@@ -1,1 +1,36 @@
-Basics about OpenViBE
+
+         *========================================*
+                      |OpenViBE| |README|
+         *========================================*
+
+|Introduction|
+
+This should give you the basic knowledge of what *OpenViBE* is and
+how the project files are organised and should be used.
+
+|Folders|
+
+<openvibe>
+	This folder contains the specifications of the *OpenViBE*
+	platform. It mostly consists in a list of unimplemented
+	classes. Those classes have to be implemented wether by the
+	kernel or the plugin developpers
+
+<openvibe-kernelimpl>
+	This folder contains kernel related implemented classes.
+
+<openvibe-pluginsimpl>
+	This folder contains the plugins of the *OpenViBE* platform.
+	Those plugins will be separated using a directory per plugin
+	module :
+
+	<samples>
+		This folder contains a minimal sample plugin module
+		that shows how a box algorithm should be implemented,
+		how a box behavior should be implemented and how
+		the plugin module should declare its plugin objects
+		to the kernel
+
+|End.of.file|
+
+ vim:tw=78:ts=8:ft=help:norl:
