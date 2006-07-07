@@ -1,0 +1,151 @@
+#ifndef __OpenViBE_IObject_H__
+#define __OpenViBE_IObject_H__
+
+#include "ov_base.h"
+#include "ovCIdentifier.h"
+
+namespace OpenViBE
+{
+	class CMessage;
+	class IObjectContext;
+
+	/**
+	 * \class IObject
+	 * \author Yann Renard (INRIA/IRISA)
+	 * \date 2006-06-16
+	 * \brief Base class for all the §OpenViBE§ platform objects
+	 *
+	 * Most of the complex objects existing in the §OpenViBE§ platform
+	 * should derive this base interface. Thus, several operations can
+	 * be performed in order to work on the object. The most important
+	 * may be the isDerivedFromClass method that allows the caller to
+	 * know it the object has specific interface implementation and if
+	 * the object could finally be casted in this interface or subclass.
+	 * Several interfaces are provided in the §OpenViBE§ specficiation
+	 * but custom class could also be created. It is the responsability
+	 * of the developper to notify the user of what interfaces are
+	 * implemented in a concrete class.
+	 *
+	 * See isDerivedFromClass to have a sample of how this function
+	 * could be used.
+	 */
+	class OV_API IObject
+	{
+	public:
+
+		/** \name Class identification */
+		//@{
+
+		/**
+		 * \brief Returns the final class identifier of the concrete class
+		 * \return The class identifier of this object.
+		 *
+		 * This method should return the class identifier of the
+		 * concrete instanciated class.
+		 */
+		virtual OpenViBE::CIdentifier getClassIdentifier(void)=0;
+		/**
+		 * \brief Checks if this object is compatible with a class identifier
+		 * \param rClassIdentifier [in] : the class identifier you want
+		 *        to test this object compatibility with
+		 * \return \e true if this object si compatible with the given
+		 *         class identifier (this means the concrete class
+		 *         overloads the class with given class identifier)
+		 *         and \e false when this object is not compatible.
+		 *
+		 * This method should be used to check object compatibility
+		 * with super classes and interfaces. For any concrete class
+		 * instance derived from OpenViBE::IObject, one can check if
+		 * plugin functions are implemented and so on... see
+		 * OpenViBE::Plugins::IPluginObject for an example...
+		 */
+		virtual OpenViBE::boolean isDerivedFromClass(
+			const OpenViBE::CIdentifier& rClassIdentifier)
+		{
+			return (rClassIdentifier==OV_ClassIdentifier_Object);
+		}
+
+		//@}
+		/** \name Initialization / Uninitialization */
+		//@{
+
+		/**
+		 * \brief Prepares the object
+		 * \return \e true when this object successfully initialized
+		 *         or \e false if it didn't succeed to initialize.
+		 *
+		 * After a successfull initialization, the caller knows
+		 * the object can safely be used... When the object is not
+		 * usefull anymore, uninitialize method is called and no more
+		 * functions of the object should be called except destructor
+		 * or initialize again.
+		 *
+		 * After unsuccessfull initialization, the caller should
+		 * immediatly call uninitialize and then decide whether to
+		 * retry initialization sequence or to work without this
+		 * concrete object.
+		 *
+		 * Default implementation simply returns \e true.
+		 *
+		 * \sa uninitialize
+		 */
+		virtual OpenViBE::boolean initialize(void);
+		/**
+		 * \brief Unprepares the object so it could be deleted
+		 * \return \e true when this object sucessfully uninitialized
+		 *         or \e false if didn't succeed to uninitialize.
+		 * \warning After a successfull uninitialize call, this object
+		 *          could whethere be deleted or used again after a
+		 *          new call to the initialize function !
+		 *
+		 * After unsuccessfull uninitialization, the caller could
+		 * try to call uninitialize again some time so it gets a
+		 * \e true result. If the object still returns errors
+		 * in uninitialization process, the object is left and never
+		 * re-initialized again. It could only be deleted one day.
+		 *
+		 * Default implementation simply returns \e true.
+		 *
+		 * \sa initialize
+		 */
+		virtual OpenViBE::boolean uninitialize(void);
+
+		//@}
+		/** \name Object communication */
+		//@{
+
+		/**
+		 * \brief Processes a simple object-to-object message
+		 * \param rObjectContext [in] : the current object context
+		 * \param rMessage [in] : the message to process
+		 * \return \e true when the message is processed successfully,
+		 *         \e false in other cases.
+		 *
+		 * Default implementation simply returns \e false.
+		 */
+		virtual OpenViBE::boolean processMessage(OpenViBE::IObjectContext& rObjectContext, OpenViBE::CMessage& rMessage);
+
+		//@}
+
+	protected:
+
+		virtual ~IObject(void);
+	};
+};
+
+#define _IsDerivedFromClass_(_SuperClassName_,_ClassIdentifier_) \
+	virtual OpenViBE::boolean isDerivedFromClass( \
+		const OpenViBE::CIdentifier& rClassIdentifier) \
+	{ \
+		return ((rClassIdentifier==_ClassIdentifier_) \
+		     || _SuperClassName_::isDerivedFromClass(rClassIdentifier)); \
+	}
+
+#define _IsDerivedFromClass_Final_(_SuperClassName_,_ClassIdentifier_) \
+	_IsDerivedFromClass_(_SuperClassName_,_ClassIdentifier_) \
+	virtual OpenViBE::CIdentifier getClassIdentifier(void) \
+	{ \
+		return _ClassIdentifier_; \
+	}
+
+#endif // __OpenViBE_IObject_H__
