@@ -8,6 +8,7 @@ namespace OpenViBE
 	namespace Plugins
 	{
 		class IBoxContext;
+		class IKernelContext;
 
 		/**
 		 * \class IBoxBehaviorContext
@@ -39,6 +40,17 @@ namespace OpenViBE
 			 *          has finished its work, it could be deprecated.
 			 */
 			virtual OpenViBE::Plugins::IBoxContext& getBoxContext(void)=0;
+			/**
+			 * \brief Gets the kernel context
+			 * \return A reference on the kernel context
+			 *
+			 * The returned context can be used by the behavior to
+			 * access the kernel functionnalities.
+			 *
+			 * \warning The behavior should use this reference after it
+			 *          has finished its work, it could be deprecated.
+			 */
+			virtual OpenViBE::Plugins::IKernelContext& getKernelContext(void)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObjectContext, OV_ClassIdentifier_BoxBehaviorContext)
 		};

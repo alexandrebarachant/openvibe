@@ -54,7 +54,7 @@
 #define OV_ClassIdentifier_BoxContext_OutputChunk           OpenViBE::CIdentifier(0x691473DE, 0x2EE37ABD)
 #define OV_ClassIdentifier_BoxContext_ConnectorBase         OpenViBE::CIdentifier(0x544A003E, 0x6DCBA5F6)
 #define OV_ClassIdentifier_BoxProto                         OpenViBE::CIdentifier(0x169ED1C1, 0x639C5957)
-// #define OV_ClassIdentifier_KernelContext                    OpenViBE::CIdentifier(0x1F8D3E14, 0x73A4DB1F)
+#define OV_ClassIdentifier_KernelContext                    OpenViBE::CIdentifier(0x1F8D3E14, 0x73A4DB1F)
 
 //___________________________________________________________________//
 //                                                                   //
