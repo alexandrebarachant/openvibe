@@ -1,0 +1,87 @@
+#ifndef __OpenViBE_CString_H__
+#define __OpenViBE_CString_H__
+
+#include "ov_base.h"
+
+namespace OpenViBE
+{
+	/**
+	 * \class CString
+	 * \author Yann Renard (INRIA/IRISA)
+	 * \date 2006-08-10
+	 * \brief String class to avoid std::string in the interface
+	 *
+	 * This class helps avoiding std::string being present in exposed
+	 * C++ interface, eventually resulting in compile/link errors when
+	 * dynamically loading modules.
+	 *
+	 * \note The implementation uses std::string of course :)
+	 */
+	class OV_API CString
+	{
+	public:
+
+		/** \name Constructor / Destructor */
+		//@{
+
+		/**
+		 * \brief Default constructor
+		 *
+		 * Initializes the string to an empty string.
+		 */
+		CString(void);
+		/**
+		 * \brief Copy constructor
+		 * \param rString [in] : The string to copy
+		 *
+		 * Copies the content of \c rString into the new string.
+		 */
+		CString(const OpenViBE::CString& rString);
+		/**
+		 * \brief Constructor based on ASCII strings
+		 * \param pString [in] : The string to copy
+		 *
+		 * Copies the content of \c pString into the new string.
+		 */
+		CString(const char* pString);
+		/**
+		 * \brief Destructor
+		 *
+		 * The destructor releases the std::string implementation !
+		 */
+		virtual ~CString(void);
+
+		//@}
+		/** \name Operators */
+		//@{
+
+		/**
+		 * \brief ASCII string cast operator
+		 * \return The string formated as standard ASCII string used in C.
+		 *
+		 * The implementation simply calls \c c_str().
+		 */
+		operator const char* (void) const;
+		/**
+		 * \brief Affectation operator (copy)
+		 * \param rString [in] : The string to copy
+		 * \return This string.
+		 */
+		OpenViBE::CString& operator=(const OpenViBE::CString& rString);
+		/**
+		 * \brief Addition operator
+		 * \param rString1 [in] : The first part of the resulting string
+		 * \param rString2 [in] : The second part of the resulting string
+		 * \return The concatenation of \c rString1 and \c rString2.
+		 */
+		friend const OpenViBE::CString operator+(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2);
+
+		//@}
+
+	protected:
+
+		void* m_pSecretImplementation; ///< The std::string implementation
+	};
+};
+
+#endif // __OpenViBE_CString_H__
