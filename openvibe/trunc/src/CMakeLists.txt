@@ -1,11 +1,10 @@
 FILE(GLOB_RECURSE source_files *.cpp)
-FILE(GLOB_RECURSE all_files *.*)
+FILE(GLOB_RECURSE header_files *.h)
 
 ADD_LIBRARY(${PROJECT_NAME}-static ${source_files})
 
 ADD_DEFINITIONS(-DOV_Exports)
 ADD_DEFINITIONS(-DOV_Shared)
-
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
@@ -27,41 +26,44 @@ IF(UNIX)
 	ENDIF(LIB_STANDARD_MODULE_DL)
 ENDIF(UNIX)
 
-# ---------------------------------
-# Copies all files to include path
-# and then remove not .h files
-# ---------------------------------
-
-# Copies all the source files
-
-STRING(REPLACE ${CMAKE_CURRENT_SOURCE_DIR}/ ";" all_files ${all_files})
-ADD_CUSTOM_COMMAND(
-	TARGET ${PROJECT_NAME}-static
-	POST_BUILD
-	COMMAND ${CMAKE_COMMAND}
-	ARGS  -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_OUTPUT_PATH})
-
-# Lists .h files to remove at clean stage
-# Lists not .h files to remove immediatly
-
-SET(remove_files "")
-FOREACH(current_file ${all_files})
-#	GET_FILENAME_COMPONENT(current_file_path ${INCLUDE_OUTPUT_PATH}/${current_file} PATH)
-	IF(${current_file} MATCHES ".*\\.h$")
-		SET(remove_files "${remove_files};${INCLUDE_OUTPUT_PATH}/${current_file};${current_file_path}")
-#		MESSAGE(STATUS "${current_file} will be deleted later !")
-	ELSE(${current_file} MATCHES ".*\\.h$")
-		ADD_CUSTOM_COMMAND(
-			TARGET ${PROJECT_NAME}-static
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND}
-			ARGS -E remove ${INCLUDE_OUTPUT_PATH}/${current_file})
-		ADD_CUSTOM_COMMAND(
-			TARGET ${PROJECT_NAME}-dynamic
-			POST_BUILD
-			COMMAND ${CMAKE_COMMAND}
-			ARGS -E remove ${INCLUDE_OUTPUT_PATH}/${current_file})
-#		MESSAGE(STATUS "${current_file} is deleted now !")
-	ENDIF(${current_file} MATCHES ".*\\.h$")
-ENDFOREACH(current_file)
-SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${remove_files}")
+# -----------------------------
+# Copies all header files to
+# include path and mark copied
+# files to be deleted at clean
+# stage.
+# NOTE: created directories
+# won't be removed
+# -----------------------------
+SET(created_directories "")
+SET(created_files "")
+STRING(REPLACE ${CMAKE_CURRENT_SOURCE_DIR}/ ";" header_files ${header_files})
+FOREACH(current_header ${header_files})
+	GET_FILENAME_COMPONENT(current_header_path ${current_header} PATH)
+	IF(NOT EXISTS ${INCLUDE_OUTPUT_PATH}/${current_header_path})
+		IF(created_directories MATCHES "${current_header_path}")
+		ELSE(created_directories MATCHES "${current_header_path}")
+			ADD_CUSTOM_COMMAND(
+				TARGET ${PROJECT_NAME}-static
+				POST_BUILD
+				COMMAND mkdir ${current_header_path})
+			SET(created_directories ${created_directories} ${current_header_path})
+#			MESSAGE(STATUS "Marked to create at post build stage ${current_header_path}")
+		ENDIF(created_directories MATCHES "${current_header_path}")
+	ENDIF(NOT EXISTS ${INCLUDE_OUTPUT_PATH}/${current_header_path})
+	ADD_CUSTOM_COMMAND(
+		TARGET ${PROJECT_NAME}-static
+		POST_BUILD
+		COMMAND ${CMAKE_COMMAND}
+		ARGS  -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${current_header}" "${INCLUDE_OUTPUT_PATH}/${current_header}")
+	SET(created_files ${created_files} ${current_header})
+#	MESSAGE(STATUS "Marked to copy at post build stage ${current_header}")
+ENDFOREACH(current_header)
+SET(remove "")
+FOREACH(created_files_remove ${created_files})
+	SET(remove ${remove};${INCLUDE_OUTPUT_PATH}/${created_files_remove})
+ENDFOREACH(created_files_remove)
+FOREACH(created_directories_remove ${created_directories})
+	SET(remove ${remove};${INCLUDE_OUTPUT_PATH}/${created_directories_remove})
+ENDFOREACH(created_directories_remove)
+SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${remove}")
+# MESSAGE(STATUS "Marked to delete at clean stage ${remove}")
