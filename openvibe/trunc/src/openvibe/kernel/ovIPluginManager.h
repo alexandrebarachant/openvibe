@@ -13,7 +13,7 @@ namespace OpenViBE
 		{
 		public:
 
-			class IPluginObjectDescEnum
+			class OV_API IPluginObjectDescEnum
 			{
 			public:
 				virtual ~IPluginObjectDescEnum(void) { }
@@ -26,7 +26,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addPluginsInFile(
 				const OpenViBE::CString& rFileName)=0;
 
-		_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassIdentifier_PluginManager)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_PluginManager)
 
 		};
 	};

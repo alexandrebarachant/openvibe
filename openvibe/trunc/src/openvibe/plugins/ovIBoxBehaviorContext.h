@@ -52,7 +52,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::Plugins::IKernelContext& getKernelContext(void)=0;
 
-			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObjectContext, OV_ClassIdentifier_BoxBehaviorContext)
+			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObjectContext, OV_ClassId_Plugins_BoxBehaviorContext)
 		};
 	};
 };

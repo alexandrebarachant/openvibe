@@ -17,6 +17,8 @@ using namespace OpenViBE::Kernel;
 
 typedef OpenViBE::boolean ovBoolean;
 
+#define OV_ClassId_Kernel_KernelLoaderFinal OpenViBE::CIdentifier(0x624A6E5B, 0x52228CEA)
+
 //___________________________________________________________________//
 //                                                                   //
 
@@ -33,7 +35,7 @@ namespace OpenViBE
 		virtual ovBoolean uninitialize(void);
 		virtual void release(void);
 
-		_IsDerivedFromClass_Final_(IKernelLoader, OV_ClassIdentifier_KernelLoaderFinal)
+		_IsDerivedFromClass_Final_(IKernelLoader, OV_ClassId_Kernel_KernelLoaderFinal)
 
 	protected:
 

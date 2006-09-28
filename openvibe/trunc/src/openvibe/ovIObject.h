@@ -62,7 +62,7 @@ namespace OpenViBE
 		virtual OpenViBE::boolean isDerivedFromClass(
 			const OpenViBE::CIdentifier& rClassIdentifier)
 		{
-			return (rClassIdentifier==OV_ClassIdentifier_Object);
+			return (rClassIdentifier==OV_ClassId_Object);
 		}
 
 		//@}

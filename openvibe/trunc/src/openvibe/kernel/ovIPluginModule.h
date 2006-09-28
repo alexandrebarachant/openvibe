@@ -25,7 +25,7 @@ namespace OpenViBE
 				OpenViBE::Kernel::IPluginObjectDesc*& rpPluginObjectDescription)=0;
 			virtual OpenViBE::boolean uninitialize(void)=0;
 
-			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassIdentifier_PluginModule)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_PluginModule)
 		};
 	};
 };

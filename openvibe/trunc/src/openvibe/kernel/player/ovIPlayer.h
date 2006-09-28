@@ -20,7 +20,7 @@ namespace OpenViBE
 
 				virtual OpenViBE::boolean loop(void)=0;
 
-				_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassIdentifier_Player);
+				_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Player_Player);
 			};
 		};
 	};

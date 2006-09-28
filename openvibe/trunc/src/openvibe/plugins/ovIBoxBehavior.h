@@ -107,7 +107,7 @@ namespace OpenViBE
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObject, OV_ClassIdentifier_BoxBehavior)
+			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObject, OV_ClassId_Plugins_BoxBehavior)
 		};
 	};
 };

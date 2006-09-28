@@ -133,7 +133,7 @@ namespace OpenViBE
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_PluginObjectDesc)
+			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_PluginObjectDesc)
 		};
 	};
 };

@@ -22,7 +22,7 @@ namespace OpenViBE
 			virtual OpenViBE::CString getCategory(void)=0;
 			virtual OpenViBE::CString getVersion(void)=0;
 
-			// _IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassIdentifier_PluginObjectDesc)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_PluginObjectDesc)
 		};
 	};
 };

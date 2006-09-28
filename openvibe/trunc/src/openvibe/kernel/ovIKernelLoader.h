@@ -26,7 +26,7 @@ namespace OpenViBE
 
 			virtual void release(void)=0;
 
-			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassIdentifier_KernelLoader)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_KernelLoader)
 		};
 
 		extern OV_API OpenViBE::Kernel::IKernelLoader* createKernelLoader(void);

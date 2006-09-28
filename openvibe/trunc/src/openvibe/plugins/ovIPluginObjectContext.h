@@ -28,7 +28,7 @@ namespace OpenViBE
 
 			// TODO
 
-			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_PluginObjectContext)
+			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_PluginObjectContext)
 		};
 	};
 };

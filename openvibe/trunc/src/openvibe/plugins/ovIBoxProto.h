@@ -57,7 +57,7 @@ namespace OpenViBE
 
 			/* TODO add flags etc... */
 
-			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_BoxProto)
+			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxProto)
 		};
 	};
 };

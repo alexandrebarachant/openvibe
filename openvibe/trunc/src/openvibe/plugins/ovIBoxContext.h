@@ -55,7 +55,7 @@ namespace OpenViBE
 
 				//@}
 
-				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_BoxContext_ConnectorBase)
+				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_ConnectorBase)
 			};
 
 		public:
@@ -95,7 +95,7 @@ namespace OpenViBE
 				virtual OpenViBE::boolean unpack(const OpenViBE::float64** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
 				//@}
 
-				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_BoxContext_InputChunk)
+				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_InputChunk)
 			};
 
 			class OV_API IOutputChunk : virtual public OpenViBE::Plugins::IPluginObjectContext
@@ -157,7 +157,7 @@ namespace OpenViBE
 				virtual OpenViBE::boolean pack(const OpenViBE::float64* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
 				//@}
 
-				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_BoxContext_OutputChunk)
+				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_OutputChunk)
 			};
 
 			/**
@@ -242,7 +242,7 @@ namespace OpenViBE
 
 				//@}
 
-				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_BoxContext_Input)
+				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_Input)
 			};
 
 			/**
@@ -308,7 +308,7 @@ namespace OpenViBE
 
 				//@}
 
-				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_BoxContext_Output)
+				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_Output)
 			};
 
 			/** \name Box identification */
@@ -396,7 +396,7 @@ namespace OpenViBE
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassIdentifier_BoxContext)
+			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext)
 		};
 	};
 };

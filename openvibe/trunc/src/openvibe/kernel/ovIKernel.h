@@ -37,7 +37,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean releaseObject(
 				OpenViBE::IObject*& rpObject)=0;
 
-			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassIdentifier_Kernel)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Kernel)
 		};
 	};
 };
