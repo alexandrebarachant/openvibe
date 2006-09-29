@@ -21,10 +21,8 @@ namespace OpenViBE
 					OpenViBE::Kernel::IPluginObjectDesc& rPluginObjectDesc)=0;
 			};
 
-			virtual OpenViBE::boolean addPluginsInDirectory(
-				const OpenViBE::CString& rDirectoryName)=0;
-			virtual OpenViBE::boolean addPluginsInFile(
-				const OpenViBE::CString& rFileName)=0;
+			virtual OpenViBE::boolean addPluginsFromFiles(
+				const OpenViBE::CString& rFileNameWildCard)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_PluginManager)
 
