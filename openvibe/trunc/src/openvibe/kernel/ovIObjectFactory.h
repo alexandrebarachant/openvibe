@@ -13,6 +13,12 @@ namespace OpenViBE
 
 			virtual OpenViBE::IObject* createObject(
 				const OpenViBE::CIdentifier& rClassIdentifier)=0;
+			virtual OpenViBE::IObject* createObject(
+				const OpenViBE::CIdentifier& rClassIdentifier,
+				OpenViBE::IObject& rUserData)=0;
+			virtual OpenViBE::IObject* createObject(
+				const OpenViBE::CIdentifier& rClassIdentifier,
+				const OpenViBE::IObject& rUserData)=0;
 			virtual OpenViBE::boolean releaseObject(
 				OpenViBE::IObject* pObject)=0;
 
