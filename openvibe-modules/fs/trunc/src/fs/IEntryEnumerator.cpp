@@ -1,6 +1,4 @@
 #include "IEntryEnumerator.h"
-#include "IEntry.h"
-#include "IAttributes.h"
 
 #include <string>
 
@@ -26,7 +24,7 @@ typedef FS::boolean FSBoolean;
 
 namespace FS
 {
-	class CEntry : virtual public IEntry
+	class CEntry : virtual public IEntryEnumerator::IEntry
 	{
 	public:
 
@@ -43,6 +41,10 @@ namespace FS
 // ________________________________________________________________________________________________________________
 //
 
+IEntryEnumerator::IEntry::~IEntry(void)
+{
+}
+
 CEntry::CEntry(const string& sName)
 	:m_sName(sName)
 {
@@ -58,7 +60,7 @@ const char* CEntry::getName(void)
 
 namespace FS
 {
-	class CAttributes : virtual public IAttributes
+	class CAttributes : virtual public IEntryEnumerator::IAttributes
 	{
 	public:
 
@@ -93,6 +95,10 @@ namespace FS
 
 // ________________________________________________________________________________________________________________
 //
+
+IEntryEnumerator::IAttributes::~IAttributes(void)
+{
+}
 
 CAttributes::CAttributes(void)
 	:m_bIsFile(false)

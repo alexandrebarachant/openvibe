@@ -17,7 +17,9 @@ namespace OpenViBE
 				const OpenViBE::CString& sName,
 				OpenViBE::CString* pError=NULL)=0;
 			virtual OpenViBE::boolean unload(
-				CString* pError=NULL)=0;
+				OpenViBE::CString* pError=NULL)=0;
+			virtual OpenViBE::boolean getFileName(
+				OpenViBE::CString& rFileName) const=0;
 
 			virtual OpenViBE::boolean initialize(void)=0;
 			virtual OpenViBE::boolean getPluginObjectDescription(
