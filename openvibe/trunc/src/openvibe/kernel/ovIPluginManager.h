@@ -7,6 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
+		class IPluginObject;
 		class IPluginObjectDesc;
 
 		class OV_API IPluginManager : virtual public OpenViBE::Kernel::IKernelObject
@@ -23,6 +24,12 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean addPluginsFromFiles(
 				const OpenViBE::CString& rFileNameWildCard)=0;
+
+			virtual OpenViBE::boolean enumeratePluginObjectDesc(
+				OpenViBE::Kernel::IPluginManager::IPluginObjectDescEnum& rCallback)=0;
+
+			virtual OpenViBE::Kernel::IPluginObject* createPluginObject(
+				OpenViBE::CIdentifier& rClassIdentifier)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_PluginManager)
 

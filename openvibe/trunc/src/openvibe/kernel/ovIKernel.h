@@ -7,6 +7,8 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
+		class IKernelLog;
+
 		class OV_API IKernel : virtual public OpenViBE::Kernel::IKernelObject
 		{
 		public:
@@ -42,6 +44,9 @@ namespace OpenViBE
 				const OpenViBE::IObject& rUserData)=0;
 			virtual OpenViBE::boolean releaseObject(
 				OpenViBE::IObject* pObject)=0;
+
+			virtual OpenViBE::Kernel::IKernelLog& getKernelLog(
+				const OpenViBE::uint32 ui32Level=0)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Kernel)
 		};

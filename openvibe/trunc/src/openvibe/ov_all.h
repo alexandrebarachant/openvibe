@@ -21,10 +21,11 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#include "kernel/ovIKernelLoader.h"
 #include "kernel/ovIKernel.h"
+#include "kernel/ovIKernelLog.h"
 #include "kernel/ovIKernelDesc.h"
 #include "kernel/ovIKernelObject.h"
+#include "kernel/ovIKernelLoader.h"
 #include "kernel/ovIObjectFactory.h"
 #include "kernel/ovIPluginModule.h"
 #include "kernel/ovIPluginManager.h"

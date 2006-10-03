@@ -12,7 +12,7 @@ namespace OpenViBE
 		public:
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void)=0;
-			// virtual OpenViBE::Kernel::IPluginObject* create(void)=0;
+			virtual OpenViBE::Kernel::IPluginObject* create(void)=0;
 
 			virtual OpenViBE::CString getName(void)=0;
 			virtual OpenViBE::CString getAuthorName(void)=0;
