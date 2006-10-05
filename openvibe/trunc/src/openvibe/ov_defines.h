@@ -79,17 +79,13 @@
 //___________________________________________________________________//
 //                                                                   //
 
+
 /*
 #define OV_ClassId_Plugin_PluginInformation                OpenViBE::CIdentifier(0x1AFF3D5A, 0x77F610EE)
 #define OV_ClassId_Plugin_BoxInputProto                    OpenViBE::CIdentifier(0x39F81801, 0x2491BF81)
 #define OV_ClassId_Plugin_BoxOutputProto                   OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
 #define OV_ClassId_Plugin_BoxSettingProto                  OpenViBE::CIdentifier(0x652D2F0B, 0x5D5E0714)
 
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x007DEEF9, 0x2F3E95C6)
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x512A166F, 0x5C3EF83F)
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x79A9EDEB, 0x245D83FC)
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x5BA36127, 0x195FEAE1)
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x434F6587, 0x2EFD2B7E)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x734C0B6A, 0x7EFEBBC8)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x583A5B71, 0x2C06662D)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x61B64E38, 0x0B36B4E8)
@@ -103,6 +99,20 @@
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x28CE73E4, 0x533A0620)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x4589F91A, 0x39E8D7D6)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x55AA406F, 0x296CF274)
+*/
+
+//___________________________________________________________________//
+//                                                                   //
+// Input/Output/Setting type identifier                              //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OV_TypeId_Integer                                  OpenViBE::CIdentifier(0x007DEEF9, 0x2F3E95C6)
+#define OV_TypeId_Float                                    OpenViBE::CIdentifier(0x512A166F, 0x5C3EF83F)
+#define OV_TypeId_String                                   OpenViBE::CIdentifier(0x79A9EDEB, 0x245D83FC)
+#define OV_TypeId_EEGStream                                OpenViBE::CIdentifier(0x5BA36127, 0x195FEAE1)
+/*
+#define OV_TypeId_                                         OpenViBE::CIdentifier(0x434F6587, 0x2EFD2B7E)
 */
 
 //___________________________________________________________________//

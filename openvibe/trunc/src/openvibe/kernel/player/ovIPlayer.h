@@ -16,7 +16,8 @@ namespace OpenViBE
 			public:
 
 				virtual OpenViBE::boolean reset(
-					OpenViBE::Kernel::IScenario& rScenario)=0;
+					const OpenViBE::Kernel::IScenario& rScenario,
+					OpenViBE::Kernel::IPluginManager& rPluginManager)=0;
 
 				virtual OpenViBE::boolean loop(void)=0;
 

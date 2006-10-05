@@ -66,21 +66,6 @@ namespace OpenViBE
 		}
 
 		//@}
-		/** \name Object communication */
-		//@{
-
-		/**
-		 * \brief Processes a simple object-to-object message
-		 * \param rObjectContext [in] : the current object context
-		 * \param rMessage [in] : the message to process
-		 * \return \e true when the message is processed successfully,
-		 *         \e false in other cases.
-		 *
-		 * Default implementation simply returns \e false.
-		 */
-		virtual OpenViBE::boolean processMessage(OpenViBE::IObjectContext& rObjectContext, OpenViBE::CMessage& rMessage);
-
-		//@}
 
 	protected:
 

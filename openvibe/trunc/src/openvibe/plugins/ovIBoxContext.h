@@ -324,12 +324,12 @@ namespace OpenViBE
 			 * boxes together and whend sending messages between
 			 * boxes.
 			 */
-			virtual OpenViBE::CIdentifier getIdentifier(void)=0;
+			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
 			/**
 			 * \brief Gets the name of the related box
 			 * \return The name of the related box.
 			 */
-			virtual OpenViBE::CString getName(void)=0;
+			virtual OpenViBE::CString getName(void) const=0;
 
 			//@}
 			/** \name Input management */
@@ -339,7 +339,7 @@ namespace OpenViBE
 			 * \brief Gets the input count for the related box
 			 * \return The input count for the related box.
 			 */
-			virtual OpenViBE::uint32 getInputCount(void)=0;
+			virtual OpenViBE::uint32 getInputCount(void) const=0;
 			/**
 			 * \brief Gets an input handle
 			 * \param ui32InputIndex [in] : the input index
@@ -356,7 +356,7 @@ namespace OpenViBE
 			 * \brief Gets the output count for the related box
 			 * \return The output count for the related box.
 			 */
-			virtual OpenViBE::uint32 getOutputCount(void)=0;
+			virtual OpenViBE::uint32 getOutputCount(void) const=0;
 			/**
 			 * \brief Gets an output handle
 			 * \param ui32OutputIndex [in] : the output index
@@ -373,7 +373,7 @@ namespace OpenViBE
 			 * \brief Gets the setting count for the related box
 			 * \return The setting count for the related box.
 			 */
-			virtual OpenViBE::uint32 getSettingCount(void)=0;
+			virtual OpenViBE::uint32 getSettingCount(void) const=0;
 			/**
 			 * \brief Gets the setting type for the related box
 			 * \param ui32SettingIndex [in] : the setting index
@@ -383,7 +383,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean getSettingType(
 				const OpenViBE::uint32 ui32SettingIndex,
-				OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
 			 * \brief Gets the setting value for the related box
 			 * \param ui32SettingIndex [in] : the setting index
@@ -392,7 +392,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean getSettingValue(
 				const OpenViBE::uint32 ui32SettingIndex,
-				OpenViBE::CString& sValue)=0;
+				OpenViBE::CString& sValue) const=0;
 
 			//@}
 
