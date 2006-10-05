@@ -40,7 +40,7 @@ namespace OpenViBE
 			 * \note Returning 0 means the block should not be
 			 *       clock activated.
 			 */
-			virtual OpenViBE::uint32 getClockFrequency(void)=0;
+			virtual OpenViBE::uint32 getClockFrequency(void) const=0;
 
 			//@}
 

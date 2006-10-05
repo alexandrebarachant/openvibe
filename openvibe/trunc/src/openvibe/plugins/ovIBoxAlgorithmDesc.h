@@ -43,7 +43,7 @@ namespace OpenViBE
 			 * \sa OpenViBE::Plugins::IBoxProto
 			 */
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype)=0;
+				OpenViBE::Plugins::IBoxProto& rPrototype) const=0;
 
 			//@}
 

@@ -185,7 +185,8 @@ ovBoolean CKernelLoaderLinux::load(
 		return false;
 	}
 
-	m_pFileHandle=dlopen(sFileName, RTLD_NOW|RTLD_LOCAL);
+	// m_pFileHandle=dlopen(sFileName, RTLD_NOW|RTLD_LOCAL);
+	m_pFileHandle=dlopen(sFileName, RTLD_LAZY|RTLD_GLOBAL);
 	if(!m_pFileHandle)
 	{
 		if(pError) *pError=dlerror();

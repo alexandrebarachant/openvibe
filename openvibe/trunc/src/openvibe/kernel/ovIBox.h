@@ -7,9 +7,6 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class IBoxAlgorithmDesc;
-		class IBoxBehaviorDesc;
-
 		/**
 		 * \class IBox
 		 * \author Yann Renard (IRISA/INRIA)
@@ -24,28 +21,6 @@ namespace OpenViBE
 		{
 		public:
 
-#if 0
-			/** \name Initialization */
-			//@{
-
-			/**
-			 * \brief Description based initialisation
-			 * \param rBoxAlgorithmDesc [in] : The description of
-			 *        the algorithm this box uses
-			 * \param rBoxBehaviorDesc [in] : The description of
-			 *        the behavior this box uses
-			 * \return \e true in case of success.
-			 * \return \e false in case of error. In such case,
-			 *         the box is simply considered as empty, with
-			 *         no input, no output, and no settings.
-			 */
-			virtual OpenViBE::boolean initialize(
-				OpenViBE::Kernel::IBoxAlgorithmDesc& rBoxAlgorithmDesc,
-				OpenViBE::Kernel::IBoxBehaviorDesc& rBoxBehaviorDesc)=0;
-
-			//@}
-#endif
-
 			/** \name Box naming and identification */
 			//@{
 
@@ -59,6 +34,16 @@ namespace OpenViBE
 			 * \return The name of this §OpenViBE§ box.
 			 */
 			virtual const OpenViBE::CString& getName(void) const=0;
+			/**
+			 * \brief Gets the algorithm class identifier
+			 * \return This box' algorithm class identifier
+			 */
+			virtual const OpenViBE::CIdentifier& getAlgorithmClassIdentifier(void) const=0;
+			/**
+			 * \brief Gets the behavior class identifier
+			 * \return This box' behavior class identifier
+			 */
+			virtual const OpenViBE::CIdentifier& getBehaviorClassIdentifier(void) const=0;
 			/**
 			 * \brief Changes the identifier of this box
 			 * \param rIdentifier [in] : The new identifier
@@ -77,15 +62,23 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setName(
 				const OpenViBE::CString& sName)=0;
 			/**
-			 * \brief Gets the behavior class identifier
-			 * \return This box' behavior class identifier
+			 * \brief Changes the algorithm identifier of this box
+			 * \param rAlgorithmClassIdentifier [in] : The new algorithm
+			 *        identifier this box should take.
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
 			 */
-			virtual const OpenViBE::CIdentifier& getBehaviorClassIdentifier(void) const=0;
+			virtual OpenViBE::boolean setAlgorithmClassIdentifier(
+				const OpenViBE::CIdentifier& rAlgorithmClassIdentifier)=0;
 			/**
-			 * \brief Gets the algorithm class identifier
-			 * \return This box' algorithm class identifier
+			 * \brief Changes the behavior identifier of this box
+			 * \param rBehaviorClassIdentifier [in] : The new behavior
+			 *        identifier this box should take.
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
 			 */
-			virtual const OpenViBE::CIdentifier& getAlgorithmClassIdentifier(void) const=0;
+			virtual OpenViBE::boolean setBehaviorClassIdentifier(
+				const OpenViBE::CIdentifier& rBehaviorClassIdentifier)=0;
 
 			//@}
 			/** \name Input management */

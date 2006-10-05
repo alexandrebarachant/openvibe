@@ -29,11 +29,10 @@
 #include "kernel/ovIObjectFactory.h"
 #include "kernel/ovIPluginModule.h"
 #include "kernel/ovIPluginManager.h"
-#include "kernel/ovIPluginObject.h"
-#include "kernel/ovIPluginObjectDesc.h"
-#include "kernel/ovIScenario.h"
 #include "kernel/ovIBox.h"
 #include "kernel/ovILink.h"
+#include "kernel/ovIScenario.h"
+#include "kernel/ovIScenarioManager.h"
 
 //___________________________________________________________________//
 //                                                                   //
@@ -64,9 +63,9 @@
 #include "plugins/ovIBoxAlgorithm.h"
 #include "plugins/ovIBoxBehaviorDesc.h"
 #include "plugins/ovIBoxBehavior.h"
-// #include "plugins/ovIScenarioImporterDesc.h"
-// #include "plugins/ovIScenarioExporter.h"
-// #include "plugins/ovIScenarioImporterDesc.h"
-// #include "plugins/ovIScenarioExporter.h"
+#include "plugins/ovIScenarioImporterDesc.h"
+#include "plugins/ovIScenarioImporter.h"
+#include "plugins/ovIScenarioExporterDesc.h"
+#include "plugins/ovIScenarioExporter.h"
 
 #endif // __OpenViBE_All_H__

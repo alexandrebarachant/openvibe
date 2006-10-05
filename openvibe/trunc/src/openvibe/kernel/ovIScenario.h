@@ -56,13 +56,33 @@ namespace OpenViBE
 			virtual OpenViBE::boolean load(
 				const OpenViBE::CString& sFileName)=0;
 			/**
+			 * \brief Loads a scenario from a file with a specific loader
+			 * \param sFileName [in] : The file to load the scenario from
+			 * \param rLoaderIdentifier [in] : The identifier of the loader to use
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean load(
+				const OpenViBE::CString& sFileName,
+				const OpenViBE::CIdentifier& rLoaderIdentifier)=0;
+			/**
 			 * \brief Saves a scenario to a file
 			 * \param sFileName [in] : The file to save the scenario to
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
 			 */
 			virtual OpenViBE::boolean save(
-				const OpenViBE::CString& sFileName) const=0;
+				const OpenViBE::CString& sFileName)=0;
+			/**
+			 * \brief Saves a scenario to a file with a specific saver
+			 * \param sFileName [in] : The file to save the scenario to
+			 * \param rSaverIdentifier [in] : The identifier of the saver to use
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean save(
+				const OpenViBE::CString& sFileName,
+				const OpenViBE::CIdentifier& rSaverIdentifier)=0;
 
 			//@{
 			/** \name Box management */

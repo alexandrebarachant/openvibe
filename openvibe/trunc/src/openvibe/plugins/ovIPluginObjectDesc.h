@@ -59,7 +59,7 @@ namespace OpenViBE
 			 * descriptor. It should return the concrete class
 			 * identifier of the plugin object itself.
 			 */
-			virtual OpenViBE::CIdentifier getCreatedClass(void)=0;
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const=0;
 			/**
 			 * \brief Creates the plugin object itself
 			 * \return the created object.
@@ -81,28 +81,28 @@ namespace OpenViBE
 			 *
 			 * Default implementation simply returns empty string.
 			 */
-			virtual OpenViBE::CString getName(void);
+			virtual OpenViBE::CString getName(void) const;
 			/**
 			 * \brief Gets the author name for this plugin
 			 * \return The author name for this plugin.
 			 *
 			 * Default implementation simply returns "no name".
 			 */
-			virtual OpenViBE::CString getAuthorName(void);
+			virtual OpenViBE::CString getAuthorName(void) const;
 			/**
 			 * \brief Gets the author company name for this plugin
 			 * \return The author company name for this plugin.
 			 *
 			 * Default implementation simply returns "unknown".
 			 */
-			virtual OpenViBE::CString getAuthorCompanyName(void);
+			virtual OpenViBE::CString getAuthorCompanyName(void) const;
 			/**
 			 * \brief Gets a short description of the plugin
 			 * \return A short description of the plugin.
 			 *
 			 * Default implementation simply returns "unknown".
 			 */
-			virtual OpenViBE::CString getShortDescription(void);
+			virtual OpenViBE::CString getShortDescription(void) const;
 			/**
 			 * \brief Gets a detailed description of the plugin
 			 * \return A detailed description of the plugin.
@@ -112,7 +112,7 @@ namespace OpenViBE
 			 * \note You can use std::endl to have the description
 			 *       on several lines when needed.
 			 */
-			virtual OpenViBE::CString getDetailedDescription(void);
+			virtual OpenViBE::CString getDetailedDescription(void) const;
 			/**
 			 * \brief Gets a basic category of the plugin
 			 * \return the category tokens of the plugin
@@ -122,14 +122,14 @@ namespace OpenViBE
 			 *
 			 * Default implementation returns "unknown".
 			 */
-			virtual OpenViBE::CString getCategory(void);
+			virtual OpenViBE::CString getCategory(void) const;
 			/**
 			 * \brief Gets the version of the plugin
 			 * \return the version of the plugin.
 			 *
 			 * Default implementation simply returns "unknown".
 			 */
-			virtual OpenViBE::CString getVersion(void);
+			virtual OpenViBE::CString getVersion(void) const;
 
 			//@}
 

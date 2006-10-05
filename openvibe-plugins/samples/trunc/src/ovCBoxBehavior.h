@@ -48,18 +48,18 @@ namespace OpenViBESamples
 	class CBoxBehaviorDesc : virtual public OpenViBE::Plugins::IBoxBehaviorDesc
 	{
 	public:
-		virtual OpenViBE::CString getName(void)                { return OpenViBE::CString("sample behavior"); }
-		virtual OpenViBE::CString getAuthorName(void)          { return OpenViBE::CString("Yann Renard"); }
-		virtual OpenViBE::CString getAuthorCompanyName(void)   { return OpenViBE::CString("INRIA/IRISA"); }
-		virtual OpenViBE::CString getShortDescription(void)    { return OpenViBE::CString("sample behavior"); }
-		virtual OpenViBE::CString getDetailedDescription(void) { return OpenViBE::CString("A sample openvibe behavior in order to see how it should work"); }
-		virtual OpenViBE::CString getCategory(void)            { return OpenViBE::CString("Samples"); }
-		virtual OpenViBE::CString getVersion(void)             { return OpenViBE::CString("1.0"); }
+		virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("sample behavior"); }
+		virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
+		virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
+		virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("sample behavior"); }
+		virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("A sample openvibe behavior in order to see how it should work"); }
+		virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
+		virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
 		virtual void release(void)
 		{
 		}
-		virtual OpenViBE::CIdentifier getCreatedClass(void)
+		virtual OpenViBE::CIdentifier getCreatedClass(void) const
 		{
 			return ClassIdentifier_SampleBoxBehavior;
 		}
@@ -67,7 +67,7 @@ namespace OpenViBESamples
 		{
 			return new OpenViBESamples::CBoxBehavior();
 		}
-		virtual OpenViBE::uint32 getClockFrequency(void)
+		virtual OpenViBE::uint32 getClockFrequency(void) const
 		{
 			return 0;
 		}

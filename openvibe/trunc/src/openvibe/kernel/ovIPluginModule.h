@@ -5,10 +5,13 @@
 
 namespace OpenViBE
 {
-	namespace Kernel
+	namespace Plugins
 	{
 		class IPluginObjectDesc;
+	};
 
+	namespace Kernel
+	{
 		class OV_API IPluginModule : virtual public OpenViBE::Kernel::IKernelObject
 		{
 		public:
@@ -24,7 +27,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean initialize(void)=0;
 			virtual OpenViBE::boolean getPluginObjectDescription(
 				OpenViBE::uint32 ui32Index,
-				OpenViBE::Kernel::IPluginObjectDesc*& rpPluginObjectDescription)=0;
+				OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)=0;
 			virtual OpenViBE::boolean uninitialize(void)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_PluginModule)
