@@ -39,11 +39,13 @@ namespace OpenViBE
 			 * \return This box' algorithm class identifier
 			 */
 			virtual const OpenViBE::CIdentifier& getAlgorithmClassIdentifier(void) const=0;
+#if 0
 			/**
 			 * \brief Gets the behavior class identifier
 			 * \return This box' behavior class identifier
 			 */
 			virtual const OpenViBE::CIdentifier& getBehaviorClassIdentifier(void) const=0;
+#endif
 			/**
 			 * \brief Changes the identifier of this box
 			 * \param rIdentifier [in] : The new identifier
@@ -70,6 +72,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean setAlgorithmClassIdentifier(
 				const OpenViBE::CIdentifier& rAlgorithmClassIdentifier)=0;
+#if 0
 			/**
 			 * \brief Changes the behavior identifier of this box
 			 * \param rBehaviorClassIdentifier [in] : The new behavior
@@ -79,6 +82,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean setBehaviorClassIdentifier(
 				const OpenViBE::CIdentifier& rBehaviorClassIdentifier)=0;
+#endif
 
 			//@}
 			/** \name Input management */

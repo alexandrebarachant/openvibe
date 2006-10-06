@@ -1,5 +1,5 @@
-#ifndef __OpenViBE_Plugins_IKernelContext_H__
-#define __OpenViBE_Plugins_IKernelContext_H__
+#ifndef __OpenViBE_Plugins_IPlayerContext_H__
+#define __OpenViBE_Plugins_IPlayerContext_H__
 
 #include "ovIPluginObjectContext.h"
 
@@ -8,16 +8,16 @@ namespace OpenViBE
 	namespace Plugins
 	{
 		/**
-		 * \class IKernelContext
+		 * \class IPlayerContext
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-07-07
-		 * \brief Kernel interface for plugin objects
+		 * \brief Player interface for plugin objects
 		 *
 		 * Instances of this class are given to plugin object
 		 * so they can communicate with the platform kernel,
 		 * providing services such as message sending etc...
 		 */
-		class OV_API IKernelContext : virtual public OpenViBE::Plugins::IPluginObjectContext
+		class OV_API IPlayerContext : virtual public OpenViBE::Plugins::IPluginObjectContext
 		{
 		public:
 
@@ -56,9 +56,9 @@ namespace OpenViBE
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObjectContext, OV_ClassId_Plugins_KernelContext)
+			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObjectContext, OV_ClassId_Plugins_PlayerContext)
 		};
 	};
 };
 
-#endif // __OpenViBE_Plugins_IKernelContext_H__
+#endif // __OpenViBE_Plugins_IPlayerContext_H__

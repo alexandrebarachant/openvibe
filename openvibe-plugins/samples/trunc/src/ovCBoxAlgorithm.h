@@ -36,6 +36,8 @@ namespace OpenViBESamples
 		virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("A sample openvibe algorithm in order to see how it should work"); }
 		virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
 		virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
+		virtual OpenViBE::uint32 getClockFrequency(void) const       { return 0; }
+
 
 		virtual void release(void)
 		{

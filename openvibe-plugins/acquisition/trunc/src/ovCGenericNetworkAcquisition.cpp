@@ -16,6 +16,19 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) c
 	return true;
 }
 
+uint32 CGenericNetworkAcquisitionDesc::getClockFrequency(void) const
+{
+	return 100; // $$$
+}
+
+boolean CGenericNetworkAcquisition::processClock(
+	IBoxAlgorithmContext& rBoxAlgorithmContext,
+	CMessageClock& rMessageClock)
+{
+	rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
+	return true; // $$$
+}
+
 boolean CGenericNetworkAcquisition::process(IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
 	IBoxContext& l_rBoxContext=rBoxAlgorithmContext.getBoxContext();

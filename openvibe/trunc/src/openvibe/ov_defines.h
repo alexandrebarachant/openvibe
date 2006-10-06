@@ -53,9 +53,9 @@
 #define OV_ClassId_Plugins_BoxAlgorithmDesc                OpenViBE::CIdentifier(0x2C4ECAD0, 0x19607084)
 #define OV_ClassId_Plugins_BoxAlgorithmContext             OpenViBE::CIdentifier(0x275F4BB8, 0x49E08D24)
 
-#define OV_ClassId_Plugins_BoxBehavior                     OpenViBE::CIdentifier(0x58AE3092, 0x0C3371A7)
-#define OV_ClassId_Plugins_BoxBehaviorDesc                 OpenViBE::CIdentifier(0x1B9B49DB, 0x6DA217E7)
-#define OV_ClassId_Plugins_BoxBehaviorContext              OpenViBE::CIdentifier(0x4E1709E5, 0x38AADA6C)
+// #define OV_ClassId_Plugins_BoxBehavior                     OpenViBE::CIdentifier(0x58AE3092, 0x0C3371A7)
+// #define OV_ClassId_Plugins_BoxBehaviorDesc                 OpenViBE::CIdentifier(0x1B9B49DB, 0x6DA217E7)
+// #define OV_ClassId_Plugins_BoxBehaviorContext              OpenViBE::CIdentifier(0x4E1709E5, 0x38AADA6C)
 
 #define OV_ClassId_Plugins_ScenarioImporter                OpenViBE::CIdentifier(0x6BF28385, 0x77F8D9A1)
 #define OV_ClassId_Plugins_ScenarioImporterDesc            OpenViBE::CIdentifier(0x05146C29, 0x283B5BB8)
@@ -71,7 +71,7 @@
 
 #define OV_ClassId_Plugins_BoxProto                        OpenViBE::CIdentifier(0x169ED1C1, 0x639C5957)
 
-#define OV_ClassId_Plugins_KernelContext                   OpenViBE::CIdentifier(0x1F8D3E14, 0x73A4DB1F)
+#define OV_ClassId_Plugins_PlayerContext                   OpenViBE::CIdentifier(0x1F8D3E14, 0x73A4DB1F)
 
 //___________________________________________________________________//
 //                                                                   //

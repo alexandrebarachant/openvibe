@@ -8,7 +8,7 @@ namespace OpenViBE
 	namespace Plugins
 	{
 		class IBoxContext;
-		class IKernelContext;
+		class IPlayerContext;
 
 		/**
 		 * \class IBoxAlgorithmContext
@@ -16,14 +16,14 @@ namespace OpenViBE
 		 * \date 2006-07-07
 		 * \brief Specific context to use for box algorithm plugins
 		 *
-		 * This 'context' is given by the kernel to an algorithm plugin
+		 * This 'context' is given by the player to an algorithm plugin
 		 * so it has all the necessary tools to work. This algorithm
 		 * context mainly consists in getting other contexts which
 		 * could be defined and used more generically (such as the
-		 * box interface or a global kernel interface for example).
+		 * box interface or a global player interface for example).
 		 *
 		 * \sa OpenViBE::Plugins::IBoxAlgorithm
-		 * \sa OpenViBE::Plugins::IBoxBehaviorContext
+		 * \sa OpenViBE::Plugins::IPlayerContext
 		 */
 		class OV_API IBoxAlgorithmContext : virtual public OpenViBE::Plugins::IPluginObjectContext
 		{
@@ -36,21 +36,34 @@ namespace OpenViBE
 			 * The returned context can be used by the algorithm to
 			 * access the box' inputs, outputs and settings.
 			 *
-			 * \warning The algorithm should use this reference after it
+			 * \warning The algorithm should not use this reference after it
 			 *          has finished its work, it could be deprecated.
 			 */
 			virtual OpenViBE::Plugins::IBoxContext& getBoxContext(void)=0;
 			/**
-			 * \brief Gets the kernel context
-			 * \return A reference on the kernel context
+			 * \brief Gets the player context
+			 * \return A reference on the player context
 			 *
 			 * The returned context can be used by the algorithm to
-			 * access the kernel functionnalities.
+			 * access the player functionnalities.
 			 *
-			 * \warning The algorithm should use this reference after it
+			 * \warning The algorithm should not use this reference after it
 			 *          has finished its work, it could be deprecated.
 			 */
-			virtual OpenViBE::Plugins::IKernelContext& getKernelContext(void)=0;
+			virtual OpenViBE::Plugins::IPlayerContext& getPlayerContext(void)=0;
+			/**
+			 * \brief Marks the algorithm as 'ready to process' so its process function is called by the kernel
+			 * \return \e true in case of success.
+			 * \return \e false when an error occurs.
+			 *
+			 * This function should be called by the algorithm itself
+			 * after receiving a message so the kernel knows it is
+			 * ready to process some data... As soon as the kernel
+			 * knows the algorithm is ready, the \c process function
+			 * is called so the algorithm does its work and produces
+			 * its outputs.
+			 */
+			virtual OpenViBE::boolean markAlgorithmAsReadyToProcess(void)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObjectContext, OV_ClassId_Plugins_BoxAlgorithmContext)
 		};

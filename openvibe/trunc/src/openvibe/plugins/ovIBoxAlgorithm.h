@@ -5,6 +5,10 @@
 
 namespace OpenViBE
 {
+	class CMessageClock;
+	class CMessageEvent;
+	class CMessageSignal;
+
 	namespace Plugins
 	{
 		class IBoxAlgorithmContext;
@@ -34,7 +38,91 @@ namespace OpenViBE
 		{
 		public:
 
-			/** \name Processing */
+			/** \name Several event processing callbacks */
+			//@{
+
+			/**
+			 * \brief Reaction to an event launched by another box
+			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
+			 * \param rMessageEvent [in] : the message the box just received
+			 * \return \e true when the message is processed.
+			 * \return \e false when the message is not processed.
+			 * \note Default implementation returns \e false
+			 *
+			 * This function is called by the §OpenViBE§ kernel when
+			 * another box tries to send an event message to this
+			 * box. This event message is described in the
+			 * rMessageEvent parameter and can be interpreted by this
+			 * algorithm.
+			 *
+			 * \sa OpenViBE::IBoxAlgorithmContext
+			 */
+			virtual OpenViBE::boolean processEvent(
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::CMessageEvent& rMessageEvent);
+			/**
+			 * \brief Reaction to a signal
+			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
+			 * \param rMessageSignal [in] : the signal the box just received
+			 * \return \e true when the message is processed.
+			 * \return \e false when the message is not processed.
+			 * \note Default implementation returns \e false
+			 *
+			 * This function is called by the §OpenViBE§ kernel when
+			 * it has sent a signal. Signal are special messages,
+			 * mainly sent by the kernel to all of the §OpenViBE§
+			 * boxes in order to tell them it is about to start,
+			 * processing, stop processing, load a new scenario
+			 * and so on...
+			 *
+			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext
+			 */
+			virtual OpenViBE::boolean processSignal(
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::CMessageSignal& rMessageSignal);
+			/**
+			 * \brief Reaction to a clock tick
+			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
+			 * \param rMessageClock [in] : the clock message the box received
+			 * \return \e true when the message is processed.
+			 * \return \e false when the message is not processed.
+			 * \note Default implementation returns \e false
+			 *
+			 * This function is called by the §OpenViBE§ kernel when
+			 * it has sent clock messages. Clock messages are used for
+			 * processes that should be executed regularly and which
+			 * can not be triggered thanks to their inputs (for example
+			 * acquisition modules). They also can be used for example
+			 * when viewing inputs on smaller range than what input
+			 * sends periodically, thus needing a moving
+			 * 'viewed-window' on lastly received data.
+			 *
+			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext
+			 */
+			virtual OpenViBE::boolean processClock(
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::CMessageClock& rMessageClock);
+			/**
+			 * \brief Reaction to an input update
+			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
+			 * \param ui32InputIndex [in] : the index of the input which has ben updated
+			 * \return \e true when the message is processed.
+			 * \return \e false when the message is not processed.
+			 * \note Default implementation returns \e false
+			 *
+			 * This function is called by the §OpenViBE§ kernel each
+			 * time an input of this box is updated. This allows the
+			 * algorithm to decide to call the process function and
+			 * eventually to the received data.
+			 *
+			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext
+			 */
+			virtual OpenViBE::boolean processInput(
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::uint32 ui32InputIndex);
+
+			//@}
+			/** \name Algorithm processing */
 			//@{
 
 			/**
@@ -43,8 +131,7 @@ namespace OpenViBE
 			 * \return \e true on success, \e false when something went wrong.
 			 *
 			 * This function is used to process the arrived data and
-			 * eventually generate results. It is called depending
-			 * on the associated box behavior. See §OpenViBE§ global
+			 * eventually generate results. See §OpenViBE§ global
 			 * architecture to understand how the commponents interact
 			 * and how an §OpenViBE§ box works internally.
 			 *

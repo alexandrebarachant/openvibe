@@ -125,7 +125,9 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean addBox(
 				const OpenViBE::CIdentifier& rBoxAlgorithmClassIdentifier,
+#if 0
 				const OpenViBE::CIdentifier& rBoxBehaviorClassIdentifier,
+#endif
 				OpenViBE::CIdentifier& rBoxIdentifier)=0;
 			/**
 			 * \brief Removes a box of the scenario

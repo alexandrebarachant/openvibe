@@ -50,9 +50,9 @@
 
 #include "plugins/ovIBoxContext.h"
 #include "plugins/ovIBoxAlgorithmContext.h"
-#include "plugins/ovIBoxBehaviorContext.h"
+// #include "plugins/ovIBoxBehaviorContext.h"
 #include "plugins/ovIBoxProto.h"
-#include "plugins/ovIKernelContext.h"
+#include "plugins/ovIPlayerContext.h"
 #include "plugins/ovIPluginObjectLoadContext.h"
 #include "plugins/ovIPluginObjectSaveContext.h"
 
@@ -61,8 +61,8 @@
 
 #include "plugins/ovIBoxAlgorithmDesc.h"
 #include "plugins/ovIBoxAlgorithm.h"
-#include "plugins/ovIBoxBehaviorDesc.h"
-#include "plugins/ovIBoxBehavior.h"
+// #include "plugins/ovIBoxBehaviorDesc.h"
+// #include "plugins/ovIBoxBehavior.h"
 #include "plugins/ovIScenarioImporterDesc.h"
 #include "plugins/ovIScenarioImporter.h"
 #include "plugins/ovIScenarioExporterDesc.h"

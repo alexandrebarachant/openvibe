@@ -47,9 +47,11 @@ namespace OpenViBESamples
 				 m_pWriter->openChild("AlgorithmClassIdentifier");
 				  m_pWriter->setChildData(rBox.getAlgorithmClassIdentifier().toString());
 				 m_pWriter->closeChild();
+#if 0
 				 m_pWriter->openChild("BehaviorClassIdentifier");
 				  m_pWriter->setChildData(rBox.getBehaviorClassIdentifier().toString());
 				 m_pWriter->closeChild();
+#endif
 
 				if(rBox.getInputCount()!=0)
 				{
