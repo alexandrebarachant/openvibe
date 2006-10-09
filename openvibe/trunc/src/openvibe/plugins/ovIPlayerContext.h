@@ -5,6 +5,10 @@
 
 namespace OpenViBE
 {
+	class CMessageClock;
+	class CMessageEvent;
+	class CMessageSignal;
+
 	namespace Plugins
 	{
 		/**

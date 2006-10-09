@@ -5,10 +5,6 @@
 
 namespace OpenViBE
 {
-	class CTimeInterval;
-	class CMessageEvent;
-	class CMessageSignal;
-
 	namespace Plugins
 	{
 		/**
@@ -27,7 +23,7 @@ namespace OpenViBE
 		 */
 		class OV_API IBoxContext : virtual public OpenViBE::Plugins::IPluginObjectContext
 		{
-		protected:
+		public:
 
 			/**
 			 * \class IConnectorBase
@@ -58,108 +54,6 @@ namespace OpenViBE
 				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_ConnectorBase)
 			};
 
-		public:
-
-			class OV_API IInputChunk : virtual public OpenViBE::Plugins::IPluginObjectContext
-			{
-			public:
-
-				/** \name Simple type reading */
-				//@{
-				virtual OpenViBE::boolean unpack(const OpenViBE::boolean& bValue)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint8& ui8Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint16& ui16Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint32& ui32Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint64& ui64Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int8& i8Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int16& i16Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int32& i32Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int64& i64Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::float32& f32Value)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::float64& f64Value)=0;
-				// virtual OpenViBE::boolean unpack(const std::string& sValue)=0;
-				//@}
-
-				/** \name Array type reading */
-				//@{
-				virtual OpenViBE::boolean unpack(const OpenViBE::boolean** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint8** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint16** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint32** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::uint64** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int8** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int16** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int32** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::int64** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::float32** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean unpack(const OpenViBE::float64** ppArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				//@}
-
-				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_InputChunk)
-			};
-
-			class OV_API IOutputChunk : virtual public OpenViBE::Plugins::IPluginObjectContext
-			{
-			public:
-
-				/**
-				 * \name Simple type writing
-				 * \param value [in] : the value to pack in the chunk
-				 * \return \e true in case of success, \e false in other cases.
-				 *
-				 * Those functions will pack the specified value
-				 * in the chunk. The size of data to pack is
-				 * chosen thanks to the type of the given value.
-				 *
-				 * \sa OpenViBE::Plugins::IBoxContext::IInputChunk
-				 * \sa OpenViBE::Plugins::IBoxContext::IInputChunk::unpack
-				 */
-				//@{
-				virtual OpenViBE::boolean pack(const OpenViBE::boolean value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint8 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint16 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint32 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint64 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int8 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int16 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int32 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int64 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::float32 value)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::float64 value)=0;
-				// virtual OpenViBE::boolean pack(const std::string& value)=0;
-				//@}
-
-				/**
-				 * \name Array type writing
-				 * \param pArray [in] : the pointer for the array to pack
-				 * \param ui32ArrayCount [in] : the number of elements
-				 *        in the array
-				 * \return \e true in case of success, \e false in other cases.
-				 *
-				 * Those functions will pack an array in the chunk. The size
-				 * of data to pack is chosen thanks to the type of the
-				 * pArray pointer !
-				 *
-				 * \sa OpenViBE::Plugins::IBoxContext::IInputChunk
-				 * \sa OpenViBE::Plugins::IBoxContext::IInputChunk::unpack
-				 */
-				//@{
-				virtual OpenViBE::boolean pack(const OpenViBE::boolean* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint8* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint16* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint32* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::uint64* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int8* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int16* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int32* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::int64* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::float32* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				virtual OpenViBE::boolean pack(const OpenViBE::float64* pArray, const OpenViBE::uint32 ui32ArrayCount)=0;
-				//@}
-
-				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_OutputChunk)
-			};
-
 			/**
 			 * \class IInput
 			 * \author Yann Renard (INRIA/IRISA)
@@ -183,12 +77,15 @@ namespace OpenViBE
 				 * \brief Gets an input chunk and its time validity.
 				 * \param ui32Index [in] : the index of the desired
 				 *        input chunk.
-				 * \param rpChunk [out] : a pointer to the input chunk
-				 * \param rValidity [out] : the time validity for the
-				 *        returned chunk.
-				 * \return \e true in case of success, \e false in other case.
-				 * \warning When returning \e false, both the value of
-				 *          rpChunk and rValidity are undefined.
+				 * \param rStartTime [out] : the time which the chunk starts at
+				 * \param rEndTime [out] : the time which the chunk ends at
+				 * \param rChunkSize [out] : the chunk buffer size in bytes
+				 * \param rpChunkBuffer [out] : the chunk data itself
+				 * \return \e true in case of success.
+				 * \return \e false in case of error.
+				 * \warning When returning \e false, none of the value
+				 *          \c rStartTime, \c rEndTime, \c rChunkSize nor
+				 *          \c rpChunkBuffer are defined.
 				 * \warning The chunks are ordered like they arrived
 				 *          to the box, this means chunk 0 arrived
 				 *          before chunk 1, that arrived before
@@ -198,12 +95,15 @@ namespace OpenViBE
 				 */
 				virtual OpenViBE::boolean getChunk(
 					const OpenViBE::uint32 ui32Index,
-					OpenViBE::Plugins::IBoxContext::IInputChunk*& rpChunk,
-					OpenViBE::CTimeInterval& rValidity)=0;
+					OpenViBE::uint64& rStartTime,
+					OpenViBE::uint64& rEndTime,
+					OpenViBE::uint64& rChunkSize,
+					const OpenViBE::uint8*& rpChunkBuffer)=0;
 				/**
 				 * \brief Releases an input chunk
 				 * \param ui32Index [in] : the index of the chunk to release
-				 * \return \e true in case of success \e false in other cases.
+				 * \return \e true in case of success.
+				 * \return \e false in case of error.
 				 * \warning The chunks are ordered like they arrived
 				 *          to the box, this means chunk 0 arrived
 				 *          before chunk 1, that arrived before
@@ -225,22 +125,26 @@ namespace OpenViBE
 					const OpenViBE::uint32 ui32Index)=0;
 
 				//@}
+
+#if 0
 				/** \name Information related to this input */
 				//@{
 
 				/**
 				 * \brief Gets the source information for this input
-				 * \param rSourceIdentifier [out] : the box identifier
+				 * \param rBoxIdentifier [out] : the box identifier
 				 *        for this input
-				 * \param rSourceOutputIndex [out] : the output index
+				 * \param rBoxOutputIndex [out] : the output index
 				 *        of the box which is connected to this input
-				 * \return \e true in case of success, \e false in other cases.
+				 * \return \e true in case of success.
+				 * \return \e false in case of error.
 				 */
 				virtual OpenViBE::boolean getSource(
-					OpenViBE::CIdentifier& rSourceIdentifier,
-					OpenViBE::uint32& rSourceOutputIndex)=0;
+					OpenViBE::CIdentifier& rBoxIdentifier,
+					OpenViBE::uint32& rBoxOutputIndex)=0;
 
 				//@}
+#endif
 
 				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_Input)
 			};
@@ -260,23 +164,33 @@ namespace OpenViBE
 				//@{
 
 				/**
-				 * \brief Gets a reference on the current output chunk
-				 * \return A reference to the current output chunk
-				 *
-				 * This chunk should be used to effectively send
-				 * data outside the concerned box. First, one should
-				 * fill in the chunk. Then one should call the
-				 * send method in order to effectively send the
-				 * chunk data specifying its time validity.
-				 *
-				 * \sa send
+				 * \brief Gets the chunk size
+				 * \return The chunk size in bytes
 				 */
-				virtual OpenViBE::Plugins::IBoxContext::IOutputChunk& getChunk(void)=0;
+				virtual OpenViBE::uint64 getChunkSize(void)=0;
+				/**
+				 * \brief Sets the output chunk size
+				 * \param ui64Size [in] : the new size of the output chunk
+				 * \return \e true in case of success.
+				 * \return \e false in case of error.
+				 */
+				virtual OpenViBE::boolean setChunkSize(
+					const OpenViBE::uint64 ui64Size)=0;
+				/**
+				 * \brief Gets a pointer to the current output chunk buffer
+				 * \return A pointer to the current output chunk buffer
+				 * \warning The returned pointer may change if
+				 *          the caller resizes the chunk buffer
+				 *          using \c setChunkSize !
+				 */
+				virtual OpenViBE::uint8* getChunkBuffer(void)=0;
+
 				/**
 				 * \brief Effectively sends the data chunk
 				 * \param rTimeValidity [in] : the time validity interval 
 				 *        for the output chunk.
-				 * \return \e true in case of succcess, \e false in other cases.
+				 * \return \e true in case of success.
+				 * \return \e false in case of error.
 				 *
 				 * The output chunk should first be filled. For
 				 * that, one will have to get a reference on it
@@ -285,28 +199,37 @@ namespace OpenViBE
 				 * \sa getChunk
 				 */
 				virtual OpenViBE::boolean send(
-					const OpenViBE::CTimeInterval& rTimeValidity)=0;
-				/**
-				 * \brief Gets the target information for this output
-				 * \param rTargetIdentifiers [out] : the target box
-				 *        identifiers for this output
-				 * \param rTargetInputIndices [out] : the input indices
-				 *        of the boxes which are connected to this output
-				 * \return \e true in case of success, \e false in other cases.
-				 */
+					const OpenViBE::uint64 ui64StartTime,
+					const OpenViBE::uint64 ui64EndTime)=0;
 
 				//@}
+
+#if 0
 				/** \name Information related to this output */
 				//@{
 
-				virtual OpenViBE::uint32 getOutputTargetCount(void)=0;
-
-				virtual OpenViBE::boolean getOutputTarget(
-					const OpenViBE::uint32 ui32OutputIndex,
-					OpenViBE::CIdentifier& rTargetIdentifiers,
-					OpenViBE::uint32& rTargetInputIndices)=0;
+				/**
+				 * \brief Gets the number of connections from this output
+				 * \return The number of connections starting from this output
+				 */
+				virtual OpenViBE::uint32 getTargetCount(void)=0;
+				/**
+				 * \brief Gets the target information for this output
+				 * \param ui32TargetIndex [in] : the target index
+				 * \param rBoxIdentifier [out] : the target box
+				 *        identifier for this output
+				 * \param rBoxInputIndex [out] : the input index
+				 *        of the boxes which are connected to this output
+				 * \return \e true in case of success.
+				 * \return \e false in case of error.
+				 */
+				virtual OpenViBE::boolean getTarget(
+					const OpenViBE::uint32 ui32TargetIndex,
+					OpenViBE::CIdentifier& rBoxIdentifier,
+					OpenViBE::uint32& rBoxInputIndex)=0;
 
 				//@}
+#endif
 
 				_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_BoxContext_Output)
 			};

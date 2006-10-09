@@ -1,4 +1,4 @@
-#include "ovIPluginAlgorithm.h"
+#include "ovIBoxAlgorithm.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

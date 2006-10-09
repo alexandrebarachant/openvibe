@@ -150,13 +150,14 @@ namespace OpenViBESamples
 				OpenViBE::CIdentifier l_oTargetBoxIdentifier;
 				OpenViBE::uint32 l_ui32SourceBoxOutputIndex=0xffffffff;
 				OpenViBE::uint32 l_ui32TargetBoxInputIndex=0xffffffff;
+
+				rLink.getSource(l_oSourceBoxIdentifier, l_ui32SourceBoxOutputIndex);
+				rLink.getTarget(l_oTargetBoxIdentifier, l_ui32TargetBoxInputIndex);
+
 				char l_sSourceBoxOutputIndex[1024];
 				char l_sTargetBoxInputIndex[1024];
 				sprintf(l_sSourceBoxOutputIndex, "%i", l_ui32SourceBoxOutputIndex);
 				sprintf(l_sTargetBoxInputIndex, "%i", l_ui32TargetBoxInputIndex);
-
-				rLink.getSource(l_oSourceBoxIdentifier, l_ui32SourceBoxOutputIndex);
-				rLink.getTarget(l_oTargetBoxIdentifier, l_ui32TargetBoxInputIndex);
 
 				m_pWriter->openChild("Link");
 				 m_pWriter->openChild("Identifier");
