@@ -145,6 +145,11 @@ for(int i=0; i<(int)ui64BufferSize && i<4; i++)
 printf("...\n");
 #endif
 
+	if(!pBuffer || !ui64BufferSize)
+	{
+		return true;
+	}
+
 	unsigned char* l_pBuffer=(unsigned char*)pBuffer;
 	uint64 l_ui64BufferSize=ui64BufferSize;
 	boolean l_bFinished=false;
