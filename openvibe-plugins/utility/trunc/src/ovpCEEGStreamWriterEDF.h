@@ -5,6 +5,32 @@
 
 #include <openvibe/ov_all.h>
 
+#include <ebml/IReader.h>
+#include <ebml/IReaderHelper.h>
+
+#define EEG_NodeId_Header                      EBML::CIdentifier(0x4239)
+ #define EEG_NodeId_AcquisitionInformation     EBML::CIdentifier(0x4240)
+  #define EEG_NodeId_ExperimentId              EBML::CIdentifier(0x4241)
+  #define EEG_NodeId_SubjectAge                EBML::CIdentifier(0x4242)
+  #define EEG_NodeId_SubjectSex                EBML::CIdentifier(0x4243)
+  #define EEG_NodeId_ChannelCount              EBML::CIdentifier(0x4244)
+  #define EEG_NodeId_SamplingFrequency         EBML::CIdentifier(0x4245)
+  #define EEG_NodeId_ChannelNames              EBML::CIdentifier(0x4246)
+   #define EEG_NodeId_ChannelName              EBML::CIdentifier(0x4247)
+  #define EEG_NodeId_GainFactors               EBML::CIdentifier(0x4248)
+   #define EEG_NodeId_GainFactor               EBML::CIdentifier(0x4249)
+  #define EEG_NodeId_ChannelLocations          EBML::CIdentifier(0x4250)
+   #define EEG_NodeId_ChannelLocation          EBML::CIdentifier(0x4251)
+#define EEG_NodeId_Buffer                      EBML::CIdentifier(0x5A)
+ #define EEG_NodeId_Samples                    EBML::CIdentifier(0x5B)
+  #define EEG_NodeId_SamplesPerChannelCount    EBML::CIdentifier(0x5C)
+  #define EEG_NodeId_SampleBlock               EBML::CIdentifier(0x5D)
+ #define EEG_NodeId_Stimulations               EBML::CIdentifier(0x60)
+  #define EEG_NodeId_StimulationsCount         EBML::CIdentifier(0x61)
+  #define EEG_NodeId_Stimulation               EBML::CIdentifier(0x62)
+   #define EEG_NodeId_StimulationSampleIndex   EBML::CIdentifier(0x63)
+   #define EEG_NodeId_StimulationIdentifier    EBML::CIdentifier(0x64)
+
 namespace OpenViBEPlugins
 {
 	namespace Utility
@@ -12,7 +38,14 @@ namespace OpenViBEPlugins
 		class CEEGStreamWriterEDF : virtual public OpenViBE::Plugins::IBoxAlgorithm
 		{
 		public:
+
+			CEEGStreamWriterEDF(void);
+
 			virtual void release(void) { delete this; }
+			virtual OpenViBE::boolean initialize(
+				const OpenViBE::Plugins::IPluginObjectContext& rContext);
+			virtual OpenViBE::boolean uninitialize(
+				const OpenViBE::Plugins::IPluginObjectContext& rContext);
 			virtual OpenViBE::boolean processInput(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
 				OpenViBE::uint32 ui32InputIndex);
@@ -20,6 +53,13 @@ namespace OpenViBEPlugins
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_EEGStreamWriterEDF)
+
+		public:
+
+			OpenViBE::CString m_sFileName;
+			EBML::IReaderCallBack* m_pReaderCallBack;
+			EBML::IReader* m_pReader;
+			OpenViBE::Plugins::IBoxContext::IInput* m_pInput;
 		};
 
 		class CEEGStreamWriterEDFDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc

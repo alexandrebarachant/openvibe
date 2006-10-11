@@ -11,6 +11,26 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR})
 
 # ---------------------------------
+# Finds module EBML
+# Adds library to target
+# Adds include path
+# ---------------------------------
+FIND_PATH(PATH_OPENVIBE_MODULES_EBML include/ebml/defines.h PATHS $ENV{OpenViBE_modules}/ebml $ENV{OpenViBE_module_ebml})
+IF(PATH_OPENVIBE_MODULES_EBML)
+	MESSAGE(STATUS "  Found OpenViBE module ebml...")
+	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_EBML}/include)
+	FIND_LIBRARY(LIB_OPENVIBE_MODULE_EBML OpenViBE-module-EBML-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_EBML}/lib)
+	IF(LIB_OPENVIBE_MODULE_EBML)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_EBML}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_EBML})
+	ELSE(LIB_OPENVIBE_MODULE_EBML)
+		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-EBML-${MODULE_LINKING}")
+	ENDIF(LIB_OPENVIBE_MODULE_EBML)
+ELSE(PATH_OPENVIBE_MODULES_EBML)
+	MESSAGE(STATUS "  FAILED to find OpenViBE module ebml...")
+ENDIF(PATH_OPENVIBE_MODULES_EBML)
+
+# ---------------------------------
 # Finds OpenViBE
 # Adds library to target
 # Adds include path
