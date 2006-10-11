@@ -79,6 +79,14 @@ namespace OpenViBE
 				OpenViBE::CIdentifier& rBoxIdentifier,
 				OpenViBE::uint32& ui32BoxOutputIndex) const=0;
 			/**
+			 * \brief Gets the source box identifier for this link
+			 */
+			virtual OpenViBE::CIdentifier getSourceBoxIdentifier(void) const=0;
+			/**
+			 * \brief Gets the source box output index for this link
+			 */
+			virtual OpenViBE::uint32 getSourceBoxOutputIndex(void) const=0;
+			/**
 			 * \brief Gets the target information for this link
 			 * \param rTargetBoxIdentifier [out] : The identifier
 			 *        of the target box
@@ -90,6 +98,15 @@ namespace OpenViBE
 			virtual OpenViBE::boolean getTarget(
 				OpenViBE::CIdentifier& rTargetBoxIdentifier,
 				OpenViBE::uint32& ui32BoxInputIndex) const=0;
+			/**
+			 * \brief Gets the target box identifier for this link
+			 */
+			virtual OpenViBE::CIdentifier getTargetBoxIdentifier(void) const=0;
+			/**
+			 * \brief Gets the target box input index for this link
+			 */
+			virtual OpenViBE::uint32 getTargetBoxInputIndex(void) const=0;
+
 
 			//@}
 

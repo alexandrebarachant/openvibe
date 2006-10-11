@@ -7,8 +7,11 @@ namespace OpenViBE
 {
 	namespace Plugins
 	{
+#if 0
 		class IPluginObjectLoadContext;
 		class IPluginObjectSaveContext;
+#endif
+		class IPluginObjectContext;
 
 		/**
 		 * \class IPluginObject
@@ -58,6 +61,8 @@ namespace OpenViBE
 
 			/**
 			 * \brief Prepares the object
+			 * \param rContext [in] : the plugin object context (the derived
+			 *        class depends on what plugin is being treated)
 			 * \return \e true when this object successfully initialized
 			 *         or \e false if it didn't succeed to initialize.
 			 *
@@ -76,9 +81,11 @@ namespace OpenViBE
 			 *
 			 * \sa uninitialize
 			 */
-			virtual OpenViBE::boolean initialize(void);
+			virtual OpenViBE::boolean initialize(const OpenViBE::Plugins::IPluginObjectContext& rContext);
 			/**
 			 * \brief Unprepares the object so it could be deleted
+			 * \param rContext [in] : the plugin object context (the derived
+			 *        class depends on what plugin is being treated)
 			 * \return \e true when this object sucessfully uninitialized
 			 *         or \e false if didn't succeed to uninitialize.
 			 * \warning After a successfull uninitialize call, this object
@@ -95,9 +102,11 @@ namespace OpenViBE
 			 *
 			 * \sa initialize
 			 */
-			virtual OpenViBE::boolean uninitialize(void);
+			virtual OpenViBE::boolean uninitialize(const OpenViBE::Plugins::IPluginObjectContext& rContext);
 
 			//@}
+
+#if 0
 			/** \name Input / Output */
 			//@{
 
@@ -140,6 +149,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean save(OpenViBE::Plugins::IPluginObjectSaveContext& rSaveContext);
 
 			//@}
+#endif
 
 			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_PluginObject)
 		};

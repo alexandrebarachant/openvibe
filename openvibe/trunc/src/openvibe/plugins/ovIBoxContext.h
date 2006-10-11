@@ -100,18 +100,14 @@ namespace OpenViBE
 					OpenViBE::uint64& rChunkSize,
 					const OpenViBE::uint8*& rpChunkBuffer)=0;
 				/**
-				 * \brief Releases an input chunk
-				 * \param ui32Index [in] : the index of the chunk to release
+				 * \brief Marks an input chunk as deprecated
+				 * \param ui32Index [in] : the index of the chunk to mark
 				 * \return \e true in case of success.
 				 * \return \e false in case of error.
 				 * \warning The chunks are ordered like they arrived
 				 *          to the box, this means chunk 0 arrived
 				 *          before chunk 1, that arrived before
 				 *          chunk 2 and so on...
-				 * \warning Due to chunk ordering, it's logic that chunk
-				 *          O is treated first. Releasing this chunk would
-				 *          change the indices so chunk 1 becomes chunk 0.
-				 *          Finaly, next chunk to work on is chunk 0 :)
 				 *
 				 * This function discards a chunk when it's been read
 				 * and processed. This allows the kernel to know a chunk
@@ -121,7 +117,7 @@ namespace OpenViBE
 				 * \sa getChunkCount
 				 * \sa getChunk
 				 */
-				virtual OpenViBE::boolean releaseChunk(
+				virtual OpenViBE::boolean markAsDeprecated(
 					const OpenViBE::uint32 ui32Index)=0;
 
 				//@}
@@ -171,11 +167,13 @@ namespace OpenViBE
 				/**
 				 * \brief Sets the output chunk size
 				 * \param ui64Size [in] : the new size of the output chunk
+				 * \param bDiscard [in] : tells if existing buffer should be discarded or not
 				 * \return \e true in case of success.
 				 * \return \e false in case of error.
 				 */
 				virtual OpenViBE::boolean setChunkSize(
-					const OpenViBE::uint64 ui64Size)=0;
+					const OpenViBE::uint64 ui64Size,
+					const OpenViBE::boolean bDiscard=true)=0;
 				/**
 				 * \brief Gets a pointer to the current output chunk buffer
 				 * \return A pointer to the current output chunk buffer
@@ -184,21 +182,29 @@ namespace OpenViBE
 				 *          using \c setChunkSize !
 				 */
 				virtual OpenViBE::uint8* getChunkBuffer(void)=0;
-
 				/**
-				 * \brief Effectively sends the data chunk
-				 * \param rTimeValidity [in] : the time validity interval 
-				 *        for the output chunk.
+				 * \brief Marks output buffer as 'ready to send'
+				 * \param ui64StartTime [in] : the start time for the
+				 *        related buffer.
+				 * \param ui64EndTime [in] : the end time for the
+				 *        related buffer.
 				 * \return \e true in case of success.
 				 * \return \e false in case of error.
 				 *
 				 * The output chunk should first be filled. For
 				 * that, one will have to get a reference on it
-				 * thanks to the getChunk method !
+				 * thanks to the getChunkBuffer method ! The
+				 * player will then know the buffer can be sent.
 				 *
 				 * \sa getChunk
+				 * \note It is important to call the \c send 
+				 *       even if no data should be sent. In order
+				 *       to do so, first request a buffer resize to
+				 *       0, then call 'send'. This is to tell
+				 *       following boxes that there won't be
+				 *       anything more for this time fork.
 				 */
-				virtual OpenViBE::boolean send(
+				virtual OpenViBE::boolean markAsReadyToSend(
 					const OpenViBE::uint64 ui64StartTime,
 					const OpenViBE::uint64 ui64EndTime)=0;
 
