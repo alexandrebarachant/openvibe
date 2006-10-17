@@ -1,5 +1,5 @@
-#ifndef __OpenViBEPlugins_Acquisition_CEEGStreamWriterEDF_H__
-#define __OpenViBEPlugins_Acquisition_CEEGStreamWriterEDF_H__
+#ifndef __OpenViBEPlugins_Acquisition_CEEGStreamWriterGDF_H__
+#define __OpenViBEPlugins_Acquisition_CEEGStreamWriterGDF_H__
 
 #include "ovp_defines.h"
 
@@ -35,11 +35,11 @@ namespace OpenViBEPlugins
 {
 	namespace Utility
 	{
-		class CEEGStreamWriterEDF : virtual public OpenViBE::Plugins::IBoxAlgorithm
+		class CEEGStreamWriterGDF : virtual public OpenViBE::Plugins::IBoxAlgorithm
 		{
 		public:
 
-			CEEGStreamWriterEDF(void);
+			CEEGStreamWriterGDF(void);
 
 			virtual void release(void) { delete this; }
 			virtual OpenViBE::boolean initialize(
@@ -52,7 +52,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean process(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_EEGStreamWriterEDF)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_EEGStreamWriterGDF)
 
 		public:
 
@@ -62,25 +62,25 @@ namespace OpenViBEPlugins
 			OpenViBE::Plugins::IBoxContext::IInput* m_pInput;
 		};
 
-		class CEEGStreamWriterEDFDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CEEGStreamWriterGDFDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("EEG stream writer - EDF"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("EEG stream writer - GDF"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This algorithm records on disk what comes from a specific output"); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This algorithm dumps on disk a stream from a specific output in the standard EDF file format"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This algorithm dumps on disk a stream from a specific output in the standard GDF file format"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Utility"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 			virtual void release(void)                                   { }
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_EEGStreamWriterEDF; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Utility::CEEGStreamWriterEDF(); }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_EEGStreamWriterGDF; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Utility::CEEGStreamWriterGDF(); }
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const;
 			virtual OpenViBE::uint32 getClockFrequency(void) const;
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_EEGStreamWriterEDFDesc)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_EEGStreamWriterGDFDesc)
 		};
 	};
 };
 
-#endif // __OpenViBEPlugins_Acquisition_CEEGStreamWriterEDF_H__
+#endif // __OpenViBEPlugins_Acquisition_CEEGStreamWriterGDF_H__

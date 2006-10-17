@@ -1,20 +1,20 @@
 #include "ovp_defines.h"
-#include "ovpCEEGStreamWriterEDF.h"
+#include "ovpCEEGStreamWriterGDF.h"
 
-static OpenViBEPlugins::Utility::CEEGStreamWriterEDFDesc* gst_pEEGStreamWriterEDFDesc=NULL;
+static OpenViBEPlugins::Utility::CEEGStreamWriterGDFDesc* gst_pEEGStreamWriterGDFDesc=NULL;
 
 extern "C"
 {
 
 OVP_API OpenViBE::boolean onInitialize(void)
 {
-	gst_pEEGStreamWriterEDFDesc=new OpenViBEPlugins::Utility::CEEGStreamWriterEDFDesc();
+	gst_pEEGStreamWriterGDFDesc=new OpenViBEPlugins::Utility::CEEGStreamWriterGDFDesc();
 	return true;
 }
 
 OVP_API OpenViBE::boolean onUninitialize(void)
 {
-	delete gst_pEEGStreamWriterEDFDesc;
+	delete gst_pEEGStreamWriterGDFDesc;
 	return true;
 }
 
@@ -22,7 +22,7 @@ OVP_API OpenViBE::boolean onGetPluginObjectDescription(OpenViBE::uint32 ui32Inde
 {
 	switch(ui32Index)
 	{
-		case 0: rpPluginObjectDescription=gst_pEEGStreamWriterEDFDesc; break;
+		case 0: rpPluginObjectDescription=gst_pEEGStreamWriterGDFDesc; break;
 		default: return false;
 	}
 	return true;

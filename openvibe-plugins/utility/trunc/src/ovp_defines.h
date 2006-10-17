@@ -7,7 +7,7 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVP_ClassId_EEGStreamWriterEDFDesc                  OpenViBE::CIdentifier(0x375BF8EC, 0x023ACEEB)
+#define OVP_ClassId_EEGStreamWriterGDFDesc                  OpenViBE::CIdentifier(0x375BF8EC, 0x023ACEEB)
 
 /*
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x02817C77, 0x77FE3D6A)
@@ -32,7 +32,7 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVP_ClassId_EEGStreamWriterEDF                     OpenViBE::CIdentifier(0x1E7B2155, 0x107289CE)
+#define OVP_ClassId_EEGStreamWriterGDF                     OpenViBE::CIdentifier(0x1E7B2155, 0x107289CE)
 
 /*
 #define OVP_ClassId_                                       OpenViBE::CIdentifier(0x78EA86B0, 0x2933E255)
