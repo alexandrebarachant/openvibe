@@ -1,0 +1,55 @@
+
+         *========================================*
+                      |OpenViBE| |README|
+         *========================================*
+
+|Introduction|
+
+*OpenViBE* is a software collection in order to process <EEG> (Electro
+Encephalo Graphic) and <MEG> (Magneto Encephalo Graphic) signals in
+neurofeedback or <BCI> (Brain Computer Interface) applications. More 
+on the web page :
+
+*http://www.irisa.fr/bunraku/OpenViBE/wiki*
+
+|Tree|
+
+<openvibe>
+	This folder contains the specifications of the *OpenViBE*
+	platform. It mostly consists in a list of unimplemented
+	classes. Those classes have to be implemented wether by the
+	kernel or the plugin developpers
+
+<openvibe-kernel-omk>
+	This folder contains a kernel implentation based on <OpenMASK>
+	more at the <OpenMASK> webpage *http://www.openmask.org*
+
+<openvibe-modules>
+	This folder contains specific helper modules (mainly for
+	portability)
+
+<openvibe-plugins>
+	This folder contains the plugins of the *OpenViBE* platform.
+	Those plugins will be separated using a directory per plugin
+	module :
+
+	<samples>
+		This folder contains a minimal sample plugin module
+		that shows how a box algorithm should be implemented,
+		how a box behavior should be implemented and how
+		the plugin module should declare its plugin objects
+		to the kernel
+	<acquisition>
+		This folder contains signal acquisition tools
+	<utility>
+		This folder contains several usefull tools which have
+		no direct relationship with EEG
+
+|Building.the.platform|
+
+See INSTALL in order to get information on how to build the platform
+from sources.
+
+|End.of.file|
+
+ vim:tw=78:ts=8:ft=help:norl:
