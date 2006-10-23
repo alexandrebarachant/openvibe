@@ -65,6 +65,7 @@ namespace OpenViBE
 			 *        class depends on what plugin is being treated)
 			 * \return \e true when this object successfully initialized
 			 *         or \e false if it didn't succeed to initialize.
+			 * \note Default implementation simply returns \e true.
 			 *
 			 * After a successfull initialization, the caller knows
 			 * the object can safely be used... When the object is not
@@ -77,11 +78,10 @@ namespace OpenViBE
 			 * retry initialization sequence or to work without this
 			 * concrete object.
 			 *
-			 * Default implementation simply returns \e true.
-			 *
 			 * \sa uninitialize
 			 */
-			virtual OpenViBE::boolean initialize(const OpenViBE::Plugins::IPluginObjectContext& rContext);
+			virtual OpenViBE::boolean initialize(
+				const OpenViBE::Plugins::IPluginObjectContext& rContext) { return true; }
 			/**
 			 * \brief Unprepares the object so it could be deleted
 			 * \param rContext [in] : the plugin object context (the derived
@@ -91,6 +91,7 @@ namespace OpenViBE
 			 * \warning After a successfull uninitialize call, this object
 			 *          could whethere be deleted or used again after a
 			 *          new call to the initialize function !
+			 * \note Default implementation simply returns \e true.
 			 *
 			 * After unsuccessfull uninitialization, the caller could
 			 * try to call uninitialize again some time so it gets a
@@ -98,11 +99,10 @@ namespace OpenViBE
 			 * in uninitialization process, the object is left and never
 			 * re-initialized again. It could only be deleted one day.
 			 *
-			 * Default implementation simply returns \e true.
-			 *
 			 * \sa initialize
 			 */
-			virtual OpenViBE::boolean uninitialize(const OpenViBE::Plugins::IPluginObjectContext& rContext);
+			virtual OpenViBE::boolean uninitialize(
+				const OpenViBE::Plugins::IPluginObjectContext& rContext) { return true; }
 
 			//@}
 

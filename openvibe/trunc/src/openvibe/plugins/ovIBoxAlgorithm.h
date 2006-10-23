@@ -59,7 +59,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean processEvent(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageEvent& rMessageEvent);
+				OpenViBE::CMessageEvent& rMessageEvent) { return false; }
 			/**
 			 * \brief Reaction to a signal
 			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
@@ -79,7 +79,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean processSignal(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageSignal& rMessageSignal);
+				OpenViBE::CMessageSignal& rMessageSignal) { return false; }
 			/**
 			 * \brief Reaction to a clock tick
 			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
@@ -101,7 +101,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean processClock(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageClock& rMessageClock);
+				OpenViBE::CMessageClock& rMessageClock) { return false; }
 			/**
 			 * \brief Reaction to an input update
 			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
@@ -119,7 +119,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean processInput(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::uint32 ui32InputIndex);
+				OpenViBE::uint32 ui32InputIndex) { return false; }
 
 			//@}
 			/** \name Algorithm processing */
