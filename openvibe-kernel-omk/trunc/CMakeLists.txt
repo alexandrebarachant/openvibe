@@ -41,4 +41,10 @@ IF(NOT LIBRARY_OUTPUT_PATH)
 ENDIF(NOT LIBRARY_OUTPUT_PATH)
 SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
 
+# ------------------------------------#
+# Adds configuration among link stage #
+# ------------------------------------#
+SET(MODULE_LINKING dynamic CACHE STRING "")
+SET(OPENVIBE_LINKING dynamic CACHE STRING "")
+
 SUBDIRS(src)
