@@ -84,24 +84,22 @@ boolean CWriterHelper::setSIntegerAsChildData(const int64 iValue)
 	uint64 l_ui64BufferSize=0;
 	unsigned char l_pBuffer[8];
 
-	if(iValue==0)
+	if(iValue==0LL)
 		l_ui64BufferSize=0;
-	else if(iValue>=-0x80 && iValue<=0x7f)
+	else if(iValue>=-0x80LL && iValue<=0x7fLL)
 		l_ui64BufferSize=1;
-	else if(iValue>=-0x8000 && iValue<=0x7fff)
+	else if(iValue>=-0x8000LL && iValue<=0x7fffLL)
 		l_ui64BufferSize=2;
-	else if(iValue>=-0x800000 && iValue<=0x7fffff)
+	else if(iValue>=-0x800000LL && iValue<=0x7fffffLL)
 		l_ui64BufferSize=3;
-	else if(iValue>=-0x80000000 && iValue<=0x7fffffff)
+	else if(iValue>=-0x80000000LL && iValue<=0x7fffffffLL)
 		l_ui64BufferSize=4;
-/*
-	else if(iValue>=-0x8000000000 && iValue<=0x7fffffffff)
+	else if(iValue>=-0x8000000000LL && iValue<=0x7fffffffffLL)
 		l_ui64BufferSize=5;
-	else if(iValue>=-0x800000000000 && iValue<=0x7fffffffffff)
+	else if(iValue>=-0x800000000000LL && iValue<=0x7fffffffffffLL)
 		l_ui64BufferSize=6;
-	else if(iValue>=-0x80000000000000 && iValue<=0x7fffffffffffff)
+	else if(iValue>=-0x80000000000000LL && iValue<=0x7fffffffffffffLL)
 		l_ui64BufferSize=7;
-*/
 	else
 		l_ui64BufferSize=8;
 
@@ -119,24 +117,22 @@ boolean CWriterHelper::setUIntegerAsChildData(const uint64 uiValue)
 	uint64 l_ui64BufferSize=0;
 	unsigned char l_pBuffer[8];
 
-	if(uiValue==0)
+	if(uiValue==0LL)
 		l_ui64BufferSize=0;
-	else if(uiValue<0x100)
+	else if(uiValue<0x100LL)
 		l_ui64BufferSize=1;
-	else if(uiValue<0x10000)
+	else if(uiValue<0x10000LL)
 		l_ui64BufferSize=2;
-	else if(uiValue<0x1000000)
+	else if(uiValue<0x1000000LL)
 		l_ui64BufferSize=3;
-/*
-	else if(uiValue<0x100000000)
+	else if(uiValue<0x100000000LL)
 		l_ui64BufferSize=4;
-	else if(uiValue<0x10000000000)
+	else if(uiValue<0x10000000000LL)
 		l_ui64BufferSize=5;
-	else if(uiValue<0x1000000000000)
+	else if(uiValue<0x1000000000000LL)
 		l_ui64BufferSize=6;
-	else if(uiValue<0x100000000000000)
+	else if(uiValue<0x100000000000000LL)
 		l_ui64BufferSize=7;
-*/
 	else
 		l_ui64BufferSize=8;
 

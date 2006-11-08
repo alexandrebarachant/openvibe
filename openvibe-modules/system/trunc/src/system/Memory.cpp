@@ -9,6 +9,7 @@ boolean Memory::copy(
 	const void* pSourceBuffer,
 	const uint64 ui64BufferSize)
 {
-	memcpy(pTargetBuffer, pSourceBuffer, ui64BufferSize);
+	// $$$ TODO take 64bits size into consideration
+	memcpy(pTargetBuffer, pSourceBuffer, static_cast<size_t>(ui64BufferSize));
 	return true;
 }

@@ -11,6 +11,7 @@
  // #include <netdb.h>
  #include <time.h>
 #elif defined Socket_OS_Windows
+ #include <winsock2.h>
  #include <windows.h>
 #else
 
@@ -71,10 +72,11 @@ namespace Socket
 				return false;
 			}
 
-			::shutdown(m_i32Socket, SHUT_RDWR);
 
 #if defined Socket_OS_Linux
+			::shutdown(m_i32Socket, SHUT_RDWR);
 #elif defined Socket_OS_Windows
+			::shutdown(m_i32Socket, SD_BOTH);
 			::closesocket(m_i32Socket);
 			::WSACleanup();
 #else
@@ -150,7 +152,7 @@ namespace Socket
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
-			int l_iResult=::send(m_i32Socket, pBuffer, ui32BufferSize, 0);
+			int l_iResult=::send(m_i32Socket, static_cast<const char*>(pBuffer), ui32BufferSize, 0);
 			if(l_iResult<0)
 			{
 				close();
@@ -170,7 +172,7 @@ namespace Socket
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
-			int l_iResult=::recv(m_i32Socket, pBuffer, ui32BufferSize, 0);
+			int l_iResult=::recv(m_i32Socket, static_cast<char *>(pBuffer), ui32BufferSize, 0);
 			if(l_iResult<0)
 			{
 				close();

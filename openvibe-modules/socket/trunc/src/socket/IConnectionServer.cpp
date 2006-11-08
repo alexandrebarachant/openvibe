@@ -51,7 +51,7 @@ namespace Socket
 #if defined Socket_OS_Linux
 			socklen_t l_iClientAddressSize=sizeof(l_oClientAddress);
 #elif defined Socket_OS_Windows
-			int32 l_iClientAddressSize=sizeof(l_oClientAddress);
+			int l_iClientAddressSize=sizeof(l_oClientAddress);
 #else
 #endif
 			int32 l_i32ClientSocket=::accept(m_i32Socket, (struct sockaddr*)&l_oClientAddress, &l_iClientAddressSize);
