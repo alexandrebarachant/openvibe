@@ -5,7 +5,7 @@
 
 namespace FS
 {
-	class Files
+	class FS_API Files
 	{
 	public:
 
