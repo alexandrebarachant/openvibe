@@ -3,8 +3,8 @@ FILE(GLOB_RECURSE header_files *.h)
 
 ADD_LIBRARY(${PROJECT_NAME}-static ${source_files})
 
-ADD_DEFINITIONS(-DFS_Shared)
-ADD_DEFINITIONS(-DFS_Exports)
+ADD_DEFINITIONS(-DSocket_Shared)
+ADD_DEFINITIONS(-DSocket_Exports)
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 
 IF(WIN32)

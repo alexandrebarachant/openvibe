@@ -3,8 +3,8 @@ FILE(GLOB_RECURSE header_files *.h)
 
 ADD_LIBRARY(${PROJECT_NAME}-static ${source_files})
 
-ADD_DEFINITIONS(-DXML_Shared)
-ADD_DEFINITIONS(-DXML_Exports)
+ADD_DEFINITIONS(-DSystem_Shared)
+ADD_DEFINITIONS(-DSystem_Exports)
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES

@@ -15,9 +15,9 @@ using namespace FS;
 
 //  * 2006-08-30 YRD - Portability note : using namespace FS confuses
 //                     windows platform SDK because it defines itself
-//                     a 'boolean' type. Thus the complete naming of
-//                     this type in this sourcefile width 'FSBoolean'
-typedef FS::boolean FSBoolean;
+//                     a 'boolean' type. Thus the following define to
+//                     force the use of FS::boolean !
+#define boolean FS::boolean
 
 // ________________________________________________________________________________________________________________
 //
@@ -120,42 +120,42 @@ CAttributes::~CAttributes(void)
 // ________________________________________________________________________________________________________________
 //
 
-FSBoolean CAttributes::isFile(void)
+boolean CAttributes::isFile(void)
 {
 	return m_bIsFile;
 }
 
-FSBoolean CAttributes::isDirectory(void)
+boolean CAttributes::isDirectory(void)
 {
 	return m_bIsDirectory;
 }
 
-FSBoolean CAttributes::isSymbolicLink(void)
+boolean CAttributes::isSymbolicLink(void)
 {
 	return m_bIsSymbolicLink;
 }
 
-FSBoolean CAttributes::isArchive(void)
+boolean CAttributes::isArchive(void)
 {
 	return m_bIsArchive;
 }
 
-FSBoolean CAttributes::isReadOnly(void)
+boolean CAttributes::isReadOnly(void)
 {
 	return m_bIsReadOnly;
 }
 
-FSBoolean CAttributes::isHidden(void)
+boolean CAttributes::isHidden(void)
 {
 	return m_bIsHidden;
 }
 
-FSBoolean CAttributes::isSystem(void)
+boolean CAttributes::isSystem(void)
 {
 	return m_bIsSystem;
 }
 
-FSBoolean CAttributes::isExecutable(void)
+boolean CAttributes::isExecutable(void)
 {
 	return m_bIsExecutable;
 }
@@ -254,7 +254,7 @@ CEntryEnumeratorLinux::CEntryEnumeratorLinux(IEntryEnumeratorCallBack& rEntryEnu
 {
 }
 
-FSBoolean CEntryEnumeratorLinux::enumerate(const char* sWildCard)
+boolean CEntryEnumeratorLinux::enumerate(const char* sWildCard)
 {
 	glob_t l_oGlobStruc;
 	memset(&l_oGlobStruc, GLOB_NOSORT, sizeof(l_oGlobStruc));
@@ -264,7 +264,7 @@ FSBoolean CEntryEnumeratorLinux::enumerate(const char* sWildCard)
 	}
 
 	size_t i=0;
-	FSBoolean l_bFinished=false;
+	boolean l_bFinished=false;
 	while(!l_bFinished)
 	{
 		if(i<l_oGlobStruc.gl_pathc)
@@ -313,13 +313,13 @@ CEntryEnumeratorWindows::CEntryEnumeratorWindows(IEntryEnumeratorCallBack& rEntr
 {
 }
 
-FSBoolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
+boolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
 {
 	WIN32_FIND_DATA l_oFindData;
 	HANDLE l_pFileHandle=FindFirstFile(sWildCard, &l_oFindData);
 	if(l_pFileHandle!=INVALID_HANDLE_VALUE)
 	{
-		FSBoolean l_bFinished=false;
+		boolean l_bFinished=false;
 		while(!l_bFinished)
 		{
 			CEntry l_oEntry(l_oFindData.cFileName);
@@ -359,7 +359,7 @@ CEntryEnumeratorDummy::CEntryEnumeratorDummy(IEntryEnumeratorCallBack& rEntryEnu
 {
 }
 
-FSBoolean CEntryEnumeratorDummy::enumerate(const char* sWildCard)
+boolean CEntryEnumeratorDummy::enumerate(const char* sWildCard)
 {
 	return true;
 }
