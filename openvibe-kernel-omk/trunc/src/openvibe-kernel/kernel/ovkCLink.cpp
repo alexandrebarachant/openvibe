@@ -6,8 +6,8 @@ using namespace OpenViBE::Kernel;
 //___________________________________________________________________//
 //                                                                   //
 
-CLink::CLink(IKernel& rKernel)
-	:TKernelObject<ILink>(rKernel)
+CLink::CLink(const IKernelContext& rKernelContext)
+	:TKernelObject<ILink>(rKernelContext)
 	,m_oIdentifier(OV_UndefinedIdentifier)
 	,m_oSourceBoxIdentifier(OV_UndefinedIdentifier)
 	,m_oTargetBoxIdentifier(OV_UndefinedIdentifier)

@@ -93,7 +93,7 @@ protected:
 	///
 	/// Reads in the configuration node the values to connect the inputs.
 	/// No input has been declared, this method does nothing.
-	virtual bool loadInputsConnectionsParameters( const PsConfigurationParameterDescriptor * node ) { return node ; }
+	virtual bool loadInputsConnectionsParameters( const PsConfigurationParameterDescriptor * node ) { return node!=NULL ; }
 	/// \brief Configuration parameters loader of \ref PsDuplicatedContextBase.
 	/// \param[in] node the root node of the configuration parameter.
 	/// \return true if all the events are well connected to a signal.
@@ -101,7 +101,7 @@ protected:
 	/// Creates events listeners and associates them to their callback method.\n
 	/// Reads in the configuration node the values to register signals.
 	/// No event has been declared, this method does nothing.
-	virtual bool loadEventsConnectionsParameters( const PsConfigurationParameterDescriptor * node ) { return node ; }
+	virtual bool loadEventsConnectionsParameters( const PsConfigurationParameterDescriptor * node ) { return node!=NULL ; }
 	//@}
 
 	/// @name PsSimulatedObject interfaces

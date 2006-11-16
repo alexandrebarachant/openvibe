@@ -11,7 +11,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CLink(OpenViBE::Kernel::IKernel& rKernel);
+			CLink(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
 			virtual OpenViBE::boolean setIdentifier(
 				const OpenViBE::CIdentifier& rIdentifier);

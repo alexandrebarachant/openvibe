@@ -43,8 +43,9 @@ using namespace OpenViBE::Kernel::Player;
 
 std::ostream& operator<<(std::ostream& rStream, const CBuffer& rBuffer)
 {
-	rStream<<rBuffer.getSize();
-	for(uint32 i=0; i<rBuffer.getSize(); i++)
+	rStream<<((uint32)(rBuffer.getSize()&0xffffffffLL));
+	rStream<<((uint32)((rBuffer.getSize()>>32)&0xffffffffLL));
+	for(uint64 i=0; i<rBuffer.getSize(); i++)
 	{
 		rStream<<rBuffer.getDirectPointer()[i];
 	}
@@ -53,10 +54,14 @@ std::ostream& operator<<(std::ostream& rStream, const CBuffer& rBuffer)
 
 std::istream& operator>>(std::istream& rStream, CBuffer& rBuffer)
 {
-	uint32 l_ui32Size;
-	rStream>>l_ui32Size;
-	rBuffer.setSize(l_ui32Size);
-	for(uint32 i=0; i<l_ui32Size; i++)
+	uint32 l_ui32Size1;
+	uint32 l_ui32Size2;
+	rStream>>l_ui32Size1;
+	rStream>>l_ui32Size2;
+	uint64 l_ui64Size=(((uint64)(l_ui32Size2))<<32)+((uint64)(l_ui32Size1));
+
+	rBuffer.setSize(l_ui64Size);
+	for(uint32 i=0; i<l_ui64Size; i++)
 	{
 		rStream>>rBuffer.getDirectPointer()[i];
 	}
@@ -65,7 +70,8 @@ std::istream& operator>>(std::istream& rStream, CBuffer& rBuffer)
 
 PsOutgoingSynchronisationMessage& operator<<(PsOutgoingSynchronisationMessage& rStream, const CBuffer& rBuffer)
 {
-	rStream<<rBuffer.getSize();
+	rStream<<((uint32)(rBuffer.getSize()&0xffffffffLL));
+	rStream<<((uint32)((rBuffer.getSize()>>32)&0xffffffffLL));
 	for(uint32 i=0; i<rBuffer.getSize(); i++)
 	{
 		rStream<<rBuffer.getDirectPointer()[i];
@@ -75,10 +81,14 @@ PsOutgoingSynchronisationMessage& operator<<(PsOutgoingSynchronisationMessage& r
 
 PsIncomingSynchronisationMessage& operator>>(PsIncomingSynchronisationMessage& rStream, CBuffer& rBuffer)
 {
-	uint32 l_ui32Size;
-	rStream>>l_ui32Size;
-	rBuffer.setSize(l_ui32Size);
-	for(uint32 i=0; i<l_ui32Size; i++)
+	uint32 l_ui32Size1;
+	uint32 l_ui32Size2;
+	rStream>>l_ui32Size1;
+	rStream>>l_ui32Size2;
+	uint64 l_ui64Size=(((uint64)(l_ui32Size2))<<32)+((uint64)(l_ui32Size1));
+
+	rBuffer.setSize(l_ui64Size);
+	for(uint32 i=0; i<l_ui64Size; i++)
 	{
 		rStream.get(((char*)rBuffer.getDirectPointer())[i]); // $$$$$$$$$$$$$
 	}

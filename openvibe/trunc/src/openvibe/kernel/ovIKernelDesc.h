@@ -51,28 +51,28 @@ namespace OpenViBE
 			 *
 			 * Default implementation simply returns empty string.
 			 */
-			virtual OpenViBE::CString getName(void);
+			virtual OpenViBE::CString getName(void) const { return CString("no name"); }
 			/**
 			 * \brief Gets the author name for this plugin
 			 * \return The author name for this plugin.
 			 *
 			 * Default implementation simply returns empty string.
 			 */
-			virtual OpenViBE::CString getAuthorName(void);
+			virtual OpenViBE::CString getAuthorName(void) const { return CString("unknown"); }
 			/**
 			 * \brief Gets the author company name for this plugin
 			 * \return The author company name for this plugin.
 			 *
 			 * Default implementation simply returns empty string.
 			 */
-			virtual OpenViBE::CString getAuthorCompanyName(void);
+			virtual OpenViBE::CString getAuthorCompanyName(void) const { return CString("unknown"); }
 			/**
 			 * \brief Gets a short description of the plugin
 			 * \return A short description of the plugin.
 			 *
 			 * Default implementation simply returns empty string.
 			 */
-			virtual OpenViBE::CString getShortDescription(void);
+			virtual OpenViBE::CString getShortDescription(void) const { return CString(""); }
 			/**
 			 * \brief Gets a detailed description of the plugin
 			 * \return A detailed description of the plugin.
@@ -82,14 +82,14 @@ namespace OpenViBE
 			 * \note You can use std::endl to have the description
 			 *       on several lines when needed.
 			 */
-			virtual OpenViBE::CString getDetailedDescription(void);
+			virtual OpenViBE::CString getDetailedDescription(void) const { return CString(""); }
 			/**
 			 * \brief Gets the version of the plugin
 			 * \return the version of the plugin.
 			 *
 			 * Default implementation simply returns empty string.
 			 */
-			virtual OpenViBE::CString getVersion(void);
+			virtual OpenViBE::CString getVersion(void) const { return CString("unknown"); }
 
 			//@}
 

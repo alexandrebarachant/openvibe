@@ -14,7 +14,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CPluginManager(OpenViBE::Kernel::IKernel& rKernel);
+			CPluginManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
 			virtual OpenViBE::boolean addPluginsFromFiles(
 				const OpenViBE::CString& rFileNameWildCard);

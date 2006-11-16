@@ -22,7 +22,7 @@
 //                                                                   //
 
 #include "kernel/ovIKernel.h"
-#include "kernel/ovIKernelLog.h"
+#include "kernel/ovIKernelContext.h"
 #include "kernel/ovIKernelDesc.h"
 #include "kernel/ovIKernelObject.h"
 #include "kernel/ovIKernelLoader.h"
@@ -33,6 +33,7 @@
 #include "kernel/ovILink.h"
 #include "kernel/ovIScenario.h"
 #include "kernel/ovIScenarioManager.h"
+#include "kernel/ovILogManager.h"
 
 //___________________________________________________________________//
 //                                                                   //
@@ -48,24 +49,26 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#include "plugins/ovIBoxContext.h"
-#include "plugins/ovIBoxAlgorithmContext.h"
-// #include "plugins/ovIBoxBehaviorContext.h"
 #include "plugins/ovIBoxProto.h"
+#include "plugins/ovIStaticBoxContext.h"
+#include "plugins/ovIDynamicBoxContext.h"
 #include "plugins/ovIPlayerContext.h"
-#include "plugins/ovIPluginObjectLoadContext.h"
-#include "plugins/ovIPluginObjectSaveContext.h"
 
 #include "plugins/ovIPluginObject.h"
 #include "plugins/ovIPluginObjectDesc.h"
 
-#include "plugins/ovIBoxAlgorithmDesc.h"
 #include "plugins/ovIBoxAlgorithm.h"
-// #include "plugins/ovIBoxBehaviorDesc.h"
+#include "plugins/ovIBoxAlgorithmDesc.h"
+#include "plugins/ovIBoxAlgorithmContext.h"
 // #include "plugins/ovIBoxBehavior.h"
-#include "plugins/ovIScenarioImporterDesc.h"
+// #include "plugins/ovIBoxBehaviorDesc.h"
+// #include "plugins/ovIBoxBehaviorContext.h"
+
 #include "plugins/ovIScenarioImporter.h"
-#include "plugins/ovIScenarioExporterDesc.h"
+#include "plugins/ovIScenarioImporterDesc.h"
+#include "plugins/ovIScenarioImporterContext.h"
 #include "plugins/ovIScenarioExporter.h"
+#include "plugins/ovIScenarioExporterDesc.h"
+#include "plugins/ovIScenarioExporterContext.h"
 
 #endif // __OpenViBE_All_H__

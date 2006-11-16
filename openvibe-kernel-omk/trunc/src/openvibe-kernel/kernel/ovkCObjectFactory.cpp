@@ -7,33 +7,33 @@
 #include "ovkCPluginManager.h"
 #include "ovkCPluginModule.h"
 
-#include "ovkCKernelLog.h"
-#include "ovkCKernelLogConsole.h"
-#include "ovkCKernelLogNull.h"
+#include "ovkCLogManager.h"
+#include "ovkCLogManagerConsole.h"
+#include "ovkCLogManagerNull.h"
 
 #include "player/ovkCPlayer.h"
 
 #include <string>
 #include <algorithm>
-#include <iostream>
 
 using namespace std;
 using namespace OpenViBE;
+#define boolean OpenViBE::boolean
 
 #define create(rcid,cid,sptr,cl) \
 	if(rcid==cid) \
 	{ \
-		sptr=new cl(getKernel()); \
+		sptr=new cl(getKernelContext()); \
 	}
 
 #define create2(rcid,cid,sptr,ud,cl) \
 	if(rcid==cid) \
 	{ \
-		sptr=new cl(getKernel(),ud); \
+		sptr=new cl(getKernelContext(),ud); \
 	}
 
-Kernel::CObjectFactory::CObjectFactory(Kernel::IKernel& rKernel)
-	:TKernelObject<IObjectFactory>(rKernel)
+Kernel::CObjectFactory::CObjectFactory(const Kernel::IKernelContext& rKernelContext)
+	:TKernelObject<IObjectFactory>(rKernelContext)
 {
 }
 
@@ -41,19 +41,19 @@ IObject* Kernel::CObjectFactory::createObject(
 	const CIdentifier& rClassIdentifier)
 {
 	IObject* l_pResult=NULL;
-	create(rClassIdentifier, OV_ClassId_Kernel_Box,               l_pResult, Kernel::CBox);
-	create(rClassIdentifier, OV_ClassId_Kernel_Link,              l_pResult, Kernel::CLink);
-	create(rClassIdentifier, OV_ClassId_Kernel_Scenario,          l_pResult, Kernel::CScenario);
+	create(rClassIdentifier, OV_ClassId_Kernel_Box,                l_pResult, Kernel::CBox);
+	create(rClassIdentifier, OV_ClassId_Kernel_Link,               l_pResult, Kernel::CLink);
+	create(rClassIdentifier, OV_ClassId_Kernel_Scenario,           l_pResult, Kernel::CScenario);
 
-//	create(rClassIdentifier, OV_ClassId_Kernel_PluginManager,     l_pResult, Kernel::CPluginManager);
-	create(rClassIdentifier, OV_ClassId_Kernel_PluginModule,      l_pResult, Kernel::CPluginModule);
+//	create(rClassIdentifier, OV_ClassId_Kernel_PluginManager,      l_pResult, Kernel::CPluginManager);
+	create(rClassIdentifier, OV_ClassId_Kernel_PluginModule,       l_pResult, Kernel::CPluginModule);
 
-	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,     l_pResult, Kernel::Player::CPlayer);
+	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,      l_pResult, Kernel::Player::CPlayer);
 
 	// create(rClassIdentifier, OV_ClassId_, l_pResult, Plugins::CBoxContext);
 
-	create(rClassIdentifier, OVK_ClassId_Kernel_KernelLogConsole, l_pResult, Kernel::CKernelLogConsole);
-	create(rClassIdentifier, OVK_ClassId_Kernel_KernelLogNull,    l_pResult, Kernel::CKernelLogNull);
+	create(rClassIdentifier, OVK_ClassId_Kernel_LogManagerConsole, l_pResult, Kernel::CLogManagerConsole);
+	create(rClassIdentifier, OVK_ClassId_Kernel_LogManagerNull,    l_pResult, Kernel::CLogManagerNull);
 
 	return l_pResult;
 }

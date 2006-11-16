@@ -15,7 +15,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CBox(OpenViBE::Kernel::IKernel& rKernel);
+			CBox(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
 			virtual const OpenViBE::CIdentifier& getIdentifier(void) const;
 			virtual const OpenViBE::CString& getName(void) const;

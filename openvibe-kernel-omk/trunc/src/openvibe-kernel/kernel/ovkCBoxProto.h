@@ -11,7 +11,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CBoxProto(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IBox& rBox);
+			CBoxProto(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IBox& rBox);
 
 			virtual OpenViBE::uint32 addInput(
 				const OpenViBE::CString& sName,

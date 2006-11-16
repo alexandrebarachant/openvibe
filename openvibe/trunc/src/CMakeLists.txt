@@ -42,10 +42,10 @@ FOREACH(current_header ${header_files})
 	IF(NOT EXISTS ${INCLUDE_OUTPUT_PATH}/${current_header_path})
 		IF(created_directories MATCHES "${current_header_path}")
 		ELSE(created_directories MATCHES "${current_header_path}")
-			ADD_CUSTOM_COMMAND(
-				TARGET ${PROJECT_NAME}-static
-				POST_BUILD
-				COMMAND mkdir ${current_header_path})
+#			ADD_CUSTOM_COMMAND(
+#				TARGET ${PROJECT_NAME}-static
+#				POST_BUILD
+#				COMMAND mkdir ${current_header_path})
 			SET(created_directories ${created_directories} ${current_header_path})
 #			MESSAGE(STATUS "Marked to create at post build stage ${current_header_path}")
 		ENDIF(created_directories MATCHES "${current_header_path}")

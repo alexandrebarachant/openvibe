@@ -130,7 +130,7 @@ protected:
 	///
 	/// Reads in the configuration node the values to connect the inputs.
 	/// No input has been declared, this method does nothing.
-	virtual bool loadInputsConnectionsParameters( const PsConfigurationParameterDescriptor * node ) { return node ; }
+	virtual bool loadInputsConnectionsParameters( const PsConfigurationParameterDescriptor * node ) { return node!=NULL ; }
 	/// \brief Configuration parameters loader of \ref PsSimulatedBoxBase.
 	/// \param[in] node the root node of the configuration parameter.
 	/// \return true if all the events are well connected to a signal.

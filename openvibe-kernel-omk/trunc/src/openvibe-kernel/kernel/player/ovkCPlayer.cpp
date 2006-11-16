@@ -1,5 +1,7 @@
 #include "ovkCPlayer.h"
 
+// #define __Distributed_Controller__
+
 #include "ovkEventId.h"
 
 #include "types/ovkPsTypeChunk.h"
@@ -7,15 +9,19 @@
 #include "simulated-objects/ovkPsSimulatedBox.h"
 #include "simulated-objects/ovkPsDuplicatedContext.h"
 
+#include "ovkCStaticBoxContext.h"
+#include "ovkCDynamicBoxContext.h"
+
 #include <PsMultipleConfigurationParameter.h>
 #include <PsUniqueConfigurationParameter.h>
 #include <PsSimulatedObjectCreator.h>
 #include <OmkXml.h>
+#ifdef __Distributed_Controller__
+ #include <PsPvmController.h>
+#endif
 
 #include <string>
 #include <iostream>
-
-// #define __Distributed_Controller__
 
 //___________________________________________________________________//
 //                                                                   //
@@ -25,6 +31,7 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Kernel::Player;
 using namespace OpenViBE::Plugins;
+#define boolean OpenViBE::boolean
 
 //___________________________________________________________________//
 //                                                                   //
@@ -62,16 +69,18 @@ class CPlayerBoxBuilder : virtual public IScenario::IBoxEnum
 {
 public:
 
-	CPlayerBoxBuilder(::PsObjectDescriptor* pSimulationRoot, IPluginManager& rPluginManager)
+	CPlayerBoxBuilder(::PsObjectDescriptor* pSimulationRoot, const IKernelContext& rKernelContext)
 		:m_pSimulationRoot(pSimulationRoot)
 		,m_bIsFirst(true)
-		,m_rPluginManager(rPluginManager)
+		,m_rKernelContext(rKernelContext)
 		,m_pBoxAlgorithmDesc(NULL)
 	{
 	}
 
 	boolean callback(const IScenario& rScenario, const IBox& rBox)
 	{
+		IPluginManager& l_rPluginManager=m_rKernelContext.getPluginManager();
+
 		if(m_bIsFirst)
 		{
 			::PsMultipleConfigurationParameter* l_pObjectConfiguration=new ::PsMultipleConfigurationParameter();
@@ -79,10 +88,10 @@ public:
 			m_pSimulationRoot->addSon(l_pSimulationBox);
 		}
 
-		m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(m_rPluginManager.getPluginObjectDescCreating(rBox.getAlgorithmClassIdentifier()));
+		m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_rPluginManager.getPluginObjectDescCreating(rBox.getAlgorithmClassIdentifier()));
 
 		::PsMultipleConfigurationParameter* l_pObjectConfiguration=new ::PsMultipleConfigurationParameter();
-		::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor(idToString(rBox.getIdentifier()), "PsSimulatedBox", "ProcessA", (int)m_pBoxAlgorithmDesc->getClockFrequency(), l_pObjectConfiguration);
+		::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor(idToString(rBox.getIdentifier()), "PsSimulatedBox", "ProcessA", (int)m_pBoxAlgorithmDesc->getClockFrequency(CStaticBoxContext(&rBox)), l_pObjectConfiguration);
 		m_pSimulationRoot->addSon(l_pSimulationBox);
 
 		return true;
@@ -92,15 +101,15 @@ public:
 
 	::PsObjectDescriptor* m_pSimulationRoot;
 	boolean m_bIsFirst;
-	IPluginManager& m_rPluginManager;
+	const IKernelContext& m_rKernelContext;
 	const IBoxAlgorithmDesc* m_pBoxAlgorithmDesc;
 };
 
 //___________________________________________________________________//
 //                                                                   //
 
-CPlayer::CPlayer(IKernel& rKernel)
-	:TKernelObject<IPlayer>(rKernel)
+CPlayer::CPlayer(const IKernelContext& rKernelContext)
+	:TKernelObject<IPlayer>(rKernelContext)
 	,m_pController(NULL)
 	,m_pControllerHandle(NULL)
 	,m_pSimulation(NULL)
@@ -129,11 +138,10 @@ boolean CPlayer::reset(
 	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Latency", new ::PsUniqueConfigurationParameter("10"));
 
 	::PsObjectDescriptor* l_pSimulation=new ::PsObjectDescriptor("root", "Controller", l_pSimulationSchedulingDescription, NULL);
-
-	::CPlayerBoxBuilder l_oPlayerBoxBuilder(l_pSimulation, getKernel().getPluginManager());
+	::CPlayerBoxBuilder l_oPlayerBoxBuilder(l_pSimulation, getKernelContext());
 	rScenario.enumerateBoxes(l_oPlayerBoxBuilder);
 
-	::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", l_pSimulation);
+	// ::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", l_pSimulation);
 
 	::PsController* l_pController=NULL;
 	::PsnReferenceObjectHandle* l_pControllerHandle=NULL;

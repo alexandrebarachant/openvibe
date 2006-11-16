@@ -2,10 +2,11 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+#define boolean OpenViBE::boolean
 
-CPlayerContext::CPlayerContext(PsSimulatedBox& rSimulatedBox)
+CPlayerContext::CPlayerContext(::PsSimulatedBox* pSimulatedBox)
 	:TPluginObjectContext<IPlayerContext>()
-	,m_rSimulatedBox(rSimulatedBox)
+	,m_pSimulatedBox(pSimulatedBox)
 {
 }
 

@@ -116,7 +116,6 @@ public:
 		const OpenViBE::uint32 ui32OutputIndex);
 	virtual OpenViBE::boolean markOutputAsReadyToSend(
 		const OpenViBE::uint32 ui32OutputIndex,
-		const OpenViBE::uint64 ui64StartTime,
 		const OpenViBE::uint64 ui64EndTime);
 
 protected:

@@ -17,24 +17,24 @@ namespace OpenViBE
 
 				CBuffer(void);
 				CBuffer(const CBuffer& rBuffer);
-				CBuffer(const OpenViBE::uint8* pBuffer, const OpenViBE::uint32 ui32BufferSize);
+				CBuffer(const OpenViBE::uint8* pBuffer, const OpenViBE::uint64 ui64BufferSize);
 				virtual ~CBuffer(void);
 
 				const CBuffer& operator=(const CBuffer& rBuffer);
 
 				OpenViBE::uint8* getDirectPointer(void);
 				const OpenViBE::uint8* getDirectPointer(void) const;
-				OpenViBE::uint32 getSize(void) const;
+				OpenViBE::uint64 getSize(void) const;
 
 				OpenViBE::boolean setSize(
-					OpenViBE::uint32 ui32Size,
+					OpenViBE::uint64 ui64Size,
 					OpenViBE::boolean bDiscard=true);
 
 			protected:
 
 				OpenViBE::uint8* m_pBuffer;
-				OpenViBE::uint32 m_ui32BufferSize;
-				OpenViBE::uint32 m_ui32AllocatedSize;
+				OpenViBE::uint64 m_ui64BufferSize;
+				OpenViBE::uint64 m_ui64AllocatedSize;
 			};
 		};
 	};

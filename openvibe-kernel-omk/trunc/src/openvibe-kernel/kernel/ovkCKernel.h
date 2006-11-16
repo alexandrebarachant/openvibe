@@ -2,6 +2,7 @@
 #define __OpenViBEKernel_CKernel_H__
 
 #include "ovkTKernelObject.h"
+#include "ovkCKernelContext.h"
 
 namespace OpenViBE
 {
@@ -15,24 +16,17 @@ namespace OpenViBE
 
 			virtual void release(void);
 
-			virtual OpenViBE::Kernel::IObjectFactory& getObjectFactory(void);
-			virtual const OpenViBE::Kernel::IObjectFactory& getObjectFactory(void) const;
-			virtual OpenViBE::Kernel::IPluginManager& getPluginManager(void);
-			virtual const OpenViBE::Kernel::IPluginManager& getPluginManager(void) const;
-			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void);
-			virtual const OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) const;
-			virtual OpenViBE::Kernel::IKernelLog& getKernelLog(
-				const OpenViBE::uint32 ui32Level=0) const;
+			// $$$$$$$$$$$$$$$$$$
+			virtual const OpenViBE::Kernel::IKernelContext* getContext(void) const
+			{
+				return &m_oContext;
+			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IKernel, OVK_ClassId_Kernel_Kernel)
 
 		protected:
 
-			OpenViBE::Kernel::IObjectFactory* m_pObjectFactory;
-			OpenViBE::Kernel::IPluginManager* m_pPluginManager;
-			OpenViBE::Kernel::IScenarioManager* m_pScenarioManager;
-			mutable OpenViBE::Kernel::IKernelLog* m_pKernelLog;
-
+			OpenViBE::Kernel::CKernelContext m_oContext;
 		};
 	};
 };

@@ -9,6 +9,7 @@ using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
+#define boolean OpenViBE::boolean
 
 // #define _ScopeTester_
 
@@ -80,11 +81,12 @@ void PsSimulatedBox::init(void)
 	IPluginManager& l_rPluginManager=m_oPluginManagerHandle.getConcretePluginManager();
 	m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_rPluginManager.getPluginObjectDescCreating(m_pBox->getAlgorithmClassIdentifier()));
 	m_pBoxAlgorithm=dynamic_cast<IBoxAlgorithm*>(l_rPluginManager.createPluginObject(m_pBox->getAlgorithmClassIdentifier()));
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::initialize");
 #endif
-		m_pBoxAlgorithm->initialize(CBoxContext(*this, *m_pBox));
+		m_pBoxAlgorithm->initialize(l_oBoxAlgorithmContext);
 	}
 }
 
@@ -92,12 +94,12 @@ void PsSimulatedBox::computeParameters(void)
 {
 //	cout<<"PsSimulatedBox::computeParameters("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
 
-	CMessageClock m;
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(*this, *m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processClock");
 #endif
+		CMessageClock m;
 		m_pBoxAlgorithm->processClock(l_oBoxAlgorithmContext, m);
 	}
 	if(l_oBoxAlgorithmContext.isAlgorithmReadyToProcess())
@@ -112,7 +114,7 @@ bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChu
 
 	m_vInput[pEvent->value.getIoConnectorIndex()].push_back(pEvent->value);
 
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(*this, *m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processInput");
@@ -128,7 +130,7 @@ bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChu
 
 void PsSimulatedBox::doProcess(void)
 {
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(*this, *m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::process");
@@ -178,7 +180,7 @@ boolean PsSimulatedBox::getInputChunk(
 	uint64& rChunkSize,
 	const uint8*& rpChunkBuffer)
 {
-	if(ui32ChunkIndex>=m_vInput[ui32ChunkIndex].size())
+	if(ui32ChunkIndex>=m_vInput[ui32InputIndex].size())
 	{
 		return false;
 	}
@@ -195,11 +197,11 @@ boolean PsSimulatedBox::markInputAsDeprecated(
 	const uint32 ui32InputIndex,
 	const uint32 ui32ChunkIndex)
 {
-	if(ui32ChunkIndex>=m_vInput[ui32ChunkIndex].size())
+	if(ui32ChunkIndex>=m_vInput[ui32InputIndex].size())
 	{
 		return false;
 	}
-	m_vInput[ui32ChunkIndex][ui32ChunkIndex].m_bDeprecated=true;
+	m_vInput[ui32InputIndex][ui32ChunkIndex].m_bDeprecated=true;
 	return true;
 }
 
@@ -225,10 +227,14 @@ uint8* PsSimulatedBox::getOutputChunkBuffer(
 
 boolean PsSimulatedBox::markOutputAsReadyToSend(
 	const uint32 ui32OutputIndex,
-	const uint64 ui64StartTime,
 	const uint64 ui64EndTime)
 {
-	m_vOutput[ui32OutputIndex].setStartTime(ui64StartTime);
+	if(m_vOutput[ui32OutputIndex].m_bReadyToSend)
+	{
+		return false;
+	}
+
+	m_vOutput[ui32OutputIndex].setStartTime(m_vOutput[ui32OutputIndex].getEndTime());
 	m_vOutput[ui32OutputIndex].setEndTime(ui64EndTime);
 	m_vOutput[ui32OutputIndex].m_bReadyToSend=true;
 	return true;

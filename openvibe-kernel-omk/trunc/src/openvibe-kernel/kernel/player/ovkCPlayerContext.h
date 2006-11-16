@@ -12,7 +12,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CPlayerContext(::PsSimulatedBox& rSimulatedBox);
+			CPlayerContext(::PsSimulatedBox* pSimulatedBox);
 
 			virtual OpenViBE::boolean sendSignal(
 				const OpenViBE::CMessageSignal& rMessageSignal);
@@ -29,7 +29,7 @@ namespace OpenViBE
 
 		protected:
 
-			::PsSimulatedBox& m_rSimulatedBox;
+			::PsSimulatedBox* m_pSimulatedBox;
 		};
 	};
 };

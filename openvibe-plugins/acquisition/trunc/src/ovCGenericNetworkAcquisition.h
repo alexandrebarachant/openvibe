@@ -47,9 +47,9 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { delete this; }
 			virtual OpenViBE::boolean initialize(
-				const OpenViBE::Plugins::IPluginObjectContext& rContext);
+				const OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
 			virtual OpenViBE::boolean uninitialize(
-				const OpenViBE::Plugins::IPluginObjectContext& rContext);
+				const OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
 			virtual OpenViBE::boolean processClock(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
 				OpenViBE::CMessageClock& rMessageClock);
@@ -67,8 +67,8 @@ namespace OpenViBEPlugins
 			EBML::IReader* m_pReader;
 			EBML::IWriterCallBack* m_pWriterCallBack;
 			EBML::IWriter* m_pWriter;
-			OpenViBE::Plugins::IBoxContext::IOutput* m_pOutput;
 			OpenViBE::uint64 m_ui64CurrentBufferSize;
+			OpenViBE::Plugins::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
 		};
 
 		class CGenericNetworkAcquisitionDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -85,7 +85,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GenericNetworkAcquisition; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition(); }
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const;
-			virtual OpenViBE::uint32 getClockFrequency(void) const;
+			virtual OpenViBE::uint32 getClockFrequency(const OpenViBE::Plugins::IStaticBoxContext& rStaticBoxContext) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_GenericNetworkAcquisitionDesc)
 		};

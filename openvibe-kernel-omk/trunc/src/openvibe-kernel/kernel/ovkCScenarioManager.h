@@ -13,7 +13,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CScenarioManager(OpenViBE::Kernel::IKernel& rKernel);
+			CScenarioManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
 			virtual OpenViBE::boolean createScenario(
 				OpenViBE::CIdentifier& rScenarioIdentifier);

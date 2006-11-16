@@ -106,7 +106,7 @@ bool PsSimulatedBoxBase::loadEventsConnectionsParameters( const PsConfigurationP
   listenedObjects.clear() ;
   if( ok && PsParametersAccessor::getVector( node, "ListenOpenViBEDataUpdateBy", listenedObjects ) )
   {
-    for( int i = 0 ; i < listenedObjects.size() ; i++ )
+    for( unsigned int i = 0 ; i < listenedObjects.size() ; i++ )
       registerForOpenViBEDataUpdateSignalBy( listenedObjects[ i ] ) ;
   }
 

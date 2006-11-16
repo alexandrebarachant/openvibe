@@ -24,7 +24,18 @@
 
 
 IF(WIN32)
-  MESSAGE("Not yet implemented for windows")
+	FIND_PATH(PATH_OPENMASK include/OpenMASK.h PATHS $ENV{OpenMASKDIR})
+	IF(PATH_OPENMASK)
+		MESSAGE(STATUS "  Found OpenMASK...")
+		SET(OMK_FOUND TRUE)
+		SET(OMK_INC ${PATH_OPENMASK}/include)
+		SET(OMK_INCFLAGS "")
+		SET(OMK_LIBS 3DVisD OpenMASKD SimpleLoaderD SoundD UserTypesD XmlLoaderD)
+		SET(OMK_LIBFLAGS "")
+		SET(OMK_LIBDIR ${PATH_OPENMASK}/lib)
+	ELSE(PATH_OPENMASK)
+		MESSAGE(STATUS "  FAILED to find OpenMASK...")
+	ENDIF(PATH_OPENMASK)
 ENDIF(WIN32)
 
 # --------------------------------------------------------------

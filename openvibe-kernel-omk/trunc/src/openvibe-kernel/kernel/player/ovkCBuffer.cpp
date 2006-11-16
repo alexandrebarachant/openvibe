@@ -5,56 +5,57 @@
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Kernel::Player;
+#define boolean OpenViBE::boolean
 
 CBuffer::CBuffer(void)
 	:m_pBuffer(NULL)
-	,m_ui32BufferSize(0)
-	,m_ui32AllocatedSize(0)
+	,m_ui64BufferSize(0)
+	,m_ui64AllocatedSize(0)
 {
 }
 
 CBuffer::CBuffer(
 	const CBuffer& rBuffer)
 	:m_pBuffer(NULL)
-	,m_ui32BufferSize(0)
-	,m_ui32AllocatedSize(0)
+	,m_ui64BufferSize(0)
+	,m_ui64AllocatedSize(0)
 {
-	if(rBuffer.m_ui32BufferSize)
+	if(rBuffer.m_ui64BufferSize)
 	{
-		m_pBuffer=new uint8[rBuffer.m_ui32BufferSize];
-		System::Memory::copy(m_pBuffer, rBuffer.m_pBuffer, rBuffer.m_ui32BufferSize);
-		m_ui32BufferSize=rBuffer.m_ui32BufferSize;
-		m_ui32AllocatedSize=rBuffer.m_ui32BufferSize;
+		m_pBuffer=new uint8[rBuffer.m_ui64BufferSize];
+		System::Memory::copy(m_pBuffer, rBuffer.m_pBuffer, rBuffer.m_ui64BufferSize);
+		m_ui64BufferSize=rBuffer.m_ui64BufferSize;
+		m_ui64AllocatedSize=rBuffer.m_ui64BufferSize;
 	}
 }
 
 CBuffer::CBuffer(
 	const uint8* pBuffer,
-	const uint32 ui32BufferSize)
+	const uint64 ui64BufferSize)
 	:m_pBuffer(NULL)
-	,m_ui32BufferSize(0)
-	,m_ui32AllocatedSize(0)
+	,m_ui64BufferSize(0)
+	,m_ui64AllocatedSize(0)
 {
-	if(ui32BufferSize)
+	if(ui64BufferSize)
 	{
-		m_pBuffer=new uint8[ui32BufferSize];
-		System::Memory::copy(m_pBuffer, pBuffer, ui32BufferSize);
-		m_ui32BufferSize=ui32BufferSize;
-		m_ui32AllocatedSize=ui32BufferSize;
+		m_pBuffer=new uint8[ui64BufferSize];
+		System::Memory::copy(m_pBuffer, pBuffer, ui64BufferSize);
+		m_ui64BufferSize=ui64BufferSize;
+		m_ui64AllocatedSize=ui64BufferSize;
 	}
 }
 
 const CBuffer& CBuffer::operator=(
 	const CBuffer& rBuffer)
 {
-	if(rBuffer.m_ui32BufferSize>m_ui32AllocatedSize)
+	if(rBuffer.m_ui64BufferSize>m_ui64AllocatedSize)
 	{
 		delete [] m_pBuffer;
-		m_pBuffer=new uint8[rBuffer.m_ui32BufferSize];
-		m_ui32AllocatedSize=rBuffer.m_ui32BufferSize;
+		m_pBuffer=new uint8[rBuffer.m_ui64BufferSize];
+		m_ui64AllocatedSize=rBuffer.m_ui64BufferSize;
 	}
-	System::Memory::copy(m_pBuffer, rBuffer.m_pBuffer, rBuffer.m_ui32BufferSize);
-	m_ui32BufferSize=rBuffer.m_ui32BufferSize;
+	System::Memory::copy(m_pBuffer, rBuffer.m_pBuffer, rBuffer.m_ui64BufferSize);
+	m_ui64BufferSize=rBuffer.m_ui64BufferSize;
 	return *this;
 }
 
@@ -73,26 +74,26 @@ const uint8* CBuffer::getDirectPointer(void) const
 	return m_pBuffer;
 }
 
-uint32 CBuffer::getSize(void) const
+uint64 CBuffer::getSize(void) const
 {
-	return m_ui32BufferSize;
+	return m_ui64BufferSize;
 }
 
 boolean CBuffer::setSize(
-	uint32 ui32Size,
+	uint64 ui64Size,
 	boolean bDiscard)
 {
-	if(ui32Size>m_ui32AllocatedSize)
+	if(ui64Size>m_ui64AllocatedSize)
 	{
 		uint8* l_pSavedBuffer=m_pBuffer;
-		m_pBuffer=new uint8[ui32Size];
+		m_pBuffer=new uint8[ui64Size];
 		if(!bDiscard)
 		{
-			System::Memory::copy(m_pBuffer, l_pSavedBuffer, m_ui32BufferSize);
+			System::Memory::copy(m_pBuffer, l_pSavedBuffer, m_ui64BufferSize);
 		}
 		delete [] l_pSavedBuffer;
-		m_ui32AllocatedSize=ui32Size;
+		m_ui64AllocatedSize=ui64Size;
 	}
-	m_ui32BufferSize=ui32Size;
+	m_ui64BufferSize=ui64Size;
 	return true;
 }

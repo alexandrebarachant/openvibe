@@ -3,28 +3,51 @@
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
+#define boolean OpenViBE::boolean
 
-CBoxAlgorithmContext::CBoxAlgorithmContext(PsSimulatedBox& rSimulatedBox, const IBox& rBox)
+CBoxAlgorithmContext::CBoxAlgorithmContext(::PsSimulatedBox* pSimulatedBox, const IBox* pBox)
 	:TPluginObjectContext<IBoxAlgorithmContext>()
-	,m_oBoxContext(rSimulatedBox, rBox)
-	,m_oPlayerContext(rSimulatedBox)
+	,m_oStaticBoxContext(pBox)
+	,m_oDynamicBoxContext(pSimulatedBox)
+	,m_oPlayerContext(pSimulatedBox)
 	,m_bReadyToProcess(false)
 {
 }
 
-IBoxContext& CBoxAlgorithmContext::getBoxContext(void)
+IStaticBoxContext* CBoxAlgorithmContext::getStaticBoxContext(void)
 {
-	return m_oBoxContext;
+	return &m_oStaticBoxContext;
 }
 
-IPlayerContext& CBoxAlgorithmContext::getPlayerContext(void)
+const IStaticBoxContext* CBoxAlgorithmContext::getStaticBoxContext(void) const
 {
-	return m_oPlayerContext;
+	return &m_oStaticBoxContext;
+}
+
+IDynamicBoxContext* CBoxAlgorithmContext::getDynamicBoxContext(void)
+{
+	return &m_oDynamicBoxContext;
+}
+
+const IDynamicBoxContext* CBoxAlgorithmContext::getDynamicBoxContext(void) const
+{
+	return &m_oDynamicBoxContext;
+}
+
+IPlayerContext* CBoxAlgorithmContext::getPlayerContext(void)
+{
+	return &m_oPlayerContext;
+}
+
+const IPlayerContext* CBoxAlgorithmContext::getPlayerContext(void) const
+{
+	return &m_oPlayerContext;
 }
 
 boolean CBoxAlgorithmContext::markAlgorithmAsReadyToProcess(void)
 {
 	m_bReadyToProcess=true;
+	return true;
 }
 
 boolean CBoxAlgorithmContext::isAlgorithmReadyToProcess(void)

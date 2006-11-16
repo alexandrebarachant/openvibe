@@ -8,7 +8,6 @@
 
 // OpenMASK
 #include <PsController.h>
-#include <PsPvmController.h>
 
 namespace OpenViBE
 {
@@ -20,7 +19,7 @@ namespace OpenViBE
 			{
 			public:
 
-				CPlayer(OpenViBE::Kernel::IKernel& rKernel);
+				CPlayer(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 				virtual ~CPlayer(void);
 
 				virtual OpenViBE::boolean reset(

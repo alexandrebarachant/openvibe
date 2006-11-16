@@ -71,10 +71,11 @@ namespace OpenViBEPlugins
 
 			virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 			{
-				m_rPlugin.m_pOutput->setChunkSize(m_rPlugin.m_ui64CurrentBufferSize+ui64BufferSize, false);
-				System::Memory::copy(m_rPlugin.m_pOutput->getChunkBuffer()+m_rPlugin.m_ui64CurrentBufferSize, pBuffer, ui64BufferSize);
+				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=m_rPlugin.m_pBoxAlgorithmContext->getDynamicBoxContext();
+				l_pDynamicBoxContext->setOutputChunkSize(0, m_rPlugin.m_ui64CurrentBufferSize+ui64BufferSize, false);
+				System::Memory::copy(l_pDynamicBoxContext->getOutputChunkBuffer(0)+m_rPlugin.m_ui64CurrentBufferSize, pBuffer, ui64BufferSize);
 				m_rPlugin.m_ui64CurrentBufferSize+=ui64BufferSize;
-				m_rPlugin.m_pOutput->markAsReadyToSend(0,0); // $$$
+				l_pDynamicBoxContext->markOutputAsReadyToSend(0,0); // $$$
 			}
 
 			CGenericNetworkAcquisition& m_rPlugin;
@@ -96,7 +97,7 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) c
 	return true;
 }
 
-uint32 CGenericNetworkAcquisitionDesc::getClockFrequency(void) const
+uint32 CGenericNetworkAcquisitionDesc::getClockFrequency(const IStaticBoxContext& rStaticBoxContext) const
 {
 	return 1; // $$$
 }
@@ -108,14 +109,14 @@ CGenericNetworkAcquisition::CGenericNetworkAcquisition(void)
 	,m_pReader(NULL)
 	,m_pWriterCallBack(NULL)
 	,m_pWriter(NULL)
-	,m_pOutput(NULL)
+	,m_pBoxAlgorithmContext(NULL)
 {
 }
 
 boolean CGenericNetworkAcquisition::initialize(
-	const IPluginObjectContext& rContext)
+	const IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IBoxContext& rBoxContext=dynamic_cast<const IBoxContext&>(rContext);
+	const IStaticBoxContext* l_pSaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Builds up client connection
 	m_pConnectionClient=Socket::createConnectionClient();
@@ -130,8 +131,8 @@ boolean CGenericNetworkAcquisition::initialize(
 
 	// Parses box settings to try connecting to server
 	CString l_sServerHostPort;
-	rBoxContext.getSettingValue(0, m_sServerHostName);
-	rBoxContext.getSettingValue(1, l_sServerHostPort);
+	l_pSaticBoxContext->getSettingValue(0, m_sServerHostName);
+	l_pSaticBoxContext->getSettingValue(1, l_sServerHostPort);
 	m_ui32ServerHostPort=atoi(l_sServerHostPort);
 
 	// Tries to connect to server
@@ -141,9 +142,9 @@ boolean CGenericNetworkAcquisition::initialize(
 }
 
 boolean CGenericNetworkAcquisition::uninitialize(
-	const IPluginObjectContext& rContext)
+	const IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IBoxContext& rBoxContext=dynamic_cast<const IBoxContext&>(rContext);
+	const IStaticBoxContext* l_pSaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Ceans up EBML writer
 	m_pWriter->release();
@@ -193,7 +194,7 @@ boolean CGenericNetworkAcquisition::process(IBoxAlgorithmContext& rBoxAlgorithmC
 	uint32 l_ui32Received;
 	m_ui64CurrentBufferSize=0;
 
-	m_pOutput=rBoxAlgorithmContext.getBoxContext().getOutput(0);
+	m_pBoxAlgorithmContext=&rBoxAlgorithmContext;
 	do
 	{
 		// Receives data from the connection
@@ -203,7 +204,7 @@ boolean CGenericNetworkAcquisition::process(IBoxAlgorithmContext& rBoxAlgorithmC
 		m_pReader->processData(l_pBuffer, l_ui32Received);
 	}
 	while(m_pConnectionClient->isReadyToReceive());
-	m_pOutput=NULL;
+	m_pBoxAlgorithmContext=NULL;
 
 	return true;
 }

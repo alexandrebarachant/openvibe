@@ -5,55 +5,47 @@
 
 #include <openvibe/ov_all.h>
 
-#define ClassIdentifier_SampleScenarioImporterDesc OpenViBE::CIdentifier(0x28DC180C, 0x4CCA7314)
-#define ClassIdentifier_SampleScenarioImporter     OpenViBE::CIdentifier(0x440BF3AC, 0x2D960300)
-
-namespace OpenViBESamples
+namespace OpenViBEPlugins
 {
-	class CScenarioImporterXML : virtual public OpenViBE::Plugins::IScenarioImporter
+	namespace Samples
 	{
-	public:
-		virtual void release(void)
+		class CScenarioImporterXML : virtual public OpenViBE::Plugins::IScenarioImporter
 		{
-			delete this;
-		}
-		virtual OpenViBE::boolean doImport(const OpenViBE::CString& rFileName, OpenViBE::Kernel::IScenario& rScenario)
+		public:
+
+			virtual void release(void)
+			{
+				delete this;
+			}
+
+			virtual OpenViBE::boolean doImport(const OpenViBE::Plugins::IScenarioImporterContext& rScenarioImporterContext)
+			{
+				return false;
+			}
+
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IScenarioImporter, OVP_ClassId_ScenarioImporterXML)
+		};
+
+		class CScenarioImporterXMLDesc : virtual public OpenViBE::Plugins::IScenarioImporterDesc
 		{
-			return false;
-		}
-		_IsDerivedFromClass_Final_(OpenViBE::Plugins::IScenarioImporter, ClassIdentifier_SampleScenarioImporter)
+		public:
+
+			virtual void release(void) { }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("sample behavior"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
+			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("sample behavior"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("A sample XML scenario importer"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
+			virtual OpenViBE::CString getFileExtension(void) const       { return OpenViBE::CString("xml;XML"); }
+
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_ScenarioImporterXML; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CScenarioImporterXML(); }
+
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IScenarioImporterDesc, OVP_ClassId_ScenarioImporterXMLDesc)
+		};
 	};
-
-	class CScenarioImporterXMLDesc : virtual public OpenViBE::Plugins::IScenarioImporterDesc
-	{
-	public:
-		virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("sample behavior"); }
-		virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
-		virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
-		virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("sample behavior"); }
-		virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("A sample XML scenario importer"); }
-		virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
-		virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
-
-		virtual void release(void)
-		{
-		}
-		virtual OpenViBE::CIdentifier getCreatedClass(void) const
-		{
-			return ClassIdentifier_SampleScenarioImporter;
-		}
-		virtual OpenViBE::Plugins::IPluginObject* create(void)
-		{
-			return new OpenViBESamples::CScenarioImporterXML();
-		}
-		virtual OpenViBE::CString getFileExtension(void) const
-		{
-			return OpenViBE::CString("xml;XML");
-		}
-
-		_IsDerivedFromClass_Final_(OpenViBE::Plugins::IScenarioImporterDesc, ClassIdentifier_SampleScenarioImporterDesc)
-	};
-
 };
 
 #endif // __SamplePlugin_CScenarioImporter_H__

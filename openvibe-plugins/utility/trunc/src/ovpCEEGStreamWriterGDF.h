@@ -43,9 +43,9 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { delete this; }
 			virtual OpenViBE::boolean initialize(
-				const OpenViBE::Plugins::IPluginObjectContext& rContext);
+				const OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
 			virtual OpenViBE::boolean uninitialize(
-				const OpenViBE::Plugins::IPluginObjectContext& rContext);
+				const OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
 			virtual OpenViBE::boolean processInput(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
 				OpenViBE::uint32 ui32InputIndex);
@@ -59,7 +59,6 @@ namespace OpenViBEPlugins
 			OpenViBE::CString m_sFileName;
 			EBML::IReaderCallBack* m_pReaderCallBack;
 			EBML::IReader* m_pReader;
-			OpenViBE::Plugins::IBoxContext::IInput* m_pInput;
 		};
 
 		class CEEGStreamWriterGDFDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -76,7 +75,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_EEGStreamWriterGDF; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Utility::CEEGStreamWriterGDF(); }
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const;
-			virtual OpenViBE::uint32 getClockFrequency(void) const;
+			virtual OpenViBE::uint32 getClockFrequency(OpenViBE::Plugins::IStaticBoxContext& rStaticBoxContext) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_EEGStreamWriterGDFDesc)
 		};

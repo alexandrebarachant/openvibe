@@ -31,6 +31,26 @@ ELSE(PATH_OPENVIBE_MODULES_EBML)
 ENDIF(PATH_OPENVIBE_MODULES_EBML)
 
 # ---------------------------------
+# Finds module System
+# Adds library to target
+# Adds include path
+# ---------------------------------
+FIND_PATH(PATH_OPENVIBE_MODULES_SYSTEM include/system/defines.h PATHS $ENV{OpenViBE_modules}/system $ENV{OpenViBE_module_system})
+IF(PATH_OPENVIBE_MODULES_SYSTEM)
+	MESSAGE(STATUS "  Found OpenViBE module system...")
+	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_SYSTEM}/include)
+	FIND_LIBRARY(LIB_OPENVIBE_MODULE_SYSTEM OpenViBE-module-System-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_SYSTEM}/lib)
+	IF(LIB_OPENVIBE_MODULE_SYSTEM)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_SYSTEM}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_SYSTEM})
+	ELSE(LIB_OPENVIBE_MODULE_SYSTEM)
+		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-System-${MODULE_LINKING}")
+	ENDIF(LIB_OPENVIBE_MODULE_SYSTEM)
+ELSE(PATH_OPENVIBE_MODULES_SYSTEM)
+	MESSAGE(STATUS "  FAILED to find OpenViBE module system...")
+ENDIF(PATH_OPENVIBE_MODULES_SYSTEM)
+
+# ---------------------------------
 # Finds OpenViBE
 # Adds library to target
 # Adds include path

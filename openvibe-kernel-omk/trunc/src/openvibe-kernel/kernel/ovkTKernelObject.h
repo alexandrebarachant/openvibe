@@ -9,32 +9,27 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		template <class T> class OV_API TKernelObject : virtual public T
+		template <class T> class TKernelObject : virtual public T
 		{
 		public:
 
-			TKernelObject(OpenViBE::Kernel::IKernel& rKernel)
-				:m_rKernel(rKernel)
+			TKernelObject(const OpenViBE::Kernel::IKernelContext& rKernelContext)
+				:m_rKernelContext(rKernelContext)
 			{
 			}
 
-			OpenViBE::Kernel::IKernel& getKernel(void)
+			const OpenViBE::Kernel::IKernelContext& getKernelContext(void) const
 			{
-				return m_rKernel;
-			}
-
-			const OpenViBE::Kernel::IKernel& getKernel(void) const
-			{
-				return m_rKernel;
+				return m_rKernelContext;
 			}
 
 			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_KernelObject)
 
 		private:
 
-			OpenViBE::Kernel::IKernel& m_rKernel;
+			const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 
-			TKernelObject(void);
+			// TKernelObject(void);
 		};
 	};
 };

@@ -14,7 +14,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CScenario(OpenViBE::Kernel::IKernel& rKernel);
+			CScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
 			virtual OpenViBE::boolean load(
 				const OpenViBE::CString& sFileName);

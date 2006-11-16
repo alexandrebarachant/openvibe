@@ -4,15 +4,15 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
 
-CScenarioManager::CScenarioManager(IKernel& rKernel)
-	:TKernelObject<IScenarioManager>(rKernel)
+CScenarioManager::CScenarioManager(const IKernelContext& rKernelContext)
+	:TKernelObject<IScenarioManager>(rKernelContext)
 {
 }
 
 boolean CScenarioManager::createScenario(
 	CIdentifier& rScenarioIdentifier)
 {
-	IScenario* l_pScenario=OpenViBE::Tools::CObjectFactoryHelper(getKernel().getObjectFactory()).createObject<IScenario*>(OV_ClassId_Kernel_Scenario);
+	IScenario* l_pScenario=OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).createObject<IScenario*>(OV_ClassId_Kernel_Scenario);
 	rScenarioIdentifier=getUnusedIdentifier();
 	m_vScenario[rScenarioIdentifier]=l_pScenario;
 	return true;
@@ -27,7 +27,7 @@ boolean CScenarioManager::releaseScenario(
 	{
 		return false;
 	}
-	OpenViBE::Tools::CObjectFactoryHelper(getKernel().getObjectFactory()).releaseObject(itScenario->second);
+	OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(itScenario->second);
 	m_vScenario.erase(itScenario);
 	return true;
 }

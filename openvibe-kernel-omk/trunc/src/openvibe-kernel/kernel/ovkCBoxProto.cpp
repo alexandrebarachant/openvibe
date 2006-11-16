@@ -4,8 +4,8 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
-CBoxProto::CBoxProto(IKernel& rKernel, IBox& rBox)
-	:TKernelObject<IBoxProto>(rKernel)
+CBoxProto::CBoxProto(const IKernelContext& rKernelContext, IBox& rBox)
+	:TKernelObject<IBoxProto>(rKernelContext)
 	,m_rBox(rBox)
 {
 }

@@ -2,7 +2,8 @@
 #define __OpenViBEKernel_Plugins_CBoxAlgorithmContext_H__
 
 #include "ovkTPluginObjectContext.h"
-#include "ovkCBoxContext.h"
+#include "ovkCStaticBoxContext.h"
+#include "ovkCDynamicBoxContext.h"
 #include "ovkCPlayerContext.h"
 #include "simulated-objects/ovkPsSimulatedBox.h"
 
@@ -14,10 +15,14 @@ namespace OpenViBE
 		{
 		public:
 
-			CBoxAlgorithmContext(::PsSimulatedBox& rSimulatedBox, const OpenViBE::Kernel::IBox& rBox);
+			CBoxAlgorithmContext(::PsSimulatedBox* pSimulatedBox, const OpenViBE::Kernel::IBox* pBox);
 
-			virtual OpenViBE::Plugins::IBoxContext& getBoxContext(void);
-			virtual OpenViBE::Plugins::IPlayerContext& getPlayerContext(void);
+			virtual OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void);
+			virtual const OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void) const;
+			virtual OpenViBE::Plugins::IDynamicBoxContext* getDynamicBoxContext(void);
+			virtual const OpenViBE::Plugins::IDynamicBoxContext* getDynamicBoxContext(void) const;
+			virtual OpenViBE::Plugins::IPlayerContext* getPlayerContext(void);
+			virtual const OpenViBE::Plugins::IPlayerContext* getPlayerContext(void) const;
 			virtual OpenViBE::boolean markAlgorithmAsReadyToProcess(void);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TPluginObjectContext<OpenViBE::Plugins::IBoxAlgorithmContext>, OVK_ClassId_Kernel_BoxAlgorithmContext)
@@ -26,7 +31,8 @@ namespace OpenViBE
 
 		protected:
 
-			OpenViBE::Kernel::CBoxContext m_oBoxContext;
+			OpenViBE::Kernel::CStaticBoxContext m_oStaticBoxContext;
+			OpenViBE::Kernel::CDynamicBoxContext m_oDynamicBoxContext;
 			OpenViBE::Kernel::CPlayerContext m_oPlayerContext;
 			OpenViBE::boolean m_bReadyToProcess;
 		};

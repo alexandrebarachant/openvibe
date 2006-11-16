@@ -1,10 +1,10 @@
 #include "ovpCEEGStreamWriterGDF.h"
 
+#include <system/Memory.h>
+
 #include <iostream>
 #include <vector>
 #include <stack>
-
-#include <netinet/in.h>
 
 #include <stdio.h>
 #include <errno.h>
@@ -121,7 +121,7 @@ namespace OpenViBEPlugins
 				m_oFixedHeader.m_i64NumberOfBytesInHeaderRecord=(m_oFixedHeader.m_ui32NumberOfSignals+1)*256;
 				m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
 				m_oFixedHeader.m_ui32DurationOfADataRecordNumerator=1;
-				m_oFixedHeader.m_ui32DurationOfADataRecordDenominator=m_ui64SamplingFrequency;
+				m_oFixedHeader.m_ui32DurationOfADataRecordDenominator=(uint32)m_ui64SamplingFrequency;
 				fwrite(&m_oFixedHeader, sizeof(m_oFixedHeader), 1, m_pFile);
 
 				if(bHeader)
@@ -146,7 +146,7 @@ namespace OpenViBEPlugins
 
 				if(!bHeader)
 				{
-					int i,j;
+					size_t i,j;
 					fseek(m_pFile, 0, SEEK_END);
 					for(i=0; i<m_vSamples[0].size(); i++)
 					{
@@ -201,7 +201,7 @@ namespace OpenViBEPlugins
 				else if(l_oIdentifier==EEG_NodeId_SubjectSex) { /* nothing to do */ }
 				else if(l_oIdentifier==EEG_NodeId_ChannelCount)
 				{
-					m_oFixedHeader.m_ui32NumberOfSignals=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
+					m_oFixedHeader.m_ui32NumberOfSignals=(uint32)m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
 					m_vVariableHeader.resize(m_oFixedHeader.m_ui32NumberOfSignals);
 					m_vSamples.resize(m_oFixedHeader.m_ui32NumberOfSignals);
 					m_vSampleCount.resize(m_oFixedHeader.m_ui32NumberOfSignals);
@@ -228,13 +228,13 @@ namespace OpenViBEPlugins
 				else if(l_oIdentifier==EEG_NodeId_SamplesPerChannelCount) { /* nothing to do */ }
 				else if(l_oIdentifier==EEG_NodeId_SampleBlock)
 				{
-					const int32* l_pSamples=static_cast<const int32*>(pBuffer);
+					const uint8* l_pBuffer=static_cast<const uint8*>(pBuffer);
+					float32 l_f32Sample=0;
 					uint32 l_ui32SampleCount=(uint32)(ui64BufferSize>>2);
 					for(uint32 i=0; i<l_ui32SampleCount; i++)
 					{
-						int32 vi=ntohl(l_pSamples[i]);
-						float32 vf=*((float32*)&vi);
-						m_vSamples[m_ui32ChannelIndex].push_back((int16)(vf*5000));
+						System::Memory::littleEndianToHost(l_pBuffer+(i<<2), &l_f32Sample);
+						m_vSamples[m_ui32ChannelIndex].push_back((int16)(l_f32Sample*5000));
 					}
 					m_vSampleCount[m_ui32ChannelIndex]+=l_ui32SampleCount;
 					m_ui32ChannelIndex++;
@@ -284,7 +284,7 @@ boolean CEEGStreamWriterGDFDesc::getBoxPrototype(
 	return true;
 }
 
-uint32 CEEGStreamWriterGDFDesc::getClockFrequency(void) const
+uint32 CEEGStreamWriterGDFDesc::getClockFrequency(IStaticBoxContext& rStaticBoxContext) const
 {
 	return 0;
 }
@@ -292,29 +292,28 @@ uint32 CEEGStreamWriterGDFDesc::getClockFrequency(void) const
 CEEGStreamWriterGDF::CEEGStreamWriterGDF(void)
 	:m_pReaderCallBack(NULL)
 	,m_pReader(NULL)
-	,m_pInput(NULL)
 {
 }
 
 boolean CEEGStreamWriterGDF::initialize(
-	const IPluginObjectContext& rContext)
+	const IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IBoxContext& rBoxContext=dynamic_cast<const IBoxContext&>(rContext);
+	const IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Prepares EBML reader
 	m_pReaderCallBack=new CEEGStreamWriterGDF_ReaderCallBack(*this);
 	m_pReader=EBML::createReader(*m_pReaderCallBack);
 
 	// Parses box settings to find filename
-	rBoxContext.getSettingValue(0, m_sFileName);
+	l_pBoxContext->getSettingValue(0, m_sFileName);
 
 	return true;
 }
 
 boolean CEEGStreamWriterGDF::uninitialize(
-	const IPluginObjectContext& rContext)
+	const IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IBoxContext& rBoxContext=dynamic_cast<const IBoxContext&>(rContext);
+	const IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Cleans up EBML reader
 	m_pReader->release();
@@ -338,22 +337,19 @@ boolean CEEGStreamWriterGDF::processInput(
 boolean CEEGStreamWriterGDF::process(
 	IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	m_pInput=rBoxAlgorithmContext.getBoxContext().getInput(0);
-
-	for(uint32 i=0; i<m_pInput->getChunkCount(); i++)
+	IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
+	for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
 	{
 		uint64 l_ui64StartTime;
 		uint64 l_ui64EndTime;
 		uint64 l_ui64ChunkSize;
 		const uint8* l_pChunkBuffer=NULL;
-		if(m_pInput->getChunk(i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+		if(l_pDynamicBoxContext->getInputChunk(0, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
 		{
 			m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
 		}
-		m_pInput->markAsDeprecated(i);
+		l_pDynamicBoxContext->markInputAsDeprecated(0, i);
 	}
-
-	m_pInput=NULL;
 
 	return true;
 }

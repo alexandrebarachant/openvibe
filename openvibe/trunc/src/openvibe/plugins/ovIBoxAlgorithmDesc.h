@@ -8,6 +8,7 @@ namespace OpenViBE
 	namespace Plugins
 	{
 		class IBoxProto;
+		class IStaticBoxContext;
 
 		/**
 		 * \class IBoxAlgorithmDesc
@@ -51,7 +52,9 @@ namespace OpenViBE
 
 			/**
 			 * \brief Gets the clock frequency to call this algorithm
+			 * \param rBoxContext [in] : The current box state
 			 * \return The clock frequency to call this algorithm
+			 * \note Default implementation returns 0
 			 *
 			 * This function is used for algorithms that are triggered on
 			 * clock signals. The returned frequency should be the
@@ -63,7 +66,8 @@ namespace OpenViBE
 			 * \note Returning 0 means the algorithm should not be
 			 *       clock activated.
 			 */
-			virtual OpenViBE::uint32 getClockFrequency(void) const=0;
+			virtual OpenViBE::uint32 getClockFrequency(
+				const OpenViBE::Plugins::IStaticBoxContext& rBoxContext) const { return 0; }
 
 			//@}
 
