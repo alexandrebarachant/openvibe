@@ -39,10 +39,11 @@ CReader::CReader(IReaderCallBack& rReaderCallBack)
 
 boolean CReader::processData(const void* pBuffer, const uint64 ui64BufferSize)
 {
+	// $$$ TODO take 64bits size into consideration
 	XML_Status l_eStatus=XML_Parse(
 		m_pXMLParser,
 		static_cast<const char*>(pBuffer),
-		ui64BufferSize,
+		static_cast<const int>(ui64BufferSize),
 		false);
 	return (l_eStatus==XML_STATUS_OK);
 }
@@ -62,12 +63,15 @@ static void XMLCALL XML::expat_xml_start(void* pData, const char* pElement, cons
 	uint64 i, l_ui64AttributeCount=0;
 	while(ppAttribute[l_ui64AttributeCount++]);
 	l_ui64AttributeCount>>=1;
-	const char** l_pAttributeName=new const char*[l_ui64AttributeCount];
-	const char** l_pAttributeValue=new const char*[l_ui64AttributeCount];
+
+	// $$$ TODO take 64bits size into consideration
+	const char** l_pAttributeName=new const char*[static_cast<size_t>(l_ui64AttributeCount)];
+	const char** l_pAttributeValue=new const char*[static_cast<size_t>(l_ui64AttributeCount)];
+
 	for(i=0; i<l_ui64AttributeCount; i++)
 	{
-		l_pAttributeName[i]=ppAttribute[i<<1];
-		l_pAttributeValue[i]=ppAttribute[i<<1+1];
+		l_pAttributeName[i]=ppAttribute[(i<<1)];
+		l_pAttributeValue[i]=ppAttribute[(i<<1)+1];
 	}
 
 	static_cast<IReaderCallBack*>(pData)->openChild(pElement, l_pAttributeName, l_pAttributeValue, l_ui64AttributeCount);

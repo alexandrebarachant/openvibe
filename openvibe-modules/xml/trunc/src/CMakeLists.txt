@@ -12,6 +12,24 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR})
 
 # -----------------------------
+# Finds third party libexpat
+# Adds library to targets
+# Adds include path
+# -----------------------------
+INCLUDE("FindExpat.cmake")
+IF(EXPAT_FOUND)
+	MESSAGE(STATUS "  Found expat...")
+	INCLUDE_DIRECTORIES(${EXPAT_INCLUDE_DIRS})
+	ADD_DEFINITIONS(${EXPAT_CFLAGS})
+	ADD_DEFINITIONS(${EXPAT_CFLAGS_OTHERS})
+	LINK_DIRECTORIES(${EXPAT_LIBRARY_DIRS})
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-static ${EXPAT_LIBRARIES})
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${EXPAT_LIBRARIES})
+ELSE(EXPAT_FOUND)
+	MESSAGE(STATUS "  FAILED to find expat...")
+ENDIF(EXPAT_FOUND)
+
+# -----------------------------
 # Copies all header files to
 # include path and mark copied
 # files to be deleted at clean
