@@ -5,4 +5,3 @@ nmake clean
 cd ..
 
 rmdir /s /q local-tmp
-mkdir local-tmp

@@ -8,15 +8,31 @@ call "%VS80COMNTOOLS%\vsvars32.bat"
 set PATH=%PATH%;E:\Microsoft Visual Studio 2005\VC\redist\Debug_NonRedist\x86\Microsoft.VC80.DebugCRT
 set PATH=%PATH%;C:\Expat-2.0.0\Libs
 
-set          OpenViBE_base=E:\Dev\openvibe
-set               OpenViBE=%OpenViBE_base%\openvibe\branches\wip-yrenard
-set       OpenViBE_modules=%OpenViBE_base%\openvibe-modules
-set   OpenViBE_module_ebml=%OpenViBE_modules%\ebml\trunc
-set     OpenViBE_module_fs=%OpenViBE_modules%\fs\trunc
-set OpenViBE_module_socket=%OpenViBE_modules%\socket\trunc
-set OpenViBE_module_system=%OpenViBE_modules%\system\trunc
-set    OpenViBE_module_xml=%OpenViBE_modules%\xml\trunc
-set        OpenViBE_kernel=%OpenViBE_base%\openvibe-kernel-omk\branches\wip-yrenard
+set                OpenViBE_base=E:\Dev\openvibe
+
+set              OpenViBE_branch=trunc
+set       OpenViBE_kernel_branch=trunc
+set      OpenViBE_modules_branch=trunc
+set OpenViBE_applications_branch=trunc
+set      OpenViBE_plugins_branch=trunc
+
+set                     OpenViBE=%OpenViBE_base%\openvibe\%OpenViBE_branch%
+set              OpenViBE_kernel=%OpenViBE_base%\openvibe-kernel-omk\%OpenViBE_kernel_branch%
+
+set             OpenViBE_modules=%OpenViBE_base%\openvibe-modules
+set         OpenViBE_module_ebml=%OpenViBE_modules%\ebml\%OpenViBE_modules_branch%
+set           OpenViBE_module_fs=%OpenViBE_modules%\fs\%OpenViBE_modules_branch%
+set       OpenViBE_module_socket=%OpenViBE_modules%\socket\%OpenViBE_modules_branch%
+set       OpenViBE_module_system=%OpenViBE_modules%\system\%OpenViBE_modules_branch%
+set          OpenViBE_module_xml=%OpenViBE_modules%\xml\%OpenViBE_modules_branch%
+
+set        OpenViBE_applications=%OpenViBE_base%\openvibe-applications
+set  OpenViBE_app_authoring_tool=%OpenViBE_applications%\authoring-tool\%OpenViBE_applications_branch%
+
+set             OpenViBE_plugins=%OpenViBE_base%\openvibe-plugins
+set  OpenViBE_plugin_acquisition=%OpenViBE_plugins%\acquisition\%OpenViBE_plugins_branch%
+set      OpenViBE_plugin_utility=%OpenViBE_plugins%\utility\%OpenViBE_plugins_branch%
+set      OpenViBE_plugin_samples=%OpenViBE_plugins%\samples\%OpenViBE_plugins_branch%
 
 set OpenMASKDIR=E:\OpenViBE\OpenMASK - VC 8.0\SDK
 
