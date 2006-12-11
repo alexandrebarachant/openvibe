@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class IObjectFactory : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IObjectFactory : virtual public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

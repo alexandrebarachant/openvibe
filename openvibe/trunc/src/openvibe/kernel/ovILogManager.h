@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class ILogManager : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API ILogManager : virtual public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

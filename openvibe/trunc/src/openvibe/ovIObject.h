@@ -79,6 +79,16 @@ namespace OpenViBE
 	{ \
 		return ((rClassIdentifier==_ClassIdentifier_) \
 		     || _SuperClassName_::isDerivedFromClass(rClassIdentifier)); \
+	} \
+	\
+	virtual OpenViBE::boolean getClassHierarchy( \
+		OpenViBE::CIdentifier* pClassIdentifier, \
+		OpenViBE::uint32* pClassNumber) const \
+	{ \
+		getClassHierarchy(pClassIdentifier+1, pClassNumber); \
+		(*pClassIdentifier)=_ClassIdentifier_; \
+		(*pClassNumber)++; \
+		return true; \
 	}
 
 #define _IsDerivedFromClass_Final_(_SuperClassName_,_ClassIdentifier_) \

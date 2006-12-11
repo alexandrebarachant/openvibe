@@ -1,13 +1,14 @@
 #ifndef __OpenViBEKernel_Kernel_CLink_H__
 #define __OpenViBEKernel_Kernel_CLink_H__
 
+#include "ovkTAttributable.h"
 #include "ovkTKernelObject.h"
 
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CLink : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::ILink>
+		class CLink : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::ILink> >
 		{
 		public:
 
@@ -34,7 +35,7 @@ namespace OpenViBE
 			virtual OpenViBE::CIdentifier getTargetBoxIdentifier(void) const;
 			virtual OpenViBE::uint32 getTargetBoxInputIndex(void) const;
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::ILink, OVK_ClassId_Kernel_Link)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::ILink> >, OVK_ClassId_Kernel_Link)
 
 		protected:
 

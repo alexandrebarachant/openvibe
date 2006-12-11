@@ -1,6 +1,7 @@
 #ifndef __OpenViBEKernel_Kernel_CScenario_H__
 #define __OpenViBEKernel_Kernel_CScenario_H__
 
+#include "ovkTAttributable.h"
 #include "ovkTKernelObject.h"
 
 #include <vector>
@@ -10,7 +11,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CScenario : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IScenario>
+		class CScenario : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IScenario> >
 		{
 		public:
 
@@ -33,6 +34,8 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rBoxIdentifier) const;
 			virtual OpenViBE::Kernel::IBox* getBoxDetails(
 				const OpenViBE::CIdentifier& rBoxIdentifier);
+			virtual OpenViBE::boolean addBox(
+				OpenViBE::CIdentifier& rBoxIdentifier);
 			virtual OpenViBE::boolean addBox(
 				const OpenViBE::CIdentifier& rBoxAlgorithmIdentifier,
 				OpenViBE::CIdentifier& rBoxIdentifier);
@@ -69,7 +72,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean disconnect(
 				const OpenViBE::CIdentifier& rLinkIdentifier);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IScenario, OVK_ClassId_Kernel_Scenario)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IScenario> >, OVK_ClassId_Kernel_Scenario)
 
 		protected:
 

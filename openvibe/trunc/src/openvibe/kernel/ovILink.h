@@ -1,7 +1,7 @@
 #ifndef __OpenViBE_Kernel_ILink_H__
 #define __OpenViBE_Kernel_ILink_H__
 
-#include "ovIKernelObject.h"
+#include "ovIAttributable.h"
 
 namespace OpenViBE
 {
@@ -16,7 +16,7 @@ namespace OpenViBE
 		 * This class collects informations between §OpenViBE§
 		 * boxes : box identifiers and input / output indices.
 		 */
-		class OV_API ILink : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API ILink : virtual public OpenViBE::Kernel::IAttributable
 		{
 		public:
 
@@ -110,7 +110,7 @@ namespace OpenViBE
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Link)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IAttributable, OV_ClassId_Kernel_Link)
 		};
 	};
 };

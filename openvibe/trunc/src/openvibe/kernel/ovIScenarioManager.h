@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class IScenarioManager : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IScenarioManager : virtual public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

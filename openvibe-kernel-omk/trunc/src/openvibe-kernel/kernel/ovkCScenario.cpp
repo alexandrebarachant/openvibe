@@ -14,7 +14,7 @@ using namespace OpenViBE::Plugins;
 //                                                                   //
 
 CScenario::CScenario(const IKernelContext& rKernelContext)
-	:TKernelObject<IScenario>(rKernelContext)
+	:TKernelObject<TAttributable<IScenario> >(rKernelContext)
 {
 }
 
@@ -73,7 +73,15 @@ boolean CScenario::load(
 {
 	getKernelContext().getLogManager() << "[ INFO ] Loading scneario with specific importer\n";
 
-	return false; // TODO
+	IScenarioImporter* l_pScenarioImporter=dynamic_cast<IScenarioImporter*>(getKernelContext().getPluginManager().createPluginObject(rLoaderIdentifier));
+	if(!l_pScenarioImporter)
+	{
+		getKernelContext().getLogManager() << "[FAILED] Importer not found\n";
+		return false;
+	}
+	l_pScenarioImporter->doImport(CScenarioImporterContext(getKernelContext(), sFileName, *this));
+	getKernelContext().getPluginManager().releasePluginObject(l_pScenarioImporter);
+	return true;
 }
 
 boolean CScenario::save(
@@ -152,6 +160,19 @@ IBox* CScenario::getBoxDetails(
 }
 
 boolean CScenario::addBox(
+	CIdentifier& rBoxIdentifier)
+{
+	getKernelContext().getLogManager() << "[ INFO ] Adding new empty box in scenario\n";
+
+	IBox* l_pBox=OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).createObject<IBox*>(OV_ClassId_Kernel_Box);
+	rBoxIdentifier=getUnusedIdentifier();
+	l_pBox->setIdentifier(rBoxIdentifier);
+
+	m_vBox[rBoxIdentifier]=l_pBox;
+	return true;
+}
+
+boolean CScenario::addBox(
 	const CIdentifier& rBoxAlgorithmIdentifier,
 	CIdentifier& rBoxIdentifier)
 {
@@ -165,11 +186,10 @@ boolean CScenario::addBox(
 	}
 
 	IBox* l_pBox=OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).createObject<IBox*>(OV_ClassId_Kernel_Box);
-
 	rBoxIdentifier=getUnusedIdentifier();
-	l_pBox->setName(l_pBoxAlgorithmDesc->getName());
 	l_pBox->setIdentifier(rBoxIdentifier);
 	l_pBox->setAlgorithmClassIdentifier(rBoxAlgorithmIdentifier);
+	l_pBox->setName(l_pBoxAlgorithmDesc->getName());
 
 	CBoxProto l_oBoxProto(getKernelContext(), *l_pBox);
 	l_pBoxAlgorithmDesc->getBoxPrototype(l_oBoxProto);
@@ -335,6 +355,7 @@ boolean CScenario::enumerateLinksToBox(
 					}
 				}
 			}
+			itLink++;
 		}
 	}
 	return true;

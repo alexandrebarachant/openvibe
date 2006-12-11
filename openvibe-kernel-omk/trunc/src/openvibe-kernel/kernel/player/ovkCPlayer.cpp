@@ -77,7 +77,7 @@ public:
 	{
 	}
 
-	boolean callback(const IScenario& rScenario, const IBox& rBox)
+	boolean callback(const IScenario& rScenario, IBox& rBox)
 	{
 		IPluginManager& l_rPluginManager=m_rKernelContext.getPluginManager();
 

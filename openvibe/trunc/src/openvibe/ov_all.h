@@ -29,6 +29,7 @@
 #include "kernel/ovIObjectFactory.h"
 #include "kernel/ovIPluginModule.h"
 #include "kernel/ovIPluginManager.h"
+#include "kernel/ovIAttributable.h"
 #include "kernel/ovIBox.h"
 #include "kernel/ovILink.h"
 #include "kernel/ovIScenario.h"

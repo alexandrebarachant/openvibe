@@ -1,6 +1,7 @@
 #ifndef __OpenViBEKernel_Kernel_CBox_H__
 #define __OpenViBEKernel_Kernel_CBox_H__
 
+#include "ovkTAttributable.h"
 #include "ovkTKernelObject.h"
 
 #include <vector>
@@ -11,7 +12,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CBox : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBox>
+		class CBox : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >
 		{
 		public:
 
@@ -97,7 +98,7 @@ namespace OpenViBE
 				const OpenViBE::uint32 ui32SettingIndex,
 				const OpenViBE::CString& rValue);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IBox, OVK_ClassId_Kernel_Box)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >, OVK_ClassId_Kernel_Box)
 
 		protected:
 

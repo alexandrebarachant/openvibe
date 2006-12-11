@@ -19,7 +19,7 @@
 #define OV_ClassId_Kernel_KernelLoaderFinal                OpenViBE::CIdentifier(0x624A6E5B, 0x52228CEA)
 #define OV_ClassId_Kernel_ObjectFactory                    OpenViBE::CIdentifier(0x04D88707, 0x21F2F456)
 
-
+#define OV_ClassId_Kernel_Attributable                     OpenViBE::CIdentifier(0x61B64E38, 0x0B36B4E8)
 #define OV_ClassId_Kernel_Box                              OpenViBE::CIdentifier(0x41209015, 0x1183237A)
 #define OV_ClassId_Kernel_Link                             OpenViBE::CIdentifier(0x38F6E10D, 0x6BA2721A)
 #define OV_ClassId_Kernel_Scenario                         OpenViBE::CIdentifier(0x6EED456C, 0x2FC6F03A)
@@ -89,7 +89,6 @@
 #define OV_ClassId_Plugin_BoxOutputProto                   OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
 #define OV_ClassId_Plugin_BoxSettingProto                  OpenViBE::CIdentifier(0x652D2F0B, 0x5D5E0714)
 
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x61B64E38, 0x0B36B4E8)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x2CDB2F0B, 0x12F231EA)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x403488E7, 0x565D70B6)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x6F752DD0, 0x082A321E)

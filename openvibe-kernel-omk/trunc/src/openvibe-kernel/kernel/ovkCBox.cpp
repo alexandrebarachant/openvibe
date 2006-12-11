@@ -8,7 +8,7 @@ using namespace OpenViBE::Kernel;
 //                                                                   //
 
 CBox::CBox(const IKernelContext& rKernelContext)
-	:TKernelObject<IBox>(rKernelContext)
+	:TKernelObject<TAttributable<IBox> >(rKernelContext)
 	,m_oIdentifier(OV_UndefinedIdentifier)
 	,m_oAlgorithmClassIdentifier(OV_UndefinedIdentifier)
 	,m_sName("unnamed")

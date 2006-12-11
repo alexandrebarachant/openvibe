@@ -31,6 +31,7 @@
 #define OVK_ClassId_Kernel_PluginObject                      OpenViBE::CIdentifier(0x718F6C0B, 0x368B2E6C)
 #define OVK_ClassId_Kernel_PluginObjectDesc                  OpenViBE::CIdentifier(0x65853ECE, 0x6E203E71)
 
+#define OVK_ClassId_Kernel_Attributable                      OpenViBE::CIdentifier(0x6F4071A4, 0x31183474)
 #define OVK_ClassId_Kernel_Box                               OpenViBE::CIdentifier(0x715A25DC, 0x5322E94C)
 #define OVK_ClassId_Kernel_Link                              OpenViBE::CIdentifier(0x118EF337, 0x095F5A5E)
 #define OVK_ClassId_Kernel_Scenario                          OpenViBE::CIdentifier(0x4215A6BF, 0x6F4E5F96)
@@ -61,7 +62,6 @@
 //                                                                   //
 
 /*
-#define OVK_ClassId_Kernel_BoxContextOutput                  OpenViBE::CIdentifier(0x6F4071A4, 0x31183474)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x11D27788, 0x0602030A)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x25476613, 0x331633DA)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x5978C732, 0x5903C7A2)

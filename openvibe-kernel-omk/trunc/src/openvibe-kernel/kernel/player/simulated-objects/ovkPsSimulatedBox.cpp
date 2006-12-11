@@ -27,7 +27,7 @@ public:
 	{
 	}
 
-	boolean callback(const IScenario& rScenario, const ILink& rLink)
+	boolean callback(const IScenario& rScenario, ILink& rLink)
 	{
 		::PsTypeChunk& l_rChunk=m_rSimulatedBox.m_vOutput[rLink.getSourceBoxOutputIndex()];
 		uint32 l_ui32SourceOutputIndex=rLink.getSourceBoxOutputIndex();

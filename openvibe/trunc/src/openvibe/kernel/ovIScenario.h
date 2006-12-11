@@ -1,7 +1,7 @@
 #ifndef __OpenViBE_Kernel_IScenario_H__
 #define __OpenViBE_Kernel_IScenario_H__
 
-#include "ovIKernelObject.h"
+#include "ovIAttributable.h"
 
 namespace OpenViBE
 {
@@ -22,26 +22,26 @@ namespace OpenViBE
 		 *
 		 * \todo Add meta information for this scenario
 		 */
-		class IScenario : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IScenario : virtual public OpenViBE::Kernel::IAttributable
 		{
 		public:
 
-			class IBoxEnum
+			class OV_API IBoxEnum
 			{
 			public:
 				virtual ~IBoxEnum(void) { }
 				virtual OpenViBE::boolean callback(
 					const OpenViBE::Kernel::IScenario& rScenario,
-					const OpenViBE::Kernel::IBox& rBox)=0;
+					OpenViBE::Kernel::IBox& rBox)=0;
 			};
 
-			class ILinkEnum
+			class OV_API ILinkEnum
 			{
 			public:
 				virtual ~ILinkEnum(void) { }
 				virtual OpenViBE::boolean callback(
 					const OpenViBE::Kernel::IScenario& rScenario,
-					const OpenViBE::Kernel::ILink& rLink)=0;
+					OpenViBE::Kernel::ILink& rLink)=0;
 			};
 
 			/** \name Input / Output from files */
@@ -111,23 +111,30 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rBoxIdentifier)=0;
 			/**
 			 * \brief Adds a new box in the scenario
+			 * \param rBoxIdentifier [out] : The identifier of
+			 *        the created box
+			 * \return \e true in case of success.
+			 * \return \e false in case of error. In such case,
+			 *         \c rBoxIdentifier remains unchanged.
+			 * \note This produces an empty and unconfigured box !
+			 */
+			virtual OpenViBE::boolean addBox(
+				OpenViBE::CIdentifier& rBoxIdentifier)=0;
+			/**
+			 * \brief Adds a new box in the scenario
 			 * \param rBoxAlgorithmClassIdentifier [in] : The
 			 *        class identifier of the algorithm for
-			 *        this box
-			 * \param rBoxBehaviorClassIdentifier [in] : The
-			 *        class identifier of the behavior for
 			 *        this box
 			 * \param rBoxIdentifier [out] : The identifier of
 			 *        the created box
 			 * \return \e true in case of success.
 			 * \return \e false in case of error. In such case,
 			 *         \c rBoxIdentifier remains unchanged.
+			 * \note This function prepares the box according
+			 *       to its algorithm class identifier !
 			 */
 			virtual OpenViBE::boolean addBox(
 				const OpenViBE::CIdentifier& rBoxAlgorithmClassIdentifier,
-#if 0
-				const OpenViBE::CIdentifier& rBoxBehaviorClassIdentifier,
-#endif
 				OpenViBE::CIdentifier& rBoxIdentifier)=0;
 			/**
 			 * \brief Removes a box of the scenario
@@ -240,7 +247,7 @@ namespace OpenViBE
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Scenario)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IAttributable, OV_ClassId_Kernel_Scenario)
 		};
 	};
 };

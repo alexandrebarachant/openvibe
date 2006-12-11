@@ -1,7 +1,7 @@
 #ifndef __OpenViBE_Kernel_IBox_H__
 #define __OpenViBE_Kernel_IBox_H__
 
-#include "ovIKernelObject.h"
+#include "ovIAttributable.h"
 
 namespace OpenViBE
 {
@@ -17,7 +17,7 @@ namespace OpenViBE
 		 * §OpenViBE§ black box. It describes its identification values,
 		 * its inputs, its outputs and its settings.
 		 */
-		class OV_API IBox : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IBox : virtual public OpenViBE::Kernel::IAttributable
 		{
 		public:
 
@@ -368,7 +368,7 @@ namespace OpenViBE
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Box)
+			_IsDerivedFromClass_(OpenViBE::Kernel::IAttributable, OV_ClassId_Kernel_Box)
 		};
 	};
 };
