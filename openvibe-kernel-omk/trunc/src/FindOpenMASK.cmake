@@ -48,8 +48,8 @@ IF(UNIX)
     $ENV{OpenMASKDIR}
     . )
   IF(OMK_CONFIG)
-    SET(OMK_ARG_CFLAGS "--debug --cxxflags")
-    SET(OMK_ARG_LDFLAGS "--debug --ldflags")
+    SET(OMK_ARG_CFLAGS "--cxxflags")
+    SET(OMK_ARG_LDFLAGS "--ldflags")
     EXEC_PROGRAM(${OMK_CONFIG}
       ARGS ${OMK_ARG_CFLAGS}
       OUTPUT_VARIABLE OMK_CFLAGS)
