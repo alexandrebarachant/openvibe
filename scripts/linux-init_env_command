@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# OpenViBE_base=/local/yrenard/Open-ViBE/repository/openvibe
+OpenViBE_base=`pwd`/..
+
+OpenViBE_branch=trunc
+OpenViBE_kernel_branch=trunc
+OpenViBE_modules_branch=trunc
+OpenViBE_applications_branch=trunc
+OpenViBE_plugins_branch=trunc
+
+OpenViBE=$OpenViBE_base/openvibe/$OpenViBE_branch
+OpenViBE_kernel=$OpenViBE_base/openvibe-kernel-omk/$OpenViBE_kernel_branch
+export OpenViBE
+export OpenViBE_kernel
+
+OpenViBE_modules=$OpenViBE_base/openvibe-modules
+OpenViBE_module_ebml=$OpenViBE_modules/ebml/$OpenViBE_modules_branch
+OpenViBE_module_fs=$OpenViBE_modules/fs/$OpenViBE_modules_branch
+OpenViBE_module_socket=$OpenViBE_modules/socket/$OpenViBE_modules_branch
+OpenViBE_module_system=$OpenViBE_modules/system/$OpenViBE_modules_branch
+OpenViBE_module_xml=$OpenViBE_modules/xml/$OpenViBE_modules_branch
+export OpenViBE_module_ebml
+export OpenViBE_module_fs
+export OpenViBE_module_socket
+export OpenViBE_module_system
+export OpenViBE_module_xml
+
+OpenViBE_applications=$OpenViBE_base/openvibe-applications
+OpenViBE_app_authoring_tool=$OpenViBE_applications/authoring-tool/$OpenViBE_applications_branch
+export OpenViBE_app_authoring_tool
+
+OpenViBE_plugins=$OpenViBE_base/openvibe-plugins
+OpenViBE_plugin_acquisition=$OpenViBE_plugins/acquisition/$OpenViBE_plugins_branch
+OpenViBE_plugin_utility=$OpenViBE_plugins/utility/$OpenViBE_plugins_branch
+OpenViBE_plugin_samples=$OpenViBE_plugins/samples/$OpenViBE_plugins_branch
+export OpenViBE_plugin_acquisition
+export OpenViBE_plugin_utility
+export OpenViBE_plugin_samples
+
+PATH=../lib:$PATH

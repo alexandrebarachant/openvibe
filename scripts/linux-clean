@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source linux-init_env_command
+
+cd ../local-tmp
+cmake ..
+make clean
+cd ..
+rm -r local-tmp

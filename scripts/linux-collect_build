@@ -1,0 +1,66 @@
+#!/bin/bash
+
+source linux-init_env_command
+
+target_dist=../dist
+
+rm -rf $target_dist/bin/* 2> /dev/null
+rm -rf $target_dist/include/* 2> /dev/null
+rm -rf $target_dist/lib/* 2> /dev/null
+
+mkdir $target_dist 2> /dev/null
+mkdir $target_dist/bin 2> /dev/null
+mkdir $target_dist/include 2> /dev/null
+mkdir $target_dist/lib 2> /dev/null
+mkdir $target_dist/share 2> /dev/null
+
+cp -rf $OpenViBE_module_ebml/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_module_fs/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_module_socket/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_module_system/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_module_xml/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_kernel/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_app_authoring_tool/bin/* $target_dist/bin 2> /dev/null
+
+cp -rf $OpenViBE_module_ebml/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_module_fs/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_module_socket/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_module_system/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_module_xml/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_kernel/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_app_authoring_tool/include/* $target_dist/include 2> /dev/null
+
+cp -rf $OpenViBE_module_ebml/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_module_fs/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_module_socket/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_module_system/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_module_xml/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_kernel/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_app_authoring_tool/lib/* $target_dist/lib 2> /dev/null
+
+cp -rf $OpenViBE_module_ebml/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_module_fs/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_module_socket/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_module_system/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_module_xml/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_kernel/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_app_authoring_tool/share/* $target_dist/share 2> /dev/null
+
+cp -rf $OpenViBE_plugin_acquisition/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_acquisition/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_acquisition/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_acquisition/share/* $target_dist/share 2> /dev/null
+
+cp -rf $OpenViBE_plugin_samples/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_samples/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_samples/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_samples/share/* $target_dist/share 2> /dev/null
+
+cp -rf $OpenViBE_plugin_utility/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_utility/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_utility/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_utility/share/* $target_dist/share 2> /dev/null
