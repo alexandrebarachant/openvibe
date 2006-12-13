@@ -359,6 +359,7 @@ public:
 		,m_rScenario(rScenario)
 		,m_oScenarioIdentifier(rScenarioIdentifier)
 		,m_rNotebook(rNotebook)
+		,m_pPlayer(NULL)
 		,m_pStencilBuffer(NULL)
 		,m_bHasFileName(false)
 		,m_bHasBeenModified(false)
@@ -763,6 +764,7 @@ public:
 	CIdentifier m_oScenarioIdentifier;
 	IKernel& m_rKernel;
 	IScenario& m_rScenario;
+	IPlayer* m_pPlayer;
 	::GtkNotebook& m_rNotebook;
 	::GladeXML* m_pGladeDummyScenarioNotebookTitle;
 	::GladeXML* m_pGladeDummyScenarioNotebookClient;
@@ -819,6 +821,10 @@ public:
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save")),    "activate", G_CALLBACK(save_scenario_cb),    this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save_as")), "activate", G_CALLBACK(save_scenario_as_cb), this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_close")),   "activate", G_CALLBACK(close_scenario_cb),   this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_run")),   "clicked",  G_CALLBACK(run_scenario_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_stop")),  "clicked",  G_CALLBACK(stop_scenario_cb),    this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_step")),  "clicked",  G_CALLBACK(step_scenario_cb),    this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_pause")), "clicked",  G_CALLBACK(pause_scenario_cb),   this);
 
 		// Prepares main notebooks
 		m_pScenarioNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "scenario_notebook"));
@@ -1004,6 +1010,56 @@ public:
 			m_vInterfacedScenario.erase(i);
 		}
 	}
+	void runScenarioCB(::GtkButton* pButton)
+	{
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario)
+		{
+			if(l_pCurrentInterfacedScenario->m_pPlayer)
+			{
+				g_idle_add(idle_scenario_step, l_pCurrentInterfacedScenario->m_pPlayer);
+			}
+		}
+	}
+	void stopScenarioCB(::GtkButton* pButton)
+	{
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario)
+		{
+			if(l_pCurrentInterfacedScenario->m_pPlayer)
+			{
+				g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
+				m_pKernel->getContext()->getObjectFactory().releaseObject(l_pCurrentInterfacedScenario->m_pPlayer);
+				l_pCurrentInterfacedScenario->m_pPlayer=NULL;
+			}
+
+			CIdentifier l_oScenarioIdentifier=l_pCurrentInterfacedScenario->m_oScenarioIdentifier;
+			l_pCurrentInterfacedScenario->m_pPlayer=dynamic_cast<IPlayer*>(m_pKernel->getContext()->getObjectFactory().createObject(OV_ClassId_Kernel_Player_Player));
+			l_pCurrentInterfacedScenario->m_pPlayer->reset(m_pScenarioManager->getScenario(l_oScenarioIdentifier), m_pKernel->getContext()->getPluginManager());
+		}
+	}
+	void pauseScenarioCB(::GtkButton* pButton)
+	{
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario)
+		{
+			if(l_pCurrentInterfacedScenario->m_pPlayer)
+			{
+				g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
+			}
+		}
+	}
+	void stepScenarioCB(::GtkButton* pButton)
+	{
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario)
+		{
+			if(l_pCurrentInterfacedScenario->m_pPlayer)
+			{
+				l_pCurrentInterfacedScenario->m_pPlayer->loop();
+			}
+		}
+	}
 
 	static void drag_data_get_cb(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pUserData)
 	{
@@ -1034,6 +1090,31 @@ public:
 	{
 		// cout<<"close_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->closeScenarioCB(pMenuItem);
+	}
+	static void run_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		cout<<"run_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->runScenarioCB(pButton);
+	}
+	static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		cout<<"stop_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->stopScenarioCB(pButton);
+	}
+	static void pause_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		cout<<"pause_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->pauseScenarioCB(pButton);
+	}
+	static void step_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		cout<<"step_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->stepScenarioCB(pButton);
+	}
+	static gboolean idle_scenario_step(gpointer pUserData)
+	{
+		static_cast<IPlayer*>(pUserData)->loop();
+		return TRUE;
 	}
 
 public:
@@ -1272,16 +1353,6 @@ int main(int argc, char ** argv)
 					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_ScenarioImporterDesc);
 
 					gtk_main();
-
-/*
-					IPlayer* l_pPlayer=dynamic_cast<IPlayer*>(l_pKernel->getContext()->getObjectFactory().createObject(OV_ClassId_Kernel_Player_Player));
-					l_pPlayer->reset(l_rScenario, l_pKernel->getContext()->getPluginManager());
-					while(true)
-					{
-						l_pPlayer->loop();
-					}
-					l_pKernel->getContext()->getObjectFactory().releaseObject(l_pPlayer);
-*/
 
 					cout<<"[  OK  ] Everything finished, realeasing objects"<<endl;
 					l_pKernel->release();
