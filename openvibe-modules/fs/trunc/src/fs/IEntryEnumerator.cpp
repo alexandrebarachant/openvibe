@@ -10,6 +10,8 @@
 #else
 #endif
 
+#include <iostream>
+
 using namespace std;
 using namespace FS;
 
@@ -315,6 +317,18 @@ CEntryEnumeratorWindows::CEntryEnumeratorWindows(IEntryEnumeratorCallBack& rEntr
 
 boolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
 {
+	// $$$ TODO
+	// $$$ Find better method to enumerate files
+	// $$$ under windows including their initial path
+	// $$$ (cFileName member of WIN32_FIND_DATA structure
+	// $$$ loses the initial path !!)
+	// $$$ TODO
+
+	char l_sExtendedWildCard[1024];
+	char* l_sExtendedWildCardFileName;
+	int a=GetFullPathName(sWildCard, sizeof(l_sExtendedWildCard), l_sExtendedWildCard, &l_sExtendedWildCardFileName);
+	std::string l_sPath(sWildCard, strlen(sWildCard)-(l_sExtendedWildCardFileName?strlen(l_sExtendedWildCardFileName):0));
+
 	WIN32_FIND_DATA l_oFindData;
 	HANDLE l_pFileHandle=FindFirstFile(sWildCard, &l_oFindData);
 	if(l_pFileHandle!=INVALID_HANDLE_VALUE)
@@ -322,7 +336,7 @@ boolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
 		boolean l_bFinished=false;
 		while(!l_bFinished)
 		{
-			CEntry l_oEntry(l_oFindData.cFileName);
+			CEntry l_oEntry(std::string(l_sPath+l_oFindData.cFileName).c_str());
 			CAttributes l_oAttributes;
 
 			l_oAttributes.m_bIsDirectory=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)?true:false;
