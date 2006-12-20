@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# OpenViBE_base=/local/yrenard/Open-ViBE/repository/openvibe
 OpenViBE_base=`pwd`/..
 
 OpenViBE_branch=trunc
@@ -27,8 +26,8 @@ export OpenViBE_module_system
 export OpenViBE_module_xml
 
 OpenViBE_applications=$OpenViBE_base/openvibe-applications
-OpenViBE_app_authoring_tool=$OpenViBE_applications/authoring-tool/$OpenViBE_applications_branch
-export OpenViBE_app_authoring_tool
+OpenViBE_designer=$OpenViBE_applications/designer/$OpenViBE_applications_branch
+export OpenViBE_designer
 
 OpenViBE_plugins=$OpenViBE_base/openvibe-plugins
 OpenViBE_plugin_acquisition=$OpenViBE_plugins/acquisition/$OpenViBE_plugins_branch

@@ -6,4 +6,4 @@ source linux-collect_build
 
 cd ../dist/bin
 pwd
-./OpenViBE-authoring-tool-dynamic
+./OpenViBE-designer-dynamic
