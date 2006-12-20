@@ -144,6 +144,14 @@ const IBox* CScenario::getBoxDetails(
 	return itBox->second;
 }
 
+boolean CScenario::isBox(
+	const CIdentifier& rIdentifier) const
+{
+	map<CIdentifier, IBox*>::const_iterator itBox;
+	itBox=m_vBox.find(rIdentifier);
+	return itBox==m_vBox.end();
+}
+
 IBox* CScenario::getBoxDetails(
 	const CIdentifier& rBoxIdentifier)
 {
@@ -224,6 +232,14 @@ boolean CScenario::removeBox(
 		vector<ILink*>::iterator itLink;
 		for(itLink=itBoxLink->second.begin(); itLink!=itBoxLink->second.end(); itLink++)
 		{
+			// Deletes link reference
+			map<CIdentifier, ILink*>::iterator itLinkRef;
+			itLinkRef=m_vLink.find((*itLink)->getIdentifier());
+			if(itLinkRef!=m_vLink.end())
+			{
+				m_vLink.erase(itLinkRef);
+			}
+
 			// Deletes link -> box relations
 			map<CIdentifier, vector<IBox*> >::iterator itLinkBox;
 			itLinkBox=m_vLinkBox.find((*itLink)->getIdentifier());
@@ -242,6 +258,7 @@ boolean CScenario::removeBox(
 
 	// Deletes the box itself
 	OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(itBox->second);
+	m_vBox.erase(itBox);
 
 	return true;
 }
@@ -359,6 +376,14 @@ boolean CScenario::enumerateLinksToBox(
 		}
 	}
 	return true;
+}
+
+boolean CScenario::isLink(
+	const CIdentifier& rIdentifier) const
+{
+	map<CIdentifier, ILink*>::const_iterator itLink;
+	itLink=m_vLink.find(rIdentifier);
+	return itLink==m_vLink.end();
 }
 
 const ILink* CScenario::getLinkDetails(
@@ -501,6 +526,7 @@ boolean CScenario::disconnect(
 	}
 
 	// Deletes the link itself
+	m_vLink.erase(itLink);
 	OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(itLink->second);
 
 	return true;

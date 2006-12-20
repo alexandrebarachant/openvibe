@@ -29,6 +29,9 @@ namespace OpenViBE
 				OpenViBE::boolean setSize(
 					OpenViBE::uint64 ui64Size,
 					OpenViBE::boolean bDiscard=true);
+				OpenViBE::boolean appendOutputChunkData(
+					const OpenViBE::uint8* pBuffer,
+					const OpenViBE::uint64 ui64BufferSize);
 
 			protected:
 

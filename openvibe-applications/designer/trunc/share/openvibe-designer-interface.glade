@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.0.2 on Tue Dec 12 12:25:15 2006 by yrenard@KanaRd-->
+<!--Generated with glade3 3.0.2 on Wed Dec 20 11:16:52 2006 by yrenard@KanaRd-->
 <glade-interface>
   <widget class="GtkWindow" id="openvibe">
     <property name="width_request">320</property>
     <property name="height_request">240</property>
-    <property name="title" translatable="yes">OpenViBE</property>
+    <property name="title" translatable="yes">OpenViBE designer</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="default_width">1024</property>
     <property name="default_height">768</property>
@@ -160,56 +160,50 @@
             <property name="spacing">10</property>
             <property name="layout_style">GTK_BUTTONBOX_START</property>
             <child>
-              <widget class="GtkButton" id="button_run">
+              <widget class="GtkButton" id="button_previous">
                 <property name="visible">True</property>
-                <child>
-                  <widget class="GtkImage" id="image1">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-media-play</property>
-                  </widget>
-                </child>
+                <property name="label" translatable="yes">gtk-media-previous</property>
+                <property name="use_stock">True</property>
               </widget>
             </child>
             <child>
-              <widget class="GtkButton" id="button_pause">
+              <widget class="GtkButton" id="button_play">
                 <property name="visible">True</property>
-                <child>
-                  <widget class="GtkImage" id="image2">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-media-pause</property>
-                  </widget>
-                </child>
+                <property name="label" translatable="yes">gtk-media-play</property>
+                <property name="use_stock">True</property>
               </widget>
               <packing>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="button_stop">
+              <widget class="GtkButton" id="button_pause">
                 <property name="visible">True</property>
-                <child>
-                  <widget class="GtkImage" id="image3">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-media-stop</property>
-                  </widget>
-                </child>
+                <property name="label" translatable="yes">gtk-media-pause</property>
+                <property name="use_stock">True</property>
               </widget>
               <packing>
                 <property name="position">2</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="button_step">
+              <widget class="GtkButton" id="button_stop">
                 <property name="visible">True</property>
-                <child>
-                  <widget class="GtkImage" id="image4">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-media-next</property>
-                  </widget>
-                </child>
+                <property name="label" translatable="yes">gtk-media-stop</property>
+                <property name="use_stock">True</property>
               </widget>
               <packing>
                 <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="button_next">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">gtk-media-next</property>
+                <property name="use_stock">True</property>
+              </widget>
+              <packing>
+                <property name="position">4</property>
               </packing>
             </child>
           </widget>
@@ -234,7 +228,8 @@
                     <child>
                       <widget class="GtkDrawingArea" id="scenario_drawing_area">
                         <property name="visible">True</property>
-                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
+                        <property name="can_focus">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
                       </widget>
                     </child>
                   </widget>
@@ -248,7 +243,7 @@
                     <child>
                       <widget class="GtkImage" id="scenario_image">
                         <property name="visible">True</property>
-                        <property name="stock">gtk-preferences</property>
+                        <property name="stock">gtk-jump-to</property>
                       </widget>
                     </child>
                     <child>
@@ -293,7 +288,7 @@
                     <child>
                       <widget class="GtkImage" id="box_algorithm_title_image">
                         <property name="visible">True</property>
-                        <property name="stock">gtk-preferences</property>
+                        <property name="stock">gtk-convert</property>
                       </widget>
                     </child>
                     <child>

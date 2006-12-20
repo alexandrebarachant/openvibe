@@ -214,7 +214,25 @@ protected:
 	/// \param[in] receiver the name of the receiver object
 	/// \param[in] value the value associated to the event
 	void sendOpenViBEDataUpdateEvent( const PsName &receiver, const PsTypeChunk & value )
-	{ sendValuedEvent( receiver, EventId::s_openViBEDataUpdate, value ) ; }
+	{
+#if 0
+		// $$$$$$$$$$$$$$$$$$$
+		PsValuedEvent<PsTypeChunk>* l_pEvent=
+			new PsValuedEvent<PsTypeChunk>(
+				EventId::s_openViBEDataUpdate,
+				getSimulatedDate()+10001,
+				getName(),
+				receiver,
+				value);
+		sendEvent(l_pEvent);
+#endif
+#if 0
+		sendValuedEventASAP( receiver, EventId::s_openViBEDataUpdate, value ) ;
+#endif
+#if 1
+		sendValuedEvent( receiver, EventId::s_openViBEDataUpdate, value ) ;
+#endif
+	}
 	/// \brief Sends the "OpenViBEDataUpdate" signal.
 	/// \param[in] value the value associated to the signal
 	void fireOpenViBEDataUpdateEvent( const PsTypeChunk & value )

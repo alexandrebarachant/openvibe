@@ -98,6 +98,15 @@ namespace OpenViBE
 			virtual OpenViBE::boolean enumerateBoxes(
 				OpenViBE::Kernel::IScenario::IBoxEnum& rCallback) const=0;
 			/**
+			 * \brief Tests whether a given identifier is a box or not
+			 * \param rIdentifier [in] : the identifier to test
+			 * \return \e true if the identified object is a box
+			 * \return \e false if the identified object is not a box
+			 * \note Requesting a bad identifier returns \e false
+			 */
+			virtual OpenViBE::boolean isBox(
+				const OpenViBE::CIdentifier& rIdentifier) const=0;
+			/**
 			 * \brief Gets the details for a specific box
 			 * \param rBoxIdentifier [in] : The identifier
 			 *        of the box which details should be
@@ -183,6 +192,15 @@ namespace OpenViBE
 			virtual OpenViBE::boolean enumerateLinksToBox(
 				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
 				const OpenViBE::CIdentifier& rBoxIdentifier) const=0;
+			/**
+			 * \brief Tests whether a given identifier is a link or not
+			 * \param rIdentifier [in] : the identifier to test
+			 * \return \e true if the identified object is a link
+			 * \return \e false if the identified object is not a link
+			 * \note Requesting a bad identifier returns \e false
+			 */
+			virtual OpenViBE::boolean isLink(
+				const OpenViBE::CIdentifier& rIdentifier) const=0;
 			/**
 			 * \brief Gets the details for a specific link
 			 * \param rLinkIdentifier [in] : The identifier

@@ -12,6 +12,7 @@ using namespace OpenViBE::Plugins;
 #define boolean OpenViBE::boolean
 
 // #define _ScopeTester_
+// #define _OMK_BehaviorTester_
 
 class OpenViBE::CMessageClock
 {
@@ -29,8 +30,8 @@ public:
 
 	boolean callback(const IScenario& rScenario, ILink& rLink)
 	{
-		::PsTypeChunk& l_rChunk=m_rSimulatedBox.m_vOutput[rLink.getSourceBoxOutputIndex()];
 		uint32 l_ui32SourceOutputIndex=rLink.getSourceBoxOutputIndex();
+		::PsTypeChunk& l_rChunk=m_rSimulatedBox.m_vOutput[l_ui32SourceOutputIndex];
 		if(l_rChunk.m_bReadyToSend)
 		{
 			CIdentifier l_oTargetBoxIdentifier=rLink.getTargetBoxIdentifier();
@@ -39,7 +40,6 @@ public:
 
 			l_rChunk.setIoConnectorIndex(l_ui32TargetBoxInputIndex);
 			m_rSimulatedBox.sendOpenViBEDataUpdateEvent(target, l_rChunk);
-			l_rChunk.m_bReadyToSend=false;
 		}
 		return true;
 	}
@@ -53,6 +53,7 @@ PsSimulatedBox::PsSimulatedBox(
 	:PsSimulatedBoxBase(rController, rObjectDescriptor)
 	,m_oScenarioHandle(*this)
 	,m_oPluginManagerHandle(*this)
+	,m_bReadyToProcess(false)
 	,m_pBoxAlgorithmDesc(NULL)
 	,m_pBoxAlgorithm(NULL)
 	,m_pBox(NULL)
@@ -88,29 +89,40 @@ void PsSimulatedBox::init(void)
 #endif
 		m_pBoxAlgorithm->initialize(l_oBoxAlgorithmContext);
 	}
+#ifdef _OMK_BehaviorTester_
+	cout<<"PsSimulatedBox::init("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
+#endif
 }
 
 void PsSimulatedBox::computeParameters(void)
 {
-//	cout<<"PsSimulatedBox::computeParameters("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
+#ifdef _OMK_BehaviorTester_
+	cout<<"PsSimulatedBox::computeParameters("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
+#endif
 
 	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processClock");
 #endif
+		// $$$$$$$$$$
 		CMessageClock m;
 		m_pBoxAlgorithm->processClock(l_oBoxAlgorithmContext, m);
 	}
-	if(l_oBoxAlgorithmContext.isAlgorithmReadyToProcess())
+	m_bReadyToProcess|=l_oBoxAlgorithmContext.isAlgorithmReadyToProcess();
+
+	if(m_bReadyToProcess)
 	{
 		doProcess();
+		m_bReadyToProcess=false;
 	}
 }
 
 bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChunk >* pEvent)
 {
-//	cout<<"PsSimulatedBox::processOpenViBEDataUpdateEvent("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
+#ifdef _OMK_BehaviorTester_
+	cout<<"PsSimulatedBox::processOpenViBEDataUpdateEvent("<<getName()<<"|"<<m_pBox->getName()<<"|"<<pEvent->date<</*"|"<<*((const float*)(pEvent->value.getBuffer().getDirectPointer()+pEvent->value.getBuffer().getSize()-4))<<*/")"<<endl;
+#endif
 
 	m_vInput[pEvent->value.getIoConnectorIndex()].push_back(pEvent->value);
 
@@ -121,10 +133,8 @@ bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChu
 #endif
 		m_pBoxAlgorithm->processInput(l_oBoxAlgorithmContext, pEvent->value.getIoConnectorIndex());
 	}
-	if(l_oBoxAlgorithmContext.isAlgorithmReadyToProcess())
-	{
-		doProcess();
-	}
+	m_bReadyToProcess|=l_oBoxAlgorithmContext.isAlgorithmReadyToProcess();
+
 	return true ;
 }
 
@@ -138,11 +148,14 @@ void PsSimulatedBox::doProcess(void)
 		m_pBoxAlgorithm->process(l_oBoxAlgorithmContext);
 	}
 
+	vector<vector< ::PsTypeChunk > >::iterator i;
+	vector< ::PsTypeChunk >::iterator j;
+
 	// perform input cleaning
-	vector<vector< ::PsTypeChunk > >::iterator i=m_vInput.begin();
+	i=m_vInput.begin();
 	while(i!=m_vInput.end())
 	{
-		vector< ::PsTypeChunk >::iterator j=i->begin();
+		j=i->begin();
 		while(j!=i->end())
 		{
 			if(j->m_bDeprecated)
@@ -160,6 +173,14 @@ void PsSimulatedBox::doProcess(void)
 	// perform output sending
 	CBoxLinkEnumCB cb(*this);
 	m_oScenarioHandle.getConcreteScenario().enumerateLinksFromBox(cb, m_pBox->getIdentifier());
+
+	// mark output chunks as sent
+	j=m_vOutput.begin();
+	while(j!=m_vOutput.end())
+	{
+		j->m_bReadyToSend=false;
+		++j;
+	}
 }
 
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -223,6 +244,14 @@ uint8* PsSimulatedBox::getOutputChunkBuffer(
 	const uint32 ui32OutputIndex)
 {
 	return m_vOutput[ui32OutputIndex].getBuffer().getDirectPointer();
+}
+
+boolean PsSimulatedBox::appendOutputChunkData(
+	const OpenViBE::uint32 ui32OutputIndex,
+	const OpenViBE::uint8* pBuffer,
+	const OpenViBE::uint64 ui64BufferSize)
+{
+	return m_vOutput[ui32OutputIndex].getBuffer().appendOutputChunkData(pBuffer, ui64BufferSize);
 }
 
 boolean PsSimulatedBox::markOutputAsReadyToSend(

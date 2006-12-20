@@ -97,3 +97,16 @@ boolean CBuffer::setSize(
 	m_ui64BufferSize=ui64Size;
 	return true;
 }
+
+boolean CBuffer::appendOutputChunkData(
+	const OpenViBE::uint8* pBuffer,
+	const OpenViBE::uint64 ui64BufferSize)
+{
+	uint64 l_ui64LastBufferSize=m_ui64BufferSize;
+	if(!setSize(l_ui64LastBufferSize+ui64BufferSize, false))
+	{
+		return false;
+	}
+	System::Memory::copy(m_pBuffer+l_ui64LastBufferSize, pBuffer, ui64BufferSize);
+	return true;
+}

@@ -137,6 +137,21 @@ virtual OpenViBE::boolean getSource(
 			virtual OpenViBE::uint8* getOutputChunkBuffer(
 				const OpenViBE::uint32 ui32OutputIndex)=0;
 			/**
+			 * \brief Appends data to the output chunk
+			 * \param ui32OutputIndex [in] : the index of the output to work on
+			 * \param pBuffer [in] : the buffer to append to the current buffer
+			 * \param ui64BufferSize [in] : the size of the appended buffer
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 * \warning This function resizes the chunk size
+			 *          calling \c setOutputChunkSize and then
+			 *          appends data doing a copy.
+			 */
+			virtual OpenViBE::boolean appendOutputChunkData(
+				const OpenViBE::uint32 ui32OutputIndex,
+				const OpenViBE::uint8* pBuffer,
+				const OpenViBE::uint64 ui64BufferSize)=0;
+			/**
 			 * \brief Marks output buffer as 'ready to send'
 			 * \param ui32OutputIndex [in] : the index of the output to work on
 			 * \param ui64EndTime [in] : the end time for the

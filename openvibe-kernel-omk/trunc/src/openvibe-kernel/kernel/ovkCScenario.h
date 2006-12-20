@@ -30,6 +30,8 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean enumerateBoxes(
 				OpenViBE::Kernel::IScenario::IBoxEnum& rCallback) const;
+			virtual OpenViBE::boolean isBox(
+				const OpenViBE::CIdentifier& rBoxIdentifier) const;
 			virtual const OpenViBE::Kernel::IBox* getBoxDetails(
 				const OpenViBE::CIdentifier& rBoxIdentifier) const;
 			virtual OpenViBE::Kernel::IBox* getBoxDetails(
@@ -53,6 +55,8 @@ namespace OpenViBE
 				const OpenViBE::uint32 ui32OutputIndex) const;
 			virtual OpenViBE::boolean enumerateLinksToBox(
 				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
+				const OpenViBE::CIdentifier& rBoxIdentifier) const;
+			virtual OpenViBE::boolean isLink(
 				const OpenViBE::CIdentifier& rBoxIdentifier) const;
 			virtual const OpenViBE::Kernel::ILink* getLinkDetails(
 				const OpenViBE::CIdentifier& rLinkIdentifier) const;

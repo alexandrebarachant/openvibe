@@ -114,6 +114,10 @@ public:
 		const OpenViBE::boolean bDiscard=true);
 	virtual OpenViBE::uint8* getOutputChunkBuffer(
 		const OpenViBE::uint32 ui32OutputIndex);
+	virtual OpenViBE::boolean appendOutputChunkData(
+		const OpenViBE::uint32 ui32OutputIndex,
+		const OpenViBE::uint8* pBuffer,
+		const OpenViBE::uint64 ui64BufferSize);
 	virtual OpenViBE::boolean markOutputAsReadyToSend(
 		const OpenViBE::uint32 ui32OutputIndex,
 		const OpenViBE::uint64 ui64EndTime);
@@ -129,6 +133,7 @@ protected:
 
 	IScenarioHandle m_oScenarioHandle;
 	IPluginManagerHandle m_oPluginManagerHandle;
+	OpenViBE::boolean m_bReadyToProcess;
 
 	const OpenViBE::Kernel::IBox* m_pBox;
 

@@ -9,25 +9,26 @@
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include <gdk/gdkkeysyms.h>
 
-#define AT_GUI_File "../share/openvibe-interface.glade"
+#define OVD_GUI_File "../share/openvibe-designer-interface.glade"
 
-#define AT_AttributeId_BoxCenterPosition                   OpenViBE::CIdentifier(0x207C9054, 0x3C841B63)
-#define AT_AttributeId_BoxSize                             OpenViBE::CIdentifier(0x7B814CCA, 0x271DF6DD)
-#define AT_AttributeId_LinkSourcePosition                  OpenViBE::CIdentifier(0x358AE8B5, 0x0F8BACD1)
-#define AT_AttributeId_LinkTargetPosition                  OpenViBE::CIdentifier(0x6267B5C5, 0x676E3E42)
+#define OVD_AttributeId_BoxCenterPosition                   OpenViBE::CIdentifier(0x207C9054, 0x3C841B63)
+#define OVD_AttributeId_BoxSize                             OpenViBE::CIdentifier(0x7B814CCA, 0x271DF6DD)
+#define OVD_AttributeId_LinkSourcePosition                  OpenViBE::CIdentifier(0x358AE8B5, 0x0F8BACD1)
+#define OVD_AttributeId_LinkTargetPosition                  OpenViBE::CIdentifier(0x6267B5C5, 0x676E3E42)
 /*
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x1FA7A38F, 0x54EDBE0B)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x4C90D4AD, 0x7A2554EC)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x1B32C44C, 0x1905E0E9)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x3F0A3B27, 0x570913D2)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x73CF34A9, 0x3D95DA4A)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x2D9272EB, 0x2E2B1F52)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x58C3F253, 0x3C6968F9)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x67FCCF68, 0x2EB30C69)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x1ADEF355, 0x4F3669DA)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x5D72CF63, 0x6B05F549)
-#define AT_AttributeId_                                    OpenViBE::CIdentifier(0x1AB61306, 0x2A30C51C)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x1FA7A38F, 0x54EDBE0B)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x4C90D4AD, 0x7A2554EC)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x1B32C44C, 0x1905E0E9)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x3F0A3B27, 0x570913D2)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x73CF34A9, 0x3D95DA4A)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x2D9272EB, 0x2E2B1F52)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x58C3F253, 0x3C6968F9)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x67FCCF68, 0x2EB30C69)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x1ADEF355, 0x4F3669DA)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x5D72CF63, 0x6B05F549)
+#define OVD_AttributeId_                                    OpenViBE::CIdentifier(0x1AB61306, 0x2A30C51C)
 */
 
 using namespace OpenViBE;
@@ -58,6 +59,8 @@ enum
 	Color_BoxSettingBorder,
 	Color_Link,
 	Color_LinkSelected,
+	Color_SelectionArea,
+	Color_SelectionAreaBorder,
 };
 
 enum
@@ -67,6 +70,16 @@ enum
 	Connector_Output,
 	Connector_Setting,
 	Connector_Link,
+};
+
+enum
+{
+	Mode_None,
+	Mode_Selection,
+	Mode_SelectionAdd,
+	Mode_MoveScenario,
+	Mode_MoveSelection,
+	Mode_Connect,
 };
 
 class CBoxProxy
@@ -83,8 +96,8 @@ public:
 	{
 		if(m_pConstBox)
 		{
-			sscanf((const char*)m_pConstBox->getAttributeValue(AT_AttributeId_BoxCenterPosition), "%i %i", &m_i32XCenter, &m_i32YCenter);
-			sscanf((const char*)m_pConstBox->getAttributeValue(AT_AttributeId_BoxSize), "%i %i", &m_i32Width, &m_i32Height);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxCenterPosition), "%i %i", &m_i32XCenter, &m_i32YCenter);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxSize), "%i %i", &m_i32Width, &m_i32Height);
 		}
 	}
 
@@ -98,8 +111,8 @@ public:
 	{
 		if(m_pConstBox)
 		{
-			sscanf((const char*)m_pConstBox->getAttributeValue(AT_AttributeId_BoxCenterPosition), "%i %i", &m_i32XCenter, &m_i32YCenter);
-			sscanf((const char*)m_pConstBox->getAttributeValue(AT_AttributeId_BoxSize), "%i %i", &m_i32Width, &m_i32Height);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxCenterPosition), "%i %i", &m_i32XCenter, &m_i32YCenter);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxSize), "%i %i", &m_i32Width, &m_i32Height);
 		}
 	}
 
@@ -110,25 +123,25 @@ public:
 			char l_sSize[1024];
 			sprintf(l_sSize, "%i %i", m_i32Width, m_i32Height);
 
-			if(m_pBox->hasAttribute(AT_AttributeId_BoxSize))
+			if(m_pBox->hasAttribute(OVD_AttributeId_BoxSize))
 			{
-				m_pBox->setAttributeValue(AT_AttributeId_BoxSize, l_sSize);
+				m_pBox->setAttributeValue(OVD_AttributeId_BoxSize, l_sSize);
 			}
 			else
 			{
-				m_pBox->addAttribute(AT_AttributeId_BoxSize, l_sSize);
+				m_pBox->addAttribute(OVD_AttributeId_BoxSize, l_sSize);
 			}
 
 			char l_sCenter[1024];
 			sprintf(l_sCenter, "%i %i", m_i32XCenter, m_i32YCenter);
 
-			if(m_pBox->hasAttribute(AT_AttributeId_BoxCenterPosition))
+			if(m_pBox->hasAttribute(OVD_AttributeId_BoxCenterPosition))
 			{
-				m_pBox->setAttributeValue(AT_AttributeId_BoxCenterPosition, l_sCenter);
+				m_pBox->setAttributeValue(OVD_AttributeId_BoxCenterPosition, l_sCenter);
 			}
 			else
 			{
-				m_pBox->addAttribute(AT_AttributeId_BoxCenterPosition, l_sCenter);
+				m_pBox->addAttribute(OVD_AttributeId_BoxCenterPosition, l_sCenter);
 			}
 		}
 	}
@@ -184,8 +197,8 @@ public:
 	{
 		if(m_pConstLink)
 		{
-			sscanf((const char*)m_pConstLink->getAttributeValue(AT_AttributeId_LinkSourcePosition), "%i %i", &m_i32XSource, &m_i32YSource);
-			sscanf((const char*)m_pConstLink->getAttributeValue(AT_AttributeId_LinkTargetPosition), "%i %i", &m_i32XTarget, &m_i32YTarget);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkSourcePosition), "%i %i", &m_i32XSource, &m_i32YSource);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkTargetPosition), "%i %i", &m_i32XTarget, &m_i32YTarget);
 		}
 	}
 
@@ -199,8 +212,8 @@ public:
 	{
 		if(m_pConstLink)
 		{
-			sscanf((const char*)m_pConstLink->getAttributeValue(AT_AttributeId_LinkSourcePosition), "%i %i", &m_i32XSource, &m_i32YSource);
-			sscanf((const char*)m_pConstLink->getAttributeValue(AT_AttributeId_LinkTargetPosition), "%i %i", &m_i32XTarget, &m_i32YTarget);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkSourcePosition), "%i %i", &m_i32XSource, &m_i32YSource);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkTargetPosition), "%i %i", &m_i32XTarget, &m_i32YTarget);
 		}
 	}
 
@@ -211,25 +224,25 @@ public:
 			char l_sSource[1024];
 			sprintf(l_sSource, "%i %i", m_i32XSource, m_i32YSource);
 
-			if(m_pLink->hasAttribute(AT_AttributeId_LinkSourcePosition))
+			if(m_pLink->hasAttribute(OVD_AttributeId_LinkSourcePosition))
 			{
-				m_pLink->setAttributeValue(AT_AttributeId_LinkSourcePosition, l_sSource);
+				m_pLink->setAttributeValue(OVD_AttributeId_LinkSourcePosition, l_sSource);
 			}
 			else
 			{
-				m_pLink->addAttribute(AT_AttributeId_LinkSourcePosition, l_sSource);
+				m_pLink->addAttribute(OVD_AttributeId_LinkSourcePosition, l_sSource);
 			}
 
 			char l_sTarget[1024];
 			sprintf(l_sTarget, "%i %i", m_i32XTarget, m_i32YTarget);
 
-			if(m_pLink->hasAttribute(AT_AttributeId_LinkTargetPosition))
+			if(m_pLink->hasAttribute(OVD_AttributeId_LinkTargetPosition))
 			{
-				m_pLink->setAttributeValue(AT_AttributeId_LinkTargetPosition, l_sTarget);
+				m_pLink->setAttributeValue(OVD_AttributeId_LinkTargetPosition, l_sTarget);
 			}
 			else
 			{
-				m_pLink->addAttribute(AT_AttributeId_LinkTargetPosition, l_sTarget);
+				m_pLink->addAttribute(OVD_AttributeId_LinkTargetPosition, l_sTarget);
 			}
 		}
 	}
@@ -288,18 +301,18 @@ public:
 		{
 			case Connector_Input:
 				sprintf(l_sPosition, "%i %i", m_rPosition[rLink.getTargetBoxInputIndex()].first, m_rPosition[rLink.getTargetBoxInputIndex()].second);
-				if(rLink.hasAttribute(AT_AttributeId_LinkTargetPosition))
-					rLink.setAttributeValue(AT_AttributeId_LinkTargetPosition, l_sPosition);
+				if(rLink.hasAttribute(OVD_AttributeId_LinkTargetPosition))
+					rLink.setAttributeValue(OVD_AttributeId_LinkTargetPosition, l_sPosition);
 				else
-					rLink.addAttribute(AT_AttributeId_LinkTargetPosition, l_sPosition);
+					rLink.addAttribute(OVD_AttributeId_LinkTargetPosition, l_sPosition);
 				break;
 
 			case Connector_Output:
 				sprintf(l_sPosition, "%i %i", m_rPosition[rLink.getSourceBoxOutputIndex()].first, m_rPosition[rLink.getSourceBoxOutputIndex()].second);
-				if(rLink.hasAttribute(AT_AttributeId_LinkSourcePosition))
-					rLink.setAttributeValue(AT_AttributeId_LinkSourcePosition, l_sPosition);
+				if(rLink.hasAttribute(OVD_AttributeId_LinkSourcePosition))
+					rLink.setAttributeValue(OVD_AttributeId_LinkSourcePosition, l_sPosition);
 				else
-					rLink.addAttribute(AT_AttributeId_LinkSourcePosition, l_sPosition);
+					rLink.addAttribute(OVD_AttributeId_LinkSourcePosition, l_sPosition);
 				break;
 		}
 		return true;
@@ -364,11 +377,15 @@ public:
 		,m_bHasFileName(false)
 		,m_bHasBeenModified(false)
 		,m_bButtonPressed(false)
+		,m_bShiftPressed(false)
+		,m_bControlPressed(false)
+		,m_bAltPressed(false)
 		,m_i32ViewOffsetX(0)
 		,m_i32ViewOffsetY(0)
+		,m_ui32CurrentMode(Mode_None)
 	{
-		m_pGladeDummyScenarioNotebookTitle=glade_xml_new(AT_GUI_File, "dummy_scenario_notebook_title", NULL);
-		m_pGladeDummyScenarioNotebookClient=glade_xml_new(AT_GUI_File, "dummy_scenario_notebook_client", NULL);
+		m_pGladeDummyScenarioNotebookTitle=glade_xml_new(OVD_GUI_File, "dummy_scenario_notebook_title", NULL);
+		m_pGladeDummyScenarioNotebookClient=glade_xml_new(OVD_GUI_File, "dummy_scenario_notebook_client", NULL);
 		m_pNotebookPageTitle=glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "dummy_scenario_notebook_title");
 		m_pNotebookPageContent=glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "dummy_scenario_notebook_client");
 		gtk_widget_ref(m_pNotebookPageTitle);
@@ -386,6 +403,8 @@ public:
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "motion_notify_event", G_CALLBACK(scenario_drawing_area_motion_notify_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "button_press_event", G_CALLBACK(scenario_drawing_area_button_pressed_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "button_release_event", G_CALLBACK(scenario_drawing_area_button_released_cb), this);
+		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-press-event", G_CALLBACK(scenario_drawing_area_key_press_event_cb), this);
+		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-release-event", G_CALLBACK(scenario_drawing_area_key_release_event_cb), this);
 	}
 
 	virtual ~CInterfacedScenario(void)
@@ -456,13 +475,13 @@ public:
 			xStart, yStart, xSize, ySize);
 		m_vInterfacedObject[m_ui32InterfacedObjectId]=SInterfacedObject(rBox.getIdentifier());
 
-		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_oCurrentObject.m_oIdentifier==rBox.getIdentifier()?Color_BoxBackgroundSelected:Color_BoxBackground]);
+		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBackgroundSelected:Color_BoxBackground]);
 		gdk_draw_rectangle(
 			l_pWidget->window,
 			l_pDrawGC,
 			TRUE,
 			xStart, yStart, xSize, ySize);
-		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_oCurrentObject.m_oIdentifier==rBox.getIdentifier()?Color_BoxBorderSelected:Color_BoxBorder]);
+		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBorderSelected:Color_BoxBorder]);
 		gdk_draw_rectangle(
 			l_pWidget->window,
 			l_pDrawGC,
@@ -544,6 +563,7 @@ public:
 				l_vPoint[j].y+=yStart+iCircleMargin+i*(iCircleSpace+iCircleSize);
 			}
 
+/*
 			updateStencilIndex(m_ui32InterfacedObjectId, l_pStencilGC);
 			gdk_draw_polygon(
 				GDK_DRAWABLE(m_pStencilBuffer),
@@ -567,6 +587,7 @@ public:
 				FALSE,
 				l_vPoint,
 				4);
+*/
 		}
 
 		::PangoContext* l_pPangoContext=NULL;
@@ -574,6 +595,7 @@ public:
 		l_pPangoContext=gtk_widget_get_pango_context(l_pWidget);
 		l_pPangoLayout=pango_layout_new(l_pPangoContext);
 		pango_layout_set_text(l_pPangoLayout, rBox.getName(), -1);
+		// pango_layout_set_text(l_pPangoLayout, rBox.getIdentifier().toString(), -1);
 		gdk_draw_layout(
 			l_pWidget->window,
 			l_pWidget->style->text_gc[GTK_WIDGET_STATE(l_pWidget)],
@@ -606,7 +628,7 @@ public:
 		CLinkProxy l_oLinkProxy(rLink);
 
 		updateStencilIndex(m_ui32InterfacedObjectId, l_pStencilGC);
-		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_oCurrentObject.m_oIdentifier==rLink.getIdentifier()?Color_LinkSelected:Color_Link]);
+		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rLink.getIdentifier()]?Color_LinkSelected:Color_Link]);
 		gdk_draw_line(
 			GDK_DRAWABLE(m_pStencilBuffer),
 			l_pStencilGC,
@@ -625,7 +647,59 @@ public:
 		return true;
 	}
 
-	void prepareStencil(void)
+#undef updateStencilIndex
+
+	uint32 pickInterfacedObject(int x, int y)
+	{
+		int l_iMaxX;
+		int l_iMaxY;
+		uint32 l_ui32InterfacedObjectId=0xffffffff;
+		gdk_drawable_get_size(GDK_DRAWABLE(m_pStencilBuffer), &l_iMaxX, &l_iMaxY);
+		if(x>=0 && y>=0 && x<l_iMaxX && y<l_iMaxY)
+		{
+			::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, x, y, 0, 0, 1, 1);
+			l_ui32InterfacedObjectId=0;
+			l_ui32InterfacedObjectId+=(gdk_pixbuf_get_pixels(l_pPixbuf)[0]<<16);
+			l_ui32InterfacedObjectId+=(gdk_pixbuf_get_pixels(l_pPixbuf)[1]<<8);
+			l_ui32InterfacedObjectId+=(gdk_pixbuf_get_pixels(l_pPixbuf)[2]);
+			g_object_unref(l_pPixbuf);
+		}
+		return l_ui32InterfacedObjectId;
+	}
+
+	boolean pickInterfacedObject(int x, int y, int iSizeX, int iSizeY)
+	{
+		int i,j;
+		int l_iMaxX;
+		int l_iMaxY;
+		gdk_drawable_get_size(GDK_DRAWABLE(m_pStencilBuffer), &l_iMaxX, &l_iMaxY);
+
+		::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, x, y, 0, 0, iSizeX+1, iSizeY+1);
+		guchar* l_pPixels=gdk_pixbuf_get_pixels(l_pPixbuf);
+		int l_iRowBytesCount=gdk_pixbuf_get_rowstride(l_pPixbuf);
+		int l_iChannelCount=gdk_pixbuf_get_n_channels(l_pPixbuf);
+		for(int j=0; j<iSizeY+1; j++)
+		{
+			for(int i=0; i<iSizeX+1; i++)
+			{
+				uint32 l_ui32InterfacedObjectId=0;
+				l_ui32InterfacedObjectId+=(l_pPixels[j*l_iRowBytesCount+i*l_iChannelCount+0]<<16);
+				l_ui32InterfacedObjectId+=(l_pPixels[j*l_iRowBytesCount+i*l_iChannelCount+1]<<8);
+				l_ui32InterfacedObjectId+=(l_pPixels[j*l_iRowBytesCount+i*l_iChannelCount+2]);
+				if(m_vInterfacedObject[l_ui32InterfacedObjectId].m_oIdentifier!=OV_UndefinedIdentifier)
+				{
+					if(!m_vCurrentObject[m_vInterfacedObject[l_ui32InterfacedObjectId].m_oIdentifier])
+					{
+						m_vCurrentObject[m_vInterfacedObject[l_ui32InterfacedObjectId].m_oIdentifier]=true;
+					}
+				}
+			}
+		}
+		g_object_unref(l_pPixbuf);
+		return true;
+	}
+
+	void scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 	{
 		gint x,y;
 
@@ -635,15 +709,49 @@ public:
 
 		m_ui32InterfacedObjectId=0;
 		m_vInterfacedObject.clear();
-	}
 
-#undef updateStencilIndex
-
-	void scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
-	{
-		prepareStencil();
 		m_rScenario.enumerateBoxes(*this);
 		m_rScenario.enumerateLinks(*this);
+
+		if(m_ui32CurrentMode==Mode_Selection || m_ui32CurrentMode==Mode_SelectionAdd)
+		{
+			int l_iStartX=(int)min(m_f64PressMouseX, m_f64CurrentMouseX);
+			int l_iStartY=(int)min(m_f64PressMouseY, m_f64CurrentMouseY);
+			int l_iSizeX=(int)max(m_f64PressMouseX-m_f64CurrentMouseX, m_f64CurrentMouseX-m_f64PressMouseX);
+			int l_iSizeY=(int)max(m_f64PressMouseY-m_f64CurrentMouseY, m_f64CurrentMouseY-m_f64PressMouseY);
+
+			::GtkWidget* l_pWidget=GTK_WIDGET(m_pScenarioDrawingArea);
+			::GdkGC* l_pDrawGC=gdk_gc_new(l_pWidget->window);
+			gdk_gc_set_function(l_pDrawGC, GDK_OR);
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_SelectionArea]);
+			gdk_draw_rectangle(
+				l_pWidget->window,
+				l_pDrawGC,
+				TRUE,
+				l_iStartX, l_iStartY, l_iSizeX, l_iSizeY);
+			gdk_gc_set_function(l_pDrawGC, GDK_COPY);
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_SelectionAreaBorder]);
+			gdk_draw_rectangle(
+				l_pWidget->window,
+				l_pDrawGC,
+				FALSE,
+				l_iStartX, l_iStartY, l_iSizeX, l_iSizeY);
+			g_object_unref(l_pDrawGC);
+		}
+
+		if(m_ui32CurrentMode==Mode_Connect)
+		{
+			::GtkWidget* l_pWidget=GTK_WIDGET(m_pScenarioDrawingArea);
+			::GdkGC* l_pDrawGC=gdk_gc_new(l_pWidget->window);
+
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_Link]);
+			gdk_draw_line(
+				l_pWidget->window,
+				l_pDrawGC,
+				(int)m_f64PressMouseX, (int)m_f64PressMouseY,
+				(int)m_f64CurrentMouseX, (int)m_f64CurrentMouseY);
+			g_object_unref(l_pDrawGC);
+		}
 	}
 	void scenarioDrawingAreaDragDataReceivedCB(::GdkDragContext* pDragContext, gint iX, gint iY, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT)
 	{
@@ -664,48 +772,99 @@ public:
 			m_bHasBeenModified=true;
 			updateLabel();
 		}
-
-		m_f64MouseX=iX;
-		m_f64MouseY=iY;
+		m_f64CurrentMouseX=iX;
+		m_f64CurrentMouseY=iY;
 	}
 	void scenarioDrawingAreaMotionNotifyCB(::GtkWidget* pWidget, ::GdkEventMotion* pEvent)
 	{
 		// cout << "scenarioDrawingAreaMotionNotifyCB" << endl;
-		if(m_bButtonPressed)
+		if(m_ui32CurrentMode!=Mode_None)
 		{
-			if(m_oCurrentObject.m_oIdentifier==OV_UndefinedIdentifier)
+			if(m_ui32CurrentMode==Mode_MoveScenario)
 			{
-				m_i32ViewOffsetX+=(int32)(pEvent->x-m_f64MouseX);
-				m_i32ViewOffsetY+=(int32)(pEvent->y-m_f64MouseY);
+				m_i32ViewOffsetX+=(int32)(pEvent->x-m_f64CurrentMouseX);
+				m_i32ViewOffsetY+=(int32)(pEvent->y-m_f64CurrentMouseY);
 				gdk_window_invalidate_rect(
 					GTK_WIDGET(m_pScenarioDrawingArea)->window,
 					NULL,
 					true);
 			}
-			else if(m_oCurrentObject.m_ui32ConnectorType==Connector_None)
+			if(m_ui32CurrentMode==Mode_MoveSelection)
 			{
-				CBoxProxy l_oBoxProxy(m_rScenario, m_oCurrentObject.m_oIdentifier);
-				l_oBoxProxy.setCenter(
-					l_oBoxProxy.getXCenter()+(int32)(pEvent->x-m_f64MouseX),
-					l_oBoxProxy.getYCenter()+(int32)(pEvent->y-m_f64MouseY));
+				map<CIdentifier, boolean>::iterator i;
+				for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
+				{
+					if(i->second)
+					{
+						CBoxProxy l_oBoxProxy(m_rScenario, i->first);
+						l_oBoxProxy.setCenter(
+							l_oBoxProxy.getXCenter()+(int32)(pEvent->x-m_f64CurrentMouseX),
+							l_oBoxProxy.getYCenter()+(int32)(pEvent->y-m_f64CurrentMouseY));
+					}
+				}
 				gdk_window_invalidate_rect(
 					GTK_WIDGET(m_pScenarioDrawingArea)->window,
 					NULL,
 					true);
 			}
+
+			gdk_window_invalidate_rect(
+				GTK_WIDGET(m_pScenarioDrawingArea)->window,
+				NULL,
+				true);
 		}
-		m_f64MouseX=pEvent->x;
-		m_f64MouseY=pEvent->y;
+		m_f64CurrentMouseX=pEvent->x;
+		m_f64CurrentMouseY=pEvent->y;
 	}
 	void scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidget, ::GdkEventButton* pEvent)
 	{
+		gtk_widget_grab_focus(pWidget);
+
 		// cout << "scenarioDrawingAreaButtonPressedCB" << endl;
 		m_bButtonPressed|=((pEvent->type==GDK_BUTTON_PRESS)&&(pEvent->button==1));
+		m_f64PressMouseX=pEvent->x;
+		m_f64PressMouseY=pEvent->y;
 
-		::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, (int)pEvent->x, (int)pEvent->y, 0, 0, 1, 1);
-		uint32 l_ui32InterfacedObjectId=(gdk_pixbuf_get_pixels(l_pPixbuf)[0]<<16)+(gdk_pixbuf_get_pixels(l_pPixbuf)[1]<<8)+(gdk_pixbuf_get_pixels(l_pPixbuf)[2]);
+		uint32 l_ui32InterfacedObjectId=pickInterfacedObject((int)m_f64PressMouseX, (int)m_f64PressMouseY);
 		m_oCurrentObject=m_vInterfacedObject[l_ui32InterfacedObjectId];
-		g_object_unref(l_pPixbuf);
+
+		if(m_oCurrentObject.m_oIdentifier==OV_UndefinedIdentifier)
+		{
+			if(m_bShiftPressed)
+			{
+				m_ui32CurrentMode=Mode_MoveScenario;
+			}
+			else
+			{
+				if(m_bControlPressed)
+				{
+					m_ui32CurrentMode=Mode_SelectionAdd;
+				}
+				else
+				{
+					m_ui32CurrentMode=Mode_Selection;
+				}
+			}
+		}
+		else
+		{
+			if(m_oCurrentObject.m_ui32ConnectorType==Connector_Input || m_oCurrentObject.m_ui32ConnectorType==Connector_Output)
+			{
+				m_ui32CurrentMode=Mode_Connect;
+			}
+			else
+			{
+				m_ui32CurrentMode=Mode_MoveSelection;
+				if(!m_vCurrentObject[m_oCurrentObject.m_oIdentifier])
+				{
+					if(!m_bControlPressed)
+					{
+						m_vCurrentObject.clear();
+					}
+					m_vCurrentObject[m_oCurrentObject.m_oIdentifier]=true;
+				}
+			}
+		}
 
 		gdk_window_invalidate_rect(
 			GTK_WIDGET(m_pScenarioDrawingArea)->window,
@@ -716,26 +875,100 @@ public:
 	{
 		// cout << "scenarioDrawingAreaButtonReleasedCB" << endl;
 		m_bButtonPressed&=!((pEvent->type==GDK_BUTTON_RELEASE)&&(pEvent->button==1));
+		m_f64ReleaseMouseX=pEvent->x;
+		m_f64ReleaseMouseY=pEvent->y;
 
-		::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, (int)pEvent->x, (int)pEvent->y, 0, 0, 1, 1);
-		uint32 l_ui32InterfacedObjectId=(gdk_pixbuf_get_pixels(l_pPixbuf)[0]<<16)+(gdk_pixbuf_get_pixels(l_pPixbuf)[1]<<8)+(gdk_pixbuf_get_pixels(l_pPixbuf)[2]);
-		SInterfacedObject l_oCurrentObject=m_vInterfacedObject[l_ui32InterfacedObjectId];
-		g_object_unref(l_pPixbuf);
-
-		if(m_oCurrentObject.m_ui32ConnectorType==Connector_Output && l_oCurrentObject.m_ui32ConnectorType==Connector_Input)
+		if(m_ui32CurrentMode!=Mode_None)
 		{
-			CIdentifier l_oLinkIdentifier;
-			m_rScenario.connect(
-				m_oCurrentObject.m_oIdentifier,
-				m_oCurrentObject.m_ui32ConnectorIndex,
-				l_oCurrentObject.m_oIdentifier,
-				l_oCurrentObject.m_ui32ConnectorIndex,
-				l_oLinkIdentifier);
+			if(m_ui32CurrentMode==Mode_Selection || m_ui32CurrentMode==Mode_SelectionAdd)
+			{
+				if(m_ui32CurrentMode==Mode_Selection)
+				{
+					m_vCurrentObject.clear();
+				}
+				int l_iStartX=(int)min(m_f64PressMouseX, m_f64CurrentMouseX);
+				int l_iStartY=(int)min(m_f64PressMouseY, m_f64CurrentMouseY);
+				int l_iSizeX=(int)max(m_f64PressMouseX-m_f64CurrentMouseX, m_f64CurrentMouseX-m_f64PressMouseX);
+				int l_iSizeY=(int)max(m_f64PressMouseY-m_f64CurrentMouseY, m_f64CurrentMouseY-m_f64PressMouseY);
+				pickInterfacedObject(l_iStartX, l_iStartY, l_iSizeX, l_iSizeY);
+			}
+			if(m_ui32CurrentMode==Mode_Connect)
+			{
+				uint32 l_ui32InterfacedObjectId=pickInterfacedObject((int)m_f64ReleaseMouseX, (int)m_f64ReleaseMouseY);
+				SInterfacedObject l_oCurrentObject=m_vInterfacedObject[l_ui32InterfacedObjectId];
+				if(l_oCurrentObject.m_ui32ConnectorType==Connector_Output && m_oCurrentObject.m_ui32ConnectorType==Connector_Input)
+				{
+					CIdentifier l_oLinkIdentifier;
+					m_rScenario.connect(
+						l_oCurrentObject.m_oIdentifier,
+						l_oCurrentObject.m_ui32ConnectorIndex,
+						m_oCurrentObject.m_oIdentifier,
+						m_oCurrentObject.m_ui32ConnectorIndex,
+						l_oLinkIdentifier);
+				}
+				if(l_oCurrentObject.m_ui32ConnectorType==Connector_Input && m_oCurrentObject.m_ui32ConnectorType==Connector_Output)
+				{
+					CIdentifier l_oLinkIdentifier;
+					m_rScenario.connect(
+						m_oCurrentObject.m_oIdentifier,
+						m_oCurrentObject.m_ui32ConnectorIndex,
+						l_oCurrentObject.m_oIdentifier,
+						l_oCurrentObject.m_ui32ConnectorIndex,
+						l_oLinkIdentifier);
+				}
+			}
+
 			gdk_window_invalidate_rect(
 				GTK_WIDGET(m_pScenarioDrawingArea)->window,
 				NULL,
 				true);
 		}
+
+		m_ui32CurrentMode=Mode_None;
+	}
+	void scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidget, ::GdkEventKey* pEvent)
+	{
+		m_bShiftPressed  |=(pEvent->keyval==GDK_Shift_L   || pEvent->keyval==GDK_Shift_R);
+		m_bControlPressed|=(pEvent->keyval==GDK_Control_L || pEvent->keyval==GDK_Control_R);
+		m_bAltPressed    |=(pEvent->keyval==GDK_Alt_L     || pEvent->keyval==GDK_Alt_R);
+
+		if(pEvent->keyval==GDK_Delete || pEvent->keyval==GDK_KP_Delete)
+		{
+			map<CIdentifier, boolean>::iterator i;
+			for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
+			{
+				if(i->second)
+				{
+					m_rScenario.removeBox(i->first);
+					m_rScenario.disconnect(i->first);
+				}
+			}
+
+			gdk_window_invalidate_rect(
+				GTK_WIDGET(m_pScenarioDrawingArea)->window,
+				NULL,
+				true);
+		}
+/*
+		std::cout	<< "scenarioDrawingAreaKeyPressEventCB ("
+					<< (m_bShiftPressed?"true":"false") << "|"
+					<< (m_bControlPressed?"true":"false") << "|"
+					<< (m_bAltPressed?"true":"false") << "|"
+					<< ")" << std::endl;
+*/
+	}
+	void scenarioDrawingAreaKeyReleaseEventCB(::GtkWidget* pWidget, ::GdkEventKey* pEvent)
+	{
+		m_bShiftPressed  &=!(pEvent->keyval==GDK_Shift_L   || pEvent->keyval==GDK_Shift_R);
+		m_bControlPressed&=!(pEvent->keyval==GDK_Control_L || pEvent->keyval==GDK_Control_R);
+		m_bAltPressed    &=!(pEvent->keyval==GDK_Alt_L     || pEvent->keyval==GDK_Alt_R);
+/*
+		std::cout	<< "scenarioDrawingAreaKeyReleaseEventCB ("
+					<< (m_bShiftPressed?"true":"false") << "|"
+					<< (m_bControlPressed?"true":"false") << "|"
+					<< (m_bAltPressed?"true":"false") << "|"
+					<< ")" << std::endl;
+*/
 	}
 
 	static void scenario_drawing_area_expose_cb(::GtkWidget* pWidget, ::GdkEventExpose* pEvent, gpointer pUserData)
@@ -758,6 +991,14 @@ public:
 	{
 		static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaButtonReleasedCB(pWidget, pEvent);
 	}
+	static gboolean scenario_drawing_area_key_press_event_cb(::GtkWidget* pWidget, ::GdkEventKey* pEvent, gpointer pUserData)
+	{
+		static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaKeyPressEventCB(pWidget, pEvent);
+	}
+	static gboolean scenario_drawing_area_key_release_event_cb(::GtkWidget* pWidget, ::GdkEventKey* pEvent, gpointer pUserData)
+	{
+		static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaKeyReleaseEventCB(pWidget, pEvent);
+	}
 
 public:
 
@@ -775,14 +1016,23 @@ public:
 	boolean m_bHasFileName;
 	boolean m_bHasBeenModified;
 	boolean m_bButtonPressed;
+	boolean m_bShiftPressed;
+	boolean m_bControlPressed;
+	boolean m_bAltPressed;
 	string m_sFileName;
-	float64 m_f64MouseX;
-	float64 m_f64MouseY;
+	float64 m_f64PressMouseX;
+	float64 m_f64PressMouseY;
+	float64 m_f64ReleaseMouseX;
+	float64 m_f64ReleaseMouseY;
+	float64 m_f64CurrentMouseX;
+	float64 m_f64CurrentMouseY;
 	int32 m_i32ViewOffsetX;
 	int32 m_i32ViewOffsetY;
+	uint32 m_ui32CurrentMode;
 
 	uint32 m_ui32InterfacedObjectId;
 	map<uint32, SInterfacedObject> m_vInterfacedObject;
+	map<CIdentifier, boolean> m_vCurrentObject;
 	SInterfacedObject m_oCurrentObject;
 };
 
@@ -812,19 +1062,20 @@ public:
 	void init(void)
 	{
 		// Loads main interface
-		m_pGladeInterface=glade_xml_new(AT_GUI_File, NULL, NULL);
+		m_pGladeInterface=glade_xml_new(OVD_GUI_File, NULL, NULL);
 		m_pMainWindow=glade_xml_get_widget(m_pGladeInterface, "openvibe");
 
 		// Connects menu actions
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_new")),     "activate", G_CALLBACK(new_scenario_cb),     this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_open")),    "activate", G_CALLBACK(open_scenario_cb),    this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save")),    "activate", G_CALLBACK(save_scenario_cb),    this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save_as")), "activate", G_CALLBACK(save_scenario_as_cb), this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_close")),   "activate", G_CALLBACK(close_scenario_cb),   this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_run")),   "clicked",  G_CALLBACK(run_scenario_cb),     this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_stop")),  "clicked",  G_CALLBACK(stop_scenario_cb),    this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_step")),  "clicked",  G_CALLBACK(step_scenario_cb),    this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_pause")), "clicked",  G_CALLBACK(pause_scenario_cb),   this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_new")),        "activate", G_CALLBACK(new_scenario_cb),      this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_open")),       "activate", G_CALLBACK(open_scenario_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save")),       "activate", G_CALLBACK(save_scenario_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save_as")),    "activate", G_CALLBACK(save_scenario_as_cb),  this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_close")),      "activate", G_CALLBACK(close_scenario_cb),    this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_previous")), "clicked",  G_CALLBACK(previous_scenario_cb), this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_play")),     "clicked",  G_CALLBACK(play_scenario_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_pause")),    "clicked",  G_CALLBACK(pause_scenario_cb),    this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_stop")),     "clicked",  G_CALLBACK(stop_scenario_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_next")),     "clicked",  G_CALLBACK(next_scenario_cb),     this);
 
 		// Prepares main notebooks
 		m_pScenarioNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "scenario_notebook"));
@@ -1010,18 +1261,7 @@ public:
 			m_vInterfacedScenario.erase(i);
 		}
 	}
-	void runScenarioCB(::GtkButton* pButton)
-	{
-		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
-		if(l_pCurrentInterfacedScenario)
-		{
-			if(l_pCurrentInterfacedScenario->m_pPlayer)
-			{
-				g_idle_add(idle_scenario_step, l_pCurrentInterfacedScenario->m_pPlayer);
-			}
-		}
-	}
-	void stopScenarioCB(::GtkButton* pButton)
+	void previousScenarioCB(::GtkButton* pButton)
 	{
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
@@ -1038,6 +1278,21 @@ public:
 			l_pCurrentInterfacedScenario->m_pPlayer->reset(m_pScenarioManager->getScenario(l_oScenarioIdentifier), m_pKernel->getContext()->getPluginManager());
 		}
 	}
+	void playScenarioCB(::GtkButton* pButton)
+	{
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario)
+		{
+			if(!l_pCurrentInterfacedScenario->m_pPlayer)
+			{
+				CIdentifier l_oScenarioIdentifier=l_pCurrentInterfacedScenario->m_oScenarioIdentifier;
+				l_pCurrentInterfacedScenario->m_pPlayer=dynamic_cast<IPlayer*>(m_pKernel->getContext()->getObjectFactory().createObject(OV_ClassId_Kernel_Player_Player));
+				l_pCurrentInterfacedScenario->m_pPlayer->reset(m_pScenarioManager->getScenario(l_oScenarioIdentifier), m_pKernel->getContext()->getPluginManager());
+			}
+
+			g_idle_add(idle_scenario_step, l_pCurrentInterfacedScenario->m_pPlayer);
+		}
+	}
 	void pauseScenarioCB(::GtkButton* pButton)
 	{
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
@@ -1049,7 +1304,20 @@ public:
 			}
 		}
 	}
-	void stepScenarioCB(::GtkButton* pButton)
+	void stopScenarioCB(::GtkButton* pButton)
+	{
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario)
+		{
+			if(l_pCurrentInterfacedScenario->m_pPlayer)
+			{
+				g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
+				m_pKernel->getContext()->getObjectFactory().releaseObject(l_pCurrentInterfacedScenario->m_pPlayer);
+				l_pCurrentInterfacedScenario->m_pPlayer=NULL;
+			}
+		}
+	}
+	void nextScenarioCB(::GtkButton* pButton)
 	{
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
@@ -1091,25 +1359,30 @@ public:
 		// cout<<"close_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->closeScenarioCB(pMenuItem);
 	}
-	static void run_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	static void previous_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"run_scenario_cb"<<endl;
-		static_cast<CApplication*>(pUserData)->runScenarioCB(pButton);
+		cout<<"previous_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->previousScenarioCB(pButton);
 	}
-	static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	static void play_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"stop_scenario_cb"<<endl;
-		static_cast<CApplication*>(pUserData)->stopScenarioCB(pButton);
+		cout<<"play_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->playScenarioCB(pButton);
 	}
 	static void pause_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		cout<<"pause_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->pauseScenarioCB(pButton);
 	}
-	static void step_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"step_scenario_cb"<<endl;
-		static_cast<CApplication*>(pUserData)->stepScenarioCB(pButton);
+		cout<<"stop_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->stopScenarioCB(pButton);
+	}
+	static void next_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		cout<<"next_scenario_cb"<<endl;
+		static_cast<CApplication*>(pUserData)->nextScenarioCB(pButton);
 	}
 	static gboolean idle_scenario_step(gpointer pUserData)
 	{
@@ -1296,6 +1569,8 @@ int main(int argc, char ** argv)
 	gdk_color_set(g_vColors[Color_BoxSettingBorder],      16383,     0, 32767);
 	gdk_color_set(g_vColors[Color_Link],                      0,     0,     0);
 	gdk_color_set(g_vColors[Color_LinkSelected],          65535, 65535, 49151);
+	gdk_color_set(g_vColors[Color_SelectionArea],        0x3f00,0x3f00,0x3f00);
+	gdk_color_set(g_vColors[Color_SelectionAreaBorder],       0,     0,     0);
 	#undef gdk_color_set
 
 //___________________________________________________________________//

@@ -77,26 +77,6 @@ public:
 	{
 	}
 
-	boolean callback(const IScenario& rScenario, IBox& rBox)
-	{
-		IPluginManager& l_rPluginManager=m_rKernelContext.getPluginManager();
-
-		if(m_bIsFirst)
-		{
-			::PsMultipleConfigurationParameter* l_pObjectConfiguration=new ::PsMultipleConfigurationParameter();
-			::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor("OpenViBEContext", "PsDuplicatedContext", 0, l_pObjectConfiguration);
-			m_pSimulationRoot->addSon(l_pSimulationBox);
-		}
-
-		m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_rPluginManager.getPluginObjectDescCreating(rBox.getAlgorithmClassIdentifier()));
-
-		::PsMultipleConfigurationParameter* l_pObjectConfiguration=new ::PsMultipleConfigurationParameter();
-		::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor(idToString(rBox.getIdentifier()), "PsSimulatedBox", "ProcessA", (int)m_pBoxAlgorithmDesc->getClockFrequency(CStaticBoxContext(&rBox)), l_pObjectConfiguration);
-		m_pSimulationRoot->addSon(l_pSimulationBox);
-
-		return true;
-	}
-
 public:
 
 	::PsObjectDescriptor* m_pSimulationRoot;
@@ -131,31 +111,6 @@ boolean CPlayer::reset(
 	const IScenario& rScenario,
 	IPluginManager& rPluginManager)
 {
-	::PsMultipleConfigurationParameter* l_pSimulationSchedulingDescription=new ::PsMultipleConfigurationParameter();
-	::PsMultipleConfigurationParameter* l_pSimulationSchedulingMachinesDescription=new ::PsMultipleConfigurationParameter();
-	l_pSimulationSchedulingMachinesDescription->appendSubDescriptorNamed("ProcessA", new ::PsUniqueConfigurationParameter("hiboux.irisa.fr"));
-	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Machines", l_pSimulationSchedulingMachinesDescription);
-	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Latency", new ::PsUniqueConfigurationParameter("10"));
-
-	::PsObjectDescriptor* l_pSimulation=new ::PsObjectDescriptor("root", "Controller", l_pSimulationSchedulingDescription, NULL);
-	::CPlayerBoxBuilder l_oPlayerBoxBuilder(l_pSimulation, getKernelContext());
-	rScenario.enumerateBoxes(l_oPlayerBoxBuilder);
-
-	// ::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", l_pSimulation);
-
-	::PsController* l_pController=NULL;
-	::PsnReferenceObjectHandle* l_pControllerHandle=NULL;
-#ifdef __Distributed_Controller__
-	l_pController=new ::PsPvmController(*l_pSimulation, 0, g_argc, g_argv);
-#else
-	l_pController=new ::PsController(*l_pSimulation, 0);
-#endif
-	l_pController->addInstanceCreator("PsSimulatedBox", new ::PsSimpleSimulatedObjectCreator< ::PsSimulatedBox >());
-	l_pController->addInstanceCreator("PsDuplicatedContext", new ::PsDuplicatedContextCreator(rScenario, rPluginManager));
-
-	l_pController->init();
-	l_pControllerHandle=dynamic_cast< ::PsnReferenceObjectHandle*>(l_pController->getObjectHandle());
-
 	if(m_pController)
 	{
 		delete m_pController;
@@ -169,9 +124,32 @@ boolean CPlayer::reset(
 		m_pSimulation=NULL;
 	}
 
-	m_pController=l_pController;
-	m_pControllerHandle=l_pControllerHandle;
-	m_pSimulation=l_pSimulation;
+	::PsMultipleConfigurationParameter* l_pSimulationSchedulingDescription=new ::PsMultipleConfigurationParameter();
+	::PsMultipleConfigurationParameter* l_pSimulationSchedulingMachinesDescription=new ::PsMultipleConfigurationParameter();
+	l_pSimulationSchedulingMachinesDescription->appendSubDescriptorNamed("ProcessA", new ::PsUniqueConfigurationParameter("hiboux.irisa.fr"));
+	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Machines", l_pSimulationSchedulingMachinesDescription);
+	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Latency", new ::PsUniqueConfigurationParameter("10"));
+
+	m_pSimulation=new ::PsObjectDescriptor("root", "Controller", l_pSimulationSchedulingDescription, NULL);
+
+	::PsMultipleConfigurationParameter* l_pDuplicatedContextConfiguration=new ::PsMultipleConfigurationParameter();
+	::PsObjectDescriptor* l_pDuplicatedContext=new ::PsObjectDescriptor("OpenViBEContext", "PsDuplicatedContext", 0, l_pDuplicatedContextConfiguration);
+	m_pSimulation->addSon(l_pDuplicatedContext);
+
+	rScenario.enumerateBoxes(*this);
+
+	// ::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", l_pSimulation);
+
+#ifdef __Distributed_Controller__
+	m_pController=new ::PsPvmController(*m_pSimulation, 0, g_argc, g_argv);
+#else
+	m_pController=new ::PsController(*m_pSimulation, 0);
+#endif
+	m_pController->addInstanceCreator("PsSimulatedBox", new ::PsSimpleSimulatedObjectCreator< ::PsSimulatedBox >());
+	m_pController->addInstanceCreator("PsDuplicatedContext", new ::PsDuplicatedContextCreator(rScenario, rPluginManager));
+
+	m_pController->init();
+	m_pControllerHandle=dynamic_cast< ::PsnReferenceObjectHandle*>(m_pController->getObjectHandle());
 
 	return true;
 }
@@ -181,6 +159,18 @@ boolean CPlayer::loop(void)
 	// Tools::CScopeTester("CPlayer::loop");
 
 	m_pController->runControllersStep(m_pControllerHandle);
+
+	return true;
+}
+
+boolean CPlayer::callback(const IScenario& rScenario, IBox& rBox)
+{
+	if(!m_pSimulation) return false;
+
+	// TODO choose a valid object frequency
+	::PsMultipleConfigurationParameter* l_pSimulatedBoxConfiguration=new ::PsMultipleConfigurationParameter();
+	::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor(idToString(rBox.getIdentifier()), "PsSimulatedBox", "ProcessA", 1000, l_pSimulatedBoxConfiguration);
+	m_pSimulation->addSon(l_pSimulationBox);
 
 	return true;
 }

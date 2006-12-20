@@ -15,7 +15,7 @@ namespace OpenViBE
 	{
 		namespace Player
 		{
-			class CPlayer : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::Player::IPlayer>
+			class CPlayer : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::Player::IPlayer>, virtual public OpenViBE::Kernel::IScenario::IBoxEnum
 			{
 			public:
 
@@ -27,6 +27,11 @@ namespace OpenViBE
 					OpenViBE::Kernel::IPluginManager& rPluginManager);
 
 				virtual OpenViBE::boolean loop(void);
+
+				// IBoxEnum callback
+				OpenViBE::boolean callback(
+					const OpenViBE::Kernel::IScenario& rScenario,
+					OpenViBE::Kernel::IBox& rBox);
 
 				_IsDerivedFromClass_Final_(OpenViBE::Kernel::Player::IPlayer, OVK_ClassId_Kernel_Player_Player);
 

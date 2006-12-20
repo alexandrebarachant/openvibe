@@ -69,6 +69,15 @@ uint8* CDynamicBoxContext::getOutputChunkBuffer(
 	return m_pSimulatedBox->getOutputChunkBuffer(ui32OutputIndex);
 }
 
+boolean CDynamicBoxContext::appendOutputChunkData(
+	const OpenViBE::uint32 ui32OutputIndex,
+	const OpenViBE::uint8* pBuffer,
+	const OpenViBE::uint64 ui64BufferSize)
+{
+	assert(m_pSimulatedBox);
+	return m_pSimulatedBox->appendOutputChunkData(ui32OutputIndex, pBuffer, ui64BufferSize);
+}
+
 boolean CDynamicBoxContext::markOutputAsReadyToSend(
 	const uint32 ui32OutputIndex,
 	const uint64 ui64EndTime)

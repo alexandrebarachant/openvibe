@@ -52,3 +52,13 @@ const CString OpenViBE::operator+(const OpenViBE::CString& rString1, const OpenV
 	*m_pImplementation2(l_oResult)=*m_pImplementation2(rString1)+*m_pImplementation2(rString2);
 	return l_oResult;
 }
+
+boolean OpenViBE::operator==(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2)
+{
+	return (*m_pImplementation2(rString1))==(*m_pImplementation2(rString2));
+}
+
+boolean OpenViBE::operator!=(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2)
+{
+	return (*m_pImplementation2(rString1))!=(*m_pImplementation2(rString2));
+}
