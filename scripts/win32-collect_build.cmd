@@ -20,7 +20,7 @@ xcopy /s %OpenViBE_module_system%\bin\*.exe %target_dist%\bin
 xcopy /s %OpenViBE_module_xml%\bin\*.exe %target_dist%\bin
 xcopy /s %OpenViBE%\bin\*.exe %target_dist%\bin
 xcopy /s %OpenViBE_kernel%\bin\*.exe %target_dist%\bin
-xcopy /s %OpenViBE_app_authoring_tool%\bin\*.exe %target_dist%\bin
+xcopy /s %OpenViBE_designer%\bin\*.exe %target_dist%\bin
 
 xcopy /s %OpenViBE_module_ebml%\include\*.* %target_dist%\include
 xcopy /s %OpenViBE_module_fs%\include\*.* %target_dist%\include
