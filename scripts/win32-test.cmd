@@ -5,4 +5,4 @@ call win32-collect_build.cmd
 
 cd ..\dist\bin
 set PATH=..\lib;%PATH%
-OpenViBE-authoring-tool-dynamic.exe
+OpenViBE-designer-dynamic.exe
