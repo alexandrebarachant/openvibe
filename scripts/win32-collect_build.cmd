@@ -29,7 +29,7 @@ xcopy /s %OpenViBE_module_system%\include\*.* %target_dist%\include
 xcopy /s %OpenViBE_module_xml%\include\*.* %target_dist%\include
 xcopy /s %OpenViBE%\include\*.* %target_dist%\include
 xcopy /s %OpenViBE_kernel%\include\*.* %target_dist%\include
-xcopy /s %OpenViBE_app_authoring_tool%\include\*.* %target_dist%\include
+xcopy /s %OpenViBE_designer%\include\*.* %target_dist%\include
 
 xcopy /s %OpenViBE_module_ebml%\lib\*.lib %target_dist%\lib
 xcopy /s %OpenViBE_module_ebml%\lib\*.dll %target_dist%\lib
@@ -45,8 +45,8 @@ xcopy /s %OpenViBE%\lib\*.lib %target_dist%\lib
 xcopy /s %OpenViBE%\lib\*.dll %target_dist%\lib
 xcopy /s %OpenViBE_kernel%\lib\*.lib %target_dist%\lib
 xcopy /s %OpenViBE_kernel%\lib\*.dll %target_dist%\lib
-xcopy /s %OpenViBE_app_authoring_tool%\lib\*.lib %target_dist%\lib
-xcopy /s %OpenViBE_app_authoring_tool%\lib\*.dll %target_dist%\lib
+xcopy /s %OpenViBE_designer%\lib\*.lib %target_dist%\lib
+xcopy /s %OpenViBE_designer%\lib\*.dll %target_dist%\lib
 
 xcopy /s %OpenViBE_module_ebml%\share\*.* %target_dist%\share
 xcopy /s %OpenViBE_module_fs%\share\*.* %target_dist%\share
@@ -55,7 +55,7 @@ xcopy /s %OpenViBE_module_system%\share\*.* %target_dist%\share
 xcopy /s %OpenViBE_module_xml%\share\*.* %target_dist%\share
 xcopy /s %OpenViBE%\share\*.* %target_dist%\share
 xcopy /s %OpenViBE_kernel%\share\*.* %target_dist%\share
-xcopy /s %OpenViBE_app_authoring_tool%\share\*.* %target_dist%\share
+xcopy /s %OpenViBE_designer%\share\*.* %target_dist%\share
 
 xcopy /s %OpenViBE_plugin_acquisition%\bin\*.exe %target_dist%\bin
 xcopy /s %OpenViBE_plugin_acquisition%\include\*.* %target_dist%\include
