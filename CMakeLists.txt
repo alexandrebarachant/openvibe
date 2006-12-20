@@ -15,4 +15,4 @@ SUBDIRS($ENV{OpenViBE_plugin_acquisition})
 SUBDIRS($ENV{OpenViBE_plugin_samples})
 SUBDIRS($ENV{OpenViBE_plugin_utility})
 
-SUBDIRS($ENV{OpenViBE_app_authoring_tool})
+SUBDIRS($ENV{OpenViBE_designer})
