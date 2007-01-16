@@ -8,102 +8,133 @@ using namespace std;
 
 CLogManager::CLogManager(const IKernelContext& rKernelContext)
 	:TKernelObject<ILogManager>(rKernelContext)
+	,m_eCurrentLogLevel(LogLevel_Info)
 {
-	m_vImplementation.push_back(OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).createObject<ILogManager*>(OVK_ClassId_Kernel_LogManagerConsole));
 }
 
-CLogManager::~CLogManager(void)
+void CLogManager::log(const uint64 ui64Value)
 {
-	vector<ILogManager*>::iterator i;
-	for(i=m_vImplementation.begin(); i!=m_vImplementation.end(); i++)
+	logForEach<const uint64>(ui64Value);
+}
+
+void CLogManager::log(const uint32 ui32Value)
+{
+	logForEach<const uint32>(ui32Value);
+}
+
+void CLogManager::log(const uint16 ui16Value)
+{
+	logForEach<const uint16>(ui16Value);
+}
+
+void CLogManager::log(const uint8 ui8Value)
+{
+	logForEach<const uint8>(ui8Value);
+}
+
+void CLogManager::log(const int64 i64Value)
+{
+	logForEach<const int64>(i64Value);
+}
+
+void CLogManager::log(const int32 i32Value)
+{
+	logForEach<const int32>(i32Value);
+}
+
+void CLogManager::log(const int16 i16Value)
+{
+	logForEach<const int16>(i16Value);
+}
+
+void CLogManager::log(const int8 i8Value)
+{
+	logForEach<const int8>(i8Value);
+}
+
+void CLogManager::log(const float64 f64Value)
+{
+	logForEach<const float64>(f64Value);
+}
+
+void CLogManager::log(const float32 f32Value)
+{
+	logForEach<const float32>(f32Value);
+}
+
+void CLogManager::log(const CIdentifier& rValue)
+{
+	logForEach<const CIdentifier&>(rValue);
+}
+
+void CLogManager::log(const CString& rValue)
+{
+	logForEach<const CString&>(rValue);
+}
+
+void CLogManager::log(const char* rValue)
+{
+	logForEach<const char*>(rValue);
+}
+
+void CLogManager::log(const ELogLevel eLogLevel)
+{
+	m_eCurrentLogLevel=eLogLevel;
+	logForEach<ELogLevel>(eLogLevel);
+}
+
+void CLogManager::log(const ELogColor eLogColor)
+{
+	logForEach<ELogColor>(eLogColor);
+}
+
+boolean CLogManager::addListener(ILogListener* pListener)
+{
+	if(pListener==NULL)
 	{
-		OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(*i);
+		return false;
 	}
+
+	vector<ILogListener*>::iterator itLogListener=m_vListener.begin();
+	while(itLogListener!=m_vListener.end())
+	{
+		if((*itLogListener)==pListener)
+		{
+			return false;
+		}
+	}
+
+	m_vListener.push_back(pListener);
+	return true;
 }
 
-boolean CLogManager::setMaximumLogLevel(const uint32 ui32LogLevel)
+boolean CLogManager::removeListener(ILogListener* pListener)
 {
-	boolean l_bResult=true;
-	vector<ILogManager*>::iterator i;
-	for(i=m_vImplementation.begin(); i!=m_vImplementation.end(); i++)
+	boolean l_bResult=false;
+	vector<ILogListener*>::iterator itLogListener=m_vListener.begin();
+	while(itLogListener!=m_vListener.end())
 	{
-		l_bResult&=(*i)->setMaximumLogLevel(ui32LogLevel);
+		if((*itLogListener)==pListener)
+		{
+			itLogListener=m_vListener.erase(itLogListener);
+			l_bResult=true;
+		}
 	}
 	return l_bResult;
 }
 
-boolean CLogManager::setCurrentLogLevel(const uint32 ui32LogLevel)
+boolean CLogManager::isActive(ELogLevel eLogLevel)
 {
-	boolean l_bResult=true;
-	vector<ILogManager*>::iterator i;
-	for(i=m_vImplementation.begin(); i!=m_vImplementation.end(); i++)
+	map<ELogLevel, boolean>::iterator itLogLevel=m_vActiveLevel.find(eLogLevel);
+	if(itLogLevel==m_vActiveLevel.end())
 	{
-		l_bResult&=(*i)->setCurrentLogLevel(ui32LogLevel);
+		return true;
 	}
-	return l_bResult;
+	return itLogLevel->second;
 }
 
-ILogManager& CLogManager::log(const uint64 ui64Value)
+boolean CLogManager::activate(ELogLevel eLogLevel, boolean bActive)
 {
-	return logForEach<const uint64>(ui64Value);
-}
-
-ILogManager& CLogManager::log(const uint32 ui32Value)
-{
-	return logForEach<const uint32>(ui32Value);
-}
-
-ILogManager& CLogManager::log(const uint16 ui16Value)
-{
-	return logForEach<const uint16>(ui16Value);
-}
-
-ILogManager& CLogManager::log(const uint8 ui8Value)
-{
-	return logForEach<const uint8>(ui8Value);
-}
-
-ILogManager& CLogManager::log(const int64 i64Value)
-{
-	return logForEach<const int64>(i64Value);
-}
-
-ILogManager& CLogManager::log(const int32 i32Value)
-{
-	return logForEach<const int32>(i32Value);
-}
-
-ILogManager& CLogManager::log(const int16 i16Value)
-{
-	return logForEach<const int16>(i16Value);
-}
-
-ILogManager& CLogManager::log(const int8 i8Value)
-{
-	return logForEach<const int8>(i8Value);
-}
-
-ILogManager& CLogManager::log(const float64 f64Value)
-{
-	return logForEach<const float64>(f64Value);
-}
-
-ILogManager& CLogManager::log(const float32 f32Value)
-{
-	return logForEach<const float32>(f32Value);
-}
-
-ILogManager& CLogManager::log(const CIdentifier& rValue)
-{
-	return logForEach<const CIdentifier&>(rValue);
-}
-
-ILogManager& CLogManager::log(const CString& rValue)
-{
-	return logForEach<const CString&>(rValue);
-}
-
-ILogManager& CLogManager::log(const char* rValue)
-{
-	return logForEach<const char*>(rValue);
+	m_vActiveLevel[eLogLevel]=bActive;
+	return true;
 }

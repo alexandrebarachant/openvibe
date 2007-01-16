@@ -22,9 +22,9 @@
 #define OVK_ClassId_Kernel_KernelContext                     OpenViBE::CIdentifier(0x72D4050C, 0x543DDAD8)
 
 #define OVK_ClassId_Kernel_LogManager                        OpenViBE::CIdentifier(0x1FE5CF01, 0x0B2B3748)
-#define OVK_ClassId_Kernel_LogManagerConsole                 OpenViBE::CIdentifier(0x1EEB056C, 0x373C17C7)
-#define OVK_ClassId_Kernel_LogManagerDebug                   OpenViBE::CIdentifier(0x45C1A72F, 0x647DE336)
-#define OVK_ClassId_Kernel_LogManagerNull                    OpenViBE::CIdentifier(0x1341E7E6, 0x2232EB75)
+#define OVK_ClassId_Kernel_LogListenerConsole                OpenViBE::CIdentifier(0x1EEB056C, 0x373C17C7)
+#define OVK_ClassId_Kernel_LogListenerDebug                  OpenViBE::CIdentifier(0x45C1A72F, 0x647DE336)
+#define OVK_ClassId_Kernel_LogListenerNull                   OpenViBE::CIdentifier(0x1341E7E6, 0x2232EB75)
 
 #define OVK_ClassId_Kernel_PluginManager                     OpenViBE::CIdentifier(0x07DB32AD, 0x76FAD392)
 #define OVK_ClassId_Kernel_PluginModule                      OpenViBE::CIdentifier(0x34883FDB, 0x78B6D1E6)

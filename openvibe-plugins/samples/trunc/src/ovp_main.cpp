@@ -3,31 +3,42 @@
 #include "ovCBoxAlgorithmConsumer.h"
 #include "ovCScenarioImporterXML.h"
 #include "ovCScenarioExporterXML.h"
-#include <iostream>
+#include "ovCEBMLStreamSpy.h"
+#include "ovCSinusSignalGenerator.h"
+#include "ovCIdentity.h"
 
-static OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc* gst_pBoxAlgorithmProducer=NULL;
-static OpenViBEPlugins::Samples::CBoxAlgorithmConsumerDesc* gst_pBoxAlgorithmConsumer=NULL;
-static OpenViBEPlugins::Samples::CScenarioImporterXMLDesc* gst_pScenarioImporterXML=NULL;
-static OpenViBEPlugins::Samples::CScenarioExporterXMLDesc* gst_pScenarioExporterXML=NULL;
+static OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc* gst_pBoxAlgorithmProducerDesc=NULL;
+static OpenViBEPlugins::Samples::CBoxAlgorithmConsumerDesc* gst_pBoxAlgorithmConsumerDesc=NULL;
+static OpenViBEPlugins::Samples::CScenarioImporterXMLDesc* gst_pScenarioImporterXMLDesc=NULL;
+static OpenViBEPlugins::Samples::CScenarioExporterXMLDesc* gst_pScenarioExporterXMLDesc=NULL;
+static OpenViBEPlugins::Samples::CEBMLStreamSpyDesc* gst_pEBMLStreamSpyDesc=NULL;
+static OpenViBEPlugins::Samples::CSinusSignalGeneratorDesc* gst_pSinusSignalGeneratorDesc=NULL;
+static OpenViBEPlugins::Samples::CIdentityDesc* gst_pIdentityDesc=NULL;
 
 extern "C"
 {
 
 OVP_API OpenViBE::boolean onInitialize(void)
 {
-	gst_pBoxAlgorithmProducer=new OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc();
-	gst_pBoxAlgorithmConsumer=new OpenViBEPlugins::Samples::CBoxAlgorithmConsumerDesc();
-	gst_pScenarioImporterXML=new OpenViBEPlugins::Samples::CScenarioImporterXMLDesc();
-	gst_pScenarioExporterXML=new OpenViBEPlugins::Samples::CScenarioExporterXMLDesc();
+	gst_pBoxAlgorithmProducerDesc=new OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc();
+	gst_pBoxAlgorithmConsumerDesc=new OpenViBEPlugins::Samples::CBoxAlgorithmConsumerDesc();
+	gst_pScenarioImporterXMLDesc=new OpenViBEPlugins::Samples::CScenarioImporterXMLDesc();
+	gst_pScenarioExporterXMLDesc=new OpenViBEPlugins::Samples::CScenarioExporterXMLDesc();
+	gst_pEBMLStreamSpyDesc=new OpenViBEPlugins::Samples::CEBMLStreamSpyDesc();
+	gst_pSinusSignalGeneratorDesc=new OpenViBEPlugins::Samples::CSinusSignalGeneratorDesc();
+	gst_pIdentityDesc=new OpenViBEPlugins::Samples::CIdentityDesc();
 	return true;
 }
 
 OVP_API OpenViBE::boolean onUninitialize(void)
 {
-	delete gst_pScenarioExporterXML;
-	delete gst_pScenarioImporterXML;
-	delete gst_pBoxAlgorithmConsumer;
-	delete gst_pBoxAlgorithmProducer;
+	delete gst_pIdentityDesc;
+	delete gst_pSinusSignalGeneratorDesc;
+	delete gst_pEBMLStreamSpyDesc;
+	delete gst_pScenarioExporterXMLDesc;
+	delete gst_pScenarioImporterXMLDesc;
+	delete gst_pBoxAlgorithmConsumerDesc;
+	delete gst_pBoxAlgorithmProducerDesc;
 	return true;
 }
 
@@ -35,10 +46,13 @@ OVP_API OpenViBE::boolean onGetPluginObjectDescription(OpenViBE::uint32 ui32Inde
 {
 	switch(ui32Index)
 	{
-		case 0: rpPluginObjectDescription=gst_pBoxAlgorithmProducer; break;
-		case 1: rpPluginObjectDescription=gst_pBoxAlgorithmConsumer; break;
-		case 2: rpPluginObjectDescription=gst_pScenarioImporterXML; break;
-		case 3: rpPluginObjectDescription=gst_pScenarioExporterXML; break;
+		case 0: rpPluginObjectDescription=gst_pBoxAlgorithmProducerDesc; break;
+		case 1: rpPluginObjectDescription=gst_pBoxAlgorithmConsumerDesc; break;
+		case 2: rpPluginObjectDescription=gst_pScenarioImporterXMLDesc; break;
+		case 3: rpPluginObjectDescription=gst_pScenarioExporterXMLDesc; break;
+		case 4: rpPluginObjectDescription=gst_pEBMLStreamSpyDesc; break;
+		case 5: rpPluginObjectDescription=gst_pSinusSignalGeneratorDesc; break;
+		case 6: rpPluginObjectDescription=gst_pIdentityDesc; break;
 		default: return false;
 	}
 	return true;

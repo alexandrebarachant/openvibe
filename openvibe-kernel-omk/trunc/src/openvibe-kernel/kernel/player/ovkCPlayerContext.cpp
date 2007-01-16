@@ -4,8 +4,9 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 #define boolean OpenViBE::boolean
 
-CPlayerContext::CPlayerContext(::PsSimulatedBox* pSimulatedBox)
-	:TPluginObjectContext<IPlayerContext>()
+CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
+	:TPluginObjectContext<IPlayerContext>(rKernelContext)
+	,TKernelObject<IPlayerContext>(rKernelContext)
 	,m_pSimulatedBox(pSimulatedBox)
 {
 }
@@ -14,6 +15,7 @@ boolean CPlayerContext::sendSignal(
 	const CMessageSignal& rMessageSignal)
 {
 	// TODO
+	log() << LogLevel_Debug << "CPlayerContext::sendSignal - Not yet implemented\n";
 	return false;
 }
 
@@ -22,6 +24,7 @@ boolean CPlayerContext::sendMessage(
 	const CIdentifier& rTargetIdentifier)
 {
 	// TODO
+	log() << LogLevel_Debug << "CPlayerContext::sendMessage - Not yet implemented\n";
 	return false;
 }
 
@@ -31,5 +34,6 @@ boolean CPlayerContext::sendMessage(
 	const uint32 ui32TargetIdentifierCount)
 {
 	// TODO
+	log() << LogLevel_Debug << "CPlayerContext::sendMessage - Not yet implemented\n";
 	return false;
 }

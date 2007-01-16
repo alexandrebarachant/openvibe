@@ -5,11 +5,12 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 #define boolean OpenViBE::boolean
 
-CBoxAlgorithmContext::CBoxAlgorithmContext(::PsSimulatedBox* pSimulatedBox, const IBox* pBox)
-	:TPluginObjectContext<IBoxAlgorithmContext>()
-	,m_oStaticBoxContext(pBox)
-	,m_oDynamicBoxContext(pSimulatedBox)
-	,m_oPlayerContext(pSimulatedBox)
+CBoxAlgorithmContext::CBoxAlgorithmContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox, const IBox* pBox)
+	:TPluginObjectContext<IBoxAlgorithmContext>(rKernelContext)
+	,TKernelObject<IBoxAlgorithmContext>(rKernelContext)
+	,m_oStaticBoxContext(rKernelContext, pBox)
+	,m_oDynamicBoxContext(rKernelContext, pSimulatedBox)
+	,m_oPlayerContext(rKernelContext, pSimulatedBox)
 	,m_bReadyToProcess(false)
 {
 }

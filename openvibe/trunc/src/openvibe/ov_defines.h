@@ -38,6 +38,7 @@
 #define OV_ClassId_Kernel_Player_Player                    OpenViBE::CIdentifier(0x790A8CC5, 0x1439C776)
 
 #define OV_ClassId_Kernel_LogManager                       OpenViBE::CIdentifier(0x22990B50, 0x571010D4)
+#define OV_ClassId_Kernel_LogListener                      OpenViBE::CIdentifier(0x766B92CB, 0x33B01B15)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -89,7 +90,6 @@
 #define OV_ClassId_Plugin_BoxOutputProto                   OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
 #define OV_ClassId_Plugin_BoxSettingProto                  OpenViBE::CIdentifier(0x652D2F0B, 0x5D5E0714)
 
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x766B92CB, 0x33B01B15)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x3E800821, 0x5D1DE74E)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x684245E9, 0x2ACDB82F)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x28CE73E4, 0x533A0620)

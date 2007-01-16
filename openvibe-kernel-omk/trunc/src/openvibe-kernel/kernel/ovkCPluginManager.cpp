@@ -20,8 +20,8 @@ namespace OpenViBE
 		public:
 
 			CEntryEnumeratorCallBack(const IKernelContext& rKernelContext, vector<IPluginModule*>& rPluginModule, map<IPluginModule*, vector<IPluginObjectDesc*> >& rPluginObjectDesc)
-				:m_rObjectFactory(rKernelContext.getObjectFactory())
-				,m_rLogManager(rKernelContext.getLogManager())
+				:m_rKernelContext(rKernelContext)
+				,m_rObjectFactory(rKernelContext.getObjectFactory())
 				,m_rPluginModule(rPluginModule)
 				,m_rPluginObjectDesc(rPluginObjectDesc)
 			{
@@ -42,7 +42,7 @@ namespace OpenViBE
 
 					if(FS::Files::equals(rEntry.getName(), (const char*)l_sPluginModuleName))
 					{
-						m_rLogManager << "[FAILED] Module [" << rEntry.getName() << "] has already been loaded\n";
+						log() << LogLevel_Warning << "Module [" << rEntry.getName() << "] has already been loaded\n";
 						return true;
 					}
 				}
@@ -50,7 +50,7 @@ namespace OpenViBE
 				IObject* l_pObject=m_rObjectFactory.createObject(OV_ClassId_Kernel_PluginModule);
 				if(!l_pObject)
 				{
-					m_rLogManager << "[FAILED] Loading [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Warning << "Loading [" << rEntry.getName() << "]\n";
 					return true;
 				}
 
@@ -58,14 +58,14 @@ namespace OpenViBE
 				if(!l_pPluginModule)
 				{
 					m_rObjectFactory.releaseObject(l_pObject);
-					m_rLogManager << "[FAILED] Loading [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Warning << "Loading [" << rEntry.getName() << "]\n";
 					return true;
 				}
 
 				if(!l_pPluginModule->load(rEntry.getName()))
 				{
 					m_rObjectFactory.releaseObject(l_pObject);
-					m_rLogManager << "[FAILED] File [" << rEntry.getName() << "] is not a plugin module\n";
+					log() << LogLevel_Warning << "File [" << rEntry.getName() << "] is not a plugin module\n";
 					return true;
 				}
 
@@ -74,7 +74,7 @@ namespace OpenViBE
 					l_pPluginModule->uninitialize();
 					l_pPluginModule->unload();
 					m_rObjectFactory.releaseObject(l_pObject);
-					m_rLogManager << "[FAILED] Module [" << rEntry.getName() << "] did not initialize correctly\n";
+					log() << LogLevel_Warning << "Module [" << rEntry.getName() << "] did not initialize correctly\n";
 					return true;
 				}
 
@@ -95,11 +95,11 @@ namespace OpenViBE
 
 				if(l_bPluginObjectDescAdded)
 				{
-					m_rLogManager << "[  OK  ] Added " << (uint32)m_rPluginObjectDesc[l_pPluginModule].size() << " 'plugin object descriptor(s)' from [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Info << "Added " << (uint32)m_rPluginObjectDesc[l_pPluginModule].size() << " 'plugin object descriptor(s)' from [" << rEntry.getName() << "]\n";
 				}
 				else
 				{
-					m_rLogManager << "[  OK  ] No 'plugin object descriptor' found from [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Info << "No 'plugin object descriptor' found from [" << rEntry.getName() << "]\n";
 				}
 
 				return true;
@@ -107,8 +107,15 @@ namespace OpenViBE
 
 		protected:
 
+			ILogManager& log(void)
+			{
+				return m_rKernelContext.getLogManager();
+			}
+
+		protected:
+
+			const IKernelContext& m_rKernelContext;
 			IObjectFactory& m_rObjectFactory;
-			ILogManager& m_rLogManager;
 			vector<IPluginModule*>& m_rPluginModule;
 			map<IPluginModule*, vector<IPluginObjectDesc*> >& m_rPluginObjectDesc;
 		};
@@ -123,7 +130,7 @@ CPluginManager::CPluginManager(const IKernelContext& rKernelContext)
 boolean CPluginManager::addPluginsFromFiles(
 	const CString& rFileNameWildCard)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Adding [" << rFileNameWildCard << "]\n";
+	log() << LogLevel_Info << "Adding [" << rFileNameWildCard << "]\n";
 
 	boolean l_bResult;
 	CEntryEnumeratorCallBack l_rCB(getKernelContext(), m_vPluginModule, m_vPluginObjectDesc);
@@ -136,7 +143,7 @@ boolean CPluginManager::addPluginsFromFiles(
 boolean CPluginManager::enumeratePluginObjectDesc(
 	IPluginManager::IPluginObjectDescEnum& rCallback) const
 {
-	getKernelContext().getLogManager() << "[ INFO ] Enumerating 'plugin object descriptor(s)'\n";
+	log() << LogLevel_Info << "Enumerating 'plugin object descriptor(s)'\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::const_iterator i;
 	vector<IPluginObjectDesc*>::const_iterator j;
@@ -157,7 +164,7 @@ boolean CPluginManager::enumeratePluginObjectDesc(
 	IPluginManager::IPluginObjectDescEnum& rCallback,
 	const OpenViBE::CIdentifier& rBaseClassIdentifier) const
 {
-	getKernelContext().getLogManager() << "[ INFO ] Enumerating 'plugin object descriptor(s)' with base type " << rBaseClassIdentifier << "\n";
+	log() << LogLevel_Info << "Enumerating 'plugin object descriptor(s)' with base type " << rBaseClassIdentifier << "\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::const_iterator i;
 	vector<IPluginObjectDesc*>::const_iterator j;
@@ -180,7 +187,7 @@ boolean CPluginManager::enumeratePluginObjectDesc(
 const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 	const CIdentifier& rClassIdentifier) const
 {
-	getKernelContext().getLogManager() << "[ INFO ] Searching plugin object descriptor\n";
+	log() << LogLevel_Info << "Searching plugin object descriptor\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::const_iterator i;
 	vector<IPluginObjectDesc*>::const_iterator j;
@@ -195,7 +202,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 		}
 	}
 
-	getKernelContext().getLogManager() << "[FAILED] Class identifier not found\n";
+	log() << LogLevel_Warning << "Class identifier not found\n";
 	return NULL;
 
 }
@@ -203,7 +210,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 IPluginObject* CPluginManager::createPluginObject(
 	const CIdentifier& rClassIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Creating plugin object\n";
+	log() << LogLevel_Info << "Creating plugin object\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::iterator i;
 	vector<IPluginObjectDesc*>::iterator j;
@@ -220,14 +227,14 @@ IPluginObject* CPluginManager::createPluginObject(
 		}
 	}
 
-	getKernelContext().getLogManager() << "[FAILED] Class identifier not found\n";
+	log() << LogLevel_Warning << "Class identifier not found\n";
 	return NULL;
 }
 
 boolean CPluginManager::releasePluginObject(
 	IPluginObject* pPluginObject)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Releasing plugin object\n";
+	log() << LogLevel_Info << "Releasing plugin object\n";
 
 	map<IPluginModule*, vector<IPluginObject*> >::iterator i;
 	vector<IPluginObject*>::iterator j;
@@ -244,6 +251,6 @@ boolean CPluginManager::releasePluginObject(
 		}
 	}
 
-	getKernelContext().getLogManager() << "[FAILED] Plugin object not found\n";
+	log() << LogLevel_Warning << "Plugin object not found\n";
 	return false;
 }

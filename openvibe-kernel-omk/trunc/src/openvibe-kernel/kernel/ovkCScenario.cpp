@@ -21,91 +21,67 @@ CScenario::CScenario(const IKernelContext& rKernelContext)
 //___________________________________________________________________//
 //                                                                   //
 
-#if 0
-namespace OpenViBE
-{
-	namespace Kernel
-	{
-		class CScenarioExporterPluginObjectDescEnumCB : virtual public IPluginManager::IPluginObjectDescEnum
-		{
-		public:
-
-			virtual ~CScenarioExporterDescEnumCB(const CString& rFileExtension)
-				:m_rFileExtension(rFileExtension)
-				,m_oExporterClassIdentifier(OV_UnknownIdentifier)
-			{
-			}
-
-			virtual boolean callback(
-				const IPluginModule& rPluginModule,
-				const IPluginObjectDesc& rPluginObjectDesc)
-			{
-				const IScenarioExporterDesc& l_rScenarioExporterDesc=dynamic_cast<const IScenarioExporterDesc&>(rPluginObjectDesc);
-				if(l_rScenarioExporterDesc.getFileExtension()==m_rFileExtension)
-				{
-					m_oExporterClassIdentifier=l_rScenarioExporterDesc.getCreatedClassIdentifier();
-					return false;
-				}
-				return true;
-			}
-
-			CIdentifier m_oExporterClassIdentifier;
-
-		portected:
-
-			CString& m_rFileExtension;
-		};
-	};
-};
-#endif
-
 boolean CScenario::load(
 	const CString& sFileName)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Loading scneario\n";
+	// TODO
+	log() << LogLevel_Debug << "CScenario::load - Not implemented yet\n";
 
-	return false; // TODO
+	return false;
 }
 
 boolean CScenario::load(
 	const CString& sFileName,
 	const CIdentifier& rLoaderIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Loading scneario with specific importer\n";
+	log() << LogLevel_Info << "Loading scneario with specific importer\n";
 
 	IScenarioImporter* l_pScenarioImporter=dynamic_cast<IScenarioImporter*>(getKernelContext().getPluginManager().createPluginObject(rLoaderIdentifier));
 	if(!l_pScenarioImporter)
 	{
-		getKernelContext().getLogManager() << "[FAILED] Importer not found\n";
+		log() << LogLevel_Warning << "Importer not found\n";
 		return false;
 	}
-	l_pScenarioImporter->doImport(CScenarioImporterContext(getKernelContext(), sFileName, *this));
+	boolean l_bResult=l_pScenarioImporter->doImport(CScenarioImporterContext(getKernelContext(), sFileName, *this));
 	getKernelContext().getPluginManager().releasePluginObject(l_pScenarioImporter);
+
+	if(!l_bResult)
+	{
+		log() << LogLevel_Warning << "Import failed...\n";
+		return false;
+	}
 	return true;
 }
 
 boolean CScenario::save(
 	const CString& sFileName)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Saving scneario\n";
+	// TODO
+	log() << LogLevel_Debug << "CScenario::save - Not implemented yet\n";
 
-	return false; // TODO
+	return false;
 }
 
 boolean CScenario::save(
 	const CString& sFileName,
 	const CIdentifier& rSaverIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Saving scneario with specific exporter\n";
+	log() << LogLevel_Info << "Saving scneario with specific exporter\n";
 
 	IScenarioExporter* l_pScenarioExporter=dynamic_cast<IScenarioExporter*>(getKernelContext().getPluginManager().createPluginObject(rSaverIdentifier));
 	if(!l_pScenarioExporter)
 	{
-		getKernelContext().getLogManager() << "[FAILED] Exporter not found\n";
+		log() << LogLevel_Warning << "Exporter not found\n";
 		return false;
 	}
-	l_pScenarioExporter->doExport(CScenarioExporterContext(getKernelContext(), sFileName, *this));
+	boolean l_bResult=l_pScenarioExporter->doExport(CScenarioExporterContext(getKernelContext(), sFileName, *this));
 	getKernelContext().getPluginManager().releasePluginObject(l_pScenarioExporter);
+
+	if(!l_bResult)
+	{
+		log() << LogLevel_Warning << "Export failed...\n";
+		return false;
+	}
 	return true;
 }
 
@@ -115,7 +91,7 @@ boolean CScenario::save(
 boolean CScenario::enumerateBoxes(
 	IScenario::IBoxEnum& rCallback) const
 {
-	// getKernelContext().getLogManager() << "[ INFO ] Enumerating scenario boxes\n";
+	// log() << LogLevel_Info << "Enumerating scenario boxes\n";
 
 	map<CIdentifier, IBox*>::const_iterator itBox=m_vBox.begin();
 	while(itBox!=m_vBox.end())
@@ -132,13 +108,13 @@ boolean CScenario::enumerateBoxes(
 const IBox* CScenario::getBoxDetails(
 	const CIdentifier& rBoxIdentifier) const
 {
-	getKernelContext().getLogManager() << "[ INFO ] Getting const box details from scenario\n";
+	log() << LogLevel_Debug << "Getting const box details from scenario\n";
 
 	map<CIdentifier, IBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
 	if(itBox==m_vBox.end())
 	{
-		getKernelContext().getLogManager() << "[FAILED] The box does not exist\n";
+		log() << LogLevel_Warning << "The box does not exist\n";
 		return NULL;
 	}
 	return itBox->second;
@@ -149,19 +125,19 @@ boolean CScenario::isBox(
 {
 	map<CIdentifier, IBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rIdentifier);
-	return itBox==m_vBox.end();
+	return itBox!=m_vBox.end();
 }
 
 IBox* CScenario::getBoxDetails(
 	const CIdentifier& rBoxIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Getting box details from scenario\n";
+	log() << LogLevel_Debug << "Getting box details from scenario\n";
 
 	map<CIdentifier, IBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
 	if(itBox==m_vBox.end())
 	{
-		getKernelContext().getLogManager() << "[FAILED] The box does not exist\n";
+		log() << LogLevel_Warning << "The box does not exist\n";
 		return NULL;
 	}
 	return itBox->second;
@@ -170,7 +146,7 @@ IBox* CScenario::getBoxDetails(
 boolean CScenario::addBox(
 	CIdentifier& rBoxIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Adding new empty box in scenario\n";
+	log() << LogLevel_Info << "Adding new empty box in scenario\n";
 
 	IBox* l_pBox=OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).createObject<IBox*>(OV_ClassId_Kernel_Box);
 	rBoxIdentifier=getUnusedIdentifier();
@@ -184,12 +160,12 @@ boolean CScenario::addBox(
 	const CIdentifier& rBoxAlgorithmIdentifier,
 	CIdentifier& rBoxIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Adding new box in scenario\n";
+	log() << LogLevel_Info << "Adding new box in scenario\n";
 
 	const IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(getKernelContext().getPluginManager().getPluginObjectDescCreating(rBoxAlgorithmIdentifier));
 	if(!l_pBoxAlgorithmDesc)
 	{
-		getKernelContext().getLogManager() << "[FAILED] Algorithm descriptor not found\n";
+		log() << LogLevel_Warning << "Algorithm descriptor not found\n";
 		return false;
 	}
 
@@ -209,7 +185,7 @@ boolean CScenario::addBox(
 boolean CScenario::removeBox(
 	const CIdentifier& rBoxIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Removing box from scenario\n";
+	log() << LogLevel_Info << "Removing box from scenario\n";
 
 	// Finds the box according to its identifier
 	map<CIdentifier, IBox*>::iterator itBox;
@@ -217,7 +193,7 @@ boolean CScenario::removeBox(
 	if(itBox==m_vBox.end())
 	{
 		// The box does not exist !
-		getKernelContext().getLogManager() << "[FAILED] The box does not exist\n";
+		log() << LogLevel_Warning << "The box does not exist\n";
 		return false;
 	}
 
@@ -269,7 +245,7 @@ boolean CScenario::removeBox(
 boolean CScenario::enumerateLinks(
 	IScenario::ILinkEnum& rCallback) const
 {
-	// getKernelContext().getLogManager() << "[ INFO ] Enumerating scenario links\n";
+	log() << LogLevel_Debug << "Enumerating scenario links\n";
 
 	map<CIdentifier, ILink*>::const_iterator itLink=m_vLink.begin();
 	while(itLink!=m_vLink.end())
@@ -287,7 +263,7 @@ boolean CScenario::enumerateLinksFromBox(
 	IScenario::ILinkEnum& rCallback,
 	const CIdentifier& rBoxIdentifier) const
 {
-	// getKernelContext().getLogManager() << "[ INFO ] Enumerating scenario links from specific box\n";
+	log() << LogLevel_Debug << "Enumerating scenario links from specific box\n";
 
 	map<CIdentifier, vector<ILink*> >::const_iterator itBoxLink;
 	CIdentifier l_oBoxIdentifier;
@@ -319,7 +295,7 @@ boolean CScenario::enumerateLinksFromBoxOutput(
 	const CIdentifier& rBoxIdentifier,
 	const uint32 ui32OutputIndex) const
 {
-	// getKernelContext().getLogManager() << "[ INFO ] Enumerating scenario links from specific box output\n";
+	log() << LogLevel_Debug << "Enumerating scenario links from specific box output\n";
 
 	map<CIdentifier, vector<ILink*> >::const_iterator itBoxLink;
 	CIdentifier l_oBoxIdentifier;
@@ -351,7 +327,7 @@ boolean CScenario::enumerateLinksToBox(
 	IScenario::ILinkEnum& rCallback,
 	const CIdentifier& rBoxIdentifier) const
 {
-	// getKernelContext().getLogManager() << "[ INFO ] Enumerating scenario links to specific box\n";
+	log() << LogLevel_Debug << "Enumerating scenario links to specific box\n";
 
 	map<CIdentifier, vector<ILink*> >::const_iterator itBoxLink;
 	CIdentifier l_oBoxIdentifier;
@@ -383,19 +359,19 @@ boolean CScenario::isLink(
 {
 	map<CIdentifier, ILink*>::const_iterator itLink;
 	itLink=m_vLink.find(rIdentifier);
-	return itLink==m_vLink.end();
+	return itLink!=m_vLink.end();
 }
 
 const ILink* CScenario::getLinkDetails(
 	const CIdentifier& rLinkIdentifier) const
 {
-	getKernelContext().getLogManager() << "[ INFO ] Retrieving const link details from scenario\n";
+	log() << LogLevel_Debug << "Retrieving const link details from scenario\n";
 
 	map<CIdentifier, ILink*>::const_iterator itLink;
 	itLink=m_vLink.find(rLinkIdentifier);
 	if(itLink==m_vLink.end())
 	{
-		getKernelContext().getLogManager() << "[FAILED] The link does not exist\n";
+		log() << LogLevel_Warning << "The link does not exist\n";
 		return NULL;
 	}
 	return itLink->second;
@@ -404,13 +380,13 @@ const ILink* CScenario::getLinkDetails(
 ILink* CScenario::getLinkDetails(
 	const CIdentifier& rLinkIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Retrieving link details from scenario\n";
+	log() << LogLevel_Debug << "Retrieving link details from scenario\n";
 
 	map<CIdentifier, ILink*>::const_iterator itLink;
 	itLink=m_vLink.find(rLinkIdentifier);
 	if(itLink==m_vLink.end())
 	{
-		getKernelContext().getLogManager() << "[FAILED] The link does not exist\n";
+		log() << LogLevel_Warning << "The link does not exist\n";
 		return NULL;
 	}
 	return itLink->second;
@@ -423,7 +399,7 @@ boolean CScenario::connect(
 	const uint32 ui32TargetBoxInputIndex,
 	CIdentifier& rLinkIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Connecting boxes\n";
+	log() << LogLevel_Info << "Connecting boxes\n";
 
 	map<CIdentifier, IBox*>::const_iterator itBox1;
 	map<CIdentifier, IBox*>::const_iterator itBox2;
@@ -431,19 +407,19 @@ boolean CScenario::connect(
 	itBox2=m_vBox.find(rTargetBoxIdentifier);
 	if(itBox1==m_vBox.end() || itBox2==m_vBox.end())
 	{
-		getKernelContext().getLogManager() << "[FAILED] At least one of the boxes does not exist\n";
+		log() << LogLevel_Warning << "At least one of the boxes does not exist\n";
 		return false;
 	}
 	IBox* l_pSourceBox=itBox1->second;
 	IBox* l_pTargetBox=itBox2->second;
 	if(ui32SourceBoxOutputIndex >= l_pSourceBox->getOutputCount())
 	{
-		getKernelContext().getLogManager() << "[FAILED] Wrong output index\n";
+		log() << LogLevel_Warning << "Wrong output index\n";
 		return false;
 	}
 	if(ui32TargetBoxInputIndex >= l_pTargetBox->getInputCount())
 	{
-		getKernelContext().getLogManager() << "[FAILED] Wrong input index\n";
+		log() << LogLevel_Warning << "Wrong input index\n";
 		return false;
 	}
 
@@ -471,15 +447,16 @@ boolean CScenario::disconnect(
 	const CIdentifier& rTargetBoxIdentifier,
 	const uint32 ui32TargetBoxInputIndex)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Disconnecting boxes\n";
+	// TODO
+	log() << LogLevel_Debug << "CScenario::disconnect (identifier based) - Not implemented yet\n";
 
-	return false; // TODO
+	return false;
 }
 
 boolean CScenario::disconnect(
 	const CIdentifier& rLinkIdentifier)
 {
-	getKernelContext().getLogManager() << "[ INFO ] Disconnecting boxes\n";
+	log() << LogLevel_Info << "Disconnecting boxes\n";
 
 	// Finds the link according to its identifier
 	map<CIdentifier, ILink*>::iterator itLink;
@@ -487,7 +464,7 @@ boolean CScenario::disconnect(
 	if(itLink==m_vLink.end())
 	{
 		// The link does not exist !
-		getKernelContext().getLogManager() << "[FAILED] The link does not exist\n";
+		log() << LogLevel_Warning << "The link does not exist\n";
 		return false;
 	}
 
@@ -526,8 +503,8 @@ boolean CScenario::disconnect(
 	}
 
 	// Deletes the link itself
-	m_vLink.erase(itLink);
 	OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(itLink->second);
+	m_vLink.erase(itLink);
 
 	return true;
 }

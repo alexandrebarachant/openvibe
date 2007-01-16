@@ -9,6 +9,28 @@
 #include <vector>
 #include <string>
 
+class IKernelContextHandle
+{
+public:
+
+	IKernelContextHandle(::PsSimulatedObject &rObject)
+		:m_rObject(rObject)
+	{
+	}
+
+	const OpenViBE::Kernel::IKernelContext& getKernelContext(void)
+	{
+		::PsDuplicatedContext* l_pOpenViBEContext=dynamic_cast< ::PsDuplicatedContext* >(m_rObject.getController().getPointerToDuplicatedObjectNamed("OpenViBEContext"));
+		assert(l_pOpenViBEContext);
+
+		return l_pOpenViBEContext->getKernelContext();
+	}
+
+protected:
+
+	::PsSimulatedObject& m_rObject;
+};
+
 class IScenarioHandle
 {
 public:
@@ -64,7 +86,7 @@ protected:
  * \n See the base class \ref PsSimulatedBoxBase to see used configuration parameters.\n
  * \todo \ref computeParameters must be written.
  */
-class PsSimulatedBox : public PsSimulatedBoxBase
+class PsSimulatedBox : public PsSimulatedBoxBase, virtual public OpenViBE::Kernel::IScenario::ILinkEnum
 {
 public:
 
@@ -90,6 +112,11 @@ protected:
 	//@}
 
 	virtual void doProcess(void);
+
+	// ILinkEnum callback
+	OpenViBE::boolean callback(
+		const OpenViBE::Kernel::IScenario& rScenario,
+		OpenViBE::Kernel::ILink& rLink);
 
 public:
 
@@ -131,6 +158,7 @@ protected:
 	virtual bool processOpenViBEDataUpdateEvent( ::PsValuedEvent< ::PsTypeChunk > *e ) ;
 	//@}
 
+	IKernelContextHandle m_oKernelContextHandle;
 	IScenarioHandle m_oScenarioHandle;
 	IPluginManagerHandle m_oPluginManagerHandle;
 	OpenViBE::boolean m_bReadyToProcess;

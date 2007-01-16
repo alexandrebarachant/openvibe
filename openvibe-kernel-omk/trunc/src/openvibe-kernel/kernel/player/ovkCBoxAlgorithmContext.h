@@ -15,7 +15,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CBoxAlgorithmContext(::PsSimulatedBox* pSimulatedBox, const OpenViBE::Kernel::IBox* pBox);
+			CBoxAlgorithmContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox, const OpenViBE::Kernel::IBox* pBox);
 
 			virtual OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void);
 			virtual const OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void) const;

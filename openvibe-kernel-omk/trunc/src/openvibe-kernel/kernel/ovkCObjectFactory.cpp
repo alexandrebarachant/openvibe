@@ -4,14 +4,12 @@
 #include "ovkCLink.h"
 #include "ovkCScenario.h"
 
-#include "ovkCPluginManager.h"
 #include "ovkCPluginModule.h"
 
-#include "ovkCLogManager.h"
-#include "ovkCLogManagerConsole.h"
-#include "ovkCLogManagerNull.h"
-
 #include "player/ovkCPlayer.h"
+
+#include "ovkCLogListenerConsole.h"
+#include "ovkCLogListenerNull.h"
 
 #include <string>
 #include <algorithm>
@@ -41,19 +39,19 @@ IObject* Kernel::CObjectFactory::createObject(
 	const CIdentifier& rClassIdentifier)
 {
 	IObject* l_pResult=NULL;
-	create(rClassIdentifier, OV_ClassId_Kernel_Box,                l_pResult, Kernel::CBox);
-	create(rClassIdentifier, OV_ClassId_Kernel_Link,               l_pResult, Kernel::CLink);
-	create(rClassIdentifier, OV_ClassId_Kernel_Scenario,           l_pResult, Kernel::CScenario);
 
-//	create(rClassIdentifier, OV_ClassId_Kernel_PluginManager,      l_pResult, Kernel::CPluginManager);
-	create(rClassIdentifier, OV_ClassId_Kernel_PluginModule,       l_pResult, Kernel::CPluginModule);
+	create(rClassIdentifier, OV_ClassId_Kernel_Box,                 l_pResult, Kernel::CBox);
+	create(rClassIdentifier, OV_ClassId_Kernel_Link,                l_pResult, Kernel::CLink);
+	create(rClassIdentifier, OV_ClassId_Kernel_Scenario,            l_pResult, Kernel::CScenario);
 
-	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,      l_pResult, Kernel::Player::CPlayer);
+	create(rClassIdentifier, OV_ClassId_Kernel_PluginModule,        l_pResult, Kernel::CPluginModule);
+
+	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,       l_pResult, Kernel::Player::CPlayer);
+
+	create(rClassIdentifier, OVK_ClassId_Kernel_LogListenerConsole, l_pResult, Kernel::CLogListenerConsole);
+	create(rClassIdentifier, OVK_ClassId_Kernel_LogListenerNull,    l_pResult, Kernel::CLogListenerNull);
 
 	// create(rClassIdentifier, OV_ClassId_, l_pResult, Plugins::CBoxContext);
-
-	create(rClassIdentifier, OVK_ClassId_Kernel_LogManagerConsole, l_pResult, Kernel::CLogManagerConsole);
-	create(rClassIdentifier, OVK_ClassId_Kernel_LogManagerNull,    l_pResult, Kernel::CLogManagerNull);
 
 	return l_pResult;
 }

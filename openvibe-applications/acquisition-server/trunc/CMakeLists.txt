@@ -1,0 +1,148 @@
+PROJECT(OpenViBE-acquisition-server)
+
+SET(PROJECT_VERSION_MAJOR 0)
+SET(PROJECT_VERSION_MINOR 1)
+SET(PROJECT_VERSION_PATCH 0)
+SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
+
+# ---------------------------------
+# Target macros
+# Defines target operating system
+# Defines target architecture
+# Defines target compilator
+# ---------------------------------
+IF(WIN32)
+	ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+	ADD_DEFINITIONS(-DTARGET_OS_Windows)
+	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
+	ADD_DEFINITIONS(-DTARGET_COMPILATOR_VisualStudio)
+ENDIF(WIN32)
+IF(UNIX)
+	# ADD_DEFINITIONS(-fvisibility=hidden) # This flag should be present... man gcc
+	ADD_DEFINITIONS(-g)
+	ADD_DEFINITIONS(-DTARGET_OS_Linux)
+	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
+	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
+ENDIF(UNIX)
+
+# ---------------------------------
+# Configures paths if not already defined
+# Defines executable path
+# Defines library output path
+# Defines include output path
+# ---------------------------------
+IF(NOT EXECUTABLE_OUTPUT_PATH)
+	SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+	MESSAGE(STATUS "EXECUTABLE_OUTPUT_PATH configured to default ${EXECUTABLE_OUTPUT_PATH}")
+ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
+IF(NOT LIBRARY_OUTPUT_PATH)
+	SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+	MESSAGE(STATUS "LIBRARY_OUTPUT_PATH configured to default ${LIBRARY_OUTPUT_PATH}")
+ENDIF(NOT LIBRARY_OUTPUT_PATH)
+SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
+
+FILE(GLOB_RECURSE source_files src/*.cpp)
+ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
+# ADD_EXECUTABLE(${PROJECT_NAME}-static ${source_files})
+# SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")
+
+# ---------------------------------
+# Finds module EBML
+# Adds library to target
+# Adds include path
+# ---------------------------------
+FIND_PATH(PATH_OPENVIBE_MODULES_EBML include/ebml/defines.h PATHS $ENV{OpenViBE_modules}/ebml $ENV{OpenViBE_module_ebml})
+IF(PATH_OPENVIBE_MODULES_EBML)
+	MESSAGE(STATUS "  Found OpenViBE module ebml...")
+	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_EBML}/include)
+	FIND_LIBRARY(LIB_OPENVIBE_MODULE_EBML OpenViBE-module-EBML-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_EBML}/lib)
+	IF(LIB_OPENVIBE_MODULE_EBML)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_EBML}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_EBML})
+	ELSE(LIB_OPENVIBE_MODULE_EBML)
+		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-EBML-${MODULE_LINKING}")
+	ENDIF(LIB_OPENVIBE_MODULE_EBML)
+ELSE(PATH_OPENVIBE_MODULES_EBML)
+	MESSAGE(STATUS "  FAILED to find OpenViBE module ebml...")
+ENDIF(PATH_OPENVIBE_MODULES_EBML)
+
+# ---------------------------------
+# Finds module Socket
+# Adds library to target
+# Adds include path
+# ---------------------------------
+FIND_PATH(PATH_OPENVIBE_MODULES_SOCKET include/socket/defines.h PATHS $ENV{OpenViBE_modules}/socket $ENV{OpenViBE_module_socket})
+IF(PATH_OPENVIBE_MODULES_SOCKET)
+	MESSAGE(STATUS "  Found OpenViBE module socket...")
+	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_SOCKET}/include)
+	FIND_LIBRARY(LIB_OPENVIBE_MODULE_SOCKET OpenViBE-module-Socket-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_SOCKET}/lib)
+	IF(LIB_OPENVIBE_MODULE_SOCKET)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_SOCKET}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_SOCKET})
+	ELSE(LIB_OPENVIBE_MODULE_SOCKET)
+		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-Socket-${MODULE_LINKING}")
+	ENDIF(LIB_OPENVIBE_MODULE_SOCKET)
+ELSE(PATH_OPENVIBE_MODULES_SOCKET)
+	MESSAGE(STATUS "  FAILED to find OpenViBE module socket...")
+ENDIF(PATH_OPENVIBE_MODULES_SOCKET)
+
+# ---------------------------------
+# Finds module System
+# Adds library to target
+# Adds include path
+# ---------------------------------
+FIND_PATH(PATH_OPENVIBE_MODULES_SYSTEM include/system/defines.h PATHS $ENV{OpenViBE_modules}/system $ENV{OpenViBE_module_system})
+IF(PATH_OPENVIBE_MODULES_SYSTEM)
+	MESSAGE(STATUS "  Found OpenViBE module system...")
+	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_SYSTEM}/include)
+	FIND_LIBRARY(LIB_OPENVIBE_MODULE_SYSTEM OpenViBE-module-System-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_SYSTEM}/lib)
+	IF(LIB_OPENVIBE_MODULE_SYSTEM)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_SYSTEM}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_SYSTEM})
+	ELSE(LIB_OPENVIBE_MODULE_SYSTEM)
+		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-System-${MODULE_LINKING}")
+	ENDIF(LIB_OPENVIBE_MODULE_SYSTEM)
+ELSE(PATH_OPENVIBE_MODULES_SYSTEM)
+	MESSAGE(STATUS "  FAILED to find OpenViBE module system...")
+ENDIF(PATH_OPENVIBE_MODULES_SYSTEM)
+
+# ---------------------------------
+# Finds Glade
+# Adds library to target
+# Adds include path
+# ---------------------------------
+INCLUDE("FindGlade.cmake")
+IF(GLADE_FOUND)
+	MESSAGE(STATUS "  Found glade...")
+	INCLUDE_DIRECTORIES(${GLADE_INCLUDE_DIRS})
+	ADD_DEFINITIONS(${GLADE_CFLAGS})
+	ADD_DEFINITIONS(${GLADE_CFLAGS_OTHERS})
+	LINK_DIRECTORIES(${GLADE_LIBRARY_DIRS})
+	FOREACH(GLADE_LIB ${GLADE_LIBRARIES})
+		SET(GLADE_LIB1 "GLADE_LIB1-NOTFOUND")
+		FIND_LIBRARY(GLADE_LIB1 NAMES ${GLADE_LIB} PATHS ${GLADE_LIBRARY_DIRS} ${GLADE_LIBDIR})
+		IF(GLADE_LIB1)
+			MESSAGE(STATUS "    [  OK  ] Third party lib ${GLADE_LIB1}")
+			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${GLADE_LIB1})
+		ELSE(GLADE_LIB1)
+			MESSAGE(STATUS "    [FAILED] Third party lib ${GLADE_LIB}")
+		ENDIF(GLADE_LIB1)
+	ENDFOREACH(GLADE_LIB)
+ELSE(GLADE_FOUND)
+	MESSAGE(STATUS "  FAILED to find glade...")
+ENDIF(GLADE_FOUND)
+
+# ---------------------------------
+# Finds standard library pthread
+# Adds library to target
+# Adds include path
+# ---------------------------------
+IF(UNIX)
+	FIND_LIBRARY(LIB_STANDARD_MODULE_PTHREAD pthread)
+	IF(LIB_STANDARD_MODULE_PTHREAD)
+		MESSAGE(STATUS "  Found pthread...")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_PTHREAD})
+	ELSE(LIB_STANDARD_MODULE_PTHREAD)
+		MESSAGE(STATUS "  FAILED to find pthread...")
+	ENDIF(LIB_STANDARD_MODULE_PTHREAD)
+ENDIF(UNIX)

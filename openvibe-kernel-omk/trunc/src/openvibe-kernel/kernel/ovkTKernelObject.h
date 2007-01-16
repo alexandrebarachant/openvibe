@@ -23,6 +23,11 @@ namespace OpenViBE
 				return m_rKernelContext;
 			}
 
+			OpenViBE::Kernel::ILogManager& log(void) const
+			{
+				return m_rKernelContext.getLogManager();
+			}
+
 			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_KernelObject)
 
 		private:
@@ -34,4 +39,4 @@ namespace OpenViBE
 	};
 };
 
-#endif // __OpenViBEKernel_Kernel_IKernelObject_H__
+#endif // __OpenViBEKernel_Kernel_TKernelObject_H__

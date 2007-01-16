@@ -44,8 +44,9 @@ using namespace OpenViBE::Plugins;
 class PsDuplicatedContextCreator : public ::PsSimulatedObjectCreator
 {
 public:
-	PsDuplicatedContextCreator(const IScenario& rScenario, IPluginManager& rPluginManager)
-		:m_rScenario(rScenario)
+	PsDuplicatedContextCreator(const IKernelContext& rKernelContext, const IScenario& rScenario, IPluginManager& rPluginManager)
+		:m_rKernelContext(rKernelContext)
+		,m_rScenario(rScenario)
 		,m_rPluginManager(rPluginManager)
 	{
 	}
@@ -54,10 +55,11 @@ public:
 		::PsController& rControler,
 		const ::PsObjectDescriptor& rObjectDescriptor) const
 	{
-		return new ::PsDuplicatedContext(rControler, rObjectDescriptor, m_rScenario, m_rPluginManager);
+		return new ::PsDuplicatedContext(rControler, rObjectDescriptor, m_rKernelContext, m_rScenario, m_rPluginManager);
 	}
 
 protected:
+	const IKernelContext& m_rKernelContext;
 	const IScenario& m_rScenario;
 	IPluginManager& m_rPluginManager;
 };
@@ -146,7 +148,7 @@ boolean CPlayer::reset(
 	m_pController=new ::PsController(*m_pSimulation, 0);
 #endif
 	m_pController->addInstanceCreator("PsSimulatedBox", new ::PsSimpleSimulatedObjectCreator< ::PsSimulatedBox >());
-	m_pController->addInstanceCreator("PsDuplicatedContext", new ::PsDuplicatedContextCreator(rScenario, rPluginManager));
+	m_pController->addInstanceCreator("PsDuplicatedContext", new ::PsDuplicatedContextCreator(getKernelContext(), rScenario, rPluginManager));
 
 	m_pController->init();
 	m_pControllerHandle=dynamic_cast< ::PsnReferenceObjectHandle*>(m_pController->getObjectHandle());
@@ -168,6 +170,8 @@ boolean CPlayer::callback(const IScenario& rScenario, IBox& rBox)
 	if(!m_pSimulation) return false;
 
 	// TODO choose a valid object frequency
+	log() << LogLevel_Debug << "CPlayer::callback - TODO choose a valid object frequency\n";
+
 	::PsMultipleConfigurationParameter* l_pSimulatedBoxConfiguration=new ::PsMultipleConfigurationParameter();
 	::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor(idToString(rBox.getIdentifier()), "PsSimulatedBox", "ProcessA", 1000, l_pSimulatedBoxConfiguration);
 	m_pSimulation->addSon(l_pSimulationBox);

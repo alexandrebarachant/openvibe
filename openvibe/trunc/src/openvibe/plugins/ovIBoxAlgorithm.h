@@ -38,6 +38,28 @@ namespace OpenViBE
 		{
 		public:
 
+			/** \name Behavioral configuration */
+			//@{
+
+			/**
+			 * \brief Gets the clock frequency to call this algorithm
+			 * \param rContext [in] : The current box state
+			 * \return The clock frequency to call this algorithm
+			 * \note Default implementation returns 0
+			 *
+			 * This function is used for algorithms that are triggered on
+			 * clock signals. The frequency is given in Hz, thus returning
+			 * 1 will make the algorithm to be called every second,
+			 * returning 100 will make the algorithm being called 100 times
+			 * per second and so on...
+			 *
+			 * \note Returning 0 means the algorithm should not be
+			 *       clock activated.
+			 */
+			virtual OpenViBE::uint32 getClockFrequency(
+				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext) const { return 0; }
+
+			//@}
 			/** \name Initialization / Uninitialization */
 			//@{
 

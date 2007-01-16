@@ -20,37 +20,11 @@ public:
 	int i;
 };
 
-class CBoxLinkEnumCB : virtual public OpenViBE::Kernel::IScenario::ILinkEnum
-{
-public:
-	CBoxLinkEnumCB(::PsSimulatedBox& rSimulatedBox)
-		:m_rSimulatedBox(rSimulatedBox)
-	{
-	}
-
-	boolean callback(const IScenario& rScenario, ILink& rLink)
-	{
-		uint32 l_ui32SourceOutputIndex=rLink.getSourceBoxOutputIndex();
-		::PsTypeChunk& l_rChunk=m_rSimulatedBox.m_vOutput[l_ui32SourceOutputIndex];
-		if(l_rChunk.m_bReadyToSend)
-		{
-			CIdentifier l_oTargetBoxIdentifier=rLink.getTargetBoxIdentifier();
-			uint32 l_ui32TargetBoxInputIndex=rLink.getTargetBoxInputIndex();
-			::PsName target(l_oTargetBoxIdentifier.toString());
-
-			l_rChunk.setIoConnectorIndex(l_ui32TargetBoxInputIndex);
-			m_rSimulatedBox.sendOpenViBEDataUpdateEvent(target, l_rChunk);
-		}
-		return true;
-	}
-
-	::PsSimulatedBox& m_rSimulatedBox;
-};
-
 PsSimulatedBox::PsSimulatedBox(
 	PsController& rController,
 	const PsObjectDescriptor& rObjectDescriptor)
 	:PsSimulatedBoxBase(rController, rObjectDescriptor)
+	,m_oKernelContextHandle(*this)
 	,m_oScenarioHandle(*this)
 	,m_oPluginManagerHandle(*this)
 	,m_bReadyToProcess(false)
@@ -82,7 +56,7 @@ void PsSimulatedBox::init(void)
 	IPluginManager& l_rPluginManager=m_oPluginManagerHandle.getConcretePluginManager();
 	m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_rPluginManager.getPluginObjectDescCreating(m_pBox->getAlgorithmClassIdentifier()));
 	m_pBoxAlgorithm=dynamic_cast<IBoxAlgorithm*>(l_rPluginManager.createPluginObject(m_pBox->getAlgorithmClassIdentifier()));
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::initialize");
@@ -100,7 +74,7 @@ void PsSimulatedBox::computeParameters(void)
 	cout<<"PsSimulatedBox::computeParameters("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
 #endif
 
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processClock");
@@ -126,7 +100,7 @@ bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChu
 
 	m_vInput[pEvent->value.getIoConnectorIndex()].push_back(pEvent->value);
 
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processInput");
@@ -140,7 +114,7 @@ bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChu
 
 void PsSimulatedBox::doProcess(void)
 {
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(this, m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::process");
@@ -171,8 +145,7 @@ void PsSimulatedBox::doProcess(void)
 	}
 
 	// perform output sending
-	CBoxLinkEnumCB cb(*this);
-	m_oScenarioHandle.getConcreteScenario().enumerateLinksFromBox(cb, m_pBox->getIdentifier());
+	m_oScenarioHandle.getConcreteScenario().enumerateLinksFromBox(*this, m_pBox->getIdentifier());
 
 	// mark output chunks as sent
 	j=m_vOutput.begin();
@@ -181,6 +154,22 @@ void PsSimulatedBox::doProcess(void)
 		j->m_bReadyToSend=false;
 		++j;
 	}
+}
+
+boolean PsSimulatedBox::callback(const IScenario& rScenario, ILink& rLink)
+{
+	uint32 l_ui32SourceOutputIndex=rLink.getSourceBoxOutputIndex();
+	::PsTypeChunk& l_rChunk=m_vOutput[l_ui32SourceOutputIndex];
+	if(l_rChunk.m_bReadyToSend)
+	{
+		CIdentifier l_oTargetBoxIdentifier=rLink.getTargetBoxIdentifier();
+		uint32 l_ui32TargetBoxInputIndex=rLink.getTargetBoxInputIndex();
+		::PsName target(l_oTargetBoxIdentifier.toString());
+
+		l_rChunk.setIoConnectorIndex(l_ui32TargetBoxInputIndex);
+		sendOpenViBEDataUpdateEvent(target, l_rChunk);
+	}
+	return true;
 }
 
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---

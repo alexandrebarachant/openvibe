@@ -13,7 +13,7 @@ using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 
-CKernelContext::CKernelContext(OpenViBE::Kernel::IKernel& rKernel)
+CKernelContext::CKernelContext(IKernel& rKernel)
 	:m_rKernel(rKernel)
 	,m_pObjectFactory(NULL)
 	,m_pPluginManager(NULL)
@@ -24,6 +24,9 @@ CKernelContext::CKernelContext(OpenViBE::Kernel::IKernel& rKernel)
 	m_pPluginManager=new CPluginManager(*this);
 	m_pScenarioManager=new CScenarioManager(*this);
 	m_pLogManager=new CLogManager(*this);
+
+	// $$$
+	m_pLogManager->addListener(dynamic_cast<ILogListener*>(m_pObjectFactory->createObject(OVK_ClassId_Kernel_LogListenerConsole)));
 }
 
 CKernelContext::~CKernelContext(void)

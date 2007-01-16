@@ -47,29 +47,6 @@ namespace OpenViBE
 				OpenViBE::Plugins::IBoxProto& rPrototype) const=0;
 
 			//@}
-			/** \name Behavioral configuration */
-			//@{
-
-			/**
-			 * \brief Gets the clock frequency to call this algorithm
-			 * \param rBoxContext [in] : The current box state
-			 * \return The clock frequency to call this algorithm
-			 * \note Default implementation returns 0
-			 *
-			 * This function is used for algorithms that are triggered on
-			 * clock signals. The returned frequency should be the
-			 * frequency itself multiplied by a factor 1 000. Thus
-			 * returning 1 000 means the algorithm would be clock
-			 * activated each second. Returning 25 000 would clock
-			 * activate the block each 40ms etc...
-			 *
-			 * \note Returning 0 means the algorithm should not be
-			 *       clock activated.
-			 */
-			virtual OpenViBE::uint32 getClockFrequency(
-				const OpenViBE::Plugins::IStaticBoxContext& rBoxContext) const { return 0; }
-
-			//@}
 
 			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObjectDesc, OV_ClassId_Plugins_BoxAlgorithmDesc)
 		};

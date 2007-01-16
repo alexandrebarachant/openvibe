@@ -80,6 +80,7 @@ enum
 	Mode_MoveScenario,
 	Mode_MoveSelection,
 	Mode_Connect,
+	Mode_EditSettings,
 };
 
 class CBoxProxy
@@ -334,6 +335,90 @@ map<uint32, ::GdkColor> g_vColors;
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
+class CSettingEditor
+{
+public:
+
+	CSettingEditor(IBox& rBox)
+		:m_rBox(rBox)
+	{
+	}
+
+	void edit(void)
+	{
+		if(m_rBox.getSettingCount())
+		{
+			uint32 i;
+			CString l_oSettingName;
+			CString l_oSettingValue;
+
+			::GladeXML* l_pGladeInterfaceSetting=glade_xml_new(OVD_GUI_File, "setting", NULL);
+			::GtkDialog* l_pSettingDialog=GTK_DIALOG(glade_xml_get_widget(l_pGladeInterfaceSetting, "setting"));
+			::GtkContainer* l_pSettingMainContainer=GTK_CONTAINER(glade_xml_get_widget(l_pGladeInterfaceSetting, "vbox_setting"));
+			::GtkWidget* l_pDummySettingWidget=glade_xml_get_widget(l_pGladeInterfaceSetting, "dummy_setting");
+			g_object_unref(l_pGladeInterfaceSetting);
+
+			gtk_container_remove(l_pSettingMainContainer, l_pDummySettingWidget);
+			gtk_window_set_title(GTK_WINDOW(l_pSettingDialog), m_rBox.getName());
+
+			vector< ::GtkEntry* > l_vSettingValue;
+			for(i=0; i<m_rBox.getSettingCount(); i++)
+			{
+				::GladeXML* l_pGladeInterfaceDummy=glade_xml_new(OVD_GUI_File, "dummy_setting", NULL);
+				::GtkContainer* l_pSettingContainer=GTK_CONTAINER(glade_xml_get_widget(l_pGladeInterfaceDummy, "dummy_setting"));
+				::GtkLabel* l_pSettingName=GTK_LABEL(glade_xml_get_widget(l_pGladeInterfaceDummy, "label_setting_name"));
+				::GtkEntry* l_pSettingValue=GTK_ENTRY(glade_xml_get_widget(l_pGladeInterfaceDummy, "entry_setting_value"));
+				g_object_unref(l_pGladeInterfaceDummy);
+
+				gtk_widget_ref(GTK_WIDGET(l_pSettingContainer));
+				gtk_widget_unparent(GTK_WIDGET(l_pSettingContainer));
+				gtk_container_add(l_pSettingMainContainer, GTK_WIDGET(l_pSettingContainer));
+				gtk_widget_unref(GTK_WIDGET(l_pSettingContainer));
+
+				m_rBox.getSettingName(i, l_oSettingName);
+				m_rBox.getSettingValue(i, l_oSettingValue);
+				gtk_label_set_text(l_pSettingName, l_oSettingName);
+				gtk_entry_set_text(l_pSettingValue, l_oSettingValue);
+
+				l_vSettingValue.push_back(l_pSettingValue);
+			}
+
+			boolean l_bFinished=false;
+			while(!l_bFinished)
+			{
+				gint l_iResult=gtk_dialog_run(l_pSettingDialog);
+				if(l_iResult==0) // revert
+				{
+					for(i=0; i<m_rBox.getSettingCount(); i++)
+					{
+						m_rBox.getSettingDefaultValue(i, l_oSettingValue);
+						gtk_entry_set_text(l_vSettingValue[i], l_oSettingValue);
+					}
+				}
+				else if(l_iResult==GTK_RESPONSE_APPLY)
+				{
+					for(i=0; i<m_rBox.getSettingCount(); i++)
+					{
+						l_oSettingValue=gtk_entry_get_text(l_vSettingValue[i]);
+						m_rBox.setSettingValue(i, l_oSettingValue);
+					}
+					l_bFinished=true;
+				}
+				else
+				{
+					l_bFinished=true;
+				}
+			}
+
+			gtk_widget_destroy(GTK_WIDGET(l_pSettingDialog));
+		}
+	}
+
+protected:
+
+	IBox& m_rBox;
+};
+
 class CInterfacedScenario : virtual public IScenario::IBoxEnum, virtual public IScenario::ILinkEnum
 {
 public:
@@ -386,6 +471,7 @@ public:
 	{
 		m_pGladeDummyScenarioNotebookTitle=glade_xml_new(OVD_GUI_File, "dummy_scenario_notebook_title", NULL);
 		m_pGladeDummyScenarioNotebookClient=glade_xml_new(OVD_GUI_File, "dummy_scenario_notebook_client", NULL);
+
 		m_pNotebookPageTitle=glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "dummy_scenario_notebook_title");
 		m_pNotebookPageContent=glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "dummy_scenario_notebook_client");
 		gtk_widget_ref(m_pNotebookPageTitle);
@@ -411,12 +497,22 @@ public:
 	{
 		if(m_pStencilBuffer) g_object_unref(m_pStencilBuffer);
 
+		g_object_unref(m_pGladeDummyScenarioNotebookTitle);
+		g_object_unref(m_pGladeDummyScenarioNotebookClient);
+
 		gtk_notebook_remove_page(
 			&m_rNotebook,
 			gtk_notebook_page_num(&m_rNotebook, m_pNotebookPageContent));
 	}
 
-	virtual void updateLabel(void)
+	virtual string getBoxLabel(const IBox& rBox)
+	{
+		string l_sBoxName(rBox.getName());
+		string l_sBoxIden(rBox.getIdentifier().toString());
+		return l_sBoxName+"\n"+l_sBoxIden;
+	}
+
+	virtual void updateScenarioLabel(void)
 	{
 		::GtkLabel* l_pTitleLabel=GTK_LABEL(glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "scenario_label"));
 		string l_sLabel;
@@ -435,6 +531,7 @@ public:
 		::PangoRectangle l_oPangoRectangle;
 		l_pPangoContext=gtk_widget_get_pango_context(pWidget);
 		l_pPangoLayout=pango_layout_new(l_pPangoContext);
+		pango_layout_set_alignment(l_pPangoLayout, PANGO_ALIGN_CENTER);
 		pango_layout_set_text(l_pPangoLayout, sText, -1);
 		pango_layout_get_pixel_extents(l_pPangoLayout, NULL, &l_oPangoRectangle);
 		*pXSize=l_oPangoRectangle.width;
@@ -594,8 +691,8 @@ public:
 		::PangoLayout* l_pPangoLayout=NULL;
 		l_pPangoContext=gtk_widget_get_pango_context(l_pWidget);
 		l_pPangoLayout=pango_layout_new(l_pPangoContext);
-		pango_layout_set_text(l_pPangoLayout, rBox.getName(), -1);
-		// pango_layout_set_text(l_pPangoLayout, rBox.getIdentifier().toString(), -1);
+		pango_layout_set_alignment(l_pPangoLayout, PANGO_ALIGN_CENTER);
+		pango_layout_set_text(l_pPangoLayout, getBoxLabel(rBox).c_str(), -1);
 		gdk_draw_layout(
 			l_pWidget->window,
 			l_pWidget->style->text_gc[GTK_WIDGET_STATE(l_pWidget)],
@@ -765,12 +862,12 @@ public:
 			int32 l_i32Height=0;
 			m_rScenario.addBox(l_oBoxAlgorithmClassIdentifier, l_oBoxIdentifier);
 			CBoxProxy l_oBoxProxy(m_rScenario, l_oBoxIdentifier);
-			getTextSize(GTK_WIDGET(m_pScenarioDrawingArea), ((IBox*)l_oBoxProxy)->getName(), &l_i32Width, &l_i32Height);
+			getTextSize(GTK_WIDGET(m_pScenarioDrawingArea), getBoxLabel(*(const IBox*)l_oBoxProxy).c_str(), &l_i32Width, &l_i32Height);
 			l_oBoxProxy.setCenter(iX-m_i32ViewOffsetX, iY-m_i32ViewOffsetY);
 			l_oBoxProxy.setSize(l_i32Width, l_i32Height);
 
 			m_bHasBeenModified=true;
-			updateLabel();
+			updateScenarioLabel();
 		}
 		m_f64CurrentMouseX=iX;
 		m_f64CurrentMouseY=iY;
@@ -778,6 +875,7 @@ public:
 	void scenarioDrawingAreaMotionNotifyCB(::GtkWidget* pWidget, ::GdkEventMotion* pEvent)
 	{
 		// cout << "scenarioDrawingAreaMotionNotifyCB" << endl;
+
 		if(m_ui32CurrentMode!=Mode_None)
 		{
 			if(m_ui32CurrentMode==Mode_MoveScenario)
@@ -818,9 +916,10 @@ public:
 	}
 	void scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidget, ::GdkEventButton* pEvent)
 	{
+		// cout << "scenarioDrawingAreaButtonPressedCB" << endl;
+
 		gtk_widget_grab_focus(pWidget);
 
-		// cout << "scenarioDrawingAreaButtonPressedCB" << endl;
 		m_bButtonPressed|=((pEvent->type==GDK_BUTTON_PRESS)&&(pEvent->button==1));
 		m_f64PressMouseX=pEvent->x;
 		m_f64PressMouseY=pEvent->y;
@@ -828,40 +927,60 @@ public:
 		uint32 l_ui32InterfacedObjectId=pickInterfacedObject((int)m_f64PressMouseX, (int)m_f64PressMouseY);
 		m_oCurrentObject=m_vInterfacedObject[l_ui32InterfacedObjectId];
 
-		if(m_oCurrentObject.m_oIdentifier==OV_UndefinedIdentifier)
+		if(pEvent->type==GDK_2BUTTON_PRESS && pEvent->button==1)
 		{
-			if(m_bShiftPressed)
+			if(m_oCurrentObject.m_oIdentifier!=OV_UndefinedIdentifier)
 			{
-				m_ui32CurrentMode=Mode_MoveScenario;
-			}
-			else
-			{
-				if(m_bControlPressed)
+				IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
+				if(l_pBox)
 				{
-					m_ui32CurrentMode=Mode_SelectionAdd;
-				}
-				else
-				{
-					m_ui32CurrentMode=Mode_Selection;
+					m_ui32CurrentMode=Mode_EditSettings;
+					m_bShiftPressed=false;
+					m_bControlPressed=false;
+					m_bAltPressed=false;
+
+					CSettingEditor l_oSettingEditor(*l_pBox);
+					l_oSettingEditor.edit();
 				}
 			}
 		}
 		else
 		{
-			if(m_oCurrentObject.m_ui32ConnectorType==Connector_Input || m_oCurrentObject.m_ui32ConnectorType==Connector_Output)
+			if(m_oCurrentObject.m_oIdentifier==OV_UndefinedIdentifier)
 			{
-				m_ui32CurrentMode=Mode_Connect;
+				if(m_bShiftPressed)
+				{
+					m_ui32CurrentMode=Mode_MoveScenario;
+				}
+				else
+				{
+					if(m_bControlPressed)
+					{
+						m_ui32CurrentMode=Mode_SelectionAdd;
+					}
+					else
+					{
+						m_ui32CurrentMode=Mode_Selection;
+					}
+				}
 			}
 			else
 			{
-				m_ui32CurrentMode=Mode_MoveSelection;
-				if(!m_vCurrentObject[m_oCurrentObject.m_oIdentifier])
+				if(m_oCurrentObject.m_ui32ConnectorType==Connector_Input || m_oCurrentObject.m_ui32ConnectorType==Connector_Output)
 				{
-					if(!m_bControlPressed)
+					m_ui32CurrentMode=Mode_Connect;
+				}
+				else
+				{
+					m_ui32CurrentMode=Mode_MoveSelection;
+					if(!m_vCurrentObject[m_oCurrentObject.m_oIdentifier])
 					{
-						m_vCurrentObject.clear();
+						if(!m_bControlPressed)
+						{
+							m_vCurrentObject.clear();
+						}
+						m_vCurrentObject[m_oCurrentObject.m_oIdentifier]=true;
 					}
-					m_vCurrentObject[m_oCurrentObject.m_oIdentifier]=true;
 				}
 			}
 		}
@@ -873,7 +992,8 @@ public:
 	}
 	void scenarioDrawingAreaButtonReleasedCB(::GtkWidget* pWidget, ::GdkEventButton* pEvent)
 	{
-		// cout << "scenarioDrawingAreaButtonReleasedCB" << endl;
+		//cout << "scenarioDrawingAreaButtonReleasedCB" << endl;
+
 		m_bButtonPressed&=!((pEvent->type==GDK_BUTTON_RELEASE)&&(pEvent->button==1));
 		m_f64ReleaseMouseX=pEvent->x;
 		m_f64ReleaseMouseY=pEvent->y;
@@ -939,8 +1059,14 @@ public:
 			{
 				if(i->second)
 				{
-					m_rScenario.removeBox(i->first);
-					m_rScenario.disconnect(i->first);
+					if(m_rScenario.isBox(i->first))
+					{
+						m_rScenario.removeBox(i->first);
+					}
+					else
+					{
+						m_rScenario.disconnect(i->first);
+					}
 				}
 			}
 
@@ -991,11 +1117,11 @@ public:
 	{
 		static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaButtonReleasedCB(pWidget, pEvent);
 	}
-	static gboolean scenario_drawing_area_key_press_event_cb(::GtkWidget* pWidget, ::GdkEventKey* pEvent, gpointer pUserData)
+	static void scenario_drawing_area_key_press_event_cb(::GtkWidget* pWidget, ::GdkEventKey* pEvent, gpointer pUserData)
 	{
 		static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaKeyPressEventCB(pWidget, pEvent);
 	}
-	static gboolean scenario_drawing_area_key_release_event_cb(::GtkWidget* pWidget, ::GdkEventKey* pEvent, gpointer pUserData)
+	static void scenario_drawing_area_key_release_event_cb(::GtkWidget* pWidget, ::GdkEventKey* pEvent, gpointer pUserData)
 	{
 		static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaKeyReleaseEventCB(pWidget, pEvent);
 	}
@@ -1160,7 +1286,7 @@ public:
 		{
 			IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
 			CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(*m_pKernel, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook);
-			l_pInterfacedScenario->updateLabel();
+			l_pInterfacedScenario->updateScenarioLabel();
 			gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
 			m_vInterfacedScenario.push_back(l_pInterfacedScenario);
 		}
@@ -1174,7 +1300,7 @@ public:
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 			NULL);
-		if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen)))
+		if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 		{
 			char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
 
@@ -1182,14 +1308,47 @@ public:
 			if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
 			{
 				IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
-				l_rScenario.load(l_sFileName, CIdentifier(0x440BF3AC, 0x2D960300));
-				CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(*m_pKernel, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook);
-				l_pInterfacedScenario->m_sFileName=l_sFileName;
-				l_pInterfacedScenario->m_bHasFileName=true;
-				l_pInterfacedScenario->m_bHasBeenModified=false;
-				l_pInterfacedScenario->updateLabel();
-				gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
-				m_vInterfacedScenario.push_back(l_pInterfacedScenario);
+				if(l_rScenario.load(l_sFileName, CIdentifier(0x440BF3AC, 0x2D960300))) // $$$
+				{
+					// Closes first unnamed scenario
+					if(m_vInterfacedScenario.size()==1)
+					{
+						if(m_vInterfacedScenario[0]->m_bHasBeenModified==false && !m_vInterfacedScenario[0]->m_bHasFileName)
+						{
+							CIdentifier l_oScenarioIdentifier=m_vInterfacedScenario[0]->m_oScenarioIdentifier;
+							delete m_vInterfacedScenario[0];
+							m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
+							m_vInterfacedScenario.clear();
+						}
+					}
+
+					// Creates interfaced scenario
+					CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(*m_pKernel, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook);
+					l_pInterfacedScenario->m_sFileName=l_sFileName;
+					l_pInterfacedScenario->m_bHasFileName=true;
+					l_pInterfacedScenario->m_bHasBeenModified=false;
+					l_pInterfacedScenario->updateScenarioLabel();
+					gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
+					m_vInterfacedScenario.push_back(l_pInterfacedScenario);
+				}
+				else
+				{
+					m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
+
+					::GtkWidget* l_pErrorDialog=gtk_message_dialog_new(
+						NULL,
+						GTK_DIALOG_MODAL,
+						GTK_MESSAGE_WARNING,
+						GTK_BUTTONS_OK,
+						"Scenario importation process failed !");
+					gtk_message_dialog_format_secondary_text(
+						GTK_MESSAGE_DIALOG(l_pErrorDialog),
+						"The requested file may either not be an OpenViBE "
+						"scenario file, be corrupted or not be compatible with "
+						"the selected scenario importer...");
+					gtk_dialog_run(GTK_DIALOG(l_pErrorDialog));
+					gtk_widget_destroy(l_pErrorDialog);
+				}
 			}
 
 			g_free(l_sFileName);
@@ -1209,11 +1368,10 @@ public:
 		}
 		else
 		{
-			cout<<"[ INFO ] Exporting scenario..."<<endl;
 			l_pCurrentInterfacedScenario->m_rScenario.save(l_pCurrentInterfacedScenario->m_sFileName.c_str(), CIdentifier(0x77075b3b, 0x3d632492));
 			l_pCurrentInterfacedScenario->m_bHasFileName=true;
 			l_pCurrentInterfacedScenario->m_bHasBeenModified=false;
-			l_pCurrentInterfacedScenario->updateLabel();
+			l_pCurrentInterfacedScenario->updateScenarioLabel();
 		}
 	}
 	void saveScenarioAsCB(::GtkMenuItem* pMenuItem)
@@ -1235,7 +1393,7 @@ public:
 		{
 			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), l_pCurrentInterfacedScenario->m_sFileName.c_str());
 		}
-		if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogSaveAs)))
+		if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogSaveAs))==GTK_RESPONSE_ACCEPT)
 		{
 			char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
 
@@ -1557,7 +1715,7 @@ int main(int argc, char ** argv)
 	};
 
 	#define gdk_color_set(c, r, g, b) { c.pixel=0; c.red=r; c.green=g; c.blue=b; }
-	gdk_color_set(g_vColors[Color_BoxBackgroundSelected], 65535, 65535, 49151);
+	gdk_color_set(g_vColors[Color_BoxBackgroundSelected], 49151, 16383, 16383);
 	gdk_color_set(g_vColors[Color_BoxBackground],         65535, 65535, 65535);
 	gdk_color_set(g_vColors[Color_BoxBorderSelected],         0,     0,     0);
 	gdk_color_set(g_vColors[Color_BoxBorder],                 0,     0,     0);
@@ -1568,7 +1726,7 @@ int main(int argc, char ** argv)
 	gdk_color_set(g_vColors[Color_BoxSettingBackground],  49151, 32767, 65535);
 	gdk_color_set(g_vColors[Color_BoxSettingBorder],      16383,     0, 32767);
 	gdk_color_set(g_vColors[Color_Link],                      0,     0,     0);
-	gdk_color_set(g_vColors[Color_LinkSelected],          65535, 65535, 49151);
+	gdk_color_set(g_vColors[Color_LinkSelected],          49151, 16383, 16383);
 	gdk_color_set(g_vColors[Color_SelectionArea],        0x3f00,0x3f00,0x3f00);
 	gdk_color_set(g_vColors[Color_SelectionAreaBorder],       0,     0,     0);
 	#undef gdk_color_set
@@ -1579,7 +1737,7 @@ int main(int argc, char ** argv)
 	IKernelLoader* l_pKernelLoader=OpenViBE::Kernel::createKernelLoader();
 	if(l_pKernelLoader)
 	{
-		cout<<"[  OK  ] Created kernel loader"<<endl;
+		cout<<"[  INF  ] Created kernel loader"<<endl;
 		CString m_sError;
 #ifdef WIN32
 		if(!l_pKernelLoader->load("../lib/OpenViBE-Kernel-dynamic.dll", &m_sError))
@@ -1587,34 +1745,40 @@ int main(int argc, char ** argv)
 		if(!l_pKernelLoader->load("../lib/libOpenViBE-Kernel-dynamic.so", &m_sError))
 #endif
 		{
-				cout<<"[FAILED] Error loading kernel ("<<m_sError<<")"<<endl;
+				cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
 		}
 		else
 		{
-			cout<<"[  OK  ] Kernel module loaded"<<endl;
+			cout<<"[  INF  ] Kernel module loaded"<<endl;
 			IKernelDesc* l_pKernelDesc=NULL;
 			IKernel* l_pKernel=NULL;
 			l_pKernelLoader->initialize();
 			l_pKernelLoader->getKernelDesc(l_pKernelDesc);
 			if(!l_pKernelDesc)
 			{
-				cout<<"[FAILED] No kernel descriptor"<<endl;
+				cout<<"[ FAILED ] No kernel descriptor"<<endl;
 			}
 			else
 			{
-				cout<<"[  OK  ] Found kernel descriptor"<<endl;
+				cout<<"[  INF  ] Found kernel descriptor"<<endl;
 				l_pKernel=l_pKernelDesc->create();
 				if(!l_pKernel)
 				{
-					cout<<"[FAILED] No kernel created by kernel descriptor"<<endl;
+					cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;
 				}
 				else
 				{
-					cout<<"[  OK  ] Created Kernel, going on testing"<<endl;
+					cout<<"[  INF  ] Created Kernel, going on testing"<<endl;
 
 					gtk_init(&g_argc, &g_argv);
 					::CApplication app(l_pKernel);
 					app.init();
+
+					ILogManager& l_rLogManager=l_pKernel->getContext()->getLogManager();
+					l_rLogManager.activate(LogLevel_Debug, false);
+					l_rLogManager.activate(LogLevel_Info, true);
+					l_rLogManager.activate(LogLevel_Warning, true);
+					l_rLogManager.activate(LogLevel_Error, true);
 
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-Plugins-*.so");
@@ -1629,7 +1793,9 @@ int main(int argc, char ** argv)
 
 					gtk_main();
 
-					cout<<"[  OK  ] Everything finished, realeasing objects"<<endl;
+					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;
+					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;
+
 					l_pKernel->release();
 				}
 				l_pKernelDesc->release();

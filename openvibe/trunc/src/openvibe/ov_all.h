@@ -35,6 +35,7 @@
 #include "kernel/ovIScenario.h"
 #include "kernel/ovIScenarioManager.h"
 #include "kernel/ovILogManager.h"
+#include "kernel/ovILogListener.h"
 
 //___________________________________________________________________//
 //                                                                   //

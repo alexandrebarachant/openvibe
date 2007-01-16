@@ -26,8 +26,9 @@ public:
 	/// \brief Destructor of \ref PsDuplicatedContext.
 	virtual ~PsDuplicatedContext() ;
 	/// \brief Protected default constructor of \ref PsDuplicatedContext call by creator.
-	PsDuplicatedContext( PsController& ctrl, const PsObjectDescriptor& objectDescriptor, const OpenViBE::Kernel::IScenario& rScenario, OpenViBE::Kernel::IPluginManager& rPluginManager );
+	PsDuplicatedContext( PsController& ctrl, const PsObjectDescriptor& objectDescriptor, const OpenViBE::Kernel::IKernelContext& m_rKernelContext, const OpenViBE::Kernel::IScenario& rScenario, OpenViBE::Kernel::IPluginManager& rPluginManager );
 	//@}
+	const OpenViBE::Kernel::IKernelContext& getKernelContext(void) const;
 	const OpenViBE::Kernel::IScenario& getScenario(void) const;
 	OpenViBE::Kernel::IPluginManager& getPluginManager(void) const;
 
@@ -42,6 +43,7 @@ protected:
 	virtual void computeParameters() ;
 	//@}
 
+	const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 	const OpenViBE::Kernel::IScenario& m_rScenario;
 	mutable OpenViBE::Kernel::IPluginManager& m_rPluginManager;
 };

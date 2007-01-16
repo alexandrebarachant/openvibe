@@ -1,5 +1,5 @@
-#ifndef __OpenViBE_kernelimp_Kernel_CPlayerContext_H__
-#define __OpenViBE_kernelimp_Kernel_CPlayerContext_H__
+#ifndef __OpenViBEKernel_Kernel_CPlayerContext_H__
+#define __OpenViBEKernel_Kernel_CPlayerContext_H__
 
 #include "ovkTPluginObjectContext.h"
 #include "simulated-objects/ovkPsSimulatedBox.h"
@@ -12,7 +12,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CPlayerContext(::PsSimulatedBox* pSimulatedBox);
+			CPlayerContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox);
 
 			virtual OpenViBE::boolean sendSignal(
 				const OpenViBE::CMessageSignal& rMessageSignal);
@@ -34,4 +34,4 @@ namespace OpenViBE
 	};
 };
 
-#endif // __OpenViBE_kernelimp_Kernel_CPlayerContext_H__
+#endif // __OpenViBEKernel_Kernel_CPlayerContext_H__

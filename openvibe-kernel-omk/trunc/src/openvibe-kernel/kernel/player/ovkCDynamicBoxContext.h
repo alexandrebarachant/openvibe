@@ -12,7 +12,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CDynamicBoxContext(::PsSimulatedBox* pSimulatedBox);
+			CDynamicBoxContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox);
 
 			virtual OpenViBE::uint32 getInputChunkCount(
 				const OpenViBE::uint32 ui32InputIndex);

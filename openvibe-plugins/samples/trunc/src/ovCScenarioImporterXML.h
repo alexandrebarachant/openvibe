@@ -132,6 +132,7 @@ namespace OpenViBEPlugins
 
 			CScenarioImporterXML(void)
 				:m_ui32Status(Status_ParsingNothing)
+				,m_bIsOpenViBEScenario(false)
 			{
 			}
 
@@ -141,7 +142,7 @@ namespace OpenViBEPlugins
 
 				std::string& l_sTop=m_vNodes.top();
 				if(false) { }
-				else if(l_sTop=="OpenViBE-Scenario" && m_ui32Status==Status_ParsingNothing)  { m_ui32Status=Status_ParsingScenario; }
+				else if(l_sTop=="OpenViBE-Scenario" && m_ui32Status==Status_ParsingNothing)  { m_ui32Status=Status_ParsingScenario;          m_bIsOpenViBEScenario=true; }
 				else if(l_sTop=="Box"               && m_ui32Status==Status_ParsingScenario) { m_ui32Status=Status_ParsingBox;               m_oScenario.m_vBox.push_back(SBox()); }
 				else if(l_sTop=="Input"             && m_ui32Status==Status_ParsingBox)      { m_ui32Status=Status_ParsingBoxInput;          m_oScenario.m_vBox.back().m_vInput.push_back(SInput());  }
 				else if(l_sTop=="Output"            && m_ui32Status==Status_ParsingBox)      { m_ui32Status=Status_ParsingBoxOutput;         m_oScenario.m_vBox.back().m_vOutput.push_back(SOutput()); }
@@ -234,12 +235,14 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean doImport(const OpenViBE::Plugins::IScenarioImporterContext& rScenarioImporterContext)
 			{
+				OpenViBE::boolean l_bStatusOk=true;
 				XML::IReader* l_pReader=XML::createReader(*this);
 				if(!l_pReader)
 				{
 					return false;
 				}
 
+				m_bIsOpenViBEScenario=false;
 				OpenViBE::Kernel::IScenario& l_rScenario=rScenarioImporterContext.getScenario();
 
 				// 1. Open scenario file
@@ -247,20 +250,29 @@ namespace OpenViBEPlugins
 				//    and sending what is read to the XML parser
 				// 3. Close the scenario file
 				std::ifstream l_oFile(rScenarioImporterContext.getFileName());
-				char l_sBuffer[1024];
-				size_t l_iBufferLen=0;
-				size_t l_iFileLen;
-				l_oFile.seekg(0, std::ios::end);
-				l_iFileLen=l_oFile.tellg();
-				l_oFile.seekg(0, std::ios::beg);
-				while(l_iFileLen)
+				if(l_oFile.is_open())
 				{
-					l_iBufferLen=(l_iFileLen>sizeof(l_sBuffer)?sizeof(l_sBuffer):l_iFileLen);
-					l_oFile.read(l_sBuffer, l_iBufferLen);
-					l_iFileLen-=l_iBufferLen;
-					l_pReader->processData(l_sBuffer, l_iBufferLen);
+					char l_sBuffer[1024];
+					size_t l_iBufferLen=0;
+					size_t l_iFileLen;
+					l_oFile.seekg(0, std::ios::end);
+					l_iFileLen=l_oFile.tellg();
+					l_oFile.seekg(0, std::ios::beg);
+					while(l_iFileLen && l_bStatusOk)
+					{
+						l_iBufferLen=(l_iFileLen>sizeof(l_sBuffer)?sizeof(l_sBuffer):l_iFileLen);
+						l_oFile.read(l_sBuffer, l_iBufferLen);
+						l_iFileLen-=l_iBufferLen;
+						l_bStatusOk=l_pReader->processData(l_sBuffer, l_iBufferLen);
+					}
+					l_oFile.close();
 				}
-				l_oFile.close();
+
+				// Checks parsin status
+				if(!l_bStatusOk || !m_bIsOpenViBEScenario)
+				{
+					return false;
+				}
 
 				// Now build the scenario according to what has been loaded
 				std::vector<SBox>::iterator b;
@@ -351,6 +363,7 @@ namespace OpenViBEPlugins
 			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vLinkIdMapping;
 			std::stack<std::string> m_vNodes;
 			OpenViBE::uint32 m_ui32Status;
+			OpenViBE::boolean m_bIsOpenViBEScenario;
 			SScenario m_oScenario;
 		};
 

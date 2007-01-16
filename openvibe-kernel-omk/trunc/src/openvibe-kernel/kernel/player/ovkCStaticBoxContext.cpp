@@ -12,8 +12,9 @@ using namespace OpenViBE::Plugins;
 //___________________________________________________________________//
 //                                                                   //
 
-CStaticBoxContext::CStaticBoxContext(const IBox* pBox)
-	:TPluginObjectContext<IStaticBoxContext>()
+CStaticBoxContext::CStaticBoxContext(const IKernelContext& rKernelContext, const IBox* pBox)
+	:TPluginObjectContext<IStaticBoxContext>(rKernelContext)
+	,TKernelObject<IStaticBoxContext>(rKernelContext)
 	,m_pBox(pBox)
 {
 }

@@ -8,8 +8,10 @@ using namespace OpenViBE::Plugins;
 //___________________________________________________________________//
 //                                                                   //
 
-CDynamicBoxContext::CDynamicBoxContext(::PsSimulatedBox* pSimulatedBox)
-	:m_pSimulatedBox(pSimulatedBox)
+CDynamicBoxContext::CDynamicBoxContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
+	:TPluginObjectContext<IDynamicBoxContext>(rKernelContext)
+	,TKernelObject<IDynamicBoxContext>(rKernelContext)
+	,m_pSimulatedBox(pSimulatedBox)
 {
 }
 
