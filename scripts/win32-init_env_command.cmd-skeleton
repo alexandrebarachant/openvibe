@@ -28,6 +28,7 @@ set          OpenViBE_module_xml=%OpenViBE_modules%\xml\%OpenViBE_modules_branch
 
 set        OpenViBE_applications=%OpenViBE_base%\openvibe-applications
 set            OpenViBE_designer=%OpenViBE_applications%\designer\%OpenViBE_applications_branch%
+set  OpenViBE_acquisition_server=%OpenViBE_applications%\acquisition-server\%OpenViBE_applications_branch%
 
 set             OpenViBE_plugins=%OpenViBE_base%\openvibe-plugins
 set  OpenViBE_plugin_acquisition=%OpenViBE_plugins%\acquisition\%OpenViBE_plugins_branch%

@@ -27,7 +27,9 @@ export OpenViBE_module_xml
 
 OpenViBE_applications=$OpenViBE_base/openvibe-applications
 OpenViBE_designer=$OpenViBE_applications/designer/$OpenViBE_applications_branch
+OpenViBE_acquisition_server=$OpenViBE_applications/acquisition-server/$OpenViBE_applications_branch
 export OpenViBE_designer
+export OpenViBE_acquisition_server
 
 OpenViBE_plugins=$OpenViBE_base/openvibe-plugins
 OpenViBE_plugin_acquisition=$OpenViBE_plugins/acquisition/$OpenViBE_plugins_branch
