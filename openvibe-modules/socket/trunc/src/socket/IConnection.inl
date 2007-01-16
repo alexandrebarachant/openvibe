@@ -17,8 +17,6 @@
 
 #endif
 
-#include <iostream>
-
 namespace Socket
 {
 	template <class T> class TConnection : virtual public T
@@ -72,9 +70,9 @@ namespace Socket
 				return false;
 			}
 
-
 #if defined Socket_OS_Linux
 			::shutdown(m_i32Socket, SHUT_RDWR);
+			::close(m_i32Socket);
 #elif defined Socket_OS_Windows
 			::shutdown(m_i32Socket, SD_BOTH);
 			::closesocket(m_i32Socket);
