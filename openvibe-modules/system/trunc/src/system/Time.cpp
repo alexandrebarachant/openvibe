@@ -12,6 +12,7 @@ using namespace std;
 boolean Time::sleep(const uint32 ui32MilliSeconds)
 {
 	usleep(ui32MilliSeconds*1000);
+	return true;
 }
 
 uint32 Time::getTime(void)
@@ -23,13 +24,14 @@ uint32 Time::getTime(void)
 	return l_ui32Result;
 }
 
-#elif defines System_OS_Windows
+#elif defined System_OS_Windows
 
 #include <windows.h>
 
 boolean Time::sleep(const uint32 ui32MilliSeconds)
 {
 	Sleep(ui32MilliSeconds);
+	return true;
 }
 
 uint32 Time::getTime(void)
