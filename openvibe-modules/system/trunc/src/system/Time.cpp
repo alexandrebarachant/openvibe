@@ -1,13 +1,17 @@
 #include "Time.h"
-#include <iostream>
-
-using namespace System;
-using namespace std;
 
 #if defined System_OS_Linux
+ #include <time.h>
+ #include <sys/time.h>
+#elif defined System_OS_Windows
+ #include <windows.h>
+#else
+#endif
 
-#include <time.h>
-#include <sys/time.h>
+using namespace System;
+#define boolean System::boolean
+
+#if defined System_OS_Linux
 
 boolean Time::sleep(const uint32 ui32MilliSeconds)
 {
@@ -25,8 +29,6 @@ uint32 Time::getTime(void)
 }
 
 #elif defined System_OS_Windows
-
-#include <windows.h>
 
 boolean Time::sleep(const uint32 ui32MilliSeconds)
 {
