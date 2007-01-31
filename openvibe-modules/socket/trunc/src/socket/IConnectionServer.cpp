@@ -29,7 +29,11 @@ namespace Socket
 			}
 
 			int l_iReuseAddress=1;
+#if defined Socket_OS_Windows
+			::setsockopt(m_i32Socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&l_iReuseAddress), sizeof(l_iReuseAddress));
+#else
 			::setsockopt(m_i32Socket, SOL_SOCKET, SO_REUSEADDR, &l_iReuseAddress, sizeof(l_iReuseAddress));
+#endif
 
 			struct sockaddr_in l_oLocalHostAddress;
 			memset(&l_oLocalHostAddress, 0, sizeof(l_oLocalHostAddress));
