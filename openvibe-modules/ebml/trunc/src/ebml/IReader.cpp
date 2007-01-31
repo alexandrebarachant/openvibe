@@ -81,7 +81,7 @@ namespace EBML
 	class CReader : virtual public IReader
 	{
 	public:
-		CReader(IReaderCallBack& rReaderCallBack);
+		CReader(IReaderCallback& rReaderCallback);
 		virtual ~CReader(void);
 
 		virtual boolean processData(const void* pBuffer, const uint64 ui64BufferSize);
@@ -96,7 +96,7 @@ namespace EBML
 			FillingContent,
 		};
 
-		IReaderCallBack& m_rReaderCallBack;
+		IReaderCallback& m_rReaderCallback;
 		CReaderNode* m_pCurrentNode;
 		uint64 m_ui64PendingSize;
 		uint64 m_ui64PendingCount;
@@ -113,8 +113,8 @@ namespace EBML
 
 #define _Debug_ 0
 
-CReader::CReader(IReaderCallBack& rReaderCallBack)
-	:m_rReaderCallBack(rReaderCallBack)
+CReader::CReader(IReaderCallback& rReaderCallback)
+	:m_rReaderCallback(rReaderCallback)
 	,m_pCurrentNode(NULL)
 	,m_ui64PendingSize(0)
 	,m_ui64PendingCount(0)
@@ -214,7 +214,7 @@ printf("...\n");
 						l_ui64ProcessedPendingBytes=m_ui64PendingCount;
 						l_ui64ProcessedBytes=l_ulCodedSizeLength;
 
-						if(m_rReaderCallBack.isMasterChild(m_oCurrentIdentifier))
+						if(m_rReaderCallback.isMasterChild(m_oCurrentIdentifier))
 						{
 							m_eStatus=FillingIdentifier;
 #if _Debug_
@@ -240,7 +240,7 @@ printf("...\n");
 #if _Debug_
 						printf("Finished with %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
 #endif
-						m_rReaderCallBack.processChildData(NULL, 0);
+						m_rReaderCallback.processChildData(NULL, 0);
 					}
 					else
 					{
@@ -259,7 +259,7 @@ printf("...\n");
 #if _Debug_
 							printf("Finished with %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
 #endif
-							m_rReaderCallBack.processChildData(m_pCurrentNode->m_pBuffer, m_pCurrentNode->m_ui64ContentSize);
+							m_rReaderCallback.processChildData(m_pCurrentNode->m_pBuffer, m_pCurrentNode->m_ui64ContentSize);
 						}
 					}
 				}
@@ -286,14 +286,14 @@ printf("...\n");
 			m_pCurrentNode=new CReaderNode(m_oCurrentIdentifier, m_pCurrentNode);
 			m_pCurrentNode->m_ui64ContentSize=m_ui64CurrentContentSize;
 			m_pCurrentNode->m_pBuffer=new unsigned char[(unsigned int)(m_ui64CurrentContentSize)];
-			m_rReaderCallBack.openChild(m_pCurrentNode->m_oIdentifier);
+			m_rReaderCallback.openChild(m_pCurrentNode->m_oIdentifier);
 		}
 		else
 		{
 			// Closes finished nodes
 			while(m_pCurrentNode && m_pCurrentNode->m_ui64ContentSize == m_pCurrentNode->m_ui64ReadContentSize)
 			{
-				m_rReaderCallBack.closeChild();
+				m_rReaderCallback.closeChild();
 				CReaderNode* l_pParentNode=m_pCurrentNode->m_pParentNode;
 				delete [] m_pCurrentNode->m_pBuffer;
 				delete m_pCurrentNode;
@@ -329,7 +329,7 @@ void CReader::release(void)
 // ________________________________________________________________________________________________________________
 //
 
-EBML_API IReader* EBML::createReader(IReaderCallBack& rReaderCallBack)
+EBML_API IReader* EBML::createReader(IReaderCallback& rReaderCallback)
 {
-	return new CReader(rReaderCallBack);
+	return new CReader(rReaderCallback);
 }

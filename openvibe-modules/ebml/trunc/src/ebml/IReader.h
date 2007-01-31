@@ -2,7 +2,7 @@
  * \file IReader.h
  * \author Yann Renard (INRIA/IRISA)
  * \date 2006-08-07
- * \brief EBML::IReaderCallBack and EBML::IReader class definitions
+ * \brief EBML::IReaderCallback and EBML::IReader class definitions
  */
 
 #ifndef __EBML_IReader_H__
@@ -13,10 +13,10 @@
 namespace EBML
 {
 	/**
-	 * \class IReaderCallBack
+	 * \class IReaderCallback
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2006-08-07
-	 * \brief CallBack class to use when parsing the EBML stream
+	 * \brief Callback class to use when parsing the EBML stream
 	 *
 	 * This class is to be overloaded by the user in order
 	 * to get rid of the parsing events. It will be notified
@@ -25,14 +25,14 @@ namespace EBML
 	 *
 	 * \sa EBML::IReader
 	 */
-	class EBML_API IReaderCallBack
+	class EBML_API IReaderCallback
 	{
 	public:
 
 		/**
 		 * \brief Virtual destructor
 		 */
-		virtual ~IReaderCallBack(void) { }
+		virtual ~IReaderCallback(void) { }
 		/**
 		 * \brief Kind of child querry
 		 * \param rIdentifier [in] : The identifier which type has to be known
@@ -82,6 +82,8 @@ namespace EBML
 		virtual void closeChild(void)=0;
 	};
 
+	class EBML_API IReaderCallBack : virtual public IReaderCallback { };
+
 	/**
 	 * \class IReader
 	 * \author Yann Renard (INRIA/IRISA)
@@ -121,7 +123,7 @@ namespace EBML
 		 * started immediatly. The callback object is called
 		 * according to the EBML structure contained in the
 		 * chunk and the previously parsed chunks. See
-		 * EBML::IReaderCallBack for more details on the
+		 * EBML::IReaderCallback for more details on the
 		 * callback object.
 		 */
 		virtual EBML::boolean processData(const void* pBuffer, const EBML::uint64 ui64BufferSize)=0;
@@ -151,11 +153,11 @@ namespace EBML
 
 	/**
 	 * \brief Instanciation function for EBML reader objects
-	 * \param rReaderCallBack [in] : The callback object the reader should use
+	 * \param rReaderCallback [in] : The callback object the reader should use
 	 * \return a pointer to the created instance on success.
 	 * \return \c NULL when something went wrong.
 	 */
-	extern EBML_API EBML::IReader* createReader(EBML::IReaderCallBack& rReaderCallBack);
+	extern EBML_API EBML::IReader* createReader(EBML::IReaderCallback& rReaderCallback);
 };
 
 #endif // __EBML_IReader_H__

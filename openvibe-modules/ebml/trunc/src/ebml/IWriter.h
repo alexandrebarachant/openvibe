@@ -2,7 +2,7 @@
  * \file IWriter.h
  * \author Yann Renard (INRIA/IRISA)
  * \date 2006-08-07
- * \brief EBML::IWriterCallBack and EBML::IWriter class definitions
+ * \brief EBML::IWriterCallback and EBML::IWriter class definitions
  */
 
 #ifndef __EBML_IWriter_H__
@@ -13,10 +13,10 @@
 namespace EBML
 {
 	/**
-	 * \class IWriterCallBack
+	 * \class IWriterCallback
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2006-08-07
-	 * \brief CallBack class to use when creating the EBML stream
+	 * \brief Callback class to use when creating the EBML stream
 	 *
 	 * This class is to be overloaded by the user in order
 	 * to get rid of the stream writing events. It will be
@@ -26,14 +26,14 @@ namespace EBML
 	 *
 	 * \sa EBML::IWriter
 	 */
-	class EBML_API IWriterCallBack
+	class EBML_API IWriterCallback
 	{
 	public:
 
 		/**
 		 * \brief Virtual destructor
 		 */
-		virtual ~IWriterCallBack(void) { }
+		virtual ~IWriterCallback(void) { }
 		/**
 		 * \brief Gives the callback object a new stream chunk
 		 * \param pBuffer [in] : The buffer to write in the stream
@@ -46,6 +46,8 @@ namespace EBML
 		 */
 		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)=0;
 	};
+
+	class EBML_API IWriterCallBack : virtual public IWriterCallback { };
 
 	/**
 	 * \class IWriter
@@ -152,11 +154,11 @@ namespace EBML
 
 	/**
 	 * \brief Instanciation function for EBML writer objects
-	 * \param rWriterCallBack [in] : The callback object the writer should use
+	 * \param rWriterCallback [in] : The callback object the writer should use
 	 * \return a pointer to the created instance on success.
 	 * \return \c NULL when something went wrong.
 	 */
-	extern EBML_API EBML::IWriter* createWriter(EBML::IWriterCallBack& rWriterCallBack);
+	extern EBML_API EBML::IWriter* createWriter(EBML::IWriterCallback& rWriterCallback);
 };
 
 #endif // __EBML_IWriter_H__

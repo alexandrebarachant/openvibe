@@ -18,7 +18,7 @@ namespace EBML
 	 * \date 2006-08-07
 	 * \brief Helper to read basic EBML types
 	 *
-	 * This class may be used by a IReaderCallBack instance
+	 * This class may be used by a IReaderCallback instance
 	 * in order to correctly parse simple types defined in the
 	 * EBML description such as integers, floats, strings etc...
 	 *

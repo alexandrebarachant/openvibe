@@ -118,7 +118,7 @@ namespace EBML
 	public:
 		CWriterNode(const CIdentifier& rIdentifier, CWriterNode* pParentNode);
 		virtual ~CWriterNode(void);
-		void process(IWriterCallBack& rWriterCallBack);
+		void process(IWriterCallback& rWriterCallback);
 
 	protected:
 		uint64 getTotalContentSize(boolean bCountIdentifierAndSize);
@@ -159,7 +159,7 @@ CWriterNode::~CWriterNode(void)
 	delete [] m_pBuffer;
 }
 
-void CWriterNode::process(IWriterCallBack& rWriterCallBack)
+void CWriterNode::process(IWriterCallback& rWriterCallback)
 {
 	unsigned char l_pIdentifier[8];
 	unsigned char l_pContentSize[8];
@@ -177,19 +177,19 @@ void CWriterNode::process(IWriterCallBack& rWriterCallBack)
 		// SHOULD NEVER HAPPEN
 	}
 
-	rWriterCallBack.write(l_pIdentifier, l_ui64IdentifierLength);
-	rWriterCallBack.write(l_pContentSize, l_ui64ContentSizeLength);
+	rWriterCallback.write(l_pIdentifier, l_ui64IdentifierLength);
+	rWriterCallback.write(l_pContentSize, l_ui64ContentSizeLength);
 
 	if(m_vChildren.size()==0)
 	{
-		rWriterCallBack.write(m_pBuffer, m_ui64BufferLength);
+		rWriterCallback.write(m_pBuffer, m_ui64BufferLength);
 	}
 	else
 	{
 		vector<CWriterNode*>::iterator i;
 		for(i=m_vChildren.begin(); i!=m_vChildren.end(); i++)
 		{
-			(*i)->process(rWriterCallBack);
+			(*i)->process(rWriterCallback);
 		}
 	}
 }
@@ -228,7 +228,7 @@ namespace EBML
 	class CWriter : virtual public IWriter
 	{
 	public:
-		CWriter(IWriterCallBack& rWriterCallBack);
+		CWriter(IWriterCallback& rWriterCallback);
 
 		virtual boolean openChild(const CIdentifier& rIdentifier);
 		virtual boolean setChildData(const void* pBuffer, const uint64 ui64BufferSize);
@@ -238,7 +238,7 @@ namespace EBML
 
 	protected:
 		CWriterNode* m_pCurrentNode;
-		IWriterCallBack& m_rWriterCallBack;
+		IWriterCallback& m_rWriterCallback;
 
 	private:
 		CWriter(void);
@@ -248,9 +248,9 @@ namespace EBML
 // ________________________________________________________________________________________________________________
 //
 
-CWriter::CWriter(IWriterCallBack& rWriterCallBack)
+CWriter::CWriter(IWriterCallback& rWriterCallback)
 	:m_pCurrentNode(NULL)
-	,m_rWriterCallBack(rWriterCallBack)
+	,m_rWriterCallback(rWriterCallback)
 {
 }
 
@@ -321,7 +321,7 @@ boolean CWriter::closeChild(void)
 	CWriterNode* l_pParentNode=m_pCurrentNode->m_pParentNode;
 	if(!l_pParentNode)
 	{
-		m_pCurrentNode->process(m_rWriterCallBack);
+		m_pCurrentNode->process(m_rWriterCallback);
 		delete m_pCurrentNode;
 	}
 
@@ -341,7 +341,7 @@ void CWriter::release(void)
 // ________________________________________________________________________________________________________________
 //
 
-EBML_API IWriter* EBML::createWriter(IWriterCallBack& rWriterCallBack)
+EBML_API IWriter* EBML::createWriter(IWriterCallback& rWriterCallback)
 {
-	return new CWriter(rWriterCallBack);
+	return new CWriter(rWriterCallback);
 }

@@ -55,7 +55,7 @@
  *
  * \image html ebml_parsing_class.png "Class Diagram"
  *
- * See EBML::IReader, EBML::IReaderCallBack and EBML::IReaderHelper
+ * See EBML::IReader, EBML::IReaderCallback and EBML::IReaderHelper
  * for more details on each of these classes.
  *
  * \section Doc_ParsingEBMLStreams_SampleCode Sample code
@@ -69,14 +69,14 @@
  * The callback object looks something like this :
  *
  * \code
- * class CReaderCallBack : virtual public EBML::IReaderCallBack
+ * class CReaderCallback : virtual public EBML::IReaderCallback
  * {
  * public:
- *   CReaderCallBack(void)
+ *   CReaderCallback(void)
  *   {
  *     m_pReaderHelper=EBML::createReaderHelper();
  *   }
- *   virtual ~CReaderCallBack(void)
+ *   virtual ~CReaderCallback(void)
  *   {
  *     if(m_pReaderHelper) m_pReaderHelper->release();
  *   }
@@ -109,7 +109,7 @@
  * initialisation this way :
  *
  * \code
- * CReaderCallBack oCallback;
+ * CReaderCallback oCallback;
  * EBML::IReader* pReader=EBML::createReader(oCallback);
  * \endcode
  *

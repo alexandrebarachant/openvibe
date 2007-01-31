@@ -39,7 +39,7 @@
  *
  * \image html ebml_formating_class.png "Class Diagram"
  *
- * See EBML::IWriter, EBML::IWriterCallBack and EBML::IWriterHelper
+ * See EBML::IWriter, EBML::IWriterCallback and EBML::IWriterHelper
  * for more details on each of these classes.
  *
  * \section Doc_FormatingEBMLStreams_SampleCode Sample code
@@ -52,14 +52,14 @@
  * The callback object implementation looks something like this :
  *
  * \code
- * class CWriterCallBack : virtual public EBML::IWriterCallBack
+ * class CWriterCallback : virtual public EBML::IWriterCallback
  * {
  * public:
- *   CWriterCallBack(char* sFileName)
+ *   CWriterCallback(char* sFileName)
  *   {
  *     m_pFile=fopen(sFileName, "wb");
  *   }
- *   virtual ~CWriterCallBack(void)
+ *   virtual ~CWriterCallback(void)
  *   {
  *     if(m_pFile) fclose(m_pFile);
  *   }
@@ -75,7 +75,7 @@
  * initialisation this way :
  *
  * \code
- * CWriterCallBack oCallback("test.ebml");
+ * CWriterCallback oCallback("test.ebml");
  * EBML::IWriter* pWriter=EBML::createWriter(oCallback);
  * EBML::IWriterHelper* pWriterHelper=EBML::createWriterHelper();
  * pWriterHelper->connect(pWriter);
