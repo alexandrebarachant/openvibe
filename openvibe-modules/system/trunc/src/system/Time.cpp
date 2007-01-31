@@ -1,6 +1,7 @@
 #include "Time.h"
 
 #if defined System_OS_Linux
+ #include <unistd.h>
  #include <time.h>
  #include <sys/time.h>
 #elif defined System_OS_Windows
