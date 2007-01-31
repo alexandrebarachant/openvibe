@@ -11,6 +11,21 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR})
 
+# ---------------------------------
+# Finds standard library WinMM
+# Adds library to target
+# Adds include path
+# ---------------------------------
+IF(WIN32)
+	FIND_LIBRARY(LIB_STANDARD_MODULE_WINMM WinMM)
+	IF(LIB_STANDARD_MODULE_WINMM)
+		MESSAGE(STATUS "  Found WinMM...")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_WINMM})
+	ELSE(LIB_STANDARD_MODULE_WINMM)
+		MESSAGE(STATUS "  FAILED to find WinMM...")
+	ENDIF(LIB_STANDARD_MODULE_WINMM)
+ENDIF(WIN32)
+
 # -----------------------------
 # Copies all header files to
 # include path and mark copied
