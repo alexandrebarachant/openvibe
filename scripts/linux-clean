@@ -2,6 +2,7 @@
 
 source linux-init_env_command
 
+mkdir ../local-tmp
 cd ../local-tmp
 cmake ..
 make clean

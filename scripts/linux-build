@@ -5,4 +5,4 @@ source linux-init_env_command
 mkdir ../local-tmp 2> /dev/null
 cd ../local-tmp
 cmake ..
-make
+make -j 2

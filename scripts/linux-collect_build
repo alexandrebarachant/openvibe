@@ -21,6 +21,7 @@ cp -rf $OpenViBE_module_system/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_module_xml/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_kernel/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_toolkit/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_designer/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_acquisition_server/bin/* $target_dist/bin 2> /dev/null
 
@@ -31,6 +32,7 @@ cp -rf $OpenViBE_module_system/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_module_xml/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_kernel/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_toolkit/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_designer/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_acquisition_server/include/* $target_dist/include 2> /dev/null
 
@@ -41,6 +43,7 @@ cp -rf $OpenViBE_module_system/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_module_xml/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_kernel/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_toolkit/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_designer/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_acquisition_server/lib/* $target_dist/lib 2> /dev/null
 
@@ -51,6 +54,7 @@ cp -rf $OpenViBE_module_system/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_module_xml/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_kernel/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_toolkit/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_designer/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_acquisition_server/share/* $target_dist/share 2> /dev/null
 

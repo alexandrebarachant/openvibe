@@ -7,17 +7,20 @@ call "%VS80COMNTOOLS%\vsvars32.bat"
 
 set PATH=%PATH%;E:\Microsoft Visual Studio 2005\VC\redist\Debug_NonRedist\x86\Microsoft.VC80.DebugCRT
 set PATH=%PATH%;C:\Expat-2.0.0\Libs
+set PATH=%PATH%;%LIB%;%LIBPATH%
 
 set                OpenViBE_base=E:\Dev\openvibe
 
 set              OpenViBE_branch=trunc
 set       OpenViBE_kernel_branch=trunc
+set      OpenViBE_toolkit_branch=trunc
 set      OpenViBE_modules_branch=trunc
 set OpenViBE_applications_branch=trunc
 set      OpenViBE_plugins_branch=trunc
 
 set                     OpenViBE=%OpenViBE_base%\openvibe\%OpenViBE_branch%
 set              OpenViBE_kernel=%OpenViBE_base%\openvibe-kernel-omk\%OpenViBE_kernel_branch%
+set             OpenViBE_toolkit=%OpenViBE_base%\openvibe-toolkit\%OpenViBE_toolkit_branch%
 
 set             OpenViBE_modules=%OpenViBE_base%\openvibe-modules
 set         OpenViBE_module_ebml=%OpenViBE_modules%\ebml\%OpenViBE_modules_branch%

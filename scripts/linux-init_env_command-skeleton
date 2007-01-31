@@ -4,14 +4,17 @@ OpenViBE_base=`pwd`/..
 
 OpenViBE_branch=trunc
 OpenViBE_kernel_branch=trunc
+OpenViBE_toolkit_branch=trunc
 OpenViBE_modules_branch=trunc
 OpenViBE_applications_branch=trunc
 OpenViBE_plugins_branch=trunc
 
 OpenViBE=$OpenViBE_base/openvibe/$OpenViBE_branch
 OpenViBE_kernel=$OpenViBE_base/openvibe-kernel-omk/$OpenViBE_kernel_branch
+OpenViBE_toolkit=$OpenViBE_base/openvibe-toolkit/$OpenViBE_toolkit_branch
 export OpenViBE
 export OpenViBE_kernel
+export OpenViBE_toolkit
 
 OpenViBE_modules=$OpenViBE_base/openvibe-modules
 OpenViBE_module_ebml=$OpenViBE_modules/ebml/$OpenViBE_modules_branch
