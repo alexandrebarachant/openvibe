@@ -852,7 +852,8 @@ public:
 	}
 	void scenarioDrawingAreaDragDataReceivedCB(::GdkDragContext* pDragContext, gint iX, gint iY, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT)
 	{
-		// cout << "scenarioDrawingAreaDragDataReceivedCB [" << gtk_selection_data_get_text(pSelectionData) << "]" << endl;
+		m_rKernel.getContext()->getLogManager() << LogLevel_Trace << "scenarioDrawingAreaDragDataReceivedCB [" << (const char*)gtk_selection_data_get_text(pSelectionData) << "]\n";
+
 		CIdentifier l_oBoxIdentifier;
 		CIdentifier l_oBoxAlgorithmClassIdentifier;
 		l_oBoxAlgorithmClassIdentifier.fromString((const char*)gtk_selection_data_get_text(pSelectionData));
@@ -874,7 +875,7 @@ public:
 	}
 	void scenarioDrawingAreaMotionNotifyCB(::GtkWidget* pWidget, ::GdkEventMotion* pEvent)
 	{
-		// cout << "scenarioDrawingAreaMotionNotifyCB" << endl;
+		m_rKernel.getContext()->getLogManager() << LogLevel_Trace << "scenarioDrawingAreaMotionNotifyCB\n";
 
 		if(m_ui32CurrentMode!=Mode_None)
 		{
@@ -916,7 +917,7 @@ public:
 	}
 	void scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidget, ::GdkEventButton* pEvent)
 	{
-		// cout << "scenarioDrawingAreaButtonPressedCB" << endl;
+		m_rKernel.getContext()->getLogManager() << LogLevel_Trace << "scenarioDrawingAreaButtonPressedCB\n";
 
 		gtk_widget_grab_focus(pWidget);
 
@@ -992,7 +993,7 @@ public:
 	}
 	void scenarioDrawingAreaButtonReleasedCB(::GtkWidget* pWidget, ::GdkEventButton* pEvent)
 	{
-		//cout << "scenarioDrawingAreaButtonReleasedCB" << endl;
+		m_rKernel.getContext()->getLogManager() << LogLevel_Trace << "scenarioDrawingAreaButtonReleasedCB\n";
 
 		m_bButtonPressed&=!((pEvent->type==GDK_BUTTON_RELEASE)&&(pEvent->button==1));
 		m_f64ReleaseMouseX=pEvent->x;
@@ -1075,26 +1076,26 @@ public:
 				NULL,
 				true);
 		}
-/*
-		std::cout	<< "scenarioDrawingAreaKeyPressEventCB ("
-					<< (m_bShiftPressed?"true":"false") << "|"
-					<< (m_bControlPressed?"true":"false") << "|"
-					<< (m_bAltPressed?"true":"false") << "|"
-					<< ")" << std::endl;
-*/
+
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug
+			<< "scenarioDrawingAreaKeyPressEventCB ("
+			<< (m_bShiftPressed?"true":"false") << "|"
+			<< (m_bControlPressed?"true":"false") << "|"
+			<< (m_bAltPressed?"true":"false") << "|"
+			<< ")\n";
 	}
 	void scenarioDrawingAreaKeyReleaseEventCB(::GtkWidget* pWidget, ::GdkEventKey* pEvent)
 	{
 		m_bShiftPressed  &=!(pEvent->keyval==GDK_Shift_L   || pEvent->keyval==GDK_Shift_R);
 		m_bControlPressed&=!(pEvent->keyval==GDK_Control_L || pEvent->keyval==GDK_Control_R);
 		m_bAltPressed    &=!(pEvent->keyval==GDK_Alt_L     || pEvent->keyval==GDK_Alt_R);
-/*
-		std::cout	<< "scenarioDrawingAreaKeyReleaseEventCB ("
-					<< (m_bShiftPressed?"true":"false") << "|"
-					<< (m_bControlPressed?"true":"false") << "|"
-					<< (m_bAltPressed?"true":"false") << "|"
-					<< ")" << std::endl;
-*/
+
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug
+			<< "scenarioDrawingAreaKeyReleaseEventCB ("
+			<< (m_bShiftPressed?"true":"false") << "|"
+			<< (m_bControlPressed?"true":"false") << "|"
+			<< (m_bAltPressed?"true":"false") << "|"
+			<< ")\n";
 	}
 
 	static void scenario_drawing_area_expose_cb(::GtkWidget* pWidget, ::GdkEventExpose* pEvent, gpointer pUserData)
@@ -1256,6 +1257,8 @@ public:
 
 	void dragDataGetCB(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "dragDataGetCB\n";
+
 		::GtkTreeView* l_pTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_tree"));
 		::GtkTreeSelection* l_pTreeSelection=gtk_tree_view_get_selection(l_pTreeView);
 		::GtkTreeModel* l_pTreeModel=NULL;
@@ -1281,6 +1284,8 @@ public:
 
 	void newScenarioCB(::GtkMenuItem* pMenuItem)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "newScenarioCB\n";
+
 		CIdentifier l_oScenarioIdentifier;
 		if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
 		{
@@ -1293,6 +1298,8 @@ public:
 	}
 	void openScenarioCB(::GtkMenuItem* pMenuItem)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "openScenarioCB\n";
+
 		::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
 			"Select scenario to open...",
 			NULL,
@@ -1357,6 +1364,8 @@ public:
 	}
 	void saveScenarioCB(::GtkMenuItem* pMenuItem)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "saveScenarioCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(!l_pCurrentInterfacedScenario)
 		{
@@ -1376,6 +1385,8 @@ public:
 	}
 	void saveScenarioAsCB(::GtkMenuItem* pMenuItem)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "saveScenarioAsCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(!l_pCurrentInterfacedScenario)
 		{
@@ -1408,6 +1419,8 @@ public:
 	}
 	void closeScenarioCB(::GtkMenuItem* pMenuItem)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "closeScenarioCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		vector<CInterfacedScenario*>::iterator i=m_vInterfacedScenario.begin();
 		while(i!=m_vInterfacedScenario.end() && *i!=l_pCurrentInterfacedScenario) i++;
@@ -1421,6 +1434,8 @@ public:
 	}
 	void previousScenarioCB(::GtkButton* pButton)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "previousScenarioCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
 		{
@@ -1438,6 +1453,8 @@ public:
 	}
 	void playScenarioCB(::GtkButton* pButton)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "playScenarioCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
 		{
@@ -1453,6 +1470,8 @@ public:
 	}
 	void pauseScenarioCB(::GtkButton* pButton)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "pauseScenarioCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
 		{
@@ -1464,6 +1483,8 @@ public:
 	}
 	void stopScenarioCB(::GtkButton* pButton)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "stopScenarioCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
 		{
@@ -1477,6 +1498,8 @@ public:
 	}
 	void nextScenarioCB(::GtkButton* pButton)
 	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "nextScenarioCB\n";
+
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
 		{
@@ -1489,57 +1512,46 @@ public:
 
 	static void drag_data_get_cb(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pUserData)
 	{
-		// cout<<"drag_data_get_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->dragDataGetCB(pWidget, pDragContex, pSelectionData, uiInfo, uiT);
 	}
 	static void new_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
-		// cout<<"new_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->newScenarioCB(pMenuItem);
 	}
 	static void open_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
-		// cout<<"open_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->openScenarioCB(pMenuItem);
 	}
 	static void save_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
-		// cout<<"save_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->saveScenarioCB(pMenuItem);
 	}
 	static void save_scenario_as_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
-		// cout<<"save_scenario_as_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->saveScenarioAsCB(pMenuItem);
 	}
 	static void close_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
-		// cout<<"close_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->closeScenarioCB(pMenuItem);
 	}
 	static void previous_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"previous_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->previousScenarioCB(pButton);
 	}
 	static void play_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"play_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->playScenarioCB(pButton);
 	}
 	static void pause_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"pause_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->pauseScenarioCB(pButton);
 	}
 	static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"stop_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->stopScenarioCB(pButton);
 	}
 	static void next_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		cout<<"next_scenario_cb"<<endl;
 		static_cast<CApplication*>(pUserData)->nextScenarioCB(pButton);
 	}
 	static gboolean idle_scenario_step(gpointer pUserData)
@@ -1771,20 +1783,23 @@ int main(int argc, char ** argv)
 					cout<<"[  INF  ] Created Kernel, going on testing"<<endl;
 
 					gtk_init(&g_argc, &g_argv);
-					::CApplication app(l_pKernel);
-					app.init();
 
 					ILogManager& l_rLogManager=l_pKernel->getContext()->getLogManager();
 					l_rLogManager.activate(LogLevel_Debug, false);
+					l_rLogManager.activate(LogLevel_Trace, false);
 					l_rLogManager.activate(LogLevel_Info, true);
 					l_rLogManager.activate(LogLevel_Warning, true);
 					l_rLogManager.activate(LogLevel_Error, true);
+					l_rLogManager.activate(LogLevel_Fatal, true);
 
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-Plugins-*.so");
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-*.so");
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-Plugins-*.dll");
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-*.dll");
+
+					::CApplication app(l_pKernel);
+					app.init();
 
 					CPluginDescEnumCB cb(app.m_pBoxAlgorithmTreeModel);
 					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_BoxAlgorithmDesc);
@@ -1821,7 +1836,9 @@ int main(int argc, char ** argv)
 	srand(time(NULL));
 	for(int i=0; i<15; i++)
 	{
-		printf("#define OV_ClassId_                                        OpenViBE::CIdentifier(0x%08X, 0x%08X)\n", rand(), rand());
+		uint32 l_ui32Vale1=(rand()&0x00ffffff);
+		uint32 l_ui32Vale2=(rand()&0xffffffff);
+		printf("#define OV_ClassId_                                        OpenViBE::CIdentifier(0x%08X, 0x%08X)\n", l_ui32Vale1, l_ui32Vale2);
 	}
 
 	return 0;

@@ -81,7 +81,7 @@ static boolean ovasDriverInitializeImpl(
 	g_fpNeXusDLLInit=(NeXusDLL_Init)GetProcAddress(g_hNeXusDLLInstance, "InitNeXusDevice");
 	g_fpNeXusDLLStart=(NeXusDLL_Start)GetProcAddress(g_hNeXusDLLInstance,"StartNeXusDevice");
 	g_fpNeXusDLLStop=(NeXusDLL_Stop)GetProcAddress(g_hNeXusDLLInstance, "StopNeXusDevice");
-	g_pSample=new float32[iSampleCount*iChannel];
+	g_pSample=new float32[ui32ChannelCount*ui32SampleCountPerChannel];
 
 	if(!g_fpNeXusDLLInit || !g_fpNeXusDLLStart || !g_fpNeXusDLLStop || !g_pSample)
 	{

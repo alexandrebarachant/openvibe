@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <string>
+#include <assert.h>
 
 class IKernelContextHandle
 {

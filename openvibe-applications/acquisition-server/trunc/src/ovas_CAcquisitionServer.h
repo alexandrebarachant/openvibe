@@ -39,7 +39,7 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CConnectionHandler : virtual public EBML::IWriterCallBack
+	class CConnectionHandler : virtual public EBML::IWriterCallback
 	{
 	public:
 

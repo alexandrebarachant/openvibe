@@ -1,6 +1,7 @@
 #include "ovkCPlayer.h"
 
 // #define __Distributed_Controller__
+// #define __Has_XML_Simulation_File__
 
 #include "ovkEventId.h"
 
@@ -15,8 +16,10 @@
 #include <PsMultipleConfigurationParameter.h>
 #include <PsUniqueConfigurationParameter.h>
 #include <PsSimulatedObjectCreator.h>
-#include <OmkXml.h>
-#ifdef __Distributed_Controller__
+#if defined __Has_XML_Simulation_File__
+ #include <OmkXml.h>
+#endif
+#if defined __Distributed_Controller__
  #include <PsPvmController.h>
 #endif
 
@@ -140,7 +143,9 @@ boolean CPlayer::reset(
 
 	rScenario.enumerateBoxes(*this);
 
-	// ::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", l_pSimulation);
+#if defined __Has_XML_Simulation_File__
+	::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", l_pSimulation);
+#endif
 
 #ifdef __Distributed_Controller__
 	m_pController=new ::PsPvmController(*m_pSimulation, 0, g_argc, g_argv);

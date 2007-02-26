@@ -1,8 +1,6 @@
 #include "ovkCStaticBoxContext.h"
 
-#if defined OVK_OS_Windows
- #include <assert.h>
-#endif
+#include <assert.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

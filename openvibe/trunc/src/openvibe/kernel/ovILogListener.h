@@ -10,9 +10,11 @@ namespace OpenViBE
 		enum ELogLevel
 		{
 			LogLevel_Debug                      =0x00000001,
-			LogLevel_Info                       =0x00000002,
-			LogLevel_Warning                    =0x00000003,
-			LogLevel_Error                      =0x00000004,
+			LogLevel_Trace                      =0x00000002,
+			LogLevel_Info                       =0x00000003,
+			LogLevel_Warning                    =0x00000004,
+			LogLevel_Error                      =0x00000005,
+			LogLevel_Fatal                      =0x00000006,
 		};
 
 		enum ELogColor

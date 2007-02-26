@@ -100,6 +100,15 @@ void CLogListenerConsole::log(const ELogLevel eLogLevel)
 			cout << "]";
 			break;
 
+		case LogLevel_Trace:
+			cout << "[";
+			log(LogColor_PushStateBit);
+			log(LogColor_ForegroundYellow);
+			cout << " TRACE ";
+			log(LogColor_PopStateBit);
+			cout << "]";
+			break;
+
 		case LogLevel_Info:
 			cout << "[";
 			log(LogColor_PushStateBit);
@@ -123,6 +132,15 @@ void CLogListenerConsole::log(const ELogLevel eLogLevel)
 			log(LogColor_PushStateBit);
 			log(LogColor_ForegroundRed);
 			cout << " ERROR ";
+			log(LogColor_PopStateBit);
+			cout << "]";
+			break;
+
+		case LogLevel_Fatal:
+			cout << "[";
+			log(LogColor_PushStateBit);
+			log(LogColor_ForegroundRed);
+			cout << " FATAL ";
 			log(LogColor_PopStateBit);
 			cout << "]";
 			break;
