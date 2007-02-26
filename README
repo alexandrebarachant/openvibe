@@ -45,6 +45,10 @@ on the web page :
 		This folder contains several usefull tools which have
 		no direct relationship with EEG
 
+<openvibe-toolkit>
+	This folder contains some helper objects designed for plugin
+	developpers.
+
 |Building.the.platform|
 
 See INSTALL in order to get information on how to build the platform
