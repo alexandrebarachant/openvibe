@@ -5,14 +5,16 @@
 
 namespace XML
 {
-	class XML_API IReaderCallBack
+	class XML_API IReaderCallback
 	{
 	public:
-		virtual ~IReaderCallBack(void) { }
+		virtual ~IReaderCallback(void) { }
 		virtual void openChild(const char* sName, const char** sAttributeName, const char** sAttributeValue, XML::uint64 ui64AttributeCount)=0;
 		virtual void processChildData(const char* sData)=0;
 		virtual void closeChild(void)=0;
 	};
+
+	class XML_API IReaderCallBack : virtual public IReaderCallback { };
 
 	class XML_API IReader
 	{
@@ -23,7 +25,7 @@ namespace XML
 		virtual ~IReader(void) { }
 	};
 
-	extern XML_API XML::IReader* createReader(XML::IReaderCallBack& rReaderCallBack);
+	extern XML_API XML::IReader* createReader(XML::IReaderCallback& rReaderCallback);
 };
 
 #endif // __XML_IReader_H__

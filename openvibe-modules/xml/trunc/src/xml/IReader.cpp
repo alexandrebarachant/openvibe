@@ -11,14 +11,14 @@ namespace XML
 	class CReader : virtual public IReader
 	{
 	public:
-		CReader(IReaderCallBack& rReaderCallBack);
+		CReader(IReaderCallback& rReaderCallback);
 
 		virtual XML::boolean processData(const void* pBuffer, const uint64 ui64BufferSize);
 		virtual void release(void);
 
 	protected:
 
-		IReaderCallBack& m_rReaderCallBack;
+		IReaderCallback& m_rReaderCallback;
 		::XML_Parser m_pXMLParser;
 	};
 
@@ -27,14 +27,14 @@ namespace XML
 	static void XMLCALL expat_xml_data(void* pData, const char* pDataValue, int iDataLength);
 };
 
-CReader::CReader(IReaderCallBack& rReaderCallBack)
-	:m_rReaderCallBack(rReaderCallBack)
+CReader::CReader(IReaderCallback& rReaderCallback)
+	:m_rReaderCallback(rReaderCallback)
 	,m_pXMLParser(NULL)
 {
 	m_pXMLParser=XML_ParserCreate(NULL);
 	XML_SetElementHandler(m_pXMLParser, expat_xml_start, expat_xml_end);
 	XML_SetCharacterDataHandler(m_pXMLParser, expat_xml_data);
-	XML_SetUserData(m_pXMLParser, &m_rReaderCallBack);
+	XML_SetUserData(m_pXMLParser, &m_rReaderCallback);
 }
 
 boolean CReader::processData(const void* pBuffer, const uint64 ui64BufferSize)
@@ -53,9 +53,9 @@ void CReader::release(void)
 	delete this;
 }
 
-XML_API IReader* XML::createReader(IReaderCallBack& rReaderCallBack)
+XML_API IReader* XML::createReader(IReaderCallback& rReaderCallback)
 {
-	return new CReader(rReaderCallBack);
+	return new CReader(rReaderCallback);
 }
 
 static void XMLCALL XML::expat_xml_start(void* pData, const char* pElement, const char** ppAttribute)
@@ -74,7 +74,7 @@ static void XMLCALL XML::expat_xml_start(void* pData, const char* pElement, cons
 		l_pAttributeValue[i]=ppAttribute[(i<<1)+1];
 	}
 
-	static_cast<IReaderCallBack*>(pData)->openChild(pElement, l_pAttributeName, l_pAttributeValue, l_ui64AttributeCount);
+	static_cast<IReaderCallback*>(pData)->openChild(pElement, l_pAttributeName, l_pAttributeValue, l_ui64AttributeCount);
 
 	delete [] l_pAttributeName;
 	delete [] l_pAttributeValue;
@@ -82,11 +82,11 @@ static void XMLCALL XML::expat_xml_start(void* pData, const char* pElement, cons
 
 static void XMLCALL XML::expat_xml_end(void* pData, const char* pElement)
 {
-	static_cast<IReaderCallBack*>(pData)->closeChild();
+	static_cast<IReaderCallback*>(pData)->closeChild();
 }
 
 static void XMLCALL XML::expat_xml_data(void* pData, const char* pDataValue, int iDataLength)
 {
 	string sData(pDataValue, iDataLength);
-	static_cast<IReaderCallBack*>(pData)->processChildData(sData.c_str());
+	static_cast<IReaderCallback*>(pData)->processChildData(sData.c_str());
 }

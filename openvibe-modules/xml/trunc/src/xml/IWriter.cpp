@@ -12,7 +12,7 @@ namespace XML
 	class CWriter : virtual public IWriter
 	{
 	public:
-		CWriter(IWriterCallBack& rWriterCallBack);
+		CWriter(IWriterCallback& rWriterCallback);
 
 		virtual XML::boolean openChild(const char* sName);
 		virtual XML::boolean setChildData(const char* sData);
@@ -20,15 +20,15 @@ namespace XML
 		virtual void release(void);
 
 	protected:
-		IWriterCallBack& m_rWriterCallBack;
+		IWriterCallback& m_rWriterCallback;
 		stack<string> m_vNodes;
 		boolean m_bHasChild;
 		boolean m_bHasData;
 	};
 };
 
-CWriter::CWriter(IWriterCallBack& rWriterCallBack)
-	:m_rWriterCallBack(rWriterCallBack)
+CWriter::CWriter(IWriterCallback& rWriterCallback)
+	:m_rWriterCallback(rWriterCallback)
 	,m_bHasChild(false)
 	,m_bHasData(false)
 {
@@ -48,7 +48,7 @@ boolean CWriter::openChild(const char* sName)
 
 	string l_sIndent(m_vNodes.size(), '\t');
 	string l_sResult=(m_vNodes.size()!=0?string("\n"):string(""))+l_sIndent+string("<")+string(sName)+string(">");
-	m_rWriterCallBack.write(l_sResult.c_str());
+	m_rWriterCallback.write(l_sResult.c_str());
 	m_vNodes.push(sName);
 	m_bHasChild=false;
 	m_bHasData=false;
@@ -67,7 +67,7 @@ boolean CWriter::setChildData(const char* sData)
 		return false;
 	}
 
-	m_rWriterCallBack.write(sData);
+	m_rWriterCallback.write(sData);
 	m_bHasChild=false;
 	m_bHasData=true;
 	return true;
@@ -82,7 +82,7 @@ boolean CWriter::closeChild(void)
 
 	string l_sIndent(m_vNodes.size()-1, '\t');
 	string l_sResult=((m_bHasData||(!m_bHasData&&!m_bHasChild))?string(""):string("\n")+l_sIndent)+string("</")+m_vNodes.top()+string(">");
-	m_rWriterCallBack.write(l_sResult.c_str());
+	m_rWriterCallback.write(l_sResult.c_str());
 	m_vNodes.pop();
 	m_bHasChild=true;
 	m_bHasData=false;
@@ -98,7 +98,7 @@ void CWriter::release(void)
 	delete this;
 }
 
-XML_API XML::IWriter* XML::createWriter(IWriterCallBack& rWriterCallBack)
+XML_API XML::IWriter* XML::createWriter(IWriterCallback& rWriterCallback)
 {
-	return new CWriter(rWriterCallBack);
+	return new CWriter(rWriterCallback);
 }

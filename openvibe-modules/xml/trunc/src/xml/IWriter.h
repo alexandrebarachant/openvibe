@@ -5,12 +5,14 @@
 
 namespace XML
 {
-	class XML_API IWriterCallBack
+	class XML_API IWriterCallback
 	{
 	public:
-		virtual ~IWriterCallBack(void) { }
-		virtual void write(const char* pString)=0;
+		virtual ~IWriterCallback(void) { }
+		virtual void write(const char* sString)=0;
 	};
+
+	class XML_API IWriterCallBack : virtual public IWriterCallback { };
 
 	class XML_API IWriter
 	{
@@ -23,7 +25,7 @@ namespace XML
 		virtual ~IWriter(void) { }
 	};
 
-	extern XML_API XML::IWriter* createWriter(XML::IWriterCallBack& rWriterCallBack);
+	extern XML_API XML::IWriter* createWriter(XML::IWriterCallback& rWriterCallback);
 };
 
 #endif // __XML_IWriter_H__
