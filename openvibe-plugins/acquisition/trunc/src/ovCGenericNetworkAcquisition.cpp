@@ -88,7 +88,7 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) c
 	// Adds box inputs
 
 	// Adds box outputs
-	rPrototype.addOutput("EEG stream",           OV_TypeId_EEGStream);
+	rPrototype.addOutput("EEG stream",           OV_TypeId_Signal);
 
 	// Adds box settings
 	rPrototype.addSetting("EEG server hostname", OV_TypeId_String,  "localhost");
