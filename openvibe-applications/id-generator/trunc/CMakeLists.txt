@@ -1,0 +1,47 @@
+PROJECT(OpenViBE-id-generator)
+
+SET(PROJECT_VERSION_MAJOR 1)
+SET(PROJECT_VERSION_MINOR 0)
+SET(PROJECT_VERSION_PATCH 0)
+SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
+
+# ---------------------------------
+# Target macros
+# Defines target operating system
+# Defines target architecture
+# Defines target compilator
+# ---------------------------------
+IF(WIN32)
+	ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+	ADD_DEFINITIONS(-DTARGET_OS_Windows)
+	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
+	ADD_DEFINITIONS(-DTARGET_COMPILATOR_VisualStudio)
+ENDIF(WIN32)
+IF(UNIX)
+	# ADD_DEFINITIONS(-fvisibility=hidden) # This flag should be present... man gcc
+	ADD_DEFINITIONS(-g)
+	ADD_DEFINITIONS(-DTARGET_OS_Linux)
+	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
+	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
+ENDIF(UNIX)
+
+# ---------------------------------
+# Configures paths if not already defined
+# Defines executable path
+# Defines library output path
+# Defines include output path
+# ---------------------------------
+IF(NOT EXECUTABLE_OUTPUT_PATH)
+	SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+	MESSAGE(STATUS "EXECUTABLE_OUTPUT_PATH configured to default ${EXECUTABLE_OUTPUT_PATH}")
+ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
+IF(NOT LIBRARY_OUTPUT_PATH)
+	SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+	MESSAGE(STATUS "LIBRARY_OUTPUT_PATH configured to default ${LIBRARY_OUTPUT_PATH}")
+ENDIF(NOT LIBRARY_OUTPUT_PATH)
+SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
+
+FILE(GLOB_RECURSE source_files src/*.cpp)
+ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
+# ADD_EXECUTABLE(${PROJECT_NAME}-static ${source_files})
+# SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")
