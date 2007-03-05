@@ -3,8 +3,6 @@
 #include <system/Memory.h>
 #include <system/Time.h>
 
-#include <openvibe-toolkit/ovtk_all.h>
-
 #include <iostream>
 #include <fstream>
 
@@ -259,28 +257,28 @@ void CAcquisitionServer::idleCB(void)
 
 			uint32 i;
 			EBML::IWriterHelper& l_rWriterHelper=l_pConnectionHandler->getWriterHelper();
-			l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_Header);
-				l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_AcquisitionInformation);
-					l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_ExperimentId);
+			l_rWriterHelper.openChild(EBML_Identifier_HEADER);
+				l_rWriterHelper.openChild(EBML_Identifier_INFORMATION);
+					l_rWriterHelper.openChild(EBML_Identifier_EXPERIMENT_ID);
 						l_rWriterHelper.setUIntegerAsChildData(m_ui32ExperimentIdentifier);
 					l_rWriterHelper.closeChild();
-					l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_SubjectAge);
+					l_rWriterHelper.openChild(EBML_Identifier_SUBJECT_AGE);
 						l_rWriterHelper.setUIntegerAsChildData(m_ui32SubjectAge);
 					l_rWriterHelper.closeChild();
-					l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_SubjectSex);
+					l_rWriterHelper.openChild(EBML_Identifier_SUBJECT_SEX);
 						l_rWriterHelper.setUIntegerAsChildData(m_ui32SubjectSex);
 					l_rWriterHelper.closeChild();
 				l_rWriterHelper.closeChild();
-				l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_ChannelCount);
+				l_rWriterHelper.openChild(EBML_Identifier_CHANNEL_NUMBER);
 					l_rWriterHelper.setUIntegerAsChildData(m_ui32ChannelCount);
 				l_rWriterHelper.closeChild();
-				l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_SamplingFrequency);
+				l_rWriterHelper.openChild(EBML_Identifier_SAMPLING_FREQUENCY);
 					l_rWriterHelper.setUIntegerAsChildData(m_ui32SamplingFrequency);
 				l_rWriterHelper.closeChild();
-				l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_ChannelNames);
+				l_rWriterHelper.openChild(EBML_Identifier_CHANNEL_NAME_LIST);
 					for(i=0; i<m_ui32ChannelCount; i++)
 					{
-						l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_ChannelName);
+						l_rWriterHelper.openChild(EBML_Identifier_CHANNEL_NAME);
 							l_rWriterHelper.setASCIIStringAsChildData(m_vChannelName[i].c_str());
 						l_rWriterHelper.closeChild();
 					}
@@ -305,14 +303,14 @@ void CAcquisitionServer::idleCB(void)
 			if(m_bStarted && m_bGotData)
 			{
 				EBML::IWriterHelper& l_rWriterHelper=(*itConnectionHandler)->getWriterHelper();
-				l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_Buffer);
-					l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_Samples);
-						l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_SamplesPerChannelCount);
+				l_rWriterHelper.openChild(EBML_Identifier_BUFFER);
+					l_rWriterHelper.openChild(EBML_Identifier_SAMPLES);
+						l_rWriterHelper.openChild(EBML_Identifier_NUMBER_OF_SAMPLE_PER_CHANNELS);
 							l_rWriterHelper.setUIntegerAsChildData(m_ui32SampleCountPerSentBlock);
 						l_rWriterHelper.closeChild();
 						for(uint32 i=0; i<m_ui32ChannelCount; i++)
 						{
-							l_rWriterHelper.openChild(OVTK_NodeId_Acquisition_SampleBlock);
+							l_rWriterHelper.openChild(EBML_Identifier_SAMPLE_BLOC);
 								l_rWriterHelper.setBinaryAsChildData(m_pSampleBuffer, m_ui32ChannelCount*m_ui32SampleCountPerSentBlock*sizeof(float32));
 							l_rWriterHelper.closeChild();
 						}
