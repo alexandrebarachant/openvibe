@@ -5,5 +5,6 @@ source linux-collect_build
 ./linux-collect_build
 
 cd ../dist/bin
+./OpenViBE-id-generator-dynamic
 ./OpenViBE-acquisition-server-dynamic &
 ./OpenViBE-designer-dynamic &
