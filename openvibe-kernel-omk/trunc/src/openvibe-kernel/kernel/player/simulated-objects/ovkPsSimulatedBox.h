@@ -148,6 +148,7 @@ public:
 		const OpenViBE::uint64 ui64BufferSize);
 	virtual OpenViBE::boolean markOutputAsReadyToSend(
 		const OpenViBE::uint32 ui32OutputIndex,
+		const OpenViBE::uint64 ui64StartTime,
 		const OpenViBE::uint64 ui64EndTime);
 
 protected:
@@ -157,6 +158,12 @@ protected:
 	/// \brief Call back to process the "OpenViBEDataUpdate" event
 	/// \return see \ref PsValuedEventListenerCallBack::CallBackFct
 	virtual bool processOpenViBEDataUpdateEvent( ::PsValuedEvent< ::PsTypeChunk > *e ) ;
+	/// \brief Call back to process the "MaskStart" event
+	/// \return see \ref PsEventListenerCallBack::CallBackFct
+	virtual bool processMaskStartEvent( ::PsEvent *e ) ;
+	/// \brief Call back to process the "MaskStop" event
+	/// \return see \ref PsEventListenerCallBack::CallBackFct
+	virtual bool processMaskStopEvent( ::PsEvent *e ) ;
 	//@}
 
 	IKernelContextHandle m_oKernelContextHandle;
@@ -173,7 +180,8 @@ public:
 	using PsSimulatedBoxBase::sendOpenViBEDataUpdateEvent;
 
 	std::vector<std::vector< ::PsTypeChunk > > m_vInput;
-	std::vector< ::PsTypeChunk > m_vOutput;
+	std::vector<std::vector< ::PsTypeChunk > > m_vOutput;
+	std::vector< ::PsTypeChunk > m_vCurrentOutput;
 	// std::vector<std::string> m_vSetting;
 };
 

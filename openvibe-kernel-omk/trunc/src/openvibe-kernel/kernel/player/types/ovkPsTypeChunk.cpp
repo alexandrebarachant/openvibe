@@ -41,25 +41,38 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Kernel::Player;
 
+/*
+std::ostream& operator<<(std::ostream& rStream, const uint64& pValue)
+{
+	rStream<<((uint32)((pValue    )&0xffffffffLL));
+	rStream<<((uint32)((pValue>>32)&0xffffffffLL));
+	return rStream;
+}
+*/
 std::ostream& operator<<(std::ostream& rStream, const CBuffer& rBuffer)
 {
-	rStream<<((uint32)(rBuffer.getSize()&0xffffffffLL));
-	rStream<<((uint32)((rBuffer.getSize()>>32)&0xffffffffLL));
+	rStream<<rBuffer.getSize();
 	for(uint64 i=0; i<rBuffer.getSize(); i++)
 	{
 		rStream<<rBuffer.getDirectPointer()[i];
 	}
 	return rStream;
 }
-
+/*
+std::istream& operator>>(std::istream& rStream, uint64& rValue)
+{
+	uint32 l_ui32Value1;
+	uint32 l_ui32Value2;
+	rStream>>l_ui32Value1;
+	rStream>>l_ui32Value2;
+	rValue=(((uint64)(l_ui32Value2))<<32)+((uint64)(l_ui32Value1));
+	return rStream;
+}
+*/
 std::istream& operator>>(std::istream& rStream, CBuffer& rBuffer)
 {
-	uint32 l_ui32Size1;
-	uint32 l_ui32Size2;
-	rStream>>l_ui32Size1;
-	rStream>>l_ui32Size2;
-	uint64 l_ui64Size=(((uint64)(l_ui32Size2))<<32)+((uint64)(l_ui32Size1));
-
+	uint64 l_ui64Size;
+	rStream>>l_ui64Size;
 	rBuffer.setSize(l_ui64Size);
 	for(uint32 i=0; i<l_ui64Size; i++)
 	{
@@ -68,10 +81,16 @@ std::istream& operator>>(std::istream& rStream, CBuffer& rBuffer)
 	return rStream;
 }
 
+PsOutgoingSynchronisationMessage& operator<<(PsOutgoingSynchronisationMessage& rStream, const uint64& pValue)
+{
+	rStream<<((uint32)((pValue    )&0xffffffffLL));
+	rStream<<((uint32)((pValue>>32)&0xffffffffLL));
+	return rStream;
+}
+
 PsOutgoingSynchronisationMessage& operator<<(PsOutgoingSynchronisationMessage& rStream, const CBuffer& rBuffer)
 {
-	rStream<<((uint32)(rBuffer.getSize()&0xffffffffLL));
-	rStream<<((uint32)((rBuffer.getSize()>>32)&0xffffffffLL));
+	rStream<<rBuffer.getSize();
 	for(uint32 i=0; i<rBuffer.getSize(); i++)
 	{
 		rStream<<rBuffer.getDirectPointer()[i];
@@ -79,14 +98,20 @@ PsOutgoingSynchronisationMessage& operator<<(PsOutgoingSynchronisationMessage& r
 	return rStream;
 }
 
+PsIncomingSynchronisationMessage& operator>>(PsIncomingSynchronisationMessage& rStream, uint64& rValue)
+{
+	uint32 l_ui32Value1;
+	uint32 l_ui32Value2;
+	rStream>>l_ui32Value1;
+	rStream>>l_ui32Value2;
+	rValue=(((uint64)(l_ui32Value2))<<32)+((uint64)(l_ui32Value1));
+	return rStream;
+}
+
 PsIncomingSynchronisationMessage& operator>>(PsIncomingSynchronisationMessage& rStream, CBuffer& rBuffer)
 {
-	uint32 l_ui32Size1;
-	uint32 l_ui32Size2;
-	rStream>>l_ui32Size1;
-	rStream>>l_ui32Size2;
-	uint64 l_ui64Size=(((uint64)(l_ui32Size2))<<32)+((uint64)(l_ui32Size1));
-
+	uint64 l_ui64Size;
+	rStream>>l_ui64Size;
 	rBuffer.setSize(l_ui64Size);
 	for(uint32 i=0; i<l_ui64Size; i++)
 	{
@@ -99,8 +124,7 @@ PsIncomingSynchronisationMessage& operator>>(PsIncomingSynchronisationMessage& r
 // Default constructor
 PsTypeChunk::PsTypeChunk()
 : PsType(),
-	m_bDeprecated(false) ,
-	m_bReadyToSend(false)
+	m_bDeprecated(false)
 {
 }
 
@@ -108,25 +132,23 @@ PsTypeChunk::PsTypeChunk()
 // Copy constructor
 PsTypeChunk::PsTypeChunk( const PsTypeChunk& ref )
 : PsType(),
-	m_bDeprecated(false) ,
-	m_bReadyToSend(false)
+	m_bDeprecated(false)
 {
   _copy( ref ) ;
 }
 
 //========================================================================
 // Constructor with the parameters
-PsTypeChunk::PsTypeChunk( int ioConnectorIndex,
-                            int startTime,
-                            int endTime,
+PsTypeChunk::PsTypeChunk( uint32 ioConnectorIndex,
+                            uint64 startTime,
+                            uint64 endTime,
                             const CBuffer& buffer)
 : PsType(),
 	_ioConnectorIndex( ioConnectorIndex ) ,
 	_startTime( startTime ) ,
 	_endTime( endTime ) ,
 	_buffer( buffer ) ,
-	m_bDeprecated(false) ,
-	m_bReadyToSend(false)
+	m_bDeprecated(false)
 {
 }
 
@@ -143,6 +165,8 @@ void PsTypeChunk::resetDefaultValues()
 	//=== Reset default parameters
 	// No parameters to reset => Nothing to do
 }
+
+#if 0
 
 //========================================================================
 // Configuration parameters loader
@@ -188,6 +212,8 @@ bool PsTypeChunk::innerParametersLoader( const PsConfigurationParameterDescripto
 	// No validation requiered, always true if valid node was given
 	return true ;
 }
+
+#endif
 
 //========================================================================
 // != operator

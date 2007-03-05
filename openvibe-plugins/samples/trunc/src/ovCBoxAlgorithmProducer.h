@@ -74,7 +74,7 @@ namespace OpenViBEPlugins
 				m_pWriterHelper->setASCIIStringAsChildData("OpenViBE producer sent this !");
 				m_pWriterHelper->closeChild();
 				m_pWriterHelper->disconnect();
-				m_pBoxAlgorithmContext->getDynamicBoxContext()->markOutputAsReadyToSend(0, 0);
+				m_pBoxAlgorithmContext->getDynamicBoxContext()->markOutputAsReadyToSend(0, 0, 0);
 
 				m_pBoxAlgorithmContext=NULL;
 				return true;

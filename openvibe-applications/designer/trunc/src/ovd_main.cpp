@@ -1,6 +1,5 @@
-#if 1
-
 #include <openvibe/ov_all.h>
+
 #include <iostream>
 #include <stack>
 #include <vector>
@@ -1752,9 +1751,9 @@ int main(int argc, char ** argv)
 		cout<<"[  INF  ] Created kernel loader"<<endl;
 		CString m_sError;
 #ifdef WIN32
-		if(!l_pKernelLoader->load("../lib/OpenViBE-Kernel-dynamic.dll", &m_sError))
+		if(!l_pKernelLoader->load("../lib/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
-		if(!l_pKernelLoader->load("../lib/libOpenViBE-Kernel-dynamic.so", &m_sError))
+		if(!l_pKernelLoader->load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
 #endif
 		{
 				cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
@@ -1823,25 +1822,3 @@ int main(int argc, char ** argv)
 
 	return 0;
 }
-
-#else
-
-#include <iostream>
-#include <math.h>
-
-int main(int argc, char ** argv)
-{
-	std::cout<<"hello world"<<std::endl;
-
-	srand(time(NULL));
-	for(int i=0; i<15; i++)
-	{
-		uint32 l_ui32Vale1=(rand()&0x00ffffff);
-		uint32 l_ui32Vale2=(rand()&0xffffffff);
-		printf("#define OV_ClassId_                                        OpenViBE::CIdentifier(0x%08X, 0x%08X)\n", l_ui32Vale1, l_ui32Vale2);
-	}
-
-	return 0;
-}
-
-#endif

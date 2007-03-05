@@ -46,6 +46,9 @@ ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 # ADD_EXECUTABLE(${PROJECT_NAME}-static ${source_files})
 # SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")
 
+ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-dynamic)
+ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
+
 # ---------------------------------
 # Finds module EBML
 # Adds library to target

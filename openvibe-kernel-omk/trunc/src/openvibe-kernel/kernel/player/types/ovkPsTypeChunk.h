@@ -32,7 +32,7 @@
 #if !defined _TYPES_OVKPSTYPECHUNK_H_
 #define _TYPES_OVKPSTYPECHUNK_H_
 
-#include <PsType.h> 
+#include <PsType.h>
 #include "../ovkCBuffer.h"
 
 class PsSimulatedObject;
@@ -150,7 +150,7 @@ class PsConfigurationParameterDescriptor;
    _psTypeChunk2.loadParameters( node ? node->getSubDescriptorByName( "secondPsTypeChunk" ) : 0, "", this ) ;
  }
  * \endcode
- * 
+ *
  */
 
 class PsTypeChunk : public PsType
@@ -163,9 +163,9 @@ public:
 	/// \brief Copy constructor of \ref PsTypeChunk.
 	PsTypeChunk( const PsTypeChunk& ref ) ;
 	/// \brief Constructor of \ref PsTypeChunk with all the parameters.
-	PsTypeChunk( int ioConnectorIndex,
-		int startTime,
-		int endTime,
+	PsTypeChunk( OpenViBE::uint32 ioConnectorIndex,
+		OpenViBE::uint64 startTime,
+		OpenViBE::uint64 endTime,
 		const OpenViBE::Kernel::Player::CBuffer& buffer ) ;
 	/// \brief Destructor of \ref PsTypeChunk.
 	virtual ~PsTypeChunk() ;
@@ -177,6 +177,8 @@ public:
 	/// \brief Reset the default values of  \ref PsTypeChunk.
 	virtual void resetDefaultValues() ;
 	
+#if 0
+
 	/// \brief Configuration parameters loader of \ref PsTypeChunk.
 	/// \param[in] node the root node of the configuration parameter
 	/// \param[in] prefix the text that prefix the parameters name.
@@ -204,23 +206,25 @@ protected:
 					PsSimulatedObject* p ) ;
 	//@}
 
+#endif
+
 	/// @name Accessors to attributes.
 	//@{
 public:
 	/// \brief Set the \b ioConnectorIndex value of \ref PsTypeChunk.
-	void setIoConnectorIndex( int ioConnectorIndex ) { _ioConnectorIndex = ioConnectorIndex ; }
+	void setIoConnectorIndex( OpenViBE::uint32 ioConnectorIndex ) { _ioConnectorIndex = ioConnectorIndex ; }
 	/// \brief Return the \b ioConnectorIndex value of \ref PsTypeChunk.
-	int getIoConnectorIndex() const { return _ioConnectorIndex ; }
+	OpenViBE::uint32 getIoConnectorIndex() const { return _ioConnectorIndex ; }
 
 	/// \brief Set the \b startTime value of \ref PsTypeChunk.
-	void setStartTime( int startTime ) { _startTime = startTime ; }
+	void setStartTime( OpenViBE::uint64 startTime ) { _startTime = startTime ; }
 	/// \brief Return the \b startTime value of \ref PsTypeChunk.
-	int getStartTime() const { return _startTime ; }
+	OpenViBE::uint64 getStartTime() const { return _startTime ; }
 
 	/// \brief Set the \b endTime value of \ref PsTypeChunk.
-	void setEndTime( int endTime ) { _endTime = endTime ; }
+	void setEndTime( OpenViBE::uint64 endTime ) { _endTime = endTime ; }
 	/// \brief Return the \b endTime value of \ref PsTypeChunk.
-	int getEndTime() const { return _endTime ; }
+	OpenViBE::uint64 getEndTime() const { return _endTime ; }
 
 	/// \brief Set the \b buffer value of \ref PsTypeChunk.
 	void setBuffer( const OpenViBE::Kernel::Player::CBuffer& buffer ) { _buffer = buffer ; }
@@ -262,18 +266,17 @@ protected:
 	/// @name Datas
 	//@{
 	/// \brief This member holds the \b ioConnectorIndex values of \ref PsTypeChunk.
-	int _ioConnectorIndex ;
+	OpenViBE::uint32 _ioConnectorIndex ;
 	/// \brief This member holds the \b startTime values of \ref PsTypeChunk.
-	int _startTime ;
+	OpenViBE::uint64 _startTime ;
 	/// \brief This member holds the \b endTime values of \ref PsTypeChunk.
-	int _endTime ;
+	OpenViBE::uint64 _endTime ;
 	/// \brief This member holds the \b buffer values of \ref PsTypeChunk.
 	OpenViBE::Kernel::Player::CBuffer _buffer ;
 	//@}
 
 public:
 	bool m_bDeprecated;
-	bool m_bReadyToSend;
 } ;
 
 #endif // defined _TYPES_OVKPSTYPECHUNK_H_

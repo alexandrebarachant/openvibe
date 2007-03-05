@@ -84,10 +84,11 @@ boolean CDynamicBoxContext::appendOutputChunkData(
 
 boolean CDynamicBoxContext::markOutputAsReadyToSend(
 	const uint32 ui32OutputIndex,
+	const uint64 ui64StartTime,
 	const uint64 ui64EndTime)
 {
 	assert(m_pSimulatedBox);
-	return m_pSimulatedBox->markOutputAsReadyToSend(ui32OutputIndex, ui64EndTime);
+	return m_pSimulatedBox->markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
 }
 
 //___________________________________________________________________//

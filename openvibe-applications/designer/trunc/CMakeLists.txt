@@ -46,18 +46,8 @@ ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 # ADD_EXECUTABLE(${PROJECT_NAME}-static ${source_files})
 # SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")
 
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-EBML-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-EBML-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-FS-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-FS-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-Socket-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-Socket-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-System-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-System-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-XML-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-XML-dynamic)
+ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-dynamic)
+ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
 
 # ---------------------------------
 # Finds Glade

@@ -41,6 +41,7 @@ namespace OpenViBE
 				const OpenViBE::uint64 ui64BufferSize);
 			virtual OpenViBE::boolean markOutputAsReadyToSend(
 				const OpenViBE::uint32 ui32OutputIndex,
+				const OpenViBE::uint64 ui64StartTime,
 				const OpenViBE::uint64 ui64EndTime);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TPluginObjectContext<OpenViBE::Plugins::IDynamicBoxContext>, OVK_ClassId_Kernel_DynamicBoxContext)

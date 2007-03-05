@@ -104,6 +104,21 @@ CPlayer::CPlayer(const IKernelContext& rKernelContext)
 
 CPlayer::~CPlayer(void)
 {
+	if(m_pController)
+	{
+		m_pController->finish();
+		m_pController->runControllersStep(m_pControllerHandle);
+
+		delete m_pController;
+		m_pController=NULL;
+		m_pControllerHandle=NULL;
+	}
+
+	if(m_pSimulation)
+	{
+		delete m_pSimulation;
+		m_pSimulation=NULL;
+	}
 }
 
 //___________________________________________________________________//
@@ -118,6 +133,9 @@ boolean CPlayer::reset(
 {
 	if(m_pController)
 	{
+		m_pController->finish();
+		m_pController->runControllersStep(m_pControllerHandle);
+
 		delete m_pController;
 		m_pController=NULL;
 		m_pControllerHandle=NULL;

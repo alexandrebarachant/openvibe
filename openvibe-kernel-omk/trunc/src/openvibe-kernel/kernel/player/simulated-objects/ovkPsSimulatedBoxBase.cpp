@@ -80,6 +80,10 @@ bool PsSimulatedBoxBase::loadEventsConnectionsParameters( const PsConfigurationP
   bool ok = true ;
   _openViBEDataUpdateEventListener = new PsValuedEventListenerCallBack< ::PsSimulatedBoxBase, ::PsTypeChunk > ( *this, &PsSimulatedBoxBase::processOpenViBEDataUpdateEvent, EventId::s_openViBEDataUpdate ) ;
   ok = _openViBEDataUpdateEventListener && ok ;
+  _maskStartEventListener = new PsEventListenerCallBack< ::PsSimulatedBoxBase > ( *this, &PsSimulatedBoxBase::processMaskStartEvent, PsSystemEventIdentifier::MaskStart ) ;
+  ok = _maskStartEventListener && ok ;
+  _maskStopEventListener = new PsEventListenerCallBack< ::PsSimulatedBoxBase > ( *this, &PsSimulatedBoxBase::processMaskStopEvent, PsSystemEventIdentifier::MaskStop ) ;
+  ok = _maskStopEventListener && ok ;
   // one or more listeners cannot be created => error
   if( !ok )
   {
@@ -156,6 +160,30 @@ void PsSimulatedBoxBase::compute()
 bool PsSimulatedBoxBase::processOpenViBEDataUpdateEvent( ::PsValuedEvent< ::PsTypeChunk > *e )
 {
   std::cerr << ":-( Warning in PsSimulatedBoxBase:: processOpenViBEDataUpdateEvent for object \""
+            << getName().getPsString() << "\" (class "
+            << getObjectDescriptor().getClass().getPsString() << ")"
+            << std::endl
+            << ">>> Not yet implemented" << std::endl ;
+  return true ;
+}
+
+//========================================================================
+//No need to call this method in the overwrite method of the sons
+bool PsSimulatedBoxBase::processMaskStartEvent( ::PsEvent *e )
+{
+  std::cerr << ":-( Warning in PsSimulatedBoxBase:: processMaskStartEvent for object \""
+            << getName().getPsString() << "\" (class "
+            << getObjectDescriptor().getClass().getPsString() << ")"
+            << std::endl
+            << ">>> Not yet implemented" << std::endl ;
+  return true ;
+}
+
+//========================================================================
+//No need to call this method in the overwrite method of the sons
+bool PsSimulatedBoxBase::processMaskStopEvent( ::PsEvent *e )
+{
+  std::cerr << ":-( Warning in PsSimulatedBoxBase:: processMaskStopEvent for object \""
             << getName().getPsString() << "\" (class "
             << getObjectDescriptor().getClass().getPsString() << ")"
             << std::endl

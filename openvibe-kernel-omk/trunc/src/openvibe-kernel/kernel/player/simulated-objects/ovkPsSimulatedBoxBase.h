@@ -33,6 +33,7 @@
 #include <PsSimulatedObject.h>
 #include <PsValuedEventListenerCallBack.h>
 #include <PsEventListenerCallBack.h>
+#include <PsSystemEventIdentifier.h>
 #include "../ovkEventId.h"
 #include "../types/ovkPsTypeChunk.h"
 
@@ -180,12 +181,31 @@ protected:
 	/// \brief Call back to process the "OpenViBEDataUpdate" event
 	/// \return see \ref PsValuedEventListenerCallBack::CallBackFct
 	virtual bool processOpenViBEDataUpdateEvent( ::PsValuedEvent< ::PsTypeChunk > *e ) ;
+	/// \brief Call back to process the "MaskStart" event
+	/// \return see \ref PsEventListenerCallBack::CallBackFct
+	virtual bool processMaskStartEvent( ::PsEvent *e ) ;
+	/// \brief Call back to process the "MaskStop" event
+	/// \return see \ref PsEventListenerCallBack::CallBackFct
+	virtual bool processMaskStopEvent( ::PsEvent *e ) ;
+
 	/// \brief Event listener to listen the "OpenViBEDataUpdate" event.
 	///
 	/// The event listener is created in the \ref init method.\n
 	/// Use registration methods \ref registerForOpenViBEDataUpdateSignal and
 	/// registerForOpenViBEDataUpdateSignalBy to listen the signal.
 	PsValuedEventListenerCallBack< ::PsSimulatedBoxBase, ::PsTypeChunk > *_openViBEDataUpdateEventListener ;
+	/// \brief Event listener to listen the "MaskStart" event.
+	///
+	/// The event listener is created in the \ref init method.\n
+	/// Use registration methods \ref registerForMaskStartSignal and
+	/// registerForMaskStartSignalBy to listen the signal.
+	PsEventListenerCallBack< ::PsSimulatedBoxBase > *_maskStartEventListener ;
+	/// \brief Event listener to listen the "MaskStop" event.
+	///
+	/// The event listener is created in the \ref init method.\n
+	/// Use registration methods \ref registerForMaskStopSignal and
+	/// registerForMaskStopSignalBy to listen the signal.
+	PsEventListenerCallBack< ::PsSimulatedBoxBase > *_maskStopEventListener ;
 	//@}
 
 	/// @name Registering signals.
@@ -206,6 +226,40 @@ protected:
 	/// \param[in] producer the listened object to cancel from.
 	/// \return true if the canceling is ok
 	bool cancelRegistrationForOpenViBEDataUpdateSignalBy( const PsName &producer ) { return cancelRegistrationForSignalBy( EventId::s_openViBEDataUpdate, producer ) ; }
+
+	/// \brief Register listening of the "MaskStart" signal comming from any object.
+	/// \return true if the registering is ok
+	bool registerForMaskStartSignal() { return registerForSignal( PsSystemEventIdentifier::MaskStart ) ; }
+	/// \brief Listening cancel of the "MaskStart" signal from any object
+	/// previously registered with \ref registerForMaskStartSignal.
+	/// \return true if the canceling is ok
+	bool cancelRegistrationForMaskStartSignal() { return cancelRegistrationForSignal( PsSystemEventIdentifier::MaskStart ) ; }
+	/// \brief Register listening of the "MaskStart" signal comming from specified object.
+	/// \param[in] producer the object to listen
+	/// \return true if the registering is ok
+	bool registerForMaskStartSignalBy( const PsName &producer ) { return registerForSignalBy( PsSystemEventIdentifier::MaskStart, producer  ) ; }
+	/// \brief Listening cancel of the "MaskStart" signal from specified object
+	/// previously registered with \ref registerForMaskStartSignalBy.
+	/// \param[in] producer the listened object to cancel from.
+	/// \return true if the canceling is ok
+	bool cancelRegistrationForMaskStartSignalBy( const PsName &producer ) { return cancelRegistrationForSignalBy( PsSystemEventIdentifier::MaskStart, producer ) ; }
+
+	/// \brief Register listening of the "MaskStop" signal comming from any object.
+	/// \return true if the registering is ok
+	bool registerForMaskStopSignal() { return registerForSignal( PsSystemEventIdentifier::MaskStop ) ; }
+	/// \brief Listening cancel of the "MaskStop" signal from any object
+	/// previously registered with \ref registerForMaskStopSignal.
+	/// \return true if the canceling is ok
+	bool cancelRegistrationForMaskStopSignal() { return cancelRegistrationForSignal( PsSystemEventIdentifier::MaskStop ) ; }
+	/// \brief Register listening of the "MaskStop" signal comming from specified object.
+	/// \param[in] producer the object to listen
+	/// \return true if the registering is ok
+	bool registerForMaskStopSignalBy( const PsName &producer ) { return registerForSignalBy( PsSystemEventIdentifier::MaskStop, producer  ) ; }
+	/// \brief Listening cancel of the "MaskStop" signal from specified object
+	/// previously registered with \ref registerForMaskStopSignalBy.
+	/// \param[in] producer the listened object to cancel from.
+	/// \return true if the canceling is ok
+	bool cancelRegistrationForMaskStopSignalBy( const PsName &producer ) { return cancelRegistrationForSignalBy( PsSystemEventIdentifier::MaskStop, producer ) ; }
 	//@}
 
 	/// @name Methods to emit event and signal.

@@ -49,6 +49,7 @@ namespace OpenViBE
 			 *          to the box, this means chunk 0 arrived
 			 *          before chunk 1, that arrived before
 			 *          chunk 2 and so on...
+			 * \note Both time value are given in fixed point 32:32 seconds
 			 * \sa getChunkCount
 			 * \sa releaseChunk
 			 */
@@ -83,27 +84,6 @@ namespace OpenViBE
 				const OpenViBE::uint32 ui32ChunkIndex)=0;
 
 			//@}
-
-#if 0
-/** \name Information related to this input */
-//@{
-
-/**
- * \brief Gets the source information for this input
- * \param rBoxIdentifier [out] : the box identifier
- *        for this input
- * \param rBoxOutputIndex [out] : the output index
- *        of the box which is connected to this input
- * \return \e true in case of success.
- * \return \e false in case of error.
- */
-virtual OpenViBE::boolean getSource(
-	OpenViBE::CIdentifier& rBoxIdentifier,
-	OpenViBE::uint32& rBoxOutputIndex)=0;
-
-//@}
-#endif
-
 			/** \name Accessing the output chunks information */
 			//@{
 
@@ -154,57 +134,33 @@ virtual OpenViBE::boolean getSource(
 			/**
 			 * \brief Marks output buffer as 'ready to send'
 			 * \param ui32OutputIndex [in] : the index of the output to work on
+			 * \param ui64StartTime [in] : the start time for
+			 *        the related buffer.
 			 * \param ui64EndTime [in] : the end time for the
-			 *        related buffer. The start time is deduced
-			 *        from the last end time for this output.
+			 *        related buffer.
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
 			 *
 			 * The output chunk should first be filled. For
 			 * that, one will have to get a reference on it
-			 * thanks to the getChunkBuffer method ! The
+			 * thanks to the getChunkBuffer or the
+			 * appendOutputChunkData methods ! The
 			 * player will then know the buffer can be sent.
 			 *
+			 * When called, the function flushes the output
+			 * chunk. Thus, after the call, the chunk size
+			 * is turned to 0 and the output is ready for
+			 * a new chunk when necessary...
+			 *
+			 * \note Both time value are given in fixed point 32:32 seconds
 			 * \sa getChunk
-			 * \note It is important to call the \c send 
-			 *       even if no data should be sent. In order
-			 *       to do so, first request a buffer resize to
-			 *       0, then call 'send'. This is to tell
-			 *       following boxes that there won't be
-			 *       anything more for this time fork.
 			 */
 			virtual OpenViBE::boolean markOutputAsReadyToSend(
 				const OpenViBE::uint32 ui32OutputIndex,
+				const OpenViBE::uint64 ui64StartTime,
 				const OpenViBE::uint64 ui64EndTime)=0;
 
 			//@}
-
-#if 0
-/** \name Information related to this output */
-//@{
-
-/**
- * \brief Gets the number of connections from this output
- * \return The number of connections starting from this output
- */
-virtual OpenViBE::uint32 getTargetCount(void)=0;
-/**
- * \brief Gets the target information for this output
- * \param ui32TargetIndex [in] : the target index
- * \param rBoxIdentifier [out] : the target box
- *        identifier for this output
- * \param rBoxInputIndex [out] : the input index
- *        of the boxes which are connected to this output
- * \return \e true in case of success.
- * \return \e false in case of error.
- */
-virtual OpenViBE::boolean getTarget(
-	const OpenViBE::uint32 ui32TargetIndex,
-	OpenViBE::CIdentifier& rBoxIdentifier,
-	OpenViBE::uint32& rBoxInputIndex)=0;
-
-//@}
-#endif
 
 			_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Plugins_DynamicBoxContext)
 		};

@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 					l_pDynamicBoxContext->markInputAsDeprecated(0, i);
 					l_pDynamicBoxContext->setOutputChunkSize(0, 0);
 					l_pDynamicBoxContext->appendOutputChunkData(0, l_pChunkBuffer, l_ui64ChunkSize);
-					l_pDynamicBoxContext->markOutputAsReadyToSend(0, 0);
+					l_pDynamicBoxContext->markOutputAsReadyToSend(0, 0, 0);
 				}
 				return true;
 			}

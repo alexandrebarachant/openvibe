@@ -146,7 +146,7 @@ namespace OpenViBEPlugins
 				static_cast<EBML::IWriterHelper*>(*m_pSignalOutputHandler)->closeChild();
 
 				m_pBoxAlgorithmContext=NULL;
-				rBoxAlgorithmContext.getDynamicBoxContext()->markOutputAsReadyToSend(0, 0); // $$$
+				rBoxAlgorithmContext.getDynamicBoxContext()->markOutputAsReadyToSend(0, 0, 0); // $$$
 
 				return true;
 			}

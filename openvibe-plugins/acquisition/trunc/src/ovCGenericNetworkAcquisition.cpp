@@ -75,7 +75,7 @@ namespace OpenViBEPlugins
 				l_pDynamicBoxContext->setOutputChunkSize(0, m_rPlugin.m_ui64CurrentBufferSize+ui64BufferSize, false);
 				System::Memory::copy(l_pDynamicBoxContext->getOutputChunkBuffer(0)+m_rPlugin.m_ui64CurrentBufferSize, pBuffer, ui64BufferSize);
 				m_rPlugin.m_ui64CurrentBufferSize+=ui64BufferSize;
-				l_pDynamicBoxContext->markOutputAsReadyToSend(0,0); // $$$
+				l_pDynamicBoxContext->markOutputAsReadyToSend(0,0,0); // $$$
 			}
 
 			CGenericNetworkAcquisition& m_rPlugin;
