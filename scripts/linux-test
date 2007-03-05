@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source linux-collect_build
+if [ ! -e linux-init_env_command ]; then
+	echo You have to configure your \`linux-init_env_command\` file.
+	echo \`linux-init_env_command-skeleton\` is a good file to start with...
+	exit
+fi
 
 ./linux-collect_build
 
