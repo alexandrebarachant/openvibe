@@ -110,7 +110,7 @@ void CBoxAlgorithmSignalInputReaderCallback::closeChild(void)
 
 void CBoxAlgorithmSignalInputReaderCallback::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
 {
-	assert(ui32DimmensionCount==2);
+	// assert(ui32DimmensionCount==2);
 }
 
 void CBoxAlgorithmSignalInputReaderCallback::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
