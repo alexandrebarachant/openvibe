@@ -14,7 +14,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CBoxAlgorithmProducer : virtual public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IWriterCallBack
+		class CBoxAlgorithmProducer : virtual public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IWriterCallback
 		{
 		public:
 
@@ -31,10 +31,8 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean initialize(
-				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
 			{
-				const OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=rContext.getStaticBoxContext();
-
 				m_pWriter=EBML::createWriter(*this);
 				m_pWriterHelper=EBML::createWriterHelper();
 
@@ -42,7 +40,7 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean uninitialize(
-				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
 			{
 				m_pWriterHelper->release();
 				m_pWriter->release();
@@ -68,13 +66,12 @@ namespace OpenViBEPlugins
 
 				m_pBoxAlgorithmContext=&rBoxAlgorithmContext;
 
-				m_pBoxAlgorithmContext->getDynamicBoxContext()->setOutputChunkSize(0, 0);
 				m_pWriterHelper->connect(m_pWriter);
 				m_pWriterHelper->openChild(0);
 				m_pWriterHelper->setASCIIStringAsChildData("OpenViBE producer sent this !");
 				m_pWriterHelper->closeChild();
 				m_pWriterHelper->disconnect();
-				m_pBoxAlgorithmContext->getDynamicBoxContext()->markOutputAsReadyToSend(0, 0, 0);
+				l_pDynamicBoxContext->markOutputAsReadyToSend(0, 0, 0);
 
 				m_pBoxAlgorithmContext=NULL;
 				return true;
@@ -84,11 +81,14 @@ namespace OpenViBEPlugins
 				const void* pBuffer,
 				const EBML::uint64 ui64BufferSize)
 			{
+				OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=m_pBoxAlgorithmContext->getStaticBoxContext();
+				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=m_pBoxAlgorithmContext->getDynamicBoxContext();
+
 				std::cout << "Producer : Sending magic data : "
 			    	      << ui64BufferSize
 				          << " byte(s)" << std::endl;
 
-				m_pBoxAlgorithmContext->getDynamicBoxContext()->appendOutputChunkData(0, static_cast<const OpenViBE::uint8*>(pBuffer), ui64BufferSize);
+				l_pDynamicBoxContext->appendOutputChunkData(0, static_cast<const OpenViBE::uint8*>(pBuffer), ui64BufferSize);
 			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_BoxAlgorithmProducer)
@@ -122,7 +122,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
-				rPrototype.addOutput("an output 1", OV_UndefinedIdentifier);
+				rPrototype.addOutput("an output", OV_UndefinedIdentifier);
 
 				return true;
 			}

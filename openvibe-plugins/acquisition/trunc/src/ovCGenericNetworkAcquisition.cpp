@@ -16,18 +16,18 @@ namespace OpenViBEPlugins
 {
 	namespace Acquisition
 	{
-		class CGenericNetworkAcquisition_ReaderCallBack : virtual public EBML::IReaderCallBack
+		class CGenericNetworkAcquisition_ReaderCallback : virtual public EBML::IReaderCallback
 		{
 		public:
 
-			CGenericNetworkAcquisition_ReaderCallBack(CGenericNetworkAcquisition& rPlugin)
+			CGenericNetworkAcquisition_ReaderCallback(CGenericNetworkAcquisition& rPlugin)
 				:m_rPlugin(rPlugin)
 				,m_pReaderHelper(NULL)
 			{
 				m_pReaderHelper=EBML::createReaderHelper();
 			}
 
-			virtual ~CGenericNetworkAcquisition_ReaderCallBack()
+			virtual ~CGenericNetworkAcquisition_ReaderCallback()
 			{
 				m_pReaderHelper->release();
 			}
@@ -60,11 +60,11 @@ namespace OpenViBEPlugins
 			EBML::IReaderHelper* m_pReaderHelper;
 		};
 
-		class CGenericNetworkAcquisition_WriterCallBack : virtual public EBML::IWriterCallBack
+		class CGenericNetworkAcquisition_WriterCallback : virtual public EBML::IWriterCallback
 		{
 		public:
 
-			CGenericNetworkAcquisition_WriterCallBack(CGenericNetworkAcquisition& rPlugin)
+			CGenericNetworkAcquisition_WriterCallback(CGenericNetworkAcquisition& rPlugin)
 				:m_rPlugin(rPlugin)
 			{
 			}
@@ -97,37 +97,32 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) c
 	return true;
 }
 
-uint32 CGenericNetworkAcquisitionDesc::getClockFrequency(const IStaticBoxContext& rStaticBoxContext) const
-{
-	return 1; // $$$
-}
-
 CGenericNetworkAcquisition::CGenericNetworkAcquisition(void)
 	:m_pConnectionClient(NULL)
 	,m_ui32ServerHostPort(0)
-	,m_pReaderCallBack(NULL)
+	,m_pReaderCallback(NULL)
 	,m_pReader(NULL)
-	,m_pWriterCallBack(NULL)
+	,m_pWriterCallback(NULL)
 	,m_pWriter(NULL)
 	,m_pBoxAlgorithmContext(NULL)
 {
 }
 
 boolean CGenericNetworkAcquisition::initialize(
-	const IBoxAlgorithmContext& rBoxAlgorithmContext)
+	IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IStaticBoxContext* l_pSaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
+	IStaticBoxContext* l_pSaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Builds up client connection
 	m_pConnectionClient=Socket::createConnectionClient();
 
 	// Prepares EBML reader
-	m_pReaderCallBack=new CGenericNetworkAcquisition_ReaderCallBack(*this);
-	m_pReader=EBML::createReader(*m_pReaderCallBack);
+	m_pReaderCallback=new CGenericNetworkAcquisition_ReaderCallback(*this);
+	m_pReader=EBML::createReader(*m_pReaderCallback);
 
 	// Prepares EBML writer
-	m_pWriterCallBack=new CGenericNetworkAcquisition_WriterCallBack(*this);
-	m_pWriter=EBML::createWriter(*m_pWriterCallBack);
+	m_pWriterCallback=new CGenericNetworkAcquisition_WriterCallback(*this);
+	m_pWriter=EBML::createWriter(*m_pWriterCallback);
 
 	// Parses box settings to try connecting to server
 	CString l_sServerHostPort;
@@ -142,21 +137,21 @@ boolean CGenericNetworkAcquisition::initialize(
 }
 
 boolean CGenericNetworkAcquisition::uninitialize(
-	const IBoxAlgorithmContext& rBoxAlgorithmContext)
+	IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IStaticBoxContext* l_pSaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
+	IStaticBoxContext* l_pSaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Ceans up EBML writer
 	m_pWriter->release();
 	m_pWriter=NULL;
-	delete m_pWriterCallBack;
-	m_pWriterCallBack=NULL;
+	delete m_pWriterCallback;
+	m_pWriterCallback=NULL;
 
 	// Cleans up EBML reader
 	m_pReader->release();
 	m_pReader=NULL;
-	delete m_pReaderCallBack;
-	m_pReaderCallBack=NULL;
+	delete m_pReaderCallback;
+	m_pReaderCallback=NULL;
 
 	// Cleans up client connection
 	m_pConnectionClient->close();

@@ -22,12 +22,10 @@ using namespace OpenViBE;
 	if(rcid==cid) \
 	{ \
 		sptr=new cl(getKernelContext()); \
-	}
-
-#define create2(rcid,cid,sptr,ud,cl) \
-	if(rcid==cid) \
-	{ \
-		sptr=new cl(getKernelContext(),ud); \
+		if(sptr) \
+		{ \
+			m_oCreatedObjects.push_back(sptr); \
+		} \
 	}
 
 Kernel::CObjectFactory::CObjectFactory(const Kernel::IKernelContext& rKernelContext)
@@ -53,25 +51,14 @@ IObject* Kernel::CObjectFactory::createObject(
 
 	// create(rClassIdentifier, OV_ClassId_, l_pResult, Plugins::CBoxContext);
 
-	return l_pResult;
-}
-
-IObject* Kernel::CObjectFactory::createObject(
-	const CIdentifier& rClassIdentifier,
-	IObject& rUserData)
-{
-	IObject* l_pResult=NULL;
-	// create2(rClassIdentifier, OV_ClassId_, l_pResult, rUserData, );
-
-	return l_pResult;
-}
-
-IObject* Kernel::CObjectFactory::createObject(
-	const CIdentifier& rClassIdentifier,
-	const IObject& rUserData)
-{
-	IObject* l_pResult=NULL;
-	// create2(rClassIdentifier, OV_ClassId_, l_pResult, dynamic_cast<>(rUserData), );
+	if(l_pResult)
+	{
+		log() << LogLevel_Trace << "Created object with class id " << rClassIdentifier << " and final class id " << l_pResult->getClassIdentifier() << "\n";
+	}
+	else
+	{
+		log() << LogLevel_Warning << "Unable to allocate object with class id " << rClassIdentifier << "\n";
+	}
 
 	return l_pResult;
 }
@@ -84,14 +71,20 @@ boolean Kernel::CObjectFactory::releaseObject(
 		return true;
 	}
 
+	CIdentifier l_rClassIdentifier;
+	l_rClassIdentifier=pObject->getClassIdentifier();
+
 	vector<IObject*>::iterator i;
 	i=find(m_oCreatedObjects.begin(), m_oCreatedObjects.end(), pObject);
 	if(i==m_oCreatedObjects.end())
 	{
+		log() << LogLevel_Warning << "Can not release object with final class id " << l_rClassIdentifier << " - it is not owned by this fatory\n";
 		return false;
 	}
 	m_oCreatedObjects.erase(i);
-	// delete pObject;
+	delete pObject;
+
+	log() << LogLevel_Trace << "Released object with final class id " << l_rClassIdentifier << "\n";
 
 	return true;
 }

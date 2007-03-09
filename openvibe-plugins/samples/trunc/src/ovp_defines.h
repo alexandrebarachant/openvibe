@@ -14,9 +14,9 @@
 #define OVP_ClassId_EBMLStreamSpyDesc           OpenViBE::CIdentifier(0x354A6864, 0x06BC570C)
 #define OVP_ClassId_SinusSignalGeneratorDesc    OpenViBE::CIdentifier(0x2633AFA2, 0x6974E32F)
 #define OVP_ClassId_IdentityDesc                OpenViBE::CIdentifier(0x54743810, 0x6A1A88CC)
+#define OVP_ClassId_WidgetDesc                  OpenViBE::CIdentifier(0x400B3B8D, 0x427A7CE7)
 
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x400B3B8D, 0x427A7CE7)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x61ED4780, 0x758C3DD3)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x4D3676B8, 0x01ED7594)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x6B5A33C9, 0x7EB13AD6)
@@ -42,9 +42,9 @@
 #define OVP_ClassId_EBMLStreamSpy               OpenViBE::CIdentifier(0x0ED76695, 0x01A69CC3)
 #define OVP_ClassId_SinusSignalGenerator        OpenViBE::CIdentifier(0x7E33BDB8, 0x68194A4A)
 #define OVP_ClassId_Identity                    OpenViBE::CIdentifier(0x5DFFE431, 0x35215C50)
+#define OVP_ClassId_Widget                      OpenViBE::CIdentifier(0x5DAFB0BA, 0x77E3BB0F)
 
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x5DAFB0BA, 0x77E3BB0F)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x6B00CEA0, 0x23617BB8)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x69D67D52, 0x7FA5E735)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x391AB48F, 0x0EB03ECD)

@@ -9,6 +9,15 @@ namespace OpenViBE
 	class CMessage;
 	class IObjectContext;
 
+	namespace Kernel
+	{
+		class CObjectFactory;
+	};
+
+	namespace Plugins
+	{
+	};
+
 	/**
 	 * \class IObject
 	 * \author Yann Renard (INRIA/IRISA)
@@ -32,6 +41,8 @@ namespace OpenViBE
 	class OV_API IObject
 	{
 	public:
+
+		friend class OpenViBE::Kernel::CObjectFactory;
 
 		/** \name Class identification */
 		//@{

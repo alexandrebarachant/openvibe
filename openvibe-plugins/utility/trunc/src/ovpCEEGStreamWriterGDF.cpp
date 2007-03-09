@@ -84,11 +84,11 @@ namespace OpenViBEPlugins
 			};
 		};
 
-		class CEEGStreamWriterGDF_ReaderCallBack : virtual public EBML::IReaderCallBack
+		class CEEGStreamWriterGDF_ReaderCallback : virtual public EBML::IReaderCallback
 		{
 		public:
 
-			CEEGStreamWriterGDF_ReaderCallBack(CEEGStreamWriterGDF& rPlugin)
+			CEEGStreamWriterGDF_ReaderCallback(CEEGStreamWriterGDF& rPlugin)
 				:m_rPlugin(rPlugin)
 				,m_pReaderHelper(NULL)
 				,m_pFile(NULL)
@@ -97,7 +97,7 @@ namespace OpenViBEPlugins
 				m_pReaderHelper=EBML::createReaderHelper();
 			}
 
-			virtual ~CEEGStreamWriterGDF_ReaderCallBack()
+			virtual ~CEEGStreamWriterGDF_ReaderCallback()
 			{
 				fclose(m_pFile);
 				m_pReaderHelper->release();
@@ -284,25 +284,20 @@ boolean CEEGStreamWriterGDFDesc::getBoxPrototype(
 	return true;
 }
 
-uint32 CEEGStreamWriterGDFDesc::getClockFrequency(IStaticBoxContext& rStaticBoxContext) const
-{
-	return 0;
-}
-
 CEEGStreamWriterGDF::CEEGStreamWriterGDF(void)
-	:m_pReaderCallBack(NULL)
+	:m_pReaderCallback(NULL)
 	,m_pReader(NULL)
 {
 }
 
 boolean CEEGStreamWriterGDF::initialize(
-	const IBoxAlgorithmContext& rBoxAlgorithmContext)
+	IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
+	IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Prepares EBML reader
-	m_pReaderCallBack=new CEEGStreamWriterGDF_ReaderCallBack(*this);
-	m_pReader=EBML::createReader(*m_pReaderCallBack);
+	m_pReaderCallback=new CEEGStreamWriterGDF_ReaderCallback(*this);
+	m_pReader=EBML::createReader(*m_pReaderCallback);
 
 	// Parses box settings to find filename
 	l_pBoxContext->getSettingValue(0, m_sFileName);
@@ -311,15 +306,15 @@ boolean CEEGStreamWriterGDF::initialize(
 }
 
 boolean CEEGStreamWriterGDF::uninitialize(
-	const IBoxAlgorithmContext& rBoxAlgorithmContext)
+	IBoxAlgorithmContext& rBoxAlgorithmContext)
 {
-	const IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
+	IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
 	// Cleans up EBML reader
 	m_pReader->release();
 	m_pReader=NULL;
-	delete m_pReaderCallBack;
-	m_pReaderCallBack=NULL;
+	delete m_pReaderCallback;
+	m_pReaderCallback=NULL;
 
 	return true;
 }

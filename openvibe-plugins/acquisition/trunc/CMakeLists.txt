@@ -1,4 +1,4 @@
-PROJECT(OpenViBE-Plugins-Acquisition)
+PROJECT(OpenViBE-plugins-acquisition)
 
 SET(PROJECT_VERSION_MAJOR 0)
 SET(PROJECT_VERSION_MINOR 1)

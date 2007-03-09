@@ -13,7 +13,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CBoxAlgorithmConsumer : virtual public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IReaderCallBack
+		class CBoxAlgorithmConsumer : virtual public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IReaderCallback
 		{
 		public:
 
@@ -29,10 +29,8 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean initialize(
-				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
 			{
-				const OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=rContext.getStaticBoxContext();
-
 				m_pReader=EBML::createReader(*this);
 				m_pReaderHelper=EBML::createReaderHelper();
 
@@ -40,7 +38,7 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean uninitialize(
-				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
 			{
 				m_pReaderHelper->release();
 				m_pReader->release();
@@ -64,15 +62,16 @@ namespace OpenViBEPlugins
 				OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
 
-				for(OpenViBE::uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
+				OpenViBE::uint64 l_ui64StartTime=0;
+				OpenViBE::uint64 l_ui64EndTime=0;
+				OpenViBE::uint64 l_ui64ChunkSize=0;
+				const OpenViBE::uint8* l_pChunkBuffer=NULL;
+
+				for(OpenViBE::uint32 j=0; j<l_pDynamicBoxContext->getInputChunkCount(0); j++)
 				{
-					OpenViBE::uint64 l_ui64StartTime;
-					OpenViBE::uint64 l_ui64EndTime;
-					OpenViBE::uint64 l_ui64ChunkSize;
-					const OpenViBE::uint8* l_pBuffer;
-					l_pDynamicBoxContext->getInputChunk(0, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pBuffer);
-					l_pDynamicBoxContext->markInputAsDeprecated(0, i);
-					m_pReader->processData(l_pBuffer, l_ui64ChunkSize);
+					l_pDynamicBoxContext->getInputChunk(0, j, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
+					m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
+					l_pDynamicBoxContext->markInputAsDeprecated(0, j);
 				}
 
 				return true;

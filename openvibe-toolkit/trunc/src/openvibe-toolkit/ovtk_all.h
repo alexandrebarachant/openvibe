@@ -15,10 +15,32 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#include "ovtkTBoxAlgorithm.h"
+
 //___________________________________________________________________//
 //                                                                   //
 //                                                                   //
 //___________________________________________________________________//
 //                                                                   //
+
+// #include "reader/ovtkIBoxAlgorithmInputReader.h"
+
+#include "reader/ovtkIBoxAlgorithmInputReaderCallback.h"
+#include "reader/ovtkIBoxAlgorithmSignalInputReaderCallback.h"
+
+#include "reader/ovtkIStreamedMatrixReaderCallbackHelper.h"
+
+//___________________________________________________________________//
+//                                                                   //
+//                                                                   //
+//___________________________________________________________________//
+//                                                                   //
+
+// #include "writer/ovtkIBoxAlgorithmOutputWriterCallback.h"
+
+#include "writer/ovtkIBoxAlgorithmOutputWriter.h"
+#include "writer/ovtkIBoxAlgorithmSignalOutputWriter.h"
+
+#include "writer/ovtkIStreamedMatrixWriterHelper.h"
 
 #endif // __OpenViBEToolkit_All_H__

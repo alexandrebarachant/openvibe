@@ -3,45 +3,19 @@
 
 #include "ovp_defines.h"
 
-#include <iostream>
+#include <openvibe-toolkit/ovtk_all.h>
 
 namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CIdentity : virtual public OpenViBE::Plugins::IBoxAlgorithm
+		class CIdentity : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
-			virtual void release(void)
-			{
-			}
-
-			virtual OpenViBE::boolean processInput(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::uint32 ui32InputIndex)
-			{
-				rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
-				return true;
-			}
-
-			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
-			{
-				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
-				for(OpenViBE::uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
-				{
-					OpenViBE::uint64 l_ui64StartTime;
-					OpenViBE::uint64 l_ui64EndTime;
-					OpenViBE::uint64 l_ui64ChunkSize;
-					const OpenViBE::uint8* l_pChunkBuffer;
-					l_pDynamicBoxContext->getInputChunk(0, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
-					l_pDynamicBoxContext->markInputAsDeprecated(0, i);
-					l_pDynamicBoxContext->setOutputChunkSize(0, 0);
-					l_pDynamicBoxContext->appendOutputChunkData(0, l_pChunkBuffer, l_ui64ChunkSize);
-					l_pDynamicBoxContext->markOutputAsReadyToSend(0, 0, 0);
-				}
-				return true;
-			}
+			virtual void release(void);
+			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
+			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_Identity)
 		};
@@ -65,9 +39,13 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
+				// Adds box inputs
 				rPrototype.addInput("Input stream", OV_UndefinedIdentifier);
 
+				// Adds box outputs
 				rPrototype.addOutput("Output stream", OV_UndefinedIdentifier);
+
+				// Adds box settings
 
 				return true;
 			}

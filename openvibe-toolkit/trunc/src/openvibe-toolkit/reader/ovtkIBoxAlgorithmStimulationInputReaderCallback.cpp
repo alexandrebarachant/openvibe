@@ -1,0 +1,118 @@
+#include "ovtkIBoxAlgorithmStimulationInputReaderCallback.h"
+#include "ovtkIStreamedMatrixReaderCallbackHelper.h"
+
+#include <ebml/IReader.h>
+#include <ebml/IReaderHelper.h>
+
+#include <stack>
+
+using namespace OpenViBEToolkit;
+using namespace OpenViBE;
+using namespace std;
+
+// ________________________________________________________________________________________________________________
+//
+
+namespace OpenViBEToolkit
+{
+	class CBoxAlgorithmStimulationInputReaderCallback : virtual public IBoxAlgorithmStimulationInputReaderCallback
+	{
+	public:
+
+		CBoxAlgorithmStimulationInputReaderCallback(ICallback& rCallback);
+		virtual ~CBoxAlgorithmStimulationInputReaderCallback(void);
+
+		virtual EBML::boolean isMasterChild(const EBML::CIdentifier& rIdentifier);
+		virtual void openChild(const EBML::CIdentifier& rIdentifier);
+		virtual void processChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+		virtual void closeChild(void);
+
+		_IsDerivedFromClass_Final_(IBoxAlgorithmStimulationInputReaderCallback, OVTK_ClassId_);
+
+	protected:
+
+		ICallback& m_rCallback;
+
+		stack<EBML::CIdentifier> m_vNodes;
+		EBML::IReaderHelper* m_pReaderHelper;
+
+		OpenViBE::uint32 m_ui32StimulationIndex;
+		OpenViBE::uint32 m_ui32StimulationIdentifier;
+		OpenViBE::uint32 m_ui32SampleIndex;
+	};
+};
+
+// ________________________________________________________________________________________________________________
+//
+
+CBoxAlgorithmStimulationInputReaderCallback::CBoxAlgorithmStimulationInputReaderCallback(IBoxAlgorithmStimulationInputReaderCallback::ICallback& rCallback)
+	:m_rCallback(rCallback)
+	,m_pReaderHelper(NULL)
+{
+	m_pReaderHelper=EBML::createReaderHelper();
+}
+
+CBoxAlgorithmStimulationInputReaderCallback::~CBoxAlgorithmStimulationInputReaderCallback(void)
+{
+	m_pReaderHelper->release();
+	m_pReaderHelper=NULL;
+}
+
+// ________________________________________________________________________________________________________________
+//
+
+EBML::boolean CBoxAlgorithmStimulationInputReaderCallback::isMasterChild(const EBML::CIdentifier& rIdentifier)
+{
+	     if(rIdentifier==OVTK_NodeId_Stimulation_Header)      { return true; }
+	else if(rIdentifier==OVTK_NodeId_Stimulation_Buffer)      { return true; }
+	else if(rIdentifier==OVTK_NodeId_Stimulation_Stimulation) { return true; }
+	return false;
+}
+
+void CBoxAlgorithmStimulationInputReaderCallback::openChild(const EBML::CIdentifier& rIdentifier)
+{
+	m_vNodes.push(rIdentifier);
+
+	EBML::CIdentifier& l_rTop=m_vNodes.top();
+
+	// ...
+
+}
+
+void CBoxAlgorithmStimulationInputReaderCallback::processChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
+{
+	EBML::CIdentifier& l_rTop=m_vNodes.top();
+
+	// ...
+
+	if(l_rTop==OVTK_NodeId_Stimulation_NumberOfStimulations)    { m_ui32StimulationIndex=0; m_rCallback.setStimulationCount(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation_Identifier)  { m_ui32StimulationIdentifier=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
+	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation_SampleIndex) { m_ui32SampleIndex=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
+}
+
+void CBoxAlgorithmStimulationInputReaderCallback::closeChild(void)
+{
+	EBML::CIdentifier& l_rTop=m_vNodes.top();
+
+	// ...
+
+	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation) m_rCallback.setStimulation(m_ui32StimulationIndex, m_ui32StimulationIdentifier, m_ui32SampleIndex);
+
+	m_vNodes.pop();
+}
+
+// ________________________________________________________________________________________________________________
+//
+
+IBoxAlgorithmStimulationInputReaderCallback* OpenViBEToolkit::createBoxAlgorithmStimulationInputReaderCallback(IBoxAlgorithmStimulationInputReaderCallback::ICallback& rCallback)
+{
+	return new CBoxAlgorithmStimulationInputReaderCallback(rCallback);
+}
+
+void OpenViBEToolkit::releaseBoxAlgorithmStimulationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* pBoxAlgorithmStimulationInputReaderCallback)
+{
+	delete pBoxAlgorithmStimulationInputReaderCallback;
+}
+
+// ________________________________________________________________________________________________________________
+//

@@ -18,11 +18,8 @@ namespace OpenViBE
 			CBoxAlgorithmContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox, const OpenViBE::Kernel::IBox* pBox);
 
 			virtual OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void);
-			virtual const OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void) const;
 			virtual OpenViBE::Plugins::IDynamicBoxContext* getDynamicBoxContext(void);
-			virtual const OpenViBE::Plugins::IDynamicBoxContext* getDynamicBoxContext(void) const;
 			virtual OpenViBE::Plugins::IPlayerContext* getPlayerContext(void);
-			virtual const OpenViBE::Plugins::IPlayerContext* getPlayerContext(void) const;
 			virtual OpenViBE::boolean markAlgorithmAsReadyToProcess(void);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TPluginObjectContext<OpenViBE::Plugins::IBoxAlgorithmContext>, OVK_ClassId_Kernel_BoxAlgorithmContext)

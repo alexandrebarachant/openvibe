@@ -43,7 +43,7 @@ namespace OpenViBE
 
 			/**
 			 * \brief Gets the clock frequency to call this algorithm
-			 * \param rContext [in] : The current box state
+			 * \param rBoxAlgorithmContext [in] : The current box state
 			 * \return The clock frequency to call this algorithm
 			 * \note Default implementation returns 0
 			 *
@@ -57,7 +57,7 @@ namespace OpenViBE
 			 *       clock activated.
 			 */
 			virtual OpenViBE::uint32 getClockFrequency(
-				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext) const { return 0; }
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext) { return 0; }
 
 			//@}
 			/** \name Initialization / Uninitialization */
@@ -65,7 +65,7 @@ namespace OpenViBE
 
 			/**
 			 * \brief Prepares plugin object
-			 * \param rContext [in] : the plugin object context
+			 * \param rBoxAlgorithmContext [in] : the plugin object context
 			 * \return \e true when this object successfully initialized
 			 *         or \e false if it didn't succeed to initialize.
 			 * \note Default implementation simply returns \e true.
@@ -77,10 +77,10 @@ namespace OpenViBE
 			 * \sa uninitialize
 			 */
 			virtual OpenViBE::boolean initialize(
-				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext) { return true; }
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext) { return true; }
 			/**
 			 * \brief Unprepares the object so it can be deleted
-			 * \param rContext [in] : the plugin object context
+			 * \param rBoxAlgorithmContext [in] : the plugin object context
 			 * \return \e true when this object sucessfully uninitialized
 			 *         or \e false if didn't succeed to uninitialize.
 			 * \note Default implementation simply returns \e true.
@@ -95,7 +95,7 @@ namespace OpenViBE
 			 * \sa initialize
 			 */
 			virtual OpenViBE::boolean uninitialize(
-				const OpenViBE::Plugins::IBoxAlgorithmContext& rContext) { return true; }
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext) { return true; }
 
 			//@}
 			/** \name Several event processing callbacks */
@@ -204,7 +204,8 @@ namespace OpenViBE
 			 *
 			 * \sa OpenViBE::Kernel::IBoxAlgorithmContext
 			 */
-			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)=0;
+			virtual OpenViBE::boolean process(
+				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)=0;
 
 			//@}
 

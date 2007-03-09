@@ -32,10 +32,16 @@ PsSimulatedBox::PsSimulatedBox(
 	,m_pBoxAlgorithm(NULL)
 	,m_pBox(NULL)
 {
+#ifdef _OMK_BehaviorTester_
+	cout<<"PsSimulatedBox::PsSimulatedBox"<<endl;
+#endif
 }
 
 PsSimulatedBox::~PsSimulatedBox(void)
 {
+#ifdef _OMK_BehaviorTester_
+	cout<<"PsSimulatedBox::~PsSimulatedBox"<<endl;
+#endif
 }
 
 void PsSimulatedBox::init(void)
@@ -103,7 +109,7 @@ bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChu
 	return true ;
 }
 
-bool PsSimulatedBox::processMaskStartEvent( ::PsEvent *e )
+bool PsSimulatedBox::processMaskStartEvent(::PsEvent* pEvent)
 {
 #ifdef _OMK_BehaviorTester_
 	cout<<"PsSimulatedBox::processMaskStartEvent("<<getName()<<"|"<<m_pBox->getName()<<"|"<<pEvent->date<<")"<<endl;
@@ -123,7 +129,7 @@ bool PsSimulatedBox::processMaskStartEvent( ::PsEvent *e )
 	return true ;
 }
 
-bool PsSimulatedBox::processMaskStopEvent( ::PsEvent *e )
+bool PsSimulatedBox::processMaskStopEvent(::PsEvent* pEvent)
 {
 #ifdef _OMK_BehaviorTester_
 	cout<<"PsSimulatedBox::processMaskStopEvent("<<getName()<<"|"<<m_pBox->getName()<<"|"<<pEvent->date<<")"<<endl;

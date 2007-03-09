@@ -42,7 +42,6 @@ namespace OpenViBE
 			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext::getDynamicBoxContext
 			 */
 			virtual OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void)=0;
-			virtual const OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void) const=0;
 			/**
 			 * \brief Gets the dynamic context of the box corresponding to the algorithm
 			 * \return A pointer on the corresponding context
@@ -55,7 +54,6 @@ namespace OpenViBE
 			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext::getStaticBoxContext
 			 */
 			virtual OpenViBE::Plugins::IDynamicBoxContext* getDynamicBoxContext(void)=0;
-			virtual const OpenViBE::Plugins::IDynamicBoxContext* getDynamicBoxContext(void) const=0;
 			/**
 			 * \brief Gets the player context
 			 * \return A pointer on the player context
@@ -67,7 +65,6 @@ namespace OpenViBE
 			 *          has finished its work, it could be deprecated.
 			 */
 			virtual OpenViBE::Plugins::IPlayerContext* getPlayerContext(void)=0;
-			virtual const OpenViBE::Plugins::IPlayerContext* getPlayerContext(void) const=0;
 			/**
 			 * \brief Marks the algorithm as 'ready to process' so its process function is called by the kernel
 			 * \return \e true in case of success.

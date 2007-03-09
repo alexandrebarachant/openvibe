@@ -27,28 +27,6 @@ namespace OpenViBE
 				return l_tResult;
 			}
 
-			template <class T> T createObject(const OpenViBE::CIdentifier& rClassIdentifier, OpenViBE::IObject& rUserData)
-			{
-				OpenViBE::IObject* l_pObject=m_rObjectFactory.createObject(rClassIdentifier, rUserData);
-				T l_tResult=dynamic_cast<T>(l_pObject);
-				if(l_pObject && !l_tResult)
-				{
-					m_rObjectFactory.releaseObject(l_pObject);
-				}
-				return l_tResult;
-			}
-
-			template <class T> T createObject(const OpenViBE::CIdentifier& rClassIdentifier, const OpenViBE::IObject& rUserData)
-			{
-				OpenViBE::IObject* l_pObject=m_rObjectFactory.createObject(rClassIdentifier, rUserData);
-				T l_tResult=dynamic_cast<T>(l_pObject);
-				if(l_pObject && !l_tResult)
-				{
-					m_rObjectFactory.releaseObject(l_pObject);
-				}
-				return l_tResult;
-			}
-
 			template <class T> OpenViBE::boolean releaseObject(T tObject)
 			{
 				return m_rObjectFactory.releaseObject(tObject);

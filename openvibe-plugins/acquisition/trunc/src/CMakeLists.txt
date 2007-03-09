@@ -10,6 +10,12 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR})
 
+ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-dynamic)
+ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
+
+ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-toolkit-dynamic)
+ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-toolkit-static)
+
 # ---------------------------------
 # Finds module EBML
 # Adds library to target
