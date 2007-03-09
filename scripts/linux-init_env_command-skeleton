@@ -1,47 +1,143 @@
 #!/bin/bash
 
+########################################################################################################################
+## GENERAL
+
+## this variable sets the branch for everything
+# OpenViBE_global_branch=trunc
+
+## these variables set each project branch
+# OpenViBE_branch=$OpenViBE_global_branch
+# OpenViBE_kernel_branch=$OpenViBE_global_branch
+# OpenViBE_toolkit_branch=$OpenViBE_global_branch
+
+########################################################################################################################
+## MODULES
+
+## this variable sets the branch for all modules
+# OpenViBE_modules_branch=$OpenViBE_global_branch
+
+## these variables set each module branch
+# OpenViBE_module_ebml_branch=$OpenViBE_modules_branch
+# OpenViBE_module_fs_branch=$OpenViBE_modules_branch
+# OpenViBE_module_socket_branch=$OpenViBE_modules_branch
+# OpenViBE_module_system_branch=$OpenViBE_modules_branch
+# OpenViBE_module_xml_branch=$OpenViBE_modules_branch
+
+########################################################################################################################
+## APPLICATIONS
+
+## this variable sets the branch for all applications
+# OpenViBE_applications_branch=$OpenViBE_global_branch
+
+## these variables set each application branch
+# OpenViBE_application_acquisition_server_branch=$OpenViBE_applications_branch
+# OpenViBE_application_designer_branch=$OpenViBE_applications_branch
+# OpenViBE_application_id_generator_branch=$OpenViBE_applications_branch
+
+########################################################################################################################
+## PLUGINS
+
+## this variable sets the branch for all plugin packages
+# OpenViBE_plugins_branch=$OpenViBE_global_branch
+
+## these variables set each plugin package branch
+# OpenViBE_plugin_acquisition_branch=$OpenViBE_plugins_branch
+# OpenViBE_plugin_samples_branch=$OpenViBE_plugins_branch
+# OpenViBE_plugin_utility_branch=$OpenViBE_plugins_branch
+
+########################################################################################################################
+
+if [ "$OpenViBE_global_branch" == "" ]; then
+	OpenViBE_global_branch=trunc
+fi
+
+########################################################################################################################
+
+if [ "$OpenViBE_branch" == "" ]; then
+	OpenViBE_branch=$OpenViBE_global_branch
+fi
+if [ "$OpenViBE_kernel_branch" == "" ]; then
+	OpenViBE_kernel_branch=$OpenViBE_global_branch
+fi
+if [ "$OpenViBE_toolkit_branch" == "" ]; then
+	OpenViBE_toolkit_branch=$OpenViBE_global_branch
+fi
+
+########################################################################################################################
+
+if [ "$OpenViBE_modules_branch" == "" ]; then
+	OpenViBE_modules_branch=$OpenViBE_global_branch
+fi
+if [ "$OpenViBE_module_ebml_branch" == "" ]; then
+	OpenViBE_module_ebml_branch=$OpenViBE_modules_branch
+fi
+if [ "$OpenViBE_module_fs_branch" == "" ]; then
+	OpenViBE_module_fs_branch=$OpenViBE_modules_branch
+fi
+if [ "$OpenViBE_module_socket_branch" == "" ]; then
+	OpenViBE_module_socket_branch=$OpenViBE_modules_branch
+fi
+if [ "$OpenViBE_module_system_branch" == "" ]; then
+	OpenViBE_module_system_branch=$OpenViBE_modules_branch
+fi
+if [ "$OpenViBE_module_xml_branch" == "" ]; then
+	OpenViBE_module_xml_branch=$OpenViBE_modules_branch
+fi
+
+########################################################################################################################
+
+if [ "$OpenViBE_applications_branch" == "" ]; then
+	OpenViBE_applications_branch=$OpenViBE_global_branch
+fi
+if [ "$OpenViBE_application_acquisition_server_branch" == "" ]; then
+	OpenViBE_application_acquisition_server_branch=$OpenViBE_applications_branch
+fi
+if [ "$OpenViBE_application_designer_branch" == "" ]; then
+	OpenViBE_application_designer_branch=$OpenViBE_applications_branch
+fi
+if [ "$OpenViBE_application_id_generator_branch" == "" ]; then
+	OpenViBE_application_id_generator_branch=$OpenViBE_applications_branch
+fi
+
+########################################################################################################################
+
+if [ "$OpenViBE_plugins_branch" == "" ]; then
+	OpenViBE_plugins_branch=$OpenViBE_global_branch
+fi
+if [ "$OpenViBE_plugin_acquisition_branch" == "" ]; then
+	OpenViBE_plugin_acquisition_branch=$OpenViBE_plugins_branch
+fi
+if [ "$OpenViBE_plugin_samples_branch" == "" ]; then
+	OpenViBE_plugin_samples_branch=$OpenViBE_plugins_branch
+fi
+if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
+	OpenViBE_plugin_utility_branch=$OpenViBE_plugins_branch
+fi
+
+########################################################################################################################
+
 OpenViBE_base=`pwd`/..
 
-OpenViBE_branch=trunc
-OpenViBE_kernel_branch=trunc
-OpenViBE_toolkit_branch=trunc
-OpenViBE_modules_branch=trunc
-OpenViBE_applications_branch=trunc
-OpenViBE_plugins_branch=trunc
-
-OpenViBE=$OpenViBE_base/openvibe/$OpenViBE_branch
-OpenViBE_kernel=$OpenViBE_base/openvibe-kernel-omk/$OpenViBE_kernel_branch
-OpenViBE_toolkit=$OpenViBE_base/openvibe-toolkit/$OpenViBE_toolkit_branch
-export OpenViBE
-export OpenViBE_kernel
-export OpenViBE_toolkit
+export OpenViBE=$OpenViBE_base/openvibe/$OpenViBE_branch
+export OpenViBE_kernel=$OpenViBE_base/openvibe-kernel-omk/$OpenViBE_kernel_branch
+export OpenViBE_toolkit=$OpenViBE_base/openvibe-toolkit/$OpenViBE_toolkit_branch
 
 OpenViBE_modules=$OpenViBE_base/openvibe-modules
-OpenViBE_module_ebml=$OpenViBE_modules/ebml/$OpenViBE_modules_branch
-OpenViBE_module_fs=$OpenViBE_modules/fs/$OpenViBE_modules_branch
-OpenViBE_module_socket=$OpenViBE_modules/socket/$OpenViBE_modules_branch
-OpenViBE_module_system=$OpenViBE_modules/system/$OpenViBE_modules_branch
-OpenViBE_module_xml=$OpenViBE_modules/xml/$OpenViBE_modules_branch
-export OpenViBE_module_ebml
-export OpenViBE_module_fs
-export OpenViBE_module_socket
-export OpenViBE_module_system
-export OpenViBE_module_xml
+export OpenViBE_module_ebml=$OpenViBE_modules/ebml/$OpenViBE_module_ebml_branch
+export OpenViBE_module_fs=$OpenViBE_modules/fs/$OpenViBE_module_ebml_branch
+export OpenViBE_module_socket=$OpenViBE_modules/socket/$OpenViBE_module_socket_branch
+export OpenViBE_module_system=$OpenViBE_modules/system/$OpenViBE_module_system_branch
+export OpenViBE_module_xml=$OpenViBE_modules/xml/$OpenViBE_module_xml_branch
 
 OpenViBE_applications=$OpenViBE_base/openvibe-applications
-OpenViBE_designer=$OpenViBE_applications/designer/$OpenViBE_applications_branch
-OpenViBE_acquisition_server=$OpenViBE_applications/acquisition-server/$OpenViBE_applications_branch
-OpenViBE_id_generator=$OpenViBE_applications/id-generator/$OpenViBE_applications_branch
-export OpenViBE_designer
-export OpenViBE_acquisition_server
-export OpenViBE_id_generator
+export OpenViBE_designer=$OpenViBE_applications/designer/$OpenViBE_application_designer_branch
+export OpenViBE_acquisition_server=$OpenViBE_applications/acquisition-server/$OpenViBE_application_acquisition_server_branch
+export OpenViBE_id_generator=$OpenViBE_applications/id-generator/$OpenViBE_application_id_generator_branch
 
 OpenViBE_plugins=$OpenViBE_base/openvibe-plugins
-OpenViBE_plugin_acquisition=$OpenViBE_plugins/acquisition/$OpenViBE_plugins_branch
-OpenViBE_plugin_utility=$OpenViBE_plugins/utility/$OpenViBE_plugins_branch
-OpenViBE_plugin_samples=$OpenViBE_plugins/samples/$OpenViBE_plugins_branch
-export OpenViBE_plugin_acquisition
-export OpenViBE_plugin_utility
-export OpenViBE_plugin_samples
+export OpenViBE_plugin_acquisition=$OpenViBE_plugins/acquisition/$OpenViBE_plugin_acquisition_branch
+export OpenViBE_plugin_samples=$OpenViBE_plugins/samples/$OpenViBE_plugin_samples_branch
+export OpenViBE_plugin_utility=$OpenViBE_plugins/utility/$OpenViBE_plugin_utility_branch
 
 PATH=../lib:$PATH
