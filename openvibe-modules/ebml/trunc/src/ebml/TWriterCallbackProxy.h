@@ -20,7 +20,7 @@ namespace EBML
 			,m_mfpWrite(mfpWrite)
 		{
 		}
-		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)=0;
+		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 		{
 			if(m_mfpWrite)
 			{
@@ -39,14 +39,13 @@ namespace EBML
 	class EBML_API TWriterCallbackProxy2 : virtual public EBML::IWriterCallback
 	{
 	public:
-		TWriterCallbackProxy1(
-			COwnerClass& rOwnerObject,
-			void (COwnerClass::*mfpWrite)(const void* pBuffer, const EBML::uint64 ui64BufferSize))
+		TWriterCallbackProxy2(
+			COwnerClass& rOwnerObject)
 			:m_rOwnerObject(rOwnerObject)
 			,m_mfpWrite(mfpWrite)
 		{
 		}
-		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)=0;
+		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 		{
 			if(m_mfpWrite)
 			{

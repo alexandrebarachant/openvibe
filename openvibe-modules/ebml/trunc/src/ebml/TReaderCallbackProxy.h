@@ -70,7 +70,7 @@ namespace EBML
 	class EBML_API TReaderCallbackProxy2 : virtual public EBML::IReaderCallback
 	{
 	public:
-		TReaderCallbackProxy1(
+		TReaderCallbackProxy2(
 			COwnerClass& rOwnerObject)
 			:m_rOwnerObject(rOwnerObject)
 			,m_mfpIsMasterChild(mfpIsMasterChild)
