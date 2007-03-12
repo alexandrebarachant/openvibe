@@ -22,7 +22,7 @@ namespace EBML
 			:m_rOwnerObject(rOwnerObject)
 			,m_mfpIsMasterChild(mfpIsMasterChild)
 			,m_mfpOpenChild(mfpOpenChild)
-			,m_mfpProcessChidData(mfpProcessChildData)
+			,m_mfpProcessChildData(mfpProcessChildData)
 			,m_mfpCloseChild(mfpCloseChild)
 		{
 		}
@@ -41,11 +41,11 @@ namespace EBML
 				(m_rOwnerObject.*m_mfpOpenChild)(rIdentifier);
 			}
 		}
-		virtual void processData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
+		virtual void processChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 		{
-			if(m_mfpProcessChidData)
+			if(m_mfpProcessChildData)
 			{
-				(m_rOwnerObject.*m_mfpProcessChidData)(pBuffer, ui64BufferSize);
+				(m_rOwnerObject.*m_mfpProcessChildData)(pBuffer, ui64BufferSize);
 			}
 		}
 		virtual void closeChild(void)
@@ -75,7 +75,7 @@ namespace EBML
 			:m_rOwnerObject(rOwnerObject)
 			,m_mfpIsMasterChild(mfpIsMasterChild)
 			,m_mfpOpenChild(mfpOpenChild)
-			,m_mfpProcessChidData(mfpProcessChildData)
+			,m_mfpProcessChildData(mfpProcessChildData)
 			,m_mfpCloseChild(mfpCloseChild)
 		{
 		}
@@ -94,11 +94,11 @@ namespace EBML
 				(m_rOwnerObject.*m_mfpOpenChild)(rIdentifier);
 			}
 		}
-		virtual void processData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
+		virtual void processChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 		{
-			if(m_mfpProcessChidData)
+			if(m_mfpProcessChildData)
 			{
-				(m_rOwnerObject.*m_mfpProcessChidData)(pBuffer, ui64BufferSize);
+				(m_rOwnerObject.*m_mfpProcessChildData)(pBuffer, ui64BufferSize);
 			}
 		}
 		virtual void closeChild(void)
