@@ -11,10 +11,14 @@ source linux-init_env_command
 saved_directory=`pwd`
 
 mkdir ../local-tmp 2> /dev/null
-for sub_directory in `find cmake -type d -printf "%P\n" | sort`; do
-	mkdir "../local-tmp/$sub_directory" 2> /dev/null
-	cd "../local-tmp/$sub_directory" 2> /dev/null
-	cmake "$saved_directory/cmake/$sub_directory"
-	make -j 2
-	cd "$saved_directory"
+for sub_directory in `find cmake -maxdepth 1 -type d -printf "%P\n" | sort`; do
+	if [[ $sub_directory =~ "^\." ]]; then
+		echo Skipped $sub_directory
+	else
+		mkdir "../local-tmp/$sub_directory" 2> /dev/null
+		cd "../local-tmp/$sub_directory" 2> /dev/null
+		cmake "$saved_directory/cmake/$sub_directory"
+		make -j 2
+		cd "$saved_directory"
+	fi;
 done
