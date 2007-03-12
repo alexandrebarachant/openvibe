@@ -8,7 +8,13 @@ fi
 
 source linux-init_env_command
 
+saved_directory=`pwd`
+
 mkdir ../local-tmp 2> /dev/null
-cd ../local-tmp
-cmake ..
-make -j 2
+for sub_directory in `find cmake -type d -printf "%P\n" | sort`; do
+	mkdir "../local-tmp/$sub_directory" 2> /dev/null
+	cd "../local-tmp/$sub_directory" 2> /dev/null
+	cmake "$saved_directory/cmake/$sub_directory"
+	make -j 2
+	cd "$saved_directory"
+done
