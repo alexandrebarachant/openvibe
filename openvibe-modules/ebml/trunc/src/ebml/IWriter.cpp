@@ -315,7 +315,9 @@ boolean CWriter::closeChild(void)
 
 	if((!m_pCurrentNode->m_bBuffered) && (!m_pCurrentNode->m_vChildren.size()))
 	{
-		return false;
+		m_pCurrentNode->m_ui64BufferLength=0;
+		m_pCurrentNode->m_pBuffer=NULL;
+		m_pCurrentNode->m_bBuffered=true;
 	}
 
 	CWriterNode* l_pParentNode=m_pCurrentNode->m_pParentNode;
