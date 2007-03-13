@@ -20,7 +20,7 @@ namespace XML
 			void (COwnerClass::*mfpCloseChild)(void))
 			:m_rOwnerObject(rOwnerObject)
 			,m_mfpOpenChild(mfpOpenChild)
-			,m_mfpProcessChidData(mfpProcessChidData)
+			,m_mfpProcessChildData(mfpProcessChildData)
 			,m_mfpCloseChild(mfpCloseChild)
 		{
 		}
@@ -31,11 +31,11 @@ namespace XML
 				m_rOwnerObject.m_mfpOpenChild(sName, sAttributeName, sAttributeValue, ui64AttributeCount);
 			}
 		}
-		virtual void processData(const char* sData)
+		virtual void processChildData(const char* sData)
 		{
-			if(m_mfpProcessChidData)
+			if(m_mfpProcessChildData)
 			{
-				m_rOwnerObject.m_mfpProcessChidData(sData);
+				m_rOwnerObject.m_mfpProcessChildData(sData);
 			}
 		}
 		virtual void closeChild(void)
@@ -48,7 +48,7 @@ namespace XML
 	protected:
 		COwnerClass& m_rOwnerObject;
 		void (COwnerClass::*m_mfpOpenChild)(const char* sName, const char** sAttributeName, const char** sAttributeValue, XML::uint64 ui64AttributeCount);
-		void (COwnerClass::*m_mfpProcessChidData)(const char* sData);
+		void (COwnerClass::*m_mfpProcessChildData)(const char* sData);
 		void (COwnerClass::*m_mfpCloseChild)(void);
 	};
 
@@ -62,7 +62,7 @@ namespace XML
 		TReaderCallbackProxy2(COwnerClass rOwnerObject)
 			:m_rOwnerObject(rOwnerObject)
 			,m_mfpOpenChild(mfpOpenChild)
-			,m_mfpProcessChidData(mfpProcessChidData)
+			,m_mfpProcessChildData(mfpProcessChildData)
 			,m_mfpCloseChild(mfpCloseChild)
 		{
 		}
@@ -73,7 +73,7 @@ namespace XML
 				m_rOwnerObject.mfpOpenChild(sName, sAttributeName, sAttributeValue, ui64AttributeCount);
 			}
 		}
-		virtual void processData(const char* sData)
+		virtual void processChildData(const char* sData)
 		{
 			if(mfpProcessChildData)
 			{
@@ -90,7 +90,7 @@ namespace XML
 	protected:
 		COwnerClass& m_rOwnerObject;
 		void (COwnerClass::*m_mfpOpenChild)(const char* sName, const char** sAttributeName, const char** sAttributeValue, XML::uint64 ui64AttributeCount);
-		void (COwnerClass::*m_mfpProcessChidData)(const char* sData);
+		void (COwnerClass::*m_mfpProcessChildData)(const char* sData);
 		void (COwnerClass::*m_mfpCloseChild)(void);
 	};
 

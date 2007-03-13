@@ -20,7 +20,7 @@ namespace XML
 			,m_mfpWrite(mfpWrite)
 		{
 		}
-		virtual void write(const char* sString)=0;
+		virtual void write(const char* sString)
 		{
 			if(m_mfpWrite)
 			{
@@ -44,7 +44,7 @@ namespace XML
 			,m_mfpWrite(mfpWrite)
 		{
 		}
-		virtual void write(const char* sString)=0;
+		virtual void write(const char* sString)
 		{
 			if(mfpWrite)
 			{
