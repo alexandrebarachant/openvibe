@@ -18,7 +18,7 @@ for sub_directory in `find cmake -maxdepth 1 -type d -printf "%P\n" | sort`; do
 		mkdir "../local-tmp/$sub_directory" 2> /dev/null
 		cd "../local-tmp/$sub_directory" 2> /dev/null
 		cmake "$saved_directory/cmake/$sub_directory"
-		make -j 2
+		make -j
 		cd "$saved_directory"
 	fi;
 done
