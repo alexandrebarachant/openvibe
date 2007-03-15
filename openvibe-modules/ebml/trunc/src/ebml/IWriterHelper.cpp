@@ -84,19 +84,19 @@ boolean CWriterHelper::setSIntegerAsChildData(const int64 iValue)
 	uint64 l_ui64BufferSize=0;
 	unsigned char l_pBuffer[8];
 
-	if(iValue==0LL)
+	      if(iValue==0x00000000000000LL)
 		l_ui64BufferSize=0;
-	else if(iValue>=-0x80LL && iValue<=0x7fLL)
+	else if(iValue>=-0x00000000000080LL && iValue<=0x0000000000007fLL)
 		l_ui64BufferSize=1;
-	else if(iValue>=-0x8000LL && iValue<=0x7fffLL)
+	else if(iValue>=-0x00000000008000LL && iValue<=0x00000000007fffLL)
 		l_ui64BufferSize=2;
-	else if(iValue>=-0x800000LL && iValue<=0x7fffffLL)
+	else if(iValue>=-0x00000000800000LL && iValue<=0x000000007fffffLL)
 		l_ui64BufferSize=3;
-	else if(iValue>=-0x80000000LL && iValue<=0x7fffffffLL)
+	else if(iValue>=-0x00000080000000LL && iValue<=0x0000007fffffffLL)
 		l_ui64BufferSize=4;
-	else if(iValue>=-0x8000000000LL && iValue<=0x7fffffffffLL)
+	else if(iValue>=-0x00008000000000LL && iValue<=0x00007fffffffffLL)
 		l_ui64BufferSize=5;
-	else if(iValue>=-0x800000000000LL && iValue<=0x7fffffffffffLL)
+	else if(iValue>=-0x00800000000000LL && iValue<=0x007fffffffffffLL)
 		l_ui64BufferSize=6;
 	else if(iValue>=-0x80000000000000LL && iValue<=0x7fffffffffffffLL)
 		l_ui64BufferSize=7;
@@ -117,19 +117,19 @@ boolean CWriterHelper::setUIntegerAsChildData(const uint64 uiValue)
 	uint64 l_ui64BufferSize=0;
 	unsigned char l_pBuffer[8];
 
-	if(uiValue==0LL)
+	    if(uiValue==0x000000000000000LL)
 		l_ui64BufferSize=0;
-	else if(uiValue<0x100LL)
+	else if(uiValue<0x000000000000100LL)
 		l_ui64BufferSize=1;
-	else if(uiValue<0x10000LL)
+	else if(uiValue<0x000000000010000LL)
 		l_ui64BufferSize=2;
-	else if(uiValue<0x1000000LL)
+	else if(uiValue<0x000000001000000LL)
 		l_ui64BufferSize=3;
-	else if(uiValue<0x100000000LL)
+	else if(uiValue<0x000000100000000LL)
 		l_ui64BufferSize=4;
-	else if(uiValue<0x10000000000LL)
+	else if(uiValue<0x000010000000000LL)
 		l_ui64BufferSize=5;
-	else if(uiValue<0x1000000000000LL)
+	else if(uiValue<0x001000000000000LL)
 		l_ui64BufferSize=6;
 	else if(uiValue<0x100000000000000LL)
 		l_ui64BufferSize=7;

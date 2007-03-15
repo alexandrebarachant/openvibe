@@ -11,102 +11,54 @@ using namespace std;
 inline unsigned long getCodedSizeLength(const uint64 uiValue)
 {
 	unsigned long l_ulCodedSizeLength=0;
-	if(uiValue<0x7f)
+	     if(uiValue<0x000000000000007fLL)
 		l_ulCodedSizeLength=1;
-	else if(uiValue<0x3fff)
+	else if(uiValue<0x0000000000003fffLL)
 		l_ulCodedSizeLength=2;
-	else if(uiValue<0x1fffff)
+	else if(uiValue<0x00000000001fffffLL)
 		l_ulCodedSizeLength=3;
-	else if(uiValue<0x0fffffff)
+	else if(uiValue<0x000000000fffffffLL)
 		l_ulCodedSizeLength=4;
-/*
-	else if(uiValue<0xffffffffff)
+	else if(uiValue<0x00000007ffffffffLL)
 		l_ulCodedSizeLength=5;
-	else if(uiValue<0xffffffffffff)
+	else if(uiValue<0x000003ffffffffffLL)
 		l_ulCodedSizeLength=6;
-	else if(uiValue<0xffffffffffffff)
+	else if(uiValue<0x0001ffffffffffffLL)
 		l_ulCodedSizeLength=7;
-*/
-	else
+	else if(uiValue<0x00ffffffffffffffLL)
 		l_ulCodedSizeLength=8;
+	else if(uiValue<0x7fffffffffffffffLL)
+		l_ulCodedSizeLength=9;
+	else
+		l_ulCodedSizeLength=10;
 
 	return l_ulCodedSizeLength;
 }
-
-#if 0
-inline unsigned long getCodedSizeLength(const int64 iValue)
-{
-	unsigned long l_ulCodedSizeLength=0;
-	if(iValue>-0x40 && iValue<0x40)
-		l_ulCodedSizeLength=1;
-	else if(iValue>-0x2000 && iValue<0x2000)
-		l_ulCodedSizeLength=2;
-	else if(iValue>-0x100000 && iValue<0x100000)
-		l_ulCodedSizeLength=3;
-	else if(iValue>-0x08000000 && iValue<0x08000000)
-		l_ulCodedSizeLength=4;
-/*
-	else if(iValue>-0x0800000000 && iValue<0x0800000000)
-		l_ulCodedSizeLength=5;
-	else if(iValue>-0x080000000000 && iValue<0x080000000000)
-		l_ulCodedSizeLength=6;
-	else if(iValue>-0x08000000000000 && iValue<0x08000000000000)
-		l_ulCodedSizeLength=7;
-*/
-	else
-		l_ulCodedSizeLength=8;
-
-	return l_ulCodedSizeLength;
-}
-#endif
 
 inline boolean getCodedBuffer(const uint64 uiValue, unsigned char* pBuffer, uint64* pBufferLength)
 {
 	unsigned long i;
-	unsigned long l_ulSize=getCodedSizeLength(uiValue);
+	unsigned long l_ulCodedSizeLength=getCodedSizeLength(uiValue);
 
-	if(l_ulSize>*pBufferLength)
+	if(l_ulCodedSizeLength>*pBufferLength)
 	{
 		return false;
 	}
 
-	for(i=0; i<l_ulSize; i++)
+	unsigned long l_ulIthBit=l_ulCodedSizeLength;
+	for(i=0; i<l_ulCodedSizeLength; i++)
 	{
-		unsigned long l_ulByteShift=l_ulSize-i-1;
-		unsigned long l_ulByte=(unsigned char)((uiValue>>(l_ulByteShift*8))&0xff);
-		l_ulByte|=(8-l_ulSize-i*8<8 && 8-l_ulSize-i*8>=0?(1<<(8-l_ulSize-i*8)):0);
+		unsigned long l_ulByteShift=l_ulCodedSizeLength-i-1;
+		unsigned long l_ulByte=(l_ulByteShift>=8?0:(unsigned char)((uiValue>>(l_ulByteShift*8))&0xff));
+		l_ulByte|=(l_ulIthBit>=0 && l_ulIthBit<8?(1<<(8-l_ulIthBit)):0);
+		l_ulIthBit-=8;
+
 		pBuffer[i]=(unsigned char)l_ulByte;
 	}
 
-	*pBufferLength=l_ulSize;
+	*pBufferLength=l_ulCodedSizeLength;
 	return true;
 }
-
-#if 0
-inline boolean getCodedBuffer(const int64 iValue, unsigned char* pBuffer, uint64* pBufferLength)
-{
-	if(iValue>-0x40 && iValue<0x40)
-		iValue+=0x3f;
-	else if(iValue>-0x2000 && iValue<0x2000)
-		iValue+=0x1fff;
-	else if(iValue>-0x100000 && iValue<0x100000)
-		iValue+=0x0fffff;
-	else if(iValue>-0x08000000 && iValue<0x08000000)
-		iValue+=0x07ffffff;
-/*
-	else if(iValue>-0x0800000000 && iValue<0x0800000000)
-		iValue+=0x07ffffffff;
-	else if(iValue>-0x080000000000 && iValue<0x080000000000)
-		iValue+=0x07ffffffffff;
-	else if(iValue>-0x08000000000000 && iValue<0x08000000000000)
-		iValue+=0x07ffffffffffff;
-	else // if(iValue>-0x0800000000000000 && iValue<0x0800000000000000)
-		iValue+=0x07ffffffffffffff;
-*/
-
-	return getCodedBuffer((uint64)iValue, pBuffer, pBufferLength);
-}
-#endif
 
 // ________________________________________________________________________________________________________________
 //
@@ -161,8 +113,8 @@ CWriterNode::~CWriterNode(void)
 
 void CWriterNode::process(IWriterCallback& rWriterCallback)
 {
-	unsigned char l_pIdentifier[8];
-	unsigned char l_pContentSize[8];
+	unsigned char l_pIdentifier[10];
+	unsigned char l_pContentSize[10];
 	uint64 l_ui64ContentSizeLength=sizeof(l_pContentSize);
 	uint64 l_ui64IdentifierLength=sizeof(l_pIdentifier);
 	uint64 l_ui64ContentSize=getTotalContentSize(false);

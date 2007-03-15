@@ -3,6 +3,7 @@
 #include <string.h>
 
 using namespace EBML;
+using namespace std;
 
 // ________________________________________________________________________________________________________________
 //
@@ -10,22 +11,26 @@ using namespace EBML;
 inline unsigned long getCodedSizeLength(unsigned char* pBuffer)
 {
 	unsigned long l_ulCodedSizeLength;
-	if((*pBuffer)>>7)
+	     if(pBuffer[0]>>7)
 		l_ulCodedSizeLength=1;
-	else if((*pBuffer)>>6)
+	else if(pBuffer[0]>>6)
 		l_ulCodedSizeLength=2;
-	else if((*pBuffer)>>5)
+	else if(pBuffer[0]>>5)
 		l_ulCodedSizeLength=3;
-	else if((*pBuffer)>>4)
+	else if(pBuffer[0]>>4)
 		l_ulCodedSizeLength=4;
-	else if((*pBuffer)>>3)
+	else if(pBuffer[0]>>3)
 		l_ulCodedSizeLength=5;
-	else if((*pBuffer)>>2)
+	else if(pBuffer[0]>>2)
 		l_ulCodedSizeLength=6;
-	else if((*pBuffer)>>1)
+	else if(pBuffer[0]>>1)
 		l_ulCodedSizeLength=7;
-	else
+	else if(pBuffer[0])
 		l_ulCodedSizeLength=8;
+	else if(pBuffer[1]>>7)
+		l_ulCodedSizeLength=9;
+	else
+		l_ulCodedSizeLength=10;
 	return l_ulCodedSizeLength;
 }
 
@@ -33,11 +38,14 @@ inline uint64 getValue(unsigned char* pBuffer, unsigned long ulBufferLength=0)
 {
 	uint64 l_uiResult=0;
 	unsigned long l_ulCodedSizeLength=getCodedSizeLength(pBuffer);
+
 	unsigned long i;
+	unsigned long l_ulIthBit=l_ulCodedSizeLength;
 	for(i=0; i<l_ulCodedSizeLength; i++)
 	{
 		l_uiResult=(l_uiResult<<8)+(pBuffer[i]);
-		l_uiResult&=~(8-l_ulCodedSizeLength-i*8<8 && 8-l_ulCodedSizeLength-i*8>=0?(1<<(8-l_ulCodedSizeLength-i*8)):0);
+		l_uiResult&=~(l_ulIthBit>=0 && l_ulIthBit<8?(1<<(8-l_ulIthBit)):0);
+		l_ulIthBit-=8;
 	}
 	return l_uiResult;
 }

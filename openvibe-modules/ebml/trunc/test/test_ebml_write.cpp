@@ -61,6 +61,10 @@ int main(int argc, char** argv)
 		l_pWriterHelper->setUIntegerAsChildData(0);
 		l_pWriterHelper->closeChild();
 
+		l_pWriterHelper->openChild(0xffffffffffffffffLL);
+		l_pWriterHelper->setUIntegerAsChildData(0xff000000ff000000LL);
+		l_pWriterHelper->closeChild();
+
 	l_pWriterHelper->closeChild();
 
 	l_pWriterHelper->release();

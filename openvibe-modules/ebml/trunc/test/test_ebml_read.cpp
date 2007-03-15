@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+#include <iomanip>
 
 #include "ebml/IReader.h"
 #include "ebml/IReaderHelper.h"
+
+using namespace std;
 
 class CReaderCallBack : virtual public EBML::IReaderCallBack
 {
@@ -30,29 +34,33 @@ public:
 	{
 		m_oCurrentIdentifier=rIdentifier;
 		EBML::uint64 l_ui64Identifier=rIdentifier;
-		for(int i=0; i<m_iDepth; i++) printf("   ");
-		printf("Opening child node [0x%08X]\n", (int)l_ui64Identifier);
+		for(int i=0; i<m_iDepth; i++) cout << "   ";
+		cout << "Opening child node [0x" << setw(16) << setfill('0') << hex << l_ui64Identifier << dec << "]\n";
 		m_iDepth++;
 	}
 
 	virtual void processChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 	{
-		for(int i=0; i<m_iDepth; i++) printf("   ");
+		for(int i=0; i<m_iDepth; i++) cout << "   ";
 		if(m_oCurrentIdentifier==EBML_Identifier_DocType)
-			printf("Got doc type : [%s]\n", m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize));
+			cout << "Got doc type : [" << m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize) << "]\n";
 		else if(m_oCurrentIdentifier==EBML_Identifier_DocTypeVersion)
-			printf("Got doc type version : [%i]\n", (int)m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
+			cout << "Got doc type version : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
 		else if(m_oCurrentIdentifier==EBML_Identifier_DocTypeReadVersion)
-			printf("Got doc type read version : [%i]\n", (int)m_pReaderHelper->getSIntegerFromChildData(pBuffer, ui64BufferSize));
+			cout <<"Got doc type read version : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
+		else if(m_oCurrentIdentifier==EBML::CIdentifier(0x1234))
+			cout <<"Got doc type uinteger : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
+		else if(m_oCurrentIdentifier==EBML::CIdentifier(0xffffffffffffffffLL))
+			cout <<"Got doc type uinteger : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
 		else
-			printf("Got %i data bytes\n", (int)ui64BufferSize);
+			cout << "Got " << ui64BufferSize << " data bytes\n";
 	}
 
 	virtual void closeChild(void)
 	{
 		m_iDepth--;
-		for(int i=0; i<m_iDepth; i++) printf("   ");
-		printf("Node closed\n");
+		for(int i=0; i<m_iDepth; i++) cout << "   ";
+		cout << "Node closed\n";
 	}
 
 	int m_iDepth;
@@ -64,7 +72,7 @@ int main(int argc, char** argv)
 {
 	if(argc<2)
 	{
-		printf("syntax : %s filein.ebml\n", argv[0]);
+		cout << "syntax : " << argv[0] << " filein.ebml\n";
 		return -1;
 	}
 
@@ -77,7 +85,7 @@ int main(int argc, char** argv)
 	while(!feof(f))
 	{
 		i=fread(c, 1, sizeof(c), f);
-		printf("\n --> reader has read %i bytes\n\n", i);
+		cout << "\n --> reader has read " << dec << i << " bytes\n\n";
 		l_pReader->processData(c, i);
 	}
 	fclose(f);
