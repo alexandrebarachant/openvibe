@@ -50,7 +50,7 @@ inline boolean getCodedBuffer(const uint64 uiValue, unsigned char* pBuffer, uint
 	{
 		unsigned long l_ulByteShift=l_ulCodedSizeLength-i-1;
 		unsigned long l_ulByte=(l_ulByteShift>=8?0:(unsigned char)((uiValue>>(l_ulByteShift*8))&0xff));
-		l_ulByte|=(l_ulIthBit>=0 && l_ulIthBit<8?(1<<(8-l_ulIthBit)):0);
+		l_ulByte|=(l_ulIthBit>0 && l_ulIthBit<=8?(1<<(8-l_ulIthBit)):0);
 		l_ulIthBit-=8;
 
 		pBuffer[i]=(unsigned char)l_ulByte;

@@ -44,7 +44,7 @@ inline uint64 getValue(unsigned char* pBuffer, unsigned long ulBufferLength=0)
 	for(i=0; i<l_ulCodedSizeLength; i++)
 	{
 		l_uiResult=(l_uiResult<<8)+(pBuffer[i]);
-		l_uiResult&=~(l_ulIthBit>=0 && l_ulIthBit<8?(1<<(8-l_ulIthBit)):0);
+		l_uiResult&=~(l_ulIthBit>0 && l_ulIthBit<=8?(1<<(8-l_ulIthBit)):0);
 		l_ulIthBit-=8;
 	}
 	return l_uiResult;
