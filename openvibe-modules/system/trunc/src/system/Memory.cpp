@@ -22,7 +22,7 @@ boolean Memory::hostToLittleEndian(
 	uint8* pBuffer)
 {
 	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui16Value&&0xff));
+	pBuffer[0]=static_cast<uint8>((ui16Value&0xff));
 	pBuffer[1]=static_cast<uint8>((ui16Value>>8)&0xff);
 	return true;
 }
@@ -32,7 +32,7 @@ boolean Memory::hostToLittleEndian(
 	uint8* pBuffer)
 {
 	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui32Value&&0xff));
+	pBuffer[0]=static_cast<uint8>((ui32Value&0xff));
 	pBuffer[1]=static_cast<uint8>((ui32Value>>8)&0xff);
 	pBuffer[2]=static_cast<uint8>((ui32Value>>16)&0xff);
 	pBuffer[3]=static_cast<uint8>((ui32Value>>24)&0xff);
@@ -44,7 +44,7 @@ boolean Memory::hostToLittleEndian(
 	uint8* pBuffer)
 {
 	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui64Value&&0xff));
+	pBuffer[0]=static_cast<uint8>((ui64Value&0xff));
 	pBuffer[1]=static_cast<uint8>((ui64Value>>8)&0xff);
 	pBuffer[2]=static_cast<uint8>((ui64Value>>16)&0xff);
 	pBuffer[3]=static_cast<uint8>((ui64Value>>24)&0xff);
@@ -87,7 +87,7 @@ boolean Memory::hostToBigEndian(
 {
 	if(!pBuffer) return false;
 	pBuffer[0]=static_cast<uint8>((ui16Value>>8)&0xff);
-	pBuffer[1]=static_cast<uint8>((ui16Value&&0xff));
+	pBuffer[1]=static_cast<uint8>((ui16Value&0xff));
 	return true;
 }
 
@@ -99,7 +99,7 @@ boolean Memory::hostToBigEndian(
 	pBuffer[0]=static_cast<uint8>((ui32Value>>24)&0xff);
 	pBuffer[1]=static_cast<uint8>((ui32Value>>16)&0xff);
 	pBuffer[2]=static_cast<uint8>((ui32Value>>8)&0xff);
-	pBuffer[3]=static_cast<uint8>((ui32Value&&0xff));
+	pBuffer[3]=static_cast<uint8>((ui32Value&0xff));
 	return true;
 }
 
@@ -115,7 +115,7 @@ boolean Memory::hostToBigEndian(
 	pBuffer[4]=static_cast<uint8>((ui64Value>>24)&0xff);
 	pBuffer[5]=static_cast<uint8>((ui64Value>>16)&0xff);
 	pBuffer[6]=static_cast<uint8>((ui64Value>>8)&0xff);
-	pBuffer[7]=static_cast<uint8>((ui64Value&&0xff));
+	pBuffer[7]=static_cast<uint8>((ui64Value&0xff));
 	return true;
 }
 
