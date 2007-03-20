@@ -71,7 +71,7 @@ namespace OpenViBEPlugins
 				// Adds box outputs
 
 				// Adds box settings
-				rPrototype.addSetting("EBML nodes description", OV_TypeId_String, "../share/ebml_stream_spy.cfg");
+				rPrototype.addSetting("EBML nodes description", OV_TypeId_String, "../share/openvibe-plugins/samples/config-ebml-stream-spy.txt");
 
 				return true;
 			}

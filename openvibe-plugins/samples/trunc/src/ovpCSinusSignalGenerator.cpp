@@ -91,6 +91,9 @@ boolean CSinusSignalGenerator::process(void)
 		}
 		m_pSignalOutputWriterHelper->writeHeader(*m_pSignalOutputWriter);
 		m_bHeaderSent=true;
+
+		uint64 l_ui64Time=(((uint64)(m_ui32SentSampleCount))<<32)/m_ui32SamplingFrequency;
+		l_pDynamicBoxContext->markOutputAsReadyToSend(0, l_ui64Time, l_ui64Time);
 	}
 	else
 	{
