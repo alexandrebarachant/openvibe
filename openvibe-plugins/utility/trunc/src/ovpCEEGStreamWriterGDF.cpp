@@ -1,13 +1,6 @@
 #include "ovpCEEGStreamWriterGDF.h"
-
-#include <system/Memory.h>
-
-#include <iostream>
-#include <vector>
-#include <stack>
-
-#include <stdio.h>
-#include <errno.h>
+#include <math.h>
+#include <cfloat>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
@@ -15,266 +8,218 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Utility;
 
+using namespace OpenViBEToolkit;
+
 using namespace std;
 
 namespace OpenViBEPlugins
 {
 	namespace Utility
 	{
-		namespace GDF
+		
+		
+		
+void CEEGStreamWriterGDF::setChannelCount(const OpenViBE::uint32 ui32ChannelCount)
+{
+	m_oFixedHeader.m_ui32NumberOfSignals = ui32ChannelCount;
+	m_oFixedHeader.m_i64NumberOfBytesInHeaderRecord=(ui32ChannelCount+1)*256;
+
+	m_oVariableHeader.setChannelCount(ui32ChannelCount);
+	m_vSamples.resize(ui32ChannelCount);
+	m_vSampleCount.resize(ui32ChannelCount);
+}
+
+void CEEGStreamWriterGDF::setChannelName(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName)
+{
+	//prepares the variable header
+	sprintf(m_oVariableHeader[ui32ChannelIndex].m_sLabel, sChannelName);
+	
+	m_oVariableHeader[ui32ChannelIndex].m_ui32ChannelType=17;		//float64
+	m_oVariableHeader[ui32ChannelIndex].m_ui32NumberOfSamplesInEachRecord=1;
+	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMinimum=+DBL_MAX;	//starting value(to compare later)
+	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMaximum=-DBL_MAX;	//starting value(to compare later)
+	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMinimum=static_cast<OpenViBE::int64>(+DBL_MAX);
+	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMaximum=static_cast<OpenViBE::int64>(-DBL_MAX);
+
+	memcpy(m_oVariableHeader[ui32ChannelIndex].m_sPhysicalDimension, "uV", sizeof("uV"));
+
+}
+
+void CEEGStreamWriterGDF::setSampleCountPerBuffer(const OpenViBE::uint32 ui32SampleCountPerBuffer)
+{
+	m_ui32SamplesPerChannel = ui32SampleCountPerBuffer;
+	
+	//save the fixed header
+	m_oFixedHeader.save(m_oFile);
+	//save the variable header
+	m_oVariableHeader.save(m_oFile);
+}
+
+void CEEGStreamWriterGDF::setSamplingRate(const OpenViBE::uint32 ui32SamplingFrequency)
+{
+	m_ui64SamplingFrequency = ui32SamplingFrequency;
+	
+	m_oFixedHeader.m_ui32DurationOfADataRecordNumerator=1;
+	m_oFixedHeader.m_ui32DurationOfADataRecordDenominator=(uint32)m_ui64SamplingFrequency;
+}
+
+void CEEGStreamWriterGDF::setSampleBuffer(const OpenViBE::float64* pBuffer)
+{
+	const OpenViBE::uint8 * l_pBuffer = reinterpret_cast<const OpenViBE::uint8*>(pBuffer); 
+	float64 l_f64Sample=0;
+		
+	//for each channel
+	for(uint32 j=0; j<m_oFixedHeader.m_ui32NumberOfSignals ; j++)
+	{
+			
+		for(uint32 i=0; i<m_ui32SamplesPerChannel; i++)
 		{
-			class CFixedGDFHeader
-			{
-			public:
-				CFixedGDFHeader(void) { memset(this, 0x20, sizeof(*this)); }
-				char m_sVersionId[8];
-				char m_sPatientId[80];
-				char m_sRecordingId[80];
-				char m_sStartDateAndTimeOfRecording[16];
-				int64 m_i64NumberOfBytesInHeaderRecord;
-				uint64 m_ui64EquipmentProviderId;
-				uint64 m_ui64LaboratoryId;
-				uint64 m_ui64TechnicianId;
-				char m_sReservedSerialNumber[20];
-				int64 m_i64NumberOfDataRecords;
-				uint32 m_ui32DurationOfADataRecordNumerator;
-				uint32 m_ui32DurationOfADataRecordDenominator;
-				uint32 m_ui32NumberOfSignals;
-			};
+			//gets a sample value
+			System::Memory::littleEndianToHost(l_pBuffer+((j*m_ui32SamplesPerChannel)+i)*sizeof(float64), &l_f64Sample);
 
-			class CVariableGDFHeaderPerChannel
+			//actualize channel's digital min/max
+			if(l_f64Sample < m_oVariableHeader[j].m_f64PhysicalMinimum) 
 			{
-			public:
-				CVariableGDFHeaderPerChannel(void)
-				{
-					memset(this, 0x20, sizeof(*this));
-				}
-				char m_sLabel[16];
-				char m_sTranducerType[80];
-				char m_sPhysicalDimension[8];
-				float64 m_f64PhysicalMinimum;
-				float64 m_f64PhysicalMaximum;
-				int64 m_i64DigitalMinimum;
-				int64 m_i64DigitalMaximum;
-				char m_sPreFiltering[80];
-				uint32 m_ui32NumberOfSamplesInEachRecord;
-				uint32 m_ui32ChannelType;
-				char m_sReserved[32];
-			};
-
-			class CGDFEventTable
+				m_oVariableHeader[j].m_f64PhysicalMinimum = l_f64Sample;
+				m_oVariableHeader[j].m_i64DigitalMinimum=static_cast<OpenViBE::int64>(floor(l_f64Sample));
+			}
+			else if(l_f64Sample > m_oVariableHeader[j].m_f64PhysicalMaximum) 
 			{
-			public:
-				CGDFEventTable(void) { memset(this, 0x20, sizeof(*this)); }
-				uint8 m_ui8EventTableMode;
-				uint8 m_ui8SampleRate1;
-				uint8 m_ui8SampleRate2;
-				uint8 m_ui8SampleRate3;
-				uint32 m_ui32NumberOfEvents;
-			};
+				m_oVariableHeader[j].m_f64PhysicalMaximum = l_f64Sample;
+				m_oVariableHeader[j].m_i64DigitalMaximum=static_cast<OpenViBE::int64>(ceil(l_f64Sample));
+			}
+				
+			//copy its current sample
+			m_vSamples[j].push_back(l_f64Sample);
+		}
+			
+		//updates the sample count
+		m_vSampleCount[j]+=m_ui32SamplesPerChannel;
+	}
+	
+	//save in the file
+	saveMatrixData();
+	//updates the fixed header
+	m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
+	m_oFixedHeader.update(m_oFile);
+	//updates the variable header
+	m_oVariableHeader.update(m_oFile);
+}
 
-			class CGDFEvent
-			{
-			public:
-				CGDFEvent(void) { memset(this, 0x20, sizeof(*this)); }
-				uint32 m_ui32Position;
-				uint16 m_ui16Type;
-				uint16 m_ui16Channel; // only if mode 3
-				uint32 m_ui32Duration; // only if mode 3
-			};
-		};
 
-		class CEEGStreamWriterGDF_ReaderCallback : virtual public EBML::IReaderCallback
+/*
+* Experiment callback
+*
+*/
+void CEEGStreamWriterGDF::setValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value)
+{
+	switch(ui32ValueIdentifier)
+	{
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_ExperimentIdentifier:
+			
+			sprintf(m_oFixedHeader.m_sRecordingId, "0x%08X", ui32Value);
+			m_oFixedHeader.m_sRecordingId[10] = ' ';
+			break;
+			
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectIdentifier:
+			
+			sprintf(m_oFixedHeader.m_sPatientId, "0x%08X ", ui32Value);	
+			m_oFixedHeader.m_sPatientId[11] = ' ';
+			break;
+			
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectAge:
+			// TODO using the experiment date, compute the birthdate?
+			break;
+			
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectSex:
+
+			switch(ui32Value)
+			{				
+				case OVTK_Value_Sex_Female:
+					m_oFixedHeader.m_sPatientId[17] = 'F';
+					break;
+						
+				case OVTK_Value_Sex_Male:
+					m_oFixedHeader.m_sPatientId[17] = 'M';
+					break;
+						
+				case OVTK_Value_Sex_Unknown:
+				case OVTK_Value_Sex_NotSpecified:
+				default:
+					m_oFixedHeader.m_sPatientId[17] = 'X';
+					break;
+			}
+				
+			m_oFixedHeader.m_sPatientId[18] = ' ';
+			break;
+			
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_LaboratoryIdentifier:
+			m_oFixedHeader.m_ui64LaboratoryId = ui32Value;
+			break;
+			
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_TechnicianIdentifier:
+			m_oFixedHeader.m_ui64TechnicianId = ui32Value;
+			m_oFixedHeader.save(m_oFile);
+			break;
+
+	}
+}
+
+void CEEGStreamWriterGDF::setValue(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue)
+{
+	switch(ui32ValueIdentifier)
+	{
+		/*
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_ExperimentDate:
+			break;
+		*/
+			
+		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectName:
 		{
-		public:
-
-			CEEGStreamWriterGDF_ReaderCallback(CEEGStreamWriterGDF& rPlugin)
-				:m_rPlugin(rPlugin)
-				,m_pReaderHelper(NULL)
-				,m_pFile(NULL)
-				,m_bFirstTime(true)
-			{
-				m_pReaderHelper=EBML::createReaderHelper();
-			}
-
-			virtual ~CEEGStreamWriterGDF_ReaderCallback()
-			{
-				fclose(m_pFile);
-				m_pReaderHelper->release();
-			}
-
-			virtual void save(boolean bHeader)
-			{
-				if(!m_pFile)
+				char * l_pFormattedSubjectName = new char[strlen(sValue)];
+						
+				strcpy(l_pFormattedSubjectName, sValue);
+					
+				char * l_pSpaceInSubjectName;
+				//replaces all spaces by underscores
+				while( (l_pSpaceInSubjectName = strchr(l_pFormattedSubjectName , ' ')) != NULL)
 				{
-					if(!(m_pFile=fopen(m_rPlugin.m_sFileName, "wb")))
-					{
-						return;
-					}
+					*l_pSpaceInSubjectName = '_';
 				}
+					
+				sprintf(m_oFixedHeader.m_sPatientId + 31, "%s", l_pFormattedSubjectName);
+					
+				delete[] l_pFormattedSubjectName;
+		}	
+		break;
 
-				fseek(m_pFile, 0, SEEK_SET);
-				strcpy(m_oFixedHeader.m_sVersionId, "GDF 0.12");
-				strcpy(m_oFixedHeader.m_sStartDateAndTimeOfRecording, "2006101100000000");
-				memset(m_oFixedHeader.m_sPatientId, ' ', sizeof(m_oFixedHeader.m_sPatientId));
-				memset(m_oFixedHeader.m_sRecordingId, ' ', sizeof(m_oFixedHeader.m_sRecordingId));
-				m_oFixedHeader.m_i64NumberOfBytesInHeaderRecord=(m_oFixedHeader.m_ui32NumberOfSignals+1)*256;
-				m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
-				m_oFixedHeader.m_ui32DurationOfADataRecordNumerator=1;
-				m_oFixedHeader.m_ui32DurationOfADataRecordDenominator=(uint32)m_ui64SamplingFrequency;
-				fwrite(&m_oFixedHeader, sizeof(m_oFixedHeader), 1, m_pFile);
+	}
+}
 
-				if(bHeader)
-				{
-					vector< GDF::CVariableGDFHeaderPerChannel >::iterator i;
-					#define __dump1(f,i,m) { fwrite(i->m, sizeof(i->m), 1, f); }
-					#define __dump2(f,i,m) { fwrite(&i->m, sizeof(i->m), 1, f); }
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump1(m_pFile, i, m_sLabel);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump1(m_pFile, i, m_sTranducerType);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump1(m_pFile, i, m_sPhysicalDimension);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump2(m_pFile, i, m_f64PhysicalMinimum);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump2(m_pFile, i, m_f64PhysicalMaximum);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump2(m_pFile, i, m_i64DigitalMinimum);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump2(m_pFile, i, m_i64DigitalMaximum);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump1(m_pFile, i, m_sPreFiltering);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump2(m_pFile, i, m_ui32NumberOfSamplesInEachRecord);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump2(m_pFile, i, m_ui32ChannelType);
-					for(i=m_vVariableHeader.begin(); i!=m_vVariableHeader.end(); i++) __dump1(m_pFile, i, m_sReserved);
-					#undef __dump2
-					#undef __dump1
-				}
 
-				if(!bHeader)
-				{
-					size_t i,j;
-					fseek(m_pFile, 0, SEEK_END);
-					for(i=0; i<m_vSamples[0].size(); i++)
-					{
-						for(j=0; j<m_vSamples.size(); j++)
-						{
-							uint16 v=m_vSamples[j][i];
-							fwrite(&v, sizeof(v), 1, m_pFile);
-						}
-					}
-					for(j=0; j<m_vSamples.size(); j++)
-					{
-						m_vSamples[j].clear();
-					}
-				}
-			}
 
-			virtual EBML::boolean isMasterChild(const EBML::CIdentifier& rIdentifier)
-			{
-				if(rIdentifier==EEG_NodeId_Header)                 return true;
-				if(rIdentifier==EEG_NodeId_AcquisitionInformation) return true;
-				if(rIdentifier==EEG_NodeId_ChannelNames)           return true;
-				if(rIdentifier==EEG_NodeId_GainFactors)            return true;
-				if(rIdentifier==EEG_NodeId_ChannelLocations)       return true;
-				if(rIdentifier==EEG_NodeId_Buffer)                 return true;
-				if(rIdentifier==EEG_NodeId_Samples)                return true;
-				if(rIdentifier==EEG_NodeId_Stimulations)           return true;
-				if(rIdentifier==EEG_NodeId_Stimulation)            return true;
-				return false;
-			}
+ void CEEGStreamWriterGDF::setStimulationCount(const OpenViBE::uint32 ui32StimulationCount)
+{
+	
+}
 
-			virtual void openChild(const EBML::CIdentifier& rIdentifier)
-			{
-				if(rIdentifier==EEG_NodeId_ChannelNames)           { m_ui32ChannelIndex=0; }
-				if(rIdentifier==EEG_NodeId_GainFactors)            { m_ui32ChannelIndex=0; }
-				if(rIdentifier==EEG_NodeId_ChannelLocations)       { m_ui32ChannelIndex=0; }
-				if(rIdentifier==EEG_NodeId_Samples)                { m_ui32ChannelIndex=0; }
-				m_vCurrentIdentifier.push(rIdentifier);
-			}
 
-			virtual void processChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
-			{
-				EBML::CIdentifier l_oIdentifier=m_vCurrentIdentifier.top();
+ void CEEGStreamWriterGDF::setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint32 ui32StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate)
+{
+	
+	
+}
 
-				if(l_oIdentifier==EEG_NodeId_ExperimentId)
-				{
-					EBML::uint64 l_ui64Id=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
-					EBML::uint64 l_ui64Id1=l_ui64Id>>32;
-					EBML::uint64 l_ui64Id2=l_ui64Id&0xffffffff;
-					sprintf(m_oFixedHeader.m_sRecordingId, "0x%08X, 0x%08x", (int)l_ui64Id1, (int) l_ui64Id2);
-				}
-				else if(l_oIdentifier==EEG_NodeId_SubjectAge) { /* nothing to do */ }
-				else if(l_oIdentifier==EEG_NodeId_SubjectSex) { /* nothing to do */ }
-				else if(l_oIdentifier==EEG_NodeId_ChannelCount)
-				{
-					m_oFixedHeader.m_ui32NumberOfSignals=(uint32)m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
-					m_vVariableHeader.resize(m_oFixedHeader.m_ui32NumberOfSignals);
-					m_vSamples.resize(m_oFixedHeader.m_ui32NumberOfSignals);
-					m_vSampleCount.resize(m_oFixedHeader.m_ui32NumberOfSignals);
-				}
-				else if(l_oIdentifier==EEG_NodeId_SamplingFrequency)
-				{
-					m_ui64SamplingFrequency=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
-				}
-				else if(l_oIdentifier==EEG_NodeId_ChannelName)
-				{
-					sprintf(m_vVariableHeader[m_ui32ChannelIndex].m_sLabel, m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize));
-					m_vVariableHeader[m_ui32ChannelIndex].m_ui32ChannelType=3; // int16
-					m_vVariableHeader[m_ui32ChannelIndex].m_ui32NumberOfSamplesInEachRecord=1;
-					m_vVariableHeader[m_ui32ChannelIndex].m_f64PhysicalMinimum=0;
-					m_vVariableHeader[m_ui32ChannelIndex].m_f64PhysicalMaximum=1;
-					m_vVariableHeader[m_ui32ChannelIndex].m_i64DigitalMinimum=-0x7fff;
-					m_vVariableHeader[m_ui32ChannelIndex].m_i64DigitalMaximum=0x7fff;
-					memcpy(m_vVariableHeader[m_ui32ChannelIndex].m_sPhysicalDimension, "uV", sizeof("uV"));
 
-					m_ui32ChannelIndex++;
-				}
-				else if(l_oIdentifier==EEG_NodeId_GainFactor) { /* nothing to do */ }
-				else if(l_oIdentifier==EEG_NodeId_ChannelLocation) { /* nothing to do */ }
-				else if(l_oIdentifier==EEG_NodeId_SamplesPerChannelCount) { /* nothing to do */ }
-				else if(l_oIdentifier==EEG_NodeId_SampleBlock)
-				{
-					const uint8* l_pBuffer=static_cast<const uint8*>(pBuffer);
-					float32 l_f32Sample=0;
-					uint32 l_ui32SampleCount=(uint32)(ui64BufferSize>>2);
-					for(uint32 i=0; i<l_ui32SampleCount; i++)
-					{
-						System::Memory::littleEndianToHost(l_pBuffer+(i<<2), &l_f32Sample);
-						m_vSamples[m_ui32ChannelIndex].push_back((int16)(l_f32Sample*5000));
-					}
-					m_vSampleCount[m_ui32ChannelIndex]+=l_ui32SampleCount;
-					m_ui32ChannelIndex++;
-				}
-			}
-
-			virtual void closeChild(void)
-			{
-				EBML::CIdentifier l_oIdentifier=m_vCurrentIdentifier.top();
-				if(l_oIdentifier==EEG_NodeId_Header) save(true);
-				if(l_oIdentifier==EEG_NodeId_Buffer) save(false);
-				m_vCurrentIdentifier.pop();
-			}
-
-		public:
-
-			CEEGStreamWriterGDF& m_rPlugin;
-			stack< EBML::CIdentifier > m_vCurrentIdentifier;
-			EBML::IReaderHelper* m_pReaderHelper;
-			FILE* m_pFile;
-			boolean m_bFirstTime;
-
-			GDF::CFixedGDFHeader m_oFixedHeader;
-			vector< GDF::CVariableGDFHeaderPerChannel > m_vVariableHeader;
-			vector< vector< int16 > > m_vSamples;
-			vector< int64 > m_vSampleCount;
-			GDF::CGDFEventTable m_oEventTable;
-			vector< GDF::CGDFEvent > m_vEvent;
-
-			uint32 m_ui32ChannelIndex;
-			uint64 m_ui64SamplingFrequency;
-		};
-	};
-};
 
 boolean CEEGStreamWriterGDFDesc::getBoxPrototype(
 	IBoxProto& rPrototype) const
 {
-	// Adds box inputs
-	rPrototype.addInput("Incoming stream", OV_UndefinedIdentifier);
+	// Adds box inputs //swap order of the first two 
+	rPrototype.addInput("Experiment information", OV_UndefinedIdentifier);
+	rPrototype.addInput("Signal", OV_UndefinedIdentifier);
+	
+	rPrototype.addInput("Stimulation", OV_UndefinedIdentifier);
 
 	// Adds box outputs
 
@@ -285,66 +230,145 @@ boolean CEEGStreamWriterGDFDesc::getBoxPrototype(
 }
 
 CEEGStreamWriterGDF::CEEGStreamWriterGDF(void)
-	:m_pReaderCallback(NULL)
-	,m_pReader(NULL)
 {
+	for(int i=0 ; i<3 ; i++)
+	{
+		m_pReaderCallBack[i]=NULL;
+		m_pReader[i] = NULL;
+	}
 }
 
-boolean CEEGStreamWriterGDF::initialize(
-	IBoxAlgorithmContext& rBoxAlgorithmContext)
+
+boolean CEEGStreamWriterGDF::initialize()
 {
-	IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
-	// Prepares EBML reader
-	m_pReaderCallback=new CEEGStreamWriterGDF_ReaderCallback(*this);
-	m_pReader=EBML::createReader(*m_pReaderCallback);
+	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
+	// Prepares EBML readers
+	m_pExperimentInformationReaderCallBack=createBoxAlgorithmExperimentInformationInputReaderCallback(*this);
+	m_pReader[0]=EBML::createReader(*m_pExperimentInformationReaderCallBack);
+
+	m_pSignalReaderCallBack = createBoxAlgorithmSignalInputReaderCallback(*this);
+	m_pReader[1]=EBML::createReader(*m_pSignalReaderCallBack);
+	
+	m_pStimulationReaderCallBack=createBoxAlgorithmStimulationInputReaderCallback(*this);
+	m_pReader[2]=EBML::createReader(*m_pStimulationReaderCallBack);
+	
 	// Parses box settings to find filename
 	l_pBoxContext->getSettingValue(0, m_sFileName);
 
+	if(!m_oFile.is_open())
+	{
+		m_oFile.open(m_sFileName, ios::binary | ios::trunc);
+		
+		if(m_oFile.bad())
+		{
+			cout<<"Couldn't open the output file : "<<m_sFileName<<endl;
+			return false;
+		}
+	}
+
 	return true;
 }
 
-boolean CEEGStreamWriterGDF::uninitialize(
-	IBoxAlgorithmContext& rBoxAlgorithmContext)
-{
-	IStaticBoxContext* l_pBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 
+boolean CEEGStreamWriterGDF::uninitialize()
+{
+	//update the fixed header
+	if(m_vSampleCount.size() != 0)
+	{ 
+		m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
+	}
+	m_oFixedHeader.update(m_oFile);
+	
+	//To save the Physical/Digital max/min values
+	m_oVariableHeader.update(m_oFile);
+
+	if(m_oFile.is_open())
+	{	
+		m_oFile.close();
+	}
+
+	releaseBoxAlgorithmExperimentInformationInputReaderCallback(m_pExperimentInformationReaderCallBack);
+	releaseBoxAlgorithmSignalInputReaderCallback(m_pSignalReaderCallBack);
+	releaseBoxAlgorithmStimulationInputReaderCallback(m_pStimulationReaderCallBack);
+	
+	
 	// Cleans up EBML reader
-	m_pReader->release();
-	m_pReader=NULL;
-	delete m_pReaderCallback;
-	m_pReaderCallback=NULL;
+	for(int i=0 ; i<3 ; i++)
+	{
+		m_pReader[i]->release();
+		m_pReader[i]=NULL;
+	}
 
 	return true;
 }
 
-boolean CEEGStreamWriterGDF::processInput(
-	IBoxAlgorithmContext& rBoxAlgorithmContext,
-	uint32 ui32InputIndex)
+boolean CEEGStreamWriterGDF::processInput(uint32 ui32InputIndex)
 {
-	// Only one input, should be the good one :)
-	rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
-
-	return true;
-}
-
-boolean CEEGStreamWriterGDF::process(
-	IBoxAlgorithmContext& rBoxAlgorithmContext)
-{
-	IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
-	for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
+	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+	
+	for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(ui32InputIndex); i++)
 	{
 		uint64 l_ui64StartTime;
 		uint64 l_ui64EndTime;
 		uint64 l_ui64ChunkSize;
 		const uint8* l_pChunkBuffer=NULL;
-		if(l_pDynamicBoxContext->getInputChunk(0, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+			
+		if(l_pDynamicBoxContext->getInputChunk(ui32InputIndex, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
 		{
-			m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
+			m_pReader[ui32InputIndex]->processData(l_pChunkBuffer, l_ui64ChunkSize);
 		}
-		l_pDynamicBoxContext->markInputAsDeprecated(0, i);
+		l_pDynamicBoxContext->markInputAsDeprecated(ui32InputIndex, i);
 	}
 
+	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+
 	return true;
+}
+
+		
+		
+void CEEGStreamWriterGDF::saveMatrixData()
+{
+	if(!m_oFile.is_open())
+	{
+		m_oFile.open(m_sFileName, ios::binary | ios::trunc);
+		
+		if(m_oFile.bad())
+		{
+			cout<<"Couldn't open the output file : "<<m_sFileName<<endl;
+			return;
+		}
+	}
+
+	size_t i,j;
+	m_oFile.seekp(0, ios::end);
+	
+	//to "convert" (if needed) the float64 in little endian format
+	OpenViBE::uint8 l_pLittleEndianBuffer[8];
+	
+	for(i=0; i<m_vSamples[0].size(); i++)
+	{
+		for(j=0; j<m_vSamples.size(); j++)
+		{
+			float64 v=m_vSamples[j][i];
+			
+			System::Memory::hostToLittleEndian(v, l_pLittleEndianBuffer);
+			m_oFile.write(reinterpret_cast<char *>(l_pLittleEndianBuffer), sizeof(l_pLittleEndianBuffer));
+		}
+	}
+	for(j=0; j<m_vSamples.size(); j++)
+	{
+		m_vSamples[j].clear();
+	}
+}
+
+boolean CEEGStreamWriterGDF::process()
+{
+	return true;
+}
+
+	}
+	
 }

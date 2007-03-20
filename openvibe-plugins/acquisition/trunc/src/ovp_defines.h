@@ -9,9 +9,10 @@
 
 #define OVP_ClassId_GenericNetworkAcquisitionDesc          OpenViBE::CIdentifier(0x390236CA, 0x3255E115)
 #define OVP_ClassId_StandardAcquisitionBehaviorDesc        OpenViBE::CIdentifier(0x0C1D9C21, 0x0D3CACBA)
+#define OVP_ClassId_GDFReaderDesc                              OpenViBE::CIdentifier(0x2E2543C1, 0x47E3739E)
 
 /*
-#define OVP_ClassId_                                       OpenViBE::CIdentifier(0x2E2543C1, 0x47E3739E)
+
 #define OVP_ClassId_                                       OpenViBE::CIdentifier(0x40DE7FE6, 0x1E27307A)
 #define OVP_ClassId_                                       OpenViBE::CIdentifier(0x28F9BFC0, 0x2117A59B)
 #define OVP_ClassId_                                       OpenViBE::CIdentifier(0x05E8507E, 0x60FDFD5B)
@@ -33,6 +34,7 @@
 
 #define OVP_ClassId_GenericNetworkAcquisition              OpenViBE::CIdentifier(0x5D5CA50E, 0x7486E783)
 #define OVP_ClassId_StandardAcquisitionBehavior            OpenViBE::CIdentifier(0x4D7D74C3, 0x3B1158B5)
+#define OVP_ClassId_GDFReader                              OpenViBE::CIdentifier(0x3EEB1264, 0x4EDFBD9A)
 
 /*
 #define OVP_ClassId_                                       OpenViBE::CIdentifier(0x3EEB1264, 0x4EDFBD9A)

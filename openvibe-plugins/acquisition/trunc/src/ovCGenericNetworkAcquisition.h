@@ -2,8 +2,12 @@
 #define __OpenViBEPlugins_Acquisition_CGenericNetworkAcquisition_H__
 
 #include "ovp_defines.h"
-
 #include <openvibe/ov_all.h>
+#include <openvibe-toolkit/ovtk_all.h>
+
+
+#include <ebml/TReaderCallbackProxy.h>
+#include <ebml/TWriterCallbackProxy.h>
 
 #include <socket/IConnectionClient.h>
 
@@ -12,63 +16,126 @@
 #include <ebml/IWriter.h>
 #include <ebml/IWriterHelper.h>
 
-#define EEG_NodeId_Header                      EBML::CIdentifier(0x4239)
- #define EEG_NodeId_AcquisitionInformation     EBML::CIdentifier(0x4240)
-  #define EEG_NodeId_ExperimentId              EBML::CIdentifier(0x4241)
-  #define EEG_NodeId_SubjectAge                EBML::CIdentifier(0x4242)
-  #define EEG_NodeId_SubjectSex                EBML::CIdentifier(0x4243)
-  #define EEG_NodeId_ChannelCount              EBML::CIdentifier(0x4244)
-  #define EEG_NodeId_SamplingFrequency         EBML::CIdentifier(0x4245)
-  #define EEG_NodeId_ChannelNames              EBML::CIdentifier(0x4246)
-   #define EEG_NodeId_ChannelName              EBML::CIdentifier(0x4247)
-  #define EEG_NodeId_GainFactors               EBML::CIdentifier(0x4248)
-   #define EEG_NodeId_GainFactor               EBML::CIdentifier(0x4249)
-  #define EEG_NodeId_ChannelLocations          EBML::CIdentifier(0x4250)
-   #define EEG_NodeId_ChannelLocation          EBML::CIdentifier(0x4251)
-#define EEG_NodeId_Buffer                      EBML::CIdentifier(0x5A)
- #define EEG_NodeId_Samples                    EBML::CIdentifier(0x5B)
-  #define EEG_NodeId_SamplesPerChannelCount    EBML::CIdentifier(0x5C)
-  #define EEG_NodeId_SampleBlock               EBML::CIdentifier(0x5D)
- #define EEG_NodeId_Stimulations               EBML::CIdentifier(0x60)
-  #define EEG_NodeId_StimulationsCount         EBML::CIdentifier(0x61)
-  #define EEG_NodeId_Stimulation               EBML::CIdentifier(0x62)
-   #define EEG_NodeId_StimulationSampleIndex   EBML::CIdentifier(0x63)
-   #define EEG_NodeId_StimulationIdentifier    EBML::CIdentifier(0x64)
+#include <string>
+#include <vector>
+
+#define GenericNetworkAcquisition_ExperimentInfoOutput		0
+#define GenericNetworkAcquisition_SignalOutput			1
+#define GenericNetworkAcquisition_StimulationOutput		2
 
 namespace OpenViBEPlugins
 {
 	namespace Acquisition
-	{
-		class CGenericNetworkAcquisition : virtual public OpenViBE::Plugins::IBoxAlgorithm
+	{	
+
+		class CGenericNetworkAcquisition : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
+		public:
+			class CExperimentInfoHeader
+			{
+				public:
+					EBML::uint64 m_ui64ExperimentId;
+					EBML::uint64 m_ui64ExperimentDate;
+				
+					EBML::uint64 m_ui64SubjectId; 
+					std::string m_pSubjectName;
+					EBML::uint64 m_ui64SubjectAge;
+					EBML::uint64 m_ui64SubjectSex;
+				
+					EBML::uint64 m_ui64LaboratoryId;	
+					std::string m_pLaboratoryName;
+					EBML::uint64 m_ui64TechnicianId;
+					std::string m_pTechnicianName;
+	
+					bool m_bReadyToSend;
+			};
+				
+			
+			// Used to store information about the signal stream
+			class CSignalDescription
+			{
+				public:
+					CSignalDescription() : m_ui32StreamVersion(1), m_ui32ChannelCount (0), m_bReadyToSend(false), m_ui32CurrentChannel(0)
+					{
+					}
+
+				public:
+					EBML::uint32 m_ui32StreamVersion;
+					EBML::uint32 m_ui32SamplingRate;
+					EBML::uint32 m_ui32ChannelCount;
+					EBML::uint32 m_ui32SampleCount;
+					std::vector<std::string> m_pChannelName;
+					EBML::uint32 m_ui32CurrentChannel;
+				
+					bool m_bReadyToSend;
+			};
+			
+			
 		public:
 
 			CGenericNetworkAcquisition(void);
 
 			virtual void release(void) { delete this; }
-			virtual OpenViBE::boolean initialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
-			virtual OpenViBE::boolean uninitialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
-			virtual OpenViBE::boolean processClock(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageClock& rMessageClock);
-			virtual OpenViBE::boolean process(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext);
+
+			virtual OpenViBE::boolean initialize();
+
+			virtual OpenViBE::boolean uninitialize();
+
+			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock& rMessageClock);
+
+			virtual OpenViBE::boolean process();
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_GenericNetworkAcquisition)
 
 		public:
+					
+			virtual EBML::boolean readerIsMasterChild(const EBML::CIdentifier& rIdentifier);
+			virtual void readerOpenChild(const EBML::CIdentifier& rIdentifier);
+			virtual void readerProcessChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+			virtual void readerCloseChild();
+			
+			virtual void writeExperimentOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+			virtual void writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+			virtual void writeStimulationOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+		public:
 
+			//Network
 			OpenViBE::CString m_sServerHostName;
 			OpenViBE::uint32 m_ui32ServerHostPort;
 			Socket::IConnectionClient* m_pConnectionClient;
-			EBML::IReaderCallback* m_pReaderCallback;
+
+			//Input etc
+			EBML::TReaderCallbackProxy2<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerIsMasterChild, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerOpenChild, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerProcessChildData, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerCloseChild> m_oInputReaderCallbackProxy;
+			
+			EBML::CIdentifier m_oCurrentIdentifier;
 			EBML::IReader* m_pReader;
-			EBML::IWriterCallback* m_pWriterCallback;
-			EBML::IWriter* m_pWriter;
+			EBML::IReaderHelper* m_pReaderHelper;
+			OpenViBE::uint32 m_ui32CurrentChannel;
+			
+			//Output Writers etc
+			EBML::IWriter* m_pWriter[3];
+
+			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter * m_pSignalOutputWriterHelper;
+			OpenViBEToolkit::IBoxAlgorithmExperimentInformationOutputWriter * m_pExperimentInformationOutputWriterHelper;
+//			OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
+
+			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition> * m_pOutputWriterCallbackProxy[3];
+			
 			OpenViBE::uint64 m_ui64CurrentBufferSize;
 			OpenViBE::Plugins::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
+
+			
+			CExperimentInfoHeader * m_pExperimentInfoHeader;
+			bool m_bHeaderSent;
+
+			CSignalDescription * m_pSignalDescription;
+			bool m_bSignalDescriptionSent;
+
+			EBML::float64 * m_pMatrixBuffer;
+			OpenViBE::uint64 m_ui64MatrixBufferSize;
+			bool m_bMatrixReadyToSend;
+			
+			OpenViBE::uint32 m_ui32SentSampleCount;
 		};
 
 		class CGenericNetworkAcquisitionDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
