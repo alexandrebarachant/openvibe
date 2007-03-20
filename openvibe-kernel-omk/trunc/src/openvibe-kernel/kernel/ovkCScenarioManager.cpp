@@ -39,7 +39,7 @@ IScenario& CScenarioManager::getScenario(
 	itScenario=m_vScenario.find(rScenarioIdentifier);
 	if(itScenario==m_vScenario.end())
 	{
-		// $$$
+		log() << LogLevel_Fatal << "Added test bitmask" << CIdentifier(1, 1) << " - TODO remove this\n";
 	}
 	return *itScenario->second;
 }

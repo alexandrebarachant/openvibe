@@ -36,9 +36,9 @@ namespace OpenViBEToolkit
 		stack<EBML::CIdentifier> m_vNodes;
 		EBML::IReaderHelper* m_pReaderHelper;
 
-		OpenViBE::uint32 m_ui32StimulationIndex;
-		OpenViBE::uint32 m_ui32StimulationIdentifier;
-		OpenViBE::uint32 m_ui32SampleIndex;
+		uint32 m_ui32StimulationIndex;
+		uint32 m_ui32StimulationIdentifier;
+		uint64 m_ui64StimulationDate;
 	};
 };
 
@@ -85,9 +85,9 @@ void CBoxAlgorithmStimulationInputReaderCallback::processChildData(const void* p
 
 	// ...
 
-	if(l_rTop==OVTK_NodeId_Stimulation_NumberOfStimulations)    { m_ui32StimulationIndex=0; m_rCallback.setStimulationCount(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
-	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation_Identifier)  { m_ui32StimulationIdentifier=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
-	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation_SampleIndex) { m_ui32SampleIndex=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
+	if(l_rTop==OVTK_NodeId_Stimulation_NumberOfStimulations)   { m_ui32StimulationIndex=0; m_rCallback.setStimulationCount(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation_Identifier) { m_ui32StimulationIdentifier=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
+	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation_Date)       { m_ui64StimulationDate=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
 }
 
 void CBoxAlgorithmStimulationInputReaderCallback::closeChild(void)
@@ -96,7 +96,7 @@ void CBoxAlgorithmStimulationInputReaderCallback::closeChild(void)
 
 	// ...
 
-	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation) m_rCallback.setStimulation(m_ui32StimulationIndex, m_ui32StimulationIdentifier, m_ui32SampleIndex);
+	if(l_rTop==OVTK_NodeId_Stimulation_Stimulation) m_rCallback.setStimulation(m_ui32StimulationIndex, m_ui32StimulationIdentifier, m_ui64StimulationDate);
 
 	m_vNodes.pop();
 }

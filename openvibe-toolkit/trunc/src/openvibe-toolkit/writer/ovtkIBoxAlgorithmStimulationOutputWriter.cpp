@@ -22,7 +22,7 @@ namespace OpenViBEToolkit
 		virtual ~CBoxAlgorithmStimulationOutputWriter(void);
 
 		virtual boolean setStimulationCount(const uint32 ui32StimulationCount);
-		virtual boolean setStimulation(const uint32 ui32StimulationIndex, const uint32 ui32StimulationIdentifier, const uint32 ui32SampleIndex);
+		virtual boolean setStimulation(const uint32 ui32StimulationIndex, const uint32 ui32StimulationIdentifier, const uint64 ui64StimulationDate);
 
 		virtual boolean writeHeader(EBML::IWriter& rWriter);
 		virtual boolean writeBuffer(EBML::IWriter& rWriter);
@@ -32,7 +32,7 @@ namespace OpenViBEToolkit
 	protected:
 
 		uint32 m_ui32SitmulationCount;
-		map< uint32, pair< uint32, uint32 > > m_vStimulation;
+		map< uint32, pair< uint32, uint64 > > m_vStimulation;
 	};
 };
 
@@ -57,9 +57,9 @@ boolean CBoxAlgorithmStimulationOutputWriter::setStimulationCount(const uint32 u
 	return true;
 }
 
-boolean CBoxAlgorithmStimulationOutputWriter::setStimulation(const uint32 ui32StimulationIndex, const uint32 ui32StimulationIdentifier, const uint32 ui32SampleIndex)
+boolean CBoxAlgorithmStimulationOutputWriter::setStimulation(const uint32 ui32StimulationIndex, const uint32 ui32StimulationIdentifier, const uint64 ui64StimulationDate)
 {
-	m_vStimulation[ui32StimulationIndex]=pair<uint32, uint32>(ui32StimulationIdentifier, ui32SampleIndex);
+	m_vStimulation[ui32StimulationIndex]=pair<uint32, uint64>(ui32StimulationIdentifier, ui64StimulationDate);
 	return true;
 }
 
@@ -91,7 +91,7 @@ boolean CBoxAlgorithmStimulationOutputWriter::writeBuffer(EBML::IWriter& rWriter
 			 m_pWriterHelper->openChild(OVTK_NodeId_Stimulation_Stimulation_Identifier);
 			  m_pWriterHelper->setUIntegerAsChildData(m_vStimulation[i].first);
 			 m_pWriterHelper->closeChild();
-			 m_pWriterHelper->openChild(OVTK_NodeId_Stimulation_Stimulation_SampleIndex);
+			 m_pWriterHelper->openChild(OVTK_NodeId_Stimulation_Stimulation_Date);
 			  m_pWriterHelper->setUIntegerAsChildData(m_vStimulation[i].second);
 			 m_pWriterHelper->closeChild();
 			m_pWriterHelper->closeChild();

@@ -1,4 +1,4 @@
-#include "ovtkIBoxAlgorithmContextHandler.h"
+#include "ovtkTBoxAlgorithm.h"
 
 #include <stack>
 

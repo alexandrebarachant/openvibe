@@ -199,41 +199,24 @@ boolean CScenario::removeBox(
 
 	// Found the box,
 	// now find all the links that are used by this box
-	map<CIdentifier, vector<ILink*> >::iterator itBoxLink;
-	itBoxLink=m_vBoxLink.find(rBoxIdentifier);
-	if(itBoxLink!=m_vBoxLink.end())
+	map<CIdentifier, ILink*>::iterator itLink;
+	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); )
 	{
-		// Links found
-		// Delete all the links
-		vector<ILink*>::iterator itLink;
-		for(itLink=itBoxLink->second.begin(); itLink!=itBoxLink->second.end(); itLink++)
+		if(itLink->second->getSourceBoxIdentifier()==rBoxIdentifier || itLink->second->getTargetBoxIdentifier()==rBoxIdentifier)
 		{
-			// Deletes link reference
-			map<CIdentifier, ILink*>::iterator itLinkRef;
-			itLinkRef=m_vLink.find((*itLink)->getIdentifier());
-			if(itLinkRef!=m_vLink.end())
-			{
-				m_vLink.erase(itLinkRef);
-			}
+			// Deletes this link
+			OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(itLink->second);
 
-			// Deletes link -> box relations
-			map<CIdentifier, vector<IBox*> >::iterator itLinkBox;
-			itLinkBox=m_vLinkBox.find((*itLink)->getIdentifier());
-			if(itLinkBox!=m_vLinkBox.end())
-			{
-				m_vLinkBox.erase(itLinkBox);
-			}
-
-			// Deletes link itself
-			OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(*itLink);
+			// Removes link from the link list
+			m_vLink.erase(itLink);
 		}
-
-		// Deletes box -> link relation
-		m_vBoxLink.erase(itBoxLink);
+		itLink++;
 	}
 
 	// Deletes the box itself
 	OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(itBox->second);
+
+	// Removes box from the box list
 	m_vBox.erase(itBox);
 
 	return true;
@@ -265,28 +248,18 @@ boolean CScenario::enumerateLinksFromBox(
 {
 	log() << LogLevel_Debug << "Enumerating scenario links from specific box\n";
 
-	map<CIdentifier, vector<ILink*> >::const_iterator itBoxLink;
-	CIdentifier l_oBoxIdentifier;
-	uint32 l_ui32Index;
-	itBoxLink=m_vBoxLink.find(rBoxIdentifier);
-	if(itBoxLink!=m_vBoxLink.end())
+	map<CIdentifier, ILink*>::const_iterator itLink;
+	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
 	{
-		vector<ILink*>::const_iterator itLink=itBoxLink->second.begin();
-		while(itLink!=itBoxLink->second.end())
+		if(itLink->second->getSourceBoxIdentifier()==rBoxIdentifier)
 		{
-			if((*itLink)->getSource(l_oBoxIdentifier, l_ui32Index))
+			if(!rCallback.callback(*this, *(itLink->second)))
 			{
-				if(l_oBoxIdentifier==rBoxIdentifier)
-				{
-					if(!rCallback.callback(*this, *(*itLink)))
-					{
-						return true;
-					}
-				}
+				return true;
 			}
-			itLink++;
 		}
 	}
+
 	return true;
 }
 
@@ -297,31 +270,23 @@ boolean CScenario::enumerateLinksFromBoxOutput(
 {
 	log() << LogLevel_Debug << "Enumerating scenario links from specific box output\n";
 
-	map<CIdentifier, vector<ILink*> >::const_iterator itBoxLink;
-	CIdentifier l_oBoxIdentifier;
-	uint32 l_ui32Index;
-	itBoxLink=m_vBoxLink.find(rBoxIdentifier);
-	if(itBoxLink!=m_vBoxLink.end())
+	map<CIdentifier, ILink*>::const_iterator itLink;
+	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
 	{
-		vector<ILink*>::const_iterator itLink=itBoxLink->second.begin();
-		while(itLink!=itBoxLink->second.end())
+		if(itLink->second->getSourceBoxIdentifier()==rBoxIdentifier)
 		{
-			if((*itLink)->getSource(l_oBoxIdentifier, l_ui32Index))
+			if(itLink->second->getSourceBoxOutputIndex()==ui32OutputIndex)
 			{
-				if(l_oBoxIdentifier==rBoxIdentifier && l_ui32Index==ui32OutputIndex)
+				if(!rCallback.callback(*this, *(itLink->second)))
 				{
-					if(!rCallback.callback(*this, *(*itLink)))
-					{
-						return true;
-					}
+					return true;
 				}
 			}
-			itLink++;
 		}
 	}
+
 	return true;
 }
-
 
 boolean CScenario::enumerateLinksToBox(
 	IScenario::ILinkEnum& rCallback,
@@ -329,28 +294,18 @@ boolean CScenario::enumerateLinksToBox(
 {
 	log() << LogLevel_Debug << "Enumerating scenario links to specific box\n";
 
-	map<CIdentifier, vector<ILink*> >::const_iterator itBoxLink;
-	CIdentifier l_oBoxIdentifier;
-	uint32 l_ui32Index;
-	itBoxLink=m_vBoxLink.find(rBoxIdentifier);
-	if(itBoxLink!=m_vBoxLink.end())
+	map<CIdentifier, ILink*>::const_iterator itLink;
+	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
 	{
-		vector<ILink*>::const_iterator itLink=itBoxLink->second.begin();
-		while(itLink!=itBoxLink->second.end())
+		if(itLink->second->getTargetBoxIdentifier()==rBoxIdentifier)
 		{
-			if((*itLink)->getTarget(l_oBoxIdentifier, l_ui32Index))
+			if(!rCallback.callback(*this, *(itLink->second)))
 			{
-				if(l_oBoxIdentifier==rBoxIdentifier)
-				{
-					if(!rCallback.callback(*this, *(*itLink)))
-					{
-						return true;
-					}
-				}
+				return true;
 			}
-			itLink++;
 		}
 	}
+
 	return true;
 }
 
@@ -430,13 +385,7 @@ boolean CScenario::connect(
 	l_pLink->setSource(rSourceBoxIdentifier, ui32SourceBoxOutputIndex);
 	l_pLink->setTarget(rTargetBoxIdentifier, ui32TargetBoxInputIndex);
 
-	rLinkIdentifier=l_pLink->getIdentifier();
-
-	m_vLink[rLinkIdentifier]=l_pLink;
-	m_vLinkBox[rLinkIdentifier].push_back(l_pSourceBox);
-	m_vLinkBox[rLinkIdentifier].push_back(l_pTargetBox);
-	m_vBoxLink[rSourceBoxIdentifier].push_back(l_pLink);
-	m_vBoxLink[rTargetBoxIdentifier].push_back(l_pLink);
+	m_vLink[l_pLink->getIdentifier()]=l_pLink;
 
 	return true;
 }
@@ -468,42 +417,10 @@ boolean CScenario::disconnect(
 		return false;
 	}
 
-	// Found the link,
-	// now find all the boxes that are used by this link
-	map<CIdentifier, vector<IBox*> >::iterator itLinkBox;
-	itLinkBox=m_vLinkBox.find(rLinkIdentifier);
-	if(itLinkBox!=m_vLinkBox.end())
-	{
-		// Boxes found
-		vector<IBox*>::iterator itBox;
-		for(itBox=itLinkBox->second.begin(); itBox!=itLinkBox->second.end(); itBox++)
-		{
-			// Updates the box -> link relations
-			map<CIdentifier, vector<ILink*> >::iterator itBoxLink;
-			itBoxLink=m_vBoxLink.find((*itBox)->getIdentifier());
-			if(itBoxLink!=m_vBoxLink.end())
-			{
-				vector<ILink*>::iterator it;
-				for(it=itBoxLink->second.begin(); it!=itBoxLink->second.end(); )
-				{
-					if((*it)->getIdentifier()==rLinkIdentifier)
-					{
-						it=itBoxLink->second.erase(it);
-					}
-					else
-					{
-						it++;
-					}
-				}
-			}
-		}
-
-		// Deletes link -> box relation
-		m_vLinkBox.erase(itLinkBox);
-	}
-
 	// Deletes the link itself
 	OpenViBE::Tools::CObjectFactoryHelper(getKernelContext().getObjectFactory()).releaseObject(itLink->second);
+
+	// Removes link from the link list
 	m_vLink.erase(itLink);
 
 	return true;

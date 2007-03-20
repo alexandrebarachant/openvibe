@@ -39,6 +39,8 @@
 #define OVK_ClassId_Kernel_ScenarioExporterContext           OpenViBE::CIdentifier(0x78606B83, 0x5EB11EC9)
 #define OVK_ClassId_Kernel_ScenarioImporterContext           OpenViBE::CIdentifier(0x17DC0F51, 0x795A3A7E)
 
+#define OVK_ClassId_Kernel_TypeManager                       OpenViBE::CIdentifier(0x11D27788, 0x0602030A)
+
 #define OVK_ClassId_Kernel_Player_Player                     OpenViBE::CIdentifier(0x7C8777FF, 0x52CE89C2)
 
 //___________________________________________________________________//
@@ -62,7 +64,6 @@
 //                                                                   //
 
 /*
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x11D27788, 0x0602030A)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x25476613, 0x331633DA)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x5978C732, 0x5903C7A2)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x6059EA7C, 0x081FDAB5)

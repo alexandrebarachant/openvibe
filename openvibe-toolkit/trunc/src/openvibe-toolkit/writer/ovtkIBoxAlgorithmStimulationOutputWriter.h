@@ -10,7 +10,7 @@ namespace OpenViBEToolkit
 	public:
 
 		virtual OpenViBE::boolean setStimulationCount(const OpenViBE::uint32 ui32StimulationCount)=0;
-		virtual OpenViBE::boolean setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint32 ui32StimulationIdentifier, const OpenViBE::uint32 ui32SampleIndex)=0;
+		virtual OpenViBE::boolean setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint32 ui32StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate)=0;
 
 		virtual OpenViBE::boolean writeHeader(EBML::IWriter& rWriter)=0;
 		virtual OpenViBE::boolean writeBuffer(EBML::IWriter& rWriter)=0;

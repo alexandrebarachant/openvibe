@@ -196,7 +196,14 @@ void PsSimulatedBox::doProcess(void)
 	j=m_vCurrentOutput.begin();
 	while(j!=m_vCurrentOutput.end())
 	{
-		j->getBuffer().setSize(0, true);
+		// checks buffer size
+		if(j->getBuffer().getSize())
+		{
+			// the buffer has been (partially ?) filled but not sent
+			cout << "[WARNING] Output buffer filled but not marked as ready to send\n"; // $$$ should use log
+			j->getBuffer().setSize(0, true);
+		}
+
 		++j;
 	}
 }

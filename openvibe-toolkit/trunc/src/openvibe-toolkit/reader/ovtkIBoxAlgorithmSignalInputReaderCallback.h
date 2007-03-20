@@ -21,7 +21,7 @@ namespace OpenViBEToolkit
 		};
 
 		template <class COwnerClass>
-		class OVTK_API TCallbackProxy1
+		class OVTK_API TCallbackProxy1 : virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		{
 		public:
 			TCallbackProxy1(
@@ -84,7 +84,7 @@ namespace OpenViBEToolkit
 		};
 
 		template <class COwnerClass, void (COwnerClass::*mfpSetChannelCount)(const OpenViBE::uint32 ui32ChannelCount), void (COwnerClass::*mfpSetChannelName)(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName), void (COwnerClass::*mfpSetSampleCountPerBuffer)(const OpenViBE::uint32 ui32SampleCountPerBuffer), void (COwnerClass::*mfpSetSamplingRate)(const OpenViBE::uint32 ui32SamplingFrequency), void (COwnerClass::*mfpSetSampleBuffer)(const OpenViBE::float64* pBuffer)>
-		class OVTK_API TCallbackProxy2
+		class OVTK_API TCallbackProxy2 : virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		{
 		public:
 			TCallbackProxy2(

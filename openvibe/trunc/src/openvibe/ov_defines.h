@@ -40,6 +40,8 @@
 #define OV_ClassId_Kernel_LogManager                       OpenViBE::CIdentifier(0x22990B50, 0x571010D4)
 #define OV_ClassId_Kernel_LogListener                      OpenViBE::CIdentifier(0x766B92CB, 0x33B01B15)
 
+#define OV_ClassId_Kernel_TypeManager                      OpenViBE::CIdentifier(0x3E800821, 0x5D1DE74E)
+
 //___________________________________________________________________//
 //                                                                   //
 // Plugin Class Identifiers                                          //
@@ -90,7 +92,6 @@
 #define OV_ClassId_Plugin_BoxOutputProto                   OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
 #define OV_ClassId_Plugin_BoxSettingProto                  OpenViBE::CIdentifier(0x652D2F0B, 0x5D5E0714)
 
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x3E800821, 0x5D1DE74E)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x684245E9, 0x2ACDB82F)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x28CE73E4, 0x533A0620)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x4589F91A, 0x39E8D7D6)
@@ -115,6 +116,14 @@
 /*
 #define OV_TypeId_                                         OpenViBE::CIdentifier(0x434F6587, 0x2EFD2B7E)
 */
+
+//___________________________________________________________________//
+//                                                                   //
+// Several other defined values                                      //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OV_Value_EnumeratedStringSeparator                 ';'
 
 //___________________________________________________________________//
 //                                                                   //

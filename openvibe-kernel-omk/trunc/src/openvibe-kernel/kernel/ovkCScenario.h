@@ -86,8 +86,6 @@ namespace OpenViBE
 
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IBox*> m_vBox;
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::ILink*> m_vLink;
-			std::map<OpenViBE::CIdentifier, std::vector<OpenViBE::Kernel::ILink*> > m_vBoxLink;
-			std::map<OpenViBE::CIdentifier, std::vector<OpenViBE::Kernel::IBox*> > m_vLinkBox;
 		};
 	};
 };

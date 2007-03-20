@@ -17,6 +17,7 @@ namespace OpenViBE
 			virtual OpenViBE::Kernel::IObjectFactory& getObjectFactory(void) const;
 			virtual OpenViBE::Kernel::IPluginManager& getPluginManager(void) const;
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) const;
+			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void) const;
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IKernelContext, OVK_ClassId_Kernel_KernelContext)
@@ -27,6 +28,7 @@ namespace OpenViBE
 			mutable OpenViBE::Kernel::IObjectFactory* m_pObjectFactory;
 			mutable OpenViBE::Kernel::IPluginManager* m_pPluginManager;
 			mutable OpenViBE::Kernel::IScenarioManager* m_pScenarioManager;
+			mutable OpenViBE::Kernel::ITypeManager* m_pTypeManager;
 			mutable OpenViBE::Kernel::ILogManager* m_pLogManager;
 
 		private:

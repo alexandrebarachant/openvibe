@@ -71,9 +71,16 @@ CBoxAlgorithmSignalInputReaderCallback::~CBoxAlgorithmSignalInputReaderCallback(
 
 EBML::boolean CBoxAlgorithmSignalInputReaderCallback::isMasterChild(const EBML::CIdentifier& rIdentifier)
 {
+	if((rIdentifier!=OVTK_NodeId_Signal_Header)
+	&& (rIdentifier!=OVTK_NodeId_Signal_Buffer)
+	&& (rIdentifier!=OVTK_NodeId_Signal_SamplingRate))
+	{
+		return m_pStreamedMatrixReaderCallbackHelper->isMasterChild(rIdentifier);
+	}
+
 	     if(rIdentifier==OVTK_NodeId_Signal_Header) { return true; }
 	else if(rIdentifier==OVTK_NodeId_Signal_Buffer) { return true; }
-	return m_pStreamedMatrixReaderCallbackHelper->isMasterChild(rIdentifier);
+	return false;
 }
 
 void CBoxAlgorithmSignalInputReaderCallback::openChild(const EBML::CIdentifier& rIdentifier)
@@ -82,25 +89,49 @@ void CBoxAlgorithmSignalInputReaderCallback::openChild(const EBML::CIdentifier& 
 
 	EBML::CIdentifier& l_rTop=m_vNodes.top();
 
-	// ...
-
-	m_pStreamedMatrixReaderCallbackHelper->openChild(rIdentifier);
+	if((l_rTop!=OVTK_NodeId_Signal_Header)
+	&& (l_rTop!=OVTK_NodeId_Signal_Buffer)
+	&& (l_rTop!=OVTK_NodeId_Signal_SamplingRate))
+	{
+		m_pStreamedMatrixReaderCallbackHelper->openChild(rIdentifier);
+	}
+	else
+	{
+		// ...
+	}
 }
 
 void CBoxAlgorithmSignalInputReaderCallback::processChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 {
 	EBML::CIdentifier& l_rTop=m_vNodes.top();
 
-	// ...
-
-	if(l_rTop==OVTK_NodeId_Signal_SamplingRate) m_rCallback.setSamplingRate(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
+	if((l_rTop!=OVTK_NodeId_Signal_Header)
+	&& (l_rTop!=OVTK_NodeId_Signal_Buffer)
+	&& (l_rTop!=OVTK_NodeId_Signal_SamplingRate))
+	{
+		m_pStreamedMatrixReaderCallbackHelper->processChildData(pBuffer, ui64BufferSize);
+	}
+	else
+	{
+		// ...
+		if(l_rTop==OVTK_NodeId_Signal_SamplingRate) m_rCallback.setSamplingRate(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
+	}
 }
 
 void CBoxAlgorithmSignalInputReaderCallback::closeChild(void)
 {
 	EBML::CIdentifier& l_rTop=m_vNodes.top();
 
-	// ...
+	if((l_rTop!=OVTK_NodeId_Signal_Header)
+	&& (l_rTop!=OVTK_NodeId_Signal_Buffer)
+	&& (l_rTop!=OVTK_NodeId_Signal_SamplingRate))
+	{
+		m_pStreamedMatrixReaderCallbackHelper->closeChild();
+	}
+	else
+	{
+		// ...
+	}
 
 	m_vNodes.pop();
 }
