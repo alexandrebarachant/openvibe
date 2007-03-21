@@ -111,19 +111,19 @@ fi
 if [ "$OpenViBE_plugin_acquisition_branch" == "" ]; then
 	OpenViBE_plugin_acquisition_branch=$OpenViBE_plugins_branch
 fi
-if [ "$OpenViBE_plugin_samples_branch" == "" ]; then
+if [ "$OpenViBE_plugin_file_io_branch" == "" ]; then
 	OpenViBE_plugin_file_io_branch=$OpenViBE_plugins_branch
 fi
-if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
+if [ "$OpenViBE_plugin_samples_branch" == "" ]; then
 	OpenViBE_plugin_samples_branch=$OpenViBE_plugins_branch
 fi
-if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
+if [ "$OpenViBE_plugin_signal_processing_branch" == "" ]; then
 	OpenViBE_plugin_signal_processing_branch=$OpenViBE_plugins_branch
 fi
-if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
+if [ "$OpenViBE_plugin_simple_visualisation_branch" == "" ]; then
 	OpenViBE_plugin_simple_visualisation_branch=$OpenViBE_plugins_branch
 fi
-if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
+if [ "$OpenViBE_plugin_tools_branch" == "" ]; then
 	OpenViBE_plugin_tools_branch=$OpenViBE_plugins_branch
 fi
 
