@@ -1,4 +1,4 @@
-#include "ovpCDataStreamWriter.h"
+#include "ovpCGenericStreamWriter.h"
 
 #include <iostream>
 
@@ -9,17 +9,17 @@ using namespace OpenViBEPlugins::FileIO;
 using namespace OpenViBEToolkit;
 using namespace std;
 
-CDataStreamWriter::CDataStreamWriter(void)
+CGenericStreamWriter::CGenericStreamWriter(void)
 {
 
 }
 
-void CDataStreamWriter::release(void)
+void CGenericStreamWriter::release(void)
 {
 	delete this;
 }
 
-boolean CDataStreamWriter::initialize(void)
+boolean CGenericStreamWriter::initialize(void)
 {
 	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
@@ -40,7 +40,7 @@ boolean CDataStreamWriter::initialize(void)
 	return true;
 }
 
-boolean CDataStreamWriter::uninitialize(void)
+boolean CGenericStreamWriter::uninitialize(void)
 {
 	if(m_oFile.is_open())
 	{
@@ -50,7 +50,7 @@ boolean CDataStreamWriter::uninitialize(void)
 	return true;
 }
 
-boolean CDataStreamWriter::processInput(uint32 ui32InputIndex)
+boolean CGenericStreamWriter::processInput(uint32 ui32InputIndex)
 {
 	//add this input to the list of inputs with pending data
 	m_vInputWithPendingData.push_back(ui32InputIndex);
@@ -59,7 +59,7 @@ boolean CDataStreamWriter::processInput(uint32 ui32InputIndex)
 	return true;
 }
 
-boolean CDataStreamWriter::process(void)
+boolean CGenericStreamWriter::process(void)
 {
 	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 

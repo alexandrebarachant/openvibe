@@ -7,10 +7,10 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVP_ClassId_EEGStreamWriterGDFDesc                  OpenViBE::CIdentifier(0x375BF8EC, 0x023ACEEB)
-#define OVP_ClassId_GDFReaderDesc                           OpenViBE::CIdentifier(0x2E2543C1, 0x47E3739E)
-#define OVP_ClassId_DataStreamWriterDesc                    OpenViBE::CIdentifier(0x02817C77, 0x77FE3D6A)
-#define OVP_ClassId_DataStreamReaderDesc                    OpenViBE::CIdentifier(0x1E8AAB1A, 0x085D72F6)
+#define OVP_ClassId_GDFFileReaderDesc                       OpenViBE::CIdentifier(0x2E2543C1, 0x47E3739E)
+#define OVP_ClassId_GDFFileWriterDesc                       OpenViBE::CIdentifier(0x375BF8EC, 0x023ACEEB)
+#define OVP_ClassId_GenericStreamReaderDesc                 OpenViBE::CIdentifier(0x1E8AAB1A, 0x085D72F6)
+#define OVP_ClassId_GenericStreamWriterDesc                 OpenViBE::CIdentifier(0x02817C77, 0x77FE3D6A)
 
 /*
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00CC1B39, 0x206A17AE)
@@ -36,10 +36,10 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVP_ClassId_EEGStreamWriterGDF                      OpenViBE::CIdentifier(0x1E7B2155, 0x107289CE)
-#define OVP_ClassId_GDFReader                               OpenViBE::CIdentifier(0x3EEB1264, 0x4EDFBD9A)
-#define OVP_ClassId_DataStreamWriter                        OpenViBE::CIdentifier(0x78EA86B0, 0x2933E255)
-#define OVP_ClassId_DataStreamReader                        OpenViBE::CIdentifier(0x0B1D880D, 0x02A17229)
+#define OVP_ClassId_GDFFileReader                           OpenViBE::CIdentifier(0x3EEB1264, 0x4EDFBD9A)
+#define OVP_ClassId_GDFFileWriter                           OpenViBE::CIdentifier(0x1E7B2155, 0x107289CE)
+#define OVP_ClassId_GenericStreamReader                     OpenViBE::CIdentifier(0x0B1D880D, 0x02A17229)
+#define OVP_ClassId_GenericStreamWriter                     OpenViBE::CIdentifier(0x78EA86B0, 0x2933E255)
 
 /*
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0085B814, 0x6E45DA7E)

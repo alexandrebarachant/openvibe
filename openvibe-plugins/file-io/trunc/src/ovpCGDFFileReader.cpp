@@ -1,4 +1,4 @@
-#include "ovpCGDFReader.h"
+#include "ovpCGDFFileReader.h"
 
 #include <system/Memory.h>
 #include <math.h>
@@ -18,24 +18,23 @@ using namespace std;
 #define _NoValueS_ "_unspecified_"
 
 //Writer Methods
-void CGDFReader::writeExperimentOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
+void CGDFFileReader::writeExperimentOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 {
 	appendOutputChunkData<GDFReader_ExperimentInfoOutput>(pBuffer, ui64BufferSize);
 }
 
-void CGDFReader::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
+void CGDFFileReader::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 {
 	appendOutputChunkData<GDFReader_SignalOutput>(pBuffer, ui64BufferSize);
 }
 
-void CGDFReader::writeStimulationOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
+void CGDFFileReader::writeStimulationOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 {
 	appendOutputChunkData<GDFReader_StimulationOutput>(pBuffer, ui64BufferSize);
 }
 
-
 //Plugin Methods
-CGDFReader::CGDFReader(void)
+CGDFFileReader::CGDFFileReader(void)
 : m_sFileName(NULL)
 , m_f32FileVersion(-1)
 , m_bErrorOccured(false)
@@ -70,11 +69,11 @@ CGDFReader::CGDFReader(void)
 {
 }
 
-void CGDFReader::release(void)
+void CGDFFileReader::release(void)
 {
 }
 
-boolean CGDFReader::initialize()
+boolean CGDFFileReader::initialize()
 {
 	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
@@ -94,11 +93,11 @@ boolean CGDFReader::initialize()
 
 
 	//Prepares the writers proxies
-	m_pOutputWriterCallbackProxy[GDFReader_ExperimentInfoOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFReader>(*this, &CGDFReader::writeExperimentOutput);
+	m_pOutputWriterCallbackProxy[GDFReader_ExperimentInfoOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFFileReader>(*this, &CGDFFileReader::writeExperimentOutput);
 
-	m_pOutputWriterCallbackProxy[GDFReader_SignalOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFReader>(*this, &CGDFReader::writeSignalOutput);
+	m_pOutputWriterCallbackProxy[GDFReader_SignalOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFFileReader>(*this, &CGDFFileReader::writeSignalOutput);
 
-	m_pOutputWriterCallbackProxy[GDFReader_StimulationOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFReader>(*this, &CGDFReader::writeStimulationOutput);
+	m_pOutputWriterCallbackProxy[GDFReader_StimulationOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFFileReader>(*this, &CGDFFileReader::writeStimulationOutput);
 
 	for(int i=0 ; i<3 ; i++)
 	{
@@ -116,7 +115,7 @@ boolean CGDFReader::initialize()
 	return true;
 }
 
-boolean CGDFReader::uninitialize()
+boolean CGDFFileReader::uninitialize()
 {
 	// Cleans up EBML writers
 	for(int i=0 ; i<3 ; i++)
@@ -158,13 +157,13 @@ boolean CGDFReader::uninitialize()
 	return true;
 }
 
-boolean CGDFReader::processClock(CMessageClock& rMessageClock)
+boolean CGDFFileReader::processClock(CMessageClock& rMessageClock)
 {
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
-void CGDFReader::GDFBufferToFloat64Buffer(float64 * out, void * in, uint64 inputBufferSize, uint32 ui32Channel)
+void CGDFFileReader::GDFBufferToFloat64Buffer(float64 * out, void * in, uint64 inputBufferSize, uint32 ui32Channel)
 {
 	switch (m_pChannelType[ui32Channel])
 	{
@@ -246,7 +245,7 @@ void CGDFReader::GDFBufferToFloat64Buffer(float64 * out, void * in, uint64 input
 	}
 }
 
-void CGDFReader::writeExperimentInformation()
+void CGDFFileReader::writeExperimentInformation()
 {
 	if(m_pExperimentInfoHeader->m_ui64ExperimentId != _NoValueI_)
 	{
@@ -302,7 +301,7 @@ void CGDFReader::writeExperimentInformation()
 }
 
 
-void CGDFReader::writeSignalInformation()
+void CGDFFileReader::writeSignalInformation()
 {
 	m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription.m_ui32SamplingRate);
 	m_pSignalOutputWriterHelper->setChannelCount(m_pSignalDescription.m_ui32ChannelCount);
@@ -318,12 +317,12 @@ void CGDFReader::writeSignalInformation()
 }
 
 
-void CGDFReader::writeEvents()
+void CGDFFileReader::writeEvents()
 {
 	//m_pWriterHelper[GenericNetworkFileIO_SignalOutput]->setBinaryAsChildData(static_cast<void*> (m_pMatrixBuffer), m_ui64MatrixBufferSize*sizeof(EBML::float64));
 }
 
-boolean CGDFReader::process()
+boolean CGDFFileReader::process()
 {
 	//Don't do anything if an error as occured while reading the input file
 	//for instance, if the file has channels with different sampling rates

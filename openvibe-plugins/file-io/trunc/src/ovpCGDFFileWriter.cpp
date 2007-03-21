@@ -1,4 +1,4 @@
-#include "ovpCEEGStreamWriterGDF.h"
+#include "ovpCGDFFileWriter.h"
 
 #include <math.h>
 #include <cfloat>
@@ -10,7 +10,7 @@ using namespace OpenViBEPlugins::FileIO;
 using namespace OpenViBEToolkit;
 using namespace std;
 
-void CEEGStreamWriterGDF::setChannelCount(const uint32 ui32ChannelCount)
+void CGDFFileWriter::setChannelCount(const uint32 ui32ChannelCount)
 {
 	m_oFixedHeader.m_ui32NumberOfSignals = ui32ChannelCount;
 	m_oFixedHeader.m_i64NumberOfBytesInHeaderRecord=(ui32ChannelCount+1)*256;
@@ -20,7 +20,7 @@ void CEEGStreamWriterGDF::setChannelCount(const uint32 ui32ChannelCount)
 	m_vSampleCount.resize(ui32ChannelCount);
 }
 
-void CEEGStreamWriterGDF::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
+void CGDFFileWriter::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
 {
 	//prepares the variable header
 	sprintf(m_oVariableHeader[ui32ChannelIndex].m_sLabel, sChannelName);
@@ -36,7 +36,7 @@ void CEEGStreamWriterGDF::setChannelName(const uint32 ui32ChannelIndex, const ch
 
 }
 
-void CEEGStreamWriterGDF::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuffer)
+void CGDFFileWriter::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuffer)
 {
 	m_ui32SamplesPerChannel = ui32SampleCountPerBuffer;
 
@@ -46,7 +46,7 @@ void CEEGStreamWriterGDF::setSampleCountPerBuffer(const uint32 ui32SampleCountPe
 	m_oVariableHeader.save(m_oFile);
 }
 
-void CEEGStreamWriterGDF::setSamplingRate(const uint32 ui32SamplingFrequency)
+void CGDFFileWriter::setSamplingRate(const uint32 ui32SamplingFrequency)
 {
 	m_ui64SamplingFrequency = ui32SamplingFrequency;
 
@@ -54,7 +54,7 @@ void CEEGStreamWriterGDF::setSamplingRate(const uint32 ui32SamplingFrequency)
 	m_oFixedHeader.m_ui32DurationOfADataRecordDenominator=(uint32)m_ui64SamplingFrequency;
 }
 
-void CEEGStreamWriterGDF::setSampleBuffer(const float64* pBuffer)
+void CGDFFileWriter::setSampleBuffer(const float64* pBuffer)
 {
 	const uint8 * l_pBuffer = reinterpret_cast<const uint8*>(pBuffer);
 	float64 l_f64Sample=0;
@@ -101,7 +101,7 @@ void CEEGStreamWriterGDF::setSampleBuffer(const float64* pBuffer)
 * Experiment callback
 *
 */
-void CEEGStreamWriterGDF::setValue(const uint32 ui32ValueIdentifier, const uint32 ui32Value)
+void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const uint32 ui32Value)
 {
 	switch(ui32ValueIdentifier)
 	{
@@ -155,7 +155,7 @@ void CEEGStreamWriterGDF::setValue(const uint32 ui32ValueIdentifier, const uint3
 	}
 }
 
-void CEEGStreamWriterGDF::setValue(const uint32 ui32ValueIdentifier, const char* sValue)
+void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const char* sValue)
 {
 	switch(ui32ValueIdentifier)
 	{
@@ -186,15 +186,15 @@ void CEEGStreamWriterGDF::setValue(const uint32 ui32ValueIdentifier, const char*
 	}
 }
 
-void CEEGStreamWriterGDF::setStimulationCount(const uint32 ui32StimulationCount)
+void CGDFFileWriter::setStimulationCount(const uint32 ui32StimulationCount)
 {
 }
 
- void CEEGStreamWriterGDF::setStimulation(const uint32 ui32StimulationIndex, const uint32 ui32StimulationIdentifier, const uint64 ui64StimulationDate)
+ void CGDFFileWriter::setStimulation(const uint32 ui32StimulationIndex, const uint32 ui32StimulationIdentifier, const uint64 ui64StimulationDate)
 {
 }
 
-boolean CEEGStreamWriterGDFDesc::getBoxPrototype(
+boolean CGDFFileWriterDesc::getBoxPrototype(
 	IBoxProto& rPrototype) const
 {
 	// Adds box inputs //swap order of the first two
@@ -211,7 +211,7 @@ boolean CEEGStreamWriterGDFDesc::getBoxPrototype(
 	return true;
 }
 
-CEEGStreamWriterGDF::CEEGStreamWriterGDF(void)
+CGDFFileWriter::CGDFFileWriter(void)
 {
 	for(int i=0 ; i<3 ; i++)
 	{
@@ -220,7 +220,7 @@ CEEGStreamWriterGDF::CEEGStreamWriterGDF(void)
 	}
 }
 
-boolean CEEGStreamWriterGDF::initialize()
+boolean CGDFFileWriter::initialize()
 {
 	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
@@ -251,7 +251,7 @@ boolean CEEGStreamWriterGDF::initialize()
 	return true;
 }
 
-boolean CEEGStreamWriterGDF::uninitialize()
+boolean CGDFFileWriter::uninitialize()
 {
 	//update the fixed header
 	if(m_vSampleCount.size() != 0)
@@ -282,7 +282,7 @@ boolean CEEGStreamWriterGDF::uninitialize()
 	return true;
 }
 
-boolean CEEGStreamWriterGDF::processInput(uint32 ui32InputIndex)
+boolean CGDFFileWriter::processInput(uint32 ui32InputIndex)
 {
 	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 
@@ -305,7 +305,7 @@ boolean CEEGStreamWriterGDF::processInput(uint32 ui32InputIndex)
 	return true;
 }
 
-void CEEGStreamWriterGDF::saveMatrixData()
+void CGDFFileWriter::saveMatrixData()
 {
 	if(!m_oFile.is_open())
 	{
@@ -340,7 +340,7 @@ void CEEGStreamWriterGDF::saveMatrixData()
 	}
 }
 
-boolean CEEGStreamWriterGDF::process()
+boolean CGDFFileWriter::process()
 {
 	return true;
 }

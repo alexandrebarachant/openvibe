@@ -1,9 +1,8 @@
-#ifndef __OpenViBEPlugins_FileIO_CEEGStreamWriterGDF_H__
-#define __OpenViBEPlugins_FileIO_CEEGStreamWriterGDF_H__
+#ifndef __OpenViBEPlugins_FileIO_CGDFFileWriter_H__
+#define __OpenViBEPlugins_FileIO_CGDFFileWriter_H__
 
 #include "ovp_defines.h"
-
-#include "ovpGDFHelpers.h"
+#include "ovp_gdf_helpers.h"
 
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
@@ -21,7 +20,6 @@
 #include <stdio.h>
 #include <errno.h>
 
-
 namespace OpenViBEPlugins
 {
 	namespace FileIO
@@ -31,14 +29,14 @@ namespace OpenViBEPlugins
 		* The plugin's main class
 		*
 		*/
-		class CEEGStreamWriterGDF : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGDFFileWriter : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		, virtual public OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback::ICallback
 		, virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
 		{
 		public:
 
-			CEEGStreamWriterGDF(void);
+			CGDFFileWriter(void);
 
 			virtual void release(void) { delete this; }
 
@@ -47,7 +45,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process();
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_EEGStreamWriterGDF)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_GDFFileWriter)
 
 		public:
 			virtual void setChannelCount(const OpenViBE::uint32 ui32ChannelCount);
@@ -91,7 +89,7 @@ namespace OpenViBEPlugins
 		/**
 		* Plugin's description
 		*/
-		class CEEGStreamWriterGDFDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGDFFileWriterDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("GDF file writer"); }
@@ -102,13 +100,13 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/GDF"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 			virtual void release(void)                                   { }
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_EEGStreamWriterGDF; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CEEGStreamWriterGDF(); }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFFileWriter; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFFileWriter(); }
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const;
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_EEGStreamWriterGDFDesc)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_GDFFileWriterDesc)
 		};
 	};
 };
 
-#endif // __OpenViBEPlugins_FileIO_CEEGStreamWriterGDF_H__
+#endif // __OpenViBEPlugins_FileIO_CGDFFileWriter_H__

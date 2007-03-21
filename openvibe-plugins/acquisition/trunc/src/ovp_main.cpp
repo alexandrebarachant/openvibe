@@ -1,5 +1,5 @@
 #include "ovp_defines.h"
-#include "ovCGenericNetworkAcquisition.h"
+#include "ovpCGenericNetworkAcquisition.h"
 
 static OpenViBEPlugins::Acquisition::CGenericNetworkAcquisitionDesc* gst_pGenericNetworkAcquisitionDesc=NULL;
 

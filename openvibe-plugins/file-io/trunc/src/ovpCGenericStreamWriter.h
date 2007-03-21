@@ -1,5 +1,5 @@
-#ifndef __OpenViBEPlugins_FileIO_ovpCDataStreamWriter_H__
-#define __OpenViBEPlugins_FileIO_ovpCDataStreamWriter_H__
+#ifndef __OpenViBEPlugins_FileIO_ovpCGenericStreamWriter_H__
+#define __OpenViBEPlugins_FileIO_ovpCGenericStreamWriter_H__
 
 #include "ovp_defines.h"
 
@@ -19,11 +19,11 @@ namespace OpenViBEPlugins
 		 * data from the different inputs and then allows the user to analyse it or "play"
 		 * it again.
 		 */
-		class CDataStreamWriter : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGenericStreamWriter : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
-			CDataStreamWriter(void);
+			CGenericStreamWriter(void);
 			virtual void release(void);
 
 			virtual OpenViBE::boolean initialize(void);
@@ -32,7 +32,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_DataStreamWriter)
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_GenericStreamWriter)
 
 		protected:
 			//!Vector of indexes of the inputs which have pending data
@@ -47,7 +47,7 @@ namespace OpenViBEPlugins
 
 		};
 
-		class CDataStreamWriterDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGenericStreamWriterDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
@@ -60,8 +60,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/Generic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_DataStreamWriter; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CDataStreamWriter(); }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GenericStreamWriter; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGenericStreamWriter(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
@@ -76,9 +76,9 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_DataStreamWriterDesc)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_GenericStreamWriterDesc)
 		};
 	};
 };
 
-#endif // __OpenViBEPlugins_FileIO_ovpCDataStreamWriter_H__
+#endif // __OpenViBEPlugins_FileIO_ovpCGenericStreamWriter_H__

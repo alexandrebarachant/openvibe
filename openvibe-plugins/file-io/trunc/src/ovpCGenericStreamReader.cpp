@@ -1,4 +1,4 @@
-#include "ovpCDataStreamReader.h"
+#include "ovpCGenericStreamReader.h"
 
 #include <iostream>
 
@@ -9,17 +9,17 @@ using namespace OpenViBEPlugins::FileIO;
 using namespace OpenViBEToolkit;
 using namespace std;
 
-CDataStreamReader::CDataStreamReader(void)
+CGenericStreamReader::CGenericStreamReader(void)
 {
 
 }
 
-void CDataStreamReader::release(void)
+void CGenericStreamReader::release(void)
 {
 	delete this;
 }
 
-boolean CDataStreamReader::initialize(void)
+boolean CGenericStreamReader::initialize(void)
 {
 	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
@@ -40,7 +40,7 @@ boolean CDataStreamReader::initialize(void)
 	return true;
 }
 
-boolean CDataStreamReader::uninitialize(void)
+boolean CGenericStreamReader::uninitialize(void)
 {
 	if(m_oFile.is_open())
 	{
@@ -50,13 +50,13 @@ boolean CDataStreamReader::uninitialize(void)
 	return true;
 }
 
-boolean CDataStreamReader::processClock(CMessageClock &rMessageClock)
+boolean CGenericStreamReader::processClock(CMessageClock &rMessageClock)
 {
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
-boolean CDataStreamReader::process(void)
+boolean CGenericStreamReader::process(void)
 {
 	if(!m_oFile.eof())
 	{

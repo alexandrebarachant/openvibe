@@ -1,13 +1,12 @@
-#ifndef __OpenViBEPlugins_FileIO_CGDFReader_H__
-#define __OpenViBEPlugins_FileIO_CGDFReader_H__
+#ifndef __OpenViBEPlugins_FileIO_CGDFFileReader_H__
+#define __OpenViBEPlugins_FileIO_CGDFFileReader_H__
 
 #include "ovp_defines.h"
+#include "ovp_gdf_helpers.h"
 
 #include <openvibe/ov_all.h>
 
 #include <openvibe-toolkit/ovtk_all.h>
-
-#include "ovpGDFHelpers.h"
 
 #include <ebml/TWriterCallbackProxy.h>
 #include <ebml/IWriter.h>
@@ -31,7 +30,7 @@ namespace OpenViBEPlugins
 		* The GDF reader plugin main class
 		*
 		*/
-		class CGDFReader : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGDFFileReader : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 			//Helper structures
@@ -76,7 +75,7 @@ namespace OpenViBEPlugins
 
 		public:
 
-			CGDFReader(void);
+			CGDFFileReader(void);
 
 			virtual void release(void);
 
@@ -88,7 +87,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean process(void);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_GDFReader)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_GDFFileReader)
 
 		public:
 
@@ -107,7 +106,7 @@ namespace OpenViBEPlugins
 			OpenViBE::float32 m_f32FileVersion;
 
 			//EBML handling
-			EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFReader> * m_pOutputWriterCallbackProxy[3];
+			EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFFileReader> * m_pOutputWriterCallbackProxy[3];
 			EBML::IWriter* m_pWriter[3];
 
 			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter * m_pSignalOutputWriterHelper;
@@ -196,7 +195,7 @@ namespace OpenViBEPlugins
 		/**
 		* Description of the GDF Reader plugin
 		*/
-		class CGDFReaderDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGDFFileReaderDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
@@ -209,8 +208,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/GDF"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFReader; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFReader(); }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFFileReader; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFFileReader(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
@@ -226,7 +225,7 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_GDFReaderDesc)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_GDFFileReaderDesc)
 		};
 	}
 }

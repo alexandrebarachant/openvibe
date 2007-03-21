@@ -1,4 +1,4 @@
-#include "ovpGDFHelpers.h"
+#include "ovp_gdf_helpers.h"
 
 #include <math.h>
 #include <iostream>
