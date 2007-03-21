@@ -43,8 +43,11 @@
 
 ## these variables set each plugin package branch
 # OpenViBE_plugin_acquisition_branch=$OpenViBE_plugins_branch
+# OpenViBE_plugin_file_io_branch=$OpenViBE_plugins_branch
 # OpenViBE_plugin_samples_branch=$OpenViBE_plugins_branch
-# OpenViBE_plugin_utility_branch=$OpenViBE_plugins_branch
+# OpenViBE_plugin_signal_processing_branch=$OpenViBE_plugins_branch
+# OpenViBE_plugin_simple_visualisation_branch=$OpenViBE_plugins_branch
+# OpenViBE_plugin_tools_branch=$OpenViBE_plugins_branch
 
 ########################################################################################################################
 
@@ -109,10 +112,19 @@ if [ "$OpenViBE_plugin_acquisition_branch" == "" ]; then
 	OpenViBE_plugin_acquisition_branch=$OpenViBE_plugins_branch
 fi
 if [ "$OpenViBE_plugin_samples_branch" == "" ]; then
+	OpenViBE_plugin_file_io_branch=$OpenViBE_plugins_branch
+fi
+if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
 	OpenViBE_plugin_samples_branch=$OpenViBE_plugins_branch
 fi
 if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
-	OpenViBE_plugin_utility_branch=$OpenViBE_plugins_branch
+	OpenViBE_plugin_signal_processing_branch=$OpenViBE_plugins_branch
+fi
+if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
+	OpenViBE_plugin_simple_visualisation_branch=$OpenViBE_plugins_branch
+fi
+if [ "$OpenViBE_plugin_utility_branch" == "" ]; then
+	OpenViBE_plugin_tools_branch=$OpenViBE_plugins_branch
 fi
 
 ########################################################################################################################
@@ -137,7 +149,10 @@ export OpenViBE_id_generator=$OpenViBE_applications/id-generator/$OpenViBE_appli
 
 OpenViBE_plugins=$OpenViBE_base/openvibe-plugins
 export OpenViBE_plugin_acquisition=$OpenViBE_plugins/acquisition/$OpenViBE_plugin_acquisition_branch
+export OpenViBE_plugin_file_io=$OpenViBE_plugins/file-io/$OpenViBE_plugin_file_io_branch
 export OpenViBE_plugin_samples=$OpenViBE_plugins/samples/$OpenViBE_plugin_samples_branch
-export OpenViBE_plugin_utility=$OpenViBE_plugins/utility/$OpenViBE_plugin_utility_branch
+export OpenViBE_plugin_signal_processing=$OpenViBE_plugins/signal-processing/$OpenViBE_plugin_signal_processing_branch
+export OpenViBE_plugin_simple_visualisation=$OpenViBE_plugins/simple-visualisation/$OpenViBE_plugin_simple_visualisation_branch
+export OpenViBE_plugin_tools=$OpenViBE_plugins/tools/$OpenViBE_plugin_tools_branch
 
 PATH=../lib:$PATH

@@ -68,17 +68,34 @@ cp -rf $OpenViBE_designer/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_acquisition_server/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_id_generator/share/* $target_dist/share 2> /dev/null
 
+#######################################################################################
+
 cp -rf $OpenViBE_plugin_acquisition/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_plugin_acquisition/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_plugin_acquisition/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_plugin_acquisition/share/* $target_dist/share 2> /dev/null
+
+cp -rf $OpenViBE_plugin_file_io/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_file_io/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_file_io/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_file_io/share/* $target_dist/share 2> /dev/null
 
 cp -rf $OpenViBE_plugin_samples/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_plugin_samples/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_plugin_samples/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_plugin_samples/share/* $target_dist/share 2> /dev/null
 
-cp -rf $OpenViBE_plugin_utility/bin/* $target_dist/bin 2> /dev/null
-cp -rf $OpenViBE_plugin_utility/include/* $target_dist/include 2> /dev/null
-cp -rf $OpenViBE_plugin_utility/lib/* $target_dist/lib 2> /dev/null
-cp -rf $OpenViBE_plugin_utility/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_plugin_signal_processing/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_signal_processing/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_signal_processing/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_signal_processing/share/* $target_dist/share 2> /dev/null
+
+cp -rf $OpenViBE_plugin_simple_visualisation/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_simple_visualisation/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_simple_visualisation/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_simple_visualisation/share/* $target_dist/share 2> /dev/null
+
+cp -rf $OpenViBE_plugin_tools/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_tools/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_tools/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_tools/share/* $target_dist/share 2> /dev/null
