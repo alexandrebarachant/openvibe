@@ -1,18 +1,17 @@
 #include "ovpCDataStreamReader.h"
 
-
 #include <iostream>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
-using namespace OpenViBEPlugins::Utility;
+using namespace OpenViBEPlugins::FileIO;
 using namespace OpenViBEToolkit;
 using namespace std;
 
 CDataStreamReader::CDataStreamReader(void)
 {
-	
+
 }
 
 void CDataStreamReader::release(void)
@@ -20,44 +19,44 @@ void CDataStreamReader::release(void)
 	delete this;
 }
 
-OpenViBE::boolean CDataStreamReader::initialize(void)
+boolean CDataStreamReader::initialize(void)
 {
 	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
-	
+
 	// Parses box settings to find filename
 	l_pBoxContext->getSettingValue(0, m_sFileName);
 
 	if(!m_oFile.is_open())
 	{
 		m_oFile.open(m_sFileName, ios::binary | ios::in);
-		
+
 		if(m_oFile.bad())
 		{
 			cout<<"Couldn't open the input file : "<<m_sFileName<<endl;
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 
-OpenViBE::boolean CDataStreamReader::uninitialize(void)
+boolean CDataStreamReader::uninitialize(void)
 {
 	if(m_oFile.is_open())
-	{	
+	{
 		m_oFile.close();
 	}
 
 	return true;
 }
 
-OpenViBE::boolean CDataStreamReader::processClock(OpenViBE::CMessageClock &rMessageClock)
+boolean CDataStreamReader::processClock(CMessageClock &rMessageClock)
 {
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
-OpenViBE::boolean CDataStreamReader::process(void)
+boolean CDataStreamReader::process(void)
 {
 	if(!m_oFile.eof())
 	{
@@ -106,16 +105,16 @@ OpenViBE::boolean CDataStreamReader::process(void)
 			cout<<"Error while reading the input file : "<<m_sFileName<<endl;
 			return false;
 		}
-		
+
 		//TODO check if still needed
 		l_pDynamicBoxContext->setOutputChunkSize(l_ui32CurrentInput, 0, true);
 
 		//sends the data
 		l_pDynamicBoxContext->appendOutputChunkData(l_ui32CurrentInput, l_pChunkBuffer, l_ui64ChunkSize);
 		l_pDynamicBoxContext->markOutputAsReadyToSend(l_ui32CurrentInput, l_ui64StartTime, l_ui64EndTime);
-		
+
 		delete[] l_pChunkBuffer;
 	}
-	
+
 	return true;
 }

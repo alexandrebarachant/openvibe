@@ -1,5 +1,5 @@
-#ifndef __UtilityPlugin_ovpCDataStreamReader_H__
-#define __UtilityPlugin_ovpCDataStreamReader_H__
+#ifndef __OpenViBEPlugins_FileIO_ovpCDataStreamReader_H__
+#define __OpenViBEPlugins_FileIO_ovpCDataStreamReader_H__
 
 #include "ovp_defines.h"
 
@@ -10,7 +10,7 @@
 
 namespace OpenViBEPlugins
 {
-	namespace Utility
+	namespace FileIO
 	{
 		/**
 		 * This class is used to read a file produced by the Data stream writer, and
@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 
 			//! The name of the input file
 			OpenViBE::CString m_sFileName;
-			
+
 		};
 
 		class CDataStreamReaderDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -46,16 +46,16 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Data stream reader"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Generic stream reader"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Data stream reader"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Reads saved data streams from the input file and plays them on its outputs"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Utility"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/Generic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_DataStreamReader; } 
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Utility::CDataStreamReader(); }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_DataStreamReader; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CDataStreamReader(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
@@ -70,9 +70,9 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_DataStreamReaderDesc) 
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_DataStreamReaderDesc)
 		};
 	};
 };
 
-#endif // __UtilityPlugin_ovpCDataStreamReader_H__
+#endif // __OpenViBEPlugins_FileIO_ovpCDataStreamReader_H__

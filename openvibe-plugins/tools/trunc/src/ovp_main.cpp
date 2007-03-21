@@ -1,21 +1,21 @@
 #include "ovp_defines.h"
-#include "ovCGenericNetworkAcquisition.h"
+#include "ovpCEBMLStreamSpy.h"
 
-static OpenViBEPlugins::Acquisition::CGenericNetworkAcquisitionDesc* gst_pGenericNetworkAcquisitionDesc=NULL;
+static OpenViBEPlugins::Tools::CEBMLStreamSpyDesc* gst_pEBMLStreamSpyDesc=NULL;
 
 extern "C"
 {
 
 OVP_API OpenViBE::boolean onInitialize(void)
 {
-	gst_pGenericNetworkAcquisitionDesc=new OpenViBEPlugins::Acquisition::CGenericNetworkAcquisitionDesc();
+	gst_pEBMLStreamSpyDesc=new OpenViBEPlugins::Tools::CEBMLStreamSpyDesc();
 
 	return true;
 }
 
 OVP_API OpenViBE::boolean onUninitialize(void)
 {
-	delete gst_pGenericNetworkAcquisitionDesc;
+	delete gst_pEBMLStreamSpyDesc;
 
 	return true;
 }
@@ -24,7 +24,7 @@ OVP_API OpenViBE::boolean onGetPluginObjectDescription(OpenViBE::uint32 ui32Inde
 {
 	switch(ui32Index)
 	{
-		case 0: rpPluginObjectDescription=gst_pGenericNetworkAcquisitionDesc; break;
+		case 0: rpPluginObjectDescription=gst_pEBMLStreamSpyDesc; break;
 
 		default: return false;
 	}

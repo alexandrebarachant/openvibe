@@ -1,5 +1,5 @@
-#ifndef __SamplePlugin_CEBMLStreamSpy_H__
-#define __SamplePlugin_CEBMLStreamSpy_H__
+#ifndef __OpenViBEPlugins_Tools_CEBMLStreamSpy_H__
+#define __OpenViBEPlugins_Tools_CEBMLStreamSpy_H__
 
 #include "ovp_defines.h"
 
@@ -14,7 +14,7 @@
 
 namespace OpenViBEPlugins
 {
-	namespace Samples
+	namespace Tools
 	{
 		class CEBMLStreamSpy : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public EBML::IReaderCallback
 		{
@@ -56,11 +56,11 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("EBML stream tree viewer"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This sample EBML stream analyzer prints the EBML tree structure to the console"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tools"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_EBMLStreamSpy; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CEBMLStreamSpy(); }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Tools::CEBMLStreamSpy(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
@@ -71,7 +71,7 @@ namespace OpenViBEPlugins
 				// Adds box outputs
 
 				// Adds box settings
-				rPrototype.addSetting("EBML nodes description", OV_TypeId_String, "../share/openvibe-plugins/samples/config-ebml-stream-spy.txt");
+				rPrototype.addSetting("EBML nodes description", OV_TypeId_String, "../share/openvibe-plugins/tools/config-ebml-stream-spy.txt");
 
 				return true;
 			}
@@ -81,4 +81,4 @@ namespace OpenViBEPlugins
 	};
 };
 
-#endif // __SamplePlugin_CEBMLStreamSpy_H__
+#endif // __OpenViBEPlugins_Tools_CEBMLStreamSpy_H__

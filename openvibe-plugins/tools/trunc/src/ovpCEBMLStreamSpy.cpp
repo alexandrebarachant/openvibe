@@ -7,7 +7,7 @@
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
-using namespace OpenViBEPlugins::Samples;
+using namespace OpenViBEPlugins::Tools;
 using namespace OpenViBEToolkit;
 using namespace std;
 

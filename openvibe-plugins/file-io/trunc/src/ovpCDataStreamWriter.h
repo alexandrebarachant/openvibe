@@ -1,5 +1,5 @@
-#ifndef __UtilityPlugin_ovpCDataStreamWriter_H__
-#define __UtilityPlugin_ovpCDataStreamWriter_H__
+#ifndef __OpenViBEPlugins_FileIO_ovpCDataStreamWriter_H__
+#define __OpenViBEPlugins_FileIO_ovpCDataStreamWriter_H__
 
 #include "ovp_defines.h"
 
@@ -11,7 +11,7 @@
 
 namespace OpenViBEPlugins
 {
-	namespace Utility
+	namespace FileIO
 	{
 		/**
 		 * This class is used to save the incoming data streams into a file. This file
@@ -33,18 +33,18 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_DataStreamWriter)
-			
+
 		protected:
 			//!Vector of indexes of the inputs which have pending data
 			std::vector<OpenViBE::uint32> m_vInputWithPendingData;
-			
+
 			//!The output file's name
 			OpenViBE::CString m_sFileName;
 
 			//!The output file's handle
 			std::ofstream m_oFile;
 
-			
+
 		};
 
 		class CDataStreamWriterDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -52,16 +52,16 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Data stream writer"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Generic stream writer"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Data stream writer"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This plugin reads the data stream from its inputs then writes it to a file so it can be played again later"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Utility"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/Generic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_DataStreamWriter; } 
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Utility::CDataStreamWriter(); }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_DataStreamWriter; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CDataStreamWriter(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
@@ -81,4 +81,4 @@ namespace OpenViBEPlugins
 	};
 };
 
-#endif // __UtilityPlugin_ovpCDataStreamWriter_H__
+#endif // __OpenViBEPlugins_FileIO_ovpCDataStreamWriter_H__
