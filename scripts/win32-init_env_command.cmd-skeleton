@@ -1,44 +1,131 @@
 @echo off
 
+REM ########################################################################################################################
+REM ## GLOBAL
+
 set PATH=%PATH%;C:\Program Files\cmake-2.4.3-win32-x86\bin
 set PATH=%PATH%;C:\Program Files\pkg-config-0.20\bin
 
-call "%VS80COMNTOOLS%\vsvars32.bat"
+call "%VS80COMNTOOLS%\vsvars32.bat%
 
 set PATH=%PATH%;E:\Microsoft Visual Studio 2005\VC\redist\Debug_NonRedist\x86\Microsoft.VC80.DebugCRT
 set PATH=%PATH%;C:\Expat-2.0.0\Libs
 set PATH=%PATH%;%LIB%;%LIBPATH%
 
-set                OpenViBE_base=E:\Dev\openvibe
-
-set              OpenViBE_branch=trunc
-set       OpenViBE_kernel_branch=trunc
-set      OpenViBE_toolkit_branch=trunc
-set      OpenViBE_modules_branch=trunc
-set OpenViBE_applications_branch=trunc
-set      OpenViBE_plugins_branch=trunc
-
-set                     OpenViBE=%OpenViBE_base%\openvibe\%OpenViBE_branch%
-set              OpenViBE_kernel=%OpenViBE_base%\openvibe-kernel-omk\%OpenViBE_kernel_branch%
-set             OpenViBE_toolkit=%OpenViBE_base%\openvibe-toolkit\%OpenViBE_toolkit_branch%
-
-set             OpenViBE_modules=%OpenViBE_base%\openvibe-modules
-set         OpenViBE_module_ebml=%OpenViBE_modules%\ebml\%OpenViBE_modules_branch%
-set           OpenViBE_module_fs=%OpenViBE_modules%\fs\%OpenViBE_modules_branch%
-set       OpenViBE_module_socket=%OpenViBE_modules%\socket\%OpenViBE_modules_branch%
-set       OpenViBE_module_system=%OpenViBE_modules%\system\%OpenViBE_modules_branch%
-set          OpenViBE_module_xml=%OpenViBE_modules%\xml\%OpenViBE_modules_branch%
-
-set        OpenViBE_applications=%OpenViBE_base%\openvibe-applications
-set            OpenViBE_designer=%OpenViBE_applications%\designer\%OpenViBE_applications_branch%
-set  OpenViBE_acquisition_server=%OpenViBE_applications%\acquisition-server\%OpenViBE_applications_branch%
-set        OpenViBE_id_generator=%OpenViBE_applications%\id-generator\%OpenViBE_applications_branch%
-
-set             OpenViBE_plugins=%OpenViBE_base%\openvibe-plugins
-set  OpenViBE_plugin_acquisition=%OpenViBE_plugins%\acquisition\%OpenViBE_plugins_branch%
-set      OpenViBE_plugin_utility=%OpenViBE_plugins%\utility\%OpenViBE_plugins_branch%
-set      OpenViBE_plugin_samples=%OpenViBE_plugins%\samples\%OpenViBE_plugins_branch%
-
 set OpenMASKDIR=E:\OpenViBE\OpenMASK - VC 8.0\SDK
-
 set PKG_CONFIG_PATH=C:\GTK\lib\pkgconfig
+
+set OpenViBE_base=%CD%\..
+
+REM ########################################################################################################################
+REM ## GENERAL
+REM
+REM ## this variable sets the branch for everything
+REM set OpenViBE_global_branch=trunc
+REM
+REM ## these variables set each project branch
+REM set OpenViBE_branch=%OpenViBE_global_branch%
+REM set OpenViBE_kernel_branch=%OpenViBE_global_branch%
+REM set OpenViBE_toolkit_branch=%OpenViBE_global_branch%
+REM
+REM ########################################################################################################################
+REM ## MODULES
+REM
+REM ## this variable sets the branch for all modules
+REM set OpenViBE_modules_branch=%OpenViBE_global_branch%
+REM
+REM ## these variables set each module branch
+REM set OpenViBE_module_ebml_branch=%OpenViBE_modules_branch%
+REM set OpenViBE_module_fs_branch=%OpenViBE_modules_branch%
+REM set OpenViBE_module_socket_branch=%OpenViBE_modules_branch%
+REM set OpenViBE_module_system_branch=%OpenViBE_modules_branch%
+REM set OpenViBE_module_xml_branch=%OpenViBE_modules_branch%
+REM
+REM ########################################################################################################################
+REM ## APPLICATIONS
+REM
+REM ## this variable sets the branch for all applications
+REM set OpenViBE_applications_branch=%OpenViBE_global_branch%
+REM
+REM ## these variables set each application branch
+REM set OpenViBE_application_acquisition_server_branch=%OpenViBE_applications_branch%
+REM set OpenViBE_application_designer_branch=%OpenViBE_applications_branch%
+REM set OpenViBE_application_id_generator_branch=%OpenViBE_applications_branch%
+REM
+REM ########################################################################################################################
+REM ## PLUGINS
+REM
+REM ## this variable sets the branch for all plugin packages
+REM set OpenViBE_plugins_branch=%OpenViBE_global_branch%
+REM
+REM ## these variables set each plugin package branch
+REM set OpenViBE_plugin_acquisition_branch=%OpenViBE_plugins_branch%
+REM set OpenViBE_plugin_file_io_branch=%OpenViBE_plugins_branch%
+REM set OpenViBE_plugin_samples_branch=%OpenViBE_plugins_branch%
+REM set OpenViBE_plugin_signal_processing_branch=%OpenViBE_plugins_branch%
+REM set OpenViBE_plugin_simple_visualisation_branch=%OpenViBE_plugins_branch%
+REM set OpenViBE_plugin_tools_branch=%OpenViBE_plugins_branch%
+REM
+REM ########################################################################################################################
+
+REM ########################################################################################################################
+
+if "%OpenViBE_global_branch%" == "" set OpenViBE_global_branch=trunc
+
+REM ########################################################################################################################
+
+if "%OpenViBE_branch%" == "" set OpenViBE_branch=%OpenViBE_global_branch%
+if "%OpenViBE_kernel_branch%" == "" set OpenViBE_kernel_branch=%OpenViBE_global_branch%
+if "%OpenViBE_toolkit_branch%" == "" set OpenViBE_toolkit_branch=%OpenViBE_global_branch%
+
+REM ########################################################################################################################
+
+if "%OpenViBE_modules_branch%" == "" set OpenViBE_modules_branch=%OpenViBE_global_branch%
+if "%OpenViBE_module_ebml_branch%" == "" set OpenViBE_module_ebml_branch=%OpenViBE_modules_branch%
+if "%OpenViBE_module_fs_branch%" == "" set OpenViBE_module_fs_branch=%OpenViBE_modules_branch%
+if "%OpenViBE_module_socket_branch%" == "" set OpenViBE_module_socket_branch=%OpenViBE_modules_branch%
+if "%OpenViBE_module_system_branch%" == "" set OpenViBE_module_system_branch=%OpenViBE_modules_branch%
+if "%OpenViBE_module_xml_branch%" == "" set OpenViBE_module_xml_branch=%OpenViBE_modules_branch%
+
+REM ########################################################################################################################
+
+if "%OpenViBE_applications_branch%" == "" set OpenViBE_applications_branch=%OpenViBE_global_branch%
+if "%OpenViBE_application_acquisition_server_branch%" == "" set OpenViBE_application_acquisition_server_branch=%OpenViBE_applications_branch%
+if "%OpenViBE_application_designer_branch%" == "" set OpenViBE_application_designer_branch=%OpenViBE_applications_branch%
+if "%OpenViBE_application_id_generator_branch%" == "" set OpenViBE_application_id_generator_branch=%OpenViBE_applications_branch%
+
+REM ########################################################################################################################
+
+if "%OpenViBE_plugins_branch%" == "" set OpenViBE_plugins_branch=%OpenViBE_global_branch%
+if "%OpenViBE_plugin_acquisition_branch%" == "" set OpenViBE_plugin_acquisition_branch=%OpenViBE_plugins_branch%
+if "%OpenViBE_plugin_file_io_branch%" == "" set OpenViBE_plugin_file_io_branch=%OpenViBE_plugins_branch%
+if "%OpenViBE_plugin_samples_branch%" == "" set OpenViBE_plugin_samples_branch=%OpenViBE_plugins_branch%
+if "%OpenViBE_plugin_signal_processing_branch%" == "" set OpenViBE_plugin_signal_processing_branch=%OpenViBE_plugins_branch%
+if "%OpenViBE_plugin_simple_visualisation_branch%" == "" set OpenViBE_plugin_simple_visualisation_branch=%OpenViBE_plugins_branch%
+if "%OpenViBE_plugin_tools_branch%" == "" set OpenViBE_plugin_tools_branch=%OpenViBE_plugins_branch%
+
+REM ########################################################################################################################
+
+set OpenViBE=%OpenViBE_base%\openvibe\%OpenViBE_branch%
+set OpenViBE_kernel=%OpenViBE_base%\openvibe-kernel-omk\%OpenViBE_kernel_branch%
+set OpenViBE_toolkit=%OpenViBE_base%\openvibe-toolkit\%OpenViBE_toolkit_branch%
+
+set OpenViBE_modules=%OpenViBE_base%\openvibe-modules
+set OpenViBE_module_ebml=%OpenViBE_modules%\ebml\%OpenViBE_module_ebml_branch%
+set OpenViBE_module_fs=%OpenViBE_modules%\fs\%OpenViBE_module_ebml_branch%
+set OpenViBE_module_socket=%OpenViBE_modules%\socket\%OpenViBE_module_socket_branch%
+set OpenViBE_module_system=%OpenViBE_modules%\system\%OpenViBE_module_system_branch%
+set OpenViBE_module_xml=%OpenViBE_modules%\xml\%OpenViBE_module_xml_branch%
+
+set OpenViBE_applications=%OpenViBE_base%\openvibe-applications
+set OpenViBE_designer=%OpenViBE_applications%\designer\%OpenViBE_application_designer_branch%
+set OpenViBE_acquisition_server=%OpenViBE_applications%\acquisition-server\%OpenViBE_application_acquisition_server_branch%
+set OpenViBE_id_generator=%OpenViBE_applications%\id-generator\%OpenViBE_application_id_generator_branch%
+
+set OpenViBE_plugins=%OpenViBE_base%\openvibe-plugins
+set OpenViBE_plugin_acquisition=%OpenViBE_plugins%\acquisition\%OpenViBE_plugin_acquisition_branch%
+set OpenViBE_plugin_file_io=%OpenViBE_plugins%\file-io\%OpenViBE_plugin_file_io_branch%
+set OpenViBE_plugin_samples=%OpenViBE_plugins%\samples\%OpenViBE_plugin_samples_branch%
+set OpenViBE_plugin_signal_processing=%OpenViBE_plugins%\signal-processing\%OpenViBE_plugin_signal_processing_branch%
+set OpenViBE_plugin_simple_visualisation=%OpenViBE_plugins%\simple-visualisation\%OpenViBE_plugin_simple_visualisation_branch%
+set OpenViBE_plugin_tools=%OpenViBE_plugins%\tools\%OpenViBE_plugin_tools_branch%
