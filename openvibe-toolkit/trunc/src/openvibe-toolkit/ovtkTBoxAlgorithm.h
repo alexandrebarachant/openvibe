@@ -16,8 +16,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IObject, OVTK_ClassId_);
 	};
 
-	extern OpenViBEToolkit::IBoxAlgorithmContextHandler* createBoxAlgorithmContextHandler(void);
-	extern void releaseBoxAlgorithmContextHandler(OpenViBEToolkit::IBoxAlgorithmContextHandler* pBoxAlgorithmContextHandler);
+	extern OVTK_API OpenViBEToolkit::IBoxAlgorithmContextHandler* createBoxAlgorithmContextHandler(void);
+	extern OVTK_API void releaseBoxAlgorithmContextHandler(OpenViBEToolkit::IBoxAlgorithmContextHandler* pBoxAlgorithmContextHandler);
 
 	template <class CBoxAlgorithmParentClass>
 	class OVTK_API TBoxAlgorithm : virtual public CBoxAlgorithmParentClass

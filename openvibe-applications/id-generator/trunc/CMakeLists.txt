@@ -43,5 +43,4 @@ SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
 
 FILE(GLOB_RECURSE source_files src/*.cpp)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
-# ADD_EXECUTABLE(${PROJECT_NAME}-static ${source_files})
 # SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")

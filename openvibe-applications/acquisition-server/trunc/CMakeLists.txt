@@ -43,71 +43,14 @@ SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
 
 FILE(GLOB_RECURSE source_files src/*.cpp)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
-# ADD_EXECUTABLE(${PROJECT_NAME}-static ${source_files})
 # SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")
 
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-dynamic)
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
 
-# ---------------------------------
-# Finds module EBML
-# Adds library to target
-# Adds include path
-# ---------------------------------
-FIND_PATH(PATH_OPENVIBE_MODULES_EBML include/ebml/defines.h PATHS $ENV{OpenViBE_modules}/ebml $ENV{OpenViBE_module_ebml})
-IF(PATH_OPENVIBE_MODULES_EBML)
-	MESSAGE(STATUS "  Found OpenViBE module ebml...")
-	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_EBML}/include)
-	FIND_LIBRARY(LIB_OPENVIBE_MODULE_EBML OpenViBE-module-EBML-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_EBML}/lib)
-	IF(LIB_OPENVIBE_MODULE_EBML)
-		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_EBML}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_EBML})
-	ELSE(LIB_OPENVIBE_MODULE_EBML)
-		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-EBML-${MODULE_LINKING}")
-	ENDIF(LIB_OPENVIBE_MODULE_EBML)
-ELSE(PATH_OPENVIBE_MODULES_EBML)
-	MESSAGE(STATUS "  FAILED to find OpenViBE module ebml...")
-ENDIF(PATH_OPENVIBE_MODULES_EBML)
-
-# ---------------------------------
-# Finds module Socket
-# Adds library to target
-# Adds include path
-# ---------------------------------
-FIND_PATH(PATH_OPENVIBE_MODULES_SOCKET include/socket/defines.h PATHS $ENV{OpenViBE_modules}/socket $ENV{OpenViBE_module_socket})
-IF(PATH_OPENVIBE_MODULES_SOCKET)
-	MESSAGE(STATUS "  Found OpenViBE module socket...")
-	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_SOCKET}/include)
-	FIND_LIBRARY(LIB_OPENVIBE_MODULE_SOCKET OpenViBE-module-Socket-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_SOCKET}/lib)
-	IF(LIB_OPENVIBE_MODULE_SOCKET)
-		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_SOCKET}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_SOCKET})
-	ELSE(LIB_OPENVIBE_MODULE_SOCKET)
-		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-Socket-${MODULE_LINKING}")
-	ENDIF(LIB_OPENVIBE_MODULE_SOCKET)
-ELSE(PATH_OPENVIBE_MODULES_SOCKET)
-	MESSAGE(STATUS "  FAILED to find OpenViBE module socket...")
-ENDIF(PATH_OPENVIBE_MODULES_SOCKET)
-
-# ---------------------------------
-# Finds module System
-# Adds library to target
-# Adds include path
-# ---------------------------------
-FIND_PATH(PATH_OPENVIBE_MODULES_SYSTEM include/system/defines.h PATHS $ENV{OpenViBE_modules}/system $ENV{OpenViBE_module_system})
-IF(PATH_OPENVIBE_MODULES_SYSTEM)
-	MESSAGE(STATUS "  Found OpenViBE module system...")
-	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_SYSTEM}/include)
-	FIND_LIBRARY(LIB_OPENVIBE_MODULE_SYSTEM OpenViBE-module-System-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_SYSTEM}/lib)
-	IF(LIB_OPENVIBE_MODULE_SYSTEM)
-		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_SYSTEM}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_SYSTEM})
-	ELSE(LIB_OPENVIBE_MODULE_SYSTEM)
-		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-System-${MODULE_LINKING}")
-	ENDIF(LIB_OPENVIBE_MODULE_SYSTEM)
-ELSE(PATH_OPENVIBE_MODULES_SYSTEM)
-	MESSAGE(STATUS "  FAILED to find OpenViBE module system...")
-ENDIF(PATH_OPENVIBE_MODULES_SYSTEM)
+INCLUDE("FindOpenViBEModuleEBML.cmake")
+INCLUDE("FindOpenViBEModuleSocket.cmake")
+INCLUDE("FindOpenViBEModuleSystem.cmake")
 
 # ---------------------------------
 # Finds Glade

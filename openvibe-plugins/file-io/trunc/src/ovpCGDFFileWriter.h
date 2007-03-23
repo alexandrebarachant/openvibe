@@ -54,11 +54,11 @@ namespace OpenViBEPlugins
 			virtual void setSamplingRate(const OpenViBE::uint32 ui32SamplingFrequency);
 			virtual void setSampleBuffer(const OpenViBE::float64* pBuffer);
 
-			virtual void setValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value);
+			virtual void setValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value);
 			virtual void setValue(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue);
 
 			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
-			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint32 ui32StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
+			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
 			void saveMatrixData();
 		public:

@@ -1,27 +1,23 @@
 FILE(GLOB_RECURSE source_files *.cpp)
 FILE(GLOB_RECURSE header_files *.h)
 
-ADD_LIBRARY(${PROJECT_NAME}-static ${source_files})
-
-ADD_DEFINITIONS(-DSocket_Shared)
-ADD_DEFINITIONS(-DSocket_Exports)
+ADD_LIBRARY(${PROJECT_NAME}-static STATIC ${source_files})
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
+
+SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR}
+	COMPILE_FLAGS "-DSocket_Shared -DSocket_Exports")
 
 IF(WIN32)
 	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ws2_32.lib)
 ENDIF(WIN32)
-
-SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
-	VERSION ${PROJECT_VERSION}
-	SOVERSION ${PROJECT_VERSION_MAJOR})
 
 # -----------------------------
 # Copies all header files to
 # include path and mark copied
 # files to be deleted at clean
 # stage.
-# NOTE: created directories
-# won't be removed
 # -----------------------------
 SET(created_directories "")
 SET(created_files "")

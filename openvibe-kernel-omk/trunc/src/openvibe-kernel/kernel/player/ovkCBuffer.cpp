@@ -22,7 +22,7 @@ CBuffer::CBuffer(
 {
 	if(rBuffer.m_ui64BufferSize)
 	{
-		m_pBuffer=new uint8[rBuffer.m_ui64BufferSize];
+		m_pBuffer=new uint8[static_cast<size_t>(rBuffer.m_ui64BufferSize)]; // $$$
 		System::Memory::copy(m_pBuffer, rBuffer.m_pBuffer, rBuffer.m_ui64BufferSize);
 		m_ui64BufferSize=rBuffer.m_ui64BufferSize;
 		m_ui64AllocatedSize=rBuffer.m_ui64BufferSize;
@@ -38,7 +38,7 @@ CBuffer::CBuffer(
 {
 	if(ui64BufferSize)
 	{
-		m_pBuffer=new uint8[ui64BufferSize];
+		m_pBuffer=new uint8[static_cast<size_t>(ui64BufferSize)]; // $$$
 		System::Memory::copy(m_pBuffer, pBuffer, ui64BufferSize);
 		m_ui64BufferSize=ui64BufferSize;
 		m_ui64AllocatedSize=ui64BufferSize;
@@ -51,7 +51,7 @@ const CBuffer& CBuffer::operator=(
 	if(rBuffer.m_ui64BufferSize>m_ui64AllocatedSize)
 	{
 		delete [] m_pBuffer;
-		m_pBuffer=new uint8[rBuffer.m_ui64BufferSize];
+		m_pBuffer=new uint8[static_cast<size_t>(rBuffer.m_ui64BufferSize)]; // $$$
 		m_ui64AllocatedSize=rBuffer.m_ui64BufferSize;
 	}
 	System::Memory::copy(m_pBuffer, rBuffer.m_pBuffer, rBuffer.m_ui64BufferSize);
@@ -80,13 +80,13 @@ uint64 CBuffer::getSize(void) const
 }
 
 boolean CBuffer::setSize(
-	uint64 ui64Size,
-	boolean bDiscard)
+	const uint64 ui64Size,
+	const boolean bDiscard)
 {
 	if(ui64Size>m_ui64AllocatedSize)
 	{
 		uint8* l_pSavedBuffer=m_pBuffer;
-		m_pBuffer=new uint8[ui64Size];
+		m_pBuffer=new uint8[static_cast<size_t>(ui64Size)]; // $$$
 		if(!bDiscard)
 		{
 			System::Memory::copy(m_pBuffer, l_pSavedBuffer, m_ui64BufferSize);
@@ -99,8 +99,8 @@ boolean CBuffer::setSize(
 }
 
 boolean CBuffer::appendOutputChunkData(
-	const OpenViBE::uint8* pBuffer,
-	const OpenViBE::uint64 ui64BufferSize)
+	const uint8* pBuffer,
+	const uint64 ui64BufferSize)
 {
 	uint64 l_ui64LastBufferSize=m_ui64BufferSize;
 	if(!setSize(l_ui64LastBufferSize+ui64BufferSize, false))

@@ -27,7 +27,7 @@ namespace OpenViBEToolkit
 		class OVTK_API ICallback
 		{
 		public:
-			virtual void setValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value)=0;
+			virtual void setValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value)=0;
 			virtual void setValue(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue)=0;
 			virtual ~ICallback(void) { }
 		};
@@ -38,18 +38,18 @@ namespace OpenViBEToolkit
 		public:
 			TCallbackProxy1(
 				COwnerClass& rOwnerObject,
-				void (COwnerClass::*mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value),
+				void (COwnerClass::*mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value),
 				void (COwnerClass::*mfpSetValueS)(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue))
 				:m_rOwnerObject(rOwnerObject)
 				,m_mfpSetValueI(mfpSetValueI)
 				,m_mfpSetValueS(mfpSetValueS)
 			{
 			}
-			virtual void mfpSetValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value)
+			virtual void mfpSetValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value)
 			{
 				if(m_mfpSetValueI)
 				{
-					(m_rOwnerObject.*m_mfpSetValueI)(ui32ValueIdentifier, ui32Value);
+					(m_rOwnerObject.*m_mfpSetValueI)(ui32ValueIdentifier, ui64Value);
 				}
 			}
 			virtual void mfpSetValue(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue)
@@ -61,11 +61,11 @@ namespace OpenViBEToolkit
 			}
 		protected:
 			COwnerClass& m_rOwnerObject;
-			void (COwnerClass::*m_mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value);
+			void (COwnerClass::*m_mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value);
 			void (COwnerClass::*m_mfpSetValueS)(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue);
 		};
 
-		template <class COwnerClass, void (COwnerClass::*mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value), void (COwnerClass::*mfpSetValueS)(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue)>
+		template <class COwnerClass, void (COwnerClass::*mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value), void (COwnerClass::*mfpSetValueS)(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue)>
 		class OVTK_API TCallbackProxy2 : virtual public OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback::ICallback
 		{
 		public:
@@ -76,11 +76,11 @@ namespace OpenViBEToolkit
 				,m_mfpSetValueS(mfpSetValueS)
 			{
 			}
-			virtual void mfpSetValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value)
+			virtual void mfpSetValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value)
 			{
 				if(m_mfpSetValueI)
 				{
-					(m_rOwnerObject.*m_mfpSetValueI)(ui32ValueIdentifier, ui32Value);
+					(m_rOwnerObject.*m_mfpSetValueI)(ui32ValueIdentifier, ui64Value);
 				}
 			}
 			virtual void mfpSetValue(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue)
@@ -92,7 +92,7 @@ namespace OpenViBEToolkit
 			}
 		protected:
 			COwnerClass& m_rOwnerObject;
-			void (COwnerClass::*m_mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value);
+			void (COwnerClass::*m_mfpSetValueI)(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui64Value);
 			void (COwnerClass::*m_mfpSetValueS)(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue);
 		};
 

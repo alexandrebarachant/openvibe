@@ -43,11 +43,13 @@ SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
 
 FILE(GLOB_RECURSE source_files src/*.cpp)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
-# ADD_EXECUTABLE(${PROJECT_NAME}-static ${source_files})
 # SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")
 
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-dynamic)
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
+
+INCLUDE("FindOpenViBE.cmake")
+INCLUDE("FindOpenViBEModuleFS.cmake")
 
 # ---------------------------------
 # Finds Glade
@@ -74,46 +76,6 @@ IF(GLADE_FOUND)
 ELSE(GLADE_FOUND)
 	MESSAGE(STATUS "  FAILED to find glade...")
 ENDIF(GLADE_FOUND)
-
-# ---------------------------------
-# Finds OpenViBE
-# Adds library to target
-# Adds include path
-# ---------------------------------
-FIND_PATH(PATH_OPENVIBE include/openvibe/ov_all.h PATHS $ENV{OpenViBE})
-IF(PATH_OPENVIBE)
-	MESSAGE(STATUS "  Found OpenViBE...")
-	INCLUDE_DIRECTORIES(${PATH_OPENVIBE}/include)
-	FIND_LIBRARY(LIB_OPENVIBE OpenViBE-${OPENVIBE_LINKING} PATH ${PATH_OPENVIBE}/lib)
-	IF(LIB_OPENVIBE)
-		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE})
-	ELSE(LIB_OPENVIBE)
-		MESSAGE(STATUS "    [FAILED] lib OpenViBE-${OPENVIBE_LINKING}")
-	ENDIF(LIB_OPENVIBE)
-ELSE(PATH_OPENVIBE)
-	MESSAGE(STATUS "  FAILED to find OpenViBE...")
-ENDIF(PATH_OPENVIBE)
-
-# ---------------------------------
-# Finds module FS
-# Adds library to target
-# Adds include path
-# ---------------------------------
-FIND_PATH(PATH_OPENVIBE_MODULES_FS include/fs/defines.h PATHS $ENV{OpenViBE_modules}/fs $ENV{OpenViBE_module_fs})
-IF(PATH_OPENVIBE_MODULES_FS)
-	MESSAGE(STATUS "  Found OpenViBE module fs...")
-	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_FS}/include)
-	FIND_LIBRARY(LIB_OPENVIBE_MODULE_FS OpenViBE-module-FS-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_FS}/lib)
-	IF(LIB_OPENVIBE_MODULE_FS)
-		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_FS}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_FS})
-	ELSE(LIB_OPENVIBE_MODULE_FS)
-		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-FS-${MODULE_LINKING}")
-	ENDIF(LIB_OPENVIBE_MODULE_FS)
-ELSE(PATH_OPENVIBE_MODULES_FS)
-	MESSAGE(STATUS "  FAILED to find OpenViBE module fs...")
-ENDIF(PATH_OPENVIBE_MODULES_FS)
 
 # ---------------------------------
 # Finds standard library pthread

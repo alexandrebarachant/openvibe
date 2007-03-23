@@ -44,7 +44,7 @@ SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
 # ------------------------------------#
 # Adds configuration among link stage #
 # ------------------------------------#
-SET(MODULE_LINKING dynamic CACHE STRING "")
-SET(OPENVIBE_LINKING dynamic CACHE STRING "")
+OPTION(STATIC_LINK_OPENVIBE_MODULE_EBML "Statically link openvibe module EBML" OFF)
+OPTION(STATIC_LINK_OPENVIBE "Statically link openvibe" OFF)
 
 SUBDIRS(src)

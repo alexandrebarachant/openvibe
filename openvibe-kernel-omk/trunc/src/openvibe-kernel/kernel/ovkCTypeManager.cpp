@@ -30,6 +30,7 @@ boolean CTypeManager::registerBitMaskType(
 		return false;
 	}
 	m_vBitMask[rTypeIdentifier]=rBitMaskString;
+	return true;
 }
 
 boolean CTypeManager::isRegistered(

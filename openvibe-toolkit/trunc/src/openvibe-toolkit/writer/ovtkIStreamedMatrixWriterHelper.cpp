@@ -125,6 +125,7 @@ boolean CStreamedMatrixWriterHelper::setDimmensionLabel(const uint32 ui32Dimmens
 boolean CStreamedMatrixWriterHelper::setBuffer(const float64* pBuffer)
 {
 	m_pMatrixBuffer=pBuffer;
+	return m_pMatrixBuffer!=NULL;
 }
 
 // ________________________________________________________________________________________________________________

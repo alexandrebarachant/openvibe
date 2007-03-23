@@ -1,15 +1,8 @@
 FILE(GLOB_RECURSE source_files *.cpp)
 FILE(GLOB_RECURSE header_files *.h)
 
-ADD_LIBRARY(${PROJECT_NAME}-static ${source_files})
-
-ADD_DEFINITIONS(-DOVTK_Exports)
-ADD_DEFINITIONS(-DOVTK_Shared)
+ADD_LIBRARY(${PROJECT_NAME}-static STATIC ${source_files})
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
-
-SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
-	VERSION ${PROJECT_VERSION}
-	SOVERSION ${PROJECT_VERSION_MAJOR})
 
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-dynamic)
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-static)
@@ -37,45 +30,13 @@ ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-System-static)
 ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-XML-dynamic)
 ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-XML-static)
 
-# ---------------------------------
-# Finds module EBML
-# Adds library to target
-# Adds include path
-# ---------------------------------
-FIND_PATH(PATH_OPENVIBE_MODULES_EBML include/ebml/defines.h PATHS $ENV{OpenViBE_modules}/ebml $ENV{OpenViBE_module_ebml})
-IF(PATH_OPENVIBE_MODULES_EBML)
-	MESSAGE(STATUS "  Found OpenViBE module ebml...")
-	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_MODULES_EBML}/include)
-	FIND_LIBRARY(LIB_OPENVIBE_MODULE_EBML OpenViBE-module-EBML-${MODULE_LINKING} PATHS ${PATH_OPENVIBE_MODULES_EBML}/lib)
-	IF(LIB_OPENVIBE_MODULE_EBML)
-		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE_MODULE_EBML}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE_MODULE_EBML})
-	ELSE(LIB_OPENVIBE_MODULE_EBML)
-		MESSAGE(STATUS "    [FAILED] lib OpenViBE-module-EBML-${MODULE_LINKING}")
-	ENDIF(LIB_OPENVIBE_MODULE_EBML)
-ELSE(PATH_OPENVIBE_MODULES_EBML)
-	MESSAGE(STATUS "  FAILED to find OpenViBE module ebml...")
-ENDIF(PATH_OPENVIBE_MODULES_EBML)
+SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR}
+	COMPILE_FLAGS "-DOVTK_Exports -DOVTK_Shared")
 
-# ---------------------------------
-# Finds OpenViBE
-# Adds library to target
-# Adds include path
-# ---------------------------------
-FIND_PATH(PATH_OPENVIBE include/openvibe/ov_all.h PATHS $ENV{OpenViBE})
-IF(PATH_OPENVIBE)
-	MESSAGE(STATUS "  Found OpenViBE...")
-	INCLUDE_DIRECTORIES(${PATH_OPENVIBE}/include)
-	FIND_LIBRARY(LIB_OPENVIBE OpenViBE-${OPENVIBE_LINKING} PATH ${PATH_OPENVIBE}/lib)
-	IF(LIB_OPENVIBE)
-		MESSAGE(STATUS "    [  OK  ] lib ${LIB_OPENVIBE}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_OPENVIBE})
-	ELSE(LIB_OPENVIBE)
-		MESSAGE(STATUS "    [FAILED] lib OpenViBE-${OPENVIBE_LINKING}")
-	ENDIF(LIB_OPENVIBE)
-ELSE(PATH_OPENVIBE)
-	MESSAGE(STATUS "  FAILED to find OpenViBE...")
-ENDIF(PATH_OPENVIBE)
+INCLUDE("FindOpenViBEModuleEBML.cmake")
+INCLUDE("FindOpenViBE.cmake")
 
 # -----------------------------
 # Copies all header files to

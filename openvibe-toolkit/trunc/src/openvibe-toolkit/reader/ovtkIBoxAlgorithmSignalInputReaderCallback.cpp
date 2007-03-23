@@ -114,7 +114,7 @@ void CBoxAlgorithmSignalInputReaderCallback::processChildData(const void* pBuffe
 	else
 	{
 		// ...
-		if(l_rTop==OVTK_NodeId_Signal_SamplingRate) m_rCallback.setSamplingRate(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
+		if(l_rTop==OVTK_NodeId_Signal_SamplingRate) m_rCallback.setSamplingRate(static_cast<uint32>(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)));
 	}
 }
 

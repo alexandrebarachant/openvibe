@@ -126,16 +126,16 @@ void CStreamedMatrixReaderCallbackHelper::processChildData(const void* pBuffer, 
 	switch(m_ui32Status)
 	{
 		case Status_ParsingHeader:
-			if(l_rTop==OVTK_NodeId_StreamedMatrix_DimmensionCount)  { m_ui32DimmensionCount=m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
+			if(l_rTop==OVTK_NodeId_StreamedMatrix_DimmensionCount)  { m_ui32DimmensionCount=static_cast<uint32>(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 			break;
 
 		case Status_ParsingDimmension:
-			if(l_rTop==OVTK_NodeId_StreamedMatrix_Dimmension_Size)  { m_vDimmensionSize.push_back(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+			if(l_rTop==OVTK_NodeId_StreamedMatrix_Dimmension_Size)  { m_vDimmensionSize.push_back(static_cast<uint32>(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize))); }
 			if(l_rTop==OVTK_NodeId_StreamedMatrix_Dimmension_Label) { m_vCurrentDimmensionLabel.push_back(m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize)); }
 			break;
 
 		case Status_ParsingBuffer:
-			if(l_rTop==OVTK_NodeId_StreamedMatrix_RawBuffer)        { m_pMatrixBuffer=reinterpret_cast<const float64*>(pBuffer); sendBufferToOwner(); }
+			if(l_rTop==OVTK_NodeId_StreamedMatrix_RawBuffer)        { m_pMatrixBuffer=static_cast<const float64*>(pBuffer); sendBufferToOwner(); }
 			break;
 	}
 }

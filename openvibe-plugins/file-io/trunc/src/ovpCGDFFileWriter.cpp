@@ -101,19 +101,19 @@ void CGDFFileWriter::setSampleBuffer(const float64* pBuffer)
 * Experiment callback
 *
 */
-void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const uint32 ui32Value)
+void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const uint64 ui64Value)
 {
 	switch(ui32ValueIdentifier)
 	{
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_ExperimentIdentifier:
 
-			sprintf(m_oFixedHeader.m_sRecordingId, "0x%08X", ui32Value);
+			sprintf(m_oFixedHeader.m_sRecordingId, "0x%08X", ui64Value);
 			m_oFixedHeader.m_sRecordingId[10] = ' ';
 			break;
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectIdentifier:
 
-			sprintf(m_oFixedHeader.m_sPatientId, "0x%08X ", ui32Value);
+			sprintf(m_oFixedHeader.m_sPatientId, "0x%08X ", ui64Value);
 			m_oFixedHeader.m_sPatientId[11] = ' ';
 			break;
 
@@ -123,7 +123,7 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const uint32 ui3
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectSex:
 
-			switch(ui32Value)
+			switch(ui64Value)
 			{
 				case OVTK_Value_Sex_Female:
 					m_oFixedHeader.m_sPatientId[17] = 'F';
@@ -144,11 +144,11 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const uint32 ui3
 			break;
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_LaboratoryIdentifier:
-			m_oFixedHeader.m_ui64LaboratoryId = ui32Value;
+			m_oFixedHeader.m_ui64LaboratoryId = ui64Value;
 			break;
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_TechnicianIdentifier:
-			m_oFixedHeader.m_ui64TechnicianId = ui32Value;
+			m_oFixedHeader.m_ui64TechnicianId = ui64Value;
 			m_oFixedHeader.save(m_oFile);
 			break;
 
@@ -190,7 +190,7 @@ void CGDFFileWriter::setStimulationCount(const uint32 ui32StimulationCount)
 {
 }
 
- void CGDFFileWriter::setStimulation(const uint32 ui32StimulationIndex, const uint32 ui32StimulationIdentifier, const uint64 ui64StimulationDate)
+ void CGDFFileWriter::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
 {
 }
 

@@ -14,7 +14,7 @@ mkdir ..\local-tmp > NULL
 for /d %%s in (cmake\*.*) do (
 	mkdir ..\local-tmp\%%s > NULL
 	cd ..\local-tmp\%%s
-	cmake %saved_directory%/%%s -G"NMake Makefiles"
+	cmake -DCMAKE_BUILD_TYPE=Release %saved_directory%/%%s -G"NMake Makefiles"
 	nmake
 	cd %saved_directory%
 )

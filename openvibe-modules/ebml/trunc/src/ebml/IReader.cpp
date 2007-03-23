@@ -1,9 +1,9 @@
 #include "IReader.h"
-
 #include <string.h>
 
+#define _Debug_ 0
+
 using namespace EBML;
-using namespace std;
 
 // ________________________________________________________________________________________________________________
 //
@@ -118,8 +118,6 @@ namespace EBML
 
 // ________________________________________________________________________________________________________________
 //
-
-#define _Debug_ 0
 
 CReader::CReader(IReaderCallback& rReaderCallback)
 	:m_rReaderCallback(rReaderCallback)
