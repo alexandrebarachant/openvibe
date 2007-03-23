@@ -59,7 +59,6 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
-				OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
 
 				OpenViBE::uint64 l_ui64StartTime=0;

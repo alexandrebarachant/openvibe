@@ -171,10 +171,9 @@ protected:
 	IPluginManagerHandle m_oPluginManagerHandle;
 	OpenViBE::boolean m_bReadyToProcess;
 
-	const OpenViBE::Kernel::IBox* m_pBox;
-
 	const OpenViBE::Plugins::IBoxAlgorithmDesc* m_pBoxAlgorithmDesc;
 	OpenViBE::Plugins::IBoxAlgorithm* m_pBoxAlgorithm;
+	const OpenViBE::Kernel::IBox* m_pBox;
 
 public:
 	using PsSimulatedBoxBase::sendOpenViBEDataUpdateEvent;

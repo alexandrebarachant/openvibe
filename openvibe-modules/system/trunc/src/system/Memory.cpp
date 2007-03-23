@@ -17,42 +17,36 @@ boolean Memory::copy(
 // ________________________________________________________________________________________________________________
 //
 
+template <typename T> boolean __hostToLittleEndian(const T& rValue, uint8* pBuffer)
+{
+	if(!pBuffer) return false;
+	memset(pBuffer, 0, sizeof(T));
+	for(unsigned int i=0; i<sizeof(T); i++)
+	{
+		pBuffer[i]=((uint8*)&rValue)[sizeof(T)-1-i];
+	}
+	return true;
+}
+
 boolean Memory::hostToLittleEndian(
 	const uint16 ui16Value,
 	uint8* pBuffer)
 {
-	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui16Value&0xff));
-	pBuffer[1]=static_cast<uint8>((ui16Value>>8)&0xff);
-	return true;
+	return __hostToLittleEndian<uint16>(ui16Value, pBuffer);
 }
 
 boolean Memory::hostToLittleEndian(
 	const uint32 ui32Value,
 	uint8* pBuffer)
 {
-	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui32Value&0xff));
-	pBuffer[1]=static_cast<uint8>((ui32Value>>8)&0xff);
-	pBuffer[2]=static_cast<uint8>((ui32Value>>16)&0xff);
-	pBuffer[3]=static_cast<uint8>((ui32Value>>24)&0xff);
-	return true;
+	return __hostToLittleEndian<uint32>(ui32Value, pBuffer);
 }
 
 boolean Memory::hostToLittleEndian(
 	const uint64 ui64Value,
 	uint8* pBuffer)
 {
-	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui64Value&0xff));
-	pBuffer[1]=static_cast<uint8>((ui64Value>>8)&0xff);
-	pBuffer[2]=static_cast<uint8>((ui64Value>>16)&0xff);
-	pBuffer[3]=static_cast<uint8>((ui64Value>>24)&0xff);
-	pBuffer[4]=static_cast<uint8>((ui64Value>>32)&0xff);
-	pBuffer[5]=static_cast<uint8>((ui64Value>>40)&0xff);
-	pBuffer[6]=static_cast<uint8>((ui64Value>>48)&0xff);
-	pBuffer[7]=static_cast<uint8>((ui64Value>>56)&0xff);
-	return true;
+	return __hostToLittleEndian<uint64>(ui64Value, pBuffer);
 }
 
 boolean Memory::hostToLittleEndian(
@@ -81,42 +75,35 @@ boolean Memory::hostToLittleEndian(
 // ________________________________________________________________________________________________________________
 //
 
+template <typename T> boolean __hostToBigEndian(const T& rValue, uint8* pBuffer)
+{
+	if(!pBuffer) return false;
+	for(unsigned int i=0; i<sizeof(T); i++)
+	{
+		pBuffer[i]=static_cast<uint8>((rValue>>(i*8))&0xff);
+	}
+	return true;
+}
+
 boolean Memory::hostToBigEndian(
 	const uint16 ui16Value,
 	uint8* pBuffer)
 {
-	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui16Value>>8)&0xff);
-	pBuffer[1]=static_cast<uint8>((ui16Value&0xff));
-	return true;
+	return __hostToBigEndian<uint16>(ui16Value, pBuffer);
 }
 
 boolean Memory::hostToBigEndian(
 	const uint32 ui32Value,
 	uint8* pBuffer)
 {
-	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui32Value>>24)&0xff);
-	pBuffer[1]=static_cast<uint8>((ui32Value>>16)&0xff);
-	pBuffer[2]=static_cast<uint8>((ui32Value>>8)&0xff);
-	pBuffer[3]=static_cast<uint8>((ui32Value&0xff));
-	return true;
+	return __hostToBigEndian<uint32>(ui32Value, pBuffer);
 }
 
 boolean Memory::hostToBigEndian(
 	const uint64 ui64Value,
 	uint8* pBuffer)
 {
-	if(!pBuffer) return false;
-	pBuffer[0]=static_cast<uint8>((ui64Value>>56)&0xff);
-	pBuffer[1]=static_cast<uint8>((ui64Value>>48)&0xff);
-	pBuffer[2]=static_cast<uint8>((ui64Value>>40)&0xff);
-	pBuffer[3]=static_cast<uint8>((ui64Value>>32)&0xff);
-	pBuffer[4]=static_cast<uint8>((ui64Value>>24)&0xff);
-	pBuffer[5]=static_cast<uint8>((ui64Value>>16)&0xff);
-	pBuffer[6]=static_cast<uint8>((ui64Value>>8)&0xff);
-	pBuffer[7]=static_cast<uint8>((ui64Value&0xff));
-	return true;
+	return __hostToBigEndian<uint64>(ui64Value, pBuffer);
 }
 
 boolean Memory::hostToBigEndian(
@@ -148,11 +135,10 @@ template <typename T> boolean __littleEndianToHost(const uint8* pBuffer, T* pVal
 {
 	if(!pBuffer) return false;
 	if(!pValue) return false;
-	*pValue=0;
-	for(int i=0; i<sizeof(*pValue); i++)
+	memset(pValue, 0, sizeof(T));
+	for(unsigned int i=0; i<sizeof(T); i++)
 	{
-		(*pValue)<<=8;
-		(*pValue)+=pBuffer[sizeof(*pValue)-i-1];
+		((uint8*)pValue)[i]=pBuffer[sizeof(T)-1-i];
 	}
 	return true;
 }
@@ -207,11 +193,10 @@ template <typename T> boolean __bigEndianToHost(const uint8* pBuffer, T* pValue)
 {
 	if(!pBuffer) return false;
 	if(!pValue) return false;
-	*pValue=0;
-	for(int i=0; i<sizeof(*pValue); i++)
+	memset(pValue, 0, sizeof(T));
+	for(unsigned int i=0; i<sizeof(T); i++)
 	{
-		(*pValue)<<=8;
-		(*pValue)+=pBuffer[i];
+		((uint8*)pValue)[i]=pBuffer[i];
 	}
 	return true;
 }

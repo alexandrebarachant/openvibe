@@ -66,8 +66,8 @@ CStreamedMatrixReaderCallbackHelper::CStreamedMatrixReaderCallbackHelper(ICallba
 	:m_rCallback(rCallback)
 	,m_ui32Status(Status_ParsingNothing)
 	,m_pReaderHelper(NULL)
-	,m_ui32DimmensionCount(0)
 	,m_pMatrixBuffer(NULL)
+	,m_ui32DimmensionCount(0)
 {
 	m_pReaderHelper=EBML::createReaderHelper();
 }

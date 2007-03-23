@@ -512,7 +512,7 @@ void CAcquisitionServer::buttonShowElectrodeNamesCB(::GtkButton* pButton)
 	for(i=0; i<l_ui32ChannelCount; i++)
 	{
 		char l_sChannelName[1024];
-		sprintf(l_sChannelName, "%i", i);
+		sprintf(l_sChannelName, "%i", (int)i);
 		gtk_list_store_append(m_pChannelNameListStore, &itChannelName);
 		gtk_list_store_set(m_pChannelNameListStore, &itChannelName, 0, l_sChannelName, -1);
 		gtk_list_store_set(m_pChannelNameListStore, &itChannelName, 1, m_vChannelName[i].c_str(), -1);

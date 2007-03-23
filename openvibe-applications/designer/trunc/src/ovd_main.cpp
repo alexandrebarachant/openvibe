@@ -89,30 +89,30 @@ public:
 	CBoxProxy(const IBox& rBox)
 		:m_pBox(NULL)
 		,m_pConstBox(&rBox)
-		,m_i32XCenter(0)
-		,m_i32YCenter(0)
-		,m_i32Width(0)
-		,m_i32Height(0)
+		,m_iXCenter(0)
+		,m_iYCenter(0)
+		,m_iWidth(0)
+		,m_iHeight(0)
 	{
 		if(m_pConstBox)
 		{
-			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxCenterPosition), "%i %i", &m_i32XCenter, &m_i32YCenter);
-			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxSize), "%i %i", &m_i32Width, &m_i32Height);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxCenterPosition), "%i %i", &m_iXCenter, &m_iYCenter);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxSize), "%i %i", &m_iWidth, &m_iHeight);
 		}
 	}
 
 	CBoxProxy(IScenario& rScenario, const CIdentifier& rBoxIdentifier)
 		:m_pBox(rScenario.getBoxDetails(rBoxIdentifier))
 		,m_pConstBox(rScenario.getBoxDetails(rBoxIdentifier))
-		,m_i32XCenter(0)
-		,m_i32YCenter(0)
-		,m_i32Width(0)
-		,m_i32Height(0)
+		,m_iXCenter(0)
+		,m_iYCenter(0)
+		,m_iWidth(0)
+		,m_iHeight(0)
 	{
 		if(m_pConstBox)
 		{
-			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxCenterPosition), "%i %i", &m_i32XCenter, &m_i32YCenter);
-			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxSize), "%i %i", &m_i32Width, &m_i32Height);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxCenterPosition), "%i %i", &m_iXCenter, &m_iYCenter);
+			sscanf((const char*)m_pConstBox->getAttributeValue(OVD_AttributeId_BoxSize), "%i %i", &m_iWidth, &m_iHeight);
 		}
 	}
 
@@ -121,7 +121,7 @@ public:
 		if(m_pBox)
 		{
 			char l_sSize[1024];
-			sprintf(l_sSize, "%i %i", m_i32Width, m_i32Height);
+			sprintf(l_sSize, "%i %i", m_iWidth, m_iHeight);
 
 			if(m_pBox->hasAttribute(OVD_AttributeId_BoxSize))
 			{
@@ -133,7 +133,7 @@ public:
 			}
 
 			char l_sCenter[1024];
-			sprintf(l_sCenter, "%i %i", m_i32XCenter, m_i32YCenter);
+			sprintf(l_sCenter, "%i %i", m_iXCenter, m_iYCenter);
 
 			if(m_pBox->hasAttribute(OVD_AttributeId_BoxCenterPosition))
 			{
@@ -156,31 +156,31 @@ public:
 		return m_pConstBox;
 	}
 
-	int32 getWidth(void) const { return m_i32Width; }
-	int32 getHeight(void) const { return m_i32Height; }
-	int32 getXCenter(void) const { return m_i32XCenter; }
-	int32 getYCenter(void) const { return m_i32YCenter; }
+	int32 getWidth(void) const { return m_iWidth; }
+	int32 getHeight(void) const { return m_iHeight; }
+	int32 getXCenter(void) const { return m_iXCenter; }
+	int32 getYCenter(void) const { return m_iYCenter; }
 
 	void setSize(int32 i32Width, int32 i32Height)
 	{
-		m_i32Width=i32Width;
-		m_i32Height=i32Height;
+		m_iWidth=i32Width;
+		m_iHeight=i32Height;
 	}
 
 	void setCenter(int32 i32XCenter, int32 i32YCenter)
 	{
-		m_i32XCenter=i32XCenter;
-		m_i32YCenter=i32YCenter;
+		m_iXCenter=i32XCenter;
+		m_iYCenter=i32YCenter;
 	}
 
 protected:
 
 	IBox* m_pBox;
 	const IBox* m_pConstBox;
-	int32 m_i32XCenter;
-	int32 m_i32YCenter;
-	int32 m_i32Width;
-	int32 m_i32Height;
+	int m_iXCenter;
+	int m_iYCenter;
+	int m_iWidth;
+	int m_iHeight;
 };
 
 class CLinkProxy
@@ -190,30 +190,30 @@ public:
 	CLinkProxy(const ILink& rLink)
 		:m_pLink(NULL)
 		,m_pConstLink(&rLink)
-		,m_i32XSource(0)
-		,m_i32YSource(0)
-		,m_i32XTarget(0)
-		,m_i32YTarget(0)
+		,m_iXSource(0)
+		,m_iYSource(0)
+		,m_iXTarget(0)
+		,m_iYTarget(0)
 	{
 		if(m_pConstLink)
 		{
-			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkSourcePosition), "%i %i", &m_i32XSource, &m_i32YSource);
-			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkTargetPosition), "%i %i", &m_i32XTarget, &m_i32YTarget);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkSourcePosition), "%i %i", &m_iXSource, &m_iYSource);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkTargetPosition), "%i %i", &m_iXTarget, &m_iYTarget);
 		}
 	}
 
 	CLinkProxy(IScenario& rScenario, const CIdentifier& rLinkIdentifier)
 		:m_pLink(rScenario.getLinkDetails(rLinkIdentifier))
 		,m_pConstLink(rScenario.getLinkDetails(rLinkIdentifier))
-		,m_i32XSource(0)
-		,m_i32YSource(0)
-		,m_i32XTarget(0)
-		,m_i32YTarget(0)
+		,m_iXSource(0)
+		,m_iYSource(0)
+		,m_iXTarget(0)
+		,m_iYTarget(0)
 	{
 		if(m_pConstLink)
 		{
-			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkSourcePosition), "%i %i", &m_i32XSource, &m_i32YSource);
-			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkTargetPosition), "%i %i", &m_i32XTarget, &m_i32YTarget);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkSourcePosition), "%i %i", &m_iXSource, &m_iYSource);
+			sscanf((const char*)m_pConstLink->getAttributeValue(OVD_AttributeId_LinkTargetPosition), "%i %i", &m_iXTarget, &m_iYTarget);
 		}
 	}
 
@@ -222,7 +222,7 @@ public:
 		if(m_pLink)
 		{
 			char l_sSource[1024];
-			sprintf(l_sSource, "%i %i", m_i32XSource, m_i32YSource);
+			sprintf(l_sSource, "%i %i", m_iXSource, m_iYSource);
 
 			if(m_pLink->hasAttribute(OVD_AttributeId_LinkSourcePosition))
 			{
@@ -234,7 +234,7 @@ public:
 			}
 
 			char l_sTarget[1024];
-			sprintf(l_sTarget, "%i %i", m_i32XTarget, m_i32YTarget);
+			sprintf(l_sTarget, "%i %i", m_iXTarget, m_iYTarget);
 
 			if(m_pLink->hasAttribute(OVD_AttributeId_LinkTargetPosition))
 			{
@@ -257,31 +257,31 @@ public:
 		return m_pConstLink;
 	}
 
-	int32 getXSource(void) { return m_i32XSource; }
-	int32 getYSource(void) { return m_i32YSource; }
-	int32 getXTarget(void) { return m_i32XTarget; }
-	int32 getYTarget(void) { return m_i32YTarget; }
+	int32 getXSource(void) { return m_iXSource; }
+	int32 getYSource(void) { return m_iYSource; }
+	int32 getXTarget(void) { return m_iXTarget; }
+	int32 getYTarget(void) { return m_iYTarget; }
 
 	void setSource(int32 i32XSource, int32 i32YSource)
 	{
-		m_i32XSource=i32XSource;
-		m_i32YSource=i32YSource;
+		m_iXSource=i32XSource;
+		m_iYSource=i32YSource;
 	}
 
 	void setTarget(int32 i32XTarget, int32 i32YTarget)
 	{
-		m_i32XTarget=i32XTarget;
-		m_i32YTarget=i32YTarget;
+		m_iXTarget=i32XTarget;
+		m_iYTarget=i32YTarget;
 	}
 
 protected:
 
 	ILink* m_pLink;
 	const ILink* m_pConstLink;
-	int32 m_i32XSource;
-	int32 m_i32YSource;
-	int32 m_i32XTarget;
-	int32 m_i32YTarget;
+	int m_iXSource;
+	int m_iYSource;
+	int m_iXTarget;
+	int m_iYTarget;
 };
 
 class CLinkPositionSetterEnum : virtual public IScenario::ILinkEnum
@@ -300,7 +300,7 @@ public:
 		switch(m_ui32ConnectorType)
 		{
 			case Connector_Input:
-				sprintf(l_sPosition, "%i %i", m_rPosition[rLink.getTargetBoxInputIndex()].first, m_rPosition[rLink.getTargetBoxInputIndex()].second);
+				sprintf(l_sPosition, "%i %i", (int)m_rPosition[rLink.getTargetBoxInputIndex()].first, (int)m_rPosition[rLink.getTargetBoxInputIndex()].second);
 				if(rLink.hasAttribute(OVD_AttributeId_LinkTargetPosition))
 					rLink.setAttributeValue(OVD_AttributeId_LinkTargetPosition, l_sPosition);
 				else
@@ -308,7 +308,7 @@ public:
 				break;
 
 			case Connector_Output:
-				sprintf(l_sPosition, "%i %i", m_rPosition[rLink.getSourceBoxOutputIndex()].first, m_rPosition[rLink.getSourceBoxOutputIndex()].second);
+				sprintf(l_sPosition, "%i %i", (int)m_rPosition[rLink.getSourceBoxOutputIndex()].first, (int)m_rPosition[rLink.getSourceBoxOutputIndex()].second);
 				if(rLink.hasAttribute(OVD_AttributeId_LinkSourcePosition))
 					rLink.setAttributeValue(OVD_AttributeId_LinkSourcePosition, l_sPosition);
 				else
@@ -321,7 +321,7 @@ public:
 protected:
 
 	uint32 m_ui32ConnectorType;
-	vector<pair<int32, int32> > m_rPosition;
+	vector<pair<int32, int32> >& m_rPosition;
 };
 
 map<uint32, ::GdkColor> g_vColors;
@@ -452,11 +452,16 @@ public:
 	};
 
 	CInterfacedScenario(IKernel& rKernel, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook)
-		:m_rKernel(rKernel)
+		:m_oScenarioIdentifier(rScenarioIdentifier)
+		,m_rKernel(rKernel)
 		,m_rScenario(rScenario)
-		,m_oScenarioIdentifier(rScenarioIdentifier)
-		,m_rNotebook(rNotebook)
 		,m_pPlayer(NULL)
+		,m_rNotebook(rNotebook)
+		,m_pGladeDummyScenarioNotebookTitle(NULL)
+		,m_pGladeDummyScenarioNotebookClient(NULL)
+		,m_pNotebookPageTitle(NULL)
+		,m_pNotebookPageContent(NULL)
+		,m_pScenarioDrawingArea(NULL)
 		,m_pStencilBuffer(NULL)
 		,m_bHasFileName(false)
 		,m_bHasBeenModified(false)
@@ -715,12 +720,6 @@ public:
 		::GdkGC* l_pStencilGC=gdk_gc_new(GDK_DRAWABLE(m_pStencilBuffer));
 		::GdkGC* l_pDrawGC=gdk_gc_new(l_pWidget->window);
 
-		const int xMargin=16;
-		const int yMargin=16;
-		const int iCircleMargin=4;
-		const int iCircleSize=9;
-		const int iCircleSpace=8;
-
 		CLinkProxy l_oLinkProxy(rLink);
 
 		updateStencilIndex(m_ui32InterfacedObjectId, l_pStencilGC);
@@ -774,9 +773,9 @@ public:
 		guchar* l_pPixels=gdk_pixbuf_get_pixels(l_pPixbuf);
 		int l_iRowBytesCount=gdk_pixbuf_get_rowstride(l_pPixbuf);
 		int l_iChannelCount=gdk_pixbuf_get_n_channels(l_pPixbuf);
-		for(int j=0; j<iSizeY+1; j++)
+		for(j=0; j<iSizeY+1; j++)
 		{
-			for(int i=0; i<iSizeX+1; i++)
+			for(i=0; i<iSizeX+1; i++)
 			{
 				uint32 l_ui32InterfacedObjectId=0;
 				l_ui32InterfacedObjectId+=(l_pPixels[j*l_iRowBytesCount+i*l_iChannelCount+0]<<16);
@@ -1610,7 +1609,7 @@ public:
 			vector<string> l_vCategory;
 			string l_sCategory=string(rPluginObjectDesc.getCategory());
 			size_t j, i=(size_t)-1;
-			while((j=l_sCategory.find('/', i+1))!=-1)
+			while((j=l_sCategory.find('/', i+1))!=string::npos)
 			{
 				string l_sSubCategory=string(l_sCategory, i+1, j-i-1);
 				if(l_sSubCategory!=string(""))
@@ -1716,14 +1715,13 @@ int main(int argc, char ** argv)
 	g_argc=argc;
 	g_argv=argv;
 
-	::GdkColor l_oColor[]=
-	{
+	/*
 		{ 0,     0,     0,     0 },
 		{ 0, 16383, 16383, 16383 },
 		{ 0, 32767, 32767, 32767 },
 		{ 0, 49151, 49151, 49151 },
 		{ 0, 65535, 65535, 65535 },
-	};
+	*/
 
 	#define gdk_color_set(c, r, g, b) { c.pixel=0; c.red=r; c.green=g; c.blue=b; }
 	gdk_color_set(g_vColors[Color_BoxBackgroundSelected], 49151, 16383, 16383);

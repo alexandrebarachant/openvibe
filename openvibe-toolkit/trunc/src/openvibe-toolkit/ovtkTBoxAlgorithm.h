@@ -20,7 +20,7 @@ namespace OpenViBEToolkit
 	extern OVTK_API void releaseBoxAlgorithmContextHandler(OpenViBEToolkit::IBoxAlgorithmContextHandler* pBoxAlgorithmContextHandler);
 
 	template <class CBoxAlgorithmParentClass>
-	class OVTK_API TBoxAlgorithm : virtual public CBoxAlgorithmParentClass
+	class TBoxAlgorithm : virtual public CBoxAlgorithmParentClass
 	{
 	public:
 
@@ -110,9 +110,7 @@ namespace OpenViBEToolkit
 			OpenViBE::Plugins::IBoxAlgorithmContext* l_pBoxAlgorithmContext=getBoxAlgorithmContext();
 			if(l_pBoxAlgorithmContext)
 			{
-				OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=l_pBoxAlgorithmContext->getStaticBoxContext();
 				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=l_pBoxAlgorithmContext->getDynamicBoxContext();
-
 				if(l_pDynamicBoxContext)
 				{
 					return l_pDynamicBoxContext->appendOutputChunkData(ui32OutputIndex, static_cast<const OpenViBE::uint8*>(pBuffer), ui64BufferSize);

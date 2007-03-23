@@ -11,8 +11,8 @@ using namespace OpenViBE::Plugins;
 //                                                                   //
 
 CDynamicBoxContext::CDynamicBoxContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
-	:TPluginObjectContext<IDynamicBoxContext>(rKernelContext)
-	,TKernelObject<IDynamicBoxContext>(rKernelContext)
+	:TKernelObject<IDynamicBoxContext>(rKernelContext)
+	,TPluginObjectContext<IDynamicBoxContext>(rKernelContext)
 	,m_pSimulatedBox(pSimulatedBox)
 {
 }

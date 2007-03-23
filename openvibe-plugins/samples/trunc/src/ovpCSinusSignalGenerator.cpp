@@ -73,7 +73,6 @@ boolean CSinusSignalGenerator::processClock(CMessageClock& rMessageClock)
 
 boolean CSinusSignalGenerator::process(void)
 {
-	IStaticBoxContext* l_pStaticBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	uint32 i,j;
@@ -86,7 +85,7 @@ boolean CSinusSignalGenerator::process(void)
 		for(i=0; i<m_ui32ChannelCount; i++)
 		{
 			char l_sChannelName[1024];
-			sprintf(l_sChannelName, "Channel %i", i);
+			sprintf(l_sChannelName, "Channel %i", (int)i);
 			m_pSignalOutputWriterHelper->setChannelName(i, l_sChannelName);
 		}
 		m_pSignalOutputWriterHelper->writeHeader(*m_pSignalOutputWriter);

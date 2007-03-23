@@ -69,7 +69,7 @@ void CBoxAlgorithmExperimentInformationInputReaderCallback::openChild(const EBML
 {
 	m_vNodes.push(rIdentifier);
 
-	EBML::CIdentifier& l_rTop=m_vNodes.top();
+	// EBML::CIdentifier& l_rTop=m_vNodes.top();
 
 	// ...
 }
@@ -96,7 +96,7 @@ void CBoxAlgorithmExperimentInformationInputReaderCallback::processChildData(con
 
 void CBoxAlgorithmExperimentInformationInputReaderCallback::closeChild(void)
 {
-	EBML::CIdentifier& l_rTop=m_vNodes.top();
+	// EBML::CIdentifier& l_rTop=m_vNodes.top();
 
 	// ...
 

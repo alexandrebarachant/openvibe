@@ -17,8 +17,8 @@ for sub_directory in `find cmake -maxdepth 1 -type d -printf "%P\n" | sort`; do
 	else
 		mkdir "../local-tmp/$sub_directory" 2> /dev/null
 		cd "../local-tmp/$sub_directory" 2> /dev/null
-		cmake -DCMAKE_BUILD_TYPE=Release "$saved_directory/cmake/$sub_directory"
-		make -j 2
+		cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release "$saved_directory/cmake/$sub_directory"
+		make
 		cd "$saved_directory"
 	fi;
 done

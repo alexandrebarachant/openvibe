@@ -44,8 +44,8 @@ namespace OpenViBEToolkit
 //
 
 CBoxAlgorithmSignalOutputWriter::CBoxAlgorithmSignalOutputWriter(void)
-	:m_ui32SamplingRate(0)
-	,m_pSampleBuffer(NULL)
+	:m_pSampleBuffer(NULL)
+	,m_ui32SamplingRate(0)
 	,m_pStreamedMatrixWriterHelper(NULL)
 {
 	m_pStreamedMatrixWriterHelper=createStreamedMatrixWriterHelper();

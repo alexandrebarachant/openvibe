@@ -6,8 +6,8 @@ using namespace OpenViBE::Plugins;
 #define boolean OpenViBE::boolean
 
 CBoxAlgorithmContext::CBoxAlgorithmContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox, const IBox* pBox)
-	:TPluginObjectContext<IBoxAlgorithmContext>(rKernelContext)
-	,TKernelObject<IBoxAlgorithmContext>(rKernelContext)
+	:TKernelObject<IBoxAlgorithmContext>(rKernelContext)
+	,TPluginObjectContext<IBoxAlgorithmContext>(rKernelContext)
 	,m_oStaticBoxContext(rKernelContext, pBox)
 	,m_oDynamicBoxContext(rKernelContext, pSimulatedBox)
 	,m_oPlayerContext(rKernelContext, pSimulatedBox)

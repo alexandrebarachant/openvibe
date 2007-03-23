@@ -1,6 +1,7 @@
 #include "IConnection.h"
 
 #if defined Socket_OS_Linux
+ #include <sys/select.h>
  #include <sys/time.h>
  #include <sys/types.h>
  #include <sys/socket.h>
@@ -19,6 +20,11 @@
 
 namespace Socket
 {
+	static boolean FD_ISSET_PROXY(int fd, fd_set* set)
+	{
+		return FD_ISSET(fd, set)?true:false;
+	}
+
 	template <class T> class TConnection : virtual public T
 	{
 	public:
@@ -104,7 +110,7 @@ namespace Socket
 			{
 				return false;
 			}
-			if(!FD_ISSET(m_i32Socket, &l_oWriteFileDescriptors))
+			if(!FD_ISSET_PROXY(m_i32Socket, &l_oWriteFileDescriptors))
 			{
 				return false;
 			}
@@ -131,7 +137,7 @@ namespace Socket
 			{
 				return false;
 			}
-			if(!(FD_ISSET(m_i32Socket, &l_oReadFileDescriptors)))
+			if(!(FD_ISSET_PROXY(m_i32Socket, &l_oReadFileDescriptors)))
 			{
 				return false;
 			}
@@ -197,4 +203,3 @@ namespace Socket
 		int32 m_i32Socket;
 	};
 };
-

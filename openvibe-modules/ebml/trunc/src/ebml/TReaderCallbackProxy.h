@@ -10,7 +10,7 @@ namespace EBML
 //
 
 	template <class COwnerClass>
-	class EBML_API TReaderCallbackProxy1 : virtual public EBML::IReaderCallback
+	class TReaderCallbackProxy1 : virtual public EBML::IReaderCallback
 	{
 	public:
 		TReaderCallbackProxy1(
@@ -67,7 +67,7 @@ namespace EBML
 //
 
 	template <class COwnerClass, EBML::boolean (COwnerClass::*mfpIsMasterChild)(const EBML::CIdentifier& rIdentifier), void (COwnerClass::*mfpOpenChild)(const EBML::CIdentifier& rIdentifier), void (COwnerClass::*mfpProcessChildData)(const void* pBuffer, const EBML::uint64 ui64BufferSize), void (COwnerClass::*mfpCloseChild)(void)>
-	class EBML_API TReaderCallbackProxy2 : virtual public EBML::IReaderCallback
+	class TReaderCallbackProxy2 : virtual public EBML::IReaderCallback
 	{
 	public:
 		TReaderCallbackProxy2(

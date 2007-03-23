@@ -62,9 +62,10 @@ namespace OpenViBEToolkit
 CStreamedMatrixWriterHelper::CStreamedMatrixWriterHelper(void)
 	:m_pWriter(NULL)
 	,m_pWriterHelper(NULL)
-	,m_ui32Status(Status_SendingNothing)
-	,m_ui32DimmensionCount(0)
+	,m_pMatrixBuffer(NULL)
 	,m_ui64MatrixBufferSize(0)
+	,m_ui32DimmensionCount(0)
+	,m_ui32Status(Status_SendingNothing)
 {
 	m_pWriterHelper=EBML::createWriterHelper();
 }

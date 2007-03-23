@@ -61,7 +61,6 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
-				OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=rBoxAlgorithmContext.getStaticBoxContext();
 				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
 
 				m_pBoxAlgorithmContext=&rBoxAlgorithmContext;
@@ -81,7 +80,6 @@ namespace OpenViBEPlugins
 				const void* pBuffer,
 				const EBML::uint64 ui64BufferSize)
 			{
-				OpenViBE::Plugins::IStaticBoxContext* l_pStaticBoxContext=m_pBoxAlgorithmContext->getStaticBoxContext();
 				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=m_pBoxAlgorithmContext->getDynamicBoxContext();
 
 				std::cout << "Producer : Sending magic data : "
@@ -93,14 +91,14 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_BoxAlgorithmProducer)
 
-		public:
-
-			OpenViBE::Plugins::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
-
 		protected:
 
 			EBML::IWriter* m_pWriter;
 			EBML::IWriterHelper* m_pWriterHelper;
+
+		public:
+
+			OpenViBE::Plugins::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
 		};
 
 		class CBoxAlgorithmProducerDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc

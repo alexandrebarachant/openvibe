@@ -33,9 +33,9 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			EBML::IWriter* m_pSignalOutputWriter;
 			EBML::TWriterCallbackProxy2<OpenViBEPlugins::Samples::CSinusSignalGenerator, &OpenViBEPlugins::Samples::CSinusSignalGenerator::writeSignalOutput> m_oSignalOutputWriterCallbackProxy;
 			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter* m_pSignalOutputWriterHelper;
+			EBML::IWriter* m_pSignalOutputWriter;
 
 			OpenViBE::boolean m_bHeaderSent;
 			OpenViBE::uint32 m_ui32ChannelCount;

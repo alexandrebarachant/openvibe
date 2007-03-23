@@ -92,7 +92,7 @@ namespace Socket
 #else
 #endif
 			int32 l_i32ClientSocket=::accept(m_i32Socket, (struct sockaddr*)&l_oClientAddress, &l_iClientAddressSize);
-			if(l_iClientAddressSize==-1)
+			if(l_i32ClientSocket==-1)
 			{
 				return NULL;
 			}

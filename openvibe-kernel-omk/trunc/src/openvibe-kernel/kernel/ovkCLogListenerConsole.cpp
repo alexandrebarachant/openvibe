@@ -305,6 +305,7 @@ void CLogListenerConsole::applyColor(void)
 					case LogColor_ForegroundMagenta:  cout << _command_separator_ << "35"; break;
 					case LogColor_ForegroundCyan:     cout << _command_separator_ << "36"; break;
 					case LogColor_ForegroundWhite:    cout << _command_separator_ << "37"; break;
+					default: break;
 				}
 			}
 		}
@@ -324,6 +325,7 @@ void CLogListenerConsole::applyColor(void)
 					case LogColor_BackgroundMagenta:  cout << _command_separator_ << "45"; break;
 					case LogColor_BackgroundCyan:     cout << _command_separator_ << "46"; break;
 					case LogColor_BackgroundWhite:    cout << _command_separator_ << "47"; break;
+					default: break;
 				}
 			}
 

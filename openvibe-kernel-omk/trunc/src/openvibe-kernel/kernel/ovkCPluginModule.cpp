@@ -227,8 +227,8 @@ namespace OpenViBE
 #if defined OVK_OS_Linux
 
 CPluginModuleLinux::CPluginModuleLinux(const IKernelContext& rKernelContext)
-	:CPluginModuleBase(rKernelContext)
-	,TKernelObject<IPluginModule>(rKernelContext)
+	:TKernelObject<IPluginModule>(rKernelContext)
+	,CPluginModuleBase(rKernelContext)
 	,m_pFileHandle(NULL)
 {
 }
@@ -295,8 +295,8 @@ boolean CPluginModuleLinux::isOpen(void) const
 #elif defined OVK_OS_Windows
 
 CPluginModuleWindows::CPluginModuleWindows(const IKernelContext& rKernelContext)
-	:CPluginModuleBase(rKernelContext)
-	,TKernelObject<IPluginModule>(rKernelContext)
+	:TKernelObject<IPluginModule>(rKernelContext)
+	,CPluginModuleBase(rKernelContext)
 	,m_pFileHandle(NULL)
 {
 }

@@ -145,8 +145,8 @@ boolean CScenarioExporterXML::callback(const IScenario& rScenario, ILink& rLink)
 
 	char l_sSourceBoxOutputIndex[1024];
 	char l_sTargetBoxInputIndex[1024];
-	sprintf(l_sSourceBoxOutputIndex, "%i", l_ui32SourceBoxOutputIndex);
-	sprintf(l_sTargetBoxInputIndex, "%i", l_ui32TargetBoxInputIndex);
+	sprintf(l_sSourceBoxOutputIndex, "%i", (int)l_ui32SourceBoxOutputIndex);
+	sprintf(l_sTargetBoxInputIndex, "%i", (int)l_ui32TargetBoxInputIndex);
 
 	m_pWriter->openChild("Link");
 	 m_pWriter->openChild("Identifier");

@@ -73,7 +73,7 @@ void CBoxAlgorithmStimulationInputReaderCallback::openChild(const EBML::CIdentif
 {
 	m_vNodes.push(rIdentifier);
 
-	EBML::CIdentifier& l_rTop=m_vNodes.top();
+	// EBML::CIdentifier& l_rTop=m_vNodes.top();
 
 	// ...
 

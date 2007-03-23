@@ -77,8 +77,8 @@ boolean CEBMLStreamSpy::initialize(void)
 	ifstream l_oFile(l_sFileName);
 	while(!l_oFile.eof())
 	{
-		uint32 l_ui32Identifier1;
-		uint32 l_ui32Identifier2;
+		unsigned int l_ui32Identifier1;
+		unsigned int l_ui32Identifier2;
 		string l_sIdentifier1;
 		string l_sIdentifier2;
 		string l_sName;
@@ -227,7 +227,6 @@ boolean CEBMLStreamSpy::processInput(uint32 ui32InputIndex)
 
 boolean CEBMLStreamSpy::process(void)
 {
-	IStaticBoxContext* l_pStaticBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	uint64 l_ui64StartTime=0;
