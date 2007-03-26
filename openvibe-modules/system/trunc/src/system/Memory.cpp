@@ -20,10 +20,9 @@ boolean Memory::copy(
 template <typename T> boolean __hostToLittleEndian(const T& rValue, uint8* pBuffer)
 {
 	if(!pBuffer) return false;
-	memset(pBuffer, 0, sizeof(T));
 	for(unsigned int i=0; i<sizeof(T); i++)
 	{
-		pBuffer[i]=((uint8*)&rValue)[sizeof(T)-1-i];
+		pBuffer[i]=static_cast<uint8>((rValue>>(i*8))&0xff);
 	}
 	return true;
 }
@@ -78,9 +77,10 @@ boolean Memory::hostToLittleEndian(
 template <typename T> boolean __hostToBigEndian(const T& rValue, uint8* pBuffer)
 {
 	if(!pBuffer) return false;
+	memset(pBuffer, 0, sizeof(T));
 	for(unsigned int i=0; i<sizeof(T); i++)
 	{
-		pBuffer[i]=static_cast<uint8>((rValue>>(i*8))&0xff);
+		pBuffer[i]=((uint8*)&rValue)[sizeof(T)-1-i];
 	}
 	return true;
 }
@@ -138,7 +138,7 @@ template <typename T> boolean __littleEndianToHost(const uint8* pBuffer, T* pVal
 	memset(pValue, 0, sizeof(T));
 	for(unsigned int i=0; i<sizeof(T); i++)
 	{
-		((uint8*)pValue)[i]=pBuffer[sizeof(T)-1-i];
+		((uint8*)pValue)[i]=pBuffer[i];
 	}
 	return true;
 }
@@ -196,11 +196,10 @@ template <typename T> boolean __bigEndianToHost(const uint8* pBuffer, T* pValue)
 	memset(pValue, 0, sizeof(T));
 	for(unsigned int i=0; i<sizeof(T); i++)
 	{
-		((uint8*)pValue)[i]=pBuffer[i];
+		((uint8*)pValue)[i]=pBuffer[sizeof(T)-1-i];
 	}
 	return true;
 }
-
 
 boolean Memory::bigEndianToHost(
 	const uint8* pBuffer,
