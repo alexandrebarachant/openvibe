@@ -1,5 +1,7 @@
 #include "IConnection.h"
 
+#include <iostream>
+
 #if defined Socket_OS_Linux
  #include <sys/select.h>
  #include <sys/time.h>
@@ -150,18 +152,18 @@ namespace Socket
 		{
 			if(!isConnected())
 			{
-				return 0xffffffff;
+				return 0;
 			}
 #if 0
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
 			int l_iResult=::send(m_i32Socket, static_cast<const char*>(pBuffer), ui32BufferSize, 0);
-			if(l_iResult<0)
+			if(ui32BufferSize!=0 && l_iResult<=0)
 			{
 				close();
 			}
-			return l_iResult<0?0:(uint32)l_iResult;
+			return l_iResult<=0?0:(uint32)l_iResult;
 		}
 
 		virtual uint32 receiveBuffer(
@@ -170,18 +172,18 @@ namespace Socket
 		{
 			if(!isConnected())
 			{
-				return 0xffffffff;
+				return 0;
 			}
 #if 0
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
 			int l_iResult=::recv(m_i32Socket, static_cast<char *>(pBuffer), ui32BufferSize, 0);
-			if(l_iResult<0)
+			if(ui32BufferSize!=0 && l_iResult<=0)
 			{
 				close();
 			}
-			return l_iResult<0?0:(uint32)l_iResult;
+			return l_iResult<=0?0:(uint32)l_iResult;
 		}
 
 		virtual boolean isConnected(void) const

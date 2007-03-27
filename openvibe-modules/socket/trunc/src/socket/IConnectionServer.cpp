@@ -3,7 +3,7 @@
 #include "IConnection.inl"
 
 #include <string.h>
-// #include <iostream>
+#include <iostream>
 
 #if defined Socket_OS_Linux
  #include <netinet/in.h>
