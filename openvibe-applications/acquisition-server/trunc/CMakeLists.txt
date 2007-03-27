@@ -48,9 +48,11 @@ ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-dynamic)
 ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
 
+INCLUDE("FindOpenViBE.cmake")
 INCLUDE("FindOpenViBEModuleEBML.cmake")
 INCLUDE("FindOpenViBEModuleSocket.cmake")
 INCLUDE("FindOpenViBEModuleSystem.cmake")
+INCLUDE("FindOpenViBEToolkit.cmake")
 
 # ---------------------------------
 # Finds Glade

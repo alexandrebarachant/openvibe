@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "ovas_CAcquisitionServer.h"
+#include "ovasCAcquisitionServer.h"
 
 #include <glade/glade.h>
 #include <gtk/gtk.h>
