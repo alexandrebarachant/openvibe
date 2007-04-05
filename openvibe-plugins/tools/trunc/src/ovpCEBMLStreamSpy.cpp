@@ -138,8 +138,8 @@ void CEBMLStreamSpy::openChild(const EBML::CIdentifier& rIdentifier)
 	{
 		cout << "  ";
 	}
-	uint32 l_ui32Identifier1=(((EBML::uint64)rIdentifier)>>32);
-	uint32 l_ui32Identifier2=(((EBML::uint64)rIdentifier)&0xffffffff);
+	uint32 l_ui32Identifier1=(uint32)(((EBML::uint64)rIdentifier)>>32);
+	uint32 l_ui32Identifier2=(uint32)(((EBML::uint64)rIdentifier)&0xffffffff);
 	cout
 		<< "Opened EBML node [id:"
 		<< ConsoleColor_FG_Blue
