@@ -10,9 +10,10 @@ source linux-init_env_command
 
 target_dist=../dist
 
-rm -rf $target_dist/bin/* 2> /dev/null
-rm -rf $target_dist/include/* 2> /dev/null
-rm -rf $target_dist/lib/* 2> /dev/null
+rm -rf $target_dist/bin 2> /dev/null
+rm -rf $target_dist/include 2> /dev/null
+rm -rf $target_dist/lib 2> /dev/null
+rm -rf $target_dist/share 2> /dev/null
 
 mkdir $target_dist 2> /dev/null
 mkdir $target_dist/bin 2> /dev/null

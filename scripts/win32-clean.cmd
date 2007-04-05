@@ -10,15 +10,16 @@ call "win32-init_env_command.cmd"
 
 set saved_directory=%CD%
 
-mkdir ..\local-tmp > NULL
+mkdir ..\local-tmp 2> NULL
 for /d %%s in (cmake\*.*) do (
-	mkdir ..\local-tmp\%%s > NULL
+	mkdir ..\local-tmp\%%s 2> NULL
 	cd ..\local-tmp\%%s
 	cmake -DCMAKE_BUILD_TYPE=Release %saved_directory%/%%s -G"NMake Makefiles"
 	nmake clean
 	cd %saved_directory%
 )
 rmdir /s /q ..\local-tmp
+del NULL
 
 :terminate
 

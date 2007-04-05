@@ -12,7 +12,7 @@ set PATH=%PATH%;E:\Microsoft Visual Studio 2005\VC\redist\Debug_NonRedist\x86\Mi
 set PATH=%PATH%;C:\Expat-2.0.0\Libs
 set PATH=%PATH%;%LIB%;%LIBPATH%
 
-set OpenMASKDIR=E:\OpenViBE\OpenMASK - VC 8.0\SDK
+set OpenMASKDIR=E:\Dev\openmask\Windows\VS .NET 2005 - VC 8.0
 set PKG_CONFIG_PATH=C:\GTK\lib\pkgconfig
 
 set OpenViBE_base=%CD%\..
