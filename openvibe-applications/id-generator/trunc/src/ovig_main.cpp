@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	for(int i=0; i<15; i++)
 	{
 		unsigned long int l_ui32Vale1=(rand()&0x00ffffff);
