@@ -91,6 +91,11 @@ cp -rf $OpenViBE_plugin_signal_processing/include/* $target_dist/include 2> /dev
 cp -rf $OpenViBE_plugin_signal_processing/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_plugin_signal_processing/share/* $target_dist/share 2> /dev/null
 
+cp -rf $OpenViBE_plugin_signal_processing_gpl/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_plugin_signal_processing_gpl/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_plugin_signal_processing_gpl/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_plugin_signal_processing_gpl/share/* $target_dist/share 2> /dev/null
+
 cp -rf $OpenViBE_plugin_simple_visualisation/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_plugin_simple_visualisation/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_plugin_simple_visualisation/lib/* $target_dist/lib 2> /dev/null
