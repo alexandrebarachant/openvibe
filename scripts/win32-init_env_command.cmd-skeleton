@@ -63,6 +63,7 @@ REM set OpenViBE_plugin_acquisition_branch=%OpenViBE_plugins_branch%
 REM set OpenViBE_plugin_file_io_branch=%OpenViBE_plugins_branch%
 REM set OpenViBE_plugin_samples_branch=%OpenViBE_plugins_branch%
 REM set OpenViBE_plugin_signal_processing_branch=%OpenViBE_plugins_branch%
+REM set OpenViBE_plugin_signal_processing_gpl_branch=%OpenViBE_plugins_branch%
 REM set OpenViBE_plugin_simple_visualisation_branch=%OpenViBE_plugins_branch%
 REM set OpenViBE_plugin_tools_branch=%OpenViBE_plugins_branch%
 REM
@@ -101,6 +102,7 @@ if "%OpenViBE_plugin_acquisition_branch%" == "" set OpenViBE_plugin_acquisition_
 if "%OpenViBE_plugin_file_io_branch%" == "" set OpenViBE_plugin_file_io_branch=%OpenViBE_plugins_branch%
 if "%OpenViBE_plugin_samples_branch%" == "" set OpenViBE_plugin_samples_branch=%OpenViBE_plugins_branch%
 if "%OpenViBE_plugin_signal_processing_branch%" == "" set OpenViBE_plugin_signal_processing_branch=%OpenViBE_plugins_branch%
+if "%OpenViBE_plugin_signal_processing_gpl_branch%" == "" set OpenViBE_plugin_signal_processing_gpl_branch=%OpenViBE_plugins_branch%
 if "%OpenViBE_plugin_simple_visualisation_branch%" == "" set OpenViBE_plugin_simple_visualisation_branch=%OpenViBE_plugins_branch%
 if "%OpenViBE_plugin_tools_branch%" == "" set OpenViBE_plugin_tools_branch=%OpenViBE_plugins_branch%
 
@@ -127,5 +129,6 @@ set OpenViBE_plugin_acquisition=%OpenViBE_plugins%\acquisition\%OpenViBE_plugin_
 set OpenViBE_plugin_file_io=%OpenViBE_plugins%\file-io\%OpenViBE_plugin_file_io_branch%
 set OpenViBE_plugin_samples=%OpenViBE_plugins%\samples\%OpenViBE_plugin_samples_branch%
 set OpenViBE_plugin_signal_processing=%OpenViBE_plugins%\signal-processing\%OpenViBE_plugin_signal_processing_branch%
+set OpenViBE_plugin_signal_processing_gpl=%OpenViBE_plugins%\signal-processing\%OpenViBE_plugin_signal_processing_gpl_branch%
 set OpenViBE_plugin_simple_visualisation=%OpenViBE_plugins%\simple-visualisation\%OpenViBE_plugin_simple_visualisation_branch%
 set OpenViBE_plugin_tools=%OpenViBE_plugins%\tools\%OpenViBE_plugin_tools_branch%

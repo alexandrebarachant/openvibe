@@ -19,6 +19,11 @@ for sub_directory in `find cmake -maxdepth 1 -type d -printf "%P\n" | sort`; do
 		cd "../local-tmp/$sub_directory" 2> /dev/null
 		cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release "$saved_directory/cmake/$sub_directory"
 		make
+		if [ $? -eq 0 ]; then
+			echo Make has been called successfully !
+		else
+			exit -1
+		fi;
 		cd "$saved_directory"
 	fi;
 done
