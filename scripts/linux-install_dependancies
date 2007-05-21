@@ -1,2 +1,100 @@
 #!/bin/bash
 
+## supposes to have :
+##   - freeglut3-dev TODO should be removed
+##   - build-essentials
+##   - subversion
+##   - wget
+##   - tar with gzip/bzip2
+
+####################################
+##
+##  initializes some environment variables
+##
+####################################
+
+openvibe_should_build_tree_structure_flag=false
+openvibe_should_download_archives_flag=false
+openvibe_should_build_openmask_flag=true
+
+openvibe_directory=`pwd`/..
+openvibe_wget=`which wget`
+
+openvibe_dependancies_folder=dependancies
+openvibe_archives_folder=archives
+openvibe_tmp_folder=tmp
+
+openvibe_dependancy_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz?modtime=1136972148&big_mirror=0
+openvibe_dependancy_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
+openvibe_dependancy_gtk_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
+openvibe_dependancy_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
+openvibe_dependancy_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
+openvibe_dependancy_gtk_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
+openvibe_dependancy_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
+openvibe_dependancy_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
+
+openvibe_dependancy_expat_archive_name=openvibe-dependancy-expat-2.0.0.tar.gz
+openvibe_dependancy_gtk_archive_name=openvibe-dependancy-gtk-2.10.12.tar.gz
+openvibe_dependancy_gtk_glib_archive_name=openvibe-dependancy-gtk-glib-2.12.12.tar.gz
+openvibe_dependancy_gtk_pango_archive_name=openvibe-dependancy-gtk-pango-1.16.4.tar.gz
+openvibe_dependancy_gtk_cairo_archive_name=openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
+openvibe_dependancy_gtk_atk_archive_name=openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
+openvibe_dependancy_glade_archive_name=openvibe-dependancy-glade3-3.1.5.tar.gz
+openvibe_dependancy_cmake_archive_name=openvibe-dependancy-cmake-2.4.6.tar.gz
+
+openvibe_dependancy_openmask_svn_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
+
+####################################
+##
+##  creates dependancy directory
+##
+####################################
+
+if [ "$openvibe_should_build_tree_structure_flag" == "true" ]; then
+	rm -rf "$openvibe_directory/$openvibe_dependancies_folder"
+	mkdir "$openvibe_directory/$openvibe_dependancies_folder"
+	mkdir "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	mkdir "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder"
+fi;
+
+####################################
+##
+##  goes to appropriate directory
+##
+####################################
+
+cd "$openvibe_directory/$openvibe_dependancies_folder"
+
+####################################
+##
+##  download necessary files
+##
+####################################
+
+if [ "$openvibe_should_download_archives_flag" == "true" ]; then
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_expat_archive_name"     $openvibe_dependancy_expat_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_archive_name"       $openvibe_dependancy_gtk_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_glib_archive_name"  $openvibe_dependancy_gtk_glib_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_pango_archive_name" $openvibe_dependancy_gtk_pango_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_cairo_archive_name" $openvibe_dependancy_gtk_cairo_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_atk_archive_name"   $openvibe_dependancy_gtk_atk_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_glade_archive_name"     $openvibe_dependancy_glade_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_cmake_archive_name"     $openvibe_dependancy_cmake_url
+fi;
+
+####################################
+##
+##  tries to build openmask
+##
+####################################
+
+if [ "$openvibe_should_build_openmask_flag" == "true" ]; then
+
+	svn checkout "$openvibe_dependancy_openmask_svn_url" "$openvibe_tmp_folder/openmask"
+	cd "$openvibe_tmp_folder/openmask"
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder --disable-scen-graph
+	make
+	make install
+
+fi;
+
