@@ -15,10 +15,21 @@
 
 openvibe_should_build_tree_structure_flag=false
 openvibe_should_download_archives_flag=false
-openvibe_should_build_openmask_flag=true
+openvibe_should_build_openmask_flag=false
+openvibe_should_build_expat_flag=true
+openvibe_should_build_gtk_flag=false
+openvibe_should_build_gtk_glib_flag=false
+openvibe_should_build_gtk_cairo_flag=false
+openvibe_should_build_gtk_pango_flag=false
+openvibe_should_build_gtk_atk_flag=false
+openvibe_should_build_glade_flag=false
 
 openvibe_directory=`pwd`/..
 openvibe_wget=`which wget`
+openvibe_tar=`which tar`
+openvibe_svn=`which svn`
+openvibe_pkgconfig=`which pkg-config`
+openvibe_make=`which make`
 
 openvibe_dependancies_folder=dependancies
 openvibe_archives_folder=archives
@@ -27,8 +38,8 @@ openvibe_tmp_folder=tmp
 openvibe_dependancy_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz?modtime=1136972148&big_mirror=0
 openvibe_dependancy_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
 openvibe_dependancy_gtk_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
-openvibe_dependancy_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
 openvibe_dependancy_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
+openvibe_dependancy_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
 openvibe_dependancy_gtk_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
 openvibe_dependancy_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
 openvibe_dependancy_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
@@ -36,8 +47,8 @@ openvibe_dependancy_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-
 openvibe_dependancy_expat_archive_name=openvibe-dependancy-expat-2.0.0.tar.gz
 openvibe_dependancy_gtk_archive_name=openvibe-dependancy-gtk-2.10.12.tar.gz
 openvibe_dependancy_gtk_glib_archive_name=openvibe-dependancy-gtk-glib-2.12.12.tar.gz
-openvibe_dependancy_gtk_pango_archive_name=openvibe-dependancy-gtk-pango-1.16.4.tar.gz
 openvibe_dependancy_gtk_cairo_archive_name=openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
+openvibe_dependancy_gtk_pango_archive_name=openvibe-dependancy-gtk-pango-1.16.4.tar.gz
 openvibe_dependancy_gtk_atk_archive_name=openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
 openvibe_dependancy_glade_archive_name=openvibe-dependancy-glade3-3.1.5.tar.gz
 openvibe_dependancy_cmake_archive_name=openvibe-dependancy-cmake-2.4.6.tar.gz
@@ -75,8 +86,8 @@ if [ "$openvibe_should_download_archives_flag" == "true" ]; then
 	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_expat_archive_name"     $openvibe_dependancy_expat_url
 	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_archive_name"       $openvibe_dependancy_gtk_url
 	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_glib_archive_name"  $openvibe_dependancy_gtk_glib_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_pango_archive_name" $openvibe_dependancy_gtk_pango_url
 	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_cairo_archive_name" $openvibe_dependancy_gtk_cairo_url
+	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_pango_archive_name" $openvibe_dependancy_gtk_pango_url
 	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_atk_archive_name"   $openvibe_dependancy_gtk_atk_url
 	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_glade_archive_name"     $openvibe_dependancy_glade_url
 	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_cmake_archive_name"     $openvibe_dependancy_cmake_url
@@ -89,12 +100,132 @@ fi;
 ####################################
 
 if [ "$openvibe_should_build_openmask_flag" == "true" ]; then
-
-	svn checkout "$openvibe_dependancy_openmask_svn_url" "$openvibe_tmp_folder/openmask"
-	cd "$openvibe_tmp_folder/openmask"
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_svn checkout "$openvibe_dependancy_openmask_svn_url"
+	cd *
 	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder --disable-scen-graph
-	make
-	make install
+	$openvibe_make
+	$openvibe_make install
+	popd
+fi;
 
+####################################
+##
+##  tries to build expat
+##
+####################################
+
+if [ "$openvibe_should_build_expat_flag" == "true" ]; then
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_expat_archive_name"
+	cd *
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
+	$openvibe_make
+	$openvibe_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build glib
+##
+####################################
+
+if [ "$openvibe_should_build_gtk_glib_flag" == "true" ]; then
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_glib_archive_name"
+	cd *
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
+	$openvibe_make
+	$openvibe_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build cairo
+##
+####################################
+
+if [ "$openvibe_should_build_gtk_cairo_flag" == "true" ]; then
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_cairo_archive_name"
+	cd *
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
+	$openvibe_make
+	$openvibe_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build pango
+##
+####################################
+
+if [ "$openvibe_should_build_gtk_pango_flag" == "true" ]; then
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_pango_archive_name"
+	cd *
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
+	$openvibe_make
+	$openvibe_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build atk
+##
+####################################
+
+if [ "$openvibe_should_build_gtk_atk_flag" == "true" ]; then
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_atk_archive_name"
+	cd *
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
+	$openvibe_make
+	$openvibe_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk
+##
+####################################
+
+if [ "$openvibe_should_build_gtk_flag" == "true" ]; then
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_archive_name"
+	cd *
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
+	$openvibe_make
+	$openvibe_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build glade
+##
+####################################
+
+if [ "$openvibe_should_build_glade_flag" == "true" ]; then
+	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
+	rm -r *
+	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_glade_archive_name"
+	cd *
+	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
+	$openvibe_make
+	$openvibe_make install
+	popd
 fi;
 
