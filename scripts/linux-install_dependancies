@@ -2,6 +2,7 @@
 
 ## supposes to have :
 ##   - freeglut3-dev TODO should be removed
+##   - pkg-config
 ##   - build-essentials
 ##   - subversion
 ##   - wget
@@ -13,47 +14,88 @@
 ##
 ####################################
 
-openvibe_should_build_tree_structure_flag=false
-openvibe_should_download_archives_flag=false
-openvibe_should_build_openmask_flag=false
-openvibe_should_build_expat_flag=true
-openvibe_should_build_gtk_flag=false
-openvibe_should_build_gtk_glib_flag=false
-openvibe_should_build_gtk_cairo_flag=false
-openvibe_should_build_gtk_pango_flag=false
-openvibe_should_build_gtk_atk_flag=false
-openvibe_should_build_glade_flag=false
+ov_should_build_tree_structure_flag=false
 
-openvibe_directory=`pwd`/..
-openvibe_wget=`which wget`
-openvibe_tar=`which tar`
-openvibe_svn=`which svn`
-openvibe_pkgconfig=`which pkg-config`
-openvibe_make=`which make`
+ov_should_download_archives_flag=false
 
-openvibe_dependancies_folder=dependancies
-openvibe_archives_folder=archives
-openvibe_tmp_folder=tmp
+ov_should_build_openmask_flag=false
+ov_should_build_expat_flag=false
+ov_should_build_gtk_glib_gettext_flag=false
+ov_should_build_gtk_glib_flag=false
+ov_should_build_gtk_cairo_libxml_flag=false
+ov_should_build_gtk_cairo_zlib_flag=false
+ov_should_build_gtk_cairo_libpng_flag=false
+ov_should_build_gtk_cairo_freetype_flag=false
+ov_should_build_gtk_cairo_fontconfig_flag=false
+ov_should_build_gtk_cairo_renderproto_flag=false
+ov_should_build_gtk_cairo_libxrender_flag=false
+ov_should_build_gtk_cairo_flag=false
+ov_should_build_gtk_pango_flag=false
+ov_should_build_gtk_atk_flag=false
+ov_should_build_gtk_flag=false
+ov_should_build_glade_flag=false
 
-openvibe_dependancy_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz?modtime=1136972148&big_mirror=0
-openvibe_dependancy_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
-openvibe_dependancy_gtk_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
-openvibe_dependancy_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
-openvibe_dependancy_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
-openvibe_dependancy_gtk_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
-openvibe_dependancy_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
-openvibe_dependancy_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
+ov_directory=`pwd`/..
+ov_wget=`which wget`
+ov_tar=`which tar`
+ov_svn=`which svn`
+ov_pkgconfig=`which pkg-config`
+ov_make=`which make`
 
-openvibe_dependancy_expat_archive_name=openvibe-dependancy-expat-2.0.0.tar.gz
-openvibe_dependancy_gtk_archive_name=openvibe-dependancy-gtk-2.10.12.tar.gz
-openvibe_dependancy_gtk_glib_archive_name=openvibe-dependancy-gtk-glib-2.12.12.tar.gz
-openvibe_dependancy_gtk_cairo_archive_name=openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
-openvibe_dependancy_gtk_pango_archive_name=openvibe-dependancy-gtk-pango-1.16.4.tar.gz
-openvibe_dependancy_gtk_atk_archive_name=openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
-openvibe_dependancy_glade_archive_name=openvibe-dependancy-glade3-3.1.5.tar.gz
-openvibe_dependancy_cmake_archive_name=openvibe-dependancy-cmake-2.4.6.tar.gz
+ov_depend_folder=dependancies
+ov_archives_folder=arch
+ov_tmp_folder=tmp
 
-openvibe_dependancy_openmask_svn_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
+ov_dep_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz
+ov_dep_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
+ov_dep_gtk_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
+ov_dep_gtk_glib_get_text_url=ftp://mirror.cict.fr/gnu/gettext/gettext-0.16.1.tar.gz
+ov_dep_gtk_cairo_libxml_url=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.28.tar.gz
+ov_dep_gtk_cairo_zlib_url=http://downloads.sourceforge.net/libpng/zlib-1.2.3.tar.gz
+ov_dep_gtk_cairo_libpng_url=http://downloads.sourceforge.net/libpng/libpng-1.2.18.tar.gz
+ov_dep_gtk_cairo_freetype_url=http://downloads.sourceforge.net/freetype/freetype-2.3.4.tar.gz
+ov_dep_gtk_cairo_fontconfig_url=http://fontconfig.org/release/fontconfig-2.4.2.tar.gz
+ov_dep_gtk_cairo_renderproto_url=http://xorg.freedesktop.org/releases/individual/proto/renderproto-0.9.2.tar.bz2
+ov_dep_gtk_cairo_libxrender_url=http://xorg.freedesktop.org/archive/individual/lib/libXrender-0.9.2.tar.gz
+ov_dep_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
+ov_dep_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
+ov_dep_gtk_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
+ov_dep_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
+ov_dep_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
+
+ov_dep_expat_archive_name=openvibe-dependancy-expat-2.0.0.tar.gz
+ov_dep_gtk_archive_name=openvibe-dependancy-gtk-2.10.12.tar.gz
+ov_dep_gtk_glib_archive_name=openvibe-dependancy-gtk-glib-2.12.12.tar.gz
+ov_dep_gtk_glib_gettext_archive_name=openvibe-dependancy-gettext-0.16.1.tar.gz
+ov_dep_gtk_cairo_libxml_archive_name=openvibe-dependancy-libxml2-sources-2.6.28.tar.gz
+ov_dep_gtk_cairo_zlib_archive_name=openvibe-dependancy-zlib-1.2.3.tar.gz
+ov_dep_gtk_cairo_libpng_archive_name=openvibe-dependancy-libpng-1.2.18.tar.gz
+ov_dep_gtk_cairo_freetype_archive_name=openvibe-dependancy-freetype-2.3.4.tar.gz
+ov_dep_gtk_cairo_fontconfig_archive_name=openvibe-dependancy-fontconfig-2.4.2.tar.gz
+ov_dep_gtk_cairo_renderproto_archive_name=openvibe-dependancy-renderproto-0.9.2.tar.bz2
+ov_dep_gtk_cairo_libxrender_archive_name=openvibe-dependancy-libXrender-0.9.2.tar.gz
+ov_dep_gtk_cairo_archive_name=openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
+ov_dep_gtk_pango_archive_name=openvibe-dependancy-gtk-pango-1.16.4.tar.gz
+ov_dep_gtk_atk_archive_name=openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
+ov_dep_glade_archive_name=openvibe-dependancy-glade3-3.1.5.tar.gz
+ov_dep_cmake_archive_name=openvibe-dependancy-cmake-2.4.6.tar.gz
+
+ov_dep_openmask_svn_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
+
+####################################
+##
+##  initializes some env variables
+##
+####################################
+
+export PKG_CONFIG_PATH=$ov_directory/$ov_depend_folder/lib/pkgconfig:$PKG_CONFIG_PATH
+export LD_LIBRARY_PATH=$ov_directory/$ov_depend_folder/lib:$LD_LIBRARY_PATH:.
+
+export PATH=$ov_directory/$ov_depend_folder/bin:$PATH
+export COMPILER_PATH=$ov_directory/$ov_depend_folder/include:$COMPILER_PATH
+export C_INCLUDE_PATH=$ov_directory/$ov_depend_folder/include:$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=$ov_directory/$ov_depend_folder/include:$CPLUS_INCLUDE_PATH
+export LIBRARY_PATH=$ov_directory/$ov_depend_folder/lib:$LIBRARY_PATH
 
 ####################################
 ##
@@ -61,20 +103,12 @@ openvibe_dependancy_openmask_svn_url=svn://scm.gforge.inria.fr/svn/openmask/Open
 ##
 ####################################
 
-if [ "$openvibe_should_build_tree_structure_flag" == "true" ]; then
-	rm -rf "$openvibe_directory/$openvibe_dependancies_folder"
-	mkdir "$openvibe_directory/$openvibe_dependancies_folder"
-	mkdir "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	mkdir "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder"
+if [ "$ov_should_build_tree_structure_flag" == "true" ]; then
+	rm -rf "$ov_directory/$ov_depend_folder"
+	mkdir "$ov_directory/$ov_depend_folder"
+	mkdir "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	mkdir "$ov_directory/$ov_depend_folder/$ov_archives_folder"
 fi;
-
-####################################
-##
-##  goes to appropriate directory
-##
-####################################
-
-cd "$openvibe_directory/$openvibe_dependancies_folder"
 
 ####################################
 ##
@@ -82,15 +116,24 @@ cd "$openvibe_directory/$openvibe_dependancies_folder"
 ##
 ####################################
 
-if [ "$openvibe_should_download_archives_flag" == "true" ]; then
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_expat_archive_name"     $openvibe_dependancy_expat_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_archive_name"       $openvibe_dependancy_gtk_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_glib_archive_name"  $openvibe_dependancy_gtk_glib_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_cairo_archive_name" $openvibe_dependancy_gtk_cairo_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_pango_archive_name" $openvibe_dependancy_gtk_pango_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_gtk_atk_archive_name"   $openvibe_dependancy_gtk_atk_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_glade_archive_name"     $openvibe_dependancy_glade_url
-	$openvibe_wget -O "$openvibe_archives_folder/$openvibe_dependancy_cmake_archive_name"     $openvibe_dependancy_cmake_url
+if [ "$ov_should_download_archives_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_archives_folder"
+	$ov_wget -c -O "$ov_dep_expat_archive_name"                $ov_dep_expat_url
+	$ov_wget -c -O "$ov_dep_gtk_glib_gettext_archive_name"     $ov_dep_gtk_glib_get_text_url
+	$ov_wget -c -O "$ov_dep_gtk_glib_archive_name"             $ov_dep_gtk_glib_url
+	$ov_wget -c -O "$ov_dep_gtk_cairo_libxml_archive_name"     $ov_dep_gtk_cairo_libxml_url
+	$ov_wget -c -O "$ov_dep_gtk_cairo_zlib_archive_name"       $ov_dep_gtk_cairo_zlib_url
+	$ov_wget -c -O "$ov_dep_gtk_cairo_libpng_archive_name"     $ov_dep_gtk_cairo_libpng_url
+	$ov_wget -c -O "$ov_dep_gtk_cairo_freetype_archive_name"   $ov_dep_gtk_cairo_freetype_url
+	$ov_wget -c -O "$ov_dep_gtk_cairo_fontconfig_archive_name" $ov_dep_gtk_cairo_fontconfig_url
+	$ov_wget -c -O "$ov_dep_gtk_cairo_libxrender_archive_name" $ov_dep_gtk_cairo_libxrender_url
+	$ov_wget -c -O "$ov_dep_gtk_cairo_archive_name"            $ov_dep_gtk_cairo_url
+	$ov_wget -c -O "$ov_dep_gtk_pango_archive_name"            $ov_dep_gtk_pango_url
+	$ov_wget -c -O "$ov_dep_gtk_atk_archive_name"              $ov_dep_gtk_atk_url
+	$ov_wget -c -O "$ov_dep_gtk_archive_name"                  $ov_dep_gtk_url
+	$ov_wget -c -O "$ov_dep_glade_archive_name"                $ov_dep_glade_url
+	$ov_wget -c -O "$ov_dep_cmake_archive_name"                $ov_dep_cmake_url
+	popd
 fi;
 
 ####################################
@@ -99,14 +142,16 @@ fi;
 ##
 ####################################
 
-if [ "$openvibe_should_build_openmask_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_svn checkout "$openvibe_dependancy_openmask_svn_url"
+if [ "$ov_should_build_openmask_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_svn checkout "$ov_dep_openmask_svn_url"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder --disable-scen-graph
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder --disable-scen-graph
+	# if [ $? -eq 0 ]; then
+
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
@@ -116,82 +161,218 @@ fi;
 ##
 ####################################
 
-if [ "$openvibe_should_build_expat_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_expat_archive_name"
+if [ "$ov_should_build_expat_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_expat_archive_name"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
 ####################################
 ##
-##  tries to build glib
+##  tries to build gtk_glib_gettext
 ##
 ####################################
 
-if [ "$openvibe_should_build_gtk_glib_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_glib_archive_name"
+if [ "$ov_should_build_gtk_glib_gettext_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_glib_gettext_archive_name"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
 ####################################
 ##
-##  tries to build cairo
+##  tries to build gtk_glib
 ##
 ####################################
 
-if [ "$openvibe_should_build_gtk_cairo_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_cairo_archive_name"
+if [ "$ov_should_build_gtk_glib_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_glib_archive_name"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
 ####################################
 ##
-##  tries to build pango
+##  tries to build gtk_cairo_libxml
 ##
 ####################################
 
-if [ "$openvibe_should_build_gtk_pango_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_pango_archive_name"
+if [ "$ov_should_build_gtk_cairo_libxml_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_libxml_archive_name"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
 ####################################
 ##
-##  tries to build atk
+##  tries to build gtk_cairo_zlib
 ##
 ####################################
 
-if [ "$openvibe_should_build_gtk_atk_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_atk_archive_name"
+if [ "$ov_should_build_gtk_cairo_zlib_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_zlib_archive_name"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_cairo_libpng
+##
+####################################
+
+if [ "$ov_should_build_gtk_cairo_libpng_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_libpng_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_cairo_freetype
+##
+####################################
+
+if [ "$ov_should_build_gtk_cairo_freetype_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_freetype_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_cairo_fontconfig
+##
+####################################
+
+if [ "$ov_should_build_gtk_cairo_fontconfig_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_fontconfig_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_cairo_renderproto
+##
+####################################
+
+if [ "$ov_should_build_gtk_cairo_renderproto_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfj "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_renderproto_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_cairo_libxrender
+##
+####################################
+
+if [ "$ov_should_build_gtk_cairo_libxrender_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_libxrender_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_cairo
+##
+####################################
+
+if [ "$ov_should_build_gtk_cairo_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_pango
+##
+####################################
+
+if [ "$ov_should_build_gtk_pango_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_pango_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build gtk_atk
+##
+####################################
+
+if [ "$ov_should_build_gtk_atk_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfj "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_atk_archive_name"
+	cd *
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
@@ -201,14 +382,14 @@ fi;
 ##
 ####################################
 
-if [ "$openvibe_should_build_gtk_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_gtk_archive_name"
+if [ "$ov_should_build_gtk_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_archive_name"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder --without-libtiff --without-libjpeg
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
@@ -218,14 +399,14 @@ fi;
 ##
 ####################################
 
-if [ "$openvibe_should_build_glade_flag" == "true" ]; then
-	pushd "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_tmp_folder"
-	rm -r *
-	$openvibe_tar xvfz "$openvibe_directory/$openvibe_dependancies_folder/$openvibe_archives_folder/$openvibe_dependancy_glade_archive_name"
+if [ "$ov_should_build_glade_flag" == "true" ]; then
+	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	rm -rf *
+	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_glade_archive_name"
 	cd *
-	./configure --prefix=$openvibe_directory/$openvibe_dependancies_folder
-	$openvibe_make
-	$openvibe_make install
+	./configure --prefix=$ov_directory/$ov_depend_folder
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
