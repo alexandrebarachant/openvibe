@@ -16,24 +16,30 @@
 
 ov_should_build_tree_structure_flag=false
 
-ov_should_download_archives_flag=false
+ov_should_build_pkgconfig_flag=true
+ov_should_build_cmake_flag=true
+
+ov_should_build_expat_flag=true
+
+ov_should_build_gtk_glib_gettext_flag=true
+ov_should_build_gtk_glib_flag=true
+ov_should_build_gtk_cairo_libxml_flag=true
+ov_should_build_gtk_cairo_zlib_flag=true
+ov_should_build_gtk_cairo_libpng_flag=true
+ov_should_build_gtk_cairo_freetype_flag=true
+ov_should_build_gtk_cairo_fontconfig_flag=true
+ov_should_build_gtk_cairo_renderproto_flag=true
+ov_should_build_gtk_cairo_libxrender_flag=true
+ov_should_build_gtk_cairo_flag=true
+ov_should_build_gtk_pango_flag=true
+ov_should_build_gtk_atk_flag=true
+ov_should_build_gtk_flag=true
+ov_should_build_glade_flag=true
+
+ov_should_build_itpp_external_flag=false
+ov_should_build_itpp_flag=false
 
 ov_should_build_openmask_flag=false
-ov_should_build_expat_flag=false
-ov_should_build_gtk_glib_gettext_flag=false
-ov_should_build_gtk_glib_flag=false
-ov_should_build_gtk_cairo_libxml_flag=false
-ov_should_build_gtk_cairo_zlib_flag=false
-ov_should_build_gtk_cairo_libpng_flag=false
-ov_should_build_gtk_cairo_freetype_flag=false
-ov_should_build_gtk_cairo_fontconfig_flag=false
-ov_should_build_gtk_cairo_renderproto_flag=false
-ov_should_build_gtk_cairo_libxrender_flag=false
-ov_should_build_gtk_cairo_flag=false
-ov_should_build_gtk_pango_flag=false
-ov_should_build_gtk_atk_flag=false
-ov_should_build_gtk_flag=false
-ov_should_build_glade_flag=false
 
 ov_directory=`pwd`/..
 ov_wget=`which wget`
@@ -42,43 +48,58 @@ ov_svn=`which svn`
 ov_pkgconfig=`which pkg-config`
 ov_make=`which make`
 
-ov_depend_folder=dependancies
-ov_archives_folder=arch
-ov_tmp_folder=tmp
+ov_depend_folder_rel=dependancies
+ov_archives_folder_rel=arch
+ov_tmp_folder_rel=tmp
+ov_log_folder_rel=log
+
+ov_depend_folder=$ov_directory/$ov_depend_folder_rel
+ov_archives_folder=$ov_depend_folder/$ov_archives_folder_rel
+ov_tmp_folder=$ov_depend_folder/$ov_tmp_folder_rel
+ov_log_folder=$ov_depend_folder/$ov_log_folder_rel
 
 ov_dep_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz
+ov_dep_pkgconfig_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/pkg-config-0.20.tar.gz
+ov_dep_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
 ov_dep_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
 ov_dep_gtk_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
-ov_dep_gtk_glib_get_text_url=ftp://mirror.cict.fr/gnu/gettext/gettext-0.16.1.tar.gz
+ov_dep_gtk_glib_gettext_url=ftp://mirror.cict.fr/gnu/gettext/gettext-0.16.1.tar.gz
 ov_dep_gtk_cairo_libxml_url=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.28.tar.gz
 ov_dep_gtk_cairo_zlib_url=http://downloads.sourceforge.net/libpng/zlib-1.2.3.tar.gz
 ov_dep_gtk_cairo_libpng_url=http://downloads.sourceforge.net/libpng/libpng-1.2.18.tar.gz
 ov_dep_gtk_cairo_freetype_url=http://downloads.sourceforge.net/freetype/freetype-2.3.4.tar.gz
 ov_dep_gtk_cairo_fontconfig_url=http://fontconfig.org/release/fontconfig-2.4.2.tar.gz
+ov_dep_gtk_cairo_fontconfig_url=http://xorg.freedesktop.org/releases/X11R7.2/src/extras/fontconfig-2.4.2.tar.gz
 ov_dep_gtk_cairo_renderproto_url=http://xorg.freedesktop.org/releases/individual/proto/renderproto-0.9.2.tar.bz2
 ov_dep_gtk_cairo_libxrender_url=http://xorg.freedesktop.org/archive/individual/lib/libXrender-0.9.2.tar.gz
 ov_dep_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
 ov_dep_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
 ov_dep_gtk_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
 ov_dep_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
-ov_dep_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
+ov_dep_itpp_external_url=http://downloads.sourceforge.net/itpp/itpp-external-2.3.0.tar.gz
+ov_dep_itpp_url=http://downloads.sourceforge.net/itpp/itpp-3.10.10.tar.gz
 
-ov_dep_expat_archive_name=openvibe-dependancy-expat-2.0.0.tar.gz
-ov_dep_gtk_archive_name=openvibe-dependancy-gtk-2.10.12.tar.gz
-ov_dep_gtk_glib_archive_name=openvibe-dependancy-gtk-glib-2.12.12.tar.gz
-ov_dep_gtk_glib_gettext_archive_name=openvibe-dependancy-gettext-0.16.1.tar.gz
-ov_dep_gtk_cairo_libxml_archive_name=openvibe-dependancy-libxml2-sources-2.6.28.tar.gz
-ov_dep_gtk_cairo_zlib_archive_name=openvibe-dependancy-zlib-1.2.3.tar.gz
-ov_dep_gtk_cairo_libpng_archive_name=openvibe-dependancy-libpng-1.2.18.tar.gz
-ov_dep_gtk_cairo_freetype_archive_name=openvibe-dependancy-freetype-2.3.4.tar.gz
-ov_dep_gtk_cairo_fontconfig_archive_name=openvibe-dependancy-fontconfig-2.4.2.tar.gz
-ov_dep_gtk_cairo_renderproto_archive_name=openvibe-dependancy-renderproto-0.9.2.tar.bz2
-ov_dep_gtk_cairo_libxrender_archive_name=openvibe-dependancy-libXrender-0.9.2.tar.gz
-ov_dep_gtk_cairo_archive_name=openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
-ov_dep_gtk_pango_archive_name=openvibe-dependancy-gtk-pango-1.16.4.tar.gz
-ov_dep_gtk_atk_archive_name=openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
-ov_dep_glade_archive_name=openvibe-dependancy-glade3-3.1.5.tar.gz
-ov_dep_cmake_archive_name=openvibe-dependancy-cmake-2.4.6.tar.gz
+ov_dep_expat_archive_name=$ov_archives_folder/openvibe-dependancy-expat-2.0.0.tar.gz
+ov_dep_pkgconfig_archive_name=$ov_archives_folder/openvibe-dependancy-pkg-config-0.20.tar.gz
+ov_dep_cmake_archive_name=$ov_archives_folder/openvibe-dependancy-cmake-2.4.6.tar.gz
+ov_dep_gtk_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-2.10.12.tar.gz
+ov_dep_gtk_glib_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-glib-2.12.12.tar.gz
+ov_dep_gtk_glib_gettext_archive_name=$ov_archives_folder/openvibe-dependancy-gettext-0.16.1.tar.gz
+ov_dep_gtk_cairo_libxml_archive_name=$ov_archives_folder/openvibe-dependancy-libxml2-sources-2.6.28.tar.gz
+ov_dep_gtk_cairo_zlib_archive_name=$ov_archives_folder/openvibe-dependancy-zlib-1.2.3.tar.gz
+ov_dep_gtk_cairo_libpng_archive_name=$ov_archives_folder/openvibe-dependancy-libpng-1.2.18.tar.gz
+ov_dep_gtk_cairo_freetype_archive_name=$ov_archives_folder/openvibe-dependancy-freetype-2.3.4.tar.gz
+ov_dep_gtk_cairo_fontconfig_archive_name=$ov_archives_folder/openvibe-dependancy-fontconfig-2.4.2.tar.gz
+ov_dep_gtk_cairo_renderproto_archive_name=$ov_archives_folder/openvibe-dependancy-renderproto-0.9.2.tar.bz2
+ov_dep_gtk_cairo_libxrender_archive_name=$ov_archives_folder/openvibe-dependancy-libXrender-0.9.2.tar.gz
+ov_dep_gtk_cairo_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
+ov_dep_gtk_pango_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-pango-1.16.4.tar.gz
+ov_dep_gtk_atk_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
+ov_dep_glade_archive_name=$ov_archives_folder/openvibe-dependancy-glade3-3.1.5.tar.gz
+ov_dep_itpp_external_archive_name=$ov_archives_folder/openvibe-dependancy-itpp-external-2.3.0.tar.gz
+ov_dep_itpp_archive_name=$ov_archives_folder/openvibe-dependancy-itpp-3.10.10.tar.gz
+
+ov_dep_gtk_additional_configure_flags= --without-libtiff --without-libjpeg
 
 ov_dep_openmask_svn_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
 
@@ -88,14 +109,14 @@ ov_dep_openmask_svn_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
 ##
 ####################################
 
-export PKG_CONFIG_PATH=$ov_directory/$ov_depend_folder/lib/pkgconfig:$PKG_CONFIG_PATH
-export LD_LIBRARY_PATH=$ov_directory/$ov_depend_folder/lib:$LD_LIBRARY_PATH:.
+export PKG_CONFIG_PATH=$ov_depend_folder/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig
+export LD_LIBRARY_PATH=$ov_depend_folder/lib:$LD_LIBRARY_PATH
 
-export PATH=$ov_directory/$ov_depend_folder/bin:$PATH
-export COMPILER_PATH=$ov_directory/$ov_depend_folder/include:$COMPILER_PATH
-export C_INCLUDE_PATH=$ov_directory/$ov_depend_folder/include:$C_INCLUDE_PATH
-export CPLUS_INCLUDE_PATH=$ov_directory/$ov_depend_folder/include:$CPLUS_INCLUDE_PATH
-export LIBRARY_PATH=$ov_directory/$ov_depend_folder/lib:$LIBRARY_PATH
+export PATH=$ov_depend_folder/bin:$PATH
+export COMPILER_PATH=$ov_depend_folder/include:$COMPILER_PATH
+export C_INCLUDE_PATH=$ov_depend_folder/include:$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=$ov_depend_folder/include:$CPLUS_INCLUDE_PATH
+export LIBRARY_PATH=$ov_depend_folder/lib:$LIBRARY_PATH
 
 ####################################
 ##
@@ -104,35 +125,185 @@ export LIBRARY_PATH=$ov_directory/$ov_depend_folder/lib:$LIBRARY_PATH
 ####################################
 
 if [ "$ov_should_build_tree_structure_flag" == "true" ]; then
-	rm -rf "$ov_directory/$ov_depend_folder"
-	mkdir "$ov_directory/$ov_depend_folder"
-	mkdir "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	mkdir "$ov_directory/$ov_depend_folder/$ov_archives_folder"
+	rm -rf "$ov_depend_folder"
+	mkdir "$ov_depend_folder"
+	mkdir "$ov_archives_folder"
+	mkdir "$ov_tmp_folder"
+	mkdir "$ov_log_folder"
 fi;
 
 ####################################
 ##
-##  download necessary files
+##  installation script
 ##
 ####################################
 
-if [ "$ov_should_download_archives_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_archives_folder"
-	$ov_wget -c -O "$ov_dep_expat_archive_name"                $ov_dep_expat_url
-	$ov_wget -c -O "$ov_dep_gtk_glib_gettext_archive_name"     $ov_dep_gtk_glib_get_text_url
-	$ov_wget -c -O "$ov_dep_gtk_glib_archive_name"             $ov_dep_gtk_glib_url
-	$ov_wget -c -O "$ov_dep_gtk_cairo_libxml_archive_name"     $ov_dep_gtk_cairo_libxml_url
-	$ov_wget -c -O "$ov_dep_gtk_cairo_zlib_archive_name"       $ov_dep_gtk_cairo_zlib_url
-	$ov_wget -c -O "$ov_dep_gtk_cairo_libpng_archive_name"     $ov_dep_gtk_cairo_libpng_url
-	$ov_wget -c -O "$ov_dep_gtk_cairo_freetype_archive_name"   $ov_dep_gtk_cairo_freetype_url
-	$ov_wget -c -O "$ov_dep_gtk_cairo_fontconfig_archive_name" $ov_dep_gtk_cairo_fontconfig_url
-	$ov_wget -c -O "$ov_dep_gtk_cairo_libxrender_archive_name" $ov_dep_gtk_cairo_libxrender_url
-	$ov_wget -c -O "$ov_dep_gtk_cairo_archive_name"            $ov_dep_gtk_cairo_url
-	$ov_wget -c -O "$ov_dep_gtk_pango_archive_name"            $ov_dep_gtk_pango_url
-	$ov_wget -c -O "$ov_dep_gtk_atk_archive_name"              $ov_dep_gtk_atk_url
-	$ov_wget -c -O "$ov_dep_gtk_archive_name"                  $ov_dep_gtk_url
-	$ov_wget -c -O "$ov_dep_glade_archive_name"                $ov_dep_glade_url
-	$ov_wget -c -O "$ov_dep_cmake_archive_name"                $ov_dep_cmake_url
+function ov_install_package
+{
+	# $1 is package name
+	#
+	# package archive name is supposed to be             $ov_($1)_archive_name
+	# package url is supposed to be                      $ov_($1)_url
+	# additional configure parameters are supposed to be $ov_($1)_additional_configure_flags
+
+	eval 'ov_current_package='$1
+	eval 'ov_current_package_should_build_flag=$ov_should_build_'$1'_flag'
+	eval 'ov_current_package_log_file=$ov_log_folder/log-'$1'.log'
+	eval 'ov_current_package_archive_name=$ov_dep_'$1'_archive_name'
+	eval 'ov_current_package_url=$ov_dep_'$1'_url'
+	eval 'ov_current_package_additional_configure_flags=$ov_dep_'$1'_additional_configure_flags'
+
+	if [ "$ov_current_package_should_build_flag" == "true" ]; then
+
+		echo "Trying to install package [$ov_current_package]..."
+
+		# goes to temporary folder
+		pushd "$ov_tmp_folder" >> $ov_current_package_log_file 2>&1
+
+		# empties temporary folder
+		rm -rf *
+
+		# resets log file
+		touch $ov_current_package.log
+
+		# downloads package archive when needed
+		echo "  Downloading [$ov_current_package_url]..."
+		$ov_wget -c -O "$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
+		if [ $? -eq 0 ]; then
+			echo "  Downloading [$ov_current_package_url] succeeded..."
+		else
+			echo "  Downloading [$ov_current_package_url] failed !"
+			exit
+		fi;
+
+		# decompresses package archive in temporary folder
+		echo "  Uncompressing [$ov_current_package_archive_name]..."
+		$ov_tar xvfz "$ov_current_package_archive_name" >> $ov_current_package_log_file 2>&1
+		if [ $? -eq 0 ]; then
+			echo "  Uncompressing [$ov_current_package_archive_name] succeeded..."
+		else
+			echo "  Uncompressing [$ov_current_package_archive_name] failed !"
+			exit
+		fi;
+
+		# enters decompressed directory (should only be one)
+		cd *
+
+		# configures the package
+		echo "  Configuring [$ov_current_package]..."
+		./configure --prefix=$ov_depend_folder $ov_current_package_additional_configure_flags >> $ov_current_package_log_file 2>&1
+		if [ $? -eq 0 ]; then
+			echo "  Configuring [$ov_current_package] succeeded..."
+		else
+			echo "  Configuring [$ov_current_package] failed !"
+			exit
+		fi;
+
+		# builds the package
+		echo "  Building [$ov_current_package]..."
+		$ov_make >> $ov_current_package_log_file 2>&1
+		if [ $? -eq 0 ]; then
+			echo "  Building [$ov_current_package] succeeded..."
+		else
+			echo "  Building [$ov_current_package] failed !"
+			exit
+		fi;
+
+		# installs the package
+		echo "  Installing [$ov_current_package]..."
+		$ov_make install >> $ov_current_package_log_file 2>&1
+		if [ $? -eq 0 ]; then
+			echo "  Installing [$ov_current_package] succeeded..."
+		else
+			echo "  Installing [$ov_current_package] failed !"
+			exit
+		fi;
+
+		# goes back to calling folder
+		popd >> $ov_current_package_log_file 2>&1
+
+	else
+
+		echo "Package [$ov_current_package] is not declared as needed, skipped..."
+
+	fi;
+}
+
+####################################
+##
+##  installation script excution
+##
+####################################
+
+ov_install_package "pkgconfig"
+ov_install_package "expat"
+ov_install_package "gtk_glib_gettext"
+ov_install_package "gtk_glib"
+ov_install_package "gtk_cairo_libxml"
+ov_install_package "gtk_cairo_zlib"
+ov_install_package "gtk_cairo_libpng"
+ov_install_package "gtk_cairo_freetype"
+ov_install_package "gtk_cairo_fontconfig"
+ov_install_package "gtk_cairo_renderproto"
+ov_install_package "gtk_cairo_libxrender"
+ov_install_package "gtk_cairo"
+ov_install_package "gtk_pango"
+ov_install_package "gtk_atk"
+ov_install_package "gtk"
+ov_install_package "glade"
+
+exit
+
+####################################
+##
+##  tries to build cmake
+##
+####################################
+
+if [ "$ov_should_build_cmake_flag" == "true" ]; then
+	pushd "$ov_tmp_folder"
+	rm -rf *
+	$ov_wget -c -O "$ov_dep_cmake_archive_name" $ov_dep_cmake_url
+	$ov_tar xvfz   "$ov_dep_cmake_archive_name"
+	cd *
+	cp -rf * $ov_depend_folder
+	rm -rf *
+	popd
+fi;
+
+####################################
+##
+##  tries to build itpp_external
+##
+####################################
+
+if [ "$ov_should_build_itpp_external_flag" == "true" ]; then
+	pushd "$ov_tmp_folder"
+	rm -rf *
+	$ov_wget -c -O "$ov_dep_itpp_external_archive_name" $ov_dep_itpp_external_url
+	$ov_tar xvfz   "$ov_dep_itpp_external_archive_name"
+	cd *
+	./configure --prefix=$ov_depend_folder
+	$ov_make
+	$ov_make install
+	popd
+fi;
+
+####################################
+##
+##  tries to build itpp
+##
+####################################
+
+if [ "$ov_should_build_itpp_flag" == "true" ]; then
+	pushd "$ov_tmp_folder"
+	rm -rf *
+	$ov_wget -c -O "$ov_dep_itpp_archive_name" $ov_dep_itpp_url
+	$ov_tar xvfz   "$ov_dep_itpp_archive_name"
+	cd *
+	./configure --prefix=$ov_depend_folder
+	$ov_make
+	$ov_make install
 	popd
 fi;
 
@@ -143,270 +314,12 @@ fi;
 ####################################
 
 if [ "$ov_should_build_openmask_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
+	pushd "$ov_tmp_folder"
 	rm -rf *
 	$ov_svn checkout "$ov_dep_openmask_svn_url"
 	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder --disable-scen-graph
-	# if [ $? -eq 0 ]; then
-
+	./configure --prefix=$ov_depend_folder --disable-scen-graph
 	$ov_make
 	$ov_make install
 	popd
 fi;
-
-####################################
-##
-##  tries to build expat
-##
-####################################
-
-if [ "$ov_should_build_expat_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_expat_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_glib_gettext
-##
-####################################
-
-if [ "$ov_should_build_gtk_glib_gettext_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_glib_gettext_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_glib
-##
-####################################
-
-if [ "$ov_should_build_gtk_glib_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_glib_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo_libxml
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_libxml_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_libxml_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo_zlib
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_zlib_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_zlib_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo_libpng
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_libpng_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_libpng_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo_freetype
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_freetype_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_freetype_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo_fontconfig
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_fontconfig_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_fontconfig_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo_renderproto
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_renderproto_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfj "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_renderproto_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo_libxrender
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_libxrender_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_libxrender_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_cairo
-##
-####################################
-
-if [ "$ov_should_build_gtk_cairo_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_cairo_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_pango
-##
-####################################
-
-if [ "$ov_should_build_gtk_pango_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_pango_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk_atk
-##
-####################################
-
-if [ "$ov_should_build_gtk_atk_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfj "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_atk_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build gtk
-##
-####################################
-
-if [ "$ov_should_build_gtk_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_gtk_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder --without-libtiff --without-libjpeg
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
-####################################
-##
-##  tries to build glade
-##
-####################################
-
-if [ "$ov_should_build_glade_flag" == "true" ]; then
-	pushd "$ov_directory/$ov_depend_folder/$ov_tmp_folder"
-	rm -rf *
-	$ov_tar xvfz "$ov_directory/$ov_depend_folder/$ov_archives_folder/$ov_dep_glade_archive_name"
-	cd *
-	./configure --prefix=$ov_directory/$ov_depend_folder
-	$ov_make
-	$ov_make install
-	popd
-fi;
-
