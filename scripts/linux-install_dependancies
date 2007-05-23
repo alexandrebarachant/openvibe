@@ -14,7 +14,7 @@
 ##
 ####################################
 
-ov_should_build_tree_structure_flag=false
+ov_should_build_tree_structure_flag=true
 
 ov_should_build_pkgconfig_flag=true
 ov_should_build_cmake_flag=true
@@ -99,7 +99,7 @@ ov_dep_glade_archive_name=$ov_archives_folder/openvibe-dependancy-glade3-3.1.5.t
 ov_dep_itpp_external_archive_name=$ov_archives_folder/openvibe-dependancy-itpp-external-2.3.0.tar.gz
 ov_dep_itpp_archive_name=$ov_archives_folder/openvibe-dependancy-itpp-3.10.10.tar.gz
 
-ov_dep_gtk_additional_configure_flags= --without-libtiff --without-libjpeg
+ov_dep_gtk_additional_configure_flags="--without-libtiff --without-libjpeg"
 
 ov_dep_openmask_svn_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
 
@@ -176,9 +176,26 @@ function ov_install_package
 			exit
 		fi;
 
+		# trying to find out what kind of archive to decompress
+		ov_package_type=`echo $ov_current_package_archive_name | sed '
+			s/\(.*\)\.\(tar\.\)/\2/g
+			'`
+		case $ov_package_type in
+			"tar.gz")
+				ov_tar_flags=xvfz
+				;;
+			"tar.bz2")
+				ov_tar_flags=xvfj
+				;;
+			*)
+				echo "  Uhandled file extension [$ov_current_package_archive_name], sorry !"
+				exit
+				;;
+		esac;
+
 		# decompresses package archive in temporary folder
 		echo "  Uncompressing [$ov_current_package_archive_name]..."
-		$ov_tar xvfz "$ov_current_package_archive_name" >> $ov_current_package_log_file 2>&1
+		$ov_tar $ov_tar_flags "$ov_current_package_archive_name" >> $ov_current_package_log_file 2>&1
 		if [ $? -eq 0 ]; then
 			echo "  Uncompressing [$ov_current_package_archive_name] succeeded..."
 		else
