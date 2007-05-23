@@ -164,7 +164,7 @@ function ov_install_package
 		rm -rf *
 
 		# resets log file
-		touch $ov_current_package.log
+		touch $ov_current_package_log_file
 
 		# downloads package archive when needed
 		echo "  Downloading [$ov_current_package_url]..."
