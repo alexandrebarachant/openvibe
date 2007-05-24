@@ -67,6 +67,7 @@ ov_should_build_gtk_cairo_libx11_flag=true
 ov_should_build_gtk_cairo_freetype_flag=true
 ov_should_build_gtk_cairo_fontconfig_flag=true
 ov_should_build_gtk_cairo_renderproto_flag=true
+ov_should_build_gtk_cairo_libxdmcp_flag=true
 ov_should_build_gtk_cairo_libxrender_flag=true
 ov_should_build_gtk_cairo_flag=true
 ov_should_build_gtk_pango_flag=true
@@ -118,6 +119,7 @@ ov_dep_gtk_cairo_freetype_url=http://downloads.sourceforge.net/freetype/freetype
 ov_dep_gtk_cairo_fontconfig_url=http://fontconfig.org/release/fontconfig-2.4.2.tar.gz
 ov_dep_gtk_cairo_fontconfig_url=http://xorg.freedesktop.org/releases/X11R7.2/src/extras/fontconfig-2.4.2.tar.gz
 ov_dep_gtk_cairo_renderproto_url=http://xorg.freedesktop.org/releases/individual/proto/renderproto-0.9.2.tar.bz2
+ov_dep_gtk_cairo_libxdmcp_url=http://xorg.freedesktop.org/releases/individual/lib/libXdmcp-1.0.2.tar.bz2
 ov_dep_gtk_cairo_libxrender_url=http://xorg.freedesktop.org/archive/individual/lib/libXrender-0.9.2.tar.gz
 ov_dep_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
 ov_dep_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
@@ -152,6 +154,7 @@ ov_dep_gtk_cairo_libx11_archive_name=$ov_archives_folder/openvibe-dependancy-lib
 ov_dep_gtk_cairo_freetype_archive_name=$ov_archives_folder/openvibe-dependancy-freetype-2.3.4.tar.gz
 ov_dep_gtk_cairo_fontconfig_archive_name=$ov_archives_folder/openvibe-dependancy-fontconfig-2.4.2.tar.gz
 ov_dep_gtk_cairo_renderproto_archive_name=$ov_archives_folder/openvibe-dependancy-renderproto-0.9.2.tar.bz2
+ov_dep_gtk_cairo_libxdmcp_archive_name=$ov_archives_folder/openvibe-dependancy-libXdmcp-1.0.2.tar.bz2
 ov_dep_gtk_cairo_libxrender_archive_name=$ov_archives_folder/openvibe-dependancy-libXrender-0.9.2.tar.gz
 ov_dep_gtk_cairo_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
 ov_dep_gtk_pango_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-pango-1.16.4.tar.gz
@@ -559,6 +562,7 @@ ov_untar_configure_make_install_package "gtk_cairo_libx11"
 ov_untar_configure_make_install_package "gtk_cairo_freetype"
 ov_untar_configure_make_install_package "gtk_cairo_fontconfig"
 ov_untar_configure_make_install_package "gtk_cairo_renderproto"
+ov_untar_configure_make_install_package "gtk_cairo_libxdmcp"
 ov_untar_configure_make_install_package "gtk_cairo_libxrender"
 ov_untar_configure_make_install_package "gtk_cairo"
 ov_untar_configure_make_install_package "gtk_pango"
