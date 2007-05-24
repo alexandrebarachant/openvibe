@@ -8,22 +8,26 @@ fi
 
 source linux-init_env_command
 
-saved_directory=`pwd`
+source_directory=`pwd`
 
 mkdir ../local-tmp 2> /dev/null
-for sub_directory in `find cmake -maxdepth 1 -type d -printf "%P\n" | sort`; do
-	if [[ $sub_directory =~ "^\." ]]; then
-		echo Skipped $sub_directory
+for sub_directory in `find cmake -maxdepth 1 -type d -printf "%P\n" | grep level | sort`; do
+	mkdir "../local-tmp/$sub_directory" 2> /dev/null
+	pushd "../local-tmp/$sub_directory" 2> /dev/null
+
+	cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release "$source_directory/cmake/$sub_directory"
+	if [ $? -eq 0 ]; then
+		echo CMake has been called successfully !
 	else
-		mkdir "../local-tmp/$sub_directory" 2> /dev/null
-		cd "../local-tmp/$sub_directory" 2> /dev/null
-		cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release "$saved_directory/cmake/$sub_directory"
-		make
-		if [ $? -eq 0 ]; then
-			echo Make has been called successfully !
-		else
-			exit -1
-		fi;
-		cd "$saved_directory"
+		exit -1
 	fi;
+
+	make
+	if [ $? -eq 0 ]; then
+		echo Make has been called successfully !
+	else
+		exit -1
+	fi;
+
+	popd 2> /dev/null
 done
