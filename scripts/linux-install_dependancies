@@ -47,9 +47,7 @@ ov_should_clear_dependancies_folder_flag=false
 
 ov_should_build_pkgconfig_flag=true
 ov_should_build_cmake_flag=true
-
 ov_should_build_expat_flag=true
-
 ov_should_build_gtk_glib_gettext_flag=true
 ov_should_build_gtk_glib_flag=true
 ov_should_build_gtk_cairo_libxml_flag=true
@@ -64,7 +62,9 @@ ov_should_build_gtk_pango_flag=true
 ov_should_build_gtk_atk_flag=true
 ov_should_build_gtk_flag=true
 ov_should_build_gtk_theme_clearlooks_flag=true
+ov_should_build_libglade_flag=true
 ov_should_build_glade_flag=true
+
 ov_should_build_itpp_external_libtool_flag=true
 ov_should_build_itpp_external_flag=true
 ov_should_build_itpp_flag=true
@@ -101,6 +101,7 @@ ov_dep_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.ta
 ov_dep_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
 ov_dep_gtk_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
 ov_dep_gtk_theme_clearlooks_url=http://downloads.sourceforge.net/clearlooks/clearlooks-0.6.2.tar.bz2
+ov_dep_libglade_url=http://ftp.gnome.org/pub/GNOME/sources/libglade/2.6/libglade-2.6.0.tar.bz2
 ov_dep_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
 ov_dep_itpp_external_libtool_url=http://ftp.gnu.org/gnu/libtool/libtool-1.5.22.tar.gz
 ov_dep_itpp_external_url=http://downloads.sourceforge.net/itpp/itpp-external-2.3.0.tar.gz
@@ -123,6 +124,7 @@ ov_dep_gtk_cairo_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-cairo-
 ov_dep_gtk_pango_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-pango-1.16.4.tar.gz
 ov_dep_gtk_atk_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
 ov_dep_gtk_theme_clearlooks_archive_name=$ov_archives_folder/openvibe-dependancy-clearlooks-0.6.2.tar.bz2
+ov_dep_libglade_archive_name=$ov_archives_folder/openvibe-dependancy-libglade-2.6.0.tar.bz2
 ov_dep_glade_archive_name=$ov_archives_folder/openvibe-dependancy-glade3-3.1.5.tar.gz
 ov_dep_itpp_external_libtool_archive_name=$ov_archives_folder/openvibe-dependancy-libtool-1.5.22.tar.gz
 ov_dep_itpp_external_archive_name=$ov_archives_folder/openvibe-dependancy-itpp-external-2.3.0.tar.gz
@@ -481,9 +483,8 @@ ov_untar_configure_make_install_package "gtk_cairo"
 ov_untar_configure_make_install_package "gtk_pango"
 ov_untar_configure_make_install_package "gtk_atk"
 ov_untar_configure_make_install_package "gtk"
-
 ov_untar_configure_make_install_package "gtk_theme_clearlooks"
-
+ov_untar_configure_make_install_package "libglade"
 ov_untar_configure_make_install_package "glade"
 
 ov_untar_configure_make_install_package "itpp_external_libtool"
