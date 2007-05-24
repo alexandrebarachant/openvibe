@@ -160,4 +160,6 @@ export OpenViBE_plugin_signal_processing_gpl=$OpenViBE_plugins/signal-processing
 export OpenViBE_plugin_simple_visualisation=$OpenViBE_plugins/simple-visualisation/$OpenViBE_plugin_simple_visualisation_branch
 export OpenViBE_plugin_tools=$OpenViBE_plugins/tools/$OpenViBE_plugin_tools_branch
 
-PATH=../lib:$PATH
+if [ -e ./linux-dependancies ]; then
+	source ./linux-dependancies
+fi;
