@@ -5,6 +5,7 @@
 
 #include "ebml/IReader.h"
 #include "ebml/IReaderHelper.h"
+#include "ebml/CReaderHelper.h"
 
 using namespace std;
 
@@ -13,14 +14,11 @@ class CReaderCallBack : virtual public EBML::IReaderCallBack
 public:
 	CReaderCallBack(void)
 		:m_iDepth(0)
-		,m_pReaderHelper(NULL)
 	{
-		m_pReaderHelper=EBML::createReaderHelper();
 	}
 
 	virtual ~CReaderCallBack(void)
 	{
-		m_pReaderHelper->release();
 	}
 
 	virtual bool isMasterChild(const EBML::CIdentifier& rIdentifier)
@@ -43,15 +41,15 @@ public:
 	{
 		for(int i=0; i<m_iDepth; i++) cout << "   ";
 		if(m_oCurrentIdentifier==EBML_Identifier_DocType)
-			cout << "Got doc type : [" << m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize) << "]\n";
+			cout << "Got doc type : [" << m_oReaderHelper.getASCIIStringFromChildData(pBuffer, ui64BufferSize) << "]\n";
 		else if(m_oCurrentIdentifier==EBML_Identifier_DocTypeVersion)
-			cout << "Got doc type version : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
+			cout << "Got doc type version : [0x" << setw(16) << setfill('0') << hex << m_oReaderHelper.getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
 		else if(m_oCurrentIdentifier==EBML_Identifier_DocTypeReadVersion)
-			cout <<"Got doc type read version : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
+			cout <<"Got doc type read version : [0x" << setw(16) << setfill('0') << hex << m_oReaderHelper.getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
 		else if(m_oCurrentIdentifier==EBML::CIdentifier(0x1234))
-			cout <<"Got doc type uinteger : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
+			cout <<"Got doc type uinteger : [0x" << setw(16) << setfill('0') << hex << m_oReaderHelper.getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
 		else if(m_oCurrentIdentifier==EBML::CIdentifier(0xffffffffffffffffLL))
-			cout <<"Got doc type uinteger : [0x" << setw(16) << setfill('0') << hex << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
+			cout <<"Got doc type uinteger : [0x" << setw(16) << setfill('0') << hex << m_oReaderHelper.getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
 		else
 			cout << "Got " << ui64BufferSize << " data bytes\n";
 	}
@@ -64,7 +62,7 @@ public:
 	}
 
 	int m_iDepth;
-	EBML::IReaderHelper* m_pReaderHelper;
+	EBML::CReaderHelper m_oReaderHelper;
 	EBML::CIdentifier m_oCurrentIdentifier;
 };
 
@@ -79,7 +77,7 @@ int main(int argc, char** argv)
 	CReaderCallBack cb;
 	EBML::IReader* l_pReader=EBML::createReader(cb);
 
-	FILE* f=fopen("test.ebml", "rb");
+	FILE* f=fopen(argv[1], "rb");
 	unsigned char c[13];
 	int i=0;
 	while(!feof(f))

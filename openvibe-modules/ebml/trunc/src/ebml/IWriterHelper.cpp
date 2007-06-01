@@ -10,28 +10,33 @@ using namespace EBML;
 
 namespace EBML
 {
-	class CWriterHelper : virtual public IWriterHelper
+	namespace
 	{
-	public:
-		CWriterHelper(void);
+		class CWriterHelper : virtual public IWriterHelper
+		{
+		public:
 
-		virtual boolean connect(IWriter* pWriter);
-		virtual boolean disconnect(void);
+			CWriterHelper(void);
 
-		virtual boolean openChild(const CIdentifier& rIdentifier);
-		virtual boolean closeChild(void);
+			virtual boolean connect(IWriter* pWriter);
+			virtual boolean disconnect(void);
 
-		virtual boolean setSIntegerAsChildData(const int64 iValue);
-		virtual boolean setUIntegerAsChildData(const uint64 uiValue);
-		virtual boolean setFloat32AsChildData(const float32 fValue);
-		virtual boolean setFloat64AsChildData(const float64 fValue);
-		virtual boolean setBinaryAsChildData(const void* pBuffer, const uint64 ui64BufferLength);
-		virtual boolean setASCIIStringAsChildData(const char* sValue);
+			virtual boolean openChild(const CIdentifier& rIdentifier);
+			virtual boolean closeChild(void);
 
-		virtual void release(void);
+			virtual boolean setSIntegerAsChildData(const int64 iValue);
+			virtual boolean setUIntegerAsChildData(const uint64 uiValue);
+			virtual boolean setFloat32AsChildData(const float32 fValue);
+			virtual boolean setFloat64AsChildData(const float64 fValue);
+			virtual boolean setBinaryAsChildData(const void* pBuffer, const uint64 ui64BufferLength);
+			virtual boolean setASCIIStringAsChildData(const char* sValue);
 
-	protected:
-		IWriter* m_pWriter;
+			virtual void release(void);
+
+		protected:
+
+			IWriter* m_pWriter;
+		};
 	};
 };
 

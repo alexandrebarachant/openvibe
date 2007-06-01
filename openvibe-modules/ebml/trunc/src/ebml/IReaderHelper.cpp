@@ -7,20 +7,20 @@ using namespace std;
 
 namespace EBML
 {
-	class CReaderHelper : virtual public IReaderHelper
+	namespace
 	{
-	public:
-		CReaderHelper(void);
+		class CReaderHelper : virtual public IReaderHelper
+		{
+		public:
+			CReaderHelper(void);
 
-		virtual uint64 getUIntegerFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
-		virtual int64 getSIntegerFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
-		virtual float64 getFloatFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
-		virtual const char* getASCIIStringFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
+			virtual uint64 getUIntegerFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
+			virtual int64 getSIntegerFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
+			virtual float64 getFloatFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
+			virtual const char* getASCIIStringFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
 
-		virtual void release(void);
-
-	protected:
-		string m_sASCIIString;
+			virtual void release(void);
+		};
 	};
 };
 
@@ -94,15 +94,16 @@ float64 CReaderHelper::getFloatFromChildData(const void* pBuffer, const uint64 u
 
 const char* CReaderHelper::getASCIIStringFromChildData(const void* pBuffer, const uint64 ui64BufferSize)
 {
+	string l_sASCIIString;
 	if(ui64BufferSize)
 	{
-		m_sASCIIString.assign((char*)pBuffer, (size_t)(ui64BufferSize));
+		l_sASCIIString.assign((char*)pBuffer, (size_t)(ui64BufferSize));
 	}
 	else
 	{
-		m_sASCIIString="";
+		l_sASCIIString="";
 	}
-	return m_sASCIIString.c_str();
+	return l_sASCIIString.c_str();
 }
 
 void CReaderHelper::release(void)

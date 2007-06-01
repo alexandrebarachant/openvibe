@@ -3,6 +3,7 @@
 #include "ebml/defines.h"
 #include "ebml/IWriter.h"
 #include "ebml/IWriterHelper.h"
+#include "ebml/CWriterHelper.h"
 
 class CWriterCallBack : public EBML::IWriterCallBack
 {
@@ -35,39 +36,37 @@ int main(int argc, char** argv)
 
 	CWriterCallBack cb(argv[1]);
 	EBML::IWriter* l_pWriter=EBML::createWriter(cb);
-	EBML::IWriterHelper* l_pWriterHelper=EBML::createWriterHelper();
+	EBML::CWriterHelper l_oWriterHelper;
 
-	l_pWriterHelper->connect(l_pWriter);
+	l_oWriterHelper.connect(l_pWriter);
 
-	l_pWriterHelper->openChild(EBML_Identifier_Header);
+	l_oWriterHelper.openChild(EBML_Identifier_Header);
 
-		l_pWriterHelper->openChild(EBML_Identifier_DocType);
-		l_pWriterHelper->setASCIIStringAsChildData("matroska");
-		l_pWriterHelper->closeChild();
+		l_oWriterHelper.openChild(EBML_Identifier_DocType);
+		l_oWriterHelper.setASCIIStringAsChildData("matroska");
+		l_oWriterHelper.closeChild();
 
-		l_pWriterHelper->openChild(0xffff);
+		l_oWriterHelper.openChild(0xffff);
 
-			l_pWriterHelper->openChild(EBML_Identifier_DocTypeVersion);
-			l_pWriterHelper->setUIntegerAsChildData(1);
-			l_pWriterHelper->closeChild();
+			l_oWriterHelper.openChild(EBML_Identifier_DocTypeVersion);
+			l_oWriterHelper.setUIntegerAsChildData(1);
+			l_oWriterHelper.closeChild();
 
-			l_pWriterHelper->openChild(EBML_Identifier_DocTypeReadVersion);
-			l_pWriterHelper->setSIntegerAsChildData(655356);
-			l_pWriterHelper->closeChild();
+			l_oWriterHelper.openChild(EBML_Identifier_DocTypeReadVersion);
+			l_oWriterHelper.setSIntegerAsChildData(655356);
+			l_oWriterHelper.closeChild();
 
-		l_pWriterHelper->closeChild();
+		l_oWriterHelper.closeChild();
 
-		l_pWriterHelper->openChild(0x1234);
-		l_pWriterHelper->setUIntegerAsChildData(0);
-		l_pWriterHelper->closeChild();
+		l_oWriterHelper.openChild(0x1234);
+		l_oWriterHelper.setUIntegerAsChildData(0);
+		l_oWriterHelper.closeChild();
 
-		l_pWriterHelper->openChild(0xffffffffffffffffLL);
-		l_pWriterHelper->setUIntegerAsChildData(0xff000000ff000000LL);
-		l_pWriterHelper->closeChild();
+		l_oWriterHelper.openChild(0xffffffffffffffffLL);
+		l_oWriterHelper.setUIntegerAsChildData(0xff000000ff000000LL);
+		l_oWriterHelper.closeChild();
 
-	l_pWriterHelper->closeChild();
-
-	l_pWriterHelper->release();
+	l_oWriterHelper.closeChild();
 
 	return 0;
 }

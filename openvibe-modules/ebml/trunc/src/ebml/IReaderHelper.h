@@ -5,8 +5,8 @@
  * \brief EBML::IReaderHelper class definitions
  */
 
-#ifndef __IReaderHelper_H__
-#define __IReaderHelper_H__
+#ifndef __EBML_IReaderHelper_H__
+#define __EBML_IReaderHelper_H__
 
 #include "IReader.h"
 
@@ -101,4 +101,4 @@ namespace EBML
 	extern EBML_API EBML::IReaderHelper* createReaderHelper(void);
 };
 
-#endif // __IReaderHelper_H__
+#endif // __EBML_IReaderHelper_H__

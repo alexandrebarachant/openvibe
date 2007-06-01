@@ -65,26 +65,33 @@ inline boolean getCodedBuffer(const uint64 uiValue, unsigned char* pBuffer, uint
 
 namespace EBML
 {
-	class CWriterNode
+	namespace
 	{
-	public:
-		CWriterNode(const CIdentifier& rIdentifier, CWriterNode* pParentNode);
-		virtual ~CWriterNode(void);
-		void process(IWriterCallback& rWriterCallback);
+		class CWriterNode
+		{
+		public:
 
-	protected:
-		uint64 getTotalContentSize(boolean bCountIdentifierAndSize);
+			CWriterNode(const CIdentifier& rIdentifier, CWriterNode* pParentNode);
+			virtual ~CWriterNode(void);
+			void process(IWriterCallback& rWriterCallback);
 
-	private:
-		CWriterNode(void);
+		protected:
 
-	public:
-		CIdentifier m_oIdentifier;
-		CWriterNode* m_pParentNode;
-		uint64 m_ui64BufferLength;
-		unsigned char* m_pBuffer;
-		boolean m_bBuffered;
-		vector<CWriterNode*> m_vChildren;
+			uint64 getTotalContentSize(boolean bCountIdentifierAndSize);
+
+		private:
+
+			CWriterNode(void);
+
+		public:
+
+			CIdentifier m_oIdentifier;
+			CWriterNode* m_pParentNode;
+			uint64 m_ui64BufferLength;
+			unsigned char* m_pBuffer;
+			boolean m_bBuffered;
+			vector<CWriterNode*> m_vChildren;
+		};
 	};
 };
 
@@ -177,23 +184,29 @@ uint64 CWriterNode::getTotalContentSize(boolean bCountIdentifierAndSize)
 
 namespace EBML
 {
-	class CWriter : virtual public IWriter
+	namespace
 	{
-	public:
-		CWriter(IWriterCallback& rWriterCallback);
+		class CWriter : virtual public IWriter
+		{
+		public:
 
-		virtual boolean openChild(const CIdentifier& rIdentifier);
-		virtual boolean setChildData(const void* pBuffer, const uint64 ui64BufferSize);
-		virtual boolean closeChild(void);
+			CWriter(IWriterCallback& rWriterCallback);
 
-		virtual void release(void);
+			virtual boolean openChild(const CIdentifier& rIdentifier);
+			virtual boolean setChildData(const void* pBuffer, const uint64 ui64BufferSize);
+			virtual boolean closeChild(void);
 
-	protected:
-		CWriterNode* m_pCurrentNode;
-		IWriterCallback& m_rWriterCallback;
+			virtual void release(void);
 
-	private:
-		CWriter(void);
+		protected:
+
+			CWriterNode* m_pCurrentNode;
+			IWriterCallback& m_rWriterCallback;
+
+		private:
+
+			CWriter(void);
+		};
 	};
 };
 

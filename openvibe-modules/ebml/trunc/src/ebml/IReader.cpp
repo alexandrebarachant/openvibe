@@ -55,20 +55,26 @@ inline uint64 getValue(unsigned char* pBuffer, unsigned long ulBufferLength=0)
 
 namespace EBML
 {
-	class CReaderNode
+	namespace
 	{
-	public:
-		CReaderNode(const CIdentifier& rIdentifier, CReaderNode* pParentNode);
+		class CReaderNode
+		{
+		public:
 
-	private:
-		CReaderNode(void);
+			CReaderNode(const CIdentifier& rIdentifier, CReaderNode* pParentNode);
 
-	public:
-		CReaderNode* m_pParentNode;
-		CIdentifier m_oIdentifier;
-		uint64 m_ui64ContentSize;
-		uint64 m_ui64ReadContentSize;
-		unsigned char* m_pBuffer;
+		private:
+
+			CReaderNode(void);
+
+		public:
+
+			CReaderNode* m_pParentNode;
+			CIdentifier m_oIdentifier;
+			uint64 m_ui64ContentSize;
+			uint64 m_ui64ReadContentSize;
+			unsigned char* m_pBuffer;
+		};
 	};
 };
 
@@ -86,33 +92,38 @@ CReaderNode::CReaderNode(const CIdentifier& rIdentifier, CReaderNode* pParentNod
 
 namespace EBML
 {
-	class CReader : virtual public IReader
+	namespace
 	{
-	public:
-		CReader(IReaderCallback& rReaderCallback);
-		virtual ~CReader(void);
-
-		virtual boolean processData(const void* pBuffer, const uint64 ui64BufferSize);
-
-		virtual void release(void);
-
-	protected:
-		enum Status
+		class CReader : virtual public IReader
 		{
-			FillingIdentifier,
-			FillingContentSize,
-			FillingContent,
-		};
+		public:
 
-		IReaderCallback& m_rReaderCallback;
-		CReaderNode* m_pCurrentNode;
-		uint64 m_ui64PendingSize;
-		uint64 m_ui64PendingCount;
-		unsigned char* m_pPending;
-		Status m_eStatus;
-		Status m_eLastStatus;
-		CIdentifier m_oCurrentIdentifier;
-		uint64 m_ui64CurrentContentSize;
+			CReader(IReaderCallback& rReaderCallback);
+			virtual ~CReader(void);
+
+			virtual boolean processData(const void* pBuffer, const uint64 ui64BufferSize);
+
+			virtual void release(void);
+
+		protected:
+
+			enum Status
+			{
+				FillingIdentifier,
+				FillingContentSize,
+				FillingContent,
+			};
+
+			IReaderCallback& m_rReaderCallback;
+			CReaderNode* m_pCurrentNode;
+			uint64 m_ui64PendingSize;
+			uint64 m_ui64PendingCount;
+			unsigned char* m_pPending;
+			Status m_eStatus;
+			Status m_eLastStatus;
+			CIdentifier m_oCurrentIdentifier;
+			uint64 m_ui64CurrentContentSize;
+		};
 	};
 };
 
