@@ -4,3 +4,5 @@
 
 SUBDIRS($ENV{OpenViBE_toolkit})
 SUBDIRS($ENV{OpenViBE_kernel})
+
+SUBDIRS($ENV{OpenViBE_module_automaton})

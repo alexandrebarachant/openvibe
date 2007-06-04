@@ -44,6 +44,7 @@ echo pause                                                   >> %target_dist%\te
 REM #######################################################################################
 
 xcopy /q /s %OpenViBE_module_ebml%\bin\*.exe                    %target_dist%\bin     > NULL 2<&1
+xcopy /q /s %OpenViBE_module_automaton%\bin\*.exe               %target_dist%\bin     > NULL 2<&1
 xcopy /q /s %OpenViBE_module_fs%\bin\*.exe                      %target_dist%\bin     > NULL 2<&1
 xcopy /q /s %OpenViBE_module_socket%\bin\*.exe                  %target_dist%\bin     > NULL 2<&1
 xcopy /q /s %OpenViBE_module_system%\bin\*.exe                  %target_dist%\bin     > NULL 2<&1
@@ -56,6 +57,7 @@ xcopy /q /s %OpenViBE_acquisition_server%\bin\*.exe             %target_dist%\bi
 xcopy /q /s %OpenViBE_id_generator%\bin\*.exe                   %target_dist%\bin     > NULL 2<&1
 
 xcopy /q /s %OpenViBE_module_ebml%\include\*.*                  %target_dist%\include > NULL 2<&1
+xcopy /q /s %OpenViBE_module_automaton%\include\*.*             %target_dist%\include > NULL 2<&1
 xcopy /q /s %OpenViBE_module_fs%\include\*.*                    %target_dist%\include > NULL 2<&1
 xcopy /q /s %OpenViBE_module_socket%\include\*.*                %target_dist%\include > NULL 2<&1
 xcopy /q /s %OpenViBE_module_system%\include\*.*                %target_dist%\include > NULL 2<&1
@@ -67,6 +69,8 @@ xcopy /q /s %OpenViBE_designer%\include\*.*                     %target_dist%\in
 xcopy /q /s %OpenViBE_acquisition_server%\include\*.*           %target_dist%\include > NULL 2<&1
 xcopy /q /s %OpenViBE_id_generator%\include\*.*                 %target_dist%\include > NULL 2<&1
 
+xcopy /q /s %OpenViBE_module_automaton%\lib\*.lib               %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_module_automaton%\lib\*.dll               %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_module_ebml%\lib\*.lib                    %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_module_ebml%\lib\*.dll                    %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_module_fs%\lib\*.lib                      %target_dist%\lib     > NULL 2<&1
@@ -91,6 +95,7 @@ xcopy /q /s %OpenViBE_id_generator%\lib\*.lib                   %target_dist%\li
 xcopy /q /s %OpenViBE_id_generator%\lib\*.dll                   %target_dist%\lib     > NULL 2<&1
 
 xcopy /q /s %OpenViBE_module_ebml%\share\*.*                    %target_dist%\share   > NULL 2<&1
+xcopy /q /s %OpenViBE_module_automaton%\share\*.*               %target_dist%\share   > NULL 2<&1
 xcopy /q /s %OpenViBE_module_fs%\share\*.*                      %target_dist%\share   > NULL 2<&1
 xcopy /q /s %OpenViBE_module_socket%\share\*.*                  %target_dist%\share   > NULL 2<&1
 xcopy /q /s %OpenViBE_module_system%\share\*.*                  %target_dist%\share   > NULL 2<&1
@@ -109,6 +114,12 @@ xcopy /q /s %OpenViBE_plugin_acquisition%\include\*.*           %target_dist%\in
 xcopy /q /s %OpenViBE_plugin_acquisition%\lib\*.lib             %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_acquisition%\lib\*.dll             %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_acquisition%\share\*.*             %target_dist%\share   > NULL 2<&1
+
+xcopy /q /s %OpenViBE_plugin_feature_extraction%\bin\*.exe      %target_dist%\bin     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_feature_extraction%\include\*.*    %target_dist%\include > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_feature_extraction%\lib\*.lib      %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_feature_extraction%\lib\*.dll      %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_feature_extraction%\share\*.*      %target_dist%\share   > NULL 2<&1
 
 xcopy /q /s %OpenViBE_plugin_file_io%\bin\*.exe                 %target_dist%\bin     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_file_io%\include\*.*               %target_dist%\include > NULL 2<&1
@@ -139,6 +150,12 @@ xcopy /q /s %OpenViBE_plugin_simple_visualisation%\include\*.*  %target_dist%\in
 xcopy /q /s %OpenViBE_plugin_simple_visualisation%\lib\*.lib    %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_simple_visualisation%\lib\*.dll    %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_simple_visualisation%\share\*.*    %target_dist%\share   > NULL 2<&1
+
+xcopy /q /s %OpenViBE_plugin_stimulation%\bin\*.exe             %target_dist%\bin     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stimulation%\include\*.*           %target_dist%\include > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stimulation%\lib\*.lib             %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stimulation%\lib\*.dll             %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stimulation%\share\*.*             %target_dist%\share   > NULL 2<&1
 
 xcopy /q /s %OpenViBE_plugin_tools%\bin\*.exe                   %target_dist%\bin     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_tools%\include\*.*                 %target_dist%\include > NULL 2<&1
