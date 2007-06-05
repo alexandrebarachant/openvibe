@@ -210,8 +210,8 @@ void CEBMLStreamSpy::processChildData(const void* pBuffer, const EBML::uint64 ui
 				<< "]-[bytes:"
 				<< ConsoleColor_FG_Blue << ui64BufferSize << ConsoleColor_FG_Black
 				<< "]";
-		cout << endl;
 	}
+	cout << endl;
 }
 
 void CEBMLStreamSpy::closeChild(void)
