@@ -33,7 +33,7 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			EBML::TWriterCallbackProxy2<OpenViBEPlugins::Samples::CSinusSignalGenerator, &OpenViBEPlugins::Samples::CSinusSignalGenerator::writeSignalOutput> m_oSignalOutputWriterCallbackProxy;
+			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Samples::CSinusSignalGenerator> m_oSignalOutputWriterCallbackProxy;
 			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter* m_pSignalOutputWriterHelper;
 			EBML::IWriter* m_pSignalOutputWriter;
 

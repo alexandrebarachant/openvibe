@@ -11,7 +11,9 @@ using namespace OpenViBEToolkit;
 using namespace std;
 
 CSinusSignalGenerator::CSinusSignalGenerator(void)
-	:m_oSignalOutputWriterCallbackProxy(*this)
+	:m_oSignalOutputWriterCallbackProxy(
+		*this,
+		&OpenViBEPlugins::Samples::CSinusSignalGenerator::writeSignalOutput)
 	,m_pSignalOutputWriterHelper(NULL)
 	,m_pSignalOutputWriter(NULL)
 	,m_bHeaderSent(false)

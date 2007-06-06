@@ -6,11 +6,13 @@
 int main(int argc, char** argv)
 {
 	srand((unsigned int)time(NULL));
-	for(int i=0; i<15; i++)
+	for(int i=0; i<16; i++)
 	{
-		unsigned long int l_ui32Vale1=(rand()&0xffffffff);
-		unsigned long int l_ui32Vale2=(rand()&0xffffffff);
-		printf("#define OV_ClassId_                                        OpenViBE::CIdentifier(0x%08X, 0x%08X)\n", (int)l_ui32Vale1, (int)l_ui32Vale2);
+		unsigned short int l_ui16Value1=(rand()&0xffff);
+		unsigned short int l_ui16Value2=(rand()&0xffff);
+		unsigned short int l_ui16Value3=(rand()&0xffff);
+		unsigned short int l_ui16Value4=(rand()&0xffff);
+		printf("#define OV_ClassId_                                        OpenViBE::CIdentifier(0x%04X%04X, 0x%04X%04X)\n", (int)l_ui16Value1, (int)l_ui16Value2, (int)l_ui16Value3, (int)l_ui16Value4);
 	}
 
 	return 0;
