@@ -36,7 +36,7 @@ namespace OpenViBE
 			 * \brief Gets the identifier of this link
 			 * \return The identifier of this link.
 			 */
-			virtual const OpenViBE::CIdentifier& getIdentifier(void) const=0;
+			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
 
 			//@}
 			/** \name Source / Target management */
@@ -106,7 +106,6 @@ namespace OpenViBE
 			 * \brief Gets the target box input index for this link
 			 */
 			virtual OpenViBE::uint32 getTargetBoxInputIndex(void) const=0;
-
 
 			//@}
 

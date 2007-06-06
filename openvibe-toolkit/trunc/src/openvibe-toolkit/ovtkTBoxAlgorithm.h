@@ -9,9 +9,9 @@ namespace OpenViBEToolkit
 	{
 	public:
 
-		virtual OpenViBE::boolean push(OpenViBE::Plugins::IBoxAlgorithmContext* pBoxAlgorithmContext)=0;
+		virtual OpenViBE::boolean push(OpenViBE::Kernel::IBoxAlgorithmContext* pBoxAlgorithmContext)=0;
 		virtual OpenViBE::boolean pop(void)=0;
-		virtual OpenViBE::Plugins::IBoxAlgorithmContext* top(void)=0;
+		virtual OpenViBE::Kernel::IBoxAlgorithmContext* top(void)=0;
 
 		_IsDerivedFromClass_(OpenViBEToolkit::IObject, OVTK_ClassId_);
 	};
@@ -36,49 +36,49 @@ namespace OpenViBEToolkit
 
 // ====================================================================================================================================
 
-		virtual OpenViBE::uint32 getClockFrequency(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+		virtual OpenViBE::uint32 getClockFrequency(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return getClockFrequency();
 		}
 
-		virtual OpenViBE::boolean initialize(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+		virtual OpenViBE::boolean initialize(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return initialize();
 		}
 
-		virtual OpenViBE::boolean uninitialize(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+		virtual OpenViBE::boolean uninitialize(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return uninitialize();
 		}
 
-		virtual OpenViBE::boolean processEvent(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::CMessageEvent& rMessageEvent)
+		virtual OpenViBE::boolean processEvent(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::CMessageEvent& rMessageEvent)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return processEvent(rMessageEvent);
 		}
 
-		virtual OpenViBE::boolean processSignal(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::CMessageSignal& rMessageSignal)
+		virtual OpenViBE::boolean processSignal(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::CMessageSignal& rMessageSignal)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return processSignal(rMessageSignal);
 		}
 
-		virtual OpenViBE::boolean processClock(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::CMessageClock& rMessageClock)
+		virtual OpenViBE::boolean processClock(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::CMessageClock& rMessageClock)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return processClock(rMessageClock);
 		}
 
-		virtual OpenViBE::boolean processInput(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::uint32 ui32InputIndex)
+		virtual OpenViBE::boolean processInput(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext, OpenViBE::uint32 ui32InputIndex)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return processInput(ui32InputIndex);
 		}
 
-		virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+		virtual OpenViBE::boolean process(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 		{
 			CScopedBoxAlgorithm l_oScopedBoxAlgorithm(m_pBoxAlgorithmContextHandler, &rBoxAlgorithmContext);
 			return process();
@@ -97,7 +97,7 @@ namespace OpenViBEToolkit
 
 // ====================================================================================================================================
 
-		virtual OpenViBE::Plugins::IBoxAlgorithmContext* getBoxAlgorithmContext(void)
+		virtual OpenViBE::Kernel::IBoxAlgorithmContext* getBoxAlgorithmContext(void)
 		{
 			return m_pBoxAlgorithmContextHandler?m_pBoxAlgorithmContextHandler->top():NULL;
 		}
@@ -107,10 +107,10 @@ namespace OpenViBEToolkit
 		template <OpenViBE::uint32 ui32OutputIndex>
 		OpenViBE::boolean appendOutputChunkData(const void* pBuffer, const OpenViBE::uint64 ui64BufferSize)
 		{
-			OpenViBE::Plugins::IBoxAlgorithmContext* l_pBoxAlgorithmContext=getBoxAlgorithmContext();
+			OpenViBE::Kernel::IBoxAlgorithmContext* l_pBoxAlgorithmContext=getBoxAlgorithmContext();
 			if(l_pBoxAlgorithmContext)
 			{
-				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=l_pBoxAlgorithmContext->getDynamicBoxContext();
+				OpenViBE::Kernel::IBoxIO* l_pDynamicBoxContext=l_pBoxAlgorithmContext->getDynamicBoxContext();
 				if(l_pDynamicBoxContext)
 				{
 					return l_pDynamicBoxContext->appendOutputChunkData(ui32OutputIndex, static_cast<const OpenViBE::uint8*>(pBuffer), ui64BufferSize);
@@ -126,7 +126,7 @@ namespace OpenViBEToolkit
 		class CScopedBoxAlgorithm
 		{
 		public:
-			CScopedBoxAlgorithm(OpenViBEToolkit::IBoxAlgorithmContextHandler* pBoxAlgorithmContextHandler, OpenViBE::Plugins::IBoxAlgorithmContext* pBoxAlgorithmContext)
+			CScopedBoxAlgorithm(OpenViBEToolkit::IBoxAlgorithmContextHandler* pBoxAlgorithmContextHandler, OpenViBE::Kernel::IBoxAlgorithmContext* pBoxAlgorithmContext)
 				:m_pBoxAlgorithmContextHandler(pBoxAlgorithmContextHandler)
 			{
 				m_pBoxAlgorithmContextHandler->push(pBoxAlgorithmContext);

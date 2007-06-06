@@ -168,7 +168,7 @@ boolean GDF::CFixedGDF1Header::update(std::ofstream& oFile)
 		System::Memory::hostToLittleEndian(static_cast<uint64>(m_i64NumberOfDataRecords), l_pTempBuffer);
 		oFile.write(reinterpret_cast<char *>(l_pTempBuffer), sizeof(int64));
 
-		oFile.seekp(l_oBackupPosition, ios::beg);
+		oFile.seekp((std::streamsize)l_oBackupPosition, ios::beg);
 
 
 		if(oFile.bad())
@@ -357,10 +357,10 @@ uint64 GDF::CFixedGDF2Header::getSubjectSex()
 std::string GDF::CFixedGDF2Header::getExperimentDate()
 {
 	//computes the experiment date
-	uint64 l_ui32TempDate= *(reinterpret_cast<uint64*>(m_ui32StartDateAndTimeOfRecording));
+	//uint64 l_ui32TempDate= *(reinterpret_cast<uint64*>(m_ui32StartDateAndTimeOfRecording));
 
-	time_t l_sStartDateAndTimeOfRecordingInSeconds = ((l_ui32TempDate/2^32) - 719529) * (3600*24);
-	tm * l_sStartDateAndTimeOfRecording = gmtime(&l_sStartDateAndTimeOfRecordingInSeconds);
+	//time_t l_sStartDateAndTimeOfRecordingInSeconds = ((l_ui32TempDate/2^32) - 719529) * (3600*24);
+	//tm * l_sStartDateAndTimeOfRecording = gmtime(&l_sStartDateAndTimeOfRecordingInSeconds);
 
 	//TODO check how date is coded in openvibe Date not good?
 	//(l_sStartDateAndTimeOfRecording->mon+1)<<8 + (l_sStartDateAndTimeOfRecording->day)
@@ -434,7 +434,7 @@ boolean GDF::CVariableGDF1Header::update(std::ofstream& oFile)
 			oFile.write(reinterpret_cast<char *>(l_pTempBuffer), sizeof(int64));
 		}
 
-		oFile.seekp(l_oBackupPosition, ios::beg);
+		oFile.seekp((std::streamsize)l_oBackupPosition, ios::beg);
 
 		if(oFile.bad())
 		{
@@ -540,7 +540,7 @@ boolean GDF::CVariableGDF1Header::save(std::ofstream& oFile)
 //HELPER METHODS
 uint16 GDF::GDFDataSize(uint32 ui32ChannelType)
 {
-	uint16 l_ui16Size;
+	uint16 l_ui16Size=0;
 	switch(ui32ChannelType)
 	{
 		case GDF::ChannelType_int8 : l_ui16Size = 1; break;

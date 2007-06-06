@@ -34,38 +34,39 @@ void CGDFFileReader::writeStimulationOutput(const void* pBuffer, const EBML::uin
 }
 
 //Plugin Methods
-CGDFFileReader::CGDFFileReader(void)
-: m_sFileName(NULL)
-, m_f32FileVersion(-1)
-, m_bErrorOccured(false)
-, m_pExperimentInfoHeader(NULL)
-, m_bExperimentInformationSent(false)
-, m_bSignalDescriptionSent(false)
-, m_pMatrixBuffer(NULL)
-, m_ui64DataRecordSize(0)
-, m_ui64CurrentDataRecord(0)
-, m_ui32CurrentSampleInDataRecord(0)
-, m_ui32NumberOfSamplesPerRecord(0)
-, m_ui64NumberOfDataRecords(0)
-, m_f64DurationOfDataRecord(0)
-, m_ui16NumberOfChannels(0)
-, m_pChannelDataSize(NULL)
-, m_pChannelType(NULL)
-, m_pChannelScale(NULL)
-, m_pChannelTranslate(NULL)
-, m_pDataRecordBuffer(NULL)
-, m_pChannelDataInDataRecord(NULL)
-, m_ui64MatrixBufferSize(0)
-, m_bMatricesSent(false)
-, m_bEventsSent(false)
-, m_ui32CurrentEvent(0)
-, m_ui8EventTableMode(0)
-, m_ui32NumberOfEvents(0)
-, m_pEventsPositionBuffer(NULL)
-, m_pEventsTypeBuffer(NULL)
-, m_ui32SamplesPerBuffer(0)
-, m_ui64StimulationPerBuffer(32)
-, m_ui32SentSampleCount(0)
+CGDFFileReader::CGDFFileReader(void):
+	m_bErrorOccured(false),
+	m_f32FileVersion(-1),
+	m_pSignalOutputWriterHelper(NULL),
+	m_pExperimentInformationOutputWriterHelper(NULL),
+	m_ui32SamplesPerBuffer(0),
+	m_ui64NumberOfDataRecords(0),
+	m_f64DurationOfDataRecord(0),
+	m_ui16NumberOfChannels(0),
+	m_ui32NumberOfSamplesPerRecord(0),
+	m_pChannelType(NULL),
+	m_pChannelDataSize(NULL),
+	m_pChannelScale(NULL),
+	m_pChannelTranslate(NULL),
+	m_ui64DataRecordSize(0),
+	m_pDataRecordBuffer(NULL),
+	m_pChannelDataInDataRecord(NULL),
+	m_pMatrixBuffer(NULL),
+	m_ui64MatrixBufferSize(0),
+	m_bMatricesSent(false),
+	m_ui32SentSampleCount(0),
+	m_ui64CurrentDataRecord(0),
+	m_ui32CurrentSampleInDataRecord(0),
+	m_ui8EventTableMode(0),
+	m_ui32NumberOfEvents(0),
+	m_pEventsPositionBuffer(NULL),
+	m_pEventsTypeBuffer(NULL),
+	m_ui32CurrentEvent(0),
+	m_bEventsSent(false),
+	m_ui64StimulationPerBuffer(32),
+	m_pExperimentInfoHeader(NULL),
+	m_bExperimentInformationSent(false),
+	m_bSignalDescriptionSent(false)
 {
 }
 
@@ -107,7 +108,7 @@ boolean CGDFFileReader::initialize()
 	// Prepares writer helpers
 	m_pExperimentInformationOutputWriterHelper=createBoxAlgorithmExperimentInformationOutputWriter();
 	m_pSignalOutputWriterHelper=createBoxAlgorithmSignalOutputWriter();
-	//m_pStimulationOutputWriterHelper=createBoxAlgorithmStimulationOutputWriter();
+	m_pStimulationOutputWriterHelper=createBoxAlgorithmStimulationOutputWriter();
 
 	//allocate the structure used to store the experiment information
 	m_pExperimentInfoHeader = new CExperimentInfoHeader;
@@ -132,10 +133,10 @@ boolean CGDFFileReader::uninitialize()
 	//desallocate the signal output writer helper
 	releaseBoxAlgorithmSignalOutputWriter(m_pSignalOutputWriterHelper);
 	m_pSignalOutputWriterHelper=NULL;
-	;
+
 	//desallocate the stimulation output writer helper
-	//releaseBoxAlgorithmSignalOutputWriter(m_pStimulationOutputWriterHelper);
-	//m_pStimulationOutputWriterHelper=NULL;
+	releaseBoxAlgorithmStimulationOutputWriter(m_pStimulationOutputWriterHelper);
+	m_pStimulationOutputWriterHelper=NULL;
 
 	//desallocate all of the remaining buffers
 	delete[] m_pChannelDataSize;	//can be done before?
@@ -249,7 +250,7 @@ void CGDFFileReader::writeExperimentInformation()
 {
 	if(m_pExperimentInfoHeader->m_ui64ExperimentId != _NoValueI_)
 	{
-		m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_ExperimentIdentifier,m_pExperimentInfoHeader->m_ui64ExperimentId);
+		m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_ExperimentIdentifier, (uint32)m_pExperimentInfoHeader->m_ui64ExperimentId);
 	}
 
 	if(m_pExperimentInfoHeader->m_sExperimentDate != _NoValueS_)
@@ -269,12 +270,12 @@ void CGDFFileReader::writeExperimentInformation()
 
 	if(m_pExperimentInfoHeader->m_ui64SubjectAge != _NoValueI_)
 	{
-		m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectAge, m_pExperimentInfoHeader->m_ui64SubjectAge);
+		m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectAge, (uint32)m_pExperimentInfoHeader->m_ui64SubjectAge);
 	}
 
 	if(m_pExperimentInfoHeader->m_ui64SubjectSex != _NoValueI_)
 	{
-		m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectSex, m_pExperimentInfoHeader->m_ui64SubjectSex);
+		m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectSex, (uint32)m_pExperimentInfoHeader->m_ui64SubjectSex);
 	}
 
 	if(m_pExperimentInfoHeader->m_ui64LaboratoryId != _NoValueI_)
@@ -306,7 +307,7 @@ void CGDFFileReader::writeSignalInformation()
 	m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription.m_ui32SamplingRate);
 	m_pSignalOutputWriterHelper->setChannelCount(m_pSignalDescription.m_ui32ChannelCount);
 
-	for(int i=0 ; i<m_pSignalDescription.m_ui32ChannelCount ; i++)
+	for(uint32 i=0 ; i<m_pSignalDescription.m_ui32ChannelCount ; i++)
 	{
 		m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription.m_pChannelName[i].c_str());
 	}
@@ -319,7 +320,18 @@ void CGDFFileReader::writeSignalInformation()
 
 void CGDFFileReader::writeEvents()
 {
-	//m_pWriterHelper[GenericNetworkFileIO_SignalOutput]->setBinaryAsChildData(static_cast<void*> (m_pMatrixBuffer), m_ui64MatrixBufferSize*sizeof(EBML::float64));
+	m_pStimulationOutputWriterHelper->setStimulationCount(m_oEvents.size());
+	
+	uint64 l_ui64EventDate = 0;
+
+	for(size_t i=0 ; i<m_oEvents.size() ; i++)
+	{
+		//compute date
+		l_ui64EventDate = ( ((uint64)(m_oEvents[i].m_ui32Position)) <<32)/m_pSignalDescription.m_ui32SamplingRate;
+		m_pStimulationOutputWriterHelper->setStimulation(i, m_oEvents[i].m_ui16Type, l_ui64EventDate);
+	}
+
+	m_pStimulationOutputWriterHelper->writeBuffer(*m_pWriter[GDFReader_StimulationOutput]);
 }
 
 boolean CGDFFileReader::process()
@@ -330,6 +342,9 @@ boolean CGDFFileReader::process()
 	{
 		return false;
 	}
+
+	uint64 l_ui64StartTime=0;
+	uint64 l_ui64EndTime=0;
 
 	IDynamicBoxContext * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();
 
@@ -354,7 +369,7 @@ boolean CGDFFileReader::process()
 		}
 
 		m_oFile.read(l_pFileVersion, 5);
-		m_f32FileVersion = atof(l_pFileVersion);
+		m_f32FileVersion = (float32)atof(l_pFileVersion);
 
 		if(m_oFile.bad())
 		{
@@ -402,7 +417,7 @@ boolean CGDFFileReader::process()
 			m_ui64NumberOfDataRecords= l_oFixedHeader->getNumberOfDataRecords();
 
 			//this information is related to the signal
-			m_ui16NumberOfChannels = l_oFixedHeader->getChannelCount();
+			m_ui16NumberOfChannels = (uint16)l_oFixedHeader->getChannelCount();
 			m_pSignalDescription.m_ui32ChannelCount = m_ui16NumberOfChannels;
 
 			//Send the header
@@ -499,7 +514,7 @@ boolean CGDFFileReader::process()
 		m_pSignalDescription.m_ui32SampleCount = static_cast<EBML::uint32>(m_ui32SamplesPerBuffer);
 
 		//needs to be computed based on the duration of a data record and the number of samples in one of those data records
-		m_pSignalDescription.m_ui32SamplingRate = static_cast<EBML::uint32>( round(m_ui32NumberOfSamplesPerRecord * (1/m_f64DurationOfDataRecord)));
+		m_pSignalDescription.m_ui32SamplingRate = static_cast<EBML::uint32>(0.5 + m_ui32NumberOfSamplesPerRecord * (1.0/m_f64DurationOfDataRecord));
 
 		//Send the data to the output
 		writeSignalInformation();
@@ -520,14 +535,14 @@ boolean CGDFFileReader::process()
 		{
 			//output matrix buffer
 			m_ui64MatrixBufferSize = m_pSignalDescription.m_ui32SampleCount*m_pSignalDescription.m_ui32ChannelCount;
-			m_pMatrixBuffer = new EBML::float64[m_ui64MatrixBufferSize];
+			m_pMatrixBuffer = new EBML::float64[(size_t)m_ui64MatrixBufferSize];
 
 			//Associate this buffer to the signal output writer helper
 			m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
 
 			//We also have to read the first data record
-			m_pDataRecordBuffer = new uint8[m_ui64DataRecordSize];
-			m_oFile.read(reinterpret_cast<char*>(m_pDataRecordBuffer), m_ui64DataRecordSize);
+			m_pDataRecordBuffer = new uint8[(size_t)m_ui64DataRecordSize];
+			m_oFile.read(reinterpret_cast<char*>(m_pDataRecordBuffer), (std::streamsize)m_ui64DataRecordSize);
 
 			if(m_oFile.bad())
 			{
@@ -566,7 +581,7 @@ boolean CGDFFileReader::process()
 							i);
 				}
 
-				m_ui32CurrentSampleInDataRecord += (m_ui32SamplesPerBuffer - l_ui32CurrentSampleInOutputMatrix);
+				m_ui32CurrentSampleInDataRecord += (uint32)(m_ui32SamplesPerBuffer - l_ui32CurrentSampleInOutputMatrix);
 
 				//Prepares for the next matrix
 				l_ui32CurrentSampleInOutputMatrix = 0;
@@ -587,13 +602,13 @@ boolean CGDFFileReader::process()
 				}
 
 				//Updates the index in the output matrix
-				l_ui32CurrentSampleInOutputMatrix += l_ui64SamplesRemainingInDataRecord;
+				l_ui32CurrentSampleInOutputMatrix += (uint32)l_ui64SamplesRemainingInDataRecord;
 
 				//reads the next data record if there is one
 				if(m_ui64CurrentDataRecord < m_ui64NumberOfDataRecords-1)
 				{
 					//reads a data record
-					m_oFile.read(reinterpret_cast<char*>(m_pDataRecordBuffer), m_ui64DataRecordSize);
+					m_oFile.read(reinterpret_cast<char*>(m_pDataRecordBuffer), (std::streamsize)m_ui64DataRecordSize);
 
 					if(m_oFile.bad())
 					{
@@ -613,7 +628,7 @@ boolean CGDFFileReader::process()
 					{
 						memset(m_pMatrixBuffer + (((i*m_ui32SamplesPerBuffer) +l_ui32CurrentSampleInOutputMatrix)),
 								0,
-								(m_ui32SamplesPerBuffer - l_ui32CurrentSampleInOutputMatrix) * sizeof(float64));
+								(uint32)(m_ui32SamplesPerBuffer - l_ui32CurrentSampleInOutputMatrix) * sizeof(float64));
 					}
 
 					//We can send the matrix
@@ -639,7 +654,7 @@ boolean CGDFFileReader::process()
 				else
 				{
 					//reads a data record
-					m_oFile.read(reinterpret_cast<char*>(m_pDataRecordBuffer), m_ui64DataRecordSize);
+					m_oFile.read(reinterpret_cast<char*>(m_pDataRecordBuffer), (std::streamsize)m_ui64DataRecordSize);
 
 					if(m_oFile.bad())
 					{
@@ -656,9 +671,9 @@ boolean CGDFFileReader::process()
 		//A signal matrix is ready to be output
 		m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter[GDFReader_SignalOutput]);
 
-		uint64 l_ui64StartTime=(((uint64)(m_ui32SentSampleCount - m_pSignalDescription.m_ui32SampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate;
+		l_ui64StartTime=(((uint64)(m_ui32SentSampleCount - m_pSignalDescription.m_ui32SampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate;
 
-		uint64 l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate;
+		l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate;
 
 		l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_SignalOutput, l_ui64StartTime, l_ui64EndTime);
 
@@ -666,13 +681,24 @@ boolean CGDFFileReader::process()
 	}
 
 	//Events
-	else if(!m_bEventsSent)
+	if(m_bSignalDescriptionSent && !m_bEventsSent)
 	{
 		//reads the events table header if it hasn't been done already
 		if(!m_pEventsPositionBuffer)
 		{
+			std::streamoff l_oBackupPosition = m_oFile.tellg();
+			m_oFile.seekg( (std::streamoff)((256 * (m_ui16NumberOfChannels+1)) + (m_ui64NumberOfDataRecords*m_ui64DataRecordSize)) );
+
 			//reads the event table mode
 			m_oFile>>m_ui8EventTableMode;
+
+			if(m_ui8EventTableMode != 1)
+			{
+				cout<<"GDF Event table mode "<<(uint32)m_ui8EventTableMode<<" unsupported!"<<endl;
+				m_oFile.seekg(l_oBackupPosition);
+				m_bEventsSent = true;
+				return true;
+			}
 
 			uint8 l_pEventTableHeader[7];
 			m_oFile.read(reinterpret_cast<char*>(l_pEventTableHeader), 7);
@@ -692,48 +718,51 @@ boolean CGDFFileReader::process()
 			//we have to read all the events' position and type
 			m_oFile.read(reinterpret_cast<char*>(m_pEventsPositionBuffer), m_ui32NumberOfEvents * 4);
 			m_oFile.read(reinterpret_cast<char*>(m_pEventsTypeBuffer), m_ui32NumberOfEvents * 2);
+			
+			m_oFile.seekg(l_oBackupPosition);
+
+			if(m_ui32NumberOfEvents!=0)
+			{
+				m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_StimulationOutput]);	
+				l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_StimulationOutput, 0, 0);
+			}
+
 		}
 
-		if(m_ui32CurrentEvent+m_ui64StimulationPerBuffer <=m_ui32NumberOfEvents-1)
+		GDF::CGDFEvent l_oEvent;
+
+		//todo check inclusive/exclusive conditions
+		while( (m_pEventsPositionBuffer[m_ui32CurrentEvent]>=m_ui32SentSampleCount-m_pSignalDescription.m_ui32SampleCount) && 
+			(m_pEventsPositionBuffer[m_ui32CurrentEvent]<m_ui32SentSampleCount) &&
+			(m_ui32CurrentEvent != m_ui32NumberOfEvents) )
 		{
-			//gets m_ui64StimulationPerBuffer events
-			for(int i=0 ; i<m_ui64StimulationPerBuffer ; i++)
-			{
-				GDF::CGDFEvent l_oEvent;
-				l_oEvent.m_ui32Position = m_pEventsPositionBuffer[i];
-				l_oEvent.m_ui16Type = m_pEventsTypeBuffer[i];
+			//reads an event
+			l_oEvent.m_ui32Position = m_pEventsPositionBuffer[m_ui32CurrentEvent];
+			l_oEvent.m_ui16Type = m_pEventsTypeBuffer[m_ui32CurrentEvent];
 
-				m_oEvents.push_back(l_oEvent);
-			}
+			//adds it to the list of events
+			m_oEvents.push_back(l_oEvent);
 
-			m_ui32CurrentEvent+=m_ui64StimulationPerBuffer;
-
-			if(m_ui32CurrentEvent == m_ui32NumberOfEvents-1)
-			{
-				m_bEventsSent = true;
-			}
+			m_ui32CurrentEvent++;
 		}
-		else
+
+		//if we just read the last event
+		if(m_ui32CurrentEvent == m_ui32NumberOfEvents-1)
 		{
-			//gets m_ui64StimulationPerBuffer events
-			for(int i=0 ; i<m_ui32NumberOfEvents-m_ui32CurrentEvent ; i++)
-			{
-				GDF::CGDFEvent l_oEvent;
-				l_oEvent.m_ui32Position = m_pEventsPositionBuffer[i];
-				l_oEvent.m_ui16Type = m_pEventsTypeBuffer[i];
-
-				m_oEvents.push_back(l_oEvent);
-			}
-
-			//Since this is the last block of events, we can change this value
-			m_ui64StimulationPerBuffer = m_ui32NumberOfEvents-m_ui32CurrentEvent;
-
-			m_bEventsSent = true;
+			m_bEventsSent = true;	
+			delete [] m_pEventsPositionBuffer;
+			delete [] m_pEventsTypeBuffer;
 		}
-		//sends these events
-		writeEvents();
-		m_oEvents.clear();
 
+		//if there is at least one event, sends it	
+		if(m_oEvents.size() != 0)
+		{
+			writeEvents();
+			l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_StimulationOutput, l_ui64StartTime, l_ui64EndTime);
+			m_oEvents.clear();
+		}
+
+	
 	}
 
 	return true;

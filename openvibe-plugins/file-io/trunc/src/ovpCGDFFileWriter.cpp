@@ -25,12 +25,12 @@ void CGDFFileWriter::setChannelName(const uint32 ui32ChannelIndex, const char* s
 	//prepares the variable header
 	sprintf(m_oVariableHeader[ui32ChannelIndex].m_sLabel, sChannelName);
 
-	m_oVariableHeader[ui32ChannelIndex].m_ui32ChannelType=17;		//float64
+	m_oVariableHeader[ui32ChannelIndex].m_ui32ChannelType=17;                //float64
 	m_oVariableHeader[ui32ChannelIndex].m_ui32NumberOfSamplesInEachRecord=1;
-	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMinimum=+DBL_MAX;	//starting value(to compare later)
-	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMaximum=-DBL_MAX;	//starting value(to compare later)
-	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMinimum=static_cast<int64>(+DBL_MAX);
-	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMaximum=static_cast<int64>(-DBL_MAX);
+	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMinimum=+DBL_MAX;       //starting value(to compare later)
+	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMaximum=-DBL_MAX;       //starting value(to compare later)
+	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMinimum=0x1000000000000000LL;
+	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMaximum=0x7fffffffffffffffLL;
 
 	memcpy(m_oVariableHeader[ui32ChannelIndex].m_sPhysicalDimension, "uV", sizeof("uV"));
 
@@ -107,13 +107,13 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const uint64 ui6
 	{
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_ExperimentIdentifier:
 
-			sprintf(m_oFixedHeader.m_sRecordingId, "0x%08X", ui64Value);
+			sprintf(m_oFixedHeader.m_sRecordingId, "0x%08X", (unsigned int)ui64Value);
 			m_oFixedHeader.m_sRecordingId[10] = ' ';
 			break;
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectIdentifier:
 
-			sprintf(m_oFixedHeader.m_sPatientId, "0x%08X ", ui64Value);
+			sprintf(m_oFixedHeader.m_sPatientId, "0x%08X ", (unsigned int)ui64Value);
 			m_oFixedHeader.m_sPatientId[11] = ' ';
 			break;
 
@@ -198,10 +198,10 @@ boolean CGDFFileWriterDesc::getBoxPrototype(
 	IBoxProto& rPrototype) const
 {
 	// Adds box inputs //swap order of the first two
-	rPrototype.addInput("Experiment information", OV_UndefinedIdentifier);
-	rPrototype.addInput("Signal", OV_UndefinedIdentifier);
+	rPrototype.addInput("Experiment information", OV_TypeId_ExperimentationInformation);
+	rPrototype.addInput("Signal", OV_TypeId_Signal);
 
-	rPrototype.addInput("Stimulation", OV_UndefinedIdentifier);
+	rPrototype.addInput("Stimulation", OV_TypeId_Stimulations);
 
 	// Adds box outputs
 

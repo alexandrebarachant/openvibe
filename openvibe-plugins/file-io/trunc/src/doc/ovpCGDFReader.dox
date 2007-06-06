@@ -1,30 +1,30 @@
 /**
- \page Doc_ovpCGDFReader GDF Reader documentation
+ \page Doc_ovpCGDFFileReader GDF file reader documentation
 
-- Plugin name : GDF Reader
-- Version :	0.2
+- Plugin name : GDF file Reader
+- Version :	0.5
 - Author : 	Bruno Renier
-- Date :	03-08-2007
+- Date :	03-27-2007
 
 <br>
 Summary :
 
-\ref Doc_ovpCGDFReader_description
+\ref Doc_ovpCGDFFileReader_description
 
-\ref Doc_ovpCGDFReader_inputs
+\ref Doc_ovpCGDFFileReader_inputs
 
-\ref Doc_ovpCGDFReader_outputs
+\ref Doc_ovpCGDFFileReader_outputs
 
-\ref Doc_ovpCGDFReader_settings
+\ref Doc_ovpCGDFFileReader_settings
 
-\ref Doc_ovpCGDFReader_examples
+\ref Doc_ovpCGDFFileReader_examples
 
-\ref Doc_ovpCGDFReader_misc
+\ref Doc_ovpCGDFFileReader_misc
 
 <hr>
 <br>
 <br>
- \section Doc_ovpCGDFReader_description Description
+ \section Doc_ovpCGDFFileReader_description Description
 This plugin reads information from GDF files. It outputs the signals from the different channels contained in the file.
 Right now, it should support most of the GDF1 and GDF2 files.
 
@@ -32,14 +32,14 @@ Right now, it should support most of the GDF1 and GDF2 files.
 
 \attention This plugin does not support GDF files containing signal information from channels with different sampling rates!
 
- \section Doc_ovpCGDFReader_inputs Inputs
+ \section Doc_ovpCGDFFileReader_inputs Inputs
  Number of inputs : 0
 
- \section Doc_ovpCGDFReader_outputs Outputs
+ \section Doc_ovpCGDFFileReader_outputs Outputs
 Number of outputs : 3
 
 -# Experiment information output
- - OV_TypeId_??
+ - OV_TypeId_ExperimentationInformation
  - This stream contains information about the experiment and subject.
 
 -# Signal output
@@ -47,10 +47,10 @@ Number of outputs : 3
  - Contains the signal information for the different channels (read from the GDF file).
 
 -# Stimulation output
- - OV_TypeId_??
- - Contains information about the stimulation that occured during the experiment.
+ - OV_TypeId_Stimulations
+ - Contains information about the stimulations that occured during the experiment.
 
- \section Doc_ovpCGDFReader_settings Settings
+ \section Doc_ovpCGDFFileReader_settings Settings
 Number of settings : 2
 
 -# Filename
@@ -61,7 +61,7 @@ Number of settings : 2
  - Integer
  - The number of samples per channel in a streamed matrix.
 
-\section Doc_ovpCGDFReader_examples Examples
+\section Doc_ovpCGDFFileReader_examples Examples
 
 If your GDF file is located in your /tmp directory, you can configure the plugin like that :
 
@@ -76,7 +76,7 @@ Samples per buffer :
 \endcode
 
 
- \section Doc_ovpCGDFReader_misc Miscellaneous
+ \section Doc_ovpCGDFFileReader_misc Miscellaneous
 
 The experiment information output isn't operational yet.
 

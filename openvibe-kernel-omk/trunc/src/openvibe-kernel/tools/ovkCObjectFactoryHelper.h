@@ -1,13 +1,15 @@
 #ifndef __OpenViBEKernel_Tools_CKernelFactoryHelper_H__
 #define __OpenViBEKernel_Tools_CKernelFactoryHelper_H__
 
+#include "../ovk_base.h"
+
 #include <openvibe/ov_all.h>
 
 namespace OpenViBE
 {
 	namespace Tools
 	{
-		class CObjectFactoryHelper
+		class CObjectFactoryHelper : virtual public OpenViBE::IObject
 		{
 		public:
 
@@ -31,6 +33,8 @@ namespace OpenViBE
 			{
 				return m_rObjectFactory.releaseObject(tObject);
 			}
+
+			_IsDerivedFromClass_Final_(OpenViBE::IObject, OVK_ClassId_Tools_ObjectFactoryHelper);
 
 		protected:
 

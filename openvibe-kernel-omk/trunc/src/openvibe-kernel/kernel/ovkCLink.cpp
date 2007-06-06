@@ -26,7 +26,7 @@ boolean CLink::setIdentifier(
 	return true;
 }
 
-const CIdentifier& CLink::getIdentifier(void) const
+CIdentifier CLink::getIdentifier(void) const
 {
 	return m_oIdentifier;
 }

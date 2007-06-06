@@ -1,7 +1,8 @@
-#ifndef __OpenViBEKernel_Plugins_CBoxAlgorithmContext_H__
-#define __OpenViBEKernel_Plugins_CBoxAlgorithmContext_H__
+#ifndef __OpenViBEKernel_Kernel_CBoxAlgorithmContext_H__
+#define __OpenViBEKernel_Kernel_CBoxAlgorithmContext_H__
 
-#include "ovkTPluginObjectContext.h"
+#include "../ovkTKernelObject.h"
+
 #include "ovkCStaticBoxContext.h"
 #include "ovkCDynamicBoxContext.h"
 #include "ovkCPlayerContext.h"
@@ -11,18 +12,18 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CBoxAlgorithmContext : virtual public OpenViBE::Kernel::TPluginObjectContext<OpenViBE::Plugins::IBoxAlgorithmContext>
+		class CBoxAlgorithmContext : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxAlgorithmContext>
 		{
 		public:
 
 			CBoxAlgorithmContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox, const OpenViBE::Kernel::IBox* pBox);
 
-			virtual OpenViBE::Plugins::IStaticBoxContext* getStaticBoxContext(void);
-			virtual OpenViBE::Plugins::IDynamicBoxContext* getDynamicBoxContext(void);
-			virtual OpenViBE::Plugins::IPlayerContext* getPlayerContext(void);
+			virtual OpenViBE::Kernel::IBox* getStaticBoxContext(void);
+			virtual OpenViBE::Kernel::IBoxIO* getDynamicBoxContext(void);
+			virtual OpenViBE::Kernel::IPlayerContext* getPlayerContext(void);
 			virtual OpenViBE::boolean markAlgorithmAsReadyToProcess(void);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TPluginObjectContext<OpenViBE::Plugins::IBoxAlgorithmContext>, OVK_ClassId_Kernel_BoxAlgorithmContext)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxAlgorithmContext>, OVK_ClassId_Kernel_BoxAlgorithmContext)
 
 			virtual OpenViBE::boolean isAlgorithmReadyToProcess(void);
 
@@ -36,4 +37,4 @@ namespace OpenViBE
 	};
 };
 
-#endif // __OpenViBEKernel_Plugins_CBoxAlgorithmContext_H__
+#endif // __OpenViBEKernel_Kernel_CBoxAlgorithmContext_H__

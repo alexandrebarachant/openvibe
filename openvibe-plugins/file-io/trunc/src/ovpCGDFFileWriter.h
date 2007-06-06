@@ -98,7 +98,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This algorithm records on disk what comes from a specific output"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This algorithm dumps on disk a stream from a specific output in the standard GDF file format"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/GDF"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFFileWriter; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFFileWriter(); }

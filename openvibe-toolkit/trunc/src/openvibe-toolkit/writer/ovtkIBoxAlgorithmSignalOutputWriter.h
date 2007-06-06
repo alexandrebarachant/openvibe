@@ -1,11 +1,11 @@
 #ifndef __OpenViBEToolkit_Writer_IBoxAlgorithmSignalOutputWriter_H__
 #define __OpenViBEToolkit_Writer_IBoxAlgorithmSignalOutputWriter_H__
 
-#include "ovtkIBoxAlgorithmOutputWriter.h"
+#include "ovtkIBoxAlgorithmStreamedMatrixOutputWriter.h"
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmSignalOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmOutputWriter
+	class OVTK_API IBoxAlgorithmSignalOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
 	{
 	public:
 
@@ -15,10 +15,7 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::boolean setSampleCount(const OpenViBE::uint32 ui32SampleCount)=0;
 		virtual OpenViBE::boolean setSampleBuffer(const OpenViBE::float64* pSampleBuffer)=0;
 
-		virtual OpenViBE::boolean writeHeader(EBML::IWriter& rWriter)=0;
-		virtual OpenViBE::boolean writeBuffer(EBML::IWriter& rWriter)=0;
-
-		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmOutputWriter, OVTK_ClassId_);
+		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter, OVTK_ClassId_);
 	};
 
 	extern OVTK_API OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter* createBoxAlgorithmSignalOutputWriter(void);

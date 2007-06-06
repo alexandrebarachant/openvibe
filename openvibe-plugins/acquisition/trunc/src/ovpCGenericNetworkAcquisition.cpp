@@ -19,8 +19,8 @@ namespace OpenViBEPlugins
 {
 	namespace Acquisition
 	{
-		
-		
+
+
 EBML::boolean CGenericNetworkAcquisition::readerIsMasterChild(const EBML::CIdentifier& rIdentifier)
 {
 	if(rIdentifier== OVTK_NodeId_Acquisition_Header
@@ -47,7 +47,7 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 	{
 		m_pExperimentInfoHeader->m_ui64ExperimentId = m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
 	}
-		
+
 	if(m_oCurrentIdentifier==OVTK_NodeId_Acquisition_SubjectAge)
 	{
 		m_pExperimentInfoHeader->m_ui64SubjectAge = m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
@@ -64,14 +64,14 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 	//Signal description
 	if(m_oCurrentIdentifier==OVTK_NodeId_Acquisition_ChannelCount)
 	{
-		m_pSignalDescription -> m_ui32ChannelCount = m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
+		m_pSignalDescription -> m_ui32ChannelCount = (uint32)m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
 
 		m_pSignalDescription -> m_pChannelName.resize(m_pSignalDescription -> m_ui32ChannelCount);
 	}
 
 	if(m_oCurrentIdentifier==OVTK_NodeId_Acquisition_SamplingFrequency)
 	{
-		m_pSignalDescription -> m_ui32SamplingRate = m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
+		m_pSignalDescription -> m_ui32SamplingRate = (uint32)m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
 	}
 
 	if(m_oCurrentIdentifier==OVTK_NodeId_Acquisition_ChannelName)
@@ -81,12 +81,12 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 
 		m_pSignalDescription->m_ui32CurrentChannel++;
 
-			
+
 	}
 
 	if(m_oCurrentIdentifier==OVTK_NodeId_Acquisition_SamplesPerChannelCount)
 	{
-		m_pSignalDescription -> m_ui32SampleCount = m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
+		m_pSignalDescription -> m_ui32SampleCount = (uint32)m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
 
 		//if the matrix buffer hasn't been allocated yet
 		if(!m_pMatrixBuffer)
@@ -94,22 +94,41 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 			m_ui64MatrixBufferSize = m_pSignalDescription -> m_ui32SampleCount * m_pSignalDescription->m_ui32ChannelCount;
 
 			//we now have all the information we needed to allocate the matrix buffer
-			m_pMatrixBuffer = new EBML::float64[m_ui64MatrixBufferSize];
+			m_pMatrixBuffer = new EBML::float64[(size_t)m_ui64MatrixBufferSize];
 		}
-			
+
 		m_ui32CurrentChannel=0;
 
-		//the signal description is ready to send
-		m_pSignalDescription->m_bReadyToSend = true;
+		if(!m_bSignalDescriptionSent)
+		{
+			IDynamicBoxContext * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();
+
+			m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription->m_ui32SamplingRate);
+			m_pSignalOutputWriterHelper->setChannelCount(m_pSignalDescription->m_ui32ChannelCount);
+
+			for(uint32 i=0 ; i<m_pSignalDescription->m_ui32ChannelCount ; i++)
+			{
+				m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription->m_pChannelName[i].c_str());
+			}
+
+			m_pSignalOutputWriterHelper->setSampleCount(m_pSignalDescription->m_ui32SampleCount);
+			m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
+
+			m_pSignalOutputWriterHelper->writeHeader(*m_pWriter[GenericNetworkAcquisition_SignalOutput]);
+
+			m_bSignalDescriptionSent=true;
+			l_pDynamicBoxContext->markOutputAsReadyToSend(GenericNetworkAcquisition_SignalOutput, 0, 0);
+		}
+
 	}
 
 	//matrix
 	if(m_oCurrentIdentifier==OVTK_NodeId_Acquisition_SampleBlock)
 	{
-		const EBML::float32  * l_pSourceMatrix = static_cast<const EBML::float32*>(pBuffer);	
-			
+		const EBML::float32  * l_pSourceMatrix = static_cast<const EBML::float32*>(pBuffer);
+
 		//copy the buffer
-		for(int i=0 ; i<(ui64BufferSize/sizeof(EBML::float32)) ; i++)
+		for(uint64 i=0 ; i<(ui64BufferSize/sizeof(EBML::float32)) ; i++)
 		{
 			m_pMatrixBuffer[(m_ui32CurrentChannel*m_pSignalDescription->m_ui32SampleCount)+i] = static_cast<EBML::float64>(l_pSourceMatrix[i]);
 		}
@@ -119,27 +138,38 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 		//If a whole matrix has been read
 		if(m_ui32CurrentChannel == m_pSignalDescription->m_ui32ChannelCount)
 		{
-				
+
 			m_ui32CurrentChannel = 0;
 
-			//the matrix is ready to be sent
-			m_bMatrixReadyToSend = true;
+			IDynamicBoxContext * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();
+
+			m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter[GenericNetworkAcquisition_SignalOutput]);
+
+			//increases total sample counter
+			m_ui32SentSampleCount += m_pSignalDescription->m_ui32SampleCount;
+
+			OpenViBE::uint64 l_ui64StartTime=(((uint64)(m_ui32SentSampleCount - m_pSignalDescription->m_ui32SampleCount))<<32)/m_pSignalDescription->m_ui32SamplingRate;
+
+			OpenViBE::uint64 l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_pSignalDescription->m_ui32SamplingRate;
+
+			l_pDynamicBoxContext->markOutputAsReadyToSend(GenericNetworkAcquisition_SignalOutput, l_ui64StartTime, l_ui64EndTime);
+
 		}
 	}
-		
+
 
 		//Stimulations
 		/*if(m_oCurrentIdentifier==)
 	{
 
 }*/
-	
+
 }
 
 void CGenericNetworkAcquisition::readerCloseChild()
 {
-	
-	
+
+
 }
 
 boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) const
@@ -147,9 +177,9 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) c
 	// Adds box inputs
 
 	// Adds box outputs
-	rPrototype.addOutput("Experiment information",	OV_TypeId_Signal); //TODO changer type?
+	rPrototype.addOutput("Experiment information",	OV_TypeId_ExperimentationInformation);
 	rPrototype.addOutput("EEG stream",           OV_TypeId_Signal);
-	rPrototype.addOutput("Stimulations",           OV_TypeId_Signal);
+	rPrototype.addOutput("Stimulations",           OV_TypeId_Stimulations);
 
 	// Adds box settings
 	rPrototype.addSetting("EEG server hostname", OV_TypeId_String,  "localhost");
@@ -160,19 +190,28 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) c
 
 
 CGenericNetworkAcquisition::CGenericNetworkAcquisition(void)
-	:m_pConnectionClient(NULL)
-	,m_ui32ServerHostPort(0)
-	,m_oInputReaderCallbackProxy(*this)
-	,m_pReader(NULL)
-	,m_pBoxAlgorithmContext(NULL)
-	,m_bHeaderSent(false)
-	,m_pExperimentInfoHeader(NULL)
-	,m_pSignalDescription(NULL)
-	,m_bSignalDescriptionSent(false)
-	,m_pMatrixBuffer(NULL)
-	,m_ui64MatrixBufferSize(0)
-	,m_bMatrixReadyToSend(false)
-	,m_ui32SentSampleCount(0)
+	:m_ui32ServerHostPort(0),
+	m_pConnectionClient(NULL),
+	m_oInputReaderCallbackProxy(
+		*this,
+		&CGenericNetworkAcquisition::readerIsMasterChild,
+		&CGenericNetworkAcquisition::readerOpenChild,
+		&CGenericNetworkAcquisition::readerProcessChildData,
+		&CGenericNetworkAcquisition::readerCloseChild),
+	m_pReader(NULL),
+	m_pReaderHelper(NULL),
+	m_ui32CurrentChannel(0),
+	m_pSignalOutputWriterHelper(NULL),
+	m_pExperimentInformationOutputWriterHelper(NULL),
+	m_ui64CurrentBufferSize(0),
+	m_pBoxAlgorithmContext(NULL),
+	m_pExperimentInfoHeader(NULL),
+	m_bHeaderSent(false),
+	m_pSignalDescription(NULL),
+	m_bSignalDescriptionSent(false),
+	m_pMatrixBuffer(NULL),
+	m_ui64MatrixBufferSize(0),
+	m_ui32SentSampleCount(0)
 {
 	//just in case ...
 	for(int i=0 ; i<3 ; i++)
@@ -211,24 +250,24 @@ boolean CGenericNetworkAcquisition::initialize()
 	m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_ExperimentInfoOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition>(*this, &CGenericNetworkAcquisition::writeExperimentOutput);
 
 	m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_SignalOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition>(*this, &CGenericNetworkAcquisition::writeSignalOutput);
-	
+
 	m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_StimulationOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition>(*this, &CGenericNetworkAcquisition::writeStimulationOutput);
-	
-	
+
+
 	// Prepares experiment information output writer
 	m_pWriter[GenericNetworkAcquisition_ExperimentInfoOutput]=EBML::createWriter(*m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_ExperimentInfoOutput]);
 	m_pExperimentInformationOutputWriterHelper=createBoxAlgorithmExperimentInformationOutputWriter();
-	
+
 	//Prepares the signal output writer
 	m_pWriter[GenericNetworkAcquisition_SignalOutput]=EBML::createWriter(*m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_SignalOutput]);
 	m_pSignalOutputWriterHelper=createBoxAlgorithmSignalOutputWriter();
-	
-			
+
+
 	//Prepares the stimulation output writer
 	//m_pStimulationOutputWriterHelper=createBoxAlgorithmStimulationOutputWriter();
 	m_pWriter[GenericNetworkAcquisition_StimulationOutput]=EBML::createWriter(*m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_StimulationOutput]);
 
-	// Prepares the data storage structure - 
+	// Prepares the data storage structure -
 	m_pExperimentInfoHeader = new CExperimentInfoHeader;
 	m_pExperimentInfoHeader -> m_bReadyToSend = false;
 
@@ -256,7 +295,7 @@ boolean CGenericNetworkAcquisition::uninitialize()
 		m_pWriter[i]->release();
 		m_pWriter[i] = NULL;
 	}
-	
+
 	releaseBoxAlgorithmExperimentInformationOutputWriter(m_pExperimentInformationOutputWriterHelper);
 	m_pExperimentInformationOutputWriterHelper=NULL;
 
@@ -318,7 +357,7 @@ boolean CGenericNetworkAcquisition::process()
 	uint8 l_pBuffer[1024];
 	uint32 l_ui32Received;
 	m_ui64CurrentBufferSize=0;
-	
+
 	IDynamicBoxContext * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	//reset the OutPut chunks
@@ -331,69 +370,31 @@ boolean CGenericNetworkAcquisition::process()
 		//if the header is ready, send it
 		if(m_pExperimentInfoHeader -> m_bReadyToSend)
 		{
-			m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_ExperimentIdentifier,m_pExperimentInfoHeader->m_ui64ExperimentId);
-			
-			m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectAge, m_pExperimentInfoHeader->m_ui64SubjectAge);
-			m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectSex, m_pExperimentInfoHeader->m_ui64SubjectSex);
+			m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_ExperimentIdentifier, (uint32)m_pExperimentInfoHeader->m_ui64ExperimentId);
+
+			m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectAge, (uint32)m_pExperimentInfoHeader->m_ui64SubjectAge);
+			m_pExperimentInformationOutputWriterHelper->setValue(IBoxAlgorithmExperimentInformationOutputWriter::Value_SubjectSex, (uint32)m_pExperimentInfoHeader->m_ui64SubjectSex);
 
 			m_pExperimentInformationOutputWriterHelper->writeHeader(*m_pWriter[GenericNetworkAcquisition_ExperimentInfoOutput]);
-		 
+
 			// The header has been sent
 			m_bHeaderSent = true;
 			l_pDynamicBoxContext->markOutputAsReadyToSend(GenericNetworkAcquisition_ExperimentInfoOutput, 0, 0);
 
 			//not needed anymore
-			delete m_pExperimentInfoHeader; 
+			delete m_pExperimentInfoHeader;
 			m_pExperimentInfoHeader=NULL;
 		}
 	}
 
-	if(!m_bSignalDescriptionSent)
-	{
-		if(m_pSignalDescription->m_bReadyToSend)
-		{
-			m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription->m_ui32SamplingRate);
-			m_pSignalOutputWriterHelper->setChannelCount(m_pSignalDescription->m_ui32ChannelCount);
-			
-			for(int i=0 ; i<m_pSignalDescription->m_ui32ChannelCount ; i++)
-			{
-				m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription->m_pChannelName[i].c_str());
-			}
 
-			m_pSignalOutputWriterHelper->setSampleCount(m_pSignalDescription->m_ui32SampleCount);
-			m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
-			
-			m_pSignalOutputWriterHelper->writeHeader(*m_pWriter[GenericNetworkAcquisition_SignalOutput]);
-
-			m_bSignalDescriptionSent=true;
-			l_pDynamicBoxContext->markOutputAsReadyToSend(GenericNetworkAcquisition_SignalOutput, 0, 0);
-		}
-	}
-
-	//sends the current signal matrix if ready
-	if(m_bMatrixReadyToSend)
-	{
-
-		m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter[GenericNetworkAcquisition_SignalOutput]);
-
-		//increases total sample counter
-		m_ui32SentSampleCount += m_pSignalDescription->m_ui32SampleCount;
-
-		OpenViBE::uint64 l_ui64StartTime=(((uint64)(m_ui32SentSampleCount - m_pSignalDescription->m_ui32SampleCount))<<32)/m_pSignalDescription->m_ui32SamplingRate;
-
-		OpenViBE::uint64 l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_pSignalDescription->m_ui32SamplingRate;
-
-		l_pDynamicBoxContext->markOutputAsReadyToSend(GenericNetworkAcquisition_SignalOutput, l_ui64StartTime, l_ui64EndTime);
-
-		m_bMatrixReadyToSend = false;
-	}
 
 
 	do
 	{
 		// Receives data from the connection
 		l_ui32Received=m_pConnectionClient->receiveBuffer(l_pBuffer, sizeof(l_pBuffer));
-		
+
 		// Sends them to the EBML processor
 		m_pReader->processData(l_pBuffer, l_ui32Received);
 	}

@@ -127,9 +127,14 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("an input", OV_UndefinedIdentifier);
+				rPrototype.addInput("an input", OV_TypeId_EBMLStream);
 
 				return true;
+			}
+
+			virtual OpenViBE::CString getStockItemName(void) const
+			{
+				return OpenViBE::CString("gtk-go-up");
 			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithmConsumerDesc)

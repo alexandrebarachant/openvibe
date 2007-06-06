@@ -28,9 +28,11 @@ namespace OpenViBEPlugins
 
 				CSignalDescription(void)
 					:m_ui32StreamVersion(1)
-					,m_ui32ChannelCount (0)
-					,m_bReadyToSend(false)
+					,m_ui32SamplingRate(0)
+					,m_ui32ChannelCount(0)
+					,m_ui32SampleCount(0)
 					,m_ui32CurrentChannel(0)
+					,m_bReadyToSend(false)
 				{
 				}
 
@@ -40,7 +42,7 @@ namespace OpenViBEPlugins
 				EBML::uint32 m_ui32SamplingRate;
 				EBML::uint32 m_ui32ChannelCount;
 				EBML::uint32 m_ui32SampleCount;
-				std::vector<std::string> m_pChannelName;
+				std::vector<std::string> m_oChannelName;
 				EBML::uint32 m_ui32CurrentChannel;
 
 				OpenViBE::boolean m_bReadyToSend;
@@ -90,7 +92,6 @@ namespace OpenViBEPlugins
 
 			// the current node identifier
 			EBML::CIdentifier m_oCurrentIdentifier;
-			EBML::IReaderHelper* m_pReaderHelper;
 
 			OpenViBE::uint64 m_ui64LastChunkStartTime;
 			OpenViBE::uint64 m_ui64LastChunkEndTime;
@@ -100,23 +101,22 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bCurrentDimension;
 
 			// stores the indexes of the selected channels in the original channel array
-			std::map<std::string,OpenViBE::uint32> m_oSelectedIndex;
+			std::vector<std::string> m_vChannelNames;
+			std::vector<OpenViBE::uint32> m_vChannelsToKeep;
 
 			// Needed to write on the plugin output
 			EBML::IWriter* m_pWriter;
 
-			EBML::TWriterCallbackProxy2<OpenViBEPlugins::SignalProcessing::CChannelSelector, &CChannelSelector::writeSignalOutput > m_oSignalOutputWriterCallbackProxy;
+			EBML::TWriterCallbackProxy1<OpenViBEPlugins::SignalProcessing::CChannelSelector> m_oSignalOutputWriterCallbackProxy;
 
 			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter* m_pSignalOutputWriterHelper;
 
 			OpenViBE::boolean m_bSelectionbyIndex;		//! If true the channels are selected by their index in the stream instead of their name
 
 			CSignalDescription * m_pSignalDescription;	//! Structure containing information about the signal stream
-			OpenViBE::boolean m_bSignalDescriptionSent;	//! True if the signal description has been sent
 
 			OpenViBE::uint64 m_ui64MatrixBufferSize; 	//! Size of the matrix buffer (output signal)
 			EBML::float64* m_pMatrixBuffer;			//! Output signal's matrix buffer
-			OpenViBE::boolean m_bMatrixReadyToSend;		//! True if the matrix is ready to be sent
 		};
 
 		/**
@@ -127,7 +127,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Channel Selector"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Channel selector"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Channel selector filter"); }
@@ -143,7 +143,7 @@ namespace OpenViBEPlugins
 				rPrototype.addInput("Input signal", OV_TypeId_Signal);
 				rPrototype.addOutput("Filtered signal", OV_TypeId_Signal);
 				rPrototype.addSetting("Channels list", OV_TypeId_String, "");
-				rPrototype.addSetting("Selection mode", OV_TypeId_String, "S");
+				rPrototype.addSetting("Selection by index", OV_TypeId_Boolean, "false");
 
 				return true;
 			}

@@ -2,6 +2,7 @@
 
 #include "ovkCBox.h"
 #include "ovkCLink.h"
+#include "ovkCProcessingUnit.h"
 #include "ovkCScenario.h"
 
 #include "ovkCPluginModule.h"
@@ -40,11 +41,12 @@ IObject* Kernel::CObjectFactory::createObject(
 
 	create(rClassIdentifier, OV_ClassId_Kernel_Box,                 l_pResult, Kernel::CBox);
 	create(rClassIdentifier, OV_ClassId_Kernel_Link,                l_pResult, Kernel::CLink);
+	create(rClassIdentifier, OV_ClassId_Kernel_ProcessingUnit,      l_pResult, Kernel::CProcessingUnit);
 	create(rClassIdentifier, OV_ClassId_Kernel_Scenario,            l_pResult, Kernel::CScenario);
 
 	create(rClassIdentifier, OV_ClassId_Kernel_PluginModule,        l_pResult, Kernel::CPluginModule);
 
-	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,       l_pResult, Kernel::Player::CPlayer);
+	create(rClassIdentifier, OV_ClassId_Kernel_Player,              l_pResult, Kernel::CPlayer);
 
 	create(rClassIdentifier, OVK_ClassId_Kernel_LogListenerConsole, l_pResult, Kernel::CLogListenerConsole);
 	create(rClassIdentifier, OVK_ClassId_Kernel_LogListenerNull,    l_pResult, Kernel::CLogListenerNull);

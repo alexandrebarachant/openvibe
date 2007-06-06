@@ -12,19 +12,19 @@ namespace OpenViBEToolkit
 	{
 	public:
 
-		virtual boolean push(Plugins::IBoxAlgorithmContext* pBoxAlgorithmContext);
+		virtual boolean push(Kernel::IBoxAlgorithmContext* pBoxAlgorithmContext);
 		virtual boolean pop(void);
-		virtual Plugins::IBoxAlgorithmContext* top(void);
+		virtual Kernel::IBoxAlgorithmContext* top(void);
 
 		_IsDerivedFromClass_Final_(IBoxAlgorithmContextHandler, OVTK_ClassId_);
 
 	protected:
 
-		stack<Plugins::IBoxAlgorithmContext*> m_vBoxAlgorithmContext;
+		stack<Kernel::IBoxAlgorithmContext*> m_vBoxAlgorithmContext;
 	};
 };
 
-boolean CBoxAlgorithmContextHandler::push(Plugins::IBoxAlgorithmContext* pBoxAlgorithmContext)
+boolean CBoxAlgorithmContextHandler::push(Kernel::IBoxAlgorithmContext* pBoxAlgorithmContext)
 {
 	m_vBoxAlgorithmContext.push(pBoxAlgorithmContext);
 	return true;
@@ -40,7 +40,7 @@ boolean CBoxAlgorithmContextHandler::pop(void)
 	return true;
 }
 
-Plugins::IBoxAlgorithmContext* CBoxAlgorithmContextHandler::top(void)
+Kernel::IBoxAlgorithmContext* CBoxAlgorithmContextHandler::top(void)
 {
 	if(m_vBoxAlgorithmContext.size()==0)
 	{

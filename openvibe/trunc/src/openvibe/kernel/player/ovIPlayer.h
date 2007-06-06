@@ -1,5 +1,5 @@
-#ifndef __OpenViBE_Kernel_Player_IPlayer_H__
-#define __OpenViBE_Kernel_Player_IPlayer_H__
+#ifndef __OpenViBE_Kernel_IPlayer_H__
+#define __OpenViBE_Kernel_IPlayer_H__
 
 #include "../ovIKernelObject.h"
 
@@ -9,22 +9,19 @@ namespace OpenViBE
 	{
 		class IScenario;
 
-		namespace Player
+		class OV_API IPlayer : virtual public OpenViBE::Kernel::IKernelObject
 		{
-			class OV_API IPlayer : virtual public OpenViBE::Kernel::IKernelObject
-			{
-			public:
+		public:
 
-				virtual OpenViBE::boolean reset(
-					const OpenViBE::Kernel::IScenario& rScenario,
-					OpenViBE::Kernel::IPluginManager& rPluginManager)=0;
+			virtual OpenViBE::boolean reset(
+				const OpenViBE::Kernel::IScenario& rScenario,
+				OpenViBE::Kernel::IPluginManager& rPluginManager)=0;
 
-				virtual OpenViBE::boolean loop(void)=0;
+			virtual OpenViBE::boolean loop(void)=0;
 
-				_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Player_Player);
-			};
+			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Player);
 		};
 	};
 };
 
-#endif // __OpenViBE_Kernel_Player_IPlayer_H__
+#endif // __OpenViBE_Kernel_IPlayer_H__

@@ -7,9 +7,10 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#define OVP_ClassId_SignalDisplay                           OpenViBE::CIdentifier(0x0055BE5F, 0x087BDD12)
+#define OVP_ClassId_GrazVisualization                       OpenViBE::CIdentifier(0x00DD290D, 0x5F142820)
+
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0055BE5F, 0x087BDD12)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00DD290D, 0x5F142820)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0090540A, 0x6FB8C769)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x004C0EA4, 0x713EC6D9)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00DF1F9E, 0x50EB7093)
@@ -31,9 +32,10 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#define OVP_ClassId_SignalDisplayDesc                       OpenViBE::CIdentifier(0x00C4F2D5, 0x58810276)
+#define OVP_ClassId_GrazVisualizationDesc                   OpenViBE::CIdentifier(0x00F1955D, 0x38813A6A)
+
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00C4F2D5, 0x58810276)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00F1955D, 0x38813A6A)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0045E1B7, 0x49F62560)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00116B40, 0x69E1B00D)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x005AA737, 0x3CF063F3)

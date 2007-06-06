@@ -19,14 +19,14 @@
 #include <string>
 #include <vector>
 
-#define GenericNetworkAcquisition_ExperimentInfoOutput		0
-#define GenericNetworkAcquisition_SignalOutput			1
-#define GenericNetworkAcquisition_StimulationOutput		2
+#define GenericNetworkAcquisition_ExperimentInfoOutput 0
+#define GenericNetworkAcquisition_SignalOutput         1
+#define GenericNetworkAcquisition_StimulationOutput    2
 
 namespace OpenViBEPlugins
 {
 	namespace Acquisition
-	{	
+	{
 
 		class CGenericNetworkAcquisition : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
@@ -36,26 +36,26 @@ namespace OpenViBEPlugins
 				public:
 					EBML::uint64 m_ui64ExperimentId;
 					EBML::uint64 m_ui64ExperimentDate;
-				
-					EBML::uint64 m_ui64SubjectId; 
+
+					EBML::uint64 m_ui64SubjectId;
 					std::string m_pSubjectName;
 					EBML::uint64 m_ui64SubjectAge;
 					EBML::uint64 m_ui64SubjectSex;
-				
-					EBML::uint64 m_ui64LaboratoryId;	
+
+					EBML::uint64 m_ui64LaboratoryId;
 					std::string m_pLaboratoryName;
 					EBML::uint64 m_ui64TechnicianId;
 					std::string m_pTechnicianName;
-	
+
 					bool m_bReadyToSend;
 			};
-				
-			
+
+
 			// Used to store information about the signal stream
 			class CSignalDescription
 			{
 				public:
-					CSignalDescription() : m_ui32StreamVersion(1), m_ui32ChannelCount (0), m_bReadyToSend(false), m_ui32CurrentChannel(0)
+					CSignalDescription() : m_ui32StreamVersion(1), m_ui32SamplingRate(0), m_ui32ChannelCount(0), m_ui32SampleCount(0), m_ui32CurrentChannel(0), m_bReadyToSend(false)
 					{
 					}
 
@@ -66,11 +66,11 @@ namespace OpenViBEPlugins
 					EBML::uint32 m_ui32SampleCount;
 					std::vector<std::string> m_pChannelName;
 					EBML::uint32 m_ui32CurrentChannel;
-				
+
 					bool m_bReadyToSend;
 			};
-			
-			
+
+
 		public:
 
 			CGenericNetworkAcquisition(void);
@@ -88,12 +88,12 @@ namespace OpenViBEPlugins
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_GenericNetworkAcquisition)
 
 		public:
-					
+
 			virtual EBML::boolean readerIsMasterChild(const EBML::CIdentifier& rIdentifier);
 			virtual void readerOpenChild(const EBML::CIdentifier& rIdentifier);
 			virtual void readerProcessChildData(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 			virtual void readerCloseChild();
-			
+
 			virtual void writeExperimentOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 			virtual void writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 			virtual void writeStimulationOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
@@ -105,13 +105,13 @@ namespace OpenViBEPlugins
 			Socket::IConnectionClient* m_pConnectionClient;
 
 			//Input etc
-			EBML::TReaderCallbackProxy2<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerIsMasterChild, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerOpenChild, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerProcessChildData, &OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition::readerCloseChild> m_oInputReaderCallbackProxy;
-			
+			EBML::TReaderCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition> m_oInputReaderCallbackProxy;
+
 			EBML::CIdentifier m_oCurrentIdentifier;
 			EBML::IReader* m_pReader;
 			EBML::IReaderHelper* m_pReaderHelper;
 			OpenViBE::uint32 m_ui32CurrentChannel;
-			
+
 			//Output Writers etc
 			EBML::IWriter* m_pWriter[3];
 
@@ -120,11 +120,11 @@ namespace OpenViBEPlugins
 //			OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
 
 			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition> * m_pOutputWriterCallbackProxy[3];
-			
+
 			OpenViBE::uint64 m_ui64CurrentBufferSize;
 			OpenViBE::Plugins::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
 
-			
+
 			CExperimentInfoHeader * m_pExperimentInfoHeader;
 			bool m_bHeaderSent;
 
@@ -134,7 +134,7 @@ namespace OpenViBEPlugins
 			EBML::float64 * m_pMatrixBuffer;
 			OpenViBE::uint64 m_ui64MatrixBufferSize;
 			bool m_bMatrixReadyToSend;
-			
+
 			OpenViBE::uint32 m_ui32SentSampleCount;
 		};
 

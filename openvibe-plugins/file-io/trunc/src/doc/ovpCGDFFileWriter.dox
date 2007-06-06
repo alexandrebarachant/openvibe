@@ -1,0 +1,78 @@
+/**
+ \page Doc_ovpCGDFFileWriter GDF file writer documentation
+
+- Plugin name : GDF file writer
+- Version :	0.5
+- Author : 	Bruno Renier
+- Date :	03-27-2007
+
+<br>
+Summary :
+
+\ref Doc_ovpCGDFFileWriter_description
+
+\ref Doc_ovpCGDFFileWriter_inputs
+
+\ref Doc_ovpCGDFFileWriter_outputs
+
+\ref Doc_ovpCGDFFileWriter_settings
+
+\ref Doc_ovpCGDFFileWriter_examples
+
+\ref Doc_ovpCGDFFileWriter_misc
+
+<hr>
+<br>
+<br>
+ \section Doc_ovpCGDFFileWriter_description Description
+This plugin writes the incoming information in a GDF file. Right now, it only writes GDF1 files.
+
+\image html GDFFileWriterBox.png
+
+\attention For now, the stimulation input is not used, which means we don't save any information about the stimulations.
+
+ \section Doc_ovpCGDFFileWriter_inputs Inputs
+ Number of inputs : 3
+
+-# Experiment information output
+ - OV_TypeId_ExperimentationInformation
+ - This stream contains information about the experiment and subject.
+
+-# Signal output
+ - OV_TypeId_Signal
+ - Contains the signal information for the different channels.
+
+-# Stimulation output
+ - OV_TypeId_Stimulations
+ - Contains information about the stimulations that occured during the experiment.
+
+ \section Doc_ovpCGDFFileWriter_outputs Outputs
+Number of outputs : 0
+
+ \section Doc_ovpCGDFFileWriter_settings Settings
+Number of settings : 1
+
+-# Filename
+ - String
+ - Name of the GDF file you want to write to.
+
+
+\section Doc_ovpCGDFFileWriter_examples Examples
+
+If you want to write the GDF file in your /tmp directory, you can configure the plugin like that :
+
+Filename :
+\code
+/tmp/myGDFFile.gdf
+\endcode
+
+
+ \section Doc_ovpCGDFFileWriter_misc Miscellaneous
+
+The stimulation input isn't used yet.
+
+The only output format is GDF1.
+
+The experiment information  such as the subject name and sex may not be parsed correctly by other programs.
+
+*/

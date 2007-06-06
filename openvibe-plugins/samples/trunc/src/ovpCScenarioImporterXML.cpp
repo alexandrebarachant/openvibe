@@ -4,7 +4,6 @@
 #include <fstream>
 
 using namespace OpenViBE;
-using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Samples;
@@ -140,7 +139,7 @@ void CScenarioImporterXML::release(void)
 	delete this;
 }
 
-boolean CScenarioImporterXML::doImport(const IScenarioImporterContext& rScenarioImporterContext)
+boolean CScenarioImporterXML::doImport(IScenarioImporterContext& rScenarioImporterContext)
 {
 	boolean l_bStatusOk=true;
 	XML::IReader* l_pReader=XML::createReader(*this);
@@ -152,11 +151,11 @@ boolean CScenarioImporterXML::doImport(const IScenarioImporterContext& rScenario
 	m_bIsOpenViBEScenario=false;
 	IScenario& l_rScenario=rScenarioImporterContext.getScenario();
 
-	// 1. Open scenario file
+	// 1. Open scenario file (binary because read would conflict with tellg for text files)
 	// 2. Loop until end of file, reading it
 	//    and sending what is read to the XML parser
 	// 3. Close the scenario file
-	ifstream l_oFile(rScenarioImporterContext.getFileName());
+	ifstream l_oFile(rScenarioImporterContext.getFileName(), ios::binary);
 	if(l_oFile.is_open())
 	{
 		char l_sBuffer[1024];

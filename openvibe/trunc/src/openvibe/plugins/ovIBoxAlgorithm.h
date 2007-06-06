@@ -5,14 +5,25 @@
 
 namespace OpenViBE
 {
-	class CMessageClock;
-	class CMessageEvent;
-	class CMessageSignal;
+	namespace Kernel
+	{
+		class IMessageClock;
+		class IMessageEvent;
+		class IMessageSignal;
+	};
+
+	// for backward compatibility
+	typedef OpenViBE::Kernel::IMessageClock CMessageClock;
+	typedef OpenViBE::Kernel::IMessageEvent CMessageEvent;
+	typedef OpenViBE::Kernel::IMessageSignal CMessageSignal;
+
+	namespace Kernel
+	{
+		class IBoxAlgorithmContext;
+	}
 
 	namespace Plugins
 	{
-		class IBoxAlgorithmContext;
-
 		/**
 		 * \class IBoxAlgorithm
 		 * \author Yann Renard (INRIA/IRISA)
@@ -30,7 +41,7 @@ namespace OpenViBE
 		 * This is the heart of the extension mechanism of the
 		 * §OpenViBE§ platform.
 		 *
-		 * \sa OpenViBE::Plugins::IBoxAlgorithmDesc
+		 * \sa OpenViBE::Kernel::IBoxAlgorithmDesc
 		 *
 		 * \todo details about building new plugins
 		 */
@@ -57,7 +68,7 @@ namespace OpenViBE
 			 *       clock activated.
 			 */
 			virtual OpenViBE::uint32 getClockFrequency(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext) { return 0; }
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext) { return 0; }
 
 			//@}
 			/** \name Initialization / Uninitialization */
@@ -77,7 +88,7 @@ namespace OpenViBE
 			 * \sa uninitialize
 			 */
 			virtual OpenViBE::boolean initialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext) { return true; }
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext) { return true; }
 			/**
 			 * \brief Unprepares the object so it can be deleted
 			 * \param rBoxAlgorithmContext [in] : the plugin object context
@@ -95,7 +106,7 @@ namespace OpenViBE
 			 * \sa initialize
 			 */
 			virtual OpenViBE::boolean uninitialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext) { return true; }
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext) { return true; }
 
 			//@}
 			/** \name Several event processing callbacks */
@@ -118,8 +129,8 @@ namespace OpenViBE
 			 * \sa OpenViBE::IBoxAlgorithmContext
 			 */
 			virtual OpenViBE::boolean processEvent(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageEvent& rMessageEvent) { return false; }
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::Kernel::IMessageEvent& rMessageEvent) { return false; }
 			/**
 			 * \brief Reaction to a signal
 			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
@@ -135,11 +146,11 @@ namespace OpenViBE
 			 * processing, stop processing, load a new scenario
 			 * and so on...
 			 *
-			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext
+			 * \sa OpenViBE::Kernel::IBoxAlgorithmContext
 			 */
 			virtual OpenViBE::boolean processSignal(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageSignal& rMessageSignal) { return false; }
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::Kernel::IMessageSignal& rMessageSignal) { return false; }
 			/**
 			 * \brief Reaction to a clock tick
 			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
@@ -157,11 +168,11 @@ namespace OpenViBE
 			 * sends periodically, thus needing a moving
 			 * 'viewed-window' on lastly received data.
 			 *
-			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext
+			 * \sa OpenViBE::Kernel::IBoxAlgorithmContext
 			 */
 			virtual OpenViBE::boolean processClock(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageClock& rMessageClock) { return false; }
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::Kernel::IMessageClock& rMessageClock) { return false; }
 			/**
 			 * \brief Reaction to an input update
 			 * \param rBoxAlgorithmContext [in] : the box algorithm context to use
@@ -175,10 +186,10 @@ namespace OpenViBE
 			 * algorithm to decide to call the process function and
 			 * eventually to the received data.
 			 *
-			 * \sa OpenViBE::Plugins::IBoxAlgorithmContext
+			 * \sa OpenViBE::Kernel::IBoxAlgorithmContext
 			 */
 			virtual OpenViBE::boolean processInput(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
 				OpenViBE::uint32 ui32InputIndex) { return false; }
 
 			//@}
@@ -205,11 +216,11 @@ namespace OpenViBE
 			 * \sa OpenViBE::Kernel::IBoxAlgorithmContext
 			 */
 			virtual OpenViBE::boolean process(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)=0;
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)=0;
 
 			//@}
 
-			_IsDerivedFromClass_(OpenViBE::Plugins::IBoxAlgorithm, OV_ClassId_Plugins_BoxAlgorithm)
+			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObject, OV_ClassId_Plugins_BoxAlgorithm)
 		};
 	};
 };

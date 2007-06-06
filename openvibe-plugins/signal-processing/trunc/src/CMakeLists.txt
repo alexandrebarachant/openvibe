@@ -16,4 +16,7 @@ ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-toolkit-static)
 
 INCLUDE("FindOpenViBE.cmake")
 INCLUDE("FindOpenViBEModuleEBML.cmake")
+INCLUDE("FindOpenViBEModuleSystem.cmake")
 INCLUDE("FindOpenViBEToolkit.cmake")
+INCLUDE("FindThirdPartyBoost.cmake")
+

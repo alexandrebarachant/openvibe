@@ -13,7 +13,7 @@ using namespace std;
 CSinusSignalGenerator::CSinusSignalGenerator(void)
 	:m_oSignalOutputWriterCallbackProxy(
 		*this,
-		&OpenViBEPlugins::Samples::CSinusSignalGenerator::writeSignalOutput)
+		&CSinusSignalGenerator::writeSignalOutput)
 	,m_pSignalOutputWriterHelper(NULL)
 	,m_pSignalOutputWriter(NULL)
 	,m_bHeaderSent(false)
@@ -103,7 +103,10 @@ boolean CSinusSignalGenerator::process(void)
 		{
 			for(j=0; j<m_ui32GeneratedEpochSampleCount; j++)
 			{
-				m_pSampleBuffer[i*m_ui32GeneratedEpochSampleCount+j]=sinf((2.0f*3.141592654f*i*(j+m_ui32SentSampleCount))/m_ui32SamplingFrequency);
+				m_pSampleBuffer[i*m_ui32GeneratedEpochSampleCount+j]=
+					sin(((j+m_ui32SentSampleCount)*(i+1)*12.3)/m_ui32SamplingFrequency)+
+					sin(((j+m_ui32SentSampleCount)*(i+1)* 4.5)/m_ui32SamplingFrequency)+
+					sin(((j+m_ui32SentSampleCount)*(i+1)*67.8)/m_ui32SamplingFrequency);
 			}
 		}
 		m_pSignalOutputWriterHelper->writeBuffer(*m_pSignalOutputWriter);

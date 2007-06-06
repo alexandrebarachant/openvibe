@@ -22,6 +22,8 @@ namespace OpenViBEPlugins
 			class CFixedGDFHeader
 			{
 			public:
+				virtual ~CFixedGDFHeader(){}
+
 				virtual OpenViBE::boolean read(std::ifstream& oFile) = 0;
 
 				virtual OpenViBE::boolean save(std::ofstream& oFile) = 0;
@@ -50,6 +52,8 @@ namespace OpenViBEPlugins
 			{
 			public:
 				CFixedGDF1Header();
+
+				virtual ~CFixedGDF1Header(){}
 
 				/**
 				 * Reads a GDF1 fixed Header from a file
@@ -103,6 +107,7 @@ namespace OpenViBEPlugins
 			class CFixedGDF2Header : public CFixedGDFHeader
 			{
 			public:
+				virtual ~CFixedGDF2Header(){}
 
 				/**
 				* Reads a GDF2 fixed Header from a file
@@ -124,7 +129,7 @@ namespace OpenViBEPlugins
 				 * \param oFile The output file.
 				 * \return true if the operation was successful
 				 */
-				virtual OpenViBE::boolean update(std::ofstream& oFile){}
+				virtual OpenViBE::boolean update(std::ofstream& oFile){ return true;}
 
 				virtual std::string getExperimentDate();
 				virtual std::string getSubjectName();
@@ -168,6 +173,7 @@ namespace OpenViBEPlugins
 			class CVariableGDFHeader
 			{
 				public:
+					virtual ~CVariableGDFHeader(){};
 					virtual OpenViBE::boolean save(std::ofstream& oFile) = 0;
 			};
 
@@ -180,6 +186,7 @@ namespace OpenViBEPlugins
 				class CVariableGDF1HeaderPerChannel
 				{
 					public:
+
 						CVariableGDF1HeaderPerChannel(void);
 
 						char m_sLabel[16];
@@ -196,6 +203,9 @@ namespace OpenViBEPlugins
 				};
 
 				public:
+					
+					virtual ~CVariableGDF1Header(){}
+
 					/**
 					* Saves a GDF1 variable Header in a file
 					* \param oFile The output file.

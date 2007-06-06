@@ -15,20 +15,35 @@ namespace OpenViBE
 
 			CTypeManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
+			virtual OpenViBE::boolean registerType(
+				const OpenViBE::CIdentifier& rTypeIdentifier,
+				const OpenViBE::CString& sTypeName);
+			virtual OpenViBE::boolean registerStreamType(
+				const OpenViBE::CIdentifier& rTypeIdentifier,
+				const OpenViBE::CString& sTypeName,
+				const OpenViBE::CIdentifier& rParentTypeIdentifier);
 			virtual OpenViBE::boolean registerEnumerationType(
 				const OpenViBE::CIdentifier& rTypeIdentifier,
-				const OpenViBE::CString& rEnumerationString);
+				const OpenViBE::CString& sTypeName,
+				const OpenViBE::CString& sEnumerationString);
 			virtual OpenViBE::boolean registerBitMaskType(
 				const OpenViBE::CIdentifier& rTypeIdentifier,
-				const OpenViBE::CString& rBitMaskString);
+				const OpenViBE::CString& sTypeName,
+				const OpenViBE::CString& sBitMaskString);
 
 			virtual OpenViBE::boolean isRegistered(
+				const OpenViBE::CIdentifier& rTypeIdentifier);
+			virtual OpenViBE::boolean isStream(
 				const OpenViBE::CIdentifier& rTypeIdentifier);
 			virtual OpenViBE::boolean isEnumeration(
 				const OpenViBE::CIdentifier& rTypeIdentifier);
 			virtual OpenViBE::boolean isBitMask(
 				const OpenViBE::CIdentifier& rTypeIdentifier);
 
+			virtual OpenViBE::CString getTypeName(
+				const OpenViBE::CIdentifier& rTypeIdentifier);
+			virtual OpenViBE::CIdentifier getStreamParentType(
+				const OpenViBE::CIdentifier& rTypeIdentifier);
 			virtual OpenViBE::CString getEnumerationString(
 				const OpenViBE::CIdentifier& rTypeIdentifier);
 			virtual OpenViBE::CString getBitMaskString(
@@ -38,8 +53,10 @@ namespace OpenViBE
 
 		protected:
 
+			std::map<OpenViBE::CIdentifier, OpenViBE::CString> m_vName;
 			std::map<OpenViBE::CIdentifier, OpenViBE::CString> m_vEnumeration;
 			std::map<OpenViBE::CIdentifier, OpenViBE::CString> m_vBitMask;
+			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vStream;
 		};
 	};
 };

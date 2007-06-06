@@ -9,7 +9,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CScenarioImporterContext : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Plugins::IScenarioImporterContext>
+		class CScenarioImporterContext : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IScenarioImporterContext>
 		{
 		public:
 
@@ -21,7 +21,7 @@ namespace OpenViBE
 			virtual OpenViBE::CString getFileName(void) const;
 			virtual OpenViBE::Kernel::IScenario& getScenario(void) const;
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Plugins::IScenarioImporterContext>, OVK_ClassId_Kernel_ScenarioImporterContext);
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IScenarioImporterContext>, OVK_ClassId_Kernel_ScenarioImporterContext);
 
 		protected:
 

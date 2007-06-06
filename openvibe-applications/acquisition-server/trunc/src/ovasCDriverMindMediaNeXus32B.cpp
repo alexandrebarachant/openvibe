@@ -1,5 +1,7 @@
 #include "ovasCDriverMindMediaNeXus32B.h"
 #include "ovasIHeader.h"
+#include "ovasIHeaderConfigurator.h"
+#include "ovasCHeaderConfiguratorGlade.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -13,7 +15,6 @@
 #endif
 
 using namespace OpenViBEAcquisitionServer;
-using namespace std;
 
 #define OVAS_ElectrodeNames_File "../share/openvibe-applications/acquisition-server/electrode-names.txt"
 #define OVAS_ConfigureGUI_File   "../share/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.glade"
@@ -68,20 +69,16 @@ static NeXusDLL_Init g_fpNeXusDLLInit=NULL;
 static NeXusDLL_Start g_fpNeXusDLLStart=NULL;
 static NeXusDLL_Stop g_fpNeXusDLLStop=NULL;
 
+static OpenViBEAcquisitionServer::CDriverMindMediaNeXus32B* g_pDriver=NULL;
+
 //___________________________________________________________________//
 //                                                                   //
 
 static void processData(int iSampleCount, int iChannel, float* pSample)
 {
-	for(int i=0; i<m_pHeader->getChannelCount(); i++)
+	if(g_pDriver)
 	{
-		m_pSample[m_ui32SampleIndex+i*m_ui32SampleCountPerSentBlock]=pSample[i];
-	}
-	m_ui32SampleIndex++;
-	m_ui32SampleIndex%=m_ui32SampleCountPerSentBlock;
-	if(!m_ui32SampleIndex)
-	{
-		g_fpDriverProcessData(m_pSample, m_pUserData);
+		g_pDriver->processData((uint32)iSampleCount, (uint32) iChannel, (float32*) pSample);
 	}
 }
 
@@ -124,7 +121,7 @@ boolean CDriverMindMediaNeXus32B::initialize(
 		return false;
 	}
 
-	::DWORD l_dwError=g_fpNeXusDLLInit(processData);
+	::DWORD l_dwError=g_fpNeXusDLLInit(::processData);
 	if(l_dwError)
 	{
 		::FreeLibrary(g_hNeXusDLLInstance);
@@ -141,6 +138,7 @@ boolean CDriverMindMediaNeXus32B::initialize(
 	m_bInitialized=true;
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 	m_ui32SampleIndex=0;
+	g_pDriver=this;
 
 	return true;
 
@@ -165,7 +163,7 @@ boolean CDriverMindMediaNeXus32B::start(void)
 		return false;
 	}
 
-	::DWORD l_dwSamplingFrequency=::DWORD(m_ui32SamplingRate);
+	::DWORD l_dwSamplingFrequency=::DWORD(m_pHeader->getSamplingFrequency());
 	::DWORD l_dwError=g_fpNeXusDLLStart(&l_dwSamplingFrequency);
 	m_bStarted=(l_dwError?false:true);
 	return m_bStarted;
@@ -249,6 +247,7 @@ boolean CDriverMindMediaNeXus32B::uninitialize(void)
 	g_fpNeXusDLLInit=NULL;
 	g_fpNeXusDLLStart=NULL;
 	g_fpNeXusDLLStop=NULL;
+	g_pDriver=NULL;
 
 	return true;
 
@@ -294,6 +293,27 @@ boolean CDriverMindMediaNeXus32B::configure(void)
 #else
 
 	return false;
+
+#endif
+}
+
+void CDriverMindMediaNeXus32B::processData(
+	uint32 ui32SampleCount,
+	uint32 ui32Channel,
+	float32* pSample)
+{
+#if defined OVAS_OS_Windows
+
+	for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+	{
+		m_pSample[m_ui32SampleIndex+i*m_ui32SampleCountPerSentBlock]=pSample[i];
+	}
+	m_ui32SampleIndex++;
+	m_ui32SampleIndex%=m_ui32SampleCountPerSentBlock;
+	if(!m_ui32SampleIndex)
+	{
+		m_pCallback->setSamples(m_pSample);
+	}
 
 #endif
 }

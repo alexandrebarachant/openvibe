@@ -97,8 +97,8 @@ boolean CGenericStreamReader::process(void)
 		System::Memory::littleEndianToHost(l_pTempBuffer+sizeof(l_ui32CurrentInput)+sizeof(l_ui64StartTime)+sizeof(l_ui64EndTime), &l_ui64ChunkSize);
 
 		//reads the actual chunk datas
-		l_pChunkBuffer = new uint8[l_ui64ChunkSize];
-		m_oFile.read(reinterpret_cast<char * >(l_pChunkBuffer), l_ui64ChunkSize);
+		l_pChunkBuffer = new uint8[(size_t)l_ui64ChunkSize];
+		m_oFile.read(reinterpret_cast<char * >(l_pChunkBuffer), (std::streamsize)l_ui64ChunkSize);
 
 		if(m_oFile.bad() || m_oFile.fail())
 		{

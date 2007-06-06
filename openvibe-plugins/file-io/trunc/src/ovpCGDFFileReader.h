@@ -14,7 +14,7 @@
 #include <system/Memory.h>
 
 #include <fstream>
-#include <string.h>
+#include <string>
 #include <vector>
 
 
@@ -57,7 +57,7 @@ namespace OpenViBEPlugins
 			class CSignalDescription
 			{
 				public:
-					CSignalDescription() : m_ui32StreamVersion(1), m_ui32ChannelCount (0), m_bReadyToSend(false), m_ui32CurrentChannel(0)
+					CSignalDescription() : m_ui32StreamVersion(1), m_ui32SamplingRate(0), m_ui32ChannelCount (0), m_ui32SampleCount(0), m_ui32CurrentChannel(0), m_bReadyToSend(false)
 					{
 					}
 
@@ -111,7 +111,7 @@ namespace OpenViBEPlugins
 
 			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter * m_pSignalOutputWriterHelper;
 			OpenViBEToolkit::IBoxAlgorithmExperimentInformationOutputWriter * m_pExperimentInformationOutputWriterHelper;
-//			OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
+			OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
 
 			//Stream information
 			OpenViBE::uint64 m_ui32SamplesPerBuffer;	//user defined
@@ -181,7 +181,7 @@ namespace OpenViBEPlugins
 				return static_cast<OpenViBE::float64>((m_pChannelScale[ui32Channel] * val) + m_pChannelTranslate[ui32Channel]);
 			}
 
-			template<class T> OpenViBE::float64 GDFTypeBufferToFloat64Buffer(OpenViBE::float64 * out, T * in, OpenViBE::uint64 inputBufferSize, OpenViBE::uint32 ui32Channel)
+			template<class T> void GDFTypeBufferToFloat64Buffer(OpenViBE::float64 * out, T * in, OpenViBE::uint64 inputBufferSize, OpenViBE::uint32 ui32Channel)
 			{
 				for(OpenViBE::uint64 i = 0 ; i<inputBufferSize ; i++)
 				{
@@ -206,7 +206,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("GDF file reader"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/GDF"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFFileReader; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFFileReader(); }
@@ -214,12 +214,12 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
 				// Adds box outputs
-				rPrototype.addOutput("Experiment information", OV_TypeId_Signal); //TODO changer type?
-				rPrototype.addOutput("EEG stream",             OV_TypeId_Signal);
-				rPrototype.addOutput("Stimulations",           OV_TypeId_Signal);
+				rPrototype.addOutput("Experiment information", OV_TypeId_ExperimentationInformation);
+				rPrototype.addOutput("EEG stream", OV_TypeId_Signal);
+				rPrototype.addOutput("Stimulations", OV_TypeId_Stimulations);
 
 				// Adds settings
-				rPrototype.addSetting("Filename", OV_TypeId_String, "/udd/brenier/gdftest.gdf");
+				rPrototype.addSetting("Filename", OV_TypeId_String, "");
 				rPrototype.addSetting("Samples per buffer", OV_TypeId_Integer, "32");
 
 				return true;

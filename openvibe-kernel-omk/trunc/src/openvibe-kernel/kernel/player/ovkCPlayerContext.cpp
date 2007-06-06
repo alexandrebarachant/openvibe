@@ -6,7 +6,6 @@ using namespace OpenViBE::Kernel;
 
 CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
 	:TKernelObject<IPlayerContext>(rKernelContext)
-	,TPluginObjectContext<IPlayerContext>(rKernelContext)
 	,m_pSimulatedBox(pSimulatedBox)
 {
 }

@@ -1,5 +1,8 @@
 #include "ovasCAcquisitionServer.h"
 
+#include "ovasCDriverMindMediaNeXus32B.h"
+#include "ovasCDriverGenericOscilator.h"
+
 #include <system/Memory.h>
 #include <system/Time.h>
 
@@ -8,8 +11,9 @@
 #include <iostream>
 #include <fstream>
 
-#include "ovasCDriverMindMediaNeXus32B.h"
-#include "ovasCDriverGenericOscilator.h"
+#if defined OVAS_OS_Windows
+ #include <assert.h>
+#endif
 
 #define OVAS_GUI_File            "../share/openvibe-applications/acquisition-server/interface.glade"
 
@@ -17,6 +21,31 @@
 
 using namespace OpenViBEAcquisitionServer;
 using namespace std;
+
+namespace OpenViBEAcquisitionServer
+{
+	class CConnectionHandler : virtual public EBML::IWriterCallback
+	{
+	public:
+
+		CConnectionHandler(Socket::IConnection& rConnection);
+		virtual ~CConnectionHandler(void);
+
+		// Accessors
+		Socket::IConnection& getConnection(void);
+		EBML::IWriter& getWriter(void);
+		EBML::IWriterHelper& getWriterHelper(void);
+
+		// EBML writer callback
+		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+
+	protected:
+
+		Socket::IConnection& m_rConnection;
+		EBML::IWriter* m_pWriter;
+		EBML::IWriterHelper* m_pWriterHelper;
+	};
+};
 
 CConnectionHandler::CConnectionHandler(Socket::IConnection& rConnection)
 	:m_rConnection(rConnection)
@@ -59,7 +88,8 @@ void CConnectionHandler::write(const void* pBuffer, const EBML::uint64 ui64Buffe
 		m_rConnection.receiveBuffer(l_pNullPacket, sizeof(l_pNullPacket));
 	}
 
-	m_rConnection.sendBuffer(pBuffer, ui64BufferSize);
+	assert(ui64BufferSize <= 0xffffffff);
+	m_rConnection.sendBuffer(pBuffer, (uint32)ui64BufferSize);
 }
 
 //___________________________________________________________________//
@@ -444,6 +474,7 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 		if(m_bGotData)
 		{
 			// some data will be dropped !
+			cout << "dropped data\n";
 		}
 		else
 		{
@@ -460,5 +491,9 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 			}
 		}
 		m_bGotData=true;
+	}
+	else
+	{
+		cout << "not started\n";
 	}
 }

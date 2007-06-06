@@ -1,6 +1,10 @@
 #ifndef __OpenViBEKernel_Tools_CScopeTester_H__
 #define __OpenViBEKernel_Tools_CScopeTester_H__
 
+#include "../ovk_base.h"
+
+#include <openvibe/ov_all.h>
+
 #include <iostream>
 #include <string>
 
@@ -8,25 +12,15 @@ namespace OpenViBE
 {
 	namespace Tools
 	{
-		class CScopeTester
+		class CScopeTester : virtual OpenViBE::IObject
 		{
 		public:
 
-			CScopeTester(void)
-			{
-				std::cout << "## CScopeTester [" << m_sPrefix << "] enter\n";
-			}
+			CScopeTester(void);
+			CScopeTester(const std::string& sPrefix);
+			virtual ~CScopeTester(void);
 
-			CScopeTester(const std::string& sPrefix)
-				:m_sPrefix(sPrefix)
-			{
-				std::cout << "## CScopeTester [" << m_sPrefix << "] enter\n";
-			}
-
-			virtual ~CScopeTester(void)
-			{
-				std::cout << "## CScopeTester [" << m_sPrefix << "] leave\n";
-			}
+			_IsDerivedFromClass_Final_(IObject, OVK_ClassId_Tools_ScopeTester);
 
 		protected:
 

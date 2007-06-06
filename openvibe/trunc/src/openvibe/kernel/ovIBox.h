@@ -28,24 +28,22 @@ namespace OpenViBE
 			 * \brief Gets the identifier of this box
 			 * \return The identifier of this §OpenViBE§ box.
 			 */
-			virtual const OpenViBE::CIdentifier& getIdentifier(void) const=0;
+			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
 			/**
 			 * \brief Gets the display name of this box
 			 * \return The name of this §OpenViBE§ box.
 			 */
-			virtual const OpenViBE::CString& getName(void) const=0;
+			virtual OpenViBE::CString getName(void) const=0;
 			/**
 			 * \brief Gets the algorithm class identifier
 			 * \return This box' algorithm class identifier
 			 */
-			virtual const OpenViBE::CIdentifier& getAlgorithmClassIdentifier(void) const=0;
-#if 0
+			virtual OpenViBE::CIdentifier getAlgorithmClassIdentifier(void) const=0;
 			/**
-			 * \brief Gets the behavior class identifier
-			 * \return This box' behavior class identifier
+			 * \brief Gets processing unit identifier for this box
+			 * \return This box' processing unit identifier
 			 */
-			virtual const OpenViBE::CIdentifier& getBehaviorClassIdentifier(void) const=0;
-#endif
+			virtual OpenViBE::CIdentifier getProcessingUnitIdentifier(void) const=0;
 			/**
 			 * \brief Changes the identifier of this box
 			 * \param rIdentifier [in] : The new identifier
@@ -72,17 +70,43 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean setAlgorithmClassIdentifier(
 				const OpenViBE::CIdentifier& rAlgorithmClassIdentifier)=0;
-#if 0
 			/**
-			 * \brief Changes the behavior identifier of this box
-			 * \param rBehaviorClassIdentifier [in] : The new behavior
-			 *        identifier this box should take.
+			 * \brief Changes the processing unit identifier of this box
+			 * \param rProcessingUnitIdentifier [in] : The new processing
+			 *        unit identifier this box should take.
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
 			 */
-			virtual OpenViBE::boolean setBehaviorClassIdentifier(
-				const OpenViBE::CIdentifier& rBehaviorClassIdentifier)=0;
-#endif
+			virtual OpenViBE::boolean setProcessingUnitIdentifier(
+				const OpenViBE::CIdentifier& rProcessingUnitIdentifier)=0;
+
+			//@}
+			/** \name Initialisation from prototypes etc... */
+			//@{
+
+			/**
+			 * \brief Initializes the box from box algorithm descriptor
+			 * \param rAlgorithmClassIdentifier [in] : The new algorithm
+			 *        identifier this box should take.
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 *
+			 * Resets the box and initializes its input/output/settings
+			 * according to the box algorithm descriptor
+			 */
+			virtual OpenViBE::boolean initializeFromAlgorithmClassIdentifier(
+				const OpenViBE::CIdentifier& rAlgorithmClassIdentifier)=0;
+			/**
+			 * \brief Initializes the box from an already existing box
+			 * \param rExisitingBox [in] : The existing box.
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 *
+			 * Resets the box and initializes its input/output/settings
+			 * according to the existing box.
+			 */
+			virtual OpenViBE::boolean initializeFromExistingBox(
+				const OpenViBE::Kernel::IBox& rExisitingBox)=0;
 
 			//@}
 			/** \name Input management */
@@ -370,6 +394,8 @@ namespace OpenViBE
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IAttributable, OV_ClassId_Kernel_Box)
 		};
+
+		typedef OpenViBE::Kernel::IBox IStaticBoxContext;
 	};
 };
 

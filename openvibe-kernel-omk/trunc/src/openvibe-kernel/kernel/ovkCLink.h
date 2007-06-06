@@ -16,7 +16,7 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean setIdentifier(
 				const OpenViBE::CIdentifier& rIdentifier);
-			virtual const OpenViBE::CIdentifier& getIdentifier(void) const;
+			virtual OpenViBE::CIdentifier getIdentifier(void) const;
 
 			virtual OpenViBE::boolean setSource(
 				const OpenViBE::CIdentifier& rBoxIdentifier,

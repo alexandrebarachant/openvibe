@@ -35,7 +35,7 @@ boolean CScenarioManager::releaseScenario(
 IScenario& CScenarioManager::getScenario(
 	const CIdentifier& rScenarioIdentifier)
 {
-	map<CIdentifier, IScenario*>::iterator itScenario;
+	map<CIdentifier, IScenario*>::const_iterator itScenario;
 	itScenario=m_vScenario.find(rScenarioIdentifier);
 	if(itScenario==m_vScenario.end())
 	{

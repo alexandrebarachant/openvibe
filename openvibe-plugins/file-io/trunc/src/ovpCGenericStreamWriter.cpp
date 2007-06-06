@@ -99,7 +99,7 @@ boolean CGenericStreamWriter::process(void)
 			m_oFile.write(reinterpret_cast<char *>(l_pTempBuffer), sizeof(uint64));
 
 			//write the chunk
-			m_oFile.write(reinterpret_cast<const char *>(l_pChunkBuffer), l_ui64ChunkSize);
+			m_oFile.write(reinterpret_cast<const char *>(l_pChunkBuffer), (std::streamsize)l_ui64ChunkSize);
 
 			l_pDynamicBoxContext->markInputAsDeprecated(l_ui32CurrentInput, j);
 
@@ -108,4 +108,6 @@ boolean CGenericStreamWriter::process(void)
 
 	//clear the vector of inputs with pending data
 	m_vInputWithPendingData.clear();
+
+	return true;
 }

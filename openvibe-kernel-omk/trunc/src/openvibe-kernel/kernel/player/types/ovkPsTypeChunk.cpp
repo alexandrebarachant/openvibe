@@ -28,7 +28,6 @@
 /* functions.                                                           */
 /************************************************************************/
 /************************************************************************/
-		
 
 #include "ovkPsTypeChunk.h"
 #include <PsSimulatedObject.h>
@@ -241,6 +240,7 @@ void PsTypeChunk::insertInStream( std::ostream& out ) const
 	    << getStartTime() << " "
 	    << getEndTime() << " "
 	    << getBuffer() << " "
+	    << m_bDeprecated << " "
 	    << " " ;
 }
 
@@ -251,7 +251,8 @@ void PsTypeChunk::extract( std::istream& in )
 	in >> _ioConnectorIndex
 	   >> _startTime
 	   >> _endTime
-	   >> _buffer ;
+	   >> _buffer
+	   >> m_bDeprecated;
 }
 
 //========================================================================
@@ -261,7 +262,8 @@ void PsTypeChunk::pack( PsOutgoingSynchronisationMessage& out ) const
 	out << getIoConnectorIndex()
 	    << getStartTime()
 	    << getEndTime()
-	    << getBuffer() ;
+	    << getBuffer()
+	    << m_bDeprecated;
 }
 
 //========================================================================
@@ -271,7 +273,8 @@ void PsTypeChunk::unpack( PsIncomingSynchronisationMessage& in )
 	in >> _ioConnectorIndex
 	   >> _startTime
 	   >> _endTime
-	   >> _buffer ;
+	   >> _buffer
+	   >> m_bDeprecated;
 }
 
 //========================================================================
@@ -289,6 +292,7 @@ void PsTypeChunk::_copy( const PsTypeChunk& ref )
 	_startTime = ref.getStartTime() ;
 	_endTime = ref.getEndTime() ;
 	_buffer = ref.getBuffer() ;
+	m_bDeprecated=ref.m_bDeprecated;
 }
 
 //========================================================================

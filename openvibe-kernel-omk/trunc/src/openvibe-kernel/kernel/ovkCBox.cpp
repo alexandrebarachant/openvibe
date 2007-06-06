@@ -1,16 +1,22 @@
 #include "ovkCBox.h"
+#include "ovkCBoxProto.h"
 
 using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace OpenViBE::Plugins;
 
 //___________________________________________________________________//
 //                                                                   //
 
 CBox::CBox(const IKernelContext& rKernelContext)
 	:TKernelObject<TAttributable<IBox> >(rKernelContext)
+	,m_pBoxAlgorithmDescriptor(NULL)
+	,m_bIsNotifyingDescriptor(false)
+	,m_bIsModificationCallbackActive(true)
 	,m_oIdentifier(OV_UndefinedIdentifier)
 	,m_oAlgorithmClassIdentifier(OV_UndefinedIdentifier)
+	,m_oProcessingUnitIdentifier(OV_UndefinedIdentifier)
 	,m_sName("unnamed")
 {
 }
@@ -18,24 +24,37 @@ CBox::CBox(const IKernelContext& rKernelContext)
 //___________________________________________________________________//
 //                                                                   //
 
-const CIdentifier& CBox::getIdentifier(void) const
+CIdentifier CBox::getIdentifier(void) const
 {
 	return m_oIdentifier;
 }
 
-const CString& CBox::getName(void) const
+CString CBox::getName(void) const
 {
 	return m_sName;
 }
 
-const CIdentifier& CBox::getAlgorithmClassIdentifier(void) const
+CIdentifier CBox::getAlgorithmClassIdentifier(void) const
 {
 	return m_oAlgorithmClassIdentifier;
+}
+
+CIdentifier CBox::getProcessingUnitIdentifier(void) const
+{
+	return m_oProcessingUnitIdentifier;
 }
 
 boolean CBox::setIdentifier(
 	const CIdentifier& rIdentifier)
 {
+	if(m_oIdentifier!=OV_UndefinedIdentifier)
+	{
+		return false;
+	}
+	if(rIdentifier==OV_UndefinedIdentifier)
+	{
+		return false;
+	}
 	m_oIdentifier=rIdentifier;
 	return true;
 }
@@ -48,9 +67,110 @@ boolean CBox::setName(
 }
 
 boolean CBox::setAlgorithmClassIdentifier(
-	const CIdentifier& rIdentifier)
+	const CIdentifier& rAlgorithmClassIdentifier)
 {
-	m_oAlgorithmClassIdentifier=rIdentifier;
+	m_oAlgorithmClassIdentifier=rAlgorithmClassIdentifier;
+
+	const IPluginObjectDesc* l_pPluginObjectDescriptor=getKernelContext().getPluginManager().getPluginObjectDescCreating(rAlgorithmClassIdentifier);
+	if(l_pPluginObjectDescriptor)
+	{
+		m_pBoxAlgorithmDescriptor=dynamic_cast<const IBoxAlgorithmDesc*>(l_pPluginObjectDescriptor);
+	}
+	else
+	{
+		m_pBoxAlgorithmDescriptor=NULL;
+	}
+
+	return true;
+}
+
+boolean CBox::setProcessingUnitIdentifier(
+	const CIdentifier& rProcessingUnitIdentifier)
+{
+	m_oProcessingUnitIdentifier=rProcessingUnitIdentifier;
+	return true;
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+boolean CBox::initializeFromAlgorithmClassIdentifier(
+	const CIdentifier& rAlgorithmClassIdentifier)
+{
+	this->deactivateModificationCallback();
+
+	const IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(getKernelContext().getPluginManager().getPluginObjectDescCreating(rAlgorithmClassIdentifier));
+	if(!l_pBoxAlgorithmDesc)
+	{
+		log() << LogLevel_Warning << "Algorithm descriptor not found\n";
+
+		this->activateModificationCallback();
+
+		return false;
+	}
+
+	clear();
+	setName(l_pBoxAlgorithmDesc->getName());
+	setAlgorithmClassIdentifier(rAlgorithmClassIdentifier);
+
+	CBoxProto l_oBoxProto(getKernelContext(), *this);
+	l_pBoxAlgorithmDesc->getBoxPrototype(l_oBoxProto);
+
+	return true;
+}
+
+boolean CBox::initializeFromExistingBox(
+	const IBox& rExisitingBox)
+{
+	uint32 i;
+
+	this->deactivateModificationCallback();
+
+	clear();
+	setName(rExisitingBox.getName());
+	setAlgorithmClassIdentifier(rExisitingBox.getAlgorithmClassIdentifier());
+
+	for(i=0; i<rExisitingBox.getInputCount(); i++)
+	{
+		CIdentifier l_oType;
+		CString l_sName;
+		rExisitingBox.getInputType(i, l_oType);
+		rExisitingBox.getInputName(i, l_sName);
+		addInput(l_sName, l_oType);
+	}
+
+	for(i=0; i<rExisitingBox.getOutputCount(); i++)
+	{
+		CIdentifier l_oType;
+		CString l_sName;
+		rExisitingBox.getOutputType(i, l_oType);
+		rExisitingBox.getOutputName(i, l_sName);
+		addOutput(l_sName, l_oType);
+	}
+
+	for(i=0; i<rExisitingBox.getSettingCount(); i++)
+	{
+		CIdentifier l_oType;
+		CString l_sName;
+		CString l_sValue;
+		CString l_sDefaultValue;
+		rExisitingBox.getSettingType(i, l_oType);
+		rExisitingBox.getSettingName(i, l_sName);
+		rExisitingBox.getSettingValue(i, l_sValue);
+		rExisitingBox.getSettingDefaultValue(i, l_sDefaultValue);
+		addSetting(l_sName, l_oType, l_sDefaultValue);
+		setSettingValue(i, l_sValue);
+	}
+
+	CIdentifier l_oIdentifier=rExisitingBox.getNextAttributeIdentifier(OV_UndefinedIdentifier);
+	while(l_oIdentifier!=OV_UndefinedIdentifier)
+	{
+		addAttribute(l_oIdentifier, rExisitingBox.getAttributeValue(l_oIdentifier));
+		l_oIdentifier=rExisitingBox.getNextAttributeIdentifier(l_oIdentifier);
+	}
+
+	this->activateModificationCallback();
+
 	return true;
 }
 
@@ -65,6 +185,9 @@ boolean CBox::addInput(
 	i.m_sName=sName;
 	i.m_oTypeIdentifier=rTypeIdentifier;
 	m_vInput.push_back(i);
+
+	this->callModificationCallback(BoxModification_InputAdded);
+
 	return true;
 }
 
@@ -82,6 +205,9 @@ boolean CBox::removeInput(
 		return false;
 	}
 	it=m_vInput.erase(it);
+
+	this->callModificationCallback(BoxModification_InputRemoved);
+
 	return true;
 }
 
@@ -123,6 +249,9 @@ boolean CBox::setInputType(
 		return false;
 	}
 	m_vInput[ui32InputIndex].m_oTypeIdentifier=rTypeIdentifier;
+
+	this->callModificationCallback(BoxModification_InputTypeChanged);
+
 	return true;
 }
 
@@ -149,6 +278,9 @@ boolean CBox::addOutput(
 	o.m_sName=sName;
 	o.m_oTypeIdentifier=rTypeIdentifier;
 	m_vOutput.push_back(o);
+
+	this->callModificationCallback(BoxModification_OutputAdded);
+
 	return true;
 }
 
@@ -166,6 +298,9 @@ boolean CBox::removeOutput(
 		return false;
 	}
 	it=m_vOutput.erase(it);
+
+	this->callModificationCallback(BoxModification_OutputRemoved);
+
 	return true;
 }
 
@@ -207,6 +342,9 @@ boolean CBox::setOutputType(
 		return false;
 	}
 	m_vOutput[ui32OutputIndex].m_oTypeIdentifier=rTypeIdentifier;
+
+	this->callModificationCallback(BoxModification_OutputTypeChanged);
+
 	return true;
 }
 
@@ -225,8 +363,6 @@ boolean CBox::setOutputName(
 //___________________________________________________________________//
 //                                                                   //
 
-#include <iostream>
-
 boolean CBox::addSetting(
 	const CString& sName,
 	const CIdentifier& rTypeIdentifier,
@@ -238,6 +374,9 @@ boolean CBox::addSetting(
 	s.m_sDefaultValue=sDefaultValue;
 	s.m_sValue=sDefaultValue;
 	m_vSetting.push_back(s);
+
+	this->callModificationCallback(BoxModification_SettingAdded);
+
 	return true;
 }
 
@@ -255,6 +394,9 @@ boolean CBox::removeSetting(
 		return false;
 	}
 	it=m_vSetting.erase(it);
+
+	this->callModificationCallback(BoxModification_SettingRemoved);
+
 	return true;
 }
 
@@ -320,6 +462,9 @@ boolean CBox::setSettingType(
 		return false;
 	}
 	m_vSetting[ui32SettingIndex].m_oTypeIdentifier=rTypeIdentifier;
+
+	this->callModificationCallback(BoxModification_SettingTypeChanged);
+
 	return true;
 }
 
@@ -344,6 +489,9 @@ boolean CBox::setSettingDefaultValue(
 		return false;
 	}
 	m_vSetting[ui32SettingIndex].m_sDefaultValue=rDefaultValue;
+
+	this->callModificationCallback(BoxModification_SettingDefaultValueChanged);
+
 	return true;
 }
 
@@ -356,5 +504,45 @@ boolean CBox::setSettingValue(
 		return false;
 	}
 	m_vSetting[ui32SettingIndex].m_sValue=rValue;
+
+	this->callModificationCallback(BoxModification_SettingValueChanged);
+
 	return true;
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+void CBox::clear(void)
+{
+	m_pBoxAlgorithmDescriptor=NULL;
+	m_oAlgorithmClassIdentifier=OV_UndefinedIdentifier;
+	m_sName="";
+	m_vInput.clear();
+	m_vOutput.clear();
+	m_vSetting.clear();
+	this->removeAllAttributes();
+}
+
+void CBox::activateModificationCallback(void)
+{
+	m_bIsModificationCallbackActive=true;
+}
+
+void CBox::deactivateModificationCallback(void)
+{
+	m_bIsModificationCallbackActive=false;
+}
+
+void CBox::callModificationCallback(
+	const EBoxModification eBoxModificationType)
+{
+	if(m_pBoxAlgorithmDescriptor && !m_bIsNotifyingDescriptor && m_bIsModificationCallbackActive)
+	{
+		m_bIsNotifyingDescriptor=true;
+		m_pBoxAlgorithmDescriptor->boxModificationCallback(
+			*((IBoxAlgorithmContext*)NULL),
+			eBoxModificationType);
+		m_bIsNotifyingDescriptor=false;
+	}
 }

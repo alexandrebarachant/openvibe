@@ -111,7 +111,7 @@ namespace OpenViBEPlugins
 			virtual void processChildData(const char* sData);
 			virtual void closeChild(void);
 
-			virtual OpenViBE::boolean doImport(const OpenViBE::Plugins::IScenarioImporterContext& rScenarioImporterContext);
+			virtual OpenViBE::boolean doImport(OpenViBE::Plugins::IScenarioImporterContext& rScenarioImporterContext);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IScenarioImporter, OVP_ClassId_ScenarioImporterXML)
 

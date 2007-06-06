@@ -1,7 +1,6 @@
 #include "ovpCScenarioExporterXML.h"
 
 using namespace OpenViBE;
-using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Samples;
@@ -22,7 +21,7 @@ void CScenarioExporterXML::write(const char* sString)
 	m_oFile << sString;
 }
 
-boolean CScenarioExporterXML::callback(const IAttributable& rAttributable, const CIdentifier& rAttributeIdentifier, const CString& rAttributeValue)
+void CScenarioExporterXML::exportAttribute(const CIdentifier& rAttributeIdentifier, const CString& rAttributeValue)
 {
 	m_pWriter->openChild("Attribute");
 	 m_pWriter->openChild("Identifier");
@@ -32,10 +31,9 @@ boolean CScenarioExporterXML::callback(const IAttributable& rAttributable, const
 	  m_pWriter->setChildData(rAttributeValue);
 	 m_pWriter->closeChild();
 	m_pWriter->closeChild();
-	return true;
 }
 
-boolean CScenarioExporterXML::callback(const IScenario& rScenario, IBox& rBox)
+void CScenarioExporterXML::exportBox(const IBox& rBox)
 {
 	m_pWriter->openChild("Box");
 	 m_pWriter->openChild("Identifier");
@@ -124,16 +122,19 @@ boolean CScenarioExporterXML::callback(const IScenario& rScenario, IBox& rBox)
 	if(rBox.hasAttributes())
 	{
 		m_pWriter->openChild("Attributes");
-		 rBox.enumerateAttributes(*this);
+			CIdentifier l_oAttributeIdentifier=rBox.getNextAttributeIdentifier(OV_UndefinedIdentifier);
+			while(l_oAttributeIdentifier!=OV_UndefinedIdentifier)
+			{
+				exportAttribute(l_oAttributeIdentifier, rBox.getAttributeValue(l_oAttributeIdentifier));
+				l_oAttributeIdentifier=rBox.getNextAttributeIdentifier(l_oAttributeIdentifier);
+			}
 		m_pWriter->closeChild();
 	}
 
 	m_pWriter->closeChild();
-
-	return true;
 }
 
-boolean CScenarioExporterXML::callback(const IScenario& rScenario, ILink& rLink)
+void CScenarioExporterXML::exportLink(const ILink& rLink)
 {
 	CIdentifier l_oSourceBoxIdentifier;
 	CIdentifier l_oTargetBoxIdentifier;
@@ -172,16 +173,19 @@ boolean CScenarioExporterXML::callback(const IScenario& rScenario, ILink& rLink)
 	if(rLink.hasAttributes())
 	{
 		m_pWriter->openChild("Attributes");
-		 rLink.enumerateAttributes(*this);
+			CIdentifier l_oAttributeIdentifier=rLink.getNextAttributeIdentifier(OV_UndefinedIdentifier);
+			while(l_oAttributeIdentifier!=OV_UndefinedIdentifier)
+			{
+				exportAttribute(l_oAttributeIdentifier, rLink.getAttributeValue(l_oAttributeIdentifier));
+				l_oAttributeIdentifier=rLink.getNextAttributeIdentifier(l_oAttributeIdentifier);
+			}
 		m_pWriter->closeChild();
 	}
 
 	m_pWriter->closeChild();
-
-	return true;
 }
 
-boolean CScenarioExporterXML::doExport(const IScenarioExporterContext& rScenarioExporterContext)
+boolean CScenarioExporterXML::doExport(IScenarioExporterContext& rScenarioExporterContext)
 {
 	m_pWriter=XML::createWriter(*this);
 	if(!m_pWriter)
@@ -195,16 +199,31 @@ boolean CScenarioExporterXML::doExport(const IScenarioExporterContext& rScenario
 
 	m_pWriter->openChild("OpenViBE-Scenario");
 	 m_pWriter->openChild("Boxes");
-	  l_rScenario.enumerateBoxes(*this);
+		CIdentifier l_oBoxIdentifier=l_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
+		while(l_oBoxIdentifier!=OV_UndefinedIdentifier)
+		{
+			exportBox(*l_rScenario.getBoxDetails(l_oBoxIdentifier));
+			l_oBoxIdentifier=l_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+		}
 	 m_pWriter->closeChild();
 	 m_pWriter->openChild("Links");
-	  l_rScenario.enumerateLinks(*this);
+		CIdentifier l_oLinkIdentifier=l_rScenario.getNextLinkIdentifier(OV_UndefinedIdentifier);
+		while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
+		{
+			exportLink(*l_rScenario.getLinkDetails(l_oLinkIdentifier));
+			l_oLinkIdentifier=l_rScenario.getNextLinkIdentifier(l_oLinkIdentifier);
+		}
 	 m_pWriter->closeChild();
 
 	if(l_rScenario.hasAttributes())
 	{
 		m_pWriter->openChild("Attributes");
-		 l_rScenario.enumerateAttributes(*this);
+			CIdentifier l_oAttributeIdentifier=l_rScenario.getNextAttributeIdentifier(OV_UndefinedIdentifier);
+			while(l_oAttributeIdentifier!=OV_UndefinedIdentifier)
+			{
+				exportAttribute(l_oAttributeIdentifier, l_rScenario.getAttributeValue(l_oAttributeIdentifier));
+				l_oAttributeIdentifier=l_rScenario.getNextAttributeIdentifier(l_oAttributeIdentifier);
+			}
 		m_pWriter->closeChild();
 	}
 

@@ -1,7 +1,6 @@
 #ifndef __OpenViBEKernel_Kernel_Player_CPlayer_H__
 #define __OpenViBEKernel_Kernel_Player_CPlayer_H__
 
-#include "../../ovk_base.h"
 #include "../ovkTKernelObject.h"
 
 #include <openvibe/ov_all.h>
@@ -13,35 +12,32 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		namespace Player
+		class CPlayer : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayer>
 		{
-			class CPlayer : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::Player::IPlayer>, virtual public OpenViBE::Kernel::IScenario::IBoxEnum
-			{
-			public:
+		public:
 
-				CPlayer(const OpenViBE::Kernel::IKernelContext& rKernelContext);
-				virtual ~CPlayer(void);
+			CPlayer(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			virtual ~CPlayer(void);
 
-				virtual OpenViBE::boolean reset(
-					const OpenViBE::Kernel::IScenario& rScenario,
-					OpenViBE::Kernel::IPluginManager& rPluginManager);
+			virtual OpenViBE::boolean reset(
+				const OpenViBE::Kernel::IScenario& rScenario,
+				OpenViBE::Kernel::IPluginManager& rPluginManager);
 
-				virtual OpenViBE::boolean loop(void);
+			virtual OpenViBE::boolean loop(void);
 
-				// IBoxEnum callback
-				OpenViBE::boolean callback(
-					const OpenViBE::Kernel::IScenario& rScenario,
-					OpenViBE::Kernel::IBox& rBox);
+			// IBoxEnum callback
+			OpenViBE::boolean callback(
+				const OpenViBE::Kernel::IScenario& rScenario,
+				OpenViBE::Kernel::IBox& rBox);
 
-				_IsDerivedFromClass_Final_(OpenViBE::Kernel::Player::IPlayer, OVK_ClassId_Kernel_Player_Player);
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IPlayer, OVK_ClassId_Kernel_Player);
 
-			protected:
+		protected:
 
-				::PsController* m_pController;
-				::PsnReferenceObjectHandle* m_pControllerHandle;
-				::PsObjectDescriptor* m_pSimulation;
-				OpenViBE::Kernel::IScenario* m_pScenario;
-			};
+			::PsController* m_pController;
+			::PsnReferenceObjectHandle* m_pControllerHandle;
+			::PsObjectDescriptor* m_pSimulation;
+			OpenViBE::Kernel::IScenario* m_pScenario;
 		};
 	};
 };

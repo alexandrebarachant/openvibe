@@ -9,6 +9,7 @@ namespace OpenViBE
 	{
 		class IBox;
 		class ILink;
+		class IProcessingUnit;
 
 		/**
 		 * \class IScenario
@@ -26,27 +27,39 @@ namespace OpenViBE
 		{
 		public:
 
+#if 0
 			class OV_API IBoxEnum
 			{
 			public:
 				virtual ~IBoxEnum(void) { }
+				virtual void preCallback(void) { }
 				virtual OpenViBE::boolean callback(
 					const OpenViBE::Kernel::IScenario& rScenario,
 					OpenViBE::Kernel::IBox& rBox)=0;
+				virtual void postCallback(void) { }
 			};
 
 			class OV_API ILinkEnum
 			{
 			public:
 				virtual ~ILinkEnum(void) { }
+				virtual void preCallback(void) { }
 				virtual OpenViBE::boolean callback(
 					const OpenViBE::Kernel::IScenario& rScenario,
 					OpenViBE::Kernel::ILink& rLink)=0;
+				virtual void postCallback(void) { }
 			};
+#endif
 
 			/** \name Input / Output from files */
 			//@{
 
+			/**
+			 * \brief Clears the scenario
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean clear(void)=0;
 			/**
 			 * \brief Loads a scenario from a file
 			 * \param sFileName [in] : The file to load the scenario from
@@ -83,11 +96,23 @@ namespace OpenViBE
 			virtual OpenViBE::boolean save(
 				const OpenViBE::CString& sFileName,
 				const OpenViBE::CIdentifier& rSaverIdentifier)=0;
+			/**
+			 * \brief Merges a scenario into the current scenario
+			 * \param rScenario [in] : The scenario to merge in
+			 *        this scenario
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 * \warning Source scenario are ignored, only boxes
+			 *          and links are effectively merged
+			 */
+			virtual OpenViBE::boolean merge(
+				const OpenViBE::Kernel::IScenario& rScenario)=0;
 
 			//@{
 			/** \name Box management */
 			//@{
 
+#if 0
 			/**
 			 * \brief Enumerates all the boxes of this scenario
 			 * \param rCallback [in] : The user callback
@@ -97,15 +122,48 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean enumerateBoxes(
 				OpenViBE::Kernel::IScenario::IBoxEnum& rCallback) const=0;
+#endif
+
+			/**
+			 * \brief Gets next box identifier
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding box
+			 * \return The identifier of the next box in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first box
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextBoxIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const=0;
+			/**
+			 * \brief Gets next box identifier running on a given process unit
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding box
+			 * \param rProcessingUnitIdentifier [in] : The identifier
+			 *        for the processing unit which the box should
+			 *        be ran on.
+			 * \return The identifier of the next box in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first box
+			 *       identifier.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rProcessingUnitIdentifier
+			 *       will cause this function to return an unaffected box
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextBoxIdentifierOnProcessingUnit(
+				const OpenViBE::CIdentifier& rPreviousIdentifier,
+				const OpenViBE::CIdentifier& rProcessingUnitIdentifier) const=0;
 			/**
 			 * \brief Tests whether a given identifier is a box or not
-			 * \param rIdentifier [in] : the identifier to test
+			 * \param rBoxIdentifier [in] : the identifier to test
 			 * \return \e true if the identified object is a box
 			 * \return \e false if the identified object is not a box
 			 * \note Requesting a bad identifier returns \e false
 			 */
 			virtual OpenViBE::boolean isBox(
-				const OpenViBE::CIdentifier& rIdentifier) const=0;
+				const OpenViBE::CIdentifier& rBoxIdentifier) const=0;
 			/**
 			 * \brief Gets the details for a specific box
 			 * \param rBoxIdentifier [in] : The identifier
@@ -128,6 +186,18 @@ namespace OpenViBE
 			 * \note This produces an empty and unconfigured box !
 			 */
 			virtual OpenViBE::boolean addBox(
+				OpenViBE::CIdentifier& rBoxIdentifier)=0;
+			/**
+			 * \brief Adds a new box in the scenario based on an existing box
+			 * \param rBox [in] : the box to copy in this scenario
+			 * \param rBoxIdentifier [out] : The identifier of
+			 *        the created box
+			 * \return \e true in case of success.
+			 * \return \e false in case of error. In such case,
+			 *         \c rBoxIdentifier remains unchanged.
+			 */
+			virtual OpenViBE::boolean addBox(
+				const OpenViBE::Kernel::IBox& rBox,
 				OpenViBE::CIdentifier& rBoxIdentifier)=0;
 			/**
 			 * \brief Adds a new box in the scenario
@@ -159,6 +229,7 @@ namespace OpenViBE
 			/** \name Connection management */
 			//@{
 
+#if 0
 			/**
 			 * \brief Enumerates all the links of this scenario
 			 * \param rCallback [in] : The user callback
@@ -192,6 +263,86 @@ namespace OpenViBE
 			virtual OpenViBE::boolean enumerateLinksToBox(
 				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
 				const OpenViBE::CIdentifier& rBoxIdentifier) const=0;
+#endif
+
+			/**
+			 * \brief Gets next link identifier
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding link
+			 * \return The identifier of the next link in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first link
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextLinkIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const=0;
+			/**
+			 * \brief Gets next link identifier from fixed box
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding link
+			 * \param rBoxIdentifier [in] : The box identifier
+			 *        which the link should end to
+			 * \return The identifier of the next link in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first link
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextLinkIdentifierFromBox(
+				const OpenViBE::CIdentifier& rPreviousIdentifier,
+				const OpenViBE::CIdentifier& rBoxIdentifier) const=0;
+			/**
+			 * \brief Gets next link identifier from fixed box output
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding link
+			 * \param rBoxIdentifier [in] : The box identifier
+			 *        which the link should end to
+			 * \param ui32OutputIndex [in] : The input index
+			 *        which the link should end to
+			 * \return The identifier of the next link in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first link
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextLinkIdentifierFromBoxOutput(
+				const OpenViBE::CIdentifier& rPreviousIdentifier,
+				const OpenViBE::CIdentifier& rBoxIdentifier,
+				const OpenViBE::uint32 ui32OutputIndex) const=0;
+			/**
+			 * \brief Gets next link identifier from fixed box
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding link
+			 * \param rBoxIdentifier [in] : The box identifier
+			 *        which the link should start from
+			 * \return The identifier of the next link in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first link
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextLinkIdentifierToBox(
+				const OpenViBE::CIdentifier& rPreviousIdentifier,
+				const OpenViBE::CIdentifier& rBoxIdentifier) const=0;
+			/**
+			 * \brief Gets next link identifier from fixed box input
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding link
+			 * \param rBoxIdentifier [in] : The box identifier
+			 *        which the link should start from
+			 * \param ui32InputInex [in] : The input index
+			 *        which the link should start from
+			 * \return The identifier of the next link in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first link
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextLinkIdentifierToBoxInput(
+				const OpenViBE::CIdentifier& rPreviousIdentifier,
+				const OpenViBE::CIdentifier& rBoxIdentifier,
+				const OpenViBE::uint32 ui32InputInex) const=0;
 			/**
 			 * \brief Tests whether a given identifier is a link or not
 			 * \param rIdentifier [in] : the identifier to test
@@ -262,6 +413,23 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean disconnect(
 				const OpenViBE::CIdentifier& rLinkIdentifier)=0;
+
+			//@}
+			/** \name Processing units management */
+			//@{
+
+			virtual OpenViBE::CIdentifier getNextProcessingUnitIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const=0;
+			virtual OpenViBE::boolean isProcessingUnit(
+				const OpenViBE::CIdentifier& rIdentifier) const=0;
+			virtual const OpenViBE::Kernel::IProcessingUnit* getProcessingUnitDetails(
+				const OpenViBE::CIdentifier& rProcessingUnitIdentifier) const=0;
+			virtual OpenViBE::Kernel::IProcessingUnit* getProcessingUnitDetails(
+				const OpenViBE::CIdentifier& rProcessingUnitIdentifier)=0;
+			virtual OpenViBE::boolean addProcessingUnit(
+				OpenViBE::CIdentifier& rProcessingUnitIdentifier)=0;
+			virtual OpenViBE::boolean removeProcessingUnit(
+				const OpenViBE::CIdentifier& rProcessingUnitIdentifier)=0;
 
 			//@}
 

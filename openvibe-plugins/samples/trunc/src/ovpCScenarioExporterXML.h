@@ -17,9 +17,6 @@ namespace OpenViBEPlugins
 		class CScenarioExporterXML
 			: virtual public OpenViBE::Plugins::IScenarioExporter
 			, virtual public XML::IWriterCallback
-			, virtual public OpenViBE::Kernel::IAttributable::IAttributeEnum
-			, virtual public OpenViBE::Kernel::IScenario::IBoxEnum
-			, virtual public OpenViBE::Kernel::IScenario::ILinkEnum
 		{
 		public:
 
@@ -28,11 +25,12 @@ namespace OpenViBEPlugins
 			virtual void release(void);
 
 			virtual void write(const char* sString);
-			virtual OpenViBE::boolean callback(const OpenViBE::Kernel::IAttributable& rAttributable, const OpenViBE::CIdentifier& rAttributeIdentifier, const OpenViBE::CString& rAttributeValue);
-			virtual OpenViBE::boolean callback(const OpenViBE::Kernel::IScenario& rScenario, OpenViBE::Kernel::IBox& rBox);
-			virtual OpenViBE::boolean callback(const OpenViBE::Kernel::IScenario& rScenario, OpenViBE::Kernel::ILink& rLink);
 
-			virtual OpenViBE::boolean doExport(const OpenViBE::Plugins::IScenarioExporterContext& rScenarioExporterContext);
+			virtual void exportAttribute(const OpenViBE::CIdentifier& rAttributeIdentifier, const OpenViBE::CString& rAttributeValue);
+			virtual void exportBox(const OpenViBE::Kernel::IBox& rBox);
+			virtual void exportLink(const OpenViBE::Kernel::ILink& rLink);
+
+			virtual OpenViBE::boolean doExport(OpenViBE::Plugins::IScenarioExporterContext& rScenarioExporterContext);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IScenarioExporter, OVP_ClassId_ScenarioExporterXML)
 

@@ -1,8 +1,11 @@
 /*!
   \mainpage
 
-  Here is the documentation for the acquisition plugins :
+  Here is the documentation for the file-io plugins :
 
-  - \ref Doc_ovpCGDFReader
+  - \ref Doc_ovpCGDFFileReader
+  - \ref Doc_ovpCGDFFileWriter
+  - \ref Doc_ovpCGenericStreamReader
+  - \ref Doc_ovpCGenericStreamWriter
 
  */

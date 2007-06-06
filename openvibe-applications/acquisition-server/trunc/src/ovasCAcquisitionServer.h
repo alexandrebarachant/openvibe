@@ -21,27 +21,7 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CConnectionHandler : virtual public EBML::IWriterCallback
-	{
-	public:
-
-		CConnectionHandler(Socket::IConnection& rConnection);
-		virtual ~CConnectionHandler(void);
-
-		// Accessors
-		Socket::IConnection& getConnection(void);
-		EBML::IWriter& getWriter(void);
-		EBML::IWriterHelper& getWriterHelper(void);
-
-		// EBML writer callback
-		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize);
-
-	protected:
-
-		Socket::IConnection& m_rConnection;
-		EBML::IWriter* m_pWriter;
-		EBML::IWriterHelper* m_pWriterHelper;
-	};
+	class CConnectionHandler;
 
 	class CAcquisitionServer : virtual OpenViBEAcquisitionServer::IDriverCallback
 	{

@@ -29,10 +29,10 @@ CKernelContext::CKernelContext(IKernel& rKernel)
 	m_pLogManager=new CLogManager(*this);
 
 	// $$$
-	m_pTypeManager->registerEnumerationType(CIdentifier(0,1), CString("enum 1 value 1;enum 1 value 2;enum 1 value 3;enum 1 value 4"));
-	m_pTypeManager->registerEnumerationType(CIdentifier(0,2), CString("enum 2 v1;enum 2 v2"));
-	m_pTypeManager->registerBitMaskType    (CIdentifier(1,1), CString("bitmask1 bit1;bitmask1 bit2;bitmask1 bit3;bitmask1 bit4;bitmask1 bit5"));
-	m_pTypeManager->registerBitMaskType    (CIdentifier(1,2), CString("bitmask2 b1;bitmask2 b2"));
+	m_pTypeManager->registerEnumerationType(CIdentifier(0,1), CString("enum1"), CString("enum 1 value 1;enum 1 value 2;enum 1 value 3;enum 1 value 4"));
+	m_pTypeManager->registerEnumerationType(CIdentifier(0,2), CString("enum2"), CString("enum 2 v1;enum 2 v2"));
+	m_pTypeManager->registerBitMaskType    (CIdentifier(1,1), CString("bitmask1"), CString("bitmask1 bit1;bitmask1 bit2;bitmask1 bit3;bitmask1 bit4;bitmask1 bit5"));
+	m_pTypeManager->registerBitMaskType    (CIdentifier(1,2), CString("bitmask2"), CString("bitmask2 b1;bitmask2 b2"));
 
 	// $$$
 	m_pLogManager->addListener(dynamic_cast<ILogListener*>(m_pObjectFactory->createObject(OVK_ClassId_Kernel_LogListenerConsole)));

@@ -1,7 +1,9 @@
 #include "ovkPsSimulatedBox.h"
-#include "ovkPsDuplicatedContext.h"
 
 #include "../ovkCBoxAlgorithmContext.h"
+#include "../ovkCMessageClock.h"
+#include "../ovkCMessageEvent.h"
+#include "../ovkCMessageSignal.h"
 
 #include <iostream>
 
@@ -13,24 +15,22 @@ using namespace OpenViBE::Plugins;
 
 // #define _ScopeTester_
 // #define _OMK_BehaviorTester_
-
-class OpenViBE::CMessageClock
-{
-public:
-	int i;
-};
+#define _MaxCrash_ 5
 
 PsSimulatedBox::PsSimulatedBox(
 	PsController& rController,
-	const PsObjectDescriptor& rObjectDescriptor)
-	:PsSimulatedBoxBase(rController, rObjectDescriptor)
-	,m_oKernelContextHandle(*this)
-	,m_oScenarioHandle(*this)
-	,m_oPluginManagerHandle(*this)
+	const PsObjectDescriptor& rObjectDescriptor,
+	const IKernelContext& rKernelContext,
+	const IScenario& rScenario)
+	:TKernelObject<IBoxIO>(rKernelContext)
+	,PsSimulatedBoxBase(rController, rObjectDescriptor)
+	,m_ui32CrashCount(0)
 	,m_bReadyToProcess(false)
-	,m_pBoxAlgorithmDesc(NULL)
+	,m_bActive(true)
 	,m_pBoxAlgorithm(NULL)
+	,m_pScenario(&rScenario)
 	,m_pBox(NULL)
+	,m_ui64Time(0)
 {
 #ifdef _OMK_BehaviorTester_
 	cout<<"PsSimulatedBox::PsSimulatedBox"<<endl;
@@ -53,8 +53,7 @@ void PsSimulatedBox::init(void)
 	::PsString l_oNameString=l_oNameIdentifier.getPsString();
 	l_oIdentifier.fromString(l_oNameIdentifier.getCString());
 
-	const IScenario& l_rScenario=m_oScenarioHandle.getConcreteScenario();
-	m_pBox=l_rScenario.getBoxDetails(l_oIdentifier);
+	m_pBox=m_pScenario->getBoxDetails(l_oIdentifier);
 
 	m_vInput.resize(m_pBox->getInputCount());
 	m_vOutput.resize(m_pBox->getOutputCount());
@@ -71,14 +70,26 @@ void PsSimulatedBox::computeParameters(void)
 	cout<<"PsSimulatedBox::computeParameters("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
 #endif
 
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
+	if(!m_bActive) return;
+
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processClock");
 #endif
-		// $$$$$$$$$$
-		CMessageClock m;
-		m_pBoxAlgorithm->processClock(l_oBoxAlgorithmContext, m);
+		try
+		{
+			// $$$$$$$$$$
+			IKernelContext* l_pContext=NULL;
+			Kernel::CMessageClock m(*l_pContext);
+			m.setTime(m_ui64Time);
+			m_pBoxAlgorithm->processClock(l_oBoxAlgorithmContext, m);
+			m_ui64Time+=0x00100000;
+		}
+		catch (...)
+		{
+			handleCrash("clock processing callback");
+		}
 	}
 	m_bReadyToProcess|=l_oBoxAlgorithmContext.isAlgorithmReadyToProcess();
 
@@ -95,14 +106,23 @@ bool PsSimulatedBox::processOpenViBEDataUpdateEvent(::PsValuedEvent< ::PsTypeChu
 	cout<<"PsSimulatedBox::processOpenViBEDataUpdateEvent("<<getName()<<"|"<<m_pBox->getName()<<"|"<<pEvent->date<<")"<<endl;
 #endif
 
+	if(!m_bActive) return false;
+
 	m_vInput[pEvent->value.getIoConnectorIndex()].push_back(pEvent->value);
 
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processInput");
 #endif
-		m_pBoxAlgorithm->processInput(l_oBoxAlgorithmContext, pEvent->value.getIoConnectorIndex());
+		try
+		{
+			m_pBoxAlgorithm->processInput(l_oBoxAlgorithmContext, pEvent->value.getIoConnectorIndex());
+		}
+		catch (...)
+		{
+			handleCrash("input processing callback");
+		}
 	}
 	m_bReadyToProcess|=l_oBoxAlgorithmContext.isAlgorithmReadyToProcess();
 
@@ -115,15 +135,23 @@ bool PsSimulatedBox::processMaskStartEvent(::PsEvent* pEvent)
 	cout<<"PsSimulatedBox::processMaskStartEvent("<<getName()<<"|"<<m_pBox->getName()<<"|"<<pEvent->date<<")"<<endl;
 #endif
 
-	IPluginManager& l_rPluginManager=m_oPluginManagerHandle.getConcretePluginManager();
-	m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_rPluginManager.getPluginObjectDescCreating(m_pBox->getAlgorithmClassIdentifier()));
-	m_pBoxAlgorithm=dynamic_cast<IBoxAlgorithm*>(l_rPluginManager.createPluginObject(m_pBox->getAlgorithmClassIdentifier()));
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
+	if(!m_bActive) return false;
+
+//	m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(getKernelContext().getPluginManager().getPluginObjectDescCreating(m_pBox->getAlgorithmClassIdentifier()));
+	m_pBoxAlgorithm=dynamic_cast<IBoxAlgorithm*>(getKernelContext().getPluginManager().createPluginObject(m_pBox->getAlgorithmClassIdentifier()));
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::initialize");
 #endif
-		m_pBoxAlgorithm->initialize(l_oBoxAlgorithmContext);
+		try
+		{
+			m_pBoxAlgorithm->initialize(l_oBoxAlgorithmContext);
+		}
+		catch (...)
+		{
+			handleCrash("initialization callback");
+		}
 	}
 
 	return true ;
@@ -135,12 +163,22 @@ bool PsSimulatedBox::processMaskStopEvent(::PsEvent* pEvent)
 	cout<<"PsSimulatedBox::processMaskStopEvent("<<getName()<<"|"<<m_pBox->getName()<<"|"<<pEvent->date<<")"<<endl;
 #endif
 
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
+	if(!m_bActive) return false;
+
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::uninitialize");
 #endif
-		m_pBoxAlgorithm->uninitialize(l_oBoxAlgorithmContext);
+		try
+		{
+			m_pBoxAlgorithm->uninitialize(l_oBoxAlgorithmContext);
+		}
+		catch (...)
+		{
+			handleCrash("uninitialization callback");
+		}
+
 		m_pBoxAlgorithm->release();
 		m_pBoxAlgorithm=NULL;
 	}
@@ -148,18 +186,68 @@ bool PsSimulatedBox::processMaskStopEvent(::PsEvent* pEvent)
 	return true ;
 }
 
+void PsSimulatedBox::handleCrash(const char* sHintName)
+{
+	m_ui32CrashCount++;
+
+	log() << LogLevel_Error << "Plugin code caused crash " << m_ui32CrashCount << " time(s)\n";
+	log() << LogLevel_Error << "  [name:" << m_pBox->getName() << "]\n";
+	log() << LogLevel_Error << "  [identifier:" << m_pBox->getIdentifier() << "]\n";
+	log() << LogLevel_Error << "  [algorithm class identifier:" << m_pBox->getAlgorithmClassIdentifier() << "]\n";
+	log() << LogLevel_Error << "  [place:" << sHintName << "]\n";
+
+	if(m_ui32CrashCount>=_MaxCrash_)
+	{
+		log () << LogLevel_Error << "  This box has been disabled !\n";
+		m_bActive=false;
+	}
+}
+
 void PsSimulatedBox::doProcess(void)
 {
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(m_oKernelContextHandle.getKernelContext(), this, m_pBox);
+#ifdef _OMK_BehaviorTester_
+	cout<<"PsSimulatedBox::doProcess("<<getName()<<"|"<<m_pBox->getName()<<")"<<endl;
+#endif
+
+	if(!m_bActive) return;
+
+	CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 	{
 #if defined _ScopeTester_
 		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::process");
 #endif
-		m_pBoxAlgorithm->process(l_oBoxAlgorithmContext);
+		try
+		{
+			m_pBoxAlgorithm->process(l_oBoxAlgorithmContext);
+		}
+		catch (...)
+		{
+			handleCrash("processing callback");
+		}
 	}
 
 	// perform output sending
-	m_oScenarioHandle.getConcreteScenario().enumerateLinksFromBox(*this, m_pBox->getIdentifier());
+	CIdentifier l_oLinkIdentifier=m_pScenario->getNextLinkIdentifierFromBox(OV_UndefinedIdentifier, m_pBox->getIdentifier());
+	while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
+	{
+		const ILink* l_pLink=m_pScenario->getLinkDetails(l_oLinkIdentifier);
+		if(l_pLink)
+		{
+			CIdentifier l_oTargetBoxIdentifier=l_pLink->getTargetBoxIdentifier();
+			uint32 l_ui32TargetBoxInputIndex=l_pLink->getTargetBoxInputIndex();
+			::PsName target(l_oTargetBoxIdentifier.toString());
+
+			uint32 l_ui32SourceOutputIndex=l_pLink->getSourceBoxOutputIndex();
+			vector< ::PsTypeChunk >::iterator i=m_vOutput[l_ui32SourceOutputIndex].begin();
+			while(i!=m_vOutput[l_ui32SourceOutputIndex].end())
+			{
+				i->setIoConnectorIndex(l_ui32TargetBoxInputIndex);
+				sendOpenViBEDataUpdateEvent(target, (*i));
+				++i;
+			}
+		}
+		l_oLinkIdentifier=m_pScenario->getNextLinkIdentifierFromBox(l_oLinkIdentifier, m_pBox->getIdentifier());
+	}
 
 	// iterators for input and output chunks
 	vector<vector< ::PsTypeChunk > >::iterator i;
@@ -208,6 +296,7 @@ void PsSimulatedBox::doProcess(void)
 	}
 }
 
+#if 0
 boolean PsSimulatedBox::callback(const IScenario& rScenario, ILink& rLink)
 {
 	CIdentifier l_oTargetBoxIdentifier=rLink.getTargetBoxIdentifier();
@@ -224,13 +313,14 @@ boolean PsSimulatedBox::callback(const IScenario& rScenario, ILink& rLink)
 	}
 	return true;
 }
+#endif
 
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 // - --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
 uint32 PsSimulatedBox::getInputChunkCount(
-	const uint32 ui32InputIndex)
+	const uint32 ui32InputIndex) const
 {
 	return m_vInput[ui32InputIndex].size();
 }
@@ -241,14 +331,14 @@ boolean PsSimulatedBox::getInputChunk(
 	uint64& rStartTime,
 	uint64& rEndTime,
 	uint64& rChunkSize,
-	const uint8*& rpChunkBuffer)
+	const uint8*& rpChunkBuffer) const
 {
 	if(ui32ChunkIndex>=m_vInput[ui32InputIndex].size())
 	{
 		return false;
 	}
 
-	::PsTypeChunk& l_rChunk=m_vInput[ui32InputIndex][ui32ChunkIndex];
+	const ::PsTypeChunk& l_rChunk=m_vInput[ui32InputIndex][ui32ChunkIndex];
 	rStartTime=l_rChunk.getStartTime();
 	rEndTime=l_rChunk.getEndTime();
 	rChunkSize=l_rChunk.getBuffer().getSize();
@@ -269,7 +359,7 @@ boolean PsSimulatedBox::markInputAsDeprecated(
 }
 
 uint64 PsSimulatedBox::getOutputChunkSize(
-	const uint32 ui32OutputIndex)
+	const uint32 ui32OutputIndex) const
 {
 	return m_vCurrentOutput[ui32OutputIndex].getBuffer().getSize();
 }

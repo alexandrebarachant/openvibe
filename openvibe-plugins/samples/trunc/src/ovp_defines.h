@@ -10,13 +10,15 @@
 #define OVP_ClassId_ScenarioExporterXMLDesc                 OpenViBE::CIdentifier(0x5B2B5C67, 0x78EA7539)
 #define OVP_ClassId_ScenarioImporterXMLDesc                 OpenViBE::CIdentifier(0x28DC180C, 0x4CCA7314)
 
+#define OVP_ClassId_CrashingBoxDesc                         OpenViBE::CIdentifier(0x009F54B9, 0x2B6A4922)
 #define OVP_ClassId_BoxAlgorithmProducerDesc                OpenViBE::CIdentifier(0x10C620AE, 0x211274FF)
 #define OVP_ClassId_BoxAlgorithmConsumerDesc                OpenViBE::CIdentifier(0x191F4A6F, 0x07EB1BF2)
 #define OVP_ClassId_SinusSignalGeneratorDesc                OpenViBE::CIdentifier(0x2633AFA2, 0x6974E32F)
+#define OVP_ClassId_TimeSignalGeneratorDesc                 OpenViBE::CIdentifier(0x57AD8655, 0x1966B4DC)
 #define OVP_ClassId_IdentityDesc                            OpenViBE::CIdentifier(0x54743810, 0x6A1A88CC)
 
+
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x009F54B9, 0x2B6A4922)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00780136, 0x57633D46)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0024B879, 0x33C0E15F)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00ABDABE, 0x41381683)
@@ -42,13 +44,14 @@
 #define OVP_ClassId_ScenarioExporterXML                     OpenViBE::CIdentifier(0x77075B3B, 0x3D632492)
 #define OVP_ClassId_ScenarioImporterXML                     OpenViBE::CIdentifier(0x440BF3AC, 0x2D960300)
 
+#define OVP_ClassId_CrashingBox                             OpenViBE::CIdentifier(0x00DAFD60, 0x39A58819)
 #define OVP_ClassId_BoxAlgorithmProducer                    OpenViBE::CIdentifier(0x77A308C8, 0x711D8E57)
 #define OVP_ClassId_BoxAlgorithmConsumer                    OpenViBE::CIdentifier(0x271A6EEC, 0x7B1D847E)
 #define OVP_ClassId_SinusSignalGenerator                    OpenViBE::CIdentifier(0x7E33BDB8, 0x68194A4A)
+#define OVP_ClassId_TimeSignalGenerator                     OpenViBE::CIdentifier(0x28A5E7FF, 0x530095DE)
 #define OVP_ClassId_Identity                                OpenViBE::CIdentifier(0x5DFFE431, 0x35215C50)
 
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00DAFD60, 0x39A58819)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00BE3E25, 0x274F2075)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0053270F, 0x78887C71)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00777FA0, 0x5DC3F560)

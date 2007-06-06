@@ -1,80 +1,13 @@
-
-
 #if !defined _SIMULATED_OBJECTS_OVKPSSIMULATEDBOX_H_
 #define _SIMULATED_OBJECTS_OVKPSSIMULATEDBOX_H_
 
 #include "ovkPsSimulatedBoxBase.h"
-#include "ovkPsDuplicatedContext.h"
+
+#include "../../ovkTKernelObject.h"
 
 #include <vector>
 #include <string>
 #include <assert.h>
-
-class IKernelContextHandle
-{
-public:
-
-	IKernelContextHandle(::PsSimulatedObject &rObject)
-		:m_rObject(rObject)
-	{
-	}
-
-	const OpenViBE::Kernel::IKernelContext& getKernelContext(void)
-	{
-		::PsDuplicatedContext* l_pOpenViBEContext=dynamic_cast< ::PsDuplicatedContext* >(m_rObject.getController().getPointerToDuplicatedObjectNamed("OpenViBEContext"));
-		assert(l_pOpenViBEContext);
-
-		return l_pOpenViBEContext->getKernelContext();
-	}
-
-protected:
-
-	::PsSimulatedObject& m_rObject;
-};
-
-class IScenarioHandle
-{
-public:
-
-	IScenarioHandle(::PsSimulatedObject &rObject)
-		:m_rObject(rObject)
-	{
-	}
-
-	const OpenViBE::Kernel::IScenario& getConcreteScenario(void)
-	{
-		::PsDuplicatedContext* l_pOpenViBEContext=dynamic_cast< ::PsDuplicatedContext* >(m_rObject.getController().getPointerToDuplicatedObjectNamed("OpenViBEContext"));
-		assert(l_pOpenViBEContext);
-
-		return l_pOpenViBEContext->getScenario();
-	}
-
-protected:
-
-	::PsSimulatedObject& m_rObject;
-};
-
-class IPluginManagerHandle
-{
-public:
-
-	IPluginManagerHandle(::PsSimulatedObject& rObject)
-		:m_rObject(rObject)
-	{
-	}
-
-	OpenViBE::Kernel::IPluginManager& getConcretePluginManager(void)
-	{
-		::PsDuplicatedContext* l_pOpenViBEContext=dynamic_cast< ::PsDuplicatedContext* >(m_rObject.getController().getPointerToDuplicatedObjectNamed("OpenViBEContext"));
-		assert(l_pOpenViBEContext);
-
-		return l_pOpenViBEContext->getPluginManager();
-	}
-
-protected:
-
-	::PsSimulatedObject& m_rObject;
-};
 
 /** \brief Implementation class of \ref PsSimulatedBoxBase.
  * \date 2006-09-12 at 18:00:28
@@ -87,7 +20,7 @@ protected:
  * \n See the base class \ref PsSimulatedBoxBase to see used configuration parameters.\n
  * \todo \ref computeParameters must be written.
  */
-class PsSimulatedBox : public PsSimulatedBoxBase, virtual public OpenViBE::Kernel::IScenario::ILinkEnum
+class PsSimulatedBox : public PsSimulatedBoxBase, virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxIO>
 {
 public:
 
@@ -96,7 +29,11 @@ public:
 	/// \brief Destructor of \ref PsSimulatedBox.
 	virtual ~PsSimulatedBox() ;
 	/// \brief Default constructor of \ref PsSimulatedBox.
-	PsSimulatedBox( PsController& ctrl, const PsObjectDescriptor& objectDescriptor );
+	PsSimulatedBox(
+		PsController& ctrl,
+		const PsObjectDescriptor& objectDescriptor,
+		const OpenViBE::Kernel::IKernelContext& rKernelContext,
+		const OpenViBE::Kernel::IScenario& IScenraio);
 	//@}
 
 protected:
@@ -112,30 +49,26 @@ protected:
 	virtual void computeParameters() ;
 	//@}
 
+	virtual void handleCrash(const char* sHintName="");
 	virtual void doProcess(void);
-
-	// ILinkEnum callback
-	OpenViBE::boolean callback(
-		const OpenViBE::Kernel::IScenario& rScenario,
-		OpenViBE::Kernel::ILink& rLink);
 
 public:
 
 	virtual OpenViBE::uint32 getInputChunkCount(
-		const OpenViBE::uint32 ui32InputIndex);
+		const OpenViBE::uint32 ui32InputIndex) const;
 	virtual OpenViBE::boolean getInputChunk(
 		const OpenViBE::uint32 ui32InputIndex,
 		const OpenViBE::uint32 ui32ChunkIndex,
 		OpenViBE::uint64& rStartTime,
 		OpenViBE::uint64& rEndTime,
 		OpenViBE::uint64& rChunkSize,
-		const OpenViBE::uint8*& rpChunkBuffer);
+		const OpenViBE::uint8*& rpChunkBuffer) const;
 	virtual OpenViBE::boolean markInputAsDeprecated(
 		const OpenViBE::uint32 ui32InputIndex,
 		const OpenViBE::uint32 ui32ChunkIndex);
 
 	virtual OpenViBE::uint64 getOutputChunkSize(
-		const OpenViBE::uint32 ui32OutputIndex);
+		const OpenViBE::uint32 ui32OutputIndex) const;
 	virtual OpenViBE::boolean setOutputChunkSize(
 		const OpenViBE::uint32 ui32OutputIndex,
 		const OpenViBE::uint64 ui64Size,
@@ -150,6 +83,8 @@ public:
 		const OpenViBE::uint32 ui32OutputIndex,
 		const OpenViBE::uint64 ui64StartTime,
 		const OpenViBE::uint64 ui64EndTime);
+
+	_IsDerivedFromClass_Final_(OpenViBE::Kernel::IBoxIO, OVK_ClassId_Kernel_Player);
 
 protected:
 
@@ -166,14 +101,15 @@ protected:
 	virtual bool processMaskStopEvent( ::PsEvent *e ) ;
 	//@}
 
-	IKernelContextHandle m_oKernelContextHandle;
-	IScenarioHandle m_oScenarioHandle;
-	IPluginManagerHandle m_oPluginManagerHandle;
+	OpenViBE::uint32 m_ui32CrashCount;
 	OpenViBE::boolean m_bReadyToProcess;
+	OpenViBE::boolean m_bActive;
 
-	const OpenViBE::Plugins::IBoxAlgorithmDesc* m_pBoxAlgorithmDesc;
 	OpenViBE::Plugins::IBoxAlgorithm* m_pBoxAlgorithm;
+	const OpenViBE::Kernel::IScenario* m_pScenario;
 	const OpenViBE::Kernel::IBox* m_pBox;
+
+	OpenViBE::uint64 m_ui64Time;
 
 public:
 	using PsSimulatedBoxBase::sendOpenViBEDataUpdateEvent;

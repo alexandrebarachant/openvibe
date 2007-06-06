@@ -206,7 +206,7 @@ float32 CHeader::getChannelGain(const uint32 ui32ChannelIndex) const
 	map<uint32, float32>::const_iterator i=m_vChannelGain.find(ui32ChannelIndex);
 	if(i==m_vChannelGain.end())
 	{
-		return(ui32ChannelIndex<m_ui32ChannelCount?1:0);
+		return(ui32ChannelIndex<m_ui32ChannelCount?1.0f:0.0f);
 	}
 	return i->second;
 }

@@ -1,0 +1,69 @@
+/**
+ \page Doc_ovpCGenericStreamWriter Generic stream writer documentation
+
+- Plugin name : Generic Stream Writer
+- Version :	0.5
+- Author : 	Bruno Renier
+- Date :	03-27-2007
+
+<br>
+Summary :
+
+\ref Doc_ovpCGenericStreamWriter_description
+
+\ref Doc_ovpCGenericStreamWriter_inputs
+
+\ref Doc_ovpCGenericStreamWriter_outputs
+
+\ref Doc_ovpCGenericStreamWriter_settings
+
+\ref Doc_ovpCGenericStreamWriter_examples
+
+\ref Doc_ovpCGenericStreamWriter_misc
+
+<hr>
+<br>
+<br>
+ \section Doc_ovpCGenericStreamWriter_description Description
+This plugin writes the incoming streams in a file which can be used for later playback by the \ref Doc_ovpCGenericStreamReader "Generic stream reader plugin". Right now it supports up to two incoming streams which will be playable separatly.
+
+\image html GenericStreamWriterBox.png
+
+
+ \section Doc_ovpCGenericStreamWriter_inputs Inputs
+ Number of inputs : 2
+
+-# Input Stream 1
+ - OV_UndefinedIdentifier
+ - Any kind of stream.
+
+-# Input Stream 2
+ - OV_UndefinedIdentifier
+ - Any kind of stream.
+
+
+ \section Doc_ovpCGenericStreamWriter_outputs Outputs
+Number of outputs : 0
+
+ \section Doc_ovpCGenericStreamWriter_settings Settings
+Number of settings : 1
+
+-# Output file
+ - String
+ - Name of the file you want to write to.
+
+
+\section Doc_ovpCGenericStreamWriter_examples Examples
+
+If you want to write the file in your /tmp directory, you can configure the plugin like that :
+
+Filename :
+\code
+/tmp/myGenericStreamData.bin
+\endcode
+
+
+ \section Doc_ovpCGenericStreamWriter_misc Miscellaneous
+
+Any input stream is valid.
+*/

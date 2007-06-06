@@ -27,6 +27,8 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBEAcquisitionServer::boolean configure(void);
 		virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void) { return m_pHeader; }
 
+		virtual void processData(OpenViBEAcquisitionServer::uint32 ui32SampleCount, OpenViBEAcquisitionServer::uint32 ui32Channel, OpenViBEAcquisitionServer::float32* pSample);
+
 	protected:
 
 		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;

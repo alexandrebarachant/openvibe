@@ -5,10 +5,13 @@
 
 namespace OpenViBE
 {
-	namespace Plugins
+	namespace Kernel
 	{
 		class IScenarioExporterContext;
+	};
 
+	namespace Plugins
+	{
 		class OV_API IScenarioExporter : virtual public OpenViBE::Plugins::IPluginObject
 		{
 		public:
@@ -30,7 +33,7 @@ namespace OpenViBE
 			 * \sa uninitialize
 			 */
 			virtual OpenViBE::boolean initialize(
-				const OpenViBE::Plugins::IScenarioExporterContext& rContext) { return true; }
+				OpenViBE::Kernel::IScenarioExporterContext& rContext) { return true; }
 			/**
 			 * \brief Unprepares the object so it can be deleted
 			 * \param rContext [in] : the plugin object context
@@ -48,12 +51,12 @@ namespace OpenViBE
 			 * \sa initialize
 			 */
 			virtual OpenViBE::boolean uninitialize(
-				const OpenViBE::Plugins::IScenarioExporterContext& rContext) { return true; }
+				OpenViBE::Kernel::IScenarioExporterContext& rContext) { return true; }
 
 			//@}
 
 			virtual OpenViBE::boolean doExport(
-				const OpenViBE::Plugins::IScenarioExporterContext& rContext)=0;
+				OpenViBE::Kernel::IScenarioExporterContext& rContext)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObject, OV_ClassId_Plugins_ScenarioExporter);
 		};

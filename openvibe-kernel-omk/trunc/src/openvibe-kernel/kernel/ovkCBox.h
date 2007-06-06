@@ -18,15 +18,23 @@ namespace OpenViBE
 
 			CBox(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
-			virtual const OpenViBE::CIdentifier& getIdentifier(void) const;
-			virtual const OpenViBE::CString& getName(void) const;
-			virtual const OpenViBE::CIdentifier& getAlgorithmClassIdentifier(void) const;
+			virtual OpenViBE::CIdentifier getIdentifier(void) const;
+			virtual OpenViBE::CString getName(void) const;
+			virtual OpenViBE::CIdentifier getAlgorithmClassIdentifier(void) const;
+			virtual OpenViBE::CIdentifier getProcessingUnitIdentifier(void) const;
 			virtual OpenViBE::boolean setIdentifier(
 				const OpenViBE::CIdentifier& rIdentifier);
 			virtual OpenViBE::boolean setName(
 				const OpenViBE::CString& sName);
 			virtual OpenViBE::boolean setAlgorithmClassIdentifier(
-				const OpenViBE::CIdentifier& rIdentifier);
+				const OpenViBE::CIdentifier& rAlgorithmClassIdentifier);
+			virtual OpenViBE::boolean setProcessingUnitIdentifier(
+				const OpenViBE::CIdentifier& rProcessingUnitIdentifier);
+
+			virtual OpenViBE::boolean initializeFromAlgorithmClassIdentifier(
+				const OpenViBE::CIdentifier& rAlgorithmClassIdentifier);
+			virtual OpenViBE::boolean initializeFromExistingBox(
+				const OpenViBE::Kernel::IBox& rExisitingBox);
 
 			virtual OpenViBE::boolean addInput(
 				const OpenViBE::CString& sName,
@@ -102,6 +110,15 @@ namespace OpenViBE
 
 		protected:
 
+			virtual void clear(void);
+
+			virtual void activateModificationCallback(void);
+			virtual void deactivateModificationCallback(void);
+			virtual void callModificationCallback(
+				const OpenViBE::Kernel::EBoxModification eBoxModificationType);
+
+		protected:
+
 			class CInput
 			{
 			public:
@@ -141,8 +158,13 @@ namespace OpenViBE
 
 		protected:
 
+			const OpenViBE::Plugins::IBoxAlgorithmDesc* m_pBoxAlgorithmDescriptor;
+			OpenViBE::boolean m_bIsNotifyingDescriptor;
+			OpenViBE::boolean m_bIsModificationCallbackActive;
+
 			OpenViBE::CIdentifier m_oIdentifier;
 			OpenViBE::CIdentifier m_oAlgorithmClassIdentifier;
+			OpenViBE::CIdentifier m_oProcessingUnitIdentifier;
 			OpenViBE::CString m_sName;
 
 			std::vector<CInput> m_vInput;

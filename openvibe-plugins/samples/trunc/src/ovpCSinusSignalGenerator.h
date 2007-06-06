@@ -53,7 +53,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Sinus oscilator"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Simple sinux signal generator"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Simple sinus signal generator"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
@@ -64,11 +64,11 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
-				rPrototype.addOutput("Generated signal", OV_TypeId_Signal);
+				rPrototype.addOutput("Generated signal",              OV_TypeId_Signal);
 
-				rPrototype.addSetting("Channel count",                OV_TypeId_Integer, "32");
-				rPrototype.addSetting("Sampling frequency",           OV_TypeId_Integer, "256");
-				rPrototype.addSetting("Generated epoch sample count", OV_TypeId_Integer, "256");
+				rPrototype.addSetting("Channel count",                OV_TypeId_Integer, "4");
+				rPrototype.addSetting("Sampling frequency",           OV_TypeId_Integer, "512");
+				rPrototype.addSetting("Generated epoch sample count", OV_TypeId_Integer, "32");
 
 				return true;
 			}

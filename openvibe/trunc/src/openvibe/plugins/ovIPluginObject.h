@@ -7,12 +7,6 @@ namespace OpenViBE
 {
 	namespace Plugins
 	{
-#if 0
-		class IPluginObjectLoadContext;
-		class IPluginObjectSaveContext;
-#endif
-		class IPluginObjectContext;
-
 		/**
 		 * \class IPluginObject
 		 * \author Yann Renard (INRIA/IRISA)
@@ -29,7 +23,6 @@ namespace OpenViBE
 		 * interface).
 		 *
 		 * \sa IBoxAlgorithm
-		 * \sa IBoxBehavior
 		 * \sa IScenarioImporter
 		 * \sa IScenarioExporter
 		 * \sa IPluginObjectDesc

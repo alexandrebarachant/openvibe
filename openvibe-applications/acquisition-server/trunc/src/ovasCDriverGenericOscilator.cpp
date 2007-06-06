@@ -116,17 +116,18 @@ boolean CDriverGenericOscillator::loop(void)
 
 	uint32 l_ui32CurrentTime=System::Time::getTime();
 
-	if(l_ui32CurrentTime-m_ui32LastTime > m_pHeader->getSamplingFrequency())
+	if(l_ui32CurrentTime-m_ui32LastTime > (1000.0*m_ui32SampleCountPerSentBlock)/m_pHeader->getSamplingFrequency())
 	{
 		for(uint32 j=0; j<m_pHeader->getChannelCount(); j++)
 		{
 			for(uint32 i=0; i<m_ui32SampleCountPerSentBlock; i++)
 			{
 #if 1
-				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=
-					33.33f*sinf(((i+m_ui32TotalSampleCount)*2.0f*M_PI*(15.0f*(j+1)*1.7f))/m_pHeader->getSamplingFrequency())+
-					33.33f*sinf(((i+m_ui32TotalSampleCount)*2.0f*M_PI*(15.0f*(j+1)*0.7f))/m_pHeader->getSamplingFrequency())+
-					33.33f*sinf(((i+m_ui32TotalSampleCount)*2.0f*M_PI*(15.0f*(j+1)*1.1f))/m_pHeader->getSamplingFrequency());
+				float64 l_f64Value=
+					sin(((i+m_ui32TotalSampleCount)*(j+1)*12.3)/m_pHeader->getSamplingFrequency())+
+					sin(((i+m_ui32TotalSampleCount)*(j+1)* 4.5)/m_pHeader->getSamplingFrequency())+
+					sin(((i+m_ui32TotalSampleCount)*(j+1)*67.8)/m_pHeader->getSamplingFrequency());
+				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=(float32)l_f64Value;
 #else
 				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=j;
 #endif

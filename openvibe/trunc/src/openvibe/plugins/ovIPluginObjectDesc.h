@@ -9,6 +9,44 @@ namespace OpenViBE
 	{
 		class IPluginObject;
 
+		// source wikipedia
+		enum ELicenseType
+		{
+			LicenseType_Unspecified,  // Generic for unspecified license type
+			LicenseType_Commercial,   // Generic for commercial software
+			LicenseType_AFL,          // Academic Free License
+			LicenseType_AL20,         // Apache License, Version 2.0
+			LicenseType_ASL,          // Apache Software License
+			LicenseType_APSL,         // Apple Public Source Licenses
+			LicenseType_BSD,          // BSD License
+			LicenseType_CPL,          // Common Public License
+			LicenseType_CeCILL,       // Licence CEA CNRS INRIA Logiciel Libre
+			LicenseType_CeCILLB,      // Licence CEA CNRS INRIA Logiciel Libre B
+			LicenseType_CeCILLC,      // Licence CEA CNRS INRIA Logiciel Libre C
+			LicenseType_EFL2,         // Eiffel Forum License Version 2.0
+			LicenseType_GPL,          // GNU General Public License
+			LicenseType_LGPL,         // GNU Lesser General Public License
+			LicenseType_IBMPL,        // IBM Public License
+			LicenseType_IOSL,         // Intel Open Source License
+			LicenseType_MPL10,        // Mozilla Public License Version 1.0
+			LicenseType_MPL11,        // Mozilla Public License Version 1.1
+			LicenseType_NPL10,        // Netscape Public License Version 1.0
+			LicenseType_NPL11,        // Netscape Public License Version 1.1
+			LicenseType_OSL,          // Open Software License
+			LicenseType_PHPL,         // PHP License
+			LicenseType_PAL,          // Perl Artistic License
+			LicenseType_CNRIPL,       // Python License (CNRI Python License)
+			LicenseType_PSFL,         // Python Software Foundation License
+			LicenseType_QPL,          // Q Public Licence (QT)
+			LicenseType_SL,           // Sleepycat Software Product License
+			LicenseType_SISSL,        // Sun Industry Standards Source License
+			LicenseType_SPL,          // Sun Public License
+			LicenseType_W3C,          // W3C Software License
+			LicenseType_WXWLL,        // wxWindows Library License
+			LicenseType_ZLL,          // zlib/libpng License
+			LicenseType_ZPL,          // Zope Public License
+		};
+
 		/**
 		 * \class IPluginObjectDesc
 		 * \author Yann Renard (INRIA/IRISA)
@@ -21,7 +59,6 @@ namespace OpenViBE
 		 * be used as a prototype of what they can create.
 		 *
 		 * \sa IBoxAlgorithmDesc
-		 * \sa IBoxBehaviorDesc
 		 * \sa IScenarioImporterDesc
 		 * \sa IScenarioExporterDesc
 		 * \sa IPluginObject
@@ -130,6 +167,25 @@ namespace OpenViBE
 			 * Default implementation simply returns "unknown".
 			 */
 			virtual OpenViBE::CString getVersion(void) const { return CString("unknown"); }
+			/**
+			 * \brief Gets the licence type for this plugin
+			 * \param ui32Index [in] : the index of the licence this plugin may have
+			 * \return the licence type for this plugin.
+			 *
+			 * Default implementation returns \c LicenseType_Unspecified .
+			 *
+			 * This function should return the licence which can be used to
+			 * distribute the plugin. The aim of this functionnality is to
+			 * be able to quickly warn the user if the usage he is doing for
+			 * the software is incompatible with the licence the plugin uses.
+			 * for example, a GPL plugin should not be used in a commercial
+			 * context.
+			 *
+			 * A plugin may be used under different licence. For this reason,
+			 * the §OpenViBE§ kernel will loop on this function changing the
+			 * index value until \c LicenseType_Unspecified is returned.
+			 */
+			virtual OpenViBE::Plugins::ELicenseType getLicenseType(const OpenViBE::uint32 ui32Index) const { return LicenseType_Unspecified; }
 
 			//@}
 

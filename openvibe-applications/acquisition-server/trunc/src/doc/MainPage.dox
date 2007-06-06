@@ -1,0 +1,9 @@
+/**
+ * \mainpage
+ *
+ * Welcome to the §OpenViBE§ acquisition server documentation page.
+ *
+ * Most of the developers may want to start by implementing their
+ * own driver depending on the hardware they have. For a complete tutorial
+ * on how to do this, go to the \ref Doc_CreatingANewDriver page :)
+ */

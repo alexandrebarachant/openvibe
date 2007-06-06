@@ -66,7 +66,7 @@ FOREACH(current_header ${header_files})
 		TARGET ${PROJECT_NAME}-static
 		POST_BUILD
 		COMMAND ${CMAKE_COMMAND}
-		ARGS  -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${current_header}" "${INCLUDE_OUTPUT_PATH}/${current_header}")
+		ARGS  -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/${current_header}" "${INCLUDE_OUTPUT_PATH}/${current_header}")
 	SET(created_files ${created_files} ${current_header})
 #	MESSAGE(STATUS "Marked to copy at post build stage ${current_header}")
 ENDFOREACH(current_header)

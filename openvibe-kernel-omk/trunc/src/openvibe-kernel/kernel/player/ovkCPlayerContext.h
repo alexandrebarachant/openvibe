@@ -1,14 +1,14 @@
 #ifndef __OpenViBEKernel_Kernel_CPlayerContext_H__
 #define __OpenViBEKernel_Kernel_CPlayerContext_H__
 
-#include "ovkTPluginObjectContext.h"
+#include "../ovkTKernelObject.h"
 #include "simulated-objects/ovkPsSimulatedBox.h"
 
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPlayerContext : virtual public OpenViBE::Kernel::TPluginObjectContext<OpenViBE::Plugins::IPlayerContext>
+		class CPlayerContext : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayerContext>
 		{
 		public:
 
@@ -25,7 +25,7 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier* pTargetIdentifier,
 				const OpenViBE::uint32 ui32TargetIdentifierCount);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TPluginObjectContext<OpenViBE::Plugins::IPlayerContext>, OVK_ClassId_Kernel_PlayerContext)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayerContext>, OVK_ClassId_Kernel_PlayerContext)
 
 		protected:
 

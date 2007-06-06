@@ -1,11 +1,11 @@
 #ifndef __OpenViBEToolkit_Writer_IBoxAlgorithmExperimentInformationOutputWriter_H__
 #define __OpenViBEToolkit_Writer_IBoxAlgorithmExperimentInformationOutputWriter_H__
 
-#include "ovtkIBoxAlgorithmOutputWriter.h"
+#include "ovtkIBoxAlgorithmEBMLOutputWriter.h"
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmExperimentInformationOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmOutputWriter
+	class OVTK_API IBoxAlgorithmExperimentInformationOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
 	{
 	public:
 
@@ -27,10 +27,7 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::boolean setValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint32 ui32Value)=0;
 		virtual OpenViBE::boolean setValue(const OpenViBE::uint32 ui32ValueIdentifier, const char* sValue)=0;
 
-		virtual OpenViBE::boolean writeHeader(EBML::IWriter& rWriter)=0;
-		// virtual OpenViBE::boolean writeBuffer(EBML::IWriter& rWriter)=0;
-
-		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmOutputWriter, OVTK_ClassId_);
+		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter, OVTK_ClassId_);
 	};
 
 	extern OVTK_API OpenViBEToolkit::IBoxAlgorithmExperimentInformationOutputWriter* createBoxAlgorithmExperimentInformationOutputWriter(void);

@@ -74,7 +74,7 @@ namespace OpenViBE
 		 * \param rString2 [in] : The second part of the resulting string
 		 * \return The concatenation of \c rString1 and \c rString2.
 		 */
-		friend const OpenViBE::CString operator+(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2);
+		friend OV_API const OpenViBE::CString operator+(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2);
 		/**
 		 * \brief Equality comparison operator
 		 * \param rString1 [in] : The first part of the resulting string
@@ -83,7 +83,7 @@ namespace OpenViBE
 		 * \return \e false in other case.
 		 * \note This is case sensitive !
 		 */
-		friend OpenViBE::boolean operator==(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2);
+		friend OV_API OpenViBE::boolean operator==(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2);
 		/**
 		 * \brief Inequality comparison operator
 		 * \param rString1 [in] : The first part of the resulting string
@@ -92,7 +92,7 @@ namespace OpenViBE
 		 * \return \e true in other case.
 		 * \note This is case sensitive !
 		 */
-		friend OpenViBE::boolean operator!=(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2);
+		friend OV_API OpenViBE::boolean operator!=(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2);
 
 		//@}
 

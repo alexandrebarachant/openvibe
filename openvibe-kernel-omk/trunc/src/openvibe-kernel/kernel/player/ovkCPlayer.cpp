@@ -8,7 +8,6 @@
 #include "types/ovkPsTypeChunk.h"
 
 #include "simulated-objects/ovkPsSimulatedBox.h"
-#include "simulated-objects/ovkPsDuplicatedContext.h"
 
 #include "ovkCStaticBoxContext.h"
 #include "ovkCDynamicBoxContext.h"
@@ -44,13 +43,12 @@ using namespace OpenViBE::Plugins;
 //___________________________________________________________________//
 //                                                                   //
 
-class PsDuplicatedContextCreator : public ::PsSimulatedObjectCreator
+class PsSimulatedBoxCreator : public ::PsSimulatedObjectCreator
 {
 public:
-	PsDuplicatedContextCreator(const IKernelContext& rKernelContext, const IScenario& rScenario, IPluginManager& rPluginManager)
+	PsSimulatedBoxCreator(const IKernelContext& rKernelContext, const IScenario& rScenario)
 		:m_rKernelContext(rKernelContext)
 		,m_rScenario(rScenario)
-		,m_rPluginManager(rPluginManager)
 	{
 	}
 
@@ -58,36 +56,12 @@ public:
 		::PsController& rControler,
 		const ::PsObjectDescriptor& rObjectDescriptor) const
 	{
-		return new ::PsDuplicatedContext(rControler, rObjectDescriptor, m_rKernelContext, m_rScenario, m_rPluginManager);
+		return new ::PsSimulatedBox(rControler, rObjectDescriptor, m_rKernelContext, m_rScenario);
 	}
 
 protected:
 	const IKernelContext& m_rKernelContext;
 	const IScenario& m_rScenario;
-	IPluginManager& m_rPluginManager;
-};
-
-//___________________________________________________________________//
-//                                                                   //
-
-class CPlayerBoxBuilder : virtual public IScenario::IBoxEnum
-{
-public:
-
-	CPlayerBoxBuilder(::PsObjectDescriptor* pSimulationRoot, const IKernelContext& rKernelContext)
-		:m_pSimulationRoot(pSimulationRoot)
-		,m_bIsFirst(true)
-		,m_rKernelContext(rKernelContext)
-		,m_pBoxAlgorithmDesc(NULL)
-	{
-	}
-
-public:
-
-	::PsObjectDescriptor* m_pSimulationRoot;
-	boolean m_bIsFirst;
-	const IKernelContext& m_rKernelContext;
-	const IBoxAlgorithmDesc* m_pBoxAlgorithmDesc;
 };
 
 //___________________________________________________________________//
@@ -154,12 +128,18 @@ boolean CPlayer::reset(
 	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Latency", new ::PsUniqueConfigurationParameter("10"));
 
 	m_pSimulation=new ::PsObjectDescriptor("root", "Controller", l_pSimulationSchedulingDescription, NULL);
+	CIdentifier l_oBoxIdentifier=rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
+	while(l_oBoxIdentifier!=OV_UndefinedIdentifier)
+	{
+		// TODO choose a valid object frequency
+		log() << LogLevel_Debug << "CPlayer::callback - TODO choose a valid object frequency\n";
 
-	::PsMultipleConfigurationParameter* l_pDuplicatedContextConfiguration=new ::PsMultipleConfigurationParameter();
-	::PsObjectDescriptor* l_pDuplicatedContext=new ::PsObjectDescriptor("OpenViBEContext", "PsDuplicatedContext", 0, l_pDuplicatedContextConfiguration);
-	m_pSimulation->addSon(l_pDuplicatedContext);
+		::PsMultipleConfigurationParameter* l_pSimulatedBoxConfiguration=new ::PsMultipleConfigurationParameter();
+		::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor(idToString(l_oBoxIdentifier), "PsSimulatedBox", "ProcessA", 1000, l_pSimulatedBoxConfiguration);
+		m_pSimulation->addSon(l_pSimulationBox);
 
-	rScenario.enumerateBoxes(*this);
+		l_oBoxIdentifier=rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+	}
 
 #if defined __Has_XML_Simulation_File__
 	::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", l_pSimulation);
@@ -170,8 +150,7 @@ boolean CPlayer::reset(
 #else
 	m_pController=new ::PsController(*m_pSimulation, 0);
 #endif
-	m_pController->addInstanceCreator("PsSimulatedBox", new ::PsSimpleSimulatedObjectCreator< ::PsSimulatedBox >());
-	m_pController->addInstanceCreator("PsDuplicatedContext", new ::PsDuplicatedContextCreator(getKernelContext(), rScenario, rPluginManager));
+	m_pController->addInstanceCreator("PsSimulatedBox", new ::PsSimulatedBoxCreator(getKernelContext(), rScenario));
 
 	m_pController->init();
 	m_pControllerHandle=dynamic_cast< ::PsnReferenceObjectHandle*>(m_pController->getObjectHandle());
