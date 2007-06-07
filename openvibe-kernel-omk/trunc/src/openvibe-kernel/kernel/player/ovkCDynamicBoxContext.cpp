@@ -1,11 +1,8 @@
 #include "ovkCDynamicBoxContext.h"
 
-#include <assert.h>
-
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Tools;
-#define boolean OpenViBE::boolean
 
 //___________________________________________________________________//
 //                                                                   //

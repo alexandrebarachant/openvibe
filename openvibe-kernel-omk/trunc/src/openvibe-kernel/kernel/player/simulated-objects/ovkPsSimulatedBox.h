@@ -7,7 +7,6 @@
 
 #include <vector>
 #include <string>
-#include <assert.h>
 
 /** \brief Implementation class of \ref PsSimulatedBoxBase.
  * \date 2006-09-12 at 18:00:28

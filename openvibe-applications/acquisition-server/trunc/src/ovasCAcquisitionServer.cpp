@@ -11,9 +11,7 @@
 #include <iostream>
 #include <fstream>
 
-#if defined OVAS_OS_Windows
- #include <assert.h>
-#endif
+#include <assert.h>
 
 #define OVAS_GUI_File            "../share/openvibe-applications/acquisition-server/interface.glade"
 
