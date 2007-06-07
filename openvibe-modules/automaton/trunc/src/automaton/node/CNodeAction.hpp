@@ -27,7 +27,7 @@ namespace Automaton
 			Automaton::CIdentifier m_oEvent;
 
 		public:
-			CSendEvent::CSendEvent(Automaton::uint64 ui64Event)
+			CSendEvent(Automaton::uint64 ui64Event)
 				: m_oEvent(ui64Event) {}
 
 			virtual ~CSendEvent(){}
@@ -49,7 +49,7 @@ namespace Automaton
 			Automaton::CIdentifier m_oEvent;
 
 		public:
-			CWaitEvent::CWaitEvent(Automaton::uint64 ui64Event)
+			CWaitEvent(Automaton::uint64 ui64Event)
 				: m_oEvent(ui64Event) {}
 
 			virtual ~CWaitEvent(){}
@@ -77,7 +77,7 @@ namespace Automaton
 			Automaton::uint64 m_ui64EndTime;
 			Automaton::boolean m_bTimeSet;
 		public:
-			CWaitTime::CWaitTime(Automaton::uint64 ui64TimeLength) : 
+			CWaitTime(Automaton::uint64 ui64TimeLength) : 
 	       			m_bTimeSet(false) 
 			{
 				uint64 l_ui64Temp = ((uint64)(ui64TimeLength%1000)<<32);
