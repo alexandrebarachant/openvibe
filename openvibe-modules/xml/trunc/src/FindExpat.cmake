@@ -16,11 +16,11 @@ ENDIF(UNIX)
 
 IF(WIN32)
 	FIND_PATH(EXPAT_expat_INCLUDE_PATH "expat.h"
-		"C:/Expat-2.0.0/Source/lib"
+		PATHS "$ENV{OV_DEP_EXPAT}/Source/lib"
 	)
 	FIND_LIBRARY(EXPAT_expat_LIBRARY
 		NAMES libexpat
-		PATHS "C:/Expat-2.0.0/Libs"
+		PATHS "$ENV{OV_DEP_EXPAT}/Libs" "$ENV{OV_DEP_EXPAT}/Bin"
 	)
 
 	IF(EXPAT_expat_INCLUDE_PATH)
