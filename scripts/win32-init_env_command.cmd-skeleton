@@ -1,20 +1,22 @@
 @echo off
 
+if exist "win32-dependencies.cmd" (
+	call "win32-dependencies.cmd"
+)
+
 REM ########################################################################################################################
 REM ## GLOBAL
 
-set PATH=%PATH%;C:\Program Files\cmake-2.4.3-win32-x86\bin
-set PATH=%PATH%;C:\Program Files\pkg-config-0.20\bin
-
 call "%VS80COMNTOOLS%\vsvars32.bat%
-
-set PATH=%PATH%;E:\Microsoft Visual Studio 2005\VC\redist\Debug_NonRedist\x86\Microsoft.VC80.DebugCRT
-set PATH=%PATH%;C:\Expat-2.0.0\Libs
 set PATH=%PATH%;%LIB%;%LIBPATH%
 
-set OpenMASKDIR=E:\Dev\openmask\Windows\VS .NET 2005 - VC 8.0
-set PKG_CONFIG_PATH=C:\GTK\lib\pkgconfig
-
+set PATH=%OV_DEP_BOOST%\Bin;%PATH%
+set PATH=%OV_DEP_GLADE%\bin;%PATH%
+set PATH=%OV_DEP_CMAKE%\bin;%PATH%
+set PATH=%OV_DEP_EXPAT%\Bin;%PATH%
+set PATH=%OV_DEP_OPENMASK%\Bin;%PATH%
+set INCLUDE=%OV_DEP_BOOST%;%INCLUDE%
+set PKG_CONFIG_PATH=%OV_DEP_GLADE%\lib\pkgconfig
 set OpenViBE_base=%CD%\..
 
 REM ########################################################################################################################

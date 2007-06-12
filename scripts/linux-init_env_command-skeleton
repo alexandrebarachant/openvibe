@@ -175,6 +175,6 @@ export OpenViBE_plugin_simple_visualisation=$OpenViBE_plugins/simple-visualisati
 export OpenViBE_plugin_stimulation=$OpenViBE_plugins/stimulation/$OpenViBE_plugin_stimulation_branch
 export OpenViBE_plugin_tools=$OpenViBE_plugins/tools/$OpenViBE_plugin_tools_branch
 
-if [ -e ./linux-dependancies ]; then
-	source ./linux-dependancies
+if [ -e ./linux-dependencies ]; then
+	source ./linux-dependencies
 fi;

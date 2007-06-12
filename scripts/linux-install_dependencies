@@ -12,7 +12,7 @@ pushd ..
 
 ####################################
 ##
-##  checks supposed dependancies
+##  checks supposed dependencies
 ##
 ####################################
 
@@ -43,7 +43,7 @@ echo "Using as g77        : [$ov_g77]..."
 ##
 ####################################
 
-ov_should_clear_dependancies_folder_flag=false
+ov_should_clear_dependencies_folder_flag=false
 
 ov_should_build_pkgconfig_flag=true
 ov_should_build_cmake_flag=true
@@ -85,7 +85,7 @@ ov_should_build_openmask_flag=true
 
 ov_directory=`pwd`
 
-ov_depend_folder_rel=dependancies
+ov_depend_folder_rel=dependencies
 ov_archives_folder_rel=arch
 ov_tmp_folder_rel=tmp
 ov_log_folder_rel=log
@@ -131,40 +131,40 @@ ov_dep_itpp_external_libtool_url=http://ftp.gnu.org/gnu/libtool/libtool-1.5.22.t
 ov_dep_itpp_external_url=http://downloads.sourceforge.net/itpp/itpp-external-2.3.0.tar.gz
 ov_dep_itpp_url=http://downloads.sourceforge.net/itpp/itpp-3.10.10.tar.gz
 
-ov_dep_expat_archive_name=$ov_archives_folder/openvibe-dependancy-expat-2.0.0.tar.gz
-ov_dep_pkgconfig_archive_name=$ov_archives_folder/openvibe-dependancy-pkg-config-0.20.tar.gz
-ov_dep_cmake_archive_name=$ov_archives_folder/openvibe-dependancy-cmake-2.4.6.tar.gz
-ov_dep_gtk_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-2.10.12.tar.gz
-ov_dep_gtk_glib_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-glib-2.12.12.tar.gz
-ov_dep_gtk_glib_gettext_archive_name=$ov_archives_folder/openvibe-dependancy-gettext-0.16.1.tar.gz
-ov_dep_gtk_cairo_libxml_archive_name=$ov_archives_folder/openvibe-dependancy-libxml2-sources-2.6.28.tar.gz
-ov_dep_gtk_cairo_zlib_archive_name=$ov_archives_folder/openvibe-dependancy-zlib-1.2.3.tar.gz
-ov_dep_gtk_cairo_libpng_archive_name=$ov_archives_folder/openvibe-dependancy-libpng-1.2.18.tar.gz
-ov_dep_gtk_cairo_libxproto_archive_name=$ov_archives_folder/openvibe-dependancy-xproto-7.0.10.tar.bz2
-ov_dep_gtk_cairo_libxextproto_archive_name=$ov_archives_folder/openvibe-dependancy-xextproto-7.0.2.tar.bz2
-ov_dep_gtk_cairo_libxtrans_archive_name=$ov_archives_folder/openvibe-dependancy-xtrans-1.0.3.tar.bz2
-ov_dep_gtk_cairo_libxslt_archive_name=$ov_archives_folder/openvibe-dependancy-libxslt-1.1.20.tar.bz2
-ov_dep_gtk_cairo_libxau_archive_name=$ov_archives_folder/openvibe-dependancy-libXau-1.0.3.tar.bz2
-ov_dep_gtk_cairo_pthreadstubs_archive_name=$ov_archives_folder/openvibe-dependancy-libpthread-stubs-0.1.tar.bz2
-ov_dep_gtk_cairo_libxcbproto_archive_name=$ov_archives_folder/openvibe-dependancy-xcb-proto-1.0.tar.bz2
-ov_dep_gtk_cairo_libxcb_archive_name=$ov_archives_folder/openvibe-dependancy-libxcb-1.0.tar.bz2
-ov_dep_gtk_cairo_libkbproto_archive_name=$ov_archives_folder/openvibe-dependancy-kbproto-1.0.3.tar.bz2
-ov_dep_gtk_cairo_libinputproto_archive_name=$ov_archives_folder/openvibe-dependancy-inputproto-1.4.tar.bz2
-ov_dep_gtk_cairo_libx11_archive_name=$ov_archives_folder/openvibe-dependancy-libX11-1.1.1.tar.bz2
-ov_dep_gtk_cairo_freetype_archive_name=$ov_archives_folder/openvibe-dependancy-freetype-2.3.4.tar.gz
-ov_dep_gtk_cairo_fontconfig_archive_name=$ov_archives_folder/openvibe-dependancy-fontconfig-2.4.2.tar.gz
-ov_dep_gtk_cairo_renderproto_archive_name=$ov_archives_folder/openvibe-dependancy-renderproto-0.9.2.tar.bz2
-ov_dep_gtk_cairo_libxdmcp_archive_name=$ov_archives_folder/openvibe-dependancy-libXdmcp-1.0.2.tar.bz2
-ov_dep_gtk_cairo_libxrender_archive_name=$ov_archives_folder/openvibe-dependancy-libXrender-0.9.2.tar.gz
-ov_dep_gtk_cairo_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-cairo-1.2.6.tar.gz
-ov_dep_gtk_pango_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-pango-1.16.4.tar.gz
-ov_dep_gtk_atk_archive_name=$ov_archives_folder/openvibe-dependancy-gtk-atk-1.9.1.tar.bz2
-ov_dep_gtk_theme_clearlooks_archive_name=$ov_archives_folder/openvibe-dependancy-clearlooks-0.6.2.tar.bz2
-ov_dep_libglade_archive_name=$ov_archives_folder/openvibe-dependancy-libglade-2.6.0.tar.bz2
-ov_dep_glade_archive_name=$ov_archives_folder/openvibe-dependancy-glade3-3.1.5.tar.gz
-ov_dep_itpp_external_libtool_archive_name=$ov_archives_folder/openvibe-dependancy-libtool-1.5.22.tar.gz
-ov_dep_itpp_external_archive_name=$ov_archives_folder/openvibe-dependancy-itpp-external-2.3.0.tar.gz
-ov_dep_itpp_archive_name=$ov_archives_folder/openvibe-dependancy-itpp-3.10.10.tar.gz
+ov_dep_expat_archive_name=$ov_archives_folder/openvibe-dependency-expat-2.0.0.tar.gz
+ov_dep_pkgconfig_archive_name=$ov_archives_folder/openvibe-dependency-pkg-config-0.20.tar.gz
+ov_dep_cmake_archive_name=$ov_archives_folder/openvibe-dependency-cmake-2.4.6.tar.gz
+ov_dep_gtk_archive_name=$ov_archives_folder/openvibe-dependency-gtk-2.10.12.tar.gz
+ov_dep_gtk_glib_archive_name=$ov_archives_folder/openvibe-dependency-gtk-glib-2.12.12.tar.gz
+ov_dep_gtk_glib_gettext_archive_name=$ov_archives_folder/openvibe-dependency-gettext-0.16.1.tar.gz
+ov_dep_gtk_cairo_libxml_archive_name=$ov_archives_folder/openvibe-dependency-libxml2-sources-2.6.28.tar.gz
+ov_dep_gtk_cairo_zlib_archive_name=$ov_archives_folder/openvibe-dependency-zlib-1.2.3.tar.gz
+ov_dep_gtk_cairo_libpng_archive_name=$ov_archives_folder/openvibe-dependency-libpng-1.2.18.tar.gz
+ov_dep_gtk_cairo_libxproto_archive_name=$ov_archives_folder/openvibe-dependency-xproto-7.0.10.tar.bz2
+ov_dep_gtk_cairo_libxextproto_archive_name=$ov_archives_folder/openvibe-dependency-xextproto-7.0.2.tar.bz2
+ov_dep_gtk_cairo_libxtrans_archive_name=$ov_archives_folder/openvibe-dependency-xtrans-1.0.3.tar.bz2
+ov_dep_gtk_cairo_libxslt_archive_name=$ov_archives_folder/openvibe-dependency-libxslt-1.1.20.tar.bz2
+ov_dep_gtk_cairo_libxau_archive_name=$ov_archives_folder/openvibe-dependency-libXau-1.0.3.tar.bz2
+ov_dep_gtk_cairo_pthreadstubs_archive_name=$ov_archives_folder/openvibe-dependency-libpthread-stubs-0.1.tar.bz2
+ov_dep_gtk_cairo_libxcbproto_archive_name=$ov_archives_folder/openvibe-dependency-xcb-proto-1.0.tar.bz2
+ov_dep_gtk_cairo_libxcb_archive_name=$ov_archives_folder/openvibe-dependency-libxcb-1.0.tar.bz2
+ov_dep_gtk_cairo_libkbproto_archive_name=$ov_archives_folder/openvibe-dependency-kbproto-1.0.3.tar.bz2
+ov_dep_gtk_cairo_libinputproto_archive_name=$ov_archives_folder/openvibe-dependency-inputproto-1.4.tar.bz2
+ov_dep_gtk_cairo_libx11_archive_name=$ov_archives_folder/openvibe-dependency-libX11-1.1.1.tar.bz2
+ov_dep_gtk_cairo_freetype_archive_name=$ov_archives_folder/openvibe-dependency-freetype-2.3.4.tar.gz
+ov_dep_gtk_cairo_fontconfig_archive_name=$ov_archives_folder/openvibe-dependency-fontconfig-2.4.2.tar.gz
+ov_dep_gtk_cairo_renderproto_archive_name=$ov_archives_folder/openvibe-dependency-renderproto-0.9.2.tar.bz2
+ov_dep_gtk_cairo_libxdmcp_archive_name=$ov_archives_folder/openvibe-dependency-libXdmcp-1.0.2.tar.bz2
+ov_dep_gtk_cairo_libxrender_archive_name=$ov_archives_folder/openvibe-dependency-libXrender-0.9.2.tar.gz
+ov_dep_gtk_cairo_archive_name=$ov_archives_folder/openvibe-dependency-gtk-cairo-1.2.6.tar.gz
+ov_dep_gtk_pango_archive_name=$ov_archives_folder/openvibe-dependency-gtk-pango-1.16.4.tar.gz
+ov_dep_gtk_atk_archive_name=$ov_archives_folder/openvibe-dependency-gtk-atk-1.9.1.tar.bz2
+ov_dep_gtk_theme_clearlooks_archive_name=$ov_archives_folder/openvibe-dependency-clearlooks-0.6.2.tar.bz2
+ov_dep_libglade_archive_name=$ov_archives_folder/openvibe-dependency-libglade-2.6.0.tar.bz2
+ov_dep_glade_archive_name=$ov_archives_folder/openvibe-dependency-glade3-3.1.5.tar.gz
+ov_dep_itpp_external_libtool_archive_name=$ov_archives_folder/openvibe-dependency-libtool-1.5.22.tar.gz
+ov_dep_itpp_external_archive_name=$ov_archives_folder/openvibe-dependency-itpp-external-2.3.0.tar.gz
+ov_dep_itpp_archive_name=$ov_archives_folder/openvibe-dependency-itpp-3.10.10.tar.gz
 
 ov_dep_gtk_additional_configure_flags="--without-libtiff --without-libjpeg"
 
@@ -176,39 +176,39 @@ ov_dep_openmask_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
 ##
 ####################################
 
-script_dependancies_file=scripts/linux-dependancies
+script_dependencies_file=scripts/linux-dependencies
 
-rm $script_dependancies_file 2> /dev/null
-touch $script_dependancies_file
+rm $script_dependencies_file 2> /dev/null
+touch $script_dependencies_file
 
-echo '#!/bin/bash' >> $script_dependancies_file
-echo '' >> $script_dependancies_file
-echo 'export PKG_CONFIG_PATH='$ov_depend_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $script_dependancies_file
-echo 'export LD_LIBRARY_PATH='$ov_depend_folder'/lib:$LD_LIBRARY_PATH' >> $script_dependancies_file
-echo '' >> $script_dependancies_file
-echo 'export PATH='$ov_depend_folder'/bin:$PATH' >> $script_dependancies_file
-echo 'export COMPILER_PATH='$ov_depend_folder'/include:$COMPILER_PATH' >> $script_dependancies_file
-# echo 'export C_INCLUDE_PATH='$ov_depend_folder'/include:$C_INCLUDE_PATH' >> $script_dependancies_file
-# echo 'export CPLUS_INCLUDE_PATH='$ov_depend_folder'/include:$CPLUS_INCLUDE_PATH' >> $script_dependancies_file
-echo 'export LIBRARY_PATH='$ov_depend_folder'/lib:$LIBRARY_PATH' >> $script_dependancies_file
+echo '#!/bin/bash' >> $script_dependencies_file
+echo '' >> $script_dependencies_file
+echo 'export PKG_CONFIG_PATH='$ov_depend_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $script_dependencies_file
+echo 'export LD_LIBRARY_PATH='$ov_depend_folder'/lib:$LD_LIBRARY_PATH' >> $script_dependencies_file
+echo '' >> $script_dependencies_file
+echo 'export PATH='$ov_depend_folder'/bin:$PATH' >> $script_dependencies_file
+echo 'export COMPILER_PATH='$ov_depend_folder'/include:$COMPILER_PATH' >> $script_dependencies_file
+# echo 'export C_INCLUDE_PATH='$ov_depend_folder'/include:$C_INCLUDE_PATH' >> $script_dependencies_file
+# echo 'export CPLUS_INCLUDE_PATH='$ov_depend_folder'/include:$CPLUS_INCLUDE_PATH' >> $script_dependencies_file
+echo 'export LIBRARY_PATH='$ov_depend_folder'/lib:$LIBRARY_PATH' >> $script_dependencies_file
 
-chmod 750 $script_dependancies_file
+chmod 750 $script_dependencies_file
 
-source $script_dependancies_file
+source $script_dependencies_file
 
 ####################################
 ##
-##  clears dependancy directory
+##  clears dependency directory
 ##
 ####################################
 
-if [ "$ov_should_clear_dependancies_folder_flag" == "true" ]; then
+if [ "$ov_should_clear_dependencies_folder_flag" == "true" ]; then
 	rm -rf "$ov_depend_folder"
 fi;
 
 ####################################
 ##
-##  creates dependancy directory when needed
+##  creates dependency directory when needed
 ##
 ####################################
 
