@@ -28,15 +28,23 @@ mkdir %target_dist%\share         > NULL 2<&1
 REM #######################################################################################
 
 echo @echo off                                               >  %target_dist%\test-acquisition-server.cmd
+echo pushd ..\scripts                                        >> %target_dist%\test-acquisition-server.cmd
+echo call win32-init_env_command.cmd                         >> %target_dist%\test-acquisition-server.cmd
+echo popd                                                    >> %target_dist%\test-acquisition-server.cmd
 echo cd lib                                                  >> %target_dist%\test-acquisition-server.cmd
 echo ..\bin\OpenViBE-acquisition-server-dynamic.exe          >> %target_dist%\test-acquisition-server.cmd
 
 echo @echo off                                               >  %target_dist%\test-designer.cmd
-echo call ..\scripts\win32-init_env_command.cmd              >> %target_dist%\test-designer.cmd
+echo pushd ..\scripts                                        >> %target_dist%\test-designer.cmd
+echo call win32-init_env_command.cmd                         >> %target_dist%\test-designer.cmd
+echo popd                                                    >> %target_dist%\test-designer.cmd
 echo cd lib                                                  >> %target_dist%\test-designer.cmd
 echo ..\bin\OpenViBE-designer-dynamic.exe                    >> %target_dist%\test-designer.cmd
 
 echo @echo off                                               >  %target_dist%\test-id-generator.cmd
+echo pushd ..\scripts                                        >> %target_dist%\test-id-generator.cmd
+echo call win32-init_env_command.cmd                         >> %target_dist%\test-id-generator.cmd
+echo popd                                                    >> %target_dist%\test-id-generator.cmd
 echo cd lib                                                  >> %target_dist%\test-id-generator.cmd
 echo ..\bin\OpenViBE-id-generator-dynamic.exe                >> %target_dist%\test-id-generator.cmd
 echo pause                                                   >> %target_dist%\test-id-generator.cmd

@@ -50,7 +50,7 @@ Section /o "CMake"
   CreateDirectory "$INSTDIR\arch"
 
   IfFileExists "arch\openvibe-dependency-cmake-2.4.6.zip" no_need_to_download_cmake
-  NSISdl::download http://www.cmake.org/files/v2.4/cmake-2.4.6-win32-x86.zip "arch\openvibe-dependency-cmake-2.4.6.zip"
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/cmake-2.4.6-win32-x86.zip "arch\openvibe-dependency-cmake-2.4.6.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
@@ -80,8 +80,7 @@ Section /o "eXpat"
   CreateDirectory "$INSTDIR\arch"
 
   IfFileExists "arch\openvibe-dependency-expat-2.0.1.zip" no_need_to_download_expat
-  ; NSISdl::download http://downloads.sourceforge.net/expat/expat-win32bin-2.0.1.exe "arch\openvibe-dependency-expat-2.0.1.exe"
-  NSISdl::download http://url "arch\openvibe-dependency-expat-2.0.1.zip"
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/expat-win32bin-2.0.1.zip "arch\openvibe-dependency-expat-2.0.1.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
@@ -90,7 +89,6 @@ Section /o "eXpat"
 no_need_to_download_expat:
  
   IfFileExists "expat" no_need_to_install_expat
-  ; ExecWait '"$INSTDIR\arch\openvibe-dependency-expat-2.0.1.exe" /silent "/dir=$INSTDIR\expat"'
   ZipDLL::extractall "arch\openvibe-dependency-expat-2.0.1.zip" "expat"
 
 no_need_to_install_expat:
@@ -112,7 +110,7 @@ Section /o "BOOST"
   CreateDirectory "$INSTDIR\arch"
 
   IfFileExists "arch\openvibe-dependency-boost-1.34.0.zip" no_need_to_download_boost
-  NSISdl::download http://downloads.sourceforge.net/boost/boost_1_34_0.zip "arch\openvibe-dependency-boost-1.34.0.zip"
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/boost_1_34_0.zip "arch\openvibe-dependency-boost-1.34.0.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
@@ -142,8 +140,7 @@ Section /o "GTK/Glade"
   CreateDirectory "$INSTDIR\arch"
 
   IfFileExists "arch\openvibe-dependency-gtk-2.10.11.zip" no_need_to_download_glade
-  ; NSISdl::download http://downloads.sourceforge.net/gladewin32/gtk-dev-2.10.11-win32-1.exe "arch\openvibe-dependency-gtk-2.10.11.exe"
-  NSISdl::download http://url "arch\openvibe-dependency-gtk-2.10.11.zip"
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/gtk-dev-2.10.11-win32-1.zip "arch\openvibe-dependency-gtk-2.10.11.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
@@ -153,7 +150,6 @@ no_need_to_download_glade:
  
   IfFileExists "GTK" no_need_to_install_glade
   ZipDLL::extractall "arch\openvibe-dependency-gtk-2.10.11.zip" "gtk"
-  ; ExecWait '"$INSTDIR\arch\openvibe-dependency-gtk-2.10.11.exe" /S /D=$INSTDIR\GTK'
 
 no_need_to_install_glade:
 
@@ -193,7 +189,7 @@ Section /o "OpenMASK"
   CreateDirectory "$INSTDIR\arch"
 
   IfFileExists "arch\openvibe-dependency-openmask-580.zip" no_need_to_download_openmask
-  NSISdl::download http://url "arch\openvibe-dependency-openmask-580.zip"
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/openmask-580-win32-x86-MSVC8.zip "arch\openvibe-dependency-openmask-580.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
@@ -219,9 +215,6 @@ SectionEnd
 ;##########################################################################################################################################################
 
 Section "Uninstall"
-
-  ; ExecWait '"$INSTDIR\GTK\uninst.exe" /s'
-  ; ExecWait '"$INSTDIR\expat\Uninstall\unins000.exe" /silent'
 
   RMDir /r "$INSTDIR\gtk"
   RMDir /r "$INSTDIR\boost"
