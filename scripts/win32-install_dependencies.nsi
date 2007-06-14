@@ -7,7 +7,7 @@
 
   ;Default installation folder
   InstallDir "$EXEDIR\..\dependencies"
-  
+
 ;Interface Settings
 
   !define MUI_ABORTWARNING
@@ -16,10 +16,10 @@
 
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_INSTFILES
-  
+
 ;  !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
-  
+
 ;Languages
  
   !insertmacro MUI_LANGUAGE "English"
@@ -30,12 +30,25 @@
 
 Section "-base" 
 
+  ;Finds Microsoft Platform SDK
+  ReadRegStr $r0 HKLM SOFTWARE\Microsoft\MicrosoftSDK\Directories "Install Dir"
+  StrCmp $r0 "" base_failed_to_find_sdk
+    MessageBox MB_OK "Microsoft Platform SDK found at :$\n$r0"
+    goto base_go_on
+
+base_failed_to_find_sdk:
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to find Microsoft Platform SDK$\nPlease update your win32-dependencies.cmd script by hand"
+    goto base_go_on
+
+base_go_on:
+
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
   ;clears dependencies file
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" w
   FileWrite $0 "@echo off$\n"
+  FileWrite $0 "set OV_DEP_MSSDK=$r0$\n"
   FileClose $0
 
 SectionEnd
@@ -44,7 +57,7 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section /o "CMake"
+Section "CMake"
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
@@ -74,7 +87,7 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section /o "eXpat"
+Section "eXpat"
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
@@ -104,7 +117,7 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section /o "BOOST"
+Section "BOOST"
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
@@ -134,7 +147,7 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section /o "GTK/Glade"
+Section "GTK/Glade"
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
@@ -183,7 +196,7 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section /o "OpenMASK"
+Section "OpenMASK"
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"

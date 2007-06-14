@@ -1,22 +1,5 @@
 @echo off
 
-if exist "win32-dependencies.cmd" (
-	call "win32-dependencies.cmd"
-)
-
-REM ########################################################################################################################
-REM ## GLOBAL
-
-call "%VS80COMNTOOLS%\vsvars32.bat%
-set PATH=%PATH%;%LIB%;%LIBPATH%
-
-set PATH=%OV_DEP_BOOST%\Bin;%PATH%
-set PATH=%OV_DEP_GLADE%\bin;%PATH%
-set PATH=%OV_DEP_CMAKE%\bin;%PATH%
-set PATH=%OV_DEP_EXPAT%\Bin;%PATH%
-set PATH=%OV_DEP_OPENMASK%\Bin;%PATH%
-set INCLUDE=%OV_DEP_BOOST%;%INCLUDE%
-set PKG_CONFIG_PATH=%OV_DEP_GLADE%\lib\pkgconfig
 set OpenViBE_base=%CD%\..
 
 REM ########################################################################################################################
@@ -143,3 +126,43 @@ set OpenViBE_plugin_signal_processing_gpl=%OpenViBE_plugins%\signal-processing-g
 set OpenViBE_plugin_simple_visualisation=%OpenViBE_plugins%\simple-visualisation\%OpenViBE_plugin_simple_visualisation_branch%
 set OpenViBE_plugin_stimulation=%OpenViBE_plugins%\stimulation\%OpenViBE_plugin_stimulation_branch%
 set OpenViBE_plugin_tools=%OpenViBE_plugins%\tools\%OpenViBE_plugin_tools_branch%
+
+REM ########################################################################################################################
+
+if exist "win32-dependencies.cmd" (
+	call "win32-dependencies.cmd"
+)
+
+REM ########################################################################################################################
+
+set VSTOOLS=
+if exist "%VS70COMNTOOLS%\vsvars32.bat" set VSTOOLS=%VS70COMNTOOLS%\vsvars32.bat
+if exist "%VS80COMNTOOLS%\vsvars32.bat" set VSTOOLS=%VS80COMNTOOLS%\vsvars32.bat
+
+if exist "%VSTOOLS%" (
+	call "%VSTOOLS%"
+) else (
+	echo ######################################################################################
+	echo ##                                                                                  ##
+	echo ##  WARNING : Microsoft Visual Studio Common tools initialisation script not found  ##
+	echo ##                                                                                  ##
+	echo ######################################################################################
+)
+
+REM ########################################################################################################################
+
+set INCLUDE=%OV_DEP_MSSDK%\Include;%INCLUDE%
+set INCLUDE=%OV_DEP_BOOST%;%INCLUDE%
+
+set LIB=%OV_DEP_MSSDK%\Lib;%LIB%
+
+set PATH=%OV_DEP_MSSDK%\Bin;%PATH%
+set PATH=%OV_DEP_BOOST%\Bin;%PATH%
+set PATH=%OV_DEP_GLADE%\bin;%PATH%
+set PATH=%OV_DEP_CMAKE%\bin;%PATH%
+set PATH=%OV_DEP_EXPAT%\Bin;%PATH%
+set PATH=%OV_DEP_OPENMASK%\Bin;%PATH%
+
+set PATH=%PATH%;%LIB%;%LIBPATH%
+
+set PKG_CONFIG_PATH=%OV_DEP_GLADE%\lib\pkgconfig
