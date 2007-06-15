@@ -31,14 +31,22 @@
 Section "-base" 
 
   ;Finds Microsoft Platform SDK
-  ReadRegStr $r0 HKLM SOFTWARE\Microsoft\MicrosoftSDK\Directories "Install Dir"
-  StrCmp $r0 "" base_failed_to_find_sdk
-    MessageBox MB_OK "Microsoft Platform SDK found at :$\n$r0"
-    goto base_go_on
+
+base_failed_to_find_sdk_1:
+  ReadRegStr $r0 HKLM "SOFTWARE\Microsoft\MicrosoftSDK\Directories" "Install Dir"
+  StrCmp $r0 "" base_failed_to_find_sdk_2 base_found_sdk
+base_failed_to_find_sdk_2:
+  ReadRegStr $r0 HKLM "SOFTWARE\Microsoft\Microsoft SDKs\Windows" "CurrentInstallFolder"
+  StrCmp $r0 "" base_failed_to_find_sdk_3 base_found_sdk
+base_failed_to_find_sdk_3:
+  goto base_failed_to_find_sdk
 
 base_failed_to_find_sdk:
-    MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to find Microsoft Platform SDK$\nPlease update your win32-dependencies.cmd script by hand"
-    goto base_go_on
+  MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to find Microsoft Platform SDK$\nPlease update your win32-dependencies.cmd script by hand"
+  goto base_go_on
+base_found_sdk:
+  MessageBox MB_OK "Microsoft Platform SDK found at :$\n$r0"
+  goto base_go_on
 
 base_go_on:
 
