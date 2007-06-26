@@ -9,9 +9,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DStream_Shared -DStream_Exports")
 
-IF(WIN32)
-	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ws2_32.lib)
-ENDIF(WIN32)
+INCLUDE("FindOpenViBEModuleSystem.cmake")
 
 # -----------------------------
 # Copies all header files to
