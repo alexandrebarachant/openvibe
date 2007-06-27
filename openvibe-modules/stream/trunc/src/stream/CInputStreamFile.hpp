@@ -28,7 +28,6 @@ namespace Stream
 
 		std::ifstream m_oFile;
 		std::string m_sFilename;
-		Stream::boolean m_bIsOpened;
 	};
 };
 

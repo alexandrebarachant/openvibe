@@ -4,13 +4,12 @@ using namespace Stream;
 
 CInputStreamFile::CInputStreamFile(const char* sFilename)
 	:m_sFilename(sFilename)
-	,m_bIsOpened(false)
 {
 }
 
 boolean CInputStreamFile::open(void)
 {
-	if(m_bIsOpened)
+	if(m_oFile.is_open())
 	{
 		return false;
 	}
@@ -19,29 +18,27 @@ boolean CInputStreamFile::open(void)
 	{
 		return false;
 	}
-	m_bIsOpened=true;
 	return true;
 }
 
 boolean CInputStreamFile::isOpened(void)
 {
-	return m_bIsOpened;
+	return m_oFile.is_open();
 }
 
 boolean CInputStreamFile::close(void)
 {
-	if(!m_bIsOpened)
+	if(!m_oFile.is_open())
 	{
 		return false;
 	}
 	m_oFile.close();
-	m_bIsOpened=false;
 	return true;
 }
 
 uint64 CInputStreamFile::bufferize(uint8* pBuffer, uint64 ui64RequestedBufferSize)
 {
-	if(m_bIsOpened)
+	if(m_oFile.is_open())
 	{
 		m_oFile.read(reinterpret_cast<char*>(pBuffer), ui64RequestedBufferSize);
 		uint64 l_ui64Result=m_oFile.gcount();
