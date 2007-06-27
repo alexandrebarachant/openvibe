@@ -27,7 +27,7 @@ namespace Stream
 	};
 
 	extern Stream_API Stream::IOutputStream* createOutputStreamFile(const char* sFilename);
-	extern Stream_API Stream::IOutputStream* createOutputStreamMemory(const Stream::uint8* pBuffer, const Stream::uint64 ui64BufferSize);
+	extern Stream_API Stream::IOutputStream* createOutputStreamMemory(Stream::uint8* pBuffer, const Stream::uint64 ui64BufferSize);
 };
 
 #endif // __Stream_IOutputStream_H__
