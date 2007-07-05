@@ -14,6 +14,16 @@ boolean Memory::copy(
 	return true;
 }
 
+boolean Memory::set(
+	void* pTargetBuffer,
+	const uint64 ui64BufferSize,
+	const uint8 ui8Value)
+{
+	// $$$ TODO take 64bits size into consideration
+	memset(pTargetBuffer, ui8Value, static_cast<size_t>(ui64BufferSize));
+	return true;
+}
+
 // ________________________________________________________________________________________________________________
 //
 

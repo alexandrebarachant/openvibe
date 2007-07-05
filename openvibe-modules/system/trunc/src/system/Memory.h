@@ -10,6 +10,7 @@ namespace System
 	public:
 
 		static System::boolean copy(void* pTargetBuffer, const void* pSourceBuffer, const System::uint64 ui64BufferSize);
+		static System::boolean set(void* pTargetBuffer, const System::uint64 ui64BufferSize, const System::uint8 ui8Value);
 
 		static System::boolean hostToLittleEndian(const System::uint16 ui16Value, System::uint8* pBuffer);
 		static System::boolean hostToLittleEndian(const System::uint32 ui32Value, System::uint8* pBuffer);
