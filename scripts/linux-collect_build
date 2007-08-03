@@ -25,6 +25,7 @@ cp -rf $OpenViBE_module_automaton/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_module_ebml/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_module_fs/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_module_socket/bin/* $target_dist/bin 2> /dev/null
+cp -rf $OpenViBE_module_stream/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_module_system/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE_module_xml/bin/* $target_dist/bin 2> /dev/null
 cp -rf $OpenViBE/bin/* $target_dist/bin 2> /dev/null
@@ -38,6 +39,7 @@ cp -rf $OpenViBE_module_automaton/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_module_ebml/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_module_fs/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_module_socket/include/* $target_dist/include 2> /dev/null
+cp -rf $OpenViBE_module_stream/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_module_system/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE_module_xml/include/* $target_dist/include 2> /dev/null
 cp -rf $OpenViBE/include/* $target_dist/include 2> /dev/null
@@ -51,6 +53,7 @@ cp -rf $OpenViBE_module_automaton/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_module_ebml/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_module_fs/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_module_socket/lib/* $target_dist/lib 2> /dev/null
+cp -rf $OpenViBE_module_stream/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_module_system/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE_module_xml/lib/* $target_dist/lib 2> /dev/null
 cp -rf $OpenViBE/lib/* $target_dist/lib 2> /dev/null
@@ -64,6 +67,7 @@ cp -rf $OpenViBE_module_automaton/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_module_ebml/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_module_fs/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_module_socket/share/* $target_dist/share 2> /dev/null
+cp -rf $OpenViBE_module_stream/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_module_system/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE_module_xml/share/* $target_dist/share 2> /dev/null
 cp -rf $OpenViBE/share/* $target_dist/share 2> /dev/null

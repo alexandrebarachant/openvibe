@@ -22,6 +22,7 @@
 # OpenViBE_module_ebml_branch=$OpenViBE_modules_branch
 # OpenViBE_module_fs_branch=$OpenViBE_modules_branch
 # OpenViBE_module_socket_branch=$OpenViBE_modules_branch
+# OpenViBE_module_stream_branch=$OpenViBE_modules_branch
 # OpenViBE_module_system_branch=$OpenViBE_modules_branch
 # OpenViBE_module_xml_branch=$OpenViBE_modules_branch
 
@@ -87,6 +88,9 @@ if [ "$OpenViBE_module_fs_branch" == "" ]; then
 fi
 if [ "$OpenViBE_module_socket_branch" == "" ]; then
 	OpenViBE_module_socket_branch=$OpenViBE_modules_branch
+fi
+if [ "$OpenViBE_module_stream_branch" == "" ]; then
+	OpenViBE_module_stream_branch=$OpenViBE_modules_branch
 fi
 if [ "$OpenViBE_module_system_branch" == "" ]; then
 	OpenViBE_module_system_branch=$OpenViBE_modules_branch
@@ -156,6 +160,7 @@ export OpenViBE_module_ebml=$OpenViBE_modules/ebml/$OpenViBE_module_ebml_branch
 export OpenViBE_module_automaton=$OpenViBE_modules/automaton/$OpenViBE_module_automaton_branch
 export OpenViBE_module_fs=$OpenViBE_modules/fs/$OpenViBE_module_ebml_branch
 export OpenViBE_module_socket=$OpenViBE_modules/socket/$OpenViBE_module_socket_branch
+export OpenViBE_module_stream=$OpenViBE_modules/stream/$OpenViBE_module_stream_branch
 export OpenViBE_module_system=$OpenViBE_modules/system/$OpenViBE_module_system_branch
 export OpenViBE_module_xml=$OpenViBE_modules/xml/$OpenViBE_module_xml_branch
 
