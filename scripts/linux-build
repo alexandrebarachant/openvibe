@@ -8,26 +8,29 @@ fi
 
 source linux-init_env_command
 
-source_directory=`pwd`
+for project_directory in $OpenViBE_build_order; do
+	if [ -e "$project_directory/CMakeLists.txt" ]; then
 
-mkdir ../local-tmp 2> /dev/null
-for sub_directory in `find cmake -maxdepth 1 -type d -printf "%P\n" | grep level | sort`; do
-	mkdir "../local-tmp/$sub_directory" 2> /dev/null
-	pushd "../local-tmp/$sub_directory" 2> /dev/null
+		temp_sub_directory=`echo $project_directory | sed '
+			s:'$OpenViBE_base'/::g
+			'`
+		mkdir -p "../local-tmp/$temp_sub_directory" 2> /dev/null
+		pushd "../local-tmp/$temp_sub_directory" 2> /dev/null
 
-	cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release "$source_directory/cmake/$sub_directory"
-	if [ $? -eq 0 ]; then
-		echo CMake has been called successfully !
-	else
-		exit -1
+		cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release "$project_directory"
+		if [ $? -eq 0 ]; then
+			echo CMake has been called successfully !
+		else
+			exit -1
+		fi;
+
+		make -j 2
+		if [ $? -eq 0 ]; then
+			echo Make has been called successfully !
+		else
+			exit -1
+		fi;
+
+		popd 2> /dev/null
 	fi;
-
-	make
-	if [ $? -eq 0 ]; then
-		echo Make has been called successfully !
-	else
-		exit -1
-	fi;
-
-	popd 2> /dev/null
 done
