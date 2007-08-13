@@ -12,36 +12,42 @@
 using namespace System;
 #define boolean System::boolean
 
-#if defined System_OS_Linux
-
 boolean Time::sleep(const uint32 ui32MilliSeconds)
 {
-	usleep(ui32MilliSeconds*1000);
+	return zsleep((((uint64)ui32MilliSeconds)<<32)/1000);
+}
+
+boolean Time::zsleep(const uint64 ui64Seconds)
+{
+#if defined System_OS_Linux
+	usleep((ui64Seconds*1000000)>>32);
+#elif defined System_OS_Windows
+	Sleep((ui64Seconds*1000)>>32);
+#else
+#endif
 	return true;
 }
 
 uint32 Time::getTime(void)
 {
-	uint32 l_ui32Result=0;
+	return (zgetTime()*1000)>>32;
+}
+
+uint64 Time::zgetTime(void)
+{
+	uint64 l_ui64Result=0;
+#if defined System_OS_Linux
 	struct timeval l_oTimeValue;
 	gettimeofday(&l_oTimeValue, NULL);
-	l_ui32Result=(l_oTimeValue.tv_sec*1000)+(l_oTimeValue.tv_usec/1000);
-	return l_ui32Result;
-}
-
+	l_ui64Result+=(((uint64)l_oTimeValue.tv_sec)<<32);
+	l_ui64Result+=(((uint64)l_oTimeValue.tv_usec)<<32)/1000000;
 #elif defined System_OS_Windows
-
-boolean Time::sleep(const uint32 ui32MilliSeconds)
-{
-	Sleep(ui32MilliSeconds);
-	return true;
-}
-
-uint32 Time::getTime(void)
-{
-	return timeGetTime();
-}
-
+	LARGE_INTEGER l_oPerformanceCounter;
+	LARGE_INTEGER l_oPerformanceFrequency;
+	QueryPerformanceCounter(&l_oPerformanceCounter);
+	QueryPerformanceFrequency(&l_oPerformanceFrequency);
+	l_ui64Result=((l_oPerformanceCounter.QuadPart<<32)/l_oPerformanceFrequency.QuadPart)
 #else
-
 #endif
+	return l_ui64Result;
+}

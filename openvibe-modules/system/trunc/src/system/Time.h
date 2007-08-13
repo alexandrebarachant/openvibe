@@ -10,7 +10,9 @@ namespace System
 	public:
 
 		static System::boolean sleep(const System::uint32 ui32MilliSeconds);
+		static System::boolean zsleep(const System::uint64 ui64Seconds); // fixed point 32:32 seconds
 		static System::uint32 getTime(void);
+		static System::uint64 zgetTime(void); // fixed point 32:32 seconds
 
 	private:
 
