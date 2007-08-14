@@ -1,0 +1,43 @@
+#!/bin/bash
+
+version_major=1
+version_minor=0
+version_patch=0
+
+projects="
+openvibe-modules/automaton
+openvibe-modules/ebml
+openvibe-modules/fs
+openvibe-modules/socket
+openvibe-modules/stream
+openvibe-modules/system
+openvibe-modules/xml
+openvibe
+openvibe-kernel-omk
+openvibe-toolkit
+openvibe-applications/acquisition-server
+openvibe-applications/designer
+openvibe-applications/id-generator
+openvibe-plugins/acquisition
+openvibe-plugins/feature-extraction
+openvibe-plugins/file-io
+openvibe-plugins/samples
+openvibe-plugins/signal-processing
+openvibe-plugins/simple-visualisation
+openvibe-plugins/stimulation
+openvibe-plugins/tools
+"
+# openvibe-plugins/classification
+# openvibe-plugins/classification-gpl
+# openvibe-plugins/signal-processing-gpl
+
+for project in $projects ; do
+	echo "---> will create tag in [$project]"
+	svn cp "../$project/trunc" "../$project/tags/$version_major.$version_minor.$version_patch"
+	sed -i -e '
+		s:SET(PROJECT_VERSION_MAJOR x):SET(PROJECT_VERSION_MAJOR '$version_major'):g
+		s:SET(PROJECT_VERSION_MINOR x):SET(PROJECT_VERSION_MINOR '$version_minor'):g
+		s:SET(PROJECT_VERSION_PATCH x):SET(PROJECT_VERSION_PATCH '$version_patch'):g
+	' "../$project/tags/$version_major.$version_minor.$version_patch/CMakeLists.txt"
+done;
+
