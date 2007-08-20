@@ -103,11 +103,12 @@ void CSignalDisplayLeftRuler::draw()
 		//get the current number of labels to display based on the nearest inferior power of ten value
 		uint64 l_ui64TempNumberOfLabels = (uint64)ceil(l_f64IntervalWidth / l_f64NearestSmallerPowerOf10);
 
+		//computes the factor by which we can divide the step
+		uint32 l_ui32Factor = (uint32)(l_ui64MaxNumberOfLabels/l_ui64TempNumberOfLabels);
+
 		//if it's less than the maximum number, we can reduce the step
 		if(l_ui64TempNumberOfLabels < l_ui64MaxNumberOfLabels)
 		{
-			//computes the factor by which we can divide the step
-			uint32 l_ui32Factor = (uint32)(round(l_ui64MaxNumberOfLabels/l_ui64TempNumberOfLabels));
 			l_ui32Factor = (l_ui32Factor % 2 == 0 || l_ui32Factor==1) ? l_ui32Factor : l_ui32Factor - 1;
 
 			l_f64ValueStep = l_f64NearestSmallerPowerOf10 / l_ui32Factor;
@@ -115,7 +116,6 @@ void CSignalDisplayLeftRuler::draw()
 		//if it's more than the maximum, increases the step
 		else
 		{
-			uint32 l_ui32Factor = (uint32)(round(l_ui64TempNumberOfLabels/l_ui64MaxNumberOfLabels));
 			l_ui32Factor = (l_ui32Factor % 2 == 0) ? l_ui32Factor : l_ui32Factor + 1;
 
 			l_f64ValueStep = l_f64NearestSmallerPowerOf10 * l_ui32Factor;

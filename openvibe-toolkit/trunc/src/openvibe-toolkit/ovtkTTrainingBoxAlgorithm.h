@@ -222,7 +222,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 
 	if(m_ui64TrialEndTime!=_no_time_ && m_ui64TrialStartTime!=_no_time_ && m_ui64TrialEndTime > m_ui64TrialStartTime)
 	{
-		OpenViBE::uint32 l_ui32SampleCount=((m_ui64TrialEndTime-m_ui64TrialStartTime)*m_pPendingSignal->getSamplingRate())>>32;
+		OpenViBE::uint32 l_ui32SampleCount=(OpenViBE::uint32)(((m_ui64TrialEndTime-m_ui64TrialStartTime)*m_pPendingSignal->getSamplingRate())>>32);
 
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
 			<< OpenViBE::Kernel::LogLevel_Trace

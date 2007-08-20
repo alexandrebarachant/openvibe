@@ -369,7 +369,7 @@ void CChannelDisplay::drawSignal()
 	gint l_iWidth = 0;
 	gint l_iHeight = 0;
 
-	uint32 l_ui32SamplesPerBuffer = m_pDatabase->m_pDimmensionSizes[1];
+	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimmensionSizes[1];
 
 	//gets the size of the drawing area
 	gdk_drawable_get_size(m_pDrawingArea->window, &l_iWidth, &l_iHeight);

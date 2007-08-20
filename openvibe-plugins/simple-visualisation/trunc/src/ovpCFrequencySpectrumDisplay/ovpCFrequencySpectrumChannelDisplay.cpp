@@ -115,7 +115,7 @@ namespace OpenViBEPlugins
 			gint l_iWidth = 0;
 			gint l_iHeight = 0;
 
-			uint32 l_ui32FrequencyCount = m_pDatabase->m_pDimmensionSizes[1];
+			uint32 l_ui32FrequencyCount = static_cast<uint32>(m_pDatabase->m_pDimmensionSizes[1]);
 
 			//gets the size of the drawing area
 			gdk_drawable_get_size(m_pDisplay->window, &l_iWidth, &l_iHeight);
@@ -126,7 +126,7 @@ namespace OpenViBEPlugins
 			float64 l_f64HeightPerPoint = static_cast<float64>(l_iHeight) / static_cast<float64>(l_ui32FrequencyCount);
 
 
-			int64 l_i64BaseX = static_cast<int64>(floor(l_iWidth - (m_pDatabase->m_oSampleBuffers.size() * l_f64WidthPerPoint)));
+			int64 l_i64BaseX = static_cast<int64>(l_iWidth - (m_pDatabase->m_oSampleBuffers.size() * l_f64WidthPerPoint));
 
 			if(l_i64BaseX<0 || l_i64BaseX < l_f64WidthPerPoint)
 			{
@@ -161,7 +161,7 @@ namespace OpenViBEPlugins
 			m_f64MaximumValue = l_f64Max;
 
 			//clear the undrawn part of the buffer
-			drawBoxToBuffer(0, 0, l_i64BaseX, l_iHeight, 0xFF, 0xFF, 0xFF);
+			drawBoxToBuffer(0, 0, l_i64BaseX>1?(unsigned)l_i64BaseX:1, l_iHeight, 0xFF, 0xFF, 0xFF);
 
 			for(size_t j=0 ; j<m_pDatabase->m_oSampleBuffers.size() ; j++)
 			{
@@ -182,7 +182,7 @@ namespace OpenViBEPlugins
 						/ (l_f64Max - l_f64Min)) * (1<<8)) + (float64)(1<<7));
 
 					//on 10 bits (test w 16)
-					l_ui8IndexedColor = (l_i32TempIndex<0) ? 0 : (l_i32TempIndex>0xFF) ? 0xFF : l_i32TempIndex;
+					l_ui8IndexedColor = (l_i32TempIndex<0) ? 0 : (l_i32TempIndex>0xFF) ? 0xFF : static_cast<uint8>(l_i32TempIndex);
 
 					drawBoxToBuffer(l_iXposition, l_iYPosition, l_iPointW, l_iPointH,
 							  0xFF - l_ui8IndexedColor, 0xFF - l_ui8IndexedColor, 0xFF - l_ui8IndexedColor );

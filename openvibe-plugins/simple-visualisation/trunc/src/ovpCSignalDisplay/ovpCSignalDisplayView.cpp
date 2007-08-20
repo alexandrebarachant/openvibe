@@ -426,7 +426,7 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplayView::init()
 		{
-			OpenViBE::uint32 l_ui32ChannelCount = m_pBufferDatabase->m_pDimmensionSizes[0];
+			OpenViBE::uint32 l_ui32ChannelCount = (uint32)m_pBufferDatabase->m_pDimmensionSizes[0];
 			vector<string>& l_oChannelName = m_pBufferDatabase->m_pDimmesionLabels[0];
 
 			stringstream l_oLabelString;

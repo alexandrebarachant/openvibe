@@ -40,7 +40,7 @@ uint64 CInputStreamFile::bufferize(uint8* pBuffer, uint64 ui64RequestedBufferSiz
 {
 	if(m_oFile.is_open())
 	{
-		m_oFile.read(reinterpret_cast<char*>(pBuffer), ui64RequestedBufferSize);
+		m_oFile.read(reinterpret_cast<char*>(pBuffer), static_cast<std::streamsize>(ui64RequestedBufferSize));
 		uint64 l_ui64Result=m_oFile.gcount();
 		return l_ui64Result;
 	}

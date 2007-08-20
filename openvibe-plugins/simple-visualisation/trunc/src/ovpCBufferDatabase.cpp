@@ -227,15 +227,15 @@ namespace OpenViBEPlugins
 			f64Min = +DBL_MAX;
 			f64Max = -DBL_MAX;
 			
-			for(uint64 i=0 ; i<m_oLocalMinMaxValue[ui32Channel].size() ; i++)
+			for(uint64 i=0 ; i<m_oLocalMinMaxValue[(size_t)ui32Channel].size() ; i++)
 			{
-				if(f64Min > m_oLocalMinMaxValue[ui32Channel][i].first)
+				if(f64Min > m_oLocalMinMaxValue[(size_t)ui32Channel][(size_t)i].first)
 				{
-					f64Min = m_oLocalMinMaxValue[ui32Channel][i].first;
+					f64Min = m_oLocalMinMaxValue[(size_t)ui32Channel][(size_t)i].first;
 				}
-				if(f64Max < m_oLocalMinMaxValue[ui32Channel][i].second)
+				if(f64Max < m_oLocalMinMaxValue[(size_t)ui32Channel][(size_t)i].second)
 				{
-					f64Max = m_oLocalMinMaxValue[ui32Channel][i].second;
+					f64Max = m_oLocalMinMaxValue[(size_t)ui32Channel][(size_t)i].second;
 				}
 			}
 		}
@@ -244,15 +244,15 @@ namespace OpenViBEPlugins
 		{
 			for(uint32 c=0 ; c<m_oLocalMinMaxValue.size() ; c++)
 			{
-				for(uint64 i=0 ; i<m_oLocalMinMaxValue[c].size() ; i++)
+				for(uint64 i=0 ; i<m_oLocalMinMaxValue[(size_t)c].size() ; i++)
 				{
-					if(f64Min > m_oLocalMinMaxValue[c][i].first)
+					if(f64Min > m_oLocalMinMaxValue[(size_t)c][(size_t)i].first)
 					{
-						f64Min = m_oLocalMinMaxValue[c][i].first;
+						f64Min = m_oLocalMinMaxValue[(size_t)c][(size_t)i].first;
 					}
-					if(f64Max < m_oLocalMinMaxValue[c][i].second)
+					if(f64Max < m_oLocalMinMaxValue[(size_t)c][(size_t)i].second)
 					{
-						f64Max = m_oLocalMinMaxValue[c][i].second;
+						f64Max = m_oLocalMinMaxValue[(size_t)c][(size_t)i].second;
 					}
 				}
 			}

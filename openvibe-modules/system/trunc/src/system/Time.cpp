@@ -22,7 +22,7 @@ boolean Time::zsleep(const uint64 ui64Seconds)
 #if defined System_OS_Linux
 	usleep((ui64Seconds*1000000)>>32);
 #elif defined System_OS_Windows
-	Sleep((ui64Seconds*1000)>>32);
+	Sleep((uint32)((ui64Seconds*1000)>>32));
 #else
 #endif
 	return true;
@@ -30,7 +30,7 @@ boolean Time::zsleep(const uint64 ui64Seconds)
 
 uint32 Time::getTime(void)
 {
-	return (zgetTime()*1000)>>32;
+	return (uint32)((zgetTime()*1000)>>32);
 }
 
 uint64 Time::zgetTime(void)
@@ -46,7 +46,7 @@ uint64 Time::zgetTime(void)
 	LARGE_INTEGER l_oPerformanceFrequency;
 	QueryPerformanceCounter(&l_oPerformanceCounter);
 	QueryPerformanceFrequency(&l_oPerformanceFrequency);
-	l_ui64Result=((l_oPerformanceCounter.QuadPart<<32)/l_oPerformanceFrequency.QuadPart)
+	l_ui64Result=((l_oPerformanceCounter.QuadPart<<32)/l_oPerformanceFrequency.QuadPart);
 #else
 #endif
 	return l_ui64Result;

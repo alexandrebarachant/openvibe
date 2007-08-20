@@ -1,8 +1,8 @@
-
 #include "ovpCBCICompetitionIIIbReader.h"
 
 #include <iostream>
 #include <math.h>
+#include <float.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
@@ -13,8 +13,10 @@ using namespace OpenViBEToolkit;
 
 using namespace std;
 
-
 #define BCICompetitionIIIbReader_UndefinedClass 0xFFFFFFFFFFLL
+#if defined OVP_OS_Windows
+#define isnan _isnan
+#endif
 
 namespace OpenViBEPlugins
 {

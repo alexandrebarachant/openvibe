@@ -67,7 +67,7 @@ namespace OpenViBEPlugins
 						string l_oLabel;
 						uint32 l_ui32ElementIndex = elt;
 						
-						for(int64 k=m_oDimmensionSize[i].size()-1 ; k>=0 ; k--)
+						for(size_t k=m_oDimmensionSize[i].size()-1 ; k>=0 ; k--)
 						{
 							l_oLabel += m_oFeatureNames[(size_t)i][(size_t)(m_oDimmensionSize[i].size()-k-1)][(size_t)(l_ui32ElementIndex / m_oDimmensionSize[i][k])];
 							l_ui32ElementIndex = l_ui32ElementIndex % m_oDimmensionSize[i][k];

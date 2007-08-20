@@ -103,7 +103,7 @@ boolean COutputStreamHelper::sendUInteger32(uint32 uiValue)
 
 boolean COutputStreamHelper::sendUInteger64(uint64 uiValue)
 {
-	return sendUInteger<uint32>(uiValue);
+	return sendUInteger<uint64>(uiValue);
 }
 
 // ________________________________________________________________________________________________________________
@@ -199,7 +199,7 @@ boolean COutputStreamHelper::sendUInteger(const T& rValue)
 	uint8 l_pBuffer[sizeof(T)];
 	for(unsigned int i=0; i<sizeof(T); i++)
 	{
-		l_pBuffer[i]=((rValue>>(8*(sizeof(T)-i-1)))&0xff);
+		l_pBuffer[i]=(uint8)(((rValue>>(8*(sizeof(T)-i-1)))&0xff));
 	}
 	return (m_rOutputStream.sendBuffer(l_pBuffer, sizeof(T))==sizeof(T)?true:false);
 }

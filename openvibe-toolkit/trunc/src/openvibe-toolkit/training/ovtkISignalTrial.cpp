@@ -107,8 +107,8 @@ ISignalTrial& OpenViBEToolkit::selectTime(
 		return rSignalTrial;
 	}
 
-	uint32 l_ui32SampleStart=(ui64TimeStart*pSourceSignalTrial->getSamplingRate())>>32;
-	uint32 l_ui32SampleEnd=(ui64TimeEnd*pSourceSignalTrial->getSamplingRate())>>32;
+	uint32 l_ui32SampleStart=(uint32)((ui64TimeStart*pSourceSignalTrial->getSamplingRate())>>32);
+	uint32 l_ui32SampleEnd=(uint32)((ui64TimeEnd*pSourceSignalTrial->getSamplingRate())>>32);
 	return selectSamples(rSignalTrial, l_ui32SampleStart, l_ui32SampleEnd, pSourceSignalTrial);
 }
 
@@ -167,8 +167,8 @@ ISignalTrial& OpenViBEToolkit::removeTime(
 		return rSignalTrial;
 	}
 
-	uint32 l_ui32SampleStart=(ui64TimeStart*pSourceSignalTrial->getSamplingRate())>>32;
-	uint32 l_ui32SampleEnd=(ui64TimeEnd*pSourceSignalTrial->getSamplingRate())>>32;
+	uint32 l_ui32SampleStart=(uint32)((ui64TimeStart*pSourceSignalTrial->getSamplingRate())>>32);
+	uint32 l_ui32SampleEnd=(uint32)((ui64TimeEnd*pSourceSignalTrial->getSamplingRate())>>32);
 	return removeSamples(rSignalTrial, l_ui32SampleStart, l_ui32SampleEnd, pSourceSignalTrial);
 }
 
@@ -226,6 +226,6 @@ ISignalTrial& OpenViBEToolkit::insertBufferTime(
 		pSourceSignalTrial=&rSignalTrial;
 	}
 
-	uint32 l_ui32SampleStart=(ui64TimeStart*pSourceSignalTrial->getSamplingRate())>>32;
+	uint32 l_ui32SampleStart=(uint32)((ui64TimeStart*pSourceSignalTrial->getSamplingRate())>>32);
 	return insertBufferSamples(rSignalTrial, l_ui32SampleStart, ui32SampleCount, pBuffer, pSourceSignalTrial);
 }

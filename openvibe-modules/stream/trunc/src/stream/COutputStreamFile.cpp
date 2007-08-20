@@ -44,7 +44,7 @@ uint64 COutputStreamFile::flush(uint8* pBuffer, uint64 ui64RequestedBufferSize)
 {
 	if(m_oFile.is_open())
 	{
-		m_oFile.write(reinterpret_cast<char*>(pBuffer), ui64RequestedBufferSize);
+		m_oFile.write(reinterpret_cast<char*>(pBuffer), static_cast<std::streamsize>(ui64RequestedBufferSize));
 		return ui64RequestedBufferSize; // $$$ Potential bug : what has effectively been written is not tested
 	}
 	return 0;

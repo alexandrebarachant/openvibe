@@ -6,7 +6,6 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Samples;
 using namespace OpenViBEToolkit;
-using namespace std;
 
 void CLog::release(void)
 {
