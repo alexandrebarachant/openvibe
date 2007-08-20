@@ -6,6 +6,7 @@ using namespace boost;
 using namespace boost::spirit;
 using namespace std;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 
 //#define DEBUG
 
@@ -17,7 +18,7 @@ functionPointer CEquationParser::m_pFunctionTable[20] = { &op_neg, &op_add, &op_
 							&op_sqrt, &op_tan};
 
 
-CEquationParser::CEquationParser(float64  * pVariable) : 
+CEquationParser::CEquationParser(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin, float64  * pVariable) : 
 		m_pTree(NULL),
 		m_pVariable(pVariable),
 		m_ui32FunctionStackSize(1024),
@@ -29,7 +30,8 @@ CEquationParser::CEquationParser(float64  * pVariable) :
 		m_ui64StackSize(1024),
 		m_pStack(NULL),
 		m_ui64TreeCategory(OP_USERDEF),
-		m_f64TreeParameter(0)
+		m_f64TreeParameter(0),
+		m_oParentPlugin(oPlugin)
 {
 
 }
@@ -107,11 +109,16 @@ boolean CEquationParser::compileEquation(const char * pEquation)
 	else
 	{
 		//if the parsing failed
-		cout << "\t\t" << pEquation << " Failed parsing\n";
-		cout << "\t\t";
+		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << pEquation << " Failed parsing\n";
+		string l_oErrorString;
+		
 		for (int i = 0; i < (l_oInfo.stop - pEquation); i++)
-			cout << " ";
-		cout << "^--Here\n\n\n";
+		{
+			l_oErrorString+=" ";
+		}
+		l_oErrorString+="^--Here\n\n";
+		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning  << l_oErrorString.c_str();
+
 		return false;
 	}
 }

@@ -1,10 +1,11 @@
 #include "ovkCKernelContext.h"
-
-#include "ovkCObjectFactory.h"
-#include "ovkCPluginManager.h"
-#include "ovkCScenarioManager.h"
-#include "ovkCLogManager.h"
+#include "ovkCKernelObjectFactory.h"
 #include "ovkCTypeManager.h"
+
+#include "player/ovkCPlayerManager.h"
+#include "plugins/ovkCPluginManager.h"
+#include "scenario/ovkCScenarioManager.h"
+#include "log/ovkCLogManager.h"
 
 #include <string>
 #include <algorithm>
@@ -16,32 +17,26 @@ using namespace OpenViBE::Kernel;
 
 CKernelContext::CKernelContext(IKernel& rKernel)
 	:m_rKernel(rKernel)
-	,m_pObjectFactory(NULL)
+	,m_pKernelObjectFactory(NULL)
+	,m_pPlayerManager(NULL)
 	,m_pPluginManager(NULL)
 	,m_pScenarioManager(NULL)
 	,m_pTypeManager(NULL)
 	,m_pLogManager(NULL)
 {
-	m_pObjectFactory=new CObjectFactory(*this);
-	m_pPluginManager=new CPluginManager(*this);
-	m_pScenarioManager=new CScenarioManager(*this);
-	m_pTypeManager=new CTypeManager(*this);
+	m_pKernelObjectFactory=new CKernelObjectFactory(*this);
+
 	m_pLogManager=new CLogManager(*this);
-
-	// $$$
-	m_pTypeManager->registerEnumerationType(CIdentifier(0,1), CString("enum1"), CString("enum 1 value 1;enum 1 value 2;enum 1 value 3;enum 1 value 4"));
-	m_pTypeManager->registerEnumerationType(CIdentifier(0,2), CString("enum2"), CString("enum 2 v1;enum 2 v2"));
-	m_pTypeManager->registerBitMaskType    (CIdentifier(1,1), CString("bitmask1"), CString("bitmask1 bit1;bitmask1 bit2;bitmask1 bit3;bitmask1 bit4;bitmask1 bit5"));
-	m_pTypeManager->registerBitMaskType    (CIdentifier(1,2), CString("bitmask2"), CString("bitmask2 b1;bitmask2 b2"));
-
-	// $$$
-	m_pLogManager->addListener(dynamic_cast<ILogListener*>(m_pObjectFactory->createObject(OVK_ClassId_Kernel_LogListenerConsole)));
-
+	m_pLogManager->addListener(dynamic_cast<ILogListener*>(m_pKernelObjectFactory->createObject(OVK_ClassId_Kernel_Log_LogListenerConsole)));
 	(*m_pLogManager) << LogLevel_Debug << "Added Console Log Listener - should be removed\n";
-	(*m_pLogManager) << LogLevel_Debug << "Added test enumeration" << CIdentifier(0, 1) << " - TODO remove this\n";
-	(*m_pLogManager) << LogLevel_Debug << "Added test enumeration" << CIdentifier(0, 2) << " - TODO remove this\n";
-	(*m_pLogManager) << LogLevel_Debug << "Added test bitmask" << CIdentifier(1, 1) << " - TODO remove this\n";
-	(*m_pLogManager) << LogLevel_Debug << "Added test bitmask" << CIdentifier(1, 2) << " - TODO remove this\n";
+
+	m_pPlayerManager=new CPlayerManager(*this);
+
+	m_pTypeManager=new CTypeManager(*this);
+
+	m_pScenarioManager=new CScenarioManager(*this);
+
+	m_pPluginManager=new CPluginManager(*this);
 }
 
 CKernelContext::~CKernelContext(void)
@@ -50,13 +45,20 @@ CKernelContext::~CKernelContext(void)
 	delete m_pTypeManager;
 	delete m_pScenarioManager;
 	delete m_pPluginManager;
-	delete m_pObjectFactory;
+	delete m_pPlayerManager;
+	delete m_pKernelObjectFactory;
 }
 
-IObjectFactory& CKernelContext::getObjectFactory(void) const
+IKernelObjectFactory& CKernelContext::getKernelObjectFactory(void) const
 {
-	return *m_pObjectFactory;
+	return *m_pKernelObjectFactory;
 }
+
+IPlayerManager& CKernelContext::getPlayerManager(void) const
+{
+	return *m_pPlayerManager;
+}
+
 IPluginManager& CKernelContext::getPluginManager(void) const
 {
 	return *m_pPluginManager;

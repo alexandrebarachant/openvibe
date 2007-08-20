@@ -19,7 +19,7 @@ namespace Automaton
 	class ISwitchConditionFunctor
 	{
 		public:
-			virtual Automaton::uint64 operator()(IAutomatonContext*) = 0;
+			virtual Automaton::int64 operator()(IAutomatonContext*) = 0;
 			virtual ~ISwitchConditionFunctor(){}
 	};
 
@@ -38,14 +38,14 @@ namespace Automaton
 				}
 			}
 
-			virtual Automaton::uint64 operator()(IAutomatonContext*)
+			virtual Automaton::int64 operator()(IAutomatonContext*)
 			{
 
 				Automaton::uint64 l_ui64Max = m_oProbability.back();
 				Automaton::uint64 l_ui64Number = rand() % l_ui64Max;
 				Automaton::boolean l_bFound = false;
 
-				uint64 i;
+				int64 i;
 				for(i=0 ; i<m_oProbability.size() && !l_bFound; i++)
 				{
 					if(l_ui64Number<m_oProbability[(size_t)i])
@@ -60,16 +60,48 @@ namespace Automaton
 			virtual ~CSwitchConditionProbability(){}
 	};
 
+	
+	class CSwitchConditionEvent : virtual public ISwitchConditionFunctor
+	{
+		std::vector<Automaton::CIdentifier> m_oEvents;
+
+		public:
+			CSwitchConditionEvent(std::vector<Automaton::CIdentifier>& oEvents) :
+				m_oEvents(oEvents)
+			{
+			}
+
+			virtual Automaton::int64 operator()(IAutomatonContext* pContext)
+			{
+				const Automaton::CIdentifier* l_pReceivedEvents = pContext->getReceivedEvents();
+
+				for(Automaton::uint64 i=0 ; i<pContext->getReceivedEventsCount() ; i++)
+				{
+					for(size_t j=0 ; j<m_oEvents.size() ; j++)
+					{
+						if(m_oEvents[j] == l_pReceivedEvents[i])
+						{
+							return j;
+						}
+					}
+				}	
+
+				return -1;
+			}
+
+			virtual ~CSwitchConditionEvent(){}
+	};
+
 	class CNodeSwitch : virtual public TNode<INode>
 	{
 		protected:
 			ISwitchConditionFunctor * m_pCondition;
 
 			Automaton::boolean m_bContinue;
-			Automaton::uint64 m_ui64BranchNumber;
+			Automaton::int64 m_i64BranchNumber;
 
 		public:
-			CNodeSwitch() : m_pCondition(NULL), m_bContinue(false), m_ui64BranchNumber(0) {}
+			CNodeSwitch() : m_pCondition(NULL), m_bContinue(false), m_i64BranchNumber(0) {}
 
 			virtual ~CNodeSwitch(){ delete m_pCondition; }
 

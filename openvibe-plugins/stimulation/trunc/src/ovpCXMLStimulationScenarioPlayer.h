@@ -36,6 +36,8 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock &rMessageClock);
 
+			virtual OpenViBE::uint64 getClockFrequency(){ return (200LL<<32); }
+			
 			virtual OpenViBE::boolean process();
 
 			virtual OpenViBE::boolean readAutomaton(OpenViBE::CString& oFilename);
@@ -88,7 +90,7 @@ namespace OpenViBEPlugins
 				rPrototype.addInput("Incoming Stimulations", OV_TypeId_Stimulations);
 				rPrototype.addOutput("Outgoing Stimulations", OV_TypeId_Stimulations);
 
-				rPrototype.addSetting("Filename", OV_TypeId_String, "");
+				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
 
 				return true;
 			}

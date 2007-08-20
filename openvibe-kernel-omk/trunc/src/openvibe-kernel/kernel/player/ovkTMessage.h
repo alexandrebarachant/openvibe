@@ -1,5 +1,5 @@
-#ifndef __OpenViBEKernel_Kernel_TMessage_H__
-#define __OpenViBEKernel_Kernel_TMessage_H__
+#ifndef __OpenViBEKernel_Kernel_Player_TMessage_H__
+#define __OpenViBEKernel_Kernel_Player_TMessage_H__
 
 #include "../../ovk_base.h"
 
@@ -24,7 +24,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setTime(
 				const OpenViBE::uint64 ui64Time);
 
-			_IsDerivedFromClass_Final_(T, OVK_ClassId_Kernel_Message);
+			_IsDerivedFromClass_Final_(T, OVK_ClassId_Kernel_Player_Message);
 
 		protected:
 
@@ -36,4 +36,4 @@ namespace OpenViBE
 
 #include "ovkTMessage.inl"
 
-#endif // __OpenViBEKernel_Kernel_TMessage_H__
+#endif // __OpenViBEKernel_Kernel_Player_TMessage_H__

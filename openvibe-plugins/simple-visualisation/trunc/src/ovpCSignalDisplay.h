@@ -11,7 +11,7 @@
 #include <vector>
 #include <string>
 
-#include "ovpCSignalDisplay/ovpCSignalDisplayDatabase.h"
+#include "ovpCBufferDatabase.h"
 #include "ovpCSignalDisplay/ovpCSignalDisplayView.h"
 
 namespace OpenViBEPlugins
@@ -24,7 +24,7 @@ namespace OpenViBEPlugins
 		* the width of the time window displayed, ...
 		*/
 		class CSignalDisplay : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
-		virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
+		virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback
 		{
 		public:
 
@@ -37,27 +37,25 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process();
 			
-			//Required by the OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback interface
-			virtual void setChannelCount(const OpenViBE::uint32 ui32ChannelCount);
-			virtual void setChannelName(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName);
-			virtual void setSampleCountPerBuffer(const OpenViBE::uint32 ui32SampleCountPerBuffer);
-			virtual void setSamplingRate(const OpenViBE::uint32 ui32SamplingFrequency);
-			virtual void setSampleBuffer(const OpenViBE::float64* pBuffer);
-			
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_SignalDisplay)
+			
+			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
+			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
+			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
 
 		public:
 			
 			
 			//ebml 
 			EBML::IReader* m_pReader;
-			OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback* m_pSignalReaderCallBack;
+			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pStreamedMatrixReaderCallBack;
 			
 			//The main object used for the display (contains all the GUI code)
 			CSignalDisplayDrawable * m_pSignalDisplayView;
 
 			//Contains all the data about the incoming signal
-			CSignalDisplayDatabase * m_pSignalDisplayDatabase;
+			CBufferDatabase * m_pBufferDatabase;
 
 			//Start and end time of the last buffer
 			OpenViBE::uint64 m_ui64StartTime;
@@ -83,7 +81,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("Signal", OV_TypeId_Signal);
+				rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
 
 				return true;
 			}

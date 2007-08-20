@@ -7,7 +7,8 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class IObjectFactory;
+		class IKernelObjectFactory;
+		class IPlayerManager;
 		class IPluginManager;
 		class IScenarioManager;
 		class ITypeManager;
@@ -17,11 +18,14 @@ namespace OpenViBE
 		{
 		public:
 
+			virtual OpenViBE::Kernel::IPlayerManager& getPlayerManager(void) const=0;
 			virtual OpenViBE::Kernel::IPluginManager& getPluginManager(void) const=0;
-			virtual OpenViBE::Kernel::IObjectFactory& getObjectFactory(void) const=0;
+			virtual OpenViBE::Kernel::IKernelObjectFactory& getKernelObjectFactory(void) const=0;
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) const=0;
 			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void) const=0;
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const=0;
+
+			virtual OpenViBE::Kernel::IKernelObjectFactory& getObjectFactory(void) const { return getKernelObjectFactory(); }
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_KernelContext)
 		};

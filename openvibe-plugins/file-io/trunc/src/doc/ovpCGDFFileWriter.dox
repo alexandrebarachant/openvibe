@@ -2,7 +2,7 @@
  \page Doc_ovpCGDFFileWriter GDF file writer documentation
 
 - Plugin name : GDF file writer
-- Version :	0.5
+- Version :	0.6
 - Author : 	Bruno Renier
 - Date :	03-27-2007
 
@@ -28,8 +28,6 @@ Summary :
 This plugin writes the incoming information in a GDF file. Right now, it only writes GDF1 files.
 
 \image html GDFFileWriterBox.png
-
-\attention For now, the stimulation input is not used, which means we don't save any information about the stimulations.
 
  \section Doc_ovpCGDFFileWriter_inputs Inputs
  Number of inputs : 3
@@ -68,8 +66,6 @@ Filename :
 
 
  \section Doc_ovpCGDFFileWriter_misc Miscellaneous
-
-The stimulation input isn't used yet.
 
 The only output format is GDF1.
 

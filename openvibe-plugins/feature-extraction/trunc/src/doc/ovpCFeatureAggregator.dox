@@ -1,0 +1,58 @@
+/**
+ \page Doc_ovpCFeatureAggregator Feature aggregator documentation
+
+- Plugin name : Feature aggregator
+- Version :	0.1
+- Author : 	Bruno Renier
+- Date :	06-07-2007
+
+<br>
+Summary :
+
+\ref Doc_ovpCFeatureAggregator_description
+
+\ref Doc_ovpCFeatureAggregator_inputs
+
+\ref Doc_ovpCFeatureAggregator_outputs
+
+\ref Doc_ovpCFeatureAggregator_settings
+
+\ref Doc_ovpCFeatureAggregator_examples
+
+\ref Doc_ovpCFeatureAggregator_misc
+
+<hr>
+<br>
+<br>
+ \section Doc_ovpCFeatureAggregator_description Description
+This plugins aggregates the features it receives on its inputs into a feature vector that can be used for classification.
+
+\image html FeatureAggregatorBox.png
+
+
+ \section Doc_ovpCFeatureAggregator_inputs Inputs
+ Number of inputs : 2 (for now) 
+
+-# Input Stream 1
+ - OV_TypeId_StreamedMatrix
+ - A stream of matrices containing features.
+
+-# Input Stream 2
+ - OV_TypeId_StreamedMatrix
+ - A stream of matrices containing features.
+
+ \section Doc_ovpCFeatureAggregator_outputs Outputs
+Number of outputs : 1
+
+-# Output Stream 1
+ - OV_TypeId_FeatureVector
+ - A stream of feature vectors made by aggregating incoming features.
+
+ \section Doc_ovpCFeatureAggregator_settings Settings
+Number of settings : 0
+
+\section Doc_ovpCFeatureAggregator_examples Examples
+
+\section Doc_ovpCFeatureAggregator_misc Miscellaneous
+
+*/

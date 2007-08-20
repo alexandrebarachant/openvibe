@@ -41,7 +41,8 @@ namespace OpenViBEPlugins
 		*/
 		class CGrazVisualization : 
 			virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
-		       	virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback 
+			virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback,
+			virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback
 		{
 		public:
 
@@ -57,9 +58,16 @@ namespace OpenViBEPlugins
 			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
 			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
+			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
+			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
+			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
+
+
 			virtual void processState();
 
 			virtual void redraw();
+			virtual void resize(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height);
 			virtual void drawReferenceCross();
 			virtual void drawArrow(EArrowDirection eDirection);
 			virtual void drawBar();
@@ -76,17 +84,39 @@ namespace OpenViBEPlugins
 
 
 			//ebml 
-			EBML::IReader* m_pReader;
+			EBML::IReader* m_pReader[2];
 			OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* m_pStimulationReaderCallBack;
+			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pStreamedMatrixReaderCallBack;
 
 			EGrazVisualizationState m_eCurrentState;
 			EArrowDirection m_eCurrentDirection;
 
+			OpenViBE::float64 m_f64MaxAmplitude;
 			OpenViBE::float64 m_f64BarScale;
 
 			//Start and end time of the last buffer
 			OpenViBE::uint64 m_ui64StartTime;
 			OpenViBE::uint64 m_ui64EndTime;
+
+			OpenViBE::boolean m_bError;
+
+			GdkPixbuf * m_pOriginalBar;
+			GdkPixbuf * m_pLeftBar;
+			GdkPixbuf * m_pRightBar;
+
+			GdkPixbuf * m_pOriginalLeftArrow;
+			GdkPixbuf * m_pOriginalRightArrow;
+			GdkPixbuf * m_pOriginalUpArrow;
+			GdkPixbuf * m_pOriginalDownArrow;
+
+			GdkPixbuf * m_pLeftArrow;
+			GdkPixbuf * m_pRightArrow;
+			GdkPixbuf * m_pUpArrow;
+			GdkPixbuf * m_pDownArrow;
+
+			GdkColor m_oBackgroundColor;
+			GdkColor m_oForegroundColor;
+
 		};
 
 		/**
@@ -109,6 +139,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("Stimulations", OV_TypeId_Stimulations);
+				rPrototype.addInput("Amplitude", OV_TypeId_StreamedMatrix);
+
 				return true;
 			}
 

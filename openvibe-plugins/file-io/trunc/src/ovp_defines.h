@@ -11,9 +11,9 @@
 #define OVP_ClassId_GDFFileWriterDesc                       OpenViBE::CIdentifier(0x375BF8EC, 0x023ACEEB)
 #define OVP_ClassId_GenericStreamReaderDesc                 OpenViBE::CIdentifier(0x1E8AAB1A, 0x085D72F6)
 #define OVP_ClassId_GenericStreamWriterDesc                 OpenViBE::CIdentifier(0x02817C77, 0x77FE3D6A)
+#define OVP_ClassId_BCICompetitionIIIbReaderDesc            OpenViBE::CIdentifier(0x00CC1B39, 0x206A17AE)
 
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00CC1B39, 0x206A17AE)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x000C486C, 0x477C80B9)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x002AEE72, 0x288D489E)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00627156, 0x55790CAE)
@@ -40,9 +40,10 @@
 #define OVP_ClassId_GDFFileWriter                           OpenViBE::CIdentifier(0x1E7B2155, 0x107289CE)
 #define OVP_ClassId_GenericStreamReader                     OpenViBE::CIdentifier(0x0B1D880D, 0x02A17229)
 #define OVP_ClassId_GenericStreamWriter                     OpenViBE::CIdentifier(0x78EA86B0, 0x2933E255)
+#define OVP_ClassId_BCICompetitionIIIbReader                OpenViBE::CIdentifier(0x0085B814, 0x6E45DA7E)
 
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0085B814, 0x6E45DA7E)
+
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00708DD4, 0x451591A0)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00962006, 0x3669F46C)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x002089B5, 0x55EF27A6)

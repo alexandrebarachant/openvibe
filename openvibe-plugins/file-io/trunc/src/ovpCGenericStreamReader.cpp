@@ -4,12 +4,65 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::FileIO;
 using namespace OpenViBEToolkit;
 using namespace std;
 
-CGenericStreamReader::CGenericStreamReader(void)
+
+OpenViBE::boolean CGenericChunk::read(std::ifstream& oFile)
+{
+	//buffer to read the next data header
+	const uint64 l_ui64HeaderSize = sizeof(m_ui32CurrentInput)+sizeof(m_ui64StartTime)+sizeof(m_ui64EndTime)+sizeof(m_ui64ChunkSize);
+
+	uint8 l_pTempBuffer[l_ui64HeaderSize];
+
+	//reads all the information about the next chunk
+	oFile.read(reinterpret_cast<char * >(l_pTempBuffer), l_ui64HeaderSize);
+
+	if(oFile.bad() || oFile.fail())
+	{
+		//if the eof has been reached
+		if(oFile.eof())
+		{
+			m_oPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Info <<"Reached the end of the input file.\n";
+			return true;
+		}
+		else
+		{
+			m_oPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error while reading the input file.\n";
+			return false;
+		}
+	}
+
+	System::Memory::littleEndianToHost(l_pTempBuffer, &m_ui32CurrentInput);
+	System::Memory::littleEndianToHost(l_pTempBuffer+sizeof(m_ui32CurrentInput), &m_ui64StartTime);
+	System::Memory::littleEndianToHost(l_pTempBuffer+sizeof(m_ui32CurrentInput)+sizeof(m_ui64StartTime), &m_ui64EndTime);
+	System::Memory::littleEndianToHost(l_pTempBuffer+sizeof(m_ui32CurrentInput)+sizeof(m_ui64StartTime)+sizeof(m_ui64EndTime), &m_ui64ChunkSize);
+
+	//reads the actual chunk datas
+	if(m_pChunkBuffer)
+	{
+		delete[] m_pChunkBuffer;
+	}
+
+	m_pChunkBuffer = new uint8[(size_t)m_ui64ChunkSize];
+	oFile.read(reinterpret_cast<char * >(m_pChunkBuffer), (std::streamsize)m_ui64ChunkSize);
+
+	if(oFile.bad() || oFile.fail())
+	{
+		m_oPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error while reading the input file.\n";
+		return false;
+	}
+
+	return true;
+}
+
+
+CGenericStreamReader::CGenericStreamReader(void) :
+	m_oCurrentChunk(*this),
+	m_bError(false)
 {
 
 }
@@ -21,10 +74,10 @@ void CGenericStreamReader::release(void)
 
 boolean CGenericStreamReader::initialize(void)
 {
-	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
+	const IBox* l_pBox=getBoxAlgorithmContext()->getStaticBoxContext();
 
 	// Parses box settings to find filename
-	l_pBoxContext->getSettingValue(0, m_sFileName);
+	l_pBox->getSettingValue(0, m_sFileName);
 
 	if(!m_oFile.is_open())
 	{
@@ -32,12 +85,19 @@ boolean CGenericStreamReader::initialize(void)
 
 		if(m_oFile.bad())
 		{
-			cout<<"Couldn't open the input file : "<<m_sFileName<<endl;
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the input file : "<<m_sFileName<<".\n";
+
+			m_bError = true;
+
 			return false;
+		}
+		else
+		{
+			m_bError = !m_oCurrentChunk.read(m_oFile);
 		}
 	}
 
-	return true;
+	return !m_bError;
 }
 
 boolean CGenericStreamReader::uninitialize(void)
@@ -50,70 +110,38 @@ boolean CGenericStreamReader::uninitialize(void)
 	return true;
 }
 
+
 boolean CGenericStreamReader::processClock(CMessageClock &rMessageClock)
 {
-	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+	if(m_bError)
+	{
+		return false;
+	}
+
+	m_ui64CurrentTime = rMessageClock.getTime();
+
+	if(m_ui64CurrentTime >= m_oCurrentChunk.m_ui64StartTime)
+	{
+		getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+	}
+
 	return true;
 }
 
 boolean CGenericStreamReader::process(void)
 {
-	if(!m_oFile.eof())
+	while(m_ui64CurrentTime >= m_oCurrentChunk.m_ui64StartTime && !m_oFile.eof() && !m_bError)
 	{
-		IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
-
-		uint32 l_ui32CurrentInput=0;
-		uint64 l_ui64StartTime=0;
-		uint64 l_ui64EndTime=0;
-		uint64 l_ui64ChunkSize=0;
-		uint8 * l_pChunkBuffer=NULL;
-
-		//buffer to read the next data header
-		const uint64 l_ui64HeaderSize = sizeof(l_ui32CurrentInput)+sizeof(l_ui64StartTime)+sizeof(l_ui64EndTime)+sizeof(l_ui64ChunkSize);
-
-		uint8 l_pTempBuffer[l_ui64HeaderSize];
-
-		//reads all the information about the next chunk
-		m_oFile.read(reinterpret_cast<char * >(l_pTempBuffer), l_ui64HeaderSize);
-
-		if(m_oFile.bad() || m_oFile.fail())
-		{
-			//if the eof has been reached
-			if(m_oFile.eof())
-			{
-				cout<<"Reached the end of the input file."<<endl;
-				return true;
-			}
-			else
-			{
-				cout<<"Error while reading the input file : "<<m_sFileName<<endl;
-				return false;
-			}
-		}
-
-		System::Memory::littleEndianToHost(l_pTempBuffer, &l_ui32CurrentInput);
-		System::Memory::littleEndianToHost(l_pTempBuffer+sizeof(l_ui32CurrentInput), &l_ui64StartTime);
-		System::Memory::littleEndianToHost(l_pTempBuffer+sizeof(l_ui32CurrentInput)+sizeof(l_ui64StartTime), &l_ui64EndTime);
-		System::Memory::littleEndianToHost(l_pTempBuffer+sizeof(l_ui32CurrentInput)+sizeof(l_ui64StartTime)+sizeof(l_ui64EndTime), &l_ui64ChunkSize);
-
-		//reads the actual chunk datas
-		l_pChunkBuffer = new uint8[(size_t)l_ui64ChunkSize];
-		m_oFile.read(reinterpret_cast<char * >(l_pChunkBuffer), (std::streamsize)l_ui64ChunkSize);
-
-		if(m_oFile.bad() || m_oFile.fail())
-		{
-			cout<<"Error while reading the input file : "<<m_sFileName<<endl;
-			return false;
-		}
-
-		//TODO check if still needed
-		l_pDynamicBoxContext->setOutputChunkSize(l_ui32CurrentInput, 0, true);
+		IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
 
 		//sends the data
-		l_pDynamicBoxContext->appendOutputChunkData(l_ui32CurrentInput, l_pChunkBuffer, l_ui64ChunkSize);
-		l_pDynamicBoxContext->markOutputAsReadyToSend(l_ui32CurrentInput, l_ui64StartTime, l_ui64EndTime);
+		l_pBoxIO->appendOutputChunkData(m_oCurrentChunk.m_ui32CurrentInput, 
+				m_oCurrentChunk.m_pChunkBuffer, m_oCurrentChunk.m_ui64ChunkSize);
 
-		delete[] l_pChunkBuffer;
+		l_pBoxIO->markOutputAsReadyToSend(m_oCurrentChunk.m_ui32CurrentInput, 
+				m_oCurrentChunk.m_ui64StartTime, m_oCurrentChunk.m_ui64EndTime);
+
+		m_bError = !m_oCurrentChunk.read(m_oFile);
 	}
 
 	return true;

@@ -26,39 +26,36 @@
 #include "kernel/ovIKernelContext.h"
 #include "kernel/ovIKernelDesc.h"
 #include "kernel/ovIKernelObject.h"
-#include "kernel/ovIObjectFactory.h"
-#include "kernel/ovIPluginModule.h"
-#include "kernel/ovIPluginManager.h"
-#include "kernel/ovIAttributable.h"
-#include "kernel/ovIBox.h"
-#include "kernel/ovIBoxIO.h"
-#include "kernel/ovILink.h"
-#include "kernel/ovIProcessingUnit.h"
-#include "kernel/ovIScenario.h"
-#include "kernel/ovIScenarioManager.h"
+#include "kernel/ovIKernelObjectFactory.h"
+
 #include "kernel/ovITypeManager.h"
-#include "kernel/ovILogManager.h"
-#include "kernel/ovILogListener.h"
 
-#include "kernel/ovIMessage.h"
-#include "kernel/ovIMessageClock.h"
-#include "kernel/ovIMessageEvent.h"
-#include "kernel/ovIMessageSignal.h"
+#include "kernel/log/ovILogManager.h"
+#include "kernel/log/ovILogListener.h"
 
-#include "kernel/ovIBoxProto.h"
-#include "kernel/ovIPlayerContext.h"
-#include "kernel/ovIBoxAlgorithmContext.h"
-#include "kernel/ovIScenarioImporterContext.h"
-#include "kernel/ovIScenarioExporterContext.h"
-
-
-//___________________________________________________________________//
-//                                                                   //
-// Player includes                                                   //
-//___________________________________________________________________//
-//                                                                   //
-
+#include "kernel/player/ovIBoxAlgorithmContext.h"
+#include "kernel/player/ovIMessage.h"
+#include "kernel/player/ovIMessageClock.h"
+#include "kernel/player/ovIMessageEvent.h"
+#include "kernel/player/ovIMessageSignal.h"
 #include "kernel/player/ovIPlayer.h"
+#include "kernel/player/ovIPlayerContext.h"
+#include "kernel/player/ovIPlayerManager.h"
+
+#include "kernel/plugins/ovIPluginManager.h"
+#include "kernel/plugins/ovIPluginModule.h"
+#include "kernel/plugins/ovIPluginModuleContext.h"
+
+#include "kernel/scenario/ovIAttributable.h"
+#include "kernel/scenario/ovIBox.h"
+#include "kernel/scenario/ovIBoxIO.h"
+#include "kernel/scenario/ovIBoxProto.h"
+#include "kernel/scenario/ovILink.h"
+#include "kernel/scenario/ovIProcessingUnit.h"
+#include "kernel/scenario/ovIScenario.h"
+#include "kernel/scenario/ovIScenarioExporterContext.h"
+#include "kernel/scenario/ovIScenarioImporterContext.h"
+#include "kernel/scenario/ovIScenarioManager.h"
 
 //___________________________________________________________________//
 //                                                                   //

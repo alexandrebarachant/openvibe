@@ -9,21 +9,21 @@ static OpenViBEPlugins::Stimulation::CKeyboardStimulatorDesc* gst_pKeyboardStimu
 extern "C"
 {
 
-OVP_API OpenViBE::boolean onInitialize(void)
+OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
 {
 	gst_pXMLStimulationScenarioPlayerDesc=new OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayerDesc();
 	gst_pKeyboardStimulatorDesc=new OpenViBEPlugins::Stimulation::CKeyboardStimulatorDesc();
 	return true;
 }
 
-OVP_API OpenViBE::boolean onUninitialize(void)
+OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
 {
 	delete gst_pXMLStimulationScenarioPlayerDesc;
 	delete gst_pKeyboardStimulatorDesc;
 	return true;
 }
 
-OVP_API OpenViBE::boolean onGetPluginObjectDescription(OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
+OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
 {
 
 	switch(ui32Index)

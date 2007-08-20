@@ -6,6 +6,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
@@ -24,10 +25,16 @@ namespace OpenViBEPlugins
 		{
 		}
 
+		gboolean GrazVisualization_SizeAllocateCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data)
+		{
+			reinterpret_cast<CGrazVisualization*>(data)->resize((uint32)allocation->width, (uint32)allocation->height);
+			return FALSE;
+		}
+
 		gboolean GrazVisualization_RedrawCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 		{
-				reinterpret_cast<CGrazVisualization*>(data)->redraw();
-				return TRUE;
+			reinterpret_cast<CGrazVisualization*>(data)->redraw();
+			return TRUE;
 		}
 
 
@@ -59,7 +66,8 @@ namespace OpenViBEPlugins
 					break;
 
 				case OVTK_GDF_Beep:
-					gdk_beep();
+					//gdk_beep();
+					cout<<"Beep!\a\n"<<endl;
 					break;
 
 				case OVTK_GDF_Left:
@@ -117,6 +125,7 @@ namespace OpenViBEPlugins
 					break;
 
 				case EGrazVisualizationState_Idle:
+					//m_f64MaxAmplitude = -DBL_MAX;
 					gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
 							NULL,
 							true);
@@ -141,20 +150,47 @@ namespace OpenViBEPlugins
 			m_pGladeInterface(NULL),
 			m_pMainWindow(NULL),
 			m_pDrawingArea(NULL),
-			m_pReader(NULL),
 			m_pStimulationReaderCallBack(NULL),
+			m_pStreamedMatrixReaderCallBack(NULL),
 			m_eCurrentState(EGrazVisualizationState_Idle),
 			m_eCurrentDirection(EArrowDirection_None),
-			m_f64BarScale(-0.5)
+			m_f64MaxAmplitude(-DBL_MAX),
+			m_f64BarScale(0.0),
+			m_bError(false),
+			m_pOriginalBar(NULL),
+			m_pLeftBar(NULL),
+			m_pRightBar(NULL),
+			m_pOriginalLeftArrow(NULL),
+			m_pOriginalRightArrow(NULL),
+			m_pOriginalUpArrow(NULL),
+			m_pOriginalDownArrow(NULL),
+			m_pLeftArrow(NULL),
+			m_pRightArrow(NULL),
+			m_pUpArrow(NULL),
+			m_pDownArrow(NULL)
 		{
-			
+			m_pReader[0] = NULL;
+			m_pReader[1] = NULL;	
+
+			m_oBackgroundColor.pixel = 0;
+			m_oBackgroundColor.red = 0;//0xFFFF;
+			m_oBackgroundColor.green = 0;//0xFFFF;
+			m_oBackgroundColor.blue = 0;//0xFFFF;
+
+			m_oForegroundColor.pixel = 0;
+			m_oForegroundColor.red = 0;
+			m_oForegroundColor.green = 0xEEEE;
+			m_oForegroundColor.blue = 0;
 		}
 		
 		
 		OpenViBE::boolean CGrazVisualization::initialize()
 		{
 			m_pStimulationReaderCallBack=createBoxAlgorithmStimulationInputReaderCallback(*this);
-			m_pReader = EBML::createReader(*m_pStimulationReaderCallBack);
+			m_pReader[0] = EBML::createReader(*m_pStimulationReaderCallBack);
+
+			m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
+			m_pReader[1] =EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
 			//load the glade interface
 			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.glade", NULL, NULL);
@@ -170,6 +206,7 @@ namespace OpenViBEPlugins
 			
 			m_pDrawingArea = glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationDrawingArea");
 			g_signal_connect(G_OBJECT(m_pDrawingArea), "expose_event", G_CALLBACK(GrazVisualization_RedrawCallback), this);
+			g_signal_connect(G_OBJECT(m_pDrawingArea), "size-allocate", G_CALLBACK(GrazVisualization_SizeAllocateCallback), this);
 
 			//does nothing on the main window if the user tries to close it
 			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationWindow")), 
@@ -178,6 +215,49 @@ namespace OpenViBEPlugins
 
 			//creates the window
 			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationWindow");
+			
+			//set widget bg color
+			gtk_widget_modify_bg(m_pDrawingArea, GTK_STATE_NORMAL, &m_oBackgroundColor);
+			gtk_widget_modify_bg(m_pDrawingArea, GTK_STATE_PRELIGHT, &m_oBackgroundColor);
+			gtk_widget_modify_bg(m_pDrawingArea, GTK_STATE_ACTIVE, &m_oBackgroundColor);
+
+			gtk_widget_modify_fg(m_pDrawingArea, GTK_STATE_NORMAL, &m_oForegroundColor);
+			gtk_widget_modify_fg(m_pDrawingArea, GTK_STATE_PRELIGHT, &m_oForegroundColor);
+			gtk_widget_modify_fg(m_pDrawingArea, GTK_STATE_ACTIVE, &m_oForegroundColor);
+
+			//arrows
+			m_pOriginalLeftArrow = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-leftArrow.png",
+					-1, -1, NULL);
+
+			m_pOriginalRightArrow = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-rightArrow.png",
+					-1, -1, NULL);
+
+			m_pOriginalUpArrow = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-upArrow.png",
+					-1, -1, NULL);
+
+			m_pOriginalDownArrow = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-downArrow.png",
+					-1, -1, NULL);
+
+
+
+			if(!m_pOriginalLeftArrow || !m_pOriginalRightArrow || !m_pOriginalUpArrow || !m_pOriginalDownArrow)
+			{
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error couldn't load arrow ressource files!\n";
+				m_bError = true;
+
+				return false;
+			}
+
+			//bar
+			m_pOriginalBar = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-bar.png", -1, -1, NULL);
+			if(!m_pOriginalBar)
+			{
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error couldn't load bar ressource file!\n";
+				m_bError = true;
+
+				return false;
+			}
+
 			gtk_widget_show_all(m_pMainWindow);
 
 			return true;
@@ -189,9 +269,11 @@ namespace OpenViBEPlugins
 			releaseBoxAlgorithmStimulationInputReaderCallback(m_pStimulationReaderCallBack);
 
 			//release the ebml reader
-			m_pReader->release();
-			m_pReader=NULL;
-			
+			m_pReader[0]->release();
+			m_pReader[0]=NULL;
+			m_pReader[1]->release();
+			m_pReader[1]=NULL;
+
 			
 			//destroy the window and its children
 			if(m_pMainWindow)
@@ -199,17 +281,34 @@ namespace OpenViBEPlugins
 				gtk_widget_destroy(m_pMainWindow);
 				m_pMainWindow = NULL;
 			}
-			
+		
 			/* unref the xml file as it's not needed anymore */
 			g_object_unref(G_OBJECT(m_pGladeInterface));
 			m_pGladeInterface=NULL;
-			
+		
+			if(m_pOriginalBar){ g_object_unref(G_OBJECT(m_pOriginalBar)); }
+			if(m_pLeftBar){ g_object_unref(G_OBJECT(m_pLeftBar)); }
+			if(m_pRightBar){ g_object_unref(G_OBJECT(m_pRightBar)); }
+			if(m_pLeftArrow){ g_object_unref(G_OBJECT(m_pLeftArrow)); }
+			if(m_pRightArrow){ g_object_unref(G_OBJECT(m_pRightArrow)); }
+			if(m_pUpArrow){	g_object_unref(G_OBJECT(m_pUpArrow)); }
+			if(m_pDownArrow){ g_object_unref(G_OBJECT(m_pDownArrow)); }
+			if(m_pOriginalLeftArrow){ g_object_unref(G_OBJECT(m_pOriginalLeftArrow)); }
+			if(m_pOriginalRightArrow){ g_object_unref(G_OBJECT(m_pOriginalRightArrow)); }
+			if(m_pOriginalUpArrow){	g_object_unref(G_OBJECT(m_pOriginalUpArrow)); }
+			if(m_pOriginalDownArrow){ g_object_unref(G_OBJECT(m_pOriginalDownArrow)); }
+
 			return true;
 		}
 		
 		
 		OpenViBE::boolean CGrazVisualization::processInput(OpenViBE::uint32 ui32InputIndex)
 		{
+			if(m_bError)
+			{
+				return false;
+			}
+
 			getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 			return true;
 		}
@@ -217,20 +316,23 @@ namespace OpenViBEPlugins
 		
 		OpenViBE::boolean CGrazVisualization::process()
 		{
-			IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+			IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
 
-			for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
+			for(uint32 input=0 ; input<getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount() ; input++)
 			{
-				uint64 l_ui64ChunkSize;
-				const uint8* l_pChunkBuffer=NULL;
-
-				if(l_pDynamicBoxContext->getInputChunk(0, i, m_ui64StartTime, m_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+				for(uint32 chunk=0; chunk<l_pBoxIO->getInputChunkCount(input); chunk++)
 				{
-					m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
-					l_pDynamicBoxContext->markInputAsDeprecated(0, i);
+					uint64 l_ui64ChunkSize;
+					const uint8* l_pChunkBuffer=NULL;
+
+					if(l_pBoxIO->getInputChunk(input, chunk, m_ui64StartTime, m_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+					{
+						m_pReader[input]->processData(l_pChunkBuffer, l_ui64ChunkSize);
+						l_pBoxIO->markInputAsDeprecated(input, chunk);
+					}
 				}
 			}
-			
+
 			return true;
 		}
 		
@@ -263,7 +365,7 @@ namespace OpenViBEPlugins
 			gint l_iWindowHeight = m_pDrawingArea->allocation.height;
 			
 			//increase line's width
-			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 2, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 
 			//horizontal line
 			gdk_draw_line(m_pDrawingArea->window,
@@ -288,88 +390,45 @@ namespace OpenViBEPlugins
 			gint l_iWindowWidth = m_pDrawingArea->allocation.width;
 			gint l_iWindowHeight = m_pDrawingArea->allocation.height;
 
-			//for arrow baseline
-			gint l_iX0 = l_iWindowWidth/2;
-			gint l_iY0 = l_iWindowHeight/2;
-			gint l_iX1 = 0;
-			gint l_iY1 = 0;
-
-			//
-			gint l_iDX1 = 0;
-			gint l_iDY1 = 0;
-			gint l_iDX2 = 0;
-			gint l_iDY2 = 0;
-
+			gint l_iX = 0;
+			gint l_iY = 0;
 
 			switch(eDirection)
 			{
 				case EArrowDirection_Left:
-					l_iX1 = (l_iWindowWidth/8);
-					l_iY1 = (l_iWindowHeight/2);
-					l_iDX1 = (l_iWindowWidth/8);
-					l_iDY1 = -(l_iWindowHeight/8);
-					l_iDX2 = (l_iWindowWidth/8);
-					l_iDY2 = (l_iWindowHeight/8);
+					l_iX = (l_iWindowWidth/2) - gdk_pixbuf_get_width(m_pLeftArrow) - 1;
+					l_iY = (l_iWindowHeight/2) - (gdk_pixbuf_get_height(m_pLeftArrow)/2);
+					gdk_draw_pixbuf(m_pDrawingArea->window, NULL, m_pLeftArrow, 0, 0,
+					l_iX, l_iY, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+
 					break;
 
 				case EArrowDirection_Right:
-					l_iX1 = ((7*l_iWindowWidth)/8);
-					l_iY1 = (l_iWindowHeight/2);
-					l_iDX1 = -(l_iWindowWidth/8);
-					l_iDY1 = -(l_iWindowHeight/8);
-					l_iDX2 = -(l_iWindowWidth/8);
-					l_iDY2 = (l_iWindowHeight/8);
+					l_iX = (l_iWindowWidth/2) + 2;
+					l_iY = (l_iWindowHeight/2) - (gdk_pixbuf_get_height(m_pRightArrow)/2);
+					gdk_draw_pixbuf(m_pDrawingArea->window, NULL, m_pRightArrow, 0, 0,
+							l_iX, l_iY, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+
 					break;
 				
 				case EArrowDirection_Up:
-					l_iX1 = (l_iWindowWidth/2);
-					l_iY1 = (l_iWindowHeight/8);
-					l_iDX1 = -(l_iWindowWidth/8);
-					l_iDY1 = (l_iWindowHeight/8);
-					l_iDX2 = (l_iWindowWidth/8);
-					l_iDY2 = (l_iWindowHeight/8);
+					l_iX = (l_iWindowWidth/2) - (gdk_pixbuf_get_width(m_pUpArrow)/2);
+					l_iY = (l_iWindowHeight/2) - gdk_pixbuf_get_height(m_pUpArrow) - 1;
+					gdk_draw_pixbuf(m_pDrawingArea->window, NULL, m_pUpArrow, 0, 0,
+							l_iX, l_iY, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
 					break;
 
 				case EArrowDirection_Down:
-					l_iX1 = (l_iWindowWidth/2);
-					l_iY1 = ((7*l_iWindowHeight)/8);
-					l_iDX1 = -(l_iWindowWidth/8);
-					l_iDY1 = -(l_iWindowHeight/8);
-					l_iDX2 = (l_iWindowWidth/8);
-					l_iDY2 = -(l_iWindowHeight/8);
+					l_iX = (l_iWindowWidth/2) - (gdk_pixbuf_get_width(m_pDownArrow)/2);
+					l_iY = (l_iWindowHeight/2) + 2;
+					gdk_draw_pixbuf(m_pDrawingArea->window, NULL, m_pDownArrow, 0, 0,
+							l_iX, l_iY, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
 					break;
 
 				default:
 					break;
 			}
 		
-			//increase line's width
-			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 6, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
-
-
-			//draw base line
-			gdk_draw_line(m_pDrawingArea->window,
-					m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)],
-					l_iX0, l_iY0,
-					l_iX1, l_iY1
-					);
-
-			//arrow head
-			gdk_draw_line(m_pDrawingArea->window,
-					m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)],
-					l_iX1, l_iY1,
-					l_iX1+l_iDX1, l_iY1+l_iDY1
-					);
-
-			gdk_draw_line(m_pDrawingArea->window,
-					m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)],
-					l_iX1, l_iY1,
-					l_iX1+l_iDX2, l_iY1+l_iDY2
-					);
-
-			//back to normal lines
-			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
-
 		}
 		
 		
@@ -379,26 +438,120 @@ namespace OpenViBEPlugins
 			gint l_iWindowHeight = m_pDrawingArea->allocation.height;
 
 			gint l_iRectangleWidth = static_cast<gint>(fabs(l_iWindowWidth * fabs(m_f64BarScale) / 2));
-			gint l_iRectangleHeight = 2*l_iWindowHeight/8;
+
+			//
+			l_iRectangleWidth = (l_iRectangleWidth>(l_iWindowWidth/2)) ? (l_iWindowWidth/2) : l_iRectangleWidth;
+			
+			gint l_iRectangleHeight = l_iWindowHeight/6;
 
 			gint l_iRectangleTopLeftX = l_iWindowWidth / 2;
-			gint l_iRectangleTopLeftY = 3 *l_iWindowHeight / 8;
+			gint l_iRectangleTopLeftY = (l_iWindowHeight/2)-(l_iRectangleHeight/2);
 
 			if(m_f64BarScale<0)
 			{
 				l_iRectangleTopLeftX -= l_iRectangleWidth;
-			}
-	
 
-			gdk_draw_rectangle(m_pDrawingArea->window,
-					m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)],
-					true,
-					l_iRectangleTopLeftX, l_iRectangleTopLeftY,
-					l_iRectangleWidth, l_iRectangleHeight
-					);
+				gdk_pixbuf_render_to_drawable(m_pLeftBar, m_pDrawingArea->window, NULL, 
+						gdk_pixbuf_get_width(m_pLeftBar)-l_iRectangleWidth, 0,
+						l_iRectangleTopLeftX, l_iRectangleTopLeftY, l_iRectangleWidth, l_iRectangleHeight,
+					       	GDK_RGB_DITHER_NONE, 0, 0);
+			}
+			else
+			{
+				gdk_pixbuf_render_to_drawable(m_pRightBar, m_pDrawingArea->window, NULL, 0, 0, l_iRectangleTopLeftX, l_iRectangleTopLeftY, l_iRectangleWidth, l_iRectangleHeight, GDK_RGB_DITHER_NONE, 0, 0);
+
+			}
 
 		}
 
+		
+		void CGrazVisualization::setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
+		{
+			if(ui32DimmensionCount != 1)
+			{
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error, dimension count isn't 1 for Amplitude input !\n";
+				m_bError = true;
+			}
+
+		}
+
+		void CGrazVisualization::setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
+		{
+			if(ui32DimmensionSize != 1)
+			{
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error, dimension size isn't 1 for Amplitude input !\n";
+				m_bError = true;
+			}
+		}
+
+		void CGrazVisualization::setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+		{
+			/* nothing to do */
+		}
+
+		void CGrazVisualization::setMatrixBuffer(const OpenViBE::float64* pBuffer)
+		{
+			if(m_bError)
+			{
+				return;
+			}
+				
+			float64 l_f64CurrentAmplitude = *pBuffer;
+
+			if(fabs(l_f64CurrentAmplitude) > m_f64MaxAmplitude)
+			{
+				m_f64MaxAmplitude = fabs(l_f64CurrentAmplitude);
+			}
+
+			m_f64BarScale = (l_f64CurrentAmplitude/m_f64MaxAmplitude);
+
+			gdk_window_invalidate_rect(m_pDrawingArea->window,
+					NULL,
+					true);
+		}
+
+
+		void CGrazVisualization::resize(uint32 ui32Width, uint32 ui32Height)
+		{
+			if(m_pLeftArrow)
+			{
+				g_object_unref(G_OBJECT(m_pLeftArrow));
+			}
+
+			if(m_pRightArrow)
+			{
+				g_object_unref(G_OBJECT(m_pRightArrow));
+			}
+
+			if(m_pUpArrow)
+			{
+				g_object_unref(G_OBJECT(m_pUpArrow));
+			}
+
+			if(m_pDownArrow)
+			{
+				g_object_unref(G_OBJECT(m_pDownArrow));
+			}
+
+			if(m_pRightBar)
+			{
+				g_object_unref(G_OBJECT(m_pRightBar));
+			}
+
+			if(m_pLeftBar)
+			{
+				g_object_unref(G_OBJECT(m_pLeftBar));
+			}
+
+
+			m_pLeftArrow = gdk_pixbuf_scale_simple(m_pOriginalLeftArrow, (2*ui32Width)/8, ui32Height/4, GDK_INTERP_BILINEAR);
+			m_pRightArrow = gdk_pixbuf_scale_simple(m_pOriginalRightArrow, (2*ui32Width)/8, ui32Height/4, GDK_INTERP_BILINEAR);
+			m_pUpArrow = gdk_pixbuf_scale_simple(m_pOriginalUpArrow, ui32Width/4, (2*ui32Height)/8, GDK_INTERP_BILINEAR);
+			m_pDownArrow = gdk_pixbuf_scale_simple(m_pOriginalDownArrow, ui32Width/4, (2*ui32Height)/8, GDK_INTERP_BILINEAR);
+
+			m_pRightBar = gdk_pixbuf_scale_simple(m_pOriginalBar, ui32Width, ui32Height/6, GDK_INTERP_BILINEAR);
+			m_pLeftBar = gdk_pixbuf_flip(m_pRightBar, true);
+		}
 	};
 };
 

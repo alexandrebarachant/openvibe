@@ -46,6 +46,7 @@ namespace OpenViBEDesigner
 	public:
 
 		OpenViBE::CIdentifier m_oScenarioIdentifier;
+		OpenViBE::CIdentifier m_oPlayerIdentifier;
 		OpenViBE::Kernel::IKernel& m_rKernel;
 		OpenViBE::Kernel::IScenario& m_rScenario;
 		OpenViBE::Kernel::IPlayer* m_pPlayer;

@@ -8,7 +8,6 @@
 //                                                                   //
 
 
-
 #define Automaton_Node_Identifier_Automaton		Automaton::CIdentifier(0x00000000)
 #define Automaton_Node_Identifier_No_Node		Automaton::CIdentifier(0x00000001)
 #define Automaton_Node_Identifier_Action		Automaton::CIdentifier(0x00000010)
@@ -23,12 +22,12 @@
 
 #define Automaton_Node_Identifier_Switch		Automaton::CIdentifier(0x00000031)
 #define Automaton_Node_Identifier_SwitchProbabilist	Automaton::CIdentifier(0x00000032)
+#define Automaton_Node_Identifier_SwitchEvent   	Automaton::CIdentifier(0x00000033)
 
 #define Automaton_Node_Identifier_RandomOrder		Automaton::CIdentifier(0x00000041)
 
 
 #define Automaton_No_Successor				Automaton::CIdentifier(0xFFFFFFFF)
-
 
 
 //___________________________________________________________________//

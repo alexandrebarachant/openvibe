@@ -36,6 +36,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	COMPILE_FLAGS "-DOVTK_Exports -DOVTK_Shared")
 
 INCLUDE("FindOpenViBEModuleEBML.cmake")
+INCLUDE("FindOpenViBEModuleSystem.cmake")
 INCLUDE("FindOpenViBE.cmake")
 
 # -----------------------------

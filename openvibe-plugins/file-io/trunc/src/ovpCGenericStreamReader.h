@@ -12,6 +12,31 @@ namespace OpenViBEPlugins
 {
 	namespace FileIO
 	{
+		class CGenericChunk
+		{
+			public :
+			OpenViBE::uint32 m_ui32CurrentInput;
+			OpenViBE::uint64 m_ui64StartTime;
+			OpenViBE::uint64 m_ui64EndTime;
+			OpenViBE::uint64 m_ui64ChunkSize;
+			OpenViBE::uint8 * m_pChunkBuffer;
+
+			OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oPlugin;
+
+			CGenericChunk(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin) : 
+				m_ui32CurrentInput(0), 
+				m_ui64StartTime(0),
+				m_ui64EndTime(0),
+				m_ui64ChunkSize(0),
+				m_pChunkBuffer(NULL),
+				m_oPlugin(oPlugin)
+			{}
+
+			OpenViBE::boolean read(std::ifstream& oFile);
+
+		};
+
+
 		/**
 		 * This class is used to read a file produced by the Data stream writer, and
 		 * playback the saved data streams.
@@ -26,6 +51,9 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
 
+			/* TODO maximum clock frequency */ 
+			virtual OpenViBE::uint64 getClockFrequency(){ return (100LL<<32); }
+
 			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock &rMessageClock);
 
 			virtual OpenViBE::boolean process(void);
@@ -38,6 +66,12 @@ namespace OpenViBEPlugins
 
 			//! The name of the input file
 			OpenViBE::CString m_sFileName;
+
+			CGenericChunk m_oCurrentChunk;
+
+			OpenViBE::uint64 m_ui64CurrentTime;
+
+			OpenViBE::boolean m_bError;
 
 		};
 

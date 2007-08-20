@@ -81,6 +81,8 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean uninitialize();
 
+			virtual OpenViBE::uint64 getClockFrequency(void) { return (100LL<<32); }
+
 			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock& rMessageClock);
 
 			virtual OpenViBE::boolean process();

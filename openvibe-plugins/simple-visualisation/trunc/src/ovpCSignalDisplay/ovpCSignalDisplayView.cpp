@@ -114,17 +114,17 @@ namespace OpenViBEPlugins
 
 			//Compute and save the nuew number of buffers to display
 			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged = 
-					l_pView->m_pSignalDisplayDatabase->adjustNumberOfDisplayedBuffers(
+					l_pView->m_pBufferDatabase->adjustNumberOfDisplayedBuffers(
 					static_cast<float64>(gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget))));
 
 			if(l_bNumberOfDisplayedBufferChanged)
 			{
 				//reserve the maximum space needed for computing the points to display
 				//(when cropping the lines, there can be up to two times the number of original points)
-				l_pView->m_pPoints.reserve((size_t)(l_pView->m_pSignalDisplayDatabase->m_ui32SamplesPerBuffer * l_pView->m_pSignalDisplayDatabase->m_ui64NumberOfBufferToDisplay * 2));
+				l_pView->m_pPoints.reserve((size_t)(l_pView->m_pBufferDatabase->m_pDimmensionSizes[1] * l_pView->m_pBufferDatabase->m_ui64NumberOfBufferToDisplay * 2));
 
 				//resize the vector of raw points (before cropping)
-				l_pView->m_pRawPoints.resize((size_t)(l_pView->m_pSignalDisplayDatabase->m_ui32SamplesPerBuffer * l_pView->m_pSignalDisplayDatabase->m_ui64NumberOfBufferToDisplay));
+				l_pView->m_pRawPoints.resize((size_t)(l_pView->m_pBufferDatabase->m_pDimmensionSizes[1] * l_pView->m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
 
 				//Redraw the window
 				l_pView->redraw();
@@ -192,27 +192,27 @@ namespace OpenViBEPlugins
 
 			//gets the different values from the database and updates the corresponding label's text field
 			stringstream l_oValueString;
-			l_oValueString<<l_pView->m_pSignalDisplayDatabase->m_ui32ChannelCount;
+			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimmensionSizes[0];
 			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayNumberOfChannels")),
 				 l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
-			l_oValueString<<l_pView->m_pSignalDisplayDatabase->m_ui32SamplingFrequency;	
+			l_oValueString<<l_pView->m_pBufferDatabase->m_ui32SamplingFrequency;	
 			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplaySamplingFrequency")),
 				l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
-			l_oValueString<<l_pView->m_pSignalDisplayDatabase->m_ui32SamplesPerBuffer;
+			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimmensionSizes[1];
 			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplaySamplesPerBuffer")),
 				l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
-			l_oValueString<<l_pView->m_pSignalDisplayDatabase->m_f64MinimumValue;
+			l_oValueString<<l_pView->m_pBufferDatabase->m_f64MinimumValue;
 			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMinimumValue")),
 				l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
-			l_oValueString<<l_pView->m_pSignalDisplayDatabase->m_f64MaximumValue;
+			l_oValueString<<l_pView->m_pBufferDatabase->m_f64MaximumValue;
 			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMaximumValue")),
 				   l_oValueString.str().c_str() );
 
@@ -276,12 +276,13 @@ namespace OpenViBEPlugins
 			gtk_widget_hide(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewDialog"));
 		}	
 
-		CSignalDisplayView::CSignalDisplayView(CSignalDisplayDatabase& oSignalDisplayDatabase)
+		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase)
 		: m_pGladeInterface(NULL),
 		m_pMainWindow(NULL),
 		m_ui32CurrentCursorMode(0),
-		m_pSignalDisplayDatabase(&oSignalDisplayDatabase),
-		m_bMultiViewInitialized(false)
+		m_pBufferDatabase(&oBufferDatabase),
+		m_bMultiViewInitialized(false),
+		m_pBottomRuler(NULL)
 		{
 			//load the glade interface
 			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.glade", NULL, NULL);
@@ -425,12 +426,17 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplayView::init()
 		{
-			OpenViBE::uint32 l_ui32ChannelCount = m_pSignalDisplayDatabase->m_ui32ChannelCount;
-			vector<string>& l_vChannelName = m_pSignalDisplayDatabase->m_vChannelName;
+			OpenViBE::uint32 l_ui32ChannelCount = m_pBufferDatabase->m_pDimmensionSizes[0];
+			vector<string>& l_oChannelName = m_pBufferDatabase->m_pDimmesionLabels[0];
 
 			stringstream l_oLabelString;
 			GtkWidget * l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectList");
 			GtkWidget * l_pMultiViewSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewSelectList");
+			
+			//size group for the channel labels and the empty widget in the bottom bar
+			//(useful to position the bottom ruler correctly)
+			GtkSizeGroup * l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+
 
 			//creates the array of Channel displays
 			m_oChannelDisplay.resize(l_ui32ChannelCount);
@@ -443,7 +449,7 @@ namespace OpenViBEPlugins
 			gtk_table_resize(GTK_TABLE(m_pSignalDisplayTable), (l_ui32ChannelCount+1)*2, 3);
 
 			//sets a minimum size for the table (needed to scroll)
-			gtk_widget_set_size_request(m_pSignalDisplayTable, 600, (l_ui32ChannelCount+1)*100);
+			gtk_widget_set_size_request(m_pSignalDisplayTable, 600, (l_ui32ChannelCount+1)*30);
 
 			//Add a vertical separator
 			GtkWidget* l_pSeparator = gtk_vseparator_new();
@@ -455,14 +461,14 @@ namespace OpenViBEPlugins
 			for(uint32 i=0 ; i<l_ui32ChannelCount ; i++)
 			{
 				//adds a label with the channel's name
-				if(l_vChannelName[i] == "")
+				if(l_oChannelName[i] == "")
 				{
 					//If no name has been set, just keep the channel index
 					l_oLabelString<<"Channel "<<i;
 				}
 				else
 				{	//else keep the index plus the name
-					l_oLabelString<<i<<" : "<<l_vChannelName[i];
+					l_oLabelString<<i<<" : "<<l_oChannelName[i];
 				}
 				GtkWidget * l_pLabel =  gtk_label_new(l_oLabelString.str().c_str());
 
@@ -475,7 +481,10 @@ namespace OpenViBEPlugins
 
 				//
 				gtk_widget_show(l_pLabel);
-				
+
+				//adds the label to the size group
+				gtk_size_group_add_widget(l_pSizeGroup, l_pLabel);
+
 				//creates the channel display widget
 				m_oChannelDisplay[i] = GTK_WIDGET(channel_display_new());
 					
@@ -547,18 +556,45 @@ namespace OpenViBEPlugins
 
 			//reserve the maximum space needed for computing the points to display
 			//(when cropping the lines, there can be up to two times the number of original points)
-			m_pPoints.reserve((size_t)(m_pSignalDisplayDatabase->m_ui32SamplesPerBuffer*m_pSignalDisplayDatabase->m_ui64NumberOfBufferToDisplay * 2));
+			m_pPoints.reserve((size_t)(m_pBufferDatabase->m_pDimmensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay * 2));
 
 			//resize the vector of raw points
-			m_pRawPoints.resize((size_t)(m_pSignalDisplayDatabase->m_ui32SamplesPerBuffer*m_pSignalDisplayDatabase->m_ui64NumberOfBufferToDisplay));
+			m_pRawPoints.resize((size_t)(m_pBufferDatabase->m_pDimmensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
 			//Used if the initial number of displayed buffer is fixed, computes the corresponding time interval
 			//gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale")), 
-			//		static_cast<gdouble>(m_pSignalDisplayDatabase->getDisplayedTimeIntervalWidth() ) ); 
+			//		static_cast<gdouble>(m_pBufferDatabase->getDisplayedTimeIntervalWidth() ) ); 
 
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale")), 1000); 
+			
+			//Adds the bottom ruler
+			
+			m_pBottomRuler = new CBottomTimeRuler(*m_pBufferDatabase);
+			
+			//adds the empty label to the size group (it will request the same height than the channel labels
+			gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBarEmptyLabel1"));
+
+			//adds the bottom ruler to the bottom bar (after the empty label)
+			gtk_box_pack_start(GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBar")),
+					m_pBottomRuler->getWidget(),
+					false, false, 0);
+
+
+			// tells the ruler that it has to resize when the channel displays are resized
+			if(m_oChannelDisplay.size() != 0)
+			{
+				m_pBottomRuler->linkWidthToWidget(CHANNEL_DISPLAY(m_oChannelDisplay[0])->m_pChannelDisplay->getDisplayWidget());
+			}
 
 			//finally, show the window
 			gtk_widget_show(m_pMainWindow);
+
+			//Don't display left ruler (default)
+			toggleLeftRulers(false);
+
+			//Dislay bottom ruler
+			toggleBottomRulers(true);
+
+			activateToolbarButtons(true);
 		}
 
 		void CSignalDisplayView::redraw()
@@ -583,12 +619,18 @@ namespace OpenViBEPlugins
 					}
 				}
 
-				if(!l_bNotInitialized && m_pSignalDisplayDatabase->m_ui32ChannelCount!=0)
+				if(!l_bNotInitialized && m_pBufferDatabase->m_pDimmensionSizes[0]!=0)
 				{
 					//The channels table needs to be redrawn
 					gdk_window_invalidate_rect(GTK_WIDGET(m_pSignalDisplayTable)->window,
 							NULL,
 							true);
+
+					//The ruler too
+					gdk_window_invalidate_rect(GTK_WIDGET(m_pBottomRuler->getWidget())->window,
+							NULL,
+							true);
+
 				}
 			}
 		}
@@ -603,10 +645,7 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplayView::toggleBottomRulers(OpenViBE::boolean bActive)
 		{
-			for(size_t i=0 ; i<m_oChannelDisplay.size() ; i++)
-			{
-				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->toggleBottomRuler(bActive);
-			}
+			m_pBottomRuler->toggle(bActive);
 		}
 
 		void CSignalDisplayView::hideChannel(OpenViBE::uint32 ui32ChannelIndex)
@@ -637,6 +676,20 @@ namespace OpenViBEPlugins
 					gtk_widget_show(GTK_WIDGET(m_pSignalDisplayTable));
 				}
 			}
+		}
+
+		void CSignalDisplayView::activateToolbarButtons(boolean bActive)
+		{
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayZoomInButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayZoomOutButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayNormalSizeButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBestFitButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRuler"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRuler"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScaleItem"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton"), bActive);
 		}
 	}
 }

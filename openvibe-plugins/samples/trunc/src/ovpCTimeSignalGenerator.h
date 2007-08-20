@@ -19,10 +19,12 @@ namespace OpenViBEPlugins
 
 			virtual void release(void);
 
+			virtual OpenViBE::uint64 getClockFrequency(void) { return (((OpenViBE::uint64)m_ui32SamplingFrequency)<<32)/m_ui32GeneratedEpochSampleCount; }
+
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
 
-			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock& rMessageClock);
+			virtual OpenViBE::boolean processClock(OpenViBE::Kernel::IMessageClock& rMessageClock);
 			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_TimeSignalGenerator)

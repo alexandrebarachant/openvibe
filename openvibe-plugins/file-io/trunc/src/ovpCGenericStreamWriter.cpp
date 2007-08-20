@@ -4,6 +4,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::FileIO;
 using namespace OpenViBEToolkit;
@@ -21,10 +22,10 @@ void CGenericStreamWriter::release(void)
 
 boolean CGenericStreamWriter::initialize(void)
 {
-	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
+	const IBox* l_pBox=getBoxAlgorithmContext()->getStaticBoxContext();
 
 	// Parses box settings to find filename
-	l_pBoxContext->getSettingValue(0, m_sFileName);
+	l_pBox->getSettingValue(0, m_sFileName);
 
 	if(!m_oFile.is_open())
 	{
@@ -32,7 +33,7 @@ boolean CGenericStreamWriter::initialize(void)
 
 		if(m_oFile.bad())
 		{
-			cout<<"Couldn't open the output file : "<<m_sFileName<<endl;
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the output file : "<<m_sFileName<<".\n";
 			return false;
 		}
 	}
@@ -55,13 +56,18 @@ boolean CGenericStreamWriter::processInput(uint32 ui32InputIndex)
 	//add this input to the list of inputs with pending data
 	m_vInputWithPendingData.push_back(ui32InputIndex);
 
-	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+	//process only if the file has been opened
+	if(m_oFile.is_open())
+	{
+		getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+	}
+
 	return true;
 }
 
 boolean CGenericStreamWriter::process(void)
 {
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	//destination buffer when converting to little endian
 	uint8 l_pTempBuffer[8];
@@ -78,9 +84,9 @@ boolean CGenericStreamWriter::process(void)
 		l_ui32CurrentInput = m_vInputWithPendingData[i];
 
 		//for every pending data on that input
-		for(uint32 j=0; j<l_pDynamicBoxContext->getInputChunkCount(l_ui32CurrentInput); j++)
+		for(uint32 j=0; j<l_pBoxIO->getInputChunkCount(l_ui32CurrentInput); j++)
 		{
-			l_pDynamicBoxContext->getInputChunk(l_ui32CurrentInput, j, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
+			l_pBoxIO->getInputChunk(l_ui32CurrentInput, j, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
 
 			//write input number
 			System::Memory::hostToLittleEndian(l_ui32CurrentInput, l_pTempBuffer);
@@ -101,7 +107,7 @@ boolean CGenericStreamWriter::process(void)
 			//write the chunk
 			m_oFile.write(reinterpret_cast<const char *>(l_pChunkBuffer), (std::streamsize)l_ui64ChunkSize);
 
-			l_pDynamicBoxContext->markInputAsDeprecated(l_ui32CurrentInput, j);
+			l_pBoxIO->markInputAsDeprecated(l_ui32CurrentInput, j);
 
 		}
 	}

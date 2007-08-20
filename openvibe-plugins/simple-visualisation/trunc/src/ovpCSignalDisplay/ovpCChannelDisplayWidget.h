@@ -1,6 +1,7 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CChannelDisplayWidget_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CChannelDisplayWidget_H__
 
+#include "ovpCSignalDisplayLeftRuler.h"
 
 #include <glib.h>
 #include <glib/gprintf.h>
@@ -22,7 +23,7 @@ namespace OpenViBEPlugins
 	{
 
 	class CSignalDisplayView;
-	class CSignalDisplayDatabase;
+	class CBufferDatabase;
 	
 	class CChannelDisplayPoint
 	{
@@ -40,10 +41,8 @@ namespace OpenViBEPlugins
 		GtkWidget * m_pWidgetTable;
 		//! The drawing area where the signal is to be drawn
 		GtkWidget * m_pDrawingArea;
-		//! The drawing area used to draw the left ruler
-		GtkWidget * m_pLeftRuler;
-		//! The drawing area used to draw the bottom ruler
-		GtkWidget * m_pBottomRuler;
+		
+		CSignalDisplayLeftRuler m_oLeftRuler;
 	
 		//! The index list of the channels to display
 		std::vector<OpenViBE::uint32> m_oChannelList;
@@ -53,7 +52,7 @@ namespace OpenViBEPlugins
 		CSignalDisplayView * m_pParentDisplayView;
 		
 		//! The database from which the information are to be read
-		CSignalDisplayDatabase * m_pDatabase;
+		CBufferDatabase * m_pDatabase;
 		
 		//Parameters needed to scale and translate the signal correctly in the drawing area
 		OpenViBE::float64 m_f64ScaleX;
@@ -72,7 +71,6 @@ namespace OpenViBEPlugins
 
 		OpenViBE::uint32 m_ui32CurrentSignalMode;
 
-		OpenViBE::uint64 m_ui64PixelsPerBottomRulerLabel;
 
 	public:
 		CChannelDisplay();
@@ -81,12 +79,8 @@ namespace OpenViBEPlugins
 		void init(GtkTable * pTable);
 		
 		void setParent(CSignalDisplayView * pDisplayView);
-		
-		/**
-		* Sets the channel associated with this display.
-		* \param ui32Channel The displayed channel.
-		*/
-	//	void setChannel(OpenViBE::uint32 ui32Channel) {m_ui32Channel=ui32Channel;}
+	
+		GtkWidget * getDisplayWidget(){ return m_pDrawingArea; }
 
 		void resetChannelList(){ m_oChannelList.clear(); }
 		void addChannel(OpenViBE::uint32 ui32Channel){ m_oChannelList.push_back(ui32Channel); }
@@ -97,27 +91,11 @@ namespace OpenViBEPlugins
 		void drawSignal();
 
 		/**
-		* Draws the left ruler.
-		*/
-		void drawLeftRuler();
-
-		/**
-		* Draws the bottom ruler.
-		*/
-		void drawBottomRuler();
-		
-		/**
 		* Shows or hides the left ruler.
 		* \param bActive If true, shows the left ruler, else hides it.
 		*/
 		void toggleLeftRuler(OpenViBE::boolean bActive);
 
-		/**
-		* Shows or hides the bottom ruler.
-		* \param bActive If true, shows the bottom ruler, else hides it.
-		*/
-		void toggleBottomRuler(OpenViBE::boolean bActive);
-		
 		/**
 		* Computes the parameters necessary for the signal
 		* to take up all the available space in the drawing area.

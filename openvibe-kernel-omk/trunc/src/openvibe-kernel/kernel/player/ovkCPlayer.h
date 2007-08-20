@@ -5,8 +5,11 @@
 
 #include <openvibe/ov_all.h>
 
-// OpenMASK
-#include <PsController.h>
+#include <system/CChrono.h>
+
+class PsController;
+class PsnReferenceObjectHandle;
+class PsObjectDescriptor;
 
 namespace OpenViBE
 {
@@ -25,12 +28,7 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean loop(void);
 
-			// IBoxEnum callback
-			OpenViBE::boolean callback(
-				const OpenViBE::Kernel::IScenario& rScenario,
-				OpenViBE::Kernel::IBox& rBox);
-
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IPlayer, OVK_ClassId_Kernel_Player);
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IPlayer, OVK_ClassId_Kernel_Player_Player);
 
 		protected:
 
@@ -38,6 +36,13 @@ namespace OpenViBE
 			::PsnReferenceObjectHandle* m_pControllerHandle;
 			::PsObjectDescriptor* m_pSimulation;
 			OpenViBE::Kernel::IScenario* m_pScenario;
+
+			OpenViBE::uint32 m_ui32ControllerSteps;
+			OpenViBE::uint32 m_ui32StartTime;
+
+		private:
+
+			System::CChrono m_oBenchmarkChrono;
 		};
 	};
 };

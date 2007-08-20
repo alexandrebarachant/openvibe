@@ -44,7 +44,7 @@ namespace OpenViBEPlugins
 
 			char * l_pXmlBuffer = new char[l_iFileSize];
 			l_oFile.read(l_pXmlBuffer, l_iFileSize);
-
+			
 			while(m_pXMLAutomatonReader->processData(l_pXmlBuffer, l_iFileSize))
 			{
 			}
@@ -150,8 +150,6 @@ namespace OpenViBEPlugins
 
 		OpenViBE::boolean CXMLStimulationScenarioPlayer::processClock(OpenViBE::CMessageClock &rMessageClock)
 		{
-//			cout<<"Current Time : "<<hex<<rMessageClock.getTime()<<endl;
-			
 			uint64 l_ui64CurrentTime = rMessageClock.getTime();
 
 			IDynamicBoxContext * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();

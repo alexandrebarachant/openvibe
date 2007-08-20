@@ -8,6 +8,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SignalProcessing;
 using namespace OpenViBEToolkit;
@@ -70,7 +71,7 @@ void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBu
 	//check if we have at least one channel
 	if(m_pSignalDescription->m_ui32ChannelCount == 0)
 	{
-		cout<<"0 channels selected!"<<endl;
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"0 channels selected!\n";
 		//stop output in this case
 	}
 	else
@@ -259,16 +260,16 @@ boolean CChannelSelector::processInput( uint32 ui32InputIndex)
 
 boolean CChannelSelector::process()
 {
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBoxIO* l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
 		
 	// Process input data
-	for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
+	for(uint32 i=0; i<l_pBoxIO->getInputChunkCount(0); i++)
 	{
 
 		uint64 l_ui64ChunkSize;
 		const uint8* l_pBuffer;
-		l_pDynamicBoxContext->getInputChunk(0, i, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pBuffer);
-		l_pDynamicBoxContext->markInputAsDeprecated(0, i);
+		l_pBoxIO->getInputChunk(0, i, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pBuffer);
+		l_pBoxIO->markInputAsDeprecated(0, i);
 		m_pReader->processData(l_pBuffer, l_ui64ChunkSize);
 	}
 

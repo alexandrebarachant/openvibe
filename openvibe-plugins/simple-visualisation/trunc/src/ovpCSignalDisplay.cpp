@@ -24,9 +24,9 @@ namespace OpenViBEPlugins
 		*/
 		CSignalDisplay::CSignalDisplay(void) : 
 			m_pReader(NULL),
-			m_pSignalReaderCallBack(NULL),
+			m_pStreamedMatrixReaderCallBack(NULL),
 			m_pSignalDisplayView(NULL),
-			m_pSignalDisplayDatabase(NULL)
+			m_pBufferDatabase(NULL)
 		{
 			
 		}
@@ -36,12 +36,12 @@ namespace OpenViBEPlugins
 		{
 			
 			//initializes the ebml input
-			m_pSignalReaderCallBack = createBoxAlgorithmSignalInputReaderCallback(*this);
-			m_pReader=EBML::createReader(*m_pSignalReaderCallBack);
+			m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
+			m_pReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
-			m_pSignalDisplayDatabase = new CSignalDisplayDatabase();
-			m_pSignalDisplayView = new CSignalDisplayView(*m_pSignalDisplayDatabase);
-			m_pSignalDisplayDatabase->setDrawable(m_pSignalDisplayView);
+			m_pBufferDatabase = new CBufferDatabase(*this);
+			m_pSignalDisplayView = new CSignalDisplayView(*m_pBufferDatabase);
+			m_pBufferDatabase->setDrawable(m_pSignalDisplayView);
 			
 			return true;
 		}
@@ -50,13 +50,13 @@ namespace OpenViBEPlugins
 		OpenViBE::boolean CSignalDisplay::uninitialize()
 		{
 			//release the ebml reader
-			releaseBoxAlgorithmSignalInputReaderCallback(m_pSignalReaderCallBack);
+			releaseBoxAlgorithmStreamedMatrixInputReaderCallback(m_pStreamedMatrixReaderCallBack);
 
 			m_pReader->release();
 			m_pReader=NULL;
 			
 			delete m_pSignalDisplayView;
-			delete m_pSignalDisplayDatabase;
+			delete m_pBufferDatabase;
 
 			return true;
 		}
@@ -87,35 +87,26 @@ namespace OpenViBEPlugins
 			
 			return true;
 		}
-		
-		
-		
-		void CSignalDisplay::setChannelCount(const OpenViBE::uint32 ui32ChannelCount)
+
+
+		void CSignalDisplay::setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
 		{
-			m_pSignalDisplayDatabase->setChannelCount(ui32ChannelCount);
+			m_pBufferDatabase->setMatrixDimmensionCount(ui32DimmensionCount);
 		}
 		
-		void CSignalDisplay::setChannelName(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName)
+		void CSignalDisplay::setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
 		{
-			m_pSignalDisplayDatabase->setChannelName(ui32ChannelIndex, sChannelName);
+			m_pBufferDatabase->setMatrixDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
 		}
 		
-		
-		void CSignalDisplay::setSampleCountPerBuffer(const OpenViBE::uint32 ui32SampleCountPerBuffer)
+		void CSignalDisplay::setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
 		{
-			m_pSignalDisplayDatabase->setSampleCountPerBuffer(ui32SampleCountPerBuffer);
+			m_pBufferDatabase->setMatrixDimmensionLabel(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
 		}
 		
-		
-		void CSignalDisplay::setSamplingRate(const OpenViBE::uint32 ui32SamplingFrequency)
+		void CSignalDisplay::setMatrixBuffer(const OpenViBE::float64* pBuffer)
 		{
-			m_pSignalDisplayDatabase->setSamplingRate(ui32SamplingFrequency);
-		}
-		
-		
-		void CSignalDisplay::setSampleBuffer(const OpenViBE::float64* pBuffer)
-		{
-			m_pSignalDisplayDatabase->setSampleBuffer(pBuffer, m_ui64StartTime);
+			m_pBufferDatabase->setMatrixBuffer(pBuffer, m_ui64StartTime, m_ui64EndTime);
 		}
 
 

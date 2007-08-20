@@ -30,6 +30,12 @@ namespace OpenViBEPlugins
 				delete this;
 			}
 
+			virtual OpenViBE::uint64 getClockFrequency(
+				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+			{
+				return 1LL<<32;
+			}
+
 			virtual OpenViBE::boolean initialize(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
 			{
@@ -46,14 +52,14 @@ namespace OpenViBEPlugins
 				m_pWriter->release();
 
 				m_pWriterHelper=NULL;
-				m_pWriter->release();
+				m_pWriter=NULL;
 
 				return true;
 			}
 
 			virtual OpenViBE::boolean processClock(
 				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::CMessageClock& rMessageClock)
+				OpenViBE::Kernel::IMessageClock& rMessageClock)
 			{
 				rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
 				return true;
@@ -61,7 +67,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
-				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
+				OpenViBE::Kernel::IBoxIO* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
 
 				m_pBoxAlgorithmContext=&rBoxAlgorithmContext;
 
@@ -80,7 +86,7 @@ namespace OpenViBEPlugins
 				const void* pBuffer,
 				const EBML::uint64 ui64BufferSize)
 			{
-				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=m_pBoxAlgorithmContext->getDynamicBoxContext();
+				OpenViBE::Kernel::IBoxIO* l_pDynamicBoxContext=m_pBoxAlgorithmContext->getDynamicBoxContext();
 
 				std::cout << "Producer : Sending magic data : "
 			    	      << ui64BufferSize
@@ -120,7 +126,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
-				rPrototype.addOutput("an output", OV_TypeId_EBMLStream);
+				rPrototype.addOutput("an output", OpenViBE::CIdentifier(0x1234, 0x5678));
 
 				return true;
 			}

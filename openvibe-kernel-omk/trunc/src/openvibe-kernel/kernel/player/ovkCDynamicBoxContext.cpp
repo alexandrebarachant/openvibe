@@ -1,4 +1,5 @@
 #include "ovkCDynamicBoxContext.h"
+#include "ovkPsSimulatedBox.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -3,6 +3,71 @@
 
 //___________________________________________________________________//
 //                                                                   //
+// OpenViBE toolkit input and output type identifiers                //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OVTK_TypeId_Boolean                                            OpenViBE::CIdentifier(0x2CDB2F0B, 0x12F231EA)
+#define OVTK_TypeId_Integer                                            OpenViBE::CIdentifier(0x007DEEF9, 0x2F3E95C6)
+#define OVTK_TypeId_Float                                              OpenViBE::CIdentifier(0x512A166F, 0x5C3EF83F)
+#define OVTK_TypeId_String                                             OpenViBE::CIdentifier(0x79A9EDEB, 0x245D83FC)
+#define OVTK_TypeId_Filename                                           OpenViBE::CIdentifier(0x330306DD, 0x74A95F98)
+#define OVTK_TypeId_Stimulation                                        OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
+
+/*
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xA538DBF0, 0xBC229750)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x2C69E624, 0x17B3DC00)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xF4AB1881, 0xB242657F)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xDF46B446, 0x2FEAAFB9)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x8BD0DA53, 0x60327AE4)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x5CBC9A9F, 0xE6C35BD1)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x2D25BF3F, 0xB2F35938)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xECADF79E, 0x66CF91E6)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xD38F22F1, 0x2936FFF8)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x091640E9, 0xDBF8FDC1)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x596A8E3B, 0x634038B1)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x4281932A, 0xE86ACE51)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x6D7D489C, 0x4935CA3A)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xE33B2FF8, 0x260B1060)
+#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xEF38D8FE, 0x6999DBE5)
+*/
+
+// retro-compatibility
+/*
+#define OV_TypeId_Boolean                                              OVTK_TypeId_Boolean
+#define OV_TypeId_Integer                                              OVTK_TypeId_Integer
+#define OV_TypeId_Float                                                OVTK_TypeId_Float
+#define OV_TypeId_String                                               OVTK_TypeId_String
+#define OV_TypeId_Filename                                             OVTK_TypeId_Stimulation
+*/
+//___________________________________________________________________//
+//                                                                   //
+// OpenViBE toolkit stream type identifiers                          //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OVTK_TypeId_EBMLStream                                         OpenViBE::CIdentifier(0x434F6587, 0x2EFD2B7E)
+#define   OVTK_TypeId_ChannelLocalisation                              OpenViBE::CIdentifier(0x1E4C0D6E, 0x5204EEB2)
+#define   OVTK_TypeId_ExperimentationInformation                       OpenViBE::CIdentifier(0x403488E7, 0x565D70B6)
+#define   OVTK_TypeId_Stimulations                                     OpenViBE::CIdentifier(0x6F752DD0, 0x082A321E)
+#define   OVTK_TypeId_StreamedMatrix                                   OpenViBE::CIdentifier(0x544A003E, 0x6DCBA5F6)
+#define     OVTK_TypeId_FeatureVector                                  OpenViBE::CIdentifier(0x17341935, 0x152FF448)
+#define     OVTK_TypeId_Signal                                         OpenViBE::CIdentifier(0x5BA36127, 0x195FEAE1)
+#define     OVTK_TypeId_Spectrum                                       OpenViBE::CIdentifier(0x1F261C0A, 0x593BF6BD)
+
+// retro-compatibility
+/*
+#define OV_TypeId_EBMLStream                                           OVTK_TypeId_EBMLStream
+#define   OV_TypeId_ChannelLocalisation                                OVTK_TypeId_ChannelLocalisation
+#define   OV_TypeId_ExperimentationInformation                         OVTK_TypeId_ExperimentationInformation
+#define   OV_TypeId_Stimulations                                       OVTK_TypeId_Stimulations
+#define   OV_TypeId_StreamedMatrix                                     OVTK_TypeId_StreamedMatrix
+#define     OV_TypeId_FeatureVector                                    OVTK_TypeId_FeatureVector
+#define     OV_TypeId_Signal                                           OVTK_TypeId_Signal
+#define     OV_TypeId_Spectrum                                         OVTK_TypeId_Spectrum
+*/
+//___________________________________________________________________//
+//                                                                   //
 // ISO 5218 conformant sex identifiers                               //
 //___________________________________________________________________//
 //                                                                   //
@@ -14,7 +79,37 @@
 
 //___________________________________________________________________//
 //                                                                   //
-// GDF file format stimulations identifiers                          //
+// OpenViBE toolkit stimulation identifiers                          //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OVTK_StimulationId_TrialStart                        0x80000001
+#define OVTK_StimulationId_TrialEnd                          0x80000002
+#define OVTK_StimulationId_Train                             0x80000000
+
+#define OVTK_StimulationId_Label(i)                          0x80000100|((i)&0x0f)
+#define OVTK_StimulationId_LabelStart                        0x80000100
+#define OVTK_StimulationId_Label_00                          0x80000100
+#define OVTK_StimulationId_Label_01                          0x80000101
+#define OVTK_StimulationId_Label_02                          0x80000102
+#define OVTK_StimulationId_Label_03                          0x80000103
+#define OVTK_StimulationId_Label_04                          0x80000104
+#define OVTK_StimulationId_Label_05                          0x80000105
+#define OVTK_StimulationId_Label_06                          0x80000106
+#define OVTK_StimulationId_Label_07                          0x80000107
+#define OVTK_StimulationId_Label_08                          0x80000108
+#define OVTK_StimulationId_Label_09                          0x80000109
+#define OVTK_StimulationId_Label_0A                          0x8000010a
+#define OVTK_StimulationId_Label_0B                          0x8000010b
+#define OVTK_StimulationId_Label_0C                          0x8000010c
+#define OVTK_StimulationId_Label_0D                          0x8000010d
+#define OVTK_StimulationId_Label_0E                          0x8000010e
+#define OVTK_StimulationId_Label_0F                          0x8000010f
+#define OVTK_StimulationId_LabelEnd                          0x8000010f
+
+//___________________________________________________________________//
+//                                                                   //
+// GDF file format stimulation identifiers                           //
 //___________________________________________________________________//
 //                                                                   //
 

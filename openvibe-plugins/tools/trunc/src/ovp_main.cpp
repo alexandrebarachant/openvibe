@@ -6,21 +6,21 @@ static OpenViBEPlugins::Tools::CEBMLStreamSpyDesc* gst_pEBMLStreamSpyDesc=NULL;
 extern "C"
 {
 
-OVP_API OpenViBE::boolean onInitialize(void)
+OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
 {
 	gst_pEBMLStreamSpyDesc=new OpenViBEPlugins::Tools::CEBMLStreamSpyDesc();
 
 	return true;
 }
 
-OVP_API OpenViBE::boolean onUninitialize(void)
+OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
 {
 	delete gst_pEBMLStreamSpyDesc;
 
 	return true;
 }
 
-OVP_API OpenViBE::boolean onGetPluginObjectDescription(OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
+OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
 {
 	switch(ui32Index)
 	{

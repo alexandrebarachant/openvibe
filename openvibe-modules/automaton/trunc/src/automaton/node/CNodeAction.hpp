@@ -73,22 +73,38 @@ namespace Automaton
 	class CWaitTime : virtual public IActionFunctor
 	{
 		private:
-			Automaton::uint64 m_ui64TimeLength;
-			Automaton::uint64 m_ui64EndTime;
 			Automaton::boolean m_bTimeSet;
+			Automaton::uint64 m_ui64TimeLength;
+			Automaton::uint64 m_ui64LowerBound;
+			Automaton::uint64 m_ui64HigherBound;
+			Automaton::uint64 m_ui64EndTime;
 		public:
-			CWaitTime(Automaton::uint64 ui64TimeLength) : 
-	       			m_bTimeSet(false) 
+
+			Automaton::uint64 convertTime(Automaton::uint64 ui64TimeLength)
 			{
 				uint64 l_ui64Temp = ((uint64)(ui64TimeLength%1000)<<32);
 
 				//converts it to 32:32 format 
-				m_ui64TimeLength = (( ui64TimeLength/1000) << 32) +
-						(l_ui64Temp/1000);
-
+				return (( ui64TimeLength/1000) << 32) + (l_ui64Temp/1000);
 			}
 
-			//TODO constructor with two arguments, to randomize between two value the wait duration
+			CWaitTime(Automaton::uint64 ui64TimeLength) : 
+	       			m_bTimeSet(false),
+				m_ui64LowerBound(0),
+				m_ui64HigherBound(0)
+			{
+				m_ui64TimeLength = convertTime(ui64TimeLength);
+			}
+
+			CWaitTime(Automaton::uint64 ui64Low, Automaton::uint64 ui64High) : 
+	       			m_bTimeSet(false),
+				m_ui64LowerBound(0),
+				m_ui64HigherBound(0)
+			{
+
+				m_ui64LowerBound=ui64Low;
+				m_ui64HigherBound=ui64High;
+			}
 
 			virtual ~CWaitTime(){}
 
@@ -96,6 +112,15 @@ namespace Automaton
 			{
 				if(!m_bTimeSet)
 				{
+					//case of random duration
+					if(m_ui64LowerBound!=m_ui64HigherBound)
+					{
+						uint64 l_ui64DurationMs = (rand() % (m_ui64HigherBound - m_ui64LowerBound)) + m_ui64LowerBound;
+
+						//converts it to 32:32 format 
+						m_ui64TimeLength = convertTime(l_ui64DurationMs); 
+					}
+
 					m_ui64EndTime = pContext->getCurrentTime() + m_ui64TimeLength;
 					m_bTimeSet = true;
 				}

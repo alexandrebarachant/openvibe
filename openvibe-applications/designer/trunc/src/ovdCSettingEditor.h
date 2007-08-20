@@ -24,6 +24,7 @@ namespace OpenViBEDesigner
 		OpenViBE::CString getValueInteger(::GtkWidget* pWidget);
 		OpenViBE::CString getValueFloat(::GtkWidget* pWidget);
 		OpenViBE::CString getValueString(::GtkWidget* pWidget);
+		OpenViBE::CString getValueFilename(::GtkWidget* pWidget);
 		OpenViBE::CString getValueEnumeration(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget);
 		OpenViBE::CString getValueBitMask(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget);
 
@@ -32,6 +33,7 @@ namespace OpenViBEDesigner
 		void setValueInteger(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueFloat(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueString(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
+		void setValueFilename(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueEnumeration(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueBitMask(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 

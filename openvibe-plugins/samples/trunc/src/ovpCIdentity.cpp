@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Samples;
@@ -22,8 +23,8 @@ boolean CIdentity::processInput(uint32 ui32InputIndex)
 
 boolean CIdentity::process(void)
 {
-	IStaticBoxContext* l_pStaticBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBox* l_pStaticBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
+	IBoxIO* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	uint64 l_ui64StartTime=0;
 	uint64 l_ui64EndTime=0;

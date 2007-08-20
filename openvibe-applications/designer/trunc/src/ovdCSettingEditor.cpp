@@ -68,9 +68,9 @@ void CSettingEditor::run(void)
 			gtk_widget_unparent(l_pSettingName);
 			gtk_widget_unparent(l_pSettingValue);
 			gtk_widget_unparent(l_pSettingRevert);
-			gtk_table_attach_defaults(l_pSettingTable, l_pSettingName, 0, 1, i, i+1);
-			gtk_table_attach_defaults(l_pSettingTable, l_pSettingValue, 1, 2, i, i+1);
-			gtk_table_attach_defaults(l_pSettingTable, l_pSettingRevert, 2, 3, i, i+1);
+			gtk_table_attach(l_pSettingTable, l_pSettingName,   0, 1, i, i+1, ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), 0, 0);
+			gtk_table_attach(l_pSettingTable, l_pSettingValue,  1, 2, i, i+1, ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), 0, 0);
+			gtk_table_attach(l_pSettingTable, l_pSettingRevert, 2, 3, i, i+1, ::GtkAttachOptions(GTK_SHRINK),          ::GtkAttachOptions(GTK_SHRINK),          0, 0);
 			gtk_widget_unref(l_pSettingRevert);
 			gtk_widget_unref(l_pSettingValue);
 			gtk_widget_unref(l_pSettingName);
@@ -117,10 +117,11 @@ void CSettingEditor::run(void)
 
 string CSettingEditor::getSettingWidgetName(const CIdentifier& rTypeIdentifier)
 {
-	if(rTypeIdentifier==OV_TypeId_Boolean) return "check_button_setting_boolean";
-	if(rTypeIdentifier==OV_TypeId_Integer) return "spin_button_setting_integer";
-	if(rTypeIdentifier==OV_TypeId_Float)   return "spin_button_setting_float";
-	if(rTypeIdentifier==OV_TypeId_String)  return "entry_setting_string";
+	if(rTypeIdentifier==OV_TypeId_Boolean)  return "check_button_setting_boolean";
+	if(rTypeIdentifier==OV_TypeId_Integer)  return "spin_button_setting_integer";
+	if(rTypeIdentifier==OV_TypeId_Float)    return "spin_button_setting_float";
+	if(rTypeIdentifier==OV_TypeId_String)   return "entry_setting_string";
+	if(rTypeIdentifier==OV_TypeId_Filename) return "file_chooser_button_setting_filename";
 	if(m_rKernel.getContext()->getTypeManager().isEnumeration(rTypeIdentifier)) return "combobox_setting_enumeration";
 	if(m_rKernel.getContext()->getTypeManager().isBitMask(rTypeIdentifier))     return "table_setting_bitmask";
 	return "entry_setting_string";
@@ -130,10 +131,11 @@ string CSettingEditor::getSettingWidgetName(const CIdentifier& rTypeIdentifier)
 
 CString CSettingEditor::getValue(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget)
 {
-	if(rTypeIdentifier==OV_TypeId_Boolean) return getValueBoolean(pWidget);
-	if(rTypeIdentifier==OV_TypeId_Integer) return getValueInteger(pWidget);
-	if(rTypeIdentifier==OV_TypeId_Float)   return getValueFloat(pWidget);
-	if(rTypeIdentifier==OV_TypeId_String)  return getValueString(pWidget);
+	if(rTypeIdentifier==OV_TypeId_Boolean)  return getValueBoolean(pWidget);
+	if(rTypeIdentifier==OV_TypeId_Integer)  return getValueInteger(pWidget);
+	if(rTypeIdentifier==OV_TypeId_Float)    return getValueFloat(pWidget);
+	if(rTypeIdentifier==OV_TypeId_String)   return getValueString(pWidget);
+	if(rTypeIdentifier==OV_TypeId_Filename) return getValueFilename(pWidget);
 	if(m_rKernel.getContext()->getTypeManager().isEnumeration(rTypeIdentifier)) return getValueEnumeration(rTypeIdentifier, pWidget);
 	if(m_rKernel.getContext()->getTypeManager().isBitMask(rTypeIdentifier))     return getValueBitMask(rTypeIdentifier, pWidget);
 	return getValueString(pWidget);
@@ -168,6 +170,12 @@ CString CSettingEditor::getValueString(::GtkWidget* pWidget)
 {
 	::GtkEntry* l_pWidget=GTK_ENTRY(pWidget);
 	return CString(gtk_entry_get_text(l_pWidget));
+}
+
+CString CSettingEditor::getValueFilename(::GtkWidget* pWidget)
+{
+	::GtkFileChooser* l_pWidget=GTK_FILE_CHOOSER(pWidget);
+	return CString(gtk_file_chooser_get_filename(l_pWidget));
 }
 
 CString CSettingEditor::getValueEnumeration(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget)
@@ -214,10 +222,11 @@ CString CSettingEditor::getValueBitMask(const CIdentifier& rTypeIdentifier, ::Gt
 
 void CSettingEditor::setValue(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const CString& rValue)
 {
-	if(rTypeIdentifier==OV_TypeId_Boolean) return setValueBoolean(pWidget, rValue);
-	if(rTypeIdentifier==OV_TypeId_Integer) return setValueInteger(pWidget, rValue);
-	if(rTypeIdentifier==OV_TypeId_Float)   return setValueFloat(pWidget, rValue);
-	if(rTypeIdentifier==OV_TypeId_String)  return setValueString(pWidget, rValue);
+	if(rTypeIdentifier==OV_TypeId_Boolean)  return setValueBoolean(pWidget, rValue);
+	if(rTypeIdentifier==OV_TypeId_Integer)  return setValueInteger(pWidget, rValue);
+	if(rTypeIdentifier==OV_TypeId_Float)    return setValueFloat(pWidget, rValue);
+	if(rTypeIdentifier==OV_TypeId_String)   return setValueString(pWidget, rValue);
+	if(rTypeIdentifier==OV_TypeId_Filename) return setValueFilename(pWidget, rValue);
 	if(m_rKernel.getContext()->getTypeManager().isEnumeration(rTypeIdentifier)) return setValueEnumeration(rTypeIdentifier, pWidget, rValue);
 	if(m_rKernel.getContext()->getTypeManager().isBitMask(rTypeIdentifier))     return setValueBitMask(rTypeIdentifier, pWidget, rValue);
 	return setValueString(pWidget, rValue);
@@ -262,6 +271,12 @@ void CSettingEditor::setValueString(::GtkWidget* pWidget, const CString& rValue)
 {
 	::GtkEntry* l_pWidget=GTK_ENTRY(pWidget);
 	gtk_entry_set_text(l_pWidget, rValue);
+}
+
+void CSettingEditor::setValueFilename(::GtkWidget* pWidget, const CString& rValue)
+{
+	::GtkFileChooser* l_pWidget=GTK_FILE_CHOOSER(pWidget);
+	gtk_file_chooser_set_filename(l_pWidget, rValue);
 }
 
 void CSettingEditor::setValueEnumeration(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const CString& rValue)

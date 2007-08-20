@@ -46,9 +46,13 @@ EParsingStatus CXMLActionWaitTimeNodeReader::openChild(const char* sName, const 
 		{
 			m_eStatus = ParsingStatus_Property;
 		}
+		else if(l_oValue == "RandomDuration")
+		{
+			m_eStatus = ParsingStatus_Property;
+		}
 		else
 		{
-			cout<<"Couldn't find class (=Duration) attribute in property node"<<endl;
+			cout<<"Couldn't find class (=Duration or RandomDuration) attribute in property node"<<endl;
 			m_eStatus = ParsingStatus_Error;
 		}
 	}

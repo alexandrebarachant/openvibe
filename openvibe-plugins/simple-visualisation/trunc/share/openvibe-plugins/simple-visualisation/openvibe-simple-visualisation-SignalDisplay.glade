@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Wed May  9 14:16:48 2007 by brenier@monlinux.irisa.fr-->
+<!--Generated with glade3 3.2.0 on Thu Jun 14 11:14:34 2007 by brenier@monlinux.irisa.fr-->
 <glade-interface>
   <widget class="GtkWindow" id="SignalDisplayMainWindow">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -19,6 +19,7 @@
             <child>
               <widget class="GtkToggleToolButton" id="SignalDisplayZoomInButton">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="stock_id">gtk-zoom-in</property>
               </widget>
@@ -29,6 +30,7 @@
             <child>
               <widget class="GtkToggleToolButton" id="SignalDisplayZoomOutButton">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="stock_id">gtk-zoom-out</property>
               </widget>
@@ -39,6 +41,7 @@
             <child>
               <widget class="GtkToggleToolButton" id="SignalDisplayBestFitButton">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="stock_id">gtk-zoom-fit</property>
               </widget>
@@ -49,6 +52,7 @@
             <child>
               <widget class="GtkToggleToolButton" id="SignalDisplayNormalSizeButton">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="stock_id">gtk-zoom-100</property>
               </widget>
@@ -69,10 +73,10 @@
             <child>
               <widget class="GtkToggleToolButton" id="SignalDisplayToggleLeftRuler">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label">Left Ruler</property>
                 <property name="stock_id">gtk-goto-first</property>
-                <property name="active">True</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -81,6 +85,7 @@
             <child>
               <widget class="GtkToggleToolButton" id="SignalDisplayToggleBottomRuler">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label">Bottom Ruler</property>
                 <property name="stock_id">gtk-goto-bottom</property>
@@ -103,6 +108,7 @@
             <child>
               <widget class="GtkToolItem" id="SignalDisplayTimeScaleItem">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <child>
                   <widget class="GtkVBox" id="vbox1">
@@ -140,6 +146,7 @@
             <child>
               <widget class="GtkToolButton" id="SignalDisplayChannelSelectButton">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label">Select Channels</property>
                 <property name="stock_id">gtk-index</property>
@@ -151,6 +158,7 @@
             <child>
               <widget class="GtkToolButton" id="SignalDisplayMultiViewButton">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label">Multi-View</property>
                 <property name="stock_id">gtk-leave-fullscreen</property>
@@ -172,6 +180,7 @@
             <child>
               <widget class="GtkToolButton" id="SignalDisplayInformationButton">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label">Information</property>
                 <property name="stock_id">gtk-dialog-info</property>
@@ -191,22 +200,75 @@
             <property name="can_focus">True</property>
             <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="vscrollbar_policy">GTK_POLICY_NEVER</property>
             <child>
               <widget class="GtkViewport" id="SignalDisplayViewport">
                 <property name="visible">True</property>
                 <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="resize_mode">GTK_RESIZE_QUEUE</property>
                 <child>
-                  <widget class="GtkTable" id="SignalDisplayMainTable">
+                  <widget class="GtkVBox" id="SignalDisplayDisplayVBox">
                     <property name="visible">True</property>
-                    <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="n_columns">2</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <child>
-                      <placeholder/>
+                      <widget class="GtkScrolledWindow" id="SignalDisplayChannelsScrollbar">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+                        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="window_placement">GTK_CORNER_TOP_RIGHT</property>
+                        <property name="window_placement_set">True</property>
+                        <child>
+                          <widget class="GtkViewport" id="SignalDisplayChannelsViewport">
+                            <property name="visible">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="resize_mode">GTK_RESIZE_QUEUE</property>
+                            <property name="shadow_type">GTK_SHADOW_NONE</property>
+                            <child>
+                              <widget class="GtkTable" id="SignalDisplayMainTable">
+                                <property name="visible">True</property>
+                                <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                <property name="n_columns">2</property>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
                     </child>
                     <child>
-                      <placeholder/>
+                      <widget class="GtkHBox" id="SignalDisplayBottomBar">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <child>
+                          <widget class="GtkLabel" id="SignalDisplayBottomBarEmptyLabel1">
+                            <property name="visible">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="label" translatable="yes">
+</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="SignalDisplayBottomBarEmptyLabel1">
+                            <property name="visible">True</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </widget>
                 </child>

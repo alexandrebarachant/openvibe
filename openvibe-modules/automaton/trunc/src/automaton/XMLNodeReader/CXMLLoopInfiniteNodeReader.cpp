@@ -61,7 +61,7 @@ EParsingStatus CXMLLoopInfiniteNodeReader::openChild(const char* sName, const ch
 				m_eStatus = ParsingStatus_Node;
 				
 				const char * l_pValue = getAttributeValue(sAttributeName, sAttributeValue, ui64AttributeCount, "class");
-
+				
 				if(l_pValue)
 				{
 					string l_oClassAttribute = l_pValue;

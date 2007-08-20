@@ -130,11 +130,11 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("sample behavior"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("XML Scenario importer"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("sample behavior"); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("A sample XML scenario importer"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("A sample XML scenario importer"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This scenario importer uses simple XML format to input the scenario"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getFileExtension(void) const       { return OpenViBE::CString("xml;XML"); }

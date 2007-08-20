@@ -1,7 +1,6 @@
-#ifndef __OpenViBEKernel_Kernel_CMessageSignal_H__
-#define __OpenViBEKernel_Kernel_CMessageSignal_H__
+#ifndef __OpenViBEKernel_Kernel_Player_CMessageSignal_H__
+#define __OpenViBEKernel_Kernel_Player_CMessageSignal_H__
 
-#include "../../ovk_base.h"
 #include "../ovkTKernelObject.h"
 #include "ovkTMessage.h"
 
@@ -21,9 +20,9 @@ namespace OpenViBE
 			{
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageSignal> >, OVK_ClassId_Kernel_MessageSignal);
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageSignal> >, OVK_ClassId_Kernel_Player_MessageSignal);
 		};
 	};
 };
 
-#endif // __OpenViBEKernel_Kernel_CMessageSignal_H__
+#endif // __OpenViBEKernel_Kernel_Player_CMessageSignal_H__

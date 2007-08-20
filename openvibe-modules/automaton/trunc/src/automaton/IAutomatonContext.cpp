@@ -137,6 +137,8 @@ CAutomatonContext::CAutomatonContext() : m_ui64CurrentTime(0)
 
 	m_oXMLNodeToIdentifier["Switch"] = Automaton_Node_Identifier_Switch;
 	m_oXMLNodeToIdentifier["SwitchProbabilist"] = Automaton_Node_Identifier_SwitchProbabilist;
+	m_oXMLNodeToIdentifier["SwitchEvent"] = Automaton_Node_Identifier_SwitchEvent;
+
 
 	m_oXMLNodeToIdentifier["RandomOrder"] = Automaton_Node_Identifier_RandomOrder;
 }

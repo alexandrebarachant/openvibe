@@ -97,7 +97,7 @@ const char* CBoxProxy::getLabel(void) const
 	string l_sBoxHasSettings(m_pConstBox->getSettingCount()!=0?"~":"-");
 	string l_sBoxName(m_pConstBox->getName());
 	string l_sBoxIden(m_pConstBox->getIdentifier().toString());
-	m_sLabel=l_sBoxHasSettings+" "+l_sBoxName+" "+l_sBoxHasSettings+"\n"+l_sBoxIden;
+	m_sLabel=l_sBoxHasSettings+" "+l_sBoxName+" "+l_sBoxHasSettings; // +"\n"+l_sBoxIden;
 	return m_sLabel.c_str();
 }
 

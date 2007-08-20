@@ -1,12 +1,13 @@
-#ifndef __OpenViBEKernel_Kernel_CBoxAlgorithmContext_H__
-#define __OpenViBEKernel_Kernel_CBoxAlgorithmContext_H__
+#ifndef __OpenViBEKernel_Kernel_Player_CBoxAlgorithmContext_H__
+#define __OpenViBEKernel_Kernel_Player_CBoxAlgorithmContext_H__
 
 #include "../ovkTKernelObject.h"
 
 #include "ovkCStaticBoxContext.h"
 #include "ovkCDynamicBoxContext.h"
 #include "ovkCPlayerContext.h"
-#include "simulated-objects/ovkPsSimulatedBox.h"
+
+class PsSimulatedBox;
 
 namespace OpenViBE
 {
@@ -23,7 +24,7 @@ namespace OpenViBE
 			virtual OpenViBE::Kernel::IPlayerContext* getPlayerContext(void);
 			virtual OpenViBE::boolean markAlgorithmAsReadyToProcess(void);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxAlgorithmContext>, OVK_ClassId_Kernel_BoxAlgorithmContext)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxAlgorithmContext>, OVK_ClassId_Kernel_Player_BoxAlgorithmContext)
 
 			virtual OpenViBE::boolean isAlgorithmReadyToProcess(void);
 
@@ -37,4 +38,4 @@ namespace OpenViBE
 	};
 };
 
-#endif // __OpenViBEKernel_Kernel_CBoxAlgorithmContext_H__
+#endif // __OpenViBEKernel_Kernel_Player_CBoxAlgorithmContext_H__

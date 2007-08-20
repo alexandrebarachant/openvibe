@@ -7,7 +7,7 @@
 
 using namespace OpenViBE;
 using namespace Plugins;
-
+using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::FileIO;
 
@@ -36,6 +36,7 @@ void CGDFFileReader::writeStimulationOutput(const void* pBuffer, const EBML::uin
 //Plugin Methods
 CGDFFileReader::CGDFFileReader(void):
 	m_bErrorOccured(false),
+	m_ui64FileSize(0),
 	m_f32FileVersion(-1),
 	m_pSignalOutputWriterHelper(NULL),
 	m_pExperimentInformationOutputWriterHelper(NULL),
@@ -66,7 +67,8 @@ CGDFFileReader::CGDFFileReader(void):
 	m_ui64StimulationPerBuffer(32),
 	m_pExperimentInfoHeader(NULL),
 	m_bExperimentInformationSent(false),
-	m_bSignalDescriptionSent(false)
+	m_bSignalDescriptionSent(false),
+	m_ui64ClockFrequency(1LL<<32)
 {
 }
 
@@ -76,7 +78,7 @@ void CGDFFileReader::release(void)
 
 boolean CGDFFileReader::initialize()
 {
-	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
+	const IBox* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
 	// Parses box settings to find filename
 	l_pBoxContext->getSettingValue(0, m_sFileName);
@@ -87,11 +89,17 @@ boolean CGDFFileReader::initialize()
 		m_oFile.open(m_sFileName);
 	}
 
+	m_oFile.seekg(0, ios::end);
+	m_ui64FileSize = (uint64)m_oFile.tellg();
+	m_oFile.seekg(0, ios::beg);
+
 	// Gets the size of output buffers
 	CString l_sParam;
 	l_pBoxContext->getSettingValue(1, l_sParam);
 	m_ui32SamplesPerBuffer = static_cast<uint32>(atoi((const char*)l_sParam));
 
+	l_pBoxContext->getSettingValue(2, l_sParam);
+	m_bOffline = (l_sParam == CString("true"));
 
 	//Prepares the writers proxies
 	m_pOutputWriterCallbackProxy[GDFReader_ExperimentInfoOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFFileReader>(*this, &CGDFFileReader::writeExperimentOutput);
@@ -113,7 +121,8 @@ boolean CGDFFileReader::initialize()
 	//allocate the structure used to store the experiment information
 	m_pExperimentInfoHeader = new CExperimentInfoHeader;
 
-	return true;
+	//reads the gdf headers and sends the corresponding buffers
+	return readFileHeader();
 }
 
 boolean CGDFFileReader::uninitialize()
@@ -139,15 +148,15 @@ boolean CGDFFileReader::uninitialize()
 	m_pStimulationOutputWriterHelper=NULL;
 
 	//desallocate all of the remaining buffers
-	delete[] m_pChannelDataSize;	//can be done before?
-	delete[] m_pChannelType;	//can be done before?
-	delete[] m_pChannelScale;
-	delete[] m_pChannelTranslate;
-	delete[] m_pDataRecordBuffer;	//can be done before??
-	delete[] m_pChannelDataInDataRecord;
-	delete[] m_pMatrixBuffer;		//can be done before?
-	delete[] m_pEventsPositionBuffer;
-	delete[] m_pEventsTypeBuffer;
+	if(m_pChannelDataSize) delete[] m_pChannelDataSize;	//can be done before?
+	if(m_pChannelType) delete[] m_pChannelType;	//can be done before?
+	if(m_pChannelScale) delete[] m_pChannelScale;
+	if(m_pChannelTranslate) delete[] m_pChannelTranslate;
+	if(m_pDataRecordBuffer) delete[] m_pDataRecordBuffer;	//can be done before??
+	if(m_pChannelDataInDataRecord) delete[] m_pChannelDataInDataRecord;
+	if(m_pMatrixBuffer) delete[] m_pMatrixBuffer;		//can be done before?
+	if(m_pEventsPositionBuffer) delete[] m_pEventsPositionBuffer;
+	if(m_pEventsTypeBuffer) delete[] m_pEventsTypeBuffer;
 
 	//Close the GDF file
 	if(m_oFile)
@@ -200,18 +209,27 @@ void CGDFFileReader::GDFBufferToFloat64Buffer(float64 * out, void * in, uint64 i
 			GDFTypeBufferToFloat64Buffer<uint64>(out, reinterpret_cast<uint64 *>(in), inputBufferSize, ui32Channel);
 		break;
 
+		//don't scale in those cases
 		case GDF::ChannelType_float32 :
-			GDFTypeBufferToFloat64Buffer<float32>(out, reinterpret_cast<float32 *>(in), inputBufferSize, ui32Channel);
+			//GDFTypeBufferToFloat64Buffer<float32>(out, reinterpret_cast<float32 *>(in), inputBufferSize, ui32Channel);
+			for(OpenViBE::uint64 i = 0 ; i<inputBufferSize ; i++)
+			{
+				out[i] = reinterpret_cast<float32 *>(in)[i];
+			}
 		break;
 
 		case GDF::ChannelType_float64 :
-			GDFTypeBufferToFloat64Buffer<float64>(out, reinterpret_cast<float64 *>(in), inputBufferSize, ui32Channel);
+			//GDFTypeBufferToFloat64Buffer<float64>(out, reinterpret_cast<float64 *>(in), inputBufferSize, ui32Channel);
+			for(OpenViBE::uint64 i = 0 ; i<inputBufferSize ; i++)
+			{
+				out[i] = reinterpret_cast<float64 *>(in)[i];
+			}
 		break;
 
 		case GDF::ChannelType_float128 :
 		{
 			//Not handled
-			cout<<"This data type is currently not handled."<<endl;
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "This data type is currently not handled : float128.\n";
 			m_bErrorOccured = true;
 		}
 		break;
@@ -240,11 +258,211 @@ void CGDFFileReader::GDFBufferToFloat64Buffer(float64 * out, void * in, uint64 i
 
 		default:
 			//not handled
-			cout<<"Invalid data type!"<<endl;
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Invalid GDF data type!\n";
 			m_bErrorOccured = true;
 			break;
 	}
 }
+
+boolean CGDFFileReader::readFileHeader()
+{
+	
+	IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
+
+	if(!m_bExperimentInformationSent)
+	{
+		//First reads the file type
+		char l_pFileType[3];
+		char l_pFileVersion[5];
+		m_oFile.read(l_pFileType, 3);
+
+		//if not a gdf file
+		if(strncmp(l_pFileType,"GDF", 3) != 0)
+		{
+			//Handle error
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"This is not a valid GDF File!\n";
+			m_bErrorOccured = true;
+			return false;
+		}
+
+		m_oFile.read(l_pFileVersion, 5);
+		m_f32FileVersion = (float32)atof(l_pFileVersion);
+
+		if(m_oFile.bad())
+		{
+			//Handle error
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error while reading file.\n";
+			m_bErrorOccured = true;
+			return false;
+		}
+
+		if(m_f32FileVersion < 3)
+		{
+			GDF::CFixedGDFHeader * l_oFixedHeader = NULL;
+
+			if(m_f32FileVersion > 1.90)
+			{
+				l_oFixedHeader = new GDF::CFixedGDF2Header;
+			}
+			else
+			{
+				l_oFixedHeader = new GDF::CFixedGDF1Header;
+			}
+
+			if(!l_oFixedHeader->read(m_oFile))
+			{
+				m_bErrorOccured = true;
+				delete l_oFixedHeader;
+				return false;
+			}
+
+			m_pExperimentInfoHeader->m_ui64ExperimentId = l_oFixedHeader->getExperimentIdentifier();
+			m_pExperimentInfoHeader->m_sExperimentDate = l_oFixedHeader->getExperimentDate();
+			m_pExperimentInfoHeader->m_ui64SubjectId = l_oFixedHeader->getSubjectIdentifier();
+			m_pExperimentInfoHeader->m_sSubjectName = l_oFixedHeader->getSubjectName();
+			m_pExperimentInfoHeader->m_ui64SubjectAge = l_oFixedHeader->getSubjectAge();
+			m_pExperimentInfoHeader->m_ui64SubjectSex = l_oFixedHeader->getSubjectSex();
+
+			m_pExperimentInfoHeader->m_ui64LaboratoryId = l_oFixedHeader->getLaboratoryIdentifier();
+			m_pExperimentInfoHeader->m_sLaboratoryName = l_oFixedHeader->getLaboratoryName();
+			m_pExperimentInfoHeader->m_ui64TechnicianId = l_oFixedHeader->getTechnicianIdentifier();
+			m_pExperimentInfoHeader->m_sTechnicianName = l_oFixedHeader->getTechnicianName();
+
+			//Experiment header ready to send now
+			m_pExperimentInfoHeader->m_bReadyToSend = true;
+
+			m_f64DurationOfDataRecord = l_oFixedHeader->getDataRecordDuration();
+			m_ui64NumberOfDataRecords= l_oFixedHeader->getNumberOfDataRecords();
+
+			//this information is related to the signal
+			m_ui16NumberOfChannels = (uint16)l_oFixedHeader->getChannelCount();
+			m_pSignalDescription.m_ui32ChannelCount = m_ui16NumberOfChannels;
+
+			//Send the header
+			writeExperimentInformation();
+
+			l_pBoxIO->markOutputAsReadyToSend(GDFReader_ExperimentInfoOutput, 0, 0);
+			m_bExperimentInformationSent=true;
+
+			//not needed anymore
+			delete l_oFixedHeader;
+			delete m_pExperimentInfoHeader;
+			m_pExperimentInfoHeader=NULL;
+		}
+		else
+		{
+			//Not a known GDF File version
+			//Error handling
+			m_bErrorOccured = true;
+		}
+	}//END of ExperimentHeader
+
+	if (!m_bSignalDescriptionSent)
+	{
+		//reads the whole variable header
+		char * l_pVariableHeaderBuffer = new char[m_ui16NumberOfChannels*256];
+		m_oFile.read(l_pVariableHeaderBuffer, m_ui16NumberOfChannels*256);
+
+		if(m_oFile.bad())
+		{
+			//Handle error
+			m_bErrorOccured = true;
+			return false;
+		}
+
+		m_pSignalDescription.m_pChannelName.resize(m_ui16NumberOfChannels);
+
+		//channel's signal gain/translation
+		m_pChannelScale = new float64[m_ui16NumberOfChannels];
+		m_pChannelTranslate = new float64[m_ui16NumberOfChannels];
+
+		float64 * l_pPhysicalMinimun = reinterpret_cast<float64*>(l_pVariableHeaderBuffer+(104*m_ui16NumberOfChannels));
+
+		float64 * l_pPhysicalMaximun = reinterpret_cast<float64*>(l_pVariableHeaderBuffer+(112*m_ui16NumberOfChannels));
+
+		int64 * l_pDigitalMinimun = reinterpret_cast<int64*>(l_pVariableHeaderBuffer+(120*m_ui16NumberOfChannels));
+
+		int64 * l_pDigitalMaximun = reinterpret_cast<int64*>(l_pVariableHeaderBuffer+(128*m_ui16NumberOfChannels));
+
+		for(int i=0 ; i<m_ui16NumberOfChannels ; i++)
+		{
+			m_pChannelScale[i] = (l_pPhysicalMaximun[i]-l_pPhysicalMinimun[i])/(l_pDigitalMaximun[i]-l_pDigitalMinimun[i]);
+
+			m_pChannelTranslate[i] = (l_pPhysicalMaximun[i]+l_pPhysicalMinimun[i])/2;
+		}
+
+		//Check if all the channels have the same sampling rate
+		uint32 * l_pNumberOfSamplesPerRecordArray = reinterpret_cast<uint32*>(l_pVariableHeaderBuffer+(216*m_ui16NumberOfChannels));
+
+		m_ui32NumberOfSamplesPerRecord = l_pNumberOfSamplesPerRecordArray[0];
+
+		for(int i=1 ; i<m_ui16NumberOfChannels ; i++)
+		{
+			//If all the channels don't have the same sampling rate
+			if(m_ui32NumberOfSamplesPerRecord != l_pNumberOfSamplesPerRecordArray[i])
+			{
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Can't handle GDF files with channels having different sampling rates!\n";
+
+				m_bErrorOccured = true;
+				return false;
+			}
+		}
+
+		//type of the channels' data
+		m_pChannelType = new uint32[m_ui16NumberOfChannels];
+		memcpy(m_pChannelType, l_pVariableHeaderBuffer+ (220*m_ui16NumberOfChannels), m_ui16NumberOfChannels * 4);
+
+		m_pChannelDataSize = new uint16[m_ui16NumberOfChannels];
+
+		for(int i=0 ; i<m_ui16NumberOfChannels ; i++)
+		{
+			//Find the data size for each channel
+			//TODO use enum to specify each type's name
+			m_pChannelDataSize[i] = GDF::GDFDataSize(m_pChannelType[i]);
+
+			//Here, we can compute the size of a data record, based on the type of each channel
+			m_ui64DataRecordSize += m_ui32NumberOfSamplesPerRecord*m_pChannelDataSize[i];
+
+			//reads the channels names
+			m_pSignalDescription.m_pChannelName[i].assign(l_pVariableHeaderBuffer + (16*i), 16);
+		}
+
+		//This parameter is defined by the user of the plugin
+		m_pSignalDescription.m_ui32SampleCount = static_cast<EBML::uint32>(m_ui32SamplesPerBuffer);
+
+		//needs to be computed based on the duration of a data record and the number of samples in one of those data records
+		m_pSignalDescription.m_ui32SamplingRate = static_cast<EBML::uint32>(0.5 + (m_ui32NumberOfSamplesPerRecord/m_f64DurationOfDataRecord));
+
+		//computes clock frequency
+		if(m_bOffline)
+		{
+			m_ui64ClockFrequency = 100LL<<32;
+		}
+		else if(m_ui32SamplesPerBuffer <= m_pSignalDescription.m_ui32SamplingRate)
+		{
+			if(m_pSignalDescription.m_ui32SamplingRate % m_ui32SamplesPerBuffer != 0)
+			{
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << 
+					"The sampling rate isn't a multiple of the buffer size\n" <<
+					"Please consider adjusting the GDFReader settings to correct this!\n";
+			}
+
+			m_ui64ClockFrequency = ( ((uint64)m_pSignalDescription.m_ui32SamplingRate<<32) / (uint64)m_ui32SamplesPerBuffer);
+		}
+
+		//Send the data to the output
+		writeSignalInformation();
+		l_pBoxIO->markOutputAsReadyToSend(GDFReader_SignalOutput, 0, 0);
+
+		delete[] l_pVariableHeaderBuffer;
+
+		m_bSignalDescriptionSent = true;
+
+	}//END of SignalHeader
+
+	return true;
+}
+
 
 void CGDFFileReader::writeExperimentInformation()
 {
@@ -346,189 +564,13 @@ boolean CGDFFileReader::process()
 	uint64 l_ui64StartTime=0;
 	uint64 l_ui64EndTime=0;
 
-	IDynamicBoxContext * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
 
-	//reset the OutPut chunks
-	l_pDynamicBoxContext->setOutputChunkSize(GDFReader_SignalOutput, 0);
-	l_pDynamicBoxContext->setOutputChunkSize(GDFReader_ExperimentInfoOutput, 0);
-
-	if(!m_bExperimentInformationSent)
-	{
-		//First reads the file type
-		char l_pFileType[3];
-		char l_pFileVersion[5];
-		m_oFile.read(l_pFileType, 3);
-
-		//if not a gdf file
-		if(strncmp(l_pFileType,"GDF", 3) != 0)
-		{
-			//Handle error
-			cout<<"This is not a valid GDF File!"<<endl;
-			m_bErrorOccured = true;
-			return false;
-		}
-
-		m_oFile.read(l_pFileVersion, 5);
-		m_f32FileVersion = (float32)atof(l_pFileVersion);
-
-		if(m_oFile.bad())
-		{
-			//Handle error
-			m_bErrorOccured = true;
-			return false;
-		}
-
-		if(m_f32FileVersion < 3)
-		{
-			GDF::CFixedGDFHeader * l_oFixedHeader = NULL;
-
-			if(m_f32FileVersion > 1.90)
-			{
-				l_oFixedHeader = new GDF::CFixedGDF2Header;
-			}
-			else
-			{
-				l_oFixedHeader = new GDF::CFixedGDF1Header;
-			}
-
-			if(!l_oFixedHeader->read(m_oFile))
-			{
-				m_bErrorOccured = true;
-				delete l_oFixedHeader;
-				return false;
-			}
-
-			m_pExperimentInfoHeader->m_ui64ExperimentId = l_oFixedHeader->getExperimentIdentifier();
-			m_pExperimentInfoHeader->m_sExperimentDate = l_oFixedHeader->getExperimentDate();
-			m_pExperimentInfoHeader->m_ui64SubjectId = l_oFixedHeader->getSubjectIdentifier();
-			m_pExperimentInfoHeader->m_sSubjectName = l_oFixedHeader->getSubjectName();
-			m_pExperimentInfoHeader->m_ui64SubjectAge = l_oFixedHeader->getSubjectAge();
-			m_pExperimentInfoHeader->m_ui64SubjectSex = l_oFixedHeader->getSubjectSex();
-
-			m_pExperimentInfoHeader->m_ui64LaboratoryId = l_oFixedHeader->getLaboratoryIdentifier();
-			m_pExperimentInfoHeader->m_sLaboratoryName = l_oFixedHeader->getLaboratoryName();
-			m_pExperimentInfoHeader->m_ui64TechnicianId = l_oFixedHeader->getTechnicianIdentifier();
-			m_pExperimentInfoHeader->m_sTechnicianName = l_oFixedHeader->getTechnicianName();
-
-			//Experiment header ready to send now
-			m_pExperimentInfoHeader->m_bReadyToSend = true;
-
-			m_f64DurationOfDataRecord = l_oFixedHeader->getDataRecordDuration();
-			m_ui64NumberOfDataRecords= l_oFixedHeader->getNumberOfDataRecords();
-
-			//this information is related to the signal
-			m_ui16NumberOfChannels = (uint16)l_oFixedHeader->getChannelCount();
-			m_pSignalDescription.m_ui32ChannelCount = m_ui16NumberOfChannels;
-
-			//Send the header
-			writeExperimentInformation();
-
-			l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_ExperimentInfoOutput, 0, 0);
-			m_bExperimentInformationSent=true;
-
-			//not needed anymore
-			delete l_oFixedHeader;
-			delete m_pExperimentInfoHeader;
-			m_pExperimentInfoHeader=NULL;
-		}
-		else
-		{
-			//Not a known GDF File version
-			//Error handling
-			m_bErrorOccured = true;
-		}
-	}//END of ExperimentHeader
-
-	else if (!m_bSignalDescriptionSent)
-	{
-		//reads the whole variable header
-		char * l_pVariableHeaderBuffer = new char[m_ui16NumberOfChannels*256];
-		m_oFile.read(l_pVariableHeaderBuffer, m_ui16NumberOfChannels*256);
-
-		if(m_oFile.bad())
-		{
-			//Handle error
-			m_bErrorOccured = true;
-			return false;
-		}
-
-		m_pSignalDescription.m_pChannelName.resize(m_ui16NumberOfChannels);
-
-		//channel's signal gain/translation
-		m_pChannelScale = new float64[m_ui16NumberOfChannels];
-		m_pChannelTranslate = new float64[m_ui16NumberOfChannels];
-
-		float64 * l_pPhysicalMinimun = reinterpret_cast<float64*>(l_pVariableHeaderBuffer+(104*m_ui16NumberOfChannels));
-
-		float64 * l_pPhysicalMaximun = reinterpret_cast<float64*>(l_pVariableHeaderBuffer+(112*m_ui16NumberOfChannels));
-
-		int64 * l_pDigitalMinimun = reinterpret_cast<int64*>(l_pVariableHeaderBuffer+(120*m_ui16NumberOfChannels));
-
-		int64 * l_pDigitalMaximun = reinterpret_cast<int64*>(l_pVariableHeaderBuffer+(128*m_ui16NumberOfChannels));
-
-		for(int i=0 ; i<m_ui16NumberOfChannels ; i++)
-		{
-			m_pChannelScale[i] = (l_pPhysicalMaximun[i]-l_pPhysicalMinimun[i])/(l_pDigitalMaximun[i]-l_pDigitalMinimun[i]);
-
-			m_pChannelTranslate[i] = (l_pPhysicalMaximun[i]+l_pPhysicalMinimun[i])/2;
-		}
-
-		//Check if all the channels have the same sampling rate
-		uint32 * l_pNumberOfSamplesPerRecordArray = reinterpret_cast<uint32*>(l_pVariableHeaderBuffer+(216*m_ui16NumberOfChannels));
-
-		m_ui32NumberOfSamplesPerRecord = l_pNumberOfSamplesPerRecordArray[0];
-
-		for(int i=1 ; i<m_ui16NumberOfChannels ; i++)
-		{
-			//If all the channels don't have the same sampling rate
-			if(m_ui32NumberOfSamplesPerRecord != l_pNumberOfSamplesPerRecordArray[i])
-			{
-				//TODO write directly to log
-				cout<<"GDFReader plugin can't handle GDF files with channels having different sampling rates!"<<endl;
-
-				m_bErrorOccured = true;
-				return false;
-			}
-		}
-
-		//type of the channels' data
-		m_pChannelType = new uint32[m_ui16NumberOfChannels];
-		memcpy(m_pChannelType, l_pVariableHeaderBuffer+ (220*m_ui16NumberOfChannels), m_ui16NumberOfChannels * 4);
-
-		m_pChannelDataSize = new uint16[m_ui16NumberOfChannels];
-
-		for(int i=0 ; i<m_ui16NumberOfChannels ; i++)
-		{
-			//Find the data size for each channel
-			//TODO use enum to specify each type's name
-			m_pChannelDataSize[i] = GDF::GDFDataSize(m_pChannelType[i]);
-
-			//Here, we can compute the size of a data record, based on the type of each channel
-			m_ui64DataRecordSize += m_ui32NumberOfSamplesPerRecord*m_pChannelDataSize[i];
-
-			//reads the channels names
-			m_pSignalDescription.m_pChannelName[i].assign(l_pVariableHeaderBuffer + (16*i), 16);
-		}
-
-		//This parameter is defined by the user of the plugin
-		m_pSignalDescription.m_ui32SampleCount = static_cast<EBML::uint32>(m_ui32SamplesPerBuffer);
-
-		//needs to be computed based on the duration of a data record and the number of samples in one of those data records
-		m_pSignalDescription.m_ui32SamplingRate = static_cast<EBML::uint32>(0.5 + m_ui32NumberOfSamplesPerRecord * (1.0/m_f64DurationOfDataRecord));
-
-		//Send the data to the output
-		writeSignalInformation();
-		l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_SignalOutput, 0, 0);
-
-		delete[] l_pVariableHeaderBuffer;
-
-		m_bSignalDescriptionSent = true;
-
-	}//END of SignalHeader
-
+	
 	// Process Matrices
-	else if(!m_bMatricesSent)
+	if(m_bSignalDescriptionSent && !m_bMatricesSent)
 	{
+
 		//If the matrix buffer is not allocated yet
 		//"first time"
 		if(!m_pMatrixBuffer)
@@ -675,10 +717,11 @@ boolean CGDFFileReader::process()
 
 		l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate;
 
-		l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_SignalOutput, l_ui64StartTime, l_ui64EndTime);
+		l_pBoxIO->markOutputAsReadyToSend(GDFReader_SignalOutput, l_ui64StartTime, l_ui64EndTime);
 
 		l_bMatrixReadyToSend = false;
 	}
+
 
 	//Events
 	if(m_bSignalDescriptionSent && !m_bEventsSent)
@@ -687,25 +730,32 @@ boolean CGDFFileReader::process()
 		if(!m_pEventsPositionBuffer)
 		{
 			std::streamoff l_oBackupPosition = m_oFile.tellg();
-			m_oFile.seekg( (std::streamoff)((256 * (m_ui16NumberOfChannels+1)) + (m_ui64NumberOfDataRecords*m_ui64DataRecordSize)) );
 
-			//reads the event table mode
-			m_oFile>>m_ui8EventTableMode;
+			std::streamoff l_oEventDataPosition = (std::streamoff)((256 * (m_ui16NumberOfChannels+1)) + (m_ui64NumberOfDataRecords*m_ui64DataRecordSize));
 
-			if(m_ui8EventTableMode != 1)
+			//checks if there are event information
+			if((uint64)l_oEventDataPosition+1 < m_ui64FileSize)
 			{
-				cout<<"GDF Event table mode "<<(uint32)m_ui8EventTableMode<<" unsupported!"<<endl;
+				m_oFile.seekg(l_oEventDataPosition);
+
+				//reads the event table mode
+				m_oFile>>m_ui8EventTableMode;
+			}
+			//no event information
+			else
+			{
 				m_oFile.seekg(l_oBackupPosition);
+
 				m_bEventsSent = true;
 				return true;
 			}
-
+			
 			uint8 l_pEventTableHeader[7];
 			m_oFile.read(reinterpret_cast<char*>(l_pEventTableHeader), 7);
 
 			if(m_f32FileVersion > 1.90)
 			{
-				//TODO same as below
+				m_ui32NumberOfEvents = *(reinterpret_cast<uint32*>(l_pEventTableHeader +0));
 			}
 			else
 			{
@@ -724,7 +774,7 @@ boolean CGDFFileReader::process()
 			if(m_ui32NumberOfEvents!=0)
 			{
 				m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_StimulationOutput]);	
-				l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_StimulationOutput, 0, 0);
+				l_pBoxIO->markOutputAsReadyToSend(GDFReader_StimulationOutput, 0, 0);
 			}
 
 		}
@@ -732,9 +782,9 @@ boolean CGDFFileReader::process()
 		GDF::CGDFEvent l_oEvent;
 
 		//todo check inclusive/exclusive conditions
-		while( (m_pEventsPositionBuffer[m_ui32CurrentEvent]>=m_ui32SentSampleCount-m_pSignalDescription.m_ui32SampleCount) && 
-			(m_pEventsPositionBuffer[m_ui32CurrentEvent]<m_ui32SentSampleCount) &&
-			(m_ui32CurrentEvent != m_ui32NumberOfEvents) )
+		while( (m_ui32CurrentEvent != m_ui32NumberOfEvents)  && 
+			(m_pEventsPositionBuffer[m_ui32CurrentEvent]>=m_ui32SentSampleCount-m_pSignalDescription.m_ui32SampleCount) && 
+			(m_pEventsPositionBuffer[m_ui32CurrentEvent]<m_ui32SentSampleCount))
 		{
 			//reads an event
 			l_oEvent.m_ui32Position = m_pEventsPositionBuffer[m_ui32CurrentEvent];
@@ -747,18 +797,20 @@ boolean CGDFFileReader::process()
 		}
 
 		//if we just read the last event
-		if(m_ui32CurrentEvent == m_ui32NumberOfEvents-1)
+		if(m_ui32CurrentEvent == m_ui32NumberOfEvents)
 		{
 			m_bEventsSent = true;	
 			delete [] m_pEventsPositionBuffer;
+			m_pEventsPositionBuffer = NULL;
 			delete [] m_pEventsTypeBuffer;
+			m_pEventsTypeBuffer = NULL;
 		}
 
 		//if there is at least one event, sends it	
 		if(m_oEvents.size() != 0)
 		{
 			writeEvents();
-			l_pDynamicBoxContext->markOutputAsReadyToSend(GDFReader_StimulationOutput, l_ui64StartTime, l_ui64EndTime);
+			l_pBoxIO->markOutputAsReadyToSend(GDFReader_StimulationOutput, l_ui64StartTime, l_ui64EndTime);
 			m_oEvents.clear();
 		}
 

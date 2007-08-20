@@ -17,6 +17,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+using namespace std;
 
 #define GDFReader_ExperimentInfoOutput  0
 #define GDFReader_SignalOutput          1
@@ -87,9 +89,12 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean process(void);
 
+			virtual OpenViBE::uint64 getClockFrequency(){ return m_ui64ClockFrequency; }
+
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_GDFFileReader)
 
 		public:
+			OpenViBE::boolean readFileHeader();
 
 			virtual void writeExperimentOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 			virtual void writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
@@ -102,6 +107,7 @@ namespace OpenViBEPlugins
 			//The GDF filename and handle
 			OpenViBE::CString m_sFileName;
 			std::ifstream m_oFile;
+			OpenViBE::uint64 m_ui64FileSize;
 
 			OpenViBE::float32 m_f32FileVersion;
 
@@ -170,6 +176,10 @@ namespace OpenViBEPlugins
 			CSignalDescription m_pSignalDescription;
 			OpenViBE::boolean m_bSignalDescriptionSent;
 
+			OpenViBE::uint64 m_ui64ClockFrequency;
+
+			OpenViBE::boolean m_bOffline;
+
 		private:
 
 			void writeExperimentInformation();
@@ -219,9 +229,10 @@ namespace OpenViBEPlugins
 				rPrototype.addOutput("Stimulations", OV_TypeId_Stimulations);
 
 				// Adds settings
-				rPrototype.addSetting("Filename", OV_TypeId_String, "");
+				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
 				rPrototype.addSetting("Samples per buffer", OV_TypeId_Integer, "32");
-
+				rPrototype.addSetting("Offline", OV_TypeId_Boolean, "false");
+				
 				return true;
 			}
 

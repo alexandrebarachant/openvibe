@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.1.5 on Fri Jun  1 15:26:18 2007 by yrenard@hiboux.irisa.fr-->
+<!--Generated with glade3 3.1.5 on Tue Jul  3 18:35:55 2007 by yrenard@hiboux.irisa.fr-->
 <glade-interface>
   <widget class="GtkWindow" id="openvibe">
     <property name="width_request">320</property>
@@ -479,6 +479,7 @@
     </child>
   </widget>
   <widget class="GtkDialog" id="setting">
+    <property name="width_request">512</property>
     <property name="border_width">5</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
@@ -641,7 +642,13 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <widget class="GtkFileChooserButton" id="file_chooser_button_setting_filename">
+            <property name="visible">True</property>
+            <property name="title" translatable="yes">Select a file</property>
+          </widget>
+          <packing>
+            <property name="position">7</property>
+          </packing>
         </child>
         <child>
           <placeholder/>
@@ -668,6 +675,12 @@
         <property name="column_spacing">2</property>
         <property name="row_spacing">2</property>
         <child>
+          <widget class="GtkLabel" id="label_name_content">
+            <property name="visible">True</property>
+            <property name="justify">GTK_JUSTIFY_CENTER</property>
+          </widget>
+        </child>
+        <child>
           <widget class="GtkLabel" id="label_type_content">
             <property name="visible">True</property>
             <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -676,12 +689,6 @@
             <property name="top_attach">1</property>
             <property name="bottom_attach">2</property>
           </packing>
-        </child>
-        <child>
-          <widget class="GtkLabel" id="label_name_content">
-            <property name="visible">True</property>
-            <property name="justify">GTK_JUSTIFY_CENTER</property>
-          </widget>
         </child>
       </widget>
     </child>

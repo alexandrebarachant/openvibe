@@ -6,12 +6,9 @@
 
 namespace OpenViBE
 {
-	class CMessage;
-	class IObjectContext;
-
 	namespace Kernel
 	{
-		class CObjectFactory;
+		class CKernelObjectFactory;
 	};
 
 	namespace Plugins
@@ -42,7 +39,7 @@ namespace OpenViBE
 	{
 	public:
 
-		friend class OpenViBE::Kernel::CObjectFactory;
+		friend class OpenViBE::Kernel::CKernelObjectFactory;
 
 		/** \name Class identification */
 		//@{

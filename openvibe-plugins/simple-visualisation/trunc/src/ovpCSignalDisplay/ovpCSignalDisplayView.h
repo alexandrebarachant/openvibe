@@ -10,7 +10,9 @@
 #include <gtk/gtk.h>
 
 #include "ovpCChannelDisplayWidget.h"
-#include "ovpCSignalDisplayDatabase.h"
+#include "../ovpCBufferDatabase.h"
+
+#include "../ovpCBottomTimeRuler.h"
 
 #include <vector>
 #include <string>
@@ -20,24 +22,13 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		class CSignalDisplayDatabase;
-		
-		/**
-		* Abtract class of objects than can be updated by a CSignalDisplayDatabase
-		*/
-		class CSignalDisplayDrawable
-		{
-			public:
+		class CBufferDatabase;
+		class CBottomTimeRuler;	
+
 				
-				virtual ~CSignalDisplayDrawable(){}
-				virtual void init() = 0;
-				virtual void redraw() = 0;
-		};
-		
-		
 		/**
 		* This class contains everything necessary to setup a GTK window and display
-		* a signal thanks to a CSignalDisplayDatabase's information.
+		* a signal thanks to a CBufferDatabase's information.
 		*/
 		class CSignalDisplayView : virtual public CSignalDisplayDrawable
 		{
@@ -52,7 +43,7 @@ namespace OpenViBEPlugins
 				
 				//! The table containing the CChannelDisplays
 				GtkWidget * m_pSignalDisplayTable;
-				
+
 				//! Array of the channel's labels
 				std::vector<GtkWidget*> m_oChannelLabel;
 
@@ -72,7 +63,7 @@ namespace OpenViBEPlugins
 				GdkCursor * m_pCursor[5];
 
 				//! The database that contains the information to use to draw the signals
-				CSignalDisplayDatabase * m_pSignalDisplayDatabase;
+				CBufferDatabase * m_pBufferDatabase;
 
 				//! vector of gdk points. Used to draw the signals.
 				std::vector<GdkPoint> m_pPoints;
@@ -88,9 +79,10 @@ namespace OpenViBEPlugins
 				OpenViBE::boolean m_bMultiViewInitialized;
 				std::vector<GtkWidget *> m_vMultiViewChannelsCheckButtons;
 				std::vector<OpenViBE::uint32> m_vMultiViewSelectedChannels;
-
+				
+				CBottomTimeRuler * m_pBottomRuler;
 			public: 
-				CSignalDisplayView(CSignalDisplayDatabase& pSignalDisplayDatabase);
+				CSignalDisplayView(CBufferDatabase& pBufferDatabase);
 				virtual ~CSignalDisplayView();
 				
 				/**
@@ -130,6 +122,8 @@ namespace OpenViBEPlugins
 				void changeMultiView();
 				
 				void updateMainTableStatus();
+
+				void activateToolbarButtons(OpenViBE::boolean bActive);
 		};
 		
 	}

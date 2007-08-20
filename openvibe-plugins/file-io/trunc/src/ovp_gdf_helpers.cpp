@@ -146,7 +146,7 @@ boolean GDF::CFixedGDF1Header::save(std::ofstream& oFile)
 
 		if(oFile.bad())
 		{
-			cout<<"Error while writing to the output file"<<endl;
+			//cout<<"Error while writing to the output file"<<endl;
 			return false;
 		}
 
@@ -173,7 +173,7 @@ boolean GDF::CFixedGDF1Header::update(std::ofstream& oFile)
 
 		if(oFile.bad())
 		{
-			cout<<"Error while writing to the output file"<<endl;
+			//cout<<"Error while writing to the output file"<<endl;
 			return false;
 		}
 		return true;
@@ -438,7 +438,7 @@ boolean GDF::CVariableGDF1Header::update(std::ofstream& oFile)
 
 		if(oFile.bad())
 		{
-			cout<<"Error while writing to the output file"<<endl;
+			//cout<<"Error while writing to the output file"<<endl;
 			return false;
 		}
 		return true;
@@ -529,7 +529,7 @@ boolean GDF::CVariableGDF1Header::save(std::ofstream& oFile)
 
 		if(oFile.bad())
 		{
-			cout<<"Error while writing to the output file"<<endl;
+			//cout<<"Error while writing to the output file"<<endl;
 			return false;
 		}
 		return true;

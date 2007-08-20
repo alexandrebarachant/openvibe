@@ -33,6 +33,7 @@ boolean CTypeManager::registerType(
 		return false;
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
+	log() << LogLevel_Trace << "Registered type id " << rTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 
@@ -51,6 +52,7 @@ boolean CTypeManager::registerStreamType(
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
 	m_vStream[rTypeIdentifier]=rParentTypeIdentifier;
+	log() << LogLevel_Trace << "Registered stream type id " << rTypeIdentifier << "::" << rParentTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 
@@ -65,6 +67,7 @@ boolean CTypeManager::registerEnumerationType(
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
 	m_vEnumeration[rTypeIdentifier]=sEnumerationString;
+	log() << LogLevel_Trace << "Registered enumeration type id " << rTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 
@@ -79,6 +82,7 @@ boolean CTypeManager::registerBitMaskType(
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
 	m_vBitMask[rTypeIdentifier]=sBitMaskString;
+	log() << LogLevel_Trace << "Registered bitmask type id " << rTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 

@@ -9,6 +9,7 @@
 #include "XMLNodeReader/CXMLLoopWaitEventNodeReader.hpp"
 
 #include "XMLNodeReader/CXMLSwitchProbabilistNodeReader.hpp"
+#include "XMLNodeReader/CXMLSwitchEventNodeReader.hpp"
 
 #include "XMLNodeReader/CXMLRandomOrderNodeReader.hpp"
 
@@ -72,6 +73,10 @@ Automaton::IXMLNodeReader * CXMLNodeReaderFactory::createNodeReader(const CIdent
 	else if(oIdentifier == Automaton_Node_Identifier_SwitchProbabilist)
 	{
 		return new CXMLSwitchProbabilistNodeReader();
+	}
+	else if(oIdentifier == Automaton_Node_Identifier_SwitchEvent)
+	{
+		return new CXMLSwitchEventNodeReader();
 	}
 
 	else if(oIdentifier == Automaton_Node_Identifier_RandomOrder)

@@ -90,13 +90,15 @@ class CEquationParser
 		OpenViBE::uint64 m_ui64TreeCategory;
 		//! Optional parameter in case of a special tree
 		OpenViBE::float64 m_f64TreeParameter;
+
+		OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;
 	public:
 		
 		/**
 		* Constructor.
 	 	* \param pVariable Pointer to the data known as X in the equation.
 		*/
-		CEquationParser(OpenViBE::float64 * pVariable);
+		CEquationParser(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin, OpenViBE::float64 * pVariable);
 		
 		//! Destructor.
 		~CEquationParser();

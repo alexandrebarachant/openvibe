@@ -1,0 +1,50 @@
+#ifndef __OpenViBE_Kernel_Scenario_IProcessingUnit_H__
+#define __OpenViBE_Kernel_Scenario_IProcessingUnit_H__
+
+#include "ovIAttributable.h"
+
+namespace OpenViBE
+{
+	namespace Kernel
+	{
+		/**
+		 * \class IProcessingUnit
+		 * \author Yann Renard (IRISA/INRIA)
+		 * \date 2006-08-16
+		 * \brief Processing unit information for §OpenViBE§ boxes
+		 */
+		class OV_API IProcessingUnit : virtual public OpenViBE::Kernel::IAttributable
+		{
+		public:
+
+			/** \name Identification */
+			//@{
+
+			/**
+			 * \brief Changes this processing unit's identifier
+			 * \param rIdentifier [in] : The new identifier
+			 *        this processing unit should have
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean setIdentifier(
+				const OpenViBE::CIdentifier& rIdentifier)=0;
+			/**
+			 * \brief Gets the identifier of this processing unit
+			 * \return The identifier of this processing unit.
+			 */
+			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
+
+			virtual OpenViBE::boolean setName(
+				const OpenViBE::CString& sName)=0;
+
+			virtual OpenViBE::CString getName(void) const=0;
+
+			//@}
+
+			_IsDerivedFromClass_(OpenViBE::Kernel::IAttributable, OV_ClassId_Kernel_Scenario_ProcessingUnit)
+		};
+	};
+};
+
+#endif // __OpenViBE_Kernel_Scenario_IProcessingUnit_H__

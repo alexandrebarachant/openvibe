@@ -16,6 +16,7 @@
 //                                                                   //
 
 #include "ovtkTBoxAlgorithm.h"
+// #include "ovtkTTrainingBoxAlgorithm.h"
 
 //___________________________________________________________________//
 //                                                                   //

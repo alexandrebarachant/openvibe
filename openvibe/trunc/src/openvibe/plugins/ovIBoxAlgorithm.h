@@ -59,15 +59,17 @@ namespace OpenViBE
 			 * \note Default implementation returns 0
 			 *
 			 * This function is used for algorithms that are triggered on
-			 * clock signals. The frequency is given in Hz, thus returning
-			 * 1 will make the algorithm to be called every second,
-			 * returning 100 will make the algorithm being called 100 times
-			 * per second and so on...
+			 * clock signals. The frequency is given in Hz, with 32:32 fixed
+			 * point representation thus returning \c (1<<32) will make the
+			 * algorithm to be called every second, returning \c (100<<32)
+			 * will make the algorithm being called 100 times a second, 
+			 * returning \c (1<<31) will make the algorithm be called once
+			 * every two seconds and so on...
 			 *
 			 * \note Returning 0 means the algorithm should not be
 			 *       clock activated.
 			 */
-			virtual OpenViBE::uint32 getClockFrequency(
+			virtual OpenViBE::uint64 getClockFrequency(
 				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext) { return 0; }
 
 			//@}

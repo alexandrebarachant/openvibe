@@ -61,6 +61,8 @@ namespace OpenViBEPlugins
 			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
 			void saveMatrixData();
+			void saveEvents();
+
 		public:
 			std::ofstream m_oFile;
 			OpenViBE::CString m_sFileName;
@@ -84,6 +86,10 @@ namespace OpenViBEPlugins
 
 			OpenViBE::uint32 m_ui32SamplesPerChannel;
 			OpenViBE::uint64 m_ui64SamplingFrequency;
+
+			std::vector<std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oEvents;
+
+			OpenViBE::boolean m_bError;
 		};
 
 		/**
@@ -98,11 +104,26 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This algorithm records on disk what comes from a specific output"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This algorithm dumps on disk a stream from a specific output in the standard GDF file format"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/GDF"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.6"); }
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFFileWriter; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFFileWriter(); }
-			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const;
+			
+			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
+			{
+				// Adds box inputs //swap order of the first two
+				rPrototype.addInput("Experiment information", OV_TypeId_ExperimentationInformation);
+				rPrototype.addInput("Signal", OV_TypeId_Signal);
+
+				rPrototype.addInput("Stimulation", OV_TypeId_Stimulations);
+
+				// Adds box outputs
+
+				// Adds box settings
+				rPrototype.addSetting("Filename", OV_TypeId_Filename, "eeg_stream_writer.gdf");
+
+				return true;
+			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_GDFFileWriterDesc)
 		};

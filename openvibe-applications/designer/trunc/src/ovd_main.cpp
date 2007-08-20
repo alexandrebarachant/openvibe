@@ -422,8 +422,10 @@ public:
 		}
 		if(!l_pCurrentInterfacedScenario->m_pPlayer)
 		{
+			m_pKernel->getContext()->getPlayerManager().createPlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
 			CIdentifier l_oScenarioIdentifier=l_pCurrentInterfacedScenario->m_oScenarioIdentifier;
-			l_pCurrentInterfacedScenario->m_pPlayer=dynamic_cast<IPlayer*>(m_pKernel->getContext()->getObjectFactory().createObject(OV_ClassId_Kernel_Player));
+			CIdentifier l_oPlayerIdentifier=l_pCurrentInterfacedScenario->m_oPlayerIdentifier;
+			l_pCurrentInterfacedScenario->m_pPlayer=&m_pKernel->getContext()->getPlayerManager().getPlayer(l_oPlayerIdentifier);
 			l_pCurrentInterfacedScenario->m_pPlayer->reset(m_pScenarioManager->getScenario(l_oScenarioIdentifier), m_pKernel->getContext()->getPluginManager());
 			l_pCurrentInterfacedScenario->redraw();
 		}
@@ -456,8 +458,10 @@ public:
 		}
 		if(!l_pCurrentInterfacedScenario->m_pPlayer)
 		{
+			m_pKernel->getContext()->getPlayerManager().createPlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
 			CIdentifier l_oScenarioIdentifier=l_pCurrentInterfacedScenario->m_oScenarioIdentifier;
-			l_pCurrentInterfacedScenario->m_pPlayer=dynamic_cast<IPlayer*>(m_pKernel->getContext()->getObjectFactory().createObject(OV_ClassId_Kernel_Player));
+			CIdentifier l_oPlayerIdentifier=l_pCurrentInterfacedScenario->m_oPlayerIdentifier;
+			l_pCurrentInterfacedScenario->m_pPlayer=&m_pKernel->getContext()->getPlayerManager().getPlayer(l_oPlayerIdentifier);
 			l_pCurrentInterfacedScenario->m_pPlayer->reset(m_pScenarioManager->getScenario(l_oScenarioIdentifier), m_pKernel->getContext()->getPluginManager());
 			l_pCurrentInterfacedScenario->redraw();
 		}
@@ -476,7 +480,8 @@ public:
 		if(l_pCurrentInterfacedScenario->m_pPlayer)
 		{
 			g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
-			m_pKernel->getContext()->getObjectFactory().releaseObject(l_pCurrentInterfacedScenario->m_pPlayer);
+			m_pKernel->getContext()->getPlayerManager().releasePlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
+			l_pCurrentInterfacedScenario->m_oPlayerIdentifier=OV_UndefinedIdentifier;
 			l_pCurrentInterfacedScenario->m_pPlayer=NULL;
 			l_pCurrentInterfacedScenario->redraw();
 		}
@@ -602,31 +607,24 @@ public:
 class CPluginDescEnumCB : virtual public Kernel::IPluginManager::IPluginObjectDescEnum
 {
 public:
+	map<string, vector<const Plugins::IBoxAlgorithmDesc*> > m_vPluginObjectDesc;
 	::GtkTreeStore* m_pTreeStore;
+	ILogManager& m_rLogManager;
 
-	CPluginDescEnumCB(::GtkTreeStore* pTreeStore) : m_pTreeStore(pTreeStore) { }
-
-	virtual boolean callback(
-		const Kernel::IPluginModule& rPluginModule,
-		const Plugins::IPluginObjectDesc& rPluginObjectDesc)
+	CPluginDescEnumCB(::GtkTreeStore* pTreeStore, ILogManager& rLogManager)
+		:m_pTreeStore(pTreeStore)
+		,m_rLogManager(rLogManager)
 	{
-		// Outputs plugin info to console
-		CString l_sModuleFileName;
-		rPluginModule.getFileName(l_sModuleFileName);
-#if 0
-		cout << "   - Plugin                     " << rPluginObjectDesc.getCreatedClass().toString() << endl;
-		cout << "       Plugin module filename : " << l_sModuleFileName << endl;
-		cout << "       Plugin category        : " << rPluginObjectDesc.getCategory() << endl;
-		cout << "       Plugin name            : " << rPluginObjectDesc.getName() << endl;
-		cout << "       Author name            : " << rPluginObjectDesc.getAuthorName() << endl;
-		cout << "       Author company name    : " << rPluginObjectDesc.getAuthorCompanyName() << endl;
-		cout << "       Short description      : " << rPluginObjectDesc.getShortDescription() << endl;
-		cout << "       Detailed description   : " << rPluginObjectDesc.getDetailedDescription() << endl;
-#endif
+	}
 
-		if(rPluginObjectDesc.isDerivedFromClass(OV_ClassId_Plugins_BoxAlgorithmDesc))
+	virtual ~CPluginDescEnumCB(void)
+	{
+		map<string, vector<const Plugins::IBoxAlgorithmDesc*> >::iterator itVectorPluginObjectDesc;
+		vector<const Plugins::IBoxAlgorithmDesc*>::iterator itPluginObjectDesc;
+		for(itVectorPluginObjectDesc=m_vPluginObjectDesc.begin(); itVectorPluginObjectDesc!=m_vPluginObjectDesc.end(); itVectorPluginObjectDesc++)
+		for(itPluginObjectDesc=itVectorPluginObjectDesc->second.begin(); itPluginObjectDesc!=itVectorPluginObjectDesc->second.end(); itPluginObjectDesc++)
 		{
-			const Plugins::IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const Plugins::IBoxAlgorithmDesc*>(&rPluginObjectDesc);
+			const Plugins::IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=*itPluginObjectDesc;// dynamic_cast<const Plugins::IBoxAlgorithmDesc*>(&rPluginObjectDesc);
 			CString l_sStockItemName=l_pBoxAlgorithmDesc->getStockItemName();
 			::GtkStockItem l_oStockItem;
 			if(!gtk_stock_lookup(l_sStockItemName, &l_oStockItem))
@@ -723,6 +721,29 @@ public:
 				BoxAlgorithm_BooleanIsPlugin, true,
 				-1);
 		}
+	}
+
+	virtual boolean callback(
+		const Kernel::IPluginModule& rPluginModule,
+		const Plugins::IPluginObjectDesc& rPluginObjectDesc)
+	{
+		// Outputs plugin info to console
+		CString l_sModuleFileName;
+		rPluginModule.getFileName(l_sModuleFileName);
+
+		m_rLogManager << LogLevel_Trace << "Plugin <" << rPluginObjectDesc.getName() << ">\n";
+		m_rLogManager << LogLevel_Debug << " | Plugin module filename : " << l_sModuleFileName << "\n";
+		m_rLogManager << LogLevel_Debug << " | Plugin category        : " << rPluginObjectDesc.getCategory() << "\n";
+		m_rLogManager << LogLevel_Debug << " | Class identifier       : " << rPluginObjectDesc.getCreatedClass().toString() << "\n";
+		m_rLogManager << LogLevel_Debug << " | Author name            : " << rPluginObjectDesc.getAuthorName() << "\n";
+		m_rLogManager << LogLevel_Debug << " | Author company name    : " << rPluginObjectDesc.getAuthorCompanyName() << "\n";
+		m_rLogManager << LogLevel_Debug << " | Short description      : " << rPluginObjectDesc.getShortDescription() << "\n";
+		m_rLogManager << LogLevel_Debug << " | Detailed description   : " << rPluginObjectDesc.getDetailedDescription() << "\n";
+
+		if(rPluginObjectDesc.isDerivedFromClass(OV_ClassId_Plugins_BoxAlgorithmDesc))
+		{
+			m_vPluginObjectDesc[string(rPluginObjectDesc.getCategory())+"/"+string(rPluginObjectDesc.getName())].push_back(dynamic_cast<const Plugins::IBoxAlgorithmDesc*>(&rPluginObjectDesc)/*&rPluginObjectDesc*/);
+		}
 
 		return true;
 	}
@@ -814,6 +835,7 @@ int main(int argc, char ** argv)
 
 					ILogManager& l_rLogManager=l_pKernel->getContext()->getLogManager();
 					l_rLogManager.activate(LogLevel_Debug, false);
+					l_rLogManager.activate(LogLevel_Benchmark, false);
 					l_rLogManager.activate(LogLevel_Trace, false);
 					l_rLogManager.activate(LogLevel_Info, true);
 					l_rLogManager.activate(LogLevel_Warning, true);
@@ -828,12 +850,12 @@ int main(int argc, char ** argv)
 
 					::CApplication app(l_pKernel);
 					app.init();
-
-					CPluginDescEnumCB cb(app.m_pBoxAlgorithmTreeModel);
+{
+					CPluginDescEnumCB cb(app.m_pBoxAlgorithmTreeModel, l_pKernel->getContext()->getLogManager());
 					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_BoxAlgorithmDesc);
 					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_ScenarioExporterDesc);
 					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_ScenarioImporterDesc);
-
+}
 					gtk_main();
 
 					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;

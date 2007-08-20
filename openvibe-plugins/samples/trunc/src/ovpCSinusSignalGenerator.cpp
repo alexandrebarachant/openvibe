@@ -4,6 +4,7 @@
 #include <math.h>
 
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Samples;
@@ -75,7 +76,7 @@ boolean CSinusSignalGenerator::processClock(CMessageClock& rMessageClock)
 
 boolean CSinusSignalGenerator::process(void)
 {
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBoxIO* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	uint32 i,j;
 	if(!m_bHeaderSent)

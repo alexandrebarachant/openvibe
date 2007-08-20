@@ -148,6 +148,42 @@ namespace OpenViBE
 		friend OV_API OpenViBE::boolean operator>(
 			const OpenViBE::CIdentifier& rIdentifier1,
 			const OpenViBE::CIdentifier& rIdentifier2);
+		/**
+		 * \brief Order test operator
+		 * \param rIdentifier1 [in] : the first identifier to compare
+		 * \param rIdentifier2 [in] : the second identifier to compare
+		 * \return \e true if the first identifier is less or equal than the second one
+		 * \return \e false if the first identifier is greater to the second one
+		 *
+		 * Compares both 32 bits parts of the two identifiers.
+		 *
+		 * \sa operator>
+		 * \sa operator==
+		 */
+		friend OV_API OpenViBE::boolean operator<=(
+			const OpenViBE::CIdentifier& rIdentifier1,
+			const OpenViBE::CIdentifier& rIdentifier2)
+		{
+			return !(rIdentifier1>rIdentifier2);
+		}
+		/**
+		 * \brief Order test operator
+		 * \param rIdentifier1 [in] : the first identifier to compare
+		 * \param rIdentifier2 [in] : the second identifier to compare
+		 * \return \e true if the first identifier is greater or equal than the second one
+		 * \return \e false if the first identifier is less to the second one
+		 *
+		 * Compares both 32 bits parts of the two identifiers.
+		 *
+		 * \sa operator<
+		 * \sa operator==
+		 */
+		friend OV_API OpenViBE::boolean operator>=(
+			const OpenViBE::CIdentifier& rIdentifier1,
+			const OpenViBE::CIdentifier& rIdentifier2)
+		{
+			return !(rIdentifier1<rIdentifier2);
+		}
 
 		//@}
 

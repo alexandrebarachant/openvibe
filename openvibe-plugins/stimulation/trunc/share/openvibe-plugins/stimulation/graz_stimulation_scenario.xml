@@ -1,0 +1,87 @@
+<Automaton>
+	<Variable name="StartExperimentWait" value="500"></Variable>
+	<Variable name="CrossOnScreen" value="786"></Variable>
+	<Variable name="BeepWait" value="2000"></Variable>
+	<Variable name="Beep" value="785"></Variable>
+	<Variable name="WaitForCue" value="1000"></Variable>
+	<Variable name="LeftCue" value="769"></Variable>
+	<Variable name="RightCue" value="770"></Variable>
+	<Variable name="DisplayCueWait" value="1250"></Variable>
+	<Variable name="Idle" value="800"></Variable>
+	<Variable name="ContinuousFeedback" value="781"></Variable>
+	<Variable name="ContinuousFeedbackDuration" value="3750"></Variable>
+	<Node class="LoopFinite">
+		<Property class="Iteration">
+			<Parameter class="IValue">40</Parameter>
+		</Property>
+		<Child>
+			<Node class="ActionWaitTime">
+				<Property class="Duration">
+					<Parameter class="IVariable">StartExperimentWait</Parameter>
+				</Property>
+			</Node>
+			<Node class="ActionSendEvent">
+				<Property class="Event">
+					<Parameter class="IVariable">CrossOnScreen</Parameter>
+				</Property>
+			</Node>
+			<Node class="ActionWaitTime">
+				<Property class="Duration">
+					<Parameter class="IVariable">BeepWait</Parameter>
+				</Property>
+			</Node>
+			<Node class="ActionSendEvent">
+				<Property class="Event">
+					<Parameter class="IVariable">Beep</Parameter>
+				</Property>
+			</Node>
+			<Node class="ActionWaitTime">
+				<Property class="Duration">
+					<Parameter class="IVariable">WaitForCue</Parameter>
+				</Property>
+			</Node>
+			<Node class="SwitchProbabilist">
+				<Child>	
+					<Property class="Probability">
+						<Parameter class="IValue">5</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">LeftCue</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>	
+					<Property class="Probability">
+						<Parameter class="IValue">5</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">RightCue</Parameter>
+						</Property>
+					</Node>
+				</Child>
+			</Node>
+			<Node class="ActionWaitTime">
+				<Property class="Duration">
+					<Parameter class="IVariable">DisplayCueWait</Parameter>
+				</Property>
+			</Node>
+			<Node class="ActionSendEvent">
+				<Property class="Event">
+					<Parameter class="IVariable">ContinuousFeedback</Parameter>
+				</Property>
+			</Node>
+			<Node class="ActionWaitTime">
+				<Property class="Duration">
+					<Parameter class="IVariable">ContinuousFeedbackDuration</Parameter>
+				</Property>
+			</Node>
+			<Node class="ActionSendEvent">
+				<Property class="Event">
+					<Parameter class="IVariable">Idle</Parameter>
+				</Property>
+			</Node>
+		</Child>
+	</Node>
+</Automaton>

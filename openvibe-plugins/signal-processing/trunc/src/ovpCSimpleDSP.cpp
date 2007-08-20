@@ -256,7 +256,7 @@ boolean CSimpleDSP::initialize()
 	m_pSignalOutputWriterHelper=createBoxAlgorithmSignalOutputWriter();
 	m_pWriter=EBML::createWriter(m_oSignalOutputWriterCallbackProxy);
 
-	m_pEquationParser = new CEquationParser(&m_f64Variable);
+	m_pEquationParser = new CEquationParser(*this, &m_f64Variable);
 	
 	if(m_pEquationParser->compileEquation((const char*)l_oEquation))
 	{

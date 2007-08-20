@@ -5,6 +5,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::FileIO;
 using namespace OpenViBEToolkit;
@@ -24,12 +25,14 @@ void CGDFFileWriter::setChannelName(const uint32 ui32ChannelIndex, const char* s
 {
 	//prepares the variable header
 	sprintf(m_oVariableHeader[ui32ChannelIndex].m_sLabel, sChannelName);
+	//remove \0 character
+	m_oVariableHeader[ui32ChannelIndex].m_sLabel[strlen(sChannelName)] = ' ';
 
 	m_oVariableHeader[ui32ChannelIndex].m_ui32ChannelType=17;                //float64
 	m_oVariableHeader[ui32ChannelIndex].m_ui32NumberOfSamplesInEachRecord=1;
 	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMinimum=+DBL_MAX;       //starting value(to compare later)
 	m_oVariableHeader[ui32ChannelIndex].m_f64PhysicalMaximum=-DBL_MAX;       //starting value(to compare later)
-	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMinimum=0x1000000000000000LL;
+	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMinimum=0x8000000000000000LL;
 	m_oVariableHeader[ui32ChannelIndex].m_i64DigitalMaximum=0x7fffffffffffffffLL;
 
 	memcpy(m_oVariableHeader[ui32ChannelIndex].m_sPhysicalDimension, "uV", sizeof("uV"));
@@ -41,9 +44,23 @@ void CGDFFileWriter::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuff
 	m_ui32SamplesPerChannel = ui32SampleCountPerBuffer;
 
 	//save the fixed header
-	m_oFixedHeader.save(m_oFile);
-	//save the variable header
-	m_oVariableHeader.save(m_oFile);
+	if(m_oFixedHeader.save(m_oFile))
+	{
+		//save the variable header
+		if(!m_oVariableHeader.save(m_oFile))
+		{
+			m_bError = true;
+		}
+	}
+	else
+	{
+		m_bError = true;
+	}
+
+	if(m_bError)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error while writing to the output file!\n";
+	}
 }
 
 void CGDFFileWriter::setSamplingRate(const uint32 ui32SamplingFrequency)
@@ -56,7 +73,6 @@ void CGDFFileWriter::setSamplingRate(const uint32 ui32SamplingFrequency)
 
 void CGDFFileWriter::setSampleBuffer(const float64* pBuffer)
 {
-	const uint8 * l_pBuffer = reinterpret_cast<const uint8*>(pBuffer);
 	float64 l_f64Sample=0;
 
 	//for each channel
@@ -66,7 +82,7 @@ void CGDFFileWriter::setSampleBuffer(const float64* pBuffer)
 		for(uint32 i=0; i<m_ui32SamplesPerChannel; i++)
 		{
 			//gets a sample value
-			System::Memory::littleEndianToHost(l_pBuffer+((j*m_ui32SamplesPerChannel)+i)*sizeof(float64), &l_f64Sample);
+			l_f64Sample = pBuffer[j*m_ui32SamplesPerChannel+i];
 
 			//actualize channel's digital min/max
 			if(l_f64Sample < m_oVariableHeader[j].m_f64PhysicalMinimum)
@@ -90,11 +106,27 @@ void CGDFFileWriter::setSampleBuffer(const float64* pBuffer)
 
 	//save in the file
 	saveMatrixData();
+	
 	//updates the fixed header
 	m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
-	m_oFixedHeader.update(m_oFile);
-	//updates the variable header
-	m_oVariableHeader.update(m_oFile);
+	if(m_oFixedHeader.update(m_oFile))
+	{
+		//updates the variable header
+		if(!m_oVariableHeader.update(m_oFile))
+		{
+			m_bError = true;
+		}
+	}
+	else
+	{
+		m_bError = true;
+	}
+
+	if(m_bError)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error while writing to the output file!\n";
+	}
+
 }
 
 /*
@@ -149,7 +181,12 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const uint64 ui6
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_TechnicianIdentifier:
 			m_oFixedHeader.m_ui64TechnicianId = ui64Value;
-			m_oFixedHeader.save(m_oFile);
+			if(!m_oFixedHeader.save(m_oFile))
+			{
+				m_bError = true;
+
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error while writing to the output file!\n";
+			}
 			break;
 
 	}
@@ -188,30 +225,17 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const char* sVal
 
 void CGDFFileWriter::setStimulationCount(const uint32 ui32StimulationCount)
 {
+
 }
 
  void CGDFFileWriter::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
 {
+	
+	m_oEvents.push_back(pair<uint64,uint64>(ui64StimulationIdentifier, ui64StimulationDate));
 }
 
-boolean CGDFFileWriterDesc::getBoxPrototype(
-	IBoxProto& rPrototype) const
-{
-	// Adds box inputs //swap order of the first two
-	rPrototype.addInput("Experiment information", OV_TypeId_ExperimentationInformation);
-	rPrototype.addInput("Signal", OV_TypeId_Signal);
-
-	rPrototype.addInput("Stimulation", OV_TypeId_Stimulations);
-
-	// Adds box outputs
-
-	// Adds box settings
-	rPrototype.addSetting("Filename", OV_TypeId_String, "eeg_stream_writer.gdf");
-
-	return true;
-}
-
-CGDFFileWriter::CGDFFileWriter(void)
+CGDFFileWriter::CGDFFileWriter(void) :
+	m_bError(false)
 {
 	for(int i=0 ; i<3 ; i++)
 	{
@@ -222,7 +246,7 @@ CGDFFileWriter::CGDFFileWriter(void)
 
 boolean CGDFFileWriter::initialize()
 {
-	const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
+	const IBox* l_pBox=getBoxAlgorithmContext()->getStaticBoxContext();
 
 	// Prepares EBML readers
 	m_pExperimentInformationReaderCallBack=createBoxAlgorithmExperimentInformationInputReaderCallback(*this);
@@ -235,7 +259,7 @@ boolean CGDFFileWriter::initialize()
 	m_pReader[2]=EBML::createReader(*m_pStimulationReaderCallBack);
 
 	// Parses box settings to find filename
-	l_pBoxContext->getSettingValue(0, m_sFileName);
+	l_pBox->getSettingValue(0, m_sFileName);
 
 	if(!m_oFile.is_open())
 	{
@@ -243,7 +267,9 @@ boolean CGDFFileWriter::initialize()
 
 		if(m_oFile.bad())
 		{
-			cout<<"Couldn't open the output file : "<<m_sFileName<<endl;
+			m_bError = true;
+
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the output file : "<<m_sFileName<<".\n";
 			return false;
 		}
 	}
@@ -258,10 +284,30 @@ boolean CGDFFileWriter::uninitialize()
 	{
 		m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
 	}
-	m_oFixedHeader.update(m_oFile);
+	
+	if(m_oFixedHeader.update(m_oFile))
+	{
+		//To save the Physical/Digital max/min values
+		if(!m_oVariableHeader.update(m_oFile))
+		{
+			m_bError = true;
+		}
+	}
+	else
+	{
+		m_bError = true;
+	}
 
-	//To save the Physical/Digital max/min values
-	m_oVariableHeader.update(m_oFile);
+	//write events
+	if(!m_oEvents.empty())
+	{
+		saveEvents();
+	}
+	
+	if(m_bError)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error while writing to the output file!\n";
+	}
 
 	if(m_oFile.is_open())
 	{
@@ -284,22 +330,11 @@ boolean CGDFFileWriter::uninitialize()
 
 boolean CGDFFileWriter::processInput(uint32 ui32InputIndex)
 {
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
-
-	for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(ui32InputIndex); i++)
+	if(m_bError)
 	{
-		uint64 l_ui64StartTime;
-		uint64 l_ui64EndTime;
-		uint64 l_ui64ChunkSize;
-		const uint8* l_pChunkBuffer=NULL;
-
-		if(l_pDynamicBoxContext->getInputChunk(ui32InputIndex, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
-		{
-			m_pReader[ui32InputIndex]->processData(l_pChunkBuffer, l_ui64ChunkSize);
-		}
-		l_pDynamicBoxContext->markInputAsDeprecated(ui32InputIndex, i);
+		return false;
 	}
-
+	
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 
 	return true;
@@ -313,7 +348,9 @@ void CGDFFileWriter::saveMatrixData()
 
 		if(m_oFile.bad())
 		{
-			cout<<"Couldn't open the output file : "<<m_sFileName<<endl;
+			m_bError = true;
+
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the output file : "<<m_sFileName<<".\n";
 			return;
 		}
 	}
@@ -340,7 +377,81 @@ void CGDFFileWriter::saveMatrixData()
 	}
 }
 
+void CGDFFileWriter::saveEvents()
+{
+	if(!m_oFile.is_open())
+	{
+		m_oFile.open(m_sFileName, ios::binary | ios::trunc);
+
+		if(m_oFile.bad())
+		{
+			m_bError = true;
+
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the output file : "<<m_sFileName<<".\n";
+			return;
+		}
+	}
+
+	m_oFile.seekp(0, ios::end);
+
+	//event mode
+	m_oFile.put(1);
+
+	//sample rate associated with event positions
+	m_oFile.put(0);
+	m_oFile.put(0);
+	m_oFile.put(0);
+
+	//number of events
+	uint8 l_pLittleEndianBuffer[4];
+	System::Memory::hostToLittleEndian((uint32)m_oEvents.size(), l_pLittleEndianBuffer);
+	m_oFile.write(reinterpret_cast<char *>(l_pLittleEndianBuffer), sizeof(l_pLittleEndianBuffer));
+
+	uint32 l_ui32Position;
+	uint16 l_ui16Type;
+
+	//events
+	vector<pair<uint64, uint64> >::iterator l_oIterator;
+	for(l_oIterator=m_oEvents.begin() ; l_oIterator!=m_oEvents.end() ; l_oIterator++)
+	{
+		l_ui32Position = (uint32)((l_oIterator->second * m_ui64SamplingFrequency)>>32);
+
+		System::Memory::hostToLittleEndian(l_ui32Position, l_pLittleEndianBuffer);
+		m_oFile.write(reinterpret_cast<char *>(l_pLittleEndianBuffer), 4);
+
+	}
+
+	for(l_oIterator=m_oEvents.begin() ; l_oIterator!=m_oEvents.end() ; l_oIterator++)
+	{
+		//Force to use only 16bits stimulations IDs
+		l_ui16Type = (uint16)(l_oIterator->first&0xFFFF);
+
+		System::Memory::hostToLittleEndian(l_ui16Type, l_pLittleEndianBuffer);
+		m_oFile.write(reinterpret_cast<char *>(l_pLittleEndianBuffer), 2);
+	}
+}
+
 boolean CGDFFileWriter::process()
 {
+	IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
+
+	for(uint32 j=0 ; j<getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount() ; j++)
+	{
+
+		for(uint32 i=0; i<l_pBoxIO->getInputChunkCount(j); i++)
+		{
+			uint64 l_ui64StartTime;
+			uint64 l_ui64EndTime;
+			uint64 l_ui64ChunkSize;
+			const uint8* l_pChunkBuffer=NULL;
+
+			if(l_pBoxIO->getInputChunk(j, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+			{
+				m_pReader[j]->processData(l_pChunkBuffer, l_ui64ChunkSize);
+			}
+			l_pBoxIO->markInputAsDeprecated(j, i);
+		}
+	}
+
 	return true;
 }

@@ -59,7 +59,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
-				OpenViBE::Plugins::IDynamicBoxContext* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
+				OpenViBE::Kernel::IBoxIO* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
 
 				OpenViBE::uint64 l_ui64StartTime=0;
 				OpenViBE::uint64 l_ui64EndTime=0;
@@ -127,7 +127,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Plugins::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("an input", OV_TypeId_EBMLStream);
+				rPrototype.addInput("an input", OpenViBE::CIdentifier(0x1234, 0x5678));
 
 				return true;
 			}

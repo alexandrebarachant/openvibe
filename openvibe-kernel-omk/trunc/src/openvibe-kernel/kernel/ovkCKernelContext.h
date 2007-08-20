@@ -14,7 +14,8 @@ namespace OpenViBE
 			CKernelContext(OpenViBE::Kernel::IKernel& rKernel);
 			virtual ~CKernelContext(void);
 
-			virtual OpenViBE::Kernel::IObjectFactory& getObjectFactory(void) const;
+			virtual OpenViBE::Kernel::IKernelObjectFactory& getKernelObjectFactory(void) const;
+			virtual OpenViBE::Kernel::IPlayerManager& getPlayerManager(void) const;
 			virtual OpenViBE::Kernel::IPluginManager& getPluginManager(void) const;
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) const;
 			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void) const;
@@ -25,7 +26,8 @@ namespace OpenViBE
 		protected:
 
 			OpenViBE::Kernel::IKernel& m_rKernel;
-			mutable OpenViBE::Kernel::IObjectFactory* m_pObjectFactory;
+			mutable OpenViBE::Kernel::IKernelObjectFactory* m_pKernelObjectFactory;
+			mutable OpenViBE::Kernel::IPlayerManager* m_pPlayerManager;
 			mutable OpenViBE::Kernel::IPluginManager* m_pPluginManager;
 			mutable OpenViBE::Kernel::IScenarioManager* m_pScenarioManager;
 			mutable OpenViBE::Kernel::ITypeManager* m_pTypeManager;

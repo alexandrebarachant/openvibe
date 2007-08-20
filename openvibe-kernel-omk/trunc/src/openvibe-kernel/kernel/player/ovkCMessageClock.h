@@ -1,7 +1,6 @@
-#ifndef __OpenViBEKernel_Kernel_CMessageClock_H__
-#define __OpenViBEKernel_Kernel_CMessageClock_H__
+#ifndef __OpenViBEKernel_Kernel_Player_CMessageClock_H__
+#define __OpenViBEKernel_Kernel_Player_CMessageClock_H__
 
-#include "../../ovk_base.h"
 #include "../ovkTKernelObject.h"
 #include "ovkTMessage.h"
 
@@ -21,9 +20,9 @@ namespace OpenViBE
 			{
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageClock> >, OVK_ClassId_Kernel_MessageClock);
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageClock> >, OVK_ClassId_Kernel_Player_MessageClock);
 		};
 	};
 };
 
-#endif // __OpenViBEKernel_Kernel_CMessageClock_H__
+#endif // __OpenViBEKernel_Kernel_Player_CMessageClock_H__

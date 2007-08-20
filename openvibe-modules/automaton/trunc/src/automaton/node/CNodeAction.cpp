@@ -20,7 +20,14 @@ Automaton::boolean CNodeAction::setAction(const std::string& oAction, const std:
 	}
 	else if(oAction == "WaitTime")
 	{
-		m_pAction = new CWaitTime(pContext->getParameterValue(oParameter[0]));
+		if(oParameter.size() == 1)
+		{
+			m_pAction = new CWaitTime(pContext->getParameterValue(oParameter[0]));
+		}
+		else if(oParameter.size() > 1)
+		{
+			m_pAction = new CWaitTime(pContext->getParameterValue(oParameter[0]), pContext->getParameterValue(oParameter[1]));
+		}
 	}
 	else
 	{

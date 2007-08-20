@@ -30,7 +30,9 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean initialize();
 			virtual OpenViBE::boolean uninitialize();
-		
+			
+			virtual OpenViBE::uint64 getClockFrequency(){ return (32LL<<32); }
+
 			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock &rMessageClock);
 
 			virtual OpenViBE::boolean process();
@@ -60,6 +62,8 @@ namespace OpenViBEPlugins
 
 				//! Plugin's previous activation date
 				OpenViBE::uint64 m_ui64PreviousActivationTime;
+
+				OpenViBE::boolean m_bError;
 		};
 
 		/**
