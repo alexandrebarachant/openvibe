@@ -25,7 +25,6 @@ namespace OpenViBEPlugins
 		class CBufferDatabase;
 		class CBottomTimeRuler;	
 
-				
 		/**
 		* This class contains everything necessary to setup a GTK window and display
 		* a signal thanks to a CBufferDatabase's information.
@@ -52,12 +51,8 @@ namespace OpenViBEPlugins
 				
 				//! Pointers to the cursor mode buttons' widgets
 				GtkToggleToolButton * m_pCursorMode[4];
-				/** The current cursor mode
-				* 0 : normal	3 : best fit
-				* 1 : zoom in	4 : normal size
-				* 2 : zoom out
-				*/
-				OpenViBE::uint32 m_ui32CurrentCursorMode;
+				//! The current cursor mode
+				OpenViBEPlugins::SimpleVisualisation::EDisplayMode m_eCurrentCursorMode;
 
 				//! The cursors for the different cursor mode
 				GdkCursor * m_pCursor[5];

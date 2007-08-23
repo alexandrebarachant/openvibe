@@ -1,6 +1,7 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CChannelDisplayWidget_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CChannelDisplayWidget_H__
 
+#include "../ovp_defines.h"
 #include "ovpCSignalDisplayLeftRuler.h"
 
 #include <glib.h>
@@ -36,7 +37,6 @@ namespace OpenViBEPlugins
 	{
 	public:
 		
-
 		//! The table containing the signal display and rulers
 		GtkWidget * m_pWidgetTable;
 		//! The drawing area where the signal is to be drawn
@@ -69,8 +69,7 @@ namespace OpenViBEPlugins
 		//! The zoom factor step
 		const OpenViBE::float64 m_f64ZoomFactor;
 
-		OpenViBE::uint32 m_ui32CurrentSignalMode;
-
+		OpenViBEPlugins::SimpleVisualisation::EDisplayMode m_eCurrentSignalMode;
 
 	public:
 		CChannelDisplay();

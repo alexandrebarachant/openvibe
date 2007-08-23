@@ -112,31 +112,31 @@ void drawingAreaClickedEventCallback(GtkWidget *widget, GdkEventButton *event, g
 	CChannelDisplay * m_pChannelDisplay = reinterpret_cast<CChannelDisplay*>(data);
 	OpenViBE::boolean l_bZoomChanged = false;
 
-	uint32 l_ui32CursorMode = m_pChannelDisplay->m_pParentDisplayView->m_ui32CurrentCursorMode;
+	EDisplayMode l_eCursorMode = m_pChannelDisplay->m_pParentDisplayView->m_eCurrentCursorMode;
 
 	//if it's a right click and the action is a zoom in or a zoom out
 	//then do the opposite action
 	if(event->button == 3)
 	{
-		if(l_ui32CursorMode==1)
+		if(l_eCursorMode==DisplayMode_ZoomIn)
 		{
-			l_ui32CursorMode = 2;
+			l_eCursorMode = DisplayMode_ZoomOut;
 		}
-		else if(l_ui32CursorMode==2)
+		else if(l_eCursorMode==DisplayMode_ZoomOut)
 		{
-			l_ui32CursorMode = 1;
+			l_eCursorMode = DisplayMode_ZoomIn;
 		}
 	}
 
 	//depending on the cursor mode, change the zoom level
-	switch(l_ui32CursorMode)
+	switch(l_eCursorMode)
 	{
-		case 1 : //ZoomIn
+		case DisplayMode_ZoomIn:
 			m_pChannelDisplay->computeZoom(true, event->x, event->y);
 			l_bZoomChanged = true;
 			break;
 
-		case 2 : //ZoomOut
+		case DisplayMode_ZoomOut:
 			if(m_pChannelDisplay->m_f64ZoomScaleX != 1.0)
 			{
 				m_pChannelDisplay->computeZoom(false, event->x, event->y);
@@ -144,19 +144,22 @@ void drawingAreaClickedEventCallback(GtkWidget *widget, GdkEventButton *event, g
 			}
 			break;
 
-		case 3 : //Best fit
+		case DisplayMode_BestFit:
 			m_pChannelDisplay->computeBestFit();
 			l_bZoomChanged = true;
 			break;
 
-		case 4 : //Normal size
+		case DisplayMode_Normal:
 			m_pChannelDisplay->computeNormalSize();
 			l_bZoomChanged = true;
+			break;
+
+		default:
 			break;
 	}
 
 	//keep track of the current mode
-	m_pChannelDisplay->m_ui32CurrentSignalMode = l_ui32CursorMode;
+	m_pChannelDisplay->m_eCurrentSignalMode = l_eCursorMode;
 
 	//if the zoom level has changed, redraw the signal and left ruler
 	if(l_bZoomChanged)
@@ -178,7 +181,7 @@ void drawingAreaEnterEventCallback(GtkWidget *widget, GdkEventCrossing *event, g
 	CChannelDisplay * m_pChannelDisplay = reinterpret_cast<CChannelDisplay*>(data);
 
 	//change the cursor to the one corresponding to the cursor mode
-	gdk_window_set_cursor(widget->window, m_pChannelDisplay->m_pParentDisplayView->m_pCursor[m_pChannelDisplay->m_pParentDisplayView->m_ui32CurrentCursorMode]);
+	gdk_window_set_cursor(widget->window, m_pChannelDisplay->m_pParentDisplayView->m_pCursor[m_pChannelDisplay->m_pParentDisplayView->m_eCurrentCursorMode]);
 
 }
 
@@ -204,7 +207,7 @@ CChannelDisplay::CChannelDisplay() :
 	m_f64ZoomScaleX(1),
 	m_f64ZoomScaleY(1),
 	m_f64ZoomFactor(1.5),
-	m_ui32CurrentSignalMode(4)
+	m_eCurrentSignalMode(DisplayMode_BestFit)
 {
 
 }
@@ -568,17 +571,18 @@ void CChannelDisplay::computeNormalSize()
 void CChannelDisplay::updateSignalZoomParameters()
 {
 	//depending on the cursor mode, change the parameters
-	switch(m_ui32CurrentSignalMode)
+	switch(m_eCurrentSignalMode)
 	{
-		case 1 :	//zoom in
-		case 2 :	//or zoom out, do nothing (keep the current zoom level)
+		case DisplayMode_Default:
+		case DisplayMode_ZoomIn:
+		case DisplayMode_ZoomOut: // do nothing (keep the current zoom level)
 			break;
 
-		case 3 : //Best fit -> actualize
+		case DisplayMode_BestFit: // actualize
 			computeBestFit();
 			break;
 
-		case 4 : //Normal size -> actualize
+		case DisplayMode_Normal: // actualize
 			computeNormalSize();
 			break;
 	}

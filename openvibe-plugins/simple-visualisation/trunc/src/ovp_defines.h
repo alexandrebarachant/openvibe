@@ -53,6 +53,27 @@
 
 //___________________________________________________________________//
 //                                                                   //
+// Some enumerations                                                 //
+//___________________________________________________________________//
+//                                                                   //
+
+namespace OpenViBEPlugins
+{
+	namespace SimpleVisualisation
+	{
+		enum EDisplayMode
+		{
+			DisplayMode_Default,
+			DisplayMode_ZoomIn,
+			DisplayMode_ZoomOut,
+			DisplayMode_BestFit,
+			DisplayMode_Normal,
+		};
+	};
+};
+
+//___________________________________________________________________//
+//                                                                   //
 // Operating System identification                                   //
 //___________________________________________________________________//
 //                                                                   //

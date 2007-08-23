@@ -36,12 +36,12 @@ namespace OpenViBEPlugins
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
 
 				//sets the cursor mode to 1 (zoomIn)
-				l_pView->m_ui32CurrentCursorMode=1;
+				l_pView->m_eCurrentCursorMode=DisplayMode_ZoomIn;
 			}
 			else
 			{
 				//sets the cursor mode back to normal
-				l_pView->m_ui32CurrentCursorMode=0;
+				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
 			}
 		}
 
@@ -54,11 +54,11 @@ namespace OpenViBEPlugins
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[2], FALSE);
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
 				
-				l_pView->m_ui32CurrentCursorMode=2;
+				l_pView->m_eCurrentCursorMode=DisplayMode_ZoomOut;
 			}
 			else
 			{
-				l_pView->m_ui32CurrentCursorMode=0;
+				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
 			}
 		}
 
@@ -71,11 +71,11 @@ namespace OpenViBEPlugins
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[1], FALSE);
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
 				
-				l_pView->m_ui32CurrentCursorMode=3;
+				l_pView->m_eCurrentCursorMode=DisplayMode_BestFit;
 			}
 			else
 			{
-				l_pView->m_ui32CurrentCursorMode=0;
+				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
 			}
 		}
 
@@ -88,11 +88,11 @@ namespace OpenViBEPlugins
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[1], FALSE);
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[2], FALSE);
 
-				l_pView->m_ui32CurrentCursorMode=4;
+				l_pView->m_eCurrentCursorMode=DisplayMode_Normal;
 			}
 			else
 			{
-				l_pView->m_ui32CurrentCursorMode=0;
+				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
 			}
 		}
 
@@ -279,7 +279,7 @@ namespace OpenViBEPlugins
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase)
 		: m_pGladeInterface(NULL),
 		m_pMainWindow(NULL),
-		m_ui32CurrentCursorMode(0),
+		m_eCurrentCursorMode(DisplayMode_Default),
 		m_pBufferDatabase(&oBufferDatabase),
 		m_bMultiViewInitialized(false),
 		m_pBottomRuler(NULL)
