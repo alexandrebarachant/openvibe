@@ -1,6 +1,7 @@
 #include "ovpCGrazVisualization.h"
 
 #include <math.h>
+#include <unistd.h>
 #include <iostream>
 
 
@@ -66,8 +67,11 @@ namespace OpenViBEPlugins
 					break;
 
 				case OVTK_GDF_Beep:
-					//gdk_beep();
-					cout<<"Beep!\a\n"<<endl;
+					// gdk_beep();
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Beep !\n";
+#if defined OVP_OS_Linux
+					system("cat /local/ov_beep.wav > /dev/dsp &");
+#endif
 					break;
 
 				case OVTK_GDF_Left:

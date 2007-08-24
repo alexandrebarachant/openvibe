@@ -83,7 +83,7 @@ boolean CSinusSignalGenerator::process(void)
 	{
 		m_pSignalOutputWriterHelper->setSamplingRate(m_ui32SamplingFrequency);
 		m_pSignalOutputWriterHelper->setChannelCount(m_ui32ChannelCount);
-		m_pSignalOutputWriterHelper->setSampleCount(m_ui32GeneratedEpochSampleCount);
+		m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_ui32GeneratedEpochSampleCount);
 		m_pSignalOutputWriterHelper->setSampleBuffer(m_pSampleBuffer);
 		for(i=0; i<m_ui32ChannelCount; i++)
 		{

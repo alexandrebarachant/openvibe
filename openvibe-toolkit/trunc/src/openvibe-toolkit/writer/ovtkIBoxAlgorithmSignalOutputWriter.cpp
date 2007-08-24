@@ -14,7 +14,7 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::boolean setSamplingRate(const OpenViBE::uint32 ui32SamplingRate);
 		virtual OpenViBE::boolean setChannelCount(const OpenViBE::uint32 ui32ChannelCount);
 		virtual OpenViBE::boolean setChannelName(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName);
-		virtual OpenViBE::boolean setSampleCount(const OpenViBE::uint32 ui32SampleCount);
+		virtual OpenViBE::boolean setSampleCountPerBuffer(const OpenViBE::uint32 ui32SampleCountPerBuffer);
 		virtual OpenViBE::boolean setSampleBuffer(const OpenViBE::float64* pSampleBuffer);
 
 		virtual OpenViBE::boolean writeHeader(EBML::IWriter& rWriter);
@@ -53,9 +53,9 @@ namespace OpenViBEToolkit
 		return m_oStreamedMatrixOutputWriterPart.setDimmensionLabel(0, ui32ChannelIndex, sChannelName);
 	}
 
-	OpenViBE::boolean CBoxAlgorithmSignalOutputWriter::setSampleCount(const OpenViBE::uint32 ui32SampleCount)
+	OpenViBE::boolean CBoxAlgorithmSignalOutputWriter::setSampleCountPerBuffer(const OpenViBE::uint32 ui32SampleCountPerBuffer)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(1, ui32SampleCount);
+		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(1, ui32SampleCountPerBuffer);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmSignalOutputWriter::setSampleBuffer(const OpenViBE::float64* pSampleBuffer)

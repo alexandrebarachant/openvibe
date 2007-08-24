@@ -79,7 +79,7 @@ boolean CTimeSignalGenerator::process(void)
 	{
 		m_pSignalOutputWriterHelper->setSamplingRate(m_ui32SamplingFrequency);
 		m_pSignalOutputWriterHelper->setChannelCount(1);
-		m_pSignalOutputWriterHelper->setSampleCount(m_ui32GeneratedEpochSampleCount);
+		m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_ui32GeneratedEpochSampleCount);
 		m_pSignalOutputWriterHelper->setSampleBuffer(m_pSampleBuffer);
 		m_pSignalOutputWriterHelper->setChannelName(0, "Time signal");
 		m_pSignalOutputWriterHelper->writeHeader(*m_pSignalOutputWriter);

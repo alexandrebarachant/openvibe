@@ -100,7 +100,7 @@ void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBu
 				m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription->m_oChannelName[i].c_str());
 			}
 
-			m_pSignalOutputWriterHelper->setSampleCount(m_pSignalDescription->m_ui32SampleCount);
+			m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_pSignalDescription->m_ui32SampleCount);
 			m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
 
 			m_pSignalOutputWriterHelper->writeHeader(*m_pWriter);

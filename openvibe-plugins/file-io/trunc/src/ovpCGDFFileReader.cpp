@@ -530,7 +530,7 @@ void CGDFFileReader::writeSignalInformation()
 		m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription.m_pChannelName[i].c_str());
 	}
 
-	m_pSignalOutputWriterHelper->setSampleCount(m_pSignalDescription.m_ui32SampleCount);
+	m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_pSignalDescription.m_ui32SampleCount);
 
 	m_pSignalOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_SignalOutput]);
 }

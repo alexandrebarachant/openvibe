@@ -12,7 +12,7 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::boolean setSamplingRate(const OpenViBE::uint32 ui32SamplingRate)=0;
 		virtual OpenViBE::boolean setChannelCount(const OpenViBE::uint32 ui32ChannelCount)=0;
 		virtual OpenViBE::boolean setChannelName(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName)=0;
-		virtual OpenViBE::boolean setSampleCount(const OpenViBE::uint32 ui32SampleCount)=0;
+		virtual OpenViBE::boolean setSampleCountPerBuffer(const OpenViBE::uint32 ui32SampleCountPerBuffer)=0;
 		virtual OpenViBE::boolean setSampleBuffer(const OpenViBE::float64* pSampleBuffer)=0;
 
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter, OVTK_ClassId_);

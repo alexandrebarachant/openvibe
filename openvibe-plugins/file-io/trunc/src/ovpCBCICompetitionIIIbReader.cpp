@@ -58,7 +58,7 @@ namespace OpenViBEPlugins
 			m_pSignalOutputWriterHelper->setChannelName(0, "+C3a-C3p");
 			m_pSignalOutputWriterHelper->setChannelName(1, "+C4a-C4p");
 
-			m_pSignalOutputWriterHelper->setSampleCount(m_ui32SamplesPerBuffer);
+			m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_ui32SamplesPerBuffer);
 
 			m_pSignalOutputWriterHelper->writeHeader(*m_pWriter[0]);
 

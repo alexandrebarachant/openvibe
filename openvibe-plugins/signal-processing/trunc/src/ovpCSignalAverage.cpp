@@ -53,7 +53,7 @@ void CSignalAverage::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuff
 	}
 
 	//just one sample per buffer since we made an average of the values in each buffer
-	m_pSignalOutputWriterHelper->setSampleCount(1);
+	m_pSignalOutputWriterHelper->setSampleCountPerBuffer(1);
 	m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
 
 	m_pSignalOutputWriterHelper->writeHeader(*m_pWriter);

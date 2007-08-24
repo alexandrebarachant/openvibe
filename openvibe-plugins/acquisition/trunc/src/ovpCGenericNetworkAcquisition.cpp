@@ -111,7 +111,7 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 				m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription->m_pChannelName[i].c_str());
 			}
 
-			m_pSignalOutputWriterHelper->setSampleCount(m_pSignalDescription->m_ui32SampleCount);
+			m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_pSignalDescription->m_ui32SampleCount);
 			m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
 
 			m_pSignalOutputWriterHelper->writeHeader(*m_pWriter[GenericNetworkAcquisition_SignalOutput]);
