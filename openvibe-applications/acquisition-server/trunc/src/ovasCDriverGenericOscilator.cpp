@@ -28,7 +28,7 @@ CDriverGenericOscillator::CDriverGenericOscillator(void)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
 	,m_ui32TotalSampleCount(0)
-	,m_ui32LastTime(0)
+	,m_ui32StartTime(0)
 {
 	m_pHeader=createHeader();
 	m_pHeader->setSamplingFrequency(512);
@@ -82,7 +82,7 @@ boolean CDriverGenericOscillator::initialize(
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 	m_ui32TotalSampleCount=0;
 
-	m_ui32LastTime=System::Time::getTime();
+	m_ui32StartTime=System::Time::getTime();
 	return true;
 }
 
@@ -116,7 +116,7 @@ boolean CDriverGenericOscillator::loop(void)
 
 	uint32 l_ui32CurrentTime=System::Time::getTime();
 
-	if(l_ui32CurrentTime-m_ui32LastTime > (1000.0*m_ui32SampleCountPerSentBlock)/m_pHeader->getSamplingFrequency())
+	if(l_ui32CurrentTime-m_ui32StartTime > (1000.0*m_ui32TotalSampleCount)/m_pHeader->getSamplingFrequency())
 	{
 		for(uint32 j=0; j<m_pHeader->getChannelCount(); j++)
 		{
@@ -136,7 +136,6 @@ boolean CDriverGenericOscillator::loop(void)
 
 		m_ui32TotalSampleCount+=m_ui32SampleCountPerSentBlock;
 		m_pCallback->setSamples(m_pSample);
-		m_ui32LastTime=l_ui32CurrentTime;
 	}
 
 	return true;
