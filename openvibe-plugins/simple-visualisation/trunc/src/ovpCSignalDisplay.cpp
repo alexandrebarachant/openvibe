@@ -18,98 +18,126 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-
 		/**
 		* Constructor
 		*/
-		CSignalDisplay::CSignalDisplay(void) : 
-			m_pReader(NULL),
+		CSignalDisplay::CSignalDisplay(void) :
+			m_pStreamedMatrixReader(NULL),
 			m_pStreamedMatrixReaderCallBack(NULL),
+			m_pStimulationReader(NULL),
+			m_pStimulationReaderCallBack(NULL),
 			m_pSignalDisplayView(NULL),
 			m_pBufferDatabase(NULL)
 		{
-			
+
 		}
-		
-		
-		OpenViBE::boolean CSignalDisplay::initialize()
+
+		boolean CSignalDisplay::initialize()
 		{
-			
+
 			//initializes the ebml input
 			m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
-			m_pReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
+			m_pStreamedMatrixReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
+			m_pStimulationReaderCallBack = createBoxAlgorithmStimulationInputReaderCallback(*this);
+			m_pStimulationReader=EBML::createReader(*m_pStimulationReaderCallBack);
 
 			m_pBufferDatabase = new CBufferDatabase(*this);
 			m_pSignalDisplayView = new CSignalDisplayView(*m_pBufferDatabase);
 			m_pBufferDatabase->setDrawable(m_pSignalDisplayView);
-			
+
 			return true;
 		}
-		
-		
-		OpenViBE::boolean CSignalDisplay::uninitialize()
+
+		boolean CSignalDisplay::uninitialize()
 		{
 			//release the ebml reader
 			releaseBoxAlgorithmStreamedMatrixInputReaderCallback(m_pStreamedMatrixReaderCallBack);
+			releaseBoxAlgorithmStimulationInputReaderCallback(m_pStimulationReaderCallBack);
+			m_pStreamedMatrixReaderCallBack=NULL;
+			m_pStimulationReaderCallBack=NULL;
 
-			m_pReader->release();
-			m_pReader=NULL;
-			
+			m_pStreamedMatrixReader->release();
+			m_pStimulationReader->release();
+			m_pStreamedMatrixReader=NULL;
+			m_pStimulationReader=NULL;
+
 			delete m_pSignalDisplayView;
 			delete m_pBufferDatabase;
+			m_pSignalDisplayView=NULL;
+			m_pBufferDatabase=NULL;
 
 			return true;
 		}
-		
-		
-		OpenViBE::boolean CSignalDisplay::processInput(OpenViBE::uint32 ui32InputIndex)
+
+		boolean CSignalDisplay::processInput(uint32 ui32InputIndex)
 		{
 			getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 			return true;
 		}
-		
-		
-		OpenViBE::boolean CSignalDisplay::process()
+
+		boolean CSignalDisplay::process()
 		{
 			IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+			uint32 i;
 
-			for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
+			for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(1); i++)
 			{
-				uint64 l_ui64ChunkSize;
+				uint64 l_ui64ChunkSize=0;
+				const uint8* l_pChunkBuffer=NULL;
+				uint64 l_ui64StartTime=0;
+				uint64 l_ui64EndTime=0;
+
+				if(l_pDynamicBoxContext->getInputChunk(1, i, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+				{
+					m_pStimulationReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
+					l_pDynamicBoxContext->markInputAsDeprecated(1, i);
+				}
+			}
+
+			for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
+			{
+				uint64 l_ui64ChunkSize=0;
 				const uint8* l_pChunkBuffer=NULL;
 
 				if(l_pDynamicBoxContext->getInputChunk(0, i, m_ui64StartTime, m_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
 				{
-					m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
+					m_pStreamedMatrixReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
 					l_pDynamicBoxContext->markInputAsDeprecated(0, i);
 				}
 			}
-			
+
 			return true;
 		}
 
-
-		void CSignalDisplay::setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
+		void CSignalDisplay::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
 		{
 			m_pBufferDatabase->setMatrixDimmensionCount(ui32DimmensionCount);
 		}
-		
-		void CSignalDisplay::setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
+
+		void CSignalDisplay::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
 		{
 			m_pBufferDatabase->setMatrixDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
 		}
-		
-		void CSignalDisplay::setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+
+		void CSignalDisplay::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
 		{
 			m_pBufferDatabase->setMatrixDimmensionLabel(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
 		}
-		
-		void CSignalDisplay::setMatrixBuffer(const OpenViBE::float64* pBuffer)
+
+		void CSignalDisplay::setMatrixBuffer(const float64* pBuffer)
 		{
 			m_pBufferDatabase->setMatrixBuffer(pBuffer, m_ui64StartTime, m_ui64EndTime);
 		}
 
+		void CSignalDisplay::setStimulationCount(const uint32 ui32StimulationCount)
+		{
+			m_pBufferDatabase->setStimulationCount(ui32StimulationCount);
+		}
 
+		void CSignalDisplay::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
+		{
+			m_pBufferDatabase->setStimulation(ui32StimulationIndex, ui64StimulationIdentifier, ui64StimulationDate);
+		}
 	};
 };
 

@@ -12,6 +12,8 @@ using namespace OpenViBE;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
 
+#define convert_time(i) (float64)(i>>32) + (float64)((float64)(i&0xFFFFFFFF) / (float64)((uint64)1<<32))
+
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
@@ -48,8 +50,6 @@ GType channel_display_get_type(void)
 
   return channel_display_type;
 }
-
-
 
 static void channel_display_init(ChannelDisplay * pChannelDisplay)
 {
@@ -212,7 +212,6 @@ CChannelDisplay::CChannelDisplay() :
 
 }
 
-
 CChannelDisplay::~CChannelDisplay()
 {
 }
@@ -248,7 +247,6 @@ void CChannelDisplay::init(GtkTable * pTable)
 			0, 1, 0, 1,
 			GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),//GTK_SHRINK,
 			0, 0);
-	
 
 	//connects the signals
 	g_signal_connect_after(G_OBJECT(m_pDrawingArea), "expose_event", G_CALLBACK(drawingAreaExposeEventCallback), this);
@@ -265,22 +263,21 @@ void CChannelDisplay::init(GtkTable * pTable)
 
 }
 
-
 uint64 CChannelDisplay::cropCurve()
 {
 	GdkPoint l_oPoint;
-	
+
 	gint l_iWidth = 0;
 	gint l_iHeight = 0;
 
 	vector<CChannelDisplayPoint>& l_vCurvePoints = m_pParentDisplayView->m_pRawPoints;
-	
+
 	//gets the size of the drawing area
 	gdk_drawable_get_size(m_pDrawingArea->window, &l_iWidth, &l_iHeight);
 
 	//clears the vector of the points to draw
 	m_pParentDisplayView->m_pPoints.clear();
-	
+
 	//for each couple of successive points
 	for(size_t i=0 ; i<(m_pDatabase->m_oSampleBuffers.size() *  m_pDatabase->m_pDimmensionSizes[1]) -1 ; i++)
 	{
@@ -289,14 +286,14 @@ uint64 CChannelDisplay::cropCurve()
 		float64 l_f64Y0 = l_vCurvePoints[i].m_f64Y;
 		float64 l_f64X1 = l_vCurvePoints[i+1].m_f64X;
 		float64 l_f64Y1 = l_vCurvePoints[i+1].m_f64Y;
-		
+
 		//if one of the point is out of the drawing area
 		if(l_f64Y0<0 || l_f64Y0>=l_iHeight || l_f64Y1<0 || l_f64Y1>=l_iHeight)
 		{
 			//computes the line's coefficients
 			float64 l_f64A = (l_f64Y1-l_f64Y0)/(l_f64X1-l_f64X0);
 			float64 l_f64B = l_f64Y0 - (l_f64A*l_f64X0);
-			
+
 			//if the first point is out of the window
 			if(l_f64Y0<0)
 			{
@@ -306,7 +303,7 @@ uint64 CChannelDisplay::cropCurve()
 				l_oPoint.y = static_cast<gint>(-1);
 				//adds it to the vector
 				m_pParentDisplayView->m_pPoints.push_back(l_oPoint);
-				
+
 			}
 			else if(l_f64Y0>=l_iHeight)
 			{
@@ -314,7 +311,7 @@ uint64 CChannelDisplay::cropCurve()
 				l_oPoint.x = static_cast<gint>((l_iHeight-l_f64B)/l_f64A);
 				l_oPoint.y = l_iHeight;
 				m_pParentDisplayView->m_pPoints.push_back(l_oPoint);
-				
+
 			}
 			//if it is inside, keep its current coordinates
 			else
@@ -323,14 +320,14 @@ uint64 CChannelDisplay::cropCurve()
 				l_oPoint.y = static_cast<gint>(l_f64Y0);
 				m_pParentDisplayView->m_pPoints.push_back(l_oPoint);
 			}
-			
+
 			//if the second point is out of the window, computes its intersect point and adds it
 			if(l_f64Y1<0)
 			{
 				l_oPoint.x = static_cast<gint>(-l_f64B/l_f64A);
 				l_oPoint.y = static_cast<gint>(-1);
 				m_pParentDisplayView->m_pPoints.push_back(l_oPoint);
-				
+
 			}
 			else if(l_f64Y1>=l_iHeight)
 			{
@@ -353,9 +350,9 @@ uint64 CChannelDisplay::cropCurve()
 				l_oPoint.y = static_cast<gint>(l_f64Y1);
 				m_pParentDisplayView->m_pPoints.push_back(l_oPoint);
 			}
-			
+
 		}
-		
+
 	}
 
 	//return the number of points to draw
@@ -377,7 +374,7 @@ void CChannelDisplay::drawSignal()
 	//gets the size of the drawing area
 	gdk_drawable_get_size(m_pDrawingArea->window, &l_iWidth, &l_iHeight);
 
-	// updates the left ruler 
+	// updates the left ruler
 	float64 l_f64MaximumDisplayedValue = m_f64TranslateY - ( (0 - ((l_iHeight*m_f64ZoomScaleY)/2) + (m_f64ZoomTranslateY* m_f64ZoomScaleY)) / (m_f64ScaleY * m_f64ZoomScaleY * l_iHeight) );
 
 	float64 l_f64MinimumDisplayedValue = m_f64TranslateY - ( (l_iHeight - ((l_iHeight*m_f64ZoomScaleY)/2) + (m_f64ZoomTranslateY* m_f64ZoomScaleY)) / (m_f64ScaleY * m_f64ZoomScaleY * l_iHeight) );
@@ -401,7 +398,7 @@ void CChannelDisplay::drawSignal()
 	}
 
 	float64 l_f64PointStep = 0;
-	
+
 	//Computes the horizontal step of displayed points
 	if( (l_ui32SamplesPerBuffer*l_ui64NumberOfBufferToDisplay) - 1 != 0 )
 	{
@@ -438,6 +435,27 @@ void CChannelDisplay::drawSignal()
 
 	//switch to dashed line
 	gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_ON_OFF_DASH, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+
+	// ##################################################
+	//
+	// Dirty add on yrenard so stimulations are displayed
+	//
+	// ##################################################
+	{
+		//computes the starting and ending time (in ms) of the displayed data
+		uint64 l_ui64StartTime=m_pDatabase->m_oStartTime[0];
+		uint64 l_ui64EndTime=m_pDatabase->m_oStartTime[m_pDatabase->m_oStartTime.size()-1];
+
+		// draw stimulations
+		std::deque<std::pair<uint64, uint64> >::iterator it;
+		for(it=m_pDatabase->m_oStimulations.begin(); it!=m_pDatabase->m_oStimulations.end(); it++)
+		{
+			float64 l_f64X = ((float64)((it->first-l_ui64StartTime)>>24) / (float64)((l_ui64EndTime-l_ui64StartTime)>>24)); //  ((l_i64BaseX + (j*l_f64WidthPerBuffer) + (i*l_f64PointStep) - m_f64TranslateX ) * m_f64ScaleX) ;
+			l_f64X = ((l_f64X - m_f64TranslateX)*m_f64ScaleX);
+			l_f64X *= l_iWidth;
+			gdk_draw_line(m_pDrawingArea->window, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], l_f64X, 0, l_f64X, l_iHeight);
+		}
+	}
 
 	gint l_iZeroY = static_cast<gint>(
 			(m_f64ScaleY * m_f64ZoomScaleY * l_iHeight * (m_f64TranslateY - 0) ) +  ((l_iHeight*m_f64ZoomScaleY)/2) - (m_f64ZoomTranslateY* m_f64ZoomScaleY));
@@ -502,12 +520,12 @@ void CChannelDisplay::computeBestFit()
 	float64 l_f64LocalMinimum = +DBL_MAX;
 	float64 l_f64CurrentMaximum;
 	float64 l_f64CurrentMinimum;
-	
+
 	for(size_t k=0 ; k<m_oChannelList.size() ; k++)
 	{
 		//get local min/max
 		m_pDatabase->getDisplayedChannelLocalMinMaxValue(m_oChannelList[k], l_f64CurrentMinimum, l_f64CurrentMaximum);
-		
+
 		if(l_f64CurrentMinimum<l_f64LocalMinimum)
 		{
 			l_f64LocalMinimum=l_f64CurrentMinimum;
@@ -530,7 +548,7 @@ void CChannelDisplay::computeBestFit()
 	{
 		m_f64ScaleY =  1 / (l_f64LocalMaximum - l_f64LocalMinimum);
 	}
-	
+
 	//compute the translation needed to center the signal correctly in the window
 	m_f64TranslateX = 0;
 	m_f64TranslateY =  (l_f64LocalMaximum + l_f64LocalMinimum) / 2;
@@ -541,7 +559,6 @@ void CChannelDisplay::computeBestFit()
 	m_f64ZoomTranslateX = 0;
 	m_f64ZoomTranslateY = 0;
 }
-
 
 void CChannelDisplay::computeNormalSize()
 {
@@ -587,7 +604,6 @@ void CChannelDisplay::updateSignalZoomParameters()
 			break;
 	}
 }
-
 
 	}
 }

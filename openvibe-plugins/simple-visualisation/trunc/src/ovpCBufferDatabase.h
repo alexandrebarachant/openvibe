@@ -30,24 +30,23 @@ namespace OpenViBEPlugins
 		class CSignalDisplayDrawable
 		{
 			public:
-				
+
 				virtual ~CSignalDisplayDrawable(){}
 				virtual void init() = 0;
 				virtual void redraw() = 0;
 		};
-		
 
 		/**
 		* This class is used to store information about the incoming signal stream. It can request a CSignalDisplayDrawable
 		* object to redraw himself in case of some changes in its data.
 		*/
-		class CBufferDatabase 
+		class CBufferDatabase
 		{
-				
+
 			public:
 				OpenViBE::uint64 m_pDimmensionSizes[2];
 				std::vector<std::string> m_pDimmesionLabels[2];
-				
+
 				OpenViBE::boolean m_bFirstBufferReceived;
 
 				//! Sampling frequency of the incoming stream
@@ -56,15 +55,18 @@ namespace OpenViBEPlugins
 				//! double-linked list of pointers to the samples buffers of the current time window
 				std::deque<OpenViBE::float64 *> m_oSampleBuffers;
 
+				//! stimulations to display. pair values are <date, stimcode>
+				std::deque<std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oStimulations;
+
 				//! Number of buffer to display at the same time
 				OpenViBE::uint64 m_ui64NumberOfBufferToDisplay;
-						
+
 				//! The global maximum value of the signal (up to now)
 				OpenViBE::float64 m_f64MaximumValue;
-				
+
 				//! The global minimum value of the signal (up to now)
 				OpenViBE::float64 m_f64MinimumValue;
-				
+
 				//! double-linked list of the start times of the current buffers
 				std::deque<OpenViBE::uint64> m_oStartTime;
 
@@ -78,17 +80,17 @@ namespace OpenViBEPlugins
 				OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;
 
 				OpenViBE::boolean m_bError;
-				
-			public:	
+
+			public:
 				CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin);
 				~CBufferDatabase();
-		
+
 				/**
 				* Sets the drawable object to update.
 				* \param pDrawable drawable object to update.
 				*/
 				void setDrawable(CSignalDisplayDrawable * pDrawable) { m_pDrawable=pDrawable; }
-				
+
 				/**
 				* Compute the number of buffers needed to display the signal for a certain time period.
 				* \param f64NumberOfMsToDisplay the time window's width in ms.
@@ -102,7 +104,7 @@ namespace OpenViBEPlugins
 				//! Returns the min/max values currently displayed (all channels taken into account)
 				void getDisplayedGlobalMinMaxValue(OpenViBE::float64& f64Min, OpenViBE::float64& f64Max);
 
-				//! Returns the min/max values of the last buffer arrived for the given channel 
+				//! Returns the min/max values of the last buffer arrived for the given channel
 				void getLastBufferChannelLocalMinMaxValue(OpenViBE::uint32 ui32Channel, OpenViBE::float64& f64Min, OpenViBE::float64& f64Max)
 				{
 					f64Min = m_oLocalMinMaxValue[ui32Channel].back().first;
@@ -122,12 +124,13 @@ namespace OpenViBEPlugins
 					}
 				}
 
-
 				void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
 				void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
 				void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
 				void setMatrixBuffer(const OpenViBE::float64* pBuffer, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime);
 
+				void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
+				void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
 		};
 	}

@@ -23,7 +23,7 @@ namespace OpenViBEPlugins
 	namespace SimpleVisualisation
 	{
 
-		CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin) :
+		CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlgorithm>& oPlugin) :
 			m_bFirstBufferReceived(true),
 			m_ui32SamplingFrequency(0),
 			m_ui64NumberOfBufferToDisplay(2),
@@ -33,8 +33,6 @@ namespace OpenViBEPlugins
 			m_oParentPlugin(oPlugin),
 			m_bError(false)
 		{
-			adjustNumberOfDisplayedBuffers(1000);
-
 		}
 
 		CBufferDatabase::~CBufferDatabase()
@@ -48,11 +46,11 @@ namespace OpenViBEPlugins
 
 		}
 
-		OpenViBE::boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(OpenViBE::float64 f64NumberOfMsToDisplay)
+		boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(float64 f64NumberOfMsToDisplay)
 		{
-			OpenViBE::boolean l_bNumberOfBufferToDisplayChanged = false;
+			boolean l_bNumberOfBufferToDisplayChanged = false;
 
-			OpenViBE::uint64 l_ui64NewNumberOfBufferToDisplay =  static_cast<uint64>(ceil( (f64NumberOfMsToDisplay*m_ui32SamplingFrequency) / (m_pDimmensionSizes[1]*1000)));
+			uint64 l_ui64NewNumberOfBufferToDisplay =  static_cast<uint64>(ceil( (f64NumberOfMsToDisplay*m_ui32SamplingFrequency) / (m_pDimmensionSizes[1]*1000)));
 
 			//displays at least one buffer
 			l_ui64NewNumberOfBufferToDisplay = (l_ui64NewNumberOfBufferToDisplay == 0) ? 1 : l_ui64NewNumberOfBufferToDisplay;
@@ -80,24 +78,24 @@ namespace OpenViBEPlugins
 
 			return l_bNumberOfBufferToDisplayChanged;
 		}
-		
-		OpenViBE::float64 CBufferDatabase::getDisplayedTimeIntervalWidth()
+
+		float64 CBufferDatabase::getDisplayedTimeIntervalWidth()
 		{
 			return (m_ui64NumberOfBufferToDisplay * ((m_pDimmensionSizes[1]*1000.0) / m_ui32SamplingFrequency));
 		}
-		
 
 
-		void CBufferDatabase::setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
+
+		void CBufferDatabase::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
 		{
 			if(ui32DimmensionCount != 2)
 			{
-				
+
 				m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error dimmension count isn't 2!\n";
 			}
 		}
 
-		void CBufferDatabase::setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
+		void CBufferDatabase::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
 		{
 			m_pDimmensionSizes[ui32DimmensionIndex] = ui32DimmensionSize;
 			m_pDimmesionLabels[ui32DimmensionIndex].resize(ui32DimmensionSize);
@@ -108,12 +106,12 @@ namespace OpenViBEPlugins
 			}
 		}
 
-		void CBufferDatabase::setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+		void CBufferDatabase::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
 		{
 			m_pDimmesionLabels[ui32DimmensionIndex][ui32DimmensionEntryIndex] = sDimmensionLabel;
 		}
 
-		void CBufferDatabase::setMatrixBuffer(const OpenViBE::float64* pBuffer, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTime, uint64 ui64EndTime)
 		{
 			//if an error has occured, do nothing
 			if(m_bError)
@@ -122,7 +120,7 @@ namespace OpenViBEPlugins
 			}
 
 			uint64 l_ui64NumberOfSamplesPerBuffer = m_pDimmensionSizes[0] * m_pDimmensionSizes[1];
-		
+
 			if(m_bFirstBufferReceived)
 			{
 				m_ui64BufferDuration = ui64EndTime - ui64StartTime;
@@ -139,8 +137,8 @@ namespace OpenViBEPlugins
 				//computes the sampling frequency
 				m_ui32SamplingFrequency = (uint32)((float64)(((uint64)1<<32)/(m_ui64BufferDuration)) * m_pDimmensionSizes[1]);
 
-				//computes the number of buffer necessary to display a 1000ms interval
-				adjustNumberOfDisplayedBuffers(1000);
+				//computes the number of buffer necessary to display a 10s interval
+				adjustNumberOfDisplayedBuffers(10000);
 
 				m_pDrawable->init();
 
@@ -156,7 +154,7 @@ namespace OpenViBEPlugins
 			if(m_ui64NumberOfBufferToDisplay - m_oSampleBuffers.size() > 0)
 			{
 				////If the number of buffer to display has changed and is greater than before, create a new buffer
-				l_pBufferToWrite = new OpenViBE::float64[(size_t)l_ui64NumberOfSamplesPerBuffer];
+				l_pBufferToWrite = new float64[(size_t)l_ui64NumberOfSamplesPerBuffer];
 			}
 			else if (m_ui64NumberOfBufferToDisplay == m_oSampleBuffers.size())
 			{
@@ -195,7 +193,7 @@ namespace OpenViBEPlugins
 						l_f64LocalMax = pBuffer[l_ui64CurrentSample];
 					}
 				}
-			
+
 				//adds the minmax pair to the corresponding channel's list
 				m_oLocalMinMaxValue[c].push_back(pair<float64, float64>(l_f64LocalMin, l_f64LocalMax));
 
@@ -209,7 +207,7 @@ namespace OpenViBEPlugins
 				}
 
 			}
-			
+
 			//copy the content of pBuffer into the selected buffer
 			System::Memory::copy(l_pBufferToWrite,
 					pBuffer,
@@ -222,11 +220,11 @@ namespace OpenViBEPlugins
 			m_pDrawable->redraw();
 		}
 
-		void CBufferDatabase::getDisplayedChannelLocalMinMaxValue(OpenViBE::uint32 ui32Channel, OpenViBE::float64& f64Min, OpenViBE::float64& f64Max)
+		void CBufferDatabase::getDisplayedChannelLocalMinMaxValue(uint32 ui32Channel, float64& f64Min, float64& f64Max)
 		{
 			f64Min = +DBL_MAX;
 			f64Max = -DBL_MAX;
-			
+
 			for(uint64 i=0 ; i<m_oLocalMinMaxValue[(size_t)ui32Channel].size() ; i++)
 			{
 				if(f64Min > m_oLocalMinMaxValue[(size_t)ui32Channel][(size_t)i].first)
@@ -240,7 +238,7 @@ namespace OpenViBEPlugins
 			}
 		}
 
-		void CBufferDatabase::getDisplayedGlobalMinMaxValue(OpenViBE::float64& f64Min, OpenViBE::float64& f64Max)
+		void CBufferDatabase::getDisplayedGlobalMinMaxValue(float64& f64Min, float64& f64Max)
 		{
 			for(uint32 c=0 ; c<m_oLocalMinMaxValue.size() ; c++)
 			{
@@ -258,5 +256,22 @@ namespace OpenViBEPlugins
 			}
 		}
 
+		void CBufferDatabase::setStimulationCount(const uint32 ui32StimulationCount)
+		{
+		}
+
+		void CBufferDatabase::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
+		{
+			m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received new stimulation id:" << ui64StimulationIdentifier << " date:" << ui64StimulationDate << "\n";
+
+			m_oStimulations.push_back(std::pair<uint64, uint64>(ui64StimulationDate, ui64StimulationIdentifier));
+
+			std::deque<std::pair<uint64, uint64> >::iterator i;
+			for(i=m_oStimulations.begin(); i!=m_oStimulations.end() && i->first<m_oStartTime.front(); )
+			{
+				i++;
+				m_oStimulations.pop_front();
+			}
+		}
 	}
 }

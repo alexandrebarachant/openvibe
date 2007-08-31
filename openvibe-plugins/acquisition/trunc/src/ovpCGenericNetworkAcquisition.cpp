@@ -6,6 +6,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Acquisition;
@@ -14,12 +15,10 @@ using namespace OpenViBEToolkit;
 
 using namespace std;
 
-
 namespace OpenViBEPlugins
 {
 	namespace Acquisition
 	{
-
 
 EBML::boolean CGenericNetworkAcquisition::readerIsMasterChild(const EBML::CIdentifier& rIdentifier)
 {
@@ -33,7 +32,6 @@ EBML::boolean CGenericNetworkAcquisition::readerIsMasterChild(const EBML::CIdent
 	}
 	return false;
 }
-
 
 void CGenericNetworkAcquisition::readerOpenChild(const EBML::CIdentifier& rIdentifier)
 {
@@ -80,7 +78,6 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 		m_pSignalDescription->m_pChannelName[m_pSignalDescription->m_ui32CurrentChannel] = m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize);
 
 		m_pSignalDescription->m_ui32CurrentChannel++;
-
 
 	}
 
@@ -154,25 +151,35 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 
 			l_pDynamicBoxContext->markOutputAsReadyToSend(GenericNetworkAcquisition_SignalOutput, l_ui64StartTime, l_ui64EndTime);
 
+			static uint64 l_ui64CurrentDate=0;
+			if(l_ui64CurrentDate>>32 != m_ui64CurrentDate>>32)
+			{
+				l_ui64CurrentDate=m_ui64CurrentDate;
+				uint32 l_ui32SentSampleCount=(m_pSignalDescription->m_ui32SamplingRate*m_ui64CurrentDate)>>32;
+				// m_ui32SentSampleCount
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+					<< LogLevel_Trace
+					<< "Sample count jittering : " << (int32)(m_ui32SentSampleCount-l_ui32SentSampleCount)
+					<< " (exact values are " << m_ui32SentSampleCount << ":" << l_ui32SentSampleCount << ")\n";
+			}
 		}
 	}
 
-
-		//Stimulations
-		/*if(m_oCurrentIdentifier==)
+	/*
+	//Stimulations
+	if(m_oCurrentIdentifier==)
 	{
-
-}*/
+	}
+	*/
 
 }
 
 void CGenericNetworkAcquisition::readerCloseChild()
 {
 
-
 }
 
-boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) const
+boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(Kernel::IBoxProto& rPrototype) const
 {
 	// Adds box inputs
 
@@ -187,7 +194,6 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(IBoxProto& rPrototype) c
 
 	return true;
 }
-
 
 CGenericNetworkAcquisition::CGenericNetworkAcquisition(void)
 	:m_ui32ServerHostPort(0),
@@ -211,7 +217,8 @@ CGenericNetworkAcquisition::CGenericNetworkAcquisition(void)
 	m_bSignalDescriptionSent(false),
 	m_pMatrixBuffer(NULL),
 	m_ui64MatrixBufferSize(0),
-	m_ui32SentSampleCount(0)
+	m_ui32SentSampleCount(0),
+	m_ui64CurrentDate(0)
 {
 	//just in case ...
 	for(int i=0 ; i<3 ; i++)
@@ -237,7 +244,7 @@ void CGenericNetworkAcquisition::writeStimulationOutput(const void* pBuffer, con
 
 boolean CGenericNetworkAcquisition::initialize()
 {
-	const IStaticBoxContext* l_pStaticBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
+	const IBox* l_pStaticBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
 	// Builds up client connection
 	m_pConnectionClient=Socket::createConnectionClient();
@@ -253,7 +260,6 @@ boolean CGenericNetworkAcquisition::initialize()
 
 	m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_StimulationOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition>(*this, &CGenericNetworkAcquisition::writeStimulationOutput);
 
-
 	// Prepares experiment information output writer
 	m_pWriter[GenericNetworkAcquisition_ExperimentInfoOutput]=EBML::createWriter(*m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_ExperimentInfoOutput]);
 	m_pExperimentInformationOutputWriterHelper=createBoxAlgorithmExperimentInformationOutputWriter();
@@ -261,7 +267,6 @@ boolean CGenericNetworkAcquisition::initialize()
 	//Prepares the signal output writer
 	m_pWriter[GenericNetworkAcquisition_SignalOutput]=EBML::createWriter(*m_pOutputWriterCallbackProxy[GenericNetworkAcquisition_SignalOutput]);
 	m_pSignalOutputWriterHelper=createBoxAlgorithmSignalOutputWriter();
-
 
 	//Prepares the stimulation output writer
 	//m_pStimulationOutputWriterHelper=createBoxAlgorithmStimulationOutputWriter();
@@ -320,18 +325,18 @@ boolean CGenericNetworkAcquisition::uninitialize()
 	m_pReader->release();
 	m_pReader=NULL;
 
-
 	// Cleans up client connection
 	m_pConnectionClient->close();
 	m_pConnectionClient->release();
 	m_pConnectionClient=NULL;
-
 
 	return true;
 }
 
 boolean CGenericNetworkAcquisition::processClock(CMessageClock& rMessageClock)
 {
+	m_ui64CurrentDate=rMessageClock.getTime();
+
 	// Checks if connection is correctly established
 	if(!m_pConnectionClient->isConnected())
 	{
@@ -351,14 +356,13 @@ boolean CGenericNetworkAcquisition::processClock(CMessageClock& rMessageClock)
 	return true;
 }
 
-
 boolean CGenericNetworkAcquisition::process()
 {
 	uint8 l_pBuffer[1024];
 	uint32 l_ui32Received;
 	m_ui64CurrentBufferSize=0;
 
-	IDynamicBoxContext * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBoxIO * l_pDynamicBoxContext = getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	//reset the OutPut chunks
 	l_pDynamicBoxContext->setOutputChunkSize(GenericNetworkAcquisition_SignalOutput, 0);
@@ -386,9 +390,6 @@ boolean CGenericNetworkAcquisition::process()
 			m_pExperimentInfoHeader=NULL;
 		}
 	}
-
-
-
 
 	do
 	{

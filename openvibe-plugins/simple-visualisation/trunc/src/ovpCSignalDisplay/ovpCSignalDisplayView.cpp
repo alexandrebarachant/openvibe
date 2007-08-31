@@ -1,6 +1,5 @@
 #include "ovpCSignalDisplayView.h"
 
-
 #include <iostream>
 
 #include <sstream>
@@ -53,7 +52,7 @@ namespace OpenViBEPlugins
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[0], FALSE);
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[2], FALSE);
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
-				
+
 				l_pView->m_eCurrentCursorMode=DisplayMode_ZoomOut;
 			}
 			else
@@ -70,7 +69,7 @@ namespace OpenViBEPlugins
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[0], FALSE);
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[1], FALSE);
 				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
-				
+
 				l_pView->m_eCurrentCursorMode=DisplayMode_BestFit;
 			}
 			else
@@ -101,7 +100,7 @@ namespace OpenViBEPlugins
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
 			l_pView->toggleLeftRulers(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget))?true:false);
 		}
-		
+
 		void toggleBottomRulerButtonCallback(GtkWidget *widget, gpointer data)
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
@@ -113,7 +112,7 @@ namespace OpenViBEPlugins
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
 
 			//Compute and save the nuew number of buffers to display
-			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged = 
+			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged =
 					l_pView->m_pBufferDatabase->adjustNumberOfDisplayedBuffers(
 					static_cast<float64>(gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget))));
 
@@ -135,7 +134,7 @@ namespace OpenViBEPlugins
 
 		//called when the channel select button is pressed (opens the channel selection dialog)
 		void channelSelectButtonCallback(GtkButton *button, gpointer data)
-		{		
+		{
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
 			GtkWidget * l_pChannelSelectDialog = glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayChannelSelectDialog");
 
@@ -183,7 +182,7 @@ namespace OpenViBEPlugins
 
 			//hides the channel selection dialog
 			gtk_widget_hide(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayChannelSelectDialog"));
-		}	
+		}
 
 		//Called when the user press the Information button (opens the information dialog)
 		void informationButtonCallback(GtkButton *button, gpointer data)
@@ -197,7 +196,7 @@ namespace OpenViBEPlugins
 				 l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
-			l_oValueString<<l_pView->m_pBufferDatabase->m_ui32SamplingFrequency;	
+			l_oValueString<<l_pView->m_pBufferDatabase->m_ui32SamplingFrequency;
 			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplaySamplingFrequency")),
 				l_oValueString.str().c_str() );
 
@@ -258,7 +257,7 @@ namespace OpenViBEPlugins
 
 			//clears the list of selected channels
 			l_pView->m_vMultiViewSelectedChannels.clear();
-			
+
 			for(unsigned int i=0 ; i<l_pView->m_vMultiViewChannelsCheckButtons.size() ; i++)
 			{
 				if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pView->m_vMultiViewChannelsCheckButtons[i])))
@@ -274,7 +273,7 @@ namespace OpenViBEPlugins
 
 			//hides the channel selection dialog
 			gtk_widget_hide(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewDialog"));
-		}	
+		}
 
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase)
 		: m_pGladeInterface(NULL),
@@ -286,7 +285,7 @@ namespace OpenViBEPlugins
 		{
 			//load the glade interface
 			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.glade", NULL, NULL);
-			
+
 			if(!m_pGladeInterface)
 			{
 				g_warning("Couldn't load the interface!");
@@ -331,9 +330,9 @@ namespace OpenViBEPlugins
 					G_CALLBACK(gtk_widget_hide),
 					G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")));
 
-			//hides the dialog if the user tries to close it	
-			 g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")), 
-					 "delete_event", 
+			//hides the dialog if the user tries to close it
+			 g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")),
+					 "delete_event",
 					 G_CALLBACK(gtk_widget_hide), NULL);
 
 			//multiview signals
@@ -345,14 +344,14 @@ namespace OpenViBEPlugins
 				G_CALLBACK(gtk_widget_hide),
 				G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewDialog")));
 
-			//hides the dialog if the user tries to close it	
-			 g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewDialog")), 
-				 "delete_event", 
+			//hides the dialog if the user tries to close it
+			 g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewDialog")),
+				 "delete_event",
 				 G_CALLBACK(gtk_widget_hide), NULL);
 
 			//does nothing on the main window if the user tries to close it
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow")), 
-				"delete_event", 
+			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow")),
+				"delete_event",
 				G_CALLBACK(gtk_widget_do_nothing), NULL);
 
 			//creates the window
@@ -369,13 +368,13 @@ namespace OpenViBEPlugins
 				gtk_widget_destroy(m_pMainWindow);
 				m_pMainWindow = NULL;
 			}
-			
+
 			//destroy the rest
 			for(int i=0 ; i<5 ; i++)
 			{
 				gdk_cursor_unref(m_pCursor[i]);
 			}
-			
+
 			/* unref the xml file as it's not needed anymore */
 			g_object_unref(G_OBJECT(m_pGladeInterface));
 			m_pGladeInterface=NULL;
@@ -417,7 +416,7 @@ namespace OpenViBEPlugins
 					CHANNEL_DISPLAY(m_oChannelDisplay.back())->m_pChannelDisplay->addChannel(m_vMultiViewSelectedChannels[i]);
 				}
 
-				//request a redraw	
+				//request a redraw
 				gdk_window_invalidate_rect(GTK_WIDGET(m_oChannelDisplay.back())->window,
 					NULL,
 					true);
@@ -432,11 +431,10 @@ namespace OpenViBEPlugins
 			stringstream l_oLabelString;
 			GtkWidget * l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectList");
 			GtkWidget * l_pMultiViewSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewSelectList");
-			
+
 			//size group for the channel labels and the empty widget in the bottom bar
 			//(useful to position the bottom ruler correctly)
 			GtkSizeGroup * l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
-
 
 			//creates the array of Channel displays
 			m_oChannelDisplay.resize(l_ui32ChannelCount);
@@ -487,32 +485,32 @@ namespace OpenViBEPlugins
 
 				//creates the channel display widget
 				m_oChannelDisplay[i] = GTK_WIDGET(channel_display_new());
-					
+
 				//configures it
 				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->setParent(this);
 				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->addChannel(i);
-				
+
 				//adds it to the table
 				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), m_oChannelDisplay[i],
 				2, 3, (i*2), (i*2)+1,
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
 				0, 0);
 				gtk_widget_show_all(m_oChannelDisplay[i]);
-					
-					
+
+
 				//Add an horizontal separator under it
 				l_pSeparator = gtk_hseparator_new();
 				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), l_pSeparator,
 				0, 3, (i*2)+1, (i*2)+2,	static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_SHRINK,	0, 0);
 				gtk_widget_show(l_pSeparator);
-				
-				
+
+
 				//Adds a checkbox in the channel select window
 				GtkWidget * l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
 				m_vChannelsCheckButtons.push_back(l_pChannelCheckButton);
-				
+
 				gtk_box_pack_start_defaults(GTK_BOX(l_pChannelSelectList), l_pChannelCheckButton);
-								
+
 				//same for the multiview dialog
 				l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
 				m_vMultiViewChannelsCheckButtons.push_back(l_pChannelCheckButton);
@@ -542,7 +540,7 @@ namespace OpenViBEPlugins
 			//adds it to the table
 			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), m_oChannelDisplay.back(),
 				2, 3, (l_ui32ChannelCount*2), (l_ui32ChannelCount*2)+1,
-				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 
+				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
 				0, 0);
 
@@ -561,15 +559,15 @@ namespace OpenViBEPlugins
 			//resize the vector of raw points
 			m_pRawPoints.resize((size_t)(m_pBufferDatabase->m_pDimmensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
 			//Used if the initial number of displayed buffer is fixed, computes the corresponding time interval
-			//gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale")), 
-			//		static_cast<gdouble>(m_pBufferDatabase->getDisplayedTimeIntervalWidth() ) ); 
+			//gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale")),
+			//		static_cast<gdouble>(m_pBufferDatabase->getDisplayedTimeIntervalWidth() ) );
 
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale")), 1000); 
-			
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale")), 10000);
+
 			//Adds the bottom ruler
-			
+
 			m_pBottomRuler = new CBottomTimeRuler(*m_pBufferDatabase);
-			
+
 			//adds the empty label to the size group (it will request the same height than the channel labels
 			gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBarEmptyLabel1"));
 
@@ -577,7 +575,6 @@ namespace OpenViBEPlugins
 			gtk_box_pack_start(GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBar")),
 					m_pBottomRuler->getWidget(),
 					false, false, 0);
-
 
 			// tells the ruler that it has to resize when the channel displays are resized
 			if(m_oChannelDisplay.size() != 0)

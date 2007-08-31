@@ -14,7 +14,6 @@ using namespace std;
 
 #define convert_time(i) (float64)(i>>32) + (float64)((float64)(i&0xFFFFFFFF) / (float64)((uint64)1<<32))
 
-
 //! Callback to redraw the bottom ruler
 gboolean bottomRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
@@ -32,7 +31,7 @@ gboolean resizeBottomRulerCallback(GtkWidget *widget, GtkAllocation *allocation,
 	CBottomTimeRuler * l_pBottomRuler = reinterpret_cast<CBottomTimeRuler*>(data);
 
 	//resizes the bottom ruler
-	gtk_widget_set_size_request(l_pBottomRuler->getWidget(), allocation->width, -1); 
+	gtk_widget_set_size_request(l_pBottomRuler->getWidget(), allocation->width, -1);
 
 	return FALSE;
 }
@@ -71,12 +70,11 @@ void CBottomTimeRuler::draw()
 		l_ui64NumberOfBufferToDisplay--;
 	}
 
-
 	//gets the widget's size
 	gint l_iBottomRulerWidth;
 	gint l_iBottomRulerHeight;
 	gdk_drawable_get_size(m_pBottomRuler->window, &l_iBottomRulerWidth, &l_iBottomRulerHeight);
-	
+
 	//draw ruler base (horizontal line)
 	gdk_draw_line(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], 0, 0, l_iBottomRulerWidth, 0);
 
@@ -99,7 +97,7 @@ void CBottomTimeRuler::draw()
 	float64 l_f64NearestSmallerPowerOf10 = static_cast<float64>(pow(10, floor(log10(l_f64IntervalWidth))));
 
 	uint64 l_ui64MaxNumberOfLabels = (uint64)(l_iBottomRulerWidth / m_ui64PixelsPerBottomRulerLabel);
-	
+
 	if( (uint64)floor(l_f64IntervalWidth / l_f64NearestSmallerPowerOf10) > l_ui64MaxNumberOfLabels )
 	{
 		l_f64ValueStep = 2 * l_f64NearestSmallerPowerOf10;
@@ -127,7 +125,6 @@ void CBottomTimeRuler::draw()
 		l_i64BaseX = 0;
 	}
 
-
 	stringstream l_oTimeLabel;
 
 	for(float64 i=l_f64BaseValue ; i<static_cast<float64>(0.5+l_f64EndTime) ; i+=l_f64ValueStep)
@@ -136,12 +133,12 @@ void CBottomTimeRuler::draw()
 		l_oTimeLabel.str("");
 
 		//compute the position of the label
-		gint l_iTextX = static_cast<gint>(l_i64BaseX + ((i - l_f64StartTime)*(((float64)l_iBottomRulerWidth)/l_f64IntervalWidth))) ; 
-		
+		gint l_iTextX = static_cast<gint>(l_i64BaseX + ((i - l_f64StartTime)*(((float64)l_iBottomRulerWidth)/l_f64IntervalWidth))) ;
+
 		l_oTimeLabel<<i;
 
 		PangoLayout * l_pText = gtk_widget_create_pango_layout(m_pBottomRuler, l_oTimeLabel.str().c_str());
-		
+
 		int l_iTextWidth;
 		pango_layout_get_pixel_size(l_pText, &l_iTextWidth, NULL);
 
@@ -151,14 +148,13 @@ void CBottomTimeRuler::draw()
 			//increases the allocated width per label
 			m_ui64PixelsPerBottomRulerLabel = l_iTextWidth + 30;
 		}
-		
+
 		//display it
 		gdk_draw_layout(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)],
 				l_iTextX, 4, l_pText);
 
 		//draw a small line above it
 		gdk_draw_line(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], l_iTextX, 0, l_iTextX, 3);
-
 
 	}
 }
@@ -178,7 +174,6 @@ void CBottomTimeRuler::toggle(OpenViBE::boolean bActive)
 		gtk_widget_hide(m_pBottomRuler);
 	}
 }
-
 
 /**
  * Associates another widget to this ruler.
