@@ -14,7 +14,7 @@ using namespace System;
 
 boolean Time::sleep(const uint32 ui32MilliSeconds)
 {
-	return zsleep((((uint64)ui32MilliSeconds)<<32)/1000);
+	return zsleep(((((uint64)ui32MilliSeconds)<<22)/1000)<<10);
 }
 
 boolean Time::zsleep(const uint64 ui64Seconds)
@@ -22,7 +22,7 @@ boolean Time::zsleep(const uint64 ui64Seconds)
 #if defined System_OS_Linux
 	usleep((ui64Seconds*1000000)>>32);
 #elif defined System_OS_Windows
-	Sleep((uint32)((ui64Seconds*1000)>>32));
+	Sleep((uint32)(((ui64Seconds>>10)*1000)>>22));
 #else
 #endif
 	return true;
@@ -30,7 +30,7 @@ boolean Time::zsleep(const uint64 ui64Seconds)
 
 uint32 Time::getTime(void)
 {
-	return (uint32)((zgetTime()*1000)>>32);
+	return (uint32)(((zgetTime()>>22)*1000)>>10);
 }
 
 uint64 Time::zgetTime(void)

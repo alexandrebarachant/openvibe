@@ -10,6 +10,10 @@ boolean Memory::copy(
 	const uint64 ui64BufferSize)
 {
 	// $$$ TODO take 64bits size into consideration
+	if(ui64BufferSize==0)
+	{
+		return true;
+	}
 	memcpy(pTargetBuffer, pSourceBuffer, static_cast<size_t>(ui64BufferSize));
 	return true;
 }
@@ -19,6 +23,10 @@ boolean Memory::set(
 	const uint64 ui64BufferSize,
 	const uint8 ui8Value)
 {
+	if(ui64BufferSize==0)
+	{
+		return true;
+	}
 	// $$$ TODO take 64bits size into consideration
 	memset(pTargetBuffer, ui8Value, static_cast<size_t>(ui64BufferSize));
 	return true;
