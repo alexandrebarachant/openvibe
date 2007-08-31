@@ -5,7 +5,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-
 #include <ebml/TReaderCallbackProxy.h>
 #include <ebml/TWriterCallbackProxy.h>
 

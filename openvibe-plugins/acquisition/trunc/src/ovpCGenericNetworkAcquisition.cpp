@@ -223,7 +223,7 @@ CGenericNetworkAcquisition::CGenericNetworkAcquisition(void)
 	//just in case ...
 	for(int i=0 ; i<3 ; i++)
 	{
-		m_pWriter[i]= NULL;
+		m_pWriter[i]=NULL;
 	}
 }
 
