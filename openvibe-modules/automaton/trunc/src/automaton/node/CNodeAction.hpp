@@ -38,7 +38,7 @@ namespace Automaton
 				std::cout<<"<<<<<<<<<<<<<<sending event : "<<std::dec<<(uint64)m_oEvent<<std::endl;
 #endif
 				pContext->sendEvent(m_oEvent);
-				
+
 				return true;
 			}
 	};
@@ -82,21 +82,18 @@ namespace Automaton
 
 			Automaton::uint64 convertTime(Automaton::uint64 ui64TimeLength)
 			{
-				uint64 l_ui64Temp = ((uint64)(ui64TimeLength%1000)<<32);
-
-				//converts it to 32:32 format 
-				return (( ui64TimeLength/1000) << 32) + (l_ui64Temp/1000);
+				return (ui64TimeLength<<32)/1000;
 			}
 
-			CWaitTime(Automaton::uint64 ui64TimeLength) : 
-	       			m_bTimeSet(false),
+			CWaitTime(Automaton::uint64 ui64TimeLength) :
+				m_bTimeSet(false),
 				m_ui64LowerBound(0),
 				m_ui64HigherBound(0)
 			{
 				m_ui64TimeLength = convertTime(ui64TimeLength);
 			}
 
-			CWaitTime(Automaton::uint64 ui64Low, Automaton::uint64 ui64High) : 
+			CWaitTime(Automaton::uint64 ui64Low, Automaton::uint64 ui64High) :
 	       			m_bTimeSet(false),
 				m_ui64LowerBound(0),
 				m_ui64HigherBound(0)
@@ -117,8 +114,8 @@ namespace Automaton
 					{
 						uint64 l_ui64DurationMs = (rand() % (m_ui64HigherBound - m_ui64LowerBound)) + m_ui64LowerBound;
 
-						//converts it to 32:32 format 
-						m_ui64TimeLength = convertTime(l_ui64DurationMs); 
+						//converts it to 32:32 format
+						m_ui64TimeLength = convertTime(l_ui64DurationMs);
 					}
 
 					m_ui64EndTime = pContext->getCurrentTime() + m_ui64TimeLength;
@@ -142,14 +139,14 @@ namespace Automaton
 
 	class CNodeAction : public virtual TNode<INode>
 	{
-		IActionFunctor * m_pAction; 
-	
+		IActionFunctor * m_pAction;
+
 		public:
 			CNodeAction() : m_pAction(NULL) {}
-		
+
 			virtual ~CNodeAction(){ delete m_pAction; }
 
-			virtual Automaton::boolean process(IAutomatonContext * pContext);	
+			virtual Automaton::boolean process(IAutomatonContext * pContext);
 
 			virtual Automaton::CIdentifier getSuccessor(IAutomatonContext * pContext)
 			{

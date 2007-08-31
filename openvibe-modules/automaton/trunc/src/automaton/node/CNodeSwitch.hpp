@@ -60,7 +60,7 @@ namespace Automaton
 			virtual ~CSwitchConditionProbability(){}
 	};
 
-	
+
 	class CSwitchConditionEvent : virtual public ISwitchConditionFunctor
 	{
 		std::vector<Automaton::CIdentifier> m_oEvents;
@@ -84,7 +84,7 @@ namespace Automaton
 							return j;
 						}
 					}
-				}	
+				}
 
 				return -1;
 			}
@@ -110,7 +110,6 @@ namespace Automaton
 
 			virtual void setSwitchCondition(const std::string& oCondition, std::vector<Automaton::CIdentifier>& oParameter, Automaton::IAutomatonContext* pContext);
 	};
-
 
 };
 

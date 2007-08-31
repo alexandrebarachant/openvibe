@@ -27,7 +27,7 @@ namespace Automaton
 	{
 		public:
 			virtual ~CLoopConditionInfinite() {}
-			
+
 			virtual Automaton::boolean operator()(IAutomatonContext*)
 			{
 				return false;
@@ -38,16 +38,16 @@ namespace Automaton
 	{
 		Automaton::uint64 m_ui64Iteration;
 		Automaton::uint64 m_ui64BaseIteration;
-		
+
 		public:
 			CLoopConditionFinite(Automaton::uint64 ui64Iteration)
-				: m_ui64Iteration(ui64Iteration), 
+				: m_ui64Iteration(ui64Iteration),
 				m_ui64BaseIteration(ui64Iteration) {}
 
 			virtual void reset(){ m_ui64Iteration = m_ui64BaseIteration; }
 
 			virtual ~CLoopConditionFinite() {}
-			
+
 			virtual Automaton::boolean operator()(IAutomatonContext*)
 			{
 				return (m_ui64Iteration--==0);
@@ -64,7 +64,7 @@ namespace Automaton
 				: m_oEvent(ui64Event) {}
 
 			virtual ~CLoopConditionEvent() {}
-			
+
 			virtual Automaton::boolean operator()(IAutomatonContext* pContext)
 			{
 				const CIdentifier* l_pReceivedEvents = pContext->getReceivedEvents();
@@ -79,10 +79,9 @@ namespace Automaton
 
 	};
 
-
 	class CNodeLoop : virtual public TNodeLoop<INode>
 	{
-		protected:	
+		protected:
 			ILoopConditionFunctor * m_pLoopCondition;
 			Automaton::boolean m_bComplete;
 
