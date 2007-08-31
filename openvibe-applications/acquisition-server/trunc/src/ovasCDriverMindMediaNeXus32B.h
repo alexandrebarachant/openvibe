@@ -40,6 +40,11 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::float32* m_pSample;
 
 		OpenViBEAcquisitionServer::uint32 m_ui32SampleIndex;
+
+		OpenViBEAcquisitionServer::uint32 m_ui32StartTime;
+		OpenViBEAcquisitionServer::uint64 m_ui64SampleCountTotal;
+		OpenViBEAcquisitionServer::uint64 m_ui64AutoAddedSampleCount;
+		OpenViBEAcquisitionServer::uint64 m_ui64AutoRemovedSampleCount;
 	};
 };
 

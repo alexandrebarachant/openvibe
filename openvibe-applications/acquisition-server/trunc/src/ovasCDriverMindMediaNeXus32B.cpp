@@ -6,6 +6,7 @@
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Time.h>
+#include <system/Memory.h>
 
 #include <math.h>
 
@@ -18,6 +19,7 @@ using namespace OpenViBEAcquisitionServer;
 
 #define OVAS_ElectrodeNames_File "../share/openvibe-applications/acquisition-server/electrode-names.txt"
 #define OVAS_ConfigureGUI_File   "../share/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.glade"
+#define OVAS_MaxSampleCountJitter 4
 
 //___________________________________________________________________//
 //                                                                   //
@@ -64,6 +66,7 @@ typedef ::DWORD (*NeXusDLL_Init)(::NeXusDLL_ProcessData fpProcessData);
 typedef ::DWORD (*NeXusDLL_Start)(::DWORD* dwSamplingRate);
 typedef ::DWORD (*NeXusDLL_Stop)(void);
 
+static HANDLE g_pMutex=NULL;
 static HINSTANCE g_hNeXusDLLInstance=NULL;
 static NeXusDLL_Init g_fpNeXusDLLInit=NULL;
 static NeXusDLL_Start g_fpNeXusDLLStart=NULL;
@@ -107,7 +110,7 @@ boolean CDriverMindMediaNeXus32B::initialize(
 	g_fpNeXusDLLInit=(NeXusDLL_Init)GetProcAddress(g_hNeXusDLLInstance, "InitNeXusDevice");
 	g_fpNeXusDLLStart=(NeXusDLL_Start)GetProcAddress(g_hNeXusDLLInstance,"StartNeXusDevice");
 	g_fpNeXusDLLStop=(NeXusDLL_Stop)GetProcAddress(g_hNeXusDLLInstance, "StopNeXusDevice");
-	m_pSample=new float32[m_pHeader->getChannelCount()*ui32SampleCountPerSentBlock];
+	m_pSample=new float32[m_pHeader->getChannelCount()*ui32SampleCountPerSentBlock*2];
 
 	if(!g_fpNeXusDLLInit || !g_fpNeXusDLLStart || !g_fpNeXusDLLStop || !m_pSample)
 	{
@@ -118,11 +121,16 @@ boolean CDriverMindMediaNeXus32B::initialize(
 		g_fpNeXusDLLStart=NULL;
 		g_fpNeXusDLLStop=NULL;
 		m_pSample=NULL;
+		g_pMutex=NULL;
 		return false;
 	}
 
-	::DWORD l_dwError=g_fpNeXusDLLInit(::processData);
-	if(l_dwError)
+	g_pMutex=CreateMutex(
+		NULL,  // default security attributes
+		FALSE, // not initially owned
+		NULL); // no name
+
+	if(!g_pMutex)
 	{
 		::FreeLibrary(g_hNeXusDLLInstance);
 		delete [] m_pSample;
@@ -131,6 +139,22 @@ boolean CDriverMindMediaNeXus32B::initialize(
 		g_fpNeXusDLLStart=NULL;
 		g_fpNeXusDLLStop=NULL;
 		m_pSample=NULL;
+		g_pMutex=NULL;
+		return false;
+	}
+
+	::DWORD l_dwError=g_fpNeXusDLLInit(::processData);
+	if(l_dwError)
+	{
+		::FreeLibrary(g_hNeXusDLLInstance);
+		delete [] m_pSample;
+		CloseHandle(g_pMutex);
+		g_hNeXusDLLInstance=NULL;
+		g_fpNeXusDLLInit=NULL;
+		g_fpNeXusDLLStart=NULL;
+		g_fpNeXusDLLStop=NULL;
+		m_pSample=NULL;
+		g_pMutex=NULL;
 		return false;
 	}
 
@@ -166,6 +190,12 @@ boolean CDriverMindMediaNeXus32B::start(void)
 	::DWORD l_dwSamplingFrequency=::DWORD(m_pHeader->getSamplingFrequency());
 	::DWORD l_dwError=g_fpNeXusDLLStart(&l_dwSamplingFrequency);
 	m_bStarted=(l_dwError?false:true);
+
+	m_ui32StartTime=System::Time::getTime();
+	m_ui64SampleCountTotal=0;
+	m_ui64AutoAddedSampleCount=0;
+	m_ui64AutoRemovedSampleCount=0;
+
 	return m_bStarted;
 
 #else
@@ -174,6 +204,8 @@ boolean CDriverMindMediaNeXus32B::start(void)
 
 #endif
 }
+
+#include <iostream>
 
 boolean CDriverMindMediaNeXus32B::loop(void)
 {
@@ -187,6 +219,76 @@ boolean CDriverMindMediaNeXus32B::loop(void)
 	if(!m_bStarted)
 	{
 		return false;
+	}
+
+	uint32 l_ui32ElapsedTime=System::Time::getTime()-m_ui32StartTime;
+
+#if 0
+	static uint32 l_ui32LastElapsedTime=0;
+	if(l_ui32ElapsedTime-l_ui32LastElapsedTime > 1000)
+	{
+		std::cout<<"Got more than a second time jump, welcome in the fourth dimension\n";
+		std::cout<<"Last elapsed time was : "<<l_ui32LastElapsedTime<<"\n";
+		std::cout<<"Current time is : "<<l_ui32ElapsedTime<<"\n";
+	}
+	l_ui32LastElapsedTime=l_ui32ElapsedTime;
+#endif
+
+	if(l_ui32ElapsedTime > (1000*m_ui64SampleCountTotal)/m_pHeader->getSamplingFrequency())
+	{
+		WaitForSingleObject(g_pMutex, INFINITE);
+
+		uint32 l_ui32NextSampleIndex=0;
+
+		if(m_ui32SampleIndex>m_ui32SampleCountPerSentBlock)
+		{
+			if(m_ui32SampleIndex-m_ui32SampleCountPerSentBlock>OVAS_MaxSampleCountJitter)
+			{
+				l_ui32NextSampleIndex=OVAS_MaxSampleCountJitter;
+				m_ui64AutoRemovedSampleCount+=m_ui32SampleIndex-m_ui32SampleCountPerSentBlock-OVAS_MaxSampleCountJitter;
+			}
+			else
+			{
+				l_ui32NextSampleIndex=m_ui32SampleIndex-m_ui32SampleCountPerSentBlock;
+			}
+		}
+		if(m_ui32SampleIndex<m_ui32SampleCountPerSentBlock)
+		{
+			m_ui64AutoAddedSampleCount+=m_ui32SampleCountPerSentBlock-m_ui32SampleIndex;
+
+			for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+			{
+				for(uint32 j=m_ui32SampleIndex>0?m_ui32SampleIndex:1; j<m_ui32SampleCountPerSentBlock; j++)
+				{
+					m_pSample[j+i*m_ui32SampleCountPerSentBlock]=m_pSample[j-1+i*m_ui32SampleCountPerSentBlock];
+				}
+			}
+		}
+
+#if 1
+		static uint64 l_ui64AutoAddedSampleCount=0;
+		static uint64 l_ui64AutoRemovedSampleCount=0;
+		if(((l_ui64AutoAddedSampleCount>>5)-(m_ui64AutoAddedSampleCount>>5)!=0) || ((l_ui64AutoRemovedSampleCount>>5)-(m_ui64AutoRemovedSampleCount>>5)!=0))
+		{
+			std::cout << "time:" << l_ui32ElapsedTime << "ms [" << m_ui64AutoAddedSampleCount << ":" << m_ui64AutoRemovedSampleCount << "] [added:removed] dummy samples so far...\n";
+
+			l_ui64AutoAddedSampleCount=m_ui64AutoAddedSampleCount;
+			l_ui64AutoRemovedSampleCount=m_ui64AutoRemovedSampleCount;
+		}
+#endif
+
+		m_pCallback->setSamples(m_pSample);
+
+		m_ui64SampleCountTotal+=m_ui32SampleCountPerSentBlock;
+
+		System::Memory::copy(
+			m_pSample,
+			m_pSample+m_pHeader->getChannelCount()*m_ui32SampleCountPerSentBlock,
+			m_pHeader->getChannelCount()*m_ui32SampleCountPerSentBlock*sizeof(float32));
+
+		m_ui32SampleIndex=l_ui32NextSampleIndex;
+
+		ReleaseMutex(g_pMutex);
 	}
 
 	return true;
@@ -241,6 +343,7 @@ boolean CDriverMindMediaNeXus32B::uninitialize(void)
 
 	::FreeLibrary(g_hNeXusDLLInstance);
 	delete [] m_pSample;
+	CloseHandle(g_pMutex);
 	m_pSample=NULL;
 	m_pCallback=NULL;
 	g_hNeXusDLLInstance=NULL;
@@ -248,6 +351,7 @@ boolean CDriverMindMediaNeXus32B::uninitialize(void)
 	g_fpNeXusDLLStart=NULL;
 	g_fpNeXusDLLStop=NULL;
 	g_pDriver=NULL;
+	g_pMutex=NULL;
 
 	return true;
 
@@ -304,16 +408,23 @@ void CDriverMindMediaNeXus32B::processData(
 {
 #if defined OVAS_OS_Windows
 
-	for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+	WaitForSingleObject(g_pMutex, INFINITE);
+
+	if(m_ui32SampleIndex<m_ui32SampleCountPerSentBlock*2)
 	{
-		m_pSample[m_ui32SampleIndex+i*m_ui32SampleCountPerSentBlock]=pSample[i];
-	}
-	m_ui32SampleIndex++;
-	m_ui32SampleIndex%=m_ui32SampleCountPerSentBlock;
-	if(!m_ui32SampleIndex)
-	{
-		m_pCallback->setSamples(m_pSample);
+		uint32 l_ui32BufferIndex=m_ui32SampleIndex/m_ui32SampleCountPerSentBlock;
+		uint32 l_ui32SampleIndex=m_ui32SampleIndex%m_ui32SampleCountPerSentBlock;
+
+		for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+		{
+			m_pSample[
+				l_ui32BufferIndex*m_ui32SampleCountPerSentBlock*m_pHeader->getChannelCount()+
+				i*m_ui32SampleCountPerSentBlock+l_ui32SampleIndex]=pSample[i];
+		}
 	}
 
+	m_ui32SampleIndex++; // Please don't overflow :o)
+
+	ReleaseMutex(g_pMutex);
 #endif
 }

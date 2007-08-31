@@ -154,8 +154,8 @@ CAcquisitionServer::CAcquisitionServer(void)
 	,m_bGotData(false)
 	,m_pDriver(NULL)
 {
-	m_vDriver.push_back(new CDriverGenericOscillator());
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B());
+	m_vDriver.push_back(new CDriverGenericOscillator());
 }
 
 CAcquisitionServer::~CAcquisitionServer(void)
@@ -333,7 +333,11 @@ void CAcquisitionServer::idleCB(void)
 		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), l_sLabel);
 	}
 
-	m_bGotData=false;
+	if(m_bGotData)
+	{
+		m_bGotData=false;
+		System::Time::sleep(0);
+	}
 }
 
 //___________________________________________________________________//
