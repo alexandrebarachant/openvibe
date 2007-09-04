@@ -3,6 +3,10 @@
 
 #define _Debug_ 0
 
+#if _Debug_
+#include <stdio.h>
+#endif
+
 using namespace EBML;
 
 // ________________________________________________________________________________________________________________
@@ -74,6 +78,7 @@ namespace EBML
 			uint64 m_ui64ContentSize;
 			uint64 m_ui64ReadContentSize;
 			unsigned char* m_pBuffer;
+//			boolean m_bBufferShouldBeDeleted;
 		};
 	};
 };
@@ -177,13 +182,13 @@ printf("...\n");
 		m_eLastStatus=m_eStatus;
 
 #if _Debug_
-	if(m_ui64PendingCount)
-	{
-		printf("%i byte(s) pending : ", (int)m_ui64PendingCount);
-		for(int i=0; i<(int)m_ui64PendingCount; i++)
-			printf("[%02X]", m_pPending[i]);
-		printf("\n");
-	}
+		if(m_ui64PendingCount)
+		{
+			printf("%i byte(s) pending : ", (int)m_ui64PendingCount);
+			for(int i=0; i<(int)m_ui64PendingCount; i++)
+				printf("[%02X]", m_pPending[i]);
+			printf("\n");
+		}
 #endif
 
 		// Processes data
@@ -261,22 +266,35 @@ printf("...\n");
 					}
 					else
 					{
-						if(m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize>l_ui64BufferSize)
+						if(m_pCurrentNode->m_ui64ReadContentSize==0 && m_pCurrentNode->m_ui64ContentSize<=l_ui64BufferSize)
 						{
-							memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(l_ui64BufferSize));
-							l_ui64ProcessedBytes=l_ui64BufferSize;
-							l_bFinished=true;
+							m_eStatus=FillingIdentifier;
+
+							l_ui64ProcessedBytes=m_pCurrentNode->m_ui64ContentSize;
+#if _Debug_
+							printf("Optimized processing of %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
+#endif
+							m_rReaderCallback.processChildData(l_pBuffer, m_pCurrentNode->m_ui64ContentSize);
 						}
 						else
 						{
-							memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize));
-							l_ui64ProcessedBytes=m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize;
+							if(m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize>l_ui64BufferSize)
+							{
+								memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(l_ui64BufferSize));
+								l_ui64ProcessedBytes=l_ui64BufferSize;
+								l_bFinished=true;
+							}
+							else
+							{
+								memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize));
+								l_ui64ProcessedBytes=m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize;
 
-							m_eStatus=FillingIdentifier;
+								m_eStatus=FillingIdentifier;
 #if _Debug_
-							printf("Finished with %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
+								printf("Finished with %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
 #endif
-							m_rReaderCallback.processChildData(m_pCurrentNode->m_pBuffer, m_pCurrentNode->m_ui64ContentSize);
+								m_rReaderCallback.processChildData(m_pCurrentNode->m_pBuffer, m_pCurrentNode->m_ui64ContentSize);
+							}
 						}
 					}
 				}
