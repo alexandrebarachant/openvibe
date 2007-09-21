@@ -31,7 +31,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean initialize();
 			virtual OpenViBE::boolean uninitialize();
-		
+
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 
 			virtual OpenViBE::boolean process();
@@ -50,11 +50,11 @@ namespace OpenViBEPlugins
 				EBML::IWriter* m_pWriter;
 				EBML::TWriterCallbackProxy1<OpenViBEPlugins::FeatureExtraction::CFeatureAggregator> * m_pOutputWriterCallbackProxy;
 				OpenViBEToolkit::IBoxAlgorithmFeatureVectorOutputWriter * m_pFeatureVectorOutputWriterHelper;
-				
+
 				// Needed to read the input
 				EBML::IReader* m_pReader;
 				OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pMatrixReaderCallBack;
-	
+
 				// contains the labels for each dimmension for each input
 				std::vector<std::vector<std::vector<std::string> > > m_oFeatureNames;
 
@@ -72,7 +72,7 @@ namespace OpenViBEPlugins
 				OpenViBE::uint32 m_ui32NumberOfInput;
 
 				// current input (usesful in the EBML callbacks)
-				OpenViBE::uint32 m_ui32CurrentInput; 
+				OpenViBE::uint32 m_ui32CurrentInput;
 
 				// the feature vector
 				OpenViBE::float64 * m_pVectorBuffer;
@@ -110,12 +110,9 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_FeatureAggregatorDesc)
 
-			
 		};
-
 
 	};
 };

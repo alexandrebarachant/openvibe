@@ -18,8 +18,7 @@ namespace OpenViBEPlugins
 {
 	namespace FeatureExtraction
 	{
-		
-				
+
 		void CFeatureAggregator::setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
 		{
 			//resizes to the number of dimmensions for the current input
@@ -34,11 +33,12 @@ namespace OpenViBEPlugins
 		{
 			//sets this dimmension size
 			m_oDimmensionSize[m_ui32CurrentInput][ui32DimmensionIndex] = ui32DimmensionSize;
-		
+
 			m_oFeatureNames[m_ui32CurrentInput][ui32DimmensionIndex].resize(ui32DimmensionSize);
-		
-			// taking the dimmension size into account in the input buffer size	
+
+			// taking the dimmension size into account in the input buffer size
 			m_oInputBufferSizes[m_ui32CurrentInput] *= ui32DimmensionSize;
+
 
 			//if it's the last input
 			if(m_ui32CurrentInput == m_ui32NumberOfInput-1 && ui32DimmensionIndex == m_oDimmensionSize[m_ui32CurrentInput].size()-1)
@@ -66,8 +66,8 @@ namespace OpenViBEPlugins
 						//creates feature's name by concatenating labels
 						string l_oLabel;
 						uint32 l_ui32ElementIndex = elt;
-						
-						for(size_t k=m_oDimmensionSize[i].size()-1 ; k>=0 ; k--)
+
+						for(int32 k=m_oDimmensionSize[i].size()-1 ; k>=0 ; k--)
 						{
 							l_oLabel += m_oFeatureNames[(size_t)i][(size_t)(m_oDimmensionSize[i].size()-k-1)][(size_t)(l_ui32ElementIndex / m_oDimmensionSize[i][k])];
 							l_ui32ElementIndex = l_ui32ElementIndex % m_oDimmensionSize[i][k];
@@ -88,7 +88,7 @@ namespace OpenViBEPlugins
 
 		void CFeatureAggregator::setMatrixBuffer(const OpenViBE::float64* pBuffer)
 		{
-			float64 * l_pDestinationAddress = (m_ui32CurrentInput==0) 
+			float64 * l_pDestinationAddress = (m_ui32CurrentInput==0)
 				? m_pVectorBuffer
 				: m_pVectorBuffer + (m_ui32CurrentInput * m_oInputBufferSizes[m_ui32CurrentInput-1]);
 
@@ -102,14 +102,12 @@ namespace OpenViBEPlugins
 				m_pFeatureVectorOutputWriterHelper->writeBuffer(*m_pWriter);
 				getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
 			}
-
 		}
 
 		void CFeatureAggregator::writeFeatureVectorOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 		{
 			appendOutputChunkData<0>(pBuffer, ui64BufferSize);
 		}
-
 
 		CFeatureAggregator::CFeatureAggregator(void) :
 			m_pWriter(NULL),
@@ -123,12 +121,12 @@ namespace OpenViBEPlugins
 			m_pVectorBuffer(NULL),
 			m_ui32VectorSize(0),
 			m_bError(false)
-		{	
+		{
 		}
 
 		OpenViBE::boolean CFeatureAggregator::initialize()
 		{
-			
+
 			// Prepares EBML reader
 			m_pMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
 			m_pReader=EBML::createReader(*m_pMatrixReaderCallBack);
@@ -139,10 +137,10 @@ namespace OpenViBEPlugins
 			m_pWriter=EBML::createWriter(*m_pOutputWriterCallbackProxy);
 
 			m_pFeatureVectorOutputWriterHelper=createBoxAlgorithmFeatureVectorOutputWriter();
-		
+
 			m_ui32NumberOfInput = getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount();
 
-			//resizes everything as needed	
+			//resizes everything as needed
 			m_oInputBufferSizes.resize(m_ui32NumberOfInput);
 			m_oDimmensionSize.resize(m_ui32NumberOfInput);
 			m_oFeatureNames.resize(m_ui32NumberOfInput);
@@ -155,7 +153,7 @@ namespace OpenViBEPlugins
 			//Cleans up the writer ...
 			delete m_pOutputWriterCallbackProxy;
 			m_pOutputWriterCallbackProxy= NULL;
-			
+
 			if(m_pWriter)
 			{
 				m_pWriter->release();
@@ -181,7 +179,6 @@ namespace OpenViBEPlugins
 			return true;
 		}
 
-
 		boolean CFeatureAggregator::processInput(uint32 ui32InputIndex)
 		{
 
@@ -194,13 +191,13 @@ namespace OpenViBEPlugins
 
 			uint64 l_ui64LastBufferChunkSize;
 			const uint8* l_pLastBuffer;
-			
+
 			uint64 l_ui64CurrentBufferChunkSize;
 			const uint8* l_pCurrentBuffer;
 
 			//gets the first buffer from the concerned input
 			l_pBoxIO->getInputChunk(ui32InputIndex, 0, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64LastBufferChunkSize, l_pLastBuffer);
-			
+
 			uint64 l_ui64StartTime = 0;
 			uint64 l_ui64EndTime = 0;
 
@@ -217,10 +214,10 @@ namespace OpenViBEPlugins
 					{
 						l_bReadyToProcess = false;
 					}
-					
+
 					//checks for problems, buffer lengths differents...
 					if(l_ui64EndTime-l_ui64StartTime != m_ui64LastChunkEndTime-m_ui64LastChunkStartTime)
-					{							
+					{
 						//marks everything as deprecated and sends a warning
 						for(uint32 input=0 ; input<m_ui32NumberOfInput ; input++)
 						{
@@ -229,7 +226,7 @@ namespace OpenViBEPlugins
 								l_pBoxIO->markInputAsDeprecated(input, chunk);
 							}
 						}
-						
+
 						getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Problem with incoming input chunks' time lengths (different)\n";
 
 						l_bReadyToProcess = false;
@@ -255,21 +252,18 @@ namespace OpenViBEPlugins
 		OpenViBE::boolean CFeatureAggregator::process()
 		{
 			IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
-		
-			//process the first buffer of every input. We are sure there is one else process wouldn't have been called	
+
+			//process the first buffer of every input. We are sure there is one else process wouldn't have been called
 			for(m_ui32CurrentInput=0 ; m_ui32CurrentInput<m_ui32NumberOfInput ; m_ui32CurrentInput++)
 			{
 					uint64 l_ui64ChunkSize;
 					const uint8* l_pBuffer;
-			
+
 					l_pBoxIO->getInputChunk(m_ui32CurrentInput, 0, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pBuffer);
 					l_pBoxIO->markInputAsDeprecated(m_ui32CurrentInput, 0);
 					m_pReader->processData(l_pBuffer, l_ui64ChunkSize);
 			}
-					return true;
+			return true;
 		}
-
 	};
-
 };
-
