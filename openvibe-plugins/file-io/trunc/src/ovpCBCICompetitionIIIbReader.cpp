@@ -34,7 +34,6 @@ namespace OpenViBEPlugins
 			appendOutputChunkData<1>(pBuffer, ui64BufferSize);
 		}
 
-
 		CBCICompetitionIIIbReader::CBCICompetitionIIIbReader()
 			: m_bErrorOccured(false),
 			m_ui64FileSize(0),
@@ -95,11 +94,9 @@ namespace OpenViBEPlugins
 			l_pBoxContext->getSettingValue(11, l_oParameter);
 			m_f64CueDisplayStart = atof((const char*) l_oParameter);
 
-
 			//get feedback start
 			l_pBoxContext->getSettingValue(12, l_oParameter);
 			m_f64FeedbackStart = atof((const char*) l_oParameter);
-
 
 			//read triggers
 			std::ifstream l_oTriggerFile;
@@ -109,14 +106,14 @@ namespace OpenViBEPlugins
 			{
 				l_oTriggerFile.open(l_oParameter);
 			}
-			
+
 			uint64 l_ui64Trigger;
 			while(getline(l_oTriggerFile, l_oLine))
 			{
 				l_oStringStream.clear();
 				l_oStringStream.str(l_oLine);
 				l_oStringStream>>l_ui64Trigger;
-				
+
 				m_oTriggerTime.push_back(l_ui64Trigger);
 				m_oCueDisplayStart.push_back(l_ui64Trigger + (uint64)floor(m_ui32SamplingRate * m_f64CueDisplayStart));
 				m_oFeedbackStart.push_back(l_ui64Trigger + (uint64)floor(m_ui32SamplingRate * m_f64FeedbackStart));
@@ -132,7 +129,7 @@ namespace OpenViBEPlugins
 			{
 				l_oLabelsFile.open(l_oParameter);
 			}
-			
+
 			uint64 l_ui64Label;
 			while(getline(l_oLabelsFile, l_oLine))
 			{
@@ -158,7 +155,7 @@ namespace OpenViBEPlugins
 			{
 				l_oArtifactFile.open(l_oParameter);
 			}
-			
+
 			uint64 l_ui64Artifact;
 			while(getline(l_oArtifactFile, l_oLine))
 			{
@@ -168,7 +165,6 @@ namespace OpenViBEPlugins
 				m_oArtifacts.push_back(l_ui64Artifact == 1);
 			}
 			l_oArtifactFile.close();
-
 
 			//read true labels
 			std::ifstream l_oTrueLabelsFile;
@@ -186,7 +182,6 @@ namespace OpenViBEPlugins
 			}
 			l_oTrueLabelsFile.close();
 
-
 			// Gets the size of output buffers
 			l_pBoxContext->getSettingValue(5, l_oParameter);
 			m_ui32SamplesPerBuffer = static_cast<uint32>(atoi((const char*)l_oParameter));
@@ -200,7 +195,7 @@ namespace OpenViBEPlugins
 				{
 					if(m_ui32SamplingRate % m_ui32SamplesPerBuffer != 0)
 					{
-						getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << 
+						getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<
 							"The sampling rate isn't a multiple of the buffer size\n" <<
 							"Please consider adjusting the BCI Competition IIIb reader settings to correct this!\n";
 					}
@@ -218,7 +213,6 @@ namespace OpenViBEPlugins
 			l_pBoxContext->getSettingValue(9, l_oParameter);
 			m_bKeepArtifactSamples = (l_oParameter == CString("true"));
 
-
 			//Prepares the writers proxies
 			m_pOutputWriterCallbackProxy[0] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CBCICompetitionIIIbReader>(*this, &CBCICompetitionIIIbReader::writeSignalOutput);
 
@@ -235,7 +229,7 @@ namespace OpenViBEPlugins
 
 			writeSignalInformation();
 
-			m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[1]);	
+			m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[1]);
 			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(1, 0, 0);
 
 			m_oMatrixBuffer.resize(2*m_ui32SamplesPerBuffer);
@@ -293,7 +287,6 @@ namespace OpenViBEPlugins
 
 			IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
 
-
 			//reading signal
 			//reset vector
 			m_oMatrixBuffer.assign(2*m_ui32SamplesPerBuffer, 0);
@@ -305,7 +298,7 @@ namespace OpenViBEPlugins
 			for(i=0 ; i<m_ui32SamplesPerBuffer && !m_bEndOfFile; i++)
 			{
 				m_bEndOfFile = (getline(m_oSignalFile, l_oLine) == NULL);
-				
+
 				l_oStringStream.clear();
 				l_oStringStream.str(l_oLine);
 
@@ -326,7 +319,7 @@ namespace OpenViBEPlugins
 				}
 				else
 				{
-					m_oMatrixBuffer[i+m_ui32SamplesPerBuffer] = l_f64Sample;	
+					m_oMatrixBuffer[i+m_ui32SamplesPerBuffer] = l_f64Sample;
 				}
 			}
 
@@ -341,7 +334,6 @@ namespace OpenViBEPlugins
 			l_pBoxIO->markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 			//////
 
-
 			//Stimulations
 			vector<std::pair<OpenViBE::uint64, OpenViBE::uint64> > l_oEvents;
 			boolean l_bChanged = true;
@@ -350,17 +342,17 @@ namespace OpenViBEPlugins
 			{
 				l_bChanged = false;
 
-				boolean l_bKeepCurrentTrial = 
+				boolean l_bKeepCurrentTrial =
 					((m_oArtifacts[m_ui32CurrentTrial] && m_bKeepArtifactSamples) || !m_oArtifacts[m_ui32CurrentTrial]) &&
 					((m_oClassLabels[m_ui32CurrentTrial] == BCICompetitionIIIbReader_UndefinedClass && m_bKeepTestSamples) ||
 					 (m_oClassLabels[m_ui32CurrentTrial] != BCICompetitionIIIbReader_UndefinedClass && m_bKeepTrainingSamples));
 
-				if(m_oTriggerTime[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) && 
+				if(m_oTriggerTime[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) &&
 						m_oTriggerTime[m_ui32CurrentTrial]<=m_ui32SentSampleCount
 				     )
 				{
 					if(l_bKeepCurrentTrial)
-					{	
+					{
 						//start of trial
 						l_oEvents.push_back(pair<uint64,uint64>(0x300,m_oTriggerTime[m_ui32CurrentTrial]));
 
@@ -370,12 +362,12 @@ namespace OpenViBEPlugins
 				}
 
 				//send CUE stimulation
-				if(m_oCueDisplayStart[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) && 
+				if(m_oCueDisplayStart[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) &&
 						m_oCueDisplayStart[m_ui32CurrentTrial]<=m_ui32SentSampleCount
 				     )
 				{
 					if(l_bKeepCurrentTrial)
-					{	
+					{
 						if(m_oClassLabels[m_ui32CurrentTrial] != BCICompetitionIIIbReader_UndefinedClass)
 						{
 							//send class label
@@ -389,9 +381,8 @@ namespace OpenViBEPlugins
 					}
 				}
 
-
 				//send feedback start stimulation
-				if(m_oFeedbackStart[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) && 
+				if(m_oFeedbackStart[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) &&
 						m_oFeedbackStart[m_ui32CurrentTrial]<=m_ui32SentSampleCount
 				     )
 				{
@@ -402,7 +393,7 @@ namespace OpenViBEPlugins
 				}
 
 				//send end of trial stimulation
-				if(m_oEndOfTrial[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) && 
+				if(m_oEndOfTrial[m_ui32CurrentTrial]>(m_ui32SentSampleCount-i) &&
 						m_oEndOfTrial[m_ui32CurrentTrial]<=m_ui32SentSampleCount
 				     )
 				{
@@ -440,7 +431,6 @@ namespace OpenViBEPlugins
 
 				l_pBoxIO->markOutputAsReadyToSend(1, l_ui64StartTime, l_ui64EndTime);
 			}
-
 
 			return true;
 		}

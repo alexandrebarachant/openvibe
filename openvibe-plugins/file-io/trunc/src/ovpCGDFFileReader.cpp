@@ -266,7 +266,7 @@ void CGDFFileReader::GDFBufferToFloat64Buffer(float64 * out, void * in, uint64 i
 
 boolean CGDFFileReader::readFileHeader()
 {
-	
+
 	IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
 
 	if(!m_bExperimentInformationSent)
@@ -442,7 +442,7 @@ boolean CGDFFileReader::readFileHeader()
 		{
 			if(m_pSignalDescription.m_ui32SamplingRate % m_ui32SamplesPerBuffer != 0)
 			{
-				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << 
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<
 					"The sampling rate isn't a multiple of the buffer size\n" <<
 					"Please consider adjusting the GDFReader settings to correct this!\n";
 			}
@@ -462,7 +462,6 @@ boolean CGDFFileReader::readFileHeader()
 
 	return true;
 }
-
 
 void CGDFFileReader::writeExperimentInformation()
 {
@@ -519,7 +518,6 @@ void CGDFFileReader::writeExperimentInformation()
 	m_pExperimentInformationOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_ExperimentInfoOutput]);
 }
 
-
 void CGDFFileReader::writeSignalInformation()
 {
 	m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription.m_ui32SamplingRate);
@@ -535,11 +533,10 @@ void CGDFFileReader::writeSignalInformation()
 	m_pSignalOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_SignalOutput]);
 }
 
-
 void CGDFFileReader::writeEvents()
 {
 	m_pStimulationOutputWriterHelper->setStimulationCount(m_oEvents.size());
-	
+
 	uint64 l_ui64EventDate = 0;
 
 	for(size_t i=0 ; i<m_oEvents.size() ; i++)
@@ -566,7 +563,7 @@ boolean CGDFFileReader::process()
 
 	IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
 
-	
+
 	// Process Matrices
 	if(m_bSignalDescriptionSent && !m_bMatricesSent)
 	{
@@ -722,7 +719,6 @@ boolean CGDFFileReader::process()
 		l_bMatrixReadyToSend = false;
 	}
 
-
 	//Events
 	if(m_bSignalDescriptionSent && !m_bEventsSent)
 	{
@@ -749,7 +745,7 @@ boolean CGDFFileReader::process()
 				m_bEventsSent = true;
 				return true;
 			}
-			
+
 			uint8 l_pEventTableHeader[7];
 			m_oFile.read(reinterpret_cast<char*>(l_pEventTableHeader), 7);
 
@@ -768,12 +764,12 @@ boolean CGDFFileReader::process()
 			//we have to read all the events' position and type
 			m_oFile.read(reinterpret_cast<char*>(m_pEventsPositionBuffer), m_ui32NumberOfEvents * 4);
 			m_oFile.read(reinterpret_cast<char*>(m_pEventsTypeBuffer), m_ui32NumberOfEvents * 2);
-			
+
 			m_oFile.seekg(l_oBackupPosition);
 
 			if(m_ui32NumberOfEvents!=0)
 			{
-				m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_StimulationOutput]);	
+				m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_StimulationOutput]);
 				l_pBoxIO->markOutputAsReadyToSend(GDFReader_StimulationOutput, 0, 0);
 			}
 
@@ -782,8 +778,8 @@ boolean CGDFFileReader::process()
 		GDF::CGDFEvent l_oEvent;
 
 		//todo check inclusive/exclusive conditions
-		while( (m_ui32CurrentEvent != m_ui32NumberOfEvents)  && 
-			(m_pEventsPositionBuffer[m_ui32CurrentEvent]>=m_ui32SentSampleCount-m_pSignalDescription.m_ui32SampleCount) && 
+		while( (m_ui32CurrentEvent != m_ui32NumberOfEvents)  &&
+			(m_pEventsPositionBuffer[m_ui32CurrentEvent]>=m_ui32SentSampleCount-m_pSignalDescription.m_ui32SampleCount) &&
 			(m_pEventsPositionBuffer[m_ui32CurrentEvent]<m_ui32SentSampleCount))
 		{
 			//reads an event
@@ -799,22 +795,21 @@ boolean CGDFFileReader::process()
 		//if we just read the last event
 		if(m_ui32CurrentEvent == m_ui32NumberOfEvents)
 		{
-			m_bEventsSent = true;	
+			m_bEventsSent = true;
 			delete [] m_pEventsPositionBuffer;
 			m_pEventsPositionBuffer = NULL;
 			delete [] m_pEventsTypeBuffer;
 			m_pEventsTypeBuffer = NULL;
 		}
 
-		//if there is at least one event, sends it	
+		//if there is at least one event, sends it
 		if(m_oEvents.size() != 0)
 		{
 			writeEvents();
-			l_pBoxIO->markOutputAsReadyToSend(GDFReader_StimulationOutput, l_ui64StartTime, l_ui64EndTime);
 			m_oEvents.clear();
 		}
 
-	
+		l_pBoxIO->markOutputAsReadyToSend(GDFReader_StimulationOutput, l_ui64StartTime, l_ui64EndTime);
 	}
 
 	return true;
