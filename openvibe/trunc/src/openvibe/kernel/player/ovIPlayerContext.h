@@ -74,6 +74,11 @@ namespace OpenViBE
 			 * \return The current player' scenario manager
 			 */
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void)=0;
+			/**
+			 * \brief Gets the current player' type manager
+			 * \return The current player' type manager
+			 */
+			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void)=0;
 
 			//@}
 

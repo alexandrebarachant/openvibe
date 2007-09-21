@@ -82,12 +82,27 @@ namespace OpenViBE
 		 * \brief Affectation operator
 		 * \param rIdentifier [in] : the identifier to initialize
 		 *        this identifier from
+		 * \return this identifier
 		 *
 		 * Reinitializes the 64 bits identifier exactly the same as
 		 * given rIdentifier parameter.
 		 */
-		const OpenViBE::CIdentifier& operator=(
+		OpenViBE::CIdentifier& operator=(
 			const OpenViBE::CIdentifier& rIdentifier);
+		/**
+		 * \brief Increments this identifier by 1
+		 * \return this identifer
+		 * \note if this identifier is \c OV_UndefinedIdentifier, it is not incremented
+		 * \note if this idenfitier is not \c OV_UndefinedIdentifier, it can not becomre \c OV_UndefinedIdentifier after being incremented
+		 */
+		OpenViBE::CIdentifier& operator++(void);
+		/**
+		 * \brief Decrements this identifier by 1
+		 * \return this identifer
+		 * \note if this identifier is \c OV_UndefinedIdentifier, it is not decremented
+		 * \note if this idenfitier is not \c OV_UndefinedIdentifier, it can not becomre \c OV_UndefinedIdentifier after being decremented
+		 */
+		OpenViBE::CIdentifier& operator--(void);
 		/**
 		 * \brief Equality test operator
 		 * \param rIdentifier1 [in] : the first identifier to compare
@@ -190,10 +205,16 @@ namespace OpenViBE
 		OpenViBE::CString toString(void) const;
 		OpenViBE::boolean fromString(const OpenViBE::CString& rString);
 
+		/**
+		 * \brief Creates a random identifier
+		 * \return a random identifier
+		 * \note The returned identifier can not be \c OV_UndefinedIdentifier
+		 */
+		static OpenViBE::CIdentifier random(void);
+
 	protected:
 
-		OpenViBE::uint32 m_ui32Identifier1; ///< First 32 bits part of the identifier
-		OpenViBE::uint32 m_ui32Identifier2; ///< Second 32 bits part of the identifier
+		OpenViBE::uint64 m_ui64Identifier;
 	};
 };
 

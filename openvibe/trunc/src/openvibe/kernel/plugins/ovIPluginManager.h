@@ -37,6 +37,8 @@ namespace OpenViBE
 				OpenViBE::Kernel::IPluginManager::IPluginObjectDescEnum& rCallback,
 				const OpenViBE::CIdentifier& rBaseClassIdentifier) const=0;
 
+			virtual OpenViBE::boolean canCreatePluginObject(
+				const OpenViBE::CIdentifier& rClassIdentifier)=0;
 			virtual const OpenViBE::Plugins::IPluginObjectDesc* getPluginObjectDescCreating(
 				const OpenViBE::CIdentifier& rClassIdentifier) const=0;
 			virtual OpenViBE::Plugins::IPluginObject* createPluginObject(
