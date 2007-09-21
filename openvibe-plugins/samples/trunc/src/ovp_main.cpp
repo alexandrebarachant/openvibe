@@ -10,6 +10,8 @@
 #include "ovpCLog.h"
 #include "ovpCTest.h"
 
+// #include "ovpCTimeBasedEpoching.h"
+
 static OpenViBEPlugins::Samples::CScenarioImporterXMLDesc* gst_pScenarioImporterXMLDesc=NULL;
 static OpenViBEPlugins::Samples::CScenarioExporterXMLDesc* gst_pScenarioExporterXMLDesc=NULL;
 
@@ -22,34 +24,26 @@ static OpenViBEPlugins::Samples::CIdentityDesc* gst_pIdentityDesc=NULL;
 static OpenViBEPlugins::Samples::CLogDesc* gst_pLogDesc=NULL;
 static OpenViBEPlugins::Samples::CTestDesc* gst_pTestDesc=NULL;
 
+// static OpenViBEPlugins::Samples::CTimeBasedEpochingDesc* gst_pTimeBasedEpochingDesc=NULL;
+
 extern "C"
 {
 
 OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
 {
 	rPluginModuleContext.getTypeManager().registerStreamType(OpenViBE::CIdentifier(0x1234,0x5678), "producer/consumer", OV_UndefinedIdentifier);
-	rPluginModuleContext.getTypeManager().registerEnumerationType(OVTK_TypeId_Stimulation, "stimulation",
-		"OVTK_Stimulation_TrialStart;"
-		"OVTK_Stimulation_TrialEnd;"
-		"OVTK_Stimulation_LabelStart;"
-		"OVTK_Stimulation_Label_00;"
-		"OVTK_Stimulation_Label_01;"
-		"OVTK_Stimulation_Label_02;"
-		"OVTK_Stimulation_Label_03;"
-		"OVTK_Stimulation_Label_04;"
-		"OVTK_Stimulation_Label_05;"
-		"OVTK_Stimulation_Label_06;"
-		"OVTK_Stimulation_Label_07;"
-		"OVTK_Stimulation_Label_08;"
-		"OVTK_Stimulation_Label_09;"
-		"OVTK_Stimulation_Label_0A;"
-		"OVTK_Stimulation_Label_0B;"
-		"OVTK_Stimulation_Label_0C;"
-		"OVTK_Stimulation_Label_0D;"
-		"OVTK_Stimulation_Label_0E;"
-		"OVTK_Stimulation_Label_0F;"
-		"OVTK_Stimulation_LabelEnd;"
-		);
+
+	rPluginModuleContext.getTypeManager().registerEnumerationType(OpenViBE::CIdentifier(0x1234,0x0000), "sample enumeration");
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OpenViBE::CIdentifier(0x1234,0x0000), "enum value 1", 1);
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OpenViBE::CIdentifier(0x1234,0x0000), "enum value 2", 2);
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OpenViBE::CIdentifier(0x1234,0x0000), "enum value 3", 3);
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OpenViBE::CIdentifier(0x1234,0x0000), "enum value 4", 4);
+
+	rPluginModuleContext.getTypeManager().registerBitMaskType(OpenViBE::CIdentifier(0x0000,0x5678), "sample bitmask");
+	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 1", 1);
+	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 2", 2);
+	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 3", 3);
+	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 4", 4);
 
 	gst_pScenarioImporterXMLDesc=new OpenViBEPlugins::Samples::CScenarioImporterXMLDesc();
 	gst_pScenarioExporterXMLDesc=new OpenViBEPlugins::Samples::CScenarioExporterXMLDesc();
@@ -62,6 +56,8 @@ OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleCont
 	gst_pIdentityDesc=new OpenViBEPlugins::Samples::CIdentityDesc();
 	gst_pLogDesc=new OpenViBEPlugins::Samples::CLogDesc();
 	gst_pTestDesc=new OpenViBEPlugins::Samples::CTestDesc();
+
+//	gst_pTimeBasedEpochingDesc=new OpenViBEPlugins::Samples::CTimeBasedEpochingDesc();
 
 	return true;
 }
@@ -79,6 +75,8 @@ OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleCo
 
 	delete gst_pScenarioImporterXMLDesc;
 	delete gst_pScenarioExporterXMLDesc;
+
+//	delete gst_pTimeBasedEpochingDesc;
 
 	return true;
 }
@@ -98,6 +96,8 @@ OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::I
 		case 7: rpPluginObjectDescription=gst_pIdentityDesc; break;
 		case 8: rpPluginObjectDescription=gst_pLogDesc; break;
 		case 9: rpPluginObjectDescription=gst_pTestDesc; break;
+
+//		case 10: rpPluginObjectDescription=gst_pTimeBasedEpochingDesc; break;
 
 		default: return false;
 	}

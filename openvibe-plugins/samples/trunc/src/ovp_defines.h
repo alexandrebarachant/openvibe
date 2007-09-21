@@ -19,9 +19,9 @@
 #define OVP_ClassId_LogDesc                                 OpenViBE::CIdentifier(0x00780136, 0x57633D46)
 #define OVP_ClassId_TestDesc                                OpenViBE::CIdentifier(0x0024B879, 0x33C0E15F)
 
+#define OVP_ClassId_TimeBasedEpochingDesc                   OpenViBE::CIdentifier(0x00ABDABE, 0x41381683)
 
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00ABDABE, 0x41381683)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0088408E, 0x16E1484F)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x004CF190, 0x502BAB67)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00A97AFA, 0x0746A776)
@@ -53,8 +53,9 @@
 #define OVP_ClassId_Log                                     OpenViBE::CIdentifier(0x00BE3E25, 0x274F2075)
 #define OVP_ClassId_Test                                    OpenViBE::CIdentifier(0x0053270F, 0x78887C71)
 
+#define OVP_ClassId_TimeBasedEpoching                       OpenViBE::CIdentifier(0x00777FA0, 0x5DC3F560)
+
 /*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00777FA0, 0x5DC3F560)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00CF6C44, 0x04D26C7D)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00164A4A, 0x1C7BDC72)
 #define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00372343, 0x71C98312)

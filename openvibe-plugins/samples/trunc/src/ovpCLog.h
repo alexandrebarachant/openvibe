@@ -49,6 +49,8 @@ namespace OpenViBEPlugins
 				// Adds box outputs
 
 				// Adds box settings
+				rPrototype.addSetting("Enumeration", OpenViBE::CIdentifier(0x1234, 0x0000), "");
+				rPrototype.addSetting("Bit mask", OpenViBE::CIdentifier(0x0000, 0x5678), "");
 
 				return true;
 			}
