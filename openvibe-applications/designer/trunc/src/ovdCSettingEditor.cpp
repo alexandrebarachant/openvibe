@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <sstream>
+#include <iostream>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -188,19 +189,6 @@ CString CSettingEditor::getValueEnumeration(const CIdentifier& rTypeIdentifier, 
 
 CString CSettingEditor::getValueBitMask(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget)
 {
-	vector<string> l_vBitMaskValue;
-	string l_sBitMaskString(m_rKernel.getContext()->getTypeManager().getBitMaskString(rTypeIdentifier));
-	string l_sBitMaskValue;
-	istringstream l_oISS(l_sBitMaskString.c_str());
-	while(!l_oISS.eof())
-	{
-		getline(l_oISS, l_sBitMaskValue, OV_Value_EnumeratedStringSeparator);
-		if(l_sBitMaskValue.length()!=0)
-		{
-			l_vBitMaskValue.push_back(l_sBitMaskValue);
-		};
-	}
-
 	::GtkTable* l_pBitMaskTable=GTK_TABLE(pWidget);
 	string l_sResult;
 	vector< ::GtkWidget* > l_vWidget;
@@ -281,83 +269,58 @@ void CSettingEditor::setValueFilename(::GtkWidget* pWidget, const CString& rValu
 
 void CSettingEditor::setValueEnumeration(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const CString& rValue)
 {
-	vector<string> l_vEnumerationValue;
-	string l_sEnumerationString(m_rKernel.getContext()->getTypeManager().getEnumerationString(rTypeIdentifier));
-	string l_sEnumerationValue;
-	string l_sSettingValue(rValue);
-	istringstream l_oISS(l_sEnumerationString.c_str());
-	while(!l_oISS.eof())
-	{
-		getline(l_oISS, l_sEnumerationValue, OV_Value_EnumeratedStringSeparator);
-		if(l_sEnumerationValue.length()!=0)
-		{
-			l_vEnumerationValue.push_back(l_sEnumerationValue);
-		};
-	}
-
 	::GtkTreeIter l_oListIter;
 	::GtkComboBox* l_pWidget=GTK_COMBO_BOX(pWidget);
 	::GtkListStore* l_pList=GTK_LIST_STORE(gtk_combo_box_get_model(l_pWidget));
 
-	uint32 l_ui32FoundIndex=0;
-	boolean l_bFoundValue=false;
 	gtk_list_store_clear(l_pList);
-	for(unsigned int i=0; i<l_vEnumerationValue.size(); i++)
+	for(uint64 i=0; i<m_rKernel.getContext()->getTypeManager().getEnumerationEntryCount(rTypeIdentifier); i++)
 	{
-		gtk_list_store_append(l_pList, &l_oListIter);
-		gtk_list_store_set(l_pList, &l_oListIter, 0, l_vEnumerationValue[i].c_str(), -1);
-		if(!l_bFoundValue)
+		CString l_sEntryName;
+		uint64 l_ui64EntryValue;
+		if(m_rKernel.getContext()->getTypeManager().getEnumerationEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
 		{
-			if(l_vEnumerationValue[i]==l_sSettingValue)
+			gtk_list_store_append(l_pList, &l_oListIter);
+			gtk_list_store_set(l_pList, &l_oListIter, 0, (const char*)l_sEntryName, -1);
+			if(l_sEntryName==rValue)
 			{
-				l_bFoundValue=true;
-			}
-			else
-			{
-				l_ui32FoundIndex++;
+				gtk_combo_box_set_active(l_pWidget, i);
 			}
 		}
 	}
-
-	if(l_bFoundValue)
+	if(gtk_combo_box_get_active(l_pWidget)==-1)
 	{
-		gtk_combo_box_set_active(l_pWidget, l_ui32FoundIndex);
+		gtk_combo_box_set_active(l_pWidget, 0);
 	}
 }
 
 void CSettingEditor::setValueBitMask(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const CString& rValue)
 {
-	vector<string> l_vBitMaskValue;
-	string l_sBitMaskString(m_rKernel.getContext()->getTypeManager().getBitMaskString(rTypeIdentifier));
-	string l_sBitMaskValue;
-	string l_sSettingValue(rValue);
-	istringstream l_oISS(l_sBitMaskString.c_str());
-	while(!l_oISS.eof())
-	{
-		getline(l_oISS, l_sBitMaskValue, OV_Value_EnumeratedStringSeparator);
-		if(l_sBitMaskValue.length()!=0)
-		{
-			l_vBitMaskValue.push_back(l_sBitMaskValue);
-		};
-	}
-
+	string l_sValue(rValue);
 	::GtkTable* l_pBitMaskTable=GTK_TABLE(pWidget);
-	gtk_table_resize(l_pBitMaskTable, 2, (l_vBitMaskValue.size()+1)>>1);
-	for(unsigned int i=0; i<l_vBitMaskValue.size(); i++)
+	gtk_table_resize(l_pBitMaskTable, 2, (m_rKernel.getContext()->getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1);
+
+	for(uint64 i=0; i<m_rKernel.getContext()->getTypeManager().getBitMaskEntryCount(rTypeIdentifier); i++)
 	{
-		::GladeXML* l_pGladeInterfaceDummy=glade_xml_new(m_sGUIFilename.c_str(), "check_button_setting_boolean", NULL);
-		::GtkWidget* l_pSettingButton=glade_xml_get_widget(l_pGladeInterfaceDummy, "check_button_setting_boolean");
-		g_object_unref(l_pGladeInterfaceDummy);
-
-		gtk_widget_ref(l_pSettingButton);
-		gtk_widget_unparent(l_pSettingButton);
-		gtk_table_attach_defaults(l_pBitMaskTable, l_pSettingButton, (i&1), (i&1)+1, (i>>1), (i>>1)+1);
-		gtk_widget_unref(l_pSettingButton);
-
-		gtk_button_set_label(GTK_BUTTON(l_pSettingButton), l_vBitMaskValue[i].c_str());
-		if(l_sSettingValue.find(l_vBitMaskValue[i])!=string::npos)
+		CString l_sEntryName;
+		uint64 l_ui64EntryValue;
+		if(m_rKernel.getContext()->getTypeManager().getBitMaskEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
 		{
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pSettingButton), true);
+			::GladeXML* l_pGladeInterfaceDummy=glade_xml_new(m_sGUIFilename.c_str(), "check_button_setting_boolean", NULL);
+			::GtkWidget* l_pSettingButton=glade_xml_get_widget(l_pGladeInterfaceDummy, "check_button_setting_boolean");
+			g_object_unref(l_pGladeInterfaceDummy);
+
+			gtk_widget_ref(l_pSettingButton);
+			gtk_widget_unparent(l_pSettingButton);
+			gtk_table_attach_defaults(l_pBitMaskTable, l_pSettingButton, (i&1), (i&1)+1, (i>>1), (i>>1)+1);
+			gtk_widget_unref(l_pSettingButton);
+
+			gtk_button_set_label(GTK_BUTTON(l_pSettingButton), (const char*)l_sEntryName);
+
+			if(l_sValue.find((const char*)l_sEntryName)!=string::npos)
+			{
+				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pSettingButton), true);
+			}
 		}
 	}
 }

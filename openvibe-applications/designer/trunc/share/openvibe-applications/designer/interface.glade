@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.1.5 on Tue Jul  3 18:35:55 2007 by yrenard@hiboux.irisa.fr-->
+<!--Generated with glade3 3.1.5 on Mon Sep 10 19:27:52 2007 by yrenard@hiboux.irisa.fr-->
 <glade-interface>
   <widget class="GtkWindow" id="openvibe">
     <property name="width_request">320</property>
@@ -622,7 +622,9 @@
         <child>
           <widget class="GtkComboBox" id="combobox_setting_enumeration">
             <property name="visible">True</property>
-            <property name="items" translatable="yes">dummy</property>
+            <property name="wrap_width">4</property>
+            <property name="items" translatable="yes">dummy
+</property>
           </widget>
           <packing>
             <property name="position">5</property>

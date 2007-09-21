@@ -35,6 +35,8 @@ namespace OpenViBEDesigner
 		Color_BackgroundPlayerStarted,
 		Color_BoxBackground,
 		Color_BoxBackgroundSelected,
+		Color_BoxBackgroundMissing,
+		Color_BoxBackgroundObsolete,
 		Color_BoxBorder,
 		Color_BoxBorderSelected,
 		Color_BoxInputBackground,

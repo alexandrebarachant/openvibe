@@ -176,11 +176,11 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		vector<pair<int32, int32> > l_vOutputPosition;
 
 		OpenViBE::uint32 i;
-		const int xMargin=20;
-		const int yMargin=20;
-		const int iCircleMargin=9;
-		const int iCircleSize=15;
-		const int iCircleSpace=9;
+		const int xMargin=5;
+		const int yMargin=5;
+		const int iCircleMargin=5;
+		const int iCircleSize=11;
+		const int iCircleSpace=3;
 
 		CBoxProxy l_oBoxProxy(rBox);
 		int xSize=l_oBoxProxy.getWidth(GTK_WIDGET(m_pScenarioDrawingArea))+xMargin*2;
@@ -196,7 +196,8 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			xStart, yStart, xSize, ySize);
 		m_vInterfacedObject[m_ui32InterfacedObjectId]=CInterfacedObject(rBox.getIdentifier());
 
-		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBackgroundSelected:Color_BoxBackground]);
+		boolean l_bCanCreate=m_rKernel.getContext()->getPluginManager().canCreatePluginObject(rBox.getAlgorithmClassIdentifier());
+		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBackgroundSelected:(!l_bCanCreate?Color_BoxBackgroundMissing:Color_BoxBackground)]);
 		gdk_draw_rectangle(
 			l_pWidget->window,
 			l_pDrawGC,
@@ -559,7 +560,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	}
 	void CInterfacedScenario::scenarioDrawingAreaDragDataReceivedCB(::GdkDragContext* pDragContext, gint iX, gint iY, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT)
 	{
-		m_rKernel.getContext()->getLogManager() << LogLevel_Trace << "scenarioDrawingAreaDragDataReceivedCB [" << (const char*)gtk_selection_data_get_text(pSelectionData) << "]\n";
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "scenarioDrawingAreaDragDataReceivedCB [" << (const char*)gtk_selection_data_get_text(pSelectionData) << "]\n";
 
 		if(this->isLocked()) return;
 
@@ -652,7 +653,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	}
 	void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidget, ::GdkEventButton* pEvent)
 	{
-		m_rKernel.getContext()->getLogManager() << LogLevel_Trace << "scenarioDrawingAreaButtonPressedCB\n";
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "scenarioDrawingAreaButtonPressedCB\n";
 
 		if(this->isLocked()) return;
 
@@ -862,7 +863,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	}
 	void CInterfacedScenario::scenarioDrawingAreaButtonReleasedCB(::GtkWidget* pWidget, ::GdkEventButton* pEvent)
 	{
-		m_rKernel.getContext()->getLogManager() << LogLevel_Trace << "scenarioDrawingAreaButtonReleasedCB\n";
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "scenarioDrawingAreaButtonReleasedCB\n";
 
 		if(this->isLocked()) return;
 

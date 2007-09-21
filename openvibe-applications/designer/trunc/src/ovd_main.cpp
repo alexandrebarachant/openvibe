@@ -776,6 +776,8 @@ int main(int argc, char ** argv)
 	#define gdk_color_set(c, r, g, b) { c.pixel=0; c.red=r; c.green=g; c.blue=b; }
 	gdk_color_set(g_vColors[Color_BackgroundPlayerStarted], 32767, 32767, 32767);
 	gdk_color_set(g_vColors[Color_BoxBackgroundSelected],   65535, 65535, 49151);
+	gdk_color_set(g_vColors[Color_BoxBackgroundMissing],    49151, 32767, 32767);
+	gdk_color_set(g_vColors[Color_BoxBackgroundObsolete],   32767, 49151, 49151);
 	gdk_color_set(g_vColors[Color_BoxBackground],           65535, 65535, 65535);
 	gdk_color_set(g_vColors[Color_BoxBorderSelected],           0,     0,     0);
 	gdk_color_set(g_vColors[Color_BoxBorder],                   0,     0,     0);
@@ -830,13 +832,15 @@ int main(int argc, char ** argv)
 				{
 					cout<<"[  INF  ] Created Kernel, going on testing"<<endl;
 
+					OpenViBEToolkit::initialize(*l_pKernel->getContext());
+
 					gtk_init(&g_argc, &g_argv);
 					// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
 
 					ILogManager& l_rLogManager=l_pKernel->getContext()->getLogManager();
 					l_rLogManager.activate(LogLevel_Debug, false);
 					l_rLogManager.activate(LogLevel_Benchmark, false);
-					l_rLogManager.activate(LogLevel_Trace, false);
+					l_rLogManager.activate(LogLevel_Trace, true);
 					l_rLogManager.activate(LogLevel_Info, true);
 					l_rLogManager.activate(LogLevel_Warning, true);
 					l_rLogManager.activate(LogLevel_Error, true);
@@ -859,7 +863,8 @@ int main(int argc, char ** argv)
 					gtk_main();
 
 					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;
-					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;
+
+					OpenViBEToolkit::uninitialize(*l_pKernel->getContext());
 
 					l_pKernel->release();
 				}

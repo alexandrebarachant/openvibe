@@ -2,6 +2,7 @@
 #define __OpenViBEDesigner_base_H__
 
 #include <openvibe/ov_all.h>
+#include <openvibe-toolkit/ovtk_all.h>
 
 #include <glade/glade.h>
 
