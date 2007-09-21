@@ -168,8 +168,8 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 #if 0
 		{
 			ISignalTrialSet& rTrialSet=*l_pSignalTrialSet;
-			FILE* l_pDump=fopen("fais_toi_plaisir.txt", "wt");
-			fprintf(l_pDump, "# Fais toi plaisir\n");
+			FILE* l_pDump=fopen("dump.txt", "wt");
+			fprintf(l_pDump, "# dump\n");
 			for(OpenViBE::uint32 i=0; i<rTrialSet.getSignalTrialCount(); i++)
 			{
 				ISignalTrial& l_rTrial=rTrialSet.getSignalTrial(i);

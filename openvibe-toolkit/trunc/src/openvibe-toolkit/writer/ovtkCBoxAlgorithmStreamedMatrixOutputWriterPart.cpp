@@ -130,15 +130,17 @@ boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::writeBufferStart(EBML::IWri
 		return false;
 	}
 
+#if 0
 	for(uint32 i=0; i<m_vDimmensionSize[0]; i++)
 		for(uint32 j=0; j<m_vDimmensionSize[1]; j++)
 		{
 			if(isnan(m_pMatrixBuffer[i*m_vDimmensionSize[1]+j]))
 			{
-				std::cout << "YR-NAAAAAAAAAAAAAAAAAAAAAAAN-(c) !!! (replaced by 0)" << std::endl;
+				std::cout << "Streamed matrix output writer got NAN values (replaced by 0)" << std::endl;
 				const_cast<float64*>(m_pMatrixBuffer)[i*m_vDimmensionSize[1]+j]=0;
 			}
 		}
+#endif
 
 	m_ui32Status=Status_SendingBuffer;
 
