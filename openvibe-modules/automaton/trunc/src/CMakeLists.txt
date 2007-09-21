@@ -9,6 +9,8 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DAutomaton_Shared -DAutomaton_Exports")
 
+INCLUDE("FindOpenViBEModuleXML")
+
 # -----------------------------
 # Copies all header files to
 # include path and mark copied
@@ -48,5 +50,3 @@ FOREACH(created_directories_remove ${created_directories})
 ENDFOREACH(created_directories_remove)
 SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${remove}")
 # MESSAGE(STATUS "Marked to delete at clean stage ${remove}")
-
-INCLUDE("FindOpenViBEModuleXML.cmake")

@@ -9,7 +9,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DStream_Shared -DStream_Exports")
 
-INCLUDE("FindOpenViBEModuleSystem.cmake")
+INCLUDE("FindOpenViBEModuleSystem")
 
 # -----------------------------
 # Copies all header files to
