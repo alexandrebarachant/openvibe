@@ -1,0 +1,38 @@
+# ---------------------------------
+# Finds VRPN
+# Adds library to target
+# Adds include path
+# ---------------------------------
+FIND_PATH(PATH_VRPN include/vrpn_BaseClass.h PATHS $ENV{VRPN_ROOT})
+IF(PATH_VRPN)
+	MESSAGE(STATUS "  Found VRPN...")
+	INCLUDE_DIRECTORIES(${PATH_VRPN}/include)
+
+	FIND_LIBRARY(LIB_VRPN vrpn PATHS ${PATH_VRPN}/lib)
+	IF(LIB_VRPN)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_VRPN}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_VRPN})
+	ELSE(LIB_VRPN)
+		MESSAGE(STATUS "    [FAILED] lib vrpn")
+	ENDIF(LIB_VRPN)
+
+	FIND_LIBRARY(LIB_VRPNSERVER vrpnserver PATHS ${PATH_VRPN}/lib)
+	IF(LIB_VRPNSERVER)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_VRPN}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_VRPNSERVER})
+	ELSE(LIB_VRPNSERVER)
+		MESSAGE(STATUS "    [FAILED] lib vrpnserver")
+	ENDIF(LIB_VRPNSERVER)
+
+	FIND_LIBRARY(LIB_QUAT quat PATHS ${PATH_VRPN}/lib)
+	IF(LIB_QUAT)
+		MESSAGE(STATUS "    [  OK  ] lib ${LIB_QUAT}")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_QUAT})
+	ELSE(LIB_QUAT)
+		MESSAGE(STATUS "    [FAILED] lib quat")
+	ENDIF(LIB_QUAT)
+
+	ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyVRPN)
+ELSE(PATH_VRPN)
+	MESSAGE(STATUS "  FAILED to find VRPN")
+ENDIF(PATH_VRPN)

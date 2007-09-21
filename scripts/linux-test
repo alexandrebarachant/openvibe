@@ -9,6 +9,9 @@ fi
 ./linux-collect_build
 
 cd ../dist/bin
+killall OpenViBE-id-generator-dynamic
+killall OpenViBE-acquisition-server-dynamic
+killall OpenViBE-designer-dynamic
 ./OpenViBE-id-generator-dynamic
 ./OpenViBE-acquisition-server-dynamic &
 ./OpenViBE-designer-dynamic &

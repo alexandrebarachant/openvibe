@@ -81,7 +81,7 @@ export OpenViBE_toolkit=$OpenViBE_base/openvibe-toolkit/$OpenViBE_toolkit_branch
 ########################################################################################################################
 
 OpenViBE_modules=$OpenViBE_base/openvibe-modules
-OpenViBE_modules_all=`find $OpenViBE_modules -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | grep -v \.svn | sort`
+OpenViBE_modules_all=`find $OpenViBE_modules -follow -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | grep -v \.svn | sort`
 for v in $OpenViBE_modules_all; do
 	vv=`echo $v | sed 's/\-/_/g'`
 	eval 'v_branch=$OpenViBE_module_'$vv'_branch'
@@ -94,7 +94,7 @@ done
 ########################################################################################################################
 
 OpenViBE_plugins=$OpenViBE_base/openvibe-plugins
-OpenViBE_plugins_all=`find $OpenViBE_plugins -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | grep -v \.svn | sort`
+OpenViBE_plugins_all=`find $OpenViBE_plugins -follow -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | grep -v \.svn | sort`
 for v in $OpenViBE_plugins_all; do
 	vv=`echo $v | sed 's/\-/_/g'`
 	eval 'v_branch=$OpenViBE_plugin_'$vv'_branch'
@@ -107,7 +107,7 @@ done
 ########################################################################################################################
 
 OpenViBE_applications=$OpenViBE_base/openvibe-applications
-OpenViBE_applications_all=`find $OpenViBE_applications -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | grep -v \.svn | sort`
+OpenViBE_applications_all=`find $OpenViBE_applications -follow -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | grep -v \.svn | sort`
 for v in $OpenViBE_applications_all; do
 	vv=`echo $v | sed 's/\-/_/g'`
 	eval 'v_branch=$OpenViBE_application_'$vv'_branch'

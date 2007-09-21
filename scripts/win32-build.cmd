@@ -14,7 +14,7 @@ mkdir ..\local-tmp 2> NULL
 for /d %%s in (cmake\*.*) do (
 	mkdir ..\local-tmp\%%s 2> NULL
 	cd ..\local-tmp\%%s
-	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" %saved_directory%/%%s -G"NMake Makefiles"
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -DCMAKE_MODULE_PATH="%saved_directory%\..\cmake-modules" %saved_directory%/%%s -G"NMake Makefiles"
 	nmake
 	cd %saved_directory%
 )

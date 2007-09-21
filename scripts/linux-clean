@@ -17,8 +17,10 @@ for project_directory in $OpenViBE_build_order; do
 		mkdir -p "../local-tmp/$temp_sub_directory" 2> /dev/null
 		pushd "../local-tmp/$temp_sub_directory" 2> /dev/null
 
-		cmake -DCMAKE_BUILD_TYPE=Release "$project_directory"
+		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="$OpenViBE_base/cmake-modules" "$project_directory"
 		make clean
+
+		rmdir $project_directory/include/* 2> /dev/null
 
 		popd 2> /dev/null
 	fi;
