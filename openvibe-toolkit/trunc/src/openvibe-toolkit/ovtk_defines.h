@@ -13,9 +13,9 @@
 #define OVTK_TypeId_String                                             OpenViBE::CIdentifier(0x79A9EDEB, 0x245D83FC)
 #define OVTK_TypeId_Filename                                           OpenViBE::CIdentifier(0x330306DD, 0x74A95F98)
 #define OVTK_TypeId_Stimulation                                        OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
+#define OVTK_TypeId_GDF_Stimulation                                    OpenViBE::CIdentifier(0xA538DBF0, 0xBC229750)
 
 /*
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xA538DBF0, 0xBC229750)
 #define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x2C69E624, 0x17B3DC00)
 #define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xF4AB1881, 0xB242657F)
 #define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xDF46B446, 0x2FEAAFB9)
@@ -162,6 +162,8 @@
 #define OVTK_GDF_Beep                                             0x311
 #define OVTK_GDF_Cross_On_Screen                                  0x312
 #define OVTK_GDF_Flashing_Light                                   0x313
+// SPECIALY ADDED BY YR
+#define OVTK_GDF_End_Of_Trial                                     0x320
 
 #define OVTK_GDF_Correct                                          0x381
 #define OVTK_GDF_Incorrect                                        0x382

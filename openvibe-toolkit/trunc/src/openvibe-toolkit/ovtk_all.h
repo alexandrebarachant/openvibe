@@ -16,7 +16,10 @@
 //                                                                   //
 
 #include "ovtkTBoxAlgorithm.h"
-// #include "ovtkTTrainingBoxAlgorithm.h"
+
+#if defined TARGET_HAS_EBML
+#include "ovtkTTrainingBoxAlgorithm.h"
+#endif
 
 //___________________________________________________________________//
 //                                                                   //
@@ -24,6 +27,7 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#if defined TARGET_HAS_EBML
 #include "reader/ovtkIBoxAlgorithmEBMLInputReaderCallback.h"
 #include "reader/ovtkIBoxAlgorithmStreamedMatrixInputReaderCallback.h"
 #include "reader/ovtkIBoxAlgorithmSignalInputReaderCallback.h"
@@ -31,6 +35,7 @@
 #include "reader/ovtkIBoxAlgorithmFeatureVectorInputReaderCallback.h"
 #include "reader/ovtkIBoxAlgorithmStimulationInputReaderCallback.h"
 #include "reader/ovtkIBoxAlgorithmExperimentInformationInputReaderCallback.h"
+#endif
 
 //___________________________________________________________________//
 //                                                                   //
@@ -38,6 +43,7 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#if defined TARGET_HAS_EBML
 #include "writer/ovtkIBoxAlgorithmEBMLOutputWriter.h"
 #include "writer/ovtkIBoxAlgorithmStreamedMatrixOutputWriter.h"
 #include "writer/ovtkIBoxAlgorithmSignalOutputWriter.h"
@@ -45,5 +51,18 @@
 #include "writer/ovtkIBoxAlgorithmFeatureVectorOutputWriter.h"
 #include "writer/ovtkIBoxAlgorithmStimulationOutputWriter.h"
 #include "writer/ovtkIBoxAlgorithmExperimentInformationOutputWriter.h"
+#endif
+
+//___________________________________________________________________//
+//                                                                   //
+//                                                                   //
+//___________________________________________________________________//
+//                                                                   //
+
+namespace OpenViBEToolkit
+{
+	OVTK_API OpenViBE::boolean initialize(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+	OVTK_API OpenViBE::boolean uninitialize(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+};
 
 #endif // __OpenViBEToolkit_All_H__

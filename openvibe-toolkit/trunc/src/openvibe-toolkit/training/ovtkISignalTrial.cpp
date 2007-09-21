@@ -189,7 +189,7 @@ ISignalTrial& OpenViBEToolkit::insertBufferSamples(
 	uint32 l_ui32ChannelCount=pSourceSignalTrial->getChannelCount();
 	uint32 l_ui32SampleCount=pSourceSignalTrial->getSampleCount();
 
-	rSignalTrial.setSampleCount(l_ui32SampleCount+ui32SampleCount, false);
+	rSignalTrial.setSampleCount(l_ui32SampleCount+ui32SampleCount, true);
 	for(uint32 i=0; i<l_ui32ChannelCount; i++)
 	{
 		if(&rSignalTrial!=pSourceSignalTrial)

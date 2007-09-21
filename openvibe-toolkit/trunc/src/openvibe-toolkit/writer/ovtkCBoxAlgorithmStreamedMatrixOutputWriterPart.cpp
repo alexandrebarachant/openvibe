@@ -1,5 +1,9 @@
 #include "ovtkCBoxAlgorithmStreamedMatrixOutputWriterPart.inl"
 
+#include <iostream>
+#include <math.h>
+#include <stdlib.h>
+
 using namespace OpenViBEToolkit;
 using namespace OpenViBE;
 
@@ -125,6 +129,16 @@ boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::writeBufferStart(EBML::IWri
 	{
 		return false;
 	}
+
+	for(uint32 i=0; i<m_vDimmensionSize[0]; i++)
+		for(uint32 j=0; j<m_vDimmensionSize[1]; j++)
+		{
+			if(isnan(m_pMatrixBuffer[i*m_vDimmensionSize[1]+j]))
+			{
+				std::cout << "YR-NAAAAAAAAAAAAAAAAAAAAAAAN-(c) !!! (replaced by 0)" << std::endl;
+				const_cast<float64*>(m_pMatrixBuffer)[i*m_vDimmensionSize[1]+j]=0;
+			}
+		}
 
 	m_ui32Status=Status_SendingBuffer;
 

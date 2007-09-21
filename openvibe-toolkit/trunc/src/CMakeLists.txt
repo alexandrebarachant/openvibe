@@ -4,40 +4,14 @@ FILE(GLOB_RECURSE header_files *.h)
 ADD_LIBRARY(${PROJECT_NAME}-static STATIC ${source_files})
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-EBML-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-EBML-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-FS-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-FS-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-Socket-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-Socket-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-System-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-System-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-XML-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-module-XML-static)
-
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-EBML-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-EBML-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-FS-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-FS-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-Socket-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-Socket-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-System-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-System-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-XML-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-module-XML-static)
-
 SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DOVTK_Exports -DOVTK_Shared")
 
-INCLUDE("FindOpenViBEModuleEBML.cmake")
-INCLUDE("FindOpenViBEModuleSystem.cmake")
-INCLUDE("FindOpenViBE.cmake")
+INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBEModuleEBML")
+INCLUDE("FindOpenViBEModuleSystem")
 
 # -----------------------------
 # Copies all header files to
