@@ -12,7 +12,6 @@ using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Classification;
 using namespace OpenViBEToolkit;
 
-
 namespace OpenViBEPlugins
 {
 	namespace Classification
@@ -46,11 +45,10 @@ namespace OpenViBEPlugins
 			m_pWriter[0]=EBML::createWriter(m_oClassOutputWriterCallbackProxy);
 			m_pWriter[1]=EBML::createWriter(m_oAmplitudeOutputWriterCallbackProxy);
 
-
 			//parses the configuration string
 			CString l_oParameters;
 			l_pBox->getSettingValue(0, l_oParameters);
-			
+
 			istringstream l_oStreamString((const char*)l_oParameters);
 			float64 l_f64CurrentValue;
 
@@ -58,7 +56,6 @@ namespace OpenViBEPlugins
 			{
 				m_oCoefficients.push_back(l_f64CurrentValue);
 			}
-			
 
 			//Sends the output header
 			m_pStreamedMatrixOutputWriterHelper->setDimmensionCount(1);
@@ -72,7 +69,6 @@ namespace OpenViBEPlugins
 			m_pStreamedMatrixOutputWriterHelper->setDimmensionLabel(0, 0, "Amplitude");
 			m_pStreamedMatrixOutputWriterHelper->writeHeader(*m_pWriter[1]);
 			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(1, 0, 0);
-
 
 			return true;
 		}
@@ -94,7 +90,6 @@ namespace OpenViBEPlugins
 			releaseBoxAlgorithmStreamedMatrixOutputWriter(m_pStreamedMatrixOutputWriterHelper);
 			m_pStreamedMatrixOutputWriterHelper=NULL;
 
-
 			return true;
 		}
 
@@ -112,12 +107,12 @@ namespace OpenViBEPlugins
 		OpenViBE::boolean CLDAClassifier::process()
 		{
 			IBoxIO* l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
-		
+
 			for(uint32 j=0; j<l_pBoxIO->getInputChunkCount(0); j++)
 			{
 					uint64 l_ui64ChunkSize;
 					const uint8* l_pBuffer;
-			
+
 					l_pBoxIO->getInputChunk(0, j, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pBuffer);
 					l_pBoxIO->markInputAsDeprecated(0, j);
 					m_pReader->processData(l_pBuffer, l_ui64ChunkSize);
@@ -141,7 +136,7 @@ namespace OpenViBEPlugins
 				m_bError = true;
 			}
 		}
-		
+
 		void CLDAClassifier::setFeatureName(const OpenViBE::uint32 ui32FeatureIndex, const char* sFeatureName)
 		{
 			/* No need for this */
@@ -154,7 +149,6 @@ namespace OpenViBEPlugins
 				return;
 			}
 
-
 			float64 l_f64Amplitude = m_oCoefficients[0];
 
 			for(size_t i=0 ; i<m_oCoefficients.size()-1 ; i++)
@@ -163,7 +157,7 @@ namespace OpenViBEPlugins
 			}
 
 			float64 l_f64Class = (l_f64Amplitude>0) ? 0 : 1;
-			
+
 			//cout<<"Class "<<l_f64Class<<" - amplitude : "<<l_f64Amplitude<<endl;
 
 			m_pStreamedMatrixOutputWriterHelper->setBuffer(&l_f64Class);
