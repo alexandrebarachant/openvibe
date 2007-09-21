@@ -100,7 +100,7 @@ namespace OpenViBE
 				}
 				else
 				{
-					log() << LogLevel_Info << "No 'plugin object descriptor' found from [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Warning << "No 'plugin object descriptor' found from [" << rEntry.getName() << "] even if it looked like a plugin module\n";
 				}
 
 				return true;
@@ -144,7 +144,7 @@ boolean CPluginManager::addPluginsFromFiles(
 boolean CPluginManager::enumeratePluginObjectDesc(
 	IPluginManager::IPluginObjectDescEnum& rCallback) const
 {
-	log() << LogLevel_Info << "Enumerating 'plugin object descriptor(s)'\n";
+	log() << LogLevel_Debug << "Enumerating 'plugin object descriptor(s)'\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::const_iterator i;
 	vector<IPluginObjectDesc*>::const_iterator j;
@@ -165,7 +165,7 @@ boolean CPluginManager::enumeratePluginObjectDesc(
 	IPluginManager::IPluginObjectDescEnum& rCallback,
 	const OpenViBE::CIdentifier& rBaseClassIdentifier) const
 {
-	log() << LogLevel_Info << "Enumerating 'plugin object descriptor(s)' with base type " << rBaseClassIdentifier << "\n";
+	log() << LogLevel_Debug << "Enumerating 'plugin object descriptor(s)' with base type " << rBaseClassIdentifier << "\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::const_iterator i;
 	vector<IPluginObjectDesc*>::const_iterator j;
@@ -185,10 +185,31 @@ boolean CPluginManager::enumeratePluginObjectDesc(
 	return true;
 }
 
+boolean CPluginManager::canCreatePluginObject(
+	const CIdentifier& rClassIdentifier)
+{
+	log() << LogLevel_Debug << "Searching if can build plugin object\n";
+
+	map<IPluginModule*, vector<IPluginObjectDesc*> >::const_iterator i;
+	vector<IPluginObjectDesc*>::const_iterator j;
+	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
+	{
+		for(j=i->second.begin(); j!=i->second.end(); j++)
+		{
+			if((*j)->getCreatedClass()==rClassIdentifier)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 	const CIdentifier& rClassIdentifier) const
 {
-	log() << LogLevel_Info << "Searching plugin object descriptor\n";
+	log() << LogLevel_Debug << "Searching plugin object descriptor\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::const_iterator i;
 	vector<IPluginObjectDesc*>::const_iterator j;
@@ -211,7 +232,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 IPluginObject* CPluginManager::createPluginObject(
 	const CIdentifier& rClassIdentifier)
 {
-	log() << LogLevel_Info << "Creating plugin object\n";
+	log() << LogLevel_Debug << "Creating plugin object\n";
 
 	map<IPluginModule*, vector<IPluginObjectDesc*> >::iterator i;
 	vector<IPluginObjectDesc*>::iterator j;
@@ -235,7 +256,7 @@ IPluginObject* CPluginManager::createPluginObject(
 boolean CPluginManager::releasePluginObject(
 	IPluginObject* pPluginObject)
 {
-	log() << LogLevel_Info << "Releasing plugin object\n";
+	log() << LogLevel_Debug << "Releasing plugin object\n";
 
 	map<IPluginModule*, vector<IPluginObject*> >::iterator i;
 	vector<IPluginObject*>::iterator j;

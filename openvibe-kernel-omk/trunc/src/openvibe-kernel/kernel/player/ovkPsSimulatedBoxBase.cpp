@@ -27,7 +27,7 @@
 /* functions.                                                           */
 /************************************************************************/
 /************************************************************************/
-		
+
 
 #include "ovkPsSimulatedBoxBase.h"
 #include <PsParametersAccessor.h>
@@ -64,7 +64,7 @@ bool PsSimulatedBoxBase::loadAttributsParameters( const PsConfigurationParameter
   { // No valid node => display error message and return false
     std::cerr << ":-( Error in PsSimulatedBoxBase::loadAttributsParameters for object \"" << getName().getPsString() << "\""
               << "\" (class " << getObjectDescriptor().getClass().getPsString() << ")"
-              << std::endl << ">>> Invalid node" << std::endl ; 
+              << std::endl << ">>> Invalid node" << std::endl ;
     return false ;
   }
 
@@ -143,7 +143,7 @@ void PsSimulatedBoxBase::init()
   { // Not ok, display the following message and exit
     std::cerr << ":-( Error in PsSimulatedBoxBase::init for object \"" << getName().getPsString() << "\" (class "
               << getObjectDescriptor().getClass().getPsString() << ")" << std::endl
-              << ">>> Unable to initialize the object" << std::endl ; 
+              << ">>> Unable to initialize the object" << std::endl ;
     exit( -1 ) ;
   }
 }

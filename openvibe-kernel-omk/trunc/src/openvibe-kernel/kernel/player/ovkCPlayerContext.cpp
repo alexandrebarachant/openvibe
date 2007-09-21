@@ -79,6 +79,47 @@ namespace OpenViBE
 
 				::PsSimulatedBox* m_pSimulatedBox;
 			};
+
+			class CTypeManagerBridge : virtual public TKernelObject<ITypeManager>
+			{
+			public:
+
+				CTypeManagerBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox) : TKernelObject<ITypeManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
+
+				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerStreamType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const CIdentifier&, rParentTypeIdentifier)
+
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerEnumerationType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
+				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sEntryName, const uint64, ui64EntryValue)
+	
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerBitMaskType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
+				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sEntryName, const uint64, ui64EntryValue)
+
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isRegistered, , const CIdentifier&, rTypeIdentifier)
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isStream, , const CIdentifier&, rTypeIdentifier)
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isEnumeration, , const CIdentifier&, rTypeIdentifier)
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isBitMask, , const CIdentifier&, rTypeIdentifier)
+
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CString, getTypeName, , const CIdentifier&, rTypeIdentifier)
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getStreamParentType, , const CIdentifier&, rTypeIdentifier)
+
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryCount, , const CIdentifier&, rTypeIdentifier)
+				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, rEntryValue)
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getEnumerationEntryNameFromValue, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryValueFromName, , const CIdentifier&, rTypeIdentifier, const CString&, rEntryName)
+
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryCount, , const CIdentifier&, rTypeIdentifier)
+				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, rEntryValue)
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getBitMaskEntryNameFromValue, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryValueFromName, , const CIdentifier&, rTypeIdentifier, const CString&, rEntryName)
+
+				_IsDerivedFromClass_Final_(TKernelObject<ITypeManager>, OV_UndefinedIdentifier);
+
+			protected:
+
+				::PsSimulatedBox* m_pSimulatedBox;
+			};
 		};
 	};
 };
@@ -92,13 +133,16 @@ CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, ::PsSimulat
 	,m_pSimulatedBox(pSimulatedBox)
 	,m_pLogManagerBridge(NULL)
 	,m_pScenarioManagerBridge(NULL)
+	,m_pTypeManagerBridge(NULL)
 {
 	m_pLogManagerBridge=new CLogManagerBridge(rKernelContext, pSimulatedBox);
 	m_pScenarioManagerBridge=new CScenarioManagerBridge(rKernelContext, pSimulatedBox);
+	m_pTypeManagerBridge=new CTypeManagerBridge(rKernelContext, pSimulatedBox);
 }
 
 CPlayerContext::~CPlayerContext(void)
 {
+	delete m_pTypeManagerBridge;
 	delete m_pScenarioManagerBridge;
 	delete m_pLogManagerBridge;
 }
@@ -138,4 +182,9 @@ ILogManager& CPlayerContext::getLogManager(void)
 IScenarioManager& CPlayerContext::getScenarioManager(void)
 {
 	return *m_pScenarioManagerBridge;
+}
+
+ITypeManager& CPlayerContext::getTypeManager(void)
+{
+	return *m_pTypeManagerBridge;
 }

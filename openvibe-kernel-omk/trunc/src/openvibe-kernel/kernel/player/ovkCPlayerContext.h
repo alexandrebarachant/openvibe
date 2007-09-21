@@ -28,6 +28,7 @@ namespace OpenViBE
 
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void);
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void);
+			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayerContext>, OVK_ClassId_Kernel_Player_PlayerContext)
 
@@ -36,6 +37,7 @@ namespace OpenViBE
 			::PsSimulatedBox* m_pSimulatedBox;
 			OpenViBE::Kernel::ILogManager* m_pLogManagerBridge;
 			OpenViBE::Kernel::IScenarioManager* m_pScenarioManagerBridge;
+			OpenViBE::Kernel::ITypeManager* m_pTypeManagerBridge;
 		};
 	};
 };
