@@ -453,7 +453,7 @@ void CChannelDisplay::drawSignal()
 			float64 l_f64X = ((float64)((it->first-l_ui64StartTime)>>24) / (float64)((l_ui64EndTime-l_ui64StartTime)>>24)); //  ((l_i64BaseX + (j*l_f64WidthPerBuffer) + (i*l_f64PointStep) - m_f64TranslateX ) * m_f64ScaleX) ;
 			l_f64X = ((l_f64X - m_f64TranslateX)*m_f64ScaleX);
 			l_f64X *= l_iWidth;
-			gdk_draw_line(m_pDrawingArea->window, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], l_f64X, 0, l_f64X, l_iHeight);
+			gdk_draw_line(m_pDrawingArea->window, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], (int)l_f64X, 0, (int)l_f64X, l_iHeight);
 		}
 	}
 

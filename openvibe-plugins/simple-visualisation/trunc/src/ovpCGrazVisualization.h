@@ -13,6 +13,8 @@
 
 #include <vector>
 #include <string>
+#include <map>
+#include <deque>
 
 #define Stimulation_Idle	0x320
 
@@ -26,7 +28,7 @@ namespace OpenViBEPlugins
 			EArrowDirection_Left,
 			EArrowDirection_Right,
 			EArrowDirection_Up,
-			EArrowDirection_Down
+			EArrowDirection_Down,
 		};
 
 		enum EGrazVisualizationState
@@ -117,6 +119,14 @@ namespace OpenViBEPlugins
 			GdkColor m_oBackgroundColor;
 			GdkColor m_oForegroundColor;
 
+			// Score
+			std::map<OpenViBE::uint32, OpenViBE::uint32> m_vWindowFailCount;
+			std::map<OpenViBE::uint32, OpenViBE::uint32> m_vWindowSuccessCount;
+			std::deque<OpenViBE::float64> m_vAmplitude;
+			OpenViBE::uint32 m_ui32WindowIndex;
+
+			OpenViBE::boolean m_bShowInstruction;
+			OpenViBE::boolean m_bShowFeedback;
 		};
 
 		/**
@@ -140,6 +150,9 @@ namespace OpenViBEPlugins
 			{
 				rPrototype.addInput("Stimulations", OV_TypeId_Stimulations);
 				rPrototype.addInput("Amplitude", OV_TypeId_StreamedMatrix);
+
+				rPrototype.addSetting("Show instruction", OV_TypeId_Boolean, "true");
+				rPrototype.addSetting("Show feedback", OV_TypeId_Boolean, "false");
 
 				return true;
 			}

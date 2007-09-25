@@ -8,10 +8,42 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
 
-
 using namespace OpenViBEToolkit;
 
 using namespace std;
+
+namespace
+{
+	uint32* getLookUpTable(void)
+	{
+		static uint32 l_pTable[1<<8];
+		static boolean l_bInitialized=false;
+
+		if(!l_bInitialized)
+		{
+			int i=0;
+			for(i=0; i<64; i++)
+			{
+				l_pTable[i]=i;
+			}
+			for(i=0; i<64; i++)
+			{
+				l_pTable[i+64]=(i<<8)+(64+i);
+			}
+			for(i=0; i<64; i++)
+			{
+				l_pTable[i+128]=(i<<16)+((64+i)<<8)+(128+i);
+			}
+			for(i=0; i<64; i++)
+			{
+				l_pTable[i+192]=((64+i)<<16)+((128+i)<<8)+(192+i);
+			}
+			l_bInitialized=true;
+		}
+
+		return l_pTable;
+	}
+};
 
 namespace OpenViBEPlugins
 {
@@ -20,7 +52,7 @@ namespace OpenViBEPlugins
 		gboolean frequencySpectrumSizeAllocateCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data)
 		{
 			CFrequencySpectrumChannelDisplay * l_pDisplay = reinterpret_cast<CFrequencySpectrumChannelDisplay*>(data);
-			
+
 			//3bytes per pixel
 			l_pDisplay->resizeRGBBuffer(allocation->width,allocation->height);
 
@@ -32,11 +64,10 @@ namespace OpenViBEPlugins
 			//first delete the previously allocated buffer
 			delete[] m_pRGBBuffer;
 
-		
 			m_ui32Rowstride = ((ui32Width*3)%4 == 0) ? (ui32Width*3) : ((((ui32Width*3)>>2)+1)<<2);
 
 			m_pRGBBuffer = new guchar[m_ui32Rowstride*ui32Height*3];
-		
+
 			m_ui32RGBBufferWidth=ui32Width;
 			m_ui32RGBBufferHeight=ui32Height;
 
@@ -54,14 +85,13 @@ namespace OpenViBEPlugins
 			return TRUE;
 		}
 
-
 		CFrequencySpectrumChannelDisplay::CFrequencySpectrumChannelDisplay(uint32 ui32Channel, CBufferDatabase& pDatabase) :
 			m_pGraphicsContext(NULL),
 			m_pDatabase(&pDatabase),
 			m_ui32Channel(ui32Channel),
 			m_f64MinimumValue(+DBL_MAX),
 			m_f64MaximumValue(-DBL_MAX),
-			m_f64Attenuation(0.95),
+			m_f64Attenuation(1),
 			m_pRGBBuffer(NULL),
 			m_ui32RGBBufferWidth(0)
 		{
@@ -77,7 +107,7 @@ namespace OpenViBEPlugins
 		CFrequencySpectrumChannelDisplay::~CFrequencySpectrumChannelDisplay()
 		{
 			g_object_unref(G_OBJECT(m_pGraphicsContext));
-			
+
 			delete[] m_pRGBBuffer;
 		}
 
@@ -101,9 +131,8 @@ namespace OpenViBEPlugins
 			{
 				//creates the GC
 				m_pGraphicsContext = gdk_gc_new(m_pDisplay->window);
-					
-				//m_pPixmap = gdk_pixmap_new(m_pDisplay->window, 200, 30, -1);
 
+				//m_pPixmap = gdk_pixmap_new(m_pDisplay->window, 200, 30, -1);
 
 			}
 
@@ -125,7 +154,6 @@ namespace OpenViBEPlugins
 			float64 l_f64WidthPerPoint = static_cast<float64>(l_iWidth) / static_cast<float64>(l_ui64NumberOfBufferToDisplay);
 			float64 l_f64HeightPerPoint = static_cast<float64>(l_iHeight) / static_cast<float64>(l_ui32FrequencyCount);
 
-
 			int64 l_i64BaseX = static_cast<int64>(l_iWidth - (m_pDatabase->m_oSampleBuffers.size() * l_f64WidthPerPoint));
 
 			if(l_i64BaseX<0 || l_i64BaseX < l_f64WidthPerPoint)
@@ -135,8 +163,6 @@ namespace OpenViBEPlugins
 
 			GdkColor l_oCurrentColor;
 			l_oCurrentColor.pixel = 0;
-
-			uint8 l_ui8IndexedColor = 0;
 
 			//computes the color
 			float64 l_f64Max;// = m_pDatabase->m_f64MaximumValue;
@@ -149,19 +175,19 @@ namespace OpenViBEPlugins
 			m_pDatabase->getLastBufferChannelLocalMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
 			//m_pDatabase->getLastBufferMinMaxValue(l_f64CurrentBufferMin, l_f64CurrentBufferMax);
 
-			l_f64Max = (m_f64MaximumValue < l_f64CurrentBufferMax) ? 
-				l_f64CurrentBufferMax : 
+			l_f64Max = (m_f64MaximumValue < l_f64CurrentBufferMax) ?
+				l_f64CurrentBufferMax :
 				(m_f64Attenuation * m_f64MaximumValue) + (1-m_f64Attenuation)*l_f64CurrentBufferMax;
 
-			l_f64Min = (m_f64MinimumValue > l_f64CurrentBufferMin) ? 
-				l_f64CurrentBufferMin : 
+			l_f64Min = (m_f64MinimumValue > l_f64CurrentBufferMin) ?
+				l_f64CurrentBufferMin :
 				(m_f64Attenuation * m_f64MinimumValue) + (1-m_f64Attenuation)*l_f64CurrentBufferMin;
 
 			m_f64MinimumValue = l_f64Min;
 			m_f64MaximumValue = l_f64Max;
 
 			//clear the undrawn part of the buffer
-			drawBoxToBuffer(0, 0, l_i64BaseX>1?(unsigned)l_i64BaseX:1, l_iHeight, 0xFF, 0xFF, 0xFF);
+			drawBoxToBuffer(0, 0, l_i64BaseX, l_iHeight, 0xFF, 0xFF, 0xFF);
 
 			for(size_t j=0 ; j<m_pDatabase->m_oSampleBuffers.size() ; j++)
 			{
@@ -171,40 +197,37 @@ namespace OpenViBEPlugins
 				//calculates the coordinates of the point in the new base
 				for(uint32 f = 0 ; f<l_ui32FrequencyCount ; f++)
 				{
-					//computes the box coordinates	
+					//computes the box coordinates
 					gint l_iXposition = (gint) (l_i64BaseX + (j *  l_f64WidthPerPoint));
 					gint l_iYPosition = (gint) (l_iHeight - ((f+1) * l_f64HeightPerPoint));
 
 					gint l_iPointW = (gint) (l_i64BaseX + ((j+1) *  l_f64WidthPerPoint) - l_iXposition);
 					gint l_iPointH = (gint) (l_iHeight - (f * l_f64HeightPerPoint) - l_iYPosition);
 
-					int32 l_i32TempIndex = (int32)floor((float64)(((l_pCurrentChannelSampleBuffer[f] - ((l_f64Max+l_f64Min)/2))
-						/ (l_f64Max - l_f64Min)) * (1<<8)) + (float64)(1<<7));
+					int32 l_i32ColorIndex=static_cast<int32>(((l_pCurrentChannelSampleBuffer[f] - l_f64Min)*(1<<8))/(l_f64Max - l_f64Min));
+					if(l_i32ColorIndex>0xff) l_i32ColorIndex=0xff;
+					if(l_i32ColorIndex<0x00) l_i32ColorIndex=0x00;
+					uint8 l_ui8ColorR=(getLookUpTable()[l_i32ColorIndex]    )&0xff;
+					uint8 l_ui8ColorG=(getLookUpTable()[l_i32ColorIndex]>>8 )&0xff;
+					uint8 l_ui8ColorB=(getLookUpTable()[l_i32ColorIndex]>>16)&0xff;
 
-					//on 10 bits (test w 16)
-					l_ui8IndexedColor = (l_i32TempIndex<0) ? 0 : (l_i32TempIndex>0xFF) ? 0xFF : static_cast<uint8>(l_i32TempIndex);
+					drawBoxToBuffer(l_iXposition, l_iYPosition, l_iPointW, l_iPointH, l_ui8ColorR, l_ui8ColorG, l_ui8ColorB);
 
-					drawBoxToBuffer(l_iXposition, l_iYPosition, l_iPointW, l_iPointH,
-							  0xFF - l_ui8IndexedColor, 0xFF - l_ui8IndexedColor, 0xFF - l_ui8IndexedColor );
-					
 				}
 			}
 
 //			gdk_draw_rgb_image(m_pPixmap, m_pDisplay->style->fg_gc[GTK_WIDGET_STATE (m_pDisplay)], 0, 0, m_ui32RGBBufferWidth, m_ui32RGBBufferHeight, GDK_RGB_DITHER_NONE, m_pRGBBuffer, m_ui32Rowstride);
-
 		}
-
 
 		void CFrequencySpectrumChannelDisplay::redraw()
 		{
 
 			gdk_draw_rgb_image(m_pDisplay->window, m_pDisplay->style->fg_gc[GTK_WIDGET_STATE (m_pDisplay)], 0, 0, m_ui32RGBBufferWidth, m_ui32RGBBufferHeight, GDK_RGB_DITHER_NONE, m_pRGBBuffer, m_ui32Rowstride);//m_ui32RGBBufferWidth*3);
-			
+
 			//gdk_draw_drawable(m_pDisplay->window, m_pDisplay->style->fg_gc[GTK_WIDGET_STATE (m_pDisplay)], m_pPixmap,
 			//		0,0,0,0, m_ui32RGBBufferWidth, m_ui32RGBBufferHeight);
-			
-		}
 
+		}
 
 	}
 }

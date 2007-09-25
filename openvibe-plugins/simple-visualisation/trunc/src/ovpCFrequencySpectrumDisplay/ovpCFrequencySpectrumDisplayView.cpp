@@ -1,6 +1,5 @@
 #include "ovpCFrequencySpectrumDisplayView.h"
 
-
 #include <iostream>
 
 #include <sstream>
@@ -10,7 +9,6 @@ using namespace OpenViBE::Plugins;
 
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
-
 
 using namespace OpenViBEToolkit;
 
@@ -31,7 +29,7 @@ namespace OpenViBEPlugins
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
 			l_pView->toggleLeftRulers(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget))?true:false);
 		}
-*/	
+*/
 		void frequencySpectrumToggleBottomRulerButtonCallback(GtkWidget *widget, gpointer data)
 		{
 			CFrequencySpectrumDisplayView* l_pView = reinterpret_cast<CFrequencySpectrumDisplayView*>(data);
@@ -43,7 +41,7 @@ namespace OpenViBEPlugins
 			CFrequencySpectrumDisplayView* l_pView = reinterpret_cast<CFrequencySpectrumDisplayView*>(data);
 
 			//Compute and save the nuew number of buffers to display
-			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged = 
+			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged =
 					l_pView->m_pBufferDatabase->adjustNumberOfDisplayedBuffers(
 					static_cast<float64>(gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget))));
 
@@ -58,7 +56,7 @@ namespace OpenViBEPlugins
 
 		//called when the channel select button is pressed (opens the channel selection dialog)
 		void frequencySpectrumChannelSelectButtonCallback(GtkButton *button, gpointer data)
-		{		
+		{
 			CFrequencySpectrumDisplayView* l_pView = reinterpret_cast<CFrequencySpectrumDisplayView*>(data);
 			GtkWidget * l_pChannelSelectDialog = glade_xml_get_widget(l_pView->m_pGladeInterface, "DisplayChannelSelectDialog");
 
@@ -106,8 +104,7 @@ namespace OpenViBEPlugins
 
 			//hides the channel selection dialog
 			gtk_widget_hide(glade_xml_get_widget(l_pView->m_pGladeInterface, "DisplayChannelSelectDialog"));
-		}	
-
+		}
 
 		gboolean minMaxAttenuationSpinButtonValueChangedCallback(GtkSpinButton *widget,  gpointer data)
 		{
@@ -117,14 +114,15 @@ namespace OpenViBEPlugins
 		}
 
 		CFrequencySpectrumDisplayView::CFrequencySpectrumDisplayView(CBufferDatabase& oBufferDatabase)
-		: m_pGladeInterface(NULL),
-		m_pMainWindow(NULL),
-		m_pBufferDatabase(&oBufferDatabase),
-		m_pBottomRuler(NULL)
+			:m_pGladeInterface(NULL)
+			,m_pMainWindow(NULL)
+			,m_pBufferDatabase(&oBufferDatabase)
+			,m_f64Attenuation(0)
+			,m_pBottomRuler(NULL)
 		{
 			//load the glade interface
 			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-FrequencySpectrumDisplay.glade", NULL, NULL);
-			
+
 			if(!m_pGladeInterface)
 			{
 				g_warning("Couldn't load the interface!");
@@ -149,15 +147,18 @@ namespace OpenViBEPlugins
 					G_CALLBACK(gtk_widget_hide),
 					G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayChannelSelectDialog")));
 
-			//hides the dialog if the user tries to close it	
-			 g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayChannelSelectDialog")), 
-					 "delete_event", 
+			//hides the dialog if the user tries to close it
+			 g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayChannelSelectDialog")),
+					 "delete_event",
 					 G_CALLBACK(gtk_widget_hide), NULL);
 
 			//does nothing on the main window if the user tries to close it
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayMainWindow")), 
-				"delete_event", 
+			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayMainWindow")),
+				"delete_event",
 				G_CALLBACK(frequency_spectrum_gtk_widget_do_nothing), NULL);
+
+			// gets attenuation
+			m_f64Attenuation=(gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "DisplayMinMaxAttenuationSpin"))));
 
 			//creates the window
 			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "DisplayMainWindow");
@@ -174,7 +175,7 @@ namespace OpenViBEPlugins
 				gtk_widget_destroy(m_pMainWindow);
 				m_pMainWindow = NULL;
 			}
-			
+
 			for(uint32 i=0 ; i<m_oChannelDisplay.size() ; i++)
 			{
 				delete m_oChannelDisplay[i];
@@ -185,7 +186,6 @@ namespace OpenViBEPlugins
 			m_pGladeInterface=NULL;
 		}
 
-
 		void CFrequencySpectrumDisplayView::init()
 		{
 
@@ -194,7 +194,7 @@ namespace OpenViBEPlugins
 
 			stringstream l_oLabelString;
 			GtkWidget * l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "DisplayChannelSelectList");
-			
+
 			//size group for the channel labels and the empty widget in the bottom bar
 			//(useful to position the bottom ruler correctly)
 			GtkSizeGroup * l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
@@ -248,41 +248,38 @@ namespace OpenViBEPlugins
 
 				//creates the channel display widget
 				m_oChannelDisplay[i] = new CFrequencySpectrumChannelDisplay(i, *m_pBufferDatabase);
-					
+
 				//adds it to the table
 				gtk_table_attach(GTK_TABLE(m_pDisplayTable), m_oChannelDisplay[i]->getWidget(),
 				2, 3, (i*2), (i*2)+1,
-				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 
+				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
 
 				//gtk_widget_show_all(m_oChannelDisplay[i]);
-					
-					
+
 				//Add an horizontal separator under it
 				l_pSeparator = gtk_hseparator_new();
 				gtk_table_attach(GTK_TABLE(m_pDisplayTable), l_pSeparator,
 				0, 3, (i*2)+1, (i*2)+2,	static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_SHRINK,	0, 0);
 				gtk_widget_show(l_pSeparator);
-				
-				
+
 				//Adds a checkbox in the channel select window
 				GtkWidget * l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
 				m_vChannelsCheckButtons.push_back(l_pChannelCheckButton);
-				
+
 				gtk_box_pack_start_defaults(GTK_BOX(l_pChannelSelectList), l_pChannelCheckButton);
-								
+
 				l_oLabelString.str("");
 
 				//a channel is selected by default
 				m_vSelectedChannels.push_back(i);
 			}
 
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "DisplayTimeScale")), 10000);
 
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "DisplayTimeScale")), 1000); 
-			
 			//Adds the bottom ruler
 			m_pBottomRuler = new CBottomTimeRuler(*m_pBufferDatabase);
-			
+
 			//adds the empty label to the size group (it will request the same height than the channel labels
 			gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "DisplayBottomBarEmptyLabel1"));
 
@@ -290,7 +287,6 @@ namespace OpenViBEPlugins
 			gtk_box_pack_start(GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "DisplayBottomBar")),
 					m_pBottomRuler->getWidget(),
 					false, false, 0);
-
 
 			// tells the ruler that it has to resize when the channel displays are resized
 			if(m_oChannelDisplay.size() != 0)
@@ -314,6 +310,7 @@ namespace OpenViBEPlugins
 		{
 			for(size_t i=0 ; i<m_oChannelDisplay.size() ; i++)
 			{
+				m_oChannelDisplay[i]->setMinMaxAttenuation(m_f64Attenuation);
 				m_oChannelDisplay[i]->update();
 			}
 
@@ -324,7 +321,7 @@ namespace OpenViBEPlugins
 
 				if(!l_bNotInitialized && m_pBufferDatabase->m_pDimmensionSizes[0]!=0)
 				{
-					
+
 					//The ruler too
 					gdk_window_invalidate_rect(GTK_WIDGET(m_pBottomRuler->getWidget())->window,
 							NULL,
@@ -391,10 +388,7 @@ namespace OpenViBEPlugins
 
 		void CFrequencySpectrumDisplayView::setMinMaxAttenuation(OpenViBE::float64 f64Attenuation)
 		{
-			for(size_t i=0 ; i<m_oChannelDisplay.size() ; i++)
-			{
-				m_oChannelDisplay[i]->setMinMaxAttenuation(f64Attenuation);
-			}
+			m_f64Attenuation=f64Attenuation;
 		}
 
 	};

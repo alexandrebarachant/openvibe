@@ -8,8 +8,6 @@
 #include <iostream>
 using namespace std;
 
-
-
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
@@ -40,13 +38,13 @@ namespace OpenViBEPlugins
 			public:
 				CFrequencySpectrumChannelDisplay(OpenViBE::uint32 ui32Channel, CBufferDatabase& pDatabase);
 				~CFrequencySpectrumChannelDisplay();
-				
+
 				//! returns the widget, so it can be added to the main interface
 				GtkWidget * getWidget() const { return m_pDisplay; }
 
 				//! toggles (show/hide)
 				void toggle(OpenViBE::boolean bActive);
-				
+
 				//! draws the spectrum
 				void redraw();
 
@@ -58,7 +56,7 @@ namespace OpenViBEPlugins
 				void drawBoxToBuffer(OpenViBE::uint32 ui32X, OpenViBE::uint32 ui32Y, OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height, OpenViBE::uint8 ui8Red, OpenViBE::uint8 ui8Green, OpenViBE::uint8 ui8Blue)
 				{
 					guchar * l_pLineBase = m_pRGBBuffer + (m_ui32Rowstride*ui32Y) + (ui32X*3);
-					
+
 					for(OpenViBE::uint32 j=0 ; j<ui32Height ; j++)
 					{
 						for(OpenViBE::uint32 i=0 ; i<(ui32Width*3) ; i+=3)

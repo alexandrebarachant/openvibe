@@ -16,14 +16,13 @@
 #include <vector>
 #include <string>
 
-
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
 
 			class CBufferDatabase;
-			class CBottomTimeRuler;	
+			class CBottomTimeRuler;
 
 			/**
 			 * This class contains everything necessary to setup a GTK window and display
@@ -57,8 +56,12 @@ namespace OpenViBEPlugins
 					//! Vector of indexes of the channels to display
 					std::vector<OpenViBE::uint32> m_vSelectedChannels;
 
+					//! Attenuation value
+					OpenViBE::float64 m_f64Attenuation;
+
+					//! Pointer on bottom ruler
 					CBottomTimeRuler * m_pBottomRuler;
-				public: 
+				public:
 					CFrequencySpectrumDisplayView(CBufferDatabase& pBufferDatabase);
 					virtual ~CFrequencySpectrumDisplayView();
 
@@ -104,7 +107,7 @@ namespace OpenViBEPlugins
 			};
 
 	}
-	
+
 }
 
 #endif

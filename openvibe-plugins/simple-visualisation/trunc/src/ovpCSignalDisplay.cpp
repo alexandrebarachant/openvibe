@@ -3,7 +3,6 @@
 #include <math.h>
 #include <iostream>
 
-
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 
@@ -21,15 +20,14 @@ namespace OpenViBEPlugins
 		/**
 		* Constructor
 		*/
-		CSignalDisplay::CSignalDisplay(void) :
-			m_pStreamedMatrixReader(NULL),
-			m_pStreamedMatrixReaderCallBack(NULL),
-			m_pStimulationReader(NULL),
-			m_pStimulationReaderCallBack(NULL),
-			m_pSignalDisplayView(NULL),
-			m_pBufferDatabase(NULL)
+		CSignalDisplay::CSignalDisplay(void)
+			:m_pStreamedMatrixReader(NULL)
+			,m_pStimulationReader(NULL)
+			,m_pStreamedMatrixReaderCallBack(NULL)
+			,m_pStimulationReaderCallBack(NULL)
+			,m_pSignalDisplayView(NULL)
+			,m_pBufferDatabase(NULL)
 		{
-
 		}
 
 		boolean CSignalDisplay::initialize()

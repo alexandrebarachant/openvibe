@@ -7,7 +7,6 @@ using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
 using namespace OpenViBEToolkit;
 
-
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
@@ -41,7 +40,7 @@ namespace OpenViBEPlugins
 
 			m_pReader->release();
 			m_pReader=NULL;
-			
+
 			delete m_pFrequencySpectrumDisplayView;
 			delete m_pFrequencySpectrumDisplayDatabase;
 
@@ -69,26 +68,25 @@ namespace OpenViBEPlugins
 					l_pDynamicBoxContext->markInputAsDeprecated(0, i);
 				}
 			}
-			
+
 			return true;
 		}
-
 
 		void CFrequencySpectrumDisplay::setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
 		{
 			m_pFrequencySpectrumDisplayDatabase->setMatrixDimmensionCount(ui32DimmensionCount);
 		}
-		
+
 		void CFrequencySpectrumDisplay::setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
 		{
 			m_pFrequencySpectrumDisplayDatabase->setMatrixDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
 		}
-		
+
 		void CFrequencySpectrumDisplay::setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
 		{
 			m_pFrequencySpectrumDisplayDatabase->setMatrixDimmensionLabel(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
 		}
-		
+
 		void CFrequencySpectrumDisplay::setMatrixBuffer(const OpenViBE::float64* pBuffer)
 		{
 			m_pFrequencySpectrumDisplayDatabase->setMatrixBuffer(pBuffer, m_ui64StartTime, m_ui64EndTime);

@@ -6,7 +6,6 @@
 
 #include <math.h>
 
-
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Kernel;
@@ -84,8 +83,6 @@ namespace OpenViBEPlugins
 			return (m_ui64NumberOfBufferToDisplay * ((m_pDimmensionSizes[1]*1000.0) / m_ui32SamplingFrequency));
 		}
 
-
-
 		void CBufferDatabase::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
 		{
 			if(ui32DimmensionCount != 2)
@@ -150,7 +147,6 @@ namespace OpenViBEPlugins
 			//Adds the starting time to the list
 			m_oStartTime.push_back(ui64StartTime);
 
-
 			if(m_ui64NumberOfBufferToDisplay - m_oSampleBuffers.size() > 0)
 			{
 				////If the number of buffer to display has changed and is greater than before, create a new buffer
@@ -171,7 +167,6 @@ namespace OpenViBEPlugins
 					m_oLocalMinMaxValue[c].pop_front();
 				}
 			}
-
 
 			uint64 l_ui64CurrentSample = 0;
 			//for each channel
@@ -215,6 +210,7 @@ namespace OpenViBEPlugins
 
 			//add the buffer at the end of the list
 			m_oSampleBuffers.push_back(l_pBufferToWrite);
+
 
 			//tells the drawable to redraw himself since the signal information has been updated
 			m_pDrawable->redraw();
@@ -262,7 +258,7 @@ namespace OpenViBEPlugins
 
 		void CBufferDatabase::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
 		{
-			m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received new stimulation id:" << ui64StimulationIdentifier << " date:" << ui64StimulationDate << "\n";
+			// m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received new stimulation id:" << ui64StimulationIdentifier << " date:" << ui64StimulationDate << "\n";
 
 			m_oStimulations.push_back(std::pair<uint64, uint64>(ui64StimulationDate, ui64StimulationIdentifier));
 
