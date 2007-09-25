@@ -1,5 +1,7 @@
 #include "Time.h"
 
+#include <math.h>
+
 #if defined System_OS_Linux
  #include <unistd.h>
  #include <time.h>
@@ -42,11 +44,18 @@ uint64 Time::zgetTime(void)
 	l_ui64Result+=(((uint64)l_oTimeValue.tv_sec)<<32);
 	l_ui64Result+=(((uint64)l_oTimeValue.tv_usec)<<32)/1000000;
 #elif defined System_OS_Windows
-	LARGE_INTEGER l_oPerformanceCounter;
-	LARGE_INTEGER l_oPerformanceFrequency;
+	static boolean l_bInitialized=false;
+	static uint32 l_ui32FrequencyOrder=0;
+	static LARGE_INTEGER l_oPerformanceCounter;
+	static LARGE_INTEGER l_oPerformanceFrequency;
+	if(!l_bInitialized)
+	{
+		QueryPerformanceFrequency(&l_oPerformanceFrequency);
+		l_ui32FrequencyOrder=1+log((float)l_oPerformanceFrequency.QuadPart);
+		l_bInitialized=true;
+	}
 	QueryPerformanceCounter(&l_oPerformanceCounter);
-	QueryPerformanceFrequency(&l_oPerformanceFrequency);
-	l_ui64Result=((l_oPerformanceCounter.QuadPart<<32)/l_oPerformanceFrequency.QuadPart);
+	l_ui64Result=(((l_oPerformanceCounter.QuadPart<<l_ui32FrequencyOrder)/l_oPerformanceFrequency.QuadPart)<<(32-l_ui32FrequencyOrder));
 #else
 #endif
 	return l_ui64Result;
