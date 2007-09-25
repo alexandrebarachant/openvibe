@@ -82,8 +82,8 @@ boolean OpenViBE::operator>(const CIdentifier& rIdentifier1, const CIdentifier& 
 CString CIdentifier::toString(void) const
 {
 	char l_sBuffer[1024];
-	unsigned int l_uiIdentifier1=m_ui64Identifier>>32;
-	unsigned int l_uiIdentifier2=m_ui64Identifier;
+	unsigned int l_uiIdentifier1=(unsigned int)(m_ui64Identifier>>32);
+	unsigned int l_uiIdentifier2=(unsigned int)(m_ui64Identifier);
 	sprintf(l_sBuffer, "(0x%08x, 0x%08x)", l_uiIdentifier1, l_uiIdentifier2);
 	return CString(l_sBuffer);
 }

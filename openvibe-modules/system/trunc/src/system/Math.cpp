@@ -5,7 +5,7 @@ using namespace System;
 
 boolean Math::initializeRandomMachine(const uint64 ui64RandomSeed)
 {
-	srand(ui64RandomSeed);
+	srand((unsigned int)ui64RandomSeed);
 	return true;
 }
 

@@ -51,7 +51,7 @@ uint64 Time::zgetTime(void)
 	if(!l_bInitialized)
 	{
 		QueryPerformanceFrequency(&l_oPerformanceFrequency);
-		l_ui32FrequencyOrder=1+log((float)l_oPerformanceFrequency.QuadPart);
+		l_ui32FrequencyOrder=(uint32)(1+log((float)l_oPerformanceFrequency.QuadPart));
 		l_bInitialized=true;
 	}
 	QueryPerformanceCounter(&l_oPerformanceCounter);

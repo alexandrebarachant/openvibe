@@ -1,8 +1,11 @@
 #include "ovpCGrazVisualization.h"
 
 #include <math.h>
-#include <unistd.h>
 #include <iostream>
+
+#if defined OVP_OS_Linux
+ #include <unistd.h>
+#endif
 
 using namespace OpenViBE;
 using namespace Plugins;
