@@ -14,34 +14,8 @@ ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
 ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-toolkit-dynamic)
 ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-toolkit-static)
 
-INCLUDE("FindOpenViBE.cmake")
-INCLUDE("FindOpenViBEToolkit.cmake")
-INCLUDE("FindOpenViBEModuleAutomaton.cmake")
-INCLUDE("FindOpenViBEModuleEBML.cmake")
-
-# ---------------------------------
-# Finds Glade
-# Adds library to target
-# Adds include path
-# ---------------------------------
-INCLUDE("FindGlade.cmake")
-IF(GLADE_FOUND)
-        MESSAGE(STATUS "  Found glade...")
-        INCLUDE_DIRECTORIES(${GLADE_INCLUDE_DIRS})
-        ADD_DEFINITIONS(${GLADE_CFLAGS})
-        ADD_DEFINITIONS(${GLADE_CFLAGS_OTHERS})
-        LINK_DIRECTORIES(${GLADE_LIBRARY_DIRS})
-        FOREACH(GLADE_LIB ${GLADE_LIBRARIES})
-                SET(GLADE_LIB1 "GLADE_LIB1-NOTFOUND")
-                FIND_LIBRARY(GLADE_LIB1 NAMES ${GLADE_LIB} PATHS ${GLADE_LIBRARY_DIRS} ${GLADE_LIBDIR})
-                IF(GLADE_LIB1)
-                        MESSAGE(STATUS "    [  OK  ] Third party lib ${GLADE_LIB1}")
-                        TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${GLADE_LIB1})
-                ELSE(GLADE_LIB1)
-                        MESSAGE(STATUS "    [FAILED] Third party lib ${GLADE_LIB}")
-                ENDIF(GLADE_LIB1)
-        ENDFOREACH(GLADE_LIB)
-ELSE(GLADE_FOUND)
-        MESSAGE(STATUS "  FAILED to find glade...")
-ENDIF(GLADE_FOUND)
-
+INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBEToolkit")
+INCLUDE("FindOpenViBEModuleEBML")
+INCLUDE("FindOpenViBEModuleAutomaton")
+INCLUDE("FindThirdPartyGlade")

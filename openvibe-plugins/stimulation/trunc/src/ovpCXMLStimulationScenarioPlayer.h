@@ -12,7 +12,6 @@
 #include <ebml/IWriter.h>
 #include <ebml/TWriterCallbackProxy.h>
 
-
 #include <vector>
 #include <string>
 
@@ -20,8 +19,7 @@ namespace OpenViBEPlugins
 {
 	namespace Stimulation
 	{
-
-		class CXMLStimulationScenarioPlayer : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback 
+		class CXMLStimulationScenarioPlayer : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
 		{
 		public:
 
@@ -31,41 +29,40 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean initialize();
 			virtual OpenViBE::boolean uninitialize();
-		
+
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 
 			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock &rMessageClock);
 
 			virtual OpenViBE::uint64 getClockFrequency(){ return (200LL<<32); }
-			
+
 			virtual OpenViBE::boolean process();
 
 			virtual OpenViBE::boolean readAutomaton(OpenViBE::CString& oFilename);
 
 			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
 			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
-			
+
 			virtual void writeStimulationOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_XMLStimulationScenarioPlayer)
 
 		public:
-				EBML::IReader* m_pReader;
-				OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* m_pStimulationReaderCallBack;
+			EBML::IReader* m_pReader;
+			OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* m_pStimulationReaderCallBack;
 
-				std::vector<std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oStimulationReceived;
+			std::vector<std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oStimulationReceived;
 
-				EBML::IWriter* m_pWriter;
-				EBML::TWriterCallbackProxy1<OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayer> * m_pOutputWriterCallbackProxy;
-				OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
+			EBML::IWriter* m_pWriter;
+			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayer> * m_pOutputWriterCallbackProxy;
+			OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
 
+			Automaton::IXMLAutomatonReader * m_pXMLAutomatonReader;
+			Automaton::IAutomatonController * m_pAutomatonController;
+			Automaton::IAutomatonContext * m_pAutomatonContext;
+			Automaton::boolean m_bEndOfAutomaton;
 
-				Automaton::IXMLAutomatonReader * m_pXMLAutomatonReader;
-				Automaton::IAutomatonController * m_pAutomatonController;
-				Automaton::IAutomatonContext * m_pAutomatonContext;
-				Automaton::boolean m_bEndOfAutomaton;
-		
-				OpenViBE::uint64 m_ui64PreviousActivationTime;
+			OpenViBE::uint64 m_ui64PreviousActivationTime;
 		};
 
 		/**
@@ -95,13 +92,8 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_XMLStimulationScenarioPlayerDesc)
-
-			
 		};
-
-
 	};
 };
 

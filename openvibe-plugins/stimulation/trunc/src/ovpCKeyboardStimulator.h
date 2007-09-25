@@ -19,7 +19,6 @@ namespace OpenViBEPlugins
 {
 	namespace Stimulation
 	{
-
 		class CKeyboardStimulator : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
@@ -30,7 +29,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean initialize();
 			virtual OpenViBE::boolean uninitialize();
-			
+
 			virtual OpenViBE::uint64 getClockFrequency(){ return (32LL<<32); }
 
 			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock &rMessageClock);
@@ -46,24 +45,24 @@ namespace OpenViBEPlugins
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_KeyboardStimulator)
 
 		public:
-				//EBML writing stuff
-				EBML::IWriter* m_pWriter;
-				EBML::TWriterCallbackProxy1<OpenViBEPlugins::Stimulation::CKeyboardStimulator> * m_pOutputWriterCallbackProxy;
-				OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
+			//EBML writing stuff
+			EBML::IWriter* m_pWriter;
+			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Stimulation::CKeyboardStimulator> * m_pOutputWriterCallbackProxy;
+			OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
 
-				//! Invisible widget used to handle keypresses				
-				GtkWidget * m_pDummyWidget;
+			//! Invisible widget used to handle keypresses
+			GtkWidget * m_pDummyWidget;
 
-				//! Stores keyvalue/stimulation couples
-				std::map<guint, OpenViBE::uint64> m_oKeyToStimulation;
-		
-				//! Vector of the stimulations to send when possible
-				std::vector<OpenViBE::uint64> m_oStimulationToSend;
+			//! Stores keyvalue/stimulation couples
+			std::map<guint, OpenViBE::uint64> m_oKeyToStimulation;
 
-				//! Plugin's previous activation date
-				OpenViBE::uint64 m_ui64PreviousActivationTime;
+			//! Vector of the stimulations to send when possible
+			std::vector<OpenViBE::uint64> m_oStimulationToSend;
 
-				OpenViBE::boolean m_bError;
+			//! Plugin's previous activation date
+			OpenViBE::uint64 m_ui64PreviousActivationTime;
+
+			OpenViBE::boolean m_bError;
 		};
 
 		/**
@@ -87,18 +86,13 @@ namespace OpenViBEPlugins
 			{
 				rPrototype.addOutput("Outgoing Stimulations", OV_TypeId_Stimulations);
 
-				rPrototype.addSetting("Filename", OV_TypeId_String, "");
+				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
 
 				return true;
 			}
 
-			
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_KeyboardStimulatorDesc)
-
-			
 		};
-
-
 	};
 };
 
