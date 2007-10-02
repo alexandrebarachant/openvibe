@@ -21,21 +21,60 @@ ov_wget=`which wget`
 ov_tar=`which tar`
 ov_gzip=`which gzip`
 ov_bzip2=`which bzip2`
+ov_unzip=`which unzip`
 ov_make=`which make`
 ov_gcc=`which gcc`
 ov_gpp=`which g++`
 ov_g77=`which g77`
+ov_sed=`which sed`
 
 echo "Using as subversion : [$ov_svn]..."
 echo "Using as wget       : [$ov_wget]..."
 echo "Using as tar        : [$ov_tar]..."
 echo "Using as gzip       : [$ov_gzip]..."
 echo "Using as bzip2      : [$ov_bzip2]..."
+echo "Using as unnzip     : [$ov_unzip]..."
 echo "Using as make       : [$ov_make]..."
-echo "Using as make       : [$ov_svn]..."
 echo "Using as gcc        : [$ov_gcc]..."
 echo "Using as g++        : [$ov_gpp]..."
 echo "Using as g77        : [$ov_g77]..."
+echo "Using as sed        : [$ov_sed]..."
+
+####################################
+##
+##  interesting variables for each package
+##
+####################################
+
+# ov_should_build_[packagename]_flag=
+#
+# ov_dep_[packagename]_url=
+# ov_dep_[packagename]_archive_name=
+# ov_dep_[packagename]_additional_configure_flags=
+#
+# ov_dep_[packagename]_hook_download=
+# ov_dep_[packagename]_hook_download_pre=
+# ov_dep_[packagename]_hook_download_post=
+#
+# ov_dep_[packagename]_hook_checkout=
+# ov_dep_[packagename]_hook_checkout_pre=
+# ov_dep_[packagename]_hook_checkout_post=
+#
+# ov_dep_[packagename]_hook_uncompress=
+# ov_dep_[packagename]_hook_uncompress_pre=
+# ov_dep_[packagename]_hook_uncompress_post=
+#
+# ov_dep_[packagename]_hook_configure=
+# ov_dep_[packagename]_hook_configure_pre=
+# ov_dep_[packagename]_hook_configure_post=
+#
+# ov_dep_[packagename]_hook_make=
+# ov_dep_[packagename]_hook_make_pre=
+# ov_dep_[packagename]_hook_make_post=
+#
+# ov_dep_[packagename]_hook_install=
+# ov_dep_[packagename]_hook_install_pre=
+# ov_dep_[packagename]_hook_install_post=
 
 ####################################
 ##
@@ -44,6 +83,18 @@ echo "Using as g77        : [$ov_g77]..."
 ####################################
 
 ov_should_clear_dependencies_folder_flag=false
+
+ov_directory=`pwd`
+
+ov_depend_folder_rel=dependencies
+ov_archives_folder_rel=arch
+ov_tmp_folder_rel=tmp
+ov_log_folder_rel=log
+
+ov_depend_folder=$ov_directory/$ov_depend_folder_rel
+ov_archives_folder=$ov_depend_folder/$ov_archives_folder_rel
+ov_tmp_folder=$ov_depend_folder/$ov_tmp_folder_rel
+ov_log_folder=$ov_depend_folder/$ov_log_folder_rel
 
 ov_should_build_pkgconfig_flag=true
 ov_should_build_cmake_flag=true
@@ -76,24 +127,13 @@ ov_should_build_gtk_flag=true
 ov_should_build_gtk_theme_clearlooks_flag=true
 ov_should_build_libglade_flag=true
 ov_should_build_glade_flag=true
-
 ov_should_build_itpp_external_libtool_flag=true
 ov_should_build_itpp_external_flag=true
 ov_should_build_itpp_flag=true
-
+ov_should_build_gsl_flag=true
+ov_should_build_torch_flag=true
+ov_should_build_vrpn_flag=true
 ov_should_build_openmask_flag=true
-
-ov_directory=`pwd`
-
-ov_depend_folder_rel=dependencies
-ov_archives_folder_rel=arch
-ov_tmp_folder_rel=tmp
-ov_log_folder_rel=log
-
-ov_depend_folder=$ov_directory/$ov_depend_folder_rel
-ov_archives_folder=$ov_depend_folder/$ov_archives_folder_rel
-ov_tmp_folder=$ov_depend_folder/$ov_tmp_folder_rel
-ov_log_folder=$ov_depend_folder/$ov_log_folder_rel
 
 ov_dep_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz
 ov_dep_pkgconfig_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/pkg-config-0.20.tar.gz
@@ -130,6 +170,10 @@ ov_dep_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.
 ov_dep_itpp_external_libtool_url=http://ftp.gnu.org/gnu/libtool/libtool-1.5.22.tar.gz
 ov_dep_itpp_external_url=http://downloads.sourceforge.net/itpp/itpp-external-2.3.0.tar.gz
 ov_dep_itpp_url=http://downloads.sourceforge.net/itpp/itpp-3.10.10.tar.gz
+ov_dep_gsl_url=ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz
+ov_dep_torch_url=http://www.torch.ch/archives/Torch3src.tgz
+ov_dep_vrpn_url=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/vrpn_07_13.zip
+ov_dep_openmask_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
 
 ov_dep_expat_archive_name=$ov_archives_folder/openvibe-dependency-expat-2.0.0.tar.gz
 ov_dep_pkgconfig_archive_name=$ov_archives_folder/openvibe-dependency-pkg-config-0.20.tar.gz
@@ -165,10 +209,20 @@ ov_dep_glade_archive_name=$ov_archives_folder/openvibe-dependency-glade3-3.1.5.t
 ov_dep_itpp_external_libtool_archive_name=$ov_archives_folder/openvibe-dependency-libtool-1.5.22.tar.gz
 ov_dep_itpp_external_archive_name=$ov_archives_folder/openvibe-dependency-itpp-external-2.3.0.tar.gz
 ov_dep_itpp_archive_name=$ov_archives_folder/openvibe-dependency-itpp-3.10.10.tar.gz
+ov_dep_gsl_archive_name=$ov_archives_folder/openvibe-dependency-gsl-1.9.tar.gz
+ov_dep_torch_archive_name=$ov_archives_folder/openvibe-dependency-torch-3.tar.gz
+ov_dep_vrpn_archive_name=$ov_archives_folder/openvibe-dependency-vrpn-7.13.zip
 
 ov_dep_gtk_additional_configure_flags="--without-libtiff --without-libjpeg"
 
-ov_dep_openmask_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
+ov_dep_torch_hook_configure="pushd * && ln -s config/Makefile_options_Linux Makefile_options_Linux && make depend && popd"
+ov_dep_torch_hook_install="pushd * && find -name *.h -type f -exec cp -f \"{}\" ../../include \\; && find -name *.a -type f -exec cp -f \"{}\" ../../lib \\; && cp Makefile_options_Linux ../.. && popd"
+# preserve tree on cp  --parents
+
+ov_dep_vrpn_hook_uncompress='$ov_unzip "$ov_current_package_archive_name"'
+ov_dep_vrpn_hook_configure="$ov_sed -i \"s/#HW_OS := pc_linux$/HW_OS := pc_linux/g\" quat/makefile && $ov_sed -i \"s/#HW_OS := pc_linux$/HW_OS := pc_linux/g\" vrpn/Makefile"
+ov_dep_vrpn_hook_make="pushd quat && make && cd ../vrpn && make && popd"
+ov_dep_vrpn_hook_install="chmod -x quat/*.h vrpn/*.h && cp quat/*.h vrpn/*.h ../include && cp quat/pc_linux/*.a vrpn/pc_linux/*.a ../lib"
 
 ####################################
 ##
@@ -183,13 +237,14 @@ touch $script_dependencies_file
 
 echo '#!/bin/bash' >> $script_dependencies_file
 echo '' >> $script_dependencies_file
+echo 'export OpenViBE_dependencies='$ov_depend_folder >> $script_dependencies_file
 echo 'export PKG_CONFIG_PATH='$ov_depend_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $script_dependencies_file
 echo 'export LD_LIBRARY_PATH='$ov_depend_folder'/lib:$LD_LIBRARY_PATH' >> $script_dependencies_file
 echo '' >> $script_dependencies_file
 echo 'export PATH='$ov_depend_folder'/bin:$PATH' >> $script_dependencies_file
 echo 'export COMPILER_PATH='$ov_depend_folder'/include:$COMPILER_PATH' >> $script_dependencies_file
-# echo 'export C_INCLUDE_PATH='$ov_depend_folder'/include:$C_INCLUDE_PATH' >> $script_dependencies_file
-# echo 'export CPLUS_INCLUDE_PATH='$ov_depend_folder'/include:$CPLUS_INCLUDE_PATH' >> $script_dependencies_file
+echo 'export C_INCLUDE_PATH='$ov_depend_folder'/include:$C_INCLUDE_PATH' >> $script_dependencies_file
+echo 'export CPLUS_INCLUDE_PATH='$ov_depend_folder'/include:$CPLUS_INCLUDE_PATH' >> $script_dependencies_file
 echo 'export LIBRARY_PATH='$ov_depend_folder'/lib:$LIBRARY_PATH' >> $script_dependencies_file
 
 chmod 750 $script_dependencies_file
@@ -239,6 +294,30 @@ function ov_untar_configure_make_install_package
 	eval 'ov_current_package_url=$ov_dep_'$1'_url'
 	eval 'ov_current_package_additional_configure_flags=$ov_dep_'$1'_additional_configure_flags'
 
+	eval 'ov_current_package_hook_download=$ov_dep_'$1'_hook_download'
+	eval 'ov_current_package_hook_download_pre=$ov_dep_'$1'_hook_download_pre'
+	eval 'ov_current_package_hook_download_post=$ov_dep_'$1'_hook_download_post'
+	eval 'ov_current_package_hook_checkout=$ov_dep_'$1'_hook_checkout'
+	eval 'ov_current_package_hook_checkout_pre=$ov_dep_'$1'_hook_checkout_pre'
+	eval 'ov_current_package_hook_checkout_post=$ov_dep_'$1'_hook_checkout_post'
+	eval 'ov_current_package_hook_uncompress=$ov_dep_'$1'_hook_uncompress'
+	eval 'ov_current_package_hook_uncompress_pre=$ov_dep_'$1'_hook_uncompress_pre'
+	eval 'ov_current_package_hook_uncompress_post=$ov_dep_'$1'_hook_uncompress_post'
+	eval 'ov_current_package_hook_configure=$ov_dep_'$1'_hook_configure'
+	eval 'ov_current_package_hook_configure_pre=$ov_dep_'$1'_hook_configure_pre'
+	eval 'ov_current_package_hook_configure_post=$ov_dep_'$1'_hook_configure_post'
+	eval 'ov_current_package_hook_make=$ov_dep_'$1'_hook_make'
+	eval 'ov_current_package_hook_make_pre=$ov_dep_'$1'_hook_make_pre'
+	eval 'ov_current_package_hook_make_post=$ov_dep_'$1'_hook_make_post'
+	eval 'ov_current_package_hook_install=$ov_dep_'$1'_hook_install'
+	eval 'ov_current_package_hook_install_pre=$ov_dep_'$1'_hook_install_pre'
+	eval 'ov_current_package_hook_install_post=$ov_dep_'$1'_hook_install_post'
+
+	ov_current_operation_result=0
+	ov_current_operation_hook_result=0
+	ov_current_operation_hook_pre_result=0
+	ov_current_operation_hook_post_result=0
+
 	if [ "$ov_current_package_should_build_flag" == "true" ]; then
 
 		if [ ! -e "$ov_current_package_hit_file" ]; then
@@ -256,48 +335,87 @@ function ov_untar_configure_make_install_package
 
 			# downloads package archive when needed
 			echo "  Downloading [$ov_current_package_url]..."
-			$ov_wget -c -O "$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
-			if [ $? -eq 0 ]; then
+			if [ ! "$ov_current_package_hook_download" == "" ]; then
+				# completely replace download phase with hook
+				`eval $ov_current_package_hook_download >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_result=$?
+			else
+				# executes download hook pre 
+				`eval $ov_current_package_hook_download_pre >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_pre_result=$?
+				# effectively download file
+				$ov_wget -c -O "$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
+				ov_current_operation_result=$?
+				# executes download hook post
+				`eval $ov_current_package_hook_download_post >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_post_result=$?
+			fi;
+			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 				echo "  Downloading [$ov_current_package_url] succeeded..."
 			else
 				echo "  Downloading [$ov_current_package_url] failed !"
 				exit
 			fi;
 
-			# trying to find out what kind of archive to decompress
-			ov_package_type=`echo $ov_current_package_archive_name | sed '
-				s/\(.*\)\.\(tar\.\)/\2/g
-				'`
-			case $ov_package_type in
-				"tar.gz")
-					ov_tar_flags=xvfz
-					;;
-				"tar.bz2")
-					ov_tar_flags=xvfj
-					;;
-				*)
-					echo "  Uhandled file extension [$ov_current_package_archive_name], sorry !"
-					exit
-					;;
-			esac;
-
 			# decompresses package archive in temporary folder
 			echo "  Uncompressing [$ov_current_package_archive_name]..."
-			$ov_tar $ov_tar_flags "$ov_current_package_archive_name" >> $ov_current_package_log_file 2>&1
-			if [ $? -eq 0 ]; then
+			if [ ! "$ov_current_package_hook_uncompress" == "" ]; then
+				# completely replace uncompress phase with hook
+				`eval $ov_current_package_hook_uncompress >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_result=$?
+			else
+				# trying to figure out what kind of archive to decompress
+				ov_package_type=`echo $ov_current_package_archive_name | $ov_sed '
+					s/\(.*\)\.\(tar\.\)/\2/g'`
+				case $ov_package_type in
+					"tar.gz")
+						ov_decompress_command="$ov_tar xvfz"
+						;;
+					"tar.bz2")
+						ov_decompress_command="$ov_tar xvfj"
+						;;
+					*)
+						echo "  Uhandled file extension [$ov_current_package_archive_name], sorry (may you try hook system ?) !"
+						exit
+						;;
+				esac;
+				# executes uncompress hook pre 
+				`eval $ov_current_package_hook_uncompress_pre >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_pre_result=$?
+				# effectively uncompress file
+				$ov_decompress_command "$ov_current_package_archive_name" >> $ov_current_package_log_file 2>&1
+				ov_current_operation_result=$?
+				# executes uncompress hook post
+				`eval $ov_current_package_hook_uncompress_post >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_post_result=$?
+			fi;
+			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 				echo "  Uncompressing [$ov_current_package_archive_name] succeeded..."
 			else
 				echo "  Uncompressing [$ov_current_package_archive_name] failed !"
 				exit
 			fi;
 
-			# enters decompressed directory (should only be one)
-			cd *
-
 			# configures the package
 			echo "  Configuring [$ov_current_package]..."
-			./configure --prefix=$ov_depend_folder $ov_current_package_additional_configure_flags >> $ov_current_package_log_file 2>&1
-			if [ $? -eq 0 ]; then
+			if [ ! "$ov_current_package_hook_configure" == "" ]; then
+				# completely replace configure phase with hook
+				`eval $ov_current_package_hook_configure >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_result=$?
+			else
+				# executes configure hook pre 
+				`eval $ov_current_package_hook_configure_pre >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_pre_result=$?
+				# effectively configure file
+				pushd * >> $ov_current_package_log_file 2>&1
+				./configure --prefix=$ov_depend_folder $ov_current_package_additional_configure_flags >> $ov_current_package_log_file 2>&1
+				popd >> $ov_current_package_log_file 2>&1
+				ov_current_operation_result=$?
+				# executes configure hook post
+				`eval $ov_current_package_hook_configure_post >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_post_result=$?
+			fi;
+			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 				echo "  Configuring [$ov_current_package] succeeded..."
 			else
 				echo "  Configuring [$ov_current_package] failed !"
@@ -306,8 +424,24 @@ function ov_untar_configure_make_install_package
 
 			# builds the package
 			echo "  Building [$ov_current_package]..."
-			$ov_make >> $ov_current_package_log_file 2>&1
-			if [ $? -eq 0 ]; then
+			if [ ! "$ov_current_package_hook_make" == "" ]; then
+				# completely replace make phase with hook
+				`eval $ov_current_package_hook_make >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_result=$?
+			else
+				# executes make hook pre 
+				`eval $ov_current_package_hook_make_pre >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_pre_result=$?
+				# effectively make file
+				pushd * >> $ov_current_package_log_file 2>&1
+				$ov_make >> $ov_current_package_log_file 2>&1
+				popd >> $ov_current_package_log_file 2>&1
+				ov_current_operation_result=$?
+				# executes make hook post
+				`eval $ov_current_package_hook_make_post >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_post_result=$?
+			fi;
+			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 				echo "  Building [$ov_current_package] succeeded..."
 			else
 				echo "  Building [$ov_current_package] failed !"
@@ -316,8 +450,24 @@ function ov_untar_configure_make_install_package
 
 			# installs the package
 			echo "  Installing [$ov_current_package]..."
-			$ov_make install >> $ov_current_package_log_file 2>&1
-			if [ $? -eq 0 ]; then
+			if [ ! "$ov_current_package_hook_install" == "" ]; then
+				# completely replace install phase with hook
+				`eval $ov_current_package_hook_install >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_result=$?
+			else
+				# executes install hook pre 
+				`eval $ov_current_package_hook_install_pre >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_pre_result=$?
+				# effectively install file
+				pushd * >> $ov_current_package_log_file 2>&1
+				$ov_make install >> $ov_current_package_log_file 2>&1
+				popd >> $ov_current_package_log_file 2>&1
+				ov_current_operation_result=$?
+				# executes install hook post
+				`eval $ov_current_package_hook_install_post >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_post_result=$?
+			fi;
+			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 				echo "  Installing [$ov_current_package] succeeded..."
 			else
 				echo "  Installing [$ov_current_package] failed !"
@@ -383,7 +533,7 @@ function ov_untar_install_package
 			fi;
 
 			# trying to find out what kind of archive to decompress
-			ov_package_type=`echo $ov_current_package_archive_name | sed '
+			ov_package_type=`echo $ov_current_package_archive_name | $ov_sed '
 				s/\(.*\)\.\(tar\.\)/\2/g
 				'`
 			case $ov_package_type in
@@ -534,7 +684,6 @@ function ov_svn_configure_make_install_package
 	fi;
 }
 
-
 ####################################
 ##
 ##  installation script excution
@@ -575,6 +724,10 @@ ov_untar_configure_make_install_package "glade"
 ov_untar_configure_make_install_package "itpp_external_libtool"
 ov_untar_configure_make_install_package "itpp_external"
 ov_untar_configure_make_install_package "itpp"
+
+ov_untar_configure_make_install_package "gsl"
+ov_untar_configure_make_install_package "torch"
+ov_untar_configure_make_install_package "vrpn"
 
 ov_untar_install_package "cmake"
 
