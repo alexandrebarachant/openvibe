@@ -210,6 +210,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			FALSE,
 			xStart, yStart, xSize, ySize);
 
+		int l_iInputOffset=(xSize-rBox.getInputCount()*(iCircleSpace+iCircleSize)-iCircleMargin*2)/2;
 		for(i=0; i<rBox.getInputCount(); i++)
 		{
 			CIdentifier l_oInputIdentifier;
@@ -225,7 +226,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			l_vPoint[2].y=0;
 			for(int j=0; j<3; j++)
 			{
-				l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize);
+				l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+l_iInputOffset;
 				l_vPoint[j].y+=yStart-(iCircleSize>>1);
 			}
 
@@ -253,7 +254,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				l_vPoint,
 				3);
 
-			int32 x=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX;
+			int32 x=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX+l_iInputOffset;
 			int32 y=yStart-(iCircleSize>>1)-m_i32ViewOffsetY;
 			CIdentifier l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierToBoxInput(OV_UndefinedIdentifier, rBox.getIdentifier(), i);
 			while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
@@ -277,6 +278,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			}
 		}
 
+		int l_iOutputOffset=(xSize-rBox.getOutputCount()*(iCircleSpace+iCircleSize)-iCircleMargin*2)/2;
 		for(i=0; i<rBox.getOutputCount(); i++)
 		{
 			CIdentifier l_oOutputIdentifier;
@@ -292,7 +294,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			l_vPoint[2].y=0;
 			for(int j=0; j<3; j++)
 			{
-				l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize);
+				l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+l_iOutputOffset;
 				l_vPoint[j].y+=yStart-(iCircleSize>>1)+ySize;
 			}
 
@@ -320,7 +322,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				l_vPoint,
 				3);
 
-			int32 x=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX;
+			int32 x=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX+l_iOutputOffset;
 			int32 y=yStart+ySize+(iCircleSize>>1)+1-m_i32ViewOffsetY;
 			CIdentifier l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierFromBoxOutput(OV_UndefinedIdentifier, rBox.getIdentifier(), i);
 			while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
@@ -908,6 +910,20 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 						l_oCurrentObject.m_oIdentifier,
 						l_oCurrentObject.m_ui32ConnectorIndex,
 						l_oLinkIdentifier);
+				}
+			}
+			if(m_ui32CurrentMode==Mode_MoveSelection)
+			{
+				map<CIdentifier, boolean>::const_iterator i;
+				for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
+				{
+					if(i->second)
+					{
+						CBoxProxy l_oBoxProxy(m_rScenario, i->first);
+						l_oBoxProxy.setCenter(
+							((l_oBoxProxy.getXCenter()+8)&0xfffffff0),
+							((l_oBoxProxy.getYCenter()+8)&0xfffffff0));
+					}
 				}
 			}
 

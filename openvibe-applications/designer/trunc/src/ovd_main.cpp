@@ -61,27 +61,29 @@ public:
 		m_pMainWindow=glade_xml_get_widget(m_pGladeInterface, "openvibe");
 
 		// Connects menu actions
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_copy")),       "activate", G_CALLBACK(menu_copy_selection_cb),     this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_cut")),        "activate", G_CALLBACK(menu_cut_selection_cb),      this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_paste")),      "activate", G_CALLBACK(menu_paste_selection_cb),    this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_delete")),     "activate", G_CALLBACK(menu_delete_selection_cb),   this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_copy")),        "activate", G_CALLBACK(menu_copy_selection_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_cut")),         "activate", G_CALLBACK(menu_cut_selection_cb),      this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_paste")),       "activate", G_CALLBACK(menu_paste_selection_cb),    this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_delete")),      "activate", G_CALLBACK(menu_delete_selection_cb),   this);
 
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_new")),        "activate", G_CALLBACK(menu_new_scenario_cb),       this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_open")),       "activate", G_CALLBACK(menu_open_scenario_cb),      this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save")),       "activate", G_CALLBACK(menu_save_scenario_cb),      this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save_as")),    "activate", G_CALLBACK(menu_save_scenario_as_cb),   this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_close")),      "activate", G_CALLBACK(menu_close_scenario_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_new")),         "activate", G_CALLBACK(menu_new_scenario_cb),       this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_open")),        "activate", G_CALLBACK(menu_open_scenario_cb),      this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save")),        "activate", G_CALLBACK(menu_save_scenario_cb),      this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_save_as")),     "activate", G_CALLBACK(menu_save_scenario_as_cb),   this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "menu_close")),       "activate", G_CALLBACK(menu_close_scenario_cb),     this);
 
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_new")),      "clicked",  G_CALLBACK(button_new_scenario_cb),     this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_open")),     "clicked",  G_CALLBACK(button_open_scenario_cb),    this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_save")),     "clicked",  G_CALLBACK(button_save_scenario_cb),    this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_save_as")),  "clicked",  G_CALLBACK(button_save_scenario_as_cb), this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_close")),    "clicked",  G_CALLBACK(button_close_scenario_cb),   this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_new")),       "clicked",  G_CALLBACK(button_new_scenario_cb),     this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_open")),      "clicked",  G_CALLBACK(button_open_scenario_cb),    this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_save")),      "clicked",  G_CALLBACK(button_save_scenario_cb),    this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_save_as")),   "clicked",  G_CALLBACK(button_save_scenario_as_cb), this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_close")),     "clicked",  G_CALLBACK(button_close_scenario_cb),   this);
 
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_play")),     "clicked",  G_CALLBACK(play_scenario_cb),           this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_pause")),    "clicked",  G_CALLBACK(pause_scenario_cb),          this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_next")),     "clicked",  G_CALLBACK(next_scenario_cb),           this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_stop")),     "clicked",  G_CALLBACK(stop_scenario_cb),           this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_play")),      "clicked",  G_CALLBACK(play_scenario_cb),           this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_pause")),     "clicked",  G_CALLBACK(pause_scenario_cb),          this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_next")),      "clicked",  G_CALLBACK(next_scenario_cb),           this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_stop")),      "clicked",  G_CALLBACK(stop_scenario_cb),           this);
+
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_log_level")), "clicked",  G_CALLBACK(log_level_cb),               this);
 
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_title_button_expand")),   "clicked", G_CALLBACK(box_algorithm_title_button_expand_cb),   this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_title_button_collapse")), "clicked", G_CALLBACK(box_algorithm_title_button_collapse_cb), this);
@@ -486,6 +488,34 @@ public:
 			l_pCurrentInterfacedScenario->redraw();
 		}
 	}
+	void logLevelCB(void)
+	{
+		// Loads log level dialog
+		::GladeXML* l_pGladeInterface=glade_xml_new(OVD_GUI_File, "openvibe_loglevel", NULL);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Fatal));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Error));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning")),   m_pKernel->getContext()->getLogManager().isActive(LogLevel_Warning));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info")),      m_pKernel->getContext()->getLogManager().isActive(LogLevel_Info));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Trace));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark")), m_pKernel->getContext()->getLogManager().isActive(LogLevel_Benchmark));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Debug));
+
+		::GtkDialog* l_pLogLevelDialog=GTK_DIALOG(glade_xml_get_widget(l_pGladeInterface, "openvibe_loglevel"));
+		gint l_iResult=gtk_dialog_run(l_pLogLevelDialog);
+		if(l_iResult==GTK_RESPONSE_APPLY)
+		{
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Fatal,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Error,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Warning,   gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Info,      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Trace,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Benchmark, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Debug,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug"))));
+		}
+
+		gtk_widget_destroy(GTK_WIDGET(l_pLogLevelDialog));
+		g_object_unref(l_pGladeInterface);
+	}
 
 	static void drag_data_get_cb(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pUserData)
 	{
@@ -566,6 +596,11 @@ public:
 	static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->stopScenarioCB();
+	}
+
+	static void log_level_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->logLevelCB();
 	}
 
 	static void box_algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData)
@@ -840,8 +875,8 @@ int main(int argc, char ** argv)
 					ILogManager& l_rLogManager=l_pKernel->getContext()->getLogManager();
 					l_rLogManager.activate(LogLevel_Debug, false);
 					l_rLogManager.activate(LogLevel_Benchmark, false);
-					l_rLogManager.activate(LogLevel_Trace, true);
-					l_rLogManager.activate(LogLevel_Info, true);
+					l_rLogManager.activate(LogLevel_Trace, false);
+					l_rLogManager.activate(LogLevel_Info, false);
 					l_rLogManager.activate(LogLevel_Warning, true);
 					l_rLogManager.activate(LogLevel_Error, true);
 					l_rLogManager.activate(LogLevel_Fatal, true);
