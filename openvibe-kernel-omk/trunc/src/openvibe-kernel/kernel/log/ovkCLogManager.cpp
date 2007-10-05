@@ -102,6 +102,7 @@ boolean CLogManager::addListener(ILogListener* pListener)
 		{
 			return false;
 		}
+		itLogListener++;
 	}
 
 	m_vListener.push_back(pListener);

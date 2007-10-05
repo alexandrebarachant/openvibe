@@ -15,6 +15,33 @@ using namespace OpenViBE::Plugins;
 // #define _ScopeTester_
 #define _MaxCrash_ 5
 
+namespace
+{
+	template <typename T>
+	T& _my_get_(list<T>& rList, uint32 ui32Index)
+	{
+		uint32 i;
+		typename list<T>::iterator it=rList.begin();
+		for(i=0; i<ui32Index; i++)
+		{
+			++it;
+		}
+		return *it;
+	}
+
+	template <typename T>
+	const T& _my_get_(const list<T>& rList, uint32 ui32Index)
+	{
+		uint32 i;
+		typename list<T>::const_iterator it=rList.begin();
+		for(i=0; i<ui32Index; i++)
+		{
+			++it;
+		}
+		return *it;
+	}
+}
+
 PsSimulatedBox::PsSimulatedBox(
 	PsController& rController,
 	const PsObjectDescriptor& rObjectDescriptor,
@@ -57,9 +84,9 @@ void PsSimulatedBox::init(void)
 
 	log() << LogLevel_Debug << "PsSimulatedBox::init(" << CString(getName().getCString()) << "|" << m_pBox->getName() << ")\n";
 
-	m_oBenchmarkChronoProcessClock.reset(32);
-	m_oBenchmarkChronoProcessInput.reset(32);
-	m_oBenchmarkChronoProcess.reset(32);
+	m_oBenchmarkChronoProcessClock.reset(1024);
+	m_oBenchmarkChronoProcessInput.reset(1024);
+	m_oBenchmarkChronoProcess.reset(1024);
 }
 
 void PsSimulatedBox::computeParameters(void)
@@ -107,19 +134,25 @@ void PsSimulatedBox::computeParameters(void)
 	if(m_oBenchmarkChronoProcessClock.hasNewEstimation())
 	{
 		log() << LogLevel_Benchmark
-			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "processClock" << LogColor_PopStateBit << "::" << m_pBox->getName() << "::" << m_pBox->getIdentifier() << "> "
+			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
+			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "process clock" << LogColor_PopStateBit
+			<< "::" << m_pBox->getName() << "> "
 			<< "Average computing time is " << ((m_oBenchmarkChronoProcessClock.getAverageStepInDuration()*1000000)>>32) << "us\n";
 	}
 	if(m_oBenchmarkChronoProcessInput.hasNewEstimation())
 	{
 		log() << LogLevel_Benchmark
-			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "processInput" << LogColor_PopStateBit << "::" << m_pBox->getName() << "::" << m_pBox->getIdentifier() << "> "
+			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
+			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "process input" << LogColor_PopStateBit
+			<< "::" << m_pBox->getName() << "> "
 			<< "Average computing time is " << ((m_oBenchmarkChronoProcessInput.getAverageStepInDuration()*1000000)>>32) << "us\n";
 	}
 	if(m_oBenchmarkChronoProcess.hasNewEstimation())
 	{
 		log() << LogLevel_Benchmark
-			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "process" << LogColor_PopStateBit << "::" << m_pBox->getName() << "::" << m_pBox->getIdentifier() << "> "
+			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
+			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "process      " << LogColor_PopStateBit
+			<< "::" << m_pBox->getName() << "> "
 			<< "Average computing time is " << ((m_oBenchmarkChronoProcess.getAverageStepInDuration()*1000000)>>32) << "us\n";
 	}
 /* TODO Thank you for reading :)                 */
@@ -277,7 +310,7 @@ void PsSimulatedBox::doProcess(void)
 			::PsName target(l_oTargetBoxIdentifier.toString());
 
 			uint32 l_ui32SourceOutputIndex=l_pLink->getSourceBoxOutputIndex();
-			vector< ::PsTypeChunk >::iterator i=m_vOutput[l_ui32SourceOutputIndex].begin();
+			list< ::PsTypeChunk >::iterator i=m_vOutput[l_ui32SourceOutputIndex].begin();
 			while(i!=m_vOutput[l_ui32SourceOutputIndex].end())
 			{
 				i->setIoConnectorIndex(l_ui32TargetBoxInputIndex);
@@ -289,8 +322,8 @@ void PsSimulatedBox::doProcess(void)
 	}
 
 	// iterators for input and output chunks
-	vector<vector< ::PsTypeChunk > >::iterator i;
-	vector< ::PsTypeChunk >::iterator j;
+	vector<list< ::PsTypeChunk > >::iterator i;
+	list< ::PsTypeChunk >::iterator j;
 
 	// perform input cleaning
 	i=m_vInput.begin();
@@ -371,7 +404,7 @@ boolean PsSimulatedBox::getInputChunk(
 		return false;
 	}
 
-	const ::PsTypeChunk& l_rChunk=m_vInput[ui32InputIndex][ui32ChunkIndex];
+	const ::PsTypeChunk& l_rChunk=_my_get_(m_vInput[ui32InputIndex], ui32ChunkIndex);
 	rStartTime=l_rChunk.getStartTime();
 	rEndTime=l_rChunk.getEndTime();
 	rChunkSize=l_rChunk.getBuffer().getSize();
@@ -391,18 +424,18 @@ boolean PsSimulatedBox::markInputAsDeprecated(
 	{
 		return false;
 	}
-	m_vInput[ui32InputIndex][ui32ChunkIndex].m_bDeprecated=true;
+	_my_get_(m_vInput[ui32InputIndex], ui32ChunkIndex).m_bDeprecated=true;
 	return true;
 }
 
 uint64 PsSimulatedBox::getOutputChunkSize(
 	const uint32 ui32OutputIndex) const
 {
-	if(ui32OutputIndex>=m_vOutput.size())
+	if(ui32OutputIndex>=m_vCurrentOutput.size())
 	{
 		return false;
 	}
-	return m_vCurrentOutput[ui32OutputIndex].getBuffer().getSize();
+	return _my_get_(m_vCurrentOutput, ui32OutputIndex).getBuffer().getSize();
 }
 
 boolean PsSimulatedBox::setOutputChunkSize(
@@ -414,7 +447,7 @@ boolean PsSimulatedBox::setOutputChunkSize(
 	{
 		return false;
 	}
-	return m_vCurrentOutput[ui32OutputIndex].getBuffer().setSize(ui64Size, bDiscard);
+	return _my_get_(m_vCurrentOutput, ui32OutputIndex).getBuffer().setSize(ui64Size, bDiscard);
 }
 
 uint8* PsSimulatedBox::getOutputChunkBuffer(
@@ -424,7 +457,7 @@ uint8* PsSimulatedBox::getOutputChunkBuffer(
 	{
 		return false;
 	}
-	return m_vCurrentOutput[ui32OutputIndex].getBuffer().getDirectPointer();
+	return _my_get_(m_vCurrentOutput, ui32OutputIndex).getBuffer().getDirectPointer();
 }
 
 boolean PsSimulatedBox::appendOutputChunkData(
@@ -436,7 +469,7 @@ boolean PsSimulatedBox::appendOutputChunkData(
 	{
 		return false;
 	}
-	return m_vCurrentOutput[ui32OutputIndex].getBuffer().appendOutputChunkData(pBuffer, ui64BufferSize);
+	return _my_get_(m_vCurrentOutput, ui32OutputIndex).getBuffer().appendOutputChunkData(pBuffer, ui64BufferSize);
 }
 
 boolean PsSimulatedBox::markOutputAsReadyToSend(
@@ -450,14 +483,14 @@ boolean PsSimulatedBox::markOutputAsReadyToSend(
 	}
 
 	// sets start and end time
-	m_vCurrentOutput[ui32OutputIndex].setStartTime(ui64StartTime);
-	m_vCurrentOutput[ui32OutputIndex].setEndTime(ui64EndTime);
+	_my_get_(m_vCurrentOutput, ui32OutputIndex).setStartTime(ui64StartTime);
+	_my_get_(m_vCurrentOutput, ui32OutputIndex).setEndTime(ui64EndTime);
 
 	// copies chunk
-	m_vOutput[ui32OutputIndex].push_back(m_vCurrentOutput[ui32OutputIndex]);
+	m_vOutput[ui32OutputIndex].push_back(_my_get_(m_vCurrentOutput, ui32OutputIndex));
 
 	// resets chunk size
-	m_vCurrentOutput[ui32OutputIndex].getBuffer().setSize(0, true);
+	_my_get_(m_vCurrentOutput, ui32OutputIndex).getBuffer().setSize(0, true);
 
 	return true;
 }

@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <string>
+#include <list>
 
 /** \brief Implementation class of \ref PsSimulatedBoxBase.
  * \date 2006-09-12 at 18:00:28
@@ -126,9 +127,9 @@ public:
 
 	using PsSimulatedBoxBase::sendOpenViBEDataUpdateEvent;
 
-	std::vector<std::vector< ::PsTypeChunk > > m_vInput;
-	std::vector<std::vector< ::PsTypeChunk > > m_vOutput;
-	std::vector< ::PsTypeChunk > m_vCurrentOutput;
+	std::vector<std::list< ::PsTypeChunk > > m_vInput;
+	std::vector<std::list< ::PsTypeChunk > > m_vOutput;
+	std::list< ::PsTypeChunk > m_vCurrentOutput;
 	// std::vector<std::string> m_vSetting;
 };
 

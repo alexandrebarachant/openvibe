@@ -10,6 +10,7 @@
 #include "player/ovkCPlayer.h"
 
 #include "log/ovkCLogListenerConsole.h"
+#include "log/ovkCLogListenerFile.h"
 #include "log/ovkCLogListenerNull.h"
 
 #include <string>
@@ -49,6 +50,7 @@ IObject* Kernel::CKernelObjectFactory::createObject(
 	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,           l_pResult, Kernel::CPlayer);
 
 	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerConsole, l_pResult, Kernel::CLogListenerConsole);
+	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerFile,    l_pResult, Kernel::CLogListenerFile);
 	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerNull,    l_pResult, Kernel::CLogListenerNull);
 
 	// create(rClassIdentifier, OV_ClassId_, l_pResult, Plugins::CBoxContext);

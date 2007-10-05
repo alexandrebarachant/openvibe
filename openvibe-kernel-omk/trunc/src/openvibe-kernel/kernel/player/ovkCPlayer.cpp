@@ -187,12 +187,27 @@ boolean CPlayer::loop(void)
 		m_ui32ControllerSteps++;
 		if((m_ui32ControllerSteps%__ControllerFrequency__)==0)
 		{
-			log() << LogLevel_Debug << "Player : time elapsed is " << m_ui32ControllerSteps/__ControllerFrequency__ << "s\n";
+			log() << LogLevel_Debug
+				<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
+				<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "elapsed time" << LogColor_PopStateBit << "> "
+				<< m_ui32ControllerSteps/__ControllerFrequency__ << "s\n";
 		}
 
 		if(m_oBenchmarkChrono.hasNewEstimation())
 		{
-			log() << LogLevel_Benchmark << "Player : processor use is " << m_oBenchmarkChrono.getStepInPercentage() << "%\n";
+			log() << LogLevel_Benchmark
+				<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
+				<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "processor use" << LogColor_PopStateBit << "> "
+				<< m_oBenchmarkChrono.getStepInPercentage() << "%\n";
+		}
+
+		int32 l_i32Delay=l_ui32CurrentTime-m_ui32StartTime-m_ui32ControllerSteps*(1000.0/__ControllerFrequency__);
+		if(l_i32Delay>1000)
+		{
+			log() << LogLevel_Warning
+				<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
+				<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "can not reach realtime" << LogColor_PopStateBit << "> "
+				<< (l_i32Delay/1000) << " second(s) late...\n";
 		}
 	}
 

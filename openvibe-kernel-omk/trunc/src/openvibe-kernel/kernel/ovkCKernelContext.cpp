@@ -28,7 +28,9 @@ CKernelContext::CKernelContext(IKernel& rKernel)
 
 	m_pLogManager=new CLogManager(*this);
 	m_pLogManager->addListener(dynamic_cast<ILogListener*>(m_pKernelObjectFactory->createObject(OVK_ClassId_Kernel_Log_LogListenerConsole)));
+	m_pLogManager->addListener(dynamic_cast<ILogListener*>(m_pKernelObjectFactory->createObject(OVK_ClassId_Kernel_Log_LogListenerFile)));
 	(*m_pLogManager) << LogLevel_Debug << "Added Console Log Listener - should be removed\n";
+	(*m_pLogManager) << LogLevel_Debug << "Added File Log Listener - should be removed\n";
 
 	m_pPlayerManager=new CPlayerManager(*this);
 
