@@ -70,6 +70,9 @@ namespace OpenViBEPlugins
 				//! double-linked list of the start times of the current buffers
 				std::deque<OpenViBE::uint64> m_oStartTime;
 
+				//! duration to display in seconds
+				OpenViBE::float64 m_f64TotalDuration;
+
 				OpenViBE::uint64 m_ui64BufferDuration;
 
 				//! Pointer to the drawable object to update (if needed)
@@ -93,9 +96,9 @@ namespace OpenViBEPlugins
 
 				/**
 				* Compute the number of buffers needed to display the signal for a certain time period.
-				* \param f64NumberOfMsToDisplay the time window's width in ms.
+				* \param f64NumberOfMsToDisplay the time window's width in seconds.
 				*/
-				OpenViBE::boolean adjustNumberOfDisplayedBuffers(OpenViBE::float64 f64NumberOfMsToDisplay);
+				OpenViBE::boolean adjustNumberOfDisplayedBuffers(OpenViBE::float64 f64NumberOfSecondsToDisplay);
 
 				OpenViBE::float64 getDisplayedTimeIntervalWidth();
 

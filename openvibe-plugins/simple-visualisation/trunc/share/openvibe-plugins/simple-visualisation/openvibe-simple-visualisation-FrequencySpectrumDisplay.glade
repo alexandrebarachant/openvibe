@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.2.0 on Tue Jun 26 14:20:47 2007 by brenier@monlinux.irisa.fr-->
+<!--Generated with glade3 3.1.5 on Tue Oct  2 12:04:15 2007 by yrenard@hiboux.irisa.fr-->
 <glade-interface>
   <widget class="GtkWindow" id="DisplayMainWindow">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="title" translatable="yes">Time frequency display</property>
-    <property name="default_width">800</property>
-    <property name="default_height">400</property>
+    <property name="default_width">400</property>
+    <property name="default_height">150</property>
     <child>
       <widget class="GtkVBox" id="DisplayMainVBox">
         <property name="visible">True</property>
@@ -16,6 +16,7 @@
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
+            <property name="icon_size">GTK_ICON_SIZE_SMALL_TOOLBAR</property>
             <child>
               <widget class="GtkToggleToolButton" id="DisplayToggleBottomRuler">
                 <property name="visible">True</property>
@@ -42,8 +43,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="adjustment">0 0 9999999999 1 100 100</property>
-                        <property name="climb_rate">0.75</property>
+                        <property name="adjustment">1 0 9999999999 1 100 100</property>
+                        <property name="climb_rate">0.0099999997764825821</property>
+                        <property name="digits">3</property>
                         <property name="snap_to_ticks">True</property>
                         <property name="numeric">True</property>
                       </widget>
@@ -91,7 +93,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="adjustment">0.75 0 1 0.01 0.10000000000000001 0.10000000000000001</property>
+                        <property name="adjustment">0.94999999999999996 0 1 0.01 0.10000000000000001 0.10000000000000001</property>
                         <property name="climb_rate">0.05000000074505806</property>
                         <property name="digits">3</property>
                       </widget>
@@ -111,6 +113,7 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
+                <property name="homogeneous">False</property>
               </packing>
             </child>
           </widget>

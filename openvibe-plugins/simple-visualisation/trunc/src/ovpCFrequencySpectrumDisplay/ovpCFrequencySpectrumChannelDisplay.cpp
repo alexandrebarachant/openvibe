@@ -14,7 +14,7 @@ using namespace std;
 
 namespace
 {
-	uint32* getLookUpTable(void)
+	inline uint32* getLookUpTable(void)
 	{
 		static uint32 l_pTable[1<<8];
 		static boolean l_bInitialized=false;
@@ -22,26 +22,45 @@ namespace
 		if(!l_bInitialized)
 		{
 			int i=0;
-			for(i=0; i<64; i++)
-			{
-				l_pTable[i]=i;
-			}
-			for(i=0; i<64; i++)
-			{
-				l_pTable[i+64]=(i<<8)+(64+i);
-			}
-			for(i=0; i<64; i++)
-			{
-				l_pTable[i+128]=(i<<16)+((64+i)<<8)+(128+i);
-			}
-			for(i=0; i<64; i++)
-			{
-				l_pTable[i+192]=((64+i)<<16)+((128+i)<<8)+(192+i);
-			}
+
+#if 0
+
+			for(i=0; i<64; i++) l_pTable[i    ]=                           (    i);
+			for(i=0; i<64; i++) l_pTable[i+ 64]=              ((    i)<<8)+( 64+i);
+			for(i=0; i<64; i++) l_pTable[i+128]=((    i)<<16)+(( 64+i)<<8)+(128+i);
+			for(i=0; i<64; i++) l_pTable[i+192]=(( 64+i)<<16)+((128+i)<<8)+(192+i);
+
+#else
+
+for(i=0; i<256; i++) l_pTable[(256*0+i)/6]=((255-i)<<16)+((255  )<<8)+((255  ));
+for(i=0; i<256; i++) l_pTable[(256*1+i)/6]=((    0)<<16)+((255-i)<<8)+((255  ));
+for(i=0; i<256; i++) l_pTable[(256*2+i)/6]=((    0)<<16)+((    0)<<8)+((255-i));
+for(i=0; i<256; i++) l_pTable[(256*3+i)/6]=((    i)<<16)+((    0)<<8)+((    0));
+for(i=0; i<256; i++) l_pTable[(256*4+i)/6]=((255  )<<16)+((    i)<<8)+((    0));
+for(i=0; i<256; i++) l_pTable[(256*5+i)/6]=((255  )<<16)+((255  )<<8)+((    i));
+
+#endif
+
 			l_bInitialized=true;
 		}
 
 		return l_pTable;
+	}
+
+	inline void drawBoxToBuffer(guchar* pRGBBuffer, uint32 ui32RowStride, uint32 ui32X, uint32 ui32Y, uint32 ui32Width, uint32 ui32Height, uint8 ui8Red, uint8 ui8Green, uint8 ui8Blue)
+	{
+		guchar * l_pLineBase = pRGBBuffer + (ui32RowStride*ui32Y) + (ui32X*3);
+		for(uint32 j=ui32Height ; j>0 ; j--)
+		{
+			guchar * l_pLine=l_pLineBase;
+			for(uint32 i=ui32Width ; i>0 ; i--)
+			{
+				*(l_pLine++) =  ui8Red;
+				*(l_pLine++) =  ui8Green;
+				*(l_pLine++) =  ui8Blue;
+			}
+			l_pLineBase+=ui32RowStride;
+		}
 	}
 };
 
@@ -89,15 +108,14 @@ namespace OpenViBEPlugins
 			m_pGraphicsContext(NULL),
 			m_pDatabase(&pDatabase),
 			m_ui32Channel(ui32Channel),
-			m_f64MinimumValue(+DBL_MAX),
-			m_f64MaximumValue(-DBL_MAX),
+			m_f64MinimumValue(0),
+			m_f64MaximumValue(0),
 			m_f64Attenuation(1),
 			m_pRGBBuffer(NULL),
 			m_ui32RGBBufferWidth(0)
 		{
-
 			m_pDisplay = gtk_drawing_area_new();
-			gtk_widget_set_size_request(m_pDisplay, 200, 30);
+			gtk_widget_set_size_request(m_pDisplay, 20, 20);
 
 			g_signal_connect_after(G_OBJECT(m_pDisplay), "expose_event", G_CALLBACK(frequencySpectrumChannelDisplayExposeEventCallback), this);
 			g_signal_connect(G_OBJECT(m_pDisplay), "size-allocate", G_CALLBACK(frequencySpectrumSizeAllocateCallback), this);
@@ -161,73 +179,64 @@ namespace OpenViBEPlugins
 				l_i64BaseX = 0;
 			}
 
-			GdkColor l_oCurrentColor;
+			::GdkColor l_oCurrentColor;
 			l_oCurrentColor.pixel = 0;
-
-			//computes the color
-			float64 l_f64Max;// = m_pDatabase->m_f64MaximumValue;
-			float64 l_f64Min;// = m_pDatabase->m_f64MinimumValue;
 
 			//test
 			float64 l_f64CurrentBufferMax;
 			float64 l_f64CurrentBufferMin;
 
-			m_pDatabase->getLastBufferChannelLocalMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+			// m_pDatabase->getLastBufferChannelLocalMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+			m_pDatabase->getDisplayedChannelLocalMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
 			//m_pDatabase->getLastBufferMinMaxValue(l_f64CurrentBufferMin, l_f64CurrentBufferMax);
 
-			l_f64Max = (m_f64MaximumValue < l_f64CurrentBufferMax) ?
-				l_f64CurrentBufferMax :
-				(m_f64Attenuation * m_f64MaximumValue) + (1-m_f64Attenuation)*l_f64CurrentBufferMax;
-
-			l_f64Min = (m_f64MinimumValue > l_f64CurrentBufferMin) ?
-				l_f64CurrentBufferMin :
-				(m_f64Attenuation * m_f64MinimumValue) + (1-m_f64Attenuation)*l_f64CurrentBufferMin;
-
-			m_f64MinimumValue = l_f64Min;
-			m_f64MaximumValue = l_f64Max;
+			m_f64MaximumValue = (1-m_f64Attenuation)*m_f64MaximumValue + (m_f64Attenuation)*l_f64CurrentBufferMax;
+			m_f64MinimumValue = (1-m_f64Attenuation)*m_f64MinimumValue + (m_f64Attenuation)*l_f64CurrentBufferMin;
 
 			//clear the undrawn part of the buffer
-			drawBoxToBuffer(0, 0, l_i64BaseX, l_iHeight, 0xFF, 0xFF, 0xFF);
+			//drawBoxToBuffer(m_pRGBBuffer, m_ui32Rowstride, 0, 0, l_i64BaseX, l_iHeight, 0xFF, 0xFF, 0xFF);
 
+			const float64 l_f64ScaleCoef=256.0/(m_f64MaximumValue - m_f64MinimumValue);
+			const uint32* l_pLookUpTable=getLookUpTable();
+
+			float64 l_f64XPosition=l_i64BaseX;
+			float64 l_f64YPosition=l_iHeight;
 			for(size_t j=0 ; j<m_pDatabase->m_oSampleBuffers.size() ; j++)
 			{
 				//gets a pointer to this channels' samples data in the current buffer
-				const float64 * l_pCurrentChannelSampleBuffer = (m_pDatabase->m_oSampleBuffers)[j] + (m_ui32Channel * l_ui32FrequencyCount);
+				const float64 * l_pCurrentChannelSampleBuffer = m_pDatabase->m_oSampleBuffers[j] + (m_ui32Channel * l_ui32FrequencyCount);
 
+				l_f64YPosition=l_iHeight;
 				//calculates the coordinates of the point in the new base
 				for(uint32 f = 0 ; f<l_ui32FrequencyCount ; f++)
 				{
-					//computes the box coordinates
-					gint l_iXposition = (gint) (l_i64BaseX + (j *  l_f64WidthPerPoint));
-					gint l_iYPosition = (gint) (l_iHeight - ((f+1) * l_f64HeightPerPoint));
+					l_f64YPosition-=l_f64HeightPerPoint;
 
-					gint l_iPointW = (gint) (l_i64BaseX + ((j+1) *  l_f64WidthPerPoint) - l_iXposition);
-					gint l_iPointH = (gint) (l_iHeight - (f * l_f64HeightPerPoint) - l_iYPosition);
-
-					int32 l_i32ColorIndex=static_cast<int32>(((l_pCurrentChannelSampleBuffer[f] - l_f64Min)*(1<<8))/(l_f64Max - l_f64Min));
+					int32 l_i32ColorIndex=static_cast<int32>((*(l_pCurrentChannelSampleBuffer++) - m_f64MinimumValue)*l_f64ScaleCoef);
 					if(l_i32ColorIndex>0xff) l_i32ColorIndex=0xff;
 					if(l_i32ColorIndex<0x00) l_i32ColorIndex=0x00;
-					uint8 l_ui8ColorR=(getLookUpTable()[l_i32ColorIndex]    )&0xff;
-					uint8 l_ui8ColorG=(getLookUpTable()[l_i32ColorIndex]>>8 )&0xff;
-					uint8 l_ui8ColorB=(getLookUpTable()[l_i32ColorIndex]>>16)&0xff;
+					uint8 l_ui8ColorR=(l_pLookUpTable[l_i32ColorIndex]    )&0xff;
+					uint8 l_ui8ColorG=(l_pLookUpTable[l_i32ColorIndex]>>8 )&0xff;
+					uint8 l_ui8ColorB=(l_pLookUpTable[l_i32ColorIndex]>>16)&0xff;
 
-					drawBoxToBuffer(l_iXposition, l_iYPosition, l_iPointW, l_iPointH, l_ui8ColorR, l_ui8ColorG, l_ui8ColorB);
-
+					drawBoxToBuffer(
+						m_pRGBBuffer,
+						m_ui32Rowstride,
+						(gint)l_f64XPosition,
+						(gint)l_f64YPosition,
+						((gint)(l_f64XPosition+l_f64WidthPerPoint))-((gint)(l_f64XPosition)),
+						((gint)(l_f64YPosition+l_f64HeightPerPoint))-((gint)(l_f64YPosition)),
+						l_ui8ColorR,
+						l_ui8ColorG,
+						l_ui8ColorB);
 				}
+				l_f64XPosition+=l_f64WidthPerPoint;
 			}
-
-//			gdk_draw_rgb_image(m_pPixmap, m_pDisplay->style->fg_gc[GTK_WIDGET_STATE (m_pDisplay)], 0, 0, m_ui32RGBBufferWidth, m_ui32RGBBufferHeight, GDK_RGB_DITHER_NONE, m_pRGBBuffer, m_ui32Rowstride);
 		}
 
 		void CFrequencySpectrumChannelDisplay::redraw()
 		{
-
 			gdk_draw_rgb_image(m_pDisplay->window, m_pDisplay->style->fg_gc[GTK_WIDGET_STATE (m_pDisplay)], 0, 0, m_ui32RGBBufferWidth, m_ui32RGBBufferHeight, GDK_RGB_DITHER_NONE, m_pRGBBuffer, m_ui32Rowstride);//m_ui32RGBBufferWidth*3);
-
-			//gdk_draw_drawable(m_pDisplay->window, m_pDisplay->style->fg_gc[GTK_WIDGET_STATE (m_pDisplay)], m_pPixmap,
-			//		0,0,0,0, m_ui32RGBBufferWidth, m_ui32RGBBufferHeight);
-
 		}
-
 	}
 }

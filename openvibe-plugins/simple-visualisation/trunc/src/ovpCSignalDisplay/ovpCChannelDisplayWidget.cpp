@@ -230,37 +230,27 @@ void CChannelDisplay::init(GtkTable * pTable)
  	gtk_table_set_homogeneous(GTK_TABLE(m_pWidgetTable), FALSE);
 
 	//set table minimum height
-	gtk_widget_set_size_request(m_pWidgetTable, -1, 30);
+	gtk_widget_set_size_request(m_pWidgetTable, -1, 20);
 
 	//creates the drawing area
 	m_pDrawingArea = gtk_drawing_area_new();
-	gtk_widget_set_size_request(m_pDrawingArea, 50, 30);
+	gtk_widget_set_size_request(m_pDrawingArea, 20, 20);
 
 	//adds them to the table
-	gtk_table_attach(GTK_TABLE(m_pWidgetTable), m_pDrawingArea,
-			1, 2, 0, 1,
-			static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
-			0, 0);
+	gtk_table_attach(GTK_TABLE(m_pWidgetTable), m_pDrawingArea, 1, 2, 0, 1, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
 
 	//adds the left ruler
-	gtk_table_attach(GTK_TABLE(m_pWidgetTable), m_oLeftRuler.getWidget(),
-			0, 1, 0, 1,
-			GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),//GTK_SHRINK,
-			0, 0);
+	gtk_table_attach(GTK_TABLE(m_pWidgetTable), m_oLeftRuler.getWidget(), 0, 1, 0, 1, GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
 
 	//connects the signals
-	g_signal_connect_after(G_OBJECT(m_pDrawingArea), "expose_event", G_CALLBACK(drawingAreaExposeEventCallback), this);
-
 	gtk_widget_add_events(GTK_WIDGET(m_pDrawingArea), GDK_BUTTON_PRESS_MASK);
 	gtk_widget_add_events(GTK_WIDGET(m_pDrawingArea), GDK_ENTER_NOTIFY_MASK);
 	gtk_widget_add_events(GTK_WIDGET(m_pDrawingArea), GDK_LEAVE_NOTIFY_MASK);
 
+	g_signal_connect_after(G_OBJECT(m_pDrawingArea), "expose_event",       G_CALLBACK(drawingAreaExposeEventCallback), this);
 	g_signal_connect_after(G_OBJECT(m_pDrawingArea), "button-press-event", G_CALLBACK(drawingAreaClickedEventCallback), this);
-
 	g_signal_connect_after(G_OBJECT(m_pDrawingArea), "enter-notify-event", G_CALLBACK(drawingAreaEnterEventCallback), this);
-
 	g_signal_connect_after(G_OBJECT(m_pDrawingArea), "leave-notify-event", G_CALLBACK(drawingAreaLeaveEventCallback), this);
-
 }
 
 uint64 CChannelDisplay::cropCurve()

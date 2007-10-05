@@ -41,9 +41,7 @@ namespace OpenViBEPlugins
 			CFrequencySpectrumDisplayView* l_pView = reinterpret_cast<CFrequencySpectrumDisplayView*>(data);
 
 			//Compute and save the nuew number of buffers to display
-			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged =
-					l_pView->m_pBufferDatabase->adjustNumberOfDisplayedBuffers(
-					static_cast<float64>(gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget))));
+			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged = l_pView->m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget)));
 
 			if(l_bNumberOfDisplayedBufferChanged)
 			{
@@ -132,7 +130,7 @@ namespace OpenViBEPlugins
 			glade_xml_signal_autoconnect(m_pGladeInterface);
 
 			//same for the other buttons
-		//	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRuler")),     "toggled",       G_CALLBACK(toggleLeftRulerButtonCallback),   this);
+			// g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRuler")),     "toggled",       G_CALLBACK(toggleLeftRulerButtonCallback),   this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayToggleBottomRuler")),   "toggled",       G_CALLBACK(frequencySpectrumToggleBottomRulerButtonCallback), this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayChannelSelectButton")), "clicked",       G_CALLBACK(frequencySpectrumChannelSelectButtonCallback),     this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayTimeScale")),           "value-changed", G_CALLBACK(frequencySpectrumSpinButtonValueChangedCallback),  this);
@@ -159,6 +157,9 @@ namespace OpenViBEPlugins
 
 			// gets attenuation
 			m_f64Attenuation=(gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "DisplayMinMaxAttenuationSpin"))));
+
+			// sets duration
+			m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "DisplayTimeScale"))));
 
 			//creates the window
 			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "DisplayMainWindow");
@@ -210,7 +211,7 @@ namespace OpenViBEPlugins
 			gtk_table_resize(GTK_TABLE(m_pDisplayTable), (l_ui32ChannelCount)*2, 3);
 
 			//sets a minimum size for the table (needed to scroll)
-			gtk_widget_set_size_request(m_pDisplayTable, 600, (l_ui32ChannelCount)*30);
+			gtk_widget_set_size_request(m_pDisplayTable, 20, (l_ui32ChannelCount)*20);
 
 			//Add a vertical separator
 			GtkWidget* l_pSeparator = gtk_vseparator_new();
@@ -260,7 +261,7 @@ namespace OpenViBEPlugins
 				//Add an horizontal separator under it
 				l_pSeparator = gtk_hseparator_new();
 				gtk_table_attach(GTK_TABLE(m_pDisplayTable), l_pSeparator,
-				0, 3, (i*2)+1, (i*2)+2,	static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_SHRINK,	0, 0);
+				0, 3, (i*2)+1, (i*2)+2,	static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_SHRINK, 0, 0);
 				gtk_widget_show(l_pSeparator);
 
 				//Adds a checkbox in the channel select window
@@ -274,8 +275,6 @@ namespace OpenViBEPlugins
 				//a channel is selected by default
 				m_vSelectedChannels.push_back(i);
 			}
-
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "DisplayTimeScale")), 10000);
 
 			//Adds the bottom ruler
 			m_pBottomRuler = new CBottomTimeRuler(*m_pBufferDatabase);
@@ -380,7 +379,7 @@ namespace OpenViBEPlugins
 
 		void CFrequencySpectrumDisplayView::activateToolbarButtons(boolean bActive)
 		{
-		//	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRuler"), bActive);
+			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRuler"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "DisplayToggleBottomRuler"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "DisplayTimeScaleItem"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "DisplayChannelSelectButton"), bActive);

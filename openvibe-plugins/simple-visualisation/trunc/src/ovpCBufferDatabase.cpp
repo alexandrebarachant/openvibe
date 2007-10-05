@@ -22,15 +22,16 @@ namespace OpenViBEPlugins
 	namespace SimpleVisualisation
 	{
 
-		CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlgorithm>& oPlugin) :
-			m_bFirstBufferReceived(true),
-			m_ui32SamplingFrequency(0),
-			m_ui64NumberOfBufferToDisplay(2),
-			m_f64MaximumValue(-DBL_MAX),
-			m_f64MinimumValue(+DBL_MAX),
-			m_pDrawable(NULL),
-			m_oParentPlugin(oPlugin),
-			m_bError(false)
+		CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlgorithm>& oPlugin)
+			:m_bFirstBufferReceived(true)
+			,m_ui32SamplingFrequency(0)
+			,m_ui64NumberOfBufferToDisplay(2)
+			,m_f64MaximumValue(-DBL_MAX)
+			,m_f64MinimumValue(+DBL_MAX)
+			,m_f64TotalDuration(10000) // 10 seconds
+			,m_pDrawable(NULL)
+			,m_oParentPlugin(oPlugin)
+			,m_bError(false)
 		{
 		}
 
@@ -45,15 +46,20 @@ namespace OpenViBEPlugins
 
 		}
 
-		boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(float64 f64NumberOfMsToDisplay)
+		boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(float64 f64NumberOfSecondsToDisplay)
 		{
 			boolean l_bNumberOfBufferToDisplayChanged = false;
 
-			uint64 l_ui64NewNumberOfBufferToDisplay =  static_cast<uint64>(ceil( (f64NumberOfMsToDisplay*m_ui32SamplingFrequency) / (m_pDimmensionSizes[1]*1000)));
+			if(f64NumberOfSecondsToDisplay>0)
+			{
+				m_f64TotalDuration=f64NumberOfSecondsToDisplay;
+			}
+
+			uint64 l_ui64NewNumberOfBufferToDisplay =  static_cast<uint64>(ceil( (m_f64TotalDuration*m_ui32SamplingFrequency) / m_pDimmensionSizes[1]));
 
 			//displays at least one buffer
 			l_ui64NewNumberOfBufferToDisplay = (l_ui64NewNumberOfBufferToDisplay == 0) ? 1 : l_ui64NewNumberOfBufferToDisplay;
-			if(l_ui64NewNumberOfBufferToDisplay != m_ui64NumberOfBufferToDisplay)
+			if(l_ui64NewNumberOfBufferToDisplay != m_ui64NumberOfBufferToDisplay || f64NumberOfSecondsToDisplay<=0)
 			{
 				m_ui64NumberOfBufferToDisplay = l_ui64NewNumberOfBufferToDisplay;
 				l_bNumberOfBufferToDisplayChanged = true;
@@ -134,8 +140,8 @@ namespace OpenViBEPlugins
 				//computes the sampling frequency
 				m_ui32SamplingFrequency = (uint32)((float64)(((uint64)1<<32)/(m_ui64BufferDuration)) * m_pDimmensionSizes[1]);
 
-				//computes the number of buffer necessary to display a 10s interval
-				adjustNumberOfDisplayedBuffers(10000);
+				//computes the number of buffer necessary to display the interval
+				adjustNumberOfDisplayedBuffers(-1);
 
 				m_pDrawable->init();
 
