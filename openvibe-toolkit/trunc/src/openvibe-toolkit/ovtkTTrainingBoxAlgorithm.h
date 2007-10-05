@@ -152,7 +152,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 		std::vector<ISignalTrial*>::iterator itSignalTrial;
 
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Debug
+			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Constituting a signal trial set based on previous signal trials...\n";
 
 		ISignalTrialSet* l_pSignalTrialSet=OpenViBEToolkit::createSignalTrialSet();
@@ -162,7 +162,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 		}
 
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Trace
+			<< OpenViBE::Kernel::LogLevel_Info
 			<< "Calling train function...\n";
 
 #if 0
@@ -190,7 +190,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 		this->train(*l_pSignalTrialSet);
 
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Debug
+			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Training done... will clear signal trials and signal trial set now...\n";
 
 		for(itSignalTrial=m_vSignalTrial.begin(); itSignalTrial!=m_vSignalTrial.end(); itSignalTrial++)
@@ -201,14 +201,14 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 		m_vSignalTrial.clear();
 
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Trace
+			<< OpenViBE::Kernel::LogLevel_Info
 			<< "Training phase finished !\n";
 	}
 	else if(ui64StimulationIdentifier==this->getStimulationIdentifierTrialStart())
 	{
 		m_ui64TrialStartTime=ui64StimulationDate;
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Debug
+			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Saved trial start time "
 			<< m_ui64TrialStartTime
 			<< "...\n";
@@ -217,7 +217,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 	{
 		m_ui64TrialEndTime=ui64StimulationDate;
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Debug
+			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Saved trial end time "
 			<< m_ui64TrialEndTime
 			<< "...\n";
@@ -226,7 +226,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 	{
 		m_oTrialLabel=ui64StimulationIdentifier;
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Debug
+			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Labeled trial "
 			<< m_oTrialLabel
 			<< "...\n";
@@ -234,7 +234,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 	else
 	{
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
-			<< OpenViBE::Kernel::LogLevel_Trace
+			<< OpenViBE::Kernel::LogLevel_Debug
 			<< "Unhandled stimulation "
 			<< OpenViBE::CIdentifier(ui64StimulationIdentifier)
 			<< " at time "
