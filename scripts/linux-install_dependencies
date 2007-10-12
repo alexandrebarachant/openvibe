@@ -219,6 +219,8 @@ ov_dep_torch_hook_configure="pushd * && ln -s config/Makefile_options_Linux Make
 ov_dep_torch_hook_install="pushd * && find -name *.h -type f -exec cp -f \"{}\" ../../include \\; && find -name *.a -type f -exec cp -f \"{}\" ../../lib \\; && cp Makefile_options_Linux ../.. && popd"
 # preserve tree on cp  --parents
 
+ov_dep_gtk_cairo_libx11_hook_configure_pre="pushd * && $ov_sed -i \"s:XPROTO_CFLAGS -I/usr/include:XPROTO_CFLAGS -I/usr/include -I$ov_depend_folder/include:g\" ./configure && popd"
+
 ov_dep_vrpn_hook_uncompress='$ov_unzip "$ov_current_package_archive_name"'
 ov_dep_vrpn_hook_configure="$ov_sed -i \"s/#HW_OS := pc_linux$/HW_OS := pc_linux/g\" quat/makefile && $ov_sed -i \"s/#HW_OS := pc_linux$/HW_OS := pc_linux/g\" vrpn/Makefile"
 ov_dep_vrpn_hook_make="pushd quat && make && cd ../vrpn && make && popd"
