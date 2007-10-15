@@ -28,6 +28,7 @@ ov_gpp=`which g++`
 ov_g77=`which g77`
 ov_sed=`which sed`
 
+echo "============================================================="
 echo "Using as subversion : [$ov_svn]..."
 echo "Using as wget       : [$ov_wget]..."
 echo "Using as tar        : [$ov_tar]..."
@@ -116,8 +117,12 @@ ov_should_build_libxcbproto_flag=true
 ov_should_build_libxcb_flag=true
 ov_should_build_libkbproto_flag=true
 ov_should_build_libinputproto_flag=true
+ov_should_build_libxdmcp_flag=true
 ov_should_build_libx11_flag=true
 ov_should_build_libxext_flag=true
+ov_should_build_m4_flag=true
+ov_should_build_gperf_flag=true
+ov_should_build_xcbutil_flag=true
 ov_should_build_freetype_flag=true
 ov_should_build_fontconfig_flag=true
 ov_should_build_renderproto_flag=true
@@ -144,7 +149,7 @@ ov_dep_pkgconfig_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/pkg-config-0.2
 ov_dep_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
 ov_dep_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
 ov_dep_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
-ov_dep_gettext_url=ftp://mirror.cict.fr/gnu/gettext/gettext-0.16.1.tar.gz
+ov_dep_gettext_url=ftp://ftp.cs.univ-paris8.fr/mirrors/ftp.gnu.org/gnu/gettext/gettext-0.16.1.tar.gz
 ov_dep_libxml_url=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.28.tar.gz
 ov_dep_zlib_url=http://downloads.sourceforge.net/libpng/zlib-1.2.3.tar.gz
 ov_dep_libpng_url=http://downloads.sourceforge.net/libpng/libpng-1.2.18.tar.gz
@@ -158,8 +163,12 @@ ov_dep_libxcbproto_url=http://xcb.freedesktop.org/dist/xcb-proto-1.0.tar.bz2
 ov_dep_libxcb_url=http://xcb.freedesktop.org/dist/libxcb-1.0.tar.bz2
 ov_dep_libkbproto_url=http://xorg.freedesktop.org/releases/individual/proto/kbproto-1.0.3.tar.bz2
 ov_dep_libinputproto_url=http://xorg.freedesktop.org/releases/individual/proto/inputproto-1.4.tar.bz2
+ov_dep_libxdmcp_url=http://xorg.freedesktop.org/releases/individual/lib/libXdmcp-1.0.2.tar.bz2
 ov_dep_libx11_url=http://xorg.freedesktop.org/releases/individual/lib/libX11-1.1.1.tar.bz2
 ov_dep_libxext_url=http://xorg.freedesktop.org/releases/individual/lib/libXext-1.0.3.tar.bz2
+ov_dep_m4_url=ftp://ftp.cs.univ-paris8.fr/mirrors/ftp.gnu.org/gnu/m4/m4-1.4.10.tar.bz2
+ov_dep_gperf_url=ftp://ftp.cs.univ-paris8.fr/mirrors/ftp.gnu.org/gnu/gperf/gperf-3.0.3.tar.gz
+ov_dep_xcbutil_url=http://xcb.freedesktop.org/dist/xcb-util-0.2.tar.bz2
 ov_dep_freetype_url=http://downloads.sourceforge.net/freetype/freetype-2.3.4.tar.gz
 ov_dep_fontconfig_url=http://xorg.freedesktop.org/releases/X11R7.2/src/extras/fontconfig-2.4.2.tar.gz
 ov_dep_renderproto_url=http://xorg.freedesktop.org/releases/individual/proto/renderproto-0.9.2.tar.bz2
@@ -171,10 +180,10 @@ ov_dep_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
 ov_dep_clearlooks_url=http://downloads.sourceforge.net/clearlooks/clearlooks-0.6.2.tar.bz2
 ov_dep_libglade_url=http://ftp.gnome.org/pub/GNOME/sources/libglade/2.6/libglade-2.6.0.tar.bz2
 ov_dep_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
-ov_dep_libtool_url=http://ftp.gnu.org/gnu/libtool/libtool-1.5.22.tar.gz
+ov_dep_libtool_url=ftp://ftp.cs.univ-paris8.fr/mirrors/ftp.gnu.org/gnu/libtool/libtool-1.5.22.tar.gz
 ov_dep_itpp_external_url=http://downloads.sourceforge.net/itpp/itpp-external-2.3.0.tar.gz
 ov_dep_itpp_url=http://downloads.sourceforge.net/itpp/itpp-3.10.10.tar.gz
-ov_dep_gsl_url=ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz
+ov_dep_gsl_url=ftp://ftp.cs.univ-paris8.fr/mirrors/ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz
 ov_dep_torch_url=http://www.torch.ch/archives/Torch3src.tgz
 ov_dep_vrpn_url=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/vrpn_07_13.zip
 ov_dep_openmask_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
@@ -198,8 +207,12 @@ ov_dep_libxcbproto_archive_name=$ov_archives_folder/xcb-proto-1.0.tar.bz2
 ov_dep_libxcb_archive_name=$ov_archives_folder/libxcb-1.0.tar.bz2
 ov_dep_libkbproto_archive_name=$ov_archives_folder/kbproto-1.0.3.tar.bz2
 ov_dep_libinputproto_archive_name=$ov_archives_folder/inputproto-1.4.tar.bz2
+ov_dep_libxdmcp_archive_name=$ov_archives_folder/libXdmcp-1.0.0.tar.bz2
 ov_dep_libx11_archive_name=$ov_archives_folder/libX11-1.1.1.tar.bz2
 ov_dep_libxext_archive_name=$ov_archives_folder/libXext-1.0.3.tar.bz2
+ov_dep_gperf_archive_name=$ov_archives_folder/gperf-3.0.3.tar.gz
+ov_dep_m4_archive_name=$ov_archives_folder/m4-1.4.10.tar.bz2
+ov_dep_xcbutil_archive_name=$ov_archives_folder/xcb-util-0.2.tar.bz2
 ov_dep_freetype_archive_name=$ov_archives_folder/freetype-2.3.4.tar.gz
 ov_dep_fontconfig_archive_name=$ov_archives_folder/fontconfig-2.4.2.tar.gz
 ov_dep_renderproto_archive_name=$ov_archives_folder/renderproto-0.9.2.tar.bz2
@@ -225,7 +238,11 @@ ov_dep_vrpn_archive_name=$ov_archives_folder/vrpn-7.13.zip
 ####################################
 # preserve tree on cp  --parents
 
-ov_dep_gtk_additional_configure_flags="--without-libtiff --without-libjpeg CFALGS=-I$ov_depend_folder/include LDFLAGS=-L$ov_depend_folder/lib"
+ov_dep_cairo_additional_configure_flags="--enable-xcb CFLAGS=-I$ov_depend_folder/include LDFLAGS=-L$ov_depend_folder/lib"
+
+ov_dep_libpng_additional_configure_flags="CFLAGS=-I$ov_depend_folder/include LDFLAGS=-L$ov_depend_folder/lib"
+
+ov_dep_gtk_additional_configure_flags="--without-libtiff --without-libjpeg CFLAGS=-I$ov_depend_folder/include LDFLAGS=-L$ov_depend_folder/lib"
 
 ov_dep_torch_hook_configure="pushd * && ln -s config/Makefile_options_Linux Makefile_options_Linux && make depend && popd"
 ov_dep_torch_hook_install="pushd * && find -name *.h -type f -exec cp -f \"{}\" ../../include \\; && find -name *.a -type f -exec cp -f \"{}\" ../../lib \\; && cp Makefile_options_Linux ../.. && popd"
@@ -252,16 +269,17 @@ chmod 750 $script_dependencies_file
 echo '#!/bin/bash' >> $script_dependencies_file
 echo '' >> $script_dependencies_file
 echo 'export OpenViBE_dependencies='$ov_depend_folder >> $script_dependencies_file
+echo '' >> $script_dependencies_file
 echo 'export PKG_CONFIG_PATH='$ov_depend_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $script_dependencies_file
 echo 'export LD_LIBRARY_PATH='$ov_depend_folder'/lib:$LD_LIBRARY_PATH' >> $script_dependencies_file
-echo '' >> $script_dependencies_file
 echo 'export PATH='$ov_depend_folder'/bin:$PATH' >> $script_dependencies_file
-echo 'export CFLAGS=-I'$ov_depend_folder'/include '$CFLAGS >> $script_dependencies_file
-echo 'export CXXFLAGS=-I'$ov_depend_folder'/include '$CXXFLAGS >> $script_dependencies_file
-echo 'export CPPFLAGS=-I'$ov_depend_folder'/include '$CPPFLAGS >> $script_dependencies_file
-echo 'export LDFLAGS=-L'$ov_depend_folder'/lib '$LDFLAGS >> $script_dependencies_file
 
 source $script_dependencies_file
+
+echo "============================================================="
+echo "PATH            : $PATH"
+echo "LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
+echo "PKG_CONFIG_PATH : $PKG_CONFIG_PATH"
 
 ####################################
 ##
@@ -703,6 +721,7 @@ function ov_svn_configure_make_install_package
 ##
 ####################################
 
+echo "============================================================="
 ov_untar_configure_make_install_package "pkgconfig"
 ov_untar_configure_make_install_package "expat"
 ov_untar_configure_make_install_package "gettext"
@@ -720,8 +739,12 @@ ov_untar_configure_make_install_package "libxcbproto"
 ov_untar_configure_make_install_package "libxcb"
 ov_untar_configure_make_install_package "libkbproto"
 ov_untar_configure_make_install_package "libinputproto"
+ov_untar_configure_make_install_package "libxdmcp"
 ov_untar_configure_make_install_package "libx11"
 ov_untar_configure_make_install_package "libxext"
+ov_untar_configure_make_install_package "m4"
+ov_untar_configure_make_install_package "gperf"
+ov_untar_configure_make_install_package "xcbutil"
 ov_untar_configure_make_install_package "freetype"
 ov_untar_configure_make_install_package "fontconfig"
 ov_untar_configure_make_install_package "renderproto"
