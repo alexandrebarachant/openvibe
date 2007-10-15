@@ -101,36 +101,36 @@ ov_hit_folder=$ov_depend_folder/$ov_hit_folder_rel
 ov_should_build_pkgconfig_flag=true
 ov_should_build_cmake_flag=true
 ov_should_build_expat_flag=true
-ov_should_build_gtk_glib_gettext_flag=true
-ov_should_build_gtk_glib_flag=true
-ov_should_build_gtk_cairo_libxml_flag=true
-ov_should_build_gtk_cairo_zlib_flag=true
-ov_should_build_gtk_cairo_libpng_flag=true
-ov_should_build_gtk_cairo_libxproto_flag=true
-ov_should_build_gtk_cairo_libxextproto_flag=true
-ov_should_build_gtk_cairo_libxtrans_flag=true
-ov_should_build_gtk_cairo_libxslt_flag=true
-ov_should_build_gtk_cairo_libxau_flag=true
-ov_should_build_gtk_cairo_pthreadstubs_flag=true
-ov_should_build_gtk_cairo_libxcbproto_flag=true
-ov_should_build_gtk_cairo_libxcb_flag=true
-ov_should_build_gtk_cairo_libkbproto_flag=true
-ov_should_build_gtk_cairo_libinputproto_flag=true
-ov_should_build_gtk_cairo_libx11_flag=true
-ov_should_build_gtk_cairo_libxext_flag=true
-ov_should_build_gtk_cairo_freetype_flag=true
-ov_should_build_gtk_cairo_fontconfig_flag=true
-ov_should_build_gtk_cairo_renderproto_flag=true
-ov_should_build_gtk_cairo_libxdmcp_flag=true
-ov_should_build_gtk_cairo_libxrender_flag=true
-ov_should_build_gtk_cairo_flag=true
-ov_should_build_gtk_pango_flag=true
-ov_should_build_gtk_atk_flag=true
-ov_should_build_gtk_flag=true
-ov_should_build_gtk_theme_clearlooks_flag=true
+ov_should_build_gettext_flag=true
+ov_should_build_glib_flag=true
+ov_should_build_libxml_flag=true
+ov_should_build_zlib_flag=true
+ov_should_build_libpng_flag=true
+ov_should_build_libxproto_flag=true
+ov_should_build_libxextproto_flag=true
+ov_should_build_libxtrans_flag=true
+ov_should_build_libxslt_flag=true
+ov_should_build_libxau_flag=true
+ov_should_build_pthreadstubs_flag=true
+ov_should_build_libxcbproto_flag=true
+ov_should_build_libxcb_flag=true
+ov_should_build_libkbproto_flag=true
+ov_should_build_libinputproto_flag=true
+ov_should_build_libx11_flag=true
+ov_should_build_libxext_flag=true
+ov_should_build_freetype_flag=true
+ov_should_build_fontconfig_flag=true
+ov_should_build_renderproto_flag=true
+ov_should_build_libxdmcp_flag=true
+ov_should_build_libxrender_flag=true
+ov_should_build_cairo_flag=true
+ov_should_build_pango_flag=true
+ov_should_build_atk_flag=true
+ov_should_build_flag=true
+ov_should_build_clearlooks_flag=true
 ov_should_build_libglade_flag=true
 ov_should_build_glade_flag=true
-ov_should_build_itpp_external_libtool_flag=true
+ov_should_build_libtool_flag=true
 ov_should_build_itpp_external_flag=true
 ov_should_build_itpp_flag=true
 ov_should_build_gsl_flag=true
@@ -142,36 +142,35 @@ ov_dep_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz
 ov_dep_pkgconfig_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/pkg-config-0.20.tar.gz
 ov_dep_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
 ov_dep_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
-ov_dep_gtk_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
-ov_dep_gtk_glib_gettext_url=ftp://mirror.cict.fr/gnu/gettext/gettext-0.16.1.tar.gz
-ov_dep_gtk_cairo_libxml_url=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.28.tar.gz
-ov_dep_gtk_cairo_zlib_url=http://downloads.sourceforge.net/libpng/zlib-1.2.3.tar.gz
-ov_dep_gtk_cairo_libpng_url=http://downloads.sourceforge.net/libpng/libpng-1.2.18.tar.gz
-ov_dep_gtk_cairo_libxproto_url=http://xorg.freedesktop.org/releases/individual/proto/xproto-7.0.10.tar.bz2
-ov_dep_gtk_cairo_libxextproto_url=http://xorg.freedesktop.org/releases/individual/proto/xextproto-7.0.2.tar.bz2
-ov_dep_gtk_cairo_libxtrans_url=http://xorg.freedesktop.org/releases/individual/lib/xtrans-1.0.3.tar.bz2
-ov_dep_gtk_cairo_libxslt_url=ftp://ftp.gnome.org/pub/GNOME/sources/libxslt/1.1/libxslt-1.1.20.tar.bz2
-ov_dep_gtk_cairo_libxau_url=http://xorg.freedesktop.org/releases/individual/lib/libXau-1.0.3.tar.bz2
-ov_dep_gtk_cairo_pthreadstubs_url=http://xorg.freedesktop.org/releases/individual/lib/libpthread-stubs-0.1.tar.bz2
-ov_dep_gtk_cairo_libxcbproto_url=http://xcb.freedesktop.org/dist/xcb-proto-1.0.tar.bz2
-ov_dep_gtk_cairo_libxcb_url=http://xcb.freedesktop.org/dist/libxcb-1.0.tar.bz2
-ov_dep_gtk_cairo_libkbproto_url=http://xorg.freedesktop.org/releases/individual/proto/kbproto-1.0.3.tar.bz2
-ov_dep_gtk_cairo_libinputproto_url=http://xorg.freedesktop.org/releases/individual/proto/inputproto-1.4.tar.bz2
-ov_dep_gtk_cairo_libx11_url=http://xorg.freedesktop.org/releases/individual/lib/libX11-1.1.1.tar.bz2
-ov_dep_gtk_cairo_libxext_url=http://xorg.freedesktop.org/releases/individual/lib/libXext-1.0.3.tar.bz2
-ov_dep_gtk_cairo_freetype_url=http://downloads.sourceforge.net/freetype/freetype-2.3.4.tar.gz
-ov_dep_gtk_cairo_fontconfig_url=http://fontconfig.org/release/fontconfig-2.4.2.tar.gz
-ov_dep_gtk_cairo_fontconfig_url=http://xorg.freedesktop.org/releases/X11R7.2/src/extras/fontconfig-2.4.2.tar.gz
-ov_dep_gtk_cairo_renderproto_url=http://xorg.freedesktop.org/releases/individual/proto/renderproto-0.9.2.tar.bz2
-ov_dep_gtk_cairo_libxdmcp_url=http://xorg.freedesktop.org/releases/individual/lib/libXdmcp-1.0.2.tar.bz2
-ov_dep_gtk_cairo_libxrender_url=http://xorg.freedesktop.org/archive/individual/lib/libXrender-0.9.2.tar.gz
-ov_dep_gtk_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
-ov_dep_gtk_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
-ov_dep_gtk_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
-ov_dep_gtk_theme_clearlooks_url=http://downloads.sourceforge.net/clearlooks/clearlooks-0.6.2.tar.bz2
+ov_dep_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
+ov_dep_gettext_url=ftp://mirror.cict.fr/gnu/gettext/gettext-0.16.1.tar.gz
+ov_dep_libxml_url=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.28.tar.gz
+ov_dep_zlib_url=http://downloads.sourceforge.net/libpng/zlib-1.2.3.tar.gz
+ov_dep_libpng_url=http://downloads.sourceforge.net/libpng/libpng-1.2.18.tar.gz
+ov_dep_libxproto_url=http://xorg.freedesktop.org/releases/individual/proto/xproto-7.0.10.tar.bz2
+ov_dep_libxextproto_url=http://xorg.freedesktop.org/releases/individual/proto/xextproto-7.0.2.tar.bz2
+ov_dep_libxtrans_url=http://xorg.freedesktop.org/releases/individual/lib/xtrans-1.0.3.tar.bz2
+ov_dep_libxslt_url=ftp://ftp.gnome.org/pub/GNOME/sources/libxslt/1.1/libxslt-1.1.20.tar.bz2
+ov_dep_libxau_url=http://xorg.freedesktop.org/releases/individual/lib/libXau-1.0.3.tar.bz2
+ov_dep_pthreadstubs_url=http://xorg.freedesktop.org/releases/individual/lib/libpthread-stubs-0.1.tar.bz2
+ov_dep_libxcbproto_url=http://xcb.freedesktop.org/dist/xcb-proto-1.0.tar.bz2
+ov_dep_libxcb_url=http://xcb.freedesktop.org/dist/libxcb-1.0.tar.bz2
+ov_dep_libkbproto_url=http://xorg.freedesktop.org/releases/individual/proto/kbproto-1.0.3.tar.bz2
+ov_dep_libinputproto_url=http://xorg.freedesktop.org/releases/individual/proto/inputproto-1.4.tar.bz2
+ov_dep_libx11_url=http://xorg.freedesktop.org/releases/individual/lib/libX11-1.1.1.tar.bz2
+ov_dep_libxext_url=http://xorg.freedesktop.org/releases/individual/lib/libXext-1.0.3.tar.bz2
+ov_dep_freetype_url=http://downloads.sourceforge.net/freetype/freetype-2.3.4.tar.gz
+ov_dep_fontconfig_url=http://xorg.freedesktop.org/releases/X11R7.2/src/extras/fontconfig-2.4.2.tar.gz
+ov_dep_renderproto_url=http://xorg.freedesktop.org/releases/individual/proto/renderproto-0.9.2.tar.bz2
+ov_dep_libxdmcp_url=http://xorg.freedesktop.org/releases/individual/lib/libXdmcp-1.0.2.tar.bz2
+ov_dep_libxrender_url=http://xorg.freedesktop.org/archive/individual/lib/libXrender-0.9.2.tar.gz
+ov_dep_cairo_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/cairo-1.2.6.tar.gz
+ov_dep_pango_url=ftp://ftp.gtk.org/pub/pango/1.16/pango-1.16.4.tar.gz
+ov_dep_atk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/atk-1.9.1.tar.bz2
+ov_dep_clearlooks_url=http://downloads.sourceforge.net/clearlooks/clearlooks-0.6.2.tar.bz2
 ov_dep_libglade_url=http://ftp.gnome.org/pub/GNOME/sources/libglade/2.6/libglade-2.6.0.tar.bz2
 ov_dep_glade_url=http://ftp.gnome.org/pub/GNOME/sources/glade3/3.1/glade3-3.1.5.tar.gz
-ov_dep_itpp_external_libtool_url=http://ftp.gnu.org/gnu/libtool/libtool-1.5.22.tar.gz
+ov_dep_libtool_url=http://ftp.gnu.org/gnu/libtool/libtool-1.5.22.tar.gz
 ov_dep_itpp_external_url=http://downloads.sourceforge.net/itpp/itpp-external-2.3.0.tar.gz
 ov_dep_itpp_url=http://downloads.sourceforge.net/itpp/itpp-3.10.10.tar.gz
 ov_dep_gsl_url=ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz
@@ -179,52 +178,58 @@ ov_dep_torch_url=http://www.torch.ch/archives/Torch3src.tgz
 ov_dep_vrpn_url=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/vrpn_07_13.zip
 ov_dep_openmask_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
 
-ov_dep_expat_archive_name=$ov_archives_folder/openvibe-dependency-expat-2.0.0.tar.gz
-ov_dep_pkgconfig_archive_name=$ov_archives_folder/openvibe-dependency-pkg-config-0.20.tar.gz
-ov_dep_cmake_archive_name=$ov_archives_folder/openvibe-dependency-cmake-2.4.6.tar.gz
-ov_dep_gtk_archive_name=$ov_archives_folder/openvibe-dependency-gtk-2.10.12.tar.gz
-ov_dep_gtk_glib_archive_name=$ov_archives_folder/openvibe-dependency-gtk-glib-2.12.12.tar.gz
-ov_dep_gtk_glib_gettext_archive_name=$ov_archives_folder/openvibe-dependency-gettext-0.16.1.tar.gz
-ov_dep_gtk_cairo_libxml_archive_name=$ov_archives_folder/openvibe-dependency-libxml2-sources-2.6.28.tar.gz
-ov_dep_gtk_cairo_zlib_archive_name=$ov_archives_folder/openvibe-dependency-zlib-1.2.3.tar.gz
-ov_dep_gtk_cairo_libpng_archive_name=$ov_archives_folder/openvibe-dependency-libpng-1.2.18.tar.gz
-ov_dep_gtk_cairo_libxproto_archive_name=$ov_archives_folder/openvibe-dependency-xproto-7.0.10.tar.bz2
-ov_dep_gtk_cairo_libxextproto_archive_name=$ov_archives_folder/openvibe-dependency-xextproto-7.0.2.tar.bz2
-ov_dep_gtk_cairo_libxtrans_archive_name=$ov_archives_folder/openvibe-dependency-xtrans-1.0.3.tar.bz2
-ov_dep_gtk_cairo_libxslt_archive_name=$ov_archives_folder/openvibe-dependency-libxslt-1.1.20.tar.bz2
-ov_dep_gtk_cairo_libxau_archive_name=$ov_archives_folder/openvibe-dependency-libXau-1.0.3.tar.bz2
-ov_dep_gtk_cairo_pthreadstubs_archive_name=$ov_archives_folder/openvibe-dependency-libpthread-stubs-0.1.tar.bz2
-ov_dep_gtk_cairo_libxcbproto_archive_name=$ov_archives_folder/openvibe-dependency-xcb-proto-1.0.tar.bz2
-ov_dep_gtk_cairo_libxcb_archive_name=$ov_archives_folder/openvibe-dependency-libxcb-1.0.tar.bz2
-ov_dep_gtk_cairo_libkbproto_archive_name=$ov_archives_folder/openvibe-dependency-kbproto-1.0.3.tar.bz2
-ov_dep_gtk_cairo_libinputproto_archive_name=$ov_archives_folder/openvibe-dependency-inputproto-1.4.tar.bz2
-ov_dep_gtk_cairo_libx11_archive_name=$ov_archives_folder/openvibe-dependency-libX11-1.1.1.tar.bz2
-ov_dep_gtk_cairo_libxext_archive_name=$ov_archives_folder/openvibe-dependency-libXext-1.0.3.tar.bz2
-ov_dep_gtk_cairo_freetype_archive_name=$ov_archives_folder/openvibe-dependency-freetype-2.3.4.tar.gz
-ov_dep_gtk_cairo_fontconfig_archive_name=$ov_archives_folder/openvibe-dependency-fontconfig-2.4.2.tar.gz
-ov_dep_gtk_cairo_renderproto_archive_name=$ov_archives_folder/openvibe-dependency-renderproto-0.9.2.tar.bz2
-ov_dep_gtk_cairo_libxdmcp_archive_name=$ov_archives_folder/openvibe-dependency-libXdmcp-1.0.2.tar.bz2
-ov_dep_gtk_cairo_libxrender_archive_name=$ov_archives_folder/openvibe-dependency-libXrender-0.9.2.tar.gz
-ov_dep_gtk_cairo_archive_name=$ov_archives_folder/openvibe-dependency-gtk-cairo-1.2.6.tar.gz
-ov_dep_gtk_pango_archive_name=$ov_archives_folder/openvibe-dependency-gtk-pango-1.16.4.tar.gz
-ov_dep_gtk_atk_archive_name=$ov_archives_folder/openvibe-dependency-gtk-atk-1.9.1.tar.bz2
-ov_dep_gtk_theme_clearlooks_archive_name=$ov_archives_folder/openvibe-dependency-clearlooks-0.6.2.tar.bz2
-ov_dep_libglade_archive_name=$ov_archives_folder/openvibe-dependency-libglade-2.6.0.tar.bz2
-ov_dep_glade_archive_name=$ov_archives_folder/openvibe-dependency-glade3-3.1.5.tar.gz
-ov_dep_itpp_external_libtool_archive_name=$ov_archives_folder/openvibe-dependency-libtool-1.5.22.tar.gz
-ov_dep_itpp_external_archive_name=$ov_archives_folder/openvibe-dependency-itpp-external-2.3.0.tar.gz
-ov_dep_itpp_archive_name=$ov_archives_folder/openvibe-dependency-itpp-3.10.10.tar.gz
-ov_dep_gsl_archive_name=$ov_archives_folder/openvibe-dependency-gsl-1.9.tar.gz
-ov_dep_torch_archive_name=$ov_archives_folder/openvibe-dependency-torch-3.tar.gz
-ov_dep_vrpn_archive_name=$ov_archives_folder/openvibe-dependency-vrpn-7.13.zip
+ov_dep_expat_archive_name=$ov_archives_folder/expat-2.0.0.tar.gz
+ov_dep_pkgconfig_archive_name=$ov_archives_folder/pkg-config-0.20.tar.gz
+ov_dep_cmake_archive_name=$ov_archives_folder/cmake-2.4.6.tar.gz
+ov_dep_gtk_archive_name=$ov_archives_folder/gtk-2.10.12.tar.gz
+ov_dep_glib_archive_name=$ov_archives_folder/gtk-glib-2.12.12.tar.gz
+ov_dep_gettext_archive_name=$ov_archives_folder/gettext-0.16.1.tar.gz
+ov_dep_libxml_archive_name=$ov_archives_folder/libxml2-sources-2.6.28.tar.gz
+ov_dep_zlib_archive_name=$ov_archives_folder/zlib-1.2.3.tar.gz
+ov_dep_libpng_archive_name=$ov_archives_folder/libpng-1.2.18.tar.gz
+ov_dep_libxproto_archive_name=$ov_archives_folder/xproto-7.0.10.tar.bz2
+ov_dep_libxextproto_archive_name=$ov_archives_folder/xextproto-7.0.2.tar.bz2
+ov_dep_libxtrans_archive_name=$ov_archives_folder/xtrans-1.0.3.tar.bz2
+ov_dep_libxslt_archive_name=$ov_archives_folder/libxslt-1.1.20.tar.bz2
+ov_dep_libxau_archive_name=$ov_archives_folder/libXau-1.0.3.tar.bz2
+ov_dep_pthreadstubs_archive_name=$ov_archives_folder/libpthread-stubs-0.1.tar.bz2
+ov_dep_libxcbproto_archive_name=$ov_archives_folder/xcb-proto-1.0.tar.bz2
+ov_dep_libxcb_archive_name=$ov_archives_folder/libxcb-1.0.tar.bz2
+ov_dep_libkbproto_archive_name=$ov_archives_folder/kbproto-1.0.3.tar.bz2
+ov_dep_libinputproto_archive_name=$ov_archives_folder/inputproto-1.4.tar.bz2
+ov_dep_libx11_archive_name=$ov_archives_folder/libX11-1.1.1.tar.bz2
+ov_dep_libxext_archive_name=$ov_archives_folder/libXext-1.0.3.tar.bz2
+ov_dep_freetype_archive_name=$ov_archives_folder/freetype-2.3.4.tar.gz
+ov_dep_fontconfig_archive_name=$ov_archives_folder/fontconfig-2.4.2.tar.gz
+ov_dep_renderproto_archive_name=$ov_archives_folder/renderproto-0.9.2.tar.bz2
+ov_dep_libxdmcp_archive_name=$ov_archives_folder/libXdmcp-1.0.2.tar.bz2
+ov_dep_libxrender_archive_name=$ov_archives_folder/libXrender-0.9.2.tar.gz
+ov_dep_cairo_archive_name=$ov_archives_folder/gtk-cairo-1.2.6.tar.gz
+ov_dep_pango_archive_name=$ov_archives_folder/gtk-pango-1.16.4.tar.gz
+ov_dep_atk_archive_name=$ov_archives_folder/gtk-atk-1.9.1.tar.bz2
+ov_dep_clearlooks_archive_name=$ov_archives_folder/clearlooks-0.6.2.tar.bz2
+ov_dep_libglade_archive_name=$ov_archives_folder/libglade-2.6.0.tar.bz2
+ov_dep_glade_archive_name=$ov_archives_folder/glade3-3.1.5.tar.gz
+ov_dep_libtool_archive_name=$ov_archives_folder/libtool-1.5.22.tar.gz
+ov_dep_itpp_external_archive_name=$ov_archives_folder/itpp-external-2.3.0.tar.gz
+ov_dep_itpp_archive_name=$ov_archives_folder/itpp-3.10.10.tar.gz
+ov_dep_gsl_archive_name=$ov_archives_folder/gsl-1.9.tar.gz
+ov_dep_torch_archive_name=$ov_archives_folder/torch-3.tar.gz
+ov_dep_vrpn_archive_name=$ov_archives_folder/vrpn-7.13.zip
+
+####################################
+##
+##  several hooks for specific archives
+##
+####################################
+# preserve tree on cp  --parents
 
 ov_dep_gtk_additional_configure_flags="--without-libtiff --without-libjpeg CFALGS=-I$ov_depend_folder/include LDFLAGS=-L$ov_depend_folder/lib"
 
 ov_dep_torch_hook_configure="pushd * && ln -s config/Makefile_options_Linux Makefile_options_Linux && make depend && popd"
 ov_dep_torch_hook_install="pushd * && find -name *.h -type f -exec cp -f \"{}\" ../../include \\; && find -name *.a -type f -exec cp -f \"{}\" ../../lib \\; && cp Makefile_options_Linux ../.. && popd"
-# preserve tree on cp  --parents
 
-ov_dep_gtk_cairo_libx11_hook_configure_pre="pushd * && $ov_sed -i \"s:XPROTO_CFLAGS -I/usr/include:XPROTO_CFLAGS -I/usr/include -I$ov_depend_folder/include:g\" ./configure && popd"
+ov_dep_libx11_hook_configure_pre="pushd * && $ov_sed -i \"s:XPROTO_CFLAGS -I/usr/include:XPROTO_CFLAGS -I/usr/include -I$ov_depend_folder/include:g\" ./configure && popd"
 
 ov_dep_vrpn_hook_uncompress='$ov_unzip "$ov_current_package_archive_name"'
 ov_dep_vrpn_hook_configure="$ov_sed -i \"s/#HW_OS := pc_linux$/HW_OS := pc_linux/g\" quat/makefile && $ov_sed -i \"s/#HW_OS := pc_linux$/HW_OS := pc_linux/g\" vrpn/Makefile"
@@ -256,11 +261,6 @@ echo 'export CPPFLAGS=-I'$ov_depend_folder'/include '$CPPFLAGS >> $script_depend
 echo 'export LDFLAGS=-L'$ov_depend_folder'/lib '$LDFLAGS >> $script_dependencies_file
 
 source $script_dependencies_file
-
-# echo 'export COMPILER_PATH='$ov_depend_folder'/include:$COMPILER_PATH' >> $script_dependencies_file
-# echo 'export C_INCLUDE_PATH='$ov_depend_folder'/include:$C_INCLUDE_PATH' >> $script_dependencies_file
-# echo 'export CPLUS_INCLUDE_PATH='$ov_depend_folder'/include:$CPLUS_INCLUDE_PATH' >> $script_dependencies_file
-# echo 'export LIBRARY_PATH='$ov_depend_folder'/lib:$LIBRARY_PATH' >> $script_dependencies_file
 
 ####################################
 ##
@@ -704,37 +704,37 @@ function ov_svn_configure_make_install_package
 
 ov_untar_configure_make_install_package "pkgconfig"
 ov_untar_configure_make_install_package "expat"
-ov_untar_configure_make_install_package "gtk_glib_gettext"
-ov_untar_configure_make_install_package "gtk_glib"
-ov_untar_configure_make_install_package "gtk_cairo_libxml"
-ov_untar_configure_make_install_package "gtk_cairo_zlib"
-ov_untar_configure_make_install_package "gtk_cairo_libpng"
-ov_untar_configure_make_install_package "gtk_cairo_libxproto"
-ov_untar_configure_make_install_package "gtk_cairo_libxextproto"
-ov_untar_configure_make_install_package "gtk_cairo_libxtrans"
-ov_untar_configure_make_install_package "gtk_cairo_libxslt"
-ov_untar_configure_make_install_package "gtk_cairo_libxau"
-ov_untar_configure_make_install_package "gtk_cairo_pthreadstubs"
-ov_untar_configure_make_install_package "gtk_cairo_libxcbproto"
-ov_untar_configure_make_install_package "gtk_cairo_libxcb"
-ov_untar_configure_make_install_package "gtk_cairo_libkbproto"
-ov_untar_configure_make_install_package "gtk_cairo_libinputproto"
-ov_untar_configure_make_install_package "gtk_cairo_libx11"
-ov_untar_configure_make_install_package "gtk_cairo_libxext"
-ov_untar_configure_make_install_package "gtk_cairo_freetype"
-ov_untar_configure_make_install_package "gtk_cairo_fontconfig"
-ov_untar_configure_make_install_package "gtk_cairo_renderproto"
-ov_untar_configure_make_install_package "gtk_cairo_libxdmcp"
-ov_untar_configure_make_install_package "gtk_cairo_libxrender"
-ov_untar_configure_make_install_package "gtk_cairo"
-ov_untar_configure_make_install_package "gtk_pango"
-ov_untar_configure_make_install_package "gtk_atk"
+ov_untar_configure_make_install_package "gettext"
+ov_untar_configure_make_install_package "glib"
+ov_untar_configure_make_install_package "libxml"
+ov_untar_configure_make_install_package "zlib"
+ov_untar_configure_make_install_package "libpng"
+ov_untar_configure_make_install_package "libxproto"
+ov_untar_configure_make_install_package "libxextproto"
+ov_untar_configure_make_install_package "libxtrans"
+ov_untar_configure_make_install_package "libxslt"
+ov_untar_configure_make_install_package "libxau"
+ov_untar_configure_make_install_package "pthreadstubs"
+ov_untar_configure_make_install_package "libxcbproto"
+ov_untar_configure_make_install_package "libxcb"
+ov_untar_configure_make_install_package "libkbproto"
+ov_untar_configure_make_install_package "libinputproto"
+ov_untar_configure_make_install_package "libx11"
+ov_untar_configure_make_install_package "libxext"
+ov_untar_configure_make_install_package "freetype"
+ov_untar_configure_make_install_package "fontconfig"
+ov_untar_configure_make_install_package "renderproto"
+ov_untar_configure_make_install_package "libxdmcp"
+ov_untar_configure_make_install_package "libxrender"
+ov_untar_configure_make_install_package "cairo"
+ov_untar_configure_make_install_package "pango"
+ov_untar_configure_make_install_package "atk"
 ov_untar_configure_make_install_package "gtk"
-ov_untar_configure_make_install_package "gtk_theme_clearlooks"
+ov_untar_configure_make_install_package "clearlooks"
 ov_untar_configure_make_install_package "libglade"
 ov_untar_configure_make_install_package "glade"
 
-ov_untar_configure_make_install_package "itpp_external_libtool"
+ov_untar_configure_make_install_package "libtool"
 ov_untar_configure_make_install_package "itpp_external"
 ov_untar_configure_make_install_package "itpp"
 
