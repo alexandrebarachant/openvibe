@@ -12,10 +12,10 @@
 # ---------------------------------
 IF(UNIX)
 	FIND_PATH(EXPAT_expat_INCLUDE_PATH "expat.h"
-		PATHS "$ENV{OpenViBE_dependencies/include")
+		PATHS "$ENV{OpenViBE_dependencies}/include")
 	FIND_LIBRARY(EXPAT_expat_LIBRARY
 		NAMES expat
-		PATHS "$ENV{OpenViBE_dependencies/lib")
+		PATHS "$ENV{OpenViBE_dependencies}/lib")
 ENDIF(UNIX)
 
 IF(WIN32)
