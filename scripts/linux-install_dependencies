@@ -272,6 +272,7 @@ echo 'export LD_LIBRARY_PATH='$ov_depend_folder'/lib:$LD_LIBRARY_PATH' >> $scrip
 echo 'export PATH='$ov_depend_folder'/bin:$PATH' >> $script_dependencies_file
 echo '' >> $script_dependencies_file
 echo 'export BOOST_ROOT='$ov_depend_folder'/include/boost_1_34_1' >> $script_dependencies_file
+echo 'export GTK2_RC_FILES='$ov_depend_folder'/share/themes/Clearlooks/gtk-2.0/gtkrc' >> $script_dependencies_file
 
 source $script_dependencies_file
 

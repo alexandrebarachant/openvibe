@@ -6,6 +6,8 @@ if [ ! -e linux-init_env_command ]; then
 	exit
 fi
 
+source linux-init_env_command
+
 ./linux-collect_build
 
 cd ../dist/bin
