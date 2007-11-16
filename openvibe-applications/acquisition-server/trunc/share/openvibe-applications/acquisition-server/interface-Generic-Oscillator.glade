@@ -215,7 +215,7 @@
                     <child>
                       <widget class="GtkLabel" id="label_sex">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Sex :</property>
+                        <property name="label" translatable="yes">Gender :</property>
                         <property name="justify">GTK_JUSTIFY_RIGHT</property>
                         <property name="single_line_mode">True</property>
                       </widget>
