@@ -109,7 +109,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFFileWriter; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFFileWriter(); }
 			
-			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
+			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				// Adds box inputs //swap order of the first two
 				rPrototype.addInput("Experiment information", OV_TypeId_ExperimentationInformation);

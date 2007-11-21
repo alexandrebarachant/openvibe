@@ -105,7 +105,7 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BCICompetitionIIIbReader; }
 				virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CBCICompetitionIIIbReader(); }
 
-				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
+				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 				{
 					// Adds box outputs
 					rPrototype.addOutput("Signal", OV_TypeId_Signal);
