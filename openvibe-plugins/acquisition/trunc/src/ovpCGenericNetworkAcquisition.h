@@ -49,7 +49,6 @@ namespace OpenViBEPlugins
 					bool m_bReadyToSend;
 			};
 
-
 			// Used to store information about the signal stream
 			class CSignalDescription
 			{
@@ -68,7 +67,6 @@ namespace OpenViBEPlugins
 
 					bool m_bReadyToSend;
 			};
-
 
 		public:
 
@@ -123,8 +121,6 @@ namespace OpenViBEPlugins
 			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Acquisition::CGenericNetworkAcquisition> * m_pOutputWriterCallbackProxy[3];
 
 			OpenViBE::uint64 m_ui64CurrentBufferSize;
-			OpenViBE::Plugins::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
-
 
 			CExperimentInfoHeader * m_pExperimentInfoHeader;
 			bool m_bHeaderSent;

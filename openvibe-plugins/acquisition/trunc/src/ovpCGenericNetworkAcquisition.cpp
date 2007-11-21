@@ -210,7 +210,6 @@ CGenericNetworkAcquisition::CGenericNetworkAcquisition(void)
 	m_pSignalOutputWriterHelper(NULL),
 	m_pExperimentInformationOutputWriterHelper(NULL),
 	m_ui64CurrentBufferSize(0),
-	m_pBoxAlgorithmContext(NULL),
 	m_pExperimentInfoHeader(NULL),
 	m_bHeaderSent(false),
 	m_pSignalDescription(NULL),
