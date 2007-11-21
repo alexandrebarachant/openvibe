@@ -1,59 +1,15 @@
 #include "ovpCEBMLStreamSpy.h"
 
 #include <iostream>
-#include <iomanip>
 #include <fstream>
 
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Tools;
 using namespace OpenViBEToolkit;
 using namespace std;
-
-#if defined OVP_OS_Windows
- #define ConsoleColor_FG_Highlight ""
- #define ConsoleColor_FG_Downlight ""
-
- #define ConsoleColor_FG_Black     ""
- #define ConsoleColor_FG_Red       ""
- #define ConsoleColor_FG_Green     ""
- #define ConsoleColor_FG_Yellow    ""
- #define ConsoleColor_FG_Blue      ""
- #define ConsoleColor_FG_Magenta   ""
- #define ConsoleColor_FG_Cyan      ""
- #define ConsoleColor_FG_White     ""
-
- #define ConsoleColor_BG_Black     ""
- #define ConsoleColor_BG_Red       ""
- #define ConsoleColor_BG_Green     ""
- #define ConsoleColor_BG_Yellow    ""
- #define ConsoleColor_BG_Blue      ""
- #define ConsoleColor_BG_Magenta   ""
- #define ConsoleColor_BG_Cyan      ""
- #define ConsoleColor_BG_White     ""
-#else
- #define ConsoleColor_FG_Highlight "\033[01m"
- #define ConsoleColor_FG_Downlight "\033[00m"
-
- #define ConsoleColor_FG_Black     "\033[30m"
- #define ConsoleColor_FG_Red       "\033[31m"
- #define ConsoleColor_FG_Green     "\033[32m"
- #define ConsoleColor_FG_Yellow    "\033[33m"
- #define ConsoleColor_FG_Blue      "\033[34m"
- #define ConsoleColor_FG_Magenta   "\033[35m"
- #define ConsoleColor_FG_Cyan      "\033[36m"
- #define ConsoleColor_FG_White     "\033[37m"
-
- #define ConsoleColor_BG_Black     "\033[40m"
- #define ConsoleColor_BG_Red       "\033[41m"
- #define ConsoleColor_BG_Green     "\033[42m"
- #define ConsoleColor_BG_Yellow    "\033[43m"
- #define ConsoleColor_BG_Blue      "\033[44m"
- #define ConsoleColor_BG_Magenta   "\033[45m"
- #define ConsoleColor_BG_Cyan      "\033[46m"
- #define ConsoleColor_BG_White     "\033[47m"
-#endif
 
 CEBMLStreamSpy::CEBMLStreamSpy(void)
 	:m_pReader(NULL)
@@ -74,8 +30,12 @@ boolean CEBMLStreamSpy::initialize(void)
 	CString l_sFileName;
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_sFileName);
 
+	CString l_sLogLevel;
+	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(1, l_sLogLevel);
+	m_eLogLevel=static_cast<ELogLevel>(getBoxAlgorithmContext()->getPlayerContext()->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_LogLevel, l_sLogLevel));
+
 	ifstream l_oFile(l_sFileName);
-	while(!l_oFile.eof())
+	while(l_oFile.good() && !l_oFile.eof())
 	{
 		unsigned int l_ui32Identifier1;
 		unsigned int l_ui32Identifier2;
@@ -134,33 +94,23 @@ void CEBMLStreamSpy::openChild(const EBML::CIdentifier& rIdentifier)
 	n=m_vName.find(rIdentifier);
 	t=m_vType.find(rIdentifier);
 
+	getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << m_eLogLevel;
+
 	for(size_t i=0; i<=m_vNodes.size(); i++)
 	{
-		cout << "  ";
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "  ";
 	}
-	uint32 l_ui32Identifier1=(uint32)(((EBML::uint64)rIdentifier)>>32);
-	uint32 l_ui32Identifier2=(uint32)(((EBML::uint64)rIdentifier)&0xffffffff);
-	cout
+
+	getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
 		<< "Opened EBML node [id:"
-		<< ConsoleColor_FG_Blue
-		<< "0x"
-		<< hex
-		<< setw(8)
-		<< setfill('0')
-		<< l_ui32Identifier1
-		<< ",0x"
-		<< hex
-		<< setw(8)
-		<< setfill('0')
-		<< l_ui32Identifier2 << ConsoleColor_FG_Black
+		<< CIdentifier(rIdentifier)
 		<< "]-[name:"
-		<< ConsoleColor_FG_Blue << (n!=m_vName.end()?n->second:"unknown") << ConsoleColor_FG_Black
-		<< "]"
-		<< dec;
+		<< CString(n!=m_vName.end()?n->second.c_str():"unknown")
+		<< "]";
 
 	if(isMasterChild(rIdentifier))
 	{
-		cout << endl;
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "\n";
 	}
 
 	m_vNodes.push(rIdentifier);
@@ -176,42 +126,25 @@ void CEBMLStreamSpy::processChildData(const void* pBuffer, const EBML::uint64 ui
 	if(t!=m_vType.end())
 	{
 		if(t->second=="uinteger")
-			cout
-				<< "-[type:"
-				<< ConsoleColor_FG_Blue << t->second << ConsoleColor_FG_Black
-				<< "]-[value:"
-				<< ConsoleColor_FG_Blue << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << ConsoleColor_FG_Black
-				<< "]";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< "-[type:" << CString(t->second.c_str()) << "]-[value:" << m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize) << "]";
 		else if(t->second=="integer")
-			cout
-				<< "-[type:"
-				<< ConsoleColor_FG_Blue << t->second << ConsoleColor_FG_Black
-				<< "]-[value:"
-				<< ConsoleColor_FG_Blue << m_pReaderHelper->getSIntegerFromChildData(pBuffer, ui64BufferSize) << ConsoleColor_FG_Black
-				<< "]";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< "-[type:" << CString(t->second.c_str()) << "]-[value:" << m_pReaderHelper->getSIntegerFromChildData(pBuffer, ui64BufferSize) << "]";
+		else if(t->second=="float")
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< "-[type:" << CString(t->second.c_str()) << "]-[value:" << m_pReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize) << "]";
 		else if(t->second=="string")
-			cout
-				<< "-[type:"
-				<< ConsoleColor_FG_Blue << t->second << ConsoleColor_FG_Black
-				<< "]-[value:"
-				<< ConsoleColor_FG_Blue << m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize) << ConsoleColor_FG_Black
-				<< "]";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< "-[type:" << CString(t->second.c_str()) << "]-[value:" << m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize) << "]";
 		else if(t->second=="binary")
-			cout
-				<< "-[type:"
-				<< ConsoleColor_FG_Blue << t->second << ConsoleColor_FG_Black
-				<< "]-[bytes:"
-				<< ConsoleColor_FG_Blue << ui64BufferSize << ConsoleColor_FG_Black
-				<< "]";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< "-[type:" << CString(t->second.c_str()) << "]-[bytes:" << ui64BufferSize << "]";
 		else
-			cout
-				<< "-[type:"
-				<< ConsoleColor_FG_Red << "unknown" << ConsoleColor_FG_Black
-				<< "]-[bytes:"
-				<< ConsoleColor_FG_Blue << ui64BufferSize << ConsoleColor_FG_Black
-				<< "]";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< "-[type:" << CString("unknown") << "]-[bytes:" << ui64BufferSize << "]";
 	}
-	cout << endl;
+	getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "\n";
 }
 
 void CEBMLStreamSpy::closeChild(void)
@@ -227,43 +160,26 @@ boolean CEBMLStreamSpy::processInput(uint32 ui32InputIndex)
 
 boolean CEBMLStreamSpy::process(void)
 {
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBoxIO* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBox* l_pStaticBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
 	uint64 l_ui64StartTime=0;
 	uint64 l_ui64EndTime=0;
 	uint64 l_ui64ChunkSize=0;
 	const uint8* l_pChunkBuffer=NULL;
 
-	for(uint32 j=0; j<l_pDynamicBoxContext->getInputChunkCount(0); j++)
+	for(uint32 i=0; i<l_pStaticBoxContext->getInputCount(); i++)
 	{
-		l_pDynamicBoxContext->getInputChunk(0, j, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
-		l_pDynamicBoxContext->markInputAsDeprecated(0, j);
+		for(uint32 j=0; j<l_pDynamicBoxContext->getInputChunkCount(i); j++)
+		{
+			l_pDynamicBoxContext->getInputChunk(i, j, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
+			l_pDynamicBoxContext->markInputAsDeprecated(i, j);
 
-		cout
-			<< "For chunk [id:"
-			<< ConsoleColor_FG_Green << 0 << ConsoleColor_FG_Black
-			<< ","
-			<< ConsoleColor_FG_Green << j << ConsoleColor_FG_Black
-			<< "] at [time:"
-			<< ConsoleColor_FG_Green
-			<< "0x"
-			<< hex
-			<< setw(16)
-			<< setfill('0')
-			<< l_ui64StartTime
-			<< ConsoleColor_FG_Black
-			<< ","
-			<< ConsoleColor_FG_Green
-			<< "0x"
-			<< hex
-			<< setw(16)
-			<< setfill('0')
-			<< l_ui64EndTime
-			<< ConsoleColor_FG_Black
-			<< "]"
-			<< endl;
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << m_eLogLevel
+				<< "For chunk [id:" << i << "," << j << "] at [time:" << CIdentifier(l_ui64StartTime) << "," << CIdentifier(l_ui64EndTime) << "]\n";
 
-		m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
+			m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
+		}
 	}
 
 	return true;

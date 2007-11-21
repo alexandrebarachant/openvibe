@@ -42,6 +42,7 @@ namespace OpenViBEPlugins
 			std::stack<EBML::CIdentifier> m_vNodes;
 			std::map<EBML::CIdentifier, std::string> m_vName;
 			std::map<EBML::CIdentifier, std::string> m_vType;
+			OpenViBE::Kernel::ELogLevel m_eLogLevel;
 			EBML::IReader* m_pReader;
 			EBML::IReaderHelper* m_pReaderHelper;
 		};
@@ -63,15 +64,16 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Tools::CEBMLStreamSpy(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype) const
+				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				// Adds box inputs
-				rPrototype.addInput("Spied EBML stream", OV_UndefinedIdentifier);
+				rPrototype.addInput("Spied EBML stream", OV_TypeId_EBMLStream);
 
 				// Adds box outputs
 
 				// Adds box settings
-				rPrototype.addSetting("EBML nodes description", OV_TypeId_String, "../share/openvibe-plugins/tools/config-ebml-stream-spy.txt");
+				rPrototype.addSetting("EBML nodes description", OV_TypeId_Filename, "../share/openvibe-plugins/tools/config-ebml-stream-spy.txt");
+				rPrototype.addSetting("Log level to use", OV_TypeId_LogLevel, "Debug");
 
 				return true;
 			}

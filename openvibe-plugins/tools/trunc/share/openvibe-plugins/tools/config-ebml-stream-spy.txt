@@ -2,7 +2,7 @@ OVTK_NodeId_Acquisition_Header                                         EBML::CId
 OVTK_NodeId_Acquisition_AcquisitionInformation                         EBML::CIdentifier(0x00000000, 0x00004240) master
 OVTK_NodeId_Acquisition_ExperimentId                                   EBML::CIdentifier(0x00000000, 0x00004241) uinteger
 OVTK_NodeId_Acquisition_SubjectAge                                     EBML::CIdentifier(0x00000000, 0x00004242) uinteger
-OVTK_NodeId_Acquisition_SubjectSex                                     EBML::CIdentifier(0x00000000, 0x00004243) uinteger
+OVTK_NodeId_Acquisition_SubjectGender                                  EBML::CIdentifier(0x00000000, 0x00004243) uinteger
 OVTK_NodeId_Acquisition_ChannelCount                                   EBML::CIdentifier(0x00000000, 0x00004244) uinteger
 OVTK_NodeId_Acquisition_SamplingFrequency                              EBML::CIdentifier(0x00000000, 0x00004245) uinteger
 OVTK_NodeId_Acquisition_ChannelNames                                   EBML::CIdentifier(0x00000000, 0x00004246) master
@@ -48,6 +48,7 @@ OVTK_NodeId_Buffer_Stimulation_NumberOfStimulations                    EBML::CId
 OVTK_NodeId_Buffer_Stimulation_Stimulation                             EBML::CIdentifier(0x0016EAC6, 0x29FBCAA1) master
 OVTK_NodeId_Buffer_Stimulation_Stimulation_Identifier                  EBML::CIdentifier(0x006FA5DB, 0x4BAC31E9) uinteger
 OVTK_NodeId_Buffer_Stimulation_Stimulation_Date                        EBML::CIdentifier(0x00B866D8, 0x14DA5374) uinteger
+OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration                    EBML::CIdentifier(0x14EE055F, 0x87FBCC9C) uinteger
 
 OVTK_NodeId_Header_ExperimentInformation                               EBML::CIdentifier(0x00746BA0, 0x115AE04D) master
 OVTK_NodeId_Header_ExperimentInformation_Experiment                    EBML::CIdentifier(0x0011D6B7, 0x48F1AA39) master
@@ -57,7 +58,7 @@ OVTK_NodeId_Header_ExperimentInformation_Subject                       EBML::CId
 OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier            EBML::CIdentifier(0x00D62974, 0x473D4AA5) uinteger
 OVTK_NodeId_Header_ExperimentInformation_Subject_Name                  EBML::CIdentifier(0x0041FD0A, 0x6BCD9A99) string
 OVTK_NodeId_Header_ExperimentInformation_Subject_Age                   EBML::CIdentifier(0x00DF7DD9, 0x33336C51) uinteger
-OVTK_NodeId_Header_ExperimentInformation_Subject_Sex                   EBML::CIdentifier(0x0069BB84, 0x3FC8E149) uinteger
+OVTK_NodeId_Header_ExperimentInformation_Subject_Gender                EBML::CIdentifier(0x0069BB84, 0x3FC8E149) uinteger
 OVTK_NodeId_Header_ExperimentInformation_Context                       EBML::CIdentifier(0x0018C291, 0x7985DFDD) master
 OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier  EBML::CIdentifier(0x003F11B9, 0x26D76D9C) uinteger
 OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName        EBML::CIdentifier(0x00EB1F23, 0x51C23B83) string
