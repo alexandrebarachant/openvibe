@@ -22,7 +22,7 @@ namespace OpenViBEPlugins
 			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Classification::CLDAClassifier> m_oAmplitudeOutputWriterCallbackProxy;
 
 			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixOutputWriter * m_pStreamedMatrixOutputWriterHelper;
-				
+
 			// Needed to read the input
 			EBML::IReader* m_pReader;
 			OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback * m_pFeatureVectorInputReaderCallback;
@@ -34,7 +34,6 @@ namespace OpenViBEPlugins
 
 			// error flag
 			OpenViBE::boolean m_bError;
-
 
 			public:
 
@@ -49,7 +48,6 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 
 				virtual OpenViBE::boolean process();
-
 
 				_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_LDAClassifier)
 
@@ -76,7 +74,7 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_LDAClassifier; }
 				virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Classification::CLDAClassifier(); }
 
-				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
+				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 				{
 					rPrototype.addInput("Feature vector", OV_TypeId_FeatureVector);
 
