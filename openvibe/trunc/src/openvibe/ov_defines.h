@@ -81,6 +81,7 @@
 #define OV_TypeId_String                                             OpenViBE::CIdentifier(0x79A9EDEB, 0x245D83FC)
 #define OV_TypeId_Filename                                           OpenViBE::CIdentifier(0x330306DD, 0x74A95F98)
 #define OV_TypeId_Stimulation                                        OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
+#define OV_TypeId_LogLevel                                           OpenViBE::CIdentifier(0xA88B3667, 0x0871638C)
 
 #define OV_TypeId_EBMLStream                                         OpenViBE::CIdentifier(0x434F6587, 0x2EFD2B7E)
 #define   OV_TypeId_ChannelLocalisation                              OpenViBE::CIdentifier(0x1E4C0D6E, 0x5204EEB2)
