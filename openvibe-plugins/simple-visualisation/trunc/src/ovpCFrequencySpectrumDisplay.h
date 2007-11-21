@@ -76,7 +76,7 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_FrequencySpectrumDisplay; }
 				virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SimpleVisualisation::CFrequencySpectrumDisplay(); }
 
-				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
+				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 				{
 					rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
 					return true;

@@ -131,7 +131,7 @@ namespace OpenViBEPlugins
 				//test if it is equal to zero : Error
 				if(m_ui64BufferDuration == 0)
 				{
-					m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error : buffer start time and end time are equal!\n";
+					m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error : buffer start time and end time are equal : " << ui64StartTime << "\n";
 
 					m_bError = true;
 					return;
