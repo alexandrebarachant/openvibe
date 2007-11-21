@@ -120,7 +120,7 @@ namespace OpenViBEPlugins
 				// Adds box outputs
 
 				// Adds box settings
-				rPrototype.addSetting("Filename", OV_TypeId_Filename, "eeg_stream_writer.gdf");
+				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
 
 				return true;
 			}
