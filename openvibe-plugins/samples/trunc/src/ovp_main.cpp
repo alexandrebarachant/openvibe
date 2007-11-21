@@ -10,7 +10,11 @@
 #include "ovpCLog.h"
 #include "ovpCTest.h"
 
-// #include "ovpCTimeBasedEpoching.h"
+#define _WithTBE_
+
+#if defined _WithTBE_
+#include "ovpCTimeBasedEpoching.h"
+#endif
 
 static OpenViBEPlugins::Samples::CScenarioImporterXMLDesc* gst_pScenarioImporterXMLDesc=NULL;
 static OpenViBEPlugins::Samples::CScenarioExporterXMLDesc* gst_pScenarioExporterXMLDesc=NULL;
@@ -24,7 +28,9 @@ static OpenViBEPlugins::Samples::CIdentityDesc* gst_pIdentityDesc=NULL;
 static OpenViBEPlugins::Samples::CLogDesc* gst_pLogDesc=NULL;
 static OpenViBEPlugins::Samples::CTestDesc* gst_pTestDesc=NULL;
 
-// static OpenViBEPlugins::Samples::CTimeBasedEpochingDesc* gst_pTimeBasedEpochingDesc=NULL;
+#if defined _WithTBE_
+static OpenViBEPlugins::Samples::CTimeBasedEpochingDesc* gst_pTimeBasedEpochingDesc=NULL;
+#endif
 
 extern "C"
 {
@@ -57,7 +63,9 @@ OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleCont
 	gst_pLogDesc=new OpenViBEPlugins::Samples::CLogDesc();
 	gst_pTestDesc=new OpenViBEPlugins::Samples::CTestDesc();
 
-//	gst_pTimeBasedEpochingDesc=new OpenViBEPlugins::Samples::CTimeBasedEpochingDesc();
+#if defined _WithTBE_
+	gst_pTimeBasedEpochingDesc=new OpenViBEPlugins::Samples::CTimeBasedEpochingDesc();
+#endif
 
 	return true;
 }
@@ -76,7 +84,9 @@ OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleCo
 	delete gst_pScenarioImporterXMLDesc;
 	delete gst_pScenarioExporterXMLDesc;
 
-//	delete gst_pTimeBasedEpochingDesc;
+#if defined _WithTBE_
+	delete gst_pTimeBasedEpochingDesc;
+#endif
 
 	return true;
 }
@@ -97,7 +107,9 @@ OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::I
 		case 8: rpPluginObjectDescription=gst_pLogDesc; break;
 		case 9: rpPluginObjectDescription=gst_pTestDesc; break;
 
-//		case 10: rpPluginObjectDescription=gst_pTimeBasedEpochingDesc; break;
+#if defined _WithTBE_
+		case 10: rpPluginObjectDescription=gst_pTimeBasedEpochingDesc; break;
+#endif
 
 		default: return false;
 	}
