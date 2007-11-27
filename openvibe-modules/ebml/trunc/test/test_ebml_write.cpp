@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 
 #include "ebml/defines.h"
 #include "ebml/IWriter.h"
@@ -64,6 +66,10 @@ int main(int argc, char** argv)
 
 		l_oWriterHelper.openChild(0xffffffffffffffffLL);
 		l_oWriterHelper.setUIntegerAsChildData(0xff000000ff000000LL);
+		l_oWriterHelper.closeChild();
+
+		l_oWriterHelper.openChild(0x4321);
+		l_oWriterHelper.setFloat64AsChildData(M_PI);
 		l_oWriterHelper.closeChild();
 
 	l_oWriterHelper.closeChild();

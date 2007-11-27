@@ -20,6 +20,8 @@ namespace EBML
 			virtual const char* getASCIIStringFromChildData(const void* pBuffer, const uint64 ui64BufferSize);
 
 			virtual void release(void);
+
+			std::string m_sASCIIString;
 		};
 	};
 };
@@ -44,7 +46,7 @@ int64 CReaderHelper::getSIntegerFromChildData(const void* pBuffer, const uint64 
 {
 	int64 l_i64Result=0;
 	uint64 i;
-	
+
 	if(ui64BufferSize!=0 && ((unsigned char*)pBuffer)[0]&0x80)
 	{
 		l_i64Result=-1;
@@ -94,16 +96,15 @@ float64 CReaderHelper::getFloatFromChildData(const void* pBuffer, const uint64 u
 
 const char* CReaderHelper::getASCIIStringFromChildData(const void* pBuffer, const uint64 ui64BufferSize)
 {
-	string l_sASCIIString;
 	if(ui64BufferSize)
 	{
-		l_sASCIIString.assign((char*)pBuffer, (size_t)(ui64BufferSize));
+		m_sASCIIString.assign((char*)pBuffer, (size_t)(ui64BufferSize));
 	}
 	else
 	{
-		l_sASCIIString="";
+		m_sASCIIString="";
 	}
-	return l_sASCIIString.c_str();
+	return m_sASCIIString.c_str();
 }
 
 void CReaderHelper::release(void)
