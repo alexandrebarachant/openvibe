@@ -64,7 +64,7 @@ namespace OpenViBEToolkit
 
 	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::writeEnd(EBML::IWriter& rWriter)
 	{
-		return m_oEBMLOutputWriterPart.writeBuffer(rWriter);
+		return m_oEBMLOutputWriterPart.writeEnd(rWriter);
 	}
 
 	OpenViBEToolkit::IBoxAlgorithmStreamedMatrixOutputWriter* createBoxAlgorithmStreamedMatrixOutputWriter(void)

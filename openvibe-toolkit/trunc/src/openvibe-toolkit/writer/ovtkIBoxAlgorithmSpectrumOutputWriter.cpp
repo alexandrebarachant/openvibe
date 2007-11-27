@@ -52,7 +52,7 @@ namespace OpenViBEToolkit
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::setFrequencyBandCount(const OpenViBE::uint32 ui32FrequencyBandCount)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(1, ui32FrequencyBandCount);
+		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(1, ui32FrequencyBandCount) && m_oSpectrumOutputWriterPart.setFrequencyBandCount(ui32FrequencyBandCount);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::setFrequencyBandName(const OpenViBE::uint32 ui32FrequencyBandIndex, const char* sFrequencyBandName)
@@ -87,7 +87,7 @@ namespace OpenViBEToolkit
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::writeEnd(EBML::IWriter& rWriter)
 	{
-		return m_oEBMLOutputWriterPart.writeBuffer(rWriter);
+		return m_oEBMLOutputWriterPart.writeEnd(rWriter);
 	}
 
 	OpenViBEToolkit::IBoxAlgorithmSpectrumOutputWriter* createBoxAlgorithmSpectrumOutputWriter(void)

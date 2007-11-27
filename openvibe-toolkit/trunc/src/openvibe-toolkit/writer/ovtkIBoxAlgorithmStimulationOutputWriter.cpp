@@ -52,7 +52,7 @@ namespace OpenViBEToolkit
 
 	OpenViBE::boolean CBoxAlgorithmStimulationOutputWriter::writeEnd(EBML::IWriter& rWriter)
 	{
-		return m_oEBMLOutputWriterPart.writeBuffer(rWriter);
+		return m_oEBMLOutputWriterPart.writeEnd(rWriter);
 	}
 
 	OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter* createBoxAlgorithmStimulationOutputWriter(void)
