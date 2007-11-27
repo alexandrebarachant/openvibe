@@ -34,8 +34,8 @@ namespace OpenViBEToolkit
 
 	CBoxAlgorithmSpectrumOutputWriter::CBoxAlgorithmSpectrumOutputWriter(void)
 	{
-		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oSpectrumOutputWriterPart);
 		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oStreamedMatrixOutputWriterPart);
+		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oSpectrumOutputWriterPart);
 
 		m_oStreamedMatrixOutputWriterPart.setDimmensionCount(2);
 	}

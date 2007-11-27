@@ -7,6 +7,7 @@ using namespace OpenViBE;
 //
 
 CBoxAlgorithmSpectrumOutputWriterPart::CBoxAlgorithmSpectrumOutputWriterPart(void)
+	:m_ui32FrequencyBandCount(0)
 {
 }
 

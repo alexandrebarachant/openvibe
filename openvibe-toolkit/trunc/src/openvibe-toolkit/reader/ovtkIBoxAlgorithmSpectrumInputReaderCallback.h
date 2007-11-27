@@ -70,7 +70,7 @@ namespace OpenViBEToolkit
 			{
 				if(m_mfpSetFrequencyBandName)
 				{
-					(m_rOwnerObject.*m_mfpSetFrequencyBandName)(sFrequencyBandName);
+					(m_rOwnerObject.*m_mfpSetFrequencyBandName)(ui32FrequencyBandIndex, sFrequencyBandName);
 				}
 			}
 			virtual void setFrequencyBandStart(const OpenViBE::uint32 ui32FrequencyBandIndex, const OpenViBE::float64 f64FrequencyBandStart)
