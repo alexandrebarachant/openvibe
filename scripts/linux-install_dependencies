@@ -146,7 +146,7 @@ ov_dep_pkgconfig_url=ftp://ftp.gtk.org/pub/gtk/v2.10/dependencies/pkg-config-0.2
 ov_dep_cmake_url=http://www.cmake.org/files/v2.4/cmake-2.4.6-Linux-i386.tar.gz
 ov_dep_boost_url=http://downloads.sourceforge.net/boost/boost_1_34_1.tar.bz2
 ov_dep_expat_url=http://downloads.sourceforge.net/expat/expat-2.0.0.tar.gz
-ov_dep_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.gz
+ov_dep_gtk_url=ftp://ftp.gtk.org/pub/gtk/v2.10/gtk+-2.10.12.tar.bz2
 ov_dep_glib_url=ftp://ftp.gtk.org/pub/glib/2.12/glib-2.12.12.tar.gz
 ov_dep_gettext_url=ftp://ftp.cs.univ-paris8.fr/mirrors/ftp.gnu.org/gnu/gettext/gettext-0.16.1.tar.gz
 ov_dep_libxml_url=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.28.tar.gz
@@ -188,7 +188,7 @@ ov_dep_pkgconfig_archive_name=$ov_archives_folder/pkg-config-0.20.tar.gz
 ov_dep_cmake_archive_name=$ov_archives_folder/cmake-2.4.6.tar.gz
 ov_dep_boost_archive_name=$ov_archives_folder/boost_1_34_1.tar.bz2
 ov_dep_expat_archive_name=$ov_archives_folder/expat-2.0.0.tar.gz
-ov_dep_gtk_archive_name=$ov_archives_folder/gtk-2.10.12.tar.gz
+ov_dep_gtk_archive_name=$ov_archives_folder/gtk-2.10.12.tar.bz2
 ov_dep_glib_archive_name=$ov_archives_folder/glib-2.12.12.tar.gz
 ov_dep_gettext_archive_name=$ov_archives_folder/gettext-0.16.1.tar.gz
 ov_dep_libxml_archive_name=$ov_archives_folder/libxml2-2.6.28.tar.gz
@@ -241,6 +241,8 @@ ov_dep_boost_hook_make=" "
 ov_dep_boost_hook_install="mv * ../include"
 
 ov_dep_zlib_hook_configure="pushd * && ./configure --prefix=$ov_depend_folder && popd"
+ov_dep_itpp_external_hook_configure="pushd * && ./configure --prefix=$ov_depend_folder && popd"
+# ov_dep_itpp_hook_configure="pushd * && ./configure --prefix=$ov_depend_folder && popd"
 ov_dep_torch_hook_configure="pushd * && ln -s config/Makefile_options_Linux Makefile_options_Linux && make depend && popd"
 ov_dep_torch_hook_install="pushd * && find -name *.h -type f -exec cp -f \"{}\" ../../include \\; && find -name *.a -type f -exec cp -f \"{}\" ../../lib \\; && cp Makefile_options_Linux ../.. && popd"
 
