@@ -102,6 +102,10 @@ void TBoxAlgorithmSpectrumInputReaderCallback<IBaseInterface>::openChild(const E
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start)
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop))
 	{
+		if(l_rTop==OVTK_NodeId_Header_Spectrum)
+		{
+			m_ui32FrequencyBandIndex=0;
+		}
 	}
 	else
 	{
@@ -119,10 +123,8 @@ void TBoxAlgorithmSpectrumInputReaderCallback<IBaseInterface>::processChildData(
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start)
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop))
 	{
-	 	if(l_rTop==OVTK_NodeId_Header_Spectrum) m_ui32FrequencyBandIndex=static_cast<OpenViBE::uint32>(-1);
-	 	if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand) m_ui32FrequencyBandIndex++;
-		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start) m_pCallback->setFrequencyBandStart(m_ui32FrequencyBandIndex, static_cast<OpenViBE::float64>(m_pReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize)));
-		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop) m_pCallback->setFrequencyBandStop(m_ui32FrequencyBandIndex, static_cast<OpenViBE::float64>(m_pReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize)));
+		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start) m_pCallback->setFrequencyBandStart(m_ui32FrequencyBandIndex, m_pReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize));
+		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop)  m_pCallback->setFrequencyBandStop (m_ui32FrequencyBandIndex, m_pReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize));
 	}
 	else
 	{
@@ -140,6 +142,10 @@ void TBoxAlgorithmSpectrumInputReaderCallback<IBaseInterface>::closeChild(void)
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start)
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop))
 	{
+		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand)
+		{
+			m_ui32FrequencyBandIndex++;
+		}
 	}
 	else
 	{

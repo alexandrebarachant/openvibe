@@ -82,7 +82,7 @@ namespace OpenViBEToolkit
 			}
 			virtual void setFrequencyBandStop(const OpenViBE::uint32 ui32FrequencyBandIndex, const OpenViBE::float64 f64FrequencyBandStop)
 			{
-				if(m_mfpSetFrequencyBandStart)
+				if(m_mfpSetFrequencyBandStop)
 				{
 					(m_rOwnerObject.*m_mfpSetFrequencyBandStop)(ui32FrequencyBandIndex, f64FrequencyBandStop);
 				}
