@@ -150,30 +150,32 @@ boolean CWriterHelper::setUIntegerAsChildData(const uint64 uiValue)
 
 boolean CWriterHelper::setFloat32AsChildData(const float32 fValue)
 {
-	uint32* l_pValue=(uint32*)&fValue;
+	uint32 l_uiValue;
 	uint64 i;
 	uint64 l_ui64BufferSize=0;
 	unsigned char l_pBuffer[8];
+	::memcpy(&l_uiValue, &fValue, sizeof(fValue));
 
 	l_ui64BufferSize=(fValue!=0?4:0);
 	for(i=0; i<l_ui64BufferSize; i++)
 	{
-		l_pBuffer[l_ui64BufferSize-i-1]=(unsigned char)(((*l_pValue)>>(i*8))&0xff);
+		l_pBuffer[l_ui64BufferSize-i-1]=(unsigned char)((l_uiValue>>(i*8))&0xff);
 	}
 	return m_pWriter->setChildData(l_pBuffer, l_ui64BufferSize);
 }
 
 boolean CWriterHelper::setFloat64AsChildData(const float64 fValue)
 {
-	uint64* l_pValue=(uint64*)&fValue;
+	uint64 l_uiValue;
 	uint64 i;
 	uint64 l_ui64BufferSize=0;
 	unsigned char l_pBuffer[8];
+	::memcpy(&l_uiValue, &fValue, sizeof(fValue));
 
 	l_ui64BufferSize=(fValue!=0?8:0);
 	for(i=0; i<l_ui64BufferSize; i++)
 	{
-		l_pBuffer[l_ui64BufferSize-i-1]=(unsigned char)(((*l_pValue)>>(i*8))&0xff);
+		l_pBuffer[l_ui64BufferSize-i-1]=(unsigned char)((l_uiValue>>(i*8))&0xff);
 	}
 	return m_pWriter->setChildData(l_pBuffer, l_ui64BufferSize);
 }

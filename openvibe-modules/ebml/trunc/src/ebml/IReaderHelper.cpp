@@ -62,6 +62,7 @@ int64 CReaderHelper::getSIntegerFromChildData(const void* pBuffer, const uint64 
 
 float64 CReaderHelper::getFloatFromChildData(const void* pBuffer, const uint64 ui64BufferSize)
 {
+	float32 l_f32Result;
 	float64 l_f64Result;
 	int32 l_ui32Result;
 	int64 l_ui64Result;
@@ -74,12 +75,13 @@ float64 CReaderHelper::getFloatFromChildData(const void* pBuffer, const uint64 u
 
 		case 4:
 			l_ui32Result=(uint32)getUIntegerFromChildData(pBuffer, ui64BufferSize);
-			l_f64Result=*((float32*)&l_ui32Result);
+			::memcpy(&l_f32Result, &l_ui32Result, sizeof(l_f32Result));
+			l_f64Result=l_f32Result;
 			break;
 
 		case 8:
 			l_ui64Result=(uint64)getUIntegerFromChildData(pBuffer, ui64BufferSize);
-			l_f64Result=*((float64*)&l_ui64Result);
+			::memcpy(&l_f64Result, &l_ui64Result, sizeof(l_f64Result));
 			break;
 
 		case 10:

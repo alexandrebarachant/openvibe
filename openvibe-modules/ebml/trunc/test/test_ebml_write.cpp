@@ -72,6 +72,10 @@ int main(int argc, char** argv)
 		l_oWriterHelper.setFloat64AsChildData(M_PI);
 		l_oWriterHelper.closeChild();
 
+		l_oWriterHelper.openChild(0x8765);
+		l_oWriterHelper.setFloat32AsChildData(M_PI);
+		l_oWriterHelper.closeChild();
+
 	l_oWriterHelper.closeChild();
 
 	return 0;

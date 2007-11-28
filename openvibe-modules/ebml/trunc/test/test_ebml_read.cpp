@@ -52,6 +52,8 @@ public:
 			cout <<"Got uinteger : [0x" << setw(16) << setfill('0') << hex << m_oReaderHelper.getUIntegerFromChildData(pBuffer, ui64BufferSize) << dec << "]\n";
 		else if(m_oCurrentIdentifier==EBML::CIdentifier(0x4321))
 			cout <<"Got float : [" << m_oReaderHelper.getFloatFromChildData(pBuffer, ui64BufferSize) << "]\n";
+		else if(m_oCurrentIdentifier==EBML::CIdentifier(0x8765))
+			cout <<"Got float : [" << m_oReaderHelper.getFloatFromChildData(pBuffer, ui64BufferSize) << "]\n";
 		else
 			cout << "Got " << ui64BufferSize << " data bytes\n";
 	}
