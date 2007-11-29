@@ -1,4 +1,5 @@
 #include "ovtkCBoxAlgorithmSpectrumOutputWriterPart.inl"
+#include <iostream>
 
 using namespace OpenViBEToolkit;
 using namespace OpenViBE;
@@ -51,17 +52,17 @@ boolean CBoxAlgorithmSpectrumOutputWriterPart::writeHeaderStart(EBML::IWriter& r
 	m_oWriterHelper.connect(&rWriter);
 
 	 m_oWriterHelper.openChild(OVTK_NodeId_Header_Spectrum);
-	  m_oWriterHelper.openChild(OVTK_NodeId_Header_Spectrum_FrequencyBand);
-	   for(uint32 i=0; i<m_ui32FrequencyBandCount; i++)
-	   {
+	  for(uint32 i=0; i<m_ui32FrequencyBandCount; i++)
+	  {
+	   m_oWriterHelper.openChild(OVTK_NodeId_Header_Spectrum_FrequencyBand);
 	    m_oWriterHelper.openChild(OVTK_NodeId_Header_Spectrum_FrequencyBand_Start);
 	     m_oWriterHelper.setFloat64AsChildData(m_vFrequencyBandStart[i]);
 	    m_oWriterHelper.closeChild();
 	    m_oWriterHelper.openChild(OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop);
 	     m_oWriterHelper.setFloat64AsChildData(m_vFrequencyBandStop[i]);
 	    m_oWriterHelper.closeChild();
-	   }
-	  m_oWriterHelper.closeChild();
+	   m_oWriterHelper.closeChild();
+	  }
 
 	m_oWriterHelper.disconnect();
 	return true;

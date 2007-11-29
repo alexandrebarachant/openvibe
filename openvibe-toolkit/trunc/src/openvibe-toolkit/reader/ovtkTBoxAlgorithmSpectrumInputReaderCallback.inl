@@ -179,8 +179,8 @@ void TBoxAlgorithmSpectrumInputReaderCallback<IBaseInterface>::setMatrixDimmensi
 {
 	switch(ui32DimmensionIndex)
 	{
-		case 0: m_pCallback->setChannelName(ui32DimmensionEntryIndex, sDimmensionLabel);
-		case 1: m_pCallback->setFrequencyBandName(ui32DimmensionEntryIndex, sDimmensionLabel);
+		case 0: m_pCallback->setChannelName(ui32DimmensionEntryIndex, sDimmensionLabel); break;
+		case 1: m_pCallback->setFrequencyBandName(ui32DimmensionEntryIndex, sDimmensionLabel); break;
 	}
 }
 
