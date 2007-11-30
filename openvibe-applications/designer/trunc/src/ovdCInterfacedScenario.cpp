@@ -24,11 +24,11 @@ static ::GtkTargetEntry g_vTargetEntry[]= {
 static ::GdkColor colorFromIdentifier(const CIdentifier& rIdentifier)
 {
 	::GdkColor l_oGdkColor;
-	uint32 l_ui32Value1=0;
-	uint32 l_ui32Value2=0;
+	unsigned int l_ui32Value1=0;
+	unsigned int l_ui32Value2=0;
 	uint64 l_ui64Result=0;
 
-	sscanf(rIdentifier.toString(), "(0x%08X, 0x%08X)", (unsigned int*)&l_ui32Value1, (unsigned int*)&l_ui32Value2);
+	sscanf(rIdentifier.toString(), "(0x%08X, 0x%08X)", &l_ui32Value1, &l_ui32Value2);
 	l_ui64Result+=l_ui32Value1;
 	l_ui64Result<<=32;
 	l_ui64Result+=l_ui32Value2;

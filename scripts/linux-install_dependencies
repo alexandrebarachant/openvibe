@@ -83,7 +83,7 @@ echo "Using as sed        : [$ov_sed]..."
 ##
 ####################################
 
-ov_should_clear_dependencies_folder_flag=false
+ov_should_skip_download=false
 
 ov_directory=`pwd`
 
@@ -285,16 +285,6 @@ echo "PKG_CONFIG_PATH : $PKG_CONFIG_PATH"
 
 ####################################
 ##
-##  clears dependency directory
-##
-####################################
-
-if [ "$ov_should_clear_dependencies_folder_flag" == "true" ]; then
-	rm -rf "$ov_depend_folder"
-fi;
-
-####################################
-##
 ##  creates dependency directory when needed
 ##
 ####################################
@@ -368,26 +358,30 @@ function ov_untar_configure_make_install_package
 
 			# downloads package archive when needed
 			echo "  Downloading [$ov_current_package_url]..."
-			if [ ! "$ov_current_package_hook_download" == "" ]; then
-				# completely replace download phase with hook
-				`eval $ov_current_package_hook_download >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_result=$?
+			if [[ "$ov_should_skip_download" == "true" && -e "$ov_current_package_archive_name" ]]; then
+				echo "  Downloading [$ov_current_package_url] succeeded... (cached)"
 			else
-				# executes download hook pre 
-				`eval $ov_current_package_hook_download_pre >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_pre_result=$?
-				# effectively download file
-				$ov_wget -c -O "$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
-				ov_current_operation_result=$?
-				# executes download hook post
-				`eval $ov_current_package_hook_download_post >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_post_result=$?
-			fi;
-			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
-				echo "  Downloading [$ov_current_package_url] succeeded..."
-			else
-				echo "  Downloading [$ov_current_package_url] failed !"
-				exit
+				if [ ! "$ov_current_package_hook_download" == "" ]; then
+					# completely replace download phase with hook
+					`eval $ov_current_package_hook_download >> $ov_current_package_log_file 2>&1`
+					ov_current_operation_hook_result=$?
+				else
+					# executes download hook pre 
+					`eval $ov_current_package_hook_download_pre >> $ov_current_package_log_file 2>&1`
+					ov_current_operation_hook_pre_result=$?
+					# effectively download file
+					$ov_wget -c -O "$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
+					ov_current_operation_result=$?
+					# executes download hook post
+					`eval $ov_current_package_hook_download_post >> $ov_current_package_log_file 2>&1`
+					ov_current_operation_hook_post_result=$?
+				fi;
+				if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
+					echo "  Downloading [$ov_current_package_url] succeeded..."
+				else
+					echo "  Downloading [$ov_current_package_url] failed !"
+					exit
+				fi;
 			fi;
 
 			# decompresses package archive in temporary folder
@@ -557,12 +551,16 @@ function ov_untar_install_package
 
 			# downloads package archive when needed
 			echo "  Downloading [$ov_current_package_url]..."
-			$ov_wget -c -O "$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
-			if [ $? -eq 0 ]; then
-				echo "  Downloading [$ov_current_package_url] succeeded..."
+			if [[ "$ov_should_skip_download" == "true" && -e "$ov_current_package_archive_name" ]]; then
+				echo "  Downloading [$ov_current_package_url] succeeded... (cached)"
 			else
-				echo "  Downloading [$ov_current_package_url] failed !"
-				exit
+				$ov_wget -c -O "$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
+				if [ $? -eq 0 ]; then
+					echo "  Downloading [$ov_current_package_url] succeeded..."
+				else
+					echo "  Downloading [$ov_current_package_url] failed !"
+					exit
+				fi;
 			fi;
 
 			# trying to find out what kind of archive to decompress

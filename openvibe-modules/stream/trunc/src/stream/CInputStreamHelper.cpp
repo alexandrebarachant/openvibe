@@ -1,4 +1,5 @@
 #include "CInputStreamHelper.hpp"
+#include <system/Memory.h>
 
 using namespace Stream;
 
@@ -134,14 +135,18 @@ int64 CInputStreamHelper::receiveSInteger64(void)
 
 float32 CInputStreamHelper::receiveFloat32(void)
 {
-	uint32 l_ui32Result=receiveUInteger<uint32>();
-	return (float32)*((float32*)&l_ui32Result);
+	uint32 l_uiResult=receiveUInteger<uint32>();
+	float32 l_fResult;
+	System::Memory::copy(&l_fResult, &l_uiResult, sizeof(l_fResult));
+	return l_fResult;
 }
 
 float64 CInputStreamHelper::receiveFloat64(void)
 {
-	uint64 l_ui64Result=receiveUInteger<uint64>();
-	return (float64)*((float64*)&l_ui64Result);
+	uint64 l_uiResult=receiveUInteger<uint64>();
+	float64 l_fResult;
+	System::Memory::copy(&l_fResult, &l_uiResult, sizeof(l_fResult));
+	return l_fResult;
 }
 
 // ________________________________________________________________________________________________________________

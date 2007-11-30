@@ -1,4 +1,5 @@
 #include "COutputStreamHelper.hpp"
+#include <system/Memory.h>
 
 using namespace Stream;
 
@@ -135,14 +136,16 @@ boolean COutputStreamHelper::sendSInteger64(int64 iValue)
 
 boolean COutputStreamHelper::sendFloat32(float32 fValue)
 {
-	uint32* l_pValue=(uint32*)&fValue;
-	return sendUInteger<uint32>(*l_pValue);
+	uint32 l_uiValue;
+	System::Memory::copy(&l_uiValue, &fValue, sizeof(l_uiValue));
+	return sendUInteger<uint32>(l_uiValue);
 }
 
 boolean COutputStreamHelper::sendFloat64(float64 fValue)
 {
-	uint64* l_pValue=(uint64*)&fValue;
-	return sendUInteger<uint64>(*l_pValue);
+	uint64 l_uiValue;
+	System::Memory::copy(&l_uiValue, &fValue, sizeof(l_uiValue));
+	return sendUInteger<uint64>(l_uiValue);
 }
 
 // ________________________________________________________________________________________________________________

@@ -1,5 +1,6 @@
 #include "Math.h"
 #include <stdlib.h>
+#include <string.h>
 
 using namespace System;
 
@@ -55,12 +56,16 @@ int64 Math::randomSInterger64(void)
 
 float32 Math::randomFloat32(void)
 {
-	uint64 r=randomUInteger64();
-	return *reinterpret_cast<float32*>(&r);
+	uint32 r=randomUInteger32();
+	float32 fr;
+	::memcpy(&fr, &r, sizeof(fr));	
+	return fr;
 }
 
 float64 Math::randomFloat64(void)
 {
 	uint64 r=randomUInteger64();
-	return *reinterpret_cast<float64*>(&r);
+	float64 fr;
+	::memcpy(&fr, &r, sizeof(fr));	
+	return fr;
 }
