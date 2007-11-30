@@ -49,17 +49,20 @@ for(i=0; i<256; i++) l_pTable[(256*5+i)/6]=((255  )<<16)+((255  )<<8)+((    i));
 
 	inline void drawBoxToBuffer(guchar* pRGBBuffer, uint32 ui32RowStride, uint32 ui32X, uint32 ui32Y, uint32 ui32Width, uint32 ui32Height, uint8 ui8Red, uint8 ui8Green, uint8 ui8Blue)
 	{
-		guchar * l_pLineBase = pRGBBuffer + (ui32RowStride*ui32Y) + (ui32X*3);
-		for(uint32 j=ui32Height ; j>0 ; j--)
+		if(pRGBBuffer)
 		{
-			guchar * l_pLine=l_pLineBase;
-			for(uint32 i=ui32Width ; i>0 ; i--)
+			guchar * l_pLineBase = pRGBBuffer + (ui32RowStride*ui32Y) + (ui32X*3);
+			for(uint32 j=ui32Height ; j>0 ; j--)
 			{
-				*(l_pLine++) =  ui8Red;
-				*(l_pLine++) =  ui8Green;
-				*(l_pLine++) =  ui8Blue;
+				guchar * l_pLine=l_pLineBase;
+				for(uint32 i=ui32Width ; i>0 ; i--)
+				{
+					*(l_pLine++) =  ui8Red;
+					*(l_pLine++) =  ui8Green;
+					*(l_pLine++) =  ui8Blue;
+				}
+				l_pLineBase+=ui32RowStride;
 			}
-			l_pLineBase+=ui32RowStride;
 		}
 	}
 };

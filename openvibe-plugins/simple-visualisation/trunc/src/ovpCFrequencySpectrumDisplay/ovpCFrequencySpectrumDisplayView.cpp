@@ -1,7 +1,6 @@
 #include "ovpCFrequencySpectrumDisplayView.h"
 
 #include <iostream>
-
 #include <sstream>
 
 using namespace OpenViBE;
@@ -187,9 +186,8 @@ namespace OpenViBEPlugins
 			m_pGladeInterface=NULL;
 		}
 
-		void CFrequencySpectrumDisplayView::init()
+		void CFrequencySpectrumDisplayView::init(void)
 		{
-
 			OpenViBE::uint32 l_ui32ChannelCount = static_cast<uint32>(m_pBufferDatabase->m_pDimmensionSizes[0]);
 			vector<string>& l_oChannelName = m_pBufferDatabase->m_pDimmesionLabels[0];
 
