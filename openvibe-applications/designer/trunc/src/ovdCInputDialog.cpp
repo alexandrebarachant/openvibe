@@ -13,8 +13,8 @@ CInputDialog::CInputDialog(const char* sGladeXML, fpButtonCB fpOKButtonCB, void*
 	//retrieve input dialog
 	::GladeXML* l_pInputDialogInterface = glade_xml_new(sGladeXML, "input_dialog", NULL);
 	m_pInputDialog = GTK_DIALOG(glade_xml_get_widget(l_pInputDialogInterface, "input_dialog"));
-	m_pInputDialogLabel = GTK_LABEL(glade_xml_get_widget(l_pInputDialogInterface, "sLabel"));
-	m_pInputDialogEntry = GTK_ENTRY(glade_xml_get_widget(l_pInputDialogInterface, "sEntry"));
+	m_pInputDialogLabel = GTK_LABEL(glade_xml_get_widget(l_pInputDialogInterface, "label"));
+	m_pInputDialogEntry = GTK_ENTRY(glade_xml_get_widget(l_pInputDialogInterface, "entry"));
 	m_pInputDialogOKButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "button_ok"));
 	m_pInputDialogCancelButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "button_cancel"));
 
