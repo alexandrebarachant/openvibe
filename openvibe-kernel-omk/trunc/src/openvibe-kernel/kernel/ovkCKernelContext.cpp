@@ -6,6 +6,7 @@
 #include "plugins/ovkCPluginManager.h"
 #include "scenario/ovkCScenarioManager.h"
 #include "log/ovkCLogManager.h"
+#include "visualisation/ovkCVisualisationManager.h"
 
 #include <string>
 #include <algorithm>
@@ -23,6 +24,7 @@ CKernelContext::CKernelContext(IKernel& rKernel)
 	,m_pScenarioManager(NULL)
 	,m_pTypeManager(NULL)
 	,m_pLogManager(NULL)
+	,m_pVisualisationManager(NULL)
 {
 	m_pKernelObjectFactory=new CKernelObjectFactory(*this);
 
@@ -38,16 +40,19 @@ CKernelContext::CKernelContext(IKernel& rKernel)
 
 	m_pScenarioManager=new CScenarioManager(*this);
 
+	m_pVisualisationManager=new CVisualisationManager(*this);
+
 	m_pPluginManager=new CPluginManager(*this);
 }
 
 CKernelContext::~CKernelContext(void)
 {
-	delete m_pLogManager;
-	delete m_pTypeManager;
-	delete m_pScenarioManager;
 	delete m_pPluginManager;
+	delete m_pVisualisationManager;
+	delete m_pScenarioManager;
+	delete m_pTypeManager;
 	delete m_pPlayerManager;
+	delete m_pLogManager;
 	delete m_pKernelObjectFactory;
 }
 
@@ -79,4 +84,9 @@ ITypeManager& CKernelContext::getTypeManager(void) const
 ILogManager& CKernelContext::getLogManager(void) const
 {
 	return *m_pLogManager;
+}
+
+IVisualisationManager& CKernelContext::getVisualisationManager(void) const
+{
+	return *m_pVisualisationManager;
 }

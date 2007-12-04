@@ -98,7 +98,7 @@ boolean CBoxAlgorithmExperimentInformationOutputWriterPart::writeHeaderStart(EBM
 	   }
 	   if(m_ui32SubjectSex!=_NoValueI_)
 	   {
-	    m_oWriterHelper.openChild(OVTK_NodeId_Header_ExperimentInformation_Subject_Sex);
+	    m_oWriterHelper.openChild(OVTK_NodeId_Header_ExperimentInformation_Subject_Gender);
 	     m_oWriterHelper.setUIntegerAsChildData(m_ui32SubjectSex);
 	    m_oWriterHelper.closeChild();
 	   }

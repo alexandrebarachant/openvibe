@@ -4,6 +4,8 @@
 #include "ovdCSettingEditor.h"
 #include "ovdCInterfacedObject.h"
 #include "ovdTAttributeHandler.h"
+#include "ovdCDesignerVisualisation.h"
+#include "ovdCPlayerVisualisation.h"
 
 #include <vector>
 #include <iostream>
@@ -83,6 +85,9 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		,m_rScenario(rScenario)
 		,m_pPlayer(NULL)
 		,m_rNotebook(rNotebook)
+		,m_pVisualisationTree(NULL)
+		,m_pDesignerVisualisation(NULL)
+		,m_pPlayerVisualisation(NULL)
 		,m_pGladeDummyScenarioNotebookTitle(NULL)
 		,m_pGladeDummyScenarioNotebookClient(NULL)
 		,m_pGladeTooltip(NULL)
@@ -124,11 +129,53 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "button_release_event", G_CALLBACK(scenario_drawing_area_button_released_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-press-event", G_CALLBACK(scenario_drawing_area_key_press_event_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-release-event", G_CALLBACK(scenario_drawing_area_key_release_event_cb), this);
+		//retrieve visualisation tree
+		m_oVisualisationTreeIdentifier = m_rScenario.getVisualisationTreeIdentifier();
+		m_pVisualisationTree = &m_rKernel.getContext()->getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
+
+		//FIXME : read this info from scenario file!
+		//fill tree in case scenario already contains visualisation widgets
+		CIdentifier l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
+
+		while(l_oBoxIdentifier != OV_UndefinedIdentifier)
+		{
+			const IBox* l_pBox = m_rScenario.getBoxDetails(l_oBoxIdentifier);
+			CIdentifier l_oIdentifier = l_pBox->getAlgorithmClassIdentifier();
+			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
+
+			if(l_pPOD->hasFunctionality(OpenViBE::Plugins::PluginFunctionality_Visualization))
+			{
+				CIdentifier l_oIdentifier;
+				m_pVisualisationTree->addVisualisationWidget(
+					l_oIdentifier,
+					l_pBox->getName(),
+					EVisualisationWidget_VisualisationBox,
+					OV_UndefinedIdentifier,
+					0,
+					l_pBox->getIdentifier(),
+					0);
+			}
+
+			l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+		}
+
+		//create window manager
+		m_pDesignerVisualisation = new CDesignerVisualisation(*m_rKernel.getContext(), *m_pVisualisationTree);
+		m_pDesignerVisualisation->init(string(sGUIFilename));
 	}
 
 	CInterfacedScenario::~CInterfacedScenario(void)
 	{
-		if(m_pStencilBuffer) g_object_unref(m_pStencilBuffer);
+		//delete window manager
+		if(m_pDesignerVisualisation)
+		{
+			delete m_pDesignerVisualisation;
+		}
+
+		if(m_pStencilBuffer)
+		{
+			g_object_unref(m_pStencilBuffer);
+		}
 
 		g_object_unref(m_pGladeDummyScenarioNotebookTitle);
 		g_object_unref(m_pGladeDummyScenarioNotebookClient);
@@ -572,6 +619,23 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		if(l_oBoxAlgorithmClassIdentifier!=OV_UndefinedIdentifier)
 		{
 			m_rScenario.addBox(l_oBoxAlgorithmClassIdentifier, l_oBoxIdentifier);
+
+			IBox* l_pBox = m_rScenario.getBoxDetails(l_oBoxIdentifier);
+			CIdentifier l_oId = l_pBox->getAlgorithmClassIdentifier();
+			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oId);
+
+			//if a visualisation box was dropped, add it in window manager
+			if(l_pPOD->hasFunctionality(OpenViBE::Plugins::PluginFunctionality_Visualization))
+			{
+				//generate a unique name so that it can be identified unambiguously
+				CString l_oBoxName;
+				generateDisplayPluginName(l_pBox, l_oBoxName);
+				l_pBox->setName(l_oBoxName);
+
+				//let window manager know about new box
+				m_pDesignerVisualisation->onVisualisationBoxAdded(l_pBox);
+			}
+
 			CBoxProxy l_oBoxProxy(m_rScenario, l_oBoxIdentifier);
 			l_oBoxProxy.setCenter(iX-m_i32ViewOffsetX, iY-m_i32ViewOffsetY);
 			m_bHasBeenModified=true;
@@ -956,6 +1020,10 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				{
 					if(m_rScenario.isBox(i->first))
 					{
+						//remove visualisation box from window manager
+						m_pDesignerVisualisation->onVisualisationBoxRemoved(i->first);
+
+						//remove box from scenario
 						m_rScenario.removeBox(i->first);
 					}
 					else
@@ -987,3 +1055,57 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		// ...
 	}
 
+	void CInterfacedScenario::createPlayerVisualisation(void)
+	{
+		//hide window manager
+		m_pDesignerVisualisation->hide();
+
+		if(m_pPlayerVisualisation == NULL)
+			m_pPlayerVisualisation = new CPlayerVisualisation(*m_rKernel.getContext(), m_rScenario, *m_pVisualisationTree);
+
+		//initialize and show windows
+		m_pPlayerVisualisation->init();
+		m_pPlayerVisualisation->showTopLevelWindows();
+		m_pPlayerVisualisation->realize3DWidgets();
+	}
+
+	void CInterfacedScenario::releasePlayerVisualisation(void)
+	{
+		if(m_pPlayerVisualisation != NULL)
+		{
+			m_pPlayerVisualisation->hideTopLevelWindows();
+			//m_pPlayerVisualisation->release();
+			delete m_pPlayerVisualisation;
+			m_pPlayerVisualisation = NULL;
+		}
+
+		m_pDesignerVisualisation->reset();
+	}
+
+	void CInterfacedScenario::generateDisplayPluginName(IBox* pDisplayBox, CString& rDisplayBoxName)
+	{
+		rDisplayBoxName = pDisplayBox->getName();
+		char buf[10];
+		int num = 2;
+
+		CIdentifier l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
+
+		//for all boxes contained in scenario
+		while(l_oBoxIdentifier!=OV_UndefinedIdentifier)
+		{
+			const IBox* l_pBox2=m_rScenario.getBoxDetails(l_oBoxIdentifier);
+
+			if(l_pBox2 != NULL && l_pBox2 != pDisplayBox)
+			{
+				//a box already has the same name
+				if(l_pBox2->getName() == rDisplayBoxName)
+				{
+					//generate a new name and ensure it is not used yet
+					sprintf(buf, " %d", num++);
+					rDisplayBoxName = pDisplayBox->getName() + CString(buf);
+					l_oBoxIdentifier = OV_UndefinedIdentifier;
+				}
+			}
+			l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+		}
+	}

@@ -51,6 +51,11 @@
 #define OV_ClassId_Kernel_Scenario_ScenarioExporterContext OpenViBE::CIdentifier(0x583A5B71, 0x2C06662D)
 #define OV_ClassId_Kernel_Scenario_ScenarioManager         OpenViBE::CIdentifier(0x67F31911, 0x3FA45C02)
 
+#define OV_ClassId_Kernel_Visualisation_VisualisationContext OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
+#define OV_ClassId_Kernel_Visualisation_VisualisationManager OpenViBE::CIdentifier(0x021E3EFD, 0x428C318A)
+#define OV_ClassId_Kernel_Visualisation_VisualisationWidget OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
+#define OV_ClassId_Kernel_Visualisation_VisualisationTree  OpenViBE::CIdentifier(0x39F81801, 0x2491BF81)
+
 //___________________________________________________________________//
 //                                                                   //
 // Plugin Class Identifiers                                          //
@@ -93,10 +98,7 @@
 #define     OV_TypeId_Spectrum                                       OpenViBE::CIdentifier(0x1F261C0A, 0x593BF6BD)
 
 /*
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x4331378D, 0x5A1E0A69)
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x691473DE, 0x2EE37ABD)
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x39F81801, 0x2491BF81)
-#define OV_ClassId_                                        OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
+#define OV_ClassId_																				 OpenViBE::CIdentifier(0x691473DE, 0x2EE37ABD)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x652D2F0B, 0x5D5E0714)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x684245E9, 0x2ACDB82F)
 #define OV_ClassId_                                        OpenViBE::CIdentifier(0x28CE73E4, 0x533A0620)

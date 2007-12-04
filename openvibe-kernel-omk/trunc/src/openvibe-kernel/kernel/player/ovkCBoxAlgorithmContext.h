@@ -6,6 +6,7 @@
 #include "ovkCStaticBoxContext.h"
 #include "ovkCDynamicBoxContext.h"
 #include "ovkCPlayerContext.h"
+#include "../visualisation/ovkCVisualisationContext.h"
 
 class PsSimulatedBox;
 
@@ -22,6 +23,8 @@ namespace OpenViBE
 			virtual OpenViBE::Kernel::IBox* getStaticBoxContext(void);
 			virtual OpenViBE::Kernel::IBoxIO* getDynamicBoxContext(void);
 			virtual OpenViBE::Kernel::IPlayerContext* getPlayerContext(void);
+			virtual OpenViBE::Kernel::IVisualisationContext* getVisualisationContext(void);
+
 			virtual OpenViBE::boolean markAlgorithmAsReadyToProcess(void);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxAlgorithmContext>, OVK_ClassId_Kernel_Player_BoxAlgorithmContext)
@@ -33,6 +36,7 @@ namespace OpenViBE
 			OpenViBE::Kernel::CStaticBoxContext m_oStaticBoxContext;
 			OpenViBE::Kernel::CDynamicBoxContext m_oDynamicBoxContext;
 			OpenViBE::Kernel::CPlayerContext m_oPlayerContext;
+			OpenViBE::Kernel::CVisualisationContext m_oVisualisationContext;
 			OpenViBE::boolean m_bReadyToProcess;
 		};
 	};

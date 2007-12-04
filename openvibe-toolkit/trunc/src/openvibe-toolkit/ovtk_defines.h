@@ -77,6 +77,11 @@
 #define OVTK_Value_Sex_Female                                         2
 #define OVTK_Value_Sex_NotSpecified                                   9
 
+#define OVTK_Value_Gender_Unknown                                     0
+#define OVTK_Value_Gender_Male                                        1
+#define OVTK_Value_Gender_Female                                      2
+#define OVTK_Value_Gender_NotSpecified                                9
+
 //___________________________________________________________________//
 //                                                                   //
 // OpenViBE toolkit stimulation identifiers                          //
@@ -251,7 +256,7 @@
  *   OVTK_NodeId_Acquisition_AcquisitionInformation
  *     OVTK_NodeId_Acquisition_ExperimentId (integer)
  *     OVTK_NodeId_Acquisition_SubjectAge (integer)
- *     OVTK_NodeId_Acquisition_SubjectSex (integer)
+ *     OVTK_NodeId_Acquisition_SubjectGender (integer)
  *   OVTK_NodeId_Acquisition_ChannelCount (integer)
  *   OVTK_NodeId_Acquisition_SamplingFrequency (integer)
  *   OVTK_NodeId_Acquisition_GainFactors
@@ -287,7 +292,8 @@
 #define OVTK_NodeId_Acquisition_AcquisitionInformation                         EBML::CIdentifier(0x00000000, 0x00004240)
 #define OVTK_NodeId_Acquisition_ExperimentId                                   EBML::CIdentifier(0x00000000, 0x00004241)
 #define OVTK_NodeId_Acquisition_SubjectAge                                     EBML::CIdentifier(0x00000000, 0x00004242)
-#define OVTK_NodeId_Acquisition_SubjectSex                                     EBML::CIdentifier(0x00000000, 0x00004243)
+#define OVTK_NodeId_Acquisition_SubjectSex                                     EBML::CIdentifier(0x00000000, 0x00004243) /* for retro compat */
+#define OVTK_NodeId_Acquisition_SubjectGender                                  EBML::CIdentifier(0x00000000, 0x00004243)
 #define OVTK_NodeId_Acquisition_ChannelCount                                   EBML::CIdentifier(0x00000000, 0x00004244)
 #define OVTK_NodeId_Acquisition_SamplingFrequency                              EBML::CIdentifier(0x00000000, 0x00004245)
 #define OVTK_NodeId_Acquisition_ChannelNames                                   EBML::CIdentifier(0x00000000, 0x00004246)
@@ -447,7 +453,7 @@
  *       OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier (integer)
  *       OVTK_NodeId_Header_ExperimentInformation_Subject_Name (string)
  *       OVTK_NodeId_Header_ExperimentInformation_Subject_Age (integer)
- *       OVTK_NodeId_Header_ExperimentInformation_Subject_Sex (integer)
+ *       OVTK_NodeId_Header_ExperimentInformation_Subject_Gender (integer)
  *     OVTK_NodeId_Header_ExperimentInformation_Context
  *       OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier (integer)
  *       OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName (string)
@@ -465,7 +471,8 @@
 #define OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier            EBML::CIdentifier(0x00D62974, 0x473D4AA5)
 #define OVTK_NodeId_Header_ExperimentInformation_Subject_Name                  EBML::CIdentifier(0x0041FD0A, 0x6BCD9A99)
 #define OVTK_NodeId_Header_ExperimentInformation_Subject_Age                   EBML::CIdentifier(0x00DF7DD9, 0x33336C51)
-#define OVTK_NodeId_Header_ExperimentInformation_Subject_Sex                   EBML::CIdentifier(0x0069BB84, 0x3FC8E149)
+#define OVTK_NodeId_Header_ExperimentInformation_Subject_Sex                   EBML::CIdentifier(0x0069BB84, 0x3FC8E149) /* for retro compat */
+#define OVTK_NodeId_Header_ExperimentInformation_Subject_Gender                EBML::CIdentifier(0x0069BB84, 0x3FC8E149)
 #define OVTK_NodeId_Header_ExperimentInformation_Context                       EBML::CIdentifier(0x0018C291, 0x7985DFDD)
 #define OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier  EBML::CIdentifier(0x003F11B9, 0x26D76D9C)
 #define OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName        EBML::CIdentifier(0x00EB1F23, 0x51C23B83)

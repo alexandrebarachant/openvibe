@@ -55,6 +55,11 @@
 #define OVK_ClassId_Kernel_Scenario_ScenarioExporterContext  OpenViBE::CIdentifier(0x78606B83, 0x5EB11EC9)
 #define OVK_ClassId_Kernel_Scenario_ScenarioImporterContext  OpenViBE::CIdentifier(0x17DC0F51, 0x795A3A7E)
 
+#define OVK_ClassId_Kernel_Visualisation_VisualisationContext OpenViBE::CIdentifier(0x2C416B59, 0x312B2571)
+#define OVK_ClassId_Kernel_Visualisation_VisualisationManager OpenViBE::CIdentifier(0xDEF8F7C4, 0x3501D90B)
+#define OVK_ClassId_Kernel_Visualisation_VisualisationWidget  OpenViBE::CIdentifier(0x08E926D6, 0xEFF6BB75)
+#define OVK_ClassId_Kernel_Visualisation_VisualisationTree    OpenViBE::CIdentifier(0xE02A7E73, 0xB2927EC4)
+
 //___________________________________________________________________//
 //                                                                   //
 // Tools Class Identifiers                                           //
@@ -65,28 +70,6 @@
 #define OVK_ClassId_Tools_KernelObjectFactoryHelper          OpenViBE::CIdentifier(0x6059EA7C, 0x081FDAB5)
 #define OVK_ClassId_Tools_BoxProxy                           OpenViBE::CIdentifier(0x4DFDFCE4, 0x49EF078E)
 #define OVK_ClassId_Tools_BoxIOProxy                         OpenViBE::CIdentifier(0x25476613, 0x331633DA)
-
-//___________________________________________________________________//
-//                                                                   //
-// Unused Class Identifiers                                          //
-//___________________________________________________________________//
-//                                                                   //
-
-/*
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x6DF62060, 0x65A40A62)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x475E144F, 0x74BDB5BE)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x5A9CB52C, 0x7F02D159)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x52DA0F06, 0x45155D4F)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x4E79D376, 0x151D2473)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x37B24229, 0x6A053984)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x4AA96293, 0x2B76B89C)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x1C4D8B4C, 0x67CFF22B)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x1C1D34A4, 0x2EAB9FA1)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x2F59C42E, 0x54166A96)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x6500E672, 0x7520EB07)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x665A47DC, 0x650630EE)
-#define OVK_ClassId_                                         OpenViBE::CIdentifier(0x270F4C85, 0x38614FD7)
-*/
 
 //___________________________________________________________________//
 //                                                                   //

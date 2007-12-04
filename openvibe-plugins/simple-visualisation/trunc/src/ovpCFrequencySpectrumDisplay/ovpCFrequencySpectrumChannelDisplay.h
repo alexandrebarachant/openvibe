@@ -17,43 +17,47 @@ namespace OpenViBEPlugins
 		 * */
 		class CFrequencySpectrumChannelDisplay
 		{
-				GtkWidget * m_pDisplay;
+		public:
 
-				GdkGC* m_pGraphicsContext;
+			CFrequencySpectrumChannelDisplay(OpenViBE::uint32 ui32Channel, CBufferDatabase& pDatabase);
+			~CFrequencySpectrumChannelDisplay();
 
-				CBufferDatabase * m_pDatabase;
+			//! returns the widget, so it can be added to the main interface
+			::GtkWidget * getWidget(void) const { return m_pDisplay; }
 
-				OpenViBE::uint32 m_ui32Channel;
+			//! toggles (show/hide)
+			void toggle(OpenViBE::boolean bActive);
 
-				OpenViBE::float64 m_f64MinimumValue;
-				OpenViBE::float64 m_f64MaximumValue;
-				OpenViBE::float64 m_f64Attenuation;
+			//! draws the spectrum
+			void redraw();
 
-				guchar * m_pRGBBuffer;
-				OpenViBE::uint32 m_ui32RGBBufferWidth;
-				OpenViBE::uint32 m_ui32RGBBufferHeight;
-				OpenViBE::uint32 m_ui32Rowstride;
+			//! computes the frequency spectrum
+			void update();
 
-				//GdkPixmap * m_pPixmap;
-			public:
-				CFrequencySpectrumChannelDisplay(OpenViBE::uint32 ui32Channel, CBufferDatabase& pDatabase);
-				~CFrequencySpectrumChannelDisplay();
+			void resizeRGBBuffer(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height);
 
-				//! returns the widget, so it can be added to the main interface
-				GtkWidget * getWidget() const { return m_pDisplay; }
+			void setMinMaxAttenuation(OpenViBE::float64 f64Attenuation) { m_f64Attenuation=f64Attenuation; }
 
-				//! toggles (show/hide)
-				void toggle(OpenViBE::boolean bActive);
+		protected:
 
-				//! draws the spectrum
-				void redraw();
+			::GtkWidget* m_pDisplay;
 
-				//! computes the frequency spectrum
-				void update();
+			::GdkGC* m_pGraphicsContext;
 
-				void resizeRGBBuffer(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height);
+			CBufferDatabase * m_pDatabase;
 
-				void setMinMaxAttenuation(OpenViBE::float64 f64Attenuation) { m_f64Attenuation=f64Attenuation; }
+			OpenViBE::uint32 m_ui32Channel;
+
+			OpenViBE::float64 m_f64MinimumValue;
+			OpenViBE::float64 m_f64MaximumValue;
+			OpenViBE::float64 m_f64Attenuation;
+
+			guchar * m_pRGBBuffer;
+			OpenViBE::uint32 m_ui32RGBBufferWidth;
+			OpenViBE::uint32 m_ui32RGBBufferHeight;
+			OpenViBE::uint32 m_ui32Rowstride;
+
+			//GdkPixmap * m_pPixmap;
 
 		};
 

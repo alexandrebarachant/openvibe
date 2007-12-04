@@ -107,6 +107,16 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean merge(
 				const OpenViBE::Kernel::IScenario& rScenario)=0;
+			/**
+			 * \brief Sets identifier of IVisualisationTree object corresponding to this scenario
+			 * \param rVisualisationTreeIdentifier [in] : identifier to be stored
+			 */
+			virtual OpenViBE::boolean setVisualisationTreeIdentifier(
+				const OpenViBE::CIdentifier& rVisualisationTreeIdentifier)=0;
+			/**
+			 * \brief Returns identifier of IVisualisationTree object corresponding to this scenario
+			 */
+			virtual OpenViBE::CIdentifier getVisualisationTreeIdentifier(void) const=0;
 
 			//@{
 			/** \name Box management */

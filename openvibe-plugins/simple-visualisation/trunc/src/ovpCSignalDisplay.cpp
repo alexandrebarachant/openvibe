@@ -43,6 +43,12 @@ namespace OpenViBEPlugins
 			m_pSignalDisplayView = new CSignalDisplayView(*m_pBufferDatabase);
 			m_pBufferDatabase->setDrawable(m_pSignalDisplayView);
 
+			//parent visualisation box in visualisation tree
+			::GtkWidget* l_pWidget=NULL;
+			::GtkWidget* l_pToolbarWidget=NULL;
+			dynamic_cast<CSignalDisplayView*>(m_pSignalDisplayView)->getWidgets(l_pWidget, l_pToolbarWidget);
+			getBoxAlgorithmContext()->getVisualisationContext()->setWidgets(l_pWidget, l_pToolbarWidget);
+
 			return true;
 		}
 

@@ -9,6 +9,8 @@
 
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.glade"
 
+#include "ovdCDesignerVisualisation.h"
+#include "ovdCPlayerVisualisation.h"
 #include "ovdCInterfacedObject.h"
 #include "ovdCInterfacedScenario.h"
 
@@ -36,6 +38,7 @@ public:
 		,m_pPluginManager(NULL)
 		,m_pScenarioManager(NULL)
 		,m_pClipboardScenario(NULL)
+		,m_pVisualisationManager(NULL)
 		,m_pGladeInterface(NULL)
 		,m_pMainWindow(NULL)
 		,m_pScenarioNotebook(NULL)
@@ -45,6 +48,7 @@ public:
 	{
 		m_pPluginManager=&m_pKernel->getContext()->getPluginManager();
 		m_pScenarioManager=&m_pKernel->getContext()->getScenarioManager();
+		m_pVisualisationManager=&m_pKernel->getContext()->getVisualisationManager();
 	}
 
 	void init(void)
@@ -78,6 +82,8 @@ public:
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_save_as")),   "clicked",  G_CALLBACK(button_save_scenario_as_cb), this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_close")),     "clicked",  G_CALLBACK(button_close_scenario_cb),   this);
 
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_windowmanager")),   "clicked",  G_CALLBACK(button_show_window_manager_cb), this);
+
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_play")),      "clicked",  G_CALLBACK(play_scenario_cb),           this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_pause")),     "clicked",  G_CALLBACK(pause_scenario_cb),          this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_next")),      "clicked",  G_CALLBACK(next_scenario_cb),           this);
@@ -87,11 +93,6 @@ public:
 
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_title_button_expand")),   "clicked", G_CALLBACK(box_algorithm_title_button_expand_cb),   this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_title_button_collapse")), "clicked", G_CALLBACK(box_algorithm_title_button_collapse_cb), this);
-		// Prepares main notebooks
-		m_pScenarioNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "scenario_notebook"));
-		m_pBoxAlgorithmNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_notebook"));
-		gtk_notebook_remove_page(m_pScenarioNotebook, 0);
-		newScenarioCB();
 
 		// Prepares box algorithm view
 		m_pBoxAlgorithmTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_tree"));
@@ -120,6 +121,12 @@ public:
 		gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnDesc, 512);
 		gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnName);
 		gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnDesc);
+
+		// Prepares main notebooks
+		m_pScenarioNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "scenario_notebook"));
+		m_pBoxAlgorithmNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_notebook"));
+		gtk_notebook_remove_page(m_pScenarioNotebook, 0);
+		newScenarioCB();
 
 		// Prepares drag & drop for box creation
 		gtk_drag_source_set(GTK_WIDGET(m_pBoxAlgorithmTreeView), GDK_BUTTON1_MASK, g_vTargetEntry, sizeof(g_vTargetEntry)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
@@ -413,15 +420,42 @@ public:
 			m_vInterfacedScenario.erase(i);
 		}
 	}
+
+	void showDesignerVisualisationCB()
+	{
+		CInterfacedScenario* l_pCurrentInterfacedScenario = getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario != NULL && l_pCurrentInterfacedScenario->isLocked() == false)
+		{
+			uint32 l_ui32Index=(uint32)gtk_notebook_get_current_page(m_pScenarioNotebook);
+			if(l_ui32Index<m_vInterfacedScenario.size())
+			{
+				if(m_vInterfacedScenario[l_ui32Index]->m_pDesignerVisualisation != NULL)
+					m_vInterfacedScenario[l_ui32Index]->m_pDesignerVisualisation->show();
+			}
+		}
+	}
+
 	void playScenarioCB(void)
 	{
 		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "playScenarioCB\n";
 
+		//retrieve current scenario
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 		if(!l_pCurrentInterfacedScenario)
 		{
 			return;
 		}
+
+		//return if scenario is playing
+		if(l_pCurrentInterfacedScenario->isLocked())
+		{
+			return;
+		}
+
+		//generate player windows
+		l_pCurrentInterfacedScenario->createPlayerVisualisation();
+
+		//create player if needed
 		if(!l_pCurrentInterfacedScenario->m_pPlayer)
 		{
 			m_pKernel->getContext()->getPlayerManager().createPlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
@@ -432,6 +466,7 @@ public:
 			l_pCurrentInterfacedScenario->redraw();
 		}
 
+		//set up idle function
 		g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
 		g_idle_add(idle_scenario_step, l_pCurrentInterfacedScenario->m_pPlayer);
 	}
@@ -481,6 +516,9 @@ public:
 		}
 		if(l_pCurrentInterfacedScenario->m_pPlayer)
 		{
+			//destroy player windows
+			l_pCurrentInterfacedScenario->releasePlayerVisualisation();
+
 			g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
 			m_pKernel->getContext()->getPlayerManager().releasePlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
 			l_pCurrentInterfacedScenario->m_oPlayerIdentifier=OV_UndefinedIdentifier;
@@ -581,6 +619,11 @@ public:
 		static_cast<CApplication*>(pUserData)->closeScenarioCB();
 	}
 
+	static void button_show_window_manager_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->showDesignerVisualisationCB();
+	}
+
 	static void play_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->playScenarioCB();
@@ -624,6 +667,7 @@ public:
 	IPluginManager* m_pPluginManager;
 	IScenarioManager* m_pScenarioManager;
 	IScenario* m_pClipboardScenario;
+	IVisualisationManager* m_pVisualisationManager;
 
 	::GladeXML* m_pGladeInterface;
 	::GtkWidget* m_pMainWindow;
@@ -836,7 +880,7 @@ int main(int argc, char ** argv)
 	{
 		cout<<"[  INF  ] Created kernel loader"<<endl;
 		CString m_sError;
-#ifdef WIN32
+#ifdef OVD_OS_Windows
 		if(!l_pKernelLoader->load("../lib/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
 		if(!l_pKernelLoader->load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
@@ -881,6 +925,10 @@ int main(int argc, char ** argv)
 					l_rLogManager.activate(LogLevel_Error, true);
 					l_rLogManager.activate(LogLevel_Fatal, true);
 
+// For Mister Vincent !
+#ifdef OVD_OS_Windows
+					_asm int 3;
+#endif
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-Plugins-*.so");
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-*.so");

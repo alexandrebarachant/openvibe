@@ -77,7 +77,7 @@ EBML::boolean TBoxAlgorithmExperimentInformationInputReaderCallback<IBaseInterfa
 	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier)           { return false; }
 	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Subject_Name)                 { return false; }
 	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Subject_Age)                  { return false; }
-	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Subject_Sex)                  { return false; }
+	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Subject_Gender)               { return false; }
 	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Context)                      { return true; }
 	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier) { return false; }
 	else if(rIdentifier==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName)       { return false; }
@@ -101,7 +101,7 @@ void TBoxAlgorithmExperimentInformationInputReaderCallback<IBaseInterface>::open
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Name)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Age)
-	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Sex)
+	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Gender)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName)
@@ -128,7 +128,7 @@ void TBoxAlgorithmExperimentInformationInputReaderCallback<IBaseInterface>::proc
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Name)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Age)
-	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Sex)
+	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Gender)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName)
@@ -141,7 +141,7 @@ void TBoxAlgorithmExperimentInformationInputReaderCallback<IBaseInterface>::proc
 		if(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier)           m_pCallback->setValue(IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectIdentifier,    m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
 		if(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Name)                 m_pCallback->setValue(IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectName,          m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize));
 		if(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Age)                  m_pCallback->setValue(IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectAge,           m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
-		if(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Sex)                  m_pCallback->setValue(IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectSex,           m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
+		if(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Gender)               m_pCallback->setValue(IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectSex,           m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
 
 		if(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier) m_pCallback->setValue(IBoxAlgorithmExperimentInformationInputReaderCallback::Value_LaboratoryIdentifier, m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize));
 		if(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName)       m_pCallback->setValue(IBoxAlgorithmExperimentInformationInputReaderCallback::Value_LaboratoryName,       m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize));
@@ -167,7 +167,7 @@ void TBoxAlgorithmExperimentInformationInputReaderCallback<IBaseInterface>::clos
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Identifier)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Name)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Age)
-	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Sex)
+	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Subject_Gender)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryIdentifier)
 	 ||(l_rTop==OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName)

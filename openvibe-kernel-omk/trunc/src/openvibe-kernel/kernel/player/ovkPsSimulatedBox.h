@@ -35,7 +35,7 @@ public:
 		PsController& ctrl,
 		const PsObjectDescriptor& objectDescriptor,
 		const OpenViBE::Kernel::IKernelContext& rKernelContext,
-		const OpenViBE::Kernel::IScenario& IScenraio);
+		const OpenViBE::Kernel::IScenario& rScenario);
 	//@}
 
 protected:
@@ -56,7 +56,8 @@ protected:
 
 public:
 
-	virtual OpenViBE::CString getOVName() const;
+	virtual OpenViBE::CString getOVName(void) const;
+	virtual const OpenViBE::Kernel::IScenario& getScenario(void) const;
 
 	virtual OpenViBE::uint32 getInputChunkCount(
 		const OpenViBE::uint32 ui32InputIndex) const;

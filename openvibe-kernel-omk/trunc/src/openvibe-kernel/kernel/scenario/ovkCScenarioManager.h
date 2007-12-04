@@ -1,5 +1,5 @@
-#ifndef __OpenViBEKernel_Kernel_Scenario_IScenarioManager_H__
-#define __OpenViBEKernel_Kernel_Scenario_IScenarioManager_H__
+#ifndef __OpenViBEKernel_Kernel_Scenario_CScenarioManager_H__
+#define __OpenViBEKernel_Kernel_Scenario_CScenarioManager_H__
 
 #include "../ovkTKernelObject.h"
 
@@ -38,4 +38,4 @@ namespace OpenViBE
 	};
 };
 
-#endif // __OpenViBEKernel_Kernel_Scenario_IScenarioManager_H__
+#endif // __OpenViBEKernel_Kernel_Scenario_CScenarioManager_H__

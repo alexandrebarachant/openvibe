@@ -19,6 +19,7 @@ INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindOpenViBEModuleSocket")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
+INCLUDE("FindThirdPartyGlade")
 INCLUDE("FindThirdPartyOpenMASK")
 
 # ---------------------------------

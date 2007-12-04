@@ -17,112 +17,108 @@
 #include <vector>
 #include <string>
 
-
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		class CBufferDatabase;
-		class CBottomTimeRuler;	
-
 		/**
 		* This class contains everything necessary to setup a GTK window and display
 		* a signal thanks to a CBufferDatabase's information.
 		*/
 		class CSignalDisplayView : virtual public CSignalDisplayDrawable
 		{
+		public:
 
-			public:
-				
-				//! The Glade handler used to create the interface
-				::GladeXML* m_pGladeInterface;
-				
-				//! The main window
-				GtkWidget * m_pMainWindow;
-				
-				//! The table containing the CChannelDisplays
-				GtkWidget * m_pSignalDisplayTable;
+			CSignalDisplayView(
+				CBufferDatabase& rBufferDatabase);
 
-				//! Array of the channel's labels
-				std::vector<GtkWidget*> m_oChannelLabel;
+			virtual ~CSignalDisplayView(void);
+			/**
+			 * Returns pointers to plugin main widget and toolbar widget
+			 */
+			void getWidgets(GtkWidget*& pWidget, GtkWidget*& pToolbarWidget);
+			/**
+			 * Initializes the window.
+			 */
+			virtual void init(void);
+			/**
+			 * Invalidates the window's content and tells it to redraw itself.
+			 */
+			virtual void redraw(void);
+			/**
+			* Used to hide/show the rulers on the left of the signal displays.
+			* \param bActive Show the ruler if true.
+			*/
+			void toggleLeftRulers(
+				OpenViBE::boolean bActive);
+			/**
+			 * Used to hide/show the rulers on the bottom of the signal displays.
+			 * \param bActive Show the ruler if true.
+			 */
+			void toggleBottomRulers(
+				OpenViBE::boolean bActive);
+			/**
+			 * Hides a whole channel's display.
+			 * \param ui64ChannelIndex The index of the channel to hide.
+			 */
+			void hideChannel(
+				OpenViBE::uint32 ui32ChannelIndex);
+			/**
+			 * Shows a channel's display.
+			 * \param ui64ChannelIndex The index of the channel to show.
+			 */
+			void showChannel(
+				OpenViBE::uint32 ui32ChannelIndex);
+			void changeMultiView(void);
+			void updateMainTableStatus(void);
+			void activateToolbarButtons(OpenViBE::boolean bActive);
 
-				//! Array of CChannelDisplays (one per channel, displays the corresponding channel)
-				std::vector<GtkWidget*> m_oChannelDisplay;
-				
-				//! Pointers to the cursor mode buttons' widgets
-				GtkToggleToolButton * m_pCursorMode[4];
-				//! The current cursor mode
-				OpenViBEPlugins::SimpleVisualisation::EDisplayMode m_eCurrentCursorMode;
+		public:
 
-				//! The cursors for the different cursor mode
-				GdkCursor * m_pCursor[5];
+			//! The Glade handler used to create the interface
+			::GladeXML* m_pGladeInterface;
 
-				//! The database that contains the information to use to draw the signals
-				CBufferDatabase * m_pBufferDatabase;
+			//! The main window
+			GtkWidget * m_pMainWindow;
 
-				//! vector of gdk points. Used to draw the signals.
-				std::vector<GdkPoint> m_pPoints;
+			//! The table containing the CChannelDisplays
+			GtkWidget * m_pSignalDisplayTable;
 
-				//! vector of raw points. Stores the points' coordinates before cropping.
-				std::vector<CChannelDisplayPoint> m_pRawPoints;
-				
-				//! Vector of pointers to the select channels dialog's check buttons
-				std::vector<GtkWidget *> m_vChannelsCheckButtons;
-				//! Vector of indexes of the channels to display
-				std::vector<OpenViBE::uint32> m_vSelectedChannels;
+			//! Array of the channel's labels
+			std::vector<GtkWidget*> m_oChannelLabel;
 
-				OpenViBE::boolean m_bMultiViewInitialized;
-				std::vector<GtkWidget *> m_vMultiViewChannelsCheckButtons;
-				std::vector<OpenViBE::uint32> m_vMultiViewSelectedChannels;
-				
-				CBottomTimeRuler * m_pBottomRuler;
-			public: 
-				CSignalDisplayView(CBufferDatabase& pBufferDatabase);
-				virtual ~CSignalDisplayView();
-				
-				/**
-				 * Initializes the window.
-				 */
-				virtual void init();
-				
-				/**
-				 * Invalidates the window's content and tells it to redraw itself.
-				 */
-				virtual void redraw();
+			//! Array of CChannelDisplays (one per channel, displays the corresponding channel)
+			std::vector<GtkWidget*> m_oChannelDisplay;
 
-				/**
-				* Used to hide/show the rulers on the left of the signal displays.
-				* \param bActive Show the ruler if true.
-				*/
-				void toggleLeftRulers(OpenViBE::boolean bActive);
-				
-				/**
-				 * Used to hide/show the rulers on the bottom of the signal displays.
-				 * \param bActive Show the ruler if true.
-				 */
-				void toggleBottomRulers(OpenViBE::boolean bActive);
+			//! Pointers to the cursor mode buttons' widgets
+			GtkToggleToolButton * m_pCursorMode[4];
+			//! The current cursor mode
+			OpenViBEPlugins::SimpleVisualisation::EDisplayMode m_eCurrentCursorMode;
 
-				/**
-				 * Hides a whole channel's display.
-				 * \param ui64ChannelIndex The index of the channel to hide.
-				 */
-				void hideChannel(OpenViBE::uint32 ui32ChannelIndex);
-				
-				/**
-				 * Shows a channel's display.
-				 * \param ui64ChannelIndex The index of the channel to show.
-				 */
-				void showChannel(OpenViBE::uint32 ui32ChannelIndex);
+			//! The cursors for the different cursor mode
+			GdkCursor * m_pCursor[5];
 
-				void changeMultiView();
-				
-				void updateMainTableStatus();
+			//! The database that contains the information to use to draw the signals
+			CBufferDatabase * m_pBufferDatabase;
 
-				void activateToolbarButtons(OpenViBE::boolean bActive);
+			//! vector of gdk points. Used to draw the signals.
+			std::vector<GdkPoint> m_pPoints;
+
+			//! vector of raw points. Stores the points' coordinates before cropping.
+			std::vector<CChannelDisplayPoint> m_pRawPoints;
+
+			//! Vector of pointers to the select channels dialog's check buttons
+			std::vector<GtkWidget *> m_vChannelsCheckButtons;
+			//! Vector of indexes of the channels to display
+			std::vector<OpenViBE::uint32> m_vSelectedChannels;
+
+			OpenViBE::boolean m_bMultiViewInitialized;
+			std::vector<GtkWidget *> m_vMultiViewChannelsCheckButtons;
+			std::vector<OpenViBE::uint32> m_vMultiViewSelectedChannels;
+
+			CBottomTimeRuler * m_pBottomRuler;
 		};
-		
 	}
-	
 }
 
 #endif

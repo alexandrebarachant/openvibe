@@ -9,6 +9,15 @@ namespace OpenViBE
 	{
 		class IPluginObject;
 
+		enum EPluginFunctionality
+		{
+			PluginFunctionality_Undefined,
+			PluginFunctionality_Visualization,
+			PluginFunctionality_Processing,
+			PluginFunctionality_Acquisition,
+			Num_PluginType
+		};
+
 		// source wikipedia
 		enum ELicenseType
 		{
@@ -167,6 +176,13 @@ namespace OpenViBE
 			 * Default implementation simply returns "unknown".
 			 */
 			virtual OpenViBE::CString getVersion(void) const { return CString("unknown"); }
+			/**
+			 * \brief Tests whether the plugin has a given functionality
+			 * \param ePF [in] : functionality of interest
+			 * \return \e true in case plugin has this functionality.
+			 * \return \e false otherwise.
+			 */
+			virtual OpenViBE::boolean hasFunctionality(EPluginFunctionality ePF) const { return false; }
 			/**
 			 * \brief Gets the licence type for this plugin
 			 * \param ui32Index [in] : the index of the licence this plugin may have

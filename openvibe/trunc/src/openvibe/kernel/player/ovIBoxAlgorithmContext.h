@@ -10,6 +10,7 @@ namespace OpenViBE
 		class IBox;
 		class IBoxIO;
 		class IPlayerContext;
+		class IVisualisationContext;
 
 		/**
 		 * \class IBoxAlgorithmContext
@@ -65,6 +66,17 @@ namespace OpenViBE
 			 *          has finished its work, it could be deprecated.
 			 */
 			virtual OpenViBE::Kernel::IPlayerContext* getPlayerContext(void)=0;
+			/**
+			 * \brief Gets the visualisation context
+			 * \return A pointer on the visualisation context
+			 *
+			 * The returned context can be used by the algorithm to
+			 * access visualisation functionalities.
+			 *
+			 * \warning The algorithm should not use this reference after it
+			 *          has finished its work, it could be deprecated.
+			 */
+			virtual OpenViBE::Kernel::IVisualisationContext* getVisualisationContext(void)=0;
 			/**
 			 * \brief Marks the algorithm as 'ready to process' so its process function is called by the kernel
 			 * \return \e true in case of success.

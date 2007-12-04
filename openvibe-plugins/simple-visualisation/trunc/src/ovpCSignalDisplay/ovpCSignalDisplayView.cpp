@@ -18,11 +18,6 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		//! Callback for the close window button
-		static void gtk_widget_do_nothing(::GtkWidget* pWidget)
-		{
-		}
-
 		//! Callback for the ZoomIn button
 		void zoomInButtonCallback(GtkWidget *widget, gpointer data)
 		{
@@ -275,7 +270,6 @@ namespace OpenViBEPlugins
 
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase)
 			:m_pGladeInterface(NULL)
-			,m_pMainWindow(NULL)
 			,m_eCurrentCursorMode(DisplayMode_Default)
 			,m_pBufferDatabase(&oBufferDatabase)
 			,m_bMultiViewInitialized(false)
@@ -347,28 +341,29 @@ namespace OpenViBEPlugins
 				 "delete_event",
 				 G_CALLBACK(gtk_widget_hide), NULL);
 
+			//hide toolbar on delete event
+			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "Toolbar")),
+				"delete_event", G_CALLBACK(gtk_widget_hide), NULL);
+
+#if 0
 			//does nothing on the main window if the user tries to close it
 			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow")),
 				"delete_event",
 				G_CALLBACK(gtk_widget_do_nothing), NULL);
 
-			// sets duration
-			m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale"))));
-
 			//creates the window
 			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow");
 			gtk_widget_show(m_pMainWindow);
+#endif
 
+			// sets duration
+			m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale"))));
 		}
 
 		CSignalDisplayView::~CSignalDisplayView()
 		{
 			//destroy the window and its children
-			if(m_pMainWindow)
-			{
-				gtk_widget_destroy(m_pMainWindow);
-				m_pMainWindow = NULL;
-			}
+			gtk_widget_destroy(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow"));
 
 			//destroy the rest
 			for(int i=0 ; i<5 ; i++)
@@ -379,6 +374,12 @@ namespace OpenViBEPlugins
 			/* unref the xml file as it's not needed anymore */
 			g_object_unref(G_OBJECT(m_pGladeInterface));
 			m_pGladeInterface=NULL;
+		}
+
+		void CSignalDisplayView::getWidgets(GtkWidget*& pWidget, GtkWidget*& pToolbarWidget)
+		{
+			pWidget=glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrolledWindow");
+			pToolbarWidget=glade_xml_get_widget(m_pGladeInterface, "Toolbar");
 		}
 
 		void CSignalDisplayView::changeMultiView()
@@ -575,8 +576,10 @@ namespace OpenViBEPlugins
 				m_pBottomRuler->linkWidthToWidget(CHANNEL_DISPLAY(m_oChannelDisplay[0])->m_pChannelDisplay->getDisplayWidget());
 			}
 
+#if 0
 			//finally, show the window
 			gtk_widget_show(m_pMainWindow);
+#endif
 
 			//Don't display left ruler (default)
 			toggleLeftRulers(false);

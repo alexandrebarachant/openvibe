@@ -71,7 +71,7 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		gboolean frequencySpectrumSizeAllocateCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data)
+		gboolean frequencySpectrumSizeAllocateCallback(::GtkWidget *widget, ::GtkAllocation *allocation, gpointer data)
 		{
 			CFrequencySpectrumChannelDisplay * l_pDisplay = reinterpret_cast<CFrequencySpectrumChannelDisplay*>(data);
 
@@ -81,7 +81,7 @@ namespace OpenViBEPlugins
 			return FALSE;
 		}
 
-		void CFrequencySpectrumChannelDisplay::resizeRGBBuffer(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height)
+		void CFrequencySpectrumChannelDisplay::resizeRGBBuffer(uint32 ui32Width, uint32 ui32Height)
 		{
 			//first delete the previously allocated buffer
 			delete[] m_pRGBBuffer;
@@ -97,7 +97,7 @@ namespace OpenViBEPlugins
 			//m_pPixmap = gdk_pixmap_new(m_pDisplay->window, ui32Width, ui32Height, -1);
 		}
 
-		gboolean frequencySpectrumChannelDisplayExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+		gboolean frequencySpectrumChannelDisplayExposeEventCallback(::GtkWidget *widget, GdkEventExpose *event, gpointer data)
 		{
 			//redraw the ruler
 			CFrequencySpectrumChannelDisplay * l_pDisplay = reinterpret_cast<CFrequencySpectrumChannelDisplay*>(data);
@@ -119,6 +119,7 @@ namespace OpenViBEPlugins
 		{
 			m_pDisplay = gtk_drawing_area_new();
 			gtk_widget_set_size_request(m_pDisplay, 20, 20);
+			gtk_widget_show(m_pDisplay);
 
 			g_signal_connect_after(G_OBJECT(m_pDisplay), "expose_event", G_CALLBACK(frequencySpectrumChannelDisplayExposeEventCallback), this);
 			g_signal_connect(G_OBJECT(m_pDisplay), "size-allocate", G_CALLBACK(frequencySpectrumSizeAllocateCallback), this);
@@ -133,7 +134,7 @@ namespace OpenViBEPlugins
 		}
 
 		//! toggles (show/hide)
-		void CFrequencySpectrumChannelDisplay::toggle(OpenViBE::boolean bActive)
+		void CFrequencySpectrumChannelDisplay::toggle(boolean bActive)
 		{
 			if(bActive)
 			{

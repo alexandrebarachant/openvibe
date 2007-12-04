@@ -13,6 +13,9 @@
 #include "log/ovkCLogListenerFile.h"
 #include "log/ovkCLogListenerNull.h"
 
+#include "visualisation/ovkCVisualisationWidget.h"
+#include "visualisation/ovkCVisualisationTree.h"
+
 #include <string>
 #include <algorithm>
 
@@ -40,18 +43,21 @@ IObject* Kernel::CKernelObjectFactory::createObject(
 {
 	IObject* l_pResult=NULL;
 
-	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_Box,            l_pResult, Kernel::CBox);
-	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_Link,           l_pResult, Kernel::CLink);
-	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_ProcessingUnit, l_pResult, Kernel::CProcessingUnit);
-	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_Scenario,       l_pResult, Kernel::CScenario);
+	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_Box,                      l_pResult, Kernel::CBox);
+	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_Link,                     l_pResult, Kernel::CLink);
+	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_ProcessingUnit,           l_pResult, Kernel::CProcessingUnit);
+	create(rClassIdentifier, OV_ClassId_Kernel_Scenario_Scenario,                 l_pResult, Kernel::CScenario);
 
-	create(rClassIdentifier, OV_ClassId_Kernel_Plugins_PluginModule,    l_pResult, Kernel::CPluginModule);
+	create(rClassIdentifier, OV_ClassId_Kernel_Plugins_PluginModule,              l_pResult, Kernel::CPluginModule);
 
-	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,           l_pResult, Kernel::CPlayer);
+	create(rClassIdentifier, OV_ClassId_Kernel_Player_Player,                     l_pResult, Kernel::CPlayer);
 
-	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerConsole, l_pResult, Kernel::CLogListenerConsole);
-	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerFile,    l_pResult, Kernel::CLogListenerFile);
-	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerNull,    l_pResult, Kernel::CLogListenerNull);
+	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerConsole,           l_pResult, Kernel::CLogListenerConsole);
+	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerFile,              l_pResult, Kernel::CLogListenerFile);
+	create(rClassIdentifier, OVK_ClassId_Kernel_Log_LogListenerNull,              l_pResult, Kernel::CLogListenerNull);
+
+	create(rClassIdentifier, OV_ClassId_Kernel_Visualisation_VisualisationTree,   l_pResult, Kernel::CVisualisationTree);
+	create(rClassIdentifier, OV_ClassId_Kernel_Visualisation_VisualisationWidget, l_pResult, Kernel::CVisualisationWidget);
 
 	// create(rClassIdentifier, OV_ClassId_, l_pResult, Plugins::CBoxContext);
 

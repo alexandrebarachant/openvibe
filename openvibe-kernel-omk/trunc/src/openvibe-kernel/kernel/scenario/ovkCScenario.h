@@ -28,9 +28,13 @@ namespace OpenViBE
 				const OpenViBE::CString& sFileName);
 			virtual OpenViBE::boolean save(
 				const OpenViBE::CString& sFileName,
-				const OpenViBE::CIdentifier& rSaverIdentifieri);
+				const OpenViBE::CIdentifier& rSaverIdentifier);
 			virtual OpenViBE::boolean merge(
 				const OpenViBE::Kernel::IScenario& rScenario);
+
+			virtual OpenViBE::boolean setVisualisationTreeIdentifier(
+				const OpenViBE::CIdentifier& rVisualisationTreeIdentifier);
+			virtual OpenViBE::CIdentifier getVisualisationTreeIdentifier(void) const;
 
 #if 0
 			virtual OpenViBE::boolean enumerateBoxes(
@@ -128,7 +132,7 @@ namespace OpenViBE
 			virtual OpenViBE::CIdentifier getUnusedIdentifier(void) const;
 
 		protected:
-
+			OpenViBE::CIdentifier m_oVisualisationTreeIdentifier;
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IBox*> m_vBox;
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::ILink*> m_vLink;
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IProcessingUnit*> m_vProcessingUnit;

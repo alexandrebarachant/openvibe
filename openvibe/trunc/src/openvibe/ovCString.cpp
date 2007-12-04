@@ -37,7 +37,10 @@ CString::~CString(void)
 
 CString::operator const char* (void) const
 {
-	return m_pImplementation->c_str();
+	if(m_pImplementation == NULL)
+		return NULL;
+	else
+		return m_pImplementation->c_str();
 }
 
 CString& CString::operator=(const CString& rString)

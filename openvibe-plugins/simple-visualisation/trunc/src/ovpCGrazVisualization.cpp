@@ -22,12 +22,6 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-
-		//! Callback for the close window button
-		static void gtk_widget_do_nothing(::GtkWidget* pWidget)
-		{
-		}
-
 		gboolean GrazVisualization_SizeAllocateCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data)
 		{
 			reinterpret_cast<CGrazVisualization*>(data)->resize((uint32)allocation->width, (uint32)allocation->height);
@@ -225,6 +219,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(m_pDrawingArea), "expose_event", G_CALLBACK(GrazVisualization_RedrawCallback), this);
 			g_signal_connect(G_OBJECT(m_pDrawingArea), "size-allocate", G_CALLBACK(GrazVisualization_SizeAllocateCallback), this);
 
+#if 0
 			//does nothing on the main window if the user tries to close it
 			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationWindow")),
 					"delete_event",
@@ -232,6 +227,7 @@ namespace OpenViBEPlugins
 
 			//creates the window
 			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationWindow");
+#endif
 
 			//set widget bg color
 			gtk_widget_modify_bg(m_pDrawingArea, GTK_STATE_NORMAL, &m_oBackgroundColor);
@@ -266,7 +262,10 @@ namespace OpenViBEPlugins
 				return false;
 			}
 
+#if 0
 			gtk_widget_show_all(m_pMainWindow);
+#endif
+			getBoxAlgorithmContext()->getVisualisationContext()->setWidgets(m_pDrawingArea, NULL);
 
 			return true;
 		}
@@ -281,11 +280,19 @@ namespace OpenViBEPlugins
 			m_pReader[1]->release();
 			m_pReader[1]=NULL;
 
+#if 0
 			//destroy the window and its children
 			if(m_pMainWindow)
 			{
 				gtk_widget_destroy(m_pMainWindow);
 				m_pMainWindow = NULL;
+			}
+#endif
+			//destroy drawing area
+			if(m_pDrawingArea)
+			{
+				gtk_widget_destroy(m_pDrawingArea);
+				m_pDrawingArea = NULL;
 			}
 
 			/* unref the xml file as it's not needed anymore */

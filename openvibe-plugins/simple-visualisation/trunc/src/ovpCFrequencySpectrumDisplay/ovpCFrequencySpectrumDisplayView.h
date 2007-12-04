@@ -20,94 +20,91 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
+		/**
+		 * This class contains everything necessary to setup a GTK window and display
+		 * a signal thanks to a CBufferDatabase's information.
+		 */
+		class CFrequencySpectrumDisplayView : virtual public CSignalDisplayDrawable
+		{
+		public:
 
-			class CBufferDatabase;
-			class CBottomTimeRuler;
+			CFrequencySpectrumDisplayView(CBufferDatabase& pBufferDatabase);
+			virtual ~CFrequencySpectrumDisplayView();
 
 			/**
-			 * This class contains everything necessary to setup a GTK window and display
-			 * a signal thanks to a CBufferDatabase's information.
+			 * Returns pointers to plugin main widget and toolbar widget
 			 */
-			class CFrequencySpectrumDisplayView : virtual public CSignalDisplayDrawable
-			{
+			void getWidgets(GtkWidget*& pWidget, GtkWidget*& pToolbarWidget);
 
-				public:
+			/**
+			 * Initializes the window.
+			 */
+			virtual void init(void);
 
-					//! The Glade handler used to create the interface
-					::GladeXML* m_pGladeInterface;
+			/**
+			 * Invalidates the window's content and tells it to redraw itself.
+			 */
+			virtual void redraw(void);
 
-					//! The main window
-					GtkWidget * m_pMainWindow;
+			/**
+			 * Used to hide/show the rulers on the left of the signal displays.
+			 * \param bActive Show the ruler if true.
+			 */
+			void toggleLeftRulers(OpenViBE::boolean bActive);
 
-					//! The table containing the displays
-					GtkWidget * m_pDisplayTable;
+			/**
+			 * Used to hide/show the rulers on the bottom of the signal displays.
+			 * \param bActive Show the ruler if true.
+			 */
+			void toggleBottomRulers(OpenViBE::boolean bActive);
 
-					//! Array of the channel's labels
-					std::vector<GtkWidget*> m_oChannelLabel;
+			/**
+			 * Hides a whole channel's display.
+			 * \param ui64ChannelIndex The index of the channel to hide.
+			 */
+			void hideChannel(OpenViBE::uint32 ui32ChannelIndex);
 
-					//! Array of Displays (one per channel, displays the corresponding channel)
-					std::vector<CFrequencySpectrumChannelDisplay*> m_oChannelDisplay;
+			/**
+			 * Shows a channel's display.
+			 * \param ui64ChannelIndex The index of the channel to show.
+			 */
+			void showChannel(OpenViBE::uint32 ui32ChannelIndex);
 
-					//! The database that contains the information to use to draw the signals
-					CBufferDatabase * m_pBufferDatabase;
+			void updateMainTableStatus(void);
 
-					//! Vector of pointers to the select channels dialog's check buttons
-					std::vector<GtkWidget *> m_vChannelsCheckButtons;
-					//! Vector of indexes of the channels to display
-					std::vector<OpenViBE::uint32> m_vSelectedChannels;
+			void activateToolbarButtons(OpenViBE::boolean bActive);
 
-					//! Attenuation value
-					OpenViBE::float64 m_f64Attenuation;
+			void setMinMaxAttenuation(OpenViBE::float64 f64Attenuation);
 
-					//! Pointer on bottom ruler
-					CBottomTimeRuler * m_pBottomRuler;
-				public:
-					CFrequencySpectrumDisplayView(CBufferDatabase& pBufferDatabase);
-					virtual ~CFrequencySpectrumDisplayView();
+		public:
 
-					/**
-					 * Initializes the window.
-					 */
-					virtual void init();
+			//! The Glade handler used to create the interface
+			::GladeXML* m_pGladeInterface;
 
-					/**
-					 * Invalidates the window's content and tells it to redraw itself.
-					 */
-					virtual void redraw();
+			//! The table containing the displays
+			GtkWidget * m_pDisplayTable;
 
-					/**
-					 * Used to hide/show the rulers on the left of the signal displays.
-					 * \param bActive Show the ruler if true.
-					 */
-					void toggleLeftRulers(OpenViBE::boolean bActive);
+			//! Array of the channel's labels
+			std::vector<GtkWidget*> m_oChannelLabel;
 
-					/**
-					 * Used to hide/show the rulers on the bottom of the signal displays.
-					 * \param bActive Show the ruler if true.
-					 */
-					void toggleBottomRulers(OpenViBE::boolean bActive);
+			//! Array of Displays (one per channel, displays the corresponding channel)
+			std::vector<CFrequencySpectrumChannelDisplay*> m_oChannelDisplay;
 
-					/**
-					 * Hides a whole channel's display.
-					 * \param ui64ChannelIndex The index of the channel to hide.
-					 */
-					void hideChannel(OpenViBE::uint32 ui32ChannelIndex);
+			//! The database that contains the information to use to draw the signals
+			CBufferDatabase * m_pBufferDatabase;
 
-					/**
-					 * Shows a channel's display.
-					 * \param ui64ChannelIndex The index of the channel to show.
-					 */
-					void showChannel(OpenViBE::uint32 ui32ChannelIndex);
+			//! Vector of pointers to the select channels dialog's check buttons
+			std::vector<GtkWidget *> m_vChannelsCheckButtons;
+			//! Vector of indexes of the channels to display
+			std::vector<OpenViBE::uint32> m_vSelectedChannels;
 
-					void updateMainTableStatus();
+			//! Attenuation value
+			OpenViBE::float64 m_f64Attenuation;
 
-					void activateToolbarButtons(OpenViBE::boolean bActive);
-
-					void setMinMaxAttenuation(OpenViBE::float64 f64Attenuation);
-			};
-
-	}
-
-}
+			//! Pointer on bottom ruler
+			CBottomTimeRuler * m_pBottomRuler;
+		};
+	};
+};
 
 #endif

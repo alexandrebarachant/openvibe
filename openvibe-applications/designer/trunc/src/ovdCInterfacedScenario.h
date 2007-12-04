@@ -10,11 +10,16 @@
 
 namespace OpenViBEDesigner
 {
+	class IVisualisationTree;
+	class CDesignerVisualisation;
+	class CPlayerVisualisation;
+
 	class CInterfacedScenario
 	{
 		public:
 
-		CInterfacedScenario(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename);
+		CInterfacedScenario(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier, 
+			::GtkNotebook& rNotebook, const char* sGUIFilename);
 		virtual ~CInterfacedScenario(void);
 
 		virtual OpenViBE::boolean isLocked(void) const;
@@ -42,15 +47,25 @@ namespace OpenViBEDesigner
 		void contextMenuModifyOutputCB(OpenViBE::uint32 ui32Index);
 		void contextMenuAddOutputCB(void);
 		void contextMenuRemoveOutputCB(void);
+		
+		void createPlayerVisualisation(void);
+		void releasePlayerVisualisation(void);
+
+	private:
+		void generateDisplayPluginName(OpenViBE::Kernel::IBox* pDisplayBox, OpenViBE::CString& rDisplayBoxName);
 
 	public:
 
 		OpenViBE::CIdentifier m_oScenarioIdentifier;
 		OpenViBE::CIdentifier m_oPlayerIdentifier;
+		OpenViBE::CIdentifier m_oVisualisationTreeIdentifier;
 		OpenViBE::Kernel::IKernel& m_rKernel;
 		OpenViBE::Kernel::IScenario& m_rScenario;
 		OpenViBE::Kernel::IPlayer* m_pPlayer;
 		::GtkNotebook& m_rNotebook;
+		OpenViBE::Kernel::IVisualisationTree* m_pVisualisationTree;
+		OpenViBEDesigner::CDesignerVisualisation* m_pDesignerVisualisation;
+		OpenViBEDesigner::CPlayerVisualisation* m_pPlayerVisualisation;
 		::GladeXML* m_pGladeDummyScenarioNotebookTitle;
 		::GladeXML* m_pGladeDummyScenarioNotebookClient;
 		::GladeXML* m_pGladeTooltip;
@@ -79,7 +94,7 @@ namespace OpenViBEDesigner
 		OpenViBE::uint32 m_ui32InterfacedObjectId;
 		std::map<OpenViBE::uint32, OpenViBEDesigner::CInterfacedObject> m_vInterfacedObject;
 		std::map<OpenViBE::CIdentifier, OpenViBE::boolean> m_vCurrentObject;
-		OpenViBEDesigner::CInterfacedObject m_oCurrentObject;
+		OpenViBEDesigner::CInterfacedObject m_oCurrentObject;				
 	};
 };
 

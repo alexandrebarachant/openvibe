@@ -377,6 +377,11 @@ CString PsSimulatedBox::getOVName(void) const
 	return m_pBox->getName();
 }
 
+const IScenario& PsSimulatedBox::getScenario(void) const
+{
+	return *m_pScenario;
+}
+
 uint32 PsSimulatedBox::getInputChunkCount(
 	const uint32 ui32InputIndex) const
 {

@@ -4,29 +4,24 @@
 #include "ovpCSignalDisplay.h"
 #include "ovpCGrazVisualization.h"
 #include "ovpCFrequencySpectrumDisplay.h"
+#include "ovpCPowerSpectrumDisplay.h"
 
-static OpenViBEPlugins::SimpleVisualisation::CSignalDisplayDesc* gst_pSignalDisplayDesc=NULL;
-static OpenViBEPlugins::SimpleVisualisation::CGrazVisualizationDesc* gst_pGrazVisualizationDesc=NULL;
-static OpenViBEPlugins::SimpleVisualisation::CFrequencySpectrumDisplayDesc * gst_pFrequencySpectrumDisplayDesc=NULL;
+static OpenViBEPlugins::SimpleVisualisation::CSignalDisplayDesc g_oSignalDisplayDesc;
+static OpenViBEPlugins::SimpleVisualisation::CGrazVisualizationDesc g_oGrazVisualizationDesc;
+static OpenViBEPlugins::SimpleVisualisation::CFrequencySpectrumDisplayDesc g_oFrequencySpectrumDisplayDesc;
+static OpenViBEPlugins::SimpleVisualisation::CPowerSpectrumDisplayDesc g_oPowerSpectrumDisplayDesc;
 
 
 extern "C"
 {
 
-OVP_API OpenViBE::boolean onInitialize()
+OVP_API OpenViBE::boolean onInitialize(void)
 {
-	gst_pSignalDisplayDesc=new OpenViBEPlugins::SimpleVisualisation::CSignalDisplayDesc();
-	gst_pGrazVisualizationDesc=new OpenViBEPlugins::SimpleVisualisation::CGrazVisualizationDesc();
-	gst_pFrequencySpectrumDisplayDesc=new OpenViBEPlugins::SimpleVisualisation::CFrequencySpectrumDisplayDesc();
-
 	return true;
 }
 
-OVP_API OpenViBE::boolean onUninitialize()
+OVP_API OpenViBE::boolean onUninitialize(void)
 {
-	delete gst_pSignalDisplayDesc;
-	delete gst_pGrazVisualizationDesc;
-	delete gst_pFrequencySpectrumDisplayDesc;
 	return true;
 }
 
@@ -34,9 +29,10 @@ OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::I
 {
 	switch(ui32Index)
 	{
-		case 0: rpPluginObjectDescription=gst_pSignalDisplayDesc; break;
-		case 1: rpPluginObjectDescription=gst_pGrazVisualizationDesc; break;
-		case 2: rpPluginObjectDescription=gst_pFrequencySpectrumDisplayDesc; break;
+		case 0: rpPluginObjectDescription=&g_oSignalDisplayDesc; break;
+		case 1: rpPluginObjectDescription=&g_oGrazVisualizationDesc; break;
+		case 2: rpPluginObjectDescription=&g_oFrequencySpectrumDisplayDesc; break;
+		case 3: rpPluginObjectDescription=&g_oPowerSpectrumDisplayDesc; break;
 		default: return false;
 	}
 	return true;

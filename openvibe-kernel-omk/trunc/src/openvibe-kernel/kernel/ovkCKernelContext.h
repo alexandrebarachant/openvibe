@@ -20,6 +20,7 @@ namespace OpenViBE
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) const;
 			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void) const;
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const;
+			virtual OpenViBE::Kernel::IVisualisationManager& getVisualisationManager(void) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IKernelContext, OVK_ClassId_Kernel_KernelContext)
 
@@ -32,6 +33,7 @@ namespace OpenViBE
 			mutable OpenViBE::Kernel::IScenarioManager* m_pScenarioManager;
 			mutable OpenViBE::Kernel::ITypeManager* m_pTypeManager;
 			mutable OpenViBE::Kernel::ILogManager* m_pLogManager;
+			mutable OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManager;
 
 		private:
 

@@ -13,6 +13,7 @@ namespace OpenViBE
 		class IScenarioManager;
 		class ITypeManager;
 		class ILogManager;
+		class IVisualisationManager;
 
 		class OV_API IKernelContext : virtual public OpenViBE::Kernel::IKernelObject
 		{
@@ -24,6 +25,7 @@ namespace OpenViBE
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) const=0;
 			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void) const=0;
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const=0;
+			virtual OpenViBE::Kernel::IVisualisationManager& getVisualisationManager(void) const=0;
 
 			virtual OpenViBE::Kernel::IKernelObjectFactory& getObjectFactory(void) const { return getKernelObjectFactory(); }
 

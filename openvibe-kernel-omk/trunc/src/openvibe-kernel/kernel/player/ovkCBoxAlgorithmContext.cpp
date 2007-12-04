@@ -10,6 +10,7 @@ CBoxAlgorithmContext::CBoxAlgorithmContext(const IKernelContext& rKernelContext,
 	,m_oStaticBoxContext(rKernelContext, pBox)
 	,m_oDynamicBoxContext(rKernelContext, pSimulatedBox)
 	,m_oPlayerContext(rKernelContext, pSimulatedBox)
+	,m_oVisualisationContext(rKernelContext, pSimulatedBox)	
 	,m_bReadyToProcess(false)
 {
 }
@@ -27,6 +28,11 @@ IBoxIO* CBoxAlgorithmContext::getDynamicBoxContext(void)
 IPlayerContext* CBoxAlgorithmContext::getPlayerContext(void)
 {
 	return &m_oPlayerContext;
+}
+
+IVisualisationContext* CBoxAlgorithmContext::getVisualisationContext(void)
+{
+	return &m_oVisualisationContext;
 }
 
 boolean CBoxAlgorithmContext::markAlgorithmAsReadyToProcess(void)

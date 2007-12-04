@@ -241,6 +241,17 @@ boolean CScenario::merge(const IScenario& rScenario)
 //___________________________________________________________________//
 //                                                                   //
 
+boolean CScenario::setVisualisationTreeIdentifier(const CIdentifier& rVisualisationTreeIdentifier)
+{
+	m_oVisualisationTreeIdentifier=rVisualisationTreeIdentifier;
+	return true;
+}
+
+CIdentifier CScenario::getVisualisationTreeIdentifier(void) const
+{
+	return m_oVisualisationTreeIdentifier;
+}
+
 #if 0
 boolean CScenario::enumerateBoxes(
 	IScenario::IBoxEnum& rCallback) const
