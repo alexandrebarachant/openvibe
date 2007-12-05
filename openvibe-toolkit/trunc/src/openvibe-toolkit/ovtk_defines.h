@@ -15,31 +15,6 @@
 #define OVTK_TypeId_Stimulation                                        OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
 #define OVTK_TypeId_GDF_Stimulation                                    OpenViBE::CIdentifier(0xA538DBF0, 0xBC229750)
 
-/*
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x2C69E624, 0x17B3DC00)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xF4AB1881, 0xB242657F)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xDF46B446, 0x2FEAAFB9)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x8BD0DA53, 0x60327AE4)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x5CBC9A9F, 0xE6C35BD1)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x2D25BF3F, 0xB2F35938)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xECADF79E, 0x66CF91E6)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xD38F22F1, 0x2936FFF8)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x091640E9, 0xDBF8FDC1)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x596A8E3B, 0x634038B1)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x4281932A, 0xE86ACE51)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0x6D7D489C, 0x4935CA3A)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xE33B2FF8, 0x260B1060)
-#define OVTK_TypeId_                                                   OpenViBE::CIdentifier(0xEF38D8FE, 0x6999DBE5)
-*/
-
-// retro-compatibility
-/*
-#define OV_TypeId_Boolean                                              OVTK_TypeId_Boolean
-#define OV_TypeId_Integer                                              OVTK_TypeId_Integer
-#define OV_TypeId_Float                                                OVTK_TypeId_Float
-#define OV_TypeId_String                                               OVTK_TypeId_String
-#define OV_TypeId_Filename                                             OVTK_TypeId_Stimulation
-*/
 //___________________________________________________________________//
 //                                                                   //
 // OpenViBE toolkit stream type identifiers                          //
@@ -55,23 +30,13 @@
 #define     OVTK_TypeId_Signal                                         OpenViBE::CIdentifier(0x5BA36127, 0x195FEAE1)
 #define     OVTK_TypeId_Spectrum                                       OpenViBE::CIdentifier(0x1F261C0A, 0x593BF6BD)
 
-// retro-compatibility
-/*
-#define OV_TypeId_EBMLStream                                           OVTK_TypeId_EBMLStream
-#define   OV_TypeId_ChannelLocalisation                                OVTK_TypeId_ChannelLocalisation
-#define   OV_TypeId_ExperimentationInformation                         OVTK_TypeId_ExperimentationInformation
-#define   OV_TypeId_Stimulations                                       OVTK_TypeId_Stimulations
-#define   OV_TypeId_StreamedMatrix                                     OVTK_TypeId_StreamedMatrix
-#define     OV_TypeId_FeatureVector                                    OVTK_TypeId_FeatureVector
-#define     OV_TypeId_Signal                                           OVTK_TypeId_Signal
-#define     OV_TypeId_Spectrum                                         OVTK_TypeId_Spectrum
-*/
 //___________________________________________________________________//
 //                                                                   //
 // ISO 5218 conformant sex identifiers                               //
 //___________________________________________________________________//
 //                                                                   //
 
+// deprecated
 #define OVTK_Value_Sex_Unknown                                        0
 #define OVTK_Value_Sex_Male                                           1
 #define OVTK_Value_Sex_Female                                         2
@@ -172,6 +137,8 @@
 
 #define OVTK_GDF_Correct                                          0x381
 #define OVTK_GDF_Incorrect                                        0x382
+// SPECIALY ADDED BY YR
+#define OVTK_GDF_End_Of_Session                                   0x3F2
 #define OVTK_GDF_Rejection                                        0x3FF
 
 #define OVTK_GDF_OAHE                                             0x401
@@ -260,8 +227,8 @@
  *   OVTK_NodeId_Acquisition_ChannelCount (integer)
  *   OVTK_NodeId_Acquisition_SamplingFrequency (integer)
  *   OVTK_NodeId_Acquisition_GainFactors
- *     OVTK_NodeId_Acquisition_GainFactor (integer)
- *     OVTK_NodeId_Acquisition_GainFactor (integer)
+ *     OVTK_NodeId_Acquisition_GainFactor (float)
+ *     OVTK_NodeId_Acquisition_GainFactor (float)
  *     ...
  *   OVTK_NodeId_Acquisition_ChannelNames
  *     OVTK_NodeId_Acquisition_ChannelName (string)
@@ -312,6 +279,9 @@
 #define OVTK_NodeId_Acquisition_StimulationSampleIndex                         EBML::CIdentifier(0x00000000, 0x00000063)
 #define OVTK_NodeId_Acquisition_StimulationIdentifier                          EBML::CIdentifier(0x00000000, 0x00000064)
 
+// deprecated
+#define OVTK_NodeId_Acquisition_SubjectSex                                     EBML::CIdentifier(0x00000000, 0x00004243)
+
 //___________________________________________________________________//
 //                                                                   //
 // Protocol hierarchy                                                //
@@ -347,10 +317,10 @@
 //                                                                   //
 
 #define OVTK_NodeId_Header_StreamedMatrix                                      EBML::CIdentifier(0x0072F560, 0x7ED2CBED)
-#define OVTK_NodeId_Header_StreamedMatrix_DimmensionCount                      EBML::CIdentifier(0x003FEBD4, 0x2725D428)
-#define OVTK_NodeId_Header_StreamedMatrix_Dimmension                           EBML::CIdentifier(0x0000E3C0, 0x3A7D5141)
-#define OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size                      EBML::CIdentifier(0x001302F7, 0x36D8438A)
-#define OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label                     EBML::CIdentifier(0x00153E40, 0x190227E0)
+#define OVTK_NodeId_Header_StreamedMatrix_DimensionCount                      EBML::CIdentifier(0x003FEBD4, 0x2725D428)
+#define OVTK_NodeId_Header_StreamedMatrix_Dimension                           EBML::CIdentifier(0x0000E3C0, 0x3A7D5141)
+#define OVTK_NodeId_Header_StreamedMatrix_Dimension_Size                      EBML::CIdentifier(0x001302F7, 0x36D8438A)
+#define OVTK_NodeId_Header_StreamedMatrix_Dimension_Label                     EBML::CIdentifier(0x00153E40, 0x190227E0)
 #define OVTK_NodeId_Buffer_StreamedMatrix                                      EBML::CIdentifier(0x00120663, 0x08FBC165)
 #define OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer                            EBML::CIdentifier(0x00B18C10, 0x427D098C)
 
@@ -371,16 +341,16 @@
  *   OVTK_NodeId_Header_Signal
  *     OVTK_NodeId_Header_Signal_SamplingRate (integer)
  *   OVTK_NodeId_Header_StreamedMatrix
- *     OVTK_NodeId_Header_StreamedMatrix_DimmensionCount (integer:2)
- *     OVTK_NodeId_Header_StreamedMatrix_Dimmension
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size (integer:channel count)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:channel 1 name)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:channel 2 name)
+ *     OVTK_NodeId_Header_StreamedMatrix_DimensionCount (integer:2)
+ *     OVTK_NodeId_Header_StreamedMatrix_Dimension
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Size (integer:channel count)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:channel 1 name)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:channel 2 name)
  *       ...
- *     OVTK_NodeId_Header_StreamedMatrix_Dimmension
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size (integer:number of samples per buffer)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string)
+ *     OVTK_NodeId_Header_StreamedMatrix_Dimension
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Size (integer:number of samples per buffer)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string)
  *       ...
  * OVTK_NodeId_Buffer
  *   OVTK_NodeId_Buffer_StreamedMatrix
@@ -405,7 +375,7 @@
 /*
  * Stimulation stream description (based on v1 november 6th 2006, modified may 24th 2007)
  *
- * version 2 :
+ * version 3 :
  * ----------------------------------------------------------------- *
  * OVTK_NodeId_Header
  *   OVTK_NodeId_Header_StreamType (integer:)
@@ -416,6 +386,7 @@
  *     OVTK_NodeId_Buffer_Stimulation_Stimulation
  *       OVTK_NodeId_Buffer_Stimulation_Stimulation_Identifier (integer)
  *       OVTK_NodeId_Buffer_Stimulation_Stimulation_Date (integer)
+ *       OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration (integer)
  *     OVTK_NodeId_Stimulation_Stimulation
  *     ...
  * OVTK_NodeId_Buffer
@@ -430,6 +401,7 @@
 #define OVTK_NodeId_Buffer_Stimulation_Stimulation                             EBML::CIdentifier(0x0016EAC6, 0x29FBCAA1)
 #define OVTK_NodeId_Buffer_Stimulation_Stimulation_Identifier                  EBML::CIdentifier(0x006FA5DB, 0x4BAC31E9)
 #define OVTK_NodeId_Buffer_Stimulation_Stimulation_Date                        EBML::CIdentifier(0x00B866D8, 0x14DA5374)
+#define OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration                    EBML::CIdentifier(0x14EE055F, 0x87FBCC9C)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -494,11 +466,11 @@
  *   OVTK_NodeId_Header_StreamType (integer:)
  *   OVTK_NodeId_Header_StreamVersion (integer:1)
  *   OVTK_NodeId_Header_StreamedMatrix
- *     OVTK_NodeId_Header_StreamedMatrix_DimmensionCount (integer:1)
- *     OVTK_NodeId_Header_StreamedMatrix_Dimmension
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size (integer:feature count)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:feature 1 name)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:feature 2 name)
+ *     OVTK_NodeId_Header_StreamedMatrix_DimensionCount (integer:1)
+ *     OVTK_NodeId_Header_StreamedMatrix_Dimension
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Size (integer:feature count)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:feature 1 name)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:feature 2 name)
  *       ...
  * OVTK_NodeId_Buffer
  *   OVTK_NodeId_Buffer_StreamedMatrix
@@ -526,16 +498,16 @@
  *   OVTK_NodeId_Header_StreamType (integer:)
  *   OVTK_NodeId_Header_StreamVersion (integer:1)
  *   OVTK_NodeId_Header_StreamedMatrix
- *     OVTK_NodeId_Header_StreamedMatrix_DimmensionCount (integer:2)
- *     OVTK_NodeId_Header_StreamedMatrix_Dimmension
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size (integer:channel count)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:channel 1 name)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:channel 2 name)
+ *     OVTK_NodeId_Header_StreamedMatrix_DimensionCount (integer:2)
+ *     OVTK_NodeId_Header_StreamedMatrix_Dimension
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Size (integer:channel count)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:channel 1 name)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:channel 2 name)
  *       ...
- *     OVTK_NodeId_Header_StreamedMatrix_Dimmension
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size (integer:number of frequency band)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:frequency band 1 name)
- *       OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label (string:frequency band 2 name)
+ *     OVTK_NodeId_Header_StreamedMatrix_Dimension
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Size (integer:number of frequency band)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:frequency band 1 name)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:frequency band 2 name)
  *       ...
  *   OVTK_NodeId_Header_Spectrum
  *     OVTK_NodeId_Header_Spectrum_FrequencyBand
@@ -577,6 +549,9 @@
 #define OVTK_NodeId_                                                    EBML::CIdentifier(0x00F1CBCB, 0x56BD6821)
 */
 #define OVTK_ClassId_                                                   OpenViBE::CIdentifier(0x00C6D56F, 0x30890D27)
+#define OVTK_ClassId_Stimulation                                        OpenViBE::CIdentifier(0xE4E131F0, 0xC6550E9E)
+#define OVTK_ClassId_BaseAlgorithms_DataImporterT                       OpenViBE::CIdentifier(0xA6BB8664, 0xF1B9DE96)
+#define OVTK_ClassId_BaseAlgorithms_DataExporterT                       OpenViBE::CIdentifier(0xA432362A, 0x5CD4F227)
 
 //___________________________________________________________________//
 //                                                                   //

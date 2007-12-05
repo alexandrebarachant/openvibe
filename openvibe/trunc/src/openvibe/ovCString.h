@@ -5,6 +5,8 @@
 
 namespace OpenViBE
 {
+	typedef struct CStringImpl;
+
 	/**
 	 * \class CString
 	 * \author Yann Renard (INRIA/IRISA)
@@ -96,9 +98,13 @@ namespace OpenViBE
 
 		//@}
 
+		virtual OpenViBE::boolean set(const OpenViBE::CString& rString);
+		virtual OpenViBE::boolean set(const char* pString);
+		virtual const char* toCString(void) const;
+
 	protected:
 
-		void* m_pSecretImplementation; ///< The std::string implementation
+		OpenViBE::CStringImpl* m_pStringImpl; ///< The string implementation
 	};
 };
 

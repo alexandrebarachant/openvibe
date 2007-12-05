@@ -34,6 +34,13 @@ namespace OpenViBE
 			virtual OpenViBE::boolean releasePluginObject(
 				OpenViBE::Plugins::IPluginObject* pPluginObject);
 
+			virtual OpenViBE::Plugins::IAlgorithm* createAlgorithm(
+				const OpenViBE::CIdentifier& rClassIdentifier,
+				const OpenViBE::Plugins::IAlgorithmDesc** ppAlgorithmDesc);
+			virtual OpenViBE::Plugins::IBoxAlgorithm* createBoxAlgorithm(
+				const OpenViBE::CIdentifier& rClassIdentifier,
+				const OpenViBE::Plugins::IBoxAlgorithmDesc** ppBoxAlgorithmDesc);
+
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IPluginManager, OVK_ClassId_Kernel_Plugins_PluginManager)
 
 		protected:

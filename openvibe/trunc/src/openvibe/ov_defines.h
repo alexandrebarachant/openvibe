@@ -7,8 +7,8 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OV_ClassId_Object                                   OpenViBE::CIdentifier(0x327B23C6, 0x6B8B4567)
-#define OV_ClassId_KernelLoader                             OpenViBE::CIdentifier(0x1930F64B, 0x6F689236)
+#define OV_ClassId_Object                                  OpenViBE::CIdentifier(0x327B23C6, 0x6B8B4567)
+#define OV_ClassId_KernelLoader                            OpenViBE::CIdentifier(0x1930F64B, 0x6F689236)
 #define OV_ClassId_KernelLoaderFinal                       OpenViBE::CIdentifier(0x624A6E5B, 0x52228CEA)
 
 //___________________________________________________________________//
@@ -23,6 +23,13 @@
 #define OV_ClassId_Kernel_KernelObject                     OpenViBE::CIdentifier(0x69BAE694, 0x163C8B2D)
 #define OV_ClassId_Kernel_KernelObjectFactory              OpenViBE::CIdentifier(0x04D88707, 0x21F2F456)
 #define OV_ClassId_Kernel_TypeManager                      OpenViBE::CIdentifier(0x3E800821, 0x5D1DE74E)
+#define OV_ClassId_Kernel_Parameter                        OpenViBE::CIdentifier(0xF980A924, 0x696E2BC8)
+#define OV_ClassId_Kernel_Configurable                     OpenViBE::CIdentifier(0x52CEA963, 0x210D78D8)
+
+#define OV_ClassId_Kernel_Algorithm_AlgorithmContext       OpenViBE::CIdentifier(0x6DAC2B49, 0xF424D47B)
+#define OV_ClassId_Kernel_Algorithm_AlgorithmManager       OpenViBE::CIdentifier(0x2596C3E4, 0xB2D91D95)
+#define OV_ClassId_Kernel_Algorithm_AlgorithmProto         OpenViBE::CIdentifier(0x06DF986C, 0x39B795CC)
+#define OV_ClassId_Kernel_Algorithm_AlgorithmProxy         OpenViBE::CIdentifier(0xE015C4C5, 0x479C3D46)
 
 #define OV_ClassId_Kernel_Log_LogManager                   OpenViBE::CIdentifier(0x22990B50, 0x571010D4)
 #define OV_ClassId_Kernel_Log_LogListener                  OpenViBE::CIdentifier(0x766B92CB, 0x33B01B15)
@@ -51,10 +58,10 @@
 #define OV_ClassId_Kernel_Scenario_ScenarioExporterContext OpenViBE::CIdentifier(0x583A5B71, 0x2C06662D)
 #define OV_ClassId_Kernel_Scenario_ScenarioManager         OpenViBE::CIdentifier(0x67F31911, 0x3FA45C02)
 
-#define OV_ClassId_Kernel_Visualisation_VisualisationContext OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
-#define OV_ClassId_Kernel_Visualisation_VisualisationManager OpenViBE::CIdentifier(0x021E3EFD, 0x428C318A)
-#define OV_ClassId_Kernel_Visualisation_VisualisationWidget OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
-#define OV_ClassId_Kernel_Visualisation_VisualisationTree  OpenViBE::CIdentifier(0x39F81801, 0x2491BF81)
+#define OV_ClassId_Kernel_Visualisation_VisualisationContext OpenViBE::CIdentifier(0x525AE260, 0x0B2F7E1F)
+#define OV_ClassId_Kernel_Visualisation_VisualisationManager OpenViBE::CIdentifier(0x36E5DE48, 0xFD4AF8A8)
+#define OV_ClassId_Kernel_Visualisation_VisualisationWidget  OpenViBE::CIdentifier(0xD88B5297, 0xFE0E9041)
+#define OV_ClassId_Kernel_Visualisation_VisualisationTree    OpenViBE::CIdentifier(0xB8F4A764, 0x8D1FF3BF)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -65,6 +72,9 @@
 #define OV_ClassId_Plugins_PluginObject                    OpenViBE::CIdentifier(0x1356510D, 0x6B6532DF)
 #define OV_ClassId_Plugins_PluginObjectDesc                OpenViBE::CIdentifier(0x100E6855, 0x7C1CA212)
 
+#define OV_ClassId_Plugins_Algorithm                       OpenViBE::CIdentifier(0x4C4499C7, 0xBD7F16C9)
+#define OV_ClassId_Plugins_AlgorithmDesc                   OpenViBE::CIdentifier(0xBB9BAE23, 0x8C81D56E)
+
 #define OV_ClassId_Plugins_BoxAlgorithm                    OpenViBE::CIdentifier(0x2A910204, 0x57E55735)
 #define OV_ClassId_Plugins_BoxAlgorithmDesc                OpenViBE::CIdentifier(0x2C4ECAD0, 0x19607084)
 
@@ -73,6 +83,24 @@
 
 #define OV_ClassId_Plugins_ScenarioExporter                OpenViBE::CIdentifier(0x6C54A6C9, 0x174982CD)
 #define OV_ClassId_Plugins_ScenarioExporterDesc            OpenViBE::CIdentifier(0x13B1BD52, 0x06AB7557)
+
+//___________________________________________________________________//
+//                                                                   //
+//                                                                   //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OV_ClassId_Matrix                                  OpenViBE::CIdentifier(0x65AA951D, 0x73EE781E)
+#define OV_ClassId_MatrixBridge                            OpenViBE::CIdentifier(0x4331378D, 0x5A1E0A69)
+#define OV_ClassId_MatrixImpl                              OpenViBE::CIdentifier(0x2F59C42E, 0x54166A96)
+
+#define OV_ClassId_StimulationSet                          OpenViBE::CIdentifier(0x691473DE, 0x2EE37ABD)
+#define OV_ClassId_StimulationSetBridge                    OpenViBE::CIdentifier(0x39F81801, 0x2491BF81)
+#define OV_ClassId_StimulationSetImpl                      OpenViBE::CIdentifier(0x1649669C, 0x25B89AD7)
+
+#define OV_ClassId_MemoryBuffer                            OpenViBE::CIdentifier(0xADF318BB, 0xB728A579)
+#define OV_ClassId_MemoryBufferBridge                      OpenViBE::CIdentifier(0xFD84704B, 0xA9E61735)
+#define OV_ClassId_MemoryBufferImpl                        OpenViBE::CIdentifier(0x51551D5C, 0x80B34EEE)
 
 //___________________________________________________________________//
 //                                                                   //

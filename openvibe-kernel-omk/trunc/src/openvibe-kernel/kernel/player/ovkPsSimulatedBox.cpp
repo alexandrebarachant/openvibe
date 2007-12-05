@@ -58,6 +58,7 @@ PsSimulatedBox::PsSimulatedBox(
 	,m_ui64LastClockActivationDate(0)
 	,m_ui64ClockFrequency(0)
 	,m_ui64ClockActivationStep(0)
+	,m_bAlreadyClockActivatedOnce(false)
 {
 	log() << LogLevel_Debug << "PsSimulatedBox::PsSimulatedBox\n";
 }
@@ -87,6 +88,8 @@ void PsSimulatedBox::init(void)
 	m_oBenchmarkChronoProcessClock.reset(1024);
 	m_oBenchmarkChronoProcessInput.reset(1024);
 	m_oBenchmarkChronoProcess.reset(1024);
+
+	m_bAlreadyClockActivatedOnce=false;
 }
 
 void PsSimulatedBox::computeParameters(void)
@@ -96,32 +99,51 @@ void PsSimulatedBox::computeParameters(void)
 	if(!m_bActive) return;
 
 	uint64 l_ui64CurrentDate=(((OpenViBE::uint64)this->getSimulatedDate())<<32);
+	boolean l_bShouldProcessClock=(m_ui64ClockFrequency!=0) && (!m_bAlreadyClockActivatedOnce || (l_ui64CurrentDate-m_ui64LastClockActivationDate>=m_ui64ClockActivationStep));
 
-	CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
+	if(l_bShouldProcessClock)
 	{
-		boolean l_bShouldProcessClock=(m_ui64ClockFrequency!=0) && (l_ui64CurrentDate-m_ui64LastClockActivationDate>=m_ui64ClockActivationStep);
-
-		if(l_bShouldProcessClock)
-		{
+		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 #if defined _ScopeTester_
-			Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processClock");
+		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::processClock");
 #endif
-			try
-			{
-				m_oBenchmarkChronoProcessClock.stepIn();
-				Kernel::CMessageClock l_oClockMessage(this->getKernelContext());
-				l_oClockMessage.setTime((m_ui64LastClockActivationDate+m_ui64ClockActivationStep)/1000);
-				m_pBoxAlgorithm->processClock(l_oBoxAlgorithmContext, l_oClockMessage);
-				m_ui64LastClockActivationDate+=m_ui64ClockActivationStep;
-				m_oBenchmarkChronoProcessClock.stepOut();
-			}
-			catch (...)
-			{
-				handleCrash("clock processing callback");
-			}
+		try
+		{
+			m_oBenchmarkChronoProcessClock.stepIn();
+			Kernel::CMessageClock l_oClockMessage(this->getKernelContext());
+			m_ui64LastClockActivationDate+=(m_bAlreadyClockActivatedOnce?m_ui64ClockActivationStep:0);
+			l_oClockMessage.setTime(m_ui64LastClockActivationDate/1000);
+			m_pBoxAlgorithm->processClock(l_oBoxAlgorithmContext, l_oClockMessage);
+			m_oBenchmarkChronoProcessClock.stepOut();
+		}
+		catch (...)
+		{
+			handleCrash("clock processing callback");
+		}
+		m_bReadyToProcess|=l_oBoxAlgorithmContext.isAlgorithmReadyToProcess();
+		m_bAlreadyClockActivatedOnce=true;
+	}
+
+	if(l_bShouldProcessClock || m_ui64ClockFrequency==0)
+	{
+		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
+#if defined _ScopeTester_
+		Tools::CScopeTester l_oScopeTester("User code IBoxAlgorithm::getClockFrequency");
+#endif
+		try
+		{
+			// note: 1LL should be left shifted 64 bits but this
+			//       would result in an integer over shift (the one
+			//       would exit). Thus the left shift of 63 bits
+			//       with a factor 2 multiplication after the division
+			m_ui64ClockFrequency=m_pBoxAlgorithm->getClockFrequency(l_oBoxAlgorithmContext);
+			m_ui64ClockActivationStep=1000*2*(m_ui64ClockFrequency?((1LL<<63)/m_ui64ClockFrequency):0);
+		}
+		catch (...)
+		{
+			handleCrash("clock frequency request callback");
 		}
 	}
-	m_bReadyToProcess|=l_oBoxAlgorithmContext.isAlgorithmReadyToProcess();
 
 	if(m_bReadyToProcess)
 	{
@@ -194,7 +216,6 @@ bool PsSimulatedBox::processMaskStartEvent(::PsEvent* pEvent)
 
 	if(!m_bActive) return false;
 
-//	m_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(getKernelContext().getPluginManager().getPluginObjectDescCreating(m_pBox->getAlgorithmClassIdentifier()));
 	m_pBoxAlgorithm=dynamic_cast<IBoxAlgorithm*>(getKernelContext().getPluginManager().createPluginObject(m_pBox->getAlgorithmClassIdentifier()));
 	CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 	{
@@ -270,7 +291,7 @@ void PsSimulatedBox::handleCrash(const char* sHintName)
 
 	if(m_ui32CrashCount>=_MaxCrash_)
 	{
-		log () << LogLevel_Error << "  This box has been disabled !\n";
+		log () << LogLevel_Fatal << "  This plugin has been disabled !\n";
 		m_bActive=false;
 	}
 }
@@ -360,7 +381,8 @@ void PsSimulatedBox::doProcess(void)
 		if(j->getBuffer().getSize())
 		{
 			// the buffer has been (partially ?) filled but not sent
-			log() << LogLevel_Warning << "Output buffer filled but not marked as ready to send\n"; // $$$ should use log
+			CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
+			l_oBoxAlgorithmContext.getPlayerContext()->getLogManager() << LogLevel_Warning << "Output buffer filled but not marked as ready to send\n"; // $$$ should use log
 			j->getBuffer().setSize(0, true);
 		}
 
@@ -371,6 +393,16 @@ void PsSimulatedBox::doProcess(void)
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 // - --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- -
 // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+uint64 PsSimulatedBox::getCurrentTime(void) const
+{
+	if(m_ui64ClockFrequency==0)
+	{
+		uint64 l_ui64CurrentDate=(((OpenViBE::uint64)this->getSimulatedDate())<<32);
+		return l_ui64CurrentDate;
+	}
+	return m_ui64LastClockActivationDate;
+}
 
 CString PsSimulatedBox::getOVName(void) const
 {
@@ -415,6 +447,56 @@ boolean PsSimulatedBox::getInputChunk(
 	rChunkSize=l_rChunk.getBuffer().getSize();
 	rpChunkBuffer=l_rChunk.getBuffer().getDirectPointer();
 	return true;
+}
+
+const IMemoryBuffer* PsSimulatedBox::getInputChunk(
+	const uint32 ui32InputIndex,
+	const uint32 ui32ChunkIndex) const
+{
+	if(ui32InputIndex>=m_vInput.size())
+	{
+		return false;
+	}
+	if(ui32ChunkIndex>=m_vInput[ui32InputIndex].size())
+	{
+		return false;
+	}
+
+	return &_my_get_(m_vInput[ui32InputIndex], ui32ChunkIndex).getBuffer();
+}
+
+uint64 PsSimulatedBox::getInputChunkStartTime(
+	const uint32 ui32InputIndex,
+	const uint32 ui32ChunkIndex) const
+{
+	if(ui32InputIndex>=m_vInput.size())
+	{
+		return false;
+	}
+	if(ui32ChunkIndex>=m_vInput[ui32InputIndex].size())
+	{
+		return false;
+	}
+
+	const ::PsTypeChunk& l_rChunk=_my_get_(m_vInput[ui32InputIndex], ui32ChunkIndex);
+	return l_rChunk.getStartTime();
+}
+
+uint64 PsSimulatedBox::getInputChunkEndTime(
+	const uint32 ui32InputIndex,
+	const uint32 ui32ChunkIndex) const
+{
+	if(ui32InputIndex>=m_vInput.size())
+	{
+		return false;
+	}
+	if(ui32ChunkIndex>=m_vInput[ui32InputIndex].size())
+	{
+		return false;
+	}
+
+	const ::PsTypeChunk& l_rChunk=_my_get_(m_vInput[ui32InputIndex], ui32ChunkIndex);
+	return l_rChunk.getEndTime();
 }
 
 boolean PsSimulatedBox::markInputAsDeprecated(
@@ -475,6 +557,16 @@ boolean PsSimulatedBox::appendOutputChunkData(
 		return false;
 	}
 	return _my_get_(m_vCurrentOutput, ui32OutputIndex).getBuffer().appendOutputChunkData(pBuffer, ui64BufferSize);
+}
+
+IMemoryBuffer* PsSimulatedBox::getOutputChunk(
+	const uint32 ui32OutputIndex)
+{
+	if(ui32OutputIndex>=m_vOutput.size())
+	{
+		return false;
+	}
+	return &_my_get_(m_vCurrentOutput, ui32OutputIndex).getBuffer();
 }
 
 boolean PsSimulatedBox::markOutputAsReadyToSend(

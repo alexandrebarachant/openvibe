@@ -9,6 +9,12 @@ namespace OpenViBE
 	{
 		class IPluginObject;
 		class IPluginObjectDesc;
+
+		class IBoxAlgorithm;
+		class IBoxAlgorithmDesc;
+
+		class IAlgorithm;
+		class IAlgorithmDesc;
 	};
 
 	namespace Kernel
@@ -45,6 +51,19 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rClassIdentifier)=0;
 			virtual OpenViBE::boolean releasePluginObject(
 				OpenViBE::Plugins::IPluginObject* pPluginObject)=0;
+
+			/**
+			 */
+
+			virtual OpenViBE::Plugins::IAlgorithm* createAlgorithm(
+				const OpenViBE::CIdentifier& rClassIdentifier,
+				const OpenViBE::Plugins::IAlgorithmDesc** ppAlgorithmDesc)=0;
+			virtual OpenViBE::Plugins::IBoxAlgorithm* createBoxAlgorithm(
+				const OpenViBE::CIdentifier& rClassIdentifier,
+				const OpenViBE::Plugins::IBoxAlgorithmDesc** ppBoxAlgorithmDesc)=0;
+
+			/**
+			 */
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Plugins_PluginManager)
 

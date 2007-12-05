@@ -24,7 +24,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setTime(
 				const OpenViBE::uint64 ui64Time);
 
-			_IsDerivedFromClass_Final_(T, OVK_ClassId_Kernel_Player_Message);
+			_IsDerivedFromClass_Final_(T, OVK_ClassId_Kernel_Player_MessageT);
 
 		protected:
 

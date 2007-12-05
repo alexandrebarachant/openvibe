@@ -147,12 +147,12 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(GTK_STOCK_EXECUTE); }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SimpleVisualisation::CGrazVisualization(); }
 
-			virtual OpenViBE::boolean hasFunctionality(OpenViBE::Plugins::EPluginFunctionality ePF) const
+			virtual OpenViBE::boolean hasFunctionality(OpenViBE::Kernel::EPluginFunctionality ePF) const
 			{
-				return ePF == OpenViBE::Plugins::PluginFunctionality_Visualization;
+				return ePF == OpenViBE::Kernel::PluginFunctionality_Visualization;
 			}
 
-			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
+			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("Stimulations", OV_TypeId_Stimulations);
 				rPrototype.addInput("Amplitude", OV_TypeId_StreamedMatrix);

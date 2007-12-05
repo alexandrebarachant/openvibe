@@ -56,6 +56,7 @@ protected:
 
 public:
 
+	virtual OpenViBE::uint64 getCurrentTime() const;
 	virtual OpenViBE::CString getOVName(void) const;
 	virtual const OpenViBE::Kernel::IScenario& getScenario(void) const;
 
@@ -68,6 +69,15 @@ public:
 		OpenViBE::uint64& rEndTime,
 		OpenViBE::uint64& rChunkSize,
 		const OpenViBE::uint8*& rpChunkBuffer) const;
+	virtual const OpenViBE::IMemoryBuffer* getInputChunk(
+		const OpenViBE::uint32 ui32InputIndex,
+		const OpenViBE::uint32 ui32ChunkIndex) const;
+	virtual OpenViBE::uint64 getInputChunkStartTime(
+		const OpenViBE::uint32 ui32InputIndex,
+		const OpenViBE::uint32 ui32ChunkIndex) const;
+	virtual OpenViBE::uint64 getInputChunkEndTime(
+		const OpenViBE::uint32 ui32InputIndex,
+		const OpenViBE::uint32 ui32ChunkIndex) const;
 	virtual OpenViBE::boolean markInputAsDeprecated(
 		const OpenViBE::uint32 ui32InputIndex,
 		const OpenViBE::uint32 ui32ChunkIndex);
@@ -84,6 +94,8 @@ public:
 		const OpenViBE::uint32 ui32OutputIndex,
 		const OpenViBE::uint8* pBuffer,
 		const OpenViBE::uint64 ui64BufferSize);
+	virtual OpenViBE::IMemoryBuffer* getOutputChunk(
+		const OpenViBE::uint32 ui32OutputIndex);
 	virtual OpenViBE::boolean markOutputAsReadyToSend(
 		const OpenViBE::uint32 ui32OutputIndex,
 		const OpenViBE::uint64 ui64StartTime,
@@ -117,6 +129,7 @@ protected:
 	OpenViBE::uint64 m_ui64LastClockActivationDate;
 	OpenViBE::uint64 m_ui64ClockFrequency;
 	OpenViBE::uint64 m_ui64ClockActivationStep;
+	OpenViBE::boolean m_bAlreadyClockActivatedOnce;
 
 private:
 

@@ -64,7 +64,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CSinusSignalGenerator(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype) const
+				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addOutput("Generated signal",              OV_TypeId_Signal);
 

@@ -14,9 +14,6 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addListener(OpenViBE::Kernel::ILogListener* pListener)=0;
 			virtual OpenViBE::boolean removeListener(OpenViBE::Kernel::ILogListener* pListener)=0;
 
-			virtual OpenViBE::boolean isActive(OpenViBE::Kernel::ELogLevel eLogLevel)=0;
-			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive)=0;
-
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Log_LogManager);
 		};
 

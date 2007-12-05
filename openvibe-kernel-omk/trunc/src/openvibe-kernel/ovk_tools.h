@@ -3,7 +3,6 @@
 
 #include "tools/ovkCKernelObjectFactoryHelper.h"
 #include "tools/ovkCScopeTester.h"
-#include "tools/ovkTBoxProxy.h"
-#include "tools/ovkTBoxIOProxy.h"
+#include "tools/ovk_bridge_bind_function.h"
 
 #endif // __OpenViBEKernel_tools_H__

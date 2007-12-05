@@ -127,7 +127,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_SignalAverage; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessing::CSignalAverage(); }
 
-			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Plugins::IBoxProto& rPrototype) const
+			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("Input signal", OV_TypeId_Signal);
 				rPrototype.addOutput("Filtered signal", OV_TypeId_Signal);

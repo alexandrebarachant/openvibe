@@ -471,7 +471,7 @@ function ov_untar_configure_make_install_package
 				ov_current_operation_hook_pre_result=$?
 				# effectively make file
 				pushd * >> $ov_current_package_log_file 2>&1
-				$ov_make >> $ov_current_package_log_file 2>&1
+				$ov_make -j 3 >> $ov_current_package_log_file 2>&1
 				popd >> $ov_current_package_log_file 2>&1
 				ov_current_operation_result=$?
 				# executes make hook post
@@ -688,7 +688,7 @@ function ov_svn_configure_make_install_package
 
 			# builds the package
 			echo "  Building [$ov_current_package]..."
-			$ov_make >> $ov_current_package_log_file 2>&1
+			$ov_make -j 3 >> $ov_current_package_log_file 2>&1
 			if [ $? -eq 0 ]; then
 				echo "  Building [$ov_current_package] succeeded..."
 			else

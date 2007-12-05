@@ -24,14 +24,14 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean initialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
 				throw 0;
 				return true;
 			}
 
 			virtual OpenViBE::boolean uninitialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
 				int one=(int)1.0;
 				int zero=(int)sin(0.0);
@@ -40,14 +40,14 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean processInput(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
 				OpenViBE::uint32 ui32InputIndex)
 			{
 				rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
 				return true;
 			}
 
-			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+			virtual OpenViBE::boolean process(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
 				*((int*)NULL)=0;
 
@@ -74,7 +74,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CCrashingBox(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype) const
+				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("an input", OV_UndefinedIdentifier);
 

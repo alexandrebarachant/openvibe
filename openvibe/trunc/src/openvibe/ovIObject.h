@@ -106,4 +106,14 @@ namespace OpenViBE
 		return _ClassIdentifier_; \
 	}
 
+namespace OpenViBE
+{
+	class CNullObject : virtual public OpenViBE::IObject
+	{
+	public:
+
+		_IsDerivedFromClass_Final_(OpenViBE::IObject, OV_ClassId_Object);
+	};
+};
+
 #endif // __OpenViBE_IObject_H__

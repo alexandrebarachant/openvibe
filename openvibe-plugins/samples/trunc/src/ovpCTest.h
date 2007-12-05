@@ -62,7 +62,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CTest(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype) const
+				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				// Adds box inputs
 				rPrototype.addInput("Signal stream", OV_TypeId_Signal);

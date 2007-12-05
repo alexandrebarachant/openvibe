@@ -2,10 +2,27 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace std;
 
 CLogListenerNull::CLogListenerNull(const IKernelContext& rKernelContext)
 	:TKernelObject<ILogListener>(rKernelContext)
 {
+}
+
+boolean CLogListenerNull::isActive(ELogLevel eLogLevel)
+{
+	map<ELogLevel, boolean>::iterator itLogLevel=m_vActiveLevel.find(eLogLevel);
+	if(itLogLevel==m_vActiveLevel.end())
+	{
+		return true;
+	}
+	return itLogLevel->second;
+}
+
+boolean CLogListenerNull::activate(ELogLevel eLogLevel, boolean bActive)
+{
+	m_vActiveLevel[eLogLevel]=bActive;
+	return true;
 }
 
 void CLogListenerNull::log(const uint64 ui64Value)
@@ -45,6 +62,10 @@ void CLogListenerNull::log(const float32 f32Value)
 }
 
 void CLogListenerNull::log(const float64 f64Value)
+{
+}
+
+void CLogListenerNull::log(const boolean bValue)
 {
 }
 

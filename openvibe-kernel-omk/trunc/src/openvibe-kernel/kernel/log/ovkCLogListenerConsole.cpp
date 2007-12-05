@@ -16,54 +16,123 @@ CLogListenerConsole::CLogListenerConsole(const IKernelContext& rKernelContext)
 {
 }
 
+boolean CLogListenerConsole::isActive(ELogLevel eLogLevel)
+{
+	map<ELogLevel, boolean>::iterator itLogLevel=m_vActiveLevel.find(eLogLevel);
+	if(itLogLevel==m_vActiveLevel.end())
+	{
+		return true;
+	}
+	return itLogLevel->second;
+}
+
+boolean CLogListenerConsole::activate(ELogLevel eLogLevel, boolean bActive)
+{
+	m_vActiveLevel[eLogLevel]=bActive;
+	return true;
+}
+
 void CLogListenerConsole::log(const uint64 ui64Value)
 {
-	cout << ui64Value;
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << ui64Value << " (0x" << hex << ui64Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const uint32 ui32Value)
 {
-	cout << ui32Value;
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << ui32Value << " (0x" << hex << ui32Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const uint16 ui16Value)
 {
-	cout << ui16Value;
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << ui16Value << " (0x" << hex << ui16Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const uint8 ui8Value)
 {
-	cout << ui8Value;
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << ui8Value << " (0x" << hex << ui8Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const int64 i64Value)
 {
-	cout << i64Value;
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << i64Value << " (0x" << hex << i64Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const int32 i32Value)
-{
-	cout << i32Value;
+{	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << i32Value << " (0x" << hex << i32Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const int16 i16Value)
 {
-	cout << i16Value;
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << i16Value << " (0x" << hex << i16Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const int8 i8Value)
 {
-	cout << i8Value;
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	ios_base::fmtflags l_oFormat=cout.flags();
+	cout << dec << i8Value << " (0x" << hex << i8Value << ")";
+	cout.flags(l_oFormat);
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const float64 f64Value)
 {
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
 	cout << f64Value;
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const float32 f32Value)
 {
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
 	cout << f32Value;
+	log(LogColor_PopStateBit);
+}
+
+void CLogListenerConsole::log(const boolean bValue)
+{
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	cout << (bValue?"true":"false");
+	log(LogColor_PopStateBit);
 }
 
 void CLogListenerConsole::log(const CIdentifier& rValue)
@@ -131,6 +200,15 @@ void CLogListenerConsole::log(const ELogLevel eLogLevel)
 			cout << "[";
 			log(LogColor_PushStateBit);
 			log(LogColor_ForegroundCyan);
+			cout << "WARNING";
+			log(LogColor_PopStateBit);
+			cout << "]";
+			break;
+
+		case LogLevel_ImportantWarning:
+			cout << "[";
+			log(LogColor_PushStateBit);
+			log(LogColor_ForegroundRed);
 			cout << "WARNING";
 			log(LogColor_PopStateBit);
 			cout << "]";

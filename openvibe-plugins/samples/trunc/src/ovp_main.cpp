@@ -1,6 +1,8 @@
 #include "ovp_defines.h"
+
 #include "ovpCScenarioImporterXML.h"
 #include "ovpCScenarioExporterXML.h"
+
 #include "ovpCCrashingBox.h"
 #include "ovpCBoxAlgorithmProducer.h"
 #include "ovpCBoxAlgorithmConsumer.h"
@@ -9,6 +11,9 @@
 #include "ovpCIdentity.h"
 #include "ovpCLog.h"
 #include "ovpCTest.h"
+
+#include "algorithms/ovpCAlgorithmAddition.h"
+#include "ovpCBoxAlgorithmAdditionTest.h"
 
 // #define _WithTBE_
 
@@ -27,6 +32,9 @@ static OpenViBEPlugins::Samples::CTimeSignalGeneratorDesc* gst_pTimeSignalGenera
 static OpenViBEPlugins::Samples::CIdentityDesc* gst_pIdentityDesc=NULL;
 static OpenViBEPlugins::Samples::CLogDesc* gst_pLogDesc=NULL;
 static OpenViBEPlugins::Samples::CTestDesc* gst_pTestDesc=NULL;
+
+static OpenViBEPlugins::Samples::CBoxAlgorithmAdditionTestDesc* gst_pBoxAlgorithmAdditionTestDesc=NULL;
+static OpenViBEPlugins::Samples::CAlgorithmAdditionDesc* gst_pAlgorithmAdditionDesc=NULL;
 
 #if defined _WithTBE_
 static OpenViBEPlugins::Samples::CTimeBasedEpochingDesc* gst_pTimeBasedEpochingDesc=NULL;
@@ -63,6 +71,9 @@ OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleCont
 	gst_pLogDesc=new OpenViBEPlugins::Samples::CLogDesc();
 	gst_pTestDesc=new OpenViBEPlugins::Samples::CTestDesc();
 
+	gst_pBoxAlgorithmAdditionTestDesc=new OpenViBEPlugins::Samples::CBoxAlgorithmAdditionTestDesc();
+	gst_pAlgorithmAdditionDesc=new OpenViBEPlugins::Samples::CAlgorithmAdditionDesc();
+
 #if defined _WithTBE_
 	gst_pTimeBasedEpochingDesc=new OpenViBEPlugins::Samples::CTimeBasedEpochingDesc();
 #endif
@@ -72,6 +83,13 @@ OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleCont
 
 OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
 {
+#if defined _WithTBE_
+	delete gst_pTimeBasedEpochingDesc;
+#endif
+
+	delete gst_pAlgorithmAdditionDesc;
+	delete gst_pBoxAlgorithmAdditionTestDesc;
+
 	delete gst_pTestDesc;
 	delete gst_pLogDesc;
 	delete gst_pIdentityDesc;
@@ -84,15 +102,12 @@ OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleCo
 	delete gst_pScenarioImporterXMLDesc;
 	delete gst_pScenarioExporterXMLDesc;
 
-#if defined _WithTBE_
-	delete gst_pTimeBasedEpochingDesc;
-#endif
-
 	return true;
 }
 
 OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
 {
+	rpPluginObjectDescription=NULL;
 	switch(ui32Index)
 	{
 		case 0: rpPluginObjectDescription=gst_pScenarioImporterXMLDesc; break;
@@ -107,8 +122,11 @@ OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::I
 		case 8: rpPluginObjectDescription=gst_pLogDesc; break;
 		case 9: rpPluginObjectDescription=gst_pTestDesc; break;
 
+		case 10: rpPluginObjectDescription=gst_pBoxAlgorithmAdditionTestDesc; break;
+		case 11: rpPluginObjectDescription=gst_pAlgorithmAdditionDesc; break;
+
 #if defined _WithTBE_
-		case 10: rpPluginObjectDescription=gst_pTimeBasedEpochingDesc; break;
+		case 12: rpPluginObjectDescription=gst_pTimeBasedEpochingDesc; break;
 #endif
 
 		default: return false;

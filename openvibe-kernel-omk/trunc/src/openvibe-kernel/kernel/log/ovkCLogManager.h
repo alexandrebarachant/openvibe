@@ -16,6 +16,9 @@ namespace OpenViBE
 
 			CLogManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
+			virtual OpenViBE::boolean isActive(OpenViBE::Kernel::ELogLevel eLogLevel);
+			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive);
+
 			virtual void log(const OpenViBE::uint64 ui64Value);
 			virtual void log(const OpenViBE::uint32 ui32Value);
 			virtual void log(const OpenViBE::uint16 ui16Value);
@@ -29,6 +32,8 @@ namespace OpenViBE
 			virtual void log(const OpenViBE::float64 f64Value);
 			virtual void log(const OpenViBE::float32 f32Value);
 
+			virtual void log(const OpenViBE::boolean bValue);
+
 			virtual void log(const OpenViBE::CIdentifier& rValue);
 			virtual void log(const OpenViBE::CString& rValue);
 			virtual void log(const char* pValue);
@@ -39,21 +44,21 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addListener(OpenViBE::Kernel::ILogListener* pListener);
 			virtual OpenViBE::boolean removeListener(OpenViBE::Kernel::ILogListener* pListener);
 
-			virtual OpenViBE::boolean isActive(OpenViBE::Kernel::ELogLevel eLogLevel);
-			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive);
-
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::ILogManager>, OVK_ClassId_Kernel_Log_LogManager);
 
 		protected:
 
 			template <class T> void logForEach(T tValue)
 			{
-				if(isActive(m_eCurrentLogLevel))
+				if(m_eCurrentLogLevel!=LogLevel_None && this->isActive(m_eCurrentLogLevel))
 				{
 					std::vector<OpenViBE::Kernel::ILogListener*>::iterator i;
 					for(i=m_vListener.begin(); i!=m_vListener.end(); i++)
 					{
-						(*i)->log(tValue);
+						if((*i)->isActive(m_eCurrentLogLevel))
+						{
+							(*i)->log(tValue);
+						}
 					}
 				}
 			}

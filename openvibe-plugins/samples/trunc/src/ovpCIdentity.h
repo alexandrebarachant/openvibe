@@ -37,7 +37,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CIdentity(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype) const
+				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				// Adds box inputs
 				rPrototype.addInput("Input stream", OV_UndefinedIdentifier);

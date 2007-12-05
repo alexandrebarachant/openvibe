@@ -11,9 +11,46 @@ using namespace std;
 
 // ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
 
-static void getValueBitMaskCB(::GtkWidget* pWidget, gpointer pUserData)
+static void collect_widget_cb(::GtkWidget* pWidget, gpointer pUserData)
 {
 	static_cast< vector< ::GtkWidget* > *>(pUserData)->push_back(pWidget);
+}
+
+static void on_button_setting_filename_browse_pressed(::GtkButton* pButton, gpointer pUserData)
+{
+	vector< ::GtkWidget* > l_vWidget;
+	gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+	::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
+		"Select file to open...",
+		NULL,
+		GTK_FILE_CHOOSER_ACTION_SAVE,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+		NULL);
+
+	const char* l_sInitialFileName=gtk_entry_get_text(l_pWidget);
+	if(g_path_is_absolute(l_sInitialFileName))
+	{
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sInitialFileName);
+	}
+	else
+	{
+		char* l_sFullPath=g_build_filename(g_get_current_dir(), l_sInitialFileName, NULL);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sFullPath);
+		g_free(l_sFullPath);
+	}
+
+	gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), false);
+
+	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
+	{
+		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
+		gtk_entry_set_text(l_pWidget, l_sFileName);
+		g_free(l_sFileName);
+	}
+	gtk_widget_destroy(l_pWidgetDialogOpen);
 }
 
 // ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
@@ -122,7 +159,7 @@ string CSettingEditor::getSettingWidgetName(const CIdentifier& rTypeIdentifier)
 	if(rTypeIdentifier==OV_TypeId_Integer)  return "spin_button_setting_integer";
 	if(rTypeIdentifier==OV_TypeId_Float)    return "spin_button_setting_float";
 	if(rTypeIdentifier==OV_TypeId_String)   return "entry_setting_string";
-	if(rTypeIdentifier==OV_TypeId_Filename) return "file_chooser_button_setting_filename";
+	if(rTypeIdentifier==OV_TypeId_Filename) return "hbox_setting_filename";
 	if(m_rKernel.getContext()->getTypeManager().isEnumeration(rTypeIdentifier)) return "combobox_setting_enumeration";
 	if(m_rKernel.getContext()->getTypeManager().isBitMask(rTypeIdentifier))     return "table_setting_bitmask";
 	return "entry_setting_string";
@@ -175,8 +212,10 @@ CString CSettingEditor::getValueString(::GtkWidget* pWidget)
 
 CString CSettingEditor::getValueFilename(::GtkWidget* pWidget)
 {
-	::GtkFileChooser* l_pWidget=GTK_FILE_CHOOSER(pWidget);
-	return CString(gtk_file_chooser_get_filename(l_pWidget));
+	vector< ::GtkWidget* > l_vWidget;
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+	return CString(gtk_entry_get_text(l_pWidget));
 }
 
 CString CSettingEditor::getValueEnumeration(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget)
@@ -189,10 +228,9 @@ CString CSettingEditor::getValueEnumeration(const CIdentifier& rTypeIdentifier, 
 
 CString CSettingEditor::getValueBitMask(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget)
 {
-	::GtkTable* l_pBitMaskTable=GTK_TABLE(pWidget);
-	string l_sResult;
 	vector< ::GtkWidget* > l_vWidget;
-	gtk_container_foreach(GTK_CONTAINER(l_pBitMaskTable), getValueBitMaskCB, &l_vWidget);
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	string l_sResult;
 	for(unsigned int i=0; i<l_vWidget.size(); i++)
 	{
 		if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_vWidget[i])))
@@ -263,8 +301,13 @@ void CSettingEditor::setValueString(::GtkWidget* pWidget, const CString& rValue)
 
 void CSettingEditor::setValueFilename(::GtkWidget* pWidget, const CString& rValue)
 {
-	::GtkFileChooser* l_pWidget=GTK_FILE_CHOOSER(pWidget);
-	gtk_file_chooser_set_filename(l_pWidget, rValue);
+	vector< ::GtkWidget* > l_vWidget;
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), NULL);
+
+	gtk_entry_set_text(l_pWidget, rValue);
 }
 
 void CSettingEditor::setValueEnumeration(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const CString& rValue)

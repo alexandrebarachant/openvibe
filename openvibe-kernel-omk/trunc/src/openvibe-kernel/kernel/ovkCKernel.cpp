@@ -14,7 +14,7 @@ using namespace OpenViBE::Kernel;
 
 	static void _openvibeKernelSignalHandler_(int iSignal)
 	{
-		throw 0;
+		throw;
 	}
 
 #endif

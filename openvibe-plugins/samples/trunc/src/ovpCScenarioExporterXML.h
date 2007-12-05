@@ -30,7 +30,7 @@ namespace OpenViBEPlugins
 			virtual void exportBox(const OpenViBE::Kernel::IBox& rBox);
 			virtual void exportLink(const OpenViBE::Kernel::ILink& rLink);
 
-			virtual OpenViBE::boolean doExport(OpenViBE::Plugins::IScenarioExporterContext& rScenarioExporterContext);
+			virtual OpenViBE::boolean doExport(OpenViBE::Kernel::IScenarioExporterContext& rScenarioExporterContext);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IScenarioExporter, OVP_ClassId_ScenarioExporterXML)
 

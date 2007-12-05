@@ -25,9 +25,9 @@ namespace OpenViBEToolkit
 
 		CBoxAlgorithmStreamedMatrixOutputWriterPart(void);
 
-		virtual OpenViBE::boolean setDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-		virtual OpenViBE::boolean setDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-		virtual OpenViBE::boolean setDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+		virtual OpenViBE::boolean setDimmensionCount(const OpenViBE::uint32 ui32DimensionCount);
+		virtual OpenViBE::boolean setDimmensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
+		virtual OpenViBE::boolean setDimmensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
 		virtual OpenViBE::boolean setBuffer(const OpenViBE::float64* pBuffer);
 
 		_IsDerivedFromClass_Final_(OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase, OVTK_ClassId_);
@@ -46,9 +46,9 @@ namespace OpenViBEToolkit
 		const OpenViBE::float64* m_pMatrixBuffer;
 		OpenViBE::uint64 m_ui64MatrixBufferSize;
 		OpenViBE::uint32 m_ui32Status;
-		OpenViBE::uint32 m_ui32DimmensionCount;
-		std::map<OpenViBE::uint32, OpenViBE::uint32> m_vDimmensionSize;
-		std::map<OpenViBE::uint32, std::map< OpenViBE::uint32, std::string > > m_vDimmensionLabel;
+		OpenViBE::uint32 m_ui32DimensionCount;
+		std::map<OpenViBE::uint32, OpenViBE::uint32> m_vDimensionSize;
+		std::map<OpenViBE::uint32, std::map< OpenViBE::uint32, std::string > > m_vDimensionLabel;
 
 		EBML::CWriterHelper m_oWriterHelper;
 	};

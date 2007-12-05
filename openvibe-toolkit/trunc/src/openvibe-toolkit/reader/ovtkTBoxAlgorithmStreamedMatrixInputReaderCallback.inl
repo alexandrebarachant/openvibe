@@ -24,7 +24,7 @@ public:
 		Status_ParsingNothing,
 		Status_ParsingHeader,
 		Status_ParsingBuffer,
-		Status_ParsingDimmension,
+		Status_ParsingDimension,
 	};
 
 	TBoxAlgorithmStreamedMatrixInputReaderCallback(void);
@@ -52,10 +52,10 @@ protected:
 	EBML::IReaderHelper* m_pReaderHelper;
 
 	const OpenViBE::float64* m_pMatrixBuffer;
-	OpenViBE::uint32 m_ui32DimmensionCount;
-	std::vector<OpenViBE::uint32> m_vDimmensionSize;
-	std::vector<std::vector< std::string > > m_vDimmensionLabel;
-	std::vector<std::string> m_vCurrentDimmensionLabel;
+	OpenViBE::uint32 m_ui32DimensionCount;
+	std::vector<OpenViBE::uint32> m_vDimensionSize;
+	std::vector<std::vector< std::string > > m_vDimensionLabel;
+	std::vector<std::string> m_vCurrentDimensionLabel;
 };
 
 // ________________________________________________________________________________________________________________
@@ -67,7 +67,7 @@ TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::TBoxAlgorithmStr
 	,m_ui32Status(Status_ParsingNothing)
 	,m_pReaderHelper(NULL)
 	,m_pMatrixBuffer(NULL)
-	,m_ui32DimmensionCount(0)
+	,m_ui32DimensionCount(0)
 {
 	m_pReaderHelper=EBML::createReaderHelper();
 }
@@ -92,10 +92,10 @@ template <class IBaseInterface>
 EBML::boolean TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::isMasterChild(const EBML::CIdentifier& rIdentifier)
 {
 	     if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix)                  return true;
-	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_Dimmension)       return true;
-	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_DimmensionCount)  return false;
-	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size)  return false;
-	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label) return false;
+	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_Dimension)       return true;
+	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)  return false;
+	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)  return false;
+	else if(rIdentifier==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label) return false;
 	else if(rIdentifier==OVTK_NodeId_Buffer_StreamedMatrix)                  return true;
 	else if(rIdentifier==OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer)        return false;
 	return CThisClassParent::isMasterChild(rIdentifier);
@@ -110,24 +110,24 @@ void TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::openChild(c
 
 
 	if((l_rTop==OVTK_NodeId_Header_StreamedMatrix)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimmensionCount)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label)
 	 ||(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix)
 	 ||(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer))
 	{
 		if(l_rTop==OVTK_NodeId_Header_StreamedMatrix && m_ui32Status==Status_ParsingNothing)
 		{
 			m_ui32Status=Status_ParsingHeader;
-			m_ui32DimmensionCount=0;
-			m_vDimmensionSize.clear();
-			m_vDimmensionLabel.clear();
+			m_ui32DimensionCount=0;
+			m_vDimensionSize.clear();
+			m_vDimensionLabel.clear();
 		}
-		else if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension && m_ui32Status==Status_ParsingHeader)
+		else if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension && m_ui32Status==Status_ParsingHeader)
 		{
-			m_ui32Status=Status_ParsingDimmension;
-			m_vCurrentDimmensionLabel.clear();
+			m_ui32Status=Status_ParsingDimension;
+			m_vCurrentDimensionLabel.clear();
 		}
 		else if(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix && m_ui32Status==Status_ParsingNothing)
 		{
@@ -146,22 +146,22 @@ void TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::processChil
 	EBML::CIdentifier& l_rTop=m_vNodes.top();
 
 	if((l_rTop==OVTK_NodeId_Header_StreamedMatrix)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimmensionCount)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label)
 	 ||(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix)
 	 ||(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer))
 	{
 		switch(m_ui32Status)
 		{
 			case Status_ParsingHeader:
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimmensionCount)  { m_ui32DimmensionCount=static_cast<OpenViBE::uint32>(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)  { m_ui32DimensionCount=static_cast<OpenViBE::uint32>(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 				break;
 
-			case Status_ParsingDimmension:
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size)  { m_vDimmensionSize.push_back(static_cast<OpenViBE::uint32>(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize))); }
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label) { m_vCurrentDimmensionLabel.push_back(m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize)); }
+			case Status_ParsingDimension:
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)  { m_vDimensionSize.push_back(static_cast<OpenViBE::uint32>(m_pReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize))); }
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label) { m_vCurrentDimensionLabel.push_back(m_pReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize)); }
 				break;
 
 			case Status_ParsingBuffer:
@@ -181,10 +181,10 @@ void TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::closeChild(
 	EBML::CIdentifier& l_rTop=m_vNodes.top();
 
 	if((l_rTop==OVTK_NodeId_Header_StreamedMatrix)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimmensionCount)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size)
-	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)
+	 ||(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label)
 	 ||(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix)
 	 ||(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer))
 	{
@@ -192,10 +192,10 @@ void TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::closeChild(
 		{
 			m_ui32Status=Status_ParsingNothing;
 		}
-		else if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimmension && m_ui32Status==Status_ParsingDimmension)
+		else if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension && m_ui32Status==Status_ParsingDimension)
 		{
 			m_ui32Status=Status_ParsingHeader;
-			m_vDimmensionLabel.push_back(m_vCurrentDimmensionLabel);
+			m_vDimensionLabel.push_back(m_vCurrentDimensionLabel);
 		}
 		else if(l_rTop==OVTK_NodeId_Header_StreamedMatrix && m_ui32Status==Status_ParsingHeader)
 		{
@@ -218,19 +218,19 @@ template <class IBaseInterface>
 void TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::sendHeaderToOwner(void)
 {
 	// should send header to owner
-	m_pCallback->setMatrixDimmensionCount(m_ui32DimmensionCount);
-	for(OpenViBE::uint32 i=0; i<m_ui32DimmensionCount; i++)
+	m_pCallback->setMatrixDimmensionCount(m_ui32DimensionCount);
+	for(OpenViBE::uint32 i=0; i<m_ui32DimensionCount; i++)
 	{
-		if(i<m_vDimmensionSize.size())
+		if(i<m_vDimensionSize.size())
 		{
-			m_pCallback->setMatrixDimmensionSize(i, m_vDimmensionSize[i]);
-			for(OpenViBE::uint32 j=0; j<m_vDimmensionSize[i]; j++)
+			m_pCallback->setMatrixDimmensionSize(i, m_vDimensionSize[i]);
+			for(OpenViBE::uint32 j=0; j<m_vDimensionSize[i]; j++)
 			{
-				if(i<m_vDimmensionLabel.size())
+				if(i<m_vDimensionLabel.size())
 				{
-					if(j<m_vDimmensionLabel[i].size())
+					if(j<m_vDimensionLabel[i].size())
 					{
-						m_pCallback->setMatrixDimmensionLabel(i, j, m_vDimmensionLabel[i][j].c_str());
+						m_pCallback->setMatrixDimmensionLabel(i, j, m_vDimensionLabel[i][j].c_str());
 					}
 					else
 					{

@@ -2,66 +2,89 @@
 
 #include <string>
 
-using namespace std;
 using namespace OpenViBE;
 
-#define m_pImplementation ((string*)m_pSecretImplementation)
-#define m_pImplementation2(r) ((string*)r.m_pSecretImplementation)
+namespace OpenViBE
+{
+	struct CStringImpl
+	{
+		std::string m_sValue;
+	};
+};
 
 CString::CString(void)
 {
-	m_pSecretImplementation=new string();
+	m_pStringImpl=new CStringImpl();
 }
 
 CString::CString(const CString& rString)
 {
-	m_pSecretImplementation=new string(*m_pImplementation2(rString));
+	m_pStringImpl=new CStringImpl();
+	m_pStringImpl->m_sValue=rString.m_pStringImpl->m_sValue;
 }
 
 CString::CString(const char* pString)
 {
+	m_pStringImpl=new CStringImpl();
 	if(pString)
 	{
-		m_pSecretImplementation=new string(pString);
-	}
-	else
-	{
-		m_pSecretImplementation=new string();
+		m_pStringImpl->m_sValue=pString;
 	}
 }
 
 CString::~CString(void)
 {
-	delete m_pImplementation;
+	delete m_pStringImpl;
 }
 
 CString::operator const char* (void) const
 {
-	if(m_pImplementation == NULL)
-		return NULL;
-	else
-		return m_pImplementation->c_str();
+	return m_pStringImpl->m_sValue.c_str();
 }
 
 CString& CString::operator=(const CString& rString)
 {
-	*m_pImplementation=*m_pImplementation2(rString);
+	m_pStringImpl->m_sValue=rString.m_pStringImpl->m_sValue;
 	return *this;
 }
 
-const CString OpenViBE::operator+(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2)
+const CString OpenViBE::operator+(const CString& rString1, const CString& rString2)
 {
-	CString l_oResult;
-	*m_pImplementation2(l_oResult)=*m_pImplementation2(rString1)+*m_pImplementation2(rString2);
-	return l_oResult;
+	std::string l_oResult;
+	l_oResult=rString1.m_pStringImpl->m_sValue+rString2.m_pStringImpl->m_sValue;
+	return l_oResult.c_str();
 }
 
-boolean OpenViBE::operator==(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2)
+boolean OpenViBE::operator==(const CString& rString1, const CString& rString2)
 {
-	return (*m_pImplementation2(rString1))==(*m_pImplementation2(rString2));
+	return (rString1.m_pStringImpl->m_sValue)==(rString2.m_pStringImpl->m_sValue);
 }
 
-boolean OpenViBE::operator!=(const OpenViBE::CString& rString1, const OpenViBE::CString& rString2)
+boolean OpenViBE::operator!=(const CString& rString1, const CString& rString2)
 {
-	return (*m_pImplementation2(rString1))!=(*m_pImplementation2(rString2));
+	return (rString1.m_pStringImpl->m_sValue)!=(rString2.m_pStringImpl->m_sValue);
+}
+
+boolean CString::set(const CString& rString)
+{
+	m_pStringImpl->m_sValue=rString.m_pStringImpl->m_sValue;
+	return true;
+}
+
+boolean CString::set(const char* pString)
+{
+	if(pString)
+	{
+		m_pStringImpl->m_sValue=pString;
+	}
+	else
+	{
+		m_pStringImpl->m_sValue="";
+	}
+	return true;
+}
+
+const char* CString::toCString(void) const
+{
+	return m_pStringImpl->m_sValue.c_str();
 }

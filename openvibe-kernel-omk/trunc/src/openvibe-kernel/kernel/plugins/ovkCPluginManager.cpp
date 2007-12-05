@@ -42,7 +42,7 @@ namespace OpenViBE
 
 					if(FS::Files::equals(rEntry.getName(), (const char*)l_sPluginModuleName))
 					{
-						log() << LogLevel_Warning << "Module [" << rEntry.getName() << "] has already been loaded\n";
+						log() << LogLevel_Warning << "Module [" << CString(rEntry.getName()) << "] has already been loaded\n";
 						return true;
 					}
 				}
@@ -50,7 +50,7 @@ namespace OpenViBE
 				IObject* l_pObject=m_rKernelObjectFactory.createObject(OV_ClassId_Kernel_Plugins_PluginModule);
 				if(!l_pObject)
 				{
-					log() << LogLevel_Warning << "Loading [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Warning << "Loading [" << CString(rEntry.getName()) << "]\n";
 					return true;
 				}
 
@@ -58,7 +58,7 @@ namespace OpenViBE
 				if(!l_pPluginModule)
 				{
 					m_rKernelObjectFactory.releaseObject(l_pObject);
-					log() << LogLevel_Warning << "Loading [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Warning << "Loading [" << CString(rEntry.getName()) << "]\n";
 					return true;
 				}
 
@@ -66,7 +66,7 @@ namespace OpenViBE
 				if(!l_pPluginModule->load(rEntry.getName(), &l_sLoadError))
 				{
 					m_rKernelObjectFactory.releaseObject(l_pObject);
-					log() << LogLevel_Warning << "File [" << rEntry.getName() << "] is not a plugin module (error:" << l_sLoadError << ")\n";
+					log() << LogLevel_Warning << "File [" << CString(rEntry.getName()) << "] is not a plugin module (error:" << l_sLoadError << ")\n";
 					return true;
 				}
 
@@ -75,7 +75,7 @@ namespace OpenViBE
 					l_pPluginModule->uninitialize();
 					l_pPluginModule->unload();
 					m_rKernelObjectFactory.releaseObject(l_pObject);
-					log() << LogLevel_Warning << "Module [" << rEntry.getName() << "] did not initialize correctly\n";
+					log() << LogLevel_Warning << "Module [" << CString(rEntry.getName()) << "] did not initialize correctly\n";
 					return true;
 				}
 
@@ -96,11 +96,11 @@ namespace OpenViBE
 
 				if(l_bPluginObjectDescAdded)
 				{
-					log() << LogLevel_Info << "Added " << (uint32)m_rPluginObjectDesc[l_pPluginModule].size() << " 'plugin object descriptor(s)' from [" << rEntry.getName() << "]\n";
+					log() << LogLevel_Info << "Added " << (uint32)m_rPluginObjectDesc[l_pPluginModule].size() << " plugin object descriptor(s) from [" << CString(rEntry.getName()) << "]\n";
 				}
 				else
 				{
-					log() << LogLevel_Warning << "No 'plugin object descriptor' found from [" << rEntry.getName() << "] even if it looked like a plugin module\n";
+					log() << LogLevel_Warning << "No 'plugin object descriptor' found from [" << CString(rEntry.getName()) << "] even if it looked like a plugin module\n";
 				}
 
 				return true;
@@ -224,7 +224,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 		}
 	}
 
-	log() << LogLevel_Warning << "Class identifier not found\n";
+	log() << LogLevel_Warning << "Class identifier " << rClassIdentifier << " not found\n";
 	return NULL;
 
 }
@@ -249,7 +249,7 @@ IPluginObject* CPluginManager::createPluginObject(
 		}
 	}
 
-	log() << LogLevel_Warning << "Class identifier not found\n";
+	log() << LogLevel_Warning << "Class identifier " << rClassIdentifier << " not found\n";
 	return NULL;
 }
 
@@ -275,4 +275,101 @@ boolean CPluginManager::releasePluginObject(
 
 	log() << LogLevel_Warning << "Plugin object not found\n";
 	return false;
+}
+
+
+IAlgorithm* CPluginManager::createAlgorithm(
+	const CIdentifier& rClassIdentifier,
+	const IAlgorithmDesc** ppAlgorithmDesc)
+{
+	if(ppAlgorithmDesc)
+	{
+		*ppAlgorithmDesc=NULL;
+	}
+
+	IPluginObjectDesc* l_pPluginObjectDesc=NULL;
+	map<IPluginModule*, vector<IPluginObjectDesc*> >::iterator i;
+	vector<IPluginObjectDesc*>::iterator j;
+	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
+	{
+		for(j=i->second.begin(); j!=i->second.end(); j++)
+		{
+			if((*j)->getCreatedClass()==rClassIdentifier)
+			{
+				l_pPluginObjectDesc=*j;
+			}
+		}
+	}
+	if(!l_pPluginObjectDesc)
+	{
+		return NULL;
+	}
+
+	IPluginObject* l_pPluginObject=l_pPluginObjectDesc->create();
+	if(!l_pPluginObjectDesc)
+	{
+		return NULL;
+	}
+
+	IAlgorithmDesc* l_pAlgorithmDesc=dynamic_cast<IAlgorithmDesc*>(l_pPluginObjectDesc);
+	IAlgorithm* l_pAlgorithm=dynamic_cast<IAlgorithm*>(l_pPluginObject);
+	if(!l_pAlgorithmDesc || !l_pAlgorithm)
+	{
+		l_pPluginObject->release();
+		return NULL;
+	}
+
+	if(ppAlgorithmDesc)
+	{
+		*ppAlgorithmDesc=l_pAlgorithmDesc;
+	}
+	return l_pAlgorithm;
+}
+
+IBoxAlgorithm* CPluginManager::createBoxAlgorithm(
+	const CIdentifier& rClassIdentifier,
+	const IBoxAlgorithmDesc** ppBoxAlgorithmDesc)
+{
+	if(ppBoxAlgorithmDesc)
+	{
+		*ppBoxAlgorithmDesc=NULL;
+	}
+
+	IPluginObjectDesc* l_pPluginObjectDesc=NULL;
+	map<IPluginModule*, vector<IPluginObjectDesc*> >::iterator i;
+	vector<IPluginObjectDesc*>::iterator j;
+	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
+	{
+		for(j=i->second.begin(); j!=i->second.end(); j++)
+		{
+			if((*j)->getCreatedClass()==rClassIdentifier)
+			{
+				l_pPluginObjectDesc=*j;
+			}
+		}
+	}
+	if(!l_pPluginObjectDesc)
+	{
+		return NULL;
+	}
+
+	IPluginObject* l_pPluginObject=l_pPluginObjectDesc->create();
+	if(!l_pPluginObjectDesc)
+	{
+		return NULL;
+	}
+
+	IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<IBoxAlgorithmDesc*>(l_pPluginObjectDesc);
+	IBoxAlgorithm* l_pBoxAlgorithm=dynamic_cast<IBoxAlgorithm*>(l_pPluginObject);
+	if(!l_pBoxAlgorithmDesc || !l_pBoxAlgorithm)
+	{
+		l_pPluginObject->release();
+		return NULL;
+	}
+
+	if(ppBoxAlgorithmDesc)
+	{
+		*ppBoxAlgorithmDesc=l_pBoxAlgorithmDesc;
+	}
+	return l_pBoxAlgorithm;
 }

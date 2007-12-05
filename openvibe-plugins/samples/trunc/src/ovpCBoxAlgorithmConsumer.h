@@ -29,7 +29,7 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean initialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Kernel::IBoxAlgorithmContext& rContext)
 			{
 				m_pReader=EBML::createReader(*this);
 				m_pReaderHelper=EBML::createReaderHelper();
@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean uninitialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Kernel::IBoxAlgorithmContext& rContext)
 			{
 				m_pReaderHelper->release();
 				m_pReader->release();
@@ -50,14 +50,14 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean processInput(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
 				OpenViBE::uint32 ui32InputIndex)
 			{
 				rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
 				return true;
 			}
 
-			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+			virtual OpenViBE::boolean process(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
 				OpenViBE::Kernel::IBoxIO* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
 
@@ -125,7 +125,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CBoxAlgorithmConsumer(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype) const
+				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("an input", OpenViBE::CIdentifier(0x1234, 0x5678));
 

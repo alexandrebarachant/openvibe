@@ -13,6 +13,15 @@
 #include "ovCIdentifier.h"
 #include "ovCString.h"
 
+#include "ovIMatrix.h"
+#include "ovCMatrix.h"
+
+#include "ovIStimulationSet.h"
+#include "ovCStimulationSet.h"
+
+#include "ovIMemoryBuffer.h"
+#include "ovCMemoryBuffer.h"
+
 #include "ovIObject.h"
 #include "ovIKernelLoader.h"
 
@@ -29,6 +38,14 @@
 #include "kernel/ovIKernelObjectFactory.h"
 
 #include "kernel/ovITypeManager.h"
+#include "kernel/ovIParameter.h"
+#include "kernel/ovIConfigurable.h"
+#include "kernel/ovTParameterHandler.h"
+
+#include "kernel/algorithm/ovIAlgorithmContext.h"
+#include "kernel/algorithm/ovIAlgorithmManager.h"
+#include "kernel/algorithm/ovIAlgorithmProto.h"
+#include "kernel/algorithm/ovIAlgorithmProxy.h"
 
 #include "kernel/log/ovILogManager.h"
 #include "kernel/log/ovILogListener.h"
@@ -71,6 +88,9 @@
 #include "plugins/ovIPluginObject.h"
 #include "plugins/ovIPluginObjectDesc.h"
 
+#include "plugins/ovIAlgorithm.h"
+#include "plugins/ovIAlgorithmDesc.h"
+
 #include "plugins/ovIBoxAlgorithm.h"
 #include "plugins/ovIBoxAlgorithmDesc.h"
 
@@ -87,11 +107,6 @@ namespace OpenViBE
 		// Backward compatibility
 		typedef OpenViBE::Kernel::IBox IStaticBoxContext;
 		typedef OpenViBE::Kernel::IBoxIO IDynamicBoxContext;
-		typedef OpenViBE::Kernel::IBoxProto IBoxProto;
-		typedef OpenViBE::Kernel::IBoxAlgorithmContext IBoxAlgorithmContext;
-		typedef OpenViBE::Kernel::IScenarioImporterContext IScenarioImporterContext;
-		typedef OpenViBE::Kernel::IScenarioExporterContext IScenarioExporterContext;
-		typedef OpenViBE::Kernel::IPlayerContext IPlayerContext;
 	};
 };
 

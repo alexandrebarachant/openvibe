@@ -26,6 +26,9 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier* pTargetIdentifier,
 				const OpenViBE::uint32 ui32TargetIdentifierCount);
 
+			virtual OpenViBE::uint64 getCurrentTime(void);
+
+			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void);
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void);
 			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void);
 			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void);
@@ -35,6 +38,7 @@ namespace OpenViBE
 		protected:
 
 			::PsSimulatedBox* m_pSimulatedBox;
+			OpenViBE::Kernel::IAlgorithmManager* m_pAlgorithmManagerBridge;
 			OpenViBE::Kernel::ILogManager* m_pLogManagerBridge;
 			OpenViBE::Kernel::IScenarioManager* m_pScenarioManagerBridge;
 			OpenViBE::Kernel::ITypeManager* m_pTypeManagerBridge;

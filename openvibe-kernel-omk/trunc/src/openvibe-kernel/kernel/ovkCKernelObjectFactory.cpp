@@ -1,5 +1,7 @@
 #include "ovkCKernelObjectFactory.h"
 
+#include "ovkCConfigurable.h"
+
 #include "scenario/ovkCBox.h"
 #include "scenario/ovkCLink.h"
 #include "scenario/ovkCProcessingUnit.h"
@@ -59,11 +61,13 @@ IObject* Kernel::CKernelObjectFactory::createObject(
 	create(rClassIdentifier, OV_ClassId_Kernel_Visualisation_VisualisationTree,   l_pResult, Kernel::CVisualisationTree);
 	create(rClassIdentifier, OV_ClassId_Kernel_Visualisation_VisualisationWidget, l_pResult, Kernel::CVisualisationWidget);
 
+	create(rClassIdentifier, OV_ClassId_Kernel_Configurable,                      l_pResult, Kernel::CConfigurable);
+
 	// create(rClassIdentifier, OV_ClassId_, l_pResult, Plugins::CBoxContext);
 
 	if(l_pResult)
 	{
-		log() << LogLevel_Trace << "Created object with class id " << rClassIdentifier << " and final class id " << l_pResult->getClassIdentifier() << "\n";
+		log() << LogLevel_Debug << "Created object with class id " << rClassIdentifier << " and final class id " << l_pResult->getClassIdentifier() << "\n";
 	}
 	else
 	{
@@ -94,7 +98,7 @@ boolean Kernel::CKernelObjectFactory::releaseObject(
 	m_oCreatedObjects.erase(i);
 	delete pObject;
 
-	log() << LogLevel_Trace << "Released object with final class id " << l_rClassIdentifier << "\n";
+	log() << LogLevel_Debug << "Released object with final class id " << l_rClassIdentifier << "\n";
 
 	return true;
 }

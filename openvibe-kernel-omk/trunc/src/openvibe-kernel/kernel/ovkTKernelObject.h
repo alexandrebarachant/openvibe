@@ -29,7 +29,7 @@ namespace OpenViBE
 				return m_rKernelContext.getLogManager();
 			}
 
-			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_KernelObject)
+			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_KernelObjectT)
 
 		private:
 

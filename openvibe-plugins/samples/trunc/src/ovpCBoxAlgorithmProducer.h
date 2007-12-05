@@ -31,13 +31,13 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::uint64 getClockFrequency(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Kernel::IBoxAlgorithmContext& rContext)
 			{
 				return 1LL<<32;
 			}
 
 			virtual OpenViBE::boolean initialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Kernel::IBoxAlgorithmContext& rContext)
 			{
 				m_pWriter=EBML::createWriter(*this);
 				m_pWriterHelper=EBML::createWriterHelper();
@@ -46,7 +46,7 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean uninitialize(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rContext)
+				OpenViBE::Kernel::IBoxAlgorithmContext& rContext)
 			{
 				m_pWriterHelper->release();
 				m_pWriter->release();
@@ -58,14 +58,14 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean processClock(
-				OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext,
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
 				OpenViBE::Kernel::IMessageClock& rMessageClock)
 			{
 				rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
 				return true;
 			}
 
-			virtual OpenViBE::boolean process(OpenViBE::Plugins::IBoxAlgorithmContext& rBoxAlgorithmContext)
+			virtual OpenViBE::boolean process(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
 			{
 				OpenViBE::Kernel::IBoxIO* l_pDynamicBoxContext=rBoxAlgorithmContext.getDynamicBoxContext();
 
@@ -104,7 +104,7 @@ namespace OpenViBEPlugins
 
 		public:
 
-			OpenViBE::Plugins::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
+			OpenViBE::Kernel::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
 		};
 
 		class CBoxAlgorithmProducerDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -124,7 +124,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Samples::CBoxAlgorithmProducer(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
-				OpenViBE::Plugins::IBoxProto& rPrototype) const
+				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addOutput("an output", OpenViBE::CIdentifier(0x1234, 0x5678));
 

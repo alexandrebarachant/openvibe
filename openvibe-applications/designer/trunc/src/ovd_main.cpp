@@ -16,6 +16,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace OpenViBE::Plugins;
 using namespace OpenViBEDesigner;
 using namespace std;
 
@@ -42,16 +43,18 @@ public:
 		,m_pGladeInterface(NULL)
 		,m_pMainWindow(NULL)
 		,m_pScenarioNotebook(NULL)
-		,m_pBoxAlgorithmNotebook(NULL)
+		,m_pResourceNotebook(NULL)
 		,m_pBoxAlgorithmTreeModel(NULL)
 		,m_pBoxAlgorithmTreeView(NULL)
+		,m_pAlgorithmTreeModel(NULL)
+		,m_pAlgorithmTreeView(NULL)
 	{
 		m_pPluginManager=&m_pKernel->getContext()->getPluginManager();
 		m_pScenarioManager=&m_pKernel->getContext()->getScenarioManager();
 		m_pVisualisationManager=&m_pKernel->getContext()->getVisualisationManager();
 	}
 
-	void init(void)
+	void initialize(void)
 	{
 		// Prepares scenario clipboard
 		CIdentifier l_oClipboardScenarioIdentifier;
@@ -94,39 +97,88 @@ public:
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_title_button_expand")),   "clicked", G_CALLBACK(box_algorithm_title_button_expand_cb),   this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_title_button_collapse")), "clicked", G_CALLBACK(box_algorithm_title_button_collapse_cb), this);
 
-		// Prepares box algorithm view
-		m_pBoxAlgorithmTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_tree"));
-		::GtkTreeViewColumn* l_pTreeViewColumnName=gtk_tree_view_column_new();
-		::GtkTreeViewColumn* l_pTreeViewColumnDesc=gtk_tree_view_column_new();
-		::GtkCellRenderer* l_pCellRendererIcon=gtk_cell_renderer_pixbuf_new();
-		::GtkCellRenderer* l_pCellRendererName=gtk_cell_renderer_text_new();
-		::GtkCellRenderer* l_pCellRendererDesc=gtk_cell_renderer_text_new();
-		gtk_tree_view_column_set_title(l_pTreeViewColumnName, "Name");
-		gtk_tree_view_column_set_title(l_pTreeViewColumnDesc, "Description");
-		gtk_tree_view_column_pack_start(l_pTreeViewColumnName, l_pCellRendererIcon, FALSE);
-		gtk_tree_view_column_pack_start(l_pTreeViewColumnName, l_pCellRendererName, TRUE);
-		gtk_tree_view_column_pack_start(l_pTreeViewColumnDesc, l_pCellRendererDesc, TRUE);
-		gtk_tree_view_column_set_attributes(l_pTreeViewColumnName, l_pCellRendererIcon, "stock-id", BoxAlgorithm_StringStockIcon, NULL);
-		gtk_tree_view_column_set_attributes(l_pTreeViewColumnName, l_pCellRendererName, "text", BoxAlgorithm_StringName, NULL);
-		gtk_tree_view_column_set_attributes(l_pTreeViewColumnDesc, l_pCellRendererDesc, "text", BoxAlgorithm_StringShortDescription, NULL);
-		gtk_tree_view_column_set_sizing(l_pTreeViewColumnName, GTK_TREE_VIEW_COLUMN_FIXED);
-		gtk_tree_view_column_set_sizing(l_pTreeViewColumnDesc, GTK_TREE_VIEW_COLUMN_FIXED);
-		gtk_tree_view_column_set_expand(l_pTreeViewColumnName, FALSE);
-		gtk_tree_view_column_set_expand(l_pTreeViewColumnDesc, FALSE);
-		gtk_tree_view_column_set_resizable(l_pTreeViewColumnName, TRUE);
-		gtk_tree_view_column_set_resizable(l_pTreeViewColumnDesc, TRUE);
-		gtk_tree_view_column_set_min_width(l_pTreeViewColumnName, 64);
-		gtk_tree_view_column_set_min_width(l_pTreeViewColumnDesc, 64);
-		gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnName, 256);
-		gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnDesc, 512);
-		gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnName);
-		gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnDesc);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "algorithm_title_button_expand")),   "clicked", G_CALLBACK(algorithm_title_button_expand_cb),   this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
 
 		// Prepares main notebooks
 		m_pScenarioNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "scenario_notebook"));
-		m_pBoxAlgorithmNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_notebook"));
+		m_pResourceNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "resource_notebook"));
+
+		// Listen to scenario notebook changes
+		g_signal_connect(G_OBJECT(m_pScenarioNotebook), "switch-page", G_CALLBACK(change_current_scenario_cb), this);
+
+		// Creates an empty scnenario
 		gtk_notebook_remove_page(m_pScenarioNotebook, 0);
-		newScenarioCB();
+
+		{
+			// Prepares box algorithm view
+			m_pBoxAlgorithmTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeInterface, "box_algorithm_tree"));
+			::GtkTreeViewColumn* l_pTreeViewColumnName=gtk_tree_view_column_new();
+			::GtkTreeViewColumn* l_pTreeViewColumnDesc=gtk_tree_view_column_new();
+			::GtkCellRenderer* l_pCellRendererIcon=gtk_cell_renderer_pixbuf_new();
+			::GtkCellRenderer* l_pCellRendererName=gtk_cell_renderer_text_new();
+			::GtkCellRenderer* l_pCellRendererDesc=gtk_cell_renderer_text_new();
+			gtk_tree_view_column_set_title(l_pTreeViewColumnName, "Name");
+			gtk_tree_view_column_set_title(l_pTreeViewColumnDesc, "Description");
+			gtk_tree_view_column_pack_start(l_pTreeViewColumnName, l_pCellRendererIcon, FALSE);
+			gtk_tree_view_column_pack_start(l_pTreeViewColumnName, l_pCellRendererName, TRUE);
+			gtk_tree_view_column_pack_start(l_pTreeViewColumnDesc, l_pCellRendererDesc, TRUE);
+			gtk_tree_view_column_set_attributes(l_pTreeViewColumnName, l_pCellRendererIcon, "stock-id", Resource_StringStockIcon, NULL);
+			gtk_tree_view_column_set_attributes(l_pTreeViewColumnName, l_pCellRendererName, "text", Resource_StringName, NULL);
+			gtk_tree_view_column_set_attributes(l_pTreeViewColumnDesc, l_pCellRendererDesc, "text", Resource_StringShortDescription, NULL);
+			gtk_tree_view_column_set_sizing(l_pTreeViewColumnName, GTK_TREE_VIEW_COLUMN_FIXED);
+			gtk_tree_view_column_set_sizing(l_pTreeViewColumnDesc, GTK_TREE_VIEW_COLUMN_FIXED);
+			gtk_tree_view_column_set_expand(l_pTreeViewColumnName, FALSE);
+			gtk_tree_view_column_set_expand(l_pTreeViewColumnDesc, FALSE);
+			gtk_tree_view_column_set_resizable(l_pTreeViewColumnName, TRUE);
+			gtk_tree_view_column_set_resizable(l_pTreeViewColumnDesc, TRUE);
+			gtk_tree_view_column_set_min_width(l_pTreeViewColumnName, 64);
+			gtk_tree_view_column_set_min_width(l_pTreeViewColumnDesc, 64);
+			gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnName, 256);
+			gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnDesc, 512);
+			gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnName);
+			gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnDesc);
+			// g_signal_connect(G_OBJECT(m_pBoxAlgorithmTreeView), "querry_tooltip", G_CALLBACK(resource_query_tooltip_cb), this);
+			//
+			// Prepares box algorithm model
+			m_pBoxAlgorithmTreeModel=gtk_tree_store_new(5, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+			gtk_tree_view_set_model(m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(m_pBoxAlgorithmTreeModel));
+		}
+
+		{
+			// Prepares algorithm view
+			m_pAlgorithmTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeInterface, "algorithm_tree"));
+			::GtkTreeViewColumn* l_pTreeViewColumnName=gtk_tree_view_column_new();
+			::GtkTreeViewColumn* l_pTreeViewColumnDesc=gtk_tree_view_column_new();
+			::GtkCellRenderer* l_pCellRendererIcon=gtk_cell_renderer_pixbuf_new();
+			::GtkCellRenderer* l_pCellRendererName=gtk_cell_renderer_text_new();
+			::GtkCellRenderer* l_pCellRendererDesc=gtk_cell_renderer_text_new();
+			gtk_tree_view_column_set_title(l_pTreeViewColumnName, "Name");
+			gtk_tree_view_column_set_title(l_pTreeViewColumnDesc, "Description");
+			gtk_tree_view_column_pack_start(l_pTreeViewColumnName, l_pCellRendererIcon, FALSE);
+			gtk_tree_view_column_pack_start(l_pTreeViewColumnName, l_pCellRendererName, TRUE);
+			gtk_tree_view_column_pack_start(l_pTreeViewColumnDesc, l_pCellRendererDesc, TRUE);
+			gtk_tree_view_column_set_attributes(l_pTreeViewColumnName, l_pCellRendererIcon, "stock-id", Resource_StringStockIcon, NULL);
+			gtk_tree_view_column_set_attributes(l_pTreeViewColumnName, l_pCellRendererName, "text", Resource_StringName, NULL);
+			gtk_tree_view_column_set_attributes(l_pTreeViewColumnDesc, l_pCellRendererDesc, "text", Resource_StringShortDescription, NULL);
+			gtk_tree_view_column_set_sizing(l_pTreeViewColumnName, GTK_TREE_VIEW_COLUMN_FIXED);
+			gtk_tree_view_column_set_sizing(l_pTreeViewColumnDesc, GTK_TREE_VIEW_COLUMN_FIXED);
+			gtk_tree_view_column_set_expand(l_pTreeViewColumnName, FALSE);
+			gtk_tree_view_column_set_expand(l_pTreeViewColumnDesc, FALSE);
+			gtk_tree_view_column_set_resizable(l_pTreeViewColumnName, TRUE);
+			gtk_tree_view_column_set_resizable(l_pTreeViewColumnDesc, TRUE);
+			gtk_tree_view_column_set_min_width(l_pTreeViewColumnName, 64);
+			gtk_tree_view_column_set_min_width(l_pTreeViewColumnDesc, 64);
+			gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnName, 256);
+			gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnDesc, 512);
+			gtk_tree_view_append_column(m_pAlgorithmTreeView, l_pTreeViewColumnName);
+			gtk_tree_view_append_column(m_pAlgorithmTreeView, l_pTreeViewColumnDesc);
+			// g_signal_connect(G_OBJECT(m_pAlgorithmTreeView), "querry_tooltip", G_CALLBACK(resource_query_tooltip_cb), this);
+
+			// Prepares algorithm model
+			m_pAlgorithmTreeModel=gtk_tree_store_new(5, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+			gtk_tree_view_set_model(m_pAlgorithmTreeView, GTK_TREE_MODEL(m_pAlgorithmTreeModel));
+		}
 
 		// Prepares drag & drop for box creation
 		gtk_drag_source_set(GTK_WIDGET(m_pBoxAlgorithmTreeView), GDK_BUTTON1_MASK, g_vTargetEntry, sizeof(g_vTargetEntry)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
@@ -135,10 +187,6 @@ public:
 			"drag_data_get",
 			G_CALLBACK(drag_data_get_cb),
 			this);
-
-		// Prepares box algorithm model
-		m_pBoxAlgorithmTreeModel=gtk_tree_store_new(5, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
-		gtk_tree_view_set_model(m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(m_pBoxAlgorithmTreeModel));
 
 		// Shows main window
 		glade_xml_signal_autoconnect(m_pGladeInterface);
@@ -170,7 +218,7 @@ public:
 			const char* l_sBoxAlgorithmIdentifier=NULL;
 			gtk_tree_model_get(
 				l_pTreeModel, &l_oTreeIter,
-				BoxAlgorithm_StringIdentifier, &l_sBoxAlgorithmIdentifier,
+				Resource_StringIdentifier, &l_sBoxAlgorithmIdentifier,
 				-1);
 			if(l_sBoxAlgorithmIdentifier)
 			{
@@ -257,8 +305,9 @@ public:
 			IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
 			CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(*m_pKernel, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
 			l_pInterfacedScenario->updateScenarioLabel();
-			gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
 			m_vInterfacedScenario.push_back(l_pInterfacedScenario);
+			gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
+			this->changeCurrentScenario(gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
 		}
 	}
 	void openScenarioCB(void)
@@ -300,8 +349,9 @@ public:
 					l_pInterfacedScenario->m_bHasFileName=true;
 					l_pInterfacedScenario->m_bHasBeenModified=false;
 					l_pInterfacedScenario->updateScenarioLabel();
-					gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
 					m_vInterfacedScenario.push_back(l_pInterfacedScenario);
+					gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
+					this->changeCurrentScenario(gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
 				}
 				else
 				{
@@ -446,11 +496,13 @@ public:
 			return;
 		}
 
+/*
 		//return if scenario is playing
 		if(l_pCurrentInterfacedScenario->isLocked())
 		{
 			return;
 		}
+*/
 
 		//generate player windows
 		l_pCurrentInterfacedScenario->createPlayerVisualisation();
@@ -467,8 +519,14 @@ public:
 		}
 
 		//set up idle function
+		l_pCurrentInterfacedScenario->m_bIsPaused=false;
 		g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
 		g_idle_add(idle_scenario_step, l_pCurrentInterfacedScenario->m_pPlayer);
+
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
 	}
 	void pauseScenarioCB(void)
 	{
@@ -483,6 +541,12 @@ public:
 		{
 			g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
 		}
+
+		l_pCurrentInterfacedScenario->m_bIsPaused=true;
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
 	}
 	void nextScenarioCB(void)
 	{
@@ -503,7 +567,13 @@ public:
 			l_pCurrentInterfacedScenario->redraw();
 		}
 
+		l_pCurrentInterfacedScenario->m_bIsPaused=true;
 		l_pCurrentInterfacedScenario->m_pPlayer->loop();
+
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
 	}
 	void stopScenarioCB(void)
 	{
@@ -525,41 +595,79 @@ public:
 			l_pCurrentInterfacedScenario->m_pPlayer=NULL;
 			l_pCurrentInterfacedScenario->redraw();
 		}
+
+		l_pCurrentInterfacedScenario->m_bIsPaused=false;
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), false);
 	}
 	void logLevelCB(void)
 	{
 		// Loads log level dialog
 		::GladeXML* l_pGladeInterface=glade_xml_new(OVD_GUI_File, "openvibe_loglevel", NULL);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Fatal));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Error));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning")),   m_pKernel->getContext()->getLogManager().isActive(LogLevel_Warning));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info")),      m_pKernel->getContext()->getLogManager().isActive(LogLevel_Info));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Trace));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark")), m_pKernel->getContext()->getLogManager().isActive(LogLevel_Benchmark));
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug")),     m_pKernel->getContext()->getLogManager().isActive(LogLevel_Debug));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal")),             m_pKernel->getContext()->getLogManager().isActive(LogLevel_Fatal));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error")),             m_pKernel->getContext()->getLogManager().isActive(LogLevel_Error));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_important_warning")), m_pKernel->getContext()->getLogManager().isActive(LogLevel_ImportantWarning));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning")),           m_pKernel->getContext()->getLogManager().isActive(LogLevel_Warning));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info")),              m_pKernel->getContext()->getLogManager().isActive(LogLevel_Info));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace")),             m_pKernel->getContext()->getLogManager().isActive(LogLevel_Trace));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark")),         m_pKernel->getContext()->getLogManager().isActive(LogLevel_Benchmark));
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug")),             m_pKernel->getContext()->getLogManager().isActive(LogLevel_Debug));
 
 		::GtkDialog* l_pLogLevelDialog=GTK_DIALOG(glade_xml_get_widget(l_pGladeInterface, "openvibe_loglevel"));
 		gint l_iResult=gtk_dialog_run(l_pLogLevelDialog);
 		if(l_iResult==GTK_RESPONSE_APPLY)
 		{
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Fatal,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Error,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Warning,   gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Info,      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Trace,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Benchmark, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Debug,     gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Fatal,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Error,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_ImportantWarning, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_important_warning"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Warning,          gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Info,             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Trace,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Benchmark,        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Debug,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug"))));
 		}
 
 		gtk_widget_destroy(GTK_WIDGET(l_pLogLevelDialog));
 		g_object_unref(l_pGladeInterface);
+	}
+	void changeCurrentScenario(uint32 ui32PageIndex)
+	{
+		if(ui32PageIndex<m_vInterfacedScenario.size())
+		{
+			CInterfacedScenario* l_pCurrentInterfacedScenario=m_vInterfacedScenario[ui32PageIndex];
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),  !l_pCurrentInterfacedScenario->m_pPlayer || l_pCurrentInterfacedScenario->m_bIsPaused);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),  !l_pCurrentInterfacedScenario->m_pPlayer || l_pCurrentInterfacedScenario->m_bIsPaused);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),  l_pCurrentInterfacedScenario->m_pPlayer && !l_pCurrentInterfacedScenario->m_bIsPaused);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),   l_pCurrentInterfacedScenario->m_pPlayer!=NULL);
+
+			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_save"), l_pCurrentInterfacedScenario->m_bHasFileName && l_pCurrentInterfacedScenario->m_bHasBeenModified);
+			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "menu_save"),   l_pCurrentInterfacedScenario->m_bHasFileName && l_pCurrentInterfacedScenario->m_bHasBeenModified);
+		}
+		else
+		{
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),  false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),  false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),  false);
+
+			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_save"), false);
+			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "menu_save"),   false);
+		}
 	}
 
 	static void drag_data_get_cb(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->dragDataGetCB(pWidget, pDragContex, pSelectionData, uiInfo, uiT);
 	}
+	static gboolean resource_query_tooltip_cb(::GtkWidget* pWidget, gint iX, gint iY, gboolean bKeyboardMode, ::GtkTooltip* pTooltip, gpointer pUserData)
+	{
+		// gtk_tooltip_set_text(pTooltip, "text");
+		// gtk_tooltip_set_markup(pTooltip, "markup");
 
+		return TRUE;
+	}
 	static void menu_copy_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->copySelectionCB();
@@ -646,6 +754,12 @@ public:
 		static_cast<CApplication*>(pUserData)->logLevelCB();
 	}
 
+	static gboolean change_current_scenario_cb(::GtkNotebook* pNotebook, ::GtkNotebookPage* pNotebookPage, guint uiPageNumber, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->changeCurrentScenario(uiPageNumber);
+		return TRUE;
+	}
+
 	static void box_algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		gtk_tree_view_expand_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "box_algorithm_tree")));
@@ -653,6 +767,15 @@ public:
 	static void box_algorithm_title_button_collapse_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		gtk_tree_view_collapse_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "box_algorithm_tree")));
+	}
+
+	static void algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		gtk_tree_view_expand_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "algorithm_tree")));
+	}
+	static void algorithm_title_button_collapse_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		gtk_tree_view_collapse_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "algorithm_tree")));
 	}
 
 	static gboolean idle_scenario_step(gpointer pUserData)
@@ -672,9 +795,11 @@ public:
 	::GladeXML* m_pGladeInterface;
 	::GtkWidget* m_pMainWindow;
 	::GtkNotebook* m_pScenarioNotebook;
-	::GtkNotebook* m_pBoxAlgorithmNotebook;
+	::GtkNotebook* m_pResourceNotebook;
 	::GtkTreeStore* m_pBoxAlgorithmTreeModel;
 	::GtkTreeView* m_pBoxAlgorithmTreeView;
+	::GtkTreeStore* m_pAlgorithmTreeModel;
+	::GtkTreeView* m_pAlgorithmTreeView;
 
 	vector<CInterfacedScenario*> m_vInterfacedScenario;
 };
@@ -683,123 +808,54 @@ public:
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-class CPluginDescEnumCB : virtual public Kernel::IPluginManager::IPluginObjectDescEnum
+class CPluginObjectDescCollector : virtual public IPluginManager::IPluginObjectDescEnum
 {
 public:
-	map<string, vector<const Plugins::IBoxAlgorithmDesc*> > m_vPluginObjectDesc;
-	::GtkTreeStore* m_pTreeStore;
-	ILogManager& m_rLogManager;
 
-	CPluginDescEnumCB(::GtkTreeStore* pTreeStore, ILogManager& rLogManager)
-		:m_pTreeStore(pTreeStore)
-		,m_rLogManager(rLogManager)
+	CPluginObjectDescCollector(const IKernelContext& rKernelContext)
+		:m_rKernelContext(rKernelContext)
 	{
 	}
 
-	virtual ~CPluginDescEnumCB(void)
+	virtual boolean callback(
+		const Kernel::IPluginModule& rPluginModule,
+		const Plugins::IPluginObjectDesc& rPluginObjectDesc)
 	{
-		map<string, vector<const Plugins::IBoxAlgorithmDesc*> >::iterator itVectorPluginObjectDesc;
-		vector<const Plugins::IBoxAlgorithmDesc*>::iterator itPluginObjectDesc;
-		for(itVectorPluginObjectDesc=m_vPluginObjectDesc.begin(); itVectorPluginObjectDesc!=m_vPluginObjectDesc.end(); itVectorPluginObjectDesc++)
-		for(itPluginObjectDesc=itVectorPluginObjectDesc->second.begin(); itPluginObjectDesc!=itVectorPluginObjectDesc->second.end(); itPluginObjectDesc++)
+		string l_sFullName=string(rPluginObjectDesc.getCategory())+"/"+string(rPluginObjectDesc.getName());
+		map<string, const IPluginObjectDesc* >::iterator itPluginObjectDesc=m_vPluginObjectDesc.find(l_sFullName);
+		if(itPluginObjectDesc!=m_vPluginObjectDesc.end())
 		{
-			const Plugins::IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=*itPluginObjectDesc;// dynamic_cast<const Plugins::IBoxAlgorithmDesc*>(&rPluginObjectDesc);
-			CString l_sStockItemName=l_pBoxAlgorithmDesc->getStockItemName();
-			::GtkStockItem l_oStockItem;
-			if(!gtk_stock_lookup(l_sStockItemName, &l_oStockItem))
-			{
-				l_sStockItemName="gtk-execute";
-			}
-
-			// Splits the plugin category
-			vector<string> l_vCategory;
-			string l_sCategory=string(l_pBoxAlgorithmDesc->getCategory());
-			size_t j, i=(size_t)-1;
-			while((j=l_sCategory.find('/', i+1))!=string::npos)
-			{
-				string l_sSubCategory=string(l_sCategory, i+1, j-i-1);
-				if(l_sSubCategory!=string(""))
-				{
-					l_vCategory.push_back(l_sSubCategory);
-				}
-				i=j;
-			}
-			if(i+1!=l_sCategory.length())
-			{
-				l_vCategory.push_back(string(l_sCategory, i+1, l_sCategory.length()-i-1));
-			}
-
-			// Fills plugin in the tree
-			vector<string>::iterator it;
-			::GtkTreeIter l_oGtkIter1;
-			::GtkTreeIter l_oGtkIter2;
-			::GtkTreeIter* l_pGtkIterParent=NULL;
-			::GtkTreeIter* l_pGtkIterChild=&l_oGtkIter1;
-			for(it=l_vCategory.begin(); it!=l_vCategory.end(); it++)
-			{
-				boolean l_bFound=false;
-				boolean l_bValid=gtk_tree_model_iter_children(
-					GTK_TREE_MODEL(m_pTreeStore),
-					l_pGtkIterChild,
-					l_pGtkIterParent)?true:false;
-				while(l_bValid && !l_bFound)
-				{
-					gchar* l_sName=NULL;
-					gboolean l_bIsPlugin;
-					gtk_tree_model_get(
-						GTK_TREE_MODEL(m_pTreeStore),
-						l_pGtkIterChild,
-						BoxAlgorithm_StringName, &l_sName,
-						BoxAlgorithm_BooleanIsPlugin, &l_bIsPlugin,
-						-1);
-					if(!l_bIsPlugin && l_sName==*it)
-					{
-						l_bFound=true;
-					}
-					else
-					{
-						l_bValid=gtk_tree_model_iter_next(
-							GTK_TREE_MODEL(m_pTreeStore),
-							l_pGtkIterChild)?true:false;
-					}
-				}
-				if(!l_bFound)
-				{
-					gtk_tree_store_append(
-						m_pTreeStore,
-						l_pGtkIterChild,
-						l_pGtkIterParent);
-					gtk_tree_store_set(
-						m_pTreeStore,
-						l_pGtkIterChild,
-						BoxAlgorithm_StringName, it->c_str(),
-						BoxAlgorithm_StringShortDescription, "",
-						BoxAlgorithm_StringStockIcon, "gtk-directory",
-						BoxAlgorithm_BooleanIsPlugin, false,
-						-1);
-				}
-				if(!l_pGtkIterParent)
-				{
-					l_pGtkIterParent=&l_oGtkIter2;
-				}
-				::GtkTreeIter* l_pGtkIterSwap=l_pGtkIterChild;
-				l_pGtkIterChild=l_pGtkIterParent;
-				l_pGtkIterParent=l_pGtkIterSwap;
-			}
-			gtk_tree_store_append(
-				m_pTreeStore,
-				l_pGtkIterChild,
-				l_pGtkIterParent);
-			gtk_tree_store_set(
-				m_pTreeStore,
-				l_pGtkIterChild,
-				BoxAlgorithm_StringName, (const char*)l_pBoxAlgorithmDesc->getName(),
-				BoxAlgorithm_StringShortDescription, (const char*)l_pBoxAlgorithmDesc->getShortDescription(),
-				BoxAlgorithm_StringIdentifier, (const char*)l_pBoxAlgorithmDesc->getCreatedClass().toString(),
-				BoxAlgorithm_StringStockIcon, (const char*)l_sStockItemName,
-				BoxAlgorithm_BooleanIsPlugin, true,
-				-1);
+			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Duplicate plugin object desc entry " << CString(l_sFullName.c_str()) << " " << itPluginObjectDesc->second->getCreatedClass() << " and " << rPluginObjectDesc.getCreatedClass() << "\n";
 		}
+		m_vPluginObjectDesc[l_sFullName]=&rPluginObjectDesc;
+		return true;
+	}
+
+	map<string, const IPluginObjectDesc*>& getPluginObjectDescMap(void)
+	{
+		return m_vPluginObjectDesc;
+	}
+
+protected:
+
+	const IKernelContext& m_rKernelContext;
+
+private:
+
+	map<string, const IPluginObjectDesc*> m_vPluginObjectDesc;
+};
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+class CPluginObjectDescLogger : virtual public IPluginManager::IPluginObjectDescEnum
+{
+public:
+
+	CPluginObjectDescLogger(const IKernelContext& rKernelContext)
+		:m_rKernelContext(rKernelContext)
+	{
 	}
 
 	virtual boolean callback(
@@ -810,23 +866,138 @@ public:
 		CString l_sModuleFileName;
 		rPluginModule.getFileName(l_sModuleFileName);
 
-		m_rLogManager << LogLevel_Trace << "Plugin <" << rPluginObjectDesc.getName() << ">\n";
-		m_rLogManager << LogLevel_Debug << " | Plugin module filename : " << l_sModuleFileName << "\n";
-		m_rLogManager << LogLevel_Debug << " | Plugin category        : " << rPluginObjectDesc.getCategory() << "\n";
-		m_rLogManager << LogLevel_Debug << " | Class identifier       : " << rPluginObjectDesc.getCreatedClass().toString() << "\n";
-		m_rLogManager << LogLevel_Debug << " | Author name            : " << rPluginObjectDesc.getAuthorName() << "\n";
-		m_rLogManager << LogLevel_Debug << " | Author company name    : " << rPluginObjectDesc.getAuthorCompanyName() << "\n";
-		m_rLogManager << LogLevel_Debug << " | Short description      : " << rPluginObjectDesc.getShortDescription() << "\n";
-		m_rLogManager << LogLevel_Debug << " | Detailed description   : " << rPluginObjectDesc.getDetailedDescription() << "\n";
-
-		if(rPluginObjectDesc.isDerivedFromClass(OV_ClassId_Plugins_BoxAlgorithmDesc))
-		{
-			m_vPluginObjectDesc[string(rPluginObjectDesc.getCategory())+"/"+string(rPluginObjectDesc.getName())].push_back(dynamic_cast<const Plugins::IBoxAlgorithmDesc*>(&rPluginObjectDesc)/*&rPluginObjectDesc*/);
-		}
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Plugin <" << rPluginObjectDesc.getName() << ">\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Plugin module filename : " << l_sModuleFileName << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Plugin category        : " << rPluginObjectDesc.getCategory() << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Class identifier       : " << rPluginObjectDesc.getCreatedClass() << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Author name            : " << rPluginObjectDesc.getAuthorName() << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Author company name    : " << rPluginObjectDesc.getAuthorCompanyName() << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Short description      : " << rPluginObjectDesc.getShortDescription() << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Detailed description   : " << rPluginObjectDesc.getDetailedDescription() << "\n";
 
 		return true;
 	}
+
+protected:
+
+	const IKernelContext& m_rKernelContext;
 };
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+static void insertPluginObjectDesc_to_GtkTreeStore(map<string, const IPluginObjectDesc*>& vPluginObjectDesc, ::GtkTreeStore* pTreeStore)
+{
+	map<string, const Plugins::IPluginObjectDesc*>::iterator itPluginObjectDesc;
+	for(itPluginObjectDesc=vPluginObjectDesc.begin(); itPluginObjectDesc!=vPluginObjectDesc.end(); itPluginObjectDesc++)
+	{
+		const Plugins::IPluginObjectDesc* l_pPluginObjectDesc=itPluginObjectDesc->second;
+
+		CString l_sStockItemName;
+
+		const Plugins::IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const Plugins::IBoxAlgorithmDesc*>(l_pPluginObjectDesc);
+		if(l_pBoxAlgorithmDesc)
+		{
+			l_sStockItemName=l_pBoxAlgorithmDesc->getStockItemName();
+		}
+
+		::GtkStockItem l_oStockItem;
+		if(!gtk_stock_lookup(l_sStockItemName, &l_oStockItem))
+		{
+			l_sStockItemName=GTK_STOCK_NEW;
+		}
+
+		// Splits the plugin category
+		vector<string> l_vCategory;
+		string l_sCategory=string(l_pPluginObjectDesc->getCategory());
+		size_t j, i=(size_t)-1;
+		while((j=l_sCategory.find('/', i+1))!=string::npos)
+		{
+			string l_sSubCategory=string(l_sCategory, i+1, j-i-1);
+			if(l_sSubCategory!=string(""))
+			{
+				l_vCategory.push_back(l_sSubCategory);
+			}
+			i=j;
+		}
+		if(i+1!=l_sCategory.length())
+		{
+			l_vCategory.push_back(string(l_sCategory, i+1, l_sCategory.length()-i-1));
+		}
+
+		// Fills plugin in the tree
+		vector<string>::iterator it;
+		::GtkTreeIter l_oGtkIter1;
+		::GtkTreeIter l_oGtkIter2;
+		::GtkTreeIter* l_pGtkIterParent=NULL;
+		::GtkTreeIter* l_pGtkIterChild=&l_oGtkIter1;
+		for(it=l_vCategory.begin(); it!=l_vCategory.end(); it++)
+		{
+			boolean l_bFound=false;
+			boolean l_bValid=gtk_tree_model_iter_children(
+				GTK_TREE_MODEL(pTreeStore),
+				l_pGtkIterChild,
+				l_pGtkIterParent)?true:false;
+			while(l_bValid && !l_bFound)
+			{
+				gchar* l_sName=NULL;
+				gboolean l_bIsPlugin;
+				gtk_tree_model_get(
+					GTK_TREE_MODEL(pTreeStore),
+					l_pGtkIterChild,
+					Resource_StringName, &l_sName,
+					Resource_BooleanIsPlugin, &l_bIsPlugin,
+					-1);
+				if(!l_bIsPlugin && l_sName==*it)
+				{
+					l_bFound=true;
+				}
+				else
+				{
+					l_bValid=gtk_tree_model_iter_next(
+						GTK_TREE_MODEL(pTreeStore),
+						l_pGtkIterChild)?true:false;
+				}
+			}
+			if(!l_bFound)
+			{
+				gtk_tree_store_append(
+					GTK_TREE_STORE(pTreeStore),
+					l_pGtkIterChild,
+					l_pGtkIterParent);
+				gtk_tree_store_set(
+					GTK_TREE_STORE(pTreeStore),
+					l_pGtkIterChild,
+					Resource_StringName, it->c_str(),
+					Resource_StringShortDescription, "",
+					Resource_StringStockIcon, "gtk-directory",
+					Resource_BooleanIsPlugin, false,
+					-1);
+			}
+			if(!l_pGtkIterParent)
+			{
+				l_pGtkIterParent=&l_oGtkIter2;
+			}
+			::GtkTreeIter* l_pGtkIterSwap=l_pGtkIterChild;
+			l_pGtkIterChild=l_pGtkIterParent;
+			l_pGtkIterParent=l_pGtkIterSwap;
+		}
+		gtk_tree_store_append(
+			GTK_TREE_STORE(pTreeStore),
+			l_pGtkIterChild,
+			l_pGtkIterParent);
+		gtk_tree_store_set(
+			GTK_TREE_STORE(pTreeStore),
+			l_pGtkIterChild,
+			Resource_StringName, (const char*)l_pPluginObjectDesc->getName(),
+			Resource_StringShortDescription, (const char*)l_pPluginObjectDesc->getShortDescription(),
+			Resource_StringIdentifier, (const char*)l_pPluginObjectDesc->getCreatedClass().toString(),
+			Resource_StringStockIcon, (const char*)l_sStockItemName,
+			Resource_BooleanIsPlugin, true,
+			-1);
+	}
+}
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -920,8 +1091,9 @@ int main(int argc, char ** argv)
 					l_rLogManager.activate(LogLevel_Debug, false);
 					l_rLogManager.activate(LogLevel_Benchmark, false);
 					l_rLogManager.activate(LogLevel_Trace, false);
-					l_rLogManager.activate(LogLevel_Info, false);
+					l_rLogManager.activate(LogLevel_Info, true);
 					l_rLogManager.activate(LogLevel_Warning, true);
+					l_rLogManager.activate(LogLevel_ImportantWarning, true);
 					l_rLogManager.activate(LogLevel_Error, true);
 					l_rLogManager.activate(LogLevel_Fatal, true);
 
@@ -936,13 +1108,18 @@ int main(int argc, char ** argv)
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-*.dll");
 
 					::CApplication app(l_pKernel);
-					app.init();
-{
-					CPluginDescEnumCB cb(app.m_pBoxAlgorithmTreeModel, l_pKernel->getContext()->getLogManager());
-					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_BoxAlgorithmDesc);
-					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_ScenarioExporterDesc);
-					l_rPluginManager.enumeratePluginObjectDesc(cb, OV_ClassId_Plugins_ScenarioImporterDesc);
-}
+					app.initialize();
+					app.newScenarioCB();
+
+					CPluginObjectDescCollector cb_collector1(*l_pKernel->getContext());
+					CPluginObjectDescCollector cb_collector2(*l_pKernel->getContext());
+					CPluginObjectDescLogger cb_logger(*l_pKernel->getContext());
+					l_rPluginManager.enumeratePluginObjectDesc(cb_logger);
+					l_rPluginManager.enumeratePluginObjectDesc(cb_collector1, OV_ClassId_Plugins_BoxAlgorithmDesc);
+					l_rPluginManager.enumeratePluginObjectDesc(cb_collector2, OV_ClassId_Plugins_AlgorithmDesc);
+					insertPluginObjectDesc_to_GtkTreeStore(cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
+					insertPluginObjectDesc_to_GtkTreeStore(cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+
 					gtk_main();
 
 					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;

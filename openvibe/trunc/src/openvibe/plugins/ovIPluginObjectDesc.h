@@ -5,10 +5,8 @@
 
 namespace OpenViBE
 {
-	namespace Plugins
+	namespace Kernel
 	{
-		class IPluginObject;
-
 		enum EPluginFunctionality
 		{
 			PluginFunctionality_Undefined,
@@ -55,6 +53,11 @@ namespace OpenViBE
 			LicenseType_ZLL,          // zlib/libpng License
 			LicenseType_ZPL,          // Zope Public License
 		};
+	};
+
+	namespace Plugins
+	{
+		class IPluginObject;
 
 		/**
 		 * \class IPluginObjectDesc
@@ -182,13 +185,14 @@ namespace OpenViBE
 			 * \return \e true in case plugin has this functionality.
 			 * \return \e false otherwise.
 			 */
-			virtual OpenViBE::boolean hasFunctionality(EPluginFunctionality ePF) const { return false; }
+			virtual OpenViBE::boolean hasFunctionality(OpenViBE::Kernel::EPluginFunctionality ePF) const { return false; }
 			/**
-			 * \brief Gets the licence type for this plugin
-			 * \param ui32Index [in] : the index of the licence this plugin may have
-			 * \return the licence type for this plugin.
+			 * \brief Tests the licence type for this plugin
+			 * \param eLT [in] : the licence type that this plugin may have
+			 * \return \e true in case this plugin accepts the specified licence.
+			 * \return \e false in other case
 			 *
-			 * Default implementation returns \c LicenseType_Unspecified .
+			 * Default implementation returns \c false .
 			 *
 			 * This function should return the licence which can be used to
 			 * distribute the plugin. The aim of this functionnality is to
@@ -197,11 +201,11 @@ namespace OpenViBE
 			 * for example, a GPL plugin should not be used in a commercial
 			 * context.
 			 *
-			 * A plugin may be used under different licence. For this reason,
-			 * the §OpenViBE§ kernel will loop on this function changing the
-			 * index value until \c LicenseType_Unspecified is returned.
+			 * A plugin may be used under different licences. For this reason,
+			 * the §OpenViBE§ kernel will loop on this function for each 
+			 * licence type to request.
 			 */
-			virtual OpenViBE::Plugins::ELicenseType getLicenseType(const OpenViBE::uint32 ui32Index) const { return LicenseType_Unspecified; }
+			virtual OpenViBE::boolean hasLicenceType(OpenViBE::Kernel::ELicenseType eLT) const { return false; }
 
 			//@}
 

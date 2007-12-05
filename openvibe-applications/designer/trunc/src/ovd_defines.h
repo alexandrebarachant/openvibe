@@ -24,11 +24,11 @@ namespace OpenViBEDesigner
 {
 	enum
 	{
-		BoxAlgorithm_StringName,
-		BoxAlgorithm_StringShortDescription,
-		BoxAlgorithm_StringIdentifier,
-		BoxAlgorithm_StringStockIcon,
-		BoxAlgorithm_BooleanIsPlugin,
+		Resource_StringName,
+		Resource_StringShortDescription,
+		Resource_StringIdentifier,
+		Resource_StringStockIcon,
+		Resource_BooleanIsPlugin,
 	};
 
 	enum

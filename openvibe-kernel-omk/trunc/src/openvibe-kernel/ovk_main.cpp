@@ -25,7 +25,7 @@ namespace OpenViBE
 			virtual CString getAuthorCompanyName(void)   { return CString("INRIA/IRISA"); }
 			virtual CString getShortDescription(void)    { return CString("OpenViBE Kernel Implementation [Based on OpenMASK]"); }
 			virtual CString getDetailedDescription(void) { return CString("OpenViBE Kernel Implementation [Based on OpenMASK]"); }
-			virtual CString getVersion(void)             { return CString("0.1"); }
+			virtual CString getVersion(void)             { return CString("0.3"); }
 
 			_IsDerivedFromClass_Final_(IKernelDesc, OVK_ClassId_KernelDesc);
 		};

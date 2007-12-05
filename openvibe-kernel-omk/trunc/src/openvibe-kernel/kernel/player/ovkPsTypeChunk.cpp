@@ -72,7 +72,7 @@ std::istream& operator>>(std::istream& rStream, CBuffer& rBuffer)
 {
 	uint64 l_ui64Size;
 	rStream>>l_ui64Size;
-	rBuffer.setSize(l_ui64Size);
+	rBuffer.setSize(l_ui64Size, true);
 	for(uint32 i=0; i<l_ui64Size; i++)
 	{
 		rStream>>rBuffer.getDirectPointer()[i];
@@ -111,7 +111,7 @@ PsIncomingSynchronisationMessage& operator>>(PsIncomingSynchronisationMessage& r
 {
 	uint64 l_ui64Size;
 	rStream>>l_ui64Size;
-	rBuffer.setSize(l_ui64Size);
+	rBuffer.setSize(l_ui64Size, true);
 	for(uint32 i=0; i<l_ui64Size; i++)
 	{
 		rStream.get(((char*)rBuffer.getDirectPointer())[i]); // $$$$$$$$$$$$$

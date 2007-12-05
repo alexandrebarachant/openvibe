@@ -51,9 +51,10 @@ static void scenario_drawing_area_drag_data_received_cb(::GtkWidget* pWidget, ::
 {
 	static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaDragDataReceivedCB(pDragContext, iX, iY, pSelectionData, uiInfo, uiT);
 }
-static void scenario_drawing_area_motion_notify_cb(::GtkWidget* pWidget, ::GdkEventMotion* pEvent, gpointer pUserData)
+static gboolean scenario_drawing_area_motion_notify_cb(::GtkWidget* pWidget, ::GdkEventMotion* pEvent, gpointer pUserData)
 {
 	static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaMotionNotifyCB(pWidget, pEvent);
+	return FALSE;
 }
 static void scenario_drawing_area_button_pressed_cb(::GtkWidget* pWidget, ::GdkEventButton* pEvent, gpointer pUserData)
 {
@@ -84,6 +85,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		,m_rKernel(rKernel)
 		,m_rScenario(rScenario)
 		,m_pPlayer(NULL)
+		,m_bIsPaused(false)
 		,m_rNotebook(rNotebook)
 		,m_pVisualisationTree(NULL)
 		,m_pDesignerVisualisation(NULL)
@@ -143,7 +145,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			CIdentifier l_oIdentifier = l_pBox->getAlgorithmClassIdentifier();
 			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
 
-			if(l_pPOD->hasFunctionality(OpenViBE::Plugins::PluginFunctionality_Visualization))
+			if(l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
 			{
 				CIdentifier l_oIdentifier;
 				m_pVisualisationTree->addVisualisationWidget(
@@ -393,6 +395,15 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			}
 		}
 
+/*
+		::GdkPixbuf* l_pPixbuf=gtk_widget_render_icon(l_pWidget, GTK_STOCK_EXECUTE, GTK_ICON_SIZE_SMALL_TOOLBAR, "openvibe");
+		if(l_pPixbuf)
+		{
+			gdk_draw_pixbuf(l_pWidget->window, l_pDrawGC, l_pPixbuf, 0, 0, 10, 10, 64, 64, GDK_RGB_DITHER_NONE, 0, 0);
+			g_object_unref(l_pPixbuf);
+		}
+*/
+
 		::PangoContext* l_pPangoContext=NULL;
 		::PangoLayout* l_pPangoLayout=NULL;
 		l_pPangoContext=gtk_widget_get_pango_context(l_pWidget);
@@ -625,7 +636,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oId);
 
 			//if a visualisation box was dropped, add it in window manager
-			if(l_pPOD->hasFunctionality(OpenViBE::Plugins::PluginFunctionality_Visualization))
+			if(l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
 			{
 				//generate a unique name so that it can be identified unambiguously
 				CString l_oBoxName;
@@ -681,7 +692,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				l_sType=CString("[")+l_sType+CString("]");
 				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "label_name_content")), l_sName);
 				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "label_type_content")), l_sType);
-				gtk_window_move(GTK_WINDOW(l_pTooltip), (gint)pEvent->x_root, (gint)pEvent->y_root+20);
+				gtk_window_move(GTK_WINDOW(l_pTooltip), (gint)pEvent->x_root, (gint)pEvent->y_root+40);
 				gtk_widget_show(l_pTooltip);
 			}
 		}

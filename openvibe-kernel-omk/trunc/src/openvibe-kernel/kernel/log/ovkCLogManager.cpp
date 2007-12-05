@@ -12,6 +12,22 @@ CLogManager::CLogManager(const IKernelContext& rKernelContext)
 {
 }
 
+boolean CLogManager::isActive(ELogLevel eLogLevel)
+{
+	map<ELogLevel, boolean>::iterator itLogLevel=m_vActiveLevel.find(eLogLevel);
+	if(itLogLevel==m_vActiveLevel.end())
+	{
+		return true;
+	}
+	return itLogLevel->second;
+}
+
+boolean CLogManager::activate(ELogLevel eLogLevel, boolean bActive)
+{
+	m_vActiveLevel[eLogLevel]=bActive;
+	return true;
+}
+
 void CLogManager::log(const uint64 ui64Value)
 {
 	logForEach<const uint64>(ui64Value);
@@ -60,6 +76,11 @@ void CLogManager::log(const float64 f64Value)
 void CLogManager::log(const float32 f32Value)
 {
 	logForEach<const float32>(f32Value);
+}
+
+void CLogManager::log(const boolean bValue)
+{
+	logForEach<const boolean>(bValue);
 }
 
 void CLogManager::log(const CIdentifier& rValue)
@@ -122,20 +143,4 @@ boolean CLogManager::removeListener(ILogListener* pListener)
 		}
 	}
 	return l_bResult;
-}
-
-boolean CLogManager::isActive(ELogLevel eLogLevel)
-{
-	map<ELogLevel, boolean>::iterator itLogLevel=m_vActiveLevel.find(eLogLevel);
-	if(itLogLevel==m_vActiveLevel.end())
-	{
-		return true;
-	}
-	return itLogLevel->second;
-}
-
-boolean CLogManager::activate(ELogLevel eLogLevel, boolean bActive)
-{
-	m_vActiveLevel[eLogLevel]=bActive;
-	return true;
 }

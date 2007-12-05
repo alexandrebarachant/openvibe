@@ -62,6 +62,7 @@ namespace OpenViBEDesigner
 		OpenViBE::Kernel::IKernel& m_rKernel;
 		OpenViBE::Kernel::IScenario& m_rScenario;
 		OpenViBE::Kernel::IPlayer* m_pPlayer;
+		OpenViBE::boolean m_bIsPaused;
 		::GtkNotebook& m_rNotebook;
 		OpenViBE::Kernel::IVisualisationTree* m_pVisualisationTree;
 		OpenViBEDesigner::CDesignerVisualisation* m_pDesignerVisualisation;

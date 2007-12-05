@@ -61,9 +61,25 @@ namespace OpenViBE
 				const OpenViBE::uint32 ui32TargetIdentifierCount)=0;
 
 			//@}
+			/** \name Time management */
+			//@{
+
+			/**
+			 * \brief Gets current the current player time
+			 * \return the current player time.
+			 * \note The time value is fixed point 32:32 representated in seconds
+			 */
+			virtual OpenViBE::uint64 getCurrentTime(void)=0;
+
+			//@}
 			/** \name Give access to some managers */
 			//@{
 
+			/**
+			 * \brief Gets the current player' algorithm manager
+			 * \return The current player' algorithm manager
+			 */
+			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void)=0;
 			/**
 			 * \brief Gets the current player' log manager
 			 * \return The current player' log manager

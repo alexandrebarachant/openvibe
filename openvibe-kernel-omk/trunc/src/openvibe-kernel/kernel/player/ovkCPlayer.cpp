@@ -78,6 +78,7 @@ CPlayer::CPlayer(const IKernelContext& rKernelContext)
 	,m_pScenario(NULL)
 	,m_ui32ControllerSteps(0)
 	,m_ui32StartTime(0)
+	,m_ui32SecondsLate(0)
 {
 }
 
@@ -168,6 +169,7 @@ boolean CPlayer::reset(
 
 	m_ui32ControllerSteps=0;
 	m_ui32StartTime=System::Time::getTime();
+	m_ui32SecondsLate=0;
 
 	m_oBenchmarkChrono.reset(__ControllerFrequency__);
 	return true;
@@ -201,13 +203,15 @@ boolean CPlayer::loop(void)
 				<< m_oBenchmarkChrono.getStepInPercentage() << "%\n";
 		}
 
-		int32 l_i32Delay=l_ui32CurrentTime-m_ui32StartTime-m_ui32ControllerSteps*(1000.0/__ControllerFrequency__);
-		if(l_i32Delay>1000)
+		uint32 l_ui32SecondsLate=static_cast<uint32>((l_ui32CurrentTime-m_ui32StartTime-m_ui32ControllerSteps*(1000.0/__ControllerFrequency__))/1000);
+		if(l_ui32SecondsLate!=m_ui32SecondsLate)
 		{
-			log() << LogLevel_Warning
+			log() << (l_ui32SecondsLate==0?LogLevel_Info:(l_ui32SecondsLate>=10?LogLevel_ImportantWarning:LogLevel_Warning))
 				<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
 				<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "can not reach realtime" << LogColor_PopStateBit << "> "
-				<< (l_i32Delay/1000) << " second(s) late...\n";
+				<< l_ui32SecondsLate << " second(s) late...\n";
+
+			m_ui32SecondsLate=l_ui32SecondsLate;
 		}
 	}
 

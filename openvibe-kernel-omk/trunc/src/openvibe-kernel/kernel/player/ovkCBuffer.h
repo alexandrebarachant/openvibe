@@ -11,25 +11,13 @@ namespace OpenViBE
 	{
 		namespace Player
 		{
-			class CBuffer
+			class CBuffer : virtual public OpenViBE::CMemoryBuffer
 			{
 			public:
 
-				CBuffer(void);
-				CBuffer(const CBuffer& rBuffer);
-				CBuffer(const OpenViBE::uint8* pBuffer, const OpenViBE::uint64 ui64BufferSize);
-				virtual ~CBuffer(void);
-
 				const CBuffer& operator=(const CBuffer& rBuffer);
 
-				OpenViBE::uint8* getDirectPointer(void);
-				const OpenViBE::uint8* getDirectPointer(void) const;
-				OpenViBE::uint64 getSize(void) const;
-
-				OpenViBE::boolean setSize(
-					const OpenViBE::uint64 ui64Size,
-					const OpenViBE::boolean bDiscard=true);
-				OpenViBE::boolean appendOutputChunkData(
+				virtual OpenViBE::boolean appendOutputChunkData(
 					const OpenViBE::uint8* pBuffer,
 					const OpenViBE::uint64 ui64BufferSize);
 

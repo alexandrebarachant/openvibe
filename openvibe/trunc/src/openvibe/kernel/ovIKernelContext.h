@@ -7,6 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
+		class IAlgorithmManager;
 		class IKernelObjectFactory;
 		class IPlayerManager;
 		class IPluginManager;
@@ -19,6 +20,7 @@ namespace OpenViBE
 		{
 		public:
 
+			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) const=0;
 			virtual OpenViBE::Kernel::IPlayerManager& getPlayerManager(void) const=0;
 			virtual OpenViBE::Kernel::IPluginManager& getPluginManager(void) const=0;
 			virtual OpenViBE::Kernel::IKernelObjectFactory& getKernelObjectFactory(void) const=0;

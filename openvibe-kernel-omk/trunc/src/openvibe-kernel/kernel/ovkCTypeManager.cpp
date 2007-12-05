@@ -1,4 +1,5 @@
 #include "ovkCTypeManager.h"
+#include <stdio.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -8,20 +9,6 @@ CTypeManager::CTypeManager(const IKernelContext& rKernelContext)
 	:TKernelObject<ITypeManager>(rKernelContext)
 {
 	m_vName[OV_UndefinedIdentifier]="undefined";
-
-	registerType(OV_TypeId_Boolean, "boolean");
-	registerType(OV_TypeId_Integer, "integer");
-	registerType(OV_TypeId_Float, "float");
-	registerType(OV_TypeId_String, "string");
-
-	registerStreamType(OV_TypeId_EBMLStream, "EBML stream", OV_UndefinedIdentifier);
-	registerStreamType(  OV_TypeId_ChannelLocalisation, "channel localisation", OV_TypeId_EBMLStream);
-	registerStreamType(  OV_TypeId_ExperimentationInformation, "experiment information", OV_TypeId_EBMLStream);
-	registerStreamType(  OV_TypeId_Stimulations, "stimulations", OV_TypeId_EBMLStream);
-	registerStreamType(  OV_TypeId_StreamedMatrix, "streamed matrix", OV_TypeId_EBMLStream);
-	registerStreamType(    OV_TypeId_FeatureVector, "feature vector", OV_TypeId_StreamedMatrix);
-	registerStreamType(    OV_TypeId_Signal, "signal", OV_TypeId_StreamedMatrix);
-	registerStreamType(    OV_TypeId_Spectrum, "spectrum", OV_TypeId_StreamedMatrix);
 }
 
 boolean CTypeManager::registerType(
@@ -231,6 +218,13 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 	{
 		return 0xffffffffffffffffll;
 	}
+
+	uint64 l_ui64Value;
+	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
+	{
+		return l_ui64Value;
+	}
+
 	map<uint64, CString>::iterator itEnumerationEntry;
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{

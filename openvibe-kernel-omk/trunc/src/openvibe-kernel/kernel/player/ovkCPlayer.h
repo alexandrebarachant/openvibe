@@ -39,6 +39,7 @@ namespace OpenViBE
 
 			OpenViBE::uint32 m_ui32ControllerSteps;
 			OpenViBE::uint32 m_ui32StartTime;
+			OpenViBE::uint32 m_ui32SecondsLate;
 
 		private:
 

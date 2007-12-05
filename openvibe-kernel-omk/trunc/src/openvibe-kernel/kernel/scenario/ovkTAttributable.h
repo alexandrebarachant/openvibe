@@ -130,7 +130,7 @@ namespace OpenViBE
 
 			}
 
-			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_Scenario_Attributable);
+			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_Scenario_AttributableT);
 
 		protected:
 

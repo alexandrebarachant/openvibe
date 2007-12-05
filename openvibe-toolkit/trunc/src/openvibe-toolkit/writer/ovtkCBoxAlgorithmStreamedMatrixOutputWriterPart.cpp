@@ -14,51 +14,51 @@ CBoxAlgorithmStreamedMatrixOutputWriterPart::CBoxAlgorithmStreamedMatrixOutputWr
 	:m_pMatrixBuffer(NULL)
 	,m_ui64MatrixBufferSize(0)
 	,m_ui32Status(Status_SendingNothing)
-	,m_ui32DimmensionCount(0)
+	,m_ui32DimensionCount(0)
 {
 }
 
 // ________________________________________________________________________________________________________________
 //
 
-boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionCount(const uint32 ui32DimmensionCount)
+boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionCount(const uint32 ui32DimensionCount)
 {
 	if(m_ui32Status!=Status_SendingNothing)
 	{
 		return false;
 	}
 
-	m_ui32DimmensionCount=ui32DimmensionCount;
-	m_vDimmensionSize.clear();
-	m_vDimmensionLabel.clear();
+	m_ui32DimensionCount=ui32DimensionCount;
+	m_vDimensionSize.clear();
+	m_vDimensionLabel.clear();
 	m_ui64MatrixBufferSize=0;
 	return true;
 }
 
-boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
+boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 {
-	if(ui32DimmensionIndex>=m_ui32DimmensionCount)
+	if(ui32DimensionIndex>=m_ui32DimensionCount)
 	{
 		return false;
 	}
 
-	m_vDimmensionSize[ui32DimmensionIndex]=ui32DimmensionSize;
+	m_vDimensionSize[ui32DimensionIndex]=ui32DimensionSize;
 	return true;
 }
 
-boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 {
-	if(ui32DimmensionIndex>=m_ui32DimmensionCount)
+	if(ui32DimensionIndex>=m_ui32DimensionCount)
 	{
 		return false;
 	}
 
-	if(ui32DimmensionEntryIndex>=m_vDimmensionSize[ui32DimmensionIndex])
+	if(ui32DimensionEntryIndex>=m_vDimensionSize[ui32DimensionIndex])
 	{
 		return false;
 	}
 
-	m_vDimmensionLabel[ui32DimmensionIndex][ui32DimmensionEntryIndex]=sDimmensionLabel;
+	m_vDimensionLabel[ui32DimensionIndex][ui32DimensionEntryIndex]=sDimensionLabel;
 	return true;
 }
 
@@ -81,27 +81,27 @@ boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::writeHeaderStart(EBML::IWri
 		return false;
 	}
 
-	m_ui64MatrixBufferSize=(m_ui32DimmensionCount==0?0:sizeof(float64));
+	m_ui64MatrixBufferSize=(m_ui32DimensionCount==0?0:sizeof(float64));
 
 	m_ui32Status=Status_SendingHeader;
 
 	m_oWriterHelper.connect(&rWriter);
 
 	 m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix);
-	  m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_DimmensionCount);
-	   m_oWriterHelper.setUIntegerAsChildData(m_ui32DimmensionCount);
+	  m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_DimensionCount);
+	   m_oWriterHelper.setUIntegerAsChildData(m_ui32DimensionCount);
 	  m_oWriterHelper.closeChild();
-	  for(uint32 i=0; i<m_ui32DimmensionCount; i++)
+	  for(uint32 i=0; i<m_ui32DimensionCount; i++)
 	  {
-	   m_ui64MatrixBufferSize*=m_vDimmensionSize[i];
-	   m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_Dimmension);
-	    m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size);
-	     m_oWriterHelper.setUIntegerAsChildData(m_vDimmensionSize[i]);
+	   m_ui64MatrixBufferSize*=m_vDimensionSize[i];
+	   m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_Dimension);
+	    m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_Dimension_Size);
+	     m_oWriterHelper.setUIntegerAsChildData(m_vDimensionSize[i]);
 	    m_oWriterHelper.closeChild();
-	    for(uint32 j=0; j<m_vDimmensionSize[i]; j++)
+	    for(uint32 j=0; j<m_vDimensionSize[i]; j++)
 	    {
-	     m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label);
-	      m_oWriterHelper.setASCIIStringAsChildData(m_vDimmensionLabel[i][j].c_str());
+	     m_oWriterHelper.openChild(OVTK_NodeId_Header_StreamedMatrix_Dimension_Label);
+	      m_oWriterHelper.setASCIIStringAsChildData(m_vDimensionLabel[i][j].c_str());
 	     m_oWriterHelper.closeChild();
 	    }
 	   m_oWriterHelper.closeChild();
@@ -131,13 +131,13 @@ boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::writeBufferStart(EBML::IWri
 	}
 
 #if 0
-	for(uint32 i=0; i<m_vDimmensionSize[0]; i++)
-		for(uint32 j=0; j<m_vDimmensionSize[1]; j++)
+	for(uint32 i=0; i<m_vDimensionSize[0]; i++)
+		for(uint32 j=0; j<m_vDimensionSize[1]; j++)
 		{
-			if(isnan(m_pMatrixBuffer[i*m_vDimmensionSize[1]+j]))
+			if(isnan(m_pMatrixBuffer[i*m_vDimensionSize[1]+j]))
 			{
 				std::cout << "Streamed matrix output writer got NAN values (replaced by 0)" << std::endl;
-				const_cast<float64*>(m_pMatrixBuffer)[i*m_vDimmensionSize[1]+j]=0;
+				const_cast<float64*>(m_pMatrixBuffer)[i*m_vDimensionSize[1]+j]=0;
 			}
 		}
 #endif

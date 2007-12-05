@@ -9,6 +9,25 @@ namespace OpenViBE
 	{
 		namespace
 		{
+			class CAlgorithmManagerBridge : virtual public TKernelObject<IAlgorithmManager>
+			{
+			public:
+
+				CAlgorithmManagerBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox) : TKernelObject<IAlgorithmManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+
+				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), CIdentifier, createAlgorithm, , const CIdentifier&, rAlgorithmClassIdentifier)
+				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), boolean, releaseAlgorithm, , const CIdentifier&, rAlgorithmIdentifier)
+				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), boolean, releaseAlgorithm, , IAlgorithmProxy&, rAlgorithm)
+				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), IAlgorithmProxy&, getAlgorithm, , const CIdentifier&, rAlgorithmIdentifier)
+				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), CIdentifier, getNextAlgorithmIdentifier, const, const CIdentifier&, rPreviousIdentifier)
+
+				_IsDerivedFromClass_Final_(TKernelObject<IAlgorithmManager>, OV_UndefinedIdentifier);
+
+			protected:
+
+				::PsSimulatedBox* m_pSimulatedBox;
+			};
+
 			class CLogManagerBridge : virtual public TKernelObject<ILogManager>
 			{
 			public:
@@ -27,6 +46,8 @@ namespace OpenViBE
 
 				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float32, f32Value)
 				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float64, f64Value)
+
+				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const boolean, bValue)
 
 				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CIdentifier&, rValue)
 				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CString&, rValue);
@@ -131,10 +152,12 @@ using namespace OpenViBE::Kernel;
 CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
 	:TKernelObject<IPlayerContext>(rKernelContext)
 	,m_pSimulatedBox(pSimulatedBox)
+	,m_pAlgorithmManagerBridge(NULL)
 	,m_pLogManagerBridge(NULL)
 	,m_pScenarioManagerBridge(NULL)
 	,m_pTypeManagerBridge(NULL)
 {
+	m_pAlgorithmManagerBridge=new CAlgorithmManagerBridge(rKernelContext, pSimulatedBox);
 	m_pLogManagerBridge=new CLogManagerBridge(rKernelContext, pSimulatedBox);
 	m_pScenarioManagerBridge=new CScenarioManagerBridge(rKernelContext, pSimulatedBox);
 	m_pTypeManagerBridge=new CTypeManagerBridge(rKernelContext, pSimulatedBox);
@@ -145,6 +168,7 @@ CPlayerContext::~CPlayerContext(void)
 	delete m_pTypeManagerBridge;
 	delete m_pScenarioManagerBridge;
 	delete m_pLogManagerBridge;
+	delete m_pAlgorithmManagerBridge;
 }
 
 boolean CPlayerContext::sendSignal(
@@ -172,6 +196,16 @@ boolean CPlayerContext::sendMessage(
 	// TODO
 	log() << LogLevel_Debug << "CPlayerContext::sendMessage - Not yet implemented\n";
 	return false;
+}
+
+uint64 CPlayerContext::getCurrentTime(void)
+{
+	return m_pSimulatedBox->getCurrentTime();
+}
+
+IAlgorithmManager& CPlayerContext::getAlgorithmManager(void)
+{
+	return *m_pAlgorithmManagerBridge;
 }
 
 ILogManager& CPlayerContext::getLogManager(void)

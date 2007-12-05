@@ -189,6 +189,7 @@ void CDesignerVisualisation::init(std::string guiFile)
 	m_pDialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 	gtk_window_set_default_size(GTK_WINDOW(m_pDialog), 600, 400);
+	gtk_window_set_title(GTK_WINDOW(m_pDialog), "Window Manager");
 	gtk_signal_connect(GTK_OBJECT(m_pDialog), "configure_event", G_CALLBACK(configure_event_cb), this);
 #ifdef HANDLE_MIN_MAX_EVENTS
 	gtk_signal_connect(GTK_OBJECT(m_pDialog), "window_state_event", G_CALLBACK(window_state_event_cb), this);
