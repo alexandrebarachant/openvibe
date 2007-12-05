@@ -50,9 +50,9 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getAlgorithmPrototype(
 				OpenViBE::Kernel::IAlgorithmProto& rAlgorithmPrototype) const
 			{
-				rAlgorithmPrototype.addInputParameter(OpenViBE::CIdentifier(0,1), "First addition operand",  OpenViBE::Kernel::ParameterType_Integer);
-				rAlgorithmPrototype.addInputParameter(OpenViBE::CIdentifier(0,2), "Second addition operand", OpenViBE::Kernel::ParameterType_Integer);
-				rAlgorithmPrototype.addInputParameter(OpenViBE::CIdentifier(0,3), "Addition result",         OpenViBE::Kernel::ParameterType_Integer);
+				rAlgorithmPrototype.addInputParameter (OpenViBE::CIdentifier(0,1), "First addition operand",  OpenViBE::Kernel::ParameterType_Integer);
+				rAlgorithmPrototype.addInputParameter (OpenViBE::CIdentifier(0,2), "Second addition operand", OpenViBE::Kernel::ParameterType_Integer);
+				rAlgorithmPrototype.addOutputParameter(OpenViBE::CIdentifier(0,3), "Addition result",         OpenViBE::Kernel::ParameterType_Integer);
 
 				return true;
 			}
