@@ -54,8 +54,8 @@ void CSpectrumDecoder::openChild(const EBML::CIdentifier& rIdentifier)
 		if(l_rTop==OVTK_NodeId_Header_Spectrum)
 		{
 			m_oFrenquencyBandMinMaxHandle->setDimensionCount(2);
-			m_oFrenquencyBandMinMaxHandle->setDimensionSize(0, m_oMatrixHandle->getDimensionSize(1));
-			m_oFrenquencyBandMinMaxHandle->setDimensionSize(1, 2);
+			m_oFrenquencyBandMinMaxHandle->setDimensionSize(0, 2);
+			m_oFrenquencyBandMinMaxHandle->setDimensionSize(1, m_oMatrixHandle->getDimensionSize(1));
 
 			m_ui32FrequencyBandIndex=0;
 		}
