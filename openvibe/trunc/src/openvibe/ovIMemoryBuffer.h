@@ -5,7 +5,7 @@
 
 namespace OpenViBE
 {
-	class IMemoryBuffer : virtual public OpenViBE::IObject
+	class OV_API IMemoryBuffer : virtual public OpenViBE::IObject
 	{
 	public:
 

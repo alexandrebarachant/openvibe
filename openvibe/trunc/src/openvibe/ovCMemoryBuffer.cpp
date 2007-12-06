@@ -71,7 +71,7 @@ boolean CMemoryBufferImpl::setSize(
 		m_pBuffer=new uint8[static_cast<size_t>(ui64Size)]; // $$$
 		if(!bDiscard)
 		{
-			::memcpy(m_pBuffer, l_pSavedBuffer, m_ui64BufferSize);
+			::memcpy(m_pBuffer, l_pSavedBuffer, static_cast<size_t>(m_ui64BufferSize));
 		}
 		delete [] l_pSavedBuffer;
 		m_ui64AllocatedSize=ui64Size;

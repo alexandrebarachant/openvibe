@@ -123,6 +123,12 @@ xcopy /q /s %OpenViBE_plugin_acquisition%\lib\*.lib             %target_dist%\li
 xcopy /q /s %OpenViBE_plugin_acquisition%\lib\*.dll             %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_acquisition%\share\*.*             %target_dist%\share   > NULL 2<&1
 
+xcopy /q /s %OpenViBE_plugin_classification%\bin\*.exe          %target_dist%\bin     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_classification%\include\*.*        %target_dist%\include > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_classification%\lib\*.lib          %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_classification%\lib\*.dll          %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_classification%\share\*.*          %target_dist%\share   > NULL 2<&1
+
 xcopy /q /s %OpenViBE_plugin_feature_extraction%\bin\*.exe      %target_dist%\bin     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_feature_extraction%\include\*.*    %target_dist%\include > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_feature_extraction%\lib\*.lib      %target_dist%\lib     > NULL 2<&1
@@ -164,6 +170,12 @@ xcopy /q /s %OpenViBE_plugin_stimulation%\include\*.*           %target_dist%\in
 xcopy /q /s %OpenViBE_plugin_stimulation%\lib\*.lib             %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_stimulation%\lib\*.dll             %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_stimulation%\share\*.*             %target_dist%\share   > NULL 2<&1
+
+xcopy /q /s %OpenViBE_plugin_stream_codecs%\bin\*.exe           %target_dist%\bin     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stream_codecs%\include\*.*         %target_dist%\include > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stream_codecs%\lib\*.lib           %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stream_codecs%\lib\*.dll           %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_stream_codecs%\share\*.*           %target_dist%\share   > NULL 2<&1
 
 xcopy /q /s %OpenViBE_plugin_tools%\bin\*.exe                   %target_dist%\bin     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_tools%\include\*.*                 %target_dist%\include > NULL 2<&1

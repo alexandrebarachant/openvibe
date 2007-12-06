@@ -4,6 +4,7 @@
 
 #if defined OVK_OS_Windows
  #include <windows.h>
+ #define boolean OpenViBE::boolean
 #endif
 
 using namespace OpenViBE;

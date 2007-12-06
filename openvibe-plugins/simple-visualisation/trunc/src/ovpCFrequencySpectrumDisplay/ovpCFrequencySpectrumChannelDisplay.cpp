@@ -203,8 +203,8 @@ namespace OpenViBEPlugins
 			const float64 l_f64ScaleCoef=256.0/(m_f64MaximumValue - m_f64MinimumValue);
 			const uint32* l_pLookUpTable=getLookUpTable();
 
-			float64 l_f64XPosition=l_i64BaseX;
-			float64 l_f64YPosition=l_iHeight;
+			float64 l_f64XPosition=(float64)l_i64BaseX;
+			float64 l_f64YPosition=(float64)l_iHeight;
 			for(size_t j=0 ; j<m_pDatabase->m_oSampleBuffers.size() ; j++)
 			{
 				//gets a pointer to this channels' samples data in the current buffer
@@ -219,9 +219,9 @@ namespace OpenViBEPlugins
 					int32 l_i32ColorIndex=static_cast<int32>((*(l_pCurrentChannelSampleBuffer++) - m_f64MinimumValue)*l_f64ScaleCoef);
 					if(l_i32ColorIndex>0xff) l_i32ColorIndex=0xff;
 					if(l_i32ColorIndex<0x00) l_i32ColorIndex=0x00;
-					uint8 l_ui8ColorR=(l_pLookUpTable[l_i32ColorIndex]    )&0xff;
-					uint8 l_ui8ColorG=(l_pLookUpTable[l_i32ColorIndex]>>8 )&0xff;
-					uint8 l_ui8ColorB=(l_pLookUpTable[l_i32ColorIndex]>>16)&0xff;
+					uint8 l_ui8ColorR=(uint8)((l_pLookUpTable[l_i32ColorIndex]    )&0xff);
+					uint8 l_ui8ColorG=(uint8)((l_pLookUpTable[l_i32ColorIndex]>>8 )&0xff);
+					uint8 l_ui8ColorB=(uint8)((l_pLookUpTable[l_i32ColorIndex]>>16)&0xff);
 
 					drawBoxToBuffer(
 						m_pRGBBuffer,

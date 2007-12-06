@@ -1,5 +1,7 @@
 #include "ovkCLogListenerFile.h"
 
+#include <stdio.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;

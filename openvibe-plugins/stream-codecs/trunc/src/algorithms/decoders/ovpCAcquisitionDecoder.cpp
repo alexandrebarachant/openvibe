@@ -153,7 +153,7 @@ void CAcquisitionDecoder::processChildData(const void* pBuffer, const EBML::uint
 		if(l_rTop==OVTK_NodeId_Acquisition_ExperimentId)           { m_oExperimentIdHandle=m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
 		if(l_rTop==OVTK_NodeId_Acquisition_SubjectAge)             { m_oSubjectAgeHandle=m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
 		if(l_rTop==OVTK_NodeId_Acquisition_SubjectGender)          { m_oSubjectGenderHandle=m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
-		if(l_rTop==OVTK_NodeId_Acquisition_ChannelCount)           { m_oSignalHandle->setDimensionSize(0, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+		if(l_rTop==OVTK_NodeId_Acquisition_ChannelCount)           { m_oSignalHandle->setDimensionSize(0, (uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 		if(l_rTop==OVTK_NodeId_Acquisition_SamplingFrequency)      { m_oSamplingRateHandle=m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize); }
 		if(l_rTop==OVTK_NodeId_Acquisition_GainFactors)            { m_ui32ChannelIndex=0; }
 		if(l_rTop==OVTK_NodeId_Acquisition_GainFactor)             { m_vChannelGainFactor.push_back(m_pEBMLReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize)); }
@@ -167,7 +167,7 @@ void CAcquisitionDecoder::processChildData(const void* pBuffer, const EBML::uint
 			m_vChannelLocation.push_back(l_pLocation[1]);
 			m_vChannelLocation.push_back(l_pLocation[2]);
 		}
-		if(l_rTop==OVTK_NodeId_Acquisition_SamplesPerChannelCount) { m_oSignalHandle->setDimensionSize(1, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+		if(l_rTop==OVTK_NodeId_Acquisition_SamplesPerChannelCount) { m_oSignalHandle->setDimensionSize(1, (uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 		if(l_rTop==OVTK_NodeId_Acquisition_SampleBlock)            { System::Memory::copy(m_oSignalHandle->getBuffer()+(m_ui32ChannelIndex++)*m_oSignalHandle->getDimensionSize(1), pBuffer, ui64BufferSize); }
 		if(l_rTop==OVTK_NodeId_Acquisition_StimulationIdentifier)  { m_vStimulationIdentifier.push_back(m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 		if(l_rTop==OVTK_NodeId_Acquisition_StimulationSampleIndex) { m_vStimulationSampleIndex.push_back(m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }

@@ -5,7 +5,7 @@
 
 namespace OpenViBE
 {
-	typedef struct CStringImpl;
+	typedef struct CStringImpl CStringImpl;
 
 	/**
 	 * \class CString

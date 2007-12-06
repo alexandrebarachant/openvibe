@@ -49,40 +49,40 @@ const uint64 CStimulationSetImpl::getStimulationCount(void) const
 
 const uint64 CStimulationSetImpl::getStimulationIdentifier(const uint64 ui64StimulationIndex) const
 {
-	return m_vStimulation[ui64StimulationIndex].m_ui64Identifier;
+	return m_vStimulation[static_cast<size_t>(ui64StimulationIndex)].m_ui64Identifier;
 }
 
 const uint64 CStimulationSetImpl::getStimulationDate(const uint64 ui64StimulationIndex) const
 {
-	return m_vStimulation[ui64StimulationIndex].m_ui64Date;
+	return m_vStimulation[static_cast<size_t>(ui64StimulationIndex)].m_ui64Date;
 }
 
 const uint64 CStimulationSetImpl::getStimulationDuration(const uint64 ui64StimulationIndex) const
 {
-	return m_vStimulation[ui64StimulationIndex].m_ui64Duration;
+	return m_vStimulation[static_cast<size_t>(ui64StimulationIndex)].m_ui64Duration;
 }
 
 boolean CStimulationSetImpl::setStimulationCount(const uint64 ui64StimulationCount)
 {
-	m_vStimulation.resize(ui64StimulationCount);
+	m_vStimulation.resize(static_cast<size_t>(ui64StimulationCount));
 	return true;
 }
 
 boolean CStimulationSetImpl::setStimulationIdentifier(const uint64 ui64StimulationIndex, const uint64 ui64StimulationIdentifier)
 {
-	m_vStimulation[ui64StimulationIndex].m_ui64Identifier=ui64StimulationIdentifier;
+	m_vStimulation[static_cast<size_t>(ui64StimulationIndex)].m_ui64Identifier=ui64StimulationIdentifier;
 	return true;
 }
 
 boolean CStimulationSetImpl::setStimulationDate(const uint64 ui64StimulationIndex, const uint64 ui64StimulationDate)
 {
-	m_vStimulation[ui64StimulationIndex].m_ui64Date=ui64StimulationDate;
+	m_vStimulation[static_cast<size_t>(ui64StimulationIndex)].m_ui64Date=ui64StimulationDate;
 	return true;
 }
 
 boolean CStimulationSetImpl::setStimulationDuration(const uint64 ui64StimulationIndex, const uint64 ui64StimulationDuration)
 {
-	m_vStimulation[ui64StimulationIndex].m_ui64Duration=ui64StimulationDuration;
+	m_vStimulation[static_cast<size_t>(ui64StimulationIndex)].m_ui64Duration=ui64StimulationDuration;
 	return true;
 }
 

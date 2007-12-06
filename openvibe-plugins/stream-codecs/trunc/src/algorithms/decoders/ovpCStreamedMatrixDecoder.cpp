@@ -101,11 +101,11 @@ void CStreamedMatrixDecoder::processChildData(const void* pBuffer, const EBML::u
 		switch(m_ui32Status)
 		{
 			case Status_ParsingHeader:
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)  { m_oMatrixHandle->setDimensionCount(m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)  { m_oMatrixHandle->setDimensionCount((uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 				break;
 
 			case Status_ParsingDimension:
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)  { m_oMatrixHandle->setDimensionSize(m_ui32DimensionIndex, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)  { m_oMatrixHandle->setDimensionSize(m_ui32DimensionIndex, (uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label) { m_oMatrixHandle->setDimensionLabel(m_ui32DimensionIndex, m_ui32DimensionEntryIndex++, m_pEBMLReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize)); }
 				break;
 
@@ -152,7 +152,7 @@ void CStreamedMatrixDecoder::closeChild(void)
 			else
 			{
 				m_ui64MatrixBufferSize=1;
-				for(uint64 i=0; i<m_oMatrixHandle->getDimensionCount(); i++)
+				for(uint32 i=0; i<m_oMatrixHandle->getDimensionCount(); i++)
 				{
 					m_ui64MatrixBufferSize*=m_oMatrixHandle->getDimensionSize(i);
 				}

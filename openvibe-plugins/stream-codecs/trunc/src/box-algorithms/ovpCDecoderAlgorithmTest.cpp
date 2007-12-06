@@ -10,10 +10,10 @@ ILogManager& operator << (ILogManager& rLogManager, IMatrix& rMatrix)
 {
 	rLogManager << "Matrix :\n";
 	rLogManager << " | Dimension count : " << rMatrix.getDimensionCount() << "\n";
-	for(uint64 i=0; i<rMatrix.getDimensionCount(); i++)
+	for(uint32 i=0; i<rMatrix.getDimensionCount(); i++)
 	{
 		rLogManager << " |   Dimmesion size " << i << " : " << rMatrix.getDimensionSize(i) << "\n";
-		for(uint64 j=0; j<rMatrix.getDimensionSize(i); j++)
+		for(uint32 j=0; j<rMatrix.getDimensionSize(i); j++)
 		{
 			rLogManager << " |     Dimmesion label " << i << " " << j << " : " << rMatrix.getDimensionLabel(i, j) << "\n";
 		}

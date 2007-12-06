@@ -619,14 +619,14 @@ public:
 		gint l_iResult=gtk_dialog_run(l_pLogLevelDialog);
 		if(l_iResult==GTK_RESPONSE_APPLY)
 		{
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Fatal,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Error,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_ImportantWarning, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_important_warning"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Warning,          gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Info,             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Trace,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Benchmark,        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark"))));
-			m_pKernel->getContext()->getLogManager().activate(LogLevel_Debug,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug"))));
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Fatal,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_fatal")))?true:false);
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Error,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_error")))?true:false);
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_ImportantWarning, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_important_warning")))?true:false);
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Warning,          gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_warning")))?true:false);
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Info,             gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_info")))?true:false);
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Trace,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_trace")))?true:false);
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Benchmark,        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_benchmark")))?true:false);
+			m_pKernel->getContext()->getLogManager().activate(LogLevel_Debug,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(l_pGladeInterface, "checkbutton_loglevel_debug")))?true:false);
 		}
 
 		gtk_widget_destroy(GTK_WIDGET(l_pLogLevelDialog));
@@ -661,6 +661,7 @@ public:
 	{
 		static_cast<CApplication*>(pUserData)->dragDataGetCB(pWidget, pDragContex, pSelectionData, uiInfo, uiT);
 	}
+#if 0
 	static gboolean resource_query_tooltip_cb(::GtkWidget* pWidget, gint iX, gint iY, gboolean bKeyboardMode, ::GtkTooltip* pTooltip, gpointer pUserData)
 	{
 		// gtk_tooltip_set_text(pTooltip, "text");
@@ -668,6 +669,7 @@ public:
 
 		return TRUE;
 	}
+#endif
 	static void menu_copy_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->copySelectionCB();
@@ -1006,6 +1008,31 @@ static void insertPluginObjectDesc_to_GtkTreeStore(map<string, const IPluginObje
 char** g_argv;
 int g_argc;
 
+namespace YR
+{
+class A
+{
+public:
+	A(void) : a(1) { }
+	virtual ~A(void) { }
+	int a;
+};
+
+class B: public A
+{
+public:
+	B(void) : b(2) { }
+	int b;
+};
+
+class C: public B
+{
+public:
+	C(void) : c(3) { }
+	int c;
+};
+};
+
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -1101,6 +1128,7 @@ int main(int argc, char ** argv)
 #ifdef OVD_OS_Windows
 					_asm int 3;
 #endif
+
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-Plugins-*.so");
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-*.so");
