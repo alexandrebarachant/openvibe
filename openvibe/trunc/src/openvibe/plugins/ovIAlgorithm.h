@@ -42,11 +42,6 @@ namespace OpenViBE
 			 * \param rAlgorithmContext [in] : the execution context for this algorithm
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
-			 *
-			 * When called, this function should intializes its internal states and
-			 * configure its own interface through the algorithm context. This done,
-			 * the outside world will be able to connect "input" parameters to owned
-			 * objects or other "output" parameters.
 			 */
 			virtual OpenViBE::boolean initialize(
 				OpenViBE::Kernel::IAlgorithmContext& rAlgorithmContext) { return true; }
@@ -55,32 +50,8 @@ namespace OpenViBE
 			 * \param rAlgorithmContext [in] : the extecution context for this algorithm
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
-			 *
-			 * When called, this function should cleanup its own objects and interface.
 			 */
 			virtual OpenViBE::boolean uninitialize(
-				OpenViBE::Kernel::IAlgorithmContext& rAlgorithmContext) { return true; }
-			/**
-			 * \brief Locks this algorithm so no more change can be done in term of structure to the interface
-			 * \param rAlgorithmContext [in] : the extecution context for this algorithm
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 *
-			 * When called, this function should check its "input" parameters and verify
-			 * every thing is ok. If case \c process can be called, \e true should be returned.
-			 * If \e false is returned, the \c process function won't be called.
-			 */
-			virtual OpenViBE::boolean lock(
-				OpenViBE::Kernel::IAlgorithmContext& rAlgorithmContext) { return true; }
-			/**
-			 * \brief Unlocks this algorithm so changes can be done in term of structure to the interface
-			 * \param rAlgorithmContext [in] : the extecution context for this algorithm
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 *
-			 * When called, this algorithm is notified that the structure will be changed.
-			 */
-			virtual OpenViBE::boolean unlock(
 				OpenViBE::Kernel::IAlgorithmContext& rAlgorithmContext) { return true; }
 			/**
 			 * \brief Effectively executes this algorithm
