@@ -1101,7 +1101,7 @@ int main(int argc, char ** argv)
 
 // For Mister Vincent !
 #ifdef OVD_OS_Windows
-					_asm int 3;
+					// _asm int 3;
 #endif
 
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
