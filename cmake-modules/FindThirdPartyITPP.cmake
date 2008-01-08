@@ -14,8 +14,24 @@
 # Adds include path
 # ---------------------------------
 
-INCLUDE("FindThirdPartyPkgConfig")
-pkg_check_modules(ITPP itpp)
+IF(WIN32)
+	FIND_PATH(PATH_ITPP include/itpp/itbase.h PATHS $ENV{OV_DEP_ITPP})
+	IF(PATH_ITPP)
+		SET(ITPP_FOUND TRUE)
+		SET(ITPP_INCLUDE_DIRS ${PATH_ITPP}/include)
+		IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+			SET(ITPP_LIBRARIES libblas.a libcblas.a libfftw3-3 liblapack.a libgcc.a itppd)
+		ELSE(CMAKE_BUILD_TYPE STREQUAL "Debug")
+			SET(ITPP_LIBRARIES libblas.a libcblas.a libfftw3-3 liblapack.a libgcc.a itpp)
+		ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		SET(ITPP_LIBRARY_DIRS ${PATH_ITPP}/lib )
+	ENDIF(PATH_ITPP)
+ENDIF(WIN32)
+
+IF(UNIX)
+	INCLUDE("FindThirdPartyPkgConfig")
+	pkg_check_modules(ITPP itpp)
+ENDIF(UNIX)
 
 IF(ITPP_FOUND)
 	MESSAGE(STATUS "  Found it++...")

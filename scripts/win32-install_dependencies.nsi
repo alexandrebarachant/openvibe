@@ -32,6 +32,8 @@ Section "-base"
 
   ;Finds Microsoft Platform SDK
 
+  ReadRegStr $r0 HKLM "SOFTWARE\Microsoft\Win32SDK\Directories" "Install Dir"
+  StrCmp $r0 "" base_failed_to_find_sdk_1 base_found_sdk
 base_failed_to_find_sdk_1:
   ReadRegStr $r0 HKLM "SOFTWARE\Microsoft\MicrosoftSDK\Directories" "Install Dir"
   StrCmp $r0 "" base_failed_to_find_sdk_2 base_found_sdk
@@ -204,6 +206,36 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
+Section "IT++"
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  IfFileExists "arch\openvibe-dependency-itpp-4.0.1.zip" no_need_to_download_itpp
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/itpp-4.0.1.zip "arch\openvibe-dependency-itpp-4.0.1.zip"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_itpp:
+ 
+  IfFileExists "itpp" no_need_to_install_itpp
+  ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.1.zip" "itpp"
+
+no_need_to_install_itpp:
+
+  FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+  FileSeek $0 0 END
+  FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\itpp$\n"
+  FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
 Section "OpenMASK"
 
   SetOutPath "$INSTDIR"
@@ -241,6 +273,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\boost"
   RMDir /r "$INSTDIR\expat"
   RMDir /r "$INSTDIR\cmake"
+  RMDir /r "$INSTDIR\itpp"
   RMDir /r "$INSTDIR\openmask"
 
   Delete "$INSTDIR\..\scripts\win32-dependencies.cmd"
