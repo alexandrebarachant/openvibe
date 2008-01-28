@@ -86,7 +86,7 @@ boolean CGDFFileReader::initialize()
 	//opens the gdf file
 	if(m_sFileName)
 	{
-		m_oFile.open(m_sFileName);
+		m_oFile.open(m_sFileName, ios::binary);
 	}
 
 	m_oFile.seekg(0, ios::end);
