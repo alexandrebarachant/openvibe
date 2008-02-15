@@ -22,7 +22,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CHeaderConfigurator(const char* sGladeXMLFileName, const char* sElectrodesFileName);
+		CHeaderConfigurator(const char* sGladeXMLFileName, const char* sElectrodesFileName, const char* sGladeXMLChannelsFileName);
 		virtual ~CHeaderConfigurator(void);
 		virtual void release(void);
 
@@ -40,12 +40,14 @@ namespace OpenViBEAcquisitionServer
 	protected:
 
 		::GladeXML* m_pGladeConfigureInterface;
+		::GladeXML* m_pGladeConfigureChannelInterface;
 		::GtkListStore* m_pElectrodeNameListStore;
 		::GtkListStore* m_pChannelNameListStore;
 
 		map<uint32, string> m_vChannelName;
 		string m_sGladeXMLFileName;
 		string m_sElectrodeFileName;
+		string m_sGladeXMLChannelsFileName;
 		IHeader* m_pHeader;
 	};
 };
@@ -105,12 +107,13 @@ static void button_remove_channel_name_cb(::GtkButton* pButton, void* pUserData)
 //___________________________________________________________________//
 //                                                                   //
 
-CHeaderConfigurator::CHeaderConfigurator(const char* sGladeXMLFileName, const char* sElectrodesFileName)
+CHeaderConfigurator::CHeaderConfigurator(const char* sGladeXMLFileName, const char* sElectrodesFileName, const char* sGladeXMLChannelsFileName)
 	:m_pGladeConfigureInterface(NULL)
 	,m_pElectrodeNameListStore(NULL)
 	,m_pChannelNameListStore(NULL)
 	,m_sGladeXMLFileName(sGladeXMLFileName)
 	,m_sElectrodeFileName(sElectrodesFileName)
+	,m_sGladeXMLChannelsFileName(sGladeXMLChannelsFileName?sGladeXMLChannelsFileName:sGladeXMLFileName)
 	,m_pHeader(NULL)
 {
 }
@@ -124,13 +127,13 @@ void CHeaderConfigurator::release(void)
 	delete this;
 }
 
-IHeaderConfigurator* OpenViBEAcquisitionServer::createHeaderConfiguratorGlade(const char* sGladeXMLFileName, const char* sElectrodesFileName)
+IHeaderConfigurator* OpenViBEAcquisitionServer::createHeaderConfiguratorGlade(const char* sGladeXMLFileName, const char* sElectrodesFileName, const char* sGladeXMLChannelsFileName)
 {
 	if(sGladeXMLFileName==NULL || sElectrodesFileName==NULL)
 	{
 		return NULL;
 	}
-	return new CHeaderConfigurator(sGladeXMLFileName, sElectrodesFileName);
+	return new CHeaderConfigurator(sGladeXMLFileName, sElectrodesFileName, sGladeXMLChannelsFileName);
 }
 
 //___________________________________________________________________//
@@ -143,10 +146,11 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 	// Prepares interface
 
 	m_pGladeConfigureInterface=glade_xml_new(m_sGladeXMLFileName.c_str(), NULL, NULL);
+	m_pGladeConfigureChannelInterface=glade_xml_new(m_sGladeXMLChannelsFileName.c_str(), NULL, NULL);
 
 	// Prepares electrode name tree view
 
-	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "treeview_electrode_names"));
+	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names"));
 	::GtkCellRenderer* l_pElectrodeNameIndexCellRenderer=gtk_cell_renderer_text_new();
 	::GtkTreeViewColumn* l_pElectrodeNameIndexTreeViewColumn=gtk_tree_view_column_new_with_attributes("Name", l_pElectrodeNameIndexCellRenderer, "text", 0, NULL);
 
@@ -154,7 +158,7 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 
 	// Prepares channel name tree view
 
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "treeview_channel_names"));
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
 	::GtkCellRenderer* l_pChannelNameIndexCellRenderer=gtk_cell_renderer_text_new();
 	::GtkCellRenderer* l_pChannelNameValueCellRenderer=gtk_cell_renderer_text_new();
 	::GtkTreeViewColumn* l_pChannelNameIndexTreeViewColumn=gtk_tree_view_column_new_with_attributes("Index", l_pChannelNameIndexCellRenderer, "text", 0, NULL);
@@ -165,10 +169,11 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 
 	// Connects custom GTK signals
 
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_change_channel_names"), "pressed", G_CALLBACK(button_change_channel_names_cb), this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_apply_channel_name"),   "pressed", G_CALLBACK(button_apply_channel_name_cb),   this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_remove_channel_name"),  "pressed", G_CALLBACK(button_remove_channel_name_cb),  this);
+	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface,        "button_change_channel_names"), "pressed", G_CALLBACK(button_change_channel_names_cb), this);
+	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "button_apply_channel_name"),   "pressed", G_CALLBACK(button_apply_channel_name_cb),   this);
+	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "button_remove_channel_name"),  "pressed", G_CALLBACK(button_remove_channel_name_cb),  this);
 	glade_xml_signal_autoconnect(m_pGladeConfigureInterface);
+	glade_xml_signal_autoconnect(m_pGladeConfigureChannelInterface);
 
 	// Configures interface with preconfigured values
 
@@ -251,7 +256,9 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 	gtk_widget_hide(GTK_WIDGET(l_pDialog));
 
 	g_object_unref(m_pGladeConfigureInterface);
+	g_object_unref(m_pGladeConfigureChannelInterface);
 	m_pGladeConfigureInterface=NULL;
+	m_pGladeConfigureChannelInterface=NULL;
 
 	m_vChannelName.clear();
 
@@ -264,9 +271,9 @@ void CHeaderConfigurator::buttonChangeChannelNamesCB(::GtkButton* pButton)
 {
 	uint32 i;
 	::GtkTreeIter itElectrodeName, itChannelName;
-	::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureInterface, "channel-names"));
-	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "treeview_electrode_names"));
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "treeview_channel_names"));
+	::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "channel-names"));
+	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names"));
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
 
 	// Creates electrode name and channel name models
 
@@ -339,8 +346,8 @@ void CHeaderConfigurator::buttonChangeChannelNamesCB(::GtkButton* pButton)
 void CHeaderConfigurator::buttonApplyChannelNameCB(::GtkButton* pButton)
 {
 	::GtkTreeIter itElectrodeName, itChannelName;
-	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "treeview_electrode_names"));
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "treeview_channel_names"));
+	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names"));
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
 
 	::GtkTreeSelection* l_pChannelNameTreeViewSelection=gtk_tree_view_get_selection(l_pChannelNameTreeView);
 	::GtkTreeSelection* l_pElectrodeNameTreeViewSelection=gtk_tree_view_get_selection(l_pElectrodeNameTreeView);
@@ -359,7 +366,7 @@ void CHeaderConfigurator::buttonApplyChannelNameCB(::GtkButton* pButton)
 void CHeaderConfigurator::buttonRemoveChannelNameCB(::GtkButton* pButton)
 {
 	::GtkTreeIter itChannelName;
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "treeview_channel_names"));
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
 
 	::GtkTreeSelection* l_pChannelNameTreeViewSelection=gtk_tree_view_get_selection(l_pChannelNameTreeView);
 	if(gtk_tree_selection_get_selected(l_pChannelNameTreeViewSelection, NULL, &itChannelName))

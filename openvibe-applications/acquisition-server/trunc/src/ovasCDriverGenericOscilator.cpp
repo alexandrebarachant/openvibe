@@ -14,8 +14,9 @@
 using namespace OpenViBEAcquisitionServer;
 using namespace std;
 
-#define OVAS_ElectrodeNames_File "../share/openvibe-applications/acquisition-server/electrode-names.txt"
-#define OVAS_ConfigureGUI_File   "../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.glade"
+#define OVAS_ElectrodeNames_File           "../share/openvibe-applications/acquisition-server/electrode-names.txt"
+#define OVAS_ConfigureGUI_File             "../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.glade"
+#define OVAS_ConfigureGUIElectrodes_File   "../share/openvibe-applications/acquisition-server/interface-channel-names.glade"
 
 //___________________________________________________________________//
 //                                                                   //
@@ -191,7 +192,7 @@ boolean CDriverGenericOscillator::configure(void)
 	boolean l_bResult=false;
 	IHeaderConfigurator* l_pHeaderConfigurator=NULL;
 
-	l_pHeaderConfigurator=createHeaderConfiguratorGlade(OVAS_ConfigureGUI_File, OVAS_ElectrodeNames_File);
+	l_pHeaderConfigurator=createHeaderConfiguratorGlade(OVAS_ConfigureGUI_File, OVAS_ElectrodeNames_File, OVAS_ConfigureGUIElectrodes_File);
 	if(l_pHeaderConfigurator)
 	{
 		l_bResult=l_pHeaderConfigurator->configure(*m_pHeader);

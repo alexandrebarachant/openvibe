@@ -9,7 +9,8 @@ namespace OpenViBEAcquisitionServer
 
 	extern OpenViBEAcquisitionServer::IHeaderConfigurator* createHeaderConfiguratorGlade(
 		const char* sGladeXMLFileName,
-		const char* sElectrodesFileName);
+		const char* sElectrodesFileName,
+		const char* sGladeXMLChannelsFileName=NULL);
 };
 
 #endif // __OpenViBE_AcquisitionServer_CHeaderConfiguratorGlade_H__
