@@ -33,6 +33,7 @@ OpenViBE_module_xml_branch=
 OpenViBE_application_acquisition_server_branch=
 OpenViBE_application_designer_branch=
 OpenViBE_application_id_generator_branch=
+OpenViBE_application_plugin_inspector_branch=
 
 ########################################################################################################################
 #PLUGINS
@@ -77,6 +78,7 @@ fi
 export OpenViBE=$OpenViBE_base/openvibe/$OpenViBE_branch
 export OpenViBE_kernel=$OpenViBE_base/openvibe-kernel-omk/$OpenViBE_kernel_branch
 export OpenViBE_toolkit=$OpenViBE_base/openvibe-toolkit/$OpenViBE_toolkit_branch
+export OpenViBE_cmake_modules=$OpenViBE_base/cmake-modules
 
 ########################################################################################################################
 
@@ -119,7 +121,9 @@ done
 
 ########################################################################################################################
 
+#$OpenViBE_application_plugin_inspector
 export OpenViBE_build_order="
+$OpenViBE
 $OpenViBE_application_id_generator
 $OpenViBE_module_ebml
 $OpenViBE_module_fs
@@ -128,7 +132,6 @@ $OpenViBE_module_system
 $OpenViBE_module_stream
 $OpenViBE_module_xml
 $OpenViBE_module_automaton
-$OpenViBE
 $OpenViBE_kernel
 $OpenViBE_toolkit
 $OpenViBE_plugin_
@@ -143,6 +146,7 @@ $OpenViBE_plugin_simple_visualisation
 $OpenViBE_plugin_stimulation
 $OpenViBE_plugin_stream_codecs
 $OpenViBE_plugin_tools
+$OpenViBE_plugin_work_in_progress
 $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
 "

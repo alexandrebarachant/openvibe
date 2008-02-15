@@ -12,8 +12,10 @@ source linux-init_env_command
 
 cd ../dist/bin
 killall OpenViBE-id-generator-dynamic
+# killall OpenViBE-plugin-inspector-dynamic
 killall OpenViBE-acquisition-server-dynamic
 killall OpenViBE-designer-dynamic
 ./OpenViBE-id-generator-dynamic
+# ./OpenViBE-plugin-inspector-dynamic
 ./OpenViBE-acquisition-server-dynamic &
 ./OpenViBE-designer-dynamic &
