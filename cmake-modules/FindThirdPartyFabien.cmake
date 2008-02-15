@@ -3,7 +3,7 @@
 # Adds library to target
 # Adds include path
 # ---------------------------------
-FIND_PATH(PATH_FABIEN_LIB include/Trial.h PATHS $ENV{OpenViBE_dependencies})
+FIND_PATH(PATH_FABIEN_LIB include/Trial.h PATHS $ENV{OpenViBE_dependencies} $ENV{OpenViBE_dependencies}/libBCI)
 IF(PATH_FABIEN_LIB)
 	MESSAGE(STATUS "  Found FABIEN_LIB...")
 	INCLUDE_DIRECTORIES(${PATH_FABIEN_LIB}/include)
