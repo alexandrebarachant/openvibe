@@ -34,8 +34,6 @@ boolean CSpectrumEncoder::processHeader(void)
 	// m_oFrequencyBandMinMaxHandle dimmension size 0 should be 2
 	// m_oFrequencyBandMinMaxHandle dimmension size 1 should be the same as streamed matrix dimmension size 1
 
-	CStreamedMatrixEncoder::processHeader();
-
 	IMatrix* l_pFrequencyBandMinMax=m_oFrequencyBandMinMaxHandle;
 
 	m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_Spectrum);
@@ -51,6 +49,8 @@ boolean CSpectrumEncoder::processHeader(void)
 	  m_pEBMLWriterHelper->closeChild();
 	 }
 	m_pEBMLWriterHelper->closeChild();
+
+	CStreamedMatrixEncoder::processHeader();
 
 	return true;
 }

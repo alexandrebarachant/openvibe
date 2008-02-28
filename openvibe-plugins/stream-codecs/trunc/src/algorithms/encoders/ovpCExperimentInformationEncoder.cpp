@@ -54,7 +54,7 @@ boolean CExperimentInformationEncoder::processHeader(void)
 	    m_pEBMLWriterHelper->setUIntegerAsChildData(m_oExperimentIdentifierHandle);
 	   m_pEBMLWriterHelper->closeChild();
 	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_ExperimentInformation_Experiment_Date);
-	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oExperimentDateHandle->toCString());
+	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oExperimentDateHandle->toASCIIString());
 	   m_pEBMLWriterHelper->closeChild();
 	  m_pEBMLWriterHelper->closeChild();
 	  m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_ExperimentInformation_Subject);
@@ -62,7 +62,7 @@ boolean CExperimentInformationEncoder::processHeader(void)
 	   m_pEBMLWriterHelper->setUIntegerAsChildData(m_oSubjectIdentifierHandle);
 	   m_pEBMLWriterHelper->closeChild();
 	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_ExperimentInformation_Subject_Name);
-	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oSubjectNameHandle->toCString());
+	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oSubjectNameHandle->toASCIIString());
 	   m_pEBMLWriterHelper->closeChild();
 	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_ExperimentInformation_Subject_Age);
 	    m_pEBMLWriterHelper->setUIntegerAsChildData(m_oSubjectAgeHandle);
@@ -76,13 +76,13 @@ boolean CExperimentInformationEncoder::processHeader(void)
 	    m_pEBMLWriterHelper->setUIntegerAsChildData(m_oLaboratoryIdentifierHandle);
 	   m_pEBMLWriterHelper->closeChild();
 	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_ExperimentInformation_Context_LaboratoryName);
-	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oLaboratoryNameHandle->toCString());
+	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oLaboratoryNameHandle->toASCIIString());
 	   m_pEBMLWriterHelper->closeChild();
 	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_ExperimentInformation_Context_TechnicianIdentifier);
 	    m_pEBMLWriterHelper->setUIntegerAsChildData(m_oTechnicianIdentifierHandle);
 	   m_pEBMLWriterHelper->closeChild();
 	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_ExperimentInformation_Context_TechnicianName);
-	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oTechnicianNameHandle->toCString());
+	    m_pEBMLWriterHelper->setASCIIStringAsChildData(m_oTechnicianNameHandle->toASCIIString());
 	   m_pEBMLWriterHelper->closeChild();
 	 m_pEBMLWriterHelper->closeChild();
 	m_pEBMLWriterHelper->closeChild();
