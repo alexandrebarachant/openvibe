@@ -77,7 +77,7 @@ public:
 	}
 
 	virtual boolean callback(
-		const Plugins::IPluginObjectDesc& rPluginObjectDesc)=0;
+		const IPluginObjectDesc& rPluginObjectDesc)=0;
 
 protected:
 
@@ -112,7 +112,7 @@ public:
 		fclose(m_pFile);
 	}
 
-	virtual boolean callback(const Plugins::IPluginObjectDesc& rPluginObjectDesc)
+	virtual boolean callback(const IPluginObjectDesc& rPluginObjectDesc)
 	{
 		if(!m_pFile) return true;
 

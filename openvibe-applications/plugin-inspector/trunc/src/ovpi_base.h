@@ -3,4 +3,6 @@
 
 #include <openvibe/ov_all.h>
 
+#include <openvibe-toolkit/ovtk_all.h>
+
 #endif // __OpenViBEPluginInspector_base_H__
