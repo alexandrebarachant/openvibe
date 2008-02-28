@@ -71,21 +71,25 @@ while [ "$l_version" == "" ]; do
 	fi;
 done;
 
-while [ "$l_short_description" == "" ]; do
+#while [ "$l_short_description" == "" ]; do
 	echo -n "Please enter short description ($g_wizard_rc_short_description) : "
 	read l_short_description
 	if [ "$l_short_description" == "" ]; then
-		l_short_description=$g_wizard_rc_short_description
+		if [ "$g_wizard_rc_short_description" != "" ]; then
+			l_short_description=$g_wizard_rc_short_description
+		fi;
 	fi;
-done;
+#done;
 
-while [ "$l_detailed_description" == "" ]; do
+#while [ "$l_detailed_description" == "" ]; do
 	echo -n "Please enter detailed description ($g_wizard_rc_detailed_description) : "
 	read l_detailed_description
 	if [ "$l_detailed_description" == "" ]; then
-		l_detailed_description=$g_wizard_rc_detailed_description
+		if [ "$g_wizard_rc_detailed_description" != "" ]; then
+			l_detailed_description=$g_wizard_rc_detailed_description
+		fi;
 	fi;
-done;
+#done;
 
 while [ "$l_generated_id_count" == "" ]; do
 	echo -n "Please enter pre-generated identifier count ($g_wizard_rc_generated_id_count) : "
@@ -110,13 +114,13 @@ l_box_algorithm_name_final=`echo $l_box_algorithm_name | sed -e '
 '`
 l_box_algorithm_namespace_final="NS"
 
-l_box_algorithm_header_decoration="__OpenViBEPlugins_Box_${l_box_algorithm_name_final}_H__"
-l_box_algorithm_class_name="CBox${l_box_algorithm_name_final}"
-l_box_algorithm_desc_class_name="CBox${l_box_algorithm_name_final}Desc"
+l_box_algorithm_header_decoration="__OpenViBEPlugins_BoxAlgorithm_${l_box_algorithm_name_final}_H__"
+l_box_algorithm_class_name="CBoxAlgorithm${l_box_algorithm_name_final}"
+l_box_algorithm_desc_class_name="CBoxAlgorithm${l_box_algorithm_name_final}Desc"
 l_box_algorithm_class_identifier="OpenViBE::CIdentifier(`printf "0x%08X, 0x%08X" $id_1 $id_2`)"
 l_box_algorithm_desc_class_identifier="OpenViBE::CIdentifier(`printf "0x%08X, 0x%08X" $id_3 $id_4`)"
-l_box_algorithm_class_identifier_def="OVP_ClassId_Box_${l_box_algorithm_name_final}"
-l_box_algorithm_desc_class_identifier_def="OVP_ClassId_Box_${l_box_algorithm_name_final}Desc"
+l_box_algorithm_class_identifier_def="OVP_ClassId_BoxAlgorithm_${l_box_algorithm_name_final}"
+l_box_algorithm_desc_class_identifier_def="OVP_ClassId_BoxAlgorithm_${l_box_algorithm_name_final}Desc"
 
 l_header_file_filename="ovp${l_box_algorithm_class_name}.h"
 l_implementation_file_filename="ovp${l_box_algorithm_class_name}.cpp"
@@ -191,7 +195,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return $l_box_algorithm_class_identifier_def; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::$l_box_algorithm_namespace_final::$l_box_algorithm_class_name; }
 
-			virtual OpenViBE::boolean getBoxAlgorithmPrototype(
+			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
 				// rBoxAlgorithmPrototype.addInput(\"input name\", /* input type (OV_TypeId_Signal) */);

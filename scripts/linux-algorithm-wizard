@@ -71,21 +71,25 @@ while [ "$l_version" == "" ]; do
 	fi;
 done;
 
-while [ "$l_short_description" == "" ]; do
+# while [ "$l_short_description" == "" ]; do
 	echo -n "Please enter short description ($g_wizard_rc_short_description) : "
 	read l_short_description
 	if [ "$l_short_description" == "" ]; then
-		l_short_description=$g_wizard_rc_short_description
+		if [ "$g_wizard_rc_short_description" != "" ]; then
+			l_short_description=$g_wizard_rc_short_description
+		fi;
 	fi;
-done;
+# done;
 
-while [ "$l_detailed_description" == "" ]; do
+# while [ "$l_detailed_description" == "" ]; do
 	echo -n "Please enter detailed description ($g_wizard_rc_detailed_description) : "
 	read l_detailed_description
 	if [ "$l_detailed_description" == "" ]; then
-		l_detailed_description=$g_wizard_rc_detailed_description
+		if [ "$g_wizard_rc_detailed_description" != "" ]; then
+			l_detailed_description=$g_wizard_rc_detailed_description
+		fi;
 	fi;
-done;
+# done;
 
 while [ "$l_generated_id_count" == "" ]; do
 	echo -n "Please enter pre-generated identifier count ($g_wizard_rc_generated_id_count) : "
