@@ -66,7 +66,7 @@ boolean CBoxAlgorithmLevelMeasure::processInput(uint32 ui32InputIndex)
 
 boolean CBoxAlgorithmLevelMeasure::process(void)
 {
-	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	// IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
