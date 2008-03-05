@@ -101,6 +101,7 @@ namespace OpenViBE
 		virtual OpenViBE::boolean set(const OpenViBE::CString& rString);
 		virtual OpenViBE::boolean set(const char* pString);
 		virtual const char* toCString(void) const;
+		virtual const char* toASCIIString(void) const { return this->toCString(); }
 
 	protected:
 
