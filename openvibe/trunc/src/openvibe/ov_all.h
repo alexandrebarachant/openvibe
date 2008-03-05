@@ -110,4 +110,43 @@ namespace OpenViBE
 	};
 };
 
+//___________________________________________________________________//
+//                                                                   //
+// Plugins includes                                                  //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OVP_Declare_Begin() \
+	static std::vector<OpenViBE::Plugins::IPluginObjectDesc*> g_descriptors; \
+	static std::vector<OpenViBE::Plugins::IPluginObjectDesc*>::iterator l_itDescriptors; \
+	extern "C" \
+	{ \
+		OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext) \
+		{
+
+#define OVP_Declare_New(Class) \
+			g_descriptors.push_back(new Class);
+
+#define OVP_Declare_End() \
+			return true; \
+		} \
+		OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext) \
+		{ \
+			for(l_itDescriptors=g_descriptors.begin(); l_itDescriptors!=g_descriptors.end(); l_itDescriptors++) \
+				delete *l_itDescriptors; \
+			g_descriptors.clear(); \
+			return true; \
+		} \
+		OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription) \
+		{ \
+			if(ui32Index>=g_descriptors.size()) \
+			{ \
+				rpPluginObjectDescription=NULL; \
+				return false; \
+			} \
+			rpPluginObjectDescription=g_descriptors[ui32Index]; \
+			return true; \
+		} \
+	}
+
 #endif // __OpenViBE_All_H__
