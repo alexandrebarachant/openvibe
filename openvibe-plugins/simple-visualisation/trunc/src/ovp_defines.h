@@ -1,6 +1,18 @@
 #ifndef __OpenViBEPlugins_Defines_H__
 #define __OpenViBEPlugins_Defines_H__
 
+#define OVP_ClassId_BoxAlgorithm_LevelMeasure                         OpenViBE::CIdentifier(0x657138E4, 0x46D6586F)
+#define OVP_ClassId_BoxAlgorithm_LevelMeasureDesc                     OpenViBE::CIdentifier(0x4D061428, 0x11B02233)
+#define OVP_ClassId_Algorithm_LevelMeasure                            OpenViBE::CIdentifier(0x63C71764, 0x34A9717F)
+#define OVP_ClassId_Algorithm_LevelMeasureDesc                        OpenViBE::CIdentifier(0x3EB6754F, 0x22FB1722)
+
+#define OVP_Algorithm_LevelMeasure_InputParameterId_Matrix            OpenViBE::CIdentifier(0x59430053, 0x67C23A83)
+#define OVP_Algorithm_LevelMeasure_OutputParameterId_MainWidget       OpenViBE::CIdentifier(0x101C4641, 0x466C71E3)
+#define OVP_Algorithm_LevelMeasure_OutputParameterId_ToolbarWidget    OpenViBE::CIdentifier(0x14905FFC, 0x6FE425B2)
+#define OVP_Algorithm_LevelMeasure_InputTriggerId_Reset               OpenViBE::CIdentifier(0x3EAF36C5, 0x74490C56)
+#define OVP_Algorithm_LevelMeasure_InputTriggerId_Refresh             OpenViBE::CIdentifier(0x71356FE4, 0x3E8F62DC)
+#define OVP_Algorithm_LevelMeasure_OutputTriggerId_Refreshed          OpenViBE::CIdentifier(0x3C3C1B06, 0x360305D9)
+
 //___________________________________________________________________//
 //                                                                   //
 // Plugin Object Descriptor Class Identifiers                        //
@@ -22,6 +34,16 @@
 #define OVP_ClassId_GrazVisualizationDesc                   OpenViBE::CIdentifier(0x00F1955D, 0x38813A6A)
 #define OVP_ClassId_FrequencySpectrumDisplayDesc            OpenViBE::CIdentifier(0x0045E1B7, 0x49F62560)
 #define OVP_ClassId_PowerSpectrumDisplayDesc                OpenViBE::CIdentifier(0x00116B40, 0x69E1B00D)
+
+//___________________________________________________________________//
+//                                                                   //
+// Gloabal defines                                                   //
+//___________________________________________________________________//
+//                                                                   //
+
+#ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+ #include "ovp_global_defines.h"
+#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
 //___________________________________________________________________//
 //                                                                   //
