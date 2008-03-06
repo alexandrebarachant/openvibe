@@ -87,6 +87,8 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::Kernel::IBox& getStaticBoxContext(void) { return *m_pBoxAlgorithmContext->getStaticBoxContext(); }
 		virtual OpenViBE::Kernel::IBoxIO& getDynamicBoxContext(void) { return *m_pBoxAlgorithmContext->getDynamicBoxContext(); }
 		virtual OpenViBE::Kernel::IPlayerContext& getPlayerContext(void) { return *m_pBoxAlgorithmContext->getPlayerContext(); }
+		virtual OpenViBE::Kernel::IVisualisationContext& getVisualisationContext(void) { return *m_pBoxAlgorithmContext->getVisualisationContext(); }
+
 		virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) { return getPlayerContext().getAlgorithmManager(); }
 		virtual OpenViBE::Kernel::ILogManager& getLogManager(void) { return getPlayerContext().getLogManager(); }
 		virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) { return getPlayerContext().getScenarioManager(); }
