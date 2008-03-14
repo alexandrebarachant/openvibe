@@ -2,188 +2,35 @@
 #define __OpenViBEPlugins_Global_Defines_H__
 
 // ----------------------------------------------------
-// Streamed matrix stream encoder
+// Brainamp file reader
 // ----------------------------------------------------
 
-#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamEncoder                                                                    OpenViBE::CIdentifier(0x5cb32c71, 0x576f00a6)
-#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamEncoderDesc                                                                OpenViBE::CIdentifier(0xeeefe060, 0x646ee8ab)
-#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix                                                    OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
-#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                      OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
-#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeBuffer                                                OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
-#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeEnd                                                   OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
-#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader                                                OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
+#define OVP_GD_ClassId_Algorithm_BrainampFileReader                                                                             OpenViBE::CIdentifier(0x2533718f, 0x07ab3af5)
+#define OVP_GD_ClassId_Algorithm_BrainampFileReaderDesc                                                                         OpenViBE::CIdentifier(0x2c5b2d6c, 0x242253cf)
+#define OVP_GD_Algorithm_BrainampFileReader_InputParameterId_Filename                                                           OpenViBE::CIdentifier(0x000c486c, 0x477c80b9)
+#define OVP_GD_Algorithm_BrainampFileReader_InputParameterId_EpochDuration                                                      OpenViBE::CIdentifier(0x002aee72, 0x288d489e)
+#define OVP_GD_Algorithm_BrainampFileReader_InputParameterId_SeekTime                                                           OpenViBE::CIdentifier(0x00627156, 0x55790cae)
+#define OVP_GD_Algorithm_BrainampFileReader_OutputParameterId_CurrentStartTime                                                  OpenViBE::CIdentifier(0x003ce019, 0x3dade050)
+#define OVP_GD_Algorithm_BrainampFileReader_OutputParameterId_SignalSamples                                                     OpenViBE::CIdentifier(0x0073a91a, 0x6d1d3d26)
+#define OVP_GD_Algorithm_BrainampFileReader_OutputParameterId_Stimulations                                                      OpenViBE::CIdentifier(0x008f7c49, 0x6ed710a9)
+#define OVP_GD_Algorithm_BrainampFileReader_OutputParameterId_SamplingRate                                                      OpenViBE::CIdentifier(0x00d3cabb, 0x339326c2)
+#define OVP_GD_Algorithm_BrainampFileReader_OutputParameterId_CurrentEndTime                                                    OpenViBE::CIdentifier(0x3b87de16, 0xb8efb2fb)
+#define OVP_GD_Algorithm_BrainampFileReader_InputTriggerId_Close                                                                OpenViBE::CIdentifier(0x003462ea, 0x031fb8fa)
+#define OVP_GD_Algorithm_BrainampFileReader_InputTriggerId_Next                                                                 OpenViBE::CIdentifier(0x003cd062, 0x739f973e)
+#define OVP_GD_Algorithm_BrainampFileReader_InputTriggerId_Open                                                                 OpenViBE::CIdentifier(0x00bcf286, 0x6f5fa2f4)
+#define OVP_GD_Algorithm_BrainampFileReader_InputTriggerId_Seek                                                                 OpenViBE::CIdentifier(0x00c3acab, 0x4e3de014)
+#define OVP_GD_Algorithm_BrainampFileReader_OutputTriggerId_Error                                                               OpenViBE::CIdentifier(0x00b1e3df, 0x3abc6c5a)
+#define OVP_GD_Algorithm_BrainampFileReader_OutputTriggerId_DataProduced                                                        OpenViBE::CIdentifier(0x00e7d5f9, 0x1471aff2)
 
 // ----------------------------------------------------
-// Stimulation stream encoder
+// Addition
 // ----------------------------------------------------
 
-#define OVP_GD_ClassId_Algorithm_StimulationStreamEncoder                                                                       OpenViBE::CIdentifier(0x6e86f7d5, 0xa4668108)
-#define OVP_GD_ClassId_Algorithm_StimulationStreamEncoderDesc                                                                   OpenViBE::CIdentifier(0x9b994b50, 0x52c3f06a)
-#define OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_SimtulationSet                                               OpenViBE::CIdentifier(0x8565254c, 0x3a49268e)
-#define OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                         OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
-#define OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer                                                   OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
-#define OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeEnd                                                      OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
-#define OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader                                                   OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
-
-// ----------------------------------------------------
-// Spectrum stream encoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_SpectrumStreamEncoder                                                                          OpenViBE::CIdentifier(0xb3e252db, 0xc3214498)
-#define OVP_GD_ClassId_Algorithm_SpectrumStreamEncoderDesc                                                                      OpenViBE::CIdentifier(0xd6182973, 0x122ce114)
-#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_Matrix                                                          OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
-#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrenquencyBands                                           OpenViBE::CIdentifier(0xf5251300, 0x72520e28)
-#define OVP_GD_Algorithm_SpectrumStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                            OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
-#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeBuffer                                                      OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
-#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeEnd                                                         OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
-#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeHeader                                                      OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
-
-// ----------------------------------------------------
-// Signal stream encoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_SignalStreamEncoder                                                                            OpenViBE::CIdentifier(0xc488ad3c, 0xeb2e36bf)
-#define OVP_GD_ClassId_Algorithm_SignalStreamEncoderDesc                                                                        OpenViBE::CIdentifier(0x90ac1e0f, 0x01518200)
-#define OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate                                                      OpenViBE::CIdentifier(0x998710ff, 0x2c5cca82)
-#define OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix                                                            OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
-#define OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                              OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
-#define OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer                                                        OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
-#define OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd                                                           OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
-#define OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader                                                        OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
-
-// ----------------------------------------------------
-// Feature vector stream encoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamEncoder                                                                     OpenViBE::CIdentifier(0x7ebe049d, 0xf777a602)
-#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamEncoderDesc                                                                 OpenViBE::CIdentifier(0xc249527b, 0x89ee1996)
-#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputParameterId_Matrix                                                     OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
-#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                       OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
-#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeBuffer                                                 OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
-#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeEnd                                                    OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
-#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeHeader                                                 OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
-
-// ----------------------------------------------------
-// Experiment information stream encoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamEncoder                                                             OpenViBE::CIdentifier(0x56b354fe, 0xbf175468)
-#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamEncoderDesc                                                         OpenViBE::CIdentifier(0x8cc2c754, 0x61665fda)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectName                                        OpenViBE::CIdentifier(0x3d3826ea, 0xe8883815)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_ExperimentIdentifier                               OpenViBE::CIdentifier(0x40259641, 0x478c73de)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_LaboratoryName                                     OpenViBE::CIdentifier(0x5ca80fa5, 0x774f01cb)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectGender                                      OpenViBE::CIdentifier(0x7d5059e8, 0xe4d8b38d)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectIdentifier                                  OpenViBE::CIdentifier(0x97c5d20d, 0x203e65b3)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianName                                     OpenViBE::CIdentifier(0xb8a94b68, 0x389393d9)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_ExperimentDate                                     OpenViBE::CIdentifier(0xbc0266a2, 0x9c2935f1)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectAge                                         OpenViBE::CIdentifier(0xc36c6b08, 0x5227380a)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianIdentifier                               OpenViBE::CIdentifier(0xc8ecfbbc, 0x0dcda310)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_LaboratoryIdentifier                               OpenViBE::CIdentifier(0xe761d3d4, 0x44ba1ebf)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_OutputParameterId_EncodedMemoryBuffer                               OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeBuffer                                         OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeEnd                                            OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
-#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeHeader                                         OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
-
-// ----------------------------------------------------
-// Streamed matrix stream decoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder                                                                    OpenViBE::CIdentifier(0x7359d0db, 0x91784b21)
-#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoderDesc                                                                OpenViBE::CIdentifier(0x384529d5, 0xd8e0a728)
-#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_InputParameterId_MemoryBufferToDecode                                      OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
-#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix                                                   OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
-#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader                                             OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
-#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer                                             OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
-#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd                                                OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
-
-// ----------------------------------------------------
-// Stimulation stream decoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_StimulationStreamDecoder                                                                       OpenViBE::CIdentifier(0xc8807f2b, 0x0813c5b1)
-#define OVP_GD_ClassId_Algorithm_StimulationStreamDecoderDesc                                                                   OpenViBE::CIdentifier(0x391a615b, 0x71cd888a)
-#define OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode                                         OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
-#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet                                              OpenViBE::CIdentifier(0xf46d0c19, 0x47306bea)
-#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader                                                OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
-#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer                                                OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
-#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd                                                   OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
-
-// ----------------------------------------------------
-// Spectrum stream decoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_SpectrumStreamDecoder                                                                          OpenViBE::CIdentifier(0x128202db, 0x449fc7a6)
-#define OVP_GD_ClassId_Algorithm_SpectrumStreamDecoderDesc                                                                      OpenViBE::CIdentifier(0x54d18ee8, 0x5dbd913a)
-#define OVP_GD_Algorithm_SpectrumStreamDecoder_InputParameterId_MemoryBufferToDecode                                            OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
-#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrenquencyBands                                          OpenViBE::CIdentifier(0x375e55e9, 0x9b3666f6)
-#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_Matrix                                                         OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
-#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedHeader                                                   OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
-#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedBuffer                                                   OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
-#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedEnd                                                      OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
-
-// ----------------------------------------------------
-// Signal stream decoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_SignalStreamDecoder                                                                            OpenViBE::CIdentifier(0x7237c149, 0x0ca66da7)
-#define OVP_GD_ClassId_Algorithm_SignalStreamDecoderDesc                                                                        OpenViBE::CIdentifier(0xf1547d89, 0x49ffd0c2)
-#define OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode                                              OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
-#define OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate                                                     OpenViBE::CIdentifier(0x363d8d79, 0xeefb912c)
-#define OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix                                                           OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
-#define OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader                                                     OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
-#define OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer                                                     OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
-#define OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd                                                        OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
-
-// ----------------------------------------------------
-// Feature vector stream decoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder                                                                     OpenViBE::CIdentifier(0xc2689ecc, 0x43b335c1)
-#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoderDesc                                                                 OpenViBE::CIdentifier(0xab0ae561, 0xf181e34f)
-#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_InputParameterId_MemoryBufferToDecode                                       OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
-#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix                                                    OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
-#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedHeader                                              OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
-#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedBuffer                                              OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
-#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedEnd                                                 OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
-
-// ----------------------------------------------------
-// Experiment information stream decoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamDecoder                                                             OpenViBE::CIdentifier(0x6fa7d52b, 0x80e2abd6)
-#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamDecoderDesc                                                         OpenViBE::CIdentifier(0x0f37ca61, 0x8a77f44e)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_InputParameterId_MemoryBufferToDecode                               OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectName                                       OpenViBE::CIdentifier(0x3d3826ea, 0xe8883815)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_ExperimentIdentifier                              OpenViBE::CIdentifier(0x40259641, 0x478c73de)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_LaboratoryName                                    OpenViBE::CIdentifier(0x5ca80fa5, 0x774f01cb)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectGender                                     OpenViBE::CIdentifier(0x7d5059e8, 0xe4d8b38d)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectIdentifier                                 OpenViBE::CIdentifier(0x97c5d20d, 0x203e65b3)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_TechnicianName                                    OpenViBE::CIdentifier(0xb8a94b68, 0x389393d9)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_ExperimentDate                                    OpenViBE::CIdentifier(0xbc0266a2, 0x9c2935f1)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectAge                                        OpenViBE::CIdentifier(0xc36c6b08, 0x5227380a)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_TechnicianIdentifier                              OpenViBE::CIdentifier(0xc8ecfbbc, 0x0dcda310)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_LaboratoryIdentifier                              OpenViBE::CIdentifier(0xe761d3d4, 0x44ba1ebf)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputTriggerId_ReceivedHeader                                      OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputTriggerId_ReceivedBuffer                                      OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
-#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputTriggerId_ReceivedEnd                                         OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
-
-// ----------------------------------------------------
-// Acquisition stream decoder
-// ----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_AcquisitionStreamDecoder                                                                       OpenViBE::CIdentifier(0x1e0812b7, 0x3f686dd4)
-#define OVP_GD_ClassId_Algorithm_AcquisitionStreamDecoderDesc                                                                   OpenViBE::CIdentifier(0xa01599b0, 0x7f51631a)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_InputParameterId_MemoryBufferToDecode                                         OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_SubjectAge                                                  OpenViBE::CIdentifier(0x02305f0e, 0xbe576533)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_Signal                                                      OpenViBE::CIdentifier(0x4fcc8d5e, 0x5a47117d)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_SubjectGender                                               OpenViBE::CIdentifier(0x980fe40f, 0xb9e4a021)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_ExperimentIdentifier                                        OpenViBE::CIdentifier(0xc1b135a6, 0x3feb7790)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_StimulationSet                                              OpenViBE::CIdentifier(0xc3049a33, 0x890dc535)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_ChannelLocation                                             OpenViBE::CIdentifier(0xedd46293, 0x67747212)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_SamplingRate                                                OpenViBE::CIdentifier(0xf9414765, 0x2a689150)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputTriggerId_ReceivedHeader                                                OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputTriggerId_ReceivedBuffer                                                OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
-#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputTriggerId_ReceivedEnd                                                   OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+#define OVP_GD_ClassId_Algorithm_Addition                                                                                       OpenViBE::CIdentifier(0x75fce50e, 0x8302fa91)
+#define OVP_GD_ClassId_Algorithm_AdditionDesc                                                                                   OpenViBE::CIdentifier(0x842e0b85, 0xa59fabc1)
+#define OVP_GD_Algorithm_Addition_InputParameterId_FirstAdditionOperand                                                         OpenViBE::CIdentifier(0x00000000, 0x00000001)
+#define OVP_GD_Algorithm_Addition_InputParameterId_SecondAdditionOperand                                                        OpenViBE::CIdentifier(0x00000000, 0x00000002)
+#define OVP_GD_Algorithm_Addition_OutputParameterId_AdditionResult                                                              OpenViBE::CIdentifier(0x00000000, 0x00000003)
 
 // ----------------------------------------------------
 // Matrix average
@@ -191,11 +38,27 @@
 
 #define OVP_GD_ClassId_Algorithm_MatrixAverage                                                                                  OpenViBE::CIdentifier(0x5e5a6c1c, 0x6f6beb03)
 #define OVP_GD_ClassId_Algorithm_MatrixAverageDesc                                                                              OpenViBE::CIdentifier(0x1992881f, 0xc938c0f2)
-#define OVP_GD_Algorithm_MatrixAverage_InputParameterId_InputMatrix                                                             OpenViBE::CIdentifier(0x913e9c3b, 0x8a62f5e3)
-#define OVP_GD_Algorithm_MatrixAverage_InputParameterId_MatrixCountForAveraging                                                 OpenViBE::CIdentifier(0xdbb778a3, 0x9c275158)
-#define OVP_GD_Algorithm_MatrixAverage_OutputParameterId_OutputAveragedMatrix                                                   OpenViBE::CIdentifier(0x03ce5ae5, 0xbd9031e0)
-#define OVP_GD_Algorithm_MatrixAverage_InputTriggerId_PerformAverage                                                            OpenViBE::CIdentifier(0x50b6ee87, 0xdc42e660)
-#define OVP_GD_Algorithm_MatrixAverage_InputTriggerId_Initialize                                                                OpenViBE::CIdentifier(0x670ec053, 0xadfe3f5c)
+#define OVP_GD_Algorithm_MatrixAverage_InputParameterId_MatrixCount                                                             OpenViBE::CIdentifier(0x08563191, 0xe78bb265)
+#define OVP_GD_Algorithm_MatrixAverage_InputParameterId_Matrix                                                                  OpenViBE::CIdentifier(0x913e9c3b, 0x8a62f5e3)
+#define OVP_GD_Algorithm_MatrixAverage_InputParameterId_MovingAverage                                                           OpenViBE::CIdentifier(0xe63cd759, 0xb6ecf6b7)
+#define OVP_GD_Algorithm_MatrixAverage_OutputParameterId_AveragedMatrix                                                         OpenViBE::CIdentifier(0x03ce5ae5, 0xbd9031e0)
+#define OVP_GD_Algorithm_MatrixAverage_InputTriggerId_FeedMatrix                                                                OpenViBE::CIdentifier(0x50b6ee87, 0xdc42e660)
+#define OVP_GD_Algorithm_MatrixAverage_InputTriggerId_Reset                                                                     OpenViBE::CIdentifier(0x670ec053, 0xadfe3f5c)
+#define OVP_GD_Algorithm_MatrixAverage_InputTriggerId_ForceAverage                                                              OpenViBE::CIdentifier(0xbf597839, 0xcd6039f0)
+#define OVP_GD_Algorithm_MatrixAverage_OutputTriggerId_AveragePerformed                                                         OpenViBE::CIdentifier(0x2bff029b, 0xd932a613)
+
+// ----------------------------------------------------
+// Stimulation based epoching
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_StimulationBasedEpoching                                                                       OpenViBE::CIdentifier(0x421e3f46, 0x12003e6c)
+#define OVP_GD_ClassId_Algorithm_StimulationBasedEpochingDesc                                                                   OpenViBE::CIdentifier(0x2eaf37fc, 0x63195eb8)
+#define OVP_GD_Algorithm_StimulationBasedEpoching_InputParameterId_InputSignal                                                  OpenViBE::CIdentifier(0x0ed5c92b, 0xe16bef25)
+#define OVP_GD_Algorithm_StimulationBasedEpoching_InputParameterId_OffsetSampleCount                                            OpenViBE::CIdentifier(0x7646ce65, 0xe128fc4e)
+#define OVP_GD_Algorithm_StimulationBasedEpoching_OutputParameterId_OutputSignal                                                OpenViBE::CIdentifier(0x00d331a2, 0xc13df043)
+#define OVP_GD_Algorithm_StimulationBasedEpoching_InputTriggerId_Reset                                                          OpenViBE::CIdentifier(0x6ba44128, 0x418cf901)
+#define OVP_GD_Algorithm_StimulationBasedEpoching_InputTriggerId_PerformEpoching                                                OpenViBE::CIdentifier(0xd05579b5, 0x2649a4b2)
+#define OVP_GD_Algorithm_StimulationBasedEpoching_OutputTriggerId_EpochingDone                                                  OpenViBE::CIdentifier(0x755bc3fe, 0x24f7b50f)
 
 // ----------------------------------------------------
 // Compute Filter Coefficients
@@ -228,13 +91,227 @@
 #define OVP_GD_Algorithm_ApplyTemporalFilter_InputTriggerId_ApplyFilter                                                         OpenViBE::CIdentifier(0xbc1f5655, 0x9807b400)
 
 // ----------------------------------------------------
-// Addition
+// Resamples input buffer
 // ----------------------------------------------------
 
-#define OVP_GD_ClassId_Algorithm_Addition                                                                                       OpenViBE::CIdentifier(0x75fce50e, 0x8302fa91)
-#define OVP_GD_ClassId_Algorithm_AdditionDesc                                                                                   OpenViBE::CIdentifier(0x842e0b85, 0xa59fabc1)
-#define OVP_GD_Algorithm_Addition_InputParameterId_FirstAdditionOperand                                                         OpenViBE::CIdentifier(0x00000000, 0x00000001)
-#define OVP_GD_Algorithm_Addition_InputParameterId_SecondAdditionOperand                                                        OpenViBE::CIdentifier(0x00000000, 0x00000002)
-#define OVP_GD_Algorithm_Addition_OutputParameterId_AdditionResult                                                              OpenViBE::CIdentifier(0x00000000, 0x00000003)
+#define OVP_GD_ClassId_Algorithm_ResamplesInputBuffer                                                                           OpenViBE::CIdentifier(0xbbbb4e18, 0x17695604)
+#define OVP_GD_ClassId_Algorithm_ResamplesInputBufferDesc                                                                       OpenViBE::CIdentifier(0xc08ba8c1, 0x3a3b6e26)
+#define OVP_GD_Algorithm_ResamplesInputBuffer_InputParameterId_SamplingFrequency                                                OpenViBE::CIdentifier(0x7c510afb, 0x4f2b9fb7)
+#define OVP_GD_Algorithm_ResamplesInputBuffer_InputParameterId_NewSamplingFrequency                                             OpenViBE::CIdentifier(0x8617e5fa, 0xc39cdbe7)
+#define OVP_GD_Algorithm_ResamplesInputBuffer_InputParameterId_SignalInputMatrix                                                OpenViBE::CIdentifier(0xbb09054a, 0xef13b2c6)
+#define OVP_GD_Algorithm_ResamplesInputBuffer_OutputParameterId_SignalOutputMatrix                                              OpenViBE::CIdentifier(0x4b9be135, 0x14c10757)
+#define OVP_GD_Algorithm_ResamplesInputBuffer_InputTriggerId_ApplyResampling                                                    OpenViBE::CIdentifier(0x2a88aff5, 0x79ecaeb3)
+#define OVP_GD_Algorithm_ResamplesInputBuffer_InputTriggerId_Initialize                                                         OpenViBE::CIdentifier(0x82d96f84, 0x9479a701)
+
+// ----------------------------------------------------
+// Level measure
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_LevelMeasure                                                                                   OpenViBE::CIdentifier(0x63c71764, 0x34a9717f)
+#define OVP_GD_ClassId_Algorithm_LevelMeasureDesc                                                                               OpenViBE::CIdentifier(0x3eb6754f, 0x22fb1722)
+#define OVP_GD_Algorithm_LevelMeasure_InputParameterId_Matrix                                                                   OpenViBE::CIdentifier(0x59430053, 0x67c23a83)
+#define OVP_GD_Algorithm_LevelMeasure_OutputParameterId_MainWidget                                                              OpenViBE::CIdentifier(0x101c4641, 0x466c71e3)
+#define OVP_GD_Algorithm_LevelMeasure_OutputParameterId_ToolbarWidget                                                           OpenViBE::CIdentifier(0x14905ffc, 0x6fe425b2)
+#define OVP_GD_Algorithm_LevelMeasure_InputTriggerId_Reset                                                                      OpenViBE::CIdentifier(0x3eaf36c5, 0x74490c56)
+#define OVP_GD_Algorithm_LevelMeasure_InputTriggerId_Refresh                                                                    OpenViBE::CIdentifier(0x71356fe4, 0x3e8f62dc)
+#define OVP_GD_Algorithm_LevelMeasure_OutputTriggerId_Refreshed                                                                 OpenViBE::CIdentifier(0x3c3c1b06, 0x360305d9)
+
+// ----------------------------------------------------
+// Acquisition stream decoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_AcquisitionStreamDecoder                                                                       OpenViBE::CIdentifier(0x1e0812b7, 0x3f686dd4)
+#define OVP_GD_ClassId_Algorithm_AcquisitionStreamDecoderDesc                                                                   OpenViBE::CIdentifier(0xa01599b0, 0x7f51631a)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_InputParameterId_MemoryBufferToDecode                                         OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_StimulationStream                                           OpenViBE::CIdentifier(0x08fc3c12, 0x86a07bf7)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_SignalStream                                                OpenViBE::CIdentifier(0x42c0d7bd, 0xbbcea3f3)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_ChannelLocalisationStream                                   OpenViBE::CIdentifier(0x4eb92f81, 0x6ecda6b9)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_BufferDuration                                              OpenViBE::CIdentifier(0x7527d6e5, 0xb7a70339)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputParameterId_ExperimentInformationStream                                 OpenViBE::CIdentifier(0xa7f1d539, 0xec708539)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputTriggerId_ReceivedHeader                                                OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputTriggerId_ReceivedBuffer                                                OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
+#define OVP_GD_Algorithm_AcquisitionStreamDecoder_OutputTriggerId_ReceivedEnd                                                   OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+
+// ----------------------------------------------------
+// Experiment information stream decoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamDecoder                                                             OpenViBE::CIdentifier(0x6fa7d52b, 0x80e2abd6)
+#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamDecoderDesc                                                         OpenViBE::CIdentifier(0x0f37ca61, 0x8a77f44e)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_InputParameterId_MemoryBufferToDecode                               OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectName                                       OpenViBE::CIdentifier(0x3d3826ea, 0xe8883815)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_ExperimentIdentifier                              OpenViBE::CIdentifier(0x40259641, 0x478c73de)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_LaboratoryName                                    OpenViBE::CIdentifier(0x5ca80fa5, 0x774f01cb)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectGender                                     OpenViBE::CIdentifier(0x7d5059e8, 0xe4d8b38d)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectIdentifier                                 OpenViBE::CIdentifier(0x97c5d20d, 0x203e65b3)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_TechnicianName                                    OpenViBE::CIdentifier(0xb8a94b68, 0x389393d9)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_ExperimentDate                                    OpenViBE::CIdentifier(0xbc0266a2, 0x9c2935f1)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectAge                                        OpenViBE::CIdentifier(0xc36c6b08, 0x5227380a)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_TechnicianIdentifier                              OpenViBE::CIdentifier(0xc8ecfbbc, 0x0dcda310)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_LaboratoryIdentifier                              OpenViBE::CIdentifier(0xe761d3d4, 0x44ba1ebf)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputTriggerId_ReceivedHeader                                      OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputTriggerId_ReceivedBuffer                                      OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
+#define OVP_GD_Algorithm_ExperimentInformationStreamDecoder_OutputTriggerId_ReceivedEnd                                         OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+
+// ----------------------------------------------------
+// Feature vector stream decoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder                                                                     OpenViBE::CIdentifier(0xc2689ecc, 0x43b335c1)
+#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoderDesc                                                                 OpenViBE::CIdentifier(0xab0ae561, 0xf181e34f)
+#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_InputParameterId_MemoryBufferToDecode                                       OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
+#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix                                                    OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
+#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedHeader                                              OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
+#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedBuffer                                              OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
+#define OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedEnd                                                 OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+
+// ----------------------------------------------------
+// Signal stream decoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_SignalStreamDecoder                                                                            OpenViBE::CIdentifier(0x7237c149, 0x0ca66da7)
+#define OVP_GD_ClassId_Algorithm_SignalStreamDecoderDesc                                                                        OpenViBE::CIdentifier(0xf1547d89, 0x49ffd0c2)
+#define OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode                                              OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
+#define OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate                                                     OpenViBE::CIdentifier(0x363d8d79, 0xeefb912c)
+#define OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix                                                           OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
+#define OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader                                                     OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
+#define OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer                                                     OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
+#define OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd                                                        OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+
+// ----------------------------------------------------
+// Spectrum stream decoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_SpectrumStreamDecoder                                                                          OpenViBE::CIdentifier(0x128202db, 0x449fc7a6)
+#define OVP_GD_ClassId_Algorithm_SpectrumStreamDecoderDesc                                                                      OpenViBE::CIdentifier(0x54d18ee8, 0x5dbd913a)
+#define OVP_GD_Algorithm_SpectrumStreamDecoder_InputParameterId_MemoryBufferToDecode                                            OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
+#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands                                           OpenViBE::CIdentifier(0x375e55e9, 0x9b3666f6)
+#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_Matrix                                                         OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
+#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedHeader                                                   OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
+#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedBuffer                                                   OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
+#define OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedEnd                                                      OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+
+// ----------------------------------------------------
+// Stimulation stream decoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_StimulationStreamDecoder                                                                       OpenViBE::CIdentifier(0xc8807f2b, 0x0813c5b1)
+#define OVP_GD_ClassId_Algorithm_StimulationStreamDecoderDesc                                                                   OpenViBE::CIdentifier(0x391a615b, 0x71cd888a)
+#define OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode                                         OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
+#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet                                              OpenViBE::CIdentifier(0xf46d0c19, 0x47306bea)
+#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader                                                OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
+#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer                                                OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
+#define OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd                                                   OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+
+// ----------------------------------------------------
+// Streamed matrix stream decoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder                                                                    OpenViBE::CIdentifier(0x7359d0db, 0x91784b21)
+#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoderDesc                                                                OpenViBE::CIdentifier(0x384529d5, 0xd8e0a728)
+#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_InputParameterId_MemoryBufferToDecode                                      OpenViBE::CIdentifier(0x2f98ea3c, 0xfb0be096)
+#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix                                                   OpenViBE::CIdentifier(0x79ef3123, 0x35e3ea4d)
+#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader                                             OpenViBE::CIdentifier(0x815234bf, 0xaabae5f2)
+#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer                                             OpenViBE::CIdentifier(0xaa2738bf, 0xf7fe9fc3)
+#define OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd                                                OpenViBE::CIdentifier(0xc4aa114c, 0x628c2d77)
+
+// ----------------------------------------------------
+// Acquisition stream encoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_AcquisitionStreamEncoder                                                                       OpenViBE::CIdentifier(0xf9fd2fb5, 0xdf0b3b2c)
+#define OVP_GD_ClassId_Algorithm_AcquisitionStreamEncoderDesc                                                                   OpenViBE::CIdentifier(0xe3e0d9eb, 0x4d4eba00)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_ChannelLocalisationStream                                    OpenViBE::CIdentifier(0x2cf786e5, 0x520714a1)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_ExperimentInformationStream                                  OpenViBE::CIdentifier(0x38755128, 0xcb0c908a)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_SignalStream                                                 OpenViBE::CIdentifier(0x4ed9d929, 0x6df5b2b6)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_BufferDuration                                               OpenViBE::CIdentifier(0xafa07097, 0x1145b59b)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_StimulationStream                                            OpenViBE::CIdentifier(0xcde202ad, 0xf4864ec9)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                         OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputTriggerId_EncodeBuffer                                                   OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputTriggerId_EncodeEnd                                                      OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
+#define OVP_GD_Algorithm_AcquisitionStreamEncoder_InputTriggerId_EncodeHeader                                                   OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
+
+// ----------------------------------------------------
+// Experiment information stream encoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamEncoder                                                             OpenViBE::CIdentifier(0x56b354fe, 0xbf175468)
+#define OVP_GD_ClassId_Algorithm_ExperimentInformationStreamEncoderDesc                                                         OpenViBE::CIdentifier(0x8cc2c754, 0x61665fda)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectName                                        OpenViBE::CIdentifier(0x3d3826ea, 0xe8883815)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_ExperimentIdentifier                               OpenViBE::CIdentifier(0x40259641, 0x478c73de)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_LaboratoryName                                     OpenViBE::CIdentifier(0x5ca80fa5, 0x774f01cb)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectGender                                      OpenViBE::CIdentifier(0x7d5059e8, 0xe4d8b38d)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectIdentifier                                  OpenViBE::CIdentifier(0x97c5d20d, 0x203e65b3)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianName                                     OpenViBE::CIdentifier(0xb8a94b68, 0x389393d9)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_ExperimentDate                                     OpenViBE::CIdentifier(0xbc0266a2, 0x9c2935f1)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectAge                                         OpenViBE::CIdentifier(0xc36c6b08, 0x5227380a)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianIdentifier                               OpenViBE::CIdentifier(0xc8ecfbbc, 0x0dcda310)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_LaboratoryIdentifier                               OpenViBE::CIdentifier(0xe761d3d4, 0x44ba1ebf)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_OutputParameterId_EncodedMemoryBuffer                               OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeBuffer                                         OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeEnd                                            OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
+#define OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeHeader                                         OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
+
+// ----------------------------------------------------
+// Feature vector stream encoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamEncoder                                                                     OpenViBE::CIdentifier(0x7ebe049d, 0xf777a602)
+#define OVP_GD_ClassId_Algorithm_FeatureVectorStreamEncoderDesc                                                                 OpenViBE::CIdentifier(0xc249527b, 0x89ee1996)
+#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputParameterId_Matrix                                                     OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
+#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                       OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
+#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeBuffer                                                 OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
+#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeEnd                                                    OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
+#define OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeHeader                                                 OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
+
+// ----------------------------------------------------
+// Signal stream encoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_SignalStreamEncoder                                                                            OpenViBE::CIdentifier(0xc488ad3c, 0xeb2e36bf)
+#define OVP_GD_ClassId_Algorithm_SignalStreamEncoderDesc                                                                        OpenViBE::CIdentifier(0x90ac1e0f, 0x01518200)
+#define OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate                                                      OpenViBE::CIdentifier(0x998710ff, 0x2c5cca82)
+#define OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix                                                            OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
+#define OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                              OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
+#define OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer                                                        OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
+#define OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd                                                           OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
+#define OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader                                                        OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
+
+// ----------------------------------------------------
+// Spectrum stream encoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_SpectrumStreamEncoder                                                                          OpenViBE::CIdentifier(0xb3e252db, 0xc3214498)
+#define OVP_GD_ClassId_Algorithm_SpectrumStreamEncoderDesc                                                                      OpenViBE::CIdentifier(0xd6182973, 0x122ce114)
+#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_Matrix                                                          OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
+#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands                                            OpenViBE::CIdentifier(0xf5251300, 0x72520e28)
+#define OVP_GD_Algorithm_SpectrumStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                            OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
+#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeBuffer                                                      OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
+#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeEnd                                                         OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
+#define OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeHeader                                                      OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
+
+// ----------------------------------------------------
+// Stimulation stream encoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_StimulationStreamEncoder                                                                       OpenViBE::CIdentifier(0x6e86f7d5, 0xa4668108)
+#define OVP_GD_ClassId_Algorithm_StimulationStreamEncoderDesc                                                                   OpenViBE::CIdentifier(0x9b994b50, 0x52c3f06a)
+#define OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_SimtulationSet                                               OpenViBE::CIdentifier(0x8565254c, 0x3a49268e)
+#define OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                         OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
+#define OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer                                                   OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
+#define OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeEnd                                                      OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
+#define OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader                                                   OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
+
+// ----------------------------------------------------
+// Streamed matrix stream encoder
+// ----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamEncoder                                                                    OpenViBE::CIdentifier(0x5cb32c71, 0x576f00a6)
+#define OVP_GD_ClassId_Algorithm_StreamedMatrixStreamEncoderDesc                                                                OpenViBE::CIdentifier(0xeeefe060, 0x646ee8ab)
+#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix                                                    OpenViBE::CIdentifier(0xa3e9e5b0, 0xae756303)
+#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_OutputParameterId_EncodedMemoryBuffer                                      OpenViBE::CIdentifier(0xa3d8b171, 0xf8734734)
+#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeBuffer                                                OpenViBE::CIdentifier(0x1b7076fd, 0x449bc70a)
+#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeEnd                                                   OpenViBE::CIdentifier(0x3fc23508, 0x806753d8)
+#define OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader                                                OpenViBE::CIdentifier(0x878eaf60, 0xf9d5303f)
 
 #endif // __OpenViBEPlugins_Global_Defines_H__
