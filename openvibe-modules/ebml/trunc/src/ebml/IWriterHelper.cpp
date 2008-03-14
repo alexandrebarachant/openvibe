@@ -145,6 +145,7 @@ boolean CWriterHelper::setUIntegerAsChildData(const uint64 uiValue)
 	{
 		l_pBuffer[l_ui64BufferSize-i-1]=(unsigned char)((uiValue>>(i*8))&0xff);
 	}
+
 	return m_pWriter->setChildData(l_pBuffer, l_ui64BufferSize);
 }
 
