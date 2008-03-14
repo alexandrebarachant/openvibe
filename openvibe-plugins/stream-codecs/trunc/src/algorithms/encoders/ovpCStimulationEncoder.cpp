@@ -11,14 +11,14 @@ boolean CStimulationEncoder::initialize(void)
 {
 	CEBMLBaseEncoder::initialize();
 
-	m_oStimulationSetHandle.initialize(getInputParameter(OVP_StimulationEncoder_StimulationSet_InParameterId));
+	ip_pStimulationSet.initialize(getInputParameter(OVP_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
 
 	return true;
 }
 
 boolean CStimulationEncoder::uninitialize(void)
 {
-	m_oStimulationSetHandle.uninitialize();
+	ip_pStimulationSet.uninitialize();
 
 	CEBMLBaseEncoder::uninitialize();
 
@@ -30,7 +30,7 @@ boolean CStimulationEncoder::uninitialize(void)
 
 boolean CStimulationEncoder::processBuffer(void)
 {
-	IStimulationSet* l_pStimulationSet=m_oStimulationSetHandle;
+	IStimulationSet* l_pStimulationSet=ip_pStimulationSet;
 
 	 m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer);
 	  m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation);

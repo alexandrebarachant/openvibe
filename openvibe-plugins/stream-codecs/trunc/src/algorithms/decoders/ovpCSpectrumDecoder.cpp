@@ -14,14 +14,14 @@ boolean CSpectrumDecoder::initialize(void)
 {
 	CStreamedMatrixDecoder::initialize();
 
-	m_oFrenquencyBandMinMaxHandle.initialize(getOutputParameter(OVP_SpectrumDecoder_FrequencyBandMinMax_OutParameterId));
+	op_pMinMaxFrequencyBands.initialize(getOutputParameter(OVP_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands));
 
 	return true;
 }
 
 boolean CSpectrumDecoder::uninitialize(void)
 {
-	m_oFrenquencyBandMinMaxHandle.uninitialize();
+	op_pMinMaxFrequencyBands.uninitialize();
 
 	CStreamedMatrixDecoder::uninitialize();
 
@@ -53,9 +53,9 @@ void CSpectrumDecoder::openChild(const EBML::CIdentifier& rIdentifier)
 	{
 		if(l_rTop==OVTK_NodeId_Header_Spectrum)
 		{
-			m_oFrenquencyBandMinMaxHandle->setDimensionCount(2);
-			m_oFrenquencyBandMinMaxHandle->setDimensionSize(0, 2);
-			m_oFrenquencyBandMinMaxHandle->setDimensionSize(1, m_oMatrixHandle->getDimensionSize(1));
+			op_pMinMaxFrequencyBands->setDimensionCount(2);
+			op_pMinMaxFrequencyBands->setDimensionSize(0, 2);
+			op_pMinMaxFrequencyBands->setDimensionSize(1, op_pMatrix->getDimensionSize(1));
 
 			m_ui32FrequencyBandIndex=0;
 		}
@@ -75,8 +75,8 @@ void CSpectrumDecoder::processChildData(const void* pBuffer, const EBML::uint64 
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start)
 	 ||(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop))
 	{
-		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start) m_oFrenquencyBandMinMaxHandle->getBuffer()[m_ui32FrequencyBandIndex*2  ]=m_pEBMLReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize);
-		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop)  m_oFrenquencyBandMinMaxHandle->getBuffer()[m_ui32FrequencyBandIndex*2+1]=m_pEBMLReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize);
+		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Start) op_pMinMaxFrequencyBands->getBuffer()[m_ui32FrequencyBandIndex*2  ]=m_pEBMLReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize);
+		if(l_rTop==OVTK_NodeId_Header_Spectrum_FrequencyBand_Stop)  op_pMinMaxFrequencyBands->getBuffer()[m_ui32FrequencyBandIndex*2+1]=m_pEBMLReaderHelper->getFloatFromChildData(pBuffer, ui64BufferSize);
 	}
 	else
 	{

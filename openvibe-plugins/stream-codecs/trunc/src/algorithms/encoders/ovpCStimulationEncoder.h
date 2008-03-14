@@ -7,7 +7,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CStimulationEncoder : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoder
+		class CStimulationEncoder : public OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoder
 		{
 		public:
 
@@ -17,14 +17,14 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean uninitialize(void);
 			virtual OpenViBE::boolean processBuffer(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoder, OVP_ClassId_Algorithm_StimulationEncoder);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoder, OVP_ClassId_Algorithm_StimulationStreamEncoder);
 
 		protected:
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > m_oStimulationSetHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > ip_pStimulationSet;
 		};
 
-		class CStimulationEncoderDesc : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoderDesc
+		class CStimulationEncoderDesc : public OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoderDesc
 		{
 		public:
 
@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stream codecs/Encoders"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_StimulationEncoder; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_StimulationStreamEncoder; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CStimulationEncoder(); }
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
@@ -46,12 +46,12 @@ namespace OpenViBEPlugins
 			{
 				OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoderDesc::getAlgorithmPrototype(rAlgorithmPrototype);
 
-				rAlgorithmPrototype.addInputParameter(OVP_StimulationEncoder_StimulationSet_InParameterId, "Simtulation set", OpenViBE::Kernel::ParameterType_StimulationSet);
+				rAlgorithmPrototype.addInputParameter(OVP_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet, "Simtulation set", OpenViBE::Kernel::ParameterType_StimulationSet);
 
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoderDesc, OVP_ClassId_Algorithm_StimulationEncoderDesc);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoderDesc, OVP_ClassId_Algorithm_StimulationStreamEncoderDesc);
 		};
 	};
 };

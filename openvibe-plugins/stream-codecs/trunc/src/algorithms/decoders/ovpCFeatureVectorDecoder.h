@@ -7,17 +7,17 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CFeatureVectorDecoder : virtual public OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoder
+		class CFeatureVectorDecoder : public OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoder
 		{
 		public:
 
 			virtual void release(void) { delete this; }
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoder, OVP_ClassId_Algorithm_FeatureVectorDecoder);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoder, OVP_ClassId_Algorithm_FeatureVectorStreamDecoder);
 
 		};
 
-		class CFeatureVectorDecoderDesc : virtual public OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoderDesc
+		class CFeatureVectorDecoderDesc : public OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoderDesc
 		{
 		public:
 
@@ -31,7 +31,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stream codecs/Decoders"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_FeatureVectorDecoder; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_FeatureVectorStreamDecoder; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CFeatureVectorDecoder(); }
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
@@ -42,7 +42,7 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoderDesc, OVP_ClassId_Algorithm_FeatureVectorDecoderDesc);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoderDesc, OVP_ClassId_Algorithm_FeatureVectorStreamDecoderDesc);
 		};
 	};
 };

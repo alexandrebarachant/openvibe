@@ -24,7 +24,7 @@ CEBMLBaseDecoder::CEBMLBaseDecoder(void)
 
 boolean CEBMLBaseDecoder::initialize(void)
 {
-	m_oEBMLMemoryBufferHandle.initialize(getInputParameter(OVP_EBMLDecoder_EBMLMemoryBuffer_InParameterId));
+	ip_pMemoryBufferToDecode.initialize(getInputParameter(OVP_Algorithm_EBMLStreamDecoder_InputParameterId_MemoryBufferToDecode));
 
 	m_pEBMLReaderHelper=EBML::createReaderHelper();
 
@@ -41,7 +41,7 @@ boolean CEBMLBaseDecoder::uninitialize(void)
 	m_pEBMLReaderHelper->release();
 	m_pEBMLReaderHelper=NULL;
 
-	m_oEBMLMemoryBufferHandle.uninitialize();
+	ip_pMemoryBufferToDecode.uninitialize();
 
 	return true;
 }
@@ -51,7 +51,7 @@ boolean CEBMLBaseDecoder::uninitialize(void)
 
 boolean CEBMLBaseDecoder::process(void)
 {
-	m_pEBMLReader->processData(m_oEBMLMemoryBufferHandle->getDirectPointer(), m_oEBMLMemoryBufferHandle->getSize());
+	m_pEBMLReader->processData(ip_pMemoryBufferToDecode->getDirectPointer(), ip_pMemoryBufferToDecode->getSize());
 
 	return true;
 }
@@ -74,15 +74,15 @@ void CEBMLBaseDecoder::openChild(const EBML::CIdentifier& rIdentifier)
 {
 	if(rIdentifier==OVTK_NodeId_Header)
 	{
-		activateOutputTrigger(OVP_EBMLDecoder_GotHeader_TriggerId, true);
+		activateOutputTrigger(OVP_Algorithm_EBMLStreamDecoder_OutputTriggerId_ReceivedHeader, true);
 	}
 	if(rIdentifier==OVTK_NodeId_Buffer)
 	{
-		activateOutputTrigger(OVP_EBMLDecoder_GotBuffer_TriggerId, true);
+		activateOutputTrigger(OVP_Algorithm_EBMLStreamDecoder_OutputTriggerId_ReceivedBuffer, true);
 	}
 	if(rIdentifier==OVTK_NodeId_End)
 	{
-		activateOutputTrigger(OVP_EBMLDecoder_GotEnd_TriggerId, true);
+		activateOutputTrigger(OVP_Algorithm_EBMLStreamDecoder_OutputTriggerId_ReceivedEnd, true);
 	}
 }
 

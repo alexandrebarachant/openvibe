@@ -7,7 +7,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CAcquisitionDecoder : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder
+		class CAcquisitionDecoder : public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder
 		{
 		public:
 
@@ -18,7 +18,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder, OVP_ClassId_Algorithm_AcquisitionDecoder);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder, OVP_ClassId_Algorithm_AcquisitionStreamDecoder);
 
 			// ebml callbacks
 			virtual EBML::boolean isMasterChild(const EBML::CIdentifier& rIdentifier);
@@ -28,28 +28,20 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oExperimentIdHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oSubjectAgeHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oSubjectGenderHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oSamplingRateHandle;
+			void appendMemoryBuffer(OpenViBE::IMemoryBuffer* pMemoryBuffer, const void* pBuffer, const EBML::uint64 ui64BufferSize);
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_oChannelLocationHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_oSignalHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > m_oStimulationSetHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64BufferDuration;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pExperimentInformationStream;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pSignalStream;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pStimulationStream;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pChannelLocalisationStream;
 
 		private:
 
 			std::stack<EBML::CIdentifier> m_vNodes;
-
-			OpenViBE::uint32 m_ui32ChannelIndex;
-			OpenViBE::uint32 m_ui32SampleCountPerBuffer;
-			std::vector < OpenViBE::float64 > m_vChannelGainFactor;
-			std::vector < OpenViBE::float64 > m_vChannelLocation;
-			std::vector < OpenViBE::uint64 > m_vStimulationIdentifier;
-			std::vector < OpenViBE::uint64 > m_vStimulationSampleIndex;
 		};
 
-		class CAcquisitionDecoderDesc : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc
+		class CAcquisitionDecoderDesc : public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc
 		{
 		public:
 
@@ -63,7 +55,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stream codecs/Decoders"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_AcquisitionDecoder; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_AcquisitionStreamDecoder; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CAcquisitionDecoder(); }
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
@@ -71,18 +63,16 @@ namespace OpenViBEPlugins
 			{
 				OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc::getAlgorithmPrototype(rAlgorithmPrototype);
 
-				rAlgorithmPrototype.addOutputParameter(OVP_AcquisitionDecoder_ExperimentId_OutParameterId,    "Experiment identifier", OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_AcquisitionDecoder_SubjectAge_OutParameterId,      "Subject age",           OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_AcquisitionDecoder_SubjectGender_OutParameterId,   "Subject gender",        OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_AcquisitionDecoder_SamplingRate_OutParameterId,    "Sampling rate",         OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_AcquisitionDecoder_ChannelLocation_OutParameterId, "Channel location",      OpenViBE::Kernel::ParameterType_Matrix);
-				rAlgorithmPrototype.addOutputParameter(OVP_AcquisitionDecoder_Signal_OutParameterId,          "Signal",                OpenViBE::Kernel::ParameterType_Matrix);
-				rAlgorithmPrototype.addOutputParameter(OVP_AcquisitionDecoder_StimulationSet_OutParameterId,  "Stimulation set",       OpenViBE::Kernel::ParameterType_StimulationSet);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_AcquisitionStreamDecoder_OutputParameterId_BufferDuration,              "Buffer duration",               OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_AcquisitionStreamDecoder_OutputParameterId_ExperimentInformationStream, "Experiment information stream", OpenViBE::Kernel::ParameterType_MemoryBuffer);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_AcquisitionStreamDecoder_OutputParameterId_SignalStream,                "Signal stream",                 OpenViBE::Kernel::ParameterType_MemoryBuffer);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_AcquisitionStreamDecoder_OutputParameterId_StimulationStream,           "Stimulation stream",            OpenViBE::Kernel::ParameterType_MemoryBuffer);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_AcquisitionStreamDecoder_OutputParameterId_ChannelLocalisationStream,   "Channel localisation stream",   OpenViBE::Kernel::ParameterType_MemoryBuffer);
 
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc, OVP_ClassId_Algorithm_AcquisitionDecoderDesc);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc, OVP_ClassId_Algorithm_AcquisitionStreamDecoderDesc);
 		};
 	};
 };

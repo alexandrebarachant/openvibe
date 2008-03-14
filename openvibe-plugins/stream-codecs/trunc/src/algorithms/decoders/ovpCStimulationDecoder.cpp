@@ -14,14 +14,14 @@ boolean CStimulationDecoder::initialize(void)
 {
 	CEBMLBaseDecoder::initialize();
 
-	m_oStimulationSetHandle.initialize(getOutputParameter(OVP_StimulationDecoder_StimulationSet_OutParameterId));
+	op_pStimulationSet.initialize(getOutputParameter(OVP_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
 
 	return true;
 }
 
 boolean CStimulationDecoder::uninitialize(void)
 {
-	m_oStimulationSetHandle.uninitialize();
+	op_pStimulationSet.uninitialize();
 
 	CEBMLBaseDecoder::uninitialize();
 
@@ -73,10 +73,10 @@ void CStimulationDecoder::processChildData(const void* pBuffer, const EBML::uint
 	 ||(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Date)
 	 ||(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration))
 	{
-		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_NumberOfStimulations)   { m_oStimulationSetHandle->setStimulationCount(m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); m_ui64StimulationIndex=0; }
-		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Identifier) { m_oStimulationSetHandle->setStimulationIdentifier(m_ui64StimulationIndex, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
-		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Date)       { m_oStimulationSetHandle->setStimulationDate(m_ui64StimulationIndex, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
-		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration)   { m_oStimulationSetHandle->setStimulationDuration(m_ui64StimulationIndex, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_NumberOfStimulations)   { op_pStimulationSet->setStimulationCount(m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); m_ui64StimulationIndex=0; }
+		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Identifier) { op_pStimulationSet->setStimulationIdentifier(m_ui64StimulationIndex, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Date)       { op_pStimulationSet->setStimulationDate(m_ui64StimulationIndex, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+		if(l_rTop==OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration)   { op_pStimulationSet->setStimulationDuration(m_ui64StimulationIndex, m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 	}
 	else
 	{

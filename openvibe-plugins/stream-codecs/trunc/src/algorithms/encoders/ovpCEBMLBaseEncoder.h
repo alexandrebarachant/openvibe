@@ -15,7 +15,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CEBMLBaseEncoder : virtual public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
+		class CEBMLBaseEncoder : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
 		{
 		public:
 
@@ -30,35 +30,36 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean processBuffer(void) { return true; }
 			virtual OpenViBE::boolean processEnd(void)    { return true; }
 
-			_IsDerivedFromClass_Final_(OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >, OVP_ClassId_Algorithm_EBMLBaseEncoder);
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >, OVP_ClassId_Algorithm_EBMLBaseStreamEncoder);
 
 			// ebml callbacks
 			virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 
 		protected:
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > m_oMemoryBufferHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pMemoryBuffer;
 
 			EBML::IWriterHelper* m_pEBMLWriterHelper;
 			EBML::IWriter* m_pEBMLWriter;
 			EBML::TWriterCallbackProxy1 < OpenViBEPlugins::StreamCodecs::CEBMLBaseEncoder > m_oEBMLWriterCallbackProxy;
 		};
 
-		class CEBMLBaseEncoderDesc : virtual public OpenViBE::Plugins::IAlgorithmDesc
+		class CEBMLBaseEncoderDesc : public OpenViBE::Plugins::IAlgorithmDesc
 		{
 		public:
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
 				OpenViBE::Kernel::IAlgorithmProto& rAlgorithmPrototype) const
 			{
-				rAlgorithmPrototype.addOutputParameter(OVP_EBMLEncoder_MemoryBuffer_OutParameterId, "Encoded memory buffer", OpenViBE::Kernel::ParameterType_MemoryBuffer);
-
-				rAlgorithmPrototype.addInputTrigger(OVP_EBMLEncoder_WriteHeader_TriggerId, "Encode header");
-				rAlgorithmPrototype.addInputTrigger(OVP_EBMLEncoder_WriteBuffer_TriggerId, "Encode buffer");
-				rAlgorithmPrototype.addInputTrigger(OVP_EBMLEncoder_WriteEnd_TriggerId, "Encode end");
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_EBMLStreamEncoder_OutputParameterId_EncodedMemoryBuffer, "Encoded memory buffer", OpenViBE::Kernel::ParameterType_MemoryBuffer);
+				rAlgorithmPrototype.addInputTrigger(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeHeader, "Encode header");
+				rAlgorithmPrototype.addInputTrigger(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeBuffer, "Encode buffer");
+				rAlgorithmPrototype.addInputTrigger(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeEnd, "Encode end");
 
 				return true;
 			}
+
+			_IsDerivedFromClass_(OpenViBE::Plugins::IAlgorithmDesc, OVP_ClassId_Algorithm_EBMLBaseStreamEncoderDesc);
 		};
 	};
 };

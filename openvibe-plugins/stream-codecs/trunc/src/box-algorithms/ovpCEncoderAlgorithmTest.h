@@ -9,7 +9,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CEncoderAlgorithmTest : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CEncoderAlgorithmTest : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -23,12 +23,12 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean processClock(OpenViBE::Kernel::IMessageClock& rMessageClock);
 			virtual OpenViBE::boolean process(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_Box_EncoderAlgorithmTest)
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_BoxAlgorithm_StreamEncoderAlgorithmTest)
 
 		protected:
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder[6];
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > m_oMemoryBufferHandle[6];
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pMemoryBuffer[6];
 
 			OpenViBE::boolean m_bHasSentHeader;
 			OpenViBE::uint64 m_ui64StartTime;
@@ -39,7 +39,7 @@ namespace OpenViBEPlugins
 			OpenViBE::CStimulationSet m_oStimulationSet;
 		};
 
-		class CEncoderAlgorithmTestDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CEncoderAlgorithmTestDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
@@ -53,7 +53,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-about"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Box_EncoderAlgorithmTest; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_StreamEncoderAlgorithmTest; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CEncoderAlgorithmTest(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
@@ -69,7 +69,7 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_Box_EncoderAlgorithmTestDesc)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_StreamEncoderAlgorithmTestDesc)
 		};
 	};
 };

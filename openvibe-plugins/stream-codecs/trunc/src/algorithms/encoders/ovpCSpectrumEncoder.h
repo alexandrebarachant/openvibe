@@ -7,7 +7,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CSpectrumEncoder : virtual public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder
+		class CSpectrumEncoder : public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder
 		{
 		public:
 
@@ -17,14 +17,14 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean uninitialize(void);
 			virtual OpenViBE::boolean processHeader(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder, OVP_ClassId_Algorithm_SpectrumEncoder);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder, OVP_ClassId_Algorithm_SpectrumStreamEncoder);
 
 		protected:
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_oFrequencyBandMinMaxHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pMinMaxFrenquencyBands;
 		};
 
-		class CSpectrumEncoderDesc : virtual public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc
+		class CSpectrumEncoderDesc : public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc
 		{
 		public:
 
@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stream codecs/Encoders"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_SpectrumEncoder; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_SpectrumStreamEncoder; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CSpectrumEncoder(); }
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
@@ -46,12 +46,12 @@ namespace OpenViBEPlugins
 			{
 				OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc::getAlgorithmPrototype(rAlgorithmPrototype);
 
-				rAlgorithmPrototype.addInputParameter(OVP_SpectrumEncoder_FrequencyBandMinMax_InParameterId, "Min/Max frenquency bands", OpenViBE::Kernel::ParameterType_Matrix);
+				rAlgorithmPrototype.addInputParameter(OVP_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands, "Min/Max frequency bands", OpenViBE::Kernel::ParameterType_Matrix);
 
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc, OVP_ClassId_Algorithm_SpectrumEncoderDesc);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc, OVP_ClassId_Algorithm_SpectrumStreamEncoderDesc);
 		};
 	};
 };

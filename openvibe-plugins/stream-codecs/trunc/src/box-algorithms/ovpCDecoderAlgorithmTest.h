@@ -9,7 +9,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CDecoderAlgorithmTest : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CDecoderAlgorithmTest : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -24,15 +24,15 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_Box_DecoderAlgorithmTest)
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_BoxAlgorithm_StreamDecoderAlgorithmTest)
 
 		protected:
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamDecoder[6];
-			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > m_oEBMLMemoryBufferHandle[6];
+			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pMemoryBuffer[6];
 		};
 
-		class CDecoderAlgorithmTestDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CDecoderAlgorithmTestDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
@@ -46,7 +46,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-about"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Box_DecoderAlgorithmTest; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_StreamDecoderAlgorithmTest; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CDecoderAlgorithmTest(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
@@ -62,7 +62,7 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_Box_DecoderAlgorithmTestDesc)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_StreamDecoderAlgorithmTestDesc)
 		};
 	};
 };

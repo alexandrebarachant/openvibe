@@ -7,7 +7,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CStreamedMatrixDecoder : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder
+		class CStreamedMatrixDecoder : public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder
 		{
 		public:
 
@@ -18,7 +18,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder, OVP_ClassId_Algorithm_StreamedMatrixDecoder);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder, OVP_ClassId_Algorithm_StreamedMatrixStreamDecoder);
 
 			// ebml callbacks
 			virtual EBML::boolean isMasterChild(const EBML::CIdentifier& rIdentifier);
@@ -28,7 +28,7 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_oMatrixHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pMatrix;
 
 		private:
 
@@ -48,7 +48,7 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64MatrixBufferSize;
 		};
 
-		class CStreamedMatrixDecoderDesc : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc
+		class CStreamedMatrixDecoderDesc : public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc
 		{
 		public:
 
@@ -62,7 +62,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stream codecs/Decoders"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_StreamedMatrixDecoder; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_StreamedMatrixStreamDecoder; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CStreamedMatrixDecoder(); }
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
@@ -70,12 +70,12 @@ namespace OpenViBEPlugins
 			{
 				OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc::getAlgorithmPrototype(rAlgorithmPrototype);
 
-				rAlgorithmPrototype.addOutputParameter(OVP_StreamedMatrixDecoder_Matrix_OutParameterId, "Matrix", OpenViBE::Kernel::ParameterType_Matrix);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix, "Matrix", OpenViBE::Kernel::ParameterType_Matrix);
 
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc, OVP_ClassId_Algorithm_StreamedMatrixDecoderDesc);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc, OVP_ClassId_Algorithm_StreamedMatrixStreamDecoderDesc);
 		};
 	};
 };

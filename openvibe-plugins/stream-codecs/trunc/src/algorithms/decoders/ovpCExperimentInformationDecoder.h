@@ -7,7 +7,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CExperimentInformationDecoder : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder
+		class CExperimentInformationDecoder : public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder
 		{
 		public:
 
@@ -18,7 +18,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder, OVP_ClassId_Algorithm_ExperimentInformationDecoder);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoder, OVP_ClassId_Algorithm_ExperimentInformationStreamDecoder);
 
 			// ebml callbacks
 			virtual EBML::boolean isMasterChild(const EBML::CIdentifier& rIdentifier);
@@ -28,25 +28,25 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oExperimentIdentifierHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > m_oExperimentDateHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64ExperimentIdentifier;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > op_pExperimentDate;
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oSubjectIdentifierHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > m_oSubjectNameHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oSubjectAgeHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oSubjectGenderHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64SubjectIdentifier;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > op_pSubjectName;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64SubjectAge;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64SubjectGender;
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oLaboratoryIdentifierHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > m_oLaboratoryNameHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oTechnicianIdentifierHandle;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > m_oTechnicianNameHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64LaboratoryIdentifier;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > op_pLaboratoryName;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64TechnicianIdentifier;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > op_pTechnicianName;
 
 		private:
 
 			std::stack<EBML::CIdentifier> m_vNodes;
 		};
 
-		class CExperimentInformationDecoderDesc : virtual public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc
+		class CExperimentInformationDecoderDesc : public OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc
 		{
 		public:
 
@@ -60,7 +60,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stream codecs/Decoders"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_ExperimentInformationDecoder; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_ExperimentInformationStreamDecoder; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CExperimentInformationDecoder(); }
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
@@ -68,21 +68,21 @@ namespace OpenViBEPlugins
 			{
 				OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc::getAlgorithmPrototype(rAlgorithmPrototype);
 
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_ExperimentIdentifier_OutParameterId, "Experiment identifier", OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_ExperimentDate_OutParameterId,       "Experiment date",       OpenViBE::Kernel::ParameterType_String);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_SubjectIdentifier_OutParameterId,    "Subject identifier",    OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_SubjectName_OutParameterId,          "Subject name",          OpenViBE::Kernel::ParameterType_String);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_SubjectAge_OutParameterId,           "Subject age",           OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_SubjectGender_OutParameterId,        "Subject gender",        OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_LaboratoryIdentifier_OutParameterId, "Laboratory identifier", OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_LaboratoryName_OutParameterId,       "Laboratory name",       OpenViBE::Kernel::ParameterType_String);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_TechnicianIdentifier_OutParameterId, "Technician identifier", OpenViBE::Kernel::ParameterType_UInteger);
-				rAlgorithmPrototype.addOutputParameter(OVP_ExperimentInformationDecoder_TechnicianName_OutParameterId,       "Technician name",       OpenViBE::Kernel::ParameterType_String);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_ExperimentIdentifier, "Experiment identifier", OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_ExperimentDate,       "Experiment date",       OpenViBE::Kernel::ParameterType_String);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectIdentifier,    "Subject identifier",    OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectName,          "Subject name",          OpenViBE::Kernel::ParameterType_String);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectAge,           "Subject age",           OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_SubjectGender,        "Subject gender",        OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_LaboratoryIdentifier, "Laboratory identifier", OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_LaboratoryName,       "Laboratory name",       OpenViBE::Kernel::ParameterType_String);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_TechnicianIdentifier, "Technician identifier", OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_TechnicianName,       "Technician name",       OpenViBE::Kernel::ParameterType_String);
 
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc, OVP_ClassId_Algorithm_ExperimentInformationDecoderDesc);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CEBMLBaseDecoderDesc, OVP_ClassId_Algorithm_ExperimentInformationStreamDecoderDesc);
 		};
 	};
 };

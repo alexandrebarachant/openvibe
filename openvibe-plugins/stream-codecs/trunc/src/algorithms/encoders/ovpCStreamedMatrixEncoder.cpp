@@ -11,7 +11,7 @@ boolean CStreamedMatrixEncoder::initialize(void)
 {
 	CEBMLBaseEncoder::initialize();
 
-	m_oMatrixHandle.initialize(getInputParameter(OVP_StreamedMatrixEncoder_Matrix_InParameterId));
+	ip_pMatrix.initialize(getInputParameter(OVP_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix));
 
 	m_ui64MatrixBufferSize=0;
 
@@ -20,7 +20,7 @@ boolean CStreamedMatrixEncoder::initialize(void)
 
 boolean CStreamedMatrixEncoder::uninitialize(void)
 {
-	m_oMatrixHandle.uninitialize();
+	ip_pMatrix.uninitialize();
 
 	CEBMLBaseEncoder::uninitialize();
 
@@ -32,7 +32,7 @@ boolean CStreamedMatrixEncoder::uninitialize(void)
 
 boolean CStreamedMatrixEncoder::processHeader(void)
 {
-	IMatrix* l_pMatrix=m_oMatrixHandle;
+	IMatrix* l_pMatrix=ip_pMatrix;
 
 	m_ui64MatrixBufferSize=(l_pMatrix->getDimensionCount()==0?0:1);
 
@@ -62,7 +62,7 @@ boolean CStreamedMatrixEncoder::processHeader(void)
 
 boolean CStreamedMatrixEncoder::processBuffer(void)
 {
-	IMatrix* l_pMatrix=m_oMatrixHandle;
+	IMatrix* l_pMatrix=ip_pMatrix;
 
 	m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_StreamedMatrix);
 	 m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer);

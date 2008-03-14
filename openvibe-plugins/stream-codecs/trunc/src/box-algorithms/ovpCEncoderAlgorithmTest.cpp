@@ -8,17 +8,17 @@ using namespace OpenViBEPlugins::StreamCodecs;
 
 boolean CEncoderAlgorithmTest::initialize(void)
 {
-	m_pStreamEncoder[0]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_ExperimentInformationEncoder));
-	m_pStreamEncoder[1]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_FeatureVectorEncoder));
-	m_pStreamEncoder[2]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SignalEncoder));
-	m_pStreamEncoder[3]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SpectrumEncoder));
-	m_pStreamEncoder[4]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StimulationEncoder));
-	m_pStreamEncoder[5]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StreamedMatrixEncoder));
+	m_pStreamEncoder[0]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_ExperimentInformationStreamEncoder));
+	m_pStreamEncoder[1]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_FeatureVectorStreamEncoder));
+	m_pStreamEncoder[2]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SignalStreamEncoder));
+	m_pStreamEncoder[3]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SpectrumStreamEncoder));
+	m_pStreamEncoder[4]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StimulationStreamEncoder));
+	m_pStreamEncoder[5]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StreamedMatrixStreamEncoder));
 
 	for(uint32 i=0; i<6; i++)
 	{
 		m_pStreamEncoder[i]->initialize();
-		m_oMemoryBufferHandle[i].initialize(m_pStreamEncoder[i]->getOutputParameter(OVP_EBMLEncoder_MemoryBuffer_OutParameterId));
+		op_pMemoryBuffer[i].initialize(m_pStreamEncoder[i]->getOutputParameter(OVP_Algorithm_EBMLStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 	}
 
 	m_oMatrix1.setDimensionCount(2);
@@ -37,13 +37,13 @@ boolean CEncoderAlgorithmTest::initialize(void)
 	IMatrix* l_pMatrix2=&m_oMatrix2;
 	IStimulationSet* l_pStimulationSet=&m_oStimulationSet;
 
-	m_pStreamEncoder[1]->getInputParameter(OVP_StreamedMatrixEncoder_Matrix_InParameterId)->setValue(&l_pMatrix1);
-	m_pStreamEncoder[2]->getInputParameter(OVP_StreamedMatrixEncoder_Matrix_InParameterId)->setValue(&l_pMatrix1);
-	m_pStreamEncoder[2]->getInputParameter(OVP_SignalEncoder_SamplingRate_InParameterId)->setValue(&m_ui64SamplingRate);
-	m_pStreamEncoder[3]->getInputParameter(OVP_StreamedMatrixEncoder_Matrix_InParameterId)->setValue(&l_pMatrix1);
-	m_pStreamEncoder[3]->getInputParameter(OVP_SpectrumEncoder_FrequencyBandMinMax_InParameterId)->setValue(&l_pMatrix2);
-	m_pStreamEncoder[4]->getInputParameter(OVP_StimulationEncoder_StimulationSet_InParameterId)->setValue(&l_pStimulationSet);
-	m_pStreamEncoder[5]->getInputParameter(OVP_StreamedMatrixEncoder_Matrix_InParameterId)->setValue(&l_pMatrix1);
+	m_pStreamEncoder[1]->getInputParameter(OVP_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setValue(&l_pMatrix1);
+	m_pStreamEncoder[2]->getInputParameter(OVP_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setValue(&l_pMatrix1);
+	m_pStreamEncoder[2]->getInputParameter(OVP_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate)->setValue(&m_ui64SamplingRate);
+	m_pStreamEncoder[3]->getInputParameter(OVP_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setValue(&l_pMatrix1);
+	m_pStreamEncoder[3]->getInputParameter(OVP_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands)->setValue(&l_pMatrix2);
+	m_pStreamEncoder[4]->getInputParameter(OVP_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet)->setValue(&l_pStimulationSet);
+	m_pStreamEncoder[5]->getInputParameter(OVP_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setValue(&l_pMatrix1);
 
 	m_bHasSentHeader=false;
 	m_ui64StartTime=0;
@@ -56,7 +56,7 @@ boolean CEncoderAlgorithmTest::uininitialize(void)
 {
 	for(uint32 i=0; i<6; i++)
 	{
-		m_oMemoryBufferHandle[i].uninitialize();
+		op_pMemoryBuffer[i].uninitialize();
 		m_pStreamEncoder[i]->uninitialize();
 		getAlgorithmManager().releaseAlgorithm(*m_pStreamEncoder[i]);
 		m_pStreamEncoder[i]=NULL;
@@ -83,8 +83,8 @@ boolean CEncoderAlgorithmTest::process(void)
 		m_ui64EndTime=0;
 		for(uint32 i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
 		{
-			m_oMemoryBufferHandle[i]=l_rDynamicBoxContext.getOutputChunk(i);
-			m_pStreamEncoder[i]->process(OVP_EBMLEncoder_WriteHeader_TriggerId);
+			op_pMemoryBuffer[i]=l_rDynamicBoxContext.getOutputChunk(i);
+			m_pStreamEncoder[i]->process(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeHeader);
 		}
 		m_bHasSentHeader=true;
 	}
@@ -92,8 +92,8 @@ boolean CEncoderAlgorithmTest::process(void)
 	{
 		for(uint32 i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
 		{
-			m_oMemoryBufferHandle[i]=l_rDynamicBoxContext.getOutputChunk(i);
-			m_pStreamEncoder[i]->process(OVP_EBMLEncoder_WriteBuffer_TriggerId);
+			op_pMemoryBuffer[i]=l_rDynamicBoxContext.getOutputChunk(i);
+			m_pStreamEncoder[i]->process(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeBuffer);
 		}
 	}
 

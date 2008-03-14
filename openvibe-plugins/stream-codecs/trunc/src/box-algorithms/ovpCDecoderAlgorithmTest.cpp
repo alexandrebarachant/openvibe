@@ -46,17 +46,17 @@ CDecoderAlgorithmTest::~CDecoderAlgorithmTest(void)
 
 boolean CDecoderAlgorithmTest::initialize(void)
 {
-	m_pStreamDecoder[0]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_ExperimentInformationDecoder));
-	m_pStreamDecoder[1]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_FeatureVectorDecoder));
-	m_pStreamDecoder[2]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SignalDecoder));
-	m_pStreamDecoder[3]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SpectrumDecoder));
-	m_pStreamDecoder[4]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StimulationDecoder));
-	m_pStreamDecoder[5]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StreamedMatrixDecoder));
+	m_pStreamDecoder[0]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_ExperimentInformationStreamDecoder));
+	m_pStreamDecoder[1]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_FeatureVectorStreamDecoder));
+	m_pStreamDecoder[2]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SignalStreamDecoder));
+	m_pStreamDecoder[3]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SpectrumStreamDecoder));
+	m_pStreamDecoder[4]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StimulationStreamDecoder));
+	m_pStreamDecoder[5]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StreamedMatrixStreamDecoder));
 
 	for(uint32 i=0; i<6; i++)
 	{
 		m_pStreamDecoder[i]->initialize();
-		m_oEBMLMemoryBufferHandle[i].initialize(m_pStreamDecoder[i]->getInputParameter(OVP_EBMLDecoder_EBMLMemoryBuffer_InParameterId));
+		ip_pMemoryBuffer[i].initialize(m_pStreamDecoder[i]->getInputParameter(OVP_Algorithm_EBMLStreamDecoder_InputParameterId_MemoryBufferToDecode));
 	}
 
 	return true;
@@ -66,7 +66,7 @@ boolean CDecoderAlgorithmTest::uininitialize(void)
 {
 	for(uint32 i=0; i<6; i++)
 	{
-		m_oEBMLMemoryBufferHandle[i].uninitialize();
+		ip_pMemoryBuffer[i].uninitialize();
 		m_pStreamDecoder[i]->uninitialize();
 		getAlgorithmManager().releaseAlgorithm(*m_pStreamDecoder[i]);
 		m_pStreamDecoder[i]=NULL;
@@ -90,13 +90,13 @@ boolean CDecoderAlgorithmTest::process(void)
 	{
 		for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(i); j++)
 		{
-			m_oEBMLMemoryBufferHandle[i]=l_rDynamicBoxContext.getInputChunk(i, j);
+			ip_pMemoryBuffer[i]=l_rDynamicBoxContext.getInputChunk(i, j);
 			m_pStreamDecoder[i]->process();
 
-			if(m_pStreamDecoder[i]->isOutputTriggerActive(OVP_EBMLDecoder_GotHeader_TriggerId))
+			if(m_pStreamDecoder[i]->isOutputTriggerActive(OVP_Algorithm_EBMLStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
 				{
-					TParameterHandler < IMatrix* > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_StreamedMatrixDecoder_Matrix_OutParameterId));
+					TParameterHandler < IMatrix* > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 					if(l_oHandle.exists())
 					{
 						getLogManager() << LogLevel_Warning << *l_oHandle << "\n";
@@ -104,7 +104,7 @@ boolean CDecoderAlgorithmTest::process(void)
 				}
 
 				{
-					TParameterHandler < IMatrix* > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_SpectrumDecoder_FrequencyBandMinMax_OutParameterId));
+					TParameterHandler < IMatrix* > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands));
 					if(l_oHandle.exists())
 					{
 						getLogManager() << LogLevel_Warning << *l_oHandle << "\n";
@@ -112,7 +112,7 @@ boolean CDecoderAlgorithmTest::process(void)
 				}
 
 				{
-					TParameterHandler < uint64 > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_SignalDecoder_SamplingRate_OutParameterId));
+					TParameterHandler < uint64 > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
 					if(l_oHandle.exists())
 					{
 						getLogManager() << LogLevel_Warning << l_oHandle << "\n";
@@ -120,10 +120,10 @@ boolean CDecoderAlgorithmTest::process(void)
 				}
 			}
 
-			if(m_pStreamDecoder[i]->isOutputTriggerActive(OVP_EBMLDecoder_GotBuffer_TriggerId))
+			if(m_pStreamDecoder[i]->isOutputTriggerActive(OVP_Algorithm_EBMLStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
 				{
-					TParameterHandler < IStimulationSet* > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_StimulationDecoder_StimulationSet_OutParameterId));
+					TParameterHandler < IStimulationSet* > l_oHandle(m_pStreamDecoder[i]->getOutputParameter(OVP_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
 					if(l_oHandle.exists())
 					{
 						getLogManager() << LogLevel_Warning << *l_oHandle << "\n";

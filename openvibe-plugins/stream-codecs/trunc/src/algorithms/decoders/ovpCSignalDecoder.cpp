@@ -14,14 +14,14 @@ boolean CSignalDecoder::initialize(void)
 {
 	CStreamedMatrixDecoder::initialize();
 
-	m_oSamplingRateHandle.initialize(getOutputParameter(OVP_SignalDecoder_SamplingRate_OutParameterId));
+	op_ui64SamplingRate.initialize(getOutputParameter(OVP_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
 
 	return true;
 }
 
 boolean CSignalDecoder::uninitialize(void)
 {
-	m_oSamplingRateHandle.uninitialize();
+	op_ui64SamplingRate.uninitialize();
 
 	CStreamedMatrixDecoder::uninitialize();
 
@@ -63,7 +63,7 @@ void CSignalDecoder::processChildData(const void* pBuffer, const EBML::uint64 ui
 	{
 		if(l_rTop==OVTK_NodeId_Header_Signal_SamplingRate)
 		{
-			m_oSamplingRateHandle=m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
+			op_ui64SamplingRate=m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize);
 		}
 	}
 	else

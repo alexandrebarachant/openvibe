@@ -23,7 +23,7 @@ CEBMLBaseEncoder::CEBMLBaseEncoder(void)
 
 boolean CEBMLBaseEncoder::initialize(void)
 {
-	m_oMemoryBufferHandle.initialize(getOutputParameter(OVP_EBMLEncoder_MemoryBuffer_OutParameterId));
+	op_pMemoryBuffer.initialize(getOutputParameter(OVP_Algorithm_EBMLStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
 	m_pEBMLWriter=EBML::createWriter(m_oEBMLWriterCallbackProxy);
 	m_pEBMLWriterHelper=EBML::createWriterHelper();
@@ -41,7 +41,7 @@ boolean CEBMLBaseEncoder::uninitialize(void)
 	m_pEBMLWriter->release();
 	m_pEBMLWriter=NULL;
 
-	m_oMemoryBufferHandle.uninitialize();
+	op_pMemoryBuffer.uninitialize();
 
 	return true;
 }
@@ -51,7 +51,7 @@ boolean CEBMLBaseEncoder::uninitialize(void)
 
 boolean CEBMLBaseEncoder::process(void)
 {
-	if(isInputTriggerActive(OVP_EBMLEncoder_WriteHeader_TriggerId))
+	if(isInputTriggerActive(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeHeader))
 	{
 		m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header);
 		 m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_StreamType);
@@ -62,23 +62,23 @@ boolean CEBMLBaseEncoder::process(void)
 		 m_pEBMLWriterHelper->closeChild();
 		 this->processHeader();
 		m_pEBMLWriterHelper->closeChild();
-		activateOutputTrigger(OVP_EBMLEncoder_MemoryBufferUpdated_TriggerId, true);
+		activateOutputTrigger(OVP_Algorithm_EBMLStreamEncoder_OutputTriggerId_MemoryBufferUpdated, true);
 	}
 
-	if(isInputTriggerActive(OVP_EBMLEncoder_WriteBuffer_TriggerId))
+	if(isInputTriggerActive(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeBuffer))
 	{
 		m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer);
 		 this->processBuffer();
 		m_pEBMLWriterHelper->closeChild();
-		activateOutputTrigger(OVP_EBMLEncoder_MemoryBufferUpdated_TriggerId, true);
+		activateOutputTrigger(OVP_Algorithm_EBMLStreamEncoder_OutputTriggerId_MemoryBufferUpdated, true);
 	}
 
-	if(isInputTriggerActive(OVP_EBMLEncoder_WriteEnd_TriggerId))
+	if(isInputTriggerActive(OVP_Algorithm_EBMLStreamEncoder_InputTriggerId_EncodeEnd))
 	{
 		m_pEBMLWriterHelper->openChild(OVTK_NodeId_End);
 		 this->processEnd();
 		m_pEBMLWriterHelper->closeChild();
-		activateOutputTrigger(OVP_EBMLEncoder_MemoryBufferUpdated_TriggerId, true);
+		activateOutputTrigger(OVP_Algorithm_EBMLStreamEncoder_OutputTriggerId_MemoryBufferUpdated, true);
 	}
 
 	return true;
@@ -89,7 +89,7 @@ boolean CEBMLBaseEncoder::process(void)
 
 void CEBMLBaseEncoder::write(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 {
-	uint64 l_ui64CurrentBufferSize=m_oMemoryBufferHandle->getSize();
-	m_oMemoryBufferHandle->setSize(l_ui64CurrentBufferSize+ui64BufferSize, false);
-	System::Memory::copy(m_oMemoryBufferHandle->getDirectPointer()+l_ui64CurrentBufferSize, pBuffer, ui64BufferSize);
+	uint64 l_ui64CurrentBufferSize=op_pMemoryBuffer->getSize();
+	op_pMemoryBuffer->setSize(l_ui64CurrentBufferSize+ui64BufferSize, false);
+	System::Memory::copy(op_pMemoryBuffer->getDirectPointer()+l_ui64CurrentBufferSize, pBuffer, ui64BufferSize);
 }

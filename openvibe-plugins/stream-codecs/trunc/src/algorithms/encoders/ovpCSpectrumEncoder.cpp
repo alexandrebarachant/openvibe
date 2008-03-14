@@ -11,14 +11,14 @@ boolean CSpectrumEncoder::initialize(void)
 {
 	CStreamedMatrixEncoder::initialize();
 
-	m_oFrequencyBandMinMaxHandle.initialize(getInputParameter(OVP_SpectrumEncoder_FrequencyBandMinMax_InParameterId));
+	ip_pMinMaxFrenquencyBands.initialize(getInputParameter(OVP_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands));
 
 	return true;
 }
 
 boolean CSpectrumEncoder::uninitialize(void)
 {
-	m_oFrequencyBandMinMaxHandle.uninitialize();
+	ip_pMinMaxFrenquencyBands.uninitialize();
 
 	CStreamedMatrixEncoder::uninitialize();
 
@@ -30,11 +30,11 @@ boolean CSpectrumEncoder::uninitialize(void)
 
 boolean CSpectrumEncoder::processHeader(void)
 {
-	// m_oFrequencyBandMinMaxHandle dimmension count should be 2
-	// m_oFrequencyBandMinMaxHandle dimmension size 0 should be 2
-	// m_oFrequencyBandMinMaxHandle dimmension size 1 should be the same as streamed matrix dimmension size 1
+	// ip_pMinMaxFrenquencyBands dimmension count should be 2
+	// ip_pMinMaxFrenquencyBands dimmension size 0 should be 2
+	// ip_pMinMaxFrenquencyBands dimmension size 1 should be the same as streamed matrix dimmension size 1
 
-	IMatrix* l_pFrequencyBandMinMax=m_oFrequencyBandMinMaxHandle;
+	IMatrix* l_pFrequencyBandMinMax=ip_pMinMaxFrenquencyBands;
 
 	m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_Spectrum);
 	 for(uint32 i=0; i<l_pFrequencyBandMinMax->getDimensionSize(1); i++)

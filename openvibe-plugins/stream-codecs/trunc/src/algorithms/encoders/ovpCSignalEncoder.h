@@ -7,7 +7,7 @@ namespace OpenViBEPlugins
 {
 	namespace StreamCodecs
 	{
-		class CSignalEncoder : virtual public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder
+		class CSignalEncoder : public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder
 		{
 		public:
 
@@ -17,15 +17,15 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean uninitialize(void);
 			virtual OpenViBE::boolean processHeader(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder, OVP_ClassId_Algorithm_SignalEncoder);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoder, OVP_ClassId_Algorithm_SignalStreamEncoder);
 
 		protected:
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_oSamplingRateHandle;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64SamplingRate;
 		};
 
 
-		class CSignalEncoderDesc : virtual public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc
+		class CSignalEncoderDesc : public OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc
 		{
 		public:
 
@@ -39,7 +39,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stream codecs/Encoders"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_SignalEncoder; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Algorithm_SignalStreamEncoder; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::StreamCodecs::CSignalEncoder(); }
 
 			virtual OpenViBE::boolean getAlgorithmPrototype(
@@ -47,12 +47,12 @@ namespace OpenViBEPlugins
 			{
 				OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc::getAlgorithmPrototype(rAlgorithmPrototype);
 
-				rAlgorithmPrototype.addInputParameter(OVP_SignalEncoder_SamplingRate_InParameterId, "Sampling rate", OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmPrototype.addInputParameter(OVP_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate, "Sampling rate", OpenViBE::Kernel::ParameterType_UInteger);
 
 				return true;
 			}
 
-			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc, OVP_ClassId_Algorithm_SignalEncoderDesc);
+			_IsDerivedFromClass_Final_(OpenViBEPlugins::StreamCodecs::CStreamedMatrixEncoderDesc, OVP_ClassId_Algorithm_SignalStreamEncoderDesc);
 		};
 	};
 };

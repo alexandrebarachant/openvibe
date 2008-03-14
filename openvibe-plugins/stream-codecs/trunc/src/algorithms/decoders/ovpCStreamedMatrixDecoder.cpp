@@ -22,14 +22,14 @@ boolean CStreamedMatrixDecoder::initialize(void)
 {
 	CEBMLBaseDecoder::initialize();
 
-	m_oMatrixHandle.initialize(getOutputParameter(OVP_StreamedMatrixDecoder_Matrix_OutParameterId));
+	op_pMatrix.initialize(getOutputParameter(OVP_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 
 	return true;
 }
 
 boolean CStreamedMatrixDecoder::uninitialize(void)
 {
-	m_oMatrixHandle.uninitialize();
+	op_pMatrix.uninitialize();
 
 	CEBMLBaseDecoder::uninitialize();
 
@@ -101,16 +101,16 @@ void CStreamedMatrixDecoder::processChildData(const void* pBuffer, const EBML::u
 		switch(m_ui32Status)
 		{
 			case Status_ParsingHeader:
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)  { m_oMatrixHandle->setDimensionCount((uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_DimensionCount)  { op_pMatrix->setDimensionCount((uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
 				break;
 
 			case Status_ParsingDimension:
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)  { m_oMatrixHandle->setDimensionSize(m_ui32DimensionIndex, (uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
-				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label) { m_oMatrixHandle->setDimensionLabel(m_ui32DimensionIndex, m_ui32DimensionEntryIndex++, m_pEBMLReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize)); }
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Size)  { op_pMatrix->setDimensionSize(m_ui32DimensionIndex, (uint32)m_pEBMLReaderHelper->getUIntegerFromChildData(pBuffer, ui64BufferSize)); }
+				if(l_rTop==OVTK_NodeId_Header_StreamedMatrix_Dimension_Label) { op_pMatrix->setDimensionLabel(m_ui32DimensionIndex, m_ui32DimensionEntryIndex++, m_pEBMLReaderHelper->getASCIIStringFromChildData(pBuffer, ui64BufferSize)); }
 				break;
 
 			case Status_ParsingBuffer:
-				if(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer)        { System::Memory::copy(m_oMatrixHandle->getBuffer(), pBuffer, m_ui64MatrixBufferSize*sizeof(float64)); }
+				if(l_rTop==OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer)        { System::Memory::copy(op_pMatrix->getBuffer(), pBuffer, m_ui64MatrixBufferSize*sizeof(float64)); }
 				break;
 		}
 	}
@@ -145,16 +145,16 @@ void CStreamedMatrixDecoder::closeChild(void)
 		{
 			m_ui32Status=Status_ParsingNothing;
 
-			if(m_oMatrixHandle->getDimensionCount()==0)
+			if(op_pMatrix->getDimensionCount()==0)
 			{
 				m_ui64MatrixBufferSize=0;
 			}
 			else
 			{
 				m_ui64MatrixBufferSize=1;
-				for(uint32 i=0; i<m_oMatrixHandle->getDimensionCount(); i++)
+				for(uint32 i=0; i<op_pMatrix->getDimensionCount(); i++)
 				{
-					m_ui64MatrixBufferSize*=m_oMatrixHandle->getDimensionSize(i);
+					m_ui64MatrixBufferSize*=op_pMatrix->getDimensionSize(i);
 				}
 			}
 		}
