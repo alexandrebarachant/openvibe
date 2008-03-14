@@ -27,6 +27,13 @@ namespace Socket
 			void* pBuffer,
 			const Socket::uint32 ui32BufferSize)=0;
 
+		virtual Socket::boolean sendBufferBlocking(
+			const void* pBuffer,
+			const Socket::uint32 ui32BufferSize)=0;
+		virtual Socket::boolean receiveBufferBlocking(
+			void* pBuffer,
+			const Socket::uint32 ui32BufferSize)=0;
+
 		virtual Socket::boolean isConnected(void) const=0;
 
 		virtual void release(void)=0;

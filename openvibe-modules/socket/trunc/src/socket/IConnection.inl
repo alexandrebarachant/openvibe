@@ -158,7 +158,7 @@ namespace Socket
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
-			int l_iResult=::send(m_i32Socket, static_cast<const char*>(pBuffer), ui32BufferSize, 0);
+			int l_iResult=::send(m_i32Socket, static_cast<const char*>(pBuffer), ui32BufferSize, MSG_NOSIGNAL);
 			if(ui32BufferSize!=0 && l_iResult<=0)
 			{
 				close();
@@ -178,12 +178,48 @@ namespace Socket
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
-			int l_iResult=::recv(m_i32Socket, static_cast<char *>(pBuffer), ui32BufferSize, 0);
+			int l_iResult=::recv(m_i32Socket, static_cast<char *>(pBuffer), ui32BufferSize, MSG_NOSIGNAL);
 			if(ui32BufferSize!=0 && l_iResult<=0)
 			{
 				close();
 			}
 			return l_iResult<=0?0:(uint32)l_iResult;
+		}
+
+		virtual boolean sendBufferBlocking(
+			const void* pBuffer,
+			const uint32 ui32BufferSize)
+		{
+			uint32 l_ui32LeftBytes=ui32BufferSize;
+			const char* l_pBuffer=static_cast<const char*>(pBuffer);
+			do
+			{
+				l_ui32LeftBytes-=sendBuffer(l_pBuffer+ui32BufferSize-l_ui32LeftBytes, l_ui32LeftBytes);
+				if(!isConnected())
+				{
+					return false;
+				}
+			}
+			while(l_ui32LeftBytes!=0);
+			return true;
+		}
+
+		virtual boolean receiveBufferBlocking(
+			void* pBuffer,
+			const uint32 ui32BufferSize)
+		{
+			uint32 l_ui32LeftBytes=ui32BufferSize;
+			char* l_pBuffer=static_cast<char*>(pBuffer);
+			do
+			{
+				l_ui32LeftBytes-=receiveBuffer(l_pBuffer+ui32BufferSize-l_ui32LeftBytes, l_ui32LeftBytes);
+				if(!isConnected())
+				{
+					return false;
+				}
+			}
+			while(l_ui32LeftBytes!=0);
+			return true;
 		}
 
 		virtual boolean isConnected(void) const
