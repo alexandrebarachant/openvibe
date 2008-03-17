@@ -37,14 +37,14 @@ namespace OpenViBEPlugins
 			::GtkWidget* m_pMainWindow;
 			::GtkWidget* m_pToolbarWidget;
 
+		public:
+
 			typedef struct
 			{
 				::GtkProgressBar* m_pProgressBar;
 				OpenViBE::uint32 m_ui32Score;
 				OpenViBE::boolean m_bLastWasOverThreshold;
 			} SProgressBar;
-
-		public:
 
 			std::vector < SProgressBar > m_vProgressBar;
 			OpenViBE::boolean m_bShowPercentages;
