@@ -13,9 +13,15 @@
  #include <unistd.h>
  // #include <netdb.h>
  #include <time.h>
+
+ #define Socket_SendFlags    MSG_NOSIGNAL
+ #define Socket_ReceiveFlags MSG_NOSIGNAL
 #elif defined Socket_OS_Windows
  #include <winsock2.h>
  #include <windows.h>
+
+ #define Socket_SendFlags    0
+ #define Socket_ReceiveFlags 0
 #else
 
 #endif
@@ -158,7 +164,7 @@ namespace Socket
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
-			int l_iResult=::send(m_i32Socket, static_cast<const char*>(pBuffer), ui32BufferSize, MSG_NOSIGNAL);
+			int l_iResult=::send(m_i32Socket, static_cast<const char*>(pBuffer), ui32BufferSize, Socket_SendFlags);
 			if(ui32BufferSize!=0 && l_iResult<=0)
 			{
 				close();
@@ -178,7 +184,7 @@ namespace Socket
 			int l_iTrue=1;
 			setsockopt(m_i32Socket, IPPROTO_TCP, TCP_NODELAY, (char*)&l_iTrue, sizeof(l_iTrue));
 #endif
-			int l_iResult=::recv(m_i32Socket, static_cast<char *>(pBuffer), ui32BufferSize, MSG_NOSIGNAL);
+			int l_iResult=::recv(m_i32Socket, static_cast<char *>(pBuffer), ui32BufferSize, Socket_ReceiveFlags);
 			if(ui32BufferSize!=0 && l_iResult<=0)
 			{
 				close();
