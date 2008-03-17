@@ -139,6 +139,37 @@ set OpenViBE_plugin_tools=%OpenViBE_plugins%\tools\%OpenViBE_plugin_tools_branch
 
 REM ########################################################################################################################
 
+set OpenViBE_build_order=OpenViBE_build_order.txt
+
+del %OpenViBE_build_order% > NULL 2<&1
+echo %OpenViBE% >> %OpenViBE_build_order%
+echo %OpenViBE_application_id_generator% >> %OpenViBE_build_order%
+echo %OpenViBE_module_ebml% >> %OpenViBE_build_order%
+echo %OpenViBE_module_fs% >> %OpenViBE_build_order%
+echo %OpenViBE_module_socket% >> %OpenViBE_build_order%
+echo %OpenViBE_module_system% >> %OpenViBE_build_order%
+echo %OpenViBE_module_stream% >> %OpenViBE_build_order%
+echo %OpenViBE_module_xml% >> %OpenViBE_build_order%
+echo %OpenViBE_module_automaton% >> %OpenViBE_build_order%
+echo %OpenViBE_kernel% >> %OpenViBE_build_order%
+echo %OpenViBE_toolkit% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_acquisition% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_classification% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_feature_extraction% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_file_io% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_samples% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_signal_processing% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_signal_processing_gpl% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_simple_visualisation% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_stimulation% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_stream_codecs% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_tools% >> %OpenViBE_build_order%
+REM echo %OpenViBE_plugin_work_in_progress% >> %OpenViBE_build_order%
+echo %OpenViBE_application_designer% >> %OpenViBE_build_order%
+echo %OpenViBE_application_acquisition_server% >> %OpenViBE_build_order%
+
+REM ########################################################################################################################
+
 if exist "win32-dependencies.cmd" (
 	call "win32-dependencies.cmd"
 )
