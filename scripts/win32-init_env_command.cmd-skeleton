@@ -108,6 +108,7 @@ REM ############################################################################
 set OpenViBE=%OpenViBE_base%\openvibe\%OpenViBE_branch%
 set OpenViBE_kernel=%OpenViBE_base%\openvibe-kernel-omk\%OpenViBE_kernel_branch%
 set OpenViBE_toolkit=%OpenViBE_base%\openvibe-toolkit\%OpenViBE_toolkit_branch%
+set OpenViBE_cmake_modules=%OpenViBE_base%\cmake-modules
 
 set OpenViBE_modules=%OpenViBE_base%\openvibe-modules
 set OpenViBE_module_automaton=%OpenViBE_modules%\automaton\%OpenViBE_module_automaton_branch%
