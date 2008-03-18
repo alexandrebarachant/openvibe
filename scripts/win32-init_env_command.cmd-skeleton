@@ -120,9 +120,9 @@ set OpenViBE_module_system=%OpenViBE_modules%\system\%OpenViBE_module_system_bra
 set OpenViBE_module_xml=%OpenViBE_modules%\xml\%OpenViBE_module_xml_branch%
 
 set OpenViBE_applications=%OpenViBE_base%\openvibe-applications
-set OpenViBE_designer=%OpenViBE_applications%\designer\%OpenViBE_application_designer_branch%
-set OpenViBE_acquisition_server=%OpenViBE_applications%\acquisition-server\%OpenViBE_application_acquisition_server_branch%
-set OpenViBE_id_generator=%OpenViBE_applications%\id-generator\%OpenViBE_application_id_generator_branch%
+set OpenViBE_application_designer=%OpenViBE_applications%\designer\%OpenViBE_application_designer_branch%
+set OpenViBE_application_acquisition_server=%OpenViBE_applications%\acquisition-server\%OpenViBE_application_acquisition_server_branch%
+set OpenViBE_application_id_generator=%OpenViBE_applications%\id-generator\%OpenViBE_application_id_generator_branch%
 
 set OpenViBE_plugins=%OpenViBE_base%\openvibe-plugins
 set OpenViBE_plugin_acquisition=%OpenViBE_plugins%\acquisition\%OpenViBE_plugin_acquisition_branch%
