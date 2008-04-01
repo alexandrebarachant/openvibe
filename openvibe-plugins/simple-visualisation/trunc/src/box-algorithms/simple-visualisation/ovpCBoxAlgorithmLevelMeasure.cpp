@@ -106,7 +106,6 @@ boolean CBoxAlgorithmLevelMeasure::process(void)
 				uint32 l_ui32ElementCount=m_pMatrix->getBufferElementCount();
 				while(l_ui32ElementCount--)
 				{
-					if(m_pMatrix->getBufferElementCount()!=2) l_f64Sum-=l_f64Min;
 					l_f64Sum+=*l_pMatrixBuffer;
 					l_pMatrixBuffer++;
 				}
@@ -118,7 +117,6 @@ boolean CBoxAlgorithmLevelMeasure::process(void)
 				uint32 l_ui32ElementCount=m_pMatrix->getBufferElementCount();
 				while(l_ui32ElementCount--)
 				{
-					if(m_pMatrix->getBufferElementCount()!=2) *l_pMatrixBuffer-=l_f64Min;
 					*l_pMatrixBuffer*=l_f64Factor;
 					l_pMatrixBuffer++;
 				}
