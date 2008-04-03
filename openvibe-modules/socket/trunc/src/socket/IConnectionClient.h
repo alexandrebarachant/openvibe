@@ -11,7 +11,8 @@ namespace Socket
 
 		virtual Socket::boolean connect(
 			const char* sServerName,
-			Socket::uint32 ui32ServerPort)=0;
+			Socket::uint32 ui32ServerPort,
+			Socket::uint32 ui32TimeOut=0xffffffff)=0;
 
 	};
 
