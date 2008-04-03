@@ -85,20 +85,6 @@ boolean CBoxAlgorithmLevelMeasure::process(void)
 // ----- >8 ------------------------------------------------------------------------------------------------------------------------------------------------------
 // should be done in a processing box !
 
-			float64 l_f64Min=1E10;
-			float64 l_f64Max=-1E10;
-
-			{
-				float64* l_pMatrixBuffer=m_pMatrix->getBuffer();
-				uint32 l_ui32ElementCount=m_pMatrix->getBufferElementCount();
-				while(l_ui32ElementCount--)
-				{
-					if(l_f64Max<*l_pMatrixBuffer) l_f64Max=*l_pMatrixBuffer;
-					if(l_f64Min>*l_pMatrixBuffer) l_f64Min=*l_pMatrixBuffer;
-					l_pMatrixBuffer++;
-				}
-			}
-
 			float64 l_f64Sum=0;
 
 			{
