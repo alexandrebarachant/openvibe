@@ -8,7 +8,7 @@ using namespace OpenViBEToolkit;
 //                                                                                                                    *
 // VIM Replace string to easily add enumeration values :                                                              *
 //                                                                                                                    *
-// :%s/#define \([A-Za-z0-9_]\+\).*/	l_rTypeManager.registerEnumerationEntry(OVTK_TypeId_Stimulation, "\1", \1);/g *
+// :%s/#define \([A-Za-z0-9_]\+\).*/	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "\1", \1);/g   *
 //                                                                                                                    *
 // ********************************************************************************************************************
 
@@ -16,9 +16,15 @@ boolean OpenViBEToolkit::initialize(const IKernelContext& rKernelContext)
 {
 	ITypeManager& l_rTypeManager=rKernelContext.getTypeManager();
 
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_ExperimentStart", OVTK_StimulationId_ExperimentStart);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_ExperimentStop", OVTK_StimulationId_ExperimentStop);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_SegmentStart", OVTK_StimulationId_SegmentStart);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_SegmentStop", OVTK_StimulationId_SegmentStop);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_TrialStart", OVTK_StimulationId_TrialStart);
-	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_TrialEnd", OVTK_StimulationId_TrialEnd);
-	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Train", OVTK_StimulationId_Train);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_TrialStop", OVTK_StimulationId_TrialStop);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_BaselineStart", OVTK_StimulationId_BaselineStart);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_BaselineStop", OVTK_StimulationId_BaselineStop);
+
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_00", OVTK_StimulationId_Label_00);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01", OVTK_StimulationId_Label_01);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_02", OVTK_StimulationId_Label_02);
@@ -35,6 +41,10 @@ boolean OpenViBEToolkit::initialize(const IKernelContext& rKernelContext)
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0D", OVTK_StimulationId_Label_0D);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0E", OVTK_StimulationId_Label_0E);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0F", OVTK_StimulationId_Label_0F);
+
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Train", OVTK_StimulationId_Train);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Beep", OVTK_StimulationId_Beep);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_DoubleBeep", OVTK_StimulationId_DoubleBeep);
 
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Artifact_EOG_Large", OVTK_GDF_Artifact_EOG_Large);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Artifact_ECG", OVTK_GDF_Artifact_ECG);

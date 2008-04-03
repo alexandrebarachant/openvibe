@@ -53,29 +53,38 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVTK_StimulationId_TrialStart                        0x80000001
-#define OVTK_StimulationId_TrialEnd                          0x80000002
-#define OVTK_StimulationId_Train                             0x80000000
+#define OVTK_StimulationId_ExperimentStart                   0x00008001
+#define OVTK_StimulationId_ExperimentStop                    0x00008002
+#define OVTK_StimulationId_SegmentStart                      0x00008003
+#define OVTK_StimulationId_SegmentStop                       0x00008004
+#define OVTK_StimulationId_TrialStart                        0x00008005
+#define OVTK_StimulationId_TrialStop                         0x00008006
+#define OVTK_StimulationId_BaselineStart                     0x00008007
+#define OVTK_StimulationId_BaselineStop                      0x00008008
 
-#define OVTK_StimulationId_Label(i)                          0x80000100|((i)&0x0f)
-#define OVTK_StimulationId_LabelStart                        0x80000100
-#define OVTK_StimulationId_Label_00                          0x80000100
-#define OVTK_StimulationId_Label_01                          0x80000101
-#define OVTK_StimulationId_Label_02                          0x80000102
-#define OVTK_StimulationId_Label_03                          0x80000103
-#define OVTK_StimulationId_Label_04                          0x80000104
-#define OVTK_StimulationId_Label_05                          0x80000105
-#define OVTK_StimulationId_Label_06                          0x80000106
-#define OVTK_StimulationId_Label_07                          0x80000107
-#define OVTK_StimulationId_Label_08                          0x80000108
-#define OVTK_StimulationId_Label_09                          0x80000109
-#define OVTK_StimulationId_Label_0A                          0x8000010a
-#define OVTK_StimulationId_Label_0B                          0x8000010b
-#define OVTK_StimulationId_Label_0C                          0x8000010c
-#define OVTK_StimulationId_Label_0D                          0x8000010d
-#define OVTK_StimulationId_Label_0E                          0x8000010e
-#define OVTK_StimulationId_Label_0F                          0x8000010f
-#define OVTK_StimulationId_LabelEnd                          0x8000010f
+#define OVTK_StimulationId_Label(i)                          0x00008100|((i)&0x0f)
+#define OVTK_StimulationId_LabelStart                        0x00008100
+#define OVTK_StimulationId_Label_00                          0x00008100
+#define OVTK_StimulationId_Label_01                          0x00008101
+#define OVTK_StimulationId_Label_02                          0x00008102
+#define OVTK_StimulationId_Label_03                          0x00008103
+#define OVTK_StimulationId_Label_04                          0x00008104
+#define OVTK_StimulationId_Label_05                          0x00008105
+#define OVTK_StimulationId_Label_06                          0x00008106
+#define OVTK_StimulationId_Label_07                          0x00008107
+#define OVTK_StimulationId_Label_08                          0x00008108
+#define OVTK_StimulationId_Label_09                          0x00008109
+#define OVTK_StimulationId_Label_0A                          0x0000810a
+#define OVTK_StimulationId_Label_0B                          0x0000810b
+#define OVTK_StimulationId_Label_0C                          0x0000810c
+#define OVTK_StimulationId_Label_0D                          0x0000810d
+#define OVTK_StimulationId_Label_0E                          0x0000810e
+#define OVTK_StimulationId_Label_0F                          0x0000810f
+#define OVTK_StimulationId_LabelEnd                          0x000081ff
+
+#define OVTK_StimulationId_Train                             0x00008201
+#define OVTK_StimulationId_Beep                              0x00008202
+#define OVTK_StimulationId_DoubleBeep                        0x00008203
 
 //___________________________________________________________________//
 //                                                                   //
