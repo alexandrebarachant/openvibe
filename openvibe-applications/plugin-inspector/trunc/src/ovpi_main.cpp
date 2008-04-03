@@ -129,6 +129,8 @@ public:
 		fprintf(m_pFile, "// ----------------------------------------------------\n");
 		fprintf(m_pFile, "\n");
 
+		// l_rAlgorithmProxy.initialize();
+
 		{
 			std::string l_sDefName;
 			l_sDefName+="OVP_GD_ClassId_Algorithm_";
@@ -138,7 +140,7 @@ public:
 			std::string l_sSpaces;
 			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
 
-			fprintf(m_pFile, "#define %s%s%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), rPluginObjectDesc.getCreatedClassIdentifier().toString().toASCIIString());
+			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), rPluginObjectDesc.getCreatedClassIdentifier().toString().toASCIIString());
 		}
 
 		{
@@ -150,7 +152,7 @@ public:
 			std::string l_sSpaces;
 			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
 
-			fprintf(m_pFile, "#define %s%s%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), rPluginObjectDesc.getClassIdentifier().toString().toASCIIString());
+			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), rPluginObjectDesc.getClassIdentifier().toString().toASCIIString());
 		}
 
 		while((l_oIdentifier=l_rAlgorithmProxy.getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
@@ -164,7 +166,7 @@ public:
 			std::string l_sSpaces;
 			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
 
-			fprintf(m_pFile, "#define %s%s%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
+			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
 		}
 
 		while((l_oIdentifier=l_rAlgorithmProxy.getNextOutputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
@@ -178,7 +180,7 @@ public:
 			std::string l_sSpaces;
 			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
 
-			fprintf(m_pFile, "#define %s%s%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
+			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
 		}
 
 		while((l_oIdentifier=l_rAlgorithmProxy.getNextInputTriggerIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
@@ -192,7 +194,7 @@ public:
 			std::string l_sSpaces;
 			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
 
-			fprintf(m_pFile, "#define %s%s%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
+			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
 		}
 
 		while((l_oIdentifier=l_rAlgorithmProxy.getNextOutputTriggerIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
@@ -206,10 +208,14 @@ public:
 			std::string l_sSpaces;
 			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
 
-			fprintf(m_pFile, "#define %s%s%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
+			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
 		}
 
+		// l_rAlgorithmProxy.uninitialize();
+
 		fprintf(m_pFile, "\n");
+
+		l_rAlgorithmManager.releaseAlgorithm(l_rAlgorithmProxy);
 
 		return true;
 	}
