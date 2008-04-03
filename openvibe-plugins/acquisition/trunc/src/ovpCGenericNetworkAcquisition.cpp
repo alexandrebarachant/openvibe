@@ -286,7 +286,7 @@ boolean CGenericNetworkAcquisition::initialize()
 	// Tries to connect to server
 	m_pConnectionClient->connect(m_sServerHostName, m_ui32ServerHostPort);
 
-	return true;
+	return m_pConnectionClient->isConnected();
 }
 
 boolean CGenericNetworkAcquisition::uninitialize()
@@ -325,7 +325,10 @@ boolean CGenericNetworkAcquisition::uninitialize()
 	m_pReader=NULL;
 
 	// Cleans up client connection
-	m_pConnectionClient->close();
+	if(m_pConnectionClient->isConnected())
+	{
+		m_pConnectionClient->close();
+	}
 	m_pConnectionClient->release();
 	m_pConnectionClient=NULL;
 
@@ -339,8 +342,8 @@ boolean CGenericNetworkAcquisition::processClock(CMessageClock& rMessageClock)
 	// Checks if connection is correctly established
 	if(!m_pConnectionClient->isConnected())
 	{
-		// In case it is not, try to reconnect
-		m_pConnectionClient->connect(m_sServerHostName, m_ui32ServerHostPort);
+		// In case it is not, abort
+		return false;
 	}
 	else
 	{
