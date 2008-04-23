@@ -192,7 +192,7 @@ ov_dep_itpp_url=http://downloads.sourceforge.net/itpp/itpp-3.10.10.tar.gz
 ov_dep_gsl_url=$ov_gnu_mirror/gsl/gsl-1.9.tar.gz
 ov_dep_torch_url=http://www.torch.ch/archives/Torch3src.tgz
 ov_dep_vrpn_url=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/vrpn_07_13.zip
-ov_dep_openmask_url=svn://scm.gforge.inria.fr/svn/openmask/OpenMASK
+ov_dep_openmask_url=http://www.irisa.fr/bunraku/OpenViBE/dependencies/linux/openmask-src.580.tar.bz2
 
 ov_dep_pkgconfig_archive_name=$ov_archives_folder/pkg-config-0.22.tar.gz
 ov_dep_cmake_archive_name=$ov_archives_folder/cmake-2.4.6.tar.gz
@@ -234,6 +234,7 @@ ov_dep_itpp_archive_name=$ov_archives_folder/itpp-3.10.10.tar.gz
 ov_dep_gsl_archive_name=$ov_archives_folder/gsl-1.9.tar.gz
 ov_dep_torch_archive_name=$ov_archives_folder/torch-3.tar.gz
 ov_dep_vrpn_archive_name=$ov_archives_folder/vrpn-7.13.zip
+ov_dep_openmask_archive_name=$ov_archives_folder/openmask-580.tar.bz2
 
 ####################################
 ##
@@ -772,7 +773,7 @@ ov_untar_configure_make_install_package "itpp"
 ov_untar_configure_make_install_package "gsl"
 ov_untar_configure_make_install_package "torch"
 ov_untar_configure_make_install_package "vrpn"
-ov_svn_configure_make_install_package "openmask"
+ov_untar_configure_make_install_package "openmask"
 
 ####################################
 
