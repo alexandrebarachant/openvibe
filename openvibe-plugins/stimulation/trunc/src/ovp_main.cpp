@@ -1,38 +1,15 @@
 #include "ovp_defines.h"
-#include <openvibe/ov_all.h>
+
 #include "ovpCXMLStimulationScenarioPlayer.h"
 #include "ovpCKeyboardStimulator.h"
 
-static OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayerDesc* gst_pXMLStimulationScenarioPlayerDesc=NULL;
-static OpenViBEPlugins::Stimulation::CKeyboardStimulatorDesc* gst_pKeyboardStimulatorDesc=NULL;
+#include "box-algorithms/stimulation/ovpCBoxAlgorithmStimulationMultiplexer.h"
+#include "box-algorithms/stimulation/ovpCBoxAlgorithmSoundPlayer.h"
 
-extern "C"
-{
+OVP_Declare_Begin();
+	OVP_Declare_New(OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayerDesc);
+	OVP_Declare_New(OpenViBEPlugins::Stimulation::CKeyboardStimulatorDesc);
 
-OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
-	gst_pXMLStimulationScenarioPlayerDesc=new OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayerDesc();
-	gst_pKeyboardStimulatorDesc=new OpenViBEPlugins::Stimulation::CKeyboardStimulatorDesc();
-	return true;
-}
-
-OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
-	delete gst_pXMLStimulationScenarioPlayerDesc;
-	delete gst_pKeyboardStimulatorDesc;
-	return true;
-}
-
-OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
-{
-
-	switch(ui32Index)
-	{
-		case 0: rpPluginObjectDescription=gst_pXMLStimulationScenarioPlayerDesc; break;
-		case 1: rpPluginObjectDescription=gst_pKeyboardStimulatorDesc; break;
-		default: return false;
-	}
-	return true;
-}
-
-}
+	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmStimulationMultiplexerDesc);
+	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmSoundPlayerDesc);
+OVP_Declare_End();
