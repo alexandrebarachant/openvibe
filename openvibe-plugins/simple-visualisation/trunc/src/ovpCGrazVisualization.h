@@ -144,7 +144,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GrazVisualization; }
-			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(GTK_STOCK_EXECUTE); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-fullscreen"); }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SimpleVisualisation::CGrazVisualization(); }
 
 			virtual OpenViBE::boolean hasFunctionality(OpenViBE::Kernel::EPluginFunctionality ePF) const

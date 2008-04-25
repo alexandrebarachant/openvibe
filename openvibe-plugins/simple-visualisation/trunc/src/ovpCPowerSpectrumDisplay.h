@@ -17,7 +17,7 @@ namespace OpenViBEPlugins
 		{
 			public:
 				CPowerSpectrumDisplay();
-				
+
 				virtual void release(void) { delete this; }
 				virtual OpenViBE::boolean initialize();
 				virtual OpenViBE::boolean uninitialize();
@@ -34,10 +34,10 @@ namespace OpenViBEPlugins
 				virtual void setFrequencyBandStart(const OpenViBE::uint32 ui32FrequencyBandIndex, const OpenViBE::float64 f64FrequencyBandStart);
 				virtual void setFrequencyBandStop(const OpenViBE::uint32 ui32FrequencyBandIndex, const OpenViBE::float64 f64FrequencyBandStop);
 				virtual void setBuffer(const OpenViBE::float64* pBuffer);
-			
+
 			public:
 
-				//ebml 
+				//ebml
 				EBML::IReader* m_pReader;
 				OpenViBEToolkit::IBoxAlgorithmSpectrumInputReaderCallback* m_pSpectrumReaderCallBack;
 
@@ -64,15 +64,15 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 				virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("TODO"); }
 				virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("TODO"); }
-				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Simple visualisation"); }				
+				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Simple visualisation"); }
 				virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("TODO"); }
 				virtual void release(void)                                   { }
 				virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_PowerSpectrumDisplay; }
-				virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(GTK_STOCK_EXECUTE); }
+				virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-zoom-fit"); }
 				virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SimpleVisualisation::CPowerSpectrumDisplay(); }
 
-				virtual OpenViBE::boolean hasFunctionality(OpenViBE::Kernel::EPluginFunctionality ePF) const 
-				{ 
+				virtual OpenViBE::boolean hasFunctionality(OpenViBE::Kernel::EPluginFunctionality ePF) const
+				{
 					return ePF == OpenViBE::Kernel::PluginFunctionality_Visualization;
 				}
 
