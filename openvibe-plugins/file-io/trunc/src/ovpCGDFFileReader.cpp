@@ -98,9 +98,6 @@ boolean CGDFFileReader::initialize()
 	l_pBoxContext->getSettingValue(1, l_sParam);
 	m_ui32SamplesPerBuffer = static_cast<uint32>(atoi((const char*)l_sParam));
 
-	l_pBoxContext->getSettingValue(2, l_sParam);
-	m_bOffline = (l_sParam == CString("true"));
-
 	//Prepares the writers proxies
 	m_pOutputWriterCallbackProxy[GDFReader_ExperimentInfoOutput] = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::FileIO::CGDFFileReader>(*this, &CGDFFileReader::writeExperimentOutput);
 
@@ -271,6 +268,8 @@ boolean CGDFFileReader::readFileHeader()
 
 	if(!m_bExperimentInformationSent)
 	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<"Reading experiment information\n";
+
 		//First reads the file type
 		char l_pFileType[3];
 		char l_pFileVersion[5];
@@ -359,6 +358,8 @@ boolean CGDFFileReader::readFileHeader()
 
 	if (!m_bSignalDescriptionSent)
 	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<"Reading signal description\n";
+
 		//reads the whole variable header
 		char * l_pVariableHeaderBuffer = new char[m_ui16NumberOfChannels*256];
 		m_oFile.read(l_pVariableHeaderBuffer, m_ui16NumberOfChannels*256);
@@ -434,17 +435,18 @@ boolean CGDFFileReader::readFileHeader()
 		m_pSignalDescription.m_ui32SamplingRate = static_cast<EBML::uint32>(0.5 + (m_ui32NumberOfSamplesPerRecord/m_f64DurationOfDataRecord));
 
 		//computes clock frequency
-		if(m_bOffline)
-		{
-			m_ui64ClockFrequency = 100LL<<32;
-		}
-		else if(m_ui32SamplesPerBuffer <= m_pSignalDescription.m_ui32SamplingRate)
+		if(m_ui32SamplesPerBuffer <= m_pSignalDescription.m_ui32SamplingRate)
 		{
 			if(m_pSignalDescription.m_ui32SamplingRate % m_ui32SamplesPerBuffer != 0)
 			{
-				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<
-					"The sampling rate isn't a multiple of the buffer size\n" <<
-					"Please consider adjusting the GDFReader settings to correct this!\n";
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning
+					<< "The sampling rate isn't a multiple of the buffer size\n";
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning
+					<< "Please consider adjusting the GDFReader settings to correct this!\n";
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug
+					<< "Sampling rate was " << m_pSignalDescription.m_ui32SamplingRate << "\n";
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug
+					<< "Buffer size was " << m_ui32SamplesPerBuffer << "\n";
 			}
 
 			m_ui64ClockFrequency = ( ((uint64)m_pSignalDescription.m_ui32SamplingRate<<32) / (uint64)m_ui32SamplesPerBuffer);

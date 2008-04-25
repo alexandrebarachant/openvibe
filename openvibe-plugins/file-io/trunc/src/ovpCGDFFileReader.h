@@ -74,7 +74,6 @@ namespace OpenViBEPlugins
 					bool m_bReadyToSend;
 			};
 
-
 		public:
 
 			CGDFFileReader(void);
@@ -178,8 +177,6 @@ namespace OpenViBEPlugins
 
 			OpenViBE::uint64 m_ui64ClockFrequency;
 
-			OpenViBE::boolean m_bOffline;
-
 		private:
 
 			void writeExperimentInformation();
@@ -217,6 +214,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/GDF"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-open"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_GDFFileReader; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FileIO::CGDFFileReader(); }
@@ -231,8 +229,7 @@ namespace OpenViBEPlugins
 				// Adds settings
 				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
 				rPrototype.addSetting("Samples per buffer", OV_TypeId_Integer, "32");
-				rPrototype.addSetting("Offline", OV_TypeId_Boolean, "false");
-				
+
 				return true;
 			}
 
