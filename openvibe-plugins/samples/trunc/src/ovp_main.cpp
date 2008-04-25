@@ -21,30 +21,7 @@
 #include "ovpCTimeBasedEpoching.h"
 #endif
 
-static OpenViBEPlugins::Samples::CScenarioImporterXMLDesc* gst_pScenarioImporterXMLDesc=NULL;
-static OpenViBEPlugins::Samples::CScenarioExporterXMLDesc* gst_pScenarioExporterXMLDesc=NULL;
-
-static OpenViBEPlugins::Samples::CCrashingBoxDesc* gst_pCrashingBoxDesc=NULL;
-static OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc* gst_pBoxAlgorithmProducerDesc=NULL;
-static OpenViBEPlugins::Samples::CBoxAlgorithmConsumerDesc* gst_pBoxAlgorithmConsumerDesc=NULL;
-static OpenViBEPlugins::Samples::CSinusSignalGeneratorDesc* gst_pSinusSignalGeneratorDesc=NULL;
-static OpenViBEPlugins::Samples::CTimeSignalGeneratorDesc* gst_pTimeSignalGeneratorDesc=NULL;
-static OpenViBEPlugins::Samples::CIdentityDesc* gst_pIdentityDesc=NULL;
-static OpenViBEPlugins::Samples::CLogDesc* gst_pLogDesc=NULL;
-static OpenViBEPlugins::Samples::CTestDesc* gst_pTestDesc=NULL;
-
-static OpenViBEPlugins::Samples::CBoxAlgorithmAdditionTestDesc* gst_pBoxAlgorithmAdditionTestDesc=NULL;
-static OpenViBEPlugins::Samples::CAlgorithmAdditionDesc* gst_pAlgorithmAdditionDesc=NULL;
-
-#if defined _WithTBE_
-static OpenViBEPlugins::Samples::CTimeBasedEpochingDesc* gst_pTimeBasedEpochingDesc=NULL;
-#endif
-
-extern "C"
-{
-
-OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
+OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerStreamType(OpenViBE::CIdentifier(0x1234,0x5678), "producer/consumer", OV_UndefinedIdentifier);
 
 	rPluginModuleContext.getTypeManager().registerEnumerationType(OpenViBE::CIdentifier(0x1234,0x0000), "sample enumeration");
@@ -59,79 +36,23 @@ OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleCont
 	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 3", 3);
 	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 4", 4);
 
-	gst_pScenarioImporterXMLDesc=new OpenViBEPlugins::Samples::CScenarioImporterXMLDesc();
-	gst_pScenarioExporterXMLDesc=new OpenViBEPlugins::Samples::CScenarioExporterXMLDesc();
-
-	gst_pCrashingBoxDesc=new OpenViBEPlugins::Samples::CCrashingBoxDesc();
-	gst_pBoxAlgorithmProducerDesc=new OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc();
-	gst_pBoxAlgorithmConsumerDesc=new OpenViBEPlugins::Samples::CBoxAlgorithmConsumerDesc();
-	gst_pSinusSignalGeneratorDesc=new OpenViBEPlugins::Samples::CSinusSignalGeneratorDesc();
-	gst_pTimeSignalGeneratorDesc=new OpenViBEPlugins::Samples::CTimeSignalGeneratorDesc();
-	gst_pIdentityDesc=new OpenViBEPlugins::Samples::CIdentityDesc();
-	gst_pLogDesc=new OpenViBEPlugins::Samples::CLogDesc();
-	gst_pTestDesc=new OpenViBEPlugins::Samples::CTestDesc();
-
-	gst_pBoxAlgorithmAdditionTestDesc=new OpenViBEPlugins::Samples::CBoxAlgorithmAdditionTestDesc();
-	gst_pAlgorithmAdditionDesc=new OpenViBEPlugins::Samples::CAlgorithmAdditionDesc();
-
 #if defined _WithTBE_
-	gst_pTimeBasedEpochingDesc=new OpenViBEPlugins::Samples::CTimeBasedEpochingDesc();
+	OVP_Declare_New(OpenViBEPlugins::Samples::CTimeBasedEpochingDesc);
 #endif
 
-	return true;
-}
+	OVP_Declare_New(OpenViBEPlugins::Samples::CScenarioImporterXMLDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CScenarioExporterXMLDesc);
 
-OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
-#if defined _WithTBE_
-	delete gst_pTimeBasedEpochingDesc;
-#endif
+	OVP_Declare_New(OpenViBEPlugins::Samples::CCrashingBoxDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmConsumerDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CSinusSignalGeneratorDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CTimeSignalGeneratorDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CIdentityDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CLogDesc);
 
-	delete gst_pAlgorithmAdditionDesc;
-	delete gst_pBoxAlgorithmAdditionTestDesc;
+	// OVP_Declare_New(OpenViBEPlugins::Samples::CTestDesc);
 
-	delete gst_pTestDesc;
-	delete gst_pLogDesc;
-	delete gst_pIdentityDesc;
-	delete gst_pTimeSignalGeneratorDesc;
-	delete gst_pSinusSignalGeneratorDesc;
-	delete gst_pBoxAlgorithmConsumerDesc;
-	delete gst_pBoxAlgorithmProducerDesc;
-	delete gst_pCrashingBoxDesc;
-
-	delete gst_pScenarioImporterXMLDesc;
-	delete gst_pScenarioExporterXMLDesc;
-
-	return true;
-}
-
-OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
-{
-	rpPluginObjectDescription=NULL;
-	switch(ui32Index)
-	{
-		case 0: rpPluginObjectDescription=gst_pScenarioImporterXMLDesc; break;
-		case 1: rpPluginObjectDescription=gst_pScenarioExporterXMLDesc; break;
-
-		case 2: rpPluginObjectDescription=gst_pCrashingBoxDesc; break;
-		case 3: rpPluginObjectDescription=gst_pBoxAlgorithmProducerDesc; break;
-		case 4: rpPluginObjectDescription=gst_pBoxAlgorithmConsumerDesc; break;
-		case 5: rpPluginObjectDescription=gst_pSinusSignalGeneratorDesc; break;
-		case 6: rpPluginObjectDescription=gst_pTimeSignalGeneratorDesc; break;
-		case 7: rpPluginObjectDescription=gst_pIdentityDesc; break;
-		case 8: rpPluginObjectDescription=gst_pLogDesc; break;
-		case 9: rpPluginObjectDescription=gst_pTestDesc; break;
-
-		case 10: rpPluginObjectDescription=gst_pBoxAlgorithmAdditionTestDesc; break;
-		case 11: rpPluginObjectDescription=gst_pAlgorithmAdditionDesc; break;
-
-#if defined _WithTBE_
-		case 12: rpPluginObjectDescription=gst_pTimeBasedEpochingDesc; break;
-#endif
-
-		default: return false;
-	}
-	return true;
-}
-
-}
+	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmAdditionTestDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CAlgorithmAdditionDesc);
+OVP_Declare_End();
