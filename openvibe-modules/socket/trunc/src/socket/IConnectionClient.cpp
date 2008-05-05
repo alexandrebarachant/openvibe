@@ -4,15 +4,17 @@
 
 #include <string.h>
 #include <iostream>
+#include <fcntl.h>
+#include <errno.h>
 
 #if defined Socket_OS_Linux
  #include <netinet/in.h>
  #include <netinet/tcp.h>
  #include <netdb.h>
  #include <unistd.h>
+#elif defined Socket_OS_Windows
  #include <fcntl.h>
  #include <errno.h>
-#elif defined Socket_OS_Windows
 #else
 #endif
 
@@ -41,6 +43,8 @@ namespace Socket
 				return false;
 			}
 
+#if defined Socket_OS_Linux
+
 			// Sets non blocking
 			if((l_iValue=::fcntl(m_i32Socket, F_GETFL, NULL))<0)
 			{
@@ -54,6 +58,8 @@ namespace Socket
 				return false;
 			}
 
+#endif
+
 			// Connects
 			struct sockaddr_in l_oServerAddress;
 			memset(&l_oServerAddress, 0, sizeof(l_oServerAddress));
@@ -62,6 +68,9 @@ namespace Socket
 			l_oServerAddress.sin_addr=*((struct in_addr*)l_pServerHostEntry->h_addr);
 			if(::connect(m_i32Socket, (struct sockaddr*)&l_oServerAddress, sizeof(struct sockaddr))<0)
 			{
+
+#if defined Socket_OS_Linux
+
 				if(errno==EINPROGRESS)
 				{
 					// Performs time out
@@ -100,11 +109,16 @@ namespace Socket
 					}
 				}
 				else
+
+#endif
+
 				{
 					close();
 					return false;
 				}
 			}
+
+#if defined Socket_OS_Linux
 
 			// Sets back to blocking
 			if((l_iValue=::fcntl(m_i32Socket, F_GETFL, NULL))<0)
@@ -118,6 +132,8 @@ namespace Socket
 				close();
 				return false;
 			}
+
+#endif
 
 			return true;
 		}
