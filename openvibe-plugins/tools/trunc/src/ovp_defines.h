@@ -8,24 +8,7 @@
 //                                                                   //
 
 #define OVP_ClassId_EBMLStreamSpyDesc                       OpenViBE::CIdentifier(0x354A6864, 0x06BC570C)
-
-/*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00D16F71, 0x31B2F266)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0005CBFB, 0x1F0E96A4)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00B5A13B, 0x71F3E137)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0027B7A0, 0x2070BD9F)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00EEB84E, 0x5F6BC168)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00B8F4D7, 0x3D690A60)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00891C63, 0x7B36F6CA)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00C53C3C, 0x1F8ACD9B)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00C57D1A, 0x6F93767A)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0051D367, 0x564DBAE2)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00286473, 0x37A599DB)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x002C9EC5, 0x5072EE78)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x007859AB, 0x03174870)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x004601D2, 0x4E6AF279)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x008DF1FF, 0x39D92E32)
-*/
+#define OVP_ClassId_MouseControl                            OpenViBE::CIdentifier(0xDA4B4EEB, 0x64FC6A16)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -34,24 +17,7 @@
 //                                                                   //
 
 #define OVP_ClassId_EBMLStreamSpy                           OpenViBE::CIdentifier(0x0ED76695, 0x01A69CC3)
-
-/*
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00CAB19C, 0x0D926E59)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00AD8C4D, 0x4FF68962)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00BC0FA8, 0x7056BB7C)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x003735D4, 0x745A195A)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00D99E2A, 0x41279854)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00B37566, 0x77E720E7)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00112883, 0x76F88249)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0014E37D, 0x714CCD45)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x002782C3, 0x1FFD7599)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x003F5DE5, 0x50FEA854)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x007E1187, 0x56898A61)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x002A4E8D, 0x3BF3B873)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x0073F1E5, 0x2BB7271F)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00E5945D, 0x702EB756)
-#define OVP_ClassId_                                        OpenViBE::CIdentifier(0x00BD8F5D, 0x635E7EB2)
-*/
+#define OVP_ClassId_MouseControlDesc                        OpenViBE::CIdentifier(0xB6B65C98, 0xA756ED0E)
 
 //___________________________________________________________________//
 //                                                                   //
