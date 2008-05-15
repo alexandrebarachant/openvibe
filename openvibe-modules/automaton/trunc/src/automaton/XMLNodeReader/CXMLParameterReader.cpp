@@ -29,14 +29,27 @@ EParsingStatus CXMLParameterReader::processChildData(const char* sData, IAutomat
 {
 	if(m_oParameterType=="IValue")
 	{
-		//for now, uint64 value
-		istringstream l_oStringData(sData);
-		uint64 l_ui64ReadValue;
-
-		while(l_oStringData>>l_ui64ReadValue)
+		string l_oVariableValue=sData;
+		uint64 l_ui64Value=0;
+		if(l_oVariableValue.length()>=3 && l_oVariableValue[0]=='0' && l_oVariableValue[1]=='x')
 		{
-			m_oParameter.push_back(pContext->addParameter(NULL,l_ui64ReadValue));
+			unsigned int l_uiValue;
+			sscanf(l_oVariableValue.c_str(), "%x", &l_uiValue);
+			l_ui64Value=static_cast<uint64>(l_uiValue);
 		}
+		else if(l_oVariableValue.length()>=2 && l_oVariableValue[0]=='0')
+		{
+			unsigned int l_uiValue;
+			sscanf(l_oVariableValue.c_str(), "%o", &l_uiValue);
+			l_ui64Value=static_cast<uint64>(l_uiValue);
+		}
+		else
+		{
+			unsigned int l_uiValue;
+			sscanf(l_oVariableValue.c_str(), "%u", &l_uiValue);
+			l_ui64Value=static_cast<uint64>(l_uiValue);
+		}
+		m_oParameter.push_back(pContext->addParameter(NULL, l_ui64Value));
 	}
 	else if(m_oParameterType=="IVariable")
 	{

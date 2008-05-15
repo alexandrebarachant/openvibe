@@ -154,7 +154,26 @@ void CXMLAutomatonReader::openChild(const char* sName, const char** sAttributeNa
 
 			if(!l_oVariableName.empty() && !l_oVariableValue.empty())
 			{
-				m_pContext->addParameter(l_oVariableName.c_str(), static_cast<uint64>(atol(l_oVariableValue.c_str())) );
+				uint64 l_ui64Value=0;
+				if(l_oVariableValue.length()>=3 && l_oVariableValue[0]=='0' && l_oVariableValue[1]=='x')
+				{
+					unsigned int l_uiValue;
+					sscanf(l_oVariableValue.c_str(), "%x", &l_uiValue);
+					l_ui64Value=static_cast<uint64>(l_uiValue);
+				}
+				else if(l_oVariableValue.length()>=2 && l_oVariableValue[0]=='0')
+				{
+					unsigned int l_uiValue;
+					sscanf(l_oVariableValue.c_str(), "%o", &l_uiValue);
+					l_ui64Value=static_cast<uint64>(l_uiValue);
+				}
+				else
+				{
+					unsigned int l_uiValue;
+					sscanf(l_oVariableValue.c_str(), "%u", &l_uiValue);
+					l_ui64Value=static_cast<uint64>(l_uiValue);
+				}
+				m_pContext->addParameter(l_oVariableName.c_str(), l_ui64Value);
 			}
 			else
 			{
