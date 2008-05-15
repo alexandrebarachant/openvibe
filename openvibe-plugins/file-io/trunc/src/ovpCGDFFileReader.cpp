@@ -268,7 +268,7 @@ boolean CGDFFileReader::readFileHeader()
 
 	if(!m_bExperimentInformationSent)
 	{
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<"Reading experiment information\n";
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace <<"Reading experiment information\n";
 
 		//First reads the file type
 		char l_pFileType[3];
@@ -358,7 +358,7 @@ boolean CGDFFileReader::readFileHeader()
 
 	if (!m_bSignalDescriptionSent)
 	{
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<"Reading signal description\n";
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace <<"Reading signal description\n";
 
 		//reads the whole variable header
 		char * l_pVariableHeaderBuffer = new char[m_ui16NumberOfChannels*256];
@@ -415,6 +415,7 @@ boolean CGDFFileReader::readFileHeader()
 
 		m_pChannelDataSize = new uint16[m_ui16NumberOfChannels];
 
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<"Found " << m_ui16NumberOfChannels << " channels...\n";
 		for(int i=0 ; i<m_ui16NumberOfChannels ; i++)
 		{
 			//Find the data size for each channel
@@ -426,6 +427,8 @@ boolean CGDFFileReader::readFileHeader()
 
 			//reads the channels names
 			m_pSignalDescription.m_pChannelName[i].assign(l_pVariableHeaderBuffer + (16*i), 16);
+
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<" * Channel " << (uint32)i << " : " << CString(m_pSignalDescription.m_pChannelName[i].c_str()) << "\n";
 		}
 
 		//This parameter is defined by the user of the plugin
@@ -433,6 +436,9 @@ boolean CGDFFileReader::readFileHeader()
 
 		//needs to be computed based on the duration of a data record and the number of samples in one of those data records
 		m_pSignalDescription.m_ui32SamplingRate = static_cast<EBML::uint32>(0.5 + (m_ui32NumberOfSamplesPerRecord/m_f64DurationOfDataRecord));
+
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<"Sample count per buffer : " << m_ui32SamplesPerBuffer << "\n";
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug <<"Sampling rate : " << m_pSignalDescription.m_ui32SamplingRate << "\n";
 
 		//computes clock frequency
 		if(m_ui32SamplesPerBuffer <= m_pSignalDescription.m_ui32SamplingRate)
