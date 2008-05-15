@@ -25,22 +25,42 @@ namespace OpenViBEPlugins
 		}
 
 		// Called when a key is pressed on the keyboard
-		gboolean KeyboardStimulator_KeyPressedCallback(GtkWidget *widget, GdkEventKey *event, gpointer data)
+		gboolean KeyboardStimulator_KeyPressCallback(GtkWidget *widget, GdkEventKey *event, gpointer data)
 		{
-			reinterpret_cast<CKeyboardStimulator*>(data)->processKey(event->keyval);
+			reinterpret_cast<CKeyboardStimulator*>(data)->processKey(event->keyval, true);
 			return true;
 		}
-		
+
+		// Called when a key is released on the keyboard
+		gboolean KeyboardStimulator_KeyReleaseCallback(GtkWidget *widget, GdkEventKey *event, gpointer data)
+		{
+			reinterpret_cast<CKeyboardStimulator*>(data)->processKey(event->keyval, false);
+			return true;
+		}
+
 		/**
 		 * Called when a key has been pressed.
 		 * \param uiKey The gdk value to the pressed key.
 		 * */
-		void CKeyboardStimulator::processKey(guint uiKey)
+		void CKeyboardStimulator::processKey(guint uiKey, bool bState)
 		{
 			//if there is one entry, adds the stimulation to the list of stims to be sent
 			if(m_oKeyToStimulation.count(uiKey) != 0)
 			{
-				m_oStimulationToSend.push_back(m_oKeyToStimulation[uiKey]);
+				if(bState)
+				{
+					// getLogManager() << LogLevel_Trace << "Pressed key code " << (uint32)uiKey << "\n";
+					m_oStimulationToSend.push_back(m_oKeyToStimulation[uiKey].first);
+				}
+				else
+				{
+					// getLogManager() << LogLevel_Trace << "Released key code " << (uint32)uiKey << "\n";
+					m_oStimulationToSend.push_back(m_oKeyToStimulation[uiKey].second);
+				}
+			}
+			else
+			{
+				// getLogManager() << LogLevel_Warning << "Unhandled key code " << (uint32)uiKey << "\n";
 			}
 		}
 
@@ -60,29 +80,31 @@ namespace OpenViBEPlugins
 			}
 
 			string l_oKeyName;
-			string l_oStimulation;
-			uint64 l_ui64Stimulation;
+			string l_oStimulationPress;
+			string l_oStimulationRelease;
+			uint64 l_ui64StimulationPress;
+			uint64 l_ui64StimulationRelease;
 
 			//reads all the couples key name/stim
 			while(!l_oFile.eof() && !l_oFile.fail())
 			{
-				l_oFile>>l_oKeyName>>l_oStimulation;
+				l_oFile>>l_oKeyName>>l_oStimulationPress>>l_oStimulationRelease;
 
-				sscanf(l_oStimulation.c_str(), "0x%08Lx", &l_ui64Stimulation);
+				sscanf(l_oStimulationPress.c_str(),   "0x%08Lx", &l_ui64StimulationPress);
+				sscanf(l_oStimulationRelease.c_str(), "0x%08Lx", &l_ui64StimulationRelease);
 
-				m_oKeyToStimulation[gdk_keyval_from_name(l_oKeyName.c_str())] = l_ui64Stimulation;
+				m_oKeyToStimulation[gdk_keyval_from_name(l_oKeyName.c_str())] = std::pair < uint64, uint64 > (l_ui64StimulationPress, l_ui64StimulationRelease);
 			}
 
 			l_oFile.close();
 
 			return true;
-		}	
+		}
 
 		void CKeyboardStimulator::writeStimulationOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 		{
 			appendOutputChunkData<0>(pBuffer, ui64BufferSize);
 		}
-
 
 		CKeyboardStimulator::CKeyboardStimulator(void) :
 			m_pWriter(NULL),
@@ -91,7 +113,7 @@ namespace OpenViBEPlugins
 			m_pDummyWidget(NULL),
 			m_ui64PreviousActivationTime(0),
 			m_bError(false)
-		{	
+		{
 		}
 
 		OpenViBE::boolean CKeyboardStimulator::initialize()
@@ -101,7 +123,7 @@ namespace OpenViBEPlugins
 
 			// Parses box settings to find input file's name
 			l_pBoxContext->getSettingValue(0, l_sFileName);
-			
+
 			if(!parseConfigurationFile((const char*)l_sFileName))
 			{
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Problem while parsing configuration file!\n";
@@ -116,7 +138,7 @@ namespace OpenViBEPlugins
 			m_pWriter=EBML::createWriter(*m_pOutputWriterCallbackProxy);
 
 			m_pStimulationOutputWriterHelper=createBoxAlgorithmStimulationOutputWriter();
-		
+
 			//dummy window widget for grabbing events
 			m_pDummyWidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 			gtk_window_set_title(GTK_WINDOW(m_pDummyWidget), "Keyboard stimulator");
@@ -132,16 +154,17 @@ namespace OpenViBEPlugins
 			gtk_container_add(GTK_CONTAINER(m_pDummyWidget), l_pLabel);
 
 			//redirect key pressed event
-			g_signal_connect(G_OBJECT(m_pDummyWidget), "key-press-event", 
-					G_CALLBACK(KeyboardStimulator_KeyPressedCallback), this);
+			g_signal_connect(G_OBJECT(m_pDummyWidget), "key-press-event",
+					G_CALLBACK(KeyboardStimulator_KeyPressCallback), this);
+			g_signal_connect(G_OBJECT(m_pDummyWidget), "key-release-event",
+					G_CALLBACK(KeyboardStimulator_KeyReleaseCallback), this);
 
 			//does nothing on the window if the user tries to close it
 			g_signal_connect(G_OBJECT(m_pDummyWidget), "delete_event", G_CALLBACK(keyboard_stimulator_gtk_widget_do_nothing), NULL);
 
-
 			gtk_widget_show_all(m_pDummyWidget);
 
-			//write stimulation stream header		
+			//write stimulation stream header
 			m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter);
 			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, 0, 0);
 
@@ -152,7 +175,7 @@ namespace OpenViBEPlugins
 		{
 			delete m_pOutputWriterCallbackProxy;
 			m_pOutputWriterCallbackProxy= NULL;
-			
+
 			if(m_pWriter)
 			{
 				m_pWriter->release();
@@ -167,10 +190,9 @@ namespace OpenViBEPlugins
 
 			gtk_widget_destroy(m_pDummyWidget);
 
-			
 			return true;
 		}
-			
+
 		OpenViBE::boolean CKeyboardStimulator::processClock(OpenViBE::CMessageClock &rMessageClock)
 		{
 			if(m_bError)
@@ -197,7 +219,7 @@ namespace OpenViBEPlugins
 			m_ui64PreviousActivationTime = l_ui64CurrentTime;
 
 			getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
-			
+
 			return true;
 		}
 

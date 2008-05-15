@@ -40,7 +40,7 @@ namespace OpenViBEPlugins
 
 			OpenViBE::boolean parseConfigurationFile(const char * pFilename);
 
-			virtual void processKey(guint uiKey);
+			virtual void processKey(guint uiKey, bool bState);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_KeyboardStimulator)
 
@@ -54,7 +54,7 @@ namespace OpenViBEPlugins
 			GtkWidget * m_pDummyWidget;
 
 			//! Stores keyvalue/stimulation couples
-			std::map<guint, OpenViBE::uint64> m_oKeyToStimulation;
+			std::map<guint, std::pair < OpenViBE::uint64, OpenViBE::uint64 > > m_oKeyToStimulation;
 
 			//! Vector of the stimulations to send when possible
 			std::vector<OpenViBE::uint64> m_oStimulationToSend;
