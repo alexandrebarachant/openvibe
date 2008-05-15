@@ -140,7 +140,7 @@ done;
 l_header_file_content="#ifndef $l_box_algorithm_header_decoration
 #define $l_box_algorithm_header_decoration
 
-#include \"../ovp_defines.h\"
+#include \"../../ovp_defines.h\"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -162,13 +162,13 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { delete this; }
 
-			virtual OpenViBE::uint64 getClockFrequency(void);
+			// virtual OpenViBE::uint64 getClockFrequency(void);
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
-			virtual OpenViBE::boolean processEvent(OpenViBE::CMessageEvent& rMessageEvent);
-			virtual OpenViBE::boolean processSignal(OpenViBE::CMessageSignal& rMessageSignal);
-			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock& rMessageClock);
-			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
+			// virtual OpenViBE::boolean processEvent(OpenViBE::CMessageEvent& rMessageEvent);
+			// virtual OpenViBE::boolean processSignal(OpenViBE::CMessageSignal& rMessageSignal);
+			// virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock& rMessageClock);
+			// virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, $l_box_algorithm_class_identifier_def);
@@ -198,14 +198,9 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
-				// rBoxAlgorithmPrototype.addInput(\"input name\", /* input type (OV_TypeId_Signal) */);
-				// ...
-
-				// rBoxAlgorithmPrototype.addOutput(\"output name\", /* output type (OV_TypeId_Signal) */);
-				// ...
-
+				// rBoxAlgorithmPrototype.addInput  (\"input name\", /* input type (OV_TypeId_Signal) */);
+				// rBoxAlgorithmPrototype.addOutput (\"output name\", /* output type (OV_TypeId_Signal) */);
 				// rBoxAlgorithmPrototype.addSetting(\"setting name\", /* setting type (OV_TypeId_Integer), \"default value\" */);
-				// ...
 
 				return true;
 			}
@@ -230,10 +225,12 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::$l_box_algorithm_namespace_final;
 
+/*
 uint64 $l_box_algorithm_class_name::getClockFrequency(void)
 {
 	return 0; // the box clock frequency
 }
+*/
 
 boolean $l_box_algorithm_class_name::initialize(void)
 {
@@ -250,6 +247,8 @@ boolean $l_box_algorithm_class_name::uninitialize(void)
 
 	return true;
 }
+
+/*
 boolean $l_box_algorithm_class_name::processEvent(IMessageEvent& rMessageEvent)
 {
 	// ...
@@ -258,7 +257,9 @@ boolean $l_box_algorithm_class_name::processEvent(IMessageEvent& rMessageEvent)
 
 	return true;
 }
+*/
 
+/*
 boolean $l_box_algorithm_class_name::processSignal(IMessageSignal& rMessageSignal)
 {
 	// ...
@@ -267,7 +268,9 @@ boolean $l_box_algorithm_class_name::processSignal(IMessageSignal& rMessageSigna
 
 	return true;
 }
+*/
 
+/*
 boolean $l_box_algorithm_class_name::processClock(IMessageClock& rMessageClock)
 {
 	// ...
@@ -276,7 +279,9 @@ boolean $l_box_algorithm_class_name::processClock(IMessageClock& rMessageClock)
 
 	return true;
 }
+*/
 
+/*
 boolean $l_box_algorithm_class_name::processInput(uint32 ui32InputIndex)
 {
 	// ...
@@ -285,6 +290,7 @@ boolean $l_box_algorithm_class_name::processInput(uint32 ui32InputIndex)
 
 	return true;
 }
+*/
 
 boolean $l_box_algorithm_class_name::process(void)
 {
