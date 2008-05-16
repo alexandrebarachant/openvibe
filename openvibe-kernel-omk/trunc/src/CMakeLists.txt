@@ -1,12 +1,7 @@
 FILE(GLOB_RECURSE source_files *.cpp)
 
-ADD_LIBRARY(${PROJECT_NAME}-static STATIC ${source_files})
+#ADD_LIBRARY(${PROJECT_NAME}-static STATIC ${source_files})
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
-
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-toolkit-dynamic)
-ADD_DEPENDENCIES(${PROJECT_NAME}-static OpenViBE-toolkit-static)
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	VERSION ${PROJECT_VERSION}

@@ -25,7 +25,7 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			enum
+			enum EStatus
 			{
 				Status_Nothing,
 				Status_CommonInfos,
@@ -33,20 +33,20 @@ namespace OpenViBEPlugins
 				Status_ChannelInfos,
 				Status_MarkerInfos,
 				Status_Comment,
-			} EStatus;
+			};
 
-			enum
+			enum EBinaryFormat
 			{
 				BinaryFormat_Integer16,
 				BinaryFormat_UnsignedInteger16,
 				BinaryFormat_Float32,
-			} EBinaryFormat;
+			};
 
-			enum
+			enum EEndianness
 			{
 				Endianness_LittleEndian,
 				Endianness_BigEndian,
-			} EEndianness;
+			};
 
 			typedef struct
 			{

@@ -190,7 +190,7 @@ boolean CAlgorithmBrainampFileReader::process(void)
 								{
 									l_ui64SamplingInterval=atoi(l_sOptionValue.c_str());
 
-									m_ui64SampleCountPerBuffer=((uint64)((ip_f64EpochDuration*1000000.)/l_ui64SamplingInterval));
+									m_ui64SampleCountPerBuffer=((int64)((ip_f64EpochDuration*1000000.)/l_ui64SamplingInterval)); // $$$ Casted in (int64) because of Ubuntu 7.10 crash !
 									op_pSignalMatrix->setDimensionSize(1, m_ui64SampleCountPerBuffer);
 									op_ui64SamplingRate=1000000/l_ui64SamplingInterval;
 
