@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!--Generated with glade3 3.4.3 on Mon May 19 17:44:49 2008 -->
+<glade-interface>
+  <widget class="GtkWindow" id="window">
+    <child>
+      <widget class="GtkVBox" id="vbox">
+        <property name="visible">True</property>
+        <child>
+          <widget class="GtkHBox" id="hbox_analog">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkVScale" id="vscale_0">
+                <property name="height_request">256</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkVScale" id="vscale_1">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVScale" id="vscale_2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVScale" id="vscale_3">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+              <packing>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVScale" id="vscale_4">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+              <packing>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVScale" id="vscale_5">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+              <packing>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVScale" id="vscale_6">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+              <packing>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVScale" id="vscale_7">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="adjustment">0 -100 100 0.01 1 10</property>
+                <property name="inverted">True</property>
+              </widget>
+              <packing>
+                <property name="position">7</property>
+              </packing>
+            </child>
+          </widget>
+        </child>
+        <child>
+          <widget class="GtkHBox" id="hbox_button">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_0">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_1">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_3">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_4">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_5">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_6">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToggleButton" id="togglebutton_7">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkImage" id="image3">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">7</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</glade-interface>
