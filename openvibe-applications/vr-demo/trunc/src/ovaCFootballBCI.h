@@ -48,6 +48,9 @@ protected:
 	OMK::Name m_sClassificationScoreTransformName;
 	OMK::Name m_sFeedbackTransformName;
 
+	OMK::Name m_sBasicArrowTransformName;
+	OMK::Name m_sCrossTransformName;
+
 	OMK::Type::Transform m_oLeftGoalArrowPosition;
 	OMK::Type::Transform m_oRightGoalArrowPosition;
 

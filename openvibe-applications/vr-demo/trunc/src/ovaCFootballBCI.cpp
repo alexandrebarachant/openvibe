@@ -37,6 +37,9 @@ void CFootballBCI::init(void)
 	OMK::ParametersAccessor::get < OMK::Name > (getConfigurationParameters(), "classification_score_transform", m_sClassificationScoreTransformName);
 	OMK::ParametersAccessor::get < OMK::Name > (getConfigurationParameters(), "feedback_transform",             m_sFeedbackTransformName);
 
+	OMK::ParametersAccessor::get < OMK::Name > (getConfigurationParameters(), "basic_arrow_transform",     m_sBasicArrowTransformName);
+	OMK::ParametersAccessor::get < OMK::Name > (getConfigurationParameters(), "cross_transform",                m_sCrossTransformName);
+
 	OMK::ParametersAccessor::get < OMK::Type::Transform > (getConfigurationParameters(), "left_goal_arrow_position",  m_oLeftGoalArrowPosition);
 	OMK::ParametersAccessor::get < OMK::Type::Transform > (getConfigurationParameters(), "right_goal_arrow_position", m_oRightGoalArrowPosition);
 
@@ -152,6 +155,9 @@ void CFootballBCI::compute(void)
 	OMK::Type::Transform l_oClassificationScoreTransform;
 	OMK::Type::Transform l_oFeedbackTransform;
 
+	OMK::Type::Transform l_oBasicArrowTransform;
+	OMK::Type::Transform l_oCrossTransform;
+
 	l_oActiveBallTransform.setTranslate(Wm4::Vector3f(m_iPhase==Phase_Active?0:1000, 0, m_fBallPosition));
 	l_oActiveBallTransform.setOrientation(0, m_fBallOrientation*4, 0);
 
@@ -161,9 +167,12 @@ void CFootballBCI::compute(void)
 	l_oPassiveBallTransform.setTranslate(Wm4::Vector3f(m_iPhase==Phase_Passive?0:1000, 0, m_fBallPosition));
 	l_oPassiveBallTransform.setOrientation(0, m_fBallOrientation*4, 0);
 
+	l_oCrossTransform.setTranslate(Wm4::Vector3f(m_iPhase==Phase_Passive?1000:0, 0, 0));
+
 	if(!m_bShowMark)
 	{
 		l_oArrowTransform.setTranslate(Wm4::Vector3f(1000, 0, 0));
+		l_oBasicArrowTransform.setTranslate(Wm4::Vector3f(1000, 0, 0));
 	}
 	else
 	{
@@ -172,14 +181,17 @@ void CFootballBCI::compute(void)
 			default:
 			case Mark_None:
 				l_oArrowTransform.setTranslate(Wm4::Vector3f(1000, 0, 0));
+				l_oBasicArrowTransform.setTranslate(Wm4::Vector3f(1000, 0, 0));
 				break;
 
 			case Mark_Left:
 				l_oArrowTransform=m_oLeftGoalArrowPosition;
+				l_oBasicArrowTransform.setOrientation(0, 0, M_PI/2);
 				break;
 
 			case Mark_Right:
 				l_oArrowTransform=m_oRightGoalArrowPosition;
+				l_oBasicArrowTransform.setOrientation(0, 0, -M_PI/2);
 				break;
 		}
 	}
@@ -202,6 +214,9 @@ void CFootballBCI::compute(void)
 	sendValuedEvent(m_sVisuName,           m_sSideScoreTransformName, OMK::Type::TransformType(OMK::Type::product(l_oSideScoreTransform, l_oPlaneOffset)));
 	sendValuedEvent(m_sVisuName, m_sClassificationScoreTransformName, OMK::Type::TransformType(OMK::Type::product(l_oClassificationScoreTransform, l_oPlaneOffset)));
 	sendValuedEvent(m_sVisuName,            m_sFeedbackTransformName, OMK::Type::TransformType(OMK::Type::product(l_oFeedbackTransform, l_oPlaneOffset)));
+
+	sendValuedEvent(m_sVisuName,          m_sBasicArrowTransformName, OMK::Type::TransformType(l_oBasicArrowTransform));
+	sendValuedEvent(m_sVisuName,               m_sCrossTransformName, OMK::Type::TransformType(l_oCrossTransform));
 
 	// -------------------------------------------------------------------------------
 	// End of computation
