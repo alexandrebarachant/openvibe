@@ -1,4 +1,8 @@
 <scene formatVersion="1.0" upAxis="y" unitsPerMeter="1" minOgreVersion="1.4" author="OgreMax Scene Exporter by Derek Nedelman (www.ogremax.com)">
+    <environment>
+        <colourAmbient r="0.4" g="0.4" b="0.4" />
+        <colourBackground r="0" g="0" b="0" />
+    </environment>
     <nodes>
         <node name="DCS_transformationCamera">
             <position x="-2.0" y="0.9" z="0.0"/>

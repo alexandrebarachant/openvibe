@@ -82,7 +82,7 @@ root
 							{
 								Class TransformAnimator
 								ListenedEvent "tie_transform"
-								NodeName "DCS_position"
+								NodeName "ze-tie"
 							}
 						}
 						Translate [ 4 0 -2 ]
@@ -106,7 +106,7 @@ root
 						}
 						Translate [ 0 0 -2.5 ]
 						Rotate [ -1.570796327 -1.570796327 0 ]
-						Scale [ 0.1 0.1 0.1 ]
+						Scale [ 0.2 0.2 0.2 ]
 					}
 
 					move

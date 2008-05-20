@@ -48,7 +48,7 @@ root
 				OgreHome "${OGRE_HOME}"
 				ResourcesFile "resources.cfg"
 				// SceneFile "null.scene"
-				Camera "camera"
+				Camera "camera0"
 				// CreateDefaultWindow off
 
 				VisualObject
@@ -156,6 +156,44 @@ root
 						Scale [ 0.25 0.25 0.25 ]
 					}
 
+					cross
+					{
+						Class OgreObject
+						GeometryFile "cross.scene"
+						ResourceGroup "General"
+						Animator
+						{
+							cross_transform
+							{
+								Class TransformAnimator
+								ListenedEvent "cross_transform"
+								NodeName "ze-cross"
+							}
+						}
+						Translate [ -2.81 0.9 0 ]
+						Rotate [ 0 -1.570796327 0 ]
+						Scale [ 0.3 0.3 0.3 ]
+					}
+
+					basic_arrow
+					{
+						Class OgreObject
+						GeometryFile "basic-arrow.scene"
+						ResourceGroup "General"
+						Animator
+						{
+							basic_arrow_transform
+							{
+								Class TransformAnimator
+								ListenedEvent "basic_arrow_transform"
+								NodeName "basic-arrow"
+							}
+						}
+						Translate [ -2.82 0.9 0 ]
+						Rotate [ 0 -1.570796327 0 ]
+						Scale [ 0.3 0.3 0.3 ]
+					}
+
 					goal_score
 					{
 						Class OgreObject
@@ -227,8 +265,7 @@ root
 								NodeName "plane-cyan"
 							}
 						}
-						// Translate [ -2.8 0.2 0 ]
-						Translate [ -2.8 1.0 0 ]
+						Translate [ -2.8 0.9 0 ]
 						Rotate [ 0 -1.570796327 0 ]
 						Scale [ 0.1 0.1 0.1 ]
 					}
@@ -270,6 +307,9 @@ root
 				side_score_transform           "side_score_transform"
 				classification_score_transform "classification_score_transform"
 				feedback_transform             "feedback_transform"
+
+				basic_arrow_transform          "basic_arrow_transform"
+				cross_transform                "cross_transform"
 
 				left_goal_arrow_position  [ [ 0 2.5 -5.92 ] ]
 				right_goal_arrow_position [ [ 0 2.5  5.92 ] ]
