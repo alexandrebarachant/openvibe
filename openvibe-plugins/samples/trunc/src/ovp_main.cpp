@@ -15,6 +15,8 @@
 #include "algorithms/ovpCAlgorithmAddition.h"
 #include "ovpCBoxAlgorithmAdditionTest.h"
 
+#include "ovpCBoxAlgorithmNothing.h"
+
 // #define _WithTBE_
 
 #if defined _WithTBE_
@@ -55,4 +57,6 @@ OVP_Declare_Begin();
 
 	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmAdditionTestDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CAlgorithmAdditionDesc);
+
+	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmNothingDesc);
 OVP_Declare_End();
