@@ -166,7 +166,10 @@ boolean CGDFFileReader::uninitialize()
 
 boolean CGDFFileReader::processClock(CMessageClock& rMessageClock)
 {
-	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+	if(rMessageClock.getTime() > (((uint64)(m_ui32SentSampleCount+m_pSignalDescription.m_ui32SampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate)
+	{
+		getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+	}
 	return true;
 }
 
