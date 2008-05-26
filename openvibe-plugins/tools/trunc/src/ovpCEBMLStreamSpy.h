@@ -80,7 +80,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::CString getStockItemName(void) const
 			{
-				return OpenViBE::CString("gtk-find");
+				return OpenViBE::CString("gtk-info");
 			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_EBMLStreamSpyDesc)
