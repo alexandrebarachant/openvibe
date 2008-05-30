@@ -191,6 +191,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(\"$l_detailed_description\"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString(\"$l_category\"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString(\"$l_version\"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(\"gtk-missing-image\"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return $l_box_algorithm_class_identifier_def; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::$l_box_algorithm_namespace_final::$l_box_algorithm_class_name; }
