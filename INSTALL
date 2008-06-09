@@ -1,33 +1,42 @@
 
          *========================================*
-                      |OpenViBE| |README|
+                     |OpenViBE| |INSTALL|
          *========================================*
 
 |Introduction|
 
 This document explains how to build the platform from sources.
 
+|Repository.organisation|
+
+Please refer to the README file to have information on the repository
+organisaion.
+
 |Build.target|
 
-OpenViBE should compile on x86 architecture running Microsoft Windows 2k/XP with
-Visual C++ 2005 express edition.
+OpenViBE should compile on x86 architecture running Microsoft Windows 2k/XP/Vista
+with Visual C++ 2005 express edition.
+
 OpenViBE should compile on x86 architecture running Linux with gcc 4.*
+
+OpenViBE is known to have dependencies not compiling on x86-64. This is being
+investigated.
 
 Please consider that trying to compile OpenViBE on another hardware/OS/compilator
 is experimental and has not been tested. Several people reported some problems
-on IA64 architectures because of some of its dependencies. If you want to try
+on x86-64 architectures because of some of its dependencies. If you want to try
 and, contribute on getting OpenViBE run on other hardware/OS/compilators,
 please do so but do not expect for support in the short time.
 
 |Prerequesite.dependencies|
 
 In order to build the software, you will have to install several dependencies.
-For this to be done, you can use prebuilt installation scripts that will
+For this to be done, you can use installation scripts that will
 automatically prepare the environment for you.
 <win32-install_dependencies> does it for you under Windows and
 <linux-install_dependencies> does it for you under Linux.
 
-Windows installation processes prebuilt packages so it is quite fast. However,
+Windows installation processes prebuilt packages so it is quite fast.
 
 Linux installation processes source packages and builds them from scratch,
 supposing almost no pre-requisite dependencies (you should be able to install
@@ -47,12 +56,12 @@ want to copy the <linux-init_env_command-skeleton> to <linux-init_env_command>
 so they get a correct file. For windows, copying the skeleton may not be
 enough because of Visual Studio paths and so on... You will have to tweak ;)
 
-|Building.the.platforme|
+|Building.the.platform|
 
 If you want to build all the projects at once, you can use the <linux-build>
 script or the <win32-build>. Both script call the appropriate
-<init_env_command> so they have correct values. However, each project will
-have its build in its own directory. The <linux-collect_build> and
+<init_env_command> so they need to have correct values. However, each project
+will have its build in its own directory. The <linux-collect_build> and
 <win32-collect_build> will get all the built files in the <dist> directory
 that will be usable...
 
@@ -60,6 +69,115 @@ that will be usable...
 interesting softwares for you.
 
 congratulations, you have OpenViBE working !
+
+|Contribution.rules|
+
+For developpers wishing to contribute in OpenViBE, there are severak coding
+rules we have fixed to have an homogeneous source code. Rules are the
+following :
+
+ - namings :
+   - english is used for every class names / variable names, function names...
+   - should it be in class names, functions, variables or whatever,
+     abreviations are not tolerated. All the names have to be as explicit as
+     possible (the code is harder to write if you don't take advantage of
+     automatic completion, but it is times easier to read for people who did
+     not write this code !)
+   - classe names start with C
+   - template names start with T
+   - interface names start with I (pure abstract classes of an API)
+   - members start with m_
+   - local variables start with l_
+   - global variables are prohibited (please contact the dev coordinator if this
+     is necessary in your case)
+   - function parameter names do not have particular prefix
+   - variable names are prefixed by their type : b for boolean, s for string,
+     r for references, o for objects, i16 for signed 16 bits integer, uint64
+     for unsigned 64 bits integer or float80 for 80 bits floats...
+   - function names do not have prefix, start with lowercase caracter and
+     use upper case caracter for each new word
+   - curly brackets always stand alone on new lines
+   - if / else blocks always have curly brackets, even if only one call is
+     to be done
+ - english is used for the documentation of the code
+ - code is documented with doxygen (http://www.stack.nl/~dimitri/doxygen/)
+ - implementation is documented for complex things with or without doxygen
+ - non portable libraries (should it be software or hardware compatibility)
+   are isolated in a separated module (like EBML, XML, FS etc...)
+ - every class is constituted of a pair of files : header (definition) and source
+   (implementation)
+ - redundant include should be avoided thanks to #ifndef #define #endif in the
+   begining/end of the header files
+ - for API headers, put these files in a folder with module's name
+ - make use of at least one namespace per module so to avoid symbol name
+   collision
+ - 'using namespace' directives shall not be used in header files
+ - use basic types provided by the modules as much as possible (float32,
+   uint32...) so that type size is explicit and developer knows what he's
+   doing with this values.
+
+This is a sample of OpenViBE-compliant code illustrating these rules :
+
+/**
+  * \file SampleFile.h
+  * \author me
+  * \date today
+  * \brief a sample file containing TSample template
+  *
+  * This sample file contains the definition of the
+  * TSample template blah blah more details...
+  */
+namesapce SampleNamesapce
+{
+        /**
+         * \class Tsample
+         * \author me
+         * \date today
+         * \brief short-blah
+         *
+         * Detailed blah blah
+          */
+        template <class T>
+        class TSample : public T
+        {
+        public:
+                /**
+                  * \function sampleFunction
+                  * \param rInputValue[in] : blah
+                  * \param rOutputValue[out] : blah
+                  * \return blah blah
+                  * \brief short-blah
+                  *
+                  * Detailed blah blah
+                  */
+                virtual SampleNamespace::boolean sampleFunction(
+                        SampleNamespace::boolean bInputValue,
+                        SampleNamespace::boolean& rOutputValue)
+                {
+                        SampleNamespace::boolean l_bCondition=true;
+                        if(l_bCondition)
+                        {
+                                rOutputValue=bInputValue;
+                                return true;
+                        }
+                        return false;
+                }
+        };
+};
+
+|Contribution.howto|
+
+Contribution integration are done at several different levels.
+- First, some people have full access to the forge. This means they can modify
+  any of the files, including trunc (unstable version of the software) and tags.
+- Second level includes restricted write access to the forge. People working
+  in this configuration work in branches. Someone with access to the trunc will
+  have to decide whether the branch is ready for integration or not, and will
+  perform the integration in the mainstream.
+- Third and last level is for people with read only access to the forge. Such
+  user develop their functionnality "localy" and produce a patch that someone
+  with write access will be able to integrate. Creating such patch simply
+  consists in dumping the output of "svn diff".
 
 |End.of.file|
 
