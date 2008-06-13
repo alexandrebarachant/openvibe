@@ -1,17 +1,20 @@
 #include "ovkCVisualisationContext.h"
-#include "../player/ovkPsSimulatedBox.h"
+#include "../player/ovkCSimulatedBox.h"
 
 #include "../../tools/ovk_bridge_bind_function.h"
+
+using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CVisualisationManagerBridge : virtual public TKernelObject<IVisualisationManager>
+		class CVisualisationManagerBridge : public TKernelObject<IVisualisationManager>
 		{
 		public:
 
-			CVisualisationManagerBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox) : TKernelObject<IVisualisationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+			CVisualisationManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IVisualisationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, createVisualisationTree, , CIdentifier&, rVisualisationTreeIdentifier)
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, releaseVisualisationTree, , const CIdentifier&, rVisualisationTreeIdentifier)
@@ -28,16 +31,12 @@ namespace OpenViBE
 
 		protected:
 
-			::PsSimulatedBox* m_pSimulatedBox;
+			CSimulatedBox* m_pSimulatedBox;
 		};
 	};
 };
 
-using namespace OpenViBE;
-using namespace OpenViBE::Kernel;
-#define boolean OpenViBE::boolean
-
-CVisualisationContext::CVisualisationContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
+CVisualisationContext::CVisualisationContext(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox)
 	:TKernelObject<IVisualisationContext>(rKernelContext)
 	,m_pSimulatedBox(pSimulatedBox)
 	,m_pVisualisationManagerBridge(NULL)
@@ -54,7 +53,7 @@ boolean CVisualisationContext::setWidgets(GtkWidget* pWidget, GtkWidget* pToolba
 {
 	return m_pVisualisationManagerBridge->setWidgets(
 		m_pSimulatedBox->getScenario().getVisualisationTreeIdentifier(),
-		m_pSimulatedBox->getOVName(),
+		m_pSimulatedBox->getName(),
 		pWidget,
 		pToolbarWidget);
 }

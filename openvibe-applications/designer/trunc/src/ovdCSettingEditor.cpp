@@ -53,6 +53,11 @@ static void on_button_setting_filename_browse_pressed(::GtkButton* pButton, gpoi
 	gtk_widget_destroy(l_pWidgetDialogOpen);
 }
 
+static void on_file_override_check_toggled(::GtkToggleButton* pToggleButton, gpointer pUserData)
+{
+	gtk_widget_set_sensitive((::GtkWidget*)pUserData, !gtk_toggle_button_get_active(pToggleButton));
+}
+
 // ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
 
 CSettingEditor::CSettingEditor(IKernel& rKernel, IBox& rBox, const char* sGUIFilename)
@@ -78,6 +83,8 @@ void CSettingEditor::run(void)
 		::GladeXML* l_pGladeInterfaceSetting=glade_xml_new(m_sGUIFilename.c_str(), "setting", NULL);
 		::GtkWidget* l_pSettingDialog=glade_xml_get_widget(l_pGladeInterfaceSetting, "setting");
 		::GtkTable* l_pSettingTable=GTK_TABLE(glade_xml_get_widget(l_pGladeInterfaceSetting, "table_setting"));
+		::GtkContainer* l_pFileOverrideContainer=GTK_CONTAINER(glade_xml_get_widget(l_pGladeInterfaceSetting, "hbox_filename_override"));
+		::GtkCheckButton* l_pFileOverrideCheck=GTK_CHECK_BUTTON(glade_xml_get_widget(l_pGladeInterfaceSetting, "checkbutton_filename_override"));
 		g_object_unref(l_pGladeInterfaceSetting);
 
 		gtk_table_resize(l_pSettingTable, m_rBox.getSettingCount(), 3);
@@ -106,18 +113,43 @@ void CSettingEditor::run(void)
 			gtk_widget_unparent(l_pSettingName);
 			gtk_widget_unparent(l_pSettingValue);
 			gtk_widget_unparent(l_pSettingRevert);
-			gtk_table_attach(l_pSettingTable, l_pSettingName,   0, 1, i, i+1, ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), 0, 0);
+			gtk_table_attach(l_pSettingTable, l_pSettingName,   0, 1, i, i+1, ::GtkAttachOptions(GTK_FILL),            ::GtkAttachOptions(GTK_FILL),            0, 0);
 			gtk_table_attach(l_pSettingTable, l_pSettingValue,  1, 2, i, i+1, ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), 0, 0);
 			gtk_table_attach(l_pSettingTable, l_pSettingRevert, 2, 3, i, i+1, ::GtkAttachOptions(GTK_SHRINK),          ::GtkAttachOptions(GTK_SHRINK),          0, 0);
 			gtk_widget_unref(l_pSettingRevert);
 			gtk_widget_unref(l_pSettingValue);
 			gtk_widget_unref(l_pSettingName);
 
-			setValue(l_oSettingType, l_pSettingValue, l_oSettingValue);
-			gtk_label_set_text(GTK_LABEL(l_pSettingName), l_oSettingName);
-
 			l_vSettingValue.push_back(l_pSettingValue);
+
+			this->setValue(l_oSettingType, l_pSettingValue, l_oSettingValue);
+			gtk_label_set_text(GTK_LABEL(l_pSettingName), l_oSettingName);
 		}
+
+#if 1
+		g_signal_connect(G_OBJECT(l_pFileOverrideCheck), "toggled", G_CALLBACK(on_file_override_check_toggled), GTK_WIDGET(l_pSettingTable));
+
+		string l_sSettingOverrideWidgetName=getSettingWidgetName(OV_TypeId_Filename);
+		::GladeXML* l_pGladeInterfaceSettingCollection=glade_xml_new(m_sGUIFilename.c_str(), l_sSettingOverrideWidgetName.c_str(), NULL);
+		::GtkWidget* l_pSettingOverrideValue=glade_xml_get_widget(l_pGladeInterfaceSettingCollection, l_sSettingOverrideWidgetName.c_str());
+		g_object_unref(l_pGladeInterfaceSettingCollection);
+
+		gtk_widget_ref(l_pSettingOverrideValue);
+		gtk_widget_unparent(l_pSettingOverrideValue);
+		gtk_container_add(l_pFileOverrideContainer, l_pSettingOverrideValue);
+		gtk_widget_unref(l_pSettingOverrideValue);
+
+		if(m_rBox.hasAttribute(OVD_AttributeId_SettingOverrideFilename))
+		{
+			this->setValue(OV_TypeId_Filename, l_pSettingOverrideValue, m_rBox.getAttributeValue(OVD_AttributeId_SettingOverrideFilename));
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pFileOverrideCheck), true);
+			gtk_widget_set_sensitive(GTK_WIDGET(l_pSettingTable), false);
+		}
+		else
+		{
+			this->setValue(OV_TypeId_Filename, l_pSettingOverrideValue, "");
+		}
+#endif
 
 		boolean l_bFinished=false;
 		while(!l_bFinished)
@@ -131,14 +163,39 @@ void CSettingEditor::run(void)
 					m_rBox.getSettingDefaultValue(i, l_oSettingValue);
 					setValue(l_oSettingType, l_vSettingValue[i], l_oSettingValue);
 				}
+				if(m_rBox.hasAttribute(OVD_AttributeId_SettingOverrideFilename))
+				{
+					this->setValue(OV_TypeId_Filename, l_pSettingOverrideValue, m_rBox.getAttributeValue(OVD_AttributeId_SettingOverrideFilename));
+					gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pFileOverrideCheck), true);
+					gtk_widget_set_sensitive(GTK_WIDGET(l_pSettingTable), false);
+				}
 			}
 			else if(l_iResult==GTK_RESPONSE_APPLY)
 			{
 				for(i=0; i<m_rBox.getSettingCount(); i++)
 				{
 					m_rBox.getSettingType(i, l_oSettingType);
-					m_rBox.setSettingValue(i, getValue(l_oSettingType, l_vSettingValue[i]));
+					m_rBox.setSettingValue(i, this->getValue(l_oSettingType, l_vSettingValue[i]));
 				}
+				if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pFileOverrideCheck)))
+				{
+					if(m_rBox.hasAttribute(OVD_AttributeId_SettingOverrideFilename))
+					{
+						m_rBox.setAttributeValue(OVD_AttributeId_SettingOverrideFilename, this->getValue(OV_TypeId_Filename, l_pSettingOverrideValue));
+					}
+					else
+					{
+						m_rBox.addAttribute(OVD_AttributeId_SettingOverrideFilename, this->getValue(OV_TypeId_Filename, l_pSettingOverrideValue));
+					}
+				}
+				else
+				{
+					if(m_rBox.hasAttribute(OVD_AttributeId_SettingOverrideFilename))
+					{
+						m_rBox.removeAttribute(OVD_AttributeId_SettingOverrideFilename);
+					}
+				}
+
 				l_bFinished=true;
 			}
 			else

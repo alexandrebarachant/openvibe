@@ -13,8 +13,6 @@
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 
-typedef OpenViBE::boolean ovBoolean;
-
 #define OV_ClassId_Kernel_KernelLoaderFinal OpenViBE::CIdentifier(0x624A6E5B, 0x52228CEA)
 
 //___________________________________________________________________//
@@ -22,29 +20,34 @@ typedef OpenViBE::boolean ovBoolean;
 
 namespace OpenViBE
 {
-	class CKernelLoaderBase : virtual public IKernelLoader
+	class CKernelLoaderBase : public IKernelLoader
 	{
 	public:
 
 		CKernelLoaderBase(void);
 
-		virtual ovBoolean initialize(void);
-		virtual ovBoolean getKernelDesc(IKernelDesc*& rpKernelDesc);
-		virtual ovBoolean uninitialize(void);
+		virtual boolean initialize(void);
+		virtual boolean getKernelDesc(IKernelDesc*& rpKernelDesc);
+		virtual boolean uninitialize(void);
 		virtual void release(void);
 
 		_IsDerivedFromClass_Final_(IKernelLoader, OV_ClassId_KernelLoaderFinal)
 
+		virtual boolean isOpen(void)=0;
+
 	protected:
 
-		virtual ovBoolean isOpen(void)=0;
-
 		CString m_sFileName;
-		ovBoolean (*onInitializeCB)(void);
-		ovBoolean (*onGetKernelDescCB)(IKernelDesc*&);
-		ovBoolean (*onUninitializeCB)(void);
+		boolean (*onInitializeCB)(void);
+		boolean (*onGetKernelDescCB)(IKernelDesc*&);
+		boolean (*onUninitializeCB)(void);
 	};
 };
+
+//___________________________________________________________________//
+//                                                                   //
+
+#define boolean OpenViBE::boolean
 
 //___________________________________________________________________//
 //                                                                   //
@@ -56,7 +59,7 @@ CKernelLoaderBase::CKernelLoaderBase(void)
 {
 }
 
-ovBoolean CKernelLoaderBase::initialize(void)
+boolean CKernelLoaderBase::initialize(void)
 {
 	if(!isOpen())
 	{
@@ -69,7 +72,7 @@ ovBoolean CKernelLoaderBase::initialize(void)
 	return onInitializeCB();
 }
 
-ovBoolean CKernelLoaderBase::getKernelDesc(
+boolean CKernelLoaderBase::getKernelDesc(
 	IKernelDesc*& rpKernelDesc)
 {
 	if(!isOpen())
@@ -83,7 +86,7 @@ ovBoolean CKernelLoaderBase::getKernelDesc(
 	return onGetKernelDescCB(rpKernelDesc);
 }
 
-ovBoolean CKernelLoaderBase::uninitialize(void)
+boolean CKernelLoaderBase::uninitialize(void)
 {
 	if(!isOpen())
 	{
@@ -108,18 +111,18 @@ void CKernelLoaderBase::release(void)
 
 namespace OpenViBE
 {
-	class CKernelLoaderLinux : virtual public CKernelLoaderBase
+	class CKernelLoaderLinux : public CKernelLoaderBase
 	{
 	public:
 
 		CKernelLoaderLinux(void);
 
-		virtual ovBoolean load(const CString& sFileName, CString* pError);
-		virtual ovBoolean unload(CString* pError);
+		virtual boolean load(const CString& sFileName, CString* pError);
+		virtual boolean unload(CString* pError);
 
 	protected:
 
-		virtual ovBoolean isOpen(void);
+		virtual boolean isOpen(void);
 
 		void* m_pFileHandle;
 	};
@@ -129,17 +132,17 @@ namespace OpenViBE
 
 namespace OpenViBE
 {
-	class CKernelLoaderWindows : virtual public CKernelLoaderBase
+	class CKernelLoaderWindows : public CKernelLoaderBase
 	{
 	public:
 		CKernelLoaderWindows(void);
 
-		virtual ovBoolean load(const CString& sFileName, CString* pError);
-		virtual ovBoolean unload(CString* pError);
+		virtual boolean load(const CString& sFileName, CString* pError);
+		virtual boolean unload(CString* pError);
 
 	protected:
 
-		virtual ovBoolean isOpen(void);
+		virtual boolean isOpen(void);
 
 		HMODULE m_pFileHandle;
 	};
@@ -149,11 +152,11 @@ namespace OpenViBE
 
 namespace OpenViBE
 {
-	class CKernelLoaderDummy : virtual public CKernelLoaderBase
+	class CKernelLoaderDummy : public CKernelLoaderBase
 	{
 	public:
-		virtual ovBoolean load(const CString& sFileName, CString* pError);
-		virtual ovBoolean unload(CString* pError);
+		virtual boolean load(const CString& sFileName, CString* pError);
+		virtual boolean unload(CString* pError);
 
 	protected:
 
@@ -173,7 +176,7 @@ CKernelLoaderLinux::CKernelLoaderLinux(void)
 {
 }
 
-ovBoolean CKernelLoaderLinux::load(
+boolean CKernelLoaderLinux::load(
 	const CString& sFileName,
 	CString* pError)
 {
@@ -191,9 +194,9 @@ ovBoolean CKernelLoaderLinux::load(
 		return false;
 	}
 
-	onInitializeCB=(ovBoolean (*)(void))dlsym(m_pFileHandle, "onInitialize");
-	onUninitializeCB=(ovBoolean (*)(void))dlsym(m_pFileHandle, "onUninitialize");
-	onGetKernelDescCB=(ovBoolean (*)(IKernelDesc*&))dlsym(m_pFileHandle, "onGetKernelDesc");
+	onInitializeCB=(boolean (*)(void))dlsym(m_pFileHandle, "onInitialize");
+	onUninitializeCB=(boolean (*)(void))dlsym(m_pFileHandle, "onUninitialize");
+	onGetKernelDescCB=(boolean (*)(IKernelDesc*&))dlsym(m_pFileHandle, "onGetKernelDesc");
 	if(!onGetKernelDescCB)
 	{
 		if(pError) *pError=dlerror();
@@ -208,7 +211,7 @@ ovBoolean CKernelLoaderLinux::load(
 	return true;
 }
 
-ovBoolean CKernelLoaderLinux::unload(
+boolean CKernelLoaderLinux::unload(
 	CString* pError)
 {
 	if(!m_pFileHandle)
@@ -224,7 +227,7 @@ ovBoolean CKernelLoaderLinux::unload(
 	return true;
 }
 
-ovBoolean CKernelLoaderLinux::isOpen(void)
+boolean CKernelLoaderLinux::isOpen(void)
 {
 	return m_pFileHandle!=NULL;
 }
@@ -236,7 +239,7 @@ CKernelLoaderWindows::CKernelLoaderWindows(void)
 {
 }
 
-ovBoolean CKernelLoaderWindows::load(
+boolean CKernelLoaderWindows::load(
 	const CString& sFileName,
 	CString* pError)
 {
@@ -268,9 +271,9 @@ ovBoolean CKernelLoaderWindows::load(
 		return false;
 	}
 
-	onInitializeCB=(ovBoolean (*)(void))GetProcAddress(m_pFileHandle, "onInitialize");
-	onUninitializeCB=(ovBoolean (*)(void))GetProcAddress(m_pFileHandle, "onUninitialize");
-	onGetKernelDescCB=(ovBoolean (*)(IKernelDesc*&))GetProcAddress(m_pFileHandle, "onGetKernelDesc");
+	onInitializeCB=(boolean (*)(void))GetProcAddress(m_pFileHandle, "onInitialize");
+	onUninitializeCB=(boolean (*)(void))GetProcAddress(m_pFileHandle, "onUninitialize");
+	onGetKernelDescCB=(boolean (*)(IKernelDesc*&))GetProcAddress(m_pFileHandle, "onGetKernelDesc");
 	if(!onGetKernelDescCB)
 	{
 		if(pError)
@@ -300,7 +303,7 @@ ovBoolean CKernelLoaderWindows::load(
 	return true;
 }
 
-ovBoolean CKernelLoaderWindows::unload(
+boolean CKernelLoaderWindows::unload(
 	CString* pError)
 {
 	if(!m_pFileHandle)
@@ -317,14 +320,14 @@ ovBoolean CKernelLoaderWindows::unload(
 	return true;
 }
 
-ovBoolean CKernelLoaderWindows::isOpen(void)
+boolean CKernelLoaderWindows::isOpen(void)
 {
 	return m_pFileHandle!=NULL;
 }
 
 #else
 
-ovBoolean CKernelLoaderDummy::load(
+boolean CKernelLoaderDummy::load(
 	const CString& sFileName, 
 	CString* pError)
 {
@@ -332,14 +335,14 @@ ovBoolean CKernelLoaderDummy::load(
 	return false;
 }
 
-ovBoolean CKernelLoaderDummy::unload(
+boolean CKernelLoaderDummy::unload(
 	CString* pError)
 {
 	if(pError) *pError="Not implemented for this configuration";
 	return false;
 }
 
-ovBoolean CKernelLoaderDummy::isOpen(void)
+boolean CKernelLoaderDummy::isOpen(void)
 {
 	return false;
 }

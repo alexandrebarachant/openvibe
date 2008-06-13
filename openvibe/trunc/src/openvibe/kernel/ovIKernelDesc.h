@@ -9,7 +9,17 @@ namespace OpenViBE
 	{
 		class IKernel;
 
-		class OV_API IKernelDesc : virtual public OpenViBE::Kernel::IKernelObject
+		/**
+		 * \class IKernelDesc
+		 * \brief A kernel description
+		 * \author Yann Renard (INRIA/IRISA)
+		 * \date 2006-09-26
+		 * \ingroup Group_Kernel
+		 *
+		 * This interface is implemented to provide information on a specific kernel
+		 * implementation and to create instances of this specific kernel implementation.
+		 */
+		class OV_API IKernelDesc : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

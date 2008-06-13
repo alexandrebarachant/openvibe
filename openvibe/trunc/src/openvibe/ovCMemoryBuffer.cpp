@@ -8,7 +8,7 @@ namespace OpenViBE
 {
 	namespace
 	{
-		class CMemoryBufferImpl : virtual public IMemoryBuffer
+		class CMemoryBufferImpl : public IMemoryBuffer
 		{
 		public:
 

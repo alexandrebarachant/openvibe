@@ -12,8 +12,10 @@ namespace OpenViBE
 		 * \author Yann Renard (IRISA/INRIA)
 		 * \date 2006-08-16
 		 * \brief Processing unit information for §OpenViBE§ boxes
+		 * \ingroup Group_Scenario
+		 * \ingroup Group_Kernel
 		 */
-		class OV_API IProcessingUnit : virtual public OpenViBE::Kernel::IAttributable
+		class OV_API IProcessingUnit : public OpenViBE::Kernel::IAttributable
 		{
 		public:
 
@@ -34,10 +36,18 @@ namespace OpenViBE
 			 * \return The identifier of this processing unit.
 			 */
 			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
-
+			/**
+			 * \brief Sets the name of this processing unit
+			 * \param sName [in] : the new name for this processing unit
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean setName(
 				const OpenViBE::CString& sName)=0;
-
+			/**
+			 * \brief Gets the name of this processing unit
+			 * \return the name of this processing unit
+			 */
 			virtual OpenViBE::CString getName(void) const=0;
 
 			//@}

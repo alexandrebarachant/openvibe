@@ -2,12 +2,42 @@
 #include "ovkCAlgorithmContext.h"
 #include "ovkCAlgorithmProto.h"
 
+#include "../../ovk_tools.h"
+
 using namespace OpenViBE;
 using namespace Kernel;
 using namespace Plugins;
 using namespace std;
 
 #define _MaxCrash_ 5
+
+#define __proxy_func_0__(_func_, _message_, _before_, _after_) \
+	{ \
+		if(!m_bActive) \
+		{ \
+			return false; \
+		} \
+/* getLogManager() << LogLevel_Debug << "CAlgorithm#1: " << _message_ << "\n"; */ \
+		CAlgorithmContext l_oAlgorithmContext(getKernelContext(), *this, m_rAlgorithmDesc); \
+		boolean l_bResult=false; \
+		try \
+		{ \
+/* getLogManager() << LogLevel_Debug << "CAlgorithm#2: " << _message_ << "\n"; */ \
+			_before_; \
+/* getLogManager() << LogLevel_Debug << "CAlgorithm#3: " << _message_ << "\n"; */ \
+			l_bResult=m_rAlgorithm._func_(l_oAlgorithmContext); \
+/* getLogManager() << LogLevel_Debug << "CAlgorithm#4: " << _message_ << "\n"; */ \
+			_after_; \
+/* getLogManager() << LogLevel_Debug << "CAlgorithm#5: " << _message_ << "\n"; */ \
+		} \
+		catch (...) \
+		{ \
+			this->handleCrash(_message_); \
+			return false; \
+		} \
+/* getLogManager() << LogLevel_Debug << "CAlgorithm#6: " << _message_ << "\n"; */ \
+		return l_bResult; \
+	}
 
 CAlgorithm::CAlgorithm(const IKernelContext& rKernelContext, IAlgorithm& rAlgorithm, const IAlgorithmDesc& rAlgorithmDesc)
 	:TKernelObject < IKernelObject >(rKernelContext)
@@ -30,6 +60,21 @@ CAlgorithm::~CAlgorithm(void)
 {
 	getKernelContext().getKernelObjectFactory().releaseObject(m_pOutputConfigurable);
 	getKernelContext().getKernelObjectFactory().releaseObject(m_pInputConfigurable);
+}
+
+IAlgorithm& CAlgorithm::getAlgorithm(void)
+{
+	return m_rAlgorithm;
+}
+
+const IAlgorithm& CAlgorithm::getAlgorithm(void) const
+{
+	return m_rAlgorithm;
+}
+
+const IAlgorithmDesc& CAlgorithm::getAlgorithmDesc(void) const
+{
+	return m_rAlgorithmDesc;
 }
 
 boolean CAlgorithm::addInputParameter(
@@ -163,6 +208,12 @@ boolean CAlgorithm::addInputTrigger(
 	return true;
 }
 
+CIdentifier CAlgorithm::getNextInputTriggerIdentifier(
+	const CIdentifier& rPreviousInputTriggerIdentifier) const
+{
+	return getNextIdentifier< pair<CString, boolean> >(m_vInputTrigger, rPreviousInputTriggerIdentifier);
+}
+
 CString CAlgorithm::getInputTriggerName(
 	const CIdentifier& rInputTriggerIdentifier) const
 {
@@ -223,6 +274,12 @@ boolean CAlgorithm::addOutputTrigger(
 	return true;
 }
 
+CIdentifier CAlgorithm::getNextOutputTriggerIdentifier(
+	const CIdentifier& rPreviousOutputTriggerIdentifier) const
+{
+	return getNextIdentifier< pair<CString, boolean> >(m_vOutputTrigger, rPreviousOutputTriggerIdentifier);
+}
+
 CString CAlgorithm::getOutputTriggerName(
 	const CIdentifier& rOutputTriggerIdentifier) const
 {
@@ -273,68 +330,17 @@ boolean CAlgorithm::removeOutputTrigger(
 
 boolean CAlgorithm::initialize(void)
 {
-	if(!m_bActive)
-	{
-		return false;
-	}
-
-	CAlgorithmContext l_oAlgorithmContext(getKernelContext(), *this, m_rAlgorithmDesc);
-	boolean l_bResult=false;
-	try
-	{
-		l_bResult=m_rAlgorithm.initialize(l_oAlgorithmContext);
-	}
-	catch (...)
-	{
-		this->handleCrash("initialize callback");
-		return false;
-	}
-	return l_bResult;
+	__proxy_func_0__(initialize, "initialize callback", , );
 }
 
 boolean CAlgorithm::uninitialize(void)
 {
-	if(!m_bActive)
-	{
-		return false;
-	}
-
-	CAlgorithmContext l_oAlgorithmContext(getKernelContext(), *this, m_rAlgorithmDesc);
-	boolean l_bResult=false;
-	try
-	{
-		l_bResult=m_rAlgorithm.uninitialize(l_oAlgorithmContext);
-	}
-	catch (...)
-	{
-		this->handleCrash("uninitialize callback");
-		return false;
-	}
-	return l_bResult;
+	__proxy_func_0__(uninitialize, "uninitialize callback", , );
 }
 
 boolean CAlgorithm::process(void)
 {
-	if(!m_bActive)
-	{
-		return false;
-	}
-
-	CAlgorithmContext l_oAlgorithmContext(getKernelContext(), *this, m_rAlgorithmDesc);
-	boolean l_bResult=false;
-	try
-	{
-		this->setAllOutputTriggers(false);
-		l_bResult=m_rAlgorithm.process(l_oAlgorithmContext);
-		this->setAllInputTriggers(false);
-	}
-	catch (...)
-	{
-		this->handleCrash("process callback");
-		return false;
-	}
-
-	return l_bResult;
+	__proxy_func_0__(process, "process callback", this->setAllOutputTriggers(false), this->setAllInputTriggers(false));
 }
 
 boolean CAlgorithm::process(
@@ -350,20 +356,7 @@ boolean CAlgorithm::process(
 		return false;
 	}
 
-	CAlgorithmContext l_oAlgorithmContext(getKernelContext(), *this, m_rAlgorithmDesc);
-	boolean l_bResult=false;
-	try
-	{
-		this->setAllOutputTriggers(false);
-		l_bResult=m_rAlgorithm.process(l_oAlgorithmContext);
-		this->setAllInputTriggers(false);
-	}
-	catch (...)
-	{
-		this->handleCrash("process callback");
-		return false;
-	}
-	return l_bResult;
+	__proxy_func_0__(process, "process callback", this->setAllOutputTriggers(false), this->setAllInputTriggers(false));
 }
 
 void CAlgorithm::setAllInputTriggers(const boolean bTriggerStatus)

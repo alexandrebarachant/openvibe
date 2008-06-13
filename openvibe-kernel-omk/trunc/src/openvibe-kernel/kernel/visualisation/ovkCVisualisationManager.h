@@ -11,7 +11,7 @@ namespace OpenViBE
 	{
 		//class COgreContext;
 
-		class CVisualisationManager : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationManager>
+		class CVisualisationManager : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationManager>
 		{
 		public:
 

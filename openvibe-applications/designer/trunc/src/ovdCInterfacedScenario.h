@@ -18,7 +18,7 @@ namespace OpenViBEDesigner
 	{
 		public:
 
-		CInterfacedScenario(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier, 
+		CInterfacedScenario(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier,
 			::GtkNotebook& rNotebook, const char* sGUIFilename);
 		virtual ~CInterfacedScenario(void);
 
@@ -47,11 +47,12 @@ namespace OpenViBEDesigner
 		void contextMenuModifyOutputCB(OpenViBE::uint32 ui32Index);
 		void contextMenuAddOutputCB(void);
 		void contextMenuRemoveOutputCB(void);
-		
+
 		void createPlayerVisualisation(void);
 		void releasePlayerVisualisation(void);
 
 	private:
+
 		void generateDisplayPluginName(OpenViBE::Kernel::IBox* pDisplayBox, OpenViBE::CString& rDisplayBoxName);
 
 	public:
@@ -62,7 +63,7 @@ namespace OpenViBEDesigner
 		OpenViBE::Kernel::IKernel& m_rKernel;
 		OpenViBE::Kernel::IScenario& m_rScenario;
 		OpenViBE::Kernel::IPlayer* m_pPlayer;
-		OpenViBE::boolean m_bIsPaused;
+		OpenViBE::uint64 m_ui64LastLoopTime;
 		::GtkNotebook& m_rNotebook;
 		OpenViBE::Kernel::IVisualisationTree* m_pVisualisationTree;
 		OpenViBEDesigner::CDesignerVisualisation* m_pDesignerVisualisation;
@@ -95,7 +96,7 @@ namespace OpenViBEDesigner
 		OpenViBE::uint32 m_ui32InterfacedObjectId;
 		std::map<OpenViBE::uint32, OpenViBEDesigner::CInterfacedObject> m_vInterfacedObject;
 		std::map<OpenViBE::CIdentifier, OpenViBE::boolean> m_vCurrentObject;
-		OpenViBEDesigner::CInterfacedObject m_oCurrentObject;				
+		OpenViBEDesigner::CInterfacedObject m_oCurrentObject;
 	};
 };
 

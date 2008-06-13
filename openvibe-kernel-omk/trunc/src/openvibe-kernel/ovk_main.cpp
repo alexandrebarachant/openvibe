@@ -9,7 +9,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CKernelDesc : virtual public IKernelDesc
+		class CKernelDesc : public IKernelDesc
 		{
 		public:
 

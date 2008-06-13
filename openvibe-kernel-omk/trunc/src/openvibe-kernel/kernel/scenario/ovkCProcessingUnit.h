@@ -12,7 +12,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CProcessingUnit : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IProcessingUnit> >
+		class CProcessingUnit : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IProcessingUnit> >
 		{
 		public:
 
@@ -25,6 +25,9 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setName(
 				const OpenViBE::CString& sName);
 			virtual OpenViBE::CString getName(void) const;
+
+			virtual OpenViBE::boolean acceptVisitor(
+				OpenViBE::IObjectVisitor& rObjectVisitor);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IProcessingUnit> >, OVK_ClassId_Kernel_Scenario_ProcessingUnit)
 

@@ -1,32 +1,14 @@
 #include "ovkCPlayer.h"
-
-// #define __Distributed_Controller__
-// #define __Has_XML_Simulation_File__
-// #define __Show_Timings__
-
-#include "ovkEventId.h"
-
-#include "ovkPsTypeChunk.h"
-
-#include "ovkPsSimulatedBox.h"
+#include "ovkCSimulatedBox.h"
+#include "ovkCScheduler.h"
 
 #include <system/Time.h>
 
-#include <PsController.h>
-#include <PsMultipleConfigurationParameter.h>
-#include <PsUniqueConfigurationParameter.h>
-#include <PsSimulatedObjectCreator.h>
-#if defined __Has_XML_Simulation_File__
- #include <OmkXml.h>
-#endif
-#if defined __Distributed_Controller__
- #include <PsPvmController.h>
-#endif
+#include <xml/IReader.h>
 
 #include <string>
 #include <iostream>
-
-#define __ControllerFrequency__  200
+#include <fstream>
 
 //___________________________________________________________________//
 //                                                                   //
@@ -34,187 +16,238 @@
 using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
-using namespace OpenViBE::Kernel::Player;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
-#define boolean OpenViBE::boolean
 
-//___________________________________________________________________//
-//                                                                   //
-
-#define idToString(id) (::PsString((const char*)id.toString()))
-
-//___________________________________________________________________//
-//                                                                   //
-
-class PsSimulatedBoxCreator : public ::PsSimulatedObjectCreator
-{
-public:
-	PsSimulatedBoxCreator(const IKernelContext& rKernelContext, const IScenario& rScenario)
-		:m_rKernelContext(rKernelContext)
-		,m_rScenario(rScenario)
-	{
-	}
-
-	virtual ::PsSimulatedObject* createSimulatedObject(
-		::PsController& rControler,
-		const ::PsObjectDescriptor& rObjectDescriptor) const
-	{
-		return new ::PsSimulatedBox(rControler, rObjectDescriptor, m_rKernelContext, m_rScenario);
-	}
-
-protected:
-	const IKernelContext& m_rKernelContext;
-	const IScenario& m_rScenario;
-};
+#define _Scheduler_Frequency_ 128
+#define _Scheduler_Maximum_Loops_Duration_ (100LL << 22) /* 100/1024 second = approx 100ms */
 
 //___________________________________________________________________//
 //                                                                   //
 
 CPlayer::CPlayer(const IKernelContext& rKernelContext)
 	:TKernelObject<IPlayer>(rKernelContext)
-	,m_pController(NULL)
-	,m_pControllerHandle(NULL)
-	,m_pSimulation(NULL)
-	,m_pScenario(NULL)
-	,m_ui32ControllerSteps(0)
-	,m_ui32StartTime(0)
-	,m_ui32SecondsLate(0)
+	,m_oScheduler(rKernelContext)
+	,m_ui64CurrentTimeToReach(0)
+	,m_ui64Lateness(0)
+	,m_eStatus(PlayerStatus_Stop)
+	,m_bIsInitialized(false)
 {
+	m_oScheduler.setFrequency(_Scheduler_Frequency_);
 }
 
 CPlayer::~CPlayer(void)
 {
-	if(m_pController)
+	if(m_bIsInitialized)
 	{
-		m_pController->finish();
-		m_pController->runControllersStep(m_pControllerHandle);
-
-		delete m_pController;
-		m_pController=NULL;
-		m_pControllerHandle=NULL;
-	}
-
-	if(m_pSimulation)
-	{
-		delete m_pSimulation;
-		m_pSimulation=NULL;
+		this->uninitialize();
 	}
 }
 
 //___________________________________________________________________//
 //                                                                   //
 
-extern char** g_argv;
-extern int g_argc;
-
-boolean CPlayer::reset(
-	const IScenario& rScenario,
-	IPluginManager& rPluginManager)
+boolean CPlayer::setScenario(
+	const CIdentifier& rScenarioIdentifier)
 {
-	if(m_pController)
-	{
-		m_pController->finish();
-		m_pController->runControllersStep(m_pControllerHandle);
+	log() << LogLevel_Trace << "Player setScenario\n";
 
-		delete m_pController;
-		m_pController=NULL;
-		m_pControllerHandle=NULL;
+	if(m_bIsInitialized)
+	{
+		log() << LogLevel_Warning << "Trying to configure an intialized player !\n";
+		return false;
 	}
 
-	if(m_pSimulation)
+	return m_oScheduler.setScenario(rScenarioIdentifier);;
+}
+
+boolean CPlayer::initialize(void)
+{
+	log() << LogLevel_Trace << "Player initialize\n";
+
+	if(m_bIsInitialized)
 	{
-		delete m_pSimulation;
-		m_pSimulation=NULL;
+		log() << LogLevel_Warning << "Trying to initialize an intialized player !\n";
+		return false;
 	}
 
-	::PsMultipleConfigurationParameter* l_pSimulationSchedulingDescription=new ::PsMultipleConfigurationParameter();
-	::PsMultipleConfigurationParameter* l_pSimulationSchedulingMachinesDescription=new ::PsMultipleConfigurationParameter();
-	l_pSimulationSchedulingMachinesDescription->appendSubDescriptorNamed("ProcessA", new ::PsUniqueConfigurationParameter("hiboux.irisa.fr"));
-	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Machines", l_pSimulationSchedulingMachinesDescription);
-	l_pSimulationSchedulingDescription->appendSubDescriptorNamed("Latency", new ::PsUniqueConfigurationParameter("10"));
+	m_oScheduler.initialize();
+	m_oBenchmarkChrono.reset(_Scheduler_Frequency_);
 
-	m_pSimulation=new ::PsObjectDescriptor("root", "Controller", l_pSimulationSchedulingDescription, NULL);
-	CIdentifier l_oBoxIdentifier=rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
-	while(l_oBoxIdentifier!=OV_UndefinedIdentifier)
+	m_ui64CurrentTimeToReach=0;
+	m_ui64Lateness=0;
+	m_eStatus=PlayerStatus_Stop;
+	m_bIsInitialized=true;
+
+	return true;
+
+}
+
+boolean CPlayer::uninitialize(void)
+{
+	log() << LogLevel_Trace << "Player uninitialize\n";
+
+	if(!m_bIsInitialized)
 	{
-		// TODO choose a valid object frequency
-		log() << LogLevel_Debug << "CPlayer::callback - TODO choose a valid object frequency\n";
-
-		::PsMultipleConfigurationParameter* l_pSimulatedBoxConfiguration=new ::PsMultipleConfigurationParameter();
-		::PsObjectDescriptor* l_pSimulationBox=new ::PsObjectDescriptor(idToString(l_oBoxIdentifier), "PsSimulatedBox", "ProcessA", __ControllerFrequency__, l_pSimulatedBoxConfiguration);
-		m_pSimulation->addSon(l_pSimulationBox);
-
-		l_oBoxIdentifier=rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+		log() << LogLevel_Warning << "Trying to uninitialize an uninitialized player !\n";
+		return false;
 	}
 
-#if defined __Has_XML_Simulation_File__
-	::omk::xml::save("/tmp/OpenViBE-log-[dumpedconfig.OpenMASK3].log", m_pSimulation);
-#endif
+	m_oScheduler.uninitialize();
 
-	std::stringstream l_sStringStream;
-	l_sStringStream << *m_pSimulation;
-	log() << LogLevel_Debug << "OpenMASK 3 Scenario :\n" << CString(l_sStringStream.str().c_str()) << "\n";
-
-#ifdef __Distributed_Controller__
-	m_pController=new ::PsPvmController(*m_pSimulation, 0, g_argc, g_argv);
-#else
-	m_pController=new ::PsController(*m_pSimulation, 0);
-#endif
-	m_pController->addInstanceCreator("PsSimulatedBox", new ::PsSimulatedBoxCreator(getKernelContext(), rScenario));
-
-	cerr << "[  INF  ] Initializing player : "; // this is to introduce cerr'ed string from OpenMASK
-
-	m_pController->init();
-	m_pControllerHandle=dynamic_cast< ::PsnReferenceObjectHandle*>(m_pController->getObjectHandle());
-
-	m_ui32ControllerSteps=0;
-	m_ui32StartTime=System::Time::getTime();
-	m_ui32SecondsLate=0;
-
-	m_oBenchmarkChrono.reset(__ControllerFrequency__);
+	m_bIsInitialized=false;
 	return true;
 }
 
-boolean CPlayer::loop(void)
+boolean CPlayer::stop(void)
 {
-	// Tools::CScopeTester("CPlayer::loop");
+	log() << LogLevel_Trace << "Player stop\n";
 
-	uint32 l_ui32CurrentTime=System::Time::getTime();
-	if(l_ui32CurrentTime-m_ui32StartTime>m_ui32ControllerSteps*(1000.0/__ControllerFrequency__))
+	if(m_bIsInitialized)
 	{
-		m_oBenchmarkChrono.stepIn();
-		m_pController->runControllersStep(m_pControllerHandle);
-		m_oBenchmarkChrono.stepOut();
-
-		m_ui32ControllerSteps++;
-		if((m_ui32ControllerSteps%__ControllerFrequency__)==0)
-		{
-			log() << LogLevel_Debug
-				<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
-				<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "elapsed time" << LogColor_PopStateBit << "> "
-				<< m_ui32ControllerSteps/__ControllerFrequency__ << "s\n";
-		}
-
-		if(m_oBenchmarkChrono.hasNewEstimation())
-		{
-			log() << LogLevel_Benchmark
-				<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
-				<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "processor use" << LogColor_PopStateBit << "> "
-				<< m_oBenchmarkChrono.getStepInPercentage() << "%\n";
-		}
-
-		uint32 l_ui32SecondsLate=static_cast<uint32>((l_ui32CurrentTime-m_ui32StartTime-m_ui32ControllerSteps*(1000.0/__ControllerFrequency__))/1000);
-		if(l_ui32SecondsLate!=m_ui32SecondsLate)
-		{
-			log() << (l_ui32SecondsLate==0?LogLevel_Info:(l_ui32SecondsLate>=10?LogLevel_ImportantWarning:LogLevel_Warning))
-				<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
-				<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "can not reach realtime" << LogColor_PopStateBit << "> "
-				<< l_ui32SecondsLate << " second(s) late...\n";
-
-			m_ui32SecondsLate=l_ui32SecondsLate;
-		}
+		this->uninitialize();
 	}
+	m_eStatus=PlayerStatus_Stop;
 
 	return true;
 }
 
+boolean CPlayer::pause(void)
+{
+	log() << LogLevel_Trace << "Player pause\n";
+
+	if(!m_bIsInitialized)
+	{
+		this->initialize();
+	}
+	m_eStatus=PlayerStatus_Pause;
+
+	return true;
+}
+
+boolean CPlayer::step(void)
+{
+	log() << LogLevel_Trace << "Player step\n";
+
+	if(!m_bIsInitialized)
+	{
+		this->initialize();
+	}
+	m_eStatus=PlayerStatus_Step;
+
+	return true;
+}
+
+boolean CPlayer::play(void)
+{
+	log() << LogLevel_Trace << "Player play\n";
+
+	if(!m_bIsInitialized)
+	{
+		this->initialize();
+	}
+	m_eStatus=PlayerStatus_Play;
+
+	return true;
+}
+
+boolean CPlayer::forward(void)
+{
+	log() << LogLevel_Trace << "Player forward\n";
+
+	if(!m_bIsInitialized)
+	{
+		this->initialize();
+	}
+	m_eStatus=PlayerStatus_Forward;
+
+	return true;
+}
+
+EPlayerStatus CPlayer::getStatus(void) const
+{
+	return m_eStatus;
+}
+
+boolean CPlayer::loop(
+	const uint64 ui64ElapsedTime)
+{
+	if(!m_bIsInitialized)
+	{
+		return false;
+	}
+
+	switch(m_eStatus)
+	{
+		// Calls a single controller loop and goes back to pause state
+		case PlayerStatus_Step:
+			m_ui64CurrentTimeToReach+=(1LL<<32)/_Scheduler_Frequency_;
+			m_eStatus=PlayerStatus_Pause;
+			break;
+
+		// Calls multiple controller loops
+		case PlayerStatus_Forward:
+			// We can't know what m_ui64CurrentTimeToReach should be in advance
+			// We will try to do as many scheduler loops as possible until
+			// _Scheduler_Maximum_Loops_Duration_ seconds elapsed
+			break;
+
+		// Simply updates time according to delta time
+		case PlayerStatus_Play:
+			m_ui64CurrentTimeToReach+=ui64ElapsedTime;
+			break;
+
+		default:
+			return true;
+			break;
+	}
+
+	uint64 l_ui64StartTime=System::Time::zgetTime();
+	boolean l_bFinished=false;
+	while(!l_bFinished)
+	{
+		if(m_eStatus!=PlayerStatus_Forward && m_oScheduler.getCurrentTime() > m_ui64CurrentTimeToReach)
+		{
+			l_bFinished=true;
+		}
+		else
+		{
+			m_oScheduler.loop();
+		}
+		if(System::Time::zgetTime() > l_ui64StartTime+_Scheduler_Maximum_Loops_Duration_)
+		{
+			l_bFinished=true;
+		}
+	}
+
+	if(m_eStatus==PlayerStatus_Forward)
+	{
+		m_ui64CurrentTimeToReach=m_oScheduler.getCurrentTime();
+	}
+
+	uint64 l_ui64Lateness;
+	if(m_ui64CurrentTimeToReach>m_oScheduler.getCurrentTime())
+	{
+		l_ui64Lateness=(m_ui64CurrentTimeToReach-m_oScheduler.getCurrentTime())>>32;
+	}
+	else
+	{
+		l_ui64Lateness=0;
+	}
+
+	if(l_ui64Lateness!=m_ui64Lateness)
+	{
+		log() << (l_ui64Lateness==0?LogLevel_Info:(l_ui64Lateness>=10?LogLevel_ImportantWarning:LogLevel_Warning))
+			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
+			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "can not reach realtime" << LogColor_PopStateBit << "> "
+			<< l_ui64Lateness << " second(s) late...\n";
+		m_ui64Lateness=l_ui64Lateness;
+	}
+
+	return true;
+}
+
+uint64 CPlayer::getCurrentSimulatedTime(void) const
+{
+	return m_oScheduler.getCurrentTime();
+}

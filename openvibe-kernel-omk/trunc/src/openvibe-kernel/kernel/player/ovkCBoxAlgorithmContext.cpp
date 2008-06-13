@@ -1,7 +1,7 @@
 #include "ovkCBoxAlgorithmContext.h"
 #include "ovkCPlayerContext.h"
 #include "../visualisation/ovkCVisualisationContext.h"
-#include "ovkPsSimulatedBox.h"
+#include "ovkCSimulatedBox.h"
 #include "../../tools/ovk_bridge_bind_function.h"
 
 using namespace OpenViBE;
@@ -13,7 +13,7 @@ namespace OpenViBE
 	{
 		namespace
 		{
-			class CBoxBridge : virtual public TKernelObject<IBox>
+			class CBoxBridge : public TKernelObject<IBox>
 			{
 			public:
 
@@ -83,11 +83,11 @@ namespace OpenViBE
 				const IBox* m_pBox;
 			};
 
-			class CBoxIOBridge : virtual public TKernelObject<IBoxIO>
+			class CBoxIOBridge : public TKernelObject<IBoxIO>
 			{
 			public:
 
-				CBoxIOBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
+				CBoxIOBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox)
 					:TKernelObject<IBoxIO>(rKernelContext)
 					,m_pSimulatedBox(pSimulatedBox)
 				{
@@ -113,15 +113,13 @@ namespace OpenViBE
 
 			protected:
 
-				::PsSimulatedBox *m_pSimulatedBox;
+				CSimulatedBox *m_pSimulatedBox;
 			};
 		};
 	};
 };
 
-#define boolean OpenViBE::boolean
-
-CBoxAlgorithmContext::CBoxAlgorithmContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox, const IBox* pBox)
+CBoxAlgorithmContext::CBoxAlgorithmContext(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox, const IBox* pBox)
 	:TKernelObject<IBoxAlgorithmContext>(rKernelContext)
 	,m_pStaticBoxContext(NULL)
 	,m_pDynamicBoxContext(NULL)

@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Plugins
 	{
-		class OV_API IScenarioImporterDesc : virtual public OpenViBE::Plugins::IPluginObjectDesc
+		class OV_API IScenarioImporterDesc : public OpenViBE::Plugins::IPluginObjectDesc
 		{
 		public:
 

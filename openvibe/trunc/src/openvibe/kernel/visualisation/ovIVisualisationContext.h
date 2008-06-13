@@ -15,7 +15,7 @@ namespace OpenViBE
 		 * \date 2007-11
 		 * \brief Visualisation manager interface for plugin objects
 		 */
-		class OV_API IVisualisationContext : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IVisualisationContext : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

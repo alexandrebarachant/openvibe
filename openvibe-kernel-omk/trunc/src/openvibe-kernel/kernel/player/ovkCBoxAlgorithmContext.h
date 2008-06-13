@@ -3,17 +3,17 @@
 
 #include "../ovkTKernelObject.h"
 
-class PsSimulatedBox;
-
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CBoxAlgorithmContext : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxAlgorithmContext>
+		class CSimulatedBox;
+
+		class CBoxAlgorithmContext : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxAlgorithmContext>
 		{
 		public:
 
-			CBoxAlgorithmContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox, const OpenViBE::Kernel::IBox* pBox);
+			CBoxAlgorithmContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::CSimulatedBox* pSimulatedBox, const OpenViBE::Kernel::IBox* pBox);
 			virtual ~CBoxAlgorithmContext(void);
 
 			virtual OpenViBE::Kernel::IBox* getStaticBoxContext(void);

@@ -17,6 +17,9 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-07-07
 		 * \brief Specific context to use for box algorithm plugins
+		 * \ingroup Group_Player
+		 * \ingroup Group_Kernel
+		 * \ingroup Group_Extend
 		 *
 		 * This 'context' is given by the player to an algorithm plugin
 		 * so it has all the necessary tools to work. This algorithm
@@ -27,7 +30,7 @@ namespace OpenViBE
 		 * \sa OpenViBE::Kernel::IBoxAlgorithm
 		 * \sa OpenViBE::Kernel::IPlayerContext
 		 */
-		class OV_API IBoxAlgorithmContext : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IBoxAlgorithmContext : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

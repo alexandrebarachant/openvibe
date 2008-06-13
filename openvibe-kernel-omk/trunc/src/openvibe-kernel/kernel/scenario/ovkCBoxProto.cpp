@@ -31,9 +31,3 @@ uint32 CBoxProto::addSetting(
 {
 	return m_rBox.addSetting(sName, rTypeIdentifier, sDefaultValue);
 }
-
-boolean CBoxProto::setUseHint(
-	const IBoxProto::EUseHint& eUseHint)
-{
-	return false;
-}

@@ -17,7 +17,7 @@ namespace OpenViBE
 			EVisualisationWidget_HorizontalSplit
 		};
 
-		class OV_API IVisualisationWidget : virtual public OpenViBE::Kernel::IAttributable
+		class OV_API IVisualisationWidget : public OpenViBE::Kernel::IAttributable
 		{
 		public:
 

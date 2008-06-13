@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CBoxProto : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxProto>
+		class CBoxProto : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IBoxProto>
 		{
 		public:
 
@@ -23,8 +23,6 @@ namespace OpenViBE
 				const OpenViBE::CString& sName,
 				const OpenViBE::CIdentifier& rTypeIdentifier,
 				const OpenViBE::CString& sDefaultValue);
-			virtual OpenViBE::boolean setUseHint(
-				const OpenViBE::Kernel::IBoxProto::EUseHint& eUseHint);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IBoxProto, OVK_ClassId_Kernel_Scenario_BoxProto)
 

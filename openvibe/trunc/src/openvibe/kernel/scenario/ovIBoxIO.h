@@ -12,12 +12,14 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-06-21
 		 * \brief Main §OpenViBE§ box interface to communicate with the kernel
+		 * \ingroup Group_Scenario
+		 * \ingroup Group_Kernel
 		 *
 		 * This context allows the object which uses it to check
 		 * inputs states, read them, write outputs while beeing
 		 * in a dynamic context (used by player).
 		 */
-		class OV_API IBoxIO : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IBoxIO : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

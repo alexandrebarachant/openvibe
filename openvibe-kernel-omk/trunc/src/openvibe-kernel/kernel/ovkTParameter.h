@@ -12,7 +12,7 @@ namespace OpenViBE
 		template <
 			class IBase,
 			class IType >
-		class TBaseParameter : virtual public IBase
+		class TBaseParameter : public IBase
 		{
 		public:
 

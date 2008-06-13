@@ -8,7 +8,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CKernel : virtual public OpenViBE::Kernel::IKernel
+		class CKernel : public OpenViBE::Kernel::IKernel
 		{
 		public:
 

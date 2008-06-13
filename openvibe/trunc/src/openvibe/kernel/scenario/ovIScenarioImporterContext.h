@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class OV_API IScenarioImporterContext : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IScenarioImporterContext : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

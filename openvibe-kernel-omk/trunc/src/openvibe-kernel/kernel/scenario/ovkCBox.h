@@ -13,7 +13,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CBox : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >
+		class CBox : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >
 		{
 		public:
 
@@ -106,6 +106,9 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setSettingValue(
 				const OpenViBE::uint32 ui32SettingIndex,
 				const OpenViBE::CString& rValue);
+
+			virtual OpenViBE::boolean acceptVisitor(
+				OpenViBE::IObjectVisitor& rObjectVisitor);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >, OVK_ClassId_Kernel_Scenario_Box)
 

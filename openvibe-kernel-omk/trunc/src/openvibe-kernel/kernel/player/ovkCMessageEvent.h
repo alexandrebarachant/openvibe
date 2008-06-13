@@ -10,13 +10,12 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CMessageEvent : virtual public OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageEvent> >
+		class CMessageEvent : public OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageEvent> >
 		{
 		public:
 
 			CMessageEvent(const OpenViBE::Kernel::IKernelContext& rKernelContext)
-				:OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageEvent>(rKernelContext)
-				,OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageEvent> >(rKernelContext)
+				:OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageEvent> >(rKernelContext)
 			{
 			}
 

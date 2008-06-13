@@ -13,6 +13,7 @@ namespace OpenViBE
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2006-06-16
 	 * \brief Globally used identifiaction class
+	 * \ingroup Group_Base
 	 *
 	 * This class is the basic class to use in order to identify
 	 * objects in the §OpenViBE§ platform. It can be used for class
@@ -202,9 +203,19 @@ namespace OpenViBE
 
 		//@}
 
+		/**
+		 * \brief Converts this identifier into an §OpenViBE§ string
+		 * \return This identifier represented as an §OpenViBE§ string
+		 */
 		OpenViBE::CString toString(void) const;
-		OpenViBE::boolean fromString(const OpenViBE::CString& rString);
-
+		/**
+		 * \brief Reads a an §OpenViBE§ string to extract this identifier
+		 * \param rString [in] : the string to convert
+		 * \return \e true in case of success.
+		 * \return \e false in case of error.
+		 */
+		OpenViBE::boolean fromString(
+			const OpenViBE::CString& rString);
 		/**
 		 * \brief Creates a random identifier
 		 * \return a random identifier
@@ -214,7 +225,7 @@ namespace OpenViBE
 
 	protected:
 
-		OpenViBE::uint64 m_ui64Identifier;
+		OpenViBE::uint64 m_ui64Identifier; ///< the 64 bit identifier value
 	};
 };
 

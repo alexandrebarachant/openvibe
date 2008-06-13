@@ -6,14 +6,37 @@
 
 namespace OpenViBE
 {
+	class IObjectVisitor;
+
 	namespace Kernel
 	{
 		class CKernelObjectFactory;
 	};
 
-	namespace Plugins
-	{
-	};
+#define _IsDerivedFromClass_(_SuperClassName_,_ClassIdentifier_) \
+	virtual OpenViBE::boolean isDerivedFromClass( \
+		const OpenViBE::CIdentifier& rClassIdentifier) const \
+	{ \
+		return ((rClassIdentifier==_ClassIdentifier_) \
+		     || _SuperClassName_::isDerivedFromClass(rClassIdentifier)); \
+	} \
+	\
+	virtual OpenViBE::boolean getClassHierarchy( \
+		OpenViBE::CIdentifier* pClassIdentifier, \
+		OpenViBE::uint32* pClassNumber) const \
+	{ \
+		getClassHierarchy(pClassIdentifier+1, pClassNumber); \
+		(*pClassIdentifier)=_ClassIdentifier_; \
+		(*pClassNumber)++; \
+		return true; \
+	}
+
+#define _IsDerivedFromClass_Final_(_SuperClassName_,_ClassIdentifier_) \
+	_IsDerivedFromClass_(_SuperClassName_,_ClassIdentifier_) \
+	virtual OpenViBE::CIdentifier getClassIdentifier(void) const \
+	{ \
+		return _ClassIdentifier_; \
+	}
 
 	/**
 	 * \class IObject
@@ -74,41 +97,31 @@ namespace OpenViBE
 		}
 
 		//@}
+		/** \name Visiting processes */
+		//@{
+
+		/**
+		 * \brief Requests this object to accept a visitor
+		 * \param rObjectVisitor [in] : the visitor reference which should act on this object
+		 * \return \e true in case of success.
+		 * \return \e false in case of error.
+		 */
+		virtual OpenViBE::boolean acceptVisitor(OpenViBE::IObjectVisitor& rObjectVisitor)
+		{
+			return true;
+		}
+
+		//@}
 
 	protected:
 
-		virtual ~IObject(void);
+		virtual ~IObject(void) { }
 	};
 };
 
-#define _IsDerivedFromClass_(_SuperClassName_,_ClassIdentifier_) \
-	virtual OpenViBE::boolean isDerivedFromClass( \
-		const OpenViBE::CIdentifier& rClassIdentifier) const \
-	{ \
-		return ((rClassIdentifier==_ClassIdentifier_) \
-		     || _SuperClassName_::isDerivedFromClass(rClassIdentifier)); \
-	} \
-	\
-	virtual OpenViBE::boolean getClassHierarchy( \
-		OpenViBE::CIdentifier* pClassIdentifier, \
-		OpenViBE::uint32* pClassNumber) const \
-	{ \
-		getClassHierarchy(pClassIdentifier+1, pClassNumber); \
-		(*pClassIdentifier)=_ClassIdentifier_; \
-		(*pClassNumber)++; \
-		return true; \
-	}
-
-#define _IsDerivedFromClass_Final_(_SuperClassName_,_ClassIdentifier_) \
-	_IsDerivedFromClass_(_SuperClassName_,_ClassIdentifier_) \
-	virtual OpenViBE::CIdentifier getClassIdentifier(void) const \
-	{ \
-		return _ClassIdentifier_; \
-	}
-
 namespace OpenViBE
 {
-	class CNullObject : virtual public OpenViBE::IObject
+	class CNullObject : public OpenViBE::IObject
 	{
 	public:
 

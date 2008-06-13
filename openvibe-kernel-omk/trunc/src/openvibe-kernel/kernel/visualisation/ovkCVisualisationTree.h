@@ -13,7 +13,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CVisualisationTree : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationTree> >
+		class CVisualisationTree : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationTree> >
 		{
 		public:
 			CVisualisationTree(

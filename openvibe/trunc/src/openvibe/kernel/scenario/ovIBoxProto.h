@@ -12,6 +12,9 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-07-05
 		 * \brief §OpenViBE§ box prototype
+		 * \ingroup Group_Scenario
+		 * \ingroup Group_Kernel
+		 * \ingroup Group_Extend
 		 *
 		 * This class is used by a plugin algorithm descriptor
 		 * to let the §OpenViBE§ platform know what an algorithm
@@ -20,17 +23,9 @@ namespace OpenViBE
 		 *
 		 * \sa OpenViBE::Kernel::IBoxAlgorithmDesc
 		 */
-		class OV_API IBoxProto : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IBoxProto : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
-
-			enum EUseHint
-			{
-				UseHint_None,
-				UseHint_Online,
-				UseHint_Offline,
-				UseHint_BothOnlineOffline,
-			};
 
 			/**
 			 * \brief Adds an input to the box
@@ -62,16 +57,6 @@ namespace OpenViBE
 				const OpenViBE::CString& sName,
 				const OpenViBE::CIdentifier& rTypeIdentifier,
 				const OpenViBE::CString& sDefaultValue)=0;
-			/**
-			 * \brief Gives an hint on which usage should be done with this box
-			 * \param eUseHint [in] : an hint on which usage should be done with this box
-			 * \return \e true in case of susccess.
-			 * \return \e false in case of error.
-			 * \note If no hint is specified, \c UseHint_None is supposed
-			 *       to be the correct value.
-			 */
-			virtual OpenViBE::boolean setUseHint(
-				const OpenViBE::Kernel::IBoxProto::EUseHint& eUseHint)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Scenario_BoxProto)
 		};

@@ -51,6 +51,7 @@ ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
 
 INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEToolkit")
+INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindThirdPartyGlade")
 
 # ---------------------------------

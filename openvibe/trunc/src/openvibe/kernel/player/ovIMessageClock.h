@@ -7,7 +7,15 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class OV_API IMessageClock : virtual public OpenViBE::Kernel::IMessage
+		/**
+		 * \class IMessageClock
+		 * \author Yann Renard (INRIA/IRISA)
+		 * \date 2006-05-30
+		 * \brief Clock message
+		 * \ingroup Group_Player
+		 * \ingroup Group_Kernel
+		 */
+		class OV_API IMessageClock : public OpenViBE::Kernel::IMessage
 		{
 		public:
 

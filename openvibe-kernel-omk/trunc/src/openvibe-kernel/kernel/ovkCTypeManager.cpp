@@ -1,4 +1,7 @@
 #include "ovkCTypeManager.h"
+
+#include "../ovk_tools.h"
+
 #include <stdio.h>
 
 using namespace OpenViBE;
@@ -9,6 +12,13 @@ CTypeManager::CTypeManager(const IKernelContext& rKernelContext)
 	:TKernelObject<ITypeManager>(rKernelContext)
 {
 	m_vName[OV_UndefinedIdentifier]="undefined";
+}
+
+
+CIdentifier CTypeManager::getNextTypeIdentifier(
+	const CIdentifier& rPreviousIdentifier) const
+{
+	return getNextIdentifier< CString >(m_vName, rPreviousIdentifier);
 }
 
 boolean CTypeManager::registerType(

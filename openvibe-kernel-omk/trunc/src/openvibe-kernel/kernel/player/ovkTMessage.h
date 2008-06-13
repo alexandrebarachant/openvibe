@@ -10,7 +10,7 @@ namespace OpenViBE
 	namespace Kernel
 	{
 		template <class T>
-		class TMessage : virtual public T
+		class TMessage : public T
 		{
 		public:
 

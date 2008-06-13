@@ -10,7 +10,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPluginManager : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPluginManager>
+		class CPluginManager : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPluginManager>
 		{
 		public:
 
@@ -19,16 +19,19 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addPluginsFromFiles(
 				const OpenViBE::CString& rFileNameWildCard);
 
-			virtual OpenViBE::boolean enumeratePluginObjectDesc(
-				OpenViBE::Kernel::IPluginManager::IPluginObjectDescEnum& rCallback) const;
-			virtual OpenViBE::boolean enumeratePluginObjectDesc(
-				OpenViBE::Kernel::IPluginManager::IPluginObjectDescEnum& rCallback,
+			virtual OpenViBE::CIdentifier getNextPluginObjectDescIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const;
+			virtual OpenViBE::CIdentifier getNextPluginObjectDescIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier,
 				const OpenViBE::CIdentifier& rBaseClassIdentifier) const;
 
 			virtual OpenViBE::boolean canCreatePluginObject(
 				const OpenViBE::CIdentifier& rClassIdentifier);
+			virtual const OpenViBE::Plugins::IPluginObjectDesc* getPluginObjectDesc(
+				const OpenViBE::CIdentifier& rClassIdentifier) const;
 			virtual const OpenViBE::Plugins::IPluginObjectDesc* getPluginObjectDescCreating(
 				const OpenViBE::CIdentifier& rClassIdentifier) const;
+
 			virtual OpenViBE::Plugins::IPluginObject* createPluginObject(
 				const OpenViBE::CIdentifier& rClassIdentifier);
 			virtual OpenViBE::boolean releasePluginObject(
@@ -45,9 +48,16 @@ namespace OpenViBE
 
 		protected:
 
+			template <class IPluginObjectT, class IPluginObjectDescT>
+			IPluginObjectT* createPluginObjectT(
+				const OpenViBE::CIdentifier& rClassIdentifier,
+				const IPluginObjectDescT** ppPluginObjectDescT);
+
+		protected:
+
 			std::vector<OpenViBE::Kernel::IPluginModule*> m_vPluginModule;
-			std::map<OpenViBE::Kernel::IPluginModule*, std::vector<OpenViBE::Plugins::IPluginObjectDesc*> > m_vPluginObjectDesc;
-			std::map<OpenViBE::Kernel::IPluginModule*, std::vector<OpenViBE::Plugins::IPluginObject*> > m_vPluginObject;
+			std::map<OpenViBE::Plugins::IPluginObjectDesc*, OpenViBE::Kernel::IPluginModule*> m_vPluginObjectDesc;
+			std::map<OpenViBE::Plugins::IPluginObjectDesc*, std::vector<OpenViBE::Plugins::IPluginObject*> > m_vPluginObject;
 		};
 	};
 };

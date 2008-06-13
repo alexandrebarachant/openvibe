@@ -9,7 +9,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CLink : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::ILink> >
+		class CLink : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::ILink> >
 		{
 		public:
 
@@ -35,6 +35,9 @@ namespace OpenViBE
 				OpenViBE::uint32& ui32BoxInputIndex) const;
 			virtual OpenViBE::CIdentifier getTargetBoxIdentifier(void) const;
 			virtual OpenViBE::uint32 getTargetBoxInputIndex(void) const;
+
+			virtual OpenViBE::boolean acceptVisitor(
+				OpenViBE::IObjectVisitor& rObjectVisitor);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::ILink> >, OVK_ClassId_Kernel_Scenario_Link)
 

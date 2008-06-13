@@ -11,7 +11,6 @@ namespace OpenViBE
 		class IBoxAlgorithmContext;
 
 		/**
-		 * \enum Box modification types
 		 * \brief This enum lists all the way a box can be modified
 		 * \sa OpenViBE::Plugins::IBoxAlgorithmDesc::boxModificationCallback
 		 */
@@ -37,7 +36,8 @@ namespace OpenViBE
 		 * \class IBoxAlgorithmDesc
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-06-19
-		 * \brief Box algorithm prototype
+		 * \brief Box algorithm plugin descriptor
+		 * \ingroup Group_Extend
 		 *
 		 * This class should be derived by any plugin developper in
 		 * order to describe a specific §OpenViBE§ box algorithm.
@@ -46,7 +46,7 @@ namespace OpenViBE
 		 *
 		 * \todo details about building new plugins
 		 */
-		class OV_API IBoxAlgorithmDesc : virtual public OpenViBE::Plugins::IPluginObjectDesc
+		class OV_API IBoxAlgorithmDesc : public OpenViBE::Plugins::IPluginObjectDesc
 		{
 		public:
 

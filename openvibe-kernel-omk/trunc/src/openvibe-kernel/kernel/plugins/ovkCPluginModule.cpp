@@ -21,7 +21,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPluginModuleBase : virtual public TKernelObject<IPluginModule>
+		class CPluginModuleBase : public TKernelObject<IPluginModule>
 		{
 		public:
 			CPluginModuleBase(const IKernelContext& rKernelContext);
@@ -56,7 +56,7 @@ namespace OpenViBE
 	{
 		namespace
 		{
-			class CLogManagerBridge : virtual public TKernelObject<ILogManager>
+			class CLogManagerBridge : public TKernelObject<ILogManager>
 			{
 			public:
 
@@ -93,12 +93,13 @@ namespace OpenViBE
 				_IsDerivedFromClass_Final_(TKernelObject<ILogManager>, OV_UndefinedIdentifier);
 			};
 
-			class CTypeManagerBridge : virtual public TKernelObject<ITypeManager>
+			class CTypeManagerBridge : public TKernelObject<ITypeManager>
 			{
 			public:
 
 				CTypeManagerBridge(const IKernelContext& rKernelContext) : TKernelObject<ITypeManager>(rKernelContext) { }
 
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getNextTypeIdentifier, const, const CIdentifier&, rPreviousIdentifier);
 				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
 				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerStreamType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const CIdentifier&, rParentTypeIdentifier)
 				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerEnumerationType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
@@ -125,21 +126,21 @@ namespace OpenViBE
 				_IsDerivedFromClass_Final_(TKernelObject<ITypeManager>, OV_UndefinedIdentifier);
 			};
 
-			class CScenarioManagerBridge : virtual public TKernelObject<IScenarioManager>
+			class CScenarioManagerBridge : public TKernelObject<IScenarioManager>
 			{
 			public:
 
 				CScenarioManagerBridge(const IKernelContext& rKernelContext) : TKernelObject<IScenarioManager>(rKernelContext) { }
 
+				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), CIdentifier, getNextScenarioIdentifier, const, const CIdentifier&, rPreviousIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, createScenario, , CIdentifier&, rScenarioIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, releaseScenario, , const CIdentifier&, rScenarioIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), IScenario&, getScenario, , const CIdentifier&, rScenarioIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, enumerateScenarios, const, IScenarioManager::IScenarioEnum&, rCallBack)
 
 				_IsDerivedFromClass_Final_(TKernelObject<IScenarioManager>, OV_UndefinedIdentifier);
 			};
 
-			class CPluginModuleContext : virtual public TKernelObject<IPluginModuleContext>
+			class CPluginModuleContext : public TKernelObject<IPluginModuleContext>
 			{
 			public:
 
@@ -266,7 +267,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPluginModuleLinux : virtual public CPluginModuleBase
+		class CPluginModuleLinux : public CPluginModuleBase
 		{
 		public:
 
@@ -292,7 +293,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPluginModuleWindows : virtual public CPluginModuleBase
+		class CPluginModuleWindows : public CPluginModuleBase
 		{
 		public:
 
@@ -309,6 +310,10 @@ namespace OpenViBE
 			virtual boolean isOpen(void) const;
 
 			HMODULE m_pFileHandle;
+
+		private:
+
+			CString getLastErrorMessageString(void);
 		};
 	};
 };
@@ -319,7 +324,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPluginModuleDummy : virtual public CPluginModuleBase
+		class CPluginModuleDummy : public CPluginModuleBase
 		{
 		public:
 
@@ -346,8 +351,7 @@ namespace OpenViBE
 #if defined OVK_OS_Linux
 
 CPluginModuleLinux::CPluginModuleLinux(const IKernelContext& rKernelContext)
-	:TKernelObject<IPluginModule>(rKernelContext)
-	,CPluginModuleBase(rKernelContext)
+	:CPluginModuleBase(rKernelContext)
 	,m_pFileHandle(NULL)
 {
 }
@@ -415,8 +419,7 @@ boolean CPluginModuleLinux::isOpen(void) const
 #elif defined OVK_OS_Windows
 
 CPluginModuleWindows::CPluginModuleWindows(const IKernelContext& rKernelContext)
-	:TKernelObject<IPluginModule>(rKernelContext)
-	,CPluginModuleBase(rKernelContext)
+	:CPluginModuleBase(rKernelContext)
 	,m_pFileHandle(NULL)
 {
 }
@@ -436,19 +439,7 @@ boolean CPluginModuleWindows::load(
 	{
 		if(pError)
 		{
-			LPVOID l_pMessageBuffer=NULL;
-			FormatMessage(
-				FORMAT_MESSAGE_ALLOCATE_BUFFER|
-				FORMAT_MESSAGE_FROM_SYSTEM|
-				FORMAT_MESSAGE_IGNORE_INSERTS,
-				NULL,
-				GetLastError(),
-				0, // Default language
-				(LPTSTR)&l_pMessageBuffer,
-				0,
-				NULL);
-			*pError=(char*)l_pMessageBuffer;
-			LocalFree(l_pMessageBuffer);
+			*pError=this->getLastErrorMessageString();
 		}
 		return false;
 	}
@@ -460,19 +451,7 @@ boolean CPluginModuleWindows::load(
 	{
 		if(pError)
 		{
-			LPVOID l_pMessageBuffer=NULL;
-			FormatMessage(
-				FORMAT_MESSAGE_ALLOCATE_BUFFER|
-				FORMAT_MESSAGE_FROM_SYSTEM|
-				FORMAT_MESSAGE_IGNORE_INSERTS,
-				NULL,
-				GetLastError(),
-				0, // Default language
-				(LPTSTR)&l_pMessageBuffer,
-				0,
-				NULL);
-			*pError=(char*)l_pMessageBuffer;
-			LocalFree(l_pMessageBuffer);
+			*pError=this->getLastErrorMessageString();
 		}
 
 		FreeLibrary(m_pFileHandle);
@@ -507,6 +486,38 @@ boolean CPluginModuleWindows::unload(
 boolean CPluginModuleWindows::isOpen(void) const
 {
 	return m_pFileHandle!=NULL;
+}
+
+CString CPluginModuleWindows::getLastErrorMessageString(void)
+{
+	CString l_sResult;
+
+	char* l_pMessageBuffer=NULL;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER|
+		FORMAT_MESSAGE_FROM_SYSTEM|
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		GetLastError(),
+		0, // Default language
+		(LPTSTR)&l_pMessageBuffer,
+		0,
+		NULL);
+	if(l_pMessageBuffer)
+	{
+		int l_iMessageLength=::strlen(l_pMessageBuffer);
+		for(int i=0; i<l_iMessageLength; i++)
+		{
+			if(l_pMessageBuffer[i]=='\n' || l_pMessageBuffer[i]=='\r')
+			{
+				l_pMessageBuffer[i]=' ';
+			}
+		}
+		l_sResult=l_pMessageBuffer;
+	}
+	LocalFree((LPVOID)l_pMessageBuffer);
+
+	return l_sResult;
 }
 
 #else

@@ -10,13 +10,12 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CMessageClock : virtual public OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageClock> >
+		class CMessageClock : public OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageClock> >
 		{
 		public:
 
 			CMessageClock(const OpenViBE::Kernel::IKernelContext& rKernelContext)
-				:OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageClock>(rKernelContext)
-				,OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageClock> >(rKernelContext)
+				:OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageClock> >(rKernelContext)
 			{
 			}
 

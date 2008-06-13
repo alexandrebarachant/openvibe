@@ -84,7 +84,7 @@ boolean CString::set(const char* pString)
 	return true;
 }
 
-const char* CString::toCString(void) const
+const char* CString::toASCIIString(void) const
 {
 	return m_pStringImpl->m_sValue.c_str();
 }

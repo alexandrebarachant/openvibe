@@ -9,12 +9,16 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CAlgorithm : virtual public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IKernelObject >
+		class CAlgorithm : public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IKernelObject >
 		{
 		public:
 
 			CAlgorithm(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Plugins::IAlgorithm& rAlgorithm, const OpenViBE::Plugins::IAlgorithmDesc& rAlgorithmDesc);
 			virtual ~CAlgorithm(void);
+
+			virtual OpenViBE::Plugins::IAlgorithm& getAlgorithm(void);
+			virtual const OpenViBE::Plugins::IAlgorithm& getAlgorithm(void) const;
+			virtual const OpenViBE::Plugins::IAlgorithmDesc& getAlgorithmDesc(void) const;
 
 			virtual OpenViBE::boolean addInputParameter(
 				const OpenViBE::CIdentifier& rInputParameterIdentifier,
@@ -49,6 +53,8 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addInputTrigger(
 				const OpenViBE::CIdentifier& rInputTriggerIdentifier,
 				const OpenViBE::CString& rInputTriggerName);
+			virtual OpenViBE::CIdentifier getNextInputTriggerIdentifier(
+				const OpenViBE::CIdentifier& rPreviousInputTriggerIdentifier) const;
 			virtual OpenViBE::CString getInputTriggerName(
 				const OpenViBE::CIdentifier& rInputTriggerIdentifier) const;
 			virtual OpenViBE::boolean isInputTriggerActive(
@@ -62,6 +68,8 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addOutputTrigger(
 				const OpenViBE::CIdentifier& rOutputTriggerIdentifier,
 				const OpenViBE::CString& rOutputTriggerName);
+			virtual OpenViBE::CIdentifier getNextOutputTriggerIdentifier(
+				const OpenViBE::CIdentifier& rPreviousOutputTriggerIdentifier) const;
 			virtual OpenViBE::CString getOutputTriggerName(
 				const OpenViBE::CIdentifier& rOutputTriggerIdentifier) const;
 			virtual OpenViBE::boolean isOutputTriggerActive(

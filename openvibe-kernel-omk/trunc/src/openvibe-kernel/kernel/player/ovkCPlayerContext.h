@@ -3,17 +3,17 @@
 
 #include "../ovkTKernelObject.h"
 
-class PsSimulatedBox;
-
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPlayerContext : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayerContext>
+		class CSimulatedBox;
+
+		class CPlayerContext : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayerContext>
 		{
 		public:
 
-			CPlayerContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox);
+			CPlayerContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::CSimulatedBox* pSimulatedBox);
 			virtual ~CPlayerContext();
 
 			virtual OpenViBE::boolean sendSignal(
@@ -37,7 +37,7 @@ namespace OpenViBE
 
 		protected:
 
-			::PsSimulatedBox* m_pSimulatedBox;
+			OpenViBE::Kernel::CSimulatedBox* m_pSimulatedBox;
 			OpenViBE::Kernel::IAlgorithmManager* m_pAlgorithmManagerBridge;
 			OpenViBE::Kernel::ILogManager* m_pLogManagerBridge;
 			OpenViBE::Kernel::IScenarioManager* m_pScenarioManagerBridge;

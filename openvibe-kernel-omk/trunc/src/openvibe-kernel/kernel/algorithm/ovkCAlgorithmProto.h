@@ -9,7 +9,7 @@ namespace OpenViBE
 	{
 		class CAlgorithm;
 
-		class CAlgorithmProto : virtual public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IAlgorithmProto >
+		class CAlgorithmProto : public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IAlgorithmProto >
 		{
 		public:
 

@@ -9,7 +9,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPluginModule : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPluginModule>
+		class CPluginModule : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPluginModule>
 		{
 		public:
 

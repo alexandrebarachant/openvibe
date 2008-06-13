@@ -16,7 +16,7 @@ namespace OpenViBE
 			uint64 m_ui64Duration;
 		} SStimulation;
 
-		class CStimulationSetImpl : virtual public IStimulationSet
+		class CStimulationSetImpl : public IStimulationSet
 		{
 		public:
 

@@ -7,23 +7,17 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class OV_API IAttributable : virtual public OpenViBE::Kernel::IKernelObject
+		/**
+		 * \class IAttributable
+		 * \author Yann Renard (IRISA/INRIA)
+		 * \date 2006-12-07
+		 * \brief
+		 * \ingroup Group_Scenario
+		 * \ingroup Group_Kernel
+		 */
+		class OV_API IAttributable : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
-
-#if 0
-			class OV_API IAttributeEnum
-			{
-			public:
-				virtual ~IAttributeEnum(void) { }
-				virtual void preCallback(void) { }
-				virtual OpenViBE::boolean callback(
-					const OpenViBE::Kernel::IAttributable& rAttributable,
-					const OpenViBE::CIdentifier& rAttributeIdentifier,
-					const OpenViBE::CString& rAttributeValue)=0;
-				virtual void postCallback(void) { }
-			};
-#endif
 
 			virtual OpenViBE::boolean addAttribute(
 				const OpenViBE::CIdentifier& rAttributeIdentifier,
@@ -41,10 +35,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean hasAttribute(
 				const OpenViBE::CIdentifier& rAttributeIdentifier) const=0;
 			virtual OpenViBE::boolean hasAttributes(void) const=0;
-#if 0
-			virtual OpenViBE::boolean enumerateAttributes(
-				OpenViBE::Kernel::IAttributable::IAttributeEnum& rCallback) const=0;
-#endif
+
 			virtual OpenViBE::CIdentifier getNextAttributeIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const=0;
 

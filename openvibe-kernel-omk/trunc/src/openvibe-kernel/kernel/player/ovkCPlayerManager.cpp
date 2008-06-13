@@ -1,4 +1,7 @@
 #include "ovkCPlayerManager.h"
+#include "ovkCPlayer.h"
+
+#include "../../ovk_tools.h"
 
 #include <system/Math.h>
 
@@ -14,22 +17,21 @@ CPlayerManager::CPlayerManager(const IKernelContext& rKernelContext)
 boolean CPlayerManager::createPlayer(
 	CIdentifier& rPlayerIdentifier)
 {
-	IPlayer* l_pPlayer=OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).createObject<IPlayer*>(OV_ClassId_Kernel_Player_Player);
 	rPlayerIdentifier=getUnusedIdentifier();
-	m_vPlayer[rPlayerIdentifier]=l_pPlayer;
+	m_vPlayer[rPlayerIdentifier]=new CPlayer(getKernelContext());
 	return true;
 }
 
 boolean CPlayerManager::releasePlayer(
 	const CIdentifier& rPlayerIdentifier)
 {
-	map<CIdentifier, IPlayer*>::iterator itPlayer;
+	map<CIdentifier, CPlayer*>::iterator itPlayer;
 	itPlayer=m_vPlayer.find(rPlayerIdentifier);
 	if(itPlayer==m_vPlayer.end())
 	{
 		return false;
 	}
-	OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).releaseObject(itPlayer->second);
+	delete itPlayer->second;
 	m_vPlayer.erase(itPlayer);
 	return true;
 }
@@ -37,11 +39,15 @@ boolean CPlayerManager::releasePlayer(
 IPlayer& CPlayerManager::getPlayer(
 	const CIdentifier& rPlayerIdentifier)
 {
-	map<CIdentifier, IPlayer*>::const_iterator itPlayer;
+	map<CIdentifier, CPlayer*>::const_iterator itPlayer;
 	itPlayer=m_vPlayer.find(rPlayerIdentifier);
 	if(itPlayer==m_vPlayer.end())
 	{
 		log() << LogLevel_Fatal << "Player " << rPlayerIdentifier << " does not exist !\n";
+	}
+	if(!itPlayer->second)
+	{
+		log() << LogLevel_Fatal << "NULL Player (this should never happen) !\n";
 	}
 	return *itPlayer->second;
 }
@@ -49,30 +55,14 @@ IPlayer& CPlayerManager::getPlayer(
 CIdentifier CPlayerManager::getNextPlayerIdentifier(
 	const CIdentifier& rPreviousIdentifier) const
 {
-	map<CIdentifier, IPlayer*>::const_iterator itPlayer=m_vPlayer.begin();
-
-	if(rPreviousIdentifier==OV_UndefinedIdentifier)
-	{
-		itPlayer=m_vPlayer.begin();
-	}
-	else
-	{
-		itPlayer=m_vPlayer.find(rPreviousIdentifier);
-		if(itPlayer==m_vPlayer.end())
-		{
-			return OV_UndefinedIdentifier;
-		}
-		itPlayer++;
-	}
-
-	return itPlayer!=m_vPlayer.end()?itPlayer->first:OV_UndefinedIdentifier;
+	return getNextIdentifier < CPlayer* >(m_vPlayer, rPreviousIdentifier);
 }
 
 CIdentifier CPlayerManager::getUnusedIdentifier(void) const
 {
 	uint64 l_ui64Identifier=System::Math::randomUInteger64();
 	CIdentifier l_oResult;
-	map<CIdentifier, IPlayer*>::const_iterator i;
+	map<CIdentifier, CPlayer*>::const_iterator i;
 	do
 	{
 		l_ui64Identifier++;

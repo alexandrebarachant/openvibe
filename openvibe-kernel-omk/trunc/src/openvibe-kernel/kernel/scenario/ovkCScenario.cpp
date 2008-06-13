@@ -2,6 +2,12 @@
 #include "ovkCScenarioExporterContext.h"
 #include "ovkCScenarioImporterContext.h"
 
+#include "ovkCBox.h"
+#include "ovkCLink.h"
+#include "ovkCProcessingUnit.h"
+
+#include "../ovkCObjectVisitorContext.h"
+
 #include <iostream>
 #include <map>
 #include <vector>
@@ -25,14 +31,14 @@ namespace
 	struct TTestEqSourceBox
 	{
 		TTestEqSourceBox(const CIdentifier& rId) : m_rId(rId) { }
-		boolean operator()(map<CIdentifier, ILink*>::const_iterator it) const { return it->second->getSourceBoxIdentifier()==m_rId; }
+		boolean operator()(map<CIdentifier, CLink*>::const_iterator it) const { return it->second->getSourceBoxIdentifier()==m_rId; }
 		const CIdentifier& m_rId;
 	};
 
 	struct TTestEqSourceBoxOutput
 	{
 		TTestEqSourceBoxOutput(const CIdentifier& rId, uint32 ui32Id) : m_rId(rId), m_ui32Id(ui32Id) { }
-		boolean operator()(map<CIdentifier, ILink*>::const_iterator it) const { return it->second->getSourceBoxIdentifier()==m_rId && it->second->getSourceBoxOutputIndex()==m_ui32Id; }
+		boolean operator()(map<CIdentifier, CLink*>::const_iterator it) const { return it->second->getSourceBoxIdentifier()==m_rId && it->second->getSourceBoxOutputIndex()==m_ui32Id; }
 		const CIdentifier& m_rId;
 		uint32 m_ui32Id;
 	};
@@ -40,14 +46,14 @@ namespace
 	struct TTestEqTargetBox
 	{
 		TTestEqTargetBox(const CIdentifier& rId) : m_rId(rId) { }
-		boolean operator()(map<CIdentifier, ILink*>::const_iterator it) const { return it->second->getTargetBoxIdentifier()==m_rId; }
+		boolean operator()(map<CIdentifier, CLink*>::const_iterator it) const { return it->second->getTargetBoxIdentifier()==m_rId; }
 		const CIdentifier& m_rId;
 	};
 
 	struct TTestEqTargetBoxInput
 	{
 		TTestEqTargetBoxInput(const CIdentifier& rId, uint32 ui32Id) : m_rId(rId), m_ui32Id(ui32Id) { }
-		boolean operator()(map<CIdentifier, ILink*>::const_iterator it) const { return it->second->getTargetBoxIdentifier()==m_rId && it->second->getTargetBoxInputIndex()==m_ui32Id; }
+		boolean operator()(map<CIdentifier, CLink*>::const_iterator it) const { return it->second->getTargetBoxIdentifier()==m_rId && it->second->getTargetBoxInputIndex()==m_ui32Id; }
 		const CIdentifier& m_rId;
 		uint32 m_ui32Id;
 	};
@@ -55,7 +61,7 @@ namespace
 	struct TTestEqProcessingUnitIdentifier
 	{
 		TTestEqProcessingUnitIdentifier(const CIdentifier& rId) : m_rId(rId) { }
-		boolean operator()(map<CIdentifier, IBox*>::const_iterator it) const { return it->second->getProcessingUnitIdentifier()==m_rId; }
+		boolean operator()(map<CIdentifier, CBox*>::const_iterator it) const { return it->second->getProcessingUnitIdentifier()==m_rId; }
 		const CIdentifier& m_rId;
 	};
 
@@ -97,8 +103,9 @@ namespace
 //___________________________________________________________________//
 //                                                                   //
 
-CScenario::CScenario(const IKernelContext& rKernelContext)
-	:TKernelObject<TAttributable<IScenario> >(rKernelContext)
+CScenario::CScenario(const IKernelContext& rKernelContext, const CIdentifier& rIdentifier)
+	:TKernelObject < TAttributable < IScenario > > (rKernelContext)
+	,m_oIdentifier(rIdentifier)
 {
 }
 
@@ -107,23 +114,31 @@ CScenario::CScenario(const IKernelContext& rKernelContext)
 
 boolean CScenario::clear(void)
 {
-	log() << LogLevel_Info << "Clearing scenario\n";
+	log() << LogLevel_Trace << "Clearing scenario\n";
 
 	// Clears boxes
-	map<CIdentifier, IBox*>::iterator itBox;
+	map<CIdentifier, CBox*>::iterator itBox;
 	for(itBox=m_vBox.begin(); itBox!=m_vBox.end(); itBox++)
 	{
-		OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).releaseObject(itBox->second);
+		delete itBox->second;
 	}
 	m_vBox.clear();
 
 	// Clears links
-	map<CIdentifier, ILink*>::iterator itLink;
+	map<CIdentifier, CLink*>::iterator itLink;
 	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
 	{
-		OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).releaseObject(itLink->second);
+		delete itLink->second;
 	}
 	m_vLink.clear();
+
+	// Clears processing units
+	map<CIdentifier, CProcessingUnit*>::iterator itProcessingUnit;
+	for(itProcessingUnit=m_vProcessingUnit.begin(); itProcessingUnit!=m_vProcessingUnit.end(); itProcessingUnit++)
+	{
+		delete itProcessingUnit->second;
+	}
+	m_vProcessingUnit.clear();
 
 	// Clears attributes
 	this->removeAllAttributes();
@@ -252,39 +267,17 @@ CIdentifier CScenario::getVisualisationTreeIdentifier(void) const
 	return m_oVisualisationTreeIdentifier;
 }
 
-#if 0
-boolean CScenario::enumerateBoxes(
-	IScenario::IBoxEnum& rCallback) const
-{
-	// log() << LogLevel_Info << "Enumerating scenario boxes\n";
-
-	rCallback.preCallback();
-	map<CIdentifier, IBox*>::const_iterator itBox=m_vBox.begin();
-	while(itBox!=m_vBox.end())
-	{
-		if(!rCallback.callback(*this, *(itBox->second)))
-		{
-			rCallback.postCallback();
-			return true;
-		}
-		itBox++;
-	}
-	rCallback.postCallback();
-	return true;
-}
-#endif
-
 CIdentifier CScenario::getNextBoxIdentifier(
 	const CIdentifier& rPreviousIdentifier) const
 {
-	return getNextTIdentifier<IBox, TTestTrue<IBox> >(m_vBox, rPreviousIdentifier, TTestTrue<IBox>());
+	return getNextTIdentifier<CBox, TTestTrue<CBox> >(m_vBox, rPreviousIdentifier, TTestTrue<CBox>());
 }
 
 CIdentifier CScenario::getNextBoxIdentifierOnProcessingUnit(
 	const CIdentifier& rPreviousIdentifier,
 	const CIdentifier& rProcessingUnitIdentifier) const
 {
-	return getNextTIdentifier<IBox, TTestEqProcessingUnitIdentifier >(m_vBox, rPreviousIdentifier, TTestEqProcessingUnitIdentifier(rProcessingUnitIdentifier));
+	return getNextTIdentifier<CBox, TTestEqProcessingUnitIdentifier >(m_vBox, rPreviousIdentifier, TTestEqProcessingUnitIdentifier(rProcessingUnitIdentifier));
 }
 
 const IBox* CScenario::getBoxDetails(
@@ -292,7 +285,7 @@ const IBox* CScenario::getBoxDetails(
 {
 	log() << LogLevel_Debug << "Getting const box details from scenario\n";
 
-	map<CIdentifier, IBox*>::const_iterator itBox;
+	map<CIdentifier, CBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
 	if(itBox==m_vBox.end())
 	{
@@ -305,7 +298,7 @@ const IBox* CScenario::getBoxDetails(
 boolean CScenario::isBox(
 	const CIdentifier& rIdentifier) const
 {
-	map<CIdentifier, IBox*>::const_iterator itBox;
+	map<CIdentifier, CBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rIdentifier);
 	return itBox!=m_vBox.end();
 }
@@ -315,7 +308,7 @@ IBox* CScenario::getBoxDetails(
 {
 	log() << LogLevel_Debug << "Getting box details from scenario\n";
 
-	map<CIdentifier, IBox*>::const_iterator itBox;
+	map<CIdentifier, CBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
 	if(itBox==m_vBox.end())
 	{
@@ -328,10 +321,10 @@ IBox* CScenario::getBoxDetails(
 boolean CScenario::addBox(
 	CIdentifier& rBoxIdentifier)
 {
-	log() << LogLevel_Info << "Adding new empty box in scenario\n";
+	log() << LogLevel_Trace << "Adding new empty box in scenario\n";
 
-	IBox* l_pBox=OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).createObject<IBox*>(OV_ClassId_Kernel_Scenario_Box);
 	rBoxIdentifier=getUnusedIdentifier();
+	CBox* l_pBox=new CBox(getKernelContext());
 	l_pBox->setIdentifier(rBoxIdentifier);
 
 	m_vBox[rBoxIdentifier]=l_pBox;
@@ -342,7 +335,7 @@ boolean CScenario::addBox(
 	const IBox& rBox,
 	CIdentifier& rBoxIdentifier)
 {
-	log () << LogLevel_Info << "Adding a new box in the scenario based on an existing one\n";
+	log () << LogLevel_Trace << "Adding a new box in the scenario based on an existing one\n";
 
 	if(!addBox(rBoxIdentifier))
 	{
@@ -362,7 +355,7 @@ boolean CScenario::addBox(
 	const CIdentifier& rBoxAlgorithmIdentifier,
 	CIdentifier& rBoxIdentifier)
 {
-	log() << LogLevel_Info << "Adding new box in scenario\n";
+	log() << LogLevel_Trace << "Adding new box in scenario\n";
 
 	if(!addBox(rBoxIdentifier))
 	{
@@ -381,10 +374,10 @@ boolean CScenario::addBox(
 boolean CScenario::removeBox(
 	const CIdentifier& rBoxIdentifier)
 {
-	log() << LogLevel_Info << "Removing box from scenario\n";
+	log() << LogLevel_Trace << "Removing box from scenario\n";
 
 	// Finds the box according to its identifier
-	map<CIdentifier, IBox*>::iterator itBox;
+	map<CIdentifier, CBox*>::iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
 	if(itBox==m_vBox.end())
 	{
@@ -397,10 +390,10 @@ boolean CScenario::removeBox(
 
 	// Found the box,
 	// now find all the links that are used by this box
-	map<CIdentifier, ILink*>::iterator itLink;
+	map<CIdentifier, CLink*>::iterator itLink;
 	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); )
 	{
-		map<CIdentifier, ILink*>::iterator itLinkCurrent=itLink;
+		map<CIdentifier, CLink*>::iterator itLinkCurrent=itLink;
 		itLink++;
 
 		if(itLinkCurrent->second->getSourceBoxIdentifier()==rBoxIdentifier || itLinkCurrent->second->getTargetBoxIdentifier()==rBoxIdentifier)
@@ -408,7 +401,7 @@ boolean CScenario::removeBox(
 			log() << LogLevel_Trace << "Found a link to this box - it will be deleted !\n";
 
 			// Deletes this link
-			OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).releaseObject(itLinkCurrent->second);
+			delete itLinkCurrent->second;
 
 			// Removes link from the link list
 			m_vLink.erase(itLinkCurrent);
@@ -416,7 +409,7 @@ boolean CScenario::removeBox(
 	}
 
 	// Deletes the box itself
-	OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).releaseObject(itBox->second);
+	delete itBox->second;
 
 	// Removes box from the box list
 	m_vBox.erase(itBox);
@@ -429,112 +422,17 @@ boolean CScenario::removeBox(
 //___________________________________________________________________//
 //                                                                   //
 
-#if 0
-boolean CScenario::enumerateLinks(
-	IScenario::ILinkEnum& rCallback) const
-{
-	log() << LogLevel_Debug << "Enumerating scenario links\n";
-
-	rCallback.preCallback();
-	map<CIdentifier, ILink*>::const_iterator itLink=m_vLink.begin();
-	while(itLink!=m_vLink.end())
-	{
-		if(!rCallback.callback(*this, *(itLink->second)))
-		{
-			rCallback.postCallback();
-			return true;
-		}
-		itLink++;
-	}
-	rCallback.postCallback();
-	return true;
-}
-
-boolean CScenario::enumerateLinksFromBox(
-	IScenario::ILinkEnum& rCallback,
-	const CIdentifier& rBoxIdentifier) const
-{
-	log() << LogLevel_Debug << "Enumerating scenario links from specific box\n";
-
-	rCallback.preCallback();
-	map<CIdentifier, ILink*>::const_iterator itLink;
-	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
-	{
-		if(itLink->second->getSourceBoxIdentifier()==rBoxIdentifier)
-		{
-			if(!rCallback.callback(*this, *(itLink->second)))
-			{
-				rCallback.postCallback();
-				return true;
-			}
-		}
-	}
-	rCallback.postCallback();
-	return true;
-}
-
-boolean CScenario::enumerateLinksFromBoxOutput(
-	IScenario::ILinkEnum& rCallback,
-	const CIdentifier& rBoxIdentifier,
-	const uint32 ui32OutputIndex) const
-{
-	log() << LogLevel_Debug << "Enumerating scenario links from specific box output\n";
-
-	rCallback.preCallback();
-	map<CIdentifier, ILink*>::const_iterator itLink;
-	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
-	{
-		if(itLink->second->getSourceBoxIdentifier()==rBoxIdentifier)
-		{
-			if(itLink->second->getSourceBoxOutputIndex()==ui32OutputIndex)
-			{
-				if(!rCallback.callback(*this, *(itLink->second)))
-				{
-					rCallback.postCallback();
-					return true;
-				}
-			}
-		}
-	}
-	rCallback.postCallback();
-	return true;
-}
-
-boolean CScenario::enumerateLinksToBox(
-	IScenario::ILinkEnum& rCallback,
-	const CIdentifier& rBoxIdentifier) const
-{
-	log() << LogLevel_Debug << "Enumerating scenario links to specific box\n";
-
-	rCallback.preCallback();
-	map<CIdentifier, ILink*>::const_iterator itLink;
-	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
-	{
-		if(itLink->second->getTargetBoxIdentifier()==rBoxIdentifier)
-		{
-			if(!rCallback.callback(*this, *(itLink->second)))
-			{
-				rCallback.postCallback();
-				return true;
-			}
-		}
-	}
-	rCallback.postCallback();
-	return true;
-}
-#endif
-
 CIdentifier CScenario::getNextLinkIdentifier(
 	const CIdentifier& rPreviousIdentifier) const
 {
-	return getNextTIdentifier<ILink, TTestTrue<ILink> >(m_vLink, rPreviousIdentifier, TTestTrue<ILink>());
+	return getNextTIdentifier<CLink, TTestTrue<CLink> >(m_vLink, rPreviousIdentifier, TTestTrue<CLink>());
 }
 
 CIdentifier CScenario::getNextLinkIdentifierFromBox(
 	const CIdentifier& rPreviousIdentifier,
 	const CIdentifier& rBoxIdentifier) const
 {
-	return getNextTIdentifier<ILink, TTestEqSourceBox>(m_vLink, rPreviousIdentifier, TTestEqSourceBox(rBoxIdentifier));
+	return getNextTIdentifier<CLink, TTestEqSourceBox>(m_vLink, rPreviousIdentifier, TTestEqSourceBox(rBoxIdentifier));
 }
 
 CIdentifier CScenario::getNextLinkIdentifierFromBoxOutput(
@@ -542,14 +440,14 @@ CIdentifier CScenario::getNextLinkIdentifierFromBoxOutput(
 	const CIdentifier& rBoxIdentifier,
 	const uint32 ui32OutputIndex) const
 {
-	return getNextTIdentifier<ILink, TTestEqSourceBoxOutput>(m_vLink, rPreviousIdentifier, TTestEqSourceBoxOutput(rBoxIdentifier, ui32OutputIndex));
+	return getNextTIdentifier<CLink, TTestEqSourceBoxOutput>(m_vLink, rPreviousIdentifier, TTestEqSourceBoxOutput(rBoxIdentifier, ui32OutputIndex));
 }
 
 CIdentifier CScenario::getNextLinkIdentifierToBox(
 	const CIdentifier& rPreviousIdentifier,
 	const CIdentifier& rBoxIdentifier) const
 {
-	return getNextTIdentifier<ILink, TTestEqTargetBox>(m_vLink, rPreviousIdentifier, TTestEqTargetBox(rBoxIdentifier));
+	return getNextTIdentifier<CLink, TTestEqTargetBox>(m_vLink, rPreviousIdentifier, TTestEqTargetBox(rBoxIdentifier));
 }
 
 CIdentifier CScenario::getNextLinkIdentifierToBoxInput(
@@ -558,13 +456,13 @@ CIdentifier CScenario::getNextLinkIdentifierToBoxInput(
 	const uint32 ui32InputInex) const
 {
 
-	return getNextTIdentifier<ILink, TTestEqTargetBoxInput>(m_vLink, rPreviousIdentifier, TTestEqTargetBoxInput(rBoxIdentifier, ui32InputInex));
+	return getNextTIdentifier<CLink, TTestEqTargetBoxInput>(m_vLink, rPreviousIdentifier, TTestEqTargetBoxInput(rBoxIdentifier, ui32InputInex));
 }
 
 boolean CScenario::isLink(
 	const CIdentifier& rIdentifier) const
 {
-	map<CIdentifier, ILink*>::const_iterator itLink;
+	map<CIdentifier, CLink*>::const_iterator itLink;
 	itLink=m_vLink.find(rIdentifier);
 	return itLink!=m_vLink.end();
 }
@@ -574,7 +472,7 @@ const ILink* CScenario::getLinkDetails(
 {
 	log() << LogLevel_Debug << "Retrieving const link details from scenario\n";
 
-	map<CIdentifier, ILink*>::const_iterator itLink;
+	map<CIdentifier, CLink*>::const_iterator itLink;
 	itLink=m_vLink.find(rLinkIdentifier);
 	if(itLink==m_vLink.end())
 	{
@@ -589,7 +487,7 @@ ILink* CScenario::getLinkDetails(
 {
 	log() << LogLevel_Debug << "Retrieving link details from scenario\n";
 
-	map<CIdentifier, ILink*>::const_iterator itLink;
+	map<CIdentifier, CLink*>::const_iterator itLink;
 	itLink=m_vLink.find(rLinkIdentifier);
 	if(itLink==m_vLink.end())
 	{
@@ -606,10 +504,10 @@ boolean CScenario::connect(
 	const uint32 ui32TargetBoxInputIndex,
 	CIdentifier& rLinkIdentifier)
 {
-	log() << LogLevel_Info << "Connecting boxes\n";
+	log() << LogLevel_Trace << "Connecting boxes\n";
 
-	map<CIdentifier, IBox*>::const_iterator itBox1;
-	map<CIdentifier, IBox*>::const_iterator itBox2;
+	map<CIdentifier, CBox*>::const_iterator itBox1;
+	map<CIdentifier, CBox*>::const_iterator itBox2;
 	itBox1=m_vBox.find(rSourceBoxIdentifier);
 	itBox2=m_vBox.find(rTargetBoxIdentifier);
 	if(itBox1==m_vBox.end() || itBox2==m_vBox.end())
@@ -617,8 +515,8 @@ boolean CScenario::connect(
 		log() << LogLevel_Warning << "At least one of the boxes does not exist\n";
 		return false;
 	}
-	IBox* l_pSourceBox=itBox1->second;
-	IBox* l_pTargetBox=itBox2->second;
+	CBox* l_pSourceBox=itBox1->second;
+	CBox* l_pTargetBox=itBox2->second;
 	if(ui32SourceBoxOutputIndex >= l_pSourceBox->getOutputCount())
 	{
 		log() << LogLevel_Warning << "Wrong output index\n";
@@ -632,7 +530,7 @@ boolean CScenario::connect(
 
 	rLinkIdentifier=getUnusedIdentifier();
 
-	ILink* l_pLink=OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).createObject<ILink*>(OV_ClassId_Kernel_Scenario_Link);
+	CLink* l_pLink=new CLink(getKernelContext());
 	l_pLink->setIdentifier(rLinkIdentifier);
 	l_pLink->setSource(rSourceBoxIdentifier, ui32SourceBoxOutputIndex);
 	l_pLink->setTarget(rTargetBoxIdentifier, ui32TargetBoxInputIndex);
@@ -657,10 +555,10 @@ boolean CScenario::disconnect(
 boolean CScenario::disconnect(
 	const CIdentifier& rLinkIdentifier)
 {
-	log() << LogLevel_Info << "Disconnecting boxes\n";
+	log() << LogLevel_Trace << "Disconnecting boxes\n";
 
 	// Finds the link according to its identifier
-	map<CIdentifier, ILink*>::iterator itLink;
+	map<CIdentifier, CLink*>::iterator itLink;
 	itLink=m_vLink.find(rLinkIdentifier);
 	if(itLink==m_vLink.end())
 	{
@@ -672,7 +570,7 @@ boolean CScenario::disconnect(
 	log() << LogLevel_Trace << "Found the link !\n";
 
 	// Deletes the link itself
-	OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).releaseObject(itLink->second);
+	delete itLink->second;
 
 	// Removes link from the link list
 	m_vLink.erase(itLink);
@@ -688,13 +586,13 @@ boolean CScenario::disconnect(
 CIdentifier CScenario::getNextProcessingUnitIdentifier(
 	const CIdentifier& rPreviousIdentifier) const
 {
-	return getNextTIdentifier<IProcessingUnit, TTestTrue<IProcessingUnit> >(m_vProcessingUnit, rPreviousIdentifier, TTestTrue<IProcessingUnit>());
+	return getNextTIdentifier<CProcessingUnit, TTestTrue<CProcessingUnit> >(m_vProcessingUnit, rPreviousIdentifier, TTestTrue<CProcessingUnit>());
 }
 
 boolean CScenario::isProcessingUnit(
 	const CIdentifier& rIdentifier) const
 {
-	map<CIdentifier, IProcessingUnit*>::const_iterator itProcessingUnit=m_vProcessingUnit.find(rIdentifier);
+	map<CIdentifier, CProcessingUnit*>::const_iterator itProcessingUnit=m_vProcessingUnit.find(rIdentifier);
 	return itProcessingUnit!=m_vProcessingUnit.end()?true:false;
 }
 
@@ -703,7 +601,7 @@ const IProcessingUnit* CScenario::getProcessingUnitDetails(
 {
 	log() << LogLevel_Debug << "Getting const processing unit details from scenario\n";
 
-	map<CIdentifier, IProcessingUnit*>::const_iterator itProcessingUnit;
+	map<CIdentifier, CProcessingUnit*>::const_iterator itProcessingUnit;
 	itProcessingUnit=m_vProcessingUnit.find(rProcessingUnitIdentifier);
 	if(itProcessingUnit==m_vProcessingUnit.end())
 	{
@@ -718,7 +616,7 @@ IProcessingUnit* CScenario::getProcessingUnitDetails(
 {
 	log() << LogLevel_Debug << "Getting processing unit details from scenario\n";
 
-	map<CIdentifier, IProcessingUnit*>::const_iterator itProcessingUnit;
+	map<CIdentifier, CProcessingUnit*>::const_iterator itProcessingUnit;
 	itProcessingUnit=m_vProcessingUnit.find(rProcessingUnitIdentifier);
 	if(itProcessingUnit==m_vProcessingUnit.end())
 	{
@@ -731,9 +629,9 @@ IProcessingUnit* CScenario::getProcessingUnitDetails(
 boolean CScenario::addProcessingUnit(
 	CIdentifier& rProcessingUnitIdentifier)
 {
-	log() << LogLevel_Info << "Adding new processing unit in scenario\n";
+	log() << LogLevel_Trace << "Adding new processing unit in scenario\n";
 
-	IProcessingUnit* l_pProcessingUnit=OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).createObject<IProcessingUnit*>(OV_ClassId_Kernel_Scenario_ProcessingUnit);
+	CProcessingUnit* l_pProcessingUnit=new CProcessingUnit(getKernelContext());
 	rProcessingUnitIdentifier=getUnusedIdentifier();
 	l_pProcessingUnit->setIdentifier(rProcessingUnitIdentifier);
 
@@ -744,10 +642,10 @@ boolean CScenario::addProcessingUnit(
 boolean CScenario::removeProcessingUnit(
 	const CIdentifier& rProcessingUnitIdentifier)
 {
-	log() << LogLevel_Info << "Removing processing unit from scenario\n";
+	log() << LogLevel_Trace << "Removing processing unit from scenario\n";
 
 	// Finds the processing unit according to its identifier
-	map<CIdentifier, IProcessingUnit*>::iterator itProcessingUnit;
+	map<CIdentifier, CProcessingUnit*>::iterator itProcessingUnit;
 	itProcessingUnit=m_vProcessingUnit.find(rProcessingUnitIdentifier);
 	if(itProcessingUnit==m_vProcessingUnit.end())
 	{
@@ -758,7 +656,7 @@ boolean CScenario::removeProcessingUnit(
 
 	// Found the processing unit,
 	// now unaffect all the boxes that are using this processing unit
-	map<CIdentifier, IBox*>::const_iterator itBox;
+	map<CIdentifier, CBox*>::const_iterator itBox;
 	for(itBox=m_vBox.begin(); itBox!=m_vBox.end(); )
 	{
 		if(itBox->second->getProcessingUnitIdentifier() == rProcessingUnitIdentifier)
@@ -772,10 +670,58 @@ boolean CScenario::removeProcessingUnit(
 	}
 
 	// Deletes the processing unit itself
-	OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).releaseObject(itProcessingUnit->second);
+	delete itProcessingUnit->second;
 
 	// Removes processing unit from the processing unit list
 	m_vProcessingUnit.erase(itProcessingUnit);
+	return true;
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+boolean CScenario::acceptVisitor(
+	IObjectVisitor& rObjectVisitor)
+{
+	CObjectVisitorContext l_oObjectVisitorContext(getKernelContext());
+
+	if(!rObjectVisitor.processBegin(l_oObjectVisitorContext, *this))
+	{
+		return false;
+	}
+
+	map<CIdentifier, CBox*>::iterator i;
+	for(i=m_vBox.begin(); i!=m_vBox.end(); i++)
+	{
+		if(!i->second->acceptVisitor(rObjectVisitor))
+		{
+			return false;
+		}
+	}
+
+	map<CIdentifier, CLink*>::iterator j;
+	for(j=m_vLink.begin(); j!=m_vLink.end(); j++)
+	{
+		if(!j->second->acceptVisitor(rObjectVisitor))
+		{
+			return false;
+		}
+	}
+
+	map<CIdentifier, CProcessingUnit*>::iterator k;
+	for(k=m_vProcessingUnit.begin(); k!=m_vProcessingUnit.end(); k++)
+	{
+		if(!k->second->acceptVisitor(rObjectVisitor))
+		{
+			return false;
+		}
+	}
+
+	if(!rObjectVisitor.processEnd(l_oObjectVisitorContext, *this))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -786,8 +732,8 @@ CIdentifier CScenario::getUnusedIdentifier(void) const
 {
 	uint64 l_ui64Identifier=(((uint64)rand())<<32)+((uint64)rand());
 	CIdentifier l_oResult;
-	map<CIdentifier, IBox*>::const_iterator i;
-	map<CIdentifier, ILink*>::const_iterator j;
+	map<CIdentifier, CBox*>::const_iterator i;
+	map<CIdentifier, CLink*>::const_iterator j;
 	do
 	{
 		l_ui64Identifier++;

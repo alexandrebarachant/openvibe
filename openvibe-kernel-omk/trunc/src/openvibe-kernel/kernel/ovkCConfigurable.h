@@ -11,13 +11,12 @@ namespace OpenViBE
 	{
 		typedef OpenViBE::Kernel::TBaseConfigurable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IConfigurable > > _Base__CConfigurable_;
 
-		class CConfigurable : virtual public _Base__CConfigurable_
+		class CConfigurable : public _Base__CConfigurable_
 		{
 		public:
 
 			CConfigurable(const OpenViBE::Kernel::IKernelContext& rKernelContext)
-				:OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IConfigurable >(rKernelContext)
-				,OpenViBE::Kernel::TBaseConfigurable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IConfigurable > >(rKernelContext)
+				:OpenViBE::Kernel::TBaseConfigurable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IConfigurable > >(rKernelContext)
 			{
 			}
 

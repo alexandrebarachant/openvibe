@@ -7,7 +7,15 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class OV_API IMessageEvent : virtual public OpenViBE::Kernel::IMessage
+		/**
+		 * \class IMessageEvent
+		 * \author Yann Renard (INRIA/IRISA)
+		 * \date 2006-05-30
+		 * \brief Event message
+		 * \ingroup Group_Player
+		 * \ingroup Group_Kernel
+		 */
+		class OV_API IMessageEvent : public OpenViBE::Kernel::IMessage
 		{
 		public:
 

@@ -9,7 +9,7 @@ namespace OpenViBE
 	{
 		class IBox;
 
-		class OV_API IWindowManager : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IWindowManager : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

@@ -8,6 +8,8 @@
 #define OVD_AttributeId_XLinkTargetPosition                 OpenViBE::CIdentifier(0x6267B5C5, 0x676E3E42)
 #define OVD_AttributeId_YLinkTargetPosition                 OpenViBE::CIdentifier(0x3F0A3B27, 0x570913D2)
 
+#define OVD_AttributeId_SettingOverrideFilename             OpenViBE::CIdentifier(0x8D21FF41, 0xDF6AFE7E)
+
 //Attributes of visualisation window :
 #define OVD_AttributeId_VisualisationWindow_Width           OpenViBE::CIdentifier(0x7B814CCA, 0x271DF6DD)
 #define OVD_AttributeId_VisualisationWindow_Height          OpenViBE::CIdentifier(0x4C90D4AD, 0x7A2554EC)

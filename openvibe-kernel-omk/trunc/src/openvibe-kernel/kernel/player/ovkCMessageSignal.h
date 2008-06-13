@@ -10,13 +10,12 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CMessageSignal : virtual public OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageSignal> >
+		class CMessageSignal : public OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageSignal> >
 		{
 		public:
 
 			CMessageSignal(const OpenViBE::Kernel::IKernelContext& rKernelContext)
-				:OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageSignal>(rKernelContext)
-				,OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageSignal> >(rKernelContext)
+				:OpenViBE::Kernel::TMessage<OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IMessageSignal> >(rKernelContext)
 			{
 			}
 

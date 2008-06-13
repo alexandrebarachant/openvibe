@@ -10,7 +10,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CLogListenerNull : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::ILogListener>
+		class CLogListenerNull : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::ILogListener>
 		{
 		public:
 

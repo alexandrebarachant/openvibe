@@ -62,7 +62,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setWidgets            (const OpenViBE::CString& rName, ::GtkWidget* pWidget, ::GtkWidget* pToolbarWidget)       { return false; }
 		};
 
-		class OV_API IVisualisationTree : virtual public OpenViBE::Kernel::IAttributable
+		class OV_API IVisualisationTree : public OpenViBE::Kernel::IAttributable
 		{
 		public:
 			virtual void init(

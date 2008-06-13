@@ -1,6 +1,8 @@
 #include "ovkCBox.h"
 #include "ovkCBoxProto.h"
 
+#include "../ovkCObjectVisitorContext.h"
+
 using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -71,15 +73,15 @@ boolean CBox::setAlgorithmClassIdentifier(
 {
 	m_oAlgorithmClassIdentifier=rAlgorithmClassIdentifier;
 
+	if(!getKernelContext().getPluginManager().canCreatePluginObject(rAlgorithmClassIdentifier))
+	{
+		log() << LogLevel_Warning << "Algorithm descriptor not found\n";
+
+		return false;
+	}
+
 	const IPluginObjectDesc* l_pPluginObjectDescriptor=getKernelContext().getPluginManager().getPluginObjectDescCreating(rAlgorithmClassIdentifier);
-	if(l_pPluginObjectDescriptor)
-	{
-		m_pBoxAlgorithmDescriptor=dynamic_cast<const IBoxAlgorithmDesc*>(l_pPluginObjectDescriptor);
-	}
-	else
-	{
-		m_pBoxAlgorithmDescriptor=NULL;
-	}
+	m_pBoxAlgorithmDescriptor=dynamic_cast<const IBoxAlgorithmDesc*>(l_pPluginObjectDescriptor);
 
 	return true;
 }
@@ -108,6 +110,7 @@ boolean CBox::initializeFromAlgorithmClassIdentifier(
 
 		return false;
 	}
+
 
 	clear();
 	setName(l_pBoxAlgorithmDesc->getName());
@@ -545,4 +548,14 @@ void CBox::callModificationCallback(
 			eBoxModificationType);
 		m_bIsNotifyingDescriptor=false;
 	}
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+boolean CBox::acceptVisitor(
+	IObjectVisitor& rObjectVisitor)
+{
+	CObjectVisitorContext l_oObjectVisitorContext(getKernelContext());
+	return rObjectVisitor.processBegin(l_oObjectVisitorContext, *this) && rObjectVisitor.processEnd(l_oObjectVisitorContext, *this);
 }

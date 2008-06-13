@@ -12,12 +12,14 @@ namespace OpenViBE
 		 * \author Yann Renard (IRISA/INRIA)
 		 * \date 2006-08-16
 		 * \brief Complete §OpenViBE§ box interface
+		 * \ingroup Group_Scenario
+		 * \ingroup Group_Kernel
 		 *
 		 * This interface can be used in order to fully describe an
 		 * §OpenViBE§ black box. It describes its identification values,
 		 * its inputs, its outputs and its settings.
 		 */
-		class OV_API IBox : virtual public OpenViBE::Kernel::IAttributable
+		class OV_API IBox : public OpenViBE::Kernel::IAttributable
 		{
 		public:
 
@@ -299,7 +301,7 @@ namespace OpenViBE
 			 * they all decrease by 1.
 			 */
 			virtual OpenViBE::boolean removeSetting(
-				const OpenViBE::uint32 ui32Index)=0;
+				const OpenViBE::uint32 ui32SettingIndex)=0;
 			/**
 			 * \brief Gets the number of settings for this box
 			 * \return The number of settings for this box.
@@ -372,7 +374,7 @@ namespace OpenViBE
 			/**
 			 * \brief Sets the default setting value
 			 * \param ui32SettingIndex [in] : The setting index
-			 * \param rValue [in] : The default value
+			 * \param rDefaultValue [in] : The default value
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
 			 */
@@ -382,7 +384,7 @@ namespace OpenViBE
 			/**
 			 * \brief Sets the setting value
 			 * \param ui32SettingIndex [in] : The setting index
-			 * \param rDefaultValue [in] : The value
+			 * \param rValue [in] : The value
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
 			 */

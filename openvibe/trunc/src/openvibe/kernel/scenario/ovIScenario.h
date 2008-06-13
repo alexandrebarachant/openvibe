@@ -16,6 +16,8 @@ namespace OpenViBE
 		 * \author Yann Renard (IRISA/INRIA)
 		 * \date 2006-08-16
 		 * \brief A static §OpenViBE§ scenario
+		 * \ingroup Group_Scenario
+		 * \ingroup Group_Kernel
 		 *
 		 * This class is a static scenario description.
 		 * It is used to load/save/modify an §OpenViBE§
@@ -23,33 +25,9 @@ namespace OpenViBE
 		 *
 		 * \todo Add meta information for this scenario
 		 */
-		class OV_API IScenario : virtual public OpenViBE::Kernel::IAttributable
+		class OV_API IScenario : public OpenViBE::Kernel::IAttributable
 		{
 		public:
-
-#if 0
-			class OV_API IBoxEnum
-			{
-			public:
-				virtual ~IBoxEnum(void) { }
-				virtual void preCallback(void) { }
-				virtual OpenViBE::boolean callback(
-					const OpenViBE::Kernel::IScenario& rScenario,
-					OpenViBE::Kernel::IBox& rBox)=0;
-				virtual void postCallback(void) { }
-			};
-
-			class OV_API ILinkEnum
-			{
-			public:
-				virtual ~ILinkEnum(void) { }
-				virtual void preCallback(void) { }
-				virtual OpenViBE::boolean callback(
-					const OpenViBE::Kernel::IScenario& rScenario,
-					OpenViBE::Kernel::ILink& rLink)=0;
-				virtual void postCallback(void) { }
-			};
-#endif
 
 			/** \name Input / Output from files */
 			//@{
@@ -121,18 +99,6 @@ namespace OpenViBE
 			//@{
 			/** \name Box management */
 			//@{
-
-#if 0
-			/**
-			 * \brief Enumerates all the boxes of this scenario
-			 * \param rCallback [in] : The user callback
-			 *        to use for each found box in the scenario
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean enumerateBoxes(
-				OpenViBE::Kernel::IScenario::IBoxEnum& rCallback) const=0;
-#endif
 
 			/**
 			 * \brief Gets next box identifier
@@ -238,42 +204,6 @@ namespace OpenViBE
 			//@}
 			/** \name Connection management */
 			//@{
-
-#if 0
-			/**
-			 * \brief Enumerates all the links of this scenario
-			 * \param rCallback [in] : The user callback
-			 *        to use for each found link in the scenario
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean enumerateLinks(
-				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback) const=0;
-			/**
-			 * \brief Enumerates the links of this scenario starting from a given box
-			 * \param rCallback [in] : The user callback
-			 *        to use for each found link in the scenario
-			 * \param rBoxIdentifier [in] : The box identifier
-			 *        which the link should start from
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean enumerateLinksFromBox(
-				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
-				const OpenViBE::CIdentifier& rBoxIdentifier) const=0;
-			/**
-			 * \brief Enumerates the links of this scenario ending to a given box
-			 * \param rCallback [in] : The user callback
-			 *        to use for each found link in the scenario
-			 * \param rBoxIdentifier [in] : The box identifier
-			 *        which the link should end to
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean enumerateLinksToBox(
-				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
-				const OpenViBE::CIdentifier& rBoxIdentifier) const=0;
-#endif
 
 			/**
 			 * \brief Gets next link identifier
@@ -428,16 +358,51 @@ namespace OpenViBE
 			/** \name Processing units management */
 			//@{
 
+			/**
+			 * \brief Gets next processing unit identifier
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding processing unit
+			 * \return The identifier of the next processing unit in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first processing unit
+			 *       identifier.
+			 */
 			virtual OpenViBE::CIdentifier getNextProcessingUnitIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const=0;
+			/**
+			 * \brief Tests if a processing unit exists
+			 * \param rIdentifier [in] : the identifier which should be tested
+			 * \return \e true if the provided identifier is a processing unit identifier.
+			 * \return \e false in other cases.
+			 */
 			virtual OpenViBE::boolean isProcessingUnit(
 				const OpenViBE::CIdentifier& rIdentifier) const=0;
+			/**
+			 * \brief Gets processing unit details
+			 * \param rProcessingUnitIdentifier [in] : the identifier of the processing unit which details should be returned
+			 * \return the details for the identifier processing unit in case of success.
+			 * \return \c NULL in case of error.
+			 */
 			virtual const OpenViBE::Kernel::IProcessingUnit* getProcessingUnitDetails(
 				const OpenViBE::CIdentifier& rProcessingUnitIdentifier) const=0;
+			/// \copydoc getProcessingUnitDetails(const OpenViBE::CIdentifier&)const
 			virtual OpenViBE::Kernel::IProcessingUnit* getProcessingUnitDetails(
 				const OpenViBE::CIdentifier& rProcessingUnitIdentifier)=0;
+			/**
+			 * \brief Adds a new processing unit in the scenario
+			 * \param rProcessingUnitIdentifier [out] : the newly created identifier
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean addProcessingUnit(
 				OpenViBE::CIdentifier& rProcessingUnitIdentifier)=0;
+			/**
+			 * \brief Removes a processing unit in the scenario
+			 * \param rProcessingUnitIdentifier [in] : the identifier of the processing unit to remove
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean removeProcessingUnit(
 				const OpenViBE::CIdentifier& rProcessingUnitIdentifier)=0;
 

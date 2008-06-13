@@ -11,7 +11,7 @@ namespace OpenViBE
 {
 	namespace
 	{
-		class CMatrixImpl : virtual public IMatrix
+		class CMatrixImpl : public IMatrix
 		{
 		public:
 
@@ -132,6 +132,10 @@ boolean CMatrixImpl::setDimensionSize(const uint32 ui32DimensionIndex, const uin
 	{
 		return false;
 	}
+
+	delete [] m_pBuffer;
+	m_pBuffer=NULL;
+
 	m_vDimensionSize[ui32DimensionIndex]=ui32DimensionSize;
 	m_vDimensionLabel[ui32DimensionIndex].clear();
 	m_vDimensionLabel[ui32DimensionIndex].resize(ui32DimensionSize);

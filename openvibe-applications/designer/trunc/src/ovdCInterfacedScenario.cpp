@@ -1,6 +1,7 @@
 #include "ovdCInterfacedScenario.h"
 #include "ovdCBoxProxy.h"
 #include "ovdCLinkProxy.h"
+#include "ovdCConnectorEditor.h"
 #include "ovdCSettingEditor.h"
 #include "ovdCInterfacedObject.h"
 #include "ovdTAttributeHandler.h"
@@ -85,7 +86,6 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		,m_rKernel(rKernel)
 		,m_rScenario(rScenario)
 		,m_pPlayer(NULL)
-		,m_bIsPaused(false)
 		,m_rNotebook(rNotebook)
 		,m_pVisualisationTree(NULL)
 		,m_pDesignerVisualisation(NULL)
@@ -145,7 +145,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			CIdentifier l_oIdentifier = l_pBox->getAlgorithmClassIdentifier();
 			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
 
-			if(l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+			if(l_pPOD && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
 			{
 				CIdentifier l_oIdentifier;
 				m_pVisualisationTree->addVisualisationWidget(
@@ -542,6 +542,16 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		if(m_pStencilBuffer) g_object_unref(m_pStencilBuffer);
 		m_pStencilBuffer=gdk_pixmap_new(NULL, x, y, 24);
 
+		::GdkGC* l_pStencilGC=gdk_gc_new(m_pStencilBuffer);
+		::GdkColor l_oColor={0, 0, 0, 0};
+		gdk_gc_set_rgb_fg_color(l_pStencilGC, &l_oColor);
+		gdk_draw_rectangle(
+			GDK_DRAWABLE(m_pStencilBuffer),
+			l_pStencilGC,
+			TRUE,
+			0, 0, x, y);
+		g_object_unref(l_pStencilGC);
+
 		if(this->isLocked())
 		{
 			::GdkColor l_oColor;
@@ -636,7 +646,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oId);
 
 			//if a visualisation box was dropped, add it in window manager
-			if(l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+			if(l_pPOD && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
 			{
 				//generate a unique name so that it can be identified unambiguously
 				CString l_oBoxName;
@@ -713,7 +723,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				map<CIdentifier, boolean>::const_iterator i;
 				for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
 				{
-					if(i->second)
+					if(i->second && m_rScenario.isBox(i->first))
 					{
 						CBoxProxy l_oBoxProxy(m_rScenario, i->first);
 						l_oBoxProxy.setCenter(
@@ -734,6 +744,8 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 
 		if(this->isLocked()) return;
 
+		::GtkWidget* l_pTooltip=glade_xml_get_widget(m_pGladeTooltip, "openvibe_tooltip");
+		gtk_widget_hide(l_pTooltip);
 		gtk_widget_grab_focus(pWidget);
 
 		m_bButtonPressed|=((pEvent->type==GDK_BUTTON_PRESS)&&(pEvent->button==1));
@@ -790,16 +802,28 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 					case GDK_2BUTTON_PRESS:
 						if(m_oCurrentObject.m_oIdentifier!=OV_UndefinedIdentifier)
 						{
-							IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
-							if(l_pBox)
-							{
-								m_ui32CurrentMode=Mode_EditSettings;
-								m_bShiftPressed=false;
-								m_bControlPressed=false;
-								m_bAltPressed=false;
+							m_ui32CurrentMode=Mode_EditSettings;
+							m_bShiftPressed=false;
+							m_bControlPressed=false;
+							m_bAltPressed=false;
 
-								CSettingEditor l_oSettingEditor(m_rKernel, *l_pBox, m_sGUIFilename.c_str());
-								l_oSettingEditor.run();
+							if(m_oCurrentObject.m_ui32ConnectorType==Connector_Input || m_oCurrentObject.m_ui32ConnectorType==Connector_Output)
+							{
+								IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
+								if(l_pBox)
+								{
+									CConnectorEditor l_oConnectorEditor(m_rKernel, *l_pBox, m_oCurrentObject.m_ui32ConnectorType, m_oCurrentObject.m_ui32ConnectorIndex, m_sGUIFilename.c_str());
+									l_oConnectorEditor.run();
+								}
+							}
+							else
+							{
+								IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
+								if(l_pBox)
+								{
+									CSettingEditor l_oSettingEditor(m_rKernel, *l_pBox, m_sGUIFilename.c_str());
+									l_oSettingEditor.run();
+								}
 							}
 						}
 						break;
@@ -992,7 +1016,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				map<CIdentifier, boolean>::const_iterator i;
 				for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
 				{
-					if(i->second)
+					if(i->second && m_rScenario.isBox(i->first))
 					{
 						CBoxProxy l_oBoxProxy(m_rScenario, i->first);
 						l_oBoxProxy.setCenter(

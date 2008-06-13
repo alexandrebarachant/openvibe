@@ -9,11 +9,14 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CTypeManager : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::ITypeManager>
+		class CTypeManager : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::ITypeManager>
 		{
 		public:
 
 			CTypeManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+
+			virtual OpenViBE::CIdentifier getNextTypeIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const;
 
 			virtual OpenViBE::boolean registerType(
 				const OpenViBE::CIdentifier& rTypeIdentifier,

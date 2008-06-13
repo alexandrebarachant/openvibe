@@ -1,7 +1,10 @@
 #include "ovkCPlayerContext.h"
-#include "ovkPsSimulatedBox.h"
+#include "ovkCSimulatedBox.h"
 
 #include "../../tools/ovk_bridge_bind_function.h"
+
+using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 
 namespace OpenViBE
 {
@@ -9,11 +12,11 @@ namespace OpenViBE
 	{
 		namespace
 		{
-			class CAlgorithmManagerBridge : virtual public TKernelObject<IAlgorithmManager>
+			class CAlgorithmManagerBridge : public TKernelObject<IAlgorithmManager>
 			{
 			public:
 
-				CAlgorithmManagerBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox) : TKernelObject<IAlgorithmManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+				CAlgorithmManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IAlgorithmManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
 				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), CIdentifier, createAlgorithm, , const CIdentifier&, rAlgorithmClassIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), boolean, releaseAlgorithm, , const CIdentifier&, rAlgorithmIdentifier)
@@ -25,14 +28,14 @@ namespace OpenViBE
 
 			protected:
 
-				::PsSimulatedBox* m_pSimulatedBox;
+				CSimulatedBox* m_pSimulatedBox;
 			};
 
-			class CLogManagerBridge : virtual public TKernelObject<ILogManager>
+			class CLogManagerBridge : public TKernelObject<ILogManager>
 			{
 			public:
 
-				CLogManagerBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox) : TKernelObject<ILogManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+				CLogManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<ILogManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
 				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint64, ui64Value)
 				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint32, ui32Value)
@@ -72,7 +75,7 @@ namespace OpenViBE
 						<< "Box algorithm"
 						<< LogColor_PopStateBit
 						<< "::"
-						<< m_pSimulatedBox->getOVName()
+						<< m_pSimulatedBox->getName()
 						<< "> ";
 				}
 
@@ -80,42 +83,40 @@ namespace OpenViBE
 
 			protected:
 
-				::PsSimulatedBox* m_pSimulatedBox;
+				CSimulatedBox* m_pSimulatedBox;
 			};
 
-			class CScenarioManagerBridge : virtual public TKernelObject<IScenarioManager>
+			class CScenarioManagerBridge : public TKernelObject<IScenarioManager>
 			{
 			public:
 
-				CScenarioManagerBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox) : TKernelObject<IScenarioManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+				CScenarioManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IScenarioManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
+				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), CIdentifier, getNextScenarioIdentifier, const, const CIdentifier&, rPreviousIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, createScenario, , CIdentifier&, rScenarioIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, releaseScenario, , const CIdentifier&, rScenarioIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), IScenario&, getScenario, , const CIdentifier&, rScenarioIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, enumerateScenarios, const, IScenarioManager::IScenarioEnum&, rCallBack)
 
 				_IsDerivedFromClass_Final_(TKernelObject<IScenarioManager>, OV_UndefinedIdentifier);
 
 			protected:
 
-				::PsSimulatedBox* m_pSimulatedBox;
+				CSimulatedBox* m_pSimulatedBox;
 			};
 
-			class CTypeManagerBridge : virtual public TKernelObject<ITypeManager>
+			class CTypeManagerBridge : public TKernelObject<ITypeManager>
 			{
 			public:
 
-				CTypeManagerBridge(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox) : TKernelObject<ITypeManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+				CTypeManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<ITypeManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
+				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getNextTypeIdentifier, const, const CIdentifier&, rPreviousIdentifier);
 				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
-
 				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerStreamType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const CIdentifier&, rParentTypeIdentifier)
-
 				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerEnumerationType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
-				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sEntryName, const uint64, ui64EntryValue)
-
+				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const uint64, ui64ValueIndex)
 				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerBitMaskType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
-				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sEntryName, const uint64, ui64EntryValue)
+				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const uint64, ui64ValueIndex)
 
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isRegistered, , const CIdentifier&, rTypeIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isStream, , const CIdentifier&, rTypeIdentifier)
@@ -124,32 +125,26 @@ namespace OpenViBE
 
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CString, getTypeName, , const CIdentifier&, rTypeIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getStreamParentType, , const CIdentifier&, rTypeIdentifier)
-
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryCount, , const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, rEntryValue)
+				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, ui64EntryValue)
 				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getEnumerationEntryNameFromValue, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryValueFromName, , const CIdentifier&, rTypeIdentifier, const CString&, rEntryName)
-
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryValueFromName, , const CIdentifier&, rTypeIdentifier, const CString&, sEntryName)
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryCount, , const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, rEntryValue)
+				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, ui64EntryValue)
 				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getBitMaskEntryNameFromValue, , const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryValueFromName, , const CIdentifier&, rTypeIdentifier, const CString&, rEntryName)
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryValueFromName, , const CIdentifier&, rTypeIdentifier, const CString&, sEntryName)
 
 				_IsDerivedFromClass_Final_(TKernelObject<ITypeManager>, OV_UndefinedIdentifier);
 
 			protected:
 
-				::PsSimulatedBox* m_pSimulatedBox;
+				CSimulatedBox* m_pSimulatedBox;
 			};
 		};
 	};
 };
 
-using namespace OpenViBE;
-using namespace OpenViBE::Kernel;
-#define boolean OpenViBE::boolean
-
-CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox)
+CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox)
 	:TKernelObject<IPlayerContext>(rKernelContext)
 	,m_pSimulatedBox(pSimulatedBox)
 	,m_pAlgorithmManagerBridge(NULL)

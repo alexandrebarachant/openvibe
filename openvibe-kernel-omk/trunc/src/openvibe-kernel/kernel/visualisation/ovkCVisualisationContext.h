@@ -3,17 +3,17 @@
 
 #include "../ovkTKernelObject.h"
 
-class PsSimulatedBox;
-
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CVisualisationContext : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationContext>
+		class CSimulatedBox;
+
+		class CVisualisationContext : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationContext>
 		{
 		public:
 
-			CVisualisationContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, ::PsSimulatedBox* pSimulatedBox);
+			CVisualisationContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::CSimulatedBox* pSimulatedBox);
 
 			virtual ~CVisualisationContext(void);
 
@@ -25,7 +25,7 @@ namespace OpenViBE
 
 		protected:
 
-			::PsSimulatedBox* m_pSimulatedBox;
+			OpenViBE::Kernel::CSimulatedBox* m_pSimulatedBox;
 			OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManagerBridge;
 		};
 	};

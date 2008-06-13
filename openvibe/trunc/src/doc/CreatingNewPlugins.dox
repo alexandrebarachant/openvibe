@@ -10,8 +10,8 @@
  * overview to get an idea of the concepts behinde §OpenViBE§.
  *
  * There are 4 ways §OpenViBE§ can be extended nowadays :
+ *  - creating new algorithm
  *  - creating new box algorithm
- *  - creating new box behaviors
  *  - creating new scenario importer
  *  - creating new scenario exporter
  *
@@ -21,8 +21,8 @@
  * a specialized extension of the OpenViBE::Plugins::IPluginObjectDesc
  * and the OpenViBE::Plugins::IPluginObject interfaces. Each family
  * already has a specialized interface :
+ *  - for algorithm : OpenViBE::Plugins::IAlgorithmDesc and OpenViBE::Plugins::IAlgorithm
  *  - for box algorithm : OpenViBE::Plugins::IBoxAlgorithmDesc and OpenViBE::Plugins::IBoxAlgorithm
- *  - for box behavior : OpenViBE::Plugins::IBoxBehaviorDesc and OpenViBE::Plugins::IBoxBehavior
  *  - for scenario importer : OpenViBE::Plugins::IScenarioImporterDesc and OpenViBE::Plugins::IScenarioImporter
  *  - for scenario exporter : OpenViBE::Plugins::IScenarioExporterDesc and OpenViBE::Plugins::IScenarioExporter
  *
@@ -47,7 +47,7 @@
  *
  * // Here comes the algorithm itself
  * // It should overload a number of methods form the OpenViBE API
- * class CBoxAlgorithm : virtual public OpenViBE::Plugins::IBoxAlgorithm
+ * class CBoxAlgorithm : public OpenViBE::Plugins::IBoxAlgorithm
  * {
  * public:
  *   virtual void release(void)
@@ -61,7 +61,7 @@
  *   _IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, ConcreteBoxAlg_ClassID)
  * };
  *
- * class CBoxAlgorithmDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+ * class CBoxAlgorithmDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
  * {
  * public:
  *   virtual std::string getName(void)                { return std::string("sample algorithm"); }

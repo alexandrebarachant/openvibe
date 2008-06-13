@@ -29,6 +29,7 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-06-19
 		 * \brief Algorithm to create/process/transform §OpenViBE§ data
+		 * \ingroup Group_Extend
 		 *
 		 * This class should be derived by any plugin that is related
 		 * to data processing. It can be data acquisition/production
@@ -45,7 +46,7 @@ namespace OpenViBE
 		 *
 		 * \todo details about building new plugins
 		 */
-		class OV_API IBoxAlgorithm : virtual public OpenViBE::Plugins::IPluginObject
+		class OV_API IBoxAlgorithm : public OpenViBE::Plugins::IPluginObject
 		{
 		public:
 

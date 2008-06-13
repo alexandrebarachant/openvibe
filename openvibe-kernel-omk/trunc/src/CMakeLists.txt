@@ -9,13 +9,10 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	COMPILE_FLAGS "-DOVK_Exports -DOVK_Shared")
 
 INCLUDE("FindOpenViBE")
-INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleFS")
-INCLUDE("FindOpenViBEModuleSocket")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindThirdPartyGlade")
-INCLUDE("FindThirdPartyOpenMASK")
 
 # ---------------------------------
 # Finds standard library dl

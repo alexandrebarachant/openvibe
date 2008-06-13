@@ -1,5 +1,7 @@
 #include "ovkCProcessingUnit.h"
 
+#include "../ovkCObjectVisitorContext.h"
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
@@ -45,4 +47,14 @@ boolean CProcessingUnit::setName(
 CString CProcessingUnit::getName(void) const
 {
 	return m_sName;
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+boolean CProcessingUnit::acceptVisitor(
+	IObjectVisitor& rObjectVisitor)
+{
+	CObjectVisitorContext l_oObjectVisitorContext(getKernelContext());
+	return rObjectVisitor.processBegin(l_oObjectVisitorContext, *this) && rObjectVisitor.processEnd(l_oObjectVisitorContext, *this);
 }

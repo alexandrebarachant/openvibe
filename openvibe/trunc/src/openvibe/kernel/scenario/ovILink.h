@@ -12,11 +12,13 @@ namespace OpenViBE
 		 * \author Yann Renard (IRISA/INRIA)
 		 * \date 2006-08-16
 		 * \brief Link information between §OpenViBE§ box
+		 * \ingroup Group_Scenario
+		 * \ingroup Group_Kernel
 		 *
 		 * This class collects informations between §OpenViBE§
 		 * boxes : box identifiers and input / output indices.
 		 */
-		class OV_API ILink : virtual public OpenViBE::Kernel::IAttributable
+		class OV_API ILink : public OpenViBE::Kernel::IAttributable
 		{
 		public:
 
@@ -80,10 +82,12 @@ namespace OpenViBE
 				OpenViBE::uint32& ui32BoxOutputIndex) const=0;
 			/**
 			 * \brief Gets the source box identifier for this link
+			 * \return the source box identifier for thit link
 			 */
 			virtual OpenViBE::CIdentifier getSourceBoxIdentifier(void) const=0;
 			/**
 			 * \brief Gets the source box output index for this link
+			 * \return the source box output index for this link
 			 */
 			virtual OpenViBE::uint32 getSourceBoxOutputIndex(void) const=0;
 			/**
@@ -100,10 +104,12 @@ namespace OpenViBE
 				OpenViBE::uint32& ui32BoxInputIndex) const=0;
 			/**
 			 * \brief Gets the target box identifier for this link
+			 * \return the target box identifier for this link
 			 */
 			virtual OpenViBE::CIdentifier getTargetBoxIdentifier(void) const=0;
 			/**
 			 * \brief Gets the target box input index for this link
+			 * \return the target box input index for this link
 			 */
 			virtual OpenViBE::uint32 getTargetBoxInputIndex(void) const=0;
 

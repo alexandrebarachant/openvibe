@@ -12,12 +12,11 @@ namespace OpenViBE
 	{
 		#define _parameter_template_instance_1_(_CName_, CType, IType, oClassId) \
 			typedef OpenViBE::Kernel::TBaseParameter < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >, IType > _Base_##_CName_; \
-			class _CName_ : virtual public _Base_##_CName_ \
+			class _CName_ : public _Base_##_CName_ \
 			{ \
 			public: \
 				_CName_(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::EParameterType eParameterType) \
-					:OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >(rKernelContext) \
-					,OpenViBE::Kernel::TBaseParameter < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >, IType >(rKernelContext, eParameterType) \
+					:OpenViBE::Kernel::TBaseParameter < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >, IType >(rKernelContext, eParameterType) \
 				{ \
 					m_oDefaultValue=0; \
 					memcpy(&m_Value, &m_oDefaultValue, sizeof(IType)); \
@@ -29,12 +28,11 @@ namespace OpenViBE
 
 		#define _parameter_template_instance_2_(_CName_, CType, IType, oClassId) \
 			typedef OpenViBE::Kernel::TBaseParameter < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >, IType > _Base_##_CName_; \
-			class _CName_ : virtual public _Base_##_CName_ \
+			class _CName_ : public _Base_##_CName_ \
 			{ \
 			public: \
 				_CName_(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::EParameterType eParameterType) \
-					:OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >(rKernelContext) \
-					,OpenViBE::Kernel::TBaseParameter < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >, IType >(rKernelContext, eParameterType) \
+					:OpenViBE::Kernel::TBaseParameter < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IParameter >, IType >(rKernelContext, eParameterType) \
 				{ \
 					IType l_pDefaultValue=&m_oDefaultValue; \
 					memcpy(&m_Value, &l_pDefaultValue, sizeof(IType)); \

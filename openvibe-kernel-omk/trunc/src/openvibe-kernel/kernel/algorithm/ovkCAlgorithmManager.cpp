@@ -19,8 +19,10 @@ CAlgorithmManager::~CAlgorithmManager(void)
 	map < CIdentifier, pair < CAlgorithm*, CAlgorithmProxy* > >::iterator itAlgorithm;
 	for(itAlgorithm=m_vAlgorithm.begin(); itAlgorithm!=m_vAlgorithm.end(); itAlgorithm++)
 	{
+		IAlgorithm& l_rAlgorithm=itAlgorithm->second.first->getAlgorithm();
 		delete itAlgorithm->second.second;
 		delete itAlgorithm->second.first;
+		getKernelContext().getPluginManager().releasePluginObject(&l_rAlgorithm);
 	}
 }
 
@@ -31,8 +33,11 @@ CIdentifier CAlgorithmManager::createAlgorithm(
 	IAlgorithm* l_pAlgorithm=getKernelContext().getPluginManager().createAlgorithm(rAlgorithmClassIdentifier, &l_pAlgorithmDesc);
 	if(!l_pAlgorithm || !l_pAlgorithmDesc)
 	{
+		getLogManager() << LogLevel_Warning << "Algorithm creation failed, class identifier :" << rAlgorithmClassIdentifier << "\n";
 		return OV_UndefinedIdentifier;
 	}
+
+	getLogManager() << LogLevel_Trace << "Creating algorithm with class identifier " << rAlgorithmClassIdentifier << "\n";
 
 	CIdentifier l_oAlgorithmIdentifier=getUnusedIdentifier();
 	CAlgorithm* l_pTrueAlgorithm=new CAlgorithm(getKernelContext(), *l_pAlgorithm, *l_pAlgorithmDesc);
@@ -48,11 +53,15 @@ boolean CAlgorithmManager::releaseAlgorithm(
 	itAlgorithm=m_vAlgorithm.find(rAlgorithmIdentifier);
 	if(itAlgorithm==m_vAlgorithm.end())
 	{
+		getLogManager() << LogLevel_Warning << "Algorithm release failed, identifier " << rAlgorithmIdentifier << "\n";
 		return false;
 	}
+	getLogManager() << LogLevel_Trace << "Releasing algorithm with identifier " << rAlgorithmIdentifier << "\n";
+	IAlgorithm& l_rAlgorithm=itAlgorithm->second.first->getAlgorithm();
 	delete itAlgorithm->second.second;
 	delete itAlgorithm->second.first;
 	m_vAlgorithm.erase(itAlgorithm);
+	getKernelContext().getPluginManager().releasePluginObject(&l_rAlgorithm);
 	return true;
 }
 
@@ -64,12 +73,16 @@ boolean CAlgorithmManager::releaseAlgorithm(
 	{
 		if((IAlgorithmProxy*)itAlgorithm->second.second==&rAlgorithm)
 		{
+			getLogManager() << LogLevel_Trace << "Releasing algorithm\n";
+			IAlgorithm& l_rAlgorithm=itAlgorithm->second.first->getAlgorithm();
 			delete itAlgorithm->second.second;
 			delete itAlgorithm->second.first;
 			m_vAlgorithm.erase(itAlgorithm);
+			getKernelContext().getPluginManager().releasePluginObject(&l_rAlgorithm);
 			return true;
 		}
 	}
+	getLogManager() << LogLevel_Warning << "Algorithm release failed\n";
 	return false;
 }
 

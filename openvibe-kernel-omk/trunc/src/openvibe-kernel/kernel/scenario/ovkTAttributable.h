@@ -2,6 +2,7 @@
 #define __OpenViBEKernel_Kernel_Scenario_TAttributable_H__
 
 #include "../../ovk_base.h"
+#include "../../ovk_tools.h"
 
 #include <openvibe/ov_all.h>
 
@@ -12,7 +13,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		template <class T> class TAttributable : virtual public T
+		template <class T> class TAttributable : public T
 		{
 		public:
 
@@ -87,47 +88,10 @@ namespace OpenViBE
 				return m_vAttribute.size()!=0;
 			}
 
-#if 0
-			virtual OpenViBE::boolean enumerateAttributes(
-				OpenViBE::Kernel::IAttributable::IAttributeEnum& rCallback) const
-			{
-				rCallback.preCallback();
-				std::map<OpenViBE::CIdentifier, OpenViBE::CString>::const_iterator itAttribute=m_vAttribute.begin();
-				while(itAttribute!=m_vAttribute.end())
-				{
-					if(!rCallback.callback(*this, itAttribute->first, itAttribute->second))
-					{
-						rCallback.postCallback();
-						return true;
-					}
-					itAttribute++;
-				}
-				rCallback.postCallback();
-				return true;
-			}
-#endif
-
 			virtual OpenViBE::CIdentifier getNextAttributeIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const
 			{
-				std::map<OpenViBE::CIdentifier, OpenViBE::CString>::const_iterator itAttribute;
-
-				if(rPreviousIdentifier==OV_UndefinedIdentifier)
-				{
-					itAttribute=m_vAttribute.begin();
-				}
-				else
-				{
-					itAttribute=m_vAttribute.find(rPreviousIdentifier);
-					if(itAttribute==m_vAttribute.end())
-					{
-						return OV_UndefinedIdentifier;
-					}
-					itAttribute++;
-				}
-
-				return itAttribute!=m_vAttribute.end()?itAttribute->first:OV_UndefinedIdentifier;
-
+				return getNextIdentifier < OpenViBE::CString >(m_vAttribute, rPreviousIdentifier);
 			}
 
 			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_Scenario_AttributableT);

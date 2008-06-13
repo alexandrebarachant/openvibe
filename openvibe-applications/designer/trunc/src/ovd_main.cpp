@@ -1,5 +1,7 @@
 #include "ovd_base.h"
 
+#include <system/Time.h>
+
 #include <stack>
 #include <vector>
 #include <map>
@@ -87,10 +89,11 @@ public:
 
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_windowmanager")),   "clicked",  G_CALLBACK(button_show_window_manager_cb), this);
 
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_play")),      "clicked",  G_CALLBACK(play_scenario_cb),           this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_stop")),      "clicked",  G_CALLBACK(stop_scenario_cb),           this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_pause")),     "clicked",  G_CALLBACK(pause_scenario_cb),          this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_next")),      "clicked",  G_CALLBACK(next_scenario_cb),           this);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_stop")),      "clicked",  G_CALLBACK(stop_scenario_cb),           this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_play")),      "clicked",  G_CALLBACK(play_scenario_cb),           this);
+		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_forward")),   "clicked",  G_CALLBACK(forward_scenario_cb),        this);
 
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "button_log_level")), "clicked",  G_CALLBACK(log_level_cb),               this);
 
@@ -99,6 +102,8 @@ public:
 
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "algorithm_title_button_expand")),   "clicked", G_CALLBACK(algorithm_title_button_expand_cb),   this);
 		g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
+
+		g_idle_add(idle_application_loop, this);
 
 		// Prepares main notebooks
 		m_pScenarioNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "scenario_notebook"));
@@ -193,6 +198,19 @@ public:
 		gtk_widget_show(m_pMainWindow);
 		// gtk_window_set_icon_name(GTK_WINDOW(m_pMainWindow), "ov-logo");
 		// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/openvibe-applications/designer/ov-logo.png", NULL);
+	}
+
+	boolean hasScenarioRuning(void)
+	{
+		vector<CInterfacedScenario*>::const_iterator itInterfacedScenario;
+		for(itInterfacedScenario=m_vInterfacedScenario.begin(); itInterfacedScenario!=m_vInterfacedScenario.end(); itInterfacedScenario++)
+		{
+			if((*itInterfacedScenario)->m_pPlayer)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	CInterfacedScenario* getCurrentInterfacedScenario(void)
@@ -485,123 +503,123 @@ public:
 		}
 	}
 
-	void playScenarioCB(void)
+	IPlayer* getPlayer(void)
 	{
-		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "playScenarioCB\n";
-
-		//retrieve current scenario
 		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
-		if(!l_pCurrentInterfacedScenario)
-		{
-			return;
-		}
+		return (l_pCurrentInterfacedScenario?l_pCurrentInterfacedScenario->m_pPlayer:NULL);
+	}
+	void createPlayer(void)
+	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "createPlayer\n";
 
-/*
-		//return if scenario is playing
-		if(l_pCurrentInterfacedScenario->isLocked())
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario && !l_pCurrentInterfacedScenario->m_pPlayer)
 		{
-			return;
-		}
-*/
+			// generate player windows
+			l_pCurrentInterfacedScenario->createPlayerVisualisation();
 
-		//generate player windows
-		l_pCurrentInterfacedScenario->createPlayerVisualisation();
-
-		//create player if needed
-		if(!l_pCurrentInterfacedScenario->m_pPlayer)
-		{
 			m_pKernel->getContext()->getPlayerManager().createPlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
 			CIdentifier l_oScenarioIdentifier=l_pCurrentInterfacedScenario->m_oScenarioIdentifier;
 			CIdentifier l_oPlayerIdentifier=l_pCurrentInterfacedScenario->m_oPlayerIdentifier;
 			l_pCurrentInterfacedScenario->m_pPlayer=&m_pKernel->getContext()->getPlayerManager().getPlayer(l_oPlayerIdentifier);
-			l_pCurrentInterfacedScenario->m_pPlayer->reset(m_pScenarioManager->getScenario(l_oScenarioIdentifier), m_pKernel->getContext()->getPluginManager());
+			l_pCurrentInterfacedScenario->m_pPlayer->setScenario(l_oScenarioIdentifier);
+			l_pCurrentInterfacedScenario->m_ui64LastLoopTime=System::Time::zgetTime();
+
+			//set up idle function
+			g_idle_add(idle_scenario_loop, l_pCurrentInterfacedScenario);
+
+			// redraws scenario
 			l_pCurrentInterfacedScenario->redraw();
 		}
+	}
+	void releasePlayer(void)
+	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "releasePlayer\n";
 
-		//set up idle function
-		l_pCurrentInterfacedScenario->m_bIsPaused=false;
-		g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
-		g_idle_add(idle_scenario_step, l_pCurrentInterfacedScenario->m_pPlayer);
+		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+		if(l_pCurrentInterfacedScenario && l_pCurrentInterfacedScenario->m_pPlayer)
+		{
+			// removes idle function
+			g_idle_remove_by_data(l_pCurrentInterfacedScenario);
 
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
+			m_pKernel->getContext()->getPlayerManager().releasePlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
+			l_pCurrentInterfacedScenario->m_oPlayerIdentifier=OV_UndefinedIdentifier;
+			l_pCurrentInterfacedScenario->m_pPlayer=NULL;
+
+			// destroy player windows
+			l_pCurrentInterfacedScenario->releasePlayerVisualisation();
+
+			// redraws scenario
+			l_pCurrentInterfacedScenario->redraw();
+		}
+	}
+
+	void stopScenarioCB(void)
+	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "stopScenarioCB\n";
+
+		this->getPlayer()->stop();
+		this->releasePlayer();
+
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),    false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),   false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_forward"), true);
 	}
 	void pauseScenarioCB(void)
 	{
 		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "pauseScenarioCB\n";
 
-		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
-		if(!l_pCurrentInterfacedScenario)
-		{
-			return;
-		}
-		if(l_pCurrentInterfacedScenario->m_pPlayer)
-		{
-			g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
-		}
+		this->createPlayer();
+		this->getPlayer()->pause();
 
-		l_pCurrentInterfacedScenario->m_bIsPaused=true;
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),   false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_forward"), true);
 	}
 	void nextScenarioCB(void)
 	{
 		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "nextScenarioCB\n";
 
-		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
-		if(!l_pCurrentInterfacedScenario)
-		{
-			return;
-		}
-		if(!l_pCurrentInterfacedScenario->m_pPlayer)
-		{
-			m_pKernel->getContext()->getPlayerManager().createPlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
-			CIdentifier l_oScenarioIdentifier=l_pCurrentInterfacedScenario->m_oScenarioIdentifier;
-			CIdentifier l_oPlayerIdentifier=l_pCurrentInterfacedScenario->m_oPlayerIdentifier;
-			l_pCurrentInterfacedScenario->m_pPlayer=&m_pKernel->getContext()->getPlayerManager().getPlayer(l_oPlayerIdentifier);
-			l_pCurrentInterfacedScenario->m_pPlayer->reset(m_pScenarioManager->getScenario(l_oScenarioIdentifier), m_pKernel->getContext()->getPluginManager());
-			l_pCurrentInterfacedScenario->redraw();
-		}
+		this->createPlayer();
+		this->getPlayer()->step();
 
-		l_pCurrentInterfacedScenario->m_bIsPaused=true;
-		l_pCurrentInterfacedScenario->m_pPlayer->loop();
-
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),   false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_forward"), true);
 	}
-	void stopScenarioCB(void)
+	void playScenarioCB(void)
 	{
-		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "stopScenarioCB\n";
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "playScenarioCB\n";
 
-		CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
-		if(!l_pCurrentInterfacedScenario)
-		{
-			return;
-		}
-		if(l_pCurrentInterfacedScenario->m_pPlayer)
-		{
-			//destroy player windows
-			l_pCurrentInterfacedScenario->releasePlayerVisualisation();
+		this->createPlayer();
+		this->getPlayer()->play();
 
-			g_idle_remove_by_data(l_pCurrentInterfacedScenario->m_pPlayer);
-			m_pKernel->getContext()->getPlayerManager().releasePlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
-			l_pCurrentInterfacedScenario->m_oPlayerIdentifier=OV_UndefinedIdentifier;
-			l_pCurrentInterfacedScenario->m_pPlayer=NULL;
-			l_pCurrentInterfacedScenario->redraw();
-		}
-
-		l_pCurrentInterfacedScenario->m_bIsPaused=false;
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),   true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),    false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_forward"), true);
 	}
+	void forwardScenarioCB(void)
+	{
+		m_pKernel->getContext()->getLogManager() << LogLevel_Trace << "forwardScenarioCB\n";
+
+		this->createPlayer();
+		this->getPlayer()->forward();
+
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),   true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),    true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_forward"), false);
+	}
+
 	void logLevelCB(void)
 	{
 		// Loads log level dialog
@@ -637,20 +655,24 @@ public:
 		if(ui32PageIndex<m_vInterfacedScenario.size())
 		{
 			CInterfacedScenario* l_pCurrentInterfacedScenario=m_vInterfacedScenario[ui32PageIndex];
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),  !l_pCurrentInterfacedScenario->m_pPlayer || l_pCurrentInterfacedScenario->m_bIsPaused);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),  !l_pCurrentInterfacedScenario->m_pPlayer || l_pCurrentInterfacedScenario->m_bIsPaused);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),  l_pCurrentInterfacedScenario->m_pPlayer && !l_pCurrentInterfacedScenario->m_bIsPaused);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),   l_pCurrentInterfacedScenario->m_pPlayer!=NULL);
+			EPlayerStatus l_ePlayerStatus=(l_pCurrentInterfacedScenario->m_pPlayer?l_pCurrentInterfacedScenario->m_pPlayer->getStatus():PlayerStatus_Stop);
+
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),    l_ePlayerStatus!=PlayerStatus_Stop);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),   l_ePlayerStatus!=PlayerStatus_Stop && l_ePlayerStatus!=PlayerStatus_Pause);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),    true);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),    l_ePlayerStatus!=PlayerStatus_Play);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_forward"), l_ePlayerStatus!=PlayerStatus_Forward);
 
 			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_save"), l_pCurrentInterfacedScenario->m_bHasFileName && l_pCurrentInterfacedScenario->m_bHasBeenModified);
 			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "menu_save"),   l_pCurrentInterfacedScenario->m_bHasFileName && l_pCurrentInterfacedScenario->m_bHasBeenModified);
 		}
 		else
 		{
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),  false);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),  false);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"), false);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),  false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"),    false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_pause"),   false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_next"),    false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"),    false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_forward"), false);
 
 			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_save"), false);
 			// gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "menu_save"),   false);
@@ -734,9 +756,9 @@ public:
 		static_cast<CApplication*>(pUserData)->showDesignerVisualisationCB();
 	}
 
-	static void play_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		static_cast<CApplication*>(pUserData)->playScenarioCB();
+		static_cast<CApplication*>(pUserData)->stopScenarioCB();
 	}
 	static void pause_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
@@ -746,9 +768,13 @@ public:
 	{
 		static_cast<CApplication*>(pUserData)->nextScenarioCB();
 	}
-	static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	static void play_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		static_cast<CApplication*>(pUserData)->stopScenarioCB();
+		static_cast<CApplication*>(pUserData)->playScenarioCB();
+	}
+	static void forward_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->forwardScenarioCB();
 	}
 
 	static void log_level_cb(::GtkButton* pButton, gpointer pUserData)
@@ -780,9 +806,34 @@ public:
 		gtk_tree_view_collapse_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "algorithm_tree")));
 	}
 
-	static gboolean idle_scenario_step(gpointer pUserData)
+	static gboolean idle_application_loop(gpointer pUserData)
 	{
-		static_cast<IPlayer*>(pUserData)->loop();
+		CInterfacedScenario* l_pInterfacedScenario=static_cast<CApplication*>(pUserData)->getCurrentInterfacedScenario();
+		float64 l_f64Time=(l_pInterfacedScenario&&l_pInterfacedScenario->m_pPlayer?((l_pInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
+		uint32 l_ui32Milli  = ((uint32)(l_f64Time*1000)%1000);
+		uint32 l_ui32Seconds=  ((uint32)l_f64Time)%60;
+		uint32 l_ui32Minutes= (((uint32)l_f64Time)/60)%60;
+		uint32 l_ui32Hours  =((((uint32)l_f64Time)/60)/60);
+
+		std::stringstream ss;
+		ss << "Time : ";
+		if(l_ui32Hours)                                            ss << l_ui32Hours << "h ";
+		if(l_ui32Hours||l_ui32Minutes)                             ss << (l_ui32Minutes<10?"0":"") << l_ui32Minutes << "m ";
+		if(l_ui32Hours||l_ui32Minutes||l_ui32Seconds)              ss << (l_ui32Seconds<10?"0":"") << l_ui32Seconds << "s ";
+		ss << (l_ui32Milli<100?"0":"") << (l_ui32Milli<10?"0":"") << l_ui32Milli << "ms";
+
+		gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "label_current_time")), ss.str().c_str());
+
+		// System::Time::sleep(static_cast<CApplication*>(pUserData)->hasScenarioRuning()?0:1);
+
+		return TRUE;
+	}
+	static gboolean idle_scenario_loop(gpointer pUserData)
+	{
+		CInterfacedScenario* l_pInterfacedScenario=static_cast<CInterfacedScenario*>(pUserData);
+		uint64 l_ui64CurrentTime=System::Time::zgetTime();
+		l_pInterfacedScenario->m_pPlayer->loop(l_ui64CurrentTime-l_pInterfacedScenario->m_ui64LastLoopTime);
+		l_pInterfacedScenario->m_ui64LastLoopTime=l_ui64CurrentTime;
 		return TRUE;
 	}
 
@@ -806,28 +857,69 @@ public:
 	vector<CInterfacedScenario*> m_vInterfacedScenario;
 };
 
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-
-class CPluginObjectDescCollector : virtual public IPluginManager::IPluginObjectDescEnum
+class CPluginObjectDescEnum
 {
 public:
 
-	CPluginObjectDescCollector(const IKernelContext& rKernelContext)
+	CPluginObjectDescEnum(const IKernelContext& rKernelContext)
 		:m_rKernelContext(rKernelContext)
 	{
 	}
 
+	virtual ~CPluginObjectDescEnum(void)
+	{
+	}
+
+	virtual boolean enumeratePluginObjectDesc(void)
+	{
+		CIdentifier l_oIdentifier;
+		while((l_oIdentifier=m_rKernelContext.getPluginManager().getNextPluginObjectDescIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+		{
+			this->callback(*m_rKernelContext.getPluginManager().getPluginObjectDesc(l_oIdentifier));
+		}
+		return true;
+	}
+
+	virtual boolean enumeratePluginObjectDesc(
+		const CIdentifier& rParentClassIdentifier)
+	{
+		CIdentifier l_oIdentifier;
+		while((l_oIdentifier=m_rKernelContext.getPluginManager().getNextPluginObjectDescIdentifier(l_oIdentifier, rParentClassIdentifier))!=OV_UndefinedIdentifier)
+		{
+			this->callback(*m_rKernelContext.getPluginManager().getPluginObjectDesc(l_oIdentifier));
+		}
+		return true;
+	}
+
 	virtual boolean callback(
-		const Kernel::IPluginModule& rPluginModule,
+		const Plugins::IPluginObjectDesc& rPluginObjectDesc)=0;
+
+protected:
+
+	const IKernelContext& m_rKernelContext;
+};
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+class CPluginObjectDescCollector : public CPluginObjectDescEnum
+{
+public:
+
+	CPluginObjectDescCollector(const IKernelContext& rKernelContext)
+		:CPluginObjectDescEnum(rKernelContext)
+	{
+	}
+
+	virtual boolean callback(
 		const Plugins::IPluginObjectDesc& rPluginObjectDesc)
 	{
 		string l_sFullName=string(rPluginObjectDesc.getCategory())+"/"+string(rPluginObjectDesc.getName());
 		map<string, const IPluginObjectDesc* >::iterator itPluginObjectDesc=m_vPluginObjectDesc.find(l_sFullName);
 		if(itPluginObjectDesc!=m_vPluginObjectDesc.end())
 		{
-			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Duplicate plugin object desc entry " << CString(l_sFullName.c_str()) << " " << itPluginObjectDesc->second->getCreatedClass() << " and " << rPluginObjectDesc.getCreatedClass() << "\n";
+			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Duplicate plugin object name " << CString(l_sFullName.c_str()) << " " << itPluginObjectDesc->second->getCreatedClass() << " and " << rPluginObjectDesc.getCreatedClass() << "\n";
 		}
 		m_vPluginObjectDesc[l_sFullName]=&rPluginObjectDesc;
 		return true;
@@ -838,10 +930,6 @@ public:
 		return m_vPluginObjectDesc;
 	}
 
-protected:
-
-	const IKernelContext& m_rKernelContext;
-
 private:
 
 	map<string, const IPluginObjectDesc*> m_vPluginObjectDesc;
@@ -851,25 +939,20 @@ private:
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-class CPluginObjectDescLogger : virtual public IPluginManager::IPluginObjectDescEnum
+class CPluginObjectDescLogger : public CPluginObjectDescEnum
 {
 public:
 
 	CPluginObjectDescLogger(const IKernelContext& rKernelContext)
-		:m_rKernelContext(rKernelContext)
+		:CPluginObjectDescEnum(rKernelContext)
 	{
 	}
 
 	virtual boolean callback(
-		const Kernel::IPluginModule& rPluginModule,
 		const Plugins::IPluginObjectDesc& rPluginObjectDesc)
 	{
 		// Outputs plugin info to console
-		CString l_sModuleFileName;
-		rPluginModule.getFileName(l_sModuleFileName);
-
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Plugin <" << rPluginObjectDesc.getName() << ">\n";
-		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Plugin module filename : " << l_sModuleFileName << "\n";
 		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Plugin category        : " << rPluginObjectDesc.getCategory() << "\n";
 		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Class identifier       : " << rPluginObjectDesc.getCreatedClass() << "\n";
 		m_rKernelContext.getLogManager() << LogLevel_Debug << " | Author name            : " << rPluginObjectDesc.getAuthorName() << "\n";
@@ -879,10 +962,6 @@ public:
 
 		return true;
 	}
-
-protected:
-
-	const IKernelContext& m_rKernelContext;
 };
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -1012,7 +1091,7 @@ int g_argc;
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-int main(int argc, char ** argv)
+int go(int argc, char ** argv)
 {
 	g_argc=argc;
 	g_argv=argv;
@@ -1086,9 +1165,6 @@ int main(int argc, char ** argv)
 
 					OpenViBEToolkit::initialize(*l_pKernel->getContext());
 
-					gtk_init(&g_argc, &g_argv);
-					// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
-
 					ILogManager& l_rLogManager=l_pKernel->getContext()->getLogManager();
 					l_rLogManager.activate(LogLevel_Debug, false);
 					l_rLogManager.activate(LogLevel_Benchmark, false);
@@ -1110,6 +1186,9 @@ int main(int argc, char ** argv)
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-Plugins-*.dll");
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-*.dll");
 
+					gtk_init(&g_argc, &g_argv);
+					// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
+
 					::CApplication app(l_pKernel);
 					app.initialize();
 					app.newScenarioCB();
@@ -1117,9 +1196,9 @@ int main(int argc, char ** argv)
 					CPluginObjectDescCollector cb_collector1(*l_pKernel->getContext());
 					CPluginObjectDescCollector cb_collector2(*l_pKernel->getContext());
 					CPluginObjectDescLogger cb_logger(*l_pKernel->getContext());
-					l_rPluginManager.enumeratePluginObjectDesc(cb_logger);
-					l_rPluginManager.enumeratePluginObjectDesc(cb_collector1, OV_ClassId_Plugins_BoxAlgorithmDesc);
-					l_rPluginManager.enumeratePluginObjectDesc(cb_collector2, OV_ClassId_Plugins_AlgorithmDesc);
+					cb_logger.enumeratePluginObjectDesc();
+					cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+					cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
 					insertPluginObjectDesc_to_GtkTreeStore(cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
 					insertPluginObjectDesc_to_GtkTreeStore(cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
 
@@ -1140,4 +1219,18 @@ int main(int argc, char ** argv)
 	}
 
 	return 0;
+}
+
+int main(int argc, char ** argv)
+{
+	int l_iRet=-1;
+	try
+	{
+		l_iRet=go(argc, argv);
+	}
+	catch (...)
+	{
+		std::cout << "Catched something at very top level...\nLeaving !\n";
+	}
+	return l_iRet;
 }

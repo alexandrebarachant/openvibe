@@ -23,6 +23,7 @@
 #include "ovCMemoryBuffer.h"
 
 #include "ovIObject.h"
+#include "ovIObjectVisitor.h"
 #include "ovIKernelLoader.h"
 
 //___________________________________________________________________//
@@ -40,6 +41,7 @@
 #include "kernel/ovITypeManager.h"
 #include "kernel/ovIParameter.h"
 #include "kernel/ovIConfigurable.h"
+#include "kernel/ovIObjectVisitorContext.h"
 #include "kernel/ovTParameterHandler.h"
 
 #include "kernel/algorithm/ovIAlgorithmContext.h"

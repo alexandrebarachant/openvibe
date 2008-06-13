@@ -12,7 +12,7 @@ namespace OpenViBE
 
 	namespace Plugins
 	{
-		class OV_API IScenarioExporter : virtual public OpenViBE::Plugins::IPluginObject
+		class OV_API IScenarioExporter : public OpenViBE::Plugins::IPluginObject
 		{
 		public:
 

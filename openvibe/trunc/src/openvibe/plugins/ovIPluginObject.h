@@ -12,6 +12,7 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-06-19
 		 * \brief Base class for plugin object
+		 * \ingroup Group_Extend
 		 *
 		 * This class is the base class for all the concrete plugin
 		 * classes that extend the §OpenViBE§ platform. It comes with
@@ -29,7 +30,7 @@ namespace OpenViBE
 		 *
 		 * \todo details about building new plugins
 		 */
-		class OV_API IPluginObject : virtual public OpenViBE::IObject
+		class OV_API IPluginObject : public OpenViBE::IObject
 		{
 		public:
 

@@ -10,7 +10,7 @@ namespace OpenViBE
 	namespace Kernel
 	{
 		template <class T>
-		class TKernelObject : virtual public T
+		class TKernelObject : public T
 		{
 		public:
 
@@ -26,7 +26,47 @@ namespace OpenViBE
 
 			OpenViBE::Kernel::ILogManager& log(void) const
 			{
+				return this->getLogManager();
+			}
+
+			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) const
+			{
+				return m_rKernelContext.getAlgorithmManager();
+			}
+
+			virtual OpenViBE::Kernel::IKernelObjectFactory& getKernelObjectFactory(void) const
+			{
+				return m_rKernelContext.getKernelObjectFactory();
+			}
+
+			virtual OpenViBE::Kernel::IPlayerManager& getPlayerManager(void) const
+			{
+				return m_rKernelContext.getPlayerManager();
+			}
+
+			virtual OpenViBE::Kernel::IPluginManager& getPluginManager(void) const
+			{
+				return m_rKernelContext.getPluginManager();
+			}
+
+			virtual OpenViBE::Kernel::IScenarioManager& getScenarioManager(void) const
+			{
+				return m_rKernelContext.getScenarioManager();
+			}
+
+			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void) const
+			{
+				return m_rKernelContext.getTypeManager();
+			}
+
+			virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const
+			{
 				return m_rKernelContext.getLogManager();
+			}
+
+			virtual OpenViBE::Kernel::IVisualisationManager& getVisualisationManager(void) const
+			{
+				return m_rKernelContext.getVisualisationManager();
 			}
 
 			_IsDerivedFromClass_(T, OVK_ClassId_Kernel_KernelObjectT)

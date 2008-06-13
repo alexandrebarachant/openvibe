@@ -12,11 +12,15 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CScenario : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IScenario> >
+		class CBox;
+		class CLink;
+		class CProcessingUnit;
+
+		class CScenario : public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::IScenario > >
 		{
 		public:
 
-			CScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			CScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext, const OpenViBE::CIdentifier& rIdentifier);
 
 			virtual OpenViBE::boolean clear(void);
 			virtual OpenViBE::boolean load(
@@ -36,10 +40,6 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rVisualisationTreeIdentifier);
 			virtual OpenViBE::CIdentifier getVisualisationTreeIdentifier(void) const;
 
-#if 0
-			virtual OpenViBE::boolean enumerateBoxes(
-				OpenViBE::Kernel::IScenario::IBoxEnum& rCallback) const;
-#endif
 			virtual OpenViBE::CIdentifier getNextBoxIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const;
 			virtual OpenViBE::CIdentifier getNextBoxIdentifierOnProcessingUnit(
@@ -62,20 +62,6 @@ namespace OpenViBE
 			virtual OpenViBE::boolean removeBox(
 				const OpenViBE::CIdentifier& rBoxIdentifier);
 
-#if 0
-			virtual OpenViBE::boolean enumerateLinks(
-				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback) const;
-			virtual OpenViBE::boolean enumerateLinksFromBox(
-				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
-				const OpenViBE::CIdentifier& rBoxIdentifier) const;
-			virtual OpenViBE::boolean enumerateLinksFromBoxOutput(
-				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
-				const OpenViBE::CIdentifier& rBoxIdentifier,
-				const OpenViBE::uint32 ui32OutputIndex) const;
-			virtual OpenViBE::boolean enumerateLinksToBox(
-				OpenViBE::Kernel::IScenario::ILinkEnum& rCallback,
-				const OpenViBE::CIdentifier& rBoxIdentifier) const;
-#endif
 			virtual OpenViBE::CIdentifier getNextLinkIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const;
 			virtual OpenViBE::CIdentifier getNextLinkIdentifierFromBox(
@@ -125,6 +111,9 @@ namespace OpenViBE
 			virtual OpenViBE::boolean removeProcessingUnit(
 				const OpenViBE::CIdentifier& rProcessingUnitIdentifier);
 
+			virtual OpenViBE::boolean acceptVisitor(
+				OpenViBE::IObjectVisitor& rObjectVisitor);
+
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IScenario> >, OVK_ClassId_Kernel_Scenario_Scenario)
 
 		protected:
@@ -132,10 +121,12 @@ namespace OpenViBE
 			virtual OpenViBE::CIdentifier getUnusedIdentifier(void) const;
 
 		protected:
+
+			OpenViBE::CIdentifier m_oIdentifier;
 			OpenViBE::CIdentifier m_oVisualisationTreeIdentifier;
-			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IBox*> m_vBox;
-			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::ILink*> m_vLink;
-			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IProcessingUnit*> m_vProcessingUnit;
+			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CBox*> m_vBox;
+			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CLink*> m_vLink;
+			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CProcessingUnit*> m_vProcessingUnit;
 		};
 	};
 };

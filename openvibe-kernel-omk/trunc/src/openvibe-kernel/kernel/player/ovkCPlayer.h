@@ -2,44 +2,52 @@
 #define __OpenViBEKernel_Kernel_Player_CPlayer_H__
 
 #include "../ovkTKernelObject.h"
-
-#include <openvibe/ov_all.h>
+#include "ovkCScheduler.h"
 
 #include <system/CChrono.h>
 
-class PsController;
-class PsnReferenceObjectHandle;
-class PsObjectDescriptor;
+#include <map>
 
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPlayer : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayer>
+		class CPlayer : public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IPlayer >
 		{
 		public:
 
 			CPlayer(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 			virtual ~CPlayer(void);
 
-			virtual OpenViBE::boolean reset(
-				const OpenViBE::Kernel::IScenario& rScenario,
-				OpenViBE::Kernel::IPluginManager& rPluginManager);
+			virtual OpenViBE::boolean setScenario(
+				const OpenViBE::CIdentifier& rScenarioIdentifier);
 
-			virtual OpenViBE::boolean loop(void);
+			virtual OpenViBE::boolean initialize(void);
+			virtual OpenViBE::boolean uninitialize(void);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IPlayer, OVK_ClassId_Kernel_Player_Player);
+			virtual OpenViBE::boolean stop(void);
+			virtual OpenViBE::boolean pause(void);
+			virtual OpenViBE::boolean step(void);
+			virtual OpenViBE::boolean play(void);
+			virtual OpenViBE::boolean forward(void);
+
+			virtual OpenViBE::Kernel::EPlayerStatus getStatus(void) const;
+
+			virtual OpenViBE::boolean loop(
+				const OpenViBE::uint64 ui64ElapsedTime);
+
+			virtual OpenViBE::uint64 getCurrentSimulatedTime(void) const;
+
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IPlayer >, OVK_ClassId_Kernel_Player_Player);
 
 		protected:
 
-			::PsController* m_pController;
-			::PsnReferenceObjectHandle* m_pControllerHandle;
-			::PsObjectDescriptor* m_pSimulation;
-			OpenViBE::Kernel::IScenario* m_pScenario;
+			OpenViBE::Kernel::CScheduler m_oScheduler;
 
-			OpenViBE::uint32 m_ui32ControllerSteps;
-			OpenViBE::uint32 m_ui32StartTime;
-			OpenViBE::uint32 m_ui32SecondsLate;
+			OpenViBE::uint64 m_ui64CurrentTimeToReach;
+			OpenViBE::uint64 m_ui64Lateness;
+			OpenViBE::Kernel::EPlayerStatus m_eStatus;
+			OpenViBE::boolean m_bIsInitialized;
 
 		private:
 

@@ -12,7 +12,7 @@ namespace OpenViBE
 		class CAlgorithm;
 		class CAlgorithmProxy;
 
-		class CAlgorithmManager : virtual public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IAlgorithmManager >
+		class CAlgorithmManager : public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IAlgorithmManager >
 		{
 		public:
 

@@ -17,6 +17,7 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2007-11-06
 		 * \brief Abstract algorithm, base element of §OpenViBE§ processing objects
+		 * \ingroup Group_Extend
 		 *
 		 * This class should be derived by any plugin that is related
 		 * to data processing. It basically has a parameterable interface
@@ -33,7 +34,7 @@ namespace OpenViBE
 		 *
 		 * \todo details about building new plugins
 		 */
-		class OV_API IAlgorithm : virtual public OpenViBE::Plugins::IPluginObject
+		class OV_API IAlgorithm : public OpenViBE::Plugins::IPluginObject
 		{
 		public:
 

@@ -207,7 +207,7 @@ IVisualisationWidget* CVisualisationTree::getVisualisationWidgetFromBoxIdentifie
 boolean CVisualisationTree::addVisualisationWidget(CIdentifier& rIdentifier, const CString& rName, EVisualisationWidgetType oType,
 	const CIdentifier& rParentIdentifier, uint32 ui32Index, const CIdentifier& rBoxIdentifier, uint32 ui32NbChildren)
 {
-	log() << LogLevel_Info << "Adding new visualisation widget\n";
+	log() << LogLevel_Trace << "Adding new visualisation widget\n";
 
 	//create new widget
 	IVisualisationWidget* l_pVisualisationWidget = OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).createObject<IVisualisationWidget*>(OV_ClassId_Kernel_Visualisation_VisualisationWidget);
@@ -1032,10 +1032,7 @@ boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, 
 		//retrieve pointer to box algorithm descriptor
 		const IBoxAlgorithmDesc* l_pDesc = dynamic_cast<const IBoxAlgorithmDesc*>(
 			m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_pBox->getAlgorithmClassIdentifier()));
-		if(l_pDesc != NULL)
-		{
-			l_pStockIconString = l_pDesc->getStockItemName();
-		}
+		l_pStockIconString = l_pDesc->getStockItemName();
 	}
 
 	::GtkWidget* l_pWidget = loadTreeWidget(pVisualisationWidget);

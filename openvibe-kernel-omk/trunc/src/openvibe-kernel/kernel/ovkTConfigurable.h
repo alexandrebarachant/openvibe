@@ -14,7 +14,7 @@ namespace OpenViBE
 		class IParameter;
 
 		template <class IBase>
-		class TBaseConfigurable : virtual public IBase
+		class TBaseConfigurable : public IBase
 		{
 		public:
 
@@ -38,16 +38,7 @@ namespace OpenViBE
 
 			virtual OpenViBE::CIdentifier getNextParameterIdentifier(const OpenViBE::CIdentifier& rPreviousIdentifier) const
 			{
-				std::map < OpenViBE::CIdentifier, std::pair < OpenViBE::boolean, OpenViBE::Kernel::IParameter* > >::const_iterator itParameter=m_vParameter.find(rPreviousIdentifier);
-				if(itParameter!=m_vParameter.end())
-				{
-					itParameter++;
-					if(itParameter!=m_vParameter.end())
-					{
-						return itParameter->first;
-					}
-				}
-				return OV_UndefinedIdentifier;
+				return getNextIdentifier< std::pair < OpenViBE::boolean, OpenViBE::Kernel::IParameter* > >(m_vParameter, rPreviousIdentifier);
 			}
 
 			virtual OpenViBE::Kernel::IParameter* getParameter(const OpenViBE::CIdentifier& rParameterIdentifier)

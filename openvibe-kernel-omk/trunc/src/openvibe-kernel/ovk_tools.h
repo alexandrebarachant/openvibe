@@ -4,5 +4,6 @@
 #include "tools/ovkCKernelObjectFactoryHelper.h"
 #include "tools/ovkCScopeTester.h"
 #include "tools/ovk_bridge_bind_function.h"
+#include "tools/ovk_identifier_map_iterator.h"
 
 #endif // __OpenViBEKernel_tools_H__

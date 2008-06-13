@@ -18,12 +18,14 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-07-07
 		 * \brief Player interface for plugin objects
+		 * \ingroup Group_Player
+		 * \ingroup Group_Kernel
 		 *
 		 * Instances of this class are given to plugin object
 		 * so they can communicate with the platform kernel,
 		 * providing services such as message sending etc...
 		 */
-		class OV_API IPlayerContext : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IPlayerContext : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 

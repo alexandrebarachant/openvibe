@@ -5,9 +5,6 @@
 
 #include <openvibe/ov_all.h>
 
-#include <iostream>
-#include <string>
-
 namespace OpenViBE
 {
 	namespace Tools
@@ -16,15 +13,15 @@ namespace OpenViBE
 		{
 		public:
 
-			CScopeTester(void);
-			CScopeTester(const std::string& sPrefix);
+			CScopeTester(const OpenViBE::Kernel::IKernelContext& rKernelCotnext, const OpenViBE::CString& sPrefix);
 			virtual ~CScopeTester(void);
 
 			_IsDerivedFromClass_Final_(IObject, OVK_ClassId_Tools_ScopeTester);
 
 		protected:
 
-			std::string m_sPrefix;
+			OpenViBE::CString m_sPrefix;
+			const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		};
 	};
 };

@@ -9,20 +9,22 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CScenarioManager : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IScenarioManager>
+		class CScenario;
+
+		class CScenarioManager : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IScenarioManager>
 		{
 		public:
 
 			CScenarioManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
+			virtual OpenViBE::CIdentifier getNextScenarioIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const;
 			virtual OpenViBE::boolean createScenario(
 				OpenViBE::CIdentifier& rScenarioIdentifier);
 			virtual OpenViBE::boolean releaseScenario(
 				const OpenViBE::CIdentifier& rScenarioIdentifier);
 			virtual OpenViBE::Kernel::IScenario& getScenario(
 				const OpenViBE::CIdentifier& rScenarioIdentifier);
-			virtual OpenViBE::boolean enumerateScenarios(
-				OpenViBE::Kernel::IScenarioManager::IScenarioEnum& rCallBack) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IScenarioManager>, OVK_ClassId_Kernel_Scenario_ScenarioManager);
 
@@ -32,7 +34,7 @@ namespace OpenViBE
 
 		protected:
 
-			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IScenario*> m_vScenario;
+			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CScenario*> m_vScenario;
 
 		};
 	};

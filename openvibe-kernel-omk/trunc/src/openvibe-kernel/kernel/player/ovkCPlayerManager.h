@@ -1,5 +1,5 @@
-#ifndef __OpenViBEKernel_Kernel_Player_IPlayerManager_H__
-#define __OpenViBEKernel_Kernel_Player_IPlayerManager_H__
+#ifndef __OpenViBEKernel_Kernel_Player_CPlayerManager_H__
+#define __OpenViBEKernel_Kernel_Player_CPlayerManager_H__
 
 #include "../ovkTKernelObject.h"
 
@@ -9,7 +9,9 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CPlayerManager : virtual public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayerManager>
+		class CPlayer;
+
+		class CPlayerManager : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IPlayerManager>
 		{
 		public:
 
@@ -32,9 +34,9 @@ namespace OpenViBE
 
 		protected:
 
-			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IPlayer*> m_vPlayer;
+			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CPlayer*> m_vPlayer;
 		};
 	};
 };
 
-#endif // __OpenViBEKernel_Kernel_Player_IPlayerManager_H__
+#endif // __OpenViBEKernel_Kernel_Player_CPlayerManager_H__

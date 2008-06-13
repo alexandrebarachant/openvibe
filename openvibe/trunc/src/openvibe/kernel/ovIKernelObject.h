@@ -7,7 +7,14 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class OV_API IKernelObject : virtual public OpenViBE::IObject
+		/**
+		 * \class IKernelObject
+		 * \brief Base class for all kernel objects
+		 * \author Yann Renard (INRIA/IRISA)
+		 * \date 2006-09-26
+		 * \ingroup Group_Kernel
+		 */
+		class OV_API IKernelObject : public OpenViBE::IObject
 		{
 		public:
 

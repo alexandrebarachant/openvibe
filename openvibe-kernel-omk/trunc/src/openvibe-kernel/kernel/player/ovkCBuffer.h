@@ -9,24 +9,24 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		namespace Player
+		class CBuffer : public OpenViBE::CMemoryBuffer
 		{
-			class CBuffer : virtual public OpenViBE::CMemoryBuffer
-			{
-			public:
+		public:
 
-				const CBuffer& operator=(const CBuffer& rBuffer);
+			CBuffer(void) { }
+			CBuffer(const OpenViBE::Kernel::CBuffer& rBuffer);
 
-				virtual OpenViBE::boolean appendOutputChunkData(
-					const OpenViBE::uint8* pBuffer,
-					const OpenViBE::uint64 ui64BufferSize);
+			const CBuffer& operator=(const CBuffer& rBuffer);
 
-			protected:
+			virtual OpenViBE::boolean appendOutputChunkData(
+				const OpenViBE::uint8* pBuffer,
+				const OpenViBE::uint64 ui64BufferSize);
 
-				OpenViBE::uint8* m_pBuffer;
-				OpenViBE::uint64 m_ui64BufferSize;
-				OpenViBE::uint64 m_ui64AllocatedSize;
-			};
+		protected:
+
+			OpenViBE::uint8* m_pBuffer;
+			OpenViBE::uint64 m_ui64BufferSize;
+			OpenViBE::uint64 m_ui64AllocatedSize;
 		};
 	};
 };

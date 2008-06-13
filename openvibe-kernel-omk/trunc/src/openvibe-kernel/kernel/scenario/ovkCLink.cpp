@@ -1,5 +1,7 @@
 #include "ovkCLink.h"
 
+#include "../ovkCObjectVisitorContext.h"
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 
@@ -88,4 +90,14 @@ CIdentifier CLink::getTargetBoxIdentifier(void) const
 uint32 CLink::getTargetBoxInputIndex(void) const
 {
 	return m_ui32TargetInputIndex;
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+boolean CLink::acceptVisitor(
+	IObjectVisitor& rObjectVisitor)
+{
+	CObjectVisitorContext l_oObjectVisitorContext(getKernelContext());
+	return rObjectVisitor.processBegin(l_oObjectVisitorContext, *this) && rObjectVisitor.processEnd(l_oObjectVisitorContext, *this);
 }

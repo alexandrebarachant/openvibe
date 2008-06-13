@@ -3,11 +3,13 @@
 
 #include "../ovIKernelObject.h"
 
+typedef struct _GtkWidget GtkWidget;
+
 namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class OV_API IVisualisationManager : virtual public OpenViBE::Kernel::IKernelObject
+		class OV_API IVisualisationManager : public OpenViBE::Kernel::IKernelObject
 		{
 		public:
 
