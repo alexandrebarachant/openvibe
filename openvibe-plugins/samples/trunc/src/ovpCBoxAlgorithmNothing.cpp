@@ -76,8 +76,8 @@ boolean CBoxAlgorithmNothing::processInput(uint32 ui32InputIndex)
 
 boolean CBoxAlgorithmNothing::process(void)
 {
-	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
-	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
+	// IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	// IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	// ...
 
