@@ -68,7 +68,7 @@ CGDFFileReader::CGDFFileReader(void):
 	m_pExperimentInfoHeader(NULL),
 	m_bExperimentInformationSent(false),
 	m_bSignalDescriptionSent(false),
-	m_ui64ClockFrequency(1LL<<32)
+	m_ui64ClockFrequency(0)
 {
 }
 
