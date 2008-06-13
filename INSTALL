@@ -15,7 +15,8 @@ organisaion.
 |Build.target|
 
 OpenViBE should compile on x86 architecture running Microsoft Windows 2k/XP/Vista
-with Visual C++ 2005 express edition.
+with Visual C++ 2005 express edition (take care of having the SP1 platform SDK
+installed).
 
 OpenViBE should compile on x86 architecture running Linux with gcc 4.*
 
