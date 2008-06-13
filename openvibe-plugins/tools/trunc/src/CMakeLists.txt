@@ -1,4 +1,4 @@
-FILE(GLOB_RECURSE source_files *.cpp)
+FILE(GLOB_RECURSE source_files *.cpp *.h)
 
 #ADD_LIBRARY(${PROJECT_NAME}-static ${source_files})
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})

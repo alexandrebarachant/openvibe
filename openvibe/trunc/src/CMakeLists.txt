@@ -1,4 +1,4 @@
-FILE(GLOB_RECURSE source_files *.cpp)
+FILE(GLOB_RECURSE source_files *.cpp *.h)
 FILE(GLOB_RECURSE header_files *.h)
 
 #ADD_LIBRARY(${PROJECT_NAME}-static STATIC ${source_files})
