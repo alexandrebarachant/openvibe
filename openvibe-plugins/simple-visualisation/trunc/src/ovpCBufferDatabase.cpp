@@ -72,6 +72,7 @@ namespace OpenViBEPlugins
 
 					//suppress the corresponding starting time from the list
 					m_oStartTime.pop_front();
+					m_oEndTime.pop_front();
 
 					//suppress the corresponding minmax values
 					for(uint32 c=0 ; c<m_pDimmensionSizes[0] ; c++)
@@ -152,6 +153,7 @@ namespace OpenViBEPlugins
 
 			//Adds the starting time to the list
 			m_oStartTime.push_back(ui64StartTime);
+			m_oEndTime.push_back(ui64EndTime);
 
 			if(m_ui64NumberOfBufferToDisplay - m_oSampleBuffers.size() > 0)
 			{
@@ -166,6 +168,7 @@ namespace OpenViBEPlugins
 
 				//remove the corresponding starting time
 				m_oStartTime.pop_front();
+				m_oEndTime.pop_front();
 
 				//removes the corresponding minmax values
 				for(uint32 c=0 ; c<m_pDimmensionSizes[0] ; c++)

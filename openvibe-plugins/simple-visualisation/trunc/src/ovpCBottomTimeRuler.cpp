@@ -67,7 +67,7 @@ void CBottomTimeRuler::draw()
 
 	if(m_pDatabase->m_pDimmensionSizes[1] == 1 && l_ui64NumberOfBufferToDisplay != 1)
 	{
-		l_ui64NumberOfBufferToDisplay--;
+		// l_ui64NumberOfBufferToDisplay--;
 	}
 
 	//gets the widget's size

@@ -69,6 +69,7 @@ namespace OpenViBEPlugins
 
 				//! double-linked list of the start times of the current buffers
 				std::deque<OpenViBE::uint64> m_oStartTime;
+				std::deque<OpenViBE::uint64> m_oEndTime;
 
 				//! duration to display in seconds
 				OpenViBE::float64 m_f64TotalDuration;

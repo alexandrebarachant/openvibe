@@ -434,7 +434,7 @@ void CChannelDisplay::drawSignal()
 	{
 		//computes the starting and ending time (in ms) of the displayed data
 		uint64 l_ui64StartTime=m_pDatabase->m_oStartTime[0];
-		uint64 l_ui64EndTime=m_pDatabase->m_oStartTime[m_pDatabase->m_oStartTime.size()-1];
+		uint64 l_ui64EndTime=m_pDatabase->m_oEndTime[m_pDatabase->m_oStartTime.size()-1];
 
 		// draw stimulations
 		std::deque<std::pair<uint64, uint64> >::iterator it;
