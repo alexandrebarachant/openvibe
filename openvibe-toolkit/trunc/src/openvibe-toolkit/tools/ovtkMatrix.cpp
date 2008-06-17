@@ -1,10 +1,10 @@
-#include "ovtkMatrixManipulation.h"
+#include "ovtkMatrix.h"
 
 #include <system/Memory.h>
 
 using namespace OpenViBE;
 
-boolean OpenViBEToolkit::Tools::MatrixManipulation::copy(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
+boolean OpenViBEToolkit::Tools::Matrix::copy(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
 {
 	if(!copyDescription(rDestinationMatrix, rSourceMatrix))
 	{
@@ -17,7 +17,7 @@ boolean OpenViBEToolkit::Tools::MatrixManipulation::copy(IMatrix& rDestinationMa
 	return true;
 }
 
-boolean OpenViBEToolkit::Tools::MatrixManipulation::copyDescription(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
+boolean OpenViBEToolkit::Tools::Matrix::copyDescription(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
 {
 	uint32 l_ui32DimensionCount=rSourceMatrix.getDimensionCount();
 	uint32 l_ui32DimensionSize=0;
@@ -43,7 +43,7 @@ boolean OpenViBEToolkit::Tools::MatrixManipulation::copyDescription(IMatrix& rDe
 	return true;
 }
 
-boolean OpenViBEToolkit::Tools::MatrixManipulation::copyContent(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
+boolean OpenViBEToolkit::Tools::Matrix::copyContent(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
 {
 	uint32 l_ui32SourceElementCount=rSourceMatrix.getBufferElementCount();
 	uint32 l_ui32DestinationElementCount=rDestinationMatrix.getBufferElementCount();
@@ -57,7 +57,7 @@ boolean OpenViBEToolkit::Tools::MatrixManipulation::copyContent(IMatrix& rDestin
 	return true;
 }
 
-boolean OpenViBEToolkit::Tools::MatrixManipulation::clearContent(IMatrix& rMatrix)
+boolean OpenViBEToolkit::Tools::Matrix::clearContent(IMatrix& rMatrix)
 {
 	System::Memory::set(rMatrix.getBuffer(), rMatrix.getBufferElementCount()*sizeof(float64), 0);
 	return true;
