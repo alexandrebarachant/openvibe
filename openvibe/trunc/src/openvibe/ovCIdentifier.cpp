@@ -59,25 +59,28 @@ CIdentifier& CIdentifier::operator--(void)
 	return *this;
 }
 
-boolean OpenViBE::operator==(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+namespace OpenViBE
 {
-	return rIdentifier1.m_ui64Identifier==rIdentifier2.m_ui64Identifier;
-}
-
-boolean OpenViBE::operator!=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return !(rIdentifier1==rIdentifier2);
-}	
-
-boolean OpenViBE::operator<(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return rIdentifier1.m_ui64Identifier<rIdentifier2.m_ui64Identifier;
-}
-
-boolean OpenViBE::operator>(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return rIdentifier1.m_ui64Identifier>rIdentifier2.m_ui64Identifier;
-}
+	boolean operator==(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier==rIdentifier2.m_ui64Identifier;
+	}
+	
+	boolean operator!=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return !(rIdentifier1==rIdentifier2);
+	}	
+	
+	boolean operator<(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier<rIdentifier2.m_ui64Identifier;
+	}
+	
+	boolean operator>(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier>rIdentifier2.m_ui64Identifier;
+	}
+};
 
 CString CIdentifier::toString(void) const
 {

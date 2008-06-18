@@ -28,35 +28,38 @@ const CIdentifier& CIdentifier::operator=(const CIdentifier& rIdentifier)
 	return *this;
 }
 
-Automaton_API boolean Automaton::operator==(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+namespace Automaton
 {
-	return rIdentifier1.m_ui64Identifier==rIdentifier2.m_ui64Identifier;
-}
-
-Automaton_API boolean Automaton::operator!=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return rIdentifier1.m_ui64Identifier!=rIdentifier2.m_ui64Identifier;
-}
-
-Automaton_API boolean Automaton::operator<=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return rIdentifier1.m_ui64Identifier<=rIdentifier2.m_ui64Identifier;
-}
-
-Automaton_API boolean Automaton::operator>=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return rIdentifier1.m_ui64Identifier>=rIdentifier2.m_ui64Identifier;
-}
-
-Automaton_API boolean Automaton::operator<(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return rIdentifier1.m_ui64Identifier<rIdentifier2.m_ui64Identifier;
-}
-
-Automaton_API boolean Automaton::operator>(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
-{
-	return rIdentifier1.m_ui64Identifier>rIdentifier2.m_ui64Identifier;
-}
+	boolean operator==(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier==rIdentifier2.m_ui64Identifier;
+	}
+	
+	boolean operator!=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier!=rIdentifier2.m_ui64Identifier;
+	}
+	
+	boolean operator<=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier<=rIdentifier2.m_ui64Identifier;
+	}
+	
+	boolean operator>=(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier>=rIdentifier2.m_ui64Identifier;
+	}
+	
+	boolean operator<(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier<rIdentifier2.m_ui64Identifier;
+	}
+	
+	boolean operator>(const CIdentifier& rIdentifier1, const CIdentifier& rIdentifier2)
+	{
+		return rIdentifier1.m_ui64Identifier>rIdentifier2.m_ui64Identifier;
+	}
+};
 
 CIdentifier::operator uint64(void) const
 {
