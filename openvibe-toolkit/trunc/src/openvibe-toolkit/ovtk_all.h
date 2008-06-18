@@ -15,7 +15,8 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#include "tools/ovtkMatrixManipulation.h"
+#include "tools/ovtkMatrix.h"
+#include "tools/ovtkStimulationSet.h"
 
 //___________________________________________________________________//
 //                                                                   //
