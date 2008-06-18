@@ -1,3 +1,5 @@
+#if 0
+
 #ifndef __OpenViBEPlugins_Tools_CMouseControl_H__
 #define __OpenViBEPlugins_Tools_CMouseControl_H__
 
@@ -92,5 +94,7 @@ namespace OpenViBEPlugins
 		};
 	};
 };
+
+#endif
 
 #endif

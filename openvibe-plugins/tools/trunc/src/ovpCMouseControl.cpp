@@ -1,3 +1,5 @@
+#if 0
+
 #include "ovpCMouseControl.h"
 
 #include <iostream>
@@ -152,3 +154,5 @@ boolean CMouseControl::process()
 	}
 	return true;
 }
+
+#endif

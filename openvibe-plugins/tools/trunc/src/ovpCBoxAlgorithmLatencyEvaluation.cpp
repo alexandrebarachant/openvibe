@@ -1,3 +1,5 @@
+#if 0
+
 #include "ovpCBoxAlgorithmLatencyEvaluation.h"
 
 using namespace OpenViBE;
@@ -50,3 +52,5 @@ boolean CBoxAlgorithmLatencyEvaluation::process(void)
 
 	return true;
 }
+
+#endif

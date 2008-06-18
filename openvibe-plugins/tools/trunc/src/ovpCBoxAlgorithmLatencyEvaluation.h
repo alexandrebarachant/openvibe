@@ -1,3 +1,5 @@
+#if 0
+
 #ifndef __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
 #define __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
 
@@ -58,3 +60,5 @@ namespace OpenViBEPlugins
 };
 
 #endif // __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
+
+#endif
