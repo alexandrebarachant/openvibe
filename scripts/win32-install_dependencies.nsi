@@ -21,14 +21,14 @@
   !insertmacro MUI_UNPAGE_INSTFILES
 
 ;Languages
- 
+
   !insertmacro MUI_LANGUAGE "English"
 
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "-base" 
+Section "-base"
 
   ;Finds Microsoft Platform SDK
 
@@ -80,7 +80,7 @@ Section "CMake"
       Quit
 
 no_need_to_download_cmake:
- 
+
   IfFileExists "cmake" no_need_to_install_cmake
   ZipDLL::extractall "arch\openvibe-dependency-cmake-2.4.6.zip" "cmake"
 
@@ -110,7 +110,7 @@ Section "eXpat"
       Quit
 
 no_need_to_download_expat:
- 
+
   IfFileExists "expat" no_need_to_install_expat
   ZipDLL::extractall "arch\openvibe-dependency-expat-2.0.1.zip" "expat"
 
@@ -140,7 +140,7 @@ Section "BOOST"
       Quit
 
 no_need_to_download_boost:
- 
+
   IfFileExists "boost" no_need_to_install_boost
   ZipDLL::extractall "arch\openvibe-dependency-boost-1.34.0.zip" "boost"
 
@@ -170,7 +170,7 @@ Section "GTK/Glade"
       Quit
 
 no_need_to_download_glade:
- 
+
   IfFileExists "GTK" no_need_to_install_glade
   ZipDLL::extractall "arch\openvibe-dependency-gtk-2.10.11.zip" "gtk"
 
@@ -219,7 +219,7 @@ Section "IT++"
       Quit
 
 no_need_to_download_itpp:
- 
+
   IfFileExists "itpp" no_need_to_install_itpp
   ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.1.zip" "itpp"
 
@@ -236,29 +236,123 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "OpenMASK"
+Section "OBT"
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
 
-  IfFileExists "arch\openvibe-dependency-openmask-580.zip" no_need_to_download_openmask
-  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/openmask-580-win32-x86-MSVC8.zip "arch\openvibe-dependency-openmask-580.zip"
+  IfFileExists "arch\openvibe-dependency-obt-22.zip" no_need_to_download_obt
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/obt-22.zip "arch\openvibe-dependency-obt-22.zip"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_obt:
+
+  IfFileExists "obt" no_need_to_install_obt
+  ZipDLL::extractall "arch\openvibe-dependency-obt-22.zip" "obt"
+
+no_need_to_install_obt:
+
+  FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+  FileSeek $0 0 END
+  FileWrite $0 "SET OV_DEP_OBT=$INSTDIR\obt$\n"
+  FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Ogre3D"
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  IfFileExists "arch\openvibe-dependency-ogre-1.4.9.zip" no_need_to_download_ogre
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.4.9.zip "arch\openvibe-dependency-ogre-1.4.9.zip"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_ogre:
+
+  IfFileExists "ogre" no_need_to_install_ogre
+  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.4.9.zip" "ogre"
+
+no_need_to_install_ogre:
+
+  FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+  FileSeek $0 0 END
+  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre$\n"
+  FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre$\n"
+  FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "OpenMASK 4 / DotSceneLoader"
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  IfFileExists "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip" no_need_to_download_openmask
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/openmask4~dotsceneloader-164.zip "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
       Quit
 
 no_need_to_download_openmask:
- 
+
   IfFileExists "openmask" no_need_to_install_openmask
-  ZipDLL::extractall "arch\openvibe-dependency-openmask-580.zip" "openmask"
+  ZipDLL::extractall "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip" "openmask"
 
 no_need_to_install_openmask:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
   FileWrite $0 "SET OV_DEP_OPENMASK=$INSTDIR\openmask$\n"
-  FileWrite $0 "SET OpenMASKDIR=$INSTDIR\openmask$\n"
+  FileWrite $0 "SET OV_DEP_DSI=$INSTDIR\openmask$\n"
+  FileWrite $0 "SET OMK_HOME=$INSTDIR\openmask$\n"
+  FileWrite $0 "SET OMK_BIN=$INSTDIR\openmask$\n"
+  FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "VRPN"
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  IfFileExists "arch\openvibe-dependency-vrpn-7.73.zip" no_need_to_download_vrpn
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/vrpn-7.13.zip "arch\openvibe-dependency-vrpn-7.13.zip"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_vrpn:
+
+  IfFileExists "vrpn" no_need_to_install_vrpn
+  ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.13.zip" "vrpn"
+
+no_need_to_install_vrpn:
+
+  FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+  FileSeek $0 0 END
+  FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\vrpn$\n"
+  FileWrite $0 "SET VRPNROOT=$INSTDIR\vrpn$\n"
   FileClose $0
 
 SectionEnd
@@ -274,7 +368,10 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\expat"
   RMDir /r "$INSTDIR\cmake"
   RMDir /r "$INSTDIR\itpp"
+  RMDir /r "$INSTDIR\obt"
+  RMDir /r "$INSTDIR\ogre"
   RMDir /r "$INSTDIR\openmask"
+  RMDir /r "$INSTDIR\vrpn"
 
   Delete "$INSTDIR\..\scripts\win32-dependencies.cmd"
 

@@ -15,7 +15,7 @@
 # ---------------------------------
 
 IF(WIN32)
-	FIND_PATH(PATH_OIS include/OMKBase.h PATHS $ENV{OpenViBE_dependencies} $ENV{OGRE_HOME})
+	FIND_PATH(PATH_OIS include/OMKBase.h PATHS $ENV{OV_DEP_OGRE} $ENV{OGRE_HOME})
 	IF(PATH_OIS)
 		SET(OIS_FOUND TRUE)
 		SET(OIS_INCLUDE_DIRS ${PATH_OIS}/include)

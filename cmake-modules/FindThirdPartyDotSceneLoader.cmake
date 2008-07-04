@@ -15,10 +15,10 @@
 # ---------------------------------
 
 IF(WIN32)
-	FIND_PATH(PATH_DotSceneLoader include/DotScene/dotSceneInterface.h PATHS $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_DotSceneLoader include/dotSceneInterface.h PATHS $ENV{OV_DEP_DSI} $ENV{OMK_HOME} $ENV{OMK_BIN})
 	IF(PATH_DotSceneLoader)
 		SET(DotSceneLoader_FOUND TRUE)
-		SET(DotSceneLoader_INCLUDE_DIRS ${PATH_DotSceneLoader}/include/DotScene)
+		SET(DotSceneLoader_INCLUDE_DIRS ${PATH_DotSceneLoader}/include)
 		IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 			SET(DotSceneLoader_LIBRARIES DotSceneInterface_d)
 		ELSE(CMAKE_BUILD_TYPE STREQUAL "Debug")

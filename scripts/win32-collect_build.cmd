@@ -183,6 +183,12 @@ xcopy /q /s %OpenViBE_plugin_tools%\lib\*.lib                   %target_dist%\li
 xcopy /q /s %OpenViBE_plugin_tools%\lib\*.dll                   %target_dist%\lib     > NULL 2<&1
 xcopy /q /s %OpenViBE_plugin_tools%\share\*.*                   %target_dist%\share   > NULL 2<&1
 
+xcopy /q /s %OpenViBE_plugin_vrpn%\bin\*.exe                    %target_dist%\bin     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_vrpn%\include\*.*                  %target_dist%\include > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_vrpn%\lib\*.lib                    %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_vrpn%\lib\*.dll                    %target_dist%\lib     > NULL 2<&1
+xcopy /q /s %OpenViBE_plugin_vrpn%\share\*.*                    %target_dist%\share   > NULL 2<&1
+
 REM #######################################################################################
 
 del NULL

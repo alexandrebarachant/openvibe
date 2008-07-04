@@ -18,6 +18,8 @@ using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::VRPN;
 using namespace std;
 
+#define boolean OpenViBE::boolean
+
 namespace OpenViBEPlugins
 {
 	namespace VRPN

@@ -15,7 +15,7 @@
 # ---------------------------------
 
 IF(WIN32)
-	FIND_PATH(PATH_Ogre3D include/Ogre.h PATHS $ENV{OpenViBE_dependencies} $ENV{OGRE_HOME})
+	FIND_PATH(PATH_Ogre3D include/Ogre.h PATHS $ENV{OV_DEP_OGRE} $ENV{OGRE_HOME})
 	IF(PATH_Ogre3D)
 		SET(Ogre3D_FOUND TRUE)
 		SET(Ogre3D_INCLUDE_DIRS ${PATH_Ogre3D}/include)

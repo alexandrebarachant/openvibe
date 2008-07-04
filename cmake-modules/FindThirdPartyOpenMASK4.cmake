@@ -15,7 +15,7 @@
 # ---------------------------------
 
 IF(WIN32)
-	FIND_PATH(PATH_OMK4 include/OMKBase.h PATHS $ENV{OpenViBE_dependencies} $ENV{OMK_HOME} $ENV{OMK_BIN})
+	FIND_PATH(PATH_OMK4 include/OMKBase.h PATHS $ENV{OV_DEP_OPENMASK} $ENV{OMK_HOME} $ENV{OMK_BIN})
 	IF(PATH_OMK4)
 		SET(OMK4_FOUND TRUE)
 		SET(OMK4_INCLUDE_DIRS ${PATH_OMK4}/include)
