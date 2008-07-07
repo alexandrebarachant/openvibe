@@ -24,7 +24,7 @@ for project_directory in $OpenViBE_build_order; do
 			exit -1
 		fi;
 
-		make -j 2
+		make -j 2 # VERBOSE=1
 		if [ $? -eq 0 ]; then
 			echo Make has been called successfully !
 		else

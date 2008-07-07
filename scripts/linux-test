@@ -11,11 +11,18 @@ source linux-init_env_command
 ./linux-collect_build
 
 cd ../dist/bin
+
+export LC_ALL=C
+
 killall OpenViBE-id-generator-dynamic
-# killall OpenViBE-plugin-inspector-dynamic
+killall OpenViBE-plugin-inspector-dynamic
 killall OpenViBE-acquisition-server-dynamic
 killall OpenViBE-designer-dynamic
-./OpenViBE-id-generator-dynamic
+
+# ./OpenViBE-id-generator-dynamic
 # ./OpenViBE-plugin-inspector-dynamic
+# ./OpenViBE-acquisition-server-dynamic
+# ./OpenViBE-omk-test-dynamic ../share/sample-52.OpenMASK3
 ./OpenViBE-acquisition-server-dynamic &
 ./OpenViBE-designer-dynamic &
+# kdbg ./OpenViBE-designer-dynamic

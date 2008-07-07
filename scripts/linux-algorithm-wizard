@@ -63,6 +63,14 @@ while [ "$l_category" == "" ]; do
 	fi;
 done;
 
+while [ "$l_project" == "" ]; do
+	echo -n "Please enter project name ($g_wizard_rc_project) : "
+	read l_project
+	if [ "$l_project" == "" ]; then
+		l_project=$g_wizard_rc_project
+	fi;
+done;
+
 while [ "$l_version" == "" ]; do
 	echo -n "Please enter version ($g_wizard_rc_version) : "
 	read l_version
@@ -112,8 +120,10 @@ l_algorithm_name_final=`echo $l_algorithm_name | sed -e '
 	s/ \(.\)/\U\1/g
 	s/^\(.\)/\U\1/g
 '`
-l_algorithm_namespace_final="NS"
-
+l_algorithm_namespace_final=`echo $l_project | sed -e '
+	s/ \(.\)/\U\1/g
+	s/^\(.\)/\U\1/g
+'`
 l_algorithm_header_decoration="__OpenViBEPlugins_Algorithm_${l_algorithm_name_final}_H__"
 l_algorithm_class_name="CAlgorithm${l_algorithm_name_final}"
 l_algorithm_desc_class_name="CAlgorithm${l_algorithm_name_final}Desc"
@@ -130,7 +140,7 @@ for i in `seq 1 $l_generated_id_count`; do
 	let id_5=$RANDOM*65536+$RANDOM
 	let id_6=$RANDOM*65536+$RANDOM
 	l_algorithm_generated_ids="$l_algorithm_generated_ids
-// #define OVP_/*TODO*/ OpenViBE::CIdentifier(`printf "0x%08X, 0x%08X" $id_5 $id_6`)"
+#define OVP_Algorithm_${l_algorithm_name_final}_/*What*/_/*Name*/ OpenViBE::CIdentifier(`printf "0x%08X, 0x%08X" $id_5 $id_6`)"
 done;
 
 #######################################################################################################################
@@ -156,7 +166,7 @@ namespace OpenViBEPlugins
 {
 	namespace $l_algorithm_namespace_final
 	{
-		class $l_algorithm_class_name : virtual public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
+		class $l_algorithm_class_name : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
 		{
 		public:
 
@@ -170,14 +180,11 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			// OpenViBE::Kernel::TParameterHandler < /* parameter type (OpenViBE::int64) */ > m_oInParameterHandle;
-			// ...
-
-			// OpenViBE::Kernel::TParameterHandler < /* parameter type (OpenViBE::int64) */ > m_oOutParameterHandle;
-			// ...
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::/*type*/ > ip_/*parametername*/;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::/*type*/ > op_/*parametername*/;
 		};
 
-		class $l_algorithm_desc_class_name : virtual public OpenViBE::Plugins::IAlgorithmDesc
+		class $l_algorithm_desc_class_name : public OpenViBE::Plugins::IAlgorithmDesc
 		{
 		public:
 
@@ -197,18 +204,10 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getAlgorithmPrototype(
 				OpenViBE::Kernel::IAlgorithmProto& rAlgorithmPrototype) const
 			{
-				// rAlgorithmPrototype.addInputParameter (/* parameter identifier (OpenViBE::CIdentifier(0x00000000, 0x00000000)) */, \"input parameter name\", /* parameter type (OpenViBE::Kernel::ParameterType_Integer) */);
-				// ...
-
-				// rAlgorithmPrototype.addOutputParameter(/* parameter identifier (OpenViBE::CIdentifier(0x00000000, 0x00000000)) */, \"output parameter name\", /* parameter type (OpenViBE::Kernel::ParameterType_Integer) */);
-				// ...
-
-				// rAlgorithmPrototype.addInputTrigger   (/* trigger identifier (OpenViBE::CIdentifier(0x00000000, 0x00000000)) */, \"input trigger name\");
-				// ...
-
-				// rAlgorithmPrototype.addOutputTrigger  (/* trigger identifier (OpenViBE::CIdentifier(0x00000000, 0x00000000)) */, \"output trigger name\");
-				// ...
-
+				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_${l_algorithm_name_final}_InputParameterId_/*Name*/, \"name\", OpenViBE::Kernel::ParameterType_/*type*/);
+				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_${l_algorithm_name_final}_OutputParameterId_/*Name*/, \"name\", OpenViBE::Kernel::ParameterType_/*type*/);
+				rAlgorithmPrototype.addInputTrigger   (OVP_Algorithm_${l_algorithm_name_final}_InputTriggerId_/*Name*/, \"name\");
+				rAlgorithmPrototype.addOutputTrigger  (OVP_Algorithm_${l_algorithm_name_final}_OutputTriggerId_/*Name*/, \"name\");
 				return true;
 			}
 
@@ -234,29 +233,25 @@ using namespace OpenViBEPlugins::$l_algorithm_namespace_final;
 
 boolean $l_algorithm_class_name::initialize(void)
 {
-	// m_oInParameterHandle.initialize(getInputParameter( /* input parameter identifier (CIdentifier(0x00000000, 0x00000000)) */ ));
-	// ...
-
-	// m_oOutParameterHandle.initialize(getOutputParameter( /* output parameter identifier (CIdentifier(0x00000000, 0x00000000)) */ ));
-	// ...
-
+	ip_/*parametername*/.initialize(this->getInputParameter(OVP_Algorithm_${l_algorithm_name_final}_InputParameterId_/*Name*/));
+	op_/*parametername*/.initialize(this->getOutputParameter(OVP_Algorithm_${l_algorithm_name_final}_OutputParameterId_/*Name*/));
 	return true;
 }
 
 boolean $l_algorithm_class_name::uninitialize(void)
 {
-	// m_oOutParameterHandle.uninitialize();
-	// ...
-
-	// m_oInParameterHandle.uninitialize();
-	// ...
-
+	op_/*parametername*/.uninitialize();
+	ip_/*parametername*/.uninitialize();
 	return true;
 }
 
 boolean $l_algorithm_class_name::process(void)
 {
-	// ...
+	if(this->isInputActive(OVP_Algorithm_${l_algorithm_name_final}_InputTriggerId_/*Name*/))
+	{
+		...
+		this->activateOutputTrigger(OVP_Algorithm_${l_algorithm_name_final}_OutputParameterId_/*Name*/, /*satus*/);
+	}
 
 	return true;
 }"
@@ -276,6 +271,7 @@ echo "g_wizard_rc_algorithm_name=\"$l_algorithm_name\"" >> $g_wizard_rc 2> /dev/
 echo "g_wizard_rc_author_name=\"$l_author_name\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_author_company_name=\"$l_author_company_name\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_category=\"$l_category\"" >> $g_wizard_rc 2> /dev/null
+echo "g_wizard_rc_project=\"$l_project\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_version=\"$l_version\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_short_description=\"$l_short_description\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_detailed_description=\"$l_detailed_description\"" >> $g_wizard_rc 2> /dev/null
