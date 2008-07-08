@@ -29,7 +29,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 IF(UNIX)
-	FIND_PATH(PATH_DotSceneLoader include/DotScene/dotSceneInterface.h PATHS $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_DotSceneLoader include/DotScene/dotSceneInterface.h PATHS $ENV{OMK_HOME} $ENV{OMK_BIN})
 	IF(PATH_DotSceneLoader)
 		SET(DotSceneLoader_FOUND TRUE)
 		SET(DotSceneLoader_INCLUDE_DIRS ${PATH_DotSceneLoader}/include/DotScene)
