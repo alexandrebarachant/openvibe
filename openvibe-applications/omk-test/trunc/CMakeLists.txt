@@ -46,7 +46,7 @@ FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 # SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "-Wl,-E")
 
-INCLUDE("FindThirdPartyOpenMASK4.cmake")
+INCLUDE("FindThirdPartyOpenMASK4")
 
 # ---------------------------------
 # Finds standard library pthread
