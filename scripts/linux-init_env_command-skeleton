@@ -33,7 +33,10 @@ OpenViBE_module_xml_branch=
 OpenViBE_application_acquisition_server_branch=
 OpenViBE_application_designer_branch=
 OpenViBE_application_id_generator_branch=
+OpenViBE_application_omk_test_branch=
 OpenViBE_application_plugin_inspector_branch=
+OpenViBE_application_vr_demo_branch=
+OpenViBE_application_vrpn_simulator_branch=
 
 ########################################################################################################################
 #PLUGINS
@@ -50,6 +53,9 @@ OpenViBE_plugin_simple_visualisation_branch=
 OpenViBE_plugin_stimulation_branch=
 OpenViBE_plugin_stream_codecs_branch=
 OpenViBE_plugin_tools_branch=
+OpenViBE_plugin_wip_brenier_branch=
+OpenViBE_plugin_wip_jsauvan_branch=
+OpenViBE_plugin_wip_gionescu_branch=
 
 ########################################################################################################################
 
@@ -125,6 +131,9 @@ done
 export OpenViBE_build_order="
 $OpenViBE
 $OpenViBE_application_id_generator
+$OpenViBE_application_omk_test
+$OpenViBE_application_vr_demo
+$OpenViBE_application_vrpn_simulator
 $OpenViBE_module_ebml
 $OpenViBE_module_fs
 $OpenViBE_module_socket
@@ -146,9 +155,13 @@ $OpenViBE_plugin_simple_visualisation
 $OpenViBE_plugin_stimulation
 $OpenViBE_plugin_stream_codecs
 $OpenViBE_plugin_tools
-$OpenViBE_plugin_work_in_progress
+$OpenViBE_plugin_vrpn
+$OpenViBE_plugin_wip_brenier
+$OpenViBE_plugin_wip_jsauvan
+$OpenViBE_plugin_wip_gionescu
 $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
+$OpenViBE_application_plugin_inspector
 "
 
 if [ -e ./linux-dependencies ]; then

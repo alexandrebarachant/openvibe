@@ -1,0 +1,23 @@
+#OpenMASK3
+
+root
+{
+	Class Controller
+	UserParams
+	{
+		TraceAll off
+	}
+
+	Sons
+	{
+		_A_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+	}
+}
+

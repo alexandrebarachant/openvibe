@@ -1,0 +1,248 @@
+#OpenMASK3
+
+root
+{
+	Class Controller
+	UserParams
+	{
+		TraceAll off
+	}
+
+	Sons
+	{
+		_A_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_B_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_C_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_D_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_E_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_F_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_G_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_H_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_I_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_J_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_K_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_L_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_M_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_N_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_O_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_P_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_Q_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_R_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_S_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_T_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_U_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_V_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_W_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_X_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_Y_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+
+		_Z_
+		{
+			Class SimulatedNothing
+			Scheduling
+			{
+				Frequency 200
+			}
+		}
+	}
+}
+
