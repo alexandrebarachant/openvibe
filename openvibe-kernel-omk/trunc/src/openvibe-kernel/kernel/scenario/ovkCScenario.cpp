@@ -9,8 +9,6 @@
 #include "../ovkCObjectVisitorContext.h"
 
 #include <iostream>
-#include <map>
-#include <vector>
 
 using namespace std;
 using namespace OpenViBE;
@@ -266,6 +264,19 @@ CIdentifier CScenario::getVisualisationTreeIdentifier(void) const
 {
 	return m_oVisualisationTreeIdentifier;
 }
+
+const IVisualisationTree& CScenario::getVisualisationTreeDetails() const
+{
+	return getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);	
+}
+			
+IVisualisationTree& CScenario::getVisualisationTreeDetails()
+{
+	return getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);	
+}
+
+//___________________________________________________________________//
+//                                                                   //
 
 CIdentifier CScenario::getNextBoxIdentifier(
 	const CIdentifier& rPreviousIdentifier) const
@@ -715,6 +726,11 @@ boolean CScenario::acceptVisitor(
 		{
 			return false;
 		}
+	}
+
+	if(!getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier).acceptVisitor(rObjectVisitor))
+	{
+		return false;
 	}
 
 	if(!rObjectVisitor.processEnd(l_oObjectVisitorContext, *this))

@@ -81,6 +81,62 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	(static_cast<CInterfacedScenario*>(pUserData)->*mfpCallback)();
 }
 
+static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawGC, ::gboolean bFill, gint x, gint y, gint width, gint height, gint radius=8)
+{
+	if(bFill)
+	{
+		gdk_draw_rectangle(
+			pDrawable,
+			pDrawGC,
+			TRUE,
+			x+radius, y, width-2*radius, height);
+		gdk_draw_rectangle(
+			pDrawable,
+			pDrawGC,
+			TRUE,
+			x, y+radius, width, height-2*radius);
+	}
+	else
+	{
+		gdk_draw_line(
+			pDrawable,
+			pDrawGC,
+			x+radius, y, x+width-radius, y);
+		gdk_draw_line(
+			pDrawable,
+			pDrawGC,
+			x+radius, y+height, x+width-radius, y+height);
+		gdk_draw_line(
+			pDrawable,
+			pDrawGC,
+			x, y+radius, x, y+height-radius);
+		gdk_draw_line(
+			pDrawable,
+			pDrawGC,
+			x+width, y+radius, x+width, y+height-radius);
+	}
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x+width-radius*2, y, radius*2, radius*2, 0*64, 90*64);
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x, y, radius*2, radius*2, 90*64, 90*64);
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x, y+height-radius*2, radius*2, radius*2, 180*64, 90*64);
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x+width-radius*2, y+height-radius*2, radius*2, radius*2, 270*64, 90*64);
+}
+
 	CInterfacedScenario::CInterfacedScenario(IKernel& rKernel, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
 		:m_oScenarioIdentifier(rScenarioIdentifier)
 		,m_rKernel(rKernel)
@@ -89,6 +145,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		,m_rNotebook(rNotebook)
 		,m_pVisualisationTree(NULL)
 		,m_pDesignerVisualisation(NULL)
+		,m_bDesignerVisualisationToggled(false)
 		,m_pPlayerVisualisation(NULL)
 		,m_pGladeDummyScenarioNotebookTitle(NULL)
 		,m_pGladeDummyScenarioNotebookClient(NULL)
@@ -131,39 +188,73 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "button_release_event", G_CALLBACK(scenario_drawing_area_button_released_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-press-event", G_CALLBACK(scenario_drawing_area_key_press_event_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-release-event", G_CALLBACK(scenario_drawing_area_key_release_event_cb), this);
+		
 		//retrieve visualisation tree
 		m_oVisualisationTreeIdentifier = m_rScenario.getVisualisationTreeIdentifier();
 		m_pVisualisationTree = &m_rKernel.getContext()->getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
 
-		//FIXME : read this info from scenario file!
-		//fill tree in case scenario already contains visualisation widgets
-		CIdentifier l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
+		//==================================================================================================================================
+		//==================================================================================================================================
+		//==================================================================================================================================
+		//FIXME : this is to be removed in the long term...
+		//It fills the tree with visualisation boxes contained in the scenario, which is
+		//normally done at scenario loading time. However this doesn't work for files
+		//created prior to the implementation of visualisation tree serialization.
+		//This piece of code takes care of displaying their visualisation boxes in the window manager 
+		//even though the scenario file doesn't list them
+		
+		CIdentifier l_oIdentifier = OV_UndefinedIdentifier;
+		boolean l_bVisualisationBoxRestored = false;
 
-		while(l_oBoxIdentifier != OV_UndefinedIdentifier)
+		//if visualisation tree is empty, it might be because the file doesn't contain a <VisualisationTree> section yet
+		if(m_pVisualisationTree->getNextVisualisationWidgetIdentifier(l_oIdentifier) == false)
 		{
-			const IBox* l_pBox = m_rScenario.getBoxDetails(l_oBoxIdentifier);
-			CIdentifier l_oIdentifier = l_pBox->getAlgorithmClassIdentifier();
-			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
+			CIdentifier l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
 
-			if(l_pPOD && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+			while(l_oBoxIdentifier != OV_UndefinedIdentifier)
 			{
-				CIdentifier l_oIdentifier;
-				m_pVisualisationTree->addVisualisationWidget(
-					l_oIdentifier,
-					l_pBox->getName(),
-					EVisualisationWidget_VisualisationBox,
-					OV_UndefinedIdentifier,
-					0,
-					l_pBox->getIdentifier(),
-					0);
-			}
+				const IBox* l_pBox = m_rScenario.getBoxDetails(l_oBoxIdentifier);
+				CIdentifier l_oIdentifier = l_pBox->getAlgorithmClassIdentifier();
+				const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
 
-			l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+				if(l_pPOD && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+				{
+					CIdentifier l_oIdentifier;
+					m_pVisualisationTree->addVisualisationWidget(
+						l_oIdentifier,
+						l_pBox->getName(),
+						EVisualisationWidget_VisualisationBox,
+						OV_UndefinedIdentifier,
+						0,
+						l_pBox->getIdentifier(),
+						0);
+					l_bVisualisationBoxRestored = true;
+				}
+
+				l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+			}			
 		}
+		//==================================================================================================================================
+		//==================================================================================================================================
+		//==================================================================================================================================
 
 		//create window manager
-		m_pDesignerVisualisation = new CDesignerVisualisation(*m_rKernel.getContext(), *m_pVisualisationTree);
-		m_pDesignerVisualisation->init(string(sGUIFilename));
+		m_pDesignerVisualisation = new CDesignerVisualisation(*m_rKernel.getContext(), *m_pVisualisationTree, *this);
+		m_pDesignerVisualisation->init(string(sGUIFilename));		
+
+
+		//==================================================================================================================================
+		//==================================================================================================================================
+		//==================================================================================================================================
+		//FIXME : to be removed (see above)
+		//if scenario file obviously lacked a visualisation tree section, restore a defaut window as well
+		if(l_bVisualisationBoxRestored == true)
+		{
+			m_pDesignerVisualisation->newVisualisationWindow("Default window");
+		}
+		//==================================================================================================================================
+		//==================================================================================================================================
+		//==================================================================================================================================
 	}
 
 	CInterfacedScenario::~CInterfacedScenario(void)
@@ -227,9 +318,8 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		OpenViBE::uint32 i;
 		const int xMargin=5;
 		const int yMargin=5;
-		const int iCircleMargin=5;
 		const int iCircleSize=11;
-		const int iCircleSpace=3;
+		const int iCircleSpace=4;
 
 		CBoxProxy l_oBoxProxy(rBox);
 		int xSize=l_oBoxProxy.getWidth(GTK_WIDGET(m_pScenarioDrawingArea))+xMargin*2;
@@ -238,7 +328,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		int yStart=l_oBoxProxy.getYCenter()+m_i32ViewOffsetY-(ySize>>1);
 
 		updateStencilIndex(m_ui32InterfacedObjectId, l_pStencilGC);
-		gdk_draw_rectangle(
+		gdk_draw_rounded_rectangle(
 			GDK_DRAWABLE(m_pStencilBuffer),
 			l_pStencilGC,
 			TRUE,
@@ -247,19 +337,19 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 
 		boolean l_bCanCreate=m_rKernel.getContext()->getPluginManager().canCreatePluginObject(rBox.getAlgorithmClassIdentifier());
 		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBackgroundSelected:(!l_bCanCreate?Color_BoxBackgroundMissing:Color_BoxBackground)]);
-		gdk_draw_rectangle(
+		gdk_draw_rounded_rectangle(
 			l_pWidget->window,
 			l_pDrawGC,
 			TRUE,
 			xStart, yStart, xSize, ySize);
 		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBorderSelected:Color_BoxBorder]);
-		gdk_draw_rectangle(
+		gdk_draw_rounded_rectangle(
 			l_pWidget->window,
 			l_pDrawGC,
 			FALSE,
 			xStart, yStart, xSize, ySize);
 
-		int l_iInputOffset=(xSize-rBox.getInputCount()*(iCircleSpace+iCircleSize)-iCircleMargin*2)/2;
+		int l_iInputOffset=(xSize-rBox.getInputCount()*(iCircleSpace+iCircleSize)+iCircleSize/2)/2;
 		for(i=0; i<rBox.getInputCount(); i++)
 		{
 			CIdentifier l_oInputIdentifier;
@@ -275,7 +365,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			l_vPoint[2].y=0;
 			for(int j=0; j<3; j++)
 			{
-				l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+l_iInputOffset;
+				l_vPoint[j].x+=xStart+i*(iCircleSpace+iCircleSize)+l_iInputOffset;
 				l_vPoint[j].y+=yStart-(iCircleSize>>1);
 			}
 
@@ -303,7 +393,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				l_vPoint,
 				3);
 
-			int32 x=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX+l_iInputOffset;
+			int32 x=xStart+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX+l_iInputOffset;
 			int32 y=yStart-(iCircleSize>>1)-m_i32ViewOffsetY;
 			CIdentifier l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierToBoxInput(OV_UndefinedIdentifier, rBox.getIdentifier(), i);
 			while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
@@ -327,7 +417,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			}
 		}
 
-		int l_iOutputOffset=(xSize-rBox.getOutputCount()*(iCircleSpace+iCircleSize)-iCircleMargin*2)/2;
+		int l_iOutputOffset=(xSize-rBox.getOutputCount()*(iCircleSpace+iCircleSize)+iCircleSize/2)/2;
 		for(i=0; i<rBox.getOutputCount(); i++)
 		{
 			CIdentifier l_oOutputIdentifier;
@@ -343,7 +433,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			l_vPoint[2].y=0;
 			for(int j=0; j<3; j++)
 			{
-				l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+l_iOutputOffset;
+				l_vPoint[j].x+=xStart+i*(iCircleSpace+iCircleSize)+l_iOutputOffset;
 				l_vPoint[j].y+=yStart-(iCircleSize>>1)+ySize;
 			}
 
@@ -371,7 +461,7 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 				l_vPoint,
 				3);
 
-			int32 x=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX+l_iOutputOffset;
+			int32 x=xStart+i*(iCircleSpace+iCircleSize)+(iCircleSize>>1)-m_i32ViewOffsetX+l_iOutputOffset;
 			int32 y=yStart+ySize+(iCircleSize>>1)+1-m_i32ViewOffsetY;
 			CIdentifier l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierFromBoxOutput(OV_UndefinedIdentifier, rBox.getIdentifier(), i);
 			while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
@@ -1090,7 +1180,63 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		// ...
 	}
 
-	void CInterfacedScenario::createPlayerVisualisation(void)
+	void CInterfacedScenario::toggleDesignerVisualisation()
+	{
+		m_bDesignerVisualisationToggled = !m_bDesignerVisualisationToggled;
+		
+		if(m_bDesignerVisualisationToggled)
+		{
+			m_pDesignerVisualisation->show();			
+		}
+		else
+		{
+			m_pDesignerVisualisation->hide();			
+		}
+	}
+
+	OpenViBE::boolean CInterfacedScenario::isDesignerVisualisationToggled()
+	{
+		return m_bDesignerVisualisationToggled;
+	}
+
+	void CInterfacedScenario::showCurrentVisualisation()
+	{
+		if(isLocked())
+		{
+			if(m_pPlayerVisualisation != NULL)
+			{
+				m_pPlayerVisualisation->showTopLevelWindows();
+			}
+		}
+		else
+		{
+			if(m_pDesignerVisualisation != NULL)
+			{
+				m_pDesignerVisualisation->show();
+			}
+		}
+	}
+
+	void CInterfacedScenario::hideCurrentVisualisation()
+	{
+		if(isLocked())
+		{
+			if(m_pPlayerVisualisation != NULL)
+			{
+				m_pPlayerVisualisation->hideTopLevelWindows();
+			}
+		}
+		else
+		{
+			if(m_pDesignerVisualisation != NULL)
+			{
+				m_pDesignerVisualisation->hide();
+			}
+		}
+		
+	}
+
+	void CInterfacedScenario::createPlayerVisualisation()
 	{
 		//hide window manager
 		m_pDesignerVisualisation->hide();
@@ -1099,22 +1245,23 @@ void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 			m_pPlayerVisualisation = new CPlayerVisualisation(*m_rKernel.getContext(), m_rScenario, *m_pVisualisationTree);
 
 		//initialize and show windows
-		m_pPlayerVisualisation->init();
-		m_pPlayerVisualisation->showTopLevelWindows();
-		m_pPlayerVisualisation->realize3DWidgets();
+		m_pPlayerVisualisation->init();		
 	}
 
 	void CInterfacedScenario::releasePlayerVisualisation(void)
 	{
 		if(m_pPlayerVisualisation != NULL)
-		{
-			m_pPlayerVisualisation->hideTopLevelWindows();
-			//m_pPlayerVisualisation->release();
+		{				
 			delete m_pPlayerVisualisation;
 			m_pPlayerVisualisation = NULL;
 		}
 
+		//reset designer visualisation
 		m_pDesignerVisualisation->reset();
+
+		//show it if it was toggled on
+		if(m_bDesignerVisualisationToggled == true)
+			m_pDesignerVisualisation->show();
 	}
 
 	void CInterfacedScenario::generateDisplayPluginName(IBox* pDisplayBox, CString& rDisplayBoxName)

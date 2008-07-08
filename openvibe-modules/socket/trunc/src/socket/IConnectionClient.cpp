@@ -20,7 +20,7 @@
 
 namespace Socket
 {
-	class CConnectionClient : virtual public TConnection<IConnectionClient>
+	class CConnectionClient : public TConnection<IConnectionClient>
 	{
 	public:
 

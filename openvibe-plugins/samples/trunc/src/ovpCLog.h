@@ -9,7 +9,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CLog : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CLog : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -24,7 +24,7 @@ namespace OpenViBEPlugins
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_Log)
 		};
 
-		class CLogDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CLogDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

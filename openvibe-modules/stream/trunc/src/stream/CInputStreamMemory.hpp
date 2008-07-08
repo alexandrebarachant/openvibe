@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class CInputStreamMemory : virtual public Stream::CInputStreamBase
+	class CInputStreamMemory : public Stream::CInputStreamBase
 	{
 	public:
 

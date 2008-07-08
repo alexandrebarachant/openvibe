@@ -1,9 +1,8 @@
-#include "../../ovk_base.h"
 #include "ovkCVisualisationTree.h"
 
+#include "../ovkCObjectVisitorContext.h"
+
 #include <iostream>
-#include <map>
-#include <vector>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -92,81 +91,15 @@ CVisualisationTree::~CVisualisationTree()
 	g_object_unref(m_pTreeStore);
 }
 
-void CVisualisationTree::init(const OpenViBE::Kernel::IScenario* pScenario)
+boolean CVisualisationTree::init(const OpenViBE::Kernel::IScenario* pScenario)
 {
 	m_pScenario = pScenario;
 
 	//create tree store
 	m_pTreeStore = gtk_tree_store_new(5, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_ULONG, G_TYPE_STRING, G_TYPE_POINTER);
-}
 
-/*
-boolean CVisualisationTree::load(
-	const CString& sFileName)
-{
-	// TODO
-	log() << LogLevel_Debug << "CScenario::load - Not implemented yet\n";
-
-	return false;
-}
-
-boolean CVisualisationTree::load(
-	const CString& sFileName,
-	const CIdentifier& rLoaderIdentifier)
-{
-	log() << LogLevel_Info << "Loading scenario with specific importer\n";
-
-	IScenarioImporter* l_pScenarioImporter=dynamic_cast<IScenarioImporter*>(getKernelContext().getPluginManager().createPluginObject(rLoaderIdentifier));
-	if(!l_pScenarioImporter)
-	{
-		log() << LogLevel_Warning << "Importer not found\n";
-		return false;
-	}
-	CScenarioImporterContext l_oScenarioImporterContext(getKernelContext(), sFileName, *this);
-	boolean l_bResult=l_pScenarioImporter->doImport(l_oScenarioImporterContext);
-	getKernelContext().getPluginManager().releasePluginObject(l_pScenarioImporter);
-
-	if(!l_bResult)
-	{
-		log() << LogLevel_Warning << "Import failed...\n";
-		return false;
-	}
 	return true;
 }
-
-boolean CVisualisationTree::save(
-	const CString& sFileName)
-{
-	// TODO
-	log() << LogLevel_Debug << "CScenario::save - Not implemented yet\n";
-
-	return false;
-}
-
-boolean CVisualisationTree::save(
-	const CString& sFileName,
-	const CIdentifier& rSaverIdentifier)
-{
-	log() << LogLevel_Info << "Saving scenario with specific exporter\n";
-
-	IScenarioExporter* l_pScenarioExporter=dynamic_cast<IScenarioExporter*>(getKernelContext().getPluginManager().createPluginObject(rSaverIdentifier));
-	if(!l_pScenarioExporter)
-	{
-		log() << LogLevel_Warning << "Exporter not found\n";
-		return false;
-	}
-	CScenarioExporterContext l_oScenarioExporterContext(getKernelContext(), sFileName, *this);
-	boolean l_bResult=l_pScenarioExporter->doExport(l_oScenarioExporterContext);
-	getKernelContext().getPluginManager().releasePluginObject(l_pScenarioExporter);
-
-	if(!l_bResult)
-	{
-		log() << LogLevel_Warning << "Export failed...\n";
-		return false;
-	}
-	return true;
-}
-*/
 
 boolean CVisualisationTree::getNextVisualisationWidgetIdentifier(CIdentifier& rIdentifier) const
 {
@@ -252,7 +185,7 @@ boolean CVisualisationTree::addVisualisationWidget(CIdentifier& rIdentifier, con
 		}
 	}
 
-	//add it to widgets vector
+	//add it to widgets map
 	m_vVisualisationWidget[rIdentifier]=l_pVisualisationWidget;
 	return true;
 }
@@ -439,12 +372,13 @@ CIdentifier CVisualisationTree::getUnusedIdentifier(void) const
 	return GTK_TREE_VIEW(gtk_tree_view_new_with_model(GTK_TREE_MODEL(m_pTreeStore)));
 }
 
-void CVisualisationTree::setTreeViewCB(ITreeViewCB* pTreeViewCB)
+boolean CVisualisationTree::setTreeViewCB(ITreeViewCB* pTreeViewCB)
 {
 	m_pTreeViewCB = pTreeViewCB;
+	return true;
 }
 
-void CVisualisationTree::reloadTree()
+boolean CVisualisationTree::reloadTree()
 {
 	//clear current tree
 	::GtkTreeIter l_oIter;
@@ -474,9 +408,11 @@ void CVisualisationTree::reloadTree()
 	CIdentifier l_oVisualisationWindowIdentifier = OV_UndefinedIdentifier;
 	while(getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)
 		loadVisualisationWindow(getVisualisationWidget(l_oVisualisationWindowIdentifier));
+
+	return true;
 }
 
-void CVisualisationTree::resizeVisualisationPanel(::GtkTreeIter* pIter)
+boolean CVisualisationTree::resizeVisualisationPanel(::GtkTreeIter* pIter)
 {
 	EVisualisationTreeNode l_oType = (EVisualisationTreeNode)getULongValueFromTreeIter(pIter, EVisualisationTreeColumn_ULongNodeType);
 	::GtkTreeIter l_oChildIter;
@@ -488,8 +424,8 @@ void CVisualisationTree::resizeVisualisationPanel(::GtkTreeIter* pIter)
 	}
 	else if(l_oType == EVisualisationTreeNode_VerticalSplit || l_oType == EVisualisationTreeNode_HorizontalSplit)
 	{
-		void* l_pWidget;
-		getPointerValueFromTreeIter(pIter, &l_pWidget, EVisualisationTreeColumn_PointerWidget);
+		void* l_pWidget = NULL;
+		getPointerValueFromTreeIter(pIter, l_pWidget, EVisualisationTreeColumn_PointerWidget);
 		::GtkPaned* l_pPaned = GTK_PANED(getVisualisationWidget(GTK_WIDGET(l_pWidget)));
 		if(l_pPaned != NULL)
 		{
@@ -508,14 +444,23 @@ void CVisualisationTree::resizeVisualisationPanel(::GtkTreeIter* pIter)
 				resizeVisualisationPanel(&l_oChildIter);
 		}
 	}
+	else
+	{
+		return false;
 }
 
-void CVisualisationTree::createTreeWidget(IVisualisationWidget* pVisualisationWidget)
+	return true;
+}
+
+boolean CVisualisationTree::createTreeWidget(IVisualisationWidget* pVisualisationWidget)
 {
 	if(m_pTreeViewCB != NULL)
 	{
 		m_pTreeViewCB->createTreeWidget(pVisualisationWidget);
+		return true;
 	}
+
+	return false;
 }
 
 ::GtkWidget* CVisualisationTree::loadTreeWidget(IVisualisationWidget* pWidget)
@@ -538,12 +483,15 @@ const char* CVisualisationTree::getTreeWidgetIcon(EVisualisationTreeNode type)
 	return m_pTreeViewCB == NULL ? "" : m_pTreeViewCB->getTreeWidgetIcon(type);
 }
 
-void CVisualisationTree::resizePanedWidget(IVisualisationWidget* pVisualisationWidget, ::GtkWidget* pPanedWidget)
+boolean CVisualisationTree::resizePanedWidget(IVisualisationWidget* pVisualisationWidget, ::GtkWidget* pPanedWidget)
 {
 	if(m_pTreeViewCB != NULL)
 	{
 		m_pTreeViewCB->resizePanedWidget(pVisualisationWidget, pPanedWidget);
+		return true;
 	}
+
+	return false;
 }
 
 //Tree helper functions
@@ -568,23 +516,24 @@ unsigned long	CVisualisationTree::getULongValueFromTreeIter(::GtkTreeIter* pTree
 	return l_ulong;
 }
 
-const char* CVisualisationTree::getStringValueFromTreeIter(::GtkTreeIter* pTreeIter, char** ppString, EVisualisationTreeColumn col) const
+boolean CVisualisationTree::getStringValueFromTreeIter(::GtkTreeIter* pTreeIter, char*& rString, EVisualisationTreeColumn col) const
 {
-	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pTreeIter, col, (gchar**)ppString, -1);
-	return *ppString;
+	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pTreeIter, col, &rString, -1);
+	return true;
 }
 
-void* CVisualisationTree::getPointerValueFromTreeIter(::GtkTreeIter* pTreeIter, void** pPointer, EVisualisationTreeColumn col) const
+boolean CVisualisationTree::getPointerValueFromTreeIter(::GtkTreeIter* pTreeIter, void*& rPointer, EVisualisationTreeColumn col) const
 {
-	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pTreeIter, col, pPointer, -1);
-	return *pPointer;
+	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pTreeIter, col, &rPointer, -1);
+	return true;
 }
 
-void CVisualisationTree::getIdentifierFromTreeIter(::GtkTreeIter* pIter, CIdentifier& rIdentifier, EVisualisationTreeColumn col) const
+boolean CVisualisationTree::getIdentifierFromTreeIter(::GtkTreeIter* pIter, CIdentifier& rIdentifier, EVisualisationTreeColumn col) const
 {
-	gchar* l_sIdentifier;
-	getStringValueFromTreeIter(pIter, &l_sIdentifier, col);
-	rIdentifier.fromString(CString(l_sIdentifier));
+	char* l_pStringIdentifier = NULL;
+	getStringValueFromTreeIter(pIter, l_pStringIdentifier, col);
+	rIdentifier.fromString(CString(l_pStringIdentifier));
+	return true;
 }
 
 //looks for a tree node named 'label' of class 'type' from tree root
@@ -794,25 +743,25 @@ boolean CVisualisationTree::findParentNode(::GtkTreeIter* pIter, EVisualisationT
 	}
 }
 
-void CVisualisationTree::dragDataReceivedOutsideWidgetCB(const CIdentifier& rSrcIdentifier, ::GtkWidget* pDstWidget, EDragDataLocation eLocation)
+boolean CVisualisationTree::dragDataReceivedOutsideWidgetCB(const CIdentifier& rSrcIdentifier, ::GtkWidget* pDstWidget, EDragDataLocation eLocation)
 {
 	//retrieve source widget parent
 	//-----------------------------
 	IVisualisationWidget* l_pSrcVisualisationWidget = getVisualisationWidget(rSrcIdentifier);
 	if(l_pSrcVisualisationWidget == NULL)
-		return;
+		return false;
 	CIdentifier l_oSrcParentIdentifier = l_pSrcVisualisationWidget->getParentIdentifier();
 
 	//retrieve dest widget and dest widget parent identifiers
 	//-------------------------------------------------------
 	::GtkTreeIter l_oDstIter;
 	if(findChildNodeFromRoot(&l_oDstIter, getTreeWidget(pDstWidget)) == false)
-		return;
+		return false;
 	CIdentifier l_oDstIdentifier;
 	getIdentifierFromTreeIter(&l_oDstIter, l_oDstIdentifier, EVisualisationTreeColumn_StringIdentifier);
 	IVisualisationWidget* l_pDstVisualisationWidget = getVisualisationWidget(l_oDstIdentifier);
 	if(l_pDstVisualisationWidget == NULL)
-		return;
+		return false;
 	CIdentifier l_oDstParentIdentifier = l_pDstVisualisationWidget->getParentIdentifier();
 
 	//unparent source widget
@@ -850,30 +799,32 @@ void CVisualisationTree::dragDataReceivedOutsideWidgetCB(const CIdentifier& rSrc
 	parentVisualisationWidget(rSrcIdentifier, l_oPanedIdentifier, l_ui32NewSrcIndex);
 	parentVisualisationWidget(l_oDstIdentifier, l_oPanedIdentifier, 1-l_ui32NewSrcIndex);
 
-	//update ::Gtk tree
+	//update Gtk tree
 	//---------------
 	reloadTree();
+
+	return true;
 }
 
-void CVisualisationTree::dragDataReceivedInWidgetCB(const CIdentifier& rSrcIdentifier, ::GtkWidget* pDstWidget)
+boolean CVisualisationTree::dragDataReceivedInWidgetCB(const CIdentifier& rSrcIdentifier, ::GtkWidget* pDstWidget)
 {
 	//retrieve source widget parent
 	//-----------------------------
 	IVisualisationWidget* l_pSrcVisualisationWidget = getVisualisationWidget(rSrcIdentifier);
 	if(l_pSrcVisualisationWidget == NULL)
-		return;
+		return false;
 	CIdentifier l_oSrcParentIdentifier = l_pSrcVisualisationWidget->getParentIdentifier();
 
 	//retrieve dest widget and dest widget parent identifiers
 	//-------------------------------------------------------
 	::GtkTreeIter l_oDstIter;
 	if(findChildNodeFromRoot(&l_oDstIter, getTreeWidget(pDstWidget)) == false)
-		return;
+		return false;
 	CIdentifier l_oDstIdentifier;
 	getIdentifierFromTreeIter(&l_oDstIter, l_oDstIdentifier, EVisualisationTreeColumn_StringIdentifier);
 	IVisualisationWidget* l_pDstVisualisationWidget = getVisualisationWidget(l_oDstIdentifier);
 	if(l_pDstVisualisationWidget == NULL)
-		return;
+		return false;
 	CIdentifier l_oDstParentIdentifier = l_pDstVisualisationWidget->getParentIdentifier();
 
 	//unparent source widget
@@ -911,9 +862,11 @@ void CVisualisationTree::dragDataReceivedInWidgetCB(const CIdentifier& rSrcIdent
 	//----------------------
 	parentVisualisationWidget(rSrcIdentifier, l_oDstParentIdentifier, l_ui32DstIndex);
 
-	//update ::Gtk tree
+	//update Gtk tree
 	//---------------
 	reloadTree();
+
+	return true;
 }
 
 boolean CVisualisationTree::loadVisualisationWindow(IVisualisationWidget* pVisualisationWindow)
@@ -1032,7 +985,10 @@ boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, 
 		//retrieve pointer to box algorithm descriptor
 		const IBoxAlgorithmDesc* l_pDesc = dynamic_cast<const IBoxAlgorithmDesc*>(
 			m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_pBox->getAlgorithmClassIdentifier()));
-		l_pStockIconString = l_pDesc->getStockItemName();
+		if(l_pDesc != NULL)
+		{
+			l_pStockIconString = l_pDesc->getStockItemName();
+		}
 	}
 
 	::GtkWidget* l_pWidget = loadTreeWidget(pVisualisationWidget);
@@ -1047,24 +1003,24 @@ boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, 
 		-1);
 
 	//add widget to parent
-	if(l_oParentType == EVisualisationTreeNode_VisualisationPanel)
+	if(l_pWidget != NULL)
 	{
-		//parent widget to notebook as a new page
-		void* l_pNotebook;
-		getPointerValueFromTreeIter(pParentIter, &l_pNotebook, EVisualisationTreeColumn_PointerWidget);
-		gchar* l_sVisualisationPanelName;
-		getStringValueFromTreeIter(pParentIter, &l_sVisualisationPanelName, EVisualisationTreeColumn_StringName);
-		gtk_notebook_append_page(GTK_NOTEBOOK(l_pNotebook), l_pWidget, gtk_label_new(l_sVisualisationPanelName));
-	}
-	else if(l_oParentType == EVisualisationTreeNode_VerticalSplit || l_oParentType == EVisualisationTreeNode_HorizontalSplit)
-	{
-		//insert widget in parent paned
-		::GtkWidget* l_pParentWidget;
-		gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pParentIter, EVisualisationTreeColumn_PointerWidget, &l_pParentWidget, -1);
-		::GtkWidget* l_pPaned = getVisualisationWidget(l_pParentWidget);
-		if(l_pPaned != NULL && GTK_IS_PANED(l_pPaned))
+		if(l_oParentType == EVisualisationTreeNode_VisualisationPanel)
 		{
-			if(l_pWidget != NULL)
+			//parent widget to notebook as a new page
+			void* l_pNotebook = NULL;
+			getPointerValueFromTreeIter(pParentIter, l_pNotebook, EVisualisationTreeColumn_PointerWidget);
+			char* l_pVisualisationPanelName = NULL;
+			getStringValueFromTreeIter(pParentIter, l_pVisualisationPanelName, EVisualisationTreeColumn_StringName);
+			gtk_notebook_append_page(GTK_NOTEBOOK(l_pNotebook), l_pWidget, gtk_label_new(l_pVisualisationPanelName));
+		}
+		else if(l_oParentType == EVisualisationTreeNode_VerticalSplit || l_oParentType == EVisualisationTreeNode_HorizontalSplit)
+		{
+			//insert widget in parent paned
+			::GtkWidget* l_pParentWidget;
+			gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pParentIter, EVisualisationTreeColumn_PointerWidget, &l_pParentWidget, -1);
+			::GtkWidget* l_pPaned = getVisualisationWidget(l_pParentWidget);
+			if(l_pPaned != NULL && GTK_IS_PANED(l_pPaned))
 			{
 				if(ui32Index == 0)
 				{
@@ -1076,11 +1032,11 @@ boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, 
 				}
 			}
 		}
-	}
 
-	if(m_pTreeViewCB)
-	{
-		m_pTreeViewCB->endLoadTreeWidget(l_pWidget);
+		if(m_pTreeViewCB)
+		{
+			m_pTreeViewCB->endLoadTreeWidget(l_pWidget);
+		}
 	}
 
 	//load hierarchy
@@ -1097,7 +1053,97 @@ boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, 
 	return true;
 }
 
-boolean	CVisualisationTree::setWidgets(const OpenViBE::CString& rVisualisationBoxName, ::GtkWidget* pWidget, ::GtkWidget* pToolbarWidget)
+boolean CVisualisationTree::setToolbar(const CString& rVisualisationBoxName, ::GtkWidget* pToolbarWidget)
 {
-	return (m_pTreeViewCB != NULL) ? m_pTreeViewCB->setWidgets(rVisualisationBoxName, pWidget, pToolbarWidget) : false;
+	if(m_pTreeViewCB != NULL)
+	{
+		return m_pTreeViewCB->setToolbar(rVisualisationBoxName, pToolbarWidget);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CVisualisationTree::setWidget(const CString& rVisualisationBoxName, ::GtkWidget* pTopmostWidget)
+{
+	if(m_pTreeViewCB != NULL)
+	{
+		return m_pTreeViewCB->setWidget(rVisualisationBoxName, pTopmostWidget);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CVisualisationTree::visitVisualisationWidget(IObjectVisitor& rObjectVisitor, CIdentifier oVisualisationWidgetIdentifier, boolean bRecurse)
+{
+	IVisualisationWidget* l_pVisualisationWidget = getVisualisationWidget(oVisualisationWidgetIdentifier);
+	if(l_pVisualisationWidget == NULL)
+	{
+		return false;
+	}
+
+	if(!l_pVisualisationWidget->acceptVisitor(rObjectVisitor))
+	{
+		return false;
+	}
+
+	if(bRecurse == true)
+	{
+		CIdentifier l_oChildIdentifier = OV_UndefinedIdentifier;
+
+		for(uint32 i = 0; i < l_pVisualisationWidget->getNbChildren(); i++)
+		{
+			l_pVisualisationWidget->getChildIdentifier(i, l_oChildIdentifier);
+			if(!visitVisualisationWidget(rObjectVisitor, l_oChildIdentifier, bRecurse))
+			{
+				return false;
+			}
+		}
+	} // if(bRecurse == true)
+
+	return true;
+}
+
+boolean CVisualisationTree::acceptVisitor(IObjectVisitor& rObjectVisitor)
+{
+	CObjectVisitorContext l_oObjectVisitorContext(getKernelContext());
+
+	if(!rObjectVisitor.processBegin(l_oObjectVisitorContext, *this))
+	{
+		return false;
+	}
+
+	//go through all top level visualisation widgets and visit them recursively in a depth-first approach
+	CIdentifier l_oCurrentIdentifier = OV_UndefinedIdentifier;
+	while(getNextVisualisationWidgetIdentifier(l_oCurrentIdentifier, EVisualisationWidget_VisualisationWindow))
+	{
+		if(!visitVisualisationWidget(rObjectVisitor, l_oCurrentIdentifier, true))
+		{
+			return false;
+		}
+	}
+
+	//go through all visualisation boxes and visit unaffected ones
+	l_oCurrentIdentifier = OV_UndefinedIdentifier;
+	while(getNextVisualisationWidgetIdentifier(l_oCurrentIdentifier, EVisualisationWidget_VisualisationBox))
+	{
+		IVisualisationWidget* l_pVisualisationWidget = getVisualisationWidget(l_oCurrentIdentifier);
+		if(l_pVisualisationWidget->getParentIdentifier() == OV_UndefinedIdentifier)
+		{
+			if(!visitVisualisationWidget(rObjectVisitor, l_oCurrentIdentifier, true))
+			{
+				return false;
+			}
+		}
+	}
+
+	if(!rObjectVisitor.processEnd(l_oObjectVisitorContext, *this))
+	{
+		return false;
+	}
+
+	return true;
 }

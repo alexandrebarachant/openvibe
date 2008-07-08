@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpCGenericStreamWriter_description Description
 This plugin writes the incoming streams in a file which can be used for later playback by the \ref Doc_ovpCGenericStreamReader "Generic stream reader plugin". Right now it supports up to two incoming streams which will be playable separatly.
 
-\image html GenericStreamWriterBox.png
+\image html BoxAlgorithm_GenericStreamWriter.png
 
 
  \section Doc_ovpCGenericStreamWriter_inputs Inputs

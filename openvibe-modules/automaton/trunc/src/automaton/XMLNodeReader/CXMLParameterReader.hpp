@@ -13,7 +13,7 @@
 namespace Automaton
 {
 
-	class CXMLParameterReader : virtual public TXMLReader<IXMLNodeReader>
+	class CXMLParameterReader : public TXMLReader<IXMLNodeReader>
 	{
 		public:
 			//! Parameters of the associated action

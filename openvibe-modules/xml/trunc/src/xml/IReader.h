@@ -14,7 +14,7 @@ namespace XML
 		virtual void closeChild(void)=0;
 	};
 
-	class XML_API IReaderCallBack : virtual public IReaderCallback { };
+	class XML_API IReaderCallBack : public IReaderCallback { };
 
 	class XML_API IReader
 	{

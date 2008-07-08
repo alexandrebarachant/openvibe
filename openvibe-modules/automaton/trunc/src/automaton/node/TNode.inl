@@ -7,7 +7,7 @@
 
 namespace Automaton
 {
-	template <class T> class TNode : virtual public T
+	template <class T> class TNode : public T
 	{
 		protected:
 			std::vector<Automaton::CIdentifier> m_oSuccessor;

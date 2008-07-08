@@ -11,7 +11,7 @@ namespace OpenViBEPlugins
 {
 	namespace Stimulation
 	{
-		class CBoxAlgorithmStimulationMultiplexer : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmStimulationMultiplexer : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -48,7 +48,7 @@ namespace OpenViBEPlugins
 			std::multimap < OpenViBE::uint64, CBoxAlgorithmStimulationMultiplexer::SStimulation > m_vStimulation;
 		};
 
-		class CBoxAlgorithmStimulationMultiplexerDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmStimulationMultiplexerDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

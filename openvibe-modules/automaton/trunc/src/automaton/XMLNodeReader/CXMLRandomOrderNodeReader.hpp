@@ -13,7 +13,7 @@
 namespace Automaton
 {
 
-	class CXMLRandomOrderNodeReader : virtual public TXMLReader<IXMLNodeReader>
+	class CXMLRandomOrderNodeReader : public TXMLReader<IXMLNodeReader>
 	{
 		public:
 			//! The node reader factory

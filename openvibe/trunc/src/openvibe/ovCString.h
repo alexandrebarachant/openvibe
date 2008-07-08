@@ -104,6 +104,17 @@ namespace OpenViBE
 			const OpenViBE::CString& rString1,
 			const OpenViBE::CString& rString2);
 
+/**
+		 * \brief Order comparison operator (necessary to use CString as a key in a stl map)
+		 * \param rString1 [in] : The first part of the resulting string
+		 * \param rString2 [in] : The second part of the resulting string
+		 * \return \e false is \c rString1 is exactly rString2.
+		 * \return \e true in other case.
+		 * \note This is case sensitive !
+		 */
+		friend OV_API OpenViBE::boolean operator<(
+			const OpenViBE::CString& rString1, 
+			const OpenViBE::CString& rString2);
 		//@}
 
 		/**

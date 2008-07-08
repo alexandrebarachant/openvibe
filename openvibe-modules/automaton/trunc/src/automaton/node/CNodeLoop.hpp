@@ -23,7 +23,7 @@ namespace Automaton
 			virtual ~ILoopConditionFunctor(){}
 	};
 
-	class CLoopConditionInfinite : virtual public ILoopConditionFunctor
+	class CLoopConditionInfinite : public ILoopConditionFunctor
 	{
 		public:
 			virtual ~CLoopConditionInfinite() {}
@@ -34,7 +34,7 @@ namespace Automaton
 			}
 	};
 
-	class CLoopConditionFinite : virtual public ILoopConditionFunctor
+	class CLoopConditionFinite : public ILoopConditionFunctor
 	{
 		Automaton::uint64 m_ui64Iteration;
 		Automaton::uint64 m_ui64BaseIteration;
@@ -55,7 +55,7 @@ namespace Automaton
 
 	};
 
-	class CLoopConditionEvent : virtual public ILoopConditionFunctor
+	class CLoopConditionEvent : public ILoopConditionFunctor
 	{
 		Automaton::CIdentifier m_oEvent;
 
@@ -79,7 +79,7 @@ namespace Automaton
 
 	};
 
-	class CNodeLoop : virtual public TNodeLoop<INode>
+	class CNodeLoop : public TNodeLoop<INode>
 	{
 		protected:
 			ILoopConditionFunctor * m_pLoopCondition;

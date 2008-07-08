@@ -15,7 +15,7 @@ using namespace std;
 namespace Automaton
 {
 
-	class CAutomatonContext : virtual public IAutomatonContext
+	class CAutomatonContext : public IAutomatonContext
 	{
 		std::map<CIdentifier, INode*> m_oNodes;
 

@@ -24,7 +24,7 @@ namespace OpenViBEPlugins
 		 * This class contains everything necessary to setup a GTK window and display
 		 * a signal thanks to a CBufferDatabase's information.
 		 */
-		class CFrequencySpectrumDisplayView : virtual public CSignalDisplayDrawable
+		class CFrequencySpectrumDisplayView : public CSignalDisplayDrawable
 		{
 		public:
 

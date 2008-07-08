@@ -5,7 +5,7 @@
 
 namespace EBML
 {
-	class EBML_API CReaderHelper : virtual public EBML::IReaderHelper
+	class EBML_API CReaderHelper : public EBML::IReaderHelper
 	{
 	public:
 

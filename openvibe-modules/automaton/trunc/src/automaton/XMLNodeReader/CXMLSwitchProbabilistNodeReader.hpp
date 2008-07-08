@@ -12,7 +12,7 @@
 namespace Automaton
 {
 
-	class CXMLSwitchProbabilistNodeReader : virtual public TXMLReader<IXMLNodeReader>
+	class CXMLSwitchProbabilistNodeReader : public TXMLReader<IXMLNodeReader>
 	{
 		public:
 			//! The node reader factory

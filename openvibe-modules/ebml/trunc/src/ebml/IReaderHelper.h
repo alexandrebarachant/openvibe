@@ -1,10 +1,3 @@
-/**
- * \file IReaderHelper.h
- * \author Yann Renard (INRIA/IRISA)
- * \date 2006-08-07
- * \brief EBML::IReaderHelper class definitions
- */
-
 #ifndef __EBML_IReaderHelper_H__
 #define __EBML_IReaderHelper_H__
 

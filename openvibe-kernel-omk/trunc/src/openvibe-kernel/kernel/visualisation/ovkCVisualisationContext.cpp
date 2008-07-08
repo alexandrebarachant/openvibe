@@ -1,10 +1,7 @@
-#include "ovkCVisualisationContext.h"
 #include "../player/ovkCSimulatedBox.h"
+#include "ovkCVisualisationContext.h"
 
 #include "../../tools/ovk_bridge_bind_function.h"
-
-using namespace OpenViBE;
-using namespace OpenViBE::Kernel;
 
 namespace OpenViBE
 {
@@ -16,17 +13,21 @@ namespace OpenViBE
 
 			CVisualisationManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IVisualisationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
+			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, initialize3DContext, , const CString&, rPluginsFile, boolean, bLogOgreToScreen, const CString&, rLogFileName)
+
+			virtual __BridgeBindFunc2__(getKernelContext().getVisualisationManager(), boolean, createResourceGroup, , CIdentifier&, rResourceGroupIdentifier, const CString&, rResourceGroupName)
+			virtual __BridgeBindFunc4__(getKernelContext().getVisualisationManager(), boolean, addResourceLocation, , const CIdentifier&, rResourceGroupIdentifier, const CString&, rResourceName, OpenViBE::Kernel::EResourceType, eResourceType, boolean, bRecursive)
+			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, initializeResourceGroup, , const CIdentifier&, rResourceGroupIdentifier)
+			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, destroyResourceGroup, , const CIdentifier&, rResourceGroupIdentifier)
+
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, createVisualisationTree, , CIdentifier&, rVisualisationTreeIdentifier)
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, releaseVisualisationTree, , const CIdentifier&, rVisualisationTreeIdentifier)
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), IVisualisationTree&, getVisualisationTree, , const CIdentifier&, rVisualisationTreeIdentifier)
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, enumerateVisualisationTrees, const, IVisualisationManager::IVisualisationTreeEnum&, rCallBack)
-			virtual __BridgeBindFunc4__(getKernelContext().getVisualisationManager(), boolean, setWidgets, , const CIdentifier&, rVisualisationTreeIdentifier, const CString&, rVisualisationBoxName,  GtkWidget*, pWidget, GtkWidget*, pToolbarWidget)
-			/*
-			virtual __BridgeBindFunc0__(getKernelContext().getVisualisationManager(), void, init3DContext, )
-			virtual __BridgeBindFunc2__(getKernelContext().getVisualisationManager(), boolean, create3DVisualisationWidget, , void*, pParentWidget, OpenViBE::uint32&, uint32Index)
-			virtual __BridgeBindFunc0__(getKernelContext().getVisualisationManager(), boolean, realize3DVisualisationWidgets, )
-			virtual __BridgeBindFunc0__(getKernelContext().getVisualisationManager(), void, release3DContext, )
-			*/
+
+			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, setToolbar, , const CIdentifier&, rVisualisationTreeIdentifier, const CString&, rVisualisationBoxName,  GtkWidget*, pToolbarWidget)
+			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, setWidget, , const CIdentifier&, rVisualisationTreeIdentifier, const CString&, rVisualisationBoxName,  GtkWidget*, pWidget)
+
 			_IsDerivedFromClass_Final_(TKernelObject<IVisualisationManager>, OV_UndefinedIdentifier);
 
 		protected:
@@ -35,6 +36,10 @@ namespace OpenViBE
 		};
 	};
 };
+
+using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
+#define boolean OpenViBE::boolean
 
 CVisualisationContext::CVisualisationContext(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox)
 	:TKernelObject<IVisualisationContext>(rKernelContext)
@@ -49,11 +54,154 @@ CVisualisationContext::~CVisualisationContext(void)
 	delete m_pVisualisationManagerBridge;
 }
 
-boolean CVisualisationContext::setWidgets(GtkWidget* pWidget, GtkWidget* pToolbarWidget)
+boolean CVisualisationContext::setToolbar(::GtkWidget* pToolbarWidget)
 {
-	return m_pVisualisationManagerBridge->setWidgets(
+	return m_pVisualisationManagerBridge->setToolbar(
 		m_pSimulatedBox->getScenario().getVisualisationTreeIdentifier(),
 		m_pSimulatedBox->getName(),
-		pWidget,
 		pToolbarWidget);
+}
+
+boolean CVisualisationContext::setWidget(::GtkWidget* pTopmostWidget)
+{
+	return m_pVisualisationManagerBridge->setWidget(
+		m_pSimulatedBox->getScenario().getVisualisationTreeIdentifier(),
+		m_pSimulatedBox->getName(),
+		pTopmostWidget);
+}
+
+boolean CVisualisationContext::createResourceGroup(CIdentifier& rResourceGroupIdentifier, const CString& rResourceGroupName)
+{
+	return m_pVisualisationManagerBridge->createResourceGroup(rResourceGroupIdentifier, rResourceGroupName);
+}
+
+boolean CVisualisationContext::addResourceLocation(const CIdentifier& rResourceGroupIdentifier, const CString& rPath, EResourceType type,	bool bRecursive)
+{
+	return m_pVisualisationManagerBridge->addResourceLocation(rResourceGroupIdentifier, rPath, type, bRecursive);
+}
+
+boolean CVisualisationContext::addResourceLocationFromFile(const CIdentifier& rResourceGroupIdentifier,	const CString& rResourcesFileName)
+{
+	return false;//m_pVisualisationManagerBridge->addResourceLocationFromFile(rResourceGroupIdentifier, rResourcesFileName);
+}
+
+boolean CVisualisationContext::initializeResourceGroup(const CIdentifier& rResourceGroupIdentifier)
+{
+	return m_pVisualisationManagerBridge->initializeResourceGroup(rResourceGroupIdentifier);
+}
+
+boolean CVisualisationContext::destroyResourceGroup(const CIdentifier& rResourceGroupIdentifier)
+{
+	return m_pVisualisationManagerBridge->destroyResourceGroup(rResourceGroupIdentifier);
+}
+
+CIdentifier CVisualisationContext::create3DWidget(::GtkWidget*& p3DWidget)
+{
+	return m_pSimulatedBox->create3DWidget(p3DWidget);
+}
+
+boolean CVisualisationContext::setBackgroundColor(const OpenViBE::CIdentifier& rWidgetIdentifier, float32 f32ColorRed, float32 f32ColorGreen, float32 f32ColorBlue)
+{
+	return m_pSimulatedBox->setBackgroundColor(rWidgetIdentifier, f32ColorRed, f32ColorGreen, f32ColorBlue);
+}
+
+boolean CVisualisationContext::setCameraToEncompassObjects(const CIdentifier& rWidgetIdentifier)
+{
+	return m_pSimulatedBox->setCameraToEncompassObjects(rWidgetIdentifier);
+}
+
+CIdentifier CVisualisationContext::createObject(const CString& rObjectFileName)
+{
+	return m_pSimulatedBox->createObject(rObjectFileName);
+}
+
+CIdentifier CVisualisationContext::createObject(const Kernel::EStandard3DObject eStandard3DObject)
+{
+	return m_pSimulatedBox->createObject(eStandard3DObject);
+}
+
+boolean CVisualisationContext::removeObject(const CIdentifier& rIdentifier)
+{
+	return m_pSimulatedBox->removeObject(rIdentifier);
+}
+
+boolean CVisualisationContext::setObjectScale(const CIdentifier& rIdentifier, float32 f32ScaleX, float32 f32ScaleY, float32 f32ScaleZ)
+{
+	return m_pSimulatedBox->setObjectScale(rIdentifier, f32ScaleX, f32ScaleY, f32ScaleZ);
+}
+
+boolean CVisualisationContext::setObjectScale(const CIdentifier& rIdentifier, float32 f32Scale)
+{
+	return m_pSimulatedBox->setObjectScale(rIdentifier, f32Scale);
+}
+
+boolean CVisualisationContext::setObjectPosition(const CIdentifier& rIdentifier, float32 f32PositionX, float32 f32PositionY, float32 f32PositionZ)
+{
+	return m_pSimulatedBox->setObjectPosition(rIdentifier, f32PositionX, f32PositionY, f32PositionZ);
+}
+
+boolean CVisualisationContext::setObjectOrientation(const CIdentifier& rIdentifier, float32 f32OrientationX, float32 f32OrientationY,
+	float32 f32OrientationZ, float32 f32OrientationW)
+{
+	return m_pSimulatedBox->setObjectOrientation(rIdentifier, f32OrientationX, f32OrientationY, f32OrientationZ, f32OrientationW);
+}
+
+boolean CVisualisationContext::setObjectColor(const CIdentifier& rIdentifier, float32 f32ColorRed, float32 f32ColorGreen, float32 f32ColorBlue)
+{
+	return m_pSimulatedBox->setObjectColor(rIdentifier, f32ColorRed, f32ColorGreen, f32ColorBlue);
+}
+
+boolean CVisualisationContext::setObjectTransparency(const CIdentifier& rIdentifier, float32 f32Transparency)
+{
+	return m_pSimulatedBox->setObjectTransparency(rIdentifier, f32Transparency);
+}
+
+boolean CVisualisationContext::setObjectVertexCount(const CIdentifier& rIdentifier, const uint32 ui32VertexCount)
+{
+	return false;
+}
+
+boolean CVisualisationContext::setObjectVertexPositionArray(const CIdentifier& rIdentifier, const float32* pVertexPositionArray)
+{
+	return false;
+}
+
+boolean CVisualisationContext::setObjectVertexColorArray(const CIdentifier& rIdentifier, const uint32 ui32VertexColorCount, const float32* pVertexColorArray)
+{
+	return m_pSimulatedBox->setObjectVertexColorArray(rIdentifier, ui32VertexColorCount, pVertexColorArray);
+}
+
+boolean CVisualisationContext::setObjectTriangleCount(const CIdentifier& rIdentifier, const uint32 ui32TriangleCount)
+{
+	return false;
+}
+
+boolean CVisualisationContext::setObjectTriangleIndexArray(const CIdentifier& rIdentifier,	const uint32* pTriangleIndexArray)
+{
+	return false;
+}
+
+boolean CVisualisationContext::getObjectVertexCount(const CIdentifier& rIdentifier, uint32& ui32VertexCount) const
+{
+	return m_pSimulatedBox->getObjectVertexCount(rIdentifier, ui32VertexCount);
+}
+
+boolean CVisualisationContext::getObjectVertexPositionArray(const CIdentifier& rIdentifier, const uint32 ui32VertexColorCount, float32* pVertexPositionArray) const
+{
+	return m_pSimulatedBox->getObjectVertexPositionArray(rIdentifier, ui32VertexColorCount, pVertexPositionArray);
+}
+
+boolean CVisualisationContext::getObjectVertexColorArray(const CIdentifier& rIdentifier,	float32* pVertexColorArray) const
+{
+	return false;
+}
+
+boolean CVisualisationContext::getObjectTriangleCount(const CIdentifier& rIdentifier, uint32& ui32TriangleCount) const
+{
+	return false;
+}
+
+boolean CVisualisationContext::getObjectTriangleIndexArray(const CIdentifier& rIdentifier, uint32* pTriangleIndexArray) const
+{
+	return false;
 }

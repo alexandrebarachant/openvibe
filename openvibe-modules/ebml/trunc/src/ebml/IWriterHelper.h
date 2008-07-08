@@ -1,10 +1,3 @@
-/**
- * \file IWriterHelper.h
- * \author Yann Renard (INRIA/IRISA)
- * \date 2006-08-07
- * \brief EBML::IWriterHelper class definitions
- */
-
 #ifndef __EBML_IWriterHelper_H__
 #define __EBML_IWriterHelper_H__
 

@@ -13,7 +13,7 @@ namespace OpenViBEPlugins
 	namespace Classification
 	{
 
-		class CLDAClassifier : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback::ICallback
+		class CLDAClassifier : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback::ICallback
 		{
 
 			//EBML writing stuff
@@ -60,7 +60,7 @@ namespace OpenViBEPlugins
 
 		};
 
-		class CLDAClassifierDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CLDAClassifierDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 			public:
 				virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("LDA classifier"); }

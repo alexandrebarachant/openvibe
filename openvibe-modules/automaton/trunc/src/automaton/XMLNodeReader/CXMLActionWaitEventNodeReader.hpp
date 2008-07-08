@@ -11,7 +11,7 @@
 namespace Automaton
 {
 
-	class CXMLActionWaitEventNodeReader : virtual public TXMLReader<IXMLNodeReader>
+	class CXMLActionWaitEventNodeReader : public TXMLReader<IXMLNodeReader>
 	{
 		public:
 			//! The node factory

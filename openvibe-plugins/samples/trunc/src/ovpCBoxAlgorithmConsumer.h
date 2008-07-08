@@ -13,7 +13,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CBoxAlgorithmConsumer : virtual public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IReaderCallback
+		class CBoxAlgorithmConsumer : public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IReaderCallback
 		{
 		public:
 
@@ -108,7 +108,7 @@ namespace OpenViBEPlugins
 			EBML::IReaderHelper* m_pReaderHelper;
 		};
 
-		class CBoxAlgorithmConsumerDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmConsumerDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

@@ -1,10 +1,3 @@
-/**
- * \file CIdentifier.h
- * \author Yann Renard (INRIA/IRISA)
- * \date 2006-08-07
- * \brief EBML::CIdentifier class definition
- */
-
 #ifndef __EBML_CIdentifier_H__
 #define __EBML_CIdentifier_H__
 

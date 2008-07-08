@@ -60,7 +60,6 @@ namespace OpenViBEPlugins
 			//GdkPixmap * m_pPixmap;
 
 		};
-
 	};
 };
 

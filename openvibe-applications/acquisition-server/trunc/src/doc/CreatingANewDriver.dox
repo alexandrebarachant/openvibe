@@ -82,7 +82,7 @@
  * \code
  * #include <IDriver.h>
  *
- * class CYourDriver : virtual public OpenViBEAcquisitionServer::IDriver
+ * class CYourDriver : public OpenViBEAcquisitionServer::IDriver
  * {
  * public:
  *   CYourDriver(void);

@@ -5,7 +5,7 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CDriverMindMediaNeXus32B : virtual public OpenViBEAcquisitionServer::IDriver
+	class CDriverMindMediaNeXus32B : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 

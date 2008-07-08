@@ -9,7 +9,7 @@ namespace OpenViBEPlugins
 {
 	namespace Stimulation
 	{
-		class CBoxAlgorithmSoundPlayer : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmSoundPlayer : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -33,7 +33,7 @@ namespace OpenViBEPlugins
 			OpenViBE::CString m_sSoundFilename;
 		};
 
-		class CBoxAlgorithmSoundPlayerDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmSoundPlayerDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

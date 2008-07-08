@@ -265,7 +265,7 @@ namespace OpenViBEPlugins
 #if 0
 			gtk_widget_show_all(m_pMainWindow);
 #endif
-			getBoxAlgorithmContext()->getVisualisationContext()->setWidgets(m_pDrawingArea, NULL);
+			getBoxAlgorithmContext()->getVisualisationContext()->setWidget(m_pDrawingArea);
 
 			return true;
 		}

@@ -10,7 +10,7 @@ namespace XML
 //
 
 	template <class COwnerClass>
-	class TReaderCallbackProxy1 : virtual public XML::IReaderCallback
+	class TReaderCallbackProxy1 : public XML::IReaderCallback
 	{
 	public:
 		TReaderCallbackProxy1(
@@ -56,7 +56,7 @@ namespace XML
 //
 
 	template <class COwnerClass, void (COwnerClass::*mfpOpenChild)(const char* sName, const char** sAttributeName, const char** sAttributeValue, XML::uint64 ui64AttributeCount), void (COwnerClass::*mfpProcessChildData)(const char* sData), void (COwnerClass::*mfpCloseChild)(void)>
-	class TReaderCallbackProxy2 : virtual public XML::IReaderCallback
+	class TReaderCallbackProxy2 : public XML::IReaderCallback
 	{
 	public:
 		TReaderCallbackProxy2(COwnerClass rOwnerObject)

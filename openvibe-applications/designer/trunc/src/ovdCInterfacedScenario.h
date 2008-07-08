@@ -10,7 +10,6 @@
 
 namespace OpenViBEDesigner
 {
-	class IVisualisationTree;
 	class CDesignerVisualisation;
 	class CPlayerVisualisation;
 
@@ -48,6 +47,12 @@ namespace OpenViBEDesigner
 		void contextMenuAddOutputCB(void);
 		void contextMenuRemoveOutputCB(void);
 
+		void toggleDesignerVisualisation();
+		OpenViBE::boolean isDesignerVisualisationToggled();
+
+		void showCurrentVisualisation();
+		void hideCurrentVisualisation();
+		
 		void createPlayerVisualisation(void);
 		void releasePlayerVisualisation(void);
 
@@ -67,6 +72,7 @@ namespace OpenViBEDesigner
 		::GtkNotebook& m_rNotebook;
 		OpenViBE::Kernel::IVisualisationTree* m_pVisualisationTree;
 		OpenViBEDesigner::CDesignerVisualisation* m_pDesignerVisualisation;
+		OpenViBE::boolean m_bDesignerVisualisationToggled;		
 		OpenViBEDesigner::CPlayerVisualisation* m_pPlayerVisualisation;
 		::GladeXML* m_pGladeDummyScenarioNotebookTitle;
 		::GladeXML* m_pGladeDummyScenarioNotebookClient;

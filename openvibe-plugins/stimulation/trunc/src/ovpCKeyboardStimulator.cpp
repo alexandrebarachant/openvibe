@@ -90,6 +90,10 @@ namespace OpenViBEPlugins
 			{
 				l_oFile>>l_oKeyName>>l_oStimulationPress>>l_oStimulationRelease;
 
+				l_ui64StimulationPress=0;
+				l_ui64StimulationRelease=0;
+
+				// MAY CAUSE ENDIANNESS PROBLEMS !
 				sscanf(l_oStimulationPress.c_str(),   "0x%08Lx", &l_ui64StimulationPress);
 				sscanf(l_oStimulationRelease.c_str(), "0x%08Lx", &l_ui64StimulationRelease);
 

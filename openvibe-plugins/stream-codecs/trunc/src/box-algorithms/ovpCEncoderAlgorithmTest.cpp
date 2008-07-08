@@ -24,12 +24,12 @@ boolean CEncoderAlgorithmTest::initialize(void)
 	m_oMatrix1.setDimensionCount(2);
 	m_oMatrix1.setDimensionSize(0, 16);
 	m_oMatrix1.setDimensionSize(1, 16);
-	OpenViBEToolkit::Tools::MatrixManipulation::clearContent(m_oMatrix1);
+	OpenViBEToolkit::Tools::Matrix::clearContent(m_oMatrix1);
 
 	m_oMatrix2.setDimensionCount(2);
 	m_oMatrix2.setDimensionSize(0, 16);
 	m_oMatrix2.setDimensionSize(1, 2);
-	OpenViBEToolkit::Tools::MatrixManipulation::clearContent(m_oMatrix2);
+	OpenViBEToolkit::Tools::Matrix::clearContent(m_oMatrix2);
 
 	uint64 m_ui64SamplingRate=16;
 

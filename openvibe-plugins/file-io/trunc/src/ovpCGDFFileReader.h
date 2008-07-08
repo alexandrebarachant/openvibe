@@ -32,7 +32,7 @@ namespace OpenViBEPlugins
 		* The GDF reader plugin main class
 		*
 		*/
-		class CGDFFileReader : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGDFFileReader : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 			//Helper structures
@@ -202,7 +202,7 @@ namespace OpenViBEPlugins
 		/**
 		* Description of the GDF Reader plugin
 		*/
-		class CGDFFileReaderDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGDFFileReaderDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

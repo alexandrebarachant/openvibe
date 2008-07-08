@@ -10,7 +10,7 @@ namespace EBML
 //
 
 	template <class COwnerClass>
-	class TWriterCallbackProxy1 : virtual public EBML::IWriterCallback
+	class TWriterCallbackProxy1 : public EBML::IWriterCallback
 	{
 	public:
 		TWriterCallbackProxy1(
@@ -36,7 +36,7 @@ namespace EBML
 //
 
 	template <class COwnerClass, void (COwnerClass::*mfpWrite)(const void* pBuffer, const EBML::uint64 ui64BufferSize)>
-	class TWriterCallbackProxy2 : virtual public EBML::IWriterCallback
+	class TWriterCallbackProxy2 : public EBML::IWriterCallback
 	{
 	public:
 		TWriterCallbackProxy2(

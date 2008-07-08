@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmStreamedMatrixOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
+	class OVTK_API IBoxAlgorithmStreamedMatrixOutputWriter : public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
 	{
 	public:
 

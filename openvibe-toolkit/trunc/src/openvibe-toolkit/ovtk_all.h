@@ -26,6 +26,10 @@
 
 #include "ovtkTAlgorithm.h"
 #include "ovtkTBoxAlgorithm.h"
+//#include "ovtkTAlgorithmClassifier.h"
+//#include "ovtkTAlgorithmClassifierTrainer.h"
+//#include "ovtkTAlgorithmClassifierProxy.h"
+//#include "ovtkTAlgorithmClassifierTrainerProxy.h"
 
 #if defined TARGET_HAS_EBML
 #include "ovtkTTrainingBoxAlgorithm.h"

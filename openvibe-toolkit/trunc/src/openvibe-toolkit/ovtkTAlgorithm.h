@@ -6,7 +6,7 @@
 namespace OpenViBEToolkit
 {
 	template <class CAlgorithmParentClass>
-	class TAlgorithm : virtual public CAlgorithmParentClass
+	class TAlgorithm : public CAlgorithmParentClass
 	{
 	public:
 

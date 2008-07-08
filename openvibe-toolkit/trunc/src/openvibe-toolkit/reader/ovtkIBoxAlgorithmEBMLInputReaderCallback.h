@@ -7,7 +7,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmEBMLInputReaderCallback : virtual public OpenViBEToolkit::IObject, virtual public EBML::IReaderCallback
+	class OVTK_API IBoxAlgorithmEBMLInputReaderCallback : public OpenViBEToolkit::IObject, virtual public EBML::IReaderCallback
 	{
 	public:
 

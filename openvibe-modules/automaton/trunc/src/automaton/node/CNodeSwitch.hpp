@@ -23,7 +23,7 @@ namespace Automaton
 			virtual ~ISwitchConditionFunctor(){}
 	};
 
-	class CSwitchConditionProbability : virtual public ISwitchConditionFunctor
+	class CSwitchConditionProbability : public ISwitchConditionFunctor
 	{
 		std::vector<Automaton::uint64> m_oProbability;
 
@@ -61,7 +61,7 @@ namespace Automaton
 	};
 
 
-	class CSwitchConditionEvent : virtual public ISwitchConditionFunctor
+	class CSwitchConditionEvent : public ISwitchConditionFunctor
 	{
 		std::vector<Automaton::CIdentifier> m_oEvents;
 
@@ -92,7 +92,7 @@ namespace Automaton
 			virtual ~CSwitchConditionEvent(){}
 	};
 
-	class CNodeSwitch : virtual public TNode<INode>
+	class CNodeSwitch : public TNode<INode>
 	{
 		protected:
 			ISwitchConditionFunctor * m_pCondition;

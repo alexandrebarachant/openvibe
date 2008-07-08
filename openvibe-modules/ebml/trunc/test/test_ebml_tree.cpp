@@ -10,7 +10,7 @@
 using namespace std;
 using namespace EBML;
 
-class CReaderCallBack : virtual public IReaderCallBack
+class CReaderCallBack : public IReaderCallBack
 {
 public:
 	CReaderCallBack(int dicc, char** dicv)

@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CBoxAlgorithmSpectrumOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmSpectrumOutputWriter
+	class CBoxAlgorithmSpectrumOutputWriter : public OpenViBEToolkit::IBoxAlgorithmSpectrumOutputWriter
 	{
 	public:
 

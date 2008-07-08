@@ -52,6 +52,7 @@ ADD_DEPENDENCIES(${PROJECT_NAME}-dynamic OpenViBE-toolkit-static)
 INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindThirdPartyGlade")
+INCLUDE("FindOpenViBEModuleSystem")
 
 # ---------------------------------
 # Finds standard library pthread

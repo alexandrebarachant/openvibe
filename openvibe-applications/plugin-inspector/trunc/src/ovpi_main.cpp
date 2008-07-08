@@ -1,233 +1,12 @@
-#include "ovpi_base.h"
+#include "ovpiCPluginObjectDescEnumAlgorithmGlobalDefinesGenerator.h"
+#include "ovpiCPluginObjectDescEnumBoxAlgorithmSnapshotGenerator.h"
 
-#include <string>
 #include <iostream>
-#include <stdio.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 using namespace std;
-
-CString transform(const CString& sInput)
-{
-	std::string l_sInput(sInput);
-	std::string l_sOutput;
-	bool l_bLastWasSeparator=false;
-
-	for(std::string::size_type i=0; i<l_sInput.length(); i++)
-	{
-		if((l_sInput[i]>='a' && l_sInput[i]<='z') || (l_sInput[i]>='A' && l_sInput[i]<='Z') || (l_sInput[i]>='0' && l_sInput[i]<='9'))
-		{
-			if(l_bLastWasSeparator)
-			{
-				if('a' <= l_sInput[i] && l_sInput[i] <= 'z')
-				{
-					l_sOutput+=l_sInput[i]+'A'-'a';
-				}
-				else
-				{
-					l_sOutput+=l_sInput[i];
-				}
-				l_bLastWasSeparator=false;
-			}
-			else
-			{
-				l_sOutput+=l_sInput[i];
-			}
-		}
-		else
-		{
-			l_bLastWasSeparator=true;
-		}
-	}
-	return l_sOutput.c_str();
-}
-
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-
-class CPluginObjectDescEnum
-{
-public:
-
-	CPluginObjectDescEnum(const IKernelContext& rKernelContext) : m_rKernelContext(rKernelContext) { }
-	virtual ~CPluginObjectDescEnum(void) { }
-
-	virtual boolean enumeratePluginObjectDesc(void)
-	{
-		CIdentifier l_oIdentifier;
-		while((l_oIdentifier=m_rKernelContext.getPluginManager().getNextPluginObjectDescIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
-		{
-			this->callback(*m_rKernelContext.getPluginManager().getPluginObjectDesc(l_oIdentifier));
-		}
-		return true;
-	}
-
-	virtual boolean enumeratePluginObjectDesc(
-		const CIdentifier& rParentClassIdentifier)
-	{
-		CIdentifier l_oIdentifier;
-		while((l_oIdentifier=m_rKernelContext.getPluginManager().getNextPluginObjectDescIdentifier(l_oIdentifier, rParentClassIdentifier))!=OV_UndefinedIdentifier)
-		{
-			this->callback(*m_rKernelContext.getPluginManager().getPluginObjectDesc(l_oIdentifier));
-		}
-		return true;
-	}
-
-	virtual boolean callback(
-		const IPluginObjectDesc& rPluginObjectDesc)=0;
-
-protected:
-
-	const IKernelContext& m_rKernelContext;
-};
-
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-
-class CHeaderGenerator : public CPluginObjectDescEnum
-{
-public:
-
-	CHeaderGenerator(const IKernelContext& rKernelContext, const char* sFilename)
-		:CPluginObjectDescEnum(rKernelContext)
-		,m_pFile(NULL)
-	{
-		m_pFile=fopen(sFilename, "wt");
-		if(!m_pFile) return;
-
-		fprintf(m_pFile, "#ifndef __OpenViBEPlugins_Global_Defines_H__\n");
-		fprintf(m_pFile, "#define __OpenViBEPlugins_Global_Defines_H__\n");
-		fprintf(m_pFile, "\n");
-	}
-
-	virtual ~CHeaderGenerator(void)
-	{
-		if(!m_pFile) return;
-
-		fprintf(m_pFile, "#endif // __OpenViBEPlugins_Global_Defines_H__\n");
-		fclose(m_pFile);
-	}
-
-	virtual boolean callback(const IPluginObjectDesc& rPluginObjectDesc)
-	{
-		if(!m_pFile) return true;
-
-		int l_iWidth=120;
-
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Dumping [" << rPluginObjectDesc.getName() << "]\n";
-
-		IAlgorithmManager& l_rAlgorithmManager=m_rKernelContext.getAlgorithmManager();
-		IAlgorithmProxy& l_rAlgorithmProxy=l_rAlgorithmManager.getAlgorithm(l_rAlgorithmManager.createAlgorithm(rPluginObjectDesc.getCreatedClass()));
-		CIdentifier l_oIdentifier;
-
-		fprintf(m_pFile, "// ----------------------------------------------------\n");
-		fprintf(m_pFile, "// %s\n", rPluginObjectDesc.getName().toASCIIString());
-		fprintf(m_pFile, "// ----------------------------------------------------\n");
-		fprintf(m_pFile, "\n");
-
-		// l_rAlgorithmProxy.initialize();
-
-		{
-			std::string l_sDefName;
-			l_sDefName+="OVP_GD_ClassId_Algorithm_";
-			l_sDefName+=transform(rPluginObjectDesc.getName());
-			l_sDefName+="";
-
-			std::string l_sSpaces;
-			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
-
-			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), rPluginObjectDesc.getCreatedClassIdentifier().toString().toASCIIString());
-		}
-
-		{
-			std::string l_sDefName;
-			l_sDefName+="OVP_GD_ClassId_Algorithm_";
-			l_sDefName+=transform(rPluginObjectDesc.getName());
-			l_sDefName+="Desc";
-
-			std::string l_sSpaces;
-			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
-
-			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), rPluginObjectDesc.getClassIdentifier().toString().toASCIIString());
-		}
-
-		while((l_oIdentifier=l_rAlgorithmProxy.getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
-		{
-			std::string l_sDefName;
-			l_sDefName+="OVP_GD_Algorithm_";
-			l_sDefName+=transform(rPluginObjectDesc.getName());
-			l_sDefName+="_InputParameterId_";
-			l_sDefName+=transform(l_rAlgorithmProxy.getInputParameterName(l_oIdentifier));
-
-			std::string l_sSpaces;
-			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
-
-			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
-		}
-
-		while((l_oIdentifier=l_rAlgorithmProxy.getNextOutputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
-		{
-			std::string l_sDefName;
-			l_sDefName+="OVP_GD_Algorithm_";
-			l_sDefName+=transform(rPluginObjectDesc.getName());
-			l_sDefName+="_OutputParameterId_";
-			l_sDefName+=transform(l_rAlgorithmProxy.getOutputParameterName(l_oIdentifier));
-
-			std::string l_sSpaces;
-			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
-
-			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
-		}
-
-		while((l_oIdentifier=l_rAlgorithmProxy.getNextInputTriggerIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
-		{
-			std::string l_sDefName;
-			l_sDefName+="OVP_GD_Algorithm_";
-			l_sDefName+=transform(rPluginObjectDesc.getName());
-			l_sDefName+="_InputTriggerId_";
-			l_sDefName+=transform(l_rAlgorithmProxy.getInputTriggerName(l_oIdentifier));
-
-			std::string l_sSpaces;
-			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
-
-			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
-		}
-
-		while((l_oIdentifier=l_rAlgorithmProxy.getNextOutputTriggerIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
-		{
-			std::string l_sDefName;
-			l_sDefName+="OVP_GD_Algorithm_";
-			l_sDefName+=transform(rPluginObjectDesc.getName());
-			l_sDefName+="_OutputTriggerId_";
-			l_sDefName+=transform(l_rAlgorithmProxy.getOutputTriggerName(l_oIdentifier));
-
-			std::string l_sSpaces;
-			l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
-
-			fprintf(m_pFile, "#define %s%sOpenViBE::CIdentifier%s\n", l_sDefName.c_str(), l_sSpaces.c_str(), l_oIdentifier.toString().toASCIIString());
-		}
-
-		// l_rAlgorithmProxy.uninitialize();
-
-		fprintf(m_pFile, "\n");
-
-		l_rAlgorithmManager.releaseAlgorithm(l_rAlgorithmProxy);
-
-		return true;
-	}
-
-protected:
-
-	::FILE* m_pFile;
-};
-
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
 
 int main(int argc, char ** argv)
 {
@@ -245,7 +24,7 @@ int main(int argc, char ** argv)
 		if(!l_pKernelLoader->load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
 #endif
 		{
-				cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
+			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
 		}
 		else
 		{
@@ -289,12 +68,14 @@ int main(int argc, char ** argv)
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-*.dll");
 
 					{
-						CHeaderGenerator l_oHeaderGenerator(*l_pKernel->getContext(), "ovp_global_defines.h");
-						l_oHeaderGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
+						CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator l_oGlobalDefinesGenerator(*l_pKernel->getContext(), "ovp_global_defines.h");
+						l_oGlobalDefinesGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
 					}
 
-					// l_rLogManager << LogLevel_Info << "Dumping box algorithms...\n";
-					// l_oHeaderGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+					{
+						CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator l_oBoxAlgorithmSnapshotGenerator(*l_pKernel->getContext());
+						l_oBoxAlgorithmSnapshotGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+					}
 
 					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;
 

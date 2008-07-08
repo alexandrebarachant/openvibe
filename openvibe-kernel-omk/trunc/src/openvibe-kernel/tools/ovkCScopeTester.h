@@ -9,7 +9,7 @@ namespace OpenViBE
 {
 	namespace Tools
 	{
-		class CScopeTester : virtual OpenViBE::IObject
+		class CScopeTester : public OpenViBE::IObject
 		{
 		public:
 

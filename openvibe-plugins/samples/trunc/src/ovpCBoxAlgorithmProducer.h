@@ -14,7 +14,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CBoxAlgorithmProducer : virtual public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IWriterCallback
+		class CBoxAlgorithmProducer : public OpenViBE::Plugins::IBoxAlgorithm, virtual public EBML::IWriterCallback
 		{
 		public:
 
@@ -107,7 +107,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IBoxAlgorithmContext* m_pBoxAlgorithmContext;
 		};
 
-		class CBoxAlgorithmProducerDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmProducerDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

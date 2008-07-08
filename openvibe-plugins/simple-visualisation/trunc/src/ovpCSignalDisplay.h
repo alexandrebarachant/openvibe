@@ -22,7 +22,7 @@ namespace OpenViBEPlugins
 		* This plugin opens a new GTK window and displays the incoming signals. The user may change the zoom level,
 		* the width of the time window displayed, ...
 		*/
-		class CSignalDisplay : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
+		class CSignalDisplay : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
 		virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback,
 		virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
 		{
@@ -69,7 +69,7 @@ namespace OpenViBEPlugins
 		/**
 		* Plugin's description
 		*/
-		class CSignalDisplayDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CSignalDisplayDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Signal display"); }
@@ -98,11 +98,7 @@ namespace OpenViBEPlugins
 			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_SignalDisplayDesc)
-
-
 		};
-
-
 	};
 };
 

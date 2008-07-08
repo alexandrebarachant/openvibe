@@ -3,7 +3,7 @@
 #include "fs/IEntryEnumerator.h"
 #include <iostream>
 
-class CB : virtual public FS::IEntryEnumeratorCallBack
+class CB : public FS::IEntryEnumeratorCallBack
 {
 public:
 	virtual FS::boolean callback(FS::IEntry& rEntry, FS::IAttributes& rAttributes)

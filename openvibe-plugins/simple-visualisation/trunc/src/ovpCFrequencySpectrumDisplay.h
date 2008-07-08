@@ -14,7 +14,7 @@ namespace OpenViBEPlugins
 	namespace SimpleVisualisation
 	{
 
-		class CFrequencySpectrumDisplay : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
+		class CFrequencySpectrumDisplay : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
 		virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback
 		{
 		public:
@@ -54,7 +54,9 @@ namespace OpenViBEPlugins
 
 #endif
 
-		class CFrequencySpectrumDisplayDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+#include <openvibe/plugins/ovIPluginObjectDesc.h>
+
+		class CFrequencySpectrumDisplayDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Time-frequency map display"); }

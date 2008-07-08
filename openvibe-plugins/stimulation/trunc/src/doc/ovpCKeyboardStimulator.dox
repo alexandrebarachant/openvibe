@@ -27,8 +27,7 @@ Summary :
  \section Doc_ovpCKeyboardStimulator_description Description
 This plugin grabs key presses and translates them into OpenViBE stimulations.
 
-\image html KeyboardStimulatorBox.png
-
+\image html BoxAlgorithm_KeyboardStimulator.png
 
  \section Doc_ovpCKeyboardStimulator_inputs Inputs
  Number of inputs : 0 

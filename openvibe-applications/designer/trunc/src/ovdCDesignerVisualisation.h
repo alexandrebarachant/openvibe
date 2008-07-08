@@ -15,6 +15,10 @@ namespace OpenViBE
 
 namespace OpenViBEDesigner
 {		
+	typedef void (*fpDesignerVisualisationDeleteEventCB)(gpointer user_data);
+
+	class CInterfacedScenario;
+
 	//Dialog helper functions
 	void displayErrorDialog(const char* text, const char* secondaryText);
 	gint displayQuestionDialog(const char* text, const char* secondaryText);
@@ -27,7 +31,8 @@ namespace OpenViBEDesigner
 	public:
 		CDesignerVisualisation(
 			const OpenViBE::Kernel::IKernelContext& rKernelContext,
-			OpenViBE::Kernel::IVisualisationTree& rVisualisationTree);			
+			OpenViBE::Kernel::IVisualisationTree& rVisualisationTree,
+			CInterfacedScenario& rInterfacedScenario);			
 		
 		~CDesignerVisualisation();
 	
@@ -37,6 +42,8 @@ namespace OpenViBEDesigner
 		void show();
 		void hide();
 		
+		void setDeleteEventCB(fpDesignerVisualisationDeleteEventCB fpDeleteEventCB, gpointer user_data);
+
 		void onVisualisationBoxAdded(
 			const OpenViBE::Kernel::IBox* pBox);
 		void onVisualisationBoxRemoved(
@@ -132,6 +139,12 @@ namespace OpenViBEDesigner
 			GtkWidget* pWidget);
 		
 	private:							
+		static gboolean delete_event_cb(
+			GtkWidget* widget,
+      GdkEvent* event,
+      gpointer user_data);
+		OpenViBE::boolean deleteEventCB();
+
 		void refreshActiveVisualisation(
 			GtkTreePath* pSelectedItemPath);		
 
@@ -145,8 +158,10 @@ namespace OpenViBEDesigner
 
 		//visualisation windows
 		void askNewVisualisationWindow(void);		
+	public:
 		OpenViBE::boolean newVisualisationWindow(
 			const char* label);
+	private:
 		void askRenameVisualisationWindow(void);		
 		OpenViBE::boolean renameVisualisationWindow(
 			const char* label);		
@@ -271,8 +286,11 @@ namespace OpenViBEDesigner
 
 	private:
 		const OpenViBE::Kernel::IKernelContext&	m_rKernelContext;
-		std::string m_sGuiFile;
 		OpenViBE::Kernel::IVisualisationTree& m_rVisualisationTree;
+		OpenViBEDesigner::CInterfacedScenario& m_rInterfacedScenario;
+		fpDesignerVisualisationDeleteEventCB m_fpDeleteEventCB;
+		gpointer m_pDeleteEventUserData;
+		std::string m_sGuiFile;
 		GtkTreeView* m_pTreeView;				
 		GtkWidget* m_pDialog;		
 		GtkWidget* m_pPane;						

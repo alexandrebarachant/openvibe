@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API ISignalTrial : virtual public OpenViBEToolkit::IObject
+	class OVTK_API ISignalTrial : public OpenViBEToolkit::IObject
 	{
 	public:
 

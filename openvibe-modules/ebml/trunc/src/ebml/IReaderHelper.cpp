@@ -9,7 +9,7 @@ namespace EBML
 {
 	namespace
 	{
-		class CReaderHelper : virtual public IReaderHelper
+		class CReaderHelper : public IReaderHelper
 		{
 		public:
 			CReaderHelper(void);

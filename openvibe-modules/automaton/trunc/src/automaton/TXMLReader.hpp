@@ -9,7 +9,7 @@
 namespace Automaton
 {
 
-	template<class T> class TXMLReader : virtual public T
+	template<class T> class TXMLReader : public T
 	{
 		public:
 			virtual ~TXMLReader() {}

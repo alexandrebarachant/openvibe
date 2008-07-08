@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmExperimentInformationOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
+	class OVTK_API IBoxAlgorithmExperimentInformationOutputWriter : public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
 	{
 	public:
 

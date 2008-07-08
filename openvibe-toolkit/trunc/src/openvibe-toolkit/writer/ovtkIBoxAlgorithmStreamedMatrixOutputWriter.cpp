@@ -4,7 +4,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CBoxAlgorithmStreamedMatrixOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixOutputWriter
+	class CBoxAlgorithmStreamedMatrixOutputWriter : public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixOutputWriter
 	{
 	public:
 

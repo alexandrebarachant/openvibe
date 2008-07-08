@@ -31,7 +31,7 @@ gboolean resizeBottomRulerCallback(GtkWidget *widget, GtkAllocation *allocation,
 	CBottomTimeRuler * l_pBottomRuler = reinterpret_cast<CBottomTimeRuler*>(data);
 
 	//resizes the bottom ruler
-	gtk_widget_set_size_request(l_pBottomRuler->getWidget(), allocation->width, -1);
+	gtk_widget_set_size_request(l_pBottomRuler->getWidget(), allocation->width, 20/*-1*/);
 
 	return FALSE;
 }

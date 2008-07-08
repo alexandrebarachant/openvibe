@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CBoxAlgorithmFeatureVectorOutputWriter : virtual public OpenViBEToolkit::IBoxAlgorithmFeatureVectorOutputWriter
+	class CBoxAlgorithmFeatureVectorOutputWriter : public OpenViBEToolkit::IBoxAlgorithmFeatureVectorOutputWriter
 	{
 	public:
 

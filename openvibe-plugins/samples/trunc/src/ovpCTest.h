@@ -13,7 +13,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CTest : virtual public OpenViBEToolkit::TTrainingBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CTest : public OpenViBEToolkit::TTrainingBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -45,7 +45,7 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64SignalLatestSampleTime;
 		};
 
-		class CTestDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CTestDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

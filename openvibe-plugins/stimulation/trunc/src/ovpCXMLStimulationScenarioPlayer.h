@@ -19,7 +19,7 @@ namespace OpenViBEPlugins
 {
 	namespace Stimulation
 	{
-		class CXMLStimulationScenarioPlayer : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
+		class CXMLStimulationScenarioPlayer : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
 		{
 		public:
 
@@ -68,7 +68,7 @@ namespace OpenViBEPlugins
 		/**
 		* Plugin's description
 		*/
-		class CXMLStimulationScenarioPlayerDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CXMLStimulationScenarioPlayerDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("XML stimulation scenario player"); }

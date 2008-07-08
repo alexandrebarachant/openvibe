@@ -29,7 +29,7 @@ namespace OpenViBEPlugins
 		* The plugin's main class
 		*
 		*/
-		class CGDFFileWriter : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGDFFileWriter : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		, virtual public OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback::ICallback
 		, virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
@@ -95,7 +95,7 @@ namespace OpenViBEPlugins
 		/**
 		* Plugin's description
 		*/
-		class CGDFFileWriterDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGDFFileWriterDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("GDF file writer"); }

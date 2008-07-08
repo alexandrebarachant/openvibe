@@ -16,7 +16,6 @@ using namespace std;
 
 #define convert_time(i) (float64)(i>>32) + (float64)((float64)(i&0xFFFFFFFF) / (float64)((uint64)1<<32))
 
-
 //! Callback to redraw the bottom ruler
 gboolean leftRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
@@ -33,8 +32,8 @@ gboolean resizeLeftRulerCallback(GtkWidget *widget, GtkAllocation *allocation, g
 {
 	CSignalDisplayLeftRuler * l_pLeftRuler = reinterpret_cast<CSignalDisplayLeftRuler*>(data);
 
-	//resizes the bottom ruler
-	gtk_widget_set_size_request(l_pLeftRuler->getWidget(), 50, allocation->height); 
+	//resizes the left ruler
+	gtk_widget_set_size_request(l_pLeftRuler->getWidget(), 50, allocation->height);
 
 	return FALSE;
 }
@@ -52,13 +51,13 @@ CSignalDisplayLeftRuler::CSignalDisplayLeftRuler() :
 	//get left ruler widget's font description
 	PangoContext * l_pPangoContext = gtk_widget_get_pango_context(m_pLeftRuler);
 	PangoFontDescription * l_pFontDescription = pango_context_get_font_description(l_pPangoContext);
-	
+
 	//adapt the allocated height per label to the font's height (plus 4 pixel to add some spacing)
 	if(pango_font_description_get_size_is_absolute(l_pFontDescription))
-	{	
+	{
 		m_ui64PixelsPerLeftRulerLabel = pango_font_description_get_size(l_pFontDescription) + 4;
 	}
-	else 
+	else
 	{
 		m_ui64PixelsPerLeftRulerLabel = pango_font_description_get_size(l_pFontDescription)/PANGO_SCALE + 4;
 	}
@@ -81,7 +80,7 @@ void CSignalDisplayLeftRuler::draw()
 	gint l_iLeftRulerWidth;
 	gint l_iLeftRulerHeight;
 	gdk_drawable_get_size(m_pLeftRuler->window, &l_iLeftRulerWidth, &l_iLeftRulerHeight);
-	
+
 	//draw ruler base (vertical line)
 	gdk_draw_line(m_pLeftRuler->window, m_pLeftRuler->style->fg_gc[GTK_WIDGET_STATE (m_pLeftRuler)],  l_iLeftRulerWidth-1, 0, l_iLeftRulerWidth-1, l_iLeftRulerHeight);
 
@@ -90,7 +89,7 @@ void CSignalDisplayLeftRuler::draw()
 	float64 l_f64ValueStep;
 	float64 l_f64BaseValue ;
 	uint64 l_ui64MaxNumberOfLabels = 0;
-	
+
 	//if the signal is not constant
 	if(l_f64IntervalWidth != 0)
 	{
@@ -99,7 +98,7 @@ void CSignalDisplayLeftRuler::draw()
 
 		//computes the maximum number of labels to display at once based on a label's height
 		l_ui64MaxNumberOfLabels = (uint64)(l_iLeftRulerHeight / m_ui64PixelsPerLeftRulerLabel);
-	
+
 		//get the current number of labels to display based on the nearest inferior power of ten value
 		uint64 l_ui64TempNumberOfLabels = (uint64)ceil(l_f64IntervalWidth / l_f64NearestSmallerPowerOf10);
 
@@ -127,9 +126,8 @@ void CSignalDisplayLeftRuler::draw()
 	else
 	{
 		l_f64ValueStep = 1;
-		l_f64BaseValue = floor(m_f64MinimumDisplayedValue - 0.5); 
+		l_f64BaseValue = floor(m_f64MinimumDisplayedValue - 0.5);
 	}
-
 
 	int l_iTextW;
 	int l_iTextH;
@@ -149,7 +147,7 @@ void CSignalDisplayLeftRuler::draw()
 
 		if(l_iTextY>=0 && l_iTextY<=l_iLeftRulerHeight)
 		{
-			
+
 			//if the current value is (almost) 0, displays 0
 			if(i < 0.5e-10 && i> -0.5e-10)
 			{
@@ -163,9 +161,9 @@ void CSignalDisplayLeftRuler::draw()
 			PangoLayout * l_pText = gtk_widget_create_pango_layout(m_pLeftRuler, l_pValueLabel);
 			pango_layout_set_width(l_pText, 28);
 			pango_layout_set_justify(l_pText, PANGO_ALIGN_RIGHT);
-	
+
 			pango_layout_get_pixel_size(l_pText, &l_iTextW, &l_iTextH);
-			
+
 			gdk_draw_layout(m_pLeftRuler->window, m_pLeftRuler->style->fg_gc[GTK_WIDGET_STATE (m_pLeftRuler)],
 					0, l_iTextY-(l_iTextH/2), l_pText);
 
@@ -191,7 +189,6 @@ void CSignalDisplayLeftRuler::toggle(OpenViBE::boolean bActive)
 		gtk_widget_hide(m_pLeftRuler);
 	}
 }
-
 
 /**
  * Associates another widget to this ruler.

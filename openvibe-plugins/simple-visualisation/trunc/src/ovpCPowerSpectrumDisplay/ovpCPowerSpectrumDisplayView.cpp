@@ -24,6 +24,8 @@ namespace OpenViBEPlugins
 		void powerSpectrumToggleBottomRulerButtonCallback(GtkWidget *widget, gpointer data);
 		void powerSpectrumChannelSelectButtonCallback(GtkButton *button, gpointer data);
 		void powerSpectrumChannelSelectDialogApplyButtonCallback(GtkButton *button, gpointer data);
+		gboolean bottomRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data);
+		gboolean resizeBottomRulerCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data);
 
 		CPowerSpectrumDisplayView::CPowerSpectrumDisplayView(CPowerSpectrumDatabase& oPowerSpectrumDatabase) :
 			m_pGladeInterface(NULL),
@@ -60,9 +62,6 @@ namespace OpenViBEPlugins
 				"toggled", G_CALLBACK(powerSpectrumToggleBottomRulerButtonCallback), this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SelectChannels")),
 				"clicked", G_CALLBACK(powerSpectrumChannelSelectButtonCallback), this);
-			//hide toolbar on delete event
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "Toolbar")),
-				"delete_event", G_CALLBACK(gtk_widget_hide), NULL);
 
 			//channels selection
 			//------------------
@@ -115,7 +114,7 @@ namespace OpenViBEPlugins
 			//columns : [0] labels, [1] vertical separator, [2] spectrum displays
 			gtk_table_resize(GTK_TABLE(m_pDisplayTable), (l_ui32ChannelCount)*2, 3);
 			//set a minimum size for the table (needed to scroll)
-			gtk_widget_set_size_request(m_pDisplayTable, 200, (l_ui32ChannelCount)*30);
+			gtk_widget_set_size_request(m_pDisplayTable, 20, (l_ui32ChannelCount)*20);
 			//add a vertical separator
 			GtkWidget* l_pSeparator = gtk_vseparator_new();
 			gtk_table_attach(GTK_TABLE(m_pDisplayTable), l_pSeparator,
@@ -125,12 +124,15 @@ namespace OpenViBEPlugins
 			gtk_widget_show(l_pSeparator);
 
 			//create a size group for channel labels and the empty bottom left widget
+			//(useful to position the bottom ruler correctly)
 			GtkSizeGroup* l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
-			//create channel widgets and add them to display table
-			stringstream l_oLabelString;
+			//channels selection widget
 			GtkWidget* l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "DisplayChannelSelectList");
 
+			stringstream l_oLabelString;
+
+			//create channel widgets and add them to display table
 			for(uint32 i=0 ; i<l_ui32ChannelCount ; i++)
 			{
 				//create channel name
@@ -191,17 +193,49 @@ namespace OpenViBEPlugins
 				l_oLabelString.str("");
 			}
 
-			//activate buttons
+			//bottom ruler
+			//------------
+			m_pBottomRuler = gtk_drawing_area_new();
+
+			gtk_widget_set_size_request(m_pBottomRuler, 0, 20);
+			g_signal_connect_after(G_OBJECT(m_pBottomRuler), "expose_event", G_CALLBACK(bottomRulerExposeEventCallback), this);
+
+			//adds the empty label to the size group (it will request the same width than the channel labels)
+			gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "BottomBarEmptyLabel1"));
+/*
+			//adds the bottom ruler to the bottom bar (after the first empty label)
+			GtkBox* l_pHBox = GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "BottomBar"));
+			if(l_pHBox != NULL)
+			{
+				gtk_container_remove(GTK_CONTAINER(l_pHBox), glade_xml_get_widget(m_pGladeInterface, "BottomBarEmptyLabel2"));
+				gtk_box_pack_end(l_pHBox, m_pBottomRuler, false, false, 0);
+			}
+*/
+			//adds the bottom ruler to the bottom bar (after the empty label)
+			gtk_box_pack_start(GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "BottomBar")),
+					m_pBottomRuler,
+					false, false, 0);
+
+			// tell ruler it has to resize along with channel displays
+			if(m_oChannelDisplays.size() != 0)
+			{
+				g_signal_connect(G_OBJECT(m_oChannelDisplays[0]->getSpectrumDisplay()), "size-allocate", G_CALLBACK(resizeBottomRulerCallback), this);
+			}
+
+			//set up initial states
+			//---------------------
+
+			//activate buttons by default
 			activateToolbarButtons(true);
 
 			//use global best fit by default
 			setDisplayMode(ESpectrumDisplayMode_GlobalBestFit);
 
-			//display left ruler by default
-			toggleLeftRulers(true);
+			//don't display left ruler by default
+			toggleLeftRulers(false);
 
 			//display bottom ruler by default
-			toggleBottomRulers(true);
+			toggleBottomRuler(true);
 		}
 
 		void CPowerSpectrumDisplayView::redraw()
@@ -220,6 +254,68 @@ namespace OpenViBEPlugins
 					//redraw table
 					gdk_window_invalidate_rect(GTK_WIDGET(m_pDisplayTable)->window,	NULL,	true);
 				}
+			}
+		}
+
+		void CPowerSpectrumDisplayView::resizeBottomRuler(gint w, gint h)
+		{
+			gtk_widget_set_size_request(m_pBottomRuler, w, h);
+		}
+
+		void CPowerSpectrumDisplayView::redrawBottomRuler()
+		{
+			//if the widget is invisible, no need to redraw it
+			if(!GTK_WIDGET_VISIBLE(m_pBottomRuler))
+				return;
+
+			//gets the widget's size
+			gint l_iBottomRulerWidth;
+			gint l_iBottomRulerHeight;
+			gdk_drawable_get_size(m_pBottomRuler->window, &l_iBottomRulerWidth, &l_iBottomRulerHeight);
+
+			//draw ruler base (horizontal line)
+			gdk_draw_line(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], 0, 0, l_iBottomRulerWidth, 0);
+
+			//draw frequency labels
+			//---------------------
+
+			//number of frequency bands
+			uint32 l_ui32FrequencyBandCount = m_pPowerSpectrumDatabase->m_pFrequencyBands.size();
+			//width available per frequency band label, in pixels
+			float32 l_f32FrequencyBandWidth = static_cast<float32>(l_iBottomRulerWidth) / l_ui32FrequencyBandCount;
+			//step between two consecutive frequency labels (computed based on available space)
+			uint32 l_iFrequencyStep = 1;
+			gint l_iTextWidth = 0;
+			gint l_iTextX = 0;
+			gint l_iTextStartX = 0;
+			PangoLayout* l_pText;
+			stringstream l_oFrequencyLabel;
+
+			for(uint32 i=0 ; i<l_ui32FrequencyBandCount; i+=l_iFrequencyStep)
+			{
+				//create text corresponding to current frequency
+				l_oFrequencyLabel.str("");
+				l_oFrequencyLabel << m_pPowerSpectrumDatabase->m_pFrequencyBands[i].first;
+
+				l_pText = gtk_widget_create_pango_layout(m_pBottomRuler, l_oFrequencyLabel.str().c_str());
+
+				//compute text position
+				l_iTextX = static_cast<gint>(l_iTextStartX + i*l_f32FrequencyBandWidth);
+
+				//increase step if width allocated per label becomes too small
+				pango_layout_get_pixel_size(l_pText, &l_iTextWidth, NULL);
+				while(l_iTextWidth >= (int)((l_iBottomRulerWidth - l_iTextStartX)/(l_ui32FrequencyBandCount/l_iFrequencyStep) - 10))
+					l_iFrequencyStep++;
+
+				//break if not enough space to display label
+				if(l_iTextX + l_iTextWidth >= l_iBottomRulerWidth)
+					break;
+
+				//draw label
+				gdk_draw_layout(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], l_iTextX, 4, l_pText);
+
+				//draw a small line above it
+				gdk_draw_line(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], l_iTextX, 0, l_iTextX, 3);
 			}
 		}
 
@@ -271,16 +367,16 @@ namespace OpenViBEPlugins
 				bActive ? TRUE : FALSE);
 		}
 
-		void CPowerSpectrumDisplayView::toggleBottomRulers(OpenViBE::boolean bActive)
+		void CPowerSpectrumDisplayView::toggleBottomRuler(OpenViBE::boolean bActive)
 		{
-			//forward toggle flag to channel displays
-			for(size_t i=0; i<m_oChannelDisplays.size(); i++)
-				m_oChannelDisplays[i]->toggleBottomRuler(bActive);
-
-			//update button state
-			gtk_toggle_tool_button_set_active(
-				GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ShowFrequencies")),
-				bActive ? TRUE : FALSE);
+			if(bActive)
+			{
+				gtk_widget_show(m_pBottomRuler);
+			}
+			else
+			{
+				gtk_widget_hide(m_pBottomRuler);
+			}
 		}
 
 		void CPowerSpectrumDisplayView::hideChannel(OpenViBE::uint32 ui32ChannelIndex)
@@ -323,7 +419,6 @@ namespace OpenViBEPlugins
 		{
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "BestFit"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "BestFitPerChannel"), bActive);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "Info"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SelectChannels"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "ShowPowers"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "ShowFrequencies"), bActive);
@@ -394,7 +489,7 @@ namespace OpenViBEPlugins
 		void powerSpectrumToggleBottomRulerButtonCallback(GtkWidget *widget, gpointer data)
 		{
 			CPowerSpectrumDisplayView* l_pPowerSpectrumDisplayView = reinterpret_cast<CPowerSpectrumDisplayView*>(data);
-			l_pPowerSpectrumDisplayView->toggleBottomRulers(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget))?true:false);
+			l_pPowerSpectrumDisplayView->toggleBottomRuler(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget))?true:false);
 		}
 
 		//called when the channel select button is pressed (opens the channel selection dialog)
@@ -409,6 +504,23 @@ namespace OpenViBEPlugins
 		{
 			CPowerSpectrumDisplayView* l_pPowerSpectrumDisplayView = reinterpret_cast<CPowerSpectrumDisplayView*>(data);
 			l_pPowerSpectrumDisplayView->applyChannelSelectionCB();
+		}
+
+		//! Callback to redraw the bottom ruler
+		gboolean bottomRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+		{
+			CPowerSpectrumDisplayView* l_pPowerSpectrumDisplayView = reinterpret_cast<CPowerSpectrumDisplayView*>(data);
+			l_pPowerSpectrumDisplayView->redrawBottomRuler();
+			//don't propagate this signal to children if any
+			return TRUE;
+		}
+
+		//! Called when the widget whose width is associated with the ruler is resized.
+		gboolean resizeBottomRulerCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data)
+		{
+			CPowerSpectrumDisplayView* l_pPowerSpectrumDisplayView = reinterpret_cast<CPowerSpectrumDisplayView*>(data);
+			l_pPowerSpectrumDisplayView->resizeBottomRuler(allocation->width, 20/*-1*/);
+			return FALSE;
 		}
 	};
 };

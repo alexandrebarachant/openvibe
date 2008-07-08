@@ -5,7 +5,7 @@
 
 namespace Socket
 {
-	class Socket_API IConnectionServer : virtual public Socket::IConnection
+	class Socket_API IConnectionServer : public Socket::IConnection
 	{
 	public:
 

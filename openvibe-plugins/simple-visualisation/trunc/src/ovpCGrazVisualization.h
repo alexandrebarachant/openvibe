@@ -41,7 +41,7 @@ namespace OpenViBEPlugins
 
 		/**
 		*/
-		class CGrazVisualization : 
+		class CGrazVisualization :
 			virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
 			virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback,
 			virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback
@@ -56,7 +56,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean uninitialize();
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process();
-			
+
 			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
 			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
@@ -64,7 +64,6 @@ namespace OpenViBEPlugins
 			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
 			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
 			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
-
 
 			virtual void processState();
 
@@ -79,13 +78,12 @@ namespace OpenViBEPlugins
 		public:
 			//! The Glade handler used to create the interface
 			::GladeXML* m_pGladeInterface;
-			
+
 			GtkWidget * m_pMainWindow;
 
 			GtkWidget * m_pDrawingArea;
 
-
-			//ebml 
+			//ebml
 			EBML::IReader* m_pReader[2];
 			OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* m_pStimulationReaderCallBack;
 			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pStreamedMatrixReaderCallBack;
@@ -132,7 +130,7 @@ namespace OpenViBEPlugins
 		/**
 		* Plugin's description
 		*/
-		class CGrazVisualizationDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGrazVisualizationDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Graz visualization"); }
@@ -163,12 +161,9 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_GrazVisualizationDesc)
 
-			
 		};
-
 
 	};
 };

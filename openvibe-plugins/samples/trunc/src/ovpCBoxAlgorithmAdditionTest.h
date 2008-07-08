@@ -11,7 +11,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CBoxAlgorithmAdditionTest : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmAdditionTest : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -41,7 +41,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy3;
 		};
 
-		class CBoxAlgorithmAdditionTestDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmAdditionTestDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

@@ -54,7 +54,7 @@ boolean CPlayer::setScenario(
 
 	if(m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to configure an intialized player !\n";
+		log() << LogLevel_Warning << "Trying to configure an initialized player !\n";
 		return false;
 	}
 
@@ -67,7 +67,7 @@ boolean CPlayer::initialize(void)
 
 	if(m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to initialize an intialized player !\n";
+		log() << LogLevel_Warning << "Trying to initialize an initialized player !\n";
 		return false;
 	}
 

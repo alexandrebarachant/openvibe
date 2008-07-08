@@ -28,8 +28,7 @@ Summary :
 This plugin generates stimulations according to a scenario written in an XML file.
 This scenario's state can be perturbed by incoming stimulations.
 
-\image html XMLStimulationScenarioPlayerBox.png
-
+\image html BoxAlgorithm_XMLStimulationScenarioPlayer.png
 
  \section Doc_ovpCXMLStimulationScenarioPlayer_inputs Inputs
  Number of inputs : 1 

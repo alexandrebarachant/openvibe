@@ -341,10 +341,6 @@ namespace OpenViBEPlugins
 				 "delete_event",
 				 G_CALLBACK(gtk_widget_hide), NULL);
 
-			//hide toolbar on delete event
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "Toolbar")),
-				"delete_event", G_CALLBACK(gtk_widget_hide), NULL);
-
 #if 0
 			//does nothing on the main window if the user tries to close it
 			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow")),
@@ -437,8 +433,8 @@ namespace OpenViBEPlugins
 			GtkSizeGroup * l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
 			//creates the array of Channel displays
-			m_oChannelDisplay.resize(l_ui32ChannelCount);
-			m_oChannelLabel.resize(l_ui32ChannelCount);
+			m_oChannelDisplay.resize(l_ui32ChannelCount+1);
+			m_oChannelLabel.resize(l_ui32ChannelCount+1);
 
 			//gets the pointer to the channels table
 			m_pSignalDisplayTable = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainTable");
@@ -477,16 +473,15 @@ namespace OpenViBEPlugins
 					GTK_FILL, GTK_SHRINK,
 					0, 0);
 
-				//
 				gtk_widget_show(l_pLabel);
 
-				//adds the label to the size group
+				//add label to size group
 				gtk_size_group_add_widget(l_pSizeGroup, l_pLabel);
 
-				//creates the channel display widget
+				//create channel display widget
 				m_oChannelDisplay[i] = GTK_WIDGET(channel_display_new());
 
-				//configures it
+				//configure it
 				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->setParent(this);
 				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->addChannel(i);
 
@@ -497,15 +492,13 @@ namespace OpenViBEPlugins
 				0, 0);
 				gtk_widget_show_all(m_oChannelDisplay[i]);
 
-
-				//Add an horizontal separator under it
+				//add horizontal separator
 				l_pSeparator = gtk_hseparator_new();
 				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), l_pSeparator,
 				0, 3, (i*2)+1, (i*2)+2,	static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_SHRINK,	0, 0);
 				gtk_widget_show(l_pSeparator);
 
-
-				//Adds a checkbox in the channel select window
+				//add checkbox in channel select window
 				GtkWidget * l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
 				m_vChannelsCheckButtons.push_back(l_pChannelCheckButton);
 
@@ -522,33 +515,38 @@ namespace OpenViBEPlugins
 				m_vSelectedChannels.push_back(i);
 			}
 
-			//The multiview channel
-			//sets a minimum size for the table (needed to scroll)
+			//Multiview channel
+			//-----------------
 
+			//create and attach label
 			GtkWidget * l_pLabel =  gtk_label_new("Multi-View");
 
-			m_oChannelLabel.push_back(l_pLabel);
+			m_oChannelLabel[l_ui32ChannelCount] = l_pLabel;
 
 			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable),l_pLabel,
 				0, 1, l_ui32ChannelCount*2, (l_ui32ChannelCount*2)+1,
 				GTK_FILL, GTK_SHRINK,
 				0, 0);
 
-			//creates the channel display widget
-			m_oChannelDisplay.push_back(GTK_WIDGET(channel_display_new()));
+			//add label to size group
+			gtk_size_group_add_widget(l_pSizeGroup, l_pLabel);
 
-			//adds it to the table
-			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), m_oChannelDisplay.back(),
+			//create and attach display widget
+			GtkWidget* l_pChannelDisplay = channel_display_new();
+
+			m_oChannelDisplay[l_ui32ChannelCount] = l_pChannelDisplay;
+
+			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), l_pChannelDisplay,
 				2, 3, (l_ui32ChannelCount*2), (l_ui32ChannelCount*2)+1,
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
 				0, 0);
 
-			CHANNEL_DISPLAY(m_oChannelDisplay.back())->m_pChannelDisplay->setParent(this);
-			CHANNEL_DISPLAY(m_oChannelDisplay.back())->m_pChannelDisplay->addChannel(0);
+			CHANNEL_DISPLAY(l_pChannelDisplay)->m_pChannelDisplay->setParent(this);
+			CHANNEL_DISPLAY(l_pChannelDisplay)->m_pChannelDisplay->addChannel(0);
 
-			gtk_widget_show_all(m_oChannelDisplay.back());
-			gtk_widget_hide(m_oChannelDisplay.back());
+			gtk_widget_show_all(l_pChannelDisplay);
+			gtk_widget_hide(l_pChannelDisplay);
 
 			m_bMultiViewInitialized = true;
 

@@ -14,7 +14,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CCrashingBox : virtual public OpenViBE::Plugins::IBoxAlgorithm
+		class CCrashingBox : public OpenViBE::Plugins::IBoxAlgorithm
 		{
 		public:
 
@@ -57,7 +57,7 @@ namespace OpenViBEPlugins
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_CrashingBox)
 		};
 
-		class CCrashingBoxDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CCrashingBoxDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

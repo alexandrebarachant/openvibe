@@ -13,7 +13,7 @@
 namespace OpenViBEToolkit
 {
 	template <class IBaseInterface>
-	class TBoxAlgorithmEBMLInputReaderCallback : virtual public IBaseInterface
+	class TBoxAlgorithmEBMLInputReaderCallback : public IBaseInterface
 	{
 	public:
 

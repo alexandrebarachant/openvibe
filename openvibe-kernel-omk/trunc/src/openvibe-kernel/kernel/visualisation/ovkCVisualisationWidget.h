@@ -6,8 +6,7 @@
 #include "../scenario/ovkTAttributable.h"
 
 #include <vector>
-#include <map>
-
+	
 namespace OpenViBE
 {
 	namespace Kernel
@@ -63,6 +62,9 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setChildIdentifier(
 				OpenViBE::uint32 ui32ChildIndex,
 				const OpenViBE::CIdentifier& rIdentifier);
+
+			virtual OpenViBE::boolean acceptVisitor(
+				OpenViBE::IObjectVisitor& rObjectVisitor);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationWidget> >, OVK_ClassId_Kernel_Visualisation_VisualisationWidget)
 

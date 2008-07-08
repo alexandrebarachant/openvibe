@@ -5,7 +5,7 @@
 
 namespace EBML
 {
-	class EBML_API CWriterHelper : virtual public EBML::IWriterHelper
+	class EBML_API CWriterHelper : public EBML::IWriterHelper
 	{
 	public:
 

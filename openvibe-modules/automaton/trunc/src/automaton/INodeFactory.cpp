@@ -9,7 +9,7 @@ using namespace Automaton;
 
 namespace Automaton
 {
-	class Automaton_API CNodeFactory : virtual public INodeFactory
+	class Automaton_API CNodeFactory : public INodeFactory
 	{
 		public:
 			static INodeFactory* m_pFactory;

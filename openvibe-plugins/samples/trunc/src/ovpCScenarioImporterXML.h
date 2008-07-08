@@ -16,13 +16,14 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		#define _default_and_copy_constructor_1_(c,m1)                   c(void) { } c(const c& r) : m1(r.m1) { }
-		#define _default_and_copy_constructor_2_(c,m1,m2)                c(void) { } c(const c& r) : m1(r.m1), m2(r.m2) { }
-		#define _default_and_copy_constructor_3_(c,m1,m2,m3)             c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3) { }
-		#define _default_and_copy_constructor_4_(c,m1,m2,m3,m4)          c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4) { }
-		#define _default_and_copy_constructor_5_(c,m1,m2,m3,m4,m5)       c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4), m5(r.m5) { }
-		#define _default_and_copy_constructor_6_(c,m1,m2,m3,m4,m5,m6)    c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4), m5(r.m5), m6(r.m6) { }
-		#define _default_and_copy_constructor_7_(c,m1,m2,m3,m4,m5,m6,m7) c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4), m5(r.m5), m6(r.m6), m7(r.m7) { }
+		#define _default_and_copy_constructor_1_(c,m1)                      c(void) { } c(const c& r) : m1(r.m1) { }
+		#define _default_and_copy_constructor_2_(c,m1,m2)                   c(void) { } c(const c& r) : m1(r.m1), m2(r.m2) { }
+		#define _default_and_copy_constructor_3_(c,m1,m2,m3)                c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3) { }
+		#define _default_and_copy_constructor_4_(c,m1,m2,m3,m4)             c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4) { }
+		#define _default_and_copy_constructor_5_(c,m1,m2,m3,m4,m5)          c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4), m5(r.m5) { }
+		#define _default_and_copy_constructor_6_(c,m1,m2,m3,m4,m5,m6)       c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4), m5(r.m5), m6(r.m6) { }
+		#define _default_and_copy_constructor_7_(c,m1,m2,m3,m4,m5,m6,m7)    c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4), m5(r.m5), m6(r.m6), m7(r.m7) { }
+		#define _default_and_copy_constructor_8_(c,m1,m2,m3,m4,m5,m6,m7,m8) c(void) { } c(const c& r) : m1(r.m1), m2(r.m2), m3(r.m3), m4(r.m4), m5(r.m5), m6(r.m6), m7(r.m7), m8(r.m8) { }
 
 		typedef struct _SInput
 		{
@@ -81,12 +82,25 @@ namespace OpenViBEPlugins
 			SLinkTarget m_oLinkTarget;
 			std::vector<SAttribute> m_vAttribute;
 		} SLink;
+		typedef struct _SVisualisationWidget
+		{
+			_default_and_copy_constructor_8_(_SVisualisationWidget, m_sIdentifier, m_sName, m_sType, m_sParentIdentifier, m_sIndex, m_sBoxIdentifier, m_sNbChildren, m_vAttribute);
+			std::string m_sIdentifier;
+			std::string m_sName;
+			std::string m_sType;
+			std::string m_sParentIdentifier;
+			std::string m_sIndex;
+			std::string m_sBoxIdentifier;
+			std::string m_sNbChildren;
+			std::vector<SAttribute> m_vAttribute;
+		} SVisualisationWidget;
 		typedef struct _SScenario
 		{
 			_default_and_copy_constructor_3_(_SScenario, m_vBox, m_vLink, m_vAttribute);
 			std::vector<SBox> m_vBox;
 			std::vector<SLink> m_vLink;
 			std::vector<SAttribute> m_vAttribute;
+			std::vector<SVisualisationWidget> m_vVisualisationWidget;
 		} SScenario;
 
 		#undef _default_and_copy_constructor_1_
@@ -98,7 +112,7 @@ namespace OpenViBEPlugins
 		#undef _default_and_copy_constructor_7_
 
 		class CScenarioImporterXML
-			: virtual public OpenViBE::Plugins::IScenarioImporter
+			: public OpenViBE::Plugins::IScenarioImporter
 			, virtual public XML::IReaderCallback
 		{
 		public:
@@ -119,13 +133,14 @@ namespace OpenViBEPlugins
 
 			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vBoxIdMapping;
 			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vLinkIdMapping;
-			std::stack<std::string> m_vNodes;
+			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vVisualisationWidgetIdMapping;
+			std::stack<std::string> m_vNodes;			
 			OpenViBE::uint32 m_ui32Status;
 			OpenViBE::boolean m_bIsOpenViBEScenario;
-			SScenario m_oScenario;
+			SScenario m_oScenario;			
 		};
 
-		class CScenarioImporterXMLDesc : virtual public OpenViBE::Plugins::IScenarioImporterDesc
+		class CScenarioImporterXMLDesc : public OpenViBE::Plugins::IScenarioImporterDesc
 		{
 		public:
 

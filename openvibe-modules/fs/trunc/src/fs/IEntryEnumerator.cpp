@@ -26,7 +26,7 @@ using namespace FS;
 
 namespace FS
 {
-	class CEntry : virtual public IEntryEnumerator::IEntry
+	class CEntry : public IEntryEnumerator::IEntry
 	{
 	public:
 
@@ -62,7 +62,7 @@ const char* CEntry::getName(void)
 
 namespace FS
 {
-	class CAttributes : virtual public IEntryEnumerator::IAttributes
+	class CAttributes : public IEntryEnumerator::IAttributes
 	{
 	public:
 
@@ -182,7 +182,7 @@ IEntryEnumerator::~IEntryEnumerator(void)
 
 namespace FS
 {
-	class CEntryEnumerator : virtual public IEntryEnumerator
+	class CEntryEnumerator : public IEntryEnumerator
 	{
 	public:
 		CEntryEnumerator(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack);
@@ -212,7 +212,7 @@ void CEntryEnumerator::release(void)
 
 namespace FS
 {
-	class CEntryEnumeratorLinux : virtual public CEntryEnumerator
+	class CEntryEnumeratorLinux : public CEntryEnumerator
 	{
 	public:
 		CEntryEnumeratorLinux(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack);
@@ -224,7 +224,7 @@ namespace FS
 
 namespace FS
 {
-	class CEntryEnumeratorWindows : virtual public CEntryEnumerator
+	class CEntryEnumeratorWindows : public CEntryEnumerator
 	{
 	public:
 		CEntryEnumeratorWindows(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack);
@@ -236,7 +236,7 @@ namespace FS
 
 namespace FS
 {
-	class CEntryEnumeratorDummy : virtual public CEntryEnumerator
+	class CEntryEnumeratorDummy : public CEntryEnumerator
 	{
 	public:
 		CEntryEnumeratorDummy(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack);

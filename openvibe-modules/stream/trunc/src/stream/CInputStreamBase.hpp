@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class CInputStreamBase : virtual public Stream::IInputStream
+	class CInputStreamBase : public Stream::IInputStream
 	{
 	public:
 

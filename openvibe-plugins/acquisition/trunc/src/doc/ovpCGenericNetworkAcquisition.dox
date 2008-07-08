@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpCGenericNetworkAcquisition_description Description
  This plugin is used to receive signal information from a socket.
 
-\image html GenericNetworkAcquisitionBox.png
+\image html BoxAlgorithm_GenericNetworkAcquisition.png
 
  \section Doc_ovpCGenericNetworkAcquisition_inputs Inputs
  Number of inputs : 0

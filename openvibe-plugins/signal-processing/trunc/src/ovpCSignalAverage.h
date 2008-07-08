@@ -25,7 +25,7 @@ namespace OpenViBEPlugins
 		/**
 		* The Simple DSP plugin's main class.
 		*/
-		class CSignalAverage : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
+		class CSignalAverage : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		{
 			// Used to store information about the signal stream
 			class CSignalDescription
@@ -111,7 +111,7 @@ namespace OpenViBEPlugins
 		/**
 		* Description of the channel selection plugin
 		*/
-		class CSignalAverageDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CSignalAverageDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

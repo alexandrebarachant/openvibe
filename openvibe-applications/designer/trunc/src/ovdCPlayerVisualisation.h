@@ -6,103 +6,121 @@
 #include <map>
 #include <gtk/gtk.h>
 
-//#define SAVE_PANED_POSITIONS
-
 namespace OpenViBEDesigner
-{	
+{
 	class CPlayerVisualisation : public OpenViBE::Kernel::ITreeViewCB
 	{
-	public:		
+	public:
 		CPlayerVisualisation(
-			const OpenViBE::Kernel::IKernelContext& rKernelContext, 
+			const OpenViBE::Kernel::IKernelContext& rKernelContext,
 			const OpenViBE::Kernel::IScenario& rScenario,
 			OpenViBE::Kernel::IVisualisationTree& rVisualisationTree);
 
 		virtual ~CPlayerVisualisation();
-	
+
 		void init();
-		void release();
-	
-		//ITreeViewCB callbacks overloading
-		GtkWidget* loadTreeWidget(
+
+		/** \name ITreeViewCB interface implementation */
+		//@{
+		::GtkWidget* loadTreeWidget(
 			OpenViBE::Kernel::IVisualisationWidget* pWidget);
-		void endLoadTreeWidget(
-			GtkWidget* treeWidget);
-		OpenViBE::boolean	setWidgets(
-			const OpenViBE::CString& rVisualisationBoxName, 
-			GtkWidget* pWidget,
-			GtkWidget* pToolbarWidget);
+		OpenViBE::boolean setToolbar(
+			const OpenViBE::CString& rName,
+			::GtkWidget* pToolbarWidget);
+		OpenViBE::boolean setWidget(
+			const OpenViBE::CString& rName,
+			::GtkWidget* pWidget);
+		//@}
 
 		void showTopLevelWindows();
 		void hideTopLevelWindows();
 
-		void realize3DWidgets();
-				
-	protected:										
-#ifdef SAVE_PANED_POSITIONS		
-		//callback for paned handle position changes
-		static gboolean	notify_position_paned_cb(
-			GtkWidget* widget, 
-			GParamSpec* spec, 
-			void* user_data);
-		virtual void enablePanedSignals(
-			GtkWidget* pPaned, 
-			OpenViBE::boolean b);		
-		void notifyPositionPanedCB(
-			GtkWidget* widget);
-
-		static gboolean window_state_event_cb(
-			GtkWidget* widget,
-			GdkEventWindowState* event,
-      gpointer user_data);
-		static void window_size_allocate_cb(
-			GtkWidget* widget,
-      GtkAllocation* allocation,
-      gpointer user_data);		
-#endif
+	protected:
+		OpenViBE::boolean parentWidgetBox(
+			OpenViBE::Kernel::IVisualisationWidget* pWidget,
+			::GtkBox* pWidgetBox);
 
 		static gboolean configure_event_cb(
-			GtkWidget* widget, 
-			GdkEventConfigure* event,
+			::GtkWidget* widget,
+			::GdkEventConfigure* event,
 			gpointer user_data);
 		static gboolean widget_expose_event_cb(
-			GtkWidget* widget,
-			GdkEventExpose* event,
-			gpointer user_data);			
+			::GtkWidget* widget,
+			::GdkEventExpose* event,
+			gpointer user_data);
 		void resizeCB(
-			GtkContainer* container);		
-		
+			::GtkContainer* container);
+
 		//callbacks for DND
 		static void	drag_data_get_from_widget_cb(
-			GtkWidget* pSrcWidget, 
-			GdkDragContext* pDC, 
-			GtkSelectionData* pSelectionData,
+			::GtkWidget* pSrcWidget,
+			::GdkDragContext* pDC,
+			::GtkSelectionData* pSelectionData,
 			guint uiInfo,
 			guint uiTime,
 			gpointer pData);
 		static void	drag_data_received_in_widget_cb(
-			GtkWidget* pDstWidget, 
-			GdkDragContext*,
+			::GtkWidget* pDstWidget,
+			::GdkDragContext*,
 			gint,
 			gint,
-			GtkSelectionData* pSelectionData,
+			::GtkSelectionData* pSelectionData,
 			guint,
 			guint,
 			gpointer pData);
 
 		//callback for toolbar
-		static void button_clicked_cb(
-			GtkButton* pButton, 
+		static void toolbar_button_toggled_cb(
+			::GtkToggleButton* pButton,
 			gpointer user_data);
-		void showToolbarCB(GtkWidget* pButton);
+		OpenViBE::boolean toggleToolbarCB(::GtkToggleButton* pButton);
+		static gboolean toolbar_delete_event_cb(
+			::GtkWidget *widget,
+			::GdkEvent  *event,
+      gpointer   user_data);
+		OpenViBE::boolean deleteToolbarCB(::GtkWidget* pWidget);
 
 		const OpenViBE::Kernel::IKernelContext&	m_rKernelContext;
 		const OpenViBE::Kernel::IScenario& m_rScenario;
-		OpenViBE::Kernel::IVisualisationTree& m_rVisualisationTree;				
-		std::map<OpenViBE::CIdentifier, GtkWindow*> m_mVisualisationWindow;
-		std::map<GtkWidget*, OpenViBE::CIdentifier> m_mVisualisationWidget;
-		std::map<GtkWidget*, GtkWidget*> m_mVisualisationWidgetToolbar;
-		GtkWidget* m_pCurrentToolbar;
+		OpenViBE::Kernel::IVisualisationTree& m_rVisualisationTree;
+
+		/**
+		 * \brief Vector of top level windows
+		 */
+		std::vector < ::GtkWindow* > m_vWindows;
+
+		/**
+		 * \brief Map of split (paned) widgets associated to their identifiers
+		 * This map is used to retrieve size properties of split widgets upon window resizing,
+		 * so as to keep the relative sizes of a hierarchy of widgets
+		 */
+		std::map < ::GtkPaned*, OpenViBE::CIdentifier > m_mSplitWidgets;
+
+		/**
+		 * \brief Map associating toolbar buttons to toolbar windows
+		 */
+		std::map < ::GtkToggleButton*, ::GtkWidget* > m_mToolbars;
+
+		/**
+		 * \brief Pointer to active toolbar button
+		 */
+		::GtkToggleButton* m_pActiveToolbarButton;
+
+		class CPluginWidgets
+		{
+		public:
+			CPluginWidgets() :
+			m_pWidget(NULL), m_pToolbarButton(NULL),	m_pToolbar(NULL)
+			{}
+			::GtkWidget* m_pWidget;
+			::GtkToggleButton* m_pToolbarButton;
+			::GtkWidget* m_pToolbar;
+		};
+
+		/**
+		 * \brief Map of visualisation plugins
+		 */
+		std::map < OpenViBE::CIdentifier, CPlayerVisualisation::CPluginWidgets > m_mPlugins;
 	};
 };
 

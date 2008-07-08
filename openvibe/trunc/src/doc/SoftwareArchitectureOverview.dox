@@ -1,0 +1,102 @@
+/** 
+\page Doc_SoftwareArchitectureOverview OpenViBE Architecture
+
+\section software_architecture_overview_introduction Introduction
+
+At a very high level, OpenViBE can be decomposed into the following components :
+
+- the kernel provides core services via a number of managers, such as the scenario, plugin and log managers
+- several modules encapsulate platform dependent functionalities (e.g. files and sockets management)
+- a plugin mechanism allows the platform to be easily and efficiently extended
+
+Applications and plugins communicate with the kernel via an interface layer. Plugins are only granted restricted access
+to the kernel thanks to a dedicated execution context. It provides subsets of interfaces to the kernel and the managers useful 
+for plugins execution.
+
+\section software_architecture_kernel Kernel
+
+The kernel is the central component of OpenViBE, offering core functionalities to design and execute scenarios. At initialization time, 
+it creates several managers that are each responsible for an aspect of the platform.
+
+ - The scenario manager handles the construction of scenarios. It maintains a list of boxes used in a given scenario, as well as 
+the links connecting these boxes together.
+ - The player manager takes care of scenario execution. It calls every module in turn at the required frequency.
+ - The visualisation manager registers visualisation boxes and their arrangement in space. It also manages a 3D context, and 
+offers a restricted set of 2D and 3D functionalities to visualisation plugins for drawing purposes.
+ - The plugin manager is responsible for listing all plugins found in the execution directory of an OpenViBE application.
+ - The log manager allows for customization of the application log.
+ - The type manager ensures types standardization across the platform, including specialized types for flow input/output between boxes,
+and types for box parameters.
+
+\section software_architexture_sources OpenViBE sources structure
+
+The OpenViBE sources are stored in the following top level hierarchy :
+ 
+ - /openvibe (interface layer or SDK) 
+ - /openvibe-applications (end-user applications should go here)
+ - /openvibe-kernel (core functionalities)
+ - /openvibe-modules (platform dependent functionalities are encapsulated in modules here)
+ - /openvibe-plugins (extensions of all kinds are stored here)
+ - /openvibe-toolkit (set of helper classes facilitating development)
+ 
+Additionally, two top level directories contain scripts useful for compilation :
+ 
+ - /cmake-modules (cmake files used for compiling the project)
+ - /scripts (set of scripts for installation, set up, compilation and execution of the platform)
+
+Finally, dependencies are stored under a top level /dependencies directory, and a script copies
+all binaries under a /dist directory.
+
+\subsection software_architecture_project_sources Typical structure of a project
+
+Each project follows the same pattern, where a /trunc directory holds the most up to date stable version of the sources.
+Work in progress should be done in development branches, which are stored under a /branches directory (e.g. /branches/wip-developerA
+for the Work In Progress of developer A).
+Switching from one branch to the other may be done by customizing a script setting up the environment found in the /script directory.
+Additionally, tagged versions of the project (corresponding to a certain set of functionalities or to the state of the application 
+at a given date) may be stored in a /tags directory
+
+This sums up the typical organization of an OpenViBE project :
+
+ - /projectName
+ 	- /branches
+ 		- /wip-developerA
+ 		- /wip-developerB
+ 	- /tags
+ 		- /0.1.0
+ 		- /0.2.0
+ 	- /trunc
+
+\subsection software_architecture_branch_sources Typical structure of a branch
+
+The structure of any branch of any OpenViBE project is the same. 
+
+Its sources are stored in a /src directory, which contains 
+a /doc directory for doxygen documentation of the project, and another directory named after the project contains the actual 
+sources.
+
+Header files are copied in a /include directory at compilation time for later collection by a script
+
+Project resources, such as GUI files and pictures, are stored under a /share directory.
+
+Library files are generated under /lib and binaries under /bin.
+
+A /doc directory stores doxygen compiled documentation.
+
+Finally, the /etc and /test directories store ??? and binaries used for testing purposes respectively.
+
+This is what a typical branch organization looks like : 
+ 
+ - /wip-developerA
+ 	- /bin
+ 	- /doc
+ 	- /etc
+ 	- /include
+ 	- /lib
+ 	- /share
+ 	- /src
+ 		- /doc
+ 		- /projectFoo 			
+ 	- /test
+ 
+*/

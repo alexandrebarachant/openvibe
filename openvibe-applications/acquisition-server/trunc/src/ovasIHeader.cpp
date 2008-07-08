@@ -13,7 +13,7 @@ using namespace std;
 
 namespace OpenViBEAcquisitionServer
 {
-	class CHeader : virtual public IHeader
+	class CHeader : public IHeader
 	{
 	public:
 

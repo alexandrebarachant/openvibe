@@ -146,10 +146,6 @@ namespace OpenViBEPlugins
 			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DisplayMainWindow")),
 				"delete_event", G_CALLBACK(gtk_widget_hide), NULL);
 
-			//hide toolbar on delete event
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "Toolbar")),
-				"delete_event", G_CALLBACK(gtk_widget_hide), NULL);
-
 			// gets attenuation
 			m_f64Attenuation=(gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "DisplayMinMaxAttenuationSpin"))));
 
@@ -394,6 +390,5 @@ namespace OpenViBEPlugins
 		{
 			m_f64Attenuation=f64Attenuation;
 		}
-
 	};
 };

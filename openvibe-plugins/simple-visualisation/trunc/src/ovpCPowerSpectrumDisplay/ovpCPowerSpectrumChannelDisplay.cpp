@@ -18,7 +18,6 @@ namespace OpenViBEPlugins
 		gboolean powerSpectrumExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data);
 		gboolean powerSpectrumSizeAllocateCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data);
 		gboolean powerSpectrumLeftRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data);
-		gboolean powerSpectrumBottomRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data);
 
 		CPowerSpectrumChannelDisplay::CPowerSpectrumChannelDisplay(
 			CPowerSpectrumDisplayView* pParentDisplay, uint32 ui32Channel, CPowerSpectrumDatabase& pDatabase) :
@@ -26,7 +25,6 @@ namespace OpenViBEPlugins
 			m_pWidgetTable(NULL),
 			m_pDisplay(NULL),
 			m_pLeftRuler(NULL),
-			m_pBottomRuler(NULL),
 			m_pGraphicsContext(NULL),
 			m_pDatabase(&pDatabase),
 			m_ui32Channel(ui32Channel),
@@ -39,18 +37,15 @@ namespace OpenViBEPlugins
 			m_ui32Rowstride(0)
 		{
 			//widgets table
-			m_pWidgetTable = GTK_TABLE(gtk_table_new(2, 2, FALSE));
+			m_pWidgetTable = GTK_TABLE(gtk_table_new(2, 1, FALSE));
 
 			//spectrum display
 			m_pDisplay = gtk_drawing_area_new();
+			gtk_widget_set_size_request(m_pDisplay, 20, 20);
 
-			//left display
+			//left ruler
 			m_pLeftRuler = gtk_drawing_area_new();
-			gtk_widget_set_size_request(m_pLeftRuler, 30, -1);
-
-			//bottom display
-			m_pBottomRuler = gtk_drawing_area_new();
-			gtk_widget_set_size_request(m_pBottomRuler, -1, 20);
+			gtk_widget_set_size_request(m_pLeftRuler, 50, 20/*-1*/);
 
 			//add displays to table
 			gtk_table_attach(m_pWidgetTable, m_pDisplay,
@@ -63,20 +58,12 @@ namespace OpenViBEPlugins
 				GTK_FILL, GTK_FILL,
 				0, 0);
 
-			gtk_table_attach(m_pWidgetTable, m_pBottomRuler,
-				1, 2, 1, 2,
-				GTK_FILL, GTK_FILL,
-				0, 0);
-
 			//spectrum display events
 			g_signal_connect_after(G_OBJECT(m_pDisplay), "expose_event", G_CALLBACK(powerSpectrumExposeEventCallback), this);
 			g_signal_connect(G_OBJECT(m_pDisplay), "size-allocate", G_CALLBACK(powerSpectrumSizeAllocateCallback), this);
 
 			//left ruler events
 			g_signal_connect_after(G_OBJECT(m_pLeftRuler), "expose_event", G_CALLBACK(powerSpectrumLeftRulerExposeEventCallback), this);
-
-			//bottom ruler events
-			g_signal_connect_after(G_OBJECT(m_pBottomRuler), "expose_event", G_CALLBACK(powerSpectrumBottomRulerExposeEventCallback), this);
 		}
 
 		CPowerSpectrumChannelDisplay::~CPowerSpectrumChannelDisplay()
@@ -92,6 +79,11 @@ namespace OpenViBEPlugins
 			return GTK_WIDGET(m_pWidgetTable);
 		}
 
+		GtkWidget* CPowerSpectrumChannelDisplay::getSpectrumDisplay() const
+		{
+			return GTK_WIDGET(m_pDisplay);
+		}
+
 		void CPowerSpectrumChannelDisplay::toggle(OpenViBE::boolean bActive)
 		{
 			bActive ? gtk_widget_show(GTK_WIDGET(m_pWidgetTable)) : gtk_widget_hide(GTK_WIDGET(m_pWidgetTable));
@@ -100,11 +92,6 @@ namespace OpenViBEPlugins
 		void CPowerSpectrumChannelDisplay::toggleLeftRuler(boolean bActive)
 		{
 			bActive ? gtk_widget_show(m_pLeftRuler) : gtk_widget_hide(m_pLeftRuler);
-		}
-
-		void CPowerSpectrumChannelDisplay::toggleBottomRuler(boolean bActive)
-		{
-			bActive ? gtk_widget_show(m_pBottomRuler) : gtk_widget_hide(m_pBottomRuler);
 		}
 
 		void CPowerSpectrumChannelDisplay::drawSpectrum()
@@ -283,65 +270,6 @@ namespace OpenViBEPlugins
 			}
 		}
 
-		void CPowerSpectrumChannelDisplay::drawBottomRuler()
-		{
-			//if the widget is invisible, no need to redraw it
-			if(!GTK_WIDGET_VISIBLE(m_pBottomRuler))
-				return;
-
-			//gets the widget's size
-			gint l_iBottomRulerWidth;
-			gint l_iBottomRulerHeight;
-			gdk_drawable_get_size(m_pBottomRuler->window, &l_iBottomRulerWidth, &l_iBottomRulerHeight);
-
-			//draw ruler base (horizontal line)
-			gdk_draw_line(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], 0, 0, l_iBottomRulerWidth, 0);
-
-			//get number and width of frequency bands
-			uint32 l_ui32FrequencyCount = m_pDatabase->m_pFrequencyBands.size();
-			float32 l_f32FreqBandWidth = static_cast<float32>(l_iBottomRulerWidth) / l_ui32FrequencyCount;
-
-			uint32 l_ui32BaseX = 0;
-
-			//FIXME read frequency labels from input stream!
-			uint32 l_ui32FrequencyStart = 10;
-			uint32 l_ui32FrequencyBandSize = 2; //2Hz frequency bands
-			// uint32 l_ui32FrequencyEnd = l_ui32FrequencyStart + (l_ui32FrequencyCount-1) * l_ui32FrequencyBandSize;
-
-			//draw frequency labels
-			int l_iTextWidth;
-			uint32 l_iIndexStep = 1;
-			stringstream l_oFrequencyLabel;
-
-			for(uint32 i=0 ; i<l_ui32FrequencyCount; i+=l_iIndexStep)
-			{
-				//clears the stringstream
-				l_oFrequencyLabel.str("");
-
-				//compute the position of the label
-				gint l_iTextX = static_cast<gint>(l_ui32BaseX + i*l_f32FreqBandWidth);
-
-				//create the string to display
-				l_oFrequencyLabel << l_ui32FrequencyStart + i * l_ui32FrequencyBandSize;
-				PangoLayout* l_pText = gtk_widget_create_pango_layout(m_pBottomRuler, l_oFrequencyLabel.str().c_str());
-
-				//if the width allocated per label becomes too small compared to the effective width of the label
-				pango_layout_get_pixel_size(l_pText, &l_iTextWidth, NULL);
-				while(l_iTextWidth >= (int)((l_iBottomRulerWidth - l_ui32BaseX)/(l_ui32FrequencyCount/l_iIndexStep) - 10))
-					l_iIndexStep++;
-
-				//break if not enough space to display label
-				if(l_iTextX + l_iTextWidth >= l_iBottomRulerWidth)
-					break;
-
-				//draw label
-				gdk_draw_layout(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], l_iTextX, 4, l_pText);
-
-				//draw a small line above it
-				gdk_draw_line(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], l_iTextX, 0, l_iTextX, 3);
-			}
-		}
-
 		void CPowerSpectrumChannelDisplay::resizeRGBBuffer(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height)
 		{
 			//first delete the previously allocated buffer
@@ -401,14 +329,6 @@ namespace OpenViBEPlugins
 			//redraw left ruler (powers)
 			CPowerSpectrumChannelDisplay* l_pDisplay = reinterpret_cast<CPowerSpectrumChannelDisplay*>(data);
 			l_pDisplay->drawLeftRuler();
-			return TRUE;
-		}
-
-		gboolean powerSpectrumBottomRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
-		{
-			//redraw bottom ruler (frequencies)
-			CPowerSpectrumChannelDisplay* l_pDisplay = reinterpret_cast<CPowerSpectrumChannelDisplay*>(data);
-			l_pDisplay->drawBottomRuler();
 			return TRUE;
 		}
 	}

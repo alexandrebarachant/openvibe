@@ -19,7 +19,7 @@ namespace OpenViBEPlugins
 {
 	namespace Stimulation
 	{
-		class CKeyboardStimulator : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CKeyboardStimulator : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -68,7 +68,7 @@ namespace OpenViBEPlugins
 		/**
 		* Plugin's description
 		*/
-		class CKeyboardStimulatorDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CKeyboardStimulatorDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Keyboard stimulator"); }

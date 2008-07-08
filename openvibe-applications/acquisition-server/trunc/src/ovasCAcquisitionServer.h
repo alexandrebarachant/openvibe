@@ -23,7 +23,7 @@ namespace OpenViBEAcquisitionServer
 {
 	class CConnectionHandler;
 
-	class CAcquisitionServer : virtual OpenViBEAcquisitionServer::IDriverCallback
+	class CAcquisitionServer : OpenViBEAcquisitionServer::IDriverCallback
 	{
 	public:
 

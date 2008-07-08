@@ -9,7 +9,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CIdentity : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CIdentity : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -20,7 +20,7 @@ namespace OpenViBEPlugins
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_Identity)
 		};
 
-		class CIdentityDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CIdentityDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

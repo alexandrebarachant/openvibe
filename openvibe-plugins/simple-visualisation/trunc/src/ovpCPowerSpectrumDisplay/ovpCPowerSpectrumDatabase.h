@@ -22,7 +22,7 @@ namespace OpenViBEPlugins
 		class CSignalDisplayDrawable;
 
 		/**
-		* This class is used to store information about the incoming signal stream. It can request a CSignalDisplayDrawable
+		* This class is used to store information about the incoming spectrum stream. It can request a CSignalDisplayDrawable
 		* object to redraw himself in case of some changes in its data.
 		*/
 		class CPowerSpectrumDatabase

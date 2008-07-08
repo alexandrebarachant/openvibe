@@ -9,7 +9,7 @@ using namespace std;
 namespace XML
 {
 
-	class CWriter : virtual public IWriter
+	class CWriter : public IWriter
 	{
 	public:
 		CWriter(IWriterCallback& rWriterCallback);

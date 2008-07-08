@@ -9,7 +9,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CBoxAlgorithmClock : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmClock : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -29,7 +29,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::ELogLevel m_eLogLevel;
 		};
 
-		class CBoxAlgorithmClockDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmClockDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

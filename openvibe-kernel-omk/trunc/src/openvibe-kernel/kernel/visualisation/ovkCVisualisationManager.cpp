@@ -1,32 +1,216 @@
 #include "ovkCVisualisationTree.h"
-//#include "ovkCOgreContext.h"
 #include "ovkCVisualisationManager.h"
+#include "../player/ovkCOgreVisualisation.h"
+#include "../ovkGtkOVCustom.h"
+
+#if defined OVK_OS_Windows
+#  include <gdk/gdkwin32.h>
+#else
+#  include <gdk/gdkx.h>
+#endif
+
+#define boolean OpenViBE::boolean
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Tools;
 using namespace std;
 
-CVisualisationManager::CVisualisationManager(const OpenViBE::Kernel::IKernelContext& rKernelContext) :
-	OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationManager>(rKernelContext)//,	m_pOgreContext(NULL)
+CVisualisationManager::CVisualisationManager(const OpenViBE::Kernel::IKernelContext& rKernelContext)
+	:OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationManager>(rKernelContext)
+	,m_pPrimaryRenderWindowWidget(NULL)
+	,m_pOgreVisualisation(NULL)
 {
+}
+
+CVisualisationManager::~CVisualisationManager()
+{
+	if(m_pPrimaryRenderWindowWidget != NULL)
+	{
+		//destroy Gtk widget only - the primary RenderWindow it contains will be deleted by Ogre
+		gtk_widget_destroy(GTK_WIDGET(m_pPrimaryRenderWindowWidget));
+	}
+
+	delete m_pOgreVisualisation;
+}
+
+boolean CVisualisationManager::initialize3DContext(const CString& rPluginsFile, boolean bLogOgreToScreen, const OpenViBE::CString& rLogFileName)
+{
+	try
+	{
+		//initialize Ogre
+		//---------------
+		m_pOgreVisualisation = new COgreVisualisation(getKernelContext());
+		if(m_pOgreVisualisation->initializeOgre(rPluginsFile, bLogOgreToScreen, rLogFileName) == true)			
+		{
+		log() << LogLevel_Trace << "Initialized Ogre\n";
+	}
+		else
+		{
+			log() << LogLevel_Trace << "Failed to initialize Ogre\n";				
+			return false;
+		}
+	}
+	catch(std::exception& e)
+	{
+		log()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< "Failed to initialize Ogre : " << e.what() << "\n";
+		return false;
+	}
+
+	try
+	{
+		//create primary render window
+		//----------------------------
+		//create custom Gtk widget
+		GtkWidget* l_pOVCustomWidget = gtk_ov_custom_new(this);
+		//add it to a top level container
+		m_pPrimaryRenderWindowWidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+		gtk_container_add(GTK_CONTAINER(m_pPrimaryRenderWindowWidget), l_pOVCustomWidget);
+		//show container to realize widget, which is when the render window can be created
+		gtk_widget_show_all(m_pPrimaryRenderWindowWidget);
+		//hide window from now on
+		gtk_widget_hide_all(m_pPrimaryRenderWindowWidget);
+		log() << LogLevel_Info << "Created primary render window\n";
+	}
+	catch(std::exception& e)
+	{
+		log()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< "Failed to create primary render window : " << e.what() << "\n";
+		return false;
+	}
+
+	return true;
+}
+
+boolean CVisualisationManager::createResourceGroup(CIdentifier& rResourceGroupIdentifier, const CString& rResourceGroupName)
+{
+	if(m_pOgreVisualisation == NULL)
+	{
+		return false;
+	}
+	rResourceGroupIdentifier = getUnusedIdentifier();
+	m_pOgreVisualisation->createResourceGroup(rResourceGroupIdentifier, rResourceGroupName.toASCIIString());
+	return true;
+}
+
+boolean CVisualisationManager::addResourceLocation(const CIdentifier& rResourceGroupIdentifier, const CString& rPath, EResourceType type,	bool bRecursive)
+{
+	if(m_pOgreVisualisation == NULL)
+	{
+		return false;
+	}
+	switch(type)
+	{
+		case ResourceType_File:
+		case ResourceType_Directory:
+			return m_pOgreVisualisation->addResourceLocation(rResourceGroupIdentifier, rPath.toASCIIString(), std::string("FileSystem"), bRecursive);
+			break;
+		case ResourceType_ZipArchive:
+			return m_pOgreVisualisation->addResourceLocation(rResourceGroupIdentifier, rPath.toASCIIString(), std::string("Zip"), bRecursive);
+			break;
+	}
+	return false;
+}
+
+boolean CVisualisationManager::initializeResourceGroup(const CIdentifier& rResourceGroupIdentifier)
+{
+	if(m_pOgreVisualisation == NULL || m_pOgreVisualisation->ogreInitialized() == false)
+	{
+		return false;
+	}
+	return m_pOgreVisualisation->initializeResourceGroup(rResourceGroupIdentifier);
+}
+
+boolean CVisualisationManager::destroyResourceGroup(const CIdentifier& rResourceGroupIdentifier)
+{
+	if(m_pOgreVisualisation == NULL || m_pOgreVisualisation->ogreInitialized() == false)
+	{
+		return false;
+	}
+	return m_pOgreVisualisation->destroyResourceGroup(rResourceGroupIdentifier);
+}
+
+COgreVisualisation* CVisualisationManager::getOgreVisualisation()
+{
+	return m_pOgreVisualisation;
+}
+
+boolean CVisualisationManager::handleRealizeEvent(GtkWidget* pOVCustomWidget)
+{
+	//ensure Ogre could be initialized
+	if(m_pOgreVisualisation->ogreInitialized() == false)
+	{
+		return false;
+	}
+
+	//create primary render window
+	std::string l_sExternalHandle;
+#if defined OVK_OS_Windows
+	l_sExternalHandle=Ogre::StringConverter::toString((unsigned long)GDK_WINDOW_HWND(pOVCustomWidget->window));
+#elif defined OVK_OS_Linux
+	::GdkDisplay* l_pGdkDisplay=gdk_drawable_get_display(GDK_DRAWABLE(pOVCustomWidget->window));
+	::GdkScreen* l_pGdkScreen=gdk_drawable_get_screen(GDK_DRAWABLE(pOVCustomWidget->window));
+	::GdkVisual* l_pGdkVisual=gdk_drawable_get_visual(GDK_DRAWABLE(pOVCustomWidget->window));
+
+	::Display* l_pXDisplay=GDK_DISPLAY_XDISPLAY(l_pGdkDisplay);
+	::Screen* l_pXScreen=GDK_SCREEN_XSCREEN(l_pGdkScreen);
+	::XID l_pXWindow=GDK_WINDOW_XWINDOW(pOVCustomWidget->window);
+	::Visual* l_pXVisual=GDK_VISUAL_XVISUAL(l_pGdkVisual);
+	int l_iScreenIndex=::XScreenNumberOfScreen(l_pXScreen);
+
+	::XVisualInfo l_oXVisualInfo;
+	::memset(&l_oXVisualInfo, 0, sizeof(::XVisualInfo));
+	l_oXVisualInfo.visual=l_pXVisual;
+	l_oXVisualInfo.visualid=::XVisualIDFromVisual(l_pXVisual);
+	l_oXVisualInfo.screen=l_iScreenIndex;
+	l_oXVisualInfo.depth=24;
+
+	l_sExternalHandle=
+		Ogre::StringConverter::toString(reinterpret_cast<unsigned long>(l_pXDisplay))+":"+
+		Ogre::StringConverter::toString(static_cast<unsigned int>(l_iScreenIndex))+":"+
+		Ogre::StringConverter::toString(static_cast<unsigned long>(l_pXWindow))+":"+
+		Ogre::StringConverter::toString(reinterpret_cast<unsigned long>(&l_oXVisualInfo));
+#else
+		#error failed compilation
+#endif
+
+	try
+	{
+		m_pOgreVisualisation->createRenderWindow(
+			"PrimaryRenderWindow",
+			l_sExternalHandle,
+			pOVCustomWidget->allocation.width,
+			pOVCustomWidget->allocation.height);
+		log() << LogLevel_Trace << "Ogre render window created\n";
+	}
+	catch(std::exception& e)
+	{
+		log()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< "Primary render window couldn't be created : " << e.what() << "\n";
+	}
+
+	//complete Ogre initialisation (this must be done once after primary window realization)
+	try
+	{
+		m_pOgreVisualisation->initializeResources();
+		log() << LogLevel_Trace << "Ogre resources initialized\n";
+	}
+	catch(std::exception& e)
+	{
+		log()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< "Ogre resources initialisation failure : " << e.what() << "\n";
+	}
+
+	return true;
 }
 
 boolean CVisualisationManager::createVisualisationTree(CIdentifier& rVisualisationTreeIdentifier)
 {
-/*
-	//FIXME : put this elsewhere!
-	//initialise Ogre
-	try
-	{
-		//m_pOgreContext = new COgreContext();
-	}
-	catch(...)
-	{
-
-	}
-*/
-
 	//create visualisation tree
 	IVisualisationTree* l_pVisualisationTree =
 		CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).createObject<IVisualisationTree*>(OV_ClassId_Kernel_Visualisation_VisualisationTree);
@@ -76,36 +260,24 @@ boolean CVisualisationManager::enumerateVisualisationTrees(IVisualisationManager
 	return true;
 }
 
-boolean CVisualisationManager::setWidgets(const CIdentifier& rVisualisationTreeIdentifier, const CString& rVisualisationBoxName, ::GtkWidget* pWidget, ::GtkWidget* pToolbarWidget)
+boolean CVisualisationManager::setToolbar(const CIdentifier& rVisualisationTreeIdentifier, const CString& rVisualisationBoxName, ::GtkWidget* pToolbar)
 {
 	IVisualisationTree& l_rVisualisationTree = getVisualisationTree(rVisualisationTreeIdentifier);
 
-	l_rVisualisationTree.setWidgets(rVisualisationBoxName, pWidget, pToolbarWidget);
+	l_rVisualisationTree.setToolbar(rVisualisationBoxName, pToolbar);
 
 	return true;
 }
-/*
-void CVisualisationManager::init3DContext()
+
+boolean CVisualisationManager::setWidget(const CIdentifier& rVisualisationTreeIdentifier, const CString& rVisualisationBoxName, ::GtkWidget* pTopmostWidget)
 {
-	m_pOgreContext->init();
+	IVisualisationTree& l_rVisualisationTree = getVisualisationTree(rVisualisationTreeIdentifier);
+
+	l_rVisualisationTree.setWidget(rVisualisationBoxName, pTopmostWidget);
+
+	return true;
 }
 
-OpenViBE::boolean CVisualisationManager::create3DVisualisationWidget(void* pParentWidget, OpenViBE::uint32& ui32Index)
-{
-	//m_pOgreContext->newOgreWidget(pParentWidget, ui32Index);
-	return FALSE;
-}
-
-OpenViBE::boolean CVisualisationManager::realize3DVisualisationWidgets()
-{
-	return FALSE;//m_pOgreContext->realizeOgreWidgets();
-}
-
-void CVisualisationManager::release3DContext()
-{
-	//m_pOgreContext->release();
-}
-*/
 CIdentifier CVisualisationManager::getUnusedIdentifier(void) const
 {
 	uint64 l_ui64Identifier=(((uint64)rand())<<32)+((uint64)rand());

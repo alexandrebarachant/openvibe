@@ -243,7 +243,7 @@ boolean CScheduler::initialize(void)
 	m_ui64CurrentTime=0;
 	m_bIsInitialized=true;
 
-	m_oBenchmarkChrono.reset(m_ui64Frequency);
+	m_oBenchmarkChrono.reset((System::uint32)m_ui64Frequency);
 
 	return true;
 

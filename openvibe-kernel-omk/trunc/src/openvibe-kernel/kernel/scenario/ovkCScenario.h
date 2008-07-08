@@ -39,6 +39,8 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setVisualisationTreeIdentifier(
 				const OpenViBE::CIdentifier& rVisualisationTreeIdentifier);
 			virtual OpenViBE::CIdentifier getVisualisationTreeIdentifier(void) const;
+			virtual const OpenViBE::Kernel::IVisualisationTree& getVisualisationTreeDetails() const;
+			virtual OpenViBE::Kernel::IVisualisationTree& getVisualisationTreeDetails();
 
 			virtual OpenViBE::CIdentifier getNextBoxIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const;

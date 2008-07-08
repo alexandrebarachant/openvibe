@@ -10,7 +10,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CBoxAlgorithmSpectrumOutputWriterPart : virtual public OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase
+	class CBoxAlgorithmSpectrumOutputWriterPart : public OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase
 	{
 	public:
 

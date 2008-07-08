@@ -56,7 +56,7 @@ namespace OpenViBEPlugins
 		/**
 		* The Simple DSP plugin's main class.
 		*/
-		class CSimpleDSP : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
+		class CSimpleDSP : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		{
 		public:
 
@@ -128,7 +128,7 @@ namespace OpenViBEPlugins
 		/**
 		* Description of the channel selection plugin
 		*/
-		class CSimpleDSPDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CSimpleDSPDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

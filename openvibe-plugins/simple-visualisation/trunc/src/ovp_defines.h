@@ -19,10 +19,15 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVP_ClassId_SignalDisplay                           OpenViBE::CIdentifier(0x0055BE5F, 0x087BDD12)
-#define OVP_ClassId_GrazVisualization                       OpenViBE::CIdentifier(0x00DD290D, 0x5F142820)
-#define OVP_ClassId_FrequencySpectrumDisplay                OpenViBE::CIdentifier(0x0090540A, 0x6FB8C769)
-#define OVP_ClassId_PowerSpectrumDisplay                    OpenViBE::CIdentifier(0x004C0EA4, 0x713EC6D9)
+#define OVP_ClassId_SignalDisplay                              OpenViBE::CIdentifier(0x0055BE5F, 0x087BDD12)
+#define OVP_ClassId_GrazVisualization                          OpenViBE::CIdentifier(0x00DD290D, 0x5F142820)
+#define OVP_ClassId_FrequencySpectrumDisplay                   OpenViBE::CIdentifier(0x0090540A, 0x6FB8C769)
+#define OVP_ClassId_PowerSpectrumDisplay                       OpenViBE::CIdentifier(0x004C0EA4, 0x713EC6D9)
+#define OVP_ClassId_TopographicMap2DDisplay                    OpenViBE::CIdentifier(0x0B104632, 0x451C265F)
+#define OVP_ClassId_AlgorithmSphericalSplineInterpolation      OpenViBE::CIdentifier(0x4F112803, 0x661D4029)
+#define OVP_ClassId_Simple3DDisplay                            OpenViBE::CIdentifier(0x31A00483, 0x35924E6B)
+#define OVP_ClassId_TopographicMap3DDisplay                    OpenViBE::CIdentifier(0x36F95BE4, 0x0EF06290)
+#define OVP_ClassId_VoxelDisplay                               OpenViBE::CIdentifier(0x76E42EA2, 0x66FB5265)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -30,10 +35,15 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVP_ClassId_SignalDisplayDesc                       OpenViBE::CIdentifier(0x00C4F2D5, 0x58810276)
-#define OVP_ClassId_GrazVisualizationDesc                   OpenViBE::CIdentifier(0x00F1955D, 0x38813A6A)
-#define OVP_ClassId_FrequencySpectrumDisplayDesc            OpenViBE::CIdentifier(0x0045E1B7, 0x49F62560)
-#define OVP_ClassId_PowerSpectrumDisplayDesc                OpenViBE::CIdentifier(0x00116B40, 0x69E1B00D)
+#define OVP_ClassId_SignalDisplayDesc                          OpenViBE::CIdentifier(0x00C4F2D5, 0x58810276)
+#define OVP_ClassId_GrazVisualizationDesc                      OpenViBE::CIdentifier(0x00F1955D, 0x38813A6A)
+#define OVP_ClassId_FrequencySpectrumDisplayDesc               OpenViBE::CIdentifier(0x0045E1B7, 0x49F62560)
+#define OVP_ClassId_PowerSpectrumDisplayDesc                   OpenViBE::CIdentifier(0x00116B40, 0x69E1B00D)
+#define OVP_ClassId_TopographicMap2DDisplayDesc                OpenViBE::CIdentifier(0x7154037A, 0x4BC52A9F)
+#define OVP_ClassId_AlgorithmSphericalSplineInterpolationDesc  OpenViBE::CIdentifier(0x00D67A20, 0x3D3D4729)
+#define OVP_ClassId_Simple3DDisplayDesc                        OpenViBE::CIdentifier(0x443E145F, 0x77205DA0)
+#define OVP_ClassId_TopographicMap3DDisplayDesc                OpenViBE::CIdentifier(0x6AD52C48, 0x6E1C1746)
+#define OVP_ClassId_VoxelDisplayDesc                           OpenViBE::CIdentifier(0x79321659, 0x642D3D0C)
 
 //___________________________________________________________________//
 //                                                                   //

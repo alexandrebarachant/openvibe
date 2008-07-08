@@ -1,11 +1,141 @@
 #include "ovpCScenarioExporterXML.h"
 
+//___________________________________________________________________//
+//                                                                   //
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Samples;
 using namespace std;
+
+//___________________________________________________________________//
+//                                                                   //
+
+class CVisualisationTreeExporterVisitor : public IObjectVisitor
+{
+public:
+	CVisualisationTreeExporterVisitor(XML::IWriter& rWriter) :
+		m_pObjectVisitorContext(NULL),
+		m_rWriter(rWriter),
+		m_pVisualisationTree(NULL)
+	{}
+
+	virtual boolean processBegin(IObjectVisitorContext& rObjectVisitorContext, IVisualisationTree& rVisualisationTree)
+	{
+		m_pObjectVisitorContext=&rObjectVisitorContext;
+
+		m_rWriter.openChild("VisualisationTree");
+
+		m_pVisualisationTree = &rVisualisationTree;
+
+		return true;
+	}
+
+	virtual boolean processEnd(IObjectVisitorContext& rObjectVisitorContext, IVisualisationTree& rVisualisationTree)
+	{
+		m_pObjectVisitorContext=&rObjectVisitorContext;
+
+		m_rWriter.closeChild();
+
+		m_pVisualisationTree = NULL;
+
+		return true;
+	}
+
+	virtual boolean processBegin(IObjectVisitorContext& rObjectVisitorContext, IVisualisationWidget& rVisualisationWidget)
+	{
+		char l_sBuffer[1024];
+
+		m_pObjectVisitorContext=&rObjectVisitorContext;
+
+		m_rWriter.openChild("VisualisationWidget");
+
+		m_rWriter.openChild("Identifier");
+		m_rWriter.setChildData(rVisualisationWidget.getIdentifier().toString());
+		m_rWriter.closeChild();
+
+		m_rWriter.openChild("Name");
+		m_rWriter.setChildData(rVisualisationWidget.getName());
+		m_rWriter.closeChild();
+
+		m_rWriter.openChild("Type");
+		sprintf(l_sBuffer, "%d", (int)rVisualisationWidget.getType());
+		m_rWriter.setChildData(l_sBuffer);
+		m_rWriter.closeChild();
+
+		m_rWriter.openChild("ParentIdentifier");
+		m_rWriter.setChildData(rVisualisationWidget.getParentIdentifier().toString());
+		m_rWriter.closeChild();
+
+		uint32 l_ui32ChildIndex=0;
+		IVisualisationWidget* l_pParentVisualisationWidget = m_pVisualisationTree->getVisualisationWidget(rVisualisationWidget.getParentIdentifier());
+		if(l_pParentVisualisationWidget != NULL)
+		{
+			l_pParentVisualisationWidget->getChildIndex(rVisualisationWidget.getIdentifier(), l_ui32ChildIndex);
+		}
+		m_rWriter.openChild("Index");
+		sprintf(l_sBuffer, "%d", (int)l_ui32ChildIndex);
+		m_rWriter.setChildData(l_sBuffer);
+		m_rWriter.closeChild();
+
+		m_rWriter.openChild("BoxIdentifier");
+		m_rWriter.setChildData(rVisualisationWidget.getBoxIdentifier().toString());
+		m_rWriter.closeChild();
+
+		m_rWriter.openChild("NumChildren");
+		sprintf(l_sBuffer, "%d", (int)rVisualisationWidget.getNbChildren());
+		m_rWriter.setChildData(l_sBuffer);
+		m_rWriter.closeChild();
+
+		if(rVisualisationWidget.hasAttributes())
+		{
+			m_rWriter.openChild("Attributes");
+				CIdentifier l_oAttributeIdentifier=rVisualisationWidget.getNextAttributeIdentifier(OV_UndefinedIdentifier);
+				while(l_oAttributeIdentifier!=OV_UndefinedIdentifier)
+				{
+					exportAttribute(l_oAttributeIdentifier, rVisualisationWidget.getAttributeValue(l_oAttributeIdentifier));
+					l_oAttributeIdentifier=rVisualisationWidget.getNextAttributeIdentifier(l_oAttributeIdentifier);
+				}
+			m_rWriter.closeChild();
+		}
+
+		return true;
+	}
+
+	virtual boolean processEnd(IObjectVisitorContext& rObjectVisitorContext, IVisualisationWidget& rVisualisationWidget)
+	{
+		m_pObjectVisitorContext=&rObjectVisitorContext;
+
+		m_rWriter.closeChild();
+
+		return true;
+	}
+
+	void exportAttribute(const CIdentifier& rAttributeIdentifier, const CString& rAttributeValue)
+	{
+		m_rWriter.openChild("Attribute");
+		 m_rWriter.openChild("Identifier");
+			m_rWriter.setChildData(rAttributeIdentifier.toString());
+		 m_rWriter.closeChild();
+		 m_rWriter.openChild("Value");
+			m_rWriter.setChildData(rAttributeValue);
+		 m_rWriter.closeChild();
+		m_rWriter.closeChild();
+	}
+
+	IObjectVisitorContext* m_pObjectVisitorContext;
+	XML::IWriter& m_rWriter;
+	IVisualisationTree* m_pVisualisationTree;
+
+#undef boolean
+	_IsDerivedFromClass_Final_(IObjectVisitor, OV_UndefinedIdentifier);
+#define boolean OpenViBE::boolean
+};
+
+//___________________________________________________________________//
+//                                                                   //
 
 CScenarioExporterXML::CScenarioExporterXML(void)
 	:m_pWriter(NULL)
@@ -227,6 +357,9 @@ boolean CScenarioExporterXML::doExport(IScenarioExporterContext& rScenarioExport
 			}
 		m_pWriter->closeChild();
 	}
+
+	CVisualisationTreeExporterVisitor	l_oVisualisationTreeExporterVisitor(*m_pWriter);
+	const_cast<IScenario&>(rScenarioExporterContext.getScenario()).acceptVisitor(l_oVisualisationTreeExporterVisitor);
 
 	m_pWriter->closeChild();
 	m_pWriter->release();

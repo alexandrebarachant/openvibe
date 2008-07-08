@@ -19,7 +19,7 @@ using namespace Automaton;
 
 namespace Automaton
 {
-	class CXMLNodeReaderFactory : virtual public IXMLNodeReaderFactory
+	class CXMLNodeReaderFactory : public IXMLNodeReaderFactory
 	{
 		public:
 			static IXMLNodeReaderFactory* m_pFactory;

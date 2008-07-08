@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class CReaderCallBack : virtual public EBML::IReaderCallBack
+class CReaderCallBack : public EBML::IReaderCallBack
 {
 public:
 	CReaderCallBack(void)

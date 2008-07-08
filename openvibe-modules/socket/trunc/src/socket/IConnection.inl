@@ -33,7 +33,7 @@ namespace Socket
 		return FD_ISSET(fd, set)?true:false;
 	}
 
-	template <class T> class TConnection : virtual public T
+	template <class T> class TConnection : public T
 	{
 	public:
 

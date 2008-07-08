@@ -19,7 +19,7 @@ namespace OpenViBEPlugins
 		 * data from the different inputs and then allows the user to analyse it or "play"
 		 * it again.
 		 */
-		class CGenericStreamWriter : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGenericStreamWriter : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -47,7 +47,7 @@ namespace OpenViBEPlugins
 
 		};
 
-		class CGenericStreamWriterDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGenericStreamWriterDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

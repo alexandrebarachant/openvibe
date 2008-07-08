@@ -26,7 +26,7 @@ namespace OpenViBEPlugins
 	{
 		namespace
 		{
-			class CVRPNServerManager : virtual public IVRPNServerManager
+			class CVRPNServerManager : public IVRPNServerManager
 			{
 			public:
 

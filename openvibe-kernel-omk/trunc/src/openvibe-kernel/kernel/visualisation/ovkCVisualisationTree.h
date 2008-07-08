@@ -2,10 +2,9 @@
 #define __OpenViBEKernel_Kernel_Visualisation_CVisualisationTree_H__
 
 #include "../ovkTKernelObject.h"
+
 #include "../scenario/ovkTAttributable.h"
 
-#include <string>
-#include <vector>
 #include <map>
 #include <gtk/gtk.h>
 
@@ -20,7 +19,7 @@ namespace OpenViBE
 				const OpenViBE::Kernel::IKernelContext& rKernelContext);
 			virtual ~CVisualisationTree(void);
 
-			void init(
+			OpenViBE::boolean init(
 				const OpenViBE::Kernel::IScenario* pScenario);
 			//VisualisationWidget management
 			OpenViBE::boolean getNextVisualisationWidgetIdentifier(
@@ -58,16 +57,16 @@ namespace OpenViBE
 
 			//tree view creation/registration
 			::GtkTreeView* createTreeViewWithModel(void);
-			void setTreeViewCB(
+			OpenViBE::boolean setTreeViewCB(
 				OpenViBE::Kernel::ITreeViewCB* pTreeViewCB);
 
 			//to be called whenever tree model is changed
 			//side effects : all iterators and GtkWidget pointers are invalidated and replaced with new values
-			void reloadTree(void);
+			OpenViBE::boolean reloadTree(void);
 
 			//called upon tree reloading (for each visualisation panel)
 			//and whenever dialog is resized (for active visualisation panel only)
-			void resizeVisualisationPanel(
+			OpenViBE::boolean resizeVisualisationPanel(
 				::GtkTreeIter* pVisualisationPanelIter);
 
 			//helper functions
@@ -79,15 +78,15 @@ namespace OpenViBE
 			unsigned long getULongValueFromTreeIter(
 				::GtkTreeIter* pTreeIter,
 				OpenViBE::Kernel::EVisualisationTreeColumn eVisualisationTreeColumn) const;
-			const char* getStringValueFromTreeIter(
+			OpenViBE::boolean getStringValueFromTreeIter(
 				::GtkTreeIter* pTreeIter,
-				char** ppString,
+				char*& rString,
 				OpenViBE::Kernel::EVisualisationTreeColumn eVisualisationTreeColumn) const;
-			void* getPointerValueFromTreeIter(
+			OpenViBE::boolean getPointerValueFromTreeIter(
 				::GtkTreeIter* pTreeIter,
-				void** pPointer,
+				void*& rPointer,
 				OpenViBE::Kernel::EVisualisationTreeColumn eVisualisationTreeColumn) const;
-			void getIdentifierFromTreeIter(
+			OpenViBE::boolean getIdentifierFromTreeIter(
 				::GtkTreeIter* pIter,
 				OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::Kernel::EVisualisationTreeColumn eVisualisationTreeColumn) const;
@@ -124,22 +123,46 @@ namespace OpenViBE
 				OpenViBE::Kernel::EVisualisationTreeNode rType);
 
 			//drag n drop
-			void dragDataReceivedInWidgetCB(
+			OpenViBE::boolean dragDataReceivedInWidgetCB(
 				const OpenViBE::CIdentifier& rSrcIdentifier,
 				::GtkWidget* pDstWidget);
-			void dragDataReceivedOutsideWidgetCB(
+			OpenViBE::boolean dragDataReceivedOutsideWidgetCB(
 				const OpenViBE::CIdentifier& rSrcIdentifier,
 				::GtkWidget* pDstWidget,
 				OpenViBE::Kernel::EDragDataLocation eLocation);
 
-			//dynamic widget parenting
-			OpenViBE::boolean setWidgets(
-				const OpenViBE::CString& rVisualisationBoxName,
-				::GtkWidget* pWidget,
+			/** 
+			 * \name Dynamic widget parenting
+			 */
+			//@{
+
+			/**
+			 * \brief Forward pointer to the toolbar of a visualisation plugin (if any) to the tree view
+			 * \param rVisualisationBoxName [in] name of visualisation box whose widgets are passed in parameter			 
+			 * \param pToolbarWidget [in] pointer to toolbar
+			 * \return \e true in case of success, \e false otherwise.
+			 */
+			virtual OpenViBE::boolean setToolbar(
+				const OpenViBE::CString& rVisualisationBoxName,				
 				::GtkWidget* pToolbarWidget);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationTree> >, OVK_ClassId_Kernel_Visualisation_VisualisationTree)
+			/**
+			 * \brief Forward pointer to the main widget of a visualisation plugin to the tree view
+			 * \param rVisualisationBoxName [in] name of visualisation box whose widgets are passed in parameter
+			 * \param pWidget [in] pointer to main window			 
+			 * \return \e true in case of success, \e false otherwise.
+			 */
+			virtual OpenViBE::boolean setWidget(
+				const OpenViBE::CString& rVisualisationBoxName,				
+				::GtkWidget* pTopmostWidget);
+			
+			//@}
+			
+			virtual OpenViBE::boolean acceptVisitor(
+				OpenViBE::IObjectVisitor& rObjectVisitor);
 
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationTree> >, OVK_ClassId_Kernel_Visualisation_VisualisationTree)
+			
 		private:
 
 			OpenViBE::boolean _destroyHierarchy(
@@ -147,7 +170,7 @@ namespace OpenViBE
 				OpenViBE::boolean bDestroyVisualisationBoxes);
 			OpenViBE::CIdentifier getUnusedIdentifier(void) const;
 
-			void createTreeWidget(
+			OpenViBE::boolean createTreeWidget(
 				OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
 			::GtkWidget* loadTreeWidget(
 				OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
@@ -157,7 +180,7 @@ namespace OpenViBE
 				::GtkWidget* pVisualisationWidget);
 			const char* getTreeWidgetIcon(
 				OpenViBE::Kernel::EVisualisationTreeNode);
-			void resizePanedWidget(
+			OpenViBE::boolean resizePanedWidget(
 				OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget,
 				::GtkWidget* pPanedWidget);
 
@@ -181,8 +204,13 @@ namespace OpenViBE
 				OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
 			OpenViBE::boolean loadVisualisationWidget(
 				::GtkTreeIter* pParentIter,
-				OpenViBE::uint32 ui32Index,
+				OpenViBE::uint32 ui32Index,				
 				OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
+
+			OpenViBE::boolean visitVisualisationWidget(
+				OpenViBE::IObjectVisitor& rObjectVisitor, 
+				OpenViBE::CIdentifier oVisualisationWidgetIdentifier, 
+				OpenViBE::boolean bRecurse);
 
 		private:
 

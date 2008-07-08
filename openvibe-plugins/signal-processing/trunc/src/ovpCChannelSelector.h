@@ -53,7 +53,7 @@ namespace OpenViBEPlugins
 		* The desired output channels are to be selected in the plugin configuration box. The different entries
 		* needs to be seperated by a ";". Channels names not present in the original stream are ignored.
 		*/
-		class CChannelSelector : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
+		class CChannelSelector : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		{
 		public:
 
@@ -122,7 +122,7 @@ namespace OpenViBEPlugins
 		/**
 		* Description of the channel selection plugin
 		*/
-		class CChannelSelectorDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CChannelSelectorDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

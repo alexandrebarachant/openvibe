@@ -16,7 +16,7 @@ namespace OpenViBEPlugins
 {
 	namespace Tools
 	{
-		class CEBMLStreamSpy : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public EBML::IReaderCallback
+		class CEBMLStreamSpy : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public EBML::IReaderCallback
 		{
 		public:
 
@@ -47,7 +47,7 @@ namespace OpenViBEPlugins
 			EBML::IReaderHelper* m_pReaderHelper;
 		};
 
-		class CEBMLStreamSpyDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CEBMLStreamSpyDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

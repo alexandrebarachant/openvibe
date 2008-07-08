@@ -7,11 +7,25 @@
 #include "ovkCMessageEvent.h"
 #include "ovkCMessageSignal.h"
 
+#include "../visualisation/ovkCVisualisationManager.h"
+#include "ovkCOgreVisualisation.h"
+#include "ovkCOgreObject.h"
+#include "ovkCOgreWindow.h"
+#include "ovkCOgreScene.h"
+#include "../ovkGtkOVCustom.h"
+
+#if defined OVK_OS_Windows
+ #include <gdk/gdkwin32.h>
+#elif defined OVK_OS_Linux
+ #include <gdk/gdkx.h>
+#endif
+
 using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
+#define boolean OpenViBE::boolean
 #define _ScopeTester_
 #define _MaxCrash_ 5
 
@@ -66,13 +80,437 @@ CSimulatedBox::CSimulatedBox(const IKernelContext& rKernelContext, CScheduler& r
 	,m_ui64LastClockActivationDate(_Bad_Time_)
 	,m_ui64ClockFrequency(0)
 	,m_ui64ClockActivationStep(0)
+	,m_pOgreVis(NULL)
+	,m_oSceneIdentifier(OV_UndefinedIdentifier)
 {
 	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+
+	m_pOgreVis = ((CVisualisationManager*)(&rKernelContext.getVisualisationManager()))->getOgreVisualisation();
 }
 
 CSimulatedBox::~CSimulatedBox(void)
 {
 	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+
+	//delete OgreWidgets
+	std::map<GtkWidget*, OpenViBE::CIdentifier>::iterator it;
+	for(it = m_mOgreWindows.begin(); it != m_mOgreWindows.end(); it = m_mOgreWindows.begin())
+	{
+		//this will destroy widget then call handleDestroyEvent to destroy COgreWindow
+		//WARNING : this invalidates iterator!
+		gtk_widget_destroy(it->first);
+	}
+
+	//clear simulated objects map
+	m_mSimulatedObjects.clear();
+
+	//delete OgreScene
+	m_pOgreVis->deleteScene(m_oSceneIdentifier);
+}
+
+boolean CSimulatedBox::handleDestroyEvent(GtkWidget* pOVCustomWidget)
+{
+	m_pOgreVis->deleteWindow(m_mOgreWindows[pOVCustomWidget]);
+	m_mOgreWindows.erase(pOVCustomWidget);
+	return true;
+}
+
+boolean CSimulatedBox::handleRealizeEvent(GtkWidget* pOVCustomWidget)
+{
+	//create render window embedded in this widget
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(m_mOgreWindows[pOVCustomWidget]);
+	if(l_pOgreWindow == NULL)
+	{
+		return false;
+	}
+
+	std::string l_sExternalHandle;
+#if defined OVK_OS_Windows
+	l_sExternalHandle=Ogre::StringConverter::toString((unsigned long)GDK_WINDOW_HWND(pOVCustomWidget->window));
+#elif defined OVK_OS_Linux
+	::GdkDisplay* l_pGdkDisplay=gdk_drawable_get_display(GDK_DRAWABLE(pOVCustomWidget->window));
+	::GdkScreen* l_pGdkScreen=gdk_drawable_get_screen(GDK_DRAWABLE(pOVCustomWidget->window));
+	::GdkVisual* l_pGdkVisual=gdk_drawable_get_visual(GDK_DRAWABLE(pOVCustomWidget->window));
+
+	::Display* l_pXDisplay=GDK_DISPLAY_XDISPLAY(l_pGdkDisplay);
+	::Screen* l_pXScreen=GDK_SCREEN_XSCREEN(l_pGdkScreen);
+	::XID l_pXWindow=GDK_WINDOW_XWINDOW(pOVCustomWidget->window);
+	::Visual* l_pXVisual=GDK_VISUAL_XVISUAL(l_pGdkVisual);
+	int l_iScreenIndex=::XScreenNumberOfScreen(l_pXScreen);
+
+	::XVisualInfo l_oXVisualInfo;
+	::memset(&l_oXVisualInfo, 0, sizeof(::XVisualInfo));
+	l_oXVisualInfo.visual=l_pXVisual;
+	l_oXVisualInfo.visualid=::XVisualIDFromVisual(l_pXVisual);
+	l_oXVisualInfo.screen=l_iScreenIndex;
+	l_oXVisualInfo.depth=24;
+
+	l_sExternalHandle=
+		Ogre::StringConverter::toString(reinterpret_cast<unsigned long>(l_pXDisplay))+":"+
+		Ogre::StringConverter::toString(static_cast<unsigned int>(l_iScreenIndex))+":"+
+		Ogre::StringConverter::toString(static_cast<unsigned long>(l_pXWindow))+":"+
+		Ogre::StringConverter::toString(reinterpret_cast<unsigned long>(&l_oXVisualInfo));
+#else
+		#error failed compilation
+#endif
+
+	try
+	{
+		l_pOgreWindow->createRenderWindow(l_sExternalHandle, pOVCustomWidget->allocation.width, pOVCustomWidget->allocation.height);
+		getLogManager() << LogLevel_Trace << "Created 3D widget\n";
+	}
+	catch(Ogre::Exception& e)
+	{
+		getLogManager() << LogLevel_Error << "Could not create render window : " << e.what() << "\n";
+		return false;
+	}
+
+	//handle realization
+	l_pOgreWindow->handleRealizeEvent();
+	return true;
+}
+
+boolean CSimulatedBox::handleUnrealizeEvent(GtkWidget* pOVCustomWidget)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(m_mOgreWindows[pOVCustomWidget]);
+	if(l_pOgreWindow == NULL)
+	{
+		return false;
+	}
+	l_pOgreWindow->handleUnrealizeEvent();
+	return true;
+}
+
+boolean CSimulatedBox::handleSizeAllocateEvent(GtkWidget* pOVCustomWidget, unsigned int uiWidth, unsigned int uiHeight)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(m_mOgreWindows[pOVCustomWidget]);
+	if(l_pOgreWindow == NULL)
+	{
+		return false;
+	}
+	l_pOgreWindow->handleSizeAllocateEvent(uiWidth, uiHeight);
+	return true;
+}
+
+boolean CSimulatedBox::handleExposeEvent(GtkWidget* pOVCustomWidget)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(m_mOgreWindows[pOVCustomWidget]);
+	if(l_pOgreWindow == NULL)
+	{
+		return false;
+	}
+	l_pOgreWindow->handleExposeEvent();
+	return true;
+}
+
+boolean CSimulatedBox::handleMotionEvent(GtkWidget* pOVCustomWidget, int i32X, int i32Y)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(m_mOgreWindows[pOVCustomWidget]);
+	if(l_pOgreWindow == NULL)
+	{
+		return false;
+	}
+	l_pOgreWindow->handleMotionEvent(i32X, i32Y);
+	return true;
+}
+
+boolean CSimulatedBox::handleButtonPressEvent(GtkWidget* pOVCustomWidget, unsigned int uiButton, int i32X, int i32Y)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(m_mOgreWindows[pOVCustomWidget]);
+	if(l_pOgreWindow == NULL)
+	{
+		return false;
+	}
+	l_pOgreWindow->handleButtonPressEvent(uiButton, i32X, i32Y);
+	return true;
+}
+
+boolean CSimulatedBox::handleButtonReleaseEvent(GtkWidget* pOVCustomWidget, unsigned int uiButton, int i32X, int i32Y)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(m_mOgreWindows[pOVCustomWidget]);
+	if(l_pOgreWindow == NULL)
+	{
+		return false;
+	}
+	l_pOgreWindow->handleButtonReleaseEvent(uiButton, i32X, i32Y);
+	return true;
+}
+
+CIdentifier CSimulatedBox::create3DWidget(::GtkWidget*& p3DWidget)
+{
+	//don't attempt to create 3D widget if Ogre wasn't initialized properly.
+	if(m_pOgreVis->ogreInitialized() == false || m_pOgreVis->resourcesInitialized() == false)
+	{
+		log () << LogLevel_Error << "Plugin " << m_pBox->getName() << " was disabled because the required 3D context couldn't be created!\n";
+		m_bActive=false;
+		return OV_UndefinedIdentifier;
+	}
+
+	//create Ogre widget
+	GtkWidget* l_pOVCustomWidget = gtk_ov_custom_new(this);
+	p3DWidget = GTK_WIDGET(l_pOVCustomWidget);
+
+	//create a window and generate an identifier for this widget
+	CIdentifier l_oWindowIdentifier = createOgreWindow();
+
+	//associate identifier to widget in a map
+	m_mOgreWindows[l_pOVCustomWidget] = l_oWindowIdentifier;
+
+	return l_oWindowIdentifier;
+}
+
+boolean CSimulatedBox::setBackgroundColor(const CIdentifier& rWindowIdentifier, float32 f32ColorRed, float32 f32ColorGreen, float32 f32ColorBlue)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(rWindowIdentifier);
+	if(l_pOgreWindow != NULL)
+	{
+		l_pOgreWindow->setBackgroundColor(f32ColorRed, f32ColorGreen, f32ColorBlue);
+	}
+	return true;
+}
+
+boolean CSimulatedBox::setCameraToEncompassObjects(const CIdentifier& rWindowIdentifier)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(rWindowIdentifier);
+	if(l_pOgreWindow != NULL)
+	{
+		l_pOgreWindow->setCameraToEncompassObjects();
+	}
+	return true;
+}
+
+CIdentifier CSimulatedBox::createObject(const CString& rObjectFileName)
+{
+	if(rObjectFileName == CString(""))
+	{
+		return OV_UndefinedIdentifier;
+	}
+
+	//generate a name from an identifier for this object
+	CIdentifier l_oIdentifier = getUnusedIdentifier();
+
+	string l_oSceneFileName(rObjectFileName);
+	l_oSceneFileName += ".scene";
+
+	if(m_pOgreVis->getOgreScene(m_oSceneIdentifier)->createObject(l_oIdentifier, l_oIdentifier.toString().toASCIIString(), l_oSceneFileName) == NULL)
+	{
+		return OV_UndefinedIdentifier;
+	}
+
+	m_mSimulatedObjects[l_oIdentifier] = l_oIdentifier.toString();
+
+	return l_oIdentifier;
+}
+
+CIdentifier CSimulatedBox::createObject(const EStandard3DObject eStandard3DObject)
+{
+	//TODO : read mapping of standard 3D objects to .scene file names from a config file
+	if(eStandard3DObject == Standard3DObject_Sphere)
+	{
+		return createObject("sphere_ov");
+	}
+	else if(eStandard3DObject == Standard3DObject_Cone)
+	{
+		return createObject("cone_ov");
+	}
+	else
+	{
+		return OV_UndefinedIdentifier;
+	}
+}
+
+boolean CSimulatedBox::removeObject(const CIdentifier& rObjectIdentifier)
+{
+	boolean res = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->removeObject(rObjectIdentifier);
+	m_mSimulatedObjects.erase(rObjectIdentifier);
+	return res;
+}
+
+boolean CSimulatedBox::setObjectScale(const CIdentifier& rIdentifier, float32 f32ScaleX, float32 f32ScaleY, float32 f32ScaleZ)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject != NULL)
+	{
+		return l_pOgreObject->setScale(f32ScaleX, f32ScaleY, f32ScaleZ);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CSimulatedBox::setObjectScale(const CIdentifier& rIdentifier, float32 f32Scale)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject != NULL)
+	{
+		return l_pOgreObject->setScale(f32Scale, f32Scale, f32Scale);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CSimulatedBox::setObjectPosition(const CIdentifier& rIdentifier, float32 f32PositionX, float32 f32PositionY, float32 f32PositionZ)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject != NULL)
+	{
+		return l_pOgreObject->setPosition(f32PositionX, f32PositionY, f32PositionZ);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CSimulatedBox::setObjectOrientation(const CIdentifier& rIdentifier, float32 f32OrientationX, float32 f32OrientationY,
+	float32 f32OrientationZ, float32 f32OrientationW)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject != NULL)
+	{
+		return l_pOgreObject->setRotation(f32OrientationX, f32OrientationY, f32OrientationZ, f32OrientationW);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CSimulatedBox::setObjectColor(const CIdentifier& rIdentifier, float32 f32ColorRed, float32 f32ColorGreen, float32 f32ColorBlue)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject != NULL)
+	{
+		return l_pOgreObject->setDiffuseColor(Ogre::ColourValue(f32ColorRed, f32ColorGreen, f32ColorBlue, 1));
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CSimulatedBox::setObjectTransparency(const CIdentifier& rIdentifier, float32 f32Transparency)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject != NULL)
+	{
+		return l_pOgreObject->setTransparency(f32Transparency);
+	}
+	else
+	{
+		return false;
+	}
+	return true;
+}
+
+boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier, const OpenViBE::uint32 ui32VertexColorCount, const float32* pVertexColorArray)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject == NULL)
+	{
+		return false;
+	}
+
+	if(sizeof(Ogre::Real) == sizeof(OpenViBE::float32))
+	{
+		return l_pOgreObject->setVertexColorArray((Ogre::uint32)ui32VertexColorCount, (Ogre::Real*)pVertexColorArray);
+	}
+	else
+	{
+		Ogre::Real* l_pOgreVertexColorArray(new Ogre::Real[ui32VertexColorCount]);
+		for(uint32 i=0; i<ui32VertexColorCount; i++)
+		{
+			l_pOgreVertexColorArray[4*i] = pVertexColorArray[4*i];
+			l_pOgreVertexColorArray[4*i+1] = pVertexColorArray[4*i+1];
+			l_pOgreVertexColorArray[4*i+2] = pVertexColorArray[4*i+2];
+			l_pOgreVertexColorArray[4*i+3] = pVertexColorArray[4*i+3];
+		}
+		boolean l_bRes = l_pOgreObject->setVertexColorArray((Ogre::uint32)ui32VertexColorCount, l_pOgreVertexColorArray);
+		delete l_pOgreVertexColorArray;
+		return l_bRes;
+	}
+}
+
+boolean CSimulatedBox::getObjectVertexCount(const CIdentifier& rIdentifier, OpenViBE::uint32& ui32VertexCount) const
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject == NULL)
+	{
+		return false;
+	}
+	return l_pOgreObject->getVertexCount((Ogre::uint32&)ui32VertexCount);
+}
+
+boolean CSimulatedBox::getObjectVertexPositionArray( const CIdentifier& rIdentifier, const OpenViBE::uint32 ui32VertexColorCount, float32* pVertexPositionArray) const
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject == NULL)
+	{
+		return false;
+	}
+	if(sizeof(Ogre::Real) == sizeof(OpenViBE::float32))
+	{
+		return l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexColorCount, (Ogre::Real*)pVertexPositionArray);
+	}
+	else
+	{
+		Ogre::Real* l_pOgreVertexPositionArray(new Ogre::Real[ui32VertexColorCount]);
+		boolean l_bRes = l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexColorCount, pVertexPositionArray);
+		if(l_bRes == true)
+		{
+			for(uint32 i=0; i<ui32VertexColorCount; i++)
+			{
+				pVertexPositionArray[4*i] = l_pOgreVertexPositionArray[4*i];
+				pVertexPositionArray[4*i+1] = l_pOgreVertexPositionArray[4*i+1];
+				pVertexPositionArray[4*i+2] = l_pOgreVertexPositionArray[4*i+2];
+				pVertexPositionArray[4*i+3] = l_pOgreVertexPositionArray[4*i+3];
+			}
+		}
+		delete l_pOgreVertexPositionArray;
+		return l_bRes;
+	}
+}
+
+CIdentifier CSimulatedBox::createOgreWindow()
+{
+	//create unique window name
+	char l_sBuffer[1024];
+	sprintf(l_sBuffer, "%s_Window%d", getName().toASCIIString(), m_mOgreWindows.size());
+
+	//FIXME
+	//create unique window identifier
+	CIdentifier l_oWindowIdentifier = (((uint64)rand())<<32)+((uint64)rand());//m_mOgreWindows.size();
+
+	//ensure a scene was created
+	if(m_oSceneIdentifier == OV_UndefinedIdentifier)
+	{
+		m_oSceneIdentifier = getUnusedIdentifier();
+		m_pOgreVis->createScene(m_oSceneIdentifier);
+	}
+
+	//create window
+	m_pOgreVis->createWindow(l_oWindowIdentifier, string(l_sBuffer), m_oSceneIdentifier);
+
+	return l_oWindowIdentifier;
+}
+
+CIdentifier CSimulatedBox::getUnusedIdentifier(void) const
+{
+	uint64 l_ui64Identifier=(((uint64)rand())<<32)+((uint64)rand());
+	CIdentifier l_oResult;
+	std::map<CIdentifier, CString>::const_iterator i;
+	do
+	{
+		l_ui64Identifier++;
+		l_oResult=CIdentifier(l_ui64Identifier);
+		i=m_mSimulatedObjects.find(l_oResult);
+	}
+	while(i!=m_mSimulatedObjects.end() || l_oResult==OV_UndefinedIdentifier);
+	//TODO : browse window and scene maps as well to guarantee ID unicity!
+	return l_oResult;
 }
 
 boolean CSimulatedBox::setScenarioIdentifier(const CIdentifier& rScenarioIdentifier)
@@ -374,6 +812,14 @@ boolean CSimulatedBox::process(void)
 	}
 
 	m_bReadyToProcess=false;
+
+	// FIXME : might not be the most relevant place where to refresh 3D windows!
+	map<GtkWidget*, CIdentifier>::iterator it;
+
+	for(it = m_mOgreWindows.begin(); it != m_mOgreWindows.end(); it++)
+	{
+		m_pOgreVis->getOgreWindow(it->second)->update();
+	}
 
 #if 0
 /*-----------------------------------------------*/

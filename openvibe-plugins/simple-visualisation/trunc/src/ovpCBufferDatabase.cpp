@@ -21,22 +21,248 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
+		//FIXME : use info from signalstream
+		static const unsigned int s_nbChannels = 72 + 23;
+
+		static string s_channelLabels[s_nbChannels] = {
+			//72 channels from INSERM's elec.dat
+			"O1",
+			"O2",
+			"T5",
+			"P3",
+			"Pz",
+			"P4",
+			"T6",
+			"T3",
+			"C3",
+			"Cz",
+			"C4",
+			"T4",
+			"F7",
+			"F3",
+ 			"Fz",
+ 			"F4",
+ 			"F8",
+			"Fp1",
+ 			"Fp2",
+			"P5",
+			"P1",
+			"P2",
+			"P6",
+			"C5",
+			"C1",
+			"C2",
+			"C6",
+			"F5",
+			"F1",
+			"F2",
+			"F6",
+			"M1",
+			"M2",
+			"Oz",
+			"POz",
+			"CPz",
+			"FCz",
+			"FFz",
+			"Fpz",
+			"FC1",
+			"FC2",
+			"CP1",
+			"CP2",
+			"FC3",
+			"FC4",
+			"CP3",
+			"CP4",
+			"FT3",
+			"FT4",
+			"TP3",
+			"TP4",
+			"P'1",
+			"P'2",
+			"Nz",
+			"I1",
+			"Iz",
+			"I2",
+			"FF3",
+			"TP5",
+			"OT5",
+			"IT1",
+			"IT2",
+			"IP1",
+			"IPz",
+			"IP2",
+			"M'1",
+			"M'2",
+			"TP7",
+			"TP8",
+			"Nez",
+			"F3z",
+			"F4z",
+			//23 channels from http://www.biosemi.com/download/Cap_coords_all.xls
+			"AF3",
+			"AF4",
+			"AF7",
+			"AF8",
+			"AFz",
+			"CP5",
+			"CP6",
+			"F9",
+			"F10",
+			"FC5",
+			"FC6",
+			"FT7",
+			"FT8",
+			/*"FT9", x*/
+			/*"FT10",x*/
+			/*"O9",  x*/
+			/*"O10"  x*/
+			"P7",
+			"P8",
+			"P9",
+			"P10",
+			"PO3",
+			"PO4",
+			"PO7",
+			"PO8",
+			/*"PO9", x*/
+			/*"PO10",x*/
+			"T7",
+			"T8"
+			/*"TP9", x*/
+			/*"TP10",x*/
+		};
+
+		static float64 s_channelCoords[s_nbChannels*2] = {
+			//72 channels from INSERM's elec.dat
+/*"O1"*/			90.0, 252.0,
+/*"O2"*/ 			90.0, 288.0,
+/*"T5"*/ 			90.0, 216.0,
+/*"P3"*/ 			63.1, 223.1,
+/*"Pz"*/ 			45.0, 270.0,
+/*"P4"*/ 			63.1, 316.9,
+/*"T6"*/ 			90.0, 324.0,
+/*"T3"*/ 			90.0, 180.0,
+/*"C3"*/ 			45.0, 180.0,
+/*"Cz"*/ 			0.0,  0.0,
+/*"C4"*/			45.0, 0.0,
+/*"T4"*/			90.0,	0.0,
+/*"F7"*/			90.0, 144.0,
+/*"F3"*/			63.1, 136.9,
+/*"Fz"*/			45.0, 90.0,
+/*"F4"*/			63.1, 43.1,
+/*"F8"*/			90.0, 36.0,
+/*"Fp1"*/			90.0, 108.0,
+/*"Fp2"*/			90.0, 72.0,
+/*"P5"*/			76.5, 219.3,
+/*"P1"*/			51.7, 243.7,
+/*"P2"*/ 			51.7, 296.3,
+/*"P6"*/ 			76.5, 320.7,
+/*"C5"*/ 			67.5, 180.0,
+/*"C1"*/ 			22.5, 180.0,
+/*"C2"*/ 			22.5, 0.0,
+/*"C6"*/ 			67.5, 0.0,
+/*"F5"*/ 			76.5, 140.7,
+/*"F1"*/ 			51.7, 116.3,
+/*"F2"*/ 			51.7, 63.7,
+/*"F6"*/ 			76.5, 39.3,
+/*"M1"*/ 			120.0, 215.6,
+/*"M2"*/ 			120.0, 324.4,
+/*"Oz"*/ 			90.0, 270.0,
+/*"POz"*/			67.5, 270.0,
+/*"CPz"*/			22.5, 270.0,
+/*"FCz"*/			22.5, 90.0,
+/*"FFz"*/			67.5, 90.0,
+/*"Fpz"*/			90.0, 90.0,
+/*"FC1"*/			31.5, 136.9,
+/*"FC2"*/			31.5, 43.1,
+/*"CP1"*/			31.5, 223.1,
+/*"CP2"*/			31.5, 316.9,
+/*"FC3"*/			52.1, 155.8,
+/*"FC4"*/			52.1, 24.2,
+/*"CP3"*/			52.1, 204.2,
+/*"CP4"*/			52.1, 335.8,
+/*"FT3"*/			75.6, 159.7,
+/*"FT4"*/			75.6, 20.3,
+/*"TP3"*/			75.6, 200.3,
+/*"TP4"*/			75.6, 339.7,
+/*"P'1"*/			52.0, 241.3,
+/*"P'2"*/			52.0, 298.7,
+/*"Nz"*/ 			112.5, 90.0,
+/*"I1"*/ 			120.0, 234.4,
+/*"Iz"*/ 			112.5, 270.0,
+/*"I2"*/			120.0, 305.6,
+/*"FF3"*/			33.2, 135.6,
+/*"TP5"*/			66.5, 201.2,
+/*"OT5"*/			77.4, 241.8,
+/*"IT1"*/			102.6, 241.8,
+/*"IT2"*/			102.6, 298.2,
+/*"IP1"*/			87.6, 247.0,
+/*"IPz"*/			78.8, 270.0,
+/*"IP2"*/			87.6, 293.0,
+/*"M'1"*/			105.4, 203.0,
+/*"M'2"*/			105.4, 337.0,
+/*"TP7"*/			90.0, 198.0,
+/*"TP8"*/			90.0, 342.0,
+/*"Nez"*/			118.1, 90.0,
+/*"F3z"*/			63.4, 113.0,
+/*"F4z"*/			63.4, 67.0,
+
+//23 channels from http://www.biosemi.com/download/Cap_coords_all.xls
+
+/*"AF3"  -74, -65,*/ 74, 115,
+/*"AF4"  74, 65, */ 74, 65,
+/*"AF7" -92, -54,*/ 92, 126,
+/*"AF8" 92, 54,*/ 92, 54,
+/*"AFz" 69, 90,*/ 69, 90,
+/*"CP5" -72, 21,*/ 72, 21,
+/*"CP6" 72, -21,*/ 72, 159,
+/*"F9" -82.8, -56.25,*/ 82.8, 123.75,
+/*"F10"-92, -56.25*/ 92, 123.75,
+/*"FC5" -72, -21,*/ 72, 159,
+/*"FC6" 72, 21,*/ 72, 21,
+/*"FT7" -92, -18,*/ 92, 162,
+/*"FT8" 92, 18,*/ 92, 18,
+/*"FT9", x*/
+/*"FT10",x*/
+/*"O9",  x*/
+/*"O10"  x*/
+/*"P7" -92, 36, */ 92, 36,
+/*"P8"  92, -36,*/ 92, 144,
+/*"P9" -115, 40*/ 115, 40,
+/*"P10" 115, -40,*/ 115, 120,
+/*"PO3" -74, 65,*/ 74, 65,
+/*"PO4" 74, -65,*/ 74, 115,
+/*"PO7" -92, 54,*/ 92, 54,
+/*"PO8" 92, -54,*/ 92, 126,
+/*"PO9", x*/
+/*"PO10",x*/
+/*"T7" -92, 0*/ 92, 180,
+/*"T8" 92, 0*/ 92, 0
+/*"TP9", x*/
+/*"TP10",x*/
+		};
 
 		CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlgorithm>& oPlugin)
-			:m_bFirstBufferReceived(true)
+			:
+			m_i64NbElectrodes(0)
+			,m_bFirstBufferReceived(false)
 			,m_ui32SamplingFrequency(0)
 			,m_ui64NumberOfBufferToDisplay(2)
 			,m_f64MaximumValue(-DBL_MAX)
 			,m_f64MinimumValue(+DBL_MAX)
 			,m_f64TotalDuration(10000) // 10 seconds
+			,m_ui64BufferDuration(0)
 			,m_pDrawable(NULL)
 			,m_oParentPlugin(oPlugin)
 			,m_bError(false)
+			,m_bRedrawOnNewData(true)
 		{
+			m_pDimmensionSizes[0] = m_pDimmensionSizes[1] = 0;
 		}
 
 		CBufferDatabase::~CBufferDatabase()
 		{
+			//FIXME : isn't there a leak here???
 			//delete all the remaining buffers
 			for(unsigned int i=0 ; i<m_oSampleBuffers.size() ; i++)
 			{
@@ -44,6 +270,11 @@ namespace OpenViBEPlugins
 				m_oSampleBuffers.pop_front();
 			}
 
+		}
+
+		boolean CBufferDatabase::isFirstBufferReceived()
+		{
+			return m_bFirstBufferReceived;
 		}
 
 		boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(float64 f64NumberOfSecondsToDisplay)
@@ -85,6 +316,11 @@ namespace OpenViBEPlugins
 			return l_bNumberOfBufferToDisplayChanged;
 		}
 
+		uint64 CBufferDatabase::getChannelCount()
+		{
+			return m_pDimmensionSizes[0];
+		}
+
 		float64 CBufferDatabase::getDisplayedTimeIntervalWidth()
 		{
 			return (m_ui64NumberOfBufferToDisplay * ((m_pDimmensionSizes[1]*1000.0) / m_ui32SamplingFrequency));
@@ -106,7 +342,21 @@ namespace OpenViBEPlugins
 
 			if(ui32DimmensionIndex == 0)
 			{
-				m_oLocalMinMaxValue.resize(ui32DimmensionSize);
+				m_i64NbElectrodes = ui32DimmensionSize;
+
+				//resize min/max values vector
+				m_oLocalMinMaxValue.resize((unsigned int)m_i64NbElectrodes);
+
+				//resize electrode coords matrix
+				m_oElectrodesCoords.setDimensionCount(1);
+				m_oElectrodesCoords.setDimensionSize(0, (uint32)(3*m_i64NbElectrodes));
+
+				//resize electrode spherical coords matrix
+				m_oElectrodesSphericalCoords.setDimensionCount(1);
+				m_oElectrodesSphericalCoords.setDimensionSize(0, (uint32)(2*m_i64NbElectrodes));
+
+				//resize electrode labels vector
+				m_oElectrodesLabels.resize((uint32)m_i64NbElectrodes);
 			}
 		}
 
@@ -125,8 +375,12 @@ namespace OpenViBEPlugins
 
 			uint64 l_ui64NumberOfSamplesPerBuffer = m_pDimmensionSizes[0] * m_pDimmensionSizes[1];
 
-			if(m_bFirstBufferReceived)
+			if(m_bFirstBufferReceived == false)
 			{
+				//make sure channel coordinates are filled
+				//TODO : add coordinates info to streamed matrix stream header!!
+				computeChannelCoords();
+
 				m_ui64BufferDuration = ui64EndTime - ui64StartTime;
 
 				//test if it is equal to zero : Error
@@ -146,7 +400,7 @@ namespace OpenViBEPlugins
 
 				m_pDrawable->init();
 
-				m_bFirstBufferReceived = false;
+				m_bFirstBufferReceived = true;
 			}
 
 			float64 * l_pBufferToWrite;
@@ -220,9 +474,11 @@ namespace OpenViBEPlugins
 			//add the buffer at the end of the list
 			m_oSampleBuffers.push_back(l_pBufferToWrite);
 
-
 			//tells the drawable to redraw himself since the signal information has been updated
-			m_pDrawable->redraw();
+			if(m_bRedrawOnNewData)
+			{
+				m_pDrawable->redraw();
+			}
 		}
 
 		void CBufferDatabase::getDisplayedChannelLocalMinMaxValue(uint32 ui32Channel, float64& f64Min, float64& f64Max)
@@ -261,6 +517,88 @@ namespace OpenViBEPlugins
 			}
 		}
 
+		uint64 CBufferDatabase::getElectrodeCount()
+		{
+			return s_nbChannels;
+		}
+
+		boolean CBufferDatabase::getElectrodePosition(const uint32 ui32ElectrodeIndex, float64* pElectrodePosition)
+		{
+			if(ui32ElectrodeIndex < s_nbChannels)
+			{
+				double teta = s_channelCoords[ui32ElectrodeIndex*2] * 3.1415926535 / 180.0;
+				double phi  = s_channelCoords[ui32ElectrodeIndex*2+1] * 3.1415926535 / 180.0;
+				*pElectrodePosition = sin(teta) * cos(phi);
+				*(pElectrodePosition+1) = sin(teta) * sin(phi);
+				*(pElectrodePosition+2) = cos(teta);
+				return true;
+			}
+
+			return false;
+		}
+
+		boolean CBufferDatabase::getElectrodePosition(const CString& rElectrodeLabel, float64* pElectrodePosition)
+		{
+			for(unsigned int i=0; i<s_nbChannels; i++)
+			{
+				if(strcmp(rElectrodeLabel.toASCIIString(), s_channelLabels[i].c_str()) == 0)
+				{
+					double teta = s_channelCoords[i*2] * 3.1415926535 / 180.0;
+					double phi  = s_channelCoords[i*2+1] * 3.1415926535 / 180.0;
+					*pElectrodePosition = sin(teta) * cos(phi);
+					*(pElectrodePosition+1) = sin(teta) * sin(phi);
+					*(pElectrodePosition+2) = cos(teta);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		boolean CBufferDatabase::getElectrodeLabel(const uint32 ui32ElectrodeIndex, CString& rElectrodeLabel)
+		{
+			if(ui32ElectrodeIndex >= s_nbChannels)
+			{
+				return false;
+			}
+			rElectrodeLabel = s_channelLabels[ui32ElectrodeIndex].c_str();
+			return true;
+		}
+
+		boolean CBufferDatabase::getChannelPosition(const uint32 ui32ChannelIndex, float64*& pElectrodePosition)
+		{
+			if(ui32ChannelIndex >= 0 && ui32ChannelIndex < m_oElectrodesCoords.getDimensionSize(0))
+			{
+				pElectrodePosition = m_oElectrodesCoords.getBuffer() + 3*ui32ChannelIndex;
+				return true;
+			}
+
+			return false;
+		}
+
+		boolean CBufferDatabase::getChannelSphericalCoordinates(const uint32 ui32ChannelIndex, float64& rTheta, float64& rPhi)
+		{
+			if(ui32ChannelIndex >= 0 && ui32ChannelIndex < m_oElectrodesSphericalCoords.getDimensionSize(0))
+			{
+				rTheta = *(m_oElectrodesSphericalCoords.getBuffer() + 2*ui32ChannelIndex);
+				rPhi = *(m_oElectrodesSphericalCoords.getBuffer() + 2*ui32ChannelIndex+1);
+				return true;
+			}
+
+			return false;
+		}
+
+		boolean CBufferDatabase::getChannelLabel(const uint32 ui32ChannelIndex, CString& rElectrodeLabel)
+		{
+			if(ui32ChannelIndex >= 0 && ui32ChannelIndex < m_oElectrodesLabels.size())
+			{
+				rElectrodeLabel = m_oElectrodesLabels[ui32ChannelIndex];
+				return true;
+			}
+
+			return false;
+		}
+
 		void CBufferDatabase::setStimulationCount(const uint32 ui32StimulationCount)
 		{
 		}
@@ -271,12 +609,106 @@ namespace OpenViBEPlugins
 
 			m_oStimulations.push_back(std::pair<uint64, uint64>(ui64StimulationDate, ui64StimulationIdentifier));
 
-			std::deque<std::pair<uint64, uint64> >::iterator i;
-			for(i=m_oStimulations.begin(); i!=m_oStimulations.end() && i->first<m_oStartTime.front(); )
+			if(m_oStartTime.size()!=0)
 			{
-				i++;
-				m_oStimulations.pop_front();
+				std::deque<std::pair<uint64, uint64> >::iterator i;
+				for(i=m_oStimulations.begin(); i!=m_oStimulations.end() && (*i).first<m_oStartTime.front(); )
+				{
+					i++;
+					m_oStimulations.pop_front();
+				}
 			}
+		}
+
+		void CBufferDatabase::setRedrawOnNewData(boolean bSet)
+		{
+			m_bRedrawOnNewData = bSet;
+		}
+
+		boolean CBufferDatabase::computeChannelCoords()
+		{
+			boolean res = true;
+
+			for(uint32 i=0; i<m_pDimmensionSizes[0]; i++)
+			{
+				//trim string
+				uint32 firstNonWhitespaceChar = 0;
+				for(; firstNonWhitespaceChar < m_pDimmesionLabels[0][i].size(); firstNonWhitespaceChar++)
+				{
+					if(!isspace(m_pDimmesionLabels[0][i][firstNonWhitespaceChar]))
+					{
+						break;
+					}
+				}
+
+				uint32 lastNonWhitespaceChar = 0;
+				if(m_pDimmesionLabels[0][i].size() > 0)
+				{
+					for(lastNonWhitespaceChar = m_pDimmesionLabels[0][i].size()-1; lastNonWhitespaceChar >= 0; lastNonWhitespaceChar--)
+				{
+					if(!isspace(m_pDimmesionLabels[0][i][lastNonWhitespaceChar]))
+					{
+						break;
+					}
+				}
+				}
+
+				boolean l_bLabelRecognized = false;
+
+				if(firstNonWhitespaceChar < lastNonWhitespaceChar)
+				{
+					std::string l_oChannelLabel(m_pDimmesionLabels[0][i].substr(firstNonWhitespaceChar, lastNonWhitespaceChar-firstNonWhitespaceChar+1));
+
+					for(unsigned int j=0; j<s_nbChannels; j++)
+					{
+						//look for a similar string in database
+						if(strcmp(l_oChannelLabel.c_str(), s_channelLabels[j].c_str()) == 0)
+						{
+							l_bLabelRecognized = true;
+							double teta = s_channelCoords[j*2] * 3.1415926535 / 180.0;
+							double phi  = s_channelCoords[j*2+1] * 3.1415926535 / 180.0;
+							*(m_oElectrodesCoords.getBuffer()+3*i) = sin(teta) * cos(phi);
+							*(m_oElectrodesCoords.getBuffer()+3*i+1) = sin(teta) * sin(phi);
+							*(m_oElectrodesCoords.getBuffer()+3*i+2) = cos(teta);
+
+							*(m_oElectrodesSphericalCoords.getBuffer()+2*i) = s_channelCoords[j*2];
+							*(m_oElectrodesSphericalCoords.getBuffer()+2*i+1) = s_channelCoords[j*2+1];
+
+							//copy label
+							m_oElectrodesLabels[i] = s_channelLabels[j].c_str();
+
+							break;
+						}
+					}
+				}
+
+				//unrecognized electrode!
+				if(l_bLabelRecognized == false)
+				{
+					m_oParentPlugin.getLogManager() << LogLevel_Trace
+						<< "Unrecognized electrode name (index=" << (uint32)i
+						<< ", name=" << m_pDimmesionLabels[0][i].c_str()
+						<< ")!\n";
+					res = false;
+				}
+			}
+
+			m_oParentPlugin.getLogManager() << LogLevel_Trace << "Electrodes list : " ;
+
+			for(uint32 i=0; i<m_pDimmensionSizes[0]; i++)
+			{
+				m_oParentPlugin.getLogManager() << (uint32)i << ":" << m_oElectrodesLabels[i];
+				if(i<m_pDimmensionSizes[0]-1)
+				{
+					m_oParentPlugin.getLogManager() << ", ";
+				}
+				else
+				{
+					m_oParentPlugin.getLogManager() << "\n";
+				}
+			}
+
+			return res;
 		}
 	}
 }

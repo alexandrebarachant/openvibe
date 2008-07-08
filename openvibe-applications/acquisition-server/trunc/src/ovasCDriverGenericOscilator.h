@@ -5,7 +5,7 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CDriverGenericOscillator : virtual public OpenViBEAcquisitionServer::IDriver
+	class CDriverGenericOscillator : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 

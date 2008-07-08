@@ -21,7 +21,7 @@ namespace Automaton
 			virtual ~IActionFunctor(){}
 	};
 
-	class CSendEvent : virtual public IActionFunctor
+	class CSendEvent : public IActionFunctor
 	{
 		private:
 			Automaton::CIdentifier m_oEvent;
@@ -43,7 +43,7 @@ namespace Automaton
 			}
 	};
 
-	class CWaitEvent : virtual public IActionFunctor
+	class CWaitEvent : public IActionFunctor
 	{
 		private:
 			Automaton::CIdentifier m_oEvent;
@@ -70,7 +70,7 @@ namespace Automaton
 			}
 	};
 
-	class CWaitTime : virtual public IActionFunctor
+	class CWaitTime : public IActionFunctor
 	{
 		private:
 			Automaton::boolean m_bTimeSet;

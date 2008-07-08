@@ -99,7 +99,7 @@ namespace EBML
 {
 	namespace
 	{
-		class CReader : virtual public IReader
+		class CReader : public IReader
 		{
 		public:
 

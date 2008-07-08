@@ -1,5 +1,7 @@
 #include "ovkCVisualisationWidget.h"
 
+#include "../ovkCObjectVisitorContext.h"
+
 #include <vector>
 
 using namespace std;
@@ -137,4 +139,21 @@ boolean CVisualisationWidget::setChildIdentifier(uint32 ui32ChildIndex, const CI
 		m_vChildren[ui32ChildIndex] = rIdentifier;
 		return true;
 	}
+}
+
+boolean CVisualisationWidget::acceptVisitor(IObjectVisitor& rObjectVisitor)
+{
+	CObjectVisitorContext l_oObjectVisitorContext(getKernelContext());
+
+	if(!rObjectVisitor.processBegin(l_oObjectVisitorContext, *this))
+	{
+		return false;
+	}
+
+	if(!rObjectVisitor.processEnd(l_oObjectVisitorContext, *this))
+	{
+		return false;
+	}
+
+	return true;
 }

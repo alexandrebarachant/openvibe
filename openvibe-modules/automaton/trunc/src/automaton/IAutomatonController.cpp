@@ -10,7 +10,7 @@ using namespace Automaton;
 namespace Automaton
 {
 
-	class CAutomatonController : virtual public IAutomatonController
+	class CAutomatonController : public IAutomatonController
 	{
 		IAutomatonContext * m_pContext;
 		INode * m_pCurrentNode;

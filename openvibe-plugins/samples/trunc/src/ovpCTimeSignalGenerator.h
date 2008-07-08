@@ -11,7 +11,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CTimeSignalGenerator : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CTimeSignalGenerator : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -46,7 +46,7 @@ namespace OpenViBEPlugins
 			OpenViBE::uint32 m_ui32SentSampleCount;
 		};
 
-		class CTimeSignalGeneratorDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CTimeSignalGeneratorDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

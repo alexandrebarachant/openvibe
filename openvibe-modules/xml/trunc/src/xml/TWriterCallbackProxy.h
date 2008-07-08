@@ -10,7 +10,7 @@ namespace XML
 //
 
 	template <class COwnerClass>
-	class TWriterCallbackProxy1 : virtual public XML::IWriterCallback
+	class TWriterCallbackProxy1 : public XML::IWriterCallback
 	{
 	public:
 		TWriterCallbackProxy1(
@@ -36,7 +36,7 @@ namespace XML
 //
 
 	template <class COwnerClass, void (COwnerClass::*mfpWrite)(const char* sString)>
-	class TWriterCallbackProxy2 : virtual public XML::IWriterCallback
+	class TWriterCallbackProxy2 : public XML::IWriterCallback
 	{
 	public:
 		TWriterCallbackProxy2(COwnerClass rOwnerObject)

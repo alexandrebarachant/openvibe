@@ -1,10 +1,3 @@
-/**
- * \file IReader.h
- * \author Yann Renard (INRIA/IRISA)
- * \date 2006-08-07
- * \brief EBML::IReaderCallback and EBML::IReader class definitions
- */
-
 #ifndef __EBML_IReader_H__
 #define __EBML_IReader_H__
 
@@ -82,7 +75,7 @@ namespace EBML
 		virtual void closeChild(void)=0;
 	};
 
-	class EBML_API IReaderCallBack : virtual public IReaderCallback { };
+	class EBML_API IReaderCallBack : public IReaderCallback { };
 
 	/**
 	 * \class IReader

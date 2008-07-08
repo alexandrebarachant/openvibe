@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.0 on Tue Dec  4 12:12:14 2007 -->
+<!--Generated with glade3 3.0.2 on Mon Jan 28 11:36:45 2008 by vdelanno@MINIPUX-->
 <glade-interface>
   <widget class="GtkWindow" id="DisplayMainWindow">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -13,19 +13,63 @@
         <property name="can_focus">True</property>
         <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+        <property name="vscrollbar_policy">GTK_POLICY_NEVER</property>
         <child>
           <widget class="GtkViewport" id="DisplayViewport">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkTable" id="DisplayMainTable">
+              <widget class="GtkVBox" id="DisplayVBox">
                 <property name="visible">True</property>
-                <property name="n_columns">2</property>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkScrolledWindow" id="ChannelsScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
+                    <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="window_placement">GTK_CORNER_TOP_RIGHT</property>
+                    <child>
+                      <widget class="GtkViewport" id="ChannelsViewport">
+                        <property name="visible">True</property>
+                        <property name="shadow_type">GTK_SHADOW_NONE</property>
+                        <child>
+                          <widget class="GtkTable" id="DisplayMainTable">
+                            <property name="visible">True</property>
+                            <property name="n_columns">2</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
                 </child>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkHBox" id="BottomBar">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkLabel" id="BottomBarEmptyLabel1">
+                        <property name="visible">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="BottomBarEmptyLabel2">
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </widget>
             </child>
@@ -72,7 +116,6 @@
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label" translatable="yes">Apply</property>
-                <property name="response_id">0</property>
               </widget>
             </child>
             <child>
@@ -82,7 +125,6 @@
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label" translatable="yes">Cancel</property>
-                <property name="response_id">0</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -115,9 +157,6 @@
             <property name="stock_id">gtk-zoom-fit</property>
             <property name="active">True</property>
           </widget>
-          <packing>
-            <property name="expand">False</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkToggleToolButton" id="BestFitPerChannel">
@@ -127,18 +166,11 @@
             <property name="stock_id">gtk-zoom-fit</property>
             <property name="active">True</property>
           </widget>
-          <packing>
-            <property name="expand">False</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
             <property name="visible">True</property>
           </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="homogeneous">False</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkToggleToolButton" id="ShowPowers">
@@ -146,11 +178,7 @@
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="label">Left Ruler</property>
             <property name="stock_id">gtk-goto-first</property>
-            <property name="active">True</property>
           </widget>
-          <packing>
-            <property name="expand">False</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkToggleToolButton" id="ShowFrequencies">
@@ -160,18 +188,11 @@
             <property name="stock_id">gtk-goto-bottom</property>
             <property name="active">True</property>
           </widget>
-          <packing>
-            <property name="expand">False</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkSeparatorToolItem" id="separatortoolitem2">
             <property name="visible">True</property>
           </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="homogeneous">False</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkToolButton" id="SelectChannels">
@@ -181,9 +202,6 @@
             <property name="label">Select Channels</property>
             <property name="stock_id">gtk-index</property>
           </widget>
-          <packing>
-            <property name="expand">False</property>
-          </packing>
         </child>
       </widget>
     </child>

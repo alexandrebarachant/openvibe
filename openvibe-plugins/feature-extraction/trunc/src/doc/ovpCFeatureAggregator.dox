@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpCFeatureAggregator_description Description
 This plugins aggregates the features it receives on its inputs into a feature vector that can be used for classification.
 
-\image html FeatureAggregatorBox.png
+\image html BoxAlgorithm_FeatureAggregator.png
 
 
  \section Doc_ovpCFeatureAggregator_inputs Inputs

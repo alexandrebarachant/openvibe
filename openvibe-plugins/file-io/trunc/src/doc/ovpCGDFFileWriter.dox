@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpCGDFFileWriter_description Description
 This plugin writes the incoming information in a GDF file. Right now, it only writes GDF1 files.
 
-\image html GDFFileWriterBox.png
+\image html BoxAlgorithm_GDFFileWriter.png
 
  \section Doc_ovpCGDFFileWriter_inputs Inputs
  Number of inputs : 3

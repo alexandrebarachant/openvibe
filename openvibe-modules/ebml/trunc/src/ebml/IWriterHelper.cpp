@@ -12,7 +12,7 @@ namespace EBML
 {
 	namespace
 	{
-		class CWriterHelper : virtual public IWriterHelper
+		class CWriterHelper : public IWriterHelper
 		{
 		public:
 

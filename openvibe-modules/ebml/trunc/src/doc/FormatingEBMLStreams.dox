@@ -52,7 +52,7 @@
  * The callback object implementation looks something like this :
  *
  * \code
- * class CWriterCallback : virtual public EBML::IWriterCallback
+ * class CWriterCallback : public EBML::IWriterCallback
  * {
  * public:
  *   CWriterCallback(char* sFileName)

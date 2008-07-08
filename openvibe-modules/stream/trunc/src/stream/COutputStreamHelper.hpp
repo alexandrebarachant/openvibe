@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class COutputStreamHelper : virtual public Stream::IOutputStreamHelper
+	class COutputStreamHelper : public Stream::IOutputStreamHelper
 	{
 	public:
 

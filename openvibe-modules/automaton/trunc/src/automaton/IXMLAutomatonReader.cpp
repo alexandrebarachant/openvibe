@@ -23,7 +23,7 @@ namespace Automaton
 {
 
 	
-	class CXMLAutomatonReader : virtual public IXMLAutomatonReader, virtual public TXMLReader<XML::IReaderCallback>
+	class CXMLAutomatonReader : public IXMLAutomatonReader, virtual public TXMLReader<XML::IReaderCallback>
 	{
 		//! The XML reader
 		XML::IReader * m_pXMLReader;

@@ -15,10 +15,6 @@
 #define OVD_AttributeId_VisualisationWindow_Height          OpenViBE::CIdentifier(0x4C90D4AD, 0x7A2554EC)
 
 //Attributes of visualisation paned :
-//boolean : isHorizontal
-//int : divider position
-//int : max divider position
-#define OVD_AttributeId_VisualisationWidget_IsPanedHorizontal       OpenViBE::CIdentifier(0x2F4B198E, 0x35B15432)
 #define OVD_AttributeId_VisualisationWidget_DividerPosition         OpenViBE::CIdentifier(0x54E45F5B, 0x76C036E2)
 #define OVD_AttributeId_VisualisationWidget_MaxDividerPosition      OpenViBE::CIdentifier(0x237E56D2, 0x10CD68AE)
 

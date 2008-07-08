@@ -41,7 +41,7 @@ namespace OpenViBEPlugins
 		 * This class is used to read a file produced by the Data stream writer, and
 		 * playback the saved data streams.
 		 */
-		class CGenericStreamReader : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGenericStreamReader : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
@@ -75,7 +75,7 @@ namespace OpenViBEPlugins
 
 		};
 
-		class CGenericStreamReaderDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGenericStreamReaderDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

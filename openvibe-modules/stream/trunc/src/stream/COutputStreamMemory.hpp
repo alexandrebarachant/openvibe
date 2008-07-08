@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class COutputStreamMemory : virtual public Stream::COutputStreamBase
+	class COutputStreamMemory : public Stream::COutputStreamBase
 	{
 	public:
 

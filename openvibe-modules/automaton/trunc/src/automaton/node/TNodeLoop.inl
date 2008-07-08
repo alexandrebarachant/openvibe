@@ -6,7 +6,7 @@
 
 namespace Automaton
 {
-	template <class T> class TNodeLoop : virtual public TNode<T>
+	template <class T> class TNodeLoop : public TNode<T>
 	{
 		public:
 			virtual ~TNodeLoop(){}

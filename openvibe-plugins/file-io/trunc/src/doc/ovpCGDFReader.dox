@@ -28,7 +28,7 @@ Summary :
 This plugin reads information from GDF files. It outputs the signals from the different channels contained in the file.
 Right now, it should support most of the GDF1 and GDF2 files.
 
-\image html GDFReaderBox.png
+\image html BoxAlgorithm_GDFFileReader.png
 
 \attention This plugin does not support GDF files containing signal information from channels with different sampling rates!
 

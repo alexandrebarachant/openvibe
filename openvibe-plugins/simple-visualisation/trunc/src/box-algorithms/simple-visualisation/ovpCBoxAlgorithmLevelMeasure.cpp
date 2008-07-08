@@ -76,7 +76,8 @@ boolean CBoxAlgorithmLevelMeasure::process(void)
 		if(m_pStreamedMatrixDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
 			m_pLevelMeasure->process(OVP_Algorithm_LevelMeasure_InputTriggerId_Reset);
-			getVisualisationContext().setWidgets(op_pLevelMeasureMainWidget, op_pLevelMeasureToolbarWidget);
+			getVisualisationContext().setWidget(op_pLevelMeasureMainWidget);
+			getVisualisationContext().setToolbar(op_pLevelMeasureToolbarWidget);
 		}
 
 		if(m_pStreamedMatrixDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))

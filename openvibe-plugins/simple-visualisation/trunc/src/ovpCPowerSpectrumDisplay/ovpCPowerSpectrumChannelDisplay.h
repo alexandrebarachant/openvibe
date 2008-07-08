@@ -27,6 +27,8 @@ namespace OpenViBEPlugins
 			//! returns the widget, so it can be added to the main interface
 			GtkWidget* getWidget() const;
 
+			GtkWidget* getSpectrumDisplay() const;
+
 			//! toggles (show/hide)
 			void toggle(
 				OpenViBE::boolean bActive);
@@ -36,12 +38,6 @@ namespace OpenViBEPlugins
 			* \param bActive If true, shows the left ruler, else hides it.
 			*/
 			void toggleLeftRuler(OpenViBE::boolean bActive);
-
-			/**
-			* Shows or hides the bottom ruler.
-			* \param bActive If true, shows the bottom ruler, else hides it.
-			*/
-			void toggleBottomRuler(OpenViBE::boolean bActive);
 
 			//! draws the spectrum
 			void drawSpectrum();
@@ -79,7 +75,7 @@ namespace OpenViBEPlugins
 			GtkWidget* m_pDisplay;
 			//! Drawing area where powers/frequencies are drawn
 			GtkWidget* m_pLeftRuler;
-			GtkWidget* m_pBottomRuler;
+
 			GdkGC* m_pGraphicsContext;
 			CPowerSpectrumDatabase* m_pDatabase;
 			OpenViBE::uint32 m_ui32Channel;

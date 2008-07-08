@@ -69,7 +69,7 @@
  * The callback object looks something like this :
  *
  * \code
- * class CReaderCallback : virtual public EBML::IReaderCallback
+ * class CReaderCallback : public EBML::IReaderCallback
  * {
  * public:
  *   CReaderCallback(void)

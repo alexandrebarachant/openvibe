@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmSignalInputReaderCallback : virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback
+	class OVTK_API IBoxAlgorithmSignalInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback
 	{
 	public:
 
@@ -21,7 +21,7 @@ namespace OpenViBEToolkit
 		};
 
 		template <class COwnerClass>
-		class TCallbackProxy1 : virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
+		class TCallbackProxy1 : public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		{
 		public:
 			TCallbackProxy1(

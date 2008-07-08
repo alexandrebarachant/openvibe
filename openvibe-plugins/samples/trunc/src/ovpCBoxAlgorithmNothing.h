@@ -13,7 +13,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CBoxAlgorithmNothing : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmNothing : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -35,7 +35,7 @@ namespace OpenViBEPlugins
 			// ...
 		};
 
-		class CBoxAlgorithmNothingDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmNothingDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

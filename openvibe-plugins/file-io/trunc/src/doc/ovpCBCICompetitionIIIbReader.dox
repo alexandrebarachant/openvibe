@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpCBCICompetitionIIIbReader_description Description
 Reads signal samples, stimulations and class labels from the BCI competition IIIb ASCII datasets.
 
-\image html BCICompetitionIIIbReaderBox.png
+\image html BoxAlgorithm_BCICompetitionIIIbReader.png
 
  \section Doc_ovpCBCICompetitionIIIbReader_inputs Inputs
  Number of inputs : 0

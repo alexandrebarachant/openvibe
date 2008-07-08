@@ -8,7 +8,7 @@
 
 namespace Stream
 {
-	class COutputStreamFile : virtual public Stream::COutputStreamBase
+	class COutputStreamFile : public Stream::COutputStreamBase
 	{
 	public:
 

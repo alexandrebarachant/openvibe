@@ -1,0 +1,15 @@
+/** 
+\page Doc_PluginManager The Plugin Manager
+
+\section plugin_manager_introduction Introduction
+
+The plugin manager handles OpenViBE plugins.
+
+It can be used to get a list of existing plugins, or box algorithms, which are defined by their descriptors. 
+This is is useful when designing a scenario, where one wants to get a list of plugins that may be included in the scenario. Plugin 
+descriptors provide information about the plugin such as its name, author, licence and a description of what it does.
+
+The plugin manager can also instatiate plugins from their identifier. This is done at Player initialization time, as a scenario
+is about to be run.
+
+On a finer level, the plugin manager also handles Algorithms.

@@ -68,7 +68,7 @@ namespace OpenViBEPlugins
 #endif
 		};
 
-		class CMouseControlDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CMouseControlDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

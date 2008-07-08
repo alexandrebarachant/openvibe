@@ -8,7 +8,7 @@ using namespace std;
 
 namespace XML
 {
-	class CReader : virtual public IReader
+	class CReader : public IReader
 	{
 	public:
 		CReader(IReaderCallback& rReaderCallback);

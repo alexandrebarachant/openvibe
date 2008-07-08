@@ -12,7 +12,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CBoxAlgorithmStreamedMatrixOutputWriterPart : virtual public OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase
+	class CBoxAlgorithmStreamedMatrixOutputWriterPart : public OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase
 	{
 	public:
 

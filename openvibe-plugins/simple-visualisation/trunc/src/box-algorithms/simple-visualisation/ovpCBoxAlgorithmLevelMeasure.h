@@ -9,7 +9,7 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		class CBoxAlgorithmLevelMeasure : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmLevelMeasure : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -37,7 +37,7 @@ namespace OpenViBEPlugins
 			OpenViBE::IMatrix* m_pMatrix;
 		};
 
-		class CBoxAlgorithmLevelMeasureDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmLevelMeasureDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

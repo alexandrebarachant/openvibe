@@ -11,7 +11,7 @@ namespace OpenViBEPlugins
 {
 	namespace Samples
 	{
-		class CAlgorithmAddition : virtual public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
+		class CAlgorithmAddition : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
 		{
 		public:
 
@@ -30,7 +30,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > m_oParameter3;
 		};
 
-		class CAlgorithmAdditionDesc : virtual public OpenViBE::Plugins::IAlgorithmDesc
+		class CAlgorithmAdditionDesc : public OpenViBE::Plugins::IAlgorithmDesc
 		{
 		public:
 

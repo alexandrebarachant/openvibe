@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpCSignalDisplay_description Description
 This plugin is used to display the incoming signal. Each channel is displayed separately, and can be zoomed, switch on/off, ...
 
-\image html SignalDisplayBox.png
+\image html BoxAlgorithm_SignalDisplay.png
 
  \section Doc_ovpCSignalDisplay_inputs Inputs
  Number of inputs : 1

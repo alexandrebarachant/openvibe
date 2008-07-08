@@ -17,7 +17,7 @@ namespace OpenViBEToolkit
 {
 
 	template <class CBoxAlgorithmParentClass>
-	class TTrainingBoxAlgorithm : virtual public OpenViBEToolkit::TBoxAlgorithm<CBoxAlgorithmParentClass>
+	class TTrainingBoxAlgorithm : public OpenViBEToolkit::TBoxAlgorithm<CBoxAlgorithmParentClass>
 	{
 	public:
 

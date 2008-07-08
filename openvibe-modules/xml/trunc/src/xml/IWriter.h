@@ -12,7 +12,7 @@ namespace XML
 		virtual void write(const char* sString)=0;
 	};
 
-	class XML_API IWriterCallBack : virtual public IWriterCallback { };
+	class XML_API IWriterCallBack : public IWriterCallback { };
 
 	class XML_API IWriter
 	{

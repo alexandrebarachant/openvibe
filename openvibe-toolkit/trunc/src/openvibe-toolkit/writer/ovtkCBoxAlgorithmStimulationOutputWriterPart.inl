@@ -11,7 +11,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CBoxAlgorithmStimulationOutputWriterPart : virtual public OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase
+	class CBoxAlgorithmStimulationOutputWriterPart : public OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase
 	{
 	public:
 

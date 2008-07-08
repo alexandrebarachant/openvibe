@@ -18,7 +18,7 @@ using namespace std;
 
 namespace OpenViBEAcquisitionServer
 {
-	class CHeaderConfigurator : virtual public OpenViBEAcquisitionServer::IHeaderConfigurator
+	class CHeaderConfigurator : public OpenViBEAcquisitionServer::IHeaderConfigurator
 	{
 	public:
 

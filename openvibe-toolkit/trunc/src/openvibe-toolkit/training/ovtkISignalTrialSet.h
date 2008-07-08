@@ -7,7 +7,7 @@ namespace OpenViBEToolkit
 {
 	class ISignalTrial;
 
-	class OVTK_API ISignalTrialSet : virtual public OpenViBEToolkit::IObject
+	class OVTK_API ISignalTrialSet : public OpenViBEToolkit::IObject
 	{
 	public:
 

@@ -7,7 +7,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CSignalTrialSet : virtual public OpenViBEToolkit::ISignalTrialSet
+	class CSignalTrialSet : public OpenViBEToolkit::ISignalTrialSet
 	{
 	public:
 

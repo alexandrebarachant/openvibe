@@ -11,7 +11,7 @@
 namespace Automaton
 {
 
-	class CXMLLoopInfiniteNodeReader : virtual public TXMLReader<IXMLNodeReader>
+	class CXMLLoopInfiniteNodeReader : public TXMLReader<IXMLNodeReader>
 	{
 		public:
 			//! The node reader factory

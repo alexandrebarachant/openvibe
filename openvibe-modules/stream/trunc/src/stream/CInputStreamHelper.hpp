@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class CInputStreamHelper : virtual public Stream::IInputStreamHelper
+	class CInputStreamHelper : public Stream::IInputStreamHelper
 	{
 	public:
 

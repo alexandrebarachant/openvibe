@@ -15,7 +15,7 @@ namespace OpenViBEPlugins
 	namespace Samples
 	{
 		class CScenarioExporterXML
-			: virtual public OpenViBE::Plugins::IScenarioExporter
+			: public OpenViBE::Plugins::IScenarioExporter
 			, virtual public XML::IWriterCallback
 		{
 		public:
@@ -40,7 +40,7 @@ namespace OpenViBEPlugins
 			std::ofstream m_oFile;
 		};
 
-		class CScenarioExporterXMLDesc : virtual public OpenViBE::Plugins::IScenarioExporterDesc
+		class CScenarioExporterXMLDesc : public OpenViBE::Plugins::IScenarioExporterDesc
 		{
 		public:
 			virtual void release(void) { }

@@ -22,7 +22,7 @@ using namespace std;
 
 namespace OpenViBEAcquisitionServer
 {
-	class CConnectionHandler : virtual public EBML::IWriterCallback
+	class CConnectionHandler : public EBML::IWriterCallback
 	{
 	public:
 

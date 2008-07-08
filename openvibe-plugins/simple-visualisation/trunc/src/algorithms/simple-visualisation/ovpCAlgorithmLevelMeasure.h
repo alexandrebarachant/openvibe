@@ -14,7 +14,7 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		class CAlgorithmLevelMeasure : virtual public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
+		class CAlgorithmLevelMeasure : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
 		{
 		public:
 
@@ -51,7 +51,7 @@ namespace OpenViBEPlugins
 			OpenViBE::float64 m_f64Threshold;
 		};
 
-		class CAlgorithmLevelMeasureDesc : virtual public OpenViBE::Plugins::IAlgorithmDesc
+		class CAlgorithmLevelMeasureDesc : public OpenViBE::Plugins::IAlgorithmDesc
 		{
 		public:
 

@@ -1,10 +1,3 @@
-/**
- * \file IWriter.h
- * \author Yann Renard (INRIA/IRISA)
- * \date 2006-08-07
- * \brief EBML::IWriterCallback and EBML::IWriter class definitions
- */
-
 #ifndef __EBML_IWriter_H__
 #define __EBML_IWriter_H__
 
@@ -47,7 +40,7 @@ namespace EBML
 		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)=0;
 	};
 
-	class EBML_API IWriterCallBack : virtual public IWriterCallback { };
+	class EBML_API IWriterCallBack : public IWriterCallback { };
 
 	/**
 	 * \class IWriter

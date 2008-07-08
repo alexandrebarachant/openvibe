@@ -17,7 +17,7 @@ namespace OpenViBEPlugins
 	namespace FileIO
 	{
 
-		class CBCICompetitionIIIbReader : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CBCICompetitionIIIbReader : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 
 			public:
@@ -91,7 +91,7 @@ namespace OpenViBEPlugins
 
 
 
-		class CBCICompetitionIIIbReaderDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBCICompetitionIIIbReaderDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 			public:
 				virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("BCI competition IIIb reader"); }

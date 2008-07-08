@@ -186,7 +186,7 @@ namespace EBML
 {
 	namespace
 	{
-		class CWriter : virtual public IWriter
+		class CWriter : public IWriter
 		{
 		public:
 

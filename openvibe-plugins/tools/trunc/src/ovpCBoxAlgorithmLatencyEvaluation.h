@@ -11,7 +11,7 @@ namespace OpenViBEPlugins
 {
 	namespace Tools
 	{
-		class CBoxAlgorithmLatencyEvaluation : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmLatencyEvaluation : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -27,7 +27,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::ELogLevel m_eLogLevel;
 		};
 
-		class CBoxAlgorithmLatencyEvaluationDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmLatencyEvaluationDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 

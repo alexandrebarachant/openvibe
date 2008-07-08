@@ -16,7 +16,7 @@
 
 namespace Socket
 {
-	class CConnectionServer : virtual public TConnection<IConnectionServer>
+	class CConnectionServer : public TConnection<IConnectionServer>
 	{
 	public:
 

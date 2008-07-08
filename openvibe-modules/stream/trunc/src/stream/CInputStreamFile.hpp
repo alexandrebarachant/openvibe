@@ -8,7 +8,7 @@
 
 namespace Stream
 {
-	class CInputStreamFile : virtual public Stream::CInputStreamBase
+	class CInputStreamFile : public Stream::CInputStreamBase
 	{
 	public:
 

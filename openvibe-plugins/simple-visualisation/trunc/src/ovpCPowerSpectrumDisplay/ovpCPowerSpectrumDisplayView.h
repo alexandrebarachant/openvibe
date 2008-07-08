@@ -34,7 +34,7 @@ namespace OpenViBEPlugins
 		 * This class contains everything necessary to setup a GTK window and display
 		 * a signal thanks to a CBufferDatabase's information.
 		 */
-		class CPowerSpectrumDisplayView : virtual public CSignalDisplayDrawable
+		class CPowerSpectrumDisplayView : public CSignalDisplayDrawable
 		{
 		public:
 			CPowerSpectrumDisplayView(
@@ -60,21 +60,26 @@ namespace OpenViBEPlugins
 			void setDisplayMode(
 				ESpectrumDisplayMode eDisplayMode);
 			/**
-			 * Used to hide/show the rulers on the left of the signal displays.
+			 * Used to hide/show the rulers on the left of the spectrum displays.
 			 * \param bActive Show the ruler if true.
 			 */
 			void toggleLeftRulers(
 				OpenViBE::boolean bActive);
 			/**
-			 * Used to hide/show the rulers on the bottom of the signal displays.
+			 * Used to hide/show the frequency ruler
 			 * \param bActive Show the ruler if true.
 			 */
-			void toggleBottomRulers(
+			void toggleBottomRuler(
 				OpenViBE::boolean bActive);
 
 			void showChannelSelectionDialogCB();
 			void applyChannelSelectionCB();
 			void applyMinMaxAttenuationCB();
+
+			void resizeBottomRuler(
+				gint w,
+				gint h);
+			void redrawBottomRuler();
 
 		private:
 			/**
@@ -103,7 +108,8 @@ namespace OpenViBEPlugins
 				OpenViBE::float64 f64Attenuation);
 
 		private:
-			void enableDisplayModeButtonSignals(OpenViBE::boolean);
+			void enableDisplayModeButtonSignals(
+				OpenViBE::boolean);
 
 			::GladeXML* m_pGladeInterface;
 			//! Table containing the channel displays
@@ -112,6 +118,8 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget*> m_oChannelLabels;
 			//! Array of channel displays
 			std::vector<CPowerSpectrumChannelDisplay*> m_oChannelDisplays;
+			//! Bottom ruler widget
+			GtkWidget* m_pBottomRuler;
 			//! Pointers to display mode toggle buttons
 			GtkToggleToolButton* m_pDisplayModeButtons[ESpectrumDisplayMode_NumDisplayMode];
 			//! Display mode

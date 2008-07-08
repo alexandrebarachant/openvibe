@@ -27,7 +27,7 @@ namespace OpenViBEPlugins
 	namespace Acquisition
 	{
 
-		class CGenericNetworkAcquisition : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+		class CGenericNetworkAcquisition : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 			class CExperimentInfoHeader
@@ -137,7 +137,7 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64CurrentDate;
 		};
 
-		class CGenericNetworkAcquisitionDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CGenericNetworkAcquisitionDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Generic network acquisition"); }

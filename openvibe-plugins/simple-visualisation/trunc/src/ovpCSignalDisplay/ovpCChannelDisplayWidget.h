@@ -25,47 +25,46 @@ namespace OpenViBEPlugins
 
 	class CSignalDisplayView;
 	class CBufferDatabase;
-	
+
 	class CChannelDisplayPoint
 	{
 		public:
 		OpenViBE::float64 m_f64X;
 		OpenViBE::float64 m_f64Y;
 	};
-	
+
 	class CChannelDisplay
 	{
 	public:
-		
+
 		//! The table containing the signal display and rulers
 		GtkWidget * m_pWidgetTable;
 		//! The drawing area where the signal is to be drawn
 		GtkWidget * m_pDrawingArea;
-		
+
 		CSignalDisplayLeftRuler m_oLeftRuler;
-	
+
 		//! The index list of the channels to display
 		std::vector<OpenViBE::uint32> m_oChannelList;
 
-
 		//! The "parent" view (which uses this widget)
 		CSignalDisplayView * m_pParentDisplayView;
-		
+
 		//! The database from which the information are to be read
 		CBufferDatabase * m_pDatabase;
-		
+
 		//Parameters needed to scale and translate the signal correctly in the drawing area
 		OpenViBE::float64 m_f64ScaleX;
 		OpenViBE::float64 m_f64ScaleY;
 		OpenViBE::float64 m_f64TranslateX;
 		OpenViBE::float64 m_f64TranslateY;
-		
+
 		//Parameters needed to scale and translate the signal correctly in the drawing area when zooming
 		OpenViBE::float64 m_f64ZoomTranslateX;
 		OpenViBE::float64 m_f64ZoomTranslateY;
 		OpenViBE::float64 m_f64ZoomScaleX;
 		OpenViBE::float64 m_f64ZoomScaleY;
-		
+
 		//! The zoom factor step
 		const OpenViBE::float64 m_f64ZoomFactor;
 
@@ -74,11 +73,11 @@ namespace OpenViBEPlugins
 	public:
 		CChannelDisplay();
 		~CChannelDisplay();
-	
+
 		void init(GtkTable * pTable);
-		
+
 		void setParent(CSignalDisplayView * pDisplayView);
-	
+
 		GtkWidget * getDisplayWidget(){ return m_pDrawingArea; }
 
 		void resetChannelList(){ m_oChannelList.clear(); }
@@ -111,7 +110,7 @@ namespace OpenViBEPlugins
 		* \param f64YClick The Y-coordinate of the center of the area we want to zoom in.
 		*/
 		void computeZoom(OpenViBE::boolean bZoomIn, OpenViBE::float64 f64XClick, OpenViBE::float64 f64YClick);
-		
+
 		/**
 		* Depending on the zooming mode, updates (or not) the scaling/translation
 		* parameters of the signals to reflect the latest changes brought by the last
@@ -119,18 +118,13 @@ namespace OpenViBEPlugins
 		*/
 		void updateSignalZoomParameters();
 
-		/** 
-		 * Computes the list of points used to draw the lines (m_pParentDisplayView->m_pPoints) using the raw points list 
+		/**
+		 * Computes the list of points used to draw the lines (m_pParentDisplayView->m_pPoints) using the raw points list
 		 * (m_pParentDisplayView->m_pRawPoints) and by cropping the lines when they go out of the window.
 		 * \return The number of points to display.
 		 */
 		OpenViBE::uint64 cropCurve();
 };
-
-
-
-
-
 
 G_BEGIN_DECLS
 
@@ -143,7 +137,6 @@ G_BEGIN_DECLS
 #define IS_CHANNEL_DISPLAY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CHANNEL_DISPLAY_TYPE))
 
 #define IS_CHANNEL_DISPLAY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CHANNEL_DISPLAY_TYPE))
-
 
 typedef struct _ChannelDisplayClass  ChannelDisplayClass;
 typedef struct _ChannelDisplay       ChannelDisplay;

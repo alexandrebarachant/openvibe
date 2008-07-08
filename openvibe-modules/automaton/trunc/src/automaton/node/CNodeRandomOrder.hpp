@@ -16,7 +16,7 @@
 
 namespace Automaton
 {
-	class CNodeRandomOrder : virtual public TNode<INode>
+	class CNodeRandomOrder : public TNode<INode>
 	{
 		protected:
 

@@ -1,25 +1,47 @@
 /**
- * \mainpage An Open platform for Virtual Brain Environments
- *
- * \image html logo.png
- *
- * This is the developper documentation of §OpenViBE§, the open platform for virtual brain environments.
- * The aim of this documentation is to present the global software architecture and to provide details
- * for software developers. Given this documentation, developers should be able to integrate new
- * functionnalities or modify existing ones according to their needs.
- *
- * First of all, you will find a software architecture overview \ref Doc_SoftwareArchitectureOverview.
- *
- * People interested in the kernel implementation could check the \ref Doc_KernelImplementation.
- * The kernel may also be partially re-implemented or replaced. For developers interested in such
- * task, check the \ref Doc_CreatingNewKernel page.
- *
- * For people interested in creating plugins, please check the \ref Doc_CreatingNewPlugins page.
- *
- * For more informations on the project, here are some reference pointers :
- *  - §OpenViBE§ website : <a href="http://www.irisa.fr/bunraku/OpenViBE">http://www.irisa.fr/bunraku/OpenViBE</a>
- *  - §OpenViBE§ forums : <a href="http://www.irisa.fr/bunraku/OpenViBE/forum">http://www.irisa.fr/bunraku/OpenViBE/forum</a>
- *  - §OpenViBE§ forge : <a href="https://gforge.inria.fr/projects/openvibe">https://gforge.inria.fr/projects/openvibe</a>
- *  - §OpenViBE§ mailing lists : <a href="https://gforge.inria.fr/mail/?group_id=276">https://gforge.inria.fr/mail/?group_id=276</a>
- *  - §OpenViBE§ irc : #openvibe on irc.freenodes.net
- */
+\mainpage An Open platform for Virtual Brain Environments
+ 
+\image html logo.png
+
+\section mainpage_introduction Introduction
+
+%OpenViBE is a free, open-source platform for designing, testing and using Brain Computer Interfaces (BCI) 
+and neurofeedback applications. It is written in C++, which is in line with some of its design goals including 
+portability and efficiency. It also relies on several portable libraries.
+
+
+<br>
+\section mainpage_current_status Current status
+
+For recent information about the current status of the platform, a list of available features and the development
+roadmap, please go to the following page of the %OpenViBE website : <br>
+ - \todo !!!INSERT features page link here!!!
+
+
+<br>
+\section mainpage_api_documentation API documentation
+
+This is the API (or developer) documentation of §OpenViBE§.
+The aim of this documentation is to present the global software architecture and to provide details
+for software developers. Using this documentation, developers should be able to integrate new
+functionalities or modify existing ones according to their needs.
+ 
+First of all, a software architecture overview can be found in \ref Doc_SoftwareArchitectureOverview.
+ 
+People interested in the kernel implementation could check the \ref Doc_KernelImplementation page.
+The kernel may also be partially re-implemented or even replaced. Developers interested in such
+tasks should read the \ref Doc_CreatingNewKernel page.
+
+People interested in creating plugins will find valuable information in the \ref Doc_CreatingNewPlugins page.
+
+
+<br> 
+\section mainpage_additional_information Additional information
+
+For additional information about the project, here are some reference pointers :
+ - §OpenViBE§ website : <a href="http://www.irisa.fr/bunraku/OpenViBE">http://www.irisa.fr/bunraku/OpenViBE</a>
+ - §OpenViBE§ forums : <a href="http://www.irisa.fr/bunraku/OpenViBE/forum">http://www.irisa.fr/bunraku/OpenViBE/forum</a>
+ - §OpenViBE§ forge : <a href="https://gforge.inria.fr/projects/openvibe">https://gforge.inria.fr/projects/openvibe</a>
+ - §OpenViBE§ mailing lists : <a href="https://gforge.inria.fr/mail/?group_id=276">https://gforge.inria.fr/mail/?group_id=276</a>
+ - §OpenViBE§ irc : #openvibe on irc.freenodes.net
+*/

@@ -33,8 +33,11 @@ namespace OpenViBEPlugins
 			::GtkWidget* l_pWidget=NULL;
 			::GtkWidget* l_pToolbarWidget=NULL;
 			dynamic_cast<CPowerSpectrumDisplayView*>(m_pPowerSpectrumDisplayView)->getWidgets(l_pWidget, l_pToolbarWidget);
-			getBoxAlgorithmContext()->getVisualisationContext()->setWidgets(l_pWidget, l_pToolbarWidget);
-
+			getBoxAlgorithmContext()->getVisualisationContext()->setWidget(l_pWidget);
+			if(l_pToolbarWidget != NULL)
+			{
+				getBoxAlgorithmContext()->getVisualisationContext()->setToolbar(l_pToolbarWidget);
+			}
 			return true;
 		}
 

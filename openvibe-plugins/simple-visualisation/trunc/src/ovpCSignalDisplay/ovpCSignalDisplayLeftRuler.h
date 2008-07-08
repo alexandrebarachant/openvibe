@@ -36,7 +36,7 @@ namespace OpenViBEPlugins
 				//! returns the widget, so it can be added to the main interface
 				GtkWidget * getWidget() const { return m_pLeftRuler; }
 
-				//! toggles (show/hide) the ruler 
+				//! toggles (show/hide) the ruler
 				void toggle(OpenViBE::boolean bActive);
 
 				//! draws the ruler
