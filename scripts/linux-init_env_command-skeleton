@@ -131,8 +131,6 @@ done
 export OpenViBE_build_order="
 $OpenViBE
 $OpenViBE_application_id_generator
-$OpenViBE_application_omk_test
-$OpenViBE_application_vr_demo
 $OpenViBE_application_vrpn_simulator
 $OpenViBE_module_ebml
 $OpenViBE_module_fs
@@ -163,6 +161,9 @@ $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
 $OpenViBE_application_plugin_inspector
 "
+
+#$OpenViBE_application_omk_test
+#$OpenViBE_application_vr_demo
 
 if [ -e ./linux-dependencies ]; then
 	source ./linux-dependencies
