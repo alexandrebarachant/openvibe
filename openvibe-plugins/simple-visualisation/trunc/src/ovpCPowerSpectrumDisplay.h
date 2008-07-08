@@ -61,7 +61,7 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 				virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Power spectrum in frequency bands"); }
 				virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("TODO"); }
-				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Simple visualisation"); }
+				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("2D visualisation"); }
 				virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 				virtual void release(void)                                   { }
 				virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_PowerSpectrumDisplay; }
