@@ -1060,3 +1060,6 @@ ov_install_package "ogre"
 ov_install_package "obt"
 ov_install_package "openmask4"
 # ov_install_package "openmask4tutorial"
+
+rm -f linux-dependencies 2> /dev/null
+ln -sf $ov_environment_configuration_script linux-dependencies
