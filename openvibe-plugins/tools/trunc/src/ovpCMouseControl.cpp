@@ -1,5 +1,3 @@
-#if 0
-
 #include "ovpCMouseControl.h"
 
 #include <iostream>
@@ -78,11 +76,6 @@ boolean CMouseControl::processInput(uint32 ui32InputIndex)
 
 void CMouseControl::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
 {
-	if(ui32DimmensionCount != 1)
-	{
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error, dimension count isn't 1 for Amplitude input !\n";
-		m_bError = true;
-	}
 }
 
 void CMouseControl::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
@@ -154,5 +147,3 @@ boolean CMouseControl::process()
 	}
 	return true;
 }
-
-#endif
