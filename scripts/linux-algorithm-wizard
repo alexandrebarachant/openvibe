@@ -150,7 +150,7 @@ done;
 l_header_file_content="#ifndef $l_algorithm_header_decoration
 #define $l_algorithm_header_decoration
 
-#include \"../ovp_defines.h\"
+#include \"../../ovp_defines.h\"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -247,10 +247,10 @@ boolean $l_algorithm_class_name::uninitialize(void)
 
 boolean $l_algorithm_class_name::process(void)
 {
-	if(this->isInputActive(OVP_Algorithm_${l_algorithm_name_final}_InputTriggerId_/*Name*/))
+	if(this->isInputTriggerActive(OVP_Algorithm_${l_algorithm_name_final}_InputTriggerId_/*Name*/))
 	{
 		...
-		this->activateOutputTrigger(OVP_Algorithm_${l_algorithm_name_final}_OutputParameterId_/*Name*/, /*satus*/);
+		this->activateOutputTrigger(OVP_Algorithm_${l_algorithm_name_final}_OutputTriggerId_/*Name*/, /*satus*/);
 	}
 
 	return true;

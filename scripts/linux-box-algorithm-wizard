@@ -63,6 +63,14 @@ while [ "$l_category" == "" ]; do
 	fi;
 done;
 
+while [ "$l_project" == "" ]; do
+	echo -n "Please enter project name ($g_wizard_rc_project) : "
+	read l_project
+	if [ "$l_project" == "" ]; then
+		l_project=$g_wizard_rc_project
+	fi;
+done;
+
 while [ "$l_version" == "" ]; do
 	echo -n "Please enter version ($g_wizard_rc_version) : "
 	read l_version
@@ -112,7 +120,10 @@ l_box_algorithm_name_final=`echo $l_box_algorithm_name | sed -e '
 	s/ \(.\)/\U\1/g
 	s/^\(.\)/\U\1/g
 '`
-l_box_algorithm_namespace_final="NS"
+l_box_algorithm_namespace_final=`echo $l_project | sed -e '
+	s/ \(.\)/\U\1/g
+	s/^\(.\)/\U\1/g
+'`
 
 l_box_algorithm_header_decoration="__OpenViBEPlugins_BoxAlgorithm_${l_box_algorithm_name_final}_H__"
 l_box_algorithm_class_name="CBoxAlgorithm${l_box_algorithm_name_final}"
@@ -326,6 +337,7 @@ echo "g_wizard_rc_box_algorithm_name=\"$l_box_algorithm_name\"" >> $g_wizard_rc 
 echo "g_wizard_rc_author_name=\"$l_author_name\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_author_company_name=\"$l_author_company_name\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_category=\"$l_category\"" >> $g_wizard_rc 2> /dev/null
+echo "g_wizard_rc_project=\"$l_project\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_version=\"$l_version\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_short_description=\"$l_short_description\"" >> $g_wizard_rc 2> /dev/null
 echo "g_wizard_rc_detailed_description=\"$l_detailed_description\"" >> $g_wizard_rc 2> /dev/null
