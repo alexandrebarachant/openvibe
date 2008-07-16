@@ -78,37 +78,14 @@ boolean CTopographicMap2DDisplay::uninitialize(void)
 	return true;
 }
 
-namespace
-{
-	static bool l_bOnce=false;
-}
-
 boolean CTopographicMap2DDisplay::processInput(OpenViBE::uint32 ui32InputIndex)
 {
-#if defined OVP_OS_Linux
-	if(!l_bOnce)
-	{
-		getLogManager() << LogLevel_ImportantWarning << "This box has been deactivated for this platform... Problem is being investigated.\n";
-		l_bOnce=true;
-	}
-	return true;
-#endif
-
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
 boolean CTopographicMap2DDisplay::processClock(IMessageClock& rMessageClock)
 {
-#if defined OVP_OS_Linux
-	if(!l_bOnce)
-	{
-		getLogManager() << LogLevel_ImportantWarning << "This box has been deactivated for this platform... Problem is being investigated.\n";
-		l_bOnce=true;
-	}
-	return true;
-#endif
-
 	m_pTopographicMapDatabase->processValues();
 	return true;
 }

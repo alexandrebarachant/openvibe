@@ -30,6 +30,7 @@ namespace OpenViBEPlugins
 			,m_ui32CurrentProjection(TopographicMap2DProjection_Radial)
 			,m_pDrawingArea(NULL)
 			,m_pClipmask(NULL)
+			,m_pClipmaskGC(NULL)
 			,m_bRedrawClipmask(true)
 			,m_ui32CurrentViewport(TopographicMap2DViewport_Top)
 			,m_bNeedResize(true)
@@ -104,13 +105,6 @@ namespace OpenViBEPlugins
 
 		CTopographicMap2DView::~CTopographicMap2DView()
 		{
-			//destroy drawing area
-			if(m_pDrawingArea)
-			{
-				gtk_widget_destroy(m_pDrawingArea);
-				m_pDrawingArea = NULL;
-			}
-
 			//destroy clip mask
 			if(m_pClipmask)
 			{
@@ -118,7 +112,11 @@ namespace OpenViBEPlugins
 				g_object_unref(m_pClipmask);
 				m_pClipmask = NULL;
 			}
-
+			if(m_pClipmaskGC)
+			{
+				g_object_unref(m_pClipmaskGC);
+				m_pClipmaskGC=NULL;
+			}
 			//destroy pixmap
 			if(m_pSkullRGBBuffer)
 			{
@@ -391,10 +389,10 @@ namespace OpenViBEPlugins
 			{
 				GdkColor l_oWhite;
 				l_oWhite.red = l_oWhite.green = l_oWhite.blue = 65535;
-				gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oWhite);
+				gdk_gc_set_rgb_fg_color(m_pClipmaskGC/*m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]*/, &l_oWhite);
 
 				gdk_draw_arc(m_pClipmask,
-				m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)],
+				m_pClipmaskGC/*m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]*/,
 				TRUE,
 				0,
 				0,
@@ -482,15 +480,21 @@ namespace OpenViBEPlugins
 				//gtk_object_destroy(GTK_OBJECT(m_pClipmask)); //invalid cast!
 				g_object_unref(m_pClipmask);
 			}
+			if(m_pClipmaskGC)
+			{
+				g_object_unref(m_pClipmaskGC);
+			}
 			m_pClipmask = gdk_pixmap_new(m_pDrawingArea->window, m_ui32SkullDiameter, m_ui32SkullDiameter, 1);
+			m_pClipmaskGC = gdk_gc_new(GDK_DRAWABLE(m_pClipmask));
+			gdk_gc_set_colormap(m_pClipmaskGC, gdk_gc_get_colormap(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]));
 			//clear it
-			gdk_draw_rectangle(m_pClipmask, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)],
+			gdk_draw_rectangle(m_pClipmask, m_pClipmaskGC/*m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]*/,
 				TRUE, 0, 0, m_ui32SkullDiameter, m_ui32SkullDiameter);
 
 			//allocate RGB pixmap
 			if(m_pSkullRGBBuffer != NULL)
 			{
-				delete m_pSkullRGBBuffer;
+				delete [] m_pSkullRGBBuffer;
 			}
 			//align lines on 32bit boundaries
 			m_ui32RowStride = ((m_ui32SkullDiameter*3)%4 == 0) ? (m_ui32SkullDiameter*3) : ((((m_ui32SkullDiameter*3)>>2)+1)<<2);
@@ -538,7 +542,6 @@ namespace OpenViBEPlugins
 		void CTopographicMap2DView::refreshPotentials()
 		{
 			uint32 w, h;
-
 			for(uint32 i=(uint32)m_rTopographicMapDatabase.getChannelCount(); i<m_oSampleValues.size(); i++)
 			{
 				//cells of last row and last column may be smaller than other ones

@@ -156,6 +156,7 @@ namespace OpenViBEPlugins
 
 			::GtkWidget* m_pDrawingArea;
 			::GdkBitmap* m_pClipmask; //origin is upper left corner of skull bounding square
+			::GdkGC* m_pClipmaskGC;
 			OpenViBE::boolean m_bRedrawClipmask;
 			::GdkColor m_oBackgroundColor;
 			ETopographicMap2DViewport m_ui32CurrentViewport;
