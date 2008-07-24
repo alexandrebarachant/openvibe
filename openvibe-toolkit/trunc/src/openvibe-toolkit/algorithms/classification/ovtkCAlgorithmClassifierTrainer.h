@@ -1,7 +1,7 @@
 #ifndef __OpenViBEToolkit_Algorithm_ClassifierTrainer_H__
 #define __OpenViBEToolkit_Algorithm_ClassifierTrainer_H__
 
-#include "../../box-algorithms/ovtkTAlgorithm.h"
+#include "../ovtkTAlgorithm.h"
 #include "../../ovtkIFeatureVectorSet.h"
 
 #define OVTK_ClassId_Algorithm_ClassifierTrainer                             OpenViBE::CIdentifier(0x5ABC21E6, 0x3C3D349B)

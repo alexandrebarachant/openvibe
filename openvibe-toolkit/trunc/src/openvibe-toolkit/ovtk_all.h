@@ -28,15 +28,15 @@
 #include "ovtkIFeatureVector.h"
 #include "ovtkIFeatureVectorSet.h"
 
-#include "box-algorithms/ovtkTAlgorithm.h"
 #include "box-algorithms/ovtkTBoxAlgorithm.h"
-
-#include "algorithms/classification/ovtkCAlgorithmClassifierProcessor.h"
-#include "algorithms/classification/ovtkCAlgorithmClassifierTrainer.h"
 
 #if defined TARGET_HAS_EBML
 #include "box-algorithms/ovtkTTrainingBoxAlgorithm.h"
 #endif
+
+#include "algorithms/ovtkTAlgorithm.h"
+#include "algorithms/classification/ovtkCAlgorithmClassifierProcessor.h"
+#include "algorithms/classification/ovtkCAlgorithmClassifierTrainer.h"
 
 //___________________________________________________________________//
 //                                                                   //

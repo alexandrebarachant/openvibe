@@ -1,7 +1,7 @@
 #ifndef __OpenViBEToolkit_Algorithm_ClassifierProcessor_H__
 #define __OpenViBEToolkit_Algorithm_ClassifierProcessor_H__
 
-#include "../../box-algorithms/ovtkTAlgorithm.h"
+#include "../ovtkTAlgorithm.h"
 #include "../../ovtkIVector.h"
 #include "../../ovtkIFeatureVector.h"
 
