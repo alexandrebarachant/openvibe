@@ -1,5 +1,7 @@
 #include "ovp_defines.h"
 
+#include "ovpCTimeBasedEpoching.h"
+
 #include "ovpCScenarioImporterXML.h"
 #include "ovpCScenarioExporterXML.h"
 
@@ -12,17 +14,12 @@
 #include "ovpCLog.h"
 #include "ovpCTest.h"
 #include "ovpCBoxAlgorithmClock.h"
+#include "ovpCBoxAlgorithmClockStimulator.h"
 
 #include "algorithms/ovpCAlgorithmAddition.h"
 #include "ovpCBoxAlgorithmAdditionTest.h"
 
 #include "ovpCBoxAlgorithmNothing.h"
-
-// #define _WithTBE_
-
-#if defined _WithTBE_
-#include "ovpCTimeBasedEpoching.h"
-#endif
 
 OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerStreamType(OpenViBE::CIdentifier(0x1234,0x5678), "producer/consumer", OV_UndefinedIdentifier);
@@ -39,9 +36,7 @@ OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 3", 3);
 	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 4", 4);
 
-#if defined _WithTBE_
 	OVP_Declare_New(OpenViBEPlugins::Samples::CTimeBasedEpochingDesc);
-#endif
 
 	OVP_Declare_New(OpenViBEPlugins::Samples::CScenarioImporterXMLDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CScenarioExporterXMLDesc);
@@ -54,6 +49,7 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::Samples::CIdentityDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CLogDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmClockDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmClockStimulatorDesc);
 
 	// OVP_Declare_New(OpenViBEPlugins::Samples::CTestDesc);
 

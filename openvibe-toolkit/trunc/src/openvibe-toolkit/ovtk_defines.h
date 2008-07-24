@@ -15,6 +15,9 @@
 #define OVTK_TypeId_Stimulation                                        OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
 #define OVTK_TypeId_GDF_Stimulation                                    OpenViBE::CIdentifier(0xA538DBF0, 0xBC229750)
 
+#define OVTK_TypeId_ClassificationProcessorAlgorithm                   OpenViBE::CIdentifier(0xFC8700C6, 0x2285747B)
+#define OVTK_TypeId_ClassificationTrainerAlgorithm                     OpenViBE::CIdentifier(0x73142A5A, 0xACA98DA3)
+
 //___________________________________________________________________//
 //                                                                   //
 // OpenViBE toolkit stream type identifiers                          //
@@ -85,6 +88,7 @@
 #define OVTK_StimulationId_Train                             0x00008201
 #define OVTK_StimulationId_Beep                              0x00008202
 #define OVTK_StimulationId_DoubleBeep                        0x00008203
+#define OVTK_StimulationId_EndOfFile                         0x00008204
 
 //___________________________________________________________________//
 //                                                                   //
@@ -599,39 +603,9 @@
 #define OVTK_ClassId_BaseAlgorithms_DataImporterT                       OpenViBE::CIdentifier(0xA6BB8664, 0xF1B9DE96)
 #define OVTK_ClassId_BaseAlgorithms_DataExporterT                       OpenViBE::CIdentifier(0xA432362A, 0x5CD4F227)
 
-//___________________________________________________________________//
-//                                                                   //
-// Partial algorithm implementations                                 //
-//___________________________________________________________________//
-//                                                                   //
-
-#define OVTK_ClassId_Algorithm_ClassifierTrainer                                      OpenViBE::CIdentifier(0x7CE12E37, 0x1B47721A)
-#define OVTK_ClassId_Algorithm_ClassifierTrainerDesc                                  OpenViBE::CIdentifier(0x215B74E2, 0x5D4B530F)
-#define OVTK_ClassId_Algorithm_ClassifierTrainerProxy                                 OpenViBE::CIdentifier(0x3F49A3F8, 0xCD2220A0)
-
-#define OVTK_Algorithm_ClassifierTrainer_InputParameterId_FeatureVectorCollection     OpenViBE::CIdentifier(0x6E9660E9, 0x3B802073)
-#define OVTK_Algorithm_ClassifierTrainer_InputParameterId_Filename                    OpenViBE::CIdentifier(0x71D500D6, 0x57AE6BFC)
-#define OVTK_Algorithm_ClassifierTrainer_OutputParameterId_ParametersBuffer           OpenViBE::CIdentifier(0x7E8141C3, 0x4E995914)
-#define OVTK_Algorithm_ClassifierTrainer_InputTriggerId_Train                         OpenViBE::CIdentifier(0x4AC825C9, 0x4BFB671F)
-#define OVTK_Algorithm_ClassifierTrainer_InputTriggerId_SerializeParametersBuffer     OpenViBE::CIdentifier(0x39F1752C, 0x6243148C)
-#define OVTK_Algorithm_ClassifierTrainer_InputTriggerId_SerializeParametersFile       OpenViBE::CIdentifier(0x70815647, 0x2210269D)
-#define OVTK_Algorithm_ClassifierTrainer_OutputTriggerId_Success                      OpenViBE::CIdentifier(0x0E107838, 0x2D6C21F7)
-#define OVTK_Algorithm_ClassifierTrainer_OutputTriggerId_Fail                         OpenViBE::CIdentifier(0x28E83C4C, 0x42C83FE9)
-
-#define OVTK_ClassId_Algorithm_Classifier                                     OpenViBE::CIdentifier(0x37B60990, 0x2D3E2F7C)
-#define OVTK_ClassId_Algorithm_ClassifierDesc                                 OpenViBE::CIdentifier(0x46236A99, 0x0B0B7337)
-#define OVTK_ClassId_Algorithm_ClassifierProxy                                OpenViBE::CIdentifier(0x786A8D3E, 0xB16FA28A)
-
-#define OVTK_Algorithm_Classifier_InputParameterId_ParametersBuffer           OpenViBE::CIdentifier(0x458B317C, 0x1FE17033)
-#define OVTK_Algorithm_Classifier_InputParameterId_FeatureVector              OpenViBE::CIdentifier(0x5359686E, 0x38DA400D)
-#define OVTK_Algorithm_Classifier_InputParameterId_Filename                   OpenViBE::CIdentifier(0x27C61F04, 0x36327EFA)
-#define OVTK_Algorithm_Classifier_OutputParameterId_Class                     OpenViBE::CIdentifier(0x52293E92, 0x7E703D83)
-#define OVTK_Algorithm_Classifier_OutputParameterId_OutputValues              OpenViBE::CIdentifier(0x6E044845, 0x78505200)
-#define OVTK_Algorithm_Classifier_InputTriggerId_Classify                     OpenViBE::CIdentifier(0x1CCA5900, 0x377345D6)
-#define OVTK_Algorithm_Classifier_InputTriggerId_DeserializeParametersBuffer  OpenViBE::CIdentifier(0x50710EF7, 0x47C55A70)
-#define OVTK_Algorithm_Classifier_InputTriggerId_DeserializeParametersFile    OpenViBE::CIdentifier(0x32BC2D0C, 0x43B261FE)
-#define OVTK_Algorithm_Classifier_OutputTriggerId_Success                     OpenViBE::CIdentifier(0x04011333, 0x2B1F2FC3)
-#define OVTK_Algorithm_Classifier_OutputTriggerId_Fail                        OpenViBE::CIdentifier(0x25CC3C3E, 0x41F27DAB)
+#define OVTK_ClassId_Vector                                             OpenViBE::CIdentifier(0x5D113170, 0x941C8932)
+#define OVTK_ClassId_FeatureVector                                      OpenViBE::CIdentifier(0xF44A9CBD, 0x459DBA69)
+#define OVTK_ClassId_FeatureVectorSet                                   OpenViBE::CIdentifier(0x6D5FB77B, 0x5BDD0420)
 
 //___________________________________________________________________//
 //                                                                   //

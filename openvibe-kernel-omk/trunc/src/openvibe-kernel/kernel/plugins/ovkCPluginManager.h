@@ -15,6 +15,7 @@ namespace OpenViBE
 		public:
 
 			CPluginManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			virtual ~CPluginManager(void);
 
 			virtual OpenViBE::boolean addPluginsFromFiles(
 				const OpenViBE::CString& rFileNameWildCard);
@@ -55,9 +56,9 @@ namespace OpenViBE
 
 		protected:
 
-			std::vector<OpenViBE::Kernel::IPluginModule*> m_vPluginModule;
-			std::map<OpenViBE::Plugins::IPluginObjectDesc*, OpenViBE::Kernel::IPluginModule*> m_vPluginObjectDesc;
-			std::map<OpenViBE::Plugins::IPluginObjectDesc*, std::vector<OpenViBE::Plugins::IPluginObject*> > m_vPluginObject;
+			std::vector < OpenViBE::Kernel::IPluginModule* > m_vPluginModule;
+			std::map < OpenViBE::Plugins::IPluginObjectDesc*, OpenViBE::Kernel::IPluginModule* > m_vPluginObjectDesc;
+			std::map < OpenViBE::Plugins::IPluginObjectDesc*, std::vector<OpenViBE::Plugins::IPluginObject* > > m_vPluginObject;
 		};
 	};
 };

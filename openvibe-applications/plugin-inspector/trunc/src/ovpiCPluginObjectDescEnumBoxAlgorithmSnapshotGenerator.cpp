@@ -121,10 +121,6 @@ namespace
 CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator(const IKernelContext& rKernelContext)
 	:CPluginObjectDescEnum(rKernelContext)
 {
-	int l_iArgc=0;
-	char** l_ppArgv=NULL;
-	gtk_init(&l_iArgc, &l_ppArgv);
-
 	m_rKernelContext.getScenarioManager().createScenario(m_oScenarioIdentifier);
 	m_pScenario=&m_rKernelContext.getScenarioManager().getScenario(m_oScenarioIdentifier);
 

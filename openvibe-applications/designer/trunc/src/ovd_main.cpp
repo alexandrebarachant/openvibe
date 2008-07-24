@@ -349,10 +349,8 @@ int go(int argc, char ** argv)
 #endif
 
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
-					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-Plugins-*.so");
-					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-*.so");
-					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-Plugins-*.dll");
-					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-*.dll");
+					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-plugins-*.so");
+					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-plugins-*.dll");
 
 					//initialise Gtk before 3D context
 					gtk_init(&g_argc, &g_argv);
@@ -401,6 +399,15 @@ int go(int argc, char ** argv)
 					gtk_main();
 
 					cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;
+
+					l_rLogManager.activate(LogLevel_Debug, true);
+					l_rLogManager.activate(LogLevel_Benchmark, false);
+					l_rLogManager.activate(LogLevel_Trace, true);
+					l_rLogManager.activate(LogLevel_Info, true);
+					l_rLogManager.activate(LogLevel_Warning, true);
+					l_rLogManager.activate(LogLevel_ImportantWarning, true);
+					l_rLogManager.activate(LogLevel_Error, true);
+					l_rLogManager.activate(LogLevel_Fatal, true);
 
 					OpenViBEToolkit::uninitialize(*l_pKernel->getContext());
 

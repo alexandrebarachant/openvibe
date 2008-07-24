@@ -553,7 +553,7 @@ boolean CSimulatedBox::initialize(void)
 	m_ui64ClockFrequency=0;
 	m_ui64ClockActivationStep=0;
 
-	m_pBoxAlgorithm=dynamic_cast<IBoxAlgorithm*>(getKernelContext().getPluginManager().createPluginObject(m_pBox->getAlgorithmClassIdentifier()));
+	m_pBoxAlgorithm=getPluginManager().createBoxAlgorithm(m_pBox->getAlgorithmClassIdentifier(), NULL);
 	if(!m_pBoxAlgorithm)
 	{
 		getLogManager() << LogLevel_Error << "Could not create box algorithm with class id " << m_pBox->getAlgorithmClassIdentifier() << "... This box will be deactivated but the whole scenario behavior will probably suffer !\n";
@@ -569,7 +569,11 @@ boolean CSimulatedBox::initialize(void)
 #endif
 			try
 			{
-				m_pBoxAlgorithm->initialize(l_oBoxAlgorithmContext);
+				if(!m_pBoxAlgorithm->initialize(l_oBoxAlgorithmContext))
+				{
+					getLogManager() << LogLevel_ImportantWarning << "Box algorithm <" << m_pBox->getName() << "> has been deactivated because initialization phase returned bad status\n";
+					m_bActive=false;
+				}
 			}
 			catch (...)
 			{
@@ -596,7 +600,11 @@ boolean CSimulatedBox::uninitialize(void)
 			{
 				try
 				{
-					m_pBoxAlgorithm->uninitialize(l_oBoxAlgorithmContext);
+					if(!m_pBoxAlgorithm->uninitialize(l_oBoxAlgorithmContext))
+					{
+						getLogManager() << LogLevel_ImportantWarning << "Box algorithm <" << m_pBox->getName() << "> has been deactivated because uninitialization phase returned bad status\n";
+						m_bActive=false;
+					}
 				}
 				catch (...)
 				{
@@ -606,7 +614,7 @@ boolean CSimulatedBox::uninitialize(void)
 		}
 	}
 
-	m_pBoxAlgorithm->release();
+	getPluginManager().releasePluginObject(m_pBoxAlgorithm);
 	m_pBoxAlgorithm=NULL;
 
 	return true ;
@@ -732,7 +740,11 @@ boolean CSimulatedBox::process(void)
 			try
 			{
 				m_oBenchmarkChronoProcess.stepIn();
-				m_pBoxAlgorithm->process(l_oBoxAlgorithmContext);
+				if(!m_pBoxAlgorithm->process(l_oBoxAlgorithmContext))
+				{
+					getLogManager() << LogLevel_ImportantWarning << "Box algorithm <" << m_pBox->getName() << "> has been deactivated because process phase returned bad status\n";
+					m_bActive=false;
+				}
 				m_oBenchmarkChronoProcess.stepOut();
 			}
 			catch (...)
@@ -821,7 +833,7 @@ boolean CSimulatedBox::process(void)
 		m_pOgreVis->getOgreWindow(it->second)->update();
 	}
 
-#if 0
+#if 1
 /*-----------------------------------------------*/
 /* TODO send this messages with better frequency */
 	if(m_oBenchmarkChronoProcessClock.hasNewEstimation())

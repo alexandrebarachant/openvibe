@@ -15,6 +15,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace OpenViBE::Plugins;
 using namespace OpenViBEDesigner;
 using namespace std;
 
@@ -144,14 +145,15 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		,m_pPlayer(NULL)
 		,m_rNotebook(rNotebook)
 		,m_pVisualisationTree(NULL)
-		,m_pDesignerVisualisation(NULL)
 		,m_bDesignerVisualisationToggled(false)
+		,m_pDesignerVisualisation(NULL)
 		,m_pPlayerVisualisation(NULL)
 		,m_pGladeDummyScenarioNotebookTitle(NULL)
 		,m_pGladeDummyScenarioNotebookClient(NULL)
 		,m_pGladeTooltip(NULL)
 		,m_pNotebookPageTitle(NULL)
 		,m_pNotebookPageContent(NULL)
+		,m_pScenarioViewport(NULL)
 		,m_pScenarioDrawingArea(NULL)
 		,m_pStencilBuffer(NULL)
 		,m_bHasFileName(false)
@@ -166,11 +168,11 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		,m_ui32CurrentMode(Mode_None)
 	{
 		m_pGladeDummyScenarioNotebookTitle=glade_xml_new(m_sGUIFilename.c_str(), "dummy_scenario_notebook_title", NULL);
-		m_pGladeDummyScenarioNotebookClient=glade_xml_new(m_sGUIFilename.c_str(), "dummy_scenario_notebook_client", NULL);
+		m_pGladeDummyScenarioNotebookClient=glade_xml_new(m_sGUIFilename.c_str(), "dummy_scenario_notebook_scrolledwindow", NULL);
 		m_pGladeTooltip=glade_xml_new(m_sGUIFilename.c_str(), "openvibe_tooltip", NULL);
 
 		m_pNotebookPageTitle=glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "dummy_scenario_notebook_title");
-		m_pNotebookPageContent=glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "dummy_scenario_notebook_client");
+		m_pNotebookPageContent=glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "dummy_scenario_notebook_scrolledwindow");
 		gtk_widget_ref(m_pNotebookPageTitle);
 		gtk_widget_ref(m_pNotebookPageContent);
 		gtk_widget_unparent(m_pNotebookPageTitle);
@@ -180,6 +182,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		gtk_widget_unref(m_pNotebookPageTitle);
 
 		m_pScenarioDrawingArea=GTK_DRAWING_AREA(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "scenario_drawing_area"));
+		m_pScenarioViewport=GTK_VIEWPORT(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "scenario_viewport"));
 		gtk_drag_dest_set(GTK_WIDGET(m_pScenarioDrawingArea), GTK_DEST_DEFAULT_ALL, g_vTargetEntry, sizeof(g_vTargetEntry)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "expose_event", G_CALLBACK(scenario_drawing_area_expose_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "drag_data_received", G_CALLBACK(scenario_drawing_area_drag_data_received_cb), this);
@@ -188,7 +191,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "button_release_event", G_CALLBACK(scenario_drawing_area_button_released_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-press-event", G_CALLBACK(scenario_drawing_area_key_press_event_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "key-release-event", G_CALLBACK(scenario_drawing_area_key_release_event_cb), this);
-		
+
 		//retrieve visualisation tree
 		m_oVisualisationTreeIdentifier = m_rScenario.getVisualisationTreeIdentifier();
 		m_pVisualisationTree = &m_rKernel.getContext()->getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
@@ -200,9 +203,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		//It fills the tree with visualisation boxes contained in the scenario, which is
 		//normally done at scenario loading time. However this doesn't work for files
 		//created prior to the implementation of visualisation tree serialization.
-		//This piece of code takes care of displaying their visualisation boxes in the window manager 
+		//This piece of code takes care of displaying their visualisation boxes in the window manager
 		//even though the scenario file doesn't list them
-		
+
 		CIdentifier l_oIdentifier = OV_UndefinedIdentifier;
 		boolean l_bVisualisationBoxRestored = false;
 
@@ -215,9 +218,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			{
 				const IBox* l_pBox = m_rScenario.getBoxDetails(l_oBoxIdentifier);
 				CIdentifier l_oIdentifier = l_pBox->getAlgorithmClassIdentifier();
-				const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
+				const IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
 
-				if(l_pPOD && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+				if(l_pPOD && l_pPOD->hasFunctionality(PluginFunctionality_Visualization))
 				{
 					CIdentifier l_oIdentifier;
 					m_pVisualisationTree->addVisualisationWidget(
@@ -232,7 +235,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				}
 
 				l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
-			}			
+			}
 		}
 		//==================================================================================================================================
 		//==================================================================================================================================
@@ -240,8 +243,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 		//create window manager
 		m_pDesignerVisualisation = new CDesignerVisualisation(*m_rKernel.getContext(), *m_pVisualisationTree, *this);
-		m_pDesignerVisualisation->init(string(sGUIFilename));		
-
+		m_pDesignerVisualisation->init(string(sGUIFilename));
 
 		//==================================================================================================================================
 		//==================================================================================================================================
@@ -306,7 +308,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 #define updateStencilIndex(id,stencilgc) { id++; ::GdkColor sc={0, (guint16)((id&0xff0000)>>8), (guint16)(id&0xff00), (guint16)((id&0xff)<<8) }; gdk_gc_set_rgb_fg_color(stencilgc, &sc); }
 
-	void CInterfacedScenario::redrawBox(IBox& rBox)
+	void CInterfacedScenario::redraw(IBox& rBox)
 	{
 		::GtkWidget* l_pWidget=GTK_WIDGET(m_pScenarioDrawingArea);
 		::GdkGC* l_pStencilGC=gdk_gc_new(GDK_DRAWABLE(m_pStencilBuffer));
@@ -315,7 +317,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		vector<pair<int32, int32> > l_vInputPosition;
 		vector<pair<int32, int32> > l_vOutputPosition;
 
-		OpenViBE::uint32 i;
+		uint32 i;
 		const int xMargin=5;
 		const int yMargin=5;
 		const int iCircleSize=11;
@@ -517,7 +519,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 */
 	}
 
-	void CInterfacedScenario::redrawLink(ILink& rLink)
+	void CInterfacedScenario::redraw(ILink& rLink)
 	{
 		::GtkWidget* l_pWidget=GTK_WIDGET(m_pScenarioDrawingArea);
 		::GdkGC* l_pStencilGC=gdk_gc_new(GDK_DRAWABLE(m_pStencilBuffer));
@@ -626,6 +628,61 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 	void CInterfacedScenario::scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 	{
+		if(m_ui32CurrentMode==Mode_None)
+		{
+			gint l_iViewportX=-1;
+			gint l_iViewportY=-1;
+
+			gint l_iMinX= 0x7fff;
+			gint l_iMaxX=-0x7fff;
+			gint l_iMinY= 0x7fff;
+			gint l_iMaxY=-0x7fff;
+
+			gint l_iMarginX=128;
+			gint l_iMarginY=64;
+
+			CIdentifier l_oBoxIdentifier;
+			while((l_oBoxIdentifier=m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
+			{
+				CBoxProxy l_oBoxProxy(*m_rScenario.getBoxDetails(l_oBoxIdentifier));
+				if(l_iMinX>l_oBoxProxy.getXCenter()) l_iMinX=l_oBoxProxy.getXCenter();
+				if(l_iMaxX<l_oBoxProxy.getXCenter()) l_iMaxX=l_oBoxProxy.getXCenter();
+				if(l_iMinY>l_oBoxProxy.getYCenter()) l_iMinY=l_oBoxProxy.getYCenter();
+				if(l_iMaxY<l_oBoxProxy.getYCenter()) l_iMaxY=l_oBoxProxy.getYCenter();
+			}
+
+
+			gint l_iNewScenarioSizeX=l_iMaxX-l_iMinX;
+			gint l_iNewScenarioSizeY=l_iMaxY-l_iMinY;
+			gint l_iOldScenarioSizeX=-1;
+			gint l_iOldScenarioSizeY=-1;
+
+			gdk_window_get_size(GTK_WIDGET(m_pScenarioViewport)->window, &l_iViewportX, &l_iViewportY);
+			gtk_widget_get_size_request(GTK_WIDGET(m_pScenarioDrawingArea), &l_iOldScenarioSizeX, &l_iOldScenarioSizeY);
+
+			if(l_iNewScenarioSizeX>=0 && l_iNewScenarioSizeY>=0)
+			{
+				if(l_iMarginX-m_i32ViewOffsetX                                       >l_iMinX) { m_i32ViewOffsetX=l_iMarginX-l_iMinX; }
+				if(l_iMarginX-m_i32ViewOffsetX+max(l_iViewportX, l_iNewScenarioSizeX)<l_iMaxX) { m_i32ViewOffsetX=l_iMarginX-l_iMaxX+max(l_iViewportX, l_iNewScenarioSizeX); }
+				if(l_iMarginY-m_i32ViewOffsetY                                       >l_iMinY) { m_i32ViewOffsetY=l_iMarginY-l_iMinY; }
+				if(l_iMarginY-m_i32ViewOffsetY+max(l_iViewportY, l_iNewScenarioSizeY)<l_iMaxY) { m_i32ViewOffsetY=l_iMarginY-l_iMaxY+max(l_iViewportY, l_iNewScenarioSizeY); }
+				if(l_iOldScenarioSizeX!=l_iNewScenarioSizeX+2*l_iMarginX || l_iOldScenarioSizeY!=l_iNewScenarioSizeY+2*l_iMarginY)
+				{
+					gtk_widget_set_size_request(GTK_WIDGET(m_pScenarioDrawingArea), l_iNewScenarioSizeX+2*l_iMarginX, l_iNewScenarioSizeY+2*l_iMarginY);
+/*
+					::GtkAdjustment* l_pHAdjustment=gtk_viewport_get_hadjustment(m_pScenarioViewport);
+					::GtkAdjustment* l_pVAdjustment=gtk_viewport_get_vadjustment(m_pScenarioViewport);
+					// gtk_adjustment_set_value(l_pHAdjustment, l_pHAdjustment->lower);
+					// gtk_adjustment_set_value(l_pHAdjustment, l_pHAdjustment->upper);
+					// gtk_adjustment_set_value(l_pVAdjustment, l_pVAdjustment->lower);
+					// gtk_adjustment_set_value(l_pVAdjustment, l_pVAdjustment->upper);
+					gtk_viewport_set_hadjustment(m_pScenarioViewport, l_pHAdjustment);
+					gtk_viewport_set_vadjustment(m_pScenarioViewport, l_pVAdjustment);
+*/
+				}
+			}
+		}
+
 		gint x,y;
 
 		gdk_window_get_size(GTK_WIDGET(m_pScenarioDrawingArea)->window, &x, &y);
@@ -664,18 +721,16 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_ui32InterfacedObjectId=0;
 		m_vInterfacedObject.clear();
 
-		CIdentifier l_oBoxIdentifier=m_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
-		while(l_oBoxIdentifier!=OV_UndefinedIdentifier)
+		CIdentifier l_oBoxIdentifier;
+		while((l_oBoxIdentifier=m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
 		{
-			redrawBox(*m_rScenario.getBoxDetails(l_oBoxIdentifier));
-			l_oBoxIdentifier=m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
+			redraw(*m_rScenario.getBoxDetails(l_oBoxIdentifier));
 		}
 
-		CIdentifier l_oLinkIdentifier=m_rScenario.getNextLinkIdentifier(OV_UndefinedIdentifier);
-		while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
+		CIdentifier l_oLinkIdentifier;
+		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifier(l_oLinkIdentifier))!=OV_UndefinedIdentifier)
 		{
-			redrawLink(*m_rScenario.getLinkDetails(l_oLinkIdentifier));
-			l_oLinkIdentifier=m_rScenario.getNextLinkIdentifier(l_oLinkIdentifier);
+			redraw(*m_rScenario.getLinkDetails(l_oLinkIdentifier));
 		}
 
 		if(m_ui32CurrentMode==Mode_Selection || m_ui32CurrentMode==Mode_SelectionAdd)
@@ -733,10 +788,10 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 			IBox* l_pBox = m_rScenario.getBoxDetails(l_oBoxIdentifier);
 			CIdentifier l_oId = l_pBox->getAlgorithmClassIdentifier();
-			const Plugins::IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oId);
+			const IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oId);
 
 			//if a visualisation box was dropped, add it in window manager
-			if(l_pPOD && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+			if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
 			{
 				//generate a unique name so that it can be identified unambiguously
 				CString l_oBoxName;
@@ -1183,18 +1238,18 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	void CInterfacedScenario::toggleDesignerVisualisation()
 	{
 		m_bDesignerVisualisationToggled = !m_bDesignerVisualisationToggled;
-		
+
 		if(m_bDesignerVisualisationToggled)
 		{
-			m_pDesignerVisualisation->show();			
+			m_pDesignerVisualisation->show();
 		}
 		else
 		{
-			m_pDesignerVisualisation->hide();			
+			m_pDesignerVisualisation->hide();
 		}
 	}
 
-	OpenViBE::boolean CInterfacedScenario::isDesignerVisualisationToggled()
+	boolean CInterfacedScenario::isDesignerVisualisationToggled()
 	{
 		return m_bDesignerVisualisationToggled;
 	}
@@ -1233,7 +1288,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				m_pDesignerVisualisation->hide();
 			}
 		}
-		
+
 	}
 
 	void CInterfacedScenario::createPlayerVisualisation()
@@ -1245,13 +1300,13 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			m_pPlayerVisualisation = new CPlayerVisualisation(*m_rKernel.getContext(), m_rScenario, *m_pVisualisationTree);
 
 		//initialize and show windows
-		m_pPlayerVisualisation->init();		
+		m_pPlayerVisualisation->init();
 	}
 
 	void CInterfacedScenario::releasePlayerVisualisation(void)
 	{
 		if(m_pPlayerVisualisation != NULL)
-		{				
+		{
 			delete m_pPlayerVisualisation;
 			m_pPlayerVisualisation = NULL;
 		}

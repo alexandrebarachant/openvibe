@@ -60,6 +60,18 @@ namespace OpenViBE
 			const OpenViBE::uint64 ui64StimulationIndex,
 			const OpenViBE::uint64 ui64StimulationDuration);
 
+		virtual OpenViBE::uint64 appendStimulation(
+			const OpenViBE::uint64 ui64StimulationIdentifier,
+			const OpenViBE::uint64 ui64StimulationDate,
+			const OpenViBE::uint64 ui64StimulationDuration);
+		virtual OpenViBE::uint64 insertStimulation(
+			const OpenViBE::uint64 ui64StimulationIndex,
+			const OpenViBE::uint64 ui64StimulationIdentifier,
+			const OpenViBE::uint64 ui64StimulationDate,
+			const OpenViBE::uint64 ui64StimulationDuration);
+		virtual OpenViBE::boolean removeStimulation(
+			const OpenViBE::uint64 ui64StimulationIndex);
+
 		_IsDerivedFromClass_Final_(OpenViBE::IStimulationSet, OV_ClassId_StimulationSetBridge);
 
 	private:

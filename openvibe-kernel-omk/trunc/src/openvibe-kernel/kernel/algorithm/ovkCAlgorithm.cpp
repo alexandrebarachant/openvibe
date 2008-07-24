@@ -84,6 +84,7 @@ boolean CAlgorithm::addInputParameter(
 {
 	if(m_pInputConfigurable->getParameter(rInputParameterIdentifier)!=NULL)
 	{
+		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Input parameter id " << rInputParameterIdentifier << " already exists\n";
 		return false;
 	}
 	m_pInputConfigurable->createParameter(rInputParameterIdentifier, eParameterType);
@@ -100,7 +101,12 @@ CIdentifier CAlgorithm::getNextInputParameterIdentifier(
 IParameter* CAlgorithm::getInputParameter(
 	const CIdentifier& rInputParameterIdentifier)
 {
-	return m_pInputConfigurable->getParameter(rInputParameterIdentifier);
+	IParameter* l_pParameter=m_pInputConfigurable->getParameter(rInputParameterIdentifier);
+	if(!l_pParameter)
+	{
+		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Requested null input parameter id " << rInputParameterIdentifier << "\n";
+	}
+	return l_pParameter;
 }
 
 EParameterType CAlgorithm::getInputParameterType(
@@ -143,6 +149,7 @@ boolean CAlgorithm::addOutputParameter(
 {
 	if(m_pOutputConfigurable->getParameter(rOutputParameterIdentifier)!=NULL)
 	{
+		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Output parameter id " << rOutputParameterIdentifier << " already exists\n";
 		return false;
 	}
 	m_pOutputConfigurable->createParameter(rOutputParameterIdentifier, eParameterType);
@@ -159,7 +166,12 @@ CIdentifier CAlgorithm::getNextOutputParameterIdentifier(
 IParameter* CAlgorithm::getOutputParameter(
 	const CIdentifier& rOutputParameterIdentifier)
 {
-	return m_pOutputConfigurable->getParameter(rOutputParameterIdentifier);
+	IParameter* l_pParameter=m_pOutputConfigurable->getParameter(rOutputParameterIdentifier);
+	if(!l_pParameter)
+	{
+		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Requested null output parameter id " << rOutputParameterIdentifier << "\n";
+	}
+	return l_pParameter;
 }
 
 EParameterType CAlgorithm::getOutputParameterType(

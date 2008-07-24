@@ -55,9 +55,17 @@ namespace OpenViBE
 		 */
 		virtual const OpenViBE::uint8* getDirectPointer(void) const=0;
 
-	protected:
-
 		_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_MemoryBuffer);
+
+		const OpenViBE::uint8& operator [] (const OpenViBE::uint64 ui64Index) const
+		{
+			return this->getDirectPointer()[ui64Index];
+		}
+
+		OpenViBE::uint8& operator [] (const OpenViBE::uint64 ui64Index)
+		{
+			return this->getDirectPointer()[ui64Index];
+		}
 	};
 };
 

@@ -1,7 +1,7 @@
 #ifndef __OpenViBEToolkit_Writer_IBoxAlgorithmEBMLOutputWriter_H__
 #define __OpenViBEToolkit_Writer_IBoxAlgorithmEBMLOutputWriter_H__
 
-#include "../ovtkIObject.h"
+#include "../../ovtkIObject.h"
 
 namespace OpenViBEToolkit
 {

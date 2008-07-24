@@ -217,6 +217,14 @@ namespace OpenViBE
 		OpenViBE::boolean fromString(
 			const OpenViBE::CString& rString);
 		/**
+		 * \brief Converts this identifier into an unsigned 64 bits integer
+		 * \return The unsigned integer converted identifier
+		 * \warning Use this function with care, identifiers should not be considered
+		 *          as integers. Actually, the internal 64 bits representation may
+		 *          change, resulting in code port needs if you use this function
+		 */
+		OpenViBE::uint64 toUInteger(void) const;
+		/**
 		 * \brief Creates a random identifier
 		 * \return a random identifier
 		 * \note The returned identifier can not be \c OV_UndefinedIdentifier

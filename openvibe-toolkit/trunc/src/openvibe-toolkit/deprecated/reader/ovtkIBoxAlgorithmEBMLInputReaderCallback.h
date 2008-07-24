@@ -1,7 +1,7 @@
 #ifndef __OpenViBEToolkit_Reader_IBoxAlgorithmEBMLInputReaderCallback_H__
 #define __OpenViBEToolkit_Reader_IBoxAlgorithmEBMLInputReaderCallback_H__
 
-#include "../ovtkIObject.h"
+#include "../../ovtkIObject.h"
 
 #include <ebml/IReader.h>
 

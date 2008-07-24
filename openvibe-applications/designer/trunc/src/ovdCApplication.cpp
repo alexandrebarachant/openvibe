@@ -184,6 +184,7 @@ void CApplication::initialize(void)
 
 	// Shows main window
 	glade_xml_signal_autoconnect(m_pGladeInterface);
+	gtk_window_maximize(GTK_WINDOW(m_pMainWindow));
 	gtk_widget_show(m_pMainWindow);
 	// gtk_window_set_icon_name(GTK_WINDOW(m_pMainWindow), "ov-logo");
 	// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/openvibe-applications/designer/ov-logo.png", NULL);
@@ -871,19 +872,23 @@ gboolean CApplication::change_current_scenario_cb(::GtkNotebook* pNotebook, ::Gt
 void CApplication::box_algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData)
 {
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "box_algorithm_tree")));
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "resource_notebook")), 0);
 }
 void CApplication::box_algorithm_title_button_collapse_cb(::GtkButton* pButton, gpointer pUserData)
 {
 	gtk_tree_view_collapse_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "box_algorithm_tree")));
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "resource_notebook")), 0);
 }
 
 void CApplication::algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData)
 {
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "algorithm_tree")));
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "resource_notebook")), 1);
 }
 void CApplication::algorithm_title_button_collapse_cb(::GtkButton* pButton, gpointer pUserData)
 {
 	gtk_tree_view_collapse_all(GTK_TREE_VIEW(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "algorithm_tree")));
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(glade_xml_get_widget(static_cast<CApplication*>(pUserData)->m_pGladeInterface, "resource_notebook")), 1);
 }
 
 gboolean CApplication::idle_application_loop(gpointer pUserData)

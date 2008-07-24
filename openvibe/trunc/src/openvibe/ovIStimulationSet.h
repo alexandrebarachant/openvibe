@@ -92,6 +92,43 @@ namespace OpenViBE
 		virtual OpenViBE::boolean setStimulationDuration(
 			const OpenViBE::uint64 ui64StimulationIndex,
 			const OpenViBE::uint64 ui64StimulationDuration)=0;
+		/**
+		 * \brief Appends a stimulation to this stimulation set
+		 * \param ui64StimulationIdentifier [in] : the identifier of the stimulation to append
+		 * \param ui64StimulationDate [in] : the date of the stimulation
+		 * \param ui64StimulationDuration [in] : the duration of the stimulation
+		 * \return the index of the appended stimulation in this stimulation set
+		 */
+		virtual OpenViBE::uint64 appendStimulation(
+			const OpenViBE::uint64 ui64StimulationIdentifier,
+			const OpenViBE::uint64 ui64StimulationDate,
+			const OpenViBE::uint64 ui64StimulationDuration)=0;
+		/**
+		 * \brief Inserts a stimulation to this stimulation set
+		 * \param ui64StimulationIndex [in] : the index of the stimulation to insert
+		 * \param ui64StimulationIdentifier [in] : the identifier of the stimulation
+		 * \param ui64StimulationDate [in] : the date of the stimulation
+		 * \param ui64StimulationDuration [in] : the duration of the stimulation
+		 * \return \e true in case of success
+		 * \return \e false in case of error
+		 * \warning stimulation indexing change after call to this function :
+		 *          following stimulation(s) get one more indexed.
+		 */
+		virtual OpenViBE::uint64 insertStimulation(
+			const OpenViBE::uint64 ui64StimulationIndex,
+			const OpenViBE::uint64 ui64StimulationIdentifier,
+			const OpenViBE::uint64 ui64StimulationDate,
+			const OpenViBE::uint64 ui64StimulationDuration)=0;
+		/**
+		 * \brief Removes a stimulation from this stimulation set
+		 * \param ui64StimulationIndex [in] : the index of the stimulation to remove
+		 * \return \e true in case of success
+		 * \return \e false in case of error
+		 * \warning stimulation indexing change after call to this function :
+		 *          following stimulation(s) get one less indexed.
+		 */
+		virtual OpenViBE::boolean removeStimulation(
+			const OpenViBE::uint64 ui64StimulationIndex)=0;
 
 		_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_StimulationSet);
 	};

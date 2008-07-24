@@ -4,7 +4,6 @@
 #include "ovp_defines.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
-#include <openvibe-toolkit/ovtkTTrainingBoxAlgorithm.h>
 
 #include <ebml/CReader.h>
 #include <ebml/CReaderHelper.h>

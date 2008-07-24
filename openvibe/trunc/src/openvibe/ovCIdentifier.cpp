@@ -104,6 +104,11 @@ boolean CIdentifier::fromString(const CString& rString)
 	return true;
 }
 
+uint64 CIdentifier::toUInteger(void) const
+{
+	return m_ui64Identifier;
+}
+
 CIdentifier CIdentifier::random(void)
 {
 	uint64 l_ui64Identifier=0;

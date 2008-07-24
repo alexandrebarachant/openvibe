@@ -5,8 +5,8 @@
 #include <string>
 
 using namespace OpenViBE;
-using namespace OpenViBE::Plugins;
-using namespace OpenViBE::Kernel;
+using namespace Plugins;
+using namespace Kernel;
 
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Stimulation;
@@ -45,18 +45,19 @@ namespace OpenViBEPlugins
 		void CKeyboardStimulator::processKey(guint uiKey, bool bState)
 		{
 			//if there is one entry, adds the stimulation to the list of stims to be sent
-			if(m_oKeyToStimulation.count(uiKey) != 0)
+			if(m_oKeyToStimulation.count(uiKey) != 0 && bState != m_oKeyToStimulation[uiKey].m_bStatus)
 			{
 				if(bState)
 				{
 					// getLogManager() << LogLevel_Trace << "Pressed key code " << (uint32)uiKey << "\n";
-					m_oStimulationToSend.push_back(m_oKeyToStimulation[uiKey].first);
+					m_oStimulationToSend.push_back(m_oKeyToStimulation[uiKey].m_ui64StimulationPress);
 				}
 				else
 				{
 					// getLogManager() << LogLevel_Trace << "Released key code " << (uint32)uiKey << "\n";
-					m_oStimulationToSend.push_back(m_oKeyToStimulation[uiKey].second);
+					m_oStimulationToSend.push_back(m_oKeyToStimulation[uiKey].m_ui64StimulationRelease);
 				}
+				m_oKeyToStimulation[uiKey].m_bStatus=bState;
 			}
 			else
 			{
@@ -82,22 +83,22 @@ namespace OpenViBEPlugins
 			string l_oKeyName;
 			string l_oStimulationPress;
 			string l_oStimulationRelease;
-			uint64 l_ui64StimulationPress;
-			uint64 l_ui64StimulationRelease;
 
 			//reads all the couples key name/stim
 			while(!l_oFile.eof() && !l_oFile.fail())
 			{
 				l_oFile>>l_oKeyName>>l_oStimulationPress>>l_oStimulationRelease;
 
-				l_ui64StimulationPress=0;
-				l_ui64StimulationRelease=0;
+				SKey l_oKey;
+				l_oKey.m_ui64StimulationPress=0;
+				l_oKey.m_ui64StimulationRelease=0;
+				l_oKey.m_bStatus=false;
 
 				// MAY CAUSE ENDIANNESS PROBLEMS !
-				sscanf(l_oStimulationPress.c_str(),   "0x%08Lx", &l_ui64StimulationPress);
-				sscanf(l_oStimulationRelease.c_str(), "0x%08Lx", &l_ui64StimulationRelease);
+				sscanf(l_oStimulationPress.c_str(),   "0x%08Lx", &l_oKey.m_ui64StimulationPress);
+				sscanf(l_oStimulationRelease.c_str(), "0x%08Lx", &l_oKey.m_ui64StimulationRelease);
 
-				m_oKeyToStimulation[gdk_keyval_from_name(l_oKeyName.c_str())] = std::pair < uint64, uint64 > (l_ui64StimulationPress, l_ui64StimulationRelease);
+				m_oKeyToStimulation[gdk_keyval_from_name(l_oKeyName.c_str())] = l_oKey;
 			}
 
 			l_oFile.close();
@@ -120,10 +121,10 @@ namespace OpenViBEPlugins
 		{
 		}
 
-		OpenViBE::boolean CKeyboardStimulator::initialize()
+		boolean CKeyboardStimulator::initialize()
 		{
 			const IBox* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
-			OpenViBE::CString l_sFileName;
+			CString l_sFileName;
 
 			// Parses box settings to find input file's name
 			l_pBoxContext->getSettingValue(0, l_sFileName);
@@ -175,7 +176,7 @@ namespace OpenViBEPlugins
 			return true;
 		}
 
-		OpenViBE::boolean CKeyboardStimulator::uninitialize()
+		boolean CKeyboardStimulator::uninitialize()
 		{
 			delete m_pOutputWriterCallbackProxy;
 			m_pOutputWriterCallbackProxy= NULL;
@@ -197,43 +198,37 @@ namespace OpenViBEPlugins
 			return true;
 		}
 
-		OpenViBE::boolean CKeyboardStimulator::processClock(OpenViBE::CMessageClock &rMessageClock)
+		boolean CKeyboardStimulator::processClock(CMessageClock &rMessageClock)
 		{
 			if(m_bError)
 			{
 				return false;
 			}
 
-			uint64 l_ui64CurrentTime = rMessageClock.getTime();
+			uint64 l_ui64CurrentTime=rMessageClock.getTime();
 
-			IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
-
-			m_pStimulationOutputWriterHelper->setStimulationCount(m_oStimulationToSend.size());
-
-			for(size_t i=0 ; i<m_oStimulationToSend.size() ; i++)
+			if(l_ui64CurrentTime!=m_ui64PreviousActivationTime)
 			{
-				m_pStimulationOutputWriterHelper->setStimulation(i, m_oStimulationToSend[i], l_ui64CurrentTime);
+				IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
+				m_pStimulationOutputWriterHelper->setStimulationCount(m_oStimulationToSend.size());
+				for(size_t i=0 ; i<m_oStimulationToSend.size() ; i++)
+				{
+					m_pStimulationOutputWriterHelper->setStimulation(i, m_oStimulationToSend[i], l_ui64CurrentTime);
+				}
+				m_oStimulationToSend.clear();
+
+				m_pStimulationOutputWriterHelper->writeBuffer(*m_pWriter);
+				l_pBoxIO->markOutputAsReadyToSend(0, m_ui64PreviousActivationTime, l_ui64CurrentTime);
+				getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 			}
 
-			m_oStimulationToSend.clear();
-
-			m_pStimulationOutputWriterHelper->writeBuffer(*m_pWriter);
-			l_pBoxIO->markOutputAsReadyToSend(0, m_ui64PreviousActivationTime, l_ui64CurrentTime);
-
 			m_ui64PreviousActivationTime = l_ui64CurrentTime;
-
-			getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
-
 			return true;
 		}
 
-		OpenViBE::boolean CKeyboardStimulator::process()
+		boolean CKeyboardStimulator::process()
 		{
-
 			return true;
 		}
-
 	};
-
 };
-

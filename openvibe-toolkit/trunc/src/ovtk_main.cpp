@@ -45,6 +45,7 @@ boolean OpenViBEToolkit::initialize(const IKernelContext& rKernelContext)
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Train", OVTK_StimulationId_Train);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Beep", OVTK_StimulationId_Beep);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_DoubleBeep", OVTK_StimulationId_DoubleBeep);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_EndOfFile", OVTK_StimulationId_EndOfFile);
 
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Artifact_EOG_Large", OVTK_GDF_Artifact_EOG_Large);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Artifact_ECG", OVTK_GDF_Artifact_ECG);
@@ -168,6 +169,9 @@ boolean OpenViBEToolkit::initialize(const IKernelContext& rKernelContext)
 
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Start_Of_New_Segment", OVTK_GDF_Start_Of_New_Segment);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Non_Equidistant_Sampling_Value", OVTK_GDF_Non_Equidistant_Sampling_Value);
+
+	l_rTypeManager.registerEnumerationType(OVTK_TypeId_ClassificationProcessorAlgorithm, "Classification processor algorithm");
+	l_rTypeManager.registerEnumerationType(OVTK_TypeId_ClassificationTrainerAlgorithm, "Classification trainer algorithm");
 
 	return true;
 }

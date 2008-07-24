@@ -7,14 +7,21 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVP_ClassId_EBMLStreamSpy                           OpenViBE::CIdentifier(0x0ED76695, 0x01A69CC3)
-#define OVP_ClassId_EBMLStreamSpyDesc                       OpenViBE::CIdentifier(0x354A6864, 0x06BC570C)
-
 #define OVP_ClassId_MouseControl                            OpenViBE::CIdentifier(0xDA4B4EEB, 0x64FC6A16)
 #define OVP_ClassId_MouseControlDesc                        OpenViBE::CIdentifier(0xB6B65C98, 0xA756ED0E)
 
 #define OVP_ClassId_BoxAlgorithm_LatencyEvaluation          OpenViBE::CIdentifier(0x0AD11EC1, 0x7EF3690B)
 #define OVP_ClassId_BoxAlgorithm_LatencyEvaluationDesc      OpenViBE::CIdentifier(0x5DB56A54, 0x5380262B)
+
+//___________________________________________________________________//
+//                                                                   //
+// Gloabal defines                                                   //
+//___________________________________________________________________//
+//                                                                   //
+
+#ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+ #include "ovp_global_defines.h"
+#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
 //___________________________________________________________________//
 //                                                                   //

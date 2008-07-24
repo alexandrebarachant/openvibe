@@ -23,8 +23,8 @@ namespace OpenViBEDesigner
 
 		virtual OpenViBE::boolean isLocked(void) const;
 		virtual void redraw(void);
-		virtual void redrawBox(OpenViBE::Kernel::IBox& rBox);
-		virtual void redrawLink(OpenViBE::Kernel::ILink& rLink);
+		virtual void redraw(OpenViBE::Kernel::IBox& rBox);
+		virtual void redraw(OpenViBE::Kernel::ILink& rLink);
 		virtual void updateScenarioLabel(void);
 		OpenViBE::uint32 pickInterfacedObject(int x, int y);
 		OpenViBE::boolean pickInterfacedObject(int x, int y, int iSizeX, int iSizeY);
@@ -52,7 +52,7 @@ namespace OpenViBEDesigner
 
 		void showCurrentVisualisation();
 		void hideCurrentVisualisation();
-		
+
 		void createPlayerVisualisation(void);
 		void releasePlayerVisualisation(void);
 
@@ -71,14 +71,15 @@ namespace OpenViBEDesigner
 		OpenViBE::uint64 m_ui64LastLoopTime;
 		::GtkNotebook& m_rNotebook;
 		OpenViBE::Kernel::IVisualisationTree* m_pVisualisationTree;
+		OpenViBE::boolean m_bDesignerVisualisationToggled;
 		OpenViBEDesigner::CDesignerVisualisation* m_pDesignerVisualisation;
-		OpenViBE::boolean m_bDesignerVisualisationToggled;		
 		OpenViBEDesigner::CPlayerVisualisation* m_pPlayerVisualisation;
 		::GladeXML* m_pGladeDummyScenarioNotebookTitle;
 		::GladeXML* m_pGladeDummyScenarioNotebookClient;
 		::GladeXML* m_pGladeTooltip;
 		::GtkWidget* m_pNotebookPageTitle;
 		::GtkWidget* m_pNotebookPageContent;
+		::GtkViewport* m_pScenarioViewport;
 		::GtkDrawingArea* m_pScenarioDrawingArea;
 		::GdkPixmap* m_pStencilBuffer;
 		OpenViBE::boolean m_bHasFileName;

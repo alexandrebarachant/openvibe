@@ -36,10 +36,13 @@ CKernelContext::CKernelContext(IKernel& rKernel)
 	(*m_pLogManager) << LogLevel_Debug << "Added Console Log Listener - should be removed\n";
 	(*m_pLogManager) << LogLevel_Debug << "Added File Log Listener - should be removed\n";
 
+	(*m_pLogManager) << LogLevel_Trace << "Creating algorithm manager\n";
 	m_pAlgorithmManager=new CAlgorithmManager(*this);
 
+	(*m_pLogManager) << LogLevel_Trace << "Creating player manager\n";
 	m_pPlayerManager=new CPlayerManager(*this);
 
+	(*m_pLogManager) << LogLevel_Trace << "Creating type manager\n";
 	m_pTypeManager=new CTypeManager(*this);
 
 	m_pTypeManager->registerType(OV_TypeId_Boolean, "boolean");
@@ -70,21 +73,31 @@ CKernelContext::CKernelContext(IKernel& rKernel)
 	m_pTypeManager->registerStreamType(    OV_TypeId_Signal, "signal", OV_TypeId_StreamedMatrix);
 	m_pTypeManager->registerStreamType(    OV_TypeId_Spectrum, "spectrum", OV_TypeId_StreamedMatrix);
 
+	(*m_pLogManager) << LogLevel_Trace << "Creating scenario manager\n";
 	m_pScenarioManager=new CScenarioManager(*this);
 
+	(*m_pLogManager) << LogLevel_Trace << "Creating visualisation manager\n";
 	m_pVisualisationManager=new CVisualisationManager(*this);
 
+	(*m_pLogManager) << LogLevel_Trace << "Creating plugin manager\n";
 	m_pPluginManager=new CPluginManager(*this);
 }
 
 CKernelContext::~CKernelContext(void)
 {
+	(*m_pLogManager) << LogLevel_Trace << "Releasing plugin manager\n";
 	delete m_pPluginManager;
+	(*m_pLogManager) << LogLevel_Trace << "Releasing visualisation manager\n";
 	delete m_pVisualisationManager;
+	(*m_pLogManager) << LogLevel_Trace << "Releasing scenario manager\n";
 	delete m_pScenarioManager;
+	(*m_pLogManager) << LogLevel_Trace << "Releasing type manager\n";
 	delete m_pTypeManager;
+	(*m_pLogManager) << LogLevel_Trace << "Releasing player manager\n";
 	delete m_pPlayerManager;
+	(*m_pLogManager) << LogLevel_Trace << "Releasing algorithm manager\n";
 	delete m_pAlgorithmManager;
+	(*m_pLogManager) << LogLevel_Trace << "Releasing log manager - no more log possible with log manager !\n";
 	delete m_pLogManager;
 	delete m_pKernelObjectFactory;
 }

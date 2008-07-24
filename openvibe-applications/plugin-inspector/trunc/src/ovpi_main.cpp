@@ -1,5 +1,6 @@
 #include "ovpiCPluginObjectDescEnumAlgorithmGlobalDefinesGenerator.h"
 #include "ovpiCPluginObjectDescEnumBoxAlgorithmSnapshotGenerator.h"
+#include "ovpiCPluginObjectDescEnumAlgorithmSnapshotGenerator.h"
 
 #include <iostream>
 
@@ -67,6 +68,9 @@ int main(int argc, char ** argv)
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-Plugins-*.dll");
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-*.dll");
 
+					gtk_init(&argc, &argv);
+
+/*
 					{
 						CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator l_oGlobalDefinesGenerator(*l_pKernel->getContext(), "ovp_global_defines.h");
 						l_oGlobalDefinesGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
@@ -75,6 +79,11 @@ int main(int argc, char ** argv)
 					{
 						CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator l_oBoxAlgorithmSnapshotGenerator(*l_pKernel->getContext());
 						l_oBoxAlgorithmSnapshotGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+					}
+*/
+					{
+						CPluginObjectDescEnumAlgorithmSnapshotGenerator l_oAlgorithmSnapshotGenerator(*l_pKernel->getContext());
+						l_oAlgorithmSnapshotGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
 					}
 
 					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;

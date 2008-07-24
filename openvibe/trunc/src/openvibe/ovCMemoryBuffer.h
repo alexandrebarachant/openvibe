@@ -33,6 +33,20 @@ namespace OpenViBE
 		 */
 		CMemoryBuffer(void);
 		/**
+		 * \brief Copy constructor
+		 *
+		 * This constructor builds the internal implementation of this memory buffer and initializes it
+		 * with the actual parameter of the constructor as a copy.
+		 */
+		CMemoryBuffer(const OpenViBE::IMemoryBuffer& rMemoryBuffer);
+		/**
+		 * \brief Copy constructor
+		 *
+		 * This constructor builds the internal implementation of this memory buffer and initializes it
+		 * with the actual parameter of the constructor as a copy.
+		 */
+		CMemoryBuffer(const OpenViBE::uint8* pMemoryBuffer, const OpenViBE::uint64 ui64BufferSize);
+		/**
 		 * \brief Destructor
 		 *
 		 * The internal implementation is released.

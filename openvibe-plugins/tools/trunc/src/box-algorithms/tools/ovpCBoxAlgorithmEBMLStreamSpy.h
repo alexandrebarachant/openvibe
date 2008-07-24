@@ -1,7 +1,7 @@
-#ifndef __OpenViBEPlugins_Tools_CEBMLStreamSpy_H__
-#define __OpenViBEPlugins_Tools_CEBMLStreamSpy_H__
+#ifndef __OpenViBEPlugins_BoxAlgorithm_EBMLStreamSpy_H__
+#define __OpenViBEPlugins_BoxAlgorithm_EBMLStreamSpy_H__
 
-#include "ovp_defines.h"
+#include "../../ovp_defines.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -12,15 +12,18 @@
 #include <map>
 #include <string>
 
+#define OVP_ClassId_BoxAlgorithm_EBMLStreamSpy     OpenViBE::CIdentifier(0x0ED76695, 0x01A69CC3)
+#define OVP_ClassId_BoxAlgorithm_EBMLStreamSpyDesc OpenViBE::CIdentifier(0x354A6864, 0x06BC570C)
+
 namespace OpenViBEPlugins
 {
 	namespace Tools
 	{
-		class CEBMLStreamSpy : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public EBML::IReaderCallback
+		class CBoxAlgorithmEBMLStreamSpy : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public EBML::IReaderCallback
 		{
 		public:
 
-			CEBMLStreamSpy(void);
+			CBoxAlgorithmEBMLStreamSpy(void);
 
 			virtual void release(void);
 
@@ -35,7 +38,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process(void);
 
-			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_EBMLStreamSpy)
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_BoxAlgorithm_EBMLStreamSpy)
 
 		protected:
 
@@ -47,7 +50,7 @@ namespace OpenViBEPlugins
 			EBML::IReaderHelper* m_pReaderHelper;
 		};
 
-		class CEBMLStreamSpyDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmEBMLStreamSpyDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
@@ -59,15 +62,17 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This sample EBML stream analyzer prints the EBML tree structure to the console"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tools"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-info"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_EBMLStreamSpy; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Tools::CEBMLStreamSpy(); }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_EBMLStreamSpy; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Tools::CBoxAlgorithmEBMLStreamSpy(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				// Adds box inputs
-				rPrototype.addInput("Spied EBML stream", OV_TypeId_EBMLStream);
+				rPrototype.addInput("Spied EBML stream 1", OV_TypeId_EBMLStream);
+				rPrototype.addInput("Spied EBML stream 2", OV_TypeId_EBMLStream);
 
 				// Adds box outputs
 
@@ -78,12 +83,7 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			virtual OpenViBE::CString getStockItemName(void) const
-			{
-				return OpenViBE::CString("gtk-info");
-			}
-
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_EBMLStreamSpyDesc)
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_EBMLStreamSpyDesc)
 		};
 	};
 };

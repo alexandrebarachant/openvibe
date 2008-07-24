@@ -24,15 +24,18 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#include "ovtkTAlgorithm.h"
-#include "ovtkTBoxAlgorithm.h"
-//#include "ovtkTAlgorithmClassifier.h"
-//#include "ovtkTAlgorithmClassifierTrainer.h"
-//#include "ovtkTAlgorithmClassifierProxy.h"
-//#include "ovtkTAlgorithmClassifierTrainerProxy.h"
+#include "ovtkIVector.h"
+#include "ovtkIFeatureVector.h"
+#include "ovtkIFeatureVectorSet.h"
+
+#include "box-algorithms/ovtkTAlgorithm.h"
+#include "box-algorithms/ovtkTBoxAlgorithm.h"
+
+#include "algorithms/classification/ovtkCAlgorithmClassifierProcessor.h"
+#include "algorithms/classification/ovtkCAlgorithmClassifierTrainer.h"
 
 #if defined TARGET_HAS_EBML
-#include "ovtkTTrainingBoxAlgorithm.h"
+#include "box-algorithms/ovtkTTrainingBoxAlgorithm.h"
 #endif
 
 //___________________________________________________________________//
@@ -42,13 +45,13 @@
 //                                                                   //
 
 #if defined TARGET_HAS_EBML
-#include "reader/ovtkIBoxAlgorithmEBMLInputReaderCallback.h"
-#include "reader/ovtkIBoxAlgorithmStreamedMatrixInputReaderCallback.h"
-#include "reader/ovtkIBoxAlgorithmSignalInputReaderCallback.h"
-#include "reader/ovtkIBoxAlgorithmSpectrumInputReaderCallback.h"
-#include "reader/ovtkIBoxAlgorithmFeatureVectorInputReaderCallback.h"
-#include "reader/ovtkIBoxAlgorithmStimulationInputReaderCallback.h"
-#include "reader/ovtkIBoxAlgorithmExperimentInformationInputReaderCallback.h"
+#include "deprecated/reader/ovtkIBoxAlgorithmEBMLInputReaderCallback.h"
+#include "deprecated/reader/ovtkIBoxAlgorithmStreamedMatrixInputReaderCallback.h"
+#include "deprecated/reader/ovtkIBoxAlgorithmSignalInputReaderCallback.h"
+#include "deprecated/reader/ovtkIBoxAlgorithmSpectrumInputReaderCallback.h"
+#include "deprecated/reader/ovtkIBoxAlgorithmFeatureVectorInputReaderCallback.h"
+#include "deprecated/reader/ovtkIBoxAlgorithmStimulationInputReaderCallback.h"
+#include "deprecated/reader/ovtkIBoxAlgorithmExperimentInformationInputReaderCallback.h"
 #endif
 
 //___________________________________________________________________//
@@ -58,13 +61,13 @@
 //                                                                   //
 
 #if defined TARGET_HAS_EBML
-#include "writer/ovtkIBoxAlgorithmEBMLOutputWriter.h"
-#include "writer/ovtkIBoxAlgorithmStreamedMatrixOutputWriter.h"
-#include "writer/ovtkIBoxAlgorithmSignalOutputWriter.h"
-#include "writer/ovtkIBoxAlgorithmSpectrumOutputWriter.h"
-#include "writer/ovtkIBoxAlgorithmFeatureVectorOutputWriter.h"
-#include "writer/ovtkIBoxAlgorithmStimulationOutputWriter.h"
-#include "writer/ovtkIBoxAlgorithmExperimentInformationOutputWriter.h"
+#include "deprecated/writer/ovtkIBoxAlgorithmEBMLOutputWriter.h"
+#include "deprecated/writer/ovtkIBoxAlgorithmStreamedMatrixOutputWriter.h"
+#include "deprecated/writer/ovtkIBoxAlgorithmSignalOutputWriter.h"
+#include "deprecated/writer/ovtkIBoxAlgorithmSpectrumOutputWriter.h"
+#include "deprecated/writer/ovtkIBoxAlgorithmFeatureVectorOutputWriter.h"
+#include "deprecated/writer/ovtkIBoxAlgorithmStimulationOutputWriter.h"
+#include "deprecated/writer/ovtkIBoxAlgorithmExperimentInformationOutputWriter.h"
 #endif
 
 //___________________________________________________________________//

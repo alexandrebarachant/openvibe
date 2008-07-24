@@ -534,7 +534,7 @@ namespace OpenViBEPlugins
 							<< "Score estimation window " << i << " : [fail:success:ratio]=["
 							<< m_vWindowFailCount[i] << ":"
 							<< m_vWindowSuccessCount[i] << ":"
-							<< ((m_vWindowSuccessCount[i]*100)/(m_vWindowSuccessCount[i]+m_vWindowFailCount[i]))<<"%]\n";
+							<< (((m_vWindowSuccessCount[i]*10000)/(m_vWindowSuccessCount[i]+m_vWindowFailCount[i])))/100.0<<"%]\n";
 					}
 				}
 

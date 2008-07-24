@@ -778,12 +778,8 @@ boolean CGDFFileReader::process()
 
 			m_oFile.seekg(l_oBackupPosition);
 
-			if(m_ui32NumberOfEvents!=0)
-			{
-				m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_StimulationOutput]);
-				l_pBoxIO->markOutputAsReadyToSend(GDFReader_StimulationOutput, 0, 0);
-			}
-
+			m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter[GDFReader_StimulationOutput]);
+			l_pBoxIO->markOutputAsReadyToSend(GDFReader_StimulationOutput, 0, 0);
 		}
 
 		GDF::CGDFEvent l_oEvent;
@@ -811,6 +807,13 @@ boolean CGDFFileReader::process()
 			m_pEventsPositionBuffer = NULL;
 			delete [] m_pEventsTypeBuffer;
 			m_pEventsTypeBuffer = NULL;
+
+			//creates an end of file event
+			l_oEvent.m_ui32Position = m_ui32SentSampleCount;
+			l_oEvent.m_ui16Type = OVTK_StimulationId_EndOfFile;
+
+			//adds it to the list of events
+			m_oEvents.push_back(l_oEvent);
 		}
 
 		//if there is at least one event, sends it

@@ -3,11 +3,11 @@
 
 #include "ovtkTBoxAlgorithm.h"
 
-#include "training/ovtkISignalTrial.h"
-#include "training/ovtkISignalTrialSet.h"
+#include "../training/ovtkISignalTrial.h"
+#include "../training/ovtkISignalTrialSet.h"
 
-#include "reader/ovtkIBoxAlgorithmSignalInputReaderCallback.h"
-#include "reader/ovtkIBoxAlgorithmStimulationInputReaderCallback.h"
+#include "../deprecated/reader/ovtkIBoxAlgorithmSignalInputReaderCallback.h"
+#include "../deprecated/reader/ovtkIBoxAlgorithmStimulationInputReaderCallback.h"
 
 #include <ebml/CReader.h>
 

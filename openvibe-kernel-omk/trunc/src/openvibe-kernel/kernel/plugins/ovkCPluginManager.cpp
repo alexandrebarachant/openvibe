@@ -134,6 +134,20 @@ CPluginManager::CPluginManager(const IKernelContext& rKernelContext)
 {
 }
 
+CPluginManager::~CPluginManager(void)
+{
+	map < IPluginObjectDesc*, vector < IPluginObject* > >::iterator i;
+	vector < IPluginObject* >::iterator j;
+	for(i=m_vPluginObject.begin(); i!=m_vPluginObject.end(); i++)
+	{
+		for(j=i->second.begin(); j!=i->second.end(); j++)
+		{
+			log() << LogLevel_ImportantWarning << "Trying to release plugin object with class id " << (*j)->getClassIdentifier() << " and plugin object descriptor " << i->first->getName() << " at plugin manager descruption time\n";
+			(*j)->release();
+		}
+	}
+}
+
 boolean CPluginManager::addPluginsFromFiles(
 	const CString& rFileNameWildCard)
 {
@@ -151,7 +165,7 @@ CIdentifier CPluginManager::getNextPluginObjectDescIdentifier(
 	const CIdentifier& rPreviousIdentifier) const
 {
 	boolean l_bFoundPrevious=(rPreviousIdentifier==OV_UndefinedIdentifier);
-	map<IPluginObjectDesc*, IPluginModule*>::const_iterator i;
+	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
 	{
 		if(!l_bFoundPrevious)
@@ -174,7 +188,7 @@ CIdentifier CPluginManager::getNextPluginObjectDescIdentifier(
 	const CIdentifier& rBaseClassIdentifier) const
 {
 	boolean l_bFoundPrevious=(rPreviousIdentifier==OV_UndefinedIdentifier);
-	map<IPluginObjectDesc*, IPluginModule*>::const_iterator i;
+	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
 	{
 		if(!l_bFoundPrevious)
@@ -200,7 +214,7 @@ boolean CPluginManager::canCreatePluginObject(
 {
 	log() << LogLevel_Debug << "Searching if can build plugin object\n";
 
-	map<IPluginObjectDesc*, IPluginModule*>::const_iterator i;
+	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
 	{
 		if(i->first->getCreatedClass()==rClassIdentifier)
@@ -217,7 +231,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDesc(
 {
 	log() << LogLevel_Debug << "Searching plugin object descriptor\n";
 
-	map<IPluginObjectDesc*, IPluginModule*>::const_iterator i;
+	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
 	{
 		if(i->first->getClassIdentifier()==rClassIdentifier)
@@ -235,7 +249,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 {
 	log() << LogLevel_Debug << "Searching plugin object descriptor\n";
 
-	map<IPluginObjectDesc*, IPluginModule*>::const_iterator i;
+	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
 	{
 		if(i->first->getCreatedClass()==rClassIdentifier)
@@ -252,21 +266,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 IPluginObject* CPluginManager::createPluginObject(
 	const CIdentifier& rClassIdentifier)
 {
-	log() << LogLevel_Debug << "Creating plugin object\n";
-
-	map<IPluginObjectDesc*, IPluginModule*>::const_iterator i;
-	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
-	{
-		if(i->first->getCreatedClass()==rClassIdentifier)
-		{
-			IPluginObject* l_pResult=i->first->create();
-			m_vPluginObject[i->first].push_back(l_pResult);
-			return l_pResult;
-		}
-	}
-
-	log() << LogLevel_Warning << "Plugin class identifier " << rClassIdentifier << " not found\n";
-	return NULL;
+	return createPluginObjectT<IPluginObject, IPluginObjectDesc>(rClassIdentifier, NULL);
 }
 
 boolean CPluginManager::releasePluginObject(
@@ -274,8 +274,8 @@ boolean CPluginManager::releasePluginObject(
 {
 	log() << LogLevel_Debug << "Releasing plugin object\n";
 
-	map<IPluginObjectDesc*, vector<IPluginObject*> >::iterator i;
-	vector<IPluginObject*>::iterator j;
+	map < IPluginObjectDesc*, vector < IPluginObject* > >::iterator i;
+	vector < IPluginObject* >::iterator j;
 	for(i=m_vPluginObject.begin(); i!=m_vPluginObject.end(); i++)
 	{
 		for(j=i->second.begin(); j!=i->second.end(); j++)
@@ -310,7 +310,7 @@ IBoxAlgorithm* CPluginManager::createBoxAlgorithm(
 
 template <class IPluginObjectT, class IPluginObjectDescT>
 IPluginObjectT* CPluginManager::createPluginObjectT(
-	const OpenViBE::CIdentifier& rClassIdentifier,
+	const CIdentifier& rClassIdentifier,
 	const IPluginObjectDescT** ppPluginObjectDescT)
 {
 	if(ppPluginObjectDescT)
@@ -319,7 +319,7 @@ IPluginObjectT* CPluginManager::createPluginObjectT(
 	}
 
 	IPluginObjectDesc* l_pPluginObjectDesc=NULL;
-	map<IPluginObjectDesc*, IPluginModule*>::const_iterator i;
+	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
 	{
 		if(i->first->getCreatedClass()==rClassIdentifier)

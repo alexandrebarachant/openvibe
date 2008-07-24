@@ -9,12 +9,28 @@ namespace OpenViBE
 {
 	namespace
 	{
-		typedef struct
+		class CStimulation
 		{
+		public:
+
+			CStimulation(void)
+				:m_ui64Identifier(0)
+				,m_ui64Date(0)
+				,m_ui64Duration(0)
+			{
+			}
+
+			CStimulation(const uint64 ui64Identifier, const uint64 ui64Date, const uint64 ui64Duration)
+				:m_ui64Identifier(ui64Identifier)
+				,m_ui64Date(ui64Date)
+				,m_ui64Duration(ui64Duration)
+			{
+			}
+
 			uint64 m_ui64Identifier;
 			uint64 m_ui64Date;
 			uint64 m_ui64Duration;
-		} SStimulation;
+		};
 
 		class CStimulationSetImpl : public IStimulationSet
 		{
@@ -30,11 +46,15 @@ namespace OpenViBE
 			virtual boolean setStimulationDate(const uint64 ui64StimulationIndex, const uint64 ui64StimulationDate);
 			virtual boolean setStimulationDuration(const uint64 ui64StimulationIndex, const uint64 ui64StimulationDuration);
 
+			virtual uint64 appendStimulation(const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate, const uint64 ui64StimulationDuration);
+			virtual uint64 insertStimulation(const uint64 ui64StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate, const uint64 ui64StimulationDuration);
+			virtual boolean removeStimulation(const uint64 ui64StimulationIndex);
+
 			_IsDerivedFromClass_Final_(IStimulationSet, OV_ClassId_StimulationSetImpl);
 
 		private:
 
-			vector < SStimulation > m_vStimulation;
+			vector < CStimulation > m_vStimulation;
 		};
 	};
 };
@@ -83,6 +103,39 @@ boolean CStimulationSetImpl::setStimulationDate(const uint64 ui64StimulationInde
 boolean CStimulationSetImpl::setStimulationDuration(const uint64 ui64StimulationIndex, const uint64 ui64StimulationDuration)
 {
 	m_vStimulation[static_cast<size_t>(ui64StimulationIndex)].m_ui64Duration=ui64StimulationDuration;
+	return true;
+}
+
+uint64 CStimulationSetImpl::appendStimulation(const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate, const uint64 ui64StimulationDuration)
+{
+	m_vStimulation.push_back(CStimulation(ui64StimulationIdentifier, ui64StimulationDate, ui64StimulationDuration));
+	return m_vStimulation.size()-1;
+}
+
+uint64 CStimulationSetImpl::insertStimulation(const uint64 ui64StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate, const uint64 ui64StimulationDuration)
+{
+	if(ui64StimulationIndex>=m_vStimulation.size())
+	{
+		return false;
+	}
+	if(ui64StimulationIndex==m_vStimulation.size())
+	{
+		m_vStimulation.push_back(CStimulation(ui64StimulationIdentifier, ui64StimulationDate, ui64StimulationDuration));
+	}
+	else
+	{
+		m_vStimulation.insert(m_vStimulation.begin()+ui64StimulationIndex, CStimulation(ui64StimulationIdentifier, ui64StimulationDate, ui64StimulationDuration));
+	}
+	return true;
+}
+
+boolean CStimulationSetImpl::removeStimulation(const uint64 ui64StimulationIndex)
+{
+	if(ui64StimulationIndex>=m_vStimulation.size())
+	{
+		return false;
+	}
+	m_vStimulation.erase(m_vStimulation.begin()+ui64StimulationIndex);
 	return true;
 }
 
@@ -138,4 +191,19 @@ boolean CStimulationSet::setStimulationDate(const uint64 ui64StimulationIndex, c
 boolean CStimulationSet::setStimulationDuration(const uint64 ui64StimulationIndex, const uint64 ui64StimulationDuration)
 {
 	return m_pStimulationSetImpl->setStimulationDuration(ui64StimulationIndex, ui64StimulationDuration);
+}
+
+uint64 CStimulationSet::appendStimulation(const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate, const uint64 ui64StimulationDuration)
+{
+	return m_pStimulationSetImpl->appendStimulation(ui64StimulationIdentifier, ui64StimulationDate, ui64StimulationDuration);
+}
+
+uint64 CStimulationSet::insertStimulation(const uint64 ui64StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate, const uint64 ui64StimulationDuration)
+{
+	return m_pStimulationSetImpl->insertStimulation(ui64StimulationIndex, ui64StimulationIdentifier, ui64StimulationDate, ui64StimulationDuration);
+}
+
+boolean CStimulationSet::removeStimulation(const uint64 ui64StimulationIndex)
+{
+	return m_pStimulationSetImpl->removeStimulation(ui64StimulationIndex);
 }

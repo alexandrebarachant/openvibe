@@ -53,8 +53,15 @@ namespace OpenViBEPlugins
 			//! Invisible widget used to handle keypresses
 			GtkWidget * m_pDummyWidget;
 
+			typedef struct
+			{
+				OpenViBE::uint64 m_ui64StimulationPress;
+				OpenViBE::uint64 m_ui64StimulationRelease;
+				OpenViBE::boolean m_bStatus;
+			} SKey;
+
 			//! Stores keyvalue/stimulation couples
-			std::map<guint, std::pair < OpenViBE::uint64, OpenViBE::uint64 > > m_oKeyToStimulation;
+			std::map<guint, SKey > m_oKeyToStimulation;
 
 			//! Vector of the stimulations to send when possible
 			std::vector<OpenViBE::uint64> m_oStimulationToSend;

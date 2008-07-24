@@ -128,6 +128,17 @@ namespace OpenViBE
 		//@}
 
 		_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_Matrix);
+
+		const OpenViBE::float64& operator [] (const OpenViBE::uint32 ui32Index) const
+		{
+			return this->getBuffer()[ui32Index];
+		}
+
+		OpenViBE::float64& operator [] (const OpenViBE::uint32 ui32Index)
+		{
+			return this->getBuffer()[ui32Index];
+		}
+
 	};
 };
 
