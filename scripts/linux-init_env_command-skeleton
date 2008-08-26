@@ -62,7 +62,6 @@ OpenViBE_plugin_vrpn_branch=
 ########################################################################################################################
 
 export OpenViBE_base=`pwd`/..
-export OpenViBE_dependencies=`pwd`/../usr
 
 ########################################################################################################################
 
@@ -133,8 +132,6 @@ done
 export OpenViBE_build_order="
 $OpenViBE
 $OpenViBE_application_id_generator
-$OpenViBE_application_omk_test
-$OpenViBE_application_vr_demo
 $OpenViBE_application_vrpn_simulator
 $OpenViBE_module_ebml
 $OpenViBE_module_fs
@@ -161,6 +158,8 @@ $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
 $OpenViBE_application_plugin_inspector
 "
+# $OpenViBE_application_omk_test
+# $OpenViBE_application_vr_demo
 # $OpenViBE_plugin_local
 # $OpenViBE_plugin_wip_brenier
 # $OpenViBE_plugin_wip_jsauvan
