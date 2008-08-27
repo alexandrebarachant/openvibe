@@ -331,9 +331,9 @@ namespace OpenViBEPlugins
 			else
 			{
 				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pDisplayModeButtons[ESpectrumDisplayMode_LocalBestFit]),
-					reinterpret_cast<void*>(G_CALLBACK (powerSpectrumToggleLocalBestFitButtonCallback)), this);
+					(void*)(G_CALLBACK (powerSpectrumToggleLocalBestFitButtonCallback)), this);
 				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pDisplayModeButtons[ESpectrumDisplayMode_GlobalBestFit]),
-					reinterpret_cast<void*>(G_CALLBACK (powerSpectrumToggleGlobalBestFitButtonCallback)), this);
+					(void*)(G_CALLBACK (powerSpectrumToggleGlobalBestFitButtonCallback)), this);
 			}
 		}
 

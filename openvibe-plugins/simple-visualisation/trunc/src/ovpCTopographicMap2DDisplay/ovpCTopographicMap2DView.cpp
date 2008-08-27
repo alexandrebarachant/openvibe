@@ -857,9 +857,9 @@ namespace OpenViBEPlugins
 			else
 			{
 				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pProjectionButtons[TopographicMap2DProjection_Axial]),
-					reinterpret_cast<void*>(G_CALLBACK (&CTopographicMap2DView::toggleAxialProjectionCB)), this);
+					(void*)(G_CALLBACK (&CTopographicMap2DView::toggleAxialProjectionCB)), this);
 				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pProjectionButtons[TopographicMap2DProjection_Radial]),
-					reinterpret_cast<void*>(G_CALLBACK (&CTopographicMap2DView::toggleRadialProjectionCB)), this);
+					(void*)(G_CALLBACK (&CTopographicMap2DView::toggleRadialProjectionCB)), this);
 			}
 		}
 

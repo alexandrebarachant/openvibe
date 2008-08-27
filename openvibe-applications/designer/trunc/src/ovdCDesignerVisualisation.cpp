@@ -136,9 +136,9 @@ CDesignerVisualisation::CDesignerVisualisation(const IKernelContext& rKernelCont
 
 CDesignerVisualisation::~CDesignerVisualisation()
 {
-	g_signal_handlers_disconnect_by_func(G_OBJECT(m_pDialog), reinterpret_cast<void*>(G_CALLBACK(configure_event_cb)), this);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(m_pDialog), G_CALLBACK2(configure_event_cb), this);
 #ifdef HANDLE_MIN_MAX_EVENTS
-	g_signal_handlers_disconnect_by_func(G_OBJECT(m_pDialog), reinterpret_cast<void*>(G_CALLBACK(window_state_event_cb)), this);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(m_pDialog), G_CALLBACK2(window_state_event_cb), this);
 #endif
 	gtk_widget_destroy(m_pDialog);
 
@@ -532,7 +532,7 @@ gboolean CDesignerVisualisation::configure_event_cb(::GtkWidget* widget, GdkEven
 
 gboolean CDesignerVisualisation::widget_expose_event_cb(::GtkWidget* widget, GdkEventExpose* event, gpointer user_data)
 {
-	g_signal_handlers_disconnect_by_func(G_OBJECT(widget), reinterpret_cast<void*>(G_CALLBACK(CDesignerVisualisation::widget_expose_event_cb)), user_data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(widget), G_CALLBACK2(CDesignerVisualisation::widget_expose_event_cb), user_data);
 
 	static_cast<CDesignerVisualisation*>(user_data)->resizeCB();
 
@@ -1178,7 +1178,7 @@ void CDesignerVisualisation::enableNotebookSignals(::GtkWidget* pNotebook, boole
 	}
 	else
 	{
-		g_signal_handlers_disconnect_by_func(G_OBJECT(pNotebook), reinterpret_cast<void*>(G_CALLBACK(notebook_page_switch_cb)), this);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(pNotebook), G_CALLBACK2(notebook_page_switch_cb), this);
 	}
 }
 
@@ -1214,7 +1214,7 @@ void CDesignerVisualisation::enablePanedSignals(::GtkWidget* pPaned, boolean b)
 	if(b)
 		g_signal_connect(G_OBJECT(pPaned), "notify::position", G_CALLBACK(notify_position_paned_cb), this);
 	else
-		g_signal_handlers_disconnect_by_func(G_OBJECT(pPaned), reinterpret_cast<void*>(G_CALLBACK(notify_position_paned_cb)), this);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(pPaned), G_CALLBACK2(notify_position_paned_cb), this);
 }
 
 void CDesignerVisualisation::ask_new_visualisation_window_cb(gpointer pUserData, guint callback_action, ::GtkWidget* pWidget)

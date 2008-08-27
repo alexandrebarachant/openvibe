@@ -33,7 +33,7 @@ CPlayerVisualisation::~CPlayerVisualisation(void)
 
 	for(unsigned int i=0; i<m_vWindows.size(); i++)
 	{
-		g_signal_handlers_disconnect_by_func(G_OBJECT(m_vWindows[i]), reinterpret_cast<void*>(G_CALLBACK(CPlayerVisualisation::configure_event_cb)), this);
+		g_signal_handlers_disconnect_by_func(G_OBJECT(m_vWindows[i]), G_CALLBACK2(CPlayerVisualisation::configure_event_cb), this);
 		gtk_widget_destroy(GTK_WIDGET(m_vWindows[i]));
 	}
 
@@ -463,7 +463,7 @@ void CPlayerVisualisation::hideTopLevelWindows(void)
 gboolean CPlayerVisualisation::configure_event_cb(::GtkWidget* widget, GdkEventConfigure* event, gpointer user_data)
 {
 	//paned positions aren't to be saved, they are to be read once only
-	g_signal_handlers_disconnect_by_func(G_OBJECT(widget), reinterpret_cast<void*>(G_CALLBACK(CPlayerVisualisation::configure_event_cb)), user_data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(widget), G_CALLBACK2(CPlayerVisualisation::configure_event_cb), user_data);
 
 	if(GTK_IS_CONTAINER(widget))
 	{
@@ -475,7 +475,7 @@ gboolean CPlayerVisualisation::configure_event_cb(::GtkWidget* widget, GdkEventC
 
 gboolean CPlayerVisualisation::widget_expose_event_cb(::GtkWidget* widget, GdkEventExpose* event, gpointer user_data)
 {
-	g_signal_handlers_disconnect_by_func(G_OBJECT(widget), reinterpret_cast<void*>(G_CALLBACK(CPlayerVisualisation::widget_expose_event_cb)), user_data);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(widget), G_CALLBACK2(CPlayerVisualisation::widget_expose_event_cb), user_data);
 /*
 	//retrieve topmost widget
 	while(gtk_widget_get_parent(widget) != NULL && GTK_IS_CONTAINER(gtk_widget_get_parent(widget)))
