@@ -165,6 +165,6 @@ $OpenViBE_application_plugin_inspector
 # $OpenViBE_plugin_wip_jsauvan
 # $OpenViBE_plugin_wip_gionescu
 
-if [ -e $OpenViBE_dependencies/environment-configuration-script ]; then
-	source $OpenViBE_dependencies/environment-configuration-script
+if [ -e ./linux-dependencies ]; then
+	source ./linux-dependencies
 fi;
