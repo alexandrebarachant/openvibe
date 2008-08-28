@@ -46,6 +46,7 @@ boolean CTimeSignalGenerator::initialize(void)
 
 	// Allocates sample block
 	m_pSampleBuffer=new float64[m_ui32GeneratedEpochSampleCount];
+	m_ui32SentSampleCount=0;
 
 	return true;
 }
@@ -74,7 +75,6 @@ boolean CTimeSignalGenerator::process(void)
 {
 	IBoxIO* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 
-	uint32 i;
 	if(!m_bHeaderSent)
 	{
 		m_pSignalOutputWriterHelper->setSamplingRate(m_ui32SamplingFrequency);
@@ -90,9 +90,10 @@ boolean CTimeSignalGenerator::process(void)
 	else
 	{
 		uint32 l_ui32SentSampleCount=m_ui32SentSampleCount;
-		for(i=0; i<m_ui32GeneratedEpochSampleCount; i++)
+		float64 l_f64SamplingFrequency=static_cast<float64>(m_ui32SamplingFrequency);
+		for(uint32 i=0; i<m_ui32GeneratedEpochSampleCount; i++)
 		{
-			m_pSampleBuffer[i]=(i+m_ui32SentSampleCount)/((float64)m_ui32SamplingFrequency);
+			m_pSampleBuffer[i]=(i+m_ui32SentSampleCount)/l_f64SamplingFrequency;
 		}
 		m_pSignalOutputWriterHelper->writeBuffer(*m_pSignalOutputWriter);
 		m_ui32SentSampleCount+=m_ui32GeneratedEpochSampleCount;

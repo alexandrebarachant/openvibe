@@ -349,8 +349,12 @@ int go(int argc, char ** argv)
 #endif
 
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
+#if defined OVD_OS_Linux
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-plugins-*.so");
+#elif defined OVD_OS_Windows
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-plugins-*.dll");
+#else
+#endif
 
 					//initialise Gtk before 3D context
 					gtk_init(&g_argc, &g_argv);

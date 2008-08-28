@@ -105,7 +105,10 @@ CSimulatedBox::~CSimulatedBox(void)
 	m_mSimulatedObjects.clear();
 
 	//delete OgreScene
-	m_pOgreVis->deleteScene(m_oSceneIdentifier);
+	if(m_pOgreVis)
+	{
+		m_pOgreVis->deleteScene(m_oSceneIdentifier);
+	}
 }
 
 boolean CSimulatedBox::handleDestroyEvent(GtkWidget* pOVCustomWidget)
