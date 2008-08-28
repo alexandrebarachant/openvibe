@@ -203,7 +203,7 @@ ov_package_url_torch=http://www.torch.ch/archives/Torch3src.tgz
 # OpenMASK 4 related packages
 ov_package_url_obt=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/obt-src-22.tar.bz2
 #http://www.irisa.fr/bunraku/OpenViBE/dependencies/linux/obt-13.tar.bz2
-ov_package_url_freeimage=$ov_sourceforge_mirror/freeimage/FreeImage3100.zip
+ov_package_url_freeimage=$ov_sourceforge_mirror/freeimage/FreeImage3110.zip
 ov_package_url_ois=$ov_sourceforge_mirror/wgois/ois-1.0.tar.gz
 ov_package_url_zziplib=$ov_sourceforge_mirror/zziplib/zziplib-0.10.82.tar.bz2
 ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86.tar.gz
@@ -961,6 +961,8 @@ touch $ov_environment_configuration_script
 
 echo '#!/bin/bash' >> $ov_environment_configuration_script
 echo '' >> $ov_environment_configuration_script
+echo 'export OpenViBE_dependencies='$ov_target_folder >> $ov_environment_configuration_script
+echo '' >> $ov_environment_configuration_script >> $ov_environment_configuration_script
 echo 'export PKG_CONFIG_PATH='$ov_target_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $ov_environment_configuration_script
 echo 'export LD_LIBRARY_PATH='$ov_target_folder'/lib:'$ov_target_folder'/lib/opt:$LD_LIBRARY_PATH' >> $ov_environment_configuration_script
 echo 'export PATH='$ov_target_folder'/bin:$PATH' >> $ov_environment_configuration_script
