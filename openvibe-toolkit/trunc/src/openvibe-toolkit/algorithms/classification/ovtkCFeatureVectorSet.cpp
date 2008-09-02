@@ -10,7 +10,9 @@ using namespace OpenViBEToolkit;
 //
 
 CInternalFeatureVector::CInternalFeatureVector(void)
-	:m_ui32BufferElementCount(0)
+	:m_pMatrix(NULL)
+	,m_ui32DimensionIndex(0)
+	,m_ui32BufferElementCount(0)
 	,m_pBuffer(NULL)
 {
 }
@@ -33,6 +35,16 @@ float64* CInternalFeatureVector::getBuffer(void)
 const float64* CInternalFeatureVector::getBuffer(void) const
 {
 	return m_pBuffer;
+}
+
+const char* CInternalFeatureVector::getElementLabel(const uint32 ui32Index) const
+{
+	return m_pMatrix->getDimensionLabel(m_ui32DimensionIndex, ui32Index);
+}
+
+boolean CInternalFeatureVector::setElementLabel(const uint32 ui32Index, const char* sElementLabel)
+{
+	return false;
 }
 
 float64 CInternalFeatureVector::getLabel(void) const
@@ -58,6 +70,8 @@ CFeatureVectorSet::CFeatureVectorSet(const IMatrix& rMatrix)
 
 	for(uint32 i=0; i<rMatrix.getDimensionSize(0); i++)
 	{
+		m_vFeatureVector[i].m_pMatrix=&rMatrix;
+		m_vFeatureVector[i].m_ui32DimensionIndex=i;
 		m_vFeatureVector[i].m_ui32BufferElementCount=rMatrix.getDimensionSize(1)-1;
 		m_vFeatureVector[i].m_pBuffer=rMatrix.getBuffer()+i*rMatrix.getDimensionSize(1);
 	}

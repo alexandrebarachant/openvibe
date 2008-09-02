@@ -38,6 +38,17 @@ namespace OpenViBEToolkit
 			return m_rMatrix.getBuffer();
 		}
 
+		virtual const char* getElementLabel(const OpenViBE::uint32 ui32Index) const
+		{
+			return m_rMatrix.getDimensionLabel(0, ui32Index);
+		}
+
+		virtual OpenViBE::boolean setElementLabel(const OpenViBE::uint32 ui32Index, const char* sElementLabel)
+		{
+			m_rMatrix.setDimensionLabel(0, ui32Index, sElementLabel);
+			return true;
+		}
+
 		_IsDerivedFromClass_Final_(CParent, OV_UndefinedIdentifier);
 
 	protected:

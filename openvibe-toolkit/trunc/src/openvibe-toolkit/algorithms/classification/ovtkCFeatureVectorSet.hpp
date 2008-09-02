@@ -18,6 +18,8 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::boolean setSize(const OpenViBE::uint32 ui32Size);
 		virtual OpenViBE::float64* getBuffer(void);
 		virtual const OpenViBE::float64* getBuffer(void) const;
+		virtual const char* getElementLabel(const OpenViBE::uint32 ui32Index) const;
+		virtual OpenViBE::boolean setElementLabel(const OpenViBE::uint32 ui32Index, const char* sElementLabel);
 
 		virtual OpenViBE::float64 getLabel(void) const;
 		virtual OpenViBE::boolean setLabel(const OpenViBE::float64 f64Label);
@@ -26,6 +28,8 @@ namespace OpenViBEToolkit
 
 	public:
 
+		const OpenViBE::IMatrix* m_pMatrix;
+		OpenViBE::uint32 m_ui32DimensionIndex;
 		OpenViBE::uint32 m_ui32BufferElementCount;
 		const OpenViBE::float64* m_pBuffer;
 	};
