@@ -17,6 +17,7 @@ namespace OpenViBE
 			virtual ~CAlgorithmContext(void);
 
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void);
+			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void);
 
 			virtual OpenViBE::CIdentifier getNextInputParameterIdentifier(
 				const OpenViBE::CIdentifier& rPreviousInputParameterIdentifier) const;

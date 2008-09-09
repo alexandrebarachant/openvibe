@@ -28,6 +28,11 @@ namespace OpenViBE
 			 * \return a reference on the current log manager
 			 */
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void)=0;
+			/**
+			 * \brief Gets a reference on the current type manager
+			 * \return a reference on the current type manager
+			 */
+			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void)=0;
 
 			/** \name Input parameters */
 			//@{

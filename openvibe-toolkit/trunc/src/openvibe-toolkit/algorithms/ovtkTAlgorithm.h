@@ -55,6 +55,11 @@ namespace OpenViBEToolkit
 			return m_pAlgorithmContext->getLogManager(); // should never be null
 		}
 
+		virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void)
+		{
+			return m_pAlgorithmContext->getTypeManager(); // should never be null
+		}
+
 		virtual OpenViBE::CIdentifier getNextInputParameterIdentifier(
 			const OpenViBE::CIdentifier& rPreviousInputParameterIdentifier) const
 		{
