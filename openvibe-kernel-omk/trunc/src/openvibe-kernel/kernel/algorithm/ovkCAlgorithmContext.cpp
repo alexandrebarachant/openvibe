@@ -91,7 +91,7 @@ ILogManager& CAlgorithmContext::getLogManager(void)
 
 ITypeManager& CAlgorithmContext::getTypeManager(void)
 {
-	return rKernelContext.getTypeManager();
+	return getKernelContext().getTypeManager();
 }
 
 CIdentifier CAlgorithmContext::getNextInputParameterIdentifier(
