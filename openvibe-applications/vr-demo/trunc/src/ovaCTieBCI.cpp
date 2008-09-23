@@ -2,9 +2,11 @@
 
 REGISTER_OBJECT_FACTORY(CTieBCI, "ovaCTieBCI");
 
+using namespace OMK::Type;
+
 static const float g_fAttenuation=.99;
 static const float g_fRotationSpeed=0.25;
-static const float g_fMoveSpeed=1; // 0.004;
+static const float g_fMoveSpeed=0.01; // 0.004;
 static const float g_fScoreGrowingSpeed=0.1;
 
 CTieBCI::CTieBCI(OMK::Controller& rController, const OMK::ObjectDescriptor& rObjectDescriptor)
@@ -140,7 +142,7 @@ void CTieBCI::compute(void)
 
 	sendValuedEvent(m_sVisuName,  m_sVadorTransformName, OMK::Type::TransformType(m_oVadorTransform));
 	sendValuedEvent(m_sVisuName,    m_sTieTransformName, OMK::Type::TransformType(m_oTieTransform));
-	sendValuedEvent(m_sVisuName,  m_sScoreTransformName, OMK::Type::TransformType(OMK::Type::product(m_oScoreTransform, l_oPlaneOffset)));
+	sendValuedEvent(m_sVisuName,  m_sScoreTransformName, OMK::Type::TransformType(product(m_oScoreTransform, l_oPlaneOffset)));
 	sendValuedEvent(m_sVisuName,   m_sMoveTransformName, OMK::Type::TransformType(m_oMoveTransform));
 	sendValuedEvent(m_sVisuName, m_sNoMoveTransformName, OMK::Type::TransformType(m_oNoMoveTransform));
 

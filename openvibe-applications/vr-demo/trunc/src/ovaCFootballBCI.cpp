@@ -7,6 +7,8 @@ template <typename T> const T _crop_(const T& t1, const T& t, const T& t2) { ret
 
 REGISTER_OBJECT_FACTORY(CFootballBCI, "ovaCFootballBCI");
 
+using namespace OMK::Type;
+
 static const float g_fViscosity=0.003;
 static const float g_fGrowScoreingSpeed=0.1;
 static const float g_fEpsilon=1E-5;
@@ -209,11 +211,11 @@ void CFootballBCI::compute(void)
 	sendValuedEvent(m_sVisuName,          m_sActiveBallTransformName, OMK::Type::TransformType(l_oActiveBallTransform));
 	sendValuedEvent(m_sVisuName,        m_sGetReadyBallTransformName, OMK::Type::TransformType(l_oGetReadyBallTransform));
 	sendValuedEvent(m_sVisuName,         m_sPassiveBallTransformName, OMK::Type::TransformType(l_oPassiveBallTransform));
-	sendValuedEvent(m_sVisuName,               m_sArrowTransformName, OMK::Type::TransformType(OMK::Type::product(l_oArrowTransform, l_oArrowOffset)));
-	sendValuedEvent(m_sVisuName,           m_sGoalScoreTransformName, OMK::Type::TransformType(OMK::Type::product(l_oGoalScoreTransform, l_oPlaneOffset)));
-	sendValuedEvent(m_sVisuName,           m_sSideScoreTransformName, OMK::Type::TransformType(OMK::Type::product(l_oSideScoreTransform, l_oPlaneOffset)));
-	sendValuedEvent(m_sVisuName, m_sClassificationScoreTransformName, OMK::Type::TransformType(OMK::Type::product(l_oClassificationScoreTransform, l_oPlaneOffset)));
-	sendValuedEvent(m_sVisuName,            m_sFeedbackTransformName, OMK::Type::TransformType(OMK::Type::product(l_oFeedbackTransform, l_oPlaneOffset)));
+	sendValuedEvent(m_sVisuName,               m_sArrowTransformName, OMK::Type::TransformType(product(l_oArrowTransform, l_oArrowOffset)));
+	sendValuedEvent(m_sVisuName,           m_sGoalScoreTransformName, OMK::Type::TransformType(product(l_oGoalScoreTransform, l_oPlaneOffset)));
+	sendValuedEvent(m_sVisuName,           m_sSideScoreTransformName, OMK::Type::TransformType(product(l_oSideScoreTransform, l_oPlaneOffset)));
+	sendValuedEvent(m_sVisuName, m_sClassificationScoreTransformName, OMK::Type::TransformType(product(l_oClassificationScoreTransform, l_oPlaneOffset)));
+	sendValuedEvent(m_sVisuName,            m_sFeedbackTransformName, OMK::Type::TransformType(product(l_oFeedbackTransform, l_oPlaneOffset)));
 
 	sendValuedEvent(m_sVisuName,          m_sBasicArrowTransformName, OMK::Type::TransformType(l_oBasicArrowTransform));
 	sendValuedEvent(m_sVisuName,               m_sCrossTransformName, OMK::Type::TransformType(l_oCrossTransform));

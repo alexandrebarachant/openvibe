@@ -9,7 +9,7 @@ root
 		Plugins [
 			["${OMK_HOME}/lib/libOMKInputs.so"]
 			["${OMK_HOME}/lib/libOMKAddOn.so"]
-			["/udd/yrenard/openvibe/openvibe-applications/vr-demo/trunc/lib/libOpenViBE-vr-demo-dynamic.so"]
+			["/local/openvibe/openvibe-applications/vr-demo/trunc/lib/libOpenViBE-vr-demo-dynamic.so"]
 		] //(2)
 	}
 
@@ -159,7 +159,7 @@ root
 			}
 			UserParams
 			{
-				device_name "openvibe-vrpn@hiboux"
+				device_name "openvibe-vrpn@hv1"
 				analog_scale 1
 				analog_offset 0
 			}
