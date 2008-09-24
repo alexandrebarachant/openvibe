@@ -645,6 +645,11 @@ boolean CSimulatedBox::processClock(void)
 				}
 				else
 				{
+					if(l_ui64NewClockFrequency > m_rScheduler.getFrequency()<<32)
+					{
+						log() << LogLevel_ImportantWarning << "Box " << m_pBox->getName() << " requested higher clock frequency (" << l_ui64NewClockFrequency << ") than what the scheduler can handle (" << (m_rScheduler.getFrequency()<<32) << ")\n";
+					}
+
 					// note: 1LL should be left shifted 64 bits but this
 					//       would result in an integer over shift (the one
 					//       would exit). Thus the left shift of 63 bits

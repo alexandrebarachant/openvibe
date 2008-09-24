@@ -389,3 +389,8 @@ uint64 CScheduler::getCurrentTime(void) const
 {
 	return m_ui64CurrentTime;
 }
+
+uint64 CScheduler::getFrequency(void) const
+{
+	return m_ui64Frequency;
+}

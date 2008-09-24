@@ -34,6 +34,7 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean sendInput(const OpenViBE::Kernel::CChunk& rChunk, const OpenViBE::CIdentifier& rBoxIdentifier, const OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::uint64 getCurrentTime(void) const;
+			virtual OpenViBE::uint64 getFrequency(void) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IKernelObject >, OVK_ClassId_Kernel_Player_Scheduler);
 
