@@ -35,6 +35,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean sendInput(const OpenViBE::Kernel::CChunk& rChunk, const OpenViBE::CIdentifier& rBoxIdentifier, const OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::uint64 getCurrentTime(void) const;
 			virtual OpenViBE::uint64 getFrequency(void) const;
+			virtual OpenViBE::float64 getCPUUsage(void) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IKernelObject >, OVK_ClassId_Kernel_Player_Scheduler);
 
@@ -48,6 +49,7 @@ namespace OpenViBE
 			OpenViBE::boolean m_bIsInitialized;
 
 			std::map < OpenViBE::CIdentifier, OpenViBE::Kernel::CSimulatedBox* > m_vSimulatedBox;
+			std::map < OpenViBE::CIdentifier, System::CChrono > m_vSimulatedBoxChrono;
 			std::map < OpenViBE::CIdentifier, std::map < OpenViBE::uint32, std::list < OpenViBE::Kernel::CChunk > > > m_vSimulatedBoxInput;
 
 		private:

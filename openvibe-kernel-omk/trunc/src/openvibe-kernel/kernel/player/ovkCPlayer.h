@@ -32,6 +32,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean forward(void);
 
 			virtual OpenViBE::Kernel::EPlayerStatus getStatus(void) const;
+			virtual OpenViBE::float64 getCPUUsage(const OpenViBE::CIdentifier& rProcessingUnitIdentifier) const;
 
 			virtual OpenViBE::boolean loop(
 				const OpenViBE::uint64 ui64ElapsedTime);

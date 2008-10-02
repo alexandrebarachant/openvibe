@@ -53,6 +53,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean forward(void)=0;
 
 			virtual OpenViBE::Kernel::EPlayerStatus getStatus(void) const=0;
+			virtual OpenViBE::float64 getCPUUsage(const OpenViBE::CIdentifier& rProcessingUnitIdentifier) const=0;
 
 			/**
 			 * \brief "short time" function to be called repeatedly by the outstide application

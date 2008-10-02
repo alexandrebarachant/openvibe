@@ -100,6 +100,9 @@ namespace OpenViBEDesigner
 		OpenViBE::int32 m_i32ViewOffsetY;
 		OpenViBE::uint32 m_ui32CurrentMode;
 
+		OpenViBE::uint32 m_ui32BoxCount;
+		OpenViBE::uint32 m_ui32LinkCount;
+
 		OpenViBE::uint32 m_ui32InterfacedObjectId;
 		std::map<OpenViBE::uint32, OpenViBEDesigner::CInterfacedObject> m_vInterfacedObject;
 		std::map<OpenViBE::CIdentifier, OpenViBE::boolean> m_vCurrentObject;

@@ -82,6 +82,10 @@ boolean CChrono::stepIn(void)
 		m_ui32StepIndex=0;
 		m_bHasNewEstimation=true;
 	}
+	else
+	{
+		m_bHasNewEstimation=false;
+	}
 
 	return true;
 }
@@ -101,35 +105,33 @@ boolean CChrono::stepOut(void)
 	return true;
 }
 
-uint64 CChrono::getTotalStepInDuration(void)
+uint64 CChrono::getTotalStepInDuration(void) const
 {
-	m_bHasNewEstimation=false;
 	return m_ui64TotalStepInTime;
 }
 
-uint64 CChrono::getTotalStepOutDuration(void)
+uint64 CChrono::getTotalStepOutDuration(void) const
 {
-	m_bHasNewEstimation=false;
 	return m_ui64TotalStepOutTime;
 }
 
-uint64 CChrono::getAverageStepInDuration(void)
+uint64 CChrono::getAverageStepInDuration(void) const
 {
 	return m_ui32StepCount?this->getTotalStepInDuration()/m_ui32StepCount:0;
 }
 
-uint64 CChrono::getAverageStepOutDuration(void)
+uint64 CChrono::getAverageStepOutDuration(void) const
 {
 	return m_ui32StepCount?this->getTotalStepOutDuration()/m_ui32StepCount:0;
 }
 
-float64 CChrono::getStepInPercentage(void)
+float64 CChrono::getStepInPercentage(void) const
 {
 	uint64 l_ui64TotalStepDuration=(this->getTotalStepInDuration()+this->getTotalStepOutDuration());
 	return l_ui64TotalStepDuration?(this->getTotalStepInDuration()*100.0)/l_ui64TotalStepDuration:0;
 }
 
-float64 CChrono::getStepOutPercentage(void)
+float64 CChrono::getStepOutPercentage(void) const
 {
 	uint64 l_ui64TotalStepDuration=(this->getTotalStepOutDuration()+this->getTotalStepInDuration());
 	return l_ui64TotalStepDuration?(this->getTotalStepOutDuration()*100.0)/l_ui64TotalStepDuration:0;

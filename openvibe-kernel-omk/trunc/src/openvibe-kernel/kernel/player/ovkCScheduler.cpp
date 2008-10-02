@@ -217,10 +217,9 @@ boolean CScheduler::initialize(void)
 	getScenarioManager().getScenario(l_oNewScenarioIdentifier).load("tmp.scenario.xml", CIdentifier(0x440BF3AC, 0x2D960300)); // $$$
 */
 	m_pScenario=&getScenarioManager().getScenario(l_oNewScenarioIdentifier);
-/*
+
 	CBoxSettingModifierVisitor l_oBoxSettingModifierVisitor;
-	l_rScenario.acceptVisitor(l_oBoxSettingModifierVisitor);
-*/
+	m_pScenario->acceptVisitor(l_oBoxSettingModifierVisitor);
 
 	CIdentifier l_oBoxIdentifier;
 	while((l_oBoxIdentifier=m_pScenario->getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
@@ -229,6 +228,7 @@ boolean CScheduler::initialize(void)
 		l_pSimulatedBox->setScenarioIdentifier(m_oScenarioIdentifier);
 		l_pSimulatedBox->setBoxIdentifier(l_oBoxIdentifier);
 		m_vSimulatedBox[l_oBoxIdentifier]=l_pSimulatedBox;
+		m_vSimulatedBoxChrono[l_oBoxIdentifier].reset(m_ui64Frequency);
 	}
 
 	for(map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
@@ -291,6 +291,9 @@ boolean CScheduler::loop(void)
 	for(map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
 	{
 		CSimulatedBox* l_pSimulatedBox=itSimulatedBox->second;
+		System::CChrono& l_rSimulatedBoxChrono=m_vSimulatedBoxChrono[itSimulatedBox->first];
+
+		l_rSimulatedBoxChrono.stepIn();
 		if(l_pSimulatedBox)
 		{
 			l_pSimulatedBox->processClock();
@@ -317,6 +320,14 @@ boolean CScheduler::loop(void)
 				}
 				l_rSimulatedBoxInputChunkList.clear();
 			}
+		}
+		l_rSimulatedBoxChrono.stepOut();
+
+		if(l_rSimulatedBoxChrono.hasNewEstimation())
+		{
+			IBox* l_pBox=m_pScenario->getBoxDetails(itSimulatedBox->first);
+			l_pBox->addAttribute(CIdentifier(1,1), "");
+			l_pBox->setAttributeValue(CIdentifier(1,1), CIdentifier(l_rSimulatedBoxChrono.getTotalStepInDuration()).toString());
 		}
 	}
 	m_oBenchmarkChrono.stepOut();
@@ -393,4 +404,9 @@ uint64 CScheduler::getCurrentTime(void) const
 uint64 CScheduler::getFrequency(void) const
 {
 	return m_ui64Frequency;
+}
+
+float64 CScheduler::getCPUUsage(void) const
+{
+	return (const_cast<System::CChrono&>(m_oBenchmarkChrono)).getStepInPercentage();
 }

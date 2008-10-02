@@ -894,12 +894,14 @@ void CApplication::algorithm_title_button_collapse_cb(::GtkButton* pButton, gpoi
 gboolean CApplication::idle_application_loop(gpointer pUserData)
 {
 	CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
-	CInterfacedScenario* l_pInterfacedScenario=l_pApplication->getCurrentInterfacedScenario();
-	float64 l_f64Time=(l_pInterfacedScenario&&l_pInterfacedScenario->m_pPlayer?((l_pInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
+	CInterfacedScenario* l_pCurrentInterfacedScenario=l_pApplication->getCurrentInterfacedScenario();
+	float64 l_f64Time=(l_pCurrentInterfacedScenario&&l_pCurrentInterfacedScenario->m_pPlayer?((l_pCurrentInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
 	uint32 l_ui32Milli  = ((uint32)(l_f64Time*1000)%1000);
 	uint32 l_ui32Seconds=  ((uint32)l_f64Time)%60;
 	uint32 l_ui32Minutes= (((uint32)l_f64Time)/60)%60;
 	uint32 l_ui32Hours  =((((uint32)l_f64Time)/60)/60);
+
+	float64 l_f64CPUUsage=(l_pCurrentInterfacedScenario&&l_pCurrentInterfacedScenario->m_pPlayer)?l_pCurrentInterfacedScenario->m_pPlayer->getCPUUsage(OV_UndefinedIdentifier):0;
 
 	std::stringstream ss;
 	ss << "Time : ";
@@ -908,11 +910,22 @@ gboolean CApplication::idle_application_loop(gpointer pUserData)
 	if(l_ui32Hours||l_ui32Minutes||l_ui32Seconds)              ss << (l_ui32Seconds<10?"0":"") << l_ui32Seconds << "s ";
 	ss << (l_ui32Milli<100?"0":"") << (l_ui32Milli<10?"0":"") << l_ui32Milli << "ms";
 
+	char l_sCPU[1024];
+	sprintf(l_sCPU, "%3.01f%%", l_f64CPUUsage);
+
 	gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "label_current_time")), ss.str().c_str());
+
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "cpu_usage_progressbar")), l_f64CPUUsage*.01);
+	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "cpu_usage_progressbar")), l_sCPU);
 
 	if(!l_pApplication->hasScenarioRunning())
 	{
 		System::Time::sleep(5);
+	}
+	if(l_pCurrentInterfacedScenario&&l_pCurrentInterfacedScenario->m_pPlayer)
+	{
+		// redraws scenario
+		l_pCurrentInterfacedScenario->redraw();
 	}
 
 	return TRUE;

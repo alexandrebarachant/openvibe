@@ -17,12 +17,12 @@ namespace System
 		virtual System::boolean stepIn(void);
 		virtual System::boolean stepOut(void);
 
-		virtual System::uint64 getTotalStepInDuration(void);
-		virtual System::uint64 getTotalStepOutDuration(void);
-		virtual System::uint64 getAverageStepInDuration(void);
-		virtual System::uint64 getAverageStepOutDuration(void);
-		virtual System::float64 getStepInPercentage(void);
-		virtual System::float64 getStepOutPercentage(void);
+		virtual System::uint64 getTotalStepInDuration(void) const;
+		virtual System::uint64 getTotalStepOutDuration(void) const;
+		virtual System::uint64 getAverageStepInDuration(void) const;
+		virtual System::uint64 getAverageStepOutDuration(void) const;
+		virtual System::float64 getStepInPercentage(void) const;
+		virtual System::float64 getStepOutPercentage(void) const;
 
 		virtual System::boolean hasNewEstimation(void);
 

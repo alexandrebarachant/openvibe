@@ -381,7 +381,7 @@ int go(int argc, char ** argv)
 #endif
 					boolean l_bLogOgreToScreen = true;
 					CIdentifier l_oDesignerResourcesIdentifier;
-					l_rVisualisationManager.initialize3DContext(l_sPluginsFile.c_str(), l_bLogOgreToScreen, ""); // "ogre.log"
+//					l_rVisualisationManager.initialize3DContext(l_sPluginsFile.c_str(), l_bLogOgreToScreen, ""); // "ogre.log"
 					l_rVisualisationManager.createResourceGroup(l_oDesignerResourcesIdentifier, "DesignerResources");
 					l_rVisualisationManager.addResourceLocation(l_oDesignerResourcesIdentifier, "../../dependencies/ogre/media/scooter", ResourceType_Directory, false);
 					l_rVisualisationManager.addResourceLocation(l_oDesignerResourcesIdentifier, "../../dependencies/ogre/media/tempo", ResourceType_Directory, false);

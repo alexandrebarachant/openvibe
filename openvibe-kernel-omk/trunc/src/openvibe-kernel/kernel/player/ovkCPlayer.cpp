@@ -169,6 +169,11 @@ EPlayerStatus CPlayer::getStatus(void) const
 	return m_eStatus;
 }
 
+float64 CPlayer::getCPUUsage(const CIdentifier& rProcessingUnitIdentifier) const
+{
+	return m_oScheduler.getCPUUsage();
+}
+
 boolean CPlayer::loop(
 	const uint64 ui64ElapsedTime)
 {

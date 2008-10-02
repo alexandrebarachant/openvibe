@@ -338,7 +338,44 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_vInterfacedObject[m_ui32InterfacedObjectId]=CInterfacedObject(rBox.getIdentifier());
 
 		boolean l_bCanCreate=m_rKernel.getContext()->getPluginManager().canCreatePluginObject(rBox.getAlgorithmClassIdentifier());
-		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBackgroundSelected:(!l_bCanCreate?Color_BoxBackgroundMissing:Color_BoxBackground)]);
+		if(!this->isLocked())
+		{
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBackgroundSelected:(!l_bCanCreate?Color_BoxBackgroundMissing:Color_BoxBackground)]);
+		}
+		else
+		{
+			CIdentifier l_oComputationTime;
+			l_oComputationTime.fromString(rBox.getAttributeValue(CIdentifier(1, 1)));
+			uint64 l_ui64ComputationTime=l_oComputationTime.toUInteger();
+			uint64 l_ui64ComputationTimeReference=(1LL<<32)/(m_ui32BoxCount==0?1:m_ui32BoxCount);
+
+			::GdkColor l_oColor;
+			if(l_ui64ComputationTime<l_ui64ComputationTimeReference)
+			{
+				l_oColor.pixel=0;
+				l_oColor.red  =(l_ui64ComputationTime<<16)/l_ui64ComputationTimeReference;
+				l_oColor.green=32768;
+				l_oColor.blue =0;
+			}
+			else
+			{
+				if(l_ui64ComputationTime<l_ui64ComputationTimeReference*4)
+				{
+					l_oColor.pixel=0;
+					l_oColor.red  =65535;
+					l_oColor.green=32768-((l_ui64ComputationTime<<15)/(l_ui64ComputationTimeReference*4));
+					l_oColor.blue =0;
+				}
+				else
+				{
+					l_oColor.pixel=0;
+					l_oColor.red  =65535;
+					l_oColor.green=0;
+					l_oColor.blue =0;
+				}
+			}
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &l_oColor);
+		}
 		gdk_draw_rounded_rectangle(
 			l_pWidget->window,
 			l_pDrawGC,
@@ -721,17 +758,23 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_ui32InterfacedObjectId=0;
 		m_vInterfacedObject.clear();
 
+		uint32 l_ui32BoxCount=0;
 		CIdentifier l_oBoxIdentifier;
 		while((l_oBoxIdentifier=m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
 		{
 			redraw(*m_rScenario.getBoxDetails(l_oBoxIdentifier));
+			l_ui32BoxCount++;
 		}
+		m_ui32BoxCount=l_ui32BoxCount;
 
+		uint32 l_ui32LinkCount=0;
 		CIdentifier l_oLinkIdentifier;
 		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifier(l_oLinkIdentifier))!=OV_UndefinedIdentifier)
 		{
 			redraw(*m_rScenario.getLinkDetails(l_oLinkIdentifier));
+			l_ui32LinkCount++;
 		}
+		m_ui32LinkCount=l_ui32LinkCount;
 
 		if(m_ui32CurrentMode==Mode_Selection || m_ui32CurrentMode==Mode_SelectionAdd)
 		{
