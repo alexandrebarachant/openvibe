@@ -2,7 +2,7 @@
 
 #include "../ovk_tools.h"
 
-#include <stdio.h>
+#include <string>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -115,58 +115,70 @@ boolean CTypeManager::registerBitMaskEntry(
 	{
 		return false;
 	}
+	for(uint32 l_ui32BitCount=0, i=0; i<64; i++)
+	{
+		if(ui64EntryValue&(1LL<<i))
+		{
+			l_ui32BitCount++;
+			if(l_ui32BitCount>1)
+			{
+				this->getLogManager() << LogLevel_ImportantWarning << "Discarded bitmask entry (" << m_vName[rTypeIdentifier] << ":" << sEntryName << ") because value " << ui64EntryValue << " contains more than one bit\n";
+				return false;
+			}
+		}
+	}
 	itBitMask->second[ui64EntryValue]=sEntryName;
 	return true;
 }
 
 boolean CTypeManager::isRegistered(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
 	return m_vName.find(rTypeIdentifier)!=m_vName.end()?true:false;
 }
 
 boolean CTypeManager::isStream(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
 	return m_vStream.find(rTypeIdentifier)!=m_vStream.end()?true:false;
 }
 
 boolean CTypeManager::isEnumeration(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
 	return m_vEnumeration.find(rTypeIdentifier)!=m_vEnumeration.end()?true:false;
 }
 
 boolean CTypeManager::isBitMask(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
 	return m_vBitMask.find(rTypeIdentifier)!=m_vBitMask.end()?true:false;
 }
 
 CString CTypeManager::getTypeName(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
 	if(!isRegistered(rTypeIdentifier))
 	{
 		return CString("");
 	}
-	return m_vName[rTypeIdentifier];
+	return m_vName.find(rTypeIdentifier)->second;
 }
 
 CIdentifier CTypeManager::getStreamParentType(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
 	if(!isStream(rTypeIdentifier))
 	{
 		return OV_UndefinedIdentifier;
 	}
-	return m_vStream[rTypeIdentifier];
+	return m_vStream.find(rTypeIdentifier)->second;
 }
 
 uint64 CTypeManager::getEnumerationEntryCount(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return 0;
@@ -178,9 +190,9 @@ boolean CTypeManager::getEnumerationEntry(
 	const CIdentifier& rTypeIdentifier,
 	const uint64 ui64EntryIndex,
 	CString& sEntryName,
-	uint64& rEntryValue)
+	uint64& rEntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return false;
@@ -191,7 +203,7 @@ boolean CTypeManager::getEnumerationEntry(
 		return false;
 	}
 
-	map<uint64, CString>::iterator itEnumerationEntry=itEnumeration->second.begin();
+	map<uint64, CString>::const_iterator itEnumerationEntry=itEnumeration->second.begin();
 	for(uint64 i=0; i<ui64EntryIndex && itEnumerationEntry!=itEnumeration->second.end(); i++, itEnumerationEntry++)
 	{
 	}
@@ -204,26 +216,26 @@ boolean CTypeManager::getEnumerationEntry(
 
 CString CTypeManager::getEnumerationEntryNameFromValue(
 	const CIdentifier& rTypeIdentifier,
-	const uint64 ui64EntryValue)
+	const uint64 ui64EntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return "";
 	}
-	map<uint64, CString>::iterator itEnumerationEntry=itEnumeration->second.find(ui64EntryValue);
+	map<uint64, CString>::const_iterator itEnumerationEntry=itEnumeration->second.find(ui64EntryValue);
 	if(itEnumerationEntry==itEnumeration->second.end())
 	{
 		return "";
 	}
-	return itEnumeration->second[ui64EntryValue];
+	return itEnumeration->second.find(ui64EntryValue)->second;
 }
 
 uint64 CTypeManager::getEnumerationEntryValueFromName(
 	const CIdentifier& rTypeIdentifier,
-	const CString& rEntryName)
+	const CString& rEntryName) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return 0xffffffffffffffffll;
@@ -235,7 +247,7 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 		return l_ui64Value;
 	}
 
-	map<uint64, CString>::iterator itEnumerationEntry;
+	map<uint64, CString>::const_iterator itEnumerationEntry;
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
 		if(itEnumerationEntry->second==rEntryName)
@@ -247,9 +259,9 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 }
 
 uint64 CTypeManager::getBitMaskEntryCount(
-	const CIdentifier& rTypeIdentifier)
+	const CIdentifier& rTypeIdentifier) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return 0;
@@ -261,9 +273,9 @@ boolean CTypeManager::getBitMaskEntry(
 	const CIdentifier& rTypeIdentifier,
 	const uint64 ui64EntryIndex,
 	CString& sEntryName,
-	uint64& rEntryValue)
+	uint64& rEntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return false;
@@ -274,7 +286,7 @@ boolean CTypeManager::getBitMaskEntry(
 		return false;
 	}
 
-	map<uint64, CString>::iterator itBitMaskEntry=itBitMask->second.begin();
+	map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.begin();
 	for(uint64 i=0; i<ui64EntryIndex && itBitMaskEntry!=itBitMask->second.end(); i++, itBitMaskEntry++)
 	{
 	}
@@ -287,31 +299,31 @@ boolean CTypeManager::getBitMaskEntry(
 
 CString CTypeManager::getBitMaskEntryNameFromValue(
 	const CIdentifier& rTypeIdentifier,
-	const uint64 ui64EntryValue)
+	const uint64 ui64EntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return "";
 	}
-	map<uint64, CString>::iterator itBitMaskEntry=itBitMask->second.find(ui64EntryValue);
+	map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.find(ui64EntryValue);
 	if(itBitMaskEntry==itBitMask->second.end())
 	{
 		return "";
 	}
-	return itBitMask->second[ui64EntryValue];
+	return itBitMask->second.find(ui64EntryValue)->second;
 }
 
 uint64 CTypeManager::getBitMaskEntryValueFromName(
 	const CIdentifier& rTypeIdentifier,
-	const CString& rEntryName)
+	const CString& rEntryName) const
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return 0xffffffffffffffffll;
 	}
-	map<uint64, CString>::iterator itBitMaskEntry;
+	map<uint64, CString>::const_iterator itBitMaskEntry;
 	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 	{
 		if(itBitMaskEntry->second==rEntryName)
@@ -320,4 +332,91 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 		}
 	}
 	return 0xffffffffffffffffll;
+}
+
+CString CTypeManager::getBitMaskEntryCompositionNameFromValue(
+	const CIdentifier& rTypeIdentifier,
+	const uint64 ui64EntryCompositionValue) const
+{
+	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	if(itBitMask==m_vBitMask.end())
+	{
+		return "";
+	}
+
+	string l_sResult;
+	for(uint32 i=0; i<64; i++)
+	{
+		if(ui64EntryCompositionValue&(1LL<<i))
+		{
+			map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.find(ui64EntryCompositionValue&(1LL<<i));
+			if(itBitMaskEntry==itBitMask->second.end())
+			{
+				return "";
+			}
+			if(l_sResult=="")
+			{
+				l_sResult=itBitMaskEntry->second.toASCIIString();
+			}
+			else
+			{
+				;
+				l_sResult+=string(1, OV_Value_EnumeratedStringSeparator);
+				l_sResult+=itBitMaskEntry->second.toASCIIString();
+			}
+		}
+	}
+	return CString(l_sResult.c_str());
+}
+
+uint64 CTypeManager::getBitMaskEntryCompositionValueFromName(
+	const CIdentifier& rTypeIdentifier,
+	const CString& rEntryCompositionName) const
+{
+	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	if(itBitMask==m_vBitMask.end())
+	{
+		return 0;
+	}
+
+	uint64 l_ui64Result=0;
+	string l_sEntryCompositionName=rEntryCompositionName.toASCIIString();
+	string::size_type i=0;
+	string::size_type j=0;
+	do
+	{
+		i=l_sEntryCompositionName.find(OV_Value_EnumeratedStringSeparator, i);
+		if(i==string::npos)
+		{
+			i=l_sEntryCompositionName.length();
+		}
+
+		if(i!=j)
+		{
+			string l_sEntryName;
+			l_sEntryName.assign(l_sEntryCompositionName, j, i-j);
+
+			boolean l_bFound=false;
+			map<uint64, CString>::const_iterator itBitMaskEntry;
+			for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
+			{
+				if(itBitMaskEntry->second==CString(l_sEntryName.c_str()))
+				{
+					l_ui64Result|=itBitMaskEntry->first;
+					l_bFound=true;
+				}
+			}
+
+			if(!l_bFound)
+			{
+				return 0;
+			}
+		}
+
+		i++;
+		j=i;
+	}
+	while(i<l_sEntryCompositionName.length());
+
+	return l_ui64Result;
 }

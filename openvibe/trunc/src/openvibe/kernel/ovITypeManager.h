@@ -135,7 +135,7 @@ namespace OpenViBE
 			 * \return \e false if the specified type has not been registered.
 			 */
 			virtual OpenViBE::boolean isRegistered(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
 			 * \brief Tests if a specific type has been registered and is a stream
 			 * \param rTypeIdentifier [in] : the type identifier which registration has to be tested
@@ -143,7 +143,7 @@ namespace OpenViBE
 			 * \return \e false if the specified type has not been registered or is not a stream.
 			 */
 			virtual OpenViBE::boolean isStream(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
 			 * \brief Tests if a specific type has been registered and is an enumeration
 			 * \param rTypeIdentifier [in] : the type identifier which registration has to be tested
@@ -151,7 +151,7 @@ namespace OpenViBE
 			 * \return \e false if the specified type has not been registered or is not an enumeration.
 			 */
 			virtual OpenViBE::boolean isEnumeration(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
 			 * \brief Tests if a specific type has been registered and is a bitmask
 			 * \param rTypeIdentifier [in] : the type identifier which registration has to be tested
@@ -159,7 +159,7 @@ namespace OpenViBE
 			 * \return \e false if the specified type has not been registered or is not a bitmask.
 			 */
 			virtual OpenViBE::boolean isBitMask(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 
 			//@}
 			/** \name Type identification */
@@ -171,7 +171,7 @@ namespace OpenViBE
 			 * \return the name of the speficied type.
 			 */
 			virtual OpenViBE::CString getTypeName(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
 			 * \brief Gets the parent stream type for a stream type
 			 * \param rTypeIdentifier [in] : the stream type identifier which parent stream type be returned
@@ -180,7 +180,7 @@ namespace OpenViBE
 			 * \note The specified type identifier has to be a stream type.
 			 */
 			virtual OpenViBE::CIdentifier getStreamParentType(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 
 			//@}
 			/** \name Enumeration entry accessors */
@@ -192,7 +192,7 @@ namespace OpenViBE
 			 * \return the number of entry for this enumeration type.
 			 */
 			virtual OpenViBE::uint64 getEnumerationEntryCount(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
 			 * \brief Gets details for a specific enumeration type entry
 			 * \param rTypeIdentifier [in] : the enumeration type identifier
@@ -206,7 +206,7 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rTypeIdentifier,
 				const OpenViBE::uint64 ui64EntryIndex,
 				OpenViBE::CString& sEntryName,
-				OpenViBE::uint64& rEntryValue)=0;
+				OpenViBE::uint64& rEntryValue) const=0;
 			/**
 			 * \brief Converts an enumeration entry value to an enumeration entry name
 			 * \param rTypeIdentifier [in] : the enumeration type identifier
@@ -216,7 +216,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::CString getEnumerationEntryNameFromValue(
 				const OpenViBE::CIdentifier& rTypeIdentifier,
-				const OpenViBE::uint64 ui64EntryValue)=0;
+				const OpenViBE::uint64 ui64EntryValue) const=0;
 			/**
 			 * \brief Converts an enumeration entry name to an enumeration entry value
 			 * \param rTypeIdentifier [in] : the enumeration type identifier
@@ -226,7 +226,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::uint64 getEnumerationEntryValueFromName(
 				const OpenViBE::CIdentifier& rTypeIdentifier,
-				const OpenViBE::CString& rEntryName)=0;
+				const OpenViBE::CString& rEntryName) const=0;
 
 			//@}
 			/** \name Bitmask entry accessors */
@@ -238,7 +238,7 @@ namespace OpenViBE
 			 * \return the number of entry for this bitmask type.
 			 */
 			virtual OpenViBE::uint64 getBitMaskEntryCount(
-				const OpenViBE::CIdentifier& rTypeIdentifier)=0;
+				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
 			 * \brief Gets details for a specific bitmask type entry
 			 * \param rTypeIdentifier [in] : the bitmask type identifier
@@ -252,7 +252,7 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rTypeIdentifier,
 				const OpenViBE::uint64 ui64EntryIndex,
 				OpenViBE::CString& sEntryName,
-				OpenViBE::uint64& rEntryValue)=0;
+				OpenViBE::uint64& rEntryValue) const=0;
 			/**
 			 * \brief Converts a bitmask entry value to a bitmask entry name
 			 * \param rTypeIdentifier [in] : the bitmask type identifier
@@ -262,7 +262,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::CString getBitMaskEntryNameFromValue(
 				const OpenViBE::CIdentifier& rTypeIdentifier,
-				const OpenViBE::uint64 ui64EntryValue)=0;
+				const OpenViBE::uint64 ui64EntryValue) const=0;
 			/**
 			 * \brief Converts a bitmask entry name to a bitmask entry value
 			 * \param rTypeIdentifier [in] : the bitmask type identifier
@@ -272,7 +272,27 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::uint64 getBitMaskEntryValueFromName(
 				const OpenViBE::CIdentifier& rTypeIdentifier,
-				const OpenViBE::CString& rEntryName)=0;
+				const OpenViBE::CString& rEntryName) const=0;
+			/**
+			 * \brief Computes the textual value of a composition of numerical entries
+			 * \param rTypeIdentifier [in] : the bitmask type identifier
+			 * \param ui64EntryCompositionValue [in] : the composition of numerical entries
+			 * \return the bitmask entry composition name.
+			 * \warning on error, an empty string is returned.
+			 */
+			virtual OpenViBE::CString getBitMaskEntryCompositionNameFromValue(
+				const OpenViBE::CIdentifier& rTypeIdentifier,
+				const OpenViBE::uint64 ui64EntryCompositionValue) const=0;
+			/**
+			 * \brief Computes the integer value of a composition of textual entries
+			 * \param rTypeIdentifier [in] : the bitmask type identifier
+			 * \param rEntryCompositionName [in] : the composition of textual entries
+			 * \return the bitmask entry composition value.
+			 * \warning on error, \c 0x0000000000000000LL is returned.
+			 */
+			virtual OpenViBE::uint64 getBitMaskEntryCompositionValueFromName(
+				const OpenViBE::CIdentifier& rTypeIdentifier,
+				const OpenViBE::CString& rEntryCompositionName) const=0;
 
 			//@}
 
