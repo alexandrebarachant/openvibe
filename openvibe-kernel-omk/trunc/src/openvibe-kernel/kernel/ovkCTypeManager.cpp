@@ -241,12 +241,7 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 		return 0xffffffffffffffffll;
 	}
 
-	uint64 l_ui64Value;
-	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
-	{
-		return l_ui64Value;
-	}
-
+	// first looks at the exact string match
 	map<uint64, CString>::const_iterator itEnumerationEntry;
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
@@ -255,6 +250,33 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 			return itEnumerationEntry->first;
 		}
 	}
+
+	// then looks at the caseless string match
+	string l_sEntryName(rEntryName);
+	string l_sEntryNameLower;
+	std::transform(l_sEntryName.begin(), l_sEntryName.end(), l_sEntryNameLower.begin(), std::tolower);
+	map<uint64, CString>::const_iterator itEnumerationEntry;
+	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
+	{
+		string l_sItEntryName(itEnumerationEntry->second);
+		string l_sItEntryNameLower;
+		std::transform(l_sItEntryName.begin(), l_sItEntryName.end(), l_sItEntryNameLower.begin(), std::tolower);
+		if(l_sItEntryNameLower==l_sEntryNameLower)
+		{
+			return itEnumerationEntry->first;
+		}
+	}
+
+	// then looks at the string beeing the value itself
+	uint64 l_ui64Value;
+	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
+	{
+		if(itEnumeration->second.find(l_ui64Value)!=itEnumeration->second.end())
+		{
+			return l_ui64Value;
+		}
+	}
+
 	return 0xffffffffffffffffll;
 }
 
@@ -323,6 +345,8 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 	{
 		return 0xffffffffffffffffll;
 	}
+
+	// first looks at the exact string match
 	map<uint64, CString>::const_iterator itBitMaskEntry;
 	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 	{
@@ -331,6 +355,33 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 			return itBitMaskEntry->first;
 		}
 	}
+
+	// then looks at the caseless string match
+	string l_sEntryName(rEntryName);
+	string l_sEntryNameLower;
+	std::transform(l_sEntryName.begin(), l_sEntryName.end(), l_sEntryNameLower.begin(), std::tolower);
+	map<uint64, CString>::const_iterator itBitMaskEntry;
+	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
+	{
+		string l_sItEntryName(itBitMaskEntry->second);
+		string l_sItEntryNameLower;
+		std::transform(l_sItEntryName.begin(), l_sItEntryName.end(), l_sItEntryNameLower.begin(), std::tolower);
+		if(l_sItEntryNameLower==l_sEntryNameLower)
+		{
+			return itBitMaskEntry->first;
+		}
+	}
+
+	// then looks at the string beeing the value itself
+	uint64 l_ui64Value;
+	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
+	{
+		if(itBitMask->second.find(l_ui64Value)!=itBitMask->second.end())
+		{
+			return l_ui64Value;
+		}
+	}
+
 	return 0xffffffffffffffffll;
 }
 
