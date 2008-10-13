@@ -1,0 +1,18 @@
+/*!
+  \mainpage
+
+  Here is the documentation for the signal-processing-gpl plugins algorithms:
+  
+  Here is the documentation for the signal-processing-gpl plugins box-algorithms:
+  
+ -	\ref Doc_ovpCDownsampling
+ - \ref Doc_ovpCTemporalFilter
+ - \ref Doc_ovpCWindowingFunctions
+ - \ref Doc_ovpCFastICA
+ 
+ - \ref Doc_ovpCSpectralAnalysis
+  
+  - \ref Doc_ovpCDetectingMinMax
+  -	\ref Doc_ovpCLDA
+    
+ */

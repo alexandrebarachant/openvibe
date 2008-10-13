@@ -1,0 +1,79 @@
+/**
+ \page Doc_ovpCDownsampling Downsampling documentation
+
+- Plugin name : Downsampling
+- Version :	0.1
+- Author : 	Guillaume Gibert
+- Date :	04-07-2008
+
+<br>
+Summary :
+
+\ref Doc_ovpCDownsampling_description
+
+\ref Doc_ovpCDownsampling_inputs
+
+\ref Doc_ovpCDownsampling_outputs
+
+\ref Doc_ovpCDownsampling_settings
+
+\ref Doc_ovpCDownsampling_examples
+
+\ref Doc_ovpCDownsampling_misc
+
+<hr>
+<br>
+<br>
+ \section Doc_ovpCDownsampling_description Description
+This plugin is used to downsample the input signal. First, a low-pass filter is applied to the input signal for anti-aliasing. Then, the input signal is downsampled at the new sampling rate. This plugin allows the selection of the kinf of filter (Butterworth, Chebychev, Yule-Walker), the new sampling rate and the frequency cutoff for the filter.  
+
+\image html DownsamplingBox.png
+
+ \section Doc_ovpCDownsampling_inputs Inputs
+ Number of inputs : 1
+
+-# Signal input
+ - OV_TypeId_Signal
+ - The input signal.
+
+
+ \section Doc_ovpCDownsampling_outputs Outputs
+Number of outputs : 1
+
+-# Downsampled signal
+ - OV_TypeId_Signal
+ - Only the channels selected by the user are kept in the output signal.
+
+ \section Doc_ovpCDownsampling_settings Settings
+Number of settings : 5
+
+-# New Sampling Rate (Hz)
+ - CString
+ - New sampling rate in Hz chosen to downsample the input signal.
+
+-# Frequency cutoff ratio
+ - Multiple Choices List
+ - Select the frequency cutoff of the low-pass filter as a ratio (1/2, 1/3 or 1/4) of the new sampling rate.
+ 
+ -# Name of Filter
+ - Multiple Choices List
+ - Select the kind of filter between Butterworth, Chebychev and Yule-Walker.
+ 
+ -# Filter Order
+ - CString
+ - Order of the low-pass filter.
+ 
+ -# PassBand Ripple (dB)
+ - CString
+ - If Chebychev filter is selected, PassBand Ripple is a necessary info.
+
+\section Doc_ovpCDownsampling_examples Examples
+Let's consider our input signal sampling rate is 1 kHz.
+If the new selected sampling rate is 200 Hz and the Frequency cutoff ratio is 1/4, then a low-pass filter (with freqeuncy cutoff equal to 200*1/4 = 50 Hz) is applied  before downsampling at 200 Hz.
+
+ \section Doc_ovpCDownsampling_misc Miscellaneous
+
+This plugin downsamples the input signal and previously realizes an anti-aliasing filtering.
+
+
+*/

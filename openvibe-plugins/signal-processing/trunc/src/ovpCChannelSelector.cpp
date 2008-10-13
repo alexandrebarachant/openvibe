@@ -44,7 +44,7 @@ void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBu
 				m_pSignalDescription->m_oChannelName.push_back(m_vChannelNames[m_vSelectedChannelIndexes[i]]);
 			}
 		}
-		
+
 	}
 	//if the selection is done by names
 	else
@@ -63,11 +63,10 @@ void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBu
 			}
 		}
 	}
-	
+
 	//the new channel count is the number of selected channels found in the input stream
 	m_pSignalDescription->m_ui32ChannelCount = m_vChannelsToKeep.size();
-	
-	
+
 	//check if we have at least one channel
 	if(m_pSignalDescription->m_ui32ChannelCount == 0)
 	{
@@ -76,39 +75,33 @@ void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBu
 	}
 	else
 	{
-	
-		//Don't send anything if no channels are selected
-		if(m_pSignalDescription->m_ui32ChannelCount!=0)
+		//gets the sample count
+		m_pSignalDescription->m_ui32SampleCount = ui32SampleCountPerBuffer;
+
+		//the matrix buffer hasn't been allocated yet, allocate it
+		if(!m_pMatrixBuffer)
 		{
-			//gets the sample count
-			m_pSignalDescription->m_ui32SampleCount = ui32SampleCountPerBuffer;
-	
-			//the matrix buffer hasn't been allocated yet, allocate it
-			if(!m_pMatrixBuffer)
-			{
-				m_ui64MatrixBufferSize = m_pSignalDescription -> m_ui32SampleCount * m_pSignalDescription -> m_ui32ChannelCount;
-	
-				m_pMatrixBuffer = new EBML::float64[(size_t)m_ui64MatrixBufferSize];
-			}
+			m_ui64MatrixBufferSize = m_pSignalDescription -> m_ui32SampleCount * m_pSignalDescription -> m_ui32ChannelCount;
 
-			//we have everything needed to send the stream header
-			m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription->m_ui32SamplingRate);
-			m_pSignalOutputWriterHelper->setChannelCount(m_pSignalDescription->m_ui32ChannelCount);
-
-			for(uint32 i=0 ; i<m_pSignalDescription->m_ui32ChannelCount ; i++)
-			{
-				m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription->m_oChannelName[i].c_str());
-			}
-
-			m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_pSignalDescription->m_ui32SampleCount);
-			m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
-
-			m_pSignalOutputWriterHelper->writeHeader(*m_pWriter);
-
-			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
+			m_pMatrixBuffer = new EBML::float64[(size_t)m_ui64MatrixBufferSize];
 		}
+
+		//we have everything needed to send the stream header
+		m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription->m_ui32SamplingRate);
+		m_pSignalOutputWriterHelper->setChannelCount(m_pSignalDescription->m_ui32ChannelCount);
+
+		for(uint32 i=0 ; i<m_pSignalDescription->m_ui32ChannelCount ; i++)
+		{
+			m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription->m_oChannelName[i].c_str());
+		}
+
+		m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_pSignalDescription->m_ui32SampleCount);
+		m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
+
+		m_pSignalOutputWriterHelper->writeHeader(*m_pWriter);
+
+		getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
 	}
-	
 }
 
 void CChannelSelector::setSamplingRate(const uint32 ui32SamplingFrequency)
@@ -125,7 +118,7 @@ void CChannelSelector::setSampleBuffer(const float64* pBuffer)
 		uint8* l_pDestinationMatrix = reinterpret_cast<EBML::uint8 *>(m_pMatrixBuffer);
 
 		//size of a sample block (for one channel) in bytes
-		uint64 l_ui64SampleBlockSize = m_pSignalDescription->m_ui32SampleCount * sizeof(EBML::float64);	
+		uint64 l_ui64SampleBlockSize = m_pSignalDescription->m_ui32SampleCount * sizeof(EBML::float64);
 
 		//for each selected channel found in the input stream
 		for(uint32 i=0 ; i<m_vChannelsToKeep.size() ; i++)
@@ -183,7 +176,6 @@ boolean CChannelSelector::initialize()
 	{
 		m_bSelectionbyIndex = false;
 	}
-
 
 	//reads the plugin settings
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_sSettings);
@@ -261,7 +253,7 @@ boolean CChannelSelector::processInput( uint32 ui32InputIndex)
 boolean CChannelSelector::process()
 {
 	IBoxIO* l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
-		
+
 	// Process input data
 	for(uint32 i=0; i<l_pBoxIO->getInputChunkCount(0); i++)
 	{

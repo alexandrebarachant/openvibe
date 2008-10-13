@@ -1,0 +1,58 @@
+/**
+ \page Doc_ovpCFastICA FastICA documentation
+
+- Plugin name : FastICA
+- Version :	0.1
+- Author : 	Guillaume Gibert
+- Date :	09-10-2008
+
+<br>
+Summary :
+
+\ref Doc_ovpCFastICA_description
+
+\ref Doc_ovpCFastICA_inputs
+
+\ref Doc_ovpCFastICA_outputs
+
+\ref Doc_ovpCFastICA_settings
+
+\ref Doc_ovpCFastICA_examples
+
+\ref Doc_ovpCFastICA_misc
+
+<hr>
+<br>
+<br>
+ \section Doc_ovpCFastICA_description Description
+This plugin is used to decompose into independant components the input signal. This plugin is based on the Fast ICA algorithm.  
+
+\image html FastICABox.png
+
+ \section Doc_ovpCFastICA_inputs Inputs
+ Number of inputs : 1
+
+-# Signal input
+ - OV_TypeId_Signal
+ - The input signal.
+
+
+ \section Doc_ovpCFastICA_outputs Outputs
+Number of outputs : 1
+
+-# Filtered signal
+ - OV_TypeId_Signal
+
+ \section Doc_ovpCFastICA_settings Settings
+Number of settings : 0
+
+\section Doc_ovpCFastICA_examples Examples
+Let's consider our input signal.
+To decompose the input signal and to enlight for example the blinks, apply the FastICA. One of the new component will contain blinks. 
+
+ \section Doc_ovpCFastICA_misc Miscellaneous
+
+This plugin applies the Fast ICA algorithm to  the input signal.
+
+
+*/

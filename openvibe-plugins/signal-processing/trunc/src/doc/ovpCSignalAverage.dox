@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpCSignalAverage_description Description
  This plugin computes the average of each incoming sample buffer and outputs the resulting signal.
 
-\image html SignalAverageBox.png
+\image html BoxAlgorithm_SignalAverage.png
 
  \section Doc_ovpCSignalAverage_inputs Inputs
  Number of inputs : 1

@@ -275,7 +275,7 @@ boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
 		{
 			pModifiedNode = new CAbstractTreeValueNode(l_f64TotalValue);
 			l_bHasChanged = true;
-			cout<<l_f64TotalValue<<endl;
+			// cout<<l_f64TotalValue<<endl;
 		}
 		//if there are still some other children, but we reduced at least two children
 		else if(i > 1)

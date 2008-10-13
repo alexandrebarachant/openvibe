@@ -1,43 +1,64 @@
-#include "ovp_defines.h"
+#include "algorithms/basic/ovpCMatrixAverage.h"
+#include "algorithms/epoching/ovpCAlgorithmStimulationBasedEpoching.h"
+#include "algorithms/filters/ovpCApplySpatialFilter.h"
+
+#include "box-algorithms/basic/ovpCMovingAverage.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
+#include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
+#include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
+
+#include "ovpCReferenceChannel.h"
 #include "ovpCChannelSelector.h"
 #include "ovpCSimpleDSP.h"
 #include "ovpCSignalAverage.h"
+#include "ovpCCommonAverageReference.h"
+#include "ovpCFirstDifferenceDetrending.h"
+#include "ovpCSecondDifferenceDetrending.h"
+#include "ovpCMovingAverageDetrending.h"
+#include "ovpCBoxAlgorithmQuadraticForm.h"
 
-static OpenViBEPlugins::SignalProcessing::CChannelSelectorDesc* gst_pChannelSelectorDesc=NULL;
-static OpenViBEPlugins::SignalProcessing::CSimpleDSPDesc* gst_pSimpleDSPDesc=NULL;
-static OpenViBEPlugins::SignalProcessing::CSignalAverageDesc* gst_pSignalAverageDesc=NULL;
+#include "ovpCBandFrequencyAverage.h"
+#include "ovpCEpoching.h"
+#include "ovpCSteadyStateFrequencyComparison.h"
 
-extern "C"
-{
+OVP_Declare_Begin()
 
-OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
-	gst_pChannelSelectorDesc=new OpenViBEPlugins::SignalProcessing::CChannelSelectorDesc();
-	gst_pSimpleDSPDesc=new OpenViBEPlugins::SignalProcessing::CSimpleDSPDesc();
-	gst_pSignalAverageDesc=new OpenViBEPlugins::SignalProcessing::CSignalAverageDesc();
+	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_EpochAverageMethod, "Epoch average method");
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_EpochAverageMethod, "Moving epoch average",   OVP_TypeId_EpochAverageMethod_MovingAverage.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_EpochAverageMethod, "Epoch block average",    OVP_TypeId_EpochAverageMethod_BlockAverage.toUInteger());
+	// rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_EpochAverage, "Infinite block average", OVP_TypeId_EpochAverage_InfiniteAverage.toUInteger());
 
-	return true;
-}
+	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_CropMethod, "Crop method");
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_CropMethod, "Min",     OVP_TypeId_CropMethod_Min.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_CropMethod, "Max",     OVP_TypeId_CropMethod_Max.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_CropMethod, "Min/Max", OVP_TypeId_CropMethod_MinMax.toUInteger());
 
-OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
-	delete gst_pChannelSelectorDesc;
-	delete gst_pSimpleDSPDesc;
-	delete gst_pSignalAverageDesc;
+	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_ComparisonMethod, "Comparison method");
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Ratio",            OVP_TypeId_ComparisonMethod_Ratio.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Substraction",     OVP_TypeId_ComparisonMethod_Substraction.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Laterality index", OVP_TypeId_ComparisonMethod_LateralityIndex.toUInteger());
 
-	return true;
-}
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CMatrixAverageDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CAlgorithmStimulationBasedEpochingDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CApplySpatialFilterDesc)
 
-OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
-{
-	switch(ui32Index)
-	{
-		case 0: rpPluginObjectDescription=gst_pChannelSelectorDesc; break;
-		case 1: rpPluginObjectDescription=gst_pSimpleDSPDesc; break;
-		case 2: rpPluginObjectDescription=gst_pSignalAverageDesc; break;
-		default: return false;
-	}
-	return true;
-}
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochAverageDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCropDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmStimulationBasedEpochingDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSpatialFilterBoxAlgorithmDesc)
 
-}
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CReferenceChannelDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CChannelSelectorDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSimpleDSPDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSignalAverageDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CCommonAverageReferenceDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CFirstDifferenceDetrendingDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSecondDifferenceDetrendingDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CMovingAverageDetrendingDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmQuadraticFormDesc)
+
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBandFrequencyAverageDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochingDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSteadyStateFrequencyComparisonDesc)
+
+OVP_Declare_End()

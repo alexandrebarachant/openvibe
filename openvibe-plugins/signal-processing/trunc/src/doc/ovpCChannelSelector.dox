@@ -27,7 +27,7 @@ Summary :
  \section Doc_ovpChannelSelector_description Description
  This plugin is used to filter the input signal and to keep a selection of channels from this signal. For instance, if the input signal has 8 channels, you can select a subset of channels to output simply by specifying their names.
 
-\image html ChannelSelectorBox.png
+\image html BoxAlgorithm_ChannelSelector.png
 
  \section Doc_ovpChannelSelector_inputs Inputs
  Number of inputs : 1

@@ -28,7 +28,7 @@ Summary :
  This plugin is used to apply a mathematical formulae to each sample of an incoming signal and output
 the resulting signal. It thus acts as a simple DSP.
 
-\image html SimpleDSPBox.png
+\image html BoxAlgorithm_SimpleDSP.png
 
  \section Doc_ovpCSimpleDSP_inputs Inputs
  Number of inputs : 1

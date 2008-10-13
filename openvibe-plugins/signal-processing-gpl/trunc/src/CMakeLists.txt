@@ -14,4 +14,4 @@ INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 INCLUDE("FindThirdPartyBoost")
-
+INCLUDE("FindThirdPartyITPP")

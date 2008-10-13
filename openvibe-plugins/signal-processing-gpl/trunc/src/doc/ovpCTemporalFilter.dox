@@ -1,0 +1,83 @@
+/**
+ \page Doc_ovpCTemporalFilter TemporalFilter documentation
+
+- Plugin name : TemporalFilter
+- Version :	0.1
+- Author : 	Guillaume Gibert
+- Date :	04-07-2008
+
+<br>
+Summary :
+
+\ref Doc_ovpCTemporalFilter_description
+
+\ref Doc_ovpCTemporalFilter_inputs
+
+\ref Doc_ovpCTemporalFilter_outputs
+
+\ref Doc_ovpCTemporalFilter_settings
+
+\ref Doc_ovpCTemporalFilter_examples
+
+\ref Doc_ovpCTemporalFilter_misc
+
+<hr>
+<br>
+<br>
+ \section Doc_ovpCTemporalFilter_description Description
+This plugin is used to filter the input signal. This plugin allows the selection of the kinf of filter (Butterworth, Chebychev, Yule-Walker), the kind of filter (low pass, high pass, band pass, band stop), the low or/and the high passband edge and the passband ripple for the Chebychev filter.  
+
+\image html TemporalFilterBox.png
+
+ \section Doc_ovpCTemporalFilter_inputs Inputs
+ Number of inputs : 1
+
+-# Signal input
+ - OV_TypeId_Signal
+ - The input signal.
+
+
+ \section Doc_ovpCTemporalFilter_outputs Outputs
+Number of outputs : 1
+
+-# Filtered signal
+ - OV_TypeId_Signal
+ - Only the channels selected by the user are kept in the output signal.
+
+ \section Doc_ovpCTemporalFilter_settings Settings
+Number of settings : 6
+
+ -# Name of Filter
+ - Multiple Choices List
+ - Select the name of filter between Butterworth, Chebychev and Yule-Walker.
+ 
+ -# Kind of Filter
+ - Multiple Choices List
+ - Select the kind of filter between Low pass, High pass, Band pass, Band stop.
+ 
+ -# Filter Order
+ - CString
+ - Order of the low-pass filter.
+ 
+ -# Low PassBand Edge
+ - CString
+ - Low edge for High pass, Band pass and Band stop filters
+ 
+ -# High PassBand Edge
+ - CString
+ - High edge for Low pass, Band pass and Band stop filters
+ 
+ -# PassBand Ripple (dB)
+ - CString
+ - If Chebychev filter is selected, PassBand Ripple is a necessary info.
+
+\section Doc_ovpCTemporalFilter_examples Examples
+Let's consider our input signal is very noisy (50 Hz).
+To filter this signal, select a Low pass Butterworth filter of 4th order and High PassBand Edge equal to 30 Hz for example. 
+
+ \section Doc_ovpCTemporalFilter_misc Miscellaneous
+
+This plugin filters the input signal. Several filtering are available.
+
+
+*/
