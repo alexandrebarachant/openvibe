@@ -61,7 +61,7 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 				virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Power spectrum in frequency bands"); }
 				virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("TODO"); }
-				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("2D visualisation/Basic"); }
+				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Visualisation/Basic"); }
 				virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 				virtual void release(void)                                   { }
 				virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_PowerSpectrumDisplay; }
@@ -75,7 +75,9 @@ namespace OpenViBEPlugins
 
 				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 				{
-					rPrototype.addInput("Signal", OV_TypeId_Spectrum);
+					rPrototype.addSetting("Minimum frequency to display", OV_TypeId_Float, "0");
+					rPrototype.addSetting("Maximum frequency to display", OV_TypeId_Float, "40");
+					rPrototype.addInput("Spectrum", OV_TypeId_Spectrum);
 					return true;
 				}
 

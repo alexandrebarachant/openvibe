@@ -42,11 +42,13 @@ namespace OpenViBE
 					const OpenViBE::Kernel::IVisualisationTree& rVisualisationTree)=0;
 			};
 
-			///Initialize 3D context and primary render window
+			/**
+			 * \brief Initialize 3D context and primary render window
+			 * \param rParametersList Reference to 3D context initialization parameters list
+			 * \return True if 3d context was successfully initialized, false otherwise
+			 */
 			virtual OpenViBE::boolean initialize3DContext(
-				const OpenViBE::CString& rPluginsFile,
-				OpenViBE::boolean bLogToScreen,
-				const OpenViBE::CString& rLogFileName)=0;
+				const OpenViBE::CNameValuePairList& rParametersList)=0;
 
 			/**
 			 * \brief Create a resource group

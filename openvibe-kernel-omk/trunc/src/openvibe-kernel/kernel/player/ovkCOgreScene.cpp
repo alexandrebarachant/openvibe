@@ -28,18 +28,21 @@ COgreScene::COgreScene(const OpenViBE::Kernel::IKernelContext& rKernelContext, c
 COgreScene::~COgreScene()
 {
 	//destroy objects
-	std::map<OpenViBE::CIdentifier, COgreObject*>::iterator it = m_mOgreObjects.begin();
-	while(it != m_mOgreObjects.end())
+	std::map<OpenViBE::CIdentifier, COgreObject*>::iterator it = m_mOgreObjectIds.begin();
+	while(it != m_mOgreObjectIds.end())
 	{
 		delete it->second;
-		m_mOgreObjects.erase(it);
-		it = m_mOgreObjects.begin();
+		m_mOgreObjectIds.erase(it);
+		it = m_mOgreObjectIds.begin();
 	}
 
 	//destroy lights
 
 	//destroy scene manager
-	m_pOgreVis->getOgreRoot()->destroySceneManager(m_pSceneManager);
+	if(m_pSceneManager != NULL)
+	{
+		m_pOgreVis->getOgreRoot()->destroySceneManager(m_pSceneManager);
+	}
 }
 
 boolean COgreScene::init()
@@ -72,21 +75,22 @@ boolean COgreScene::init()
 	}
 
 	//create default lights
-  m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1, 1));
-
-	//back light
-	Ogre::Light* l_pLight1 = m_pSceneManager->createLight(string(m_sName) + "_Light_0");
-	l_pLight1->setType(Ogre::Light::LT_DIRECTIONAL);
-	l_pLight1->setDirection(Ogre::Real(0), Ogre::Real(0), Ogre::Real(-1));
-	l_pLight1->setDiffuseColour(1, 1, 1);
+	m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1, 1));
+	//m_pSceneManager->setAmbientLight(Ogre::ColourValue(0, 0, 0, 1));
 
 	//front light
+	Ogre::Light* l_pLight1 = m_pSceneManager->createLight(string(m_sName) + "_Light_0");
+	l_pLight1->setType(Ogre::Light::LT_DIRECTIONAL);
+	l_pLight1->setDirection(Ogre::Real(0), Ogre::Real(0), Ogre::Real(-1));	
+	l_pLight1->setDiffuseColour(1, 1, 1);
+
+	//back light
 	Ogre::Light* l_pLight2 = m_pSceneManager->createLight(string(m_sName) + "_Light_1");
 	l_pLight2->setType(Ogre::Light::LT_DIRECTIONAL);
 	l_pLight2->setDirection(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1));
 	l_pLight2->setDiffuseColour(1, 1, 1);
 
-  //top light
+	//top light
 	Ogre::Light* l_pLight3 = m_pSceneManager->createLight(string(m_sName) + "_Light_2");
 	l_pLight3->setType(Ogre::Light::LT_DIRECTIONAL);
 	l_pLight3->setDirection(Ogre::Real(0), Ogre::Real(-1), Ogre::Real(0));
@@ -107,7 +111,7 @@ Ogre::SceneManager* COgreScene::getSceneManager()
 
 void COgreScene::getBoundingBox(float32& rMinX, float32& rMinY, float32& rMinZ, float32& rMaxX, float32& rMaxY, float32& rMaxZ)
 {
-	if(m_mOgreObjects.size() == 0)
+	if(m_mOgreObjectIds.size() == 0)
 	{
 		rMinX = rMinY = rMinZ = rMaxX = rMaxY = rMaxZ = 0;
 	}
@@ -123,7 +127,7 @@ void COgreScene::getBoundingBox(float32& rMinX, float32& rMinY, float32& rMinZ, 
 		rMaxZ = -FLT_MAX;
 
 		//get each object's bounding box and update global bounding box
-		for(it = m_mOgreObjects.begin(); it != m_mOgreObjects.end(); it++)
+		for(it = m_mOgreObjectIds.begin(); it != m_mOgreObjectIds.end(); it++)
 		{
 			float32 l_f32ObjectMinX, l_f32ObjectMinY, l_f32ObjectMinZ;
 			float32 l_f32ObjectMaxX, l_f32ObjectMaxY, l_f32ObjectMaxZ;
@@ -150,40 +154,87 @@ void COgreScene::getBoundingBox(float32& rMinX, float32& rMinY, float32& rMinZ, 
 	}
 }
 
-COgreObject* COgreScene::createObject(CIdentifier rObjectIdentifier, const string& rObjectName, const string& rGeometryFileName)
+COgreObject* COgreScene::createObject(CIdentifier rObjectIdentifier, const CString& rGeometryFileName, const CNameValuePairList& rNameValuePairList)
 {
-	//ensure object hasn't been created yet
-	if(m_mOgreObjects.find(rObjectIdentifier) == m_mOgreObjects.end())
+	if(!m_pSceneManager)
 	{
-		//create Ogre object
-		m_mOgreObjects[rObjectIdentifier] = new COgreObject(m_rKernelContext, rObjectName.c_str(), m_pOgreVis, m_pSceneManager, rGeometryFileName.c_str());
-		if(m_mOgreObjects[rObjectIdentifier]->loadGeometry() == false)
-		{
-			removeObject(rObjectIdentifier);
-			return NULL;
-		}
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not create object " << rGeometryFileName << " because scene manager is not yet initialized\n";
+		return NULL;
 	}
 
-	return m_mOgreObjects[rObjectIdentifier];
+	COgreObject* l_pObject = new COgreObject(m_rKernelContext, rObjectIdentifier, m_pOgreVis, m_pSceneManager, rGeometryFileName);
+
+	if(l_pObject->loadGeometry() == false)
+	{
+		delete l_pObject;
+		return NULL;
+	}
+
+	//should mesh be cloned?
+	boolean l_bCloneMesh = false;
+	rNameValuePairList.getValue("CloneMesh", l_bCloneMesh);
+	if(l_bCloneMesh == true)
+	{
+		l_pObject->cloneMeshes();
+	}
+	
+	//should materials be cloned?
+	boolean l_bCloneMaterials = false;
+	rNameValuePairList.getValue("CloneMaterials", l_bCloneMaterials);
+	if(l_bCloneMaterials)
+	{
+		l_pObject->cloneMaterials();
+	}
+
+	l_pObject->createAnimators();
+
+	//store object in Ids map
+	m_mOgreObjectIds[rObjectIdentifier] = l_pObject;
+
+	return l_pObject;
+}
+
+COgreObject* COgreScene::createPlane(CIdentifier rObjectIdentifier, const CNameValuePairList& rNameValuePairList)
+{
+	COgreObject* l_pObject = new COgreObject(m_rKernelContext, rObjectIdentifier, m_pOgreVis, m_pSceneManager);
+
+	if(l_pObject->createPlane(rNameValuePairList) == false)
+	{
+		delete l_pObject;
+		return NULL;
+	}
+
+	l_pObject->createAnimators();
+
+	//store object in Ids map
+	m_mOgreObjectIds[rObjectIdentifier] = l_pObject;
+
+	return l_pObject;
 }
 
 boolean COgreScene::removeObject(CIdentifier rObjectIdentifier)
 {
 	//ensure object exists
-	if(m_mOgreObjects.find(rObjectIdentifier) == m_mOgreObjects.end())
+	if(m_mOgreObjectIds.find(rObjectIdentifier) == m_mOgreObjectIds.end())
 	{
 		return false;
-	}
-	delete m_mOgreObjects[rObjectIdentifier];
-	m_mOgreObjects.erase(rObjectIdentifier);
+	}	
+	COgreObject* l_pObject = m_mOgreObjectIds[rObjectIdentifier];
+
+	//remove object from Ids map	
+	m_mOgreObjectIds.erase(rObjectIdentifier);
+
+	//delete object
+	delete l_pObject;
+
 	return true;
 }
 
 COgreObject* COgreScene::getOgreObject(CIdentifier rObjectIdentifier)
 {
-	if(m_mOgreObjects.find(rObjectIdentifier) == m_mOgreObjects.end() || m_mOgreObjects[rObjectIdentifier] == NULL)
+	if(m_mOgreObjectIds.find(rObjectIdentifier) == m_mOgreObjectIds.end() || m_mOgreObjectIds[rObjectIdentifier] == NULL)
 	{
 		return NULL;
 	}
-	return m_mOgreObjects[rObjectIdentifier];
+	return m_mOgreObjectIds[rObjectIdentifier];
 }

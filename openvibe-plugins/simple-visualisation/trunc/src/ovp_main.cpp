@@ -6,7 +6,7 @@
 //2D plugins
 #include "ovpCSignalDisplay.h"
 #include "ovpCGrazVisualization.h"
-#include "ovpCFrequencySpectrumDisplay.h"
+#include "ovpCTimeFrequencyMapDisplay.h"
 #include "ovpCPowerSpectrumDisplay.h"
 #include "ovpCTopographicMap2DDisplay.h"
 #include "box-algorithms/simple-visualisation/ovpCBoxAlgorithmLevelMeasure.h"
@@ -17,16 +17,20 @@
 
 OVP_Declare_Begin()
 
+	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_SphericalLinearInterpolationType, "Spherical linear interpolation type");
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_SphericalLinearInterpolationType, "Spline (potentials)", OVP_TypeId_SphericalLinearInterpolationType_Spline);
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_SphericalLinearInterpolationType, "Spline laplacian (currents)",  OVP_TypeId_SphericalLinearInterpolationType_Laplacian);
+
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CAlgorithmLevelMeasureDesc)
 	OVP_Declare_New(OpenViBEPlugins::Test::CAlgorithmSphericalSplineInterpolationDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CSignalDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CGrazVisualizationDesc)
-	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CFrequencySpectrumDisplayDesc)
+	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CTimeFrequencyMapDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CPowerSpectrumDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CTopographicMap2DDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CBoxAlgorithmLevelMeasureDesc)
-
+	
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CSimple3DDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CTopographicMap3DDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CVoxelDisplayDesc)

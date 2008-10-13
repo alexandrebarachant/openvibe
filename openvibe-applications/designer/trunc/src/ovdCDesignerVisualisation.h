@@ -19,13 +19,6 @@ namespace OpenViBEDesigner
 
 	class CInterfacedScenario;
 
-	//Dialog helper functions
-	void displayErrorDialog(const char* text, const char* secondaryText);
-	gint displayQuestionDialog(const char* text, const char* secondaryText);
-
-	//Table helper function
-	GtkTableChild* getTableChild(GtkTable* pTable, int leftAttach, int rightAttach, int topAttach, int bottomAttach);
-
 	class CDesignerVisualisation : public OpenViBE::Kernel::ITreeViewCB
 	{	
 	public:
@@ -54,17 +47,14 @@ namespace OpenViBEDesigner
 			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
 		GtkWidget* loadTreeWidget(
 			OpenViBE::Kernel::IVisualisationWidget*);
-		void endLoadTreeWidget(
-			GtkWidget* treeWidget);
+		void endLoadTreeWidget(			
+			OpenViBE::Kernel::IVisualisationWidget*);
 		GtkWidget* getTreeWidget(
 			GtkWidget* visualisationWidget);
 		GtkWidget* getVisualisationWidget(
 			GtkWidget* treeWidget);		
 		const char* getTreeWidgetIcon(
-			OpenViBE::Kernel::EVisualisationTreeNode);		
-		void resizePanedWidget(
-			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget, 
-			GtkWidget* pPanedWidget);
+			OpenViBE::Kernel::EVisualisationTreeNode);				
 		
 		//callbacks for dialog
 #ifdef HANDLE_MIN_MAX_EVENTS
@@ -81,7 +71,8 @@ namespace OpenViBEDesigner
 			GtkWidget* widget,
 			GdkEventExpose* event,
 			gpointer user_data);			
-		void resizeCB();
+		void resizeCB(
+			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
 		
 		static void	notebook_page_switch_cb(
 			GtkNotebook* notebook, 

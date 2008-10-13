@@ -73,14 +73,24 @@ public:
 	/**
 	 * \brief Create a new 3D object
 	 * \param rObjectIdentifier Identifier to give to new object
-	 * \param rObjectName Name to give to new object
 	 * \param rGeometryFileName .scene filename containing object geometry
-	 * \return Pointer to newly created object
+	 * \param rNameValuePairList Object creation parameters	 
+	 * \return Pointer to newly created object	 
 	 */
 	COgreObject* createObject(
 		OpenViBE::CIdentifier rObjectIdentifier,
-		const std::string& rObjectName,
-		const std::string& rGeometryFileName);
+		const OpenViBE::CString& rGeometryFileName,
+		const OpenViBE::CNameValuePairList& rNameValuePairList);
+
+	/**
+	 * \brief Create a new 3D plane
+	 * \param rObjectIdentifier Identifier to give to new object	 
+	 * \param rNameValuePairList Object creation parameters	 
+	 * \return Pointer to newly created object
+	 */
+	COgreObject* createPlane(
+		OpenViBE::CIdentifier rObjectIdentifier,
+		const OpenViBE::CNameValuePairList& rNameValuePairList);
 
 	/**
 	 * \brief Remove a 3D object
@@ -108,9 +118,9 @@ private:
 	/// Pointer to this scene's SceneManager
 	Ogre::SceneManager* m_pSceneManager;
 	/// Maps object Ids to object pointers
-	std::map<OpenViBE::CIdentifier, COgreObject*> m_mOgreObjects;
+	std::map<OpenViBE::CIdentifier, COgreObject*> m_mOgreObjectIds;	
 	/// Maps simulated object IDs to corresponding simulated object names.
-	std::map<OpenViBE::CIdentifier, OpenViBE::CString> m_mSimulatedObjects;
+	//std::map<OpenViBE::CIdentifier, OpenViBE::CString> m_mSimulatedObjects;
 };
 
 #endif // __OpenViBEKernel_Kernel_Player_COgreScene_H__

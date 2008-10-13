@@ -57,7 +57,9 @@ namespace OpenViBEPlugins
 			s_palette[48] = 255*COLOR_SCALE/255;s_palette[49] = 0*COLOR_SCALE/255;	s_palette[50] = 0*COLOR_SCALE/255;
 
 			for(int i=3; i<s_nbColors*4; i+=4)
+			{
 				s_palette[i] = 0.2f;
+			}
 		}
 
 		CSimple3DDatabase::~CSimple3DDatabase()
@@ -66,16 +68,7 @@ namespace OpenViBEPlugins
 
 		void CSimple3DDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTime, uint64 ui64EndTime)
 		{
-			boolean l_bFirstBufferReceived = m_bFirstBufferReceived;
-
 			CBufferDatabase::setMatrixBuffer(pBuffer, ui64StartTime, ui64EndTime);
-
-			if(l_bFirstBufferReceived == false)
-			{
-				//set background color
-				float32 l_pCyan[3] = {128/255.f, 192/255.f, 1.f };
-				m_oParentPlugin.getVisualisationContext().setBackgroundColor(m_o3DWidgetIdentifier, l_pCyan[0], l_pCyan[1], l_pCyan[2]);
-			}
 		}
 
 		boolean CSimple3DDatabase::set3DWidgetIdentifier(CIdentifier o3DWidgetIdentifier)
@@ -258,6 +251,7 @@ namespace OpenViBEPlugins
 				//ensure number of vertices could be retrieved
 				if(l_ui32NbVertices > 0)
 				{
+					//FIXME
 					float32* l_pColorArray(new float32[l_ui32NbVertices*4]);
 
 					//copy vertex color for each vertex
@@ -274,7 +268,7 @@ namespace OpenViBEPlugins
 						l_ui32NbVertices,
 						l_pColorArray);
 
-					delete l_pColorArray;
+					delete[] l_pColorArray;
 				}
 				m_bSetObjectVertexColor = false;
 			}

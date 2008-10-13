@@ -12,6 +12,7 @@
 
 #include "ovCIdentifier.h"
 #include "ovCString.h"
+#include "ovCNameValuePairList.h"
 
 #include "ovIMatrix.h"
 #include "ovCMatrix.h"

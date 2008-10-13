@@ -174,6 +174,37 @@ boolean CScenario::load(
 		log() << LogLevel_Warning << "Import failed...\n";
 		return false;
 	}
+		
+	//ensure visualisation widgets contained in the scenario (if any) appear in the window manager 
+	//even when the <VisualisationTree> section of a scenario file is missing, erroneous or deprecated
+	CIdentifier l_oVisualisationWidgetIdentifier = OV_UndefinedIdentifier;
+	IVisualisationTree& l_rVisualisationTree = getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);	
+	if(l_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWidgetIdentifier) == false)
+	{
+		//no visualisation widget was added to visualisation tree : ensure there aren't any in scenario
+		CIdentifier l_oBoxIdentifier = getNextBoxIdentifier(OV_UndefinedIdentifier);
+		while(l_oBoxIdentifier != OV_UndefinedIdentifier)
+		{
+			const IBox* l_pBox = getBoxDetails(l_oBoxIdentifier);
+			CIdentifier l_oAlgorithmIdentifier = l_pBox->getAlgorithmClassIdentifier();
+			const Plugins::IPluginObjectDesc* l_pPOD = getKernelContext().getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
+			if(l_pPOD != NULL && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+			{				
+				//a visualisation widget was found in scenario : manually add it to visualisation tree
+				l_rVisualisationTree.addVisualisationWidget(
+					l_oVisualisationWidgetIdentifier,
+					l_pBox->getName(),
+					EVisualisationWidget_VisualisationBox,
+					OV_UndefinedIdentifier,
+					0,
+					l_pBox->getIdentifier(),
+					0);				
+			}
+
+			l_oBoxIdentifier = getNextBoxIdentifier(l_oBoxIdentifier);
+		}		
+	}
+
 	return true;
 }
 

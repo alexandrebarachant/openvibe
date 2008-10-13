@@ -12,8 +12,8 @@ namespace OpenViBE
 		public:
 
 			CVisualisationManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IVisualisationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
-
-			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, initialize3DContext, , const CString&, rPluginsFile, boolean, bLogOgreToScreen, const CString&, rLogFileName)
+			
+			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, initialize3DContext, , const CNameValuePairList&, rNameValuePairList)
 
 			virtual __BridgeBindFunc2__(getKernelContext().getVisualisationManager(), boolean, createResourceGroup, , CIdentifier&, rResourceGroupIdentifier, const CString&, rResourceGroupName)
 			virtual __BridgeBindFunc4__(getKernelContext().getVisualisationManager(), boolean, addResourceLocation, , const CIdentifier&, rResourceGroupIdentifier, const CString&, rResourceName, OpenViBE::Kernel::EResourceType, eResourceType, boolean, bRecursive)
@@ -100,6 +100,17 @@ CIdentifier CVisualisationContext::create3DWidget(::GtkWidget*& p3DWidget)
 	return m_pSimulatedBox->create3DWidget(p3DWidget);
 }
 
+boolean CVisualisationContext::is3DWidgetRealized(
+	const CIdentifier& rWidgetIdentifier) const
+{
+	return m_pSimulatedBox->is3DWidgetRealized(rWidgetIdentifier);
+}
+
+boolean CVisualisationContext::update3DWidget(const CIdentifier& rWidgetIdentifier)
+{
+	return m_pSimulatedBox->update3DWidget(rWidgetIdentifier);
+}
+
 boolean CVisualisationContext::setBackgroundColor(const OpenViBE::CIdentifier& rWidgetIdentifier, float32 f32ColorRed, float32 f32ColorGreen, float32 f32ColorBlue)
 {
 	return m_pSimulatedBox->setBackgroundColor(rWidgetIdentifier, f32ColorRed, f32ColorGreen, f32ColorBlue);
@@ -110,19 +121,24 @@ boolean CVisualisationContext::setCameraToEncompassObjects(const CIdentifier& rW
 	return m_pSimulatedBox->setCameraToEncompassObjects(rWidgetIdentifier);
 }
 
-CIdentifier CVisualisationContext::createObject(const CString& rObjectFileName)
+CIdentifier CVisualisationContext::createObject(const CString& rObjectFileName, const CNameValuePairList* pObjectParams)
 {
-	return m_pSimulatedBox->createObject(rObjectFileName);
+	return m_pSimulatedBox->createObject(rObjectFileName, pObjectParams);
 }
 
-CIdentifier CVisualisationContext::createObject(const Kernel::EStandard3DObject eStandard3DObject)
+CIdentifier CVisualisationContext::createObject(const Kernel::EStandard3DObject eStandard3DObject, const CNameValuePairList* pObjectParams)
 {
-	return m_pSimulatedBox->createObject(eStandard3DObject);
+	return m_pSimulatedBox->createObject(eStandard3DObject, pObjectParams);
 }
 
 boolean CVisualisationContext::removeObject(const CIdentifier& rIdentifier)
 {
 	return m_pSimulatedBox->removeObject(rIdentifier);
+}
+
+boolean CVisualisationContext::setObjectVisible(const CIdentifier& rIdentifier, boolean bVisible)
+{
+	return m_pSimulatedBox->setObjectVisible(rIdentifier, bVisible);
 }
 
 boolean CVisualisationContext::setObjectScale(const CIdentifier& rIdentifier, float32 f32ScaleX, float32 f32ScaleY, float32 f32ScaleZ)

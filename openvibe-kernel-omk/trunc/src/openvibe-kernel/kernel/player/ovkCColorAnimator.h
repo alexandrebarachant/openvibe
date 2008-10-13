@@ -2,6 +2,7 @@
 #define __OpenViBEKernel_Kernel_Player_CColorAnimator_H__
 
 #include "ovkCOgreAnimator.h"
+#include "ovkMaterialAction.h"
 
 class NodeMaterialOrig;
 
@@ -17,17 +18,14 @@ public:
 
 	virtual OpenViBE::boolean init(const std::string& rNodeName);
 
-	void setDiffuse(const Ogre::ColourValue& diffuse);
+	void setDiffuseColor(const Ogre::ColourValue& diffuse);
+	void setDiffuseColor(Ogre::Real r, Ogre::Real g, Ogre::Real b);
+	void setTransparency(Ogre::Real transparency);
 
-	void setTransparency(const Ogre::Real& transparency);
-
-	//TODO : have one animator per parameter or have a generic one?
-	//void set(const Ogre::ColourColourValue& diffuse);
-	//void set(const Ogre::ColourValue& diffuse);
-
-protected:
+protected:	
 	NodeMaterialOrig* m_pNodeMaterial;
-	Ogre::Vector4 m_oColor;
+	MaterialSetDiffuse m_oMaterialSetDiffuse;
+	Ogre::Vector4 m_oColor;	
 };
 
 #endif // __OpenViBEKernel_Kernel_Player_CColorAnimator_H__

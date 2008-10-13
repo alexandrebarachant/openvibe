@@ -2,6 +2,7 @@
 #define __OpenViBEKernel_Kernel_Player_COgreObject_H__
 
 #include <openvibe/ov_all.h>
+#include <OgreColourValue.h>
 
 namespace Ogre
 {
@@ -23,36 +24,86 @@ class CVertexBufferAnimator;
  */
 class COgreObject
 {
+	enum EGeometryFileType
+	{
+		GeometryFileType_Invalid=0,
+		GeometryFileType_Scene,
+		GeometryFileType_Mesh		
+	};
+
+friend class COgreScene;
 public:
 	/**
 	 * \brief Constructor
 	 * \param[in] rKernelContext OpenViBE kernel context
-	 * \param[in] rName Object name
+	 * \param[in] rIdentifier Object identifier
 	 * \param[in] pOgreVis pointer to OgreVisualisation object
 	 * \param[in] pSceneManager pointer to scene manager this object is to be added to
 	 * \param[in] rGeometryfileName name of file containing this object's geometry
 	 */
 	COgreObject(
 		const OpenViBE::Kernel::IKernelContext& rKernelContext,
-		const OpenViBE::CString& rName,
+		OpenViBE::CIdentifier oIdentifier,
 		COgreVisualisation* pOgreVis,
 		Ogre::SceneManager* pSceneManager,
 		const OpenViBE::CString& rGeometryFileName);
 
+	COgreObject(
+		const OpenViBE::Kernel::IKernelContext& rKernelContext,
+		OpenViBE::CIdentifier oIdentifier,
+		COgreVisualisation* pOgreVis,
+		Ogre::SceneManager* pSceneManager);
+
 	/// Destructor
 	~COgreObject();
 
-	/// Load the geometry using the dotSceneInterface
-	OpenViBE::boolean loadGeometry();
+	/**
+	 * \brief Clone object
+	 * \param[in] oIdentifier Identifier of the object
+	 * \param[out] pClone Reference of pointer to cloned object
+	 * \return True if cloned object could be created, false otherwise
+	 */
+	/*
+	OpenViBE::boolean clone(
+		OpenViBE::CIdentifier oIdentifier,
+		COgreObject*& pClone);*/
+
+	/// Clone meshes used by this object
+	OpenViBE::boolean cloneMeshes();
+
+	/// Clone materials used by this object
+	OpenViBE::boolean cloneMaterials();
+
+	/// Return object identifier
+	OpenViBE::CIdentifier getIdentifier();
 
 	/// Return object name
 	const OpenViBE::CString& getName();
+
+	/// Return geometry file name
+	const OpenViBE::CString& getGeometryFileName();
 
 	/// Return the node to change the materials
   NodeMaterialOrig* getNodeMaterialOrig() ;
 
 	/// Retrieve scene node corresponding to this object
 	Ogre::SceneNode& getSceneNode() const;
+
+	/**
+	 * \brief Set visibility
+	 * \param bVisible Visibility flag
+	 * \return True if visibility could be set, false otherwise
+	 */
+	OpenViBE::boolean setVisible(
+		OpenViBE::boolean bVisible);
+
+	/**
+	 * \brief Set the color of an object
+	 * \param oDiffuse RGBA diffuse color	 
+	 * \return True if color could be set, false otherwise
+	 */
+	OpenViBE::boolean setDiffuseColor(
+		const Ogre::ColourValue& oDiffuse);
 
 	/**
 	 * \brief Set the color of an object
@@ -62,7 +113,10 @@ public:
 	 * \return True if color could be set, false otherwise
 	 */
 	OpenViBE::boolean setDiffuseColor(
-		Ogre::ColourValue diffuse);
+		Ogre::Real f32ColorRed,
+		Ogre::Real f32ColorGreen,
+		Ogre::Real f32ColorBlue
+		);
 
 	/**
 	 * \brief Set the transparency of an object
@@ -171,7 +225,38 @@ public:
 		Ogre::Real& rMaxY,
 		Ogre::Real& rMaxZ);
 
-private:
+private:	
+	/** 
+	 * \brief Clone the geometry from an existing Entity
+	 * \param pEntity pointer to Entity whose geometry is to be cloned
+	 * \return True if geometry could be cloned, false otherwise
+	 */
+	OpenViBE::boolean cloneGeometry(
+		Ogre::Entity* pEntity);
+
+	/** 
+	 * \brief Load the geometry using the dotSceneInterface
+	 * \return True if geometry could be loaded, false otherwise
+	 */
+	OpenViBE::boolean loadGeometry();
+
+	/**
+	 * \brief Create plane from scratch
+	 * \param rNameValuePairList Plane parameters list
+	 * \return True if plane could be created, false otherwise
+	 */
+	OpenViBE::boolean createPlane(
+		const OpenViBE::CNameValuePairList& rNameValuePairList);
+
+	/**
+	 * \brief Create animators
+	 * This creates all potentially needed animators : a transform animator to rotate, translate and
+	 * scale the object, a color animator to modify its color/transparency, and a vertex buffer animator to 
+	 * access the object geometry (e.g. set vertex colors)
+	 * \return True if animators could be created, false otherwise
+	 */
+	OpenViBE::boolean createAnimators();
+
 	/**
 	 * \brief Retrieve first Entity in Ogre hierarchy starting at pNode
 	 * \param pNode Pointer to an Ogre node from which to start looking for an Entity
@@ -196,6 +281,9 @@ private:
 	/// OpenViBE kernel context
 	const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 
+	// identifier of the visual object
+	OpenViBE::CIdentifier m_oIdentifier;
+
 	// name of the visual object
 	OpenViBE::CString m_sName;
 
@@ -213,6 +301,9 @@ private:
 
 	/// name of the resource group of the geometry file
 	OpenViBE::CString m_sResourceGroupName;
+
+	/// type of file containing this object's geometry
+	EGeometryFileType m_eGeometryFileType;
 
 	/// name of the geometry file
 	OpenViBE::CString m_sGeometryFileName;

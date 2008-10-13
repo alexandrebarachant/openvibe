@@ -67,7 +67,7 @@ namespace OpenViBE
 			//@{
 
 			/**
-			 * \brief Gets current the current player time
+			 * \brief Gets the current player time
 			 * \return the current player time.
 			 * \note The time value is fixed point 32:32 representated in seconds
 			 */

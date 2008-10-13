@@ -23,8 +23,9 @@ namespace OpenViBE
 		{
 			Standard3DObject_Invalid = -1,
 			Standard3DObject_Sphere,
-			Standard3DObject_Cone/*,
-			Standard3DObject_Cube,*/
+			Standard3DObject_Cone,
+			Standard3DObject_Cube,
+			Standard3DObject_Quad
 		};
 /*
 		typedef union
@@ -97,6 +98,15 @@ namespace OpenViBE
 				::GtkWidget*& p3DWidget)=0;
 
 			/**
+			 * \brief Request 3D widget realization status
+			 * \param[in] rWidgetIdentifier identifier of the 3D widget which has to be tested
+			 * \return True if the widget has been realized.
+			 * \return False if the widget has not been realized.
+			 */
+			virtual OpenViBE::boolean is3DWidgetRealized(
+				const OpenViBE::CIdentifier& rWidgetIdentifier) const=0;
+
+			/**
 			 * \brief Create a resource group
 			 * \param [out] rResourceGroupIdentifier Identifier of resource group created
 			 * \param [in] rResourceGroupName Resource group name
@@ -154,6 +164,14 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rResourceGroupIdentifier)=0;
 
 			/**
+			 * \brief Update 3D window
+			 * \param rWidgetIdentifier Identifier of 3D widget to be refreshed
+			 * \return True if widget could be refreshed
+			 */
+			virtual OpenViBE::boolean update3DWidget(
+				const OpenViBE::CIdentifier& rWidgetIdentifier)=0;
+
+			/**
 			 * \brief Set background color of a 3D widget
 			 * \param rWidgetIdentifier Identifier of 3D widget
 			 * \param f32ColorRed Red component (0 to 1)
@@ -180,20 +198,22 @@ namespace OpenViBE
 			/**
 			 * \brief Create a new 3D object
 			 * \param rObjectFileName Filename (without extension) from which to load object
+			 * \param pObjectParams Optional object parameters
 			 * \return Identifier of newly created object, or OV_UndefinedIdentifier if failed
 			 */
 			virtual OpenViBE::CIdentifier createObject(
-				const OpenViBE::CString& rObjectFileName/*,
-				OpenViBE::boolean bClone*/)=0;
+				const OpenViBE::CString& rObjectFileName,
+				const CNameValuePairList* pObjectParams=NULL)=0;
 
 			/**
 			 * \brief Create a new 3D object
 			 * \param eStandard3DObject Enumeration member of standard object to create
+			 * \param pObjectParams Optional object parameters
 			 * \return Identifier of newly created object, or OV_UndefinedIdentifier if failed
 			 */
 			virtual OpenViBE::CIdentifier createObject(
-				const OpenViBE::Kernel::EStandard3DObject eStandard3DObject/*,
-				OpenViBE::boolean bClone*/)=0;
+				const OpenViBE::Kernel::EStandard3DObject eStandard3DObject,
+				const CNameValuePairList* pObjectParams=NULL)=0;
 
 			/**
 			 * \brief Remove a 3D object
@@ -202,6 +222,16 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean removeObject(
 				const OpenViBE::CIdentifier& rIdentifier)=0;
+
+			/**
+			 * \brief Set visibility of a 3D object
+			 * \param rIdentifier Identifier of object which visibility is to be set
+			 * \param bVisible Visibility flag
+			 * \return True if object visibility could be set, false otherwise
+			 */
+			virtual OpenViBE::boolean setObjectVisible(
+				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::boolean bVisible)=0;
 
 			/**
 			 * \brief Set the position of an object

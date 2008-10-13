@@ -36,3 +36,5 @@ Frame : Y up, looking down Z axis
 Objects : should be exported to Ogre's .mesh format. For objects which vertex colors will be modified, the vertex buffer should 
 have the "dynamic" property (the index buffer may be left with the default "static" property since it will probably only be read 
 once).
+
+*/

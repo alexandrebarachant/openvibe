@@ -142,7 +142,7 @@ CPluginManager::~CPluginManager(void)
 	{
 		for(j=i->second.begin(); j!=i->second.end(); j++)
 		{
-			log() << LogLevel_ImportantWarning << "Trying to release plugin object with class id " << (*j)->getClassIdentifier() << " and plugin object descriptor " << i->first->getName() << " at plugin manager descruption time\n";
+			log() << LogLevel_ImportantWarning << "Trying to release plugin object with class id " << (*j)->getClassIdentifier() << " and plugin object descriptor " << i->first->getName() << " at plugin manager destruction time\n";
 			(*j)->release();
 		}
 	}

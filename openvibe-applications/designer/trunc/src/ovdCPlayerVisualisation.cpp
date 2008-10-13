@@ -65,34 +65,109 @@ void CPlayerVisualisation::init(void)
 
 ::GtkWidget* CPlayerVisualisation::loadTreeWidget(IVisualisationWidget* pVisualisationWidget)
 {
-	::GtkWidget* l_pWidget = NULL;
+	::GtkWidget* l_pTreeWidget = NULL;
 
-	if(pVisualisationWidget->getType() == EVisualisationWidget_Undefined)
+	if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationPanel)
 	{
-		l_pWidget = gtk_button_new();
-		gtk_button_set_label(GTK_BUTTON(l_pWidget), (const char*)pVisualisationWidget->getName());
+		//retrieve panel index
+		IVisualisationWidget* l_pVisualisationWindow = m_rVisualisationTree.getVisualisationWidget(pVisualisationWidget->getParentIdentifier());
+		if(l_pVisualisationWindow != NULL)
+		{
+			uint32 l_ui32PanelIndex;
+			l_pVisualisationWindow->getChildIndex(pVisualisationWidget->getIdentifier(), l_ui32PanelIndex);
+
+			//create notebook if this is the first panel
+			if(l_ui32PanelIndex == 0)
+			{
+				l_pTreeWidget = gtk_notebook_new();
+			}		
+			else //otherwise retrieve it from first panel
+			{
+				CIdentifier l_oFirstPanelIdentifier;
+				l_pVisualisationWindow->getChildIdentifier(0, l_oFirstPanelIdentifier);
+				GtkTreeIter l_oFirstPanelIter;
+				m_rVisualisationTree.findChildNodeFromRoot(&l_oFirstPanelIter, l_oFirstPanelIdentifier);
+				void* l_pNotebookWidget = NULL;
+				m_rVisualisationTree.getPointerValueFromTreeIter(&l_oFirstPanelIter, l_pNotebookWidget, EVisualisationTreeColumn_PointerWidget);
+				l_pTreeWidget = (GtkWidget*)l_pNotebookWidget;
+			}		
+		}
 	}
-	else if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationPanel)
+	else if(pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit ||	pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit ||
+		pVisualisationWidget->getType() == EVisualisationWidget_Undefined || pVisualisationWidget->getType() == EVisualisationWidget_VisualisationBox)
 	{
-		l_pWidget = gtk_notebook_new();
-	}
-	else if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationBox)
-	{
-		//widget will be inserted at player startup time
-	}
-	else if(pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit || pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit)
-	{
-		l_pWidget = (pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit) ? gtk_hpaned_new() : gtk_vpaned_new();
+		if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationBox)
+		{
+			if(pVisualisationWidget->getParentIdentifier() != OV_UndefinedIdentifier)
+			{
+				//dummy widget (actual one will be created at plugin initialization time)
+				l_pTreeWidget = gtk_button_new();
+			}
+			else
+			{
+				//widget will be added to a top level window in setWidget()
+			}
+		}
+		else if(pVisualisationWidget->getType() == EVisualisationWidget_Undefined)
+		{
+			l_pTreeWidget = gtk_button_new();
+			gtk_button_set_label(GTK_BUTTON(l_pTreeWidget), (const char*)pVisualisationWidget->getName());
+		}		
+		else if(pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit || pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit)
+		{
+			l_pTreeWidget = (pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit) ? gtk_hpaned_new() : gtk_vpaned_new();
 
-		//store paned widget in paned map
-		m_mSplitWidgets[GTK_PANED(l_pWidget)] = pVisualisationWidget->getIdentifier();
+			//store paned widget in paned map
+			m_mSplitWidgets[GTK_PANED(l_pTreeWidget)] = pVisualisationWidget->getIdentifier();
 
-		//retrieve its attributes
-		TAttributeHandler l_oAttributeHandler(*pVisualisationWidget);
-		int l_i32HandlePos = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWidget_DividerPosition);
+			//retrieve its attributes
+			TAttributeHandler l_oAttributeHandler(*pVisualisationWidget);
+			int l_i32HandlePos = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWidget_DividerPosition);
 
-		//initialize paned handle position
-		gtk_paned_set_position(GTK_PANED(l_pWidget), l_i32HandlePos);
+			//initialize paned handle position
+			gtk_paned_set_position(GTK_PANED(l_pTreeWidget), l_i32HandlePos);
+		}
+
+		//parent widget to its parent
+		//---------------------------
+		IVisualisationWidget* l_pParentVisualisationWidget = m_rVisualisationTree.getVisualisationWidget(pVisualisationWidget->getParentIdentifier());
+		
+		if(l_pParentVisualisationWidget != NULL) //unparented visualisation boxes don't have a parent
+		{
+			GtkTreeIter l_oParentIter;
+			m_rVisualisationTree.findChildNodeFromRoot(&l_oParentIter, l_pParentVisualisationWidget->getIdentifier());
+
+			if(l_pParentVisualisationWidget->getType() == EVisualisationWidget_VisualisationPanel)
+			{	
+				//parent widget to notebook as a new page			
+				void* l_pNotebook = NULL;
+				m_rVisualisationTree.getPointerValueFromTreeIter(&l_oParentIter, l_pNotebook, EVisualisationTreeColumn_PointerWidget);
+				char* l_pVisualisationPanelName = NULL;
+				m_rVisualisationTree.getStringValueFromTreeIter(&l_oParentIter, l_pVisualisationPanelName, EVisualisationTreeColumn_StringName);
+				gtk_notebook_append_page(GTK_NOTEBOOK(l_pNotebook), l_pTreeWidget, gtk_label_new(l_pVisualisationPanelName));
+			}		
+			else if(l_pParentVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit || l_pParentVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit)
+			{			
+				//insert widget in parent paned
+				void* l_pPaned = NULL;
+				m_rVisualisationTree.getPointerValueFromTreeIter(&l_oParentIter, l_pPaned, EVisualisationTreeColumn_PointerWidget);
+				if(l_pPaned != NULL && GTK_IS_PANED(l_pPaned))
+				{
+					uint32 l_ui32ChildIndex;
+					if(l_pParentVisualisationWidget->getChildIndex(pVisualisationWidget->getIdentifier(), l_ui32ChildIndex) == true)
+					{
+						if(l_ui32ChildIndex == 0)
+						{
+							gtk_paned_pack1(GTK_PANED(l_pPaned), l_pTreeWidget, TRUE, TRUE);
+						}
+						else
+						{
+							gtk_paned_pack2(GTK_PANED(l_pPaned), l_pTreeWidget, TRUE, TRUE);
+						}
+					}
+				}
+			}	
+		}
 	}
 	else if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationWindow)
 	{
@@ -123,35 +198,65 @@ void CPlayerVisualisation::init(void)
 		if(l_bCreateWindow == true)
 		{
 			//create new top level window
-			l_pWidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-			m_vWindows.push_back(GTK_WINDOW(l_pWidget));
+			l_pTreeWidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+			m_vWindows.push_back(GTK_WINDOW(l_pTreeWidget));
 
 			//retrieve its size
-			TAttributeHandler l_oAttributeHandler(*pVisualisationWidget);
+			/*TAttributeHandler l_oAttributeHandler(*pVisualisationWidget);
 			gtk_window_set_default_size(
-				GTK_WINDOW(l_pWidget),
+				GTK_WINDOW(l_pTreeWidget),
 				l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width),
-				l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height));
+				l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height));*/
+			//FIXME : read default size from a settings file
+			gtk_window_set_default_size(GTK_WINDOW(l_pTreeWidget), 300, 300);
 
 			//set its title
-			gtk_window_set_title(GTK_WINDOW(l_pWidget), (const char*)pVisualisationWidget->getName());
+			gtk_window_set_title(GTK_WINDOW(l_pTreeWidget), (const char*)pVisualisationWidget->getName());
 
 			//FIXME wrong spelling (-)
-			gtk_signal_connect(GTK_OBJECT(l_pWidget), "configure_event", G_CALLBACK(configure_event_cb), this);
+			gtk_signal_connect(GTK_OBJECT(l_pTreeWidget), "configure_event", G_CALLBACK(configure_event_cb), this);
 			//FIXME wrong spelling (-)
-			g_signal_connect(l_pWidget, "delete_event", G_CALLBACK(dummy_callback), NULL);
+			g_signal_connect(l_pTreeWidget, "delete_event", G_CALLBACK(dummy_callback), NULL);
 		}
 	}
 
 #if 0
-	//*** moved to setWidgets() ***
+	//*** moved to setWidget() ***
 	//resize widgets once they are allocated : this is the case when they are shown on an expose event
 	//FIXME : perform resizing only once (when it is done as many times as there are widgets in the tree here)
-	if(l_pWidget != NULL)
-		gtk_signal_connect(GTK_OBJECT(l_pWidget), "expose-event", G_CALLBACK(widget_expose_event_cb), this);
+	if(l_pTreeWidget != NULL)
+	{
+		gtk_signal_connect(GTK_OBJECT(l_pTreeWidget), "expose-event", G_CALLBACK(widget_expose_event_cb), this);
+	}
 #endif
 
-	return l_pWidget;
+	return l_pTreeWidget;
+}
+
+void CPlayerVisualisation::endLoadTreeWidget(OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget)
+{
+	//retrieve tree widget
+	GtkTreeIter l_oIter;
+	m_rVisualisationTree.findChildNodeFromRoot(&l_oIter, pVisualisationWidget->getIdentifier());
+	void* l_pTreeWidget;
+	m_rVisualisationTree.getPointerValueFromTreeIter(&l_oIter, l_pTreeWidget, EVisualisationTreeColumn_PointerWidget);
+
+	if(l_pTreeWidget != NULL && pVisualisationWidget->getType() == EVisualisationWidget_VisualisationWindow)
+	{		
+		//retrieve notebook
+		CIdentifier l_oChildIdentifier;
+		pVisualisationWidget->getChildIdentifier(0, l_oChildIdentifier);
+		GtkTreeIter l_oChildIter;			
+		m_rVisualisationTree.findChildNodeFromRoot(&l_oChildIter,  l_oChildIdentifier);
+		void* l_pChildTreeWidget;
+		m_rVisualisationTree.getPointerValueFromTreeIter(&l_oChildIter, l_pChildTreeWidget, EVisualisationTreeColumn_PointerWidget);
+
+		//insert notebook in window
+		if(l_pChildTreeWidget != NULL && GTK_IS_NOTEBOOK((GtkWidget*)l_pChildTreeWidget))
+		{
+			gtk_container_add(GTK_CONTAINER((GtkWidget*)l_pTreeWidget), (GtkWidget*)l_pChildTreeWidget);
+		}
+	}	
 }
 
 boolean CPlayerVisualisation::setToolbar(const CString& rVisualisationBoxName, ::GtkWidget* pToolbarWidget)
@@ -312,6 +417,8 @@ boolean CPlayerVisualisation::setWidget(const CString& rVisualisationBoxName, ::
 
 			//parent box at the appropriate location
 			parentWidgetBox(l_pVisualisationWidget, l_pVBox);
+
+			return true;
 		}
 	}
 
@@ -356,10 +463,12 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 				//insert visualisation box in paned
 				if(l_oVisualisationBoxIndex == 0)
 				{
+					gtk_container_remove(GTK_CONTAINER(l_pParentWidget), gtk_paned_get_child1(GTK_PANED(l_pParentWidget)));
 					gtk_paned_pack1(GTK_PANED(l_pParentWidget), GTK_WIDGET(pWidgetBox), TRUE, TRUE);
 				}
 				else
 				{
+					gtk_container_remove(GTK_CONTAINER(l_pParentWidget), gtk_paned_get_child2(GTK_PANED(l_pParentWidget)));
 					gtk_paned_pack2(GTK_PANED(l_pParentWidget), GTK_WIDGET(pWidgetBox), TRUE, TRUE);
 				}
 			}
@@ -371,9 +480,10 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 				uint32 l_oPanelIndex;
 				l_pParentVisualisationWindow->getChildIndex(l_pParentVisualisationWidget->getIdentifier(), l_oPanelIndex);
 
-				//insert visualisation box in notebook
-				//FIXME : page doesn't exist when a NULL widget was inserted at page creation time
+				//remove temporary page
 				gtk_notebook_remove_page(GTK_NOTEBOOK(l_pParentWidget), l_oPanelIndex);
+
+				//insert final page
 				gtk_notebook_insert_page(
 					GTK_NOTEBOOK(l_pParentWidget),
 					GTK_WIDGET(pWidgetBox),
@@ -416,6 +526,8 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 
 					//show parent window
 					gtk_widget_show_all(GTK_WIDGET(l_pWindowWidget));
+					// gtk_widget_realize(GTK_WIDGET(l_pWindowWidget));
+					// gdk_flush();
 
 					//set panel containing widget as current (this realizes the widget)
 					gtk_notebook_set_current_page(GTK_NOTEBOOK(l_pPanelWidget), l_ui32PanelIndex);

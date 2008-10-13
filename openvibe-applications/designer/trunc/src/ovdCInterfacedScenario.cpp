@@ -196,67 +196,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_oVisualisationTreeIdentifier = m_rScenario.getVisualisationTreeIdentifier();
 		m_pVisualisationTree = &m_rKernel.getContext()->getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
 
-		//==================================================================================================================================
-		//==================================================================================================================================
-		//==================================================================================================================================
-		//FIXME : this is to be removed in the long term...
-		//It fills the tree with visualisation boxes contained in the scenario, which is
-		//normally done at scenario loading time. However this doesn't work for files
-		//created prior to the implementation of visualisation tree serialization.
-		//This piece of code takes care of displaying their visualisation boxes in the window manager
-		//even though the scenario file doesn't list them
-
-		CIdentifier l_oIdentifier = OV_UndefinedIdentifier;
-		boolean l_bVisualisationBoxRestored = false;
-
-		//if visualisation tree is empty, it might be because the file doesn't contain a <VisualisationTree> section yet
-		if(m_pVisualisationTree->getNextVisualisationWidgetIdentifier(l_oIdentifier) == false)
-		{
-			CIdentifier l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
-
-			while(l_oBoxIdentifier != OV_UndefinedIdentifier)
-			{
-				const IBox* l_pBox = m_rScenario.getBoxDetails(l_oBoxIdentifier);
-				CIdentifier l_oIdentifier = l_pBox->getAlgorithmClassIdentifier();
-				const IPluginObjectDesc* l_pPOD = m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(l_oIdentifier);
-
-				if(l_pPOD && l_pPOD->hasFunctionality(PluginFunctionality_Visualization))
-				{
-					CIdentifier l_oIdentifier;
-					m_pVisualisationTree->addVisualisationWidget(
-						l_oIdentifier,
-						l_pBox->getName(),
-						EVisualisationWidget_VisualisationBox,
-						OV_UndefinedIdentifier,
-						0,
-						l_pBox->getIdentifier(),
-						0);
-					l_bVisualisationBoxRestored = true;
-				}
-
-				l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
-			}
-		}
-		//==================================================================================================================================
-		//==================================================================================================================================
-		//==================================================================================================================================
-
 		//create window manager
 		m_pDesignerVisualisation = new CDesignerVisualisation(*m_rKernel.getContext(), *m_pVisualisationTree, *this);
 		m_pDesignerVisualisation->init(string(sGUIFilename));
-
-		//==================================================================================================================================
-		//==================================================================================================================================
-		//==================================================================================================================================
-		//FIXME : to be removed (see above)
-		//if scenario file obviously lacked a visualisation tree section, restore a defaut window as well
-		if(l_bVisualisationBoxRestored == true)
-		{
-			m_pDesignerVisualisation->newVisualisationWindow("Default window");
-		}
-		//==================================================================================================================================
-		//==================================================================================================================================
-		//==================================================================================================================================
 	}
 
 	CInterfacedScenario::~CInterfacedScenario(void)
@@ -687,7 +629,6 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				if(l_iMinY>l_oBoxProxy.getYCenter()) l_iMinY=l_oBoxProxy.getYCenter();
 				if(l_iMaxY<l_oBoxProxy.getYCenter()) l_iMaxY=l_oBoxProxy.getYCenter();
 			}
-
 
 			gint l_iNewScenarioSizeX=l_iMaxX-l_iMinX;
 			gint l_iNewScenarioSizeY=l_iMaxY-l_iMinY;
@@ -1340,7 +1281,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_pDesignerVisualisation->hide();
 
 		if(m_pPlayerVisualisation == NULL)
+		{
 			m_pPlayerVisualisation = new CPlayerVisualisation(*m_rKernel.getContext(), m_rScenario, *m_pVisualisationTree);
+		}
 
 		//initialize and show windows
 		m_pPlayerVisualisation->init();
@@ -1359,7 +1302,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 		//show it if it was toggled on
 		if(m_bDesignerVisualisationToggled == true)
+		{
 			m_pDesignerVisualisation->show();
+		}
 	}
 
 	void CInterfacedScenario::generateDisplayPluginName(IBox* pDisplayBox, CString& rDisplayBoxName)

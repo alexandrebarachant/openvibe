@@ -9,6 +9,7 @@
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 
+#include "../ovpCTopographicMap3DDisplay.h"
 #include "../ovpCTopographicMapDatabase.h"
 
 #include <vector>
@@ -25,49 +26,77 @@ namespace OpenViBEPlugins
 		class CTopographicMap3DView
 		{
 		public:
+			/**
+			 * \brief Constructor
+			 * \param rTopographicMap3DDisplay Parent plugin
+			 * \param rTopographicMapDatabase Datastore
+			 * \param ui64DefaultInterpolation Interpolation mode
+			 * \param ui64Delay Delay to apply to displayed data
+			 */
+			CTopographicMap3DView(
+				CTopographicMap3DDisplay& rTopographicMap3DDisplay,
+				CTopographicMapDatabase& rTopographicMapDatabase,
+				OpenViBE::uint64 ui64DefaultInterpolation,
+				OpenViBE::float64 f64Delay);
 
-			enum ETopographicMap3DViewport
-			{
-				TopographicMap3DViewport_Top,
-				TopographicMap3DViewport_NumViewport
-			};
-
-			CTopographicMap3DView();
-
+			/**
+			 * \brief Destructor
+			 */
 			virtual ~CTopographicMap3DView();
 
+			/**
+			 * \brief Initialize widgets
+			 */
 			virtual void init();
 
 			/**
-			 * Returns pointer to toolbar
+			 * \brief Get toolbar pointer (if any)
+			 * \param [out] pToolbarWidget Pointer to toolbar widget
 			 */
 			void getToolbar(
-				GtkWidget*& pToolbarWidget);
-			/**
-			 * Returns name of viewport currently used
-			 */
-			ETopographicMap3DViewport getCurrentViewport(void);
-			/**
-			 * Sets current viewport.
-			 * \param eViewport Display mode to set.
-			 */
-			void setCurrentViewport(
-				ETopographicMap3DViewport eViewport);
+				::GtkWidget*& pToolbarWidget);
+
+			/** \name Callbacks */
+			//@{
+
+			void setInterpolationCB(::GtkWidget* pWidget);
+			void toggleElectrodesCB();
+			//void toggleSamplingPointsCB();
+			void setDelayCB(OpenViBE::float64 f64Delay);
+
+			//@}
 
 		private:
-			/*
-			static gboolean redrawCB(::GtkWidget* pWidget, ::GdkEventExpose* pEvent, gpointer data);
-			static gboolean sizeAllocateCB(::GtkWidget* pWidget, ::GtkAllocation* pAllocation, gpointer data);
-			*/
-			/**
-			 * Resizes the widget's drawing area.
-			 */
-			void resize(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height) {};
+			void enableInterpolationButtonSignals(
+				OpenViBE::boolean bEnable);
+
+		private:
+			CTopographicMap3DDisplay& m_rTopographicMap3DDisplay;
+
+			//! The database that contains the information to use to draw the signals
+			CTopographicMapDatabase& m_rTopographicMapDatabase;
+
+			//Maximum delay that can be applied to displayed data
+			OpenViBE::float64 m_f64MaxDelay;
 
 			::GladeXML* m_pGladeInterface;
-			ETopographicMap3DViewport m_ui32CurrentViewport;
+
+			//! Interpolation type
+			OpenViBE::uint64 m_ui64CurrentInterpolation;
+			GtkRadioToolButton* m_pMapPotentials;
+			GtkRadioToolButton* m_pMapCurrents;
+
+			//! Electrodes toggle button
+			GtkToggleToolButton* m_pElectrodesToggleButton;
+			//! Electrodes toggle state
+			OpenViBE::boolean m_bElectrodesToggledOn;
+
+			//! Pointer to sampling points toggle button
+			//GtkToggleToolButton* m_pSamplingPointsToggleButton;
+			//! Sampling points toggle state
+			//OpenViBE::boolean m_bSamplingPointsToggledOn;
 		};
-	}
-}
+	};
+};
 
 #endif // __SimpleVisualisationPlugin_CTopographicMap3DView_H__

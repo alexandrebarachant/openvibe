@@ -32,80 +32,131 @@ namespace OpenViBEPlugins
 			TopographicMap2DProjection_NumProjection
 		};
 
-			enum ETopographicMap2DViewport
+			enum ETopographicMap2DView
 			{
-				TopographicMap2DViewport_Top,/*
-				TopographicMap2DViewport_Left,
-				TopographicMap2DViewport_Right,
-				TopographicMap2DViewport_Back*/
-				TopographicMap2DViewport_NumViewport
+				TopographicMap2DView_Top,
+				TopographicMap2DView_Left,
+				TopographicMap2DView_Right,
+				TopographicMap2DView_Back
 			};
 
+			/**
+			 * \brief Constructor
+			 * \param rTopographicMapDatabase Datastore
+			 * \param ui64DefaultInterpolation Interpolation mode
+			 * \param ui64Delay Delay to apply to displayed data
+			 */
 			CTopographicMap2DView(
-				CTopographicMapDatabase& rTopographicMapDatabase);
+				CTopographicMapDatabase& rTopographicMapDatabase,
+				OpenViBE::uint64 ui64DefaultInterpolation,
+				OpenViBE::float64 f64Delay);
 
+			/**
+			 * \brief Destructor
+			 */
 			virtual ~CTopographicMap2DView();
 
-			//CSignalDisplayDrawable implementation
-			//-------------------------------------
+			/** \name CSignalDisplayDrawable implementation */
+			//@{
+
 			/**
-			 * Initializes the window.
+			 * \brief Initialize widgets
 			 */
 			virtual void init();
+
 			/**
-			 * Invalidates the window's content and tells it to redraw itself.
+			 * \brief Redraw map
 			 */
 			virtual void redraw();
-			//-------------------------------------
 
-			//CTopographicMapDrawable implementation
-			//----------------------------------------
+			//@}
+
+			/** \name CTopographicMapDrawable implementation */
+			//@{
+
 			/**
-			* Returns pointer to sample coords matrix (places where to interpolate values)
-			*/
+			 * \brief Get matrix of sample points coordinates (places where to interpolate values)
+			 * \return Pointer to matrix of sample points coordinates
+			 */
 			virtual OpenViBE::CMatrix* getSampleCoordinatesMatrix();
+
 			/**
-			* Sets pointer to sample values matrix (values interpolated at places specified in sample matrix)
-			*/
+			 * \brief Set matrix of sample points values (values interpolated at places specified in sample coordinates matrix)
+			 * \param [in] pSampleValuesMatrix Pointer to matrix of sample points values
+			 * \return True if values were successfully set, false otherwise
+			 */
 			virtual OpenViBE::boolean setSampleValuesMatrix(
 				OpenViBE::IMatrix* pSampleValuesMatrix);
-			//----------------------------------------
+
+			//@}
 
 			/**
-			 * Returns pointers to plugin main widget and toolbar widget
+			 * \brief Get pointers to plugin main widget and (optional) toolbar widget
+			 * \param [out] pWidget Pointer to main widget
+			 * \param [out] pToolbarWidget Pointer to (optional) toolbar widget
 			 */
 			void getWidgets(
-				GtkWidget*& pWidget,
-				GtkWidget*& pToolbarWidget);
+				::GtkWidget*& pWidget,
+				::GtkWidget*& pToolbarWidget);
+
 			/**
-			 * Returns name of viewport currently used
+			 * \brief Get ID of current view
+			 * \return ID of current view
 			 */
-			ETopographicMap2DViewport getCurrentViewport(void);
-			/**
-			 * Sets current viewport.
-			 * \param eViewport Display mode to set.
-			 */
-			void setCurrentViewport(
-				ETopographicMap2DViewport eViewport);
+			ETopographicMap2DView getCurrentView(void);
+
+			/** \name Callbacks */
+			//@{
+
+			void resizeCB(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height);
+			void toggleElectrodesCB();
+			void setProjectionCB(::GtkWidget* pWidget);
+			void setViewCB(::GtkWidget* pWidget);
+			void setInterpolationCB(::GtkWidget* pWidget);
+			void setDelayCB(OpenViBE::float64 f64Delay);
+
+			//@}
 
 		private:
+			//draw color palette
 			void drawPalette(
 				OpenViBE::uint32 ui32X,
 				OpenViBE::uint32 ui32Y,
 				OpenViBE::uint32 ui32Width,
 				OpenViBE::uint32 ui32Height);
 
-			void drawTopViewport(
+			//draw face (ears, nose, neck)
+			void drawFace(
 				OpenViBE::uint32 ui32X,
 				OpenViBE::uint32 ui32Y,
 				OpenViBE::uint32 ui32Width,
 				OpenViBE::uint32 ui32Height);
 
+			//draw head
+			void drawHead();
+
+				//draw RGB buffer
+				void drawPotentials();
+
+				//draw electrodes corresponding to visible channels as rings
+				void drawElectrodes();
+
+					/**
+					 * \brief Get channel position in 2D
+					 * \param ui32ChannelIndex[in] Index of channel which position is to be retrieved
+					 * \param l_i32ChannelX[out] X coordinate of channel location, if channel is visible
+					 * \param l_i32ChannelY[out] Y coordinate of channel location, if channel is visible
+					 * \return True if channel is visible in current view, false otherwise
+					 */
+					OpenViBE::boolean getChannel2DPosition(
+						OpenViBE::uint32 ui32ChannelIndex,
+						gint& l_i32ChannelX,
+						gint& l_i32ChannelY);
+
+			//update RGB buffer with interpolated values
 			void refreshPotentials();
-			void drawPotentials();
 
-			void drawElectrodes();
-
+			//draw a box in RGB buffer
 			void drawBoxToBuffer(
 				OpenViBE::uint32 ui32X,
 				OpenViBE::uint32 ui32Y,
@@ -115,51 +166,68 @@ namespace OpenViBEPlugins
 				OpenViBE::uint8 ui8Green,
 				OpenViBE::uint8 ui8Blue);
 
+			void enableElectrodeButtonSignals(
+				OpenViBE::boolean bEnable);
+
 			void enableProjectionButtonSignals(
-				OpenViBE::boolean);
-			void setProjection(
-				ETopographicMap2DProjection eProjection);
+				OpenViBE::boolean bEnable);
 
-			static void toggleAxialProjectionCB(
-				GtkWidget* pWidget,
-				gpointer data);
-			static void toggleRadialProjectionCB(
-				GtkWidget* widget,
-				gpointer data);
+			void enableViewButtonSignals(
+				OpenViBE::boolean bEnable);
 
-			static gboolean redrawCB(::GtkWidget* pWidget, ::GdkEventExpose* pEvent, gpointer data);
-
-			static gboolean sizeAllocateCB(::GtkWidget* pWidget, ::GtkAllocation* pAllocation, gpointer data);
+			void enableInterpolationButtonSignals(
+				OpenViBE::boolean bEnable);
 
 			/**
-			 * Resizes the widget's drawing area.
+			 * \brief Compute normalized coordinates of 2D samples
+			 * \remark This method should first be called with bComputeCoordinates = false, allowing caller
+			 * to resize data structures appropriately, and then it may be called with bComputeCoordinates = true
+			 * \param bComputeCoordinates If false, this method only computes the number of visible samples
+			 * \return Number of visible samples (samples lying within the actual skull area)
 			 */
-			void resize(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height);
-
-			OpenViBE::uint32 getSamplesCount();
-			void computeSamplesNormalizedCoordinates();
-			void computeColorIndices();
+			OpenViBE::uint32 computeSamplesNormalizedCoordinates(
+				OpenViBE::boolean bComputeCoordinates);
 
 			void resizeData();
 
-			//void enableViewportButtonSignals(OpenViBE::boolean);
-
+		private:
 			//! The database that contains the information to use to draw the signals
 			CTopographicMapDatabase& m_rTopographicMapDatabase;
 
+			//Maximum delay that can be applied to displayed data
+			OpenViBE::float64 m_f64MaxDelay;
+
 			::GladeXML* m_pGladeInterface;
 
-			//! Pointers to projection type toggle buttons
-			GtkToggleToolButton* m_pProjectionButtons[TopographicMap2DProjection_NumProjection];
-			//! Display mode
-			ETopographicMap2DProjection m_ui32CurrentProjection;
-
 			::GtkWidget* m_pDrawingArea;
-			::GdkBitmap* m_pClipmask; //origin is upper left corner of skull bounding square
+			::GdkBitmap* m_pClipmask; //origin (m_ui32SkullX, m_ui32SkullY), dims : depend on view
 			::GdkGC* m_pClipmaskGC;
 			OpenViBE::boolean m_bRedrawClipmask;
 			::GdkColor m_oBackgroundColor;
-			ETopographicMap2DViewport m_ui32CurrentViewport;
+
+			//! Active projection
+			ETopographicMap2DProjection m_ui32CurrentProjection;
+			//! Projection radio buttons
+			GtkRadioToolButton* m_pAxialProjectionButton;
+			GtkRadioToolButton* m_pRadialProjectionButton;
+
+			//! Active view
+			ETopographicMap2DView m_ui32CurrentView;
+			//! View radio buttons
+			GtkRadioToolButton* m_pTopViewButton;
+			GtkRadioToolButton* m_pLeftViewButton;
+			GtkRadioToolButton* m_pRightViewButton;
+			GtkRadioToolButton* m_pBackViewButton;
+
+			//! Interpolation type
+			OpenViBE::uint64 m_ui64CurrentInterpolation;
+			GtkRadioToolButton* m_pMapPotentials;
+			GtkRadioToolButton* m_pMapCurrents;
+
+			//! Electrodes toggle button
+			GtkToggleToolButton* m_pElectrodesToggleButton;
+			//! Electrodes toggle state
+			OpenViBE::boolean m_bElectrodesToggledOn;
 
 			OpenViBE::boolean m_bNeedResize;
 
@@ -180,15 +248,87 @@ namespace OpenViBEPlugins
 			OpenViBE::uint32 m_ui32PaletteWindowWidth;
 			OpenViBE::uint32 m_ui32PaletteWindowHeight;
 
-			OpenViBE::uint32 m_ui32NoseY;
 			OpenViBE::uint32 m_ui32SkullX;
 			OpenViBE::uint32 m_ui32SkullY;
 			OpenViBE::uint32 m_ui32SkullDiameter;
+			//angles relative to 3 o'clock position, CCW, in degrees
+			OpenViBE::float32 m_f32SkullOutlineStartAngle;
+			OpenViBE::float32 m_f32SkullOutlineEndAngle;
+			OpenViBE::float32 m_f32SkullFillStartAngle;
+			OpenViBE::float32 m_f32SkullFillEndAngle;
 
+			//determined from m_ui32SkullOutlineEndAngle
+			OpenViBE::uint32 m_ui32SkullOutlineLeftPointX;
+			OpenViBE::uint32 m_ui32SkullOutlineLeftPointY;
+			//determined from m_ui32SkullOutlineStartAngle
+			OpenViBE::uint32 m_ui32SkullOutlineRightPointX;
+			OpenViBE::uint32 m_ui32SkullOutlineRightPointY;
+
+			//determined from m_ui32SkullFillEndAngle
+			OpenViBE::uint32 m_ui32SkullFillLeftPointX;
+			OpenViBE::uint32 m_ui32SkullFillLeftPointY;
+			//determined from m_ui32SkullFillStartAngle
+			OpenViBE::uint32 m_ui32SkullFillRightPointX;
+			OpenViBE::uint32 m_ui32SkullFillRightPointY;
+
+			OpenViBE::uint32 m_ui32SkullFillBottomPointX;
+			OpenViBE::uint32 m_ui32SkullFillBottomPointY;
+
+			/////////////////////////////
+			// TOP VIEW
+			/////////////////////////////
+			OpenViBE::uint32 m_ui32NoseY;
+
+			/////////////////////////////
+			// BOTTOM VIEW
+			/////////////////////////////
+			OpenViBE::uint32 m_ui32LeftNeckX;
+			OpenViBE::uint32 m_ui32LeftNeckY;
+			OpenViBE::uint32 m_ui32RightNeckX;
+			OpenViBE::uint32 m_ui32RightNeckY;
+
+			//////////////////////////////////
+			// LEFT/RIGHT VIEWS
+			//////////////////////////////////
+			/*
+			    + A
+			   /
+			  /
+			 /
+			+ B
+			| C
+			+----+ D
+			     |
+			     + E
+			*/
+			OpenViBE::uint32 m_ui32NoseTopX; //A
+			OpenViBE::uint32 m_ui32NoseTopY;
+			OpenViBE::uint32 m_ui32NoseBumpX; //B
+			OpenViBE::uint32 m_ui32NoseBumpY;
+			OpenViBE::uint32 m_ui32NoseTipX; //C
+			OpenViBE::uint32 m_ui32NoseTipY;
+			OpenViBE::uint32 m_ui32NoseBaseX; //D
+			OpenViBE::uint32 m_ui32NoseBaseY;
+			OpenViBE::uint32 m_ui32NoseBottomX; //E
+			OpenViBE::uint32 m_ui32NoseBottomY;
+
+			/**
+			 * \brief Main pixmap
+			 * \remark This pixmap is 32-bit aligned. Each row is m_ui32RowStride wide, and the pixmap has the height of the DrawingArea's
+			 * window. It is pasted into the DrawingArea's window upon redraw
+			 */
+			//TODO
+			//GdkPixmap* m_pPixmap;
+
+			/**
+			 * \brief Skull pixmap
+			 * \remark This pixmap is 32-bit aligned. Each row is m_ui32RowStride wide, and the pixmap has m_ui32SkullDiameter rows.
+			 * It is pasted into the main pixmap everytime changes happen (window resizing, display options toggled on/off, etc)
+			 */
 			guchar* m_pSkullRGBBuffer;
 			OpenViBE::uint32 m_ui32RowStride;
 		};
-	}
-}
+	};
+};
 
 #endif // __SimpleVisualisationPlugin_CTopographicMap2DView_H__

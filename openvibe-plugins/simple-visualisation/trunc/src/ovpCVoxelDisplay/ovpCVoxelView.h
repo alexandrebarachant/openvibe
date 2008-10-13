@@ -9,7 +9,7 @@
 #include <glade/glade.h>
 #include <gtk/gtk.h>
 
-#include "../ovpCBufferDatabase.h"
+#include "../ovpCVoxelDisplay.h"
 
 #include <vector>
 #include <string>
@@ -20,26 +20,44 @@ namespace OpenViBEPlugins
 	{
 		/**
 		 * This class contains everything necessary to setup a GTK window and display
-		 * a 2D topographic map
+		 * a voxel visualiser
 		 */
-		class CVoxelView
+		class CVoxelView : public OpenViBEPlugins::SimpleVisualisation::IStreamDisplayDrawable
 		{
-		public:
-			/*
-			enum EVoxelViewport
-			{
-				VoxelViewport_Top,
-				VoxelViewport_NumViewport
-			};*/
-
-			CVoxelView();
-
-			virtual ~CVoxelView();
-
-			virtual void init();
+		public:			
+			/**
+			 * \brief Constructor
+			 * \param rVoxelDisplay Parent plugin			 			 
+			 */
+			CVoxelView(
+				CVoxelDisplay& rVoxelDisplay);
 
 			/**
-			 * Returns pointer to toolbar
+			 * \brief Destructor
+			 */
+			virtual ~CVoxelView();
+
+			/** \name IStreamDisplayDrawable implementation */
+			//@{
+			
+			/**
+			 * \brief Initialize widgets.
+			 * \remark Called automatically by spectrum database when first buffer is received
+			 * \return True if initialization was successful, false otherwise
+			 */
+			virtual OpenViBE::boolean init(void);
+
+			/**
+			 * \brief Invalidate window contents and have it redraw itself.
+			 * \return True if redraw was successful, false otherwise
+			 */
+			virtual OpenViBE::boolean redraw(void);
+			
+			//@}
+			
+			/**
+			 * \brief Get toolbar pointer (if any)
+			 * \param [out] pToolbarWidget Pointer to toolbar widget
 			 */
 			void getToolbar(
 				GtkWidget*& pToolbarWidget);
@@ -54,18 +72,25 @@ namespace OpenViBEPlugins
 			//void setCurrentViewport(
 				//EVoxelViewport eViewport);
 
-		private:
-			/*
-			static gboolean redrawCB(::GtkWidget* pWidget, ::GdkEventExpose* pEvent, gpointer data);
-			static gboolean sizeAllocateCB(::GtkWidget* pWidget, ::GtkAllocation* pAllocation, gpointer data);
-			*/
-			/**
-			 * Resizes the widget's drawing area.
-			 */
-			//void resize(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height) {};
+			void setVoxelObjectCB(GtkWidget* pWidget);
+			void toggleColorModificationCB(OpenViBE::boolean bModifyColor);
+			void toggleTransparencyModificationCB(OpenViBE::boolean bModifyTransparency);
+			void toggleSizeModificationCB(OpenViBE::boolean bModifySize);
+			void setMinVoxelScaleFactorCB(::GtkSpinButton* pWidget);
+			void setMaxVoxelScaleFactorCB(::GtkSpinButton* pWidget);
+			void setVoxelDisplayThresholdCB(OpenViBE::float64 f64Threshold);
+			void setSkullOpacityCB(OpenViBE::float64 f64Delay);
+			void setPausedCB(OpenViBE::boolean bPaused);
+			void repositionCameraCB();
+
+		private:						
+			CVoxelDisplay& m_rVoxelDisplay;
 
 			::GladeXML* m_pGladeInterface;
-			//EVoxelViewport m_ui32CurrentViewport;
+			
+			//! View radio buttons
+			::GtkRadioToolButton* m_pCubeButton;
+			::GtkRadioToolButton* m_pSphereButton;			
 		};
 	}
 }

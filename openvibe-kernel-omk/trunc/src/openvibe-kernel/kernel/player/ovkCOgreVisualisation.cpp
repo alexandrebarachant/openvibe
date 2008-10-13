@@ -14,7 +14,7 @@ COgreVisualisation::COgreVisualisation(const OpenViBE::Kernel::IKernelContext& r
 	m_bOgreInitialised(false),
 	m_bResourcesInitialised(false),
 	m_pRoot(NULL),
-	m_bLogToScreen(false),
+	m_bOutputCapturedMessages(false),
 	m_pLog(NULL)
 {
 }
@@ -26,7 +26,7 @@ COgreVisualisation::~COgreVisualisation()
 
 void COgreVisualisation::messageLogged(const String& message, LogMessageLevel lml, bool maskDebug, const String &logName)
 {
-	if(m_bLogToScreen == true)
+	if(m_bOutputCapturedMessages == true)
 	{
 		switch(lml)
 		{
@@ -44,29 +44,47 @@ void COgreVisualisation::messageLogged(const String& message, LogMessageLevel lm
 
 boolean COgreVisualisation::initializeOgre(const CString& rPluginsFile, boolean bLogToScreen, const CString& rLogFileName) throw (std::exception)
 {
+	CNameValuePairList l_oOgreParams;		
+	l_oOgreParams.setValue("PluginsFile", rPluginsFile.toASCIIString());	
+	l_oOgreParams.setValue("CaptureMessages", "1");	
+	l_oOgreParams.setValue("OutputCapturedMessages", bLogToScreen ? "1" : "0");	
+	l_oOgreParams.setValue("OutputFileName", rLogFileName);
+
+	return initializeOgre(l_oOgreParams);	
+}
+
+boolean COgreVisualisation::initializeOgre(const CNameValuePairList& rNameValuePairList) throw (std::exception)
+{
 	try
 	{
-	m_bLogToScreen = bLogToScreen;
+	//retrieve optional file name to which Ogre messages should be dumped
+	CString l_sOutputFileName;
+	rNameValuePairList.getValue("OutputFileName", l_sOutputFileName);
 
-	//configure custom log
-	//--------------------
-
-	LogManager* l_pLogManager = new LogManager();
-
-	//this is Ogre's default log
-	bool l_bIsDefaultLog = true;
-
-	//don't send Ogre log to debugger
-	bool l_bSendLogToDebuggerOutupt = false;
-
-	//suppress logging to file if no filename is provided
-	bool l_bSuppressFileLog = string(rLogFileName).empty();
-
-	//create custom log
-	m_pLog = l_pLogManager->createLog(rLogFileName.toASCIIString(), l_bIsDefaultLog, l_bSendLogToDebuggerOutupt, l_bSuppressFileLog);
-
-	//get log messages to forward them to OV's log manager, if required
-	m_pLog->addListener(this);
+	//should Ogre messages be captured by OpenViBE?
+	boolean l_bCaptureMessages;
+	rNameValuePairList.getValue("CaptureMessages", l_bCaptureMessages);
+		
+	//if Ogre messages are to be captured, a custom log manager must be created
+	if(l_bCaptureMessages == true)
+	{
+		//should Ogre messages be forwarded to OpenViBE's log manager?
+		rNameValuePairList.getValue("OutputCapturedMessages", m_bOutputCapturedMessages);
+			
+		//configure custom log
+		//--------------------
+		LogManager* l_pLogManager = new LogManager();
+		//this is Ogre's default log
+		bool l_bIsDefaultLog = true;
+		//don't send Ogre log to debugger
+		bool l_bSendLogToDebuggerOutput = false;
+		//suppress logging to file if no filename is provided
+		bool l_bSuppressFileLog = string(l_sOutputFileName).empty();
+		//create custom log
+		m_pLog = l_pLogManager->createLog(l_sOutputFileName.toASCIIString(), l_bIsDefaultLog, l_bSendLogToDebuggerOutput, l_bSuppressFileLog);
+		//get log messages to forward them to OV's log manager, if required
+		m_pLog->addListener(this);
+	}
 
 	//initialize Ogre
 	//---------------
@@ -74,8 +92,12 @@ boolean COgreVisualisation::initializeOgre(const CString& rPluginsFile, boolean 
 	//configuration file is assumed to be copied to working dir
 	std::string l_sConfigFile("../share/openvibe-kernel-omk/ogre.cfg");
 
+	//retrieve plugins file
+	CString l_sPluginsFile;
+	rNameValuePairList.getValue("PluginsFile", l_sPluginsFile);
+
 	//create Ogre Root
-	m_pRoot = new Ogre::Root(rPluginsFile.toASCIIString(), l_sConfigFile, "");
+	m_pRoot = new Ogre::Root(l_sPluginsFile.toASCIIString(), l_sConfigFile, l_bCaptureMessages ? "" : l_sOutputFileName.toASCIIString());
 
 	//resources file is assumed to be copied to working dir
 	std::string l_sResourcesFile("../share/openvibe-kernel-omk/resources.cfg");

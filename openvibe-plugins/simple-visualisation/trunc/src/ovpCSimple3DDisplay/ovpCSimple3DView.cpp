@@ -214,6 +214,14 @@ namespace OpenViBEPlugins
 			*/
 		}
 
+		void CSimple3DView::redraw()
+		{
+			//if(m_pDrawingArea != NULL && GTK_WIDGET_VISIBLE(m_pDrawingArea))
+			{
+				//gdk_window_invalidate_rect(m_pDrawingArea->window,	NULL,	true);
+			}
+		}
+
 		void CSimple3DView::getToolbar(GtkWidget*& pToolbarWidget)
 		{
 			pToolbarWidget = glade_xml_get_widget(m_pGladeInterface, "Toolbar");
@@ -425,14 +433,6 @@ namespace OpenViBEPlugins
 		{
 			reinterpret_cast<CSimple3DView*>(data)->redraw();
 			return TRUE;
-		}
-
-		void CSimple3DView::redraw()
-		{
-			//if(m_pDrawingArea != NULL && GTK_WIDGET_VISIBLE(m_pDrawingArea))
-			{
-				//gdk_window_invalidate_rect(m_pDrawingArea->window,	NULL,	true);
-			}
 		}
 
 		gboolean CSimple3DView::sizeAllocateCB(GtkWidget *widget, GtkAllocation *allocation, gpointer data)

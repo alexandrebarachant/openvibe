@@ -38,6 +38,16 @@ void MaterialSetMaterialName::subEntityAction( SubEntityMaterial* subEntity ) co
 //===========================================================================
 
 //===========================================================================
+// MaterialSetSceneBlending
+//===========================================================================
+void MaterialSetSceneBlending::passAction( SubEntityMaterial* subEntity,
+                                           Pass* passDest, Pass* passSrc ) const
+{
+  passDest->setSceneBlending( _blendType );
+}
+//===========================================================================
+
+//===========================================================================
 // MaterialSetTransparency
 //===========================================================================
 MaterialSetTransparency::MaterialSetTransparency( const IKernelContext& rKernelContext, Ogre::Real transparency )
@@ -75,7 +85,24 @@ void MaterialSetTransparency::passAction( SubEntityMaterial* subEntity,
 void MaterialSetDiffuse::passAction( SubEntityMaterial* subEntity,
                                           Pass* passDest, Pass* passSrc ) const
 {
-  passDest->setDiffuse ( _diffuse );
+	if(_bUseShader == false)
+	{
+		passDest->setDiffuse ( _diffuse );		
+	}
+}
+
+void MaterialSetDiffuse::subEntityAction( SubEntityMaterial* subEntity ) const
+{
+	if(_bUseShader == true)
+	{
+#define COLOR_MODULATE_PARAM_INDEX 1	
+		subEntity->getOgreSubEntity()->setCustomParameter(COLOR_MODULATE_PARAM_INDEX, Ogre::Vector4(_diffuse.r, _diffuse.g, _diffuse.b, _diffuse.a)); 
+	}
+	else
+	{
+		//call passAction for each pass
+		IMaterialPassAction::subEntityAction(subEntity);
+	}
 }
 //===========================================================================
 
@@ -230,16 +257,6 @@ void MaterialSetAwareness::passAction( SubEntityMaterial* subEntity,
   passDest->setSpecular( computeBlend( passSrc->getSpecular() ) ) ;
   //force reload
   passDest->_load() ;
-}
-//===========================================================================
-
-//===========================================================================
-// MaterialSetSceneBlending
-//===========================================================================
-void MaterialSetSceneBlending::passAction( SubEntityMaterial* subEntity,
-                                           Pass* passDest, Pass* passSrc ) const
-{
-  passDest->setSceneBlending( _blendType );
 }
 //===========================================================================
 

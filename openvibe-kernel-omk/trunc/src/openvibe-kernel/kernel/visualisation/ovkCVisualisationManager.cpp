@@ -34,17 +34,17 @@ CVisualisationManager::~CVisualisationManager()
 	delete m_pOgreVisualisation;
 }
 
-boolean CVisualisationManager::initialize3DContext(const CString& rPluginsFile, boolean bLogOgreToScreen, const OpenViBE::CString& rLogFileName)
+boolean CVisualisationManager::initialize3DContext(const CNameValuePairList& rNameValuePairList)
 {
 	try
 	{
 		//initialize Ogre
 		//---------------
 		m_pOgreVisualisation = new COgreVisualisation(getKernelContext());
-		if(m_pOgreVisualisation->initializeOgre(rPluginsFile, bLogOgreToScreen, rLogFileName) == true)			
+		if(m_pOgreVisualisation->initializeOgre(rNameValuePairList) == true)			
 		{
-		log() << LogLevel_Trace << "Initialized Ogre\n";
-	}
+			log() << LogLevel_Trace << "Initialized Ogre\n";
+		}
 		else
 		{
 			log() << LogLevel_Trace << "Failed to initialize Ogre\n";				

@@ -3,42 +3,57 @@
  *
  * \section Doc_CreatingNewPlugins_Introduction Introduction
  *
- * The §OpenViBE§ is vey high level defined and heavily based on
- * plugin mechanism so it can be extended a lot. It's purpose is
- * to be used with neurofeedback/BCI but its description level
- * allows it to be used for a lot of other things ; see §OpenViBE§
- * overview to get an idea of the concepts behinde §OpenViBE§.
+ * §OpenViBE§ is a very high level platform which relies heavily on
+ * a plugin mechanism, making it easy to extend. Its purpose is
+ * to be used for neurofeedback/BCI experiments, but its description level
+ * makes the platform suitable for use in other contexts; see §OpenViBE§
+ * overview to get an idea of the concepts behind §OpenViBE§.
  *
- * There are 4 ways §OpenViBE§ can be extended nowadays :
- *  - creating new algorithm
- *  - creating new box algorithm
- *  - creating new scenario importer
- *  - creating new scenario exporter
+ * There are currently 4 ways to extend §OpenViBE§, which are by creating new
+ *  - algorithms
+ *  - box algorithms
+ *  - scenario importers
+ *  - scenario exporters
  *
- * Each extension a developper creates will come with a pair of
- * implemented classes : a description of the plugin object
- * and the plugin object itself. Each extension can be viewed as
- * a specialized extension of the OpenViBE::Plugins::IPluginObjectDesc
- * and the OpenViBE::Plugins::IPluginObject interfaces. Each family
- * already has a specialized interface :
- *  - for algorithm : OpenViBE::Plugins::IAlgorithmDesc and OpenViBE::Plugins::IAlgorithm
- *  - for box algorithm : OpenViBE::Plugins::IBoxAlgorithmDesc and OpenViBE::Plugins::IBoxAlgorithm
- *  - for scenario importer : OpenViBE::Plugins::IScenarioImporterDesc and OpenViBE::Plugins::IScenarioImporter
- *  - for scenario exporter : OpenViBE::Plugins::IScenarioExporterDesc and OpenViBE::Plugins::IScenarioExporter
+ * Each extension a developer creates will come as a pair of
+ * concrete classes. The first is a description of the plugin object
+ * and the second is the plugin object itself. An extension can be seen as
+ * an implementation of the OpenViBE::Plugins::IPluginObjectDesc
+ * and OpenViBE::Plugins::IPluginObject interfaces. 
  *
- * \section Doc_CreatingNewPlugins_CreatingNewAlgorithms Creating new algorithms
+ * Each extension 'family' has specialized interfaces deriving from these interfaces :
+ *  - for algorithms : OpenViBE::Plugins::IAlgorithmDesc and OpenViBE::Plugins::IAlgorithm
+ *  - for box algorithms : OpenViBE::Plugins::IBoxAlgorithmDesc and OpenViBE::Plugins::IBoxAlgorithm
+ *  - for scenario importers : OpenViBE::Plugins::IScenarioImporterDesc and OpenViBE::Plugins::IScenarioImporter
+ *  - for scenario exporters : OpenViBE::Plugins::IScenarioExporterDesc and OpenViBE::Plugins::IScenarioExporter
  *
- * In order to create new box algorithms, the developper has to
- * describe the interface of its box : inputs, outputs and settings.
+ * Algorithms make up the finest granularity level of reusable components in $OpenViBE$. 
+ * These data processing entities are designed to be easily embedded in plugins code 
+ * and help to make the extension process fast and efficient. Powerful signal processing can
+ * be achieved by chaining several algorithms together.
+ *
+ * Box algorithms lie one level higher in the abstraction tree. They are the smallest reusable
+ * components available in authoring tools. These black boxes can use one or more
+ * algorithms in order to accomplish their task. Several boxes can also be linked together
+ * to constitute scenarios.
+ *
+ * Finally, scenario importers and exporters are responsible for serializing $OpenViBE$ scenarios.
+ * 
+ * \section Doc_CreatingNewPlugins_CreatingNewBoxAlgorithms Creating new box algorithms
+ *
+ * In order to create new box algorithms, the developer has to
+ * describe the interface of the box, namely its inputs, outputs and settings.
+ * Inputs and outputs describe the data flows
+ * consumed and produced by the box. They have a name and a type identifier. 
  * Settings are parameters that can be modified outside the algorithm
- * itself, usually in the authoring tool application. Each of this
- * inputs, outputs and settings should have an authoring tool 
- * understandable type. This type is returned in the protoype of
- * the setting.
+ * itself, usually in authoring tools. They have a name, a type identifier and a 
+ * default value. Each input, output and setting should have 
+ * an authoring tool understandable type. The box prototype provides information about
+ * the type of each parameter.
  *
  * \todo terminate this documentation
  *
- * Here comes a sample of algorithm plugin :
+ * Here is a sample of a box algorithm plugin :
  *
  * \code
  *
@@ -90,4 +105,6 @@
  * };
  *
  * \endcode
+ *
+ * \todo describe algorithms, scenario importers and exporters creation
  */

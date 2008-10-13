@@ -30,8 +30,8 @@ namespace OpenViBEPlugins
 
 			virtual ~CSimple3DView();
 
-			//CSignalDisplayDrawable implementation
-			//-------------------------------------
+			/** \name CSignalDisplayDrawable implementation */
+			//@{
 			/**
 			 * Initializes the window.
 			 */
@@ -40,10 +40,10 @@ namespace OpenViBEPlugins
 			 * Invalidates the window's content and tells it to redraw itself.
 			 */
 			virtual void redraw();
-			//-------------------------------------
+			//@}
 
 			/**
-			 * Returns pointer to toolbar
+			 * \brief Get pointer to toolbar
 			 * \param[out] pToolbar pointer to toolbar
 			 */
 			void getToolbar(

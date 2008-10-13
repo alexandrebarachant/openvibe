@@ -19,6 +19,7 @@ COgreWindow::COgreWindow(const IKernelContext& rKernelContext, const Ogre::Strin
 	,m_pRenderWindow(NULL)
 	,m_pSceneManager(NULL)
 	,m_pCamera(NULL)
+	,m_f32NearFarClipRatio(1.f/1000)
 	,m_pViewport(NULL)
 	,m_bLeftButtonPressed(false)
 	,m_bMiddleButtonPressed(false)
@@ -68,7 +69,7 @@ boolean COgreWindow::createRenderWindow(const std::string& rExternalHandle, unsi
 	try
 	{
 	m_pRenderWindow = Ogre::Root::getSingleton().createRenderWindow(
-		m_sName + "_RenderWindow",
+		m_sName,// + "_RenderWindow",
 		uiWidth,
 		uiHeight,
 		false, //don't use fullscreen with non top level windows
@@ -135,7 +136,7 @@ boolean COgreWindow::handleSizeAllocateEvent(unsigned int uiWidth, unsigned int 
 	m_pRenderWindow->resize(uiWidth, uiHeight);
 	m_pRenderWindow->windowMovedOrResized();
 #elif defined OVK_OS_Linux
-	m_pRenderWindow->resize(iuWidth, uiHeight);
+	m_pRenderWindow->resize(uiWidth, uiHeight);
 #endif
 	m_pRenderWindow->update(true);
 
@@ -265,6 +266,16 @@ boolean COgreWindow::setCameraToEncompassObjects()
 		l_f32LargestDimension = l_f32MaxZ - l_f32MinZ;
 	}
 
+	//update clip planes accordingly, so that near/far ratio is constant
+	float32 l_f32FarClipDistance = 4*l_f32LargestDimension; //purely arbitrary!
+	float32 l_f32NearClipDistance = l_f32FarClipDistance * m_f32NearFarClipRatio;
+	if(l_f32NearClipDistance < 1)
+	{
+		l_f32NearClipDistance = 1;
+	}
+	m_pCamera->setNearClipDistance(l_f32NearClipDistance);
+	m_pCamera->setFarClipDistance(l_f32FarClipDistance);
+
 	//look at BB center
 	m_oLookAt.x = (l_f32MinX + l_f32MaxX) / 2;
 	m_oLookAt.y = (l_f32MinY + l_f32MaxY) / 2;
@@ -299,8 +310,9 @@ boolean COgreWindow::createView()
 	//create default camera
 	m_pCamera = m_pSceneManager->createCamera(string(m_sName) + "_Camera_0");
 	m_pCamera->setAutoAspectRatio(true);
-	m_pCamera->setNearClipDistance(1.0);
-	m_pCamera->setFarClipDistance(1000.0);
+	float32 l_f32NearClipDistance = 1.f;	
+	m_pCamera->setNearClipDistance(l_f32NearClipDistance);
+	m_pCamera->setFarClipDistance(l_f32NearClipDistance / m_f32NearFarClipRatio);
 	m_pCamera->setFixedYawAxis(true);
 	updateCamera();
 

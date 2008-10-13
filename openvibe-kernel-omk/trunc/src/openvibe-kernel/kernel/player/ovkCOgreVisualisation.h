@@ -1,6 +1,7 @@
 #ifndef __OpenViBEKernel_Kernel_Player_COgreVisualisation_H__
 #define __OpenViBEKernel_Kernel_Player_COgreVisualisation_H__
 
+#include "../../ovk_base.h"
 #include <openvibe/ov_all.h>
 
 #include <Ogre.h>
@@ -54,6 +55,17 @@ public:
 		const OpenViBE::CString& rPluginsFile,
 		OpenViBE::boolean bLogToScreen,
 		const OpenViBE::CString& rLogFileName) throw (std::exception);
+
+	/**
+	 * \brief Load configuration files and initialise Ogre
+	 * Creates Ogre root object, parses resource locations and initialises Ogre from last
+	 * configuration (if any) or by displaying the Ogre configuration dialog if no
+	 * ogre.cfg is available
+	 * \param rNameValuePairList List of configuration parameters
+	 * \return True if Ogre was initialised, false otherwise
+	 */
+	OpenViBE::boolean initializeOgre(
+		const OpenViBE::CNameValuePairList& rNameValuePairList) throw (std::exception);
 
 	/**
 	 * \brief Determine whether Ogre has been initialized yet
@@ -231,8 +243,8 @@ private:
 	OpenViBE::boolean m_bResourcesInitialised;
 	/// Ogre3D root
 	Ogre::Root* m_pRoot;
-	/// Log to screen flag
-	OpenViBE::boolean m_bLogToScreen;
+	/// Forward captured messages to OpenViBE's log manager
+	OpenViBE::boolean m_bOutputCapturedMessages;
 	/// Ogre log
 	Ogre::Log* m_pLog;
 	/// Maps scene Ids to scene pointers

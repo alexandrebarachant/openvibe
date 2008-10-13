@@ -30,13 +30,18 @@ namespace OpenViBEPlugins
 		public:
 
 			CSignalDisplayView(
-				CBufferDatabase& rBufferDatabase);
+				CBufferDatabase& rBufferDatabase,
+				OpenViBE::float64 f64TimeScale);
 
 			virtual ~CSignalDisplayView(void);
 			/**
-			 * Returns pointers to plugin main widget and toolbar widget
+			 * \brief Get pointers to plugin main widget and (optional) toolbar widget
+			 * \param [out] pWidget Pointer to main widget
+			 * \param [out] pToolbarWidget Pointer to (optional) toolbar widget
 			 */
-			void getWidgets(GtkWidget*& pWidget, GtkWidget*& pToolbarWidget);
+			void getWidgets(
+				::GtkWidget*& pWidget, 
+				::GtkWidget*& pToolbarWidget);
 			/**
 			 * Initializes the window.
 			 */

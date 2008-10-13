@@ -915,18 +915,20 @@ gboolean CApplication::idle_application_loop(gpointer pUserData)
 
 	gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "label_current_time")), ss.str().c_str());
 
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "cpu_usage_progressbar")), l_f64CPUUsage*.01);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "cpu_usage_progressbar")), l_sCPU);
+	// gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "cpu_usage_progressbar")), l_f64CPUUsage*.01);
+	// gtk_progress_bar_set_text(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "cpu_usage_progressbar")), l_sCPU);
 
 	if(!l_pApplication->hasScenarioRunning())
 	{
 		System::Time::sleep(5);
 	}
+	/*
 	if(l_pCurrentInterfacedScenario&&l_pCurrentInterfacedScenario->m_pPlayer)
 	{
 		// redraws scenario
 		l_pCurrentInterfacedScenario->redraw();
 	}
+	*/
 
 	return TRUE;
 }

@@ -26,7 +26,16 @@ namespace OpenViBEPlugins
 			m_pReader=EBML::createReader(*m_pSpectrumReaderCallBack);
 
 			m_pPowerSpectrumDisplayDatabase = new CPowerSpectrumDatabase(*this);
-			m_pPowerSpectrumDisplayView = new CPowerSpectrumDisplayView(*m_pPowerSpectrumDisplayDatabase);
+			
+			//retrieve displayed frequency range settings
+			CString l_sMinDisplayedFrequencySettingValue;
+			CString l_sMaxDisplayedFrequencySettingValue;
+			getStaticBoxContext().getSettingValue(0, l_sMinDisplayedFrequencySettingValue);									
+			getStaticBoxContext().getSettingValue(1, l_sMaxDisplayedFrequencySettingValue);
+			
+			m_pPowerSpectrumDisplayView = new CPowerSpectrumDisplayView(*m_pPowerSpectrumDisplayDatabase, 
+				atof(l_sMinDisplayedFrequencySettingValue), atof(l_sMaxDisplayedFrequencySettingValue));
+			
 			m_pPowerSpectrumDisplayDatabase->setDrawable(m_pPowerSpectrumDisplayView);
 
 			//parent visualisation box in visualisation tree

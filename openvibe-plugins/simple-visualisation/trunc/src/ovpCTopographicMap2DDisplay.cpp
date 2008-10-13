@@ -39,9 +39,24 @@ boolean CTopographicMap2DDisplay::initialize(void)
 	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_AlgorithmSphericalSplineInterpolation));
 	m_pProxy->initialize();
 
+	//create topographic map database
 	m_pTopographicMapDatabase = new CTopographicMapDatabase(*this, *m_pProxy);
-	m_pTopographicMap2DView = new CTopographicMap2DView(*m_pTopographicMapDatabase);
+
+	//retrieve settings
+	CString l_sInterpolationModeSettingValue;
+	getStaticBoxContext().getSettingValue(0, l_sInterpolationModeSettingValue);
+	CString l_sDelaySettingValue;
+	getStaticBoxContext().getSettingValue(1, l_sDelaySettingValue);
+
+	//create topographic map view (handling GUI interaction)	
+	m_pTopographicMap2DView = new CTopographicMap2DView(
+		*m_pTopographicMapDatabase, 
+		getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_SphericalLinearInterpolationType, l_sInterpolationModeSettingValue),
+		atof(l_sDelaySettingValue));
+	
+	//have database notify us when new data is available
 	m_pTopographicMapDatabase->setDrawable(m_pTopographicMap2DView);
+	//ask not to be notified when new data is available (refresh is handled separately)
 	m_pTopographicMapDatabase->setRedrawOnNewData(false);
 
 	//send widget pointers to visualisation context for parenting

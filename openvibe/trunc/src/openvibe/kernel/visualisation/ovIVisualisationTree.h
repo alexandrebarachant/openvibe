@@ -140,10 +140,10 @@ namespace OpenViBE
 			 * \brief Notifies the tree view that a widget hierarchy has been loaded
 			 * This method lets the tree view perform additional loading operations at the end of the loading
 			 * process
-			 * \param[in] pTreeWidget pointer to the GtkWidget whose loading is finished
+			 * \param[in] pVisualisationWidget pointer to visualisation widget
 			 */
 			virtual void endLoadTreeWidget(
-				::GtkWidget* pTreeWidget)
+				OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget)
 			{}
 
 			/**
@@ -410,18 +410,6 @@ namespace OpenViBE
 			virtual OpenViBE::boolean reloadTree(void)=0;
 
 			/**
-			 * \brief Resizes a visualisation panel and its hierarchy
-			 * FIXME : is this still needed?
-			 * Called internally upon tree reloading (for each visualisation panel).
-			 * Should be called externally whenever a dialog is resized (for the active visualisation panel only)
-			 * \param pVisualisationPanelIter [in] pointer to a node of type EVisualisationTreeNode_VisualisationPanel when its
-			 * associated widget is resized.
-			 * \return true if panel was successfully resized, false otherwise
-			 */
-			virtual OpenViBE::boolean resizeVisualisationPanel(
-				::GtkTreeIter* pVisualisationPanelIter)=0;
-
-			/**
 			 * \name Helper functions
 			 */
 			//@{
@@ -492,7 +480,7 @@ namespace OpenViBE
 			//@}
 
 			/**
-			 * \name Search functions
+			 * \name Node searching
 			 */
 			//@{
 

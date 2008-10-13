@@ -135,6 +135,8 @@ private:
 	Ogre::SceneManager* m_pSceneManager;
 	/// Camera used by this window
 	Ogre::Camera* m_pCamera;
+	/// Near/far clip planes ratio
+	OpenViBE::float32 m_f32NearFarClipRatio;
 	//eCameraModel m_oCameraModel;
 	/// Viewport displayed in this window
 	Ogre::Viewport* m_pViewport;

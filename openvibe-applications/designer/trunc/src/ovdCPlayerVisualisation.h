@@ -23,7 +23,9 @@ namespace OpenViBEDesigner
 		/** \name ITreeViewCB interface implementation */
 		//@{
 		::GtkWidget* loadTreeWidget(
-			OpenViBE::Kernel::IVisualisationWidget* pWidget);
+			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);		
+		void endLoadTreeWidget(			
+			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);		
 		OpenViBE::boolean setToolbar(
 			const OpenViBE::CString& rName,
 			::GtkWidget* pToolbarWidget);

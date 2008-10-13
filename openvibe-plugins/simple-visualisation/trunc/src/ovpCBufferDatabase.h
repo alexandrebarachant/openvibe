@@ -14,7 +14,11 @@
 #include <string>
 #include <cfloat>
 
-//#include "ovpCSignalDisplayView.h"
+#ifdef OVP_OS_Windows
+#ifndef NDEBUG
+		//#define ELAN_VALIDATION
+#endif
+#endif
 
 #include <iostream>
 
@@ -155,6 +159,9 @@ public:
 			virtual OpenViBE::boolean getElectrodePosition(
 				const OpenViBE::uint32 ui32ElectrodeIndex,
 				OpenViBE::float64* pElectrodePosition);
+			/**
+			 * \remark Position expressed in normalized cartesian frame where X is right, Y front, Z up
+			 */
 			virtual OpenViBE::boolean getElectrodePosition(
 				const OpenViBE::CString& rElectrodeLabel,
 				OpenViBE::float64* pElectrodePosition);
@@ -162,7 +169,15 @@ public:
 				const OpenViBE::uint32 ui32ElectrodeIndex,
 				OpenViBE::CString& rElectrodeLabel);
 
+			/**
+			 * \brief Get number of channels
+			 * \return Number of channels
+			 */
 			virtual OpenViBE::uint64 getChannelCount();
+
+			/**
+			 * \remark Position expressed in normalized cartesian frame where X is right, Y front, Z up
+			 */
 			virtual OpenViBE::boolean getChannelPosition(
 				const OpenViBE::uint32 ui32ChannelIndex,
 				OpenViBE::float64*& pElectrodePosition);

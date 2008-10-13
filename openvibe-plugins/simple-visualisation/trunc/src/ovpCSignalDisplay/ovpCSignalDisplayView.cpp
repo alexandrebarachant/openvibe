@@ -268,7 +268,7 @@ namespace OpenViBEPlugins
 			gtk_widget_hide(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewDialog"));
 		}
 
-		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase)
+		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale)
 			:m_pGladeInterface(NULL)
 			,m_eCurrentCursorMode(DisplayMode_Default)
 			,m_pBufferDatabase(&oBufferDatabase)
@@ -311,7 +311,12 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectButton")), "clicked",       G_CALLBACK(channelSelectButtonCallback),     this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewButton")),     "clicked",       G_CALLBACK(multiViewButtonCallback),         this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton")),   "clicked",       G_CALLBACK(informationButtonCallback),       this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale")),           "value-changed", G_CALLBACK(spinButtonValueChangedCallback),  this);
+			
+			GtkSpinButton* l_pSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale"));
+			gtk_spin_button_set_value(l_pSpinButton, f64TimeScale);
+			g_signal_connect(G_OBJECT(l_pSpinButton), "value-changed", G_CALLBACK(spinButtonValueChangedCallback),  this);
+			//notify database of current time scale 
+			m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(l_pSpinButton));
 
 			//channel select dialog's signals
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectApplyButton")), "clicked", G_CALLBACK(channelSelectDialogApplyButtonCallback), this);
@@ -323,9 +328,9 @@ namespace OpenViBEPlugins
 					G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")));
 
 			//hides the dialog if the user tries to close it
-			 g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")),
-					 "delete_event",
-					 G_CALLBACK(gtk_widget_hide), NULL);
+			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")),
+					"delete_event",
+					G_CALLBACK(gtk_widget_hide), NULL);
 
 			//multiview signals
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewApplyButton")), "clicked", G_CALLBACK(multiViewDialogApplyButtonCallback), this);
@@ -350,10 +355,7 @@ namespace OpenViBEPlugins
 			//creates the window
 			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow");
 			gtk_widget_show(m_pMainWindow);
-#endif
-
-			// sets duration
-			m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale"))));
+#endif			
 		}
 
 		CSignalDisplayView::~CSignalDisplayView()

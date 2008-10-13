@@ -4,6 +4,7 @@
 #include "spline_sph.h"
 
 #include <float.h> //DBL_MAX
+#include <math.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -101,6 +102,23 @@ boolean CAlgorithmSphericalSplineInterpolation::process(void)
 				*(m_oSampleCoords->getBuffer()+3*i+1),
 				*(m_oSampleCoords->getBuffer()+3*i+2) //coordinate where to interpolate
 				);
+
+/*
+			if(isnan(*l_pSampleValue))
+			{
+				getLogManager() << LogLevel_ImportantWarning << "Interpolation fails !\n";
+				getLogManager() << LogLevel_ImportantWarning << *(m_oSampleCoords->getBuffer()+3*i) << "\n";
+				getLogManager() << LogLevel_ImportantWarning << *(m_oSampleCoords->getBuffer()+3*i+1) << "\n";
+				getLogManager() << LogLevel_ImportantWarning << *(m_oSampleCoords->getBuffer()+3*i+2) << "\n";
+			}
+			if(isinf(*l_pSampleValue))
+			{
+				getLogManager() << LogLevel_ImportantWarning << "Interpolation fails !\n";
+				getLogManager() << LogLevel_ImportantWarning << *(m_oSampleCoords->getBuffer()+3*i) << "\n";
+				getLogManager() << LogLevel_ImportantWarning << *(m_oSampleCoords->getBuffer()+3*i+1) << "\n";
+				getLogManager() << LogLevel_ImportantWarning << *(m_oSampleCoords->getBuffer()+3*i+2) << "\n";
+			}
+*/
 
 			if(*l_pSampleValue < m_oMinSampleValue)
 			{

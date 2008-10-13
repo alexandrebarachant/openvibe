@@ -15,18 +15,74 @@ for plugins execution.
 
 \section software_architecture_kernel Kernel
 
-The kernel is the central component of OpenViBE, offering core functionalities to design and execute scenarios. At initialization time, 
+The kernel is the central component of OpenViBE, offering core functionalities to create and execute scenarios. At initialization time, 
 it creates several managers that are each responsible for an aspect of the platform.
 
  - The scenario manager handles the construction of scenarios. It maintains a list of boxes used in a given scenario, as well as 
-the links connecting these boxes together.
+the links connecting these boxes together. 
+ - The plugin manager is responsible for listing all plugins found in the working directory of an OpenViBE application.
+ - The algorithm manager maintains a list of existing algorithms.
+ - The log manager handles log messages and redirects them to log listeners.
+ - The type manager ensures types standardization across the platform, including specialized types for flow input/output between boxes,
+and types for box parameters.
  - The player manager takes care of scenario execution. It calls every module in turn at the required frequency.
  - The visualisation manager registers visualisation boxes and their arrangement in space. It also manages a 3D context, and 
 offers a restricted set of 2D and 3D functionalities to visualisation plugins for drawing purposes.
- - The plugin manager is responsible for listing all plugins found in the execution directory of an OpenViBE application.
- - The log manager allows for customization of the application log.
- - The type manager ensures types standardization across the platform, including specialized types for flow input/output between boxes,
-and types for box parameters.
+
+In addition to these managers, the kernel also owns a kernel object factory responsible for creating kernel objects based on their
+identifiers, thus hiding implementation details to the outside world. All of these functionalities are gathered in a kernel context 
+object created at startup, which provides access to the interface of each manager.
+
+\section software_architecture_scenariomanager The scenario manager
+
+OpenViBE scenarios are handled by the scenario manager, which allows for creating, releasing and going through existing scenarios. 
+These objects describe the behavior of an OpenViBE application, and are made up of any number of box algorithms linked together by
+their inputs and/or outputs. In OpenViBE, data is streamed from a data source, sent down a processing chain and eventually 
+stored in an altered way or displayed on screen.
+
+All processing is performed by a key component of the platform called the box algorithm. It comes as a black box provided with
+inputs, outputs and settings. Some boxes have no explicit inputs : they are data producers, getting input data 
+from a file or an acquisition device. Other boxes have no explicit outputs : standing at the end of the signal processing chain, 
+they may save results to a file or display data in a window. However, most boxes have connectable inputs and outputs, taking in
+data in some form, processing it and then outputting it for other boxes down the processing chain.
+
+In addition to this list of interconnected boxes, a scenario also owns a visualisation tree. This object holds a description of
+the layout of graphical plugins in the scenario. A great flexibility is possible in the arrangement of windows, including windows
+with multiple tabs, each tab containing a hierarchy of windows of varying sizes.
+
+\section software_architecture_plugin_manager The plugin manager
+
+The plugin manager looks for OpenViBE plugins in specific directories. Such plugins may be box algorithms or smaller processing
+components such as algorithms, which can be embedded in box algorithms to maximize code reuse between boxes. A list of all 
+loaded plugins can be retrieved from this manager, and it handles plugin instantiation/release requests at player start/stop time.
+
+\section software_architecture_algorithm_manager The algorithm manager
+
+The algorithm manager works at a smaller scale than the plugin manager. It handles algorithm creation/destruction requests.
+
+\section software_architecture_log_manager The log manager
+
+The log manager handles log messages and dispatches them to log listeners.
+
+Log listeners include a console listener, which outputs messages to the console. Different log levels let the user hide irrelevant
+messages, depending on the context. A color scheme ensures easier reading by displaying headers of different colors in front of
+messages.
+
+\section software_architecture_type_manager The type manager
+
+The type manager registers types to be used by boxes to communicate together. Box inputs and outputs must use such 'standard' types,
+which ensures compatibility with other boxes across the platform.
+
+\section software_architecture_player_manager The player manager
+
+The player manager is used in 'online' mode when running an OpenViBE scenario. It goes through the box algorithms used in a scenario,
+instantiates and initializes each of them and then calls each box in turn. It can be configured to run in real-time, i.e. play a 
+scenario in real-time, or it can be set in 'free run', meaning it will stream data as fast as possible. Additionally, it can jump
+by a single 'step' (the inverse of the frequency at which the player is run).
+
+\section software_architecture_visualisation_manager The visualisation manager
+
+\ref Doc_visualisation_manager
 
 \section software_architexture_sources OpenViBE sources structure
 

@@ -8,6 +8,7 @@ material cone_ov_material
 			diffuse 1 1 1
 //			specular 0 0 0 10
 //			emissive 0 0 0
+			scene_blend alpha_blend
 		}
 	}
 }

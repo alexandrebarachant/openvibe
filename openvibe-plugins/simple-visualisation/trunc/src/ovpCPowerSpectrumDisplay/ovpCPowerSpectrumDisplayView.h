@@ -31,86 +31,119 @@ namespace OpenViBEPlugins
 		class CPowerSpectrumDatabase;
 
 		/**
-		 * This class contains everything necessary to setup a GTK window and display
-		 * a signal thanks to a CBufferDatabase's information.
+		 * This class manages Gtk widgets used to display a power spectrum.
+		 * Power spectrum data is retrieved from an external CPowerSpectrumDatabase object.
 		 */
 		class CPowerSpectrumDisplayView : public CSignalDisplayDrawable
 		{
 		public:
-			CPowerSpectrumDisplayView(
-				CPowerSpectrumDatabase& pPowerSpectrumDatabase);
-
-			virtual ~CPowerSpectrumDisplayView();
 			/**
-			 * Initializes the window.
+			 * \brief Constructor
+			 * \param pPowerSpectrumDatabase Object storing power spectrum data
+			 * \param f64MinDisplayedFrequency Minimum frequency to display
+			 * \param f64MaxDisplayedFrequency Maximum frequency to display				
+			 */
+			CPowerSpectrumDisplayView(
+				CPowerSpectrumDatabase& pPowerSpectrumDatabase,
+				OpenViBE::float64 f64MinDisplayedFrequency,
+				OpenViBE::float64 f64MaxDisplayedFrequency);
+			
+			/**
+			 * \brief Destructor
+			 */
+			virtual ~CPowerSpectrumDisplayView();
+			
+			/**
+			 * \brief Initialize widgets
+			 * \remark Called automatically by spectrum database when first buffer is received
 			 */
 			virtual void init();
+			
 			/**
-			 * Returns pointers to plugin main widget and toolbar widget
+			 * \brief Get pointers to plugin main widget and (optional) toolbar widget
+			 * \param [out] pWidget Pointer to main widget
+			 * \param [out] pToolbarWidget Pointer to (optional) toolbar widget
 			 */
-			void getWidgets(GtkWidget*& pWidget, GtkWidget*& pToolbarWidget);
+			void getWidgets(
+				::GtkWidget*& pWidget, 
+				::GtkWidget*& pToolbarWidget);
+
 			/**
-			 * Returns pointer to topmost widget
+			 * \brief Get current display mode
+			 * \return Current display mode
 			 */
 			ESpectrumDisplayMode getCurrentDisplayMode(void);
+
 			/**
-			 * Sets current display mode.
+			 * \brief Set current display mode.
 			 * \param eDisplayMode Display mode to set.
 			 */
 			void setDisplayMode(
 				ESpectrumDisplayMode eDisplayMode);
+
 			/**
-			 * Used to hide/show the rulers on the left of the spectrum displays.
-			 * \param bActive Show the ruler if true.
+			 * \brief Toggle left rulers (amplitude values) visibility
+			 * \param bActive Visibility flag
 			 */
 			void toggleLeftRulers(
 				OpenViBE::boolean bActive);
+
 			/**
-			 * Used to hide/show the frequency ruler
-			 * \param bActive Show the ruler if true.
+			 * \brief Toggle bottom ruler (frequency scale) visibility
+			 * \param bActive Visibility flag
 			 */
 			void toggleBottomRuler(
 				OpenViBE::boolean bActive);
 
+			/**
+			 * \brief Draw bottom ruler
+			 */
+			void redrawBottomRuler();
+
+			/** \name Gtk widget callbacks */
+			//@{
+			void minDisplayedFrequencyChangedCB(::GtkWidget* pWidget);
+			void maxDisplayedFrequencyChangedCB(::GtkWidget* pWidget);
+			void resizeBottomRulerCB(gint w, gint h);
 			void showChannelSelectionDialogCB();
 			void applyChannelSelectionCB();
 			void applyMinMaxAttenuationCB();
-
-			void resizeBottomRuler(
-				gint w,
-				gint h);
-			void redrawBottomRuler();
+			//@}
 
 		private:
 			/**
-			 * Invalidates the window's content and tells it to redraw itself.
+			 * \brief Invalidate window contents and have it redraw itself			 
 			 */
 			virtual void redraw();
+			
 			/**
-			 * Hides a whole channel's display.
-			 * \param ui64ChannelIndex The index of the channel to hide.
+			 * \brief Hide a given channel
+			 * \param ui32ChannelIndex Index of channel to hide
 			 */
 			void hideChannel(
 				OpenViBE::uint32 ui32ChannelIndex);
+
 			/**
-			 * Shows a channel's display.
-			 * \param ui64ChannelIndex The index of the channel to show.
+			 * \brief Show a given channel
+			 * \param ui32ChannelIndex Index of channel to show
 			 */
 			void showChannel(
 				OpenViBE::uint32 ui32ChannelIndex);
 
+			/**
+			 * \brief Update channel widgets visibility
+			 */
 			void updateMainTableStatus();
 
+			/**
+			 * \brief Set toolbar buttons activation state
+			 * \param bActive Activation flag
+			 */
 			void activateToolbarButtons(
 				OpenViBE::boolean bActive);
 
-			void setMinMaxAttenuation(
-				OpenViBE::float64 f64Attenuation);
-
 		private:
-			void enableDisplayModeButtonSignals(
-				OpenViBE::boolean);
-
+			//! The Glade handler used to create the interface
 			::GladeXML* m_pGladeInterface;
 			//! Table containing the channel displays
 			GtkWidget* m_pDisplayTable;
@@ -130,7 +163,10 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget*> m_vChannelsCheckButtons;
 			//! Vector of indexes of the channels to display
 			std::vector<OpenViBE::uint32> m_vSelectedChannels;
-			//CBottomTimeRuler * m_pBottomRuler;
+			//! Minimum frequency to display
+			OpenViBE::float64 m_f64MinDisplayedFrequency;
+			//! Maximum frequency to display
+			OpenViBE::float64 m_f64MaxDisplayedFrequency;
 		};
 	}
 }

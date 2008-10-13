@@ -102,12 +102,21 @@ boolean CSimple3DDisplay::uninitialize(void)
 
 OpenViBE::boolean CSimple3DDisplay::processInput(OpenViBE::uint32 ui32InputIndex)
 {
+	if(!getBoxAlgorithmContext()->getVisualisationContext()->is3DWidgetRealized(m_o3DWidgetIdentifier))
+	{
+		return true;
+	}
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
 boolean CSimple3DDisplay::processClock(IMessageClock& rMessageClock)
 {
+	if(!getBoxAlgorithmContext()->getVisualisationContext()->is3DWidgetRealized(m_o3DWidgetIdentifier))
+	{
+		return true;
+	}
+	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
@@ -128,7 +137,9 @@ boolean CSimple3DDisplay::process(void)
 		}
 	}
 
+	//moved here so that it doesn't have to be connected to a signal generator
 	m_pSimple3DDatabase->process3D();
+	getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
 
 	return true;
 }

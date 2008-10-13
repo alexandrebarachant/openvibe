@@ -344,7 +344,7 @@ int go(int argc, char ** argv)
 // For Mister Vincent !
 #ifdef OVD_OS_Windows
 #ifndef NDEBUG
-					_asm int 3;
+					//_asm int 3;
 #endif
 #endif
 
@@ -359,8 +359,6 @@ int go(int argc, char ** argv)
 					//initialise Gtk before 3D context
 					gtk_init(&g_argc, &g_argv);
 					// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
-
-					IVisualisationManager& l_rVisualisationManager=l_pKernel->getContext()->getVisualisationManager();
 
 					//retrieve Ogre plugin file (assumed to be in Ogre binaries directory)
 					char* l_pOgreDir = getenv("OGRE_HOME");
@@ -379,13 +377,15 @@ int go(int argc, char ** argv)
 #elif defined OVD_OS_Linux
 					l_sPluginsFile += "/lib/OGRE/Plugins.cfg";
 #endif
-					boolean l_bLogOgreToScreen = true;
-					CIdentifier l_oDesignerResourcesIdentifier;
-//					l_rVisualisationManager.initialize3DContext(l_sPluginsFile.c_str(), l_bLogOgreToScreen, ""); // "ogre.log"
-					l_rVisualisationManager.createResourceGroup(l_oDesignerResourcesIdentifier, "DesignerResources");
-					l_rVisualisationManager.addResourceLocation(l_oDesignerResourcesIdentifier, "../../dependencies/ogre/media/scooter", ResourceType_Directory, false);
-					l_rVisualisationManager.addResourceLocation(l_oDesignerResourcesIdentifier, "../../dependencies/ogre/media/tempo", ResourceType_Directory, false);
-					l_rVisualisationManager.initializeResourceGroup(l_oDesignerResourcesIdentifier);
+
+					CNameValuePairList l_oOgreParams;
+					l_oOgreParams.setValue("PluginsFile", l_sPluginsFile.c_str()); //specify location of ogre plugins file
+					l_oOgreParams.setValue("CaptureMessages", true); //capture ogre messages
+					l_oOgreParams.setValue("OutputCapturedMessages", true); //forward captured messages to OpenViBE's log manager for output
+					// l_oOgreParams.setValue("OutputFileName", "ogre.log"); //name of file where to output ogre messages
+
+					IVisualisationManager& l_rVisualisationManager=l_pKernel->getContext()->getVisualisationManager();
+					l_rVisualisationManager.initialize3DContext(l_oOgreParams);
 
 					::CApplication app(l_pKernel);
 					app.initialize();

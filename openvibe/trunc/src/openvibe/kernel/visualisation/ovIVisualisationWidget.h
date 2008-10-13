@@ -41,7 +41,7 @@ namespace OpenViBE
 				\param ui32NbChildren [in] number of children of this widget (none for a visualisation box, 1 for a visualisation panel, 2 for split widgets, variable number for windows)
 				\return True if widget was successfully initialized, false otherwise
 			*/
-			virtual OpenViBE::boolean	initialize(
+			virtual OpenViBE::boolean initialize(
 				const OpenViBE::CIdentifier& rIdentifier,
 				const OpenViBE::CString& rName,
 				OpenViBE::Kernel::EVisualisationWidgetType oType,
@@ -53,7 +53,7 @@ namespace OpenViBE
 				\brief Returns the identifier of the widget
 				\return Widget identifier
 			*/
-			virtual OpenViBE::CIdentifier	getIdentifier(void) const=0;
+			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
 
 			/**
 				\brief Returns the name of the widget
@@ -77,7 +77,7 @@ namespace OpenViBE
 				\brief Returns the identifier of the widget's parent (if any)
 				\return Widget's parent identifier if any, OV_Undefined otherwise
 			*/
-			virtual OpenViBE::CIdentifier	getParentIdentifier(void) const=0;
+			virtual OpenViBE::CIdentifier getParentIdentifier(void) const=0;
 			/**
 				\brief Sets the identifier of the widget's parent
 				\param rParentIdentifier [in] identifier of the widget's parent

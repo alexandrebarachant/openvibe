@@ -20,12 +20,455 @@ using namespace std;
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
-	{
-		//FIXME : use info from signalstream
-		static const unsigned int s_nbChannels = 72 + 23;
+	{	
+#ifdef ELAN_VALIDATION
+		static const unsigned int s_nbChannels = 143;
 
 		static string s_channelLabels[s_nbChannels] = {
-			//72 channels from INSERM's elec.dat
+		"LCa",
+		"LCb",
+		"LCc",
+		"LCd",
+		"LCe",
+		"LCf",
+		"LCk",
+		"LCl",
+		"LCm",
+		"LCn",
+		"LCo",
+		"LCp",
+		"LCq",
+		"LCr",
+		"LCu",
+		"LCv",
+		"LCw",
+		"LCx",
+		"LCy",
+		"LCz",
+		"LCA",
+		"LCE",
+		"LCF",
+		"LCG",
+		"LFa",
+		"LFb",
+		"LFc",
+		"LFd",
+		"LFe",
+		"LFf",
+		"LFk",
+		"LFl",
+		"LFm",
+		"LFn",
+		"LFo",
+		"LFp",
+		"LFu",
+		"LFv",
+		"LFw",
+		"LFx",
+		"LFy",
+		"LFE",
+		"LFF",
+		"LFG",
+		"LFH",
+		"LFI",
+		"LPa",
+		"LPb",
+		"LPc",
+		"LPd",
+		"LPe",
+		"LPk",
+		"LPl",
+		"LPm",
+		"LPn",
+		"LPo",
+		"LPp",
+		"LPq",
+		"LPu",
+		"LPv",
+		"LPw",
+		"LPx",
+		"LPE",
+		"LPF",
+		"LPG",
+		"LPH",
+		"LPI",
+		"MC1",
+		"MC2",
+		"MC3",
+		"MC4",
+		"MC5",
+		"MF1",
+		"MF2",
+		"MP1",
+		"MP2",
+		"RCa",
+		"RCb",
+		"RCc",
+		"RCd",
+		"RCe",
+		"RCf",
+		"RCk",
+		"RCl",
+		"RCm",
+		"RCn",
+		"RCo",
+		"RCp",
+		"RCq",
+		"RCr",
+		"RCu",
+		"RCv",
+		"RCw",
+		"RCx",
+		"RCy",
+		"RCz",
+		"RCA",
+		"RCE",
+		"RCF",
+		"RCG",
+		"RFa",
+		"RFb",
+		"RFc",
+		"RFd",
+		"RFe",
+		"RFf",
+		"RFk",
+		"RFl",
+		"RFm",
+		"RFn",
+		"RFo",
+		"RFp",
+		"RFu",
+		"RFv",
+		"RFw",
+		"RFx",
+		"RFy",
+		"RFE",
+		"RFF",
+		"RFG",
+		"RFH",
+		"RFI",
+		"RPa",
+		"RPb",
+		"RPc",
+		"RPd",
+		"RPe",
+		"RPk",
+		"RPl",
+		"RPm",
+		"RPn",
+		"RPo",
+		"RPp",
+		"RPu",
+		"RPv",
+		"RPw",
+		"RPx",
+		"RPy",
+		"RPE",
+		"RPF",
+		"RPG",
+		"RPH",
+		"RPI"
+		};
+
+		static float64 s_channelCoords[2*s_nbChannels] = {
+		61.099998,38.599998,
+		55.799999,23.600000,
+		62.099998,7.700000,
+		54.500000,352.000000,
+		50.000000,333.600006,
+		49.400002,314.100006,
+		58.099998,72.300003,
+		53.799999,54.900002,
+		45.099998,36.900002,
+		45.700001,11.100000,
+		39.700001,352.100006,
+		35.599998,330.700012,
+		37.099998,308.299988,
+		46.400002,291.799988,
+		45.200001,76.699997,
+		38.400002,59.799999,
+		30.700001,39.299999,
+		31.600000,13.500000,
+		24.200001,347.299988,
+		23.400000,310.700012,
+		32.599998,286.299988,
+		20.200001,61.500000,
+		16.400000,20.700001,
+		11.100000,320.500000,
+		104.699997,76.199997,
+		105.099998,61.299999,
+		108.599998,46.299999,
+		115.900002,31.200001,
+		123.900002,15.900000,
+		118.099998,358.399994,
+		92.900002,82.000000,
+		92.599998,67.000000,
+		93.400002,51.700001,
+		96.199997,38.200001,
+		103.699997,25.100000,
+		110.900002,11.100000,
+		81.199997,74.300003,
+		81.300003,58.099998,
+		80.099998,39.799999,
+		86.699997,24.500000,
+		94.599998,9.100000,
+		69.500000,81.199997,
+		69.099998,64.900002,
+		69.500000,50.200001,
+		71.000000,24.900000,
+		77.800003,8.900000,
+		111.800003,343.399994,
+		105.400002,327.600006,
+		101.099998,312.200012,
+		97.400002,297.899994,
+		95.599998,283.500000,
+		103.699997,355.100006,
+		96.900002,340.600006,
+		92.099998,324.100006,
+		87.300003,308.899994,
+		84.199997,293.799988,
+		82.500000,278.799988,
+		87.699997,354.100006,
+		81.000000,338.000000,
+		76.900002,321.600006,
+		72.800003,305.100006,
+		70.599998,287.899994,
+		70.500000,352.299988,
+		64.599998,336.000000,
+		62.500000,318.799988,
+		59.099998,299.799988,
+		57.299999,280.799988,
+		57.000000,90.000000,
+		31.299999,89.800003,
+		5.400000,87.500000,
+		19.400000,270.799988,
+		44.200001,270.500000,
+		104.599998,90.099998,
+		81.199997,90.099998,
+		94.900002,270.200012,
+		69.699997,270.299988,
+		60.799999,141.699997,
+		55.500000,156.800003,
+		61.700001,172.899994,
+		54.299999,188.500000,
+		49.700001,206.899994,
+		49.099998,226.500000,
+		57.900002,107.699997,
+		53.500000,125.099998,
+		44.599998,143.199997,
+		45.299999,169.399994,
+		39.400002,188.399994,
+		35.400002,210.000000,
+		36.700001,232.500000,
+		46.200001,249.100006,
+		45.000000,103.099998,
+		38.099998,120.000000,
+		30.299999,140.699997,
+		31.200001,166.800003,
+		23.799999,193.300003,
+		23.100000,230.800003,
+		32.500000,254.699997,
+		19.900000,117.699997,
+		16.000000,158.899994,
+		10.800000,220.800003,
+		104.699997,104.000000,
+		105.000000,118.900002,
+		108.500000,134.100006,
+		115.800003,149.199997,
+		123.900002,164.800003,
+		117.699997,182.100006,
+		92.800003,98.199997,
+		92.500000,113.099998,
+		93.400002,128.600006,
+		96.000000,142.100006,
+		103.500000,155.199997,
+		110.000000,169.600006,
+		81.099998,106.000000,
+		81.000000,122.099998,
+		79.699997,140.699997,
+		86.199997,155.899994,
+		94.300003,171.399994,
+		69.300003,99.000000,
+		68.800003,115.199997,
+		69.199997,130.000000,
+		70.699997,155.500000,
+		77.400002,171.600006,
+		111.500000,197.300003,
+		105.199997,213.000000,
+		100.900002,228.300003,
+		97.400002,242.600006,
+		95.500000,256.799988,
+		103.300003,185.399994,
+		96.500000,199.899994,
+		91.599998,216.399994,
+		87.000000,231.600006,
+		84.000000,246.600006,
+		82.500000,261.600006,
+		87.300003,186.500000,
+		80.500000,202.699997,
+		76.500000,218.899994,
+		72.599998,235.500000,
+		70.400002,252.699997,
+		70.099998,188.199997,
+		64.300003,204.399994,
+		62.099998,221.699997,
+		58.900002,240.899994,
+		57.200001,259.899994
+		};
+
+		static float64 s_channelValues[s_nbChannels] = {
+		0.836,
+		1.255,
+		1.686,
+		1.985,
+		1.960,
+		1.857,
+		0.319,
+		0.613,
+		1.073,
+		1.537,
+		1.671,
+		1.639,
+		1.468,
+		1.232,
+		0.306,
+		0.687,
+		1.071,
+		1.360,
+		1.295,
+		1.024,
+		0.612,
+		0.493,
+		0.870,
+		0.463,
+		0.158,
+		0.230,
+		0.268,
+		0.304,
+		0.291,
+		0.382,
+		0.111,
+		0.225,
+		0.325,
+		0.495,
+		0.671,
+		0.580,
+		0.189,
+		0.312,
+		0.612,
+		0.992,
+		1.029,
+		0.146,
+		0.319,
+		0.494,
+		1.110,
+		1.628,
+		0.500,
+		0.563,
+		0.549,
+		0.400,
+		0.260,
+		0.828,
+		1.007,
+		1.314,
+		1.152,
+		0.827,
+		0.429,
+		1.405,
+		1.686,
+		2.042,
+		1.666,
+		0.995,
+		2.255,
+		2.317,
+		2.136,
+		1.631,
+		0.698,
+		0.008,
+		-0.104,
+		-0.228,
+		-0.278,
+		-0.160,
+		0.072,
+		0.034,
+		0.082,
+		0.068,
+		-0.929,
+		-1.447,
+		-1.992,
+		-2.336,
+		-2.295,
+		-2.237,
+		-0.307,
+		-0.658,
+		-1.246,
+		-1.864,
+		-2.012,
+		-2.001,
+		-1.882,
+		-1.570,
+		-0.359,
+		-0.852,
+		-1.398,
+		-1.714,
+		-1.658,
+		-1.435,
+		-1.103,
+		-0.842,
+		-1.274,
+		-0.981,
+		-0.035,
+		-0.123,
+		-0.154,
+		-0.155,
+		-0.136,
+		-0.218,
+		-0.024,
+		-0.159,
+		-0.280,
+		-0.429,
+		-0.543,
+		-0.428,
+		-0.146,
+		-0.291,
+		-0.638,
+		-1.024,
+		-0.958,
+		-0.112,
+		-0.292,
+		-0.498,
+		-1.228,
+		-1.765,
+		-0.307,
+		-0.342,
+		-0.316,
+		-0.212,
+		-0.097,
+		-0.648,
+		-0.842,
+		-1.103,
+		-0.945,
+		-0.633,
+		-0.214,
+		-1.397,
+		-1.801,
+		-2.080,
+		-1.665,
+		-0.927,
+		-2.535,
+		-2.638,
+		-2.417,
+		-1.871,
+		-0.791
+		};
+
+#else //Normal mode : set of 72 'standard' electrodes
+
+		//TODO : retrieve this info from electrode localisation stream
+		static const unsigned int s_nbChannels = 72;// + 23;
+
+		static string s_channelLabels[s_nbChannels] = {
+			//from INSERM's elec.dat
 			"O1",
 			"O2",
 			"T5",
@@ -98,6 +541,7 @@ namespace OpenViBEPlugins
 			"Nez",
 			"F3z",
 			"F4z",
+#if 0
 			//23 channels from http://www.biosemi.com/download/Cap_coords_all.xls
 			"AF3",
 			"AF4",
@@ -130,6 +574,7 @@ namespace OpenViBEPlugins
 			"T8"
 			/*"TP9", x*/
 			/*"TP10",x*/
+#endif
 		};
 
 		static float64 s_channelCoords[s_nbChannels*2] = {
@@ -205,8 +650,8 @@ namespace OpenViBEPlugins
 /*"TP8"*/			90.0, 342.0,
 /*"Nez"*/			118.1, 90.0,
 /*"F3z"*/			63.4, 113.0,
-/*"F4z"*/			63.4, 67.0,
-
+/*"F4z"*/			63.4, 67.0//,
+#if 0
 //23 channels from http://www.biosemi.com/download/Cap_coords_all.xls
 
 /*"AF3"  -74, -65,*/ 74, 115,
@@ -240,9 +685,11 @@ namespace OpenViBEPlugins
 /*"T8" 92, 0*/ 92, 0
 /*"TP9", x*/
 /*"TP10",x*/
+#endif
 		};
+#endif
 
-		CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlgorithm>& oPlugin)
+			CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlgorithm>& oPlugin)
 			:
 			m_i64NbElectrodes(0)
 			,m_bFirstBufferReceived(false)
@@ -261,15 +708,13 @@ namespace OpenViBEPlugins
 		}
 
 		CBufferDatabase::~CBufferDatabase()
-		{
-			//FIXME : isn't there a leak here???
+		{			
 			//delete all the remaining buffers
-			for(unsigned int i=0 ; i<m_oSampleBuffers.size() ; i++)
+			while(m_oSampleBuffers.size() > 0)
 			{
 				delete[] m_oSampleBuffers.front();
 				m_oSampleBuffers.pop_front();
 			}
-
 		}
 
 		boolean CBufferDatabase::isFirstBufferReceived()
@@ -337,12 +782,18 @@ namespace OpenViBEPlugins
 
 		void CBufferDatabase::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
 		{
-			m_pDimmensionSizes[ui32DimmensionIndex] = ui32DimmensionSize;
-			m_pDimmesionLabels[ui32DimmensionIndex].resize(ui32DimmensionSize);
-
+#ifdef ELAN_VALIDATION
 			if(ui32DimmensionIndex == 0)
 			{
-				m_i64NbElectrodes = ui32DimmensionSize;
+				*(uint32*)&ui32DimmensionSize = s_nbChannels;				
+			}
+#endif
+			m_pDimmensionSizes[ui32DimmensionIndex] = ui32DimmensionSize;			
+			m_pDimmesionLabels[ui32DimmensionIndex].resize(m_pDimmensionSizes[ui32DimmensionIndex]);
+
+			if(ui32DimmensionIndex == 0)
+			{					
+				m_i64NbElectrodes = m_pDimmensionSizes[ui32DimmensionIndex];
 
 				//resize min/max values vector
 				m_oLocalMinMaxValue.resize((unsigned int)m_i64NbElectrodes);
@@ -357,12 +808,16 @@ namespace OpenViBEPlugins
 
 				//resize electrode labels vector
 				m_oElectrodesLabels.resize((uint32)m_i64NbElectrodes);
-			}
+			}			
 		}
 
 		void CBufferDatabase::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
 		{
+#ifdef ELAN_VALIDATION
+			//done upon first buffer reception in setMatrixBuffer	
+#else
 			m_pDimmesionLabels[ui32DimmensionIndex][ui32DimmensionEntryIndex] = sDimmensionLabel;
+#endif
 		}
 
 		void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTime, uint64 ui64EndTime)
@@ -376,7 +831,14 @@ namespace OpenViBEPlugins
 			uint64 l_ui64NumberOfSamplesPerBuffer = m_pDimmensionSizes[0] * m_pDimmensionSizes[1];
 
 			if(m_bFirstBufferReceived == false)
-			{
+			{				
+#ifdef ELAN_VALIDATION
+				for(uint32 i=0; i<s_nbChannels; i++)
+				{
+					m_pDimmesionLabels[0][i] = s_channelLabels[i];
+				}
+#endif
+
 				//make sure channel coordinates are filled
 				//TODO : add coordinates info to streamed matrix stream header!!
 				computeChannelCoords();
@@ -402,7 +864,9 @@ namespace OpenViBEPlugins
 
 				m_bFirstBufferReceived = true;
 			}
-
+#ifdef ELAN_VALIDATION
+			return;			
+#endif
 			float64 * l_pBufferToWrite;
 
 			//Adds the starting time to the list
@@ -501,6 +965,9 @@ namespace OpenViBEPlugins
 
 		void CBufferDatabase::getDisplayedGlobalMinMaxValue(float64& f64Min, float64& f64Max)
 		{
+			f64Min = +DBL_MAX;
+			f64Max = -DBL_MAX;
+
 			for(uint32 c=0 ; c<m_oLocalMinMaxValue.size() ; c++)
 			{
 				for(uint64 i=0 ; i<m_oLocalMinMaxValue[(size_t)c].size() ; i++)
@@ -533,7 +1000,6 @@ namespace OpenViBEPlugins
 				*(pElectrodePosition+2) = cos(teta);
 				return true;
 			}
-
 			return false;
 		}
 
@@ -595,8 +1061,11 @@ namespace OpenViBEPlugins
 				rElectrodeLabel = m_oElectrodesLabels[ui32ChannelIndex];
 				return true;
 			}
-
-			return false;
+			else
+			{
+				rElectrodeLabel = "";
+				return false;
+			}
 		}
 
 		void CBufferDatabase::setStimulationCount(const uint32 ui32StimulationCount)
@@ -645,12 +1114,12 @@ namespace OpenViBEPlugins
 				if(m_pDimmesionLabels[0][i].size() > 0)
 				{
 					for(lastNonWhitespaceChar = m_pDimmesionLabels[0][i].size()-1; lastNonWhitespaceChar >= 0; lastNonWhitespaceChar--)
-				{
-					if(!isspace(m_pDimmesionLabels[0][i][lastNonWhitespaceChar]))
 					{
-						break;
+						if(!isspace(m_pDimmesionLabels[0][i][lastNonWhitespaceChar]))
+						{
+							break;
+						}
 					}
-				}
 				}
 
 				boolean l_bLabelRecognized = false;
@@ -710,5 +1179,5 @@ namespace OpenViBEPlugins
 
 			return res;
 		}
-	}
-}
+	};
+};

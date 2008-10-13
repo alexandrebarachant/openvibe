@@ -99,39 +99,17 @@ namespace OpenViBE
 
 			virtual ~CSimulatedBox() ;
 
-			OpenViBE::boolean handleDestroyEvent(
-				GtkWidget* pOVCustomWidget);
-
-			OpenViBE::boolean handleRealizeEvent(
-				GtkWidget* pOVCustomWidget);
-
-			OpenViBE::boolean handleUnrealizeEvent(
-				GtkWidget* pOVCustomWidget);
-
-			OpenViBE::boolean handleSizeAllocateEvent(
-				GtkWidget* pOVCustomWidget,
-				unsigned int uiWidth,
-				unsigned int uiHeight);
-
-			OpenViBE::boolean handleExposeEvent(
-				GtkWidget* pOVCustomWidget);
-
-			OpenViBE::boolean handleMotionEvent(
-				GtkWidget* pOVCustomWidget,
-				int i32X,
-				int i32Y);
-
-			OpenViBE::boolean handleButtonPressEvent(
-				GtkWidget* pOVCustomWidget,
-				unsigned int uiButton,
-				int i32X,
-				int i32Y);
-
-			OpenViBE::boolean handleButtonReleaseEvent(
-				GtkWidget* pOVCustomWidget,
-				unsigned int uiButton,
-				int i32X,
-				int i32Y);
+			/** \name IGtkOVCustomHandler implementation */
+			//@{
+			OpenViBE::boolean handleDestroyEvent(::GtkWidget* pOVCustomWidget);
+			OpenViBE::boolean handleRealizeEvent(::GtkWidget* pOVCustomWidget);
+			OpenViBE::boolean handleUnrealizeEvent(::GtkWidget* pOVCustomWidget);
+			OpenViBE::boolean handleSizeAllocateEvent(::GtkWidget* pOVCustomWidget, unsigned int uiWidth, unsigned int uiHeight);
+			OpenViBE::boolean handleExposeEvent(::GtkWidget* pOVCustomWidget);
+			OpenViBE::boolean handleMotionEvent(::GtkWidget* pOVCustomWidget,	int i32X, int i32Y);
+			OpenViBE::boolean handleButtonPressEvent(::GtkWidget* pOVCustomWidget, unsigned int uiButton,	int i32X, int i32Y);
+			OpenViBE::boolean handleButtonReleaseEvent(::GtkWidget* pOVCustomWidget, unsigned int uiButton,	int i32X, int i32Y);
+			//@}
 
 			virtual OpenViBE::boolean setScenarioIdentifier(const OpenViBE::CIdentifier& rScenarioIdentifier);
 			virtual OpenViBE::boolean setBoxIdentifier(const OpenViBE::CIdentifier& rBoxIdentifier);
@@ -148,7 +126,8 @@ namespace OpenViBE
 			virtual OpenViBE::CString getName(void) const;
 			virtual const OpenViBE::Kernel::IScenario& getScenario(void) const;
 
-			// IBoxIO - inputs
+			/** \name IBoxIO inputs handling */
+			//@{
 			virtual OpenViBE::uint32 getInputChunkCount(
 				const OpenViBE::uint32 ui32InputIndex) const;
 			virtual OpenViBE::boolean getInputChunk(
@@ -170,8 +149,10 @@ namespace OpenViBE
 			virtual OpenViBE::boolean markInputAsDeprecated(
 				const OpenViBE::uint32 ui32InputIndex,
 				const OpenViBE::uint32 ui32ChunkIndex);
+			//@}
 
-			// IBoxIO - outputs
+			/** \name IBoxIO outputs handling */
+			//@{
 			virtual OpenViBE::uint64 getOutputChunkSize(
 				const OpenViBE::uint32 ui32OutputIndex) const;
 			virtual OpenViBE::boolean setOutputChunkSize(
@@ -190,12 +171,16 @@ namespace OpenViBE
 				const OpenViBE::uint32 ui32OutputIndex,
 				const OpenViBE::uint64 ui64StartTime,
 				const OpenViBE::uint64 ui64EndTime);
-
-			OpenViBE::CIdentifier create3DWidget(
-				::GtkWidget*& p3DWidget);
+			//@}
 
 			/** \name 3D API - window management */
 			//@{
+			OpenViBE::CIdentifier create3DWidget(
+				::GtkWidget*& p3DWidget);
+			OpenViBE::boolean is3DWidgetRealized(
+				const OpenViBE::CIdentifier& rWidgetIdentifier) const;
+			OpenViBE::boolean update3DWidget(
+				const OpenViBE::CIdentifier& rWidgetIdentifier);
 			OpenViBE::boolean setBackgroundColor(
 				const OpenViBE::CIdentifier& rWindowIdentifier,
 				OpenViBE::float32 f32ColorRed,
@@ -208,11 +193,16 @@ namespace OpenViBE
 			/** \name 3D API - scene management */
 			//@{
 			OpenViBE::CIdentifier createObject(
-				const OpenViBE::CString& rObjectFileName);
+				const OpenViBE::CString& rObjectFileName,
+				const OpenViBE::CNameValuePairList* pObjectParams);
 			OpenViBE::CIdentifier createObject(
-				const OpenViBE::Kernel::EStandard3DObject eStandard3DObject);
+				const OpenViBE::Kernel::EStandard3DObject eStandard3DObject,
+				const OpenViBE::CNameValuePairList* pObjectParams);
 			OpenViBE::boolean removeObject(
 				const OpenViBE::CIdentifier& rIdentifier);
+			OpenViBE::boolean setObjectVisible(
+				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::boolean bVisible);
 			OpenViBE::boolean setObjectPosition(
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::float32 f32PositionX,

@@ -1,0 +1,120 @@
+/** 
+\page Doc_DesignerOverview OpenViBE Designer
+
+\section designer_introduction Introduction
+
+OpenViBE Designer is an authoring tool dedicated to creating and executing OpenViBE scenarios. It is targeted at a broad range of users, including
+  - students and researchers of the BCI community
+  - neurophysiology experts who need a tool for signal processing and visualisation in the context of brain activity
+  - clinicians looking for a tool to conduct neurofeedback experiments
+
+It relies on a graphical user interface to provide signal processing tools in an intuitive way, and doesn't require any programming skills. Each of these tools
+comes as a plugin, which communicates with the application via a generic interface hiding implementation details. As a result, it is easy to extend the range of tools
+provided with the platfom. An ever growing number of these signal processing boxes, or 'box algorithms' in OpenViBE terminology, are exposed by the Designer. 
+Users may arrange any number of these boxes in a very flexible fashion, considering there is virtually no limit as to the number of boxes that may be included in a given scenario. 
+Boxes arrangement is also made less error prone by typecasting box inputs/outputs.
+
+Once a scenario is created, it may be run from the Designer, which provides a toolbar for playing, pausing and stepping through a scenario. A number of box algorithms are available 
+for direct visualisation of results, from simple 2D displays such as power spectrum and signal display to 3D paradigms such as 3D topographical mapping. The layout of these displays
+may be customised as desired at scenario editing time using the window manager module of the Designer. 
+
+The following sections are an overview of the main features of the Designer tool, and make for a quick and easy introduction to its usage.
+
+\section designer_gui Graphical User Interface (GUI)
+
+Upon startup, the Designer application starts by looking for OpenViBE modules and kernels in installation directories, then displays the GUI. The Designer GUI is divided into 4 parts :
+ - a top level menu bar
+ - a toolbar providing immediate access to the most common actions
+ - a tabbed widget on the right hand side, listing available box algorithms and algorithms
+ - a scenario edition window, where box algorithms may be linked together by drag and dropping them and connecting their inputs/outputs
+
+<img src="designer.png"></img>
+<center><strong>Fig.1 Designer interface under WindowsXP, as a new scenario is being edited.</strong></center>
+
+\subsection designer_gui_menubar Menubar
+
+Options available from the menu bar presently are restricted to scenario files handling and exiting application. Scenarios may be saved to XML files. Several scenarios may be edited
+simultaneously, and the active scenario may be changed by clicking onto the corresponding tab at the top of the scenario edition window. Here is a list of options available from the menu bar:
+ 
+ <ul>
+ <li>File
+ 	<ul>
+ 	<li>New
+ 	<li>Open
+ 	<li>Save
+ 	<li>Save As
+ 	<li>Close
+ 	<li>Quit
+ 	</ul>
+ </ul>
+
+\subsection designer_gui_toolbar Toolbar
+
+The first section of the toolbar offers direct access to these scenario handling options (see Fig. 1). 
+
+Its second section is dedicated to scenario playing. It comprises the following buttons : 
+
+ <ul>
+ <li>Stop (go back to scenario edition mode)
+ <li>Pause
+ <li>Step (play scenario one step at a time)
+ <li>Run (play scenario in real time)
+ <li>Free Run (play scenario as fast as possible)
+ </ul>
+
+A third section comprises two toolbuttons. The first is a toggle button, allowing for displaying and hiding the window manager. This tool is displayed in a popup window when the button is
+pressed. It takes care of arranging visualisation boxes in a layout. Such boxes (if any in the current scenario) initially appear under the 'Unaffected display plugins' node of the tree view
+in the upper left corner. A window containing one tab is also created by default and displayed on the right. Users may create any number of windows containing any number of tabs, 
+and then drag and drop visualisation boxes (or 'display plugins') onto such tabs in a tree-like structure. This work can be avoided though, since the default behaviour consists in 
+displaying each visualisation box in its own window. For a more in-depth review of the window manager usage, see \ref Doc_WindowManagerUsage.
+
+<img src="window_manager.png"></img>
+<center><strong>Fig.2 Window manager popup dialog for a scenario that doesn't contain any visualisation box.</strong></center>
+
+The next button displays the log levels dialog. It may be used to configure which log messages should be displayed in the debug output(s). It contains 8 levels as shown in the
+following figure :
+
+<img src="log_levels.png"></img>
+<center><strong>Fig.3 Log levels dialog.</strong></center>
+
+Finally, the toolbar contains a time counter which displays the simulation time as a scenario is being run. It is reset to 0 as a scenario is stopped.
+
+\subsection designer_gui_scenario_building_blocks Box algorithms and Algorithms : the building blocks of OpenViBE scenarios
+
+	\subsubsection designer_gui_boxalgorithms Box algorithms
+
+The right-hand part of the Designer window displays a list of existing box algorithms and algorithms.
+
+Under the 'Box algorithms' tab lies a tree view listing the box algorithms available along with a short description of their respective roles.
+Box algorithms are the smallest granularity elements that may be manipulated by a Designer user. They act as black boxes which can be connected together by their inputs and outputs. 
+In order to facilitate their selection, they are grouped into categories, which make up the top level nodes of the tree view. Some categories are related to signal processing, 
+others to scenario serialization or visualisation purposes...
+
+Box algorithms are added to the active scenario by drag and dropping them from the tree view to the scenario edition window. They appear as boxes with their name inside the box, 
+inputs (if any) on top and outputs (if any) at the bottom. These connectors are displayed as color-coded triangles. Colors vary with the connector type, and
+help users making sure they connect boxes properly. See \ref Doc_BoxAlgorithmConnectorTypes for an overview of the different connector types. 
+
+<img src="boxalgorithm.png"></img>
+<center><strong>Fig.4 A file reading box algorithm which owns 3 outputs (experiment information, signal and stimulations streams)</strong></center>
+
+Additionally, if the box has customizable settings, the may be set by double clicking onto the box (tip : when a box own such settings, its name is prefixed and postfixed 
+by tilde '~' characters as opposed to hyphens '-'). The settings are listed in the popup dialog that appears, along with their default values. Settings may be overriden by 
+directly typing in their desired values, or they may be read from a file. In the latter case, one should expand the 'Override settings with configuration file' section to 
+check the 'File' button and pick a configuration file (see [INSERT CONFIGURATION FILE DOC FILE HERE] for information as to the XML syntax it must follow).
+
+<img src="boxalgorithm_settings.png"></img>
+<center><strong>Fig.5 Settings of a 'GDF file reader' box : filename text entry and number of samples to be stored per buffer.</strong></center>
+
+Boxes and links may be selected by clicking on them. One can also select several at once using a selection area : press the left mouse button then drag the mouse over 
+the area of interest. Selected object are highlighted, and a press on the Delete key deletes them from the scenario.
+
+Also, the work area may be shifted by pressing the shift key and the left mouse button, then moving the mouse as desired.
+
+	\subsubsection designer_gui_algorithms Algorithms
+
+While box algorithms can be arranged together by the user to make up a scenario, algorithms lie at a lower level
+in the OpenViBE object diagram and aren't meant to be directly manipulated by the user. Instead, they can be seen as reusable components which box algorithms relie on.  
+A tree of existing algorithms can be found next to the box algorithms tree. It is similarly sorted by category, only this time, it merely is a reminder of what algorithms 
+are available in the current state of the platform. They can't be added to a scenario by drag and dropping them in the scenario edition window.
+
+*/

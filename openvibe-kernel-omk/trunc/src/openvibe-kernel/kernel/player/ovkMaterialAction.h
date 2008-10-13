@@ -88,19 +88,37 @@ private:
 class MaterialSetDiffuse : public IMaterialPassAction
 {
 public:
-  ///\brief The constructor stores the argument.
 	MaterialSetDiffuse(
 		const OpenViBE::Kernel::IKernelContext& rKernelContext,
-		Ogre::ColourValue diffuse) :
+		Ogre::ColourValue diffuse,
+		bool bUseShader) :
 		IMaterialPassAction(rKernelContext),
+		_bUseShader(bUseShader),
 		_diffuse(diffuse)
 	{}
-  ///\brief Destructor.
-	virtual ~MaterialSetDiffuse()
+  virtual ~MaterialSetDiffuse()
 	{}
+	void setUseShader(bool b)
+	{
+		_bUseShader = b;
+	}
+	void setDiffuseColor(const Ogre::ColourValue& d)
+	{
+		_diffuse = d;
+	}
+	void setDiffuseColor(Ogre::Real r, Ogre::Real g, Ogre::Real b)
+	{
+		_diffuse.r = r;
+		_diffuse.g = g;
+		_diffuse.b = b;
+	}
+	void setDiffuseAlpha(Ogre::Real a)
+	{
+		_diffuse.a = a;
+	}
+
 protected:
-  ///\brief The argument.
-  /// It is given to the function.
+	bool _bUseShader;
 	Ogre::ColourValue _diffuse;
 private:
   ///\brief The action for each pass of each technique.
@@ -108,6 +126,8 @@ private:
 		SubEntityMaterial* subEntity,
 		Ogre::Pass* passDest,
 		Ogre::Pass* passSrc) const;
+	virtual void subEntityAction(
+		SubEntityMaterial* subEntity) const;
 };
 
 //---------------------------------------------------------------------------

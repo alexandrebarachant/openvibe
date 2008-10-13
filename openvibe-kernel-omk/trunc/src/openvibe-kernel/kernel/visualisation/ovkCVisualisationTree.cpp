@@ -380,16 +380,23 @@ boolean CVisualisationTree::setTreeViewCB(ITreeViewCB* pTreeViewCB)
 
 boolean CVisualisationTree::reloadTree()
 {
+	if(m_pTreeViewCB == NULL)
+	{
+		return false;
+	}
+
 	//clear current tree
 	::GtkTreeIter l_oIter;
 	while(gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(m_pTreeStore), &l_oIter, NULL, 0) != FALSE)
+	{
 		gtk_tree_store_remove(m_pTreeStore, &l_oIter);
+	}
 
 	//create 'unaffected display plugins' node
 	gtk_tree_store_append(m_pTreeStore, &l_oIter, NULL);
 	gtk_tree_store_set(m_pTreeStore, &l_oIter,
 		EVisualisationTreeColumn_StringName, "Unaffected display plugins",
-		EVisualisationTreeColumn_StringStockIcon, getTreeWidgetIcon(EVisualisationTreeNode_Unaffected),
+		EVisualisationTreeColumn_StringStockIcon, m_pTreeViewCB->getTreeWidgetIcon(EVisualisationTreeNode_Unaffected),
 		EVisualisationTreeColumn_ULongNodeType, EVisualisationTreeNode_Unaffected,
 		EVisualisationTreeColumn_StringIdentifier, (const char*)OV_UndefinedIdentifier.toString(),
 		-1);
@@ -401,97 +408,19 @@ boolean CVisualisationTree::reloadTree()
 		IVisualisationWidget* l_pVisualisationWidget = getVisualisationWidget(l_oVisualisationWidgetIdentifier);
 		//load widget if it doesn't have a parent (== is unaffected)
 		if(l_pVisualisationWidget->getParentIdentifier() == OV_UndefinedIdentifier)
-			loadVisualisationWidget(&l_oIter, 0, l_pVisualisationWidget);
+		{
+			loadVisualisationWidget(l_pVisualisationWidget, &l_oIter);
+		}
 	}
 
 	//reload visualisation windows
 	CIdentifier l_oVisualisationWindowIdentifier = OV_UndefinedIdentifier;
 	while(getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)
-		loadVisualisationWindow(getVisualisationWidget(l_oVisualisationWindowIdentifier));
+	{
+		loadVisualisationWidget(getVisualisationWidget(l_oVisualisationWindowIdentifier), NULL);
+	}
 
 	return true;
-}
-
-boolean CVisualisationTree::resizeVisualisationPanel(::GtkTreeIter* pIter)
-{
-	EVisualisationTreeNode l_oType = (EVisualisationTreeNode)getULongValueFromTreeIter(pIter, EVisualisationTreeColumn_ULongNodeType);
-	::GtkTreeIter l_oChildIter;
-
-	if(l_oType == EVisualisationTreeNode_VisualisationPanel)
-	{
-		if(gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(m_pTreeStore), &l_oChildIter, pIter, 0) != FALSE)
-			resizeVisualisationPanel(&l_oChildIter);
-	}
-	else if(l_oType == EVisualisationTreeNode_VerticalSplit || l_oType == EVisualisationTreeNode_HorizontalSplit)
-	{
-		void* l_pWidget = NULL;
-		getPointerValueFromTreeIter(pIter, l_pWidget, EVisualisationTreeColumn_PointerWidget);
-		::GtkPaned* l_pPaned = GTK_PANED(getVisualisationWidget(GTK_WIDGET(l_pWidget)));
-		if(l_pPaned != NULL)
-		{
-			//retrieve visualisation widget
-			CIdentifier l_oVisualisationWidgetIdentifier;
-			getIdentifierFromTreeIter(pIter, l_oVisualisationWidgetIdentifier, EVisualisationTreeColumn_StringIdentifier);
-			IVisualisationWidget* l_pVisualisationWidget = getVisualisationWidget(l_oVisualisationWidgetIdentifier);
-
-			//resize it
-			resizePanedWidget(l_pVisualisationWidget, GTK_WIDGET(l_pPaned));
-
-			//go down children
-			if(gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(m_pTreeStore), &l_oChildIter, pIter, 0) != FALSE)
-				resizeVisualisationPanel(&l_oChildIter);
-			if(gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(m_pTreeStore), &l_oChildIter, pIter, 1) != FALSE)
-				resizeVisualisationPanel(&l_oChildIter);
-		}
-	}
-	else
-	{
-		return false;
-}
-
-	return true;
-}
-
-boolean CVisualisationTree::createTreeWidget(IVisualisationWidget* pVisualisationWidget)
-{
-	if(m_pTreeViewCB != NULL)
-	{
-		m_pTreeViewCB->createTreeWidget(pVisualisationWidget);
-		return true;
-	}
-
-	return false;
-}
-
-::GtkWidget* CVisualisationTree::loadTreeWidget(IVisualisationWidget* pWidget)
-{
-	return m_pTreeViewCB == NULL ? NULL : m_pTreeViewCB->loadTreeWidget(pWidget);
-}
-
-::GtkWidget* CVisualisationTree::getVisualisationWidget(::GtkWidget* treeWidget)
-{
-	return m_pTreeViewCB == NULL ? NULL : m_pTreeViewCB->getVisualisationWidget(treeWidget);
-}
-
-::GtkWidget* CVisualisationTree::getTreeWidget(::GtkWidget* visualisationWidget)
-{
-	return m_pTreeViewCB == NULL ? NULL : m_pTreeViewCB->getTreeWidget(visualisationWidget);
-}
-
-const char* CVisualisationTree::getTreeWidgetIcon(EVisualisationTreeNode type)
-{
-	return m_pTreeViewCB == NULL ? "" : m_pTreeViewCB->getTreeWidgetIcon(type);
-}
-
-boolean CVisualisationTree::resizePanedWidget(IVisualisationWidget* pVisualisationWidget, ::GtkWidget* pPanedWidget)
-{
-	if(m_pTreeViewCB != NULL)
-	{
-		m_pTreeViewCB->resizePanedWidget(pVisualisationWidget, pPanedWidget);
-		return true;
-	}
-
-	return false;
 }
 
 //Tree helper functions
@@ -755,7 +684,7 @@ boolean CVisualisationTree::dragDataReceivedOutsideWidgetCB(const CIdentifier& r
 	//retrieve dest widget and dest widget parent identifiers
 	//-------------------------------------------------------
 	::GtkTreeIter l_oDstIter;
-	if(findChildNodeFromRoot(&l_oDstIter, getTreeWidget(pDstWidget)) == false)
+	if(findChildNodeFromRoot(&l_oDstIter, m_pTreeViewCB->getTreeWidget(pDstWidget)) == false)
 		return false;
 	CIdentifier l_oDstIdentifier;
 	getIdentifierFromTreeIter(&l_oDstIter, l_oDstIdentifier, EVisualisationTreeColumn_StringIdentifier);
@@ -791,7 +720,10 @@ boolean CVisualisationTree::dragDataReceivedOutsideWidgetCB(const CIdentifier& r
 
 	//add attributes
 	//--------------
-	createTreeWidget(l_pPanedVisualisationWidget);
+	if(m_pTreeViewCB != NULL)
+	{
+		m_pTreeViewCB->createTreeWidget(l_pPanedVisualisationWidget);
+	}
 
 	//reparent widgets
 	//----------------
@@ -818,7 +750,7 @@ boolean CVisualisationTree::dragDataReceivedInWidgetCB(const CIdentifier& rSrcId
 	//retrieve dest widget and dest widget parent identifiers
 	//-------------------------------------------------------
 	::GtkTreeIter l_oDstIter;
-	if(findChildNodeFromRoot(&l_oDstIter, getTreeWidget(pDstWidget)) == false)
+	if(findChildNodeFromRoot(&l_oDstIter, m_pTreeViewCB->getTreeWidget(pDstWidget)) == false)
 		return false;
 	CIdentifier l_oDstIdentifier;
 	getIdentifierFromTreeIter(&l_oDstIter, l_oDstIdentifier, EVisualisationTreeColumn_StringIdentifier);
@@ -869,115 +801,34 @@ boolean CVisualisationTree::dragDataReceivedInWidgetCB(const CIdentifier& rSrcId
 	return true;
 }
 
-boolean CVisualisationTree::loadVisualisationWindow(IVisualisationWidget* pVisualisationWindow)
+boolean CVisualisationTree::loadVisualisationWidget(IVisualisationWidget* pVisualisationWidget, ::GtkTreeIter* pParentIter)
 {
-	//create new tree node
-	::GtkTreeIter l_oIter;
-	gtk_tree_store_append(m_pTreeStore, &l_oIter, NULL);
+	//create visualisation widget
+	//---------------------------
+	::GtkWidget* l_pWidget = m_pTreeViewCB->loadTreeWidget(pVisualisationWidget);
 
-	//create new window
-	::GtkWidget* l_pWidget = loadTreeWidget(pVisualisationWindow);
-
-	//set tree node fields
-	gtk_tree_store_set(m_pTreeStore, &l_oIter,
-		EVisualisationTreeColumn_StringName, (const char*)pVisualisationWindow->getName(),
-		EVisualisationTreeColumn_StringStockIcon, getTreeWidgetIcon(EVisualisationTreeNode_VisualisationWindow),
-		EVisualisationTreeColumn_ULongNodeType, EVisualisationTreeNode_VisualisationWindow,
-		EVisualisationTreeColumn_StringIdentifier, (const char*)pVisualisationWindow->getIdentifier().toString(),
-		EVisualisationTreeColumn_PointerWidget, l_pWidget,
-		-1);
-
-	if(pVisualisationWindow->getNbChildren() > 0)
-	{
-		::GtkWidget* l_pNotebook = NULL;
-
-		//for each child
-		for(uint32 i=0; i<pVisualisationWindow->getNbChildren(); i++)
-		{
-			//get child identifier
-			CIdentifier l_oChildIdentifier;
-			pVisualisationWindow->getChildIdentifier(i, l_oChildIdentifier);
-
-			//create child hierarchy
-			loadVisualisationPanel(&l_oIter, l_pNotebook, getVisualisationWidget(l_oChildIdentifier));
-		}
-
-		//add notebook to window
-		if(l_pWidget != NULL && l_pNotebook != NULL)
-			gtk_container_add(GTK_CONTAINER(l_pWidget), l_pNotebook);
-	}
-
-	return true;
-}
-
-boolean CVisualisationTree::loadVisualisationPanel(::GtkTreeIter* pParentIter, ::GtkWidget*& pNotebook, IVisualisationWidget* pVisualisationWidget)
-{
-	//create new tree node
+	//add visualisation widget node to tree store
+	//-------------------------------------------
+	//create tree node
 	::GtkTreeIter l_oIter;
 	gtk_tree_store_append(m_pTreeStore, &l_oIter, pParentIter);
 
-	//create new widget
-	if(pNotebook == NULL)
-		pNotebook = loadTreeWidget(pVisualisationWidget);
-
-	//set tree node fields
-	gtk_tree_store_set(m_pTreeStore, &l_oIter,
-		EVisualisationTreeColumn_StringName, (const char*)pVisualisationWidget->getName(),
-		EVisualisationTreeColumn_StringStockIcon, getTreeWidgetIcon(EVisualisationTreeNode_VisualisationPanel),
-		EVisualisationTreeColumn_ULongNodeType, EVisualisationTreeNode_VisualisationPanel,
-		EVisualisationTreeColumn_StringIdentifier, (const char*)pVisualisationWidget->getIdentifier().toString(),
-		EVisualisationTreeColumn_PointerWidget, pNotebook,
-		-1);
-
-	//retrieve panel child
-	CIdentifier l_oChildIdentifier;
-	pVisualisationWidget->getChildIdentifier(0, l_oChildIdentifier);
-
-	//create a dummy child if none exists
-	if(l_oChildIdentifier == OV_UndefinedIdentifier)
-		addVisualisationWidget(
-			l_oChildIdentifier,
-			"Empty",
-			EVisualisationWidget_Undefined,
-			pVisualisationWidget->getIdentifier(),
-			0,
-			OV_UndefinedIdentifier,
-			0);
-
-	//load hierarchy
-	loadVisualisationWidget(&l_oIter, 0, getVisualisationWidget(l_oChildIdentifier));
-
-	//resize visualisation panel
-	resizeVisualisationPanel(&l_oIter);
-
-	return true;
-}
-
-boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, uint32 ui32Index, IVisualisationWidget* pVisualisationWidget)
-{
-	//create new tree node
-	::GtkTreeIter l_oIter;
-	gtk_tree_store_append(m_pTreeStore, &l_oIter, pParentIter);
-
-	//create new widget
-	EVisualisationTreeNode l_oParentType = (EVisualisationTreeNode)getULongValueFromTreeIter(pParentIter, EVisualisationTreeColumn_ULongNodeType);
-	EVisualisationTreeNode l_oChildType = EVisualisationTreeNode_Undefined;
-
-	if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationBox)
+	//retrieve values of tree node fields
+	EVisualisationTreeNode l_oChildType;
+	switch(pVisualisationWidget->getType())
 	{
-		l_oChildType = EVisualisationTreeNode_VisualisationBox;
-	}
-	else if(pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit)
-	{
-		l_oChildType = EVisualisationTreeNode_HorizontalSplit;
-	}
-	else if(pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit)
-	{
-		l_oChildType = EVisualisationTreeNode_VerticalSplit;
+		case EVisualisationWidget_VisualisationWindow : l_oChildType = EVisualisationTreeNode_VisualisationWindow; break;
+		case EVisualisationWidget_VisualisationPanel : l_oChildType = EVisualisationTreeNode_VisualisationPanel; break;
+		case EVisualisationWidget_VisualisationBox : l_oChildType = EVisualisationTreeNode_VisualisationBox; break;
+		case EVisualisationWidget_HorizontalSplit : l_oChildType = EVisualisationTreeNode_HorizontalSplit; break;
+		case EVisualisationWidget_VerticalSplit : l_oChildType = EVisualisationTreeNode_VerticalSplit; break;
+		case EVisualisationWidget_Undefined:
+		default:
+			l_oChildType=EVisualisationTreeNode_Undefined;
+			break;
 	}
 
-	CString l_pStockIconString = getTreeWidgetIcon(l_oChildType);
-
+	CString l_pStockIconString = m_pTreeViewCB->getTreeWidgetIcon(l_oChildType);
 	if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationBox)
 	{
 		//retrieve pointer to IBox
@@ -991,8 +842,6 @@ boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, 
 		}
 	}
 
-	::GtkWidget* l_pWidget = loadTreeWidget(pVisualisationWidget);
-
 	//set tree node fields
 	gtk_tree_store_set(m_pTreeStore, &l_oIter,
 		EVisualisationTreeColumn_StringName, (const char*)pVisualisationWidget->getName(),
@@ -1002,53 +851,39 @@ boolean CVisualisationTree::loadVisualisationWidget(::GtkTreeIter* pParentIter, 
 		EVisualisationTreeColumn_PointerWidget, l_pWidget,
 		-1);
 
-	//add widget to parent
-	if(l_pWidget != NULL)
+	//load visualisation widget hierarchy
+	//-----------------------------------
+	//create a dummy child for visualisation panels if none exists
+	if(pVisualisationWidget->getType() == EVisualisationWidget_VisualisationPanel)
 	{
-		if(l_oParentType == EVisualisationTreeNode_VisualisationPanel)
+		CIdentifier l_oChildIdentifier;
+		pVisualisationWidget->getChildIdentifier(0, l_oChildIdentifier);
+		if(l_oChildIdentifier == OV_UndefinedIdentifier)
 		{
-			//parent widget to notebook as a new page
-			void* l_pNotebook = NULL;
-			getPointerValueFromTreeIter(pParentIter, l_pNotebook, EVisualisationTreeColumn_PointerWidget);
-			char* l_pVisualisationPanelName = NULL;
-			getStringValueFromTreeIter(pParentIter, l_pVisualisationPanelName, EVisualisationTreeColumn_StringName);
-			gtk_notebook_append_page(GTK_NOTEBOOK(l_pNotebook), l_pWidget, gtk_label_new(l_pVisualisationPanelName));
-		}
-		else if(l_oParentType == EVisualisationTreeNode_VerticalSplit || l_oParentType == EVisualisationTreeNode_HorizontalSplit)
-		{
-			//insert widget in parent paned
-			::GtkWidget* l_pParentWidget;
-			gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pParentIter, EVisualisationTreeColumn_PointerWidget, &l_pParentWidget, -1);
-			::GtkWidget* l_pPaned = getVisualisationWidget(l_pParentWidget);
-			if(l_pPaned != NULL && GTK_IS_PANED(l_pPaned))
-			{
-				if(ui32Index == 0)
-				{
-					gtk_paned_pack1(GTK_PANED(l_pPaned), l_pWidget, TRUE, TRUE);
-				}
-				else
-				{
-					gtk_paned_pack2(GTK_PANED(l_pPaned), l_pWidget, TRUE, TRUE);
-				}
-			}
-		}
-
-		if(m_pTreeViewCB)
-		{
-			m_pTreeViewCB->endLoadTreeWidget(l_pWidget);
+			addVisualisationWidget(
+				l_oChildIdentifier,
+				"Empty",
+				EVisualisationWidget_Undefined,
+				pVisualisationWidget->getIdentifier(),
+				0,
+				OV_UndefinedIdentifier,
+				0);
 		}
 	}
 
-	//load hierarchy
 	for(uint32 i=0;  i<pVisualisationWidget->getNbChildren(); i++)
 	{
 		//get child identifier
 		CIdentifier l_oChildIdentifier;
 		pVisualisationWidget->getChildIdentifier(i, l_oChildIdentifier);
 
-		//create child hierarchy
-		loadVisualisationWidget(&l_oIter, i, getVisualisationWidget(l_oChildIdentifier));
+		//load child and its hierarchy
+		loadVisualisationWidget(getVisualisationWidget(l_oChildIdentifier), &l_oIter);
 	}
+
+	//complete visualisation widget loading now that its hierarchy is loaded
+	//----------------------------------------------------------------------
+	m_pTreeViewCB->endLoadTreeWidget(pVisualisationWidget);
 
 	return true;
 }
@@ -1102,7 +937,7 @@ boolean CVisualisationTree::visitVisualisationWidget(IObjectVisitor& rObjectVisi
 				return false;
 			}
 		}
-	} // if(bRecurse == true)
+	}
 
 	return true;
 }

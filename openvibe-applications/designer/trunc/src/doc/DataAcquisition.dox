@@ -1,0 +1,97 @@
+/**
+
+\page Doc_DataAcquisition Data acquisition
+
+Usually, one will want to start creating a scenario by setting up a data source from which to acquire signals (Note : this is strictly always needed since some boxes are of 'standalone'
+type and do not require input signals to be forwarded to them. For example, see the Simple 3D Viewer sample box). Generally speaking, there are 3 ways to get input signals :
+ - from a signal generator box (handy for testing purposes)
+ - from a file (e.g. prerecorded EEG or MEG session files)
+ - from an external device (signals are then acquired across a network)
+
+\if FOOBAR
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+				SIGNAL GENERATOR
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+\endif
+
+\section Doc_DataAcquisition_SignalGenerator Signal generator
+
+The easiest way to get started consists in adding a signal generator box to a scenario. Sample boxes such as the Sinus Oscillator or the Time Signal are examples of such boxes.
+The Sinus Oscillator generates sinusoidal signals on a configurable number of channels. Both boxes also allow for configuring the sampling frequency and epoch size settings.
+
+Let's create a simple signal processing scenario using the Signal Generator box and a display plugin to watch the generated signals. First, we add a Signal Generator box by 
+drag and dropping it from the Samples category. A double click on it will display its configurable settings. Let's generate signals for 4 channels at a rate of 512 samples per second 
+(sampling frequency) and send them down the processing line in blocks of 32 samples (epoch sample count). This means there will be 512/32 = 16 data blocks emitted by this box every
+second.
+
+Now we want to visualise the generated signals. Let's add a Signal Display box. We can set its Time Scale(i.e. the time span that will be displayed) by double clicking on it. 
+
+Finally, we forward signals from the Signal Oscillator to the Signal Display box by linking the output of the former to the first input of the latter.
+
+The scenario may be launched by clicking the 'Play' button in the Player toolbar. Random combinations of sinusoidal signals should be displayed in a Signal Display window, along with 
+default channel names. Press the Player 'Stop' button to go back to scenario edition mode.
+
+<img src="scenario_edition_sinus_oscillator.png"></img>
+<center><strong>Fig.1 A simple sinus oscillator scenario.</strong></center>
+
+<img src="scenario_edition_sinus_oscillator_online.png"></img>
+<center><strong>Fig.2 Visualising sinus oscillator signals.</strong></center>
+
+\if FOOBAR
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+				FILE READER
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+\endif
+
+\section Doc_DataAcquisition_FileReader File reader
+
+Another way to retrieve signals is to load them from files. Existing file-reading boxes include a GDF reader, as well as a few more specific boxes such as BCI Competition 
+and BrainAmp file readers. 
+
+Let's add a GDF file reader box to an empty scenario. One should also locate a GDF file and enter its path in the 'Filename' setting of the box. A second setting 
+allows to specify the number of samples to be sent per data block.
+
+This box has 3 output connectors, corresponding to experiment information, stimulations 
+and signals. One can connect the last two to the two input connectors of a Signal Display box to visualise the signals and/or stimulations stored in the GDF file.
+
+<img src="scenario_edition_gdffilereader_online.png"></img>
+<center><strong>Fig.3 Loading and visualising a GDF file.</strong></center>
+
+\if FOOBAR
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+				NETWORK COMMUNICATION
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+\endif
+
+\section Doc_DataAcquisition_NetworkCommunication Network communication
+
+A third way to retrieve signals is from a network connection. 
+This way, an external device such as an EEG helmet may be connected to one computer performing the signal acquisition (using e.g. the OpenViBE Acquisition Server 
+and the appropriate driver plugin, see \ref Doc_AcquisitionServerOverview for more information on this), then the acquired signals can be sent across the network 
+to a second computer dedicated to signal processing. Data transmission across the network is performed using the TCP/IP protocol.
+
+One can easily test this execution mode using a single computer and without any external device. 
+
+First, the Acquisition Server should be started (one can refer to \ref Doc_AcquisitionServerOverview for general information about this tool).
+By choosing the 'Generic Oscillator' driver in the Driver drop-down list, one can send random sinusoidal signals across the network, very 
+much like the Sinus Oscillator box algorithm generates similar data (see \ref Doc_ScenarioEdition_DataAcquisition_SignalGenerator). Default connection port (e.g. 1024) and 
+sample count values may be left as is, as can experiment properties ('Properties' button) such as the number of channels and the sampling frequency. Click 'Connect' when you're done
+and then 'Play' to start sending random values over the network.
+
+Next, some work needs to be done in the Designer to retrieve and display these signals. The 'Generic network acquisition' box found in the Acquisition category is dedicated to 
+retrieving data from the network and forwarding it as 3 streams (experiment information, signal and stimulations). Its settings should be configured properly to ensure it listens
+to the right port. Again, one can leave default values here since they match the Acquisition Server default settings (server hostname : localhost and connection port : 1024).
+
+Signals may be visualised using a Signal Display box by connecting its inputs to the 'Signal' and 'Stimulations' outputs of the Generic network acquisition box. Note that the Signal
+Display plugin will automatically adapt the number of displayed channels to what was configured in the Properties dialog of the Acquisition Server (4 channels by default).
+
+<img src="scenario_edition_genericnetworkacquisition_online.png"></img>
+<center><strong>Fig.4 Retrieve data from the network.</strong></center>
+
+*/

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.0.2 on Mon Jan 28 11:36:45 2008 by vdelanno@MINIPUX-->
+<!--Generated with glade3 3.4.3 on Mon Sep 08 15:44:31 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="DisplayMainWindow">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -116,6 +116,7 @@
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label" translatable="yes">Apply</property>
+                <property name="response_id">0</property>
               </widget>
             </child>
             <child>
@@ -125,6 +126,7 @@
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="label" translatable="yes">Cancel</property>
+                <property name="response_id">0</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -157,6 +159,9 @@
             <property name="stock_id">gtk-zoom-fit</property>
             <property name="active">True</property>
           </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
         </child>
         <child>
           <widget class="GtkToggleToolButton" id="BestFitPerChannel">
@@ -166,11 +171,18 @@
             <property name="stock_id">gtk-zoom-fit</property>
             <property name="active">True</property>
           </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
         </child>
         <child>
           <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
             <property name="visible">True</property>
           </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">False</property>
+          </packing>
         </child>
         <child>
           <widget class="GtkToggleToolButton" id="ShowPowers">
@@ -179,6 +191,9 @@
             <property name="label">Left Ruler</property>
             <property name="stock_id">gtk-goto-first</property>
           </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
         </child>
         <child>
           <widget class="GtkToggleToolButton" id="ShowFrequencies">
@@ -188,11 +203,89 @@
             <property name="stock_id">gtk-goto-bottom</property>
             <property name="active">True</property>
           </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
         </child>
         <child>
           <widget class="GtkSeparatorToolItem" id="separatortoolitem2">
             <property name="visible">True</property>
           </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkToolItem" id="MinFrequencyItem">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkVBox" id="vbox1">
+                <property name="visible">True</property>
+                <property name="border_width">1</property>
+                <child>
+                  <widget class="GtkSpinButton" id="MinFrequency">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">0 0 100 1 10 10</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label2">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Min Frequency</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkToolItem" id="MaxFrequencyItem">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <property name="border_width">1</property>
+                <child>
+                  <widget class="GtkSpinButton" id="MaxFrequency">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">0 0 100 1 10 10</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Max Frequency</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkSeparatorToolItem" id="toolbutton3">
+            <property name="visible">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">False</property>
+          </packing>
         </child>
         <child>
           <widget class="GtkToolButton" id="SelectChannels">
@@ -202,6 +295,9 @@
             <property name="label">Select Channels</property>
             <property name="stock_id">gtk-index</property>
           </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
         </child>
       </widget>
     </child>

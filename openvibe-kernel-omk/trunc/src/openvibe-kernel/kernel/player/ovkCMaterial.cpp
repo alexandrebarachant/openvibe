@@ -334,7 +334,10 @@ SubEntityMaterialOrig::SubEntityMaterialOrig( Ogre::SubEntity *ogreSubEntity )
 //-----------------------------------------------------------------------------
 SubEntityMaterialOrig::~SubEntityMaterialOrig() 
 {
-  _ogreSubEntity->setMaterialName( _mat->getName() ) ;
+	if(!_mat.isNull())
+	{
+		_ogreSubEntity->setMaterialName( _mat->getName() ) ;
+	}
 }
 //-----------------------------------------------------------------------------
 

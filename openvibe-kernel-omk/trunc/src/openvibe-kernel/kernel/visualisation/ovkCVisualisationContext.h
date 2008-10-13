@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		/** 
+		/**
 		 * \class CVisualisationContext
 		 * \author Vincent Delannoy (INRIA/IRISA)
 		 * \date 2008-06
@@ -18,7 +18,7 @@ namespace OpenViBE
 		{
 		public:
 			/**
-			 * \brief Constructor			 
+			 * \brief Constructor
 			 */
 			CVisualisationContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::CSimulatedBox* pSimulatedBox);
 
@@ -50,37 +50,46 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::CIdentifier create3DWidget(
 				::GtkWidget*& p3DWidget);
-		
-			/** 
-			 * \brief Create a resource group			
+
+			/**
+			 * \brief Request 3D widget realization status
+			 * \param[in] rWidgetIdentifier identifier of the 3D widget which has to be tested
+			 * \return True if the widget has been realized.
+			 * \return False if the widget has not been realized.
+			 */
+			virtual OpenViBE::boolean is3DWidgetRealized(
+				const OpenViBE::CIdentifier& rWidgetIdentifier) const;
+
+			/**
+			 * \brief Create a resource group
 			 * \param [out] rResourceGroupIdentifier Identifier of resource group created
-			 * \param [in] rResourceGroupName Resource group name	
+			 * \param [in] rResourceGroupName Resource group name
 			 * \return True if resource group could be created, false otherwise
 			 */
-			virtual OpenViBE::boolean createResourceGroup(			
+			virtual OpenViBE::boolean createResourceGroup(
 				OpenViBE::CIdentifier& rResourceGroupIdentifier,
 				const OpenViBE::CString& rResourceGroupName);
 
-			/** 
+			/**
 			 * \brief Add a resource location
 			 * \remark Resources can't be added once Resource Group has been initialized
 			 * \param rResourceGroupIdentifier Resource group identifier
 			 * \param rPath Resources location path
-			 * \param type Resources type (path or zip file)	 
+			 * \param type Resources type (path or zip file)
 			 * \param bRecursive Resources are added recursively from location passed in parameter if true
 			 * \return True if resource location could be added, false otherwise
 			 */
 			virtual OpenViBE::boolean addResourceLocation(
 				const OpenViBE::CIdentifier& rResourceGroupIdentifier,
-				const OpenViBE::CString& rPath, 
-				OpenViBE::Kernel::EResourceType type,		
+				const OpenViBE::CString& rPath,
+				OpenViBE::Kernel::EResourceType type,
 				bool bRecursive);
 
-			/** 
+			/**
 			 * \brief Add resource locations from a file
 			 * \remark Resources can't be added once Resource Group has been initialized
 			 * \param rResourceGroupIdentifier Resource group identifier
-			 * \param rResourcesFileName Resources file in OV format			 
+			 * \param rResourcesFileName Resources file in OV format
 			 * \return True if location could be added, false otherwise
 			 */
 			virtual OpenViBE::boolean addResourceLocationFromFile(
@@ -106,7 +115,15 @@ namespace OpenViBE
 			 * \return True if resource group could be destroyed (or was initialized already), false if an error occured
 			 */
 			virtual OpenViBE::boolean destroyResourceGroup(
-				const OpenViBE::CIdentifier& rResourceGroupIdentifier);	
+				const OpenViBE::CIdentifier& rResourceGroupIdentifier);
+
+			/**
+			 * \brief Update 3D window
+			 * \param rWidgetIdentifier Identifier of 3D widget to be refreshed
+			 * \return True if widget could be refreshed
+			 */
+			virtual OpenViBE::boolean update3DWidget(
+				const OpenViBE::CIdentifier& rWidgetIdentifier);
 
 			/**
 			 * \brief Set background color of a 3D widget
@@ -135,21 +152,23 @@ namespace OpenViBE
 			/**
 			 * \brief Create a new 3D object
 			 * \param rObjectFileName Filename (without extension) from which to load object
+			 * \param pObjectParams Optional object parameters
 			 * \return Identifier of newly created object, or OV_UndefinedIdentifier if failed
 			 */
 			virtual OpenViBE::CIdentifier createObject(
-				const OpenViBE::CString& rObjectFileName/*,
-				OpenViBE::boolean bClone*/);			
-			
+				const OpenViBE::CString& rObjectFileName,
+				const CNameValuePairList* pObjectParams);
+
 			/**
 			 * \brief Create a new 3D object
 			 * \param eStandard3DObject Enumeration member of standard object to create
+			 * \param pObjectParams Optional object parameters
 			 * \return Identifier of newly created object, or OV_UndefinedIdentifier if failed
 			 */
 			virtual OpenViBE::CIdentifier createObject(
-				const OpenViBE::Kernel::EStandard3DObject eStandard3DObject/*,
-				OpenViBE::boolean bClone*/);				
-			
+				const OpenViBE::Kernel::EStandard3DObject eStandard3DObject,
+				const CNameValuePairList* pObjectParams);
+
 			/**
 			 * \brief Remove a 3D object
 			 * \param rIdentifier Identifier of object to remove from 3D scene
@@ -157,7 +176,17 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean removeObject(
 				const OpenViBE::CIdentifier& rIdentifier);
-			
+
+			/**
+			 * \brief Set visibility of a 3D object
+			 * \param rIdentifier Identifier of object which visibility is to be set
+			 * \param bVisible Visibility flag
+			 * \return True if object visibility could be set, false otherwise
+			 */
+			virtual OpenViBE::boolean setObjectVisible(
+				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::boolean bVisible);
+
 			/**
 			 * \brief Set the position of an object
 			 * \param rIdentifier Identifier of the object the position of which is to be set
@@ -171,7 +200,7 @@ namespace OpenViBE
 				OpenViBE::float32 f32PositionX,
 				OpenViBE::float32 f32PositionY,
 				OpenViBE::float32 f32PositionZ);
-			
+
 			/**
 			 * \brief Set the orientation of an object
 			 * \param rIdentifier Identifier of the object the orientation of which is to be set
@@ -187,7 +216,7 @@ namespace OpenViBE
 				OpenViBE::float32 f32OrientationY,
 				OpenViBE::float32 f32OrientationZ,
 				OpenViBE::float32 f32OrientationW);
-			
+
 			/**
 			 * \brief Set the scale of an object
 			 * \param rIdentifier Identifier of the object the scale of which is to be set
@@ -201,7 +230,7 @@ namespace OpenViBE
 				OpenViBE::float32 f32ScaleX,
 				OpenViBE::float32 f32ScaleY,
 				OpenViBE::float32 f32ScaleZ);
-			
+
 			/**
 			 * \brief Set the uniform scale of an object
 			 * \param rIdentifier Identifier of the object the scale of which is to be set
@@ -211,7 +240,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setObjectScale(
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::float32 f32Scale);
-			
+
 			/**
 			 * \brief Set the color of an object
 			 * \param rIdentifier Identifier of the object the color of which is to be set
@@ -225,7 +254,7 @@ namespace OpenViBE
 				OpenViBE::float32 f32ColorRed,
 				OpenViBE::float32 f32ColorGreen,
 				OpenViBE::float32 f32ColorBlue);
-			
+
 			/**
 			 * \brief Set the transparency of an object
 			 * \param rIdentifier Identifier of the object the transparency of which is to be set
@@ -243,10 +272,10 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setObjectVertexPositionArray(
 				const OpenViBE::CIdentifier& rIdentifier,
 				const OpenViBE::float32* pVertexPositionArray);
-			
+
 			/**
 			 * \brief Set vertex colors of an object
-			 * \remark This method applies vertex colors to the first mesh of the first 
+			 * \remark This method applies vertex colors to the first mesh of the first
 			 * Ogre::Entity encountered in the object hierarchy only. For it to work, the
 			 * Ogre::Mesh needs to have been flagged as using vertex colors in authoring tools.
 			 * \param rIdentifier Identifier of the object whose vertex colors are to be set
@@ -256,7 +285,7 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean setObjectVertexColorArray(
 				const OpenViBE::CIdentifier& rIdentifier,
-				const uint32 ui32VertexColorCount, 
+				const uint32 ui32VertexColorCount,
 				const OpenViBE::float32* pVertexColorArray);
 
 			virtual OpenViBE::boolean setObjectTriangleCount(
@@ -271,19 +300,19 @@ namespace OpenViBE
 
 			/**
 			 * \brief Get object vertex count
-			 * \remark This method returns the number of vertices in the first mesh of the first 
+			 * \remark This method returns the number of vertices in the first mesh of the first
 			 * Ogre::Entity encountered in the object hierarchy only.
-			 * \param rIdentifier Identifier of the object whose vertex count is to be retrieved	 
+			 * \param rIdentifier Identifier of the object whose vertex count is to be retrieved
 			 * \param ui32VertexCount Number of vertices found in first mesh of first entity
 			 * \return True if vertex count could be retrieved, false otherwise
 			 */
 			virtual OpenViBE::boolean getObjectVertexCount(
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::uint32& ui32VertexCount) const;
-			
+
 			/**
 			 * \brief Get vertex position array
-			 * \remark This method returns vertex positions of the first mesh of the first 
+			 * \remark This method returns vertex positions of the first mesh of the first
 			 * Ogre::Entity encountered in the object hierarchy only.
 			 * \param rIdentifier Identifier of the object whose vertex positions are to be retrieved
 			 * \param pVertexPositionArray Preallocated array destined to store vertex position triplets

@@ -6,18 +6,41 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <ebml/IReader.h>
+#include <glade/glade.h>
+#include <gtk/gtk.h>
 
-#include "ovpCBufferDatabase.h"
-#include "ovpCVoxelDisplay/ovpCVoxelView.h"
+#include "ovpCStreamedMatrixDatabase.h"
 
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		class CVoxelDisplay : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >,
-		virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback,
-		virtual public CSignalDisplayDrawable
+		class CVoxelView;
+
+		class CVoxel
+		{
+		public:
+			CVoxel();
+
+			OpenViBE::boolean setObjectIdentifiers(
+				OpenViBE::CIdentifier oCubeIdentifier,
+				OpenViBE::CIdentifier oSphereIdentifier);
+
+			OpenViBE::boolean setPosition(
+				OpenViBE::float32 f32X,
+				OpenViBE::float32 f32Y,
+				OpenViBE::float32 f32Z);
+
+			//object identifiers
+			OpenViBE::CIdentifier m_oCubeIdentifier;
+			OpenViBE::CIdentifier m_oSphereIdentifier;
+			//current visibility state of active object
+			OpenViBE::boolean m_bVisible;
+			//coordinates of active object
+			OpenViBE::float32 m_f32X, m_f32Y, m_f32Z;
+		};
+
+		class CVoxelDisplay : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 			CVoxelDisplay(void);
@@ -25,62 +48,125 @@ namespace OpenViBEPlugins
 			virtual void release(void) { delete this; }
 
 			virtual OpenViBE::uint64 getClockFrequency(void);
+
 			virtual OpenViBE::boolean initialize(void);
+
 			virtual OpenViBE::boolean uninitialize(void);
+
 			virtual OpenViBE::boolean processInput(
 				OpenViBE::uint32 ui32InputIndex);
+
 			virtual OpenViBE::boolean processClock(
 				OpenViBE::Kernel::IMessageClock& rMessageClock);
+
 			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_VoxelDisplay)
 
-			//IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback implementation
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
-			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
+			/** \name CVoxelView callbacks */
+			//@{
 
-			//CSignalDisplayDrawable implementation
-			//-------------------------------------
-			/**
-			 * Initializes the window.
-			 */
-			virtual void init();
-			/**
-			 * Invalidates the window's content and tells it to redraw itself.
-			 */
-			virtual void redraw();
+			OpenViBE::boolean setVoxelObject(
+				OpenViBE::Kernel::EStandard3DObject eStandard3DObject);
 
-		protected:
-			void process3D();
+			OpenViBE::boolean toggleColorModification(
+				OpenViBE::boolean bModifyColor);
 
-			//ebml
-			EBML::IReader* m_pStreamedMatrixReader;
+			OpenViBE::boolean toggleTransparencyModification(
+				OpenViBE::boolean bModifyTransparency);
 
-			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pStreamedMatrixReaderCallBack;
+			OpenViBE::boolean toggleSizeModification(
+				OpenViBE::boolean bModifySize);
 
-			//Start and end time of the last buffer
-			OpenViBE::uint64 m_ui64StartTime;
-			OpenViBE::uint64 m_ui64EndTime;
+			OpenViBE::boolean setMinScaleFactor(
+				OpenViBE::float64 f64MinScaleFactor);
 
-			//OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;
-			CBufferDatabase* m_pDatabase;
-			CVoxelView* m_pVoxelView; //main object used for the display (contains all the GUI code)
+			OpenViBE::boolean setMaxScaleFactor(
+				OpenViBE::float64 f64MaxScaleFactor);
+
+			OpenViBE::boolean setVoxelDisplayThreshold(
+				OpenViBE::float64 f64Threshold);
+
+			OpenViBE::boolean setSkullOpacity(
+				OpenViBE::float64 f64Opacity);
+
+			OpenViBE::boolean setPaused(
+				OpenViBE::boolean bPaused);
+
+			OpenViBE::boolean repositionCamera();
+
+			//@}
+
+		private:
+			OpenViBE::CIdentifier getActiveShapeIdentifier(CVoxel& rVoxel);
+
+			OpenViBE::boolean process3D();
+
+				OpenViBE::boolean createVoxels();
+
+				//REMOVE ME
+				OpenViBE::boolean computePotentials();
+				OpenViBE::boolean getMinMaxPotentials(OpenViBE::float64& rMinPotential, OpenViBE::float64& rMaxPotential);
+				//
+
+				OpenViBE::boolean updateVoxels();
+
+		private:
+			//Streamed matrix database
+			CStreamedMatrixDatabase* m_pStreamedMatrixDatabase;
+			//GUI management
+			CVoxelView* m_pVoxelView;
 
 			OpenViBE::CIdentifier m_o3DWidgetIdentifier;
+			OpenViBE::CIdentifier m_oResourceGroupIdentifier;
+
+			OpenViBE::boolean m_bCameraPositioned;
+			OpenViBE::boolean m_bPaused;
+			OpenViBE::float64 m_f64Time;
+
+			//REMOVE ME : get matrix from database!
+			OpenViBE::CMatrix m_oPotentialMatrix;
 
 			OpenViBE::uint32 m_ui32NbColors; //number of predefined colors
 			OpenViBE::float32* m_pColorScale; //scale of predefined colors potentials are converted to
 
 			std::vector<OpenViBE::CIdentifier> m_oElectrodeIds; //ids of electrode objects
-			OpenViBE::boolean m_bCameraPositioned;
-			/*
-			OpenViBE::CIdentifier m_oScalpId; //ID of scalp object
-			OpenViBE::uint32 m_ui32NbScalpVertices;	//number of scalp vertices
-			OpenViBE::CMatrix m_oSampleCoordinatesMatrix; //normalized vertices where to interpolate potentials
-			OpenViBE::float32* m_pScalpColors; //scalp vertex colors
-			*/
+			std::vector<OpenViBEPlugins::SimpleVisualisation::CVoxel> m_oVoxels; //voxels vector
+			OpenViBE::CIdentifier m_oScalpId;
+			OpenViBE::CIdentifier m_oFaceId;
+
+			/** \name Members modified by CVoxelView requests */
+			//@{
+			//set voxel object
+			OpenViBE::boolean m_bSetVoxelObject;
+			OpenViBE::Kernel::EStandard3DObject m_eVoxelObject;
+
+			//toggle color modification
+			OpenViBE::boolean m_bToggleColorModification;
+			OpenViBE::boolean m_bColorModificationToggled;
+
+			//toggle transparency modification
+			OpenViBE::boolean m_bToggleTransparencyModification;
+			OpenViBE::boolean m_bTransparencyModificationToggled;
+
+			//toggle size modification
+			OpenViBE::boolean m_bToggleSizeModification;
+			OpenViBE::boolean m_bSizeModificationToggled;
+
+			//scale factors
+			OpenViBE::float64 m_f64MinScaleFactor;
+			OpenViBE::float64 m_f64MaxScaleFactor;
+
+			//voxel display threshold
+			OpenViBE::float64 m_f64VoxelDisplayThreshold;
+
+			//set skull opacity
+			OpenViBE::boolean m_bSetSkullOpacity;
+			OpenViBE::float64 m_f64SkullOpacity;
+
+			//reposition camera
+			OpenViBE::boolean m_bRepositionCamera;
+			//@}
 		};
 
 		class CVoxelDisplayDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -94,7 +180,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Displays brain activity as voxels"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("3D visualisation"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/Visualisation/Volume"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(GTK_STOCK_EXECUTE); }
 
@@ -110,7 +196,7 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				//rPrototype.addSetting("Log level to use", OV_TypeId_LogLevel, "Information");
-				rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
+				rPrototype.addInput("Streamed matrix", OV_TypeId_StreamedMatrix);
 				return true;
 			}
 

@@ -71,7 +71,9 @@ namespace OpenViBEPlugins
 			g_object_unref(G_OBJECT(m_pGraphicsContext));
 
 			if(m_pRGBBuffer != NULL)
+			{			
 				delete[] m_pRGBBuffer;
+			}
 		}
 
 		GtkWidget* CPowerSpectrumChannelDisplay::getWidget() const
@@ -106,26 +108,31 @@ namespace OpenViBEPlugins
 				m_ui32Rowstride);
 		}
 
-		//! draws the power spectrum
 		void CPowerSpectrumChannelDisplay::update()
 		{
 			//do we have something to display?
-			if(m_pDatabase == NULL || m_pDatabase->m_pBuffer == NULL)
+			if(m_pDatabase == NULL || m_pDatabase->getDisplayedFrequencyBandCount() == 0)
+			{
 				return;
+			}
 
 			//has a size-allocate event been received yet?
 			if(m_pRGBBuffer == NULL)
+			{
 				return;
+			}
 
 			//create graphics context if needed
-			if(!m_pGraphicsContext)
+			if(m_pGraphicsContext == NULL)
+			{
 				m_pGraphicsContext = gdk_gc_new(m_pDisplay->window);
+			}
 
 			//clear buffer
 			drawBoxToBuffer(0, 0, m_ui32RGBBufferWidth, m_ui32RGBBufferHeight, 0xFF, 0xFF, 0xFF);
 
-			//get number of frequency bands
-			uint32 l_ui32FrequencyCount = m_pDatabase->m_pFrequencyBands.size();
+			//get number of frequency bands to display
+			uint32 l_ui32FrequencyCount = m_pDatabase->getDisplayedFrequencyBandCount();
 
 			//get size of drawing area
 			gint l_iWidth = 0;
@@ -143,31 +150,46 @@ namespace OpenViBEPlugins
 			float64 l_f64CurrentBufferMax;
 			float64 l_f64CurrentBufferMin;
 			if(m_pParentDisplay->getCurrentDisplayMode() == ESpectrumDisplayMode_GlobalBestFit)
+			{
 				m_pDatabase->getLastBufferMinMaxValue(l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+			}
 			else
+			{
 				m_pDatabase->getLastBufferChannelMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+			}
 
 			//gets a pointer to this channels' samples data in the current buffer
-			float64* pChannelBuf = m_pDatabase->getLastBufferChannelPointer(m_ui32Channel);
+			float64* l_pChannelBuf = m_pDatabase->getLastBufferChannelPointer(m_ui32Channel);
 
-			//for all frequency bands
-			for(uint32 f = 0 ; f<l_ui32FrequencyCount ; f++)
+			//draw frequency bands
+			uint32 l_ui32MinDisplayedFrequencyBandIndex = m_pDatabase->getMinDisplayedFrequencyBandIndex();
+			uint32 l_ui32MaxDisplayedFrequencyBandIndex = m_pDatabase->getMaxDisplayedFrequencyBandIndex();
+
+			for(uint32 i=l_ui32MinDisplayedFrequencyBandIndex; i<=l_ui32MaxDisplayedFrequencyBandIndex; i++)
 			{
 				//height ratio
-				float ratio = (float)((pChannelBuf[f] - l_f64CurrentBufferMin) / (l_f64CurrentBufferMax - l_f64CurrentBufferMin));
-				if(ratio < 0)
-					ratio = 0;
-				else if(ratio > 1)
-					ratio = 1;
+				float ratio = 0;
+				if(l_f64CurrentBufferMax > l_f64CurrentBufferMin)
+				{
+					ratio = (float)((l_pChannelBuf[i] - l_f64CurrentBufferMin) / (l_f64CurrentBufferMax - l_f64CurrentBufferMin));
+					if(ratio < 0)
+					{
+						ratio = 0;
+					}
+					else if(ratio > 1)
+					{
+						ratio = 1;
+					}
+				}
 
-				gint l_iX = (gint) (f *  l_f32FreqBandWidth);
-				// gint l_iY = l_iHeight; //start at bottom
+				gint l_iX = (gint) ((i-l_ui32MinDisplayedFrequencyBandIndex) *  l_f32FreqBandWidth);
+				gint l_iW = (gint)((i+1-l_ui32MinDisplayedFrequencyBandIndex) * l_f32FreqBandWidth - l_iX);
 
-				gint l_iW = (gint) ((f+1) *  l_f32FreqBandWidth - l_iX);
 				gint l_iH = (gint)(l_iHeight * ratio);
-
+				gint l_iY = l_iHeight-l_iH;
+					
 				drawBoxToBuffer(
-					l_iX, l_iHeight-l_iH, //origin
+					l_iX, l_iY, //origin
 					l_iW, l_iH, //size
 					0xFF, 0, 0); //RGB color
 			}
@@ -177,7 +199,9 @@ namespace OpenViBEPlugins
 		{
 			//if the widget is invisible, no need to redraw it
 			if(!GTK_WIDGET_VISIBLE(m_pLeftRuler))
+			{
 				return;
+			}
 
 			gint l_iLeftRulerWidth;
 			gint l_iLeftRulerHeight;
@@ -191,9 +215,13 @@ namespace OpenViBEPlugins
 			float64 l_f64CurrentBufferMax;
 			float64 l_f64CurrentBufferMin;
 			if(m_pParentDisplay->getCurrentDisplayMode() == ESpectrumDisplayMode_GlobalBestFit)
+			{
 				m_pDatabase->getLastBufferMinMaxValue(l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+			}
 			else
+			{
 				m_pDatabase->getLastBufferChannelMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+			}
 
 			float64 l_f64IntervalWidth = l_f64CurrentBufferMax-l_f64CurrentBufferMin;
 			float64 l_f64ValueStep;
@@ -233,7 +261,9 @@ namespace OpenViBEPlugins
 
 			//if the step is too small, it causes problems, so don't display anything and return
 			if(l_f64ValueStep < 0.5e-5)
+			{
 				return;
+			}
 
 			for(float64 i=l_f64BaseValue; i<=l_f64CurrentBufferMax; i+=l_f64ValueStep)
 			{
@@ -246,9 +276,13 @@ namespace OpenViBEPlugins
 
 				//if the current value is (almost) 0, display 0
 				if(i < 0.5e-10 && i> -0.5e-10)
+				{
 					sprintf(l_pValueLabel,"0");
+				}
 				else
+				{
 					sprintf(l_pValueLabel, "%g", i);
+				}
 
 				PangoLayout* l_pText = gtk_widget_create_pango_layout(m_pLeftRuler, l_pValueLabel);
 				pango_layout_set_width(l_pText, 28);
@@ -259,12 +293,18 @@ namespace OpenViBEPlugins
 				pango_layout_get_pixel_size(l_pText, &l_iTextW, &l_iTextH);
 
 				if(l_iTextH  > l_iLeftRulerHeight)
+				{
 					break;
+				}
 
 				if(l_iTextY - (l_iTextH/2) < 0)
+				{
 					l_iTextY = l_iTextH/2;
+				}
 				else if((l_iTextY + ceil(l_iTextH/2.f)) > (l_iLeftRulerHeight-1))
+				{
 					l_iTextY = (gint)(l_iLeftRulerHeight - ceil(l_iTextH/2.f));
+				}
 
 				gdk_draw_layout(m_pLeftRuler->window, m_pLeftRuler->style->fg_gc[GTK_WIDGET_STATE (m_pLeftRuler)], 0, l_iTextY-(l_iTextH/2), l_pText);
 			}
@@ -272,13 +312,14 @@ namespace OpenViBEPlugins
 
 		void CPowerSpectrumChannelDisplay::resizeRGBBuffer(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height)
 		{
-			//first delete the previously allocated buffer
-			if(m_pRGBBuffer != NULL)
-				delete[] m_pRGBBuffer;
-
 			//align lines on 32bit boundaries
 			m_ui32Rowstride = ((ui32Width*3)%4 == 0) ? (ui32Width*3) : ((((ui32Width*3)>>2)+1)<<2);
 
+			//delete previously allocated buffer
+			if(m_pRGBBuffer != NULL)
+			{
+				delete[] m_pRGBBuffer;
+			}
 			m_pRGBBuffer = new guchar[m_ui32Rowstride*ui32Height];
 
 			m_ui32RGBBufferWidth=ui32Width;
