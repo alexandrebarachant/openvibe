@@ -36,6 +36,8 @@ boolean CSpectrumEncoder::processHeader(void)
 
 	IMatrix* l_pFrequencyBandMinMax=ip_pMinMaxFrenquencyBands;
 
+	CStreamedMatrixEncoder::processHeader();
+
 	m_pEBMLWriterHelper->openChild(OVTK_NodeId_Header_Spectrum);
 	 for(uint32 i=0; i<l_pFrequencyBandMinMax->getDimensionSize(1); i++)
 	 {
@@ -49,8 +51,6 @@ boolean CSpectrumEncoder::processHeader(void)
 	  m_pEBMLWriterHelper->closeChild();
 	 }
 	m_pEBMLWriterHelper->closeChild();
-
-	CStreamedMatrixEncoder::processHeader();
 
 	return true;
 }
