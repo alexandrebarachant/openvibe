@@ -2,7 +2,13 @@
 
 #include <system/Memory.h>
 
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
 using namespace OpenViBE;
+using namespace OpenViBEToolkit;
+using namespace OpenViBEToolkit::Tools;
 
 boolean OpenViBEToolkit::Tools::Matrix::copy(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
 {
@@ -60,5 +66,60 @@ boolean OpenViBEToolkit::Tools::Matrix::copyContent(IMatrix& rDestinationMatrix,
 boolean OpenViBEToolkit::Tools::Matrix::clearContent(IMatrix& rMatrix)
 {
 	System::Memory::set(rMatrix.getBuffer(), rMatrix.getBufferElementCount()*sizeof(float64), 0);
+	return true;
+}
+
+boolean OpenViBEToolkit::Tools::Matrix::isDescriptionSimilar(const IMatrix& rSourceMatrix1, const IMatrix& rSourceMatrix2, const boolean bCheckLabels)
+{
+	if(rSourceMatrix1.getDimensionCount() != rSourceMatrix2.getDimensionCount())
+	{
+		return false;
+	}
+
+	for(uint32 i=0; i<rSourceMatrix1.getDimensionCount(); i++)
+	{
+		if(rSourceMatrix1.getDimensionSize(i) != rSourceMatrix2.getDimensionSize(i))
+		{
+			return false;
+		}
+	}
+
+	if(bCheckLabels)
+	{
+		for(uint32 i=0; i<rSourceMatrix1.getDimensionCount(); i++)
+		{
+			for(uint32 j=0; j<rSourceMatrix1.getDimensionSize(i); j++)
+			{
+				if(strcmp(rSourceMatrix1.getDimensionLabel(i, j), rSourceMatrix2.getDimensionLabel(i, j))!=0)
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+boolean OpenViBEToolkit::Tools::Matrix::isContentSimilar(const IMatrix& rSourceMatrix1, const IMatrix& rSourceMatrix2)
+{
+	if(rSourceMatrix1.getBufferElementCount() != rSourceMatrix2.getBufferElementCount())
+	{
+		return false;
+	}
+
+	return ::memcmp(rSourceMatrix1.getBuffer(), rSourceMatrix2.getBuffer(), rSourceMatrix1.getBufferElementCount()*sizeof(float64)) == 0;
+}
+
+boolean OpenViBEToolkit::Tools::Matrix::isContentValid(const IMatrix& rSourceMatrix, const boolean bCheckNotANumber, const boolean bCheckInfinity)
+{
+	const float64* l_pBuffer=rSourceMatrix.getBuffer();
+	const float64* l_pBufferEnd=rSourceMatrix.getBuffer()+rSourceMatrix.getBufferElementCount();
+	while(l_pBuffer!=l_pBufferEnd)
+	{
+		if(bCheckNotANumber && isnan(*l_pBuffer)) return false;
+		if(bCheckInfinity && isinf(*l_pBuffer)) return false;
+		l_pBuffer++;
+	}
 	return true;
 }
