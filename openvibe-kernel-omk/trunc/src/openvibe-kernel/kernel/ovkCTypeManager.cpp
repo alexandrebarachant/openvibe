@@ -236,13 +236,13 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 	const CString& rEntryName) const
 {
 	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	map<uint64, CString>::const_iterator itEnumerationEntry;
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return 0xffffffffffffffffll;
 	}
 
 	// first looks at the exact string match
-	map<uint64, CString>::const_iterator itEnumerationEntry;
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
 		if(itEnumerationEntry->second==rEntryName)
@@ -255,7 +255,6 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 	string l_sEntryName(rEntryName);
 	string l_sEntryNameLower;
 	std::transform(l_sEntryName.begin(), l_sEntryName.end(), l_sEntryNameLower.begin(), std::tolower);
-	map<uint64, CString>::const_iterator itEnumerationEntry;
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
 		string l_sItEntryName(itEnumerationEntry->second);
@@ -341,13 +340,13 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 	const CString& rEntryName) const
 {
 	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	map<uint64, CString>::const_iterator itBitMaskEntry;
 	if(itBitMask==m_vBitMask.end())
 	{
 		return 0xffffffffffffffffll;
 	}
 
 	// first looks at the exact string match
-	map<uint64, CString>::const_iterator itBitMaskEntry;
 	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 	{
 		if(itBitMaskEntry->second==rEntryName)
@@ -360,7 +359,6 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 	string l_sEntryName(rEntryName);
 	string l_sEntryNameLower;
 	std::transform(l_sEntryName.begin(), l_sEntryName.end(), l_sEntryNameLower.begin(), std::tolower);
-	map<uint64, CString>::const_iterator itBitMaskEntry;
 	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 	{
 		string l_sItEntryName(itBitMaskEntry->second);
