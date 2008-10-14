@@ -1,0 +1,58 @@
+/**
+ * \mainpage OpenViBE
+ *
+ * Here you will find a technical description and manual of the §OpenViBE§ platform, a novel, free
+ * and open source general purpose platform to design and tune BCI systems and connect them with VR applications.
+ * The whole software is developed in C++.
+ *
+ * The redaction of this document is on progress so this documentation is far from complete right now. However,
+ * we collected several things from here and there and put them altogether in an unorganised way. This is a start...
+ * Have a nice reading.
+ *
+ * \image html logo.png
+ *
+ * Licence :
+ * - The software platform is released under the term of this \subpage Doc_Licence
+ *
+ * Installation :
+ * - \subpage Doc_Install procedure
+ *
+ * User documentation :
+ * - \subpage Doc_BoxAlgorithms (documentation in progress)
+ *
+ * Developper documentation :
+ * - \subpage Doc_CreatingANewDriver (should be updated)
+ * - \subpage Doc_CreatingNewPlugins (should be both improved and updated)
+ * - \subpage Doc_OpenViBEStreams
+ * - \subpage Doc_Stimulations
+ *
+ * Details on EBML :
+ * - \subpage Doc_WhatIsEBML
+ * - \subpage Doc_ParsingEBMLStreams
+ * - \subpage Doc_FormatingEBMLStreams
+ * - \subpage Doc_OpenViBEStreams
+ *
+ * Ongoing documentation :
+ * - \subpage Doc_BoxAlgorithmConnectorTypes
+ * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
+ * - \subpage Doc_BoxAlgorithmsTutorials
+ * - \subpage Doc_DataAcquisition
+ * - \subpage Doc_DataVisualisation
+ * - \subpage Doc_DesignerOverview
+ * - \subpage Doc_WindowManagerUsage
+ * - \subpage Doc_DesignerTutorial1
+ * - \subpage Doc_DesignerTutorial2
+ * - \subpage Doc_DesignerTutorial3
+ * - \subpage Doc_AcquisitionServerOverview
+ *
+ * Things that should be done :
+ * - \subpage todo
+ *
+ * Contact :
+ * - Website : http://www.irisa.fr/bunraku/OpenViBE
+ * - Forum : http://www.irisa.fr/bunraku/OpenViBE/forum
+ * - INRIA gForge : https://gforge.inria.fr/projects/openvibe
+ * - INRIA gForge mailing lists : https://gforge.inria.fr/mail/?group_id=276
+ * - INRIA gForge bug tracker : https://gforge.inria.fr/tracker/?group_id=276
+ * - IRC : \e \#openvibe on \e irc.freenode.net
+ */
