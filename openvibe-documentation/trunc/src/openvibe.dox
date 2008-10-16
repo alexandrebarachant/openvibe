@@ -11,28 +11,34 @@
  *
  * \image html logo.png
  *
- * Licence :
- * - The software platform is released under the term of this \subpage Doc_Licence
+ * \subpage Doc_Licence :
+ * - The software platform is released under the term of the \subpage Doc_Licence "L-GPL v2+"
  *
- * Installation :
- * - \subpage Doc_Install procedure
+ * <hr>
+ *
+ * \subpage Doc_Install "Installation procedure"
+ *
+ * <hr>
  *
  * User documentation :
  * - \subpage Doc_BoxAlgorithms (documentation in progress)
  *
- * Developper documentation :
+ * <hr>
+ *
+ * \subpage Doc_DevelopperDocumentation :
  * - \subpage Doc_CreatingANewDriver (should be updated)
  * - \subpage Doc_CreatingNewPlugins (should be both improved and updated)
  * - \subpage Doc_OpenViBEStreams
  * - \subpage Doc_Stimulations
  *
- * Details on EBML :
+ * \subpage Doc_EBML :
  * - \subpage Doc_WhatIsEBML
  * - \subpage Doc_ParsingEBMLStreams
  * - \subpage Doc_FormatingEBMLStreams
- * - \subpage Doc_OpenViBEStreams
  *
- * Ongoing documentation :
+ * <hr>
+ *
+ * \subpage Doc_OngoingDocumentation :
  * - \subpage Doc_BoxAlgorithmConnectorTypes
  * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
  * - \subpage Doc_BoxAlgorithmsTutorials
@@ -45,8 +51,12 @@
  * - \subpage Doc_DesignerTutorial3
  * - \subpage Doc_AcquisitionServerOverview
  *
+ * <hr>
+ *
  * Things that should be done :
  * - \subpage todo
+ *
+ * <hr>
  *
  * Contact :
  * - Website : http://www.irisa.fr/bunraku/OpenViBE
@@ -55,4 +65,34 @@
  * - INRIA gForge mailing lists : https://gforge.inria.fr/mail/?group_id=276
  * - INRIA gForge bug tracker : https://gforge.inria.fr/tracker/?group_id=276
  * - IRC : \e \#openvibe on \e irc.freenode.net
+ */
+
+/**
+ * \page Doc_DevelopperDocumentation Developper documentation
+ * - \subpage Doc_CreatingANewDriver (should be updated)
+ * - \subpage Doc_CreatingNewPlugins (should be both improved and updated)
+ * - \subpage Doc_OpenViBEStreams
+ * - \subpage Doc_Stimulations
+ */
+
+/**
+ * \page Doc_EBML Details on EBML
+ * - \subpage Doc_WhatIsEBML
+ * - \subpage Doc_ParsingEBMLStreams
+ * - \subpage Doc_FormatingEBMLStreams
+ */
+
+/**
+ * \page Doc_OngoingDocumentation Ongoing documentation
+ * - \subpage Doc_BoxAlgorithmConnectorTypes
+ * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
+ * - \subpage Doc_BoxAlgorithmsTutorials
+ * - \subpage Doc_DataAcquisition
+ * - \subpage Doc_DataVisualisation
+ * - \subpage Doc_DesignerOverview
+ * - \subpage Doc_WindowManagerUsage
+ * - \subpage Doc_DesignerTutorial1
+ * - \subpage Doc_DesignerTutorial2
+ * - \subpage Doc_DesignerTutorial3
+ * - \subpage Doc_AcquisitionServerOverview
  */

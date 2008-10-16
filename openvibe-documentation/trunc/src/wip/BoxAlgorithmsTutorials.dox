@@ -1,0 +1,33 @@
+/**
+
+\page Doc_BoxAlgorithmsTutorials Box algorithms tutorials
+
+In this section, we go through several practical examples to present major concepts behind OpenViBE scenario edition with OpenViBE Designer. A number of 
+box algorithms are used in sample scenarios to demonstrate the possibilities of the platform, however many more boxes are available. For an exhaustive overview of 
+existing box algorithms, one should refer to the API documentation. A list of all box algorithms, along with links to the description of each box, is available 
+here : [INSERT LINK TO BOX ALGORITHMS LIST HERE].
+
+Here is a list of the topics addressed in the following pages :
+
+- \ref Doc_DataAcquisition
+	- \ref Doc_DataAcquisition_SignalGenerator
+	- \ref Doc_DataAcquisition_FileReader
+	- \ref Doc_DataAcquisition_NetworkCommunication
+- \ref Doc_SignalProcessing_All 	
+	- \ref Doc_SignalProcessing_GPL
+	- \ref Doc_SignalProcessing
+	- \ref Doc_SignalProcessing_OtherBoxes
+- \ref Doc_DataVisualisation	
+	- \ref Doc_DataVisualisation_2DVisualisation
+		- \ref Doc_DataVisualisation_2DVisualisation_SignalDisplay
+		- \ref Doc_DataVisualisation_2DVisualisation_PowerSpectrum
+		- \ref Doc_DataVisualisation_2DVisualisation_TimeFrequencyMap
+		- \ref Doc_DataVisualisation_2DVisualisation_2DTopographicMap
+	- \ref Doc_DataVisualisation_3DVisualisation
+		- \ref Doc_DataVisualisation_3DVisualisation_Simple3DViewer
+		- \ref Doc_DataVisualisation_3DVisualisation_3DTopographicMap
+		- \ref Doc_DataVisualisation_3DVisualisation_VoxelDisplay
+	- \ref Doc_DataVisualisation_OtherVisualisations
+
+		
+*/
