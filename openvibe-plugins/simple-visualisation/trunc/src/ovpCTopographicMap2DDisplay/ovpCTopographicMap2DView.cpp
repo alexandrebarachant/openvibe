@@ -1004,14 +1004,17 @@ namespace OpenViBEPlugins
 					h = m_ui32CellSize;
 				}
 
+				uint32 l_ui32Index=m_oSampleValues[i];
+				if(l_ui32Index>12) l_ui32Index=12;
+
 				drawBoxToBuffer(
 					m_oSample2DCoordinates[i].first,
 					m_oSample2DCoordinates[i].second,
 					w,
 					h,
-					s_palette8[3*m_oSampleValues[i]],
-					s_palette8[3*m_oSampleValues[i]+1],
-					s_palette8[3*m_oSampleValues[i]+2]);
+					s_palette8[3*l_ui32Index],
+					s_palette8[3*l_ui32Index+1],
+					s_palette8[3*l_ui32Index+2]);
 			}
 		}
 
