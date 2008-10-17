@@ -1,34 +1,10 @@
 #include "ovp_defines.h"
+
 #include "ovpCGenericNetworkAcquisition.h"
 
-static OpenViBEPlugins::Acquisition::CGenericNetworkAcquisitionDesc* gst_pGenericNetworkAcquisitionDesc=NULL;
+#include "box-algorithms/acquisition/ovpCBoxAlgorithmAcquisitionClient.h"
 
-extern "C"
-{
-
-OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
-	gst_pGenericNetworkAcquisitionDesc=new OpenViBEPlugins::Acquisition::CGenericNetworkAcquisitionDesc();
-
-	return true;
-}
-
-OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext)
-{
-	delete gst_pGenericNetworkAcquisitionDesc;
-
-	return true;
-}
-
-OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription)
-{
-	switch(ui32Index)
-	{
-		case 0: rpPluginObjectDescription=gst_pGenericNetworkAcquisitionDesc; break;
-
-		default: return false;
-	}
-	return true;
-}
-
-}
+OVP_Declare_Begin()
+	OVP_Declare_New(OpenViBEPlugins::Acquisition::CGenericNetworkAcquisitionDesc)
+	OVP_Declare_New(OpenViBEPlugins::Acquisition::CBoxAlgorithmAcquisitionClientDesc)
+OVP_Declare_End()

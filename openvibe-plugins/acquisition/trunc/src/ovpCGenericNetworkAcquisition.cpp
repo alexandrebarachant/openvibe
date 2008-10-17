@@ -393,7 +393,7 @@ boolean CGenericNetworkAcquisition::process()
 		}
 	}
 
-	do
+	while(m_pConnectionClient->isReadyToReceive())
 	{
 		// Receives data from the connection
 		l_ui32Received=m_pConnectionClient->receiveBuffer(l_pBuffer, sizeof(l_pBuffer));
@@ -401,7 +401,6 @@ boolean CGenericNetworkAcquisition::process()
 		// Sends them to the EBML processor
 		m_pReader->processData(l_pBuffer, l_ui32Received);
 	}
-	while(m_pConnectionClient->isReadyToReceive());
 
 	return true;
 }
