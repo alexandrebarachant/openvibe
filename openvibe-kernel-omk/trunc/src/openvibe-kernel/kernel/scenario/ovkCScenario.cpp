@@ -174,11 +174,11 @@ boolean CScenario::load(
 		log() << LogLevel_Warning << "Import failed...\n";
 		return false;
 	}
-		
-	//ensure visualisation widgets contained in the scenario (if any) appear in the window manager 
+
+	//ensure visualisation widgets contained in the scenario (if any) appear in the window manager
 	//even when the <VisualisationTree> section of a scenario file is missing, erroneous or deprecated
 	CIdentifier l_oVisualisationWidgetIdentifier = OV_UndefinedIdentifier;
-	IVisualisationTree& l_rVisualisationTree = getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);	
+	IVisualisationTree& l_rVisualisationTree = getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
 	if(l_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWidgetIdentifier) == false)
 	{
 		//no visualisation widget was added to visualisation tree : ensure there aren't any in scenario
@@ -189,7 +189,7 @@ boolean CScenario::load(
 			CIdentifier l_oAlgorithmIdentifier = l_pBox->getAlgorithmClassIdentifier();
 			const Plugins::IPluginObjectDesc* l_pPOD = getKernelContext().getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
 			if(l_pPOD != NULL && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
-			{				
+			{
 				//a visualisation widget was found in scenario : manually add it to visualisation tree
 				l_rVisualisationTree.addVisualisationWidget(
 					l_oVisualisationWidgetIdentifier,
@@ -198,11 +198,11 @@ boolean CScenario::load(
 					OV_UndefinedIdentifier,
 					0,
 					l_pBox->getIdentifier(),
-					0);				
+					0);
 			}
 
 			l_oBoxIdentifier = getNextBoxIdentifier(l_oBoxIdentifier);
-		}		
+		}
 	}
 
 	return true;
@@ -298,12 +298,12 @@ CIdentifier CScenario::getVisualisationTreeIdentifier(void) const
 
 const IVisualisationTree& CScenario::getVisualisationTreeDetails() const
 {
-	return getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);	
+	return getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
 }
-			
+
 IVisualisationTree& CScenario::getVisualisationTreeDetails()
 {
-	return getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);	
+	return getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
 }
 
 //___________________________________________________________________//

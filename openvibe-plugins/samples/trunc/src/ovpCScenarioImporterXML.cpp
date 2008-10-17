@@ -80,8 +80,8 @@ void CScenarioImporterXML::openChild(const char* sName, const char** sAttributeN
 	//
 	else if(l_sTop=="VisualisationTree" && m_ui32Status==Status_ParsingScenario) { m_ui32Status=Status_ParsingVisualisationTree; }
 	//
-	else if(l_sTop=="VisualisationWidget" && m_ui32Status==Status_ParsingVisualisationTree) { m_ui32Status=Status_ParsingVisualisationWidget; m_oScenario.m_vVisualisationWidget.push_back(SVisualisationWidget()); }
-	else if(l_sTop=="Attribute"					&& m_ui32Status==Status_ParsingVisualisationWidget) { m_ui32Status=Status_ParsingVisualisationWidgetAttribute; m_oScenario.m_vVisualisationWidget.back().m_vAttribute.push_back(SAttribute()); }
+	else if(l_sTop=="VisualisationWidget" && m_ui32Status==Status_ParsingVisualisationTree)   { m_ui32Status=Status_ParsingVisualisationWidget; m_oScenario.m_vVisualisationWidget.push_back(SVisualisationWidget()); }
+	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingVisualisationWidget) { m_ui32Status=Status_ParsingVisualisationWidgetAttribute; m_oScenario.m_vVisualisationWidget.back().m_vAttribute.push_back(SAttribute()); }
 	// cout << string(m_vNodes.size(), '\t') << m_ui32Status << endl;
 }
 
@@ -240,7 +240,6 @@ boolean CScenarioImporterXML::doImport(IScenarioImporterContext& rScenarioImport
 		l_rScenario.addBox(l_oNewBoxIdentifier);
 		l_pBox=l_rScenario.getBoxDetails(l_oNewBoxIdentifier);
 		l_pBox->setName(_AutoCaster_(b->m_sName));
-		l_pBox->setAlgorithmClassIdentifier(_AutoCaster_(b->m_sAlgorithmClassIdentifier));
 
 		for(i=b->m_vInput.begin(); i!=b->m_vInput.end(); i++)
 		{
@@ -270,6 +269,10 @@ boolean CScenarioImporterXML::doImport(IScenarioImporterContext& rScenarioImport
 				_AutoCaster_(a->m_sIdentifier),
 				_AutoCaster_(a->m_sValue));
 		}
+
+		// it is important to set box algorithm at
+		// last so the box listener is never called
+		l_pBox->setAlgorithmClassIdentifier(_AutoCaster_(b->m_sAlgorithmClassIdentifier));
 		m_vBoxIdMapping[l_oBoxIdentifier]=l_oNewBoxIdentifier;
 	}
 	for(l=m_oScenario.m_vLink.begin(); l!=m_oScenario.m_vLink.end(); l++)
