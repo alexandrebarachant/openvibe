@@ -36,39 +36,48 @@ boolean CPluginObjectDescEnum::enumeratePluginObjectDesc(
 	return true;
 }
 
-CString CPluginObjectDescEnum::transform(const CString& sInput)
+CString CPluginObjectDescEnum::transform(const CString& sInput, const boolean bRemoveSlash)
 {
 	std::string l_sInput(sInput);
 	std::string l_sOutput;
-	bool l_bLastWasSeparator=false;
+	bool l_bLastWasSeparator=true;
 
 	for(std::string::size_type i=0; i<l_sInput.length(); i++)
 	{
-		if((l_sInput[i]>='a' && l_sInput[i]<='z') || (l_sInput[i]>='A' && l_sInput[i]<='Z') || (l_sInput[i]>='0' && l_sInput[i]<='9'))
+		if((l_sInput[i]>='a' && l_sInput[i]<='z') || (l_sInput[i]>='A' && l_sInput[i]<='Z') || (l_sInput[i]>='0' && l_sInput[i]<='9') || (!bRemoveSlash && l_sInput[i]=='/'))
 		{
-			if(l_bLastWasSeparator)
+			if(l_sInput[i]=='/')
 			{
-				if('a' <= l_sInput[i] && l_sInput[i] <= 'z')
+				l_sOutput+="_";
+			}
+			else
+			{
+				if(l_bLastWasSeparator)
 				{
-					l_sOutput+=l_sInput[i]+'A'-'a';
+					if('a' <= l_sInput[i] && l_sInput[i] <= 'z')
+					{
+						l_sOutput+=l_sInput[i]+'A'-'a';
+					}
+					else
+					{
+						l_sOutput+=l_sInput[i];
+					}
 				}
 				else
 				{
 					l_sOutput+=l_sInput[i];
 				}
-				l_bLastWasSeparator=false;
 			}
-			else
-			{
-				l_sOutput+=l_sInput[i];
-			}
+			l_bLastWasSeparator=false;
 		}
 		else
 		{
+/*
 			if(!l_bLastWasSeparator)
 			{
 				l_sOutput+="_";
 			}
+*/
 			l_bLastWasSeparator=true;
 		}
 	}

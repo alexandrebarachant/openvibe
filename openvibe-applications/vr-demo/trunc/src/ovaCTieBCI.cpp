@@ -9,6 +9,8 @@ static const float g_fRotationSpeed=0.25;
 static const float g_fMoveSpeed=0.01; // 0.004;
 static const float g_fScoreGrowingSpeed=0.1;
 
+using namespace OMK::Type;
+
 CTieBCI::CTieBCI(OMK::Controller& rController, const OMK::ObjectDescriptor& rObjectDescriptor)
 	:OMK::ExtensibleSimulatedObject(rController, rObjectDescriptor)
 {

@@ -48,6 +48,9 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rTypeIdentifier) const;
 			virtual OpenViBE::boolean isStream(
 				const OpenViBE::CIdentifier& rTypeIdentifier) const;
+			virtual OpenViBE::boolean isDerivedFromStream(
+				const OpenViBE::CIdentifier& rTypeIdentifier,
+				const OpenViBE::CIdentifier& rParentTypeIdentifier) const;
 			virtual OpenViBE::boolean isEnumeration(
 				const OpenViBE::CIdentifier& rTypeIdentifier) const;
 			virtual OpenViBE::boolean isBitMask(

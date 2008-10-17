@@ -1,9 +1,8 @@
 #include "ovp_defines.h"
 
-#include "ovpCTimeBasedEpoching.h"
-
 #include "ovpCScenarioImporterXML.h"
 #include "ovpCScenarioExporterXML.h"
+#include "ovpCScenarioExporterSVG.h"
 
 #include "ovpCCrashingBox.h"
 #include "ovpCBoxAlgorithmProducer.h"
@@ -36,10 +35,9 @@ OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 3", 4);
 	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OpenViBE::CIdentifier(0x0000,0x5678), "bitmask value 4", 8);
 
-	OVP_Declare_New(OpenViBEPlugins::Samples::CTimeBasedEpochingDesc);
-
 	OVP_Declare_New(OpenViBEPlugins::Samples::CScenarioImporterXMLDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CScenarioExporterXMLDesc);
+	OVP_Declare_New(OpenViBEPlugins::Samples::CScenarioExporterSVGDesc);
 
 	OVP_Declare_New(OpenViBEPlugins::Samples::CCrashingBoxDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmProducerDesc);

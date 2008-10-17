@@ -50,6 +50,31 @@ namespace OpenViBEPlugins
 			EBML::IReaderHelper* m_pReaderHelper;
 		};
 
+		class CBoxAlgorithmEBMLStreamSpyListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+		public:
+
+			OpenViBE::boolean check(OpenViBE::Kernel::IBox& rBox)
+			{
+				char l_sName[1024];
+				OpenViBE::uint32 i;
+
+				for(i=0; i<rBox.getInputCount(); i++)
+				{
+					sprintf(l_sName, "Spied EBML stream %lu", i+1);
+					rBox.setInputName(i, l_sName);
+					rBox.setInputType(i, OV_TypeId_EBMLStream);
+				}
+
+				return true;
+			}
+
+			virtual OpenViBE::boolean onInputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return this->check(rBox); }
+			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return this->check(rBox); };
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+		};
+
 		class CBoxAlgorithmEBMLStreamSpyDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
@@ -66,20 +91,16 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_EBMLStreamSpy; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Tools::CBoxAlgorithmEBMLStreamSpy(); }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new CBoxAlgorithmEBMLStreamSpyListener; }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				// Adds box inputs
-				rPrototype.addInput("Spied EBML stream 1", OV_TypeId_EBMLStream);
-				rPrototype.addInput("Spied EBML stream 2", OV_TypeId_EBMLStream);
-
-				// Adds box outputs
-
-				// Adds box settings
+				rPrototype.addInput  ("Spied EBML stream 1",    OV_TypeId_EBMLStream);
 				rPrototype.addSetting("EBML nodes description", OV_TypeId_Filename, "../share/openvibe-plugins/tools/config-ebml-stream-spy.txt");
-				rPrototype.addSetting("Log level to use", OV_TypeId_LogLevel, "Debug");
-
+				rPrototype.addSetting("Log level to use",       OV_TypeId_LogLevel, "Debug");
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				return true;
 			}
 

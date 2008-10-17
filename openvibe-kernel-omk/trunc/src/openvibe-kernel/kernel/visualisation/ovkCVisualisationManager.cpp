@@ -61,6 +61,7 @@ boolean CVisualisationManager::initialize3DContext(const CNameValuePairList& rNa
 
 	try
 	{
+		log() << LogLevel_Info << "Creating primary render window\n";
 		//create primary render window
 		//----------------------------
 		//create custom Gtk widget

@@ -1,0 +1,66 @@
+/**
+ *
+ * Whatever you write between tags will be ignored by CMake
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Description|
+ * some details about the brainamp file reader
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Description|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Outputs|
+ * some general purpose details about the outputs
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Outputs|
+ *
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Output1|
+ * some details about output 1
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Output1|
+ *
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Output2|
+ * some details about output 2
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Output2|
+ *
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Output3|
+ * some details about output 3
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Output3|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Settings|
+ * some general purpose details about the settings
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Settings|
+ *
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Setting1|
+ * some details about setting 1
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Setting1|
+ *
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Setting2|
+ * some details about setting 2
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Setting2|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Examples|
+ * some examples on how to use this box
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Examples|
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_BrainampFileReader_Miscellaneous|
+ * whatever you would like to add on this box, such as known issues,
+ * reference to other boxes etc
+ * |OVP_DocEnd_BoxAlgorithm_BrainampFileReader_Miscellaneous|
+ */
+

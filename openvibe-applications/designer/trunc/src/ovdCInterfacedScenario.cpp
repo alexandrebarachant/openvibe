@@ -2,11 +2,14 @@
 #include "ovdCBoxProxy.h"
 #include "ovdCLinkProxy.h"
 #include "ovdCConnectorEditor.h"
-#include "ovdCSettingEditor.h"
+#include "ovdCBoxConfigurationDialog.h"
 #include "ovdCInterfacedObject.h"
 #include "ovdTAttributeHandler.h"
 #include "ovdCDesignerVisualisation.h"
 #include "ovdCPlayerVisualisation.h"
+#include "ovdCRenameDialog.h"
+#include "ovdCAboutPluginDialog.h"
+#include "ovdCSettingEditorDialog.h"
 
 #include <vector>
 #include <iostream>
@@ -75,11 +78,24 @@ static void scenario_drawing_area_key_release_event_cb(::GtkWidget* pWidget, ::G
 	static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaKeyReleaseEventCB(pWidget, pEvent);
 }
 
-template <void (CInterfacedScenario::*mfpCallback)(void)>
-void menuitem_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 {
-	std::cout << "menuitem_cb" << std::endl;
-	(static_cast<CInterfacedScenario*>(pUserData)->*mfpCallback)();
+	CInterfacedScenario::BoxContextMenuCB* l_pContextMenuCB=static_cast < CInterfacedScenario::BoxContextMenuCB* >(pUserData);
+	switch(l_pContextMenuCB->ui32Command)
+	{
+		case BoxContextMenu_Rename:        l_pContextMenuCB->pInterfacedScenario->contextMenuRenameCB(*l_pContextMenuCB->pBox); break;
+		case BoxContextMenu_AddInput:      l_pContextMenuCB->pInterfacedScenario->contextMenuAddInputCB(*l_pContextMenuCB->pBox); break;
+		case BoxContextMenu_EditInput:     l_pContextMenuCB->pInterfacedScenario->contextMenuEditInputCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
+		case BoxContextMenu_RemoveInput:   l_pContextMenuCB->pInterfacedScenario->contextMenuRemoveInputCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
+		case BoxContextMenu_AddOutput:     l_pContextMenuCB->pInterfacedScenario->contextMenuAddOutputCB(*l_pContextMenuCB->pBox); break;
+		case BoxContextMenu_EditOutput:    l_pContextMenuCB->pInterfacedScenario->contextMenuEditOutputCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
+		case BoxContextMenu_RemoveOutput:  l_pContextMenuCB->pInterfacedScenario->contextMenuRemoveOutputCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
+		case BoxContextMenu_AddSetting:    l_pContextMenuCB->pInterfacedScenario->contextMenuAddSettingCB(*l_pContextMenuCB->pBox); break;
+		case BoxContextMenu_EditSetting:   l_pContextMenuCB->pInterfacedScenario->contextMenuEditSettingCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
+		case BoxContextMenu_RemoveSetting: l_pContextMenuCB->pInterfacedScenario->contextMenuRemoveSettingCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
+		case BoxContextMenu_Configure:     l_pContextMenuCB->pInterfacedScenario->contextMenuConfigureCB(*l_pContextMenuCB->pBox); break;
+		case BoxContextMenu_About:         l_pContextMenuCB->pInterfacedScenario->contextMenuAboutCB(*l_pContextMenuCB->pBox); break;
+	}
 }
 
 static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawGC, ::gboolean bFill, gint x, gint y, gint width, gint height, gint radius=8)
@@ -162,17 +178,18 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		,m_bShiftPressed(false)
 		,m_bControlPressed(false)
 		,m_bAltPressed(false)
+		,m_bDebugCPUUsage(false)
 		,m_sGUIFilename(sGUIFilename)
 		,m_i32ViewOffsetX(0)
 		,m_i32ViewOffsetY(0)
 		,m_ui32CurrentMode(Mode_None)
 	{
-		m_pGladeDummyScenarioNotebookTitle=glade_xml_new(m_sGUIFilename.c_str(), "dummy_scenario_notebook_title", NULL);
-		m_pGladeDummyScenarioNotebookClient=glade_xml_new(m_sGUIFilename.c_str(), "dummy_scenario_notebook_scrolledwindow", NULL);
-		m_pGladeTooltip=glade_xml_new(m_sGUIFilename.c_str(), "openvibe_tooltip", NULL);
+		m_pGladeDummyScenarioNotebookTitle=glade_xml_new(m_sGUIFilename.c_str(), "openvibe_scenario_notebook_title", NULL);
+		m_pGladeDummyScenarioNotebookClient=glade_xml_new(m_sGUIFilename.c_str(), "openvibe_scenario_notebook_scrolledwindow", NULL);
+		m_pGladeTooltip=glade_xml_new(m_sGUIFilename.c_str(), "tooltip", NULL);
 
-		m_pNotebookPageTitle=glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "dummy_scenario_notebook_title");
-		m_pNotebookPageContent=glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "dummy_scenario_notebook_scrolledwindow");
+		m_pNotebookPageTitle=glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe_scenario_notebook_title");
+		m_pNotebookPageContent=glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe_scenario_notebook_scrolledwindow");
 		gtk_widget_ref(m_pNotebookPageTitle);
 		gtk_widget_ref(m_pNotebookPageContent);
 		gtk_widget_unparent(m_pNotebookPageTitle);
@@ -181,8 +198,8 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		gtk_widget_unref(m_pNotebookPageContent);
 		gtk_widget_unref(m_pNotebookPageTitle);
 
-		m_pScenarioDrawingArea=GTK_DRAWING_AREA(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "scenario_drawing_area"));
-		m_pScenarioViewport=GTK_VIEWPORT(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "scenario_viewport"));
+		m_pScenarioDrawingArea=GTK_DRAWING_AREA(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_drawing_area"));
+		m_pScenarioViewport=GTK_VIEWPORT(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_viewport"));
 		gtk_drag_dest_set(GTK_WIDGET(m_pScenarioDrawingArea), GTK_DEST_DEFAULT_ALL, g_vTargetEntry, sizeof(g_vTargetEntry)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "expose_event", G_CALLBACK(scenario_drawing_area_expose_cb), this);
 		g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "drag_data_received", G_CALLBACK(scenario_drawing_area_drag_data_received_cb), this);
@@ -238,7 +255,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 	void CInterfacedScenario::updateScenarioLabel(void)
 	{
-		::GtkLabel* l_pTitleLabel=GTK_LABEL(glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "scenario_label"));
+		::GtkLabel* l_pTitleLabel=GTK_LABEL(glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe-scenario_label"));
 		string l_sLabel;
 		l_sLabel+=m_bHasBeenModified?"*":"";
 		l_sLabel+=" ";
@@ -280,15 +297,31 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_vInterfacedObject[m_ui32InterfacedObjectId]=CInterfacedObject(rBox.getIdentifier());
 
 		boolean l_bCanCreate=m_rKernel.getContext()->getPluginManager().canCreatePluginObject(rBox.getAlgorithmClassIdentifier());
-		if(!this->isLocked())
+		boolean l_bDeprecated=rBox.hasAttribute(OV_AttributeId_Box_FlagIsDeprecated);
+		if(!this->isLocked() || !m_bDebugCPUUsage)
 		{
-			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rBox.getIdentifier()]?Color_BoxBackgroundSelected:(!l_bCanCreate?Color_BoxBackgroundMissing:Color_BoxBackground)]);
+			if(m_vCurrentObject[rBox.getIdentifier()])
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundSelected]);
+			}
+			else if(!l_bCanCreate)
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundMissing]);
+			}
+			else if(l_bDeprecated)
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundDeprecated]);
+			}
+			else
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackground]);
+			}
 		}
 		else
 		{
 			CIdentifier l_oComputationTime;
-			l_oComputationTime.fromString(rBox.getAttributeValue(CIdentifier(1, 1)));
-			uint64 l_ui64ComputationTime=l_oComputationTime.toUInteger();
+			l_oComputationTime.fromString(rBox.getAttributeValue(OV_AttributeId_Box_ComputationTimeLastSecond));
+			uint64 l_ui64ComputationTime=(l_oComputationTime==OV_UndefinedIdentifier?0:l_oComputationTime.toUInteger());
 			uint64 l_ui64ComputationTimeReference=(1LL<<32)/(m_ui32BoxCount==0?1:m_ui32BoxCount);
 
 			::GdkColor l_oColor;
@@ -329,6 +362,18 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			l_pDrawGC,
 			FALSE,
 			xStart, yStart, xSize, ySize);
+
+		TAttributeHandler l_oAttributeHandler(rBox);
+
+		if(!l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_XSize))
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_XSize, xSize);
+		else
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_XSize, xSize);
+
+		if(!l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_YSize))
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_YSize, ySize);
+		else
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_YSize, ySize);
 
 		int l_iInputOffset=(xSize-rBox.getInputCount()*(iCircleSpace+iCircleSize)+iCircleSize/2)/2;
 		for(i=0; i<rBox.getInputCount(); i++)
@@ -384,15 +429,15 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				{
 					TAttributeHandler l_oAttributeHandler(*l_pLink);
 
-					if(!l_oAttributeHandler.hasAttribute(OVD_AttributeId_XLinkTargetPosition))
-						l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_XLinkTargetPosition, x);
+					if(!l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_XTargetPosition))
+						l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_XTargetPosition, x);
 					else
-						l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_XLinkTargetPosition, x);
+						l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_XTargetPosition, x);
 
-					if(!l_oAttributeHandler.hasAttribute(OVD_AttributeId_YLinkTargetPosition))
-						l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_YLinkTargetPosition, y);
+					if(!l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_YTargetPosition))
+						l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_YTargetPosition, y);
 					else
-						l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_YLinkTargetPosition, y);
+						l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_YTargetPosition, y);
 				}
 				l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierToBoxInput(l_oLinkIdentifier, rBox.getIdentifier(), i);
 			}
@@ -452,15 +497,15 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				{
 					TAttributeHandler l_oAttributeHandler(*l_pLink);
 
-					if(!l_oAttributeHandler.hasAttribute(OVD_AttributeId_XLinkSourcePosition))
-						l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_XLinkSourcePosition, x);
+					if(!l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_XSourcePosition))
+						l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_XSourcePosition, x);
 					else
-						l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_XLinkSourcePosition, x);
+						l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_XSourcePosition, x);
 
-					if(!l_oAttributeHandler.hasAttribute(OVD_AttributeId_YLinkSourcePosition))
-						l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_YLinkSourcePosition, y);
+					if(!l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_YSourcePosition))
+						l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_YSourcePosition, y);
 					else
-						l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_YLinkSourcePosition, y);
+						l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_YSourcePosition, y);
 				}
 				l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierFromBoxOutput(l_oLinkIdentifier, rBox.getIdentifier(), i);
 			}
@@ -480,7 +525,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		l_pPangoContext=gtk_widget_get_pango_context(l_pWidget);
 		l_pPangoLayout=pango_layout_new(l_pPangoContext);
 		pango_layout_set_alignment(l_pPangoLayout, PANGO_ALIGN_CENTER);
-		pango_layout_set_text(l_pPangoLayout, l_oBoxProxy.getLabel(), -1);
+		pango_layout_set_markup(l_pPangoLayout, l_oBoxProxy.getLabel(), -1);
 		gdk_draw_layout(
 			l_pWidget->window,
 			l_pWidget->style->text_gc[GTK_WIDGET_STATE(l_pWidget)],
@@ -801,7 +846,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 		if(this->isLocked()) return;
 
-		::GtkWidget* l_pTooltip=glade_xml_get_widget(m_pGladeTooltip, "openvibe_tooltip");
+		::GtkWidget* l_pTooltip=glade_xml_get_widget(m_pGladeTooltip, "tooltip");
 		gtk_widget_set_name(l_pTooltip, "gtk-tooltips");
 		uint32 l_ui32InterfacedObjectId=pickInterfacedObject((int)pEvent->x, (int)pEvent->y);
 		CInterfacedObject& l_rObject=m_vInterfacedObject[l_ui32InterfacedObjectId];
@@ -829,8 +874,8 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 					l_sType=m_rKernel.getContext()->getTypeManager().getTypeName(l_oType);
 				}
 				l_sType=CString("[")+l_sType+CString("]");
-				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "label_name_content")), l_sName);
-				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "label_type_content")), l_sType);
+				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "tooltip-label_name_content")), l_sName);
+				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "tooltip-label_type_content")), l_sType);
 				gtk_window_move(GTK_WINDOW(l_pTooltip), (gint)pEvent->x_root, (gint)pEvent->y_root+40);
 				gtk_widget_show(l_pTooltip);
 			}
@@ -873,7 +918,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 		if(this->isLocked()) return;
 
-		::GtkWidget* l_pTooltip=glade_xml_get_widget(m_pGladeTooltip, "openvibe_tooltip");
+		::GtkWidget* l_pTooltip=glade_xml_get_widget(m_pGladeTooltip, "tooltip");
 		gtk_widget_hide(l_pTooltip);
 		gtk_widget_grab_focus(pWidget);
 
@@ -950,8 +995,8 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 								IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
 								if(l_pBox)
 								{
-									CSettingEditor l_oSettingEditor(m_rKernel, *l_pBox, m_sGUIFilename.c_str());
-									l_oSettingEditor.run();
+									CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernel, *l_pBox, m_sGUIFilename.c_str());
+									l_oBoxConfigurationDialog.run();
 								}
 							}
 						}
@@ -965,7 +1010,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				break;
 
 			case 3:
-#if 0
+#if 1
 				switch(pEvent->type)
 				{
 					case GDK_BUTTON_PRESS:
@@ -976,15 +1021,33 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 								if(l_pBox)
 								{
 									uint32 i;
+									char l_sCompleteName[1024];
+									m_vBoxContextMenuCB.clear();
 									::GtkMenu* l_pMenu=GTK_MENU(gtk_menu_new());
 
-									#define gtk_menu_add_new_image_menu_item(menu, menuitem, icon, label, cb) \
+									#define gtk_menu_add_new_image_menu_item(menu, menuitem, icon, label) \
 										::GtkImageMenuItem* menuitem=NULL; \
 										{ \
 											menuitem=GTK_IMAGE_MENU_ITEM(gtk_image_menu_item_new_with_label(label)); \
 											gtk_image_menu_item_set_image(menuitem, gtk_image_new_from_stock(icon, GTK_ICON_SIZE_MENU)); \
 											gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(menuitem)); \
-											if((void*)(cb)) g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(cb), this); \
+										}
+									#define gtk_menu_add_new_image_menu_item_with_cb(menu, menuitem, icon, label, cb, cb_box, cb_command, cb_index) \
+										gtk_menu_add_new_image_menu_item(menu, menuitem, icon, label); \
+										{ \
+											CInterfacedScenario::BoxContextMenuCB l_oBoxContextMenuCB; \
+											l_oBoxContextMenuCB.ui32Command=cb_command; \
+											l_oBoxContextMenuCB.ui32Index=cb_index; \
+											l_oBoxContextMenuCB.pBox=cb_box; \
+											l_oBoxContextMenuCB.pInterfacedScenario=this; \
+											uint32 l_ui32MapIndex=m_vBoxContextMenuCB.size(); \
+											m_vBoxContextMenuCB[l_ui32MapIndex]=l_oBoxContextMenuCB; \
+											g_signal_connect(G_OBJECT(menuitem), "activate", G_CALLBACK(cb), &m_vBoxContextMenuCB[l_ui32MapIndex]); \
+										}
+									#define gtk_menu_add_new_image_menu_item_with_cb_condition(condition, menu, menuitem, icon, label, cb, cb_box, cb_command, cb_index) \
+										if(condition) \
+										{ \
+											gtk_menu_add_new_image_menu_item_with_cb(menu, menuitem, icon, label, cb, cb_box, cb_command, cb_index); \
 										}
 									#define gtk_menu_add_separator_menu_item(menu) \
 										{ \
@@ -994,87 +1057,108 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 									// -------------- INPUTS --------------
 
-									::GtkMenu* l_pMenuInput=GTK_MENU(gtk_menu_new());
-									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemInput, GTK_STOCK_PROPERTIES, "modify inputs", NULL);
-									for(i=0; i<l_pBox->getInputCount(); i++)
+									boolean l_bFlagCanAddInput=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanAddInput);
+									boolean l_bFlagCanModifyInput=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyInput);
+									if(l_bFlagCanAddInput || l_bFlagCanModifyInput)
 									{
-										CString l_sName;
-										CIdentifier l_oType;
-										l_pBox->getInputName(i, l_sName);
-										l_pBox->getInputType(i, l_oType);
-										gtk_menu_add_new_image_menu_item(l_pMenuInput, l_pMenuInputMenuItem, GTK_STOCK_PROPERTIES, l_sName, NULL);
+										::GtkMenu* l_pMenuInput=GTK_MENU(gtk_menu_new());
+										gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemInput, GTK_STOCK_PROPERTIES, "modify inputs");
+										for(i=0; i<l_pBox->getInputCount(); i++)
+										{
+											CString l_sName;
+											CIdentifier l_oType;
+											l_pBox->getInputName(i, l_sName);
+											l_pBox->getInputType(i, l_oType);
+											sprintf(l_sCompleteName, "%i : %s", (int)i+1, l_sName.toASCIIString());
+											gtk_menu_add_new_image_menu_item(l_pMenuInput, l_pMenuInputMenuItem, GTK_STOCK_PROPERTIES, l_sCompleteName);
 
-										::GtkMenu* l_pMenuInputMenuAction=GTK_MENU(gtk_menu_new());
-										gtk_menu_add_new_image_menu_item(l_pMenuInputMenuAction, l_pMenuInputInputMenuItemEdit, GTK_STOCK_EDIT, "edit...", NULL);
-										gtk_menu_add_new_image_menu_item(l_pMenuInputMenuAction, l_pMenuInputInputMenuItemRemove, GTK_STOCK_REMOVE, "remove...", NULL);
-										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuInputMenuItem), GTK_WIDGET(l_pMenuInputMenuAction));
+											::GtkMenu* l_pMenuInputMenuAction=GTK_MENU(gtk_menu_new());
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifyInput, l_pMenuInputMenuAction, l_pMenuInputInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, BoxContextMenu_EditInput, i);
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddInput, l_pMenuInputMenuAction, l_pMenuInputInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, BoxContextMenu_RemoveInput, i);
+											gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuInputMenuItem), GTK_WIDGET(l_pMenuInputMenuAction));
+										}
+										gtk_menu_add_separator_menu_item(l_pMenuInput);
+										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddInput, l_pMenuInput, l_pMenuInputMenuItemAdd, GTK_STOCK_ADD, "new...", context_menu_cb, l_pBox, BoxContextMenu_AddInput, -1);
+										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemInput), GTK_WIDGET(l_pMenuInput));
 									}
-									gtk_menu_add_separator_menu_item(l_pMenuInput);
-									gtk_menu_add_new_image_menu_item(l_pMenuInput, l_pMenuInputMenuItemAdd, GTK_STOCK_ADD, "add...", NULL);
-									gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemInput), GTK_WIDGET(l_pMenuInput));
 
 									// -------------- OUTPUTS --------------
 
-									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemOutput, GTK_STOCK_PROPERTIES, "modify outputs", NULL);
-									::GtkMenu* l_pMenuOutput=GTK_MENU(gtk_menu_new());
-									for(i=0; i<l_pBox->getOutputCount(); i++)
+									boolean l_bFlagCanAddOutput=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanAddOutput);
+									boolean l_bFlagCanModifyOutput=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput);
+									if(l_bFlagCanAddOutput || l_bFlagCanModifyOutput)
 									{
-										CString l_sName;
-										CIdentifier l_oType;
-										l_pBox->getOutputName(i, l_sName);
-										l_pBox->getOutputType(i, l_oType);
-										gtk_menu_add_new_image_menu_item(l_pMenuOutput, l_pMenuOutputMenuItem, GTK_STOCK_PROPERTIES, l_sName, NULL);
+										gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemOutput, GTK_STOCK_PROPERTIES, "modify outputs");
+										::GtkMenu* l_pMenuOutput=GTK_MENU(gtk_menu_new());
+										for(i=0; i<l_pBox->getOutputCount(); i++)
+										{
+											CString l_sName;
+											CIdentifier l_oType;
+											l_pBox->getOutputName(i, l_sName);
+											l_pBox->getOutputType(i, l_oType);
+											sprintf(l_sCompleteName, "%i : %s", (int)i+1, l_sName.toASCIIString());
+											gtk_menu_add_new_image_menu_item(l_pMenuOutput, l_pMenuOutputMenuItem, GTK_STOCK_PROPERTIES, l_sCompleteName);
 
-										::GtkMenu* l_pMenuOutputMenuAction=GTK_MENU(gtk_menu_new());
-										gtk_menu_add_new_image_menu_item(l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemEdit, GTK_STOCK_EDIT, "edit...", NULL);
-										gtk_menu_add_new_image_menu_item(l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemRemove, GTK_STOCK_REMOVE, "remove...", NULL);
-										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuOutputMenuItem), GTK_WIDGET(l_pMenuOutputMenuAction));
+											::GtkMenu* l_pMenuOutputMenuAction=GTK_MENU(gtk_menu_new());
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifyOutput, l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, BoxContextMenu_EditOutput, i);
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddOutput, l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, BoxContextMenu_RemoveOutput, i);
+											gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuOutputMenuItem), GTK_WIDGET(l_pMenuOutputMenuAction));
+										}
+										gtk_menu_add_separator_menu_item(l_pMenuOutput);
+										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddOutput, l_pMenuOutput, l_pMenuOutputMenuItemAdd, GTK_STOCK_ADD, "new...", context_menu_cb, l_pBox, BoxContextMenu_AddOutput, -1);
+										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemOutput), GTK_WIDGET(l_pMenuOutput));
 									}
-									gtk_menu_add_separator_menu_item(l_pMenuOutput);
-									gtk_menu_add_new_image_menu_item(l_pMenuOutput, l_pMenuOutputMenuItemAdd, GTK_STOCK_ADD, "add...", NULL);
-									gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemOutput), GTK_WIDGET(l_pMenuOutput));
 
 									// -------------- SETTINGS --------------
 
-									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemSetting, GTK_STOCK_PROPERTIES, "modify settings", NULL);
-									::GtkMenu* l_pMenuSetting=GTK_MENU(gtk_menu_new());
-									for(i=0; i<l_pBox->getSettingCount(); i++)
+									boolean l_bFlagCanAddSetting=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanAddSetting);
+									boolean l_bFlagCanModifySetting=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifySetting);
+									if(l_bFlagCanAddSetting || l_bFlagCanModifySetting)
 									{
-										CString l_sName;
-										CIdentifier l_oType;
-										l_pBox->getSettingName(i, l_sName);
-										l_pBox->getSettingType(i, l_oType);
-										gtk_menu_add_new_image_menu_item(l_pMenuSetting, l_pMenuSettingMenuItem, GTK_STOCK_PROPERTIES, l_sName, NULL);
+										gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemSetting, GTK_STOCK_PROPERTIES, "modify settings");
+										::GtkMenu* l_pMenuSetting=GTK_MENU(gtk_menu_new());
+										for(i=0; i<l_pBox->getSettingCount(); i++)
+										{
+											CString l_sName;
+											CIdentifier l_oType;
+											l_pBox->getSettingName(i, l_sName);
+											l_pBox->getSettingType(i, l_oType);
+											sprintf(l_sCompleteName, "%i : %s", (int)i+1, l_sName.toASCIIString());
+											gtk_menu_add_new_image_menu_item(l_pMenuSetting, l_pMenuSettingMenuItem, GTK_STOCK_PROPERTIES, l_sCompleteName);
 
-										::GtkMenu* l_pMenuSettingMenuAction=GTK_MENU(gtk_menu_new());
-										gtk_menu_add_new_image_menu_item(l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemEdit, GTK_STOCK_EDIT, "edit...", NULL);
-										gtk_menu_add_new_image_menu_item(l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemRemove, GTK_STOCK_REMOVE, "remove...", NULL);
-										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuSettingMenuItem), GTK_WIDGET(l_pMenuSettingMenuAction));
+											::GtkMenu* l_pMenuSettingMenuAction=GTK_MENU(gtk_menu_new());
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifySetting, l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, BoxContextMenu_EditSetting, i);
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddSetting, l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, BoxContextMenu_RemoveSetting, i);
+											gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuSettingMenuItem), GTK_WIDGET(l_pMenuSettingMenuAction));
+										}
+										gtk_menu_add_separator_menu_item(l_pMenuSetting);
+										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddSetting, l_pMenuSetting, l_pMenuSettingMenuItemAdd, GTK_STOCK_ADD, "new...", context_menu_cb, l_pBox, BoxContextMenu_AddSetting, -1);
+										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemSetting), GTK_WIDGET(l_pMenuSetting));
 									}
-									gtk_menu_add_separator_menu_item(l_pMenuSetting);
-									gtk_menu_add_new_image_menu_item(l_pMenuSetting, l_pMenuSettingMenuItemAdd, GTK_STOCK_ADD, "add...", NULL);
-									gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemSetting), GTK_WIDGET(l_pMenuSetting));
 
 									// -------------- PROCESSING UNIT --------------
-
+#if 0
 									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemProcessUnit, GTK_STOCK_EXECUTE, "process unit", NULL);
 									::GtkMenu* l_pMenuProcessingUnit=GTK_MENU(gtk_menu_new());
 									gtk_menu_add_new_image_menu_item(l_pMenuProcessingUnit, l_pMenuProcessingUnitDefault, GTK_STOCK_HOME, "default", NULL);
 									gtk_menu_add_separator_menu_item(l_pMenuProcessingUnit);
-									gtk_menu_add_new_image_menu_item(l_pMenuProcessingUnit, l_pMenuProcessingUnitAdd, GTK_STOCK_ADD, "add...", NULL);
+									gtk_menu_add_new_image_menu_item(l_pMenuProcessingUnit, l_pMenuProcessingUnitAdd, GTK_STOCK_ADD, "new...", NULL);
 									gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemProcessUnit), GTK_WIDGET(l_pMenuProcessingUnit));
+#endif
+									// -------------- ABOUT / RENAME --------------
 
-									// -------------- ABOUT --------------
-
-									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemAbout, GTK_STOCK_ABOUT, "about", NULL);
+									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemEdit, GTK_STOCK_EDIT, "configure box...", context_menu_cb, l_pBox, BoxContextMenu_Configure, -1);
+									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemRename, GTK_STOCK_EDIT, "rename box...", context_menu_cb, l_pBox, BoxContextMenu_Rename, -1);
+									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemAbout, GTK_STOCK_ABOUT, "about...", context_menu_cb, l_pBox, BoxContextMenu_About, -1);
 
 									// -------------- RUN --------------
 
 									#undef gtk_menu_add_separator_menu_item
+									#undef gtk_menu_add_new_image_menu_item_with_cb
 									#undef gtk_menu_add_new_image_menu_item
 
 									gtk_widget_show_all(GTK_WIDGET(l_pMenu));
-									gtk_menu_popup(l_pMenu, NULL, NULL, NULL, NULL, 3, gtk_get_current_event_time());
+									gtk_menu_popup(l_pMenu, NULL, NULL, NULL, NULL, 3, pEvent->time);
 								}
 							}
 						}
@@ -1217,6 +1301,103 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		if(this->isLocked()) return;
 
 		// ...
+	}
+
+	void CInterfacedScenario::contextMenuRenameCB(IBox& rBox)
+	{
+		const IPluginObjectDesc* l_pPluginObjectDescriptor=m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(rBox.getAlgorithmClassIdentifier());
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuRenameCB\n";
+		CRenameDialog l_oRename(m_rKernel, rBox.getName(), l_pPluginObjectDescriptor?l_pPluginObjectDescriptor->getName():rBox.getName(), m_sGUIFilename.c_str());
+		if(l_oRename.run())
+		{
+			rBox.setName(l_oRename.getResult());
+		}
+	}
+	void CInterfacedScenario::contextMenuAddInputCB(IBox& rBox)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuAddInputCB\n";
+		rBox.addInput("", OV_UndefinedIdentifier);
+		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifyInput))
+		{
+			CConnectorEditor l_oConnectorEditor(m_rKernel, rBox, Connector_Input, rBox.getInputCount()-1, m_sGUIFilename.c_str());
+			if(!l_oConnectorEditor.run())
+			{
+				rBox.removeInput(rBox.getInputCount()-1);
+			}
+		}
+	}
+	void CInterfacedScenario::contextMenuEditInputCB(IBox& rBox, uint32 ui32Index)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuEditInputCB\n";
+
+		CConnectorEditor l_oConnectorEditor(m_rKernel, rBox, Connector_Input, ui32Index, m_sGUIFilename.c_str());
+		l_oConnectorEditor.run();
+	}
+	void CInterfacedScenario::contextMenuRemoveInputCB(IBox& rBox, uint32 ui32Index)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuRemoveInputCB\n";
+		rBox.removeInput(ui32Index);
+	}
+	void CInterfacedScenario::contextMenuAddOutputCB(IBox& rBox)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuAddOutputCB\n";
+		rBox.addOutput("", OV_UndefinedIdentifier);
+		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput))
+		{
+			CConnectorEditor l_oConnectorEditor(m_rKernel, rBox, Connector_Output, rBox.getOutputCount()-1, m_sGUIFilename.c_str());
+			if(!l_oConnectorEditor.run())
+			{
+				rBox.removeOutput(rBox.getOutputCount()-1);
+			}
+		}
+	}
+	void CInterfacedScenario::contextMenuEditOutputCB(IBox& rBox, uint32 ui32Index)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuEditOutputCB\n";
+
+		CConnectorEditor l_oConnectorEditor(m_rKernel, rBox, Connector_Output, ui32Index, m_sGUIFilename.c_str());
+		l_oConnectorEditor.run();
+	}
+	void CInterfacedScenario::contextMenuRemoveOutputCB(IBox& rBox, uint32 ui32Index)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuRemoveOutputCB\n";
+		rBox.removeOutput(ui32Index);
+	}
+	void CInterfacedScenario::contextMenuAddSettingCB(IBox& rBox)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuAddSettingCB\n";
+		rBox.addSetting("", OV_UndefinedIdentifier, "");
+		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifySetting))
+		{
+			CSettingEditorDialog l_oSettingEditorDialog(m_rKernel, rBox, rBox.getSettingCount()-1, m_sGUIFilename.c_str());
+			if(!l_oSettingEditorDialog.run())
+			{
+				rBox.removeSetting(rBox.getSettingCount()-1);
+			}
+		}
+	}
+	void CInterfacedScenario::contextMenuEditSettingCB(IBox& rBox, uint32 ui32Index)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuEditSettingCB\n";
+		CSettingEditorDialog l_oSettingEditorDialog(m_rKernel, rBox, ui32Index, m_sGUIFilename.c_str());
+		l_oSettingEditorDialog.run();
+	}
+	void CInterfacedScenario::contextMenuRemoveSettingCB(IBox& rBox, uint32 ui32Index)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuRemoveSettingCB\n";
+		rBox.removeSetting(ui32Index);
+	}
+	void CInterfacedScenario::contextMenuConfigureCB(IBox& rBox)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuConfigureCB\n";
+		CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernel, rBox, m_sGUIFilename.c_str());
+		l_oBoxConfigurationDialog.run();
+	}
+	void CInterfacedScenario::contextMenuAboutCB(IBox& rBox)
+	{
+		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuAboutCB\n";
+		CAboutPluginDialog l_oAboutPluginDialog(m_rKernel, rBox.getAlgorithmClassIdentifier(), m_sGUIFilename.c_str());
+		l_oAboutPluginDialog.run();
 	}
 
 	void CInterfacedScenario::toggleDesignerVisualisation()

@@ -10,6 +10,7 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#define OVP_ClassId_ScenarioExporterSVGDesc                 OpenViBE::CIdentifier(0xF90BB4FF, 0x219FF8BE)
 #define OVP_ClassId_ScenarioExporterXMLDesc                 OpenViBE::CIdentifier(0x5B2B5C67, 0x78EA7539)
 #define OVP_ClassId_ScenarioImporterXMLDesc                 OpenViBE::CIdentifier(0x28DC180C, 0x4CCA7314)
 
@@ -26,14 +27,13 @@
 #define OVP_ClassId_AlgorithmAdditionDesc                   OpenViBE::CIdentifier(0x842E0B85, 0xA59FABC1)
 #define OVP_ClassId_BoxAlgorithmAdditionTestDesc            OpenViBE::CIdentifier(0xB33EC315, 0xF63BC0C5)
 
-#define OVP_ClassId_TimeBasedEpochingDesc                   OpenViBE::CIdentifier(0x00ABDABE, 0x41381683)
-
 //___________________________________________________________________//
 //                                                                   //
 // Plugin Object Class Identifiers                                   //
 //___________________________________________________________________//
 //                                                                   //
 
+#define OVP_ClassId_ScenarioExporterSVG                     OpenViBE::CIdentifier(0x389FB9DF, 0x848FDF29)
 #define OVP_ClassId_ScenarioExporterXML                     OpenViBE::CIdentifier(0x77075B3B, 0x3D632492)
 #define OVP_ClassId_ScenarioImporterXML                     OpenViBE::CIdentifier(0x440BF3AC, 0x2D960300)
 
@@ -49,8 +49,6 @@
 
 #define OVP_ClassId_AlgorithmAddition                       OpenViBE::CIdentifier(0x75FCE50E, 0x8302FA91)
 #define OVP_ClassId_BoxAlgorithmAdditionTest                OpenViBE::CIdentifier(0x534EB140, 0x15F41496)
-
-#define OVP_ClassId_TimeBasedEpoching                       OpenViBE::CIdentifier(0x00777FA0, 0x5DC3F560)
 
 //___________________________________________________________________//
 //                                                                   //

@@ -15,8 +15,8 @@ CBoxProxy::CBoxProxy(const IBox& rBox)
 	if(m_pConstBox)
 	{
 		TAttributeHandler l_oAttributeHandler(*m_pConstBox);
-		m_iXCenter=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_XBoxCenterPosition);
-		m_iYCenter=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_YBoxCenterPosition);
+		m_iXCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_XCenterPosition);
+		m_iYCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_YCenterPosition);
 	}
 }
 
@@ -29,8 +29,8 @@ CBoxProxy::CBoxProxy(IScenario& rScenario, const CIdentifier& rBoxIdentifier)
 	if(m_pConstBox)
 	{
 		TAttributeHandler l_oAttributeHandler(*m_pConstBox);
-		m_iXCenter=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_XBoxCenterPosition);
-		m_iYCenter=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_YBoxCenterPosition);
+		m_iXCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_XCenterPosition);
+		m_iYCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_YCenterPosition);
 	}
 }
 
@@ -40,15 +40,15 @@ CBoxProxy::~CBoxProxy(void)
 	{
 		TAttributeHandler l_oAttributeHandler(*m_pBox);
 
-		if(l_oAttributeHandler.hasAttribute(OVD_AttributeId_XBoxCenterPosition))
-			l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_XBoxCenterPosition, m_iXCenter);
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_XCenterPosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_XCenterPosition, m_iXCenter);
 		else
-			l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_XBoxCenterPosition, m_iXCenter);
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_XCenterPosition, m_iXCenter);
 
-		if(l_oAttributeHandler.hasAttribute(OVD_AttributeId_YBoxCenterPosition))
-			l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_YBoxCenterPosition, m_iYCenter);
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_YCenterPosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
 		else
-			l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_YBoxCenterPosition, m_iYCenter);
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
 	}
 }
 
@@ -94,10 +94,38 @@ void CBoxProxy::setCenter(int32 i32XCenter, int32 i32YCenter)
 
 const char* CBoxProxy::getLabel(void) const
 {
-	string l_sBoxHasSettings(m_pConstBox->getSettingCount()!=0?"~":"-");
+	boolean l_bBoxCanChangeInput  (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyInput)  ||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddInput));
+	boolean l_bBoxCanChangeOutput (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput) ||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddOutput));
+	boolean l_bBoxCanChangeSetting(m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifySetting)||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddSetting));
+	boolean l_bBoxIsDeprecated    (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagIsDeprecated));
+
 	string l_sBoxName(m_pConstBox->getName());
 	string l_sBoxIden(m_pConstBox->getIdentifier().toString());
-	m_sLabel=l_sBoxHasSettings+" "+l_sBoxName+" "+l_sBoxHasSettings; // +"\n"+l_sBoxIden;
+
+	m_sLabel=l_sBoxName;
+
+	if(m_pConstBox->getSettingCount()!=0)
+	{
+		m_sLabel="<span weight=\"bold\">"+m_sLabel+"</span>";
+	}
+
+	if(l_bBoxCanChangeInput || l_bBoxCanChangeOutput || l_bBoxCanChangeSetting)
+	{
+		string l_sRed("#800000");
+		string l_sGreen("#008000");
+		m_sLabel+="\n";
+		m_sLabel+="<span foreground=\""+(l_bBoxCanChangeInput?l_sGreen:l_sRed)+"\">In</span>";
+		m_sLabel+="|";
+		m_sLabel+="<span foreground=\""+(l_bBoxCanChangeOutput?l_sGreen:l_sRed)+"\">Out</span>";
+		m_sLabel+="|";
+		m_sLabel+="<span foreground=\""+(l_bBoxCanChangeSetting?l_sGreen:l_sRed)+"\">S</span>";
+	}
+	if(l_bBoxIsDeprecated)
+	{
+		m_sLabel+="\n";
+		m_sLabel+="<span style=\"italic\">deprecated</span>";
+	}
+
 	return m_sLabel.c_str();
 }
 
@@ -109,7 +137,7 @@ void CBoxProxy::updateSize(::GtkWidget* pWidget, const char* sText, int* pXSize,
 	l_pPangoContext=gtk_widget_get_pango_context(pWidget);
 	l_pPangoLayout=pango_layout_new(l_pPangoContext);
 	pango_layout_set_alignment(l_pPangoLayout, PANGO_ALIGN_CENTER);
-	pango_layout_set_text(l_pPangoLayout, sText, -1);
+	pango_layout_set_markup(l_pPangoLayout, sText, -1);
 	pango_layout_get_pixel_extents(l_pPangoLayout, NULL, &l_oPangoRectangle);
 	*pXSize=l_oPangoRectangle.width;
 	*pYSize=l_oPangoRectangle.height;

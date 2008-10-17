@@ -163,7 +163,7 @@ boolean CBoxAlgorithmStimulationMultiplexer::process(void)
 			}
 		}
 
-		TParameterHandler < IStimulationSet* > l_ipStimulationSet(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_SimtulationSet));
+		TParameterHandler < IStimulationSet* > l_ipStimulationSet(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
 		l_ipStimulationSet->setStimulationCount(m_vStimulation.size());
 		for(k=0, it=m_vStimulation.begin(); it!=m_vStimulation.end(); it++, k++)
 		{

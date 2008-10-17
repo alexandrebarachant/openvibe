@@ -13,6 +13,8 @@ static const float g_fViscosity=0.003;
 static const float g_fGrowScoreingSpeed=0.1;
 static const float g_fEpsilon=1E-5;
 
+using namespace OMK::Type;
+
 CFootballBCI::CFootballBCI(OMK::Controller& rController, const OMK::ObjectDescriptor& rObjectDescriptor)
 	:OMK::ExtensibleSimulatedObject(rController, rObjectDescriptor)
 {

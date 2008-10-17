@@ -11,12 +11,12 @@ CInputDialog::CInputDialog(const char* sGladeXML, fpButtonCB fpOKButtonCB, void*
 	m_pUserData = pUserData;
 
 	//retrieve input dialog
-	::GladeXML* l_pInputDialogInterface = glade_xml_new(sGladeXML, "input_dialog", NULL);
-	m_pInputDialog = GTK_DIALOG(glade_xml_get_widget(l_pInputDialogInterface, "input_dialog"));
-	m_pInputDialogLabel = GTK_LABEL(glade_xml_get_widget(l_pInputDialogInterface, "label"));
-	m_pInputDialogEntry = GTK_ENTRY(glade_xml_get_widget(l_pInputDialogInterface, "entry"));
-	m_pInputDialogOKButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "button_ok"));
-	m_pInputDialogCancelButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "button_cancel"));
+	::GladeXML* l_pInputDialogInterface = glade_xml_new(sGladeXML, "input", NULL);
+	m_pInputDialog = GTK_DIALOG(glade_xml_get_widget(l_pInputDialogInterface, "input"));
+	m_pInputDialogLabel = GTK_LABEL(glade_xml_get_widget(l_pInputDialogInterface, "input-label"));
+	m_pInputDialogEntry = GTK_ENTRY(glade_xml_get_widget(l_pInputDialogInterface, "input-entry"));
+	m_pInputDialogOKButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "input-button_ok"));
+	m_pInputDialogCancelButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "input-button_cancel"));
 
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(m_pInputDialogEntry), GDK_KEY_PRESS_MASK);
 	g_signal_connect(G_OBJECT(m_pInputDialogEntry), "key-press-event", G_CALLBACK(key_press_event_cb), m_pInputDialog);

@@ -217,6 +217,11 @@ boolean CScheduler::initialize(void)
 	getScenarioManager().getScenario(l_oNewScenarioIdentifier).load("tmp.scenario.xml", CIdentifier(0x440BF3AC, 0x2D960300)); // $$$
 */
 	m_pScenario=&getScenarioManager().getScenario(l_oNewScenarioIdentifier);
+	if(!m_pScenario)
+	{
+		log() << LogLevel_ImportantWarning << "Scenario " << l_oNewScenarioIdentifier << " does not exist !\n";
+		return false;
+	}
 
 	CBoxSettingModifierVisitor l_oBoxSettingModifierVisitor;
 	m_pScenario->acceptVisitor(l_oBoxSettingModifierVisitor);
@@ -326,8 +331,8 @@ boolean CScheduler::loop(void)
 		if(l_rSimulatedBoxChrono.hasNewEstimation())
 		{
 			IBox* l_pBox=m_pScenario->getBoxDetails(itSimulatedBox->first);
-			l_pBox->addAttribute(CIdentifier(1,1), "");
-			l_pBox->setAttributeValue(CIdentifier(1,1), CIdentifier(l_rSimulatedBoxChrono.getTotalStepInDuration()).toString());
+			l_pBox->addAttribute(OV_AttributeId_Box_ComputationTimeLastSecond, "");
+			l_pBox->setAttributeValue(OV_AttributeId_Box_ComputationTimeLastSecond, CIdentifier(l_rSimulatedBoxChrono.getTotalStepInDuration()).toString());
 		}
 	}
 	m_oBenchmarkChrono.stepOut();

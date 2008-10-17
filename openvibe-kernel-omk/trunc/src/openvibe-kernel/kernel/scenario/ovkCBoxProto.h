@@ -23,6 +23,8 @@ namespace OpenViBE
 				const OpenViBE::CString& sName,
 				const OpenViBE::CIdentifier& rTypeIdentifier,
 				const OpenViBE::CString& sDefaultValue);
+			virtual OpenViBE::boolean addFlag(
+				const OpenViBE::Kernel::EBoxFlag eBoxFlag);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::IBoxProto, OVK_ClassId_Kernel_Scenario_BoxProto)
 

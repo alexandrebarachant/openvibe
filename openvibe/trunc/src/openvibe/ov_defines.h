@@ -52,6 +52,7 @@
 #define OV_ClassId_Kernel_Scenario_Attributable              OpenViBE::CIdentifier(0x61B64E38, 0x0B36B4E8)
 #define OV_ClassId_Kernel_Scenario_Box                       OpenViBE::CIdentifier(0x41209015, 0x1183237A)
 #define OV_ClassId_Kernel_Scenario_BoxIO                     OpenViBE::CIdentifier(0x110AAB4F, 0x157CBEF1)
+#define OV_ClassId_Kernel_Scenario_BoxListenerContext        OpenViBE::CIdentifier(0xB4344A89, 0xC5044324)
 #define OV_ClassId_Kernel_Scenario_BoxProto                  OpenViBE::CIdentifier(0x169ED1C1, 0x639C5957)
 #define OV_ClassId_Kernel_Scenario_Link                      OpenViBE::CIdentifier(0x38F6E10D, 0x6BA2721A)
 #define OV_ClassId_Kernel_Scenario_ProcessingUnit            OpenViBE::CIdentifier(0x3681EC07, 0x337DE51F)
@@ -79,6 +80,7 @@
 
 #define OV_ClassId_Plugins_BoxAlgorithm                      OpenViBE::CIdentifier(0x2A910204, 0x57E55735)
 #define OV_ClassId_Plugins_BoxAlgorithmDesc                  OpenViBE::CIdentifier(0x2C4ECAD0, 0x19607084)
+#define OV_ClassId_Plugins_BoxListener                       OpenViBE::CIdentifier(0xCC0CE0A3, 0x4684AEED)
 
 #define OV_ClassId_Plugins_ScenarioImporter                  OpenViBE::CIdentifier(0x6BF28385, 0x77F8D9A1)
 #define OV_ClassId_Plugins_ScenarioImporterDesc              OpenViBE::CIdentifier(0x05146C29, 0x283B5BB8)
@@ -103,6 +105,43 @@
 #define OV_ClassId_MemoryBuffer                              OpenViBE::CIdentifier(0xADF318BB, 0xB728A579)
 #define OV_ClassId_MemoryBufferBridge                        OpenViBE::CIdentifier(0xFD84704B, 0xA9E61735)
 #define OV_ClassId_MemoryBufferImpl                          OpenViBE::CIdentifier(0x51551D5C, 0x80B34EEE)
+
+//___________________________________________________________________//
+//                                                                   //
+//  Box attributes                                                   //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OV_AttributeId_Box_XCenterPosition                   OpenViBE::CIdentifier(0x207C9054, 0x3C841B63)
+#define OV_AttributeId_Box_YCenterPosition                   OpenViBE::CIdentifier(0x1FA7A38F, 0x54EDBE0B)
+#define OV_AttributeId_Box_XSize                             OpenViBE::CIdentifier(0xAD100179, 0xA3C984AB)
+#define OV_AttributeId_Box_YSize                             OpenViBE::CIdentifier(0x1FA963F5, 0x1A638CD4)
+
+#define OV_AttributeId_Box_SettingOverrideFilename           OpenViBE::CIdentifier(0x8D21FF41, 0xDF6AFE7E)
+#define OV_AttributeId_Box_InitialPrototypeHashValue         OpenViBE::CIdentifier(0x4E7B798A, 0x183BEAFB)
+#define OV_AttributeId_Box_ComputationTimeLastSecond         OpenViBE::CIdentifier(0xC46B3D00, 0x3E0454E1)
+
+#define OV_AttributeId_Box_FlagCanAddInput                   OpenViBE::CIdentifier(0xFBA64161, 0x65304E21)
+#define OV_AttributeId_Box_FlagCanModifyInput                OpenViBE::CIdentifier(0x527AD68D, 0x16D746A0)
+#define OV_AttributeId_Box_FlagCanAddOutput                  OpenViBE::CIdentifier(0x17EE7C08, 0x94C14893)
+#define OV_AttributeId_Box_FlagCanModifyOutput               OpenViBE::CIdentifier(0x30A4E5C9, 0x83502953)
+#define OV_AttributeId_Box_FlagCanAddSetting                 OpenViBE::CIdentifier(0x61D11811, 0x71E65362)
+#define OV_AttributeId_Box_FlagCanModifySetting              OpenViBE::CIdentifier(0xF191C1C8, 0xA0123976)
+#define OV_AttributeId_Box_FlagIsDeprecated                  OpenViBE::CIdentifier(0x32767532, 0x4F53ACFA)
+
+#define OV_AttributeId_Link_XSourcePosition                  OpenViBE::CIdentifier(0x358AE8B5, 0x0F8BACD1)
+#define OV_AttributeId_Link_YSourcePosition                  OpenViBE::CIdentifier(0x1B32C44C, 0x1905E0E9)
+#define OV_AttributeId_Link_XTargetPosition                  OpenViBE::CIdentifier(0x6267B5C5, 0x676E3E42)
+#define OV_AttributeId_Link_YTargetPosition                  OpenViBE::CIdentifier(0x3F0A3B27, 0x570913D2)
+
+/*
+#define OV_AttributeId_                                      OpenViBE::CIdentifier(0xD9D911F9, 0x8CD986E9)
+#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x137230A2, 0x0B95331C)
+#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x949725F8, 0xBFF0C70E)
+#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x9B2B0F43, 0x7408E9A6)
+#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x88CD8C43, 0xD4A28474)
+#define OV_AttributeId_                                      OpenViBE::CIdentifier(0xCDA439D2, 0xD295E592)
+*/
 
 //___________________________________________________________________//
 //                                                                   //

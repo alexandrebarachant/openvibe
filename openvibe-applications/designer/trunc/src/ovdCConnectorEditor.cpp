@@ -21,7 +21,7 @@ CConnectorEditor::~CConnectorEditor(void)
 {
 }
 
-void CConnectorEditor::run(void)
+boolean CConnectorEditor::run(void)
 {
 	t_getConnectorName getConnectorName=NULL;
 	t_setConnectorName setConnectorName=NULL;
@@ -45,7 +45,7 @@ void CConnectorEditor::run(void)
 			break;
 
 		default:
-			return;
+			return false;
 	}
 
 	CString l_oConnectorName;
@@ -53,10 +53,10 @@ void CConnectorEditor::run(void)
 	(m_rBox.*getConnectorName)(m_ui32ConnectorIndex, l_oConnectorName);
 	(m_rBox.*getConnectorType)(m_ui32ConnectorIndex, l_oConnectorType);
 
-	::GladeXML* l_pGladeInterfaceConnector=glade_xml_new(m_sGUIFilename.c_str(), "openvibe_connector", NULL);
-	::GtkWidget* l_pConnectorDialog=glade_xml_get_widget(l_pGladeInterfaceConnector, "openvibe_connector");
-	::GtkEntry* l_pConnectorNameEntry=GTK_ENTRY(glade_xml_get_widget(l_pGladeInterfaceConnector, "connector_name_entry"));
-	::GtkComboBox* l_pConnectorTypeComboBox=GTK_COMBO_BOX(glade_xml_get_widget(l_pGladeInterfaceConnector,"connector_type_combobox"));
+	::GladeXML* l_pGladeInterfaceConnector=glade_xml_new(m_sGUIFilename.c_str(), "connector_editor", NULL);
+	::GtkWidget* l_pConnectorDialog=glade_xml_get_widget(l_pGladeInterfaceConnector, "connector_editor");
+	::GtkEntry* l_pConnectorNameEntry=GTK_ENTRY(glade_xml_get_widget(l_pGladeInterfaceConnector, "connector_editor-connector_name_entry"));
+	::GtkComboBox* l_pConnectorTypeComboBox=GTK_COMBO_BOX(glade_xml_get_widget(l_pGladeInterfaceConnector,"connector_editor-connector_type_combobox"));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_combo_box_get_model(l_pConnectorTypeComboBox)));
 	gtk_window_set_title(GTK_WINDOW(l_pConnectorDialog), m_rBox.getName());
 
@@ -80,6 +80,7 @@ void CConnectorEditor::run(void)
 	gtk_entry_set_text(l_pConnectorNameEntry, l_oConnectorName.toASCIIString());
 
 	boolean l_bFinished=false;
+	boolean l_bResult=false;
 	while(!l_bFinished)
 	{
 		gint l_iResult=gtk_dialog_run(GTK_DIALOG(l_pConnectorDialog));
@@ -93,21 +94,25 @@ void CConnectorEditor::run(void)
 		}
 		else if(l_iResult==GTK_RESPONSE_APPLY)
 		{
-			map<string, CIdentifier>::const_iterator it=m_vStreamTypes.find(gtk_combo_box_get_active_text(l_pConnectorTypeComboBox));
-			if(it!=m_vStreamTypes.end())
+			char* l_sActiveText=gtk_combo_box_get_active_text(l_pConnectorTypeComboBox);
+			if(l_sActiveText)
 			{
-				(m_rBox.*setConnectorType)(m_ui32ConnectorIndex, it->second);
+				(m_rBox.*setConnectorType)(m_ui32ConnectorIndex, m_vStreamTypes[l_sActiveText]);
 				(m_rBox.*setConnectorName)(m_ui32ConnectorIndex, gtk_entry_get_text(l_pConnectorNameEntry));
 				l_bFinished=true;
+				l_bResult=true;
 			}
 		}
 		else
 		{
 			l_bFinished=true;
+			l_bResult=false;
 		}
 	}
 
 	gtk_widget_destroy(l_pConnectorDialog);
 
 	g_object_unref(l_pGladeInterfaceConnector);
+
+	return l_bResult;
 }

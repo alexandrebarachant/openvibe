@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ ! -e linux-init_env_command ]; then
-	echo You have to configure your \`linux-init_env_command\` file.
-	echo \`linux-init_env_command-skeleton\` is a good file to start with...
+	echo "You have to configure your \`linux-init_env_command\` file."
+	echo "\`linux-init_env_command-skeleton\` is a good file to start with..."
 	exit
 fi
 
@@ -17,14 +17,14 @@ for project_directory in $OpenViBE_build_order; do
 		mkdir -p "../local-tmp/$temp_sub_directory" 2> /dev/null
 		pushd "../local-tmp/$temp_sub_directory" 2> /dev/null
 
-		cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="$OpenViBE_base/cmake-modules" "$project_directory"
+		cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="$OpenViBE_base/cmake-modules" "$project_directory" -Wno-dev
 		if [ $? -eq 0 ]; then
 			echo CMake has been called successfully !
 		else
 			exit -1
 		fi;
 
-		make -j 2 # VERBOSE=1
+		make $1 -j 2 # VERBOSE=1
 		if [ $? -eq 0 ]; then
 			echo Make has been called successfully !
 		else

@@ -17,7 +17,7 @@ public:
 	virtual OpenViBE::boolean callback(
 		const OpenViBE::Plugins::IPluginObjectDesc& rPluginObjectDesc)=0;
 
-	static OpenViBE::CString transform(const OpenViBE::CString& sInput);
+	static OpenViBE::CString transform(const OpenViBE::CString& sInput, const OpenViBE::boolean bRemoveSlash=false);
 
 protected:
 

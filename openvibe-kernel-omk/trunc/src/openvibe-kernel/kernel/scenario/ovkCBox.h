@@ -18,6 +18,7 @@ namespace OpenViBE
 		public:
 
 			CBox(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			virtual ~CBox(void);
 
 			virtual OpenViBE::CIdentifier getIdentifier(void) const;
 			virtual OpenViBE::CString getName(void) const;
@@ -116,10 +117,16 @@ namespace OpenViBE
 
 			virtual void clear(void);
 
-			virtual void activateModificationCallback(void);
-			virtual void deactivateModificationCallback(void);
-			virtual void callModificationCallback(
-				const OpenViBE::Kernel::EBoxModification eBoxModificationType);
+			virtual void enableNotification(void);
+			virtual void disableNotification(void);
+			virtual void notify(
+				const OpenViBE::Kernel::EBoxModification eBoxModificationType,
+				const OpenViBE::uint32 ui32Index);
+			virtual void notify(
+				const OpenViBE::Kernel::EBoxModification eBoxModificationType)
+			{
+				this->notify(eBoxModificationType, 0xffffffff);
+			}
 
 		protected:
 
@@ -163,8 +170,9 @@ namespace OpenViBE
 		protected:
 
 			const OpenViBE::Plugins::IBoxAlgorithmDesc* m_pBoxAlgorithmDescriptor;
+			OpenViBE::Plugins::IBoxListener* m_pBoxListener;
 			OpenViBE::boolean m_bIsNotifyingDescriptor;
-			OpenViBE::boolean m_bIsModificationCallbackActive;
+			OpenViBE::boolean m_bIsNotificationActive;
 
 			OpenViBE::CIdentifier m_oIdentifier;
 			OpenViBE::CIdentifier m_oAlgorithmClassIdentifier;

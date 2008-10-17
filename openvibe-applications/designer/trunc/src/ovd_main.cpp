@@ -274,7 +274,7 @@ int go(int argc, char ** argv)
 	gdk_color_set(g_vColors[Color_BackgroundPlayerStarted], 32767, 32767, 32767);
 	gdk_color_set(g_vColors[Color_BoxBackgroundSelected],   65535, 65535, 49151);
 	gdk_color_set(g_vColors[Color_BoxBackgroundMissing],    49151, 32767, 32767);
-	gdk_color_set(g_vColors[Color_BoxBackgroundObsolete],   32767, 49151, 49151);
+	gdk_color_set(g_vColors[Color_BoxBackgroundDeprecated], 16383, 24575, 24575);
 	gdk_color_set(g_vColors[Color_BoxBackground],           65535, 65535, 65535);
 	gdk_color_set(g_vColors[Color_BoxBorderSelected],           0,     0,     0);
 	gdk_color_set(g_vColors[Color_BoxBorder],                   0,     0,     0);

@@ -145,6 +145,22 @@ namespace OpenViBE
 			virtual OpenViBE::boolean isStream(
 				const OpenViBE::CIdentifier& rTypeIdentifier) const=0;
 			/**
+			 * \brief Tests is a specific type has been registered, is a stream and is derived from another registered stream type
+			 * \param rTypeIdentifier [in] : the type identifier which registration and derivation has to be tested
+			 * \param rParentTypeIdentifier [in] : the type identifier of the supposed parent stream
+			 * \return \e true in case \c rTypeIdentifier is registered as a stream type and derived from \c rParentTypeIdentifier
+			 * \return \e false in case \c rParentTypeIdentifier is not registered
+			 * \return \e false in case \c rParentTypeIdentifier is not a stream
+			 * \return \e false in case \c rTypeIdentifier is not registered
+			 * \return \e false in case \c rTypeIdentifier is not a stream
+			 * \return \e false in case \c rTypeIdentifier is not derived from rParentTypeIdentifier
+			 * \note The derivation can be indirect (\c rTypeIdentifier can derive an
+			 *       intermediate stream type which derives \c rParentTypeIdentifier)
+			 */
+			virtual OpenViBE::boolean isDerivedFromStream(
+				const OpenViBE::CIdentifier& rTypeIdentifier,
+				const OpenViBE::CIdentifier& rParentTypeIdentifier) const=0;
+			/**
 			 * \brief Tests if a specific type has been registered and is an enumeration
 			 * \param rTypeIdentifier [in] : the type identifier which registration has to be tested
 			 * \return \e true if the specified type has been registered and is an enumeration.

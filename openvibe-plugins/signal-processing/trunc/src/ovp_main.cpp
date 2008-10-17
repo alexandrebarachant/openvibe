@@ -7,6 +7,7 @@
 #include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
 #include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
 
+#include "ovpCTimeBasedEpoching.h"
 #include "ovpCReferenceChannel.h"
 #include "ovpCChannelSelector.h"
 #include "ovpCSimpleDSP.h"
@@ -37,6 +38,8 @@ OVP_Declare_Begin()
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Ratio",            OVP_TypeId_ComparisonMethod_Ratio.toUInteger());
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Substraction",     OVP_TypeId_ComparisonMethod_Substraction.toUInteger());
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Laterality index", OVP_TypeId_ComparisonMethod_LateralityIndex.toUInteger());
+
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CTimeBasedEpochingDesc);
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CMatrixAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CAlgorithmStimulationBasedEpochingDesc)

@@ -46,13 +46,45 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bAnalogSet;
 		};
 
+		class CVRPNAnalogServerListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+		public:
+
+			OpenViBE::boolean check(OpenViBE::Kernel::IBox& rBox)
+			{
+				char l_sName[1024];
+				OpenViBE::uint32 i;
+
+				for(i=0; i<rBox.getInputCount(); i++)
+				{
+					sprintf(l_sName, "Input %lu", i+1);
+					rBox.setInputName(i, l_sName);
+					rBox.setInputType(i, OV_TypeId_StreamedMatrix);
+				}
+
+				return true;
+			}
+
+			virtual OpenViBE::boolean onInputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				return this->check(rBox);
+			}
+
+			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				return this->check(rBox);
+			};
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+		};
+
 		class CVRPNAnalogServerDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Analog VRPN server"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier/Yann Renard"); }
-			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
+			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Creates VRPN analog servers (one per input)."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Creates VRPN analog servers to make data from the plugin's inputs available to VRPN client applications."); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("VRPN"); }
@@ -60,13 +92,14 @@ namespace OpenViBEPlugins
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_VRPNAnalogServer; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::VRPN::CVRPNAnalogServer(); }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new CVRPNAnalogServerListener; }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("Input", OV_TypeId_StreamedMatrix);
-
-				rPrototype.addSetting("Peripheral name", OV_TypeId_String, "openvibe-vrpn");
-
+				rPrototype.addInput  ("Input 1",         OV_TypeId_StreamedMatrix);
+				rPrototype.addSetting("Peripheral name", OV_TypeId_String,        "openvibe-vrpn");
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				return true;
 			}
 

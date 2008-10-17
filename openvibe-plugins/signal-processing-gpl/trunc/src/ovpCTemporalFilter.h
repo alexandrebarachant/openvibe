@@ -200,6 +200,7 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Low cut frequency (Hz)",  OV_TypeId_Float,         "29");
 				rPrototype.addSetting("High cut frequency (Hz)", OV_TypeId_Float,         "40");
 				rPrototype.addSetting("Pass band ripple (dB)",   OV_TypeId_Float,         "0.5");
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsDeprecated);
 				return true;
 			}
 

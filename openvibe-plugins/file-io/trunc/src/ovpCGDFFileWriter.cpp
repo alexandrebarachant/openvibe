@@ -106,7 +106,7 @@ void CGDFFileWriter::setSampleBuffer(const float64* pBuffer)
 
 	//save in the file
 	saveMatrixData();
-	
+
 	//updates the fixed header
 	m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
 	if(m_oFixedHeader.update(m_oFile))
@@ -219,18 +219,15 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const char* sVal
 				delete[] l_pFormattedSubjectName;
 		}
 		break;
-
 	}
 }
 
 void CGDFFileWriter::setStimulationCount(const uint32 ui32StimulationCount)
 {
-
 }
 
- void CGDFFileWriter::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
+void CGDFFileWriter::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
 {
-	
 	m_oEvents.push_back(pair<uint64,uint64>(ui64StimulationIdentifier, ui64StimulationDate));
 }
 
@@ -284,7 +281,7 @@ boolean CGDFFileWriter::uninitialize()
 	{
 		m_oFixedHeader.m_i64NumberOfDataRecords=m_vSampleCount[0];
 	}
-	
+
 	if(m_oFixedHeader.update(m_oFile))
 	{
 		//To save the Physical/Digital max/min values
@@ -303,7 +300,7 @@ boolean CGDFFileWriter::uninitialize()
 	{
 		saveEvents();
 	}
-	
+
 	if(m_bError)
 	{
 		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error while writing to the output file!\n";
@@ -334,7 +331,7 @@ boolean CGDFFileWriter::processInput(uint32 ui32InputIndex)
 	{
 		return false;
 	}
-	
+
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 
 	return true;

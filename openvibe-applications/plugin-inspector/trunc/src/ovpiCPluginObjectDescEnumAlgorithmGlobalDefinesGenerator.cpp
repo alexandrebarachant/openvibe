@@ -46,7 +46,7 @@ boolean CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::callback(const IPl
 	{
 		std::string l_sDefName;
 		l_sDefName+="OVP_GD_ClassId_Algorithm_";
-		l_sDefName+=transform(rPluginObjectDesc.getName());
+		l_sDefName+=transform(rPluginObjectDesc.getName(), true);
 		l_sDefName+="";
 
 		std::string l_sSpaces;
@@ -58,7 +58,7 @@ boolean CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::callback(const IPl
 	{
 		std::string l_sDefName;
 		l_sDefName+="OVP_GD_ClassId_Algorithm_";
-		l_sDefName+=transform(rPluginObjectDesc.getName());
+		l_sDefName+=transform(rPluginObjectDesc.getName(), true);
 		l_sDefName+="Desc";
 
 		std::string l_sSpaces;
@@ -71,9 +71,9 @@ boolean CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::callback(const IPl
 	{
 		std::string l_sDefName;
 		l_sDefName+="OVP_GD_Algorithm_";
-		l_sDefName+=transform(rPluginObjectDesc.getName());
+		l_sDefName+=transform(rPluginObjectDesc.getName(), true);
 		l_sDefName+="_InputParameterId_";
-		l_sDefName+=transform(l_rAlgorithmProxy.getInputParameterName(l_oIdentifier));
+		l_sDefName+=transform(l_rAlgorithmProxy.getInputParameterName(l_oIdentifier), true);
 
 		std::string l_sSpaces;
 		l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
@@ -85,9 +85,9 @@ boolean CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::callback(const IPl
 	{
 		std::string l_sDefName;
 		l_sDefName+="OVP_GD_Algorithm_";
-		l_sDefName+=transform(rPluginObjectDesc.getName());
+		l_sDefName+=transform(rPluginObjectDesc.getName(), true);
 		l_sDefName+="_OutputParameterId_";
-		l_sDefName+=transform(l_rAlgorithmProxy.getOutputParameterName(l_oIdentifier));
+		l_sDefName+=transform(l_rAlgorithmProxy.getOutputParameterName(l_oIdentifier), true);
 
 		std::string l_sSpaces;
 		l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
@@ -99,9 +99,9 @@ boolean CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::callback(const IPl
 	{
 		std::string l_sDefName;
 		l_sDefName+="OVP_GD_Algorithm_";
-		l_sDefName+=transform(rPluginObjectDesc.getName());
+		l_sDefName+=transform(rPluginObjectDesc.getName(), true);
 		l_sDefName+="_InputTriggerId_";
-		l_sDefName+=transform(l_rAlgorithmProxy.getInputTriggerName(l_oIdentifier));
+		l_sDefName+=transform(l_rAlgorithmProxy.getInputTriggerName(l_oIdentifier), true);
 
 		std::string l_sSpaces;
 		l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');
@@ -113,9 +113,9 @@ boolean CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::callback(const IPl
 	{
 		std::string l_sDefName;
 		l_sDefName+="OVP_GD_Algorithm_";
-		l_sDefName+=transform(rPluginObjectDesc.getName());
+		l_sDefName+=transform(rPluginObjectDesc.getName(), true);
 		l_sDefName+="_OutputTriggerId_";
-		l_sDefName+=transform(l_rAlgorithmProxy.getOutputTriggerName(l_oIdentifier));
+		l_sDefName+=transform(l_rAlgorithmProxy.getOutputTriggerName(l_oIdentifier), true);
 
 		std::string l_sSpaces;
 		l_sSpaces.resize(l_iWidth-l_sDefName.length(), ' ');

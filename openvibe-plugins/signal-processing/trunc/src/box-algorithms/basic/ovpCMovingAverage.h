@@ -35,6 +35,45 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64LastStartTime;
 		};
 
+		class CEpochAverageListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+		public:
+
+			virtual OpenViBE::boolean onInputTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				OpenViBE::CIdentifier l_oTypeIdentifier;
+				rBox.getInputType(ui32Index, l_oTypeIdentifier);
+				if(this->getTypeManager().isDerivedFromStream(l_oTypeIdentifier, OV_TypeId_StreamedMatrix))
+				{
+					rBox.setOutputType(ui32Index, l_oTypeIdentifier);
+				}
+				else
+				{
+					rBox.getOutputType(ui32Index, l_oTypeIdentifier);
+					rBox.setInputType(ui32Index, l_oTypeIdentifier);
+				}
+				return true;
+			}
+
+			virtual OpenViBE::boolean onOutputTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				OpenViBE::CIdentifier l_oTypeIdentifier;
+				rBox.getOutputType(ui32Index, l_oTypeIdentifier);
+				if(this->getTypeManager().isDerivedFromStream(l_oTypeIdentifier, OV_TypeId_StreamedMatrix))
+				{
+					rBox.setInputType(ui32Index, l_oTypeIdentifier);
+				}
+				else
+				{
+					rBox.getInputType(ui32Index, l_oTypeIdentifier);
+					rBox.setOutputType(ui32Index, l_oTypeIdentifier);
+				}
+				return true;
+			};
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+		};
+
 		class CEpochAverageDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
@@ -51,17 +90,18 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_MovingAverage; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessing::CEpochAverage(); }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new CEpochAverageListener; }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput  ("Input epochs",    OV_TypeId_StreamedMatrix);
-
 				rPrototype.addOutput ("Averaged epochs", OV_TypeId_StreamedMatrix);
-
 				rPrototype.addSetting("Averaging type",  OVP_TypeId_EpochAverageMethod, OVP_TypeId_EpochAverageMethod_MovingAverage.toString());
 				rPrototype.addSetting("Epoch count",     OV_TypeId_Integer, "4");
-
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyOutput);
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyInput);
 				return true;
 			}
 

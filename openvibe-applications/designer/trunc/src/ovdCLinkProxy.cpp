@@ -16,10 +16,10 @@ CLinkProxy::CLinkProxy(const ILink& rLink)
 	if(m_pConstLink)
 	{
 		TAttributeHandler l_oAttributeHandler(*m_pConstLink);
-		m_iXSource=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_XLinkSourcePosition);
-		m_iYSource=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_YLinkSourcePosition);
-		m_iXTarget=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_XLinkTargetPosition);
-		m_iYTarget=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_YLinkTargetPosition);
+		m_iXSource=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_XSourcePosition);
+		m_iYSource=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_YSourcePosition);
+		m_iXTarget=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_XTargetPosition);
+		m_iYTarget=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_YTargetPosition);
 	}
 }
 
@@ -34,10 +34,10 @@ CLinkProxy::CLinkProxy(IScenario& rScenario, const CIdentifier& rLinkIdentifier)
 	if(m_pConstLink)
 	{
 		TAttributeHandler l_oAttributeHandler(*m_pConstLink);
-		m_iXSource=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_XLinkSourcePosition);
-		m_iYSource=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_YLinkSourcePosition);
-		m_iXTarget=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_XLinkTargetPosition);
-		m_iYTarget=l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_YLinkTargetPosition);
+		m_iXSource=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_XSourcePosition);
+		m_iYSource=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_YSourcePosition);
+		m_iXTarget=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_XTargetPosition);
+		m_iYTarget=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Link_YTargetPosition);
 	}
 }
 
@@ -47,25 +47,25 @@ CLinkProxy::~CLinkProxy(void)
 	{
 		TAttributeHandler l_oAttributeHandler(*m_pLink);
 
-		if(l_oAttributeHandler.hasAttribute(OVD_AttributeId_XLinkSourcePosition))
-			l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_XLinkSourcePosition, m_iXSource);
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_XSourcePosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_XSourcePosition, m_iXSource);
 		else
-			l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_XLinkSourcePosition, m_iXSource);
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_XSourcePosition, m_iXSource);
 
-		if(l_oAttributeHandler.hasAttribute(OVD_AttributeId_YLinkSourcePosition))
-			l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_YLinkSourcePosition, m_iYSource);
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_YSourcePosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_YSourcePosition, m_iYSource);
 		else
-			l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_YLinkSourcePosition, m_iYSource);
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_YSourcePosition, m_iYSource);
 
-		if(l_oAttributeHandler.hasAttribute(OVD_AttributeId_XLinkTargetPosition))
-			l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_XLinkTargetPosition, m_iXTarget);
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_XTargetPosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_XTargetPosition, m_iXTarget);
 		else
-			l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_XLinkTargetPosition, m_iXTarget);
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_XTargetPosition, m_iXTarget);
 
-		if(l_oAttributeHandler.hasAttribute(OVD_AttributeId_YLinkTargetPosition))
-			l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_YLinkTargetPosition, m_iYTarget);
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Link_YTargetPosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Link_YTargetPosition, m_iYTarget);
 		else
-			l_oAttributeHandler.addAttribute<int>(OVD_AttributeId_YLinkTargetPosition, m_iYTarget);
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Link_YTargetPosition, m_iYTarget);
 	}
 }
 

@@ -1,15 +1,6 @@
 #ifndef __OpenViBEDesigner_defines_H__
 #define __OpenViBEDesigner_defines_H__
 
-#define OVD_AttributeId_XBoxCenterPosition                  OpenViBE::CIdentifier(0x207C9054, 0x3C841B63)
-#define OVD_AttributeId_YBoxCenterPosition                  OpenViBE::CIdentifier(0x1FA7A38F, 0x54EDBE0B)
-#define OVD_AttributeId_XLinkSourcePosition                 OpenViBE::CIdentifier(0x358AE8B5, 0x0F8BACD1)
-#define OVD_AttributeId_YLinkSourcePosition                 OpenViBE::CIdentifier(0x1B32C44C, 0x1905E0E9)
-#define OVD_AttributeId_XLinkTargetPosition                 OpenViBE::CIdentifier(0x6267B5C5, 0x676E3E42)
-#define OVD_AttributeId_YLinkTargetPosition                 OpenViBE::CIdentifier(0x3F0A3B27, 0x570913D2)
-
-#define OVD_AttributeId_SettingOverrideFilename             OpenViBE::CIdentifier(0x8D21FF41, 0xDF6AFE7E)
-
 //Attributes of visualisation window :
 #define OVD_AttributeId_VisualisationWindow_Width           OpenViBE::CIdentifier(0x7B814CCA, 0x271DF6DD)
 #define OVD_AttributeId_VisualisationWindow_Height          OpenViBE::CIdentifier(0x4C90D4AD, 0x7A2554EC)
@@ -20,6 +11,22 @@
 
 namespace OpenViBEDesigner
 {
+	enum
+	{
+		BoxContextMenu_Rename,
+		BoxContextMenu_AddInput,
+		BoxContextMenu_EditInput,
+		BoxContextMenu_RemoveInput,
+		BoxContextMenu_AddOutput,
+		BoxContextMenu_EditOutput,
+		BoxContextMenu_RemoveOutput,
+		BoxContextMenu_AddSetting,
+		BoxContextMenu_RemoveSetting,
+		BoxContextMenu_EditSetting,
+		BoxContextMenu_Configure,
+		BoxContextMenu_About,
+	};
+
 	enum
 	{
 		Resource_StringName,
@@ -35,7 +42,7 @@ namespace OpenViBEDesigner
 		Color_BoxBackground,
 		Color_BoxBackgroundSelected,
 		Color_BoxBackgroundMissing,
-		Color_BoxBackgroundObsolete,
+		Color_BoxBackgroundDeprecated,
 		Color_BoxBorder,
 		Color_BoxBorderSelected,
 		Color_BoxInputBackground,

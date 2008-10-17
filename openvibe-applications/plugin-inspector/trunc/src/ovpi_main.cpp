@@ -19,7 +19,7 @@ int main(int argc, char ** argv)
 	{
 		cout<<"[  INF  ] Created kernel loader"<<endl;
 		CString m_sError;
-#ifdef OVD_OS_Windows
+#ifdef OVPI_OS_Windows
 		if(!l_pKernelLoader->load("../lib/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
 		if(!l_pKernelLoader->load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
@@ -63,14 +63,15 @@ int main(int argc, char ** argv)
 					l_rLogManager.activate(LogLevel_Fatal, true);
 
 					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
-					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-Plugins-*.so");
-					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-*.so");
-					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-Plugins-*.dll");
-					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-*.dll");
+#if defined OVPI_OS_Linux
+					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-plugins-*.so");
+#elif defined OVPI_OS_Windows
+					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-plugins-*.dll");
+#else
+#endif
 
 					gtk_init(&argc, &argv);
 
-/*
 					{
 						CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator l_oGlobalDefinesGenerator(*l_pKernel->getContext(), "ovp_global_defines.h");
 						l_oGlobalDefinesGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
@@ -80,12 +81,12 @@ int main(int argc, char ** argv)
 						CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator l_oBoxAlgorithmSnapshotGenerator(*l_pKernel->getContext());
 						l_oBoxAlgorithmSnapshotGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
 					}
-*/
+/*
 					{
 						CPluginObjectDescEnumAlgorithmSnapshotGenerator l_oAlgorithmSnapshotGenerator(*l_pKernel->getContext());
 						l_oAlgorithmSnapshotGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
 					}
-
+*/
 					cout<<"[  INF  ] Everything finished, realeasing objects"<<endl;
 
 					OpenViBEToolkit::uninitialize(*l_pKernel->getContext());

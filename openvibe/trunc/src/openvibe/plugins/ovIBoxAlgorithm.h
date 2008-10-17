@@ -10,6 +10,37 @@ namespace OpenViBE
 		class IMessageClock;
 		class IMessageEvent;
 		class IMessageSignal;
+
+		/**
+		 * \brief This enum lists all the way a box can be modified
+		 * \sa OpenViBE::Plugins::IBoxListener::process
+		 */
+		enum EBoxModification
+		{
+			BoxModification_Initialized,
+			BoxModification_NameChanged,
+			BoxModification_IdentifierChanged,
+			BoxModification_AlgorithmClassIdentifierChanged,
+			BoxModification_ProcessingUnitChanged,
+			BoxModification_InputConnected,
+			BoxModification_InputDisconnected,
+			BoxModification_InputAdded,
+			BoxModification_InputRemoved,
+			BoxModification_InputTypeChanged,
+			BoxModification_InputNameChanged,
+			BoxModification_OutputConnected,
+			BoxModification_OutputDisconnected,
+			BoxModification_OutputAdded,
+			BoxModification_OutputRemoved,
+			BoxModification_OutputTypeChanged,
+			BoxModification_OutputNameChanged,
+			BoxModification_SettingAdded,
+			BoxModification_SettingRemoved,
+			BoxModification_SettingTypeChanged,
+			BoxModification_SettingNameChanged,
+			BoxModification_SettingDefaultValueChanged,
+			BoxModification_SettingValueChanged,
+		};
 	};
 
 	// for backward compatibility
@@ -20,6 +51,7 @@ namespace OpenViBE
 	namespace Kernel
 	{
 		class IBoxAlgorithmContext;
+		class IBoxListenerContext;
 	}
 
 	namespace Plugins
@@ -224,6 +256,60 @@ namespace OpenViBE
 			//@}
 
 			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObject, OV_ClassId_Plugins_BoxAlgorithm)
+		};
+
+		class OV_API IBoxListener : public OpenViBE::Plugins::IPluginObject
+		{
+		public:
+
+			virtual ~IBoxListener(void)
+			{
+			}
+
+			virtual void release(void)
+			{
+			}
+
+			virtual OpenViBE::boolean initialize(
+				OpenViBE::Kernel::IBoxListenerContext& rBoxListenerContext)
+			{
+				return true;
+			}
+
+			virtual OpenViBE::boolean uninitialize(
+				OpenViBE::Kernel::IBoxListenerContext& rBoxListenerContext)
+			{
+				return true;
+			}
+
+			/** \name Box modifications callbacks */
+			//@{
+
+			/**
+			 * \brief This callback is called when the box is modified in some way
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 * \param rBoxListenerContext [in] : the box listener context
+			 *        containing the description of the box
+			 * \param eBoxModificationType [in] : the type of modification
+			 *        applied to the box
+			 *
+			 * This function is called as soon as a modification is done
+			 * on the box which this listener is attached to. The box listener
+			 * is then allowed to examine and check box status validity
+			 * and to adpat the box itself according to this validity.
+			 *
+			 * \sa OpenViBE::Plugins::IBoxProto
+			 * \sa OpenViBE::Plugins::IBoxListenerContext
+			 * \sa OpenViBE::Plugins::EBoxModification
+			 */
+			virtual OpenViBE::boolean process(
+				OpenViBE::Kernel::IBoxListenerContext& rBoxListenerContext,
+				const OpenViBE::Kernel::EBoxModification eBoxModificationType)=0;
+
+			//@}
+
+			_IsDerivedFromClass_(OpenViBE::Plugins::IPluginObject, OV_ClassId_Plugins_BoxListener)
 		};
 	};
 };

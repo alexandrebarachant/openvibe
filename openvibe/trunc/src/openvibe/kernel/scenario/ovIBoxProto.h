@@ -8,6 +8,21 @@ namespace OpenViBE
 	namespace Kernel
 	{
 		/**
+		 * \brief This enum lists all the flags a box can be have
+		 * \sa OpenViBE::Kernel::IBoxProto::addFlag
+		 */
+		enum EBoxFlag
+		{
+			BoxFlag_CanAddInput,
+			BoxFlag_CanModifyInput,
+			BoxFlag_CanAddOutput,
+			BoxFlag_CanModifyOutput,
+			BoxFlag_CanAddSetting,
+			BoxFlag_CanModifySetting,
+			BoxFlag_IsDeprecated,
+		};
+
+		/**
 		 * \class IBoxProto
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-07-05
@@ -57,6 +72,14 @@ namespace OpenViBE
 				const OpenViBE::CString& sName,
 				const OpenViBE::CIdentifier& rTypeIdentifier,
 				const OpenViBE::CString& sDefaultValue)=0;
+			/**
+			 * \brief Adds a flag to the box
+			 * \param eBoxFlag [in] : the flag to add to the box
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean addFlag(
+				const OpenViBE::Kernel::EBoxFlag eBoxFlag)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Scenario_BoxProto)
 		};

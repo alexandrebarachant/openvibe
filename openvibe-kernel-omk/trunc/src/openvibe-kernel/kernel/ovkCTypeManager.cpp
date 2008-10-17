@@ -143,6 +143,25 @@ boolean CTypeManager::isStream(
 	return m_vStream.find(rTypeIdentifier)!=m_vStream.end()?true:false;
 }
 
+boolean CTypeManager::isDerivedFromStream(
+	const CIdentifier& rTypeIdentifier,
+	const CIdentifier& rParentTypeIdentifier) const
+{
+	map < CIdentifier, CIdentifier >::const_iterator it=m_vStream.find(rTypeIdentifier);
+	map < CIdentifier, CIdentifier >::const_iterator itParent=m_vStream.find(rParentTypeIdentifier);
+	if(it==m_vStream.end()) return false;
+	if(itParent==m_vStream.end()) return false;
+	while(it!=m_vStream.end())
+	{
+		if(it->first==rParentTypeIdentifier)
+		{
+			return true;
+		}
+		it=m_vStream.find(it->second);
+	}
+	return false;
+}
+
 boolean CTypeManager::isEnumeration(
 	const CIdentifier& rTypeIdentifier) const
 {

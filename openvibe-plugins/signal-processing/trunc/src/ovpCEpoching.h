@@ -153,12 +153,10 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("Input signal", OV_TypeId_Signal);
-
 				rPrototype.addSetting("Interval Inter Trigger (ms)", OV_TypeId_Float, "40");
 				rPrototype.addSetting("Size of epoch (ms)", OV_TypeId_Float, "55");
-
 				rPrototype.addOutput("Output signal", OV_TypeId_Signal);
-
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsDeprecated);
 				return true;
 			}
 

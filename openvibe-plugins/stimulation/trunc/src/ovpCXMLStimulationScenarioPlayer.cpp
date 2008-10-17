@@ -5,6 +5,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Stimulation;
 
@@ -21,21 +22,23 @@ namespace OpenViBEPlugins
 			appendOutputChunkData<0>(pBuffer, ui64BufferSize);
 		}
 
-
-		void CXMLStimulationScenarioPlayer::setStimulationCount(const OpenViBE::uint32 ui32StimulationCount)
+		void CXMLStimulationScenarioPlayer::setStimulationCount(const uint32 ui32StimulationCount)
 		{
 			/* TODO nothing? */
 		}
 
-		void CXMLStimulationScenarioPlayer::setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate)
+		void CXMLStimulationScenarioPlayer::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
 		{
 			m_oStimulationReceived.push_back(pair<uint64, uint64>(ui64StimulationIdentifier, ui64StimulationDate));
 		}
 
-
-		OpenViBE::boolean CXMLStimulationScenarioPlayer::readAutomaton(OpenViBE::CString& oFilename)
+		boolean CXMLStimulationScenarioPlayer::readAutomaton(const CString& oFilename)
 		{
-			ifstream l_oFile((const char*)oFilename);
+			ifstream l_oFile(oFilename.toASCIIString());
+			if(!l_oFile.good())
+			{
+				return false;
+			}
 
 			size_t l_iFileSize = 0;
 			l_oFile.seekg(0, ios::end);
@@ -44,11 +47,9 @@ namespace OpenViBEPlugins
 
 			char * l_pXmlBuffer = new char[l_iFileSize];
 			l_oFile.read(l_pXmlBuffer, l_iFileSize);
-			
-			while(m_pXMLAutomatonReader->processData(l_pXmlBuffer, l_iFileSize))
-			{
-			}
-			
+
+			m_pXMLAutomatonReader->processData(l_pXmlBuffer, l_iFileSize);
+
 			l_oFile.close();
 
 			return true;
@@ -65,32 +66,35 @@ namespace OpenViBEPlugins
 			m_pAutomatonContext(NULL),
 			m_bEndOfAutomaton(false),
 			m_ui64PreviousActivationTime(0)
-		{	
+		{
 		}
 
-		OpenViBE::boolean CXMLStimulationScenarioPlayer::initialize()
+		boolean CXMLStimulationScenarioPlayer::initialize()
 		{
 			m_bEndOfAutomaton = false;
 
 			m_pStimulationReaderCallBack=createBoxAlgorithmStimulationInputReaderCallback(*this);
 			m_pReader = EBML::createReader(*m_pStimulationReaderCallBack);
-		
+
 			m_pOutputWriterCallbackProxy = new EBML::TWriterCallbackProxy1<OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayer>(*this, &CXMLStimulationScenarioPlayer::writeStimulationOutput);
 
 			m_pWriter=EBML::createWriter(*m_pOutputWriterCallbackProxy);
 
 			m_pStimulationOutputWriterHelper=createBoxAlgorithmStimulationOutputWriter();
 
-
-			const IStaticBoxContext* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
-			OpenViBE::CString l_sFileName;
+			const IBox* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
+			CString l_sFileName;
 
 			m_pXMLAutomatonReader = Automaton::createXMLAutomatonReader();
-		
+
 			// Parses box settings to find input file's name
 			l_pBoxContext->getSettingValue(0, l_sFileName);
 
-			readAutomaton(l_sFileName);
+			if(!readAutomaton(l_sFileName))
+			{
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Could not read automaton file\n";
+				return false;
+			}
 
 			m_pAutomatonController = m_pXMLAutomatonReader->getAutomatonController();
 
@@ -101,14 +105,14 @@ namespace OpenViBEPlugins
 
 			m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter);
 			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, 0, 0);
-			
+
 			return true;
 		}
 
-		OpenViBE::boolean CXMLStimulationScenarioPlayer::uninitialize()
+		boolean CXMLStimulationScenarioPlayer::uninitialize()
 		{
 			releaseBoxAlgorithmStimulationInputReaderCallback(m_pStimulationReaderCallBack);
-		
+
 			delete m_pOutputWriterCallbackProxy;
 			m_pOutputWriterCallbackProxy= NULL;
 			m_pWriter->release();
@@ -124,8 +128,8 @@ namespace OpenViBEPlugins
 
 			return true;
 		}
-		
-		OpenViBE::boolean CXMLStimulationScenarioPlayer::processInput(OpenViBE::uint32 ui32InputIndex)
+
+		boolean CXMLStimulationScenarioPlayer::processInput(uint32 ui32InputIndex)
 		{
 			IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 
@@ -148,7 +152,7 @@ namespace OpenViBEPlugins
 			return true;
 		}
 
-		OpenViBE::boolean CXMLStimulationScenarioPlayer::processClock(OpenViBE::CMessageClock &rMessageClock)
+		boolean CXMLStimulationScenarioPlayer::processClock(CMessageClock &rMessageClock)
 		{
 			uint64 l_ui64CurrentTime = rMessageClock.getTime();
 
@@ -157,7 +161,6 @@ namespace OpenViBEPlugins
 			if(!m_bEndOfAutomaton)
 			{
 				//actualize context
-				
 				m_pAutomatonContext->setCurrentTime(rMessageClock.getTime());
 
 				for(size_t i=0 ; i<m_oStimulationReceived.size() ; i++)
@@ -166,12 +169,12 @@ namespace OpenViBEPlugins
 					m_pAutomatonContext->addReceivedEvent(l_oStimulationIdentifier);
 				}
 
-				//process	
+				//process
 				m_bEndOfAutomaton = m_pAutomatonController->process();
 
 				const Automaton::CIdentifier * l_pSentEvents = m_pAutomatonContext->getSentEvents();
-			
-				//set the number of stimulation to send	
+
+				//set the number of stimulation to send
 				m_pStimulationOutputWriterHelper->setStimulationCount(m_pAutomatonContext->getSentEventsCount());
 
 				//if there were stimulations
@@ -193,27 +196,25 @@ namespace OpenViBEPlugins
 
 				m_pAutomatonContext->clearSentEvents();
 
-
 				//TODO clear all events?? or just used ones?
 				m_pAutomatonContext->clearReceivedEvents();
 			}
-			
+
 			m_ui64PreviousActivationTime = l_ui64CurrentTime;
 
 			getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 
 			return true;
 		}
-		
-		OpenViBE::boolean CXMLStimulationScenarioPlayer::process()
+
+		boolean CXMLStimulationScenarioPlayer::process()
 		{
-
-		//	l_pDynamicBoxContext->markOutputAsReadyToSend(0, 0, 0);
-
+			// l_pDynamicBoxContext->markOutputAsReadyToSend(0, 0, 0);
 			return true;
 		}
 
 	};
 
 };
+
 

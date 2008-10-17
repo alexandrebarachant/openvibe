@@ -52,7 +52,7 @@ boolean CBoxAlgorithmClockStimulator::process(void)
 {
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
-	TParameterHandler < IStimulationSet* > ip_pStimulationSet(m_pStimulationEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_SimtulationSet));
+	TParameterHandler < IStimulationSet* > ip_pStimulationSet(m_pStimulationEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
 	TParameterHandler < IMemoryBuffer* > op_pMemoryBuffer(m_pStimulationEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
 	uint64 l_ui64CurrentTime=getPlayerContext().getCurrentTime();

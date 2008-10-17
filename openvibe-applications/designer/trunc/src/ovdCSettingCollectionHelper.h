@@ -1,5 +1,5 @@
-#ifndef __OpenViBEDesigner_CSettingEditor_H__
-#define __OpenViBEDesigner_CSettingEditor_H__
+#ifndef __OpenViBEDesigner_CSettingCollectionHelper_H__
+#define __OpenViBEDesigner_CSettingCollectionHelper_H__
 
 #include "ovd_base.h"
 
@@ -7,17 +7,14 @@
 
 namespace OpenViBEDesigner
 {
-	class CSettingEditor
+	class CSettingCollectionHelper
 	{
 	public:
 
-		CSettingEditor(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IBox& rBox, const char* sGUIFilename);
-		virtual ~CSettingEditor(void);
-		virtual void run(void);
+		CSettingCollectionHelper(OpenViBE::Kernel::IKernel& rKernel, const char* sGUIFilename);
+		virtual ~CSettingCollectionHelper(void);
 
-	protected:
-
-		std::string getSettingWidgetName(const OpenViBE::CIdentifier& rTypeIdentifier);
+		OpenViBE::CString getSettingWidgetName(const OpenViBE::CIdentifier& rTypeIdentifier);
 
 		OpenViBE::CString getValue(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget);
 		OpenViBE::CString getValueBoolean(::GtkWidget* pWidget);
@@ -40,9 +37,12 @@ namespace OpenViBEDesigner
 	protected:
 
 		OpenViBE::Kernel::IKernel& m_rKernel;
-		OpenViBE::Kernel::IBox& m_rBox;
-		const std::string m_sGUIFilename;
+		OpenViBE::CString m_sGUIFilename;
+
+	private:
+
+		CSettingCollectionHelper(void);
 	};
 };
 
-#endif // __OpenViBEDesigner_CSettingEditor_H__
+#endif // __OpenViBEDesigner_CSettingCollectionHelper_H__

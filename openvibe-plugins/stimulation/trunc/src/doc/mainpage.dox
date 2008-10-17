@@ -1,9 +1,0 @@
-/*!
-  \mainpage
-
-  Here is the documentation for the stimulation plugins :
-
-  - \ref Doc_ovpCKeyboardStimulator
-  - \ref Doc_ovpCXMLStimulationScenarioPlayer
-
- */

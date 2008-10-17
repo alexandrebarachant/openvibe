@@ -22,7 +22,7 @@ namespace
 		Color_BoxBackground,
 		Color_BoxBackgroundSelected,
 		Color_BoxBackgroundMissing,
-		Color_BoxBackgroundObsolete,
+		Color_BoxBackgroundDeprecated,
 		Color_BoxBorder,
 		Color_BoxBorderSelected,
 		Color_BoxInputBackground,
@@ -128,7 +128,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::CPluginObjectDescEnumBoxAlgo
 	gdk_color_set(m_vColors[Color_BackgroundPlayerStarted], 32767, 32767, 32767);
 	gdk_color_set(m_vColors[Color_BoxBackgroundSelected],   65535, 65535, 49151);
 	gdk_color_set(m_vColors[Color_BoxBackgroundMissing],    49151, 32767, 32767);
-	gdk_color_set(m_vColors[Color_BoxBackgroundObsolete],   32767, 49151, 49151);
+	gdk_color_set(m_vColors[Color_BoxBackgroundDeprecated], 16383, 24575, 24575);
 	gdk_color_set(m_vColors[Color_BoxBackground],           65535, 65535, 65535);
 	gdk_color_set(m_vColors[Color_BoxBorderSelected],           0,     0,     0);
 	gdk_color_set(m_vColors[Color_BoxBorder],                   0,     0,     0);
@@ -156,7 +156,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlg
 	m_rKernelContext.getScenarioManager().releaseScenario(m_oScenarioIdentifier);
 
 	std::ofstream l_oBoxAlgorithmsFile;
-	l_oBoxAlgorithmsFile.open("box_algorithms.dox");
+	l_oBoxAlgorithmsFile.open("Doc_BoxAlgorithms.dox");
 	l_oBoxAlgorithmsFile
 		<< "/**\n"
 		<< " * \\page Doc_BoxAlgorithms Box algorithms list\n"
@@ -219,7 +219,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlg
 		l_oBoxAlgorithmsFile << " * ";
 		for(uint32 k=0; k<l_ui32Level+1; k++)
 			l_oBoxAlgorithmsFile << "   ";
-		l_oBoxAlgorithmsFile << " - \\subpage Doc_box_algorithm_" << transform((l_sCategory+"/"+l_sName).c_str()).toASCIIString() << " \"" << l_sName << "\"\n";
+		l_oBoxAlgorithmsFile << " - \\subpage Doc_BoxAlgorithm_" << transform(l_sName.c_str()).toASCIIString() << " \"" << l_sName << "\"\n";
 	}
 
 	l_oBoxAlgorithmsFile << " */\n";
@@ -229,7 +229,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlg
 boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPluginObjectDesc& rPluginObjectDesc)
 {
 	CString l_sFullName=rPluginObjectDesc.getCategory() + "/" + rPluginObjectDesc.getName();
-	CString l_sFilename=CString("box_algorithm_")+transform(l_sFullName);
+	CString l_sFilename=CString("Doc_BoxAlgorithm_")+(transform(rPluginObjectDesc.getName()));
 	CIdentifier l_oBoxIdentifier;
 	if(!m_pScenario->addBox(rPluginObjectDesc.getCreatedClassIdentifier(), l_oBoxIdentifier))
 	{
@@ -237,6 +237,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 		return true;
 	}
 	IBox& l_rBox=*m_pScenario->getBoxDetails(l_oBoxIdentifier);
+	IBox& rBox=*m_pScenario->getBoxDetails(l_oBoxIdentifier);
 
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "Working on [" << l_sFilename << "]\n";
 
@@ -248,12 +249,11 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 	pango_layout_set_text(l_pPangoLayout, rPluginObjectDesc.getName(), -1);
 	pango_layout_get_pixel_extents(l_pPangoLayout, NULL, &l_oPangoRectangle);
 
-	uint32 i;
-	const int xMargin=5;
-	const int yMargin=5;
-	const int iCircleMargin=5;
-	const int iCircleSize=11;
-	const int iCircleSpace=4;
+		uint32 i;
+		const int xMargin=5;
+		const int yMargin=5;
+		const int iCircleSize=11;
+		const int iCircleSpace=4;
 
 	int xSize=l_oPangoRectangle.width+xMargin*2;
 	int ySize=l_oPangoRectangle.height+yMargin*2;
@@ -272,7 +272,16 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 
 	::GdkGC* l_pDrawGC=gdk_gc_new(m_pWidget->window);
 
-	gdk_gc_set_rgb_fg_color(l_pDrawGC, &m_vColors[Color_BoxBackground]);
+		boolean l_bDeprecated=rBox.hasAttribute(OV_AttributeId_Box_FlagIsDeprecated);
+		if(l_bDeprecated)
+		{
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &m_vColors[Color_BoxBackgroundDeprecated]);
+		}
+		else
+		{
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &m_vColors[Color_BoxBackground]);
+		}
+
 	gdk_draw_rounded_rectangle(
 		m_pWidget->window,
 		l_pDrawGC,
@@ -292,18 +301,18 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 		l_rBox.getInputType(i, l_oInputIdentifier);
 		::GdkColor l_oInputColor=colorFromIdentifier(l_oInputIdentifier);
 
-		::GdkPoint l_vPoint[4];
-		l_vPoint[0].x=iCircleSize>>1;
-		l_vPoint[0].y=iCircleSize;
-		l_vPoint[1].x=0;
-		l_vPoint[1].y=0;
-		l_vPoint[2].x=iCircleSize-1;
-		l_vPoint[2].y=0;
-		for(int j=0; j<3; j++)
-		{
-			l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+l_iInputOffset;
-			l_vPoint[j].y+=yStart-(iCircleSize>>1);
-		}
+			::GdkPoint l_vPoint[4];
+			l_vPoint[0].x=iCircleSize>>1;
+			l_vPoint[0].y=iCircleSize;
+			l_vPoint[1].x=0;
+			l_vPoint[1].y=0;
+			l_vPoint[2].x=iCircleSize-1;
+			l_vPoint[2].y=0;
+			for(int j=0; j<3; j++)
+			{
+				l_vPoint[j].x+=xStart+i*(iCircleSpace+iCircleSize)+l_iInputOffset;
+				l_vPoint[j].y+=yStart-(iCircleSize>>1);
+			}
 
 		gdk_gc_set_rgb_fg_color(l_pDrawGC, &l_oInputColor);
 		gdk_draw_polygon(
@@ -328,18 +337,18 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 		l_rBox.getOutputType(i, l_oOutputIdentifier);
 		::GdkColor l_oOutputColor=colorFromIdentifier(l_oOutputIdentifier);
 
-		::GdkPoint l_vPoint[4];
-		l_vPoint[0].x=iCircleSize>>1;
-		l_vPoint[0].y=iCircleSize;
-		l_vPoint[1].x=0;
-		l_vPoint[1].y=0;
-		l_vPoint[2].x=iCircleSize-1;
-		l_vPoint[2].y=0;
-		for(int j=0; j<3; j++)
-		{
-			l_vPoint[j].x+=xStart+iCircleMargin+i*(iCircleSpace+iCircleSize)+l_iOutputOffset;
-			l_vPoint[j].y+=yStart-(iCircleSize>>1)+ySize;
-		}
+			::GdkPoint l_vPoint[4];
+			l_vPoint[0].x=iCircleSize>>1;
+			l_vPoint[0].y=iCircleSize;
+			l_vPoint[1].x=0;
+			l_vPoint[1].y=0;
+			l_vPoint[2].x=iCircleSize-1;
+			l_vPoint[2].y=0;
+			for(int j=0; j<3; j++)
+			{
+				l_vPoint[j].x+=xStart+i*(iCircleSpace+iCircleSize)+l_iOutputOffset;
+				l_vPoint[j].y+=yStart-(iCircleSize>>1)+ySize;
+			}
 
 		gdk_gc_set_rgb_fg_color(l_pDrawGC, &l_oOutputColor);
 		gdk_draw_polygon(
@@ -380,12 +389,12 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 	m_vCategories.push_back(pair < string, string >(rPluginObjectDesc.getCategory().toASCIIString(), rPluginObjectDesc.getName().toASCIIString()));
 
 	std::ofstream l_oFile;
-	l_oFile.open((l_sFilename+".dox").toASCIIString());
+	l_oFile.open((l_sFilename+".dox-skeleton").toASCIIString());
 
 	l_oFile
 		<< "/**\n"
-		<< " * \\page Doc_" << l_sFilename.toASCIIString() << " " << l_sFullName.toASCIIString() << "\n"
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_summary Summary\n"
+		<< " * \\page " << l_sFilename.toASCIIString() << " " << rPluginObjectDesc.getName().toASCIIString() << "\n"
+		<< " * \\section " << l_sFilename.toASCIIString() << "_Summary Summary\n"
 		<< " * \\image html " << l_sFilename.toASCIIString() << ".png\n"
 		<< " *\n"
 		<< " * - Plugin name : " << rPluginObjectDesc.getName() << "\n"
@@ -395,73 +404,95 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 		<< " * - Short description : " << rPluginObjectDesc.getShortDescription() << "\n"
 		<< " * - Documentation template generation date : " << __DATE__ << "\n"
 		<< " *\n"
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_description Description\n"
-		<< " * " << rPluginObjectDesc.getDetailedDescription() << " TODO\n"
-		<< " *\n";
-
-	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_inputs Inputs\n"
-		<< " * Number of inputs : " << l_rBox.getInputCount() << "\n"
-		<< " *\n";
-	for(i=0; i<l_rBox.getInputCount(); i++)
-	{
-		CString l_sName;
-		CIdentifier l_oTypeIdentifier;
-		l_rBox.getInputName(i, l_sName);
-		l_rBox.getInputType(i, l_oTypeIdentifier);
-		l_oFile
-			<< " * - Input " << i+1 << "\n"
-			<< " *  - Name : " << l_sName.toASCIIString() << "\n"
-			<< " *  - Type identifier : " << m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier).toASCIIString() << " " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
-			<< " *  - Description : TODO\n"
-			<< " *\n";
-	}
-
-	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_outputs Outputs\n"
-		<< " * Number of outputs : " << l_rBox.getOutputCount() << "\n"
-		<< " *\n";
-	for(i=0; i<l_rBox.getOutputCount(); i++)
-	{
-		CString l_sName;
-		CIdentifier l_oTypeIdentifier;
-		l_rBox.getOutputName(i, l_sName);
-		l_rBox.getOutputType(i, l_oTypeIdentifier);
-		l_oFile
-			<< " * - Output " << i+1 << "\n"
-			<< " *  - Name : " << l_sName.toASCIIString() << "\n"
-			<< " *  - Type identifier : " << m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier).toASCIIString() << " " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
-			<< " *  - Description : TODO\n"
-			<< " *\n";
-	}
-
-	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_settings Settings\n"
-		<< " * Number of settings : " << l_rBox.getSettingCount() << "\n"
-		<< " *\n";
-	for(i=0; i<l_rBox.getSettingCount(); i++)
-	{
-		CString l_sName;
-		CIdentifier l_oTypeIdentifier;
-		CString l_sDefaultValue;
-		l_rBox.getSettingName(i, l_sName);
-		l_rBox.getSettingType(i, l_oTypeIdentifier);
-		l_rBox.getSettingDefaultValue(i, l_sDefaultValue);
-		l_oFile
-			<< " * - Setting " << i+1 << "\n"
-			<< " *  - Name : " << l_sName.toASCIIString() << "\n"
-			<< " *  - Type identifier : " << m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier).toASCIIString() << " " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
-			<< " *  - Default value : " << l_sDefaultValue.toASCIIString() << "\n"
-			<< " *  - Description : TODO\n"
-			<< " *\n";
-	}
-
-	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_examples Examples\n"
-		<< " * TODO\n"
+		<< " * \\section " << l_sFilename.toASCIIString() << "_Description Description\n"
+		<< " * " << rPluginObjectDesc.getDetailedDescription() << "\n"
 		<< " *\n"
-		<< " *  \\section Doc_" << l_sFilename.toASCIIString() << "_misc Miscellaneous\n"
-		<< " * TODO\n"
+		<< " * @" << l_sFilename.toASCIIString() << "_Description_Content@\n"
+		<< " *\n";
+
+	if(l_rBox.getInputCount())
+	{
+		l_oFile
+			<< " * \\section " << l_sFilename.toASCIIString() << "_Inputs Inputs\n"
+			// << " * Number of inputs : " << l_rBox.getInputCount() << "\n"
+			<< " *\n"
+			<< " * @" << l_sFilename.toASCIIString() << "_Inputs_Content@\n";
+		for(i=0; i<l_rBox.getInputCount(); i++)
+		{
+			CString l_sName;
+			CIdentifier l_oTypeIdentifier;
+			CString l_sTypeName;
+			l_rBox.getInputName(i, l_sName);
+			l_rBox.getInputType(i, l_oTypeIdentifier);
+			l_sTypeName=m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier);
+			l_oFile
+				<< " * \\subsection " << l_sFilename.toASCIIString() << "_Input_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
+				<< " * Type identifier of this input is \\ref Doc_Streams_" << transform(l_sTypeName).toASCIIString() << " \"" << l_sTypeName.toASCIIString() << "\" " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
+				<< " *\n"
+				<< " * @" << l_sFilename.toASCIIString() << "_Input" << i+1 << "_Content@\n"
+				<< " *\n";
+		}
+	}
+
+	if(l_rBox.getOutputCount())
+	{
+		l_oFile
+			<< " * \\section " << l_sFilename.toASCIIString() << "_Outputs Outputs\n"
+			// << " * Number of outputs : " << l_rBox.getOutputCount() << "\n"
+			<< " *\n"
+			<< " * @" << l_sFilename.toASCIIString() << "_Outputs_Content@\n";
+		for(i=0; i<l_rBox.getOutputCount(); i++)
+		{
+			CString l_sName;
+			CIdentifier l_oTypeIdentifier;
+			CString l_sTypeName;
+			l_rBox.getOutputName(i, l_sName);
+			l_rBox.getOutputType(i, l_oTypeIdentifier);
+			l_sTypeName=m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier);
+			l_oFile
+				<< " * \\subsection " << l_sFilename.toASCIIString() << "_Output_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
+				<< " * Type identifier of this output is \\ref Doc_Streams_" << transform(l_sTypeName).toASCIIString() << " \"" << l_sTypeName.toASCIIString() << "\" " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
+				<< " *\n"
+				<< " * @" << l_sFilename.toASCIIString() << "_Output" << i+1 << "_Content@\n"
+				<< " *\n";
+		}
+	}
+
+	if(l_rBox.getSettingCount())
+	{
+		l_oFile
+			<< " * \\section " << l_sFilename.toASCIIString() << "_Settings Settings\n"
+			// << " * Number of settings : " << l_rBox.getSettingCount() << "\n"
+			<< " *\n"
+			<< " * @" << l_sFilename.toASCIIString() << "_Settings_Content@\n";
+		for(i=0; i<l_rBox.getSettingCount(); i++)
+		{
+			CString l_sName;
+			CIdentifier l_oTypeIdentifier;
+			CString l_sDefaultValue;
+			CString l_sTypeName;
+			l_rBox.getSettingName(i, l_sName);
+			l_rBox.getSettingType(i, l_oTypeIdentifier);
+			l_rBox.getSettingDefaultValue(i, l_sDefaultValue);
+			l_sTypeName=m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier);
+			l_oFile
+				<< " * \\subsection " << l_sFilename.toASCIIString() << "_Setting_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
+				<< " * Type identifier of this setting is \\ref Doc_Types_" << transform(l_sTypeName).toASCIIString() << " \"" << l_sTypeName.toASCIIString() << "\" " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
+				<< " *\n"
+				<< " * Default value of this setting is " << l_sDefaultValue.toASCIIString() << "\n"
+				<< " *\n"
+				<< " * @" << l_sFilename.toASCIIString() << "_Setting" << i+1 << "_Content@\n"
+				<< " *\n";
+		}
+	}
+
+	l_oFile
+		<< " *\n"
+		<< " * \\section " << l_sFilename.toASCIIString() << "_Examples Examples\n"
+		<< " * @" << l_sFilename.toASCIIString() << "_Examples_Content@\n"
+		<< " *\n"
+		<< " *  \\section " << l_sFilename.toASCIIString() << "_Miscellaneous Miscellaneous\n"
+		<< " * @" << l_sFilename.toASCIIString() << "_Miscellaneous_Content@\n"
 		<< " */";
 
 	l_oFile.close();

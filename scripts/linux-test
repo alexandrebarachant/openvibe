@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [ ! -e linux-init_env_command ]; then
-	echo You have to configure your \`linux-init_env_command\` file.
-	echo \`linux-init_env_command-skeleton\` is a good file to start with...
+	echo "You have to configure your \`linux-init_env_command\` file."
+	echo "\`linux-init_env_command-skeleton\` is a good file to start with..."
 	exit
 fi
 
@@ -19,10 +19,10 @@ killall OpenViBE-plugin-inspector-dynamic
 killall OpenViBE-acquisition-server-dynamic
 killall OpenViBE-designer-dynamic
 
-# ./OpenViBE-id-generator-dynamic
-# ./OpenViBE-plugin-inspector-dynamic
-# ./OpenViBE-acquisition-server-dynamic
-# ./OpenViBE-omk-test-dynamic ../share/sample-52.OpenMASK3
+#gdb ./OpenViBE-id-generator-dynamic
+#gdb ./OpenViBE-plugin-inspector-dynamic
+#gdb ./OpenViBE-acquisition-server-dynamic
+#gdb ./OpenViBE-designer-dynamic
+
 ./OpenViBE-acquisition-server-dynamic &
 ./OpenViBE-designer-dynamic &
-# kdbg ./OpenViBE-designer-dynamic

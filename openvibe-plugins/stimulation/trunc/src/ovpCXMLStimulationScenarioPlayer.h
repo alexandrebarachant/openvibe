@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean process();
 
-			virtual OpenViBE::boolean readAutomaton(OpenViBE::CString& oFilename);
+			virtual OpenViBE::boolean readAutomaton(const OpenViBE::CString& oFilename);
 
 			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
 			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);

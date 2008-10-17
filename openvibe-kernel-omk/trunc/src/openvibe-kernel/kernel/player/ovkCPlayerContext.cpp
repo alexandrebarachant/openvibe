@@ -120,6 +120,7 @@ namespace OpenViBE
 
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isRegistered, const, const CIdentifier&, rTypeIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isStream, const, const CIdentifier&, rTypeIdentifier)
+				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, isDerivedFromStream, const, const CIdentifier&, rTypeIdentifier, const CIdentifier&, rParentTypeIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isEnumeration, const, const CIdentifier&, rTypeIdentifier)
 				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isBitMask, const, const CIdentifier&, rTypeIdentifier)
 

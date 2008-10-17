@@ -140,7 +140,7 @@ mkdir "$ov_target_folder_lib" 2> /dev/null
 ##############################################
 
 # package management related packages
-ov_package_url_cmake=http://www.cmake.org/files/v2.4/cmake-2.4.8-Linux-i386.tar.gz
+ov_package_url_cmake=http://www.cmake.org/files/v2.6/cmake-2.6.2-Linux-i386.tar.gz
 ov_package_url_pkgconfig=http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
 
 # base libraries
@@ -191,7 +191,7 @@ ov_package_url_pango=$ov_gnome_mirror/sources/pango/1.21/pango-1.21.3.tar.bz2
 ov_package_url_atk=$ov_gnome_mirror/sources/atk/1.22/atk-1.22.0.tar.bz2
 ov_package_url_gtk=$ov_gnome_mirror/sources/gtk+/2.12/gtk+-2.12.11.tar.bz2
 ov_package_url_clearlooks=$ov_sourceforge_mirror/clearlooks/clearlooks-0.6.2.tar.bz2
-ov_package_url_libglade=$ov_gnome_mirror/sources/libglade/2.6/libglade-2.6.2.tar.bz2
+ov_package_url_libglade=$ov_gnome_mirror/sources/libglade/2.6/libglade-2.6.3.tar.bz2
 ov_package_url_glade=$ov_gnome_mirror/sources/glade3/3.5/glade3-3.5.2.tar.bz2
 
 # Computation and signal processing packages
@@ -339,6 +339,9 @@ ov_package_make_hook_mesa='
 	pushd * &&
 	make linux-x86 &&
 	popd'
+
+ov_package_additional_configure_flags_pixman='
+	--disable-gtk'
 
 ov_package_additional_configure_flags_gtk='
 	--without-libtiff

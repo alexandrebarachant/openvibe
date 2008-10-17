@@ -69,6 +69,7 @@
 #include "kernel/scenario/ovIAttributable.h"
 #include "kernel/scenario/ovIBox.h"
 #include "kernel/scenario/ovIBoxIO.h"
+#include "kernel/scenario/ovIBoxListenerContext.h"
 #include "kernel/scenario/ovIBoxProto.h"
 #include "kernel/scenario/ovILink.h"
 #include "kernel/scenario/ovIProcessingUnit.h"

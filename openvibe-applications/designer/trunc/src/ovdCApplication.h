@@ -102,6 +102,13 @@ namespace OpenViBEDesigner
 
 		//@}
 
+		/** \name CPU usage */
+		//@{
+
+		void CPUUsageCB(void);
+
+		//@}
+
 		/** \name Gtk callbacks */
 		//@{
 
@@ -131,6 +138,7 @@ namespace OpenViBEDesigner
 		static void play_scenario_cb(::GtkButton* pButton, gpointer pUserData);
 		static void forward_scenario_cb(::GtkButton* pButton, gpointer pUserData);
 		static void log_level_cb(::GtkButton* pButton, gpointer pUserData);
+		static void cpu_usage_cb(::GtkToggleButton* pButton, gpointer pUserData);
 		static gboolean change_current_scenario_cb(::GtkNotebook* pNotebook, ::GtkNotebookPage* pNotebookPage, guint uiPageNumber, gpointer pUserData);
 		static void box_algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData);
 		static void box_algorithm_title_button_collapse_cb(::GtkButton* pButton, gpointer pUserData);

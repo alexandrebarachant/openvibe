@@ -31,3 +31,21 @@ uint32 CBoxProto::addSetting(
 {
 	return m_rBox.addSetting(sName, rTypeIdentifier, sDefaultValue);
 }
+
+boolean CBoxProto::addFlag(
+	const EBoxFlag eBoxFlag)
+{
+	switch (eBoxFlag)
+	{
+		case BoxFlag_CanAddInput: m_rBox.addAttribute(OV_AttributeId_Box_FlagCanAddInput, ""); break;
+		case BoxFlag_CanModifyInput: m_rBox.addAttribute(OV_AttributeId_Box_FlagCanModifyInput, ""); break;
+		case BoxFlag_CanAddOutput: m_rBox.addAttribute(OV_AttributeId_Box_FlagCanAddOutput, ""); break;
+		case BoxFlag_CanModifyOutput: m_rBox.addAttribute(OV_AttributeId_Box_FlagCanModifyOutput, ""); break;
+		case BoxFlag_CanAddSetting: m_rBox.addAttribute(OV_AttributeId_Box_FlagCanAddSetting, ""); break;
+		case BoxFlag_CanModifySetting: m_rBox.addAttribute(OV_AttributeId_Box_FlagCanModifySetting, ""); break;
+		case BoxFlag_IsDeprecated: m_rBox.addAttribute(OV_AttributeId_Box_FlagIsDeprecated, ""); break;
+		default:
+			return false;
+	}
+	return true;
+}

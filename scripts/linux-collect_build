@@ -10,22 +10,23 @@ source linux-init_env_command
 
 target_dist=../dist
 
-rm -rf $target_dist/bin 2> /dev/null
-rm -rf $target_dist/include 2> /dev/null
-rm -rf $target_dist/lib 2> /dev/null
-rm -rf $target_dist/share 2> /dev/null
-rm -rf $target_dist/data 2> /dev/null
+rm -rf $target_dist/bin       2> /dev/null
+rm -rf $target_dist/include   2> /dev/null
+rm -rf $target_dist/lib       2> /dev/null
+rm -rf $target_dist/share     2> /dev/null
+rm -rf $target_dist/data      2> /dev/null
 
-mkdir -p $target_dist/bin 2> /dev/null
+mkdir -p $target_dist/bin     2> /dev/null
 mkdir -p $target_dist/include 2> /dev/null
-mkdir -p $target_dist/lib 2> /dev/null
-mkdir -p $target_dist/share 2> /dev/null
-mkdir -p $target_dist/data 2> /dev/null
+mkdir -p $target_dist/lib     2> /dev/null
+mkdir -p $target_dist/share   2> /dev/null
+mkdir -p $target_dist/data    2> /dev/null
 
 for project_directory in $OpenViBE_build_order; do
-	cp -rf $project_directory/bin/*     $target_dist/bin 2> /dev/null
+	cp -rf $project_directory/bin/*     $target_dist/bin     2> /dev/null
 	cp -rf $project_directory/include/* $target_dist/include 2> /dev/null
-	cp -rf $project_directory/lib/*.a*  $target_dist/lib 2> /dev/null
-	cp -rf $project_directory/lib/*.so* $target_dist/lib 2> /dev/null
-	cp -rf $project_directory/share/*   $target_dist/share 2> /dev/null
+	cp -rf $project_directory/lib/*.a*  $target_dist/lib     2> /dev/null
+	cp -rf $project_directory/lib/*.so* $target_dist/lib     2> /dev/null
+	cp -rf $project_directory/share/*   $target_dist/share   2> /dev/null
 done
+

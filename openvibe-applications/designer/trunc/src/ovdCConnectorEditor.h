@@ -13,7 +13,7 @@ namespace OpenViBEDesigner
 
 		CConnectorEditor(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32ConnectorType, OpenViBE::uint32 ui32ConnectorIndex, const char* sGUIFilename);
 		virtual ~CConnectorEditor(void);
-		virtual void run(void);
+		virtual OpenViBE::boolean run(void);
 
 	protected:
 

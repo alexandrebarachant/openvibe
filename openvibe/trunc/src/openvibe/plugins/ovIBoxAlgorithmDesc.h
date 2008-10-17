@@ -9,29 +9,12 @@ namespace OpenViBE
 	{
 		class IBoxProto;
 		class IBoxAlgorithmContext;
-
-		/**
-		 * \brief This enum lists all the way a box can be modified
-		 * \sa OpenViBE::Plugins::IBoxAlgorithmDesc::boxModificationCallback
-		 */
-		enum EBoxModification
-		{
-			BoxModification_InputAdded,
-			BoxModification_InputRemoved,
-			BoxModification_InputTypeChanged,
-			BoxModification_OutputAdded,
-			BoxModification_OutputRemoved,
-			BoxModification_OutputTypeChanged,
-			BoxModification_SettingAdded,
-			BoxModification_SettingRemoved,
-			BoxModification_SettingTypeChanged,
-			BoxModification_SettingDefaultValueChanged,
-			BoxModification_SettingValueChanged,
-		};
 	};
 
 	namespace Plugins
 	{
+		class IBoxListener;
+
 		/**
 		 * \class IBoxAlgorithmDesc
 		 * \author Yann Renard (INRIA/IRISA)
@@ -85,32 +68,36 @@ namespace OpenViBE
 				return OpenViBE::CString("");
 			}
 
-			//@}
-			/** \name Box modifications callbacks */
+			//@{
+			/** \name Box modification monitoring */
 			//@{
 
 			/**
-			 * \brief This callback is called when the box is modified in some way
-			 * \param rBoxAlgorithmContext [in] : the box algorithm context
-			 *        containing the static description of the box
-			 * \param eBoxModificationType [in] : the type of modification
-			 *        applied to the box
+			 * \brief Creates a new box listener
+			 * \return a new box listener
 			 *
-			 * This function is called as soon as a modification is done
-			 * on a box of this algorithm class. The algorithm descriptor
-			 * is then allowed to examine and check box status validity
-			 * and to adpat the box itself according to this validity.
+			 * This function is called by the kernel when a box instance
+			 * is created if any modification flag is set in its prototype.
+			 * This box listener will be notified each time the box is modified.
 			 *
-			 * In such context, the box algorithm descriptor should
-			 * only access the static box context. Neither the dynamic box,
-			 * the player context nor the box state marker will be valid !
-			 *
-			 * \sa OpenViBE::Plugins::IBoxProto
-			 * \sa OpenViBE::Plugins::EBoxModification
+			 * \sa OpenViBE::Kernel::IBoxProto
+			 * \sa OpenViBE::Plugins::IBoxListener
 			 */
-			virtual void boxModificationCallback(
-				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				const OpenViBE::Kernel::EBoxModification eBoxModificationType) const
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const
+			{
+				return NULL;
+			}
+			/**
+			 * \brief Releases an existing box listener
+			 * \param pBoxListener [in] : the box listener to release
+			 *
+			 * This function is called by the kernel as soon as it knows
+			 * a box listener won't be used any more. In case this descriptor
+			 * allocated some memory for this box listener, this memory
+			 * can be freed safely, no more call will be done on this
+			 * box listener.
+			 */
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const
 			{
 			}
 

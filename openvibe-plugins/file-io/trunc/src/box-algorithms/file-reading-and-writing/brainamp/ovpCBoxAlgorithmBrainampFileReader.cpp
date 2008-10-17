@@ -53,7 +53,7 @@ boolean CBoxAlgorithmBrainampFileReader::initialize(void)
 	TParameterHandler < IMatrix* > ip_pSignalMatrix(m_pSignalStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix));
 
 	// Stimulation stream encoder parameters
-	TParameterHandler < IStimulationSet* > ip_pStimulations(m_pStimulationStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_SimtulationSet));
+	TParameterHandler < IStimulationSet* > ip_pStimulations(m_pStimulationStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
 
 	// Connect parameters together
 	ip_ui64SamplingRate.setReferenceTarget(op_ui64SamplingRate);
