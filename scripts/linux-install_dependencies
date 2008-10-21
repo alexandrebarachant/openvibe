@@ -55,6 +55,7 @@ ov_gcc=`which gcc`
 ov_gpp=`which g++`
 ov_g77=`which g77`
 ov_sed=`which sed`
+ov_find=`which find`
 ov_true=`which true`
 ov_false=`which false`
 
@@ -70,6 +71,7 @@ echo "  Using as gcc        : [$ov_gcc]..."
 echo "  Using as g++        : [$ov_gpp]..."
 echo "  Using as g77        : [$ov_g77]..."
 echo "  Using as sed        : [$ov_sed]..."
+echo "  Using as find       : [$ov_find]..."
 echo "  Using as true       : [$ov_true]..."
 echo "  Using as false      : [$ov_false]..."
 
@@ -150,7 +152,7 @@ ov_package_url_libxml=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.31.tar.gz
 ov_package_url_gettext=$ov_gnu_mirror/gettext/gettext-0.16.1.tar.gz
 ov_package_url_pthreadstubs=$ov_freedesktop_mirror/releases/individual/lib/libpthread-stubs-0.1.tar.bz2
 ov_package_url_zlib=$ov_sourceforge_mirror/libpng/zlib-1.2.3.tar.gz
-ov_package_url_libpng=$ov_sourceforge_mirror/libpng/libpng-1.2.18.tar.gz
+ov_package_url_libpng=$ov_sourceforge_mirror/libpng/libpng-1.2.32.tar.gz
 ov_package_url_freetype=$ov_sourceforge_mirror/freetype/freetype-2.3.4.tar.gz
 ov_package_url_fontconfig=$ov_freedesktop_mirror/releases/X11R7.2/src/extras/fontconfig-2.4.2.tar.gz
 ov_package_url_libtool=$ov_gnu_mirror/libtool/libtool-1.5.22.tar.gz
@@ -396,11 +398,18 @@ ov_package_configure_hook_freeimage='
 	pushd * &&
 	$ov_sed -i "s#INCDIR = /usr/include#INCDIR = $ov_target_folder_include#g" Makefile.gnu &&
 	$ov_sed -i "s#INSTALLDIR = /usr/lib#INSTALLDIR = $ov_target_folder_lib#g" Makefile.gnu &&
-	$ov_sed -i "s#INSTALLDIR = /usr/lib#INSTALLDIR = $ov_target_folder_lib#g" Makefile.gnu &&
 	$ov_sed -i "s# -fvisibility=hidden##g" Makefile.gnu &&
 	$ov_sed -i "s# -o root##g" Makefile.gnu &&
 	$ov_sed -i "s# -g root##g" Makefile.gnu &&
 	$ov_sed -i "s#ldconfig##g" Makefile.gnu &&
+	$ov_find Source -wholename \*.h\* -exec $ov_sed -i "s#png_#FI_png_#g" "{}" \; &&
+	$ov_find Source -wholename \*.c\* -exec $ov_sed -i "s#png_#FI_png_#g" "{}" \; &&
+	$ov_find Source -wholename \*.h\* -exec $ov_sed -i "s#PNG_#FI_PNG_#g" "{}" \; &&
+	$ov_find Source -wholename \*.c\* -exec $ov_sed -i "s#PNG_#FI_PNG_#g" "{}" \; &&
+	$ov_find Source -wholename \*.h\* -exec $ov_sed -i "s#z_#FI_z_#g" "{}" \; &&
+	$ov_find Source -wholename \*.c\* -exec $ov_sed -i "s#z_#FI_z_#g" "{}" \; &&
+	$ov_find Source -wholename \*.h\* -exec $ov_sed -i "s#Z_#FI_Z_#g" "{}" \; &&
+	$ov_find Source -wholename \*.c\* -exec $ov_sed -i "s#Z_#FI_Z_#g" "{}" \; &&
 	popd'
 
 ov_package_configure_hook_ois='
