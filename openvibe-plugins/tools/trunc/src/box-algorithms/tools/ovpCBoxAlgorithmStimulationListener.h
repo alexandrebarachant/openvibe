@@ -43,7 +43,7 @@ namespace OpenViBEPlugins
 
 				for(i=0; i<rBox.getInputCount(); i++)
 				{
-					sprintf(l_sName, "Stimulation stream %lu", i+1);
+					sprintf(l_sName, "Stimulation stream %u", i+1);
 					rBox.setInputName(i, l_sName);
 					rBox.setInputType(i, OV_TypeId_Stimulations);
 				}

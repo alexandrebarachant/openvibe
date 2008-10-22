@@ -60,18 +60,18 @@ namespace OpenViBEPlugins
 
 				for(i=0; i<rBox.getInputCount(); i++)
 				{
-					sprintf(l_sName, "Input %lu", i+1);
+					sprintf(l_sName, "Input %u", i+1);
 					rBox.setInputName(i, l_sName);
 					rBox.setInputType(i, OV_TypeId_Stimulations);
 				}
 
 				for(i=0; i<rBox.getInputCount(); i++)
 				{
-					sprintf(l_sName, "Button %lu ON", i+1);
+					sprintf(l_sName, "Button %u ON", i+1);
 					rBox.setSettingName(i*2+1, l_sName);
 					rBox.setSettingType(i*2+1, OV_TypeId_Stimulation);
 
-					sprintf(l_sName, "Button %lu OFF", i+1);
+					sprintf(l_sName, "Button %u OFF", i+1);
 					rBox.setSettingName(i*2+2, l_sName);
 					rBox.setSettingType(i*2+2, OV_TypeId_Stimulation);
 				}

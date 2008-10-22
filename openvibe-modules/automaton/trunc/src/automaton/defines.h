@@ -8,26 +8,26 @@
 //                                                                   //
 
 
-#define Automaton_Node_Identifier_Automaton		Automaton::CIdentifier(0x00000000)
-#define Automaton_Node_Identifier_No_Node		Automaton::CIdentifier(0x00000001)
-#define Automaton_Node_Identifier_Action		Automaton::CIdentifier(0x00000010)
-#define Automaton_Node_Identifier_ActionSendEvent	Automaton::CIdentifier(0x00000011)
-#define Automaton_Node_Identifier_ActionWaitEvent	Automaton::CIdentifier(0x00000012)
-#define Automaton_Node_Identifier_ActionWaitTime	Automaton::CIdentifier(0x00000013)
+#define Automaton_Node_Identifier_Automaton         Automaton::CIdentifier(0x00000000)
+#define Automaton_Node_Identifier_No_Node           Automaton::CIdentifier(0x00000001)
+#define Automaton_Node_Identifier_Action            Automaton::CIdentifier(0x00000010)
+#define Automaton_Node_Identifier_ActionSendEvent   Automaton::CIdentifier(0x00000011)
+#define Automaton_Node_Identifier_ActionWaitEvent   Automaton::CIdentifier(0x00000012)
+#define Automaton_Node_Identifier_ActionWaitTime    Automaton::CIdentifier(0x00000013)
 
-#define Automaton_Node_Identifier_Loop			Automaton::CIdentifier(0x00000021)
-#define Automaton_Node_Identifier_LoopFinite		Automaton::CIdentifier(0x00000022)
-#define Automaton_Node_Identifier_LoopInfinite		Automaton::CIdentifier(0x00000023)
-#define Automaton_Node_Identifier_LoopWaitEvent		Automaton::CIdentifier(0x00000024)
+#define Automaton_Node_Identifier_Loop              Automaton::CIdentifier(0x00000021)
+#define Automaton_Node_Identifier_LoopFinite        Automaton::CIdentifier(0x00000022)
+#define Automaton_Node_Identifier_LoopInfinite      Automaton::CIdentifier(0x00000023)
+#define Automaton_Node_Identifier_LoopWaitEvent     Automaton::CIdentifier(0x00000024)
 
-#define Automaton_Node_Identifier_Switch		Automaton::CIdentifier(0x00000031)
-#define Automaton_Node_Identifier_SwitchProbabilist	Automaton::CIdentifier(0x00000032)
-#define Automaton_Node_Identifier_SwitchEvent   	Automaton::CIdentifier(0x00000033)
+#define Automaton_Node_Identifier_Switch            Automaton::CIdentifier(0x00000031)
+#define Automaton_Node_Identifier_SwitchProbabilist Automaton::CIdentifier(0x00000032)
+#define Automaton_Node_Identifier_SwitchEvent       Automaton::CIdentifier(0x00000033)
 
-#define Automaton_Node_Identifier_RandomOrder		Automaton::CIdentifier(0x00000041)
+#define Automaton_Node_Identifier_RandomOrder       Automaton::CIdentifier(0x00000041)
 
 
-#define Automaton_No_Successor				Automaton::CIdentifier(0xFFFFFFFF)
+#define Automaton_No_Successor                      Automaton::CIdentifier(0xFFFFFFFF)
 
 
 //___________________________________________________________________//
@@ -38,18 +38,49 @@
 
 namespace Automaton
 {
-	typedef bool boolean;					///< Boolean
-	typedef unsigned long long uint64;		///< 64 bits unsigned integer
-	typedef signed long long int64;			///< 64 bits signed integer
-	typedef unsigned long uint32;			///< 32 bits unsigned integer
-	typedef signed long int32;				///< 32 bits signed integer
-	typedef unsigned short uint16;			///< 16 bits unsigned integer
-	typedef signed short int16;				///< 16 bits signed integer
-	typedef unsigned char uint8;			///< 8 bits unsigned integer
-	typedef signed char int8;				///< 8 bits signed integer
-	typedef float float32;					///< 32 bits floating point
-	typedef double float64;					///< 64 bits floating point
-	typedef long double float80;			///< 80 bits floating point
+
+//___________________________________________________________________//
+//                                                                   //
+// Boolean basic type                                                //
+//___________________________________________________________________//
+//                                                                   //
+
+	typedef bool boolean;                   ///< Boolean
+
+//___________________________________________________________________//
+//                                                                   //
+// Integer basic types                                               //
+//___________________________________________________________________//
+//                                                                   //
+
+	typedef unsigned long long uint64;      ///< 64 bits unsigned integer
+	typedef signed long long int64;         ///< 64 bits signed integer
+	typedef unsigned int uint32;            ///< 32 bits unsigned integer
+	typedef signed int int32;               ///< 32 bits signed integer
+	typedef unsigned short uint16;          ///< 16 bits unsigned integer
+	typedef signed short int16;             ///< 16 bits signed integer
+	typedef unsigned char uint8;            ///< 8 bits unsigned integer
+	typedef signed char int8;               ///< 8 bits signed integer
+
+//___________________________________________________________________//
+//                                                                   //
+// Adressing and indexing types                                      //
+//___________________________________________________________________//
+//                                                                   //
+
+	typedef void* pointer;                  ///< untyped pointer
+	typedef unsigned long int pointer_size; ///< addressing range
+
+//___________________________________________________________________//
+//                                                                   //
+// Floating point basic types                                        //
+//___________________________________________________________________//
+//                                                                   //
+
+	typedef float float32;                  ///< 32 bits floating point
+	typedef double float64;                 ///< 64 bits floating point
+	typedef long double float80;            ///< 80 bits floating point
+
 };
 
 //___________________________________________________________________//

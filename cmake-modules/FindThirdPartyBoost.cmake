@@ -3,18 +3,9 @@
 # Adds library to target
 # Adds include path
 # ---------------------------------
-IF(WIN32)
-	FIND_PACKAGE(Boost)
-ENDIF(WIN32)
 
-IF(UNIX)
-	FIND_PATH(Boost_INCLUDE_DIRS "boost/config.hpp" PATHS "$ENV{OpenViBE_dependencies}/include" "$ENV{BOOST_ROOT}")
-	IF(Boost_INCLUDE_DIRS)
-		SET(Boost_FOUND TRUE)
-	ELSE(Boost_INCLUDE_DIRS)
-		SET(Boost_FOUND FALSE)
-	ENDIF(Boost_INCLUDE_DIRS)
-ENDIF(UNIX)
+SET(Boost_ADDITIONAL_VERSIONS 1.34.1)
+FIND_PACKAGE(Boost 1.36.0)
 
 IF(Boost_FOUND)
 	MESSAGE(STATUS "  Found boost...")

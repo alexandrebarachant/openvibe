@@ -141,7 +141,7 @@ namespace OpenViBEPlugins
 				m_rSpectrumDatabase.getChannelLabel(i, l_oChannelLabel);
 
 				//adds a label with the channel's name
-				if(l_oChannelLabel.toASCIIString() == "")
+				if(l_oChannelLabel == CString(""))
 				{
 					//If no name has been set, just keep the channel index
 					l_oLabelString<<"Channel "<<i;

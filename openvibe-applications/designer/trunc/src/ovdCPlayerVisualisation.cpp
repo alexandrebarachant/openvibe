@@ -665,14 +665,14 @@ void CPlayerVisualisation::resizeCB(::GtkContainer* container)
 void CPlayerVisualisation::drag_data_get_from_widget_cb(::GtkWidget* pSrcWidget, GdkDragContext* pDragContext, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiTime, gpointer pData)
 {
 	char l_sString[1024];
-	sprintf(l_sString, "%i", (int)pSrcWidget);
+	sprintf(l_sString, "%p", pSrcWidget);
 	gtk_selection_data_set_text(pSelectionData, l_sString, strlen(l_sString));
 }
 
 void CPlayerVisualisation::drag_data_received_in_widget_cb(::GtkWidget* pDstWidget, GdkDragContext* pDragContext,gint iX,gint iY,::GtkSelectionData* pSelectionData,guint uiInfo,guint uiTime,gpointer pData)
 {
 	void* l_pSrcWidget = NULL;
-	sscanf((const char*)gtk_selection_data_get_text(pSelectionData), "%i", (int*)&l_pSrcWidget);
+	sscanf((const char*)gtk_selection_data_get_text(pSelectionData), "%p", &l_pSrcWidget);
 
 	//retrieve source box and parent widgets
 	::GtkWidget* l_pSrcBoxWidget = NULL;

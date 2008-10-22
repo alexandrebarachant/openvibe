@@ -66,12 +66,12 @@ namespace OpenViBE
 	{
 		return (rString1.m_pStringImpl->m_sValue)!=(rString2.m_pStringImpl->m_sValue);
 	}
-};
 
-boolean OpenViBE::operator<(const CString& rString1, const CString& rString2)
-{
-	return (rString1.m_pStringImpl->m_sValue)<(rString2.m_pStringImpl->m_sValue);
-}
+	boolean operator<(const CString& rString1, const CString& rString2)
+	{
+		return (rString1.m_pStringImpl->m_sValue)<(rString2.m_pStringImpl->m_sValue);
+	}
+};
 
 boolean CString::set(const CString& rString)
 {

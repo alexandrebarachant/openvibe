@@ -142,7 +142,7 @@ namespace OpenViBEPlugins
 				CString l_sChannelLabel;
 				m_pPowerSpectrumDatabase->getChannelLabel(i, l_sChannelLabel);
 
-				if(l_sChannelLabel.toASCIIString() == "")
+				if(l_sChannelLabel == CString(""))
 				{
 					//if no name was set, use channel index
 					l_oLabelString << "Channel " << i;

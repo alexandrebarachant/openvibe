@@ -57,7 +57,7 @@ namespace OpenViBEPlugins
 
 				for(i=0; i<rBox.getInputCount(); i++)
 				{
-					sprintf(l_sName, "Input %lu", i+1);
+					sprintf(l_sName, "Input %u", i+1);
 					rBox.setInputName(i, l_sName);
 					rBox.setInputType(i, OV_TypeId_StreamedMatrix);
 				}

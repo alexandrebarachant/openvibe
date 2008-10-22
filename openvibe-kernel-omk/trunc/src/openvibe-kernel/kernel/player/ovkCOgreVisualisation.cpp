@@ -288,7 +288,7 @@ COgreScene* COgreVisualisation::createScene(const CIdentifier& rSceneIdentifier)
 	if(m_mOgreScenes.find(rSceneIdentifier) == m_mOgreScenes.end())
 	{
 		char l_sBuffer[1024];
-		sprintf(l_sBuffer, "Scene_%d", m_mOgreScenes.size());
+		sprintf(l_sBuffer, "Scene_%lu", m_mOgreScenes.size());
 		m_mOgreScenes[rSceneIdentifier] = new COgreScene(m_rKernelContext, String(l_sBuffer), this);
 	}
 	return m_mOgreScenes[rSceneIdentifier];

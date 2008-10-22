@@ -39,56 +39,56 @@ boolean CLogListenerFile::activate(ELogLevel eLogLevel, boolean bActive)
 void CLogListenerFile::log(const uint64 ui64Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%lld (0x%llx)", ui64Value, ui64Value);
+		fprintf(l_pFile, "%llu (0x%llx)", ui64Value, ui64Value);
 	);
 }
 
 void CLogListenerFile::log(const uint32 ui32Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%ld (0x%lx)", ui32Value, ui32Value);
+		fprintf(l_pFile, "%u (0x%x)", ui32Value, ui32Value);
 	);
 }
 
 void CLogListenerFile::log(const uint16 ui16Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%d (0x%x)", ui16Value, ui16Value);
+		fprintf(l_pFile, "%u (0x%x)", ui16Value, ui16Value);
 	);
 }
 
 void CLogListenerFile::log(const uint8 ui8Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%d (0x%x)", ui8Value, ui8Value);
+		fprintf(l_pFile, "%u (0x%x)", ui8Value, ui8Value);
 	);
 }
 
 void CLogListenerFile::log(const int64 i64Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%lld (0x%llx)", i64Value, i64Value);
+		fprintf(l_pFile, "%lli (0x%llx)", i64Value, i64Value);
 	);
 }
 
 void CLogListenerFile::log(const int32 i32Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%ld (0x%lx)", i32Value, i32Value);
+		fprintf(l_pFile, "%i (0x%x)", i32Value, i32Value);
 	);
 }
 
 void CLogListenerFile::log(const int16 i16Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%d (0x%x)", i16Value, i16Value);
+		fprintf(l_pFile, "%i (0x%x)", i16Value, i16Value);
 	);
 }
 
 void CLogListenerFile::log(const int8 i8Value)
 {
 	_do_stuff_on_file_(l_pFile, "at",
-		fprintf(l_pFile, "%d (0x%x)", i8Value, i8Value);
+		fprintf(l_pFile, "%i (0x%x)", i8Value, i8Value);
 	);
 }
 

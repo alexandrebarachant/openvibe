@@ -55,7 +55,7 @@ namespace OpenViBEPlugins
 				OpenViBE::uint32 i;
 				for(i=0; i<rBox.getInputCount(); i++)
 				{
-					sprintf(l_sName, "Input stream %lu", i+1);
+					sprintf(l_sName, "Input stream %u", i+1);
 					rBox.setInputName(i, l_sName);
 				}
 				return true;

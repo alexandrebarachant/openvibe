@@ -45,10 +45,10 @@ namespace Automaton
 				Automaton::uint64 l_ui64Number = rand() % l_ui64Max;
 				Automaton::boolean l_bFound = false;
 
-				int64 i;
+				std::vector<Automaton::uint64>::size_type i;
 				for(i=0 ; i<m_oProbability.size() && !l_bFound; i++)
 				{
-					if(l_ui64Number<m_oProbability[(size_t)i])
+					if(l_ui64Number<m_oProbability[i])
 					{
 						l_bFound=true;
 					}

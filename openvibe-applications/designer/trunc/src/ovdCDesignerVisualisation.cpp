@@ -739,19 +739,19 @@ void CDesignerVisualisation::setupNewEventBoxTable(GladeXML* xml)
 
 	//set up event boxes callbacks for drag data received events
 	char buf[256];
-	sprintf(buf, "%i %s", (int)this, "top");
+	sprintf(buf, "%p %s", this, "top");
 	m_sTopEventBoxData = buf;
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox2")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sTopEventBoxData.c_str()));
-	sprintf(buf, "%i %s", (int)this, "left");
+	sprintf(buf, "%p %s", this, "left");
 	m_sLeftEventBoxData = buf;
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox4")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sLeftEventBoxData.c_str()));
-	sprintf(buf, "%i %s", (int)this, "right");
+	sprintf(buf, "%p %s", this, "right");
 	m_sRightEventBoxData = buf;
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox6")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sRightEventBoxData.c_str()));
-	sprintf(buf, "%i %s", (int)this, "bottom");
+	sprintf(buf, "%p %s", this, "bottom");
 	m_sBottomEventBoxData = buf;
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox8")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sBottomEventBoxData.c_str()));
@@ -1636,7 +1636,7 @@ void CDesignerVisualisation::drag_data_get_from_tree_cb(::GtkWidget* pSrcWidget,
 void CDesignerVisualisation::dragDataGetFromTreeCB(::GtkWidget* pSrcWidget, ::GtkSelectionData* pSelectionData)
 {
 	char l_sString[1024];
-	sprintf(l_sString, "%i", (int)pSrcWidget);
+	sprintf(l_sString, "%p", pSrcWidget);
 	gtk_selection_data_set_text(pSelectionData, l_sString, strlen(l_sString));
 }
 
@@ -1648,7 +1648,7 @@ void CDesignerVisualisation::drag_data_get_from_widget_cb(::GtkWidget* pSrcWidge
 void CDesignerVisualisation::dragDataGetFromWidgetCB(::GtkWidget* pSrcWidget, ::GtkSelectionData* pSelectionData)
 {
 	char l_sString[1024];
-	sprintf(l_sString, "%i", (int)pSrcWidget);
+	sprintf(l_sString, "%p", pSrcWidget);
 	gtk_selection_data_set_text(pSelectionData, l_sString, strlen(l_sString));
 }
 
@@ -1660,7 +1660,7 @@ void CDesignerVisualisation::drag_data_received_in_widget_cb(::GtkWidget* dstWid
 void CDesignerVisualisation::dragDataReceivedInWidgetCB(::GtkWidget* pDstWidget, ::GtkSelectionData* pSelectionData)
 {
 	void* l_pSrcWidget = NULL;
-	sscanf((const char*)gtk_selection_data_get_text(pSelectionData), "%i", (int*)&l_pSrcWidget);
+	sscanf((const char*)gtk_selection_data_get_text(pSelectionData), "%p", &l_pSrcWidget);
 	::GtkTreeIter l_oSrcIter;
 
 	//retrieve source widget iterator
@@ -1721,7 +1721,7 @@ void CDesignerVisualisation::drag_data_received_in_event_box_cb(::GtkWidget* pDs
 {
 	char buf[1024];
 	void* pDesignerVisualisation = NULL;
-	sscanf((const char*)pData, "%i %s", (int*)&pDesignerVisualisation, buf);
+	sscanf((const char*)pData, "%p %s", &pDesignerVisualisation, buf);
 
 	EDragDataLocation l_oLocation;
 	if(strcmp(buf, "left") == 0)
@@ -1739,7 +1739,7 @@ void CDesignerVisualisation::drag_data_received_in_event_box_cb(::GtkWidget* pDs
 void CDesignerVisualisation::dragDataReceivedInEventBoxCB(::GtkWidget* pDstWidget, ::GtkSelectionData* pSelectionData, EDragDataLocation l_oLocation)
 {
 	void* l_pSrcWidget = NULL;
-	sscanf((const char*)gtk_selection_data_get_text(pSelectionData), "%i", (int*)&l_pSrcWidget);
+	sscanf((const char*)gtk_selection_data_get_text(pSelectionData), "%p", &l_pSrcWidget);
 	::GtkTreeIter l_oSrcIter;
 
 	//get iterator to src widget

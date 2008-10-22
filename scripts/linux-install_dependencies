@@ -56,6 +56,7 @@ ov_gpp=`which g++`
 ov_g77=`which g77`
 ov_sed=`which sed`
 ov_find=`which find`
+ov_uname=`which uname`
 ov_true=`which true`
 ov_false=`which false`
 
@@ -72,8 +73,11 @@ echo "  Using as g++        : [$ov_gpp]..."
 echo "  Using as g77        : [$ov_g77]..."
 echo "  Using as sed        : [$ov_sed]..."
 echo "  Using as find       : [$ov_find]..."
+echo "  Using as uname      : [$ov_uname]..."
 echo "  Using as true       : [$ov_true]..."
 echo "  Using as false      : [$ov_false]..."
+
+ov_machine=`$ov_uname -m`
 
 ##############################################
 ##                                          ##
@@ -88,6 +92,7 @@ ov_target_folder_hit=$ov_target_folder/hit
 ov_target_folder_include=$ov_target_folder/include
 ov_target_folder_bin=$ov_target_folder/bin
 ov_target_folder_lib=$ov_target_folder/lib
+ov_target_folder_lib64=$ov_target_folder/lib64
 
 echo "Creating target tree structure..."
 mkdir "$ov_target_folder" 2> /dev/null
@@ -146,7 +151,7 @@ ov_package_url_cmake=http://www.cmake.org/files/v2.6/cmake-2.6.2-Linux-i386.tar.
 ov_package_url_pkgconfig=http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
 
 # base libraries
-ov_package_url_boost=$ov_sourceforge_mirror/boost/boost_1_34_1.tar.bz2
+ov_package_url_boost=$ov_sourceforge_mirror/boost/boost_1_36_0.tar.bz2
 ov_package_url_expat=$ov_sourceforge_mirror/expat/expat-2.0.0.tar.gz
 ov_package_url_libxml=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.31.tar.gz
 ov_package_url_gettext=$ov_gnu_mirror/gettext/gettext-0.16.1.tar.gz
@@ -208,7 +213,11 @@ ov_package_url_obt=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/obt-src
 ov_package_url_freeimage=$ov_sourceforge_mirror/freeimage/FreeImage3110.zip
 ov_package_url_ois=$ov_sourceforge_mirror/wgois/ois-1.0.tar.gz
 ov_package_url_zziplib=$ov_sourceforge_mirror/zziplib/zziplib-0.10.82.tar.bz2
+if [ "$ov_machine" == "x86_64" ]; then
+ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86_64.tar.gz
+else
 ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86.tar.gz
+fi;
 ov_package_url_ogre=$ov_sourceforge_mirror/ogre/ogre-v1-4-9.tar.bz2
 ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/vrpn_07_15.zip
 ov_package_url_openmask4=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4~dotsceneloader-src-164.tar.bz2
@@ -358,11 +367,22 @@ ov_package_configure_hook_itpp_external='
 	./configure --prefix=$ov_target_folder &&
 	popd'
 
+if [ "$ov_machine" == "x86_64" ]; then
 ov_package_configure_hook_torch='
 	pushd * &&
-	ln -s config/Makefile_options_Linux Makefile_options_Linux &&
+	ln -s config/Makefile_options_Linux &&
+	$ov_sed -i "s/-march=i686/-march=native/g" config/Makefile_options_Linux &&
+	$ov_sed -i "s/-mcpu=i686/-mtune=native/g" config/Makefile_options_Linux &&
+	$ov_sed -i "s/-malign-double//g" config/Makefile_options_Linux &&
 	make depend &&
 	popd'
+else
+ov_package_configure_hook_torch='
+	pushd * &&
+	ln -s config/Makefile_options_Linux &&
+	make depend &&
+	popd'
+fi;
 ov_package_install_hook_torch='
 	pushd * &&
 	find -name *.h -type f -exec cp -f "{}" ../../include \; &&
@@ -415,7 +435,7 @@ ov_package_configure_hook_freeimage='
 ov_package_configure_hook_ois='
 	pushd * &&
 	./bootstrap &&
-	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib" &&
+	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" &&
 	popd'
 
 # http://www.ogre3d.org/phpBB2/viewtopic.php?t=33562
@@ -688,19 +708,32 @@ ov_package_post_install_hook_ogre='
 	echo "Plugin=Plugin_OctreeSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
 	echo "Plugin=Plugin_CgProgramManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg'
 
+if [ "$ov_machine" == "x86_64" ]; then
+ov_package_configure_hook_vrpn='
+	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux64/g" quat/makefile &&
+	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux64/g" vrpn/Makefile'
+else
 ov_package_configure_hook_vrpn='
 	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux/g" quat/makefile &&
 	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux/g" vrpn/Makefile'
+fi;
 ov_package_make_hook_vrpn='
 	pushd quat &&
 	make &&
 	cd ../vrpn &&
 	make &&
 	popd'
+if [ "$ov_machine" == "x86_64" ]; then
+ov_package_install_hook_vrpn='
+	chmod a-x quat/*.h vrpn/*.h &&
+	cp quat/*.h vrpn/*.h ../include &&
+	cp quat/pc_linux64/*.a vrpn/pc_linux64/*.a ../lib'
+else
 ov_package_install_hook_vrpn='
 	chmod a-x quat/*.h vrpn/*.h &&
 	cp quat/*.h vrpn/*.h ../include &&
 	cp quat/pc_linux/*.a vrpn/pc_linux/*.a ../lib'
+fi;
 
 ov_package_configure_hook_openmask4='
 	pushd * &&
@@ -791,8 +824,11 @@ function ov_install_package
 				ov_current_operation_hook_pre_result=$?
 				# effectively download file(s)
 				if [ ! "$ov_current_package_archive_name" == "" ]; then
-					$ov_wget -c -O "$ov_target_folder_arch/$ov_current_package_archive_name" $ov_current_package_url >> $ov_current_package_log_file 2>&1
+					$ov_wget -c -O "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" $ov_current_package_url >> $ov_current_package_log_file 2>&1
 					ov_current_operation_result=$?
+					if [[ $ov_current_operation_result -eq 0 ]]; then
+						mv -f "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" "$ov_target_folder_arch/$ov_current_package_archive_name"
+					fi;
 				else
 					$ov_svn checkout $ov_current_package_url >> $ov_current_package_log_file 2>&1
 					ov_current_operation_result=$?
@@ -870,7 +906,7 @@ function ov_install_package
 			ov_current_operation_hook_pre_result=$?
 			# effectively configure file
 			pushd * >> $ov_current_package_log_file 2>&1
-			./configure --prefix=$ov_target_folder $ov_current_package_additional_configure_flags CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib" >> $ov_current_package_log_file 2>&1
+			./configure --prefix=$ov_target_folder $ov_current_package_additional_configure_flags CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" >> $ov_current_package_log_file 2>&1
 			ov_current_operation_result=$?
 			popd >> $ov_current_package_log_file 2>&1
 			# executes configure hook post
@@ -976,7 +1012,7 @@ echo '' >> $ov_environment_configuration_script
 echo 'export OpenViBE_dependencies='$ov_target_folder >> $ov_environment_configuration_script
 echo '' >> $ov_environment_configuration_script >> $ov_environment_configuration_script
 echo 'export PKG_CONFIG_PATH='$ov_target_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $ov_environment_configuration_script
-echo 'export LD_LIBRARY_PATH='$ov_target_folder'/lib:'$ov_target_folder'/lib/opt:$LD_LIBRARY_PATH' >> $ov_environment_configuration_script
+echo 'export LD_LIBRARY_PATH='$ov_target_folder'/lib64:'$ov_target_folder'/lib:'$ov_target_folder'/lib/opt:$LD_LIBRARY_PATH' >> $ov_environment_configuration_script
 echo 'export PATH='$ov_target_folder'/bin:$PATH' >> $ov_environment_configuration_script
 echo '' >> $ov_environment_configuration_script
 echo 'export OGRE_HOME='$ov_target_folder >> $ov_environment_configuration_script

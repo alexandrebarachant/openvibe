@@ -62,18 +62,18 @@ namespace OpenViBEPlugins
 
 				for(i=0; i<rBox.getOutputCount(); i++)
 				{
-					sprintf(l_sName, "Epoched signal %lu", i+1);
+					sprintf(l_sName, "Epoched signal %u", i+1);
 					rBox.setOutputName(i, l_sName);
 					rBox.setOutputType(i, OV_TypeId_Signal);
 				}
 
 				for(i=0; i<rBox.getOutputCount(); i++)
 				{
-					sprintf(l_sName, "Epoch %lu duration (in sec)", i+1);
+					sprintf(l_sName, "Epoch %u duration (in sec)", i+1);
 					rBox.setSettingName(i*2, l_sName);
 					rBox.setSettingType(i*2, OV_TypeId_Float);
 
-					sprintf(l_sName, "Epoch %lu intervals (in sec)", i+1);
+					sprintf(l_sName, "Epoch %u intervals (in sec)", i+1);
 					rBox.setSettingName(i*2+1, l_sName);
 					rBox.setSettingType(i*2+1, OV_TypeId_Float);
 				}
