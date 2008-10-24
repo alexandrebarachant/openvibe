@@ -86,7 +86,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Data stream writer"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This plugin reads the data stream from its inputs then writes it to a file so it can be played again later"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/File reading and writing/Generic"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("File reading and writing/Generic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-save"); }
 
@@ -102,6 +102,7 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Output file",    OV_TypeId_String, "../../streamdata.bin");
 				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyInput);
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 

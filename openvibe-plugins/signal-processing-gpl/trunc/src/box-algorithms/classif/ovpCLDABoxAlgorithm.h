@@ -67,7 +67,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM/U821"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/Signal processing/Classification"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Classification"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(""); }
 
@@ -86,6 +86,7 @@ namespace OpenViBEPlugins
 				rPrototype.addOutput ("Decision value",             OV_TypeId_StreamedMatrix);
 				rPrototype.addSetting("Number of training samples", OV_TypeId_Integer, "5");
 				rPrototype.addSetting("Class 1 Samples numbers",    OV_TypeId_String, "2 5 1 3 6");
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 
 				return true;
 			}

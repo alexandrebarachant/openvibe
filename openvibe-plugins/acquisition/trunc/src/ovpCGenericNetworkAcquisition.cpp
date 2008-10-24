@@ -192,6 +192,8 @@ boolean CGenericNetworkAcquisitionDesc::getBoxPrototype(Kernel::IBoxProto& rProt
 	rPrototype.addSetting("EEG server hostname", OV_TypeId_String,  "localhost");
 	rPrototype.addSetting("EEG server port",     OV_TypeId_Integer, "1024");
 
+	rPrototype.addFlag(BoxFlag_IsDeprecated);
+
 	return true;
 }
 

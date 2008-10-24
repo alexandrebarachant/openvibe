@@ -129,7 +129,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Computes cospectra"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/Signal processing/Spectral analysis"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Spectral analysis"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_SpectralAnalysisCospectra; }
@@ -142,7 +142,7 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Window method",             OVP_TypeId_WindowMethod, "Hamming");
 				rPrototype.addSetting("Window size",               OV_TypeId_Integer,       "32");
 				rPrototype.addSetting("Percentage of Overlapping", OV_TypeId_Float,         "50");
-
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 

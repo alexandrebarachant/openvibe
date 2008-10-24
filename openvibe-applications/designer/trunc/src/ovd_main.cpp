@@ -58,7 +58,7 @@ public:
 	}
 
 	virtual boolean callback(
-		const Plugins::IPluginObjectDesc& rPluginObjectDesc)=0;
+		const IPluginObjectDesc& rPluginObjectDesc)=0;
 
 protected:
 
@@ -79,7 +79,7 @@ public:
 	}
 
 	virtual boolean callback(
-		const Plugins::IPluginObjectDesc& rPluginObjectDesc)
+		const IPluginObjectDesc& rPluginObjectDesc)
 	{
 		string l_sFullName=string(rPluginObjectDesc.getCategory())+"/"+string(rPluginObjectDesc.getName());
 		map<string, const IPluginObjectDesc* >::iterator itPluginObjectDesc=m_vPluginObjectDesc.find(l_sFullName);
@@ -115,7 +115,7 @@ public:
 	}
 
 	virtual boolean callback(
-		const Plugins::IPluginObjectDesc& rPluginObjectDesc)
+		const IPluginObjectDesc& rPluginObjectDesc)
 	{
 		// Outputs plugin info to console
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Plugin <" << rPluginObjectDesc.getName() << ">\n";
@@ -134,16 +134,16 @@ public:
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-static void insertPluginObjectDesc_to_GtkTreeStore(map<string, const IPluginObjectDesc*>& vPluginObjectDesc, ::GtkTreeStore* pTreeStore)
+static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernelContext, map<string, const IPluginObjectDesc*>& vPluginObjectDesc, ::GtkTreeStore* pTreeStore)
 {
-	map<string, const Plugins::IPluginObjectDesc*>::iterator itPluginObjectDesc;
+	map<string, const IPluginObjectDesc*>::iterator itPluginObjectDesc;
 	for(itPluginObjectDesc=vPluginObjectDesc.begin(); itPluginObjectDesc!=vPluginObjectDesc.end(); itPluginObjectDesc++)
 	{
-		const Plugins::IPluginObjectDesc* l_pPluginObjectDesc=itPluginObjectDesc->second;
+		const IPluginObjectDesc* l_pPluginObjectDesc=itPluginObjectDesc->second;
 
 		CString l_sStockItemName;
 
-		const Plugins::IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const Plugins::IBoxAlgorithmDesc*>(l_pPluginObjectDesc);
+		const IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_pPluginObjectDesc);
 		if(l_pBoxAlgorithmDesc)
 		{
 			l_sStockItemName=l_pBoxAlgorithmDesc->getStockItemName();
@@ -219,6 +219,7 @@ static void insertPluginObjectDesc_to_GtkTreeStore(map<string, const IPluginObje
 					Resource_StringName, it->c_str(),
 					Resource_StringShortDescription, "",
 					Resource_StringStockIcon, "gtk-directory",
+					Resource_StringColor, "#000000",
 					Resource_BooleanIsPlugin, false,
 					-1);
 			}
@@ -241,6 +242,10 @@ static void insertPluginObjectDesc_to_GtkTreeStore(map<string, const IPluginObje
 			Resource_StringShortDescription, (const char*)l_pPluginObjectDesc->getShortDescription(),
 			Resource_StringIdentifier, (const char*)l_pPluginObjectDesc->getCreatedClass().toString(),
 			Resource_StringStockIcon, (const char*)l_sStockItemName,
+			Resource_StringColor,
+				rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(l_pPluginObjectDesc->getCreatedClass())?"#3f7f7f":
+				rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass())?"#6f6f6f":
+				"black",
 			Resource_BooleanIsPlugin, true,
 			-1);
 	}
@@ -250,18 +255,8 @@ static void insertPluginObjectDesc_to_GtkTreeStore(map<string, const IPluginObje
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-char** g_argv;
-int g_argc;
-
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------------
-
 int go(int argc, char ** argv)
 {
-	g_argc=argc;
-	g_argv=argv;
-
 	/*
 		{ 0,     0,     0,     0 },
 		{ 0, 16383, 16383, 16383 },
@@ -271,23 +266,25 @@ int go(int argc, char ** argv)
 	*/
 
 	#define gdk_color_set(c, r, g, b) { c.pixel=0; c.red=r; c.green=g; c.blue=b; }
-	gdk_color_set(g_vColors[Color_BackgroundPlayerStarted], 32767, 32767, 32767);
-	gdk_color_set(g_vColors[Color_BoxBackgroundSelected],   65535, 65535, 49151);
-	gdk_color_set(g_vColors[Color_BoxBackgroundMissing],    49151, 32767, 32767);
-	gdk_color_set(g_vColors[Color_BoxBackgroundDeprecated], 16383, 24575, 24575);
-	gdk_color_set(g_vColors[Color_BoxBackground],           65535, 65535, 65535);
-	gdk_color_set(g_vColors[Color_BoxBorderSelected],           0,     0,     0);
-	gdk_color_set(g_vColors[Color_BoxBorder],                   0,     0,     0);
-	gdk_color_set(g_vColors[Color_BoxInputBackground],      65535, 49151, 32767);
-	gdk_color_set(g_vColors[Color_BoxInputBorder],          16383, 16383, 16383);
-	gdk_color_set(g_vColors[Color_BoxOutputBackground],     32767, 65535, 49151);
-	gdk_color_set(g_vColors[Color_BoxOutputBorder],         16383, 16383, 16383);
-	gdk_color_set(g_vColors[Color_BoxSettingBackground],    49151, 32767, 65535);
-	gdk_color_set(g_vColors[Color_BoxSettingBorder],        16383, 16383, 16383);
-	gdk_color_set(g_vColors[Color_Link],                        0,     0,     0);
-	gdk_color_set(g_vColors[Color_LinkSelected],            49151, 16383, 16383);
-	gdk_color_set(g_vColors[Color_SelectionArea],          0x3f00,0x3f00,0x3f00);
-	gdk_color_set(g_vColors[Color_SelectionAreaBorder],         0,     0,     0);
+	gdk_color_set(g_vColors[Color_BackgroundPlayerStarted],  32767, 32767, 32767);
+	gdk_color_set(g_vColors[Color_BoxBackgroundSelected],    65535, 65535, 49151);
+	gdk_color_set(g_vColors[Color_BoxBackgroundMissing],     49151, 32767, 32767);
+	gdk_color_set(g_vColors[Color_BoxBackgroundDeprecated],  24575, 32767, 32767);
+	gdk_color_set(g_vColors[Color_BoxBackgroundNeedsUpdate], 57343, 57343, 57343);
+	gdk_color_set(g_vColors[Color_BoxBackgroundUnstable],    49151, 49151, 49151);
+	gdk_color_set(g_vColors[Color_BoxBackground],            65535, 65535, 65535);
+	gdk_color_set(g_vColors[Color_BoxBorderSelected],            0,     0,     0);
+	gdk_color_set(g_vColors[Color_BoxBorder],                    0,     0,     0);
+	gdk_color_set(g_vColors[Color_BoxInputBackground],       65535, 49151, 32767);
+	gdk_color_set(g_vColors[Color_BoxInputBorder],           16383, 16383, 16383);
+	gdk_color_set(g_vColors[Color_BoxOutputBackground],      32767, 65535, 49151);
+	gdk_color_set(g_vColors[Color_BoxOutputBorder],          16383, 16383, 16383);
+	gdk_color_set(g_vColors[Color_BoxSettingBackground],     49151, 32767, 65535);
+	gdk_color_set(g_vColors[Color_BoxSettingBorder],         16383, 16383, 16383);
+	gdk_color_set(g_vColors[Color_Link],                         0,     0,     0);
+	gdk_color_set(g_vColors[Color_LinkSelected],             49151, 16383, 16383);
+	gdk_color_set(g_vColors[Color_SelectionArea],           0x3f00,0x3f00,0x3f00);
+	gdk_color_set(g_vColors[Color_SelectionAreaBorder],          0,     0,     0);
 	#undef gdk_color_set
 
 //___________________________________________________________________//
@@ -357,7 +354,7 @@ int go(int argc, char ** argv)
 #endif
 
 					//initialise Gtk before 3D context
-					gtk_init(&g_argc, &g_argv);
+					gtk_init(&argc, &argv);
 					// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
 
 					//retrieve Ogre plugin file (assumed to be in Ogre binaries directory)
@@ -397,10 +394,17 @@ int go(int argc, char ** argv)
 					cb_logger.enumeratePluginObjectDesc();
 					cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
 					cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
-					insertPluginObjectDesc_to_GtkTreeStore(cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
-					insertPluginObjectDesc_to_GtkTreeStore(cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
+					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
 
-					gtk_main();
+					try
+					{
+						gtk_main();
+					}
+					catch(...)
+					{
+						l_rLogManager << LogLevel_Fatal << "Catched top level exception\n";
+					}
 
 					cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;
 

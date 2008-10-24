@@ -33,6 +33,13 @@ namespace OpenViBE
 			virtual const OpenViBE::Plugins::IPluginObjectDesc* getPluginObjectDescCreating(
 				const OpenViBE::CIdentifier& rClassIdentifier) const;
 
+			virtual OpenViBE::CIdentifier getPluginObjectHashValue(
+				const OpenViBE::CIdentifier& rClassIdentifier) const;
+			virtual OpenViBE::boolean isPluginObjectFlaggedAsDeprecated(
+				const OpenViBE::CIdentifier& rClassIdentifier) const;
+			virtual OpenViBE::boolean isPluginObjectFlaggedAsUnstable(
+				const OpenViBE::CIdentifier& rClassIdentifier) const;
+
 			virtual OpenViBE::Plugins::IPluginObject* createPluginObject(
 				const OpenViBE::CIdentifier& rClassIdentifier);
 			virtual OpenViBE::boolean releasePluginObject(

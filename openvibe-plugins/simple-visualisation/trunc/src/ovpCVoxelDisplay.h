@@ -180,7 +180,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Displays brain activity as voxels"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/Visualisation/Volume"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Visualisation/Volume"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(GTK_STOCK_EXECUTE); }
 
@@ -197,6 +197,7 @@ namespace OpenViBEPlugins
 			{
 				//rPrototype.addSetting("Log level to use", OV_TypeId_LogLevel, "Information");
 				rPrototype.addInput("Streamed matrix", OV_TypeId_StreamedMatrix);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 

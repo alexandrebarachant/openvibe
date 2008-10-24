@@ -127,21 +127,11 @@
 #define OV_AttributeId_Box_FlagCanModifyOutput               OpenViBE::CIdentifier(0x30A4E5C9, 0x83502953)
 #define OV_AttributeId_Box_FlagCanAddSetting                 OpenViBE::CIdentifier(0x61D11811, 0x71E65362)
 #define OV_AttributeId_Box_FlagCanModifySetting              OpenViBE::CIdentifier(0xF191C1C8, 0xA0123976)
-#define OV_AttributeId_Box_FlagIsDeprecated                  OpenViBE::CIdentifier(0x32767532, 0x4F53ACFA)
 
 #define OV_AttributeId_Link_XSourcePosition                  OpenViBE::CIdentifier(0x358AE8B5, 0x0F8BACD1)
 #define OV_AttributeId_Link_YSourcePosition                  OpenViBE::CIdentifier(0x1B32C44C, 0x1905E0E9)
 #define OV_AttributeId_Link_XTargetPosition                  OpenViBE::CIdentifier(0x6267B5C5, 0x676E3E42)
 #define OV_AttributeId_Link_YTargetPosition                  OpenViBE::CIdentifier(0x3F0A3B27, 0x570913D2)
-
-/*
-#define OV_AttributeId_                                      OpenViBE::CIdentifier(0xD9D911F9, 0x8CD986E9)
-#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x137230A2, 0x0B95331C)
-#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x949725F8, 0xBFF0C70E)
-#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x9B2B0F43, 0x7408E9A6)
-#define OV_AttributeId_                                      OpenViBE::CIdentifier(0x88CD8C43, 0xD4A28474)
-#define OV_AttributeId_                                      OpenViBE::CIdentifier(0xCDA439D2, 0xD295E592)
-*/
 
 //___________________________________________________________________//
 //                                                                   //

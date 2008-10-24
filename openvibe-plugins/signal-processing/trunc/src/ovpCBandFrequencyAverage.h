@@ -104,7 +104,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Computes the average of a band frequency."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/Signal processing/Averaging"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Averaging"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_BandFrequencyAverage; }
@@ -112,11 +112,11 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("Input spectrum", OV_TypeId_Spectrum);
-				rPrototype.addOutput("Average of Band Frequency", OV_TypeId_FeatureVector);
-
-				rPrototype.addSetting("Low Frequency (Hz)", OV_TypeId_String, "21");
-				rPrototype.addSetting("High Frequency (Hz)", OV_TypeId_String, "29");
+				rPrototype.addInput  ("Input spectrum",            OV_TypeId_Spectrum);
+				rPrototype.addOutput ("Average of Band Frequency", OV_TypeId_FeatureVector);
+				rPrototype.addSetting("Low Frequency (Hz)",        OV_TypeId_String, "21");
+				rPrototype.addSetting("High Frequency (Hz)",       OV_TypeId_String, "29");
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 

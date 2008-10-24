@@ -33,6 +33,7 @@ namespace OpenViBEDesigner
 		Resource_StringShortDescription,
 		Resource_StringIdentifier,
 		Resource_StringStockIcon,
+		Resource_StringColor,
 		Resource_BooleanIsPlugin,
 	};
 
@@ -43,6 +44,8 @@ namespace OpenViBEDesigner
 		Color_BoxBackgroundSelected,
 		Color_BoxBackgroundMissing,
 		Color_BoxBackgroundDeprecated,
+		Color_BoxBackgroundUnstable,
+		Color_BoxBackgroundNeedsUpdate,
 		Color_BoxBorder,
 		Color_BoxBorderSelected,
 		Color_BoxInputBackground,

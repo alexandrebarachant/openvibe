@@ -12,8 +12,10 @@ namespace OpenViBEDesigner
 	public:
 
 		CBoxProxy(
+			const OpenViBE::Kernel::IKernelContext& rKernelContext,
 			const OpenViBE::Kernel::IBox& rBox);
 		CBoxProxy(
+			const OpenViBE::Kernel::IKernelContext& rKernelContext,
 			OpenViBE::Kernel::IScenario& rScenario,
 			const OpenViBE::CIdentifier& rBoxIdentifier);
 		virtual ~CBoxProxy(void);
@@ -35,6 +37,11 @@ namespace OpenViBEDesigner
 
 		virtual const char* getLabel(void) const;
 
+		OpenViBE::boolean isBoxAlgorithmPluginPresent(void) const;
+		OpenViBE::boolean isUpToDate(void) const;
+		OpenViBE::boolean isDeprecated(void) const;
+		OpenViBE::boolean isUnstable(void) const;
+
 	protected:
 
 		virtual void updateSize(
@@ -45,6 +52,7 @@ namespace OpenViBEDesigner
 
 	protected:
 
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		const OpenViBE::Kernel::IBox* m_pConstBox;
 		OpenViBE::Kernel::IBox* m_pBox;
 		int m_iXCenter;

@@ -6,8 +6,9 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBEDesigner;
 using namespace std;
 
-CBoxProxy::CBoxProxy(const IBox& rBox)
-	:m_pConstBox(&rBox)
+CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, const IBox& rBox)
+	:m_rKernelContext(rKernelContext)
+	,m_pConstBox(&rBox)
 	,m_pBox(NULL)
 	,m_iXCenter(0)
 	,m_iYCenter(0)
@@ -20,8 +21,9 @@ CBoxProxy::CBoxProxy(const IBox& rBox)
 	}
 }
 
-CBoxProxy::CBoxProxy(IScenario& rScenario, const CIdentifier& rBoxIdentifier)
-	:m_pConstBox(rScenario.getBoxDetails(rBoxIdentifier))
+CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, IScenario& rScenario, const CIdentifier& rBoxIdentifier)
+	:m_rKernelContext(rKernelContext)
+	,m_pConstBox(rScenario.getBoxDetails(rBoxIdentifier))
 	,m_pBox(rScenario.getBoxDetails(rBoxIdentifier))
 	,m_iXCenter(0)
 	,m_iYCenter(0)
@@ -97,7 +99,9 @@ const char* CBoxProxy::getLabel(void) const
 	boolean l_bBoxCanChangeInput  (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyInput)  ||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddInput));
 	boolean l_bBoxCanChangeOutput (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput) ||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddOutput));
 	boolean l_bBoxCanChangeSetting(m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifySetting)||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddSetting));
-	boolean l_bBoxIsDeprecated    (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagIsDeprecated));
+	boolean l_bBoxIsUpToDate      (this->isUpToDate());
+	boolean l_bBoxIsDeprecated    (this->isDeprecated());
+	boolean l_bBoxIsUnstable      (this->isUnstable());
 
 	string l_sBoxName(m_pConstBox->getName());
 	string l_sBoxIden(m_pConstBox->getIdentifier().toString());
@@ -109,24 +113,56 @@ const char* CBoxProxy::getLabel(void) const
 		m_sLabel="<span weight=\"bold\">"+m_sLabel+"</span>";
 	}
 
+	string l_sRed("#602020");
+	string l_sGreen("#206020");
+	string l_sBlue("#202060");
+
 	if(l_bBoxCanChangeInput || l_bBoxCanChangeOutput || l_bBoxCanChangeSetting)
 	{
-		string l_sRed("#800000");
-		string l_sGreen("#008000");
 		m_sLabel+="\n";
+		m_sLabel+="<span size=\"smaller\">";
 		m_sLabel+="<span foreground=\""+(l_bBoxCanChangeInput?l_sGreen:l_sRed)+"\">In</span>";
 		m_sLabel+="|";
 		m_sLabel+="<span foreground=\""+(l_bBoxCanChangeOutput?l_sGreen:l_sRed)+"\">Out</span>";
 		m_sLabel+="|";
-		m_sLabel+="<span foreground=\""+(l_bBoxCanChangeSetting?l_sGreen:l_sRed)+"\">S</span>";
-	}
-	if(l_bBoxIsDeprecated)
-	{
-		m_sLabel+="\n";
-		m_sLabel+="<span style=\"italic\">deprecated</span>";
+		m_sLabel+="<span foreground=\""+(l_bBoxCanChangeSetting?l_sGreen:l_sRed)+"\">Set</span>";
+		m_sLabel+="</span>";
 	}
 
+	if(l_bBoxIsDeprecated || l_bBoxIsUnstable || !l_bBoxIsUpToDate)
+	{
+		m_sLabel+="\n";
+		m_sLabel+="<span size=\"smaller\" foreground=\""+l_sBlue+"\">";
+		if(l_bBoxIsDeprecated) m_sLabel+=" <span style=\"italic\">deprecated</span>";
+		if(l_bBoxIsUnstable)   m_sLabel+=" <span style=\"italic\">unstable</span>";
+		if(!l_bBoxIsUpToDate)  m_sLabel+=" <span style=\"italic\">update</span>";
+		m_sLabel+=" </span>";
+	}
 	return m_sLabel.c_str();
+}
+
+boolean CBoxProxy::isBoxAlgorithmPluginPresent(void) const
+{
+	return m_rKernelContext.getPluginManager().canCreatePluginObject(m_pConstBox->getAlgorithmClassIdentifier());
+}
+
+boolean CBoxProxy::isUpToDate(void) const
+{
+	CIdentifier l_oBoxHashCode1;
+	CIdentifier l_oBoxHashCode2;
+	l_oBoxHashCode1=m_rKernelContext.getPluginManager().getPluginObjectHashValue(m_pConstBox->getAlgorithmClassIdentifier());
+	l_oBoxHashCode2.fromString(m_pConstBox->getAttributeValue(OV_AttributeId_Box_InitialPrototypeHashValue));
+	return l_oBoxHashCode1!=OV_UndefinedIdentifier && l_oBoxHashCode1==l_oBoxHashCode2;
+}
+
+boolean CBoxProxy::isDeprecated(void) const
+{
+	return m_rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(m_pConstBox->getAlgorithmClassIdentifier());
+}
+
+boolean CBoxProxy::isUnstable(void) const
+{
+	return m_rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable  (m_pConstBox->getAlgorithmClassIdentifier());
 }
 
 void CBoxProxy::updateSize(::GtkWidget* pWidget, const char* sText, int* pXSize, int* pYSize) const

@@ -282,7 +282,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		const int iCircleSize=11;
 		const int iCircleSpace=4;
 
-		CBoxProxy l_oBoxProxy(rBox);
+		CBoxProxy l_oBoxProxy(*m_rKernel.getContext(), rBox);
 		int xSize=l_oBoxProxy.getWidth(GTK_WIDGET(m_pScenarioDrawingArea))+xMargin*2;
 		int ySize=l_oBoxProxy.getHeight(GTK_WIDGET(m_pScenarioDrawingArea))+yMargin*2;
 		int xStart=l_oBoxProxy.getXCenter()+m_i32ViewOffsetX-(xSize>>1);
@@ -296,8 +296,10 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			xStart, yStart, xSize, ySize);
 		m_vInterfacedObject[m_ui32InterfacedObjectId]=CInterfacedObject(rBox.getIdentifier());
 
-		boolean l_bCanCreate=m_rKernel.getContext()->getPluginManager().canCreatePluginObject(rBox.getAlgorithmClassIdentifier());
-		boolean l_bDeprecated=rBox.hasAttribute(OV_AttributeId_Box_FlagIsDeprecated);
+		boolean l_bCanCreate =l_oBoxProxy.isBoxAlgorithmPluginPresent();
+		boolean l_bUpToDate  =l_oBoxProxy.isUpToDate();
+		boolean l_bDeprecated=l_oBoxProxy.isDeprecated();
+		boolean l_bUnstable  =l_oBoxProxy.isUnstable();
 		if(!this->isLocked() || !m_bDebugCPUUsage)
 		{
 			if(m_vCurrentObject[rBox.getIdentifier()])
@@ -311,6 +313,14 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			else if(l_bDeprecated)
 			{
 				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundDeprecated]);
+			}
+			else if(!l_bUpToDate)
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundNeedsUpdate]);
+			}
+			else if(l_bUnstable)
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundUnstable]);
 			}
 			else
 			{
@@ -668,7 +678,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			CIdentifier l_oBoxIdentifier;
 			while((l_oBoxIdentifier=m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
 			{
-				CBoxProxy l_oBoxProxy(*m_rScenario.getBoxDetails(l_oBoxIdentifier));
+				CBoxProxy l_oBoxProxy(*m_rKernel.getContext(), *m_rScenario.getBoxDetails(l_oBoxIdentifier));
 				if(l_iMinX>l_oBoxProxy.getXCenter()) l_iMinX=l_oBoxProxy.getXCenter();
 				if(l_iMaxX<l_oBoxProxy.getXCenter()) l_iMaxX=l_oBoxProxy.getXCenter();
 				if(l_iMinY>l_oBoxProxy.getYCenter()) l_iMinY=l_oBoxProxy.getYCenter();
@@ -831,7 +841,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				m_pDesignerVisualisation->onVisualisationBoxAdded(l_pBox);
 			}
 
-			CBoxProxy l_oBoxProxy(m_rScenario, l_oBoxIdentifier);
+			CBoxProxy l_oBoxProxy(*m_rKernel.getContext(), m_rScenario, l_oBoxIdentifier);
 			l_oBoxProxy.setCenter(iX-m_i32ViewOffsetX, iY-m_i32ViewOffsetY);
 			m_bHasBeenModified=true;
 			updateScenarioLabel();
@@ -899,7 +909,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				{
 					if(i->second && m_rScenario.isBox(i->first))
 					{
-						CBoxProxy l_oBoxProxy(m_rScenario, i->first);
+						CBoxProxy l_oBoxProxy(*m_rKernel.getContext(), m_rScenario, i->first);
 						l_oBoxProxy.setCenter(
 							l_oBoxProxy.getXCenter()+(int32)(pEvent->x-m_f64CurrentMouseX),
 							l_oBoxProxy.getYCenter()+(int32)(pEvent->y-m_f64CurrentMouseY));
@@ -1231,7 +1241,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				{
 					if(i->second && m_rScenario.isBox(i->first))
 					{
-						CBoxProxy l_oBoxProxy(m_rScenario, i->first);
+						CBoxProxy l_oBoxProxy(*m_rKernel.getContext(), m_rScenario, i->first);
 						l_oBoxProxy.setCenter(
 							((l_oBoxProxy.getXCenter()+8)&0xfffffff0),
 							((l_oBoxProxy.getYCenter()+8)&0xfffffff0));

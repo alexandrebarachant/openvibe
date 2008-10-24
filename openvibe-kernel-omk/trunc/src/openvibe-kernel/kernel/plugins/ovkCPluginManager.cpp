@@ -6,6 +6,8 @@
 #include <fs/IEntryEnumerator.h>
 #include <fs/Files.h>
 
+#include <system/Memory.h>
+
 #include <iostream>
 #include <map>
 
@@ -261,6 +263,122 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 	log() << LogLevel_Warning << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
 	return NULL;
 
+}
+
+namespace
+{
+	struct SBoxProto : public IBoxProto
+	{
+	public:
+
+		SBoxProto(void)
+			:m_bIsDeprecated(false)
+			,m_bIsUnstable(false)
+		{
+		}
+		virtual uint32 addInput(const CString& sName, const CIdentifier& rTypeIdentifier)
+		{
+			uint64 v=rTypeIdentifier.toUInteger();
+			swap_byte(v, 5, 1);
+			swap_byte(v, 4, 2);
+			swap_byte(v, 3, 0);
+			m_oHash=m_oHash.toUInteger()^v;
+			return true;
+		}
+		virtual uint32 addOutput(const CString& sName, const CIdentifier& rTypeIdentifier)
+		{
+			uint64 v=rTypeIdentifier.toUInteger();
+			swap_byte(v, 7, 5);
+			swap_byte(v, 6, 0);
+			swap_byte(v, 2, 1);
+			m_oHash=m_oHash.toUInteger()^v;
+			return true;
+		}
+		virtual uint32 addSetting(const CString& sName, const CIdentifier& rTypeIdentifier, const CString& sDefaultValue)
+		{
+			uint64 v=rTypeIdentifier.toUInteger();
+			swap_byte(v, 6, 4);
+			swap_byte(v, 5, 0);
+			swap_byte(v, 3, 1);
+			m_oHash=m_oHash.toUInteger()^v;
+			return true;
+		}
+		virtual boolean addFlag(const EBoxFlag eBoxFlag)
+		{
+			switch(eBoxFlag)
+			{
+				case BoxFlag_CanAddInput:       m_oHash=m_oHash.toUInteger()^OpenViBE::CIdentifier(0x07507AC8, 0xEB643ACE).toUInteger(); break;
+				case BoxFlag_CanModifyInput:    m_oHash=m_oHash.toUInteger()^OpenViBE::CIdentifier(0x5C985376, 0x8D74CDB8).toUInteger(); break;
+				case BoxFlag_CanAddOutput:      m_oHash=m_oHash.toUInteger()^OpenViBE::CIdentifier(0x58DEA69B, 0x12411365).toUInteger(); break;
+				case BoxFlag_CanModifyOutput:   m_oHash=m_oHash.toUInteger()^OpenViBE::CIdentifier(0x6E162C01, 0xAC979F22).toUInteger(); break;
+				case BoxFlag_CanAddSetting:     m_oHash=m_oHash.toUInteger()^OpenViBE::CIdentifier(0xFA7A50DC, 0x2140C013).toUInteger(); break;
+				case BoxFlag_CanModifySetting:  m_oHash=m_oHash.toUInteger()^OpenViBE::CIdentifier(0x624D7661, 0xD8DDEA0A).toUInteger(); break;
+				case BoxFlag_IsDeprecated:      m_bIsDeprecated=true; break;
+				case BoxFlag_IsUnstable:        m_bIsUnstable=true;   break;
+				default:
+					return false;
+					break;
+			}
+			return true;
+		}
+		void swap_byte(uint64& v, uint32 i, uint32 j)
+		{
+			uint8 s, V[sizeof(v)];
+			System::Memory::hostToLittleEndian(v, V);
+			s=V[i];
+			V[i]=V[j];
+			V[j]=s;
+			System::Memory::littleEndianToHost(V, &v);
+		}
+
+		_IsDerivedFromClass_Final_(IBoxProto, OV_UndefinedIdentifier)
+
+		CIdentifier m_oHash;
+		boolean m_bIsDeprecated;
+		boolean m_bIsUnstable;
+	};
+}
+
+CIdentifier CPluginManager::getPluginObjectHashValue(
+	const CIdentifier& rClassIdentifier) const
+{
+	const IPluginObjectDesc* l_pPluginObjectDesc=this->getPluginObjectDescCreating(rClassIdentifier);
+	const IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_pPluginObjectDesc);
+	if(l_pBoxAlgorithmDesc)
+	{
+		SBoxProto l_oBoxPrototype;
+		l_pBoxAlgorithmDesc->getBoxPrototype(l_oBoxPrototype);
+		return l_oBoxPrototype.m_oHash;
+	}
+	return OV_UndefinedIdentifier;
+}
+
+boolean CPluginManager::isPluginObjectFlaggedAsDeprecated(
+	const CIdentifier& rClassIdentifier) const
+{
+	const IPluginObjectDesc* l_pPluginObjectDesc=this->getPluginObjectDescCreating(rClassIdentifier);
+	const IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_pPluginObjectDesc);
+	if(l_pBoxAlgorithmDesc)
+	{
+		SBoxProto l_oBoxPrototype;
+		l_pBoxAlgorithmDesc->getBoxPrototype(l_oBoxPrototype);
+		return l_oBoxPrototype.m_bIsDeprecated;
+	}
+	return false;
+}
+
+boolean CPluginManager::isPluginObjectFlaggedAsUnstable(
+	const CIdentifier& rClassIdentifier) const
+{
+	const IPluginObjectDesc* l_pPluginObjectDesc=this->getPluginObjectDescCreating(rClassIdentifier);
+	const IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(l_pPluginObjectDesc);
+	if(l_pBoxAlgorithmDesc)
+	{
+		SBoxProto l_oBoxPrototype;
+		l_pBoxAlgorithmDesc->getBoxPrototype(l_oBoxPrototype);
+		return l_oBoxPrototype.m_bIsUnstable;
+	}
+	return false;
 }
 
 IPluginObject* CPluginManager::createPluginObject(

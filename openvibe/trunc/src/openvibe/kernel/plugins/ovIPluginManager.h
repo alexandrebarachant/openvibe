@@ -101,6 +101,57 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rClassIdentifier) const=0;
 
 			//@}
+			/** \name Plugin lifetime management */
+			//@{
+
+			/**
+			 * \brief Gets a hash value for a given plugin
+			 * \param rClassIdentifier [in] : the class identifier of the plugin which hash value
+			 *        has to be returned
+			 * \return a hash code for the corresponding plugin object
+			 *
+			 * This function can be used to compute a has code of the described plugin object
+			 * If this hash code differs from session to session, it means that the plugin
+			 * descriptor changed in some way.
+			 *
+			 * \note The method used to compute the hash code is specific to the class
+			 *       of plugin that is considered (for example, for box algorithms, the
+			 *       hash code is based on what OpenViBE::Kernel::IBoxProto receives at
+			 *       description stage)
+			 */
+			virtual OpenViBE::CIdentifier getPluginObjectHashValue(
+				const OpenViBE::CIdentifier& rClassIdentifier) const=0;
+			/**
+			 * \brief Gets a hint whether a plugin is deprecated or not
+			 * \param rClassIdentifier [in] : the class identifier of the plugin which deprecation should be returned
+			 * \return \e true in case the plugin is deprecated
+			 * \return \e false in case the plugin is not deprecated
+			 *
+			 * If this function returns \e true, this means that the considered
+			 * plugin is still valid and functionnal but that it will
+			 * be removed soon or later. Code relying on this plugin
+			 * should consider any alternative available to avoid future problems.
+			 */
+			virtual OpenViBE::boolean isPluginObjectFlaggedAsDeprecated(
+				const OpenViBE::CIdentifier& rClassIdentifier) const=0;
+			/**
+			 * \brief Gets a hint whether a plugin is fully functionnal or not
+			 * \param rClassIdentifier [in] : the class identifier of the plugin which stability should be returned
+			 * \return \e true in case the plugin is considered as unstable
+			 * \return \e false in case the plugin is considered as stable
+			 *
+			 * Getting \e true from this function for a given plugin
+			 * reflects the fact that this plugin is known not to be
+			 * fully usable. This could either be because of work in progress
+			 * for this plugin or either because there are known limitations
+			 * that could not be bypassed. This plugin probably is functionnal
+			 * enough for well known cases, and may produce unexpected results
+			 * in other cases. Use it at your own risks (expect crashes for example)
+			 */
+			virtual OpenViBE::boolean isPluginObjectFlaggedAsUnstable(
+				const OpenViBE::CIdentifier& rClassIdentifier) const=0;
+
+			//@}
 			/** \name Plugin creation and destruction */
 			//@{
 

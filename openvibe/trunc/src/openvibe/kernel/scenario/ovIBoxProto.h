@@ -20,6 +20,7 @@ namespace OpenViBE
 			BoxFlag_CanAddSetting,
 			BoxFlag_CanModifySetting,
 			BoxFlag_IsDeprecated,
+			BoxFlag_IsUnstable,
 		};
 
 		/**

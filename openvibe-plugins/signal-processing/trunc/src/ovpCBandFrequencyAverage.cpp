@@ -188,7 +188,7 @@ boolean CBandFrequencyAverage::process()
 				m_pFeatureVectorOutputWriterHelper->setFeatureCount(m_ui32VectorSize);
 				for (uint32 j=0; j < m_ui32VectorSize; j++)
 				{
-					sprintf(l_sFeatureVectorLabel, "%lu", j);
+					sprintf(l_sFeatureVectorLabel, "%u", j);
 					m_pFeatureVectorOutputWriterHelper->setFeatureName(j, l_sFeatureVectorLabel);
 				}
 					

@@ -78,7 +78,7 @@ namespace OpenViBEPlugins
 				virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM"); }
 				virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Comparison of Frequencies"); }
 				virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Comparison of Frequencies"); }
-				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/Signal processing/Basic"); }
+				virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
 				virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 				virtual void release(void)                                   { }
 				virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_SteadyStateFrequencyComparison; }
@@ -86,11 +86,11 @@ namespace OpenViBEPlugins
 
 				virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 				{
-					rPrototype.addInput("Feature vector 1", OV_TypeId_FeatureVector);
-					rPrototype.addInput("Feature vector 2", OV_TypeId_FeatureVector);
-					rPrototype.addOutput("Comparison Amplitude", OV_TypeId_StreamedMatrix);
-					rPrototype.addSetting("Kind of Comparison", OVP_TypeId_ComparisonMethod, OVP_TypeId_ComparisonMethod_Ratio.toString());
-
+					rPrototype.addInput  ("Feature vector 1",     OV_TypeId_FeatureVector);
+					rPrototype.addInput  ("Feature vector 2",     OV_TypeId_FeatureVector);
+					rPrototype.addOutput ("Comparison Amplitude", OV_TypeId_StreamedMatrix);
+					rPrototype.addSetting("Kind of Comparison",   OVP_TypeId_ComparisonMethod, OVP_TypeId_ComparisonMethod_Ratio.toString());
+					rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 					return true;
 				}
 

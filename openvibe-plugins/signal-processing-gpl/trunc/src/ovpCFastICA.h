@@ -123,7 +123,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Computes fast independant component analysis"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("-Unstable-/Signal processing/Independant component analysis"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Independant component analysis"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_FastICA; }
@@ -131,9 +131,9 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("Input signal", OV_TypeId_Signal);
-
+				rPrototype.addInput ("Input signal",  OV_TypeId_Signal);
 				rPrototype.addOutput("Output signal", OV_TypeId_Signal);
+				rPrototype.addFlag  (OpenViBE::Kernel::BoxFlag_IsUnstable);
 
 				return true;
 			}

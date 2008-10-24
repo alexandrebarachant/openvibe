@@ -159,6 +159,15 @@ boolean CBox::initializeFromAlgorithmClassIdentifier(
 	CBoxProto l_oBoxProto(getKernelContext(), *this);
 	l_pBoxAlgorithmDesc->getBoxPrototype(l_oBoxProto);
 
+	if(this->hasAttribute(OV_AttributeId_Box_InitialPrototypeHashValue))
+	{
+		this->setAttributeValue(OV_AttributeId_Box_InitialPrototypeHashValue, this->getPluginManager().getPluginObjectHashValue(rAlgorithmClassIdentifier).toString());
+	}
+	else
+	{
+		this->addAttribute(OV_AttributeId_Box_InitialPrototypeHashValue, this->getPluginManager().getPluginObjectHashValue(rAlgorithmClassIdentifier).toString());
+	}
+
 	this->enableNotification();
 
 	this->notify(BoxModification_Initialized);
