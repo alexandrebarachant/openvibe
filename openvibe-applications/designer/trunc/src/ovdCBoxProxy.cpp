@@ -152,7 +152,7 @@ boolean CBoxProxy::isUpToDate(void) const
 	CIdentifier l_oBoxHashCode2;
 	l_oBoxHashCode1=m_rKernelContext.getPluginManager().getPluginObjectHashValue(m_pConstBox->getAlgorithmClassIdentifier());
 	l_oBoxHashCode2.fromString(m_pConstBox->getAttributeValue(OV_AttributeId_Box_InitialPrototypeHashValue));
-	return l_oBoxHashCode1!=OV_UndefinedIdentifier && l_oBoxHashCode1==l_oBoxHashCode2;
+	return l_oBoxHashCode1==OV_UndefinedIdentifier || (l_oBoxHashCode1!=OV_UndefinedIdentifier && l_oBoxHashCode1==l_oBoxHashCode2);
 }
 
 boolean CBoxProxy::isDeprecated(void) const

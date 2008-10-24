@@ -271,14 +271,12 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 	}
 
 	// then looks at the caseless string match
-	string l_sEntryName(rEntryName);
-	string l_sEntryNameLower;
-	std::transform(l_sEntryName.begin(), l_sEntryName.end(), l_sEntryNameLower.begin(), std::tolower);
+	string l_sEntryNameLower=rEntryName.toASCIIString();
+	std::transform(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), l_sEntryNameLower.begin(), std::tolower);
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
-		string l_sItEntryName(itEnumerationEntry->second);
-		string l_sItEntryNameLower;
-		std::transform(l_sItEntryName.begin(), l_sItEntryName.end(), l_sItEntryNameLower.begin(), std::tolower);
+		string l_sItEntryNameLower=itEnumerationEntry->second.toASCIIString();
+		std::transform(l_sItEntryNameLower.begin(), l_sItEntryNameLower.end(), l_sItEntryNameLower.begin(), std::tolower);
 		if(l_sItEntryNameLower==l_sEntryNameLower)
 		{
 			return itEnumerationEntry->first;
@@ -375,14 +373,12 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 	}
 
 	// then looks at the caseless string match
-	string l_sEntryName(rEntryName);
-	string l_sEntryNameLower;
-	std::transform(l_sEntryName.begin(), l_sEntryName.end(), l_sEntryNameLower.begin(), std::tolower);
+	string l_sEntryNameLower=rEntryName.toASCIIString();
+	std::transform(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), l_sEntryNameLower.begin(), std::tolower);
 	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 	{
-		string l_sItEntryName(itBitMaskEntry->second);
-		string l_sItEntryNameLower;
-		std::transform(l_sItEntryName.begin(), l_sItEntryName.end(), l_sItEntryNameLower.begin(), std::tolower);
+		string l_sItEntryNameLower=itBitMaskEntry->second.toASCIIString();
+		std::transform(l_sItEntryNameLower.begin(), l_sItEntryNameLower.end(), l_sItEntryNameLower.begin(), std::tolower);
 		if(l_sItEntryNameLower==l_sEntryNameLower)
 		{
 			return itBitMaskEntry->first;

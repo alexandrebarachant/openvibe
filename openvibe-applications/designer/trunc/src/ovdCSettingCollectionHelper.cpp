@@ -1,8 +1,7 @@
 #include "ovdCSettingCollectionHelper.h"
 
 #include <vector>
-#include <sstream>
-#include <iostream>
+#include <string>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -229,6 +228,7 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 	::GtkTreeIter l_oListIter;
 	::GtkComboBox* l_pWidget=GTK_COMBO_BOX(pWidget);
 	::GtkListStore* l_pList=GTK_LIST_STORE(gtk_combo_box_get_model(l_pWidget));
+	uint64 l_ui64Value=m_rKernel.getContext()->getTypeManager().getEnumerationEntryValueFromName(rTypeIdentifier, rValue);
 
 	gtk_list_store_clear(l_pList);
 	for(uint64 i=0; i<m_rKernel.getContext()->getTypeManager().getEnumerationEntryCount(rTypeIdentifier); i++)
@@ -239,7 +239,8 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 		{
 			gtk_list_store_append(l_pList, &l_oListIter);
 			gtk_list_store_set(l_pList, &l_oListIter, 0, (const char*)l_sEntryName, -1);
-			if(l_sEntryName==rValue)
+
+			if(l_ui64Value==l_ui64EntryValue)
 			{
 				gtk_combo_box_set_active(l_pWidget, i);
 			}
