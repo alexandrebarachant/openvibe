@@ -272,7 +272,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 
 	::GdkGC* l_pDrawGC=gdk_gc_new(m_pWidget->window);
 
-		boolean l_bDeprecated=rBox.hasAttribute(OV_AttributeId_Box_FlagIsDeprecated);
+		boolean l_bDeprecated=m_rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(rBox.getAlgorithmClassIdentifier());
 		if(l_bDeprecated)
 		{
 			gdk_gc_set_rgb_fg_color(l_pDrawGC, &m_vColors[Color_BoxBackgroundDeprecated]);
