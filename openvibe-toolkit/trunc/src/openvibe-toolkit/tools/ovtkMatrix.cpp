@@ -5,6 +5,12 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <float.h>
+
+#if defined OVTK_OS_Windows
+#define isnan _isnan
+#define isinf !_finite
+#endif
 
 using namespace OpenViBE;
 using namespace OpenViBEToolkit;

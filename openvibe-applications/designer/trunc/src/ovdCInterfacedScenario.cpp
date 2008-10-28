@@ -1157,7 +1157,10 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 #endif
 									// -------------- ABOUT / RENAME --------------
 
-									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemEdit, GTK_STOCK_EDIT, "configure box...", context_menu_cb, l_pBox, BoxContextMenu_Configure, -1);
+									if(l_pBox->getSettingCount()!=0)
+									{
+										gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemEdit, GTK_STOCK_EDIT, "configure box...", context_menu_cb, l_pBox, BoxContextMenu_Configure, -1);
+									}
 									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemRename, GTK_STOCK_EDIT, "rename box...", context_menu_cb, l_pBox, BoxContextMenu_Rename, -1);
 									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemAbout, GTK_STOCK_ABOUT, "about...", context_menu_cb, l_pBox, BoxContextMenu_About, -1);
 
@@ -1326,7 +1329,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	void CInterfacedScenario::contextMenuAddInputCB(IBox& rBox)
 	{
 		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuAddInputCB\n";
-		rBox.addInput("", OV_UndefinedIdentifier);
+		rBox.addInput("New input", OV_UndefinedIdentifier);
 		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifyInput))
 		{
 			CConnectorEditor l_oConnectorEditor(m_rKernel, rBox, Connector_Input, rBox.getInputCount()-1, m_sGUIFilename.c_str());
@@ -1351,7 +1354,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	void CInterfacedScenario::contextMenuAddOutputCB(IBox& rBox)
 	{
 		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuAddOutputCB\n";
-		rBox.addOutput("", OV_UndefinedIdentifier);
+		rBox.addOutput("New output", OV_UndefinedIdentifier);
 		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput))
 		{
 			CConnectorEditor l_oConnectorEditor(m_rKernel, rBox, Connector_Output, rBox.getOutputCount()-1, m_sGUIFilename.c_str());
@@ -1376,7 +1379,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	void CInterfacedScenario::contextMenuAddSettingCB(IBox& rBox)
 	{
 		m_rKernel.getContext()->getLogManager() << LogLevel_Debug << "contextMenuAddSettingCB\n";
-		rBox.addSetting("", OV_UndefinedIdentifier, "");
+		rBox.addSetting("New setting", OV_UndefinedIdentifier, "");
 		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifySetting))
 		{
 			CSettingEditorDialog l_oSettingEditorDialog(m_rKernel, rBox, rBox.getSettingCount()-1, m_sGUIFilename.c_str());

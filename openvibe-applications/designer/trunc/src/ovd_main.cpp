@@ -384,26 +384,28 @@ int go(int argc, char ** argv)
 					IVisualisationManager& l_rVisualisationManager=l_pKernel->getContext()->getVisualisationManager();
 					l_rVisualisationManager.initialize3DContext(l_oOgreParams);
 
-					::CApplication app(l_pKernel);
-					app.initialize();
-					app.newScenarioCB();
-
-					CPluginObjectDescCollector cb_collector1(*l_pKernel->getContext());
-					CPluginObjectDescCollector cb_collector2(*l_pKernel->getContext());
-					CPluginObjectDescLogger cb_logger(*l_pKernel->getContext());
-					cb_logger.enumeratePluginObjectDesc();
-					cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
-					cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
-					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
-					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
-
-					try
 					{
-						gtk_main();
-					}
-					catch(...)
-					{
-						l_rLogManager << LogLevel_Fatal << "Catched top level exception\n";
+						::CApplication app(l_pKernel);
+						app.initialize();
+						app.newScenarioCB();
+
+						CPluginObjectDescCollector cb_collector1(*l_pKernel->getContext());
+						CPluginObjectDescCollector cb_collector2(*l_pKernel->getContext());
+						CPluginObjectDescLogger cb_logger(*l_pKernel->getContext());
+						cb_logger.enumeratePluginObjectDesc();
+						cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+						cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
+						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
+						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+
+						try
+						{
+							gtk_main();
+						}
+						catch(...)
+						{
+							l_rLogManager << LogLevel_Fatal << "Catched top level exception\n";
+						}
 					}
 
 					cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;

@@ -15,12 +15,6 @@
 
 #include <boost/timer.hpp>
 
-#include <iostream>
-#include <vector>
-#include <string>
-
-#include <math.h>
-
 #include "ovpCEquationParserGrammar.h"
 #include "ovpCAbstractTree.h"
 

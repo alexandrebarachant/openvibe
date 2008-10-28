@@ -3,10 +3,23 @@
 #include "../ovk_tools.h"
 
 #include <string>
+#include <algorithm>
+#include <functional>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
-using namespace std;
+
+namespace
+{
+	// because std::tolower has multiple signatures,
+	// it can not be easily used in std::transform
+	// this workaround is taken from http://www.gcek.net/ref/books/sw/cpp/ticppv2/
+	template <class charT>
+	charT to_lower(charT c)
+	{
+		return std::tolower(c);
+	}
+};
 
 CTypeManager::CTypeManager(const IKernelContext& rKernelContext)
 	:TKernelObject<ITypeManager>(rKernelContext)
@@ -72,12 +85,12 @@ boolean CTypeManager::registerEnumerationEntry(
 	const CString& sEntryName,
 	const uint64 ui64EntryValue)
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return false;
 	}
-	map<uint64, CString>::iterator itEnumerationEntry=itEnumeration->second.find(ui64EntryValue);
+	std::map<uint64, CString>::iterator itEnumerationEntry=itEnumeration->second.find(ui64EntryValue);
 	if(itEnumerationEntry!=itEnumeration->second.end())
 	{
 		return false;
@@ -105,12 +118,12 @@ boolean CTypeManager::registerBitMaskEntry(
 	const CString& sEntryName,
 	const uint64 ui64EntryValue)
 {
-	map<CIdentifier, map<uint64, CString> >::iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return false;
 	}
-	map<uint64, CString>::iterator itBitMaskEntry=itBitMask->second.find(ui64EntryValue);
+	std::map<uint64, CString>::iterator itBitMaskEntry=itBitMask->second.find(ui64EntryValue);
 	if(itBitMaskEntry!=itBitMask->second.end())
 	{
 		return false;
@@ -147,8 +160,8 @@ boolean CTypeManager::isDerivedFromStream(
 	const CIdentifier& rTypeIdentifier,
 	const CIdentifier& rParentTypeIdentifier) const
 {
-	map < CIdentifier, CIdentifier >::const_iterator it=m_vStream.find(rTypeIdentifier);
-	map < CIdentifier, CIdentifier >::const_iterator itParent=m_vStream.find(rParentTypeIdentifier);
+	std::map < CIdentifier, CIdentifier >::const_iterator it=m_vStream.find(rTypeIdentifier);
+	std::map < CIdentifier, CIdentifier >::const_iterator itParent=m_vStream.find(rParentTypeIdentifier);
 	if(it==m_vStream.end()) return false;
 	if(itParent==m_vStream.end()) return false;
 	while(it!=m_vStream.end())
@@ -197,7 +210,7 @@ CIdentifier CTypeManager::getStreamParentType(
 uint64 CTypeManager::getEnumerationEntryCount(
 	const CIdentifier& rTypeIdentifier) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return 0;
@@ -211,7 +224,7 @@ boolean CTypeManager::getEnumerationEntry(
 	CString& sEntryName,
 	uint64& rEntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return false;
@@ -222,7 +235,7 @@ boolean CTypeManager::getEnumerationEntry(
 		return false;
 	}
 
-	map<uint64, CString>::const_iterator itEnumerationEntry=itEnumeration->second.begin();
+	std::map<uint64, CString>::const_iterator itEnumerationEntry=itEnumeration->second.begin();
 	for(uint64 i=0; i<ui64EntryIndex && itEnumerationEntry!=itEnumeration->second.end(); i++, itEnumerationEntry++)
 	{
 	}
@@ -237,12 +250,12 @@ CString CTypeManager::getEnumerationEntryNameFromValue(
 	const CIdentifier& rTypeIdentifier,
 	const uint64 ui64EntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return "";
 	}
-	map<uint64, CString>::const_iterator itEnumerationEntry=itEnumeration->second.find(ui64EntryValue);
+	std::map<uint64, CString>::const_iterator itEnumerationEntry=itEnumeration->second.find(ui64EntryValue);
 	if(itEnumerationEntry==itEnumeration->second.end())
 	{
 		return "";
@@ -254,14 +267,14 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 	const CIdentifier& rTypeIdentifier,
 	const CString& rEntryName) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
-	map<uint64, CString>::const_iterator itEnumerationEntry;
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itEnumeration=m_vEnumeration.find(rTypeIdentifier);
+	std::map<uint64, CString>::const_iterator itEnumerationEntry;
 	if(itEnumeration==m_vEnumeration.end())
 	{
 		return 0xffffffffffffffffll;
 	}
 
-	// first looks at the exact string match
+	// first looks at the exact std::string match
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
 		if(itEnumerationEntry->second==rEntryName)
@@ -270,20 +283,20 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 		}
 	}
 
-	// then looks at the caseless string match
-	string l_sEntryNameLower=rEntryName.toASCIIString();
-	std::transform(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), l_sEntryNameLower.begin(), std::tolower);
+	// then looks at the caseless std::string match
+	std::string l_sEntryNameLower=rEntryName.toASCIIString();
+	std::for_each(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), ::to_lower<std::string::value_type>);
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
-		string l_sItEntryNameLower=itEnumerationEntry->second.toASCIIString();
-		std::transform(l_sItEntryNameLower.begin(), l_sItEntryNameLower.end(), l_sItEntryNameLower.begin(), std::tolower);
+		std::string l_sItEntryNameLower=itEnumerationEntry->second.toASCIIString();
+		std::transform(l_sItEntryNameLower.begin(), l_sItEntryNameLower.end(), l_sItEntryNameLower.begin(), ::to_lower<std::string::value_type>);
 		if(l_sItEntryNameLower==l_sEntryNameLower)
 		{
 			return itEnumerationEntry->first;
 		}
 	}
 
-	// then looks at the string beeing the value itself
+	// then looks at the std::string beeing the value itself
 	uint64 l_ui64Value;
 	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
 	{
@@ -299,7 +312,7 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 uint64 CTypeManager::getBitMaskEntryCount(
 	const CIdentifier& rTypeIdentifier) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return 0;
@@ -313,7 +326,7 @@ boolean CTypeManager::getBitMaskEntry(
 	CString& sEntryName,
 	uint64& rEntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return false;
@@ -324,7 +337,7 @@ boolean CTypeManager::getBitMaskEntry(
 		return false;
 	}
 
-	map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.begin();
+	std::map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.begin();
 	for(uint64 i=0; i<ui64EntryIndex && itBitMaskEntry!=itBitMask->second.end(); i++, itBitMaskEntry++)
 	{
 	}
@@ -339,12 +352,12 @@ CString CTypeManager::getBitMaskEntryNameFromValue(
 	const CIdentifier& rTypeIdentifier,
 	const uint64 ui64EntryValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return "";
 	}
-	map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.find(ui64EntryValue);
+	std::map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.find(ui64EntryValue);
 	if(itBitMaskEntry==itBitMask->second.end())
 	{
 		return "";
@@ -356,14 +369,14 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 	const CIdentifier& rTypeIdentifier,
 	const CString& rEntryName) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
-	map<uint64, CString>::const_iterator itBitMaskEntry;
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	std::map<uint64, CString>::const_iterator itBitMaskEntry;
 	if(itBitMask==m_vBitMask.end())
 	{
 		return 0xffffffffffffffffll;
 	}
 
-	// first looks at the exact string match
+	// first looks at the exact std::string match
 	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 	{
 		if(itBitMaskEntry->second==rEntryName)
@@ -372,20 +385,20 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 		}
 	}
 
-	// then looks at the caseless string match
-	string l_sEntryNameLower=rEntryName.toASCIIString();
-	std::transform(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), l_sEntryNameLower.begin(), std::tolower);
+	// then looks at the caseless std::string match
+	std::string l_sEntryNameLower=rEntryName.toASCIIString();
+	std::transform(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), l_sEntryNameLower.begin(), ::to_lower<std::string::value_type>);
 	for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 	{
-		string l_sItEntryNameLower=itBitMaskEntry->second.toASCIIString();
-		std::transform(l_sItEntryNameLower.begin(), l_sItEntryNameLower.end(), l_sItEntryNameLower.begin(), std::tolower);
+		std::string l_sItEntryNameLower=itBitMaskEntry->second.toASCIIString();
+		std::transform(l_sItEntryNameLower.begin(), l_sItEntryNameLower.end(), l_sItEntryNameLower.begin(), ::to_lower<std::string::value_type>);
 		if(l_sItEntryNameLower==l_sEntryNameLower)
 		{
 			return itBitMaskEntry->first;
 		}
 	}
 
-	// then looks at the string beeing the value itself
+	// then looks at the std::string beeing the value itself
 	uint64 l_ui64Value;
 	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
 	{
@@ -402,18 +415,18 @@ CString CTypeManager::getBitMaskEntryCompositionNameFromValue(
 	const CIdentifier& rTypeIdentifier,
 	const uint64 ui64EntryCompositionValue) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return "";
 	}
 
-	string l_sResult;
+	std::string l_sResult;
 	for(uint32 i=0; i<64; i++)
 	{
 		if(ui64EntryCompositionValue&(1LL<<i))
 		{
-			map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.find(ui64EntryCompositionValue&(1LL<<i));
+			std::map<uint64, CString>::const_iterator itBitMaskEntry=itBitMask->second.find(ui64EntryCompositionValue&(1LL<<i));
 			if(itBitMaskEntry==itBitMask->second.end())
 			{
 				return "";
@@ -425,7 +438,7 @@ CString CTypeManager::getBitMaskEntryCompositionNameFromValue(
 			else
 			{
 				;
-				l_sResult+=string(1, OV_Value_EnumeratedStringSeparator);
+				l_sResult+=std::string(1, OV_Value_EnumeratedStringSeparator);
 				l_sResult+=itBitMaskEntry->second.toASCIIString();
 			}
 		}
@@ -437,31 +450,31 @@ uint64 CTypeManager::getBitMaskEntryCompositionValueFromName(
 	const CIdentifier& rTypeIdentifier,
 	const CString& rEntryCompositionName) const
 {
-	map<CIdentifier, map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
+	std::map<CIdentifier, std::map<uint64, CString> >::const_iterator itBitMask=m_vBitMask.find(rTypeIdentifier);
 	if(itBitMask==m_vBitMask.end())
 	{
 		return 0;
 	}
 
 	uint64 l_ui64Result=0;
-	string l_sEntryCompositionName=rEntryCompositionName.toASCIIString();
-	string::size_type i=0;
-	string::size_type j=0;
+	std::string l_sEntryCompositionName=rEntryCompositionName.toASCIIString();
+	std::string::size_type i=0;
+	std::string::size_type j=0;
 	do
 	{
 		i=l_sEntryCompositionName.find(OV_Value_EnumeratedStringSeparator, i);
-		if(i==string::npos)
+		if(i==std::string::npos)
 		{
 			i=l_sEntryCompositionName.length();
 		}
 
 		if(i!=j)
 		{
-			string l_sEntryName;
+			std::string l_sEntryName;
 			l_sEntryName.assign(l_sEntryCompositionName, j, i-j);
 
 			boolean l_bFound=false;
-			map<uint64, CString>::const_iterator itBitMaskEntry;
+			std::map<uint64, CString>::const_iterator itBitMaskEntry;
 			for(itBitMaskEntry=itBitMask->second.begin(); itBitMaskEntry!=itBitMask->second.end(); itBitMaskEntry++)
 			{
 				if(itBitMaskEntry->second==CString(l_sEntryName.c_str()))

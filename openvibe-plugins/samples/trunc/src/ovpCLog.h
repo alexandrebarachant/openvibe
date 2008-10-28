@@ -91,8 +91,11 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Bit mask", OpenViBE::CIdentifier(0x0000, 0x5678), "");
 
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyInput);
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddOutput);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyOutput);
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddSetting);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifySetting);
 
 				return true;
 			}
