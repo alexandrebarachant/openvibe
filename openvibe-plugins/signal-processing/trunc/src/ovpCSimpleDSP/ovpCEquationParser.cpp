@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <functional>
+#include <cctype>
 
 using namespace boost;
 using namespace boost::spirit;

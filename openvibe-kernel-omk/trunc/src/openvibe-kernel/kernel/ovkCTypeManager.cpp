@@ -5,6 +5,7 @@
 #include <string>
 #include <algorithm>
 #include <functional>
+#include <cctype>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
