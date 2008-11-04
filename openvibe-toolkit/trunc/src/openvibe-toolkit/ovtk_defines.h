@@ -418,6 +418,48 @@
 
 //___________________________________________________________________//
 //                                                                   //
+// Channel localisation stream node identifiers                      //
+//___________________________________________________________________//
+//                                                                   //
+
+/*
+ * Channel localisation description (nov 04th 2008)
+ *
+ * version 1 :
+ * ----------------------------------------------------------------- *
+ * OVTK_NodeId_Header
+ *   OVTK_NodeId_Header_StreamType (integer:)
+ *   OVTK_NodeId_Header_StreamVersion (integer:2)
+ *   OVTK_NodeId_Header_ChannelLocalisation
+ *     OVTK_NodeId_Header_ChannelLocalisation_Dynamic (boolean)
+ *   OVTK_NodeId_Header_StreamedMatrix
+ *     OVTK_NodeId_Header_StreamedMatrix_DimensionCount (integer:2)
+ *     OVTK_NodeId_Header_StreamedMatrix_Dimension
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Size (integer:channel count)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:channel 1 name)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:channel 2 name)
+ *       ...
+ *     OVTK_NodeId_Header_StreamedMatrix_Dimension
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Size (integer:3)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:x)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:y)
+ *       OVTK_NodeId_Header_StreamedMatrix_Dimension_Label (string:z)
+ * OVTK_NodeId_Buffer
+ *   OVTK_NodeId_Buffer_StreamedMatrix
+ *     OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer (array of float64)
+ * OVTK_NodeId_Buffer
+ *   OVTK_NodeId_Buffer_StreamedMatrix
+ *     OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer (array of float64)
+ * ...
+ * OVTK_NodeId_End
+ * ----------------------------------------------------------------- *
+ */
+
+#define OVTK_NodeId_Header_ChannelLocalisation                                 EBML::CIdentifier(0xF2CFE60B, 0xEFD63E3B)
+#define OVTK_NodeId_Header_ChannelLocalisation_Dynamic                         EBML::CIdentifier(0x5338AF5C, 0x07C469C3)
+
+//___________________________________________________________________//
+//                                                                   //
 // Stimulation stream node identifiers                               //
 //___________________________________________________________________//
 //                                                                   //

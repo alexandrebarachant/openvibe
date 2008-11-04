@@ -28,8 +28,8 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamDecoder[6];
-			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pMemoryBuffer[6];
+			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamDecoder[7];
+			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pMemoryBuffer[7];
 		};
 
 		class CDecoderAlgorithmTestDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -58,6 +58,7 @@ namespace OpenViBEPlugins
 				rPrototype.addInput("Spectrum", OV_TypeId_Spectrum);
 				rPrototype.addInput("Stimulation", OV_TypeId_Stimulations);
 				rPrototype.addInput("Streamed matrix", OV_TypeId_StreamedMatrix);
+				rPrototype.addInput("Channel localisation", OV_TypeId_ChannelLocalisation);
 
 				return true;
 			}

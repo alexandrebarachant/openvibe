@@ -52,8 +52,9 @@ boolean CDecoderAlgorithmTest::initialize(void)
 	m_pStreamDecoder[3]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SpectrumStreamDecoder));
 	m_pStreamDecoder[4]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StimulationStreamDecoder));
 	m_pStreamDecoder[5]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StreamedMatrixStreamDecoder));
+	m_pStreamDecoder[6]=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_ChannelLocalisationStreamDecoder));
 
-	for(uint32 i=0; i<6; i++)
+	for(uint32 i=0; i<7; i++)
 	{
 		m_pStreamDecoder[i]->initialize();
 		ip_pMemoryBuffer[i].initialize(m_pStreamDecoder[i]->getInputParameter(OVP_Algorithm_EBMLStreamDecoder_InputParameterId_MemoryBufferToDecode));
@@ -64,7 +65,7 @@ boolean CDecoderAlgorithmTest::initialize(void)
 
 boolean CDecoderAlgorithmTest::uininitialize(void)
 {
-	for(uint32 i=0; i<6; i++)
+	for(uint32 i=0; i<7; i++)
 	{
 		ip_pMemoryBuffer[i].uninitialize();
 		m_pStreamDecoder[i]->uninitialize();

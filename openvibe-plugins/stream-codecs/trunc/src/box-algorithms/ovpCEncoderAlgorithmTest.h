@@ -27,16 +27,17 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder[6];
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pMemoryBuffer[6];
+			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder[7];
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pMemoryBuffer[7];
 
 			OpenViBE::boolean m_bHasSentHeader;
 			OpenViBE::uint64 m_ui64StartTime;
 			OpenViBE::uint64 m_ui64EndTime;
 
-			OpenViBE::CMatrix m_oMatrix1;
-			OpenViBE::CMatrix m_oMatrix2;
-			OpenViBE::CStimulationSet m_oStimulationSet;
+			OpenViBE::CMatrix* m_pMatrix1;
+			OpenViBE::CMatrix* m_pMatrix2;
+			OpenViBE::CMatrix* m_pMatrix3;
+			OpenViBE::CStimulationSet* m_pStimulationSet;
 		};
 
 		class CEncoderAlgorithmTestDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -65,6 +66,7 @@ namespace OpenViBEPlugins
 				rPrototype.addOutput("Spectrum", OV_TypeId_Spectrum);
 				rPrototype.addOutput("Stimulation", OV_TypeId_Stimulations);
 				rPrototype.addOutput("Streamed matrix", OV_TypeId_StreamedMatrix);
+				rPrototype.addOutput("Channel localisation", OV_TypeId_ChannelLocalisation);
 
 				return true;
 			}

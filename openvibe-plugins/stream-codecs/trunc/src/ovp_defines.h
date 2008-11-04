@@ -57,6 +57,15 @@
 #define OVP_Algorithm_ExperimentInformationStreamDecoder_OutputParameterId_TechnicianName                  OpenViBE::CIdentifier(0xB8A94B68, 0x389393D9)
 
 //___________________________________________________________________//
+//
+// Channel localisation decoder
+//___________________________________________________________________//
+//
+#define OVP_ClassId_Algorithm_ChannelLocalisationStreamDecoder                                             OpenViBE::CIdentifier(0x8222F065, 0xB05D35CF)
+#define OVP_ClassId_Algorithm_ChannelLocalisationStreamDecoderDesc                                         OpenViBE::CIdentifier(0x713A29FD, 0xA5A95E2C)
+#define OVP_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Dynamic                           OpenViBE::CIdentifier(0xD20991FD, 0xA3153651)
+
+//___________________________________________________________________//
 //                                                                   //
 // Feature vector decoder
 //___________________________________________________________________//
@@ -143,6 +152,15 @@
 #define OVP_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_LaboratoryName                   OpenViBE::CIdentifier(0x5CA80FA5, 0x774F01CB)
 #define OVP_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianIdentifier             OpenViBE::CIdentifier(0xC8ECFBBC, 0x0DCDA310)
 #define OVP_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianName                   OpenViBE::CIdentifier(0xB8A94B68, 0x389393D9)
+
+//___________________________________________________________________//
+//
+// Channel localisation encoder
+//___________________________________________________________________//
+//
+#define OVP_ClassId_Algorithm_ChannelLocalisationStreamEncoder                                             OpenViBE::CIdentifier(0xC4AA738A, 0x2368C0EA)
+#define OVP_ClassId_Algorithm_ChannelLocalisationStreamEncoderDesc                                         OpenViBE::CIdentifier(0x3F7B49A3, 0x2B8F861A)
+#define OVP_Algorithm_ChannelLocalisationStreamEncoder_InputParameterId_Dynamic                            OpenViBE::CIdentifier(0xCF5DD4F8, 0xC2FF2878)
 
 //___________________________________________________________________//
 //                                                                   //
