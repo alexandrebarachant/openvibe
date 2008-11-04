@@ -96,7 +96,7 @@ namespace OpenViBEPlugins
 		} SVisualisationWidget;
 		typedef struct _SScenario
 		{
-			_default_and_copy_constructor_3_(_SScenario, m_vBox, m_vLink, m_vAttribute);
+			_default_and_copy_constructor_4_(_SScenario, m_vBox, m_vLink, m_vAttribute, m_vVisualisationWidget);
 			std::vector<SBox> m_vBox;
 			std::vector<SLink> m_vLink;
 			std::vector<SAttribute> m_vAttribute;

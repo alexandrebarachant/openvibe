@@ -52,7 +52,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Sinus oscilator"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Sinus oscillator"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Simple sinus signal generator"); }

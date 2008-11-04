@@ -56,9 +56,13 @@ public:
 		m_rWriter.setChildData(rVisualisationWidget.getIdentifier().toString());
 		m_rWriter.closeChild();
 
-		m_rWriter.openChild("Name");
-		m_rWriter.setChildData(rVisualisationWidget.getName());
-		m_rWriter.closeChild();
+		//visualisation box name can be retrieved from corresponding IBox, so we can skip it for these
+		if(rVisualisationWidget.getType() != EVisualisationWidget_VisualisationBox)
+		{
+			m_rWriter.openChild("Name");
+			m_rWriter.setChildData(rVisualisationWidget.getName());
+			m_rWriter.closeChild();
+		}
 
 		m_rWriter.openChild("Type");
 		sprintf(l_sBuffer, "%d", (int)rVisualisationWidget.getType());

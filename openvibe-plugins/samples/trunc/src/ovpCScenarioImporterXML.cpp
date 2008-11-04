@@ -303,10 +303,15 @@ boolean CScenarioImporterXML::doImport(IScenarioImporterContext& rScenarioImport
 		CIdentifier l_oNewVisualisationWidgetIdentifier;
 		CIdentifier l_oVisualisationWidgetIdentifier;
 		l_oVisualisationWidgetIdentifier.fromString(_AutoCaster_(v->m_sIdentifier));
+		CString l_sWidgetName = _AutoCaster_(v->m_sName);
+		if(_AutoCaster_(v->m_sType) == EVisualisationWidget_VisualisationBox)
+		{
+			l_sWidgetName = l_rScenario.getBoxDetails(m_vBoxIdMapping[_AutoCaster_(v->m_sBoxIdentifier)])->getName();
+		}
 
 		l_rScenario.getVisualisationTreeDetails().addVisualisationWidget(
 			l_oNewVisualisationWidgetIdentifier,
-			_AutoCaster_(v->m_sName),
+			l_sWidgetName,
 			_AutoCaster_(v->m_sType),
 			m_vVisualisationWidgetIdMapping[_AutoCaster_(v->m_sParentIdentifier)],
 			_AutoCaster_(v->m_sIndex),
