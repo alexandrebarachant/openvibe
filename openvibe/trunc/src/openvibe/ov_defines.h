@@ -33,6 +33,8 @@
 #define OV_ClassId_Kernel_Algorithm_AlgorithmProto           OpenViBE::CIdentifier(0x06DF986C, 0x39B795CC)
 #define OV_ClassId_Kernel_Algorithm_AlgorithmProxy           OpenViBE::CIdentifier(0xE015C4C5, 0x479C3D46)
 
+#define OV_ClassId_Kernel_Configuration_ConfigurationManager OpenViBE::CIdentifier(0xA5267456, 0xE58CC0E9)
+
 #define OV_ClassId_Kernel_Log_LogManager                     OpenViBE::CIdentifier(0x22990B50, 0x571010D4)
 #define OV_ClassId_Kernel_Log_LogListener                    OpenViBE::CIdentifier(0x766B92CB, 0x33B01B15)
 

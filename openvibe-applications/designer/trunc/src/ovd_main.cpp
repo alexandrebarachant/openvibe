@@ -326,9 +326,11 @@ int go(int argc, char ** argv)
 				{
 					cout<<"[  INF  ] Created Kernel, going on testing"<<endl;
 
-					OpenViBEToolkit::initialize(*l_pKernel->getContext());
+					const IKernelContext& l_rKernelContext=*l_pKernel->getContext();
 
-					ILogManager& l_rLogManager=l_pKernel->getContext()->getLogManager();
+					OpenViBEToolkit::initialize(l_rKernelContext);
+
+					ILogManager& l_rLogManager=l_rKernelContext.getLogManager();
 					l_rLogManager.activate(LogLevel_Debug, false);
 					l_rLogManager.activate(LogLevel_Benchmark, false);
 					l_rLogManager.activate(LogLevel_Trace, false);
@@ -345,13 +347,15 @@ int go(int argc, char ** argv)
 #endif
 #endif
 
-					IPluginManager& l_rPluginManager=l_pKernel->getContext()->getPluginManager();
+					IPluginManager& l_rPluginManager=l_rKernelContext.getPluginManager();
 #if defined OVD_OS_Linux
 					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-plugins-*.so");
 #elif defined OVD_OS_Windows
 					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-plugins-*.dll");
 #else
 #endif
+
+					IConfigurationManager& l_rConfigurationManager=l_rKernelContext.getConfigurationManager();
 
 					//initialise Gtk before 3D context
 					gtk_init(&argc, &argv);
@@ -381,7 +385,7 @@ int go(int argc, char ** argv)
 					l_oOgreParams.setValue("OutputCapturedMessages", true); //forward captured messages to OpenViBE's log manager for output
 					// l_oOgreParams.setValue("OutputFileName", "ogre.log"); //name of file where to output ogre messages
 
-					IVisualisationManager& l_rVisualisationManager=l_pKernel->getContext()->getVisualisationManager();
+					IVisualisationManager& l_rVisualisationManager=l_rKernelContext.getVisualisationManager();
 					l_rVisualisationManager.initialize3DContext(l_oOgreParams);
 
 					{
@@ -389,14 +393,14 @@ int go(int argc, char ** argv)
 						app.initialize();
 						app.newScenarioCB();
 
-						CPluginObjectDescCollector cb_collector1(*l_pKernel->getContext());
-						CPluginObjectDescCollector cb_collector2(*l_pKernel->getContext());
-						CPluginObjectDescLogger cb_logger(*l_pKernel->getContext());
+						CPluginObjectDescCollector cb_collector1(l_rKernelContext);
+						CPluginObjectDescCollector cb_collector2(l_rKernelContext);
+						CPluginObjectDescLogger cb_logger(l_rKernelContext);
 						cb_logger.enumeratePluginObjectDesc();
 						cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
 						cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
-						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
-						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernel->getContext(), cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+						insertPluginObjectDesc_to_GtkTreeStore(l_rKernelContext, cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
+						insertPluginObjectDesc_to_GtkTreeStore(l_rKernelContext, cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
 
 						try
 						{
@@ -419,7 +423,7 @@ int go(int argc, char ** argv)
 					l_rLogManager.activate(LogLevel_Error, true);
 					l_rLogManager.activate(LogLevel_Fatal, true);
 
-					OpenViBEToolkit::uninitialize(*l_pKernel->getContext());
+					OpenViBEToolkit::uninitialize(l_rKernelContext);
 
 					l_pKernel->release();
 				}

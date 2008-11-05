@@ -358,7 +358,7 @@ void CEquationParser::op_power(float64 *& pStack, functionContext& pContext)
 
 void CEquationParser::op_abs(float64*& pStack, functionContext& pContext)
 {
-	*pStack = abs(*(pStack));
+	*pStack = fabs(*(pStack));
 }
 
 void CEquationParser::op_acos(float64*& pStack, functionContext& pContext)

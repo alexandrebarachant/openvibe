@@ -50,6 +50,8 @@
 #include "kernel/algorithm/ovIAlgorithmProto.h"
 #include "kernel/algorithm/ovIAlgorithmProxy.h"
 
+#include "kernel/configuration/ovIConfigurationManager.h"
+
 #include "kernel/log/ovILogManager.h"
 #include "kernel/log/ovILogListener.h"
 

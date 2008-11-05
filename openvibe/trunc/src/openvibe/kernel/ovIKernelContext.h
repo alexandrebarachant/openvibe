@@ -8,6 +8,7 @@ namespace OpenViBE
 	namespace Kernel
 	{
 		class IAlgorithmManager;
+		class IConfigurationManager;
 		class IKernelObjectFactory;
 		class IPlayerManager;
 		class IPluginManager;
@@ -37,6 +38,11 @@ namespace OpenViBE
 			 * \return a reference on the kernel's algorithm manager
 			 */
 			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) const=0;
+			/**
+			 * \brief Gets a reference on the kernel's configuration manager
+			 * \return a reference on the kernel's configuration manager
+			 */
+			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void) const=0;
 			/**
 			 * \brief Gets a reference on the kernel's player manager
 			 * \return a reference on the kernel's player manager

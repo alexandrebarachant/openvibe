@@ -329,7 +329,7 @@ void CAcquisitionServer::idleCB(void)
 	if(l_bLabelNeedsUpdate)
 	{
 		char l_sLabel[1024];
-		sprintf(l_sLabel, "%lu host%s connected...", m_vConnectionHandler.size(), m_vConnectionHandler.size()?"s":"");
+		sprintf(l_sLabel, "%u host%s connected...", m_vConnectionHandler.size(), m_vConnectionHandler.size()?"s":"");
 		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), l_sLabel);
 	}
 

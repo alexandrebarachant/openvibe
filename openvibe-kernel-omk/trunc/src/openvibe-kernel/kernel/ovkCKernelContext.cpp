@@ -3,6 +3,7 @@
 #include "ovkCTypeManager.h"
 
 #include "algorithm/ovkCAlgorithmManager.h"
+#include "configuration/ovkCConfigurationManager.h"
 #include "player/ovkCPlayerManager.h"
 #include "plugins/ovkCPluginManager.h"
 #include "scenario/ovkCScenarioManager.h"
@@ -20,6 +21,7 @@ using namespace OpenViBE::Kernel;
 CKernelContext::CKernelContext(IKernel& rKernel)
 	:m_rKernel(rKernel)
 	,m_pAlgorithmManager(NULL)
+	,m_pConfigurationManager(NULL)
 	,m_pKernelObjectFactory(NULL)
 	,m_pPlayerManager(NULL)
 	,m_pPluginManager(NULL)
@@ -35,6 +37,9 @@ CKernelContext::CKernelContext(IKernel& rKernel)
 	m_pLogManager->addListener(dynamic_cast<ILogListener*>(m_pKernelObjectFactory->createObject(OVK_ClassId_Kernel_Log_LogListenerFile)));
 	(*m_pLogManager) << LogLevel_Debug << "Added Console Log Listener - should be removed\n";
 	(*m_pLogManager) << LogLevel_Debug << "Added File Log Listener - should be removed\n";
+
+	(*m_pLogManager) << LogLevel_Trace << "Creating configuration manager\n";
+	m_pConfigurationManager=new CConfigurationManager(*this);
 
 	(*m_pLogManager) << LogLevel_Trace << "Creating algorithm manager\n";
 	m_pAlgorithmManager=new CAlgorithmManager(*this);
@@ -97,6 +102,8 @@ CKernelContext::~CKernelContext(void)
 	delete m_pPlayerManager;
 	(*m_pLogManager) << LogLevel_Trace << "Releasing algorithm manager\n";
 	delete m_pAlgorithmManager;
+	(*m_pLogManager) << LogLevel_Trace << "Releasing configuration manager\n";
+	delete m_pConfigurationManager;
 	(*m_pLogManager) << LogLevel_Trace << "Releasing log manager - no more log possible with log manager !\n";
 	delete m_pLogManager;
 	delete m_pKernelObjectFactory;
@@ -105,6 +112,11 @@ CKernelContext::~CKernelContext(void)
 IAlgorithmManager& CKernelContext::getAlgorithmManager(void) const
 {
 	return *m_pAlgorithmManager;
+}
+
+IConfigurationManager& CKernelContext::getConfigurationManager(void) const
+{
+	return *m_pConfigurationManager;
 }
 
 IKernelObjectFactory& CKernelContext::getKernelObjectFactory(void) const

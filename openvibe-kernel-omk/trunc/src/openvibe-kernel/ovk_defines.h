@@ -27,6 +27,8 @@
 #define OVK_ClassId_Kernel_Algorithm_AlgorithmProto           OpenViBE::CIdentifier(0x3C83B501, 0xD5992078)
 #define OVK_ClassId_Kernel_Algorithm_AlgorithmProxy           OpenViBE::CIdentifier(0x25BBE1E2, 0x18275693)
 
+#define OVK_ClassId_Kernel_Configuration_ConfigurationManager OpenViBE::CIdentifier(0xE483786B, 0xA464DD55)
+
 #define OVK_ClassId_Kernel_Log_LogManager                     OpenViBE::CIdentifier(0x1FE5CF01, 0x0B2B3748)
 #define OVK_ClassId_Kernel_Log_LogListenerConsole             OpenViBE::CIdentifier(0x1EEB056C, 0x373C17C7)
 #define OVK_ClassId_Kernel_Log_LogListenerFile                OpenViBE::CIdentifier(0x6A7FCB0C, 0xC847976D)
