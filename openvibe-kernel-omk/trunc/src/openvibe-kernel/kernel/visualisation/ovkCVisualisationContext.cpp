@@ -13,7 +13,7 @@ namespace OpenViBE
 
 			CVisualisationManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IVisualisationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 			
-			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, initialize3DContext, , const CNameValuePairList&, rNameValuePairList)
+			virtual __BridgeBindFunc0__(getKernelContext().getVisualisationManager(), boolean, initialize3DContext, )
 
 			virtual __BridgeBindFunc2__(getKernelContext().getVisualisationManager(), boolean, createResourceGroup, , CIdentifier&, rResourceGroupIdentifier, const CString&, rResourceGroupName)
 			virtual __BridgeBindFunc4__(getKernelContext().getVisualisationManager(), boolean, addResourceLocation, , const CIdentifier&, rResourceGroupIdentifier, const CString&, rResourceName, OpenViBE::Kernel::EResourceType, eResourceType, boolean, bRecursive)

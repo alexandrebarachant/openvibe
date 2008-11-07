@@ -18,11 +18,11 @@ namespace OpenViBE
 
 				CAlgorithmManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IAlgorithmManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
-				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), CIdentifier, createAlgorithm, , const CIdentifier&, rAlgorithmClassIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), boolean, releaseAlgorithm, , const CIdentifier&, rAlgorithmIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), boolean, releaseAlgorithm, , IAlgorithmProxy&, rAlgorithm)
-				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), IAlgorithmProxy&, getAlgorithm, , const CIdentifier&, rAlgorithmIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), CIdentifier, getNextAlgorithmIdentifier, const, const CIdentifier&, rPreviousIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), CIdentifier, createAlgorithm, , const CIdentifier&, rAlgorithmClassIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), boolean, releaseAlgorithm, , const CIdentifier&, rAlgorithmIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), boolean, releaseAlgorithm, , IAlgorithmProxy&, rAlgorithm)
+				__BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), IAlgorithmProxy&, getAlgorithm, , const CIdentifier&, rAlgorithmIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getAlgorithmManager(), CIdentifier, getNextAlgorithmIdentifier, const, const CIdentifier&, rPreviousIdentifier)
 
 				_IsDerivedFromClass_Final_(TKernelObject<IAlgorithmManager>, OV_UndefinedIdentifier);
 
@@ -37,35 +37,37 @@ namespace OpenViBE
 
 				CLogManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<ILogManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint64, ui64Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint32, ui32Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint16, ui16Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint8, ui8Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint64, ui64Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint32, ui32Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint16, ui16Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint8, ui8Value)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int64, i64Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int32, i32Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int16, i16Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int8, i8Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int64, i64Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int32, i32Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int16, i16Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int8, i8Value)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float32, f32Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float64, f64Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float32, f32Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float64, f64Value)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const boolean, bValue)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const boolean, bValue)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CIdentifier&, rValue)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CString&, rValue);
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const char*, rValue);
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CIdentifier&, rValue)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CString&, rValue);
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const char*, rValue);
 
-				// virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogLevel, eLogLevel)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogColor, eLogColor)
+				// __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogLevel, eLogLevel)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogColor, eLogColor)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, addListener, , ILogListener*, pListener)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, removeListener, , ILogListener*, pListener)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, addListener, , ILogListener*, pListener)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, removeListener, , ILogListener*, pListener)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, isActive, , ELogLevel, eLogLevel)
-				virtual __BridgeBindFunc2__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eLogLevel, boolean, bActive)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, isActive, , ELogLevel, eLogLevel)
+				__BridgeBindFunc2__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eLogLevel, boolean, bActive)
+				__BridgeBindFunc3__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eStartLogLevel, ELogLevel, eEndLogLevel, boolean, bActive)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, activate, , boolean, bActive)
 
-				virtual void log(const ELogLevel eLogLevel)
+				void log(const ELogLevel eLogLevel)
 				{
 					getKernelContext().getLogManager()
 						<< eLogLevel
@@ -92,10 +94,10 @@ namespace OpenViBE
 
 				CScenarioManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IScenarioManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
-				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), CIdentifier, getNextScenarioIdentifier, const, const CIdentifier&, rPreviousIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, createScenario, , CIdentifier&, rScenarioIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, releaseScenario, , const CIdentifier&, rScenarioIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getScenarioManager(), IScenario&, getScenario, , const CIdentifier&, rScenarioIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getScenarioManager(), CIdentifier, getNextScenarioIdentifier, const, const CIdentifier&, rPreviousIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, createScenario, , CIdentifier&, rScenarioIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getScenarioManager(), boolean, releaseScenario, , const CIdentifier&, rScenarioIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getScenarioManager(), IScenario&, getScenario, , const CIdentifier&, rScenarioIdentifier)
 
 				_IsDerivedFromClass_Final_(TKernelObject<IScenarioManager>, OV_UndefinedIdentifier);
 
@@ -110,32 +112,32 @@ namespace OpenViBE
 
 				CTypeManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<ITypeManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getNextTypeIdentifier, const, const CIdentifier&, rPreviousIdentifier);
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
-				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerStreamType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const CIdentifier&, rParentTypeIdentifier)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerEnumerationType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
-				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const uint64, ui64ValueIndex)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerBitMaskType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
-				virtual __BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const uint64, ui64ValueIndex)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getNextTypeIdentifier, const, const CIdentifier&, rPreviousIdentifier);
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
+				__BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerStreamType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const CIdentifier&, rParentTypeIdentifier)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerEnumerationType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
+				__BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerEnumerationEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const uint64, ui64ValueIndex)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, registerBitMaskType, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName)
+				__BridgeBindFunc3__(getKernelContext().getTypeManager(), boolean, registerBitMaskEntry, , const CIdentifier&, rTypeIdentifier, const CString&, sTypeName, const uint64, ui64ValueIndex)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isRegistered, const, const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isStream, const, const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, isDerivedFromStream, const, const CIdentifier&, rTypeIdentifier, const CIdentifier&, rParentTypeIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isEnumeration, const, const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isBitMask, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isRegistered, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isStream, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), boolean, isDerivedFromStream, const, const CIdentifier&, rTypeIdentifier, const CIdentifier&, rParentTypeIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isEnumeration, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), boolean, isBitMask, const, const CIdentifier&, rTypeIdentifier)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CString, getTypeName, const, const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getStreamParentType, const, const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryCount, const, const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getEnumerationEntry, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, ui64EntryValue)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getEnumerationEntryNameFromValue, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryValueFromName, const, const CIdentifier&, rTypeIdentifier, const CString&, sEntryName)
-				virtual __BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryCount, const, const CIdentifier&, rTypeIdentifier)
-				virtual __BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getBitMaskEntry, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, ui64EntryValue)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getBitMaskEntryNameFromValue, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryValueFromName, const, const CIdentifier&, rTypeIdentifier, const CString&, sEntryName)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getBitMaskEntryCompositionNameFromValue, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryCompositionValue)
-				virtual __BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryCompositionValueFromName, const, const CIdentifier&, rTypeIdentifier, const CString&, sEntryCompositionName)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), CString, getTypeName, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), CIdentifier, getStreamParentType, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryCount, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getEnumerationEntry, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, ui64EntryValue)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getEnumerationEntryNameFromValue, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getEnumerationEntryValueFromName, const, const CIdentifier&, rTypeIdentifier, const CString&, sEntryName)
+				__BridgeBindFunc1__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryCount, const, const CIdentifier&, rTypeIdentifier)
+				__BridgeBindFunc4__(getKernelContext().getTypeManager(), boolean, getBitMaskEntry, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryIndex, CString&, sEntryName, uint64&, ui64EntryValue)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getBitMaskEntryNameFromValue, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryValue)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryValueFromName, const, const CIdentifier&, rTypeIdentifier, const CString&, sEntryName)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), CString, getBitMaskEntryCompositionNameFromValue, const, const CIdentifier&, rTypeIdentifier, const uint64, ui64EntryCompositionValue)
+				__BridgeBindFunc2__(getKernelContext().getTypeManager(), uint64, getBitMaskEntryCompositionValueFromName, const, const CIdentifier&, rTypeIdentifier, const CString&, sEntryCompositionName)
 
 				_IsDerivedFromClass_Final_(TKernelObject<ITypeManager>, OV_UndefinedIdentifier);
 
@@ -173,7 +175,7 @@ boolean CPlayerContext::sendSignal(
 	const CMessageSignal& rMessageSignal)
 {
 	// TODO
-	log() << LogLevel_Debug << "CPlayerContext::sendSignal - Not yet implemented\n";
+	this->getLogManager() << LogLevel_Debug << "CPlayerContext::sendSignal - Not yet implemented\n";
 	return false;
 }
 
@@ -182,7 +184,7 @@ boolean CPlayerContext::sendMessage(
 	const CIdentifier& rTargetIdentifier)
 {
 	// TODO
-	log() << LogLevel_Debug << "CPlayerContext::sendMessage - Not yet implemented\n";
+	this->getLogManager() << LogLevel_Debug << "CPlayerContext::sendMessage - Not yet implemented\n";
 	return false;
 }
 
@@ -192,7 +194,7 @@ boolean CPlayerContext::sendMessage(
 	const uint32 ui32TargetIdentifierCount)
 {
 	// TODO
-	log() << LogLevel_Debug << "CPlayerContext::sendMessage - Not yet implemented\n";
+	this->getLogManager() << LogLevel_Debug << "CPlayerContext::sendMessage - Not yet implemented\n";
 	return false;
 }
 

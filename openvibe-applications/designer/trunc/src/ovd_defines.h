@@ -13,18 +13,23 @@ namespace OpenViBEDesigner
 {
 	enum
 	{
-		BoxContextMenu_Rename,
-		BoxContextMenu_AddInput,
-		BoxContextMenu_EditInput,
-		BoxContextMenu_RemoveInput,
-		BoxContextMenu_AddOutput,
-		BoxContextMenu_EditOutput,
-		BoxContextMenu_RemoveOutput,
-		BoxContextMenu_AddSetting,
-		BoxContextMenu_RemoveSetting,
-		BoxContextMenu_EditSetting,
-		BoxContextMenu_Configure,
-		BoxContextMenu_About,
+		ContextMenu_SelectionCopy,
+		ContextMenu_SelectionCut,
+		ContextMenu_SelectionPaste,
+
+		ContextMenu_BoxRename,
+		ContextMenu_BoxDelete,
+		ContextMenu_BoxAddInput,
+		ContextMenu_BoxEditInput,
+		ContextMenu_BoxRemoveInput,
+		ContextMenu_BoxAddOutput,
+		ContextMenu_BoxEditOutput,
+		ContextMenu_BoxRemoveOutput,
+		ContextMenu_BoxAddSetting,
+		ContextMenu_BoxRemoveSetting,
+		ContextMenu_BoxEditSetting,
+		ContextMenu_BoxConfigure,
+		ContextMenu_BoxAbout,
 	};
 
 	enum

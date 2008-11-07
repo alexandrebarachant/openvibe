@@ -177,5 +177,5 @@ void CBoxProxy::updateSize(::GtkWidget* pWidget, const char* sText, int* pXSize,
 	pango_layout_get_pixel_extents(l_pPangoLayout, NULL, &l_oPangoRectangle);
 	*pXSize=l_oPangoRectangle.width;
 	*pYSize=l_oPangoRectangle.height;
-	g_object_unref(l_pPangoContext);
+	g_object_unref(l_pPangoLayout);
 }

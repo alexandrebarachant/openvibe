@@ -24,23 +24,21 @@ namespace OpenViBE
 
 			/**
 			 * \brief Initialize 3D context and primary render window
-			 * \param rParametersList Reference to 3D context initialization parameters list
 			 * \return True if 3d context was successfully initialized, false otherwise
 			 */
-			virtual OpenViBE::boolean initialize3DContext(
-				const OpenViBE::CNameValuePairList& rParametersList);
+			virtual OpenViBE::boolean initialize3DContext(void);
 
-			/** 
-			 * \brief Create a resource group			
+			/**
+			 * \brief Create a resource group
 			 * \param [out] rResourceGroupIdentifier Identifier of resource group created
-			 * \param [in] rResourceGroupName Resource group name	
+			 * \param [in] rResourceGroupName Resource group name
 			 * \return True if resource group could be created, false otherwise
 			 */
-			virtual OpenViBE::boolean createResourceGroup(			
+			virtual OpenViBE::boolean createResourceGroup(
 				OpenViBE::CIdentifier& rResourceGroupIdentifier,
 				const OpenViBE::CString& rResourceGroupName);
 
-			/** 
+			/**
 			 * \brief Add a resource location
 			 * \remark Resources can't be added once Resource Group has been initialized
 			 * \param rResourceGroupIdentifier Resource group identifier
@@ -51,8 +49,8 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean addResourceLocation(
 				const OpenViBE::CIdentifier& rResourceGroupIdentifier,
-				const OpenViBE::CString& rResourceName, 
-				OpenViBE::Kernel::EResourceType rResourceType,		
+				const OpenViBE::CString& rResourceName,
+				OpenViBE::Kernel::EResourceType rResourceType,
 				OpenViBE::boolean bRecursive);
 
 			/**
@@ -74,7 +72,7 @@ namespace OpenViBE
 			 * \return True if resource group could be destroyed (or was initialized already), false if an error occured
 			 */
 			virtual OpenViBE::boolean destroyResourceGroup(
-				const OpenViBE::CIdentifier& rResourceGroupIdentifier);	
+				const OpenViBE::CIdentifier& rResourceGroupIdentifier);
 
 			COgreVisualisation* getOgreVisualisation();
 
@@ -90,7 +88,7 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rVisualisationTreeIdentifier);
 			virtual OpenViBE::boolean enumerateVisualisationTrees(
 				OpenViBE::Kernel::IVisualisationManager::IVisualisationTreeEnum& rCallBack) const;
-			
+
 			virtual OpenViBE::boolean setToolbar(
 				const CIdentifier& rVisualisationTreeIdentifier,
 				const CString& rVisualisationBoxName,

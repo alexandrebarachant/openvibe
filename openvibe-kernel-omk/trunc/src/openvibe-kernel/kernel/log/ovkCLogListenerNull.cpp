@@ -25,6 +25,20 @@ boolean CLogListenerNull::activate(ELogLevel eLogLevel, boolean bActive)
 	return true;
 }
 
+boolean CLogListenerNull::activate(ELogLevel eStartLogLevel, ELogLevel eEndLogLevel, boolean bActive)
+{
+	for(int i=eStartLogLevel; i<=eEndLogLevel; i++)
+	{
+		m_vActiveLevel[ELogLevel(i)]=bActive;
+	}
+	return true;
+}
+
+boolean CLogListenerNull::activate(boolean bActive)
+{
+	return activate(LogLevel_First, LogLevel_Last, bActive);
+}
+
 void CLogListenerNull::log(const uint64 ui64Value)
 {
 }

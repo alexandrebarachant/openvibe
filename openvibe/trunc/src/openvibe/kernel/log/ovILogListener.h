@@ -12,15 +12,17 @@ namespace OpenViBE
 		 */
 		enum ELogLevel
 		{
-			LogLevel_None                       =0x00000000,
-			LogLevel_Debug                      =0x00000001,
-			LogLevel_Benchmark                  =0x00000002,
-			LogLevel_Trace                      =0x00000003,
-			LogLevel_Info                       =0x00000004,
-			LogLevel_Warning                    =0x00000005,
-			LogLevel_ImportantWarning           =0x00000006,
-			LogLevel_Error                      =0x00000007,
-			LogLevel_Fatal                      =0x00000008,
+			LogLevel_First,
+			LogLevel_None,
+			LogLevel_Debug,
+			LogLevel_Benchmark,
+			LogLevel_Trace,
+			LogLevel_Info,
+			LogLevel_Warning,
+			LogLevel_ImportantWarning,
+			LogLevel_Error,
+			LogLevel_Fatal,
+			LogLevel_Last,
 		};
 
 		/**
@@ -125,6 +127,22 @@ namespace OpenViBE
 			 * \return \e false in case of error.
 			 */
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive)=0;
+			/**
+			 * \brief Changes the activation status of a specific range of log level
+			 * \param eStartLogLevel [in] : the first log level which status has to be changed
+			 * \param eEndLogLevel [in] : the last log level which status has to be changed
+			 * \param bActive [in] : a boolean telling whether these levels should be active or not
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eStartLogLevel, OpenViBE::Kernel::ELogLevel eEndLogLevel, OpenViBE::boolean bActive)=0;
+			/**
+			 * \brief Changes the activation status of all log levels at once
+			 * \param bActive [in] : a boolean telling whether the levels should be active or not
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean activate(OpenViBE::boolean bActive)=0;
 
 			//@}
 			/** \name Logging function */

@@ -13,10 +13,12 @@ namespace OpenViBE
 		{
 		public:
 
-			CLogListenerFile(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			CLogListenerFile(const OpenViBE::Kernel::IKernelContext& rKernelContext, const OpenViBE::CString& sLogFilename);
 
 			virtual OpenViBE::boolean isActive(OpenViBE::Kernel::ELogLevel eLogLevel);
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive);
+			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eStartLogLevel, OpenViBE::Kernel::ELogLevel eEndLogLevel, OpenViBE::boolean bActive);
+			virtual OpenViBE::boolean activate(OpenViBE::boolean bActive);
 
 			virtual void log(const OpenViBE::uint64 ui64Value);
 			virtual void log(const OpenViBE::uint32 ui32Value);
@@ -45,6 +47,7 @@ namespace OpenViBE
 		protected:
 
 			std::map<OpenViBE::Kernel::ELogLevel, OpenViBE::boolean> m_vActiveLevel;
+			OpenViBE::CString m_sLogFilename;
 		};
 	};
 };

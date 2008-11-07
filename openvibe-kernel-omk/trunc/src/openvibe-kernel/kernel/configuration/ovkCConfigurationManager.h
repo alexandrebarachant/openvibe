@@ -48,16 +48,44 @@ namespace OpenViBE
 			virtual OpenViBE::CIdentifier lookUpConfigurationTokenIdentifier(
 				const OpenViBE::CString& rConfigurationTokenName) const;
 
-			virtual OpenViBE::CString expandExpression(
+			virtual OpenViBE::CString expand(
 				const OpenViBE::CString& rExpression) const;
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IConfigurationManager >, OVK_ClassId_Kernel_Configuration_ConfigurationManager);
+
+			virtual OpenViBE::float64 expandAsFloat(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::float64 f64FallbackValue);
+			virtual OpenViBE::int64 expandAsInteger(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::int64 i64FallbackValue);
+			virtual OpenViBE::uint64 expandAsUInteger(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::uint64 ui64FallbackValue);
+			virtual OpenViBE::boolean expandAsBoolean(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::boolean bFallbackValue);
+			virtual OpenViBE::uint64 expandAsEnumerationEntryValue(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::CIdentifier& rEnumerationTypeIdentifier,
+				const OpenViBE::uint64 ui64FallbackValue);
 
 		protected:
 
 			virtual OpenViBE::CIdentifier getUnusedIdentifier(void) const;
 
-			OpenViBE::boolean expand(const std::string& sValue, std::string& sResult) const;
+			OpenViBE::boolean internalExpand(const std::string& sValue, std::string& sResult) const;
+
+		protected:
+
+			mutable OpenViBE::uint32 m_ui32Index;
+			mutable OpenViBE::uint32 m_ui32StartTime;
+
+			OpenViBE::uint32 getRandom(void) const;
+			OpenViBE::uint32 getIndex(void) const;
+			OpenViBE::CString getTime(void) const;
+			OpenViBE::CString getDate(void) const;
+			OpenViBE::uint32 getRealTime(void) const;
 
 		protected:
 

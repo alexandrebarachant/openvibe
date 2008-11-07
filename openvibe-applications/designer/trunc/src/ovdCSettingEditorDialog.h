@@ -12,7 +12,7 @@ namespace OpenViBEDesigner
 	{
 	public:
 
-		CSettingEditorDialog(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32SettingIndex, const char* sGUIFilename);
+		CSettingEditorDialog(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32SettingIndex, const char* sGUIFilename);
 		virtual ~CSettingEditorDialog(void);
 		virtual OpenViBE::boolean run(void);
 
@@ -20,7 +20,7 @@ namespace OpenViBEDesigner
 
 	protected:
 
-		OpenViBE::Kernel::IKernel& m_rKernel;
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::Kernel::IBox& m_rBox;
 		OpenViBE::uint32 m_ui32SettingIndex;
 		OpenViBE::CString m_sGUIFilename;

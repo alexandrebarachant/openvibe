@@ -1,7 +1,8 @@
 #ifndef __OpenViBEKernel_Kernel_Player_COgreVisualisation_H__
 #define __OpenViBEKernel_Kernel_Player_COgreVisualisation_H__
 
-#include "../../ovk_base.h"
+#include "../ovkTKernelObject.h"
+
 #include <openvibe/ov_all.h>
 
 #include <Ogre.h>
@@ -18,7 +19,7 @@ class COgreResourceGroup;
  * This class initializes the Ogre library, creates 3D scenes, windows (views
  of 3D scenes) and objects that populate such scenes.
  */
-class COgreVisualisation : public Ogre::LogListener
+class COgreVisualisation : public OpenViBE::Kernel::TKernelObject<OpenViBE::IObject>, public Ogre::LogListener
 {
 public:
 	/**
@@ -61,11 +62,9 @@ public:
 	 * Creates Ogre root object, parses resource locations and initialises Ogre from last
 	 * configuration (if any) or by displaying the Ogre configuration dialog if no
 	 * ogre.cfg is available
-	 * \param rNameValuePairList List of configuration parameters
 	 * \return True if Ogre was initialised, false otherwise
 	 */
-	OpenViBE::boolean initializeOgre(
-		const OpenViBE::CNameValuePairList& rNameValuePairList) throw (std::exception);
+	OpenViBE::boolean initializeOgre(void) throw (std::exception);
 
 	/**
 	 * \brief Determine whether Ogre has been initialized yet
@@ -222,6 +221,8 @@ public:
 	OpenViBE::boolean deleteScene(
 		OpenViBE::CIdentifier rSceneIdentifier);
 
+	_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::IObject>, OV_UndefinedIdentifier);
+
 private:
 	/// add the resources path given in the resources.cfg file
 
@@ -235,16 +236,15 @@ private:
 		const std::string& resourcesFile);
 
 private:
-	/// OpenViBE kernel context
-	const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
+
+	/// Ogre messages log level
+	OpenViBE::Kernel::ELogLevel m_eLogLevel;
 	/// Flag set to true upon Ogre initialisation
 	OpenViBE::boolean m_bOgreInitialised;
 	/// Flag set to true upon resources initialisation (post primary render window creation)
 	OpenViBE::boolean m_bResourcesInitialised;
 	/// Ogre3D root
 	Ogre::Root* m_pRoot;
-	/// Forward captured messages to OpenViBE's log manager
-	OpenViBE::boolean m_bOutputCapturedMessages;
 	/// Ogre log
 	Ogre::Log* m_pLog;
 	/// Maps scene Ids to scene pointers

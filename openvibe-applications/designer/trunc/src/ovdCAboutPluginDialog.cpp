@@ -5,8 +5,8 @@ using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Kernel;
 
-CAboutPluginDialog::CAboutPluginDialog(const IKernel& rKernel, const CIdentifier& rPluginClassIdentifier, const char* sGUIFilename)
-	:m_rKernel(rKernel)
+CAboutPluginDialog::CAboutPluginDialog(const IKernelContext& rKernelContext, const CIdentifier& rPluginClassIdentifier, const char* sGUIFilename)
+	:m_rKernelContext(rKernelContext)
 	,m_oPluginClassIdentifier(rPluginClassIdentifier)
 	,m_sGUIFilename(sGUIFilename)
 {
@@ -18,7 +18,7 @@ CAboutPluginDialog::~CAboutPluginDialog(void)
 
 boolean CAboutPluginDialog::run(void)
 {
-	const IPluginObjectDesc* l_pPluginObjectDescriptor=m_rKernel.getContext()->getPluginManager().getPluginObjectDescCreating(m_oPluginClassIdentifier);
+	const IPluginObjectDesc* l_pPluginObjectDescriptor=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(m_oPluginClassIdentifier);
 	if(!l_pPluginObjectDescriptor) return false;
 
 	::GladeXML* l_pInterface=glade_xml_new(m_sGUIFilename.toASCIIString(), "plugin_about", NULL);

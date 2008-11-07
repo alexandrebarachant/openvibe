@@ -26,6 +26,7 @@
 #include "ovIObject.h"
 #include "ovIObjectVisitor.h"
 #include "ovIKernelLoader.h"
+#include "ovCKernelLoader.h"
 
 //___________________________________________________________________//
 //                                                                   //
@@ -33,7 +34,6 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#include "kernel/ovIKernel.h"
 #include "kernel/ovIKernelContext.h"
 #include "kernel/ovIKernelDesc.h"
 #include "kernel/ovIKernelObject.h"

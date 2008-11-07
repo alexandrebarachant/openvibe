@@ -17,35 +17,37 @@ namespace OpenViBE
 
 				CLogManagerBridge(const IKernelContext& rKernelContext, const IBox& rBox) : TKernelObject<ILogManager>(rKernelContext), m_rBox(rBox) { }
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint64, ui64Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint32, ui32Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint16, ui16Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint8, ui8Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint64, ui64Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint32, ui32Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint16, ui16Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint8, ui8Value)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int64, i64Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int32, i32Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int16, i16Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int8, i8Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int64, i64Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int32, i32Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int16, i16Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const int8, i8Value)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float32, f32Value)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float64, f64Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float32, f32Value)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const float64, f64Value)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const boolean, bValue)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const boolean, bValue)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CIdentifier&, rValue)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CString&, rValue);
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const char*, rValue);
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CIdentifier&, rValue)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const CString&, rValue);
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const char*, rValue);
 
-				// virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogLevel, eLogLevel)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogColor, eLogColor)
+				// __BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogLevel, eLogLevel)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const ELogColor, eLogColor)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, addListener, , ILogListener*, pListener)
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, removeListener, , ILogListener*, pListener)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, addListener, , ILogListener*, pListener)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, removeListener, , ILogListener*, pListener)
 
-				virtual __BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, isActive, , ELogLevel, eLogLevel)
-				virtual __BridgeBindFunc2__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eLogLevel, boolean, bActive)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, isActive, , ELogLevel, eLogLevel)
+				__BridgeBindFunc2__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eLogLevel, boolean, bActive)
+				__BridgeBindFunc3__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eStartLogLevel, ELogLevel, eEndLogLevel, boolean, bActive)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, activate, , boolean, bActive)
 
-				virtual void log(const ELogLevel eLogLevel)
+				void log(const ELogLevel eLogLevel)
 				{
 					getKernelContext().getLogManager()
 						<< eLogLevel

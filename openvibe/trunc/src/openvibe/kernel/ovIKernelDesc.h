@@ -7,7 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class IKernel;
+		class IKernelContext;
 
 		/**
 		 * \class IKernelDesc
@@ -23,33 +23,26 @@ namespace OpenViBE
 		{
 		public:
 
-			/** \name Memory management */
-			//@{
-
-			/**
-			 * \brief Informs the plugin description it won't be used any more
-			 *
-			 * This is called by the §OpenViBE§ platform to inform
-			 * the plugin description it is not usefull anymore.
-			 * The plugin can chose whether to delete itself or
-			 * to stay in memory until it decides it is ok to be
-			 * deleted. However, the §OpenViBE§ platform will not
-			 * call any of the plugin functions after release is
-			 * called.
-			 */
-			virtual void release(void)=0;
-
-			//@}
 			/** \name Creation process */
 			//@{
 
 			/**
 			 * \brief Creates the kernel itself
+			 * \param rApplicationName [in] : the name of the application requesting kernel creation
+			 *                                (an configuration token will be created so the configuration
+			 *                                file can be tweaked according to the targeted application)
+			 * \param rConfigurationFilename [in] : a bootstrap configuration file
 			 * \return the created kernel.
 			 *
 			 * This method creates the kernel itself and returns it.
 			 */
-			virtual OpenViBE::Kernel::IKernel* create(void)=0;
+			virtual OpenViBE::Kernel::IKernelContext* createKernel(const OpenViBE::CString& rApplicationName, const OpenViBE::CString& rConfigurationFilename)=0;
+			/**
+			 * \brief Releases the kernel itself
+			 *
+			 * This method releases an existing kernel.
+			 */
+			virtual void releaseKernel(OpenViBE::Kernel::IKernelContext* pKernel)=0;
 
 			//@}
 			/** \name Textual plugin object description and information */

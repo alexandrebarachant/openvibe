@@ -46,6 +46,8 @@ namespace OpenViBE
 
 				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, isActive, , ELogLevel, eLogLevel)
 				__BridgeBindFunc2__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eLogLevel, boolean, bActive)
+				__BridgeBindFunc3__(getKernelContext().getLogManager(), boolean, activate, , ELogLevel, eStartLogLevel, ELogLevel, eEndLogLevel, boolean, bActive)
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), boolean, activate, , boolean, bActive)
 
 				void log(const ELogLevel eLogLevel)
 				{

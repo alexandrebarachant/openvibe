@@ -9,7 +9,7 @@ class CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator : public CPluginObjec
 {
 public:
 
-	CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator(const OpenViBE::Kernel::IKernelContext& rKernelContext, const char* sFilename);
+	CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator(const OpenViBE::Kernel::IKernelContext& rKernelContext, const OpenViBE::CString& sFilename);
 	virtual ~CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator(void);
 	virtual OpenViBE::boolean callback(const OpenViBE::Plugins::IPluginObjectDesc& rPluginObjectDesc);
 

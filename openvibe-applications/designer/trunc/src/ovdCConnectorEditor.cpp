@@ -8,8 +8,8 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBEDesigner;
 using namespace std;
 
-CConnectorEditor::CConnectorEditor(IKernel& rKernel, IBox& rBox, uint32 ui32ConnectorType, uint32 ui32ConnectorIndex, const char* sGUIFilename)
-	:m_rKernel(rKernel)
+CConnectorEditor::CConnectorEditor(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32ConnectorType, uint32 ui32ConnectorIndex, const char* sGUIFilename)
+	:m_rKernelContext(rKernelContext)
 	,m_rBox(rBox)
 	,m_ui32ConnectorType(ui32ConnectorType)
 	,m_ui32ConnectorIndex(ui32ConnectorIndex)
@@ -63,17 +63,17 @@ boolean CConnectorEditor::run(void)
 	map<string, CIdentifier> m_vStreamTypes;
 	CIdentifier l_oCurrentTypeIdentifier;
 	gint l_iActive=-1;
-	while((l_oCurrentTypeIdentifier=m_rKernel.getContext()->getTypeManager().getNextTypeIdentifier(l_oCurrentTypeIdentifier))!=OV_UndefinedIdentifier)
+	while((l_oCurrentTypeIdentifier=m_rKernelContext.getTypeManager().getNextTypeIdentifier(l_oCurrentTypeIdentifier))!=OV_UndefinedIdentifier)
 	{
-		if(m_rKernel.getContext()->getTypeManager().isStream(l_oCurrentTypeIdentifier))
+		if(m_rKernelContext.getTypeManager().isStream(l_oCurrentTypeIdentifier))
 		{
-			gtk_combo_box_append_text(l_pConnectorTypeComboBox, m_rKernel.getContext()->getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString());
+			gtk_combo_box_append_text(l_pConnectorTypeComboBox, m_rKernelContext.getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString());
 			if(l_oCurrentTypeIdentifier==l_oConnectorType)
 			{
 				l_iActive=m_vStreamTypes.size();
 				gtk_combo_box_set_active(l_pConnectorTypeComboBox, l_iActive);
 			}
-			m_vStreamTypes[m_rKernel.getContext()->getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString()]=l_oCurrentTypeIdentifier;
+			m_vStreamTypes[m_rKernelContext.getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString()]=l_oCurrentTypeIdentifier;
 		}
 	}
 

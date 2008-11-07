@@ -12,8 +12,8 @@ using namespace OpenViBEDesigner;
 
 static ::GtkTargetEntry targets [] =
 {
-	{ "STRING", 0, 0 },
-	{ "text/plain", 0, 0 },
+	{ (gchar*)"STRING", 0, 0 },
+	{ (gchar*)"text/plain", 0, 0 },
 };
 
 namespace OpenViBEDesigner
@@ -99,38 +99,38 @@ namespace OpenViBEDesigner
 //-----
 
 static ::GtkItemFactoryEntry unaffected_menu_items[] = {
-	{ "/New window",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_new_visualisation_window_cb, 1, "<StockItem>", GTK_STOCK_DND_MULTIPLE }
+	{ (gchar*)"/New window", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_new_visualisation_window_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_DND_MULTIPLE }
 };
 
-static ::GtkItemFactoryEntry visualisation_window_menu_items[] = {
-	{ "/New tab",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_new_visualisation_panel_cb, 1, "<StockItem>", GTK_STOCK_DND },
-	{ "/Rename",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_rename_visualisation_window_cb, 1, "<StockItem>", GTK_STOCK_BOLD },
-	{	"/Remove",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_window_cb, 1, "<StockItem>", GTK_STOCK_DELETE }
+static ::GtkItemFactoryEntry visualisation_window_menu_items[] ={
+	{ (gchar*)"/New tab", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_new_visualisation_panel_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_DND },
+	{ (gchar*)"/Rename", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_rename_visualisation_window_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_BOLD },
+	{ (gchar*)"/Remove", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_window_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_DELETE }
 };
 
 static ::GtkItemFactoryEntry visualisation_panel_menu_items[] = {
-  { "/Rename",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_rename_visualisation_panel_cb, 1, "<StockItem>", GTK_STOCK_BOLD },
-	{	"/Remove",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_panel_cb, 1, "<StockItem>", GTK_STOCK_DELETE }
+	{ (gchar*)"/Rename", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::ask_rename_visualisation_panel_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_BOLD },
+	{ (gchar*)"/Remove", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_panel_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_DELETE }
 };
 
 static ::GtkItemFactoryEntry visualisation_box_menu_items[] = {
-  { "/Remove",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_widget_cb, 1, "<StockItem>", GTK_STOCK_DELETE }
+	{ (gchar*)"/Remove", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_widget_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_DELETE }
 };
 
 static ::GtkItemFactoryEntry undefined_widget_menu_items[] = {
-	{ "/Remove",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_widget_cb, 1, "<StockItem>", GTK_STOCK_DELETE }
+	{ (gchar*)"/Remove", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_widget_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_DELETE }
 };
 
 static ::GtkItemFactoryEntry split_widget_menu_items[] = {
-	{ "/Remove",	"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_widget_cb, 1, "<StockItem>", GTK_STOCK_DELETE }
+	{ (gchar*)"/Remove", (gchar*)"", (::GtkItemFactoryCallback)CDesignerVisualisation::remove_visualisation_widget_cb, 1, (gchar*)"<StockItem>", GTK_STOCK_DELETE }
 };
 
-static gint num_unaffected_menu_items						= sizeof (unaffected_menu_items) / sizeof (unaffected_menu_items[0]);
-static gint num_visualisation_window_menu_items	= sizeof (visualisation_window_menu_items) / sizeof (visualisation_window_menu_items[0]);
-static gint num_visualisation_panel_menu_items	= sizeof (visualisation_panel_menu_items) / sizeof (visualisation_panel_menu_items[0]);
-static gint num_visualisation_box_menu_items		= sizeof (visualisation_box_menu_items) / sizeof (visualisation_box_menu_items[0]);
-static gint num_undefined_widget_menu_items			= sizeof (undefined_widget_menu_items) / sizeof (undefined_widget_menu_items[0]);
-static gint num_split_widget_menu_items					= sizeof (split_widget_menu_items) / sizeof (split_widget_menu_items[0]);
+static gint num_unaffected_menu_items           = sizeof (unaffected_menu_items) / sizeof (unaffected_menu_items[0]);
+static gint num_visualisation_window_menu_items = sizeof (visualisation_window_menu_items) / sizeof (visualisation_window_menu_items[0]);
+static gint num_visualisation_panel_menu_items  = sizeof (visualisation_panel_menu_items) / sizeof (visualisation_panel_menu_items[0]);
+static gint num_visualisation_box_menu_items    = sizeof (visualisation_box_menu_items) / sizeof (visualisation_box_menu_items[0]);
+static gint num_undefined_widget_menu_items     = sizeof (undefined_widget_menu_items) / sizeof (undefined_widget_menu_items[0]);
+static gint num_split_widget_menu_items         = sizeof (split_widget_menu_items) / sizeof (split_widget_menu_items[0]);
 
 CDesignerVisualisation::CDesignerVisualisation(const IKernelContext& rKernelContext, IVisualisationTree& rVisualisationTree, CInterfacedScenario& rInterfacedScenario) :
 	m_rKernelContext(rKernelContext),

@@ -43,11 +43,11 @@ IPlayer& CPlayerManager::getPlayer(
 	itPlayer=m_vPlayer.find(rPlayerIdentifier);
 	if(itPlayer==m_vPlayer.end())
 	{
-		log() << LogLevel_Fatal << "Player " << rPlayerIdentifier << " does not exist !\n";
+		this->getLogManager() << LogLevel_Fatal << "Player " << rPlayerIdentifier << " does not exist !\n";
 	}
 	if(!itPlayer->second)
 	{
-		log() << LogLevel_Fatal << "NULL Player (this should never happen) !\n";
+		this->getLogManager() << LogLevel_Fatal << "NULL Player (this should never happen) !\n";
 	}
 	return *itPlayer->second;
 }

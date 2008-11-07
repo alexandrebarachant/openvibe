@@ -54,8 +54,8 @@ static void on_button_setting_filename_browse_pressed(::GtkButton* pButton, gpoi
 
 // ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
 
-CSettingCollectionHelper::CSettingCollectionHelper(IKernel& rKernel, const char* sGUIFilename)
-	:m_rKernel(rKernel)
+CSettingCollectionHelper::CSettingCollectionHelper(const IKernelContext& rKernelContext, const char* sGUIFilename)
+	:m_rKernelContext(rKernelContext)
 	,m_sGUIFilename(sGUIFilename)
 {
 }
@@ -73,8 +73,8 @@ CString CSettingCollectionHelper::getSettingWidgetName(const CIdentifier& rTypeI
 	if(rTypeIdentifier==OV_TypeId_Float)    return "settings_collection-spin_button_setting_float";
 	if(rTypeIdentifier==OV_TypeId_String)   return "settings_collection-entry_setting_string";
 	if(rTypeIdentifier==OV_TypeId_Filename) return "settings_collection-hbox_setting_filename";
-	if(m_rKernel.getContext()->getTypeManager().isEnumeration(rTypeIdentifier)) return "settings_collection-combobox_setting_enumeration";
-	if(m_rKernel.getContext()->getTypeManager().isBitMask(rTypeIdentifier))     return "settings_collection-table_setting_bitmask";
+	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return "settings_collection-combobox_setting_enumeration";
+	if(m_rKernelContext.getTypeManager().isBitMask(rTypeIdentifier))     return "settings_collection-table_setting_bitmask";
 	return "settings_collection-entry_setting_string";
 }
 
@@ -87,8 +87,8 @@ CString CSettingCollectionHelper::getValue(const CIdentifier& rTypeIdentifier, :
 	if(rTypeIdentifier==OV_TypeId_Float)    return getValueFloat(pWidget);
 	if(rTypeIdentifier==OV_TypeId_String)   return getValueString(pWidget);
 	if(rTypeIdentifier==OV_TypeId_Filename) return getValueFilename(pWidget);
-	if(m_rKernel.getContext()->getTypeManager().isEnumeration(rTypeIdentifier)) return getValueEnumeration(rTypeIdentifier, pWidget);
-	if(m_rKernel.getContext()->getTypeManager().isBitMask(rTypeIdentifier))     return getValueBitMask(rTypeIdentifier, pWidget);
+	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return getValueEnumeration(rTypeIdentifier, pWidget);
+	if(m_rKernelContext.getTypeManager().isBitMask(rTypeIdentifier))     return getValueBitMask(rTypeIdentifier, pWidget);
 	return getValueString(pWidget);
 }
 
@@ -166,8 +166,8 @@ void CSettingCollectionHelper::setValue(const CIdentifier& rTypeIdentifier, ::Gt
 	if(rTypeIdentifier==OV_TypeId_Float)    return setValueFloat(pWidget, rValue);
 	if(rTypeIdentifier==OV_TypeId_String)   return setValueString(pWidget, rValue);
 	if(rTypeIdentifier==OV_TypeId_Filename) return setValueFilename(pWidget, rValue);
-	if(m_rKernel.getContext()->getTypeManager().isEnumeration(rTypeIdentifier)) return setValueEnumeration(rTypeIdentifier, pWidget, rValue);
-	if(m_rKernel.getContext()->getTypeManager().isBitMask(rTypeIdentifier))     return setValueBitMask(rTypeIdentifier, pWidget, rValue);
+	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return setValueEnumeration(rTypeIdentifier, pWidget, rValue);
+	if(m_rKernelContext.getTypeManager().isBitMask(rTypeIdentifier))     return setValueBitMask(rTypeIdentifier, pWidget, rValue);
 	return setValueString(pWidget, rValue);
 }
 
@@ -228,14 +228,14 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 	::GtkTreeIter l_oListIter;
 	::GtkComboBox* l_pWidget=GTK_COMBO_BOX(pWidget);
 	::GtkListStore* l_pList=GTK_LIST_STORE(gtk_combo_box_get_model(l_pWidget));
-	uint64 l_ui64Value=m_rKernel.getContext()->getTypeManager().getEnumerationEntryValueFromName(rTypeIdentifier, rValue);
+	uint64 l_ui64Value=m_rKernelContext.getTypeManager().getEnumerationEntryValueFromName(rTypeIdentifier, rValue);
 
 	gtk_list_store_clear(l_pList);
-	for(uint64 i=0; i<m_rKernel.getContext()->getTypeManager().getEnumerationEntryCount(rTypeIdentifier); i++)
+	for(uint64 i=0; i<m_rKernelContext.getTypeManager().getEnumerationEntryCount(rTypeIdentifier); i++)
 	{
 		CString l_sEntryName;
 		uint64 l_ui64EntryValue;
-		if(m_rKernel.getContext()->getTypeManager().getEnumerationEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
+		if(m_rKernelContext.getTypeManager().getEnumerationEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
 		{
 			gtk_list_store_append(l_pList, &l_oListIter);
 			gtk_list_store_set(l_pList, &l_oListIter, 0, (const char*)l_sEntryName, -1);
@@ -256,13 +256,13 @@ void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifie
 {
 	string l_sValue(rValue);
 	::GtkTable* l_pBitMaskTable=GTK_TABLE(pWidget);
-	gtk_table_resize(l_pBitMaskTable, 2, (m_rKernel.getContext()->getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1);
+	gtk_table_resize(l_pBitMaskTable, 2, (m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1);
 
-	for(uint64 i=0; i<m_rKernel.getContext()->getTypeManager().getBitMaskEntryCount(rTypeIdentifier); i++)
+	for(uint64 i=0; i<m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier); i++)
 	{
 		CString l_sEntryName;
 		uint64 l_ui64EntryValue;
-		if(m_rKernel.getContext()->getTypeManager().getBitMaskEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
+		if(m_rKernelContext.getTypeManager().getBitMaskEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
 		{
 			::GladeXML* l_pGladeInterfaceDummy=glade_xml_new(m_sGUIFilename.toASCIIString(), "settings_collection-check_button_setting_boolean", NULL);
 			::GtkWidget* l_pSettingButton=glade_xml_get_widget(l_pGladeInterfaceDummy, "settings_collection-check_button_setting_boolean");

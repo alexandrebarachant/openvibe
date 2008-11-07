@@ -290,149 +290,96 @@ int go(int argc, char ** argv)
 //___________________________________________________________________//
 //                                                                   //
 
-	IKernelLoader* l_pKernelLoader=OpenViBE::createKernelLoader();
-	if(l_pKernelLoader)
-	{
-		cout<<"[  INF  ] Created kernel loader"<<endl;
-		CString m_sError;
+	CKernelLoader l_oKernelLoader;
+
+	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
+	CString m_sError;
 #if defined OVD_OS_Windows
-		if(!l_pKernelLoader->load("../lib/OpenViBE-kernel-dynamic.dll", &m_sError))
+	if(!l_oKernelLoader.load("../lib/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
-		if(!l_pKernelLoader->load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
+	if(!l_oKernelLoader.load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
 #endif
+	{
+			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
+	}
+	else
+	{
+		cout<<"[  INF  ] Kernel module loaded, trying to get kernel descriptor"<<endl;
+		IKernelDesc* l_pKernelDesc=NULL;
+		IKernelContext* l_pKernelContext=NULL;
+		l_oKernelLoader.initialize();
+		l_oKernelLoader.getKernelDesc(l_pKernelDesc);
+		if(!l_pKernelDesc)
 		{
-				cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
+			cout<<"[ FAILED ] No kernel descriptor"<<endl;
 		}
 		else
 		{
-			cout<<"[  INF  ] Kernel module loaded"<<endl;
-			IKernelDesc* l_pKernelDesc=NULL;
-			IKernel* l_pKernel=NULL;
-			l_pKernelLoader->initialize();
-			l_pKernelLoader->getKernelDesc(l_pKernelDesc);
-			if(!l_pKernelDesc)
+			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<endl;
+			l_pKernelContext=l_pKernelDesc->createKernel("designer", "../share/openvibe.conf");
+			if(!l_pKernelContext)
 			{
-				cout<<"[ FAILED ] No kernel descriptor"<<endl;
+				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;
 			}
 			else
 			{
-				cout<<"[  INF  ] Found kernel descriptor"<<endl;
-				l_pKernel=l_pKernelDesc->create();
-				if(!l_pKernel)
-				{
-					cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;
-				}
-				else
-				{
-					cout<<"[  INF  ] Created Kernel, going on testing"<<endl;
-
-					const IKernelContext& l_rKernelContext=*l_pKernel->getContext();
-
-					OpenViBEToolkit::initialize(l_rKernelContext);
-
-					ILogManager& l_rLogManager=l_rKernelContext.getLogManager();
-					l_rLogManager.activate(LogLevel_Debug, false);
-					l_rLogManager.activate(LogLevel_Benchmark, false);
-					l_rLogManager.activate(LogLevel_Trace, false);
-					l_rLogManager.activate(LogLevel_Info, true);
-					l_rLogManager.activate(LogLevel_Warning, true);
-					l_rLogManager.activate(LogLevel_ImportantWarning, true);
-					l_rLogManager.activate(LogLevel_Error, true);
-					l_rLogManager.activate(LogLevel_Fatal, true);
+				OpenViBEToolkit::initialize(*l_pKernelContext);
 
 // For Mister Vincent !
 #ifdef OVD_OS_Windows
 #ifndef NDEBUG
-					//_asm int 3;
+				//_asm int 3;
 #endif
 #endif
 
-					IPluginManager& l_rPluginManager=l_rKernelContext.getPluginManager();
-#if defined OVD_OS_Linux
-					l_rPluginManager.addPluginsFromFiles("../lib/libOpenViBE-plugins-*.so");
-#elif defined OVD_OS_Windows
-					l_rPluginManager.addPluginsFromFiles("../lib/OpenViBE-plugins-*.dll");
-#else
-#endif
+				IConfigurationManager& l_rConfigurationManager=l_pKernelContext->getConfigurationManager();
 
-					IConfigurationManager& l_rConfigurationManager=l_rKernelContext.getConfigurationManager();
+				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 
-					//initialise Gtk before 3D context
-					gtk_init(&argc, &argv);
-					// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
+				//initialise Gtk before 3D context
+				gtk_init(&argc, &argv);
+				// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
 
-					//retrieve Ogre plugin file (assumed to be in Ogre binaries directory)
-					char* l_pOgreDir = getenv("OGRE_HOME");
-					if(l_pOgreDir == NULL)
-					{
-						l_rLogManager << LogLevel_Error << "Couldn't retrieve OGRE_HOME environment variable! Ogre initialisation will fail...\n";
-					}
-					std::string l_sPluginsFile(l_pOgreDir);
-
-#if defined OVD_OS_Windows
-	#ifndef NDEBUG
-					l_sPluginsFile += "/bin/debug/Plugins.cfg";
-	#else
-					l_sPluginsFile += "/bin/release/Plugins.cfg";
-	#endif
-#elif defined OVD_OS_Linux
-					l_sPluginsFile += "/lib/OGRE/Plugins.cfg";
-#endif
-
-					CNameValuePairList l_oOgreParams;
-					l_oOgreParams.setValue("PluginsFile", l_sPluginsFile.c_str()); //specify location of ogre plugins file
-					l_oOgreParams.setValue("CaptureMessages", true); //capture ogre messages
-					l_oOgreParams.setValue("OutputCapturedMessages", true); //forward captured messages to OpenViBE's log manager for output
-					// l_oOgreParams.setValue("OutputFileName", "ogre.log"); //name of file where to output ogre messages
-
-					IVisualisationManager& l_rVisualisationManager=l_rKernelContext.getVisualisationManager();
-					l_rVisualisationManager.initialize3DContext(l_oOgreParams);
-
-					{
-						::CApplication app(l_pKernel);
-						app.initialize();
-						app.newScenarioCB();
-
-						CPluginObjectDescCollector cb_collector1(l_rKernelContext);
-						CPluginObjectDescCollector cb_collector2(l_rKernelContext);
-						CPluginObjectDescLogger cb_logger(l_rKernelContext);
-						cb_logger.enumeratePluginObjectDesc();
-						cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
-						cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
-						insertPluginObjectDesc_to_GtkTreeStore(l_rKernelContext, cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
-						insertPluginObjectDesc_to_GtkTreeStore(l_rKernelContext, cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
-
-						try
-						{
-							gtk_main();
-						}
-						catch(...)
-						{
-							l_rLogManager << LogLevel_Fatal << "Catched top level exception\n";
-						}
-					}
-
-					cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;
-
-					l_rLogManager.activate(LogLevel_Debug, true);
-					l_rLogManager.activate(LogLevel_Benchmark, false);
-					l_rLogManager.activate(LogLevel_Trace, true);
-					l_rLogManager.activate(LogLevel_Info, true);
-					l_rLogManager.activate(LogLevel_Warning, true);
-					l_rLogManager.activate(LogLevel_ImportantWarning, true);
-					l_rLogManager.activate(LogLevel_Error, true);
-					l_rLogManager.activate(LogLevel_Fatal, true);
-
-					OpenViBEToolkit::uninitialize(l_rKernelContext);
-
-					l_pKernel->release();
+				if(l_rConfigurationManager.expandAsBoolean("${Kernel_3DVisualisationEnabled}"))
+				{
+					l_pKernelContext->getVisualisationManager().initialize3DContext();
 				}
-				l_pKernelDesc->release();
+
+				{
+					::CApplication app(*l_pKernelContext);
+					app.initialize();
+					app.newScenarioCB();
+
+					CPluginObjectDescCollector cb_collector1(*l_pKernelContext);
+					CPluginObjectDescCollector cb_collector2(*l_pKernelContext);
+					CPluginObjectDescLogger cb_logger(*l_pKernelContext);
+					cb_logger.enumeratePluginObjectDesc();
+					cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+					cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
+					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
+					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+
+					l_pKernelContext->getLogManager() << LogLevel_Info << "Initialization took " << l_pKernelContext->getConfigurationManager().expand("$Core{real-time}") << " ms\n";
+
+					try
+					{
+						gtk_main();
+					}
+					catch(...)
+					{
+						l_pKernelContext->getLogManager() << LogLevel_Fatal << "Catched top level exception\n";
+					}
+				}
+
+				cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;
+
+				OpenViBEToolkit::uninitialize(*l_pKernelContext);
+
+				l_pKernelDesc->releaseKernel(l_pKernelContext);
 			}
-			l_pKernelLoader->uninitialize();
-			l_pKernelLoader->unload();
 		}
-		l_pKernelLoader->release();
+		l_oKernelLoader.uninitialize();
+		l_oKernelLoader.unload();
 	}
 
 	return 0;

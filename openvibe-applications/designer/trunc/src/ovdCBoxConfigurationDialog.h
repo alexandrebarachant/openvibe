@@ -11,13 +11,13 @@ namespace OpenViBEDesigner
 	{
 	public:
 
-		CBoxConfigurationDialog(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IBox& rBox, const char* sGUIFilename);
+		CBoxConfigurationDialog(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IBox& rBox, const char* sGUIFilename);
 		virtual ~CBoxConfigurationDialog(void);
 		virtual void run(void);
 
 	protected:
 
-		OpenViBE::Kernel::IKernel& m_rKernel;
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::Kernel::IBox& m_rBox;
 		OpenViBE::CString m_sGUIFilename;
 	};

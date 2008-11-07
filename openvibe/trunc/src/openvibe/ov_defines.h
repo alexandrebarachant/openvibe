@@ -10,7 +10,7 @@
 #define OV_ClassId_Object                                    OpenViBE::CIdentifier(0x327B23C6, 0x6B8B4567)
 #define OV_ClassId_ObjectVisitor                             OpenViBE::CIdentifier(0x1ED722DC, 0x00BDA996)
 #define OV_ClassId_KernelLoader                              OpenViBE::CIdentifier(0x1930F64B, 0x6F689236)
-#define OV_ClassId_KernelLoaderFinal                         OpenViBE::CIdentifier(0x624A6E5B, 0x52228CEA)
+#define OV_ClassId_KernelLoaderBridge                        OpenViBE::CIdentifier(0xFD705391, 0xA3078789)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -18,7 +18,6 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OV_ClassId_Kernel_Kernel                             OpenViBE::CIdentifier(0x255EEE43, 0x2B852543)
 #define OV_ClassId_Kernel_KernelContext                      OpenViBE::CIdentifier(0x1AFF3D5A, 0x77F610EE)
 #define OV_ClassId_Kernel_KernelDesc                         OpenViBE::CIdentifier(0x5410291E, 0x2FEF6B81)
 #define OV_ClassId_Kernel_KernelObject                       OpenViBE::CIdentifier(0x69BAE694, 0x163C8B2D)

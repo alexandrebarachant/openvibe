@@ -140,7 +140,7 @@ IVisualisationWidget* CVisualisationTree::getVisualisationWidgetFromBoxIdentifie
 boolean CVisualisationTree::addVisualisationWidget(CIdentifier& rIdentifier, const CString& rName, EVisualisationWidgetType oType,
 	const CIdentifier& rParentIdentifier, uint32 ui32Index, const CIdentifier& rBoxIdentifier, uint32 ui32NbChildren)
 {
-	log() << LogLevel_Trace << "Adding new visualisation widget\n";
+	this->getLogManager() << LogLevel_Trace << "Adding new visualisation widget\n";
 
 	//create new widget
 	IVisualisationWidget* l_pVisualisationWidget = OpenViBE::Tools::CKernelObjectFactoryHelper(getKernelContext().getKernelObjectFactory()).createObject<IVisualisationWidget*>(OV_ClassId_Kernel_Visualisation_VisualisationWidget);
@@ -148,7 +148,7 @@ boolean CVisualisationTree::addVisualisationWidget(CIdentifier& rIdentifier, con
 
 	if(l_pVisualisationWidget->initialize(rIdentifier, rName, oType, rParentIdentifier, rBoxIdentifier, ui32NbChildren) == false)
 	{
-		log() << LogLevel_Warning << "Failed to add new visualisation widget (couldn't initialize it)\n";
+		this->getLogManager() << LogLevel_Warning << "Failed to add new visualisation widget (couldn't initialize it)\n";
 		getKernelContext().getKernelObjectFactory().releaseObject(l_pVisualisationWidget);
 		return false;
 	}
@@ -174,13 +174,13 @@ boolean CVisualisationTree::addVisualisationWidget(CIdentifier& rIdentifier, con
 
 			if(l_pParentVisualisationWidget->setChildIdentifier(ui32Index, rIdentifier) == false)
 			{
-				log() << LogLevel_Warning << "Failed to add new visualisation widget (couldn't set child identifier in parent window)\n";
+				this->getLogManager() << LogLevel_Warning << "Failed to add new visualisation widget (couldn't set child identifier in parent window)\n";
 				return false;
 			}
 		}
 		else
 		{
-			log() << LogLevel_Warning << "Failed to add new visualisation widget (couldn't find parent)\n";
+			this->getLogManager() << LogLevel_Warning << "Failed to add new visualisation widget (couldn't find parent)\n";
 			return false;
 		}
 	}
@@ -209,7 +209,7 @@ boolean CVisualisationTree::getVisualisationWidgetIndex(const CIdentifier& rIden
 	IVisualisationWidget* l_pParentVisualisationWidget = getVisualisationWidget(l_rParentIdentifier);
 	if(l_pParentVisualisationWidget == NULL)
 	{
-		log() << LogLevel_Warning << "Failed to unparent visualisation widget (couldn't find parent)\n";
+		this->getLogManager() << LogLevel_Warning << "Failed to unparent visualisation widget (couldn't find parent)\n";
 		return false;
 	}
 
@@ -235,7 +235,7 @@ boolean CVisualisationTree::destroyHierarchy(const CIdentifier& rIdentifier, boo
 		}
 
 		//delete this window in kernel factory and erase its slot in map
-		log() << LogLevel_Trace << "Deleting visualisation window\n";
+		this->getLogManager() << LogLevel_Trace << "Deleting visualisation window\n";
 		getKernelContext().getKernelObjectFactory().releaseObject(l_pVisualisationWidget);
 		map<CIdentifier, IVisualisationWidget*>::iterator it = m_vVisualisationWidget.find(rIdentifier);
 		m_vVisualisationWidget.erase(it);
@@ -285,7 +285,7 @@ boolean CVisualisationTree::_destroyHierarchy(const CIdentifier& rIdentifier, bo
 	}
 	else
 	{
-		log() << LogLevel_Trace << "Deleting visualisation widget\n";
+		this->getLogManager() << LogLevel_Trace << "Deleting visualisation widget\n";
 		getKernelContext().getKernelObjectFactory().releaseObject(l_pVisualisationWidget);
 		map<CIdentifier, IVisualisationWidget*>::iterator it = m_vVisualisationWidget.find(rIdentifier);
 		m_vVisualisationWidget.erase(it);
@@ -344,7 +344,7 @@ boolean CVisualisationTree::parentVisualisationWidget(const CIdentifier& rIdenti
 	IVisualisationWidget* l_pParentVisualisationWidget = getVisualisationWidget(rParentIdentifier);
 	if(l_pParentVisualisationWidget == NULL)
 	{
-		log() << LogLevel_Warning << "Failed to parent visualisation widget (couldn't find parent)\n";
+		this->getLogManager() << LogLevel_Warning << "Failed to parent visualisation widget (couldn't find parent)\n";
 		return false;
 	}
 

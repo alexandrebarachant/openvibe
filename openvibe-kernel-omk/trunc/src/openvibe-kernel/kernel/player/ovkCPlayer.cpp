@@ -19,7 +19,7 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
-#define _Scheduler_Frequency_ 128
+#define _Scheduler_Default_Frequency_ 128
 #define _Scheduler_Maximum_Loops_Duration_ (100LL << 22) /* 100/1024 second = approx 100ms */
 
 //___________________________________________________________________//
@@ -33,7 +33,17 @@ CPlayer::CPlayer(const IKernelContext& rKernelContext)
 	,m_eStatus(PlayerStatus_Stop)
 	,m_bIsInitialized(false)
 {
-	m_oScheduler.setFrequency(_Scheduler_Frequency_);
+	uint64 l_ui64SchedulerFrequency=this->getConfigurationManager().expandAsUInteger("${Kernel_PlayerFrequency}");
+	if(l_ui64SchedulerFrequency==0)
+	{
+		getLogManager() << LogLevel_ImportantWarning << "Invalid frequency configuration " << CString("Kernel_PlayerFrequency") << "=" << this->getConfigurationManager().expand("${Kernel_PlayerFrequency}") << " restored to default " << _Scheduler_Default_Frequency_ << "\n";
+		l_ui64SchedulerFrequency=_Scheduler_Default_Frequency_;
+	}
+	else
+	{
+		getLogManager() << LogLevel_Trace << "Player frequency set to " << l_ui64SchedulerFrequency << "\n";
+	}
+	m_oScheduler.setFrequency(l_ui64SchedulerFrequency);
 }
 
 CPlayer::~CPlayer(void)
@@ -50,11 +60,11 @@ CPlayer::~CPlayer(void)
 boolean CPlayer::setScenario(
 	const CIdentifier& rScenarioIdentifier)
 {
-	log() << LogLevel_Trace << "Player setScenario\n";
+	this->getLogManager() << LogLevel_Trace << "Player setScenario\n";
 
 	if(m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to configure an initialized player !\n";
+		this->getLogManager() << LogLevel_Warning << "Trying to configure an initialized player !\n";
 		return false;
 	}
 
@@ -63,16 +73,16 @@ boolean CPlayer::setScenario(
 
 boolean CPlayer::initialize(void)
 {
-	log() << LogLevel_Trace << "Player initialize\n";
+	this->getLogManager() << LogLevel_Trace << "Player initialize\n";
 
 	if(m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to initialize an initialized player !\n";
+		this->getLogManager() << LogLevel_Warning << "Trying to initialize an initialized player !\n";
 		return false;
 	}
 
 	m_oScheduler.initialize();
-	m_oBenchmarkChrono.reset(_Scheduler_Frequency_);
+	m_oBenchmarkChrono.reset(m_oScheduler.getFrequency());
 
 	m_ui64CurrentTimeToReach=0;
 	m_ui64Lateness=0;
@@ -85,11 +95,11 @@ boolean CPlayer::initialize(void)
 
 boolean CPlayer::uninitialize(void)
 {
-	log() << LogLevel_Trace << "Player uninitialize\n";
+	this->getLogManager() << LogLevel_Trace << "Player uninitialize\n";
 
 	if(!m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to uninitialize an uninitialized player !\n";
+		this->getLogManager() << LogLevel_Warning << "Trying to uninitialize an uninitialized player !\n";
 		return false;
 	}
 
@@ -101,7 +111,7 @@ boolean CPlayer::uninitialize(void)
 
 boolean CPlayer::stop(void)
 {
-	log() << LogLevel_Trace << "Player stop\n";
+	this->getLogManager() << LogLevel_Trace << "Player stop\n";
 
 	if(m_bIsInitialized)
 	{
@@ -114,7 +124,7 @@ boolean CPlayer::stop(void)
 
 boolean CPlayer::pause(void)
 {
-	log() << LogLevel_Trace << "Player pause\n";
+	this->getLogManager() << LogLevel_Trace << "Player pause\n";
 
 	if(!m_bIsInitialized)
 	{
@@ -127,7 +137,7 @@ boolean CPlayer::pause(void)
 
 boolean CPlayer::step(void)
 {
-	log() << LogLevel_Trace << "Player step\n";
+	this->getLogManager() << LogLevel_Trace << "Player step\n";
 
 	if(!m_bIsInitialized)
 	{
@@ -140,7 +150,7 @@ boolean CPlayer::step(void)
 
 boolean CPlayer::play(void)
 {
-	log() << LogLevel_Trace << "Player play\n";
+	this->getLogManager() << LogLevel_Trace << "Player play\n";
 
 	if(!m_bIsInitialized)
 	{
@@ -153,7 +163,7 @@ boolean CPlayer::play(void)
 
 boolean CPlayer::forward(void)
 {
-	log() << LogLevel_Trace << "Player forward\n";
+	this->getLogManager() << LogLevel_Trace << "Player forward\n";
 
 	if(!m_bIsInitialized)
 	{
@@ -186,7 +196,7 @@ boolean CPlayer::loop(
 	{
 		// Calls a single controller loop and goes back to pause state
 		case PlayerStatus_Step:
-			m_ui64CurrentTimeToReach+=(1LL<<32)/_Scheduler_Frequency_;
+			m_ui64CurrentTimeToReach+=(1LL<<32)/m_oScheduler.getFrequency();
 			m_eStatus=PlayerStatus_Pause;
 			break;
 
@@ -242,7 +252,7 @@ boolean CPlayer::loop(
 
 	if(l_ui64Lateness!=m_ui64Lateness)
 	{
-		log() << (l_ui64Lateness==0?LogLevel_Info:(l_ui64Lateness>=10?LogLevel_ImportantWarning:LogLevel_Warning))
+		this->getLogManager() << (l_ui64Lateness==0?LogLevel_Info:(l_ui64Lateness>=10?LogLevel_ImportantWarning:LogLevel_Warning))
 			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
 			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "can not reach realtime" << LogColor_PopStateBit << "> "
 			<< l_ui64Lateness << " second(s) late...\n";

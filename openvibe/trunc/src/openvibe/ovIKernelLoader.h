@@ -47,7 +47,7 @@ namespace OpenViBE
 		 * \warning \c load must have been called successfully before calling \c unload
 		 */
 		virtual OpenViBE::boolean unload(
-			CString* pError=NULL)=0;
+			OpenViBE::CString* pError=NULL)=0;
 		/**
 		 * \brief Requests the kernel DLL/so file to self initialize
 		 * \return \e true on success.
@@ -75,25 +75,9 @@ namespace OpenViBE
 		 * \warning both \c load and \c initialize must have been called successfully before calling \c getKernelDesc
 		 */
 		virtual OpenViBE::boolean uninitialize(void)=0;
-		/**
-		 * \brief Releases this kernel loader
-		 *
-		 * This function notifies this kernel loader it won't ever be used. At this time,
-		 * the kernel loader can release any allocated memory or resource.
-		 *
-		 * \sa OpenViBE::createKernelLoader
-		 */
-		virtual void release(void)=0;
 
 		_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_KernelLoader)
 	};
-
-	/**
-	 * \brief Creates a new kernel loader
-	 * \return a new kernel loader
-	 * \sa OpenViBE::IKernelLoader
-	 */
-	extern OV_API OpenViBE::IKernelLoader* createKernelLoader(void);
 };
 
 #endif // __OpenViBE_IKernelLoader_H__

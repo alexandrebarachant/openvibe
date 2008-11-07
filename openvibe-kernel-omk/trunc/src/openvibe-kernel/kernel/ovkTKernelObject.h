@@ -24,14 +24,14 @@ namespace OpenViBE
 				return m_rKernelContext;
 			}
 
-			OpenViBE::Kernel::ILogManager& log(void) const
-			{
-				return this->getLogManager();
-			}
-
 			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) const
 			{
 				return m_rKernelContext.getAlgorithmManager();
+			}
+
+			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void) const
+			{
+				return m_rKernelContext.getConfigurationManager();
 			}
 
 			virtual OpenViBE::Kernel::IKernelObjectFactory& getKernelObjectFactory(void) const

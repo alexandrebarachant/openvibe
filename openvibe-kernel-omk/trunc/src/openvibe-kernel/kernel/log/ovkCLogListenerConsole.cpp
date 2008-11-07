@@ -33,6 +33,20 @@ boolean CLogListenerConsole::activate(ELogLevel eLogLevel, boolean bActive)
 	return true;
 }
 
+boolean CLogListenerConsole::activate(ELogLevel eStartLogLevel, ELogLevel eEndLogLevel, boolean bActive)
+{
+	for(int i=eStartLogLevel; i<=eEndLogLevel; i++)
+	{
+		m_vActiveLevel[ELogLevel(i)]=bActive;
+	}
+	return true;
+}
+
+boolean CLogListenerConsole::activate(boolean bActive)
+{
+	return activate(LogLevel_First, LogLevel_Last, bActive);
+}
+
 void CLogListenerConsole::log(const uint64 ui64Value)
 {
 	log(LogColor_PushStateBit);

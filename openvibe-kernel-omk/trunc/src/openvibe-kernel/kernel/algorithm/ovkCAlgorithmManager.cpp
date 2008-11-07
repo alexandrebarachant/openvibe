@@ -93,7 +93,7 @@ IAlgorithmProxy& CAlgorithmManager::getAlgorithm(
 	itAlgorithm=m_vAlgorithm.find(rAlgorithmIdentifier);
 	if(itAlgorithm==m_vAlgorithm.end())
 	{
-		log() << LogLevel_Fatal << "Algorithm " << rAlgorithmIdentifier << " does not exist !\n";
+		this->getLogManager() << LogLevel_Fatal << "Algorithm " << rAlgorithmIdentifier << " does not exist !\n";
 	}
 	return *itAlgorithm->second.second;
 }

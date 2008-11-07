@@ -37,10 +37,27 @@ namespace OpenViBE
 			virtual OpenViBE::CIdentifier lookUpConfigurationTokenIdentifier(
 				const OpenViBE::CString& rConfigurationTokenName) const=0;
 
-			virtual OpenViBE::CString expandExpression(
+			virtual OpenViBE::CString expand(
 				const OpenViBE::CString& rExpression) const=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Configuration_ConfigurationManager);
+
+			virtual OpenViBE::float64 expandAsFloat(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::float64 f64FallbackValue=0)=0;
+			virtual OpenViBE::int64 expandAsInteger(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::int64 i64FallbackValue=0)=0;
+			virtual OpenViBE::uint64 expandAsUInteger(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::uint64 ui64FallbackValue=0)=0;
+			virtual OpenViBE::boolean expandAsBoolean(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::boolean bFallbackValue=true)=0;
+			virtual OpenViBE::uint64 expandAsEnumerationEntryValue(
+				const OpenViBE::CString& rExpression,
+				const OpenViBE::CIdentifier& rEnumerationTypeIdentifier,
+				const OpenViBE::uint64 ui64FallbackValue=0)=0;
 		};
 	};
 };

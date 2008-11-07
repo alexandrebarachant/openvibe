@@ -28,6 +28,20 @@ boolean CLogManager::activate(ELogLevel eLogLevel, boolean bActive)
 	return true;
 }
 
+boolean CLogManager::activate(ELogLevel eStartLogLevel, ELogLevel eEndLogLevel, boolean bActive)
+{
+	for(int i=eStartLogLevel; i<=eEndLogLevel; i++)
+	{
+		m_vActiveLevel[ELogLevel(i)]=bActive;
+	}
+	return true;
+}
+
+boolean CLogManager::activate(boolean bActive)
+{
+	return activate(LogLevel_First, LogLevel_Last, bActive);
+}
+
 void CLogManager::log(const uint64 ui64Value)
 {
 	logForEach<const uint64>(ui64Value);

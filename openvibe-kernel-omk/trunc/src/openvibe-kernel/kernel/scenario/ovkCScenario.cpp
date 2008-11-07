@@ -112,7 +112,7 @@ CScenario::CScenario(const IKernelContext& rKernelContext, const CIdentifier& rI
 
 boolean CScenario::clear(void)
 {
-	log() << LogLevel_Trace << "Clearing scenario\n";
+	this->getLogManager() << LogLevel_Trace << "Clearing scenario\n";
 
 	// Clears boxes
 	map<CIdentifier, CBox*>::iterator itBox;
@@ -148,7 +148,7 @@ boolean CScenario::load(
 	const CString& sFileName)
 {
 	// TODO
-	log() << LogLevel_Debug << "CScenario::load - Not implemented yet\n";
+	this->getLogManager() << LogLevel_Debug << "CScenario::load - Not implemented yet\n";
 
 	return false;
 }
@@ -157,12 +157,12 @@ boolean CScenario::load(
 	const CString& sFileName,
 	const CIdentifier& rLoaderIdentifier)
 {
-	log() << LogLevel_Info << "Loading scenario with specific importer\n";
+	this->getLogManager() << LogLevel_Info << "Loading scenario with specific importer\n";
 
 	IScenarioImporter* l_pScenarioImporter=dynamic_cast<IScenarioImporter*>(getKernelContext().getPluginManager().createPluginObject(rLoaderIdentifier));
 	if(!l_pScenarioImporter)
 	{
-		log() << LogLevel_Warning << "Importer not found\n";
+		this->getLogManager() << LogLevel_Warning << "Importer not found\n";
 		return false;
 	}
 	CScenarioImporterContext l_oScenarioImporterContext(getKernelContext(), sFileName, *this);
@@ -171,7 +171,7 @@ boolean CScenario::load(
 
 	if(!l_bResult)
 	{
-		log() << LogLevel_Warning << "Import failed...\n";
+		this->getLogManager() << LogLevel_Warning << "Import failed...\n";
 		return false;
 	}
 
@@ -212,7 +212,7 @@ boolean CScenario::save(
 	const CString& sFileName)
 {
 	// TODO
-	log() << LogLevel_Debug << "CScenario::save - Not implemented yet\n";
+	this->getLogManager() << LogLevel_Debug << "CScenario::save - Not implemented yet\n";
 
 	return false;
 }
@@ -221,12 +221,12 @@ boolean CScenario::save(
 	const CString& sFileName,
 	const CIdentifier& rSaverIdentifier)
 {
-	log() << LogLevel_Info << "Saving scenario with specific exporter\n";
+	this->getLogManager() << LogLevel_Info << "Saving scenario with specific exporter\n";
 
 	IScenarioExporter* l_pScenarioExporter=dynamic_cast<IScenarioExporter*>(getKernelContext().getPluginManager().createPluginObject(rSaverIdentifier));
 	if(!l_pScenarioExporter)
 	{
-		log() << LogLevel_Warning << "Exporter not found\n";
+		this->getLogManager() << LogLevel_Warning << "Exporter not found\n";
 		return false;
 	}
 	CScenarioExporterContext l_oScenarioExporterContext(getKernelContext(), sFileName, *this);
@@ -235,7 +235,7 @@ boolean CScenario::save(
 
 	if(!l_bResult)
 	{
-		log() << LogLevel_Warning << "Export failed...\n";
+		this->getLogManager() << LogLevel_Warning << "Export failed...\n";
 		return false;
 	}
 	return true;
@@ -243,7 +243,7 @@ boolean CScenario::save(
 
 boolean CScenario::merge(const IScenario& rScenario)
 {
-	log() << LogLevel_Info << "Merging scenario with specific scenario\n";
+	this->getLogManager() << LogLevel_Info << "Merging scenario with specific scenario\n";
 
 	map<CIdentifier, CIdentifier> l_vBoxBox;
 
@@ -325,13 +325,13 @@ CIdentifier CScenario::getNextBoxIdentifierOnProcessingUnit(
 const IBox* CScenario::getBoxDetails(
 	const CIdentifier& rBoxIdentifier) const
 {
-	log() << LogLevel_Debug << "Getting const box details from scenario\n";
+	this->getLogManager() << LogLevel_Debug << "Getting const box details from scenario\n";
 
 	map<CIdentifier, CBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
 	if(itBox==m_vBox.end())
 	{
-		log() << LogLevel_Warning << "The box does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The box does not exist\n";
 		return NULL;
 	}
 	return itBox->second;
@@ -348,13 +348,13 @@ boolean CScenario::isBox(
 IBox* CScenario::getBoxDetails(
 	const CIdentifier& rBoxIdentifier)
 {
-	log() << LogLevel_Debug << "Getting box details from scenario\n";
+	this->getLogManager() << LogLevel_Debug << "Getting box details from scenario\n";
 
 	map<CIdentifier, CBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
 	if(itBox==m_vBox.end())
 	{
-		log() << LogLevel_Warning << "The box does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The box does not exist\n";
 		return NULL;
 	}
 	return itBox->second;
@@ -363,7 +363,7 @@ IBox* CScenario::getBoxDetails(
 boolean CScenario::addBox(
 	CIdentifier& rBoxIdentifier)
 {
-	log() << LogLevel_Trace << "Adding new empty box in scenario\n";
+	this->getLogManager() << LogLevel_Trace << "Adding new empty box in scenario\n";
 
 	rBoxIdentifier=getUnusedIdentifier();
 	CBox* l_pBox=new CBox(getKernelContext());
@@ -377,7 +377,7 @@ boolean CScenario::addBox(
 	const IBox& rBox,
 	CIdentifier& rBoxIdentifier)
 {
-	log () << LogLevel_Trace << "Adding a new box in the scenario based on an existing one\n";
+	this->getLogManager() << LogLevel_Trace << "Adding a new box in the scenario based on an existing one\n";
 
 	if(!addBox(rBoxIdentifier))
 	{
@@ -397,7 +397,7 @@ boolean CScenario::addBox(
 	const CIdentifier& rBoxAlgorithmIdentifier,
 	CIdentifier& rBoxIdentifier)
 {
-	log() << LogLevel_Trace << "Adding new box in scenario\n";
+	this->getLogManager() << LogLevel_Trace << "Adding new box in scenario\n";
 
 	if(!addBox(rBoxIdentifier))
 	{
@@ -416,7 +416,7 @@ boolean CScenario::addBox(
 boolean CScenario::removeBox(
 	const CIdentifier& rBoxIdentifier)
 {
-	log() << LogLevel_Trace << "Removing box from scenario\n";
+	this->getLogManager() << LogLevel_Trace << "Removing box from scenario\n";
 
 	// Finds the box according to its identifier
 	map<CIdentifier, CBox*>::iterator itBox;
@@ -424,11 +424,11 @@ boolean CScenario::removeBox(
 	if(itBox==m_vBox.end())
 	{
 		// The box does not exist !
-		log() << LogLevel_Warning << "The box does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The box does not exist\n";
 		return false;
 	}
 
-	log() << LogLevel_Trace << "Found the box !\n";
+	this->getLogManager() << LogLevel_Trace << "Found the box !\n";
 
 	// Found the box,
 	// now find all the links that are used by this box
@@ -440,7 +440,7 @@ boolean CScenario::removeBox(
 
 		if(itLinkCurrent->second->getSourceBoxIdentifier()==rBoxIdentifier || itLinkCurrent->second->getTargetBoxIdentifier()==rBoxIdentifier)
 		{
-			log() << LogLevel_Trace << "Found a link to this box - it will be deleted !\n";
+			this->getLogManager() << LogLevel_Trace << "Found a link to this box - it will be deleted !\n";
 
 			// Deletes this link
 			delete itLinkCurrent->second;
@@ -456,7 +456,7 @@ boolean CScenario::removeBox(
 	// Removes box from the box list
 	m_vBox.erase(itBox);
 
-	log() << LogLevel_Trace << "The box has been removed\n";
+	this->getLogManager() << LogLevel_Trace << "The box has been removed\n";
 
 	return true;
 }
@@ -512,13 +512,13 @@ boolean CScenario::isLink(
 const ILink* CScenario::getLinkDetails(
 	const CIdentifier& rLinkIdentifier) const
 {
-	log() << LogLevel_Debug << "Retrieving const link details from scenario\n";
+	this->getLogManager() << LogLevel_Debug << "Retrieving const link details from scenario\n";
 
 	map<CIdentifier, CLink*>::const_iterator itLink;
 	itLink=m_vLink.find(rLinkIdentifier);
 	if(itLink==m_vLink.end())
 	{
-		log() << LogLevel_Warning << "The link does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The link does not exist\n";
 		return NULL;
 	}
 	return itLink->second;
@@ -527,13 +527,13 @@ const ILink* CScenario::getLinkDetails(
 ILink* CScenario::getLinkDetails(
 	const CIdentifier& rLinkIdentifier)
 {
-	log() << LogLevel_Debug << "Retrieving link details from scenario\n";
+	this->getLogManager() << LogLevel_Debug << "Retrieving link details from scenario\n";
 
 	map<CIdentifier, CLink*>::const_iterator itLink;
 	itLink=m_vLink.find(rLinkIdentifier);
 	if(itLink==m_vLink.end())
 	{
-		log() << LogLevel_Warning << "The link does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The link does not exist\n";
 		return NULL;
 	}
 	return itLink->second;
@@ -546,7 +546,7 @@ boolean CScenario::connect(
 	const uint32 ui32TargetBoxInputIndex,
 	CIdentifier& rLinkIdentifier)
 {
-	log() << LogLevel_Trace << "Connecting boxes\n";
+	this->getLogManager() << LogLevel_Trace << "Connecting boxes\n";
 
 	map<CIdentifier, CBox*>::const_iterator itBox1;
 	map<CIdentifier, CBox*>::const_iterator itBox2;
@@ -554,19 +554,19 @@ boolean CScenario::connect(
 	itBox2=m_vBox.find(rTargetBoxIdentifier);
 	if(itBox1==m_vBox.end() || itBox2==m_vBox.end())
 	{
-		log() << LogLevel_Warning << "At least one of the boxes does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "At least one of the boxes does not exist\n";
 		return false;
 	}
 	CBox* l_pSourceBox=itBox1->second;
 	CBox* l_pTargetBox=itBox2->second;
 	if(ui32SourceBoxOutputIndex >= l_pSourceBox->getOutputCount())
 	{
-		log() << LogLevel_Warning << "Wrong output index\n";
+		this->getLogManager() << LogLevel_Warning << "Wrong output index\n";
 		return false;
 	}
 	if(ui32TargetBoxInputIndex >= l_pTargetBox->getInputCount())
 	{
-		log() << LogLevel_Warning << "Wrong input index\n";
+		this->getLogManager() << LogLevel_Warning << "Wrong input index\n";
 		return false;
 	}
 
@@ -589,7 +589,7 @@ boolean CScenario::disconnect(
 	const uint32 ui32TargetBoxInputIndex)
 {
 	// TODO
-	log() << LogLevel_Debug << "CScenario::disconnect (identifier based) - Not implemented yet\n";
+	this->getLogManager() << LogLevel_Debug << "CScenario::disconnect (identifier based) - Not implemented yet\n";
 
 	return false;
 }
@@ -597,7 +597,7 @@ boolean CScenario::disconnect(
 boolean CScenario::disconnect(
 	const CIdentifier& rLinkIdentifier)
 {
-	log() << LogLevel_Trace << "Disconnecting boxes\n";
+	this->getLogManager() << LogLevel_Trace << "Disconnecting boxes\n";
 
 	// Finds the link according to its identifier
 	map<CIdentifier, CLink*>::iterator itLink;
@@ -605,11 +605,11 @@ boolean CScenario::disconnect(
 	if(itLink==m_vLink.end())
 	{
 		// The link does not exist !
-		log() << LogLevel_Warning << "The link does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The link does not exist\n";
 		return false;
 	}
 
-	log() << LogLevel_Trace << "Found the link !\n";
+	this->getLogManager() << LogLevel_Trace << "Found the link !\n";
 
 	// Deletes the link itself
 	delete itLink->second;
@@ -617,7 +617,7 @@ boolean CScenario::disconnect(
 	// Removes link from the link list
 	m_vLink.erase(itLink);
 
-	log() << LogLevel_Trace << "Link removed\n";
+	this->getLogManager() << LogLevel_Trace << "Link removed\n";
 
 	return true;
 }
@@ -641,13 +641,13 @@ boolean CScenario::isProcessingUnit(
 const IProcessingUnit* CScenario::getProcessingUnitDetails(
 	const CIdentifier& rProcessingUnitIdentifier) const
 {
-	log() << LogLevel_Debug << "Getting const processing unit details from scenario\n";
+	this->getLogManager() << LogLevel_Debug << "Getting const processing unit details from scenario\n";
 
 	map<CIdentifier, CProcessingUnit*>::const_iterator itProcessingUnit;
 	itProcessingUnit=m_vProcessingUnit.find(rProcessingUnitIdentifier);
 	if(itProcessingUnit==m_vProcessingUnit.end())
 	{
-		log() << LogLevel_Warning << "The processing unit does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The processing unit does not exist\n";
 		return NULL;
 	}
 	return itProcessingUnit->second;
@@ -656,13 +656,13 @@ const IProcessingUnit* CScenario::getProcessingUnitDetails(
 IProcessingUnit* CScenario::getProcessingUnitDetails(
 	const CIdentifier& rProcessingUnitIdentifier)
 {
-	log() << LogLevel_Debug << "Getting processing unit details from scenario\n";
+	this->getLogManager() << LogLevel_Debug << "Getting processing unit details from scenario\n";
 
 	map<CIdentifier, CProcessingUnit*>::const_iterator itProcessingUnit;
 	itProcessingUnit=m_vProcessingUnit.find(rProcessingUnitIdentifier);
 	if(itProcessingUnit==m_vProcessingUnit.end())
 	{
-		log() << LogLevel_Warning << "The processing unit does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The processing unit does not exist\n";
 		return NULL;
 	}
 	return itProcessingUnit->second;
@@ -671,7 +671,7 @@ IProcessingUnit* CScenario::getProcessingUnitDetails(
 boolean CScenario::addProcessingUnit(
 	CIdentifier& rProcessingUnitIdentifier)
 {
-	log() << LogLevel_Trace << "Adding new processing unit in scenario\n";
+	this->getLogManager() << LogLevel_Trace << "Adding new processing unit in scenario\n";
 
 	CProcessingUnit* l_pProcessingUnit=new CProcessingUnit(getKernelContext());
 	rProcessingUnitIdentifier=getUnusedIdentifier();
@@ -684,7 +684,7 @@ boolean CScenario::addProcessingUnit(
 boolean CScenario::removeProcessingUnit(
 	const CIdentifier& rProcessingUnitIdentifier)
 {
-	log() << LogLevel_Trace << "Removing processing unit from scenario\n";
+	this->getLogManager() << LogLevel_Trace << "Removing processing unit from scenario\n";
 
 	// Finds the processing unit according to its identifier
 	map<CIdentifier, CProcessingUnit*>::iterator itProcessingUnit;
@@ -692,7 +692,7 @@ boolean CScenario::removeProcessingUnit(
 	if(itProcessingUnit==m_vProcessingUnit.end())
 	{
 		// The processing unit does not exist !
-		log() << LogLevel_Warning << "The processing unit does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "The processing unit does not exist\n";
 		return false;
 	}
 
@@ -703,7 +703,7 @@ boolean CScenario::removeProcessingUnit(
 	{
 		if(itBox->second->getProcessingUnitIdentifier() == rProcessingUnitIdentifier)
 		{
-			log() << LogLevel_Trace << "The box " << itBox->second->getIdentifier() << " is affected to this processing unit - it will now be affected to undefined processing unit\n";
+			this->getLogManager() << LogLevel_Trace << "The box " << itBox->second->getIdentifier() << " is affected to this processing unit - it will now be affected to undefined processing unit\n";
 
 			// Affects to unknown identifier
 			itBox->second->setProcessingUnitIdentifier(OV_UndefinedIdentifier);

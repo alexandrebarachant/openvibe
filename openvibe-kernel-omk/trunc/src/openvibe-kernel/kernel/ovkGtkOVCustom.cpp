@@ -261,26 +261,26 @@ static void gtk_ov_custom_init(GtkOVCustom *pOVCustom)
 
 guint gtk_ov_custom_get_type(void)
 {
-  static guint ov_custom_type = 0;
+	static guint ov_custom_type = 0;
 
-  if (!ov_custom_type)
-  {
-    static const GtkTypeInfo ov_custom_info =
-    {
-      "GtkOVCustom",
-      sizeof(GtkOVCustom),
-      sizeof(GtkOVCustomClass),
-      (GtkClassInitFunc)gtk_ov_custom_class_init,
-      (GtkObjectInitFunc)gtk_ov_custom_init,
-      NULL,
-      NULL,
-      (GtkClassInitFunc)NULL,
-    };
+	if (!ov_custom_type)
+	{
+		static const GtkTypeInfo ov_custom_info =
+		{
+			(gchar*)"GtkOVCustom",
+			sizeof(GtkOVCustom),
+			sizeof(GtkOVCustomClass),
+			(GtkClassInitFunc)gtk_ov_custom_class_init,
+			(GtkObjectInitFunc)gtk_ov_custom_init,
+			NULL,
+			NULL,
+			(GtkClassInitFunc)NULL,
+		};
 
-    ov_custom_type = gtk_type_unique(gtk_widget_get_type(), &ov_custom_info);
-  }
+		ov_custom_type = gtk_type_unique(gtk_widget_get_type(), &ov_custom_info);
+	}
 
-  return ov_custom_type;
+	return ov_custom_type;
 }
 
 GtkWidget* gtk_ov_custom_new(IGtkOVCustomHandler* pHandler)

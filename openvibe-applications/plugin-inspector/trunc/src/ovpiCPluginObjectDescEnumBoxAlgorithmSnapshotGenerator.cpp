@@ -118,8 +118,10 @@ namespace
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator(const IKernelContext& rKernelContext)
+CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator(const IKernelContext& rKernelContext, const CString& sSnapshotDirectory, const CString& sDocTemplateDirectory)
 	:CPluginObjectDescEnum(rKernelContext)
+	,m_sSnapshotDirectory(sSnapshotDirectory)
+	,m_sDocTemplateDirectory(sDocTemplateDirectory)
 {
 	m_rKernelContext.getScenarioManager().createScenario(m_oScenarioIdentifier);
 	m_pScenario=&m_rKernelContext.getScenarioManager().getScenario(m_oScenarioIdentifier);
@@ -156,7 +158,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlg
 	m_rKernelContext.getScenarioManager().releaseScenario(m_oScenarioIdentifier);
 
 	std::ofstream l_oBoxAlgorithmsFile;
-	l_oBoxAlgorithmsFile.open("Doc_BoxAlgorithms.dox");
+	l_oBoxAlgorithmsFile.open((m_sDocTemplateDirectory+"Doc_BoxAlgorithms.dox").c_str());
 	l_oBoxAlgorithmsFile
 		<< "/**\n"
 		<< " * \\page Doc_BoxAlgorithms Box algorithms list\n"
@@ -380,7 +382,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 		0, 0,
 		0, 0,
 		xSize+32, ySize+32);
-	gdk_pixbuf_save(l_pPixBuf, (l_sFilename+".png").toASCIIString(), "png", NULL, NULL);
+	gdk_pixbuf_save(l_pPixBuf, (CString(m_sSnapshotDirectory.c_str())+l_sFilename+".png").toASCIIString(), "png", NULL, NULL);
 
 	g_object_unref(l_pPixBuf);
 
@@ -389,7 +391,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 	m_vCategories.push_back(pair < string, string >(rPluginObjectDesc.getCategory().toASCIIString(), rPluginObjectDesc.getName().toASCIIString()));
 
 	std::ofstream l_oFile;
-	l_oFile.open((l_sFilename+".dox-skeleton").toASCIIString());
+	l_oFile.open((CString(m_sDocTemplateDirectory.c_str())+l_sFilename+".dox-skeleton").toASCIIString());
 
 	l_oFile
 		<< "/**\n"

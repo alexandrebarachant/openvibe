@@ -14,7 +14,7 @@ namespace OpenViBEDesigner
 	{
 	public:
 		CApplication(
-			OpenViBE::Kernel::IKernel* pKernel);
+			const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
 		void initialize(void);
 
@@ -40,6 +40,8 @@ namespace OpenViBEDesigner
 		void pasteSelectionCB(void);
 
 		void deleteSelectionCB(void);
+
+		void preferencesCB(void);
 
 		//@}
 
@@ -109,48 +111,9 @@ namespace OpenViBEDesigner
 
 		//@}
 
-		/** \name Gtk callbacks */
-		//@{
-
-		static void drag_data_get_cb(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pUserData);
-	#if 0
-		static gboolean resource_query_tooltip_cb(::GtkWidget* pWidget, gint iX, gint iY, gboolean bKeyboardMode, ::GtkTooltip* pTooltip, gpointer pUserData);
-	#endif
-		static void menu_copy_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_cut_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_paste_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_delete_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_new_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_open_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_save_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_save_scenario_as_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void menu_close_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData);
-		static void button_new_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void button_open_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void button_save_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void button_save_scenario_as_cb(::GtkButton* pButton, gpointer pUserData);
-		static void button_close_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void delete_designer_visualisation_cb(gpointer user_data);
-		static void button_toggle_window_manager_cb(::GtkToggleToolButton* pButton, gpointer pUserData);
-		static void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void pause_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void next_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void play_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void forward_scenario_cb(::GtkButton* pButton, gpointer pUserData);
-		static void log_level_cb(::GtkButton* pButton, gpointer pUserData);
-		static void cpu_usage_cb(::GtkToggleButton* pButton, gpointer pUserData);
-		static gboolean change_current_scenario_cb(::GtkNotebook* pNotebook, ::GtkNotebookPage* pNotebookPage, guint uiPageNumber, gpointer pUserData);
-		static void box_algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData);
-		static void box_algorithm_title_button_collapse_cb(::GtkButton* pButton, gpointer pUserData);
-		static void algorithm_title_button_expand_cb(::GtkButton* pButton, gpointer pUserData);
-		static void algorithm_title_button_collapse_cb(::GtkButton* pButton, gpointer pUserData);
-		static gboolean idle_application_loop(gpointer pUserData);
-		static gboolean idle_scenario_loop(gpointer pUserData);
-
-		//@}
-
 	public:
-		OpenViBE::Kernel::IKernel* m_pKernel;
+
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::Kernel::IPluginManager* m_pPluginManager;
 		OpenViBE::Kernel::IScenarioManager* m_pScenarioManager;
 		OpenViBE::Kernel::IScenario* m_pClipboardScenario;

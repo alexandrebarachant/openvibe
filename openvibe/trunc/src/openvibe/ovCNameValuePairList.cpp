@@ -1,6 +1,7 @@
 #include "ovCString.h"
 #include "ovCNameValuePairList.h"
 
+#if 1
 #include <string>
 #include <map>
 
@@ -115,3 +116,5 @@ boolean CNameValuePairList::getValue(const CString& rName, boolean& rValue) cons
 		return false;
 	}
 }
+
+#endif

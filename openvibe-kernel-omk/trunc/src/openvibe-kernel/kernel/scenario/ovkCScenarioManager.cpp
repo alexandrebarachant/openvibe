@@ -82,7 +82,7 @@ IScenario& CScenarioManager::getScenario(
 	itScenario=m_vScenario.find(rScenarioIdentifier);
 	if(itScenario==m_vScenario.end())
 	{
-		log() << LogLevel_Fatal << "Scenario " << rScenarioIdentifier << " does not exist !\n";
+		this->getLogManager() << LogLevel_Fatal << "Scenario " << rScenarioIdentifier << " does not exist !\n";
 	}
 	return *itScenario->second;
 }

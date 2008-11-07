@@ -11,7 +11,7 @@ namespace OpenViBEDesigner
 	{
 	public:
 
-		CSettingCollectionHelper(OpenViBE::Kernel::IKernel& rKernel, const char* sGUIFilename);
+		CSettingCollectionHelper(const OpenViBE::Kernel::IKernelContext& rKernelContext, const char* sGUIFilename);
 		virtual ~CSettingCollectionHelper(void);
 
 		OpenViBE::CString getSettingWidgetName(const OpenViBE::CIdentifier& rTypeIdentifier);
@@ -36,7 +36,7 @@ namespace OpenViBEDesigner
 
 	protected:
 
-		OpenViBE::Kernel::IKernel& m_rKernel;
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::CString m_sGUIFilename;
 
 	private:

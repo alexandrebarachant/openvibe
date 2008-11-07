@@ -20,12 +20,12 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CEntryEnumeratorCallBack : public FS::IEntryEnumeratorCallBack
+		class CPluginManagerEntryEnumeratorCallBack : public TKernelObject < IObject >, public FS::IEntryEnumeratorCallBack
 		{
 		public:
 
-			CEntryEnumeratorCallBack(const IKernelContext& rKernelContext, vector<IPluginModule*>& rPluginModule, map<IPluginObjectDesc*, IPluginModule*>& rPluginObjectDesc)
-				:m_rKernelContext(rKernelContext)
+			CPluginManagerEntryEnumeratorCallBack(const IKernelContext& rKernelContext, vector<IPluginModule*>& rPluginModule, map<IPluginObjectDesc*, IPluginModule*>& rPluginObjectDesc)
+				:TKernelObject < IObject >(rKernelContext)
 				,m_rPluginManager(rKernelContext.getPluginManager())
 				,m_rPluginModule(rPluginModule)
 				,m_rPluginObjectDesc(rPluginObjectDesc)
@@ -47,17 +47,17 @@ namespace OpenViBE
 
 					if(FS::Files::equals(rEntry.getName(), (const char*)l_sPluginModuleName))
 					{
-						log() << LogLevel_Warning << "Module [" << CString(rEntry.getName()) << "] has already been loaded\n";
+						this->getLogManager() << LogLevel_Warning << "Module [" << CString(rEntry.getName()) << "] has already been loaded\n";
 						return true;
 					}
 				}
 
-				IPluginModule* l_pPluginModule=new CPluginModule(m_rKernelContext);
+				IPluginModule* l_pPluginModule=new CPluginModule(this->getKernelContext());
 				CString l_sLoadError;
 				if(!l_pPluginModule->load(rEntry.getName(), &l_sLoadError))
 				{
 					delete l_pPluginModule;
-					log() << LogLevel_Warning << "File [" << CString(rEntry.getName()) << "] is not a plugin module (error:" << l_sLoadError << ")\n";
+					this->getLogManager() << LogLevel_Warning << "File [" << CString(rEntry.getName()) << "] is not a plugin module (error:" << l_sLoadError << ")\n";
 					return true;
 				}
 
@@ -66,7 +66,7 @@ namespace OpenViBE
 					l_pPluginModule->uninitialize();
 					l_pPluginModule->unload();
 					delete l_pPluginModule;
-					log() << LogLevel_Warning << "Module [" << CString(rEntry.getName()) << "] did not initialize correctly\n";
+					this->getLogManager() << LogLevel_Warning << "Module [" << CString(rEntry.getName()) << "] did not initialize correctly\n";
 					return true;
 				}
 
@@ -83,7 +83,7 @@ namespace OpenViBE
 					{
 						if(i->first->getClassIdentifier()==l_pPluginObjectDesc->getClassIdentifier())
 						{
-							log() << LogLevel_ImportantWarning << "Duplicate plugin object descriptor class identifier [" << i->first->getName() << "] and [" << l_pPluginObjectDesc->getName() << "]... second one is ignored.\n";
+							this->getLogManager() << LogLevel_ImportantWarning << "Duplicate plugin object descriptor class identifier [" << i->first->getName() << "] and [" << l_pPluginObjectDesc->getName() << "]... second one is ignored.\n";
 							l_bFound=true;
 						}
 					}
@@ -104,26 +104,20 @@ namespace OpenViBE
 
 				if(l_bPluginObjectDescAdded)
 				{
-					log() << LogLevel_Info << "Added " << l_ui32Count << " plugin object descriptor(s) from [" << CString(rEntry.getName()) << "]\n";
+					this->getLogManager() << LogLevel_Info << "Added " << l_ui32Count << " plugin object descriptor(s) from [" << CString(rEntry.getName()) << "]\n";
 				}
 				else
 				{
-					log() << LogLevel_Warning << "No 'plugin object descriptor' found from [" << CString(rEntry.getName()) << "] even if it looked like a plugin module\n";
+					this->getLogManager() << LogLevel_Warning << "No 'plugin object descriptor' found from [" << CString(rEntry.getName()) << "] even if it looked like a plugin module\n";
 				}
 
 				return true;
 			}
 
-		protected:
-
-			ILogManager& log(void)
-			{
-				return m_rKernelContext.getLogManager();
-			}
+			_IsDerivedFromClass_Final_(TKernelObject < IObject >, OV_UndefinedIdentifier)
 
 		protected:
 
-			const IKernelContext& m_rKernelContext;
 			IPluginManager& m_rPluginManager;
 			vector<IPluginModule*>& m_rPluginModule;
 			map<IPluginObjectDesc*, IPluginModule*>& m_rPluginObjectDesc;
@@ -144,7 +138,7 @@ CPluginManager::~CPluginManager(void)
 	{
 		for(j=i->second.begin(); j!=i->second.end(); j++)
 		{
-			log() << LogLevel_ImportantWarning << "Trying to release plugin object with class id " << (*j)->getClassIdentifier() << " and plugin object descriptor " << i->first->getName() << " at plugin manager destruction time\n";
+			this->getLogManager() << LogLevel_ImportantWarning << "Trying to release plugin object with class id " << (*j)->getClassIdentifier() << " and plugin object descriptor " << i->first->getName() << " at plugin manager destruction time\n";
 			(*j)->release();
 		}
 	}
@@ -153,10 +147,10 @@ CPluginManager::~CPluginManager(void)
 boolean CPluginManager::addPluginsFromFiles(
 	const CString& rFileNameWildCard)
 {
-	log() << LogLevel_Info << "Adding [" << rFileNameWildCard << "]\n";
+	this->getLogManager() << LogLevel_Info << "Adding [" << rFileNameWildCard << "]\n";
 
 	boolean l_bResult;
-	CEntryEnumeratorCallBack l_rCB(getKernelContext(), m_vPluginModule, m_vPluginObjectDesc);
+	CPluginManagerEntryEnumeratorCallBack l_rCB(this->getKernelContext(), m_vPluginModule, m_vPluginObjectDesc);
 	FS::IEntryEnumerator* l_pEntryEnumerator=FS::createEntryEnumerator(l_rCB);
 	l_bResult=l_pEntryEnumerator->enumerate(rFileNameWildCard);
 	l_pEntryEnumerator->release();
@@ -214,7 +208,7 @@ CIdentifier CPluginManager::getNextPluginObjectDescIdentifier(
 boolean CPluginManager::canCreatePluginObject(
 	const CIdentifier& rClassIdentifier)
 {
-	log() << LogLevel_Debug << "Searching if can build plugin object\n";
+	this->getLogManager() << LogLevel_Debug << "Searching if can build plugin object\n";
 
 	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
@@ -231,7 +225,7 @@ boolean CPluginManager::canCreatePluginObject(
 const IPluginObjectDesc* CPluginManager::getPluginObjectDesc(
 	const CIdentifier& rClassIdentifier) const
 {
-	log() << LogLevel_Debug << "Searching plugin object descriptor\n";
+	this->getLogManager() << LogLevel_Debug << "Searching plugin object descriptor\n";
 
 	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
@@ -242,14 +236,14 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDesc(
 		}
 	}
 
-	log() << LogLevel_Warning << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
+	this->getLogManager() << LogLevel_Warning << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
 	return NULL;
 }
 
 const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 	const CIdentifier& rClassIdentifier) const
 {
-	log() << LogLevel_Debug << "Searching plugin object descriptor\n";
+	this->getLogManager() << LogLevel_Debug << "Searching plugin object descriptor\n";
 
 	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
@@ -260,7 +254,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 		}
 	}
 
-	log() << LogLevel_Warning << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
+	this->getLogManager() << LogLevel_Warning << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
 	return NULL;
 
 }
@@ -390,7 +384,7 @@ IPluginObject* CPluginManager::createPluginObject(
 boolean CPluginManager::releasePluginObject(
 	IPluginObject* pPluginObject)
 {
-	log() << LogLevel_Debug << "Releasing plugin object\n";
+	this->getLogManager() << LogLevel_Debug << "Releasing plugin object\n";
 
 	map < IPluginObjectDesc*, vector < IPluginObject* > >::iterator i;
 	vector < IPluginObject* >::iterator j;
@@ -407,7 +401,7 @@ boolean CPluginManager::releasePluginObject(
 		}
 	}
 
-	log() << LogLevel_Warning << "Plugin object has not been created by this plugin manager (class id was " << pPluginObject->getClassIdentifier() << ")\n";
+	this->getLogManager() << LogLevel_Warning << "Plugin object has not been created by this plugin manager (class id was " << pPluginObject->getClassIdentifier() << ")\n";
 	return false;
 }
 

@@ -1,6 +1,21 @@
 #include "ovkCConfigurationManager.h"
 
+#include <fs/IEntryEnumerator.h>
+#include <fs/Files.h>
+
+#include <system/Time.h>
+#include <system/Math.h>
+
 #include <stack>
+#include <string>
+#include <fstream>
+
+#include <string>
+#include <algorithm>
+#include <functional>
+#include <cctype>
+
+#include <time.h>
 
 #include <stdlib.h>
 
@@ -8,16 +23,143 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
+namespace
+{
+	// because std::tolower has multiple signatures,
+	// it can not be easily used in std::transform
+	// this workaround is taken from http://www.gcek.net/ref/books/sw/cpp/ticppv2/
+	template <class charT>
+	charT to_lower(charT c)
+	{
+		return std::tolower(c);
+	}
+};
+
+namespace OpenViBE
+{
+	namespace Kernel
+	{
+		class CConfigurationManagerEntryEnumeratorCallBack : public FS::IEntryEnumeratorCallBack
+		{
+		public:
+
+			CConfigurationManagerEntryEnumeratorCallBack(const IKernelContext& rKernelContext)
+				:m_rKernelContext(rKernelContext)
+			{
+			}
+
+			static std::string reduce(const std::string& sValue)
+			{
+				std::string::size_type i=0;
+				std::string::size_type j=sValue.length()-1;
+
+				while(i<sValue.length() && (sValue[i]=='\t' || sValue[i]==' ')) i++;
+				while(j>=i              && (sValue[j]=='\t' || sValue[j]==' ')) j--;
+
+				return sValue.substr(i, j-i+1);
+			}
+
+			virtual FS::boolean callback(
+				FS::IEntryEnumerator::IEntry& rEntry,
+				FS::IEntryEnumerator::IAttributes& rAttributes)
+			{
+				std::ifstream l_oFile(rEntry.getName());
+				if(!l_oFile.good())
+				{
+					m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not open file " << CString(rEntry.getName()) << "\n";
+					return true;
+				}
+
+				m_rKernelContext.getLogManager() << LogLevel_Trace << "Processing configuration file " << CString(rEntry.getName()) << "\n";
+
+				while(!l_oFile.eof())
+				{
+					std::string l_sLine;
+					std::string l_sLinePart;
+					std::string l_sLineTokenName;
+					std::string l_sLineTokenValue;
+					std::string::size_type eq;
+
+					while(!l_oFile.eof() && (l_sLine.length()==0 || l_sLine[l_sLine.length()-1]=='\\'))
+					{
+						while(l_sLine.length()!=0 && l_sLine[l_sLine.length()-1]=='\\')
+						{
+							l_sLine.resize(l_sLine.length()-1); // removes ending backslashes
+						}
+
+						std::getline(l_oFile, l_sLinePart, '\n');
+
+						l_sLine+=reduce(l_sLinePart);
+					}
+
+					if(l_oFile.good())
+					{
+						switch(l_sLine[0])
+						{
+							case '#':
+								m_rKernelContext.getLogManager() << LogLevel_Debug << "Ignored comment in configuration file " << CString(rEntry.getName()) << " : " << CString(l_sLine.c_str()) << "\n";
+								break;
+							default :
+								if((eq=l_sLine.find("="))==std::string::npos)
+								{
+									m_rKernelContext.getLogManager() << LogLevel_Warning << "Invalid syntax in configuration file " << CString(rEntry.getName()) << " : " << CString(l_sLine.c_str()) << "\n";
+								}
+								else
+								{
+									std::string l_sTokenName(reduce(l_sLine.substr(0, eq)));
+									std::string l_sTokenValue(reduce(l_sLine.substr(eq+1, l_sLine.length()-eq)));
+									CIdentifier l_oTokenIdentifier=m_rKernelContext.getConfigurationManager().lookUpConfigurationTokenIdentifier(l_sTokenName.c_str());
+									if(l_oTokenIdentifier==OV_UndefinedIdentifier)
+									{
+										m_rKernelContext.getLogManager() << LogLevel_Trace << "Adding configuration token " << CString(l_sTokenName.c_str()) << " : " << CString(l_sTokenValue.c_str()) << "\n";
+										m_rKernelContext.getConfigurationManager().createConfigurationToken(l_sTokenName.c_str(), l_sTokenValue.c_str());
+									}
+									else
+									{
+										m_rKernelContext.getLogManager() << LogLevel_Trace << "Changing configuration token " << CString(l_sTokenName.c_str()) << " to " << CString(l_sTokenValue.c_str()) << "\n";
+										m_rKernelContext.getConfigurationManager().setConfigurationTokenValue(l_oTokenIdentifier, l_sTokenValue.c_str());
+									}
+								}
+								break;
+						}
+					}
+					else
+					{
+						if(l_sLine!="")
+						{
+							m_rKernelContext.getLogManager() << LogLevel_Warning << "Unexpected end of file in configuration file " << CString(rEntry.getName()) << "\n";
+						}
+					}
+				}
+
+				return true;
+			}
+
+		protected:
+
+			const IKernelContext& m_rKernelContext;
+		};
+	};
+};
+
 CConfigurationManager::CConfigurationManager(const IKernelContext& rKernelContext)
 	:TKernelObject<IConfigurationManager>(rKernelContext)
 {
+	m_ui32Index=0;
+	m_ui32StartTime=System::Time::getTime();
 }
 
 boolean CConfigurationManager::addConfigurationFromFile(
 	const CString& rFileNameWildCard)
 {
-	// TODO
-	return false;
+	this->getLogManager() << LogLevel_Info << "Adding configuration file(s) [" << rFileNameWildCard << "]\n";
+
+	boolean l_bResult;
+	CConfigurationManagerEntryEnumeratorCallBack l_rCB(getKernelContext());
+	FS::IEntryEnumerator* l_pEntryEnumerator=FS::createEntryEnumerator(l_rCB);
+	l_bResult=l_pEntryEnumerator->enumerate(rFileNameWildCard);
+	l_pEntryEnumerator->release();
+	return l_bResult;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------
@@ -154,12 +296,12 @@ CIdentifier CConfigurationManager::lookUpConfigurationTokenIdentifier(
 
 // ----------------------------------------------------------------------------------------------------------------------------
 
-CString CConfigurationManager::expandExpression(
+CString CConfigurationManager::expand(
 	const CString& rExpression) const
 {
 	std::string l_sValue(rExpression.toASCIIString());
 	std::string l_sResult;
-	if(this->expand(l_sValue, l_sResult))
+	if(this->internalExpand(l_sValue, l_sResult))
 	{
 		return l_sResult.c_str();
 	}
@@ -195,7 +337,7 @@ namespace
 	};
 };
 
-boolean CConfigurationManager::expand(const std::string& sValue, std::string& sResult) const
+boolean CConfigurationManager::internalExpand(const std::string& sValue, std::string& sResult) const
 {
 	std::stack < std::pair < ENodeType, std::string > > l_vChildren;
 	l_vChildren.push(std::make_pair(NodeType_Value, std::string()));
@@ -239,10 +381,42 @@ boolean CConfigurationManager::expand(const std::string& sValue, std::string& sR
 				{
 					l_sValue=this->getConfigurationTokenValue(this->lookUpConfigurationTokenIdentifier(l_sPostfix.c_str()));
 				}
-				else if(l_sPrefix=="ENV")
+				else if(l_sPrefix=="Environment")
 				{
 					char* l_sEnvValue=::getenv(l_sPostfix.c_str());
 					l_sValue=(l_sEnvValue?l_sEnvValue:"");
+				}
+				else if(l_sPrefix=="Core")
+				{
+					char l_sLocalValue[1024];
+					if(l_sPostfix=="random")
+					{
+						sprintf(l_sLocalValue, "%u", this->getRandom());
+						l_sValue=l_sLocalValue;
+					}
+					else if(l_sPostfix=="index")
+					{
+						sprintf(l_sLocalValue, "%u", this->getIndex());
+						l_sValue=l_sLocalValue;
+					}
+					else if(l_sPostfix=="time")
+					{
+						l_sValue=this->getTime();
+					}
+					else if(l_sPostfix=="date")
+					{
+						l_sValue=this->getDate();
+					}
+					else if(l_sPostfix=="real-time")
+					{
+						sprintf(l_sLocalValue, "%u", this->getRealTime());
+						l_sValue=l_sLocalValue;
+					}
+					else
+					{
+						this->getLogManager() << LogLevel_Warning << "Could not expand token with " << CString(l_sPrefix.c_str()) << " prefix and " << CString(l_sPostfix.c_str()) << " postfix while expanding " << CString(sValue.c_str()) << "\n";
+						return false;
+					}
 				}
 				else
 				{
@@ -250,7 +424,7 @@ boolean CConfigurationManager::expand(const std::string& sValue, std::string& sR
 					return false;
 				}
 
-				if(!this->expand(l_sValue, l_sExpandedValue))
+				if(!this->internalExpand(l_sValue, l_sExpandedValue))
 				{
 					this->getLogManager() << LogLevel_Warning << "Could not expand " << CString(l_sValue.c_str()) << " while expanding " << CString(sValue.c_str()) << "\n";
 					return false;
@@ -281,4 +455,121 @@ boolean CConfigurationManager::expand(const std::string& sValue, std::string& sR
 	sResult=l_vChildren.top().second;
 
 	return true;
+}
+
+
+float64 CConfigurationManager::expandAsFloat(
+	const CString& rExpression,
+	const float64 f64FallbackValue)
+{
+	CString l_sResult=this->expand(rExpression);
+	float64 l_f64Result=0;
+	if(sscanf(l_sResult.toASCIIString(), "%lf", &l_f64Result)==1)
+	{
+		return l_f64Result;
+	}
+
+	return f64FallbackValue;
+}
+
+int64 CConfigurationManager::expandAsInteger(
+	const CString& rExpression,
+	const int64 i64FallbackValue)
+{
+	CString l_sResult=this->expand(rExpression);
+	int64 l_i64Result=0;
+	if(sscanf(l_sResult.toASCIIString(), "%lli", &l_i64Result)==1)
+	{
+		return l_i64Result;
+	}
+
+	return i64FallbackValue;
+}
+
+uint64 CConfigurationManager::expandAsUInteger(
+	const CString& rExpression,
+	const uint64 ui64FallbackValue)
+{
+	CString l_sResult=this->expand(rExpression);
+	uint64 l_ui64Result=0;
+	if(sscanf(l_sResult.toASCIIString(), "%llu", &l_ui64Result)==1)
+	{
+		return l_ui64Result;
+	}
+
+	return ui64FallbackValue;
+}
+
+boolean CConfigurationManager::expandAsBoolean(
+	const CString& rExpression,
+	const boolean bFallbackValue)
+{
+	std::string l_sResult=this->expand(rExpression).toASCIIString();
+	std::transform(l_sResult.begin(), l_sResult.end(), l_sResult.begin(), ::to_lower<std::string::value_type>);
+
+	if(l_sResult=="true")  return true;
+	if(l_sResult=="on")    return true;
+	if(l_sResult=="1")     return true;
+
+	if(l_sResult=="false") return false;
+	if(l_sResult=="off")   return false;
+	if(l_sResult=="0")     return false;
+
+	return bFallbackValue;
+}
+
+uint64 CConfigurationManager::expandAsEnumerationEntryValue(
+	const CString& rExpression,
+	const CIdentifier& rEnumerationTypeIdentifier,
+	const uint64 ui64FallbackValue)
+{
+	CString l_sResult=this->expand(rExpression);
+	uint64 l_ui64Result=this->getTypeManager().getEnumerationEntryValueFromName(rEnumerationTypeIdentifier, l_sResult);
+	if(l_ui64Result!=0xffffffffffffffffll)
+	{
+		return l_ui64Result;
+	}
+
+	return ui64FallbackValue;
+}
+
+uint32 CConfigurationManager::getRandom(void) const
+{
+	return System::Math::randomUInteger32();
+}
+
+uint32 CConfigurationManager::getIndex(void) const
+{
+	return m_ui32Index++;
+}
+
+CString CConfigurationManager::getTime(void) const
+{
+	char l_sResult[1024];
+	::time_t l_oRawTime;
+	struct tm* l_pTimeInfo;
+
+	::time(&l_oRawTime);
+	l_pTimeInfo=::localtime(&l_oRawTime);
+
+	sprintf(l_sResult, "%02i.%02i.%02i", l_pTimeInfo->tm_hour, l_pTimeInfo->tm_min, l_pTimeInfo->tm_sec);
+	return l_sResult;
+}
+
+CString CConfigurationManager::getDate(void) const
+{
+	char l_sResult[1024];
+	::time_t l_oRawTime;
+	struct tm* l_pTimeInfo;
+
+	::time(&l_oRawTime);
+	l_pTimeInfo=::localtime(&l_oRawTime);
+
+	sprintf(l_sResult, "%04i.%02i.%02i", l_pTimeInfo->tm_year+1900, l_pTimeInfo->tm_mon+1, l_pTimeInfo->tm_mday);
+	return l_sResult;
+}
+
+uint32 CConfigurationManager::getRealTime(void) const
+{
+	return System::Time::getTime()-m_ui32StartTime;
 }

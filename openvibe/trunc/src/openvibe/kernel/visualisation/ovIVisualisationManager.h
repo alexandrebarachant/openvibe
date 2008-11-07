@@ -44,11 +44,9 @@ namespace OpenViBE
 
 			/**
 			 * \brief Initialize 3D context and primary render window
-			 * \param rParametersList Reference to 3D context initialization parameters list
 			 * \return True if 3d context was successfully initialized, false otherwise
 			 */
-			virtual OpenViBE::boolean initialize3DContext(
-				const OpenViBE::CNameValuePairList& rParametersList)=0;
+			virtual OpenViBE::boolean initialize3DContext(void)=0;
 
 			/**
 			 * \brief Create a resource group

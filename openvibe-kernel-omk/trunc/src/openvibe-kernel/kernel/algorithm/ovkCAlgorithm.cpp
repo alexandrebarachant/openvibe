@@ -393,14 +393,14 @@ void CAlgorithm::handleCrash(const char* sWhere)
 {
 	m_ui32CrashCount++;
 
-	log() << LogLevel_Error << "Plugin code caused crash " << m_ui32CrashCount << " time(s)\n";
-	log() << LogLevel_Error << "  [name:" << m_rAlgorithmDesc.getName() << "]\n";
-	log() << LogLevel_Error << "  [class identifier:" << m_rAlgorithm.getClassIdentifier() << "]\n";
-	log() << LogLevel_Error << "  [place:" << sWhere << "]\n";
+	this->getLogManager() << LogLevel_Error << "Plugin code caused crash " << m_ui32CrashCount << " time(s)\n";
+	this->getLogManager() << LogLevel_Error << "  [name:" << m_rAlgorithmDesc.getName() << "]\n";
+	this->getLogManager() << LogLevel_Error << "  [class identifier:" << m_rAlgorithm.getClassIdentifier() << "]\n";
+	this->getLogManager() << LogLevel_Error << "  [place:" << sWhere << "]\n";
 
 	if(m_ui32CrashCount>=_MaxCrash_)
 	{
-		log () << LogLevel_Fatal << "  This plugin has been disabled !\n";
+		this->getLogManager() << LogLevel_Fatal << "  This plugin has been disabled !\n";
 		m_bActive=false;
 	}
 }

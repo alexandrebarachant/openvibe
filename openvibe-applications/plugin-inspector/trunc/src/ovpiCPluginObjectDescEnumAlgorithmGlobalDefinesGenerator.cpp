@@ -4,10 +4,10 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
-CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator(const IKernelContext& rKernelContext, const char* sFilename)
+CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator(const IKernelContext& rKernelContext, const CString& sFilename)
 	:CPluginObjectDescEnum(rKernelContext)
 {
-	m_oFile.open(sFilename);
+	m_oFile.open((sFilename+CString("ovp_global_defines.h")).toASCIIString());
 
 	if(!m_oFile.good()) return;
 

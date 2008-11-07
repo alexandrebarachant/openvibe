@@ -9,8 +9,8 @@ using namespace std;
 
 static ::GtkTargetEntry targets [] =
 {
-	{ "STRING", 0, 0 },
-	{ "text/plain", 0, 0 },
+	{ (gchar*)"STRING", 0, 0 },
+	{ (gchar*)"text/plain", 0, 0 },
 };
 
 static void dummy_callback(::GtkWidget*)

@@ -119,8 +119,10 @@ namespace
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-CPluginObjectDescEnumAlgorithmSnapshotGenerator::CPluginObjectDescEnumAlgorithmSnapshotGenerator(const IKernelContext& rKernelContext)
+CPluginObjectDescEnumAlgorithmSnapshotGenerator::CPluginObjectDescEnumAlgorithmSnapshotGenerator(const IKernelContext& rKernelContext, const CString& sSnapshotDirectory, const CString& sDocTemplateDirectory)
 	:CPluginObjectDescEnum(rKernelContext)
+	,m_sSnapshotDirectory(sSnapshotDirectory)
+	,m_sDocTemplateDirectory(sDocTemplateDirectory)
 {
 	#define gdk_color_set(c, r, g, b) { c.pixel=0; c.red=r; c.green=g; c.blue=b; }
 	gdk_color_set(m_vColors[Color_BackgroundPlayerStarted], 32767, 32767, 32767);
@@ -152,7 +154,7 @@ CPluginObjectDescEnumAlgorithmSnapshotGenerator::CPluginObjectDescEnumAlgorithmS
 CPluginObjectDescEnumAlgorithmSnapshotGenerator::~CPluginObjectDescEnumAlgorithmSnapshotGenerator(void)
 {
 	std::ofstream l_oAlgorithmsFile;
-	l_oAlgorithmsFile.open("algorithms.dox");
+	l_oAlgorithmsFile.open((m_sDocTemplateDirectory+"Doc_Algorithms.dox").c_str());
 	l_oAlgorithmsFile
 		<< "/**\n"
 		<< " * \\page Doc_Algorithms Algorithms list\n"
@@ -225,7 +227,7 @@ CPluginObjectDescEnumAlgorithmSnapshotGenerator::~CPluginObjectDescEnumAlgorithm
 boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginObjectDesc& rPluginObjectDesc)
 {
 	CString l_sFullName=rPluginObjectDesc.getCategory() + "/" + rPluginObjectDesc.getName();
-	CString l_sFilename=CString("algorithm_")+transform(l_sFullName);
+	CString l_sFilename=CString(m_sSnapshotDirectory.c_str())+CString("Algorithm_")+transform(l_sFullName);
 	CIdentifier l_oIdentifier;
 	if((l_oIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(rPluginObjectDesc.getCreatedClassIdentifier()))==OV_UndefinedIdentifier)
 	{

@@ -84,14 +84,14 @@ CSimulatedBox::CSimulatedBox(const IKernelContext& rKernelContext, CScheduler& r
 	,m_pOgreVis(NULL)
 	,m_oSceneIdentifier(OV_UndefinedIdentifier)
 {
-	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	m_pOgreVis = ((CVisualisationManager*)(&rKernelContext.getVisualisationManager()))->getOgreVisualisation();
 }
 
 CSimulatedBox::~CSimulatedBox(void)
 {
-	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	//delete OgreWidgets
 	std::map<GtkWidget*, OpenViBE::CIdentifier>::iterator it;
@@ -245,7 +245,7 @@ CIdentifier CSimulatedBox::create3DWidget(::GtkWidget*& p3DWidget)
 	//don't attempt to create 3D widget if Ogre wasn't initialized properly.
 	if(!m_pOgreVis || m_pOgreVis->ogreInitialized() == false || m_pOgreVis->resourcesInitialized() == false)
 	{
-		log () << LogLevel_Error << "Plugin " << m_pBox->getName() << " was disabled because the required 3D context couldn't be created!\n";
+		this->getLogManager() << LogLevel_Error << "Plugin " << m_pBox->getName() << " was disabled because the required 3D context couldn't be created!\n";
 		m_bActive=false;
 		return OV_UndefinedIdentifier;
 	}
@@ -597,7 +597,7 @@ boolean CSimulatedBox::setBoxIdentifier(const CIdentifier& rBoxIdentifier)
 
 boolean CSimulatedBox::initialize(void)
 {
-	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	if(!m_bActive) return false;
 
@@ -651,7 +651,7 @@ boolean CSimulatedBox::initialize(void)
 
 boolean CSimulatedBox::uninitialize(void)
 {
-	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	if(!m_bActive) return false;
 
@@ -686,7 +686,7 @@ boolean CSimulatedBox::uninitialize(void)
 
 boolean CSimulatedBox::processClock(void)
 {
-	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	if(!m_bActive) return false;
 
@@ -708,7 +708,7 @@ boolean CSimulatedBox::processClock(void)
 				{
 					if(l_ui64NewClockFrequency > m_rScheduler.getFrequency()<<32)
 					{
-						log() << LogLevel_ImportantWarning << "Box " << m_pBox->getName() << " requested higher clock frequency (" << l_ui64NewClockFrequency << ") than what the scheduler can handle (" << (m_rScheduler.getFrequency()<<32) << ")\n";
+						this->getLogManager() << LogLevel_ImportantWarning << "Box " << m_pBox->getName() << " requested higher clock frequency (" << l_ui64NewClockFrequency << ") than what the scheduler can handle (" << (m_rScheduler.getFrequency()<<32) << ")\n";
 					}
 
 					// note: 1LL should be left shifted 64 bits but this
@@ -764,7 +764,7 @@ boolean CSimulatedBox::processClock(void)
 
 boolean CSimulatedBox::processInput(const uint32 ui32InputIndex, const CChunk& rChunk)
 {
-	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	if(!m_bActive) return false;
 
@@ -795,7 +795,7 @@ boolean CSimulatedBox::processInput(const uint32 ui32InputIndex, const CChunk& r
 
 boolean CSimulatedBox::process(void)
 {
-	log() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	if(!m_bActive) return false;
 	if(!m_bReadyToProcess) return true;
@@ -909,7 +909,7 @@ boolean CSimulatedBox::process(void)
 /* TODO send this messages with better frequency */
 	if(m_oBenchmarkChronoProcessClock.hasNewEstimation())
 	{
-		log() << LogLevel_Benchmark
+		this->getLogManager() << LogLevel_Benchmark
 			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
 			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "process clock" << LogColor_PopStateBit
 			<< "::" << m_pBox->getName() << "> "
@@ -917,7 +917,7 @@ boolean CSimulatedBox::process(void)
 	}
 	if(m_oBenchmarkChronoProcessInput.hasNewEstimation())
 	{
-		log() << LogLevel_Benchmark
+		this->getLogManager() << LogLevel_Benchmark
 			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
 			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "process input" << LogColor_PopStateBit
 			<< "::" << m_pBox->getName() << "> "
@@ -925,7 +925,7 @@ boolean CSimulatedBox::process(void)
 	}
 	if(m_oBenchmarkChronoProcess.hasNewEstimation())
 	{
-		log() << LogLevel_Benchmark
+		this->getLogManager() << LogLevel_Benchmark
 			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Player" << LogColor_PopStateBit
 			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "process      " << LogColor_PopStateBit
 			<< "::" << m_pBox->getName() << "> "
@@ -1152,15 +1152,15 @@ void CSimulatedBox::handleCrash(const char* sHintName)
 {
 	m_ui32CrashCount++;
 
-	log() << LogLevel_Error << "Plugin code caused crash " << m_ui32CrashCount << " time(s)\n";
-	log() << LogLevel_Error << "  [name:" << m_pBox->getName() << "]\n";
-	log() << LogLevel_Error << "  [identifier:" << m_pBox->getIdentifier() << "]\n";
-	log() << LogLevel_Error << "  [algorithm class identifier:" << m_pBox->getAlgorithmClassIdentifier() << "]\n";
-	log() << LogLevel_Error << "  [place:" << sHintName << "]\n";
+	this->getLogManager() << LogLevel_Error << "Plugin code caused crash " << m_ui32CrashCount << " time(s)\n";
+	this->getLogManager() << LogLevel_Error << "  [name:" << m_pBox->getName() << "]\n";
+	this->getLogManager() << LogLevel_Error << "  [identifier:" << m_pBox->getIdentifier() << "]\n";
+	this->getLogManager() << LogLevel_Error << "  [algorithm class identifier:" << m_pBox->getAlgorithmClassIdentifier() << "]\n";
+	this->getLogManager() << LogLevel_Error << "  [place:" << sHintName << "]\n";
 
 	if(m_ui32CrashCount>=_MaxCrash_)
 	{
-		log () << LogLevel_Fatal << "  This plugin has been disabled !\n";
+		this->getLogManager() << LogLevel_Fatal << "  This plugin has been disabled !\n";
 		m_bActive=false;
 	}
 }

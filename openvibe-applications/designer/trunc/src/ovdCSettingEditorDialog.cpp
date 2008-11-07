@@ -13,8 +13,8 @@ static void type_changed_cb(::GtkComboBox* pWidget, gpointer pUserData)
 	static_cast<CSettingEditorDialog*>(pUserData)->typeChangedCB();
 }
 
-CSettingEditorDialog::CSettingEditorDialog(IKernel& rKernel, IBox& rBox, uint32 ui32SettingIndex, const char* sGUIFilename)
-	:m_rKernel(rKernel)
+CSettingEditorDialog::CSettingEditorDialog(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32SettingIndex, const char* sGUIFilename)
+	:m_rKernelContext(rKernelContext)
 	,m_rBox(rBox)
 	,m_ui32SettingIndex(ui32SettingIndex)
 	,m_sGUIFilename(sGUIFilename)
@@ -47,16 +47,16 @@ boolean CSettingEditorDialog::run(void)
 
 	CIdentifier l_oCurrentTypeIdentifier;
 	gint l_iActive=-1;
-	while((l_oCurrentTypeIdentifier=m_rKernel.getContext()->getTypeManager().getNextTypeIdentifier(l_oCurrentTypeIdentifier))!=OV_UndefinedIdentifier)
+	while((l_oCurrentTypeIdentifier=m_rKernelContext.getTypeManager().getNextTypeIdentifier(l_oCurrentTypeIdentifier))!=OV_UndefinedIdentifier)
 	{
-		if(!m_rKernel.getContext()->getTypeManager().isStream(l_oCurrentTypeIdentifier))
+		if(!m_rKernelContext.getTypeManager().isStream(l_oCurrentTypeIdentifier))
 		{
-			gtk_combo_box_append_text(GTK_COMBO_BOX(m_pType), m_rKernel.getContext()->getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString());
+			gtk_combo_box_append_text(GTK_COMBO_BOX(m_pType), m_rKernelContext.getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString());
 			if(l_oCurrentTypeIdentifier==l_oSettingType)
 			{
 				l_iActive=m_vSettingTypes.size();
 			}
-			m_vSettingTypes[m_rKernel.getContext()->getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString()]=l_oCurrentTypeIdentifier;
+			m_vSettingTypes[m_rKernelContext.getTypeManager().getTypeName(l_oCurrentTypeIdentifier).toASCIIString()]=l_oCurrentTypeIdentifier;
 		}
 	}
 
@@ -79,7 +79,7 @@ boolean CSettingEditorDialog::run(void)
 			if(l_sActiveText)
 			{
 				CIdentifier l_oSettingType=m_vSettingTypes[l_sActiveText];
-				CSettingCollectionHelper l_oHelper(m_rKernel, m_sGUIFilename.toASCIIString());
+				CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUIFilename.toASCIIString());
 				m_rBox.setSettingName(m_ui32SettingIndex, gtk_entry_get_text(GTK_ENTRY(l_pName)));
 				m_rBox.setSettingType(m_ui32SettingIndex, l_oSettingType);
 				m_rBox.setSettingValue(m_ui32SettingIndex, l_oHelper.getValue(l_oSettingType, m_pDefaultValue));
@@ -102,7 +102,7 @@ boolean CSettingEditorDialog::run(void)
 
 void CSettingEditorDialog::typeChangedCB(void)
 {
-	CSettingCollectionHelper l_oHelper(m_rKernel, m_sGUIFilename.toASCIIString());
+	CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUIFilename.toASCIIString());
 
 	CIdentifier l_oSettingType=m_vSettingTypes[gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pType))];
 

@@ -44,7 +44,7 @@ boolean CTypeManager::registerType(
 		return false;
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
-	log() << LogLevel_Trace << "Registered type id " << rTypeIdentifier << " - " << sTypeName << "\n";
+	this->getLogManager() << LogLevel_Trace << "Registered type id " << rTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 
@@ -63,7 +63,7 @@ boolean CTypeManager::registerStreamType(
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
 	m_vStream[rTypeIdentifier]=rParentTypeIdentifier;
-	log() << LogLevel_Trace << "Registered stream type id " << rTypeIdentifier << "::" << rParentTypeIdentifier << " - " << sTypeName << "\n";
+	this->getLogManager() << LogLevel_Trace << "Registered stream type id " << rTypeIdentifier << "::" << rParentTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 
@@ -77,7 +77,7 @@ boolean CTypeManager::registerEnumerationType(
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
 	m_vEnumeration[rTypeIdentifier];
-	log() << LogLevel_Trace << "Registered enumeration type id " << rTypeIdentifier << " - " << sTypeName << "\n";
+	this->getLogManager() << LogLevel_Trace << "Registered enumeration type id " << rTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 
@@ -110,7 +110,7 @@ boolean CTypeManager::registerBitMaskType(
 	}
 	m_vName[rTypeIdentifier]=sTypeName;
 	m_vBitMask[rTypeIdentifier];
-	log() << LogLevel_Trace << "Registered bitmask type id " << rTypeIdentifier << " - " << sTypeName << "\n";
+	this->getLogManager() << LogLevel_Trace << "Registered bitmask type id " << rTypeIdentifier << " - " << sTypeName << "\n";
 	return true;
 }
 
@@ -286,7 +286,7 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 
 	// then looks at the caseless std::string match
 	std::string l_sEntryNameLower=rEntryName.toASCIIString();
-	std::for_each(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), ::to_lower<std::string::value_type>);
+	std::transform(l_sEntryNameLower.begin(), l_sEntryNameLower.end(), l_sEntryNameLower.begin(), ::to_lower<std::string::value_type>);
 	for(itEnumerationEntry=itEnumeration->second.begin(); itEnumerationEntry!=itEnumeration->second.end(); itEnumerationEntry++)
 	{
 		std::string l_sItEntryNameLower=itEnumerationEntry->second.toASCIIString();

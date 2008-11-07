@@ -1,4 +1,4 @@
-#include "ovIKernelLoader.h"
+#include "ovCKernelLoader.h"
 
 #if defined OV_OS_Linux
  #include <dlfcn.h>
@@ -12,8 +12,6 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
-
-#define OV_ClassId_Kernel_KernelLoaderFinal OpenViBE::CIdentifier(0x624A6E5B, 0x52228CEA)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -31,7 +29,7 @@ namespace OpenViBE
 		virtual boolean uninitialize(void);
 		virtual void release(void);
 
-		_IsDerivedFromClass_Final_(IKernelLoader, OV_ClassId_KernelLoaderFinal)
+		_IsDerivedFromClass_Final_(IKernelLoader, OV_UndefinedIdentifier)
 
 		virtual boolean isOpen(void)=0;
 
@@ -149,20 +147,6 @@ namespace OpenViBE
 };
 
 #else
-
-namespace OpenViBE
-{
-	class CKernelLoaderDummy : public CKernelLoaderBase
-	{
-	public:
-		virtual boolean load(const CString& sFileName, CString* pError);
-		virtual boolean unload(CString* pError);
-
-	protected:
-
-		virtual isOpen(void);
-	};
-};
 
 #endif
 
@@ -327,40 +311,48 @@ boolean CKernelLoaderWindows::isOpen(void)
 
 #else
 
-boolean CKernelLoaderDummy::load(
-	const CString& sFileName, 
-	CString* pError)
-{
-	if(pError) *pError="Not implemented for this configuration";
-	return false;
-}
-
-boolean CKernelLoaderDummy::unload(
-	CString* pError)
-{
-	if(pError) *pError="Not implemented for this configuration";
-	return false;
-}
-
-boolean CKernelLoaderDummy::isOpen(void)
-{
-	return false;
-}
-
 #endif
 
 //___________________________________________________________________//
 //                                                                   //
 
-OV_API IKernelLoader* OpenViBE::createKernelLoader(void)
+CKernelLoader::CKernelLoader(void)
+	:m_pKernelLoaderImpl(NULL)
 {
-	IKernelLoader* l_pResult=NULL;
 #if defined OV_OS_Linux
-	l_pResult=new CKernelLoaderLinux();
+	m_pKernelLoaderImpl=new CKernelLoaderLinux();
 #elif defined OV_OS_Windows
-	l_pResult=new CKernelLoaderWindows();
+	m_pKernelLoaderImpl=new CKernelLoaderWindows();
 #else
-	l_pResult=new CKernelLoaderDummy();
 #endif
-	return l_pResult;
+}
+
+CKernelLoader::~CKernelLoader(void)
+{
+	delete m_pKernelLoaderImpl;
+}
+
+boolean CKernelLoader::load(const CString& sFileName, CString* pError)
+{
+	return m_pKernelLoaderImpl?m_pKernelLoaderImpl->load(sFileName, pError):false;
+}
+
+boolean CKernelLoader::unload(CString* pError)
+{
+	return m_pKernelLoaderImpl?m_pKernelLoaderImpl->unload(pError):false;
+}
+
+boolean CKernelLoader::initialize(void)
+{
+	return m_pKernelLoaderImpl?m_pKernelLoaderImpl->initialize():false;
+}
+
+boolean CKernelLoader::getKernelDesc(IKernelDesc*& rpKernelDesc)
+{
+	return m_pKernelLoaderImpl?m_pKernelLoaderImpl->getKernelDesc(rpKernelDesc):false;
+}
+
+boolean CKernelLoader::uninitialize(void)
+{
+	return m_pKernelLoaderImpl?m_pKernelLoaderImpl->uninitialize():false;
 }

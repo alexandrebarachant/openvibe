@@ -19,7 +19,7 @@ namespace OpenViBEDesigner
 	{
 		public:
 
-		CInterfacedScenario(OpenViBE::Kernel::IKernel& rKernel, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier,
+		CInterfacedScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier,
 			::GtkNotebook& rNotebook, const char* sGUIFilename);
 		virtual ~CInterfacedScenario(void);
 
@@ -39,18 +39,23 @@ namespace OpenViBEDesigner
 		void scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidget, ::GdkEventKey* pEvent);
 		void scenarioDrawingAreaKeyReleaseEventCB(::GtkWidget* pWidget, ::GdkEventKey* pEvent);
 
-		void contextMenuRenameCB(OpenViBE::Kernel::IBox& rBox);
-		void contextMenuAddInputCB(OpenViBE::Kernel::IBox& rBox);
-		void contextMenuEditInputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
-		void contextMenuRemoveInputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
-		void contextMenuAddOutputCB(OpenViBE::Kernel::IBox& rBox);
-		void contextMenuEditOutputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
-		void contextMenuRemoveOutputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
-		void contextMenuAddSettingCB(OpenViBE::Kernel::IBox& rBox);
-		void contextMenuEditSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
-		void contextMenuRemoveSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
-		void contextMenuConfigureCB(OpenViBE::Kernel::IBox& rBox);
-		void contextMenuAboutCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuSelectionCopyCB(void);
+		void contextMenuSelectionCutCB(void);
+		void contextMenuSelectionPasteCB(void);
+
+		void contextMenuBoxRenameCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxDeleteCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxAddInputCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxEditInputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
+		void contextMenuBoxRemoveInputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
+		void contextMenuBoxAddOutputCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxEditOutputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
+		void contextMenuBoxRemoveOutputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
+		void contextMenuBoxAddSettingCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxEditSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
+		void contextMenuBoxRemoveSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
+		void contextMenuBoxConfigureCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxAboutCB(OpenViBE::Kernel::IBox& rBox);
 
 		void toggleDesignerVisualisation();
 		OpenViBE::boolean isDesignerVisualisationToggled();
@@ -60,6 +65,9 @@ namespace OpenViBEDesigner
 
 		void createPlayerVisualisation(void);
 		void releasePlayerVisualisation(void);
+
+		OpenViBE::boolean hasSelection(void);
+		void deleteSelection(void);
 
 	private:
 
@@ -71,7 +79,7 @@ namespace OpenViBEDesigner
 		OpenViBE::CIdentifier m_oPlayerIdentifier;
 		OpenViBE::CIdentifier m_oVisualisationTreeIdentifier;
 		OpenViBE::CIdentifier m_oExporterIdentifier;
-		OpenViBE::Kernel::IKernel& m_rKernel;
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::Kernel::IScenario& m_rScenario;
 		OpenViBE::Kernel::IPlayer* m_pPlayer;
 		OpenViBE::uint64 m_ui64LastLoopTime;

@@ -94,7 +94,7 @@ boolean CBox::setAlgorithmClassIdentifier(
 
 	if(!getKernelContext().getPluginManager().canCreatePluginObject(rAlgorithmClassIdentifier))
 	{
-		log() << LogLevel_Warning << "Algorithm descriptor not found\n";
+		this->getLogManager() << LogLevel_Warning << "Algorithm descriptor not found\n";
 
 		return false;
 	}
@@ -145,7 +145,7 @@ boolean CBox::initializeFromAlgorithmClassIdentifier(
 	const IBoxAlgorithmDesc* l_pBoxAlgorithmDesc=dynamic_cast<const IBoxAlgorithmDesc*>(getKernelContext().getPluginManager().getPluginObjectDescCreating(rAlgorithmClassIdentifier));
 	if(!l_pBoxAlgorithmDesc)
 	{
-		log() << LogLevel_Warning << "Algorithm descriptor not found\n";
+		this->getLogManager() << LogLevel_Warning << "Algorithm descriptor not found\n";
 
 		this->enableNotification();
 

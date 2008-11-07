@@ -9,14 +9,14 @@ namespace OpenViBEDesigner
 	{
 	public:
 
-		CAboutPluginDialog(const OpenViBE::Kernel::IKernel& rKernel, const OpenViBE::CIdentifier& rPluginClassIdentifier, const char* sGUIFilename);
+		CAboutPluginDialog(const OpenViBE::Kernel::IKernelContext& rKernelContext, const OpenViBE::CIdentifier& rPluginClassIdentifier, const char* sGUIFilename);
 		virtual ~CAboutPluginDialog(void);
 
 		OpenViBE::boolean run(void);
 
 	protected:
 
-		const OpenViBE::Kernel::IKernel& m_rKernel;
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::CIdentifier m_oPluginClassIdentifier;
 		OpenViBE::CString m_sGUIFilename;
 

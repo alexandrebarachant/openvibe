@@ -169,11 +169,11 @@ CScheduler::~CScheduler(void)
 boolean CScheduler::setScenario(
 	const CIdentifier& rScenarioIdentifier)
 {
-	log() << LogLevel_Trace << "Scheduler setScenario\n";
+	this->getLogManager() << LogLevel_Trace << "Scheduler setScenario\n";
 
 	if(m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to configure an intialized scheduler !\n";
+		this->getLogManager() << LogLevel_Warning << "Trying to configure an intialized scheduler !\n";
 		return false;
 	}
 
@@ -185,11 +185,11 @@ boolean CScheduler::setScenario(
 boolean CScheduler::setFrequency(
 	const uint64 ui64Frequency)
 {
-	log() << LogLevel_Trace << "Scheduler setFrequency\n";
+	this->getLogManager() << LogLevel_Trace << "Scheduler setFrequency\n";
 
 	if(m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to configure an intialized scheduler !\n";
+		this->getLogManager() << LogLevel_Warning << "Trying to configure an intialized scheduler !\n";
 		return false;
 	}
 
@@ -202,11 +202,11 @@ boolean CScheduler::setFrequency(
 
 boolean CScheduler::initialize(void)
 {
-	log() << LogLevel_Trace << "Scheduler initialize\n";
+	this->getLogManager() << LogLevel_Trace << "Scheduler initialize\n";
 
 	if(m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to initialize an intialized scheduler !\n";
+		this->getLogManager() << LogLevel_Warning << "Trying to initialize an intialized scheduler !\n";
 		return false;
 	}
 
@@ -219,7 +219,7 @@ boolean CScheduler::initialize(void)
 	m_pScenario=&getScenarioManager().getScenario(l_oNewScenarioIdentifier);
 	if(!m_pScenario)
 	{
-		log() << LogLevel_ImportantWarning << "Scenario " << l_oNewScenarioIdentifier << " does not exist !\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Scenario " << l_oNewScenarioIdentifier << " does not exist !\n";
 		return false;
 	}
 
@@ -256,11 +256,11 @@ boolean CScheduler::initialize(void)
 
 boolean CScheduler::uninitialize(void)
 {
-	log() << LogLevel_Trace << "Scheduler uninitialize\n";
+	this->getLogManager() << LogLevel_Trace << "Scheduler uninitialize\n";
 
 	if(!m_bIsInitialized)
 	{
-		log() << LogLevel_Warning << "Trying to uninitialize an uninitialized player !\n";
+		this->getLogManager() << LogLevel_Warning << "Trying to uninitialize an uninitialized player !\n";
 		return false;
 	}
 
@@ -339,7 +339,7 @@ boolean CScheduler::loop(void)
 
 	if((m_ui64Steps%m_ui64Frequency)==0)
 	{
-		log() << LogLevel_Debug
+		this->getLogManager() << LogLevel_Debug
 			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Scheduler" << LogColor_PopStateBit
 			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "elapsed time" << LogColor_PopStateBit << "> "
 			<< m_ui64Steps/m_ui64Frequency << "s\n";
@@ -347,7 +347,7 @@ boolean CScheduler::loop(void)
 
 	if(m_oBenchmarkChrono.hasNewEstimation())
 	{
-		log() << LogLevel_Benchmark
+		this->getLogManager() << LogLevel_Benchmark
 			<< "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Scheduler" << LogColor_PopStateBit
 			<< "::" << LogColor_PushStateBit << LogColor_ForegroundBlue << "processor use" << LogColor_PopStateBit << "> "
 			<< m_oBenchmarkChrono.getStepInPercentage() << "%\n";

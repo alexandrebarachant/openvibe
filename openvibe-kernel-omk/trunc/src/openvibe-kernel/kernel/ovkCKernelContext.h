@@ -7,11 +7,14 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
+		class CLogListenerConsole;
+		class CLogListenerFile;
+
 		class CKernelContext : public OpenViBE::Kernel::IKernelContext
 		{
 		public:
 
-			CKernelContext(OpenViBE::Kernel::IKernel& rKernel);
+			CKernelContext(const OpenViBE::CString& rApplicationName, const OpenViBE::CString& rConfigurationFile);
 			virtual ~CKernelContext(void);
 
 			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) const;
@@ -28,7 +31,10 @@ namespace OpenViBE
 
 		protected:
 
-			OpenViBE::Kernel::IKernel& m_rKernel;
+			virtual OpenViBE::Kernel::ELogLevel earlyGetLogLevel(const OpenViBE::CString& rLogLevelName, OpenViBE::Kernel::ELogLevel eFallback);
+
+		protected:
+
 			mutable OpenViBE::Kernel::IAlgorithmManager* m_pAlgorithmManager;
 			mutable OpenViBE::Kernel::IConfigurationManager* m_pConfigurationManager;
 			mutable OpenViBE::Kernel::IKernelObjectFactory* m_pKernelObjectFactory;
@@ -39,10 +45,12 @@ namespace OpenViBE
 			mutable OpenViBE::Kernel::ILogManager* m_pLogManager;
 			mutable OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManager;
 
+			OpenViBE::Kernel::CLogListenerConsole* m_pLogListenerConsole;
+			OpenViBE::Kernel::CLogListenerFile* m_pLogListenerFile;
+
 		private:
 
 			CKernelContext(void);
-
 		};
 	};
 };

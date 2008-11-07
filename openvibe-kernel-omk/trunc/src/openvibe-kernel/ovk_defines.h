@@ -15,7 +15,6 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#define OVK_ClassId_Kernel_Kernel                             OpenViBE::CIdentifier(0x02F2D050, 0x25CD9EE5)
 #define OVK_ClassId_Kernel_KernelObjectT                      OpenViBE::CIdentifier(0x672AE465, 0x60CB46D8)
 #define OVK_ClassId_Kernel_KernelObjectFactory                OpenViBE::CIdentifier(0x7D380DFA, 0x1B33AE2F)
 #define OVK_ClassId_Kernel_KernelContext                      OpenViBE::CIdentifier(0x72D4050C, 0x543DDAD8)

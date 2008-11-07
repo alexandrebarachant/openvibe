@@ -7,15 +7,16 @@ using namespace OpenViBE::Kernel;
 using namespace std;
 
 #define _do_stuff_on_file_(f, wm, stuff) \
-	FILE* f=fopen("openvibe.log", wm); \
+	FILE* f=fopen(m_sLogFilename.toASCIIString(), wm); \
 	if(f) \
 	{ \
 		stuff; \
 		fclose(f); \
 	}
 
-CLogListenerFile::CLogListenerFile(const IKernelContext& rKernelContext)
+CLogListenerFile::CLogListenerFile(const IKernelContext& rKernelContext, const CString& sLogFilename)
 	:TKernelObject<ILogListener>(rKernelContext)
+	,m_sLogFilename(sLogFilename)
 {
 	_do_stuff_on_file_(l_pFile, "wt", );
 }
@@ -34,6 +35,20 @@ boolean CLogListenerFile::activate(ELogLevel eLogLevel, boolean bActive)
 {
 	m_vActiveLevel[eLogLevel]=bActive;
 	return true;
+}
+
+boolean CLogListenerFile::activate(ELogLevel eStartLogLevel, ELogLevel eEndLogLevel, boolean bActive)
+{
+	for(int i=eStartLogLevel; i<=eEndLogLevel; i++)
+	{
+		m_vActiveLevel[ELogLevel(i)]=bActive;
+	}
+	return true;
+}
+
+boolean CLogListenerFile::activate(boolean bActive)
+{
+	return activate(LogLevel_First, LogLevel_Last, bActive);
 }
 
 void CLogListenerFile::log(const uint64 ui64Value)

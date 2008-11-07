@@ -1,4 +1,4 @@
-#include "kernel/ovkCKernel.h"
+#include "kernel/ovkCKernelContext.h"
 
 #include <openvibe/ov_all.h>
 
@@ -13,19 +13,22 @@ namespace OpenViBE
 		{
 		public:
 
-			virtual void release(void) { }
-
-			virtual IKernel* create(void)
+			virtual IKernelContext* createKernel(const CString& rApplicationName, const CString& rConfigurationFilename)
 			{
-				return new CKernel();
+				return new CKernelContext(rApplicationName, rConfigurationFilename);
 			}
 
-			virtual CString getName(void)                { return CString("OpenViBE Kernel Implementation [Based on OpenMASK]"); }
+			virtual void releaseKernel(IKernelContext* pKernelContext)
+			{
+				delete pKernelContext;
+			}
+
+			virtual CString getName(void)                { return CString("OpenViBE Kernel Implementation"); }
 			virtual CString getAuthorName(void)          { return CString("Yann Renard"); }
 			virtual CString getAuthorCompanyName(void)   { return CString("INRIA/IRISA"); }
-			virtual CString getShortDescription(void)    { return CString("OpenViBE Kernel Implementation [Based on OpenMASK]"); }
-			virtual CString getDetailedDescription(void) { return CString("OpenViBE Kernel Implementation [Based on OpenMASK]"); }
-			virtual CString getVersion(void)             { return CString("0.3"); }
+			virtual CString getShortDescription(void)    { return CString("OpenViBE Kernel Implementation"); }
+			virtual CString getDetailedDescription(void) { return CString("OpenViBE Kernel Implementation"); }
+			virtual CString getVersion(void)             { return CString("0.5"); }
 
 			_IsDerivedFromClass_Final_(IKernelDesc, OVK_ClassId_KernelDesc);
 		};

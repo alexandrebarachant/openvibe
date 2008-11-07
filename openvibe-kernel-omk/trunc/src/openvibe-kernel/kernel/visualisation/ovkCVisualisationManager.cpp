@@ -34,26 +34,26 @@ CVisualisationManager::~CVisualisationManager()
 	delete m_pOgreVisualisation;
 }
 
-boolean CVisualisationManager::initialize3DContext(const CNameValuePairList& rNameValuePairList)
+boolean CVisualisationManager::initialize3DContext(void)
 {
 	try
 	{
 		//initialize Ogre
 		//---------------
 		m_pOgreVisualisation = new COgreVisualisation(getKernelContext());
-		if(m_pOgreVisualisation->initializeOgre(rNameValuePairList) == true)			
+		if(m_pOgreVisualisation->initializeOgre() == true)
 		{
-			log() << LogLevel_Trace << "Initialized Ogre\n";
+			this->getLogManager() << LogLevel_Trace << "Initialized Ogre\n";
 		}
 		else
 		{
-			log() << LogLevel_Trace << "Failed to initialize Ogre\n";				
+			this->getLogManager() << LogLevel_Trace << "Failed to initialize Ogre\n";
 			return false;
 		}
 	}
 	catch(std::exception& e)
 	{
-		log()
+		this->getLogManager()
 			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to initialize Ogre : " << e.what() << "\n";
 		return false;
@@ -61,7 +61,7 @@ boolean CVisualisationManager::initialize3DContext(const CNameValuePairList& rNa
 
 	try
 	{
-		log() << LogLevel_Info << "Creating primary render window\n";
+		this->getLogManager() << LogLevel_Info << "Creating primary render window\n";
 		//create primary render window
 		//----------------------------
 		//create custom Gtk widget
@@ -73,11 +73,11 @@ boolean CVisualisationManager::initialize3DContext(const CNameValuePairList& rNa
 		gtk_widget_show_all(m_pPrimaryRenderWindowWidget);
 		//hide window from now on
 		gtk_widget_hide_all(m_pPrimaryRenderWindowWidget);
-		log() << LogLevel_Info << "Created primary render window\n";
+		this->getLogManager() << LogLevel_Info << "Created primary render window\n";
 	}
 	catch(std::exception& e)
 	{
-		log()
+		this->getLogManager()
 			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to create primary render window : " << e.what() << "\n";
 		return false;
@@ -185,11 +185,11 @@ boolean CVisualisationManager::handleRealizeEvent(GtkWidget* pOVCustomWidget)
 			l_sExternalHandle,
 			pOVCustomWidget->allocation.width,
 			pOVCustomWidget->allocation.height);
-		log() << LogLevel_Trace << "Ogre render window created\n";
+		this->getLogManager() << LogLevel_Trace << "Ogre render window created\n";
 	}
 	catch(std::exception& e)
 	{
-		log()
+		this->getLogManager()
 			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Primary render window couldn't be created : " << e.what() << "\n";
 	}
@@ -198,11 +198,11 @@ boolean CVisualisationManager::handleRealizeEvent(GtkWidget* pOVCustomWidget)
 	try
 	{
 		m_pOgreVisualisation->initializeResources();
-		log() << LogLevel_Trace << "Ogre resources initialized\n";
+		this->getLogManager() << LogLevel_Trace << "Ogre resources initialized\n";
 	}
 	catch(std::exception& e)
 	{
-		log()
+		this->getLogManager()
 			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Ogre resources initialisation failure : " << e.what() << "\n";
 	}
@@ -243,7 +243,7 @@ IVisualisationTree& CVisualisationManager::getVisualisationTree(const CIdentifie
 	map<CIdentifier, IVisualisationTree*>::const_iterator it = m_vVisualisationTree.find(rVisualisationTreeIdentifier);
 	if(it == m_vVisualisationTree.end())
 	{
-		log() << LogLevel_Fatal << "Visualisation Tree " << rVisualisationTreeIdentifier << " does not exist !\n";
+		this->getLogManager() << LogLevel_Fatal << "Visualisation Tree " << rVisualisationTreeIdentifier << " does not exist !\n";
 	}
 	return *it->second;
 }
