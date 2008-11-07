@@ -1,56 +1,18 @@
-#include "ovasCHeaderConfiguratorGlade.h"
-#include "ovasIHeaderConfigurator.h"
+#include "ovasCConfigurationGlade.h"
 #include "ovasIHeader.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
-#include <gtk/gtk.h>
-
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <list>
-#include <map>
+
+#define OVAS_ElectrodeNames_File           "../share/openvibe-applications/acquisition-server/electrode-names.txt"
+#define OVAS_ConfigureGUIElectrodes_File   "../share/openvibe-applications/acquisition-server/interface-channel-names.glade"
 
 using namespace OpenViBEAcquisitionServer;
+using namespace OpenViBE;
 using namespace std;
-
-namespace OpenViBEAcquisitionServer
-{
-	class CHeaderConfigurator : public OpenViBEAcquisitionServer::IHeaderConfigurator
-	{
-	public:
-
-		CHeaderConfigurator(const char* sGladeXMLFileName, const char* sElectrodesFileName, const char* sGladeXMLChannelsFileName);
-		virtual ~CHeaderConfigurator(void);
-		virtual void release(void);
-
-		virtual OpenViBEAcquisitionServer::boolean configure(
-			OpenViBEAcquisitionServer::IHeader& rHeader);
-
-		virtual void buttonChangeChannelNamesCB(::GtkButton* pButton);
-		virtual void buttonApplyChannelNameCB(::GtkButton* pButton);
-		virtual void buttonRemoveChannelNameCB(::GtkButton* pButton);
-
-	private:
-
-		CHeaderConfigurator(void);
-
-	protected:
-
-		::GladeXML* m_pGladeConfigureInterface;
-		::GladeXML* m_pGladeConfigureChannelInterface;
-		::GtkListStore* m_pElectrodeNameListStore;
-		::GtkListStore* m_pChannelNameListStore;
-
-		map<uint32, string> m_vChannelName;
-		string m_sGladeXMLFileName;
-		string m_sElectrodeFileName;
-		string m_sGladeXMLChannelsFileName;
-		IHeader* m_pHeader;
-	};
-};
 
 //___________________________________________________________________//
 //                                                                   //
@@ -85,7 +47,7 @@ static void button_change_channel_names_cb(::GtkButton* pButton, void* pUserData
 #if defined _DEBUG_Callbacks_
 	cout << "button_change_channel_names_cb" << endl;
 #endif
-	static_cast<CHeaderConfigurator*>(pUserData)->buttonChangeChannelNamesCB(pButton);
+	static_cast<CConfigurationGlade*>(pUserData)->buttonChangeChannelNamesCB(pButton);
 }
 
 static void button_apply_channel_name_cb(::GtkButton* pButton, void* pUserData)
@@ -93,7 +55,7 @@ static void button_apply_channel_name_cb(::GtkButton* pButton, void* pUserData)
 #if defined _DEBUG_Callbacks_
 	cout << "button_apply_channel_name_cb" << endl;
 #endif
-	static_cast<CHeaderConfigurator*>(pUserData)->buttonApplyChannelNameCB(pButton);
+	static_cast<CConfigurationGlade*>(pUserData)->buttonApplyChannelNameCB(pButton);
 }
 
 static void button_remove_channel_name_cb(::GtkButton* pButton, void* pUserData)
@@ -101,56 +63,66 @@ static void button_remove_channel_name_cb(::GtkButton* pButton, void* pUserData)
 #if defined _DEBUG_Callbacks_
 	cout << "button_remove_channel_name_cb" << endl;
 #endif
-	static_cast<CHeaderConfigurator*>(pUserData)->buttonRemoveChannelNameCB(pButton);
+	static_cast<CConfigurationGlade*>(pUserData)->buttonRemoveChannelNameCB(pButton);
 }
 
 //___________________________________________________________________//
 //                                                                   //
 
-CHeaderConfigurator::CHeaderConfigurator(const char* sGladeXMLFileName, const char* sElectrodesFileName, const char* sGladeXMLChannelsFileName)
+CConfigurationGlade::CConfigurationGlade(const char* sGladeXMLFileName)
 	:m_pGladeConfigureInterface(NULL)
 	,m_pElectrodeNameListStore(NULL)
 	,m_pChannelNameListStore(NULL)
-	,m_sGladeXMLFileName(sGladeXMLFileName)
-	,m_sElectrodeFileName(sElectrodesFileName)
-	,m_sGladeXMLChannelsFileName(sGladeXMLChannelsFileName?sGladeXMLChannelsFileName:sGladeXMLFileName)
+	,m_sGladeXMLFileName(sGladeXMLFileName?sGladeXMLFileName:"")
+	,m_sElectrodeFileName(OVAS_ElectrodeNames_File)
+	,m_sGladeXMLChannelsFileName(OVAS_ConfigureGUIElectrodes_File)
 	,m_pHeader(NULL)
 {
 }
 
-CHeaderConfigurator::~CHeaderConfigurator(void)
+CConfigurationGlade::~CConfigurationGlade(void)
 {
-}
-
-void CHeaderConfigurator::release(void)
-{
-	delete this;
-}
-
-IHeaderConfigurator* OpenViBEAcquisitionServer::createHeaderConfiguratorGlade(const char* sGladeXMLFileName, const char* sElectrodesFileName, const char* sGladeXMLChannelsFileName)
-{
-	if(sGladeXMLFileName==NULL || sElectrodesFileName==NULL)
-	{
-		return NULL;
-	}
-	return new CHeaderConfigurator(sGladeXMLFileName, sElectrodesFileName, sGladeXMLChannelsFileName);
 }
 
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CHeaderConfigurator::configure(IHeader& rHeader)
+boolean CConfigurationGlade::configure(IHeader& rHeader)
 {
-	m_pHeader=&rHeader;
+	m_bApplyConfiguration=false;
 
+	m_pHeader=&rHeader;
+	this->preConfigure();
+	m_bApplyConfiguration=this->doConfigure();
+	this->postConfigure();
+	m_pHeader=NULL;
+
+	return m_bApplyConfiguration;
+}
+
+boolean CConfigurationGlade::preConfigure(void)
+{
 	// Prepares interface
 
 	m_pGladeConfigureInterface=glade_xml_new(m_sGladeXMLFileName.c_str(), NULL, NULL);
 	m_pGladeConfigureChannelInterface=glade_xml_new(m_sGladeXMLChannelsFileName.c_str(), NULL, NULL);
 
+	// Finds all the widgets
+
+	m_pDialog=glade_xml_get_widget(m_pGladeConfigureInterface, "openvibe-acquisition-server-settings");
+
+	m_pIdentifier=glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_identifier");
+	m_pAge=glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_age");
+	m_pNumberOfChannels=glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_number_of_channels");
+	m_pSamplingFrequency=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sampling_frequency");
+	m_pSex=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sex");
+
+	m_pElectrodeNameTreeView=glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names");
+	m_pChannelNameTreeView=glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names");
+
 	// Prepares electrode name tree view
 
-	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names"));
+	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(m_pElectrodeNameTreeView);
 	::GtkCellRenderer* l_pElectrodeNameIndexCellRenderer=gtk_cell_renderer_text_new();
 	::GtkTreeViewColumn* l_pElectrodeNameIndexTreeViewColumn=gtk_tree_view_column_new_with_attributes("Name", l_pElectrodeNameIndexCellRenderer, "text", 0, NULL);
 
@@ -158,7 +130,7 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 
 	// Prepares channel name tree view
 
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(m_pChannelNameTreeView);
 	::GtkCellRenderer* l_pChannelNameIndexCellRenderer=gtk_cell_renderer_text_new();
 	::GtkCellRenderer* l_pChannelNameValueCellRenderer=gtk_cell_renderer_text_new();
 	::GtkTreeViewColumn* l_pChannelNameIndexTreeViewColumn=gtk_tree_view_column_new_with_attributes("Index", l_pChannelNameIndexCellRenderer, "text", 0, NULL);
@@ -180,19 +152,19 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 	if(m_pHeader->isExperimentIdentifierSet())
 	{
 		gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_identifier")),
+			GTK_SPIN_BUTTON(m_pIdentifier),
 			m_pHeader->getExperimentIdentifier());
 	}
 	if(m_pHeader->isSubjectAgeSet())
 	{
 		gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_age")),
+			GTK_SPIN_BUTTON(m_pAge),
 			m_pHeader->getSubjectAge());
 	}
 	if(m_pHeader->isChannelCountSet())
 	{
 		gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_number_of_channels")),
+			GTK_SPIN_BUTTON(m_pNumberOfChannels),
 			m_pHeader->getChannelCount());
 		for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
 		{
@@ -204,19 +176,19 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 		char l_sSamplingFrequency[1024];
 		sprintf(l_sSamplingFrequency, "%i", (int)m_pHeader->getSamplingFrequency());
 		gtk_combo_box_set_active_text(
-			GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sampling_frequency")),
+			GTK_COMBO_BOX(m_pSamplingFrequency),
 			l_sSamplingFrequency);
 	}
 	else
 	{
 		gtk_combo_box_set_active(
-			GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sampling_frequency")),
+			GTK_COMBO_BOX(m_pSamplingFrequency),
 			0);
 	}
 	if(m_pHeader->isSubjectSexSet())
 	{
 		gtk_combo_box_set_active_text(
-			GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sex")),
+			GTK_COMBO_BOX(m_pSex),
 				m_pHeader->getSubjectSex()==OVTK_Value_Sex_Male?"male":
 				m_pHeader->getSubjectSex()==OVTK_Value_Sex_Female?"female":
 				m_pHeader->getSubjectSex()==OVTK_Value_Sex_Unknown?"unknown":
@@ -225,20 +197,27 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 	else
 	{
 		gtk_combo_box_set_active(
-			GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sex")),
+			GTK_COMBO_BOX(m_pSex),
 			0);
 	}
 
-	// Runs the dialog !
+	return true;
+}
 
-	::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureInterface, "openvibe-acquisition-server-settings"));
-	if(gtk_dialog_run(l_pDialog)==GTK_RESPONSE_APPLY)
+boolean CConfigurationGlade::doConfigure(void)
+{
+	return gtk_dialog_run(GTK_DIALOG(m_pDialog))==GTK_RESPONSE_APPLY;
+}
+
+boolean CConfigurationGlade::postConfigure(void)
+{
+	if(m_bApplyConfiguration)
 	{
-		string l_sSex=gtk_combo_box_get_active_text(GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sex")));
-		m_pHeader->setExperimentIdentifier(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_identifier"))));
-		m_pHeader->setSubjectAge(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_age"))));
-		m_pHeader->setChannelCount(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_number_of_channels"))));
-		m_pHeader->setSamplingFrequency(atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sampling_frequency")))));
+		string l_sSex=gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pSex));
+		m_pHeader->setExperimentIdentifier(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pIdentifier)));
+		m_pHeader->setSubjectAge(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pAge)));
+		m_pHeader->setChannelCount(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pNumberOfChannels)));
+		m_pHeader->setSamplingFrequency(atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pSamplingFrequency))));
 		m_pHeader->setSubjectSex(
 			l_sSex=="male"?OVTK_Value_Sex_Male:
 			l_sSex=="female"?OVTK_Value_Sex_Female:
@@ -253,7 +232,7 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 		}
 	}
 
-	gtk_widget_hide(GTK_WIDGET(l_pDialog));
+	gtk_widget_hide(m_pDialog);
 
 	g_object_unref(m_pGladeConfigureInterface);
 	g_object_unref(m_pGladeConfigureChannelInterface);
@@ -262,18 +241,16 @@ boolean CHeaderConfigurator::configure(IHeader& rHeader)
 
 	m_vChannelName.clear();
 
-	m_pHeader=NULL;
-
 	return true;
 }
 
-void CHeaderConfigurator::buttonChangeChannelNamesCB(::GtkButton* pButton)
+void CConfigurationGlade::buttonChangeChannelNamesCB(::GtkButton* pButton)
 {
 	uint32 i;
 	::GtkTreeIter itElectrodeName, itChannelName;
 	::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "channel-names"));
-	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names"));
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
+	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(m_pElectrodeNameTreeView);
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(m_pChannelNameTreeView);
 
 	// Creates electrode name and channel name models
 
@@ -304,7 +281,7 @@ void CHeaderConfigurator::buttonChangeChannelNamesCB(::GtkButton* pButton)
 
 	// Fills in channel name model
 
-	uint32 l_ui32ChannelCount=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_number_of_channels")));
+	uint32 l_ui32ChannelCount=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pNumberOfChannels));
 	for(i=0; i<l_ui32ChannelCount; i++)
 	{
 		char l_sChannelName[1024];
@@ -343,11 +320,11 @@ void CHeaderConfigurator::buttonChangeChannelNamesCB(::GtkButton* pButton)
 	m_pElectrodeNameListStore=NULL;
 }
 
-void CHeaderConfigurator::buttonApplyChannelNameCB(::GtkButton* pButton)
+void CConfigurationGlade::buttonApplyChannelNameCB(::GtkButton* pButton)
 {
 	::GtkTreeIter itElectrodeName, itChannelName;
-	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names"));
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
+	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(m_pElectrodeNameTreeView);
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(m_pChannelNameTreeView);
 
 	::GtkTreeSelection* l_pChannelNameTreeViewSelection=gtk_tree_view_get_selection(l_pChannelNameTreeView);
 	::GtkTreeSelection* l_pElectrodeNameTreeViewSelection=gtk_tree_view_get_selection(l_pElectrodeNameTreeView);
@@ -363,10 +340,10 @@ void CHeaderConfigurator::buttonApplyChannelNameCB(::GtkButton* pButton)
 	}
 }
 
-void CHeaderConfigurator::buttonRemoveChannelNameCB(::GtkButton* pButton)
+void CConfigurationGlade::buttonRemoveChannelNameCB(::GtkButton* pButton)
 {
 	::GtkTreeIter itChannelName;
-	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names"));
+	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(m_pChannelNameTreeView);
 
 	::GtkTreeSelection* l_pChannelNameTreeViewSelection=gtk_tree_view_get_selection(l_pChannelNameTreeView);
 	if(gtk_tree_selection_get_selected(l_pChannelNameTreeViewSelection, NULL, &itChannelName))
