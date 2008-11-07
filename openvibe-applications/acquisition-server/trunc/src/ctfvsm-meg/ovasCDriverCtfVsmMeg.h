@@ -51,7 +51,7 @@ namespace OpenViBEAcquisitionServer
 			int nbCharSubjectName;
 			str32 subjectName;
 			int subjectAge;
-			char subjectSex[1]; /**F: female or M: Male*/
+			char subjectGender[1]; /**F: female or M: Male*/
 
 			int labId;
 			str32 labName;

@@ -42,7 +42,7 @@ typedef struct GUID
 
 namespace OpenViBEAcquisitionServer
 {
-	class CDriverBrainAmpScalpEEG : virtual public OpenViBEAcquisitionServer::IDriver
+	class CDriverBrainAmpScalpEEG : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 

@@ -43,9 +43,29 @@ namespace OpenViBEAcquisitionServer
 		 * ...
 		 * pSample[i*nSamplesPerChannel+j] is channel i sample j
 		 * \endcode
+		 *
+		 * \sa IDriver::loop
 		 */
 		virtual void setSamples(
-			const OpenViBEAcquisitionServer::float32* pSample)=0;
+			const OpenViBE::float32* pSample)=0;
+
+		/**
+		 * \brief Gives a new stimulation set corresponding to the last sample buffer
+		 * \param rStimulationSet [in] : the stimulation set associated with the last sample buffer
+		 *
+		 * This is used by the acquisition server to be notified when the
+		 * driver has finished to build the whole buffer of data to send.
+		 * This function is called by the driver during the \e IDriver::loop
+		 * and immediatly after the IDriverCallback::setSamples function, even
+		 * if the stimulation set is empty.
+		 *
+		 * \warning The stimulation dates are relative to the
+		 *          last buffer start time.
+		 *
+		 * \sa IDriver::loop
+		 */
+		virtual void setStimulationSet(
+			const OpenViBE::IStimulationSet& rStimulationSet)=0;
 
 		/**
 		 * \brief Destructor
@@ -87,17 +107,14 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
+		/**
+		 * \brief Destructor
+		 */
+		virtual ~IDriver(void) { }
+
 		/** \name General purpose functions */
 		//@{
 
-		/**
-		 * \brief Releases this driver
-		 *
-		 * When called, this function should release the driver. It tells
-		 * it won't be used any more in the future and any allocated memory
-		 * should be freed.
-		 */
-		virtual void release(void)=0;
 		/**
 		 * \brief Gets the driver name (usually the hardware name)
 		 * \return the driver name.
@@ -114,7 +131,7 @@ namespace OpenViBEAcquisitionServer
 		 * \return \e false if this driver is not configurable.
 		 * \sa configure
 		 */
-		virtual OpenViBEAcquisitionServer::boolean isConfigurable(void)=0;
+		virtual OpenViBE::boolean isConfigurable(void)=0;
 		/**
 		 * \brief Requests the driver to configure itself
 		 * \return \e true if the configuration ended successfully
@@ -137,7 +154,7 @@ namespace OpenViBEAcquisitionServer
 		 *
 		 * \sa isConfigurable
 		 */
-		virtual OpenViBEAcquisitionServer::boolean configure(void)=0;
+		virtual OpenViBE::boolean configure(void)=0;
 
 		//@}
 		/** \name Initialization / uninitialization */
@@ -164,8 +181,8 @@ namespace OpenViBEAcquisitionServer
 		 * \sa getHeader
 		 * \sa IHeader
 		 */
-		virtual OpenViBEAcquisitionServer::boolean initialize(
-			const OpenViBEAcquisitionServer::uint32 ui32SampleCountPerSentBlock,
+		virtual OpenViBE::boolean initialize(
+			const OpenViBE::uint32 ui32SampleCountPerSentBlock,
 			OpenViBEAcquisitionServer::IDriverCallback& rCallback)=0;
 		/**
 		 * \brief Uninitializes the driver
@@ -177,7 +194,7 @@ namespace OpenViBEAcquisitionServer
 		 * is called, the driver may be re-configured and re-initialized
 		 * to start a new acquisition session.
 		 */
-		virtual OpenViBEAcquisitionServer::boolean uninitialize(void)=0;
+		virtual OpenViBE::boolean uninitialize(void)=0;
 		/**
 		 * \brief Gets the header information for the session
 		 * \return the header information for the session
@@ -209,7 +226,7 @@ namespace OpenViBEAcquisitionServer
 		 * \sa loop
 		 * \sa stop
 		 */
-		virtual OpenViBEAcquisitionServer::boolean start(void)=0;
+		virtual OpenViBE::boolean start(void)=0;
 		/**
 		 * \brief Stops acquisition for this driver
 		 * \return \e true in case of success.
@@ -223,7 +240,7 @@ namespace OpenViBEAcquisitionServer
 		 * \sa start
 		 * \sa loop
 		 */
-		virtual OpenViBEAcquisitionServer::boolean stop(void)=0;
+		virtual OpenViBE::boolean stop(void)=0;
 		/**
 		 * \brief Requests data acquisition to be done
 		 * \return \e true in case of success.
@@ -235,17 +252,21 @@ namespace OpenViBEAcquisitionServer
 		 * according to the requested sampling count per channel (see \c initialize)
 		 * and send this built buffer to the provided callback object. The
 		 * server will then send these informations to the platform.
+		 *
+		 * During this loop function, the object passed as IDriverCallback at
+		 * the initialize phase should be ready to be notified of samples or
+		 * stimulations.
+		 *
+		 * \warning When implementing the driver, one should take care
+		 *         of configuring stimulation dates so that they are relative
+		 *         to the last buffer start time.
+		 *
+		 * \sa IDriverCallback::setSamples
+		 * \sa IDriverCallback::setStimulationSet
 		 */
-		virtual OpenViBEAcquisitionServer::boolean loop(void)=0;
+		virtual OpenViBE::boolean loop(void)=0;
 
 		//@}
-
-	protected:
-
-		/**
-		 * \brief Destructor
-		 */
-		virtual ~IDriver(void) { }
 	};
 };
 

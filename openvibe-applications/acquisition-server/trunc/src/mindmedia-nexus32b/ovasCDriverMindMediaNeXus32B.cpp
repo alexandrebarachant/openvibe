@@ -1,7 +1,5 @@
 #include "ovasCDriverMindMediaNeXus32B.h"
-#include "ovasIHeader.h"
-#include "ovasIHeaderConfigurator.h"
-#include "ovasCHeaderConfiguratorGlade.h"
+#include "../ovasCConfigurationGlade.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -12,37 +10,27 @@
 
 #if defined OVAS_OS_Windows
  #include <windows.h>
- #define boolean OpenViBEAcquisitionServer::boolean
+ #define boolean OpenViBE::boolean
 #endif
 
 using namespace OpenViBEAcquisitionServer;
+using namespace OpenViBE;
 
-#define OVAS_ElectrodeNames_File           "../share/openvibe-applications/acquisition-server/electrode-names.txt"
-#define OVAS_ConfigureGUI_File             "../share/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.glade"
-#define OVAS_ConfigureGUIElectrodes_File   "../share/openvibe-applications/acquisition-server/interface-channel-names.glade"
-#define OVAS_MaxSampleCountJitter 4
+#define OVAS_MaxSampleCountJitter 16
 
 //___________________________________________________________________//
 //                                                                   //
 
 CDriverMindMediaNeXus32B::CDriverMindMediaNeXus32B(void)
 	:m_pCallback(NULL)
-	,m_pHeader(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
 	,m_ui32SampleIndex(0)
 {
-	m_pHeader=createHeader();
-	m_pHeader->setSamplingFrequency(512);
-	m_pHeader->setChannelCount(4);
-}
-
-CDriverMindMediaNeXus32B::~CDriverMindMediaNeXus32B(void)
-{
-	m_pHeader->release();
-	m_pHeader=NULL;
+	m_oHeader.setSamplingFrequency(512);
+	m_oHeader.setChannelCount(4);
 }
 
 void CDriverMindMediaNeXus32B::release(void)
@@ -111,7 +99,7 @@ boolean CDriverMindMediaNeXus32B::initialize(
 	g_fpNeXusDLLInit=(NeXusDLL_Init)GetProcAddress(g_hNeXusDLLInstance, "InitNeXusDevice");
 	g_fpNeXusDLLStart=(NeXusDLL_Start)GetProcAddress(g_hNeXusDLLInstance,"StartNeXusDevice");
 	g_fpNeXusDLLStop=(NeXusDLL_Stop)GetProcAddress(g_hNeXusDLLInstance, "StopNeXusDevice");
-	m_pSample=new float32[m_pHeader->getChannelCount()*ui32SampleCountPerSentBlock*2];
+	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock*2];
 
 	if(!g_fpNeXusDLLInit || !g_fpNeXusDLLStart || !g_fpNeXusDLLStop || !m_pSample)
 	{
@@ -188,7 +176,7 @@ boolean CDriverMindMediaNeXus32B::start(void)
 		return false;
 	}
 
-	::DWORD l_dwSamplingFrequency=::DWORD(m_pHeader->getSamplingFrequency());
+	::DWORD l_dwSamplingFrequency=::DWORD(m_oHeader.getSamplingFrequency());
 	::DWORD l_dwError=g_fpNeXusDLLStart(&l_dwSamplingFrequency);
 	m_bStarted=(l_dwError?false:true);
 
@@ -235,7 +223,7 @@ boolean CDriverMindMediaNeXus32B::loop(void)
 	l_ui32LastElapsedTime=l_ui32ElapsedTime;
 #endif
 
-	if(l_ui32ElapsedTime > (1000*m_ui64SampleCountTotal)/m_pHeader->getSamplingFrequency())
+	if(l_ui32ElapsedTime > (1000*m_ui64SampleCountTotal)/m_oHeader.getSamplingFrequency())
 	{
 		WaitForSingleObject(g_pMutex, INFINITE);
 
@@ -257,7 +245,7 @@ boolean CDriverMindMediaNeXus32B::loop(void)
 		{
 			m_ui64AutoAddedSampleCount+=m_ui32SampleCountPerSentBlock-m_ui32SampleIndex;
 
-			for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+			for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 			{
 				for(uint32 j=m_ui32SampleIndex>0?m_ui32SampleIndex:1; j<m_ui32SampleCountPerSentBlock; j++)
 				{
@@ -284,8 +272,8 @@ boolean CDriverMindMediaNeXus32B::loop(void)
 
 		System::Memory::copy(
 			m_pSample,
-			m_pSample+m_pHeader->getChannelCount()*m_ui32SampleCountPerSentBlock,
-			m_pHeader->getChannelCount()*m_ui32SampleCountPerSentBlock*sizeof(float32));
+			m_pSample+m_oHeader.getChannelCount()*m_ui32SampleCountPerSentBlock,
+			m_oHeader.getChannelCount()*m_ui32SampleCountPerSentBlock*sizeof(float32));
 
 		m_ui32SampleIndex=l_ui32NextSampleIndex;
 
@@ -383,17 +371,8 @@ boolean CDriverMindMediaNeXus32B::configure(void)
 {
 #if defined OVAS_OS_Windows
 
-	boolean l_bResult=false;
-	IHeaderConfigurator* l_pHeaderConfigurator=NULL;
-
-	l_pHeaderConfigurator=createHeaderConfiguratorGlade(OVAS_ConfigureGUI_File, OVAS_ElectrodeNames_File, OVAS_ConfigureGUIElectrodes_File);
-	if(l_pHeaderConfigurator)
-	{
-		l_bResult=l_pHeaderConfigurator->configure(*m_pHeader);
-	}
-	l_pHeaderConfigurator->release();
-
-	return l_bResult;
+	CConfigurationGlade m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.glade");
+	return m_oConfiguration.configure(m_oHeader);
 
 #else
 
@@ -416,10 +395,10 @@ void CDriverMindMediaNeXus32B::processData(
 		uint32 l_ui32BufferIndex=m_ui32SampleIndex/m_ui32SampleCountPerSentBlock;
 		uint32 l_ui32SampleIndex=m_ui32SampleIndex%m_ui32SampleCountPerSentBlock;
 
-		for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+		for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 		{
 			m_pSample[
-				l_ui32BufferIndex*m_ui32SampleCountPerSentBlock*m_pHeader->getChannelCount()+
+				l_ui32BufferIndex*m_ui32SampleCountPerSentBlock*m_oHeader.getChannelCount()+
 				i*m_ui32SampleCountPerSentBlock+l_ui32SampleIndex]=pSample[i];
 		}
 	}

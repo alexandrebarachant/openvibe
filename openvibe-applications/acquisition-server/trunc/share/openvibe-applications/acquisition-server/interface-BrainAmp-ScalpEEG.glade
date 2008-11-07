@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.3 on Wed Jun 18 17:37:00 2008 -->
+<!--Generated with glade3 3.4.3 on Wed Jun 18 17:36:06 2008 -->
 <glade-interface>
   <widget class="GtkDialog" id="openvibe-acquisition-server-settings">
     <property name="border_width">5</property>
@@ -17,10 +17,11 @@
         <child>
           <widget class="GtkLabel" id="label_title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">MindMedia NeXus32B</property>
+            <property name="label" translatable="yes">Brainamp Scalp EEG</property>
             <property name="justify">GTK_JUSTIFY_CENTER</property>
           </widget>
           <packing>
+            <property name="expand">False</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -49,12 +50,27 @@
                     <property name="n_columns">2</property>
                     <property name="homogeneous">True</property>
                     <child>
-                      <widget class="GtkSpinButton" id="spinbutton_number_of_channels">
+                      <widget class="GtkSpinButton" id="spinbutton_host_port">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="adjustment">32 1 1024 1 10 10</property>
+                        <property name="adjustment">1025 0 65535 1 10 10</property>
                         <property name="snap_to_ticks">True</property>
                         <property name="numeric">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">4</property>
+                        <property name="bottom_attach">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkEntry" id="entry_host_name">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="max_length">15</property>
+                        <property name="invisible_char">•</property>
+                        <property name="text" translatable="yes">localhost</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -64,20 +80,23 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkComboBox" id="combobox_sampling_frequency">
+                      <widget class="GtkLabel" id="label_host_port">
                         <property name="visible">True</property>
-                        <property name="items" translatable="yes">128
-256
-512
-1024
-2048
-4096</property>
+                        <property name="label" translatable="yes">Connection host port</property>
                       </widget>
                       <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
                         <property name="top_attach">4</property>
                         <property name="bottom_attach">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_host_name">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Connection host name</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
                       </packing>
                     </child>
                     <child>
@@ -113,30 +132,6 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_number_of_channels">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Number of channels :</property>
-                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
-                        <property name="single_line_mode">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_sampling_frequency">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Sampling frequency :</property>
-                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
-                        <property name="single_line_mode">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
-                      </packing>
-                    </child>
-                    <child>
                       <widget class="GtkSpinButton" id="spinbutton_identifier">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -153,7 +148,7 @@
                       <widget class="GtkSpinButton" id="spinbutton_age">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="adjustment">18 0 100 1 10 10</property>
+                        <property name="adjustment">0 0 100 1 10 10</property>
                         <property name="snap_to_ticks">True</property>
                         <property name="numeric">True</property>
                       </widget>
@@ -183,19 +178,9 @@ unknown</property>
                 </child>
               </widget>
             </child>
-            <child>
-              <widget class="GtkButton" id="button_change_channel_names">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Change channel names</property>
-                <property name="response_id">0</property>
-              </widget>
-              <packing>
-                <property name="expand">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
           </widget>
           <packing>
+            <property name="expand">False</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -237,6 +222,341 @@ unknown</property>
             <property name="expand">False</property>
             <property name="pack_type">GTK_PACK_END</property>
           </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="dummy-widgets">
+    <child>
+      <widget class="GtkTable" id="table1">
+        <property name="visible">True</property>
+        <property name="n_rows">10</property>
+        <property name="n_columns">10</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <widget class="GtkSpinButton" id="spinbutton_number_of_channels">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">1 1 1024 1 10 10</property>
+            <property name="snap_to_ticks">True</property>
+            <property name="numeric">True</property>
+          </widget>
+          <packing>
+            <property name="top_attach">2</property>
+            <property name="bottom_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkComboBox" id="combobox_sampling_frequency">
+            <property name="visible">True</property>
+            <property name="items" translatable="yes">128
+256
+512
+1024
+2048
+4096</property>
+          </widget>
+          <packing>
+            <property name="top_attach">1</property>
+            <property name="bottom_attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkButton" id="button_change_channel_names">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Change channel names</property>
+            <property name="response_id">0</property>
+          </widget>
         </child>
       </widget>
     </child>

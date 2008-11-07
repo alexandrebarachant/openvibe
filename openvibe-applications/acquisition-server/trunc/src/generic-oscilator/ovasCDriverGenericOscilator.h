@@ -1,7 +1,8 @@
 #ifndef __OpenViBE_AcquisitionServer_CDriverGenericOscillator_H__
 #define __OpenViBE_AcquisitionServer_CDriverGenericOscillator_H__
 
-#include "ovasIDriver.h"
+#include "../ovasIDriver.h"
+#include "../ovasCHeader.h"
 
 namespace OpenViBEAcquisitionServer
 {
@@ -10,35 +11,34 @@ namespace OpenViBEAcquisitionServer
 	public:
 
 		CDriverGenericOscillator(void);
-		virtual ~CDriverGenericOscillator(void);
 		virtual void release(void);
 		virtual const char* getName(void);
 
-		virtual OpenViBEAcquisitionServer::boolean initialize(
-			const OpenViBEAcquisitionServer::uint32 ui32SampleCountPerSentBlock,
+		virtual OpenViBE::boolean initialize(
+			const OpenViBE::uint32 ui32SampleCountPerSentBlock,
 			OpenViBEAcquisitionServer::IDriverCallback& rCallback);
-		virtual OpenViBEAcquisitionServer::boolean uninitialize(void);
+		virtual OpenViBE::boolean uninitialize(void);
 
-		virtual OpenViBEAcquisitionServer::boolean start(void);
-		virtual OpenViBEAcquisitionServer::boolean stop(void);
-		virtual OpenViBEAcquisitionServer::boolean loop(void);
+		virtual OpenViBE::boolean start(void);
+		virtual OpenViBE::boolean stop(void);
+		virtual OpenViBE::boolean loop(void);
 
-		virtual OpenViBEAcquisitionServer::boolean isConfigurable(void);
-		virtual OpenViBEAcquisitionServer::boolean configure(void);
-		virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void) { return m_pHeader; }
+		virtual OpenViBE::boolean isConfigurable(void);
+		virtual OpenViBE::boolean configure(void);
+		virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void) { return &m_oHeader; }
 
 	protected:
 
 		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
-		OpenViBEAcquisitionServer::IHeader* m_pHeader;
+		OpenViBEAcquisitionServer::CHeader m_oHeader;
 
-		OpenViBEAcquisitionServer::boolean m_bInitialized;
-		OpenViBEAcquisitionServer::boolean m_bStarted;
-		OpenViBEAcquisitionServer::uint32 m_ui32SampleCountPerSentBlock;
-		OpenViBEAcquisitionServer::float32* m_pSample;
+		OpenViBE::boolean m_bInitialized;
+		OpenViBE::boolean m_bStarted;
+		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
+		OpenViBE::float32* m_pSample;
 
-		OpenViBEAcquisitionServer::uint32 m_ui32TotalSampleCount;
-		OpenViBEAcquisitionServer::uint32 m_ui32StartTime;
+		OpenViBE::uint32 m_ui32TotalSampleCount;
+		OpenViBE::uint32 m_ui32StartTime;
 	};
 };
 

@@ -50,7 +50,7 @@ namespace OpenViBEAcquisitionServer
 		::GtkWidget* m_pAge;
 		::GtkWidget* m_pNumberOfChannels;
 		::GtkWidget* m_pSamplingFrequency;
-		::GtkWidget* m_pSex;
+		::GtkWidget* m_pGender;
 
 		::GtkListStore* m_pElectrodeNameListStore;
 		::GtkListStore* m_pChannelNameListStore;

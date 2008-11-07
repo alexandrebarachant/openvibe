@@ -1,7 +1,5 @@
 #include "ovasCDriverGenericOscilator.h"
-#include "ovasIHeader.h"
-#include "ovasIHeaderConfigurator.h"
-#include "ovasCHeaderConfiguratorGlade.h"
+#include "../ovasCConfigurationGlade.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -12,18 +10,14 @@
 #include <iostream>
 
 using namespace OpenViBEAcquisitionServer;
+using namespace OpenViBE;
 using namespace std;
-
-#define OVAS_ElectrodeNames_File           "../share/openvibe-applications/acquisition-server/electrode-names.txt"
-#define OVAS_ConfigureGUI_File             "../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.glade"
-#define OVAS_ConfigureGUIElectrodes_File   "../share/openvibe-applications/acquisition-server/interface-channel-names.glade"
 
 //___________________________________________________________________//
 //                                                                   //
 
 CDriverGenericOscillator::CDriverGenericOscillator(void)
 	:m_pCallback(NULL)
-	,m_pHeader(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
@@ -31,15 +25,8 @@ CDriverGenericOscillator::CDriverGenericOscillator(void)
 	,m_ui32TotalSampleCount(0)
 	,m_ui32StartTime(0)
 {
-	m_pHeader=createHeader();
-	m_pHeader->setSamplingFrequency(512);
-	m_pHeader->setChannelCount(4);
-}
-
-CDriverGenericOscillator::~CDriverGenericOscillator(void)
-{
-	m_pHeader->release();
-	m_pHeader=NULL;
+	m_oHeader.setSamplingFrequency(512);
+	m_oHeader.setChannelCount(4);
 }
 
 void CDriverGenericOscillator::release(void)
@@ -64,13 +51,13 @@ boolean CDriverGenericOscillator::initialize(
 		return false;
 	}
 
-	if(!m_pHeader->isChannelCountSet()
-	 ||!m_pHeader->isSamplingFrequencySet())
+	if(!m_oHeader.isChannelCountSet()
+	 ||!m_oHeader.isSamplingFrequencySet())
 	{
 		return false;
 	}
 
-	m_pSample=new float32[m_pHeader->getChannelCount()*ui32SampleCountPerSentBlock];
+	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
 	if(!m_pSample)
 	{
 		delete [] m_pSample;
@@ -117,17 +104,23 @@ boolean CDriverGenericOscillator::loop(void)
 
 	uint32 l_ui32CurrentTime=System::Time::getTime();
 
-	if(l_ui32CurrentTime-m_ui32StartTime > (1000.0*m_ui32TotalSampleCount)/m_pHeader->getSamplingFrequency())
+	if(l_ui32CurrentTime-m_ui32StartTime > (1000*m_ui32TotalSampleCount)/m_oHeader.getSamplingFrequency())
 	{
-		for(uint32 j=0; j<m_pHeader->getChannelCount(); j++)
+		CStimulationSet l_oStimulationSet;
+		l_oStimulationSet.setStimulationCount(1);
+		l_oStimulationSet.setStimulationIdentifier(0, 0);
+		l_oStimulationSet.setStimulationDate(0, 0);
+		l_oStimulationSet.setStimulationDuration(0, 0);
+
+		for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
 		{
 			for(uint32 i=0; i<m_ui32SampleCountPerSentBlock; i++)
 			{
 #if 1
 				float64 l_f64Value=
-					sin(((i+m_ui32TotalSampleCount)*(j+1)*12.3)/m_pHeader->getSamplingFrequency())+
-					sin(((i+m_ui32TotalSampleCount)*(j+1)* 4.5)/m_pHeader->getSamplingFrequency())+
-					sin(((i+m_ui32TotalSampleCount)*(j+1)*67.8)/m_pHeader->getSamplingFrequency());
+					sin(((i+m_ui32TotalSampleCount)*(j+1)*12.3)/m_oHeader.getSamplingFrequency())+
+					sin(((i+m_ui32TotalSampleCount)*(j+1)* 4.5)/m_oHeader.getSamplingFrequency())+
+					sin(((i+m_ui32TotalSampleCount)*(j+1)*67.8)/m_oHeader.getSamplingFrequency());
 				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=(float32)l_f64Value;
 #else
 				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=j;
@@ -137,6 +130,7 @@ boolean CDriverGenericOscillator::loop(void)
 
 		m_ui32TotalSampleCount+=m_ui32SampleCountPerSentBlock;
 		m_pCallback->setSamples(m_pSample);
+		m_pCallback->setStimulationSet(l_oStimulationSet);
 	}
 
 	return true;
@@ -189,15 +183,6 @@ boolean CDriverGenericOscillator::isConfigurable(void)
 
 boolean CDriverGenericOscillator::configure(void)
 {
-	boolean l_bResult=false;
-	IHeaderConfigurator* l_pHeaderConfigurator=NULL;
-
-	l_pHeaderConfigurator=createHeaderConfiguratorGlade(OVAS_ConfigureGUI_File, OVAS_ElectrodeNames_File, OVAS_ConfigureGUIElectrodes_File);
-	if(l_pHeaderConfigurator)
-	{
-		l_bResult=l_pHeaderConfigurator->configure(*m_pHeader);
-	}
-	l_pHeaderConfigurator->release();
-
-	return l_bResult;
+	CConfigurationGlade m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.glade");
+	return m_oConfiguration.configure(m_oHeader);
 }

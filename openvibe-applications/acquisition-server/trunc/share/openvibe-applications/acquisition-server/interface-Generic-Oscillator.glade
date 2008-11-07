@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.0 on Fri Feb  8 19:08:15 2008 -->
+<!--Generated with glade3 3.4.3 on Wed Jun 18 17:36:40 2008 -->
 <glade-interface>
   <widget class="GtkDialog" id="openvibe-acquisition-server-settings">
     <property name="border_width">5</property>
+    <property name="title" translatable="yes">Device configuration</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="gravity">GDK_GRAVITY_CENTER</property>
@@ -16,7 +17,7 @@
         <child>
           <widget class="GtkLabel" id="label_title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Generic Oscillator configuration</property>
+            <property name="label" translatable="yes">Generic Oscillator</property>
             <property name="justify">GTK_JUSTIFY_CENTER</property>
           </widget>
           <packing>
@@ -48,7 +49,7 @@
                     <property name="n_columns">2</property>
                     <property name="homogeneous">True</property>
                     <child>
-                      <widget class="GtkComboBox" id="combobox_sex">
+                      <widget class="GtkComboBox" id="combobox_gender">
                         <property name="visible">True</property>
                         <property name="items" translatable="yes">unspecified
 female
@@ -115,7 +116,7 @@ unknown</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_sex">
+                      <widget class="GtkLabel" id="label_gender">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Gender :</property>
                         <property name="justify">GTK_JUSTIFY_RIGHT</property>

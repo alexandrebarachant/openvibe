@@ -115,7 +115,7 @@ boolean CConfigurationGlade::preConfigure(void)
 	m_pAge=glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_age");
 	m_pNumberOfChannels=glade_xml_get_widget(m_pGladeConfigureInterface, "spinbutton_number_of_channels");
 	m_pSamplingFrequency=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sampling_frequency");
-	m_pSex=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_sex");
+	m_pGender=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_gender");
 
 	m_pElectrodeNameTreeView=glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names");
 	m_pChannelNameTreeView=glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_channel_names");
@@ -185,19 +185,19 @@ boolean CConfigurationGlade::preConfigure(void)
 			GTK_COMBO_BOX(m_pSamplingFrequency),
 			0);
 	}
-	if(m_pHeader->isSubjectSexSet())
+	if(m_pHeader->isSubjectGenderSet())
 	{
 		gtk_combo_box_set_active_text(
-			GTK_COMBO_BOX(m_pSex),
-				m_pHeader->getSubjectSex()==OVTK_Value_Sex_Male?"male":
-				m_pHeader->getSubjectSex()==OVTK_Value_Sex_Female?"female":
-				m_pHeader->getSubjectSex()==OVTK_Value_Sex_Unknown?"unknown":
+			GTK_COMBO_BOX(m_pGender),
+				m_pHeader->getSubjectGender()==OVTK_Value_Gender_Male?"male":
+				m_pHeader->getSubjectGender()==OVTK_Value_Gender_Female?"female":
+				m_pHeader->getSubjectGender()==OVTK_Value_Gender_Unknown?"unknown":
 				"unspecified");
 	}
 	else
 	{
 		gtk_combo_box_set_active(
-			GTK_COMBO_BOX(m_pSex),
+			GTK_COMBO_BOX(m_pGender),
 			0);
 	}
 
@@ -213,16 +213,16 @@ boolean CConfigurationGlade::postConfigure(void)
 {
 	if(m_bApplyConfiguration)
 	{
-		string l_sSex=gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pSex));
+		string l_sGender=gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pGender));
 		m_pHeader->setExperimentIdentifier(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pIdentifier)));
 		m_pHeader->setSubjectAge(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pAge)));
 		m_pHeader->setChannelCount(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pNumberOfChannels)));
 		m_pHeader->setSamplingFrequency(atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pSamplingFrequency))));
-		m_pHeader->setSubjectSex(
-			l_sSex=="male"?OVTK_Value_Sex_Male:
-			l_sSex=="female"?OVTK_Value_Sex_Female:
-			l_sSex=="unknown"?OVTK_Value_Sex_Unknown:
-			OVTK_Value_Sex_NotSpecified);
+		m_pHeader->setSubjectGender(
+			l_sGender=="male"?OVTK_Value_Gender_Male:
+			l_sGender=="female"?OVTK_Value_Gender_Female:
+			l_sGender=="unknown"?OVTK_Value_Gender_Unknown:
+			OVTK_Value_Gender_NotSpecified);
 		for(uint32 i=0; i!=m_pHeader->getChannelCount(); i++)
 		{
 			if(m_vChannelName[i]!="")

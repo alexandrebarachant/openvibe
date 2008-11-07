@@ -5,10 +5,6 @@
 #include "ovasIDriver.h"
 #include "ovasIHeader.h"
 
-#include <ebml/defines.h>
-#include <ebml/IWriter.h>
-#include <ebml/IWriterHelper.h>
-
 #include <socket/IConnectionServer.h>
 
 #include <glade/glade.h>
@@ -21,16 +17,14 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CConnectionHandler;
-
 	class CAcquisitionServer : OpenViBEAcquisitionServer::IDriverCallback
 	{
 	public:
 
-		CAcquisitionServer(void);
+		CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 		virtual ~CAcquisitionServer(void);
 
-		virtual OpenViBEAcquisitionServer::boolean initialize(void);
+		virtual OpenViBE::boolean initialize(void);
 
 		// GTK idle callback
 		virtual void idleCB(void);
@@ -43,23 +37,41 @@ namespace OpenViBEAcquisitionServer
 		virtual void comboBoxDriverChanged(::GtkComboBox* pComboBox);
 
 		// Driver samples information callback
-		virtual void setSamples(const OpenViBEAcquisitionServer::float32* pSample);
+		virtual void setSamples(const OpenViBE::float32* pSample);
+		virtual void setStimulationSet(const OpenViBE::IStimulationSet& rStimulationSet);
 
 	protected :
 
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
+
+		OpenViBE::Kernel::IAlgorithmProxy* m_pAcquisitionStreamEncoder;
+		OpenViBE::Kernel::IAlgorithmProxy* m_pExperimentInformationStreamEncoder;
+		OpenViBE::Kernel::IAlgorithmProxy* m_pSignalStreamEncoder;
+		OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationStreamEncoder;
+		OpenViBE::Kernel::IAlgorithmProxy* m_pChannelLocalisationStreamEncoder;
+
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pAcquisitionMemoryBuffer;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pExperimentInformationMemoryBuffer;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pSignalMemoryBuffer;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pStimulationMemoryBuffer;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pChannelLocalisationMemoryBuffer;
+
 		::GladeXML* m_pGladeInterface;
 
-		std::list<OpenViBEAcquisitionServer::CConnectionHandler*> m_vConnectionHandler;
+		std::list < std::pair < Socket::IConnection*, OpenViBE::uint64 > > m_vConnection;
 		Socket::IConnectionServer* m_pConnectionServer;
 
 		std::vector<OpenViBEAcquisitionServer::IDriver*> m_vDriver;
-		OpenViBEAcquisitionServer::boolean m_bInitialized;
-		OpenViBEAcquisitionServer::boolean m_bStarted;
-		OpenViBEAcquisitionServer::uint32 m_ui32IdleCallbackId;
-		OpenViBEAcquisitionServer::uint32 m_ui32SampleCountPerSentBlock;
+		OpenViBE::boolean m_bInitialized;
+		OpenViBE::boolean m_bStarted;
+		OpenViBE::uint32 m_ui32IdleCallbackId;
+		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
+		OpenViBE::uint64 m_ui64SampleCount;
 
-		OpenViBEAcquisitionServer::uint8* m_pSampleBuffer;
-		OpenViBEAcquisitionServer::boolean m_bGotData;
+		OpenViBE::uint8* m_pSampleBuffer;
+		OpenViBE::boolean m_bGotData;
+
+		OpenViBE::CStimulationSet m_oStimulationSet;
 
 		OpenViBEAcquisitionServer::IDriver* m_pDriver;
 	};

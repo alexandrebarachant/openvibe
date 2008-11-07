@@ -94,7 +94,7 @@ boolean CDriverCtfVsmMeg::initialize(
 		//m_oHeader.setSubjectId();
 		//m_oHeader.setSubjectName();
 		m_oHeader.setSubjectAge(m_structHeader.subjectAge);
-		//m_oHeader.setSubjectSex();
+		//m_oHeader.setSubjectGender();
 
 		//m_oHeader.setLaboratoryId();
 		//m_oHeader.setLaboratoryName();
