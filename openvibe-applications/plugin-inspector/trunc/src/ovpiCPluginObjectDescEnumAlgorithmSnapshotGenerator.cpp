@@ -154,7 +154,7 @@ CPluginObjectDescEnumAlgorithmSnapshotGenerator::CPluginObjectDescEnumAlgorithmS
 CPluginObjectDescEnumAlgorithmSnapshotGenerator::~CPluginObjectDescEnumAlgorithmSnapshotGenerator(void)
 {
 	std::ofstream l_oAlgorithmsFile;
-	l_oAlgorithmsFile.open((m_sDocTemplateDirectory+"Doc_Algorithms.dox").c_str());
+	l_oAlgorithmsFile.open((m_sDocTemplateDirectory+"/Doc_Algorithms.dox").c_str());
 	l_oAlgorithmsFile
 		<< "/**\n"
 		<< " * \\page Doc_Algorithms Algorithms list\n"
@@ -217,7 +217,7 @@ CPluginObjectDescEnumAlgorithmSnapshotGenerator::~CPluginObjectDescEnumAlgorithm
 		l_oAlgorithmsFile << " * ";
 		for(uint32 k=0; k<l_ui32Level+1; k++)
 			l_oAlgorithmsFile << "   ";
-		l_oAlgorithmsFile << " - \\subpage Doc_algorithm_" << transform((l_sCategory+"/"+l_sName).c_str()).toASCIIString() << " \"" << l_sName << "\"\n";
+		l_oAlgorithmsFile << " - \\subpage Doc_algorithm_" << transform(l_sCategory+"/"+l_sName).c_str() << " \"" << l_sName << "\"\n";
 	}
 
 	l_oAlgorithmsFile << " */\n";
@@ -226,17 +226,17 @@ CPluginObjectDescEnumAlgorithmSnapshotGenerator::~CPluginObjectDescEnumAlgorithm
 
 boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginObjectDesc& rPluginObjectDesc)
 {
-	CString l_sFullName=rPluginObjectDesc.getCategory() + "/" + rPluginObjectDesc.getName();
-	CString l_sFilename=CString(m_sSnapshotDirectory.c_str())+CString("Algorithm_")+transform(l_sFullName);
+	string l_sFullName=string(rPluginObjectDesc.getCategory().toASCIIString()) + "/" + string(rPluginObjectDesc.getName().toASCIIString());
+	string l_sFilename=m_sSnapshotDirectory+"/Algorithm_"+transform(l_sFullName);
 	CIdentifier l_oIdentifier;
 	if((l_oIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(rPluginObjectDesc.getCreatedClassIdentifier()))==OV_UndefinedIdentifier)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "Skipped [" << l_sFilename << "] (could not create corresponding algorithm)\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Skipped [" << CString(l_sFilename.c_str()) << "] (could not create corresponding algorithm)\n";
 		return true;
 	}
 	IAlgorithmProxy& l_rAlgorithm=m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oIdentifier);
 
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "Working on [" << l_sFilename << "]\n";
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Working on [" << CString(l_sFilename.c_str()) << "]\n";
 
 	::PangoContext* l_pPangoContext=gtk_widget_get_pango_context(m_pWidget);
 	::PangoLayout* l_pPangoLayout=pango_layout_new(l_pPangoContext);
@@ -371,7 +371,7 @@ boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginO
 		0, 0,
 		0, 0,
 		xSize+32, ySize+32);
-	gdk_pixbuf_save(l_pPixBuf, (l_sFilename+".png").toASCIIString(), "png", NULL, NULL);
+	gdk_pixbuf_save(l_pPixBuf, (l_sFilename+".png").c_str(), "png", NULL, NULL);
 
 	g_object_unref(l_pPixBuf);
 
@@ -386,9 +386,9 @@ boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginO
 
 	l_oFile
 		<< "/**\n"
-		<< " * \\page Doc_" << l_sFilename.toASCIIString() << " " << l_sFullName.toASCIIString() << "\n"
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_summary Summary\n"
-		<< " * \\image html " << l_sFilename.toASCIIString() << ".png\n"
+		<< " * \\page Doc_" << l_sFilename.c_str() << " " << l_sFullName.toASCIIString() << "\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_summary Summary\n"
+		<< " * \\image html " << l_sFilename.c_str() << ".png\n"
 		<< " *\n"
 		<< " * - Plugin name : " << rPluginObjectDesc.getName() << "\n"
 		<< " * - Version : " << rPluginObjectDesc.getVersion() << "\n"
@@ -397,12 +397,12 @@ boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginO
 		<< " * - Short description : " << rPluginObjectDesc.getShortDescription() << "\n"
 		<< " * - Documentation template generation date : " << __DATE__ << "\n"
 		<< " *\n"
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_description Description\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_description Description\n"
 		<< " * " << rPluginObjectDesc.getDetailedDescription() << " TODO\n"
 		<< " *\n";
 
 	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_inputs Inputs\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_inputs Inputs\n"
 		<< " * Number of inputs : " << l_rBox.getInputCount() << "\n"
 		<< " *\n";
 	for(i=0; i<l_rBox.getInputCount(); i++)
@@ -420,7 +420,7 @@ boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginO
 	}
 
 	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_outputs Outputs\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_outputs Outputs\n"
 		<< " * Number of outputs : " << l_rBox.getOutputCount() << "\n"
 		<< " *\n";
 	for(i=0; i<l_rBox.getOutputCount(); i++)
@@ -438,7 +438,7 @@ boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginO
 	}
 
 	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_settings Settings\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_settings Settings\n"
 		<< " * Number of settings : " << l_rBox.getSettingCount() << "\n"
 		<< " *\n";
 	for(i=0; i<l_rBox.getSettingCount(); i++)
@@ -459,10 +459,10 @@ boolean CPluginObjectDescEnumAlgorithmSnapshotGenerator::callback(const IPluginO
 	}
 
 	l_oFile
-		<< " * \\section Doc_" << l_sFilename.toASCIIString() << "_examples Examples\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_examples Examples\n"
 		<< " * TODO\n"
 		<< " *\n"
-		<< " *  \\section Doc_" << l_sFilename.toASCIIString() << "_misc Miscellaneous\n"
+		<< " *  \\section Doc_" << l_sFilename.c_str() << "_misc Miscellaneous\n"
 		<< " * TODO\n"
 		<< " */";
 

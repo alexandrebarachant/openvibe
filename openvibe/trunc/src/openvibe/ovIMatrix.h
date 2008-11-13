@@ -55,20 +55,27 @@ namespace OpenViBE
 		 * \note The raw buffer is permanent pointer until the dimension count or any dimension size changes
 		 *
 		 * When the raw buffer is acquired, the elements are accessed sequentially, using each dimension
-		 * after the other. Suppose a matrix of 2 dimensions, of size 2 x 3 :
+		 * after the other. Suppose a matrix of 2 dimensions. First dimension size is 2 and second dimension
+		 * size is 3 :
 		 *
 		 * \code
 		 *
 		 * IMatrix* l_pMatrix= // ...
 		 *
+		 * l_pMatrix->setDimensionCount(2);
+		 * l_pMatrix->setDimensionSize(0, 2);
+		 * l_pMatrix->setDimensionSize(1, 3);
+		 *
 		 * float64* l_pMatrixRawBuffer=l_pMatrix->getBuffer();
 		 *
-		 * l_pMatrixRawBuffer[0]; // this is first line first column
-		 * l_pMatrixRawBuffer[1]; // this is first line second column
-		 * l_pMatrixRawBuffer[2]; // this is second line first column
-		 * l_pMatrixRawBuffer[3]; // this is second line second column
+		 * l_pMatrixRawBuffer[0]; // this is l_pMatrixRawBuffer[0*2 + 0];
+		 * l_pMatrixRawBuffer[1]; // this is l_pMatrixRawBuffer[0*2 + 1];
+		 * l_pMatrixRawBuffer[2]; // this is l_pMatrixRawBuffer[1*2 + 0];
+		 * l_pMatrixRawBuffer[3]; // this is l_pMatrixRawBuffer[1*2 + 1];
+		 * l_pMatrixRawBuffer[4]; // this is l_pMatrixRawBuffer[2*2 + 0];
+		 * l_pMatrixRawBuffer[5]; // this is l_pMatrixRawBuffer[1*2 + 1];
 		 *
-		 * l_pMatrixRawBuffer[i*2+j]; // this is ith line jth column
+		 * l_pMatrixRawBuffer[i*2+j]; // this is index i of the first dimension, and j of the second dimension
 		 *
 		 * \endcode
 		 * \sa getBufferElementCount

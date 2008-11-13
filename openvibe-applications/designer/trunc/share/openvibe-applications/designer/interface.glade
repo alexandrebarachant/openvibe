@@ -2,7 +2,7 @@
 <glade-interface>
   <widget class="GtkDialog" id="connector_editor">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Edit connector...</property>
+    <property name="title" translatable="yes">Connector Editor</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
@@ -36,6 +36,20 @@
               </packing>
             </child>
             <child>
+              <widget class="GtkButton" id="connector_editor-connector_name_revert_button">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
+              </widget>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkComboBox" id="connector_editor-connector_type_combobox">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
@@ -53,7 +67,7 @@
               <widget class="GtkLabel" id="connector_editor-connector_type_label">
                 <property name="width_request">150</property>
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">type :</property>
+                <property name="label" translatable="yes">Type :</property>
               </widget>
               <packing>
                 <property name="top_attach">1</property>
@@ -72,24 +86,10 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="connector_editor-connector_name_revert_button">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
-                <property name="use_stock">True</property>
-                <property name="response_id">0</property>
-              </widget>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
-              </packing>
-            </child>
-            <child>
               <widget class="GtkLabel" id="connector_editor-connector_name_label">
                 <property name="width_request">150</property>
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">name :</property>
+                <property name="label" translatable="yes">Name :</property>
               </widget>
             </child>
           </widget>
@@ -103,11 +103,11 @@
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="connector_editor-button_default">
+              <widget class="GtkButton" id="connector_editor-button_revert">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">gtk-revert-to-saved</property>
                 <property name="use_stock">True</property>
-                <property name="response_id">0</property>
+                <property name="response_id">2</property>
               </widget>
             </child>
             <child>
@@ -158,7 +158,7 @@
             <child>
               <widget class="GtkLabel" id="input-label">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">label</property>
+                <property name="label" translatable="yes">Label</property>
               </widget>
             </child>
             <child>
@@ -360,7 +360,7 @@
   </widget>
   <widget class="GtkDialog" id="loglevel">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Activate log levels</property>
+    <property name="title" translatable="yes">Activate Log Levels</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
@@ -409,7 +409,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_fatal">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">fatal error</property>
+                        <property name="label" translatable="yes">Fatal error</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -436,7 +436,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_error">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">error</property>
+                        <property name="label" translatable="yes">Error</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -466,7 +466,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_important_warning">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">important warning</property>
+                        <property name="label" translatable="yes">Important warning</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -496,7 +496,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_warning">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">warning</property>
+                        <property name="label" translatable="yes">Warning</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -526,7 +526,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_info">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">information</property>
+                        <property name="label" translatable="yes">Information</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -556,7 +556,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_trace">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">trace</property>
+                        <property name="label" translatable="yes">Trace</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -586,7 +586,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_benchmark">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">benchmark and profiling</property>
+                        <property name="label" translatable="yes">Benchmark and profiling</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -616,7 +616,7 @@
                     <child>
                       <widget class="GtkLabel" id="loglevel-label_loglevel_debug">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">debug</property>
+                        <property name="label" translatable="yes">Debug</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
@@ -719,6 +719,38 @@
               </widget>
             </child>
             <child>
+              <widget class="GtkButton" id="settings_collection-button_setting_default">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="response_id">0</property>
+                <child>
+                  <widget class="GtkHBox" id="settings_collection-button_setting_default_hbox">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImage" id="settings_collection-button_setting_default_image">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-revert-to-saved</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="settings_collection-button_setting_default_label">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Default</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkButton" id="settings_collection-button_setting_revert">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -729,7 +761,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </widget>
@@ -929,7 +961,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="response_id">1</property>
+                <property name="response_id">3</property>
                 <child>
                   <widget class="GtkHBox" id="box_configuration-button_load_current_from_file-hbox">
                     <property name="visible">True</property>
@@ -963,7 +995,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="response_id">2</property>
+                <property name="response_id">4</property>
                 <child>
                   <widget class="GtkHBox" id="box_configuration-button_save_current_to_file-hbox">
                     <property name="visible">True</property>
@@ -996,13 +1028,43 @@
             <child>
               <widget class="GtkButton" id="box_configuration-button_default">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
-                <property name="use_stock">True</property>
-                <property name="response_id">0</property>
+                <property name="response_id">1</property>
+                <child>
+                  <widget class="GtkHBox" id="box_configuration-button_default_hbox">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImage" id="box_configuration-button_default_image">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-revert-to-saved</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="box_configuration-button_default_label">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Default</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
               </widget>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="box_configuration-button_revert">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">2</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -1016,7 +1078,7 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">3</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
@@ -1029,7 +1091,7 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">4</property>
+                <property name="position">5</property>
               </packing>
             </child>
           </widget>
@@ -1080,7 +1142,7 @@
   <widget class="GtkWindow" id="openvibe">
     <property name="width_request">320</property>
     <property name="height_request">240</property>
-    <property name="title" translatable="yes">OpenViBE designer</property>
+    <property name="title" translatable="yes">OpenViBE Designer</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="default_width">1024</property>
     <property name="default_height">768</property>
@@ -1748,7 +1810,7 @@
   </widget>
   <widget class="GtkDialog" id="setting_editor">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Edit setting...</property>
+    <property name="title" translatable="yes">Setting Editor</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
@@ -1785,17 +1847,6 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="setting_editor-setting_default_value_label">
-                <property name="width_request">150</property>
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">default value :</property>
-              </widget>
-              <packing>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
               <widget class="GtkButton" id="setting_editor-setting_type_revert_button">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
@@ -1809,6 +1860,31 @@
                 <property name="right_attach">3</property>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="setting_editor-setting_name_revert_button">
+                <property name="width_request">100</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
+              </widget>
+              <packing>
+                <property name="left_attach">2</property>
+                <property name="right_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="setting_editor-setting_default_value_label">
+                <property name="width_request">150</property>
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Default value :</property>
+              </widget>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
               </packing>
             </child>
             <child>
@@ -1829,7 +1905,7 @@
               <widget class="GtkLabel" id="setting_editor-setting_type_label">
                 <property name="width_request">150</property>
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">type :</property>
+                <property name="label" translatable="yes">Type :</property>
               </widget>
               <packing>
                 <property name="top_attach">1</property>
@@ -1848,24 +1924,10 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="setting_editor-setting_name_revert_button">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
-                <property name="use_stock">True</property>
-                <property name="response_id">0</property>
-              </widget>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="right_attach">3</property>
-              </packing>
-            </child>
-            <child>
               <widget class="GtkLabel" id="setting_editor-setting_name_label">
                 <property name="width_request">150</property>
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">name :</property>
+                <property name="label" translatable="yes">Name :</property>
               </widget>
             </child>
           </widget>
@@ -1879,11 +1941,11 @@
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="setting_editor-button_default">
+              <widget class="GtkButton" id="setting_editor-button_revert">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">gtk-revert-to-saved</property>
                 <property name="use_stock">True</property>
-                <property name="response_id">0</property>
+                <property name="response_id">2</property>
               </widget>
             </child>
             <child>
@@ -1922,7 +1984,7 @@
   </widget>
   <widget class="GtkDialog" id="rename">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Rename object...</property>
+    <property name="title" translatable="yes">Rename Object...</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <child internal-child="vbox">
@@ -1959,10 +2021,39 @@
             <child>
               <widget class="GtkButton" id="rename-button_default">
                 <property name="visible">True</property>
+                <property name="response_id">1</property>
+                <child>
+                  <widget class="GtkHBox" id="rename-button_default_hbox">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImage" id="rename-button_default_image">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-revert-to-saved</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="rename-button_default_label">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Default</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkButton" id="rename-button_revert">
+                <property name="visible">True</property>
                 <property name="label" translatable="yes">gtk-revert-to-saved</property>
                 <property name="use_stock">True</property>
-                <property name="response_id">0</property>
+                <property name="response_id">2</property>
               </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkButton" id="rename-button_apply">
@@ -1974,7 +2065,7 @@
                 <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -1986,7 +2077,7 @@
                 <accelerator key="Escape" signal="clicked"/>
               </widget>
               <packing>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </widget>
@@ -2000,7 +2091,7 @@
   </widget>
   <widget class="GtkDialog" id="plugin_about">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Plugin description</property>
+    <property name="title" translatable="yes">Plugin Description</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <child internal-child="vbox">
@@ -2230,9 +2321,9 @@
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="plugin_about-button_cancel">
+              <widget class="GtkButton" id="plugin_about-button_close">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label" translatable="yes">gtk-close</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-6</property>
                 <accelerator key="Escape" signal="clicked"/>
@@ -2249,7 +2340,7 @@
   </widget>
   <widget class="GtkDialog" id="configuration_manager">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Configuration manager (read only)</property>
+    <property name="title" translatable="yes">Configuration Manager (read only)</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_NORMAL</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="configuration_manager-vbox">
@@ -2281,9 +2372,9 @@
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="configuration_manager-button_cancel">
+              <widget class="GtkButton" id="configuration_manager-button_close">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label" translatable="yes">gtk-close</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-6</property>
                 <accelerator key="Escape" signal="clicked"/>

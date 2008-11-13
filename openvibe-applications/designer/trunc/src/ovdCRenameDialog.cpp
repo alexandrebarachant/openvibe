@@ -32,15 +32,19 @@ boolean CRenameDialog::run(void)
 	while(!l_bFinished)
 	{
 		gint l_iResult=gtk_dialog_run(GTK_DIALOG(l_pDialog));
-		if(l_iResult==0) // revert
-		{
-			gtk_entry_set_text(GTK_ENTRY(l_pName), m_sDefaultName.toASCIIString());
-		}
-		else if(l_iResult==GTK_RESPONSE_APPLY)
+		if(l_iResult==GTK_RESPONSE_APPLY)
 		{
 			m_sResult=gtk_entry_get_text(GTK_ENTRY(l_pName));
 			l_bFinished=true;
 			l_bResult=true;
+		}
+		else if(l_iResult==1) // default
+		{
+			gtk_entry_set_text(GTK_ENTRY(l_pName), m_sDefaultName.toASCIIString());
+		}
+		else if(l_iResult==2) // revert
+		{
+			gtk_entry_set_text(GTK_ENTRY(l_pName), m_sInitialName.toASCIIString());
 		}
 		else
 		{

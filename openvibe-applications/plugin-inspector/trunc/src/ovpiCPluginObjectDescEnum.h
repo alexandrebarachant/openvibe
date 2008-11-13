@@ -3,6 +3,8 @@
 
 #include "ovpi_base.h"
 
+#include <string>
+
 class CPluginObjectDescEnum
 {
 public:
@@ -17,7 +19,7 @@ public:
 	virtual OpenViBE::boolean callback(
 		const OpenViBE::Plugins::IPluginObjectDesc& rPluginObjectDesc)=0;
 
-	static OpenViBE::CString transform(const OpenViBE::CString& sInput, const OpenViBE::boolean bRemoveSlash=false);
+	static std::string transform(const std::string& sInput, const OpenViBE::boolean bRemoveSlash=false);
 
 protected:
 

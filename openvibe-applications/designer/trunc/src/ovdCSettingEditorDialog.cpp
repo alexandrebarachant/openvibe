@@ -70,10 +70,7 @@ boolean CSettingEditorDialog::run(void)
 	while(!l_bFinished)
 	{
 		gint l_iResult=gtk_dialog_run(GTK_DIALOG(l_pDialog));
-		if(l_iResult==0) // revert
-		{
-		}
-		else if(l_iResult==GTK_RESPONSE_APPLY)
+		if(l_iResult==GTK_RESPONSE_APPLY)
 		{
 			char* l_sActiveText=gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pType));
 			if(l_sActiveText)
@@ -86,6 +83,15 @@ boolean CSettingEditorDialog::run(void)
 				m_rBox.setSettingDefaultValue(m_ui32SettingIndex, l_oHelper.getValue(l_oSettingType, m_pDefaultValue));
 				l_bFinished=true;
 				l_bResult=true;
+			}
+		}
+		else if(l_iResult==2) // revert
+		{
+			gtk_entry_set_text(GTK_ENTRY(l_pName), l_sSettingName.toASCIIString());
+
+			if(l_iActive!=-1)
+			{
+				gtk_combo_box_set_active(GTK_COMBO_BOX(m_pType), l_iActive);
 			}
 		}
 		else

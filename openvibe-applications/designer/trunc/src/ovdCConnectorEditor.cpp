@@ -84,15 +84,7 @@ boolean CConnectorEditor::run(void)
 	while(!l_bFinished)
 	{
 		gint l_iResult=gtk_dialog_run(GTK_DIALOG(l_pConnectorDialog));
-		if(l_iResult==0) // revert
-		{
-			(m_rBox.*getConnectorName)(m_ui32ConnectorIndex, l_oConnectorName);
-			(m_rBox.*getConnectorType)(m_ui32ConnectorIndex, l_oConnectorType);
-
-			gtk_entry_set_text(l_pConnectorNameEntry, l_oConnectorName.toASCIIString());
-			gtk_combo_box_set_active(l_pConnectorTypeComboBox, l_iActive);
-		}
-		else if(l_iResult==GTK_RESPONSE_APPLY)
+		if(l_iResult==GTK_RESPONSE_APPLY)
 		{
 			char* l_sActiveText=gtk_combo_box_get_active_text(l_pConnectorTypeComboBox);
 			if(l_sActiveText)
@@ -102,6 +94,14 @@ boolean CConnectorEditor::run(void)
 				l_bFinished=true;
 				l_bResult=true;
 			}
+		}
+		else if(l_iResult==2) // revert
+		{
+			(m_rBox.*getConnectorName)(m_ui32ConnectorIndex, l_oConnectorName);
+			(m_rBox.*getConnectorType)(m_ui32ConnectorIndex, l_oConnectorType);
+
+			gtk_entry_set_text(l_pConnectorNameEntry, l_oConnectorName.toASCIIString());
+			gtk_combo_box_set_active(l_pConnectorTypeComboBox, l_iActive);
 		}
 		else
 		{

@@ -15,6 +15,11 @@ static void collect_widget_cb(::GtkWidget* pWidget, gpointer pUserData)
 	static_cast< vector< ::GtkWidget* > *>(pUserData)->push_back(pWidget);
 }
 
+static void remove_widget_cb(::GtkWidget* pWidget, gpointer pUserData)
+{
+	gtk_container_remove(GTK_CONTAINER(pUserData), pWidget);
+}
+
 static void on_button_setting_filename_browse_pressed(::GtkButton* pButton, gpointer pUserData)
 {
 	vector< ::GtkWidget* > l_vWidget;
@@ -137,8 +142,6 @@ CString CSettingCollectionHelper::getValueEnumeration(const CIdentifier& rTypeId
 	return CString(gtk_combo_box_get_active_text(l_pWidget));
 }
 
-// ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
-
 CString CSettingCollectionHelper::getValueBitMask(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget)
 {
 	vector< ::GtkWidget* > l_vWidget;
@@ -158,6 +161,8 @@ CString CSettingCollectionHelper::getValueBitMask(const CIdentifier& rTypeIdenti
 
 	return CString(l_sResult.c_str());
 }
+
+// ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
 
 void CSettingCollectionHelper::setValue(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const CString& rValue)
 {
@@ -254,6 +259,8 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 
 void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const CString& rValue)
 {
+	gtk_container_foreach(GTK_CONTAINER(pWidget), remove_widget_cb, pWidget);
+
 	string l_sValue(rValue);
 	::GtkTable* l_pBitMaskTable=GTK_TABLE(pWidget);
 	gtk_table_resize(l_pBitMaskTable, 2, (m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1);

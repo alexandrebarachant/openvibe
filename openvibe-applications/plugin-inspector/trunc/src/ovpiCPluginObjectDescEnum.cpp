@@ -1,7 +1,5 @@
 #include "ovpiCPluginObjectDescEnum.h"
 
-#include <string>
-
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -36,7 +34,7 @@ boolean CPluginObjectDescEnum::enumeratePluginObjectDesc(
 	return true;
 }
 
-CString CPluginObjectDescEnum::transform(const CString& sInput, const boolean bRemoveSlash)
+std::string CPluginObjectDescEnum::transform(const std::string& sInput, const boolean bRemoveSlash)
 {
 	std::string l_sInput(sInput);
 	std::string l_sOutput;
@@ -81,5 +79,5 @@ CString CPluginObjectDescEnum::transform(const CString& sInput, const boolean bR
 			l_bLastWasSeparator=true;
 		}
 	}
-	return l_sOutput.c_str();
+	return l_sOutput;
 }
