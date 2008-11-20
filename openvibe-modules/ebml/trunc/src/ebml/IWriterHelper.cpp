@@ -1,6 +1,7 @@
 #include "IWriterHelper.h"
 #include "IWriter.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 using namespace EBML;

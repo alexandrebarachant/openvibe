@@ -12,6 +12,7 @@
 
 namespace OpenViBEDesigner
 {
+	class CApplication;
 	class CDesignerVisualisation;
 	class CPlayerVisualisation;
 
@@ -19,7 +20,7 @@ namespace OpenViBEDesigner
 	{
 		public:
 
-		CInterfacedScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier,
+		CInterfacedScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBEDesigner::CApplication& rApplication, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier,
 			::GtkNotebook& rNotebook, const char* sGUIFilename);
 		virtual ~CInterfacedScenario(void);
 
@@ -39,9 +40,10 @@ namespace OpenViBEDesigner
 		void scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidget, ::GdkEventKey* pEvent);
 		void scenarioDrawingAreaKeyReleaseEventCB(::GtkWidget* pWidget, ::GdkEventKey* pEvent);
 
-		void contextMenuSelectionCopyCB(void);
-		void contextMenuSelectionCutCB(void);
-		void contextMenuSelectionPasteCB(void);
+		void copySelection(void);
+		void cutSelection(void);
+		void pasteSelection(void);
+		void deleteSelection(void);
 
 		void contextMenuBoxRenameCB(OpenViBE::Kernel::IBox& rBox);
 		void contextMenuBoxDeleteCB(OpenViBE::Kernel::IBox& rBox);
@@ -67,7 +69,6 @@ namespace OpenViBEDesigner
 		void releasePlayerVisualisation(void);
 
 		OpenViBE::boolean hasSelection(void);
-		void deleteSelection(void);
 
 	private:
 
@@ -79,6 +80,7 @@ namespace OpenViBEDesigner
 		OpenViBE::CIdentifier m_oPlayerIdentifier;
 		OpenViBE::CIdentifier m_oVisualisationTreeIdentifier;
 		OpenViBE::CIdentifier m_oExporterIdentifier;
+		OpenViBEDesigner::CApplication& m_rApplication;
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::Kernel::IScenario& m_rScenario;
 		OpenViBE::Kernel::IPlayer* m_pPlayer;

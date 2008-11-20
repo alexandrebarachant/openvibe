@@ -1,6 +1,7 @@
 #include "IEntryEnumerator.h"
 
 #include <string>
+#include <string.h>
 
 #ifdef FS_OS_Linux
  #include <glob.h>

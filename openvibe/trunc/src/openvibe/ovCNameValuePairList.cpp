@@ -83,10 +83,8 @@ boolean CNameValuePairList::getValue(const CString& rName, float64& rValue) cons
 	{
 		return false;
 	}
-	char* endptr;
-	float64 temp = strtod(m_pNameValuePairListImpl->m_oMap[rName].toASCIIString(), &endptr);
-	//cheap verification : ensure string was read to the end as a double
-	if(*endptr != '\0')
+	float64 temp;
+	if(sscanf(m_pNameValuePairListImpl->m_oMap[rName].toASCIIString(), "%lf", &temp)!=1)
 	{
 		return false;
 	}

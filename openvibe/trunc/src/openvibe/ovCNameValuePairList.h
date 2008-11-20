@@ -16,7 +16,7 @@ namespace OpenViBE
 	 * It handles a (hidden) map associating string keys to string values.
 	 * \ingroup Group_Base
 	 *
-	 * This class avoids the need to include stl's map header file in the C++ interface, 
+	 * This class avoids the need to include stl's map header file in the C++ interface,
 	 * thus preventing potential compile/link errors when dynamically loading modules.
 	 *
 	 * \note Implementation based on std::map<std::string, std::string>
@@ -40,7 +40,7 @@ namespace OpenViBE
 		 *
 		 * Copies the contents of \c rNameValuePairList into the new list.
 		 */
-		CNameValuePairList(const OpenViBE::CNameValuePairList& rNameValuePairList);		
+		CNameValuePairList(const OpenViBE::CNameValuePairList& rNameValuePairList);
 		/**
 		 * \brief Destructor
 		 *
@@ -58,7 +58,7 @@ namespace OpenViBE
 		 * \return This list.
 		 */
 		OpenViBE::CNameValuePairList& operator=(
-			const OpenViBE::CNameValuePairList& rNameValuePairList);		
+			const OpenViBE::CNameValuePairList& rNameValuePairList);
 		//@}
 
 		/**
@@ -68,7 +68,7 @@ namespace OpenViBE
 		 * \return True if pair could be inserted, false otherwise
 		 */
 		OpenViBE::boolean setValue(
-			const OpenViBE::CString& rName, 
+			const OpenViBE::CString& rName,
 			const OpenViBE::CString& rValue);
 
 		/**
@@ -78,7 +78,7 @@ namespace OpenViBE
 		 * \return True if pair could be inserted, false otherwise
 		 */
 		OpenViBE::boolean setValue(
-			const OpenViBE::CString& rName, 
+			const OpenViBE::CString& rName,
 			const char* pValue);
 
 		/**
@@ -88,7 +88,7 @@ namespace OpenViBE
 		 * \return True if pair could be inserted, false otherwise
 		 */
 		OpenViBE::boolean setValue(
-			const OpenViBE::CString& rName, 
+			const OpenViBE::CString& rName,
 			const OpenViBE::float64& rValue);
 
 		/**
@@ -98,7 +98,7 @@ namespace OpenViBE
 		 * \return True if pair could be inserted, false otherwise
 		 */
 		OpenViBE::boolean setValue(
-			const OpenViBE::CString& rName, 
+			const OpenViBE::CString& rName,
 			OpenViBE::boolean bValue);
 
 		/**
@@ -108,7 +108,7 @@ namespace OpenViBE
 		 * \return True if value could be retrieved, false otherwise
 		 */
 		OpenViBE::boolean getValue(
-			const OpenViBE::CString& rName, 
+			const OpenViBE::CString& rName,
 			OpenViBE::CString& rValue) const;
 
 		/**
@@ -118,12 +118,12 @@ namespace OpenViBE
 		 * \return True if a float64 value could be retrieved, false otherwise
 		 */
 		OpenViBE::boolean getValue(
-			const OpenViBE::CString& rName, 
+			const OpenViBE::CString& rName,
 			OpenViBE::float64& rValue) const;
 
-		/** 
+		/**
 		 * \brief Retrieve a boolean value from the list
-		 * In the current implementation a value evaluates to true if its string 
+		 * In the current implementation a value evaluates to true if its string
 		 * equals "1" and to false if it equals "0".
 		 * \param rValue String to evaluate
 		 * \return True if string evaluates to a boolean, false otherwise

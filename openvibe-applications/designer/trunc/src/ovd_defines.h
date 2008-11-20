@@ -16,6 +16,7 @@ namespace OpenViBEDesigner
 		ContextMenu_SelectionCopy,
 		ContextMenu_SelectionCut,
 		ContextMenu_SelectionPaste,
+		ContextMenu_SelectionDelete,
 
 		ContextMenu_BoxRename,
 		ContextMenu_BoxDelete,
@@ -61,6 +62,9 @@ namespace OpenViBEDesigner
 		Color_BoxSettingBorder,
 		Color_Link,
 		Color_LinkSelected,
+		Color_LinkDownCast,
+		Color_LinkUpCast,
+		Color_LinkInvalid,
 		Color_SelectionArea,
 		Color_SelectionAreaBorder,
 	};

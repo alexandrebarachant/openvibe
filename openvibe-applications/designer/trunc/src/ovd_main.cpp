@@ -282,7 +282,10 @@ int go(int argc, char ** argv)
 	gdk_color_set(g_vColors[Color_BoxSettingBackground],     49151, 32767, 65535);
 	gdk_color_set(g_vColors[Color_BoxSettingBorder],         16383, 16383, 16383);
 	gdk_color_set(g_vColors[Color_Link],                         0,     0,     0);
-	gdk_color_set(g_vColors[Color_LinkSelected],             49151, 16383, 16383);
+	gdk_color_set(g_vColors[Color_LinkSelected],             49151, 49151, 16383);
+	gdk_color_set(g_vColors[Color_LinkUpCast],               32767, 16383, 16383);
+	gdk_color_set(g_vColors[Color_LinkDownCast],             16383, 32767, 16383);
+	gdk_color_set(g_vColors[Color_LinkInvalid],              49151, 16383, 16383);
 	gdk_color_set(g_vColors[Color_SelectionArea],           0x3f00,0x3f00,0x3f00);
 	gdk_color_set(g_vColors[Color_SelectionAreaBorder],          0,     0,     0);
 	#undef gdk_color_set

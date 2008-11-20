@@ -50,6 +50,10 @@ namespace
 		static_cast<CApplication*>(pUserData)->preferencesCB();
 	}
 
+	void menu_test_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->testCB();
+	}
 	void menu_new_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->newScenarioCB();
@@ -230,8 +234,8 @@ CApplication::CApplication(const IKernelContext& rKernelContext)
 	:m_rKernelContext(rKernelContext)
 	,m_pPluginManager(NULL)
 	,m_pScenarioManager(NULL)
-	,m_pClipboardScenario(NULL)
 	,m_pVisualisationManager(NULL)
+	,m_pClipboardScenario(NULL)
 	,m_pGladeInterface(NULL)
 	,m_pMainWindow(NULL)
 	,m_pScenarioNotebook(NULL)
@@ -270,6 +274,8 @@ void CApplication::initialize(void)
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_save")),        "activate", G_CALLBACK(menu_save_scenario_cb),      this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_save_as")),     "activate", G_CALLBACK(menu_save_scenario_as_cb),   this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_close")),       "activate", G_CALLBACK(menu_close_scenario_cb),     this);
+
+	// g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_test")),        "activate", G_CALLBACK(menu_test_cb),               this);
 
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_new")),       "clicked",  G_CALLBACK(button_new_scenario_cb),     this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_open")),      "clicked",  G_CALLBACK(button_open_scenario_cb),    this);
@@ -398,6 +404,23 @@ void CApplication::initialize(void)
 	// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/openvibe-applications/designer/ov-logo.png", NULL);
 }
 
+CString CApplication::getWorkingDirectory(void)
+{
+	CString l_sWorkingDirectory;
+	CString l_sConfiguredWorkingDirectory=m_rKernelContext.getConfigurationManager().expand("${Designer_DefaultWorkingDirectory}");
+	char* l_sCurrentDirectory=g_get_current_dir();
+	if(g_path_is_absolute(l_sConfiguredWorkingDirectory.toASCIIString()))
+	{
+		l_sWorkingDirectory=l_sConfiguredWorkingDirectory;
+	}
+	else
+	{
+		l_sWorkingDirectory=l_sCurrentDirectory+CString("/")+l_sConfiguredWorkingDirectory;
+	}
+	g_free(l_sCurrentDirectory);
+	return l_sWorkingDirectory;
+}
+
 boolean CApplication::hasScenarioRunning(void)
 {
 	vector<CInterfacedScenario*>::const_iterator itInterfacedScenario;
@@ -452,66 +475,44 @@ void CApplication::copySelectionCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "copySelectionCB\n";
 
-	IScenario& l_rCurrentScenario=getCurrentInterfacedScenario()->m_rScenario;
-	map<CIdentifier, boolean>& l_vCurrentObject=getCurrentInterfacedScenario()->m_vCurrentObject;
-	map<CIdentifier, boolean>::iterator o;
-	map<CIdentifier, CIdentifier> l_vBoxBox;
-
-	// Clears clipboard scenario
-	m_pClipboardScenario->clear();
-
-	// adds boxes
-	for(o=l_vCurrentObject.begin(); o!=l_vCurrentObject.end(); o++)
+	CInterfacedScenario* l_pCurrentInterfacedScenario=this->getCurrentInterfacedScenario();
+	if(l_pCurrentInterfacedScenario)
 	{
-		if(o->second)
-		{
-			if(l_rCurrentScenario.isBox(o->first))
-			{
-				CIdentifier l_oClipboardBoxIdentifier;
-				IBox& l_rBox=*l_rCurrentScenario.getBoxDetails(o->first);
-				m_pClipboardScenario->addBox(l_rBox, l_oClipboardBoxIdentifier);
-				l_vBoxBox[o->first]=l_oClipboardBoxIdentifier;
-			}
-		}
-	}
-
-	// adds links
-	for(o=l_vCurrentObject.begin(); o!=l_vCurrentObject.end(); o++)
-	{
-		if(o->second)
-		{
-			if(l_rCurrentScenario.isLink(o->first))
-			{
-				CIdentifier l_oClipboardLinkIdentifier;
-				ILink& l_rLink=*l_rCurrentScenario.getLinkDetails(o->first);
-				m_pClipboardScenario->connect(
-					l_vBoxBox[l_rLink.getSourceBoxIdentifier()],
-					l_rLink.getSourceBoxOutputIndex(),
-					l_vBoxBox[l_rLink.getTargetBoxIdentifier()],
-					l_rLink.getTargetBoxInputIndex(),
-					l_oClipboardLinkIdentifier);
-			}
-		}
+		l_pCurrentInterfacedScenario->copySelection();
 	}
 }
 
 void CApplication::cutSelectionCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "cutSelectionCB\n";
+
+	CInterfacedScenario* l_pCurrentInterfacedScenario=this->getCurrentInterfacedScenario();
+	if(l_pCurrentInterfacedScenario)
+	{
+		l_pCurrentInterfacedScenario->cutSelection();
+	}
 }
 
 void CApplication::pasteSelectionCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "pasteSelectionCB\n";
 
-	IScenario& l_rCurrentScenario=getCurrentInterfacedScenario()->m_rScenario;
-
-	l_rCurrentScenario.merge(*m_pClipboardScenario);
+	CInterfacedScenario* l_pCurrentInterfacedScenario=this->getCurrentInterfacedScenario();
+	if(l_pCurrentInterfacedScenario)
+	{
+		l_pCurrentInterfacedScenario->pasteSelection();
+	}
 }
 
 void CApplication::deleteSelectionCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "deleteSelectionCB\n";
+
+	CInterfacedScenario* l_pCurrentInterfacedScenario=this->getCurrentInterfacedScenario();
+	if(l_pCurrentInterfacedScenario)
+	{
+		l_pCurrentInterfacedScenario->deleteSelection();
+	}
 }
 
 void CApplication::preferencesCB(void)
@@ -595,6 +596,11 @@ void CApplication::preferencesCB(void)
 	g_object_unref(l_pGladeInterface);
 }
 
+void CApplication::testCB(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "testCB\n";
+}
+
 void CApplication::newScenarioCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "newScenarioCB\n";
@@ -603,7 +609,7 @@ void CApplication::newScenarioCB(void)
 	if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
 	{
 		IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
-		CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
+		CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
 		if(l_pInterfacedScenario->m_pDesignerVisualisation != NULL)
 		{
 			l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);
@@ -627,6 +633,9 @@ void CApplication::openScenarioCB(void)
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 		NULL);
+	gtk_file_chooser_set_current_folder(
+		GTK_FILE_CHOOSER(l_pWidgetDialogOpen),
+		this->getWorkingDirectory().toASCIIString());
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 	{
 		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
@@ -650,7 +659,7 @@ void CApplication::openScenarioCB(void)
 				}
 
 				// Creates interfaced scenario
-				CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
+				CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
 				if(l_pInterfacedScenario->m_pDesignerVisualisation != NULL)
 				{
 					l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);
@@ -743,6 +752,12 @@ void CApplication::saveScenarioAsCB(void)
 	if(l_pCurrentInterfacedScenario->m_bHasFileName)
 	{
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), l_pCurrentInterfacedScenario->m_sFileName.c_str());
+	}
+	else
+	{
+		gtk_file_chooser_set_current_folder(
+			GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs),
+			this->getWorkingDirectory().toASCIIString());
 	}
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogSaveAs))==GTK_RESPONSE_ACCEPT)
 	{

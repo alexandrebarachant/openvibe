@@ -1,4 +1,5 @@
 #include "ovdCInterfacedScenario.h"
+#include "ovdCApplication.h"
 #include "ovdCBoxProxy.h"
 #include "ovdCLinkProxy.h"
 #include "ovdCConnectorEditor.h"
@@ -83,9 +84,10 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	CInterfacedScenario::BoxContextMenuCB* l_pContextMenuCB=static_cast < CInterfacedScenario::BoxContextMenuCB* >(pUserData);
 	switch(l_pContextMenuCB->ui32Command)
 	{
-		case ContextMenu_SelectionCopy:    l_pContextMenuCB->pInterfacedScenario->contextMenuSelectionCopyCB(); break;
-		case ContextMenu_SelectionCut:     l_pContextMenuCB->pInterfacedScenario->contextMenuSelectionCutCB(); break;
-		case ContextMenu_SelectionPaste:   l_pContextMenuCB->pInterfacedScenario->contextMenuSelectionPasteCB(); break;
+		case ContextMenu_SelectionCopy:    l_pContextMenuCB->pInterfacedScenario->copySelection(); break;
+		case ContextMenu_SelectionCut:     l_pContextMenuCB->pInterfacedScenario->cutSelection(); break;
+		case ContextMenu_SelectionPaste:   l_pContextMenuCB->pInterfacedScenario->pasteSelection(); break;
+		case ContextMenu_SelectionDelete:  l_pContextMenuCB->pInterfacedScenario->deleteSelection(); break;
 
 		case ContextMenu_BoxRename:        l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRenameCB(*l_pContextMenuCB->pBox); break;
 		case ContextMenu_BoxDelete:        l_pContextMenuCB->pInterfacedScenario->contextMenuBoxDeleteCB(*l_pContextMenuCB->pBox); break;
@@ -159,8 +161,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		x+width-radius*2, y+height-radius*2, radius*2, radius*2, 270*64, 90*64);
 }
 
-	CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
+	CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, CApplication& rApplication, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
 		:m_oScenarioIdentifier(rScenarioIdentifier)
+		,m_rApplication(rApplication)
 		,m_rKernelContext(rKernelContext)
 		,m_rScenario(rScenario)
 		,m_pPlayer(NULL)
@@ -566,8 +569,37 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 		CLinkProxy l_oLinkProxy(rLink);
 
+		CIdentifier l_oSourceOutputTypeIdentifier;
+		CIdentifier l_oTargetInputTypeIdentifier;
+
+		m_rScenario.getBoxDetails(rLink.getSourceBoxIdentifier())->getOutputType(rLink.getSourceBoxOutputIndex(), l_oSourceOutputTypeIdentifier);
+		m_rScenario.getBoxDetails(rLink.getTargetBoxIdentifier())->getInputType(rLink.getTargetBoxInputIndex(), l_oTargetInputTypeIdentifier);
+
+		if(m_vCurrentObject[rLink.getIdentifier()])
+		{
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_LinkSelected]);
+		}
+		else if(l_oTargetInputTypeIdentifier==l_oSourceOutputTypeIdentifier)
+		{
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_Link]);
+		}
+		else
+		{
+			if(m_rKernelContext.getTypeManager().isDerivedFromStream(l_oSourceOutputTypeIdentifier, l_oTargetInputTypeIdentifier))
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_LinkDownCast]);
+			}
+			else if(m_rKernelContext.getTypeManager().isDerivedFromStream(l_oTargetInputTypeIdentifier, l_oSourceOutputTypeIdentifier))
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_LinkUpCast]);
+			}
+			else
+			{
+				gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_LinkInvalid]);
+			}
+		}
+
 		updateStencilIndex(m_ui32InterfacedObjectId, l_pStencilGC);
-		gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rLink.getIdentifier()]?Color_LinkSelected:Color_Link]);
 		gdk_draw_line(
 			GDK_DRAWABLE(m_pStencilBuffer),
 			l_pStencilGC,
@@ -837,15 +869,17 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			m_vCurrentObject.clear();
 			m_vCurrentObject[l_oBoxIdentifier]=true;
 
-			//if a visualisation box was dropped, add it in window manager
+			// If a visualisation box was dropped, add it in window manager
 			if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
 			{
-				//generate a unique name so that it can be identified unambiguously
+#if 1
+				// Generate a unique name so that it can be identified unambiguously
 				CString l_oBoxName;
 				generateDisplayPluginName(l_pBox, l_oBoxName);
 				l_pBox->setName(l_oBoxName);
+#endif
 
-				//let window manager know about new box
+				// Let window manager know about new box
 				m_pDesignerVisualisation->onVisualisationBoxAdded(l_pBox);
 			}
 
@@ -1073,15 +1107,10 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 							// -------------- SELECTION -----------
 
-							if(this->hasSelection())
-							{
-								::GtkMenu* l_pMenuSelection=GTK_MENU(gtk_menu_new());
-								gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemSelection, GTK_STOCK_SELECT_ALL, "selection");
-								gtk_menu_add_new_image_menu_item_with_cb(l_pMenuSelection, l_pMenuSelectionMenuItemSelectionCut, GTK_STOCK_CUT, "cut selection...", context_menu_cb, NULL, ContextMenu_SelectionCut, -1);
-								gtk_menu_add_new_image_menu_item_with_cb(l_pMenuSelection, l_pMenuSelectionMenuItemSelectionCopy, GTK_STOCK_COPY, "copy selection...", context_menu_cb, NULL, ContextMenu_SelectionCopy, -1);
-								gtk_menu_add_new_image_menu_item_with_cb(l_pMenuSelection, l_pMenuSelectionMenuItemSelectionPaste, GTK_STOCK_PASTE, "paste...", context_menu_cb, NULL, ContextMenu_SelectionPaste, -1);
-								gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuItemSelection), GTK_WIDGET(l_pMenuSelection));
-							}
+							if(this->hasSelection()) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionCut, GTK_STOCK_CUT, "cut...", context_menu_cb, NULL, ContextMenu_SelectionCut, -1); }
+							if(this->hasSelection()) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionCopy, GTK_STOCK_COPY, "copy...", context_menu_cb, NULL, ContextMenu_SelectionCopy, -1); }
+							if(m_rApplication.m_pClipboardScenario->getNextBoxIdentifier(OV_UndefinedIdentifier)!=OV_UndefinedIdentifier) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionPaste, GTK_STOCK_PASTE, "paste...", context_menu_cb, NULL, ContextMenu_SelectionPaste, -1); }
+							if(this->hasSelection()) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionCut, GTK_STOCK_DELETE, "delete...", context_menu_cb, NULL, ContextMenu_SelectionDelete, -1); }
 
 							if(m_oCurrentObject.m_oIdentifier!=OV_UndefinedIdentifier)
 							{
@@ -1329,20 +1358,165 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		// ...
 	}
 
-	void CInterfacedScenario::contextMenuSelectionCopyCB(void)
+	void CInterfacedScenario::copySelection(void)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuSelectionCopyCB\n";
-		m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "contextMenuSelectionCopyCB - not yet implemented\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "copySelection\n";
+
+		// Prepares copy
+		map < CIdentifier, CIdentifier > l_vIdMapping;
+		map < CIdentifier, boolean >::const_iterator it;
+		m_rApplication.m_pClipboardScenario->clear();
+
+		// Copies boxes to clipboard
+		for(it=m_vCurrentObject.begin(); it!=m_vCurrentObject.end(); it++)
+		{
+			if(it->second)
+			{
+				if(m_rScenario.isBox(it->first))
+				{
+					CIdentifier l_oNewIdentifier;
+					IBox* l_pBox=m_rScenario.getBoxDetails(it->first);
+					m_rApplication.m_pClipboardScenario->addBox(
+						*l_pBox,
+						l_oNewIdentifier);
+					l_vIdMapping[it->first]=l_oNewIdentifier;
+				}
+			}
+		}
+
+		// Copies links to clipboard
+		for(it=m_vCurrentObject.begin(); it!=m_vCurrentObject.end(); it++)
+		{
+			if(it->second)
+			{
+				if(m_rScenario.isLink(it->first))
+				{
+					CIdentifier l_oNewIdentifier;
+					ILink* l_pLink=m_rScenario.getLinkDetails(it->first);
+					m_rApplication.m_pClipboardScenario->connect(
+						l_vIdMapping[l_pLink->getSourceBoxIdentifier()],
+						l_pLink->getSourceBoxOutputIndex(),
+						l_vIdMapping[l_pLink->getTargetBoxIdentifier()],
+						l_pLink->getTargetBoxInputIndex(),
+						l_oNewIdentifier);
+				}
+			}
+		}
 	}
-	void CInterfacedScenario::contextMenuSelectionCutCB(void)
+	void CInterfacedScenario::cutSelection(void)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuSelectionCutCB\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "cutSelection\n";
+
+		this->copySelection();
 		this->deleteSelection();
 	}
-	void CInterfacedScenario::contextMenuSelectionPasteCB(void)
+	void CInterfacedScenario::pasteSelection(void)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuSelectionPasteCB\n";
-		m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "contextMenuSelectionPasteCB - not yet implemented\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "pasteSelection\n";
+
+		// Prepares paste
+		CIdentifier l_oIdentifier;
+		map < CIdentifier, CIdentifier > l_vIdMapping;
+		map < CIdentifier, CIdentifier >::const_iterator it;
+		int32 l_iCenterX=0;
+		int32 l_iCenterY=0;
+		int32 l_iBoxCount=0;
+
+		// Pastes boxes from clipboard
+		while((l_oIdentifier=m_rApplication.m_pClipboardScenario->getNextBoxIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+		{
+			CIdentifier l_oNewIdentifier;
+			IBox* l_pBox=m_rApplication.m_pClipboardScenario->getBoxDetails(l_oIdentifier);
+			m_rScenario.addBox(
+				*l_pBox,
+				l_oNewIdentifier);
+			l_vIdMapping[l_oIdentifier]=l_oNewIdentifier;
+
+			// Updates visualisation manager
+			CIdentifier l_oBoxAlgorithmIdentifier=l_pBox->getAlgorithmClassIdentifier();
+			const IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oBoxAlgorithmIdentifier);
+
+			// If a visualisation box was dropped, add it in window manager
+			if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
+			{
+#if 1
+				// Generate a unique name so that it can be identified unambiguously
+				CString l_oBoxName;
+				generateDisplayPluginName(m_rScenario.getBoxDetails(l_oNewIdentifier), l_oBoxName);
+				m_rScenario.getBoxDetails(l_oNewIdentifier)->setName(l_oBoxName);
+#endif
+
+				// Let window manager know about new box
+				m_pDesignerVisualisation->onVisualisationBoxAdded(m_rScenario.getBoxDetails(l_oNewIdentifier));
+			}
+
+			// Computes average box location
+			CBoxProxy l_oBoxProxy(m_rKernelContext, m_rScenario, l_oNewIdentifier);
+			l_iCenterX+=l_oBoxProxy.getXCenter();
+			l_iCenterY+=l_oBoxProxy.getYCenter();
+			l_iBoxCount++;
+		}
+
+		// Pastes links from clipboard
+		while((l_oIdentifier=m_rApplication.m_pClipboardScenario->getNextLinkIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+		{
+			CIdentifier l_oNewIdentifier;
+			ILink* l_pLink=m_rApplication.m_pClipboardScenario->getLinkDetails(l_oIdentifier);
+			m_rScenario.connect(
+				l_vIdMapping[l_pLink->getSourceBoxIdentifier()],
+				l_pLink->getSourceBoxOutputIndex(),
+				l_vIdMapping[l_pLink->getTargetBoxIdentifier()],
+				l_pLink->getTargetBoxInputIndex(),
+				l_oNewIdentifier);
+		}
+
+		// Makes pasted stuff the default selection
+		// Moves boxes under cursor
+		if(m_rApplication.m_pClipboardScenario->getNextBoxIdentifier(OV_UndefinedIdentifier)!=OV_UndefinedIdentifier)
+		{
+			m_vCurrentObject.clear();
+			for(it=l_vIdMapping.begin(); it!=l_vIdMapping.end(); it++)
+			{
+				m_vCurrentObject[it->second]=true;
+
+				// Moves boxes under cursor
+				CBoxProxy l_oBoxProxy(m_rKernelContext, m_rScenario, it->second);
+				l_oBoxProxy.setCenter(
+					l_oBoxProxy.getXCenter()-l_iCenterX/l_iBoxCount+m_f64CurrentMouseX-m_i32ViewOffsetX,
+					l_oBoxProxy.getYCenter()-32+m_f64CurrentMouseY-m_i32ViewOffsetY);
+				// Ok, why 32 would you ask, just because it is fine
+			}
+		}
+
+		this->redraw();
+	}
+	void CInterfacedScenario::deleteSelection(void)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "deleteSelection\n";
+
+		map<CIdentifier, boolean>::const_iterator i;
+		for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
+		{
+			if(i->second)
+			{
+				if(m_rScenario.isBox(i->first))
+				{
+					// removes visualisation box from window manager
+					m_pDesignerVisualisation->onVisualisationBoxRemoved(i->first);
+
+					// removes box from scenario
+					m_rScenario.removeBox(i->first);
+				}
+				if(m_rScenario.isLink(i->first))
+				{
+					// removes link from scenario
+					m_rScenario.disconnect(i->first);
+				}
+			}
+		}
+		m_vCurrentObject.clear();
+
+		this->redraw();
 	}
 
 	void CInterfacedScenario::contextMenuBoxRenameCB(IBox& rBox)
@@ -1546,30 +1720,6 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			}
 		}
 		return false;
-	}
-
-	void CInterfacedScenario::deleteSelection(void)
-	{
-		map<CIdentifier, boolean>::const_iterator i;
-		for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
-		{
-			if(i->second)
-			{
-				if(m_rScenario.isBox(i->first))
-				{
-					//remove visualisation box from window manager
-					m_pDesignerVisualisation->onVisualisationBoxRemoved(i->first);
-
-					//remove box from scenario
-					m_rScenario.removeBox(i->first);
-				}
-				else
-				{
-					m_rScenario.disconnect(i->first);
-				}
-			}
-		}
-		m_vCurrentObject.clear();
 	}
 
 	void CInterfacedScenario::generateDisplayPluginName(IBox* pDisplayBox, CString& rDisplayBoxName)

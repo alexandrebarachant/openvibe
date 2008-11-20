@@ -1,6 +1,8 @@
 #include "IReaderHelper.h"
 
 #include <string>
+#include <string.h>
+#include <stdlib.h>
 
 using namespace EBML;
 using namespace std;

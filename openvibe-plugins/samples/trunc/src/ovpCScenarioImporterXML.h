@@ -134,10 +134,10 @@ namespace OpenViBEPlugins
 			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vBoxIdMapping;
 			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vLinkIdMapping;
 			std::map<OpenViBE::CIdentifier, OpenViBE::CIdentifier> m_vVisualisationWidgetIdMapping;
-			std::stack<std::string> m_vNodes;			
+			std::stack<std::string> m_vNodes;
 			OpenViBE::uint32 m_ui32Status;
 			OpenViBE::boolean m_bIsOpenViBEScenario;
-			SScenario m_oScenario;			
+			SScenario m_oScenario;
 		};
 
 		class CScenarioImporterXMLDesc : public OpenViBE::Plugins::IScenarioImporterDesc

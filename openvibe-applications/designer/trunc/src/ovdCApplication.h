@@ -13,8 +13,7 @@ namespace OpenViBEDesigner
 	class CApplication
 	{
 	public:
-		CApplication(
-			const OpenViBE::Kernel::IKernelContext& rKernelContext);
+		CApplication(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
 		void initialize(void);
 
@@ -34,13 +33,9 @@ namespace OpenViBEDesigner
 		//@{
 
 		void copySelectionCB(void);
-
 		void cutSelectionCB(void);
-
 		void pasteSelectionCB(void);
-
 		void deleteSelectionCB(void);
-
 		void preferencesCB(void);
 
 		//@}
@@ -48,9 +43,13 @@ namespace OpenViBEDesigner
 		/** \name Scenario management */
 		//@{
 
+		OpenViBE::CString getWorkingDirectory(void);
+
 		OpenViBE::boolean hasScenarioRunning(void);
 
 		OpenViBEDesigner::CInterfacedScenario* getCurrentInterfacedScenario(void);
+
+		void testCB(void);
 
 		void newScenarioCB(void);
 
@@ -116,8 +115,8 @@ namespace OpenViBEDesigner
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::Kernel::IPluginManager* m_pPluginManager;
 		OpenViBE::Kernel::IScenarioManager* m_pScenarioManager;
-		OpenViBE::Kernel::IScenario* m_pClipboardScenario;
 		OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManager;
+		OpenViBE::Kernel::IScenario* m_pClipboardScenario;
 
 		::GladeXML* m_pGladeInterface;
 		::GtkWidget* m_pMainWindow;

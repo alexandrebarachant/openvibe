@@ -7,6 +7,9 @@
 #include <stdio.h>
 #endif
 
+#include <stdlib.h>
+#include <string.h>
+
 using namespace EBML;
 
 // ________________________________________________________________________________________________________________

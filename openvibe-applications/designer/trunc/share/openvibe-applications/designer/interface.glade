@@ -1231,7 +1231,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="openvibe-menu_cut">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
+                        <property name="sensitive">True</property>
                         <property name="label" translatable="yes">gtk-cut</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
@@ -1240,7 +1240,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="openvibe-menu_copy">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
+                        <property name="sensitive">True</property>
                         <property name="label" translatable="yes">gtk-copy</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
@@ -1249,7 +1249,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="openvibe-menu_paste">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
+                        <property name="sensitive">True</property>
                         <property name="label" translatable="yes">gtk-paste</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
@@ -1258,7 +1258,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="openvibe-menu_delete">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
+                        <property name="sensitive">True</property>
                         <property name="label" translatable="yes">gtk-delete</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
