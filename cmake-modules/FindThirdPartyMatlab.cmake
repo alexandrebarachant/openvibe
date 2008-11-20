@@ -1,0 +1,27 @@
+# ---------------------------------
+# Finds Matlab toolkit
+# ---------------------------------
+
+INCLUDE("FindMatlab")
+
+IF(MATLAB_FOUND)
+	MESSAGE(STATUS "  Found Matlab...")
+	INCLUDE_DIRECTORIES(${MATLAB_INCLUDE_DIR})
+	LINK_DIRECTORIES(${MATLAB_MEX_LIBRARY})
+	LINK_DIRECTORIES(${MATLAB_MX_LIBRARY})
+	LINK_DIRECTORIES(${MATLAB_ENG_LIBRARY})
+
+	FOREACH(Matlab_LIB ${MATLAB_LIBRARIES})
+		SET(Matlab_LIB1 "Matlab_LIB1-NOTFOUND")
+		FIND_LIBRARY(Matlab_LIB1 NAMES ${Matlab_LIB} PATHS ${MATLAB_MEX_LIBRARY} ${MATLAB_MX_LIBRARY} ${MATLAB_ENG_LIBRARY} / NO_DEFAULT_PATH)
+		FIND_LIBRARY(Matlab_LIB1 NAMES ${Matlab_LIB})
+		IF(Matlab_LIB1)
+			MESSAGE(STATUS "    [  OK  ] Third party lib ${Matlab_LIB1}")
+			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${Matlab_LIB1})
+		ELSE(Matlab_LIB1)
+			MESSAGE(STATUS "    [FAILED] Third party lib ${Matlab_LIB}")
+		ENDIF(Matlab_LIB1)
+	ENDFOREACH(Matlab_LIB)
+ELSE(MATLAB_FOUND)
+	MESSAGE(STATUS "  FAILED to find Matlab...")
+ENDIF(MATLAB_FOUND)
