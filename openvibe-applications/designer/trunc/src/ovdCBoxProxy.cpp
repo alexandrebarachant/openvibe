@@ -170,7 +170,7 @@ void CBoxProxy::updateSize(::GtkWidget* pWidget, const char* sText, int* pXSize,
 	::PangoContext* l_pPangoContext=NULL;
 	::PangoLayout* l_pPangoLayout=NULL;
 	::PangoRectangle l_oPangoRectangle;
-	l_pPangoContext=gtk_widget_get_pango_context(pWidget);
+	l_pPangoContext=gtk_widget_create_pango_context(pWidget);
 	l_pPangoLayout=pango_layout_new(l_pPangoContext);
 	pango_layout_set_alignment(l_pPangoLayout, PANGO_ALIGN_CENTER);
 	pango_layout_set_markup(l_pPangoLayout, sText, -1);
@@ -178,4 +178,5 @@ void CBoxProxy::updateSize(::GtkWidget* pWidget, const char* sText, int* pXSize,
 	*pXSize=l_oPangoRectangle.width;
 	*pYSize=l_oPangoRectangle.height;
 	g_object_unref(l_pPangoLayout);
+	g_object_unref(l_pPangoContext);
 }

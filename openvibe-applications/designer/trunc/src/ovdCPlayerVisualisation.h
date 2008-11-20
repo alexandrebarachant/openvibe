@@ -13,8 +13,8 @@ namespace OpenViBEDesigner
 	public:
 		CPlayerVisualisation(
 			const OpenViBE::Kernel::IKernelContext& rKernelContext,
-			const OpenViBE::Kernel::IScenario& rScenario,
-			OpenViBE::Kernel::IVisualisationTree& rVisualisationTree);
+			OpenViBE::Kernel::IVisualisationTree& rVisualisationTree,
+			CInterfacedScenario& rInterfacedScenario);
 
 		virtual ~CPlayerVisualisation();
 
@@ -82,9 +82,11 @@ namespace OpenViBEDesigner
       gpointer   user_data);
 		OpenViBE::boolean deleteToolbarCB(::GtkWidget* pWidget);
 
+	private:
+
 		const OpenViBE::Kernel::IKernelContext&	m_rKernelContext;
-		const OpenViBE::Kernel::IScenario& m_rScenario;
 		OpenViBE::Kernel::IVisualisationTree& m_rVisualisationTree;
+		OpenViBEDesigner::CInterfacedScenario& m_rInterfacedScenario;		
 
 		/**
 		 * \brief Vector of top level windows

@@ -1,5 +1,7 @@
 #include "ovd_base.h"
 #include "ovdTAttributeHandler.h"
+#include "ovdCApplication.h"
+#include "ovdCInterfacedScenario.h"
 #include "ovdCPlayerVisualisation.h"
 
 using namespace OpenViBE;
@@ -17,10 +19,10 @@ static void dummy_callback(::GtkWidget*)
 {
 }
 
-CPlayerVisualisation::CPlayerVisualisation(const IKernelContext& rKernelContext, const IScenario& rScenario, IVisualisationTree& rVisualisationTree) :
+CPlayerVisualisation::CPlayerVisualisation(const IKernelContext& rKernelContext, IVisualisationTree& rVisualisationTree, CInterfacedScenario& rInterfacedScenario) :
 	m_rKernelContext(rKernelContext),
-	m_rScenario(rScenario),
 	m_rVisualisationTree(rVisualisationTree),
+	m_rInterfacedScenario(rInterfacedScenario),
 	m_pActiveToolbarButton(NULL)
 {
 }
@@ -212,6 +214,9 @@ void CPlayerVisualisation::init(void)
 
 			//set its title
 			gtk_window_set_title(GTK_WINDOW(l_pTreeWidget), (const char*)pVisualisationWidget->getName());
+
+			//set it transient for main window
+			gtk_window_set_transient_for(GTK_WINDOW(l_pTreeWidget), GTK_WINDOW(m_rInterfacedScenario.m_rApplication.m_pMainWindow));
 
 			//FIXME wrong spelling (-)
 			gtk_signal_connect(GTK_OBJECT(l_pTreeWidget), "configure_event", G_CALLBACK(configure_event_cb), this);
@@ -436,6 +441,8 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 		//FIXME : read default size from a settings file
 		gtk_window_set_default_size(GTK_WINDOW(l_pWindow), 300, 300);
 		gtk_window_set_title(GTK_WINDOW(l_pWindow), (const char*)pWidget->getName());
+		//set it transient for main window
+		gtk_window_set_transient_for(GTK_WINDOW(l_pWindow), GTK_WINDOW(m_rInterfacedScenario.m_rApplication.m_pMainWindow));
 		//insert box in top level window
 		gtk_container_add(GTK_CONTAINER(l_pWindow), (::GtkWidget*)pWidgetBox);
 		//prevent user from closing this window

@@ -242,7 +242,35 @@ void CBoxConfigurationDialog::run(void)
 		CIdentifier l_oSettingType;
 
 		::GladeXML* l_pGladeInterfaceSetting=glade_xml_new(m_sGUIFilename.toASCIIString(), "box_configuration", NULL);
+
+#if 1 //this approach fails to set a modal dialog
 		::GtkWidget* l_pSettingDialog=glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration");
+		char l_sTitle[1024];
+		sprintf(l_sTitle, "Configure %s settings", m_rBox.getName().toASCIIString());
+		gtk_window_set_title(GTK_WINDOW(l_pSettingDialog), l_sTitle);
+#else
+		::GtkWidget *l_pSettingDialog = gtk_dialog_new_with_buttons(
+			"Configure Box Settings", 
+			&m_rMainWindow, //set dialog transient for main window
+			GTK_DIALOG_MODAL,
+			"Revert", 0, "Apply", GTK_RESPONSE_APPLY,	"Cancel",	GTK_RESPONSE_CANCEL, NULL);	 //set up action buttons
+	
+		//unparent contents from glade interface
+		GtkWidget* l_pContents = glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-table");
+		::GtkWidget* l_pContentsParent = gtk_widget_get_parent(l_pContents);
+		if(GTK_IS_CONTAINER(l_pContentsParent))
+		{
+			gtk_object_ref(GTK_OBJECT(l_pContents));
+			gtk_container_remove(GTK_CONTAINER(l_pContentsParent), l_pContents);
+		}	
+		
+		//add contents to dialog
+		GtkWidget* l_pContentsArea = GTK_DIALOG(l_pSettingDialog)->vbox;//gtk_dialog_get_content_area() not available in current Gtk distribution
+		gtk_container_add (GTK_CONTAINER (l_pContentsArea), l_pContents);
+		gtk_object_unref(GTK_OBJECT(l_pContents));
+
+		//action buttons can't be unparented from glade interface and added to dialog, which is why they are added at dialog creation time
+#endif
 		::GtkTable* l_pSettingTable=GTK_TABLE(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-table"));
 		::GtkContainer* l_pFileOverrideContainer=GTK_CONTAINER(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-hbox_filename_override"));
 		::GtkCheckButton* l_pFileOverrideCheck=GTK_CHECK_BUTTON(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-checkbutton_filename_override"));
@@ -251,7 +279,6 @@ void CBoxConfigurationDialog::run(void)
 		g_object_unref(l_pGladeInterfaceSetting);
 
 		gtk_table_resize(l_pSettingTable, m_rBox.getSettingCount(), 4);
-		gtk_window_set_title(GTK_WINDOW(l_pSettingDialog), m_rBox.getName());
 
 		vector< ::GtkWidget* > l_vSettingValue;
 		for(i=0; i<m_rBox.getSettingCount(); i++)

@@ -1038,7 +1038,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 								IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
 								if(l_pBox)
 								{
-									CConnectorEditor l_oConnectorEditor(m_rKernelContext, *l_pBox, m_oCurrentObject.m_ui32ConnectorType, m_oCurrentObject.m_ui32ConnectorIndex, m_sGUIFilename.c_str());
+									CConnectorEditor l_oConnectorEditor(m_rKernelContext, *l_pBox, m_oCurrentObject.m_ui32ConnectorType, m_oCurrentObject.m_ui32ConnectorIndex, m_oCurrentObject.m_ui32ConnectorType==Connector_Input?"Edit Input":"Edit Output", m_sGUIFilename.c_str());
 									l_oConnectorEditor.run();
 								}
 							}
@@ -1540,7 +1540,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		rBox.addInput("New input", OV_UndefinedIdentifier);
 		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifyInput))
 		{
-			CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Input, rBox.getInputCount()-1, m_sGUIFilename.c_str());
+			CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Input, rBox.getInputCount()-1, "Add Input", m_sGUIFilename.c_str());
 			if(!l_oConnectorEditor.run())
 			{
 				rBox.removeInput(rBox.getInputCount()-1);
@@ -1551,7 +1551,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxEditInputCB\n";
 
-		CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Input, ui32Index, m_sGUIFilename.c_str());
+		CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Input, ui32Index, "Edit Input", m_sGUIFilename.c_str());
 		l_oConnectorEditor.run();
 	}
 	void CInterfacedScenario::contextMenuBoxRemoveInputCB(IBox& rBox, uint32 ui32Index)
@@ -1565,7 +1565,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		rBox.addOutput("New output", OV_UndefinedIdentifier);
 		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput))
 		{
-			CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Output, rBox.getOutputCount()-1, m_sGUIFilename.c_str());
+			CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Output, rBox.getOutputCount()-1, "Add Output", m_sGUIFilename.c_str());
 			if(!l_oConnectorEditor.run())
 			{
 				rBox.removeOutput(rBox.getOutputCount()-1);
@@ -1576,7 +1576,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxEditOutputCB\n";
 
-		CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Output, ui32Index, m_sGUIFilename.c_str());
+		CConnectorEditor l_oConnectorEditor(m_rKernelContext, rBox, Connector_Output, ui32Index, "Edit Output", m_sGUIFilename.c_str());
 		l_oConnectorEditor.run();
 	}
 	void CInterfacedScenario::contextMenuBoxRemoveOutputCB(IBox& rBox, uint32 ui32Index)
@@ -1590,7 +1590,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		rBox.addSetting("New setting", OV_UndefinedIdentifier, "");
 		if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifySetting))
 		{
-			CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, rBox.getSettingCount()-1, m_sGUIFilename.c_str());
+			CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, rBox.getSettingCount()-1, "Add Setting", m_sGUIFilename.c_str());
 			if(!l_oSettingEditorDialog.run())
 			{
 				rBox.removeSetting(rBox.getSettingCount()-1);
@@ -1600,7 +1600,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	void CInterfacedScenario::contextMenuBoxEditSettingCB(IBox& rBox, uint32 ui32Index)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxEditSettingCB\n";
-		CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, ui32Index, m_sGUIFilename.c_str());
+		CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, ui32Index, "Edit Setting", m_sGUIFilename.c_str());
 		l_oSettingEditorDialog.run();
 	}
 	void CInterfacedScenario::contextMenuBoxRemoveSettingCB(IBox& rBox, uint32 ui32Index)
@@ -1684,7 +1684,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 		if(m_pPlayerVisualisation == NULL)
 		{
-			m_pPlayerVisualisation = new CPlayerVisualisation(m_rKernelContext, m_rScenario, *m_pVisualisationTree);
+			m_pPlayerVisualisation = new CPlayerVisualisation(m_rKernelContext, *m_pVisualisationTree, *this);
 		}
 
 		//initialize and show windows

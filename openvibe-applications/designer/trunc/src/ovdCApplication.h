@@ -3,13 +3,12 @@
 
 #include "ovd_base.h"
 
-#include "ovdCInterfacedObject.h"
-
-#include <map>
-#include <string>
+#include <vector>
 
 namespace OpenViBEDesigner
 {
+	class CInterfacedScenario;
+
 	class CApplication
 	{
 	public:
@@ -93,6 +92,13 @@ namespace OpenViBEDesigner
 		void createPlayer(void);
 
 		void releasePlayer(void);
+
+		//@}
+
+		/** \name Application management */
+		//@{
+
+		OpenViBE::boolean quitApplicationCB(void);
 
 		//@}
 

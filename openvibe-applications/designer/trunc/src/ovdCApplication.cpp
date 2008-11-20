@@ -74,6 +74,13 @@ namespace
 	{
 		static_cast<CApplication*>(pUserData)->closeScenarioCB();
 	}
+	void menu_quit_application_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		if(static_cast<CApplication*>(pUserData)->quitApplicationCB())
+		{
+			gtk_main_quit();
+		}
+	}
 
 	void button_new_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
@@ -98,10 +105,7 @@ namespace
 
 	void delete_designer_visualisation_cb(gpointer user_data)
 	{
-		if(user_data != NULL)
-		{
-			static_cast<CApplication*>(user_data)->deleteDesignerVisualisationCB();
-		}
+		static_cast<CApplication*>(user_data)->deleteDesignerVisualisationCB();
 	}
 	void button_toggle_window_manager_cb(::GtkToggleToolButton* pButton, gpointer pUserData)
 	{
@@ -129,6 +133,15 @@ namespace
 		static_cast<CApplication*>(pUserData)->forwardScenarioCB();
 	}
 
+	gboolean button_quit_application_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, gpointer pUserData)
+	{
+		if(static_cast<CApplication*>(pUserData)->quitApplicationCB())
+		{
+			gtk_main_quit();
+			return FALSE;
+		}
+		return TRUE;
+	}
 	void log_level_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->logLevelCB();
@@ -262,6 +275,9 @@ void CApplication::initialize(void)
 	m_pGladeInterface=glade_xml_new(OVD_GUI_File, "openvibe", NULL);
 	m_pMainWindow=glade_xml_get_widget(m_pGladeInterface, "openvibe");
 
+	// Catch delete events when close button is clicked
+	g_signal_connect(m_pMainWindow, "delete_event", G_CALLBACK(button_quit_application_cb), this);
+
 	// Connects menu actions
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_copy")),        "activate", G_CALLBACK(menu_copy_selection_cb),     this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_cut")),         "activate", G_CALLBACK(menu_cut_selection_cb),      this);
@@ -274,6 +290,7 @@ void CApplication::initialize(void)
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_save")),        "activate", G_CALLBACK(menu_save_scenario_cb),      this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_save_as")),     "activate", G_CALLBACK(menu_save_scenario_as_cb),   this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_close")),       "activate", G_CALLBACK(menu_close_scenario_cb),     this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_quit")),        "activate", G_CALLBACK(menu_quit_application_cb),   this);
 
 	// g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_test")),        "activate", G_CALLBACK(menu_test_cb),               this);
 
@@ -830,7 +847,7 @@ void CApplication::closeScenarioCB(void)
 
 void CApplication::deleteDesignerVisualisationCB()
 {
-	//untoggle visualisation button
+	//untoggle window manager button when its associated dialog is closed
 	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager")), FALSE);
 }
 
@@ -973,6 +990,35 @@ void CApplication::forwardScenarioCB(void)
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), false);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), false);
+}
+
+boolean CApplication::quitApplicationCB(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "quitApplicationCB\n";
+
+	// can't quit while scenarios are running
+	if(hasScenarioRunning() == true)
+	{
+		// display warning dialog
+		::GtkWidget* l_pDialog=gtk_message_dialog_new(
+			GTK_WINDOW(m_pMainWindow),
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_WARNING,
+			GTK_BUTTONS_OK,
+			"A scenario is locked !");
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pDialog),
+			"The application can't be exited while scenarios are being played. "
+			"If you really want to quit, you'll have to stop all scenarios first.");
+		gtk_window_set_title(GTK_WINDOW(l_pDialog), "Warning");
+		gtk_dialog_run(GTK_DIALOG(l_pDialog));
+		gtk_widget_destroy(l_pDialog);
+
+		// prevent Gtk from handling delete_event and killing app
+		return false;
+	}
+
+	// OK to kill app
+	return true;
 }
 
 void CApplication::logLevelCB(void)

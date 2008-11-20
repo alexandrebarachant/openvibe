@@ -13,11 +13,12 @@ static void type_changed_cb(::GtkComboBox* pWidget, gpointer pUserData)
 	static_cast<CSettingEditorDialog*>(pUserData)->typeChangedCB();
 }
 
-CSettingEditorDialog::CSettingEditorDialog(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32SettingIndex, const char* sGUIFilename)
+CSettingEditorDialog::CSettingEditorDialog(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32SettingIndex, const char* sTitle, const char* sGUIFilename)
 	:m_rKernelContext(rKernelContext)
 	,m_rBox(rBox)
 	,m_ui32SettingIndex(ui32SettingIndex)
 	,m_sGUIFilename(sGUIFilename)
+	,m_sTitle(sTitle)
 	,m_pDefaultValue(NULL)
 {
 }
@@ -35,6 +36,8 @@ boolean CSettingEditorDialog::run(void)
 	m_pType=glade_xml_get_widget(l_pGladeInterfaceSetting, "setting_editor-setting_type_combobox");
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(m_pType))));
 	g_object_unref(l_pGladeInterfaceSetting);
+
+	gtk_window_set_title(GTK_WINDOW(l_pDialog), m_sTitle.c_str());
 
 	g_signal_connect(G_OBJECT(m_pType), "changed", G_CALLBACK(type_changed_cb), this);
 

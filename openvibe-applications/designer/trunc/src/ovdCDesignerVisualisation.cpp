@@ -1,5 +1,6 @@
 #include "ovd_base.h"
 #include "ovdTAttributeHandler.h"
+#include "ovdCApplication.h"
 #include "ovdCDesignerVisualisation.h"
 #include "ovdCInterfacedScenario.h"
 #include "ovdCInputDialog.h"
@@ -211,6 +212,7 @@ void CDesignerVisualisation::init(std::string guiFile)
 
 	gtk_window_set_default_size(GTK_WINDOW(m_pDialog), 600, 400);
 	gtk_window_set_title(GTK_WINDOW(m_pDialog), "OpenViBE Window Manager");
+	// gtk_window_set_transient_for(GTK_WINDOW(m_pDialog), GTK_WINDOW(m_rInterfacedScenario.m_rApplication.m_pMainWindow));
 	gtk_signal_connect(GTK_OBJECT(m_pDialog), "configure_event", G_CALLBACK(configure_event_cb), this);
 #ifdef HANDLE_MIN_MAX_EVENTS
 	gtk_signal_connect(GTK_OBJECT(m_pDialog), "window_state_event", G_CALLBACK(window_state_event_cb), this);
@@ -311,6 +313,28 @@ void CDesignerVisualisation::onVisualisationBoxRemoved(const CIdentifier& rBoxId
 
 		//refresh view
 		refreshActiveVisualisation(NULL);
+	}
+}
+
+void CDesignerVisualisation::onVisualisationBoxRenamed(const CIdentifier& rBoxIdentifier)
+{
+	//retrieve visualisation widget
+	IVisualisationWidget* l_pVisualisationWidget = m_rVisualisationTree.getVisualisationWidgetFromBoxIdentifier(rBoxIdentifier);
+	if(l_pVisualisationWidget != NULL)
+	{
+		//retrieve box name
+		const IBox* l_pBox = m_rInterfacedScenario.m_rScenario.getBoxDetails(rBoxIdentifier);
+		if(l_pBox != NULL)
+		{
+			//set new visualisation widget name
+			l_pVisualisationWidget->setName(l_pBox->getName());
+
+			//reload tree
+			m_rVisualisationTree.reloadTree();
+
+			//refresh view			
+			refreshActiveVisualisation(NULL);
+		}
 	}
 }
 
@@ -1019,7 +1043,9 @@ boolean CDesignerVisualisation::renameVisualisationWindow(const char* pNewVisual
 	//if trying to set identical name, return
 	CString l_oNewWindowName = pNewVisualisationWindowName;
 	if(l_pVisualisationWindow->getName() == l_oNewWindowName)
+	{
 		return true;
+	}
 
 	//ensure name is unique
 	CIdentifier l_oVisualisationWindowIdentifier = OV_UndefinedIdentifier;
@@ -1050,8 +1076,12 @@ boolean CDesignerVisualisation::removeVisualisationWindow()
 	//retrieve visualisation window
 	CIdentifier l_oVisualisationWindowIdentifier = OV_UndefinedIdentifier;
 	while(m_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)
+	{
 		if(m_rVisualisationTree.getVisualisationWidget(l_oVisualisationWindowIdentifier)->getName() == m_oActiveVisualisationWindowName)
+		{
 			break;
+		}
+	}
 
 	//return if window was not found
 	if(l_oVisualisationWindowIdentifier == OV_UndefinedIdentifier)
@@ -1489,7 +1519,10 @@ void CDesignerVisualisation::buttonReleaseCB(::GtkWidget* pWidget, GdkEventButto
 				::GtkTreeIter l_oIter;
 
 				if(m_rVisualisationTree.getTreeSelection(m_pTreeView, &l_oIter) == false)
+				{
+std::cout << "oups\n";
 					return;
+				}
 
 				unsigned long l_ulType = m_rVisualisationTree.getULongValueFromTreeIter(&l_oIter, EVisualisationTreeColumn_ULongNodeType);
 

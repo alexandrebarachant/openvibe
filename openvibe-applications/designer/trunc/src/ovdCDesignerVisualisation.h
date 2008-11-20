@@ -41,7 +41,9 @@ namespace OpenViBEDesigner
 			const OpenViBE::Kernel::IBox* pBox);
 		void onVisualisationBoxRemoved(
 			const OpenViBE::CIdentifier& rBoxIdentifier);
-		
+		void onVisualisationBoxRenamed(
+			const OpenViBE::CIdentifier& rBoxIdentifier);
+
 		//ITreeViewCB callbacks overloading		
 		void createTreeWidget(
 			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
@@ -276,6 +278,7 @@ namespace OpenViBEDesigner
 			OpenViBE::Kernel::EDragDataLocation oLocation);
 
 	private:
+
 		const OpenViBE::Kernel::IKernelContext&	m_rKernelContext;
 		OpenViBE::Kernel::IVisualisationTree& m_rVisualisationTree;
 		OpenViBEDesigner::CInterfacedScenario& m_rInterfacedScenario;

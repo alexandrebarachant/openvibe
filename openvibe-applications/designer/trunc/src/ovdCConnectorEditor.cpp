@@ -8,12 +8,13 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBEDesigner;
 using namespace std;
 
-CConnectorEditor::CConnectorEditor(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32ConnectorType, uint32 ui32ConnectorIndex, const char* sGUIFilename)
+CConnectorEditor::CConnectorEditor(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32ConnectorType, uint32 ui32ConnectorIndex, const char* sTitle, const char* sGUIFilename)
 	:m_rKernelContext(rKernelContext)
 	,m_rBox(rBox)
 	,m_ui32ConnectorType(ui32ConnectorType)
 	,m_ui32ConnectorIndex(ui32ConnectorIndex)
 	,m_sGUIFilename(sGUIFilename)
+	,m_sTitle(sTitle?sTitle:"")
 {
 }
 
@@ -58,8 +59,9 @@ boolean CConnectorEditor::run(void)
 	::GtkEntry* l_pConnectorNameEntry=GTK_ENTRY(glade_xml_get_widget(l_pGladeInterfaceConnector, "connector_editor-connector_name_entry"));
 	::GtkComboBox* l_pConnectorTypeComboBox=GTK_COMBO_BOX(glade_xml_get_widget(l_pGladeInterfaceConnector,"connector_editor-connector_type_combobox"));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_combo_box_get_model(l_pConnectorTypeComboBox)));
-	gtk_window_set_title(GTK_WINDOW(l_pConnectorDialog), m_rBox.getName());
+	gtk_window_set_title(GTK_WINDOW(l_pConnectorDialog), m_sTitle.c_str());
 
+	//get a list of stream types and display connector type
 	map<string, CIdentifier> m_vStreamTypes;
 	CIdentifier l_oCurrentTypeIdentifier;
 	gint l_iActive=-1;
@@ -77,6 +79,7 @@ boolean CConnectorEditor::run(void)
 		}
 	}
 
+	//display connector name
 	gtk_entry_set_text(l_pConnectorNameEntry, l_oConnectorName.toASCIIString());
 
 	boolean l_bFinished=false;
