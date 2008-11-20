@@ -15,10 +15,7 @@ namespace OpenViBEPlugins
 namespace SimpleVisualisation
 {
 
-CSimple3DDisplay::CSimple3DDisplay(void) :
-	m_pStreamedMatrixReader(NULL),
-	m_pStreamedMatrixReaderCallBack(NULL),
-	m_pProxy(NULL),
+CSimple3DDisplay::CSimple3DDisplay(void) :	
 	m_pSimple3DDatabase(NULL),
 	m_o3DWidgetIdentifier(OV_UndefinedIdentifier)
 {
@@ -31,13 +28,6 @@ uint64 CSimple3DDisplay::getClockFrequency(void)
 
 boolean CSimple3DDisplay::initialize(void)
 {
-	//initializes the ebml input
-	m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
-	m_pStreamedMatrixReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
-
-	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_AlgorithmSphericalSplineInterpolation));
-	m_pProxy->initialize();
-
 	m_pSimple3DDatabase = new CSimple3DDatabase(*this);
 
 	m_pSimple3DView = new CSimple3DView(*m_pSimple3DDatabase);
@@ -81,21 +71,10 @@ boolean CSimple3DDisplay::initialize(void)
 
 boolean CSimple3DDisplay::uninitialize(void)
 {
-	//release the ebml reader
-	releaseBoxAlgorithmStreamedMatrixInputReaderCallback(m_pStreamedMatrixReaderCallBack);
-	m_pStreamedMatrixReaderCallBack=NULL;
-
-	m_pStreamedMatrixReader->release();
-	m_pStreamedMatrixReader=NULL;
-
 	delete m_pSimple3DView;
 	m_pSimple3DView = NULL;
 	delete m_pSimple3DDatabase;
 	m_pSimple3DDatabase = NULL;
-
-	m_pProxy->uninitialize();
-
-	getAlgorithmManager().releaseAlgorithm(*m_pProxy);
 
 	return true;
 }
@@ -121,47 +100,11 @@ boolean CSimple3DDisplay::processClock(IMessageClock& rMessageClock)
 }
 
 boolean CSimple3DDisplay::process(void)
-{
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
-	uint32 i;
-
-	for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
-	{
-		uint64 l_ui64ChunkSize=0;
-		const uint8* l_pChunkBuffer=NULL;
-
-		if(l_pDynamicBoxContext->getInputChunk(0, i, m_ui64StartTime, m_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
-		{
-			m_pStreamedMatrixReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
-			l_pDynamicBoxContext->markInputAsDeprecated(0, i);
-		}
-	}
-
-	//moved here so that it doesn't have to be connected to a signal generator
+{	
 	m_pSimple3DDatabase->process3D();
 	getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
 
 	return true;
-}
-
-void CSimple3DDisplay::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
-{
-	m_pSimple3DDatabase->setMatrixDimmensionCount(ui32DimmensionCount);
-}
-
-void CSimple3DDisplay::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
-{
-	m_pSimple3DDatabase->setMatrixDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
-}
-
-void CSimple3DDisplay::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
-{
-	m_pSimple3DDatabase->setMatrixDimmensionLabel(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
-}
-
-void CSimple3DDisplay::setMatrixBuffer(const float64* pBuffer)
-{
-	m_pSimple3DDatabase->setMatrixBuffer(pBuffer, m_ui64StartTime, m_ui64EndTime);
 }
 
 };

@@ -6,6 +6,7 @@
 #include "ovpCBCICompetitionIIIbReader.h"
 
 #include "algorithms/file-reading-and-writing/brainamp/ovpCAlgorithmBrainampFileReader.h"
+#include "algorithms/file-reading-and-writing/ovpCAlgorithmOVMatrixFileReader.h"
 
 #include "box-algorithms/file-reading-and-writing/brainamp/ovpCBoxAlgorithmBrainampFileReader.h"
 
@@ -20,4 +21,6 @@ OVP_Declare_Begin()
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CAlgorithmBrainampFileReaderDesc)
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmBrainampFileReaderDesc)
+
+	OVP_Declare_New(OpenViBEPlugins::FileIO::CAlgorithmOVMatrixFileReaderDesc)
 OVP_Declare_End()

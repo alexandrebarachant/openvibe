@@ -2,12 +2,11 @@
 #define __OpenViBEPlugins_FileIO_ovpCGenericStreamWriter_H__
 
 #include "ovp_defines.h"
-
 #include <system/Memory.h>
 #include <openvibe-toolkit/ovtk_all.h>
-
 #include <vector>
 #include <fstream>
+#include <stdio.h>
 
 namespace OpenViBEPlugins
 {

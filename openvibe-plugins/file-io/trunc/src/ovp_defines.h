@@ -13,6 +13,8 @@
 #define OVP_ClassId_GenericStreamWriterDesc                                    OpenViBE::CIdentifier(0x02817C77, 0x77FE3D6A)
 #define OVP_ClassId_BCICompetitionIIIbReaderDesc                               OpenViBE::CIdentifier(0x00CC1B39, 0x206A17AE)
 
+//-------------------------------------------------------------------//
+// Brainamp File Reader
 #define OVP_ClassId_Algorithm_BrainampFileReader                               OpenViBE::CIdentifier(0x2533718F, 0x07AB3AF5)
 #define OVP_ClassId_Algorithm_BrainampFileReaderDesc                           OpenViBE::CIdentifier(0x2C5B2D6C, 0x242253CF)
 
@@ -36,6 +38,29 @@
 
 #define OVP_Algorithm_BrainampFileReader_OutputTriggerId_Error                 OpenViBE::CIdentifier(0x00B1E3DF, 0x3ABC6C5A)
 #define OVP_Algorithm_BrainampFileReader_OutputTriggerId_DataProduced          OpenViBE::CIdentifier(0x00E7D5F9, 0x1471AFF2)
+//-------------------------------------------------------------------//
+
+//-------------------------------------------------------------------//
+// OV Matrix File Reader
+#define OVP_ClassId_Algorithm_OVMatrixFileReader                               OpenViBE::CIdentifier(0x10661A33, 0x0B0F44A7)
+#define OVP_ClassId_Algorithm_OVMatrixFileReaderDesc                           OpenViBE::CIdentifier(0x0E873B5E, 0x0A287FCB)
+
+//#define OVP_ClassId_BoxAlgorithm_OVMatrixFileReader                            OpenViBE::CIdentifier(0x40704155, 0x19C50E8F)
+//#define OVP_ClassId_BoxAlgorithm_OVMatrixFileReaderDesc                        OpenViBE::CIdentifier(0x4796613F, 0x653A48D5)
+
+#define OVP_Algorithm_OVMatrixFileReader_InputParameterId_Filename             OpenViBE::CIdentifier(0x28F87B29, 0x0B09737E)     
+
+#define OVP_Algorithm_OVMatrixFileReader_OutputParameterId_Matrix              OpenViBE::CIdentifier(0x2F9521E0, 0x027D789F)
+//-------------------------------------------------------------------//
+
+//-------------------------------------------------------------------//
+// OV Matrix File Writer
+#define OVP_ClassId_Algorithm_OVMatrixFileWriter                               OpenViBE::CIdentifier(0x739158FC, 0x1E8240CC)
+#define OVP_ClassId_Algorithm_OVMatrixFileWriterDesc                           OpenViBE::CIdentifier(0x44CF6DD0, 0x329D47F9)
+
+#define OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Filename             OpenViBE::CIdentifier(0x330D2D0B, 0x175271E6)
+#define OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Matrix               OpenViBE::CIdentifier(0x6F6402EE, 0x493044F3)
+//-------------------------------------------------------------------//
 
 //___________________________________________________________________//
 //                                                                   //

@@ -40,11 +40,6 @@ namespace OpenViBEPlugins
 
 			virtual ~CSimple3DDatabase();
 
-			virtual void setMatrixBuffer(
-				const OpenViBE::float64* pBuffer,
-				OpenViBE::uint64 ui64StartTime,
-				OpenViBE::uint64 ui64EndTime);
-
 			OpenViBE::boolean set3DWidgetIdentifier(
 				OpenViBE::CIdentifier o3DWidgetIdentifier);
 

@@ -238,7 +238,7 @@ boolean CTopographicMap3DDisplay::initialize(void)
 	m_pStreamedMatrixReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
 	//initialize spline interpolation algorithm
-	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_AlgorithmSphericalSplineInterpolation));
+	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SphericalSplineInterpolation));
 	m_pProxy->initialize();
 
 	//create topographic map database

@@ -66,11 +66,6 @@ namespace OpenViBEPlugins
 		{
 		}
 
-		void CSimple3DDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTime, uint64 ui64EndTime)
-		{
-			CBufferDatabase::setMatrixBuffer(pBuffer, ui64StartTime, ui64EndTime);
-		}
-
 		boolean CSimple3DDatabase::set3DWidgetIdentifier(CIdentifier o3DWidgetIdentifier)
 		{
 			m_o3DWidgetIdentifier = o3DWidgetIdentifier;

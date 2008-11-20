@@ -47,8 +47,10 @@ namespace OpenViBEPlugins
 			,m_pGladeInterface(NULL)
 			,m_pDrawingArea(NULL)
 			,m_pClipmask(NULL)
+			,m_ui32ClipmaskWidth(0)
+			,m_ui32ClipmaskHeight(0)
 			,m_pClipmaskGC(NULL)
-			,m_bRedrawClipmask(true)
+			,m_pVisibleRegion(NULL)			
 			,m_ui32CurrentProjection(TopographicMap2DProjection_Radial)
 			,m_pAxialProjectionButton(NULL)
 			,m_pRadialProjectionButton(NULL)
@@ -194,8 +196,7 @@ namespace OpenViBEPlugins
 		{
 			//destroy clip mask
 			if(m_pClipmask)
-			{
-				//gtk_object_destroy(GTK_OBJECT(m_pClipmask)); //invalid cast
+			{				
 				g_object_unref(m_pClipmask);
 				m_pClipmask = NULL;
 			}
@@ -203,6 +204,12 @@ namespace OpenViBEPlugins
 			{
 				g_object_unref(m_pClipmaskGC);
 				m_pClipmaskGC=NULL;
+			}
+			//destroy visible region
+			if(m_pVisibleRegion)
+			{
+				gdk_region_destroy(m_pVisibleRegion);
+				m_pVisibleRegion = NULL;
 			}
 			//destroy pixmap
 			if(m_pSkullRGBBuffer)
@@ -262,20 +269,9 @@ namespace OpenViBEPlugins
 			{
 				if(m_bNeedResize == true)
 				{
-					resizeData();
-
-					if(m_rTopographicMapDatabase.interpolateValues() == false)
-					{
-						m_bNeedResize = true; //FIXME : have 2 separate flags, one for resize and one for interpolation of values
-						return;
-					}
+					resizeData();					
 				}
-
-				//restore default black color
-				GdkColor l_oBlack;
-				l_oBlack.red = l_oBlack.green = l_oBlack.blue = 0;
-				gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oBlack);
-
+								
 				//draw face
 				drawFace(0, 0, m_ui32HeadWindowWidth, m_ui32HeadWindowHeight);
 
@@ -284,6 +280,8 @@ namespace OpenViBEPlugins
 
 				//draw palette
 				drawPalette(0, m_ui32HeadWindowHeight, m_ui32PaletteWindowWidth, m_ui32PaletteWindowHeight);
+				
+				//don't clear screen at every redraw, it introduces major flickering
 				//gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
 			}
 		}
@@ -371,6 +369,12 @@ namespace OpenViBEPlugins
 		void CTopographicMap2DView::toggleElectrodesCB()
 		{
 			m_bElectrodesToggledOn = !m_bElectrodesToggledOn;
+
+			if(m_bElectrodesToggledOn == false)
+			{
+				//clear screen so that electrode labels are hidden
+				gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
+			}
 		}
 
 		void CTopographicMap2DView::setProjectionCB(GtkWidget* pWidget)
@@ -389,6 +393,7 @@ namespace OpenViBEPlugins
 				m_ui32CurrentProjection = TopographicMap2DProjection_Radial;
 			}
 
+			//recompute sample points coordinates
 			m_bNeedResize = true;
 
 			//clear screen
@@ -419,7 +424,7 @@ namespace OpenViBEPlugins
 				m_ui32CurrentView = TopographicMap2DView_Back;
 			}
 
-			//recompute sample points coordinates
+			//recompute sample points coordinates, update clipmask
 			m_bNeedResize = true;
 
 			//clear screen
@@ -456,10 +461,12 @@ namespace OpenViBEPlugins
 		void CTopographicMap2DView::drawPalette(uint32 ui32X, uint32 ui32Y, uint32 ui32Width, uint32 ui32Height)
 		{
 			if(ui32Width == 0 || ui32Height == 0)
+			{
 				return;
-
+			}
+			
 			boolean l_bDrawText = true;
-
+			
 			//retrieve text size
 			PangoLayout* l_pText = gtk_widget_create_pango_layout(GTK_WIDGET(m_pDrawingArea), "0");
 			gint l_iTextHeight;
@@ -467,16 +474,20 @@ namespace OpenViBEPlugins
 
 			//don't draw text if not enough room
 			if(l_iTextHeight >= (gint)(ui32Height - m_ui32MinPaletteBarHeight))
+			{
 				l_bDrawText = false;
-
+			}
 			//determine palette bar dims
 			gint l_iPaletteBarWidth = (gint)(0.9 * ui32Width);
 			gint l_iPaletteBarHeight = (gint)(ui32Height - l_iTextHeight);
 			if(l_iPaletteBarHeight < (gint)(m_ui32MinPaletteBarHeight))
+			{
 				l_iPaletteBarHeight = (gint)m_ui32MinPaletteBarHeight;
+			}
 			else if(l_iPaletteBarHeight > (gint)(m_ui32MaxPaletteBarHeight))
+			{
 				l_iPaletteBarHeight = (gint)(m_ui32MaxPaletteBarHeight);
-
+			}
 			gint l_iPaletteBarStartX = (gint)(ui32X + (ui32Width - l_iPaletteBarWidth)/2);
 			gint l_iPaletteBarStartY = (gint)(ui32Y);
 
@@ -498,8 +509,9 @@ namespace OpenViBEPlugins
 			pango_layout_get_pixel_size(l_pText, &l_iTextWidth, NULL);
 			l_iLabelX = l_iPaletteBarStartX - l_iTextWidth/2;
 			if(l_iLabelX < 0)
+			{
 				l_iLabelX = 0;
-
+			}
 			gdk_draw_layout(m_pDrawingArea->window, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)],
 				l_iLabelX,
 				l_iLabelY,
@@ -510,8 +522,9 @@ namespace OpenViBEPlugins
 			pango_layout_get_pixel_size(l_pText, &l_iTextWidth, NULL);
 			l_iLabelX = l_iPaletteBarStartX + l_iPaletteBarWidth - l_iTextWidth/2;
 			if(l_iLabelX + l_iTextWidth >= (gint)ui32Width)
+			{
 				l_iLabelX = ui32Width - l_iTextWidth;
-
+			}
 			gdk_draw_layout(m_pDrawingArea->window, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)],
 				l_iLabelX,
 				l_iLabelY,
@@ -540,6 +553,9 @@ namespace OpenViBEPlugins
 			GdkColor l_oBlack;
 			l_oBlack.red = l_oBlack.green = l_oBlack.blue = 0;
 			gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oBlack);
+
+			//delete pango layout
+			g_object_unref(l_pText);
 		}
 
 		void CTopographicMap2DView::drawFace(uint32 ui32X, uint32 ui32Y, uint32 ui32Width, uint32 ui32Height)
@@ -644,52 +660,9 @@ namespace OpenViBEPlugins
 				(gint)(64 * m_f32SkullOutlineStartAngle),
 				(gint)(64 * (m_f32SkullOutlineEndAngle-m_f32SkullOutlineStartAngle)));
 
-			//draw clipmask
-			//if(m_bRedrawClipmask == true && m_pClipmask != NULL)
-			{
-				GdkColor l_oWhite;
-				l_oWhite.red = l_oWhite.green = l_oWhite.blue = 65535;
-				gdk_gc_set_rgb_fg_color(m_pClipmaskGC/*m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]*/, &l_oWhite);
-
-				gdk_draw_arc(m_pClipmask,
-					m_pClipmaskGC/*m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]*/,
-					TRUE,
-					0,
-					0,
-					(gint)m_ui32SkullDiameter,
-					(gint)m_ui32SkullDiameter,
-					(gint)(64 * m_f32SkullFillStartAngle),
-					(gint)(64 * (m_f32SkullFillEndAngle-m_f32SkullFillStartAngle)));
-
-				if(m_ui32CurrentView == TopographicMap2DView_Left || m_ui32CurrentView == TopographicMap2DView_Right ||
-					m_ui32CurrentView == TopographicMap2DView_Back)
-				{
-					//draw polygon : { skullCenter, skullFillStartPoint, skullFillBottomPoint, skullFillEndPoint, skullCenter }
-					GdkPoint l_pPolygon[4];
-					l_pPolygon[0].x = m_ui32SkullX + m_ui32SkullDiameter/2 - m_ui32SkullX;
-					l_pPolygon[0].y = m_ui32SkullY + m_ui32SkullDiameter/2 - m_ui32SkullY - 2;
-					l_pPolygon[1].x = m_ui32SkullFillRightPointX - m_ui32SkullX;
-					l_pPolygon[1].y = m_ui32SkullFillRightPointY - m_ui32SkullY - 2;
-					l_pPolygon[2].x = m_ui32SkullFillBottomPointX - m_ui32SkullX;
-					l_pPolygon[2].y = m_ui32SkullFillBottomPointY - m_ui32SkullY - 2;
-					l_pPolygon[3].x = m_ui32SkullFillLeftPointX - m_ui32SkullX;
-					l_pPolygon[3].y = m_ui32SkullFillLeftPointY - m_ui32SkullY - 2;
-					gdk_draw_polygon(m_pClipmask, m_pClipmaskGC/*m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]*/, TRUE, l_pPolygon, 4);
-				}
-
-				//restore default black color
-				GdkColor l_oBlack;
-				l_oBlack.red = l_oBlack.green = l_oBlack.blue = 0;
-				gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oBlack);
-
-				gdk_gc_set_clip_origin(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)],
-					(gint)m_ui32SkullX,
-					(gint)m_ui32SkullY);
-
-				m_bRedrawClipmask = false;
-			}
-
 			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+			
+			gdk_gc_set_clip_origin(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], (gint)m_ui32SkullX, (gint)m_ui32SkullY);
 
 			gdk_gc_set_clip_mask(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], m_pClipmask);
 
@@ -704,8 +677,6 @@ namespace OpenViBEPlugins
 
 		void CTopographicMap2DView::resizeData()
 		{
-			m_bNeedResize = false;
-
 			//window size
 			uint32 l_iWindowWidth = m_pDrawingArea->allocation.width;
 			uint32 l_iWindowHeight = m_pDrawingArea->allocation.height;
@@ -714,7 +685,8 @@ namespace OpenViBEPlugins
 			PangoLayout* l_pText = gtk_widget_create_pango_layout(GTK_WIDGET(m_pDrawingArea), "0");
 			int l_iTextHeight;
 			pango_layout_get_pixel_size(l_pText, NULL, &l_iTextHeight);
-			//FIXME : delete text
+			g_object_unref(l_pText);
+			l_pText = NULL;
 
 			//palette sub-window dims
 			m_ui32PaletteWindowWidth = l_iWindowWidth;
@@ -748,9 +720,6 @@ namespace OpenViBEPlugins
 				l_ui32HeadMaxSize = (uint32)(0.9 * m_ui32HeadWindowHeight);
 			}
 
-			uint32 l_ui32ClipMaskWidth=0;
-			uint32 l_ui32ClipMaskHeight=0;
-
 			if(m_ui32CurrentView == TopographicMap2DView_Top)
 			{
 				//height used up by nose
@@ -770,8 +739,8 @@ namespace OpenViBEPlugins
 				m_f32SkullFillEndAngle = 360;
 
 				//clip mask
-				l_ui32ClipMaskWidth = m_ui32SkullDiameter;
-				l_ui32ClipMaskHeight = m_ui32SkullDiameter;
+				m_ui32ClipmaskWidth = m_ui32SkullDiameter;
+				m_ui32ClipmaskHeight = m_ui32SkullDiameter;
 			}
 			else if(m_ui32CurrentView == TopographicMap2DView_Back)
 			{
@@ -814,8 +783,8 @@ namespace OpenViBEPlugins
 				m_ui32RightNeckY = m_ui32LeftNeckY;
 
 				//clip mask
-				l_ui32ClipMaskWidth = m_ui32SkullDiameter;
-				l_ui32ClipMaskHeight = m_ui32SkullFillBottomPointY - m_ui32SkullY + 1;
+				m_ui32ClipmaskWidth = m_ui32SkullDiameter;
+				m_ui32ClipmaskHeight = m_ui32SkullFillBottomPointY - m_ui32SkullY + 1;
 			}
 			else if(m_ui32CurrentView == TopographicMap2DView_Left || m_ui32CurrentView == TopographicMap2DView_Right)
 			{
@@ -902,28 +871,28 @@ namespace OpenViBEPlugins
 				m_ui32SkullFillBottomPointY = m_ui32SkullY + (uint32)(0.684f * m_ui32SkullDiameter);
 
 				//clip mask
-				l_ui32ClipMaskWidth = m_ui32SkullDiameter;
-				l_ui32ClipMaskHeight = m_ui32SkullFillBottomPointY - m_ui32SkullY + 1;
+				m_ui32ClipmaskWidth = m_ui32SkullDiameter;
+				m_ui32ClipmaskHeight = m_ui32SkullFillBottomPointY - m_ui32SkullY + 1;
 			}
 
+			//free existing clipmask, if any			
+			if(m_pClipmaskGC != NULL)
+			{
+				g_object_unref(m_pClipmaskGC);				
+			}
+			if(m_pClipmask != NULL)
+			{				
+				g_object_unref(m_pClipmask);				
+			}			
+			
 			//allocate clipmask
-			if(m_pClipmask)
-			{
-				//gtk_object_destroy(GTK_OBJECT(m_pClipmask)); //invalid cast!
-				g_object_unref(m_pClipmask);
-			}
-			if(m_pClipmaskGC)
-			{
-				g_object_unref(m_pClipmaskGC);
-			}
-			m_pClipmask = gdk_pixmap_new(m_pDrawingArea->window, l_ui32ClipMaskWidth, l_ui32ClipMaskHeight, 1);
+			m_pClipmask = gdk_pixmap_new(m_pDrawingArea->window, m_ui32ClipmaskWidth, m_ui32ClipmaskHeight, 1);
 			m_pClipmaskGC = gdk_gc_new(GDK_DRAWABLE(m_pClipmask));
 			gdk_gc_set_colormap(m_pClipmaskGC, gdk_gc_get_colormap(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]));
-
-			//clear it
-			gdk_draw_rectangle(m_pClipmask, m_pClipmaskGC/*m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]*/,
-				TRUE, 0, 0, l_ui32ClipMaskWidth, l_ui32ClipMaskHeight);
-
+			
+			//redraw it
+			redrawClipmask();
+			
 			//allocate main pixmap
 			//TODO!
 
@@ -973,6 +942,64 @@ namespace OpenViBEPlugins
 
 			//compute samples normalized coordinates
 			computeSamplesNormalizedCoordinates(true);
+
+			//resizing completed
+			m_bNeedResize = false;			
+		}
+
+		void CTopographicMap2DView::redrawClipmask()
+		{
+			//clear clipmask by drawing a black rectangle
+			GdkColor l_oBlack;
+			l_oBlack.red = l_oBlack.green = l_oBlack.blue = 0;
+			gdk_gc_set_rgb_fg_color(m_pClipmaskGC, &l_oBlack);
+			gdk_draw_rectangle(m_pClipmask, m_pClipmaskGC, TRUE, 0, 0, m_ui32ClipmaskWidth, m_ui32ClipmaskHeight);
+
+			//draw visible circular region with a white filled arc
+			GdkColor l_oWhite;
+			l_oWhite.red = l_oWhite.green = l_oWhite.blue = 65535;
+			gdk_gc_set_rgb_fg_color(m_pClipmaskGC, &l_oWhite);
+			gdk_draw_arc(m_pClipmask,
+				m_pClipmaskGC,
+				TRUE,
+				0,
+				0,
+				(gint)m_ui32SkullDiameter,
+				(gint)m_ui32SkullDiameter,
+				(gint)(64 * m_f32SkullFillStartAngle),
+				(gint)(64 * (m_f32SkullFillEndAngle-m_f32SkullFillStartAngle)));
+
+			//views other than top have an extra non-clipped area
+			if(m_ui32CurrentView == TopographicMap2DView_Left || m_ui32CurrentView == TopographicMap2DView_Right ||
+				m_ui32CurrentView == TopographicMap2DView_Back)
+			{
+				//draw polygon : { skullCenter, skullFillStartPoint, skullFillBottomPoint, skullFillEndPoint, skullCenter }
+				GdkPoint l_pPolygon[4];
+				l_pPolygon[0].x = m_ui32SkullX + m_ui32SkullDiameter/2 - m_ui32SkullX;
+				l_pPolygon[0].y = m_ui32SkullY + m_ui32SkullDiameter/2 - m_ui32SkullY - 2;
+				l_pPolygon[1].x = m_ui32SkullFillRightPointX - m_ui32SkullX;
+				l_pPolygon[1].y = m_ui32SkullFillRightPointY - m_ui32SkullY - 2;
+				l_pPolygon[2].x = m_ui32SkullFillBottomPointX - m_ui32SkullX;
+				l_pPolygon[2].y = m_ui32SkullFillBottomPointY - m_ui32SkullY - 2;
+				l_pPolygon[3].x = m_ui32SkullFillLeftPointX - m_ui32SkullX;
+				l_pPolygon[3].y = m_ui32SkullFillLeftPointY - m_ui32SkullY - 2;
+				gdk_draw_polygon(
+					m_pClipmask, 
+					m_pClipmaskGC, 
+					TRUE, 
+					l_pPolygon, 
+					4);
+			}
+			
+			//restore default black color
+			gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oBlack);
+
+			//update visible region
+			if(m_pVisibleRegion != NULL)
+			{
+				gdk_region_destroy(m_pVisibleRegion);
+			}			
+			m_pVisibleRegion = gdk_drawable_get_visible_region(GDK_DRAWABLE(m_pClipmask));		
 		}
 
 		void CTopographicMap2DView::refreshPotentials()
@@ -1005,7 +1032,15 @@ namespace OpenViBEPlugins
 				}
 
 				uint32 l_ui32Index=m_oSampleValues[i];
-				if(l_ui32Index>12) l_ui32Index=12;
+				if(l_ui32Index>12) 
+				{
+#if defined OVP_OS_Windows
+#ifndef NDEBUG
+					_asm int 3;
+#endif
+#endif
+					l_ui32Index=12;
+				}
 
 				drawBoxToBuffer(
 					m_oSample2DCoordinates[i].first,
@@ -1137,6 +1172,9 @@ namespace OpenViBEPlugins
 
 			//restore default black color
 			gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oBlack);
+
+			//delete pango layout
+			g_object_unref(l_pElectrodeLabelLayout);
 		}
 
 		boolean CTopographicMap2DView::getChannel2DPosition(uint32 ui32ChannelIndex, gint& l_i32ChannelX, gint& l_i32ChannelY)
@@ -1248,14 +1286,14 @@ namespace OpenViBEPlugins
 
 			//make sure electrode is in the non clipped area of the display
 			//TODO : perform this test once per view only!
-			return gdk_region_point_in(gdk_drawable_get_visible_region(GDK_DRAWABLE(m_pClipmask)), l_i32ChannelX-m_ui32SkullX, l_i32ChannelY-m_ui32SkullY) != 0;
+			return gdk_region_point_in(m_pVisibleRegion, l_i32ChannelX-m_ui32SkullX, l_i32ChannelY-m_ui32SkullY) != 0;
 		}
 
 		void CTopographicMap2DView::drawBoxToBuffer(uint32 ui32X, uint32 ui32Y, uint32 ui32Width, uint32 ui32Height, uint8 ui8Red, uint8 ui8Green, uint8 ui8Blue)
 		{
 #ifdef OVP_OS_Windows
 #ifndef NDEBUG
-			//m_pSkullRGBBuffer = m_ui32RowStride*m_ui32SkullDiameter
+			//m_pSkullRGBBuffer == m_ui32RowStride*m_ui32SkullDiameter
 			assert(ui32X < m_ui32SkullDiameter);
 			assert(ui32Y < m_ui32SkullDiameter);
 			assert( (m_ui32RowStride*ui32Y) + (ui32X*3) + 2 < m_ui32RowStride * m_ui32SkullDiameter );
@@ -1326,13 +1364,13 @@ namespace OpenViBEPlugins
 					{
 						//ensure this point is in the non clipped skull area
 						//FIXME : the previous test remains necessary to get rid of all points lying outside "skull sphere"... Bug in gdk_region_point_in()?
-						if(gdk_region_point_in(gdk_drawable_get_visible_region(GDK_DRAWABLE(m_pClipmask)), (int)(l_f32ClosestX-m_ui32SkullX), (int)(l_f32ClosestY-m_ui32SkullY)))
+						if(gdk_region_point_in(m_pVisibleRegion, (int)(l_f32ClosestX-m_ui32SkullX), (int)(l_f32ClosestY-m_ui32SkullY)))
 						{
 							if(bComputeCoordinates == true)
-							{
+							{								
 								m_oSample2DCoordinates[l_ui32CurSample].first = j*m_ui32CellSize;
 								m_oSample2DCoordinates[l_ui32CurSample].second= i*m_ui32CellSize;
-
+								
 								//compute normalized coordinates to be fed to spherical spline algorithm
 								//----------------------------------------------------------------------
 								uint32 l_ui32BaseIndex = 3* l_ui32CurSample;
@@ -1365,7 +1403,7 @@ namespace OpenViBEPlugins
 										{
 											l_f32ScalingFactor = sinf(l_f32Theta) / l_f32Theta;
 										}
-
+										
 										//x = sin(theta) / theta * X
 										*(l_pBuffer + l_ui32BaseIndex) = l_f32ScalingFactor * l_f32X;
 										//y = sin(theta) / theta * Y

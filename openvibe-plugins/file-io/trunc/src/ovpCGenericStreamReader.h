@@ -2,11 +2,10 @@
 #define __OpenViBEPlugins_FileIO_ovpCGenericStreamReader_H__
 
 #include "ovp_defines.h"
-
 #include <system/Memory.h>
 #include <openvibe-toolkit/ovtk_all.h>
-
 #include <fstream>
+#include <stdio.h>
 
 namespace OpenViBEPlugins
 {

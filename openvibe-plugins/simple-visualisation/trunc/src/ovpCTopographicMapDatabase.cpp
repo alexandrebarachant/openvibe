@@ -175,31 +175,31 @@ namespace OpenViBEPlugins
 			,m_rProxy(rProxy)
 			,m_i64SplineOrder(4)
 			,m_ui64InterpolationType(OVP_TypeId_SphericalLinearInterpolationType_Spline)
-			,m_pCoordsINSERMMatrix(NULL)
-			,m_pPotentialsMatrix(NULL)
-			,m_pSampleCoordinatesMatrix(NULL)
+			,m_pElectrodeCoords(NULL)
+			,m_pElectrodePotentials(NULL)
+			,m_pSamplePointCoords(NULL)
 			,m_ui64Delay(0)
 		{
 			//map input parameters
 			//--------------------
 
 			//spline order
-			m_rProxy.getInputParameter(CIdentifier(0,1))->setReferenceTarget(&m_i64SplineOrder);
+			m_rProxy.getInputParameter(OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SplineOrder)->setReferenceTarget(&m_i64SplineOrder);
 			//number of channels (or electrodes)
-			m_rProxy.getInputParameter(CIdentifier(0,2))->setReferenceTarget(&m_i64NbElectrodes);
+			m_rProxy.getInputParameter(OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCount)->setReferenceTarget(&m_i64NbElectrodes);
 			//matrix of pointers to electrode coordinates
-			m_pCoordsINSERMMatrix = &m_oElectrodesCoordsINSERM;
-			m_rProxy.getInputParameter(CIdentifier(0,3))->setReferenceTarget(&m_pCoordsINSERMMatrix);
+			m_pElectrodeCoords = &m_oElectrodesCoords;
+			m_rProxy.getInputParameter(OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCoordinates)->setReferenceTarget(&m_pElectrodeCoords);
 			//matrix of potentials measured at each electrode
-			m_pPotentialsMatrix = &m_oElectrodesPotentials;
-			m_rProxy.getInputParameter(CIdentifier(0,4))->setReferenceTarget(&m_pPotentialsMatrix);
+			m_pElectrodePotentials = &m_oElectrodePotentials;
+			m_rProxy.getInputParameter(OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsValues)->setReferenceTarget(&m_pElectrodePotentials);
 			//matrix holding sample coordinates mapped at runtime (its size is not known a priori and may vary)
 			//
 
 			//map output parameters
 			//---------------------
-			m_oMinInterpolatedValue.initialize(m_rProxy.getOutputParameter(OpenViBE::CIdentifier(1, 1)));
-			m_oMaxInterpolatedValue.initialize(m_rProxy.getOutputParameter(OpenViBE::CIdentifier(1, 2)));
+			m_oMinSamplePointValue.initialize(m_rProxy.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_MinSamplePointValue));
+			m_oMaxSamplePointValue.initialize(m_rProxy.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_MaxSamplePointValue));
 		}
 
 		CTopographicMapDatabase::~CTopographicMapDatabase()
@@ -212,28 +212,15 @@ namespace OpenViBEPlugins
 
 			if(ui32DimmensionIndex == 0)
 			{
-				m_oElectrodesPotentials.setDimensionCount(1);
-				m_oElectrodesPotentials.setDimensionSize(0, (uint32)m_i64NbElectrodes);
-
-				//resize and setup matrix of pointers to electrode coords matrix
-				//--------------------------------------------------------------
-				m_oElectrodesCoordsINSERM.setDimensionCount(1);
-				//we only need room for ceil(m_i64NbElectrodes/2) elements because pointers, not doubles, will be stored here
-				m_oElectrodesCoordsINSERM.setDimensionSize(0, (uint32)ceil(m_i64NbElectrodes/2.));
-
-				for(int i=0; i<m_i64NbElectrodes; i++)
-				{
-					//handle matrix as if it were a matrix of double*
-					void* l_pointer = m_oElectrodesCoords.getBuffer() + 3*i;
-					memcpy((unsigned long*)m_oElectrodesCoordsINSERM.getBuffer() + i, &l_pointer, sizeof(unsigned long*));
-				}
+				m_oElectrodePotentials.setDimensionCount(1);
+				m_oElectrodePotentials.setDimensionSize(0, (uint32)m_i64NbElectrodes);				
 			}
 		}
 
 		void CTopographicMapDatabase::getLastBufferInterpolatedMinMaxValue(OpenViBE::float64& f64Min, OpenViBE::float64& f64Max)
 		{
-			f64Min = m_oMinInterpolatedValue;
-			f64Max = m_oMaxInterpolatedValue;
+			f64Min = m_oMinSamplePointValue;
+			f64Max = m_oMaxSamplePointValue;
 		}
 
 		boolean CTopographicMapDatabase::processValues()
@@ -250,7 +237,7 @@ namespace OpenViBEPlugins
 				//m_pDrawable->init();
 
 				//precompute sin/cos tables
-				m_rProxy.activateInputTrigger(OpenViBE::CIdentifier(0, 5), true);
+				m_rProxy.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_PrecomputeTables, true);
 
 				m_bFirstProcess = false;
 			}
@@ -259,7 +246,7 @@ namespace OpenViBEPlugins
 #ifdef ELAN_VALIDATION
 			for(int i=0; i<m_i64NbElectrodes; i++)
 			{
-				*(m_oElectrodesPotentials.getBuffer()+i) = s_elanChannelValues[i];
+				*(m_oElectrodePotentials.getBuffer()+i) = s_elanChannelValues[i];
 			}
 #elif 1
 			//determine what buffer to use from delay
@@ -285,7 +272,7 @@ namespace OpenViBEPlugins
 
 			for(int i=0; i<m_i64NbElectrodes; i++)
 			{
-				*(m_oElectrodesPotentials.getBuffer()+i) = m_oSampleBuffers[l_ui32BufferIndex][i*m_pDimmensionSizes[1] + l_ui64SampleIndex];
+				*(m_oElectrodePotentials.getBuffer()+i) = m_oSampleBuffers[l_ui32BufferIndex][i*m_pDimmensionSizes[1] + l_ui64SampleIndex];
 			}
 #else
 			//debug test : null potentials on all but F4 electrode
@@ -293,11 +280,11 @@ namespace OpenViBEPlugins
 			{
 				if(m_pDimmesionLabels[0][i].find("F4") != string::npos)
 				{
-					*(m_oElectrodesPotentials.getBuffer()+i) = 1;
+					*(m_oElectrodePotentials.getBuffer()+i) = 1;
 				}
 				else
 				{
-					*(m_oElectrodesPotentials.getBuffer()+i) = 0;
+					*(m_oElectrodePotentials.getBuffer()+i) = 0;
 				}
 			}
 #endif
@@ -305,42 +292,42 @@ namespace OpenViBEPlugins
 			//interpolate spline values (potentials)
 			if(m_ui64InterpolationType == OVP_TypeId_SphericalLinearInterpolationType_Spline)
 			{
-				m_rProxy.activateInputTrigger(OpenViBE::CIdentifier(0, 6), true);
+				m_rProxy.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_ComputeSplineCoefs, true);
 			}
 			else //interpolate spline laplacian (currents)
 			{
-				m_rProxy.activateInputTrigger(OpenViBE::CIdentifier(0, 7), true);
+				m_rProxy.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_ComputeLaplacianCoefs, true);
 			}
 
 			//retrieve up-to-date pointer to sample matrix
-			m_pSampleCoordinatesMatrix = dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->getSampleCoordinatesMatrix();
+			m_pSamplePointCoords = dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->getSampleCoordinatesMatrix();
 
-			if(m_pSampleCoordinatesMatrix != NULL)
+			if(m_pSamplePointCoords != NULL)
 			{
 				//map pointer to input parameter
-				m_rProxy.getInputParameter(CIdentifier(0,10))->setReferenceTarget(&m_pSampleCoordinatesMatrix);
+				m_rProxy.getInputParameter(OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SamplePointsCoordinates)->setReferenceTarget(&m_pSamplePointCoords);
 
 				if(m_ui64InterpolationType == OVP_TypeId_SphericalLinearInterpolationType_Spline)
 				{
-					m_rProxy.activateInputTrigger(OpenViBE::CIdentifier(0, 8), true);
+					m_rProxy.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateSpline, true);
 				}
 				else
 				{
-					m_rProxy.activateInputTrigger(OpenViBE::CIdentifier(0, 9), true);
+					m_rProxy.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateLaplacian, true);
 				}
 			}
 
 			m_rProxy.process();
 
-			if(m_pSampleCoordinatesMatrix != NULL)
+			if(m_pSamplePointCoords != NULL)
 			{
 				//retrieve interpolation results
 				OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oSampleValuesMatrix;
-				l_oSampleValuesMatrix.initialize(m_rProxy.getOutputParameter(OpenViBE::CIdentifier(1, 0)));
+				l_oSampleValuesMatrix.initialize(m_rProxy.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_SamplePointsValues));
 				dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->setSampleValuesMatrix(l_oSampleValuesMatrix);
 			}
 
-			//tells the drawable to redraw himself since the signal information has been updated
+			//tells the drawable to redraw itself since the signal information has been updated
 			m_pDrawable->redraw();
 
 			return true;
@@ -378,10 +365,7 @@ namespace OpenViBEPlugins
 		}
 
 		boolean CTopographicMapDatabase::interpolateValues()
-		{
-			//REMOVE ME
-			return false;
-
+		{			
 			//can't interpolate before first buffer has been received
 			if(m_bFirstProcess == true)
 			{
@@ -389,31 +373,31 @@ namespace OpenViBEPlugins
 			}
 
 			//retrieve up-to-date pointer to sample matrix
-			m_pSampleCoordinatesMatrix = dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->getSampleCoordinatesMatrix();
+			m_pSamplePointCoords = dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->getSampleCoordinatesMatrix();
 
-			if(m_pSampleCoordinatesMatrix != NULL)
+			if(m_pSamplePointCoords != NULL)
 			{
 				//map pointer to input parameter
-				m_rProxy.getInputParameter(CIdentifier(0,10))->setReferenceTarget(&m_pSampleCoordinatesMatrix);
+				m_rProxy.getInputParameter(OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SamplePointsCoordinates)->setReferenceTarget(&m_pSamplePointCoords);
 
 				//interpolate using spline or laplacian coefficients depending on interpolation mode
 				if(m_ui64InterpolationType == OVP_TypeId_SphericalLinearInterpolationType_Spline)
 				{
-					m_rProxy.activateInputTrigger(OpenViBE::CIdentifier(0, 8), true);
+					m_rProxy.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateSpline, true);
 				}
 				else
 				{
-					m_rProxy.activateInputTrigger(OpenViBE::CIdentifier(0, 9), true);
+					m_rProxy.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateLaplacian, true);
 				}
 			}
 
 			m_rProxy.process();
 
-			if(m_pSampleCoordinatesMatrix != NULL)
+			if(m_pSamplePointCoords != NULL)
 			{
 				//retrieve interpolation results
 				OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oSampleValuesMatrix;
-				l_oSampleValuesMatrix.initialize(m_rProxy.getOutputParameter(OpenViBE::CIdentifier(1, 0)));
+				l_oSampleValuesMatrix.initialize(m_rProxy.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_SamplePointsValues));
 				dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->setSampleValuesMatrix(l_oSampleValuesMatrix);
 			}
 

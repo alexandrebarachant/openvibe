@@ -189,6 +189,8 @@ namespace OpenViBEPlugins
 				OpenViBE::boolean bComputeCoordinates);
 
 			void resizeData();
+			
+			void redrawClipmask();
 
 		private:
 			//! The database that contains the information to use to draw the signals
@@ -199,10 +201,13 @@ namespace OpenViBEPlugins
 
 			::GladeXML* m_pGladeInterface;
 
-			::GtkWidget* m_pDrawingArea;
-			::GdkBitmap* m_pClipmask; //origin (m_ui32SkullX, m_ui32SkullY), dims : depend on view
+			::GtkWidget* m_pDrawingArea;			
+			::GdkBitmap* m_pClipmask; //origin (m_ui32SkullX, m_ui32SkullY)
+			OpenViBE::uint32 m_ui32ClipmaskWidth;
+			OpenViBE::uint32 m_ui32ClipmaskHeight;
 			::GdkGC* m_pClipmaskGC;
-			OpenViBE::boolean m_bRedrawClipmask;
+			::GdkRegion* m_pVisibleRegion; //reallocated whenever clipmask changes
+			
 			::GdkColor m_oBackgroundColor;
 
 			//! Active projection
@@ -230,7 +235,7 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bElectrodesToggledOn;
 
 			OpenViBE::boolean m_bNeedResize;
-
+			
 			OpenViBE::uint32 m_ui32GridSize;
 			OpenViBE::uint32 m_ui32CellSize;
 

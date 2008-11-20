@@ -45,7 +45,8 @@ namespace OpenViBEPlugins
 				const OpenViBE::uint32 ui32DimmensionIndex,
 				const OpenViBE::uint32 ui32DimmensionSize);
 
-			OpenViBE::boolean setDelay(OpenViBE::float64 f64Delay);
+			OpenViBE::boolean setDelay(
+				OpenViBE::float64 f64Delay);
 
 			/** 
 			 * \brief Set interpolation type
@@ -82,28 +83,27 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bFirstProcess;
 			//spherical spline algorithm proxy
 			OpenViBE::Kernel::IAlgorithmProxy& m_rProxy;
-			//order of spherical spline used for interpolation - mapped to IN param (0,1)
+			//order of spherical spline used for interpolation - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SplineOrder
 			OpenViBE::int64 m_i64SplineOrder;
 			/** 
 			 * \brief Type of interpolation 
 			 * \sa OVP_TypeId_SphericalLinearInterpolationType enumeration
 			 */
 			OpenViBE::uint64 m_ui64InterpolationType; 
-			//number of electrodes (see CBufferDatabase) - mapped to IN param (0,2)
-			//OpenViBE::int64 m_i64NbElectrodes;
-			//electrode cartesian coordinates stored in an INSERM algorithm compliant way
-			OpenViBE::CMatrix m_oElectrodesCoordsINSERM;
-			//pointer to electrode coordinates matrix - mapped to IN param (0,3)
-			OpenViBE::IMatrix* m_pCoordsINSERMMatrix;
+			//number of electrodes (see CBufferDatabase) - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCount
+			//OpenViBE::int64 m_i64NbElectrodes;			
+			//pointer to electrode coordinates matrix - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCoordinates
+			OpenViBE::IMatrix* m_pElectrodeCoords;
 			//electrode potentials
-			OpenViBE::CMatrix m_oElectrodesPotentials;
-			//pointer to electrode potentials matrix - mapped to IN param (0,4)
-			OpenViBE::IMatrix* m_pPotentialsMatrix;
-			//pointer to samples matrix - mapped to IN param (0,10)
-			OpenViBE::IMatrix* m_pSampleCoordinatesMatrix;
-			//interpolated values' min/max			
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > m_oMinInterpolatedValue;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > m_oMaxInterpolatedValue;
+			OpenViBE::CMatrix m_oElectrodePotentials;
+			//pointer to electrode potentials matrix - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsValues
+			OpenViBE::IMatrix* m_pElectrodePotentials;
+			//pointer to sample points coordinates matrix - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SamplePointsCoordinates
+			OpenViBE::IMatrix* m_pSamplePointCoords;
+			//minimum interpolated value
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > m_oMinSamplePointValue;
+			//maximum interpolated value
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > m_oMaxSamplePointValue;
 			//delay to apply to interpolated values
 			OpenViBE::uint64 m_ui64Delay;
 		};

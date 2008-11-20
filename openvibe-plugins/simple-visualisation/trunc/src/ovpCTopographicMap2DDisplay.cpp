@@ -36,7 +36,7 @@ boolean CTopographicMap2DDisplay::initialize(void)
 	m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
 	m_pStreamedMatrixReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
-	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_AlgorithmSphericalSplineInterpolation));
+	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SphericalSplineInterpolation));
 	m_pProxy->initialize();
 
 	//create topographic map database
@@ -101,7 +101,7 @@ boolean CTopographicMap2DDisplay::processInput(OpenViBE::uint32 ui32InputIndex)
 
 boolean CTopographicMap2DDisplay::processClock(IMessageClock& rMessageClock)
 {
-	m_pTopographicMapDatabase->processValues();
+	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
@@ -121,6 +121,8 @@ boolean CTopographicMap2DDisplay::process(void)
 			l_pDynamicBoxContext->markInputAsDeprecated(0, i);
 		}
 	}
+
+	m_pTopographicMapDatabase->processValues();
 
 	return true;
 }

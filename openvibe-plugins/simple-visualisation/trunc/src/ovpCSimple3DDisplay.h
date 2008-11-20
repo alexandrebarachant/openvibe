@@ -15,8 +15,7 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		class CSimple3DDisplay : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >,
-		virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback
+		class CSimple3DDisplay : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 			CSimple3DDisplay(void);
@@ -33,24 +32,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_Simple3DDisplay)
-
-			//IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback implementation
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
-			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
-
-		protected:
-			//ebml
-			EBML::IReader* m_pStreamedMatrixReader;
-
-			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pStreamedMatrixReaderCallBack;
-
-			//Start and end time of the last buffer
-			OpenViBE::uint64 m_ui64StartTime;
-			OpenViBE::uint64 m_ui64EndTime;
-
-			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;
+			
+		protected:			
 			CSimple3DDatabase* m_pSimple3DDatabase;
 			CSignalDisplayDrawable* m_pSimple3DView; //main object used for the display (contains all the GUI code)
 			OpenViBE::CIdentifier m_o3DWidgetIdentifier;

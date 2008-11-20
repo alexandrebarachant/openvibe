@@ -272,6 +272,8 @@ for (i=0; i<nb_value; i++)
     }
 coef[nb_value] = 0.0;
 sspsl(p_mat_a, &itmp, p_iwork, coef);
+free(p_mat_a);
+free(p_iwork);
 return (0);
 }
 

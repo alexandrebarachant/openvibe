@@ -17,6 +17,23 @@
 #define OVP_Algorithm_LevelMeasure_InputTriggerId_Refresh             OpenViBE::CIdentifier(0x71356FE4, 0x3E8F62DC)
 #define OVP_Algorithm_LevelMeasure_OutputTriggerId_Refreshed          OpenViBE::CIdentifier(0x3C3C1B06, 0x360305D9)
 
+#define OVP_ClassId_Algorithm_SphericalSplineInterpolation            OpenViBE::CIdentifier(0x4F112803, 0x661D4029)
+#define OVP_ClassId_Algorithm_SphericalSplineInterpolationDesc        OpenViBE::CIdentifier(0x00D67A20, 0x3D3D4729)
+
+#define OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SplineOrder              OpenViBE::CIdentifier(0x3B8200F6, 0x205162C7)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCount       OpenViBE::CIdentifier(0x2ABF11FC, 0x174A2CFE)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCoordinates OpenViBE::CIdentifier(0x36F743FE, 0x37897AB9)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsValues      OpenViBE::CIdentifier(0x4EA55599, 0x670274A7)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SamplePointsCoordinates  OpenViBE::CIdentifier(0x280A531D, 0x339C18AA)
+#define OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_SamplePointsValues      OpenViBE::CIdentifier(0x12D0319C, 0x51ED4D8B)
+#define OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_MinSamplePointValue     OpenViBE::CIdentifier(0x0CEE2041, 0x79455EED)
+#define OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_MaxSamplePointValue     OpenViBE::CIdentifier(0x1ECB03E3, 0x40EF757F)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_PrecomputeTables           OpenViBE::CIdentifier(0x42A650DA, 0x62B35F76)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_ComputeSplineCoefs         OpenViBE::CIdentifier(0x5B353712, 0x069F3D3B)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_ComputeLaplacianCoefs      OpenViBE::CIdentifier(0x7D8C545E, 0x7C086660)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateSpline          OpenViBE::CIdentifier(0x1241610E, 0x03CB1AD9)
+#define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateLaplacian       OpenViBE::CIdentifier(0x11CE0AC3, 0x0FD85469)
+
 //___________________________________________________________________//
 //                                                                   //
 // Plugin Object Descriptor Class Identifiers                        //
@@ -27,7 +44,6 @@
 #define OVP_ClassId_GrazVisualization                          OpenViBE::CIdentifier(0x00DD290D, 0x5F142820)
 #define OVP_ClassId_PowerSpectrumDisplay                       OpenViBE::CIdentifier(0x004C0EA4, 0x713EC6D9)
 #define OVP_ClassId_TopographicMap2DDisplay                    OpenViBE::CIdentifier(0x0B104632, 0x451C265F)
-#define OVP_ClassId_AlgorithmSphericalSplineInterpolation      OpenViBE::CIdentifier(0x4F112803, 0x661D4029)
 #define OVP_ClassId_Simple3DDisplay                            OpenViBE::CIdentifier(0x31A00483, 0x35924E6B)
 #define OVP_ClassId_TopographicMap3DDisplay                    OpenViBE::CIdentifier(0x36F95BE4, 0x0EF06290)
 #define OVP_ClassId_VoxelDisplay                               OpenViBE::CIdentifier(0x76E42EA2, 0x66FB5265)
@@ -43,7 +59,6 @@
 #define OVP_ClassId_GrazVisualizationDesc                      OpenViBE::CIdentifier(0x00F1955D, 0x38813A6A)
 #define OVP_ClassId_PowerSpectrumDisplayDesc                   OpenViBE::CIdentifier(0x00116B40, 0x69E1B00D)
 #define OVP_ClassId_TopographicMap2DDisplayDesc                OpenViBE::CIdentifier(0x7154037A, 0x4BC52A9F)
-#define OVP_ClassId_AlgorithmSphericalSplineInterpolationDesc  OpenViBE::CIdentifier(0x00D67A20, 0x3D3D4729)
 #define OVP_ClassId_Simple3DDisplayDesc                        OpenViBE::CIdentifier(0x443E145F, 0x77205DA0)
 #define OVP_ClassId_TopographicMap3DDisplayDesc                OpenViBE::CIdentifier(0x6AD52C48, 0x6E1C1746)
 #define OVP_ClassId_VoxelDisplayDesc                           OpenViBE::CIdentifier(0x79321659, 0x642D3D0C)
