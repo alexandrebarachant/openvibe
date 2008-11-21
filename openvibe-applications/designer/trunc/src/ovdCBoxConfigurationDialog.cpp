@@ -57,7 +57,7 @@ namespace
 	{
 	public:
 
-		CXMLReaderCallback(::SButtonCB& rButtonCB)
+		CXMLReaderCallback(SButtonCB& rButtonCB)
 			:m_ui32Status(Status_ParsingNone)
 			,m_rButtonCB(rButtonCB)
 		{
@@ -130,7 +130,7 @@ namespace
 
 		uint32 m_ui32Status;
 		uint32 m_ui32SettingIndex;
-		::SButtonCB& m_rButtonCB;
+		SButtonCB& m_rButtonCB;
 	};
 };
 
@@ -141,7 +141,7 @@ static void on_file_override_check_toggled(::GtkToggleButton* pToggleButton, gpo
 
 static void on_button_load_clicked(::GtkButton* pButton, gpointer pUserData)
 {
-	::SButtonCB* l_pUserData=static_cast < ::SButtonCB* >(pUserData);
+	SButtonCB* l_pUserData=static_cast < SButtonCB* >(pUserData);
 
 	::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
 		"Select file to load settings from...",
@@ -185,7 +185,7 @@ static void on_button_load_clicked(::GtkButton* pButton, gpointer pUserData)
 
 static void on_button_save_clicked(::GtkButton* pButton, gpointer pUserData)
 {
-	::SButtonCB* l_pUserData=static_cast < ::SButtonCB* >(pUserData);
+	SButtonCB* l_pUserData=static_cast < SButtonCB* >(pUserData);
 
 	::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
 		"Select file to save settings to...",
@@ -322,7 +322,7 @@ void CBoxConfigurationDialog::run(void)
 		}
 
 #if 1
-		::SButtonCB l_oButtonCB = { l_vSettingValue, l_oHelper, m_rBox };
+		SButtonCB l_oButtonCB = { l_vSettingValue, l_oHelper, m_rBox };
 
 		g_signal_connect(G_OBJECT(l_pFileOverrideCheck), "toggled", G_CALLBACK(on_file_override_check_toggled), GTK_WIDGET(l_pSettingTable));
 		g_signal_connect(G_OBJECT(l_pButtonLoad),        "clicked", G_CALLBACK(on_button_load_clicked), &l_oButtonCB);

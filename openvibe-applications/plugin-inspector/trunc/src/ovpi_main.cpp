@@ -19,7 +19,7 @@ int main(int argc, char ** argv)
 
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
 	CString m_sError;
-#if defined OVAS_OS_Windows
+#if defined OVPI_OS_Windows
 	if(!l_oKernelLoader.load("../lib/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
 	if(!l_oKernelLoader.load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))

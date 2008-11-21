@@ -35,6 +35,7 @@ REM ## these variables SET each application branch
 SET OpenViBE_application_acquisition_server_branch=
 SET OpenViBE_application_designer_branch=
 SET OpenViBE_application_id_generator_branch=
+SET OpenViBE_application_plugin_inspector_branch=
 REM
 REM ########################################################################################################################
 REM ## PLUGINS
@@ -80,6 +81,7 @@ REM ############################################################################
 if "%OpenViBE_application_acquisition_server_branch%" == "" SET OpenViBE_application_acquisition_server_branch=%OpenViBE_default_branch%
 if "%OpenViBE_application_designer_branch%" == "" SET OpenViBE_application_designer_branch=%OpenViBE_default_branch%
 if "%OpenViBE_application_id_generator_branch%" == "" SET OpenViBE_application_id_generator_branch=%OpenViBE_default_branch%
+if "%OpenViBE_application_plugin_inspector_branch%" == "" SET OpenViBE_application_plugin_inspector_branch=%OpenViBE_default_branch%
 
 REM ########################################################################################################################
 
@@ -116,6 +118,7 @@ SET OpenViBE_applications=%OpenViBE_base%\openvibe-applications
 SET OpenViBE_application_designer=%OpenViBE_applications%\designer\%OpenViBE_application_designer_branch%
 SET OpenViBE_application_acquisition_server=%OpenViBE_applications%\acquisition-server\%OpenViBE_application_acquisition_server_branch%
 SET OpenViBE_application_id_generator=%OpenViBE_applications%\id-generator\%OpenViBE_application_id_generator_branch%
+SET OpenViBE_application_plugin_inspector=%OpenViBE_applications%\plugin-inspector\%OpenViBE_application_plugin_inspector_branch%
 
 SET OpenViBE_plugins=%OpenViBE_base%\openvibe-plugins
 SET OpenViBE_plugin_acquisition=%OpenViBE_plugins%\acquisition\%OpenViBE_plugin_acquisition_branch%
@@ -161,6 +164,7 @@ echo %OpenViBE_plugin_tools% >> %OpenViBE_build_order%
 echo %OpenViBE_plugin_vrpn% >> %OpenViBE_build_order%
 echo %OpenViBE_application_designer% >> %OpenViBE_build_order%
 echo %OpenViBE_application_acquisition_server% >> %OpenViBE_build_order%
+echo %OpenViBE_application_plugin_inspector% >> %OpenViBE_build_order%
 
 REM ########################################################################################################################
 

@@ -5,6 +5,8 @@
 #include <map>
 #include <vector>
 
+#include <algorithm>
+
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <pango/pango.h>

@@ -27,7 +27,7 @@ namespace System
 			__check_different_type_size__(int32, int8);
 			__check_different_type_size__(int16, int8);
 
-#ifndef OV_OS_Windows
+#ifndef System_OS_Windows
 			__check_different_type_size__(float80, float64);
 			__check_different_type_size__(float80, float32);
 #endif

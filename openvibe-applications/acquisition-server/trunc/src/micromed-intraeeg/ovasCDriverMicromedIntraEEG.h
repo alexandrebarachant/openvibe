@@ -68,6 +68,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32IndexOut;
 		OpenViBE::uint32 m_ui32BuffDataIndex;
 
+		#pragma pack(push)
 		#pragma pack(1)
 		struct
 		{
@@ -275,6 +276,7 @@ namespace OpenViBEAcquisitionServer
 		{
 			signed short int data[NB_SAMPLE_MAX];
 		} m_structBuffData;
+		#pragma pack(pop)
 
 		char* m_pStructHeader;
 		char* m_pStructHeaderInfo;

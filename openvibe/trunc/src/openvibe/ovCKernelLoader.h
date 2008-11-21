@@ -5,7 +5,7 @@
 
 namespace OpenViBE
 {
-	class CKernelLoader : public OpenViBE::IKernelLoader
+	class OV_API CKernelLoader : public OpenViBE::IKernelLoader
 	{
 	public:
 

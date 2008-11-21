@@ -50,6 +50,11 @@ namespace OpenViBE
 
 			static std::string reduce(const std::string& sValue)
 			{
+				if(sValue.length()==0)
+				{
+					return "";
+				}
+
 				std::string::size_type i=0;
 				std::string::size_type j=sValue.length()-1;
 
@@ -349,6 +354,8 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 
 	for(std::string::size_type i=0; i<sValue.length(); i++)
 	{
+		boolean l_bShouldExpand;
+
 		switch(sValue[i])
 		{
 			case '$':
@@ -377,6 +384,8 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 				l_sPrefix=l_vChildren.top().second;
 				l_vChildren.pop();
 
+				l_bShouldExpand=true;
+
 				if(l_sPrefix=="")
 				{
 					l_sValue=this->getConfigurationTokenValue(this->lookUpConfigurationTokenIdentifier(l_sPostfix.c_str()));
@@ -385,6 +394,7 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 				{
 					char* l_sEnvValue=::getenv(l_sPostfix.c_str());
 					l_sValue=(l_sEnvValue?l_sEnvValue:"");
+					l_bShouldExpand=false;
 				}
 				else if(l_sPrefix=="Core")
 				{
@@ -424,12 +434,19 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 					return false;
 				}
 
-				if(!this->internalExpand(l_sValue, l_sExpandedValue))
+				if(l_bShouldExpand)
 				{
-					this->getLogManager() << LogLevel_Warning << "Could not expand " << CString(l_sValue.c_str()) << " while expanding " << CString(sValue.c_str()) << "\n";
-					return false;
+					if(!this->internalExpand(l_sValue, l_sExpandedValue))
+					{
+						this->getLogManager() << LogLevel_Warning << "Could not expand " << CString(l_sValue.c_str()) << " while expanding " << CString(sValue.c_str()) << "\n";
+						return false;
+					}
+					l_vChildren.top().second += l_sExpandedValue;
 				}
-				l_vChildren.top().second += l_sExpandedValue;
+				else
+				{
+					l_vChildren.top().second += l_sValue;
+				}
 				break;
 
 			case '\\':

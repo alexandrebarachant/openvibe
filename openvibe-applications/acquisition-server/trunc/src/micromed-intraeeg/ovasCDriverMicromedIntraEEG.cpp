@@ -129,8 +129,8 @@ boolean CDriverMicromedIntraEEG::initialize(
 			l_ui32ReqLength = 0;
 			l_ui32Result = 0;
 			uint32 l_ui32RestOfDataSize = m_structHeaderInfo.addressOfData -  sizeof(m_structHeaderInfo);
-			char l_charHdBuffer[l_ui32RestOfDataSize];
-			char * l_pcharHdBuffer= (char*)&l_charHdBuffer;
+			char* l_charHdBuffer=new char[l_ui32RestOfDataSize];
+			char* l_pcharHdBuffer=l_charHdBuffer;
 
 			// Receive rest of the header not used yet maybe one day...
 			while(l_ui32Received < l_ui32RestOfDataSize)
@@ -146,6 +146,7 @@ boolean CDriverMicromedIntraEEG::initialize(
 			cout << "m_structHeaderInfo.positiveInputLabel = " << m_structHeaderInfo.positiveInputLabel<< std::endl;
 			cout << "m_structHeaderInfo.negativeInputLabel = " << m_structHeaderInfo.negativeInputLabel<< std::endl;
 			cout << "SSStartOffsetCode = " << m_structHeaderInfo.SSStartOffsetCode << std::endl;
+			delete [] l_charHdBuffer;
 
 			// Save Header info into m_oHeader
 			//m_oHeader.setExperimentIdentifier();
