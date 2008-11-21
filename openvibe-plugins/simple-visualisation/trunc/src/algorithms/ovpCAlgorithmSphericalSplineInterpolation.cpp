@@ -73,10 +73,10 @@ boolean CAlgorithmSphericalSplineInterpolation::uninitialize(void)
 boolean CAlgorithmSphericalSplineInterpolation::process(void)
 {
 	if(m_bFirstProcess == true)
-	{		
+	{
 		//store coords as doubles
 		m_pDoubleCoords = new double[3*ip_i64ControlPointsCount];
-		//set up matrix of pointers to double coords matrix				
+		//set up matrix of pointers to double coords matrix
 		m_pInsermCoords = new double* [ip_i64ControlPointsCount];
 		//fill both matrices
 		for(int i=0; i<ip_i64ControlPointsCount; i++)
@@ -86,7 +86,7 @@ boolean CAlgorithmSphericalSplineInterpolation::process(void)
 			m_pDoubleCoords[i*3+2] = (double)(*ip_pControlPointsCoords)[i*3+2];
 			m_pInsermCoords[i] = m_pDoubleCoords + 3*i;
 		}
-		m_bFirstProcess == false;
+		m_bFirstProcess = false;
 	}
 
 	//do we want to precompute tables?
@@ -103,7 +103,7 @@ boolean CAlgorithmSphericalSplineInterpolation::process(void)
 			m_pSplineCoefs = new double[(int)ip_i64ControlPointsCount+1];
 		}
 
-		//compute spline ponderation coefficients using spline values		
+		//compute spline ponderation coefficients using spline values
 		//FIXME : have a working copy of control points values stored as doubles?
 		spline_coef((int)ip_i64ControlPointsCount, m_pInsermCoords, (double*)ip_pControlPointsValues->getBuffer(), m_PotTable, m_pSplineCoefs);
 	}
