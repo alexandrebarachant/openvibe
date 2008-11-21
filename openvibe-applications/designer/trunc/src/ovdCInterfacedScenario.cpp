@@ -109,6 +109,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 {
 	if(bFill)
 	{
+#if defined OVD_OS_Linux
 		gdk_draw_rectangle(
 			pDrawable,
 			pDrawGC,
@@ -119,6 +120,20 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			pDrawGC,
 			TRUE,
 			x, y+radius, width, height-2*radius);
+#elif defined OVD_OS_Windows
+		gdk_draw_rectangle(
+			pDrawable,
+			pDrawGC,
+			TRUE,
+			x+radius, y, width-2*radius+1, height+1);
+		gdk_draw_rectangle(
+			pDrawable,
+			pDrawGC,
+			TRUE,
+			x, y+radius, width+1, height-2*radius+1);
+#else
+	#pragma error("you should give a version of this function for your OS")
+#endif
 	}
 	else
 	{
@@ -139,6 +154,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			pDrawGC,
 			x+width, y+radius, x+width, y+height-radius);
 	}
+#if defined OVD_OS_Linux
 	gdk_draw_arc(
 		pDrawable,
 		pDrawGC,
@@ -159,6 +175,30 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		pDrawGC,
 		bFill,
 		x+width-radius*2, y+height-radius*2, radius*2, radius*2, 270*64, 90*64);
+#elif defined OVD_OS_Windows
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x+width-radius*2, y, radius*2+(bFill?2:1), radius*2+(bFill?2:1), 0*64, 90*64);
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x, y, radius*2+(bFill?2:1), radius*2+(bFill?2:1), 90*64, 90*64);
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x, y+height-radius*2, radius*2+(bFill?2:1), radius*2+(bFill?2:1), 180*64, 90*64);
+	gdk_draw_arc(
+		pDrawable,
+		pDrawGC,
+		bFill,
+		x+width-radius*2, y+height-radius*2, radius*2+(bFill?2:1), radius*2+(bFill?2:1), 270*64, 90*64);
+#else
+	#pragma error("you should give a version of this function for your OS")
+#endif
 }
 
 	CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, CApplication& rApplication, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
