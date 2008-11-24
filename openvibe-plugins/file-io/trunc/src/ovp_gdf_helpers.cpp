@@ -2,6 +2,8 @@
 
 #include <math.h>
 #include <iostream>
+#include <stdlib.h>
+#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBEPlugins;

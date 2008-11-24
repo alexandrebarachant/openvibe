@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <cfloat>
+#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

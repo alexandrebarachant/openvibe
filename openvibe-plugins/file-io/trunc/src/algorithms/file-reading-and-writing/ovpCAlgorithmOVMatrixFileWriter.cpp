@@ -16,8 +16,8 @@ using namespace OpenViBEPlugins::FileIO;
 
 boolean CAlgorithmOVMatrixFileWriter::initialize(void)
 {
-	ip_sFilename.initialize(getInputParameter(OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Filename));	
-	ip_pMatrix.initialize(getInputParameter(OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Matrix));	
+	ip_sFilename.initialize(getInputParameter(OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Filename));
+	ip_pMatrix.initialize(getInputParameter(OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Matrix));
 
 	return true;
 }
@@ -31,22 +31,22 @@ boolean CAlgorithmOVMatrixFileWriter::uninitialize(void)
 }
 
 boolean CAlgorithmOVMatrixFileWriter::process(void)
-{	
+{
 	m_oDataFile.open(ip_sFilename->toASCIIString(), std::ios_base::out | std::ios_base::trunc );
 	if(!m_oDataFile.good())
 	{
 		getLogManager() << LogLevel_Error << "Opening " << *ip_sFilename << " failed\n";
 		return false;
 	}
-	
+
 	dumpHeader();
-	
+
 	uint32 l_ui32ElementIndex = 0;
-	dumpBuffer(0, l_ui32ElementIndex);	
-	
+	dumpBuffer(0, l_ui32ElementIndex);
+
 	getLogManager() << LogLevel_Trace << "Opening " << *ip_sFilename << " succeeded\n";
 	m_oDataFile.close();
-	
+
 	return true;
 }
 
@@ -64,7 +64,7 @@ boolean CAlgorithmOVMatrixFileWriter::dumpHeader()
 		{
 			m_oDataFile << " \"" << ip_pMatrix->getDimensionLabel(i, j) << "\"";
 		}
-		
+
 		m_oDataFile << " ]\n";
 	}
 
@@ -75,7 +75,7 @@ boolean CAlgorithmOVMatrixFileWriter::dumpHeader()
 }
 
 boolean CAlgorithmOVMatrixFileWriter::dumpBuffer(uint32 ui32DimensionIndex, uint32& ui32ElementIndex)
-{	
+{
 	//are we in innermost dimension?
 	if(ui32DimensionIndex == ip_pMatrix->getDimensionCount()-1)
 	{
@@ -92,14 +92,14 @@ boolean CAlgorithmOVMatrixFileWriter::dumpBuffer(uint32 ui32DimensionIndex, uint
 			m_oDataFile << " " << (*ip_pMatrix)[ui32ElementIndex];
 		}
 
-		//dimension end		
+		//dimension end
 		m_oDataFile << " ]\n";
 	}
 	else
 	{
 		//dump all entries in current dimension
 		for(uint32 i=0; i<ip_pMatrix->getDimensionSize(ui32DimensionIndex); i++)
-		{	
+		{
 			//dimension start
 			for(uint32 j=0; j<ui32DimensionIndex; j++)
 			{
@@ -108,7 +108,7 @@ boolean CAlgorithmOVMatrixFileWriter::dumpBuffer(uint32 ui32DimensionIndex, uint
 			m_oDataFile << "[\n";
 
 			dumpBuffer(ui32DimensionIndex+1, ui32ElementIndex);
-					
+
 			//dimension end
 			for(uint32 j=0; j<ui32DimensionIndex; j++)
 			{

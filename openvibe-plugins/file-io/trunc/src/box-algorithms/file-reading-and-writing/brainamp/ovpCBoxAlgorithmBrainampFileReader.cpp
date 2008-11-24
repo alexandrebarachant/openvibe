@@ -1,4 +1,5 @@
 #include "ovpCBoxAlgorithmBrainampFileReader.h"
+#include <stdlib.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -3,6 +3,8 @@
 #include <system/Memory.h>
 
 #include <sstream>
+#include <string.h>
+#include <stdlib.h>
 #include <locale>
 #if defined OVP_OS_Windows
 #include <errno.h>
@@ -18,9 +20,9 @@ using namespace OpenViBEPlugins::FileIO;
 boolean CAlgorithmOVMatrixFileReader::initialize(void)
 {
 	ip_sFilename.initialize(getInputParameter(OVP_Algorithm_OVMatrixFileReader_InputParameterId_Filename));
-	
+
 	op_pMatrix.initialize(getOutputParameter(OVP_Algorithm_OVMatrixFileReader_OutputParameterId_Matrix));
-	
+
 	return true;
 }
 
@@ -29,21 +31,21 @@ boolean CAlgorithmOVMatrixFileReader::uninitialize(void)
 	op_pMatrix.uninitialize();
 
 	ip_sFilename.uninitialize();
-	
+
 	return true;
 }
 
 boolean CAlgorithmOVMatrixFileReader::process(void)
-{		
+{
 	m_oDataFile.open(ip_sFilename->toASCIIString(), std::ios_base::in);
 	if(!m_oDataFile.good())
 	{
 		getLogManager() << LogLevel_Error << "Opening " << *ip_sFilename << " failed\n";
 		return false;
 	}
-	
+
 	getLogManager() << LogLevel_Trace << "Opening " << *ip_sFilename << " succeeded\n";
-	
+
 	//determine matrix dimension count and size
 	if(parseFile(false) == false)
 	{
@@ -70,10 +72,10 @@ boolean CAlgorithmOVMatrixFileReader::process(void)
 	/*
 	{
 		const char* l_pString;
-	
+
 		//go through labels
 		for(uint32 l_ui32DimensionIndex=0; l_ui32DimensionIndex<op_pMatrix->getDimensionCount(); l_ui32DimensionIndex++)
-		{	
+		{
 			for(uint32 l_ui32EntryIndex = 0; l_ui32EntryIndex < op_pMatrix->getDimensionSize(l_ui32DimensionIndex); l_ui32EntryIndex++)
 			{
 				l_pString = op_pMatrix->getDimensionLabel(l_ui32DimensionIndex, l_ui32EntryIndex);
@@ -84,8 +86,8 @@ boolean CAlgorithmOVMatrixFileReader::process(void)
 		float64 l_f64Value;
 
 		for(uint32 l_ui32ElementIndex=0; l_ui32ElementIndex<op_pMatrix->getBufferElementCount(); l_ui32ElementIndex++)
-		{	
-			l_f64Value = (*op_pMatrix)[l_ui32ElementIndex];		
+		{
+			l_f64Value = (*op_pMatrix)[l_ui32ElementIndex];
 		}
 	}*/
 
@@ -93,37 +95,37 @@ boolean CAlgorithmOVMatrixFileReader::process(void)
 }
 
 boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
-{	
-	std::locale l_oLocale;		
+{
+	std::locale l_oLocale;
 	//current string to parse
 	std::string l_sWhat;
 	//current parsing status
-	uint32 l_ui32Status=Status_Nothing;	
+	uint32 l_ui32Status=Status_Nothing;
 	//current element index (incremented every time a value is stored in matrix)
 	uint32 l_ui32CurElementIndex = 0;
 	//number of dimensions
 	uint32 l_ui32DimensionCount = op_pMatrix->getDimensionCount();
 	//current dimension index
-	int32 l_i32CurDimensionIndex = -1;			
+	int32 l_i32CurDimensionIndex = -1;
 	//vector keeping track of dimension sizes
 	std::vector<uint32> l_vDimensionSize;
 	//vector keeping track of number of values found in each dimension
 	std::vector<uint32> l_vValuesCount(op_pMatrix->getDimensionCount(), 0);
 	//current quote-delimited string
-	std::string l_sCurString;	
-	
+	std::string l_sCurString;
+
 	do
-	{	
+	{
 		//read current line
 		std::getline(m_oDataFile, l_sWhat, '\n');
-		
+
 		//is line empty?
 		if(l_sWhat.length()==0)
 		{
 			//skip it
 			continue;
 		}
-		
+
 		//output line to be parsed in debug level
 		getLogManager() << LogLevel_Debug << CString(l_sWhat.c_str()) << "\n";
 
@@ -132,35 +134,35 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 		{
 			l_sWhat.erase(l_sWhat.length()-1, 1);
 		}
-		
+
 		//start parsing current line
 		std::string::iterator l_oIt = l_sWhat.begin();
 
 		//parse current line
 		while(l_oIt != l_sWhat.end())
-		{					
+		{
 			switch(l_ui32Status)
-			{		
+			{
 				//initial parsing status
-				case Status_Nothing:													
-				
+				case Status_Nothing:
+
 					//comments starting
 					if(*l_oIt == '#')
 					{
 						//ignore rest of line by skipping to last character
-						l_oIt = l_sWhat.end()-1;						
+						l_oIt = l_sWhat.end()-1;
 					}
 					//header starting
 					else if(*l_oIt == '[')
-					{	
+					{
 						//update status
-						l_ui32Status = Status_ParsingHeader;												
-					}					
+						l_ui32Status = Status_ParsingHeader;
+					}
 					else if(std::isspace(*l_oIt, l_oLocale) == false)
-					{							
+					{
 						getLogManager() << LogLevel_Trace << "Unexpected character found on line " << l_sWhat.c_str() << ", parsing aborted\n";
 						return false;
-					}										
+					}
 					break;
 
 				//parse header
@@ -170,14 +172,14 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 					if(*l_oIt == '#')
 					{
 						//ignore rest of line by skipping to last character
-						l_oIt = l_sWhat.end()-1;						
+						l_oIt = l_sWhat.end()-1;
 					}
 					//new dimension opened
 					else if(*l_oIt == '[')
-					{	
-						//increment dimension count						
-						l_vDimensionSize.resize(l_vDimensionSize.size()+1);						
-						
+					{
+						//increment dimension count
+						l_vDimensionSize.resize(l_vDimensionSize.size()+1);
+
 						//update current dimension index
 						l_i32CurDimensionIndex++;
 
@@ -186,26 +188,26 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 					}
 					//finished parsing header
 					else if(*l_oIt == ']')
-					{	
+					{
 						if(bStoreData == false)
 						{
 							//ensure at least one dimension was found
 							if(l_vDimensionSize.size() == 0)
-							{				
+							{
 								getLogManager() << LogLevel_Trace << "End of header section reached, found 0 dimensions : parsing aborted\n";
 								return false;
 							}
 
 							//resize matrix
 							op_pMatrix->setDimensionCount(l_vDimensionSize.size());
-							for(int i=0; i<l_vDimensionSize.size(); i++)
+							for(size_t i=0; i<l_vDimensionSize.size(); i++)
 							{
 								op_pMatrix->setDimensionSize(i, l_vDimensionSize[i]);
 							}
 
 							//dump dimension count and size
 							char l_pBuf[1024]={'\0'};
-							for(int i=0; i<l_vDimensionSize.size(); i++)
+							for(size_t i=0; i<l_vDimensionSize.size(); i++)
 							{
 								if(i>0)
 								{
@@ -217,8 +219,8 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 									sprintf(l_pBuf+strlen(l_pBuf), "%d", l_vDimensionSize[i]);
 								}
 							}
-							getLogManager() << LogLevel_Trace << 
-								"End of header section reached, found " << l_vDimensionSize.size() << " dimensions of size ["
+							getLogManager() << LogLevel_Trace
+								<< "End of header section reached, found " << (uint32)l_vDimensionSize.size() << " dimensions of size ["
 								<< l_pBuf << "]\n";
 
 							//stop parsing
@@ -230,41 +232,41 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 							l_i32CurDimensionIndex = -1;
 
 							//update status
-							l_ui32Status = Status_ParsingBuffer;						
+							l_ui32Status = Status_ParsingBuffer;
 						}
 					}
 					else if(std::isspace(*l_oIt, l_oLocale) == false)
-					{		
+					{
 						getLogManager() << LogLevel_Trace << "Unexpected character found on line " << l_sWhat.c_str() << ", parsing aborted\n";
 						return false;
 					}
 					break;
-				
+
 				case Status_ParsingHeaderDimension:
-				
+
 					//comments starting
 					if(*l_oIt == '#')
 					{
 						//ignore rest of line by skipping to last character
-						l_oIt = l_sWhat.end()-1;						
+						l_oIt = l_sWhat.end()-1;
 					}
 					//new label found
 					else if(*l_oIt == '"')
 					{
 						//new element found in current dimension
-						l_vDimensionSize[l_i32CurDimensionIndex]++;												
+						l_vDimensionSize[l_i32CurDimensionIndex]++;
 
 						//update status
 						l_ui32Status = Status_ParsingHeaderLabel;
-					}					
+					}
 					//finished parsing current dimension header
 					else if(*l_oIt == ']')
-					{	
+					{
 						//update status
 						l_ui32Status = Status_ParsingHeader;
 					}
 					else if(std::isspace(*l_oIt, l_oLocale) == false)
-					{					
+					{
 						getLogManager() << LogLevel_Trace << "Unexpected character found on line " << l_sWhat.c_str() << ", parsing aborted\n";
 						return false;
 					}
@@ -283,13 +285,13 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 								(uint32)l_i32CurDimensionIndex, //dimension index
 								l_vDimensionSize[l_i32CurDimensionIndex]-1, //label index
 								l_sCurString.c_str()); //label
-											
+
 							//clear current string
-							l_sCurString.erase();						
+							l_sCurString.erase();
 						}
 
 						//update status
-						l_ui32Status = Status_ParsingHeaderDimension;						
+						l_ui32Status = Status_ParsingHeaderDimension;
 					}
 					//otherwise, keep parsing current label
 					else
@@ -302,97 +304,97 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 					break;
 
 				case Status_ParsingBuffer:
-				
+
 					//comments starting
 					if(*l_oIt == '#')
 					{
 						//ignore rest of line by skipping to last character
-						l_oIt = l_sWhat.end()-1;						
+						l_oIt = l_sWhat.end()-1;
 					}
 					//going down one dimension
 					else if(*l_oIt == '[')
-					{											
+					{
 						//update dimension index
 						l_i32CurDimensionIndex++;
 
 						//ensure dimension count remains in allocated range
 						if((uint32)l_i32CurDimensionIndex == l_ui32DimensionCount)
-						{					
+						{
 							getLogManager() << LogLevel_Trace << "Exceeded expected number of dimensions while parsing values, parsing aborted\n";
 							return false;
 						}
 
 						//ensure values count remains in allocated range
 						if(l_vValuesCount[(uint32)l_i32CurDimensionIndex] == op_pMatrix->getDimensionSize((uint32)l_i32CurDimensionIndex))
-						{	
+						{
 							getLogManager() << LogLevel_Trace << "Exceeded expected number of values for dimension " << l_i32CurDimensionIndex << ", parsing aborted\n";
 							return false;
 						}
 
 						//increment values count for current dimension, if it is not the innermost
-						if(l_i32CurDimensionIndex < l_ui32DimensionCount - 1)
+						if(l_i32CurDimensionIndex < (int32)(l_ui32DimensionCount - 1))
 						{
-							l_vValuesCount[(uint32)l_i32CurDimensionIndex]++;																		
+							l_vValuesCount[(uint32)l_i32CurDimensionIndex]++;
 						}
-					}					
+					}
 					//going up one dimension
 					else if(*l_oIt == ']')
-					{	
+					{
 						//if we are not in innermost dimension
-						if(l_i32CurDimensionIndex < l_ui32DimensionCount-1)
+						if(l_i32CurDimensionIndex < (int32)(l_ui32DimensionCount-1))
 						{
 							//ensure the right number of values was parsed in lower dimension
 							if(l_vValuesCount[(uint32)l_i32CurDimensionIndex+1] != op_pMatrix->getDimensionSize((uint32)l_i32CurDimensionIndex+1))
-							{						
+							{
 								getLogManager() << LogLevel_Trace << "Found " << l_vValuesCount[(uint32)l_i32CurDimensionIndex+1] << " values in dimension "
 								<< l_i32CurDimensionIndex+1 << ", expected " << op_pMatrix->getDimensionSize((uint32)l_i32CurDimensionIndex+1) << ", parsing aborted\n";
-								return false;						
+								return false;
 							}
 							//reset values count of lower dimension to 0
 							l_vValuesCount[(uint32)l_i32CurDimensionIndex+1] = 0;
 						}
 						//ensure dimension count is correct
 						else if(l_i32CurDimensionIndex < 0)
-						{							
+						{
 							getLogManager() << LogLevel_Trace << "Found one too many closing bracket character, parsing aborted\n";
 							return false;
 						}
 
 						//go up one dimension
-						l_i32CurDimensionIndex--;												
-					}		
+						l_i32CurDimensionIndex--;
+					}
 					//non whitespace character found
 					else if(std::isspace(*l_oIt, l_oLocale) == false)
-					{	
+					{
 						//if we are in innermost dimension, assume a value is starting here
 						if((uint32)l_i32CurDimensionIndex == l_ui32DimensionCount-1)
 						{
 							//ensure values parsed so far in current dimension doesn't exceed current dimension size
 							if(l_vValuesCount.back() == op_pMatrix->getDimensionSize((uint32)l_i32CurDimensionIndex))
-							{			
-								getLogManager() << LogLevel_Trace 
-									<< "Found " << l_vValuesCount.back() << " values in dimension "	<< l_i32CurDimensionIndex 
+							{
+								getLogManager() << LogLevel_Trace
+									<< "Found " << l_vValuesCount.back() << " values in dimension "	<< l_i32CurDimensionIndex
 									<< ", expected " << op_pMatrix->getDimensionSize((uint32)l_i32CurDimensionIndex) << ", parsing aborted\n";
 								return false;
 							}
-							
+
 							//increment values count found in innermost dimension
-							l_vValuesCount[(uint32)l_i32CurDimensionIndex]++;																								
+							l_vValuesCount[(uint32)l_i32CurDimensionIndex]++;
 
 							//append current character to current string
 							l_sCurString.append(1, *l_oIt);
 
 							//update status
-							l_ui32Status = Status_ParsingBufferValue;					
+							l_ui32Status = Status_ParsingBufferValue;
 						}
-						else 
-						{	
+						else
+						{
 							getLogManager() << LogLevel_Trace << "Unexpected character found on line " << l_sWhat.c_str() << ", parsing aborted\n";
 							return false;
 						}
 					}
 					break;
-				
+
 				//look for end of value (first '"' char not preceded by the '\' escape char)
 				case Status_ParsingBufferValue:
 
@@ -403,7 +405,7 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 						if(*l_oIt == ']')
 						{
 							//move back iterator by one character so that closing bracket is taken into account in Status_ParsingBuffer case
-							l_oIt--;						
+							l_oIt--;
 						}
 
 						//retrieve value
@@ -415,7 +417,7 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 							getLogManager() << LogLevel_Trace << "Couldn't convert token \"" << l_sCurString.c_str() << "\" to floating point value, parsing aborted\n";
 							return false;
 						}
-#endif					
+#endif
 						//store value in matrix
 						(*op_pMatrix)[l_ui32CurElementIndex] = l_f64Value;
 
@@ -433,12 +435,12 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 					{
 						l_sCurString.append(1, *l_oIt);
 					}
-					break;	
-					
+					break;
+
 				default:
-					break;								
+					break;
 			} // switch(l_ui32Status)
-					
+
 			//increment iterator
 			l_oIt++;
 
@@ -448,10 +450,10 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 
 	//ensure the right number of values were parsed in first dimension
 	if(l_vValuesCount[0] != op_pMatrix->getDimensionSize(0))
-	{					
-		getLogManager() << LogLevel_Trace << 
+	{
+		getLogManager() << LogLevel_Trace <<
 			"Found " << l_vValuesCount[0] << " values in dimension 0, expected " << op_pMatrix->getDimensionSize(0) << ", parsing aborted\n";
-		return false;						
+		return false;
 	}
 
 	return true;
