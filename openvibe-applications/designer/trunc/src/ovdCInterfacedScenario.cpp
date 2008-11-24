@@ -107,6 +107,21 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 
 static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawGC, ::gboolean bFill, gint x, gint y, gint width, gint height, gint radius=8)
 {
+	if(radius<0)
+	{
+		radius=8;
+	}
+	if(width <(radius+1)*2)
+	{
+		x-=(radius+1)-width/2;
+		width =(radius+1)*2;
+	}
+	if(height<(radius+1)*2)
+	{
+		y-=(radius+1)-height/2;
+		height=(radius+1)*2;
+	}
+
 	if(bFill)
 	{
 #if defined OVD_OS_Linux

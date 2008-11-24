@@ -1,6 +1,7 @@
 #include "ovpCReferenceChannel.h"
 
 #include <system/Memory.h>
+#include <stdlib.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

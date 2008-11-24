@@ -220,7 +220,7 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 					Resource_StringShortDescription, "",
 					Resource_StringStockIcon, "gtk-directory",
 					Resource_StringColor, "#000000",
-					Resource_BooleanIsPlugin, false,
+					Resource_BooleanIsPlugin, (gboolean)FALSE,
 					-1);
 			}
 			if(!l_pGtkIterParent)
@@ -246,7 +246,7 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 				rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(l_pPluginObjectDesc->getCreatedClass())?"#3f7f7f":
 				rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass())?"#6f6f6f":
 				"black",
-			Resource_BooleanIsPlugin, true,
+			Resource_BooleanIsPlugin, (gboolean)TRUE,
 			-1);
 	}
 }

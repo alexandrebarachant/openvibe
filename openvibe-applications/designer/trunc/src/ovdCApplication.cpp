@@ -2,20 +2,21 @@
 
 #include <system/Time.h>
 
+#include "ovdCDesignerVisualisation.h"
+#include "ovdCPlayerVisualisation.h"
+#include "ovdCInterfacedObject.h"
+#include "ovdCInterfacedScenario.h"
+#include "ovdCApplication.h"
+
 #include <stack>
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <string.h>
 
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.glade"
-
-#include "ovdCDesignerVisualisation.h"
-#include "ovdCPlayerVisualisation.h"
-#include "ovdCInterfacedObject.h"
-#include "ovdCInterfacedScenario.h"
-#include "ovdCApplication.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

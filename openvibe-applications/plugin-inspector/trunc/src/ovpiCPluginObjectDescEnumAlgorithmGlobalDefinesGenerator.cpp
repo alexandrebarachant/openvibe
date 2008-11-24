@@ -1,7 +1,5 @@
 #include "ovpiCPluginObjectDescEnumAlgorithmGlobalDefinesGenerator.h"
 
-#include <algorithm>
-
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;

@@ -1,0 +1,68 @@
+/**
+ * \page BoxAlgorithm_StimulationBasedEpoching Stimulation based epoching
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Description|
+ This box generates epochs upon reception of a given stimulation.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Inputs|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Input1|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Input1|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Input2|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Input2|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Output1|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Setting1|
+ Size of epochs to generate, in seconds
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Setting1|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Setting2|
+ Offset (in seconds) to add to target stimulation reception time before generated epochs are to start.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Setting2|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Setting3|
+ Rarget stimulation ID.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Setting3|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Examples|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Examples|
+
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationBasedEpoching_Miscellaneous|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationBasedEpoching_Miscellaneous|
+ */

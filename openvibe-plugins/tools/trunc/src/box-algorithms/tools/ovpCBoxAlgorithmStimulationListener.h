@@ -5,6 +5,7 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 #include <vector>
+#include <stdio.h>
 
 #define OVP_ClassId_BoxAlgorithm_StimulationListener     OpenViBE::CIdentifier(0x65731E1D, 0x47DE5276)
 #define OVP_ClassId_BoxAlgorithm_StimulationListenerDesc OpenViBE::CIdentifier(0x0EC013FD, 0x5DD23E44)

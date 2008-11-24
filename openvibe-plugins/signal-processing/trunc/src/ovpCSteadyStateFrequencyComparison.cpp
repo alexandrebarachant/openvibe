@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

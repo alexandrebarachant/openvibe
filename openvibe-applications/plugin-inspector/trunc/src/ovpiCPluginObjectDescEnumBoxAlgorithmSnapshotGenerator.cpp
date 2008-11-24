@@ -4,7 +4,6 @@
 #include <fstream>
 #include <map>
 #include <vector>
-
 #include <algorithm>
 
 #include <gtk/gtk.h>
@@ -233,7 +232,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlg
 boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPluginObjectDesc& rPluginObjectDesc)
 {
 	string l_sFullName=string(rPluginObjectDesc.getCategory().toASCIIString()) + "/" + string(rPluginObjectDesc.getName().toASCIIString());
-	string l_sFilename="Doc_BoxAlgorithm_"+transform(rPluginObjectDesc.getName().toASCIIString());
+	string l_sFilename="BoxAlgorithm_"+transform(rPluginObjectDesc.getName().toASCIIString());
 	CIdentifier l_oBoxIdentifier;
 	if(!m_pScenario->addBox(rPluginObjectDesc.getCreatedClassIdentifier(), l_oBoxIdentifier))
 	{
@@ -384,7 +383,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 		0, 0,
 		0, 0,
 		xSize+32, ySize+32);
-	gdk_pixbuf_save(l_pPixBuf, (m_sSnapshotDirectory+"/"+l_sFilename+".png").c_str(), "png", NULL, NULL);
+	gdk_pixbuf_save(l_pPixBuf, (m_sSnapshotDirectory+"/Doc_"+l_sFilename+".png").c_str(), "png", NULL, NULL);
 
 	g_object_unref(l_pPixBuf);
 
@@ -392,35 +391,79 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 
 	m_vCategories.push_back(pair < string, string >(rPluginObjectDesc.getCategory().toASCIIString(), rPluginObjectDesc.getName().toASCIIString()));
 
-	std::ofstream l_oFile;
-	l_oFile.open((m_sDocTemplateDirectory+"/"+l_sFilename+".dox-skeleton").c_str());
+	std::ofstream l_oFileSkeleton;
+	std::ofstream l_oFilePart;
+	l_oFileSkeleton.open((m_sDocTemplateDirectory+"/Doc_"+l_sFilename+".dox-skeleton").c_str());
+	l_oFilePart.open((m_sDocTemplateDirectory+"/Doc_"+l_sFilename+".dox-part-skeleton").c_str());
 
-	l_oFile
+	l_oFileSkeleton
 		<< "/**\n"
-		<< " * \\page " << l_sFilename.c_str() << " " << rPluginObjectDesc.getName().toASCIIString() << "\n"
-		<< " * \\section " << l_sFilename.c_str() << "_Summary Summary\n"
-		<< " * \\image html " << l_sFilename.c_str() << ".png\n"
+		<< " * \\page Doc_" << l_sFilename.c_str() << " " << rPluginObjectDesc.getName().toASCIIString() << "\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_Summary Summary\n"
+		<< " * \\image html Doc_" << l_sFilename.c_str() << ".png\n"
 		<< " *\n"
 		<< " * - Plugin name : " << rPluginObjectDesc.getName() << "\n"
 		<< " * - Version : " << rPluginObjectDesc.getVersion() << "\n"
 		<< " * - Author : " << rPluginObjectDesc.getAuthorName() << "\n"
 		<< " * - Compnay : " << rPluginObjectDesc.getAuthorCompanyName() << "\n"
 		<< " * - Short description : " << rPluginObjectDesc.getShortDescription() << "\n"
-		<< " * - Documentation template generation date : " << __DATE__ << "\n"
+		<< " * - Documentation template generation date : " << __DATE__ << "\n";
+
+	boolean l_bDeprectated=m_rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(rPluginObjectDesc.getCreatedClassIdentifier());
+	if(l_bDeprectated)
+	{
+		l_oFileSkeleton
+			<< " * - <b>WARNING : this box has been marked as DEPRECATED by the developer.</b>\n"
+			<< " * It will be removed soon or later, so you should consider not using this\n"
+			<< " * box and turn to another \"equivalent\" one.\n";
+	}
+
+	boolean l_bUnstable=m_rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(rPluginObjectDesc.getCreatedClassIdentifier());
+	if(l_bUnstable)
+	{
+		l_oFileSkeleton
+			<< " * - <b>WARNING : this box has been marked as UNSTABLE by the developer.\n"
+			<< " * It means that its implementation may be incomplete or that the box can only work\n"
+			<< " * under well known conditions. It may possibly crash or cause data loss.\n"
+			<< " * Use this box at your own risk, you've been warned.</b>\n";
+	}
+
+	l_oFileSkeleton
 		<< " *\n"
-		<< " * \\section " << l_sFilename.c_str() << "_Description Description\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_Description Description\n"
 		<< " * " << rPluginObjectDesc.getDetailedDescription() << "\n"
 		<< " *\n"
-		<< " * @" << l_sFilename.c_str() << "_Description_Content@\n"
+		<< " * @Doc_" << l_sFilename.c_str() << "_Description_Content@\n"
 		<< " *\n";
+
+	l_oFilePart
+		<< "/**\n"
+		<< " * \\page " << l_sFilename.c_str() << " " << rPluginObjectDesc.getName().toASCIIString() << "\n"
+		<< "__________________________________________________________________\n"
+		<< "\n"
+		<< "Detailed description\n"
+		<< "__________________________________________________________________\n"
+		<< "\n"
+		<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Description|\n"
+		<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Description|\n";
 
 	if(l_rBox.getInputCount())
 	{
-		l_oFile
-			<< " * \\section " << l_sFilename.c_str() << "_Inputs Inputs\n"
+		l_oFileSkeleton
+			<< " * \\section Doc_" << l_sFilename.c_str() << "_Inputs Inputs\n"
 			// << " * Number of inputs : " << l_rBox.getInputCount() << "\n"
 			<< " *\n"
-			<< " * @" << l_sFilename.c_str() << "_Inputs_Content@\n";
+			<< " * @Doc_" << l_sFilename.c_str() << "_Inputs_Content@\n";
+
+		l_oFilePart
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< "Inputs description\n"
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Inputs|\n"
+			<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Inputs|\n";
+
 		for(i=0; i<l_rBox.getInputCount(); i++)
 		{
 			CString l_sName;
@@ -429,22 +472,38 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 			l_rBox.getInputName(i, l_sName);
 			l_rBox.getInputType(i, l_oTypeIdentifier);
 			l_sTypeName=m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier);
-			l_oFile
-				<< " * \\subsection " << l_sFilename.c_str() << "_Input_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
-				<< " * Type identifier of this input is \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
+
+			l_oFileSkeleton
+				<< " * \\subsection Doc_" << l_sFilename.c_str() << "_Input_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
+				<< " * @Doc_" << l_sFilename.c_str() << "_Input" << i+1 << "_Content@\n"
 				<< " *\n"
-				<< " * @" << l_sFilename.c_str() << "_Input" << i+1 << "_Content@\n"
+				<< " * - Type identifier of this input is \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" <em>" << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
 				<< " *\n";
+
+			l_oFilePart
+				<< "\n"
+				<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Input" << i+1 << "|\n"
+				<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Input" << i+1 << "|\n";
 		}
 	}
 
 	if(l_rBox.getOutputCount())
 	{
-		l_oFile
-			<< " * \\section " << l_sFilename.c_str() << "_Outputs Outputs\n"
+		l_oFileSkeleton
+			<< " * \\section Doc_" << l_sFilename.c_str() << "_Outputs Outputs\n"
 			// << " * Number of outputs : " << l_rBox.getOutputCount() << "\n"
 			<< " *\n"
-			<< " * @" << l_sFilename.c_str() << "_Outputs_Content@\n";
+			<< " * @Doc_" << l_sFilename.c_str() << "_Outputs_Content@\n";
+
+		l_oFilePart
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< "Outputs description\n"
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Outputs|\n"
+			<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Outputs|\n";
+
 		for(i=0; i<l_rBox.getOutputCount(); i++)
 		{
 			CString l_sName;
@@ -453,22 +512,38 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 			l_rBox.getOutputName(i, l_sName);
 			l_rBox.getOutputType(i, l_oTypeIdentifier);
 			l_sTypeName=m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier);
-			l_oFile
-				<< " * \\subsection " << l_sFilename.c_str() << "_Output_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
-				<< " * Type identifier of this output is \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
+
+			l_oFileSkeleton
+				<< " * \\subsection Doc_" << l_sFilename.c_str() << "_Output_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
+				<< " * @Doc_" << l_sFilename.c_str() << "_Output" << i+1 << "_Content@\n"
 				<< " *\n"
-				<< " * @" << l_sFilename.c_str() << "_Output" << i+1 << "_Content@\n"
+				<< " * - Type identifier of this output is \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" <em>" << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
 				<< " *\n";
+
+			l_oFilePart
+				<< "\n"
+				<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Output" << i+1 << "|\n"
+				<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Output" << i+1 << "|\n";
 		}
 	}
 
 	if(l_rBox.getSettingCount())
 	{
-		l_oFile
-			<< " * \\section " << l_sFilename.c_str() << "_Settings Settings\n"
+		l_oFileSkeleton
+			<< " * \\section Doc_" << l_sFilename.c_str() << "_Settings Settings\n"
 			// << " * Number of settings : " << l_rBox.getSettingCount() << "\n"
 			<< " *\n"
-			<< " * @" << l_sFilename.c_str() << "_Settings_Content@\n";
+			<< " * @Doc_" << l_sFilename.c_str() << "_Settings_Content@\n";
+
+		l_oFilePart
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< "Settings description\n"
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Settings|\n"
+			<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Settings|\n";
+
 		for(i=0; i<l_rBox.getSettingCount(); i++)
 		{
 			CString l_sName;
@@ -479,35 +554,69 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 			l_rBox.getSettingType(i, l_oTypeIdentifier);
 			l_rBox.getSettingDefaultValue(i, l_sDefaultValue);
 			l_sTypeName=m_rKernelContext.getTypeManager().getTypeName(l_oTypeIdentifier);
-			l_oFile
-				<< " * \\subsection " << l_sFilename.c_str() << "_Setting_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
-				<< " * Type identifier of this setting is \\ref Doc_Types_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" " << l_oTypeIdentifier.toString().toASCIIString() << "\n"
+
+			l_oFileSkeleton
+				<< " * \\subsection Doc_" << l_sFilename.c_str() << "_Setting_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
+				<< " * @Doc_" << l_sFilename.c_str() << "_Setting" << i+1 << "_Content@\n"
 				<< " *\n"
-				<< " * Default value of this setting is " << l_sDefaultValue.toASCIIString() << "\n"
+// "\\ref Doc_Types_" << transform(l_sTypeName.toASCIIString()).c_str()
+				<< " * - Type identifier of this setting is <em> " << l_sTypeName.toASCIIString() << " " << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
 				<< " *\n"
-				<< " * @" << l_sFilename.c_str() << "_Setting" << i+1 << "_Content@\n"
+				<< " * - Default value of this setting is [ <em>" << l_sDefaultValue.toASCIIString() << "</em> ]\n"
 				<< " *\n";
+
+			l_oFilePart
+				<< "\n"
+				<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Setting" << i+1 << "|\n"
+				<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Setting" << i+1 << "|\n";
 		}
 	}
 
 	if(rPluginObjectDesc.hasFunctionality(PluginFunctionality_Visualization))
 	{
-		l_oFile
-			<< " * \\section " << l_sFilename.c_str() << "_OnlineVisualizationSettings Online visualisation settings\n"
+		l_oFileSkeleton
+			<< " * \\section Doc_" << l_sFilename.c_str() << "_OnlineVisualizationSettings Online visualisation settings\n"
 			<< " *\n"
-			<< " * @" << l_sFilename.c_str() << "_OnlineVisualizationSettings_Content@\n";
+			<< " * @Doc_" << l_sFilename.c_str() << "_OnlineVisualizationSettings_Content@\n";
+
+		l_oFilePart
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< "Online visualisation settings\n"
+			<< "__________________________________________________________________\n"
+			<< "\n"
+			<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_OnlineVisualizationSettings|\n"
+			<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_OnlineVisualizationSettings|\n";
 	}
 
-	l_oFile
+	l_oFileSkeleton
 		<< " *\n"
-		<< " * \\section " << l_sFilename.c_str() << "_Examples Examples\n"
-		<< " * @" << l_sFilename.c_str() << "_Examples_Content@\n"
+		<< " * \\section Doc_" << l_sFilename.c_str() << "_Examples Examples\n"
+		<< " * @Doc_" << l_sFilename.c_str() << "_Examples_Content@\n"
 		<< " *\n"
-		<< " *  \\section " << l_sFilename.c_str() << "_Miscellaneous Miscellaneous\n"
-		<< " * @" << l_sFilename.c_str() << "_Miscellaneous_Content@\n"
-		<< " */";
+		<< " *  \\section Doc_" << l_sFilename.c_str() << "_Miscellaneous Miscellaneous\n"
+		<< " * @Doc_" << l_sFilename.c_str() << "_Miscellaneous_Content@\n"
+		<< " */\n";
 
-	l_oFile.close();
+	l_oFilePart
+		<< "__________________________________________________________________\n"
+		<< "\n"
+		<< "Examples description\n"
+		<< "__________________________________________________________________\n"
+		<< "\n"
+		<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Examples|\n"
+		<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Examples|\n"
+		<< "__________________________________________________________________\n"
+		<< "\n"
+		<< "Miscellaneous description\n"
+		<< "__________________________________________________________________\n"
+		<< "\n"
+		<< " * |OVP_DocBegin_" << l_sFilename.c_str() << "_Miscellaneous|\n"
+		<< " * |OVP_DocEnd_" << l_sFilename.c_str() << "_Miscellaneous|\n"
+		<< " */\n";
+
+	l_oFileSkeleton.close();
+	l_oFilePart.close();
 
 	return true;
 }

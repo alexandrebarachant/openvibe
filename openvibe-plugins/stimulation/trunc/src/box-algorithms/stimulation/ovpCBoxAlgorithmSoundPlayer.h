@@ -56,7 +56,8 @@ namespace OpenViBEPlugins
 			{
 				rBoxAlgorithmPrototype.addInput  ("Stimulation stream", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addSetting("Stimulation", OV_TypeId_Stimulation,"OVTK_StimulationId_Beep");
-				rBoxAlgorithmPrototype.addSetting("Sound to play", OV_TypeId_Filename, "");
+				rBoxAlgorithmPrototype.addSetting("Sound to play", OV_TypeId_Filename, "../share/openvibe-plugins/stimulation/ov_beep.wav");
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 
 				return true;
 			}

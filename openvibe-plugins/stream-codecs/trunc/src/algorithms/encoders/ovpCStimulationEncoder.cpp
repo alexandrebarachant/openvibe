@@ -32,27 +32,25 @@ boolean CStimulationEncoder::processBuffer(void)
 {
 	IStimulationSet* l_pStimulationSet=ip_pStimulationSet;
 
-	 m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer);
-	  m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation);
-	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_NumberOfStimulations);
-	    m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationCount());
-	   m_pEBMLWriterHelper->closeChild();
-	   for(uint32 i=0; i<l_pStimulationSet->getStimulationCount(); i++)
-	   {
-	     m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation);
-	      m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation_Identifier);
-	       m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationIdentifier(i));
-	      m_pEBMLWriterHelper->closeChild();
-	      m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation_Date);
-	       m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationDate(i));
-	      m_pEBMLWriterHelper->closeChild();
-	      m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration);
-	       m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationDuration(i));
-	      m_pEBMLWriterHelper->closeChild();
-	     m_pEBMLWriterHelper->closeChild();
-	    }
-	  m_pEBMLWriterHelper->closeChild();
+	m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation);
+	 m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_NumberOfStimulations);
+	  m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationCount());
 	 m_pEBMLWriterHelper->closeChild();
+	 for(uint32 i=0; i<l_pStimulationSet->getStimulationCount(); i++)
+	 {
+	   m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation);
+	    m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation_Identifier);
+	     m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationIdentifier(i));
+	    m_pEBMLWriterHelper->closeChild();
+	    m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation_Date);
+	     m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationDate(i));
+	    m_pEBMLWriterHelper->closeChild();
+	    m_pEBMLWriterHelper->openChild(OVTK_NodeId_Buffer_Stimulation_Stimulation_Duration);
+	     m_pEBMLWriterHelper->setUIntegerAsChildData(l_pStimulationSet->getStimulationDuration(i));
+	    m_pEBMLWriterHelper->closeChild();
+	   m_pEBMLWriterHelper->closeChild();
+	  }
+	m_pEBMLWriterHelper->closeChild();
 
 	return true;
 }

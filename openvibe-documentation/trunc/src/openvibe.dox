@@ -1,15 +1,61 @@
+/*
+ * It proposes to generate online scenarios (step 3 of Figure \ref{figure-bci-steps})
+ * automatically from offline analysis (step 2 of Figure \ref{figure-bci-steps}).
+ * It is also strongly linked with VR as it enables the use of innovative VR displays
+ * and feedback and can be used as a device for any VR application.
+ */
+
 /**
  * \mainpage OpenViBE
  *
- * Here you will find a technical description and manual of the §OpenViBE§ platform, a novel, free
- * and open source general purpose platform to design and tune BCI systems and connect them with VR applications.
- * The whole software is developed in C++.
- *
+ * \b NOTE
  * The redaction of this document is on progress so this documentation is far from complete right now. However,
  * we collected several things from here and there and put them altogether in an unorganised way. This is a start...
  * Have a nice reading.
  *
  * \image html logo.png
+ *
+ * <hr>
+ *
+ * This website describes the §OpenViBE§ software platform. §OpenViBE§ enables to design, test and use
+ * Brain-Computer Interfaces. Brain-Computer Interfaces (BCI) are communication systems that enable users to
+ * send commands to computers only by means of brain activity. BCI are gaining interest inside the Virtual
+ * Reality (VR) community as they have appeared as promising interaction devices for Virtual Environments (VE).
+ *
+ * §OpenViBE§ is free and open source (under the term of this \ref Doc_Licence). The whole software is developed in C++.
+ * It consists of a set of software modules that can be integrated easily and efficiently to design BCI applications
+ * such as for VR interactions. Key features of the platform are:
+ *
+ * - <b>Modularity and reusability.</b> Our platform is a set of software modules devoted to
+ * the acquisition, pre-processing, processing and visualization of cerebral data, as well as to the
+ * interaction with VR displays. §OpenViBE§ being a general purpose software implies
+ * users should be able to easily add new software modules in order to fit their needs. This is ensured thanks to
+ * the concept of box algorithm, a "black box" in charge of a fraction of the whole processing pipeline,
+ * that allows to develop reusable components, reduces development time and helps to quickly extend functionalities
+ * (See \ref Doc_BoxAlgorithms for a list of the existing box algorithms).
+ * - <b>Different types of user.</b> §OpenViBE§ is designed for different types of user:
+ * VR developers, clinicians, BCI researchers, etc. Their various needs are addressed
+ * and different tools are proposed for each of them, depending on their programming skills
+ * and their knowledge in brain processes.
+ * - <b>Portability.</b> The platform operates independently from the different
+ * software and hardware targets.
+ * It includes an abstraction allowing to run with various acquisition machines, such as EEG or MEG.
+ * It can run on Windows and Linux and also includes different data visualisation techniques.
+ * Also, it is based on free and portable softwares (e.g., GTK+, IT++, GSL, VRPN, GCC).
+ * - <b>Connection with VR.</b> Our software can be integrated with high-end VR
+ * applications. §OpenViBE§ can serve as an external peripheral to connect a BCI system to
+ * any kind of VR application. It also takes advantage of VR displays
+ * thanks to a light abstraction of a scenegraph management library, allowing to visualize
+ * cerebral activity more efficiently or to provide incentive training environments (e.g., for neurofeedback).
+ *
+ * As compared to other BCI softwares, the §OpenViBE§ platform presented in this paper
+ * is highly modular. It addresses the needs of different types of users (programmers and
+ * non-programmers) and proposes a user-friendly graphical language which allows
+ * non-programmers to design a BCI without writing a single line of code.
+ * Moreover, §OpenViBE§ is portable, is independent of the hardware or software, can run
+ * on both Windows and Linux and is entirely based on free and open-source softwares.
+ *
+ * <hr>
  *
  * \subpage Doc_Licence :
  * - The software platform is released under the term of the \subpage Doc_Licence "L-GPL v2+"
@@ -20,16 +66,30 @@
  *
  * <hr>
  *
- * User documentation :
- * - \subpage Doc_BoxAlgorithms (documentation in progress)
+ * \subpage Doc_DevelopperDocumentation :
+ * - \subpage Doc_CreatingANewDriver (should be updated with stimulations - YR)
+ * - \subpage Doc_CreatingNewPlugins (should be both improved and updated - YR)
+ * - \subpage Doc_Algorithms (documentation in progress)
+ * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ * - \subpage Doc_OpenViBEStreams (should be improved - YR)
+ * - \subpage Doc_Stimulations
  *
  * <hr>
  *
- * \subpage Doc_DevelopperDocumentation :
- * - \subpage Doc_CreatingANewDriver (should be updated)
- * - \subpage Doc_CreatingNewPlugins (should be both improved and updated)
- * - \subpage Doc_OpenViBEStreams
- * - \subpage Doc_Stimulations
+ * \subpage Doc_UserDocumentation :
+ * - \subpage Doc_AcquisitionServerUserDocumentation
+ *   - \subpage Doc_AcquisitionServerOverview
+ * - \subpage Doc_DesignerUserDocumentation
+ *   - \subpage Doc_BoxAlgorithms (documentation in progress)
+ *   - \subpage Doc_DesignerOverview
+ *   - \subpage Doc_WindowManagerUsage
+ *   - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
+ *   - \subpage Doc_DesignerUserDocumentationTutorial
+ *     - \subpage Doc_DesignerTutorial1
+ *     - \subpage Doc_DesignerTutorial2
+ *     - \subpage Doc_DesignerTutorial3
+ *
+ * <hr>
  *
  * \subpage Doc_EBML :
  * - \subpage Doc_WhatIsEBML
@@ -39,17 +99,13 @@
  * <hr>
  *
  * \subpage Doc_OngoingDocumentation :
- * - \subpage Doc_BoxAlgorithmConnectorTypes
- * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
- * - \subpage Doc_BoxAlgorithmsTutorials
- * - \subpage Doc_DataAcquisition
- * - \subpage Doc_DataVisualisation
- * - \subpage Doc_DesignerOverview
- * - \subpage Doc_WindowManagerUsage
- * - \subpage Doc_DesignerTutorial1
- * - \subpage Doc_DesignerTutorial2
- * - \subpage Doc_DesignerTutorial3
- * - \subpage Doc_AcquisitionServerOverview
+ * - \subpage Doc_BoxAlgorithmConnectorTypes (should be completed - YR)
+ * - \subpage Doc_SoftwareArchitectureOverview (should be completed with ieee vr paper, source structure should be removed - YR)
+ * - \subpage Doc_BoxAlgorithmsTutorials (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
+ * - \subpage Doc_DataAcquisition (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
+ * - \subpage Doc_DataVisualisation (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
+ * - \subpage Doc_SignalProcessing_All (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
+ * - \subpage Doc_VisualisationManager
  *
  * <hr>
  *
@@ -69,10 +125,27 @@
 
 /**
  * \page Doc_DevelopperDocumentation Developper documentation
- * - \subpage Doc_CreatingANewDriver (should be updated)
- * - \subpage Doc_CreatingNewPlugins (should be both improved and updated)
+ * - \subpage Doc_CreatingANewDriver
+ * - \subpage Doc_CreatingNewPlugins
+ * - \subpage Doc_Algorithms
+ * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  * - \subpage Doc_OpenViBEStreams
  * - \subpage Doc_Stimulations
+ */
+
+/**
+ * \page Doc_UserDocumentation User documentation
+ * - \subpage Doc_AcquisitionServerUserDocumentation
+ *   - \subpage Doc_AcquisitionServerOverview
+ * - \subpage Doc_DesignerUserDocumentation
+ *   - \subpage Doc_BoxAlgorithms
+ *   - \subpage Doc_DesignerOverview
+ *   - \subpage Doc_WindowManagerUsage
+ *   - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
+ *   - \subpage Doc_DesignerUserDocumentationTutorial
+ *     - \subpage Doc_DesignerTutorial1
+ *     - \subpage Doc_DesignerTutorial2
+ *     - \subpage Doc_DesignerTutorial3
  */
 
 /**
@@ -85,14 +158,10 @@
 /**
  * \page Doc_OngoingDocumentation Ongoing documentation
  * - \subpage Doc_BoxAlgorithmConnectorTypes
- * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
  * - \subpage Doc_BoxAlgorithmsTutorials
  * - \subpage Doc_DataAcquisition
  * - \subpage Doc_DataVisualisation
- * - \subpage Doc_DesignerOverview
- * - \subpage Doc_WindowManagerUsage
- * - \subpage Doc_DesignerTutorial1
- * - \subpage Doc_DesignerTutorial2
- * - \subpage Doc_DesignerTutorial3
- * - \subpage Doc_AcquisitionServerOverview
+ * - \subpage Doc_SoftwareArchitectureOverview
+ * - \subpage Doc_VisualisationManager
+ * - \subpage Doc_SignalProcessing_All
  */

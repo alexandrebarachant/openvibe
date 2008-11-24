@@ -2,12 +2,10 @@
 #define __SamplePlugin_CTimeBasedEpoching_H__
 
 #include "ovp_defines.h"
-
 #include <openvibe-toolkit/ovtk_all.h>
-
 #include <ebml/TWriterCallbackProxy.h>
-
 #include <vector>
+#include <stdio.h>
 
 namespace OpenViBEPlugins
 {

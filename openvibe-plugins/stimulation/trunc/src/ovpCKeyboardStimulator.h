@@ -93,7 +93,7 @@ namespace OpenViBEPlugins
 			{
 				rPrototype.addOutput("Outgoing Stimulations", OV_TypeId_Stimulations);
 
-				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
+				rPrototype.addSetting("Filename", OV_TypeId_Filename, "../share/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt");
 
 				return true;
 			}

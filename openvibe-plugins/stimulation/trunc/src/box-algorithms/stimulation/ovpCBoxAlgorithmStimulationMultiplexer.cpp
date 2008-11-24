@@ -132,7 +132,7 @@ boolean CBoxAlgorithmStimulationMultiplexer::process(void)
 					l_oStimulation.m_ui64Identifier=l_opStimulationSet->getStimulationIdentifier(k);
 					l_oStimulation.m_ui64Date=l_opStimulationSet->getStimulationDate(k);
 					l_oStimulation.m_ui64Duration=l_opStimulationSet->getStimulationDuration(k);
-					m_vStimulation.insert(pair < uint64, SStimulation >(l_oStimulation.m_ui64Date, l_oStimulation));
+					m_vStimulation.insert(make_pair(l_oStimulation.m_ui64Date, l_oStimulation));
 				}
 			}
 
@@ -158,14 +158,14 @@ boolean CBoxAlgorithmStimulationMultiplexer::process(void)
 		{
 			if(it->first < l_ui64ReadChunkMinEndTime)
 			{
-				l_vStimulationToSend.insert(pair < uint64, SStimulation >(it->first, it->second));
+				l_vStimulationToSend.insert(make_pair(it->first, it->second));
 				m_vStimulation.erase(it);
 			}
 		}
 
 		TParameterHandler < IStimulationSet* > l_ipStimulationSet(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
-		l_ipStimulationSet->setStimulationCount(m_vStimulation.size());
-		for(k=0, it=m_vStimulation.begin(); it!=m_vStimulation.end(); it++, k++)
+		l_ipStimulationSet->setStimulationCount(l_vStimulationToSend.size());
+		for(k=0, it=l_vStimulationToSend.begin(); it!=l_vStimulationToSend.end(); it++, k++)
 		{
 			l_ipStimulationSet->setStimulationIdentifier(k, it->second.m_ui64Identifier);
 			l_ipStimulationSet->setStimulationDate(k, it->second.m_ui64Date);

@@ -435,6 +435,8 @@ ov_package_configure_hook_freeimage='
 ov_package_configure_hook_ois='
 	pushd * &&
 	./bootstrap &&
+	$ov_sed -i "1i#include <stdlib.h>" includes/config.h.in &&
+	$ov_sed -i "1i#include <string.h>" includes/config.h.in &&
 	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" &&
 	popd'
 

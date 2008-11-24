@@ -31,6 +31,8 @@ for project_directory in $OpenViBE_build_order; do
 			exit -1
 		fi;
 
+		# make OpenViBE-documentation
+
 		popd 2> /dev/null
 	fi;
 done

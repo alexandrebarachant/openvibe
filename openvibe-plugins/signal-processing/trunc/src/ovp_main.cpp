@@ -2,7 +2,7 @@
 #include "algorithms/epoching/ovpCAlgorithmStimulationBasedEpoching.h"
 #include "algorithms/filters/ovpCApplySpatialFilter.h"
 
-#include "box-algorithms/basic/ovpCMovingAverage.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmEpochAverage.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
 #include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
 #include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"

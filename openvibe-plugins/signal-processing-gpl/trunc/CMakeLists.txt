@@ -19,6 +19,7 @@ IF(WIN32)
 ENDIF(WIN32)
 IF(UNIX)
 	# ADD_DEFINITIONS(-fvisibility=hidden) # This flag should be present... man gcc
+	ADD_DEFINITIONS(-fnon-call-exceptions)
 	ADD_DEFINITIONS(-g)
 	ADD_DEFINITIONS(-DTARGET_OS_Linux)
 	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)

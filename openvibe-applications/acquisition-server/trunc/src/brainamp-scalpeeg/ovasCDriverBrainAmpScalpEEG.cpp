@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <stdlib.h>
+#include <string.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

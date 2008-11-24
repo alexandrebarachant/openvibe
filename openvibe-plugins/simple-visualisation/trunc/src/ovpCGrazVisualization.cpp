@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <stdlib.h>
 
 #if defined OVP_OS_Linux
  #include <unistd.h>

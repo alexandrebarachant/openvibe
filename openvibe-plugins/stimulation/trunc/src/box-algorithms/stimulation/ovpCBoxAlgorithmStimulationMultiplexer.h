@@ -6,6 +6,7 @@
 #include <openvibe-toolkit/ovtk_all.h>
 #include <vector>
 #include <map>
+#include <stdio.h>
 
 namespace OpenViBEPlugins
 {
@@ -96,6 +97,7 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
 				rBoxAlgorithmPrototype.addInput ("Input stimulations 1",     OV_TypeId_Stimulations);
+				rBoxAlgorithmPrototype.addInput ("Input stimulations 2",     OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput("Multiplexed stimulations", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				return true;

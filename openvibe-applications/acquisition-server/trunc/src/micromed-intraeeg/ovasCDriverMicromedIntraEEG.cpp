@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include <iostream>
+#include <string.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

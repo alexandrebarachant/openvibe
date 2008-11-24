@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include <stdlib.h>
 #include <system/Memory.h>
 
 using namespace OpenViBE;

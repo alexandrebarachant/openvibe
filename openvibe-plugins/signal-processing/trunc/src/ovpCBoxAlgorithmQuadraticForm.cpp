@@ -6,6 +6,9 @@
 #include <sstream>
 #include <string>
 
+//atoi
+#include <stdlib.h>
+
 using namespace std;
 
 using namespace OpenViBE;

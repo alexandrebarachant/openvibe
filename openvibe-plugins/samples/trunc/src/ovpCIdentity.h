@@ -2,8 +2,8 @@
 #define __SamplePlugin_CIdentity_H__
 
 #include "ovp_defines.h"
-
 #include <openvibe-toolkit/ovtk_all.h>
+#include <stdio.h>
 
 namespace OpenViBEPlugins
 {

@@ -5,6 +5,7 @@
 #endif
 
 #include <string>
+#include <stdlib.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

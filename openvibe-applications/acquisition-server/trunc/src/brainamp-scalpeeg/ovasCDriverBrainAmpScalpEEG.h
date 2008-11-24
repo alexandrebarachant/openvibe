@@ -15,13 +15,13 @@ typedef unsigned long ULONG;
 #endif
 
 #ifndef GUID
-typedef struct GUID
+typedef struct
 {
 	unsigned long  Data1;
-    unsigned short Data2;
-    unsigned short Data3;
-    unsigned char  Data4[8];
-};
+	unsigned short Data2;
+	unsigned short Data3;
+	unsigned char  Data4[8];
+} GUID;
 #endif
 
 #ifndef DEFINE_GUID

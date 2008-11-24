@@ -2,15 +2,13 @@
 #define __OpenViBEPlugins_BoxAlgorithm_EBMLStreamSpy_H__
 
 #include "../../ovp_defines.h"
-
 #include <openvibe-toolkit/ovtk_all.h>
-
 #include <ebml/IReader.h>
 #include <ebml/IReaderHelper.h>
-
 #include <stack>
 #include <map>
 #include <string>
+#include <stdio.h>
 
 #define OVP_ClassId_BoxAlgorithm_EBMLStreamSpy     OpenViBE::CIdentifier(0x0ED76695, 0x01A69CC3)
 #define OVP_ClassId_BoxAlgorithm_EBMLStreamSpyDesc OpenViBE::CIdentifier(0x354A6864, 0x06BC570C)
