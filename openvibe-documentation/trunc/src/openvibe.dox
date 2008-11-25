@@ -114,7 +114,9 @@
  *
  * <hr>
  *
- * Contact :
+ * \subpage Doc_FAQ
+ *
+ * \section Doc_Contact Contact
  * - Website : http://www.irisa.fr/bunraku/OpenViBE
  * - Forum : http://www.irisa.fr/bunraku/OpenViBE/forum
  * - INRIA gForge : https://gforge.inria.fr/projects/openvibe

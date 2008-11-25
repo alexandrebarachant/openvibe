@@ -1,0 +1,170 @@
+/**
+ * \page Doc_FAQ Frequently asked questions
+ *
+ * \section Doc_FAQ_What What is OpenViBE ?
+ *
+ * §OpenViBE§ is a software platform that enables to design, test and use
+ * Brain-Computer Interfaces. Brain-Computer Interfaces (BCI) are communication systems that enable users to
+ * send commands to computers only by means of brain activity. BCI are gaining interest inside the Virtual
+ * Reality (VR) community as they have appeared as promising interaction devices for Virtual Environments (VE).
+ *
+ * \section Doc_FAQ_Licence What is the licence of OpenViBE ?
+ *
+ * The licence for §OpenViBE§ basically is L-GPL, see \ref Doc_Licence for details about this licences. Some of
+ * the plugins of §OpenViBE§ are based on GPL libraries. Consequently, those plugins are GPL.
+ *
+ * \section Doc_FAQ_Status What is the current status of OpenViBE ?
+ *
+ * §OpenViBE§ is quite a young software. The development began in 2006 from scratch. It already offers several
+ * complete processing pipelines. It has been successfully used by the authors for some motor imagination
+ * interactions and for basic neurofeedback for example. The functionnalities are far from complete right now,
+ * but the existing plugin architecture should allow them to be plugged with no major changes of the API. Of
+ * course, the API will see some improvements in the next months. Additionnaly, we expect eternal contributions
+ * to enlarge the existing functionnalities quite quickly.
+ *
+ * Consider this software as alpha stage for its use, with reasonably stable API.
+ *
+ * \section Doc_FAQ_Functionnalities What are the current functionnalities of OpenViBE ?
+ *
+ * Here is a non exhaustive list of the §OpenViBE§ functionnalities :
+ * - Acquisition
+ *   - Mindmedia NeXus32B
+ *   - Micromed IntraEEG
+ *   - Brainamp ScalpEEG
+ *   - CTF/VSM MEG
+ *   - Brainquiry QPET9 (on progress)
+ * - File reading and writing
+ *   - OpenViBE files (r/w)
+ *   - GDF files (r/w)
+ *   - BCI competition 3b (r)
+ *   - Brainamp files (r)
+ * - Preprocessing
+ *   - Time based epoching
+ *   - Stimulation based epoching
+ *   - Moving average
+ *   - Windowing
+ *   - Channel selection
+ *   - Simple DSP
+ *   - Downsampling (on progress)
+ *   - Temporal filter
+ * - Feature extraction
+ *   - Spectral analysis
+ *   - Spatial filter
+ * - Classification
+ *   - Linear Discriminant Analysis
+ * - Stimulation presentation
+ *   - Graz-like motor imagination presentation for motor imagination
+ * - Visualisation
+ *   - Simple levels
+ *   - Raw signal
+ *   - Spectrum
+ *   - Time/Frequency analysis
+ *   - 2D/3D topography
+ * - Connecting with external software
+ *   - VRPN integration (Virtual Reality Peripheral Network)
+ *   - TurboFieldTrip integration (r/w, on progress)
+ *
+ * \section Doc_FAQ_Environment What kind of software / hardware do I need to run OpenViBE ?
+ *
+ * §OpenViBE§ currently only runs on PCs and compiles on differents targets. The following
+ * table shows a summary of these different configurations...
+ *
+\htmlonly
+<table border=1 cellpading=0 cellspacing=0>
+<tr bgcolor=lightgrey> <th>CPU</th> <th>Operating system</th> <th>Distribution</th> <th>Compilator</th> <th>Status</th> </tr>
+<tr> <td rowspan=7>x86</td>    <td rowspan=2>Windows</td> <td>XP SP2</td>        <td>Visual C++ 2005 Express SP1</td> <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Vista</td>         <td>Visual C++ 2005 Express SP1</td> <td bgcolor=green>OK</td> </tr>
+<tr>                           <td rowspan=5>Linux</td>   <td>Ubuntu 8.04</td>   <td>GCC 4.2.4</td>                   <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Ubuntu 8.10</td>   <td>GCC 4.3.2</td>                   <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora Core 3</td> <td>GCC 3.4.3</td>                   <td bgcolor=orange>No 3D visualisation</td> </tr>
+<tr>                                                      <td>Fedora Core 4</td> <td>GCC ?</td>                       <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora 8</td>      <td>GCC</td>                         <td bgcolor=green>OK</td> </tr>
+<tr> <td rowspan=3>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                      <td bgcolor=grey>Untested</td> </tr>
+<tr>                           <td rowspan=2>Linux</td>   <td>Ubuntu 8.04</td>   <td>GCC 4.2.4</td>                   <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora 9</td>      <td>GCC 4.3.0</td>                   <td bgcolor=green>OK</td> </tr>
+</table>
+\endhtmlonly
+ *
+ * If you have tested §OpenViBE§ on another platform, please fill free to report its status for this platform.
+ *
+ * \section Doc_FAQ_GTK Why did you choose GTK better than QT ?
+ *
+ * People usually ask us why we choose GTK better than QT, arguing that QT has advantages over GTK, particularly under windows.
+ * The reason is quite simple, we did not want a GPL licence for §OpenViBE§ to allow private companies to derive build on §OpenViBE§
+ * without revealing their source codes. QT probably has better support and better implementation/integration on Windows, but it would
+ * have forced most of the §OpenViBE§ components to be GPL. This is why GTK has been chosen.
+ *
+ * \section Doc_FAQ_DownloadSources Where can I download OpenViBE sources ?
+ *
+ * The latest unstable sources can be downloaded with subversion from the gforge at https://gforge.inria.fr/projects/openvibe .
+ * Alternatively, you may want to download latest stable source package from TODO
+ *
+ * \section Doc_FAQ_DownloadBinaries Where can I download OpenViBE precompiled binaries ?
+ *
+ * TODO
+ *
+ * \section Doc_FAQ_ProblemsCompiling I have problems compiling OpenViBE, what should I do ?
+ *
+ * First, ensure you followed the install procedure described in \ref Doc_Install . Then, you should contact any people involved in
+ * the project in order to get help and update this FAQ. See \ref Doc_Contact for how to contact us.
+ *
+ * \section Doc_FAQ_ProblemsUsing I have problems using OpenViBE, what should I do ?
+ *
+ * TODO
+ *
+ * \section Doc_FAQ_Bug I think I found a bug, what should I do ?
+ *
+ * If you think you found a bug, please, take some minutes for a bug report. Our bug tracker can be found at http://gforge.inria.fr/tracker/?group_id=276 .
+ * You will first want to check that your bug is not already present in the tracker. If it is not, then fill in a complete bug report. Put as many details
+ * as possible so we can try to reproduce the bug. We will typically want to know what hardware you have, what operating system, what compilator, a sample
+ * scenario or sample EEG record etc. The most information you provide us, the better we can try to solve the bug.
+ *
+ * \section Doc_FAQ_Contribute How can I contribute to OpenViBE ?
+ *
+ * There are many way you can contribute to §OpenViBE§ :
+ *  - developers : you can implement new boxes, new algorithms, new drivers
+ *  - documentation : you can enhance the existing documentation or write tutorials
+ *  - testing : you can test new features, new operating systems, new hardware, and fill in bug reports when needed
+ *  - support : you can provide help to the community regularly visiting the forum, the IRC and the mailing lists, guiding new users
+ *  - packaging :
+ *  - funding : you can give money to help to maintain the mainstream developers FIXME
+ *
+ * In any case, check the \ref Doc_ContributionRules and \ref Doc_Contact us.
+ *
+ * \section Doc_FAQ_Roadmap What is the planned roadmap for OpenViBE development ?
+ *
+ * TODO
+ *
+ * \section Doc_FAQ_OtherBCISoftwareDifferences How does OpenViBE differ from other BCI platforms ?
+ *
+ * TODO
+ *
+ * \section Doc_FAQ_OtherBCISoftwareConnections Are there any exiting connections with other BCI platforms ?
+ *
+ * There is a bridge that is currently being implemented with TurboFiedTrip.
+ *
+ * Any other connection has not yet been planned but fell free to \ref Doc_Contact us if you think a connection with your software could be a plus.
+ *
+ * \section Doc_FAQ_DependencyInstallationLinux Why did you write this crappy dependency insallation script for Linux ?
+ *
+ * Ok most linux people will ask why we created this installation script. First, some people at the begining of OpenViBE estimated that
+ * installing the dependencies with a simple "click" would be a plus. This is the way to do for Windows, but not for Linux, where most distribution
+ * come with their own packaging system, be it rpm or apt-get. However, some of our dependencies do not appear in the official packages of common
+ * Linux distributions (namely OpenMASK and VRPN). Second, some people estimated one should not have root access to his computer
+ * to install all the dependencies we rely on. Third, we apply some minor patches to some of the dependencies we install. Last, it
+ * guarantees that every Linux user has the same version of the dependencies.
+ *
+ * Those are the reasons, be them good or not. It is possible this way to handle the dependencies evolves in the future, particularly if we
+ * propose precompiled packages for dedicated distributions. But for now, prefer the installation script better than the official precompiled
+ * packages.
+ *
+ * Also, you may want to ask why we install so much low level packages in this script, such as Xlib, xproto and so on. In fact, we decided to
+ * keep the number of required preinstalled dependencies to their minimum (usual compiling tools such as g++, gfortran, autotools etc...) and
+ * to compile everything from scratch. The script was built so we can install a fresh Ubuntu, install \c build-essentials, \c g77, \c subversion
+ * and build everything form there.
+ *
+ * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
+ *
+ * You will be asked this question when you will request for support to ensure you actually read this FAQ. The answer to this currently is 17 !
+ *
+ */
