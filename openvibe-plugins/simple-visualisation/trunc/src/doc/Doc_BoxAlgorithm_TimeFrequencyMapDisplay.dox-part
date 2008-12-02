@@ -43,7 +43,7 @@ Online options include :
  - Select Channels : clicking this button pops up a dialog that allows to show/hide some of the channels.
  - Attenuation : this setting allows to gradually adapt color thresholds. Valid values are in the [0,1] interval.
  
- \img html timefrequencymapdisplay_toolbar.png "Time Frequency Map toolbar."
+ \image html timefrequencymapdisplay_toolbar.png "Time Frequency Map toolbar."
  * |OVP_DocEnd_BoxAlgorithm_TimeFrequencyMapDisplay_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_TimeFrequencyMapDisplay_Setting1|
@@ -87,7 +87,7 @@ Practical example :
  	- Finally, one can notice two dominant frequency bands in the power spectrum of each channel, where they stand out as high amplitude peaks. These bands translate into 
  	dark horizontal lines in the TF maps.
  
- \img html timefrequencymapdisplay_online.png "Power spectra and their "history" displayed over the last 10 seconds using the TF map plugin."
+ \image html timefrequencymapdisplay_online.png "Power spectra and their "history" displayed over the last 10 seconds using the TF map plugin."
   
  * |OVP_DocEnd_BoxAlgorithm_TimeFrequencyMapDisplay_Examples|
 

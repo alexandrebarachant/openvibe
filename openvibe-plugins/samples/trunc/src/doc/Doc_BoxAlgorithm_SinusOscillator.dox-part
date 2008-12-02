@@ -54,9 +54,9 @@ Practical example :
  
  The scenario may be launched by clicking the 'Play' button in the Player toolbar. Random combinations of sinusoidal signals should be displayed in a Signal Display window, along with default channel names. Press the Player 'Stop' button to go back to scenario edition mode.
  
-\img html sinussignalgenerator_scenario.png "A simple sinus oscillator scenario."
+\image html sinussignalgenerator_scenario.png "A simple sinus oscillator scenario."
  
-\img html sinussignalgenerator_online.png "Visualising sinus oscillator signals."
+\image html sinussignalgenerator_online.png "Visualising sinus oscillator signals."
  * |OVP_DocEnd_BoxAlgorithm_SinusOscillator_Examples|
 
 __________________________________________________________________

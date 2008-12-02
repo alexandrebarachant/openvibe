@@ -74,7 +74,7 @@ __________________________________________________________________
  
  Signals may be visualised using a Signal Display box by connecting its inputs to the 'Signal' and 'Stimulations' outputs of the Generic network acquisition box. Note that the Signal Display plugin will automatically adapt the number of displayed channels to what was configured in the Properties dialog of the Acquisition Server (4 channels by default).
  
-\img html genericnetworkacquisition.png "Retrieve data from the network."
+\image html genericnetworkacquisition.png "Retrieve data from the network."
  * |OVP_DocEnd_BoxAlgorithm_GenericNetworkAcquisition_Examples|
 
 __________________________________________________________________

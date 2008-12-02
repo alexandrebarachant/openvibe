@@ -54,6 +54,27 @@ namespace OpenViBE
 		 * \sa getSize
 		 */
 		virtual const OpenViBE::uint8* getDirectPointer(void) const=0;
+		/**
+		 * \brief Appends data to this memory buffer
+		 * \param pBuffer [in] : the buffer containing data that should be appended
+		 * \param ui64BufferSize [in] : the buffer size that should be appended
+		 * \return \e true in case of success.
+		 * \return \e false in case of error.
+		 */
+		virtual OpenViBE::boolean append(
+			const OpenViBE::uint8* pBuffer,
+			const OpenViBE::uint64 ui64BufferSize)=0;
+		/**
+		 * \brief Appends data to this memory buffer
+		 * \param rMemoryBuffer [in] : the memory buffer containing data that should be appended
+		 * \return \e true in case of success.
+		 * \return \e false in case of error.
+		 */
+		virtual OpenViBE::boolean append(
+			const OpenViBE::IMemoryBuffer& rMemoryBuffer)
+		{
+			return this->append(rMemoryBuffer.getDirectPointer(), rMemoryBuffer.getSize());
+		}
 
 		_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_MemoryBuffer);
 

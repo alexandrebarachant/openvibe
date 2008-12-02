@@ -110,6 +110,8 @@ namespace EBML
 			virtual ~CReader(void);
 
 			virtual boolean processData(const void* pBuffer, const uint64 ui64BufferSize);
+			virtual CIdentifier getCurrentNodeIdentifier(void) const;
+			virtual uint64 getCurrentNodeSize(void) const;
 
 			virtual void release(void);
 
@@ -357,6 +359,16 @@ printf("\n");
 #endif
 
 	return true;
+}
+
+CIdentifier CReader::getCurrentNodeIdentifier(void) const
+{
+	return m_pCurrentNode?m_pCurrentNode->m_oIdentifier:CIdentifier();
+}
+
+uint64 CReader::getCurrentNodeSize(void) const
+{
+	return m_pCurrentNode?m_pCurrentNode->m_ui64ContentSize:0;
 }
 
 void CReader::release(void)

@@ -54,7 +54,7 @@ Online settings :
   - Multi-View : clicking this button pops up a dialog that configures what channels should be plotted in an extra graph at the bottom of the Signal Display window. When no channels are selected (default) this extra graph is not displayed.
   - Information : this button displays information about sampled data (min/max values and so on).
   
- \img html signaldisplay_toolbar.png "Signal Display toolbar"
+ \image html signaldisplay_toolbar.png "Signal Display toolbar"
  * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_OnlineVisualizationSettings|
 __________________________________________________________________
 
@@ -68,7 +68,7 @@ Practical example :
  
  An easy way to test this plugin consists in generating signals with the Sinus Oscillator plugin (found under 'Samples'), then connecting its signal output to the signal input of the Signal Display plugin.
  
- \img html signaldisplay_online "Visualising 2 channels using the Signal Display plugin."
+ \image html signaldisplay_online "Visualising 2 channels using the Signal Display plugin."
  * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_Examples|
 
 __________________________________________________________________

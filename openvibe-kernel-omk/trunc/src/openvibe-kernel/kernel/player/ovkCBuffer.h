@@ -17,16 +17,6 @@ namespace OpenViBE
 			CBuffer(const OpenViBE::Kernel::CBuffer& rBuffer);
 
 			const CBuffer& operator=(const CBuffer& rBuffer);
-
-			virtual OpenViBE::boolean appendOutputChunkData(
-				const OpenViBE::uint8* pBuffer,
-				const OpenViBE::uint64 ui64BufferSize);
-
-		protected:
-
-			OpenViBE::uint8* m_pBuffer;
-			OpenViBE::uint64 m_ui64BufferSize;
-			OpenViBE::uint64 m_ui64AllocatedSize;
 		};
 	};
 };

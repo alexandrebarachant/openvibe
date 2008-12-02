@@ -30,7 +30,7 @@ Online options include :
 - Cones/Spheres : these buttons switch between possible voxel shapes.
 - View All : resets the camera position so that it encompasses the whole 3D scene, facing the +Z side of its bounding box
 
-\img html voxeldisplay_toolbar.png "Voxel Display toolbar"
+\image html voxeldisplay_toolbar.png "Voxel Display toolbar"
  * |OVP_DocEnd_BoxAlgorithm_VoxelVisualizer_OnlineVisualizationSettings|
 __________________________________________________________________
 

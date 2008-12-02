@@ -1613,6 +1613,25 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxRemoveInputCB\n";
 		rBox.removeInput(ui32Index);
+
+		CIdentifier l_oLinkIdentifier;
+
+		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierToBoxInput(l_oLinkIdentifier, rBox.getIdentifier(), ui32Index))!=OV_UndefinedIdentifier)
+		{
+			m_rScenario.disconnect(l_oLinkIdentifier);
+		}
+
+		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierToBox(l_oLinkIdentifier, rBox.getIdentifier()))!=OV_UndefinedIdentifier)
+		{
+			ILink* l_pLink=m_rScenario.getLinkDetails(l_oLinkIdentifier);
+			if(l_pLink)
+			{
+				if(l_pLink->getTargetBoxInputIndex()>ui32Index)
+				{
+					l_pLink->setTarget(rBox.getIdentifier(), l_pLink->getTargetBoxInputIndex()-1);
+				}
+			}
+		}
 	}
 	void CInterfacedScenario::contextMenuBoxAddOutputCB(IBox& rBox)
 	{
@@ -1638,6 +1657,25 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxRemoveOutputCB\n";
 		rBox.removeOutput(ui32Index);
+
+		CIdentifier l_oLinkIdentifier;
+
+		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierFromBoxOutput(l_oLinkIdentifier, rBox.getIdentifier(), ui32Index))!=OV_UndefinedIdentifier)
+		{
+			m_rScenario.disconnect(l_oLinkIdentifier);
+		}
+
+		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierFromBox(l_oLinkIdentifier, rBox.getIdentifier()))!=OV_UndefinedIdentifier)
+		{
+			ILink* l_pLink=m_rScenario.getLinkDetails(l_oLinkIdentifier);
+			if(l_pLink)
+			{
+				if(l_pLink->getSourceBoxOutputIndex()>ui32Index)
+				{
+					l_pLink->setSource(rBox.getIdentifier(), l_pLink->getSourceBoxOutputIndex()-1);
+				}
+			}
+		}
 	}
 	void CInterfacedScenario::contextMenuBoxAddSettingCB(IBox& rBox)
 	{

@@ -1109,7 +1109,7 @@ boolean CSimulatedBox::appendOutputChunkData(
 	{
 		return false;
 	}
-	return m_vCurrentOutput[ui32OutputIndex].getBuffer().appendOutputChunkData(pBuffer, ui64BufferSize);
+	return m_vCurrentOutput[ui32OutputIndex].getBuffer().append(pBuffer, ui64BufferSize);
 }
 
 IMemoryBuffer* CSimulatedBox::getOutputChunk(

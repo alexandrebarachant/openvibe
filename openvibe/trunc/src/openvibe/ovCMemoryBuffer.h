@@ -61,6 +61,9 @@ namespace OpenViBE
 		virtual OpenViBE::uint64 getSize(void) const;
 		virtual OpenViBE::uint8* getDirectPointer(void);
 		virtual const OpenViBE::uint8* getDirectPointer(void) const;
+		virtual OpenViBE::boolean append(
+			const OpenViBE::uint8* pBuffer,
+			const OpenViBE::uint64 ui64BufferSize);
 
 		_IsDerivedFromClass_Final_(OpenViBE::IMemoryBuffer, OV_ClassId_MemoryBufferBridge);
 

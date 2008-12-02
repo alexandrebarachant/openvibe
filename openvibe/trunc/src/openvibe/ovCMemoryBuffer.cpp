@@ -21,6 +21,7 @@ namespace OpenViBE
 			virtual uint64 getSize(void) const;
 			virtual uint8* getDirectPointer(void);
 			virtual const uint8* getDirectPointer(void) const;
+			virtual boolean append(const uint8* pBuffer, const uint64 ui64BufferSize);
 
 			_IsDerivedFromClass_Final_(IMemoryBuffer, OV_ClassId_MemoryBufferImpl);
 
@@ -119,6 +120,20 @@ boolean CMemoryBufferImpl::setSize(
 	return true;
 }
 
+boolean CMemoryBufferImpl::append(const uint8* pBuffer, const uint64 ui64BufferSize)
+{
+	if(ui64BufferSize!=0)
+	{
+		uint64 l_ui64BufferSizeBackup=m_ui64BufferSize;
+		if(!this->setSize(m_ui64BufferSize+ui64BufferSize, false))
+		{
+			return false;
+		}
+		::memcpy(m_pBuffer+l_ui64BufferSizeBackup, pBuffer, static_cast<size_t>(ui64BufferSize));
+	}
+	return true;
+}
+
 // ________________________________________________________________________________________________________________
 //
 
@@ -163,4 +178,9 @@ uint8* CMemoryBuffer::getDirectPointer(void)
 const uint8* CMemoryBuffer::getDirectPointer(void) const
 {
 	return m_pMemoryBufferImpl->getDirectPointer();
+}
+
+boolean CMemoryBuffer::append(const uint8* pBuffer, const uint64 ui64BufferSize)
+{
+	return m_pMemoryBufferImpl->append(pBuffer, ui64BufferSize);
 }

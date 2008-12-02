@@ -6,6 +6,11 @@
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <ebml/CWriter.h>
+#include <ebml/CWriterHelper.h>
+
+#include <stdio.h>
+
+#include <fstream>
 
 // TODO:
 // - please move the identifier definitions in ovp_defines.h
@@ -18,26 +23,35 @@ namespace OpenViBEPlugins
 {
 	namespace FileIO
 	{
-		class CBoxAlgorithmGenericStreamWriter : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmGenericStreamWriter : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, public EBML::IWriterCallback
 		{
 		public:
 
+			CBoxAlgorithmGenericStreamWriter(void);
 			virtual void release(void) { delete this; }
 
-			// virtual OpenViBE::uint64 getClockFrequency(void);
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
-			// virtual OpenViBE::boolean processEvent(OpenViBE::CMessageEvent& rMessageEvent);
-			// virtual OpenViBE::boolean processSignal(OpenViBE::CMessageSignal& rMessageSignal);
-			// virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock& rMessageClock);
-			// virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
+			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
 			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_BoxAlgorithm_GenericStreamWriter);
 
 		protected:
 
-			// ...
+			OpenViBE::boolean m_bUseCompression;
+			OpenViBE::CString m_sFilename;
+			EBML::CWriter m_oWriter;
+			EBML::CWriterHelper m_oWriterHelper;
+
+		private:
+
+			virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+
+		private:
+
+			OpenViBE::CMemoryBuffer m_oSwap;
+			std::ofstream m_oFile;
 		};
 
 		class CBoxAlgorithmGenericStreamWriterListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
@@ -58,6 +72,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
+				rBox.setInputType(ui32Index, OV_TypeId_EBMLStream);
 				this->check(rBox);
 				return true;
 			}
@@ -100,11 +115,11 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
-				rBoxAlgorithmPrototype.addInput  ("Input stream 1", OV_UndefinedIdentifier);
+				rBoxAlgorithmPrototype.addInput  ("Input stream 1", OV_TypeId_EBMLStream);
 				rBoxAlgorithmPrototype.addSetting("Filename", OV_TypeId_Filename, "");
+				rBoxAlgorithmPrototype.addSetting("Use compression", OV_TypeId_Boolean, "true");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyInput);
-				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 

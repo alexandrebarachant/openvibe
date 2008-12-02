@@ -67,9 +67,8 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 		l_f64Ratio=1.0/2;
 	}
 
-	uint64 l_iu64NameFilter=this->getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_FilterMethod, l_oRatio);
-
-	uint64 l_iu64KindFilter=1; //Low Pass
+	uint64 l_iu64NameFilter=this->getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_FilterMethod, l_oNameFilter);
+	uint64 l_iu64KindFilter=OVP_TypeId_FilterType_LowPass.toUInteger(); //Low Pass
 	uint64 l_ui64FilterOrder=atoi(l_oFilterOrder);
 	float64 l_f64LowCutFrequency = 0;
 	float64 l_f64HighCutFrequency = (float64)m_ui64NewSamplingRate*l_f64Ratio;

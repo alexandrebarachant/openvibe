@@ -60,15 +60,15 @@ Practical example : apply time based epoching to compute the power spectrum of a
  make sure the Amplitude setting is enabled in the Spectral Analysis box. Now we can launch the player : the power spectrum is very coarse. 
  This is because the Sinus Oscillator generates small data blocks (32/512 = 1/16th of a second per block) compared to the periods of sinusoids making up the signal. The spectral analysis yields very coarse results when working on such blocks (see image below).
  
- \img html timebasedepoching_1.png "Coarse power spectrum computation due to small data blocks."
+ \image html timebasedepoching_1.png "Coarse power spectrum computation due to small data blocks."
  
  One way to correct this problem is to increase the data blocks size. Let's send bigger blocks by setting their size to 512 samples. When launching the player again, the power spectrum should be much finer than before, since the spectral analysis works on blocks representing 1 second of signal. However, notice how the spectrum is only refreshed at 1Hz now. This solution is not satisfactory.
  
- \img html timebasedepoching_2.png "Finer power spectrum computation by sending bigger chunks."
+ \image html timebasedepoching_2.png "Finer power spectrum computation by sending bigger chunks."
  
  Now we insert a Time based epoching box before the Spectral Analysis. We reset the Sinus Oscillator settings to 512 samples a second and blocks of 32 samples. Let's now setup the epoching box : we are going to generate epochs of 1 second every 1/16th of a second. Now let's launch the player again : the power spectrum is refined and updated regularly.
  
- \img html timebasedepoching_3.png "Epoching 1-second chunks to refine spectrum computations"
+ \image html timebasedepoching_3.png "Epoching 1-second chunks to refine spectrum computations"
  
  The stimulation based epoching box is similar to time based epoching, only it generates epochs when a given stimulation is received. Thus, the box has two input connectors : one for signals and another for stimulations. Settings include epoch size, epoch offset (delay when epoching should start after the target stimulation is received), and stimulation identifier.
  

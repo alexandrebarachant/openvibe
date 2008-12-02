@@ -52,7 +52,7 @@ __________________________________________________________________
  - Toggle Electrodes : toggle electrodes on/off.
  - Toggle Sampling Points : toggle sampling points on/off. Sampling points lie at the vertices of the skull mesh.
  
- \img html topographicmap3d_toolbar.png "3D Topographic Map toolbar" 
+ \image html topographicmap3d_toolbar.png "3D Topographic Map toolbar" 
  * |OVP_DocEnd_BoxAlgorithm_3DTopographicMap_OnlineVisualizationSettings|
 __________________________________________________________________
 
@@ -66,7 +66,7 @@ This example is based on the following scenario file : tutorials/visualisation/s
  
  A 2D topographic map is displayed next to the 3D verion for comparison purposes.
  
- \img html topographicmap3ddisplay_toolbar.png "Mapping brain activity in 2D and 3D"
+ \image html topographicmap3ddisplay_toolbar.png "Mapping brain activity in 2D and 3D"
  * |OVP_DocEnd_BoxAlgorithm_3DTopographicMap_Examples|
 
 __________________________________________________________________

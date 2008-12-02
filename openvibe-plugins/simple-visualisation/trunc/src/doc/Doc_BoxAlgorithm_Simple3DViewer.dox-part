@@ -25,7 +25,7 @@ Online options include :
  - Set Color : opens a dialog to change the color of an object.
  - View All : resets the camera position so that it encompasses the whole 3D scene, facing the +Z side of its bounding box
  
- \img html simple3Dviewer_toolbar.png "Simple 3D Viewer toolbar"
+ \image html simple3Dviewer_toolbar.png "Simple 3D Viewer toolbar"
  * |OVP_DocEnd_BoxAlgorithm_Simple3DViewer_OnlineVisualizationSettings|
 __________________________________________________________________
 
@@ -51,7 +51,7 @@ This example is based on the following scenario file : tutorials/visualisation/s
  
  Also, one can move the camera at any time using the mouse. Maintaining the left mouse button pressed and moving the mouse rotates the camera around the center of the scene. To recompute the center (e.g. whenever the scene contents have changed), press the 'View All' button. To zoom in and out of the scene, press the right mouse button and move the mouse up or down.
  
- \img html simple3dviewer_online.png "Manipulating 3D objects using the Simple 3D Viewer plugin"
+ \image html simple3dviewer_online.png "Manipulating 3D objects using the Simple 3D Viewer plugin"
 
  * |OVP_DocEnd_BoxAlgorithm_Simple3DViewer_Examples|
 

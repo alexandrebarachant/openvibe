@@ -121,6 +121,16 @@ namespace EBML
 		 */
 		virtual EBML::boolean processData(const void* pBuffer, const EBML::uint64 ui64BufferSize)=0;
 		/**
+		 * \brief Gets the identifier of the current node
+		 * \return the identifier of the current node
+		 */
+		virtual EBML::CIdentifier getCurrentNodeIdentifier(void) const=0;
+		/**
+		 * \brief Gets the size of the current node
+		 * \return the size of the current node
+		 */
+		virtual EBML::uint64 getCurrentNodeSize(void) const=0;
+		/**
 		 * \brief Tells this object it won't be used anymore
 		 *
 		 * Instances of this class can not be instanciated
