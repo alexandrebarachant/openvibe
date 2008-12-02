@@ -7,7 +7,7 @@ using namespace OpenViBE::Plugins;
 CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator::CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator(const IKernelContext& rKernelContext, const CString& sFilename)
 	:CPluginObjectDescEnum(rKernelContext)
 {
-	m_oFile.open((sFilename+CString("ovp_global_defines.h")).toASCIIString());
+	m_oFile.open((sFilename+CString("/ovp_global_defines.h")).toASCIIString());
 
 	if(!m_oFile.good()) return;
 
