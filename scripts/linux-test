@@ -8,8 +8,6 @@ fi
 
 source linux-init_env_command
 
-./linux-collect_build
-
 cd ../dist/bin
 
 export LC_ALL=C

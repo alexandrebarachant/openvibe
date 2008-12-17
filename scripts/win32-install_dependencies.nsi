@@ -72,8 +72,8 @@ Section "CMake"
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
 
-  IfFileExists "arch\openvibe-dependency-cmake-2.4.6.zip" no_need_to_download_cmake
-  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/cmake-2.4.6-win32-x86.zip "arch\openvibe-dependency-cmake-2.4.6.zip"
+  IfFileExists "arch\openvibe-dependency-cmake-2.6.2.zip" no_need_to_download_cmake
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/cmake-2.6.2-win32-x86.zip "arch\openvibe-dependency-cmake-2.6.2.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
@@ -82,13 +82,13 @@ Section "CMake"
 no_need_to_download_cmake:
 
   IfFileExists "cmake" no_need_to_install_cmake
-  ZipDLL::extractall "arch\openvibe-dependency-cmake-2.4.6.zip" "cmake"
+  ZipDLL::extractall "arch\openvibe-dependency-cmake-2.6.2.zip" "cmake"
 
 no_need_to_install_cmake:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.4.6-win32-x86$\n"
+  FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.6.2-win32-x86$\n"
   FileClose $0
 
 SectionEnd

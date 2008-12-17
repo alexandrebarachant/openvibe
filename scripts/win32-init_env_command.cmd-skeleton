@@ -15,6 +15,7 @@ REM ## these variables SET each project branch
 SET OpenViBE_branch=
 SET OpenViBE_kernel_branch=
 SET OpenViBE_toolkit_branch=
+SET OpenViBE_documentation_branch=
 REM
 REM ########################################################################################################################
 REM ## MODULES
@@ -65,6 +66,7 @@ REM ############################################################################
 if "%OpenViBE_branch%" == "" SET OpenViBE_branch=%OpenViBE_default_branch%
 if "%OpenViBE_kernel_branch%" == "" SET OpenViBE_kernel_branch=%OpenViBE_default_branch%
 if "%OpenViBE_toolkit_branch%" == "" SET OpenViBE_toolkit_branch=%OpenViBE_default_branch%
+if "%OpenViBE_documentation_branch%" == "" SET OpenViBE_documentation_branch=%OpenViBE_default_branch%
 
 REM ########################################################################################################################
 
@@ -103,6 +105,7 @@ REM ############################################################################
 SET OpenViBE=%OpenViBE_base%\openvibe\%OpenViBE_branch%
 SET OpenViBE_kernel=%OpenViBE_base%\openvibe-kernel-omk\%OpenViBE_kernel_branch%
 SET OpenViBE_toolkit=%OpenViBE_base%\openvibe-toolkit\%OpenViBE_toolkit_branch%
+SET OpenViBE_documentation=%OpenViBE_base%\openvibe-documentation\%OpenViBE_documentation_branch%
 SET OpenViBE_cmake_modules=%OpenViBE_base%\cmake-modules
 
 SET OpenViBE_modules=%OpenViBE_base%\openvibe-modules
@@ -165,6 +168,7 @@ echo %OpenViBE_plugin_vrpn% >> %OpenViBE_build_order%
 echo %OpenViBE_application_designer% >> %OpenViBE_build_order%
 echo %OpenViBE_application_acquisition_server% >> %OpenViBE_build_order%
 echo %OpenViBE_application_plugin_inspector% >> %OpenViBE_build_order%
+REM echo %OpenViBE_documentation% >> %OpenViBE_build_order%
 
 REM ########################################################################################################################
 
@@ -177,6 +181,7 @@ REM ############################################################################
 SET VSTOOLS=
 if exist "%VS70COMNTOOLS%\vsvars32.bat" SET VSTOOLS=%VS70COMNTOOLS%\vsvars32.bat
 if exist "%VS80COMNTOOLS%\vsvars32.bat" SET VSTOOLS=%VS80COMNTOOLS%\vsvars32.bat
+if exist "%VS90COMNTOOLS%\vsvars32.bat" SET VSTOOLS=%VS90COMNTOOLS%\vsvars32.bat
 
 if exist "%VSTOOLS%" (
 	call "%VSTOOLS%"
