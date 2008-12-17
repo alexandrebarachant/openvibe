@@ -124,7 +124,7 @@ uint64 CStimulationSetImpl::insertStimulation(const uint64 ui64StimulationIndex,
 	}
 	else
 	{
-		m_vStimulation.insert(m_vStimulation.begin()+ui64StimulationIndex, CStimulation(ui64StimulationIdentifier, ui64StimulationDate, ui64StimulationDuration));
+		m_vStimulation.insert(m_vStimulation.begin()+static_cast<size_t>(ui64StimulationIndex), CStimulation(ui64StimulationIdentifier, ui64StimulationDate, ui64StimulationDuration));
 	}
 	return true;
 }
@@ -135,7 +135,7 @@ boolean CStimulationSetImpl::removeStimulation(const uint64 ui64StimulationIndex
 	{
 		return false;
 	}
-	m_vStimulation.erase(m_vStimulation.begin()+ui64StimulationIndex);
+	m_vStimulation.erase(m_vStimulation.begin()+static_cast<size_t>(ui64StimulationIndex));
 	return true;
 }
 
