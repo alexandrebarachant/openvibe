@@ -2,6 +2,8 @@
 
 if "%1" == "" goto base
 
+REM #######################################################################################
+
 set what_full=%1
 echo set what_relative=%%what_full:%OpenViBE_base%\=%% > windows_sucks.cmd
 call windows_sucks.cmd
@@ -13,9 +15,19 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1
 nmake clean
 cd %saved_directory%
 
-goto terminate_2
+goto terminate_no_pause
+
+REM #######################################################################################
+
+:sub_error
+
+return 1
+
+goto terminate_no_pause
 
 :base
+
+REM #######################################################################################
 
 if not exist "win32-init_env_command.cmd" (
 	echo You have to configure your `win32-init_env_command` file.
@@ -25,16 +37,20 @@ if not exist "win32-init_env_command.cmd" (
 
 call "win32-init_env_command.cmd"
 
+REM #######################################################################################
+
 set saved_directory=%CD%
 
 mkdir ..\local-tmp 2> NULL
 for /F %%s in (%OpenViBE_build_order%) do (
 	cmd /e /c %0 %%s
 )
-del NULL
+rmdir /s /q local-tmp             > NULL 2<&1
 
 :terminate
 
 pause
 
-:terminate_2
+:terminate_no_pause
+
+del NULL

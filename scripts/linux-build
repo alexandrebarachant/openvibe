@@ -31,8 +31,32 @@ for project_directory in $OpenViBE_build_order; do
 			exit -1
 		fi;
 
-		# make OpenViBE-documentation
+		make OpenViBE-documentation
 
 		popd 2> /dev/null
 	fi;
 done
+
+target_dist=../dist
+
+rm -rf $target_dist           2> /dev/null
+
+mkdir -p $target_dist/bin     2> /dev/null
+mkdir -p $target_dist/include 2> /dev/null
+mkdir -p $target_dist/lib     2> /dev/null
+mkdir -p $target_dist/share   2> /dev/null
+mkdir -p $target_dist/tmp     2> /dev/null
+mkdir -p $target_dist/log     2> /dev/null
+mkdir -p $target_dist/etc     2> /dev/null
+mkdir -p $target_dist/doc     2> /dev/null
+
+for project_directory in $OpenViBE_build_order; do
+	cp -rf $project_directory/bin/*     $target_dist/bin     2> /dev/null
+	cp -rf $project_directory/include/* $target_dist/include 2> /dev/null
+	cp -rf $project_directory/lib/*.a*  $target_dist/lib     2> /dev/null
+	cp -rf $project_directory/lib/*.so* $target_dist/lib     2> /dev/null
+	cp -rf $project_directory/share/*   $target_dist/share   2> /dev/null
+	cp -rf $project_directory/etc/*     $target_dist/etc     2> /dev/null
+	cp -rf $project_directory/doc/*     $target_dist/doc     2> /dev/null
+done
+
