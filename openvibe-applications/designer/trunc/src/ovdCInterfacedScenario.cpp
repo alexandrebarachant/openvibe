@@ -1117,13 +1117,14 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 							else
 							{
 								m_ui32CurrentMode=Mode_MoveSelection;
-								if(!m_vCurrentObject[m_oCurrentObject.m_oIdentifier])
+								if(m_bControlPressed)
 								{
-									if(!m_bControlPressed)
-									{
-										m_vCurrentObject.clear();
-									}
 									m_vCurrentObject[m_oCurrentObject.m_oIdentifier]=!m_vCurrentObject[m_oCurrentObject.m_oIdentifier];
+								}
+								else
+								{
+									m_vCurrentObject.clear();
+									m_vCurrentObject[m_oCurrentObject.m_oIdentifier]=true;
 								}
 							}
 						}
