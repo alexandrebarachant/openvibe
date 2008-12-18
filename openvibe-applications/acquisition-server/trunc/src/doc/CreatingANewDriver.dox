@@ -1,5 +1,5 @@
 /**
- * \page Doc_CreatingANewDriver Creating a new driver for the acquisition server
+ * \page Doc_CreatingANewDriver Turotial: creating a new driver for the acquisition server
  *
  * \section Doc_CreatingANewDriver_Introduction Introduction
  *
@@ -211,12 +211,20 @@
  *   if(!m_bInitialized) return false;
  *   if(!m_bStarted) return false;
  *
+ *   OpenViBE::CStimulationSet l_oStimulationSet;
+ *
  *   // ...
  *   // receive samples from hardware
  *   // put them the correct way in the sample array
  *   // whether the buffer is full, send it to the acquisition server
  *   //...
  *   m_pCallback->setSamples(m_pSample);
+ *
+ *   // ...
+ *   // receive events from hardware
+ *   // and put them the correct way in a CStimulationSet object
+ *   //...
+ *   m_pCallback->setStimulationSet(l_oStimulationSet);
  *
  *   return true;
  * }

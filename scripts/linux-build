@@ -60,3 +60,4 @@ for project_directory in $OpenViBE_build_order; do
 	cp -rf $project_directory/doc/*     $target_dist/doc     2> /dev/null
 done
 
+true

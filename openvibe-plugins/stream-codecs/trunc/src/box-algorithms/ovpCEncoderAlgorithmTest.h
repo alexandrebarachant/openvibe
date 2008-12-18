@@ -67,7 +67,7 @@ namespace OpenViBEPlugins
 				rPrototype.addOutput("Stimulation", OV_TypeId_Stimulations);
 				rPrototype.addOutput("Streamed matrix", OV_TypeId_StreamedMatrix);
 				rPrototype.addOutput("Channel localisation", OV_TypeId_ChannelLocalisation);
-
+				rPrototype.addFlag (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 

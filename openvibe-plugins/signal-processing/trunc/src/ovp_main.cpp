@@ -15,7 +15,6 @@
 #include "ovpCCommonAverageReference.h"
 #include "ovpCFirstDifferenceDetrending.h"
 #include "ovpCSecondDifferenceDetrending.h"
-#include "ovpCMovingAverageDetrending.h"
 #include "ovpCBoxAlgorithmQuadraticForm.h"
 
 #include "ovpCBandFrequencyAverage.h"
@@ -57,7 +56,6 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CCommonAverageReferenceDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CFirstDifferenceDetrendingDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSecondDifferenceDetrendingDesc)
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CMovingAverageDetrendingDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmQuadraticFormDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBandFrequencyAverageDesc)

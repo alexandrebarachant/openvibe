@@ -288,7 +288,6 @@ boolean CVRPNServerManager::setAnalogCount(
 	m_vAnalogServer[rServerIdentifier]=new vrpn_Analog_Server(m_vServerName[rServerIdentifier], m_pConnection);
 	m_vAnalogServer[rServerIdentifier]->setNumChannels(ui32AnalogCount);
 	return true;
-
 }
 
 boolean CVRPNServerManager::setAnalogState(

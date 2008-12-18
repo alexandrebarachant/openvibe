@@ -82,7 +82,6 @@
 #define OVP_ClassId_CommonAverageReferenceDesc                                         OpenViBE::CIdentifier(0x0033EAF8, 0x09C65E4E)
 #define OVP_ClassId_FirstDifferenceDetrendingDesc                                      OpenViBE::CIdentifier(0x0039EF62, 0x11DA5967)
 #define OVP_ClassId_SecondDifferenceDetrendingDesc                                     OpenViBE::CIdentifier(0x000B30B6, 0x29E85D42)
-#define OVP_ClassId_MovingAverageDetrendingDesc                                        OpenViBE::CIdentifier(0x000738D9, 0x4A6648AE)
 #define OVP_ClassId_OverlappingEpochAverageDesc                                        OpenViBE::CIdentifier(0x000C8040, 0x7A4F177E)
 #define OVP_ClassId_BoxAlgorithm_QuadraticFormDesc                                     OpenViBE::CIdentifier(0x31C11856, 0x3E4F7B67)
 //___________________________________________________________________//
@@ -98,7 +97,6 @@
 #define OVP_ClassId_CommonAverageReference                                             OpenViBE::CIdentifier(0x009C0CE3, 0x6BDF71C3)
 #define OVP_ClassId_FirstDifferenceDetrending                                          OpenViBE::CIdentifier(0x001B4E3D, 0x7FEE9CB1)
 #define OVP_ClassId_SecondDifferenceDetrending                                         OpenViBE::CIdentifier(0x00D283A5, 0x40D76DD3)
-#define OVP_ClassId_MovingAverageDetrending                                            OpenViBE::CIdentifier(0x00B82A89, 0x701DB82A)
 #define OVP_ClassId_OverlappingEpochAverage                                            OpenViBE::CIdentifier(0x0042232E, 0x6F5B5E21)
 #define OVP_ClassId_BoxAlgorithm_QuadraticForm                                         OpenViBE::CIdentifier(0x54E73B81, 0x1AD356C6)
 

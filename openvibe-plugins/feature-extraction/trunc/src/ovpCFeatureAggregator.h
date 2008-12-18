@@ -83,6 +83,31 @@ namespace OpenViBEPlugins
 				OpenViBE::boolean m_bError;
 		};
 
+		class CFeatureAggregatorListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+		public:
+
+			OpenViBE::boolean check(OpenViBE::Kernel::IBox& rBox)
+			{
+				char l_sName[1024];
+				OpenViBE::uint32 i;
+
+				for(i=0; i<rBox.getInputCount(); i++)
+				{
+					sprintf(l_sName, "Input stream %u", i+1);
+					rBox.setInputName(i, l_sName);
+					rBox.setInputType(i, OV_TypeId_StreamedMatrix);
+				}
+
+				return true;
+			}
+
+			virtual OpenViBE::boolean onInputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return this->check(rBox); }
+			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return this->check(rBox); };
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+		};
+
 		/**
 		* Plugin's description
 		*/
@@ -95,17 +120,20 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Aggregates features in a vector"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Aggregates features in a vector"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Feature extraction"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-convert"); }
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_FeatureAggregator; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::FeatureExtraction::CFeatureAggregator(); }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new CFeatureAggregatorListener; }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("Feature Input 1", OV_TypeId_StreamedMatrix);
-				rPrototype.addInput("Feature Input 2", OV_TypeId_StreamedMatrix);
-
-				rPrototype.addOutput("Feature vector output", OV_TypeId_FeatureVector);
+				rPrototype.addInput("Input stream 1", OV_TypeId_StreamedMatrix);
+				rPrototype.addInput("Input stream 2", OV_TypeId_StreamedMatrix);
+				rPrototype.addOutput("Feature vector stream", OV_TypeId_FeatureVector);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);
 
 				return true;
 			}

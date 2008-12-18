@@ -18,6 +18,11 @@ using namespace OpenViBEToolkit::Tools;
 
 boolean OpenViBEToolkit::Tools::Matrix::copy(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
 {
+	if(&rDestinationMatrix==&rSourceMatrix)
+	{
+		return true;
+	}
+
 	if(!copyDescription(rDestinationMatrix, rSourceMatrix))
 	{
 		return false;
@@ -31,6 +36,11 @@ boolean OpenViBEToolkit::Tools::Matrix::copy(IMatrix& rDestinationMatrix, const 
 
 boolean OpenViBEToolkit::Tools::Matrix::copyDescription(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
 {
+	if(&rDestinationMatrix==&rSourceMatrix)
+	{
+		return true;
+	}
+
 	uint32 l_ui32DimensionCount=rSourceMatrix.getDimensionCount();
 	uint32 l_ui32DimensionSize=0;
 	if(!rDestinationMatrix.setDimensionCount(l_ui32DimensionCount))
@@ -57,6 +67,11 @@ boolean OpenViBEToolkit::Tools::Matrix::copyDescription(IMatrix& rDestinationMat
 
 boolean OpenViBEToolkit::Tools::Matrix::copyContent(IMatrix& rDestinationMatrix, const IMatrix& rSourceMatrix)
 {
+	if(&rDestinationMatrix==&rSourceMatrix)
+	{
+		return true;
+	}
+
 	uint32 l_ui32SourceElementCount=rSourceMatrix.getBufferElementCount();
 	uint32 l_ui32DestinationElementCount=rDestinationMatrix.getBufferElementCount();
 	if(l_ui32DestinationElementCount != l_ui32SourceElementCount)
@@ -77,6 +92,11 @@ boolean OpenViBEToolkit::Tools::Matrix::clearContent(IMatrix& rMatrix)
 
 boolean OpenViBEToolkit::Tools::Matrix::isDescriptionSimilar(const IMatrix& rSourceMatrix1, const IMatrix& rSourceMatrix2, const boolean bCheckLabels)
 {
+	if(&rSourceMatrix1==&rSourceMatrix2)
+	{
+		return true;
+	}
+
 	if(rSourceMatrix1.getDimensionCount() != rSourceMatrix2.getDimensionCount())
 	{
 		return false;
@@ -109,6 +129,11 @@ boolean OpenViBEToolkit::Tools::Matrix::isDescriptionSimilar(const IMatrix& rSou
 
 boolean OpenViBEToolkit::Tools::Matrix::isContentSimilar(const IMatrix& rSourceMatrix1, const IMatrix& rSourceMatrix2)
 {
+	if(&rSourceMatrix1==&rSourceMatrix2)
+	{
+		return true;
+	}
+
 	if(rSourceMatrix1.getBufferElementCount() != rSourceMatrix2.getBufferElementCount())
 	{
 		return false;

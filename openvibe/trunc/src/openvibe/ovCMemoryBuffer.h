@@ -64,6 +64,8 @@ namespace OpenViBE
 		virtual OpenViBE::boolean append(
 			const OpenViBE::uint8* pBuffer,
 			const OpenViBE::uint64 ui64BufferSize);
+		virtual OpenViBE::boolean append(
+			const OpenViBE::IMemoryBuffer& rMemoryBuffer);
 
 		_IsDerivedFromClass_Final_(OpenViBE::IMemoryBuffer, OV_ClassId_MemoryBufferBridge);
 

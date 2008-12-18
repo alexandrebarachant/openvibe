@@ -7,14 +7,13 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 #include <stdio.h>
+#include <map>
 
 namespace OpenViBEPlugins
 {
 	namespace VRPN
 	{
-		class CVRPNAnalogServer
-			:public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
-			,public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback
+		class CVRPNAnalogServer : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -27,24 +26,13 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_VRPNAnalogServer)
 
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
-			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
-
 		protected:
 
-			// Ebml
-			EBML::IReader* m_pReader;
-			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pStreamedMatrixReaderCallBack;
-
-			// Start and end time of the last buffer
-			OpenViBE::uint64 m_ui64StartTime;
-			OpenViBE::uint64 m_ui64EndTime;
-
 			OpenViBE::CIdentifier m_oServerIdentifier;
-			OpenViBE::uint32 m_ui32AnalogCount;
 			OpenViBE::boolean m_bAnalogSet;
+
+			std::map < OpenViBE::uint32, OpenViBE::Kernel::IAlgorithmProxy* > m_vStreamDecoder;
+			std::map < OpenViBE::uint32, OpenViBE::uint32 > m_vAnalogCount;
 		};
 
 		class CVRPNAnalogServerListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
@@ -89,7 +77,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Creates VRPN analog servers (one per input)."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Creates VRPN analog servers to make data from the plugin's inputs available to VRPN client applications."); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("VRPN"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.6"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-connect"); }
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_VRPNAnalogServer; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::VRPN::CVRPNAnalogServer(); }

@@ -8,7 +8,7 @@ using namespace OpenViBE::Plugins;
 
 int main(int argc, char ** argv)
 {
-	std::cout << "This is not implemented yer\n"
+	std::cout << "This is not implemented yet\n";
 
 	return 0;
 }

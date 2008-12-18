@@ -149,105 +149,122 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 			l_sStockItemName=l_pBoxAlgorithmDesc->getStockItemName();
 		}
 
-		::GtkStockItem l_oStockItem;
-		if(!gtk_stock_lookup(l_sStockItemName, &l_oStockItem))
+		boolean l_bShouldShow=true;
+
+		if  (rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(l_pPluginObjectDesc->getCreatedClass())
+		 && !rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ShowDeprecated}", false))
 		{
-			l_sStockItemName=GTK_STOCK_NEW;
+			l_bShouldShow=false;
 		}
 
-		// Splits the plugin category
-		vector<string> l_vCategory;
-		string l_sCategory=string(l_pPluginObjectDesc->getCategory());
-		size_t j, i=(size_t)-1;
-		while((j=l_sCategory.find('/', i+1))!=string::npos)
+		if  (rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass())
+		 && !rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ShowUnstable}", false))
 		{
-			string l_sSubCategory=string(l_sCategory, i+1, j-i-1);
-			if(l_sSubCategory!=string(""))
+			l_bShouldShow=false;
+		}
+
+		if(l_bShouldShow)
+		{
+			::GtkStockItem l_oStockItem;
+			if(!gtk_stock_lookup(l_sStockItemName, &l_oStockItem))
 			{
-				l_vCategory.push_back(l_sSubCategory);
+				l_sStockItemName=GTK_STOCK_NEW;
 			}
-			i=j;
-		}
-		if(i+1!=l_sCategory.length())
-		{
-			l_vCategory.push_back(string(l_sCategory, i+1, l_sCategory.length()-i-1));
-		}
-
-		// Fills plugin in the tree
-		vector<string>::iterator it;
-		::GtkTreeIter l_oGtkIter1;
-		::GtkTreeIter l_oGtkIter2;
-		::GtkTreeIter* l_pGtkIterParent=NULL;
-		::GtkTreeIter* l_pGtkIterChild=&l_oGtkIter1;
-		for(it=l_vCategory.begin(); it!=l_vCategory.end(); it++)
-		{
-			boolean l_bFound=false;
-			boolean l_bValid=gtk_tree_model_iter_children(
-				GTK_TREE_MODEL(pTreeStore),
-				l_pGtkIterChild,
-				l_pGtkIterParent)?true:false;
-			while(l_bValid && !l_bFound)
+	
+			// Splits the plugin category
+			vector<string> l_vCategory;
+			string l_sCategory=string(l_pPluginObjectDesc->getCategory());
+			size_t j, i=(size_t)-1;
+			while((j=l_sCategory.find('/', i+1))!=string::npos)
 			{
-				gchar* l_sName=NULL;
-				gboolean l_bIsPlugin;
-				gtk_tree_model_get(
+				string l_sSubCategory=string(l_sCategory, i+1, j-i-1);
+				if(l_sSubCategory!=string(""))
+				{
+					l_vCategory.push_back(l_sSubCategory);
+				}
+				i=j;
+			}
+			if(i+1!=l_sCategory.length())
+			{
+				l_vCategory.push_back(string(l_sCategory, i+1, l_sCategory.length()-i-1));
+			}
+	
+			// Fills plugin in the tree
+			vector<string>::iterator it;
+			::GtkTreeIter l_oGtkIter1;
+			::GtkTreeIter l_oGtkIter2;
+			::GtkTreeIter* l_pGtkIterParent=NULL;
+			::GtkTreeIter* l_pGtkIterChild=&l_oGtkIter1;
+			for(it=l_vCategory.begin(); it!=l_vCategory.end(); it++)
+			{
+				boolean l_bFound=false;
+				boolean l_bValid=gtk_tree_model_iter_children(
 					GTK_TREE_MODEL(pTreeStore),
 					l_pGtkIterChild,
-					Resource_StringName, &l_sName,
-					Resource_BooleanIsPlugin, &l_bIsPlugin,
-					-1);
-				if(!l_bIsPlugin && l_sName==*it)
+					l_pGtkIterParent)?true:false;
+				while(l_bValid && !l_bFound)
 				{
-					l_bFound=true;
-				}
-				else
-				{
-					l_bValid=gtk_tree_model_iter_next(
+					gchar* l_sName=NULL;
+					gboolean l_bIsPlugin;
+					gtk_tree_model_get(
 						GTK_TREE_MODEL(pTreeStore),
-						l_pGtkIterChild)?true:false;
+						l_pGtkIterChild,
+						Resource_StringName, &l_sName,
+						Resource_BooleanIsPlugin, &l_bIsPlugin,
+						-1);
+					if(!l_bIsPlugin && l_sName==*it)
+					{
+						l_bFound=true;
+					}
+					else
+					{
+						l_bValid=gtk_tree_model_iter_next(
+							GTK_TREE_MODEL(pTreeStore),
+							l_pGtkIterChild)?true:false;
+					}
 				}
+				if(!l_bFound)
+				{
+					gtk_tree_store_append(
+						GTK_TREE_STORE(pTreeStore),
+						l_pGtkIterChild,
+						l_pGtkIterParent);
+					gtk_tree_store_set(
+						GTK_TREE_STORE(pTreeStore),
+						l_pGtkIterChild,
+						Resource_StringName, it->c_str(),
+						Resource_StringShortDescription, "",
+						Resource_StringStockIcon, "gtk-directory",
+						Resource_StringColor, "#000000",
+						Resource_BooleanIsPlugin, (gboolean)FALSE,
+						-1);
+				}
+				if(!l_pGtkIterParent)
+				{
+					l_pGtkIterParent=&l_oGtkIter2;
+				}
+				::GtkTreeIter* l_pGtkIterSwap=l_pGtkIterChild;
+				l_pGtkIterChild=l_pGtkIterParent;
+				l_pGtkIterParent=l_pGtkIterSwap;
 			}
-			if(!l_bFound)
-			{
-				gtk_tree_store_append(
-					GTK_TREE_STORE(pTreeStore),
-					l_pGtkIterChild,
-					l_pGtkIterParent);
-				gtk_tree_store_set(
-					GTK_TREE_STORE(pTreeStore),
-					l_pGtkIterChild,
-					Resource_StringName, it->c_str(),
-					Resource_StringShortDescription, "",
-					Resource_StringStockIcon, "gtk-directory",
-					Resource_StringColor, "#000000",
-					Resource_BooleanIsPlugin, (gboolean)FALSE,
-					-1);
-			}
-			if(!l_pGtkIterParent)
-			{
-				l_pGtkIterParent=&l_oGtkIter2;
-			}
-			::GtkTreeIter* l_pGtkIterSwap=l_pGtkIterChild;
-			l_pGtkIterChild=l_pGtkIterParent;
-			l_pGtkIterParent=l_pGtkIterSwap;
-		}
-		gtk_tree_store_append(
-			GTK_TREE_STORE(pTreeStore),
-			l_pGtkIterChild,
-			l_pGtkIterParent);
-		gtk_tree_store_set(
-			GTK_TREE_STORE(pTreeStore),
-			l_pGtkIterChild,
-			Resource_StringName, (const char*)l_pPluginObjectDesc->getName(),
-			Resource_StringShortDescription, (const char*)l_pPluginObjectDesc->getShortDescription(),
-			Resource_StringIdentifier, (const char*)l_pPluginObjectDesc->getCreatedClass().toString(),
-			Resource_StringStockIcon, (const char*)l_sStockItemName,
-			Resource_StringColor,
-				rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(l_pPluginObjectDesc->getCreatedClass())?"#3f7f7f":
-				rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass())?"#6f6f6f":
-				"black",
-			Resource_BooleanIsPlugin, (gboolean)TRUE,
-			-1);
+			gtk_tree_store_append(
+				GTK_TREE_STORE(pTreeStore),
+				l_pGtkIterChild,
+				l_pGtkIterParent);
+			gtk_tree_store_set(
+				GTK_TREE_STORE(pTreeStore),
+				l_pGtkIterChild,
+				Resource_StringName, (const char*)l_pPluginObjectDesc->getName(),
+				Resource_StringShortDescription, (const char*)l_pPluginObjectDesc->getShortDescription(),
+				Resource_StringIdentifier, (const char*)l_pPluginObjectDesc->getCreatedClass().toString(),
+				Resource_StringStockIcon, (const char*)l_sStockItemName,
+				Resource_StringColor,
+					rKernelContext.getPluginManager().isPluginObjectFlaggedAsDeprecated(l_pPluginObjectDesc->getCreatedClass())?"#3f7f7f":
+					rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass())?"#6f6f6f":
+					"black",
+				Resource_BooleanIsPlugin, (gboolean)TRUE,
+				-1);
+		};
 	}
 }
 

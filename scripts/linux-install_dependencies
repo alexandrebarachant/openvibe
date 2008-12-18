@@ -222,6 +222,7 @@ ov_package_url_itpp_external=$ov_sourceforge_mirror/itpp/itpp-external-3.0.0.tar
 ov_package_url_itpp=$ov_sourceforge_mirror/itpp/itpp-4.0.6.tar.bz2
 ov_package_url_gsl=$ov_gnu_mirror/gsl/gsl-1.9.tar.gz
 ov_package_url_torch=http://www.torch.ch/archives/Torch3src.tgz
+ov_package_url_bliff=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/bliff-src-16.tar.bz2
 
 # OpenMASK 4 related packages
 ov_package_url_cmake=http://www.cmake.org/files/v2.6/cmake-2.6.2.tar.gz
@@ -315,6 +316,7 @@ ov_package_archive_itpp_external=`echo "$ov_package_url_itpp_external" | $ov_sed
 ov_package_archive_itpp=`echo "$ov_package_url_itpp" | $ov_sed 's#.*/##g'`
 ov_package_archive_gsl=`echo "$ov_package_url_gsl" | $ov_sed 's#.*/##g'`
 ov_package_archive_torch=`echo "$ov_package_url_torch" | $ov_sed 's#.*/##g'`
+ov_package_archive_bliff=`echo "$ov_package_url_bliff" | $ov_sed 's#.*/##g'`
 
 # OpenMASK 4 related packages
 ov_package_archive_cmake=`echo "$ov_package_url_cmake" | $ov_sed 's#.*/##g'`
@@ -400,8 +402,6 @@ ov_package_configure_hook_itpp='
 	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" &&
 	popd'
 
-# -l$ov_lib_g77_gfortran
-
 if [ "$ov_machine" == "x86_64" ]; then
 ov_package_configure_hook_torch='
 	pushd * &&
@@ -431,6 +431,21 @@ ov_package_install_hook_torch='
 	find -name *.h -type f -exec cp -f "{}" ../../include \; &&
 	find -name *.a -type f -exec cp -f "{}" ../../lib \; &&
 	cp Makefile_options_Linux ../.. &&
+	popd'
+
+ov_package_configure_hook_bliff='
+	pushd * &&
+	$ov_sed -i "1iITPP_HOME=$ov_target_folder" Makefile &&
+	$ov_sed -i "1iTORCH_HOME=$ov_target_folder" Makefile &&
+	$ov_sed -i "1iGSL_HOME=$ov_target_folder" Makefile &&
+	$ov_sed -i "1iBOOST_INCLUDE=$ov_target_folder/include/boost-1_36" Makefile &&
+	$ov_sed -i "s/CFLAGS =/CFLAGS = -fPIC/g" Makefile &&
+	popd'
+ov_package_install_hook_bliff='
+	pushd * &&
+	chmod a-x include/*.h &&
+	cp include/*.h ../../include &&
+	cp lib/*.a ../../lib &&
 	popd'
 
 ov_package_configure_hook_cg='
@@ -1175,6 +1190,7 @@ ov_install_package "itpp_external"
 ov_install_package "itpp"
 ov_install_package "gsl"
 ov_install_package "torch"
+ov_install_package "bliff"
 
 # OpenMASK 4 related packages
 ov_install_package "freeimage"

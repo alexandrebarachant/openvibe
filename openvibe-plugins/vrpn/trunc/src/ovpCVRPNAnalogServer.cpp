@@ -6,30 +6,31 @@
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Kernel;
+
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::VRPN;
-using namespace OpenViBEToolkit;
-using namespace std;
 
 CVRPNAnalogServer::CVRPNAnalogServer()
-	:m_pReader(NULL)
-	,m_pStreamedMatrixReaderCallBack(NULL)
-	,m_ui32AnalogCount(0)
+	:m_bAnalogSet(false)
 {
 }
 
 boolean CVRPNAnalogServer::initialize()
 {
-	const IBox * l_pBox=getBoxAlgorithmContext()->getStaticBoxContext();
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
-	//initializes the ebml input
-	m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
-	m_pReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
-
-	//get server name, and creates an analog server for this server
+	// Gets server name, and creates an analog server for this server
 	CString l_oServerName;
-	l_pBox->getSettingValue(0, l_oServerName);
+	l_rStaticBoxContext.getSettingValue(0, l_oServerName);
 
+	// Creates the stream decoders
+	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+	{
+		m_vStreamDecoder[i]=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder));
+		m_vStreamDecoder[i]->initialize();
+	}
+
+	// Creates the peripheral
 	IVRPNServerManager::getInstance().initialize();
 	IVRPNServerManager::getInstance().addServer(l_oServerName, m_oServerIdentifier);
 
@@ -38,12 +39,17 @@ boolean CVRPNAnalogServer::initialize()
 
 boolean CVRPNAnalogServer::uninitialize()
 {
-	//release the ebml reader
-	releaseBoxAlgorithmStreamedMatrixInputReaderCallback(m_pStreamedMatrixReaderCallBack);
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
-	m_pReader->release();
-	m_pReader=NULL;
+	// Releases decoders
+	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+	{
+		m_vStreamDecoder[i]->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_vStreamDecoder[i]);
+	}
+	m_vStreamDecoder.clear();
 
+	// Releases the peripheral
 	IVRPNServerManager::getInstance().uninitialize();
 
 	return true;
@@ -57,64 +63,71 @@ boolean CVRPNAnalogServer::processInput(uint32 ui32InputIndex)
 
 boolean CVRPNAnalogServer::process()
 {
-	IBoxIO * l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
-	for(uint32 i=0; i<l_pBoxIO->getInputChunkCount(0); i++)
+	uint32 k;
+
+	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
 	{
-		uint64 l_ui64ChunkSize;
-		const uint8* l_pChunkBuffer=NULL;
-		if(l_pBoxIO->getInputChunk(0, i, m_ui64StartTime, m_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+		for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(i); j++)
 		{
-			m_pReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
-			l_pBoxIO->markInputAsDeprecated(0, i);
+			TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_vStreamDecoder[i]->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_InputParameterId_MemoryBufferToDecode));
+			TParameterHandler < IMatrix* > op_pMatrix(m_vStreamDecoder[i]->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
+
+			ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(i, j);
+			m_vStreamDecoder[i]->process();
+
+			IMatrix* l_pMatrix=op_pMatrix;
+
+			if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader))
+			{
+				m_vAnalogCount[i]=l_pMatrix->getBufferElementCount();
+				if(m_vAnalogCount.size()==l_rStaticBoxContext.getInputCount())
+				{
+					uint32 l_ui32AnalogCount;
+					for(k=0; k<l_rStaticBoxContext.getInputCount(); k++)
+					{
+						l_ui32AnalogCount+=m_vAnalogCount[k];
+					}
+
+					IVRPNServerManager::getInstance().setAnalogCount(m_oServerIdentifier, l_ui32AnalogCount);
+					this->getLogManager() << LogLevel_Trace << "Created VRPN analog server for " << l_ui32AnalogCount << " channel(s)\n";
+
+					m_bAnalogSet=true;
+				}
+			}
+			if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
+			{
+				if(m_bAnalogSet)
+				{
+					uint32 l_ui32AnalogOffset=0;
+					for(k=0; k<i; k++)
+					{
+						l_ui32AnalogOffset+=m_vAnalogCount[k];
+					}
+					for(k=0; k<l_pMatrix->getBufferElementCount(); k++)
+					{
+						if(!IVRPNServerManager::getInstance().setAnalogState(m_oServerIdentifier, l_ui32AnalogOffset+k, l_pMatrix->getBuffer()[k]))
+						{
+							getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Could not set analog state !\n";
+						}
+					}
+				}
+			}
+			if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd))
+			{
+			}
+			l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 		}
 	}
 
 	if(m_bAnalogSet)
 	{
-	IVRPNServerManager::getInstance().process();
+		IVRPNServerManager::getInstance().process();
 	}
 
 	return true;
-}
-
-void CVRPNAnalogServer::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
-{
-	m_ui32AnalogCount=0;
-	m_bAnalogSet=false;
-}
-
-void CVRPNAnalogServer::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
-{
-	if(m_ui32AnalogCount==0)
-	{
-		m_ui32AnalogCount=1;
-	}
-	m_ui32AnalogCount*=ui32DimmensionSize;
-}
-
-void CVRPNAnalogServer::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
-{
-	// NOTHING TO DO
-}
-
-void CVRPNAnalogServer::setMatrixBuffer(const float64* pBuffer)
-{
-	if(!m_bAnalogSet)
-	{
-		IVRPNServerManager::getInstance().setAnalogCount(m_oServerIdentifier, m_ui32AnalogCount+1);
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Created VRPN analog server for " << m_ui32AnalogCount << " channel(s)\n";
-		m_bAnalogSet=true;
-	}
-
-	// updates the analog server channels
-	for(uint32 i=0; i<m_ui32AnalogCount; i++)
-	{
-		if(!IVRPNServerManager::getInstance().setAnalogState(m_oServerIdentifier, i+1, pBuffer[i]))
-		{
-			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Could not set analog state !\n";
-		}
-	}
 }
 
 #endif // OVP_HAS_Vrpn

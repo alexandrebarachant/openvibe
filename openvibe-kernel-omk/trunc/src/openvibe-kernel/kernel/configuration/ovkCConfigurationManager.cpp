@@ -477,7 +477,7 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 
 float64 CConfigurationManager::expandAsFloat(
 	const CString& rExpression,
-	const float64 f64FallbackValue)
+	const float64 f64FallbackValue) const
 {
 	CString l_sResult=this->expand(rExpression);
 	float64 l_f64Result=0;
@@ -491,7 +491,7 @@ float64 CConfigurationManager::expandAsFloat(
 
 int64 CConfigurationManager::expandAsInteger(
 	const CString& rExpression,
-	const int64 i64FallbackValue)
+	const int64 i64FallbackValue) const
 {
 	CString l_sResult=this->expand(rExpression);
 	int64 l_i64Result=0;
@@ -505,7 +505,7 @@ int64 CConfigurationManager::expandAsInteger(
 
 uint64 CConfigurationManager::expandAsUInteger(
 	const CString& rExpression,
-	const uint64 ui64FallbackValue)
+	const uint64 ui64FallbackValue) const
 {
 	CString l_sResult=this->expand(rExpression);
 	uint64 l_ui64Result=0;
@@ -519,7 +519,7 @@ uint64 CConfigurationManager::expandAsUInteger(
 
 boolean CConfigurationManager::expandAsBoolean(
 	const CString& rExpression,
-	const boolean bFallbackValue)
+	const boolean bFallbackValue) const
 {
 	std::string l_sResult=this->expand(rExpression).toASCIIString();
 	std::transform(l_sResult.begin(), l_sResult.end(), l_sResult.begin(), ::to_lower<std::string::value_type>);
@@ -538,7 +538,7 @@ boolean CConfigurationManager::expandAsBoolean(
 uint64 CConfigurationManager::expandAsEnumerationEntryValue(
 	const CString& rExpression,
 	const CIdentifier& rEnumerationTypeIdentifier,
-	const uint64 ui64FallbackValue)
+	const uint64 ui64FallbackValue) const
 {
 	CString l_sResult=this->expand(rExpression);
 	uint64 l_ui64Result=this->getTypeManager().getEnumerationEntryValueFromName(rEnumerationTypeIdentifier, l_sResult);

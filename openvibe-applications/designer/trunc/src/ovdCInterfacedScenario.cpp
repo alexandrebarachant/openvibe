@@ -49,6 +49,54 @@ static ::GdkColor colorFromIdentifier(const CIdentifier& rIdentifier)
 	return l_oGdkColor;
 }
 
+static std::string getBoxAlgorithmURL(const std::string& sInput, const boolean bRemoveSlash=false)
+{
+	std::string l_sInput(sInput);
+	std::string l_sOutput;
+	bool l_bLastWasSeparator=true;
+
+	for(std::string::size_type i=0; i<l_sInput.length(); i++)
+	{
+		if((l_sInput[i]>='a' && l_sInput[i]<='z') || (l_sInput[i]>='A' && l_sInput[i]<='Z') || (l_sInput[i]>='0' && l_sInput[i]<='9') || (!bRemoveSlash && l_sInput[i]=='/'))
+		{
+			if(l_sInput[i]=='/')
+			{
+				l_sOutput+="_";
+			}
+			else
+			{
+				if(l_bLastWasSeparator)
+				{
+					if('a' <= l_sInput[i] && l_sInput[i] <= 'z')
+					{
+						l_sOutput+=l_sInput[i]+'A'-'a';
+					}
+					else
+					{
+						l_sOutput+=l_sInput[i];
+					}
+				}
+				else
+				{
+					l_sOutput+=l_sInput[i];
+				}
+			}
+			l_bLastWasSeparator=false;
+		}
+		else
+		{
+/*
+			if(!l_bLastWasSeparator)
+			{
+				l_sOutput+="_";
+			}
+*/
+			l_bLastWasSeparator=true;
+		}
+	}
+	return l_sOutput;
+}
+
 static void scenario_drawing_area_expose_cb(::GtkWidget* pWidget, ::GdkEventExpose* pEvent, gpointer pUserData)
 {
 	static_cast<CInterfacedScenario*>(pUserData)->scenarioDrawingAreaExposeCB(pEvent);
@@ -360,9 +408,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_vInterfacedObject[m_ui32InterfacedObjectId]=CInterfacedObject(rBox.getIdentifier());
 
 		boolean l_bCanCreate =l_oBoxProxy.isBoxAlgorithmPluginPresent();
-		boolean l_bUpToDate  =l_oBoxProxy.isUpToDate();
-		boolean l_bDeprecated=l_oBoxProxy.isDeprecated();
-		boolean l_bUnstable  =l_oBoxProxy.isUnstable();
+		boolean l_bUpToDate  =l_bCanCreate ?  l_oBoxProxy.isUpToDate() : true;
+		boolean l_bDeprecated=l_bCanCreate && l_oBoxProxy.isDeprecated();
+		boolean l_bUnstable  =l_bCanCreate && l_oBoxProxy.isUnstable();
 		if(!this->isLocked() || !m_bDebugCPUUsage)
 		{
 			if(m_vCurrentObject[rBox.getIdentifier()])
@@ -1075,7 +1123,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 									{
 										m_vCurrentObject.clear();
 									}
-									m_vCurrentObject[m_oCurrentObject.m_oIdentifier]=true;
+									m_vCurrentObject[m_oCurrentObject.m_oIdentifier]=!m_vCurrentObject[m_oCurrentObject.m_oIdentifier];
 								}
 							}
 						}
@@ -1379,6 +1427,61 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		m_bShiftPressed  |=(pEvent->keyval==GDK_Shift_L   || pEvent->keyval==GDK_Shift_R);
 		m_bControlPressed|=(pEvent->keyval==GDK_Control_L || pEvent->keyval==GDK_Control_R);
 		m_bAltPressed    |=(pEvent->keyval==GDK_Alt_L     || pEvent->keyval==GDK_Alt_R);
+
+		if(pEvent->keyval==GDK_F12 && m_bShiftPressed)
+		{
+			CIdentifier l_oIdentifier;
+			while((l_oIdentifier=m_rScenario.getNextBoxIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+			{
+				IBox* l_pBox=m_rScenario.getBoxDetails(l_oIdentifier);
+				CIdentifier l_oAlgorithmIdentifier=l_pBox->getAlgorithmClassIdentifier();
+				CIdentifier l_oHashValue=m_rKernelContext.getPluginManager().getPluginObjectHashValue(l_oAlgorithmIdentifier);
+				if(l_pBox->hasAttribute(OV_AttributeId_Box_InitialPrototypeHashValue))
+				{
+					l_pBox->setAttributeValue(OV_AttributeId_Box_InitialPrototypeHashValue, l_oHashValue.toString());
+				}
+				else
+				{
+					l_pBox->addAttribute(OV_AttributeId_Box_InitialPrototypeHashValue, l_oHashValue.toString());
+				}
+			}
+
+			this->redraw();
+		}
+
+		if(pEvent->keyval==GDK_F1)
+		{
+			CString l_sWebBrowser=m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand}");
+			CString l_sURLBase=m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserHelpURLBase}");
+
+			map < CIdentifier, boolean > l_vSelectedBoxAlgorithm;
+			map < CIdentifier, boolean >::const_iterator it;
+			for(it=m_vCurrentObject.begin(); it!=m_vCurrentObject.end(); it++)
+			{
+				if(it->second)
+				{
+					if(m_rScenario.isBox(it->first))
+					{
+						l_vSelectedBoxAlgorithm[m_rScenario.getBoxDetails(it->first)->getAlgorithmClassIdentifier()]=true;
+					}
+				}
+			}
+
+			for(it=l_vSelectedBoxAlgorithm.begin(); it!=l_vSelectedBoxAlgorithm.end(); it++)
+			{
+				if(it->first!=OV_UndefinedIdentifier)
+				{
+					if(m_rKernelContext.getPluginManager().canCreatePluginObject(it->first))
+					{
+						const IPluginObjectDesc* l_pPluginObjectDesc=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(it->first);
+						CString l_sHTMLName=CString("Doc_BoxAlgorithm_")+CString(getBoxAlgorithmURL(l_pPluginObjectDesc->getName().toASCIIString()).c_str())+CString(".html");
+						CString l_sFullURL=l_sURLBase+CString("/")+l_sHTMLName;
+						m_rKernelContext.getLogManager() << LogLevel_Trace << "Requesting web browser on URL " << l_sFullURL << "\n";
+						system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
+					}
+				}
+			}
+		}
 
 		m_rKernelContext.getLogManager() << LogLevel_Debug
 			<< "scenarioDrawingAreaKeyPressEventCB ("

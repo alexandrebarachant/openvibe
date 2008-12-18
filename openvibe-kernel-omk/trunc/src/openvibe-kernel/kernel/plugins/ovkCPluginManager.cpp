@@ -268,32 +268,32 @@ namespace
 		SBoxProto(void)
 			:m_bIsDeprecated(false)
 			,m_bIsUnstable(false)
+			,m_ui64InputCountHash  (0x64AC3CB54A35888CLL)
+			,m_ui64OutputCountHash (0x21E0FAAFE5CAF1E1LL)
+			,m_ui64SettingCountHash(0x6BDFB15B54B09F63LL)
 		{
 		}
 		virtual uint32 addInput(const CString& sName, const CIdentifier& rTypeIdentifier)
 		{
 			uint64 v=rTypeIdentifier.toUInteger();
-			swap_byte(v, 5, 1);
-			swap_byte(v, 4, 2);
-			swap_byte(v, 3, 0);
+			swap_byte(v, m_ui64InputCountHash);
+			swap_byte(m_ui64InputCountHash, 0x7936A0F3BD12D936LL);
 			m_oHash=m_oHash.toUInteger()^v;
 			return true;
 		}
 		virtual uint32 addOutput(const CString& sName, const CIdentifier& rTypeIdentifier)
 		{
 			uint64 v=rTypeIdentifier.toUInteger();
-			swap_byte(v, 7, 5);
-			swap_byte(v, 6, 0);
-			swap_byte(v, 2, 1);
+			swap_byte(v, m_ui64OutputCountHash);
+			swap_byte(m_ui64OutputCountHash, 0xCBB66A5B893AA4E9LL);
 			m_oHash=m_oHash.toUInteger()^v;
 			return true;
 		}
 		virtual uint32 addSetting(const CString& sName, const CIdentifier& rTypeIdentifier, const CString& sDefaultValue)
 		{
 			uint64 v=rTypeIdentifier.toUInteger();
-			swap_byte(v, 6, 4);
-			swap_byte(v, 5, 0);
-			swap_byte(v, 3, 1);
+			swap_byte(v, m_ui64SettingCountHash);
+			swap_byte(m_ui64SettingCountHash, 0x3C87F3AAE9F8303BLL);
 			m_oHash=m_oHash.toUInteger()^v;
 			return true;
 		}
@@ -315,13 +315,21 @@ namespace
 			}
 			return true;
 		}
-		void swap_byte(uint64& v, uint32 i, uint32 j)
+		void swap_byte(uint64& v, const uint64 s)
 		{
-			uint8 s, V[sizeof(v)];
+			uint8 t;
+			uint8 V[sizeof(v)];
+			uint8 S[sizeof(s)];
 			System::Memory::hostToLittleEndian(v, V);
-			s=V[i];
-			V[i]=V[j];
-			V[j]=s;
+			System::Memory::hostToLittleEndian(s, S);
+			for(uint32 i=0; i<sizeof(s); i+=2)
+			{
+				uint32 j=S[i  ]%sizeof(v);
+				uint32 k=S[i+1]%sizeof(v);
+				t=V[j];
+				V[j]=V[k];
+				V[k]=t;
+			}
 			System::Memory::littleEndianToHost(V, &v);
 		}
 
@@ -330,6 +338,9 @@ namespace
 		CIdentifier m_oHash;
 		boolean m_bIsDeprecated;
 		boolean m_bIsUnstable;
+		uint64 m_ui64InputCountHash;
+		uint64 m_ui64OutputCountHash;
+		uint64 m_ui64SettingCountHash;
 	};
 }
 

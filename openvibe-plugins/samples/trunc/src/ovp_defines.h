@@ -1,8 +1,23 @@
 #ifndef __OpenViBEPlugins_Defines_H__
 #define __OpenViBEPlugins_Defines_H__
 
-#define OVP_ClassId_Algorithm_SampleClassifier              OpenViBE::CIdentifier(0x7E54E7C8, 0xFECC2806)
-#define OVP_ClassId_Algorithm_SampleClassifierDesc          OpenViBE::CIdentifier(0x17E4233B, 0xA74CD097)
+//___________________________________________________________________//
+//                                                                   //
+// Tutorials                                                         //
+//___________________________________________________________________//
+//                                                                   //
+
+#define OVP_ClassId_Algorithm_SignalProcessingAlgorithm                     OpenViBE::CIdentifier(0x534D5DEA, 0x446B58C8)
+#define OVP_ClassId_Algorithm_SignalProcessingAlgorithmDesc                 OpenViBE::CIdentifier(0x5F0515B1, 0x529A2AE4)
+
+#define OVP_Algorithm_SignalProcessingAlgorithm_InputParameterId_Matrix     OpenViBE::CIdentifier(0x5E304CD6, 0x4C161997)
+#define OVP_Algorithm_SignalProcessingAlgorithm_OutputParameterId_Matrix    OpenViBE::CIdentifier(0x4A6E6A30, 0x539866D9)
+#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Initialize   OpenViBE::CIdentifier(0xC38C7193, 0xCABC6A1D)
+#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Process      OpenViBE::CIdentifier(0x15FF5553, 0x3B014A5C)
+#define OVP_Algorithm_SignalProcessingAlgorithm_OutputTriggerId_ProcessDone OpenViBE::CIdentifier(0x0E533B2C, 0x3F6D7D08)
+
+#define OVP_ClassId_BoxAlgorithm_SignalProcessingBoxAlgorithm               OpenViBE::CIdentifier(0x60B5618E, 0x28F92FD9)
+#define OVP_ClassId_BoxAlgorithm_SignalProcessingBoxAlgorithmDesc           OpenViBE::CIdentifier(0x1DBC4D01, 0x5E1664C1)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -15,8 +30,6 @@
 #define OVP_ClassId_ScenarioImporterXMLDesc                 OpenViBE::CIdentifier(0x28DC180C, 0x4CCA7314)
 
 #define OVP_ClassId_CrashingBoxDesc                         OpenViBE::CIdentifier(0x009F54B9, 0x2B6A4922)
-#define OVP_ClassId_BoxAlgorithmProducerDesc                OpenViBE::CIdentifier(0x10C620AE, 0x211274FF)
-#define OVP_ClassId_BoxAlgorithmConsumerDesc                OpenViBE::CIdentifier(0x191F4A6F, 0x07EB1BF2)
 #define OVP_ClassId_SinusSignalGeneratorDesc                OpenViBE::CIdentifier(0x2633AFA2, 0x6974E32F)
 #define OVP_ClassId_TimeSignalGeneratorDesc                 OpenViBE::CIdentifier(0x57AD8655, 0x1966B4DC)
 #define OVP_ClassId_IdentityDesc                            OpenViBE::CIdentifier(0x54743810, 0x6A1A88CC)
@@ -38,8 +51,6 @@
 #define OVP_ClassId_ScenarioImporterXML                     OpenViBE::CIdentifier(0x440BF3AC, 0x2D960300)
 
 #define OVP_ClassId_CrashingBox                             OpenViBE::CIdentifier(0x00DAFD60, 0x39A58819)
-#define OVP_ClassId_BoxAlgorithmProducer                    OpenViBE::CIdentifier(0x77A308C8, 0x711D8E57)
-#define OVP_ClassId_BoxAlgorithmConsumer                    OpenViBE::CIdentifier(0x271A6EEC, 0x7B1D847E)
 #define OVP_ClassId_SinusSignalGenerator                    OpenViBE::CIdentifier(0x7E33BDB8, 0x68194A4A)
 #define OVP_ClassId_TimeSignalGenerator                     OpenViBE::CIdentifier(0x28A5E7FF, 0x530095DE)
 #define OVP_ClassId_Identity                                OpenViBE::CIdentifier(0x5DFFE431, 0x35215C50)

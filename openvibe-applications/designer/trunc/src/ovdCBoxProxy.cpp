@@ -99,9 +99,9 @@ const char* CBoxProxy::getLabel(void) const
 	boolean l_bBoxCanChangeInput  (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyInput)  ||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddInput));
 	boolean l_bBoxCanChangeOutput (m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput) ||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddOutput));
 	boolean l_bBoxCanChangeSetting(m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanModifySetting)||m_pConstBox->hasAttribute(OV_AttributeId_Box_FlagCanAddSetting));
-	boolean l_bBoxIsUpToDate      (this->isUpToDate());
-	boolean l_bBoxIsDeprecated    (this->isDeprecated());
-	boolean l_bBoxIsUnstable      (this->isUnstable());
+	boolean l_bBoxIsUpToDate      (this->isBoxAlgorithmPluginPresent()  ? this->isUpToDate() : true);
+	boolean l_bBoxIsDeprecated    (this->isBoxAlgorithmPluginPresent() && this->isDeprecated());
+	boolean l_bBoxIsUnstable      (this->isBoxAlgorithmPluginPresent() && this->isUnstable());
 
 	string l_sBoxName(m_pConstBox->getName());
 	string l_sBoxIden(m_pConstBox->getIdentifier().toString());

@@ -7,6 +7,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
+		class IConfigurationManager;
 		class ILogManager;
 		class IMessageClock;
 		class IMessageEvent;
@@ -77,6 +78,11 @@ namespace OpenViBE
 			/** \name Give access to some managers */
 			//@{
 
+			/**
+			 * \brief Gets the current player' configuration manager
+			 * \return The current player' configuration manager
+			 */
+			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void)=0;
 			/**
 			 * \brief Gets the current player' algorithm manager
 			 * \return The current player' algorithm manager

@@ -64,9 +64,11 @@ namespace OpenViBEPlugins
 
 				case OVTK_GDF_Beep:
 					// gdk_beep();
-					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Beep !\n";
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Beep is no more considered in 'Graz Visu', use the 'Sound player' for this!\n";
+#if 0
 #if defined OVP_OS_Linux
 					system("cat /local/ov_beep.wav > /dev/dsp &");
+#endif
 #endif
 					break;
 

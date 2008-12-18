@@ -55,20 +55,20 @@ namespace OpenViBE
 
 			virtual OpenViBE::float64 expandAsFloat(
 				const OpenViBE::CString& rExpression,
-				const OpenViBE::float64 f64FallbackValue);
+				const OpenViBE::float64 f64FallbackValue) const;
 			virtual OpenViBE::int64 expandAsInteger(
 				const OpenViBE::CString& rExpression,
-				const OpenViBE::int64 i64FallbackValue);
+				const OpenViBE::int64 i64FallbackValue) const;
 			virtual OpenViBE::uint64 expandAsUInteger(
 				const OpenViBE::CString& rExpression,
-				const OpenViBE::uint64 ui64FallbackValue);
+				const OpenViBE::uint64 ui64FallbackValue) const;
 			virtual OpenViBE::boolean expandAsBoolean(
 				const OpenViBE::CString& rExpression,
-				const OpenViBE::boolean bFallbackValue);
+				const OpenViBE::boolean bFallbackValue) const;
 			virtual OpenViBE::uint64 expandAsEnumerationEntryValue(
 				const OpenViBE::CString& rExpression,
 				const OpenViBE::CIdentifier& rEnumerationTypeIdentifier,
-				const OpenViBE::uint64 ui64FallbackValue);
+				const OpenViBE::uint64 ui64FallbackValue) const;
 
 		protected:
 

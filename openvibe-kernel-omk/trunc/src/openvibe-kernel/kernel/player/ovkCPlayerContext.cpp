@@ -31,6 +31,41 @@ namespace OpenViBE
 				CSimulatedBox* m_pSimulatedBox;
 			};
 
+			class CConfigurationManagerBridge : public TKernelObject<IConfigurationManager>
+			{
+			public:
+
+				CConfigurationManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IConfigurationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), boolean, addConfigurationFromFile, , const CString&, rFileNameWildCard);
+
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), CIdentifier, createConfigurationToken, , const CString&, rConfigurationTokenName, const CString&, rConfigurationTokenValue);
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), boolean, releaseConfigurationToken, , const CIdentifier&, rConfigurationTokenIdentifier);
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CIdentifier, getNextConfigurationTokenIdentifier, const, const CIdentifier&, rPreviousConfigurationTokenIdentifier);
+
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CString, getConfigurationTokenName, const, const CIdentifier&, rConfigurationTokenIdentifier);
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CString, getConfigurationTokenValue, const, const CIdentifier&, rConfigurationTokenIdentifier);
+
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), boolean, setConfigurationTokenName, , const CIdentifier&, rConfigurationTokenIdentifier, const CString&, rConfigurationTokenName);
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), boolean, setConfigurationTokenValue, , const CIdentifier&, rConfigurationTokenIdentifier, const CString&, rConfigurationTokenValue);
+
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CIdentifier, lookUpConfigurationTokenIdentifier, const, const CString&, rConfigurationTokenName);
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CString, expand, const, const CString&, rExpression);
+
+
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), float64, expandAsFloat, const, const CString&, rExpression, const float64, f64FallbackValue);
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), int64, expandAsInteger, const, const CString&, rExpression, const int64, i64FallbackValue);
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), uint64, expandAsUInteger, const, const CString&, rExpression, const uint64, ui64FallbackValue);
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), boolean, expandAsBoolean, const, const CString&, rExpression, const boolean, bFallbackValue);
+				__BridgeBindFunc3__(getKernelContext().getConfigurationManager(), uint64, expandAsEnumerationEntryValue, const, const CString&, rExpression, const CIdentifier&, rEnumerationTypeIdentifier, const uint64, ui64FallbackValue);
+
+				_IsDerivedFromClass_Final_(TKernelObject<IConfigurationManager>, OV_UndefinedIdentifier);
+
+			protected:
+
+				CSimulatedBox* m_pSimulatedBox;
+			};
+
 			class CLogManagerBridge : public TKernelObject<ILogManager>
 			{
 			public:
@@ -153,11 +188,13 @@ CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, CSimulatedB
 	:TKernelObject<IPlayerContext>(rKernelContext)
 	,m_pSimulatedBox(pSimulatedBox)
 	,m_pAlgorithmManagerBridge(NULL)
+	,m_pConfigurationManagerBridge(NULL)
 	,m_pLogManagerBridge(NULL)
 	,m_pScenarioManagerBridge(NULL)
 	,m_pTypeManagerBridge(NULL)
 {
 	m_pAlgorithmManagerBridge=new CAlgorithmManagerBridge(rKernelContext, pSimulatedBox);
+	m_pConfigurationManagerBridge=new CConfigurationManagerBridge(rKernelContext, pSimulatedBox);
 	m_pLogManagerBridge=new CLogManagerBridge(rKernelContext, pSimulatedBox);
 	m_pScenarioManagerBridge=new CScenarioManagerBridge(rKernelContext, pSimulatedBox);
 	m_pTypeManagerBridge=new CTypeManagerBridge(rKernelContext, pSimulatedBox);
@@ -168,6 +205,7 @@ CPlayerContext::~CPlayerContext(void)
 	delete m_pTypeManagerBridge;
 	delete m_pScenarioManagerBridge;
 	delete m_pLogManagerBridge;
+	delete m_pConfigurationManagerBridge;
 	delete m_pAlgorithmManagerBridge;
 }
 
@@ -206,6 +244,11 @@ uint64 CPlayerContext::getCurrentTime(void)
 IAlgorithmManager& CPlayerContext::getAlgorithmManager(void)
 {
 	return *m_pAlgorithmManagerBridge;
+}
+
+IConfigurationManager& CPlayerContext::getConfigurationManager(void)
+{
+	return *m_pConfigurationManagerBridge;
 }
 
 ILogManager& CPlayerContext::getLogManager(void)
