@@ -85,7 +85,7 @@ boolean CVRPNAnalogServer::process()
 				m_vAnalogCount[i]=l_pMatrix->getBufferElementCount();
 				if(m_vAnalogCount.size()==l_rStaticBoxContext.getInputCount())
 				{
-					uint32 l_ui32AnalogCount;
+					uint32 l_ui32AnalogCount=0;
 					for(k=0; k<l_rStaticBoxContext.getInputCount(); k++)
 					{
 						l_ui32AnalogCount+=m_vAnalogCount[k];

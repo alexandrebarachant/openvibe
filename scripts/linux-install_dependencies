@@ -440,6 +440,11 @@ ov_package_configure_hook_bliff='
 	$ov_sed -i "1iGSL_HOME=$ov_target_folder" Makefile &&
 	$ov_sed -i "1iBOOST_INCLUDE=$ov_target_folder/include/boost-1_36" Makefile &&
 	$ov_sed -i "s/CFLAGS =/CFLAGS = -fPIC/g" Makefile &&
+	$ov_sed -i "s/iostream\.h/iostream/g" include/*.h src/*.inl src/*.cpp &&
+	$ov_sed -i "s/vector\.h/vector/g" include/*.h src/*.inl src/*.cpp &&
+	$ov_sed -i "3i#include <iostream>" include/*.h &&
+	$ov_sed -i "4i#include <algorithm>" include/*.h &&
+	$ov_sed -i "5iusing namespace std;" include/*.h &&
 	popd'
 ov_package_install_hook_bliff='
 	pushd * &&
