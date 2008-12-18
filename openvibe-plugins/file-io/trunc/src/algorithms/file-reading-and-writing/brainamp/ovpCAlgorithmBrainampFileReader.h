@@ -70,7 +70,7 @@ namespace OpenViBEPlugins
 
 			OpenViBE::uint32 m_ui32BinaryFormat;
 			OpenViBE::uint32 m_ui32Endianness;
-			OpenViBE::uint64 m_ui64ChannelCount;
+			OpenViBE::uint32 m_ui32ChannelCount;
 			OpenViBE::uint64 m_ui64SamplingInterval;
 			OpenViBE::uint64 m_ui64StartSampleIndex;
 			OpenViBE::uint64 m_ui64EndSampleIndex;

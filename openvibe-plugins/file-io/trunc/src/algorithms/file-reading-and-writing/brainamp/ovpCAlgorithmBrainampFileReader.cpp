@@ -58,7 +58,7 @@ boolean CAlgorithmBrainampFileReader::process(void)
 		uint64 l_ui64SamplingInterval;
 
 		m_ui32BinaryFormat=BinaryFormat_Integer16;
-		m_ui64ChannelCount=0;
+		m_ui32ChannelCount=0;
 		m_ui64SamplingInterval=0;
 		m_ui64StartSampleIndex=0;
 		m_ui64EndSampleIndex=0;
@@ -182,17 +182,17 @@ boolean CAlgorithmBrainampFileReader::process(void)
 								}
 								else if(l_sOptionName=="NumberOfChannels")
 								{
-									m_ui64ChannelCount=atoi(l_sOptionValue.c_str());
+									m_ui32ChannelCount=atoi(l_sOptionValue.c_str());
 									m_vChannelScale.clear();
-									m_vChannelScale.resize(m_ui64ChannelCount, 1);
-									op_pSignalMatrix->setDimensionSize(0, m_ui64ChannelCount);
+									m_vChannelScale.resize(m_ui32ChannelCount, 1);
+									op_pSignalMatrix->setDimensionSize(0, m_ui32ChannelCount);
 								}
 								else if(l_sOptionName=="SamplingInterval")
 								{
 									l_ui64SamplingInterval=atoi(l_sOptionValue.c_str());
 
 									m_ui64SampleCountPerBuffer=((int64)((ip_f64EpochDuration*1000000.)/l_ui64SamplingInterval)); // $$$ Casted in (int64) because of Ubuntu 7.10 crash !
-									op_pSignalMatrix->setDimensionSize(1, m_ui64SampleCountPerBuffer);
+									op_pSignalMatrix->setDimensionSize(1, (uint32)m_ui64SampleCountPerBuffer);
 									op_ui64SamplingRate=1000000/l_ui64SamplingInterval;
 
 									// TODO warn if approximated sampling rate
@@ -453,7 +453,7 @@ boolean CAlgorithmBrainampFileReader::process(void)
 			} \
 			for(uint32 j=0; j<m_ui64SampleCountPerBuffer; j++) \
 			{ \
-				for(uint32 i=0; i<m_ui64ChannelCount; i++, l_pFileBuffer+=sizeof(T)) \
+				for(uint32 i=0; i<m_ui32ChannelCount; i++, l_pFileBuffer+=sizeof(T)) \
 				{ \
 					(*l_fpFileToHost)(l_pFileBuffer, &l_tValue); \
 					l_pSignalMatrixBuffer[i*m_ui64SampleCountPerBuffer+j]=m_vChannelScale[i]*l_tValue; \

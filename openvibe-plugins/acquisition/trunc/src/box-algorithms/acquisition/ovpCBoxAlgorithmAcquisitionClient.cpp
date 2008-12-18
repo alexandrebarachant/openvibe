@@ -108,7 +108,7 @@ boolean CBoxAlgorithmAcquisitionClient::process(void)
 			getLogManager() << LogLevel_ImportantWarning << "Could not re allocate memory buffer with size " << l_ui64MemoryBufferSize << "\n";
 			return false;
 		}
-		if(!m_pConnectionClient->receiveBufferBlocking(ip_pAcquisitionMemoryBuffer->getDirectPointer(), l_ui64MemoryBufferSize))
+		if(!m_pConnectionClient->receiveBufferBlocking(ip_pAcquisitionMemoryBuffer->getDirectPointer(), static_cast<uint32>(l_ui64MemoryBufferSize)))
 		{
 			getLogManager() << LogLevel_ImportantWarning << "Could not receive memory buffer content of size " << l_ui64MemoryBufferSize << "\n";
 			return false;

@@ -56,7 +56,7 @@ boolean CBoxAlgorithmGenericStreamWriter::initialize(void)
 		this->getLogManager() << LogLevel_ImportantWarning << "Could not open file " << m_sFilename << "\n";
 		return false;
 	}
-	m_oFile.write(reinterpret_cast<const char*>(m_oSwap.getDirectPointer()), m_oSwap.getSize());
+	m_oFile.write(reinterpret_cast<const char*>(m_oSwap.getDirectPointer()), (std::streamsize)m_oSwap.getSize());
 	m_oFile.close();
 
 	return true;
@@ -117,7 +117,7 @@ boolean CBoxAlgorithmGenericStreamWriter::process(void)
 		this->getLogManager() << LogLevel_ImportantWarning << "Could not open file " << m_sFilename << "\n";
 		return false;
 	}
-	m_oFile.write(reinterpret_cast<const char*>(m_oSwap.getDirectPointer()), m_oSwap.getSize());
+	m_oFile.write(reinterpret_cast<const char*>(m_oSwap.getDirectPointer()), (std::streamsize)m_oSwap.getSize());
 	m_oFile.close();
 
 	return true;

@@ -207,7 +207,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 			ofstream l_oFile(l_sConfigurationFilename.toASCIIString(), ios::binary);
 			if(l_oFile.is_open())
 			{
-				l_oFile.write((char*)l_pConfiguration->getDirectPointer(), l_pConfiguration->getSize());
+				l_oFile.write((char*)l_pConfiguration->getDirectPointer(), (std::streamsize)l_pConfiguration->getSize());
 				l_oFile.close();
 			}
 			else

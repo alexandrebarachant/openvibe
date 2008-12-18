@@ -32,7 +32,7 @@ void CReferenceChannel::setSampleCountPerBuffer(const uint32 ui32SampleCountPerB
 
 	//allocate matrix
 	m_ui64MatrixBufferSize = m_ui32SamplesPerBuffer * (uint32)m_oChannelNames.size();
-	m_pMatrixBuffer = new float64[m_ui64MatrixBufferSize];
+	m_pMatrixBuffer = new float64[static_cast<size_t>(m_ui64MatrixBufferSize)];
 
 	//send header
 	m_pSignalOutputWriterHelper->setSamplingRate(m_ui32SamplingFrequency);

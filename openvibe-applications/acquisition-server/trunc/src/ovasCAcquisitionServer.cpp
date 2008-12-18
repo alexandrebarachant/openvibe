@@ -244,7 +244,7 @@ boolean CAcquisitionServer::initialize(void)
 
 	::GtkSpinButton* l_pSpinButtonConnectionPort=GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port"));
 	uint64 l_ui64DefaultConnectionPort=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DefaultConnectionPort}", 1024);
-	gtk_spin_button_set_value(l_pSpinButtonConnectionPort, l_ui64DefaultConnectionPort);
+	gtk_spin_button_set_value(l_pSpinButtonConnectionPort, (gdouble)l_ui64DefaultConnectionPort);
 
 	// Shows main window
 

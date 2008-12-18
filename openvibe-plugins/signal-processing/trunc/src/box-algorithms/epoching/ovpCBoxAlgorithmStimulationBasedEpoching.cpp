@@ -160,7 +160,7 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 			{
 				m_pOutputSignalDescription->setDimensionCount(2);
 				m_pOutputSignalDescription->setDimensionSize(0, m_pInputSignal->getDimensionSize(0));
-				m_pOutputSignalDescription->setDimensionSize(1, (m_ui64SamplingRate*(m_ui64EpochDuration>>16))>>16);
+				m_pOutputSignalDescription->setDimensionSize(1, (uint32)((m_ui64SamplingRate*(m_ui64EpochDuration>>16))>>16));
 				for(k=0; k<m_pInputSignal->getDimensionSize(0); k++)
 				{
 					m_pOutputSignalDescription->setDimensionLabel(0, k, m_pInputSignal->getDimensionLabel(0, k));

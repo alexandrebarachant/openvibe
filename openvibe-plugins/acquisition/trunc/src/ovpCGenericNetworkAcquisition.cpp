@@ -156,7 +156,7 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 			if(l_ui64CurrentDate>>32 != m_ui64CurrentDate>>32)
 			{
 				l_ui64CurrentDate=m_ui64CurrentDate;
-				uint32 l_ui32SentSampleCount=(m_pSignalDescription->m_ui32SamplingRate*m_ui64CurrentDate)>>32;
+				uint32 l_ui32SentSampleCount=(uint32)((m_pSignalDescription->m_ui32SamplingRate*m_ui64CurrentDate)>>32);
 				// m_ui32SentSampleCount
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
 					<< LogLevel_Trace

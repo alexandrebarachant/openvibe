@@ -2868,7 +2868,7 @@ boolean CVoxelDisplay::computePotentials()
 
 		if(squareDistance < l_f64SquareMaxDistance)
 		{
-			l_f64Potential = (1 - sqrtf(squareDistance) / l_f64MaxDistance) * l_f64SourceAttenuationFactor;
+			l_f64Potential = (1 - sqrt(squareDistance) / l_f64MaxDistance) * l_f64SourceAttenuationFactor;
 		}
 
 		//ensure potential doesn't exceed 1

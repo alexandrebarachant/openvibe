@@ -96,7 +96,7 @@ boolean CBoxAlgorithmGenericStreamReader::process(void)
 			if(!m_oFile.eof())
 			{
 				m_oSwap.setSize(m_oReader.getCurrentNodeSize(), true);
-				m_oFile.read(reinterpret_cast<char*>(m_oSwap.getDirectPointer()), m_oSwap.getSize());
+				m_oFile.read(reinterpret_cast<char*>(m_oSwap.getDirectPointer()), (std::streamsize)m_oSwap.getSize());
 
 				m_oPendingChunk.setSize(0, true);
 				m_ui64StartTime=(uint64)-1;
@@ -166,7 +166,7 @@ void CBoxAlgorithmGenericStreamReader::processChildData(const void* pBuffer, con
 
 	if(l_rTop==OVP_NodeId_OpenViBEStream_Buffer_ChannelIndex)
 	{
-		uint32 l_ui32StreamIndex=m_oReaderHelper.getUIntegerFromChildData(pBuffer, ui64BufferSize);
+		uint32 l_ui32StreamIndex=(uint32)m_oReaderHelper.getUIntegerFromChildData(pBuffer, ui64BufferSize);
 		if(m_vStreamIndexToTypeIdentifier.find(l_ui32StreamIndex)!=m_vStreamIndexToTypeIdentifier.end())
 		{
 			m_ui32OutputIndex=m_vStreamIndexToOutputIndex[l_ui32StreamIndex];

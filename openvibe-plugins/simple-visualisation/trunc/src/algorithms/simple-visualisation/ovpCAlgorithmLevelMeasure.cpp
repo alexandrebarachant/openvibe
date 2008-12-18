@@ -32,7 +32,7 @@ namespace
 	void show_percentages_toggle_button_cb(::GtkToggleToolButton* pButton, gpointer pUserData)
 	{
 		CAlgorithmLevelMeasure* l_pLevelMeasure=reinterpret_cast<CAlgorithmLevelMeasure*>(pUserData);
-		l_pLevelMeasure->m_bShowPercentages=gtk_toggle_tool_button_get_active(pButton);
+		l_pLevelMeasure->m_bShowPercentages=(gtk_toggle_tool_button_get_active(pButton)?true:false);
 	}
 };
 
@@ -57,7 +57,7 @@ boolean CAlgorithmLevelMeasure::initialize(void)
 	m_pMainWindow=glade_xml_get_widget(m_pMainWidgetInterface, "level-measure-table");
 	m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "level-measure-toolbar");
 
-	m_bShowPercentages=gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-percentages-toggle-button")));
+	m_bShowPercentages=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-percentages-toggle-button")))?true:false);
 	m_f64Threshold=.01*gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "threshold-spinbutton")));
 
 	return true;

@@ -49,10 +49,10 @@ boolean CAlgorithmStimulationBasedEpoching::process(void)
 			}
 		}
 
-		uint32 l_ui32SamplesToCopy=l_ui32InputSampleCount-m_ui64SamplesToSkip;
+		uint32 l_ui32SamplesToCopy=(uint32)(l_ui32InputSampleCount-m_ui64SamplesToSkip);
 		if(l_ui32SamplesToCopy>=l_ui32OutputSampleCount-m_ui64ReceivedSamples)
 		{
-			l_ui32SamplesToCopy=l_ui32OutputSampleCount-m_ui64ReceivedSamples;
+			l_ui32SamplesToCopy=(uint32)(l_ui32OutputSampleCount-m_ui64ReceivedSamples);
 			this->activateOutputTrigger(OVP_Algorithm_StimulationBasedEpoching_OutputTriggerId_EpochingDone, true);
 		}
 

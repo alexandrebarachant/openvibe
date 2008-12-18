@@ -233,7 +233,7 @@ boolean CScheduler::initialize(void)
 		l_pSimulatedBox->setScenarioIdentifier(m_oScenarioIdentifier);
 		l_pSimulatedBox->setBoxIdentifier(l_oBoxIdentifier);
 		m_vSimulatedBox[l_oBoxIdentifier]=l_pSimulatedBox;
-		m_vSimulatedBoxChrono[l_oBoxIdentifier].reset(m_ui64Frequency);
+		m_vSimulatedBoxChrono[l_oBoxIdentifier].reset(static_cast<uint32>(m_ui64Frequency));
 	}
 
 	for(map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)

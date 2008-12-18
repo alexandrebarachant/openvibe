@@ -449,7 +449,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			if(l_ui64ComputationTime<l_ui64ComputationTimeReference)
 			{
 				l_oColor.pixel=0;
-				l_oColor.red  =(l_ui64ComputationTime<<16)/l_ui64ComputationTimeReference;
+				l_oColor.red  =(guint16)((l_ui64ComputationTime<<16)/l_ui64ComputationTimeReference);
 				l_oColor.green=32768;
 				l_oColor.blue =0;
 			}
@@ -459,7 +459,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				{
 					l_oColor.pixel=0;
 					l_oColor.red  =65535;
-					l_oColor.green=32768-((l_ui64ComputationTime<<15)/(l_ui64ComputationTimeReference*4));
+					l_oColor.green=(guint16)(32768-((l_ui64ComputationTime<<15)/(l_ui64ComputationTimeReference*4)));
 					l_oColor.blue =0;
 				}
 				else
@@ -1640,8 +1640,8 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 				// Moves boxes under cursor
 				CBoxProxy l_oBoxProxy(m_rKernelContext, m_rScenario, it->second);
 				l_oBoxProxy.setCenter(
-					l_oBoxProxy.getXCenter()-l_iCenterX/l_iBoxCount+m_f64CurrentMouseX-m_i32ViewOffsetX,
-					l_oBoxProxy.getYCenter()-32+m_f64CurrentMouseY-m_i32ViewOffsetY);
+					(int32)(l_oBoxProxy.getXCenter()-l_iCenterX/l_iBoxCount+m_f64CurrentMouseX-m_i32ViewOffsetX),
+					(int32)(l_oBoxProxy.getYCenter()-32+m_f64CurrentMouseY-m_i32ViewOffsetY));
 				// Ok, why 32 would you ask, just because it is fine
 			}
 		}

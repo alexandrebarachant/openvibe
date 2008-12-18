@@ -58,8 +58,8 @@ boolean CSpatialFilterBoxAlgorithm::initialize(void)
 	}
 	TParameterHandler<IMatrix*> ip_pFilterCoefficientsInputMatrix(m_pApplySpatialFilter->getInputParameter(OVP_Algorithm_ApplySpatialFilter_InputParameterId_FilterCoefficientsMatrix));
 	ip_pFilterCoefficientsInputMatrix->setDimensionCount(2);
-	ip_pFilterCoefficientsInputMatrix->setDimensionSize(0,l_ui64NbLine);
-	ip_pFilterCoefficientsInputMatrix->setDimensionSize(1,l_ui64NbColumn);
+	ip_pFilterCoefficientsInputMatrix->setDimensionSize(0, (uint32)l_ui64NbLine);
+	ip_pFilterCoefficientsInputMatrix->setDimensionSize(1, (uint32)l_ui64NbColumn);
 	float64* l_pFilterCoefficientsInput = ip_pFilterCoefficientsInputMatrix->getBuffer();
 	for (uint32 i = 0; i<m_oCoefficients.size(); i++)
 	{

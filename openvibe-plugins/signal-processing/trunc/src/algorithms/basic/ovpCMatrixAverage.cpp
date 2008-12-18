@@ -61,7 +61,7 @@ boolean CMatrixAverage::process(void)
 		if(ip_i64MatrixCount>0)
 		{
 			delete [] m_pMatrixCache;
-			m_pMatrixCache=new CMatrix[ip_i64MatrixCount];
+			m_pMatrixCache=new CMatrix[(size_t)ip_i64MatrixCount];
 			m_ui64MatrixCacheCount=ip_i64MatrixCount;
 			m_bInfiniteAverage=false;
 			m_bMovingAverage=ip_bMovingAverage;

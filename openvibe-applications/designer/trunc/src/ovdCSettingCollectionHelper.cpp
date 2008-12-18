@@ -247,7 +247,7 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 
 			if(l_ui64Value==l_ui64EntryValue)
 			{
-				gtk_combo_box_set_active(l_pWidget, i);
+				gtk_combo_box_set_active(l_pWidget, (gint)i);
 			}
 		}
 	}
@@ -263,7 +263,7 @@ void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifie
 
 	string l_sValue(rValue);
 	::GtkTable* l_pBitMaskTable=GTK_TABLE(pWidget);
-	gtk_table_resize(l_pBitMaskTable, 2, (m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1);
+	gtk_table_resize(l_pBitMaskTable, 2, (guint)((m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1));
 
 	for(uint64 i=0; i<m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier); i++)
 	{
@@ -277,7 +277,7 @@ void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifie
 
 			gtk_widget_ref(l_pSettingButton);
 			gtk_widget_unparent(l_pSettingButton);
-			gtk_table_attach_defaults(l_pBitMaskTable, l_pSettingButton, (i&1), (i&1)+1, (i>>1), (i>>1)+1);
+			gtk_table_attach_defaults(l_pBitMaskTable, l_pSettingButton, (guint)(i&1), (guint)((i&1)+1), (guint)(i>>1), (guint)((i>>1)+1));
 			gtk_widget_unref(l_pSettingButton);
 
 			gtk_button_set_label(GTK_BUTTON(l_pSettingButton), (const char*)l_sEntryName);

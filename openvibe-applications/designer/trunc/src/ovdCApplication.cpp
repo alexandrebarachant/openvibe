@@ -1058,7 +1058,7 @@ void CApplication::CPUUsageCB(void)
 	CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 	if(l_pCurrentInterfacedScenario)
 	{
-		l_pCurrentInterfacedScenario->m_bDebugCPUUsage=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-togglebutton_cpu_usage")));
+		l_pCurrentInterfacedScenario->m_bDebugCPUUsage=(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-togglebutton_cpu_usage")))?true:false);
 		l_pCurrentInterfacedScenario->redraw();
 	}
 }

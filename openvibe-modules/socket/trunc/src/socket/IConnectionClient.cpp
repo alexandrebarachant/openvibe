@@ -29,7 +29,12 @@ namespace Socket
 			uint32 ui32ServerPort,
 			uint32 ui32TimeOut)
 		{
+#if defined Socket_OS_Linux
+
 			long l_iValue;
+
+#endif
+
 			if(!open())
 			{
 				return false;

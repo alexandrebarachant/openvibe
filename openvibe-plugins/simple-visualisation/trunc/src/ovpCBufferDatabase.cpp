@@ -21,7 +21,7 @@ using namespace std;
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
-	{	
+	{
 #ifdef ELAN_VALIDATION
 		static const unsigned int s_nbChannels = 143;
 
@@ -709,7 +709,7 @@ namespace OpenViBEPlugins
 		}
 
 		CBufferDatabase::~CBufferDatabase()
-		{			
+		{
 			//delete all the remaining buffers
 			while(m_oSampleBuffers.size() > 0)
 			{
@@ -786,14 +786,14 @@ namespace OpenViBEPlugins
 #ifdef ELAN_VALIDATION
 			if(ui32DimmensionIndex == 0)
 			{
-				*(uint32*)&ui32DimmensionSize = s_nbChannels;				
+				*(uint32*)&ui32DimmensionSize = s_nbChannels;
 			}
 #endif
-			m_pDimmensionSizes[ui32DimmensionIndex] = ui32DimmensionSize;			
-			m_pDimmesionLabels[ui32DimmensionIndex].resize(m_pDimmensionSizes[ui32DimmensionIndex]);
+			m_pDimmensionSizes[ui32DimmensionIndex] = ui32DimmensionSize;
+			m_pDimmesionLabels[ui32DimmensionIndex].resize(ui32DimmensionSize);
 
 			if(ui32DimmensionIndex == 0)
-			{					
+			{
 				m_i64NbElectrodes = m_pDimmensionSizes[ui32DimmensionIndex];
 
 				//resize min/max values vector
@@ -809,13 +809,13 @@ namespace OpenViBEPlugins
 
 				//resize electrode labels vector
 				m_oElectrodesLabels.resize((uint32)m_i64NbElectrodes);
-			}			
+			}
 		}
 
 		void CBufferDatabase::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
 		{
 #ifdef ELAN_VALIDATION
-			//done upon first buffer reception in setMatrixBuffer	
+			//done upon first buffer reception in setMatrixBuffer
 #else
 			m_pDimmesionLabels[ui32DimmensionIndex][ui32DimmensionEntryIndex] = sDimmensionLabel;
 #endif
@@ -832,7 +832,7 @@ namespace OpenViBEPlugins
 			uint64 l_ui64NumberOfSamplesPerBuffer = m_pDimmensionSizes[0] * m_pDimmensionSizes[1];
 
 			if(m_bFirstBufferReceived == false)
-			{				
+			{
 #ifdef ELAN_VALIDATION
 				for(uint32 i=0; i<s_nbChannels; i++)
 				{
@@ -866,7 +866,7 @@ namespace OpenViBEPlugins
 				m_bFirstBufferReceived = true;
 			}
 #ifdef ELAN_VALIDATION
-			return;			
+			return;
 #endif
 			float64 * l_pBufferToWrite;
 

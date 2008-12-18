@@ -82,7 +82,7 @@ boolean CPlayer::initialize(void)
 	}
 
 	m_oScheduler.initialize();
-	m_oBenchmarkChrono.reset(m_oScheduler.getFrequency());
+	m_oBenchmarkChrono.reset(static_cast<uint32>(m_oScheduler.getFrequency()));
 
 	m_ui64CurrentTimeToReach=0;
 	m_ui64Lateness=0;

@@ -116,7 +116,7 @@ boolean CDriverBrainAmpScalpEEG::initialize(
 	if (!(*(&m_pStructRDA_MessageHeader) = (RDA_MessageHeader*)malloc(l_structRDA_MessageHeader.nSize)))
 	{
 		cout << "Couldn't allocate memory" << std::endl;
-		return -1;
+		return false;
 	}
 	else
 	{
@@ -162,7 +162,7 @@ boolean CDriverBrainAmpScalpEEG::initialize(
 	for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 	{
 		m_oHeader.setChannelName(i, l_pszChannelNames);
-		m_oHeader.setChannelGain(i, (m_pStructRDA_MessageStart->dResolutions[i]));
+		m_oHeader.setChannelGain(i, (float32)((m_pStructRDA_MessageStart->dResolutions[i])));
 		l_pszChannelNames += strlen(l_pszChannelNames) + 1;
 	}
 
@@ -275,7 +275,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 	if (!(*(&m_pStructRDA_MessageHeader) = (RDA_MessageHeader*)malloc(l_structRDA_MessageHeader.nSize)))
 	{
 		cout << "Couldn't allocate memory" << std::endl;
-		return -1;
+		return false;
 	}
 	else
 	{
@@ -427,7 +427,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 				if (!(*(&m_pStructRDA_MessageHeader) = (RDA_MessageHeader*)malloc(l_structRDA_MessageHeader.nSize)))
 				{
 					cout << "Couldn't allocate memory" << std::endl;
-					return -1;
+					return false;
 				}
 				else
 				{
