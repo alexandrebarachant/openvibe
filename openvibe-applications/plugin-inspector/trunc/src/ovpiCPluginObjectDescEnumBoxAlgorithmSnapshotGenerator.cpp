@@ -1,5 +1,7 @@
 #include "ovpiCPluginObjectDescEnumBoxAlgorithmSnapshotGenerator.h"
 
+#include <system/Time.h>
+
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -152,6 +154,8 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::CPluginObjectDescEnumBoxAlgo
 	gtk_container_add(GTK_CONTAINER(m_pWindow), m_pWidget);
 	gtk_widget_set_size_request(m_pWidget, 512, 128);
 	gtk_widget_show_all(m_pWindow);
+	gdk_flush();
+	System::Time::sleep(1000);
 }
 
 CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator(void)
