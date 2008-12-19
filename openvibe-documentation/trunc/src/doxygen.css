@@ -179,8 +179,8 @@ DL.el
 
 .fragment
 {
-	font-family: monospace, fixed;
-	font-size: 95%;
+	/* font-family: Courier, Console, monospace, fixed; */
+	font-size: small;
 }
 
 PRE.fragment

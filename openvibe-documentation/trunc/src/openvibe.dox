@@ -9,9 +9,12 @@
  * \mainpage OpenViBE
  *
  * \b NOTE
- * The redaction of this document is on progress so this documentation is far from complete right now. However,
- * we collected several things from here and there and put them altogether in an unorganised way. This is a start...
- * Have a nice reading.
+ * The writing of the §OpenViBE§ project documentation is in progress and far from complete at the moment. The way 
+ * the documentation is structured may also change over time. However, existing documentation files are already made 
+ * available to users and developers since they contain valuable information, albeit in a not very organised fashion. 
+ * This is a start...
+ *
+ * Have a nice reading!
  *
  * \image html logo.png
  *
@@ -57,8 +60,12 @@
  *
  * <hr>
  *
+ * \subpage Doc_FAQ
+ *
+ * <hr>
+ *
  * \subpage Doc_Licence :
- * - The software platform is released under the term of the \subpage Doc_Licence "L-GPL v2+"
+ * - The software platform is released under the terms of the \subpage Doc_Licence "L-GPL v2+"
  *
  * <hr>
  *
@@ -66,13 +73,13 @@
  *
  * <hr>
  *
- * \subpage Doc_DevelopperDocumentation :
- * - \subpage Doc_CreatingANewDriver (should be updated with stimulations - YR)
- * - \subpage Doc_CreatingNewPlugins (should be both improved and updated - YR)
- * - \subpage Doc_Algorithms (documentation in progress)
- * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ * \subpage Doc_DeveloperDocumentation :
+ * - \subpage Doc_CreatingANewDriver
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing
+ * - \subpage Doc_GlobalDefines
  * - \subpage Doc_OpenViBEStreams (should be improved - YR)
  * - \subpage Doc_Stimulations
+ * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  *
  * <hr>
  *
@@ -101,11 +108,6 @@
  * \subpage Doc_OngoingDocumentation :
  * - \subpage Doc_BoxAlgorithmConnectorTypes (should be completed - YR)
  * - \subpage Doc_SoftwareArchitectureOverview (should be completed with ieee vr paper, source structure should be removed - YR)
- * - \subpage Doc_BoxAlgorithmsTutorials (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
- * - \subpage Doc_DataAcquisition (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
- * - \subpage Doc_DataVisualisation (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
- * - \subpage Doc_SignalProcessing_All (should be splitted, some parts in specific box algorithm documentations, some other parts in tutorial pages - VD)
- * - \subpage Doc_VisualisationManager
  *
  * <hr>
  *
@@ -113,8 +115,6 @@
  * - \subpage todo
  *
  * <hr>
- *
- * \subpage Doc_FAQ
  *
  * \section Doc_Contact Contact
  * - Website : http://www.irisa.fr/bunraku/OpenViBE
@@ -126,13 +126,13 @@
  */
 
 /**
- * \page Doc_DevelopperDocumentation Developper documentation
+ * \page Doc_DeveloperDocumentation Developer documentation
  * - \subpage Doc_CreatingANewDriver
- * - \subpage Doc_CreatingNewPlugins
- * - \subpage Doc_Algorithms
- * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing
+ * - \subpage Doc_GlobalDefines
  * - \subpage Doc_OpenViBEStreams
  * - \subpage Doc_Stimulations
+ * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  */
 
 /**
@@ -160,10 +160,29 @@
 /**
  * \page Doc_OngoingDocumentation Ongoing documentation
  * - \subpage Doc_BoxAlgorithmConnectorTypes
- * - \subpage Doc_BoxAlgorithmsTutorials
- * - \subpage Doc_DataAcquisition
- * - \subpage Doc_DataVisualisation
  * - \subpage Doc_SoftwareArchitectureOverview
- * - \subpage Doc_VisualisationManager
- * - \subpage Doc_SignalProcessing_All
+ */
+
+/**
+ * \page Doc_AcquisitionServerUserDocumentation Acquisition server user documentation
+ * - \subpage Doc_AcquisitionServerOverview
+ */
+
+/**
+ * \page Doc_DesignerUserDocumentation Designer user documentation
+ * - \subpage Doc_BoxAlgorithms (documentation in progress)
+ * - \subpage Doc_DesignerOverview
+ * - \subpage Doc_WindowManagerUsage
+ * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
+ * - \subpage Doc_DesignerUserDocumentationTutorial
+ *   - \subpage Doc_DesignerTutorial1
+ *   - \subpage Doc_DesignerTutorial2
+ *   - \subpage Doc_DesignerTutorial3
+ */
+
+/**
+ * \page Doc_DesignerUserDocumentationTutorial Designer tutorials
+ * - \subpage Doc_DesignerTutorial1
+ * - \subpage Doc_DesignerTutorial2
+ * - \subpage Doc_DesignerTutorial3
  */

@@ -69,19 +69,17 @@ Finally, in each branch, each software module is divided in the following UNIX-l
 \section Doc_BuildTarget Build target
 
 OpenViBE should compile on \b x86 architecture running \b Microsoft \b Windows \b 2k/XP/Vista
-with \b Visual \b C++ \b 2005 \b express \b edition (take care of having the \b SP1 \b platform \b SDK
-installed).
+with \b Visual \b C++ \b 2005 \b express \b edition (make sure the \b SP1 \b platform \b SDK
+is installed).
 
-OpenViBE should compile on x86 architectures running \b Linux with \b gcc \b 4.*
-
-Some of OpenViBE dependencies are known \b not \b to \b be \b compiling on \b x86-64. This is being
-investigated.
+OpenViBE should compile on x86 and x86_64 architectures running \b Linux with \b gcc \b 4.*
 
 Please consider that trying to compile OpenViBE on other hardware/OS/compiler
-is experimental and has not been tested. Several people reported some problems
-on x86-64 architectures because of some of its dependencies. If you wish to try
+is experimental and has not been tested. If you wish to try
 and get OpenViBE to run on other hardware/OS/compilers, your efforts are welcome
 but you should not expect to get support on the short term.
+
+Check \ref Doc_FAQ_Environment for a list of known-to-work configurations.
 
 \section Doc_PrerequesiteDependencies Prerequesite dependencies
 
@@ -99,7 +97,7 @@ each dependency in a local directory without requiring root access and without u
 any package manager such as apt-get or yum. The build process takes quite a
 long time, typically 2 to 3 hours on recent computers.
 
-\section Doc_PreparingEnvironment Preparingi environment
+\section Doc_PreparingEnvironment Preparing environment
 
 The build process uses many environment variables. The 'script' directory
 contains the necessary files to build the whole platform and plugins.

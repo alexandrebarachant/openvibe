@@ -10,15 +10,15 @@
 ADD_CUSTOM_TARGET(${PROJECT_NAME})
 
 # look for doxygen, if not present, no need to generate documentation
-FIND_PROGRAM(doxygen_bin "doxygen" PATHS ${OpenViBE_dependencies}/bin NO_DEFAULT_PATH)
-FIND_PROGRAM(doxygen_bin "doxygen" PATHS ${OpenViBE_dependencies}/bin)
+FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin NO_DEFAULT_PATH)
+FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin)
 
 IF(doxygen_bin)
 	MESSAGE(STATUS "  Found doxygen...")
 
 	# intializes the variable that will be used in the doxyfile for input
 	# directories
-	SET(ov_doxy_input "")
+	SET(ov_doxy_input "$ENV{OpenViBE_base}/cmake-modules")
 
 	# intializes the variable that will contain the list of resource files to
 	# copy to the target directory

@@ -1,0 +1,42 @@
+/** 
+\page Doc_DesignerTutorial4 Designer Tutorial 4 : Advanced box configuration
+
+\section Doc_DesignerTutorial4_overview Overview
+
+This tutorial details advanced box configuration settings, which require a general understanding of the Designer application. Not all settings are available for each box. This document goes through all existing ways a box may be configured, illustrating each setting with a concrete example. For more information about advanced box configuration, one should refer to the box algorithms documentation pages.
+
+\section Doc_DesignerTutorial4_step1 Connectors configuration
+
+Some boxes are designed to allow for customization of their connectors from the Designer, because they are too generic for the box developer to be able to specify how many connectors a box should own, or to set the type of these connectors at programming time.
+
+When the number of connectors a box should own is not known a priori, developers may choose to initialize the box with only one input and/or output connector, or none at all. 
+
+Also, when the type of connector is configurable, the box developer may choose to initialize it with the 'undefined' type. Such connectors appear as white in the Designer, which will alert the author at scenario editing time and remind him that the connectors of the box should be configured depending on the context in which they are used. 
+
+In any case, when a box can handle a varying number of connectors, or when the type of its connectors may be changed, it displays green 'In' and/or 'Out' labels below the box name. These labels tell the author that the box has configurable input and/or output connectors.
+
+\subsection Doc_DesignerTutorial4_step1_1 Configuring the type of a connector
+
+To illustrate the usefulness of setting the type of a connector at scenario edition time, let's take the example of the epoch average box. This box performs matrix averages, and is thus initialized with one streamed matrix input connector and one similarly typed output connector. 
+
+Since the spectrum or feature vector types derive from the matrix type, a 'spectrum' output connector can be connected to the default 'streamed matrix' input connector of the epoch average box. However, doing so would result in the loss of some data specific to the spectrum type (such as the  list of frequency bands min and max thresholds). To perform matrix averages while retaining type-specific information in the output flow, one can modify the type of the input and output connectors and downcast them to 'spectrum' type.
+
+\subsection Doc_DesignerTutorial4_step1_2 Adding connectors
+
+Some boxes are designed to handle a varying number of input or output connectors. For example, the Generic stream reader box (found under 'File reading and writing/Generic') is a generic reader which doesn't know in advance what kind of data it is supposed to output. It is up to the author to specify what the box should output. For example, let's assume the input stream contains signal data as well as stimulations information. If both data types are relevant in the scenario being edited, the author can choose to add one 'signal' output connector and one 'stimulations' output connector. As the scenario is being run, the box will check what data types it should forward in the output stream and retain signal and stimulations, discarding other input data.
+
+Similarly, the generic stream writer is a generic file writer. It's up to the author to specify what kind of data should be saved to disk by adding the appropriate output connectors to the box.
+
+\section Doc_DesignerTutorial4_step2 Settings configuration
+
+\TODO
+
+\subsection Doc_DesignerTutorial4_step2_1 Configuring the type of a setting
+
+\TODO
+
+\subsection Doc_DesignerTutorial4_step2_2 Adding settings
+
+\TODO
+
+*/
