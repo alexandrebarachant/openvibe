@@ -199,7 +199,7 @@ void CTimeFrequencyMapChannelDisplay::update()
 	float64 l_f64WidthPerPoint = 0;
 	if(m_rSpectrumDatabase.getMaxDisplayedBufferCount() > 0)
 	{
-		l_f64WidthPerPoint = static_cast<float64>(l_iWidth) / static_cast<float64>(m_rSpectrumDatabase.getMaxDisplayedBufferCount());	
+		l_f64WidthPerPoint = static_cast<float64>(l_iWidth) / static_cast<float64>(m_rSpectrumDatabase.getMaxDisplayedBufferCount());
 	}
 	float64 l_f64HeightPerPoint = static_cast<float64>(l_iHeight) /
 		static_cast<float64>(l_ui32MaxDisplayedFrequencyIndex - l_ui32MinDisplayedFrequencyIndex + 1);
@@ -355,26 +355,26 @@ void CTimeFrequencyMapChannelDisplay::drawLeftRuler()
 	{
 		return;
 	}
-	
+
 	//increase step so that labels don't step over each other
 	int l_iMinGapBetweenLabels = l_iTextH / 3;
 	int l_iLabelCount = (int)((l_f64MaxDisplayedFrequency - l_f64MinDisplayedFrequency) / l_f64ValueStep + 1);
 	while( l_iLabelCount > 1 &&
 		(l_iTextH * l_iLabelCount + l_iMinGapBetweenLabels * (l_iLabelCount-1)) > l_iLeftRulerHeight)
-	{			
+	{
 		l_f64ValueStep  *= 2;
 		l_iLabelCount = (int)((l_f64MaxDisplayedFrequency - l_f64MinDisplayedFrequency) / l_f64ValueStep + 1);
 	}
-	
+
 	//if room for a single label, pick one in the middle of displayed frequency range
 	if(l_iLabelCount == 1)
 	{
-		return;		
+		return;
 	}
-	
+
 	//update base value
 	l_f64BaseValue = l_f64ValueStep * ceil(l_f64MinDisplayedFrequency/l_f64ValueStep);
-	
+
 	//draw frequency band labels
 	for(float64 i=l_f64BaseValue; i<=l_f64MaxDisplayedFrequency; i+=l_f64ValueStep)
 	{

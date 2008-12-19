@@ -311,11 +311,11 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectButton")), "clicked",       G_CALLBACK(channelSelectButtonCallback),     this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewButton")),     "clicked",       G_CALLBACK(multiViewButtonCallback),         this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton")),   "clicked",       G_CALLBACK(informationButtonCallback),       this);
-			
+
 			GtkSpinButton* l_pSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale"));
 			gtk_spin_button_set_value(l_pSpinButton, f64TimeScale);
 			g_signal_connect(G_OBJECT(l_pSpinButton), "value-changed", G_CALLBACK(spinButtonValueChangedCallback),  this);
-			//notify database of current time scale 
+			//notify database of current time scale
 			m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(l_pSpinButton));
 
 			//channel select dialog's signals
@@ -355,7 +355,7 @@ namespace OpenViBEPlugins
 			//creates the window
 			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow");
 			gtk_widget_show(m_pMainWindow);
-#endif			
+#endif
 		}
 
 		CSignalDisplayView::~CSignalDisplayView()

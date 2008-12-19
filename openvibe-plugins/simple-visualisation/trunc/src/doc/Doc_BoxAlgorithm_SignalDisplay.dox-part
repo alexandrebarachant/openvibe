@@ -41,19 +41,19 @@ Online visualisation settings
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SignalDisplay_OnlineVisualizationSettings|
-Online settings : 
-  
+Online settings :
+
   The first 4 icons are used to select the signal's scaling mode. Each signal can be scaled individually, by clicking a scaling button and then the channel to apply it on.
- 
+
   - Zoom In/Out : Increase/decrease the ordinate scale of a channel, and center it vertically at the location of the click.
   - Best Fit : Change the ordinate scale of a channel so it takes up all the available vertical space.
   - Normal Size : Scale the signal considering that the maximum and minimum values displayed in the window are those of the whole signal.
   - Left/Bottom Ruler : these buttons toggle channel labels and amplitude values on/off.
   - Time Scale : this setting adjusts the time span displayed by the plugin, in seconds.
-  - Select Channels : clicking this button pops up a dialog that allows to show/hide some of the channels by checking/unchecking each channel. 
+  - Select Channels : clicking this button pops up a dialog that allows to show/hide some of the channels by checking/unchecking each channel.
   - Multi-View : clicking this button pops up a dialog that configures what channels should be plotted in an extra graph at the bottom of the Signal Display window. When no channels are selected (default) this extra graph is not displayed.
   - Information : this button displays information about sampled data (min/max values and so on).
-  
+
  \image html signaldisplay_toolbar.png "Signal Display toolbar"
  * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_OnlineVisualizationSettings|
 __________________________________________________________________
@@ -62,13 +62,13 @@ Examples description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SignalDisplay_Examples|
-Practical example : 
- 
+Practical example :
+
  This example is based on the following scenario file : tutorials/visualisation/sample_signal_display
- 
+
  An easy way to test this plugin consists in generating signals with the Sinus Oscillator plugin (found under 'Samples'), then connecting its signal output to the signal input of the Signal Display plugin.
- 
- \image html signaldisplay_online "Visualising 2 channels using the Signal Display plugin."
+
+ \image html signaldisplay_online.png "Visualising 2 channels using the Signal Display plugin."
  * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_Examples|
 
 __________________________________________________________________

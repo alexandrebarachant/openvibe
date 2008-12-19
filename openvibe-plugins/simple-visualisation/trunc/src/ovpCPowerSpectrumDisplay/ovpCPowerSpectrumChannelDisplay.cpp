@@ -71,7 +71,7 @@ namespace OpenViBEPlugins
 			g_object_unref(G_OBJECT(m_pGraphicsContext));
 
 			if(m_pRGBBuffer != NULL)
-			{			
+			{
 				delete[] m_pRGBBuffer;
 			}
 		}
@@ -187,7 +187,7 @@ namespace OpenViBEPlugins
 
 				gint l_iH = (gint)(l_iHeight * ratio);
 				gint l_iY = l_iHeight-l_iH;
-					
+
 				drawBoxToBuffer(
 					l_iX, l_iY, //origin
 					l_iW, l_iH, //size

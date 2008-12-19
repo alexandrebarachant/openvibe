@@ -209,12 +209,12 @@ namespace OpenViBE
 			 * \brief Set toolbar pointer of a visualisation box
 			 * Forwards pointer to the toolbar of a visualisation box as the player is launched and each visualisation
 			 * box contained in the active scenario is being instantiated.
-			 * \param[in] rName name (as stored in EVisualisationTreeColumn_StringName column of tree store) of visualisation box
+			 * \param[in] rBoxIdentifier Identifier of IBox whose toolbar is being set
 			 * \param[in] pToolbarWidget pointer to toolbar of visualisation box
 			 * \return true if widget was successfully registered, false otherwise
 			 */
 			virtual OpenViBE::boolean setToolbar(
-				const OpenViBE::CString& rName,
+				const OpenViBE::CIdentifier& rBoxIdentifier,
 				::GtkWidget* pToolbarWidget)
 			{
 				return false;
@@ -225,12 +225,12 @@ namespace OpenViBE
 			 * Forwards pointer to the topmost widget of a visualisation box as the player is launched and each visualisation
 			 * box contained in the active scenario is being instantiated. Used to position each box at the appropriate position, as defined
 		   * using the offline window manager.
-			 * \param[in] rName name (as stored in EVisualisationTreeColumn_StringName column of tree store) of visualisation box
+			 * \param[in] rBoxIdentifier Identifier of IBox whose toolbar is being set 
 			 * \param[in] pWidget pointer to main window of visualisation box
 			 * \return true if widget was successfully registered, false otherwise
 			 */
 			virtual OpenViBE::boolean setWidget(
-				const OpenViBE::CString& rName,
+				const OpenViBE::CIdentifier& rBoxIdentifier,
 				::GtkWidget* pWidget)
 			{
 				return false;
@@ -403,8 +403,8 @@ namespace OpenViBE
 
 			/**
 			 * \brief Recreates Gtk widgets based on the widgets description stored in the internal tree store.
-			 * To be called upon widget creation, deletion or repositioning. Side effects : all identifiers
-			 * and Gtk widget pointers are invalidated and replaced with new values.
+			 * To be called upon widget creation, deletion or repositioning. Side effects : all tree iterators
+			 * and GtkWidget pointers are invalidated and replaced with new values.
 			 * \return true if widgets were successfully reloaded, false otherwise
 			 */
 			virtual OpenViBE::boolean reloadTree(void)=0;
@@ -490,7 +490,7 @@ namespace OpenViBE
 			 * \param pLabel [in] label of node to be retrieved, as stored in the EVisualisationTreeColumn_StringName column
 			 * \param eType [in] type of node to be retrieved, as stored in the EVisualisationTreeColumn_ULongNodeType column
 			 * \return true if node was found, false otherwise
-			 */
+			 */			
 			virtual OpenViBE::boolean findChildNodeFromRoot(
 				::GtkTreeIter* pIter,
 				const char* pLabel,
@@ -595,22 +595,22 @@ namespace OpenViBE
 
 			/**
 			 * \brief Forward pointer to the toolbar of a visualisation plugin (if any) to the tree view
-			 * \param rVisualisationBoxName [in] name of visualisation box whose widgets are passed in parameter
+			 * \param rBoxIdentifier [in] Identifier of IBox whose toolbar pointer is being set
 			 * \param pToolbarWidget [in] pointer to toolbar
 			 * \return \e true in case of success, \e false otherwise.
 			 */
 			virtual OpenViBE::boolean setToolbar(
-				const OpenViBE::CString& rVisualisationBoxName,
+				const OpenViBE::CIdentifier& rBoxIdentifier,
 				::GtkWidget* pToolbarWidget)=0;
 
 			/**
 			 * \brief Forward pointer to the main widget of a visualisation plugin to the tree view
-			 * \param rVisualisationBoxName [in] name of visualisation box whose widgets are passed in parameter
+			 * \param rBoxIdentifier [in] Identifier of IBox whose topmost widget pointer is being set
 			 * \param pWidget [in] pointer to main window
 			 * \return \e true in case of success, \e false otherwise.
 			 */
 			virtual OpenViBE::boolean setWidget(
-				const OpenViBE::CString& rVisualisationBoxName,
+				const OpenViBE::CIdentifier& rBoxIdentifier,
 				::GtkWidget* pTopmostWidget)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IAttributable, OV_ClassId_Kernel_Visualisation_VisualisationTree)

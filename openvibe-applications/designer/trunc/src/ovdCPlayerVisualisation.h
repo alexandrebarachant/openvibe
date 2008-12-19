@@ -27,10 +27,10 @@ namespace OpenViBEDesigner
 		void endLoadTreeWidget(			
 			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);		
 		OpenViBE::boolean setToolbar(
-			const OpenViBE::CString& rName,
+			const OpenViBE::CIdentifier& rBoxIdentifier,
 			::GtkWidget* pToolbarWidget);
 		OpenViBE::boolean setWidget(
-			const OpenViBE::CString& rName,
+			const OpenViBE::CIdentifier& rBoxIdentifier,
 			::GtkWidget* pWidget);
 		//@}
 

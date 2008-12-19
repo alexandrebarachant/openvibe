@@ -69,10 +69,10 @@ namespace OpenViBEDesigner
 		void releasePlayerVisualisation(void);
 
 		OpenViBE::boolean hasSelection(void);
-
+/*
 	private:
 
-		void generateDisplayPluginName(OpenViBE::Kernel::IBox* pDisplayBox, OpenViBE::CString& rDisplayBoxName);
+		void generateDisplayPluginName(OpenViBE::Kernel::IBox* pDisplayBox, OpenViBE::CString& rDisplayBoxName);*/
 
 	public:
 

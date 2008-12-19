@@ -111,9 +111,15 @@ namespace OpenViBE
 			OpenViBE::boolean handleButtonReleaseEvent(::GtkWidget* pOVCustomWidget, unsigned int uiButton,	int i32X, int i32Y);
 			//@}
 
-			virtual OpenViBE::boolean setScenarioIdentifier(const OpenViBE::CIdentifier& rScenarioIdentifier);
-			virtual OpenViBE::boolean setBoxIdentifier(const OpenViBE::CIdentifier& rBoxIdentifier);
+			virtual OpenViBE::boolean setScenarioIdentifier(
+				const OpenViBE::CIdentifier& rScenarioIdentifier);
+			
+			virtual OpenViBE::boolean getBoxIdentifier(
+				OpenViBE::CIdentifier& rBoxIdentifier);
 
+			virtual OpenViBE::boolean setBoxIdentifier(
+				const OpenViBE::CIdentifier& rBoxIdentifier);
+			
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
 
@@ -234,6 +240,10 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rIdentifier,
 				const OpenViBE::uint32 ui32VertexColorCount,
 				const OpenViBE::float32* pVertexColorArray);
+			OpenViBE::boolean getObjectAxisAlignedBoundingBox(
+				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::float32* pMinimum,
+				OpenViBE::float32* pMaximum);
 			OpenViBE::boolean getObjectVertexCount(
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::uint32& ui32VertexCount) const;

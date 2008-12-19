@@ -16,7 +16,7 @@
 namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
-	{			
+	{
 		class CTopographicMap3DView;
 
 		class CTopographicMap3DDisplay : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >,
@@ -49,7 +49,7 @@ namespace OpenViBEPlugins
 
 			/** \name CSignalDisplayDrawable implementation */
 			//@{
-			
+
 			/**
 			 * \brief Initialize window.
 			 */
@@ -58,9 +58,9 @@ namespace OpenViBEPlugins
 			 * \brief Invalidate window contents and tell it to redraw itself.
 			 */
 			virtual void redraw();
-			
+
 			//@}
-			
+
 			/** \name CTopographicMapDrawable implementation */
 			//@{
 
@@ -76,12 +76,23 @@ namespace OpenViBEPlugins
 			 * \brief Toggle electrodes on/off
 			 */
 			void toggleElectrodes(OpenViBE::boolean);
-			
+
 			//void toggleSamplingPoints(OpenViBE::boolean);
 
 			//@}
 
 		protected:
+			/**
+			 * \brief Decode a channel localisation memory buffer
+			 * This function fills a matrix with names and coordinates of electrodes in
+			 * the frame of the head model used by this plugin. Coordinates are expected
+			 * to be expressed in a cartesian frame.
+			 * \param pMemoryBuffer Memory buffer to decode
+			 * \return True if memory buffer could be properly decoded, false otherwise
+			 */
+			OpenViBE::boolean decodeChannelLocalisationMemoryBuffer(
+				const OpenViBE::IMemoryBuffer* pMemoryBuffer);
+
 			/**
 			 * \brief Process 3D requests
 			 */
@@ -92,13 +103,12 @@ namespace OpenViBEPlugins
 			 */
 			OpenViBE::boolean createSkull();
 
-
 			/**
 			 * \brief Create 3D objects at channel locations
 			 */
 			OpenViBE::boolean createElectrodes();
 
-			/** 
+			/**
 			 * \brief Create 3D objects at sampling points locations
 			 */
 			OpenViBE::boolean createSamplingPoints();
@@ -122,25 +132,39 @@ namespace OpenViBEPlugins
 				OpenViBE::float64& rElectrodeObjectZ);
 
 		private:
+			//channel localisation decoder
+			OpenViBE::Kernel::IAlgorithmProxy* m_pChannelLocalisationStreamDecoder;
+
 			//ebml
 			EBML::IReader* m_pStreamedMatrixReader;
-
 			OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pStreamedMatrixReaderCallBack;
+
+			//Name of file containing face mesh
+			OpenViBE::CString m_oFaceMeshFilename;
+			//Name of file containing scalp mesh
+			OpenViBE::CString m_oScalpMeshFilename;
+			//Name of file containing sphere on which scalp vertices are mapped
+			OpenViBE::CString m_oProjectionSphereMeshFilename;
 
 			//Start and end time of the last buffer
 			OpenViBE::uint64 m_ui64StartTime;
 			OpenViBE::uint64 m_ui64EndTime;
 
-			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;
+			OpenViBE::Kernel::IAlgorithmProxy* m_pSphericalSplineInterpolation;
 			CTopographicMapDatabase* m_pTopographicMapDatabase;
 			CTopographicMap3DView* m_pTopographicMap3DView; //main object used for the display (contains all the GUI code)
 
 			OpenViBE::CIdentifier m_o3DWidgetIdentifier;
 			OpenViBE::CIdentifier m_oResourceGroupIdentifier;
-			
+
 			OpenViBE::boolean m_bSkullCreated;
 			OpenViBE::boolean m_bCameraPositioned;
 			OpenViBE::boolean m_bElectrodesCreated;
+
+			//flag set to true once channel localisation buffer is received
+			OpenViBE::boolean m_bModelElectrodeCoordinatesInitialized;
+			//matrix of electrode labels and coordinates expressed in head model frame
+			OpenViBE::CMatrix m_oModelElectrodeCoordinates;
 
 			OpenViBE::uint32 m_ui32NbColors; //number of predefined colors
 			OpenViBE::float32* m_pColorScale; //scale of predefined colors potentials are converted to
@@ -152,10 +176,14 @@ namespace OpenViBEPlugins
 			std::vector<OpenViBE::CIdentifier> m_oSamplingPointIds; //ids of sampling point objects
 			OpenViBE::boolean m_bNeedToggleSamplingPoints;
 			OpenViBE::boolean m_bSamplingPointsToggleState;
-			
-			OpenViBE::CIdentifier m_oScalpId; //ID of scalp object
-			OpenViBE::uint32 m_ui32NbScalpVertices;	//number of scalp vertices
-			OpenViBE::float32* m_pScalpVertices; //working copy of scalp vertices coordinates
+			//ID of scalp object
+			OpenViBE::CIdentifier m_oScalpId;
+			//number of scalp vertices
+			OpenViBE::uint32 m_ui32NbScalpVertices;
+			//working copy of scalp vertices coordinates
+			OpenViBE::float32* m_pScalpVertices;
+			//center of unit sphere on which scalp vertices are projected, in normalized space (X right Y front Z up)
+			OpenViBE::float32 m_f32ProjectionCenter[3];
 			OpenViBE::CMatrix m_oSampleCoordinatesMatrix; //normalized vertices where to interpolate potentials
 			OpenViBE::float32* m_pScalpColors; //scalp vertex colors
 		};
@@ -188,7 +216,12 @@ namespace OpenViBEPlugins
 			{
 				rPrototype.addSetting("Interpolation type", OVP_TypeId_SphericalLinearInterpolationType, "1");
 				rPrototype.addSetting("Delay (in s)", OV_TypeId_Float, "0");
+				rPrototype.addSetting("Face mesh filename", OV_TypeId_String, "face");
+				rPrototype.addSetting("Scalp mesh filename", OV_TypeId_String, "scalp");
+				rPrototype.addSetting("Sphere projection mesh filename", OV_TypeId_String, "projection_center");
 				rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
+				rPrototype.addInput("Channel localisation", OV_TypeId_ChannelLocalisation);
+				rPrototype.addInput("Channel localisation in model frame", OV_TypeId_ChannelLocalisation);
 				return true;
 			}
 

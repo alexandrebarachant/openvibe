@@ -71,10 +71,10 @@ namespace OpenViBEPlugins
 			 * \param f64MinimumDisplayedFrequency Minimum frequency to display
 			 * \param f64MaximumDisplayedFrequency Maximum frequency to display
 			 */
-			//TODO (if min/max computation should be restricted to this range)			
+			//TODO (if min/max computation should be restricted to this range)
 			/*
 			void setDisplayedFrequencyRange(
-				OpenViBE::float64 f64MinimumDisplayedFrequency, 
+				OpenViBE::float64 f64MinimumDisplayedFrequency,
 				OpenViBE::float64 f64MaximumDisplayedFrequency);*/
 
 			/**
@@ -97,18 +97,18 @@ namespace OpenViBEPlugins
 			 * \return True if values could be computed, false otherwise
 			 */
 			OpenViBE::boolean getChannelMinMaxValues(
-				OpenViBE::uint32 ui32Channel, 
-				OpenViBE::float64& f64Min, 
+				OpenViBE::uint32 ui32Channel,
+				OpenViBE::float64& f64Min,
 				OpenViBE::float64& f64Max);
-						
+
 			/**
-			 * \brief Compute min/max values currently displayed, taking all channels into account			 
+			 * \brief Compute min/max values currently displayed, taking all channels into account
 			 * \param [out] f64Min Minimum displayed value
 			 * \param [out] f64Max Maximum displayed value
 			 * \return True if values could be computed, false otherwise
 			 */
 			OpenViBE::boolean getGlobalMinMaxValues(
-				OpenViBE::float64& f64Min, 
+				OpenViBE::float64& f64Min,
 				OpenViBE::float64& f64Max);
 
 			/**
@@ -119,20 +119,20 @@ namespace OpenViBEPlugins
 			 * \return True if values could be computed, false otherwise
 			 */
 			OpenViBE::boolean getLastBufferChannelMinMaxValues(
-				OpenViBE::uint32 ui32Channel, 
-				OpenViBE::float64& f64Min, 
+				OpenViBE::uint32 ui32Channel,
+				OpenViBE::float64& f64Min,
 				OpenViBE::float64& f64Max);
-			
+
 			/**
-			 * \brief Compute min/max values in last buffer, taking all channels into account			 
+			 * \brief Compute min/max values in last buffer, taking all channels into account
 			 * \param [out] f64Min Minimum value
 			 * \param [out] f64Max Maximum value
 			 * \return True if values could be computed, false otherwise
 			 */
 			OpenViBE::boolean getLastBufferGlobalMinMaxValues(
-				OpenViBE::float64& f64Min, 
+				OpenViBE::float64& f64Min,
 				OpenViBE::float64& f64Max);
-			
+
 			OpenViBE::uint64 getMaxDisplayedBufferCount();
 
 			OpenViBE::uint64 getBufferCount();
@@ -168,7 +168,7 @@ namespace OpenViBEPlugins
 			 */
 			OpenViBE::boolean getChannelLabel(
 				const OpenViBE::uint32 ui32ChannelIndex,
-				OpenViBE::CString& rElectrodeLabel);		
+				OpenViBE::CString& rElectrodeLabel);
 
 			/**
 			 * \brief Get number of frequency bands
@@ -185,7 +185,7 @@ namespace OpenViBEPlugins
 			/**
 			 * \brief Get frequency band start frequency
 			 * \param ui32FrequencyBandIndex Index of frequency band
-			 * \return Frequency band start if it could be retrieved, 0 otherwise 
+			 * \return Frequency band start if it could be retrieved, 0 otherwise
 			 */
 			OpenViBE::float64 getFrequencyBandStart(
 				OpenViBE::uint32 ui32FrequencyBandIndex);
@@ -193,34 +193,34 @@ namespace OpenViBEPlugins
 			/**
 			 * \brief Get frequency band stop frequency
 			 * \param ui32FrequencyBandIndex Index of frequency band
-			 * \return Frequency band stop if it could be retrieved, 0 otherwise 
+			 * \return Frequency band stop if it could be retrieved, 0 otherwise
 			 */
 			OpenViBE::float64 getFrequencyBandStop(
 				OpenViBE::uint32 ui32FrequencyBandIndex);
 
 		private:
 			// parent plugin
-			OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;			
+			OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;
 			//spectrum decoder algorithm proxy
-			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;			
+			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;
 			//drawable object to update (if needed)
 			IStreamDisplayDrawable* m_pDrawable;
 			//flag stating whether to redraw the IStreamDisplayDrawable upon new data reception if true (default)
 			OpenViBE::boolean m_bRedrawOnNewData;
 			//flag stating whether first samples buffer has been received
 			OpenViBE::boolean m_bFirstBufferReceived;
-			
+
 			//sampling frequency of incoming stream
 			OpenViBE::uint32 m_ui32SamplingFrequency;
 			//maximum number of buffers displayed at the same time per channel
-			OpenViBE::uint64 m_ui64MaxDisplayedBufferCount;			
+			OpenViBE::uint64 m_ui64MaxDisplayedBufferCount;
 			//maximum duration of displayed buffers (in seconds)
-			OpenViBE::float64 m_f64TimeScale;			
+			OpenViBE::float64 m_f64TimeScale;
 			//double-linked list of start times of stored buffers
 			std::deque<OpenViBE::uint64> m_oStartTime;
 			//double-linked list of end times of stored buffers
-			std::deque<OpenViBE::uint64> m_oEndTime;			
-			
+			std::deque<OpenViBE::uint64> m_oEndTime;
+
 			//streamed matrix header : number of channels & frequency bands + labels
 			OpenViBE::CMatrix m_oStreamedMatrixHeader;
 			//streamed matrix	history (1st dimension : channels, 2nd dimension : frequency bands)
@@ -233,8 +233,8 @@ namespace OpenViBEPlugins
 			std::vector< std::pair<OpenViBE::float64, OpenViBE::float64> > m_oFrequencyBands;
 			//frequency bands (1st dimension : frequency bands, 2nd dimension : start/stop frequencies)
 			//OpenViBE::CMatrix m_oFrequencyBands;
-		
-			//OpenViBE::boolean m_bError;								
+
+			//OpenViBE::boolean m_bError;
 		};
 	}
 }

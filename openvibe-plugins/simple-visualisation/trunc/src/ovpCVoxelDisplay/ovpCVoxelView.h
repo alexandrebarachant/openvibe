@@ -24,10 +24,10 @@ namespace OpenViBEPlugins
 		 */
 		class CVoxelView : public OpenViBEPlugins::SimpleVisualisation::IStreamDisplayDrawable
 		{
-		public:			
+		public:
 			/**
 			 * \brief Constructor
-			 * \param rVoxelDisplay Parent plugin			 			 
+			 * \param rVoxelDisplay Parent plugin
 			 */
 			CVoxelView(
 				CVoxelDisplay& rVoxelDisplay);
@@ -39,7 +39,7 @@ namespace OpenViBEPlugins
 
 			/** \name IStreamDisplayDrawable implementation */
 			//@{
-			
+
 			/**
 			 * \brief Initialize widgets.
 			 * \remark Called automatically by spectrum database when first buffer is received
@@ -52,9 +52,9 @@ namespace OpenViBEPlugins
 			 * \return True if redraw was successful, false otherwise
 			 */
 			virtual OpenViBE::boolean redraw(void);
-			
+
 			//@}
-			
+
 			/**
 			 * \brief Get toolbar pointer (if any)
 			 * \param [out] pToolbarWidget Pointer to toolbar widget
@@ -83,14 +83,14 @@ namespace OpenViBEPlugins
 			void setPausedCB(OpenViBE::boolean bPaused);
 			void repositionCameraCB();
 
-		private:						
+		private:
 			CVoxelDisplay& m_rVoxelDisplay;
 
 			::GladeXML* m_pGladeInterface;
-			
+
 			//! View radio buttons
 			::GtkRadioToolButton* m_pCubeButton;
-			::GtkRadioToolButton* m_pSphereButton;			
+			::GtkRadioToolButton* m_pSphereButton;
 		};
 	}
 }

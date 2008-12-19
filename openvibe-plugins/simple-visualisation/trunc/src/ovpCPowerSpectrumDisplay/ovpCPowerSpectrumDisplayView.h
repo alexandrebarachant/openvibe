@@ -41,31 +41,31 @@ namespace OpenViBEPlugins
 			 * \brief Constructor
 			 * \param pPowerSpectrumDatabase Object storing power spectrum data
 			 * \param f64MinDisplayedFrequency Minimum frequency to display
-			 * \param f64MaxDisplayedFrequency Maximum frequency to display				
+			 * \param f64MaxDisplayedFrequency Maximum frequency to display
 			 */
 			CPowerSpectrumDisplayView(
 				CPowerSpectrumDatabase& pPowerSpectrumDatabase,
 				OpenViBE::float64 f64MinDisplayedFrequency,
 				OpenViBE::float64 f64MaxDisplayedFrequency);
-			
+
 			/**
 			 * \brief Destructor
 			 */
 			virtual ~CPowerSpectrumDisplayView();
-			
+
 			/**
 			 * \brief Initialize widgets
 			 * \remark Called automatically by spectrum database when first buffer is received
 			 */
 			virtual void init();
-			
+
 			/**
 			 * \brief Get pointers to plugin main widget and (optional) toolbar widget
 			 * \param [out] pWidget Pointer to main widget
 			 * \param [out] pToolbarWidget Pointer to (optional) toolbar widget
 			 */
 			void getWidgets(
-				::GtkWidget*& pWidget, 
+				::GtkWidget*& pWidget,
 				::GtkWidget*& pToolbarWidget);
 
 			/**
@@ -112,10 +112,10 @@ namespace OpenViBEPlugins
 
 		private:
 			/**
-			 * \brief Invalidate window contents and have it redraw itself			 
+			 * \brief Invalidate window contents and have it redraw itself
 			 */
 			virtual void redraw();
-			
+
 			/**
 			 * \brief Hide a given channel
 			 * \param ui32ChannelIndex Index of channel to hide

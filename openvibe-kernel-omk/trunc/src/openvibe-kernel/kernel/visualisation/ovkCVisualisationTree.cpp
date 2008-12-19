@@ -3,8 +3,6 @@
 #include "../ovkCObjectVisitorContext.h"
 
 #include <iostream>
-#include <stdlib.h>
-#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -399,7 +397,7 @@ boolean CVisualisationTree::reloadTree()
 	gtk_tree_store_set(m_pTreeStore, &l_oIter,
 		EVisualisationTreeColumn_StringName, "Unaffected display plugins",
 		EVisualisationTreeColumn_StringStockIcon, m_pTreeViewCB->getTreeWidgetIcon(EVisualisationTreeNode_Unaffected),
-		EVisualisationTreeColumn_ULongNodeType, (unsigned long)EVisualisationTreeNode_Unaffected,
+		EVisualisationTreeColumn_ULongNodeType, EVisualisationTreeNode_Unaffected,
 		EVisualisationTreeColumn_StringIdentifier, (const char*)OV_UndefinedIdentifier.toString(),
 		-1);
 
@@ -506,16 +504,15 @@ boolean	CVisualisationTree::findChildNodeFromParent(::GtkTreeIter* pIter, const 
 boolean	CVisualisationTree::_findChildNodeFromParent(::GtkTreeIter* pIter, const char* label, EVisualisationTreeNode type)
 {
 	gchar* l_sName;
-	unsigned long l_ulType;
+	EVisualisationTreeNode l_ulType;
 
 	//is current node the one looked for?
 	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pIter,
 		EVisualisationTreeColumn_StringName, &l_sName,
 		EVisualisationTreeColumn_ULongNodeType, &l_ulType,
 		-1);
-	EVisualisationTreeNode l_eType=(EVisualisationTreeNode)l_ulType;
 
-	if(strcmp(label, l_sName) == 0 && type == l_eType)
+	if(strcmp(label, l_sName) == 0 && type == l_ulType)
 	{
 		m_oInternalTreeNode = *pIter;
 		return true;
@@ -654,13 +651,12 @@ boolean	CVisualisationTree::_findChildNodeFromParent(::GtkTreeIter* pIter, CIden
 
 boolean CVisualisationTree::findParentNode(::GtkTreeIter* pIter, EVisualisationTreeNode type)
 {
-	unsigned long l_ulType;
+	EVisualisationTreeNode l_ulType;
 	::GtkTreeIter l_oIter;
 
 	//is current node the one looked for?
 	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pIter, EVisualisationTreeColumn_ULongNodeType, &l_ulType, -1);
-	EVisualisationTreeNode l_eType=(EVisualisationTreeNode)l_ulType;
-	if(type == l_eType)
+	if(type == l_ulType)
 	{
 		return true;
 	}
@@ -850,7 +846,7 @@ boolean CVisualisationTree::loadVisualisationWidget(IVisualisationWidget* pVisua
 	gtk_tree_store_set(m_pTreeStore, &l_oIter,
 		EVisualisationTreeColumn_StringName, (const char*)pVisualisationWidget->getName(),
 		EVisualisationTreeColumn_StringStockIcon, (const char*)l_pStockIconString,
-		EVisualisationTreeColumn_ULongNodeType, (unsigned long)l_oChildType,
+		EVisualisationTreeColumn_ULongNodeType, l_oChildType,
 		EVisualisationTreeColumn_StringIdentifier, (const char*)pVisualisationWidget->getIdentifier().toString(),
 		EVisualisationTreeColumn_PointerWidget, l_pWidget,
 		-1);
@@ -892,11 +888,11 @@ boolean CVisualisationTree::loadVisualisationWidget(IVisualisationWidget* pVisua
 	return true;
 }
 
-boolean CVisualisationTree::setToolbar(const CString& rVisualisationBoxName, ::GtkWidget* pToolbarWidget)
+boolean CVisualisationTree::setToolbar(const CIdentifier& rBoxIdentifier, ::GtkWidget* pToolbarWidget)
 {
 	if(m_pTreeViewCB != NULL)
 	{
-		return m_pTreeViewCB->setToolbar(rVisualisationBoxName, pToolbarWidget);
+		return m_pTreeViewCB->setToolbar(rBoxIdentifier, pToolbarWidget);
 	}
 	else
 	{
@@ -904,11 +900,11 @@ boolean CVisualisationTree::setToolbar(const CString& rVisualisationBoxName, ::G
 	}
 }
 
-boolean CVisualisationTree::setWidget(const CString& rVisualisationBoxName, ::GtkWidget* pTopmostWidget)
+boolean CVisualisationTree::setWidget(const CIdentifier& rBoxIdentifier, ::GtkWidget* pTopmostWidget)
 {
 	if(m_pTreeViewCB != NULL)
 	{
-		return m_pTreeViewCB->setWidget(rVisualisationBoxName, pTopmostWidget);
+		return m_pTreeViewCB->setWidget(rBoxIdentifier, pTopmostWidget);
 	}
 	else
 	{

@@ -503,6 +503,25 @@ boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier,
 	}
 }
 
+boolean CSimulatedBox::getObjectAxisAlignedBoundingBox(const CIdentifier& rIdentifier, float32* pMinimum, float32* pMaximum)
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject == NULL)
+	{
+		return false;
+	}
+	Ogre::Real l_oMin[3];
+	Ogre::Real l_oMax[3];
+	l_pOgreObject->getWorldBoundingBox(l_oMin[0], l_oMin[1], l_oMin[2], l_oMax[0], l_oMax[1], l_oMax[2]);
+	pMinimum[0] = l_oMin[0];
+	pMinimum[1] = l_oMin[1];
+	pMinimum[2] = l_oMin[2];
+	pMaximum[0] = l_oMax[0];
+	pMaximum[1] = l_oMax[1];
+	pMaximum[2] = l_oMax[2];
+	return true;
+}
+
 boolean CSimulatedBox::getObjectVertexCount(const CIdentifier& rIdentifier, OpenViBE::uint32& ui32VertexCount) const
 {
 	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
@@ -582,6 +601,16 @@ boolean CSimulatedBox::setScenarioIdentifier(const CIdentifier& rScenarioIdentif
 	// FIXME test if rScenario is a scenario identifier
 	m_pScenario=&getScenarioManager().getScenario(rScenarioIdentifier);
 	return m_pScenario!=NULL;
+}
+
+boolean CSimulatedBox::getBoxIdentifier(CIdentifier& rBoxIdentifier)
+{
+	if(m_pBox == NULL)
+	{
+		return false;
+	}
+	rBoxIdentifier = m_pBox->getIdentifier();
+	return true;
 }
 
 boolean CSimulatedBox::setBoxIdentifier(const CIdentifier& rBoxIdentifier)

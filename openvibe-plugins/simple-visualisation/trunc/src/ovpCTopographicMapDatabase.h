@@ -38,17 +38,25 @@ namespace OpenViBEPlugins
 		public:
 			CTopographicMapDatabase(
 				OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin,
-				OpenViBE::Kernel::IAlgorithmProxy& rProxy);
+				OpenViBE::Kernel::IAlgorithmProxy& rSphericalSplineInterpolation);
 			~CTopographicMapDatabase();
 
 			void setMatrixDimmensionSize(
 				const OpenViBE::uint32 ui32DimmensionIndex,
 				const OpenViBE::uint32 ui32DimmensionSize);
 
+			/**
+			 * \brief Callback called upon channel localisation buffer reception
+			 * \param uint32 Index of newly received channel localisation buffer
+			 * \return True if buffer data was correctly processed, false otherwise
+			 */
+			virtual OpenViBE::boolean onChannelLocalisationBufferReceived(
+				OpenViBE::uint32 ui32ChannelLocalisationBufferIndex);
+
 			OpenViBE::boolean setDelay(
 				OpenViBE::float64 f64Delay);
 
-			/** 
+			/**
 			 * \brief Set interpolation type
 			 * Spline values (potentials) can be interpolated directly, but the spline laplacian (currents) may
 			 * be used as well
@@ -75,23 +83,27 @@ namespace OpenViBEPlugins
 			 * \return True if time passed as parameter lies within a buffer's timeframe, false otherwise
 			 */
 			OpenViBE::boolean getBufferIndexFromTime(
-				OpenViBE::uint64 ui64Time, 
+				OpenViBE::uint64 ui64Time,
 				OpenViBE::uint32& rBufferIndex);
 
 		private:
 			//true until process() is called for the first time
 			OpenViBE::boolean m_bFirstProcess;
-			//spherical spline algorithm proxy
-			OpenViBE::Kernel::IAlgorithmProxy& m_rProxy;
+			//spherical spline interpolation
+			OpenViBE::Kernel::IAlgorithmProxy& m_rSphericalSplineInterpolation;
 			//order of spherical spline used for interpolation - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_SplineOrder
 			OpenViBE::int64 m_i64SplineOrder;
-			/** 
-			 * \brief Type of interpolation 
+			/**
+			 * \brief Type of interpolation
 			 * \sa OVP_TypeId_SphericalLinearInterpolationType enumeration
 			 */
-			OpenViBE::uint64 m_ui64InterpolationType; 
+			OpenViBE::uint64 m_ui64InterpolationType;
 			//number of electrodes (see CBufferDatabase) - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCount
-			//OpenViBE::int64 m_i64NbElectrodes;			
+			//OpenViBE::int64 m_i64NbElectrodes;
+			//flag set to true once electrode coordinates have been initialized
+			OpenViBE::boolean m_bElectrodeCoordsInitialized;
+			//electrode cartesian coordinates
+			OpenViBE::CMatrix m_oElectrodeCoords;
 			//pointer to electrode coordinates matrix - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCoordinates
 			OpenViBE::IMatrix* m_pElectrodeCoords;
 			//electrode potentials

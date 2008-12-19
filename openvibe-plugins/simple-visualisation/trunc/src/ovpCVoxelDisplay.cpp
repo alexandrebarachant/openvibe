@@ -2663,7 +2663,7 @@ static float32 l_f32VoxelOffsetY = 1.2f;
 static float32 l_f32VoxelOffsetZ = -0.5f;
 static float32 l_f32ScaleFromOffset = 0.016f;
 static float32 l_f32VoxelScale = 0.05f;
-static uint32 l_ui32VoxelStep = 10;
+static uint32 l_ui32VoxelStep = 1;
 
 boolean CVoxelDisplay::process3D()
 {
@@ -2810,6 +2810,7 @@ boolean CVoxelDisplay::createVoxels()
 		m_oVoxels[i].setObjectIdentifiers(
 			getVisualisationContext().createObject("ov_unitcube", &l_oParamsList),
 			getVisualisationContext().createObject("ov_unitsphere_80faces", &l_oParamsList));
+
 		//show active shape and hide the other one
 		getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oCubeIdentifier, m_eVoxelObject == Standard3DObject_Cube);
 		getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oSphereIdentifier, m_eVoxelObject == Standard3DObject_Sphere);

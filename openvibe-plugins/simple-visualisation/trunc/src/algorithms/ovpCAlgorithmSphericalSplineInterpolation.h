@@ -26,15 +26,15 @@ namespace OpenViBEPlugins
 		protected:
 
 			//input parameters
-			//----------------			
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64SplineOrder;			
+			//----------------
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64SplineOrder;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64ControlPointsCount;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pControlPointsCoords;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pControlPointsValues;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pSamplePointsCoords;
 
 			//output parameters
-			//-----------------			
+			//-----------------
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pSamplePointsValues;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > op_f64MinSamplePointValue;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > op_f64MaxSamplePointValue;

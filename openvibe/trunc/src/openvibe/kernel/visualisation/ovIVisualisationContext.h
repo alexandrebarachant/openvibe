@@ -345,6 +345,18 @@ namespace OpenViBE
 			// =====================================
 
 			/**
+			 * \brief Get object axis aligned bounding box			 			 
+			 * \param rIdentifier Identifier of the object whose AABB is to be retrieved
+			 * \param pMinimum XYZ vector of AABB minimum boundaries
+			 * \param pMaximum XYZ vector of AABB maximum boundaries
+			 * \return True if vertex count could be retrieved, false otherwise
+			 */
+			virtual OpenViBE::boolean getObjectAxisAlignedBoundingBox(
+				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::float32* pMinimum,
+				OpenViBE::float32* pMaximum)=0;
+
+			/**
 			 * \brief Get object vertex count
 			 * \remark This method returns the number of vertices in the first mesh of the first
 			 * Ogre::Entity encountered in the object hierarchy only.

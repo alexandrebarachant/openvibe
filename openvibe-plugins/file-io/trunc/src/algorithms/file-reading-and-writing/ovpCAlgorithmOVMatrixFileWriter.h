@@ -23,11 +23,11 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >, OVP_ClassId_Algorithm_OVMatrixFileWriter);
 
-		protected:					
+		protected:
 			OpenViBE::boolean dumpHeader();
 
 			OpenViBE::boolean dumpBuffer(
-				OpenViBE::uint32 ui32DimensionIndex, 
+				OpenViBE::uint32 ui32DimensionIndex,
 				OpenViBE::uint32& ui32ElementIndex);
 
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > ip_sFilename;
@@ -55,8 +55,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getAlgorithmPrototype(
 				OpenViBE::Kernel::IAlgorithmProto& rAlgorithmPrototype) const
 			{
-				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Filename, "Filename", OpenViBE::Kernel::ParameterType_String);				
-				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Filename, "Matrix", OpenViBE::Kernel::ParameterType_Matrix);				
+				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Filename, "Filename", OpenViBE::Kernel::ParameterType_String);
+				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_OVMatrixFileWriter_InputParameterId_Matrix,   "Matrix",   OpenViBE::Kernel::ParameterType_Matrix);
 				//rAlgorithmPrototype.addOutputTrigger  (OVP_Algorithm_OVMatrixFileWriter_OutputTriggerId_Error,              "Error");
 				//rAlgorithmPrototype.addOutputTrigger  (OVP_Algorithm_OVMatrixFileWriter_OutputTriggerId_DataProduced,       "Data produced");
 				return true;

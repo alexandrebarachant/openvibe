@@ -1,6 +1,5 @@
 #include "ovpCTimeFrequencyMapDisplay.h"
 #include "ovp_defines.h"
-#include <stdlib.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
@@ -21,8 +20,8 @@ OpenViBE::boolean CTimeFrequencyMapDisplay::initialize()
 	m_pSpectrumDatabase = new CSpectrumDatabase(*this);
 
 	//retrieve default settings
-	CString l_sSettingValue;
-	getStaticBoxContext().getSettingValue(0, l_sSettingValue);
+	CString l_sTimeScaleSettingValue;
+	getStaticBoxContext().getSettingValue(0, l_sTimeScaleSettingValue);
 	CString l_sMinDisplayedFrequencySettingValue;
 	CString l_sMaxDisplayedFrequencySettingValue;
 	getStaticBoxContext().getSettingValue(1, l_sMinDisplayedFrequencySettingValue);
@@ -33,7 +32,7 @@ OpenViBE::boolean CTimeFrequencyMapDisplay::initialize()
 		*m_pSpectrumDatabase,
 		atof(l_sMinDisplayedFrequencySettingValue),
 		atof(l_sMaxDisplayedFrequencySettingValue),
-		atof(l_sSettingValue));
+		atof(l_sTimeScaleSettingValue));
 
 	//have database notify view when data is received
 	m_pSpectrumDatabase->setDrawable(m_pTimeFrequencyMapDisplayView);

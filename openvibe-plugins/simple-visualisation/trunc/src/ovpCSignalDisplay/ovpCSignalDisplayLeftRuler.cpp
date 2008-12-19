@@ -201,3 +201,4 @@ void CSignalDisplayLeftRuler::linkHeightToWidget(GtkWidget * pWidget)
 	g_signal_connect(G_OBJECT(pWidget), "size-allocate", G_CALLBACK(resizeLeftRulerCallback), this);
 }
 
+

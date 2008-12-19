@@ -25,11 +25,11 @@ __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_LevelMeasure_OnlineVisualizationSettings|
  Online settings :
- 
+
  Setting1 : Reset scores
- 
+
  Setting2 : Threshold that must be reached for scores to be incremented
- 
+
  Setting3 : Show levels as percentages
 
  * |OVP_DocEnd_BoxAlgorithm_LevelMeasure_OnlineVisualizationSettings|

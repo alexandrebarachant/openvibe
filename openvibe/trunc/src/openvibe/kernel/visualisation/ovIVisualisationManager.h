@@ -127,28 +127,28 @@ namespace OpenViBE
 			 * \brief Set the toolbar of a visualisation plugin.
 			 * This method is to be called by visualisation plugins as they are being initialized. It lets them send
 			 * a pointer to their toolbar (if they have one) to the scenario's IVisualisationTree.
-			 * \param rVisualisationTreeIdentifier [in] identifier of the IVisualisationTree to which the pointers are to be forwarded
-			 * \param rVisualisationBoxName [in] name of IVisualisationWidget associated to the pointers
+			 * \param rVisualisationTreeIdentifier [in] identifier of IVisualisationTree to which the toolbar pointer is to be forwarded
+			 * \param rBoxIdentifier [in] Identifier of IBox whose toolbar pointer is being set
 			 * \param pToolbarWidget [in] pointer to the toolbar of the widget
 			 * \return True if pointer was successfully forwarded to IVisualisationTree, false otherwise
 			 */
 			virtual OpenViBE::boolean setToolbar(
 				const CIdentifier& rVisualisationTreeIdentifier,
-				const CString& rVisualisationBoxName,
+				const CIdentifier& rBoxIdentifier,
 				::GtkWidget* pToolbar)=0;
 
 			/**
 			 * \brief Set the topmost widget of a visualisation plugin.
 			 * This method is to be called by visualisation plugins as they are being initialized. It lets them send
 			 * a pointer to their topmost widget to the scenario's IVisualisationTree.
-			 * \param rVisualisationTreeIdentifier [in] identifier of the IVisualisationTree to which the pointers are to be forwarded
-			 * \param rVisualisationBoxName [in] name of IVisualisationWidget associated to the pointers
+			 * \param rVisualisationTreeIdentifier [in] identifier of IVisualisationTree to which the toolbar pointer is to be forwarded
+			 * \param rBoxIdentifier [in] Identifier of IBox whose topmost widget pointer is being set
 			 * \param pWidget [in] pointer to the main window of the widget
 			 * \return True if pointer was successfully forwarded to IVisualisationTree, false otherwise
 			 */
 			virtual OpenViBE::boolean setWidget(
 				const CIdentifier& rVisualisationTreeIdentifier,
-				const CString& rVisualisationBoxName,
+				const CIdentifier& rBoxIdentifier,
 				::GtkWidget* pTopmostWidget)=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_Visualisation_VisualisationManager)

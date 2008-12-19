@@ -40,7 +40,7 @@ namespace OpenViBEPlugins
 			 * \param [out] pToolbarWidget Pointer to (optional) toolbar widget
 			 */
 			void getWidgets(
-				::GtkWidget*& pWidget, 
+				::GtkWidget*& pWidget,
 				::GtkWidget*& pToolbarWidget);
 			/**
 			 * Initializes the window.

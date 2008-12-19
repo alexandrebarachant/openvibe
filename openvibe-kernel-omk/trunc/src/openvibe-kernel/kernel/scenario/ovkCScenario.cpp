@@ -9,7 +9,6 @@
 #include "../ovkCObjectVisitorContext.h"
 
 #include <iostream>
-#include <stdlib.h>
 
 using namespace std;
 using namespace OpenViBE;

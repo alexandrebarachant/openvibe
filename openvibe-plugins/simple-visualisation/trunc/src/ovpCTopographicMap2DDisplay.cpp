@@ -11,15 +11,10 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
 
-namespace OpenViBEPlugins
-{
-namespace SimpleVisualisation
-{
-
 CTopographicMap2DDisplay::CTopographicMap2DDisplay(void) :
 	m_pStreamedMatrixReader(NULL),
 	m_pStreamedMatrixReaderCallBack(NULL),
-	m_pProxy(NULL),
+	m_pSphericalSplineInterpolation(NULL),
 	m_pTopographicMapDatabase(NULL),
 	m_pTopographicMap2DView(NULL)
 {
@@ -36,11 +31,11 @@ boolean CTopographicMap2DDisplay::initialize(void)
 	m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
 	m_pStreamedMatrixReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
-	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SphericalSplineInterpolation));
-	m_pProxy->initialize();
+	m_pSphericalSplineInterpolation = &getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SphericalSplineInterpolation));
+	m_pSphericalSplineInterpolation->initialize();
 
 	//create topographic map database
-	m_pTopographicMapDatabase = new CTopographicMapDatabase(*this, *m_pProxy);
+	m_pTopographicMapDatabase = new CTopographicMapDatabase(*this, *m_pSphericalSplineInterpolation);
 
 	//retrieve settings
 	CString l_sInterpolationModeSettingValue;
@@ -48,12 +43,12 @@ boolean CTopographicMap2DDisplay::initialize(void)
 	CString l_sDelaySettingValue;
 	getStaticBoxContext().getSettingValue(1, l_sDelaySettingValue);
 
-	//create topographic map view (handling GUI interaction)	
+	//create topographic map view (handling GUI interaction)
 	m_pTopographicMap2DView = new CTopographicMap2DView(
-		*m_pTopographicMapDatabase, 
+		*m_pTopographicMapDatabase,
 		getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_SphericalLinearInterpolationType, l_sInterpolationModeSettingValue),
 		atof(l_sDelaySettingValue));
-	
+
 	//have database notify us when new data is available
 	m_pTopographicMapDatabase->setDrawable(m_pTopographicMap2DView);
 	//ask not to be notified when new data is available (refresh is handled separately)
@@ -86,9 +81,9 @@ boolean CTopographicMap2DDisplay::uninitialize(void)
 	delete m_pTopographicMapDatabase;
 	m_pTopographicMapDatabase = NULL;
 
-	m_pProxy->uninitialize();
+	m_pSphericalSplineInterpolation->uninitialize();
 
-	getAlgorithmManager().releaseAlgorithm(*m_pProxy);
+	getAlgorithmManager().releaseAlgorithm(*m_pSphericalSplineInterpolation);
 
 	return true;
 }
@@ -110,6 +105,7 @@ boolean CTopographicMap2DDisplay::process(void)
 	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 	uint32 i;
 
+	//decode signal data
 	for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
 	{
 		uint64 l_ui64ChunkSize=0;
@@ -120,6 +116,17 @@ boolean CTopographicMap2DDisplay::process(void)
 			m_pStreamedMatrixReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
 			l_pDynamicBoxContext->markInputAsDeprecated(0, i);
 		}
+	}
+
+	//decode channel localisation data
+	for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(1); i++)
+	{
+		const IMemoryBuffer* l_pBuf = l_pDynamicBoxContext->getInputChunk(1, i);
+		m_pTopographicMapDatabase->decodeChannelLocalisationMemoryBuffer(
+			l_pBuf,
+			l_pDynamicBoxContext->getInputChunkStartTime(1, i),
+			l_pDynamicBoxContext->getInputChunkEndTime(1, i));
+		l_pDynamicBoxContext->markInputAsDeprecated(1, i);
 	}
 
 	m_pTopographicMapDatabase->processValues();
@@ -146,6 +153,3 @@ void CTopographicMap2DDisplay::setMatrixBuffer(const float64* pBuffer)
 {
 	m_pTopographicMapDatabase->setMatrixBuffer(pBuffer, m_ui64StartTime, m_ui64EndTime);
 }
-
-};
-};

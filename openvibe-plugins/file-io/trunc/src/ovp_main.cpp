@@ -4,12 +4,16 @@
 #include "ovpCBCICompetitionIIIbReader.h"
 
 #include "algorithms/file-reading-and-writing/brainamp/ovpCAlgorithmBrainampFileReader.h"
+
 #include "algorithms/file-reading-and-writing/ovpCAlgorithmOVMatrixFileReader.h"
+#include "algorithms/file-reading-and-writing/ovpCAlgorithmOVMatrixFileWriter.h"
 
 #include "box-algorithms/file-reading-and-writing/brainamp/ovpCBoxAlgorithmBrainampFileReader.h"
 
 #include "box-algorithms/file-reading-and-writing/openvibe/ovpCBoxAlgorithmGenericStreamReader.h"
 #include "box-algorithms/file-reading-and-writing/openvibe/ovpCBoxAlgorithmGenericStreamWriter.h"
+
+#include "box-algorithms/file-reading-and-writing/ovpCBoxAlgorithmElectrodeLocalizationFileReader.h"
 
 OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CGDFFileReaderDesc)
@@ -24,4 +28,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmGenericStreamWriterDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CAlgorithmOVMatrixFileReaderDesc)
+	OVP_Declare_New(OpenViBEPlugins::FileIO::CAlgorithmOVMatrixFileWriterDesc)
+
+	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmElectrodeLocalisationFileReaderDesc)
 OVP_Declare_End()

@@ -56,7 +56,7 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64StartTime;
 			OpenViBE::uint64 m_ui64EndTime;
 
-			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;
+			OpenViBE::Kernel::IAlgorithmProxy* m_pSphericalSplineInterpolation;
 			CTopographicMapDatabase* m_pTopographicMapDatabase;
 			CSignalDisplayDrawable* m_pTopographicMap2DView; //main object used for the display (contains all the GUI code)
 		};
@@ -90,6 +90,7 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Interpolation type", OVP_TypeId_SphericalLinearInterpolationType, "1");
 				rPrototype.addSetting("Delay (in s)", OV_TypeId_Float, "0");
 				rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
+				rPrototype.addInput("Channel localization", OV_TypeId_ChannelLocalisation);
 				return true;
 			}
 

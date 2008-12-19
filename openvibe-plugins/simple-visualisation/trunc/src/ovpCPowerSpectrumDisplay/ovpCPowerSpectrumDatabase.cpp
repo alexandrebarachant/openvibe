@@ -23,7 +23,7 @@ namespace OpenViBEPlugins
 	namespace SimpleVisualisation
 	{
 
-		CPowerSpectrumDatabase::CPowerSpectrumDatabase(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin) :			
+		CPowerSpectrumDatabase::CPowerSpectrumDatabase(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin) :
 			m_oParentPlugin(oPlugin),
 			m_pDrawable(NULL),
 			m_pBuffer(NULL),
@@ -31,7 +31,7 @@ namespace OpenViBEPlugins
 			m_ui32MinDisplayedFrequencyBand(0),
 			m_ui32MaxDisplayedFrequencyBand(0),
 			m_f64MinDisplayedValue(+DBL_MAX),
-			m_f64MaxDisplayedValue(-DBL_MAX)		
+			m_f64MaxDisplayedValue(-DBL_MAX)
 		{
 		}
 
@@ -168,7 +168,7 @@ namespace OpenViBEPlugins
 		}
 
 		boolean CPowerSpectrumDatabase::setMinDisplayedFrequency(float64 f64MinDisplayedFrequency)
-		{		
+		{
 			if(m_pFrequencyBands.size() == 0)
 			{
 				return false;
@@ -176,7 +176,7 @@ namespace OpenViBEPlugins
 
 			if(f64MinDisplayedFrequency < m_pFrequencyBands[0].first)
 			{
-				m_ui32MinDisplayedFrequencyBand = 0;												
+				m_ui32MinDisplayedFrequencyBand = 0;
 			}
 			else
 			{
@@ -184,11 +184,11 @@ namespace OpenViBEPlugins
 				for(i=0; i<m_pFrequencyBands.size(); i++)
 				{
 					if(f64MinDisplayedFrequency < m_pFrequencyBands[i].second)
-					{					
+					{
 						break;
 					}
-				}			
-				m_ui32MinDisplayedFrequencyBand = i;												
+				}
+				m_ui32MinDisplayedFrequencyBand = i;
 			}
 			return true;
 		}
@@ -202,7 +202,7 @@ namespace OpenViBEPlugins
 
 			if(f64MaxDisplayedFrequency > m_pFrequencyBands.back().second)
 			{
-				m_ui32MaxDisplayedFrequencyBand = m_pFrequencyBands.size()-1;				
+				m_ui32MaxDisplayedFrequencyBand = m_pFrequencyBands.size()-1;
 			}
 			else
 			{
@@ -210,11 +210,11 @@ namespace OpenViBEPlugins
 				for(i=0; i<m_pFrequencyBands.size(); i++)
 				{
 					if(f64MaxDisplayedFrequency <= m_pFrequencyBands[i].second)
-					{					
+					{
 						break;
 					}
-				}			
-				m_ui32MaxDisplayedFrequencyBand = i;												
+				}
+				m_ui32MaxDisplayedFrequencyBand = i;
 			}
 			return true;
 		}
@@ -256,7 +256,7 @@ namespace OpenViBEPlugins
 		{
 			if(ui32FrequencyBandIndex >= m_pFrequencyBands.size())
 			{
-				return false;	
+				return false;
 			}
 			rFrequencyBandStart = m_pFrequencyBands[ui32FrequencyBandIndex].first;
 			rFrequencyBandStop = m_pFrequencyBands[ui32FrequencyBandIndex].second;
@@ -267,7 +267,7 @@ namespace OpenViBEPlugins
 		{
 			m_pDrawable=pDrawable;
 		}
-		
+
 		boolean CPowerSpectrumDatabase::getLastBufferChannelMinMaxValue(uint32 ui32Channel, float64& f64Min, float64& f64Max)
 		{
 			if(ui32Channel >= m_oMinMaxDisplayedValues.size())
@@ -278,7 +278,7 @@ namespace OpenViBEPlugins
 			f64Max = m_oMinMaxDisplayedValues[ui32Channel].second;
 			return true;
 		}
-		
+
 		boolean CPowerSpectrumDatabase::getLastBufferMinMaxValue(OpenViBE::float64& f64Min, OpenViBE::float64& f64Max)
 		{
 			if(m_bFirstBufferReceived == false)

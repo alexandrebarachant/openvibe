@@ -157,21 +157,6 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 
 static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawGC, ::gboolean bFill, gint x, gint y, gint width, gint height, gint radius=8)
 {
-	if(radius<0)
-	{
-		radius=8;
-	}
-	if(width <(radius+1)*2)
-	{
-		x-=(radius+1)-width/2;
-		width =(radius+1)*2;
-	}
-	if(height<(radius+1)*2)
-	{
-		y-=(radius+1)-height/2;
-		height=(radius+1)*2;
-	}
-
 	if(bFill)
 	{
 #if defined OVD_OS_Linux
@@ -266,6 +251,11 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 #endif
 }
 
+void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
+{
+	static_cast<CInterfacedScenario*>(pUserData)->m_rApplication.closeScenarioCB();
+}
+
 	CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, CApplication& rApplication, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
 		:m_oScenarioIdentifier(rScenarioIdentifier)
 		,m_rApplication(rApplication)
@@ -311,6 +301,9 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		gtk_widget_unref(m_pNotebookPageContent);
 		gtk_widget_unref(m_pNotebookPageTitle);
 
+		GtkWidget* l_pCloseWidget = glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe-scenario_button_close");
+		g_signal_connect(G_OBJECT(l_pCloseWidget), "clicked", G_CALLBACK(scenario_title_button_close_cb), this);
+		
 		m_pScenarioDrawingArea=GTK_DRAWING_AREA(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_drawing_area"));
 		m_pScenarioViewport=GTK_VIEWPORT(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_viewport"));
 		gtk_drag_dest_set(GTK_WIDGET(m_pScenarioDrawingArea), GTK_DEST_DEFAULT_ALL, g_vTargetEntry, sizeof(g_vTargetEntry)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
@@ -977,13 +970,6 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			// If a visualisation box was dropped, add it in window manager
 			if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
 			{
-#if 1
-				// Generate a unique name so that it can be identified unambiguously
-				CString l_oBoxName;
-				generateDisplayPluginName(l_pBox, l_oBoxName);
-				l_pBox->setName(l_oBoxName);
-#endif
-
 				// Let window manager know about new box
 				m_pDesignerVisualisation->onVisualisationBoxAdded(l_pBox);
 			}
@@ -1600,13 +1586,6 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			// If a visualisation box was dropped, add it in window manager
 			if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
 			{
-#if 1
-				// Generate a unique name so that it can be identified unambiguously
-				CString l_oBoxName;
-				generateDisplayPluginName(m_rScenario.getBoxDetails(l_oNewIdentifier), l_oBoxName);
-				m_rScenario.getBoxDetails(l_oNewIdentifier)->setName(l_oBoxName);
-#endif
-
 				// Let window manager know about new box
 				m_pDesignerVisualisation->onVisualisationBoxAdded(m_rScenario.getBoxDetails(l_oNewIdentifier));
 			}
@@ -1688,6 +1667,16 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 		if(l_oRename.run())
 		{
 			rBox.setName(l_oRename.getResult());
+
+			//check whether it is a visualisation box
+			CIdentifier l_oId = rBox.getAlgorithmClassIdentifier();
+			const IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oId);
+
+			//if a visualisation box was renamed, tell window manager about it
+			if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
+			{				
+				m_pDesignerVisualisation->onVisualisationBoxRenamed(rBox.getIdentifier());
+			}
 		}
 	}
 	void CInterfacedScenario::contextMenuBoxDeleteCB(IBox& rBox)
@@ -1719,25 +1708,6 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxRemoveInputCB\n";
 		rBox.removeInput(ui32Index);
-
-		CIdentifier l_oLinkIdentifier;
-
-		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierToBoxInput(l_oLinkIdentifier, rBox.getIdentifier(), ui32Index))!=OV_UndefinedIdentifier)
-		{
-			m_rScenario.disconnect(l_oLinkIdentifier);
-		}
-
-		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierToBox(l_oLinkIdentifier, rBox.getIdentifier()))!=OV_UndefinedIdentifier)
-		{
-			ILink* l_pLink=m_rScenario.getLinkDetails(l_oLinkIdentifier);
-			if(l_pLink)
-			{
-				if(l_pLink->getTargetBoxInputIndex()>ui32Index)
-				{
-					l_pLink->setTarget(rBox.getIdentifier(), l_pLink->getTargetBoxInputIndex()-1);
-				}
-			}
-		}
 	}
 	void CInterfacedScenario::contextMenuBoxAddOutputCB(IBox& rBox)
 	{
@@ -1763,25 +1733,6 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxRemoveOutputCB\n";
 		rBox.removeOutput(ui32Index);
-
-		CIdentifier l_oLinkIdentifier;
-
-		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierFromBoxOutput(l_oLinkIdentifier, rBox.getIdentifier(), ui32Index))!=OV_UndefinedIdentifier)
-		{
-			m_rScenario.disconnect(l_oLinkIdentifier);
-		}
-
-		while((l_oLinkIdentifier=m_rScenario.getNextLinkIdentifierFromBox(l_oLinkIdentifier, rBox.getIdentifier()))!=OV_UndefinedIdentifier)
-		{
-			ILink* l_pLink=m_rScenario.getLinkDetails(l_oLinkIdentifier);
-			if(l_pLink)
-			{
-				if(l_pLink->getSourceBoxOutputIndex()>ui32Index)
-				{
-					l_pLink->setSource(rBox.getIdentifier(), l_pLink->getSourceBoxOutputIndex()-1);
-				}
-			}
-		}
 	}
 	void CInterfacedScenario::contextMenuBoxAddSettingCB(IBox& rBox)
 	{
@@ -1919,32 +1870,4 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 			}
 		}
 		return false;
-	}
-
-	void CInterfacedScenario::generateDisplayPluginName(IBox* pDisplayBox, CString& rDisplayBoxName)
-	{
-		rDisplayBoxName = pDisplayBox->getName();
-		char buf[10];
-		int num = 2;
-
-		CIdentifier l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(OV_UndefinedIdentifier);
-
-		//for all boxes contained in scenario
-		while(l_oBoxIdentifier!=OV_UndefinedIdentifier)
-		{
-			const IBox* l_pBox2=m_rScenario.getBoxDetails(l_oBoxIdentifier);
-
-			if(l_pBox2 != NULL && l_pBox2 != pDisplayBox)
-			{
-				//a box already has the same name
-				if(l_pBox2->getName() == rDisplayBoxName)
-				{
-					//generate a new name and ensure it is not used yet
-					sprintf(buf, " %d", num++);
-					rDisplayBoxName = pDisplayBox->getName() + CString(buf);
-					l_oBoxIdentifier = OV_UndefinedIdentifier;
-				}
-			}
-			l_oBoxIdentifier = m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier);
-		}
 	}

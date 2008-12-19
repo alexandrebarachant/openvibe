@@ -311,7 +311,7 @@ int go(int argc, char ** argv)
 //                                                                   //
 
 	CKernelLoader l_oKernelLoader;
-
+	
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
 	CString m_sError;
 #if defined OVD_OS_Windows
@@ -348,7 +348,7 @@ int go(int argc, char ** argv)
 // For Mister Vincent !
 #ifdef OVD_OS_Windows
 #ifndef NDEBUG
-				//_asm int 3;
+					//_asm int 3;
 #endif
 #endif
 

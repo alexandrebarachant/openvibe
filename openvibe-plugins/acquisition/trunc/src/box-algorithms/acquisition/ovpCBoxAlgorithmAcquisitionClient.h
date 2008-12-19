@@ -63,12 +63,12 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
-				rBoxAlgorithmPrototype.addOutput ("Experiment information", OV_TypeId_ExperimentationInformation);
-				rBoxAlgorithmPrototype.addOutput ("EEG stream",             OV_TypeId_Signal);
-				rBoxAlgorithmPrototype.addOutput ("Stimulations",           OV_TypeId_Stimulations);
-				rBoxAlgorithmPrototype.addOutput ("Channel localisation",   OV_TypeId_ChannelLocalisation);
-				rBoxAlgorithmPrototype.addSetting("EEG server hostname",    OV_TypeId_String,  "localhost");
-				rBoxAlgorithmPrototype.addSetting("EEG server port",        OV_TypeId_Integer, "1024");
+				rBoxAlgorithmPrototype.addOutput ("Experiment information",      OV_TypeId_ExperimentationInformation);
+				rBoxAlgorithmPrototype.addOutput ("Signal strea",                OV_TypeId_Signal);
+				rBoxAlgorithmPrototype.addOutput ("Stimulations",                OV_TypeId_Stimulations);
+				rBoxAlgorithmPrototype.addOutput ("Channel localisation",        OV_TypeId_ChannelLocalisation);
+				rBoxAlgorithmPrototype.addSetting("Acquisition server hostname", OV_TypeId_String,  "localhost");
+				rBoxAlgorithmPrototype.addSetting("Acquisition server port",     OV_TypeId_Integer, "1024");
 				return true;
 			}
 

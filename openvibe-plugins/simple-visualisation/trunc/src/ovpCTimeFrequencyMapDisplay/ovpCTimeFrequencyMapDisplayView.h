@@ -31,7 +31,7 @@ namespace OpenViBEPlugins
 			 * \brief Constructor
 			 * \param rSpectrumDatabase Object storing spectrum data
 			 * \param f64MinDisplayedFrequency Minimum frequency to display
-			 * \param f64MaxDisplayedFrequency Maximum frequency to display				
+			 * \param f64MaxDisplayedFrequency Maximum frequency to display
 			 * \param f64TimeScale Time scale to display (in s)
 			 */
 			CTimeFrequencyMapDisplayView(
@@ -47,7 +47,7 @@ namespace OpenViBEPlugins
 
 			/** \name IStreamDisplayDrawable implementation */
 			//@{
-			
+
 			/**
 			 * \brief Initialize widgets.
 			 * \remark Called automatically by spectrum database when first buffer is received
@@ -60,7 +60,7 @@ namespace OpenViBEPlugins
 			 * \return True if redraw was successful, false otherwise
 			 */
 			virtual OpenViBE::boolean redraw(void);
-			
+
 			//@}
 
 			/**
@@ -69,7 +69,7 @@ namespace OpenViBEPlugins
 			 * \param [out] pToolbarWidget Pointer to (optional) toolbar widget
 			 */
 			void getWidgets(
-				::GtkWidget*& pWidget, 
+				::GtkWidget*& pWidget,
 				::GtkWidget*& pToolbarWidget);
 
 			/**
@@ -121,7 +121,7 @@ namespace OpenViBEPlugins
 			void maxDisplayedFrequencyChangedCB(::GtkWidget* pWidget);
 			void timeScaleChangedCB(::GtkSpinButton* pSpinButton);
 			void channelSelectionDialogOpenedCB(GtkButton* pButton);
-			void channelSelectionChangedCB(::GtkButton* pButton);			
+			void channelSelectionChangedCB(::GtkButton* pButton);
 			//@}
 
 		private:
@@ -134,7 +134,7 @@ namespace OpenViBEPlugins
 			//! Array of channel label widgets
 			std::vector<GtkWidget*> m_vChannelLabels;
 			//! Array of Displays (one per channel, displays the corresponding channel)
-			std::vector<CTimeFrequencyMapChannelDisplay*> m_vChannelDisplays;			
+			std::vector<CTimeFrequencyMapChannelDisplay*> m_vChannelDisplays;
 			//! Vector of pointers to the select channels dialog's check buttons
 			std::vector<GtkWidget *> m_vChannelsCheckButtons;
 			//! Vector of indexes of the channels to display
@@ -146,7 +146,7 @@ namespace OpenViBEPlugins
 			//! Maximum frequency to display
 			OpenViBE::float64 m_f64MaxDisplayedFrequency;
 			//! Pointer to time ruler
-			CTimeRuler* m_pTimeRuler;			
+			CTimeRuler* m_pTimeRuler;
 		};
 	};
 };

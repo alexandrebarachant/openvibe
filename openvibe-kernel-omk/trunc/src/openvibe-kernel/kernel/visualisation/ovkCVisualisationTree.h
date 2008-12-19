@@ -69,8 +69,7 @@ namespace OpenViBE
 			/**
 			 * \brief Recreates Gtk widgets based on the widgets description stored in the internal tree store.
 			 * \remark Side effects : all iterators and GtkWidget pointers are invalidated and replaced with new values
-			 * To be called upon widget creation, deletion or repositioning. Side effects : all identifiers
-			 * and Gtk widget pointers are invalidated and replaced with new values.
+			 * To be called upon widget creation, deletion or repositioning. 
 			 * \return true if widgets were successfully reloaded, false otherwise
 			 */		 
 			OpenViBE::boolean reloadTree(void);
@@ -209,22 +208,22 @@ namespace OpenViBE
 
 			/**
 			 * \brief Forward pointer to the toolbar of a visualisation plugin (if any) to the tree view
-			 * \param rVisualisationBoxName [in] name of visualisation box whose widgets are passed in parameter
+			 * \param rBoxIdentifier [in] Identifier of IBox whose toolbar is being set
 			 * \param pToolbarWidget [in] pointer to toolbar
 			 * \return \e true in case of success, \e false otherwise.
 			 */
 			virtual OpenViBE::boolean setToolbar(
-				const OpenViBE::CString& rVisualisationBoxName,				
+				const OpenViBE::CIdentifier& rBoxIdentifier,				
 				::GtkWidget* pToolbarWidget);
 
 			/**
 			 * \brief Forward pointer to the main widget of a visualisation plugin to the tree view
-			 * \param rVisualisationBoxName [in] name of visualisation box whose widgets are passed in parameter
+			 * \param rBoxIdentifier [in] Identifier of IBox whose topmost widget is being set
 			 * \param pWidget [in] pointer to main window			 
 			 * \return \e true in case of success, \e false otherwise.
 			 */
 			virtual OpenViBE::boolean setWidget(
-				const OpenViBE::CString& rVisualisationBoxName,				
+				const OpenViBE::CIdentifier& rBoxIdentifier,				
 				::GtkWidget* pTopmostWidget);
 			
 			//@}

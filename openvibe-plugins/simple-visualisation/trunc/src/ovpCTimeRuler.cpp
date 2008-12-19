@@ -21,11 +21,11 @@ CTimeRuler::CTimeRuler(IStreamDatabase& rStreamDatabase) :
 	m_pWidget(NULL),
 	m_rStreamDatabase(rStreamDatabase),
 	m_ui64PixelsPerBottomRulerLabel(20)
-{	
+{
 	m_pWidget = gtk_drawing_area_new();
 
 	gtk_widget_set_size_request(m_pWidget, 0, 20);
-	
+
 	g_signal_connect_after(G_OBJECT(m_pWidget), "expose_event", G_CALLBACK(timeRulerExposeEventCallback), this);
 }
 
@@ -163,9 +163,10 @@ gboolean timeRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, 
 //! Called when the widget whose width is associated with the ruler is resized.
 gboolean timeRulerResizeCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data)
 {
-	CTimeRuler* l_pTimeRuler = reinterpret_cast<CTimeRuler*>(data);	
+	CTimeRuler* l_pTimeRuler = reinterpret_cast<CTimeRuler*>(data);
 	gtk_widget_set_size_request(l_pTimeRuler->getWidget(), allocation->width, 20/*-1*/);
-	
+
 	return FALSE;
 }
+
 

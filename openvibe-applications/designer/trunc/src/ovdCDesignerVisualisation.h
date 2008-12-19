@@ -291,7 +291,8 @@ namespace OpenViBEDesigner
 		//highlighted widget
 		GtkWidget* m_pHighlightedWidget;
 		//active items
-		OpenViBE::CString m_oActiveVisualisationWindowName, m_oActiveVisualisationPanelName, m_oActiveVisualisationBoxName;
+		OpenViBE::CString m_oActiveVisualisationWindowName, m_oActiveVisualisationPanelName;
+		OpenViBE::CIdentifier m_oActiveVisualisationBoxIdentifier;
 		//factories used to build contextual menus
 		GtkItemFactory *m_pUnaffectedItemFactory, *m_pVisualisationWindowItemFactory, *m_pVisualisationPanelItemFactory;
 		GtkItemFactory *m_pVisualisationBoxItemFactory, *m_pUndefinedItemFactory, *m_pSplitItemFactory;

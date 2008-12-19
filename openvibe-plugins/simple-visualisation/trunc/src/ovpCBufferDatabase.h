@@ -17,6 +17,7 @@
 #ifdef OVP_OS_Windows
 #ifndef NDEBUG
 		//#define ELAN_VALIDATION
+		#define NB_ELAN_CHANNELS 143
 #endif
 #endif
 
@@ -48,6 +49,30 @@ namespace OpenViBEPlugins
 		{
 
 		public:
+			/* \name Channel localisation */
+			//@{
+			//channel localisation decoder
+			OpenViBE::Kernel::IAlgorithmProxy* m_pChannelLocalisationStreamDecoder;
+			//flag set to true once channel localisation buffer is received
+			OpenViBE::boolean m_bChannelLocalisationHeaderReceived;
+			//dynamic channel localisation flag (e.g. localisation is constantly updated with MEG)
+			OpenViBE::boolean m_bDynamicChannelLocalisation;
+			//channel labels database
+			std::vector<OpenViBE::CString> m_oChannelLocalisationLabels;
+			//flag stating whether streamed coordinates are cartesian (as opposed to spherical)
+			OpenViBE::boolean m_bCartesianStreamedCoords;
+			//! double-linked list of channel cartesian coordinates
+			std::deque< std::pair<OpenViBE::CMatrix*, OpenViBE::boolean> > m_oChannelLocalisationStreamedCoords;
+			//! double-linked list of channel coordinates (spherical if streamed coords aere cartesian and vice versa)
+			//std::deque<  std::pair<OpenViBE::CMatrix*, OpenViBE::boolean> > m_oChannelLocalisationAlternateCoords;
+			//pointer to double linked list of cartesian coordinates
+			//std::deque< std::pair<OpenViBE::CMatrix*, OpenViBE::boolean> > * m_pChannelLocalisationCartesianCoords;
+			//pointer to double linked list of spherical coordinates
+			//std::deque< std::pair<OpenViBE::CMatrix*, OpenViBE::boolean> > * m_pChannelLocalisationSphericalCoords;
+			//! double-linked list of start/end times of channel coordinates
+			std::deque< std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oChannelLocalisationTimes;
+			//@}
+
 			//! Number of channels
 			OpenViBE::int64 m_i64NbElectrodes;
 
@@ -65,15 +90,17 @@ namespace OpenViBEPlugins
 			//! stimulations to display. pair values are <date, stimcode>
 			std::deque<std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oStimulations;
 
-			//electrode cartesian coordinates
-			OpenViBE::CMatrix m_oElectrodesCoords;
-
 			//electrode spherical coordinates (in degrees)
-			OpenViBE::CMatrix m_oElectrodesSphericalCoords;
+			//OpenViBE::CMatrix m_oElectrodesSphericalCoords;
+
+			//flag set to true once channel lookup indices are determined
+			OpenViBE::boolean m_bChannelLookupTableInitialized;
+
+			//indices of electrodes in channel localisation database
+			std::vector<OpenViBE::uint32> m_oChannelLookupIndices;
 
 			//electrode labels (standardized)
-			std::vector<OpenViBE::CString> m_oElectrodesLabels;
-				std::deque<OpenViBE::uint64> m_oEndTime;
+			//std::vector<OpenViBE::CString> m_oElectrodesLabels;
 
 			//! Number of buffer to display at the same time
 			OpenViBE::uint64 m_ui64NumberOfBufferToDisplay;
@@ -86,6 +113,9 @@ namespace OpenViBEPlugins
 
 			//! double-linked list of the start times of the current buffers
 			std::deque<OpenViBE::uint64> m_oStartTime;
+
+			//! double-linked list of the end times of the current buffers
+			std::deque<OpenViBE::uint64> m_oEndTime;
 
 			//! duration to display in seconds
 			OpenViBE::float64 m_f64TotalDuration;
@@ -109,6 +139,26 @@ public:
 				OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin);
 
 			virtual ~CBufferDatabase();
+
+			/**
+			 * \brief Decode a channel localisation memory buffer
+			 * \param pMemoryBuffer Memory buffer to decode
+			 * \param ui64StartTime Start time of memory buffer
+			 * \param ui64EndTime End time of memory buffer
+			 * \return True if memory buffer could be properly decoded, false otherwise
+			 */
+			virtual OpenViBE::boolean decodeChannelLocalisationMemoryBuffer(
+				const OpenViBE::IMemoryBuffer* pMemoryBuffer,
+				OpenViBE::uint64 ui64StartTime,
+				OpenViBE::uint64 ui64EndTime);
+
+			/**
+			 * \brief Callback called upon channel localisation buffer reception
+			 * \param uint32 Index of newly received channel localisation buffer
+			 * \return True if buffer data was correctly processed, false otherwise
+			 */
+			virtual OpenViBE::boolean onChannelLocalisationBufferReceived(
+				OpenViBE::uint32 ui32ChannelLocalisationBufferIndex);
 
 			/**
 			* Sets the drawable object to update.
@@ -215,7 +265,12 @@ public:
 				OpenViBE::boolean bSet);
 
 		protected:
-			virtual OpenViBE::boolean computeChannelCoords();
+			virtual OpenViBE::boolean fillChannelLookupTable();
+
+			OpenViBE::boolean convertCartesianToSpherical(
+				const OpenViBE::float64* pCartesianCoords,
+				OpenViBE::float64& rTheta,
+				OpenViBE::float64& rPhi);
 		};
 	}
 

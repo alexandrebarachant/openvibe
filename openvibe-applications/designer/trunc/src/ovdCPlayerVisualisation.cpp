@@ -3,7 +3,6 @@
 #include "ovdCApplication.h"
 #include "ovdCInterfacedScenario.h"
 #include "ovdCPlayerVisualisation.h"
-#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -23,7 +22,7 @@ static void dummy_callback(::GtkWidget*)
 CPlayerVisualisation::CPlayerVisualisation(const IKernelContext& rKernelContext, IVisualisationTree& rVisualisationTree, CInterfacedScenario& rInterfacedScenario) :
 	m_rKernelContext(rKernelContext),
 	m_rVisualisationTree(rVisualisationTree),
-	m_rInterfacedScenario(rInterfacedScenario),
+	m_rInterfacedScenario(rInterfacedScenario),		
 	m_pActiveToolbarButton(NULL)
 {
 }
@@ -205,14 +204,11 @@ void CPlayerVisualisation::init(void)
 			m_vWindows.push_back(GTK_WINDOW(l_pTreeWidget));
 
 			//retrieve its size
-			/*TAttributeHandler l_oAttributeHandler(*pVisualisationWidget);
+			TAttributeHandler l_oAttributeHandler(*pVisualisationWidget);
 			gtk_window_set_default_size(
 				GTK_WINDOW(l_pTreeWidget),
 				l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width),
-				l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height));*/
-			//FIXME : read default size from a settings file
-			gtk_window_set_default_size(GTK_WINDOW(l_pTreeWidget), 300, 300);
-
+				l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height));			
 			//set its title
 			gtk_window_set_title(GTK_WINDOW(l_pTreeWidget), (const char*)pVisualisationWidget->getName());
 
@@ -265,71 +261,68 @@ void CPlayerVisualisation::endLoadTreeWidget(OpenViBE::Kernel::IVisualisationWid
 	}	
 }
 
-boolean CPlayerVisualisation::setToolbar(const CString& rVisualisationBoxName, ::GtkWidget* pToolbarWidget)
+boolean CPlayerVisualisation::setToolbar(const CIdentifier& rBoxIdentifier, ::GtkWidget* pToolbarWidget)
 {
+	//retrieve visualisation widget
+	IVisualisationWidget* l_pVisualisationWidget = m_rVisualisationTree.getVisualisationWidgetFromBoxIdentifier(rBoxIdentifier);
+	if(l_pVisualisationWidget == NULL)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "CPlayerVisualisation::setToolbar FAILED : couldn't retrieve simulated box with identifier " << rBoxIdentifier <<"\n";			
+		return false;
+	}
+
+	//ensure toolbar pointer is not null
 	if(pToolbarWidget == NULL)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning
-			<< "CPlayerVisualisation::setToolbar FAILED : toolbar pointer is NULL for plugin "
-			<< rVisualisationBoxName <<"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "CPlayerVisualisation::setToolbar FAILED : toolbar pointer is NULL for plugin " << l_pVisualisationWidget->getName() << "\n";			
 		return false;
 	}
 
+	//ensure toolbar pointer is a window
 	if(GTK_IS_WINDOW(pToolbarWidget) == false)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning
-			<< "CPlayerVisualisation::setToolbar FAILED : toolbar pointer is not a GtkWindow for plugin "
-			<< rVisualisationBoxName <<"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "CPlayerVisualisation::setToolbar FAILED : toolbar pointer is not a GtkWindow for plugin " << l_pVisualisationWidget->getName() <<"\n";
 		return false;
 	}
 
-	//retrieve iterator to visualisation box
-	::GtkTreeIter l_oVisualisationBoxIter;
-	if(m_rVisualisationTree.findChildNodeFromRoot(&l_oVisualisationBoxIter, (const char*)rVisualisationBoxName, EVisualisationTreeNode_VisualisationBox) == true)
+	//retrieve identifier
+	CIdentifier l_oIdentifier = l_pVisualisationWidget->getIdentifier();
+
+	//store toolbar
+	m_mPlugins[l_oIdentifier].m_pToolbar = pToolbarWidget;
+
+	//ensure it is open at mouse position
+	gtk_window_set_position(GTK_WINDOW(pToolbarWidget), GTK_WIN_POS_MOUSE);
+
+	//if toolbar button has been created, set it sensitive (otherwise it will be set active later)
+	if(m_mPlugins[l_oIdentifier].m_pToolbarButton != NULL)
 	{
-		//retrieve box identifier
-		CIdentifier l_oVisualisationBoxIdentifier;
-		m_rVisualisationTree.getIdentifierFromTreeIter(&l_oVisualisationBoxIter, l_oVisualisationBoxIdentifier, EVisualisationTreeColumn_StringIdentifier);
+		gtk_widget_set_sensitive(GTK_WIDGET(m_mPlugins[l_oIdentifier].m_pToolbarButton), true);
 
-		//retrieve visualisation widget
-		IVisualisationWidget* l_pVisualisationWidget = m_rVisualisationTree.getVisualisationWidget(l_oVisualisationBoxIdentifier);
-		if(l_pVisualisationWidget != NULL)
-		{
-			//retrieve identifier
-			CIdentifier l_oIdentifier = l_pVisualisationWidget->getIdentifier();
-
-			//store toolbar
-			m_mPlugins[l_oIdentifier].m_pToolbar = pToolbarWidget;
-
-			//ensure it is open at mouse position
-			gtk_window_set_position(GTK_WINDOW(pToolbarWidget), GTK_WIN_POS_MOUSE);
-
-			//if toolbar button has been created, set it sensitive (otherwise it will be set active later)
-			if(m_mPlugins[l_oIdentifier].m_pToolbarButton != NULL)
-			{
-				gtk_widget_set_sensitive(GTK_WIDGET(m_mPlugins[l_oIdentifier].m_pToolbarButton), true);
-
-				//associate toolbar button to toolbar window
-				m_mToolbars[m_mPlugins[l_oIdentifier].m_pToolbarButton] = pToolbarWidget;
-			}
-
-			//catch delete events
-			g_signal_connect(G_OBJECT(pToolbarWidget), "delete-event", G_CALLBACK(toolbar_delete_event_cb), this);
-
-			return true;
-		}
+		//associate toolbar button to toolbar window
+		m_mToolbars[m_mPlugins[l_oIdentifier].m_pToolbarButton] = pToolbarWidget;
 	}
 
-	return false;
+	//catch delete events
+	g_signal_connect(G_OBJECT(pToolbarWidget), "delete-event", G_CALLBACK(toolbar_delete_event_cb), this);
+
+	return true;	
 }
 
-boolean CPlayerVisualisation::setWidget(const CString& rVisualisationBoxName, ::GtkWidget* pWidget)
+boolean CPlayerVisualisation::setWidget(const CIdentifier& rBoxIdentifier, ::GtkWidget* pWidget)
 {
+	//retrieve visualisation widget
+	IVisualisationWidget* l_pVisualisationWidget = m_rVisualisationTree.getVisualisationWidgetFromBoxIdentifier(rBoxIdentifier);
+	if(l_pVisualisationWidget == NULL)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "CPlayerVisualisation::setWidget FAILED : couldn't retrieve simulated box with identifier " << rBoxIdentifier <<"\n";			
+		return false;
+	}
+
+	//ensure widget pointer is not null
 	if(pWidget == NULL)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning
-			<< "CPlayerVisualisation::setWidgets FAILED : widget pointer is NULL for plugin "
-			<< rVisualisationBoxName <<"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "CPlayerVisualisation::setWidget FAILED : widget pointer is NULL for plugin " << l_pVisualisationWidget->getName() << "\n";			
 		return false;
 	}
 
@@ -340,95 +333,77 @@ boolean CPlayerVisualisation::setWidget(const CString& rVisualisationBoxName, ::
 		gtk_object_ref(GTK_OBJECT(pWidget));
 		gtk_container_remove(GTK_CONTAINER(l_pWidgetParent), pWidget);
 	}
+		
+	//create a box to store toolbar button and plugin widget
+	::GtkBox* l_pVBox = GTK_BOX(gtk_vbox_new(FALSE, 0));
+	//gtk_widget_set_size_request(GTK_WIDGET(l_pVBox), 0, 0);
 
-	//retrieve iterator to visualisation box
-	::GtkTreeIter l_oVisualisationBoxIter;
-	if(m_rVisualisationTree.findChildNodeFromRoot(&l_oVisualisationBoxIter, (const char*)rVisualisationBoxName, EVisualisationTreeNode_VisualisationBox) == true)
+	//create toolbar button
+	::GtkToggleButton* l_pButton = GTK_TOGGLE_BUTTON(gtk_toggle_button_new());
 	{
-		//retrieve box identifier
-		CIdentifier l_oVisualisationBoxIdentifier;
-		m_rVisualisationTree.getIdentifierFromTreeIter(&l_oVisualisationBoxIter, l_oVisualisationBoxIdentifier, EVisualisationTreeColumn_StringIdentifier);
+		//horizontal container : icon + label
+		::GtkBox* l_pHBox = GTK_BOX(gtk_hbox_new(FALSE, 0));
+		//gtk_widget_set_size_request(GTK_WIDGET(l_pHBox), 0, 0);
 
-		//retrieve visualisation widget
-		IVisualisationWidget* l_pVisualisationWidget = m_rVisualisationTree.getVisualisationWidget(l_oVisualisationBoxIdentifier);
-		if(l_pVisualisationWidget != NULL)
+		//retrieve icon name
+		::GtkTreeIter l_oIter;
+		char* l_pIconString = NULL;
+		if(m_rVisualisationTree.findChildNodeFromRoot(&l_oIter, (const char*)l_pVisualisationWidget->getName(), EVisualisationTreeNode_VisualisationBox) == true)
 		{
-			//retrieve identifier
-			CIdentifier l_oIdentifier = l_pVisualisationWidget->getIdentifier();
-
-			//create a box to store toolbar button and plugin widget
-			::GtkBox* l_pVBox = GTK_BOX(gtk_vbox_new(FALSE, 0));
-			//gtk_widget_set_size_request(GTK_WIDGET(l_pVBox), 0, 0);
-
-			//create toolbar button
-			::GtkToggleButton* l_pButton = GTK_TOGGLE_BUTTON(gtk_toggle_button_new());
-			{
-				//horizontal container : icon + label
-				::GtkBox* l_pHBox = GTK_BOX(gtk_hbox_new(FALSE, 0));
-				//gtk_widget_set_size_request(GTK_WIDGET(l_pHBox), 0, 0);
-
-				//retrieve icon name
-				::GtkTreeIter l_oIter;
-				char* l_pIconString = NULL;
-				if(m_rVisualisationTree.findChildNodeFromRoot(&l_oIter, (const char*)rVisualisationBoxName, EVisualisationTreeNode_VisualisationBox) == true)
-				{
-					m_rVisualisationTree.getStringValueFromTreeIter(&l_oIter, l_pIconString, EVisualisationTreeColumn_StringStockIcon);
-				}
-
-				//create icon
-				::GtkWidget* l_pIcon = gtk_image_new_from_stock(l_pIconString != NULL ? l_pIconString : GTK_STOCK_EXECUTE, GTK_ICON_SIZE_BUTTON);
-				//gtk_widget_set_size_request(l_pIcon, 0, 0);
-				gtk_box_pack_start(l_pHBox, l_pIcon, TRUE, TRUE, 0);
-
-				//create label
-				::GtkWidget* l_pLabel = gtk_label_new((const char*)rVisualisationBoxName);
-				//gtk_widget_set_size_request(l_pLabel, 0, 0);
-				gtk_box_pack_start(l_pHBox, l_pLabel, TRUE, TRUE, 0);
-
-				//add box to button
-				gtk_container_add(GTK_CONTAINER(l_pButton), GTK_WIDGET(l_pHBox));
-			}
-
-			//detect toolbar button toggle events
-			g_signal_connect(G_OBJECT(l_pButton), "toggled", G_CALLBACK(toolbar_button_toggled_cb), this);
-
-			//set up toolbar button as drag destination
-			gtk_drag_dest_set(GTK_WIDGET(l_pButton), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
-			g_signal_connect(G_OBJECT(l_pButton), "drag_data_received", G_CALLBACK(drag_data_received_in_widget_cb), this);
-
-			//set up toolbar button as drag source as well
-			gtk_drag_source_set(GTK_WIDGET(l_pButton), GDK_BUTTON1_MASK, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
-			g_signal_connect(G_OBJECT(l_pButton), "drag_data_get", G_CALLBACK(drag_data_get_from_widget_cb), this);
-
-			//store plugin widget and toolbar button
-			m_mPlugins[l_oIdentifier].m_pWidget = pWidget;
-			m_mPlugins[l_oIdentifier].m_pToolbarButton = l_pButton;
-
-			//if a toolbar was registered for this widget, set its button sensitive
-			if(m_mPlugins[l_oIdentifier].m_pToolbar != NULL)
-			{
-				gtk_widget_set_sensitive(GTK_WIDGET(l_pButton), true);
-
-				//associate toolbar button to toolbar window
-				m_mToolbars[l_pButton] = m_mPlugins[l_oIdentifier].m_pToolbar;
-			}
-			else
-			{
-				gtk_widget_set_sensitive(GTK_WIDGET(l_pButton), false);
-			}
-
-			//vertical container : button on top, visualisation box below
-			gtk_box_pack_start(l_pVBox, GTK_WIDGET(l_pButton), FALSE, TRUE, 0);
-			gtk_box_pack_start(l_pVBox, pWidget, TRUE, TRUE, 0);
-
-			//parent box at the appropriate location
-			parentWidgetBox(l_pVisualisationWidget, l_pVBox);
-
-			return true;
+			m_rVisualisationTree.getStringValueFromTreeIter(&l_oIter, l_pIconString, EVisualisationTreeColumn_StringStockIcon);
 		}
+
+		//create icon
+		::GtkWidget* l_pIcon = gtk_image_new_from_stock(l_pIconString != NULL ? l_pIconString : GTK_STOCK_EXECUTE, GTK_ICON_SIZE_BUTTON);
+		//gtk_widget_set_size_request(l_pIcon, 0, 0);
+		gtk_box_pack_start(l_pHBox, l_pIcon, TRUE, TRUE, 0);
+
+		//create label
+		::GtkWidget* l_pLabel = gtk_label_new((const char*)l_pVisualisationWidget->getName());
+		//gtk_widget_set_size_request(l_pLabel, 0, 0);
+		gtk_box_pack_start(l_pHBox, l_pLabel, TRUE, TRUE, 0);
+
+		//add box to button
+		gtk_container_add(GTK_CONTAINER(l_pButton), GTK_WIDGET(l_pHBox));
 	}
 
-	return false;
+	//detect toolbar button toggle events
+	g_signal_connect(G_OBJECT(l_pButton), "toggled", G_CALLBACK(toolbar_button_toggled_cb), this);
+
+	//set up toolbar button as drag destination
+	gtk_drag_dest_set(GTK_WIDGET(l_pButton), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
+	g_signal_connect(G_OBJECT(l_pButton), "drag_data_received", G_CALLBACK(drag_data_received_in_widget_cb), this);
+
+	//set up toolbar button as drag source as well
+	gtk_drag_source_set(GTK_WIDGET(l_pButton), GDK_BUTTON1_MASK, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
+	g_signal_connect(G_OBJECT(l_pButton), "drag_data_get", G_CALLBACK(drag_data_get_from_widget_cb), this);
+
+	//store plugin widget and toolbar button
+	CIdentifier l_oIdentifier = l_pVisualisationWidget->getIdentifier();
+	m_mPlugins[l_oIdentifier].m_pWidget = pWidget;
+	m_mPlugins[l_oIdentifier].m_pToolbarButton = l_pButton;
+
+	//if a toolbar was registered for this widget, set its button sensitive
+	if(m_mPlugins[l_oIdentifier].m_pToolbar != NULL)
+	{
+		gtk_widget_set_sensitive(GTK_WIDGET(l_pButton), true);
+
+		//associate toolbar button to toolbar window
+		m_mToolbars[l_pButton] = m_mPlugins[l_oIdentifier].m_pToolbar;
+	}
+	else
+	{
+		gtk_widget_set_sensitive(GTK_WIDGET(l_pButton), false);
+	}
+
+	//vertical container : button on top, visualisation box below
+	gtk_box_pack_start(l_pVBox, GTK_WIDGET(l_pButton), FALSE, TRUE, 0);
+	gtk_box_pack_start(l_pVBox, pWidget, TRUE, TRUE, 0);
+
+	//parent box at the appropriate location
+	parentWidgetBox(l_pVisualisationWidget, l_pVBox);
+
+	return true;		
 }
 
 boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::GtkBox* pWidgetBox)
@@ -439,8 +414,23 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 		//create a top level window
 		::GtkWidget* l_pWindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		m_vWindows.push_back(GTK_WINDOW(l_pWindow));
-		//FIXME : read default size from a settings file
-		gtk_window_set_default_size(GTK_WINDOW(l_pWindow), 300, 300);
+#if 1
+		uint64 l_ui64DefaultWidth = m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowWidth}", 400);
+		uint64 l_ui64DefaultHeight = m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowHeight}", 400);	
+#else
+		//one could also choose to initialize unaffected windows with the size of user-created windows
+		//=>look for an existing window and get its size from its attributes
+		CIdentifier l_oVisualisationWindowIdentifier;
+		if(m_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)
+		{
+			IVisualisationWidget* l_pVisualisationWindow = m_rVisualisationTree.getVisualisationWidget(l_oVisualisationWindowIdentifier);
+			TAttributeHandler l_oAttributeHandler(*l_pVisualisationWindow);
+			l_ui64DefaultWidth = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width);
+			l_ui64DefaultHeight = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height);
+		}
+#endif
+		gtk_window_set_default_size(GTK_WINDOW(l_pWindow), l_ui64DefaultWidth, l_ui64DefaultHeight);						
+		//set its title
 		gtk_window_set_title(GTK_WINDOW(l_pWindow), (const char*)pWidget->getName());
 		//set it transient for main window
 		gtk_window_set_transient_for(GTK_WINDOW(l_pWindow), GTK_WINDOW(m_rInterfacedScenario.m_rApplication.m_pMainWindow));

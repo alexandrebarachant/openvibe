@@ -32,8 +32,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean process(void);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_Simple3DDisplay)
-			
-		protected:			
+
+		protected:
 			CSimple3DDatabase* m_pSimple3DDatabase;
 			CSignalDisplayDrawable* m_pSimple3DView; //main object used for the display (contains all the GUI code)
 			OpenViBE::CIdentifier m_o3DWidgetIdentifier;
@@ -64,7 +64,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
-			{				
+			{
 				return true;
 			}
 

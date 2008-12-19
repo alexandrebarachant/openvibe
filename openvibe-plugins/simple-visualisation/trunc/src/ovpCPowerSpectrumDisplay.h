@@ -56,7 +56,7 @@ namespace OpenViBEPlugins
 		class CPowerSpectrumDisplayDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 			public:
-				virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Power Spectrum Display"); }
+				virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Power spectrum display"); }
 				virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Vincent Delannoy"); }
 				virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 				virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Power spectrum in frequency bands"); }

@@ -186,3 +186,4 @@ void CBottomTimeRuler::linkWidthToWidget(GtkWidget * pWidget)
 	g_signal_connect(G_OBJECT(pWidget), "size-allocate", G_CALLBACK(resizeBottomRulerCallback), this);
 }
 
+

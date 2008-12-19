@@ -34,10 +34,10 @@ namespace OpenViBEPlugins
 			 */
 			CPowerSpectrumDatabase(
 				OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& oPlugin);
-			
+
 			/**
 			 * \brief Destructor
-			 */			
+			 */
 			~CPowerSpectrumDatabase();
 
 			/**
@@ -47,7 +47,7 @@ namespace OpenViBEPlugins
 			void setDrawable(
 				CSignalDisplayDrawable* pDrawable);
 
-			/** 
+			/**
 			 * \name IBoxAlgorithmSpectrumInputReaderCallback::ICallback callbacks implementation
 			 */
 			//@{
@@ -57,7 +57,7 @@ namespace OpenViBEPlugins
 			 */
 			void setChannelCount(
 				const OpenViBE::uint32 ui32ChannelCount);
-			
+
 			/**
 			 * \brief Set name of a channel
 			 * \param ui32ChannelIndex Index of channel
@@ -103,14 +103,14 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Set data buffer
-			 * \param pbuffer Pointer to data buffer			 
+			 * \param pbuffer Pointer to data buffer
 			 */
 			void setBuffer(
 				const OpenViBE::float64* pBuffer);
 
 			//@}
 
-			/** 
+			/**
 			 * \name Buffer data management
 			 */
 			//@{
@@ -124,7 +124,7 @@ namespace OpenViBEPlugins
 			 */
 			OpenViBE::boolean getLastBufferChannelMinMaxValue(
 				OpenViBE::uint32 ui32Channel,
-				OpenViBE::float64& f64Min, 
+				OpenViBE::float64& f64Min,
 				OpenViBE::float64& f64Max);
 
 			/**
@@ -134,7 +134,7 @@ namespace OpenViBEPlugins
 			 * \return True if values could be retrieved, false otherwise
 			 */
 			OpenViBE::boolean getLastBufferMinMaxValue(
-				OpenViBE::float64& f64Min, 
+				OpenViBE::float64& f64Min,
 				OpenViBE::float64& f64Max);
 
 			/**
@@ -147,7 +147,7 @@ namespace OpenViBEPlugins
 
 			//@}
 
-			/** 
+			/**
 			 * \name Channels and frequency bands management
 			 */
 			//@{
@@ -158,17 +158,17 @@ namespace OpenViBEPlugins
 			 */
 			OpenViBE::uint32 getChannelCount();
 
-			/** 
+			/**
 			 * \brief Get the label of a channel
 			 * \param [in] ui32ChannelIndex index of channel which label is to be retrieved
 			 * \param [out] rChannelLabel channel label to be retrieved
 			 * \return True if channel label could be retrieved, false otherwise
 			 */
 			OpenViBE::boolean getChannelLabel(
-				OpenViBE::uint32 ui32ChannelIndex, 
+				OpenViBE::uint32 ui32ChannelIndex,
 				OpenViBE::CString& rChannelLabel);
 
-			/** 
+			/**
 			 * \brief Set the minimum frequency displayed by the power spectrum plugin
 			 * \remark This frequency should lie in the range of frequencies received from data
 			 * buffers, and it is taken into account when computing min/max amplitude values. Also,
@@ -180,7 +180,7 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean setMinDisplayedFrequency(
 				OpenViBE::float64 f64MinDisplayedFrequency);
 
-			/** 
+			/**
 			 * \brief Set the maximum frequency displayed by the power spectrum plugin
 			 * \remark This frequency should lie in the range of frequencies received from data
 			 * buffers, and it is taken into account when computing min/max amplitude values. Also,
@@ -193,7 +193,7 @@ namespace OpenViBEPlugins
 				OpenViBE::float64 f64MaxDisplayedFrequency);
 
 			/**
-			 * \brief Get range of frequencies received from incoming buffers			 
+			 * \brief Get range of frequencies received from incoming buffers
 			 * \param [out] f64MinInputFrequency Minimum input frequency
 			 * \param [out] f64MaxInputFrequency Maximum input frequency
 			 * \return True if input frequency range, false otherwise
@@ -228,12 +228,12 @@ namespace OpenViBEPlugins
 			 * \return True if frequency band index is valid, false otherwise
 			 */
 			OpenViBE::boolean getFrequencyBandRange(
-				OpenViBE::uint32 ui32FrequencyBandIndex, 
+				OpenViBE::uint32 ui32FrequencyBandIndex,
 				OpenViBE::float64& rFrequencyBandStart,
 				OpenViBE::float64& rFrequencyBandStop);
 
-			//@}		
-			
+			//@}
+
 		private:
 			// Parent plugin
 			OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;
@@ -241,20 +241,20 @@ namespace OpenViBEPlugins
 			// Pointer to the drawable object to update
 			CSignalDisplayDrawable* m_pDrawable;
 
-			/** 
-			 * \name Buffer data 
+			/**
+			 * \name Buffer data
 			 */
 			//@{
 
 			// Pointer to last buffer received
 			OpenViBE::float64* m_pBuffer;
 			// Flag set to true upon first buffer reception
-			OpenViBE::boolean m_bFirstBufferReceived;			
-			
-			//@}		
+			OpenViBE::boolean m_bFirstBufferReceived;
 
-			/** 
-			 * \name Channels and frequency bands data 
+			//@}
+
+			/**
+			 * \name Channels and frequency bands data
 			 */
 			//@{
 
@@ -265,17 +265,17 @@ namespace OpenViBEPlugins
 			// Vector of frequency band values (lower and upper frequencies for each band)
 			std::vector<std::pair<OpenViBE::float64, OpenViBE::float64> > m_pFrequencyBands;
 			// Index of minimum frequency band displayed in power spectrum plugin
-			OpenViBE::uint32 m_ui32MinDisplayedFrequencyBand; 
+			OpenViBE::uint32 m_ui32MinDisplayedFrequencyBand;
 			// Index of maximum frequency band displayed in power spectrum plugin
-			OpenViBE::uint32 m_ui32MaxDisplayedFrequencyBand; 
+			OpenViBE::uint32 m_ui32MaxDisplayedFrequencyBand;
 			// Min/max displayed values per channel for last buffer
-			std::vector<std::pair<OpenViBE::float64, OpenViBE::float64> > m_oMinMaxDisplayedValues; 
+			std::vector<std::pair<OpenViBE::float64, OpenViBE::float64> > m_oMinMaxDisplayedValues;
 			// Minimum displayed value for last buffer
 			OpenViBE::float64 m_f64MinDisplayedValue;
 			// Maximum displayed value for last buffer
-			OpenViBE::float64 m_f64MaxDisplayedValue; 
-			
-			//@}			
+			OpenViBE::float64 m_f64MaxDisplayedValue;
+
+			//@}
 		};
 	}
 

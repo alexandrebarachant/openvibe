@@ -298,6 +298,11 @@ namespace OpenViBE
 
 			// =====================================
 
+			virtual OpenViBE::boolean getObjectAxisAlignedBoundingBox(
+				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::float32* pMinimum,
+				OpenViBE::float32* pMaximum);
+
 			/**
 			 * \brief Get object vertex count
 			 * \remark This method returns the number of vertices in the first mesh of the first

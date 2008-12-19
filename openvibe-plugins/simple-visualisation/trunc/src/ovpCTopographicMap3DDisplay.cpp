@@ -8,185 +8,16 @@
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
-
+using namespace OpenViBEToolkit;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
 using namespace std;
 
-namespace OpenViBEPlugins
-{
-namespace SimpleVisualisation
-{
-//coordinates of 78 channels in head model coordinates
-
-static const int s_nbChannels = 78 - 8 - 23; //8 electrodes lack normalized spherical coords for now (see CBufferDatabase)
-
-static string s_channelLabels[s_nbChannels] = {
-	"Iz",
-	"Oz",
-	"POz",
-	"Pz",
-	"CPz",
-	"Cz",
-	"FCz",
-	"Fz",
-	//"AFz",
-	"Fpz",
-	"Fp1",
-	"Fp2",
-	//"AF7",
-	//"AF8",
-	"F7",
-	"F8",
-	//"FT7",
-	//"FT8",
-	//"T7",
-	//"T8",
-	"T3",
-	"T4",
-	"TP7",
-	"TP8",
-	//"P7",
-	//"P8",
-	"T5",
-	"T6",
-	//"PO7",
-	//"PO8",
-	"O1",
-	"O2",
-	"F5",
-	"F6",
-	//"FC5",
-	//"FC6",
-	"C5",
-	"C6",
-	//"CP5",
-	//"CP6",
-	"P5",
-	"P6",
-	//"AF3",
-	//"AF4",
-	"F3",
-	"F4",
-	"FC3",
-	"FC4",
-	"C3",
-	"C4",
-	"CP3",
-	"CP4",
-	"P3",
-	"P4",
-	//"PO3",
-	//"PO4",
-	"F1",
-	"F2",
-	"FC1",
-	"FC2",
-	"C1",
-	"C2",
-	"CP1",
-	"CP2",
-	"P1",
-	"P2",
-	//"F9",
-	//"F10",
-	/*"FT9",
-	"FT10",
-	"TP9",
-	"TP10",*/
-	//"P9",
-	//"P10"/*,
-	//"PO9",
-	//"PO10",
-	//"O9",
-	//"O10"*/
-};
-
-static float64 s_channelCoords[3*s_nbChannels] = {
-/*"Iz"*/ 					0.000000,0.324107,-1.816900,
-/*"Oz"*/ 					0.000000,1.077350,-1.859270,
-/*"POz"*/					0.000000,1.780830,-1.678850,
-/*"Pz"*/ 					0.000000,2.283700,-1.229050,
-/*"CPz"*/					0.000000,2.489760,-0.625818,
-/*"Cz"*/ 					0.000000,2.521990,-0.074703,
-/*"FCz"*/					0.000000,2.449310,0.458199,
-/*"Fz"*/ 					0.000000,2.197910,0.948010,
-/*"AFz"*///					0.000000,1.636610,1.243520,
-/*"Fpz"*/					0.000000,1.087250,1.427310,
-/*"Fp1"*/					0.431096,1.136220,1.383540,
-/*"Fp2"*/					-0.430637,1.135010,1.382070,
-/*"AF7"*///					0.868440,1.212150,1.179260,
-/*"AF8"*///					-0.853668,1.191530,1.159200,
-/*"F7"*/ 					1.077960,1.138210,0.695629,
-/*"F8"*/ 					-1.070310,1.130140,0.690693,
-/*"FT7"*///					1.193720,1.169370,0.324902,
-/*"FT8"*///					-1.192900,1.168570,0.324679,
-/*"T7"*/// 					1.268070,1.128820,-0.075298,
-/*"T8"*/// 					-1.257960,1.119820,-0.074698,
-/*"T3"*/ 					1.268070,1.128820,-0.075298,
-/*"T4"*/ 					-1.257960,1.119820,-0.074698,
-/*"TP7"*/					1.293350,1.093940,-0.480522,
-/*"TP8"*/					-1.295430,1.095700,-0.481295,
-/*"P7"*/// 					1.239860,1.040190,-0.961792,
-/*"P8"*/// 					-1.239620,1.039990,-0.961601,
-/*"T5"*/ 					1.239860,1.040190,-0.961792,
-/*"T6"*/ 					-1.239620,1.039990,-0.961601,
-/*"PO7"*///					0.991943,1.035330,-1.429190,
-/*"PO8"*///					-0.984801,1.027880,-1.418900,
-/*"O1"*/ 					0.541729,1.052830,-1.755660,
-/*"O2"*/ 					-0.536080,1.041850,-1.737360,
-/*"F5"*/ 					1.000260,1.595040,0.759633,
-/*"F6"*/ 					-1.014230,1.617330,0.770249,
-/*"FC5"*///					1.131910,1.606920,0.347484,
-/*"FC6"*///					-1.118740,1.588230,0.343442,
-/*"C5"*/ 					1.180460,1.603820,-0.073446,
-/*"C6"*/ 					-1.181080,1.604670,-0.073484,
-/*"CP5"*///					1.226810,1.541050,-0.559545,
-/*"CP6"*///					-1.213390,1.524190,-0.553426,
-/*"P5"*/ 					1.162760,1.523560,-1.077470,
-/*"P6"*/ 					-1.135050,1.487260,-1.051800,
-/*"AF3"*///					0.598288,1.563540,1.172600,
-/*"AF4"*///					-0.599236,1.566020,1.174450,
-/*"F3"*/ 					0.766714,1.887900,0.854557,
-/*"F4"*/ 					-0.771871,1.900590,0.860304,
-/*"FC3"*/					0.900475,1.981120,0.507370,
-/*"FC4"*/					-0.900256,1.980630,0.507247,
-/*"C3"*/ 					0.942403,2.071010,-0.073806,
-/*"C4"*/ 					-0.950497,2.088800,-0.074440,
-/*"CP3"*/					0.950821,2.040280,-0.712553,
-/*"CP4"*/					-0.968544,2.078310,-0.725835,
-/*"P3"*/ 					0.890590,1.988430,-1.202420,
-/*"P4"*/ 					-0.873229,1.949660,-1.178990,
-/*"PO3"*///					0.681842,1.608680,-1.570740,
-/*"PO4"*///					-0.679282,1.602640,-1.564850,
-/*"F1"*/ 					0.419552,2.086410,0.918746,
-/*"F2"*/ 					-0.418200,2.079690,0.915787,
-/*"FC1"*/					0.503221,2.309680,0.421867,
-/*"FC2"*/					-0.503213,2.309640,0.421860,
-/*"C1"*/ 					0.527505,2.453540,-0.075810,
-/*"C2"*/ 					-0.516740,2.403470,-0.074263,
-/*"CP1"*/					0.528469,2.384180,-0.618806,
-/*"CP2"*/					-0.528633,2.384920,-0.618997,
-/*"P1"*/ 					0.460929,2.191080,-1.218350,
-/*"P2"*/ 					-0.461184,2.192290,-1.219030,
-/*"F9"*/// 					1.131800,0.631298,0.717026,
-/*"F10"*///					-1.130930,0.630810,0.716472,
-/*"FT9"*/					//1.232730,0.679354,0.315221,
-/*"FT10"*/				//	-1.224270,0.674692,0.313058,
-/*"TP9"*/					//1.287920,0.596754,-0.609839,
-/*"TP10"*/				//	-1.275420,0.590961,-0.603919,
-/*"P9"*/// 					1.193760,0.416675,-0.960809,
-/*"P10"*///					-1.192910,0.416379,-0.960126
-/*"PO9"*/					//0.953803,0.337360,-1.411520,
-/*"PO10"*/				//-0.943379,0.333673,-1.396100,
-/*"O9"*/ 					//0.529359,0.330813,-1.729350,
-/*"O10"*/					//-0.522668,0.326631,-1.707490
-};
-
 CTopographicMap3DDisplay::CTopographicMap3DDisplay(void) :
+	m_pChannelLocalisationStreamDecoder(NULL),
 	m_pStreamedMatrixReader(NULL),
 	m_pStreamedMatrixReaderCallBack(NULL),
-	m_pProxy(NULL),
+	m_pSphericalSplineInterpolation(NULL),
 	m_pTopographicMapDatabase(NULL),
 	m_pTopographicMap3DView(NULL),
 	m_o3DWidgetIdentifier(OV_UndefinedIdentifier),
@@ -205,6 +36,10 @@ CTopographicMap3DDisplay::CTopographicMap3DDisplay(void) :
 	m_pScalpVertices(NULL),
 	m_pScalpColors(NULL)
 {
+	m_f32ProjectionCenter[0] = 0.f;
+	m_f32ProjectionCenter[1] = 0.f;
+	m_f32ProjectionCenter[2] = 0.f;
+
 	//TODO : read color scale from some database or flow header
 	m_ui32NbColors = 13;
 	m_pColorScale = new float32[m_ui32NbColors*3];
@@ -233,22 +68,30 @@ uint64 CTopographicMap3DDisplay::getClockFrequency(void)
 
 boolean CTopographicMap3DDisplay::initialize(void)
 {
+	//initialize chanloc decoder
+	m_pChannelLocalisationStreamDecoder = &getAlgorithmManager().getAlgorithm(
+		getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_ChannelLocalisationStreamDecoder));
+	m_pChannelLocalisationStreamDecoder->initialize();
+
 	//initializes the ebml input
 	m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
 	m_pStreamedMatrixReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
 	//initialize spline interpolation algorithm
-	m_pProxy=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SphericalSplineInterpolation));
-	m_pProxy->initialize();
+	m_pSphericalSplineInterpolation = &getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_SphericalSplineInterpolation));
+	m_pSphericalSplineInterpolation->initialize();
 
 	//create topographic map database
-	m_pTopographicMapDatabase = new CTopographicMapDatabase(*this, *m_pProxy);
+	m_pTopographicMapDatabase = new CTopographicMapDatabase(*this, *m_pSphericalSplineInterpolation);
 
 	//retrieve settings
 	CString l_sInterpolationModeSettingValue;
 	getStaticBoxContext().getSettingValue(0, l_sInterpolationModeSettingValue);
 	CString l_sDelaySettingValue;
 	getStaticBoxContext().getSettingValue(1, l_sDelaySettingValue);
+	getStaticBoxContext().getSettingValue(2, m_oFaceMeshFilename);
+	getStaticBoxContext().getSettingValue(3, m_oScalpMeshFilename);
+	getStaticBoxContext().getSettingValue(4, m_oProjectionSphereMeshFilename);
 
 	//create topographic map view (handling GUI interaction)
 	m_pTopographicMap3DView = new CTopographicMap3DView(
@@ -287,6 +130,10 @@ boolean CTopographicMap3DDisplay::initialize(void)
 
 boolean CTopographicMap3DDisplay::uninitialize(void)
 {
+	//delete decoder algorithm
+	m_pChannelLocalisationStreamDecoder->uninitialize();
+	getAlgorithmManager().releaseAlgorithm(*m_pChannelLocalisationStreamDecoder);
+
 	//release the ebml reader
 	releaseBoxAlgorithmStreamedMatrixInputReaderCallback(m_pStreamedMatrixReaderCallBack);
 	m_pStreamedMatrixReaderCallBack=NULL;
@@ -295,8 +142,8 @@ boolean CTopographicMap3DDisplay::uninitialize(void)
 	m_pStreamedMatrixReader=NULL;
 
 	//release algorithm
-	m_pProxy->uninitialize();
-	getAlgorithmManager().releaseAlgorithm(*m_pProxy);
+	m_pSphericalSplineInterpolation->uninitialize();
+	getAlgorithmManager().releaseAlgorithm(*m_pSphericalSplineInterpolation);
 
 	delete m_pTopographicMap3DView;
 	m_pTopographicMap3DView = NULL;
@@ -341,6 +188,7 @@ boolean CTopographicMap3DDisplay::process(void)
 	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 	uint32 i;
 
+	//decode signal data
 	for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
 	{
 		uint64 l_ui64ChunkSize=0;
@@ -353,7 +201,27 @@ boolean CTopographicMap3DDisplay::process(void)
 		}
 	}
 
+	//decode channel localisation data
+	for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(1); i++)
+	{
+		const IMemoryBuffer* l_pBuf = l_pDynamicBoxContext->getInputChunk(1, i);
+		m_pTopographicMapDatabase->decodeChannelLocalisationMemoryBuffer(
+			l_pBuf,
+			l_pDynamicBoxContext->getInputChunkStartTime(1, i),
+			l_pDynamicBoxContext->getInputChunkEndTime(1, i));
+		l_pDynamicBoxContext->markInputAsDeprecated(1, i);
+	}
+
+	//decode channel localisation (in model frame) data
+	for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(2); i++)
+	{
+		const IMemoryBuffer* l_pBuf = l_pDynamicBoxContext->getInputChunk(2, i);
+		decodeChannelLocalisationMemoryBuffer(l_pBuf);
+		l_pDynamicBoxContext->markInputAsDeprecated(2, i);
+	}
+
 	process3D();
+
 	getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
 
 	return true;
@@ -423,200 +291,44 @@ CMatrix* CTopographicMap3DDisplay::getSampleCoordinatesMatrix()
 			m_oSampleCoordinatesMatrix.setDimensionSize(0, m_ui32NbScalpVertices);
 			m_oSampleCoordinatesMatrix.setDimensionSize(1, 3);
 
-#if 0
-			//Hack computing vertex coordinates in a spherical frame based on the bounding box of the scalp
+			//compute scalp vertices coordinates once projected onto a unit sphere
+			float32 l_f32UnitVector[3];
+			float32* l_pScalpVertexCoord = m_pScalpVertices;
+			float64* l_pSampleCoordsBuffer = m_oSampleCoordinatesMatrix.getBuffer();
 
-			//compute scalp vertices BB
-			float32 l_f32MinCoordinates[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
-			float32 l_f32MaxCoordinates[3] = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
-
-			for(uint32 i=0; i<m_ui32NbScalpVertices; i++)
+			for(uint32 i=0; i<m_ui32NbScalpVertices; i++, l_pScalpVertexCoord+=3)
 			{
-				if(m_pScalpVertices[3*i] < l_f32MinCoordinates[0])
-					l_f32MinCoordinates[0] = m_pScalpVertices[3*i];
-				if(m_pScalpVertices[3*i] > l_f32MaxCoordinates[0])
-					l_f32MaxCoordinates[0] = m_pScalpVertices[3*i];
-
-				if(m_pScalpVertices[3*i+1] < l_f32MinCoordinates[1])
-					l_f32MinCoordinates[1] = m_pScalpVertices[3*i+1];
-				if(m_pScalpVertices[3*i+1] > l_f32MaxCoordinates[1])
-					l_f32MaxCoordinates[1] = m_pScalpVertices[3*i+1];
-
-				if(m_pScalpVertices[3*i+2] < l_f32MinCoordinates[2])
-					l_f32MinCoordinates[2] = m_pScalpVertices[3*i+2];
-				if(m_pScalpVertices[3*i+2] > l_f32MaxCoordinates[0])
-					l_f32MaxCoordinates[2] = m_pScalpVertices[3*i+2];
-			}
-
-			//compute BB center (used as origin of normalized coordinates)
-			//TODO : use barycenter or some other scheme to compute a "better" origin (see Tempo source code)
-			float32 l_f32Origin[3];
-			l_f32Origin[0] = (l_f32MinCoordinates[0] + l_f32MaxCoordinates[0]) / 2;
-			l_f32Origin[1] = (l_f32MinCoordinates[1] + l_f32MaxCoordinates[1]) / 2;
-			l_f32Origin[2] = (l_f32MinCoordinates[2] + l_f32MaxCoordinates[2]) / 2;
-
-			//transform scalp vertices to normalized coordinates
-			float32 l_f32Point[3];
-			float32 l_f32InvVectorLength;
-			for(uint32 i=0; i<m_ui32NbScalpVertices; i++)
-			{
-				/*
-				  Ogre     Normalized space
-				  ====     ================
-
-				  Y            Zn
-				  |            |
-				  +-- X    Xn--+
-				 /            /
-				Z            Yn
-				   Xn = -X
-				   Yn = Z
-				   Zn = Y
-				*/
-
-				//express scalp vertices in normalized frame
-				m_pScalpVertices[3*i] -= l_f32Origin[0];
-				m_pScalpVertices[3*i+1] -= l_f32Origin[1];
-				m_pScalpVertices[3*i+2] -= l_f32Origin[2];
-
-				l_f32Point[0] = -m_pScalpVertices[3*i];
-				l_f32Point[1] = m_pScalpVertices[3*i+2];
-				l_f32Point[2] = m_pScalpVertices[3*i+1];
-
-				l_f32InvVectorLength = 1 / sqrtf(l_f32Point[0]*l_f32Point[0] + l_f32Point[1]*l_f32Point[1] + l_f32Point[2]*l_f32Point[2]);
-
-				//normalize vertices and store them in matrix to be fed to interpolation algorithm
-				*(m_oSampleCoordinatesMatrix.getBuffer() + 3*i) = l_f32Point[0] * l_f32InvVectorLength;
-				*(m_oSampleCoordinatesMatrix.getBuffer() + 3*i+1) = l_f32Point[1] * l_f32InvVectorLength;
-				*(m_oSampleCoordinatesMatrix.getBuffer() + 3*i+2) = l_f32Point[2] * l_f32InvVectorLength;
-			}
-#else
-			//compute scalp vertices coordinates in a spherical frame based on the location of the nearest electrodes
-			for(uint32 i=0; i<m_ui32NbScalpVertices; i++)
-			{
-				//find distance from current vertex to each electrode
-				vector<float64> l_oSquaredDistances((unsigned int)m_pTopographicMapDatabase->getElectrodeCount());
-
-				for(uint32 j=0; j<m_pTopographicMapDatabase->getElectrodeCount(); j++)
-				{
-					//get electrode coordinates
-					float64 l_f64ElectrodeX, l_f64ElectrodeY, l_f64ElectrodeZ;
-					if(getElectrodeObjectCoordinates(j, l_f64ElectrodeX, l_f64ElectrodeY, l_f64ElectrodeZ) == false)
-					{
-						l_oSquaredDistances[j] = DBL_MAX;
-						continue;
-					}
-
-					//compute square distance	of vertex to electrode
-					l_oSquaredDistances[j] = (m_pScalpVertices[3*i] - l_f64ElectrodeX) * (m_pScalpVertices[3*i] - l_f64ElectrodeX) +
-						(m_pScalpVertices[3*i+1] - l_f64ElectrodeY) * (m_pScalpVertices[3*i+1] - l_f64ElectrodeY) +
-						(m_pScalpVertices[3*i+2] - l_f64ElectrodeZ) * (m_pScalpVertices[3*i+2] - l_f64ElectrodeZ);
-				}
-
-				//find 3 nearest electrodes
-				uint32 l_pNearestElectrodes[3];
-				float64 l_pDistanceToNearestElectrodes[3];
-				float64 l_pWeights[3];
-				for(uint32 j=0; j<3; j++)
-				{
-					uint32 l_ui32Index = 0;
-					float64 l_f64SquaredDistance = l_oSquaredDistances[l_ui32Index];
-					for(uint32 k=l_ui32Index+1; k<m_pTopographicMapDatabase->getElectrodeCount(); k++)
-					{
-						if(l_oSquaredDistances[k] < l_f64SquaredDistance)
-						{
-							l_ui32Index = k;
-							l_f64SquaredDistance = l_oSquaredDistances[k];
-						}
-					}
-					//save nearest electrode and distance
-					l_pNearestElectrodes[j] = l_ui32Index;
-					l_pDistanceToNearestElectrodes[j] = sqrt(l_f64SquaredDistance);
-					//ensure it won't be selected again
-					l_oSquaredDistances[l_ui32Index] = DBL_MAX;
-				}
-
-				//find weights from distances
-				float64 l_f64TotalWeight = 0;
-				for(uint32 j=0; j<3; j++)
-				{
-					if(l_pDistanceToNearestElectrodes[j] == 0)
-					{
-						for(uint32 k=0; k<3; k++)
-						{
-							l_pWeights[k] = 0;
-						}
-						l_pWeights[j] = 1;
-						break;
-					}
-					l_pWeights[j] = 1 / l_pDistanceToNearestElectrodes[j];
-					l_f64TotalWeight += l_pWeights[j];
-				}
-
-				//normalize weights
-				if(l_f64TotalWeight != 0)
-				{
-					float64 l_f64InvTotalWeight = 1 / l_f64TotalWeight;
-					for(uint32 k=0; k<3; k++)
-					{
-						l_pWeights[k] *= l_f64InvTotalWeight;
-					}
-				}
-
-				//find vertex position in normalized space using 3 nearest electrode names and weight coefficients
-				float64 l_f64VertexX = 0;
-				float64 l_f64VertexY = 0;
-				float64 l_f64VertexZ = 0;
-				float64 l_pElectrodePosition[3] = { 0, 0, 0 };
-				for(uint32 j=0; j<3; j++)
-				{
-					if(m_pTopographicMapDatabase->getElectrodePosition(l_pNearestElectrodes[j], l_pElectrodePosition) == false)
-					{
-						break;
-					}
-
-					l_f64VertexX += l_pWeights[j] * l_pElectrodePosition[0];
-					l_f64VertexY += l_pWeights[j] * l_pElectrodePosition[1];
-					l_f64VertexZ += l_pWeights[j] * l_pElectrodePosition[2];
-				}
-
-				//normalize vertex
-				float64 l_f64Length = sqrt(l_f64VertexX * l_f64VertexX + l_f64VertexY * l_f64VertexY + l_f64VertexZ * l_f64VertexZ);
-				if(l_f64Length > 0)
-				{
-					float64 l_f64InvLength = 1 / l_f64Length;
-					l_f64VertexX *= l_f64InvLength;
-					l_f64VertexY *= l_f64InvLength;
-					l_f64VertexZ *= l_f64InvLength;
-				}
-
-				//store vertex in matrix to be fed to interpolation algorithm
-				*(m_oSampleCoordinatesMatrix.getBuffer() + 3*i) = l_f64VertexX;
-				*(m_oSampleCoordinatesMatrix.getBuffer() + 3*i+1) = l_f64VertexY;
-				*(m_oSampleCoordinatesMatrix.getBuffer() + 3*i+2) = l_f64VertexZ;
-
-				//DEBUG REMOVE ME
-				/*
-						Ogre     Normalized space
-						====     ================
-
+				/* Ogre     Normalized space
+					 ====     ================
 						Y            Zn
 						|            |
 						+-- X    Xn--+
 					 /            /
 					Z            Yn
-						 X = -Xn
-						 Y = Zn
-						 Z = Yn
-				*/
-				/*
+					 => X = -Xn, Y = Zn, Z = Yn */
+
+				//compute vector from center of unit sphere to scalp vertex
+				l_f32UnitVector[0] = -l_pScalpVertexCoord[0] - m_f32ProjectionCenter[0];
+				l_f32UnitVector[1] = l_pScalpVertexCoord[2] - m_f32ProjectionCenter[1];
+				l_f32UnitVector[2] = l_pScalpVertexCoord[1] - m_f32ProjectionCenter[2];
+
+				//normalize vector
+				float32 l_f32InvLength = 1.f / sqrtf(l_f32UnitVector[0]*l_f32UnitVector[0] + l_f32UnitVector[1]*l_f32UnitVector[1] + l_f32UnitVector[2]*l_f32UnitVector[2]);
+				l_f32UnitVector[0] *= l_f32InvLength;
+				l_f32UnitVector[1] *= l_f32InvLength;
+				l_f32UnitVector[2] *= l_f32InvLength;
+
+				//store vertex in matrix to be fed to interpolation algorithm
+				*l_pSampleCoordsBuffer++ = l_f32UnitVector[0];
+				*l_pSampleCoordsBuffer++ = l_f32UnitVector[1];
+				*l_pSampleCoordsBuffer++ = l_f32UnitVector[2];
+
 				//display a sphere at the location of the normalized coordinates
-				CIdentifier id = getVisualisationContext().createObject(Standard3DObject_Sphere);
+
+				/*CIdentifier id = getVisualisationContext().createObject(Standard3DObject_Sphere);
 				getVisualisationContext().setObjectScale(id, 0.001f, 0.001f, 0.001f);
-				getVisualisationContext().setObjectPosition(id, 3 * (-l_f64VertexX), 3 * l_f64VertexZ, 3 * l_f64VertexY);
-				*/
+				getVisualisationContext().setObjectPosition(id, 3 * (-l_f32UnitVector[0]), 3 * l_f32UnitVector[2], 3 * l_f32UnitVector[1]);*/
 			}
-#endif
 		}
 	}
 
@@ -676,6 +388,65 @@ void CTopographicMap3DDisplay::toggleElectrodes(boolean bToggle)
 	m_bSamplingPointsToggleState = bToggle;
 }*/
 
+boolean CTopographicMap3DDisplay::decodeChannelLocalisationMemoryBuffer(const IMemoryBuffer* pMemoryBuffer)
+{
+	//feed memory buffer to decoder
+	m_pChannelLocalisationStreamDecoder->getInputParameter(
+		OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_InputParameterId_MemoryBufferToDecode)->setReferenceTarget(&pMemoryBuffer);
+
+	//process buffer
+	m_pChannelLocalisationStreamDecoder->process();
+
+	//copy header if needed
+	if(m_pChannelLocalisationStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputTriggerId_ReceivedHeader) == true)
+	{
+		//retrieve matrix header
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oMatrix;
+		l_oMatrix.initialize(m_pChannelLocalisationStreamDecoder->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Matrix));
+		if(l_oMatrix->getDimensionSize(1) != 3)
+		{
+			getLogManager() << LogLevel_Error
+				<< "Wrong size found for dimension 1 of channel localisation header! Can't process header!\n";
+			return false;
+		}
+
+		//copy channel labels
+		Tools::Matrix::copyDescription(m_oModelElectrodeCoordinates, *l_oMatrix);
+	}
+
+	//has a chanloc buffer been received?
+	if(m_pChannelLocalisationStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputTriggerId_ReceivedBuffer) == true)
+	{
+		//retrieve coordinates matrix
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oMatrix;
+		l_oMatrix.initialize(m_pChannelLocalisationStreamDecoder->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Matrix));
+
+		//save labels
+		CMatrix l_oTempMatrix;
+		Tools::Matrix::copyDescription(l_oTempMatrix, m_oModelElectrodeCoordinates);
+
+		//resize matrix
+		Tools::Matrix::copyDescription(m_oModelElectrodeCoordinates, *l_oMatrix);
+
+		//copy labels
+		for(uint32 i=0; i<m_oModelElectrodeCoordinates.getDimensionSize(0); i++)
+		{
+			m_oModelElectrodeCoordinates.setDimensionLabel(0, i, l_oTempMatrix.getDimensionLabel(0, i));
+		}
+		for(uint32 i=0; i<m_oModelElectrodeCoordinates.getDimensionSize(1); i++)
+		{
+			m_oModelElectrodeCoordinates.setDimensionLabel(1, i, l_oTempMatrix.getDimensionLabel(1, i));
+		}
+
+		//copy coordinates
+		Tools::Matrix::copyContent(m_oModelElectrodeCoordinates, *l_oMatrix);
+
+		m_bModelElectrodeCoordinatesInitialized = true;
+	}
+
+	return true;
+}
+
 void CTopographicMap3DDisplay::process3D()
 {
 	//first pass : initialize 3D scene
@@ -701,17 +472,8 @@ void CTopographicMap3DDisplay::process3D()
 	//third pass : create electrode and sampling point objects
 	if(m_bElectrodesCreated == false)
 	{
-		if(m_oElectrodeIds.size() == 0)
-		{
-			createElectrodes();
-		}
-		/*
-		//
-		if(m_oSamplingPointIds.size() == 0)
-		{
-			createSamplingPoints();
-		}*/
-
+		createElectrodes();
+		//createSamplingPoints();
 		m_bElectrodesCreated = true;
 		return;
 	}
@@ -746,12 +508,51 @@ boolean CTopographicMap3DDisplay::createSkull()
 	getVisualisationContext().setBackgroundColor(m_o3DWidgetIdentifier, 0, 0, 0);
 
 	//load face mesh
-	getVisualisationContext().createObject("face");
+	if(getVisualisationContext().createObject(m_oFaceMeshFilename) == OV_UndefinedIdentifier)
+	{
+		getLogManager() << LogLevel_Warning << "Couldn't load face mesh!\n";
+	}
 
 	//load scalp mesh
 	CNameValuePairList l_oParams;
 	l_oParams.setValue("CloneMeshes", true); //clone scalp mesh so that it doesn't interfere with other maps
-	m_oScalpId = getVisualisationContext().createObject("scalp", &l_oParams);
+	m_oScalpId = getVisualisationContext().createObject(m_oScalpMeshFilename, &l_oParams);
+
+	if(m_oScalpId == OV_UndefinedIdentifier)
+	{
+		getLogManager() << LogLevel_Warning << "Couldn't load scalp mesh!\n";
+	}
+
+	//load projection sphere mesh
+	CIdentifier l_oDummyObject = getVisualisationContext().createObject(m_oProjectionSphereMeshFilename);
+	if(l_oDummyObject == OV_UndefinedIdentifier)
+	{
+		getLogManager() << LogLevel_Warning << "Couldn't load projection sphere mesh!\n";
+	}
+	else
+	{
+		float32 l_oMin[3];
+		float32 l_oMax[3];
+		getVisualisationContext().getObjectAxisAlignedBoundingBox(l_oDummyObject, l_oMin, l_oMax);
+		float32 l_oModelSpaceProjectionCenter[3];
+
+		l_oModelSpaceProjectionCenter[0] = (l_oMin[0] + l_oMax[0]) / 2;
+		l_oModelSpaceProjectionCenter[1] = (l_oMin[1] + l_oMax[1]) / 2;
+		l_oModelSpaceProjectionCenter[2] = (l_oMin[2] + l_oMax[2]) / 2;
+
+		/* Ogre     Normalized space
+		   ====     ================
+		   Y            Zn
+		   |            |
+		   +-- X    Xn--+
+		  /            /
+		 Z            Yn
+		 => X = -Xn, Y = Zn, Z = Yn */
+
+		m_f32ProjectionCenter[0] = -l_oModelSpaceProjectionCenter[0];
+		m_f32ProjectionCenter[1] = l_oModelSpaceProjectionCenter[2];
+		m_f32ProjectionCenter[2] = l_oModelSpaceProjectionCenter[1];
+	}
 
 	//set skull creation flag
 	m_bSkullCreated = true;
@@ -771,7 +572,9 @@ boolean CTopographicMap3DDisplay::createElectrodes()
 
 		if(m_oElectrodeIds[i] == OV_UndefinedIdentifier)
 		{
-			getLogManager() << LogLevel_Warning << "process3D() : couldn't create electrode object!\n";
+			CString l_oElectrodeLabel;
+			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
+			getLogManager() << LogLevel_Warning << "Couldn't create electrode object for channel " << l_oElectrodeLabel << " !\n";
 			break;
 		}
 
@@ -788,7 +591,9 @@ boolean CTopographicMap3DDisplay::createElectrodes()
 		float64 l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ;
 		if(getChannelWorldCoordinates(i, l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ) == false)
 		{
-			getLogManager() << LogLevel_Warning << "process3D() : couldn't retrieve electrode position!\n";
+			CString l_oElectrodeLabel;
+			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
+			getLogManager() << LogLevel_Warning << "Couldn't retrieve electrode position for channel " << l_oElectrodeLabel << " !\n";
 			continue;
 		}
 
@@ -806,7 +611,9 @@ boolean CTopographicMap3DDisplay::createElectrodes()
 
 		if(m_oElectrodeIds[i] == OV_UndefinedIdentifier)
 		{
-			getLogManager() << LogLevel_Warning << "process3D() : couldn't create electrode object!\n";
+			CString l_oElectrodeLabel;
+			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
+			getLogManager() << LogLevel_Warning << "Couldn't create electrode object for channel " << l_oElectrodeLabel << " !\n";
 			continue;
 		}
 
@@ -817,7 +624,9 @@ boolean CTopographicMap3DDisplay::createElectrodes()
 		float64 l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ;
 		if(getElectrodeObjectCoordinates(i, l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ) == false)
 		{
-			getLogManager() << LogLevel_Warning << "process3D() : couldn't retrieve electrode position!\n";
+			CString l_oElectrodeLabel;
+			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
+			getLogManager() << LogLevel_Warning << "Couldn't retrieve electrode position for channel " << l_oElectrodeLabel << " !\n";
 			continue;
 		}
 
@@ -914,19 +723,19 @@ boolean CTopographicMap3DDisplay::getChannelWorldCoordinates(uint32 ui32ChannelI
 	CString l_oElectrodeLabel;
 	m_pTopographicMapDatabase->getChannelLabel(ui32ChannelIndex, l_oElectrodeLabel);
 
-	int j;
-	for(j=0; j<s_nbChannels; j++)
+	uint32 j;
+	for(j=0; j<m_oModelElectrodeCoordinates.getDimensionSize(0); j++)
 	{
-		if(s_channelLabels[j] == string(l_oElectrodeLabel))
+		if(string(m_oModelElectrodeCoordinates.getDimensionLabel(0, j)) == string(l_oElectrodeLabel))
 		{
-			rElectrodeWorldX = *(s_channelCoords + 3*j);
-			rElectrodeWorldY = *(s_channelCoords + 3*j+1);
-			rElectrodeWorldZ = *(s_channelCoords + 3*j+2);
+			rElectrodeWorldX = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j);
+			rElectrodeWorldY = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+1);
+			rElectrodeWorldZ = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+2);
 			break;
 		}
 	}
 
-	return j<s_nbChannels;
+	return j<m_oModelElectrodeCoordinates.getDimensionSize(0);
 }
 
 boolean CTopographicMap3DDisplay::getElectrodeObjectCoordinates(uint32 ui32ChannelIndex, float64& rElectrodeObjectX, float64& rElectrodeObjectY, float64& rElectrodeObjectZ)
@@ -934,20 +743,17 @@ boolean CTopographicMap3DDisplay::getElectrodeObjectCoordinates(uint32 ui32Chann
 	CString l_oElectrodeLabel;
 	m_pTopographicMapDatabase->getElectrodeLabel(ui32ChannelIndex, l_oElectrodeLabel);
 
-	int j;
-	for(j=0; j<s_nbChannels; j++)
+	uint32 j;
+	for(j=0; j<m_oModelElectrodeCoordinates.getDimensionSize(0); j++)
 	{
-		if(s_channelLabels[j] == string(l_oElectrodeLabel))
+		if(string(m_oModelElectrodeCoordinates.getDimensionLabel(0, j)) == string(l_oElectrodeLabel))
 		{
-			rElectrodeObjectX = *(s_channelCoords + 3*j);
-			rElectrodeObjectY = *(s_channelCoords + 3*j+1);
-			rElectrodeObjectZ = *(s_channelCoords + 3*j+2);
+			rElectrodeObjectX = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j);
+			rElectrodeObjectY = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+1);
+			rElectrodeObjectZ = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+2);
 			break;
 		}
 	}
 
-	return j<s_nbChannels;
+	return j<m_oModelElectrodeCoordinates.getDimensionSize(0);
 }
-
-};
-};

@@ -27,7 +27,6 @@
 
 #include "ovkIGtkOVCustomHandler.h"
 #include "ovkGtkOVCustom.h"
-#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

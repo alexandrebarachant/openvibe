@@ -1,0 +1,14 @@
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="1" minOgreVersion="1.4" author="OgreMax Scene Exporter by Derek Nedelman (www.ogremax.com)">
+    <nodes>
+        <node name="projection_center">
+            <scale x="1" y="1" z="1" />
+            <position x="0" y="0.65" z="-0.075" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="projection_center" id="24" meshFile="projection_center.mesh" castShadows="true" receiveShadows="true">
+                <subentities>
+                    <subentity index="0" materialName="NoMaterial" />
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>

@@ -77,7 +77,7 @@ namespace OpenViBEPlugins
 				const OpenViBE::IMemoryBuffer* pMemoryBuffer,
 				OpenViBE::uint64 ui64StartTime,
 				OpenViBE::uint64 ui64EndTime);
-						
+
 			OpenViBE::uint64 getMaxDisplayedBufferCount();
 
 			OpenViBE::uint64 getBufferCount();
@@ -113,39 +113,39 @@ namespace OpenViBEPlugins
 			 */
 			OpenViBE::boolean getChannelLabel(
 				const OpenViBE::uint32 ui32ChannelIndex,
-				OpenViBE::CString& rElectrodeLabel);		
+				OpenViBE::CString& rElectrodeLabel);
 
 		private:
 			// parent plugin
-			OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;			
+			OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;
 			//streamed matrix decoder algorithm proxy
-			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;			
+			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;
 			//drawable object to update (if needed)
 			IStreamDisplayDrawable* m_pDrawable;
 			//flag stating whether to redraw the IStreamDisplayDrawable upon new data reception if true (default)
 			OpenViBE::boolean m_bRedrawOnNewData;
 			//flag stating whether first samples buffer has been received
 			OpenViBE::boolean m_bFirstBufferReceived;
-			
+
 			//sampling frequency of incoming stream
 			OpenViBE::uint32 m_ui32SamplingFrequency;
 			//maximum number of buffers displayed at the same time per channel
-			OpenViBE::uint64 m_ui64MaxDisplayedBufferCount;			
+			OpenViBE::uint64 m_ui64MaxDisplayedBufferCount;
 			//maximum duration of displayed buffers (in seconds)
-			OpenViBE::float64 m_f64TimeScale;			
+			OpenViBE::float64 m_f64TimeScale;
 			//double-linked list of start times of stored buffers
 			std::deque<OpenViBE::uint64> m_oStartTime;
 			//double-linked list of end times of stored buffers
-			std::deque<OpenViBE::uint64> m_oEndTime;			
-			
+			std::deque<OpenViBE::uint64> m_oEndTime;
+
 			//streamed matrix header : number of channels & frequency bands + labels
 			OpenViBE::CMatrix m_oStreamedMatrixHeader;
 			//streamed matrix	history
 			std::deque<OpenViBE::CMatrix*> m_oStreamedMatrices;
 			//min/max values for each channel
 			//std::vector<std::deque<std::pair<OpenViBE::float64, OpenViBE::float64> > > m_oChannelMinMaxValues;
-		
-			//OpenViBE::boolean m_bError;								
+
+			//OpenViBE::boolean m_bError;
 		};
 	}
 }

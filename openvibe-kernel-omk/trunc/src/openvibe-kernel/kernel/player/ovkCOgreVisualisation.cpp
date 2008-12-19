@@ -76,11 +76,13 @@ boolean COgreVisualisation::initializeOgre(void) throw (std::exception)
 
 		//configuration file is assumed to be copied to working dir
 		CString l_sConfigFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgreConfiguration}");
+		//CString l_sConfigFile("../share/openvibe-kernel-omk/ogre.cfg");
 
 		this->getLogManager() << LogLevel_Trace << "Ogre configuration file " << l_sConfigFile << "\n";
 
 		//retrieve plugins file
 		CString l_sPluginsFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgrePlugins}");
+		//CString l_sPluginsFile("../../dependencies/ogre/bin/debug/Plugins.cfg");
 
 		this->getLogManager() << LogLevel_Trace << "Ogre plugins file " << l_sPluginsFile << "\n";
 
@@ -89,6 +91,7 @@ boolean COgreVisualisation::initializeOgre(void) throw (std::exception)
 
 		//resources file is assumed to be copied to working dir
 		CString l_sResourcesFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgreResources}");
+		//CString l_sResourcesFile("../share/openvibe-kernel-omk/resources.cfg");
 
 		this->getLogManager() << LogLevel_Trace << "Ogre resources file " << l_sResourcesFile << "\n";
 

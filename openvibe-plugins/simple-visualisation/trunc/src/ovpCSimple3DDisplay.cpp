@@ -15,7 +15,7 @@ namespace OpenViBEPlugins
 namespace SimpleVisualisation
 {
 
-CSimple3DDisplay::CSimple3DDisplay(void) :	
+CSimple3DDisplay::CSimple3DDisplay(void) :
 	m_pSimple3DDatabase(NULL),
 	m_o3DWidgetIdentifier(OV_UndefinedIdentifier)
 {
@@ -100,7 +100,7 @@ boolean CSimple3DDisplay::processClock(IMessageClock& rMessageClock)
 }
 
 boolean CSimple3DDisplay::process(void)
-{	
+{
 	m_pSimple3DDatabase->process3D();
 	getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
 

@@ -5,8 +5,6 @@
 #include <sstream>
 
 #include <math.h>
-#include <stdlib.h>
-#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

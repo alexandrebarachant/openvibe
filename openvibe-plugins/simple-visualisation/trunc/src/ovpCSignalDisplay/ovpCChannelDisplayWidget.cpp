@@ -597,4 +597,3 @@ void CChannelDisplay::updateSignalZoomParameters()
 
 	}
 }
-

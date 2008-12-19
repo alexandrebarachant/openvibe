@@ -2,21 +2,20 @@
 
 #include <system/Time.h>
 
-#include "ovdCDesignerVisualisation.h"
-#include "ovdCPlayerVisualisation.h"
-#include "ovdCInterfacedObject.h"
-#include "ovdCInterfacedScenario.h"
-#include "ovdCApplication.h"
-
 #include <stack>
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <string.h>
 
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.glade"
+
+#include "ovdCDesignerVisualisation.h"
+#include "ovdCPlayerVisualisation.h"
+#include "ovdCInterfacedObject.h"
+#include "ovdCInterfacedScenario.h"
+#include "ovdCApplication.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -316,7 +315,7 @@ void CApplication::initialize(void)
 
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-algorithm_title_button_expand")),   "clicked", G_CALLBACK(algorithm_title_button_expand_cb),   this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
-
+		
 	g_idle_add(idle_application_loop, this);
 
 	// Prepares main notebooks
@@ -821,9 +820,9 @@ void CApplication::closeScenarioCB(void)
 			"Scenario is locked !");
 		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pDialog),
 			"The scenario you are trying to close is locked. "
-			"It is most probably beeing used by a player engine "
-			"and started or paused. If you really want to close "
-			"it, you'll have to stop its execution before.");
+			"It is most probably being used by a player engine, "
+			"and either started or paused. If you really want to close "
+			"it, you'll have to stop its execution first.");
 		gtk_window_set_title(GTK_WINDOW(l_pDialog), "Warning");
 		gtk_dialog_run(GTK_DIALOG(l_pDialog));
 		gtk_widget_destroy(l_pDialog);

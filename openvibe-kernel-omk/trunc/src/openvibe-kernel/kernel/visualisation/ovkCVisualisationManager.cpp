@@ -261,20 +261,20 @@ boolean CVisualisationManager::enumerateVisualisationTrees(IVisualisationManager
 	return true;
 }
 
-boolean CVisualisationManager::setToolbar(const CIdentifier& rVisualisationTreeIdentifier, const CString& rVisualisationBoxName, ::GtkWidget* pToolbar)
+boolean CVisualisationManager::setToolbar(const CIdentifier& rVisualisationTreeIdentifier, const CIdentifier& rBoxIdentifier, ::GtkWidget* pToolbar)
 {
 	IVisualisationTree& l_rVisualisationTree = getVisualisationTree(rVisualisationTreeIdentifier);
 
-	l_rVisualisationTree.setToolbar(rVisualisationBoxName, pToolbar);
+	l_rVisualisationTree.setToolbar(rBoxIdentifier, pToolbar);
 
 	return true;
 }
 
-boolean CVisualisationManager::setWidget(const CIdentifier& rVisualisationTreeIdentifier, const CString& rVisualisationBoxName, ::GtkWidget* pTopmostWidget)
+boolean CVisualisationManager::setWidget(const CIdentifier& rVisualisationTreeIdentifier, const CIdentifier& rBoxIdentifier, ::GtkWidget* pTopmostWidget)
 {
 	IVisualisationTree& l_rVisualisationTree = getVisualisationTree(rVisualisationTreeIdentifier);
 
-	l_rVisualisationTree.setWidget(rVisualisationBoxName, pTopmostWidget);
+	l_rVisualisationTree.setWidget(rBoxIdentifier, pTopmostWidget);
 
 	return true;
 }

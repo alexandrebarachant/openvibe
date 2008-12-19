@@ -2,7 +2,6 @@
 
 #include <math.h>
 #include <iostream>
-#include <stdlib.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
@@ -41,13 +40,13 @@ namespace OpenViBEPlugins
 			m_pStimulationReader=EBML::createReader(*m_pStimulationReaderCallBack);
 
 			m_pBufferDatabase = new CBufferDatabase(*this);
-			
+
 			//retrieve time scale setting
 			CString l_sSettingValue;
 			getStaticBoxContext().getSettingValue(0, l_sSettingValue);
-			
+
 			m_pSignalDisplayView = new CSignalDisplayView(*m_pBufferDatabase, atof(l_sSettingValue));
-			
+
 			m_pBufferDatabase->setDrawable(m_pSignalDisplayView);
 
 			//parent visualisation box in visualisation tree
@@ -155,4 +154,5 @@ namespace OpenViBEPlugins
 		}
 	};
 };
+
 

@@ -47,27 +47,29 @@ Examples description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_GDFFileReader_Examples|
-If your GDF file is located in your /tmp directory, you can configure the plugin like that :
-
-Filename :
+ * If your GDF file is located in your /tmp directory, you can configure the plugin like that :
+ *
+ * Filename :
+ *
 \code
 /tmp/myGDFFile.gdf
 \endcode
-
-Samples per buffer :
+ *
+ * Samples per buffer :
+ *
 \code
 32
 \endcode
-
-Practical example : 
-
-Let's add a GDF file reader box to an empty scenario. One should also locate a GDF file and enter its path in the 'Filename' setting of the box. A second setting 
-allows to specify the number of samples to be sent per data block.
-
-This box has 3 output connectors, corresponding to experiment information, stimulations 
-and signals. One can connect the last two to the two input connectors of a Signal Display box to visualise the signals and/or stimulations stored in the GDF file.
-
-\image html gdffilereader_online.png "Loading and visualising a GDF file."
+ *
+ * Practical example :
+ *
+ * Let's add a GDF file reader box to an empty scenario. One should also locate a GDF file and enter its path in the 'Filename' setting of the box. A second setting
+ * allows to specify the number of samples to be sent per data block.
+ *
+ * This box has 3 output connectors, corresponding to experiment information, stimulations
+ * and signals. One can connect the last two to the two input connectors of a Signal Display box to visualise the signals and/or stimulations stored in the GDF file.
+ *
+ * \img html gdffilereader_online.png "Loading and visualising a GDF file."
  * |OVP_DocEnd_BoxAlgorithm_GDFFileReader_Examples|
 
 __________________________________________________________________
@@ -76,9 +78,6 @@ Miscellaneous description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_GDFFileReader_Miscellaneous|
-The experiment information output isn't operational yet.
-
-Events are not supported yet.
-
+ * The experiment information output isn't operational yet.
  * |OVP_DocEnd_BoxAlgorithm_GDFFileReader_Miscellaneous|
  */

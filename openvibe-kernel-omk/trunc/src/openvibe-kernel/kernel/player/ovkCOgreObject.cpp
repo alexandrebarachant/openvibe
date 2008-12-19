@@ -239,7 +239,7 @@ boolean COgreObject::loadGeometry()
 					m_pSceneNode,
 					false,
 					false,
-					true);
+					false);
 		}
 		else if(m_eGeometryFileType == GeometryFileType_Mesh)
 		{

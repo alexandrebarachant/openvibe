@@ -91,11 +91,11 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean setToolbar(
 				const CIdentifier& rVisualisationTreeIdentifier,
-				const CString& rVisualisationBoxName,
+				const CIdentifier& rBoxIdentifier,
 				::GtkWidget* pToolbar);
 			virtual OpenViBE::boolean setWidget(
 				const CIdentifier& rVisualisationTreeIdentifier,
-				const CString& rVisualisationBoxName,
+				const CIdentifier& rBoxIdentifier,
 				::GtkWidget* pTopmostWidget);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationManager>, OVK_ClassId_Kernel_Visualisation_VisualisationManager);

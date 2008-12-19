@@ -25,8 +25,8 @@ namespace OpenViBE
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), IVisualisationTree&, getVisualisationTree, , const CIdentifier&, rVisualisationTreeIdentifier)
 			virtual __BridgeBindFunc1__(getKernelContext().getVisualisationManager(), boolean, enumerateVisualisationTrees, const, IVisualisationManager::IVisualisationTreeEnum&, rCallBack)
 
-			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, setToolbar, , const CIdentifier&, rVisualisationTreeIdentifier, const CString&, rVisualisationBoxName,  GtkWidget*, pToolbarWidget)
-			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, setWidget, , const CIdentifier&, rVisualisationTreeIdentifier, const CString&, rVisualisationBoxName,  GtkWidget*, pWidget)
+			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, setToolbar, , const CIdentifier&, rVisualisationTreeIdentifier, const CIdentifier&, rBoxIdentifier,  GtkWidget*, pToolbarWidget)
+			virtual __BridgeBindFunc3__(getKernelContext().getVisualisationManager(), boolean, setWidget, , const CIdentifier&, rVisualisationTreeIdentifier, const CIdentifier&, rBoxIdentifier, GtkWidget*, pWidget)
 
 			_IsDerivedFromClass_Final_(TKernelObject<IVisualisationManager>, OV_UndefinedIdentifier);
 
@@ -56,17 +56,23 @@ CVisualisationContext::~CVisualisationContext(void)
 
 boolean CVisualisationContext::setToolbar(::GtkWidget* pToolbarWidget)
 {
+	CIdentifier l_oBoxIdentifier;
+	m_pSimulatedBox->getBoxIdentifier(l_oBoxIdentifier);
+
 	return m_pVisualisationManagerBridge->setToolbar(
 		m_pSimulatedBox->getScenario().getVisualisationTreeIdentifier(),
-		m_pSimulatedBox->getName(),
+		l_oBoxIdentifier,
 		pToolbarWidget);
 }
 
 boolean CVisualisationContext::setWidget(::GtkWidget* pTopmostWidget)
 {
+	CIdentifier l_oBoxIdentifier;
+	m_pSimulatedBox->getBoxIdentifier(l_oBoxIdentifier);
+	
 	return m_pVisualisationManagerBridge->setWidget(
 		m_pSimulatedBox->getScenario().getVisualisationTreeIdentifier(),
-		m_pSimulatedBox->getName(),
+		l_oBoxIdentifier,
 		pTopmostWidget);
 }
 
@@ -195,6 +201,11 @@ boolean CVisualisationContext::setObjectTriangleCount(const CIdentifier& rIdenti
 boolean CVisualisationContext::setObjectTriangleIndexArray(const CIdentifier& rIdentifier,	const uint32* pTriangleIndexArray)
 {
 	return false;
+}
+
+boolean CVisualisationContext::getObjectAxisAlignedBoundingBox(const CIdentifier& rIdentifier, float32* pMinimum, float32* pMaximum)
+{
+	return m_pSimulatedBox->getObjectAxisAlignedBoundingBox(rIdentifier, pMinimum, pMaximum);
 }
 
 boolean CVisualisationContext::getObjectVertexCount(const CIdentifier& rIdentifier, uint32& ui32VertexCount) const

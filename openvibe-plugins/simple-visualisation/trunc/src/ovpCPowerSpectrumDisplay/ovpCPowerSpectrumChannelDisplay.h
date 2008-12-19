@@ -15,7 +15,7 @@ namespace OpenViBEPlugins
 		class CPowerSpectrumDisplayView;
 
 		/**
-		 * Displays power spectrum of a given channel.		  
+		 * Displays power spectrum of a given channel.
 		 */
 		class CPowerSpectrumChannelDisplay
 		{
@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Get channel widget
-			 * \return Pointer to GtkWidget 
+			 * \return Pointer to GtkWidget
 			 */
 			::GtkWidget* getWidget() const;
 
@@ -48,7 +48,7 @@ namespace OpenViBEPlugins
 			 */
 			GtkWidget* getSpectrumDisplay() const;
 
-			/** 
+			/**
 			 * \brief Toggle channel visibility
 			 * \param bActive Visibility flag
 			 */
@@ -67,7 +67,7 @@ namespace OpenViBEPlugins
 			 */
 			void drawSpectrum();
 
-			/** 
+			/**
 			 * \brief Draws left ruler (amplitude scale)
 			 */
 			void drawLeftRuler();
@@ -131,7 +131,7 @@ namespace OpenViBEPlugins
 			GtkWidget* m_pLeftRuler;
 			//Gdk graphics context
 			GdkGC* m_pGraphicsContext;
-			//Power spectrum database 
+			//Power spectrum database
 			CPowerSpectrumDatabase* m_pDatabase;
 			//Channel index
 			OpenViBE::uint32 m_ui32Channel;
@@ -154,4 +154,3 @@ namespace OpenViBEPlugins
 };
 
 #endif
-

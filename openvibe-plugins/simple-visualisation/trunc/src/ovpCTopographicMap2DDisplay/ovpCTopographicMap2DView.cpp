@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include <sstream>
-#include <string.h>
 
 #include <math.h>
 
@@ -15,6 +14,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
+using namespace OpenViBE::Kernel;
 
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
@@ -37,7 +37,7 @@ namespace OpenViBEPlugins
 		static gboolean resizeCallback(::GtkWidget* pWidget, ::GtkAllocation* pAllocation, gpointer data);
 		static void toggleElectrodesCallback(::GtkWidget* pWidget, gpointer data);
 		static void setProjectionCallback(::GtkWidget* pWidget, gpointer data);
-		static void setViewCallback(::GtkWidget* pWidget,	gpointer data);
+		static void setViewCallback(::GtkWidget* pWidget, gpointer data);
 		static void setInterpolationCallback(::GtkWidget* pWidget, gpointer data);
 		static void setDelayCallback(::GtkRange *range, gpointer data);
 
@@ -51,7 +51,7 @@ namespace OpenViBEPlugins
 			,m_ui32ClipmaskWidth(0)
 			,m_ui32ClipmaskHeight(0)
 			,m_pClipmaskGC(NULL)
-			,m_pVisibleRegion(NULL)			
+			,m_pVisibleRegion(NULL)
 			,m_ui32CurrentProjection(TopographicMap2DProjection_Radial)
 			,m_pAxialProjectionButton(NULL)
 			,m_pRadialProjectionButton(NULL)
@@ -197,7 +197,7 @@ namespace OpenViBEPlugins
 		{
 			//destroy clip mask
 			if(m_pClipmask)
-			{				
+			{
 				g_object_unref(m_pClipmask);
 				m_pClipmask = NULL;
 			}
@@ -270,9 +270,9 @@ namespace OpenViBEPlugins
 			{
 				if(m_bNeedResize == true)
 				{
-					resizeData();					
+					resizeData();
 				}
-								
+
 				//draw face
 				drawFace(0, 0, m_ui32HeadWindowWidth, m_ui32HeadWindowHeight);
 
@@ -281,7 +281,7 @@ namespace OpenViBEPlugins
 
 				//draw palette
 				drawPalette(0, m_ui32HeadWindowHeight, m_ui32PaletteWindowWidth, m_ui32PaletteWindowHeight);
-				
+
 				//don't clear screen at every redraw, it introduces major flickering
 				//gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
 			}
@@ -465,9 +465,9 @@ namespace OpenViBEPlugins
 			{
 				return;
 			}
-			
+
 			boolean l_bDrawText = true;
-			
+
 			//retrieve text size
 			PangoLayout* l_pText = gtk_widget_create_pango_layout(GTK_WIDGET(m_pDrawingArea), "0");
 			gint l_iTextHeight;
@@ -662,7 +662,7 @@ namespace OpenViBEPlugins
 				(gint)(64 * (m_f32SkullOutlineEndAngle-m_f32SkullOutlineStartAngle)));
 
 			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
-			
+
 			gdk_gc_set_clip_origin(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], (gint)m_ui32SkullX, (gint)m_ui32SkullY);
 
 			gdk_gc_set_clip_mask(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], m_pClipmask);
@@ -876,24 +876,24 @@ namespace OpenViBEPlugins
 				m_ui32ClipmaskHeight = m_ui32SkullFillBottomPointY - m_ui32SkullY + 1;
 			}
 
-			//free existing clipmask, if any			
+			//free existing clipmask, if any
 			if(m_pClipmaskGC != NULL)
 			{
-				g_object_unref(m_pClipmaskGC);				
+				g_object_unref(m_pClipmaskGC);
 			}
 			if(m_pClipmask != NULL)
-			{				
-				g_object_unref(m_pClipmask);				
-			}			
-			
+			{
+				g_object_unref(m_pClipmask);
+			}
+
 			//allocate clipmask
 			m_pClipmask = gdk_pixmap_new(m_pDrawingArea->window, m_ui32ClipmaskWidth, m_ui32ClipmaskHeight, 1);
 			m_pClipmaskGC = gdk_gc_new(GDK_DRAWABLE(m_pClipmask));
 			gdk_gc_set_colormap(m_pClipmaskGC, gdk_gc_get_colormap(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)]));
-			
+
 			//redraw it
 			redrawClipmask();
-			
+
 			//allocate main pixmap
 			//TODO!
 
@@ -945,7 +945,7 @@ namespace OpenViBEPlugins
 			computeSamplesNormalizedCoordinates(true);
 
 			//resizing completed
-			m_bNeedResize = false;			
+			m_bNeedResize = false;
 		}
 
 		void CTopographicMap2DView::redrawClipmask()
@@ -985,13 +985,13 @@ namespace OpenViBEPlugins
 				l_pPolygon[3].x = m_ui32SkullFillLeftPointX - m_ui32SkullX;
 				l_pPolygon[3].y = m_ui32SkullFillLeftPointY - m_ui32SkullY - 2;
 				gdk_draw_polygon(
-					m_pClipmask, 
-					m_pClipmaskGC, 
-					TRUE, 
-					l_pPolygon, 
+					m_pClipmask,
+					m_pClipmaskGC,
+					TRUE,
+					l_pPolygon,
 					4);
 			}
-			
+
 			//restore default black color
 			gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oBlack);
 
@@ -999,8 +999,8 @@ namespace OpenViBEPlugins
 			if(m_pVisibleRegion != NULL)
 			{
 				gdk_region_destroy(m_pVisibleRegion);
-			}			
-			m_pVisibleRegion = gdk_drawable_get_visible_region(GDK_DRAWABLE(m_pClipmask));		
+			}
+			m_pVisibleRegion = gdk_drawable_get_visible_region(GDK_DRAWABLE(m_pClipmask));
 		}
 
 		void CTopographicMap2DView::refreshPotentials()
@@ -1033,7 +1033,7 @@ namespace OpenViBEPlugins
 				}
 
 				uint32 l_ui32Index=m_oSampleValues[i];
-				if(l_ui32Index>12) 
+				if(l_ui32Index>12)
 				{
 #if defined OVP_OS_Windows
 #ifndef NDEBUG
@@ -1368,10 +1368,10 @@ namespace OpenViBEPlugins
 						if(gdk_region_point_in(m_pVisibleRegion, (int)(l_f32ClosestX-m_ui32SkullX), (int)(l_f32ClosestY-m_ui32SkullY)))
 						{
 							if(bComputeCoordinates == true)
-							{								
+							{
 								m_oSample2DCoordinates[l_ui32CurSample].first = j*m_ui32CellSize;
 								m_oSample2DCoordinates[l_ui32CurSample].second= i*m_ui32CellSize;
-								
+
 								//compute normalized coordinates to be fed to spherical spline algorithm
 								//----------------------------------------------------------------------
 								uint32 l_ui32BaseIndex = 3* l_ui32CurSample;
@@ -1404,7 +1404,7 @@ namespace OpenViBEPlugins
 										{
 											l_f32ScalingFactor = sinf(l_f32Theta) / l_f32Theta;
 										}
-										
+
 										//x = sin(theta) / theta * X
 										*(l_pBuffer + l_ui32BaseIndex) = l_f32ScalingFactor * l_f32X;
 										//y = sin(theta) / theta * Y
