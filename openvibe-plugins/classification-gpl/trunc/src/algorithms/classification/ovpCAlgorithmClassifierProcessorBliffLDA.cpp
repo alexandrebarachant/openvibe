@@ -1,4 +1,4 @@
-#include "ovpCAlgorithmClassifierProcessorLDA.h"
+#include "ovpCAlgorithmClassifierProcessorBliffLDA.h"
 
 #if defined TARGET_HAS_ThirdPartyBLiFF
 
@@ -15,9 +15,9 @@ using namespace OpenViBEPlugins::Local;
 
 using namespace OpenViBEToolkit;
 
-#define _ParameterFile_ "./CAlgorithmClassifierProcessorLDA-config.tmp"
+#define _ParameterFile_ "./CAlgorithmClassifierProcessorBliffLDA-config.tmp"
 
-boolean CAlgorithmClassifierProcessorLDA::classify(const IFeatureVector& rFeatureVector, float64& rf64Class, IVector& rClassificationValues)
+boolean CAlgorithmClassifierProcessorBliffLDA::classify(const IFeatureVector& rFeatureVector, float64& rf64Class, IVector& rClassificationValues)
 {
 	bliff::FeatureVector l_oFeatureVector(rFeatureVector.getSize(), 0);
 	for(uint32 j=0; j<rFeatureVector.getSize(); j++)
@@ -31,10 +31,10 @@ boolean CAlgorithmClassifierProcessorLDA::classify(const IFeatureVector& rFeatur
 
 	itpp::Vec<double> l_vResult;
 	double l_dResult;
-	bliff::CLDAClassifier l_oLDAClassifier;
-	l_oLDAClassifier.readParams(_ParameterFile_);
-	l_vResult=l_oLDAClassifier.classify(l_oFeatureVector);
-	l_dResult=l_oLDAClassifier.assign(l_oFeatureVector);
+	bliff::CLDAClassifier l_oBliffLDAClassifier;
+	l_oBliffLDAClassifier.readParams(_ParameterFile_);
+	l_vResult=l_oBliffLDAClassifier.classify(l_oFeatureVector);
+	l_dResult=l_oBliffLDAClassifier.assign(l_oFeatureVector);
 
 	rf64Class=l_dResult;
 	rClassificationValues.setSize(l_vResult.size());
@@ -46,7 +46,7 @@ boolean CAlgorithmClassifierProcessorLDA::classify(const IFeatureVector& rFeatur
 	return true;
 }
 
-boolean CAlgorithmClassifierProcessorLDA::loadConfiguration(const IMemoryBuffer& rMemoryBuffer)
+boolean CAlgorithmClassifierProcessorBliffLDA::loadConfiguration(const IMemoryBuffer& rMemoryBuffer)
 {
 	m_oConfiguration.setSize(0, true);
 	m_oConfiguration.append(rMemoryBuffer);

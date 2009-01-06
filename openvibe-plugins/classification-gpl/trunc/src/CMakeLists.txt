@@ -11,6 +11,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
+INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 
