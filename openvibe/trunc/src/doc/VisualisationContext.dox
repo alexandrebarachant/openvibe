@@ -30,3 +30,4 @@ material myMaterial
 
 Of course, more complex materials can be used with objects using vertex colors. If the model is textured, one should ensure 
 the texture is modulated with the diffuse color.
+*/
