@@ -95,6 +95,7 @@
  *     - \subpage Doc_DesignerTutorial1
  *     - \subpage Doc_DesignerTutorial2
  *     - \subpage Doc_DesignerTutorial3
+ *     - \subpage Doc_DesignerTutorial4 (should be completed - YR)
  *
  * <hr>
  *
@@ -107,7 +108,10 @@
  *
  * \subpage Doc_OngoingDocumentation :
  * - \subpage Doc_BoxAlgorithmConnectorTypes (should be completed - YR)
- * - \subpage Doc_SoftwareArchitectureOverview (should be completed with ieee vr paper, source structure should be removed - YR)
+ * - \subpage Doc_SoftwareArchitectureOverview (should be completed - YR)
+ * - \subpage Doc_VisualisationManager (orphaned page - VD)
+ * - \subpage Doc_VisualisationContext (orphaned page - VD)
+ * - \subpage Doc_DataVisualisation (orphaned page - VD)
  *
  * <hr>
  *
@@ -148,6 +152,7 @@
  *     - \subpage Doc_DesignerTutorial1
  *     - \subpage Doc_DesignerTutorial2
  *     - \subpage Doc_DesignerTutorial3
+ *     - \subpage Doc_DesignerTutorial4
  */
 
 /**
@@ -161,6 +166,9 @@
  * \page Doc_OngoingDocumentation Ongoing documentation
  * - \subpage Doc_BoxAlgorithmConnectorTypes
  * - \subpage Doc_SoftwareArchitectureOverview
+ * - \subpage Doc_VisualisationManager
+ * - \subpage Doc_VisualisationContext
+ * - \subpage Doc_DataVisualisation
  */
 
 /**
@@ -178,6 +186,7 @@
  *   - \subpage Doc_DesignerTutorial1
  *   - \subpage Doc_DesignerTutorial2
  *   - \subpage Doc_DesignerTutorial3
+ *   - \subpage Doc_DesignerTutorial4
  */
 
 /**
@@ -185,4 +194,5 @@
  * - \subpage Doc_DesignerTutorial1
  * - \subpage Doc_DesignerTutorial2
  * - \subpage Doc_DesignerTutorial3
+ * - \subpage Doc_DesignerTutorial4
  */
