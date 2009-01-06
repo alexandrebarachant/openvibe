@@ -481,7 +481,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 				<< " * \\subsection Doc_" << l_sFilename.c_str() << "_Input_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
 				<< " * @Doc_" << l_sFilename.c_str() << "_Input" << i+1 << "_Content@\n"
 				<< " *\n"
-				<< " * - Type identifier of this input is \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" <em>" << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
+				<< " * - Type identifier : \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" <em>" << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
 				<< " *\n";
 
 			l_oFilePart
@@ -521,7 +521,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 				<< " * \\subsection Doc_" << l_sFilename.c_str() << "_Output_" << i+1 << " " << i+1 << ". " << l_sName.toASCIIString() << "\n"
 				<< " * @Doc_" << l_sFilename.c_str() << "_Output" << i+1 << "_Content@\n"
 				<< " *\n"
-				<< " * - Type identifier of this output is \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" <em>" << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
+				<< " * - Type identifier : \\ref Doc_Streams_" << transform(l_sTypeName.toASCIIString()).c_str() << " \"" << l_sTypeName.toASCIIString() << "\" <em>" << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
 				<< " *\n";
 
 			l_oFilePart
@@ -564,9 +564,9 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 				<< " * @Doc_" << l_sFilename.c_str() << "_Setting" << i+1 << "_Content@\n"
 				<< " *\n"
 // "\\ref Doc_Types_" << transform(l_sTypeName.toASCIIString()).c_str()
-				<< " * - Type identifier of this setting is <em> " << l_sTypeName.toASCIIString() << " " << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
+				<< " * - Type identifier : <em> " << l_sTypeName.toASCIIString() << " " << l_oTypeIdentifier.toString().toASCIIString() << "</em>\n"
 				<< " *\n"
-				<< " * - Default value of this setting is [ <em>" << l_sDefaultValue.toASCIIString() << "</em> ]\n"
+				<< " * - Default value : [ <em>" << l_sDefaultValue.toASCIIString() << "</em> ]\n"
 				<< " *\n";
 
 			l_oFilePart

@@ -107,6 +107,7 @@ CString CSettingCollectionHelper::getValueBoolean(::GtkWidget* pWidget)
 CString CSettingCollectionHelper::getValueInteger(::GtkWidget* pWidget)
 {
 	::GtkSpinButton* l_pWidget=GTK_SPIN_BUTTON(pWidget);
+	gtk_spin_button_update(l_pWidget);
 	int l_iValue=gtk_spin_button_get_value_as_int(l_pWidget);
 	char l_sValue[1024];
 	sprintf(l_sValue, "%i", l_iValue);
@@ -116,6 +117,7 @@ CString CSettingCollectionHelper::getValueInteger(::GtkWidget* pWidget)
 CString CSettingCollectionHelper::getValueFloat(::GtkWidget* pWidget)
 {
 	::GtkSpinButton* l_pWidget=GTK_SPIN_BUTTON(pWidget);
+	gtk_spin_button_update(l_pWidget);
 	double l_fValue=gtk_spin_button_get_value_as_float(l_pWidget);
 	char l_sValue[1024];
 	sprintf(l_sValue, "%f", l_fValue);
