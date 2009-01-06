@@ -151,7 +151,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 		}
 		else
 		{
-			this->getLogManager() << LogLevel_Trace << "Received train stimulation\n";
+			this->getLogManager() << LogLevel_Info << "Received train stimulation\n";
 
 			uint32 l_ui32FeatureVectorCount=m_vFeatureVector.size();
 			uint32 l_ui32FeatureVectorSize=m_vFeatureVector[0].m_pFeatureVectorMatrix->getBufferElementCount();
@@ -193,7 +193,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 
 			m_pClassifierTrainer->process(OVTK_Algorithm_ClassifierTrainer_InputTriggerId_Train);
 
-			this->getLogManager() << LogLevel_Trace << "Training finished\n";
+			this->getLogManager() << LogLevel_Info << "Training finished\n";
 
 			m_pClassifierTrainer->process(OVTK_Algorithm_ClassifierTrainer_InputTriggerId_SaveConfiguration);
 
