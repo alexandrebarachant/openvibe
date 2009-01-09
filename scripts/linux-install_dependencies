@@ -362,9 +362,9 @@ ov_package_pre_configure_hook_libx11='
 
 ov_package_configure_hook_mesa='
 	pushd * &&
-	$ov_sed -i "84s#INSTALL_DIR = .*#INSTALL_DIR = $ov_target_folder#" configs/default &&
-	$ov_sed -i "23s#X11_INCLUDES = \(.*\)#X11_INCLUDES = -I$ov_target_folder_include \1#" configs/linux &&
-	$ov_sed -i "37s#EXTRA_LIB_PATH = \(.*\)#EXTRA_LIB_PATH = -L$ov_target_folder_lib \1#" configs/linux &&
+	$ov_sed -i "s#^INSTALL_DIR = .*#INSTALL_DIR = $ov_target_folder#" configs/default &&
+	$ov_sed -i "s#^X11_INCLUDES = \(.*\)#X11_INCLUDES = -I$ov_target_folder_include \1#" configs/linux &&
+	$ov_sed -i "s#^EXTRA_LIB_PATH = \(.*\)#EXTRA_LIB_PATH = -L$ov_target_folder_lib \1#" configs/linux &&
 	popd'
 if [ "$ov_machine" == "x86_64" ]; then
 ov_package_make_hook_mesa='
@@ -501,6 +501,7 @@ ov_package_configure_hook_ois='
 	$ov_sed -i "1i#include <stdlib.h>" includes/config.h.in &&
 	$ov_sed -i "1i#include <string.h>" includes/config.h.in &&
 	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" &&
+	$ov_sed -i "s/ECHO=/echo=/g" libtool &&
 	popd'
 
 # http://www.ogre3d.org/phpBB2/viewtopic.php?t=33562

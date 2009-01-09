@@ -4,6 +4,8 @@
 #include "ovdCInterfacedScenario.h"
 #include "ovdCPlayerVisualisation.h"
 
+#include <string.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBEDesigner;

@@ -8,6 +8,9 @@
 #include <errno.h>
 #endif
 
+#include <string.h>
+#include <stdlib.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;

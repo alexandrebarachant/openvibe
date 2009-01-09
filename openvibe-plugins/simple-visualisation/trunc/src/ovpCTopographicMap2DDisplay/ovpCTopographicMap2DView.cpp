@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include <math.h>
+#include <string.h>
 
 #ifdef OVP_OS_Windows
 #ifndef NDEBUG

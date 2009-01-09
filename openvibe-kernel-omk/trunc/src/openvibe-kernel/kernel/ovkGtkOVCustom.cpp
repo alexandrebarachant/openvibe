@@ -19,14 +19,17 @@
 //
 //     3. This notice may not be removed or altered from any source distribution.
 //
+#include "ovkIGtkOVCustomHandler.h"
+#include "ovkGtkOVCustom.h"
+
 #if defined( __WIN32__ ) || defined( _WIN32 )
 #  include <gdk/gdkwin32.h>
 #else
 #  include <gdk/gdkx.h>
 #endif
 
-#include "ovkIGtkOVCustomHandler.h"
-#include "ovkGtkOVCustom.h"
+#include <stdlib.h>
+#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

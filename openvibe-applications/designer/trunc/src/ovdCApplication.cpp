@@ -9,6 +9,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <string.h>
+
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.glade"
 
 #include "ovdCDesignerVisualisation.h"

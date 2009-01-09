@@ -3,6 +3,8 @@
 #include "../ovkCObjectVisitorContext.h"
 
 #include <iostream>
+#include <stdlib.h>
+#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

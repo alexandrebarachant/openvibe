@@ -1,6 +1,8 @@
 #include "ovkCScenarioManager.h"
 #include "ovkCScenario.h"
 
+#include <stdlib.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
