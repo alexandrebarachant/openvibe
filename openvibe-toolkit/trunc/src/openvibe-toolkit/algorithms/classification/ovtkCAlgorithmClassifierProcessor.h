@@ -18,7 +18,7 @@
 
 namespace OpenViBEToolkit
 {
-	class CAlgorithmClassifierProcessor : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
+	class OVTK_API CAlgorithmClassifierProcessor : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
 	{
 	public:
 
@@ -31,7 +31,7 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >, OVTK_ClassId_Algorithm_ClassifierProcessor);
 	};
 
-	class CAlgorithmClassifierProcessorDesc : public OpenViBE::Plugins::IAlgorithmDesc
+	class OVTK_API CAlgorithmClassifierProcessorDesc : public OpenViBE::Plugins::IAlgorithmDesc
 	{
 	public:
 

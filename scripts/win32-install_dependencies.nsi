@@ -211,8 +211,8 @@ Section "IT++"
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
 
-  IfFileExists "arch\openvibe-dependency-itpp-4.0.1.zip" no_need_to_download_itpp
-  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/itpp-4.0.1.zip "arch\openvibe-dependency-itpp-4.0.1.zip"
+  IfFileExists "arch\openvibe-dependency-itpp-4.0.6.zip" no_need_to_download_itpp
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/itpp-4.0.6.zip "arch\openvibe-dependency-itpp-4.0.6.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
@@ -221,7 +221,7 @@ Section "IT++"
 no_need_to_download_itpp:
 
   IfFileExists "itpp" no_need_to_install_itpp
-  ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.1.zip" "itpp"
+  ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.6.zip" "itpp"
 
 no_need_to_install_itpp:
 
