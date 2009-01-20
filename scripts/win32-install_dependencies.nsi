@@ -24,6 +24,11 @@
 
   !insertmacro MUI_LANGUAGE "English"
 
+;Installer and uninstaller icons
+
+  Icon "${NSISDIR}\Contrib\Graphics\Icons\box-install.ico"
+  UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\box-uninstall.ico"
+
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
@@ -57,8 +62,9 @@ base_go_on:
 
   ;clears dependencies file
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" w
-  FileWrite $0 "@echo off$\n"
-  FileWrite $0 "set OV_DEP_MSSDK=$r0$\n"
+  FileWrite $0 "@echo off$\r$\n"
+  FileWrite $0 "\r$\n"
+  FileWrite $0 "set OV_DEP_MSSDK=$r0$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -88,7 +94,7 @@ no_need_to_install_cmake:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.6.2-win32-x86$\n"
+  FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.6.2-win32-x86$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -118,7 +124,7 @@ no_need_to_install_expat:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_EXPAT=$INSTDIR\expat$\n"
+  FileWrite $0 "SET OV_DEP_EXPAT=$INSTDIR\expat$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -148,7 +154,7 @@ no_need_to_install_boost:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\boost\boost_1_34_0$\n"
+  FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\boost\boost_1_34_0$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -177,27 +183,27 @@ no_need_to_download_glade:
 no_need_to_install_glade:
 
   FileOpen $0 "$INSTDIR\gtk\lib\pkgconfig\libglade-2.0.pc" w
-  FileWrite $0 "prefix=$INSTDIR\gtk$\n"
-  FileWrite $0 "exec_prefix=$${prefix}$\n"
-  FileWrite $0 "libdir=$${exec_prefix}/lib$\n"
-  FileWrite $0 "includedir=$${prefix}/include$\n"
-  FileWrite $0 "$\n"
-  FileWrite $0 "# so people can do $\"pkg-config --variable moduledir libglade-2.0$\"$\n"
-  FileWrite $0 "# (which is broken - users can now use the LIBGLADE_MODULE_PATH$\n"
-  FileWrite $0 "# environment variable$\n"
-  FileWrite $0 "moduledir=$${libdir}/libglade/2.0$\n"
-  FileWrite $0 "$\n"
-  FileWrite $0 "Name: Libglade$\n"
-  FileWrite $0 "Description: a library for dynamically loading GLADE interface files$\n"
-  FileWrite $0 "Version: 2.5.1$\n"
-  FileWrite $0 "Requires: gtk+-2.0 libxml-2.0$\n"
-  FileWrite $0 "Libs: -L$${libdir} -lglade-2.0$\n"
-  FileWrite $0 "Cflags: -I$${includedir}/libglade-2.0$\n"
+  FileWrite $0 "prefix=$INSTDIR\gtk$\r$\n"
+  FileWrite $0 "exec_prefix=$${prefix}$\r$\n"
+  FileWrite $0 "libdir=$${exec_prefix}/lib$\r$\n"
+  FileWrite $0 "includedir=$${prefix}/include$\r$\n"
+  FileWrite $0 "$\r$\n"
+  FileWrite $0 "# so people can do $\"pkg-config --variable moduledir libglade-2.0$\"$\r$\n"
+  FileWrite $0 "# (which is broken - users can now use the LIBGLADE_MODULE_PATH$\r$\n"
+  FileWrite $0 "# environment variable$\r$\n"
+  FileWrite $0 "moduledir=$${libdir}/libglade/2.0$\r$\n"
+  FileWrite $0 "$\r$\n"
+  FileWrite $0 "Name: Libglade$\r$\n"
+  FileWrite $0 "Description: a library for dynamically loading GLADE interface files$\r$\n"
+  FileWrite $0 "Version: 2.5.1$\r$\n"
+  FileWrite $0 "Requires: gtk+-2.0 libxml-2.0$\r$\n"
+  FileWrite $0 "Libs: -L$${libdir} -lglade-2.0$\r$\n"
+  FileWrite $0 "Cflags: -I$${includedir}/libglade-2.0$\r$\n"
   FileClose $0
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_GLADE=$INSTDIR\gtk$\n"
+  FileWrite $0 "SET OV_DEP_GLADE=$INSTDIR\gtk$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -227,7 +233,7 @@ no_need_to_install_itpp:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\itpp$\n"
+  FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\itpp$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -257,7 +263,7 @@ no_need_to_install_obt:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_OBT=$INSTDIR\obt$\n"
+  FileWrite $0 "SET OV_DEP_OBT=$INSTDIR\obt$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -287,8 +293,8 @@ no_need_to_install_ogre:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre$\n"
-  FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre$\n"
+  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre$\r$\n"
+  FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -318,10 +324,10 @@ no_need_to_install_openmask:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_OPENMASK=$INSTDIR\openmask$\n"
-  FileWrite $0 "SET OV_DEP_DSI=$INSTDIR\openmask$\n"
-  FileWrite $0 "SET OMK_HOME=$INSTDIR\openmask$\n"
-  FileWrite $0 "SET OMK_BIN=$INSTDIR\openmask$\n"
+  FileWrite $0 "SET OV_DEP_OPENMASK=$INSTDIR\openmask$\r$\n"
+  FileWrite $0 "SET OV_DEP_DSI=$INSTDIR\openmask$\r$\n"
+  FileWrite $0 "SET OMK_HOME=$INSTDIR\openmask$\r$\n"
+  FileWrite $0 "SET OMK_BIN=$INSTDIR\openmask$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -351,8 +357,8 @@ no_need_to_install_vrpn:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\vrpn$\n"
-  FileWrite $0 "SET VRPNROOT=$INSTDIR\vrpn$\n"
+  FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\vrpn$\r$\n"
+  FileWrite $0 "SET VRPNROOT=$INSTDIR\vrpn$\r$\n"
   FileClose $0
 
 SectionEnd

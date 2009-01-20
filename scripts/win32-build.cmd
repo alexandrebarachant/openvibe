@@ -53,7 +53,7 @@ echo.
 REM #######################################################################################
 
 echo.
-echo Copying filed to 'dist' folder, this can take a few seconds...
+echo Copying files to 'dist' folder, this can take a few seconds...
 echo.
 
 rmdir /s /q %target_dist%         > NULL 2<&1
@@ -108,7 +108,9 @@ for /F %%s in (%OpenViBE_build_order%) do (
 	xcopy /q /s %%s\doc\*.*            %target_dist%\doc     > NULL 2<&1
 )
 
+echo.
 echo Copy successfully completed !
+echo.
 
 goto terminate_success
 

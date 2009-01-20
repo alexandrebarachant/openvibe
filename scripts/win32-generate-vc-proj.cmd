@@ -37,6 +37,8 @@ echo which is 'win32-build.cmd's task. Additionnaly, note that the platform has 
 echo compiled entirely at least once with 'win32-build.cmd' before thinking of generating
 echo VCProj files.
 echo.
+echo VCProj files and solutions will go in local-tmp/visual folder.
+echo.
 echo If you don't understand this notice, you should consider not using this script and
 echo press CTRL+C to abort. Thank you.
 echo.
