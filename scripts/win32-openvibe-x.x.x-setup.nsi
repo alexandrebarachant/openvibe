@@ -6,7 +6,8 @@
   OutFile "openvibe-x.x.x-setup.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES\openvibe-x.x.x"
+  InstallDir "$PROGRAMFILES\openvibe"
+  Var OLDINSTDIR
 
 ;Interface Settings
 
@@ -38,7 +39,34 @@
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
+Function .onInit
+
+  ReadRegStr $0 HKLM SOFTWARE\openvibe InstallDir
+
+  ${If} $0 != ""
+    IfFileExists "$0\Uninstall.exe" +1 +5
+      MessageBox MB_YESNO "A previous installation of OpenViBE is installed under $0.$\nContinuing the install procedure will remove previous installation of OpenViBE (including all files you eventually added in the installation directory).$\nWould you like to accept this removal and continue on installation process ?" IDNO +1 IDYES +2
+	    Abort
+    StrCpy $OLDINSTDIR $0
+    StrCpy $INSTDIR $0
+  ${EndIf}
+
+FunctionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
 Section "-OpenViBE"
+
+  ${If} $OLDINSTDIR != ""
+    RMDir /r $OLDINSTDIR
+    RMDir /r "$SMPROGRAMS\OpenViBE"
+  ${EndIf}
+
+  SetOutPath $INSTDIR
+  WriteRegStr HKLM "SOFTWARE\openvibe" "InstallDir" "$INSTDIR"
+  WriteUninstaller Uninstall.exe
 
   SetOutPath $INSTDIR\dependencies\arch
   File ..\dependencies\arch\openvibe-dependency-boost-1.34.0.zip
@@ -134,7 +162,6 @@ Section "-OpenViBE"
   FileWrite $0 "$\r$\n"
   FileWrite $0 "pause$\r$\n"
   FileClose $0
-  WriteUninstaller Uninstall.exe
 
   FileOpen $0 "$INSTDIR\openvibe-plugin-inspector.cmd" w
   FileWrite $0 "@echo off$\r$\n"
@@ -145,39 +172,19 @@ Section "-OpenViBE"
   FileWrite $0 "$\r$\n"
   FileWrite $0 "pause$\r$\n"
   FileClose $0
-  WriteUninstaller Uninstall.exe
 
   CreateDirectory "$SMPROGRAMS\OpenViBE"
   CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe designer.lnk"           "$INSTDIR\openvibe-designer.cmd"           "" "%SystemRoot%\system32\shell32.dll" 137
   CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe acquisition server.lnk" "$INSTDIR\openvibe-acquisition-server.cmd" "" "%SystemRoot%\system32\shell32.dll" 18
   CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe id generator.lnk"       "$INSTDIR\openvibe-id-generator.cmd"       "" "%SystemRoot%\system32\shell32.dll" 57
   CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe plugin inspector.lnk"   "$INSTDIR\openvibe-plugin-inspector.cmd"   "" "%SystemRoot%\system32\shell32.dll" 55
+  CreateShortCut "$SMPROGRAMS\OpenViBE\uninstall.lnk"                   "$INSTDIR\Uninstall.exe"
 
 SectionEnd
 
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
 Section "Uninstall"
 
-  Delete $INSTDIR\Uninstall.exe
   RMDir /r $INSTDIR
-
-  RMDir /r "$INSTDIR\gtk"
-  RMDir /r "$INSTDIR\boost"
-  RMDir /r "$INSTDIR\expat"
-  RMDir /r "$INSTDIR\cmake"
-  RMDir /r "$INSTDIR\itpp"
-  RMDir /r "$INSTDIR\obt"
-  RMDir /r "$INSTDIR\ogre"
-  RMDir /r "$INSTDIR\openmask"
-  RMDir /r "$INSTDIR\vrpn"
-
-  Delete "$INSTDIR\..\scripts\win32-dependencies.cmd"
-
-  Delete "$INSTDIR\Uninstall.exe"
-
-  RMDir "$INSTDIR"
+  RMDir /r "$SMPROGRAMS\OpenViBE"
 
 SectionEnd
