@@ -1,0 +1,668 @@
+/**
+ * \page Doc_Tutorial_Developer_SignalProcessing Tutorial: creating a signal processing algorithm and use it in a box
+ *
+ * In this tutorial, we will try to demonstrate how one can
+ * add a new box algorithm in §OpenViBE§. There are two ways
+ * §OpenViBE§ can be expanded. One is to write new algorithms,
+ * that are only used by programmers in order to perform a
+ * specific operation. The second way to expand §OpenViBE§ is
+ * to create new boxes that can be used by authors in scenarios.
+ *
+ * The cleanest way to do is to write an algorithm that a box
+ * algorithm uses. This ensures that box developpers will be
+ * able to reuse an existing algorithm, while the algorithm itself
+ * is exposed to the author thanks to the corresponding box
+ * algorithm.
+ *
+ * In this tutorial, we will create a basic signal processing algorithm
+ * and use it in a box. The tutorial is divided in four parts :
+ * - \ref Doc_Tutorial_Developer_SignalProcessing_AlgorithmHeader
+ * - \ref Doc_Tutorial_Developer_SignalProcessing_AlgorithmImplementation
+ * - \ref Doc_Tutorial_Developer_SignalProcessing_BoxAlgorithmHeader
+ * - \ref Doc_Tutorial_Developer_SignalProcessing_BoxAlgorithmImplementation
+ *
+ * We hope you will be quickly able to build your own plugins
+ * for §OpenViBE§ based on this quickstart tutorial.
+ *
+ * \section Doc_Tutorial_Developer_SignalProcessing_AlgorithmHeader Algorithm definition
+ *
+ * Here is the file containing the algorithm definition, we will detail each line of the file later on.
+ *
+ * \include "ovpCAlgorithmSignalProcessingAlgorithm.h"
+ * \dontinclude "ovpCAlgorithmSignalProcessingAlgorithm.h"
+ *
+ * First of all, we will include every identifier / define needed
+ * for this plugin to work. OpenViBE toolkit will help in the
+ * implementation so we include it also
+ * \until ovtk_all
+ *
+ * In order to avoir name collisions, we like to define namespaces
+ * All standard OpenViBE plugins are defined in sub namespaces of
+ * OpenViBEPlugins.
+ * \until {
+ * \until {
+ *
+ * Now we are woking in OpenViBEPlugins::Samples, we have
+ * to define two classes : the descriptor and the algorithm
+ * itself. The descriptor is given to the kernel at startup
+ * so the kernel has informations about the algorithm and
+ * can create instances of this algorithm.
+ *
+ * The algorithm implementation is made easier thanks to
+ * the OpenViBEToolkit::TAlgorithm template that implements
+ * several basic stuffs all algorithm want such as direct
+ * access to managers etc...
+ * \until release
+ *
+ * An algorithm is roughly composed of three interesing
+ * functions : initialize, uninitialize and process.
+ * Its life cycle looks something like this :
+ * one initialize call, several process calls and one
+ * uninitialize call. Each of those functions has to
+ * return a boolean value reflecting the validity of
+ * the algorithm. If any of those functions returns
+ * false, the kernel will avoid the next calls to
+ * this algorithm.
+ * \until process
+ *
+ * One common thing for all the OpenViBE classes is
+ * to give them a class identifier. This is easily
+ * done with the _IsDerivedFromClass_Final_ macro.
+ * \until protected
+ *
+ * Our signal processing algorithm takes an input
+ * matrix, processes it and produces an output matrix.
+ * In order to ease the access to the parameters,
+ * our algorithm can embed as many parameter handler
+ * as needed. The parameters are not very easy to
+ * manipulate and the parameter handler proposes
+ * an interface similar to the object owned by the
+ * parameter. Therefore, parameter handlers are a
+ * convenient way of interacting with the parameters.
+ * \until }
+ *
+ * The descriptor describes what this algorithm does,
+ * who created it, what category a human would like it
+ * to see in... It also points out what kind of algorithm
+ * it is able to create thanks to the getCreatedClass
+ * function. The create function creates the actual
+ * algorithm and the getAlgorithmPrototype describes
+ * what the algorithm should look like (inputs, outputs
+ * and triggers).
+ * \until getStockItemName
+ *
+ * Here, the descriptor informs the kernel about what
+ * kind of algorithm can be created with this descriptor.
+ * It also creates instances in the create function.
+ * \until create
+ *
+ * Last function describes the algorithm aspect to the
+ * kernel. It declares each of its inputs, its outputs
+ * and its triggers. Inputs and outputs are parameters
+ * and can easily be manipulated with the parameter
+ * handlers. Triggers are the different way this algorithm
+ * can be used or the different states it can end in.
+ * \until {
+ *
+ * This signal processing algorithm has two parameters :
+ * one input containing the signal matrix to process and
+ * one outptu containing the processed signal. Each of these
+ * parameters is identified by an identifier and a type.
+ * \until addOutputParameter
+ *
+ * This signal processing algorithm also has three triggers.
+ * The first one is an input trigger and is used to notify the
+ * algorithm that the initalization could be perfomed. This
+ * initialization is different than the one at initialize
+ * step. Actually, at when this trigger is activated, the
+ * input matrix description should be filled, which is not
+ * the case at initialize step.
+ * The second trigger also is an input trigger used to
+ * request the actual processing on the input matrix and
+ * to produce an output matrix.
+ * Last trigger is an output trigger used to notify
+ * calling code that everything went smoothly at during actual
+ * signal processing stage.
+ * \until addOutputTrigger
+ *
+ * Finally, the descriptor returns true notifying the
+ * kernel that everything is ok.
+ * \until }
+ *
+ * Of course, the descriptor also has to use the
+ * _IsDerivedFromClass_Final_ macro so to tell
+ * the kernel about its class identifier.
+ * \until endif
+ *
+ * \section Doc_Tutorial_Developer_SignalProcessing_AlgorithmImplementation Algorithm implementation
+ *
+ * Here is the file containing the algorithm implementation, we will detail each line of the file later on.
+ *
+ * \include "ovpCAlgorithmSignalProcessingAlgorithm.cpp"
+ * \dontinclude "ovpCAlgorithmSignalProcessingAlgorithm.cpp"
+ *
+ * First, for easier development, you can declare using some common
+ * namespaces OpenViBE has so you don't have to type them every time.
+ * You should not do this in header files, but it is quite acceptable
+ * in implementation files as OpenViBE does not have conflicting classes
+ * over its namespaces.
+ * \until OpenViBE::Plugins;
+ *
+ * The same can be done for the plugin project namespaces
+ * \until OpenViBEPlugins::Samples
+ *
+ * Now we have two simple functions to implement, namely
+ * initialize and uninitialize. In our case, they simply
+ * consist in connecting or disconnecting our parameter
+ * handlers to the corresponding actual parameter. These
+ * handlers will be used later to ease the parameter
+ * value manipulations.
+ * \until {
+ *
+ * ip_pMatrix is the input matrix pointer of this
+ * algorithm. This parameter has been declared in the
+ * algorithm descriptor as being of type OV_TypeId_Matrix
+ * and with identifier OVP_Algorithm_SignalProcessingAlgorithm_InputParameterId_Matrix
+ * The parameter can be retrieved with the getInputParameter
+ * function and given to the handler. Passed this point,
+ * ip_pMatrix can be used as an IMatrix* pointer using
+ * the -> operator.
+ * \until initialize
+ *
+ * Similarly, op_pMatrix is the output matrix pointer
+ * of this algorithm. The parameter can be retrieved
+ * with the getOutputParameter function and given to the
+ * handler. Passed this point, ip_pMatrix can be used
+ * as an IMatrix* pointer using the -> operator.
+ * \until initialize
+ *
+ * Returning true at the end of this initialize function
+ * tells the kernel everything ran nicely and no error
+ * occured. If you return false here, the kernel will
+ * consider this algorithm as failing and won't call
+ * it anymore in the future.
+ * \until }
+ *
+ * Uninitialization notifies the algorithm that it won't
+ * be used anymore in the future. Thus every initialized
+ * members should be freed and the whole environment should
+ * be left as it was before initialize was called.
+ * For this to be done, we just have to disconnect our
+ * parameter handlers form their respective paramters.
+ * \until {
+ *
+ * op_pMatrix can be disconnected of its parameter
+ * thanks to the uninitialize method. Passed this point,
+ * using operator -> will throw an exception and cause
+ * a crash.
+ * \until uninitialize
+ *
+ * The same can be done to ip_pMatrix
+ * \until uninitialize
+ *
+ * And as for the initialize part, this function
+ * should return true to notify the kernel everything
+ * was just fine.
+ * \until }
+ *
+ * Now we arrive on the real interesting part of
+ * the algorithm, the processing part. This part
+ * is called each time an operation should be
+ * performed by this algorithm. The actual operation
+ * to perform can be specified thanks to the input
+ * triggers. Each input trigger, if existing, should
+ * be examined to perform the correct action. At the
+ * end of the processing, the algorithm can reflect
+ * its status thanks to the output triggers.
+ * \until {
+ *
+ * First of all, we will get come convenient pointers
+ * from the handlers. The handler instances being
+ * templated with IMatrix*, there is an automatic cast
+ * operator to get a pointer on the actual IMatrix* value.
+ * \until op_pMatrix
+ *
+ * Now, we have to examine each of the input triggers
+ * of this algorithm. Those input triggers are declared
+ * in the algorithm prototype. In our case, there are two
+ * of them, namely OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Initialize
+ * and OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Process
+ * \until {
+ *
+ * When this particular trigger is active, we know that
+ * the input matrix contains a complete description
+ * (number of dimension, dimension sizes, labels...)
+ * Our processing function does not change the description
+ * of the input matrix, so the output matrix sould
+ * have the exact same description. This description
+ * can be copied thanks to the copyDescription of the
+ * toolkit. Passed this point, the output matrix will
+ * have the same aspect as the input matrix. However,
+ * its content is unsure.
+ * \until {
+ *
+ * When this particular trigger is active, we know that
+ * the input matrix is completely filled, buffer included.
+ * This is the place for the actual processing to take place.
+ * As an example, we propose to roughly copy the whole signal
+ * buffer and change the first sample of each channel to 0.
+ * \until }
+ *
+ * Now we have finished with the actual processing part,
+ * the state can be exposed activating output triggers.
+ * This output trigger state will be accessible from the
+ * code that called this algorithm' process function.
+ * Therefore, the OVP_Algorithm_SignalProcessingAlgorithm_OutputTriggerId_ProcessDone
+ * is activated.
+ * \until }
+ *
+ * Finally, we should return true to notify the kernel that
+ * no error occured during this processing step. If false is
+ * returned, the kernel won't ever call this algorithm anymore.
+ * \until }
+ *
+ * \section Doc_Tutorial_Developer_SignalProcessing_BoxAlgorithmHeader Box algorithm definition
+ *
+ * Here is the file containing the box algorithm definition, we will detail each line of the file later on.
+ *
+ * \include "ovpCBoxAlgorithmSignalProcessingBoxAlgorithm.h"
+ * \dontinclude "ovpCBoxAlgorithmSignalProcessingBoxAlgorithm.h"
+ *
+ * First of all, we will include every identifier / define needed
+ * for this plugin to work. OpenViBE toolkit will help in the
+ * implementation so we include it also
+ * \until ovtk_all
+ *
+ * In order to avoir name collisions, we like to define namespaces.
+ * All standard OpenViBE plugins are defined in sub namespaces of
+ * OpenViBEPlugins.
+ * \until {
+ * \until {
+ *
+ * Now we are woking in OpenViBEPlugins::Samples, we have
+ * to define two classes : the descriptor and the box algorithm
+ * itself. The descriptor is given to the kernel at startup
+ * so the kernel has informations about the box algorithm and
+ * can create instances of this box algorithm.
+ *
+ * The box algorithm implementation is made easier thanks to
+ * the OpenViBEToolkit::TBoxAlgorithm template that implements
+ * several basic stuffs all box algorithm want such as direct
+ * access to managers etc...
+ * \until release
+ *
+ * An box algorithm is roughly composed of three interesing
+ * functions : initialize, uninitialize and process.
+ * Additionnaly, it has several notification callback
+ * such as input reception, clock ticks, message receptions...
+ * Its life cycle looks something like this :
+ * one initialize call, several notification/process calls
+ * and one uninitialize call. Each of those functions has to
+ * return a boolean value reflecting the validity of
+ * the box-algorithm. If any of those functions returns
+ * false, the kernel will avoid the next calls to
+ * this box-algorithm.
+ * \until process
+ * \until process
+ *
+ * One common thing for all the OpenViBE classes is
+ * to give them a class identifier. This is easily
+ * done with the \c _IsDerivedFromClass_Final_ macro.
+ * \until m_bActive
+ *
+ * The box implementation heavily relies on algorithm
+ * to do fragments of the job. This signal processing
+ * box algorithm will rely on three algorithms. The
+ * first one will be responsible for decoding the input
+ * stream, the second one for the actual processing and
+ * the last one for the output stream encoding.
+ * Each of these three algorithms have input or output
+ * parameters.
+ * In order to ease the access to these parameters,
+ * our box-algorithm can embed as many parameter handler
+ * as needed. The parameters are not very easy to
+ * manipulate and the parameter handler proposes
+ * an interface similar to the object owned by the
+ * parameter. Therefore, parameter handlers are a
+ * convenient way of interacting with the parameters.
+ *
+ * First, we define the signal decoder and its
+ * associated parameter handlers. The signal
+ * decoder takes a memory buffer to decode and
+ * produces a signal matrix and an unsigned integer
+ * with the sampling rate.
+ * \until op_pDecodedMatrix
+ *
+ * Second, we define the signal processing
+ * algorithm and its associated parameter handlers.
+ * This algorithm takes a signal matrix as input and
+ * produces a new signal matrix as output.
+ * \until op_pSignalProcessingAlgorithmMatrix
+ *
+ * Lastly, we define the signal encoder and its
+ * associated parameter handlers. The signal
+ * encoder takes a signal matrix and an unsigned
+ * integer for the sampling rate as inputs and
+ * produces a memory buffer as output.
+ * \until };
+ *
+ * The descriptor describes what this box algorithm does,
+ * who created it, what category a human would like it
+ * to see in... It also points out what kind of box algorithm
+ * it is able to create thanks to the getCreatedClass
+ * function. The create function creates the actual
+ * box algorithm and the getBoxAlgorithmPrototype describes
+ * what the box algorithm should look like (inputs, outputs
+ * settings and flags).
+ * \until getStockItemName
+ *
+ * Here, the descriptor informs the kernel about what
+ * kind of box algorithm can be created with this descriptor.
+ * It also creates instances in the create function.
+ * \until create
+ *
+ * Last function describes the box algorithm aspect to the
+ * kernel. It declares each of its inputs, its outputs
+ * and its settings. Additionnaly, some flags may be added
+ * to reflect the fact that the box development is not
+ * terminated for eaxample. Inputs and outputs are streams
+ * and will have to be decoded / encoded by specific
+ * algorithms. The settings will contain text values
+ * that will probably be easily parsed and expanded thanks
+ * to the configuration manager.
+ * \until {
+ *
+ * Our signal processing box will have one input of
+ * type signal and one output of type signal.
+ * \until addOutput
+ *
+ * For the example, we add a setting of type boolean
+ * that will be capable of enabling or disabling the box
+ * in the designer interface.
+ * \until addSetting
+ *
+ * Lastly, as this box is for turorial purpose, we
+ * notify the user that it should be used with care
+ * because it probably does not do exactly what he wants :o)
+ * \until addFlag
+ *
+ * Finally, the descriptor returns true notifying the
+ * kernel that everything is ok.
+ * \until }
+ *
+ * Of course, the descriptor also has to use the
+ * \c _IsDerivedFromClass_Final_ macro so to tell
+ * the kernel about its class identifier.
+ * \until endif
+ *
+ * \section Doc_Tutorial_Developer_SignalProcessing_BoxAlgorithmImplementation Box algorithm implementation
+ *
+ * Here is the file containing the box algorithm implementation, we will detail each line of the file later on.
+ *
+ * \include "ovpCBoxAlgorithmSignalProcessingBoxAlgorithm.cpp"
+ * \dontinclude "ovpCBoxAlgorithmSignalProcessingBoxAlgorithm.cpp"
+ *
+ * First, for easier development, you can declare using some common
+ * namespaces OpenViBE has so you don't have to type them every time.
+ * You should not do this in header files, but it is quite acceptable
+ * in implementation files as OpenViBE does not have conflicting classes
+ * over its namespaces.
+ * \until OpenViBE::Plugins
+ *
+ * The same can be done for the plugin project namespaces
+ * \until OpenViBEPlugins::Samples
+ *
+ * Now we have two simple functions to implement, namely
+ * initialize and uninitialize. In our case, they consist
+ * in reading the settings, creating or releasing the necessary
+ * algorithms and connecting or disconnecting our parameter
+ * handlers to the corresponding actual parameter. These
+ * handlers will be used later to ease the parameter
+ * value manipulations.
+ * \until {
+ *
+ * The static box context describes the symbolic description
+ * of the box, notably the number of inputs / outputs / settings
+ * and their type. Here we will use this static box context
+ * to read the value of the "active state" setting.
+ * \until getStaticBoxContext
+ *
+ * The first thing we do is check the setting value.
+ * Settings are accessed with their 0-based index
+ * thanks to the getSettingValue function. The returned
+ * string may be parsed by the configuration manager.
+ * For example, in this case, we know the setting string
+ * is a boolean. So the expandAsBoolean function will
+ * return the boolean value corresponding to the
+ * setting string.
+ * \until m_bActive=
+ *
+ * Now we use the algorithm manager to create and get
+ * each of the three algorithms to use for this box.
+ * Theese algorithm should be initialized before to
+ * be used and to connect any parameter handler to them.
+ * Stream decoder and encoders are common algorithms
+ * owned by another project in the platform. The identifier
+ * of these algorithm is found in the \ref Doc_GlobalDefines
+ * file which can be generated thanks to the plugin
+ * inspector tool.
+ *
+ * So first, we create and initialize the signal decoder.
+ * Then we connect our parameter handlers to their corresponding
+ * parameters. For example ip_pMemoryBufferToDecode is the input
+ * memory buffer that decoder will work on. This parameter has
+ * been declared in the decoder algorithm descriptor as being of
+ * type OV_TypeId_MemoryBuffer and with identifier
+ * OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode
+ * The parameter can be retrieved with the getInputParameter
+ * function and given to the handler. Passed this point,
+ * ip_pMemoryBufferToDecode can be used as an IMemoryBuffer*
+ * pointer using the -> operator.
+ * The same behavior is applied on the sampling rate output
+ * parameter and the matrix output parameter.
+ * \until op_pDecodedMatrix
+ *
+ * Now we create and initialize the signal processing
+ * algorithm. This algorithm is defined in this project so
+ * we can directly use the class identifier from the ovp_defines.h
+ * Then we connect our parameter handlers to their corresponding
+ * parameters.
+ * \until op_pSignalProcessingAlgorithmMatrix
+ *
+ * Last step is to create and initialize the signal encoder.
+ * As for the decoder, we have to use the class identifier and
+ * the parameter identifiers from the ovp_global_defines.h
+ * \until op_pEncodedMemoryBuffer
+ *
+ * Now that we have all the algorithm and parameter handlers
+ * initialized, it is convenient to connect those parameters
+ * altogether to minimize efforts on passing data from an
+ * algorithm to another. For example, the signal processing does
+ * not change the sampling rate value. It means that this parameter
+ * can be directly connected from the decoder to the encoder.
+ * However, this is not the same for the decoded matrix. This
+ * particular matrix should go to the signal processing algorithm
+ * and the matrix produced by this signal processing algorithm
+ * should go to the encoder.
+ * This is ecactly what setReferenceTarget does. Passed this
+ * point, any modification on the value of the sampling rate
+ * parameter of the decoder will immediatly affect the sampling
+ * rate parameter of the encoder. Similarly, any modification on
+ * the output matrix of the signal processing algorithm will
+ * immediatly affect the encoder input matrix etc. The
+ * parameters will share the same object value.
+ * \until ip_pMatrixToEncode
+ *
+ * Returning true at the end of this initialize function
+ * tells the kernel everything ran nicely and no error
+ * occured. If you return false here, the kernel will
+ * consider this box algorithm as failing and won't call
+ * it anymore in the future.
+ * \until }
+ *
+ * Uninitialization notifies the box algorithm that it won't
+ * be used anymore in the future. Thus every initialized
+ * members should be freed and the whole environment should
+ * be left as it was before initialize was called.
+ * For this to be done, we have to disconnect our
+ * parameter handlers form their respective paramters and
+ * to release the three algorithms we created.
+ * \until {
+ *
+ * ip_pMatrixToEncode can be disconnected of its parameter
+ * thanks to the uninitialize method. Passed this point,
+ * using operator -> will throw an exception and cause
+ * a crash. The same is done on each of the parameter handler
+ * releated to the signal encoder. Then the signal encoder
+ * can be uninitialized and a request can be send to the
+ * algorithm manager to release this algorithm that won't be
+ * used anymore.
+ * \until releaseAlgorithm
+ *
+ * The same operation is done on the signal processing
+ * releated parameter handlers and on this algorithm itself.
+ * \until releaseAlgorithm
+ *
+ * And finally, the operation is done on the signal decoder
+ * releated parameter handlers and on this algorithm itself.
+ * \until releaseAlgorithm
+ *
+ * And as for the initialize part, this function
+ * should return true to notify the kernel everything
+ * was just fine.
+ * \until }
+ *
+ * Now comes the notification and processing part.
+ * The box can be notified on several different events
+ * such as message arrival or clock ticks. This particular
+ * box only cares about input arrivals to trigger a process
+ * on them. Therefore, only processInput is implemented.
+ * \until {
+ *
+ * The notification method simply consists in examining the
+ * notification status and telling the kernel whether this box
+ * is candidate for the actual processing or not. In our case,
+ * the box is ready to process as soon as some data arrives
+ * on the input.
+ *
+ * \until markAlgorithmAsReadyToProcess
+ *
+ * And as usual, this function should return true
+ * to notify the kernel everything was just fine.
+ * \until }
+ *
+ * Here comes the actual processing part. This function will
+ * cover each of the input chunk in order to decode it, process
+ * it and produce a corresponding output chunk.
+ * \until {
+ *
+ * The dynamic box context contains all the information about
+ * the box communication. Some of this information is the
+ * input pending chunks. For this reason, we keep a reference
+ * on this context to directly access the input and output
+ * chunks.
+ * \until getDynamicBoxContext
+ *
+ * Notifying the kernel that this box algorithm is ready
+ * to proceed with the processing part does not necessary
+ * trigger an immediate process call. Therefore, multiple
+ * input chunks may be pending for the input of the box.
+ * So in this loop, we iterate on each input chunk.
+ * \until {
+ *
+ * For each chunk, we will proceed in the decoding,
+ * processing en rencoding of the data. The parameter
+ * handler we initialized earlier can be used here to
+ * give the decoder and encoder algorithm the correct
+ * place where chunks to decode are stored and where
+ * encoded chunks should be placed. This is done thanks
+ * to the getInputChunk and getOutputChunk functions
+ * of the dynamic context.
+ *
+ * \until op_pEncodedMemoryBuffer
+ *
+ * At this point, the whole processing of the chunk is
+ * ready to be performed. First, we request the decoder
+ * to decode the input chunk.
+ * \until process
+ *
+ * The decoder has several output triggers telling us
+ * what was just decoded. There are three categories of
+ * chunk : headers, buffers and end nodes. Depending on
+ * what is decoded, a different behavior will be adopted.
+ * \until {
+ *
+ * In the case of a header received, we simply can
+ * request the initialization of the signal processing
+ * algorithm. This trigger will cause the algorithm
+ * to initialize its output matrix. So at this point,
+ * the header part of the output stream can be endoded.
+ * \until m_pSignalEncoder
+ *
+ * And then, the output chunk can be marked as ready
+ * to send so the kernel sends it to the boxes that
+ * are connected to this output.
+ * One thing that we did not notice is that each stream
+ * buffer reflect a specific time period. This time period
+ * is retrieved thanks to the getInputChunkStartTime and
+ * getInputChunkEndTime functions of the dynamic context.
+ * Similarly, when making an output chunk as ready to send,
+ * the box has to specify the time period that this chunk
+ * refers to.
+ * \until {
+ *
+ * In the case of a buffer received, we can request
+ * the signal processing algorithm to do its actual
+ * work on the matrix content.
+ * \until m_pSignalProcessingAlgorithm
+ *
+ * Now depending on the success of the actual processing,
+ * we may be ready to request a buffer encoding.
+ * \until {
+ *
+ * Since the processing algorithm as activated
+ * its "process done" output trigger, this means that
+ * the matrix has been correctly filled. We will then
+ * request the encoder for the creation of a buffer chunk.
+ * \until m_pSignalEncoder
+ *
+ * As for header chunk, we mark this new output chunk
+ * as ready to send with the corresponding time period
+ * \until {
+ *
+ * Lastly, in case the decoder decoded an end node, we
+ * do not have to process anything. This just means that
+ * the input stream is closed an that no more buffer will
+ * come from it. Possibly a new header could be sent and then
+ * new buffers... However, for now, we just have to notify
+ * following boxes that an end node has been decoded, encoding
+ * and sending them an end node
+ * \until m_pSignalEncoder
+ *
+ * And as for header and buffer chunk, we mark this new
+ * output chunk as ready to send with the corresponding time period
+ * \until }
+ *
+ * Finally, the input chunk being processed, we can notify
+ * the kernel that this chunk won't be of any use in the
+ * future for us. The chunk object won't be effectively
+ * released until the process function is terminated.
+ * You can consider this call as a flagging function.
+ * \until }
+ *
+ * Finally, we should return true to notify the kernel that
+ * no error occured during this processing step. If false is
+ * returned, the kernel won't ever call this box algorithm anymore.
+ * \until }
+ *
+ * \section Doc_Tutorial_Developer_SignalProcessing_Conclusion Conclusion
+ *
+ * Now that both plugins are created, we have to register
+ * have to register them to the kernel at plugin module load
+ * time. For this reason, in \c ovp_main.cpp we use the 
+ * \c OVP_Declare_New macro as follows :
+ * \code
+ * OVP_Declare_New(OpenViBEPlugins::Samples::CAlgorithmSignalProcessingAlgorithmDesc);
+ * OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmSignalProcessingBoxAlgorithmDesc);
+ * \endcode
+ */
