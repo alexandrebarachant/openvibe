@@ -122,26 +122,39 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pLogManager->activate(true);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring file log listener\n";
-	m_pLogListenerFile=new CLogListenerFile(*this, (CString("openvibe-")+rApplicationName+CString(".log")).toASCIIString());
+	m_pLogListenerFile=new CLogListenerFile(*this, rApplicationName, CString("openvibe-")+rApplicationName+CString(".log"));
 	m_pLogListenerFile->activate(true);
 	this->getLogManager().addListener(m_pLogListenerFile);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring console log listener\n";
-	m_pLogListenerConsole=new CLogListenerConsole(*this);
+	m_pLogListenerConsole=new CLogListenerConsole(*this, rApplicationName);
 	m_pLogListenerConsole->activate(false);
 	m_pLogListenerConsole->activate(LogLevel_Info, LogLevel_Last, true);
 	this->getLogManager().addListener(m_pLogListenerConsole);
 
 	this->getLogManager() << LogLevel_Trace << "Creating configuration manager\n";
 	m_pConfigurationManager=new CConfigurationManager(*this);
-	m_pConfigurationManager->createConfigurationToken("ApplicationName",              rApplicationName);
+
+#if defined OVK_BUILDTYPE_Release
+	m_pConfigurationManager->createConfigurationToken("BuildType",                    "Release");
+#elif defined OVK_BUILDTYPE_Debug
+	m_pConfigurationManager->createConfigurationToken("BuildType",                    "Debug");
+#else
+	m_pConfigurationManager->createConfigurationToken("BuildType",                    "Unknown");
+#endif
+
 #if defined OVK_OS_Windows
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Windows");
+	m_pConfigurationManager->createConfigurationToken("UserHome",                     "$Environment{USERPROFILE}");
 #elif defined OVK_OS_Linux
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Linux");
+	m_pConfigurationManager->createConfigurationToken("UserHome",                     "$Environment{HOME}");
 #else
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Unknown");
+	m_pConfigurationManager->createConfigurationToken("UserHome",                     "");
 #endif
+
+	m_pConfigurationManager->createConfigurationToken("ApplicationName",              rApplicationName);
 	m_pConfigurationManager->createConfigurationToken("Path_Root",                    "..");
 	m_pConfigurationManager->createConfigurationToken("Path_Bin",                     "${Path_Root}/bin");
 	m_pConfigurationManager->createConfigurationToken("Path_Lib",                     "${Path_Root}/lib");
@@ -151,15 +164,16 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternLinux",   "libOpenViBE-plugins-*.so");
 	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternWindows", "OpenViBE-plugins-*.dll");
 	m_pConfigurationManager->createConfigurationToken("Kernel_Plugins",               "${Path_Lib}/${Kernel_PluginsPattern${OperatingSystem}}");
-	m_pConfigurationManager->createConfigurationToken("Kernel_MainLogLevel",          "Trace");
+	m_pConfigurationManager->createConfigurationToken("Kernel_MainLogLevel",          "Debug");
 	m_pConfigurationManager->createConfigurationToken("Kernel_ConsoleLogLevel",       "Information");
 	m_pConfigurationManager->createConfigurationToken("Kernel_FileLogLevel",          "Debug");
 	m_pConfigurationManager->createConfigurationToken("Kernel_PlayerFrequency",       "128");
+
 	m_pConfigurationManager->addConfigurationFromFile(rConfigurationFile);
 
-	ELogLevel l_eMainLogLevel   =this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_MainLogLevel}"),    LogLevel_Trace);
-	ELogLevel l_eConsoleLogLevel=this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_ConsoleLogLevel}"), LogLevel_Info);
-	ELogLevel l_eFileLogLevel   =this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_FileLogLevel}"),    LogLevel_First);
+	ELogLevel l_eMainLogLevel   =this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_MainLogLevel}"));
+	ELogLevel l_eConsoleLogLevel=this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_ConsoleLogLevel}"));
+	ELogLevel l_eFileLogLevel   =this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_FileLogLevel}"));
 
 	m_pLogManager->activate(false);
 	m_pLogManager->activate(l_eMainLogLevel, LogLevel_Last, true);
@@ -307,7 +321,7 @@ IVisualisationManager& CKernelContext::getVisualisationManager(void) const
 	return *m_pVisualisationManager;
 }
 
-ELogLevel CKernelContext::earlyGetLogLevel(const CString& rLogLevelName, ELogLevel eFallback)
+ELogLevel CKernelContext::earlyGetLogLevel(const CString& rLogLevelName)
 {
 	std::string l_sValue(rLogLevelName.toASCIIString());
 	std::transform(l_sValue.begin(), l_sValue.end(), l_sValue.begin(), ::to_lower<std::string::value_type>);
@@ -322,5 +336,7 @@ ELogLevel CKernelContext::earlyGetLogLevel(const CString& rLogLevelName, ELogLev
 	if(l_sValue=="error")                    return LogLevel_Error;
 	if(l_sValue=="fatal error")              return LogLevel_Fatal;
 
-	return eFallback;
+	(*m_pLogManager) << LogLevel_Warning << "Invalid log level " << rLogLevelName << " specified in configuration file, falling back to " << CString("Debug") << "\n";
+
+	return LogLevel_Debug;
 }

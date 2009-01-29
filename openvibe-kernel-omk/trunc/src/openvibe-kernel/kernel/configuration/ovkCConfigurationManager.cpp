@@ -113,16 +113,26 @@ namespace OpenViBE
 								{
 									std::string l_sTokenName(reduce(l_sLine.substr(0, eq)));
 									std::string l_sTokenValue(reduce(l_sLine.substr(eq+1, l_sLine.length()-eq)));
-									CIdentifier l_oTokenIdentifier=m_rKernelContext.getConfigurationManager().lookUpConfigurationTokenIdentifier(l_sTokenName.c_str());
-									if(l_oTokenIdentifier==OV_UndefinedIdentifier)
+									if(l_sTokenName=="Include")
 									{
-										m_rKernelContext.getLogManager() << LogLevel_Trace << "Adding configuration token " << CString(l_sTokenName.c_str()) << " : " << CString(l_sTokenValue.c_str()) << "\n";
-										m_rKernelContext.getConfigurationManager().createConfigurationToken(l_sTokenName.c_str(), l_sTokenValue.c_str());
+										CString l_sWildcard=m_rKernelContext.getConfigurationManager().expand(l_sTokenValue.c_str());
+										m_rKernelContext.getLogManager() << LogLevel_Trace << "Including configuration file " << l_sWildcard << "...\n";
+										m_rKernelContext.getConfigurationManager().addConfigurationFromFile(l_sWildcard);
+										m_rKernelContext.getLogManager() << LogLevel_Trace << "Including configuration file " << l_sWildcard << " done...\n";
 									}
 									else
 									{
-										m_rKernelContext.getLogManager() << LogLevel_Trace << "Changing configuration token " << CString(l_sTokenName.c_str()) << " to " << CString(l_sTokenValue.c_str()) << "\n";
-										m_rKernelContext.getConfigurationManager().setConfigurationTokenValue(l_oTokenIdentifier, l_sTokenValue.c_str());
+										CIdentifier l_oTokenIdentifier=m_rKernelContext.getConfigurationManager().lookUpConfigurationTokenIdentifier(l_sTokenName.c_str());
+										if(l_oTokenIdentifier==OV_UndefinedIdentifier)
+										{
+											m_rKernelContext.getLogManager() << LogLevel_Trace << "Adding configuration token " << CString(l_sTokenName.c_str()) << " : " << CString(l_sTokenValue.c_str()) << "\n";
+											m_rKernelContext.getConfigurationManager().createConfigurationToken(l_sTokenName.c_str(), l_sTokenValue.c_str());
+										}
+										else
+										{
+											m_rKernelContext.getLogManager() << LogLevel_Trace << "Changing configuration token " << CString(l_sTokenName.c_str()) << " to " << CString(l_sTokenValue.c_str()) << "\n";
+											m_rKernelContext.getConfigurationManager().setConfigurationTokenValue(l_oTokenIdentifier, l_sTokenValue.c_str());
+										}
 									}
 								}
 								break;
@@ -136,6 +146,8 @@ namespace OpenViBE
 						}
 					}
 				}
+
+				m_rKernelContext.getLogManager() << LogLevel_Trace << "Processing configuration file " << CString(rEntry.getName()) << " finished\n";
 
 				return true;
 			}
@@ -390,7 +402,7 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 				{
 					l_sValue=this->getConfigurationTokenValue(this->lookUpConfigurationTokenIdentifier(l_sPostfix.c_str()));
 				}
-				else if(l_sPrefix=="Environment")
+				else if(l_sPrefix=="Environment" || l_sPrefix=="Env")
 				{
 					char* l_sEnvValue=::getenv(l_sPostfix.c_str());
 					l_sValue=(l_sEnvValue?l_sEnvValue:"");

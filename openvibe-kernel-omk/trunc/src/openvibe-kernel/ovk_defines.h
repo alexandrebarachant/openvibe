@@ -153,6 +153,23 @@
 
 //___________________________________________________________________//
 //                                                                   //
+// Build type identification                                         //
+//___________________________________________________________________//
+//                                                                   //
+
+// #define OVK_BUILDTYPE_Debug
+// #define OVK_BUILDTYPE_Release
+
+#if defined TARGET_BUILDTYPE_Debug
+ #define OVK_BUILDTYPE_Debug
+#elif defined TARGET_BUILDTYPE_Release
+ #define OVK_BUILDTYPE_Release
+#else
+ #warning "No build type defined !"
+#endif
+
+//___________________________________________________________________//
+//                                                                   //
 // API Definition                                                    //
 //___________________________________________________________________//
 //                                                                   //

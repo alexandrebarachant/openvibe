@@ -14,8 +14,9 @@ using namespace std;
 		fclose(f); \
 	}
 
-CLogListenerFile::CLogListenerFile(const IKernelContext& rKernelContext, const CString& sLogFilename)
+CLogListenerFile::CLogListenerFile(const IKernelContext& rKernelContext, const CString& sApplicationName, const CString& sLogFilename)
 	:TKernelObject<ILogListener>(rKernelContext)
+	,m_sApplicationName(sApplicationName)
 	,m_sLogFilename(sLogFilename)
 {
 	_do_stuff_on_file_(l_pFile, "wt", );

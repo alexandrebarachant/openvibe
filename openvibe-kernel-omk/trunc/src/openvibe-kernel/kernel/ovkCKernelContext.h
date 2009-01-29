@@ -31,7 +31,7 @@ namespace OpenViBE
 
 		protected:
 
-			virtual OpenViBE::Kernel::ELogLevel earlyGetLogLevel(const OpenViBE::CString& rLogLevelName, OpenViBE::Kernel::ELogLevel eFallback);
+			virtual OpenViBE::Kernel::ELogLevel earlyGetLogLevel(const OpenViBE::CString& rLogLevelName);
 
 		protected:
 

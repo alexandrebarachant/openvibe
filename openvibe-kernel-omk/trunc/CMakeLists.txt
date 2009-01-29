@@ -26,6 +26,13 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
 
+IF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+	ADD_DEFINITIONS(-DTARGET_BUILDTYPE_Release)
+ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+IF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+	ADD_DEFINITIONS(-DTARGET_BUILDTYPE_Debug)
+ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+
 # ---------------------------------
 # Configures paths if not already defined
 # Defines executable path

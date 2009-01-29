@@ -11,9 +11,10 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
 
-CLogListenerConsole::CLogListenerConsole(const IKernelContext& rKernelContext)
+CLogListenerConsole::CLogListenerConsole(const IKernelContext& rKernelContext, const CString& sApplicationName)
 	:TKernelObject<ILogListener>(rKernelContext)
 	,m_eLogColor(LogColor_Default)
+	,m_sApplicationName(sApplicationName)
 {
 }
 
@@ -252,6 +253,20 @@ void CLogListenerConsole::log(const ELogLevel eLogLevel)
 			break;
 	}
 	cout << " ";
+
+#if 0
+	cout << "<";
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundBlue);
+	cout << "Application";
+	log(LogColor_PopStateBit);
+	cout << "::";
+	log(LogColor_PushStateBit);
+	log(LogColor_ForegroundMagenta);
+	cout << m_sApplicationName.toASCIIString();
+	log(LogColor_PopStateBit);
+	cout << "> ";
+#endif
 }
 
 void CLogListenerConsole::log(const ELogColor eLogColor)

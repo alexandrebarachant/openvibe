@@ -14,7 +14,7 @@ namespace OpenViBE
 		{
 		public:
 
-			CLogListenerConsole(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			CLogListenerConsole(const OpenViBE::Kernel::IKernelContext& rKernelContext, const CString& sApplicationName);
 
 			virtual OpenViBE::boolean isActive(OpenViBE::Kernel::ELogLevel eLogLevel);
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive);
@@ -54,6 +54,7 @@ namespace OpenViBE
 			std::map<OpenViBE::Kernel::ELogLevel, OpenViBE::boolean> m_vActiveLevel;
 			std::stack<OpenViBE::Kernel::ELogColor> m_vLogColor;
 			OpenViBE::Kernel::ELogColor m_eLogColor;
+			OpenViBE::CString m_sApplicationName;
 		};
 	};
 };
