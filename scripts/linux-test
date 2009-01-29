@@ -24,4 +24,4 @@ killall OpenViBE-designer-dynamic
 
 #./OpenViBE-acquisition-server-dynamic
 #./OpenViBE-plugin-inspector-dynamic
-gdb ./OpenViBE-designer-dynamic
+./OpenViBE-designer-dynamic
