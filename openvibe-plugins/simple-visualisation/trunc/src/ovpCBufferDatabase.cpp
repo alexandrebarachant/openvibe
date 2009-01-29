@@ -607,9 +607,8 @@ void CBufferDatabase::setStimulation(const uint32 ui32StimulationIndex, const ui
 	if(m_oStartTime.size()!=0)
 	{
 		std::deque<std::pair<uint64, uint64> >::iterator i;
-		for(i=m_oStimulations.begin(); i!=m_oStimulations.end() && (*i).first<m_oStartTime.front(); )
+		while(m_oStimulations.begin() != m_oStimulations.end() && m_oStimulations.begin()->first < m_oStartTime.front())
 		{
-			i++;
 			m_oStimulations.pop_front();
 		}
 	}
