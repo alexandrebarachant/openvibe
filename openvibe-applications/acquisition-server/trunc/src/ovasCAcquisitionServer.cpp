@@ -390,6 +390,7 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port"), false);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"), false);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"), false);
 
 			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connected ! Ready...");
 			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), "0 host connected...");
@@ -487,6 +488,7 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 
 		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port"), true);
 		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"), true);
 
 		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "");
 		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), "");
