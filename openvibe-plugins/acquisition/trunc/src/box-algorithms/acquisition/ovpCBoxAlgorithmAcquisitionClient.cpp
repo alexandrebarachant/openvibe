@@ -28,19 +28,9 @@ boolean CBoxAlgorithmAcquisitionClient::initialize(void)
 
 	m_ui64LastChunkStartTime=0;
 	m_ui64LastChunkEndTime=0;
+	m_pConnectionClient=NULL;
 
-	CString l_sSettingValue;
-
-	getStaticBoxContext().getSettingValue(0, l_sSettingValue);
-	CString l_sServerName=l_sSettingValue;
-
-	getStaticBoxContext().getSettingValue(1, l_sSettingValue);
-	uint32 l_ui32ServerPort=::atoi(l_sSettingValue.toASCIIString());
-
-	m_pConnectionClient=Socket::createConnectionClient();
-	m_pConnectionClient->connect(l_sServerName, l_ui32ServerPort);
-
-	return m_pConnectionClient->isConnected();
+	return true;
 }
 
 boolean CBoxAlgorithmAcquisitionClient::uninitialize(void)
@@ -67,12 +57,26 @@ boolean CBoxAlgorithmAcquisitionClient::uninitialize(void)
 
 boolean CBoxAlgorithmAcquisitionClient::processClock(IMessageClock& rMessageClock)
 {
-	if(!m_pConnectionClient || !m_pConnectionClient->isConnected())
+	if(!m_pConnectionClient)
 	{
-		return false;
+		CString l_sSettingValue;
+
+		getStaticBoxContext().getSettingValue(0, l_sSettingValue);
+		CString l_sServerName=l_sSettingValue;
+
+		getStaticBoxContext().getSettingValue(1, l_sSettingValue);
+		uint32 l_ui32ServerPort=::atoi(l_sSettingValue.toASCIIString());
+
+		m_pConnectionClient=Socket::createConnectionClient();
+		m_pConnectionClient->connect(l_sServerName, l_ui32ServerPort);
+		if(!m_pConnectionClient->isConnected())
+		{
+			this->getLogManager() << LogLevel_ImportantWarning << "Could not connect to server " << l_sServerName << ":" << l_ui32ServerPort << "\n";
+			return true;
+		}
 	}
 
-	if(m_pConnectionClient->isReadyToReceive() && rMessageClock.getTime()>m_ui64LastChunkEndTime+op_ui64BufferDuration)
+	if(m_pConnectionClient && m_pConnectionClient->isReadyToReceive() && rMessageClock.getTime()>m_ui64LastChunkEndTime+op_ui64BufferDuration)
 	{
 		getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	}

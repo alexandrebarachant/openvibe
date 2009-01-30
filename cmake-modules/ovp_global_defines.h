@@ -5,8 +5,8 @@
 // LDA classifier processor - GPL
 // -----------------------------------------------------
 
-#define OVP_GD_ClassId_Algorithm_LDAClassifierProcessorGPL                                                                      OpenViBE::CIdentifier(0x12d9e1fa, 0x077932ae)
-#define OVP_GD_ClassId_Algorithm_LDAClassifierProcessorGPLDesc                                                                  OpenViBE::CIdentifier(0xff13f5ea, 0xbbf9c01f)
+#define OVP_GD_ClassId_Algorithm_LDAClassifierProcessorGPL                                                                      OpenViBE::CIdentifier(0x11784ab1, 0xea05f77c)
+#define OVP_GD_ClassId_Algorithm_LDAClassifierProcessorGPLDesc                                                                  OpenViBE::CIdentifier(0xb2fa0286, 0x87a54ac3)
 #define OVP_GD_Algorithm_LDAClassifierProcessorGPL_InputParameterId_FeatureVector                                               OpenViBE::CIdentifier(0x6d69bf98, 0x1eb9ee66)
 #define OVP_GD_Algorithm_LDAClassifierProcessorGPL_InputParameterId_Configuration                                               OpenViBE::CIdentifier(0xa705428e, 0x5bb1cadd)
 #define OVP_GD_Algorithm_LDAClassifierProcessorGPL_OutputParameterId_Class                                                      OpenViBE::CIdentifier(0x8a39a7ea, 0xf2ee45c4)
@@ -20,8 +20,8 @@
 // LDA classifier trainer - GPL
 // -----------------------------------------------------
 
-#define OVP_GD_ClassId_Algorithm_LDAClassifierTrainerGPL                                                                        OpenViBE::CIdentifier(0xc200b3cc, 0x19e64cbd)
-#define OVP_GD_ClassId_Algorithm_LDAClassifierTrainerGPLDesc                                                                    OpenViBE::CIdentifier(0xba291d66, 0x2cf290f7)
+#define OVP_GD_ClassId_Algorithm_LDAClassifierTrainerGPL                                                                        OpenViBE::CIdentifier(0xd7183fc7, 0xbd74f298)
+#define OVP_GD_ClassId_Algorithm_LDAClassifierTrainerGPLDesc                                                                    OpenViBE::CIdentifier(0xd42d544a, 0x7a28ddb1)
 #define OVP_GD_Algorithm_LDAClassifierTrainerGPL_InputParameterId_FeatureVectorSet                                              OpenViBE::CIdentifier(0x27c05927, 0x5de9103a)
 #define OVP_GD_Algorithm_LDAClassifierTrainerGPL_OutputParameterId_Configuration                                                OpenViBE::CIdentifier(0x30590936, 0x61ce5971)
 #define OVP_GD_Algorithm_LDAClassifierTrainerGPL_InputTriggerId_Train                                                           OpenViBE::CIdentifier(0x34684752, 0x78a46de2)
@@ -67,6 +67,24 @@
 #define OVP_GD_ClassId_Algorithm_OpenViBEMatrixFileWriterDesc                                                                   OpenViBE::CIdentifier(0x44cf6dd0, 0x329d47f9)
 #define OVP_GD_Algorithm_OpenViBEMatrixFileWriter_InputParameterId_Filename                                                     OpenViBE::CIdentifier(0x330d2d0b, 0x175271e6)
 #define OVP_GD_Algorithm_OpenViBEMatrixFileWriter_InputParameterId_Matrix                                                       OpenViBE::CIdentifier(0x6f6402ee, 0x493044f3)
+
+// -----------------------------------------------------
+// XML Scenario exporter
+// -----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_XMLScenarioExporter                                                                            OpenViBE::CIdentifier(0x53693531, 0xb136cf3f)
+#define OVP_GD_ClassId_Algorithm_XMLScenarioExporterDesc                                                                        OpenViBE::CIdentifier(0x9709c9fa, 0xf126f74e)
+#define OVP_GD_Algorithm_XMLScenarioExporter_InputParameterId_Scenario                                                          OpenViBE::CIdentifier(0x5b9c0d54, 0x04ba2957)
+#define OVP_GD_Algorithm_XMLScenarioExporter_OutputParameterId_MemoryBuffer                                                     OpenViBE::CIdentifier(0x64030633, 0x419e3a33)
+
+// -----------------------------------------------------
+// XML Scenario importer
+// -----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_XMLScenarioImporter                                                                            OpenViBE::CIdentifier(0xe80c3ea2, 0x149c4a05)
+#define OVP_GD_ClassId_Algorithm_XMLScenarioImporterDesc                                                                        OpenViBE::CIdentifier(0xff25d456, 0x721fcc57)
+#define OVP_GD_Algorithm_XMLScenarioImporter_InputParameterId_MemoryBuffer                                                      OpenViBE::CIdentifier(0x600463a3, 0x474b7f66)
+#define OVP_GD_Algorithm_XMLScenarioImporter_OutputParameterId_Scenario                                                         OpenViBE::CIdentifier(0x29574c87, 0x7ba77780)
 
 // -----------------------------------------------------
 // Stimulation based epoching

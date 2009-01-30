@@ -356,6 +356,7 @@ void CChannelDisplay::drawSignal()
 	{
 		return;
 	}
+
 	gint l_iWidth = 0;
 	gint l_iHeight = 0;
 
