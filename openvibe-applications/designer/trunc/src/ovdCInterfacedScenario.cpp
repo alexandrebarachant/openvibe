@@ -730,10 +730,21 @@ void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 		if(x>=0 && y>=0 && x<l_iMaxX && y<l_iMaxY)
 		{
 			::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, x, y, 0, 0, 1, 1);
+			if(!l_pPixbuf)
+			{
+				return 0xffffffff;
+			}
+
+			guchar* l_pPixels=gdk_pixbuf_get_pixels(l_pPixbuf);
+			if(!l_pPixels)
+			{
+				return 0xffffffff;
+			}
+
 			l_ui32InterfacedObjectId=0;
-			l_ui32InterfacedObjectId+=(gdk_pixbuf_get_pixels(l_pPixbuf)[0]<<16);
-			l_ui32InterfacedObjectId+=(gdk_pixbuf_get_pixels(l_pPixbuf)[1]<<8);
-			l_ui32InterfacedObjectId+=(gdk_pixbuf_get_pixels(l_pPixbuf)[2]);
+			l_ui32InterfacedObjectId+=(l_pPixels[0]<<16);
+			l_ui32InterfacedObjectId+=(l_pPixels[1]<<8);
+			l_ui32InterfacedObjectId+=(l_pPixels[2]);
 			g_object_unref(l_pPixbuf);
 		}
 		return l_ui32InterfacedObjectId;
@@ -771,7 +782,17 @@ void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 		iSizeY=iEndY-iStartY+1;
 
 		::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, iStartX, iStartY, 0, 0, iSizeX, iSizeY);
+		if(!l_pPixbuf)
+		{
+			return false;
+		}
+
 		guchar* l_pPixels=gdk_pixbuf_get_pixels(l_pPixbuf);
+		if(!l_pPixels)
+		{
+			return false;
+		}
+
 		int l_iRowBytesCount=gdk_pixbuf_get_rowstride(l_pPixbuf);
 		int l_iChannelCount=gdk_pixbuf_get_n_channels(l_pPixbuf);
 		for(j=0; j<iSizeY; j++)

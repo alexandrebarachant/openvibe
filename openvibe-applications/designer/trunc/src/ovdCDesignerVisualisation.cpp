@@ -1788,7 +1788,7 @@ void CDesignerVisualisation::dragDataReceivedInWidgetCB(::GtkWidget* pDstWidget,
 	}
 
 	//retrieve src widget identifier
-	CIdentifier l_oSrcIdentifier = OV_UndefinedIdentifier;
+	CIdentifier l_oSrcIdentifier;
 	m_rVisualisationTree.getIdentifierFromTreeIter(&l_oSrcIter, l_oSrcIdentifier, EVisualisationTreeColumn_StringIdentifier);
 
 	//retrieve dest widget type
