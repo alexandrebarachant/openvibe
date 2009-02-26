@@ -23,20 +23,24 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean uninitialize(void)=0;
 
 			virtual OpenViBE::boolean process(void)=0;
+			virtual OpenViBE::boolean reportAnalog(
+				const OpenViBE::CIdentifier& rServerIdentifier)=0;
+			virtual OpenViBE::boolean reportButton(
+				const OpenViBE::CIdentifier& rServerIdentifier)=0;
 
 			virtual OpenViBE::boolean addServer(
 				const OpenViBE::CString& sServerName,
 				OpenViBE::CIdentifier& rServerIdentifier)=0;
 			virtual OpenViBE::boolean isServer(
-				const OpenViBE::CIdentifier& rServerIdentifier)=0;
+				const OpenViBE::CIdentifier& rServerIdentifier) const=0;
 			virtual OpenViBE::boolean isServer(
-				const OpenViBE::CString& sServerName)=0;
+				const OpenViBE::CString& sServerName) const=0;
 			virtual OpenViBE::boolean getServerIdentifier(
 				const OpenViBE::CString& sServerName,
-				OpenViBE::CIdentifier& rServerIdentifier)=0;
+				OpenViBE::CIdentifier& rServerIdentifier) const=0;
 			virtual OpenViBE::boolean getServerName(
 				const OpenViBE::CIdentifier& rServerIdentifier,
-				OpenViBE::CString& sServerName)=0;
+				OpenViBE::CString& sServerName) const=0;
 			virtual OpenViBE::boolean removeServer(
 				const OpenViBE::CIdentifier& rServerIdentifier)=0;
 
@@ -47,6 +51,9 @@ namespace OpenViBEPlugins
 				const OpenViBE::CIdentifier& rServerIdentifier,
 				const OpenViBE::uint32 ui32ButtonIndex,
 				const OpenViBE::boolean bButtonStatus)=0;
+			virtual OpenViBE::boolean getButtonState(
+				const OpenViBE::CIdentifier& rServerIdentifier,
+				const OpenViBE::uint32 ui32ButtonIndex) const=0;
 
 			virtual OpenViBE::boolean setAnalogCount(
 				const OpenViBE::CIdentifier& rServerIdentifier,
@@ -55,6 +62,9 @@ namespace OpenViBEPlugins
 				const OpenViBE::CIdentifier& rServerIdentifier,
 				const OpenViBE::uint32 ui32AnalogIndex,
 				const OpenViBE::float64 f64AnalogStatus)=0;
+			virtual OpenViBE::float64 getAnalogState(
+				const OpenViBE::CIdentifier& rServerIdentifier,
+				const OpenViBE::uint32 ui32AnalogIndex) const=0;
 		};
 	};
 };

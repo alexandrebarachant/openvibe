@@ -55,6 +55,12 @@ boolean CVRPNAnalogServer::uninitialize()
 	return true;
 }
 
+boolean CVRPNAnalogServer::processClock(IMessageClock& rMessageClock)
+{
+	IVRPNServerManager::getInstance().process();
+	return true;
+}
+
 boolean CVRPNAnalogServer::processInput(uint32 ui32InputIndex)
 {
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
@@ -96,35 +102,35 @@ boolean CVRPNAnalogServer::process()
 
 					m_bAnalogSet=true;
 				}
+				l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 			}
-			if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
+			if(m_bAnalogSet)
 			{
-				if(m_bAnalogSet)
+				if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
 				{
-					uint32 l_ui32AnalogOffset=0;
-					for(k=0; k<i; k++)
+					if(m_bAnalogSet)
 					{
-						l_ui32AnalogOffset+=m_vAnalogCount[k];
-					}
-					for(k=0; k<l_pMatrix->getBufferElementCount(); k++)
-					{
-						if(!IVRPNServerManager::getInstance().setAnalogState(m_oServerIdentifier, l_ui32AnalogOffset+k, l_pMatrix->getBuffer()[k]))
+						uint32 l_ui32AnalogOffset=0;
+						for(k=0; k<i; k++)
 						{
-							getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Could not set analog state !\n";
+							l_ui32AnalogOffset+=m_vAnalogCount[k];
 						}
+						for(k=0; k<l_pMatrix->getBufferElementCount(); k++)
+						{
+							if(!IVRPNServerManager::getInstance().setAnalogState(m_oServerIdentifier, l_ui32AnalogOffset+k, l_pMatrix->getBuffer()[k]))
+							{
+								getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Could not set analog state !\n";
+							}
+						}
+						IVRPNServerManager::getInstance().reportAnalog(m_oServerIdentifier);
 					}
 				}
+				if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd))
+				{
+				}
+				l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 			}
-			if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd))
-			{
-			}
-			l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 		}
-	}
-
-	if(m_bAnalogSet)
-	{
-		IVRPNServerManager::getInstance().process();
 	}
 
 	return true;

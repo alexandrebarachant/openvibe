@@ -63,6 +63,12 @@ boolean CVRPNButtonServer::uninitialize()
 	return true;
 }
 
+boolean CVRPNButtonServer::processClock(IMessageClock& rMessageClock)
+{
+	IVRPNServerManager::getInstance().process();
+	return true;
+}
+
 boolean CVRPNButtonServer::processInput(uint32 ui32InputIndex)
 {
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
@@ -90,8 +96,6 @@ boolean CVRPNButtonServer::process()
 		}
 	}
 
-	IVRPNServerManager::getInstance().process();
-
 	return true;
 }
 
@@ -101,16 +105,31 @@ void CVRPNButtonServer::setStimulationCount(const uint32 ui32StimulationCount)
 
 void CVRPNButtonServer::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
 {
-	if(m_vStimulationPair[m_ui32CurrentInput].first==ui64StimulationIdentifier)
-	{
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received ON stimulation for button " << m_ui32CurrentInput << " (" << ui64StimulationIdentifier << ")\n";
-		IVRPNServerManager::getInstance().setButtonState(m_oServerIdentifier, m_ui32CurrentInput, true);
-	}
+	pair < uint64, uint64 > l_oStimulationPair=m_vStimulationPair[m_ui32CurrentInput];
 
-	if(m_vStimulationPair[m_ui32CurrentInput].second==ui64StimulationIdentifier)
+	if(l_oStimulationPair.first==l_oStimulationPair.second)
 	{
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received OFF stimulation for button " << m_ui32CurrentInput << " (" << ui64StimulationIdentifier << ")\n";
-		IVRPNServerManager::getInstance().setButtonState(m_oServerIdentifier, m_ui32CurrentInput, false);
+		if(l_oStimulationPair.first==ui64StimulationIdentifier)
+		{
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received TOGGLE stimulation for button " << m_ui32CurrentInput << " (" << ui64StimulationIdentifier << ")\n";
+			IVRPNServerManager::getInstance().setButtonState(m_oServerIdentifier, m_ui32CurrentInput, !IVRPNServerManager::getInstance().getButtonState(m_oServerIdentifier, m_ui32CurrentInput));
+			IVRPNServerManager::getInstance().reportButton(m_oServerIdentifier);
+		}
+	}
+	else
+	{
+		if(l_oStimulationPair.first==ui64StimulationIdentifier)
+		{
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received ON stimulation for button " << m_ui32CurrentInput << " (" << ui64StimulationIdentifier << ")\n";
+			IVRPNServerManager::getInstance().setButtonState(m_oServerIdentifier, m_ui32CurrentInput, true);
+			IVRPNServerManager::getInstance().reportButton(m_oServerIdentifier);
+		}
+		if(l_oStimulationPair.second==ui64StimulationIdentifier)
+		{
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Received OFF stimulation for button " << m_ui32CurrentInput << " (" << ui64StimulationIdentifier << ")\n";
+			IVRPNServerManager::getInstance().setButtonState(m_oServerIdentifier, m_ui32CurrentInput, false);
+			IVRPNServerManager::getInstance().reportButton(m_oServerIdentifier);
+		}
 	}
 }
 
