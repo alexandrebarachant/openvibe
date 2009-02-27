@@ -2,7 +2,12 @@
 
 #include <system/Memory.h>
 
+#if defined System_OS_Windows
+#include <windows.h>
+#define boolean System::boolean
+#else
 #include <netinet/in.h>
+#endif
 
 using namespace System;
 using namespace std;
