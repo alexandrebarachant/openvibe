@@ -167,7 +167,7 @@ namespace OpenViBEPlugins
 {
 	namespace $l_box_algorithm_namespace_final
 	{
-		class $l_box_algorithm_class_name : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class $l_box_algorithm_class_name : public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 
@@ -189,7 +189,7 @@ namespace OpenViBEPlugins
 			// ...
 		};
 
-		class $l_box_algorithm_desc_class_name : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class $l_box_algorithm_desc_class_name : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
