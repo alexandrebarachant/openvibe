@@ -12,6 +12,7 @@
 #include "ovpCChannelSelector.h"
 #include "ovpCSimpleDSP.h"
 #include "ovpCSignalAverage.h"
+#include "ovpCSignalConcat.h"
 #include "ovpCCommonAverageReference.h"
 #include "ovpCFirstDifferenceDetrending.h"
 #include "ovpCSecondDifferenceDetrending.h"
@@ -53,6 +54,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CChannelSelectorDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSimpleDSPDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSignalAverageDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSignalConcatenationDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CCommonAverageReferenceDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CFirstDifferenceDetrendingDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSecondDifferenceDetrendingDesc)

@@ -31,8 +31,6 @@ namespace OpenViBEPlugins
 
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64MatrixCount;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > ip_bMovingAverage;
-
-			OpenViBE::uint64 m_ui64LastStartTime;
 		};
 
 		class CEpochAverageListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >

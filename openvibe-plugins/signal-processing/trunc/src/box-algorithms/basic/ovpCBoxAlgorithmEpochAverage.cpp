@@ -71,8 +71,6 @@ boolean CEpochAverage::initialize(void)
 	m_pMatrixAverage->getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_Matrix)->setReferenceTarget(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 	m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setReferenceTarget(m_pMatrixAverage->getOutputParameter(OVP_Algorithm_MatrixAverage_OutputParameterId_AveragedMatrix));
 
-	m_ui64LastStartTime=0;
-
 	if(ip_i64MatrixCount<=0)
 	{
 		getLogManager() << LogLevel_Error << "You should provide a positive number of epochs better than " << ip_i64MatrixCount << "\n";
@@ -117,14 +115,13 @@ boolean CEpochAverage::process(void)
 			TParameterHandler < IMemoryBuffer* > l_oOutputMemoryBufferHandle(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 			l_oInputMemoryBufferHandle=l_rDynamicBoxContext.getInputChunk(i, j);
 			l_oOutputMemoryBufferHandle=l_rDynamicBoxContext.getOutputChunk(i);
-			uint64 l_ui64EndTime=m_ui64LastStartTime+l_rDynamicBoxContext.getInputChunkEndTime(i, j)-l_rDynamicBoxContext.getInputChunkStartTime(i, j);
 
 			m_pStreamDecoder->process();
 			if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
 				m_pMatrixAverage->process(OVP_Algorithm_MatrixAverage_InputTriggerId_Reset);
 				m_pStreamEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(i, m_ui64LastStartTime, l_ui64EndTime);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
 			if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
@@ -132,16 +129,15 @@ boolean CEpochAverage::process(void)
 				if(m_pMatrixAverage->isOutputTriggerActive(OVP_Algorithm_MatrixAverage_OutputTriggerId_AveragePerformed))
 				{
 					m_pStreamEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeBuffer);
-					l_rDynamicBoxContext.markOutputAsReadyToSend(i, m_ui64LastStartTime, l_ui64EndTime);
+					l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 				}
 			}
 			if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd))
 			{
 				m_pStreamEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeEnd);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(i, m_ui64LastStartTime, l_ui64EndTime);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
 
-			m_ui64LastStartTime=l_rDynamicBoxContext.getInputChunkStartTime(i, j);
 			l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 		}
 	}
