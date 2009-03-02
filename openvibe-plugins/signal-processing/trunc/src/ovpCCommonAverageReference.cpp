@@ -6,11 +6,11 @@ using namespace OpenViBEToolkit;
 using namespace OpenViBEPlugins::SignalProcessing;
 using namespace OpenViBE::Kernel;
 
-CCommonAverageReference::CCommonAverageReference(void) : 
+CCommonAverageReference::CCommonAverageReference(void) :
   m_pSignalReader(NULL),
   m_pSignalReaderCallBack(NULL),
   m_oSignalReaderCallBackProxy(*this,
-			       &CCommonAverageReference::setChannelCount, 
+			       &CCommonAverageReference::setChannelCount,
 			       &CCommonAverageReference::setChannelName,
 			       &CCommonAverageReference::setSampleCountPerBuffer,
 			       &CCommonAverageReference::setSamplingRate,
@@ -22,12 +22,12 @@ CCommonAverageReference::CCommonAverageReference(void) :
 				     &CCommonAverageReference::appendSignalOutputChunkData),
   m_pSignalOutputWriterHelper(NULL),
   m_ui32ChannelCount(0),
-  m_ui32SamplePerBufferCount(0)  
+  m_ui32SamplePerBufferCount(0)
 {
 }
 
 void CCommonAverageReference::release(void)
-{  
+{
   delete this;
 }
 
@@ -63,7 +63,7 @@ boolean CCommonAverageReference::processInput(uint32 ui32InputIndex)
 }
 
 boolean CCommonAverageReference::process(void)
-{  
+{
   IBoxIO * l_pDynamicContext = getBoxAlgorithmContext()->getDynamicBoxContext();
   uint32 l_ui32InputChunkCount = l_pDynamicContext->getInputChunkCount(0);
   for(uint32 i = 0; i < l_ui32InputChunkCount; i++)
@@ -74,15 +74,15 @@ boolean CCommonAverageReference::process(void)
 	{
 	  m_pSignalReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
 	  l_pDynamicContext->markInputAsDeprecated(0,i);
-	  
+
 	  if(m_pInputBuffer == NULL) //dealing with the signal header
 	    {
 	      //l_pDynamicContext->appendOutputChunkData(0, l_pChunkBuffer, l_ui64ChunkSize);
 	      m_pSignalOutputWriterHelper->writeHeader(*m_pSignalOutputWriter);
 	      m_pOutputBuffer = new float64[m_ui32SamplePerBufferCount*m_ui32ChannelCount];
 	      m_pSignalOutputWriterHelper->setSampleBuffer(m_pOutputBuffer);
-	    } 
-	  else 
+	    }
+	  else
 	    { //doing the processing
 	      for(uint32 j = 0; j < m_ui32SamplePerBufferCount; j++)
 		{
@@ -103,10 +103,10 @@ boolean CCommonAverageReference::process(void)
 	    }
 	  l_pDynamicContext->markOutputAsReadyToSend(0,m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
 	}
-      else 
+      else
 	{
 	  //I should insult the user...
-	}      
+	}
     }
   return true;
 }

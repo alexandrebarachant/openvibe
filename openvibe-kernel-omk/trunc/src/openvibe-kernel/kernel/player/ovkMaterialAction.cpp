@@ -87,7 +87,7 @@ void MaterialSetDiffuse::passAction( SubEntityMaterial* subEntity,
 {
 	if(_bUseShader == false)
 	{
-		passDest->setDiffuse ( _diffuse );		
+		passDest->setDiffuse ( _diffuse );
 	}
 }
 
@@ -95,8 +95,8 @@ void MaterialSetDiffuse::subEntityAction( SubEntityMaterial* subEntity ) const
 {
 	if(_bUseShader == true)
 	{
-#define COLOR_MODULATE_PARAM_INDEX 1	
-		subEntity->getOgreSubEntity()->setCustomParameter(COLOR_MODULATE_PARAM_INDEX, Ogre::Vector4(_diffuse.r, _diffuse.g, _diffuse.b, _diffuse.a)); 
+#define COLOR_MODULATE_PARAM_INDEX 1
+		subEntity->getOgreSubEntity()->setCustomParameter(COLOR_MODULATE_PARAM_INDEX, Ogre::Vector4(_diffuse.r, _diffuse.g, _diffuse.b, _diffuse.a));
 	}
 	else
 	{

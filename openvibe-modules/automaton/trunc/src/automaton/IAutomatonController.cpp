@@ -34,7 +34,7 @@ namespace Automaton
 //
 
 
-CAutomatonController::CAutomatonController(IAutomatonContext * pContext) : m_pContext(pContext) 
+CAutomatonController::CAutomatonController(IAutomatonContext * pContext) : m_pContext(pContext)
 {
 	m_pCurrentNode = m_pContext->getInitialNode();
 }
@@ -46,10 +46,10 @@ Automaton::boolean CAutomatonController::process()
 
 	while(l_NodeIdentifier!=Automaton_No_Successor && m_pCurrentNode->process(m_pContext))
 	{
-		
+
 		l_NodeIdentifier = m_pCurrentNode->getSuccessor(m_pContext);
 
-#ifdef DEBUG			
+#ifdef DEBUG
 		cout<<"going to next node ... "<< l_NodeIdentifier<<endl;
 #endif
 

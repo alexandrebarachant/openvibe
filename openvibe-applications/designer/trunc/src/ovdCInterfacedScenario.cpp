@@ -303,7 +303,7 @@ void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 
 		GtkWidget* l_pCloseWidget = glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe-scenario_button_close");
 		g_signal_connect(G_OBJECT(l_pCloseWidget), "clicked", G_CALLBACK(scenario_title_button_close_cb), this);
-		
+
 		m_pScenarioDrawingArea=GTK_DRAWING_AREA(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_drawing_area"));
 		m_pScenarioViewport=GTK_VIEWPORT(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_viewport"));
 		gtk_drag_dest_set(GTK_WIDGET(m_pScenarioDrawingArea), GTK_DEST_DEFAULT_ALL, g_vTargetEntry, sizeof(g_vTargetEntry)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
@@ -1695,7 +1695,7 @@ void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 
 			//if a visualisation box was renamed, tell window manager about it
 			if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
-			{				
+			{
 				m_pDesignerVisualisation->onVisualisationBoxRenamed(rBox.getIdentifier());
 			}
 		}

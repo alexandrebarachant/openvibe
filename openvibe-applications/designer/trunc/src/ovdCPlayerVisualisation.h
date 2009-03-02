@@ -23,9 +23,9 @@ namespace OpenViBEDesigner
 		/** \name ITreeViewCB interface implementation */
 		//@{
 		::GtkWidget* loadTreeWidget(
-			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);		
-		void endLoadTreeWidget(			
-			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);		
+			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
+		void endLoadTreeWidget(
+			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
 		OpenViBE::boolean setToolbar(
 			const OpenViBE::CIdentifier& rBoxIdentifier,
 			::GtkWidget* pToolbarWidget);
@@ -86,7 +86,7 @@ namespace OpenViBEDesigner
 
 		const OpenViBE::Kernel::IKernelContext&	m_rKernelContext;
 		OpenViBE::Kernel::IVisualisationTree& m_rVisualisationTree;
-		OpenViBEDesigner::CInterfacedScenario& m_rInterfacedScenario;		
+		OpenViBEDesigner::CInterfacedScenario& m_rInterfacedScenario;
 
 		/**
 		 * \brief Vector of top level windows

@@ -10,7 +10,7 @@ using namespace Automaton;
 CXMLSwitchProbabilistNodeReader::CXMLSwitchProbabilistNodeReader() :
         m_pNodeReaderFactory(NULL),
 	m_pNodeFactory(NULL),
-	m_pParameterParser(NULL),	
+	m_pParameterParser(NULL),
 	m_pNode(NULL),
 	m_eStatus(ParsingStatus_Nothing)
 {
@@ -48,13 +48,13 @@ EParsingStatus CXMLSwitchProbabilistNodeReader::openChild(const char* sName, con
 			if(m_eStatus == ParsingStatus_Nothing)
 			{
 				m_pNode = dynamic_cast<CNodeSwitch*>(m_pNodeFactory->createNode(Automaton_Node_Identifier_Switch));
-				
-				//add the switch node  
+
+				//add the switch node
 				m_oNodeIdentifier = pContext->addNode(m_pNode);
-				
+
 				m_eStatus = ParsingStatus_Switch;
 			}
-			//else it's a child 
+			//else it's a child
 			else if(m_eStatus == ParsingStatus_Child)
 			{
 				const char * l_pValue = getAttributeValue(sAttributeName, sAttributeValue, ui64AttributeCount, "class");
@@ -86,7 +86,7 @@ EParsingStatus CXMLSwitchProbabilistNodeReader::openChild(const char* sName, con
 		else if(l_oChildName == "Property" && m_eStatus==ParsingStatus_Child)
 		{
 			string l_oValue = getAttributeValue(sAttributeName, sAttributeValue, ui64AttributeCount, "class");
-	
+
 			if(l_oValue == "Probability")
 			{
 				m_eStatus=ParsingStatus_Property;
@@ -100,7 +100,7 @@ EParsingStatus CXMLSwitchProbabilistNodeReader::openChild(const char* sName, con
 		else if(l_oChildName == "Parameter" && m_eStatus==ParsingStatus_Property)
 		{
 			m_pParameterParser = new CXMLParameterReader(m_oParameter);
-			m_eStatus = m_pParameterParser->openChild(sName, sAttributeName, sAttributeValue, ui64AttributeCount, pContext);	
+			m_eStatus = m_pParameterParser->openChild(sName, sAttributeName, sAttributeValue, ui64AttributeCount, pContext);
 		}
 		else
 		{
@@ -233,7 +233,7 @@ EParsingStatus CXMLSwitchProbabilistNodeReader::closeChild(IAutomatonContext* pC
 
 	}
 
-	return m_eStatus; 
+	return m_eStatus;
 
 }
 

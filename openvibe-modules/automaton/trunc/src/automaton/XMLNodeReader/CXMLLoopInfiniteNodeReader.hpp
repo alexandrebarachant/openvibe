@@ -24,7 +24,7 @@ namespace Automaton
 
 			CNodeLoop * m_pNode;
 			CIdentifier m_oNodeIdentifier;
-	
+
 			std::vector <CIdentifier> m_oNodes;
 
 			std::stack<IXMLNodeReader*> m_oReaderStack;

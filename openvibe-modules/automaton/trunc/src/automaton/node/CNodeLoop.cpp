@@ -12,7 +12,7 @@ Automaton::boolean CNodeLoop::process(IAutomatonContext* pContext)
 		m_pLoopCondition->reset();
 	}
 
-	return true;	
+	return true;
 }
 
 Automaton::CIdentifier CNodeLoop::getSuccessor(IAutomatonContext* pContext)

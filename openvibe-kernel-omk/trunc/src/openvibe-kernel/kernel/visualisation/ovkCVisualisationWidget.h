@@ -6,7 +6,7 @@
 #include "../scenario/ovkTAttributable.h"
 
 #include <vector>
-	
+
 namespace OpenViBE
 {
 	namespace Kernel

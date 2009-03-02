@@ -13,7 +13,7 @@ namespace OpenViBE
 		class IMessageEvent;
 		class IMessageSignal;
 		class IScenarioManager;
-		
+
 		/**
 		 * \class IPlayerContext
 		 * \author Yann Renard (INRIA/IRISA)

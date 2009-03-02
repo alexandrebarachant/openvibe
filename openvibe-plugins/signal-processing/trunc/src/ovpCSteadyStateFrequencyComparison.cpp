@@ -15,7 +15,7 @@ using namespace OpenViBE::Kernel;
 
 
 
-CSteadyStateFrequencyComparison::CSteadyStateFrequencyComparison() 
+CSteadyStateFrequencyComparison::CSteadyStateFrequencyComparison()
 	:m_pFeatureVectorReader(NULL),
 	m_pFeatureVectorInputReaderCallback(NULL),
 	m_oFeatureVectorReaderCallbackProxy(
@@ -42,10 +42,10 @@ void CSteadyStateFrequencyComparison::release(void)
 }
 
 boolean CSteadyStateFrequencyComparison::initialize()
-{	
+{
 	//reads the plugin settings
 	CString l_oComparisonKind;
-	
+
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_oComparisonKind);
 	m_bRatio = false;
 	m_bSubstraction = false;
@@ -63,18 +63,18 @@ boolean CSteadyStateFrequencyComparison::initialize()
 		m_bLateralityIndex = true;
 	}
 	m_ui32NumberOfInput = getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount();
-	
+
 	// Prepares EBML reader
 	m_pFeatureVectorInputReaderCallback = createBoxAlgorithmFeatureVectorInputReaderCallback(m_oFeatureVectorReaderCallbackProxy);
 	m_pFeatureVectorReader=EBML::createReader(*m_pFeatureVectorInputReaderCallback);
-	
+
 	// Prepares EBML writer
 	m_pStreamedMatrixOutputWriterHelper=createBoxAlgorithmStreamedMatrixOutputWriter();
 	m_pWriter=EBML::createWriter(m_oAmplitudeOutputWriterCallbackProxy);
-	
+
 	m_pInputBuffer = NULL;
 	m_pOutputBuffer = NULL;
-	
+
 	//Sends the output header
 	m_pStreamedMatrixOutputWriterHelper->setDimmensionCount(1);
 	m_pStreamedMatrixOutputWriterHelper->setDimmensionSize(0,1);
@@ -90,10 +90,10 @@ OpenViBE::boolean CSteadyStateFrequencyComparison::uninitialize()
 	// Cleans up EBML writer
 	m_pWriter->release();
 	m_pWriter=NULL;
-	
+
 	releaseBoxAlgorithmStreamedMatrixOutputWriter(m_pStreamedMatrixOutputWriterHelper);
 	m_pStreamedMatrixOutputWriterHelper=NULL;
-	
+
 	// Cleans up EBML reader
 	releaseBoxAlgorithmFeatureVectorInputReaderCallback(m_pFeatureVectorInputReaderCallback);
 	m_pFeatureVectorReader->release();
@@ -101,7 +101,7 @@ OpenViBE::boolean CSteadyStateFrequencyComparison::uninitialize()
 	m_pFeatureVectorReader=NULL;
 
 	delete[] m_pOutputBuffer;
-	
+
 	return true;
 }
 
@@ -195,7 +195,7 @@ void CSteadyStateFrequencyComparison::setFeatureVector(const OpenViBE::float64* 
 	{
 		m_float64Amplitude = pFeatureBuffer[0];
 	}
-	
+
 	if (m_ui32CurrentInput == m_ui32NumberOfInput-1)
 	{
 		float64 l_float64Amplitude = m_float64Amplitude;
@@ -227,7 +227,7 @@ void CSteadyStateFrequencyComparison::writeToAmplitudeOutput(const void* pBuffer
 OpenViBE::boolean CSteadyStateFrequencyComparison::process()
 {
 	IBoxIO* l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
-	
+
 	//process the first buffer of every input. We are sure there is one else process wouldn't have been called
 	for(m_ui32CurrentInput=0 ; m_ui32CurrentInput<m_ui32NumberOfInput ; m_ui32CurrentInput++)
 	{
@@ -242,6 +242,6 @@ OpenViBE::boolean CSteadyStateFrequencyComparison::process()
 	return true;
 }
 
-		
 
-		
+
+

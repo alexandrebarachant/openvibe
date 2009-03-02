@@ -35,7 +35,7 @@ uint64 CNodeFactory::m_ui64ReferenceCount = 0;
 
 INode * CNodeFactory::createNode(const CIdentifier& oIdentifier)
 {
-	
+
 	if(oIdentifier == Automaton_Node_Identifier_Action)
 	{
 		return new CNodeAction();
@@ -56,7 +56,7 @@ INode * CNodeFactory::createNode(const CIdentifier& oIdentifier)
 	{
 		return NULL;
 	}
-	
+
 }
 
 void CNodeFactory::releaseNode(INode * pNode)

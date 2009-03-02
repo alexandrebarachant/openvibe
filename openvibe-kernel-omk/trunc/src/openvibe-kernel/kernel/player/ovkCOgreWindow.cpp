@@ -310,7 +310,7 @@ boolean COgreWindow::createView()
 	//create default camera
 	m_pCamera = m_pSceneManager->createCamera(string(m_sName) + "_Camera_0");
 	m_pCamera->setAutoAspectRatio(true);
-	float32 l_f32NearClipDistance = 1.f;	
+	float32 l_f32NearClipDistance = 1.f;
 	m_pCamera->setNearClipDistance(l_f32NearClipDistance);
 	m_pCamera->setFarClipDistance(l_f32NearClipDistance / m_f32NearFarClipRatio);
 	m_pCamera->setFixedYawAxis(true);

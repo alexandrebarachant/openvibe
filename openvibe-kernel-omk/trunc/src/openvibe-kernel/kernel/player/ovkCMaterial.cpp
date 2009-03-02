@@ -19,7 +19,7 @@
 /* acordance with that specific license                                 */
 /************************************************************************/
 
-#include "ovkCMaterial.h" 
+#include "ovkCMaterial.h"
 
 using namespace OpenViBE::Kernel;
 
@@ -28,30 +28,30 @@ using namespace OpenViBE::Kernel;
 //=============================================================================
 // NodeMaterial
 //=============================================================================
-NodeMaterial::~NodeMaterial() 
+NodeMaterial::~NodeMaterial()
 {
   for( EntityMaterialIterator it = getEntityMaterialIterator() ;
        it.hasMoreElements() ;
-       it.moveNext() ) 
+       it.moveNext() )
   {
     delete it.peekNextValue() ;
   }
 }
 //-----------------------------------------------------------------------------
-void NodeMaterial::doAction( const IMaterialAction& action ) 
+void NodeMaterial::doAction( const IMaterialAction& action )
 {
   if( action.nodeAction( this ) )
   {
     for( EntityMaterialIterator it = getEntityMaterialIterator() ;
          it.hasMoreElements() ;
-         it.moveNext() ) 
+         it.moveNext() )
     {
       it.peekNextValue()->doAction( action ) ;
     }
   }
 }
 //-----------------------------------------------------------------------------
-void NodeMaterial::activateMaterial() 
+void NodeMaterial::activateMaterial()
 {
   for( EntityMaterialIterator it = getEntityMaterialIterator() ;
        it.hasMoreElements() ;
@@ -61,7 +61,7 @@ void NodeMaterial::activateMaterial()
   }
 }
 //-----------------------------------------------------------------------------
-void NodeMaterial::clearMaterial() 
+void NodeMaterial::clearMaterial()
 {
   for( EntityMaterialIterator it = getEntityMaterialIterator() ;
        it.hasMoreElements() ;
@@ -75,30 +75,30 @@ void NodeMaterial::clearMaterial()
 //=============================================================================
 // EntityMaterial
 //=============================================================================
-EntityMaterial::~EntityMaterial() 
+EntityMaterial::~EntityMaterial()
 {
   for( SubEntityMaterialIterator it = getSubEntityMaterialIterator() ;
        it.hasMoreElements() ;
-       it.moveNext() ) 
+       it.moveNext() )
   {
     delete it.peekNext() ;
   }
 }
 //-----------------------------------------------------------------------------
-void EntityMaterial::doAction( const IMaterialAction& action ) 
+void EntityMaterial::doAction( const IMaterialAction& action )
 {
   if( action.entityAction( this ) )
   {
     for( SubEntityMaterialIterator it = getSubEntityMaterialIterator() ;
          it.hasMoreElements() ;
-         it.moveNext() ) 
+         it.moveNext() )
     {
       it.peekNext()->doAction( action ) ;
     }
   }
 }
 //-----------------------------------------------------------------------------
-void EntityMaterial::activateMaterial() 
+void EntityMaterial::activateMaterial()
 {
   for( SubEntityMaterialIterator it = getSubEntityMaterialIterator() ;
        it.hasMoreElements() ;
@@ -108,7 +108,7 @@ void EntityMaterial::activateMaterial()
   }
 }
 //-----------------------------------------------------------------------------
-void EntityMaterial::clearMaterial() 
+void EntityMaterial::clearMaterial()
 {
   for( SubEntityMaterialIterator it = getSubEntityMaterialIterator() ;
        it.hasMoreElements() ;
@@ -122,12 +122,12 @@ void EntityMaterial::clearMaterial()
 //=============================================================================
 // SubEntityMaterial
 //=============================================================================
-void SubEntityMaterial::doAction( const IMaterialAction& action ) 
+void SubEntityMaterial::doAction( const IMaterialAction& action )
 {
   action.subEntityAction( this ) ;
 }
 //-----------------------------------------------------------------------------
-void SubEntityMaterial::activateMaterial() 
+void SubEntityMaterial::activateMaterial()
 {
   if( !_mat.isNull() )
   {
@@ -136,7 +136,7 @@ void SubEntityMaterial::activateMaterial()
   }
 }
 //-----------------------------------------------------------------------------
-void SubEntityMaterial::activateMaterial( const Ogre::String& materialName ) 
+void SubEntityMaterial::activateMaterial( const Ogre::String& materialName )
 {
   if( _mat.isNull() || materialName != _mat->getName() )
   {
@@ -147,7 +147,7 @@ void SubEntityMaterial::activateMaterial( const Ogre::String& materialName )
   }
 }
 //-----------------------------------------------------------------------------
-void SubEntityMaterial::clearMaterial() 
+void SubEntityMaterial::clearMaterial()
 {
   if( !_mat.isNull() )
   {
@@ -160,16 +160,16 @@ void SubEntityMaterial::clearMaterial()
 //=============================================================================
 // NodeMaterialOrig
 //=============================================================================
-NodeMaterialOrig::NodeMaterialOrig( Ogre::SceneNode* sceneNode ) 
+NodeMaterialOrig::NodeMaterialOrig( Ogre::SceneNode* sceneNode )
 : NodeMaterial(),
-  _sceneNode( sceneNode ) 
+  _sceneNode( sceneNode )
 {
   for( Ogre::SceneNode::ObjectIterator it = sceneNode->getAttachedObjectIterator() ;
        it.hasMoreElements() ;
        it.moveNext() )
   {
     Ogre::MovableObject * currentMO = it.peekNextValue() ;
-    if ( currentMO->getMovableType() == Ogre::EntityFactory::FACTORY_TYPE_NAME ) 
+    if ( currentMO->getMovableType() == Ogre::EntityFactory::FACTORY_TYPE_NAME )
     {
       //OMTRACEID( "DEBUG", "Create entity " << currentMO->getName() ) ;
       _entities[ it.peekNextKey() ] = new EntityMaterialOrig( static_cast< Ogre::Entity *> ( currentMO ) ) ;
@@ -190,11 +190,11 @@ NodeMaterialOrig::~NodeMaterialOrig()
 {
   for( NodeMaterialOrigVector::iterator it = _childs.begin() ;
        it != _childs.end() ;
-       it++ ) 
+       it++ )
   {
     delete *it ;
   }
-  for( ItemStack::iterator it = _stack.begin() ; 
+  for( ItemStack::iterator it = _stack.begin() ;
        it != _stack.end() ;
        it++ )
   {
@@ -202,42 +202,42 @@ NodeMaterialOrig::~NodeMaterialOrig()
   }
 }
 //-----------------------------------------------------------------------------
-void NodeMaterialOrig::doAction( const IMaterialAction& action ) 
+void NodeMaterialOrig::doAction( const IMaterialAction& action )
 {
   if( action.nodeAction( this ) )
   {
     for( EntityMaterialIterator it = getEntityMaterialIterator() ;
          it.hasMoreElements() ;
-         it.moveNext() ) 
+         it.moveNext() )
     {
       it.peekNextValue()->doAction( action ) ;
     }
   }
   for( NodeMaterialOrigVector::iterator it = _childs.begin() ;
        it != _childs.end() ;
-       it++ ) 
+       it++ )
   {
     (*it)->doAction( action ) ;
   }
 }
 //-----------------------------------------------------------------------------
-NodeMaterialOrig* NodeMaterialOrig::find( Ogre::SceneNode* node ) 
+NodeMaterialOrig* NodeMaterialOrig::find( Ogre::SceneNode* node )
 {
   NodeMaterialOrig* result = node != _sceneNode ? 0 : this ;
   for( NodeMaterialOrigVector::iterator it = _childs.begin() ;
        it != _childs.end() && !result ;
-       it++ ) 
+       it++ )
   {
     result = (*it)->find( node ) ;
   }
   return result ;
 }
 //-----------------------------------------------------------------------------
-void NodeMaterialOrig::updateCopyWith( IUpdateMaterial* update ) 
+void NodeMaterialOrig::updateCopyWith( IUpdateMaterial* update )
 {
   NodeMaterialCopy* newNode = new NodeMaterialCopy( _stack.empty() ? (NodeMaterial*)this : (NodeMaterial*)_stack.back().nodeMaterial, update ) ;
   _stack.push_back( Item( newNode, update ) ) ;
-  //OMTRACEID("DEBUG", "" << update->getMaterialName(".") 
+  //OMTRACEID("DEBUG", "" << update->getMaterialName(".")
   //      << " Stack size " << _stack.size() );
     for( EntityMaterialIterator it = getEntityMaterialIterator() ;
        it.hasMoreElements() ;
@@ -257,19 +257,19 @@ void NodeMaterialOrig::updateCopyWith( IUpdateMaterial* update )
   update->update( newNode ) ;
 }
 //-----------------------------------------------------------------------------
-void NodeMaterialOrig::createCopyAndUpdateWith( IUpdateMaterial* update ) 
+void NodeMaterialOrig::createCopyAndUpdateWith( IUpdateMaterial* update )
 {
   updateCopyWith( update ) ;
   for( NodeMaterialOrigVector::iterator it = _childs.begin() ;
        it != _childs.end() ;
-       it++ ) 
+       it++ )
   {
     //OMTRACEID("DEBUG", "Child --------------- " );
       (*it)->createCopyAndUpdateWith( update ) ;
   }
 }
 //-----------------------------------------------------------------------------
-void NodeMaterialOrig::undoFor( IUpdateMaterial* update, bool deleteNode ) 
+void NodeMaterialOrig::undoFor( IUpdateMaterial* update, bool deleteNode )
 {
   // Undo the current node level
   UpdateMaterialStack updateStack ;
@@ -290,7 +290,7 @@ void NodeMaterialOrig::undoFor( IUpdateMaterial* update, bool deleteNode )
   // Do the same for children
   for( NodeMaterialOrigVector::iterator it = _childs.begin() ;
        it != _childs.end() ;
-       it++ ) 
+       it++ )
   {
     (*it)->undoFor( update, deleteNode ) ;
   }
@@ -309,12 +309,12 @@ void NodeMaterialOrig::undoFor( IUpdateMaterial* update, bool deleteNode )
 //=============================================================================
 // EntityMaterialOrig
 //=============================================================================
-EntityMaterialOrig::EntityMaterialOrig( Ogre::Entity *ogreEntity ) 
+EntityMaterialOrig::EntityMaterialOrig( Ogre::Entity *ogreEntity )
 : EntityMaterial( ogreEntity )
 {
-  for( unsigned int i = 0; 
-       i < ogreEntity->getNumSubEntities() ; 
-       i++ ) 
+  for( unsigned int i = 0;
+       i < ogreEntity->getNumSubEntities() ;
+       i++ )
   {
     //OMTRACEID( "DEBUG", "Create SubEntityMaterial " << i  ) ;
     _subEntities.push_back( new SubEntityMaterialOrig( ogreEntity->getSubEntity( i ) ) ) ;
@@ -325,14 +325,14 @@ EntityMaterialOrig::EntityMaterialOrig( Ogre::Entity *ogreEntity )
 //=============================================================================
 // SubEntityMaterialOrig
 //=============================================================================
-SubEntityMaterialOrig::SubEntityMaterialOrig( Ogre::SubEntity *ogreSubEntity ) 
+SubEntityMaterialOrig::SubEntityMaterialOrig( Ogre::SubEntity *ogreSubEntity )
 : SubEntityMaterial( ogreSubEntity )
 {
   _mat = Ogre::MaterialManager::getSingleton().getByName( _ogreSubEntity->getMaterialName() ) ;
   //OMTRACEID( "DEBUG", "get Material of " <<_ogreSubEntity->getMaterialName()  << (_mat.isNull() ? " NULL" : " OK" )) ;
 }
 //-----------------------------------------------------------------------------
-SubEntityMaterialOrig::~SubEntityMaterialOrig() 
+SubEntityMaterialOrig::~SubEntityMaterialOrig()
 {
 	if(!_mat.isNull())
 	{
@@ -411,7 +411,7 @@ SubEntityMaterialCopy::~SubEntityMaterialCopy()
 // IMaterialAction
 //=============================================================================
 Ogre::Pass* IMaterialAction::getFirstPassOfFirstTechnique( SubEntityMaterial* subEntity )
-{  
+{
 	//OMASSERTM( 0 < subEntity->getMaterial()->getNumTechniques(), "Don't get Any Tecnnique on Material" << subEntity->getMaterial()->getName() );
   Ogre::Technique * technique = subEntity->getMaterial()->getTechnique( 0 );
 	//OMASSERTM( 0 < technique->getNumPasses(), "Don't get Any PASS on Material " << subEntity->getMaterial()->getName() );
@@ -422,15 +422,15 @@ Ogre::Pass* IMaterialAction::getFirstPassOfFirstTechnique( SubEntityMaterial* su
 //=============================================================================
 // IUpdateMaterial
 //=============================================================================
-void IUpdateMaterial::undo( NodeMaterial* node ) 
-{ 
-  node->clearMaterial() ; 
+void IUpdateMaterial::undo( NodeMaterial* node )
+{
+  node->clearMaterial() ;
 }
 //-----------------------------------------------------------------------------
-Ogre::String IUpdateMaterial::getUniqueMaterialName( const Ogre::String& name ) 
+Ogre::String IUpdateMaterial::getUniqueMaterialName( const Ogre::String& name )
 {
   Ogre::String uniqueName( name ) ;
-  for( ; 
+  for( ;
     Ogre::MaterialManager::getSingleton().resourceExists( uniqueName ) ;
     uniqueName = name + Ogre::StringConverter::toString( Ogre::Math::UnitRandom() ) )
        ;

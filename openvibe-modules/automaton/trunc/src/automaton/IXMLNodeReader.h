@@ -26,7 +26,7 @@ namespace Automaton
 
 	};
 
-	class Automaton_API IXMLNodeReader 
+	class Automaton_API IXMLNodeReader
 	{
 		protected:
 			virtual ~IXMLNodeReader(){}
@@ -38,7 +38,7 @@ namespace Automaton
 
 			virtual CIdentifier getNodeIdentifier() = 0;
 
-			virtual void release() = 0; 
+			virtual void release() = 0;
 	};
 };
 

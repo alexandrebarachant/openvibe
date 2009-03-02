@@ -84,11 +84,11 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32DataOffset;
 		OpenViBE::uint32 m_ui32MarkerCount;
 		OpenViBE::uint32 m_ui32NumberOfMarkers;
-			
+
 		std::vector<OpenViBE::uint32> m_vStimulationIdentifier;
 		std::vector<OpenViBE::uint64> m_vStimulationDate;
 		std::vector<OpenViBE::uint64> m_vStimulationSample;
-		
+
 		#pragma pack(push)
 		#pragma pack(1)
 		struct RDA_Marker

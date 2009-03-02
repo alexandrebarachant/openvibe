@@ -7,7 +7,7 @@
 using namespace std;
 using namespace Automaton;
 
-CXMLRandomOrderNodeReader::CXMLRandomOrderNodeReader() : 
+CXMLRandomOrderNodeReader::CXMLRandomOrderNodeReader() :
 	m_pNodeReaderFactory(NULL),
 	m_pNodeFactory(NULL),
 	m_ui64BranchCount(0),
@@ -51,14 +51,14 @@ EParsingStatus CXMLRandomOrderNodeReader::openChild(const char* sName, const cha
 				m_pNode = dynamic_cast<CNodeRandomOrder*>(m_pNodeFactory->createNode(Automaton_Node_Identifier_RandomOrder));
 				m_eStatus = ParsingStatus_RandomOrder;
 			}
-			//else it's a child 
+			//else it's a child
 			else if(m_eStatus == ParsingStatus_Child)
 			{
 				const char * l_pNodeClass = getAttributeValue(sAttributeName, sAttributeValue, ui64AttributeCount, "class");
 				if(l_pNodeClass)
 				{
 					string l_oClassAttribute = l_pNodeClass;
-				
+
 					CIdentifier l_oChildIdentifier = pContext->getIdentifier(l_oClassAttribute);
 					m_oReaderStack.push(m_pNodeReaderFactory->createNodeReader(l_oChildIdentifier));
 					m_oReaderStack.top()->openChild(sName, sAttributeName, sAttributeValue, ui64AttributeCount, pContext);
@@ -78,7 +78,7 @@ EParsingStatus CXMLRandomOrderNodeReader::openChild(const char* sName, const cha
 		else if(l_oChildName == "Property" && m_eStatus==ParsingStatus_RandomOrder)
 		{
 			string l_oValue = getAttributeValue(sAttributeName, sAttributeValue, ui64AttributeCount, "class");
-	
+
 			if(l_oValue == "Iteration")
 			{
 				m_eStatus=ParsingStatus_Property;
@@ -151,8 +151,8 @@ EParsingStatus CXMLRandomOrderNodeReader::closeChild(IAutomatonContext* pContext
 	//If we have to redirect to another reader
 	if(m_oReaderStack.size() != 0)
 	{
-		EParsingStatus l_eChildStatus = m_oReaderStack.top()->closeChild(pContext);	
-		
+		EParsingStatus l_eChildStatus = m_oReaderStack.top()->closeChild(pContext);
+
 		//the node has been read
 		if(l_eChildStatus==ParsingStatus_Complete)
 		{
@@ -199,7 +199,7 @@ EParsingStatus CXMLRandomOrderNodeReader::closeChild(IAutomatonContext* pContext
 		}
 		else if(l_oChildName == "Property" && m_eStatus==ParsingStatus_Property)
 		{
-			//add the  node  
+			//add the  node
 			m_oNodeIdentifier = pContext->addNode(m_pNode);
 			m_eStatus = ParsingStatus_RandomOrder;
 		}

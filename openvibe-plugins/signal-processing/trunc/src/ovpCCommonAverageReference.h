@@ -21,13 +21,13 @@ namespace OpenViBEPlugins
 	namespace SignalProcessing
 	{
 
-		
+
 		/**
 		* The class to re-reference the data to Common Average Reference (CAR)
 		*/
 		class CCommonAverageReference : virtual public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
-			
+
 
 
 		public:
@@ -45,7 +45,7 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_CommonAverageReference)
 
-		public:			
+		public:
 			void appendSignalOutputChunkData(const void* pBuffer,  EBML::uint64 ui64BufferSize)
 			  {
 			    appendOutputChunkData(0, pBuffer, ui64BufferSize);
@@ -63,7 +63,7 @@ namespace OpenViBEPlugins
 			EBML::IReader* m_pSignalReader;
 			OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback* m_pSignalReaderCallBack;
 			OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::TCallbackProxy1<OpenViBEPlugins::SignalProcessing::CCommonAverageReference> m_oSignalReaderCallBackProxy;
-		
+
 
 			//start time and end time of the last arrived chunk
 			OpenViBE::uint64 m_ui64LastChunkStartTime;
@@ -74,20 +74,20 @@ namespace OpenViBEPlugins
 			EBML::TWriterCallbackProxy1<OpenViBEPlugins::SignalProcessing::CCommonAverageReference> m_oSignalOutputWriterCallbackProxy;
 			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter* m_pSignalOutputWriterHelper;
 
-			///number of channels			
+			///number of channels
 			OpenViBE::uint32 m_ui32ChannelCount;
 
 			///number of samples per buffer
 			OpenViBE::uint32 m_ui32SamplePerBufferCount;
-			
+
 			//the current input buffer being processed
 			const OpenViBE::float64* m_pInputBuffer;
 
 			//the current output buffer being generated
 			OpenViBE::float64* m_pOutputBuffer;
 
-			
-			
+
+
 		};
 
 		/**

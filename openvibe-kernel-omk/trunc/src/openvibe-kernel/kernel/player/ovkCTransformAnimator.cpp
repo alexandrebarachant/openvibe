@@ -10,7 +10,7 @@ using Ogre::Entity;
 
 CTransformAnimator::CTransformAnimator(const IKernelContext& rKernelContext, COgreObject& rOgreObject, const CIdentifier& rIdentifier) :
 	COgreAnimator(rKernelContext, rOgreObject, rIdentifier)
-{	
+{
 }
 
 CTransformAnimator::~CTransformAnimator()

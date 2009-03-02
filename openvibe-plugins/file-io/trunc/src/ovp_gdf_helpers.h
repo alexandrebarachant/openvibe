@@ -203,7 +203,7 @@ namespace OpenViBEPlugins
 				};
 
 				public:
-					
+
 					virtual ~CVariableGDF1Header(){}
 
 					/**

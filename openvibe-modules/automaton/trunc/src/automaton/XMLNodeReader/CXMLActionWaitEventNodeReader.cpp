@@ -8,7 +8,7 @@ using namespace Automaton;
 
 
 
-CXMLActionWaitEventNodeReader::CXMLActionWaitEventNodeReader() : 
+CXMLActionWaitEventNodeReader::CXMLActionWaitEventNodeReader() :
 	m_pNodeFactory(NULL),
 	m_pParameterParser(NULL),
 	m_pNode(NULL),
@@ -35,7 +35,7 @@ EParsingStatus CXMLActionWaitEventNodeReader::openChild(const char* sName, const
 	{
 		//creates the action node
 		m_pNode = dynamic_cast<CNodeAction*>(m_pNodeFactory->createNode(Automaton_Node_Identifier_Action));
-		
+
 		m_eStatus = ParsingStatus_Action;
 	}
 	else if(l_oChildName == "Property" && m_eStatus==ParsingStatus_Action)
@@ -92,7 +92,7 @@ EParsingStatus CXMLActionWaitEventNodeReader::closeChild(IAutomatonContext* pCon
 
 	if(l_oChildName == "Node" && m_eStatus == ParsingStatus_Node)
 	{
-		//return the node Identifier if it has been completely parsed  
+		//return the node Identifier if it has been completely parsed
 		m_oNodeIdentifier = pContext->addNode(m_pNode);
 
 		m_eStatus = ParsingStatus_Complete;

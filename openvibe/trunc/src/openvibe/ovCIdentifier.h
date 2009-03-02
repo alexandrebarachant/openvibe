@@ -18,7 +18,7 @@ namespace OpenViBE
 	 * This class is the basic class to use in order to identify
 	 * objects in the §OpenViBE§ platform. It can be used for class
 	 * identification, for object identification and any user needed
-	 * identification process. 
+	 * identification process.
 	 *
 	 * The identification of the §OpenViBE§ platform is based on
 	 * 64 bits integers. This allows more than

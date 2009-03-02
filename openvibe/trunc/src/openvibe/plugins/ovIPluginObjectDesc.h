@@ -208,7 +208,7 @@ namespace OpenViBE
 			 * context.
 			 *
 			 * A plugin may be used under different licences. For this reason,
-			 * the §OpenViBE§ kernel will loop on this function for each 
+			 * the §OpenViBE§ kernel will loop on this function for each
 			 * licence type to request.
 			 */
 			virtual OpenViBE::boolean hasLicenceType(OpenViBE::Kernel::ELicenseType eLT) const { return false; }

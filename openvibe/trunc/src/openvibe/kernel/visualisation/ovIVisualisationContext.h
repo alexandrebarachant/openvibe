@@ -345,7 +345,7 @@ namespace OpenViBE
 			// =====================================
 
 			/**
-			 * \brief Get object axis aligned bounding box			 			 
+			 * \brief Get object axis aligned bounding box
 			 * \param rIdentifier Identifier of the object whose AABB is to be retrieved
 			 * \param pMinimum XYZ vector of AABB minimum boundaries
 			 * \param pMaximum XYZ vector of AABB maximum boundaries

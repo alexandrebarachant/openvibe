@@ -30,7 +30,7 @@
  */
 #define EBML_Identifier_Header				EBML::CIdentifier(0x0A45DFA3)
 /**
- * EBML Version. 
+ * EBML Version.
  * This is a child node of type \c integer.
  * It contains the EBML version.
  */

@@ -8,9 +8,9 @@ using namespace OpenViBE::Kernel;
 
 COgreAnimator::COgreAnimator(const IKernelContext& rKernelContext, COgreObject& rOgreObject, const CIdentifier& rIdentifier) :
 	m_rKernelContext(rKernelContext),
-	m_rOgreObject(rOgreObject),	
-	m_pSceneNode(NULL) 
-{			
+	m_rOgreObject(rOgreObject),
+	m_pSceneNode(NULL)
+{
 }
 
 COgreAnimator::~COgreAnimator()
@@ -19,33 +19,33 @@ COgreAnimator::~COgreAnimator()
 
 OpenViBE::boolean COgreAnimator::attachToNode(const std::string& rNodeName)
 {
-	m_sNodeName = rNodeName; 
-	
+	m_sNodeName = rNodeName;
+
 	if(rNodeName.empty())
 	{
-		m_pSceneNode = &m_rOgreObject.getSceneNode();		
+		m_pSceneNode = &m_rOgreObject.getSceneNode();
 	}
 	else
 	{
 		m_pSceneNode = dynamic_cast<Ogre::SceneNode*>(findNode(m_rOgreObject.getSceneNode(), m_sNodeName));
 		if(m_pSceneNode == NULL)
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Trace << "Failed to initialize animator : couldn't find node " << rNodeName.c_str() 
-				<< " in hierarchy of object " << m_rOgreObject.getName().toASCIIString() << "\n";		
+			m_rKernelContext.getLogManager() << LogLevel_Trace << "Failed to initialize animator : couldn't find node " << rNodeName.c_str()
+				<< " in hierarchy of object " << m_rOgreObject.getName().toASCIIString() << "\n";
 			return false;
-		}		
+		}
 	}
 	return true;
 }
 
-Ogre::SceneNode& COgreAnimator::getSceneNode() const 
-{ 
+Ogre::SceneNode& COgreAnimator::getSceneNode() const
+{
 	return *m_pSceneNode;
 }
 
-const std::string& COgreAnimator::getNodeName() const 
-{ 
-	return m_sNodeName; 
+const std::string& COgreAnimator::getNodeName() const
+{
+	return m_sNodeName;
 }
 
 Ogre::Node* COgreAnimator::findNode(const Ogre::Node& rRootNode, const std::string& rNodeName)
@@ -65,7 +65,7 @@ Ogre::Node* COgreAnimator::findNode(const Ogre::Node& rRootNode, const std::stri
 		if(l_pNode != NULL)
 			break;
 	}
-	  
+
 	return l_pNode;
 }
 

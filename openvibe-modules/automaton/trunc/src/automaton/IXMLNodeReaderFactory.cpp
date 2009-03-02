@@ -27,7 +27,7 @@ namespace Automaton
 
 		public:
 			virtual ~CXMLNodeReaderFactory(){}
-				
+
 			virtual IXMLNodeReader * createNodeReader(const CIdentifier& oIdentifier);
 			virtual void releaseNodeReader(IXMLNodeReader * pReader);
 
@@ -83,7 +83,7 @@ Automaton::IXMLNodeReader * CXMLNodeReaderFactory::createNodeReader(const CIdent
 	{
 		return new CXMLRandomOrderNodeReader();
 	}
-	else 
+	else
 	{
 		return NULL;
 	}

@@ -25,7 +25,7 @@ namespace OpenViBEPlugins
 		//static void toggleSamplingPointsCallback(GtkWidget* widget, gpointer data);
 		static void setDelayCallback(::GtkRange *range, gpointer data);
 
-		CTopographicMap3DView::CTopographicMap3DView(CTopographicMap3DDisplay& rTopographicMap3DDisplay, 
+		CTopographicMap3DView::CTopographicMap3DView(CTopographicMap3DDisplay& rTopographicMap3DDisplay,
 			CTopographicMapDatabase& rTopographicMapDatabase, uint64 ui64DefaultInterpolation, float64 f64Delay) :
 			m_rTopographicMap3DDisplay(rTopographicMap3DDisplay),
 			m_rTopographicMapDatabase(rTopographicMapDatabase),
@@ -64,9 +64,9 @@ namespace OpenViBEPlugins
 			m_pElectrodesToggleButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ToggleElectrodes"));
 			//disable electrodes by default
 			m_bElectrodesToggledOn = false;
-			gtk_toggle_tool_button_set_active(m_pElectrodesToggleButton, m_bElectrodesToggledOn);			
+			gtk_toggle_tool_button_set_active(m_pElectrodesToggleButton, m_bElectrodesToggledOn);
 			//connect callback
-			g_signal_connect(G_OBJECT(m_pElectrodesToggleButton), "toggled", G_CALLBACK(toggleElectrodesCallback), this);			
+			g_signal_connect(G_OBJECT(m_pElectrodesToggleButton), "toggled", G_CALLBACK(toggleElectrodesCallback), this);
 
 			//get pointer to sampling points toggle button
 			//m_pSamplingPointsToggleButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ToggleSamplingPoints"));
@@ -74,8 +74,8 @@ namespace OpenViBEPlugins
 			//m_bSamplingPointsToggledOn = false;
 			//gtk_toggle_tool_button_set_active(m_pSamplingPointsToggleButton, m_bSamplingPointsToggledOn);
 			//connect callback
-			//g_signal_connect(G_OBJECT(m_pSamplingPointsToggleButton), "toggled", G_CALLBACK(toggleSamplingPointsCallback), this);			
-		
+			//g_signal_connect(G_OBJECT(m_pSamplingPointsToggleButton), "toggled", G_CALLBACK(toggleSamplingPointsCallback), this);
+
 			//tell database about maximum delay
 			m_rTopographicMapDatabase.adjustNumberOfDisplayedBuffers(m_f64MaxDelay);
 			//ensure default delay lies in [0, m_f64MaxDelay]
@@ -93,7 +93,7 @@ namespace OpenViBEPlugins
 			gtk_widget_set_size_request(l_pDelayScale, 100, -1);
 			gtk_widget_show_all(l_pDelayScale);
 			g_signal_connect(G_OBJECT(l_pDelayScale), "value_changed", G_CALLBACK(setDelayCallback), this);
-			
+
 			//replace existing scale (which somehow can't be used) with the newly created one
 			GtkWidget* l_pOldScale = glade_xml_get_widget(m_pGladeInterface, "DelayScale");
 			GtkWidget* l_pScaleParent = gtk_widget_get_parent(l_pOldScale);
@@ -103,7 +103,7 @@ namespace OpenViBEPlugins
 				if(GTK_IS_BOX(l_pScaleParent))
 				{
 					gtk_box_pack_start(GTK_BOX(l_pScaleParent), l_pDelayScale, TRUE, TRUE, 0);
-					gtk_box_reorder_child(GTK_BOX(l_pScaleParent), l_pDelayScale, 0);				
+					gtk_box_reorder_child(GTK_BOX(l_pScaleParent), l_pDelayScale, 0);
 				}
 			}
 		}
@@ -117,7 +117,7 @@ namespace OpenViBEPlugins
 
 		void CTopographicMap3DView::init()
 		{
-			//reflect default interpolation type			
+			//reflect default interpolation type
 			m_rTopographicMapDatabase.setInterpolationType(m_ui64CurrentInterpolation);
 			enableInterpolationButtonSignals(false);
 			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(m_pMapPotentials), m_ui64CurrentInterpolation == OVP_TypeId_SphericalLinearInterpolationType_Spline);
@@ -146,7 +146,7 @@ namespace OpenViBEPlugins
 			{
 				m_ui64CurrentInterpolation = OVP_TypeId_SphericalLinearInterpolationType_Laplacian;
 				m_rTopographicMapDatabase.setInterpolationType(OVP_TypeId_SphericalLinearInterpolationType_Laplacian);
-			}				
+			}
 		}
 
 		void CTopographicMap3DView::toggleElectrodesCB()
@@ -187,25 +187,25 @@ namespace OpenViBEPlugins
 		void setInterpolationCallback(GtkWidget* pWidget, gpointer data)
 		{
 			CTopographicMap3DView* l_pTopographicMap3DView = reinterpret_cast<CTopographicMap3DView*>(data);
-			l_pTopographicMap3DView->setInterpolationCB(pWidget);			
+			l_pTopographicMap3DView->setInterpolationCB(pWidget);
 		}
 
 		void toggleElectrodesCallback(GtkWidget* pWidget, gpointer data)
 		{
-			CTopographicMap3DView* l_pTopographicMap3DView = reinterpret_cast<CTopographicMap3DView*>(data);			
+			CTopographicMap3DView* l_pTopographicMap3DView = reinterpret_cast<CTopographicMap3DView*>(data);
 			l_pTopographicMap3DView->toggleElectrodesCB();
 		}
 
 		/*void toggleSamplingPointsCallback(GtkWidget* pWidget, gpointer data)
 		{
-			CTopographicMap3DView* l_pTopographicMap3DView = reinterpret_cast<CTopographicMap3DView*>(data);			
+			CTopographicMap3DView* l_pTopographicMap3DView = reinterpret_cast<CTopographicMap3DView*>(data);
 			l_pTopographicMap3DView->toggleSamplingPointsCB();
 		}*/
 
 		void setDelayCallback(GtkRange* pRange, gpointer data)
 		{
 			CTopographicMap3DView* l_pTopographicMap3DView = reinterpret_cast<CTopographicMap3DView*>(data);
-			l_pTopographicMap3DView->setDelayCB(gtk_range_get_value(pRange));			
-		}		
+			l_pTopographicMap3DView->setDelayCB(gtk_range_get_value(pRange));
+		}
 	};
 };

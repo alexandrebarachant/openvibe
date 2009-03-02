@@ -81,7 +81,7 @@ boolean COgreScene::init()
 	//front light
 	Ogre::Light* l_pLight1 = m_pSceneManager->createLight(string(m_sName) + "_Light_0");
 	l_pLight1->setType(Ogre::Light::LT_DIRECTIONAL);
-	l_pLight1->setDirection(Ogre::Real(0), Ogre::Real(0), Ogre::Real(-1));	
+	l_pLight1->setDirection(Ogre::Real(0), Ogre::Real(0), Ogre::Real(-1));
 	l_pLight1->setDiffuseColour(1, 1, 1);
 
 	//back light
@@ -177,7 +177,7 @@ COgreObject* COgreScene::createObject(CIdentifier rObjectIdentifier, const CStri
 	{
 		l_pObject->cloneMeshes();
 	}
-	
+
 	//should materials be cloned?
 	boolean l_bCloneMaterials = false;
 	rNameValuePairList.getValue("CloneMaterials", l_bCloneMaterials);
@@ -218,10 +218,10 @@ boolean COgreScene::removeObject(CIdentifier rObjectIdentifier)
 	if(m_mOgreObjectIds.find(rObjectIdentifier) == m_mOgreObjectIds.end())
 	{
 		return false;
-	}	
+	}
 	COgreObject* l_pObject = m_mOgreObjectIds[rObjectIdentifier];
 
-	//remove object from Ids map	
+	//remove object from Ids map
 	m_mOgreObjectIds.erase(rObjectIdentifier);
 
 	//delete object

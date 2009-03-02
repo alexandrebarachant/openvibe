@@ -77,18 +77,18 @@ void CSimpleDSP::setSampleBuffer(const float64* pBuffer)
 				m_pMatrixBuffer[i] = m_pEquationParser->executeEquation();
 			}
 			break;
-			
+
 		case OP_X2:
 			for(uint64 i=0 ; i<m_ui64MatrixBufferSize ; i++)
 			{
 				m_pMatrixBuffer[i] = pBuffer[i]*pBuffer[i];
 			}
 			break;
-			
+
 		case OP_NONE:
 			System::Memory::copy(m_pMatrixBuffer, pBuffer, m_ui64MatrixBufferSize*sizeof(float64));
 			break;
-			
+
 		case OP_ABS:
 			for(uint64 i=0 ; i<m_ui64MatrixBufferSize ; i++)
 			{
@@ -185,14 +185,14 @@ void CSimpleDSP::setSampleBuffer(const float64* pBuffer)
 				m_pMatrixBuffer[i] = pBuffer[i] + m_f64SpecialEquationParameter;
 			}
 			break;
-		
+
 		case OP_MUL:
 			for(uint64 i=0 ; i<m_ui64MatrixBufferSize ; i++)
 			{
 				m_pMatrixBuffer[i] = pBuffer[i] * m_f64SpecialEquationParameter;
 			}
 			break;
-			
+
 		case OP_DIV:
 			for(uint64 i=0 ; i<m_ui64MatrixBufferSize ; i++)
 			{
@@ -200,7 +200,7 @@ void CSimpleDSP::setSampleBuffer(const float64* pBuffer)
 			}
 			break;
 	}
-	
+
 
 	//the matrix is ready to be sent
 	m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter);
@@ -239,11 +239,11 @@ void CSimpleDSP::release(void)
 
 boolean CSimpleDSP::initialize()
 {
-	
+
 	//reads the plugin settings
 	CString l_oEquation;
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_oEquation);
-	
+
 
 	//initialises the signal description structure
 	m_pSignalDescription = new CSignalDescription();
@@ -257,7 +257,7 @@ boolean CSimpleDSP::initialize()
 	m_pWriter=EBML::createWriter(m_oSignalOutputWriterCallbackProxy);
 
 	m_pEquationParser = new CEquationParser(*this, &m_f64Variable);
-	
+
 	if(m_pEquationParser->compileEquation((const char*)l_oEquation))
 	{
 		m_bValidEquation = true;
@@ -265,13 +265,13 @@ boolean CSimpleDSP::initialize()
 		m_f64SpecialEquationParameter = m_pEquationParser->getTreeParameter();
 		return true;
 	}
-		
+
 	return false;
 }
 
 boolean CSimpleDSP::uninitialize()
 {
-		
+
 	if(m_pMatrixBuffer)
 	{
 		delete[] m_pMatrixBuffer;
@@ -294,7 +294,7 @@ boolean CSimpleDSP::uninitialize()
 	m_pSignalDescription = NULL;
 
 	delete m_pEquationParser;
-	
+
 	return true;
 }
 
@@ -317,7 +317,7 @@ boolean CSimpleDSP::process()
 		// Process input data
 		for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
 		{
-	
+
 			uint64 l_ui64ChunkSize;
 			const uint8* l_pBuffer;
 			l_pDynamicBoxContext->getInputChunk(0, i, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pBuffer);
@@ -325,6 +325,6 @@ boolean CSimpleDSP::process()
 			m_pReader->processData(l_pBuffer, l_ui64ChunkSize);
 		}
 	}
-	
+
 	return true;
 }

@@ -113,7 +113,7 @@ namespace OpenViBE
 		 * \note This is case sensitive !
 		 */
 		friend OV_API OpenViBE::boolean operator<(
-			const OpenViBE::CString& rString1, 
+			const OpenViBE::CString& rString1,
 			const OpenViBE::CString& rString2);
 		//@}
 

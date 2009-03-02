@@ -113,13 +113,13 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean setScenarioIdentifier(
 				const OpenViBE::CIdentifier& rScenarioIdentifier);
-			
+
 			virtual OpenViBE::boolean getBoxIdentifier(
 				OpenViBE::CIdentifier& rBoxIdentifier);
 
 			virtual OpenViBE::boolean setBoxIdentifier(
 				const OpenViBE::CIdentifier& rBoxIdentifier);
-			
+
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
 

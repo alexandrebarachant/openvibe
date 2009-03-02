@@ -23,23 +23,23 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >, OVP_ClassId_Algorithm_OVMatrixFileReader);
 
-		protected:		
+		protected:
 			enum EStatus
 			{
 				Status_Nothing,
 				Status_ParsingHeader,
 				Status_ParsingHeaderDimension,
-				Status_ParsingHeaderLabel,								
-				Status_ParsingBuffer,				
-				Status_ParsingBufferValue				
+				Status_ParsingHeaderLabel,
+				Status_ParsingBuffer,
+				Status_ParsingBufferValue
 			};
 
 			OpenViBE::boolean parseFile(
 				OpenViBE::boolean bStoreData);
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > ip_sFilename;						
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pMatrix;						
-			std::ifstream m_oDataFile;		
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > ip_sFilename;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pMatrix;
+			std::ifstream m_oDataFile;
 		};
 
 		class CAlgorithmOVMatrixFileReaderDesc : public OpenViBE::Plugins::IAlgorithmDesc

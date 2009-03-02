@@ -54,7 +54,7 @@ namespace Automaton
 			 * \param oIdentifier The identifier of the new event.
 			 */
 			virtual void addReceivedEvent(CIdentifier& oIdentifier) = 0;
-		
+
 			virtual const CIdentifier * getSentEvents() = 0;
 			virtual Automaton::uint32 getSentEventsCount() = 0;
 			virtual void clearSentEvents() = 0;
@@ -62,16 +62,16 @@ namespace Automaton
 			/**
 			 * Sends a new event to the external world.
 			 * \param oIdentifier The identifier of the event sent.
-			 */	
+			 */
 			virtual void sendEvent(CIdentifier& oIdentifier) = 0;
-		
+
 			/**
 			 * Converts an XML node name to an identifier.
 			 * \param oXMLNodeName The node's name.
 			 * \return This node category's identifier.
-			 */	
+			 */
 			virtual CIdentifier getIdentifier(const std::string& oXMLNodeName) = 0;
-	
+
 			virtual void setCurrentTime(Automaton::uint64 ui64Time) = 0;
 			virtual Automaton::uint64 getCurrentTime() = 0;
 

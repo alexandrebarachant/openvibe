@@ -20,7 +20,7 @@ enum ByteCodes
 	OP_SUB,
 	OP_MUL,
 	OP_DIV,
-	
+
 	OP_ABS,
 	OP_ACOS,
 	OP_ASIN,
@@ -114,11 +114,11 @@ struct CMathConstantSymbols : symbols<OpenViBE::float64>
 				("m_ln10"       , 2.30258509299404568402)
 				;
 	}
-	
+
 } ;
 
 
-	
+
 static CUnaryFunctionSymbols unaryFunction_p;
 static CBinaryFunctionSymbols binaryFunction_p;
 static CMathConstantSymbols mathConstant_p;
@@ -135,7 +135,7 @@ struct CEquationGrammar : public grammar<CEquationGrammar>
 	static const int factorID = 6;
 	static const int termID = 7;
 	static const int expressionID = 8;
-	
+
 
     template <typename ScannerT>
     struct definition
@@ -145,19 +145,19 @@ struct CEquationGrammar : public grammar<CEquationGrammar>
             real =
 			    leaf_node_d[real_p]
                 ;
-	    
+
 	    variable =
 			   leaf_node_d[as_lower_d[ch_p('x')]]
 		;
 
 	    constant = leaf_node_d[as_lower_d[mathConstant_p]]
 			    ;
-	    
+
 	    function = (
-			    root_node_d[as_lower_d[unaryFunction_p]]>>no_node_d[ch_p('(')]>>expression 
+			    root_node_d[as_lower_d[unaryFunction_p]]>>no_node_d[ch_p('(')]>>expression
 			    | root_node_d[as_lower_d[binaryFunction_p]]>>no_node_d[ch_p('(')]>> infix_node_d[(expression>>','>>expression)]
 		       ) >> no_node_d[ch_p(')')];
-	    
+
 
             factor =
 			    (real | variable | constant | function)
@@ -179,10 +179,10 @@ struct CEquationGrammar : public grammar<CEquationGrammar>
 			    	|   (root_node_d[ch_p('-')] >> term)
                     )
                     ;
-	 
+
         }
 
-	
+
 	rule<ScannerT, parser_context<>, parser_tag<expressionID> > expression;
 	rule<ScannerT, parser_context<>, parser_tag<termID> > term;
 	rule<ScannerT, parser_context<>, parser_tag<factorID> > factor;
@@ -190,7 +190,7 @@ struct CEquationGrammar : public grammar<CEquationGrammar>
 	rule<ScannerT, parser_context<>, parser_tag<variableID> > variable;
 	rule<ScannerT, parser_context<>, parser_tag<functionID> > function;
 	rule<ScannerT, parser_context<>, parser_tag<constantID> > constant;
-	
+
 	rule<ScannerT, parser_context<>, parser_tag<expressionID> > const& start() const { return expression; }
     };
 

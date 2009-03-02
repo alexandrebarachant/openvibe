@@ -28,7 +28,7 @@ class COgreObject
 	{
 		GeometryFileType_Invalid=0,
 		GeometryFileType_Scene,
-		GeometryFileType_Mesh		
+		GeometryFileType_Mesh
 	};
 
 friend class COgreScene;
@@ -99,7 +99,7 @@ public:
 
 	/**
 	 * \brief Set the color of an object
-	 * \param oDiffuse RGBA diffuse color	 
+	 * \param oDiffuse RGBA diffuse color
 	 * \return True if color could be set, false otherwise
 	 */
 	OpenViBE::boolean setDiffuseColor(
@@ -225,8 +225,8 @@ public:
 		Ogre::Real& rMaxY,
 		Ogre::Real& rMaxZ);
 
-private:	
-	/** 
+private:
+	/**
 	 * \brief Clone the geometry from an existing Entity
 	 * \param pEntity pointer to Entity whose geometry is to be cloned
 	 * \return True if geometry could be cloned, false otherwise
@@ -234,7 +234,7 @@ private:
 	OpenViBE::boolean cloneGeometry(
 		Ogre::Entity* pEntity);
 
-	/** 
+	/**
 	 * \brief Load the geometry using the dotSceneInterface
 	 * \return True if geometry could be loaded, false otherwise
 	 */
@@ -251,7 +251,7 @@ private:
 	/**
 	 * \brief Create animators
 	 * This creates all potentially needed animators : a transform animator to rotate, translate and
-	 * scale the object, a color animator to modify its color/transparency, and a vertex buffer animator to 
+	 * scale the object, a color animator to modify its color/transparency, and a vertex buffer animator to
 	 * access the object geometry (e.g. set vertex colors)
 	 * \return True if animators could be created, false otherwise
 	 */

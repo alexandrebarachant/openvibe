@@ -35,9 +35,9 @@ boolean CColorAnimator::init(const std::string& rNodeName)
 		//TODO couldn't find node!
 		return false;
 	}
-	
+
 #if 0 //shaders are not used for now
-	//determine whether object is programmable	
+	//determine whether object is programmable
 	IsProgrammable l_oIsProgrammable(m_rKernelContext);
 	m_pNodeMaterial->doAction(l_oIsProgrammable);
 	m_oMaterialSetDiffuse.setUseShader(l_oIsProgrammable);*/
@@ -61,7 +61,7 @@ void CColorAnimator::setDiffuseColor(const Ogre::ColourValue& diffuse)
 	{
 #if 0
 		m_pNodeMaterial->doAction(MaterialSetDiffuse(m_rKernelContext, diffuse));
-#else		
+#else
 		m_oMaterialSetDiffuse.setDiffuseColor(diffuse);
 		m_pNodeMaterial->doAction(m_oMaterialSetDiffuse);
 #endif
@@ -83,7 +83,7 @@ void CColorAnimator::setTransparency(Ogre::Real t)
 	{
 #if 0
 		m_pNodeMaterial->doAction(MaterialSetTransparency(m_rKernelContext, transparency));
-#else		
+#else
 		m_oMaterialSetDiffuse.setDiffuseAlpha(1-t);
 		m_pNodeMaterial->doAction(m_oMaterialSetDiffuse);
 #endif

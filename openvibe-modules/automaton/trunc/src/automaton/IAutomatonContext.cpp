@@ -24,14 +24,14 @@ namespace Automaton
 		std::vector<CIdentifier> m_oSentEvents;
 
 		std::map<std::string, CIdentifier> m_oXMLNodeToIdentifier;
-	
+
 		Automaton::uint64 m_ui64CurrentTime;
 
 		std::map<CIdentifier, string> m_oParameterName;
 		std::map<CIdentifier, Automaton::uint64> m_oParameterValue;
 
 		public:
-			CAutomatonContext();			
+			CAutomatonContext();
 
 			virtual ~CAutomatonContext();
 			virtual void release(){ delete this; }
@@ -55,7 +55,7 @@ namespace Automaton
 			{
 				return m_oReceivedEvents.size();
 			}
-			
+
 			virtual void clearReceivedEvents()
 			{
 				m_oReceivedEvents.clear();
@@ -65,7 +65,7 @@ namespace Automaton
 			{
 				m_oReceivedEvents.push_back(oIdentifier);
 			}
-			
+
 			virtual const CIdentifier * getSentEvents()
 			{
 				if(m_oSentEvents.size() != 0)
@@ -119,7 +119,7 @@ namespace Automaton
 
 //___________________________________________________________________________________________________
 //
-	
+
 CAutomatonContext::CAutomatonContext() : m_ui64CurrentTime(0)
 {
 	m_oXMLNodeToIdentifier["Automaton"] = Automaton_Node_Identifier_Automaton;
@@ -183,7 +183,7 @@ boolean CAutomatonContext::addSuccessor(CIdentifier oStart, CIdentifier oEnd)
 	{
 		return false;
 	}
-	else 
+	else
 	{
 		m_oNodes[oStart]->addSuccessor(oEnd);
 		return true;
@@ -202,7 +202,7 @@ CIdentifier CAutomatonContext::getIdentifier(const std::string& oXMLNodeName)
 	{
 		return Automaton_Node_Identifier_No_Node;
 	}
-	
+
 	return m_oXMLNodeToIdentifier[oXMLNodeName];
 }
 

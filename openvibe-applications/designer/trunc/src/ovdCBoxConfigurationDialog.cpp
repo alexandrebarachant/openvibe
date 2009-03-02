@@ -250,11 +250,11 @@ void CBoxConfigurationDialog::run(void)
 		gtk_window_set_title(GTK_WINDOW(l_pSettingDialog), l_sTitle);
 #else
 		::GtkWidget *l_pSettingDialog = gtk_dialog_new_with_buttons(
-			"Configure Box Settings", 
+			"Configure Box Settings",
 			&m_rMainWindow, //set dialog transient for main window
 			GTK_DIALOG_MODAL,
 			"Revert", 0, "Apply", GTK_RESPONSE_APPLY,	"Cancel",	GTK_RESPONSE_CANCEL, NULL);	 //set up action buttons
-	
+
 		//unparent contents from glade interface
 		GtkWidget* l_pContents = glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-table");
 		::GtkWidget* l_pContentsParent = gtk_widget_get_parent(l_pContents);
@@ -262,8 +262,8 @@ void CBoxConfigurationDialog::run(void)
 		{
 			gtk_object_ref(GTK_OBJECT(l_pContents));
 			gtk_container_remove(GTK_CONTAINER(l_pContentsParent), l_pContents);
-		}	
-		
+		}
+
 		//add contents to dialog
 		GtkWidget* l_pContentsArea = GTK_DIALOG(l_pSettingDialog)->vbox;//gtk_dialog_get_content_area() not available in current Gtk distribution
 		gtk_container_add (GTK_CONTAINER (l_pContentsArea), l_pContents);

@@ -21,7 +21,7 @@ namespace OpenViBEPlugins
 	namespace SignalProcessing
 	{
 
-		
+
 		/**
 		* The Simple DSP plugin's main class.
 		*/
@@ -31,7 +31,7 @@ namespace OpenViBEPlugins
 			class CSignalDescription
 			{
 				public:
-	
+
 					CSignalDescription(void)
 						:m_ui32StreamVersion(1)
 						,m_ui32SamplingRate(0)
@@ -41,16 +41,16 @@ namespace OpenViBEPlugins
 						,m_bReadyToSend(false)
 					{
 					}
-	
+
 				public:
-	
+
 					EBML::uint32 m_ui32StreamVersion;
 					EBML::uint32 m_ui32SamplingRate;
 					EBML::uint32 m_ui32ChannelCount;
 					EBML::uint32 m_ui32SampleCount;
 					std::vector<std::string> m_pChannelName;
 					EBML::uint32 m_ui32CurrentChannel;
-	
+
 					OpenViBE::boolean m_bReadyToSend;
 			};
 
@@ -102,10 +102,10 @@ namespace OpenViBEPlugins
 			CSignalDescription * m_pSignalDescription;
 
 			//! Size of the matrix buffer (output signal)
-			OpenViBE::uint64 m_ui64MatrixBufferSize; 
+			OpenViBE::uint64 m_ui64MatrixBufferSize;
 			//! Output signal's matrix buffer
 			EBML::float64* m_pMatrixBuffer;
-			
+
 		};
 
 		/**

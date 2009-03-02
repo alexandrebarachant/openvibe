@@ -8,7 +8,7 @@ using namespace Automaton;
 
 
 
-CXMLActionWaitTimeNodeReader::CXMLActionWaitTimeNodeReader() : 
+CXMLActionWaitTimeNodeReader::CXMLActionWaitTimeNodeReader() :
 	m_pNodeFactory(NULL),
 	m_pParameterParser(NULL),
 	m_pNode(NULL),
@@ -35,7 +35,7 @@ EParsingStatus CXMLActionWaitTimeNodeReader::openChild(const char* sName, const 
 	{
 		//creates the action node
 		m_pNode = dynamic_cast<CNodeAction*>(m_pNodeFactory->createNode(Automaton_Node_Identifier_Action));
-		
+
 		m_eStatus = ParsingStatus_Action;
 	}
 	else if(l_oChildName == "Property" && m_eStatus==ParsingStatus_Action)
@@ -80,7 +80,7 @@ EParsingStatus CXMLActionWaitTimeNodeReader::processChildData(const char* sData,
 
 	if(l_oChildName == "Parameter")
 	{
-		m_eStatus = m_pParameterParser->processChildData(sData, pContext);	
+		m_eStatus = m_pParameterParser->processChildData(sData, pContext);
 	}
 
 	return m_eStatus;
@@ -96,7 +96,7 @@ EParsingStatus CXMLActionWaitTimeNodeReader::closeChild(IAutomatonContext* pCont
 
 	if(l_oChildName == "Node" && m_eStatus == ParsingStatus_Node)
 	{
-		//return the node Identifier if it has been completely parsed  
+		//return the node Identifier if it has been completely parsed
 		m_oNodeIdentifier = pContext->addNode(m_pNode);
 
 		m_eStatus = ParsingStatus_Complete;

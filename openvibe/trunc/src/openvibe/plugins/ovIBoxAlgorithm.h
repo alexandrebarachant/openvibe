@@ -95,7 +95,7 @@ namespace OpenViBE
 			 * clock signals. The frequency is given in Hz, with 32:32 fixed
 			 * point representation thus returning \c (1<<32) will make the
 			 * algorithm to be called every second, returning \c (100<<32)
-			 * will make the algorithm being called 100 times a second, 
+			 * will make the algorithm being called 100 times a second,
 			 * returning \c (1<<31) will make the algorithm be called once
 			 * every two seconds and so on...
 			 *
@@ -243,7 +243,7 @@ namespace OpenViBE
 			 *
 			 * The processing function may use the provided context
 			 * in order to read its inputs and write its outputs...
-			 * Also it could use the provided context to send 
+			 * Also it could use the provided context to send
 			 * messages/events to other boxes. Finally, it may use
 			 * the provided context in order to perform rendering
 			 * tasks !

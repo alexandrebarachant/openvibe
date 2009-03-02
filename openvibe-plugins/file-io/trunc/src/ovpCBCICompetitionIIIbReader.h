@@ -42,7 +42,7 @@ namespace OpenViBEPlugins
 				virtual void writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 				virtual void writeStimulationOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 
-				_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_BCICompetitionIIIbReader) 
+				_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_BCICompetitionIIIbReader)
 
 
 			public:

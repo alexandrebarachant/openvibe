@@ -38,7 +38,7 @@ class EntityMaterialCopy;
 class SubEntityMaterialCopy;
 
 //=============================================================================
-class IMaterialAction 
+class IMaterialAction
 {
 protected:
   ///\brief Constructor.
@@ -48,22 +48,22 @@ protected:
 		m_rKernelContext(rKernelContext)
 	{}
 
-public : 
+public :
   ///\brief Destructor.
   virtual ~IMaterialAction() {}
-  ///\brief Method called by \ref NodeMaterial::doAction "doAction" for 
+  ///\brief Method called by \ref NodeMaterial::doAction "doAction" for
   /// the current node.
   ///\return \e true if the action must execute the loop for the entities
   ///
   /// The default does nothing. Can call a method of the node.
   virtual bool nodeAction( NodeMaterial* node ) const { return true ; }
-  ///\brief Method called by \ref EntityMaterial::doAction "doAction" for 
+  ///\brief Method called by \ref EntityMaterial::doAction "doAction" for
   /// the current entity.
   ///\return \e true if the action must execute the loop for the sub-entities
   ///
   /// The default does nothing. Can call a method of the entity.
   virtual bool entityAction( EntityMaterial* entity ) const { return true ; }
-  ///\brief Method called by \ref SubEntityMaterial::doAction "doAction" for 
+  ///\brief Method called by \ref SubEntityMaterial::doAction "doAction" for
   /// the current sub-entity.
   /// The default does nothing. Most of the time calls a method of the sub-entity.
   virtual void subEntityAction( SubEntityMaterial* subEntity ) const {}
@@ -82,7 +82,7 @@ protected:
 public:
   virtual ~IUpdateMaterial() {}
   virtual void update( NodeMaterial* node ) = 0 ;
-  virtual void undo( NodeMaterial* node ) ; 
+  virtual void undo( NodeMaterial* node ) ;
   virtual Ogre::String getMaterialName( const Ogre::String& name ) const { return getUniqueMaterialName( name ) ; }
 protected:
   static Ogre::String getUniqueMaterialName( const Ogre::String& name ) ;
@@ -137,7 +137,7 @@ public:
   void doAction( const IMaterialAction& action ) ;
 } ;
 //=============================================================================
-class  SubEntityMaterial 
+class  SubEntityMaterial
 {
 public:
   SubEntityMaterial( Ogre::SubEntity *ogreSubEntity ) : _ogreSubEntity( ogreSubEntity ) {} ;
@@ -181,7 +181,7 @@ public:
   virtual ~EntityMaterialOrig() {}
 } ;
 //=============================================================================
-class  SubEntityMaterialOrig : public SubEntityMaterial 
+class  SubEntityMaterialOrig : public SubEntityMaterial
 {
 public:
   SubEntityMaterialOrig( Ogre::SubEntity *ogreSubEntity ) ;
@@ -193,7 +193,7 @@ protected:
 
 //Copy
 //=============================================================================
-class  NodeMaterialCopy : public NodeMaterial 
+class  NodeMaterialCopy : public NodeMaterial
 {
 public:
   NodeMaterialCopy( NodeMaterial* node, IUpdateMaterial* update ) ;
@@ -207,7 +207,7 @@ public:
   virtual ~EntityMaterialCopy() ;
 } ;
 //=============================================================================
-class  SubEntityMaterialCopy : public SubEntityMaterial 
+class  SubEntityMaterialCopy : public SubEntityMaterial
 {
 public:
   SubEntityMaterialCopy( SubEntityMaterial *se, IUpdateMaterial* update ) ;

@@ -225,7 +225,7 @@ namespace OpenViBE
 			 * Forwards pointer to the topmost widget of a visualisation box as the player is launched and each visualisation
 			 * box contained in the active scenario is being instantiated. Used to position each box at the appropriate position, as defined
 		   * using the offline window manager.
-			 * \param[in] rBoxIdentifier Identifier of IBox whose toolbar is being set 
+			 * \param[in] rBoxIdentifier Identifier of IBox whose toolbar is being set
 			 * \param[in] pWidget pointer to main window of visualisation box
 			 * \return true if widget was successfully registered, false otherwise
 			 */
@@ -490,7 +490,7 @@ namespace OpenViBE
 			 * \param pLabel [in] label of node to be retrieved, as stored in the EVisualisationTreeColumn_StringName column
 			 * \param eType [in] type of node to be retrieved, as stored in the EVisualisationTreeColumn_ULongNodeType column
 			 * \return true if node was found, false otherwise
-			 */			
+			 */
 			virtual OpenViBE::boolean findChildNodeFromRoot(
 				::GtkTreeIter* pIter,
 				const char* pLabel,

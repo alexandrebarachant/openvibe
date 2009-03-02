@@ -12,7 +12,7 @@ namespace OpenViBE
 		public:
 
 			CVisualisationManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IVisualisationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
-			
+
 			virtual __BridgeBindFunc0__(getKernelContext().getVisualisationManager(), boolean, initialize3DContext, )
 
 			virtual __BridgeBindFunc2__(getKernelContext().getVisualisationManager(), boolean, createResourceGroup, , CIdentifier&, rResourceGroupIdentifier, const CString&, rResourceGroupName)
@@ -69,7 +69,7 @@ boolean CVisualisationContext::setWidget(::GtkWidget* pTopmostWidget)
 {
 	CIdentifier l_oBoxIdentifier;
 	m_pSimulatedBox->getBoxIdentifier(l_oBoxIdentifier);
-	
+
 	return m_pVisualisationManagerBridge->setWidget(
 		m_pSimulatedBox->getScenario().getVisualisationTreeIdentifier(),
 		l_oBoxIdentifier,

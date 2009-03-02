@@ -169,7 +169,7 @@ void CScenarioImporterXML::closeChild(void)
 	else if(l_sTop=="Target"            && m_ui32Status==Status_ParsingLinkTarget)        m_ui32Status=Status_ParsingLink;
 	else if(l_sTop=="Attribute"         && m_ui32Status==Status_ParsingLinkAttribute)     m_ui32Status=Status_ParsingLink;
 	//
-	else if(l_sTop=="VisualisationWidget" && m_ui32Status==Status_ParsingVisualisationWidget) m_ui32Status=Status_ParsingVisualisationTree; 
+	else if(l_sTop=="VisualisationWidget" && m_ui32Status==Status_ParsingVisualisationWidget) m_ui32Status=Status_ParsingVisualisationTree;
 	else if(l_sTop=="Attribute"         && m_ui32Status==Status_ParsingVisualisationWidgetAttribute) m_ui32Status=Status_ParsingVisualisationWidget;
 	//
 	else if(l_sTop=="Attribute"         && m_ui32Status==Status_ParsingScenarioAttribute) m_ui32Status=Status_ParsingScenario;
@@ -324,7 +324,7 @@ boolean CScenarioImporterXML::doImport(IScenarioImporterContext& rScenarioImport
 			l_pVisualisationWidget->addAttribute(
 				_AutoCaster_(a->m_sIdentifier),
 				_AutoCaster_(a->m_sValue));
-		}		
+		}
 		m_vVisualisationWidgetIdMapping[l_oVisualisationWidgetIdentifier]=l_oNewVisualisationWidgetIdentifier;
 	}
 	for(a=m_oScenario.m_vAttribute.begin(); a!=m_oScenario.m_vAttribute.end(); a++)

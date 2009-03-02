@@ -22,10 +22,10 @@ public:
 	void setDiffuseColor(Ogre::Real r, Ogre::Real g, Ogre::Real b);
 	void setTransparency(Ogre::Real transparency);
 
-protected:	
+protected:
 	NodeMaterialOrig* m_pNodeMaterial;
 	MaterialSetDiffuse m_oMaterialSetDiffuse;
-	Ogre::Vector4 m_oColor;	
+	Ogre::Vector4 m_oColor;
 };
 
 #endif // __OpenViBEKernel_Kernel_Player_CColorAnimator_H__

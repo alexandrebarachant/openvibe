@@ -212,7 +212,7 @@ void CDesignerVisualisation::init(std::string guiFile)
 	//create main dialog
 	//------------------
 	m_pDialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
+
 	//if windows have been created, retrieve their size and take it into account
 	uint64 l_ui64TreeViewWidth = 200;
 	uint64 l_ui64DefaultWidth = m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowWidth}", 400);
@@ -351,7 +351,7 @@ void CDesignerVisualisation::onVisualisationBoxRenamed(const CIdentifier& rBoxId
 			//reload tree
 			m_rVisualisationTree.reloadTree();
 
-			//refresh view			
+			//refresh view
 			refreshActiveVisualisation(NULL);
 		}
 	}
@@ -652,7 +652,7 @@ gboolean CDesignerVisualisation::window_state_event_cb(::GtkWidget* widget,GdkEv
 gboolean CDesignerVisualisation::configure_event_cb(::GtkWidget* widget, GdkEventConfigure* event, gpointer user_data)
 {
 	/*
-	//upon first show, resize window so that the preview widget has the desired size 
+	//upon first show, resize window so that the preview widget has the desired size
 	if(m_bFirstShow == true)
 	{
 		//set preview widget size
@@ -679,7 +679,7 @@ gboolean CDesignerVisualisation::widget_expose_event_cb(::GtkWidget* widget, Gdk
 void CDesignerVisualisation::resizeCB(IVisualisationWidget* pVisualisationWidget)
 {
 	if(pVisualisationWidget == NULL)
-	{		
+	{
 		//assign current window size to each window
 		::GtkWidget* l_pNotebook = gtk_paned_get_child2(GTK_PANED(m_pPane));
 		if(l_pNotebook != NULL)
@@ -1309,7 +1309,7 @@ boolean CDesignerVisualisation::removeVisualisationWidget()
 		return false;
 	}
 	CIdentifier l_oIdentifier;
-	m_rVisualisationTree.getIdentifierFromTreeIter(&l_oIter, l_oIdentifier, EVisualisationTreeColumn_StringIdentifier);	
+	m_rVisualisationTree.getIdentifierFromTreeIter(&l_oIter, l_oIdentifier, EVisualisationTreeColumn_StringIdentifier);
 	return removeVisualisationWidget(l_oIdentifier);
 }
 
@@ -1653,7 +1653,7 @@ void CDesignerVisualisation::cursorChangedCB(::GtkTreeView* pTreeView)
 	//save active item
 	if(m_rVisualisationTree.getULongValueFromTreeIter(&l_oSelectionIter, EVisualisationTreeColumn_ULongNodeType) == EVisualisationTreeNode_VisualisationBox)
 	{
-		m_rVisualisationTree.getIdentifierFromTreeIter(&l_oSelectionIter, m_oActiveVisualisationBoxIdentifier, EVisualisationTreeColumn_StringIdentifier);		
+		m_rVisualisationTree.getIdentifierFromTreeIter(&l_oSelectionIter, m_oActiveVisualisationBoxIdentifier, EVisualisationTreeColumn_StringIdentifier);
 	}
 
 	::GtkTreeIter l_oVisualisationPanelIter = l_oSelectionIter;
@@ -1770,7 +1770,7 @@ void CDesignerVisualisation::dragDataReceivedInWidgetCB(::GtkWidget* pDstWidget,
 	{
 		//ensure dragged widget is a visualisation box
 		if(m_rVisualisationTree.findChildNodeFromRoot(&l_oSrcIter, m_oActiveVisualisationBoxIdentifier) == false)
-		{		
+		{
 			return;
 		}
 	}
@@ -1860,7 +1860,7 @@ void CDesignerVisualisation::dragDataReceivedInEventBoxCB(::GtkWidget* pDstWidge
 	if(GTK_IS_TREE_VIEW(l_pSrcWidget))
 	{
 		if(m_rVisualisationTree.findChildNodeFromRoot(&l_oSrcIter, m_oActiveVisualisationBoxIdentifier) == false)
-		{		
+		{
 			return;
 		}
 		//get actual src widget (item being dropped) and ensure it isn't being dropped in its own table

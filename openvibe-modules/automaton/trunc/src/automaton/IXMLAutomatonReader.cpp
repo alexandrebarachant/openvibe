@@ -22,7 +22,7 @@ using namespace Automaton;
 namespace Automaton
 {
 
-	
+
 	class CXMLAutomatonReader : public IXMLAutomatonReader, virtual public TXMLReader<XML::IReaderCallback>
 	{
 		//! The XML reader
@@ -67,9 +67,9 @@ namespace Automaton
 //___________________________________________________________________________________________________
 //
 
-CXMLAutomatonReader::CXMLAutomatonReader() : 
-	m_pXMLReader(NULL), 
-	m_pNodeReaderFactory(NULL), 
+CXMLAutomatonReader::CXMLAutomatonReader() :
+	m_pXMLReader(NULL),
+	m_pNodeReaderFactory(NULL),
 	m_pNodeFactory(NULL),
 	m_pContext(NULL),
 	m_eStatus(ParsingStatus_Nothing)
@@ -86,7 +86,7 @@ CXMLAutomatonReader::~CXMLAutomatonReader()
 	m_pXMLReader->release();
 	releaseNodeFactory(m_pNodeFactory);
 	releaseXMLNodeReaderFactory(m_pNodeReaderFactory);
-	
+
 }
 
 boolean CXMLAutomatonReader::processData(const void * pBuffer, const Automaton::uint64 ui64BufferSize)
@@ -124,17 +124,17 @@ void CXMLAutomatonReader::openChild(const char* sName, const char** sAttributeNa
 			m_eStatus = ParsingStatus_Node;
 
 			const char * l_pValue = getAttributeValue(sAttributeName, sAttributeValue, ui64AttributeCount, "class");
-			
+
 			if(l_pValue)
 			{
 				string l_oClassAttribute = l_pValue;
-			
+
 				//gets the identifier associated with this kind of node
 				CIdentifier l_oChildIdentifier = m_pContext->getIdentifier(l_oClassAttribute);
-				
+
 				//creates the associated node reader and adds it to the stack
 				m_oReaderStack.push(m_pNodeReaderFactory->createNodeReader(l_oChildIdentifier));
-				
+
 				//calls it on the current node
 				m_oReaderStack.top()->openChild(sName, sAttributeName, sAttributeValue, ui64AttributeCount, m_pContext);
 			}
@@ -206,7 +206,7 @@ void CXMLAutomatonReader::processChildData(const char* sData)
 		}
 	}
 	else
-	{	
+	{
 #ifdef DEBUG
 		string& l_oChildName = m_oParsedXMLNodes.top();
 		cout<<"Processing node : "<<l_oChildName <<"..."<<endl;
@@ -236,7 +236,7 @@ void CXMLAutomatonReader::closeChild(void)
 			//we don't need the associated reader anymore (desallocates it, removes it from the stack)
 			m_pNodeReaderFactory->releaseNodeReader(m_oReaderStack.top());
 			m_oReaderStack.pop();
-			
+
 			m_oParsedXMLNodes.pop();
 
 			//we are now back to the main parsin state

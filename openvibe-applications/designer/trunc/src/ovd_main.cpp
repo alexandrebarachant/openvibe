@@ -170,7 +170,7 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 			{
 				l_sStockItemName=GTK_STOCK_NEW;
 			}
-	
+
 			// Splits the plugin category
 			vector<string> l_vCategory;
 			string l_sCategory=string(l_pPluginObjectDesc->getCategory());
@@ -188,7 +188,7 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 			{
 				l_vCategory.push_back(string(l_sCategory, i+1, l_sCategory.length()-i-1));
 			}
-	
+
 			// Fills plugin in the tree
 			vector<string>::iterator it;
 			::GtkTreeIter l_oGtkIter1;
@@ -311,7 +311,7 @@ int go(int argc, char ** argv)
 //                                                                   //
 
 	CKernelLoader l_oKernelLoader;
-	
+
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
 	CString m_sError;
 #if defined OVD_OS_Windows

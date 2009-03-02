@@ -7,7 +7,7 @@ using namespace std;
 
 using namespace Automaton;
 
-CXMLLoopInfiniteNodeReader::CXMLLoopInfiniteNodeReader() : 
+CXMLLoopInfiniteNodeReader::CXMLLoopInfiniteNodeReader() :
 	m_pNodeReaderFactory(NULL),
 	m_pNodeFactory(NULL),
 	m_pNode(NULL),
@@ -59,9 +59,9 @@ EParsingStatus CXMLLoopInfiniteNodeReader::openChild(const char* sName, const ch
 			else if(m_eStatus == ParsingStatus_Child)
 			{
 				m_eStatus = ParsingStatus_Node;
-				
+
 				const char * l_pValue = getAttributeValue(sAttributeName, sAttributeValue, ui64AttributeCount, "class");
-				
+
 				if(l_pValue)
 				{
 					string l_oClassAttribute = l_pValue;
@@ -116,7 +116,7 @@ EParsingStatus CXMLLoopInfiniteNodeReader::processChildData(const char* sData, I
 		else
 		{
 			cout<<"Unexpected node : "<<l_oChildName<<endl;
-			m_eStatus = ParsingStatus_Error;	
+			m_eStatus = ParsingStatus_Error;
 		}
 	}
 
@@ -127,7 +127,7 @@ EParsingStatus CXMLLoopInfiniteNodeReader::closeChild(IAutomatonContext* pContex
 {
 	//If we have to redirect to another reader
 	if(m_oReaderStack.size() != 0)
-	{	
+	{
 		EParsingStatus l_eChildStatus = m_oReaderStack.top()->closeChild(pContext);
 
 		//the node has been read
@@ -168,13 +168,13 @@ EParsingStatus CXMLLoopInfiniteNodeReader::closeChild(IAutomatonContext* pContex
 
 		if(l_oChildName == "Node" && m_eStatus==ParsingStatus_Loop)
 		{
-			
+
 			if(m_oNodes.size() != 0)
 			{
 				pContext->addSuccessor(m_oNodeIdentifier, m_oNodes.front());
 				pContext->addSuccessor(m_oNodes.back(), m_oNodeIdentifier);
 			}
-			
+
 			m_eStatus = ParsingStatus_Complete;
 		}
 		else if(l_oChildName == "Child" && m_eStatus==ParsingStatus_Child)

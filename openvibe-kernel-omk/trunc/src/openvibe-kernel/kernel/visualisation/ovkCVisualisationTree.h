@@ -21,7 +21,7 @@ namespace OpenViBE
 
 			OpenViBE::boolean init(
 				const OpenViBE::Kernel::IScenario* pScenario);
-			
+
 			/** \name VisualisationWidget management */
 			//@{
 			OpenViBE::boolean getNextVisualisationWidgetIdentifier(
@@ -65,15 +65,15 @@ namespace OpenViBE
 			::GtkTreeView* createTreeViewWithModel(void);
 			OpenViBE::boolean setTreeViewCB(
 				OpenViBE::Kernel::ITreeViewCB* pTreeViewCB);
-			
+
 			/**
 			 * \brief Recreates Gtk widgets based on the widgets description stored in the internal tree store.
 			 * \remark Side effects : all iterators and GtkWidget pointers are invalidated and replaced with new values
-			 * To be called upon widget creation, deletion or repositioning. 
+			 * To be called upon widget creation, deletion or repositioning.
 			 * \return true if widgets were successfully reloaded, false otherwise
-			 */		 
+			 */
 			OpenViBE::boolean reloadTree(void);
-			
+
 			/** \name Helper functions */
 			//@{
 			OpenViBE::boolean getTreeSelection(
@@ -139,7 +139,7 @@ namespace OpenViBE
 			 */
 			OpenViBE::boolean findChildNodeFromParent(
 				::GtkTreeIter* pIter,
-				void* pWidget);				
+				void* pWidget);
 			/**
 			 * \brief Looks for a node whose identifier matches 'oIdentifier' from the root of the internal tree store
 			 * \param pIter [out] pointer to node to be retrieved
@@ -157,7 +157,7 @@ namespace OpenViBE
 			 */
 			OpenViBE::boolean findChildNodeFromParent(
 				::GtkTreeIter* pIter,
-				OpenViBE::CIdentifier oIdentifier);			
+				OpenViBE::CIdentifier oIdentifier);
 			/**
 			 * \brief Find first parent node of a given type
 			 * Looks for first parent node of type 'eType' from a given node in the internal tree store
@@ -201,7 +201,7 @@ namespace OpenViBE
 				OpenViBE::Kernel::EDragDataLocation eLocation);
 			//@}
 
-			/** 
+			/**
 			 * \name Dynamic widget parenting
 			 */
 			//@{
@@ -213,26 +213,26 @@ namespace OpenViBE
 			 * \return \e true in case of success, \e false otherwise.
 			 */
 			virtual OpenViBE::boolean setToolbar(
-				const OpenViBE::CIdentifier& rBoxIdentifier,				
+				const OpenViBE::CIdentifier& rBoxIdentifier,
 				::GtkWidget* pToolbarWidget);
 
 			/**
 			 * \brief Forward pointer to the main widget of a visualisation plugin to the tree view
 			 * \param rBoxIdentifier [in] Identifier of IBox whose topmost widget is being set
-			 * \param pWidget [in] pointer to main window			 
+			 * \param pWidget [in] pointer to main window
 			 * \return \e true in case of success, \e false otherwise.
 			 */
 			virtual OpenViBE::boolean setWidget(
-				const OpenViBE::CIdentifier& rBoxIdentifier,				
+				const OpenViBE::CIdentifier& rBoxIdentifier,
 				::GtkWidget* pTopmostWidget);
-			
+
 			//@}
-			
+
 			virtual OpenViBE::boolean acceptVisitor(
 				OpenViBE::IObjectVisitor& rObjectVisitor);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationTree> >, OVK_ClassId_Kernel_Visualisation_VisualisationTree)
-			
+
 		private:
 
 			OpenViBE::boolean _destroyHierarchy(
@@ -251,14 +251,14 @@ namespace OpenViBE
 				::GtkTreeIter* pIter,
 				OpenViBE::CIdentifier oIdentifier);
 
-			//tree loading			
-			OpenViBE::boolean loadVisualisationWidget(				
+			//tree loading
+			OpenViBE::boolean loadVisualisationWidget(
 				OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget,
 				::GtkTreeIter* pParentIter);
 
 			OpenViBE::boolean visitVisualisationWidget(
-				OpenViBE::IObjectVisitor& rObjectVisitor, 
-				OpenViBE::CIdentifier oVisualisationWidgetIdentifier, 
+				OpenViBE::IObjectVisitor& rObjectVisitor,
+				OpenViBE::CIdentifier oVisualisationWidgetIdentifier,
 				OpenViBE::boolean bRecurse);
 
 		private:

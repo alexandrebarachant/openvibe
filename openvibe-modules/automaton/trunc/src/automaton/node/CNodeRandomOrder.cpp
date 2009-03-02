@@ -12,7 +12,7 @@ Automaton::boolean CNodeRandomOrder::process(IAutomatonContext* pContext)
 
 		m_ui64BranchNumber = m_oBranchCount[(size_t)l_ui64RandomIndex].first;
 
-		//if this branch "ttl" is equal to 0, suppress its entry	
+		//if this branch "ttl" is equal to 0, suppress its entry
 		if(--m_oBranchCount[(size_t)l_ui64RandomIndex].second == 0)
 		{
 			m_oBranchCount.erase(m_oBranchCount.begin() + (size_t)l_ui64RandomIndex );
@@ -21,7 +21,7 @@ Automaton::boolean CNodeRandomOrder::process(IAutomatonContext* pContext)
 	else
 	{
 		//we can quit this node
-		
+
 		//reset it
 		for(uint64 i=0 ; i<m_ui64BranchCount ; i++)
 		{
