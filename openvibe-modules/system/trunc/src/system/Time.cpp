@@ -35,28 +35,32 @@ uint32 Time::getTime(void)
 	return (uint32)(((zgetTime()>>22)*1000)>>10);
 }
 
-#if 0
-#include <stdio.h>
-static void display(uint64 v)
-{
-	printf(" 0x%08x%08x ", (uint32)(v>>32), (uint32)(v));
-}
-#endif
-
 uint64 Time::zgetTime(void)
 {
 	uint64 l_ui64Result=0;
 #if defined System_OS_Linux
+	static boolean l_bInitialized=false;
+	static struct timeval l_oTimeValueStart;
 	struct timeval l_oTimeValue;
+	uint64 l_ui64TimeMicroSecond=0;
+
+	if(!l_bInitialized)
+	{
+		gettimeofday(&l_oTimeValueStart, NULL);
+
+		l_bInitialized=true;
+	}
+
 	gettimeofday(&l_oTimeValue, NULL);
-	l_ui64Result+=(((uint64)l_oTimeValue.tv_sec)<<32);
-	l_ui64Result+=(((uint64)l_oTimeValue.tv_usec)<<32)/1000000;
+	l_ui64TimeMicroSecond+=(l_oTimeValue.tv_sec-l_oTimeValueStart.tv_sec)*1000000;
+	l_ui64TimeMicroSecond+=(l_oTimeValue.tv_usec-l_oTimeValueStart.tv_usec);
+
+	l_ui64Result=((l_ui64TimeMicroSecond/1000000)<<32)+(((l_ui64TimeMicroSecond%1000000)<<32)/1000000);
 #elif defined System_OS_Windows
 	static boolean l_bInitialized=false;
 	static uint64 l_ui64Frequency;
 	static uint64 l_ui64CounterStart;
-	static uint64 l_ui64Counter;
-	//static uint32 l_ui32FrequencyOrder;
+	uint64 l_ui64Counter;
 
 	if(!l_bInitialized)
 	{
@@ -68,8 +72,6 @@ uint64 Time::zgetTime(void)
 		QueryPerformanceCounter(&l_oPerformanceCounterStart);
 		l_ui64CounterStart=l_oPerformanceCounterStart.QuadPart;
 
-		//l_ui32FrequencyOrder=1+(uint32)(log(1.+(double)l_ui64Frequency)/log(2.));
-
 		l_bInitialized=true;
 	}
 
@@ -77,18 +79,7 @@ uint64 Time::zgetTime(void)
 	QueryPerformanceCounter(&l_oPerformanceCounter);
 	l_ui64Counter=l_oPerformanceCounter.QuadPart-l_ui64CounterStart;
 
-	// l_ui64Result=((l_ui64Counter<<(32-l_ui32FrequencyOrder))/l_ui64Frequency)<<l_ui32FrequencyOrder;
 	l_ui64Result=((l_ui64Counter/l_ui64Frequency)<<32)+(((l_ui64Counter%l_ui64Frequency)<<32)/l_ui64Frequency);
-#if 0
-	display(l_ui32FrequencyOrder);
-	display(l_ui64Frequency);
-	display(l_ui64Counter);
-	display(l_ui64Counter<<(32-l_ui32FrequencyOrder));
-	display(l_ui64Result);
-	display(r);
-	display(r-l_ui64Result);
-	printf("\n");
-#endif
 #else
 #endif
 	return l_ui64Result;
