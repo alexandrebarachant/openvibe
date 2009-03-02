@@ -1,4 +1,4 @@
-PROJECT(OpenViBE-plugins-noname)
+PROJECT(OpenViBE-plugins-turbofieldtrip)
 
 SET(PROJECT_VERSION_MAJOR x)
 SET(PROJECT_VERSION_MINOR x)
