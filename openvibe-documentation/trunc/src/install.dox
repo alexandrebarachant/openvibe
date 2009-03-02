@@ -14,6 +14,13 @@ be done thanks to this command :
 svn checkout svn+ssh://developername@scm.gforge.inria.fr/svn/openvibe
 \endcode
 
+Windows users will prefer a GUI for subversion. We recommand \e TortoiseSVN which
+can be downloaded from http://tortoisesvn.tigris.org
+
+<b>Please avoid any special caracters such as &, |, !, ?, spaces etc in the path
+where you download the sources</b>. This would break some of the build scripts
+(especially with \b Windows).
+
 \section Doc_RepositoryOrganisation Repository organisation
 
 The project repository is composed of several software modules. Each software
@@ -106,19 +113,14 @@ it must be tuned according to each local installation and usage. However, the
 \e linux-init_env_command-skeleton and \e win32-init_env_command-skeleton files
 may be used as a basis to create such scripts. Most Linux users will simply
 want to copy the \e linux-init_env_command-skeleton to \e linux-init_env_command.
-Under Windows, copying the windows skeleton to \e win32-init_env_command may not
-be enough because of installation specifics such as Visual Studio paths and so on...
-Script tweaking is required here ;)
+Similarly, most Windows users will simply want to copy
+\e win32-init_env_command.cmd-skeleton to \e win32-init_env_command.cmd.
 
 \section Doc_Building Building the platform
 
 If you want to build all projects at once, you can use the \e linux-build or
 \e win32-build scripts. Both scripts call the appropriate
 \e init_env_command, which must have been properly configured.
-
-Since each project will compile in its own directory, the \e linux-collect_build and
-\e win32-collect_build scripts should be used to get all built files and copy them to
-the \e dist directory.
 
 The \e linux-test and \e win32-test scripts will collect the build and then launch
 the most interesting softwares for you.
