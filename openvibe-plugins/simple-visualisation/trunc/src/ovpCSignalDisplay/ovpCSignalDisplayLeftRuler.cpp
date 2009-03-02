@@ -33,18 +33,21 @@ gboolean resizeLeftRulerCallback(GtkWidget *widget, GtkAllocation *allocation, g
 	CSignalDisplayLeftRuler * l_pLeftRuler = reinterpret_cast<CSignalDisplayLeftRuler*>(data);
 
 	//resizes the left ruler
-	gtk_widget_set_size_request(l_pLeftRuler->getWidget(), 50, allocation->height);
+	gtk_widget_set_size_request(l_pLeftRuler->getWidget(), l_pLeftRuler->m_i32WidthRequest, allocation->height);
 
 	return FALSE;
 }
 
-CSignalDisplayLeftRuler::CSignalDisplayLeftRuler() :
-	m_ui64PixelsPerLeftRulerLabel(10)
+CSignalDisplayLeftRuler::CSignalDisplayLeftRuler(int32 i32WidthRequest, int32 i32HeightRequest) :
+	m_i32WidthRequest(i32WidthRequest)
+	,m_f64MaximumDisplayedValue(-DBL_MAX)
+	,m_f64MinimumDisplayedValue(DBL_MAX)
+	,m_ui64PixelsPerLeftRulerLabel(10)
 {
 	//creates the main drawing area
 	m_pLeftRuler = gtk_drawing_area_new();
 
-	gtk_widget_set_size_request(m_pLeftRuler, 50, 0);
+	gtk_widget_set_size_request(m_pLeftRuler, i32WidthRequest, i32HeightRequest);
 
 	g_signal_connect_after(G_OBJECT(m_pLeftRuler), "expose_event", G_CALLBACK(leftRulerExposeEventCallback), this);
 
@@ -65,11 +68,23 @@ CSignalDisplayLeftRuler::CSignalDisplayLeftRuler() :
 
 CSignalDisplayLeftRuler::~CSignalDisplayLeftRuler()
 {
+	g_object_unref(m_pLeftRuler);
 }
 
-/**
- * Draws the ruler by using the information from the database.
- * */
+void CSignalDisplayLeftRuler::update(float64 f64Min, float64 f64Max)
+{
+	m_f64MaximumDisplayedValue = f64Max;
+	m_f64MinimumDisplayedValue = f64Min;
+
+	//redraw the ruler
+	gdk_window_invalidate_rect(m_pLeftRuler->window, NULL, true);
+}
+
+GtkWidget* CSignalDisplayLeftRuler::getWidget() const
+{
+	return m_pLeftRuler;
+}
+
 void CSignalDisplayLeftRuler::draw()
 {
 	if(!GTK_WIDGET_VISIBLE(m_pLeftRuler))
@@ -86,42 +101,49 @@ void CSignalDisplayLeftRuler::draw()
 
 	//computes the step in values for the ruler
 	float64 l_f64IntervalWidth = m_f64MaximumDisplayedValue-m_f64MinimumDisplayedValue;
-	float64 l_f64ValueStep;
-	float64 l_f64BaseValue ;
+	float64 l_f64ValueStep = 0;
+	float64 l_f64BaseValue = 0;
 	uint64 l_ui64MaxNumberOfLabels = 0;
 
 	//if the signal is not constant
-	if(l_f64IntervalWidth != 0)
+	if(l_f64IntervalWidth > 0)
 	{
 		//computes the step
 		float64 l_f64NearestSmallerPowerOf10 = static_cast<float64>(pow(10, floor(log10(l_f64IntervalWidth))));
 
-		//computes the maximum number of labels to display at once based on a label's height
+		//get max number of labels that fit in widget
 		l_ui64MaxNumberOfLabels = (uint64)(l_iLeftRulerHeight / m_ui64PixelsPerLeftRulerLabel);
 
-		//get the current number of labels to display based on the nearest inferior power of ten value
-		uint64 l_ui64TempNumberOfLabels = (uint64)ceil(l_f64IntervalWidth / l_f64NearestSmallerPowerOf10);
-
-		//computes the factor by which we can divide the step
-		uint32 l_ui32Factor = (uint32)(l_ui64MaxNumberOfLabels/l_ui64TempNumberOfLabels);
-
-		//if it's less than the maximum number, we can reduce the step
-		if(l_ui64TempNumberOfLabels < l_ui64MaxNumberOfLabels)
+		//ensure there is room for at least one label
+		if(l_ui64MaxNumberOfLabels > 0)
 		{
-			l_ui32Factor = (l_ui32Factor % 2 == 0 || l_ui32Factor==1) ? l_ui32Factor : l_ui32Factor - 1;
+			//get the current number of labels to display based on the nearest inferior power of ten value
+			uint64 l_ui64TempNumberOfLabels = (uint64)floor(l_f64IntervalWidth / l_f64NearestSmallerPowerOf10);
 
-			l_f64ValueStep = l_f64NearestSmallerPowerOf10 / l_ui32Factor;
+			if(l_ui64TempNumberOfLabels > 2*l_ui64MaxNumberOfLabels)
+			{
+				l_f64ValueStep = 4 * l_f64NearestSmallerPowerOf10;
+			}
+			else if(l_ui64TempNumberOfLabels > l_ui64MaxNumberOfLabels)
+			{
+				l_f64ValueStep = 2 * l_f64NearestSmallerPowerOf10;
+			}
+			else if(l_ui64TempNumberOfLabels < (l_ui64MaxNumberOfLabels/4))
+			{
+				l_f64ValueStep = l_f64NearestSmallerPowerOf10 / 4;
+			}
+			else if(l_ui64TempNumberOfLabels < (l_ui64MaxNumberOfLabels/2))
+			{
+				l_f64ValueStep = l_f64NearestSmallerPowerOf10 / 2;
+			}
+			else
+			{
+				l_f64ValueStep = l_f64NearestSmallerPowerOf10;
+			}
+
+			//recompute base value of the step
+			l_f64BaseValue = l_f64ValueStep *floor(m_f64MinimumDisplayedValue/l_f64ValueStep);
 		}
-		//if it's more than the maximum, increases the step
-		else
-		{
-			l_ui32Factor = (l_ui32Factor % 2 == 0) ? l_ui32Factor : l_ui32Factor + 1;
-
-			l_f64ValueStep = l_f64NearestSmallerPowerOf10 * l_ui32Factor;
-		}
-
-		//recalculate base value of the step
-		l_f64BaseValue = l_f64ValueStep *floor(m_f64MinimumDisplayedValue/l_f64ValueStep);
 	}
 	else
 	{
@@ -167,38 +189,11 @@ void CSignalDisplayLeftRuler::draw()
 			gdk_draw_layout(m_pLeftRuler->window, m_pLeftRuler->style->fg_gc[GTK_WIDGET_STATE (m_pLeftRuler)],
 					0, l_iTextY-(l_iTextH/2), l_pText);
 
-			gdk_draw_line(m_pLeftRuler->window, m_pLeftRuler->style->fg_gc[GTK_WIDGET_STATE (m_pLeftRuler)], l_iLeftRulerWidth-2, l_iTextY, l_iLeftRulerWidth, l_iTextY);
+			gdk_draw_line(m_pLeftRuler->window, m_pLeftRuler->style->fg_gc[GTK_WIDGET_STATE (m_pLeftRuler)], l_iLeftRulerWidth-4, l_iTextY, l_iLeftRulerWidth, l_iTextY);
 
 		}
 	}
 
-}
-
-/**
- * Shows/Hides the ruler.
- * \param bActive Whether the ruler must be displayed or not.
- * */
-void CSignalDisplayLeftRuler::toggle(OpenViBE::boolean bActive)
-{
-	if(bActive)
-	{
-		gtk_widget_show(m_pLeftRuler);
-	}
-	else
-	{
-		gtk_widget_hide(m_pLeftRuler);
-	}
-}
-
-/**
- * Associates another widget to this ruler.
- * The ruler's height will be resized when the other widget's height changes.
- * \param pWidget The widget you want to associate the ruler with.
- * */
-void CSignalDisplayLeftRuler::linkHeightToWidget(GtkWidget * pWidget)
-{
-	//adds a callback to the widget for the size-allocate signal
-	g_signal_connect(G_OBJECT(pWidget), "size-allocate", G_CALLBACK(resizeLeftRulerCallback), this);
 }
 
 

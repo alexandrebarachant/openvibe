@@ -214,18 +214,18 @@ void CDesignerVisualisation::init(std::string guiFile)
 	m_pDialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
 	//if windows have been created, retrieve their size and take it into account
-	uint64 l_ui64TreeViewWidth = 200;
-	uint64 l_ui64DefaultWidth = m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowWidth}", 400);
-	uint64 l_ui64DefaultHeight = m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowHeight}", 400);
+	uint32 l_ui32TreeViewWidth = 200;
+	uint32 l_ui32PreviewWindowWidth = (uint32)m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowWidth}", 400);
+	uint32 l_ui32PreviewWindowHeight = (uint32)m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowHeight}", 400);
 	CIdentifier l_oVisualisationWindowIdentifier;
 	if(m_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)
 	{
 		IVisualisationWidget* l_pVisualisationWindow = m_rVisualisationTree.getVisualisationWidget(l_oVisualisationWindowIdentifier);
 		TAttributeHandler l_oAttributeHandler(*l_pVisualisationWindow);
-		l_ui64DefaultWidth = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width);
-		l_ui64DefaultHeight = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height);
+		l_ui32PreviewWindowWidth = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width);
+		l_ui32PreviewWindowHeight = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height);
 	}
-	gtk_window_set_default_size(GTK_WINDOW(m_pDialog), l_ui64TreeViewWidth + l_ui64DefaultWidth, l_ui64DefaultHeight);
+	gtk_window_set_default_size(GTK_WINDOW(m_pDialog), (gint)(l_ui32TreeViewWidth + l_ui32PreviewWindowWidth), (gint)l_ui32PreviewWindowHeight);
 	//set window title
 	gtk_window_set_title(GTK_WINDOW(m_pDialog), "OpenViBE Window Manager");
 	// gtk_window_set_transient_for(GTK_WINDOW(m_pDialog), GTK_WINDOW(m_rInterfacedScenario.m_rApplication.m_pMainWindow));
@@ -243,7 +243,7 @@ void CDesignerVisualisation::init(std::string guiFile)
 	gtk_paned_add1(GTK_PANED(m_pPane), GTK_WIDGET(m_pTreeView));
 
 	//set initial divider position
-	gtk_paned_set_position(GTK_PANED(m_pPane), l_ui64TreeViewWidth);
+	gtk_paned_set_position(GTK_PANED(m_pPane), (gint)l_ui32TreeViewWidth);
 
 	//create popup menus
 	//------------------
@@ -266,7 +266,7 @@ void CDesignerVisualisation::init(std::string guiFile)
 	gtk_item_factory_create_items(m_pSplitItemFactory, num_split_widget_menu_items, split_widget_menu_items, this);
 }
 
-void CDesignerVisualisation::reset(void)
+void CDesignerVisualisation::load(void)
 {
 	m_rVisualisationTree.setTreeViewCB(this);
 
@@ -682,7 +682,7 @@ void CDesignerVisualisation::resizeCB(IVisualisationWidget* pVisualisationWidget
 	{
 		//assign current window size to each window
 		::GtkWidget* l_pNotebook = gtk_paned_get_child2(GTK_PANED(m_pPane));
-		if(l_pNotebook != NULL)
+		if(l_pNotebook != NULL && GTK_WIDGET_VISIBLE(l_pNotebook) == true)
 		{
 			CIdentifier l_oVisualisationWindowIdentifier = OV_UndefinedIdentifier;
 
@@ -695,6 +695,10 @@ void CDesignerVisualisation::resizeCB(IVisualisationWidget* pVisualisationWidget
 				l_oAttributeHandler.setAttributeValue(OVD_AttributeId_VisualisationWindow_Width, l_pNotebook->allocation.width);
 				l_oAttributeHandler.setAttributeValue(OVD_AttributeId_VisualisationWindow_Height, l_pNotebook->allocation.height);
 			}
+		}
+		else
+		{
+			//return; //?
 		}
 
 		//retrieve active visualisation panel
@@ -1771,6 +1775,7 @@ void CDesignerVisualisation::dragDataReceivedInWidgetCB(::GtkWidget* pDstWidget,
 		//ensure dragged widget is a visualisation box
 		if(m_rVisualisationTree.findChildNodeFromRoot(&l_oSrcIter, m_oActiveVisualisationBoxIdentifier) == false)
 		{
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "dragDataReceivedInWidgetCB couldn't retrieve iterator of active visualisation box!\n";
 			return;
 		}
 	}
@@ -1780,23 +1785,37 @@ void CDesignerVisualisation::dragDataReceivedInWidgetCB(::GtkWidget* pDstWidget,
 		{
 			return;
 		}
-		m_rVisualisationTree.findChildNodeFromRoot(&l_oSrcIter, getTreeWidget(GTK_WIDGET(l_pSrcWidget)));
+		if(m_rVisualisationTree.findChildNodeFromRoot(&l_oSrcIter, getTreeWidget(GTK_WIDGET(l_pSrcWidget))) == false)
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "dragDataReceivedInWidgetCB couldn't retrieve iterator of dragged button!\n";
+			return;
+		}
 	}
 	else
 	{
 		return;
 	}
 
-	//retrieve src widget identifier
+	//retrieve src widget identifier and src visualisation widget
 	CIdentifier l_oSrcIdentifier;
 	m_rVisualisationTree.getIdentifierFromTreeIter(&l_oSrcIter, l_oSrcIdentifier, EVisualisationTreeColumn_StringIdentifier);
+	IVisualisationWidget* l_pSrcVisualisationWidget = m_rVisualisationTree.getVisualisationWidget(l_oSrcIdentifier);
+	if(l_pSrcVisualisationWidget == NULL)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "dragDataReceivedInWidgetCB couldn't retrieve source visualisation widget!\n";
+		return;
+	}
 
 	//retrieve dest widget type
 	::GtkTreeIter l_oDstIter;
-	m_rVisualisationTree.findChildNodeFromRoot(&l_oDstIter, getTreeWidget(pDstWidget));
+	if(m_rVisualisationTree.findChildNodeFromRoot(&l_oDstIter, getTreeWidget(pDstWidget)) == false)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "dragDataReceivedInWidgetCB couldn't retrieve iterator of destination widget!\n";
+		return;
+	}
 
 	//if src widget is unaffected or if dest widget is a visualisation box, perform the drop operation directly
-	if(m_rVisualisationTree.getVisualisationWidget(l_oSrcIdentifier)->getParentIdentifier() == OV_UndefinedIdentifier ||
+	if(l_pSrcVisualisationWidget->getParentIdentifier() == OV_UndefinedIdentifier ||
 		m_rVisualisationTree.getULongValueFromTreeIter(&l_oDstIter, EVisualisationTreeColumn_ULongNodeType) == EVisualisationTreeNode_VisualisationBox)
 	{
 		m_rVisualisationTree.dragDataReceivedInWidgetCB(l_oSrcIdentifier, pDstWidget);
@@ -1808,10 +1827,18 @@ void CDesignerVisualisation::dragDataReceivedInWidgetCB(::GtkWidget* pDstWidget,
 		m_rVisualisationTree.getIdentifierFromTreeIter(&l_oDstIter, l_oDstIdentifier, EVisualisationTreeColumn_StringIdentifier);
 
 		//unaffect src widget, so that tree is simplified
-		removeVisualisationWidget(l_oSrcIdentifier);
+		if(removeVisualisationWidget(l_oSrcIdentifier) == false)
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "dragDataReceivedInWidgetCB couldn't remove source widget from its parent!\n";
+			return;
+		}
 
 		//then drop it
-		m_rVisualisationTree.findChildNodeFromRoot(&l_oDstIter, l_oDstIdentifier);
+		if(m_rVisualisationTree.findChildNodeFromRoot(&l_oDstIter, l_oDstIdentifier) == false)
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "dragDataReceivedInWidgetCB couldn't retrieve iterator of dummy destination widget to delete!\n";
+			return;
+		}
 		void* l_pNewDstTreeWidget = NULL;
 		m_rVisualisationTree.getPointerValueFromTreeIter(&l_oDstIter, l_pNewDstTreeWidget, EVisualisationTreeColumn_PointerWidget);
 		m_rVisualisationTree.dragDataReceivedInWidgetCB(l_oSrcIdentifier, getVisualisationWidget(GTK_WIDGET(l_pNewDstTreeWidget)));

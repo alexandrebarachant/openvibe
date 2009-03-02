@@ -253,7 +253,7 @@ static void gdk_draw_rounded_rectangle(::GdkDrawable* pDrawable, ::GdkGC* pDrawG
 
 void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 {
-	static_cast<CInterfacedScenario*>(pUserData)->m_rApplication.closeScenarioCB();
+	static_cast<CInterfacedScenario*>(pUserData)->m_rApplication.closeScenarioCB(static_cast<CInterfacedScenario*>(pUserData));
 }
 
 	CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, CApplication& rApplication, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
@@ -1870,8 +1870,8 @@ void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 			m_pPlayerVisualisation = NULL;
 		}
 
-		//reset designer visualisation
-		m_pDesignerVisualisation->reset();
+		//reload designer visualisation
+		m_pDesignerVisualisation->load();
 
 		//show it if it was toggled on
 		if(m_bDesignerVisualisationToggled == true)

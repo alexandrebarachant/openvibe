@@ -18,76 +18,18 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		//! Callback for the ZoomIn button
-		void zoomInButtonCallback(GtkWidget *widget, gpointer data)
+		void scrollModeButtonCallback(GtkWidget *widget, gpointer data)
 		{
-			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
-			if(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget)))
-			{
-				//toggle off the other buttons
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[1], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[2], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
-
-				//sets the cursor mode to 1 (zoomIn)
-				l_pView->m_eCurrentCursorMode=DisplayMode_ZoomIn;
-			}
-			else
-			{
-				//sets the cursor mode back to normal
-				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
-			}
+			reinterpret_cast<CSignalDisplayView*>(data)->onDisplayModeToggledCB(
+				gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget)) == TRUE ?
+					OVP_TypeId_SignalDisplayMode_Scroll : OVP_TypeId_SignalDisplayMode_Scan);
 		}
 
-		void zoomOutButtonCallback(GtkWidget *widget, gpointer data)
+		void scanModeButtonCallback(GtkWidget *widget, gpointer data)
 		{
-			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
-			if(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget)))
-			{
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[0], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[2], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
-
-				l_pView->m_eCurrentCursorMode=DisplayMode_ZoomOut;
-			}
-			else
-			{
-				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
-			}
-		}
-
-		void bestFitButtonCallback(GtkWidget *widget, gpointer data)
-		{
-			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
-			if(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget)))
-			{
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[0], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[1], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[3], FALSE);
-
-				l_pView->m_eCurrentCursorMode=DisplayMode_BestFit;
-			}
-			else
-			{
-				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
-			}
-		}
-
-		void normalSizeButtonCallback(GtkWidget *widget, gpointer data)
-		{
-			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
-			if(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget)))
-			{
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[0], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[1], FALSE);
-				gtk_toggle_tool_button_set_active(l_pView->m_pCursorMode[2], FALSE);
-
-				l_pView->m_eCurrentCursorMode=DisplayMode_Normal;
-			}
-			else
-			{
-				l_pView->m_eCurrentCursorMode=DisplayMode_Default;
-			}
+			reinterpret_cast<CSignalDisplayView*>(data)->onDisplayModeToggledCB(
+				gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget)) == TRUE ?
+					OVP_TypeId_SignalDisplayMode_Scan : OVP_TypeId_SignalDisplayMode_Scroll);
 		}
 
 		void toggleLeftRulerButtonCallback(GtkWidget *widget, gpointer data)
@@ -99,14 +41,26 @@ namespace OpenViBEPlugins
 		void toggleBottomRulerButtonCallback(GtkWidget *widget, gpointer data)
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
-			l_pView->toggleBottomRulers(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget))?true:false);
+			l_pView->toggleBottomRuler(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget))?true:false);
+		}
+
+		void toggleAutoVerticalScaleButtonCallback(GtkToggleButton *togglebutton, gpointer data)
+		{
+			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
+			l_pView->onVerticalScaleModeToggledCB(togglebutton);
+		}
+
+		void customVerticalScaleChangedCallback(::GtkSpinButton* pSpinButton, gpointer data)
+		{
+			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
+			l_pView->onCustomVerticalScaleChangedCB(pSpinButton);
 		}
 
 		gboolean spinButtonValueChangedCallback(GtkSpinButton *widget,  gpointer data)
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
 
-			//Compute and save the nuew number of buffers to display
+			//Compute and save the new number of buffers to display
 			OpenViBE::boolean l_bNumberOfDisplayedBufferChanged = l_pView->m_pBufferDatabase->adjustNumberOfDisplayedBuffers(gtk_spin_button_get_value(GTK_SPIN_BUTTON(widget)));
 
 			if(l_bNumberOfDisplayedBufferChanged)
@@ -118,7 +72,13 @@ namespace OpenViBEPlugins
 				//resize the vector of raw points (before cropping)
 				l_pView->m_pRawPoints.resize((size_t)(l_pView->m_pBufferDatabase->m_pDimmensionSizes[1] * l_pView->m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
 
-				//Redraw the window
+				//force full redraw of all channels when time scale changes
+				for(size_t i=0 ; i<l_pView->m_oChannelDisplay.size(); i++)
+				{
+					l_pView->getChannelDisplay(i)->updateScale();
+				}
+
+				//redraw channels
 				l_pView->redraw();
 			}
 
@@ -147,7 +107,7 @@ namespace OpenViBEPlugins
 			gtk_widget_show_all(l_pChannelSelectDialog);
 		}
 
-		//Called when the user press the apply button of the channel selection dialog
+		//Called when the user presses the apply button of the channel selection dialog
 		void channelSelectDialogApplyButtonCallback(GtkButton *button, gpointer data)
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
@@ -162,12 +122,12 @@ namespace OpenViBEPlugins
 					//if a button is checked, add the corresponding channel to the list of selected ones
 					l_pView->m_vSelectedChannels.push_back(i);
 					//show the channel's display
-					l_pView->showChannel(i);
+					l_pView->toggleChannel(i, true);
 				}
 				else
 				{
 					//this channel is not selected, hides it
-					l_pView->hideChannel(i);
+					l_pView->toggleChannel(i, false);
 				}
 			}
 
@@ -177,7 +137,7 @@ namespace OpenViBEPlugins
 			gtk_widget_hide(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayChannelSelectDialog"));
 		}
 
-		//Called when the user press the Information button (opens the information dialog)
+		//Called when the user presses the Information button (opens the information dialog)
 		void informationButtonCallback(GtkButton *button, gpointer data)
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
@@ -243,7 +203,7 @@ namespace OpenViBEPlugins
 			gtk_widget_show_all(l_pMultiViewDialog);
 		}
 
-		//Called when the user press the apply button of the channel selection dialog
+		//Called when the user presses the apply button of the channel selection dialog
 		void multiViewDialogApplyButtonCallback(GtkButton *button, gpointer data)
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast<CSignalDisplayView*>(data);
@@ -268,11 +228,20 @@ namespace OpenViBEPlugins
 			gtk_widget_hide(glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewDialog"));
 		}
 
-		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale)
+		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode)
 			:m_pGladeInterface(NULL)
-			,m_eCurrentCursorMode(DisplayMode_Default)
+			,m_bShowLeftRulers(false)
+			,m_bShowBottomRuler(true)
+			,m_ui64LeftmostDisplayedTime(0)
+			,m_f64LargestDisplayedValueRange(0)
+			,m_f64ValueRangeMargin(0)
+			,m_f64MarginFactor(0.4f) //add 40% space above and below extremums
+			,m_bVerticalScaleChanged(false)
+			,m_bAutoVerticalScale(true)
+			,m_f64CustomVerticalScaleValue(1.)
 			,m_pBufferDatabase(&oBufferDatabase)
 			,m_bMultiViewInitialized(false)
+			,m_pBottomBox(NULL)
 			,m_pBottomRuler(NULL)
 		{
 			//load the glade interface
@@ -286,32 +255,39 @@ namespace OpenViBEPlugins
 
 			glade_xml_signal_autoconnect(m_pGladeInterface);
 
-			//gets the pointers to the cursor mode buttons
-			m_pCursorMode[0] = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayZoomInButton"));
-			m_pCursorMode[1] = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayZoomOutButton"));
-			m_pCursorMode[2] = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBestFitButton"));
-			m_pCursorMode[3] = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayNormalSizeButton"));
+			//show widgets hierarchy
+			//gtk_widget_show_all(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrolledWindow"));
+
+			//initialize display mode
+			m_pBufferDatabase->setDisplayMode(oDisplayMode);
+			gtk_toggle_tool_button_set_active(
+				GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrollModeButton")),
+				oDisplayMode == OVP_TypeId_SignalDisplayMode_Scroll);
+
+			//connect display mode callbacks
+			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrollModeButton")), "toggled", G_CALLBACK (scrollModeButtonCallback), this);
+			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScanModeButton")), "toggled", G_CALLBACK (scanModeButtonCallback), this);
 
 			//creates the cursors
 			m_pCursor[0] = gdk_cursor_new(GDK_LEFT_PTR);
 			m_pCursor[1] = gdk_cursor_new(GDK_SIZING);
-			m_pCursor[2] = gdk_cursor_new(GDK_SIZING);	//TODO change
-			m_pCursor[3] = gdk_cursor_new(GDK_SIZING);	//TODO change
-			m_pCursor[4] = gdk_cursor_new(GDK_SIZING);	//TODO change
 
-			//connect the callback to the cursor mode buttons
-			g_signal_connect(G_OBJECT(m_pCursorMode[0]), "toggled", G_CALLBACK (zoomInButtonCallback), this);
-			g_signal_connect(G_OBJECT(m_pCursorMode[1]), "toggled", G_CALLBACK (zoomOutButtonCallback), this);
-			g_signal_connect(G_OBJECT(m_pCursorMode[2]), "toggled", G_CALLBACK (bestFitButtonCallback), this);
-			g_signal_connect(G_OBJECT(m_pCursorMode[3]), "toggled", G_CALLBACK (normalSizeButtonCallback), this);
-
-			//same for the other buttons
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRuler")),     "toggled",       G_CALLBACK(toggleLeftRulerButtonCallback),   this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRuler")),   "toggled",       G_CALLBACK(toggleBottomRulerButtonCallback), this);
+			//button callbacks
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectButton")), "clicked",       G_CALLBACK(channelSelectButtonCallback),     this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewButton")),     "clicked",       G_CALLBACK(multiViewButtonCallback),         this);
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton")),   "clicked",       G_CALLBACK(informationButtonCallback),       this);
 
+			//initialize vertical scale
+			m_bAutoVerticalScale = true;
+			m_f64CustomVerticalScaleValue = 1;
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayVerticalScaleToggleButton")), m_bAutoVerticalScale);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64CustomVerticalScaleValue);
+
+			//connect vertical scale callbacks
+			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayVerticalScaleToggleButton")),     "toggled",       G_CALLBACK(toggleAutoVerticalScaleButtonCallback), this);
+			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), "value-changed", G_CALLBACK(customVerticalScaleChangedCallback), this);
+
+			//time scale
 			GtkSpinButton* l_pSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale"));
 			gtk_spin_button_set_value(l_pSpinButton, f64TimeScale);
 			g_signal_connect(G_OBJECT(l_pSpinButton), "value-changed", G_CALLBACK(spinButtonValueChangedCallback),  this);
@@ -346,16 +322,8 @@ namespace OpenViBEPlugins
 				 "delete_event",
 				 G_CALLBACK(gtk_widget_hide), NULL);
 
-#if 0
-			//does nothing on the main window if the user tries to close it
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow")),
-				"delete_event",
-				G_CALLBACK(gtk_widget_do_nothing), NULL);
-
-			//creates the window
-			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow");
-			gtk_widget_show(m_pMainWindow);
-#endif
+			//bottom box
+			m_pBottomBox = GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBox"));
 		}
 
 		CSignalDisplayView::~CSignalDisplayView()
@@ -364,12 +332,12 @@ namespace OpenViBEPlugins
 			gtk_widget_destroy(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow"));
 
 			//destroy the rest
-			for(int i=0 ; i<5 ; i++)
+			for(int i=0 ; i<2 ; i++)
 			{
 				gdk_cursor_unref(m_pCursor[i]);
 			}
 
-			/* unref the xml file as it's not needed anymore */
+			//unref the xml file as it's not needed anymore
 			g_object_unref(G_OBJECT(m_pGladeInterface));
 			m_pGladeInterface=NULL;
 		}
@@ -382,17 +350,19 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplayView::changeMultiView()
 		{
-			//if the multiview isn't initialized
 			if(!m_bMultiViewInitialized)
 			{
-				//Do nothing
+				return;
 			}
+
+			CSignalChannelDisplay* l_pChannelDisplay = getChannelDisplay(m_oChannelDisplay.size()-1);
+
 			//if there are no channels to display in the multiview
-			else if(m_vMultiViewSelectedChannels.empty())
+			if(m_vMultiViewSelectedChannels.empty())
 			{
 				//hides the multiview display (last one in the list)
-				CHANNEL_DISPLAY(m_oChannelDisplay.back())->m_pChannelDisplay->resetChannelList();
-				hideChannel(m_oChannelDisplay.size() - 1);
+				l_pChannelDisplay->resetChannelList();
+				toggleChannel(m_oChannelDisplay.size() - 1, false);
 			}
 			//there are channels to display in the multiview
 			else
@@ -403,21 +373,21 @@ namespace OpenViBEPlugins
 					gtk_widget_show(GTK_WIDGET(m_pSignalDisplayTable));
 				}
 
-				if(!GTK_WIDGET_VISIBLE(GTK_WIDGET((m_oChannelDisplay.back()))))
+				if(isChannelDisplayVisible(m_oChannelDisplay.size()-1) == false)
 				{
-					showChannel(m_oChannelDisplay.size() - 1);
+					toggleChannel(m_oChannelDisplay.size() - 1, true);
 				}
 
 				//updates channels to display list
-				CHANNEL_DISPLAY(m_oChannelDisplay.back())->m_pChannelDisplay->resetChannelList();
+				l_pChannelDisplay->resetChannelList();
 
 				for(size_t i=0 ; i<m_vMultiViewSelectedChannels.size() ; i++)
 				{
-					CHANNEL_DISPLAY(m_oChannelDisplay.back())->m_pChannelDisplay->addChannel(m_vMultiViewSelectedChannels[i]);
+					l_pChannelDisplay->addChannel(m_vMultiViewSelectedChannels[i]);
 				}
 
 				//request a redraw
-				gdk_window_invalidate_rect(GTK_WIDGET(m_oChannelDisplay.back())->window, NULL, true);
+				gdk_window_invalidate_rect(l_pChannelDisplay->getSignalDisplayWidget()->window, NULL, false);
 			}
 		}
 
@@ -430,10 +400,6 @@ namespace OpenViBEPlugins
 			GtkWidget * l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectList");
 			GtkWidget * l_pMultiViewSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewSelectList");
 
-			//size group for the channel labels and the empty widget in the bottom bar
-			//(useful to position the bottom ruler correctly)
-			GtkSizeGroup * l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
-
 			//creates the array of Channel displays
 			m_oChannelDisplay.resize(l_ui32ChannelCount+1);
 			m_oChannelLabel.resize(l_ui32ChannelCount+1);
@@ -442,21 +408,53 @@ namespace OpenViBEPlugins
 			m_pSignalDisplayTable = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainTable");
 
 			//resize this table according to the number of channels
-			gtk_table_resize(GTK_TABLE(m_pSignalDisplayTable), (l_ui32ChannelCount+1)*2, 3);
+			gtk_table_resize(GTK_TABLE(m_pSignalDisplayTable), l_ui32ChannelCount*2+1, 4);
 
+			int32 l_i32LeftRulerWidthRequest = 50;
+			int32 l_i32ChannelDisplayWidthRequest = 20;
+			int32 l_i32BottomRulerWidthRequest = 0;
+
+			int32 l_i32LeftRulerHeightRequest = 0;
+			int32 l_i32ChannelDisplayHeightRequest = 20;
+			int32 l_i32BottomRulerHeightRequest = 20;
+			/*
+			//resize dialogs
+			int32 l_i32DialogFixedSizeRequest = 100;
+			int32 l_i32DialogChannelHeightRequest = 15;
+			//int32 l_i32DialogWidthRequest = 150;
+
+			gtk_widget_set_size_request(
+				glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog"),
+				-1,
+				l_i32DialogFixedSizeRequest + l_ui32ChannelCount * l_i32DialogChannelHeightRequest);
+
+			gtk_widget_set_size_request(
+				glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewDialog"),
+				-1,
+				l_i32DialogFixedSizeRequest + l_ui32ChannelCount * l_i32DialogChannelHeightRequest);
+			*/
 			//sets a minimum size for the table (needed to scroll)
-			gtk_widget_set_size_request(m_pSignalDisplayTable, 20, (l_ui32ChannelCount+1)*20);
+			gtk_widget_set_size_request(
+				m_pSignalDisplayTable,
+				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayHeightRequest,
+				(l_ui32ChannelCount*2+1)*l_i32ChannelDisplayHeightRequest
+			);
 
-			//Add a vertical separator
+			//add a vertical separator
 			GtkWidget* l_pSeparator = gtk_vseparator_new();
 			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), l_pSeparator,
-				1, 2, 0, (l_ui32ChannelCount+1)*2, GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
+				1, 2, //second column
+				0, l_ui32ChannelCount*2+1, //run over the whole table height
+				GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
 			gtk_widget_show(l_pSeparator);
+
+			GtkSizeGroup* l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
 			//creates as many ChannelDisplay widget as there are channels and adds them to the table
 			for(uint32 i=0 ; i<l_ui32ChannelCount ; i++)
 			{
-				//adds a label with the channel's name
+				//add channel label
+				//-----------------
 				if(l_oChannelName[i] == "")
 				{
 					//If no name has been set, just keep the channel index
@@ -466,186 +464,324 @@ namespace OpenViBEPlugins
 				{	//else keep the index plus the name
 					l_oLabelString<<i<<" : "<<l_oChannelName[i];
 				}
-				GtkWidget * l_pLabel =  gtk_label_new(l_oLabelString.str().c_str());
-
+				GtkWidget* l_pLabel = gtk_label_new(l_oLabelString.str().c_str());
 				m_oChannelLabel[i] = l_pLabel;
-
 				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable),l_pLabel,
-					0, 1, i*2, (i*2)+1,
+					0, 1, //first column
+					i*2, (i*2)+1,
 					GTK_FILL, GTK_SHRINK,
 					0, 0);
-
 				gtk_widget_show(l_pLabel);
-
-				//add label to size group
 				gtk_size_group_add_widget(l_pSizeGroup, l_pLabel);
 
 				//create channel display widget
-				m_oChannelDisplay[i] = GTK_WIDGET(channel_display_new());
+				//-----------------------------
+				m_oChannelDisplay[i] = new CSignalChannelDisplay(
+					this,
+					l_i32ChannelDisplayWidthRequest, l_i32ChannelDisplayHeightRequest,
+					l_i32LeftRulerWidthRequest, l_i32LeftRulerHeightRequest);
+				m_oChannelDisplay[i]->addChannel(i);
 
-				//configure it
-				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->setParent(this);
-				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->addChannel(i);
-
-				//adds it to the table
-				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), m_oChannelDisplay[i],
-				2, 3, (i*2), (i*2)+1,
-				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
-				0, 0);
-				gtk_widget_show_all(m_oChannelDisplay[i]);
+				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable),
+					m_oChannelDisplay[i]->getRulerWidget(),
+					2, 3, //third column
+					i*2, (i*2)+1,
+					GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
+					0, 0);
+				gtk_widget_show(m_oChannelDisplay[i]->getRulerWidget());
+				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable),
+					m_oChannelDisplay[i]->getSignalDisplayWidget(),
+					3, 4, //fourth column
+					i*2, (i*2)+1,
+					static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
+					0, 0);
+				gtk_widget_show(m_oChannelDisplay[i]->getSignalDisplayWidget());
 
 				//add horizontal separator
+				//------------------------
 				l_pSeparator = gtk_hseparator_new();
 				gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), l_pSeparator,
-				0, 3, (i*2)+1, (i*2)+2,	static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_SHRINK,	0, 0);
+					0, 4,
+					(i*2)+1, (i*2)+2,
+					static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_SHRINK,
+					0, 0);
 				gtk_widget_show(l_pSeparator);
 
 				//add checkbox in channel select window
+				//-------------------------------------
 				GtkWidget * l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
 				m_vChannelsCheckButtons.push_back(l_pChannelCheckButton);
-
 				gtk_box_pack_start_defaults(GTK_BOX(l_pChannelSelectList), l_pChannelCheckButton);
 
 				//same for the multiview dialog
+				//-----------------------------
 				l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
 				m_vMultiViewChannelsCheckButtons.push_back(l_pChannelCheckButton);
 				gtk_box_pack_start_defaults(GTK_BOX(l_pMultiViewSelectList), l_pChannelCheckButton);
-
 				l_oLabelString.str("");
 
 				//a channel is selected by default
 				m_vSelectedChannels.push_back(i);
 			}
 
-			//Multiview channel
+			//multiview channel
 			//-----------------
-
 			//create and attach label
 			GtkWidget * l_pLabel =  gtk_label_new("Multi-View");
-
 			m_oChannelLabel[l_ui32ChannelCount] = l_pLabel;
-
 			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable),l_pLabel,
-				0, 1, l_ui32ChannelCount*2, (l_ui32ChannelCount*2)+1,
+				0, 1,
+				l_ui32ChannelCount*2, (l_ui32ChannelCount*2)+1,
 				GTK_FILL, GTK_SHRINK,
 				0, 0);
 
-			//add label to size group
-			gtk_size_group_add_widget(l_pSizeGroup, l_pLabel);
-
 			//create and attach display widget
-			GtkWidget* l_pChannelDisplay = channel_display_new();
-
+			CSignalChannelDisplay* l_pChannelDisplay = new CSignalChannelDisplay(
+				this,
+				l_i32ChannelDisplayWidthRequest, l_i32ChannelDisplayHeightRequest,
+				l_i32LeftRulerWidthRequest, l_i32LeftRulerHeightRequest);
 			m_oChannelDisplay[l_ui32ChannelCount] = l_pChannelDisplay;
-
-			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable), l_pChannelDisplay,
-				2, 3, (l_ui32ChannelCount*2), (l_ui32ChannelCount*2)+1,
-				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
-				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
+			l_pChannelDisplay->addChannel(0);
+			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable),
+				l_pChannelDisplay->getRulerWidget(),
+				2, 3, //third column
+				(l_ui32ChannelCount*2), (l_ui32ChannelCount*2)+1,
+				GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
 				0, 0);
-
-			CHANNEL_DISPLAY(l_pChannelDisplay)->m_pChannelDisplay->setParent(this);
-			CHANNEL_DISPLAY(l_pChannelDisplay)->m_pChannelDisplay->addChannel(0);
-
-			gtk_widget_show_all(l_pChannelDisplay);
-			gtk_widget_hide(l_pChannelDisplay);
+			gtk_table_attach(GTK_TABLE(m_pSignalDisplayTable),
+				l_pChannelDisplay->getSignalDisplayWidget(),
+				3, 4, //fourth column
+				(l_ui32ChannelCount*2), (l_ui32ChannelCount*2)+1,
+				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),
+				0, 0);
 
 			m_bMultiViewInitialized = true;
 
+			//create bottom ruler
+			//-------------------
+			m_pBottomRuler = new CBottomTimeRuler(*m_pBufferDatabase, l_i32BottomRulerWidthRequest, l_i32BottomRulerHeightRequest);
+			gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "SignalDisplayEmptyLabel1"));
+			gtk_box_pack_start(m_pBottomBox, m_pBottomRuler->getWidget(), false, false, 0);
+			// tell ruler has to resize when channel displays are resized
+			if(m_oChannelDisplay.size() != 0)
+			{
+				m_pBottomRuler->linkWidthToWidget(m_oChannelDisplay[0]->getSignalDisplayWidget());
+			}
+			gtk_widget_show_all(m_pBottomRuler->getWidget());
+
+			//allocate memory to store sample points
+			//--------------------------------------
 			//reserve the maximum space needed for computing the points to display
 			//(when cropping the lines, there can be up to two times the number of original points)
 			m_pPoints.reserve((size_t)(m_pBufferDatabase->m_pDimmensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay * 2));
-
 			//resize the vector of raw points
 			m_pRawPoints.resize((size_t)(m_pBufferDatabase->m_pDimmensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
 
-			//Adds the bottom ruler
-			m_pBottomRuler = new CBottomTimeRuler(*m_pBufferDatabase);
-
-			//adds the empty label to the size group (it will request the same height than the channel labels
-			gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBarEmptyLabel1"));
-
-			//adds the bottom ruler to the bottom bar (after the empty label)
-			gtk_box_pack_start(GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBar")),
-					m_pBottomRuler->getWidget(),
-					false, false, 0);
-
-			// tells the ruler that it has to resize when the channel displays are resized
-			if(m_oChannelDisplay.size() != 0)
-			{
-				m_pBottomRuler->linkWidthToWidget(CHANNEL_DISPLAY(m_oChannelDisplay[0])->m_pChannelDisplay->getDisplayWidget());
-			}
-
-#if 0
-			//finally, show the window
-			gtk_widget_show(m_pMainWindow);
-#endif
-
 			//Don't display left ruler (default)
-			toggleLeftRulers(false);
+			m_bShowLeftRulers = false;
+			toggleLeftRulers(m_bShowLeftRulers);
+			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRulerButton")), m_bShowLeftRulers);
+			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRulerButton")),     "toggled",       G_CALLBACK(toggleLeftRulerButtonCallback),   this);
 
-			//Dislay bottom ruler
-			toggleBottomRulers(true);
+			//Display bottom ruler
+			m_bShowBottomRuler = true;
+			toggleBottomRuler(m_bShowBottomRuler);
+			gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRulerButton")), m_bShowBottomRuler);
+			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRulerButton")),   "toggled",       G_CALLBACK(toggleBottomRulerButtonCallback), this);
 
 			activateToolbarButtons(true);
 		}
 
 		void CSignalDisplayView::redraw()
 		{
-			//nothing to redraw if the table isn't visible
-			if(m_pSignalDisplayTable && GTK_WIDGET_VISIBLE(m_pSignalDisplayTable))
+			//nothing to redraw if the table isn't visible or no data was received
+			if(m_pSignalDisplayTable == NULL || !GTK_WIDGET_VISIBLE(m_pSignalDisplayTable) || m_pBufferDatabase->isFirstBufferReceived() == false)
 			{
-				boolean l_bNotInitialized = false;
-				//update the signal scaling/translating parameters if in bestsize/normal mode
-				for(uint32 i=0 ; i<m_oChannelDisplay.size()&& !l_bNotInitialized; i++)
+				return;
+			}
+
+			float64 l_f64LargestDisplayedValueRange = 0;
+
+			//update channels display parameters based on current signal data
+			for(uint32 i=0 ; i<m_oChannelDisplay.size(); i++)
+			{
+				if(m_oChannelDisplay[i] == NULL)
 				{
-					if(m_oChannelDisplay[i])
+					return;
+				}
+
+				//FIXME : should hidden channels be taken into account when computing largest value range?
+				if(GTK_WIDGET_VISIBLE(m_oChannelDisplay[i]->getSignalDisplayWidget()))
+				{
+					float64 l_f64ValueRange;
+					m_oChannelDisplay[i]->checkTranslation(l_f64ValueRange);
+					if(l_f64ValueRange > l_f64LargestDisplayedValueRange)
 					{
-						if(GTK_WIDGET_VISIBLE(GTK_WIDGET(m_oChannelDisplay[i])))
-						{
-							CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->updateSignalZoomParameters();
-						}
+						l_f64LargestDisplayedValueRange = l_f64ValueRange;
+					}
+				}
+			}
+
+			if(m_bAutoVerticalScale == true) //global best fit
+			{
+				//if we just switched back to auto scale, or if range increased or decreased beyond margin boundaries
+				if(m_bVerticalScaleChanged == true ||
+					l_f64LargestDisplayedValueRange > (m_f64LargestDisplayedValueRange + m_f64ValueRangeMargin) ||
+					l_f64LargestDisplayedValueRange < (m_f64LargestDisplayedValueRange - m_f64ValueRangeMargin))
+				{
+					m_f64LargestDisplayedValueRange = l_f64LargestDisplayedValueRange;
+					m_f64ValueRangeMargin = m_f64MarginFactor * l_f64LargestDisplayedValueRange;
+
+					for(uint32 i=0; i<m_oChannelDisplay.size(); i++)
+					{
+						//set new parameters
+						m_oChannelDisplay[i]->setGlobalBestFitParameters(m_f64LargestDisplayedValueRange, m_f64ValueRangeMargin);
+					}
+				}
+			}
+			else //fixed scale
+			{
+				//tell all channels about new fixed range if it just changed
+				if(m_bVerticalScaleChanged == true)
+				{
+					for(uint32 i=0; i<m_oChannelDisplay.size(); i++)
+					{
+						//set new parameters
+						float64 l_f64Margin = 0;
+						m_oChannelDisplay[i]->setGlobalBestFitParameters(m_f64CustomVerticalScaleValue, l_f64Margin);
+					}
+				}
+			}
+
+			//if in scan mode, check whether time scale needs to be updated
+			if(m_pBufferDatabase->getDisplayMode() == OVP_TypeId_SignalDisplayMode_Scan && m_ui64LeftmostDisplayedTime < m_pBufferDatabase->m_oStartTime[0])
+			{
+				//printf("Time basis needs to be updated\n");
+				if(m_pBufferDatabase->m_oSampleBuffers.size() < m_pBufferDatabase->m_ui64NumberOfBufferToDisplay)
+				{
+					m_ui64LeftmostDisplayedTime = m_pBufferDatabase->m_oStartTime[0];
+				}
+				else //catch up with current time interval
+				{
+					if(m_pBufferDatabase->m_ui64TotalStep == 0)
+					{
+						//error
 					}
 					else
 					{
-						l_bNotInitialized = true;
+						m_ui64LeftmostDisplayedTime += m_pBufferDatabase->m_ui64TotalStep;
+
+						//while there is time to catch up
+						while(m_ui64LeftmostDisplayedTime < (m_pBufferDatabase->m_oStartTime[0] - m_pBufferDatabase->m_ui64BufferStep))
+						{
+							m_ui64LeftmostDisplayedTime += m_pBufferDatabase->m_ui64TotalStep;
+						}
+
+						//round leftmost displayed time to start of closest data buffer
+						for(uint32 i=0; i<m_pBufferDatabase->m_oStartTime.size(); i++)
+						{
+							if(m_pBufferDatabase->m_oEndTime[i] > m_ui64LeftmostDisplayedTime)
+							{
+								m_ui64LeftmostDisplayedTime = m_pBufferDatabase->m_oStartTime[i];
+							}
+						}
+
+						//if drawing is not up to date, force a full redraw
+						if(m_oChannelDisplay[0]->m_ui64LatestDisplayedTime != m_ui64LeftmostDisplayedTime)
+						{
+							for(size_t i=0; i<m_oChannelDisplay.size(); i++)
+							{
+								m_oChannelDisplay[i]->redrawAllAtNextRefresh();
+							}
+						}
 					}
 				}
+			}
 
-				if(!l_bNotInitialized && m_pBufferDatabase->m_pDimmensionSizes[0]!=0)
+			//redraw channels
+			for(size_t i=0 ; i<m_oChannelDisplay.size(); i++)
+			{
+				if(GTK_WIDGET_VISIBLE(m_oChannelDisplay[i]->getSignalDisplayWidget()))
 				{
-					//The channels table needs to be redrawn
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pSignalDisplayTable)->window, NULL, true);
+					/*
+					//if in scroll mode, or if time basis changed, redraw all
+					if(m_pBufferDatabase->getDisplayMode() == OVP_TypeId_SignalDisplayMode_Scroll || l_pChannelDisplay->mustRedrawAll() == true)
+					{
+						printf("full redraw\n");*/
+						GdkRectangle l_oUpdateRect;
+						m_oChannelDisplay[i]->getUpdateRectangle(l_oUpdateRect);
+						gdk_window_invalidate_rect(m_oChannelDisplay[i]->getSignalDisplayWidget()->window, &l_oUpdateRect, false);
+					/*}
+					else
+					{
+						GdkRectangle l_oUpdateRect;
+						m_oChannelDisplay[i]->getUpdateRectangle(l_oUpdateRect);
+						//printf("partial redraw : x=%d, w=%d\n", l_oUpdateRect.x, l_oUpdateRect.width);
+						gdk_window_clear_area_e(m_oChannelDisplay[i]->getSignalDisplayWidget()->window, l_oUpdateRect.x, l_oUpdateRect.y, l_oUpdateRect.width, l_oUpdateRect.height);
+					}*/
+				}
+			}
 
-					//The ruler too
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pBottomRuler->getWidget())->window, NULL, true);
+			//redraw ruler
+			m_pBottomRuler->setLeftmostDisplayedTime(m_ui64LeftmostDisplayedTime);
+			gdk_window_invalidate_rect(GTK_WIDGET(m_pBottomRuler->getWidget())->window, NULL, true);
+
+			m_bVerticalScaleChanged = false;
+		}
+
+		void CSignalDisplayView::toggleLeftRulers(boolean bActive)
+		{
+			m_bShowLeftRulers = bActive;
+
+			for(size_t i=0 ; i<m_oChannelDisplay.size() ; i++)
+			{
+				if(isChannelDisplayVisible(i) == true)
+				{
+					if(bActive)
+					{
+						gtk_widget_show(m_oChannelDisplay[i]->getRulerWidget());
+					}
+					else
+					{
+						gtk_widget_hide(m_oChannelDisplay[i]->getRulerWidget());
+					}
 				}
 			}
 		}
 
-		void CSignalDisplayView::toggleLeftRulers(OpenViBE::boolean bActive)
+		void CSignalDisplayView::toggleBottomRuler(boolean bActive)
 		{
-			for(size_t i=0 ; i<m_oChannelDisplay.size() ; i++)
+			m_bShowBottomRuler = bActive;
+
+			if(bActive)
 			{
-				CHANNEL_DISPLAY(m_oChannelDisplay[i])->m_pChannelDisplay->toggleLeftRuler(bActive);
+				gtk_widget_show_all(GTK_WIDGET(m_pBottomBox));
+			}
+			else
+			{
+				gtk_widget_hide_all(GTK_WIDGET(m_pBottomBox));
 			}
 		}
 
-		void CSignalDisplayView::toggleBottomRulers(OpenViBE::boolean bActive)
+		void CSignalDisplayView::toggleChannel(uint32 ui32ChannelIndex, boolean bActive)
 		{
-			m_pBottomRuler->toggle(bActive);
-		}
+			CSignalChannelDisplay* l_pChannelDisplay = getChannelDisplay(ui32ChannelIndex);
 
-		void CSignalDisplayView::hideChannel(OpenViBE::uint32 ui32ChannelIndex)
-		{
-			gtk_widget_hide( m_oChannelDisplay[ui32ChannelIndex] );
-			gtk_widget_hide( m_oChannelLabel[ui32ChannelIndex] );
-		}
-
-		void CSignalDisplayView::showChannel(OpenViBE::uint32 ui32ChannelIndex)
-		{
-			gtk_widget_show( m_oChannelDisplay[ui32ChannelIndex] );
-			gtk_widget_show( m_oChannelLabel[ui32ChannelIndex] );
+			if(bActive)
+			{
+				gtk_widget_show( m_oChannelLabel[ui32ChannelIndex] );
+				if(m_bShowLeftRulers == true)
+				{
+					gtk_widget_show( l_pChannelDisplay->getRulerWidget() );
+				}
+				gtk_widget_show( l_pChannelDisplay->getSignalDisplayWidget() );
+			}
+			else
+			{
+				gtk_widget_hide( m_oChannelLabel[ui32ChannelIndex] );
+				gtk_widget_hide( l_pChannelDisplay->getRulerWidget() );
+				gtk_widget_hide( l_pChannelDisplay->getSignalDisplayWidget() );
+			}
 		}
 
 		void CSignalDisplayView::updateMainTableStatus()
@@ -668,16 +804,75 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplayView::activateToolbarButtons(boolean bActive)
 		{
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayZoomInButton"), bActive);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayZoomOutButton"), bActive);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayNormalSizeButton"), bActive);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBestFitButton"), bActive);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRuler"), bActive);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRuler"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrollModeButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScanModeButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRulerButton"), bActive);
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRulerButton"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScaleItem"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectButton"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewButton"), bActive);
 			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton"), bActive);
+		}
+
+		boolean CSignalDisplayView::onDisplayModeToggledCB(CIdentifier oDisplayMode)
+		{
+			m_pBufferDatabase->setDisplayMode(oDisplayMode);
+
+			//force full redraw of all channels when display mode changes
+			for(size_t i=0 ; i<m_oChannelDisplay.size(); i++)
+			{
+				m_oChannelDisplay[i]->redrawAllAtNextRefresh();
+			}
+
+			//redraw channels
+			redraw();
+
+			return true;
+		}
+
+		boolean CSignalDisplayView::onVerticalScaleModeToggledCB(GtkToggleButton* pToggleButton)
+		{
+			m_bVerticalScaleChanged = true;
+			m_bAutoVerticalScale = gtk_toggle_button_get_active(pToggleButton);
+#if 0
+			if(m_bAutoVerticalScale)
+			{
+				gtk_widget_hide(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"));
+			}
+			else
+			{
+				gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64LargestDisplayedValueRange);
+				gtk_widget_show(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"));
+			}
+#else
+			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"), !m_bAutoVerticalScale);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64LargestDisplayedValueRange);
+#endif
+			return true;
+		}
+
+		boolean CSignalDisplayView::onCustomVerticalScaleChangedCB(::GtkSpinButton *pSpinButton)
+		{
+			m_bVerticalScaleChanged = true;
+			m_f64CustomVerticalScaleValue = gtk_spin_button_get_value(pSpinButton);
+			return true;
+		}
+
+		CSignalChannelDisplay* CSignalDisplayView::getChannelDisplay(uint32 ui32ChannelIndex)
+		{
+			if(ui32ChannelIndex < m_oChannelDisplay.size())
+			{
+				return m_oChannelDisplay[ui32ChannelIndex];
+			}
+			else
+			{
+				return NULL;
+			}
+		}
+
+		boolean CSignalDisplayView::isChannelDisplayVisible(uint32 ui32ChannelIndex)
+		{
+			return GTK_WIDGET_VISIBLE(getChannelDisplay(ui32ChannelIndex)->getSignalDisplayWidget());
 		}
 	}
 }

@@ -506,7 +506,7 @@ boolean	CVisualisationTree::findChildNodeFromParent(::GtkTreeIter* pIter, const 
 boolean	CVisualisationTree::_findChildNodeFromParent(::GtkTreeIter* pIter, const char* label, EVisualisationTreeNode type)
 {
 	gchar* l_sName;
-	EVisualisationTreeNode l_ulType;
+	unsigned long l_ulType;
 
 	//is current node the one looked for?
 	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pIter,
@@ -514,7 +514,7 @@ boolean	CVisualisationTree::_findChildNodeFromParent(::GtkTreeIter* pIter, const
 		EVisualisationTreeColumn_ULongNodeType, &l_ulType,
 		-1);
 
-	if(strcmp(label, l_sName) == 0 && type == l_ulType)
+	if(strcmp(label, l_sName) == 0 && type == (EVisualisationTreeNode)l_ulType)
 	{
 		m_oInternalTreeNode = *pIter;
 		return true;
@@ -653,12 +653,12 @@ boolean	CVisualisationTree::_findChildNodeFromParent(::GtkTreeIter* pIter, CIden
 
 boolean CVisualisationTree::findParentNode(::GtkTreeIter* pIter, EVisualisationTreeNode type)
 {
-	EVisualisationTreeNode l_ulType;
+	unsigned long l_ulType;
 	::GtkTreeIter l_oIter;
 
 	//is current node the one looked for?
 	gtk_tree_model_get(GTK_TREE_MODEL(m_pTreeStore), pIter, EVisualisationTreeColumn_ULongNodeType, &l_ulType, -1);
-	if(type == l_ulType)
+	if(type == (EVisualisationTreeNode)l_ulType)
 	{
 		return true;
 	}

@@ -200,12 +200,35 @@ public:
 	 * \brief Get vertex position array
 	 * \remark This method returns vertex positions of the first mesh of the first
 	 * Ogre::Entity encountered in the object hierarchy only.
+	 * \param ui32VertexCount Number of vertices that can be stored in pVertexPositionArray
 	 * \param pVertexPositionArray Preallocated array destined to store vertex position triplets
 	 * \return True if vertex positions could be retrieved, false otherwise
 	 */
 	OpenViBE::boolean getVertexPositionArray(
-		Ogre::uint32 ui32VertexPositionCount,
+		Ogre::uint32 ui32VertexCount,
 		Ogre::Real* pVertexPositionArray) const;
+
+	/**
+	 * \brief Get object triangle count
+	 * \remark This method returns the number of triangles in the first mesh of the first
+	 * Ogre::Entity encountered in the object hierarchy only.
+	 * \param ui32TriangleCount Number of triangles found in first mesh of first entity
+	 * \return True if triangle count could be retrieved, false otherwise
+	 */
+	OpenViBE::boolean getTriangleCount(
+		Ogre::uint32& ui32TriangleCount) const;
+
+	/**
+	 * \brief Get array of face indices
+	 * \remark This method returns face indices of the first mesh of the first
+	 * Ogre::Entity encountered in the object hierarchy only.
+	 * \param ui32TriangleCount Number of triangles that can be stored in pTriangleIndexArray
+	 * \param pTriangleIndexArray Preallocated array destined to store face indices triplets
+	 * \return True if face indices could be retrieved, false otherwise
+	 */
+	OpenViBE::boolean getTriangleIndexArray(
+		Ogre::uint32 ui32TriangleCount,
+		OpenViBE::uint32* pTriangleIndexArray) const;
 
 	/**
 	 * \brief Get world bounding box of an object

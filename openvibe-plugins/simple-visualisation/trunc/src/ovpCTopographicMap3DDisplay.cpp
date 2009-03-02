@@ -13,7 +13,48 @@ using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
 using namespace std;
 
+/*
+   OV (Ogre)     Normalized space
+   =========     ================
+    Y                Zn
+    |                |
+    +-- X        Xn--+
+   /                /
+  Z                Yn
+ => X = -Xn, Y = Zn, Z = Yn
+*/
+#define CONVERT_STD_TO_OV(ov_vec, std_vec) \
+	ov_vec[0] = -std_vec[0]; \
+	ov_vec[1] = std_vec[2]; \
+	ov_vec[2] = std_vec[1];
+
+#define CONVERT_OV_TO_STD(std_vec, ov_vec) \
+	std_vec[0] = -ov_vec[0]; \
+	std_vec[1] = ov_vec[2]; \
+	std_vec[2] = ov_vec[1];
+
+#define CROSS(dest,v1,v2) \
+	dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
+	dest[1]=v1[2]*v2[0]-v1[0]*v2[2]; \
+	dest[2]=v1[0]*v2[1]-v1[1]*v2[0];
+
+#define DOT(v1,v2) (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2])
+
+#define SUB(dest,v1,v2) \
+	dest[0]=v1[0]-v2[0]; \
+	dest[1]=v1[1]-v2[1]; \
+	dest[2]=v1[2]-v2[2];
+
+#define NORMALIZE(v) { \
+	float32 a = 1 / sqrtf(DOT(v,v)); \
+	v[0] *= a; \
+	v[1] *= a; \
+	v[2] *= a; }
+
+#define EPSILON 0.000001f
+
 CTopographicMap3DDisplay::CTopographicMap3DDisplay(void) :
+	m_bError(false),
 	m_pChannelLocalisationStreamDecoder(NULL),
 	m_pStreamedMatrixReader(NULL),
 	m_pStreamedMatrixReaderCallBack(NULL),
@@ -24,7 +65,9 @@ CTopographicMap3DDisplay::CTopographicMap3DDisplay(void) :
 	m_oResourceGroupIdentifier(OV_UndefinedIdentifier),
 	m_bSkullCreated(false),
 	m_bCameraPositioned(false),
+	m_bScalpDataInitialized(false),
 	m_bElectrodesCreated(false),
+	m_bModelElectrodeCoordinatesInitialized(false),
 	m_ui32NbColors(0),
 	m_pColorScale(NULL),
 	m_bNeedToggleElectrodes(false),
@@ -212,19 +255,16 @@ boolean CTopographicMap3DDisplay::process(void)
 		l_pDynamicBoxContext->markInputAsDeprecated(1, i);
 	}
 
-	//decode channel localisation (in model frame) data
-	for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(2); i++)
+	if(process3D() == true)
 	{
-		const IMemoryBuffer* l_pBuf = l_pDynamicBoxContext->getInputChunk(2, i);
-		decodeChannelLocalisationMemoryBuffer(l_pBuf);
-		l_pDynamicBoxContext->markInputAsDeprecated(2, i);
+		getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
+		return true;
 	}
-
-	process3D();
-
-	getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
-
-	return true;
+	else
+	{
+		//disable plugin upon errors
+		return false;
+	}
 }
 
 void CTopographicMap3DDisplay::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
@@ -263,75 +303,6 @@ void CTopographicMap3DDisplay::redraw()
 //--------------------------------------
 CMatrix* CTopographicMap3DDisplay::getSampleCoordinatesMatrix()
 {
-	if(m_ui32NbScalpVertices == 0)
-	{
-		//retrieve number of vertices in scalp mesh
-		if(getVisualisationContext().getObjectVertexCount(m_oScalpId, m_ui32NbScalpVertices) == false)
-		{
-			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve number of vertices from scalp object\n";
-		}
-
-		if(m_ui32NbScalpVertices > 0)
-		{
-			//allocate colors array
-			m_pScalpColors = new float32[4*m_ui32NbScalpVertices];
-
-			//retrieve vertices
-			if(m_pScalpVertices == NULL)
-			{
-				m_pScalpVertices = new float32[3*m_ui32NbScalpVertices];
-			}
-
-			if(getVisualisationContext().getObjectVertexPositionArray(m_oScalpId, m_ui32NbScalpVertices, m_pScalpVertices) == false)
-			{
-				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve vertex array from scalp object\n";
-			}
-
-			//allocate normalized sample coordinates matrix
-			m_oSampleCoordinatesMatrix.setDimensionSize(0, m_ui32NbScalpVertices);
-			m_oSampleCoordinatesMatrix.setDimensionSize(1, 3);
-
-			//compute scalp vertices coordinates once projected onto a unit sphere
-			float32 l_f32UnitVector[3];
-			float32* l_pScalpVertexCoord = m_pScalpVertices;
-			float64* l_pSampleCoordsBuffer = m_oSampleCoordinatesMatrix.getBuffer();
-
-			for(uint32 i=0; i<m_ui32NbScalpVertices; i++, l_pScalpVertexCoord+=3)
-			{
-				/* Ogre     Normalized space
-					 ====     ================
-						Y            Zn
-						|            |
-						+-- X    Xn--+
-					 /            /
-					Z            Yn
-					 => X = -Xn, Y = Zn, Z = Yn */
-
-				//compute vector from center of unit sphere to scalp vertex
-				l_f32UnitVector[0] = -l_pScalpVertexCoord[0] - m_f32ProjectionCenter[0];
-				l_f32UnitVector[1] = l_pScalpVertexCoord[2] - m_f32ProjectionCenter[1];
-				l_f32UnitVector[2] = l_pScalpVertexCoord[1] - m_f32ProjectionCenter[2];
-
-				//normalize vector
-				float32 l_f32InvLength = 1.f / sqrtf(l_f32UnitVector[0]*l_f32UnitVector[0] + l_f32UnitVector[1]*l_f32UnitVector[1] + l_f32UnitVector[2]*l_f32UnitVector[2]);
-				l_f32UnitVector[0] *= l_f32InvLength;
-				l_f32UnitVector[1] *= l_f32InvLength;
-				l_f32UnitVector[2] *= l_f32InvLength;
-
-				//store vertex in matrix to be fed to interpolation algorithm
-				*l_pSampleCoordsBuffer++ = l_f32UnitVector[0];
-				*l_pSampleCoordsBuffer++ = l_f32UnitVector[1];
-				*l_pSampleCoordsBuffer++ = l_f32UnitVector[2];
-
-				//display a sphere at the location of the normalized coordinates
-
-				/*CIdentifier id = getVisualisationContext().createObject(Standard3DObject_Sphere);
-				getVisualisationContext().setObjectScale(id, 0.001f, 0.001f, 0.001f);
-				getVisualisationContext().setObjectPosition(id, 3 * (-l_f32UnitVector[0]), 3 * l_f32UnitVector[2], 3 * l_f32UnitVector[1]);*/
-			}
-		}
-	}
-
 	return &m_oSampleCoordinatesMatrix;
 }
 
@@ -388,118 +359,305 @@ void CTopographicMap3DDisplay::toggleElectrodes(boolean bToggle)
 	m_bSamplingPointsToggleState = bToggle;
 }*/
 
-boolean CTopographicMap3DDisplay::decodeChannelLocalisationMemoryBuffer(const IMemoryBuffer* pMemoryBuffer)
+boolean CTopographicMap3DDisplay::initializeScalpData()
 {
-	//feed memory buffer to decoder
-	m_pChannelLocalisationStreamDecoder->getInputParameter(
-		OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_InputParameterId_MemoryBufferToDecode)->setReferenceTarget(&pMemoryBuffer);
-
-	//process buffer
-	m_pChannelLocalisationStreamDecoder->process();
-
-	//copy header if needed
-	if(m_pChannelLocalisationStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputTriggerId_ReceivedHeader) == true)
+	if(m_ui32NbScalpVertices == 0)
 	{
-		//retrieve matrix header
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oMatrix;
-		l_oMatrix.initialize(m_pChannelLocalisationStreamDecoder->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Matrix));
-		if(l_oMatrix->getDimensionSize(1) != 3)
+		//retrieve number of vertices in scalp mesh
+		if(getVisualisationContext().getObjectVertexCount(m_oScalpId, m_ui32NbScalpVertices) == false)
 		{
-			getLogManager() << LogLevel_Error
-				<< "Wrong size found for dimension 1 of channel localisation header! Can't process header!\n";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve number of vertices from scalp object\n";
 			return false;
 		}
 
-		//copy channel labels
-		Tools::Matrix::copyDescription(m_oModelElectrodeCoordinates, *l_oMatrix);
-	}
-
-	//has a chanloc buffer been received?
-	if(m_pChannelLocalisationStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputTriggerId_ReceivedBuffer) == true)
-	{
-		//retrieve coordinates matrix
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oMatrix;
-		l_oMatrix.initialize(m_pChannelLocalisationStreamDecoder->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Matrix));
-
-		//save labels
-		CMatrix l_oTempMatrix;
-		Tools::Matrix::copyDescription(l_oTempMatrix, m_oModelElectrodeCoordinates);
-
-		//resize matrix
-		Tools::Matrix::copyDescription(m_oModelElectrodeCoordinates, *l_oMatrix);
-
-		//copy labels
-		for(uint32 i=0; i<m_oModelElectrodeCoordinates.getDimensionSize(0); i++)
+		if(m_ui32NbScalpVertices > 0)
 		{
-			m_oModelElectrodeCoordinates.setDimensionLabel(0, i, l_oTempMatrix.getDimensionLabel(0, i));
-		}
-		for(uint32 i=0; i<m_oModelElectrodeCoordinates.getDimensionSize(1); i++)
-		{
-			m_oModelElectrodeCoordinates.setDimensionLabel(1, i, l_oTempMatrix.getDimensionLabel(1, i));
-		}
+			//allocate colors array
+			m_pScalpColors = new float32[4*m_ui32NbScalpVertices];
 
-		//copy coordinates
-		Tools::Matrix::copyContent(m_oModelElectrodeCoordinates, *l_oMatrix);
+			//retrieve vertices
+			if(m_pScalpVertices == NULL)
+			{
+				m_pScalpVertices = new float32[3*m_ui32NbScalpVertices];
 
-		m_bModelElectrodeCoordinatesInitialized = true;
+				if(getVisualisationContext().getObjectVertexPositionArray(m_oScalpId, m_ui32NbScalpVertices, m_pScalpVertices) == false)
+				{
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve vertex array from scalp object\n";
+					return false;
+				}
+			}
+
+			//allocate normalized sample coordinates matrix
+			m_oSampleCoordinatesMatrix.setDimensionSize(0, m_ui32NbScalpVertices);
+			m_oSampleCoordinatesMatrix.setDimensionSize(1, 3);
+
+			//compute scalp vertices coordinates once projected onto a unit sphere
+			float32 l_f32UnitVector[3];
+			float32* l_pScalpVertexCoord = m_pScalpVertices;
+			float64* l_pSampleCoordsBuffer = m_oSampleCoordinatesMatrix.getBuffer();
+
+			for(uint32 i=0; i<m_ui32NbScalpVertices; i++, l_pScalpVertexCoord+=3)
+			{
+				//compute unit vector from center of unit sphere to scalp vertex
+				CONVERT_OV_TO_STD(l_f32UnitVector, l_pScalpVertexCoord)
+				SUB(l_f32UnitVector, l_f32UnitVector, m_f32ProjectionCenter)
+				NORMALIZE(l_f32UnitVector)
+
+				//store vertex in matrix to be fed to interpolation algorithm
+				*l_pSampleCoordsBuffer++ = l_f32UnitVector[0];
+				*l_pSampleCoordsBuffer++ = l_f32UnitVector[1];
+				*l_pSampleCoordsBuffer++ = l_f32UnitVector[2];
+			}
+		}
 	}
 
 	return true;
 }
 
-void CTopographicMap3DDisplay::process3D()
+boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
+{
+	uint64 l_ui64ChannelCount = m_pTopographicMapDatabase->getChannelCount();
+
+	//transform normalized projection center to Ogre space
+	float32 l_pProjectionCenter[3];
+	CONVERT_STD_TO_OV(l_pProjectionCenter, m_f32ProjectionCenter)
+
+	//get scalp triangles
+	uint32 l_ui32ScalpTriangleCount = 0;
+	if(getVisualisationContext().getObjectTriangleCount(m_oScalpId, l_ui32ScalpTriangleCount) == false)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve number of triangles from scalp object\n";
+		return false;
+	}
+
+	if(l_ui32ScalpTriangleCount == 0)
+	{
+		return false;
+	}
+
+	//store scalp triangle indices
+	uint32* l_pScalpTriangleIndexArray = new uint32[3*l_ui32ScalpTriangleCount];
+
+	if(getVisualisationContext().getObjectTriangleIndexArray(m_oScalpId, l_ui32ScalpTriangleCount, l_pScalpTriangleIndexArray) == false)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve index array from scalp object\n";
+		delete[] l_pScalpTriangleIndexArray;
+		return false;
+	}
+
+	m_oElectrodeIds.resize((size_t)m_pTopographicMapDatabase->getChannelCount());
+
+	//retrieve size of scalp to compute size to give to electrodes
+	float32 l_oMin[3];
+	float32 l_oMax[3];
+	getVisualisationContext().getObjectAxisAlignedBoundingBox(m_oScalpId, l_oMin, l_oMax);
+#define ELECTRODE_TO_SCALP_SIZE_RATIO 5e-4f
+	float32 l_f32ScalpLength = l_oMax[2] - l_oMin[2];
+	float32 l_f32ElectrodeScale = ELECTRODE_TO_SCALP_SIZE_RATIO * l_f32ScalpLength;
+
+	//for each channel, look for intersection of projCenter->channelCoord ray with scalp triangles
+	for(uint32 i=0; i<l_ui64ChannelCount; i++)
+	{
+		//get normalized channel coords from DB
+		float64* l_pNormalizedChannelCoords = NULL;
+		if(m_pTopographicMapDatabase->getChannelPosition(i, l_pNormalizedChannelCoords) == true)
+		{
+			//transform them to Ogre space to get normalized ray direction
+			float32 l_pRayDirection[3];
+			CONVERT_STD_TO_OV(l_pRayDirection, l_pNormalizedChannelCoords)
+
+			//look for triangle intersected by ray
+			uint32 j = 0;
+			float32 l_t;
+			for(j=0; j<l_ui32ScalpTriangleCount; j++)
+			{
+				if(findRayTriangleIntersection(l_pProjectionCenter, l_pRayDirection,
+					m_pScalpVertices + 3*l_pScalpTriangleIndexArray[3*j],
+					m_pScalpVertices + 3*l_pScalpTriangleIndexArray[3*j+1],
+					m_pScalpVertices + 3*l_pScalpTriangleIndexArray[3*j+2],
+					l_t) == true)
+				{
+					break;
+				}
+			}
+
+			if(j== m_ui32NbScalpVertices)
+			{
+				//no scalp triangle was intersected by ray : can't compute electrode coordinates!
+			}
+			else
+			{
+				m_oElectrodeIds[i] = getVisualisationContext().createObject(Standard3DObject_Sphere);
+				if(m_oElectrodeIds[i] == OV_UndefinedIdentifier)
+				{
+					getLogManager() << LogLevel_Warning << "Couldn't create electrode object!\n";
+					break;
+				}
+
+				//should electrodes be shown initially?
+				if(m_bNeedToggleElectrodes == false)
+				{
+					getVisualisationContext().setObjectVisible(m_oElectrodeIds[i], false);
+				}
+
+				//scale electrode so that it is homogeneous with skull model
+				getVisualisationContext().setObjectScale(m_oElectrodeIds[i], l_f32ElectrodeScale);
+
+				//position electrode
+				getVisualisationContext().setObjectPosition(m_oElectrodeIds[i],
+					l_pProjectionCenter[0] + l_t * l_pRayDirection[0],
+					l_pProjectionCenter[1] + l_t * l_pRayDirection[1],
+					l_pProjectionCenter[2] + l_t * l_pRayDirection[2]);
+			}
+		}
+	}
+
+	m_bModelElectrodeCoordinatesInitialized = true;
+
+	delete[] l_pScalpTriangleIndexArray;
+
+	return true;
+}
+
+boolean CTopographicMap3DDisplay::findRayTriangleIntersection(float32* pOrigin, float32* pDirection, float32* pV0, float32* pV1, float32* pV2, float32& rT)
+{
+	float32 u, v;
+	float32 edge1[3], edge2[3], tvec[3], pvec[3], qvec[3];
+	float32 det, inv_det;
+
+	/* find vectors for two edges sharing pV0 */
+	SUB(edge1, pV1, pV0);
+	SUB(edge2, pV2, pV0);
+
+	/* begin calculating determinant - also used to calculate U parameter */
+	CROSS(pvec, pDirection, edge2);
+
+	/* if determinant is near zero, ray lies in plane of triangle */
+	det = DOT(edge1, pvec);
+
+#ifdef TEST_CULL           /* define TEST_CULL if culling is desired */
+	if (det < EPSILON)
+		return false;
+
+	/* calculate distance from pV0 to ray pOriginin */
+	SUB(tvec, pOrigin, pV0);
+
+	/* calculate U parameter and test bounds */
+	u = DOT(tvec, pvec);
+	if (u < 0.0 || u > det)
+		return false;
+
+	/* prepare to test V parameter */
+	CROSS(qvec, tvec, edge1);
+
+	/* calculate V parameter and test bounds */
+	v = DOT(pDirection, qvec);
+	if (v < 0.0 || u + v > det)
+		return false;
+
+	/* calculate t, scale parameters, ray intersects triangle */
+	rT = DOT(edge2, qvec);
+	inv_det = 1.0 / det;
+	rT *= inv_det;
+	u *= inv_det;
+	v *= inv_det;
+#else                    /* the non-culling branch */
+	if (det > -EPSILON && det < EPSILON)
+		return false;
+	inv_det = 1.0 / det;
+
+	/* calculate distance from pV0 to ray pOriginin */
+	SUB(tvec, pOrigin, pV0);
+
+	/* calculate U parameter and test bounds */
+	u = DOT(tvec, pvec) * inv_det;
+	if (u < 0.0 || u > 1.0)
+		return false;
+
+	/* prepare to test V parameter */
+	CROSS(qvec, tvec, edge1);
+
+	/* calculate V parameter and test bounds */
+	v = DOT(pDirection, qvec) * inv_det;
+	if (v < 0.0 || u + v > 1.0)
+		return false;
+
+	/* calculate t, ray intersects triangle */
+	rT = DOT(edge2, qvec) * inv_det;
+#endif
+	return true;
+}
+
+boolean CTopographicMap3DDisplay::process3D()
 {
 	//first pass : initialize 3D scene
 	if(m_bSkullCreated == false)
 	{
-		createSkull();
-		return;
+		boolean l_bRes = createSkull();
+		m_bSkullCreated = true;
+		return l_bRes;
 	}
 	//second pass : auto position camera
 	else if(m_bCameraPositioned == false)
 	{
-		getVisualisationContext().setCameraToEncompassObjects(m_o3DWidgetIdentifier);
+		boolean l_bRes = getVisualisationContext().setCameraToEncompassObjects(m_o3DWidgetIdentifier);
 		m_bCameraPositioned = true;
-		return;
+		return l_bRes;
 	}
-
-	//wait for first buffer
-	if(m_pTopographicMapDatabase->isFirstBufferReceived() == false)
+	else
 	{
-		return;
-	}
-
-	//third pass : create electrode and sampling point objects
-	if(m_bElectrodesCreated == false)
-	{
-		createElectrodes();
-		//createSamplingPoints();
-		m_bElectrodesCreated = true;
-		return;
-	}
-
-	//fourth pass and more : handle 3D requests
-	if(m_bNeedToggleElectrodes == true)
-	{
-		for(uint32 i=0; i<m_oElectrodeIds.size(); i++)
+		//initialize scalp vertices
+		if(m_bScalpDataInitialized == false)
 		{
-			getVisualisationContext().setObjectVisible(m_oElectrodeIds[i], m_bElectrodesToggleState);
+			boolean l_bRes = initializeScalpData();
+			m_bScalpDataInitialized = true;
+			if(l_bRes == false)
+			{
+				return false;
+			}
 		}
 
-		m_bNeedToggleElectrodes = false;
-	}
-
-	if(m_bNeedToggleSamplingPoints == true)
-	{
-		for(uint32 i=0; i<m_oSamplingPointIds.size(); i++)
+		//create electrode objects
+		if(m_bElectrodesCreated == false)
 		{
-			getVisualisationContext().setObjectVisible(m_oSamplingPointIds[i], m_bSamplingPointsToggleState);
+			//ensure normalized channel coords are available
+			if(m_pTopographicMapDatabase->isFirstChannelLocalisationBufferProcessed() == true)
+			{
+				//compute channel coords in 3d scene
+				bool l_bRes = computeModelFrameChannelCoordinates();
+				m_bElectrodesCreated = true;
+				return l_bRes;
+			}
 		}
 
-		m_bNeedToggleSamplingPoints = false;
-	}
+		//should electrode objects be toggled on/off?
+		if(m_bNeedToggleElectrodes == true)
+		{
+			for(uint32 i=0; i<m_oElectrodeIds.size(); i++)
+			{
+				getVisualisationContext().setObjectVisible(m_oElectrodeIds[i], m_bElectrodesToggleState);
+			}
 
-	m_pTopographicMapDatabase->processValues();
+			m_bNeedToggleElectrodes = false;
+		}
+
+		//should sampling point objects be toggled on/off?
+		if(m_bNeedToggleSamplingPoints == true)
+		{
+			for(uint32 i=0; i<m_oSamplingPointIds.size(); i++)
+			{
+				getVisualisationContext().setObjectVisible(m_oSamplingPointIds[i], m_bSamplingPointsToggleState);
+			}
+
+			m_bNeedToggleSamplingPoints = false;
+		}
+
+		//update map
+		boolean l_bProcess = m_pTopographicMapDatabase->processValues();
+
+		//disable plugin upon errors
+		return l_bProcess == true;
+	}
 }
 
 boolean CTopographicMap3DDisplay::createSkull()
@@ -510,7 +668,9 @@ boolean CTopographicMap3DDisplay::createSkull()
 	//load face mesh
 	if(getVisualisationContext().createObject(m_oFaceMeshFilename) == OV_UndefinedIdentifier)
 	{
-		getLogManager() << LogLevel_Warning << "Couldn't load face mesh!\n";
+		getLogManager() << LogLevel_Error << "Couldn't load face mesh!\n";
+		m_bError = true;
+		return false;
 	}
 
 	//load scalp mesh
@@ -520,140 +680,44 @@ boolean CTopographicMap3DDisplay::createSkull()
 
 	if(m_oScalpId == OV_UndefinedIdentifier)
 	{
-		getLogManager() << LogLevel_Warning << "Couldn't load scalp mesh!\n";
+		getLogManager() << LogLevel_Error << "Couldn't load scalp mesh!\n";
+		m_bError = true;
+		return false;
 	}
 
 	//load projection sphere mesh
 	CIdentifier l_oDummyObject = getVisualisationContext().createObject(m_oProjectionSphereMeshFilename);
 	if(l_oDummyObject == OV_UndefinedIdentifier)
 	{
-		getLogManager() << LogLevel_Warning << "Couldn't load projection sphere mesh!\n";
+		getLogManager() << LogLevel_Error << "Couldn't load projection sphere mesh!\n";
+		m_bError = true;
+		return false;
 	}
 	else
 	{
 		float32 l_oMin[3];
 		float32 l_oMax[3];
 		getVisualisationContext().getObjectAxisAlignedBoundingBox(l_oDummyObject, l_oMin, l_oMax);
-		float32 l_oModelSpaceProjectionCenter[3];
 
+		float32 l_oModelSpaceProjectionCenter[3];
 		l_oModelSpaceProjectionCenter[0] = (l_oMin[0] + l_oMax[0]) / 2;
 		l_oModelSpaceProjectionCenter[1] = (l_oMin[1] + l_oMax[1]) / 2;
 		l_oModelSpaceProjectionCenter[2] = (l_oMin[2] + l_oMax[2]) / 2;
 
-		/* Ogre     Normalized space
-		   ====     ================
-		   Y            Zn
-		   |            |
-		   +-- X    Xn--+
-		  /            /
-		 Z            Yn
-		 => X = -Xn, Y = Zn, Z = Yn */
+		CONVERT_OV_TO_STD(m_f32ProjectionCenter, l_oModelSpaceProjectionCenter)
 
-		m_f32ProjectionCenter[0] = -l_oModelSpaceProjectionCenter[0];
-		m_f32ProjectionCenter[1] = l_oModelSpaceProjectionCenter[2];
-		m_f32ProjectionCenter[2] = l_oModelSpaceProjectionCenter[1];
+		getVisualisationContext().removeObject(l_oDummyObject);
 	}
-
-	//set skull creation flag
-	m_bSkullCreated = true;
-
-	return true;
-}
-
-boolean CTopographicMap3DDisplay::createElectrodes()
-{
-	//create visual objects corresponding to each channel
-#if 1
-	m_oElectrodeIds.resize((size_t)m_pTopographicMapDatabase->getChannelCount());
-
-	for(uint32 i=0; i<m_oElectrodeIds.size(); i++)
-	{
-		m_oElectrodeIds[i] = getVisualisationContext().createObject(Standard3DObject_Sphere);
-
-		if(m_oElectrodeIds[i] == OV_UndefinedIdentifier)
-		{
-			CString l_oElectrodeLabel;
-			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
-			getLogManager() << LogLevel_Warning << "Couldn't create electrode object for channel " << l_oElectrodeLabel << " !\n";
-			break;
-		}
-
-		//should electrodes be shown initially?
-		if(m_bNeedToggleElectrodes == false)
-		{
-			getVisualisationContext().setObjectVisible(m_oElectrodeIds[i], false);
-		}
-
-		//scale electrode so that it is homogeneous with skull model
-		getVisualisationContext().setObjectScale(m_oElectrodeIds[i], 0.002f, 0.002f, 0.002f);
-
-		//retrieve 3D coordinates of current electrode (in 3D scene coords)
-		float64 l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ;
-		if(getChannelWorldCoordinates(i, l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ) == false)
-		{
-			CString l_oElectrodeLabel;
-			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
-			getLogManager() << LogLevel_Warning << "Couldn't retrieve electrode position for channel " << l_oElectrodeLabel << " !\n";
-			continue;
-		}
-
-		//position electrode
-		getVisualisationContext().setObjectPosition(m_oElectrodeIds[i],
-			(float32)l_f64ElectrodeWorldX, (float32)l_f64ElectrodeWorldY, (float32)l_f64ElectrodeWorldZ);
-	}
-#else
-	//create visual objects corresponding to each electrode in database
-	m_oElectrodeIds.resize((size_t)m_pTopographicMapDatabase->getElectrodeCount());
-
-	for(uint32 i=0; i<m_oElectrodeIds.size(); i++)
-	{
-		m_oElectrodeIds[i] = getVisualisationContext().createObject(Standard3DObject_Sphere);
-
-		if(m_oElectrodeIds[i] == OV_UndefinedIdentifier)
-		{
-			CString l_oElectrodeLabel;
-			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
-			getLogManager() << LogLevel_Warning << "Couldn't create electrode object for channel " << l_oElectrodeLabel << " !\n";
-			continue;
-		}
-
-		//scale electrode so that it is homogeneous with skull model
-		getVisualisationContext().setObjectScale(m_oElectrodeIds[i], 0.001f, 0.001f, 0.001f);
-
-		//retrieve 3D coordinates of current electrode (in 3D scene coords)
-		float64 l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ;
-		if(getElectrodeObjectCoordinates(i, l_f64ElectrodeWorldX, l_f64ElectrodeWorldY, l_f64ElectrodeWorldZ) == false)
-		{
-			CString l_oElectrodeLabel;
-			m_pTopographicMapDatabase->getChannelLabel(i, l_oElectrodeLabel);
-			getLogManager() << LogLevel_Warning << "Couldn't retrieve electrode position for channel " << l_oElectrodeLabel << " !\n";
-			continue;
-		}
-
-		//position electrode
-		getVisualisationContext().setObjectPosition(m_oElectrodeIds[i],
-			(float32)l_f64ElectrodeWorldX, (float32)l_f64ElectrodeWorldY, (float32)l_f64ElectrodeWorldZ);
-	}
-#endif
 
 	return true;
 }
 
 boolean CTopographicMap3DDisplay::createSamplingPoints()
 {
+	boolean l_bRes = true;
+
 	//display a sphere at the vertex location
 	m_oSamplingPointIds.resize(m_ui32NbScalpVertices);
-
-	//retrieve vertices
-	if(m_pScalpVertices == NULL)
-	{
-		m_pScalpVertices = new float32[3*m_ui32NbScalpVertices];
-	}
-
-	if(getVisualisationContext().getObjectVertexPositionArray(m_oScalpId, m_ui32NbScalpVertices, m_pScalpVertices) == false)
-	{
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve vertex array from scalp object\n";
-	}
 
 	for(uint32 i=0; i<m_ui32NbScalpVertices; i++)
 	{
@@ -662,6 +726,7 @@ boolean CTopographicMap3DDisplay::createSamplingPoints()
 		if(m_oSamplingPointIds[i] == OV_UndefinedIdentifier)
 		{
 			getLogManager() << LogLevel_Warning << "process3D() : couldn't create electrode object!\n";
+			l_bRes = false;
 			break;
 		}
 
@@ -715,45 +780,5 @@ boolean CTopographicMap3DDisplay::createSamplingPoints()
 		getVisualisationContext().setObjectTransparency(m_oSamplingPointIds[i], 0.5f);
 	}
 #endif
-	return true;
-}
-
-boolean CTopographicMap3DDisplay::getChannelWorldCoordinates(uint32 ui32ChannelIndex, float64& rElectrodeWorldX, float64& rElectrodeWorldY, float64& rElectrodeWorldZ)
-{
-	CString l_oElectrodeLabel;
-	m_pTopographicMapDatabase->getChannelLabel(ui32ChannelIndex, l_oElectrodeLabel);
-
-	uint32 j;
-	for(j=0; j<m_oModelElectrodeCoordinates.getDimensionSize(0); j++)
-	{
-		if(string(m_oModelElectrodeCoordinates.getDimensionLabel(0, j)) == string(l_oElectrodeLabel))
-		{
-			rElectrodeWorldX = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j);
-			rElectrodeWorldY = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+1);
-			rElectrodeWorldZ = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+2);
-			break;
-		}
-	}
-
-	return j<m_oModelElectrodeCoordinates.getDimensionSize(0);
-}
-
-boolean CTopographicMap3DDisplay::getElectrodeObjectCoordinates(uint32 ui32ChannelIndex, float64& rElectrodeObjectX, float64& rElectrodeObjectY, float64& rElectrodeObjectZ)
-{
-	CString l_oElectrodeLabel;
-	m_pTopographicMapDatabase->getElectrodeLabel(ui32ChannelIndex, l_oElectrodeLabel);
-
-	uint32 j;
-	for(j=0; j<m_oModelElectrodeCoordinates.getDimensionSize(0); j++)
-	{
-		if(string(m_oModelElectrodeCoordinates.getDimensionLabel(0, j)) == string(l_oElectrodeLabel))
-		{
-			rElectrodeObjectX = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j);
-			rElectrodeObjectY = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+1);
-			rElectrodeObjectZ = *(m_oModelElectrodeCoordinates.getBuffer() + 3*j+2);
-			break;
-		}
-	}
-
-	return j<m_oModelElectrodeCoordinates.getDimensionSize(0);
+	return l_bRes;
 }

@@ -297,7 +297,7 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 		}
 	}
 
-	// then looks at the std::string beeing the value itself
+	// then looks at the std::string being the value itself
 	uint64 l_ui64Value;
 	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
 	{
@@ -399,7 +399,7 @@ uint64 CTypeManager::getBitMaskEntryValueFromName(
 		}
 	}
 
-	// then looks at the std::string beeing the value itself
+	// then looks at the std::string being the value itself
 	uint64 l_ui64Value;
 	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
 	{

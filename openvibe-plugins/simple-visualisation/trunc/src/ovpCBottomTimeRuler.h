@@ -14,30 +14,69 @@ namespace OpenViBEPlugins
 		/**
 		 * Used to display an horizontal temporal ruler.
 		 * Uses information fetched from a signal database object.
-		 * */
+		 * \param pDatabase Object from which to fetch time data
+		 * \param i32WidthRequest Width to be requested by widget
+		 * \param i32HeightRequest Height to be requested by widget
+		 */
 		class CBottomTimeRuler
 		{
-				GtkWidget * m_pBottomRuler;
+		public:
+			CBottomTimeRuler(
+				CBufferDatabase& pDatabase,
+				OpenViBE::int32 i32WidthRequest,
+				OpenViBE::int32 i32HeightRequest);
 
-				CBufferDatabase * m_pDatabase;
+			~CBottomTimeRuler();
 
-				OpenViBE::uint64 m_ui64PixelsPerBottomRulerLabel;
+			//! returns the widget, so it can be added to the main interface
+			GtkWidget* getWidget() const;
 
-			public:
-				CBottomTimeRuler(CBufferDatabase& pDatabase);
-				~CBottomTimeRuler();
+			//! draws the ruler
+			void draw();
 
-				//! returns the widget, so it can be added to the main interface
-				GtkWidget * getWidget() const { return m_pBottomRuler; }
+			/**
+			 * \brief Resize this ruler when the widget passed in parameter is resized
+			 * \param pWidget Widget whose width is matched by this widget
+			 */
+			void linkWidthToWidget(
+				GtkWidget* pWidget);
 
-				//! toggles (show/hide) the ruler
-				void toggle(OpenViBE::boolean bActive);
+			//! in scan mode, leftmost displayed time is not always the one of the oldest buffer
+			void setLeftmostDisplayedTime(OpenViBE::uint64 ui64LeftmostDisplayedTime);
 
-				//! draws the ruler
-				void draw();
+			/**
+			 * \brief Callback notified upon resize events
+			 * \param i32Width New window width
+			 * \param i32Height New window height
+			 */
+			void onResizeEventCB(
+				gint i32Width,
+				gint i32Height);
 
-				//! link the ruler's width to another widget's
-				void linkWidthToWidget(GtkWidget * pWidget);
+		private:
+			//! Draw ruler
+			void drawRuler(
+				OpenViBE::int64 i64BaseX,
+				OpenViBE::int32 i32RulerWidth,
+				OpenViBE::float64 f64StartTime,
+				OpenViBE::float64 f64EndTime,
+				OpenViBE::float64 f64Length,
+				OpenViBE::float64 f64BaseValue,
+				OpenViBE::float64 f64ValueStep,
+				OpenViBE::int32 ui32ClipLeft,
+				OpenViBE::int32 ui32ClipRight);
+
+		private:
+			//! Gtk widget
+			GtkWidget* m_pBottomRuler;
+			//! Signal database from which time information is retrieved
+			CBufferDatabase* m_pDatabase;
+			//! Height request
+			OpenViBE::int32 m_i32HeightRequest;
+			//! Space allocated per label
+			OpenViBE::uint64 m_ui64PixelsPerBottomRulerLabel;
+			//! When in scan mode, current leftmost displayed time
+			OpenViBE::uint64 m_ui64LeftmostDisplayedTime;
 		};
 
 	};

@@ -92,7 +92,6 @@ boolean CVisualisationManager::createResourceGroup(CIdentifier& rResourceGroupId
 	{
 		return false;
 	}
-	rResourceGroupIdentifier = getUnusedIdentifier();
 	m_pOgreVisualisation->createResourceGroup(rResourceGroupIdentifier, rResourceGroupName.toASCIIString());
 	return true;
 }

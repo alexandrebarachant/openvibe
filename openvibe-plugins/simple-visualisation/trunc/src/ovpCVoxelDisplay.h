@@ -102,6 +102,8 @@ namespace OpenViBEPlugins
 
 			OpenViBE::boolean process3D();
 
+				OpenViBE::boolean loadVoxels();
+
 				OpenViBE::boolean createVoxels();
 
 				//REMOVE ME
@@ -112,6 +114,11 @@ namespace OpenViBEPlugins
 				OpenViBE::boolean updateVoxels();
 
 		private:
+			//Voxel coordinates file reader
+			OpenViBE::Kernel::IAlgorithmProxy* m_pOVMatrixFileReader;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > ip_sFilename;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pVoxelsMatrix;
+			OpenViBE::boolean m_bVoxelsMatrixLoaded;
 			//Streamed matrix database
 			CStreamedMatrixDatabase* m_pStreamedMatrixDatabase;
 			//GUI management
@@ -134,6 +141,9 @@ namespace OpenViBEPlugins
 			std::vector<OpenViBEPlugins::SimpleVisualisation::CVoxel> m_oVoxels; //voxels vector
 			OpenViBE::CIdentifier m_oScalpId;
 			OpenViBE::CIdentifier m_oFaceId;
+
+			//load voxel grid
+			//OpenViBE::boolean m_bLoadVoxelGrid;
 
 			/** \name Members modified by CVoxelView requests */
 			//@{
@@ -195,7 +205,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				//rPrototype.addSetting("Log level to use", OV_TypeId_LogLevel, "Information");
+				rPrototype.addSetting("Voxels filename", OV_TypeId_Filename, "");
 				rPrototype.addInput("Streamed matrix", OV_TypeId_StreamedMatrix);
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;

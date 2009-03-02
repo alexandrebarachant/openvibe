@@ -58,7 +58,8 @@ namespace OpenViBEDesigner
 
 		void saveScenarioAsCB(void);
 
-		void closeScenarioCB(void);
+		void closeScenarioCB(
+			OpenViBEDesigner::CInterfacedScenario* pInterfacedScenario);
 
 		void stopScenarioCB(void);
 

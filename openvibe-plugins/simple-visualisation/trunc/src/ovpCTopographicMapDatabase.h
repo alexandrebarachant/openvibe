@@ -86,6 +86,12 @@ namespace OpenViBEPlugins
 				OpenViBE::uint64 ui64Time,
 				OpenViBE::uint32& rBufferIndex);
 
+			/**
+			 * \brief Ensure electrode coordinates are normalized
+			 * \return True if all electrode coordinates are normalized, false otherwise
+			 */
+			OpenViBE::boolean checkElectrodeCoordinates();
+
 		private:
 			//true until process() is called for the first time
 			OpenViBE::boolean m_bFirstProcess;
@@ -102,7 +108,7 @@ namespace OpenViBEPlugins
 			//OpenViBE::int64 m_i64NbElectrodes;
 			//flag set to true once electrode coordinates have been initialized
 			OpenViBE::boolean m_bElectrodeCoordsInitialized;
-			//electrode cartesian coordinates
+			//electrode cartesian coordinates, in normalized space (X right Y front Z up)
 			OpenViBE::CMatrix m_oElectrodeCoords;
 			//pointer to electrode coordinates matrix - mapped to OVP_Algorithm_SphericalSplineInterpolation_InputParameterId_ControlPointsCoordinates
 			OpenViBE::IMatrix* m_pElectrodeCoords;

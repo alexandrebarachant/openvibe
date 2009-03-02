@@ -71,67 +71,79 @@ namespace OpenViBEPlugins
 			/**
 			 * \brief Set pointer to values matrix (interpolation results)
 			 */
-			virtual OpenViBE::boolean setSampleValuesMatrix(OpenViBE::IMatrix* pSampleValuesMatrix);
-			/**
-			 * \brief Toggle electrodes on/off
-			 */
-			void toggleElectrodes(OpenViBE::boolean);
-
-			//void toggleSamplingPoints(OpenViBE::boolean);
+			virtual OpenViBE::boolean setSampleValuesMatrix(
+				OpenViBE::IMatrix* pSampleValuesMatrix);
 
 			//@}
 
+			/**
+			 * \brief Toggle electrodes on/off
+			 */
+			void toggleElectrodes(
+				OpenViBE::boolean);
+
+			//void toggleSamplingPoints(OpenViBE::boolean);
+
 		protected:
 			/**
-			 * \brief Decode a channel localisation memory buffer
-			 * This function fills a matrix with names and coordinates of electrodes in
-			 * the frame of the head model used by this plugin. Coordinates are expected
-			 * to be expressed in a cartesian frame.
-			 * \param pMemoryBuffer Memory buffer to decode
-			 * \return True if memory buffer could be properly decoded, false otherwise
+			 * \brief Perform initialization tasks related to scalp mesh
+			 * Retrieves scalp vertex data, stores it in internal array,
+			 * computes electrode localization in model frame based on
+			 * the coordinates in normalized frame as stored in database
+			 * \return True if initialization completed successfully
 			 */
-			OpenViBE::boolean decodeChannelLocalisationMemoryBuffer(
-				const OpenViBE::IMemoryBuffer* pMemoryBuffer);
+			OpenViBE::boolean initializeScalpData();
+
+			/**
+			 * \brief Compute electrode coordinates in head model frame
+			 * Coordinates are computed by casting rays from sphere projection
+			 * center to normalized electrode coordinates, looking for intersection
+			 * between such rays and head model.
+			 * \return True if coordinates could be computed for all electrodes, false otherwise
+			 */
+			OpenViBE::boolean computeModelFrameChannelCoordinates();
+
+			/**
+			 * \brief Looks for intersection between ray and triangle
+			 * If an intersection exists, rT holds its location from origin
+			 * \param[in] pOrigin Ray origin
+			 * \param[in] pDirection Ray normalized direction
+			 * \param[in] pV0 Triangle vertex 0
+			 * \param[in] pV1 Triangle vertex 1
+			 * \param[in] pV2 Triangle vertex 2
+			 * \param[out] rT Intersection location from origin, if any
+			 * \return True if intersection found, false otherwise
+			 */
+			OpenViBE::boolean findRayTriangleIntersection(
+				OpenViBE::float32* pOrigin,
+				OpenViBE::float32* pDirection,
+				OpenViBE::float32* pV0,
+				OpenViBE::float32* pV1,
+				OpenViBE::float32* pV2,
+				OpenViBE::float32& rT);
 
 			/**
 			 * \brief Process 3D requests
+			 * \return True if plugin execution may go on, false if plugin must be stopped
 			 */
-			void process3D();
+			OpenViBE::boolean process3D();
 
 			/**
 			 * \brief Create 3D skull
+			 * \return True if skull created, false otherwise
 			 */
 			OpenViBE::boolean createSkull();
 
 			/**
-			 * \brief Create 3D objects at channel locations
-			 */
-			OpenViBE::boolean createElectrodes();
-
-			/**
 			 * \brief Create 3D objects at sampling points locations
+			 * \return True if sampling points created, false otherwise
 			 */
 			OpenViBE::boolean createSamplingPoints();
 
-			/**
-			 * \brief Return world coordinates of an electrode
-			 */
-			OpenViBE::boolean getChannelWorldCoordinates(
-				OpenViBE::uint32 ui32ChannelIndex,
-				OpenViBE::float64& rElectrodeWorldX,
-				OpenViBE::float64& rElectrodeWorldY,
-				OpenViBE::float64& rElectrodeWorldZ);
-
-			/**
-			 * \brief Return object (local) coordinates of an electrode
-			 */
-			OpenViBE::boolean getElectrodeObjectCoordinates(
-				OpenViBE::uint32 ui32ChannelIndex,
-				OpenViBE::float64& rElectrodeObjectX,
-				OpenViBE::float64& rElectrodeObjectY,
-				OpenViBE::float64& rElectrodeObjectZ);
-
 		private:
+			//error flag (plugin should be disabled when true)
+			OpenViBE::boolean m_bError;
+
 			//channel localisation decoder
 			OpenViBE::Kernel::IAlgorithmProxy* m_pChannelLocalisationStreamDecoder;
 
@@ -146,46 +158,66 @@ namespace OpenViBEPlugins
 			//Name of file containing sphere on which scalp vertices are mapped
 			OpenViBE::CString m_oProjectionSphereMeshFilename;
 
-			//Start and end time of the last buffer
+			//Start time of last buffer
 			OpenViBE::uint64 m_ui64StartTime;
+			//end time of last buffer
 			OpenViBE::uint64 m_ui64EndTime;
 
+			//interpolation algorithm
 			OpenViBE::Kernel::IAlgorithmProxy* m_pSphericalSplineInterpolation;
+			//signal database object
 			CTopographicMapDatabase* m_pTopographicMapDatabase;
-			CTopographicMap3DView* m_pTopographicMap3DView; //main object used for the display (contains all the GUI code)
+			//main object used for the display (contains all the GUI code)
+			CTopographicMap3DView* m_pTopographicMap3DView;
 
+			//ID of 3D widget associated to this plugin
 			OpenViBE::CIdentifier m_o3DWidgetIdentifier;
+			//ID of resource group associated to this plugin
 			OpenViBE::CIdentifier m_oResourceGroupIdentifier;
 
+			//flag set to true once skull meshes are loaded
 			OpenViBE::boolean m_bSkullCreated;
+			//flag set to true once camera is centered in front of 3D scene
 			OpenViBE::boolean m_bCameraPositioned;
+			//flag set to true once scalp data is initialized
+			OpenViBE::boolean m_bScalpDataInitialized;
+			//flag set to true once 3D electrode objects are created
 			OpenViBE::boolean m_bElectrodesCreated;
 
 			//flag set to true once channel localisation buffer is received
 			OpenViBE::boolean m_bModelElectrodeCoordinatesInitialized;
-			//matrix of electrode labels and coordinates expressed in head model frame
-			OpenViBE::CMatrix m_oModelElectrodeCoordinates;
 
-			OpenViBE::uint32 m_ui32NbColors; //number of predefined colors
-			OpenViBE::float32* m_pColorScale; //scale of predefined colors potentials are converted to
+			//number of predefined colors
+			OpenViBE::uint32 m_ui32NbColors;
+			//scale of predefined colors potentials are converted to
+			OpenViBE::float32* m_pColorScale;
 
-			std::vector<OpenViBE::CIdentifier> m_oElectrodeIds; //ids of electrode objects
+			//IDs of electrode objects
+			std::vector<OpenViBE::CIdentifier> m_oElectrodeIds;
+			//flag set to true when electrode objects toggle status has changed
 			OpenViBE::boolean m_bNeedToggleElectrodes;
+			//flag specifying whether electrode objects must be toggled on or off
 			OpenViBE::boolean m_bElectrodesToggleState;
 
-			std::vector<OpenViBE::CIdentifier> m_oSamplingPointIds; //ids of sampling point objects
+			//IDs of sampling points (scalp vertices) objects
+			std::vector<OpenViBE::CIdentifier> m_oSamplingPointIds;
+			//flag set to true when sampling points objects toggle status has changed
 			OpenViBE::boolean m_bNeedToggleSamplingPoints;
+			//flag specifying whether sampling point objects must be toggled on or off
 			OpenViBE::boolean m_bSamplingPointsToggleState;
+
 			//ID of scalp object
 			OpenViBE::CIdentifier m_oScalpId;
 			//number of scalp vertices
 			OpenViBE::uint32 m_ui32NbScalpVertices;
-			//working copy of scalp vertices coordinates
+			//working copy of scalp vertices coordinates, in model space
 			OpenViBE::float32* m_pScalpVertices;
 			//center of unit sphere on which scalp vertices are projected, in normalized space (X right Y front Z up)
 			OpenViBE::float32 m_f32ProjectionCenter[3];
-			OpenViBE::CMatrix m_oSampleCoordinatesMatrix; //normalized vertices where to interpolate potentials
-			OpenViBE::float32* m_pScalpColors; //scalp vertex colors
+			//normalized vertices where to interpolate potentials
+			OpenViBE::CMatrix m_oSampleCoordinatesMatrix;
+			//scalp vertex colors
+			OpenViBE::float32* m_pScalpColors;
 		};
 
 		class CTopographicMap3DDisplayDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -221,7 +253,6 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Sphere projection mesh filename", OV_TypeId_String, "projection_center");
 				rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
 				rPrototype.addInput("Channel localisation", OV_TypeId_ChannelLocalisation);
-				rPrototype.addInput("Channel localisation in model frame", OV_TypeId_ChannelLocalisation);
 				return true;
 			}
 

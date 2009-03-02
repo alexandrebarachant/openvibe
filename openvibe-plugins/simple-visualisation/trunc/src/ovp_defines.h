@@ -5,6 +5,10 @@
 #define OVP_TypeId_SphericalLinearInterpolationType_Spline            1
 #define OVP_TypeId_SphericalLinearInterpolationType_Laplacian         2
 
+#define OVP_TypeId_SignalDisplayMode                                  OpenViBE::CIdentifier(0x5DE046A6, 0x086340AA)
+#define OVP_TypeId_SignalDisplayMode_Scroll                           OpenViBE::CIdentifier(0x0A4B5537, 0x3F791851)
+#define OVP_TypeId_SignalDisplayMode_Scan                             OpenViBE::CIdentifier(0x1CE12013, 0x69464506)
+
 #define OVP_ClassId_BoxAlgorithm_LevelMeasure                         OpenViBE::CIdentifier(0x657138E4, 0x46D6586F)
 #define OVP_ClassId_BoxAlgorithm_LevelMeasureDesc                     OpenViBE::CIdentifier(0x4D061428, 0x11B02233)
 #define OVP_ClassId_Algorithm_LevelMeasure                            OpenViBE::CIdentifier(0x63C71764, 0x34A9717F)
@@ -33,6 +37,7 @@
 #define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_ComputeLaplacianCoefs      OpenViBE::CIdentifier(0x7D8C545E, 0x7C086660)
 #define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateSpline          OpenViBE::CIdentifier(0x1241610E, 0x03CB1AD9)
 #define OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_InterpolateLaplacian       OpenViBE::CIdentifier(0x11CE0AC3, 0x0FD85469)
+#define OVP_Algorithm_SphericalSplineInterpolation_OutputTriggerId_Error                     OpenViBE::CIdentifier(0x08CB0679, 0x3A6F3C3A)
 
 //___________________________________________________________________//
 //                                                                   //
@@ -86,11 +91,12 @@ namespace OpenViBEPlugins
 	{
 		enum EDisplayMode
 		{
-			DisplayMode_Default,
+			//DisplayMode_Default,
 			DisplayMode_ZoomIn,
 			DisplayMode_ZoomOut,
-			DisplayMode_BestFit,
-			DisplayMode_Normal,
+			//DisplayMode_BestFit,
+			DisplayMode_GlobalBestFit,
+			//DisplayMode_Normal,
 		};
 	};
 };

@@ -64,7 +64,9 @@ namespace OpenViBEPlugins
 };
 
 CTimeFrequencyMapChannelDisplay::CTimeFrequencyMapChannelDisplay(CSpectrumDatabase& rSpectrumDatabase, uint32 ui32Channel,
-	float64 f64Attenuation,	float64 f64MinimumDisplayedFrequency, float64 f64MaximumDisplayedFrequency) :
+	float64 f64Attenuation,	float64 f64MinimumDisplayedFrequency, float64 f64MaximumDisplayedFrequency,
+	int32 i32ChannelDisplayWidthRequest, int32 i32ChannelDisplayHeightRequest,
+	int32 i32LeftRulerWidthRequest, int32 i32LeftRulerHeightRequest) :
 	m_rSpectrumDatabase(rSpectrumDatabase),
 	m_pWidgetTable(NULL),
 	m_pDisplay(NULL),
@@ -87,11 +89,11 @@ CTimeFrequencyMapChannelDisplay::CTimeFrequencyMapChannelDisplay(CSpectrumDataba
 
 	//TF map display
 	m_pDisplay = gtk_drawing_area_new();
-	gtk_widget_set_size_request(m_pDisplay, 20, 20);
+	gtk_widget_set_size_request(m_pDisplay, i32ChannelDisplayWidthRequest, i32ChannelDisplayHeightRequest);
 
 	//left ruler
 	m_pLeftRuler = gtk_drawing_area_new();
-	gtk_widget_set_size_request(m_pLeftRuler, m_pLeftRulerLeftPadding + 20, 20/*-1*/);
+	gtk_widget_set_size_request(m_pLeftRuler, m_pLeftRulerLeftPadding + i32LeftRulerWidthRequest, i32LeftRulerHeightRequest);
 
 	//add displays to table
 	gtk_table_attach(m_pWidgetTable, m_pDisplay,
@@ -136,11 +138,11 @@ void CTimeFrequencyMapChannelDisplay::toggle(boolean bActive)
 {
 	if(bActive)
 	{
-		gtk_widget_show(m_pDisplay);
+		gtk_widget_show(GTK_WIDGET(m_pWidgetTable));
 	}
 	else
 	{
-		gtk_widget_hide(m_pDisplay);
+		gtk_widget_hide(GTK_WIDGET(m_pWidgetTable));
 	}
 }
 
@@ -197,16 +199,16 @@ void CTimeFrequencyMapChannelDisplay::update()
 	gint l_iHeight = 0;
 	gdk_drawable_get_size(m_pDisplay->window, &l_iWidth, &l_iHeight);
 	float64 l_f64WidthPerPoint = 0;
-	if(m_rSpectrumDatabase.getMaxDisplayedBufferCount() > 0)
+	if(m_rSpectrumDatabase.getMaxBufferCount() > 0)
 	{
-		l_f64WidthPerPoint = static_cast<float64>(l_iWidth) / static_cast<float64>(m_rSpectrumDatabase.getMaxDisplayedBufferCount());
+		l_f64WidthPerPoint = static_cast<float64>(l_iWidth) / static_cast<float64>(m_rSpectrumDatabase.getMaxBufferCount());
 	}
 	float64 l_f64HeightPerPoint = static_cast<float64>(l_iHeight) /
 		static_cast<float64>(l_ui32MaxDisplayedFrequencyIndex - l_ui32MinDisplayedFrequencyIndex + 1);
 
 	//get x coordinate of oldest displayed frequency band
-	int64 l_i64BaseX = static_cast<int64>(l_iWidth - (m_rSpectrumDatabase.getBufferCount() * l_f64WidthPerPoint));
-	if(l_i64BaseX<0 || l_i64BaseX < l_f64WidthPerPoint)
+	int64 l_i64BaseX = static_cast<int64>(l_iWidth - (m_rSpectrumDatabase.getCurrentBufferCount() * l_f64WidthPerPoint));
+	if(l_i64BaseX<0)
 	{
 		l_i64BaseX = 0;
 	}
@@ -235,7 +237,7 @@ void CTimeFrequencyMapChannelDisplay::update()
 	float64 l_f64XPosition=(float64)l_i64BaseX;
 	float64 l_f64YPosition=(float64)l_iHeight;
 
-	for(size_t j=0 ; j<m_rSpectrumDatabase.getBufferCount() ; j++)
+	for(size_t j=0 ; j<m_rSpectrumDatabase.getCurrentBufferCount() ; j++)
 	{
 		//gets a pointer to this channels' samples data in the current buffer
 		const float64 * l_pCurrentChannelSampleBuffer = m_rSpectrumDatabase.getBuffer(j);

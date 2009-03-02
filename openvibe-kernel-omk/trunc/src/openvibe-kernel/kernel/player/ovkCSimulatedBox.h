@@ -249,8 +249,15 @@ namespace OpenViBE
 				OpenViBE::uint32& ui32VertexCount) const;
 			OpenViBE::boolean getObjectVertexPositionArray(
 				const OpenViBE::CIdentifier& rIdentifier,
-				const uint32 ui32VertexColorCount,
+				const uint32 ui32VertexCount,
 				OpenViBE::float32* pVertexPositionArray) const;
+			OpenViBE::boolean getObjectTriangleCount(
+				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::uint32& ui32TriangleCount) const;
+			OpenViBE::boolean getObjectTriangleIndexArray(
+				const OpenViBE::CIdentifier& rIdentifier,
+				const uint32 ui32TriangleCount,
+				OpenViBE::uint32* pTriangleIndexArray) const;
 			//@}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IBoxIO >, OVK_ClassId_Kernel_Player_SimulatedBox);

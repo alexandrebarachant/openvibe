@@ -101,7 +101,7 @@ boolean CAlgorithmClassifierTrainerLDA::train(const IFeatureVectorSet& rFeatureV
 
 	l_sClasses << l_f64Class1 << " " << l_f64Class2;
 	l_sCoefficients << m_oCoefficients[0];
-	for(i=1; i<m_oCoefficients.size(); i++)
+	for(int i=1; i<m_oCoefficients.size(); i++)
 	{
 		l_sCoefficients << " " << m_oCoefficients[i];
 	}

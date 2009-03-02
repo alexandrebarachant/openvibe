@@ -19,9 +19,13 @@ namespace OpenViBEPlugins
 			/**
 			 * \brief Constructor
 			 * \param rStreamDatabase Object from which data is retrieved
+			 * \param i32WidthRequest Width to be requested by widget
+			 * \param i32HeightRequest Height to be requested by widget
 			 */
 			CTimeRuler(
-				IStreamDatabase& rStreamDatabase);
+				IStreamDatabase& rStreamDatabase,
+				OpenViBE::int32 i32WidthRequest,
+				OpenViBE::int32 i32HeightRequest);
 
 			/**
 			 * \brief Destructor
@@ -51,11 +55,22 @@ namespace OpenViBEPlugins
 			 */
 			void linkWidthToWidget(GtkWidget* pWidget);
 
+			/**
+			 * \brief Callback notified upon resize events
+			 * \param i32Width New window width
+			 * \param i32Height New window height
+			 */
+			void onResizeEventCB(
+				gint i32Width,
+				gint i32Height);
+
 		private:
 			//! Ruler widget
 			GtkWidget* m_pWidget;
 			//! Database from which stream information is retrieved
 			IStreamDatabase& m_rStreamDatabase;
+			//! Height request
+			OpenViBE::int32 m_i32HeightRequest;
 			//! Size available per label along the ruler
 			OpenViBE::uint64 m_ui64PixelsPerBottomRulerLabel;
 		};

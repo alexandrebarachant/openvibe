@@ -13,7 +13,7 @@ namespace OpenViBEPlugins
 		class IStreamDisplayDrawable;
 
 		/**
-		 * \brief Abstract class of objects than can be updated by a CStreamDatabase
+		 * \brief Abstract class of objects than can be updated by an IStreamDatabase object
 		 */
 		class IStreamDisplayDrawable
 		{
@@ -27,6 +27,12 @@ namespace OpenViBEPlugins
 		{
 		public:
 			virtual ~IStreamDatabase() {}
+
+			/**
+			 * \brief Initialize the database, including creating decoder
+			 * \return True if initialization succeeded
+			 */
+			virtual OpenViBE::boolean initialize() = 0;
 
 			/**
 			 * \brief Set drawable object to update.
@@ -70,62 +76,61 @@ namespace OpenViBEPlugins
 				OpenViBE::uint64 ui64EndTime) = 0;
 
 			/**
-			 * \brief Compute min/max values currently displayed for a given channel
-			 * \param [in] ui32Channel Index of channel
-			 * \param [out] f64Min Minimum displayed value for channel of interest
-			 * \param [out] f64Max Maximum displayed value for channel of interest
-			 * \return True if values could be computed, false otherwise
+			 * \brief Get number of buffers necessary to cover time scale
+			 * \remarks Can't be computed before 2 buffers have been received, because
+			 * the time step between the start of 2 consecutive buffers must be known
+			 * \return Maximum number of buffers stored in this object
 			 */
-			/*virtual OpenViBE::boolean getChannelMinMaxValues(
-				OpenViBE::uint32 ui32Channel,
-				OpenViBE::float64& f64Min,
-				OpenViBE::float64& f64Max) = 0;*/
+			virtual OpenViBE::uint64 getMaxBufferCount() = 0;
 
 			/**
-			 * \brief Compute min/max values currently displayed, taking all channels into account
-			 * \param [out] f64Min Minimum displayed value
-			 * \param [out] f64Max Maximum displayed value
-			 * \return True if values could be computed, false otherwise
+			 * \brief Get current buffer count
+			 * \return Current buffer count
 			 */
-			/*virtual OpenViBE::boolean getGlobalMinMaxValues(
-				OpenViBE::float64& f64Min,
-				OpenViBE::float64& f64Max) = 0;*/
+			virtual OpenViBE::uint64 getCurrentBufferCount() = 0;
 
 			/**
-			 * \brief Compute min/max values in last buffer for a given channel
-			 * \param [in] ui32Channel Index of channel
-			 * \param [out] f64Min Minimum value for channel of interest
-			 * \param [out] f64Max Maximum value for channel of interest
-			 * \return True if values could be computed, false otherwise
+			 * \brief Get pointer on a given buffer
+			 * \param ui32Index Index of buffer to retrieve
+			 * \return Buffer pointer if buffer exists, NULL otherwise
 			 */
-			/*virtual OpenViBE::boolean getLastBufferChannelMinMaxValues(
-				OpenViBE::uint32 ui32Channel,
-				OpenViBE::float64& f64Min,
-				OpenViBE::float64& f64Max) = 0;*/
+			virtual const OpenViBE::float64* getBuffer(
+				OpenViBE::uint32 ui32Index) = 0;
 
 			/**
-			 * \brief Compute min/max values in last buffer, taking all channels into account
-			 * \param [out] f64Min Minimum value
-			 * \param [out] f64Max Maximum value
-			 * \return True if values could be computed, false otherwise
+			 * \brief Get start time of a given buffer
+			 * \param ui32BufferIndex Index of buffer whose start time is to be retrieved
+			 * \return Start time if buffer exists, 0 otherwise
 			 */
-			/*virtual OpenViBE::boolean getLastBufferGlobalMinMaxValues(
-				OpenViBE::float64& f64Min,
-				OpenViBE::float64& f64Max) = 0;*/
-
-			virtual OpenViBE::uint64 getMaxDisplayedBufferCount() = 0;
-
-			virtual OpenViBE::uint64 getBufferCount() = 0;
-
-			virtual const OpenViBE::float64* getBuffer(OpenViBE::uint32 ui32Index) = 0;
-
 			virtual OpenViBE::uint64 getStartTime(
 				OpenViBE::uint32 ui32BufferIndex) = 0;
 
+			/**
+			 * \brief Get end time of a given buffer
+			 * \param ui32BufferIndex Index of buffer whose end time is to be retrieved
+			 * \return End time if buffer exists, 0 otherwise
+			 */
 			virtual OpenViBE::uint64 getEndTime(
 				OpenViBE::uint32 ui32BufferIndex) = 0;
 
+			/**
+			 * \brief Get time span covered by a buffer
+			 * \return Buffer time span
+			 */
 			virtual OpenViBE::uint64 getBufferDuration() = 0;
+
+			/**
+			 * \brief Determine whether buffer time step has been computed yet
+			 * \return True if buffer time step has been computed
+			 */
+			virtual OpenViBE::boolean isBufferTimeStepComputed() = 0;
+
+			/**
+			 * \brief Get time step between the start of 2 consecutive buffers
+			 * \remarks This value can't be computed before the first 2 buffers are received
+			 * \return Buffer time step
+			 */
+			virtual OpenViBE::uint64 getBufferTimeStep() = 0;
 
 			/**
 			 * \brief Get number of samples per buffer
@@ -148,6 +153,55 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getChannelLabel(
 				const OpenViBE::uint32 ui32ChannelIndex,
 				OpenViBE::CString& rElectrodeLabel) = 0;
+
+			/** \name Min/max values retrieval */
+			//@{
+
+			/**
+			 * \brief Compute min/max values currently displayed for a given channel
+			 * \param [in] ui32Channel Index of channel
+			 * \param [out] f64Min Minimum displayed value for channel of interest
+			 * \param [out] f64Max Maximum displayed value for channel of interest
+			 * \return True if values could be computed, false otherwise
+			 */
+			virtual OpenViBE::boolean getChannelMinMaxValues(
+				OpenViBE::uint32 ui32Channel,
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max) = 0;
+
+			/**
+			 * \brief Compute min/max values currently displayed, taking all channels into account
+			 * \param [out] f64Min Minimum displayed value
+			 * \param [out] f64Max Maximum displayed value
+			 * \return True if values could be computed, false otherwise
+			 */
+			virtual OpenViBE::boolean getGlobalMinMaxValues(
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max) = 0;
+
+			/**
+			 * \brief Compute min/max values in last buffer for a given channel
+			 * \param [in] ui32Channel Index of channel
+			 * \param [out] f64Min Minimum value for channel of interest
+			 * \param [out] f64Max Maximum value for channel of interest
+			 * \return True if values could be computed, false otherwise
+			 */
+			virtual OpenViBE::boolean getLastBufferChannelMinMaxValues(
+				OpenViBE::uint32 ui32Channel,
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max) = 0;
+
+			/**
+			 * \brief Compute min/max values in last buffer, taking all channels into account
+			 * \param [out] f64Min Minimum value
+			 * \param [out] f64Max Maximum value
+			 * \return True if values could be computed, false otherwise
+			 */
+			virtual OpenViBE::boolean getLastBufferGlobalMinMaxValues(
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max) = 0;
+
+			//@}
 		};
 	}
 }

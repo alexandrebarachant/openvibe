@@ -76,25 +76,24 @@ namespace OpenViBEPlugins
 			 * \brief Toggle left rulers (frequency scales) visibility
 			 * \param bActive Visibility flag
 			 */
-			void toggleLeftRulers(OpenViBE::boolean bActive);
+			void toggleLeftRulers(
+				OpenViBE::boolean bActive);
 
 			/**
 			 * \brief Toggle bottom ruler (time scale) visibility
 			 * \param bActive Visibility flag
 			 */
-			void toggleBottomRulers(OpenViBE::boolean bActive);
+			void toggleBottomRuler(
+				OpenViBE::boolean bActive);
 
 			/**
-			 * \brief Hide a given channel
-			 * \param ui32ChannelIndex Index of channel to hide
+			 * Toggle a channel on/off
+			 * \param ui64ChannelIndex The index of the channel to toggle.
+			 * \param bActive Show the channel if true.
 			 */
-			void hideChannel(OpenViBE::uint32 ui32ChannelIndex);
-
-			/**
-			 * \brief Show a given channel
-			 * \param ui32ChannelIndex Index of channel to show
-			 */
-			void showChannel(OpenViBE::uint32 ui32ChannelIndex);
+			void toggleChannel(
+				OpenViBE::uint32 ui32ChannelIndex,
+				OpenViBE::boolean bActive);
 
 			/**
 			 * \brief Update channel widgets visibility
@@ -105,7 +104,8 @@ namespace OpenViBEPlugins
 			 * \brief Set toolbar buttons activation state
 			 * \param bActive Activation flag
 			 */
-			void activateToolbarButtons(OpenViBE::boolean bActive);
+			void activateToolbarButtons(
+				OpenViBE::boolean bActive);
 
 			/**
 			 * \brief Set minimum/maximum values attenuation
@@ -113,7 +113,8 @@ namespace OpenViBEPlugins
 			 * minimum = f64Attenuation * minimum + (1-f64Attenuation) * previous minimum. Therefore, 1 corresponds to no attenuation.
 			 * \param f64Attenuation Attenuation of min/max values between 2 consecutive buffers
 			 */
-			void setMinMaxAttenuation(OpenViBE::float64 f64Attenuation);
+			void setMinMaxAttenuation(
+				OpenViBE::float64 f64Attenuation);
 
 			/** \name Gtk widget callbacks */
 			//@{
@@ -123,6 +124,9 @@ namespace OpenViBEPlugins
 			void channelSelectionDialogOpenedCB(GtkButton* pButton);
 			void channelSelectionChangedCB(::GtkButton* pButton);
 			//@}
+
+			OpenViBE::boolean isChannelDisplayVisible(
+				OpenViBE::uint32 ui32ChannelIndex);
 
 		private:
 			//! The spectrum database that contains the information to use to draw TF maps
@@ -139,12 +143,18 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget *> m_vChannelsCheckButtons;
 			//! Vector of indexes of the channels to display
 			std::vector<OpenViBE::uint32> m_vSelectedChannels;
+			//! Show left rulers when true
+			OpenViBE::boolean m_bShowLeftRulers;
+			//!Show bottom time ruler when true
+			OpenViBE::boolean m_bShowBottomRuler;
 			//! Attenuation value
 			OpenViBE::float64 m_f64Attenuation;
 			//! Minimum frequency to display
 			OpenViBE::float64 m_f64MinDisplayedFrequency;
 			//! Maximum frequency to display
 			OpenViBE::float64 m_f64MaxDisplayedFrequency;
+			//! Bottom box containing bottom ruler
+			GtkBox* m_pBottomBox;
 			//! Pointer to time ruler
 			CTimeRuler* m_pTimeRuler;
 		};

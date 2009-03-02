@@ -74,7 +74,7 @@ namespace
 	}
 	void menu_close_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
-		static_cast<CApplication*>(pUserData)->closeScenarioCB();
+		static_cast<CApplication*>(pUserData)->closeScenarioCB(static_cast<CApplication*>(pUserData)->getCurrentInterfacedScenario());
 	}
 	void menu_quit_application_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
@@ -102,7 +102,7 @@ namespace
 	}
 	void button_close_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		static_cast<CApplication*>(pUserData)->closeScenarioCB();
+		static_cast<CApplication*>(pUserData)->closeScenarioCB(static_cast<CApplication*>(pUserData)->getCurrentInterfacedScenario());
 	}
 
 	void delete_designer_visualisation_cb(gpointer user_data)
@@ -682,7 +682,7 @@ void CApplication::openScenarioCB(void)
 				if(l_pInterfacedScenario->m_pDesignerVisualisation != NULL)
 				{
 					l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);
-					l_pInterfacedScenario->m_pDesignerVisualisation->reset();
+					l_pInterfacedScenario->m_pDesignerVisualisation->load();
 				}
 				l_pInterfacedScenario->m_sFileName=l_sFileName;
 				l_pInterfacedScenario->m_bHasFileName=true;
@@ -780,7 +780,48 @@ void CApplication::saveScenarioAsCB(void)
 	}
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogSaveAs))==GTK_RESPONSE_ACCEPT)
 	{
-		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
+		//ensure file extension is added after filename
+		char* l_sTempFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
+
+		char l_sFileName[1024];
+		sprintf(l_sFileName, l_sTempFileName);
+
+		char l_sTempLowercaseFileName[1024];
+		int i=0;
+		do
+		{
+			l_sTempLowercaseFileName[i] = tolower(l_sFileName[i]);
+		}
+		while(l_sFileName[i++] != '\0');
+
+		g_free(l_sTempFileName);
+
+		GtkFileFilter* l_pFilter = gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
+		if(l_pFilter == NULL) //no filter
+		{
+			if(strstr(l_sTempLowercaseFileName, ".xml") == NULL) //default to .xml extension
+			{
+				strcat(l_sFileName, ".xml");
+			}
+		}
+		else
+		{
+			const char* l_sFilterName = gtk_file_filter_get_name(l_pFilter);
+			if(strcmp(l_sFilterName, gtk_file_filter_get_name(l_pFileFilterXML)) == 0) //xml filter
+			{
+				if(strstr(l_sTempLowercaseFileName, ".xml") == NULL)
+				{
+					strcat(l_sFileName, ".xml");
+				}
+			}
+			else //svg filter
+			{
+				if(strstr(l_sTempLowercaseFileName, ".svg") == NULL)
+				{
+					strcat(l_sFileName, ".svg");
+				}
+			}
+		}
 
 		l_pCurrentInterfacedScenario->m_sFileName=l_sFileName;
 		l_pCurrentInterfacedScenario->m_bHasFileName=true;
@@ -791,28 +832,25 @@ void CApplication::saveScenarioAsCB(void)
 		{
 			l_pCurrentInterfacedScenario->m_oExporterIdentifier=CIdentifier(0x389FB9DF, 0x848FDF29);
 		}
-		else // if(l_pFileFilter==l_pFileFilterXML)
+		else
 		{
 			l_pCurrentInterfacedScenario->m_oExporterIdentifier=CIdentifier(0x77075b3b, 0x3d632492);
 		}
 
 		saveScenarioCB();
-
-		g_free(l_sFileName);
 	}
 	gtk_widget_destroy(l_pWidgetDialogSaveAs);
 }
 
-void CApplication::closeScenarioCB(void)
+void CApplication::closeScenarioCB(CInterfacedScenario* pInterfacedScenario)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "closeScenarioCB\n";
 
-	CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
-	if(!l_pCurrentInterfacedScenario)
+	if(!pInterfacedScenario)
 	{
 		return;
 	}
-	if(l_pCurrentInterfacedScenario->isLocked())
+	if(pInterfacedScenario->isLocked())
 	{
 		::GtkWidget* l_pDialog=gtk_message_dialog_new(
 			GTK_WINDOW(m_pMainWindow),
@@ -832,11 +870,11 @@ void CApplication::closeScenarioCB(void)
 	}
 
 	vector<CInterfacedScenario*>::iterator i=m_vInterfacedScenario.begin();
-	while(i!=m_vInterfacedScenario.end() && *i!=l_pCurrentInterfacedScenario) i++;
+	while(i!=m_vInterfacedScenario.end() && *i!=pInterfacedScenario) i++;
 	if(i!=m_vInterfacedScenario.end())
 	{
-		CIdentifier l_oScenarioIdentifier=l_pCurrentInterfacedScenario->m_oScenarioIdentifier;
-		delete l_pCurrentInterfacedScenario;
+		CIdentifier l_oScenarioIdentifier=pInterfacedScenario->m_oScenarioIdentifier;
+		delete pInterfacedScenario;
 		m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
 		m_vInterfacedScenario.erase(i);
 		//when closing last open scenario, no "switch-page" event is triggered so we manually handle this case

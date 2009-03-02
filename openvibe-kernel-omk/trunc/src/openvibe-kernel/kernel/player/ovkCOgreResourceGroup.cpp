@@ -14,6 +14,9 @@ COgreResourceGroup::COgreResourceGroup(const IKernelContext& rKernelContext, con
 	try
 	{
 		ResourceGroupManager::getSingleton().createResourceGroup(m_sName);
+		m_rKernelContext.getLogManager()
+				<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+				<< "> Created resource group " << m_sName.c_str() << "\n";
 	}
 	catch (Ogre::Exception& e)
 	{
@@ -25,10 +28,12 @@ COgreResourceGroup::COgreResourceGroup(const IKernelContext& rKernelContext, con
 
 COgreResourceGroup::~COgreResourceGroup()
 {
-	//ensure resource group actually gets destroyed
-	m_ui32RefCount = 1;
-	//free resources
-	destroy();
+	if(m_ui32RefCount > 1)
+	{
+		//ensure resource group actually gets destroyed
+		m_ui32RefCount = 1;
+		destroy();
+	}
 }
 
 const std::string& COgreResourceGroup::getName()
@@ -50,6 +55,9 @@ bool COgreResourceGroup::addResourceLocation(const std::string& rPath, const std
 	try
 	{
 		ResourceGroupManager::getSingleton().addResourceLocation(rPath, rType, m_sName, bRecursive);
+		m_rKernelContext.getLogManager()
+				<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+				<< "> Added resource location " << rPath.c_str() << " to resource group " << m_sName.c_str() << "\n";
 		return true;
 	}
 	catch(Ogre::Exception& e)
@@ -108,7 +116,13 @@ bool COgreResourceGroup::initialize()
 			//must clear resource group and reinitialize it for new resources to be found
 			//ResourceGroupManager::getSingleton().clearResourceGroup(name);
 			ResourceGroupManager::getSingleton().initialiseResourceGroup(m_sName);
+			m_rKernelContext.getLogManager()
+				<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+				<< "> Initialized resource group " << m_sName.c_str() << "\n";
 			ResourceGroupManager::getSingleton().loadResourceGroup(m_sName);
+			m_rKernelContext.getLogManager()
+				<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+				<< "> Loaded resource group " << m_sName.c_str() << "\n";
 			m_bInitialized = true;
 			return true;
 		}
@@ -118,6 +132,12 @@ bool COgreResourceGroup::initialize()
 				<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 				<< "Failed to initialize/load resource group : " << e.what() << "\n";
 		}
+	}
+	else
+	{
+		m_rKernelContext.getLogManager()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+			<< "> Resource group " << m_sName.c_str() << "reference count incremented (it is now " << m_ui32RefCount << ")\n";
 	}
 
 	return false;
@@ -138,6 +158,9 @@ bool COgreResourceGroup::destroy()
 		try
 		{
 			ResourceGroupManager::getSingleton().destroyResourceGroup(m_sName);
+			m_rKernelContext.getLogManager()
+				<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+				<< "> Destroyed resource group " << m_sName.c_str() << "\n";
 			m_bInitialized = false;
 			return true;
 		}
@@ -147,6 +170,12 @@ bool COgreResourceGroup::destroy()
 				<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 				<< "Failed to destroy resource group : " << e.what() << "\n";
 		}
+	}
+	else
+	{
+		m_rKernelContext.getLogManager()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+			<< "> Resource group " << m_sName.c_str() << "reference count decremented (it is now " << m_ui32RefCount << ")\n";
 	}
 
 	return false;

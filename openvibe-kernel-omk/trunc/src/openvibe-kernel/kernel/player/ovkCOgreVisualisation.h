@@ -117,12 +117,17 @@ public:
 
 	/**
 	 * \brief Create a resource group
-	 * \param rResourceGroupIdentifier Resource group identifier
-	 * \param rResourceGroupName Resource group name
+	 * \param[in/out] rResourceGroupIdentifier Must be OV_UndefinedIdentifier if a new
+	 * resource group is to be created. Otherwise the method looks for the resource group
+	 * with the identifier passed in parameter, returning NULL if none matches this ID.
+	 * \param[in] rResourceGroupName If rResourceGroupIdentifier is OV_UndefinedIdentifier
+	 * and a group named rResourceGroupName already exists, rResourceGroupIdentifier
+	 * will be set to the identifier of this group. Otherwise, a new group named
+	 * rResourceGroupName will be created.
    * \return Pointer to resource group or NULL if creation failed
 	 */
 	COgreResourceGroup* createResourceGroup(
-		const OpenViBE::CIdentifier& rResourceGroupIdentifier,
+		OpenViBE::CIdentifier& rResourceGroupIdentifier,
 		const std::string& rResourceGroupName);
 
 	/**
@@ -234,6 +239,8 @@ private:
 	 */
 	void addResourceLocations(
 		const std::string& resourcesFile);
+
+	OpenViBE::CIdentifier getUnusedResourceGroupIdentifier() const;
 
 private:
 

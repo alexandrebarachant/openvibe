@@ -178,28 +178,32 @@ boolean CVisualisationContext::setObjectTransparency(const CIdentifier& rIdentif
 	return m_pSimulatedBox->setObjectTransparency(rIdentifier, f32Transparency);
 }
 
-boolean CVisualisationContext::setObjectVertexCount(const CIdentifier& rIdentifier, const uint32 ui32VertexCount)
+boolean CVisualisationContext::setObjectVertexCount(const CIdentifier& rIdentifier, uint32 ui32VertexCount)
 {
+	getLogManager() << LogLevel_Warning << "setObjectVertexCount is not implemented yet!\n";
 	return false;
 }
 
-boolean CVisualisationContext::setObjectVertexPositionArray(const CIdentifier& rIdentifier, const float32* pVertexPositionArray)
+boolean CVisualisationContext::setObjectVertexPositionArray(const CIdentifier& rIdentifier, uint32 ui32VertexPositionCount, const float32* pVertexPositionArray)
 {
+	getLogManager() << LogLevel_Warning << "setObjectVertexPositionArray is not implemented yet!\n";
 	return false;
 }
 
-boolean CVisualisationContext::setObjectVertexColorArray(const CIdentifier& rIdentifier, const uint32 ui32VertexColorCount, const float32* pVertexColorArray)
+boolean CVisualisationContext::setObjectVertexColorArray(const CIdentifier& rIdentifier, uint32 ui32VertexColorCount, const float32* pVertexColorArray)
 {
 	return m_pSimulatedBox->setObjectVertexColorArray(rIdentifier, ui32VertexColorCount, pVertexColorArray);
 }
 
 boolean CVisualisationContext::setObjectTriangleCount(const CIdentifier& rIdentifier, const uint32 ui32TriangleCount)
 {
+	getLogManager() << LogLevel_Warning << "setObjectTriangleCount is not implemented yet!\n";
 	return false;
 }
 
-boolean CVisualisationContext::setObjectTriangleIndexArray(const CIdentifier& rIdentifier,	const uint32* pTriangleIndexArray)
+boolean CVisualisationContext::setObjectTriangleIndexArray(const CIdentifier& rIdentifier, uint32 ui32TriangleCount, const uint32* pTriangleIndexArray)
 {
+	getLogManager() << LogLevel_Warning << "setObjectTriangleIndexArray is not implemented yet!\n";
 	return false;
 }
 
@@ -213,22 +217,23 @@ boolean CVisualisationContext::getObjectVertexCount(const CIdentifier& rIdentifi
 	return m_pSimulatedBox->getObjectVertexCount(rIdentifier, ui32VertexCount);
 }
 
-boolean CVisualisationContext::getObjectVertexPositionArray(const CIdentifier& rIdentifier, const uint32 ui32VertexColorCount, float32* pVertexPositionArray) const
+boolean CVisualisationContext::getObjectVertexPositionArray(const CIdentifier& rIdentifier, uint32 ui32VertexCount, float32* pVertexPositionArray) const
 {
-	return m_pSimulatedBox->getObjectVertexPositionArray(rIdentifier, ui32VertexColorCount, pVertexPositionArray);
+	return m_pSimulatedBox->getObjectVertexPositionArray(rIdentifier, ui32VertexCount, pVertexPositionArray);
 }
 
-boolean CVisualisationContext::getObjectVertexColorArray(const CIdentifier& rIdentifier,	float32* pVertexColorArray) const
+boolean CVisualisationContext::getObjectVertexColorArray(const CIdentifier& rIdentifier, uint32 ui32VertexColorCount, float32* pVertexColorArray) const
 {
+	getLogManager() << LogLevel_Warning << "getObjectVertexColorArray is not implemented yet!\n";
 	return false;
 }
 
 boolean CVisualisationContext::getObjectTriangleCount(const CIdentifier& rIdentifier, uint32& ui32TriangleCount) const
 {
-	return false;
+	return m_pSimulatedBox->getObjectTriangleCount(rIdentifier, ui32TriangleCount);
 }
 
-boolean CVisualisationContext::getObjectTriangleIndexArray(const CIdentifier& rIdentifier, uint32* pTriangleIndexArray) const
+boolean CVisualisationContext::getObjectTriangleIndexArray(const CIdentifier& rIdentifier, uint32 ui32TriangleCount, uint32* pTriangleIndexArray) const
 {
-	return false;
+	return m_pSimulatedBox->getObjectTriangleIndexArray(rIdentifier, ui32TriangleCount, pTriangleIndexArray);
 }

@@ -108,7 +108,7 @@ boolean CTopographicMapDatabase::onChannelLocalisationBufferReceived(uint32 ui32
 				m_oElectrodeCoords[3*i+2] = *(l_pCoords + 3 * l_ui32LookupIndex + 2);
 			}
 
-			//electrode coordinates intialized : it is now possible to interpolate potentials
+			//electrode coordinates initialized : it is now possible to interpolate potentials
 			m_bElectrodeCoordsInitialized = true;
 		}
 	}
@@ -124,9 +124,10 @@ void CTopographicMapDatabase::getLastBufferInterpolatedMinMaxValue(OpenViBE::flo
 
 boolean CTopographicMapDatabase::processValues()
 {
+	//wait for electrode coordinates
 	if(m_bElectrodeCoordsInitialized == false)
 	{
-		return false;
+		return true;
 	}
 
 	if(m_bFirstProcess == true)
@@ -134,6 +135,11 @@ boolean CTopographicMapDatabase::processValues()
 		//done in CBufferDatabase::setMatrixBuffer
 		//initialize the drawable object
 		//m_pDrawable->init();
+
+		if(checkElectrodeCoordinates() == false)
+		{
+			return false;
+		}
 
 		//precompute sin/cos tables
 		m_rSphericalSplineInterpolation.activateInputTrigger(OVP_Algorithm_SphericalSplineInterpolation_InputTriggerId_PrecomputeTables, true);
@@ -208,19 +214,27 @@ boolean CTopographicMapDatabase::processValues()
 	}
 
 	m_rSphericalSplineInterpolation.process();
-
-	if(m_pSamplePointCoords != NULL)
+	boolean l_bProcess = true;
+	if(m_rSphericalSplineInterpolation.isOutputTriggerActive(OVP_Algorithm_SphericalSplineInterpolation_OutputTriggerId_Error) == true)
 	{
-		//retrieve interpolation results
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oSampleValuesMatrix;
-		l_oSampleValuesMatrix.initialize(m_rSphericalSplineInterpolation.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_SamplePointsValues));
-		dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->setSampleValuesMatrix(l_oSampleValuesMatrix);
+		m_oParentPlugin.getLogManager() << LogLevel_Warning	<< "An error occurred while interpolating potentials!\n";
+		l_bProcess = false;
+	}
+	else
+	{
+		if(m_pSamplePointCoords != NULL)
+		{
+			//retrieve interpolation results
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oSampleValuesMatrix;
+			l_oSampleValuesMatrix.initialize(m_rSphericalSplineInterpolation.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_SamplePointsValues));
+			dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->setSampleValuesMatrix(l_oSampleValuesMatrix);
+
+			//tells the drawable to redraw itself since the signal information has been updated
+			m_pDrawable->redraw();
+		}
 	}
 
-	//tells the drawable to redraw itself since the signal information has been updated
-	m_pDrawable->redraw();
-
-	return true;
+	return l_bProcess;
 }
 
 boolean CTopographicMapDatabase::setDelay(OpenViBE::float64 f64Delay)
@@ -270,12 +284,19 @@ boolean CTopographicMapDatabase::interpolateValues()
 
 	m_rSphericalSplineInterpolation.process();
 
-	if(m_pSamplePointCoords != NULL)
+	if(m_rSphericalSplineInterpolation.isOutputTriggerActive(OVP_Algorithm_SphericalSplineInterpolation_OutputTriggerId_Error) == true)
 	{
-		//retrieve interpolation results
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oSampleValuesMatrix;
-		l_oSampleValuesMatrix.initialize(m_rSphericalSplineInterpolation.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_SamplePointsValues));
-		dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->setSampleValuesMatrix(l_oSampleValuesMatrix);
+		m_oParentPlugin.getLogManager() << LogLevel_Warning	<< "An error occurred while interpolating potentials!\n";
+	}
+	else
+	{
+		if(m_pSamplePointCoords != NULL)
+		{
+			//retrieve interpolation results
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > l_oSampleValuesMatrix;
+			l_oSampleValuesMatrix.initialize(m_rSphericalSplineInterpolation.getOutputParameter(OVP_Algorithm_SphericalSplineInterpolation_OutputParameterId_SamplePointsValues));
+			dynamic_cast<CTopographicMapDrawable*>(m_pDrawable)->setSampleValuesMatrix(l_oSampleValuesMatrix);
+		}
 	}
 
 	return true;
@@ -311,4 +332,41 @@ boolean CTopographicMapDatabase::getBufferIndexFromTime(uint64 ui64Time, uint32&
 
 		return true;
 	}
+}
+
+boolean CTopographicMapDatabase::checkElectrodeCoordinates()
+{
+	uint64 l_ui64ChannelCount = getChannelCount();
+
+	for(uint32 i=0; i<l_ui64ChannelCount; i++)
+	{
+		float64* l_pNormalizedChannelCoords = NULL;
+		if(getChannelPosition(i, l_pNormalizedChannelCoords) == false)
+		{
+			CString l_sChannelLabel;
+			getChannelLabel(i, l_sChannelLabel);
+			m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< LogLevel_Error
+				<< "Couldn't retrieve coordinates of electrode #" << i
+				<< "(" << l_sChannelLabel << "), aborting model frame electrode coordinates computation\n";
+			return false;
+		}
+
+#define MY_THRESHOLD 0.01
+		if(fabs(l_pNormalizedChannelCoords[0] * l_pNormalizedChannelCoords[0] +
+		        l_pNormalizedChannelCoords[1] * l_pNormalizedChannelCoords[1] +
+		        l_pNormalizedChannelCoords[2] * l_pNormalizedChannelCoords[2] - 1.) > MY_THRESHOLD)
+#undef MY_THRESHOLD
+		{
+			CString l_sChannelLabel;
+			getChannelLabel(i, l_sChannelLabel);
+			m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
+				<< LogLevel_Error
+				<< "Coordinates of electrode #" << i
+				<< "(" << l_sChannelLabel << "), are not normalized, aborting model frame electrode coordinates computation\n";
+			return false;
+		}
+	}
+
+	return true;
 }

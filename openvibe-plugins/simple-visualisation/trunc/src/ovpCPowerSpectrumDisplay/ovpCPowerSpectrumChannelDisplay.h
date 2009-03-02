@@ -25,11 +25,19 @@ namespace OpenViBEPlugins
 			 * \param pParentDisplay Pointer to object managing power spectrum widgets
 			 * \param ui32Channel Index of channel to display
 			 * \param pDatabase Object holding signal data
+			 * \param i32ChannelDisplayWidthRequest Width to be requested by widget
+			 * \param i32ChannelDisplayHeightRequest Height to be requested by widget
+			 * \param i32LeftRulerWidthRequest Width to be requested by left ruler
+			 * \param i32LeftRulerHeightRequest Height to be requested by left ruler
 			 */
 			CPowerSpectrumChannelDisplay(
 				CPowerSpectrumDisplayView* pParentDisplay,
 				OpenViBE::uint32 ui32Channel,
-				CPowerSpectrumDatabase& pDatabase);
+				CPowerSpectrumDatabase& pDatabase,
+				OpenViBE::int32 i32ChannelDisplayWidthRequest,
+				OpenViBE::int32 i32ChannelDisplayHeightRequest,
+				OpenViBE::int32 i32LeftRulerWidthRequest,
+				OpenViBE::int32 i32LeftRulerHeightRequest);
 
 			/**
 			 * \brief Destructor
@@ -37,16 +45,16 @@ namespace OpenViBEPlugins
 			~CPowerSpectrumChannelDisplay();
 
 			/**
-			 * \brief Get channel widget
-			 * \return Pointer to GtkWidget
+			 * \brief Get channel top (main) widget
+			 * \return Pointer to top GtkWidget
 			 */
-			::GtkWidget* getWidget() const;
+			::GtkWidget* getTopWidget() const;
 
 			/**
-			 * \brief Get pointer to widget
-			 * \return Pointer to widget
+			 * \brief Get spectrum display widget
+			 * \return Pointer to spectrum display widget
 			 */
-			GtkWidget* getSpectrumDisplay() const;
+			GtkWidget* getSpectrumDisplayWidget() const;
 
 			/**
 			 * \brief Toggle channel visibility
@@ -123,7 +131,7 @@ namespace OpenViBEPlugins
 		private:
 			//Parent plugin
 			CPowerSpectrumDisplayView* m_pParentDisplay;
-			//Table containing spectrum and ruler
+			//Table containing left ruler and spectrum drawing area
 			GtkTable* m_pWidgetTable;
 			//Drawing area where the spectrum is to be drawn
 			GtkWidget* m_pDisplay;

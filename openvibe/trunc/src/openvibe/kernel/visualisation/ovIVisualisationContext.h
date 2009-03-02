@@ -313,10 +313,11 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean setObjectVertexCount(
 				const OpenViBE::CIdentifier& rIdentifier,
-				const OpenViBE::uint32 ui32VertexCount)=0;
+				OpenViBE::uint32 ui32VertexCount)=0;
 
 			virtual OpenViBE::boolean setObjectVertexPositionArray(
 				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::uint32 ui32VertexPositionCount,
 				const OpenViBE::float32* pVertexPositionArray)=0;
 
 			/**
@@ -331,15 +332,16 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean setObjectVertexColorArray(
 				const OpenViBE::CIdentifier& rIdentifier,
-				const uint32 ui32VertexColorCount,
+				OpenViBE::uint32 ui32VertexColorCount,
 				const OpenViBE::float32* pVertexColorArray)=0;
 
 			virtual OpenViBE::boolean setObjectTriangleCount(
 				const OpenViBE::CIdentifier& rIdentifier,
-				const OpenViBE::uint32 ui32TriangleCount)=0;
+				OpenViBE::uint32 ui32TriangleCount)=0;
 
 			virtual OpenViBE::boolean setObjectTriangleIndexArray(
 				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::uint32 ui32TriangleCount,
 				const OpenViBE::uint32* pTriangleIndexArray)=0;
 
 			// =====================================
@@ -378,11 +380,12 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::boolean getObjectVertexPositionArray(
 				const OpenViBE::CIdentifier& rIdentifier,
-				const OpenViBE::uint32 ui32VertexColorCount,
+				OpenViBE::uint32 ui32VertexPositionCount,
 				OpenViBE::float32* pVertexPositionArray) const=0;
 
 			virtual OpenViBE::boolean getObjectVertexColorArray(
 				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::uint32 ui32VertexColorCount,
 				OpenViBE::float32* pVertexColorArray) const=0;
 
 			virtual OpenViBE::boolean getObjectTriangleCount(
@@ -391,6 +394,7 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean getObjectTriangleIndexArray(
 				const OpenViBE::CIdentifier& rIdentifier,
+				OpenViBE::uint32 ui32TriangleCount,
 				OpenViBE::uint32* pTriangleIndexArray) const=0;
 
 			// =====================================

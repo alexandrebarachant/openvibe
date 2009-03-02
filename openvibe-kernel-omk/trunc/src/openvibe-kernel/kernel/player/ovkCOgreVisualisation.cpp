@@ -86,8 +86,11 @@ boolean COgreVisualisation::initializeOgre(void) throw (std::exception)
 
 		this->getLogManager() << LogLevel_Trace << "Ogre plugins file " << l_sPluginsFile << "\n";
 
-		//create Ogre Root
+		//create Ogre Root. This will cause a crash under Windows if the wrong version (debug/release) of Ogre dlls
+		//are referenced in the 'plugins' file!
+		this->getLogManager() << LogLevel_Trace << "Creating Ogre root object...\n";
 		m_pRoot = new Ogre::Root(l_sPluginsFile.toASCIIString(), l_sConfigFile.toASCIIString(), "");
+		this->getLogManager() << LogLevel_Trace << "Ogre root object created!\n";
 
 		//resources file is assumed to be copied to working dir
 		CString l_sResourcesFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgreResources}");
@@ -237,14 +240,46 @@ RenderWindow* COgreVisualisation::createRenderWindow(const std::string& rName, c
 	return l_pRenderWindow;
 }
 
-COgreResourceGroup* COgreVisualisation::createResourceGroup(const CIdentifier& rResourceGroupIdentifier, const std::string& rResourceGroupName)
+COgreResourceGroup* COgreVisualisation::createResourceGroup(CIdentifier& rResourceGroupIdentifier, const std::string& rResourceGroupName)
 {
-	//if group already exists, don't duplicate it
-	if(m_mOgreResourceGroups.find(rResourceGroupIdentifier) == m_mOgreResourceGroups.end())
+	//check whether a similarly named group was already created by another plugin
+	std::map<OpenViBE::CIdentifier, COgreResourceGroup*>::iterator it = m_mOgreResourceGroups.begin();
+	while(it != m_mOgreResourceGroups.end())
 	{
-		m_mOgreResourceGroups[rResourceGroupIdentifier] = new COgreResourceGroup(this->getKernelContext(), rResourceGroupName);
+		if(it->second->getName() == rResourceGroupName)
+		{
+			this->getLogManager()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+			<< "> A resource group named " << rResourceGroupName.c_str() << " was found! Creation aborted\n";
+			rResourceGroupIdentifier = it->first;
+			return it->second;
+		}
+		it++;
 	}
-	return m_mOgreResourceGroups[rResourceGroupIdentifier];
+
+	//if a new resource group must be created
+	if(rResourceGroupIdentifier == OV_UndefinedIdentifier)
+	{
+		rResourceGroupIdentifier = getUnusedResourceGroupIdentifier();
+		return m_mOgreResourceGroups[rResourceGroupIdentifier] = new COgreResourceGroup(this->getKernelContext(), rResourceGroupName);
+	}
+	else //a specific ID was set
+	{
+		//ensure a group with this ID exists
+		if(m_mOgreResourceGroups.find(rResourceGroupIdentifier) != m_mOgreResourceGroups.end())
+		{
+			//ensure group with this ID is named as specified
+			if(m_mOgreResourceGroups[rResourceGroupIdentifier]->getName() == rResourceGroupName)
+			{
+				return m_mOgreResourceGroups[rResourceGroupIdentifier];
+			}
+		}
+		//error
+		this->getLogManager()
+		<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit
+		<< "> Can't find resource group with ID " << rResourceGroupIdentifier <<" and name " << rResourceGroupName.c_str() << "\n";
+		return NULL;
+	}
 }
 
 boolean COgreVisualisation::addResourceLocation(const CIdentifier& rResourceGroupIdentifier, const std::string& rPath, const std::string& rType, bool bRecursive)
@@ -382,4 +417,18 @@ void COgreVisualisation::addResourceLocations(const std::string& resourcesFile)
 			ResourceGroupManager::getSingleton().addResourceLocation(resourceName, resourceTypeName, resourceGroupName);
 		}
 	}
+}
+
+CIdentifier COgreVisualisation::getUnusedResourceGroupIdentifier(void) const
+{
+	uint64 l_ui64Identifier=(((uint64)rand())<<32)+((uint64)rand());
+	CIdentifier l_oResult;
+	map<CIdentifier, COgreResourceGroup*>::const_iterator it;
+	do
+	{
+		l_oResult=CIdentifier(l_ui64Identifier++);
+		it=m_mOgreResourceGroups.find(l_oResult);
+	}
+	while(it!=m_mOgreResourceGroups.end() || l_oResult==OV_UndefinedIdentifier);
+	return l_oResult;
 }

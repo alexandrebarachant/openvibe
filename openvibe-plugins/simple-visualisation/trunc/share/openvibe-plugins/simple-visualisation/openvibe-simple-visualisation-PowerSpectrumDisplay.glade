@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.3 on Mon Sep 08 15:44:31 2008 -->
+<!--Generated with glade3 3.4.3 on Thu Feb 26 12:01:28 2009 -->
 <glade-interface>
-  <widget class="GtkWindow" id="DisplayMainWindow">
+  <widget class="GtkWindow" id="PowerSpectrumDisplayMainWindow">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="title" translatable="yes">Power spectrum display</property>
     <property name="default_width">800</property>
     <property name="default_height">400</property>
     <child>
-      <widget class="GtkScrolledWindow" id="DisplayScrolledWindow">
+      <widget class="GtkScrolledWindow" id="PowerSpectrumDisplayScrolledWindow">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
         <property name="vscrollbar_policy">GTK_POLICY_NEVER</property>
         <child>
-          <widget class="GtkViewport" id="DisplayViewport">
+          <widget class="GtkViewport" id="PowerSpectrumDisplayViewport">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkVBox" id="DisplayVBox">
+              <widget class="GtkVBox" id="PowerSpectrumDisplayVBox">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkScrolledWindow" id="ChannelsScrolledWindow">
+                  <widget class="GtkScrolledWindow" id="PowerSpectrumDisplayChannelsScrolledWindow">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_STRUCTURE_MASK</property>
@@ -29,13 +29,16 @@
                     <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                     <property name="window_placement">GTK_CORNER_TOP_RIGHT</property>
                     <child>
-                      <widget class="GtkViewport" id="ChannelsViewport">
+                      <widget class="GtkViewport" id="PowerSpectrumDisplayChannelsViewport">
                         <property name="visible">True</property>
                         <property name="shadow_type">GTK_SHADOW_NONE</property>
                         <child>
-                          <widget class="GtkTable" id="DisplayMainTable">
+                          <widget class="GtkTable" id="PowerSpectrumDisplayMainTable">
                             <property name="visible">True</property>
-                            <property name="n_columns">2</property>
+                            <property name="n_columns">3</property>
+                            <child>
+                              <placeholder/>
+                            </child>
                             <child>
                               <placeholder/>
                             </child>
@@ -49,25 +52,30 @@
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkHBox" id="BottomBar">
+                  <widget class="GtkHBox" id="PowerSpectrumDisplayBottomBox">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkLabel" id="BottomBarEmptyLabel1">
+                      <widget class="GtkLabel" id="PowerSpectrumDisplayBottomBoxLabel1">
                         <property name="visible">True</property>
                       </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                      </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="BottomBarEmptyLabel2">
+                      <widget class="GtkLabel" id="PowerSpectrumDisplayBottomBoxLabel2">
                         <property name="visible">True</property>
                       </widget>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -78,11 +86,10 @@
       </widget>
     </child>
   </widget>
-  <widget class="GtkDialog" id="DisplayChannelSelectDialog">
+  <widget class="GtkDialog" id="PowerSpectrumDisplayChannelSelectDialog">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Select Channels</property>
-    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">GTK_WIN_POS_MOUSE</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
@@ -93,11 +100,26 @@
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkVBox" id="DisplayChannelSelectList">
+          <widget class="GtkScrolledWindow" id="PowerSpectrumDisplayChannelSelectScrolledWindow">
             <property name="visible">True</property>
-            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
             <child>
-              <placeholder/>
+              <widget class="GtkViewport" id="PowerSpectrumDisplayChannelSelectViewport">
+                <property name="visible">True</property>
+                <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <property name="resize_mode">GTK_RESIZE_QUEUE</property>
+                <child>
+                  <widget class="GtkVBox" id="PowerSpectrumDisplayChannelSelectList">
+                    <property name="visible">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
             </child>
           </widget>
           <packing>
@@ -110,7 +132,7 @@
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="DisplayChannelSelectApplyButton">
+              <widget class="GtkButton" id="PowerSpectrumDisplayChannelSelectApplyButton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -120,7 +142,7 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkButton" id="DisplayChannelSelectCancelButton">
+              <widget class="GtkButton" id="PowerSpectrumDisplayChannelSelectCancelButton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -146,15 +168,17 @@
     <property name="resizable">False</property>
     <property name="window_position">GTK_WIN_POS_MOUSE</property>
     <child>
-      <widget class="GtkToolbar" id="DisplayToolbar">
+      <widget class="GtkToolbar" id="PowerSpectrumDisplayToolbar">
         <property name="visible">True</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
         <property name="show_arrow">False</property>
         <child>
-          <widget class="GtkToggleToolButton" id="BestFit">
+          <widget class="GtkToggleToolButton" id="PowerSpectrumDisplayBestFitButton">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="visible_horizontal">False</property>
+            <property name="visible_vertical">False</property>
             <property name="label">Best fit</property>
             <property name="stock_id">gtk-zoom-fit</property>
             <property name="active">True</property>
@@ -164,9 +188,11 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkToggleToolButton" id="BestFitPerChannel">
+          <widget class="GtkToggleToolButton" id="PowerSpectrumDisplayBestFitPerChannelButton">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="visible_horizontal">False</property>
+            <property name="visible_vertical">False</property>
             <property name="label">Best Fit per Channel</property>
             <property name="stock_id">gtk-zoom-fit</property>
             <property name="active">True</property>
@@ -178,6 +204,8 @@
         <child>
           <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
             <property name="visible">True</property>
+            <property name="visible_horizontal">False</property>
+            <property name="visible_vertical">False</property>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -185,7 +213,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkToggleToolButton" id="ShowPowers">
+          <widget class="GtkToggleToolButton" id="PowerSpectrumDisplayToggleLeftRulerButton">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="label">Left Ruler</property>
@@ -196,7 +224,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkToggleToolButton" id="ShowFrequencies">
+          <widget class="GtkToggleToolButton" id="PowerSpectrumDisplayToggleBottomRulerButton">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="label">Bottom Ruler</property>
@@ -217,21 +245,97 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkToolItem" id="MinFrequencyItem">
+          <widget class="GtkToolItem" id="PowerSpectrumDisplayVerticalScaleItem">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkVBox" id="vbox3">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkHBox" id="hbox1">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkRadioButton" id="PowerSpectrumDisplayAutoVerticalScaleButton">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="label" translatable="yes">Best Fit</property>
+                        <property name="response_id">0</property>
+                        <property name="active">True</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkHBox" id="hbox2">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkRadioButton" id="PowerSpectrumDisplayCustomVerticalScaleButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="label" translatable="yes">Custom</property>
+                            <property name="response_id">0</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                            <property name="group">PowerSpectrumDisplayAutoVerticalScaleButton</property>
+                          </widget>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="PowerSpectrumDisplayCustomVerticalScaleEntry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="width_chars">10</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="PowerSpectrumDisplayVerticalScaleLabel">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Vertical Scale</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkSeparatorToolItem" id="toolbutton4">
+            <property name="visible">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkToolItem" id="PowerSpectrumDisplayMinFrequencyItem">
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
                 <property name="border_width">1</property>
                 <child>
-                  <widget class="GtkSpinButton" id="MinFrequency">
+                  <widget class="GtkSpinButton" id="PowerSpectrumDisplayMinFrequencyButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="adjustment">0 0 100 1 10 10</property>
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label2">
+                  <widget class="GtkLabel" id="PowerSpectrumDisplayMinFrequencyLabel">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Min Frequency</property>
                   </widget>
@@ -248,21 +352,21 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkToolItem" id="MaxFrequencyItem">
+          <widget class="GtkToolItem" id="PowerSpectrumDisplayMaxFrequencyItem">
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="border_width">1</property>
                 <child>
-                  <widget class="GtkSpinButton" id="MaxFrequency">
+                  <widget class="GtkSpinButton" id="PowerSpectrumDisplayMaxFrequencyButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="adjustment">0 0 100 1 10 10</property>
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label1">
+                  <widget class="GtkLabel" id="PowerSpectrumDisplayMaxFrequencyLabel">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Max Frequency</property>
                   </widget>
@@ -288,7 +392,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkToolButton" id="SelectChannels">
+          <widget class="GtkToolButton" id="PowerSpectrumDisplaySelectChannelsButton">
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>

@@ -16,7 +16,7 @@ namespace OpenViBE
 		 * \ingroup Group_Kernel
 		 *
 		 * This context allows the object which uses it to check
-		 * inputs states, read them, write outputs while beeing
+		 * inputs states, read them, write outputs while being
 		 * in a dynamic context (used by player).
 		 */
 		class OV_API IBoxIO : public OpenViBE::Kernel::IKernelObject

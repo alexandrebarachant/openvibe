@@ -129,9 +129,10 @@ boolean CTopographicMap2DDisplay::process(void)
 		l_pDynamicBoxContext->markInputAsDeprecated(1, i);
 	}
 
-	m_pTopographicMapDatabase->processValues();
+	boolean l_bProcessValues = m_pTopographicMapDatabase->processValues();
 
-	return true;
+	//disable plugin upon errors
+	return l_bProcessValues;
 }
 
 void CTopographicMap2DDisplay::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)

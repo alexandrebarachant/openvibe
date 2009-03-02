@@ -33,7 +33,6 @@ namespace OpenViBEPlugins
 
 		boolean CSignalDisplay::initialize()
 		{
-
 			//initializes the ebml input
 			m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
 			m_pStreamedMatrixReader=EBML::createReader(*m_pStreamedMatrixReaderCallBack);
@@ -42,11 +41,17 @@ namespace OpenViBEPlugins
 
 			m_pBufferDatabase = new CBufferDatabase(*this);
 
-			//retrieve time scale setting
-			CString l_sSettingValue;
-			getStaticBoxContext().getSettingValue(0, l_sSettingValue);
+			//retrieve settings
+			CString l_sTimeScaleSettingValue;
+			getStaticBoxContext().getSettingValue(0, l_sTimeScaleSettingValue);
+			CString l_sDisplayModeSettingValue;
+			getStaticBoxContext().getSettingValue(1, l_sDisplayModeSettingValue);
 
-			m_pSignalDisplayView = new CSignalDisplayView(*m_pBufferDatabase, atof(l_sSettingValue));
+			//create GUI
+			m_pSignalDisplayView = new CSignalDisplayView(
+				*m_pBufferDatabase,
+				atof(l_sTimeScaleSettingValue),
+				CIdentifier(getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_SignalDisplayMode, l_sDisplayModeSettingValue)));
 
 			m_pBufferDatabase->setDrawable(m_pSignalDisplayView);
 

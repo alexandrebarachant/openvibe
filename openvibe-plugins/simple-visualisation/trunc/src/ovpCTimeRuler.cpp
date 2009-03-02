@@ -11,20 +11,21 @@ using namespace OpenViBEPlugins::SimpleVisualisation;
 
 using namespace std;
 
-#define convert_time(i) (float64)(i>>32) + (float64)((float64)(i&0xFFFFFFFF) / (float64)((uint64)1<<32))
+#define convert_time(i) (float64)((i)>>32) + (float64)((float64)((i)&0xFFFFFFFF) / (float64)((uint64)1<<32))
 
 //callbacks
 gboolean timeRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data);
 gboolean timeRulerResizeCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data);
 
-CTimeRuler::CTimeRuler(IStreamDatabase& rStreamDatabase) :
+CTimeRuler::CTimeRuler(IStreamDatabase& rStreamDatabase, int32 i32WidthRequest, int32 i32HeightRequest) :
 	m_pWidget(NULL),
 	m_rStreamDatabase(rStreamDatabase),
+	m_i32HeightRequest(i32HeightRequest),
 	m_ui64PixelsPerBottomRulerLabel(20)
 {
 	m_pWidget = gtk_drawing_area_new();
 
-	gtk_widget_set_size_request(m_pWidget, 0, 20);
+	gtk_widget_set_size_request(m_pWidget, i32WidthRequest, i32HeightRequest);
 
 	g_signal_connect_after(G_OBJECT(m_pWidget), "expose_event", G_CALLBACK(timeRulerExposeEventCallback), this);
 }
@@ -41,31 +42,21 @@ void CTimeRuler::draw()
 		return;
 	}
 
-	//get number of buffers to display
-	uint64 l_ui64NumberOfBufferToDisplay = m_rStreamDatabase.getMaxDisplayedBufferCount();
+	//return if time between two consecutive buffers hasn't been computed yet
+	if(m_rStreamDatabase.isBufferTimeStepComputed() == false)
+	{
+		return;
+	}
 
 	//get widget size
 	gint l_iBottomRulerWidth;
-	gint l_iBottomRulerHeight;
-	gdk_drawable_get_size(m_pWidget->window, &l_iBottomRulerWidth, &l_iBottomRulerHeight);
+	gdk_drawable_get_size(m_pWidget->window, &l_iBottomRulerWidth, NULL);
 
-	//draw ruler base (horizontal line)
-	gdk_draw_line(m_pWidget->window, m_pWidget->style->fg_gc[GTK_WIDGET_STATE (m_pWidget)], 0, 0, l_iBottomRulerWidth, 0);
-
-	//compute starting and ending time (in ms) of displayed data
-	float64 l_f64StartTime = 0;
-	if(m_rStreamDatabase.getStartTime(0) != 0)
-	{
-		l_f64StartTime = convert_time(m_rStreamDatabase.getStartTime(0));
-	}
-
-	//displayed time interval (in ms)
-	float64 l_f64IntervalWidth = convert_time(l_ui64NumberOfBufferToDisplay * m_rStreamDatabase.getBufferDuration());
-
-	float64 l_f64EndTime = l_f64StartTime + l_f64IntervalWidth;
-
-	float64 l_f64ValueStep;
-	float64 l_f64BaseValue;
+	float64 l_f64StartTime = convert_time(m_rStreamDatabase.getStartTime(0));
+	float64 l_f64EndTime = convert_time(m_rStreamDatabase.getStartTime(0) + m_rStreamDatabase.getMaxBufferCount() * m_rStreamDatabase.getBufferTimeStep());
+	float64 l_f64IntervalWidth = l_f64EndTime - l_f64StartTime;
+	float64 l_f64ValueStep = 0;
+	float64 l_f64BaseValue = 0;
 
 	//compute step between two values displayed on the ruler
 	float64 l_f64NearestSmallerPowerOf10 = static_cast<float64>(pow(10, floor(log10(l_f64IntervalWidth))));
@@ -80,7 +71,6 @@ void CTimeRuler::draw()
 	{
 		l_f64ValueStep = l_f64NearestSmallerPowerOf10 / 2;
 	}
-
 	else
 	{
 		l_f64ValueStep = l_f64NearestSmallerPowerOf10;
@@ -89,18 +79,19 @@ void CTimeRuler::draw()
 	//recompute step base value
 	l_f64BaseValue = l_f64ValueStep * floor(l_f64StartTime/l_f64ValueStep);
 
-	//used to compute the X position of the labels
-	float64 l_f64WidthPerBuffer = static_cast<float64>(l_iBottomRulerWidth) / static_cast<float64>(l_ui64NumberOfBufferToDisplay);
-	//X position of the first label (if there are less buffers than needed)
-	int64 l_i64BaseX = static_cast<int64>(floor(l_iBottomRulerWidth - ( m_rStreamDatabase.getBufferCount() * l_f64WidthPerBuffer)));
-
-	if(l_i64BaseX<0 || l_i64BaseX < l_f64WidthPerBuffer)
+	//X position of the first label
+	float64 l_f64WidthPerBuffer = static_cast<float64>(l_iBottomRulerWidth) / static_cast<float64>(m_rStreamDatabase.getMaxBufferCount());
+	int64 l_i64BaseX = static_cast<int64>(floor(l_iBottomRulerWidth - ( m_rStreamDatabase.getCurrentBufferCount() * l_f64WidthPerBuffer)));
+	if(l_i64BaseX<0)
 	{
 		l_i64BaseX = 0;
 	}
 
-	stringstream l_oTimeLabel;
+	//draw ruler base (horizontal line)
+	gdk_draw_line(m_pWidget->window, m_pWidget->style->fg_gc[GTK_WIDGET_STATE (m_pWidget)], (gint)l_i64BaseX, 0, l_iBottomRulerWidth, 0);
 
+	//draw labels
+	stringstream l_oTimeLabel;
 	for(float64 i=l_f64BaseValue; i<static_cast<float64>(0.5+l_f64EndTime); i+=l_f64ValueStep)
 	{
 		//clear stringstream
@@ -108,6 +99,11 @@ void CTimeRuler::draw()
 
 		//compute label position
 		gint l_iTextX = static_cast<gint>(l_i64BaseX + ((i - l_f64StartTime)*(((float64)l_iBottomRulerWidth)/l_f64IntervalWidth)));
+
+		if(l_iTextX >= l_iBottomRulerWidth)
+		{
+			break;
+		}
 
 		l_oTimeLabel<<i;
 
@@ -149,6 +145,13 @@ void CTimeRuler::linkWidthToWidget(GtkWidget* pWidget)
 	g_signal_connect(G_OBJECT(pWidget), "size-allocate", G_CALLBACK(timeRulerResizeCallback), this);
 }
 
+void CTimeRuler::onResizeEventCB(gint i32Width, gint i32Height)
+{
+	gtk_widget_set_size_request(m_pWidget, i32Width, m_i32HeightRequest);
+}
+
+//CALLBACKS
+
 //! Callback to redraw the bottom ruler
 gboolean timeRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
@@ -164,8 +167,7 @@ gboolean timeRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, 
 gboolean timeRulerResizeCallback(GtkWidget *widget, GtkAllocation *allocation, gpointer data)
 {
 	CTimeRuler* l_pTimeRuler = reinterpret_cast<CTimeRuler*>(data);
-	gtk_widget_set_size_request(l_pTimeRuler->getWidget(), allocation->width, 20/*-1*/);
-
+	l_pTimeRuler->onResizeEventCB(allocation->width, allocation->height);
 	return FALSE;
 }
 

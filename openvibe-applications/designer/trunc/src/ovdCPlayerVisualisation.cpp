@@ -224,6 +224,12 @@ void CPlayerVisualisation::init(void)
 		}
 	}
 
+	//show newly created widget
+	if(l_pTreeWidget != NULL && pVisualisationWidget->getType() != EVisualisationWidget_VisualisationWindow)
+	{
+		gtk_widget_show(l_pTreeWidget);
+	}
+
 #if 0
 	//*** moved to setWidget() ***
 	//resize widgets once they are allocated : this is the case when they are shown on an expose event
@@ -402,6 +408,9 @@ boolean CPlayerVisualisation::setWidget(const CIdentifier& rBoxIdentifier, ::Gtk
 	gtk_box_pack_start(l_pVBox, GTK_WIDGET(l_pButton), FALSE, TRUE, 0);
 	gtk_box_pack_start(l_pVBox, pWidget, TRUE, TRUE, 0);
 
+	//show vbox hierarchy
+	gtk_widget_show_all(GTK_WIDGET(l_pVBox));
+
 	//parent box at the appropriate location
 	parentWidgetBox(l_pVisualisationWidget, l_pVBox);
 
@@ -431,7 +440,7 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 			l_ui64DefaultHeight = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height);
 		}
 #endif
-		gtk_window_set_default_size(GTK_WINDOW(l_pWindow), l_ui64DefaultWidth, l_ui64DefaultHeight);
+		gtk_window_set_default_size(GTK_WINDOW(l_pWindow), (gint)l_ui64DefaultWidth, (gint)l_ui64DefaultHeight);
 		//set its title
 		gtk_window_set_title(GTK_WINDOW(l_pWindow), (const char*)pWidget->getName());
 		//set it transient for main window
@@ -441,7 +450,7 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 		//prevent user from closing this window
 		g_signal_connect(l_pWindow, "delete_event", G_CALLBACK(dummy_callback), NULL);
 		//show window (and realize widget in doing so)
-		gtk_widget_show_all(l_pWindow);
+		gtk_widget_show(l_pWindow);
 	}
 	else //retrieve parent widget in which to insert current widget
 	{
@@ -525,7 +534,7 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 					m_rVisualisationTree.getPointerValueFromTreeIter(&l_oWindowIter, l_pWindowWidget, EVisualisationTreeColumn_PointerWidget);
 
 					//show parent window
-					gtk_widget_show_all(GTK_WIDGET(l_pWindowWidget));
+					gtk_widget_show(GTK_WIDGET(l_pWindowWidget));
 					// gtk_widget_realize(GTK_WIDGET(l_pWindowWidget));
 					// gdk_flush();
 
@@ -547,7 +556,7 @@ void CPlayerVisualisation::showTopLevelWindows(void)
 {
 	for(unsigned int i=0; i<m_vWindows.size(); i++)
 	{
-		gtk_widget_show_all(GTK_WIDGET(m_vWindows[i]));
+		gtk_widget_show(GTK_WIDGET(m_vWindows[i]));
 	}
 	if(m_pActiveToolbarButton != NULL)
 	{
@@ -561,7 +570,7 @@ void CPlayerVisualisation::hideTopLevelWindows(void)
 {
 	for(unsigned int i=0; i<m_vWindows.size(); i++)
 	{
-		gtk_widget_hide_all(GTK_WIDGET(m_vWindows[i]));
+		gtk_widget_hide(GTK_WIDGET(m_vWindows[i]));
 	}
 
 	if(m_pActiveToolbarButton != NULL)
@@ -710,6 +719,12 @@ void CPlayerVisualisation::drag_data_received_in_widget_cb(::GtkWidget* pDstWidg
 	::GtkWidget* l_pDstParentWidget = gtk_widget_get_parent(l_pDstBoxWidget);
 
 	if(l_pDstParentWidget == NULL)
+	{
+		return;
+	}
+
+	//ensure src and dst widgets are different
+	if(l_pSrcBoxWidget == l_pDstBoxWidget)
 	{
 		return;
 	}

@@ -20,7 +20,9 @@ namespace OpenViBEPlugins
 		gboolean powerSpectrumLeftRulerExposeEventCallback(GtkWidget *widget, GdkEventExpose *event, gpointer data);
 
 		CPowerSpectrumChannelDisplay::CPowerSpectrumChannelDisplay(
-			CPowerSpectrumDisplayView* pParentDisplay, uint32 ui32Channel, CPowerSpectrumDatabase& pDatabase) :
+			CPowerSpectrumDisplayView* pParentDisplay, uint32 ui32Channel, CPowerSpectrumDatabase& pDatabase,
+			int32 i32ChannelDisplayWidthRequest, int32 i32ChannelDisplayHeightRequest,
+			int32 i32LeftRulerWidthRequest, int32 i32LeftRulerHeightRequest) :
 			m_pParentDisplay(pParentDisplay),
 			m_pWidgetTable(NULL),
 			m_pDisplay(NULL),
@@ -37,15 +39,15 @@ namespace OpenViBEPlugins
 			m_ui32Rowstride(0)
 		{
 			//widgets table
-			m_pWidgetTable = GTK_TABLE(gtk_table_new(2, 1, FALSE));
+			m_pWidgetTable = GTK_TABLE(gtk_table_new(1, 2, FALSE));
 
 			//spectrum display
 			m_pDisplay = gtk_drawing_area_new();
-			gtk_widget_set_size_request(m_pDisplay, 20, 20);
+			gtk_widget_set_size_request(m_pDisplay, i32ChannelDisplayWidthRequest, i32ChannelDisplayHeightRequest);
 
 			//left ruler
 			m_pLeftRuler = gtk_drawing_area_new();
-			gtk_widget_set_size_request(m_pLeftRuler, 50, 20/*-1*/);
+			gtk_widget_set_size_request(m_pLeftRuler, i32LeftRulerWidthRequest, i32LeftRulerHeightRequest);
 
 			//add displays to table
 			gtk_table_attach(m_pWidgetTable, m_pDisplay,
@@ -76,12 +78,12 @@ namespace OpenViBEPlugins
 			}
 		}
 
-		GtkWidget* CPowerSpectrumChannelDisplay::getWidget() const
+		GtkWidget* CPowerSpectrumChannelDisplay::getTopWidget() const
 		{
 			return GTK_WIDGET(m_pWidgetTable);
 		}
 
-		GtkWidget* CPowerSpectrumChannelDisplay::getSpectrumDisplay() const
+		GtkWidget* CPowerSpectrumChannelDisplay::getSpectrumDisplayWidget() const
 		{
 			return GTK_WIDGET(m_pDisplay);
 		}
@@ -149,13 +151,14 @@ namespace OpenViBEPlugins
 			//get current buffer min/max values
 			float64 l_f64CurrentBufferMax;
 			float64 l_f64CurrentBufferMin;
-			if(m_pParentDisplay->getCurrentDisplayMode() == ESpectrumDisplayMode_GlobalBestFit)
+			if(m_pParentDisplay->isAutoVerticalScaleEnabled() == true)
 			{
 				m_pDatabase->getLastBufferMinMaxValue(l_f64CurrentBufferMin, l_f64CurrentBufferMax);
 			}
 			else
 			{
-				m_pDatabase->getLastBufferChannelMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+				l_f64CurrentBufferMin = 0;
+				l_f64CurrentBufferMax = m_pParentDisplay->getCustomVerticalScaleValue();
 			}
 
 			//gets a pointer to this channels' samples data in the current buffer
@@ -214,13 +217,14 @@ namespace OpenViBEPlugins
 			//get current buffer min/max values
 			float64 l_f64CurrentBufferMax;
 			float64 l_f64CurrentBufferMin;
-			if(m_pParentDisplay->getCurrentDisplayMode() == ESpectrumDisplayMode_GlobalBestFit)
+			if(m_pParentDisplay->isAutoVerticalScaleEnabled() == true)
 			{
 				m_pDatabase->getLastBufferMinMaxValue(l_f64CurrentBufferMin, l_f64CurrentBufferMax);
 			}
 			else
 			{
-				m_pDatabase->getLastBufferChannelMinMaxValue(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+				l_f64CurrentBufferMin = 0;
+				l_f64CurrentBufferMax = m_pParentDisplay->getCustomVerticalScaleValue();
 			}
 
 			float64 l_f64IntervalWidth = l_f64CurrentBufferMax-l_f64CurrentBufferMin;

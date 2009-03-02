@@ -1728,7 +1728,7 @@
         <child>
           <widget class="GtkLabel" id="loglevel-label_title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Chose which level(s) to activate</property>
+            <property name="label" translatable="yes">Check log level(s) to activate</property>
           </widget>
           <packing>
             <property name="position">1</property>

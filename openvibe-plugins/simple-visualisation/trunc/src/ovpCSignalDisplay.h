@@ -67,8 +67,8 @@ namespace OpenViBEPlugins
 		};
 
 		/**
-		* Plugin's description
-		*/
+		 * Signal Display plugin descriptor
+		 */
 		class CSignalDisplayDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
@@ -92,6 +92,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addSetting("Time Scale", OV_TypeId_Float, "10");
+				rPrototype.addSetting("Display Mode", OVP_TypeId_SignalDisplayMode, "Scan");
 				rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
 				rPrototype.addInput("Stimulations", OV_TypeId_Stimulations);
 

@@ -21,6 +21,8 @@ OpenViBE::boolean CTimeFrequencyMapDisplay::initialize()
 	//create spectrum database
 	m_pSpectrumDatabase = new CSpectrumDatabase(*this);
 
+	m_pSpectrumDatabase->initialize();
+
 	//retrieve default settings
 	CString l_sTimeScaleSettingValue;
 	getStaticBoxContext().getSettingValue(0, l_sTimeScaleSettingValue);

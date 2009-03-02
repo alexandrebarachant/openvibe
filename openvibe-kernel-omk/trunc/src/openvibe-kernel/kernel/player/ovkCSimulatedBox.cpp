@@ -499,7 +499,7 @@ boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier,
 			l_pOgreVertexColorArray[4*i+3] = pVertexColorArray[4*i+3];
 		}
 		boolean l_bRes = l_pOgreObject->setVertexColorArray((Ogre::uint32)ui32VertexColorCount, l_pOgreVertexColorArray);
-		delete l_pOgreVertexColorArray;
+		delete[] l_pOgreVertexColorArray;
 		return l_bRes;
 	}
 }
@@ -533,7 +533,7 @@ boolean CSimulatedBox::getObjectVertexCount(const CIdentifier& rIdentifier, Open
 	return l_pOgreObject->getVertexCount((Ogre::uint32&)ui32VertexCount);
 }
 
-boolean CSimulatedBox::getObjectVertexPositionArray( const CIdentifier& rIdentifier, const OpenViBE::uint32 ui32VertexColorCount, float32* pVertexPositionArray) const
+boolean CSimulatedBox::getObjectVertexPositionArray( const CIdentifier& rIdentifier, const OpenViBE::uint32 ui32VertexCount, float32* pVertexPositionArray) const
 {
 	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
 	if(l_pOgreObject == NULL)
@@ -542,15 +542,15 @@ boolean CSimulatedBox::getObjectVertexPositionArray( const CIdentifier& rIdentif
 	}
 	if(sizeof(Ogre::Real) == sizeof(OpenViBE::float32))
 	{
-		return l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexColorCount, (Ogre::Real*)pVertexPositionArray);
+		return l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexCount, (Ogre::Real*)pVertexPositionArray);
 	}
 	else
 	{
-		Ogre::Real* l_pOgreVertexPositionArray(new Ogre::Real[ui32VertexColorCount]);
-		boolean l_bRes = l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexColorCount, pVertexPositionArray);
+		Ogre::Real* l_pOgreVertexPositionArray(new Ogre::Real[4*ui32VertexCount]);
+		boolean l_bRes = l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexCount, pVertexPositionArray);
 		if(l_bRes == true)
 		{
-			for(uint32 i=0; i<ui32VertexColorCount; i++)
+			for(uint32 i=0; i<ui32VertexCount; i++)
 			{
 				pVertexPositionArray[4*i] = l_pOgreVertexPositionArray[4*i];
 				pVertexPositionArray[4*i+1] = l_pOgreVertexPositionArray[4*i+1];
@@ -558,7 +558,46 @@ boolean CSimulatedBox::getObjectVertexPositionArray( const CIdentifier& rIdentif
 				pVertexPositionArray[4*i+3] = l_pOgreVertexPositionArray[4*i+3];
 			}
 		}
-		delete l_pOgreVertexPositionArray;
+		delete[] l_pOgreVertexPositionArray;
+		return l_bRes;
+	}
+}
+
+boolean CSimulatedBox::getObjectTriangleCount(const CIdentifier& rIdentifier, uint32& ui32TriangleCount) const
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject == NULL)
+	{
+		return false;
+	}
+	return l_pOgreObject->getTriangleCount((Ogre::uint32&)ui32TriangleCount);
+}
+
+boolean CSimulatedBox::getObjectTriangleIndexArray(const CIdentifier& rIdentifier, uint32 ui32TriangleCount, uint32* pTriangleIndexArray) const
+{
+	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
+	if(l_pOgreObject == NULL)
+	{
+		return false;
+	}
+	if(sizeof(Ogre::uint32) == sizeof(OpenViBE::uint32))
+	{
+		return l_pOgreObject->getTriangleIndexArray((Ogre::uint32)ui32TriangleCount, (Ogre::uint32*)pTriangleIndexArray);
+	}
+	else
+	{
+		Ogre::uint32* l_pOgreTriangleIndexArray(new Ogre::uint32[3*ui32TriangleCount]);
+		boolean l_bRes = l_pOgreObject->getTriangleIndexArray((Ogre::uint32)ui32TriangleCount, pTriangleIndexArray);
+		if(l_bRes == true)
+		{
+			for(uint32 i=0; i<ui32TriangleCount; i++)
+			{
+				pTriangleIndexArray[4*i] = l_pOgreTriangleIndexArray[4*i];
+				pTriangleIndexArray[4*i+1] = l_pOgreTriangleIndexArray[4*i+1];
+				pTriangleIndexArray[4*i+2] = l_pOgreTriangleIndexArray[4*i+2];
+			}
+		}
+		delete[] l_pOgreTriangleIndexArray;
 		return l_bRes;
 	}
 }
@@ -651,7 +690,7 @@ boolean CSimulatedBox::initialize(void)
 	m_pBoxAlgorithm=getPluginManager().createBoxAlgorithm(m_pBox->getAlgorithmClassIdentifier(), NULL);
 	if(!m_pBoxAlgorithm)
 	{
-		getLogManager() << LogLevel_Error << "Could not create box algorithm with class id " << m_pBox->getAlgorithmClassIdentifier() << "... This box will be deactivated but the whole scenario behavior will probably suffer !\n";
+		getLogManager() << LogLevel_Error << "Could not create box algorithm with class id " << m_pBox->getAlgorithmClassIdentifier() << "... This box will be deactivated but this might alter the scenario behavior!\n";
 		m_bSuspended=true;
 		return false;
 	}

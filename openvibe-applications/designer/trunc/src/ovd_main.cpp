@@ -356,6 +356,14 @@ int go(int argc, char ** argv)
 
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 
+				//FIXME : set locale only when needed
+				CString l_sLocale = l_rConfigurationManager.expand("${Designer_Locale}");
+				if(l_sLocale == CString(""))
+				{
+					l_sLocale = "C";
+				}
+				setlocale( LC_ALL, l_sLocale.toASCIIString() );
+
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
 				// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");

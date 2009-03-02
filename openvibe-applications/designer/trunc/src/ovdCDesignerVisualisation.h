@@ -31,7 +31,7 @@ namespace OpenViBEDesigner
 
 		void init(
 			std::string guiFile);
-		void reset();
+		void load();
 		void show();
 		void hide();
 

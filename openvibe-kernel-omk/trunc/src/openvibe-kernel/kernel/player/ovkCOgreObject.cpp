@@ -87,7 +87,7 @@ COgreObject::~COgreObject()
 	catch(Ogre::Exception& e)
 	{
 		m_rKernelContext.getLogManager()
-			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to destroy scene node : " << e.what() << "\n";
 	}
 
@@ -127,7 +127,7 @@ boolean COgreObject::cloneMeshes()
 	catch(Ogre::Exception& e)
 	{
 		m_rKernelContext.getLogManager()
-			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to clone mesh : " << e.what() << "\n";
 	}
 
@@ -176,7 +176,7 @@ boolean COgreObject::cloneMaterials()
 	catch(Ogre::Exception& e)
 	{
 		m_rKernelContext.getLogManager()
-			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to clone materials : " << e.what() << "\n";
 	}
 
@@ -212,7 +212,7 @@ boolean COgreObject::createPlane(const CNameValuePairList& rNameValuePairList)
 	catch(Ogre::Exception& e)
 	{
 		m_rKernelContext.getLogManager()
-			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to create plane : " << e.what() << "\n";
 		return false;
 	}
@@ -249,7 +249,7 @@ boolean COgreObject::loadGeometry()
 	catch(Ogre::Exception& e)
 	{
 		m_rKernelContext.getLogManager()
-			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to load file [" << m_sGeometryFileName << "] : " << e.what() << "\n";
 		return false;
 	}
@@ -382,7 +382,7 @@ boolean COgreObject::getVertexCount(Ogre::uint32& ui32VertexCount) const
 
 	if(l_pSubMesh->useSharedVertices == true)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "Failed to retrieve vertex count : submesh uses shared vertices!\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Failed to retrieve vertex count : submesh uses shared vertices!\n";
 		return false;
 	}
 
@@ -391,7 +391,7 @@ boolean COgreObject::getVertexCount(Ogre::uint32& ui32VertexCount) const
 	return true;
 }
 
-boolean COgreObject::getVertexPositionArray(Ogre::uint32 ui32VertexPositionCount, Ogre::Real* pVertexPositionArray) const
+boolean COgreObject::getVertexPositionArray(Ogre::uint32 ui32VertexCount, Ogre::Real* pVertexPositionArray) const
 {
 	if(pVertexPositionArray == NULL)
 	{
@@ -412,12 +412,13 @@ boolean COgreObject::getVertexPositionArray(Ogre::uint32 ui32VertexPositionCount
 
 	if(l_pSubMesh->useSharedVertices == true)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "Failed to retrieve vertex count : submesh uses shared vertices!\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Failed to retrieve vertices : submesh uses shared vertices!\n";
 		return false;
 	}
 
-	if(l_pSubMesh->vertexData->vertexCount != ui32VertexPositionCount)
+	if(l_pSubMesh->vertexData->vertexCount > ui32VertexCount)
 	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Failed to retrieve vertices : array is too small!\n";
 		return false;
 	}
 
@@ -459,6 +460,92 @@ boolean COgreObject::getVertexPositionArray(Ogre::uint32 ui32VertexPositionCount
 
 	//unlock VB
 	l_pVertexBuffer->unlock();
+
+	return true;
+}
+
+boolean COgreObject::getTriangleCount(Ogre::uint32& ui32TriangleCount) const
+{
+	Ogre::Entity* l_pEntity;
+	if(getFirstEntityInHierarchy(&getSceneNode(), l_pEntity) == false)
+	{
+		return false;
+	}
+
+	Ogre::SubMesh* l_pSubMesh;
+	if(getFirstSubMesh(l_pEntity, l_pSubMesh) == false)
+	{
+		return false;
+	}
+
+	if(l_pSubMesh->useSharedVertices == true)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Failed to retrieve triangle count : submesh uses shared vertices!\n";
+		return false;
+	}
+
+	ui32TriangleCount = (uint32)l_pSubMesh->indexData->indexCount / 3;
+
+	return true;
+}
+
+boolean COgreObject::getTriangleIndexArray(Ogre::uint32 ui32TriangleCount, OpenViBE::uint32* pTriangleIndexArray) const
+{
+	if(pTriangleIndexArray == NULL)
+	{
+		return false;
+	}
+
+	Ogre::Entity* l_pEntity;
+	if(getFirstEntityInHierarchy(&getSceneNode(), l_pEntity) == false)
+	{
+		return false;
+	}
+
+	Ogre::SubMesh* l_pSubMesh;
+	if(getFirstSubMesh(l_pEntity, l_pSubMesh) == false)
+	{
+		return false;
+	}
+
+	if(l_pSubMesh->useSharedVertices == true)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Failed to retrieve face indices : submesh uses shared vertices!\n";
+		return false;
+	}
+
+	if(l_pSubMesh->indexData->indexCount != 3 * ui32TriangleCount)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Failed to retrieve indices : array is too small!\n";
+		return false;
+	}
+
+	//retrieve IB
+	Ogre::HardwareIndexBufferSharedPtr l_pIndexBuffer = l_pSubMesh->indexData->indexBuffer;
+
+	//lock IB for reading
+	unsigned char* l_pIndexBufferPointer = static_cast<unsigned char*>(l_pIndexBuffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+
+	//iterate through IB
+	size_t l_ui32StartIndex = l_pSubMesh->indexData->indexStart;
+
+	if(l_pIndexBuffer->getType() == Ogre::HardwareIndexBuffer::IT_16BIT)
+	{
+		for(size_t j = l_ui32StartIndex; j<l_pSubMesh->indexData->indexCount+l_ui32StartIndex; ++j, l_pIndexBufferPointer += l_pIndexBuffer->getIndexSize())
+		{
+			pTriangleIndexArray[j] = *((Ogre::uint16*)l_pIndexBufferPointer);
+		}
+	}
+	else //IT_32BIT
+	{
+		for(size_t j = l_ui32StartIndex; j<l_pSubMesh->indexData->indexCount+l_ui32StartIndex; ++j, l_pIndexBufferPointer += l_pIndexBuffer->getIndexSize())
+		{
+			pTriangleIndexArray[j] = *((Ogre::uint32*)l_pIndexBufferPointer);
+		}
+	}
+
+	//unlock VB
+	l_pIndexBuffer->unlock();
 
 	return true;
 }
@@ -524,6 +611,7 @@ boolean COgreObject::getFirstEntityInHierarchy(Ogre::SceneNode* pNode, Ogre::Ent
 		}
 	}
 
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Failed to retrieve Entity\n";
 	return false;
 }
 

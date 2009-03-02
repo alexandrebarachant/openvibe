@@ -37,115 +37,107 @@ namespace OpenViBEPlugins
 			 */
 			virtual ~CStreamedMatrixDatabase();
 
-			/**
-			 * \brief Set drawable object to update.
-			 * \param pDrawable drawable object to update.
-			 */
-			void setDrawable(
+			virtual OpenViBE::boolean initialize();
+
+			virtual void setDrawable(
 				IStreamDisplayDrawable* pDrawable);
 
-			/**
-			 * \brief Set flag stating whether or not to redraw upon new data reception
-			 * \param bRedrawOnNewData Redraw flag
-			 */
-			void setRedrawOnNewData(
+			virtual void setRedrawOnNewData(
 				OpenViBE::boolean bRedrawOnNewData);
 
-			/**
-			 * \brief Determine whether first buffer has been received yet
-			 * \return True if first buffer has been received already, false otherwise
-			 */
-			OpenViBE::boolean isFirstBufferReceived();
+			virtual OpenViBE::boolean isFirstBufferReceived();
 
-			/**
-			 * \brief Set time scale
-			 * Computes the maximum number of buffers that can be displayed simultaneously
-			 * \param f64TimeScale Time window's width in seconds.
-			 * \return True if buffer count changed, false otherwise
-			 */
-			OpenViBE::boolean setTimeScale(
+			virtual OpenViBE::boolean setTimeScale(
 				OpenViBE::float64 f64TimeScale);
 
-			/**
-			 * \brief Decode a memory buffer using proxy
-			 * \param pMemoryBuffer Memory buffer to decode
-			 * \param ui64StartTime Start time of memory buffer
-			 * \param ui64EndTime End time of memory buffer
-			 * \return True if memory buffer could be properly decoded, false otherwise
-			 */
-			OpenViBE::boolean decodeMemoryBuffer(
+			virtual OpenViBE::boolean decodeMemoryBuffer(
 				const OpenViBE::IMemoryBuffer* pMemoryBuffer,
 				OpenViBE::uint64 ui64StartTime,
 				OpenViBE::uint64 ui64EndTime);
 
-			OpenViBE::uint64 getMaxDisplayedBufferCount();
+			virtual OpenViBE::uint64 getMaxBufferCount();
 
-			OpenViBE::uint64 getBufferCount();
+			virtual OpenViBE::uint64 getCurrentBufferCount();
 
-			const OpenViBE::float64* getBuffer(
+			virtual const OpenViBE::float64* getBuffer(
 				OpenViBE::uint32 ui32BufferIndex);
 
-			OpenViBE::uint64 getStartTime(
+			virtual OpenViBE::uint64 getStartTime(
 				OpenViBE::uint32 ui32BufferIndex);
 
-			OpenViBE::uint64 getEndTime(
+			virtual OpenViBE::uint64 getEndTime(
 				OpenViBE::uint32 ui32BufferIndex);
 
-			OpenViBE::uint64 getBufferDuration();
+			virtual OpenViBE::uint64 getBufferDuration();
 
-			/**
-			 * \brief Get number of samples per buffer
-			 * \return Number of samples per buffer
-			 */
-			OpenViBE::uint32 getSampleCountPerBuffer();
+			virtual OpenViBE::boolean isBufferTimeStepComputed();
 
-			/**
-			 * \brief Get number of channels
-			 * \return Number of channels
-			 */
-			OpenViBE::uint32 getChannelCount();
+			virtual OpenViBE::uint64 getBufferTimeStep();
 
-			/**
-			 * \brief Get channel label
-			 * \param[in] ui32ChannelIndex index of channel
-			 * \param[out] rChannelLabel channel label
-			 * \return true if channel label could be retrieved, false otherwise
-			 */
-			OpenViBE::boolean getChannelLabel(
+			virtual OpenViBE::uint32 getSampleCountPerBuffer();
+
+			virtual OpenViBE::uint32 getChannelCount();
+
+			virtual OpenViBE::boolean getChannelLabel(
 				const OpenViBE::uint32 ui32ChannelIndex,
 				OpenViBE::CString& rElectrodeLabel);
 
-		private:
+			virtual OpenViBE::boolean getChannelMinMaxValues(
+				OpenViBE::uint32 ui32Channel,
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max);
+
+			virtual OpenViBE::boolean getGlobalMinMaxValues(
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max);
+
+			virtual OpenViBE::boolean getLastBufferChannelMinMaxValues(
+				OpenViBE::uint32 ui32Channel,
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max);
+
+			virtual OpenViBE::boolean getLastBufferGlobalMinMaxValues(
+				OpenViBE::float64& f64Min,
+				OpenViBE::float64& f64Max);
+
+		protected:
+			virtual OpenViBE::boolean decodeHeader();
+
+			virtual OpenViBE::boolean decodeBuffer(
+				OpenViBE::uint64 ui64StartTime,
+				OpenViBE::uint64 ui64EndTime);
+
+		protected:
 			// parent plugin
 			OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>& m_oParentPlugin;
-			//streamed matrix decoder algorithm proxy
-			OpenViBE::Kernel::IAlgorithmProxy* m_pProxy;
+			//decoder algorithm
+			OpenViBE::Kernel::IAlgorithmProxy* m_pDecoder;
 			//drawable object to update (if needed)
 			IStreamDisplayDrawable* m_pDrawable;
 			//flag stating whether to redraw the IStreamDisplayDrawable upon new data reception if true (default)
 			OpenViBE::boolean m_bRedrawOnNewData;
 			//flag stating whether first samples buffer has been received
 			OpenViBE::boolean m_bFirstBufferReceived;
-
+			//flag stating whether buffer time step was computed
+			OpenViBE::boolean m_bBufferTimeStepComputed;
+			//time difference between start times of two consecutive buffers
+			OpenViBE::uint64 m_ui64BufferTimeStep;
 			//sampling frequency of incoming stream
-			OpenViBE::uint32 m_ui32SamplingFrequency;
-			//maximum number of buffers displayed at the same time per channel
-			OpenViBE::uint64 m_ui64MaxDisplayedBufferCount;
+			//OpenViBE::uint32 m_ui32SamplingFrequency;
+			//maximum number of buffers stored in database
+			OpenViBE::uint64 m_ui64MaxBufferCount;
 			//maximum duration of displayed buffers (in seconds)
 			OpenViBE::float64 m_f64TimeScale;
 			//double-linked list of start times of stored buffers
 			std::deque<OpenViBE::uint64> m_oStartTime;
 			//double-linked list of end times of stored buffers
 			std::deque<OpenViBE::uint64> m_oEndTime;
-
-			//streamed matrix header : number of channels & frequency bands + labels
+			//streamed matrix header
 			OpenViBE::CMatrix m_oStreamedMatrixHeader;
 			//streamed matrix	history
 			std::deque<OpenViBE::CMatrix*> m_oStreamedMatrices;
 			//min/max values for each channel
-			//std::vector<std::deque<std::pair<OpenViBE::float64, OpenViBE::float64> > > m_oChannelMinMaxValues;
-
-			//OpenViBE::boolean m_bError;
+			std::vector<std::deque<std::pair<OpenViBE::float64, OpenViBE::float64> > > m_oChannelMinMaxValues;
 		};
 	}
 }

@@ -25,13 +25,21 @@ namespace OpenViBEPlugins
 			 * \brief Constructor
 			 * \param pDatabase Object holding signal data
 			 * \param ui32Channel Index of channel to display
+			 * \param i32ChannelDisplayWidthRequest Width to be requested by widget
+			 * \param i32ChannelDisplayHeightRequest Height to be requested by widget
+			 * \param i32LeftRulerWidthRequest Width to be requested by left ruler
+			 * \param i32LeftRulerHeightRequest Height to be requested by left ruler
 			 */
 			CTimeFrequencyMapChannelDisplay(
 				CSpectrumDatabase& rSpectrumDatabase,
 				OpenViBE::uint32 ui32Channel,
 				OpenViBE::float64 f64Attenuation,
 				OpenViBE::float64 f64MinimumDisplayedFrequency,
-				OpenViBE::float64 f64MaximumDisplayedFrequency);
+				OpenViBE::float64 f64MaximumDisplayedFrequency,
+				OpenViBE::int32 i32ChannelDisplayWidthRequest,
+				OpenViBE::int32 i32ChannelDisplayHeightRequest,
+				OpenViBE::int32 i32LeftRulerWidthRequest,
+				OpenViBE::int32 i32LeftRulerHeightRequest);
 
 			/**
 			 * \brief Destructor

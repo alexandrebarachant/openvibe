@@ -19,15 +19,6 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		enum ESpectrumDisplayMode
-		{
-			ESpectrumDisplayMode_LocalBestFit,
-			ESpectrumDisplayMode_GlobalBestFit/*,
-			ESpectrumDisplayMode_ZoomIn,
-			ESpectrumDisplayMode_ZoomOut*/,
-			ESpectrumDisplayMode_NumDisplayMode
-		};
-
 		class CPowerSpectrumDatabase;
 
 		/**
@@ -69,17 +60,16 @@ namespace OpenViBEPlugins
 				::GtkWidget*& pToolbarWidget);
 
 			/**
-			 * \brief Get current display mode
-			 * \return Current display mode
+			 * \brief Get auto vertical scale status
+			 * \return True if auto scale is on, false otherwise
 			 */
-			ESpectrumDisplayMode getCurrentDisplayMode(void);
+			OpenViBE::boolean isAutoVerticalScaleEnabled();
 
 			/**
-			 * \brief Set current display mode.
-			 * \param eDisplayMode Display mode to set.
+			 * \brief Get custom vertical scale value
+			 * \return Custom vertical scale value
 			 */
-			void setDisplayMode(
-				ESpectrumDisplayMode eDisplayMode);
+			OpenViBE::float64 getCustomVerticalScaleValue();
 
 			/**
 			 * \brief Toggle left rulers (amplitude values) visibility
@@ -96,6 +86,15 @@ namespace OpenViBEPlugins
 				OpenViBE::boolean bActive);
 
 			/**
+			 * Toggle a channel on/off
+			 * \param ui64ChannelIndex The index of the channel to toggle.
+			 * \param bActive Show the channel if true.
+			 */
+			void toggleChannel(
+				OpenViBE::uint32 ui32ChannelIndex,
+				OpenViBE::boolean bActive);
+
+			/**
 			 * \brief Draw bottom ruler
 			 */
 			void redrawBottomRuler();
@@ -104,10 +103,26 @@ namespace OpenViBEPlugins
 			//@{
 			void minDisplayedFrequencyChangedCB(::GtkWidget* pWidget);
 			void maxDisplayedFrequencyChangedCB(::GtkWidget* pWidget);
-			void resizeBottomRulerCB(gint w, gint h);
 			void showChannelSelectionDialogCB();
 			void applyChannelSelectionCB();
 			void applyMinMaxAttenuationCB();
+
+			/**
+			 * Callback called when vertical scale mode changes
+			 * \param pToggleButton Radio button toggled
+			 * \return True
+			 */
+			OpenViBE::boolean onVerticalScaleModeToggledCB(
+				GtkToggleButton* pToggleButton);
+
+			/**
+			 * Callback called when custom vertical scale is changed
+			 * \param pEditable Custom vertical scale widget
+			 * \return True if custom vertical scale value could be retrieved, false otherwise
+			 */
+			OpenViBE::boolean onCustomVerticalScaleChangedCB(
+				GtkEditable *pEditable);
+
 			//@}
 
 		private:
@@ -115,20 +130,6 @@ namespace OpenViBEPlugins
 			 * \brief Invalidate window contents and have it redraw itself
 			 */
 			virtual void redraw();
-
-			/**
-			 * \brief Hide a given channel
-			 * \param ui32ChannelIndex Index of channel to hide
-			 */
-			void hideChannel(
-				OpenViBE::uint32 ui32ChannelIndex);
-
-			/**
-			 * \brief Show a given channel
-			 * \param ui32ChannelIndex Index of channel to show
-			 */
-			void showChannel(
-				OpenViBE::uint32 ui32ChannelIndex);
 
 			/**
 			 * \brief Update channel widgets visibility
@@ -145,18 +146,27 @@ namespace OpenViBEPlugins
 		private:
 			//! The Glade handler used to create the interface
 			::GladeXML* m_pGladeInterface;
-			//! Table containing the channel displays
+			//! Table (3*N) containing (channel label, vertical separator, channel display) triplets
 			GtkWidget* m_pDisplayTable;
 			//! Array of channels labels
 			std::vector<GtkWidget*> m_oChannelLabels;
 			//! Array of channel displays
 			std::vector<CPowerSpectrumChannelDisplay*> m_oChannelDisplays;
+			//! Bottom box containing bottom ruler
+			GtkBox* m_pBottomBox;
 			//! Bottom ruler widget
 			GtkWidget* m_pBottomRuler;
-			//! Pointers to display mode toggle buttons
-			GtkToggleToolButton* m_pDisplayModeButtons[ESpectrumDisplayMode_NumDisplayMode];
-			//! Display mode
-			ESpectrumDisplayMode m_ui32CurrentDisplayMode;
+
+			/** \name Vertical scale */
+			//@{
+			//! Auto vertical scale radio button
+			GtkRadioButton* m_pAutoVerticalScaleRadioButton;
+			//! Flag set to true when auto vertical scale is toggled on
+			OpenViBE::boolean m_bAutoVerticalScale;
+			//! Value of custom vertical scale
+			OpenViBE::float64 m_f64CustomVerticalScaleValue;
+			//@}
+
 			//! The database that contains the information to use to draw the signals
 			CPowerSpectrumDatabase* m_pPowerSpectrumDatabase;
 			//! Vector of pointers to the select channels dialog's check buttons
