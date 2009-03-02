@@ -399,7 +399,7 @@ boolean CVisualisationTree::reloadTree()
 	gtk_tree_store_set(m_pTreeStore, &l_oIter,
 		EVisualisationTreeColumn_StringName, "Unaffected display plugins",
 		EVisualisationTreeColumn_StringStockIcon, m_pTreeViewCB->getTreeWidgetIcon(EVisualisationTreeNode_Unaffected),
-		EVisualisationTreeColumn_ULongNodeType, EVisualisationTreeNode_Unaffected,
+		EVisualisationTreeColumn_ULongNodeType, (unsigned long)EVisualisationTreeNode_Unaffected,
 		EVisualisationTreeColumn_StringIdentifier, (const char*)OV_UndefinedIdentifier.toString(),
 		-1);
 
@@ -848,7 +848,7 @@ boolean CVisualisationTree::loadVisualisationWidget(IVisualisationWidget* pVisua
 	gtk_tree_store_set(m_pTreeStore, &l_oIter,
 		EVisualisationTreeColumn_StringName, (const char*)pVisualisationWidget->getName(),
 		EVisualisationTreeColumn_StringStockIcon, (const char*)l_pStockIconString,
-		EVisualisationTreeColumn_ULongNodeType, l_oChildType,
+		EVisualisationTreeColumn_ULongNodeType, (unsigned long)l_oChildType,
 		EVisualisationTreeColumn_StringIdentifier, (const char*)pVisualisationWidget->getIdentifier().toString(),
 		EVisualisationTreeColumn_PointerWidget, l_pWidget,
 		-1);

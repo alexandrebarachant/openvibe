@@ -266,7 +266,8 @@ namespace OpenViBE
 
 			OpenViBE::uint32 m_ui32CrashCount;
 			OpenViBE::boolean m_bReadyToProcess;
-			OpenViBE::boolean m_bActive;
+			OpenViBE::boolean m_bSuspended;
+			OpenViBE::boolean m_bCrashed;
 
 			OpenViBE::Plugins::IBoxAlgorithm* m_pBoxAlgorithm;
 			const OpenViBE::Kernel::IScenario* m_pScenario;

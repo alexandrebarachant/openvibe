@@ -73,7 +73,8 @@ CSimulatedBox::CSimulatedBox(const IKernelContext& rKernelContext, CScheduler& r
 	:TKernelObject<IBoxIO>(rKernelContext)
 	,m_ui32CrashCount(0)
 	,m_bReadyToProcess(false)
-	,m_bActive(true)
+	,m_bSuspended(false)
+	,m_bCrashed(false)
 	,m_pBoxAlgorithm(NULL)
 	,m_pScenario(NULL)
 	,m_pBox(NULL)
@@ -246,7 +247,7 @@ CIdentifier CSimulatedBox::create3DWidget(::GtkWidget*& p3DWidget)
 	if(!m_pOgreVis || m_pOgreVis->ogreInitialized() == false || m_pOgreVis->resourcesInitialized() == false)
 	{
 		this->getLogManager() << LogLevel_Error << "Plugin " << m_pBox->getName() << " was disabled because the required 3D context couldn't be created!\n";
-		m_bActive=false;
+		m_bSuspended=true;
 		return OV_UndefinedIdentifier;
 	}
 
@@ -628,7 +629,8 @@ boolean CSimulatedBox::initialize(void)
 {
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
-	if(!m_bActive) return false;
+	if(m_bSuspended) return false;
+	if(m_bCrashed) return false;
 
 	// FIXME test for already initialized boxes etc
 	if(!m_pBox) return false;
@@ -650,7 +652,7 @@ boolean CSimulatedBox::initialize(void)
 	if(!m_pBoxAlgorithm)
 	{
 		getLogManager() << LogLevel_Error << "Could not create box algorithm with class id " << m_pBox->getAlgorithmClassIdentifier() << "... This box will be deactivated but the whole scenario behavior will probably suffer !\n";
-		m_bActive=false;
+		m_bSuspended=true;
 		return false;
 	}
 
@@ -665,7 +667,7 @@ boolean CSimulatedBox::initialize(void)
 				if(!m_pBoxAlgorithm->initialize(l_oBoxAlgorithmContext))
 				{
 					getLogManager() << LogLevel_ImportantWarning << "Box algorithm <" << m_pBox->getName() << "> has been deactivated because initialization phase returned bad status\n";
-					m_bActive=false;
+					m_bSuspended=true;
 				}
 			}
 			catch (...)
@@ -682,7 +684,7 @@ boolean CSimulatedBox::uninitialize(void)
 {
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
-	if(!m_bActive) return false;
+	if(m_bCrashed) return false;
 
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
@@ -696,7 +698,7 @@ boolean CSimulatedBox::uninitialize(void)
 					if(!m_pBoxAlgorithm->uninitialize(l_oBoxAlgorithmContext))
 					{
 						getLogManager() << LogLevel_ImportantWarning << "Box algorithm <" << m_pBox->getName() << "> has been deactivated because uninitialization phase returned bad status\n";
-						m_bActive=false;
+						m_bSuspended=true;
 					}
 				}
 				catch (...)
@@ -717,7 +719,8 @@ boolean CSimulatedBox::processClock(void)
 {
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
-	if(!m_bActive) return false;
+	if(m_bSuspended) return false;
+	if(m_bCrashed) return false;
 
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
@@ -795,7 +798,8 @@ boolean CSimulatedBox::processInput(const uint32 ui32InputIndex, const CChunk& r
 {
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
-	if(!m_bActive) return false;
+	if(m_bSuspended) return false;
+	if(m_bCrashed) return false;
 
 	m_vInput[ui32InputIndex].push_back(rChunk);
 
@@ -826,7 +830,9 @@ boolean CSimulatedBox::process(void)
 {
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
-	if(!m_bActive) return false;
+	if(m_bSuspended) return false;
+	if(m_bCrashed) return false;
+
 	if(!m_bReadyToProcess) return true;
 
 	{
@@ -841,7 +847,7 @@ boolean CSimulatedBox::process(void)
 				if(!m_pBoxAlgorithm->process(l_oBoxAlgorithmContext))
 				{
 					getLogManager() << LogLevel_ImportantWarning << "Box algorithm <" << m_pBox->getName() << "> has been deactivated because process phase returned bad status\n";
-					m_bActive=false;
+					m_bSuspended=true;
 				}
 				m_oBenchmarkChronoProcess.stepOut();
 			}
@@ -1190,7 +1196,7 @@ void CSimulatedBox::handleCrash(const char* sHintName)
 	if(m_ui32CrashCount>=_MaxCrash_)
 	{
 		this->getLogManager() << LogLevel_Fatal << "  This plugin has been disabled !\n";
-		m_bActive=false;
+		m_bCrashed=true;
 	}
 }
 
