@@ -37,7 +37,6 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64NewSamplingRate;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_ui64SamplingRate;
 
-			OpenViBE::uint64 m_ui64LastStartTime;
 			OpenViBE::uint64 m_ui64LastEndTime;
 			OpenViBE::boolean m_bFlagFirstTime;
 		};

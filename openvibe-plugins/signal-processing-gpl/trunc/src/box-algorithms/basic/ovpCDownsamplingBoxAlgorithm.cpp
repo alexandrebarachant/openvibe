@@ -101,8 +101,7 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 
 	m_pOutputSignalDescription=new CMatrix();
 
-	m_ui64LastStartTime=0;
-	m_ui64LastEndTime=0;
+	m_ui64LastEndTime = 0;
 	m_bFlagFirstTime = true;
 
 	return true;
@@ -144,7 +143,9 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 		TParameterHandler < IMemoryBuffer* > l_oOutputMemoryBufferHandle(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 		l_oInputMemoryBufferHandle=l_rDynamicBoxContext.getInputChunk(0, j);
 		l_oOutputMemoryBufferHandle=l_rDynamicBoxContext.getOutputChunk(0);
-		uint64 l_ui64EndTime=m_ui64LastStartTime+l_rDynamicBoxContext.getInputChunkEndTime(0, j)-l_rDynamicBoxContext.getInputChunkStartTime(0, j);
+
+		uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(0, j);
+		uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(0, j);
 
 		m_pStreamDecoder->process();
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
@@ -159,7 +160,7 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 				m_pApplyTemporalFilter->process(OVP_Algorithm_ApplyTemporalFilter_InputTriggerId_Initialize);
 			}
 
-			if (m_ui64LastEndTime==l_rDynamicBoxContext.getInputChunkStartTime(0, j))
+			if (m_ui64LastEndTime==l_ui64StartTime)
 			{
 				m_pApplyTemporalFilter->process(OVP_Algorithm_ApplyTemporalFilter_InputTriggerId_ApplyFilterWithHistoric);
 			}
@@ -172,31 +173,38 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 
 			if (m_bFlagFirstTime)
 			{
+				uint64 l_ui64InputSamplingFrequency=m_ui64SamplingRate;
+				if(l_ui64InputSamplingFrequency%m_ui64NewSamplingRate != 0)
+				{
+					this->getLogManager() << LogLevel_Warning << "This box is not stable yet and settings should be chosen with care\n";
+					this->getLogManager() << LogLevel_ImportantWarning << "The input sampling frequency (" << l_ui64InputSamplingFrequency << ") is not a multiple of the new sampling frequency (" << m_ui64NewSamplingRate << ")\n";
+					return false;
+				}
+
 				m_pOutputSignalDescription->setDimensionCount(2);
 				m_pOutputSignalDescription->setDimensionSize(0, m_pInputSignal->getDimensionSize(0));
-				m_pOutputSignalDescription->setDimensionSize(1, (uint64)((float64)m_pInputSignal->getDimensionSize(1)/m_ui64SamplingRate*m_ui64NewSamplingRate));
+				m_pOutputSignalDescription->setDimensionSize(1,(m_pInputSignal->getDimensionSize(1)*m_ui64NewSamplingRate)/m_ui64SamplingRate);
 				for(uint32 k=0; k< m_pInputSignal->getDimensionSize(0); k++)
 				{
 					m_pOutputSignalDescription->setDimensionLabel(0, k, m_pInputSignal->getDimensionLabel(0, k));
 				}
 				m_pOutputSignal.setReferenceTarget(m_pOutputSignalDescription);
 				m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastStartTime, m_ui64LastStartTime);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 				m_bFlagFirstTime = false;
 			}
 			m_pOutputSignal.setReferenceTarget(m_pDownsampling->getOutputParameter(OVP_Algorithm_Downsampling_OutputParameterId_SignalMatrix));
 			m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
-			l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastStartTime, l_ui64EndTime);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 		}
 
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd))
 		{
 			m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd);
-			l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastStartTime, l_ui64EndTime);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 		}
 
-		m_ui64LastStartTime+=l_rDynamicBoxContext.getInputChunkEndTime(0, j)-l_rDynamicBoxContext.getInputChunkStartTime(0, j);
-		m_ui64LastEndTime+=l_rDynamicBoxContext.getInputChunkEndTime(0, j)-l_rDynamicBoxContext.getInputChunkStartTime(0, j);
+		m_ui64LastEndTime=l_ui64EndTime;
 		l_rDynamicBoxContext.markInputAsDeprecated(0, j);
 	}
 
