@@ -247,7 +247,7 @@ bool CFootballBCI::processEvent(OMK::Event* pEvent)
 		{
 			VrpnAnalogState l_oValue=l_pValuedEvent->value;
 
-			double l_dAnalog=*(++l_oValue.begin());
+			double l_dAnalog=*(l_oValue.begin());
 			if(l_dAnalog>m_dMaxAnalog) m_dMaxAnalog=l_dAnalog;
 			if(l_dAnalog<m_dMinAnalog) m_dMinAnalog=l_dAnalog;
 			double l_dAbsoluteMinMax=_max_(m_dMaxAnalog, -m_dMinAnalog);

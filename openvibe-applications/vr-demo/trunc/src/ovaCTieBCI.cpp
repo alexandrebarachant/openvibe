@@ -166,7 +166,7 @@ bool CTieBCI::processEvent(OMK::Event* pEvent)
 		{
 			VrpnAnalogState l_oValue=l_pValuedEvent->value;
 
-			m_dFeedback=*(++l_oValue.begin());
+			m_dFeedback=*(l_oValue.begin());
 
 // std::cout << "feedback : " << m_dFeedback << std::endl;
 
