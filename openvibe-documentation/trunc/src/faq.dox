@@ -107,12 +107,28 @@
  *
  * \section Doc_FAQ_DownloadBinaries Where can I download OpenViBE precompiled binaries ?
  *
- * TODO
+ * Some probably outdated windows binaries could be found at http://www.irisa.fr/bunraku/OpenViBE/binaries/win32 .
+ * These precompiled versions are not officially supported yet so don't expect regular updates.
+ *
+ * Additionnaly we are looking for a smart solution to have precompiled packages for Linux on several distribution. If you
+ * have any advice, please feel free to share. See \ref Doc_Contact for how to contact us.
  *
  * \section Doc_FAQ_ProblemsCompiling I have problems compiling OpenViBE, what should I do ?
  *
  * First, make sure you followed the install procedure described in \ref Doc_Install . If problems persist, you can get some help from
  * the people involved in this project. See \ref Doc_Contact for how to contact us.
+ *
+ * \section Doc_FAQ_BranchChanging The branch changes I did does not seam to be considered at comilation time, why is that ?
+ *
+ * Don't forget to clean everything before editing your <i>win32-init_env_command.cmd</i> or <i>linux-init_env_command</i>
+ * to switch your developements to other branches. If you don't do this, <i>cmake</i> will keep compiling the software
+ * in the old branches because of its cache. Cleaning everything will cause the header and library files to be
+ * removed and thus force <i>cmake</i> to search for them again.
+ *
+ * More generally here is the correct way to work with our branches :
+ *  * clean
+ *  * svn update / branch switch / whatever eventually involves the structure of the code
+ *  * re-build
  *
  * \section Doc_FAQ_ProblemsUsing I have problems using OpenViBE, what should I do ?
  *
@@ -184,6 +200,6 @@
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 18!)
+ * this question currently is 19!)
  *
  */
