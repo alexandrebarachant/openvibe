@@ -21,6 +21,7 @@ boolean CBoxAlgorithmGenericStreamWriter::initialize(void)
 
 	l_rStaticBoxContext.getSettingValue(0, m_sFilename);
 	l_rStaticBoxContext.getSettingValue(1, l_sUseCompression);
+	m_sFilename=this->getConfigurationManager().expand(m_sFilename);
 
 	m_bUseCompression=(l_sUseCompression==CString("true"));
 
