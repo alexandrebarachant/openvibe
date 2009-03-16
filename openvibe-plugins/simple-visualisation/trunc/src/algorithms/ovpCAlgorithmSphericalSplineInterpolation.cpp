@@ -5,6 +5,8 @@
 
 #include <float.h> //DBL_MAX
 #include <math.h>
+#include <stdio.h>
+#include <sting.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
