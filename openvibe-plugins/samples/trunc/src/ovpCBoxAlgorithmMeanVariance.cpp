@@ -1,5 +1,7 @@
 #include "ovpCBoxAlgorithmMeanVariance.h"
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <math.h>
 
 using namespace OpenViBE;
