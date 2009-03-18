@@ -175,8 +175,10 @@ void CSignalConcatenation::release(void)
 
 boolean CSignalConcatenation::initialize()
 {
-	m_oSignalReader.resize(4);
-	m_oStimulationReader.resize(4);
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+
+	m_oSignalReader.resize(l_rStaticBoxContext.getInputCount()/2);
+	m_oStimulationReader.resize(l_rStaticBoxContext.getInputCount()/2);
 
 	//initialises the signal description structure
 	m_pSignalDescription = new CSignalDescription();
@@ -207,8 +209,7 @@ boolean CSignalConcatenation::initialize()
 	m_pStimulationOutputWriterHelper->writeHeader(*m_pStimulationWriter);
 	getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(1, 0, 0);
 
-
-	return false;
+	return true;
 }
 
 boolean CSignalConcatenation::uninitialize()
