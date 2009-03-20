@@ -88,59 +88,40 @@ void CSignalConcatenation::setSampleBuffer(const float64* pBuffer)
 
 void CSignalConcatenation::setStimulationCount(const OpenViBE::uint32 ui32StimulationCount)
 {
-	m_oStimulations.resize(ui32StimulationCount);
+	m_ui32StimulationCount=ui32StimulationCount;
+	m_oStimulations.clear();
 }
 
 void CSignalConcatenation::setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate)
 {
-	//TODO use variable
-	if( (ui64StimulationIdentifier == STIMULATION_END_OF_SESSION) && (m_ui32CurrentInput != getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount()-2) )
+	//when stimulation is not end stimulation
+	if(ui64StimulationIdentifier != m_ui64EndStimulation)
 	{
-		//don't send it
-		//set the number of stimulation to send
-		m_pStimulationOutputWriterHelper->setStimulationCount(m_oStimulations.size() - 1);
+		//stores stimulation
+		m_oStimulations.push_back(pair<uint64, uint64>(ui64StimulationIdentifier, ui64StimulationDate));
+	}
+	else
+	{
+		//goto next input
+		m_bChangeInput = true;
+	}
 
-		//adds em
-		for(uint32 i = 0 ; i<m_oStimulations.size()-1 ; i++)
+	//if the last stimulation of the current chunk is received
+	if(ui32StimulationIndex==m_ui32StimulationCount-1)
+	{
+		//set the number of stimulation to send
+		m_pStimulationOutputWriterHelper->setStimulationCount(m_oStimulations.size());
+
+		//adds them
+		for(uint32 i = 0 ; i<m_oStimulations.size() ; i++)
 		{
 			m_pStimulationOutputWriterHelper->setStimulation(i, m_oStimulations[i].first, m_oStimulations[i].second + m_ui64TimeOffset);
 		}
 
+		//sends them
 		m_pStimulationOutputWriterHelper->writeBuffer(*m_pStimulationWriter);
 
 		getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(1, m_ui64TimeOffset+m_ui64LastChunkStartTime, m_ui64LastChunkEndTime+m_ui64TimeOffset);
-
-		m_oStimulations.clear();
-	}
-	else
-	{
-		m_oStimulations[ui32StimulationIndex] = pair<uint64, uint64>(ui64StimulationIdentifier, ui64StimulationDate);
-
-		//send buffer
-		if(ui32StimulationIndex == m_oStimulations.size()-1 )
-		{
-			//set the number of stimulation to send
-			m_pStimulationOutputWriterHelper->setStimulationCount(m_oStimulations.size());
-
-			//adds em
-			for(uint32 i = 0 ; i<m_oStimulations.size() ; i++)
-			{
-				m_pStimulationOutputWriterHelper->setStimulation(i, m_oStimulations[i].first, m_oStimulations[i].second + m_ui64TimeOffset);
-			}
-
-			m_pStimulationOutputWriterHelper->writeBuffer(*m_pStimulationWriter);
-
-			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(1, m_ui64TimeOffset+m_ui64LastChunkStartTime, m_ui64LastChunkEndTime+m_ui64TimeOffset);
-
-			m_oStimulations.clear();
-		}
-	}
-
-	//goto next input, updates time offset
-	if(ui64StimulationIdentifier == STIMULATION_END_OF_SESSION)
-	{
-		//next input
-		m_bChangeInput = true;
 	}
 }
 
@@ -166,6 +147,7 @@ CSignalConcatenation::CSignalConcatenation(void)
 	m_pMatrixBuffer(NULL),
 	m_ui32CurrentInput(0),
 	m_ui64TimeOffset(0),
+	m_ui64EndStimulation(0),
 	m_bChangeInput(false)
 {
 }
@@ -177,6 +159,10 @@ void CSignalConcatenation::release(void)
 boolean CSignalConcatenation::initialize()
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+
+	CString l_sSettingValue;
+	l_rStaticBoxContext.getSettingValue(0, l_sSettingValue);
+	m_ui64EndStimulation=this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, l_sSettingValue);
 
 	m_oSignalReader.resize(l_rStaticBoxContext.getInputCount()/2);
 	m_oStimulationReader.resize(l_rStaticBoxContext.getInputCount()/2);
@@ -259,12 +245,12 @@ boolean CSignalConcatenation::processInput( uint32 ui32InputIndex)
 		m_ui32CurrentInput+=2;
 		m_bChangeInput = false;
 		// getBoxAlgorithmContext()->getPlayerContext()->getLogManager()<<Kernel::LogLevel_Trace<<"Changed input\n";
-	}
 
-	if(m_ui32CurrentInput>=getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount())
-	{
-		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << Kernel::LogLevel_Info << "Concatenation finished !\n";
-		return false;
+		if(m_ui32CurrentInput>=getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount())
+		{
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << Kernel::LogLevel_Info << "Concatenation finished !\n";
+			return false;
+		}
 	}
 
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();

@@ -112,8 +112,10 @@ namespace OpenViBEPlugins
 
 			OpenViBE::uint32 m_ui32CurrentInput;
 			OpenViBE::uint64 m_ui64TimeOffset;
+			OpenViBE::uint64 m_ui64EndStimulation;
 
 			std::vector<std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oStimulations;
+			OpenViBE::uint32 m_ui32StimulationCount;
 
 			OpenViBE::boolean m_bChangeInput;
 		};
@@ -190,6 +192,8 @@ namespace OpenViBEPlugins
 
 				rPrototype.addOutput("Output signal",       OV_TypeId_Signal);
 				rPrototype.addOutput("Output stimulations", OV_TypeId_Stimulations);
+
+				rPrototype.addSetting("Stimulation to consider an input as finished", OV_TypeId_Stimulation, "OVTK_StimulationId_EndOfFile");
 
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);
