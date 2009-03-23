@@ -14,7 +14,7 @@ boolean Memory::copy(
 	{
 		return true;
 	}
-	memcpy(pTargetBuffer, pSourceBuffer, static_cast<size_t>(ui64BufferSize));
+	::memcpy(pTargetBuffer, pSourceBuffer, static_cast<size_t>(ui64BufferSize));
 	return true;
 }
 
@@ -28,8 +28,18 @@ boolean Memory::set(
 		return true;
 	}
 	// $$$ TODO take 64bits size into consideration
-	memset(pTargetBuffer, ui8Value, static_cast<size_t>(ui64BufferSize));
+	::memset(pTargetBuffer, ui8Value, static_cast<size_t>(ui64BufferSize));
 	return true;
+}
+
+boolean Memory::compare(const void* pSourceBuffer1, const void* pSourceBuffer2, const uint64 ui64BufferSize)
+{
+	if(ui64BufferSize==0)
+	{
+		return true;
+	}
+	// $$$ TODO take 64bits size into consideration
+	return ::memcmp(pSourceBuffer1, pSourceBuffer2, static_cast<size_t>(ui64BufferSize))==0;
 }
 
 // ________________________________________________________________________________________________________________

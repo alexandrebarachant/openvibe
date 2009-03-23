@@ -42,7 +42,7 @@ uint64 Time::zgetTime(void)
 	static boolean l_bInitialized=false;
 	static struct timeval l_oTimeValueStart;
 	struct timeval l_oTimeValue;
-	uint64 l_ui64TimeMicroSecond=0;
+	uint64 l_i64TimeMicroSecond=0;
 
 	if(!l_bInitialized)
 	{
@@ -52,10 +52,13 @@ uint64 Time::zgetTime(void)
 	}
 
 	gettimeofday(&l_oTimeValue, NULL);
-	l_ui64TimeMicroSecond+=(l_oTimeValue.tv_sec-l_oTimeValueStart.tv_sec)*1000000;
-	l_ui64TimeMicroSecond+=(l_oTimeValue.tv_usec-l_oTimeValueStart.tv_usec);
+	int64 l_i64SecDiff=(int64)(l_oTimeValue.tv_sec-l_oTimeValueStart.tv_sec);
+	int64 l_i64USecDiff=(int64)(l_oTimeValue.tv_usec-l_oTimeValueStart.tv_usec);
 
-	l_ui64Result=((l_ui64TimeMicroSecond/1000000)<<32)+(((l_ui64TimeMicroSecond%1000000)<<32)/1000000);
+	l_i64TimeMicroSecond+=l_i64SecDiff*1000000;
+	l_i64TimeMicroSecond+=l_i64USecDiff;
+
+	l_ui64Result=((l_i64TimeMicroSecond/1000000)<<32)+(((l_i64TimeMicroSecond%1000000)<<32)/1000000);
 #elif defined System_OS_Windows
 	static boolean l_bInitialized=false;
 	static uint64 l_ui64Frequency;
