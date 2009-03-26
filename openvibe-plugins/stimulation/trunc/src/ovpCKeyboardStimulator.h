@@ -50,8 +50,7 @@ namespace OpenViBEPlugins
 			EBML::TWriterCallbackProxy1<OpenViBEPlugins::Stimulation::CKeyboardStimulator> * m_pOutputWriterCallbackProxy;
 			OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter * m_pStimulationOutputWriterHelper;
 
-			//! Invisible widget used to handle keypresses
-			GtkWidget * m_pDummyWidget;
+			::GtkWidget * m_pWidget;
 
 			typedef struct
 			{
@@ -88,6 +87,11 @@ namespace OpenViBEPlugins
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_KeyboardStimulator; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Stimulation::CKeyboardStimulator(); }
+
+			virtual OpenViBE::boolean hasFunctionality(OpenViBE::Kernel::EPluginFunctionality ePF) const
+			{
+				return ePF == OpenViBE::Kernel::PluginFunctionality_Visualization;
+			}
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{

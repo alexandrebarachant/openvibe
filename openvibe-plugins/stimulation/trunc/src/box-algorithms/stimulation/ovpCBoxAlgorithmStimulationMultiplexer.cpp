@@ -153,13 +153,20 @@ boolean CBoxAlgorithmStimulationMultiplexer::process(void)
 	if(l_ui64ReadChunkMinEndTime!=m_ui64LastEndTime)
 	{
 		multimap < uint64, SStimulation >::iterator it;
+		multimap < uint64, SStimulation >::iterator it_backup;
 		multimap < uint64, SStimulation > l_vStimulationToSend;
-		for(it=m_vStimulation.begin(); it!=m_vStimulation.end(); it++)
+		for(it=m_vStimulation.begin(); it!=m_vStimulation.end(); )
 		{
 			if(it->first < l_ui64ReadChunkMinEndTime)
 			{
-				l_vStimulationToSend.insert(make_pair(it->first, it->second));
-				m_vStimulation.erase(it);
+				it_backup=it;
+				it++;
+				l_vStimulationToSend.insert(make_pair(it_backup->first, it_backup->second));
+				m_vStimulation.erase(it_backup);
+			}
+			else
+			{
+				it++;
 			}
 		}
 

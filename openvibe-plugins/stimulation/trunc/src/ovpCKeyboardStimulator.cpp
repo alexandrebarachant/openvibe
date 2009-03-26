@@ -1,8 +1,11 @@
 #include "ovpCKeyboardStimulator.h"
 
+#include <glade/glade.h>
+
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace OpenViBE;
 using namespace Plugins;
@@ -19,11 +22,12 @@ namespace OpenViBEPlugins
 {
 	namespace Stimulation
 	{
+/*
 		//! Callback for the close window button
 		static void keyboard_stimulator_gtk_widget_do_nothing(::GtkWidget* pWidget)
 		{
 		}
-
+*/
 		// Called when a key is pressed on the keyboard
 		gboolean KeyboardStimulator_KeyPressCallback(GtkWidget *widget, GdkEventKey *event, gpointer data)
 		{
@@ -115,7 +119,7 @@ namespace OpenViBEPlugins
 			m_pWriter(NULL),
 			m_pOutputWriterCallbackProxy(NULL),
 			m_pStimulationOutputWriterHelper(NULL),
-			m_pDummyWidget(NULL),
+			m_pWidget(NULL),
 			m_ui64PreviousActivationTime(0),
 			m_bError(false)
 		{
@@ -144,30 +148,36 @@ namespace OpenViBEPlugins
 
 			m_pStimulationOutputWriterHelper=createBoxAlgorithmStimulationOutputWriter();
 
-			//dummy window widget for grabbing events
-			m_pDummyWidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-			gtk_window_set_title(GTK_WINDOW(m_pDummyWidget), "Keyboard stimulator");
-			gtk_window_set_default_size(GTK_WINDOW(m_pDummyWidget), 100, 100);
-			gtk_widget_set_size_request(m_pDummyWidget, 100, 100);
-			gtk_window_set_resizable(GTK_WINDOW(m_pDummyWidget), false);
+			string l_sRed("#602020");
+			string l_sGreen("#206020");
+			string l_sBlue("#202060");
 
-			//adds a label with some text
-			GtkWidget * l_pLabel = gtk_label_new("Use your keyboard to send stimulations");
-			gtk_widget_set_size_request(l_pLabel, 100, 100);
-			gtk_label_set_line_wrap(GTK_LABEL(l_pLabel), true);
-			gtk_label_set_justify(GTK_LABEL(l_pLabel), GTK_JUSTIFY_CENTER);
-			gtk_container_add(GTK_CONTAINER(m_pDummyWidget), l_pLabel);
+			stringstream ss;
+			ss << "\nUse your keyboard to send stimulations\nAvailable keys are :\n\n";
+			for(map<guint, SKey>::const_iterator i=m_oKeyToStimulation.begin(); i!=m_oKeyToStimulation.end(); i++)
+			{
+				ss << "<span size=\"smaller\">\t";
+				ss << "<span style=\"italic\" foreground=\"" << l_sGreen << "\">" << gdk_keyval_name(i->first) << "</span>";
+				ss << "\t";
+				ss << "Pressed : <span style=\"italic\" foreground=\"" << l_sBlue << "\">" << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, i->second.m_ui64StimulationPress) << "</span>";
+				ss << "\t";
+				ss << "Released : <span style=\"italic\" foreground=\"" << l_sBlue << "\">" << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, i->second.m_ui64StimulationRelease) << "</span>";
+				ss << "\t</span>\n";
+			}
 
-			//redirect key pressed event
-			g_signal_connect(G_OBJECT(m_pDummyWidget), "key-press-event",
-					G_CALLBACK(KeyboardStimulator_KeyPressCallback), this);
-			g_signal_connect(G_OBJECT(m_pDummyWidget), "key-release-event",
-					G_CALLBACK(KeyboardStimulator_KeyReleaseCallback), this);
+			::GladeXML* l_pGlade=glade_xml_new("../share/openvibe-plugins/stimulation/keyboard-stimulator.glade", NULL, NULL);
 
-			//does nothing on the window if the user tries to close it
-			g_signal_connect(G_OBJECT(m_pDummyWidget), "delete_event", G_CALLBACK(keyboard_stimulator_gtk_widget_do_nothing), NULL);
+			glade_xml_signal_autoconnect(l_pGlade);
 
-			gtk_widget_show_all(m_pDummyWidget);
+			m_pWidget=glade_xml_get_widget(l_pGlade, "keyboard_stimulator-eventbox");
+
+			gtk_label_set_markup(GTK_LABEL(glade_xml_get_widget(l_pGlade, "keyboard_stimulator-label")), ss.str().c_str());
+
+			g_signal_connect(m_pWidget, "key-press-event",   G_CALLBACK(KeyboardStimulator_KeyPressCallback),   this);
+			g_signal_connect(m_pWidget, "key-release-event", G_CALLBACK(KeyboardStimulator_KeyReleaseCallback), this);
+			g_object_unref(l_pGlade);
+
+			this->getVisualisationContext().setWidget(m_pWidget);
 
 			//write stimulation stream header
 			m_pStimulationOutputWriterHelper->writeHeader(*m_pWriter);
@@ -193,7 +203,7 @@ namespace OpenViBEPlugins
 				m_pStimulationOutputWriterHelper=NULL;
 			}
 
-			gtk_widget_destroy(m_pDummyWidget);
+			g_object_unref(m_pWidget);
 
 			return true;
 		}
