@@ -58,10 +58,11 @@ namespace Automaton
 	class CLoopConditionEvent : public ILoopConditionFunctor
 	{
 		Automaton::CIdentifier m_oEvent;
+		size_t m_uiFoundEventIndex;
 
 		public:
 			CLoopConditionEvent(Automaton::uint64 ui64Event)
-				: m_oEvent(ui64Event) {}
+				: m_oEvent(ui64Event), m_uiFoundEventIndex(size_t(-1)) {}
 
 			virtual ~CLoopConditionEvent() {}
 
@@ -72,7 +73,13 @@ namespace Automaton
 				if(l_pReceivedEvents)
 				{
 					const CIdentifier* l_pEnd = l_pReceivedEvents + pContext->getReceivedEventsCount();
-					return std::find(l_pReceivedEvents, l_pEnd, m_oEvent) != l_pEnd;
+					size_t l_uiFoundEventIndex = (size_t)(std::find(l_pReceivedEvents+(m_uiFoundEventIndex==size_t(-1)?0:m_uiFoundEventIndex+1), l_pEnd, m_oEvent) - l_pReceivedEvents);
+					if(l_uiFoundEventIndex != pContext->getReceivedEventsCount())
+					{
+						m_uiFoundEventIndex=l_uiFoundEventIndex;
+						return true;
+					}
+					return false;
 				}
 				return false;
 			}

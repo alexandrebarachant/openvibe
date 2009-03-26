@@ -6,8 +6,6 @@
 using namespace std;
 using namespace Automaton;
 
-
-
 CXMLActionWaitEventNodeReader::CXMLActionWaitEventNodeReader() :
 	m_pNodeFactory(NULL),
 	m_pParameterParser(NULL),
@@ -121,7 +119,6 @@ EParsingStatus CXMLActionWaitEventNodeReader::closeChild(IAutomatonContext* pCon
 		m_eStatus = ParsingStatus_Complete;
 	}
 
-
 	return m_eStatus;
 }
 
@@ -129,4 +126,5 @@ void CXMLActionWaitEventNodeReader::release()
 {
 	delete this;
 }
+
 
