@@ -12,11 +12,16 @@ using namespace std;
 
 boolean CBoxAlgorithmStimulationBasedEpoching::initialize(void)
 {
+	// IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
+
 	m_pStimulationStreamDecoder=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamDecoder));
+	m_pStimulationStreamEncoder=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamEncoder));
 	m_pSignalStreamDecoder=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamDecoder));
 	m_pSignalStreamEncoder=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamEncoder));
 
 	m_pStimulationStreamDecoder->initialize();
+	m_pStimulationStreamEncoder->initialize();
 	m_pSignalStreamDecoder->initialize();
 	m_pSignalStreamEncoder->initialize();
 
@@ -52,15 +57,26 @@ boolean CBoxAlgorithmStimulationBasedEpoching::initialize(void)
 
 	m_ui64LastStimulationInputStartTime=0;
 	m_ui64LastStimulationInputEndTime=0;
+	m_ui64LastStimulationOutputEndTime=0;
 
-	m_ui64SamplingRate.initialize(m_pSignalStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
-	m_pInputStimulationSet.initialize(m_pStimulationStreamDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
-	m_pInputSignal.initialize(m_pSignalStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix));
-	m_pOutputSignal.initialize(m_pSignalStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix));
+	op_ui64SamplingRate.initialize(m_pSignalStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
+	op_pStimulationSet.initialize(m_pStimulationStreamDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
+	ip_pStimulationSet.initialize(m_pStimulationStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
+	ip_pSignal.initialize(m_pSignalStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix));
+	op_pSignal.initialize(m_pSignalStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix));
 
-	getLogManager() << LogLevel_Debug << "Parameters existence : " << m_ui64SamplingRate.exists() << m_pInputStimulationSet.exists() << m_pInputSignal.exists() << m_pOutputSignal.exists() << "\n";
+	op_pStimulationMemoryBuffer.initialize(m_pStimulationStreamEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+	ip_pStimulationMemoryBuffer.initialize(m_pStimulationStreamDecoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
+	op_SignalMemoryBuffer.initialize(m_pSignalStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+	ip_SignalMemoryBuffer.initialize(m_pSignalStreamDecoder->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
+
+	getLogManager() << LogLevel_Debug << "Parameters existence : " << op_ui64SamplingRate.exists() << ip_pStimulationSet.exists() << op_pStimulationSet.exists() << ip_pSignal.exists() << op_pSignal.exists() << "\n";
 
 	m_pSignalStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate)->setReferenceTarget(m_pSignalStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
+
+	op_pStimulationMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(1);
+	m_pStimulationStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
+	l_rDynamicBoxContext.markOutputAsReadyToSend(1, 0, 0);
 
 	m_pOutputSignalDescription=new CMatrix();
 
@@ -74,10 +90,12 @@ boolean CBoxAlgorithmStimulationBasedEpoching::uninitialize(void)
 
 	m_pSignalStreamEncoder->uninitialize();
 	m_pSignalStreamDecoder->uninitialize();
+	m_pStimulationStreamEncoder->uninitialize();
 	m_pStimulationStreamDecoder->uninitialize();
 
 	getAlgorithmManager().releaseAlgorithm(*m_pSignalStreamEncoder);
 	getAlgorithmManager().releaseAlgorithm(*m_pSignalStreamDecoder);
+	getAlgorithmManager().releaseAlgorithm(*m_pStimulationStreamEncoder);
 	getAlgorithmManager().releaseAlgorithm(*m_pStimulationStreamDecoder);
 
 	m_vStimulationId.clear();
@@ -107,30 +125,38 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 	// Stimulation input parsing
 	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
 	{
-		TParameterHandler < const IMemoryBuffer* > l_pStimulationMemoryBuffer(m_pStimulationStreamDecoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
-		l_pStimulationMemoryBuffer=l_rDynamicBoxContext.getInputChunk(1, i);
+		CStimulationSet l_oOutputStimulationSet;
+		ip_pStimulationSet=&l_oOutputStimulationSet;
+
+		op_pStimulationMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(1);
+		ip_pStimulationMemoryBuffer=l_rDynamicBoxContext.getInputChunk(1, i);
 
 		m_pStimulationStreamDecoder->process();
 		if(m_pStimulationStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
-			for(j=0; j<m_pInputStimulationSet->getStimulationCount(); j++)
+			for(j=0; j<op_pStimulationSet->getStimulationCount(); j++)
 			{
-				if(m_vStimulationId.find(m_pInputStimulationSet->getStimulationIdentifier(j))!=m_vStimulationId.end())
+				if(m_vStimulationId.find(op_pStimulationSet->getStimulationIdentifier(j))!=m_vStimulationId.end())
 				{
-					if((int64)m_pInputStimulationSet->getStimulationDate(j)+m_i64EpochOffset>=0)
+					if((int64)op_pStimulationSet->getStimulationDate(j)+m_i64EpochOffset>=0)
 					{
 						SStimulationBasedEpoching l_oEpocher;
 						l_oEpocher.m_pEpocher=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_StimulationBasedEpoching));
 						l_oEpocher.m_pEpocher->initialize();
-						l_oEpocher.m_ui64StimulationTime=m_pInputStimulationSet->getStimulationDate(j);
-						l_oEpocher.m_ui64StartTime=m_pInputStimulationSet->getStimulationDate(j)+m_i64EpochOffset;
-						l_oEpocher.m_ui64EndTime=m_pInputStimulationSet->getStimulationDate(j)+m_i64EpochOffset+m_ui64EpochDuration;
+						l_oEpocher.m_ui64StimulationTime=op_pStimulationSet->getStimulationDate(j);
+						l_oEpocher.m_ui64StartTime=op_pStimulationSet->getStimulationDate(j)+m_i64EpochOffset;
+						l_oEpocher.m_ui64EndTime=op_pStimulationSet->getStimulationDate(j)+m_i64EpochOffset+m_ui64EpochDuration;
 						l_oEpocher.m_bNeedsReset=true;
 						m_vStimulationBasedEpoching.push_back(l_oEpocher);
 						getLogManager() << LogLevel_Trace << "Created new epocher at time "
 							<< l_oEpocher.m_ui64StimulationTime << ":"
 							<< l_oEpocher.m_ui64StartTime << ":"
 							<< l_oEpocher.m_ui64EndTime << "\n";
+
+						ip_pStimulationSet->appendStimulation(
+							op_pStimulationSet->getStimulationIdentifier(j),
+							op_pStimulationSet->getStimulationDate(j)+m_i64EpochOffset,
+							m_ui64EpochDuration);
 					}
 					else
 					{
@@ -138,7 +164,15 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 					}
 				}
 			}
+
+			if((int64)l_rDynamicBoxContext.getInputChunkEndTime(1, i)+m_i64EpochOffset>=0)
+			{
+				m_pStimulationStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(1, m_ui64LastStimulationOutputEndTime, l_rDynamicBoxContext.getInputChunkEndTime(1, i)+m_i64EpochOffset);
+				m_ui64LastStimulationOutputEndTime=l_rDynamicBoxContext.getInputChunkEndTime(1, i)+m_i64EpochOffset;
+			}
 		}
+
 		m_ui64LastStimulationInputStartTime=l_rDynamicBoxContext.getInputChunkStartTime(1, i);
 		m_ui64LastStimulationInputEndTime=l_rDynamicBoxContext.getInputChunkEndTime(1, i);
 		l_rDynamicBoxContext.markInputAsDeprecated(1, i);
@@ -149,23 +183,21 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 	{
 		if((int64)l_rDynamicBoxContext.getInputChunkEndTime(0, i) <= (int64)m_ui64LastStimulationInputEndTime + m_i64EpochOffset) // preserve enough history
 		{
-			TParameterHandler < const IMemoryBuffer* > l_pInputSignalMemoryBuffer(m_pSignalStreamDecoder->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
-			TParameterHandler < IMemoryBuffer* > l_pOutputSignalMemoryBuffer(m_pSignalStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-			l_pInputSignalMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
-			l_pOutputSignalMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+			ip_SignalMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
+			op_SignalMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
 
 			m_pSignalStreamDecoder->process();
 
 			if(m_pSignalStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
 				m_pOutputSignalDescription->setDimensionCount(2);
-				m_pOutputSignalDescription->setDimensionSize(0, m_pInputSignal->getDimensionSize(0));
-				m_pOutputSignalDescription->setDimensionSize(1, (uint32)((m_ui64SamplingRate*(m_ui64EpochDuration>>16))>>16));
-				for(k=0; k<m_pInputSignal->getDimensionSize(0); k++)
+				m_pOutputSignalDescription->setDimensionSize(0, ip_pSignal->getDimensionSize(0));
+				m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*(m_ui64EpochDuration>>16))>>16));
+				for(k=0; k<ip_pSignal->getDimensionSize(0); k++)
 				{
-					m_pOutputSignalDescription->setDimensionLabel(0, k, m_pInputSignal->getDimensionLabel(0, k));
+					m_pOutputSignalDescription->setDimensionLabel(0, k, ip_pSignal->getDimensionLabel(0, k));
 				}
-				m_pOutputSignal.setReferenceTarget(m_pOutputSignalDescription);
+				op_pSignal.setReferenceTarget(m_pOutputSignalDescription);
 				m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
 				l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 			}
@@ -179,14 +211,14 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 
 					TParameterHandler < IMatrix* > l_pEpocherInputSignal(l_oEpocher.m_pEpocher->getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_InputSignal));
 					TParameterHandler < IMatrix* > l_pEpocherOutputSignal(l_oEpocher.m_pEpocher->getOutputParameter(OVP_Algorithm_StimulationBasedEpoching_OutputParameterId_OutputSignal));
-					l_pEpocherInputSignal.setReferenceTarget(m_pInputSignal);
-					m_pOutputSignal.setReferenceTarget(l_pEpocherOutputSignal);
+					l_pEpocherInputSignal.setReferenceTarget(ip_pSignal);
+					op_pSignal.setReferenceTarget(l_pEpocherOutputSignal);
 
 					if(l_oEpocher.m_bNeedsReset)
 					{
 						OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pEpocherOutputSignal, *m_pOutputSignalDescription);
 						TParameterHandler < int64 > l_ui64OffsetSampleCount(l_oEpocher.m_pEpocher->getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_OffsetSampleCount));
-						l_ui64OffsetSampleCount=(m_ui64SamplingRate*((l_oEpocher.m_ui64StartTime-l_rDynamicBoxContext.getInputChunkStartTime(0, i))>>16))>>16;
+						l_ui64OffsetSampleCount=(op_ui64SamplingRate*((l_oEpocher.m_ui64StartTime-l_rDynamicBoxContext.getInputChunkStartTime(0, i))>>16))>>16;
 						l_oEpocher.m_pEpocher->process(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_Reset);
 						l_oEpocher.m_bNeedsReset=false;
 					}

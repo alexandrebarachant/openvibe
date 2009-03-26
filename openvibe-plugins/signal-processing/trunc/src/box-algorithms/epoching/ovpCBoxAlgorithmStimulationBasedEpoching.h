@@ -37,14 +37,22 @@ namespace OpenViBEPlugins
 			} SStimulationBasedEpoching;
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationStreamDecoder;
+			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationStreamEncoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pSignalStreamDecoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pSignalStreamEncoder;
 			std::vector < SStimulationBasedEpoching > m_vStimulationBasedEpoching;
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_ui64SamplingRate;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > m_pInputStimulationSet;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputSignal;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputSignal;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > op_ui64SamplingRate;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > op_pStimulationSet;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > ip_pStimulationSet;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pSignal;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pSignal;
+
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pStimulationMemoryBuffer;
+			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pStimulationMemoryBuffer;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_SignalMemoryBuffer;
+			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_SignalMemoryBuffer;
+
 			OpenViBE::IMatrix* m_pOutputSignalDescription;
 
 			std::map < OpenViBE::uint64, OpenViBE::boolean > m_vStimulationId;
@@ -52,6 +60,7 @@ namespace OpenViBEPlugins
 			OpenViBE::int64 m_i64EpochOffset;
 			OpenViBE::uint64 m_ui64LastStimulationInputStartTime;
 			OpenViBE::uint64 m_ui64LastStimulationInputEndTime;
+			OpenViBE::uint64 m_ui64LastStimulationOutputEndTime;
 		};
 
 		class CBoxAlgorithmStimulationBasedEpochingDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -79,6 +88,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addInput("Input stimulations",          OV_TypeId_Stimulations);
 
 				rBoxAlgorithmPrototype.addOutput("Epoched signal",             OV_TypeId_Signal);
+				rBoxAlgorithmPrototype.addOutput("Resynced stimulations",      OV_TypeId_Stimulations);
 
 				rBoxAlgorithmPrototype.addSetting("Epoch duration (in sec)",   OV_TypeId_Float,       "1");
 				rBoxAlgorithmPrototype.addSetting("Epoch offset (in sec)",     OV_TypeId_Float,       "0.5");
