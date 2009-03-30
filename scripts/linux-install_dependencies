@@ -60,6 +60,8 @@ ov_uname=`which uname`
 ov_true=`which true`
 ov_false=`which false`
 ov_tail=`which tail`
+ov_automake=`which automake`
+ov_autoconf=`which autoconf`
 
 ov_g77=`which g77`
 ov_gfortran=`which gfortran`
@@ -93,6 +95,8 @@ echo "  Using as uname        : [$ov_uname]..."
 echo "  Using as true         : [$ov_true]..."
 echo "  Using as false        : [$ov_false]..."
 echo "  Using as tail         : [$ov_tail]..."
+echo "  Using as automake     : [$ov_automake]..."
+echo "  Using as autoconf     : [$ov_autoconf]..."
 
 ov_machine=`$ov_uname -m`
 
@@ -851,10 +855,10 @@ function ov_install_package
 	eval 'ov_current_package_additional_configure_flags=$ov_package_additional_configure_flags_'$1
 	eval 'ov_current_package_backup=post-install-backup-'$1'.tar'
 
-	eval 'ov_current_package_hook_download=$ov_package_hook_download_'$1
+	eval 'ov_current_package_hook_download=$ov_package_download_hook_'$1
 	eval 'ov_current_package_hook_download_pre=$ov_package_pre_download_hook_'$1
 	eval 'ov_current_package_hook_download_post=$ov_package_post_download_hook_'$1
-	eval 'ov_current_package_hook_checkout=$ov_package_hook_checkout_'$1
+	eval 'ov_current_package_hook_checkout=$ov_package_checkout_hook_'$1
 	eval 'ov_current_package_hook_checkout_pre=$ov_package_pre_checkout_hook_'$1
 	eval 'ov_current_package_hook_checkout_post=$ov_package_post_checkout_hook_'$1
 	eval 'ov_current_package_hook_uncompress=$ov_package_uncompress_hook_'$1
@@ -1138,6 +1142,39 @@ source $ov_environment_configuration_script
 # package management related packages
 ov_install_package "pkgconfig"
 
+pkg-config --exists gl
+ov_has_gl=$?
+
+if [[ $ov_has_gl -eq 0 ]]; then
+	echo ""
+	echo "Looks like you already have mesa-dev... that would be great."
+	echo "Or you installed the software rendering version thanks to this script... that would simply be ok :)"
+	echo ""
+else
+	echo ""
+	echo "Looks like you don't have mesa-dev installed."
+	echo "I recommand you use your distro package system to install it and get OpenGL developement files."
+	echo "Alternatively, I could build software rendering version of mesa for you but you won't have 3D acceleration."
+	echo ""
+	echo "If you want to install mesa-dev for your distro outside of this script, press CTRL+C now."
+	echo "After you actually installed mesa-dev, you will be able to continue the dependencies installation by relaunching this script."
+	echo ""
+	echo "If you want to install software rendering version of mesa within this script, answer 'continue'"
+	echo ""
+	echo -n "What is your choice ? "
+	read ov_should_break
+	if [[ $ov_should_break == "continue" ]]; then
+		echo ""
+		echo "All right, you won't have 3D acceleration, and you've been warned !"
+		echo ""
+	else
+		echo ""
+		echo "You did not answer 'continue'."
+		echo "You did the right choice, see you soon."
+		exit
+	fi;
+fi;
+
 # base libraries
 ov_install_package "expat"
 ov_install_package "libxml"
@@ -1177,7 +1214,9 @@ ov_install_package "librandrproto"
 ov_install_package "libXrandr"
 
 # is this one necessary ?
-#ov_install_package "mesa"
+if [[ ! $ov_has_gl -eq 0 ]]; then
+	ov_install_package "mesa"
+fi;
 
 # GTK+ related packages
 ov_install_package "glib"
