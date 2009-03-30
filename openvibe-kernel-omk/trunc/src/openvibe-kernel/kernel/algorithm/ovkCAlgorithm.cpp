@@ -80,14 +80,15 @@ const IAlgorithmDesc& CAlgorithm::getAlgorithmDesc(void) const
 boolean CAlgorithm::addInputParameter(
 	const CIdentifier& rInputParameterIdentifier,
 	const CString& sInputName,
-	const EParameterType eParameterType)
+	const EParameterType eParameterType,
+	const CIdentifier& rSubTypeIdentifier)
 {
 	if(m_pInputConfigurable->getParameter(rInputParameterIdentifier)!=NULL)
 	{
 		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Input parameter id " << rInputParameterIdentifier << " already exists\n";
 		return false;
 	}
-	m_pInputConfigurable->createParameter(rInputParameterIdentifier, eParameterType);
+	m_pInputConfigurable->createParameter(rInputParameterIdentifier, eParameterType, rSubTypeIdentifier);
 	m_vInputParameterName[rInputParameterIdentifier]=sInputName;
 	return true;
 }
@@ -145,14 +146,15 @@ boolean CAlgorithm::removeInputParameter(
 boolean CAlgorithm::addOutputParameter(
 	const CIdentifier& rOutputParameterIdentifier,
 	const CString& sOutputName,
-	const EParameterType eParameterType)
+	const EParameterType eParameterType,
+	const CIdentifier& rSubTypeIdentifier)
 {
 	if(m_pOutputConfigurable->getParameter(rOutputParameterIdentifier)!=NULL)
 	{
 		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Output parameter id " << rOutputParameterIdentifier << " already exists\n";
 		return false;
 	}
-	m_pOutputConfigurable->createParameter(rOutputParameterIdentifier, eParameterType);
+	m_pOutputConfigurable->createParameter(rOutputParameterIdentifier, eParameterType, rSubTypeIdentifier);
 	m_vOutputParameterName[rOutputParameterIdentifier]=sOutputName;
 	return true;
 }

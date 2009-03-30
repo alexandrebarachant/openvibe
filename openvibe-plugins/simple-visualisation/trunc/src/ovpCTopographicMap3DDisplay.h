@@ -206,6 +206,8 @@ namespace OpenViBEPlugins
 			//flag specifying whether sampling point objects must be toggled on or off
 			OpenViBE::boolean m_bSamplingPointsToggleState;
 
+			//ID of face object
+			OpenViBE::CIdentifier m_oFaceId;
 			//ID of scalp object
 			OpenViBE::CIdentifier m_oScalpId;
 			//number of scalp vertices

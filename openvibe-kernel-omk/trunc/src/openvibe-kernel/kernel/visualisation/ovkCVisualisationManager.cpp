@@ -41,13 +41,10 @@ boolean CVisualisationManager::initialize3DContext(void)
 		//initialize Ogre
 		//---------------
 		m_pOgreVisualisation = new COgreVisualisation(getKernelContext());
-		if(m_pOgreVisualisation->initializeOgre() == true)
+		this->getLogManager() << LogLevel_Trace << "Initializing Ogre\n";
+		if(m_pOgreVisualisation->initializeOgre() == false)
 		{
-			this->getLogManager() << LogLevel_Trace << "Initialized Ogre\n";
-		}
-		else
-		{
-			this->getLogManager() << LogLevel_Trace << "Failed to initialize Ogre\n";
+			this->getLogManager() << LogLevel_Warning << "Ogre initialization failed, 3D rendering disabled!\n";
 			return false;
 		}
 	}
@@ -61,7 +58,7 @@ boolean CVisualisationManager::initialize3DContext(void)
 
 	try
 	{
-		this->getLogManager() << LogLevel_Info << "Creating primary render window\n";
+		this->getLogManager() << LogLevel_Trace << "Creating primary render window\n";
 		//create primary render window
 		//----------------------------
 		//create custom Gtk widget
@@ -73,7 +70,6 @@ boolean CVisualisationManager::initialize3DContext(void)
 		gtk_widget_show_all(m_pPrimaryRenderWindowWidget);
 		//hide window from now on
 		gtk_widget_hide_all(m_pPrimaryRenderWindowWidget);
-		this->getLogManager() << LogLevel_Info << "Created primary render window\n";
 	}
 	catch(std::exception& e)
 	{

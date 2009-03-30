@@ -16,6 +16,7 @@ namespace OpenViBE
 		public:
 
 			CScenarioManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			virtual ~CScenarioManager(void);
 
 			virtual OpenViBE::CIdentifier getNextScenarioIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const;

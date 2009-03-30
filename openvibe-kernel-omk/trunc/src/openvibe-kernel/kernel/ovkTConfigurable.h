@@ -60,7 +60,7 @@ namespace OpenViBE
 				return true;
 			}
 
-			virtual OpenViBE::Kernel::IParameter* createParameter(const OpenViBE::CIdentifier& rParameterIdentifier, const EParameterType eParameterType)
+			virtual OpenViBE::Kernel::IParameter* createParameter(const OpenViBE::CIdentifier& rParameterIdentifier, const EParameterType eParameterType, const CIdentifier& rSubTypeIdentifier)
 			{
 				std::map < OpenViBE::CIdentifier, std::pair < OpenViBE::boolean, OpenViBE::Kernel::IParameter* > >::iterator itParameter=m_vParameter.find(rParameterIdentifier);
 				if(itParameter!=m_vParameter.end())
@@ -71,18 +71,19 @@ namespace OpenViBE
 				OpenViBE::Kernel::IParameter* l_pParameter=NULL;
 				switch(eParameterType)
 				{
-					case OpenViBE::Kernel::ParameterType_UInteger:       l_pParameter=new OpenViBE::Kernel::CUIntegerParameter(this->getKernelContext(), eParameterType);       break;
-					case OpenViBE::Kernel::ParameterType_Integer:        l_pParameter=new OpenViBE::Kernel::CIntegerParameter(this->getKernelContext(), eParameterType);        break;
-					case OpenViBE::Kernel::ParameterType_Boolean:        l_pParameter=new OpenViBE::Kernel::CBooleanParameter(this->getKernelContext(), eParameterType);        break;
-					case OpenViBE::Kernel::ParameterType_Float:          l_pParameter=new OpenViBE::Kernel::CFloatParameter(this->getKernelContext(), eParameterType);          break;
-					case OpenViBE::Kernel::ParameterType_String:         l_pParameter=new OpenViBE::Kernel::CStringParameter(this->getKernelContext(), eParameterType);         break;
-					case OpenViBE::Kernel::ParameterType_Identifier:     l_pParameter=new OpenViBE::Kernel::CIdentifierParameter(this->getKernelContext(), eParameterType);     break;
-					case OpenViBE::Kernel::ParameterType_Matrix:         l_pParameter=new OpenViBE::Kernel::CMatrixParameter(this->getKernelContext(), eParameterType);         break;
-					case OpenViBE::Kernel::ParameterType_StimulationSet: l_pParameter=new OpenViBE::Kernel::CStimulationSetParameter(this->getKernelContext(), eParameterType); break;
-					case OpenViBE::Kernel::ParameterType_MemoryBuffer:   l_pParameter=new OpenViBE::Kernel::CMemoryBufferParameter(this->getKernelContext(), eParameterType);   break;
-					case OpenViBE::Kernel::ParameterType_Object:         l_pParameter=new OpenViBE::Kernel::CObjectParameter(this->getKernelContext(), eParameterType);         break;
+					case OpenViBE::Kernel::ParameterType_UInteger:       l_pParameter=new OpenViBE::Kernel::CUIntegerParameter(this->getKernelContext(), eParameterType);                        break;
+					case OpenViBE::Kernel::ParameterType_Integer:        l_pParameter=new OpenViBE::Kernel::CIntegerParameter(this->getKernelContext(), eParameterType);                         break;
+					case OpenViBE::Kernel::ParameterType_Enumeration:    l_pParameter=new OpenViBE::Kernel::CEnumerationParameter(this->getKernelContext(), eParameterType, rSubTypeIdentifier); break;
+					case OpenViBE::Kernel::ParameterType_Boolean:        l_pParameter=new OpenViBE::Kernel::CBooleanParameter(this->getKernelContext(), eParameterType);                         break;
+					case OpenViBE::Kernel::ParameterType_Float:          l_pParameter=new OpenViBE::Kernel::CFloatParameter(this->getKernelContext(), eParameterType);                           break;
+					case OpenViBE::Kernel::ParameterType_String:         l_pParameter=new OpenViBE::Kernel::CStringParameter(this->getKernelContext(), eParameterType);                          break;
+					case OpenViBE::Kernel::ParameterType_Identifier:     l_pParameter=new OpenViBE::Kernel::CIdentifierParameter(this->getKernelContext(), eParameterType);                      break;
+					case OpenViBE::Kernel::ParameterType_Matrix:         l_pParameter=new OpenViBE::Kernel::CMatrixParameter(this->getKernelContext(), eParameterType);                          break;
+					case OpenViBE::Kernel::ParameterType_StimulationSet: l_pParameter=new OpenViBE::Kernel::CStimulationSetParameter(this->getKernelContext(), eParameterType);                  break;
+					case OpenViBE::Kernel::ParameterType_MemoryBuffer:   l_pParameter=new OpenViBE::Kernel::CMemoryBufferParameter(this->getKernelContext(), eParameterType);                    break;
+					case OpenViBE::Kernel::ParameterType_Object:         l_pParameter=new OpenViBE::Kernel::CObjectParameter(this->getKernelContext(), eParameterType);                          break;
 					case OpenViBE::Kernel::ParameterType_None:
-					case OpenViBE::Kernel::ParameterType_Pointer:        l_pParameter=new OpenViBE::Kernel::CPointerParameter(this->getKernelContext(), eParameterType);        break;
+					case OpenViBE::Kernel::ParameterType_Pointer:        l_pParameter=new OpenViBE::Kernel::CPointerParameter(this->getKernelContext(), eParameterType);                         break;
 				};
 
 				if(l_pParameter!=NULL)

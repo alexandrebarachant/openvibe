@@ -35,6 +35,8 @@ namespace OpenViBEDesigner
 			OpenViBE::int32 i32XCenter,
 			OpenViBE::int32 i32YCenter);
 
+		void apply(void);
+
 		virtual const char* getLabel(void) const;
 
 		OpenViBE::boolean isBoxAlgorithmPluginPresent(void) const;

@@ -24,6 +24,10 @@ boolean OpenViBEToolkit::initialize(const IKernelContext& rKernelContext)
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_TrialStop", OVTK_StimulationId_TrialStop);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_BaselineStart", OVTK_StimulationId_BaselineStart);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_BaselineStop", OVTK_StimulationId_BaselineStop);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_RestStart", OVTK_StimulationId_RestStart);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_RestStop", OVTK_StimulationId_RestStop);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_VisualStimulationStart", OVTK_StimulationId_VisualStimulationStart);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_VisualStimulationStop", OVTK_StimulationId_VisualStimulationStop);
 
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_00", OVTK_StimulationId_Label_00);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01", OVTK_StimulationId_Label_01);
@@ -46,6 +50,8 @@ boolean OpenViBEToolkit::initialize(const IKernelContext& rKernelContext)
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Beep", OVTK_StimulationId_Beep);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_DoubleBeep", OVTK_StimulationId_DoubleBeep);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_EndOfFile", OVTK_StimulationId_EndOfFile);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Target", OVTK_StimulationId_Target);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_NonTarget", OVTK_StimulationId_NonTarget);
 
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Artifact_EOG_Large", OVTK_GDF_Artifact_EOG_Large);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_GDF_Artifact_ECG", OVTK_GDF_Artifact_ECG);

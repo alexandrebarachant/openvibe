@@ -3,8 +3,6 @@
 
 #include "../ovtk_base.h"
 
-#
-
 namespace OpenViBEToolkit
 {
 	namespace Tools

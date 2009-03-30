@@ -60,9 +60,7 @@ CTopographicMap3DDisplay::CTopographicMap3DDisplay(void) :
 	m_pStreamedMatrixReaderCallBack(NULL),
 	m_pSphericalSplineInterpolation(NULL),
 	m_pTopographicMapDatabase(NULL),
-	m_pTopographicMap3DView(NULL),
-	m_o3DWidgetIdentifier(OV_UndefinedIdentifier),
-	m_oResourceGroupIdentifier(OV_UndefinedIdentifier),
+	m_pTopographicMap3DView(NULL),	
 	m_bSkullCreated(false),
 	m_bCameraPositioned(false),
 	m_bScalpDataInitialized(false),
@@ -70,11 +68,10 @@ CTopographicMap3DDisplay::CTopographicMap3DDisplay(void) :
 	m_bModelElectrodeCoordinatesInitialized(false),
 	m_ui32NbColors(0),
 	m_pColorScale(NULL),
-	m_bNeedToggleElectrodes(false),
+	m_bNeedToggleElectrodes(true),
 	m_bElectrodesToggleState(false),
 	m_bNeedToggleSamplingPoints(false),
-	m_bSamplingPointsToggleState(false),
-	m_oScalpId(OV_UndefinedIdentifier),
+	m_bSamplingPointsToggleState(false),	
 	m_ui32NbScalpVertices(0),
 	m_pScalpVertices(NULL),
 	m_pScalpColors(NULL)
@@ -429,7 +426,6 @@ boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
 		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve number of triangles from scalp object\n";
 		return false;
 	}
-
 	if(l_ui32ScalpTriangleCount == 0)
 	{
 		return false;
@@ -437,13 +433,51 @@ boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
 
 	//store scalp triangle indices
 	uint32* l_pScalpTriangleIndexArray = new uint32[3*l_ui32ScalpTriangleCount];
-
 	if(getVisualisationContext().getObjectTriangleIndexArray(m_oScalpId, l_ui32ScalpTriangleCount, l_pScalpTriangleIndexArray) == false)
 	{
 		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Couldn't retrieve index array from scalp object\n";
 		delete[] l_pScalpTriangleIndexArray;
 		return false;
 	}
+
+#define PROJECT_ON_FACE
+
+#ifdef PROJECT_ON_FACE
+	uint32 l_ui32NbFaceVertices = 0;	
+	if(getVisualisationContext().getObjectVertexCount(m_oFaceId, l_ui32NbFaceVertices) == false)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Couldn't retrieve number of vertices from face object\n";		
+	}
+
+	float32* l_pFaceVertices = new float32[3*l_ui32NbFaceVertices];
+	if(getVisualisationContext().getObjectVertexPositionArray(m_oFaceId, l_ui32NbFaceVertices, l_pFaceVertices) == false)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Couldn't retrieve vertex array from face object\n";		
+		delete[] l_pFaceVertices;
+		l_pFaceVertices = NULL;
+	}
+	
+	uint32 l_ui32FaceTriangleCount = 0;	
+	if(getVisualisationContext().getObjectTriangleCount(m_oFaceId, l_ui32FaceTriangleCount) == false)
+	{
+		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Couldn't retrieve number of triangles from face object\n";		
+	}
+	
+	uint32* l_pFaceTriangleIndexArray = NULL;
+	if(l_ui32FaceTriangleCount > 0)
+	{
+		//store scalp triangle indices
+		l_pFaceTriangleIndexArray = new uint32[3*l_ui32FaceTriangleCount];
+		if(getVisualisationContext().getObjectTriangleIndexArray(m_oFaceId, l_ui32FaceTriangleCount, l_pFaceTriangleIndexArray) == false)
+		{
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Couldn't retrieve index array from face object\n";		
+			delete[] l_pFaceVertices;
+			l_pFaceVertices = NULL;
+			delete[] l_pFaceTriangleIndexArray;
+			l_pFaceTriangleIndexArray = NULL;
+		}
+	}
+#endif
 
 	m_oElectrodeIds.resize((size_t)m_pTopographicMapDatabase->getChannelCount());
 
@@ -466,25 +500,51 @@ boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
 			float32 l_pRayDirection[3];
 			CONVERT_STD_TO_OV(l_pRayDirection, l_pNormalizedChannelCoords)
 
-			//look for triangle intersected by ray
+			//look for scalp triangle intersected by ray
 			uint32 j = 0;
 			float32 l_t;
+			boolean l_bIntersectionFound = false;
+
 			for(j=0; j<l_ui32ScalpTriangleCount; j++)
 			{
+				l_bIntersectionFound = false;
+
 				if(findRayTriangleIntersection(l_pProjectionCenter, l_pRayDirection,
 					m_pScalpVertices + 3*l_pScalpTriangleIndexArray[3*j],
 					m_pScalpVertices + 3*l_pScalpTriangleIndexArray[3*j+1],
 					m_pScalpVertices + 3*l_pScalpTriangleIndexArray[3*j+2],
-					l_t) == true)
+					l_t) == true && l_t > 0)
 				{
+					l_bIntersectionFound = true;
 					break;
 				}
 			}
-
-			if(j== m_ui32NbScalpVertices)
+								
+#ifdef PROJECT_ON_FACE
+				if(l_bIntersectionFound == false && l_pFaceVertices != NULL && l_pFaceTriangleIndexArray != NULL) //try and project it on face
+				{					
+					for(j=0; j<l_ui32FaceTriangleCount; j++)
+					{
+						if(findRayTriangleIntersection(l_pProjectionCenter, l_pRayDirection,
+							l_pFaceVertices + 3*l_pFaceTriangleIndexArray[3*j],
+							l_pFaceVertices + 3*l_pFaceTriangleIndexArray[3*j+1],
+							l_pFaceVertices + 3*l_pFaceTriangleIndexArray[3*j+2],
+							l_t) == true && l_t > 0)
+						{
+							l_bIntersectionFound = true;
+							break;
+						}
+					}
+				}
+#endif
+				
+			if(l_bIntersectionFound == false)
 			{
-				//no scalp triangle was intersected by ray : can't compute electrode coordinates!
-			}
+				CString l_oChannelLabel;
+				m_pTopographicMapDatabase->getChannelLabel(i, l_oChannelLabel);
+				getLogManager() << LogLevel_Warning << "Channel " << i << "(" << l_oChannelLabel << ") couldn't be projected on scalp! " 
+					<< "No graphical object will be created for this channel!\n";
+			}			
 			else
 			{
 				m_oElectrodeIds[i] = getVisualisationContext().createObject(Standard3DObject_Sphere);
@@ -516,6 +576,17 @@ boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
 
 	delete[] l_pScalpTriangleIndexArray;
 
+#ifdef PROJECT_ON_FACE
+	if(l_pFaceVertices != NULL)
+	{
+		delete[] l_pFaceVertices;
+	}
+	if(l_pFaceTriangleIndexArray != NULL)
+	{
+		delete[] l_pFaceTriangleIndexArray;
+	}
+#endif
+
 	return true;
 }
 
@@ -539,7 +610,7 @@ boolean CTopographicMap3DDisplay::findRayTriangleIntersection(float32* pOrigin, 
 	if (det < EPSILON)
 		return false;
 
-	/* calculate distance from pV0 to ray pOriginin */
+	/* calculate distance from pV0 to ray origin */
 	SUB(tvec, pOrigin, pV0);
 
 	/* calculate U parameter and test bounds */
@@ -566,7 +637,7 @@ boolean CTopographicMap3DDisplay::findRayTriangleIntersection(float32* pOrigin, 
 		return false;
 	inv_det = 1.0 / det;
 
-	/* calculate distance from pV0 to ray pOriginin */
+	/* calculate distance from pV0 to ray origin */
 	SUB(tvec, pOrigin, pV0);
 
 	/* calculate U parameter and test bounds */
@@ -666,7 +737,8 @@ boolean CTopographicMap3DDisplay::createSkull()
 	getVisualisationContext().setBackgroundColor(m_o3DWidgetIdentifier, 0, 0, 0);
 
 	//load face mesh
-	if(getVisualisationContext().createObject(m_oFaceMeshFilename) == OV_UndefinedIdentifier)
+	m_oFaceId = getVisualisationContext().createObject(m_oFaceMeshFilename);	
+	if(m_oFaceId == OV_UndefinedIdentifier)
 	{
 		getLogManager() << LogLevel_Error << "Couldn't load face mesh!\n";
 		m_bError = true;
@@ -677,7 +749,6 @@ boolean CTopographicMap3DDisplay::createSkull()
 	CNameValuePairList l_oParams;
 	l_oParams.setValue("CloneMeshes", true); //clone scalp mesh so that it doesn't interfere with other maps
 	m_oScalpId = getVisualisationContext().createObject(m_oScalpMeshFilename, &l_oParams);
-
 	if(m_oScalpId == OV_UndefinedIdentifier)
 	{
 		getLogManager() << LogLevel_Error << "Couldn't load scalp mesh!\n";

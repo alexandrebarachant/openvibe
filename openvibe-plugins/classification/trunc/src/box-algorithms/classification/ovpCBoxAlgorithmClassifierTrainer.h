@@ -5,6 +5,8 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
+#include "ovpCBoxAlgorithmCommonClassifierListener.inl"
+
 #include <map>
 
 #define OVP_ClassId_BoxAlgorithm_ClassifierTrainer     OpenViBE::CIdentifier(0x128703B1, 0x0E2441F5)
@@ -12,7 +14,7 @@
 
 namespace OpenViBEPlugins
 {
-	namespace Local
+	namespace Classification
 	{
 		class CBoxAlgorithmClassifierTrainer : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
@@ -63,7 +65,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-apply"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_ClassifierTrainer; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Local::CBoxAlgorithmClassifierTrainer; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Classification::CBoxAlgorithmClassifierTrainer; }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
@@ -75,9 +77,11 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addSetting("Train trigger",                     OV_TypeId_Stimulation, "OVTK_StimulationId_Train");
 				rBoxAlgorithmPrototype.addSetting("Class 1 label",                     OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
 				rBoxAlgorithmPrototype.addSetting("Class 2 label",                     OV_TypeId_Stimulation, "OVTK_StimulationId_Label_02");
-
 				return true;
 			}
+
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmCommonClassifierListener(5); }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) { delete pBoxListener; }
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_ClassifierTrainerDesc);
 		};

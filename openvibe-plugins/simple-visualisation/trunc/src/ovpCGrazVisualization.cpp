@@ -116,28 +116,32 @@ namespace OpenViBEPlugins
 			switch(m_eCurrentState)
 			{
 				case EGrazVisualizationState_Reference:
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
-							NULL,
-							true);
+					if(GTK_WIDGET(m_pDrawingArea)->window)
+						gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
+								NULL,
+								true);
 					break;
 
 				case EGrazVisualizationState_Cue:
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
-							NULL,
-							true);
+					if(GTK_WIDGET(m_pDrawingArea)->window)
+						gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
+								NULL,
+								true);
 					break;
 
 				case EGrazVisualizationState_Idle:
 					//m_f64MaxAmplitude = -DBL_MAX;
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
-							NULL,
-							true);
+					if(GTK_WIDGET(m_pDrawingArea)->window)
+						gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
+								NULL,
+								true);
 					break;
 
 				case EGrazVisualizationState_ContinousFeedback:
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
-							NULL,
-							true);
+					if(GTK_WIDGET(m_pDrawingArea)->window)
+						gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,
+								NULL,
+								true);
 					break;
 
 				default:
@@ -570,6 +574,9 @@ namespace OpenViBEPlugins
 
 		void CGrazVisualization::resize(uint32 ui32Width, uint32 ui32Height)
 		{
+			ui32Width =(ui32Width<8?8:ui32Width);
+			ui32Height=(ui32Height<8?8:ui32Height);
+
 			if(m_pLeftArrow)
 			{
 				g_object_unref(G_OBJECT(m_pLeftArrow));

@@ -38,20 +38,7 @@ CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, IScenario& rScenario,
 
 CBoxProxy::~CBoxProxy(void)
 {
-	if(m_pBox)
-	{
-		TAttributeHandler l_oAttributeHandler(*m_pBox);
-
-		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_XCenterPosition))
-			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_XCenterPosition, m_iXCenter);
-		else
-			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_XCenterPosition, m_iXCenter);
-
-		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_YCenterPosition))
-			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
-		else
-			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
-	}
+	this->apply();
 }
 
 CBoxProxy::operator IBox* (void)
@@ -92,6 +79,23 @@ void CBoxProxy::setCenter(int32 i32XCenter, int32 i32YCenter)
 {
 	m_iXCenter=i32XCenter;
 	m_iYCenter=i32YCenter;
+}
+void CBoxProxy::apply(void)
+{
+	if(m_pBox)
+	{
+		TAttributeHandler l_oAttributeHandler(*m_pBox);
+
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_XCenterPosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_XCenterPosition, m_iXCenter);
+		else
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_XCenterPosition, m_iXCenter);
+
+		if(l_oAttributeHandler.hasAttribute(OV_AttributeId_Box_YCenterPosition))
+			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
+		else
+			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
+	}
 }
 
 const char* CBoxProxy::getLabel(void) const

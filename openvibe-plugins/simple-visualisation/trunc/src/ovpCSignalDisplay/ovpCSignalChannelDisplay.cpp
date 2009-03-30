@@ -609,10 +609,18 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 		gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_ON_OFF_DASH, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 
 		//compute current time window start and end time
-		uint64 l_ui64StartTime = m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay] +
-			m_pDatabase->m_ui64BufferDuration * ui32FirstSampleToDisplay / l_ui32SamplesPerBuffer;
-
+#if 0
+		uint64 l_ui64StartTime = m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay] +	m_pDatabase->m_ui64BufferDuration * ui32FirstSampleToDisplay / l_ui32SamplesPerBuffer;
 		uint64 l_ui64EndTime = m_pDatabase->m_oStartTime[ui32LastBufferToDisplay] + m_pDatabase->m_ui64BufferDuration;
+#else
+		uint64 l_ui64FirstBufferDuration = m_pDatabase->m_oEndTime[ui32FirstBufferToDisplay] - m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay];
+		uint64 l_ui64LastBufferDuration = m_pDatabase->m_oEndTime[ui32LastBufferToDisplay] - m_pDatabase->m_oStartTime[ui32LastBufferToDisplay];
+
+		uint64 l_ui64StartTime = m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay] + 
+			l_ui64FirstBufferDuration * ui32FirstSampleToDisplay / l_ui32SamplesPerBuffer;
+
+		uint64 l_ui64EndTime = m_pDatabase->m_oStartTime[ui32LastBufferToDisplay] + l_ui64LastBufferDuration;
+#endif
 
 		//draw stimulations
 		std::deque<std::pair<uint64, uint64> >::iterator it;
@@ -627,13 +635,25 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 					j++;
 				}
 
+				GdkColor l_oLineColor;
+				m_pParentDisplayView->getStimulationColor(it->second, l_oLineColor);				
+				gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
+
+#if 0
 				uint32 i = (uint32)((it->first - m_pDatabase->m_oStartTime[j]) * l_ui32SamplesPerBuffer / m_pDatabase->m_ui64BufferDuration);
+#else
+				uint64 l_ui64StimBufferDuration = m_pDatabase->m_oEndTime[j] - m_pDatabase->m_oStartTime[j];
+				uint32 i = (uint32)((it->first - m_pDatabase->m_oStartTime[j]) * l_ui32SamplesPerBuffer / l_ui64StimBufferDuration);
+#endif
 				uint32 l_ui32StimulationX = (uint32)getSampleXCoordinate(j - ui32FirstBufferToDisplay, i, f64FirstBufferStartX);
 				gdk_draw_line(m_pDrawingArea->window, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], l_ui32StimulationX, 0, l_ui32StimulationX, m_ui32Height);
 			}
 		}
 
 		//switch back to normal line
+		GdkColor l_oLineColor;
+		l_oLineColor.red = 0; l_oLineColor.green = 0; l_oLineColor.blue = 0;
+		gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
 		gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 	}
 }
@@ -749,8 +769,8 @@ void drawingAreaClickedEventCallback(GtkWidget *widget, GdkEventButton *pEvent, 
 	if(l_bZoomChanged)
 	{
 		m_pChannelDisplay->redrawAllAtNextRefresh();
-		gdk_window_invalidate_rect(GTK_WIDGET(m_pChannelDisplay->m_pDrawingArea)->window, NULL, true);
-		gdk_window_invalidate_rect(GTK_WIDGET(m_pChannelDisplay->m_pLeftRuler->getWidget())->window, NULL, true);
+		if(GTK_WIDGET(m_pChannelDisplay->m_pDrawingArea)->window) gdk_window_invalidate_rect(GTK_WIDGET(m_pChannelDisplay->m_pDrawingArea)->window, NULL, true);
+		if(GTK_WIDGET(m_pChannelDisplay->m_pLeftRuler->getWidget())->window) gdk_window_invalidate_rect(GTK_WIDGET(m_pChannelDisplay->m_pLeftRuler->getWidget())->window, NULL, true);
 	}
 }
 

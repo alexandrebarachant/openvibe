@@ -19,6 +19,7 @@ namespace OpenViBE
 			ParameterType_None,           //!< No parameter
 			ParameterType_Integer,        //!< Integer parameter
 			ParameterType_UInteger,       //!< Unsigned integer parameter
+			ParameterType_Enumeration,    //!< Enumeration integer parameter
 			ParameterType_Boolean,        //!< Boolean parameter
 			ParameterType_Float,          //!< Float parameter
 			ParameterType_String,         //!< String parameter
@@ -96,6 +97,7 @@ namespace OpenViBE
 			 * \brief Creates a new parameter of a specific type
 			 * \param rParameterIdentifier [in] : the parameter identifier which has to be created
 			 * \param eParameterType [in] : the type of this parameter
+			 * \param rSubTypeIdentifier [in] : the optional sub type of this parameter (e.g. for enumerations)
 			 * \sa EParameterType
 			 * \sa IParameter
 			 *
@@ -103,7 +105,8 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::Kernel::IParameter* createParameter(
 				const OpenViBE::CIdentifier& rParameterIdentifier,
-				const OpenViBE::Kernel::EParameterType eParameterType)=0;
+				const OpenViBE::Kernel::EParameterType eParameterType,
+				const OpenViBE::CIdentifier& rSubTypeIdentifier=OV_UndefinedIdentifier)=0;
 			/**
 			 * \brief Removes an existing parameter
 			 * \param rParameterIdentifier [in] : the identifier of the parameter to remove

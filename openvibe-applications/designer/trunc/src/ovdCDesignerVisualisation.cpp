@@ -146,6 +146,9 @@ CDesignerVisualisation::CDesignerVisualisation(const IKernelContext& rKernelCont
 	m_pDialog(NULL),
 	m_pPane(NULL),
 	m_pHighlightedWidget(NULL),
+	m_bPreviewWindowVisible(false),
+	m_ui32PreviewWindowWidth(0),
+	m_ui32PreviewWindowHeight(0),
 	m_pUnaffectedItemFactory(NULL),
 	m_pVisualisationWindowItemFactory(NULL),
 	m_pVisualisationPanelItemFactory(NULL),
@@ -213,19 +216,20 @@ void CDesignerVisualisation::init(std::string guiFile)
 	//------------------
 	m_pDialog = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 
-	//if windows have been created, retrieve their size and take it into account
+	//retrieve default window size
 	uint32 l_ui32TreeViewWidth = 200;
-	uint32 l_ui32PreviewWindowWidth = (uint32)m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowWidth}", 400);
-	uint32 l_ui32PreviewWindowHeight = (uint32)m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowHeight}", 400);
+	m_ui32PreviewWindowWidth = (uint32)m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowWidth}", 400);
+	m_ui32PreviewWindowHeight = (uint32)m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UnaffectedVisualisationWindowHeight}", 400);
 	CIdentifier l_oVisualisationWindowIdentifier;
+	//if at least one window was created, retrieve its dimensions
 	if(m_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)
 	{
 		IVisualisationWidget* l_pVisualisationWindow = m_rVisualisationTree.getVisualisationWidget(l_oVisualisationWindowIdentifier);
 		TAttributeHandler l_oAttributeHandler(*l_pVisualisationWindow);
-		l_ui32PreviewWindowWidth = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width);
-		l_ui32PreviewWindowHeight = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height);
+		m_ui32PreviewWindowWidth = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width);
+		m_ui32PreviewWindowHeight = l_oAttributeHandler.getAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height);
 	}
-	gtk_window_set_default_size(GTK_WINDOW(m_pDialog), (gint)(l_ui32TreeViewWidth + l_ui32PreviewWindowWidth), (gint)l_ui32PreviewWindowHeight);
+	gtk_window_set_default_size(GTK_WINDOW(m_pDialog), (gint)(l_ui32TreeViewWidth + m_ui32PreviewWindowWidth), (gint)m_ui32PreviewWindowHeight);
 	//set window title
 	gtk_window_set_title(GTK_WINDOW(m_pDialog), "OpenViBE Window Manager");
 	// gtk_window_set_transient_for(GTK_WINDOW(m_pDialog), GTK_WINDOW(m_rInterfacedScenario.m_rApplication.m_pMainWindow));
@@ -279,11 +283,16 @@ void CDesignerVisualisation::load(void)
 
 void CDesignerVisualisation::show()
 {
+	// since gtk is asynchronous for the expose event,
+	// the m_bPreviewWindowVisible flag is turned on in the
+	// corresponding callback 
+	//m_bPreviewWindowVisible = true;
 	gtk_widget_show_all((::GtkWidget*)m_pDialog);
 }
 
 void CDesignerVisualisation::hide()
 {
+	m_bPreviewWindowVisible = false;
 	gtk_widget_hide_all((::GtkWidget*)m_pDialog);
 }
 
@@ -648,9 +657,10 @@ gboolean CDesignerVisualisation::window_state_event_cb(::GtkWidget* widget,GdkEv
 }
 #endif
 
-//event generated whenever window changes size, including when it is first created
+//event generated whenever window size changes, including when it is first created
 gboolean CDesignerVisualisation::configure_event_cb(::GtkWidget* widget, GdkEventConfigure* event, gpointer user_data)
 {
+	static_cast<CDesignerVisualisation*>(user_data)->m_bPreviewWindowVisible = true;
 	/*
 	//upon first show, resize window so that the preview widget has the desired size
 	if(m_bFirstShow == true)
@@ -669,6 +679,8 @@ gboolean CDesignerVisualisation::configure_event_cb(::GtkWidget* widget, GdkEven
 
 gboolean CDesignerVisualisation::widget_expose_event_cb(::GtkWidget* widget, GdkEventExpose* event, gpointer user_data)
 {
+	static_cast<CDesignerVisualisation*>(user_data)->m_bPreviewWindowVisible = true;
+
 	g_signal_handlers_disconnect_by_func(G_OBJECT(widget), G_CALLBACK2(CDesignerVisualisation::widget_expose_event_cb), user_data);
 
 	static_cast<CDesignerVisualisation*>(user_data)->resizeCB(NULL);
@@ -682,9 +694,20 @@ void CDesignerVisualisation::resizeCB(IVisualisationWidget* pVisualisationWidget
 	{
 		//assign current window size to each window
 		::GtkWidget* l_pNotebook = gtk_paned_get_child2(GTK_PANED(m_pPane));
-		if(l_pNotebook != NULL && GTK_WIDGET_VISIBLE(l_pNotebook) == true)
+		if(l_pNotebook != NULL)
 		{
 			CIdentifier l_oVisualisationWindowIdentifier = OV_UndefinedIdentifier;
+			//retrieve current preview window size, if window is visible
+			if(m_bPreviewWindowVisible == true)
+			{
+				::GtkWidget* l_pNotebook = gtk_paned_get_child2(GTK_PANED(m_pPane));
+				if(l_pNotebook != NULL)
+				{
+					//update preview window dims
+					m_ui32PreviewWindowWidth = l_pNotebook->allocation.width;
+					m_ui32PreviewWindowHeight = l_pNotebook->allocation.height;
+				}	
+			}
 
 			while(m_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)
 			{
@@ -692,8 +715,8 @@ void CDesignerVisualisation::resizeCB(IVisualisationWidget* pVisualisationWidget
 
 				//store new dimensions
 				TAttributeHandler l_oAttributeHandler(*l_pVisualisationWindow);
-				l_oAttributeHandler.setAttributeValue(OVD_AttributeId_VisualisationWindow_Width, l_pNotebook->allocation.width);
-				l_oAttributeHandler.setAttributeValue(OVD_AttributeId_VisualisationWindow_Height, l_pNotebook->allocation.height);
+				l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Width, m_ui32PreviewWindowWidth);
+				l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_VisualisationWindow_Height, m_ui32PreviewWindowHeight);
 			}
 		}
 		else
@@ -1431,8 +1454,8 @@ void CDesignerVisualisation::notifyPositionPanedCB(::GtkWidget* pWidget)
 		TAttributeHandler l_oAttributeHandler(*m_rVisualisationTree.getVisualisationWidget(l_oIdentifier));
 
 		//store new position and max position
-		l_oAttributeHandler.setAttributeValue(OVD_AttributeId_VisualisationWidget_DividerPosition, l_iPos);
-		l_oAttributeHandler.setAttributeValue(OVD_AttributeId_VisualisationWidget_MaxDividerPosition, l_iMaxPos);
+		l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_VisualisationWidget_DividerPosition, l_iPos);
+		l_oAttributeHandler.setAttributeValue<int>(OVD_AttributeId_VisualisationWidget_MaxDividerPosition, l_iMaxPos);
 	}
 }
 

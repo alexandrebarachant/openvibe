@@ -118,6 +118,49 @@ namespace OpenViBEToolkit
 
 		_IsDerivedFromClass_(CBoxAlgorithmParentClass, OVTK_ClassId_);
 
+	protected:
+
+		class FSettingValueAutoCast
+		{
+		public:
+			FSettingValueAutoCast(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext, const OpenViBE::uint32 ui32Index)
+				:m_rTypeManager(rBoxAlgorithmContext.getPlayerContext()->getTypeManager())
+				,m_rConfigurationManager(rBoxAlgorithmContext.getPlayerContext()->getConfigurationManager())
+			{
+				rBoxAlgorithmContext.getStaticBoxContext()->getSettingValue(ui32Index, m_sSettingValue);
+				rBoxAlgorithmContext.getStaticBoxContext()->getSettingType(ui32Index, m_oSettingType);
+			}
+			operator OpenViBE::uint64 (void)
+			{
+				if(m_rTypeManager.isEnumeration(m_oSettingType))
+				{
+					return m_rTypeManager.getEnumerationEntryValueFromName(m_oSettingType, m_sSettingValue);
+				}
+				return m_rConfigurationManager.expandAsUInteger(m_sSettingValue);
+			}
+			operator OpenViBE::int64 (void)
+			{
+				return m_rConfigurationManager.expandAsInteger(m_sSettingValue);
+			}
+			operator OpenViBE::float64 (void)
+			{
+				return m_rConfigurationManager.expandAsFloat(m_sSettingValue);
+			}
+			operator OpenViBE::boolean (void)
+			{
+				return m_rConfigurationManager.expandAsBoolean(m_sSettingValue);
+			}
+			operator const OpenViBE::CString (void)
+			{
+				return m_sSettingValue;
+			}
+		private:
+			OpenViBE::Kernel::ITypeManager& m_rTypeManager;
+			OpenViBE::Kernel::IConfigurationManager& m_rConfigurationManager;
+			OpenViBE::CString m_sSettingValue;
+			OpenViBE::CIdentifier m_oSettingType;
+		};
+
 	private:
 
 		class CScopedBoxAlgorithm

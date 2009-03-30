@@ -64,6 +64,10 @@
 #define OVTK_StimulationId_TrialStop                         0x00008006
 #define OVTK_StimulationId_BaselineStart                     0x00008007
 #define OVTK_StimulationId_BaselineStop                      0x00008008
+#define OVTK_StimulationId_RestStart                         0x00008009
+#define OVTK_StimulationId_RestStop                          0x0000800a
+#define OVTK_StimulationId_VisualStimulationStart            0x0000800b
+#define OVTK_StimulationId_VisualStimulationStop             0x0000800c
 
 #define OVTK_StimulationId_Label(i)                          0x00008100|((i)&0x0f)
 #define OVTK_StimulationId_LabelStart                        0x00008100
@@ -89,6 +93,8 @@
 #define OVTK_StimulationId_Beep                              0x00008202
 #define OVTK_StimulationId_DoubleBeep                        0x00008203
 #define OVTK_StimulationId_EndOfFile                         0x00008204
+#define OVTK_StimulationId_Target                            0x00008205
+#define OVTK_StimulationId_NonTarget                         0x00008206
 
 //___________________________________________________________________//
 //                                                                   //

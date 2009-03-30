@@ -27,6 +27,7 @@ namespace OpenViBE
 			 * \param rInputParameterIdentifier [in] : the identifier for this parameter
 			 * \param sInputName [in] : the name for this parameter
 			 * \param eParameterType [in] : the type for this parameter
+			 * \param rSubTypeIdentifier [in] : the optional sub type of this parameter (e.g. for enumerations)
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
 			 * \sa IParameter
@@ -34,12 +35,14 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addInputParameter(
 				const OpenViBE::CIdentifier& rInputParameterIdentifier,
 				const OpenViBE::CString& sInputName,
-				const OpenViBE::Kernel::EParameterType eParameterType)=0;
+				const OpenViBE::Kernel::EParameterType eParameterType,
+				const OpenViBE::CIdentifier& rSubTypeIdentifier=OV_UndefinedIdentifier)=0;
 			/**
 			 * \brief Adds an output parameter
 			 * \param rOutputParameterIdentifier [in] : the identifier for this parameter
 			 * \param sOutputName [in] : the name for this parameter
 			 * \param eParameterType [in] : the type for this parameter
+			 * \param rSubTypeIdentifier [in] : the optional sub type of this parameter (e.g. for enumerations)
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.
 			 * \sa IParameter
@@ -47,7 +50,8 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addOutputParameter(
 				const OpenViBE::CIdentifier& rOutputParameterIdentifier,
 				const OpenViBE::CString& sOutputName,
-				const OpenViBE::Kernel::EParameterType eParameterType)=0;
+				const OpenViBE::Kernel::EParameterType eParameterType,
+				const OpenViBE::CIdentifier& rSubTypeIdentifier=OV_UndefinedIdentifier)=0;
 			/**
 			 * \brief Adds an input trigger
 			 * \param rInputTriggerIdentifier [in] : the identifier for this trigger

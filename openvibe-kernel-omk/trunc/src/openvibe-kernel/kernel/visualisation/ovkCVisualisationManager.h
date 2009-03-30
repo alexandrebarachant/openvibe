@@ -101,9 +101,11 @@ namespace OpenViBE
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationManager>, OVK_ClassId_Kernel_Visualisation_VisualisationManager);
 
 		protected:
+
 			virtual OpenViBE::CIdentifier getUnusedIdentifier(void) const;
 
 		protected:
+
 			/// Map of visualisation trees (one per scenario, storing visualisation widgets arrangement in space)
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::IVisualisationTree*> m_vVisualisationTree;
 			/// Widget containing primary render window, created at startup and destroyed upon shutdown

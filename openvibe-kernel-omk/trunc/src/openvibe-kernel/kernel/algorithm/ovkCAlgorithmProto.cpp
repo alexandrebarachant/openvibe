@@ -13,17 +13,19 @@ CAlgorithmProto::CAlgorithmProto(const IKernelContext& rKernelContext, CAlgorith
 boolean CAlgorithmProto::addInputParameter(
 	const CIdentifier& rInputParameterIdentifier,
 	const CString& sInputName,
-	const EParameterType eParameterType)
+	const EParameterType eParameterType,
+	const CIdentifier& rSubTypeIdentifier)
 {
-	return m_rAlgorithm.addInputParameter(rInputParameterIdentifier, sInputName, eParameterType);
+	return m_rAlgorithm.addInputParameter(rInputParameterIdentifier, sInputName, eParameterType, rSubTypeIdentifier);
 }
 
 boolean CAlgorithmProto::addOutputParameter(
 	const CIdentifier& rOutputParameterIdentifier,
 	const CString& sOutputName,
-	const EParameterType eParameterType)
+	const EParameterType eParameterType,
+	const CIdentifier& rSubTypeIdentifier)
 {
-	return m_rAlgorithm.addOutputParameter(rOutputParameterIdentifier, sOutputName, eParameterType);
+	return m_rAlgorithm.addOutputParameter(rOutputParameterIdentifier, sOutputName, eParameterType, rSubTypeIdentifier);
 }
 
 boolean CAlgorithmProto::addInputTrigger(

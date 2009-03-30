@@ -16,6 +16,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace OpenViBEPlugins
 {
@@ -121,6 +122,30 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean isChannelDisplayVisible(
 				OpenViBE::uint32 ui32ChannelIndex);
 
+			void onStimulationReceivedCB(
+				OpenViBE::uint64 ui64StimulationCode,
+				const OpenViBE::CString& rStimulationName);
+
+			/**
+			 * \brief Get a color from a stimulation code
+			 * \remarks Only the lower 32 bits of the stimulation code are currently used to compute the color.
+			 * \param[in] ui64StimulationCode Stimulation code
+			 * \param[out] rColor Color computed from stimulation code
+			 */
+			void getStimulationColor(
+				OpenViBE::uint64 ui64StimulationCode, 
+				::GdkColor& rColor);
+
+		private:
+			/**
+			 * \brief Update stimulations color dialog with a new (stimulation, color) pair			 
+			 * \param[in] rStimulationLabel Stimulation label
+			 * \param[in] rStimulationColor Stimulation color
+			 */
+			void updateStimulationColorsDialog(
+				const OpenViBE::CString& rStimulationLabel, 
+				const GdkColor& rStimulationColor);
+
 		public:
 
 			//! The Glade handler used to create the interface
@@ -192,6 +217,9 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget *> m_vMultiViewChannelsCheckButtons;
 			//! Vector of indices of selected channels
 			std::vector<OpenViBE::uint32> m_vMultiViewSelectedChannels;
+			
+			//Map of stimulation codes received so far, and their corresponding name and color
+			std::map< OpenViBE::uint64, std::pair< OpenViBE::CString, ::GdkColor > > m_mStimulations;
 
 			//! Bottom box containing bottom ruler
 			GtkBox* m_pBottomBox;

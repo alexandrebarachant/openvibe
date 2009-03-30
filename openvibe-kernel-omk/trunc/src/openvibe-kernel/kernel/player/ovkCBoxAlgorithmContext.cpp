@@ -70,7 +70,20 @@ namespace OpenViBE
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingType, const, const uint32, ui32SettingIndex, CIdentifier&, rTypeIdentifier);
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingName, const, const uint32, ui32SettingIndex, CString&, rName);
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingDefaultValue, const, const uint32, ui32SettingIndex, CString&, rDefaultValue);
+#if 1
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingValue, const, const uint32, ui32SettingIndex, CString&, rValue);
+#else
+				virtual boolean getSettingValue(const uint32 ui32SettingIndex, CString& rValue) const
+				{
+					CString l_sResult;
+					if(!m_pBox->getSettingValue(ui32SettingIndex, l_sResult))
+					{
+						return false;
+					}
+					rValue=this->getConfigurationManager().expand(l_sResult);
+					return true;
+				}
+#endif
 				virtual __BridgeImplFunc2__((*m_pBox), boolean, setSettingType, , return false, const uint32, ui32SettingIndex, const CIdentifier&, rTypeIdentifier);
 				virtual __BridgeImplFunc2__((*m_pBox), boolean, setSettingName, , return false, const uint32, ui32SettingIndex, const CString&, rName);
 				virtual __BridgeImplFunc2__((*m_pBox), boolean, setSettingDefaultValue, , return false, const uint32, ui32SettingIndex, const CString&, rDefaultValue);

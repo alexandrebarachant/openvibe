@@ -11,6 +11,7 @@ namespace OpenViBE
 
 		enum EPlayerStatus
 		{
+			PlayerStatus_Uninitialized,
 			PlayerStatus_Stop,
 			PlayerStatus_Pause,
 			PlayerStatus_Step,
@@ -45,6 +46,9 @@ namespace OpenViBE
 
 			virtual OpenViBE::boolean setScenario(
 				const OpenViBE::CIdentifier& rScenarioIdentifier)=0;
+
+			virtual OpenViBE::boolean initialize(void)=0;
+			virtual OpenViBE::boolean uninitialize(void)=0;
 
 			virtual OpenViBE::boolean stop(void)=0;
 			virtual OpenViBE::boolean pause(void)=0;

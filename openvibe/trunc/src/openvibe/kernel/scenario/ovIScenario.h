@@ -5,6 +5,8 @@
 
 namespace OpenViBE
 {
+	class IMemoryBuffer;
+
 	namespace Kernel
 	{
 		class IBox;
@@ -20,7 +22,7 @@ namespace OpenViBE
 		 * \ingroup Group_Kernel
 		 *
 		 * This class is a static scenario description.
-		 * It is used to load/save/modify an §OpenViBE§
+		 * It is used to manipulate an §OpenViBE§
 		 * box/connection collection...
 		 *
 		 * \todo Add meta information for this scenario
@@ -29,7 +31,7 @@ namespace OpenViBE
 		{
 		public:
 
-			/** \name Input / Output from files */
+			/** \name General purpose functions */
 			//@{
 
 			/**
@@ -38,53 +40,6 @@ namespace OpenViBE
 			 * \return \e false in case of error.
 			 */
 			virtual OpenViBE::boolean clear(void)=0;
-			/**
-			 * \brief Loads a scenario from a file
-			 * \param sFileName [in] : The file to load the scenario from
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean load(
-				const OpenViBE::CString& sFileName)=0;
-			/**
-			 * \brief Loads a scenario from a file with a specific loader
-			 * \param sFileName [in] : The file to load the scenario from
-			 * \param rLoaderIdentifier [in] : The identifier of the loader to use
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean load(
-				const OpenViBE::CString& sFileName,
-				const OpenViBE::CIdentifier& rLoaderIdentifier)=0;
-			/**
-			 * \brief Saves a scenario to a file
-			 * \param sFileName [in] : The file to save the scenario to
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean save(
-				const OpenViBE::CString& sFileName)=0;
-			/**
-			 * \brief Saves a scenario to a file with a specific saver
-			 * \param sFileName [in] : The file to save the scenario to
-			 * \param rSaverIdentifier [in] : The identifier of the saver to use
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 */
-			virtual OpenViBE::boolean save(
-				const OpenViBE::CString& sFileName,
-				const OpenViBE::CIdentifier& rSaverIdentifier)=0;
-			/**
-			 * \brief Merges a scenario into the current scenario
-			 * \param rScenario [in] : The scenario to merge in
-			 *        this scenario
-			 * \return \e true in case of success.
-			 * \return \e false in case of error.
-			 * \warning Source scenario are ignored, only boxes
-			 *          and links are effectively merged
-			 */
-			virtual OpenViBE::boolean merge(
-				const OpenViBE::Kernel::IScenario& rScenario)=0;
 
 			//@{
 			/** \name Visualisation tree management */

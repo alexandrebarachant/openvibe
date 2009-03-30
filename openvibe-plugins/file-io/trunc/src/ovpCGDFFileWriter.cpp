@@ -300,6 +300,7 @@ boolean CGDFFileWriter::uninitialize()
 	//write events
 	if(!m_oEvents.empty())
 	{
+		this->getLogManager() << LogLevel_Trace << "Saving " << (uint32)m_oEvents.size() << " events\n";
 		saveEvents();
 	}
 
@@ -436,7 +437,6 @@ boolean CGDFFileWriter::process()
 
 	for(uint32 j=0 ; j<getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount() ; j++)
 	{
-
 		for(uint32 i=0; i<l_pBoxIO->getInputChunkCount(j); i++)
 		{
 			uint64 l_ui64StartTime;

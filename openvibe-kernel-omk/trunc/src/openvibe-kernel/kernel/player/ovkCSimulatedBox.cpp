@@ -724,6 +724,7 @@ boolean CSimulatedBox::uninitialize(void)
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
 
 	if(m_bCrashed) return false;
+	if(!m_pBoxAlgorithm) return false;
 
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
@@ -1207,8 +1208,8 @@ boolean CSimulatedBox::markOutputAsReadyToSend(
 	}
 
 	// sets start and end time
-	m_vCurrentOutput[ui32OutputIndex].setStartTime(ui64StartTime);
-	m_vCurrentOutput[ui32OutputIndex].setEndTime(ui64EndTime);
+	m_vCurrentOutput[ui32OutputIndex].setStartTime(min(ui64StartTime, ui64EndTime));
+	m_vCurrentOutput[ui32OutputIndex].setEndTime(max(ui64StartTime, ui64EndTime));
 
 	// copies chunk
 	m_vOutput[ui32OutputIndex].push_back(m_vCurrentOutput[ui32OutputIndex]);

@@ -15,6 +15,7 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#include "tools/ovtkColorGradient.h"
 #include "tools/ovtkMatrix.h"
 #include "tools/ovtkStimulationSet.h"
 
@@ -37,6 +38,9 @@
 #include "algorithms/ovtkTAlgorithm.h"
 #include "algorithms/classification/ovtkCAlgorithmClassifierProcessor.h"
 #include "algorithms/classification/ovtkCAlgorithmClassifierTrainer.h"
+
+#include "algorithms/scenario-io/ovtkCAlgorithmScenarioImporter.h"
+#include "algorithms/scenario-io/ovtkCAlgorithmScenarioExporter.h"
 
 //___________________________________________________________________//
 //                                                                   //

@@ -118,7 +118,7 @@ namespace OpenViBEPlugins
 			m_pDisplayTable = glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayMainTable");
 			//rows : for each channel, [0] channel data, [1] horizontal separator
 			//columns : [0] labels, [1] vertical separator, [2] spectrum displays
-			gtk_table_resize(GTK_TABLE(m_pDisplayTable), (l_ui32ChannelCount)*2 - 1, 3);
+			gtk_table_resize(GTK_TABLE(m_pDisplayTable), l_ui32ChannelCount*2-1, 3);
 
 			int32 l_i32LeftRulerWidthRequest = 50;
 			int32 l_i32ChannelDisplayWidthRequest = 20;
@@ -131,14 +131,14 @@ namespace OpenViBEPlugins
 			//set a minimum size for the table (needed to scroll)
 			gtk_widget_set_size_request(
 				m_pDisplayTable,
-				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayWidthRequest,
-				(l_ui32ChannelCount*2)*l_i32ChannelDisplayHeightRequest);
+				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayWidthRequest,				
+				l_ui32ChannelCount*l_i32ChannelDisplayHeightRequest);
 
 			//add a vertical separator
 			GtkWidget* l_pSeparator = gtk_vseparator_new();
 			gtk_table_attach(GTK_TABLE(m_pDisplayTable), l_pSeparator,
 				1, 2, //2nd column
-				0, (l_ui32ChannelCount)*2, //whole table height
+				0, l_ui32ChannelCount*2-1, //whole table height
 				GTK_SHRINK, static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), 0, 0);
 			gtk_widget_show(l_pSeparator);
 
@@ -172,7 +172,8 @@ namespace OpenViBEPlugins
 				gtk_table_attach(GTK_TABLE(m_pDisplayTable),l_pLabel,
 					0, 1, //1st column
 					i*2, (i*2)+1, //ith line
-					GTK_FILL, GTK_SHRINK,	0, 0);
+					GTK_FILL, GTK_SHRINK,	
+					0, 0);
 				gtk_widget_show(l_pLabel);
 				gtk_size_group_add_widget(l_pSizeGroup, l_pLabel);
 
@@ -209,6 +210,7 @@ namespace OpenViBEPlugins
 				//select channel by default
 				m_vSelectedChannels.push_back(i);
 
+				//clear label
 				l_oLabelString.str("");
 			}
 
@@ -305,7 +307,7 @@ namespace OpenViBEPlugins
 			//redraw channels and rulers
 			if(m_vSelectedChannels.size() > 0)
 			{
-				gdk_window_invalidate_rect(GTK_WIDGET(m_pDisplayTable)->window,	NULL,	true);
+				if(GTK_WIDGET(m_pDisplayTable)->window) gdk_window_invalidate_rect(GTK_WIDGET(m_pDisplayTable)->window, NULL, true);
 			}
 		}
 
@@ -441,7 +443,7 @@ namespace OpenViBEPlugins
 			m_f64MinDisplayedFrequency = gtk_spin_button_get_value(GTK_SPIN_BUTTON(pWidget));
 			m_pPowerSpectrumDatabase->setMinDisplayedFrequency(m_f64MinDisplayedFrequency);
 			//redraw bottom ruler
-			gdk_window_invalidate_rect(m_pBottomRuler->window, NULL, true);
+			if(m_pBottomRuler->window) gdk_window_invalidate_rect(m_pBottomRuler->window, NULL, true);
 		}
 
 		void CPowerSpectrumDisplayView::maxDisplayedFrequencyChangedCB(GtkWidget* pWidget)
@@ -449,7 +451,7 @@ namespace OpenViBEPlugins
 			m_f64MaxDisplayedFrequency = gtk_spin_button_get_value(GTK_SPIN_BUTTON(pWidget));
 			m_pPowerSpectrumDatabase->setMaxDisplayedFrequency(m_f64MaxDisplayedFrequency);
 			//redraw bottom ruler
-			gdk_window_invalidate_rect(m_pBottomRuler->window, NULL, true);
+			if(m_pBottomRuler->window) gdk_window_invalidate_rect(m_pBottomRuler->window, NULL, true);
 		}
 
 		void CPowerSpectrumDisplayView::updateMainTableStatus()

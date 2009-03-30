@@ -85,7 +85,7 @@ CTimeFrequencyMapChannelDisplay::CTimeFrequencyMapChannelDisplay(CSpectrumDataba
 	m_ui32Rowstride(0)
 {
 	//widgets table
-	m_pWidgetTable = GTK_TABLE(gtk_table_new(2, 1, FALSE));
+	m_pWidgetTable = GTK_TABLE(gtk_table_new(1, 2, FALSE));
 
 	//TF map display
 	m_pDisplay = gtk_drawing_area_new();
@@ -489,16 +489,6 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		gboolean timeFrequencyMapChannelDisplaySizeAllocateCallback(::GtkWidget *widget, ::GtkAllocation *allocation, gpointer data)
-		{
-			CTimeFrequencyMapChannelDisplay * l_pDisplay = reinterpret_cast<CTimeFrequencyMapChannelDisplay*>(data);
-
-			//3bytes per pixel
-			l_pDisplay->resizeRGBBuffer(allocation->width,allocation->height);
-
-			return FALSE;
-		}
-
 		gboolean timeFrequencyMapChannelDisplayExposeEventCallback(::GtkWidget *widget, GdkEventExpose *event, gpointer data)
 		{
 			//redraw map
@@ -507,6 +497,13 @@ namespace OpenViBEPlugins
 
 			//don't propagate this signal to the children if any
 			return TRUE;
+		}
+
+		gboolean timeFrequencyMapChannelDisplaySizeAllocateCallback(::GtkWidget *widget, ::GtkAllocation *allocation, gpointer data)
+		{
+			CTimeFrequencyMapChannelDisplay * l_pDisplay = reinterpret_cast<CTimeFrequencyMapChannelDisplay*>(data);			
+			l_pDisplay->resizeRGBBuffer(allocation->width,allocation->height);
+			return FALSE;
 		}
 
 		gboolean timeFrequencyMapLeftRulerExposeEventCallback(::GtkWidget *widget, GdkEventExpose *event, gpointer data)

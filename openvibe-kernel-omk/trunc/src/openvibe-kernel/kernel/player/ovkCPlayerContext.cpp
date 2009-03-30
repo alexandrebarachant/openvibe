@@ -70,7 +70,7 @@ namespace OpenViBE
 			{
 			public:
 
-				CLogManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<ILogManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
+				CLogManagerBridge(const IKernelContext& rKernelContext, IPlayerContext& rPlayerContext, CSimulatedBox* pSimulatedBox) : TKernelObject<ILogManager>(rKernelContext), m_rPlayerContext(rPlayerContext), m_pSimulatedBox(pSimulatedBox) { }
 
 				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint64, ui64Value)
 				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint32, ui32Value)
@@ -106,6 +106,8 @@ namespace OpenViBE
 				{
 					getKernelContext().getLogManager()
 						<< eLogLevel
+						<< "At time "
+						<< m_rPlayerContext.getCurrentTime()
 						<< "<"
 						<< LogColor_PushStateBit
 						<< LogColor_ForegroundBlue
@@ -120,6 +122,7 @@ namespace OpenViBE
 
 			protected:
 
+				IPlayerContext& m_rPlayerContext;
 				CSimulatedBox* m_pSimulatedBox;
 			};
 
@@ -195,7 +198,7 @@ CPlayerContext::CPlayerContext(const IKernelContext& rKernelContext, CSimulatedB
 {
 	m_pAlgorithmManagerBridge=new CAlgorithmManagerBridge(rKernelContext, pSimulatedBox);
 	m_pConfigurationManagerBridge=new CConfigurationManagerBridge(rKernelContext, pSimulatedBox);
-	m_pLogManagerBridge=new CLogManagerBridge(rKernelContext, pSimulatedBox);
+	m_pLogManagerBridge=new CLogManagerBridge(rKernelContext, *this, pSimulatedBox);
 	m_pScenarioManagerBridge=new CScenarioManagerBridge(rKernelContext, pSimulatedBox);
 	m_pTypeManagerBridge=new CTypeManagerBridge(rKernelContext, pSimulatedBox);
 }

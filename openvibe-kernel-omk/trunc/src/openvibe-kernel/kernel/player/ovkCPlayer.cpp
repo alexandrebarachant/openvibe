@@ -30,8 +30,7 @@ CPlayer::CPlayer(const IKernelContext& rKernelContext)
 	,m_oScheduler(rKernelContext)
 	,m_ui64CurrentTimeToReach(0)
 	,m_ui64Lateness(0)
-	,m_eStatus(PlayerStatus_Stop)
-	,m_bIsInitialized(false)
+	,m_eStatus(PlayerStatus_Uninitialized)
 {
 	uint64 l_ui64SchedulerFrequency=this->getConfigurationManager().expandAsUInteger("${Kernel_PlayerFrequency}");
 	if(l_ui64SchedulerFrequency==0)
@@ -48,7 +47,7 @@ CPlayer::CPlayer(const IKernelContext& rKernelContext)
 
 CPlayer::~CPlayer(void)
 {
-	if(m_bIsInitialized)
+	if(m_eStatus!=PlayerStatus_Uninitialized)
 	{
 		this->uninitialize();
 	}
@@ -60,26 +59,26 @@ CPlayer::~CPlayer(void)
 boolean CPlayer::setScenario(
 	const CIdentifier& rScenarioIdentifier)
 {
-	this->getLogManager() << LogLevel_Trace << "Player setScenario\n";
-
-	if(m_bIsInitialized)
+	if(m_eStatus!=PlayerStatus_Uninitialized)
 	{
 		this->getLogManager() << LogLevel_Warning << "Trying to configure an initialized player !\n";
 		return false;
 	}
+
+	this->getLogManager() << LogLevel_Trace << "Player setScenario\n";
 
 	return m_oScheduler.setScenario(rScenarioIdentifier);;
 }
 
 boolean CPlayer::initialize(void)
 {
-	this->getLogManager() << LogLevel_Trace << "Player initialize\n";
-
-	if(m_bIsInitialized)
+	if(m_eStatus!=PlayerStatus_Uninitialized)
 	{
 		this->getLogManager() << LogLevel_Warning << "Trying to initialize an initialized player !\n";
 		return false;
 	}
+
+	this->getLogManager() << LogLevel_Trace << "Player initialize\n";
 
 	m_oScheduler.initialize();
 	m_oBenchmarkChrono.reset(static_cast<uint32>(m_oScheduler.getFrequency()));
@@ -87,7 +86,6 @@ boolean CPlayer::initialize(void)
 	m_ui64CurrentTimeToReach=0;
 	m_ui64Lateness=0;
 	m_eStatus=PlayerStatus_Stop;
-	m_bIsInitialized=true;
 
 	return true;
 
@@ -95,28 +93,30 @@ boolean CPlayer::initialize(void)
 
 boolean CPlayer::uninitialize(void)
 {
-	this->getLogManager() << LogLevel_Trace << "Player uninitialize\n";
-
-	if(!m_bIsInitialized)
+	if(m_eStatus==PlayerStatus_Uninitialized)
 	{
 		this->getLogManager() << LogLevel_Warning << "Trying to uninitialize an uninitialized player !\n";
 		return false;
 	}
 
+	this->getLogManager() << LogLevel_Trace << "Player uninitialize\n";
+
 	m_oScheduler.uninitialize();
 
-	m_bIsInitialized=false;
+	m_eStatus=PlayerStatus_Uninitialized;
 	return true;
 }
 
 boolean CPlayer::stop(void)
 {
+	if(m_eStatus==PlayerStatus_Uninitialized)
+	{
+		this->getLogManager() << LogLevel_Warning << "Player has to be initialized before to use it !\n";
+		return false;
+	}
+
 	this->getLogManager() << LogLevel_Trace << "Player stop\n";
 
-	if(m_bIsInitialized)
-	{
-		this->uninitialize();
-	}
 	m_eStatus=PlayerStatus_Stop;
 
 	return true;
@@ -124,12 +124,14 @@ boolean CPlayer::stop(void)
 
 boolean CPlayer::pause(void)
 {
+	if(m_eStatus==PlayerStatus_Uninitialized)
+	{
+		this->getLogManager() << LogLevel_Warning << "Player has to be initialized before to use it !\n";
+		return false;
+	}
+
 	this->getLogManager() << LogLevel_Trace << "Player pause\n";
 
-	if(!m_bIsInitialized)
-	{
-		this->initialize();
-	}
 	m_eStatus=PlayerStatus_Pause;
 
 	return true;
@@ -137,12 +139,14 @@ boolean CPlayer::pause(void)
 
 boolean CPlayer::step(void)
 {
+	if(m_eStatus==PlayerStatus_Uninitialized)
+	{
+		this->getLogManager() << LogLevel_Warning << "Player has to be initialized before to use it !\n";
+		return false;
+	}
+
 	this->getLogManager() << LogLevel_Trace << "Player step\n";
 
-	if(!m_bIsInitialized)
-	{
-		this->initialize();
-	}
 	m_eStatus=PlayerStatus_Step;
 
 	return true;
@@ -150,12 +154,14 @@ boolean CPlayer::step(void)
 
 boolean CPlayer::play(void)
 {
+	if(m_eStatus==PlayerStatus_Uninitialized)
+	{
+		this->getLogManager() << LogLevel_Warning << "Player has to be initialized before to use it !\n";
+		return false;
+	}
+
 	this->getLogManager() << LogLevel_Trace << "Player play\n";
 
-	if(!m_bIsInitialized)
-	{
-		this->initialize();
-	}
 	m_eStatus=PlayerStatus_Play;
 
 	return true;
@@ -163,12 +169,14 @@ boolean CPlayer::play(void)
 
 boolean CPlayer::forward(void)
 {
+	if(m_eStatus==PlayerStatus_Uninitialized)
+	{
+		this->getLogManager() << LogLevel_Warning << "Player has to be initialized before to use it !\n";
+		return false;
+	}
+
 	this->getLogManager() << LogLevel_Trace << "Player forward\n";
 
-	if(!m_bIsInitialized)
-	{
-		this->initialize();
-	}
 	m_eStatus=PlayerStatus_Forward;
 
 	return true;
@@ -187,8 +195,9 @@ float64 CPlayer::getCPUUsage(const CIdentifier& rProcessingUnitIdentifier) const
 boolean CPlayer::loop(
 	const uint64 ui64ElapsedTime)
 {
-	if(!m_bIsInitialized)
+	if(m_eStatus==PlayerStatus_Uninitialized)
 	{
+		this->getLogManager() << LogLevel_Warning << "Player has to be initialized before to use it !\n";
 		return false;
 	}
 

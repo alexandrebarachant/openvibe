@@ -12,6 +12,14 @@ CScenarioManager::CScenarioManager(const IKernelContext& rKernelContext)
 {
 }
 
+CScenarioManager::~CScenarioManager(void)
+{
+	for(map<CIdentifier, CScenario*>::iterator i=m_vScenario.begin(); i!=m_vScenario.end(); i++)
+	{
+		delete i->second;
+	}
+}
+
 CIdentifier CScenarioManager::getNextScenarioIdentifier(
 	const CIdentifier& rPreviousIdentifier) const
 {

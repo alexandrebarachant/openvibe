@@ -375,7 +375,7 @@ namespace OpenViBEPlugins
 			if(m_bElectrodesToggledOn == false)
 			{
 				//clear screen so that electrode labels are hidden
-				gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
+				if(m_pDrawingArea->window) gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
 			}
 		}
 
@@ -399,7 +399,7 @@ namespace OpenViBEPlugins
 			m_bNeedResize = true;
 
 			//clear screen
-			gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
+			if(m_pDrawingArea->window) gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
 		}
 
 		void CTopographicMap2DView::setViewCB(GtkWidget* pWidget)
@@ -430,7 +430,7 @@ namespace OpenViBEPlugins
 			m_bNeedResize = true;
 
 			//clear screen
-			gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
+			if(m_pDrawingArea->window) gdk_window_invalidate_rect(m_pDrawingArea->window, NULL, true);
 		}
 
 		void CTopographicMap2DView::setInterpolationCB(GtkWidget* pWidget)

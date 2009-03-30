@@ -21,20 +21,9 @@ namespace OpenViBE
 		public:
 
 			CScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext, const OpenViBE::CIdentifier& rIdentifier);
+			virtual ~CScenario(void);
 
 			virtual OpenViBE::boolean clear(void);
-			virtual OpenViBE::boolean load(
-				const OpenViBE::CString& sFileName);
-			virtual OpenViBE::boolean load(
-				const OpenViBE::CString& sFileName,
-				const OpenViBE::CIdentifier& rLoaderIdentifier);
-			virtual OpenViBE::boolean save(
-				const OpenViBE::CString& sFileName);
-			virtual OpenViBE::boolean save(
-				const OpenViBE::CString& sFileName,
-				const OpenViBE::CIdentifier& rSaverIdentifier);
-			virtual OpenViBE::boolean merge(
-				const OpenViBE::Kernel::IScenario& rScenario);
 
 			virtual OpenViBE::boolean setVisualisationTreeIdentifier(
 				const OpenViBE::CIdentifier& rVisualisationTreeIdentifier);

@@ -87,6 +87,7 @@
 #define OVK_ClassId_Kernel_ParameterT                         OpenViBE::CIdentifier(0x6DF62060, 0x65A40A62)
 #define OVK_ClassId_Kernel_UIntegerParameter                  OpenViBE::CIdentifier(0x665A47DC, 0x650630EE)
 #define OVK_ClassId_Kernel_IntegerParameter                   OpenViBE::CIdentifier(0x52DA0F06, 0x45155D4F)
+#define OVK_ClassId_Kernel_EnumerationParameter               OpenViBE::CIdentifier(0x1825F2CA, 0x5589B8E2)
 #define OVK_ClassId_Kernel_BooleanParameter                   OpenViBE::CIdentifier(0x4E79D376, 0x151D2473)
 #define OVK_ClassId_Kernel_FloatParameter                     OpenViBE::CIdentifier(0x37B24229, 0x6A053984)
 #define OVK_ClassId_Kernel_StringParameter                    OpenViBE::CIdentifier(0x4AA96293, 0x2B76B89C)

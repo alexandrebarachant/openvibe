@@ -48,7 +48,6 @@ namespace OpenViBE
 			OpenViBE::uint64 m_ui64CurrentTimeToReach;
 			OpenViBE::uint64 m_ui64Lateness;
 			OpenViBE::Kernel::EPlayerStatus m_eStatus;
-			OpenViBE::boolean m_bIsInitialized;
 
 		private:
 

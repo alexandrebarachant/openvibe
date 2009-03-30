@@ -147,6 +147,8 @@
 #define OV_TypeId_Filename                                   OpenViBE::CIdentifier(0x330306DD, 0x74A95F98)
 #define OV_TypeId_Stimulation                                OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
 #define OV_TypeId_LogLevel                                   OpenViBE::CIdentifier(0xA88B3667, 0x0871638C)
+#define OV_TypeId_Color                                      OpenViBE::CIdentifier(0x7F45A2A9, 0x7DB12219)
+#define OV_TypeId_ColorGradient                              OpenViBE::CIdentifier(0x3D3C7C7F, 0xEF0E7129)
 
 #define OV_TypeId_EBMLStream                                 OpenViBE::CIdentifier(0x434F6587, 0x2EFD2B7E)
 #define   OV_TypeId_ChannelLocalisation                      OpenViBE::CIdentifier(0x013DF452, 0xA3A8879A)

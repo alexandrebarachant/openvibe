@@ -4,6 +4,7 @@
 #include "ovd_base.h"
 
 #include "ovdCInterfacedObject.h"
+#include "ovdCScenarioStateStack.h"
 
 #include <map>
 #include <vector>
@@ -31,6 +32,10 @@ namespace OpenViBEDesigner
 		virtual void updateScenarioLabel(void);
 		OpenViBE::uint32 pickInterfacedObject(int x, int y);
 		OpenViBE::boolean pickInterfacedObject(int x, int y, int iSizeX, int iSizeY);
+
+		void undoCB(void);
+		void redoCB(void);
+		void snapshotCB(void);
 
 		void scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent);
 		void scenarioDrawingAreaDragDataReceivedCB(::GdkDragContext* pDragContext, gint iX, gint iY, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT);
@@ -133,6 +138,8 @@ namespace OpenViBEDesigner
 			OpenViBEDesigner::CInterfacedScenario* pInterfacedScenario;
 		} BoxContextMenuCB;
 		std::map < OpenViBE::uint32, BoxContextMenuCB > m_vBoxContextMenuCB;
+
+		OpenViBEDesigner::CScenarioStateStack m_oStateStack;
 	};
 };
 

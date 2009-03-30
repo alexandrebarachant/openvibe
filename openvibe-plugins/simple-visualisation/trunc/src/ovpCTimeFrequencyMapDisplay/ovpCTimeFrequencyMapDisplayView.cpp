@@ -111,10 +111,6 @@ namespace OpenViBEPlugins
 			//TODO
 			//m_rSpectrumDatabase.setDisplayedFrequencyRange(m_f64MinDisplayedFrequency, m_f64MaxDisplayedFrequency);
 
-			//size group for the channel labels and the empty widget in the bottom box
-			//(useful to position the bottom time ruler correctly)
-			::GtkSizeGroup * l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
-
 			//retrieve channel count
 			uint32 l_ui32ChannelCount = m_rSpectrumDatabase.getChannelCount();
 
@@ -130,45 +126,56 @@ namespace OpenViBEPlugins
 
 			int32 l_i32LeftRulerWidthRequest = 50;
 			int32 l_i32ChannelDisplayWidthRequest = 20;
+			int32 l_i32BottomRulerWidthRequest = 0;
 
 			int32 l_i32LeftRulerHeightRequest = 20;
 			int32 l_i32ChannelDisplayHeightRequest = 20;
+			int32 l_i32BottomRulerHeightRequest = 20;
 
 			//sets a minimum size for the table (needed to scroll)
 			gtk_widget_set_size_request(
 				m_pDisplayTable,
 				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayWidthRequest,
-				(l_ui32ChannelCount)*20);
+				l_ui32ChannelCount*l_i32ChannelDisplayHeightRequest);
 
 			//add a vertical separator
 			::GtkWidget* l_pSeparator = gtk_vseparator_new();
 			gtk_table_attach(GTK_TABLE(m_pDisplayTable), l_pSeparator,
-				1, 2, 0, (l_ui32ChannelCount)*2, GTK_SHRINK, static_cast< ::GtkAttachOptions >(GTK_EXPAND | GTK_FILL), 0, 0);
+				1, 2, //2nd column
+				0, (l_ui32ChannelCount)*2, //whole table height
+				GTK_SHRINK, static_cast< ::GtkAttachOptions >(GTK_EXPAND | GTK_FILL), 0, 0);
 			gtk_widget_show(l_pSeparator);
 
-			//create as many widgets as there are channels and add them to table
-			CString l_oChannelLabel;
-			stringstream l_oLabelString;
-			::GtkWidget * l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectList");
+			//size group for the channel labels and the empty widget in the bottom box
+			//(useful to position the bottom time ruler correctly)
+			GtkSizeGroup* l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
+			//channels selection widget
+			GtkWidget* l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectList");
+			
+			stringstream l_oLabelString;
+
+			//create channel widgets and add them to display table
 			for(uint32 i=0 ; i<l_ui32ChannelCount ; i++)
 			{
 				//add channel label
 				//-----------------
-				m_rSpectrumDatabase.getChannelLabel(i, l_oChannelLabel);
-				if(l_oChannelLabel == CString(""))
+				CString l_sChannelLabel;
+				m_rSpectrumDatabase.getChannelLabel(i, l_sChannelLabel);
+				if(l_sChannelLabel == CString(""))
 				{
 					//if no name has been set, use channel index
 					l_oLabelString << "Channel " << i;
 				}
 				else //prepend name with channel index
 				{
-					l_oLabelString << i << " : " << l_oChannelLabel;
+					l_oLabelString << i << " : " << l_sChannelLabel;
 				}
 				GtkWidget* l_pLabel =  gtk_label_new(l_oLabelString.str().c_str());
 				m_vChannelLabels[i] = l_pLabel;
 				gtk_table_attach(GTK_TABLE(m_pDisplayTable),l_pLabel,
-					0, 1, i*2, (i*2)+1,
+					0, 1, //first column
+					i*2, (i*2)+1, //ith line
 					GTK_FILL, GTK_SHRINK,
 					0, 0);
 				gtk_widget_show(l_pLabel);
@@ -184,7 +191,7 @@ namespace OpenViBEPlugins
 				gtk_table_attach(GTK_TABLE(m_pDisplayTable), m_vChannelDisplays[i]->getTopWidget(),
 					2, 3, //3rd column
 					(i*2), (i*2)+1, //ith line
-				static_cast< ::GtkAttachOptions >(GTK_EXPAND | GTK_FILL), static_cast< ::GtkAttachOptions >(GTK_EXPAND | GTK_FILL), 0, 0);
+					static_cast< ::GtkAttachOptions >(GTK_EXPAND | GTK_FILL), static_cast< ::GtkAttachOptions >(GTK_EXPAND | GTK_FILL), 0, 0);
 				gtk_widget_show_all(m_vChannelDisplays[i]->getTopWidget());
 
 				//add a horizontal separator
@@ -198,7 +205,7 @@ namespace OpenViBEPlugins
 
 				//add a checkbox to channel selection window
 				//------------------------------------------
-				::GtkWidget * l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
+				GtkWidget* l_pChannelCheckButton = gtk_check_button_new_with_label(l_oLabelString.str().c_str());
 				gtk_box_pack_start_defaults(GTK_BOX(l_pChannelSelectList), l_pChannelCheckButton);
 
 				//store a pointer to channel check box
@@ -208,12 +215,13 @@ namespace OpenViBEPlugins
 				//select channel by default
 				m_vSelectedChannels.push_back(i);
 
+				//clear label
 				l_oLabelString.str("");
 			}
 
 			//bottom ruler
 			//------------
-			m_pTimeRuler = new CTimeRuler(m_rSpectrumDatabase, l_i32LeftRulerWidthRequest, l_i32LeftRulerHeightRequest);
+			m_pTimeRuler = new CTimeRuler(m_rSpectrumDatabase, l_i32BottomRulerWidthRequest, l_i32BottomRulerHeightRequest);
 			gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayBottomBoxLabel1"));
 			gtk_box_pack_start(m_pBottomBox, m_pTimeRuler->getWidget(), false, false, 0);
 			if(m_vChannelDisplays.size() != 0)
@@ -306,14 +314,16 @@ namespace OpenViBEPlugins
 				//if(m_pBufferDatabase->getChannelCount() > 0)
 				{
 					//The ruler needs to be redrawn
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pTimeRuler->getWidget())->window,
-							NULL,
-							true);
+					if(GTK_WIDGET(m_pTimeRuler->getWidget())->window)
+						gdk_window_invalidate_rect(GTK_WIDGET(m_pTimeRuler->getWidget())->window,
+								NULL,
+								true);
 
 					//The channels table needs to be redrawn
-					gdk_window_invalidate_rect(GTK_WIDGET(m_pDisplayTable)->window,
-							NULL,
-							true);
+					if(GTK_WIDGET(m_pDisplayTable)->window)
+						gdk_window_invalidate_rect(GTK_WIDGET(m_pDisplayTable)->window,
+								NULL,
+								true);
 				}
 			}
 

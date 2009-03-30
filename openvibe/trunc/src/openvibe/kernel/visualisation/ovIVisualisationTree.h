@@ -267,7 +267,7 @@ namespace OpenViBE
 
 			/**
 			 * \brief Iterates through IVisualisationWidget instances managed by this tree
-			 * Upon first call, this method should be passed an identifier initialized with OV_Undefined.
+			 * Upon first call, this method should be passed an identifier initialized with OV_UndefinedIdentifier.
 			 * It is modified at each subsequent call until all widgets have been returned (in which
 			 * case the identifier is reset to OV_Undefined)
 			 * \param rIdentifier [in/out] identifier of current visualisation widget when calling the method and of next widget upon return
@@ -294,7 +294,7 @@ namespace OpenViBE
 			 * \param rIdentifier [in] identifier to look for in the internal tree store
 			 * \return true if rIdentifier corresponds to an IVisualisationWidget instance stored in this tree, false otherwise
 			 */
-			virtual OpenViBE::boolean	isVisualisationWidget(
+			virtual OpenViBE::boolean isVisualisationWidget(
 				const OpenViBE::CIdentifier& rIdentifier) const=0;
 
 			/**
@@ -321,13 +321,13 @@ namespace OpenViBE
 			 * \param rIdentifier [in] identifier of the widget to be created
 			 * \param rName [in] name of the widget
 			 * \param oType [in] type of the widget
-			 * \param rParentIdentifier [in] parent widget identifier (OV_Undefined for top-level widgets)
+			 * \param rParentIdentifier [in] parent widget identifier (OV_UndefinedIdentifier for top-level widgets)
 			 * \param ui32ParentIndex [in] index where this widget is to be parented (irrelevant for top-level widgets)
 			 * \param rBoxIdentifier [in] identifier of associated IBox (for widgets of type EVisualisationWidget_VisualisationBox only)
 			 * \param ui32NbChildren [in] number of children of this widget (none for a visualisation box, 1 for a visualisation panel, 2 for split widgets, variable number for windows)
 			 * \return true if widget successfully added to the internal tree store, false otherwise
 			 */
-			virtual OpenViBE::boolean	addVisualisationWidget(
+			virtual OpenViBE::boolean addVisualisationWidget(
 				OpenViBE::CIdentifier& rIdentifier,
 				const OpenViBE::CString& rName,
 				OpenViBE::Kernel::EVisualisationWidgetType oType,
@@ -343,7 +343,7 @@ namespace OpenViBE
 			 * \param ui32Index [out] index where the widget is parented
 			 * \return true if widget index could be determined, false otherwise
 			 */
-			virtual OpenViBE::boolean	getVisualisationWidgetIndex(
+			virtual OpenViBE::boolean getVisualisationWidgetIndex(
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::uint32& ui32Index) const=0;
 
@@ -353,7 +353,7 @@ namespace OpenViBE
 			 * \param ui32Index [out] index where this widget was parented
 			 * \return true if widget could be removed from its parent, false otherwise
 			 */
-			virtual OpenViBE::boolean	unparentVisualisationWidget(
+			virtual OpenViBE::boolean unparentVisualisationWidget(
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::uint32& ui32Index)=0;
 
@@ -364,7 +364,7 @@ namespace OpenViBE
 			 * \param ui32Index [in] index where widget is to be parented
 			 * \return true if widget could be parented as desired, false otherwise
 			 */
-			virtual OpenViBE::boolean	parentVisualisationWidget(
+			virtual OpenViBE::boolean parentVisualisationWidget(
 				const OpenViBE::CIdentifier& rIdentifier,
 				const OpenViBE::CIdentifier& rParentIdentifier,
 				OpenViBE::uint32 ui32Index)=0;
@@ -375,7 +375,7 @@ namespace OpenViBE
 			 * \param bDestroyVisualisationBoxes [in] if false, widgets of type EVisualisationTreeNode_VisualisationBox are unaffected only (as opposed to destroyed)
 			 * \return true if hierarchy was successfully destroyed, false otherwise
 			 */
-			virtual OpenViBE::boolean	destroyHierarchy(
+			virtual OpenViBE::boolean destroyHierarchy(
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::boolean bDestroyVisualisationBoxes=true)=0;
 			//@}
@@ -397,7 +397,7 @@ namespace OpenViBE
 			 * \return true if tree view was successfully registered, false otherwise
 			 * \sa ITreeViewCB
 			 */
-			virtual OpenViBE::boolean	setTreeViewCB(
+			virtual OpenViBE::boolean setTreeViewCB(
 				OpenViBE::Kernel::ITreeViewCB* pTreeViewCB)=0;
 			//@}
 
@@ -544,7 +544,7 @@ namespace OpenViBE
 			 * \param oIdentifier [in] identifier of node to be retrieved, as stored in the EVisualisationTreeColumn_StringIdentifier column
 			 * \return true if node was found, false otherwise
 			 */
-			virtual OpenViBE::boolean	findChildNodeFromParent(
+			virtual OpenViBE::boolean findChildNodeFromParent(
 				::GtkTreeIter* pIter,
 				OpenViBE::CIdentifier oIdentifier)=0;
 
@@ -555,7 +555,7 @@ namespace OpenViBE
 			 * \param eType [in] type of parent node looked for, as stored in the EVisualisationTreeColumn_ULongNodeType column
 			 * \return true if node was found, false otherwise
 			 */
-			virtual OpenViBE::boolean	findParentNode(
+			virtual OpenViBE::boolean findParentNode(
 				::GtkTreeIter* pIter,
 				OpenViBE::Kernel::EVisualisationTreeNode eType)=0;
 			//@}

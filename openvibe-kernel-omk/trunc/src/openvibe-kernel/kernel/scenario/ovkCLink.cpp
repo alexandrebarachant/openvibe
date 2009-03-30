@@ -1,4 +1,5 @@
 #include "ovkCLink.h"
+#include "ovkCScenario.h"
 
 #include "../ovkCObjectVisitorContext.h"
 
@@ -8,8 +9,9 @@ using namespace OpenViBE::Kernel;
 //___________________________________________________________________//
 //                                                                   //
 
-CLink::CLink(const IKernelContext& rKernelContext)
+CLink::CLink(const IKernelContext& rKernelContext, CScenario& rOwnerScenario)
 	:TKernelObject<TAttributable<ILink> >(rKernelContext)
+	,m_rOwnerScenario(rOwnerScenario)
 	,m_oIdentifier(OV_UndefinedIdentifier)
 	,m_oSourceBoxIdentifier(OV_UndefinedIdentifier)
 	,m_oTargetBoxIdentifier(OV_UndefinedIdentifier)

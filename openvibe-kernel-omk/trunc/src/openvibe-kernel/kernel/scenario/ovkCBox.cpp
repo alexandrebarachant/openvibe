@@ -1,6 +1,7 @@
 #include "ovkCBox.h"
 #include "ovkCBoxProto.h"
 #include "ovkCBoxListenerContext.h"
+#include "ovkCScenario.h"
 
 #include "../ovkCObjectVisitorContext.h"
 
@@ -12,8 +13,9 @@ using namespace OpenViBE::Plugins;
 //___________________________________________________________________//
 //                                                                   //
 
-CBox::CBox(const IKernelContext& rKernelContext)
+CBox::CBox(const IKernelContext& rKernelContext, CScenario& rOwnerScenario)
 	:TKernelObject<TAttributable<IBox> >(rKernelContext)
+	,m_rOwnerScenario(rOwnerScenario)
 	,m_pBoxAlgorithmDescriptor(NULL)
 	,m_pBoxListener(NULL)
 	,m_bIsNotifyingDescriptor(false)
@@ -252,17 +254,59 @@ boolean CBox::addInput(
 boolean CBox::removeInput(
 	const uint32 ui32InputIndex)
 {
-	uint32 i=0;
-	vector<CInput>::iterator it=m_vInput.begin();
-	for(i=0; i<ui32InputIndex && it!=m_vInput.end(); i++)
-	{
-		it++;
-	}
-	if(it==m_vInput.end())
+	CIdentifier l_oIdentifier;
+	size_t i;
+
+	if(ui32InputIndex >= m_vInput.size())
 	{
 		return false;
 	}
-	it=m_vInput.erase(it);
+
+	while((l_oIdentifier=m_rOwnerScenario.getNextLinkIdentifierToBoxInput(l_oIdentifier, m_oIdentifier, ui32InputIndex))!=OV_UndefinedIdentifier)
+	{
+		m_rOwnerScenario.disconnect(l_oIdentifier);
+	}
+
+	// $$$
+	// The way the links are removed here
+	// is not correct because they are all
+	// collected and then all removed. In case
+	// the box listener callback on box removal,
+	// the nextcoming links would potentially be
+	// invalid
+	vector < CIdentifier > l_vLinksToRemove;
+	vector < pair < pair < uint64, uint32 >, pair < uint64, uint32 > > > l_vLink;
+	while((l_oIdentifier=m_rOwnerScenario.getNextLinkIdentifierToBox(l_oIdentifier, m_oIdentifier))!=OV_UndefinedIdentifier)
+	{
+		ILink* l_pLink=m_rOwnerScenario.getLinkDetails(l_oIdentifier);
+		if(l_pLink->getTargetBoxInputIndex()>ui32InputIndex)
+		{
+			pair < pair < uint64, uint32 >, pair < uint64, uint32 > > l;
+			l.first.first=l_pLink->getSourceBoxIdentifier().toUInteger();
+			l.first.second=l_pLink->getSourceBoxOutputIndex();
+			l.second.first=l_pLink->getTargetBoxIdentifier().toUInteger();
+			l.second.second=l_pLink->getTargetBoxInputIndex();
+			l_vLink.push_back(l);
+			l_vLinksToRemove.push_back(l_oIdentifier);
+		}
+	}
+
+	for(i=0; i<l_vLinksToRemove.size(); i++)
+	{
+		m_rOwnerScenario.disconnect(l_vLinksToRemove[i]);
+	}
+
+	m_vInput.erase(m_vInput.begin()+ui32InputIndex);
+
+	for(i=0; i<l_vLink.size(); i++)
+	{
+		m_rOwnerScenario.connect(
+			l_vLink[i].first.first,
+			l_vLink[i].first.second,
+			l_vLink[i].second.first,
+			l_vLink[i].second.second-1,
+			l_oIdentifier);
+	}
 
 	this->notify(BoxModification_InputRemoved, ui32InputIndex);
 
@@ -348,17 +392,59 @@ boolean CBox::addOutput(
 boolean CBox::removeOutput(
 	const uint32 ui32OutputIndex)
 {
-	uint32 i=0;
-	vector<COutput>::iterator it=m_vOutput.begin();
-	for(i=0; i<ui32OutputIndex && it!=m_vOutput.end(); i++)
-	{
-		it++;
-	}
-	if(it==m_vOutput.end())
+	CIdentifier l_oIdentifier;
+	size_t i;
+
+	if(ui32OutputIndex >= m_vOutput.size())
 	{
 		return false;
 	}
-	it=m_vOutput.erase(it);
+
+	while((l_oIdentifier=m_rOwnerScenario.getNextLinkIdentifierFromBoxOutput(l_oIdentifier, m_oIdentifier, ui32OutputIndex))!=OV_UndefinedIdentifier)
+	{
+		m_rOwnerScenario.disconnect(l_oIdentifier);
+	}
+
+	// $$$
+	// The way the links are removed here
+	// is not correct because they are all
+	// collected and then all removed. In case
+	// the box listener callback on box removal,
+	// the nextcoming links would potentially be
+	// invalid
+	vector < CIdentifier > l_vLinksToRemove;
+	vector < pair < pair < uint64, uint32 >, pair < uint64, uint32 > > > l_vLink;
+	while((l_oIdentifier=m_rOwnerScenario.getNextLinkIdentifierFromBox(l_oIdentifier, m_oIdentifier))!=OV_UndefinedIdentifier)
+	{
+		ILink* l_pLink=m_rOwnerScenario.getLinkDetails(l_oIdentifier);
+		if(l_pLink->getSourceBoxOutputIndex()>ui32OutputIndex)
+		{
+			pair < pair < uint64, uint32 >, pair < uint64, uint32 > > l;
+			l.first.first=l_pLink->getSourceBoxIdentifier().toUInteger();
+			l.first.second=l_pLink->getSourceBoxOutputIndex();
+			l.second.first=l_pLink->getTargetBoxIdentifier().toUInteger();
+			l.second.second=l_pLink->getTargetBoxInputIndex();
+			l_vLink.push_back(l);
+			l_vLinksToRemove.push_back(l_oIdentifier);
+		}
+	}
+
+	for(i=0; i<l_vLinksToRemove.size(); i++)
+	{
+		m_rOwnerScenario.disconnect(l_vLinksToRemove[i]);
+	}
+
+	m_vOutput.erase(m_vOutput.begin()+ui32OutputIndex);
+
+	for(i=0; i<l_vLink.size(); i++)
+	{
+		m_rOwnerScenario.connect(
+			l_vLink[i].first.first,
+			l_vLink[i].first.second-1,
+			l_vLink[i].second.first,
+			l_vLink[i].second.second,
+			l_oIdentifier);
+	}
 
 	this->notify(BoxModification_OutputRemoved, ui32OutputIndex);
 

@@ -392,30 +392,41 @@ boolean COgreVisualisation::deleteScene(CIdentifier rSceneIdentifier)
 
 void COgreVisualisation::addResourceLocations(const std::string& resourcesFile)
 {
-	//load resource paths from config file
-	ConfigFile configFile;
-	configFile.load(resourcesFile);
-
-	String resourceGroupName;
-	String resourceTypeName;
-	String resourceName;
-
-	//go through all sections
-	ConfigFile::SectionIterator sectionIterator(configFile.getSectionIterator());
-	while(sectionIterator.hasMoreElements() == true)
+	try
 	{
-		//each section corresponds to a resource group
-		resourceGroupName = sectionIterator.peekNextKey();
-		ConfigFile::SettingsMultiMap* settings(sectionIterator.getNext());
+		//load resource paths from config file
+		ConfigFile configFile;
+		this->getLogManager() << LogLevel_Trace << "Loading resources file\n";
+		configFile.load(resourcesFile);
 
-		//go through all resources
-		for(ConfigFile::SettingsMultiMap::iterator i(settings->begin()); i != settings->end(); ++i)
+		String resourceGroupName;
+		String resourceTypeName;
+		String resourceName;
+
+		//go through all sections
+		ConfigFile::SectionIterator sectionIterator(configFile.getSectionIterator());
+		while(sectionIterator.hasMoreElements() == true)
 		{
-			//each entry is a resource location for the current resource group
-			resourceTypeName = i->first;
-			resourceName = i->second;
-			ResourceGroupManager::getSingleton().addResourceLocation(resourceName, resourceTypeName, resourceGroupName);
+			//each section corresponds to a resource group
+			resourceGroupName = sectionIterator.peekNextKey();
+			ConfigFile::SettingsMultiMap* settings(sectionIterator.getNext());
+
+			//go through all resources
+			for(ConfigFile::SettingsMultiMap::iterator i(settings->begin()); i != settings->end(); ++i)
+			{
+				//each entry is a resource location for the current resource group
+				resourceTypeName = i->first;
+				resourceName = i->second;
+				this->getLogManager() << LogLevel_Trace << "Adding resource location " << resourceName.c_str() << "\n";
+				ResourceGroupManager::getSingleton().addResourceLocation(resourceName, resourceTypeName, resourceGroupName);
+			}
 		}
+	}
+	catch(Ogre::Exception& e)
+	{
+		this->getLogManager()
+			<< LogLevel_Trace << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+			<< e.what() << "\n";
 	}
 }
 

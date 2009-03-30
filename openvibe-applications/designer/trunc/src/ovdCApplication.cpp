@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include <string.h>
 
@@ -118,17 +119,20 @@ namespace
 	{
 		static_cast<CApplication*>(pUserData)->stopScenarioCB();
 	}
-	void pause_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	void play_pause_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
-		static_cast<CApplication*>(pUserData)->pauseScenarioCB();
+		if(std::string(gtk_tool_button_get_stock_id(GTK_TOOL_BUTTON(pButton)))==GTK_STOCK_MEDIA_PLAY)
+		{
+			static_cast<CApplication*>(pUserData)->playScenarioCB();
+		}
+		else
+		{
+			static_cast<CApplication*>(pUserData)->pauseScenarioCB();
+		}
 	}
 	void next_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->nextScenarioCB();
-	}
-	void play_scenario_cb(::GtkButton* pButton, gpointer pUserData)
-	{
-		static_cast<CApplication*>(pUserData)->playScenarioCB();
 	}
 	void forward_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
@@ -304,11 +308,10 @@ void CApplication::initialize(void)
 
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager")),   "toggled",  G_CALLBACK(button_toggle_window_manager_cb), this);
 
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop")),      "clicked",  G_CALLBACK(stop_scenario_cb),           this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause")),     "clicked",  G_CALLBACK(pause_scenario_cb),          this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next")),      "clicked",  G_CALLBACK(next_scenario_cb),           this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play")),      "clicked",  G_CALLBACK(play_scenario_cb),           this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward")),   "clicked",  G_CALLBACK(forward_scenario_cb),        this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop")),       "clicked",  G_CALLBACK(stop_scenario_cb),          this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), "clicked",  G_CALLBACK(play_pause_scenario_cb),    this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next")),       "clicked",  G_CALLBACK(next_scenario_cb),          this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward")),    "clicked",  G_CALLBACK(forward_scenario_cb),       this);
 
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_log_level")), "clicked",  G_CALLBACK(log_level_cb),               this);
 
@@ -663,8 +666,76 @@ void CApplication::openScenarioCB(void)
 		if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
 		{
 			IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
-			if(l_rScenario.load(l_sFileName, CIdentifier(0x440BF3AC, 0x2D960300))) // $$$
+
+			CMemoryBuffer l_oMemoryBuffer;
+			boolean l_bSuccess=false;
+
+			std::ifstream l_oFile(l_sFileName, ios::binary);
+			if(l_oFile.good())
 			{
+				l_oFile.seekg(0, ios::end);
+				l_oMemoryBuffer.setSize(l_oFile.tellg(), true);
+				l_oFile.seekg(0, ios::beg);
+				l_oFile.read(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize());
+				l_oFile.close();
+
+				CIdentifier l_oImporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_XMLScenarioImporter);
+				if(l_oImporterIdentifier!=OV_UndefinedIdentifier)
+				{
+					IAlgorithmProxy* l_pImporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oImporterIdentifier);
+					if(l_pImporter)
+					{
+						m_rKernelContext.getLogManager() << LogLevel_Info << "Importing scenario...\n";
+
+						l_pImporter->initialize();
+
+						TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(l_pImporter->getInputParameter(OVTK_Algorithm_ScenarioImporter_InputParameterId_MemoryBuffer));
+						TParameterHandler < IScenario* > op_pScenario(l_pImporter->getOutputParameter(OVTK_Algorithm_ScenarioImporter_OutputParameterId_Scenario));
+
+						ip_pMemoryBuffer=&l_oMemoryBuffer;
+						op_pScenario=&l_rScenario;
+
+						l_pImporter->process();
+						l_pImporter->uninitialize();
+						m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pImporter);
+
+						l_bSuccess=true;
+					}
+				}
+			}
+
+			if(l_bSuccess)
+			{
+				CIdentifier l_oVisualisationWidgetIdentifier;
+				CIdentifier l_oBoxIdentifier;
+
+				//ensure visualisation widgets contained in the scenario (if any) appear in the window manager
+				//even when the <VisualisationTree> section of a scenario file is missing, erroneous or deprecated
+				IVisualisationTree& l_rVisualisationTree = m_rKernelContext.getVisualisationManager().getVisualisationTree(l_rScenario.getVisualisationTreeIdentifier());
+
+				//no visualisation widget was added to visualisation tree : ensure there aren't any in scenario
+				while((l_oBoxIdentifier=l_rScenario.getNextBoxIdentifier(l_oBoxIdentifier)) != OV_UndefinedIdentifier)
+				{
+					if(l_rVisualisationTree.getVisualisationWidgetFromBoxIdentifier(l_oBoxIdentifier)==NULL)
+					{
+						const IBox* l_pBox = l_rScenario.getBoxDetails(l_oBoxIdentifier);
+						CIdentifier l_oAlgorithmIdentifier = l_pBox->getAlgorithmClassIdentifier();
+						const Plugins::IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
+						if(l_pPOD != NULL && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+						{
+							//a visualisation widget was found in scenario : manually add it to visualisation tree
+							l_rVisualisationTree.addVisualisationWidget(
+								l_oVisualisationWidgetIdentifier,
+								l_pBox->getName(),
+								EVisualisationWidget_VisualisationBox,
+								OV_UndefinedIdentifier,
+								0,
+								l_pBox->getIdentifier(),
+								0);
+						}
+					}
+				}
+
 				// Closes first unnamed scenario
 				if(m_vInterfacedScenario.size()==1)
 				{
@@ -684,6 +755,7 @@ void CApplication::openScenarioCB(void)
 					l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);
 					l_pInterfacedScenario->m_pDesignerVisualisation->load();
 				}
+				l_pInterfacedScenario->snapshotCB();
 				l_pInterfacedScenario->m_sFileName=l_sFileName;
 				l_pInterfacedScenario->m_bHasFileName=true;
 				l_pInterfacedScenario->m_bHasBeenModified=false;
@@ -694,6 +766,8 @@ void CApplication::openScenarioCB(void)
 			}
 			else
 			{
+				m_rKernelContext.getLogManager() << LogLevel_Warning << "Importing scenario failed...\n";
+
 				m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
 
 				::GtkWidget* l_pErrorDialog=gtk_message_dialog_new(
@@ -732,11 +806,50 @@ void CApplication::saveScenarioCB(void)
 	}
 	else
 	{
-		CIdentifier& l_rExporterIdentifier(l_pCurrentInterfacedScenario->m_oExporterIdentifier);
-		l_pCurrentInterfacedScenario->m_rScenario.save(l_pCurrentInterfacedScenario->m_sFileName.c_str(), l_rExporterIdentifier!=OV_UndefinedIdentifier?l_rExporterIdentifier:CIdentifier(0x77075b3b, 0x3d632492));
-		l_pCurrentInterfacedScenario->m_bHasFileName=true;
-		l_pCurrentInterfacedScenario->m_bHasBeenModified=false;
-		l_pCurrentInterfacedScenario->updateScenarioLabel();
+		boolean l_bSuccess=false;
+		CMemoryBuffer l_oMemoryBuffer;
+		CIdentifier l_oClassIdentifier(l_pCurrentInterfacedScenario->m_oExporterIdentifier);
+
+		CIdentifier l_oExporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(l_oClassIdentifier!=OV_UndefinedIdentifier?l_oClassIdentifier:OVP_GD_ClassId_Algorithm_XMLScenarioExporter);
+		if(l_oExporterIdentifier!=OV_UndefinedIdentifier)
+		{
+			IAlgorithmProxy* l_pExporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oExporterIdentifier);
+			if(l_pExporter)
+			{
+				m_rKernelContext.getLogManager() << LogLevel_Info << "Exporting scenario...\n";
+
+				l_pExporter->initialize();
+
+				TParameterHandler < const IScenario* > ip_pScenario(l_pExporter->getInputParameter(OVTK_Algorithm_ScenarioExporter_InputParameterId_Scenario));
+				TParameterHandler < IMemoryBuffer* > op_pMemoryBuffer(l_pExporter->getOutputParameter(OVTK_Algorithm_ScenarioExporter_OutputParameterId_MemoryBuffer));
+
+				ip_pScenario=&l_pCurrentInterfacedScenario->m_rScenario;
+				op_pMemoryBuffer=&l_oMemoryBuffer;
+
+				l_pExporter->process();
+				l_pExporter->uninitialize();
+				m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pExporter);
+
+				l_bSuccess=(l_oMemoryBuffer.getSize()!=0);
+
+				l_pCurrentInterfacedScenario->snapshotCB();
+				l_pCurrentInterfacedScenario->m_bHasFileName=true;
+				l_pCurrentInterfacedScenario->m_bHasBeenModified=false;
+				l_pCurrentInterfacedScenario->updateScenarioLabel();
+
+				std::ofstream l_oFile(l_pCurrentInterfacedScenario->m_sFileName.c_str(), ios::binary);
+				if(l_oFile.good())
+				{
+					l_oFile.write(reinterpret_cast<const char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize());
+					l_oFile.close();
+				}
+			}
+		}
+
+		if(!l_bSuccess)
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "Exporting scenario failed...\n";
+		}
 	}
 }
 
@@ -783,6 +896,7 @@ void CApplication::saveScenarioAsCB(void)
 		//ensure file extension is added after filename
 		char* l_sTempFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
 
+#if 0
 		char l_sFileName[1024];
 		sprintf(l_sFileName, l_sTempFileName);
 
@@ -822,19 +936,21 @@ void CApplication::saveScenarioAsCB(void)
 				}
 			}
 		}
+#endif
 
-		l_pCurrentInterfacedScenario->m_sFileName=l_sFileName;
+		l_pCurrentInterfacedScenario->m_sFileName=l_sTempFileName;
 		l_pCurrentInterfacedScenario->m_bHasFileName=true;
 		l_pCurrentInterfacedScenario->m_bHasBeenModified=false;
+		l_pCurrentInterfacedScenario->updateScenarioLabel();
 
 		::GtkFileFilter* l_pFileFilter=gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
 		if(l_pFileFilter==l_pFileFilterSVG)
 		{
-			l_pCurrentInterfacedScenario->m_oExporterIdentifier=CIdentifier(0x389FB9DF, 0x848FDF29);
+			l_pCurrentInterfacedScenario->m_oExporterIdentifier=OVP_GD_ClassId_Algorithm_XMLScenarioExporter;
 		}
 		else
 		{
-			l_pCurrentInterfacedScenario->m_oExporterIdentifier=CIdentifier(0x77075b3b, 0x3d632492);
+			l_pCurrentInterfacedScenario->m_oExporterIdentifier=OVP_GD_ClassId_Algorithm_XMLScenarioExporter;
 		}
 
 		saveScenarioCB();
@@ -925,6 +1041,7 @@ void CApplication::createPlayer(void)
 		CIdentifier l_oPlayerIdentifier=l_pCurrentInterfacedScenario->m_oPlayerIdentifier;
 		l_pCurrentInterfacedScenario->m_pPlayer=&m_rKernelContext.getPlayerManager().getPlayer(l_oPlayerIdentifier);
 		l_pCurrentInterfacedScenario->m_pPlayer->setScenario(l_oScenarioIdentifier);
+		l_pCurrentInterfacedScenario->m_pPlayer->initialize();
 		l_pCurrentInterfacedScenario->m_ui64LastLoopTime=System::Time::zgetTime();
 
 		//set up idle function
@@ -945,7 +1062,10 @@ void CApplication::releasePlayer(void)
 		// removes idle function
 		g_idle_remove_by_data(l_pCurrentInterfacedScenario);
 
+		l_pCurrentInterfacedScenario->m_pPlayer->uninitialize();
+
 		m_rKernelContext.getPlayerManager().releasePlayer(l_pCurrentInterfacedScenario->m_oPlayerIdentifier);
+
 		l_pCurrentInterfacedScenario->m_oPlayerIdentifier=OV_UndefinedIdentifier;
 		l_pCurrentInterfacedScenario->m_pPlayer=NULL;
 
@@ -964,12 +1084,12 @@ void CApplication::stopScenarioCB(void)
 	this->getPlayer()->stop();
 	this->releasePlayer();
 
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    false);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   false);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          false);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),       true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), true);
+	gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), GTK_STOCK_MEDIA_PLAY);
 }
 
 void CApplication::pauseScenarioCB(void)
@@ -979,12 +1099,12 @@ void CApplication::pauseScenarioCB(void)
 	this->createPlayer();
 	this->getPlayer()->pause();
 
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   false);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),       true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), false);
+	gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), GTK_STOCK_MEDIA_PLAY);
 }
 
 void CApplication::nextScenarioCB(void)
@@ -994,12 +1114,12 @@ void CApplication::nextScenarioCB(void)
 	this->createPlayer();
 	this->getPlayer()->step();
 
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   false);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),       true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), false);
+	gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), GTK_STOCK_MEDIA_PLAY);
 }
 
 void CApplication::playScenarioCB(void)
@@ -1009,12 +1129,12 @@ void CApplication::playScenarioCB(void)
 	this->createPlayer();
 	this->getPlayer()->play();
 
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    false);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),       true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), false);
+	gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), GTK_STOCK_MEDIA_PAUSE);
 }
 
 void CApplication::forwardScenarioCB(void)
@@ -1024,16 +1144,17 @@ void CApplication::forwardScenarioCB(void)
 	this->createPlayer();
 	this->getPlayer()->forward();
 
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    true);
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), false);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),          true);
+	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),       false);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), false);
+	gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), GTK_STOCK_MEDIA_PLAY);
 }
 
 boolean CApplication::quitApplicationCB(void)
 {
+	CIdentifier l_oIdentifier;
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "quitApplicationCB\n";
 
 	// can't quit while scenarios are running
@@ -1055,6 +1176,23 @@ boolean CApplication::quitApplicationCB(void)
 
 		// prevent Gtk from handling delete_event and killing app
 		return false;
+	}
+
+	// Clears all existing interfaced scenarios
+	for(std::vector < CInterfacedScenario* >::iterator i=m_vInterfacedScenario.begin(); i!=m_vInterfacedScenario.end(); i++)
+	{
+		delete *i;
+	}
+
+	// Clears all existing scenarios
+	vector < CIdentifier > l_vScenarioIdentifiers;
+	while((l_oIdentifier=m_rKernelContext.getScenarioManager().getNextScenarioIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+	{
+		l_vScenarioIdentifiers.push_back(l_oIdentifier);
+	}
+	for(vector < CIdentifier > ::iterator i=l_vScenarioIdentifiers.begin(); i!=l_vScenarioIdentifiers.end(); i++)
+	{
+		m_rKernelContext.getScenarioManager().releaseScenario(*i);
 	}
 
 	// OK to kill app
@@ -1114,11 +1252,11 @@ void CApplication::changeCurrentScenario(int32 i32PageIndex)
 	//closing last open scenario
 	if(i32PageIndex == -1)
 	{
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),       false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"), false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),       false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),    false);
+		gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), GTK_STOCK_MEDIA_PLAY);
 
 		g_signal_handlers_disconnect_by_func(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-togglebutton_cpu_usage")), G_CALLBACK2(cpu_usage_cb), this);
 		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), false);
@@ -1137,11 +1275,11 @@ void CApplication::changeCurrentScenario(int32 i32PageIndex)
 		CInterfacedScenario* l_pCurrentInterfacedScenario=m_vInterfacedScenario[i32PageIndex];
 		EPlayerStatus l_ePlayerStatus=(l_pCurrentInterfacedScenario->m_pPlayer?l_pCurrentInterfacedScenario->m_pPlayer->getStatus():PlayerStatus_Stop);
 
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    l_ePlayerStatus!=PlayerStatus_Stop);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   l_ePlayerStatus!=PlayerStatus_Stop && l_ePlayerStatus!=PlayerStatus_Pause);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    l_ePlayerStatus!=PlayerStatus_Play);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), l_ePlayerStatus!=PlayerStatus_Forward);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),       l_ePlayerStatus!=PlayerStatus_Stop);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),       true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),    l_ePlayerStatus!=PlayerStatus_Forward);
+		gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), (l_ePlayerStatus==PlayerStatus_Stop || l_ePlayerStatus==PlayerStatus_Pause || l_ePlayerStatus==PlayerStatus_Uninitialized) ? GTK_STOCK_MEDIA_PLAY : GTK_STOCK_MEDIA_PAUSE);
 
 		g_signal_handlers_disconnect_by_func(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-togglebutton_cpu_usage")), G_CALLBACK2(cpu_usage_cb), this);
 		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), l_ePlayerStatus==PlayerStatus_Stop);
@@ -1170,11 +1308,11 @@ void CApplication::changeCurrentScenario(int32 i32PageIndex)
 	//first scenario is created (or a scenario is opened and replaces first unnamed unmodified scenario)
 	else
 	{
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),    false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_pause"),   false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),    true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play"),    true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),       false);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"), true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next"),       true);
+		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward"),    true);
+		gtk_tool_button_set_stock_id(GTK_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), GTK_STOCK_MEDIA_PLAY);
 
 		g_signal_handlers_disconnect_by_func(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-togglebutton_cpu_usage")), G_CALLBACK2(cpu_usage_cb), this);
 		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager"), true);
@@ -1188,4 +1326,5 @@ void CApplication::changeCurrentScenario(int32 i32PageIndex)
 		g_signal_connect(l_pWindowManagerButton, "toggled", G_CALLBACK(button_toggle_window_manager_cb), this);
 	}
 }
+
 

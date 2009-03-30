@@ -156,6 +156,8 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplay::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
 		{
+			CString l_oStimulationName = getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, ui64StimulationIdentifier);
+			((CSignalDisplayView*)m_pSignalDisplayView)->onStimulationReceivedCB(ui64StimulationIdentifier, l_oStimulationName);
 			m_pBufferDatabase->setStimulation(ui32StimulationIndex, ui64StimulationIdentifier, ui64StimulationDate);
 		}
 	};

@@ -108,6 +108,11 @@ CScenario::CScenario(const IKernelContext& rKernelContext, const CIdentifier& rI
 {
 }
 
+CScenario::~CScenario(void)
+{
+	this->clear();
+}
+
 //___________________________________________________________________//
 //                                                                   //
 
@@ -141,144 +146,6 @@ boolean CScenario::clear(void)
 
 	// Clears attributes
 	this->removeAllAttributes();
-
-	return true;
-}
-
-boolean CScenario::load(
-	const CString& sFileName)
-{
-	// TODO
-	this->getLogManager() << LogLevel_Debug << "CScenario::load - Not implemented yet\n";
-
-	return false;
-}
-
-boolean CScenario::load(
-	const CString& sFileName,
-	const CIdentifier& rLoaderIdentifier)
-{
-	this->getLogManager() << LogLevel_Info << "Loading scenario with specific importer\n";
-
-	IScenarioImporter* l_pScenarioImporter=dynamic_cast<IScenarioImporter*>(getKernelContext().getPluginManager().createPluginObject(rLoaderIdentifier));
-	if(!l_pScenarioImporter)
-	{
-		this->getLogManager() << LogLevel_Warning << "Importer not found\n";
-		return false;
-	}
-	CScenarioImporterContext l_oScenarioImporterContext(getKernelContext(), sFileName, *this);
-	boolean l_bResult=l_pScenarioImporter->doImport(l_oScenarioImporterContext);
-	getKernelContext().getPluginManager().releasePluginObject(l_pScenarioImporter);
-
-	if(!l_bResult)
-	{
-		this->getLogManager() << LogLevel_Warning << "Import failed...\n";
-		return false;
-	}
-
-	//ensure visualisation widgets contained in the scenario (if any) appear in the window manager
-	//even when the <VisualisationTree> section of a scenario file is missing, erroneous or deprecated
-	CIdentifier l_oVisualisationWidgetIdentifier = OV_UndefinedIdentifier;
-	IVisualisationTree& l_rVisualisationTree = getKernelContext().getVisualisationManager().getVisualisationTree(m_oVisualisationTreeIdentifier);
-	if(l_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWidgetIdentifier) == false)
-	{
-		//no visualisation widget was added to visualisation tree : ensure there aren't any in scenario
-		CIdentifier l_oBoxIdentifier = getNextBoxIdentifier(OV_UndefinedIdentifier);
-		while(l_oBoxIdentifier != OV_UndefinedIdentifier)
-		{
-			const IBox* l_pBox = getBoxDetails(l_oBoxIdentifier);
-			CIdentifier l_oAlgorithmIdentifier = l_pBox->getAlgorithmClassIdentifier();
-			const Plugins::IPluginObjectDesc* l_pPOD = getKernelContext().getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
-			if(l_pPOD != NULL && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
-			{
-				//a visualisation widget was found in scenario : manually add it to visualisation tree
-				l_rVisualisationTree.addVisualisationWidget(
-					l_oVisualisationWidgetIdentifier,
-					l_pBox->getName(),
-					EVisualisationWidget_VisualisationBox,
-					OV_UndefinedIdentifier,
-					0,
-					l_pBox->getIdentifier(),
-					0);
-			}
-
-			l_oBoxIdentifier = getNextBoxIdentifier(l_oBoxIdentifier);
-		}
-	}
-
-	return true;
-}
-
-boolean CScenario::save(
-	const CString& sFileName)
-{
-	// TODO
-	this->getLogManager() << LogLevel_Debug << "CScenario::save - Not implemented yet\n";
-
-	return false;
-}
-
-boolean CScenario::save(
-	const CString& sFileName,
-	const CIdentifier& rSaverIdentifier)
-{
-	this->getLogManager() << LogLevel_Info << "Saving scenario with specific exporter\n";
-
-	IScenarioExporter* l_pScenarioExporter=dynamic_cast<IScenarioExporter*>(getKernelContext().getPluginManager().createPluginObject(rSaverIdentifier));
-	if(!l_pScenarioExporter)
-	{
-		this->getLogManager() << LogLevel_Warning << "Exporter not found\n";
-		return false;
-	}
-	CScenarioExporterContext l_oScenarioExporterContext(getKernelContext(), sFileName, *this);
-	boolean l_bResult=l_pScenarioExporter->doExport(l_oScenarioExporterContext);
-	getKernelContext().getPluginManager().releasePluginObject(l_pScenarioExporter);
-
-	if(!l_bResult)
-	{
-		this->getLogManager() << LogLevel_Warning << "Export failed...\n";
-		return false;
-	}
-	return true;
-}
-
-boolean CScenario::merge(const IScenario& rScenario)
-{
-	this->getLogManager() << LogLevel_Info << "Merging scenario with specific scenario\n";
-
-	map<CIdentifier, CIdentifier> l_vBoxBox;
-
-	// adds boxes
-	CIdentifier l_oBoxIdentifier=getNextBoxIdentifier(OV_UndefinedIdentifier);
-	while(l_oBoxIdentifier!=OV_UndefinedIdentifier)
-	{
-		const IBox* l_pBox=rScenario.getBoxDetails(l_oBoxIdentifier);
-		if(l_pBox)
-		{
-			CIdentifier l_oMergedBox;
-			this->addBox(*l_pBox, l_oMergedBox);
-			l_vBoxBox[l_oBoxIdentifier]=l_oMergedBox;
-		}
-		l_oBoxIdentifier=getNextBoxIdentifier(l_oBoxIdentifier);
-	}
-
-	// adds links
-	CIdentifier l_oLinkIdentifier=getNextLinkIdentifier(OV_UndefinedIdentifier);
-	while(l_oLinkIdentifier!=OV_UndefinedIdentifier)
-	{
-		const ILink* l_pLink=rScenario.getLinkDetails(l_oLinkIdentifier);
-		if(l_pLink)
-		{
-			CIdentifier l_oMergedLink;
-			this->connect(
-				l_vBoxBox[l_pLink->getSourceBoxIdentifier()],
-				l_pLink->getSourceBoxOutputIndex(),
-				l_vBoxBox[l_pLink->getTargetBoxIdentifier()],
-				l_pLink->getTargetBoxInputIndex(),
-				l_oMergedLink);
-		}
-		l_oLinkIdentifier=getNextLinkIdentifier(l_oLinkIdentifier);
-	}
 
 	return true;
 }
@@ -367,7 +234,7 @@ boolean CScenario::addBox(
 	this->getLogManager() << LogLevel_Trace << "Adding new empty box in scenario\n";
 
 	rBoxIdentifier=getUnusedIdentifier();
-	CBox* l_pBox=new CBox(getKernelContext());
+	CBox* l_pBox=new CBox(this->getKernelContext(), *this);
 	l_pBox->setIdentifier(rBoxIdentifier);
 
 	m_vBox[rBoxIdentifier]=l_pBox;
@@ -571,9 +438,24 @@ boolean CScenario::connect(
 		return false;
 	}
 
+	// Looks for any connected link to this box input and removes it
+	map<CIdentifier, CLink*>::iterator itLink;
+	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
+	{
+		CLink* l_pLink=itLink->second;
+		if(l_pLink)
+		{
+			if(l_pLink->getTargetBoxIdentifier()==rTargetBoxIdentifier && l_pLink->getTargetBoxInputIndex()==ui32TargetBoxInputIndex)
+			{
+				delete l_pLink;
+				m_vLink.erase(itLink);
+			}
+		}
+	}
+
 	rLinkIdentifier=getUnusedIdentifier();
 
-	CLink* l_pLink=new CLink(getKernelContext());
+	CLink* l_pLink=new CLink(this->getKernelContext(), *this);
 	l_pLink->setIdentifier(rLinkIdentifier);
 	l_pLink->setSource(rSourceBoxIdentifier, ui32SourceBoxOutputIndex);
 	l_pLink->setTarget(rTargetBoxIdentifier, ui32TargetBoxInputIndex);
@@ -589,9 +471,29 @@ boolean CScenario::disconnect(
 	const CIdentifier& rTargetBoxIdentifier,
 	const uint32 ui32TargetBoxInputIndex)
 {
-	// TODO
-	this->getLogManager() << LogLevel_Debug << "CScenario::disconnect (identifier based) - Not implemented yet\n";
+	// Looks for any link with the same signature
+	map<CIdentifier, CLink*>::iterator itLink;
+	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
+	{
+		CLink* l_pLink=itLink->second;
+		if(l_pLink)
+		{
+			if(l_pLink->getTargetBoxIdentifier()==rTargetBoxIdentifier && l_pLink->getTargetBoxInputIndex()==ui32TargetBoxInputIndex)
+			{
+				if(l_pLink->getSourceBoxIdentifier()==rSourceBoxIdentifier && l_pLink->getSourceBoxOutputIndex()==ui32SourceBoxOutputIndex)
+				{
+					// Found a link, so removes it
+					delete l_pLink;
+					m_vLink.erase(itLink);
 
+					this->getLogManager() << LogLevel_Trace << "Link removed\n";
+					return true;
+				}
+			}
+		}
+	}
+
+	this->getLogManager() << LogLevel_Warning << "The link does not exist\n";
 	return false;
 }
 

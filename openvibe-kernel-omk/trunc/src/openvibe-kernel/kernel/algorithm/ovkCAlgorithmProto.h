@@ -18,12 +18,14 @@ namespace OpenViBE
 			virtual OpenViBE::boolean addInputParameter(
 				const OpenViBE::CIdentifier& rInputParameterIdentifier,
 				const OpenViBE::CString& sInputName,
-				const OpenViBE::Kernel::EParameterType eParameterType);
+				const OpenViBE::Kernel::EParameterType eParameterType,
+				const OpenViBE::CIdentifier& rSubTypeIdentifier);
 
 			virtual OpenViBE::boolean addOutputParameter(
 				const OpenViBE::CIdentifier& rOutputParameterIdentifier,
 				const OpenViBE::CString& sOutputName,
-				const OpenViBE::Kernel::EParameterType eParameterType);
+				const OpenViBE::Kernel::EParameterType eParameterType,
+				const OpenViBE::CIdentifier& rSubTypeIdentifier);
 
 			virtual OpenViBE::boolean addInputTrigger(
 				const OpenViBE::CIdentifier& rInputTriggerIdentifier,

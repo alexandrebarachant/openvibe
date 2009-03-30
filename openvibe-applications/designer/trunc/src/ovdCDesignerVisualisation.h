@@ -27,7 +27,7 @@ namespace OpenViBEDesigner
 			OpenViBE::Kernel::IVisualisationTree& rVisualisationTree,
 			CInterfacedScenario& rInterfacedScenario);
 
-		~CDesignerVisualisation();
+		virtual ~CDesignerVisualisation();
 
 		void init(
 			std::string guiFile);
@@ -76,14 +76,14 @@ namespace OpenViBEDesigner
 		void resizeCB(
 			OpenViBE::Kernel::IVisualisationWidget* pVisualisationWidget);
 
-		static void	notebook_page_switch_cb(
+		static void notebook_page_switch_cb(
 			GtkNotebook* notebook,
 			GtkNotebookPage* page,
 			guint pagenum,
 			gpointer user_data);
 
 		//callback for paned handle position changes
-		static gboolean	notify_position_paned_cb(
+		static gboolean notify_position_paned_cb(
 			GtkWidget* widget,
 			GParamSpec* spec,
 			gpointer user_data);
@@ -92,41 +92,41 @@ namespace OpenViBEDesigner
 			gpointer pUserData,
 			guint callback_action,
 			GtkWidget* pWidget);
-		static void	new_visualisation_window_cb(
+		static void new_visualisation_window_cb(
 			GtkWidget* pWidget,
 			gpointer pUserData);
-		static void	ask_rename_visualisation_window_cb(
+		static void ask_rename_visualisation_window_cb(
 			gpointer pUserData,
 			guint callback_action,
 			GtkWidget* pWidget);
-		static void	rename_visualisation_window_cb(
+		static void rename_visualisation_window_cb(
 			GtkWidget* pWidget,
 			gpointer pUserData);
-		static void	remove_visualisation_window_cb(
+		static void remove_visualisation_window_cb(
 			gpointer pUserData,
 			guint callback_action,
 			GtkWidget* pWidget);
 
-		static void	ask_new_visualisation_panel_cb(
+		static void ask_new_visualisation_panel_cb(
 			gpointer pUserData,
 			guint callback_action,
 			GtkWidget* pWidget);
-		static void	new_visualisation_panel_cb(
+		static void new_visualisation_panel_cb(
 			GtkWidget* pWidget,
 			gpointer pUserData);
-		static void	ask_rename_visualisation_panel_cb(
+		static void ask_rename_visualisation_panel_cb(
 			gpointer pUserData,
 			guint callback_action,
 			GtkWidget* pWidget);
-		static void	rename_visualisation_panel_cb(
+		static void rename_visualisation_panel_cb(
 			GtkWidget* pWidget,
 			gpointer pUserData);
-		static void	remove_visualisation_panel_cb(
+		static void remove_visualisation_panel_cb(
 			gpointer pUserData,
 			guint callback_action,
 			GtkWidget* pWidget);
 
-		static void	remove_visualisation_widget_cb(
+		static void remove_visualisation_widget_cb(
 			gpointer pUserData,
 			guint callback_action,
 			GtkWidget* pWidget);
@@ -167,7 +167,7 @@ namespace OpenViBEDesigner
 		void askRenameVisualisationPanel(void);
 		OpenViBE::boolean renameVisualisationPanel(
 			const char* label);
-		OpenViBE::boolean	removeVisualisationPanel(void);
+		OpenViBE::boolean removeVisualisationPanel(void);
 
 		//visualisation widgets
 		OpenViBE::boolean removeVisualisationWidget(void);
@@ -213,7 +213,7 @@ namespace OpenViBEDesigner
 			GdkEventCrossing* pEventCrossing);
 
 		//Tree management callbacks
-		static gboolean	button_release_cb(
+		static gboolean button_release_cb(
 			GtkWidget* pWidget,
 			GdkEventButton *pEvent,
 			gpointer pUserData);
@@ -229,7 +229,7 @@ namespace OpenViBEDesigner
 			GtkTreeView* pTreeView);
 
 		//Drag methods
-		static void	drag_data_get_from_tree_cb(
+		static void drag_data_get_from_tree_cb(
 			GtkWidget* pSrcWidget,
 			GdkDragContext* pDragContex,
 			GtkSelectionData* pSelectionData,
@@ -239,7 +239,7 @@ namespace OpenViBEDesigner
 		void dragDataGetFromTreeCB(
 			GtkWidget* pSrcWidget,
 			GtkSelectionData* pSelectionData);
-		static void	drag_data_get_from_widget_cb(
+		static void drag_data_get_from_widget_cb(
 			GtkWidget* pSrcWidget,
 			GdkDragContext* pDC,
 			GtkSelectionData* pSelectionData,
@@ -251,7 +251,7 @@ namespace OpenViBEDesigner
 			GtkSelectionData* pSelectionData);
 
 		//Drop methods
-		static void	drag_data_received_in_widget_cb(
+		static void drag_data_received_in_widget_cb(
 			GtkWidget* pDstWidget,
 			GdkDragContext*,
 			gint,
@@ -293,6 +293,10 @@ namespace OpenViBEDesigner
 		//active items
 		OpenViBE::CString m_oActiveVisualisationWindowName, m_oActiveVisualisationPanelName;
 		OpenViBE::CIdentifier m_oActiveVisualisationBoxIdentifier;
+		//preview window visibility flag
+		OpenViBE::boolean m_bPreviewWindowVisible;
+		OpenViBE::uint32 m_ui32PreviewWindowWidth;
+		OpenViBE::uint32 m_ui32PreviewWindowHeight;
 		//factories used to build contextual menus
 		GtkItemFactory *m_pUnaffectedItemFactory, *m_pVisualisationWindowItemFactory, *m_pVisualisationPanelItemFactory;
 		GtkItemFactory *m_pVisualisationBoxItemFactory, *m_pUndefinedItemFactory, *m_pSplitItemFactory;

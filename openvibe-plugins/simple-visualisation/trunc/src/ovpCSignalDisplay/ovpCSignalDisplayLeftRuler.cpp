@@ -77,7 +77,7 @@ void CSignalDisplayLeftRuler::update(float64 f64Min, float64 f64Max)
 	m_f64MinimumDisplayedValue = f64Min;
 
 	//redraw the ruler
-	gdk_window_invalidate_rect(m_pLeftRuler->window, NULL, true);
+	if(m_pLeftRuler->window) gdk_window_invalidate_rect(m_pLeftRuler->window, NULL, true);
 }
 
 GtkWidget* CSignalDisplayLeftRuler::getWidget() const

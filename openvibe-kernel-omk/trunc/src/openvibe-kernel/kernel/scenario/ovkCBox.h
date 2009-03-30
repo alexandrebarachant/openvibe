@@ -13,11 +13,13 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
+		class CScenario;
+
 		class CBox : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >
 		{
 		public:
 
-			CBox(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			CBox(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::CScenario& rOwnerScenario);
 			virtual ~CBox(void);
 
 			virtual OpenViBE::CIdentifier getIdentifier(void) const;
@@ -169,6 +171,7 @@ namespace OpenViBE
 
 		protected:
 
+			OpenViBE::Kernel::CScenario& m_rOwnerScenario;
 			const OpenViBE::Plugins::IBoxAlgorithmDesc* m_pBoxAlgorithmDescriptor;
 			OpenViBE::Plugins::IBoxListener* m_pBoxListener;
 			OpenViBE::boolean m_bIsNotifyingDescriptor;

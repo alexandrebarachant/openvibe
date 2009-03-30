@@ -361,6 +361,8 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 
 	std::string l_sPrefix;
 	std::string l_sPostfix;
+	std::string l_sLowerPrefix;
+	std::string l_sLowerPostfix;
 	std::string l_sValue;
 	std::string l_sExpandedValue;
 
@@ -398,38 +400,43 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 
 				l_bShouldExpand=true;
 
-				if(l_sPrefix=="")
+				l_sLowerPrefix=l_sPrefix;
+				l_sLowerPostfix=l_sPostfix;
+				std::transform(l_sLowerPrefix.begin(), l_sLowerPrefix.end(), l_sLowerPrefix.begin(), ::to_lower<std::string::value_type>);
+				std::transform(l_sLowerPostfix.begin(), l_sLowerPostfix.end(), l_sLowerPostfix.begin(), ::to_lower<std::string::value_type>);
+
+				if(l_sLowerPrefix=="")
 				{
 					l_sValue=this->getConfigurationTokenValue(this->lookUpConfigurationTokenIdentifier(l_sPostfix.c_str()));
 				}
-				else if(l_sPrefix=="Environment" || l_sPrefix=="Env")
+				else if(l_sLowerPrefix=="environment" || l_sLowerPrefix=="env")
 				{
 					char* l_sEnvValue=::getenv(l_sPostfix.c_str());
 					l_sValue=(l_sEnvValue?l_sEnvValue:"");
 					l_bShouldExpand=false;
 				}
-				else if(l_sPrefix=="Core")
+				else if(l_sLowerPrefix=="core")
 				{
 					char l_sLocalValue[1024];
-					if(l_sPostfix=="random")
+					if(l_sLowerPostfix=="random")
 					{
 						sprintf(l_sLocalValue, "%u", this->getRandom());
 						l_sValue=l_sLocalValue;
 					}
-					else if(l_sPostfix=="index")
+					else if(l_sLowerPostfix=="index")
 					{
 						sprintf(l_sLocalValue, "%u", this->getIndex());
 						l_sValue=l_sLocalValue;
 					}
-					else if(l_sPostfix=="time")
+					else if(l_sLowerPostfix=="time")
 					{
 						l_sValue=this->getTime();
 					}
-					else if(l_sPostfix=="date")
+					else if(l_sLowerPostfix=="date")
 					{
 						l_sValue=this->getDate();
 					}
-					else if(l_sPostfix=="real-time")
+					else if(l_sLowerPostfix=="real-time")
 					{
 						sprintf(l_sLocalValue, "%u", this->getRealTime());
 						l_sValue=l_sLocalValue;

@@ -44,6 +44,11 @@ namespace OpenViBE
 			 * \return the type of this parameter's content.
 			 */
 			virtual OpenViBE::Kernel::EParameterType getType(void) const                                 { return ParameterType_None; }
+			/**
+			 * \brief Gets the sub type of this parameter's content (e.g. for enumeration)
+			 * \return the sub type of this parameter's content (e.g. for enumeration).
+			 */
+			virtual OpenViBE::CIdentifier getSubTypeIdentifier(void) const                               { return OV_UndefinedIdentifier; }
 
 			//@}
 			/** \name Reinitialization */

@@ -256,7 +256,7 @@ void CBoxConfigurationDialog::run(void)
 			"Revert", 0, "Apply", GTK_RESPONSE_APPLY,	"Cancel",	GTK_RESPONSE_CANCEL, NULL);	 //set up action buttons
 
 		//unparent contents from glade interface
-		GtkWidget* l_pContents = glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-table");
+		::GtkWidget* l_pContents = glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-table");
 		::GtkWidget* l_pContentsParent = gtk_widget_get_parent(l_pContents);
 		if(GTK_IS_CONTAINER(l_pContentsParent))
 		{
@@ -265,7 +265,7 @@ void CBoxConfigurationDialog::run(void)
 		}
 
 		//add contents to dialog
-		GtkWidget* l_pContentsArea = GTK_DIALOG(l_pSettingDialog)->vbox;//gtk_dialog_get_content_area() not available in current Gtk distribution
+		::GtkWidget* l_pContentsArea = GTK_DIALOG(l_pSettingDialog)->vbox;//gtk_dialog_get_content_area() not available in current Gtk distribution
 		gtk_container_add (GTK_CONTAINER (l_pContentsArea), l_pContents);
 		gtk_object_unref(GTK_OBJECT(l_pContents));
 
@@ -359,7 +359,7 @@ void CBoxConfigurationDialog::run(void)
 				for(i=0; i<m_rBox.getSettingCount(); i++)
 				{
 					m_rBox.getSettingType(i, l_oSettingType);
-					m_rBox.setSettingValue(i, l_oHelper.getValue(l_oSettingType, l_vSettingValue[i]));
+					m_rBox.setSettingValue(i, l_oHelper.getValue(l_oSettingType, i<l_vSettingValue.size()?l_vSettingValue[i]:NULL));
 				}
 				if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pFileOverrideCheck)))
 				{
@@ -388,7 +388,7 @@ void CBoxConfigurationDialog::run(void)
 				{
 					m_rBox.getSettingType(i, l_oSettingType);
 					m_rBox.getSettingDefaultValue(i, l_oSettingValue);
-					l_oHelper.setValue(l_oSettingType, l_vSettingValue[i], l_oSettingValue);
+					l_oHelper.setValue(l_oSettingType, i<l_vSettingValue.size()?l_vSettingValue[i]:NULL, l_oSettingValue);
 				}
 				l_oHelper.setValue(OV_TypeId_Filename, l_pSettingOverrideValue, "");
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pFileOverrideCheck), false);
@@ -400,7 +400,7 @@ void CBoxConfigurationDialog::run(void)
 				{
 					m_rBox.getSettingType(i, l_oSettingType);
 					m_rBox.getSettingValue(i, l_oSettingValue);
-					l_oHelper.setValue(l_oSettingType, l_vSettingValue[i], l_oSettingValue);
+					l_oHelper.setValue(l_oSettingType, i<l_vSettingValue.size()?l_vSettingValue[i]:NULL, l_oSettingValue);
 				}
 				if(m_rBox.hasAttribute(OV_AttributeId_Box_SettingOverrideFilename))
 				{
