@@ -44,7 +44,7 @@ namespace
 		{
 			if(m_pFile)
 			{
-				fprintf(m_pFile, sString);
+				fprintf(m_pFile, "%s", sString);
 			}
 		}
 

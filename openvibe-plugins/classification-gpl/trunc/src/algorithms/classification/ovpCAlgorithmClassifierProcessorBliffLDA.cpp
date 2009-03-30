@@ -26,7 +26,7 @@ boolean CAlgorithmClassifierProcessorBliffLDA::classify(const IFeatureVector& rF
 	}
 
 	FILE* l_pFile=fopen(_ParameterFile_, "wb");
-	fwrite(m_oConfiguration.getDirectPointer(), m_oConfiguration.getSize(), 1, l_pFile);
+	size_t l_iCount=fwrite(m_oConfiguration.getDirectPointer(), m_oConfiguration.getSize(), 1, l_pFile);
 	fclose(l_pFile);
 
 	itpp::Vec<double> l_vResult;

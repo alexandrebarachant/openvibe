@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <map>
+#include <cstdio>
 
 // TODO:
 // - please move the identifier definitions in ovp_defines.h

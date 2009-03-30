@@ -1617,7 +1617,7 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 					CString l_sHTMLName=CString("Doc_BoxAlgorithm_")+CString(getBoxAlgorithmURL(l_pPluginObjectDesc->getName().toASCIIString()).c_str())+CString(".html");
 					CString l_sFullURL=l_sURLBase+CString("/")+l_sHTMLName;
 					m_rKernelContext.getLogManager() << LogLevel_Trace << "Requesting web browser on URL " << l_sFullURL << "\n";
-					system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
+					int l_iResult=system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
 				}
 			}
 		}

@@ -32,9 +32,10 @@ namespace OpenViBEDesigner
 						GTK_DIALOG_MODAL,
 						GTK_MESSAGE_WARNING,
 						GTK_BUTTONS_OK,
+						"%s",
 						pText);
 
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pErrorDialog), pSecondaryText);
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pErrorDialog), "%s", pSecondaryText);
 
 		gtk_window_set_position(GTK_WINDOW(l_pErrorDialog), GTK_WIN_POS_MOUSE);
 

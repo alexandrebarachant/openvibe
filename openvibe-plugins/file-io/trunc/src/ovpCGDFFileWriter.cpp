@@ -25,7 +25,7 @@ void CGDFFileWriter::setChannelCount(const uint32 ui32ChannelCount)
 void CGDFFileWriter::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
 {
 	//prepares the variable header
-	sprintf(m_oVariableHeader[ui32ChannelIndex].m_sLabel, sChannelName);
+	sprintf(m_oVariableHeader[ui32ChannelIndex].m_sLabel, "%s", sChannelName);
 	//remove \0 character
 	m_oVariableHeader[ui32ChannelIndex].m_sLabel[strlen(sChannelName)] = ' ';
 
