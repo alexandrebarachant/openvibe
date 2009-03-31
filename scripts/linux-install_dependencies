@@ -1139,25 +1139,30 @@ source $ov_environment_configuration_script
 ##                                ##
 ####################################
 
-# package management related packages
-ov_install_package "pkgconfig"
-
-pkg-config --exists gl
-ov_has_gl=$?
+	echo "
+	#include <GL/gl.h>
+	int main(int argc, char** argv)
+	{
+		return 0;
+	}" > test_gl.cpp
+	$ov_gcc -c test_gl.cpp -o test_gl.o 2>/dev/null
+	ov_has_gl=$?
+	rm test_gl.cpp 2>/dev/null
+	rm test_gl.o 2>/dev/null
 
 if [[ $ov_has_gl -eq 0 ]]; then
 	echo ""
-	echo "Looks like you already have mesa-dev... that would be great."
-	echo "Or you installed the software rendering version thanks to this script... that would simply be ok :)"
+	echo "Looks like you already have OpenGL dev files... that would be great."
+	echo "Or you installed the mesa software rendering version thanks to this script... that would simply be ok :)"
 	echo ""
 else
 	echo ""
-	echo "Looks like you don't have mesa-dev installed."
-	echo "I recommand you use your distro package system to install it and get OpenGL developement files."
+	echo "Looks like you don't have OpenGL dev files installed."
+	echo "I recommand you use your distro package system to install it and get them for your video card."
 	echo "Alternatively, I could build software rendering version of mesa for you but you won't have 3D acceleration."
 	echo ""
-	echo "If you want to install mesa-dev for your distro outside of this script, press CTRL+C now."
-	echo "After you actually installed mesa-dev, you will be able to continue the dependencies installation by relaunching this script."
+	echo "If you want to install OpenGL dev files for your distro outside of this script, press CTRL+C now."
+	echo "After you actually installed them, you will be able to continue the dependencies installation by relaunching this script."
 	echo ""
 	echo "If you want to install software rendering version of mesa within this script, answer 'continue'"
 	echo ""
@@ -1174,6 +1179,9 @@ else
 		exit
 	fi;
 fi;
+
+# package management related packages
+ov_install_package "pkgconfig"
 
 # base libraries
 ov_install_package "expat"
