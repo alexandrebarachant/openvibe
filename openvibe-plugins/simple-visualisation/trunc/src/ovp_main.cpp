@@ -3,9 +3,11 @@
 #include "algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
 #include "algorithms/simple-visualisation/ovpCAlgorithmLevelMeasure.h"
 
+//Presentation
+#include "ovpCGrazVisualization.h"
+#include "ovpCBoxAlgorithmP300SpellerVisualisation.h"
 //2D plugins
 #include "ovpCSignalDisplay.h"
-#include "ovpCGrazVisualization.h"
 #include "ovpCTimeFrequencyMapDisplay.h"
 #include "ovpCPowerSpectrumDisplay.h"
 #include "ovpCTopographicMap2DDisplay.h"
@@ -28,8 +30,10 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CAlgorithmLevelMeasureDesc)
 	OVP_Declare_New(OpenViBEPlugins::Test::CAlgorithmSphericalSplineInterpolationDesc)
 
-	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CSignalDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CGrazVisualizationDesc)
+	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CBoxAlgorithmP300SpellerVisualisationDesc)
+
+	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CSignalDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CTimeFrequencyMapDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CPowerSpectrumDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CTopographicMap2DDisplayDesc)
