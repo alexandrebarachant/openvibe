@@ -103,7 +103,7 @@ namespace
 //                                                                   //
 
 CScenario::CScenario(const IKernelContext& rKernelContext, const CIdentifier& rIdentifier)
-	:TKernelObject < TAttributable < IScenario > > (rKernelContext)
+	:TAttributable < TKernelObject < IScenario > > (rKernelContext)
 	,m_oIdentifier(rIdentifier)
 {
 }

@@ -14,7 +14,7 @@ using namespace OpenViBE::Plugins;
 //                                                                   //
 
 CBox::CBox(const IKernelContext& rKernelContext, CScenario& rOwnerScenario)
-	:TKernelObject<TAttributable<IBox> >(rKernelContext)
+	:TAttributable < TKernelObject < IBox > >(rKernelContext)
 	,m_rOwnerScenario(rOwnerScenario)
 	,m_pBoxAlgorithmDescriptor(NULL)
 	,m_pBoxListener(NULL)

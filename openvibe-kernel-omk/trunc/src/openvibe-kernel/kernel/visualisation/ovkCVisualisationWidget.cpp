@@ -9,7 +9,7 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 
 CVisualisationWidget::CVisualisationWidget(const IKernelContext& rKernelContext) :
-	TKernelObject<TAttributable<IVisualisationWidget> >(rKernelContext),
+	TAttributable < TKernelObject < IVisualisationWidget > >(rKernelContext),
 	m_oIdentifier(OV_UndefinedIdentifier),
 	m_oType(EVisualisationWidget_Undefined),
 	m_oParentIdentifier(OV_UndefinedIdentifier),

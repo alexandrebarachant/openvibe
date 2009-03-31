@@ -17,6 +17,11 @@ namespace OpenViBE
 		{
 		public:
 
+			TAttributable(const OpenViBE::Kernel::IKernelContext& rKernelContext)
+				:T(rKernelContext)
+			{
+			}
+
 			virtual OpenViBE::boolean addAttribute(
 				const OpenViBE::CIdentifier& rAttributeIdentifier,
 				const OpenViBE::CString& sAttributeValue)
@@ -66,7 +71,9 @@ namespace OpenViBE
 				std::map<OpenViBE::CIdentifier, OpenViBE::CString>::iterator itAttribute=m_vAttribute.find(rAttributeIdentifier);
 				if(itAttribute==m_vAttribute.end())
 				{
-					return false;
+					this->getLogManager() << OpenViBE::Kernel::LogLevel_Trace << "Automatically added unexisting attribute identifier " << rAttributeIdentifier << " while setting its value\n";
+					m_vAttribute[rAttributeIdentifier]=sAttributeValue;
+					return true;
 				}
 				itAttribute->second=sAttributeValue;
 				return true;

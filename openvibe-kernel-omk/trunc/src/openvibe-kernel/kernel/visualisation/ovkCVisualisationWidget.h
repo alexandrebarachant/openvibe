@@ -11,7 +11,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CVisualisationWidget : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationWidget> >
+		class CVisualisationWidget : public OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IVisualisationWidget > >
 		{
 		public:
 			CVisualisationWidget(const OpenViBE::Kernel::IKernelContext& rKernelContext);
@@ -66,7 +66,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean acceptVisitor(
 				OpenViBE::IObjectVisitor& rObjectVisitor);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationWidget> >, OVK_ClassId_Kernel_Visualisation_VisualisationWidget)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IVisualisationWidget > >, OVK_ClassId_Kernel_Visualisation_VisualisationWidget)
 
 		private:
 

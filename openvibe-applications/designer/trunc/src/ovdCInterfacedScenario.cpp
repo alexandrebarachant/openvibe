@@ -1244,9 +1244,15 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 							IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
 							if(l_pBox)
 							{
-								CConnectorEditor l_oConnectorEditor(m_rKernelContext, *l_pBox, m_oCurrentObject.m_ui32ConnectorType, m_oCurrentObject.m_ui32ConnectorIndex, m_oCurrentObject.m_ui32ConnectorType==Connector_Input?"Edit Input":"Edit Output", m_sGUIFilename.c_str());
-								l_oConnectorEditor.run();
-								this->snapshotCB();
+								if((m_oCurrentObject.m_ui32ConnectorType==Connector_Input  && l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyInput))
+								|| (m_oCurrentObject.m_ui32ConnectorType==Connector_Output && l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput)))
+								{
+									CConnectorEditor l_oConnectorEditor(m_rKernelContext, *l_pBox, m_oCurrentObject.m_ui32ConnectorType, m_oCurrentObject.m_ui32ConnectorIndex, m_oCurrentObject.m_ui32ConnectorType==Connector_Input?"Edit Input":"Edit Output", m_sGUIFilename.c_str());
+									if(l_oConnectorEditor.run())
+									{
+										this->snapshotCB();
+									}
+								}
 							}
 						}
 						else

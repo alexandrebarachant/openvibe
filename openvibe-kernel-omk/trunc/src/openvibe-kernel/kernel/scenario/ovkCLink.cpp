@@ -10,7 +10,7 @@ using namespace OpenViBE::Kernel;
 //                                                                   //
 
 CLink::CLink(const IKernelContext& rKernelContext, CScenario& rOwnerScenario)
-	:TKernelObject<TAttributable<ILink> >(rKernelContext)
+	:TAttributable < TKernelObject < ILink > >(rKernelContext)
 	,m_rOwnerScenario(rOwnerScenario)
 	,m_oIdentifier(OV_UndefinedIdentifier)
 	,m_oSourceBoxIdentifier(OV_UndefinedIdentifier)

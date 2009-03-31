@@ -12,7 +12,7 @@ namespace OpenViBE
 {
 	namespace Kernel
 	{
-		class CVisualisationTree : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationTree> >
+		class CVisualisationTree : public OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IVisualisationTree > >
 		{
 		public:
 			CVisualisationTree(
@@ -231,7 +231,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean acceptVisitor(
 				OpenViBE::IObjectVisitor& rObjectVisitor);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IVisualisationTree> >, OVK_ClassId_Kernel_Visualisation_VisualisationTree)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IVisualisationTree > >, OVK_ClassId_Kernel_Visualisation_VisualisationTree)
 
 		private:
 

@@ -76,8 +76,8 @@ namespace
 	}
 };
 
-CVisualisationTree::CVisualisationTree(const OpenViBE::Kernel::IKernelContext& rKernelContext) :
-	TKernelObject<TAttributable<IVisualisationTree> >(rKernelContext),
+CVisualisationTree::CVisualisationTree(const IKernelContext& rKernelContext) :
+	TAttributable<TKernelObject<IVisualisationTree> >(rKernelContext),
 	m_rKernelContext(rKernelContext),
 	m_pScenario(NULL),
 	m_pTreeStore(NULL),
@@ -93,7 +93,7 @@ CVisualisationTree::~CVisualisationTree()
 	g_object_unref(m_pTreeStore);
 }
 
-boolean CVisualisationTree::init(const OpenViBE::Kernel::IScenario* pScenario)
+boolean CVisualisationTree::init(const IScenario* pScenario)
 {
 	m_pScenario = pScenario;
 

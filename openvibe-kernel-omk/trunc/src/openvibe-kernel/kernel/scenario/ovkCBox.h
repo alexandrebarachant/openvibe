@@ -15,7 +15,7 @@ namespace OpenViBE
 	{
 		class CScenario;
 
-		class CBox : public OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >
+		class CBox : public OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IBox > >
 		{
 		public:
 
@@ -113,7 +113,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean acceptVisitor(
 				OpenViBE::IObjectVisitor& rObjectVisitor);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IBox> >, OVK_ClassId_Kernel_Scenario_Box)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IBox > >, OVK_ClassId_Kernel_Scenario_Box)
 
 		protected:
 

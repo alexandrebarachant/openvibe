@@ -10,7 +10,7 @@ using namespace std;
 //                                                                   //
 
 CProcessingUnit::CProcessingUnit(const IKernelContext& rKernelContext)
-	:TKernelObject<TAttributable<IProcessingUnit> >(rKernelContext)
+	:TAttributable < TKernelObject < IProcessingUnit > >(rKernelContext)
 {
 }
 

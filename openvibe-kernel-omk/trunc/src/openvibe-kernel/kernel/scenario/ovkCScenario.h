@@ -16,7 +16,7 @@ namespace OpenViBE
 		class CLink;
 		class CProcessingUnit;
 
-		class CScenario : public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::IScenario > >
+		class CScenario : public OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IScenario > >
 		{
 		public:
 
@@ -105,7 +105,7 @@ namespace OpenViBE
 			virtual OpenViBE::boolean acceptVisitor(
 				OpenViBE::IObjectVisitor& rObjectVisitor);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::TAttributable<OpenViBE::Kernel::IScenario> >, OVK_ClassId_Kernel_Scenario_Scenario)
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TAttributable < OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IScenario > >, OVK_ClassId_Kernel_Scenario_Scenario)
 
 		protected:
 
