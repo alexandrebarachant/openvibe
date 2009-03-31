@@ -70,17 +70,29 @@ namespace OpenViBE
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingType, const, const uint32, ui32SettingIndex, CIdentifier&, rTypeIdentifier);
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingName, const, const uint32, ui32SettingIndex, CString&, rName);
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingDefaultValue, const, const uint32, ui32SettingIndex, CString&, rDefaultValue);
-#if 1
+#if 0
 				virtual __BridgeBindFunc2__((*m_pBox), boolean, getSettingValue, const, const uint32, ui32SettingIndex, CString&, rValue);
 #else
 				virtual boolean getSettingValue(const uint32 ui32SettingIndex, CString& rValue) const
 				{
+					CIdentifier l_oTypeIdentifier;
+					if(!m_pBox->getSettingType(ui32SettingIndex, l_oTypeIdentifier))
+					{
+						return false;
+					}
 					CString l_sResult;
 					if(!m_pBox->getSettingValue(ui32SettingIndex, l_sResult))
 					{
 						return false;
 					}
-					rValue=this->getConfigurationManager().expand(l_sResult);
+					if(l_oTypeIdentifier==OV_TypeId_Filename)
+					{
+						rValue=this->getConfigurationManager().expand(l_sResult);
+					}
+					else
+					{
+						rValue=l_sResult;
+					}
 					return true;
 				}
 #endif

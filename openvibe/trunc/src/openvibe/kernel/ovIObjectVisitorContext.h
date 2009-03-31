@@ -19,10 +19,25 @@ namespace OpenViBE
 		public:
 
 			/**
+			 * \brief Gets a reference on the current algorithm manager
+			 * \return a reference on the current algorithm manager
+			 */
+			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) const=0;
+			/**
+			 * \brief Gets a reference on the current configuration manager
+			 * \return a reference on the current configuration manager
+			 */
+			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void) const=0;
+			/**
+			 * \brief Gets a reference on the current type manager
+			 * \return a reference on the current type manager
+			 */
+			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void) const=0;
+			/**
 			 * \brief Gets a reference on the current log manager
 			 * \return a reference on the current log manager
 			 */
-			virtual OpenViBE::Kernel::ILogManager& getLogManager(void)=0;
+			virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const=0;
 
 			_IsDerivedFromClass_(OpenViBE::Kernel::IKernelObject, OV_ClassId_Kernel_ObjectVisitorContext)
 		};

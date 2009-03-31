@@ -23,6 +23,21 @@ namespace OpenViBE
 	public:
 
 		/**
+		 * \brief Reserves some memory for this memory buffer
+		 * \param ui64Size [in] : the amount of memory to reserve
+		 * \return \e true in case of success.
+		 * \return \e false in case of error.
+		 *
+		 * This function reserves some memory space for later use. This does not
+		 * affect the actual size of the buffer but allows later calls to \c append
+		 * not to reallocate the whole buffer.
+		 *
+		 * \note if \c ui64Size is lower than the actual buffer size
+		 *       then \e true is returned and nothing is done.
+		 */
+		virtual OpenViBE::boolean reserve(
+			const OpenViBE::uint64 ui64Size)=0;
+		/**
 		 * \brief Changes the size of this memory buffer
 		 * \param ui64Size [in] : the new size to give to the buffer
 		 * \param bDiscard [in] : tells the reallocation process whether it should presever currently stored data or not

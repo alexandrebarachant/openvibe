@@ -70,9 +70,10 @@ public:
 		if(rBox.hasAttribute(OVD_AttributeId_SettingOverrideFilename))
 		{
 			CString l_sSettingOverrideFilename=rBox.getAttributeValue(OVD_AttributeId_SettingOverrideFilename);;
+			CString l_sSettingOverrideFilenameFinal=rObjectVisitorContext.getConfigurationManager().expand(l_sSettingOverrideFilename);
 
 			// message
-			rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Trying to override [" << rBox.getName() << "] box settings with file [" << l_sSettingOverrideFilename << "] !\n";
+			rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Trying to override [" << rBox.getName() << "] box settings with file [" << l_sSettingOverrideFilename << " which expands to " << l_sSettingOverrideFilenameFinal << "] !\n";
 
 			// creates XML reader
 			XML::IReader* l_pReader=XML::createReader(*this);
@@ -87,7 +88,7 @@ public:
 			// 2. Loop until end of file, reading it
 			//    and sending what is read to the XML parser
 			// 3. Close the settings file
-			ifstream l_oFile(l_sSettingOverrideFilename.toASCIIString(), ios::binary);
+			ifstream l_oFile(l_sSettingOverrideFilenameFinal.toASCIIString(), ios::binary);
 			if(l_oFile.is_open())
 			{
 				char l_sBuffer[1024];

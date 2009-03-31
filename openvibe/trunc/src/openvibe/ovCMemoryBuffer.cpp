@@ -17,6 +17,7 @@ namespace OpenViBE
 			CMemoryBufferImpl(const uint8* pMemoryBuffer, const uint64 ui64BufferSize);
 			virtual ~CMemoryBufferImpl(void);
 
+			virtual boolean reserve(const uint64 ui64Size);
 			virtual boolean setSize(const uint64 ui64Size, const boolean bDiscard);
 			virtual uint64 getSize(void) const;
 			virtual uint8* getDirectPointer(void);
@@ -101,6 +102,24 @@ uint64 CMemoryBufferImpl::getSize(void) const
 	return m_ui64BufferSize;
 }
 
+boolean CMemoryBufferImpl::reserve(const uint64 ui64Size)
+{
+	if(ui64Size>m_ui64AllocatedSize)
+	{
+		uint8* l_pSavedBuffer=m_pBuffer;
+		m_pBuffer=new uint8[static_cast<size_t>(ui64Size+1)]; // $$$
+		if(!m_pBuffer)
+		{
+			return false;
+		}
+		::memcpy(m_pBuffer, l_pSavedBuffer, static_cast<size_t>(m_ui64BufferSize)); // $$$
+		delete [] l_pSavedBuffer;
+		m_ui64AllocatedSize=ui64Size;
+		m_pBuffer[m_ui64AllocatedSize]=0;
+	}
+	return true;
+}
+
 boolean CMemoryBufferImpl::setSize(
 	const uint64 ui64Size,
 	const boolean bDiscard)
@@ -109,6 +128,10 @@ boolean CMemoryBufferImpl::setSize(
 	{
 		uint8* l_pSavedBuffer=m_pBuffer;
 		m_pBuffer=new uint8[static_cast<size_t>(ui64Size+1)]; // $$$
+		if(!m_pBuffer)
+		{
+			return false;
+		}
 		if(!bDiscard)
 		{
 			::memcpy(m_pBuffer, l_pSavedBuffer, static_cast<size_t>(m_ui64BufferSize)); // $$$
@@ -173,6 +196,11 @@ CMemoryBuffer::CMemoryBuffer(const uint8* pMemoryBuffer, const uint64 ui64Buffer
 CMemoryBuffer::~CMemoryBuffer(void)
 {
 	delete m_pMemoryBufferImpl;
+}
+
+boolean CMemoryBuffer::reserve(const uint64 ui64Size)
+{
+	return m_pMemoryBufferImpl->reserve(ui64Size);
 }
 
 boolean CMemoryBuffer::setSize(const uint64 ui64Size, const boolean bDiscard)

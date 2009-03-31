@@ -258,7 +258,6 @@ boolean CGDFFileWriter::initialize()
 
 	// Parses box settings to find filename
 	l_pBox->getSettingValue(0, m_sFileName);
-	m_sFileName=this->getConfigurationManager().expand(m_sFileName);
 
 	if(!m_oFile.is_open())
 	{

@@ -55,6 +55,8 @@ namespace OpenViBE
 
 		//@}
 
+		virtual OpenViBE::boolean reserve(
+			const OpenViBE::uint64 ui64Size);
 		virtual OpenViBE::boolean setSize(
 			const OpenViBE::uint64 ui64Size,
 			const OpenViBE::boolean bDiscard);

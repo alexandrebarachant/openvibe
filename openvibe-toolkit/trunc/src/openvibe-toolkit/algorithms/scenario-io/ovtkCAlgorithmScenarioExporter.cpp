@@ -52,6 +52,9 @@ boolean CAlgorithmScenarioExporter::process(void)
 	CIdentifier l_oLinkIdentifier;
 	CIdentifier l_oVisualisationWidgetIdentifier;
 
+	// preallocates 1 Mbytes
+	l_oTemporaryMemoryBuffer.reserve(1024*1024);
+
 	TParameterHandler < IScenario* > ip_pScenario(this->getInputParameter(OVTK_Algorithm_ScenarioExporter_InputParameterId_Scenario));
 	IScenario* l_pScenario=ip_pScenario;
 	if(!l_pScenario)

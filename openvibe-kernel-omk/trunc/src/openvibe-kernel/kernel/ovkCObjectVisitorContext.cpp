@@ -78,6 +78,21 @@ CObjectVisitorContext::~CObjectVisitorContext(void)
 	delete m_pLogManager;
 }
 
+IAlgorithmManager& CObjectVisitorContext::getAlgorithmManager(void)
+{
+	return TKernelObject < IObjectVisitorContext >::getAlgorithmManager();
+}
+
+IConfigurationManager& CObjectVisitorContext::getConfigurationManager(void)
+{
+	return TKernelObject < IObjectVisitorContext >::getConfigurationManager();
+}
+
+ITypeManager& CObjectVisitorContext::getTypeManager(void)
+{
+	return TKernelObject < IObjectVisitorContext >::getTypeManager();
+}
+
 ILogManager& CObjectVisitorContext::getLogManager(void)
 {
 	return *m_pLogManager;
