@@ -13,13 +13,18 @@ namespace XML
 	public:
 		CReader(IReaderCallback& rReaderCallback);
 
-		virtual XML::boolean processData(const void* pBuffer, const uint64 ui64BufferSize);
+		virtual boolean processData(const void* pBuffer, const uint64 ui64BufferSize);
 		virtual void release(void);
+
+		virtual void openChild(const char* sName, const char** sAttributeName, const char** sAttributeValue, uint64 ui64AttributeCount);
+		virtual void processChildData(const char* sData);
+		virtual void closeChild(void);
 
 	protected:
 
 		IReaderCallback& m_rReaderCallback;
 		::XML_Parser m_pXMLParser;
+		std::string m_sData;
 	};
 
 	static void XMLCALL expat_xml_start(void* pData, const char* pElement, const char** ppAttribute);
@@ -34,7 +39,7 @@ CReader::CReader(IReaderCallback& rReaderCallback)
 	m_pXMLParser=XML_ParserCreate(NULL);
 	XML_SetElementHandler(m_pXMLParser, expat_xml_start, expat_xml_end);
 	XML_SetCharacterDataHandler(m_pXMLParser, expat_xml_data);
-	XML_SetUserData(m_pXMLParser, &m_rReaderCallback);
+	XML_SetUserData(m_pXMLParser, this);
 }
 
 boolean CReader::processData(const void* pBuffer, const uint64 ui64BufferSize)
@@ -51,6 +56,26 @@ boolean CReader::processData(const void* pBuffer, const uint64 ui64BufferSize)
 void CReader::release(void)
 {
 	delete this;
+}
+
+void CReader::openChild(const char* sName, const char** sAttributeName, const char** sAttributeValue, uint64 ui64AttributeCount)
+{
+	m_rReaderCallback.openChild(sName, sAttributeName, sAttributeValue, ui64AttributeCount);
+	m_sData="";
+}
+
+void CReader::processChildData(const char* sData)
+{
+	m_sData+=sData;
+}
+
+void CReader::closeChild(void)
+{
+	if(m_sData.size()!=0)
+	{
+		m_rReaderCallback.processChildData(m_sData.c_str());
+	}
+	m_rReaderCallback.closeChild();
 }
 
 XML_API IReader* XML::createReader(IReaderCallback& rReaderCallback)
@@ -74,7 +99,7 @@ static void XMLCALL XML::expat_xml_start(void* pData, const char* pElement, cons
 		l_pAttributeValue[i]=ppAttribute[(i<<1)+1];
 	}
 
-	static_cast<IReaderCallback*>(pData)->openChild(pElement, l_pAttributeName, l_pAttributeValue, l_ui64AttributeCount);
+	static_cast<CReader*>(pData)->openChild(pElement, l_pAttributeName, l_pAttributeValue, l_ui64AttributeCount);
 
 	delete [] l_pAttributeName;
 	delete [] l_pAttributeValue;
@@ -82,11 +107,11 @@ static void XMLCALL XML::expat_xml_start(void* pData, const char* pElement, cons
 
 static void XMLCALL XML::expat_xml_end(void* pData, const char* pElement)
 {
-	static_cast<IReaderCallback*>(pData)->closeChild();
+	static_cast<CReader*>(pData)->closeChild();
 }
 
 static void XMLCALL XML::expat_xml_data(void* pData, const char* pDataValue, int iDataLength)
 {
 	string sData(pDataValue, iDataLength);
-	static_cast<IReaderCallback*>(pData)->processChildData(sData.c_str());
+	static_cast<CReader*>(pData)->processChildData(sData.c_str());
 }
