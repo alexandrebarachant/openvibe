@@ -40,11 +40,38 @@ namespace Socket
 		TConnection(void)
 			:m_i32Socket(-1)
 		{
+#if defined Socket_OS_Linux
+#elif defined Socket_OS_Windows
+			int32 l_i32VersionHigh=2;
+			int32 l_i32VersionLow=0;
+			WORD l_oWinsockVersion=MAKEWORD(l_i32VersionHigh, l_i32VersionLow);
+			WSADATA l_oWSAData;
+			::WSAStartup(l_oWinsockVersion, &l_oWSAData);
+#else
+#endif
 		}
 
 		TConnection(int32 i32Socket)
 			:m_i32Socket(i32Socket)
 		{
+#if defined Socket_OS_Linux
+#elif defined Socket_OS_Windows
+			int32 l_i32VersionHigh=2;
+			int32 l_i32VersionLow=0;
+			WORD l_oWinsockVersion=MAKEWORD(l_i32VersionHigh, l_i32VersionLow);
+			WSADATA l_oWSAData;
+			::WSAStartup(l_oWinsockVersion, &l_oWSAData);
+#else
+#endif
+		}
+
+		virtual ~TConnection(void)
+		{
+#if defined Socket_OS_Linux
+#elif defined Socket_OS_Windows
+			::WSACleanup();
+#else
+#endif
 		}
 
 	protected:
@@ -55,16 +82,6 @@ namespace Socket
 			{
 				return false;
 			}
-
-#if defined Socket_OS_Linux
-#elif defined Socket_OS_Windows
-			int32 l_i32VersionHigh=2;
-			int32 l_i32VersionLow=0;
-			WORD l_oWinsockVersion=MAKEWORD(l_i32VersionHigh, l_i32VersionLow);
-			WSADATA l_oWSAData;
-			::WSAStartup(l_oWinsockVersion, &l_oWSAData);
-#else
-#endif
 
 			m_i32Socket=::socket(AF_INET, SOCK_STREAM, 0);
 			if(m_i32Socket==-1)
@@ -90,7 +107,6 @@ namespace Socket
 #elif defined Socket_OS_Windows
 			::shutdown(m_i32Socket, SD_BOTH);
 			::closesocket(m_i32Socket);
-			::WSACleanup();
 #else
 #endif
 

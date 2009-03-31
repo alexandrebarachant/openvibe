@@ -64,7 +64,7 @@ namespace Socket
 				return false;
 			}
 
-			if(::listen(m_i32Socket, 1)==-1)
+			if(::listen(m_i32Socket, 32)==-1)
 			{
 /*
 				switch(errno)
