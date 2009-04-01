@@ -1,6 +1,7 @@
 #include "ovpCBoxAlgorithmP300SpellerStimulator.h"
 
 #include <list>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
