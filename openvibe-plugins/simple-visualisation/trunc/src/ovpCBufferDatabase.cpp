@@ -371,7 +371,14 @@ void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTi
 		}
 		if(m_ui64BufferStep == 0)
 		{
-			m_ui64BufferStep = m_oStartTime[1] - m_oStartTime[0];
+			if(m_oStartTime.size()<=1)
+			{
+				m_ui64BufferStep = m_ui64TotalDuration;
+			}
+			else
+			{
+				m_ui64BufferStep = m_oStartTime[1] - m_oStartTime[0];
+			}
 		}
 		if(m_ui64TotalStep == 0)
 		{

@@ -428,18 +428,26 @@ void CApplication::initialize(void)
 
 CString CApplication::getWorkingDirectory(void)
 {
-	CString l_sWorkingDirectory;
-	CString l_sConfiguredWorkingDirectory=m_rKernelContext.getConfigurationManager().expand("${Designer_DefaultWorkingDirectory}");
-	char* l_sCurrentDirectory=g_get_current_dir();
-	if(g_path_is_absolute(l_sConfiguredWorkingDirectory.toASCIIString()))
+	CString l_sWorkingDirectory=m_rKernelContext.getConfigurationManager().expand("${Designer_DefaultWorkingDirectory}");
+
+	CInterfacedScenario* l_pCurrentScenario=this->getCurrentInterfacedScenario();
+	if(l_pCurrentScenario)
 	{
-		l_sWorkingDirectory=l_sConfiguredWorkingDirectory;
+		if(l_pCurrentScenario->m_bHasFileName)
+		{
+			char* l_sCurrentDirectory=g_path_get_dirname(l_pCurrentScenario->m_sFileName.c_str());
+			l_sWorkingDirectory=l_sCurrentDirectory;
+			g_free(l_sCurrentDirectory);
+		}
 	}
-	else
+
+	if(!g_path_is_absolute(l_sWorkingDirectory.toASCIIString()))
 	{
-		l_sWorkingDirectory=l_sCurrentDirectory+CString("/")+l_sConfiguredWorkingDirectory;
+		char* l_sCurrentDirectory=g_get_current_dir();
+		l_sWorkingDirectory=l_sCurrentDirectory+CString("/")+l_sWorkingDirectory;
+		g_free(l_sCurrentDirectory);
 	}
-	g_free(l_sCurrentDirectory);
+
 	return l_sWorkingDirectory;
 }
 
@@ -983,6 +991,24 @@ void CApplication::closeScenarioCB(CInterfacedScenario* pInterfacedScenario)
 		gtk_dialog_run(GTK_DIALOG(l_pDialog));
 		gtk_widget_destroy(l_pDialog);
 		return;
+	}
+	if(pInterfacedScenario->m_bHasBeenModified)
+	{
+		::GtkWidget* l_pDialog=gtk_message_dialog_new(
+			GTK_WINDOW(m_pMainWindow),
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_MESSAGE_QUESTION,
+			GTK_BUTTONS_YES_NO,
+			"Save scenario ?");
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pDialog),
+			"The scenario you are trying to close has modifications. "
+			"Would you like to save those modifications before to close it ?");
+		gtk_window_set_title(GTK_WINDOW(l_pDialog), "Warning");
+		if(gtk_dialog_run(GTK_DIALOG(l_pDialog))==GTK_RESPONSE_YES)
+		{
+			this->saveScenarioCB();
+		}
+		gtk_widget_destroy(l_pDialog);
 	}
 
 	vector<CInterfacedScenario*>::iterator i=m_vInterfacedScenario.begin();

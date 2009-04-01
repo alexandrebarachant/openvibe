@@ -231,8 +231,9 @@ CBoxConfigurationDialog::~CBoxConfigurationDialog(void)
 {
 }
 
-void CBoxConfigurationDialog::run(void)
+boolean CBoxConfigurationDialog::run(void)
 {
+	boolean l_bModified=false;
 	CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUIFilename.toASCIIString());
 	if(m_rBox.getSettingCount())
 	{
@@ -381,6 +382,7 @@ void CBoxConfigurationDialog::run(void)
 				}
 
 				l_bFinished=true;
+				l_bModified=true;
 			}
 			else if(l_iResult==1) // default
 			{
@@ -393,6 +395,7 @@ void CBoxConfigurationDialog::run(void)
 				l_oHelper.setValue(OV_TypeId_Filename, l_pSettingOverrideValue, "");
 				gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pFileOverrideCheck), false);
 				gtk_widget_set_sensitive(GTK_WIDGET(l_pSettingTable), true);
+				l_bModified=false;
 			}
 			else if(l_iResult==2) // revert
 			{
@@ -411,6 +414,7 @@ void CBoxConfigurationDialog::run(void)
 			}
 			else if(l_iResult==3) // load
 			{
+				l_bModified=true;
 			}
 			else if(l_iResult==4) // save
 			{
@@ -423,4 +427,5 @@ void CBoxConfigurationDialog::run(void)
 
 		gtk_widget_destroy(l_pSettingDialog);
 	}
+	return l_bModified;
 }

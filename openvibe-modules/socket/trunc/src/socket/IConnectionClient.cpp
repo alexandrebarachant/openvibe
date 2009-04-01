@@ -33,6 +33,10 @@ namespace Socket
 
 			long l_iValue;
 
+#elif defined Socket_OS_Windows
+
+			unsigned long l_uiMode;
+
 #endif
 
 			if(!open())
@@ -63,6 +67,12 @@ namespace Socket
 				return false;
 			}
 
+#elif defined Socket_OS_Windows
+
+			// Sets non blocking
+			l_uiMode=1;
+			::ioctlsocket(m_i32Socket, FIONBIO, &l_uiMode);
+
 #endif
 
 			// Connects
@@ -73,10 +83,19 @@ namespace Socket
 			l_oServerAddress.sin_addr=*((struct in_addr*)l_pServerHostEntry->h_addr);
 			if(::connect(m_i32Socket, (struct sockaddr*)&l_oServerAddress, sizeof(struct sockaddr))<0)
 			{
+				boolean l_bInProgress=false;
 
 #if defined Socket_OS_Linux
 
-				if(errno==EINPROGRESS)
+				l_bInProgress=(errno==EINPROGRESS);
+
+#elif defined Socket_OS_Windows
+
+				l_bInProgress=(WSAGetLastError()==WSAEINPROGRESS || WSAGetLastError()==WSAEWOULDBLOCK);
+
+#endif
+
+				if(l_bInProgress)
 				{
 					// Performs time out
 					if(ui32TimeOut==0xffffffff)
@@ -104,9 +123,14 @@ namespace Socket
 					}
 
 					// Checks error status
-					int l_iOption;
+					int l_iOption=0;
+#if defined Socket_OS_Linux
 					socklen_t l_iOptionLength=sizeof(l_iOption);
 					::getsockopt(m_i32Socket, SOL_SOCKET, SO_ERROR, (void*)(&l_iOption), &l_iOptionLength);
+#elif defined Socket_OS_Windows
+					int l_iOptionLength=sizeof(l_iOption);
+					::getsockopt(m_i32Socket, SOL_SOCKET, SO_ERROR, (char*)(&l_iOption), &l_iOptionLength);
+#endif
 					if(l_iOption!=0)
 					{
 						close();
@@ -114,9 +138,6 @@ namespace Socket
 					}
 				}
 				else
-
-#endif
-
 				{
 					close();
 					return false;
@@ -137,6 +158,12 @@ namespace Socket
 				close();
 				return false;
 			}
+
+#elif defined Socket_OS_Windows
+
+			// Sets back to blocking
+			l_uiMode=0;
+			::ioctlsocket(m_i32Socket, FIONBIO, &l_uiMode);
 
 #endif
 

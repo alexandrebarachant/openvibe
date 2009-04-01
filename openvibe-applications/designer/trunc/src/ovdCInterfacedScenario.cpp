@@ -368,9 +368,15 @@ void CInterfacedScenario::updateScenarioLabel(void)
 {
 	::GtkLabel* l_pTitleLabel=GTK_LABEL(glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe-scenario_label"));
 	string l_sLabel;
+	string l_sTempFileName=m_sFileName;
+	string::size_type l_iBackSlashIndex;
+	while((l_iBackSlashIndex=l_sTempFileName.find('\\'))!=string::npos)
+	{
+		l_sTempFileName[l_iBackSlashIndex]='/';
+	}
 	l_sLabel+=m_bHasBeenModified?"*":"";
 	l_sLabel+=" ";
-	l_sLabel+=m_bHasFileName?m_sFileName.substr(m_sFileName.rfind('/')+1):"(untitled)";
+	l_sLabel+=m_bHasFileName?l_sTempFileName.substr(l_sTempFileName.rfind('/')+1):"(untitled)";
 	l_sLabel+=" ";
 	l_sLabel+=m_bHasBeenModified?"*":"";
 	gtk_label_set_text(l_pTitleLabel, l_sLabel.c_str());
@@ -1263,8 +1269,10 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 								if(l_pBox->getSettingCount()!=0)
 								{
 									CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, *l_pBox, m_sGUIFilename.c_str());
-									l_oBoxConfigurationDialog.run();
-									this->snapshotCB();
+									if(l_oBoxConfigurationDialog.run())
+									{
+										this->snapshotCB();
+									}
 								}
 							}
 						}
