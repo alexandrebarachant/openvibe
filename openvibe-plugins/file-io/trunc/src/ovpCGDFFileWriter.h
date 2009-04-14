@@ -90,6 +90,7 @@ namespace OpenViBEPlugins
 			std::vector<std::pair<OpenViBE::uint64, OpenViBE::uint64> > m_oEvents;
 
 			OpenViBE::boolean m_bError;
+			OpenViBE::float64 m_f64Precision; // because of GDF writing problem (no scaling)
 		};
 
 		/**

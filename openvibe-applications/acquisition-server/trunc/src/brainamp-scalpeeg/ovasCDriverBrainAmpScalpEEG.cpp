@@ -322,7 +322,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 			char* pszType = m_pStructRDA_Marker->sTypeDesc;
 			char* pszDescription = pszType + strlen(pszType) + 1;
 
-			cout << "Stim n°" << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< std::endl;
+			// cout << "Stim " << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< std::endl;
 
 			m_vStimulationIdentifier[i] = atoi(strtok (pszDescription,"S"));
 			m_vStimulationDate[i] = (((uint64)(m_pStructRDA_Marker->nPosition + m_ui32DataOffset)) << 32) / m_oHeader.getSamplingFrequency();
@@ -352,7 +352,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 		l_oStimulationSet.setStimulationCount(m_ui32NumberOfMarkers);
 		for (uint32 i = 0; i < m_ui32NumberOfMarkers; i++)
 		{
-			l_oStimulationSet.setStimulationIdentifier(i, m_vStimulationIdentifier[i]);
+			l_oStimulationSet.setStimulationIdentifier(i, OVTK_StimulationId_Label(m_vStimulationIdentifier[i]));
 			l_oStimulationSet.setStimulationDate(i, m_vStimulationDate[i]);
 			l_oStimulationSet.setStimulationDuration(i, 0);
 		}
@@ -360,7 +360,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 		m_pCallback->setSamples(m_pSample);
 		m_pCallback->setStimulationSet(l_oStimulationSet);
 		m_ui32NumberOfMarkers = 0;
-
+		m_ui32DataOffset = 0;
 	}
 	else
 	{
@@ -477,7 +477,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 						char* pszType = m_pStructRDA_Marker->sTypeDesc;
 						char* pszDescription = pszType + strlen(pszType) + 1;
 
-						cout << "Stim n°" << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< std::endl;
+						// cout << "Stim " << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< std::endl;
 
 						m_vStimulationIdentifier[i+l_ui32NumberOfMarkers] = atoi(strtok (pszDescription,"S"));
 						m_vStimulationDate[i+l_ui32NumberOfMarkers] = (((uint64)(m_pStructRDA_Marker->nPosition + m_ui32DataOffset)) << 32) / m_oHeader.getSamplingFrequency();
@@ -509,14 +509,14 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 					l_ui32NumberOfMarkersToSend++;
 				}
 			}
-			cout << "l_ui32NumberOfMarkersToSend = " << l_ui32NumberOfMarkersToSend<<endl;
+			// cout << "l_ui32NumberOfMarkersToSend = " << l_ui32NumberOfMarkersToSend<<endl;
 
 			// send buffers
 			CStimulationSet l_oStimulationSet;
 			l_oStimulationSet.setStimulationCount(l_ui32NumberOfMarkersToSend);
 			for (uint32 i = 0; i < l_ui32NumberOfMarkersToSend; i++)
 			{
-				l_oStimulationSet.setStimulationIdentifier(i, m_vStimulationIdentifier[i]);
+				l_oStimulationSet.setStimulationIdentifier(i, OVTK_StimulationId_Label(m_vStimulationIdentifier[i]));
 				l_oStimulationSet.setStimulationDate(i, m_vStimulationDate[i]);
 				l_oStimulationSet.setStimulationDuration(i, 0);
 			}
@@ -534,9 +534,10 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 			l_vStimulationSample.assign(m_ui32NumberOfMarkers-l_ui32NumberOfMarkersToSend, 0);
 			for (uint32 i = l_ui32NumberOfMarkersToSend; i < m_ui32NumberOfMarkers; i++)
 			{
-				l_vStimulationDate[i-l_ui32NumberOfMarkersToSend] = m_vStimulationDate[i] - m_ui32SampleCountPerSentBlock%(uint32)m_pStructRDA_MessageData32->nPoints;
+				// l_vStimulationDate[i-l_ui32NumberOfMarkersToSend] = m_vStimulationDate[i] - m_ui32SampleCountPerSentBlock%(uint32)m_pStructRDA_MessageData32->nPoints;
 				l_vStimulationIdentifier[i-l_ui32NumberOfMarkersToSend] = m_vStimulationIdentifier[i];
 				l_vStimulationSample[i-l_ui32NumberOfMarkersToSend] = m_vStimulationSample[i] - m_ui32SampleCountPerSentBlock;
+				l_vStimulationDate[i-l_ui32NumberOfMarkersToSend] = (((uint64)(m_vStimulationSample[i] - m_ui32SampleCountPerSentBlock)) << 32 ) / m_oHeader.getSamplingFrequency();
 			}
 			m_vStimulationIdentifier.resize( m_ui32NumberOfMarkers - l_ui32NumberOfMarkersToSend);
 			m_vStimulationDate.resize( m_ui32NumberOfMarkers - l_ui32NumberOfMarkersToSend);
@@ -568,7 +569,6 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 
 			m_ui32IndexOut = (uint32)m_pStructRDA_MessageData32->nPoints-m_ui32IndexIn;
 			m_ui32IndexIn = 0;
-
 		}
 		else
 		{
@@ -597,7 +597,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 				l_oStimulationSet.setStimulationCount(l_ui32NumberOfMarkersToSend);
 				for (uint32 i = 0; i < l_ui32NumberOfMarkersToSend; i++)
 				{
-					l_oStimulationSet.setStimulationIdentifier(i, m_vStimulationIdentifier[i]);
+					l_oStimulationSet.setStimulationIdentifier(i, OVTK_StimulationId_Label(m_vStimulationIdentifier[i]));
 					l_oStimulationSet.setStimulationDate(i, m_vStimulationDate[i]);
 					l_oStimulationSet.setStimulationDuration(i, 0);
 				}
@@ -605,7 +605,6 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 				//send data
 				m_pCallback->setSamples(m_pSample);
 				m_pCallback->setStimulationSet(l_oStimulationSet);
-
 
 				// save the rest of markers
 				std::vector<OpenViBE::uint32> l_vStimulationIdentifier;
@@ -616,7 +615,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 				l_vStimulationSample.assign(m_ui32NumberOfMarkers-l_ui32NumberOfMarkersToSend, 0);
 				for (uint32 i = l_ui32NumberOfMarkersToSend; i < m_ui32NumberOfMarkers; i++)
 				{
-					l_vStimulationDate[i-l_ui32NumberOfMarkersToSend] = m_vStimulationDate[i] - m_ui32SampleCountPerSentBlock%(uint32)m_pStructRDA_MessageData32->nPoints;
+					l_vStimulationDate[i-l_ui32NumberOfMarkersToSend] = (((uint64)(m_vStimulationSample[i] - m_ui32SampleCountPerSentBlock)) << 32 ) / m_oHeader.getSamplingFrequency();
 					l_vStimulationIdentifier[i-l_ui32NumberOfMarkersToSend] = m_vStimulationIdentifier[i];
 					l_vStimulationSample[i-l_ui32NumberOfMarkersToSend] = m_vStimulationSample[i] - m_ui32SampleCountPerSentBlock;
 				}
@@ -647,8 +646,6 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 
 			m_ui32IndexOut = (uint32)m_pStructRDA_MessageData32->nPoints - m_ui32IndexIn;
 			m_ui32IndexIn = 0;
-
-
 		}
 	}
 

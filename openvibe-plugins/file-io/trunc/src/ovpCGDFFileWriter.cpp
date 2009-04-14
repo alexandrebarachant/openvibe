@@ -86,19 +86,16 @@ void CGDFFileWriter::setSampleBuffer(const float64* pBuffer)
 			l_f64Sample = pBuffer[j*m_ui32SamplesPerChannel+i];
 
 			//actualize channel's digital min/max
-			if(l_f64Sample < m_oVariableHeader[j].m_f64PhysicalMinimum)
+			if(fabs(l_f64Sample) > m_oVariableHeader[j].m_f64PhysicalMaximum)
 			{
-				m_oVariableHeader[j].m_f64PhysicalMinimum = l_f64Sample;
-				m_oVariableHeader[j].m_i64DigitalMinimum=static_cast<int64>(floor(l_f64Sample));
-			}
-			else if(l_f64Sample > m_oVariableHeader[j].m_f64PhysicalMaximum)
-			{
-				m_oVariableHeader[j].m_f64PhysicalMaximum = l_f64Sample;
-				m_oVariableHeader[j].m_i64DigitalMaximum=static_cast<int64>(ceil(l_f64Sample));
+				m_oVariableHeader[j].m_f64PhysicalMaximum = fabs(l_f64Sample+(1/m_f64Precision));
+				m_oVariableHeader[j].m_f64PhysicalMinimum = -m_oVariableHeader[j].m_f64PhysicalMaximum;
+				m_oVariableHeader[j].m_i64DigitalMaximum=static_cast<int64>(1+(ceil(fabs(l_f64Sample)*m_f64Precision)));
+				m_oVariableHeader[j].m_i64DigitalMinimum=-m_oVariableHeader[j].m_i64DigitalMaximum;
 			}
 
 			//copy its current sample
-			m_vSamples[j].push_back(l_f64Sample);
+			m_vSamples[j].push_back(l_f64Sample*m_f64Precision);
 		}
 
 		//updates the sample count
@@ -271,6 +268,8 @@ boolean CGDFFileWriter::initialize()
 			return false;
 		}
 	}
+
+	m_f64Precision = 1000.0;
 
 	return true;
 }

@@ -199,6 +199,9 @@ namespace OpenViBEPlugins
 			void GDFBufferToFloat64Buffer(OpenViBE::float64 * out, void * in, OpenViBE::uint64 inputBufferSize, OpenViBE::uint32 ui32Channel);
 		};
 
+		// template<> OpenViBE::float64 CGDFFileReader::GDFTypeToFloat64<OpenViBE::float32>(OpenViBE::float32 val, OpenViBE::uint32 ui32Channel);
+		// template<> OpenViBE::float64 CGDFFileReader::GDFTypeToFloat64<OpenViBE::float64>(OpenViBE::float64 val, OpenViBE::uint32 ui32Channel);
+
 		/**
 		* Description of the GDF Reader plugin
 		*/

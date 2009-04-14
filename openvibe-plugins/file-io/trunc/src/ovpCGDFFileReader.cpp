@@ -8,13 +8,16 @@
 #include <string.h>
 
 using namespace OpenViBE;
-using namespace Plugins;
+using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::FileIO;
 
 using namespace OpenViBEToolkit;
 using namespace std;
+
+// template<> OpenViBE::float64 OpenViBEPlugins::FileIO::CGDFFileReader::GDFTypeToFloat64<OpenViBE::float32>(OpenViBE::float32 val, OpenViBE::uint32 ui32Channel) { std::cout << "specialized 1\n"; return val; }
+// template<> OpenViBE::float64 OpenViBEPlugins::FileIO::CGDFFileReader::GDFTypeToFloat64<OpenViBE::float64>(OpenViBE::float64 val, OpenViBE::uint32 ui32Channel) { std::cout << "specialized 2\n"; return val; }
 
 #define _NoValueI_ 0xffffffff
 #define _NoValueS_ "_unspecified_"
@@ -211,21 +214,12 @@ void CGDFFileReader::GDFBufferToFloat64Buffer(float64 * out, void * in, uint64 i
 			GDFTypeBufferToFloat64Buffer<uint64>(out, reinterpret_cast<uint64 *>(in), inputBufferSize, ui32Channel);
 		break;
 
-		//don't scale in those cases
 		case GDF::ChannelType_float32 :
-			//GDFTypeBufferToFloat64Buffer<float32>(out, reinterpret_cast<float32 *>(in), inputBufferSize, ui32Channel);
-			for(OpenViBE::uint64 i = 0 ; i<inputBufferSize ; i++)
-			{
-				out[i] = reinterpret_cast<float32 *>(in)[i];
-			}
+			GDFTypeBufferToFloat64Buffer<float32>(out, reinterpret_cast<float32 *>(in), inputBufferSize, ui32Channel);
 		break;
 
 		case GDF::ChannelType_float64 :
-			//GDFTypeBufferToFloat64Buffer<float64>(out, reinterpret_cast<float64 *>(in), inputBufferSize, ui32Channel);
-			for(OpenViBE::uint64 i = 0 ; i<inputBufferSize ; i++)
-			{
-				out[i] = reinterpret_cast<float64 *>(in)[i];
-			}
+			GDFTypeBufferToFloat64Buffer<float64>(out, reinterpret_cast<float64 *>(in), inputBufferSize, ui32Channel);
 		break;
 
 		case GDF::ChannelType_float128 :
