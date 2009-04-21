@@ -197,7 +197,18 @@ namespace OpenViBE
 
 			/**
 			 * \brief Create a new 3D object
+			 * \details
+			 * Possible parameters to store in pObjectParams include :
+			 *  - "CloneMesh" (true/false, false by default) : set to true to clone object mesh. This avoids mesh-level changes
+			 * (e.g. vertex color modification) to affect more than a single object.
+			 *  - "CloneMaterials" (true/false, false by default) : set to true to clone object materials. This avoids
+			 * material-level changes to affect more than a single object.
+			 *  - "VertexBufferUsage" ("Static"/"Dynamic", "Static" by default). Set to "Dynamic" in case vertex buffers
+			 * must be accessed regularly for reading or writing (e.g. to get vertex array or set vertex colors).
+			 *  - "IndexBufferUsage" ("Static"/"Dynamic", "Static" by default). Set to "Dynamic" in case index buffers
+			 * must be accessed regularly for reading or writing (e.g. to get triangle indices).
 			 * \param rObjectFileName Filename (without extension) from which to load object
+			 * In practice, filename must refer to a .mesh file since 3D rendering is based on the Ogre render engine.
 			 * \param pObjectParams Optional object parameters
 			 * \return Identifier of newly created object, or OV_UndefinedIdentifier if failed
 			 */
@@ -207,8 +218,9 @@ namespace OpenViBE
 
 			/**
 			 * \brief Create a new 3D object
+			 * \copydetails IVisualisationContext::createObject(const OpenViBE::CString&, const CNameValuePairList*)
 			 * \param eStandard3DObject Enumeration member of standard object to create
-			 * \param pObjectParams Optional object parameters
+			 * \param pObjectParams Optional object parameters (see CString-based createObject method for details)
 			 * \return Identifier of newly created object, or OV_UndefinedIdentifier if failed
 			 */
 			virtual OpenViBE::CIdentifier createObject(
