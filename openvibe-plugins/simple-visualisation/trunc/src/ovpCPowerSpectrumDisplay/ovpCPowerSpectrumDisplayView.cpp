@@ -126,13 +126,16 @@ namespace OpenViBEPlugins
 
 			int32 l_i32LeftRulerHeightRequest = 20;
 			int32 l_i32ChannelDisplayHeightRequest = 20;
+			int32 l_i32HorizontalSeparatorHeightRequest = 5;
 			int32 l_i32BottomRulerHeightRequest = 20;
 
 			//set a minimum size for the table (needed to scroll)
 			gtk_widget_set_size_request(
 				m_pDisplayTable,
-				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayWidthRequest,				
-				l_ui32ChannelCount*l_i32ChannelDisplayHeightRequest);
+				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayWidthRequest,
+				//vertical size request is larger than needed and corresponds to the size requested by the signal display plugin. This
+				//ensures both plugins look the same when displayed next to each other
+				(l_ui32ChannelCount+1)*l_i32ChannelDisplayHeightRequest + l_ui32ChannelCount*l_i32HorizontalSeparatorHeightRequest);
 
 			//add a vertical separator
 			GtkWidget* l_pSeparator = gtk_vseparator_new();
@@ -172,7 +175,7 @@ namespace OpenViBEPlugins
 				gtk_table_attach(GTK_TABLE(m_pDisplayTable),l_pLabel,
 					0, 1, //1st column
 					i*2, (i*2)+1, //ith line
-					GTK_FILL, GTK_SHRINK,	
+					GTK_FILL, GTK_SHRINK,
 					0, 0);
 				gtk_widget_show(l_pLabel);
 				gtk_size_group_add_widget(l_pSizeGroup, l_pLabel);

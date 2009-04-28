@@ -29,9 +29,6 @@ void COgreVisualisation::messageLogged(const String& message, LogMessageLevel lm
 	switch(lml)
 	{
 		case Ogre::LML_CRITICAL:
-			this->getLogManager() << LogLevel_Error << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Log> " << message.c_str() << "\n";
-			break;
-
 		case Ogre::LML_TRIVIAL:
 		case Ogre::LML_NORMAL:
 		default:

@@ -150,13 +150,20 @@ namespace OpenViBEPlugins
 			if(m_bCreateObject == true)
 			{
 				CIdentifier l_oIdentifier;
+				CNameValuePairList l_oParams;
+				//clone objects so that changes to one object don't interfere with other similar objects
+				l_oParams.setValue("CloneMeshes", true);
+				l_oParams.setValue("CloneMaterials", true);
+				//user might want to update vertex colors using the toolbar
+				l_oParams.setValue("VertexBufferUsage", "Dynamic");
+
 				if(m_eStandard3DObject != Standard3DObject_Invalid)
 				{
-					l_oIdentifier = m_oParentPlugin.getVisualisationContext().createObject(m_eStandard3DObject);
+					l_oIdentifier = m_oParentPlugin.getVisualisationContext().createObject(m_eStandard3DObject, &l_oParams);
 				}
 				else
 				{
-					l_oIdentifier = m_oParentPlugin.getVisualisationContext().createObject(m_sCreateObjectFileName);
+					l_oIdentifier = m_oParentPlugin.getVisualisationContext().createObject(m_sCreateObjectFileName, &l_oParams);
 				}
 
 				if(l_oIdentifier != OV_UndefinedIdentifier)

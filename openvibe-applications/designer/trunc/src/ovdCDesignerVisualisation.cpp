@@ -286,7 +286,7 @@ void CDesignerVisualisation::show()
 {
 	// since gtk is asynchronous for the expose event,
 	// the m_bPreviewWindowVisible flag is turned on in the
-	// corresponding callback 
+	// corresponding callback
 	//m_bPreviewWindowVisible = true;
 	gtk_widget_show_all((::GtkWidget*)m_pDialog);
 }
@@ -707,7 +707,7 @@ void CDesignerVisualisation::resizeCB(IVisualisationWidget* pVisualisationWidget
 					//update preview window dims
 					m_ui32PreviewWindowWidth = l_pNotebook->allocation.width;
 					m_ui32PreviewWindowHeight = l_pNotebook->allocation.height;
-				}	
+				}
 			}
 
 			while(m_rVisualisationTree.getNextVisualisationWidgetIdentifier(l_oVisualisationWindowIdentifier, EVisualisationWidget_VisualisationWindow) == true)

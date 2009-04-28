@@ -133,17 +133,17 @@ namespace OpenViBEPlugins
 			 * \param[out] rColor Color computed from stimulation code
 			 */
 			void getStimulationColor(
-				OpenViBE::uint64 ui64StimulationCode, 
+				OpenViBE::uint64 ui64StimulationCode,
 				::GdkColor& rColor);
 
 		private:
 			/**
-			 * \brief Update stimulations color dialog with a new (stimulation, color) pair			 
+			 * \brief Update stimulations color dialog with a new (stimulation, color) pair
 			 * \param[in] rStimulationLabel Stimulation label
 			 * \param[in] rStimulationColor Stimulation color
 			 */
 			void updateStimulationColorsDialog(
-				const OpenViBE::CString& rStimulationLabel, 
+				const OpenViBE::CString& rStimulationLabel,
 				const GdkColor& rStimulationColor);
 
 		public:
@@ -217,7 +217,7 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget *> m_vMultiViewChannelsCheckButtons;
 			//! Vector of indices of selected channels
 			std::vector<OpenViBE::uint32> m_vMultiViewSelectedChannels;
-			
+
 			//Map of stimulation codes received so far, and their corresponding name and color
 			std::map< OpenViBE::uint64, std::pair< OpenViBE::CString, ::GdkColor > > m_mStimulations;
 

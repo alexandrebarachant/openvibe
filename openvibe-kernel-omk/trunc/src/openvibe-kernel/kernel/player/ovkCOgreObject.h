@@ -68,12 +68,6 @@ public:
 		OpenViBE::CIdentifier oIdentifier,
 		COgreObject*& pClone);*/
 
-	/// Clone meshes used by this object
-	OpenViBE::boolean cloneMeshes();
-
-	/// Clone materials used by this object
-	OpenViBE::boolean cloneMaterials();
-
 	/// Return object identifier
 	OpenViBE::CIdentifier getIdentifier();
 
@@ -175,7 +169,7 @@ public:
 
 	/**
 	 * \brief Set vertex colors of an object
-	 * \remark This method applies vertex colors to the first mesh of the first
+	 * \remarks This method applies vertex colors to the first mesh of the first
 	 * Ogre::Entity encountered in the object hierarchy only. For it to work, the
 	 * Ogre::Mesh needs to have been flagged as using vertex colors in authoring tools.
 	 * \param ui32VertexColorCount Number of colors contained in pVertexColorArray
@@ -188,7 +182,7 @@ public:
 
 	/**
 	 * \brief Get object vertex count
-	 * \remark This method returns the number of vertices in the first mesh of the first
+	 * \remarks This method returns the number of vertices in the first mesh of the first
 	 * Ogre::Entity encountered in the object hierarchy only.
 	 * \param ui32VertexCount Number of vertices found in first mesh of first entity
 	 * \return True if vertex count could be retrieved, false otherwise
@@ -198,7 +192,7 @@ public:
 
 	/**
 	 * \brief Get vertex position array
-	 * \remark This method returns vertex positions of the first mesh of the first
+	 * \remarks This method returns vertex positions of the first mesh of the first
 	 * Ogre::Entity encountered in the object hierarchy only.
 	 * \param ui32VertexCount Number of vertices that can be stored in pVertexPositionArray
 	 * \param pVertexPositionArray Preallocated array destined to store vertex position triplets
@@ -210,7 +204,7 @@ public:
 
 	/**
 	 * \brief Get object triangle count
-	 * \remark This method returns the number of triangles in the first mesh of the first
+	 * \remarks This method returns the number of triangles in the first mesh of the first
 	 * Ogre::Entity encountered in the object hierarchy only.
 	 * \param ui32TriangleCount Number of triangles found in first mesh of first entity
 	 * \return True if triangle count could be retrieved, false otherwise
@@ -220,7 +214,7 @@ public:
 
 	/**
 	 * \brief Get array of face indices
-	 * \remark This method returns face indices of the first mesh of the first
+	 * \remarks This method returns face indices of the first mesh of the first
 	 * Ogre::Entity encountered in the object hierarchy only.
 	 * \param ui32TriangleCount Number of triangles that can be stored in pTriangleIndexArray
 	 * \param pTriangleIndexArray Preallocated array destined to store face indices triplets
@@ -259,9 +253,11 @@ private:
 
 	/**
 	 * \brief Load the geometry using the dotSceneInterface
+	 * \param rNameValuePairList Geometry parameters list
 	 * \return True if geometry could be loaded, false otherwise
 	 */
-	OpenViBE::boolean loadGeometry();
+	OpenViBE::boolean loadGeometry(
+		const OpenViBE::CNameValuePairList& rNameValuePairList);
 
 	/**
 	 * \brief Create plane from scratch
@@ -270,6 +266,31 @@ private:
 	 */
 	OpenViBE::boolean createPlane(
 		const OpenViBE::CNameValuePairList& rNameValuePairList);
+
+	/**
+	 * \brief Finish loading geometry
+	 * \details This method checks whether materials and/or mesh should be cloned,
+	 * and finishes building the object.
+	 * \param rNameValuePairList Plane parameters list
+	 * \return True
+	 */
+	OpenViBE::boolean finishLoading(
+		const OpenViBE::CNameValuePairList& rNameValuePairList);
+
+	/// Clone meshes used by this object
+	OpenViBE::boolean cloneMeshes();
+
+	/// Clone materials used by this object
+	OpenViBE::boolean cloneMaterials();
+
+	/**
+	 * \brief Look for text file containing object orientation, position
+	 * and/or scale parameters
+	 * \details File name should be identical to that of the mesh file, and
+	 * file extension should be "txt"
+	 * \return True
+	 */
+	OpenViBE::boolean loadWorldMatrix();
 
 	/**
 	 * \brief Create animators
@@ -317,7 +338,7 @@ private:
 	Ogre::SceneNode* m_pSceneNode;
 
 	/// scene manager to attach this object to
-	Ogre::SceneManager* m_pSceneManager;
+	Ogre::SceneManager* const m_pSceneManager;
 
 	/// MaterialAnimation stack
   NodeMaterialOrig* m_pNodeMaterial;

@@ -214,7 +214,7 @@ namespace OpenViBEPlugins
 		{
 			//retrieve channel count
 			OpenViBE::uint32 l_ui32ChannelCount = (uint32)m_pBufferDatabase->getChannelCount();
-			
+
 			//allocate channel labels and channel displays arrays accordingly
 			m_oChannelDisplay.resize(l_ui32ChannelCount+1);
 			m_oChannelLabel.resize(l_ui32ChannelCount+1);
@@ -231,14 +231,14 @@ namespace OpenViBEPlugins
 
 			int32 l_i32LeftRulerHeightRequest = 20;
 			int32 l_i32ChannelDisplayHeightRequest = 20;
+			int32 l_i32HorizontalSeparatorHeightRequest = 5;
 			int32 l_i32BottomRulerHeightRequest = 20;
-					
+
 			//sets a minimum size for the table (needed to scroll)
 			gtk_widget_set_size_request(
 				m_pSignalDisplayTable,
 				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayHeightRequest,
-				//(l_ui32ChannelCount*2+1)*l_i32ChannelDisplayHeightRequest);
-				l_ui32ChannelCount*l_i32ChannelDisplayHeightRequest);
+				(l_ui32ChannelCount+1)*l_i32ChannelDisplayHeightRequest + l_ui32ChannelCount*l_i32HorizontalSeparatorHeightRequest);
 
 			//add a vertical separator
 			GtkWidget* l_pSeparator = gtk_vseparator_new();
@@ -251,13 +251,13 @@ namespace OpenViBEPlugins
 			//create a size group for channel labels and the empty bottom left widget
 			//(useful to position the bottom ruler correctly)
 			GtkSizeGroup* l_pSizeGroup = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
-			
+
 			//channels selection widget
 			GtkWidget * l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectList");
-			
+
 			//multiple channels selection widget
 			GtkWidget * l_pMultiViewSelectList = glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewSelectList");
-			
+
 			//vector of channel names
 			vector<string>& l_oChannelName = m_pBufferDatabase->m_pDimmesionLabels[0];
 
@@ -267,7 +267,7 @@ namespace OpenViBEPlugins
 			for(uint32 i=0 ; i<l_ui32ChannelCount ; i++)
 			{
 				//add channel label
-				//-----------------				
+				//-----------------
 				if(l_oChannelName[i] == "")
 				{
 					//if no name has been set, use channel index
@@ -275,7 +275,7 @@ namespace OpenViBEPlugins
 				}
 				else //prepend name with channel index
 				{
-					l_oLabelString << i << " : " << l_oChannelName[i];					
+					l_oLabelString << i << " : " << l_oChannelName[i];
 				}
 				GtkWidget* l_pLabel = gtk_label_new(l_oLabelString.str().c_str());
 				m_oChannelLabel[i] = l_pLabel;
@@ -691,14 +691,14 @@ namespace OpenViBEPlugins
 		void CSignalDisplayView::onStimulationReceivedCB(uint64 ui64StimulationCode, const CString& rStimulationName)
 		{
 			if(m_mStimulations.find(ui64StimulationCode) == m_mStimulations.end())
-			{				
+			{
 				//only the lower 32 bits of the stimulation code are currently used to compute the color
 				uint32 ui32Code = (uint32)ui64StimulationCode;
 				GdkColor l_oColor;
 				l_oColor.red = 0;
 				l_oColor.green = 0;
 				l_oColor.blue = 0;
-				
+
 				//go through the lower 32 bits to compute RGB components. Bit positions are
 				//inverted so that close code values result in very different colors.
 				for(uint32 i=0; i<11; i++)
@@ -730,64 +730,64 @@ namespace OpenViBEPlugins
 			if(m_mStimulations.find(ui64StimulationCode) != m_mStimulations.end())
 			{
 				rColor = m_mStimulations[ui64StimulationCode].second;
-			}			
+			}
 		}
 
 		void CSignalDisplayView::updateStimulationColorsDialog(const CString& rStimulationLabel, const GdkColor& rStimulationColor)
 		{
 			//retrieve table
 			GtkTable* l_pStimulationColorsTable = GTK_TABLE(glade_xml_get_widget(m_pGladeInterface, "SignalDisplayStimulationColorsTable"));
-						
+
 			//resize table and store new colors
 			gtk_table_resize(l_pStimulationColorsTable, l_pStimulationColorsTable->nrows + 1, 2);
 
 			//set a minimum size request (needed to scroll)
 			int32 l_i32LabelWidthRequest = -1;
-			int32 l_i32ColorWidthRequest = 50;			
+			int32 l_i32ColorWidthRequest = 50;
 			int32 l_i32RowHeightRequest = 20;
-						
+
 			gtk_widget_set_size_request(
 				GTK_WIDGET(l_pStimulationColorsTable),
 				-1,
 				(l_pStimulationColorsTable->nrows + 1) * l_i32RowHeightRequest);
-						
+
 			GtkLabel* l_pStimLabel = GTK_LABEL(gtk_label_new("Stimulations"));
 			gtk_widget_set_size_request(GTK_WIDGET(l_pStimLabel), -1, 20);
 			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pStimLabel), 0, 1, 0, 1,
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_FILL,	0, 0);
-			
+
 			GtkLabel* l_pColorLabel = GTK_LABEL(gtk_label_new("Colors"));
 			gtk_widget_set_size_request(GTK_WIDGET(l_pColorLabel), -1, 20);
 			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pColorLabel), 1, 2, 0, 1,
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), GTK_FILL,	0, 0);
-			
+
 			GtkLabel* l_pLabel = GTK_LABEL(gtk_label_new(rStimulationLabel.toASCIIString()));
 			gtk_widget_set_size_request(GTK_WIDGET(l_pLabel), l_i32LabelWidthRequest, l_i32RowHeightRequest);
-			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pLabel),	
+			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pLabel),
 				0, 1, //first column
 				l_pStimulationColorsTable->nrows-1, l_pStimulationColorsTable->nrows-1+1, //last row
 				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),	0, 0);
-#if 1						
+#if 1
 			GdkPixbuf* l_pPixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, l_i32ColorWidthRequest, l_i32RowHeightRequest);
 			//fill with RGBA value
-			guint32 l_ui32Color = (((guint32)(rStimulationColor.red * 255 / 65535)) << 24) + 
-				(((guint32)(rStimulationColor.green * 255 / 65535)) << 16) + 
+			guint32 l_ui32Color = (((guint32)(rStimulationColor.red * 255 / 65535)) << 24) +
+				(((guint32)(rStimulationColor.green * 255 / 65535)) << 16) +
 				(((guint32)(rStimulationColor.blue * 255 / 65535)) << 8);
 			gdk_pixbuf_fill(l_pPixbuf, l_ui32Color);
 			GtkWidget* l_pImage = gtk_image_new_from_pixbuf(l_pPixbuf);
-			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pImage), 
+			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pImage),
 				1, 2, //2nd column
 				l_pStimulationColorsTable->nrows-1, l_pStimulationColorsTable->nrows-1+1, //last row
-				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),	0, 0);																		
-#else			
+				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),	0, 0);
+#else
 			GtkColorButton* l_pButton = GTK_COLOR_BUTTON(gtk_color_button_new_with_color(&rStimulationColor));
-			gtk_widget_set_size_request(GTK_WIDGET(l_pButton), l_i32ColorWidthRequest, l_i32RowHeightRequest);			
+			gtk_widget_set_size_request(GTK_WIDGET(l_pButton), l_i32ColorWidthRequest, l_i32RowHeightRequest);
 			//g_signal_connect(G_OBJECT(l_pButton), "clicked", G_CALLBACK(dummyButtonCallback), NULL);
-			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pButton), 
+			gtk_table_attach(l_pStimulationColorsTable, GTK_WIDGET(l_pButton),
 				1, 2, //2nd column
 				l_pStimulationColorsTable->nrows-1, l_pStimulationColorsTable->nrows-1+1, //last row
-				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),	0, 0);															
-#endif			
+				static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL), static_cast<GtkAttachOptions>(GTK_EXPAND | GTK_FILL),	0, 0);
+#endif
 		}
 
 		//
@@ -919,7 +919,7 @@ namespace OpenViBEPlugins
 			GtkWidget* l_pStimulationColorsDialog = glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayStimulationColorsDialog");
 			gtk_widget_show_all(l_pStimulationColorsDialog);
 		}
-		
+
 		//Called when the user presses the Information button (opens the information dialog)
 		void informationButtonCallback(GtkButton *button, gpointer data)
 		{

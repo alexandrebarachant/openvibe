@@ -50,7 +50,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Initialize widgets.
-			 * \remark Called automatically by spectrum database when first buffer is received
+			 * \remarks Called automatically by spectrum database when first buffer is received
 			 * \return True if initialization was successful, false otherwise
 			 */
 			virtual OpenViBE::boolean init(void);

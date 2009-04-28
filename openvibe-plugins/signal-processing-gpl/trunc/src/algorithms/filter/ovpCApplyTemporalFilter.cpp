@@ -75,12 +75,14 @@ boolean CApplyTemporalFilter::process(void)
 		uint32 l_ui32SignalInputMatrixDimensionNbChannels=ip_pSignalMatrix->getDimensionSize(0);
 		uint32 l_ui32SignalInputMatrixDimensionSizeEpoch=ip_pSignalMatrix->getDimensionSize(1);
 
+/*
 		// signal output vars
 		l_pOutputMatrix->setDimensionCount(l_ui32SignalInputMatrixDimensionCount);
 		for (uint32 i=0 ; i<l_ui32SignalInputMatrixDimensionCount; i++)
 		{
 			l_pOutputMatrix->setDimensionSize(i,ip_pSignalMatrix->getDimensionSize(i));
 		}
+*/
 		float64* l_pFilteredSignalMatrix= l_pOutputMatrix->getBuffer();
 
 		vec x(l_ui32SignalInputMatrixDimensionSizeEpoch);
@@ -123,13 +125,14 @@ boolean CApplyTemporalFilter::process(void)
 			}
 			m_bFlagInitialize = false;
 		}
-
+/*
 		// signal output vars
 		l_pOutputMatrix->setDimensionCount(l_ui32SignalInputMatrixDimensionCount);
 		for (uint32 i=0 ; i<l_ui32SignalInputMatrixDimensionCount; i++)
 		{
 			l_pOutputMatrix->setDimensionSize(i,ip_pSignalMatrix->getDimensionSize(i));
 		}
+*/
 		float64* l_pFilteredSignalMatrix= l_pOutputMatrix->getBuffer();
 
 		vec x(l_ui32SignalInputMatrixDimensionSizeEpoch);

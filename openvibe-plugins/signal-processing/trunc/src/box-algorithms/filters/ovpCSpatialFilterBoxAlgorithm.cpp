@@ -70,8 +70,6 @@ boolean CSpatialFilterBoxAlgorithm::initialize(void)
 	m_pApplySpatialFilter->getInputParameter(OVP_Algorithm_ApplySpatialFilter_InputParameterId_SignalMatrix)->setReferenceTarget(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix));
 	m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix)->setReferenceTarget(m_pApplySpatialFilter->getOutputParameter(OVP_Algorithm_ApplySpatialFilter_OutputParameterId_FilteredSignalMatrix));
 
-	m_ui64LastStartTime=0;
-
 	return true;
 }
 
@@ -107,28 +105,26 @@ boolean CSpatialFilterBoxAlgorithm::process(void)
 			TParameterHandler < IMemoryBuffer* > l_oOutputMemoryBufferHandle(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 			l_oInputMemoryBufferHandle=l_rDynamicBoxContext.getInputChunk(i, j);
 			l_oOutputMemoryBufferHandle=l_rDynamicBoxContext.getOutputChunk(i);
-			uint64 l_ui64EndTime=m_ui64LastStartTime+l_rDynamicBoxContext.getInputChunkEndTime(i, j)-l_rDynamicBoxContext.getInputChunkStartTime(i, j);
 
 			m_pStreamDecoder->process();
 			if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
 				m_pApplySpatialFilter->process(OVP_Algorithm_ApplySpatialFilter_InputTriggerId_Initialize);
 				m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(i, m_ui64LastStartTime, l_ui64EndTime);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
 			if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
 				m_pApplySpatialFilter->process(OVP_Algorithm_ApplySpatialFilter_InputTriggerId_ApplyFilter);
 				m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(i, m_ui64LastStartTime, l_ui64EndTime);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
 			if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd))
 			{
 				m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(i, m_ui64LastStartTime, l_ui64EndTime);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
 
-			m_ui64LastStartTime=l_rDynamicBoxContext.getInputChunkStartTime(i, j);
 			l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 		}
 	}

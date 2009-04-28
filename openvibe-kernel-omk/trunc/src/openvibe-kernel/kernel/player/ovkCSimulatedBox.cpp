@@ -317,7 +317,7 @@ CIdentifier CSimulatedBox::createObject(const CString& rObjectFileName, const CN
 	CIdentifier l_oIdentifier = getUnusedIdentifier();
 
 	string l_oSceneFileName(rObjectFileName);
-	l_oSceneFileName += ".scene";
+	l_oSceneFileName += ".mesh";
 
 	if(pObjectParams == NULL)
 	{
@@ -1231,7 +1231,7 @@ void CSimulatedBox::handleCrash(const char* sHintName)
 	this->getLogManager() << LogLevel_Error << "  [name:" << m_pBox->getName() << "]\n";
 	this->getLogManager() << LogLevel_Error << "  [identifier:" << m_pBox->getIdentifier() << "]\n";
 	this->getLogManager() << LogLevel_Error << "  [algorithm class identifier:" << m_pBox->getAlgorithmClassIdentifier() << "]\n";
-	this->getLogManager() << LogLevel_Error << "  [place:" << sHintName << "]\n";
+	this->getLogManager() << LogLevel_Error << "  [location:" << sHintName << "]\n";
 
 	if(m_ui32CrashCount>=_MaxCrash_)
 	{

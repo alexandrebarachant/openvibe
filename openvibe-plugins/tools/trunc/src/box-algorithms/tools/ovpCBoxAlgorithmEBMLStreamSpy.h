@@ -40,9 +40,13 @@ namespace OpenViBEPlugins
 
 		protected:
 
+			template <class T>
+			void processBinaryBlock(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+
 			std::stack<EBML::CIdentifier> m_vNodes;
 			std::map<EBML::CIdentifier, std::string> m_vName;
 			std::map<EBML::CIdentifier, std::string> m_vType;
+			OpenViBE::uint64 m_ui64ExpandValuesCount;
 			OpenViBE::Kernel::ELogLevel m_eLogLevel;
 			EBML::IReader* m_pReader;
 			EBML::IReaderHelper* m_pReaderHelper;
@@ -95,9 +99,11 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput  ("Spied EBML stream 1",    OV_TypeId_EBMLStream);
-				rPrototype.addSetting("EBML nodes description", OV_TypeId_Filename, "../share/openvibe-plugins/tools/config-ebml-stream-spy.txt");
-				rPrototype.addSetting("Log level to use",       OV_TypeId_LogLevel, "Debug");
+				rPrototype.addInput  ("Spied EBML stream 1",                 OV_TypeId_EBMLStream);
+				rPrototype.addSetting("EBML nodes description",              OV_TypeId_Filename, "../share/openvibe-plugins/tools/config-ebml-stream-spy.txt");
+				rPrototype.addSetting("Log level to use",                    OV_TypeId_LogLevel, "Debug");
+				rPrototype.addSetting("Expand binray blocks",                OV_TypeId_Boolean,  "false");
+				rPrototype.addSetting("Number of values in expanded blocks", OV_TypeId_Integer,  "4");
 				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				return true;
 			}

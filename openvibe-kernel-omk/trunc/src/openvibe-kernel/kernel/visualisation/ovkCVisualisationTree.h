@@ -68,7 +68,7 @@ namespace OpenViBE
 
 			/**
 			 * \brief Recreates Gtk widgets based on the widgets description stored in the internal tree store.
-			 * \remark Side effects : all iterators and GtkWidget pointers are invalidated and replaced with new values
+			 * \remarks Side effects : all iterators and GtkWidget pointers are invalidated and replaced with new values
 			 * To be called upon widget creation, deletion or repositioning.
 			 * \return true if widgets were successfully reloaded, false otherwise
 			 */

@@ -28,17 +28,28 @@
  * \section Doc_FAQ_Functionalities What are the current functionalities of OpenViBE ?
  *
  * Here is a non exhaustive list of §OpenViBE§ functionalities :
+\htmlonly
+<!-- features start -->
+\endhtmlonly
  * - Acquisition
+\htmlonly
+<!-- hardware-compatibility start -->
+\endhtmlonly
  *   - Mindmedia NeXus32B
  *   - Micromed IntraEEG
  *   - Brainamp ScalpEEG
  *   - CTF/VSM MEG
  *   - Brainquiry QPET9 (in progress)
+ *
+\htmlonly
+<!-- hardware-compatibility stop -->
+\endhtmlonly
  * - File reading and writing
- *   - OpenViBE files (r/w)
+ *   - Generic files (r/w)
  *   - GDF files (r/w)
  *   - BCI Competition IIIb (r)
  *   - Brainamp files (r)
+ *
  * - Preprocessing
  *   - Time based epoching
  *   - Stimulation based epoching
@@ -48,22 +59,31 @@
  *   - Simple DSP
  *   - Temporal filter
  *   - Downsampling (in progress)
+ *
  * - Feature extraction
  *   - Spectral analysis
  *   - Spatial filter
+ *
  * - Classification
  *   - Linear Discriminant Analysis
+ *
  * - Stimulation presentation
  *   - Graz-like motor imagery presentation
+ *
  * - Visualisation
  *   - Simple levels
  *   - Raw signal
  *   - Spectrum
  *   - Time/Frequency analysis
  *   - 2D/3D topography
+ *
  * - Connection to external software
  *   - VRPN integration (Virtual Reality Peripheral Network)
  *   - TurboFieldTrip integration (r/w, in progress)
+ *
+\htmlonly
+<!-- features stop -->
+\endhtmlonly
  *
  * \section Doc_FAQ_Environment What kind of software / hardware do I need to run OpenViBE ?
  *
@@ -71,6 +91,7 @@
  * table shows a summary of these different configurations...
  *
 \htmlonly
+<!-- os-compatibility start -->
 <table border=1 cellpading=0 cellspacing=0>
 <tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> </tr>
 <tr> <td rowspan=9>x86</td>    <td rowspan=3>Windows</td> <td rowspan=2>XP SP2</td> <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> </tr>
@@ -87,6 +108,7 @@
 <tr>                                                      <td>Fedora 9</td>         <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Fedora 10</td>        <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
 </table>
+<!-- os-compatibility stop -->
 \endhtmlonly
  *
  * If you have tested §OpenViBE§ on another platform, please fill free to report its status for this platform.

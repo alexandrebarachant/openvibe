@@ -170,7 +170,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Set the minimum frequency displayed by the power spectrum plugin
-			 * \remark This frequency should lie in the range of frequencies received from data
+			 * \remarks This frequency should lie in the range of frequencies received from data
 			 * buffers, and it is taken into account when computing min/max amplitude values. Also,
 			 * this function should be called after header information has been received, e.g. upon
 			 * first buffer reception.
@@ -182,7 +182,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Set the maximum frequency displayed by the power spectrum plugin
-			 * \remark This frequency should lie in the range of frequencies received from data
+			 * \remarks This frequency should lie in the range of frequencies received from data
 			 * buffers, and it is taken into account when computing min/max amplitude values. Also,
 			 * this function should be called after header information has been received, e.g. upon
 			 * first buffer reception.

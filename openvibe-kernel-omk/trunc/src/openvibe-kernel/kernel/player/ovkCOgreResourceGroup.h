@@ -43,7 +43,7 @@ public:
 
 	/**
 	 * \brief Add a resource location
-	 * \remark Resources can't be added once Resource Group has been initialized
+	 * \remarks Resources can't be added once Resource Group has been initialized
 	 * \param rPath Resources location path
 	 * \param type Resources type (path or zip file)
 	 * \param bRecursive Resources are added recursively from location passed in parameter if true
@@ -56,14 +56,14 @@ public:
 
 	/**
 	 * \brief Initialize resource group
-	 * \remark This increments the resource group internal reference counter
+	 * \remarks This increments the resource group internal reference counter
 	 * \return True if this group was effectively intialised (i.e. upon first call to this method), false otherwise
 	 */
 	bool initialize();
 
 	/**
 	 * \brief Destroy resource group
-	 * \remark This decrements the resource group internal reference counter
+	 * \remarks This decrements the resource group internal reference counter
 	 * \return True if this group was effectively destroyed (i.e. its refcount reached 0), false otherwise
 	 */
 	bool destroy();

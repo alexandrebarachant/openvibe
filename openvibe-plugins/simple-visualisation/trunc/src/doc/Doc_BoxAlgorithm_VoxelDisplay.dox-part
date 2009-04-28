@@ -1,0 +1,69 @@
+/**
+ * \page BoxAlgorithm_VoxelDisplay Voxel display
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelDisplay_Description|
+This plugin uses a 3D grid of voxels to display brain activity sources in real time. The incoming matrix stream is assumed to contain the activation levels of each voxel, as computed by a spatial filter based on an inverse model such as sLoreta. In addition, a semi-transparent face mesh can be displayed on top of the grid to provide orientation cues to the viewer. Different settings allow to configure the way brain activity is depicted on screen (e.g. one can map activity levels to the opacity, color or size of voxels), and help make the more active brain areas stand out.
+ * |OVP_DocEnd_BoxAlgorithm_VoxelDisplay_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelDisplay_Inputs|
+ * |OVP_DocEnd_BoxAlgorithm_VoxelDisplay_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelDisplay_Input1|
+ Voxel activity matrix. Its size should be 3 times the voxel count, for an [x,y,z] triplet is assumed to describe the dipole reconstructed at the location of each voxel. The vector provides the orientation of the dipole while its norm gives its activation level.
+ * |OVP_DocEnd_BoxAlgorithm_VoxelDisplay_Input1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelDisplay_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_VoxelDisplay_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelDisplay_Setting1|
+Voxel grid filename. This file should be in "OpenViBE Matrix" file format.
+ * |OVP_DocEnd_BoxAlgorithm_VoxelDisplay_Setting1|
+__________________________________________________________________
+
+Online visualisation settings
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelDisplay_OnlineVisualizationSettings|
+Online options include :
+
+- Modify Color : voxel activation thresholds are mapped to voxel colors
+- Modify Transparency : voxel activation thresholds are mapped to voxel transparency factors
+- Modify Scale : voxel activation thresholds are mapped to voxel scale factors
+- Min Scale Factor : specifies the scale factor to apply to the least activated voxels
+- Max Scale Factor : specifies the scale factor to apply to the most activated voxels
+- Min Display Threshold : defines the normalized activation threshold below which voxels are to be hidden
+- Max Display Threshold : defines the normalized activation threshold above which voxels are to be hidden
+- Face Opacity : sets the opacity of the face mesh surrounding the voxels
+- View All : resets the camera position so that it encompasses the whole 3D scene, facing the +Z side of its bounding box
+
+\image html voxeldisplay_toolbar.png "Voxel Display toolbar"
+ * |OVP_DocEnd_BoxAlgorithm_VoxelDisplay_OnlineVisualizationSettings|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelVisualizer_Examples|
+ * |OVP_DocEnd_BoxAlgorithm_VoxelVisualizer_Examples|
+
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_VoxelVisualizer_Miscellaneous|
+ This example is based on the following scenario file : tutorials/visualisation/sample_voxel_display
+ * |OVP_DocEnd_BoxAlgorithm_VoxelVisualizer_Miscellaneous|
+ */

@@ -1,7 +1,15 @@
+#include <sstream>
+#include <locale>
+#if defined OVP_OS_Windows
+#include <errno.h>
+#endif
+
+#include <string.h>
+#include <stdlib.h>
+
 #include "Ogre.h"
 #include "OgreSceneNode.h"
 #include "OgreMovableObject.h"
-#include "dotSceneInterface.h"
 
 #include "ovkCMaterial.h"
 #include "ovkCTransformAnimator.h"
@@ -10,9 +18,9 @@
 #include "ovkCOgreObject.h"
 #include "ovkCOgreVisualisation.h"
 
-using namespace OBT;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace std;
 
 COgreObject::COgreObject(const IKernelContext& rKernelContext, OpenViBE::CIdentifier oIdentifier, COgreVisualisation* pOgreVis, Ogre::SceneManager* pSceneManager, const CString& rGeometryFileName) :
 	m_rKernelContext(rKernelContext),
@@ -94,6 +102,21 @@ COgreObject::~COgreObject()
 	if(m_pNodeMaterial != NULL)
 	{
 		delete m_pNodeMaterial;
+	}
+
+	if(m_pTransformAnimator != NULL)
+	{
+		delete m_pTransformAnimator;
+	}
+
+	if(m_pColorAnimator != NULL)
+	{
+		delete m_pColorAnimator;
+	}
+
+	if(m_pVertexBufferAnimator != NULL)
+	{
+		delete m_pVertexBufferAnimator;
 	}
 }
 
@@ -208,6 +231,8 @@ boolean COgreObject::createPlane(const CNameValuePairList& rNameValuePairList)
 		Ogre::Entity* l_pEntity = m_pSceneManager->createEntity(Ogre::String(m_sName.toASCIIString()) + "Entity", m_sName.toASCIIString());//"myPlane"); //FIXME!!
 		//l_pEntity->setMaterialName("Examples/RustySteel");
 		m_pSceneNode->attachObject(l_pEntity);
+
+		finishLoading(rNameValuePairList);
 	}
 	catch(Ogre::Exception& e)
 	{
@@ -220,7 +245,7 @@ boolean COgreObject::createPlane(const CNameValuePairList& rNameValuePairList)
 	return true;
 }
 
-boolean COgreObject::loadGeometry()
+boolean COgreObject::loadGeometry(const CNameValuePairList& rNameValuePairList)
 {
 	if(m_eGeometryFileType == GeometryFileType_Invalid)
 	{
@@ -231,7 +256,10 @@ boolean COgreObject::loadGeometry()
 	{
 		if(m_eGeometryFileType == GeometryFileType_Scene)
 		{
-			Singleton<Ogre::dsi::dotSceneLoader>::getInstance().
+			m_rKernelContext.getLogManager()
+				<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
+				<< "Failed to load object : .scene files are not supported!\n";
+			/*Singleton<Ogre::dsi::dotSceneLoader>::getInstance().
 				load(m_sGeometryFileName.toASCIIString(),
 					m_sResourceGroupName.toASCIIString(),
 					m_pSceneManager,
@@ -239,11 +267,48 @@ boolean COgreObject::loadGeometry()
 					m_pSceneNode,
 					false,
 					false,
-					false);
+					false);*/
 		}
 		else if(m_eGeometryFileType == GeometryFileType_Mesh)
 		{
-			//TODO!
+			//retrieve mesh loading parameters
+			Ogre::HardwareBuffer::Usage l_oVertexBufferUsage = Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+			Ogre::HardwareBuffer::Usage l_oIndexBufferUsage = Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+			CString l_sVertexBufferUsage;
+			if(rNameValuePairList.getValue("VertexBufferUsage", l_sVertexBufferUsage) == true)
+			{
+				if(l_sVertexBufferUsage == CString("Dynamic"))
+				{
+					l_oVertexBufferUsage = Ogre::HardwareBuffer::HBU_DYNAMIC;
+				}
+			}
+			CString l_sIndexBufferUsage;
+			if(rNameValuePairList.getValue("IndexBufferUsage", l_sIndexBufferUsage) == true)
+			{
+				if(l_sIndexBufferUsage == CString("Dynamic"))
+				{
+					l_oIndexBufferUsage = Ogre::HardwareBuffer::HBU_DYNAMIC;
+				}
+			}
+
+			//load mesh
+			Ogre::String l_oMeshName(m_sGeometryFileName);
+			Ogre::String l_oResourceGroupName(m_sResourceGroupName);
+
+			Ogre::MeshManager::getSingletonPtr()->load(l_oMeshName,
+				l_oResourceGroupName,
+				l_oVertexBufferUsage,
+				l_oIndexBufferUsage,
+				true, //VB shadowed
+				true); //IB shadowed
+
+			//create entity
+			Ogre::String l_sEntityName = Ogre::String(m_sName.toASCIIString()) + "_Entity";
+			Ogre::Entity* l_pEntity = m_pSceneManager->createEntity(l_sEntityName, l_oMeshName);
+			m_pSceneNode->attachObject(l_pEntity);
+
+			finishLoading(rNameValuePairList);
 		}
 	}
 	catch(Ogre::Exception& e)
@@ -252,6 +317,321 @@ boolean COgreObject::loadGeometry()
 			<< LogLevel_Warning << "<" << LogColor_PushStateBit << LogColor_ForegroundBlue << "Ogre3D" << LogColor_PopStateBit << "::Exception> "
 			<< "Failed to load file [" << m_sGeometryFileName << "] : " << e.what() << "\n";
 		return false;
+	}
+
+	return true;
+}
+
+boolean COgreObject::finishLoading(const CNameValuePairList& rNameValuePairList)
+{
+	//should mesh be cloned?
+	boolean l_bCloneMesh = false;
+	rNameValuePairList.getValue("CloneMesh", l_bCloneMesh);
+	if(l_bCloneMesh == true)
+	{
+		cloneMeshes();
+	}
+
+	//should materials be cloned?
+	boolean l_bCloneMaterials = false;
+	rNameValuePairList.getValue("CloneMaterials", l_bCloneMaterials);
+	if(l_bCloneMaterials)
+	{
+		cloneMaterials();
+	}
+
+	createAnimators();
+
+	loadWorldMatrix();
+
+	return true;
+}
+
+boolean COgreObject::loadWorldMatrix()
+{
+	try
+	{
+	//build world matrix file name
+	std::string l_oFilename = m_sGeometryFileName.toASCIIString();
+	std::string::size_type l_oDotIndex = l_oFilename.rfind('.');
+	if(l_oDotIndex == std::string::npos)
+	{
+		return true;
+	}
+	l_oFilename.erase(l_oDotIndex);
+	l_oFilename += ".txt";
+
+	//try and open matrix file
+#if 0
+	std::ifstream l_oFile(l_oFilename.c_str(), std::ios_base::in);
+	if(!l_oFile.good())
+	{
+		return true;
+	}
+#else
+	//FIXME
+	//Ogre::DataStreamPtr l_pStream = Ogre::ResourceGroupManager::getSingleton().openResource(l_oFilename, (const Ogre::String&)m_sResourceGroupName);
+	//const Ogre::String l_oResourceGroup("TopographicMap3DResources");
+	const Ogre::String& l_oResourceGroup = Ogre::ResourceGroupManager::getSingleton().findGroupContainingResource(l_oFilename);
+
+	Ogre::DataStreamListPtr l_pStreamList =
+		Ogre::ResourceGroupManager::getSingleton().openResources(l_oFilename, l_oResourceGroup/*(const Ogre::String&)m_sResourceGroupName*/);
+	if(l_pStreamList->empty() == true)
+	{
+		return true;
+	}
+	Ogre::DataStreamPtr l_pStream = *l_pStreamList->begin();
+#endif
+
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Opening " << CString(l_oFilename.c_str()) << " succeeded\n";
+
+	enum EStatus
+	{
+		Status_Nothing,
+		Status_ParsingLabel,
+		Status_ParsingVector,
+		Status_ParsingPosition,
+		Status_ParsingOrientation,
+		Status_ParsingScale
+	};
+
+	std::locale l_oLocale("C");
+	//current string to parse
+	std::string l_sWhat;
+	//current parsing status
+	uint32 l_ui32Status=Status_Nothing;
+	//current value index (must reach 3 when parsing position & orientation)
+	uint32 l_ui32CurValueIndex = 0;
+	//current quote-delimited string
+	std::string l_sCurString;
+	//position array (x y z)
+	float32 l_pPosition[3];
+	//orientation array (roll pitch yaw)
+	float32 l_pOrientation[3];
+	//scale array (sx sy sz)
+	float32 l_pScale[3];
+
+	//read current line
+	//std::getline(l_oFile, l_sWhat, '\n');
+
+	while(l_pStream->eof() == false)
+	{
+		l_sWhat = (std::string)l_pStream->getLine();
+
+		//is line empty?
+		if(l_sWhat.length()==0)
+		{
+			//skip it
+			continue;
+		}
+
+		//reset token index
+		l_ui32CurValueIndex = 0;
+
+		//reset current string
+		l_sCurString.erase();
+
+		//output line to be parsed in debug level
+		//m_rKernelContext.getLogManager() << LogLevel_Debug << CString(l_sWhat.c_str()) << "\n";
+
+		//remove ending carriage return (if any) for windows / linux compatibility
+		if(l_sWhat[l_sWhat.length()-1]=='\r')
+		{
+			l_sWhat.erase(l_sWhat.length()-1, 1);
+		}
+
+		//start parsing current line
+		std::string::iterator l_oIt = l_sWhat.begin();
+
+		//parse current line
+		while(l_oIt != l_sWhat.end())
+		{
+			switch(l_ui32Status)
+			{
+				case Status_Nothing:
+
+					//comments starting
+					if(*l_oIt == '#')
+					{
+						//ignore rest of line by skipping to last character
+						l_oIt = l_sWhat.end()-1;
+					}
+					//label starting
+					else if(std::isspace(*l_oIt, l_oLocale) == false)
+					{
+						l_sCurString.append(1, *l_oIt);
+						l_ui32Status = Status_ParsingLabel;
+					}
+					break;
+
+				case Status_ParsingLabel:
+
+					//keep parsing till space char found
+					if(std::isspace(*l_oIt, l_oLocale) == false)
+					{
+						l_sCurString.append(1, *l_oIt);
+					}
+					else
+					{
+						l_ui32Status = Status_ParsingVector;
+					}
+					break;
+
+				case Status_ParsingVector:
+
+					if(*l_oIt == '[')
+					{
+						if(l_sCurString == "position")
+						{
+							l_ui32Status = Status_ParsingPosition;
+						}
+						else if(l_sCurString == "orientation")
+						{
+							l_ui32Status = Status_ParsingOrientation;
+						}
+						else if(l_sCurString == "scale")
+						{
+							l_ui32Status = Status_ParsingScale;
+						}
+
+						l_sCurString.erase();
+					}
+					break;
+
+				case Status_ParsingPosition:
+
+					//stop at first whitespace char or when vector end is found
+					if(std::isspace(*l_oIt, l_oLocale) == true || *l_oIt == ']')
+					{
+						float64 l_f64Value = atof(l_sCurString.c_str());
+#if defined OVP_OS_Windows
+						if(errno == ERANGE)
+						{
+							//string couldn't be converted to a double
+							m_rKernelContext.getLogManager() << LogLevel_Trace << "Couldn't convert token \"" << CString(l_sCurString.c_str()) << "\" to floating point value, parsing aborted\n";
+							return false;
+						}
+#endif
+						//store value and update current value index
+						l_pPosition[l_ui32CurValueIndex++] = l_f64Value;
+
+						//reset current string
+						l_sCurString.erase();
+
+						if(l_ui32CurValueIndex == 3)
+						{
+							//position object
+							setPosition(l_pPosition[0], l_pPosition[1], l_pPosition[2]);
+						}
+
+						if(l_ui32CurValueIndex == 3 || *l_oIt == ']')
+						{
+							l_oIt = l_sWhat.end() - 1;
+							l_ui32Status = Status_Nothing;
+							break;
+						}
+					}
+					//otherwise, append current character to current string
+					else
+					{
+						l_sCurString.append(1, *l_oIt);
+					}
+					break;
+
+				case Status_ParsingOrientation:
+
+					//stop at first whitespace char or when vector end is found
+					if(std::isspace(*l_oIt, l_oLocale) == true || *l_oIt == ']')
+					{
+						float64 l_f64Value = atof(l_sCurString.c_str());
+#if defined OVP_OS_Windows
+						if(errno == ERANGE)
+						{
+							//string couldn't be converted to a double
+							m_rKernelContext.getLogManager() << LogLevel_Trace << "Couldn't convert token \"" << CString(l_sCurString.c_str()) << "\" to floating point value, parsing aborted\n";
+							return false;
+						}
+#endif
+						//store value and update current value index
+						l_pOrientation[l_ui32CurValueIndex++] = l_f64Value;
+
+						//reset current string
+						l_sCurString.erase();
+
+						if(l_ui32CurValueIndex == 3)
+						{
+							//rotate object
+							setRotation(l_pOrientation[0], l_pOrientation[1], l_pOrientation[2]);
+						}
+
+						if(l_ui32CurValueIndex == 3 || *l_oIt == ']')
+						{
+							l_oIt = l_sWhat.end() - 1;
+							l_ui32Status = Status_Nothing;
+							break;
+						}
+					}
+					//otherwise, append current character to current string
+					else
+					{
+						l_sCurString.append(1, *l_oIt);
+					}
+					break;
+
+				case Status_ParsingScale:
+
+					//stop at first whitespace char or when vector end is found
+					if(std::isspace(*l_oIt, l_oLocale) == true || *l_oIt == ']')
+					{
+						float64 l_f64Value = atof(l_sCurString.c_str());
+#if defined OVP_OS_Windows
+						if(errno == ERANGE)
+						{
+							//string couldn't be converted to a double
+							m_rKernelContext.getLogManager() << LogLevel_Trace << "Couldn't convert token \"" << CString(l_sCurString.c_str()) << "\" to floating point value, parsing aborted\n";
+							return false;
+						}
+#endif
+						//store value and update current value index
+						l_pScale[l_ui32CurValueIndex++] = l_f64Value;
+
+						//reset current string
+						l_sCurString.erase();
+
+						if(l_ui32CurValueIndex == 3)
+						{
+							//scale object
+							setScale(l_pScale[0], l_pScale[1], l_pScale[2]);
+						}
+
+						if(l_ui32CurValueIndex == 3 || *l_oIt == ']')
+						{
+							l_oIt = l_sWhat.end() - 1;
+							l_ui32Status = Status_Nothing;
+							break;
+						}
+					}
+					//otherwise, append current character to current string
+					else
+					{
+						l_sCurString.append(1, *l_oIt);
+					}
+					break;
+
+				default:
+					break;
+			} // switch(l_ui32Status)
+
+			//increment iterator
+			l_oIt++;
+
+		} // while(l_oIt != l_sWhat.end()) (read each character of current line)
+	}
+
+	l_pStream->close();
+	}
+	catch(Ogre::Exception&)
+	{
 	}
 
 	return true;

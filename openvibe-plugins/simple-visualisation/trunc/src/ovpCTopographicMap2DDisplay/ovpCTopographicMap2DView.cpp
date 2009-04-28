@@ -569,7 +569,7 @@ namespace OpenViBEPlugins
 			uint32 l_ui32SkullCenterY = m_ui32SkullY + m_ui32SkullDiameter/2;
 
 #ifndef M_PI
-#define M_PI 3.1415926535f
+#define M_PI 3.1415926535897932384626433832795
 #endif
 #define DEG2RAD(x) (x)*M_PI/180
 
@@ -668,11 +668,9 @@ namespace OpenViBEPlugins
 
 			gdk_gc_set_clip_mask(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], m_pClipmask);
 
-			if(m_ui32CurrentView==TopographicMap2DView_Top || m_ui32CurrentProjection!=TopographicMap2DProjection_Radial)
-			{
-				drawPotentials();
-				drawElectrodes();
-			}
+			drawPotentials();
+
+			drawElectrodes();
 
 			gdk_gc_set_clip_mask(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], NULL);
 		}
@@ -1183,106 +1181,101 @@ namespace OpenViBEPlugins
 		{
 			uint32 l_ui32SkullCenterX = m_ui32SkullX + m_ui32SkullDiameter/2;
 			uint32 l_ui32SkullCenterY = m_ui32SkullY + m_ui32SkullDiameter/2;
+			//get normalized coordinates
+			float64* l_pElectrodePosition;
+			m_rTopographicMapDatabase.getChannelPosition(ui32ChannelIndex, l_pElectrodePosition);
 
 			if(m_ui32CurrentView == TopographicMap2DView_Top)
 			{
 				if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
 				{
-					float64* l_pElectrodePosition;
-					m_rTopographicMapDatabase.getChannelPosition(ui32ChannelIndex, l_pElectrodePosition);
-					if(l_pElectrodePosition[2] < 0) //electrode not visible
-					{
-						return false;
-					}
 					l_i32ChannelX = (gint)(l_ui32SkullCenterX + l_pElectrodePosition[0] * m_ui32SkullDiameter/2);
 					l_i32ChannelY = (gint)(l_ui32SkullCenterY - l_pElectrodePosition[1] * m_ui32SkullDiameter/2);
 				}
 				else //radial
 				{
-					float64 l_f64Theta, l_f64Phi;
-					m_rTopographicMapDatabase.getChannelSphericalCoordinates(ui32ChannelIndex, l_f64Theta, l_f64Phi);
-					if(l_f64Theta > 90) //electrode not visible
-					{
-						return false;
-					}
-					//linear plotting along radius
-					float64 l_f64Length = l_f64Theta/90 * m_ui32SkullDiameter/2;
-					//determine coordinates on unit circle
-					float64 l_f64X = cos(l_f64Phi * 3.1415926535 / 180);
-					float64 l_f64Y = sin(l_f64Phi * 3.1415926535 / 180);
-					//scale vector so that it is l_f64Length long
-					l_i32ChannelX = (gint)(l_ui32SkullCenterX + l_f64Length * l_f64X);
-					l_i32ChannelY = (gint)(l_ui32SkullCenterY - l_f64Length * l_f64Y);
+					//compute back frame 2D coordinates
+					float64 l_f64Theta = getThetaFromCartesianCoordinates(l_pElectrodePosition);
+					float64 l_f64Phi = getPhiFromCartesianCoordinates(l_pElectrodePosition);
+					compute2DCoordinates(l_f64Theta, l_f64Phi, l_ui32SkullCenterX, l_ui32SkullCenterY, l_i32ChannelX, l_i32ChannelY);
 				}
 			}
 			else if(m_ui32CurrentView == TopographicMap2DView_Back)
 			{
+				//if(l_pElectrodePosition[1] > 0) //electrode not visible
+				if(l_pElectrodePosition[1] > sin(1.f/90*M_PI/2))
+				{
+					return false;
+				}
+
 				if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
 				{
-					float64* l_pElectrodePosition;
-					m_rTopographicMapDatabase.getChannelPosition(ui32ChannelIndex, l_pElectrodePosition);
-					//if(l_pElectrodePosition[1] > 0) //electrode not visible
-					if(l_pElectrodePosition[1] > sin(1.f/90*3.1415926535/2))
-					{
-						return false;
-					}
 					l_i32ChannelX = (gint)(l_ui32SkullCenterX + l_pElectrodePosition[0] * m_ui32SkullDiameter/2);
 					l_i32ChannelY = (gint)(l_ui32SkullCenterY - l_pElectrodePosition[2] * m_ui32SkullDiameter/2);
 				}
 				else //radial
 				{
-					return false;
+					//transform coordinates from top frame to back frame
+					float64 l_pBackElectrodePosition[3];
+					l_pBackElectrodePosition[0] = l_pElectrodePosition[0];
+					l_pBackElectrodePosition[1] = l_pElectrodePosition[2];
+					l_pBackElectrodePosition[2] = -l_pElectrodePosition[1];
+					//compute back frame 2D coordinates
+					float64 l_f64Theta = getThetaFromCartesianCoordinates(l_pBackElectrodePosition);
+					float64 l_f64Phi = getPhiFromCartesianCoordinates(l_pBackElectrodePosition);
+					compute2DCoordinates(l_f64Theta, l_f64Phi, l_ui32SkullCenterX, l_ui32SkullCenterY, l_i32ChannelX, l_i32ChannelY);
 				}
 			}
 			else if(m_ui32CurrentView == TopographicMap2DView_Left)
 			{
+				//if(l_pElectrodePosition[0] > 0) //electrode not visible
+				if(l_pElectrodePosition[0] > cos(89.f/90*M_PI/2))
+				{
+					return false;
+				}
+
 				if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
 				{
-					float64* l_pElectrodePosition;
-					m_rTopographicMapDatabase.getChannelPosition(ui32ChannelIndex, l_pElectrodePosition);
-					//if(l_pElectrodePosition[0] > 0) //electrode not visible
-					if(l_pElectrodePosition[0] > cos(89.f/90*3.1415926535/2))
-					{
-						return false;
-					}
 					l_i32ChannelX = (gint)(l_ui32SkullCenterX - l_pElectrodePosition[1] * m_ui32SkullDiameter/2);
 					l_i32ChannelY = (gint)(l_ui32SkullCenterY - l_pElectrodePosition[2] * m_ui32SkullDiameter/2);
 				}
 				else //radial
 				{
-					float64 l_f64Theta, l_f64Phi;
-					m_rTopographicMapDatabase.getChannelSphericalCoordinates(ui32ChannelIndex, l_f64Theta, l_f64Phi);
-					if(l_f64Phi < 89 || l_f64Phi > 271) //electrode not visible*/
-					{
-						return false;
-					}
-					//linear plotting of Theta along Y - theta in degrees
-					l_i32ChannelY = m_ui32SkullY + (uint32)(l_f64Theta/90 * m_ui32SkullDiameter/2);
-					//determine radial theta angle - radial theta in radians
-					float64 l_f64RadialTheta = acos(((float)l_ui32SkullCenterY - l_i32ChannelY) / (m_ui32SkullDiameter/2));
-					//determine left boundary on skull for this value of theta
-					uint32 l_ui32MinX = l_ui32SkullCenterX + (uint32)(cos(l_f64RadialTheta + 3.1415926535 / 2) * m_ui32SkullDiameter/2);
-					//linear plotting of Phi along X - phi in degrees
-					l_i32ChannelX = l_ui32MinX + (uint32)((l_f64Phi - 90)/90 * (l_ui32SkullCenterX - l_ui32MinX));
+					//transform coordinates from top frame to left frame
+					float64 l_pBackElectrodePosition[3];
+					l_pBackElectrodePosition[0] = -l_pElectrodePosition[1];
+					l_pBackElectrodePosition[1] = l_pElectrodePosition[2];
+					l_pBackElectrodePosition[2] = -l_pElectrodePosition[0];
+					//compute back frame 2D coordinates
+					float64 l_f64Theta = getThetaFromCartesianCoordinates(l_pBackElectrodePosition);
+					float64 l_f64Phi = getPhiFromCartesianCoordinates(l_pBackElectrodePosition);
+					compute2DCoordinates(l_f64Theta, l_f64Phi, l_ui32SkullCenterX, l_ui32SkullCenterY, l_i32ChannelX, l_i32ChannelY);
 				}
 			}
 			else if(m_ui32CurrentView == TopographicMap2DView_Right)
 			{
+				//if(l_pElectrodePosition[0] < 0) //electrode not visible
+				if(l_pElectrodePosition[0] < -cos(89.f/90*M_PI/2))
+				{
+					return false;
+				}
+
 				if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
 				{
-					float64* l_pElectrodePosition;
-					m_rTopographicMapDatabase.getChannelPosition(ui32ChannelIndex, l_pElectrodePosition);
-					//if(l_pElectrodePosition[0] < 0) //electrode not visible
-					if(l_pElectrodePosition[0] < -cos(89.f/90*3.1415926535/2))
-					{
-						return false;
-					}
 					l_i32ChannelX = (gint)(l_ui32SkullCenterX + l_pElectrodePosition[1] * m_ui32SkullDiameter/2);
 					l_i32ChannelY = (gint)(l_ui32SkullCenterY - l_pElectrodePosition[2] * m_ui32SkullDiameter/2);
 				}
 				else //radial
 				{
-					return false;
+					//transform coordinates from top frame to left frame
+					float64 l_pBackElectrodePosition[3];
+					l_pBackElectrodePosition[0] = l_pElectrodePosition[1];
+					l_pBackElectrodePosition[1] = l_pElectrodePosition[2];
+					l_pBackElectrodePosition[2] = l_pElectrodePosition[0];
+					//compute back frame 2D coordinates
+					float64 l_f64Theta = getThetaFromCartesianCoordinates(l_pBackElectrodePosition);
+					float64 l_f64Phi = getPhiFromCartesianCoordinates(l_pBackElectrodePosition);
+					compute2DCoordinates(l_f64Theta, l_f64Phi, l_ui32SkullCenterX, l_ui32SkullCenterY, l_i32ChannelX, l_i32ChannelY);
 				}
 			}
 
@@ -1345,7 +1338,7 @@ namespace OpenViBEPlugins
 			float32 l_f32SkullCenterX = m_ui32SkullX + m_ui32SkullDiameter/2.f;
 			float32 l_f32SkullCenterY = m_ui32SkullY + m_ui32SkullDiameter/2.F;
 			float32 l_f32ClosestX, l_f32ClosestY;
-			float32 l_f32X, l_f32Y, l_f32Z; //normalized cartesian coordinates
+			float32 l_f32X, l_f32Y;
 			float64* l_pBuffer = m_oSampleCoordinatesMatrix.getBuffer();
 
 			//for each row
@@ -1377,102 +1370,82 @@ namespace OpenViBEPlugins
 								//----------------------------------------------------------------------
 								uint32 l_ui32BaseIndex = 3* l_ui32CurSample;
 
-								if(m_ui32CurrentView == TopographicMap2DView_Top)
-								{
-									if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
-									{
-										//normalized X, Y coords in (X, Y) plane
-										l_f32X = (l_f32ClosestX - l_f32SkullCenterX) / (m_ui32SkullDiameter/2.f);
-										l_f32Y = -(l_f32ClosestY - l_f32SkullCenterY) / (m_ui32SkullDiameter/2.f); //y axis down in 2D but up in 3D convention
+								//normalized X, Y coords in (X, Y) projection plane
+								l_f32X = (l_f32ClosestX - l_f32SkullCenterX) / (m_ui32SkullDiameter/2.f);
+								l_f32Y = -(l_f32ClosestY - l_f32SkullCenterY) / (m_ui32SkullDiameter/2.f); //y axis down in 2D but up in 3D convention
 
-										//x and y computed directly from point position
+								if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
+								{
+									if(m_ui32CurrentView == TopographicMap2DView_Top)
+									{
 										*(l_pBuffer + l_ui32BaseIndex) = l_f32X;
 										*(l_pBuffer + l_ui32BaseIndex+1) = l_f32Y;
 										//z = sqrt(1-x*x-y*y)
 										float32 l_f32SquareXYSum = l_f32X * l_f32X + l_f32Y * l_f32Y;
 										*(l_pBuffer + l_ui32BaseIndex+2) = (l_f32SquareXYSum >= 1) ? 0 : sqrt(1 - l_f32SquareXYSum);
 									}
-									else //radial
+									else if(m_ui32CurrentView == TopographicMap2DView_Back)
 									{
-										//X, Y radial coords
-										l_f32X = (l_f32ClosestX - l_f32SkullCenterX) / (m_ui32SkullDiameter/2.f) * (3.1415926535f / 2);
-										//y axis down in 2D but up in 3D convention
-										l_f32Y = -(l_f32ClosestY - l_f32SkullCenterY) / (m_ui32SkullDiameter/2.f) * (3.1415926535f / 2);
-										//theta = (X,Y) arc length
-										float32 l_f32Theta = sqrtf(l_f32X*l_f32X + l_f32Y*l_f32Y);
-										float32 l_f32ScalingFactor = 0;
-										if(l_f32Theta > 1e-3)
-										{
-											l_f32ScalingFactor = sinf(l_f32Theta) / l_f32Theta;
-										}
-
-										//x = sin(theta) / theta * X
-										*(l_pBuffer + l_ui32BaseIndex) = l_f32ScalingFactor * l_f32X;
-										//y = sin(theta) / theta * Y
-										*(l_pBuffer + l_ui32BaseIndex+1) = l_f32ScalingFactor * l_f32Y;
-										//z = cos(theta)
-										*(l_pBuffer + l_ui32BaseIndex+2) = cosf(l_f32Theta);
-									}
-								}
-								else if(m_ui32CurrentView == TopographicMap2DView_Back)
-								{
-									//if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
-									{
-										//normalized X, Y coords in (X, Y) plane
-										l_f32X = (l_f32ClosestX - l_f32SkullCenterX) / (m_ui32SkullDiameter/2.f);
-										l_f32Z = -(l_f32ClosestY - l_f32SkullCenterY) / (m_ui32SkullDiameter/2.f); //y axis down in 2D but up in 3D convention
-
-										//x and y computed directly from point position
 										*(l_pBuffer + l_ui32BaseIndex) = l_f32X;
-										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32Z;
+										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32Y;
 										//y = sqrt(1-x*x-z*z)
-										float32 l_f32SquareXZSum = l_f32X * l_f32X + l_f32Z * l_f32Z;
-										*(l_pBuffer + l_ui32BaseIndex+1) = (l_f32SquareXZSum >= 1) ? 0 : sqrt(1 - l_f32SquareXZSum);
+										float32 l_f32SquareXYSum = l_f32X * l_f32X + l_f32Y * l_f32Y;
+										*(l_pBuffer + l_ui32BaseIndex+1) = (l_f32SquareXYSum >= 1) ? 0 : sqrt(1 - l_f32SquareXYSum);
 									}
-									/*else //radial
+									else if(m_ui32CurrentView == TopographicMap2DView_Left)
 									{
-
-									}*/
-								}
-								else if(m_ui32CurrentView == TopographicMap2DView_Left)
-								{
-									//if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
-									{
-										//normalized X, Y coords in (X, Y) plane
-										l_f32Y = -(l_f32ClosestX - l_f32SkullCenterX) / (m_ui32SkullDiameter/2.f);
-										l_f32Z = -(l_f32ClosestY - l_f32SkullCenterY) / (m_ui32SkullDiameter/2.f); //y axis down in 2D but up in 3D convention
-
-										//x and y computed directly from point position
-										*(l_pBuffer + l_ui32BaseIndex+1) = l_f32Y;
-										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32Z;
+										*(l_pBuffer + l_ui32BaseIndex+1) = -l_f32X;
+										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32Y;
 										//x = sqrt(1-y*y-z*z)
-										float32 l_f32SquareYZSum = l_f32Y * l_f32Y + l_f32Z * l_f32Z;
-										*(l_pBuffer + l_ui32BaseIndex) = (l_f32SquareYZSum >= 1) ? 0 : sqrt(1 - l_f32SquareYZSum);
+										float32 l_f32SquareXYSum = l_f32X * l_f32X + l_f32Y * l_f32Y;
+										*(l_pBuffer + l_ui32BaseIndex) = (l_f32SquareXYSum >= 1) ? 0 : sqrt(1 - l_f32SquareXYSum);
 									}
-									/*else //radial
+									else if(m_ui32CurrentView == TopographicMap2DView_Right)
 									{
-
-									}*/
-								}
-								else if(m_ui32CurrentView == TopographicMap2DView_Right)
-								{
-									//if(m_ui32CurrentProjection == TopographicMap2DProjection_Axial)
-									{
-										//normalized X, Y coords in (X, Y) plane
-										l_f32Y = (l_f32ClosestX - l_f32SkullCenterX) / (m_ui32SkullDiameter/2.f);
-										l_f32Z = -(l_f32ClosestY - l_f32SkullCenterY) / (m_ui32SkullDiameter/2.f); //y axis down in 2D but up in 3D convention
-
-										//x and y computed directly from point position
-										*(l_pBuffer + l_ui32BaseIndex+1) = l_f32Y;
-										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32Z;
+										*(l_pBuffer + l_ui32BaseIndex+1) = l_f32X;
+										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32Y;
 										//x = sqrt(1-y*y-z*z)
-										float32 l_f32SquareYZSum = l_f32Y * l_f32Y + l_f32Z * l_f32Z;
-										*(l_pBuffer + l_ui32BaseIndex) = (l_f32SquareYZSum >= 1) ? 0 : sqrt(1 - l_f32SquareYZSum);
+										float32 l_f32SquareXYSum = l_f32X * l_f32X + l_f32Y * l_f32Y;
+										*(l_pBuffer + l_ui32BaseIndex) = (l_f32SquareXYSum >= 1) ? 0 : sqrt(1 - l_f32SquareXYSum);
 									}
-									/*else //radial
-									{
+								}
+								else //radial
+								{
+									//theta = (X,Y) arc length
+									float32 l_f32Theta = M_PI/2 * sqrtf(l_f32X*l_f32X + l_f32Y*l_f32Y);
+									float32 l_f32ScalingFactor = (l_f32Theta <= 1e-3) ? 0 : (sinf(l_f32Theta) / l_f32Theta);
+									float32 l_f32SampleLocalCoordinates[3];
+									//x = sin(theta) / theta * X
+									l_f32SampleLocalCoordinates[0] = l_f32ScalingFactor * l_f32X * (M_PI/2);
+									//y = sin(theta) / theta * Y
+									l_f32SampleLocalCoordinates[1] = l_f32ScalingFactor * l_f32Y * (M_PI/2);
+									//z = cos(theta)
+									l_f32SampleLocalCoordinates[2] = cosf(l_f32Theta);
 
-									}*/
+									if(m_ui32CurrentView == TopographicMap2DView_Top)
+									{
+										*(l_pBuffer + l_ui32BaseIndex) = l_f32SampleLocalCoordinates[0];
+										*(l_pBuffer + l_ui32BaseIndex+1) = l_f32SampleLocalCoordinates[1];
+										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32SampleLocalCoordinates[2];
+									}
+									else if(m_ui32CurrentView == TopographicMap2DView_Back)
+									{
+										*(l_pBuffer + l_ui32BaseIndex) = l_f32SampleLocalCoordinates[0];
+										*(l_pBuffer + l_ui32BaseIndex+1) = -l_f32SampleLocalCoordinates[2];
+										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32SampleLocalCoordinates[1];
+									}
+									else if(m_ui32CurrentView == TopographicMap2DView_Left)
+									{
+										*(l_pBuffer + l_ui32BaseIndex) = -l_f32SampleLocalCoordinates[2];
+										*(l_pBuffer + l_ui32BaseIndex+1) = -l_f32SampleLocalCoordinates[0];
+										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32SampleLocalCoordinates[1];
+									}
+									else if(m_ui32CurrentView == TopographicMap2DView_Right)
+									{
+										*(l_pBuffer + l_ui32BaseIndex) = l_f32SampleLocalCoordinates[2];
+										*(l_pBuffer + l_ui32BaseIndex+1) = l_f32SampleLocalCoordinates[0];
+										*(l_pBuffer + l_ui32BaseIndex+2) = l_f32SampleLocalCoordinates[1];
+									}
 								}
 							}
 
@@ -1541,6 +1514,49 @@ namespace OpenViBEPlugins
 				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pMapPotentials), (void*)(G_CALLBACK (setInterpolationCallback)), this);
 				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pMapCurrents), (void*)(G_CALLBACK (setInterpolationCallback)), this);
 			}
+		}
+
+		float64 CTopographicMap2DView::getThetaFromCartesianCoordinates(const float64* pCartesianCoords) const
+		{
+			return acos(pCartesianCoords[2]);
+		}
+
+		float64 CTopographicMap2DView::getPhiFromCartesianCoordinates(const float64* pCartesianCoords) const
+		{
+			float64 l_f64Phi;
+			if(pCartesianCoords[0] > 0.001)
+			{
+				l_f64Phi = atan(pCartesianCoords[1] / pCartesianCoords[0]);
+
+				if(l_f64Phi < 0)
+				{
+					l_f64Phi += 2 * M_PI;
+				}
+			}
+			else if(pCartesianCoords[0] < -0.001)
+			{
+				l_f64Phi = atan(pCartesianCoords[1] / pCartesianCoords[0]) + M_PI;
+			}
+			else
+			{
+				l_f64Phi = pCartesianCoords[1] > 0 ? (M_PI / 2) : (3 * M_PI/2);
+			}
+
+			return l_f64Phi;
+		}
+
+		boolean CTopographicMap2DView::compute2DCoordinates(float64 f64Theta, float64 f64Phi,
+			uint32 ui32SkullCenterX, uint32 ui32SkullCenterY, gint& rX, gint& rY) const
+		{
+			//linear plotting along radius
+			float64 l_f64Length = f64Theta/(M_PI/2) * m_ui32SkullDiameter/2;
+			//determine coordinates on unit circle
+			float64 l_f64X = cos(f64Phi);
+			float64 l_f64Y = sin(f64Phi);
+			//scale vector so that it is l_f64Length long
+			rX = (gint)(ui32SkullCenterX + l_f64Length * l_f64X);
+			rY = (gint)(ui32SkullCenterY - l_f64Length * l_f64Y);
+			return true;
 		}
 
 		//CALLBACKS

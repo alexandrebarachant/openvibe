@@ -120,7 +120,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Set minimum/maximum values attenuation
-			 * \remark Attenuation is not implemented yet!
+			 * \remarks Attenuation is not implemented yet!
 			 * The attenuation is performed between last min/max values and current values, according to this formula :
 			 * minimum = f64Attenuation * minimum + (1-f64Attenuation) * previous minimum. Therefore, 1 corresponds to no attenuation.
 			 * \param f64Attenuation Attenuation of min/max values between 2 consecutive buffers

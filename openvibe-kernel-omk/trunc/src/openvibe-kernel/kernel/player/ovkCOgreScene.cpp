@@ -164,29 +164,11 @@ COgreObject* COgreScene::createObject(CIdentifier rObjectIdentifier, const CStri
 
 	COgreObject* l_pObject = new COgreObject(m_rKernelContext, rObjectIdentifier, m_pOgreVis, m_pSceneManager, rGeometryFileName);
 
-	if(l_pObject->loadGeometry() == false)
+	if(l_pObject->loadGeometry(rNameValuePairList) == false)
 	{
 		delete l_pObject;
 		return NULL;
 	}
-
-	//should mesh be cloned?
-	boolean l_bCloneMesh = false;
-	rNameValuePairList.getValue("CloneMesh", l_bCloneMesh);
-	if(l_bCloneMesh == true)
-	{
-		l_pObject->cloneMeshes();
-	}
-
-	//should materials be cloned?
-	boolean l_bCloneMaterials = false;
-	rNameValuePairList.getValue("CloneMaterials", l_bCloneMaterials);
-	if(l_bCloneMaterials)
-	{
-		l_pObject->cloneMaterials();
-	}
-
-	l_pObject->createAnimators();
 
 	//store object in Ids map
 	m_mOgreObjectIds[rObjectIdentifier] = l_pObject;
@@ -203,8 +185,6 @@ COgreObject* COgreScene::createPlane(CIdentifier rObjectIdentifier, const CNameV
 		delete l_pObject;
 		return NULL;
 	}
-
-	l_pObject->createAnimators();
 
 	//store object in Ids map
 	m_mOgreObjectIds[rObjectIdentifier] = l_pObject;

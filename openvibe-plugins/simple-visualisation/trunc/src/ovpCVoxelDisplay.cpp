@@ -49,6 +49,8 @@ CVoxelDisplay::CVoxelDisplay(void) :
 	m_bCameraPositioned(false),
 	m_bPaused(false),
 	m_f64Time(0),
+	m_f64MinPotential(FLT_MAX),
+	m_f64MaxPotential(FLT_MIN),
 	m_ui32NbColors(0),
 	m_pColorScale(NULL),
 	m_oScalpId(OV_UndefinedIdentifier),
@@ -63,7 +65,8 @@ CVoxelDisplay::CVoxelDisplay(void) :
 	m_bSizeModificationToggled(false),
 	m_f64MinScaleFactor(1),
 	m_f64MaxScaleFactor(2),
-	m_f64VoxelDisplayThreshold(0),
+	m_f64MinDisplayThreshold(0),
+	m_f64MaxDisplayThreshold(1),
 	m_bSetSkullOpacity(false),
 	m_f64SkullOpacity(0),
 	m_bRepositionCamera(false)
@@ -118,6 +121,7 @@ boolean CVoxelDisplay::initialize(void)
 	//create spectrum database
 	m_pStreamedMatrixDatabase = new CStreamedMatrixDatabase(*this);
 	m_pStreamedMatrixDatabase->initialize();
+	m_pStreamedMatrixDatabase->setMaxBufferCount(2);
 
 	//retrieve box settings
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
@@ -207,10 +211,18 @@ boolean CVoxelDisplay::process(void)
 		l_pDynamicBoxContext->markInputAsDeprecated(0, i);
 	}
 
-	process3D();
-	getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
+	boolean l_bProcess3D = process3D();
 
-	return true;
+	if(l_bProcess3D == true)
+	{
+		getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
+		return true;
+	}
+	else
+	{
+		//disable plugin upon errors
+		return false;
+	}
 }
 
 boolean CVoxelDisplay::setPaused(boolean bPaused)
@@ -265,9 +277,15 @@ boolean CVoxelDisplay::setMaxScaleFactor(float64 f64MaxScaleFactor)
 	return true;
 }
 
-boolean CVoxelDisplay::setVoxelDisplayThreshold(float64 f64Threshold)
+boolean CVoxelDisplay::setMinDisplayThreshold(float64 f64MinDisplayThreshold)
 {
-	m_f64VoxelDisplayThreshold = f64Threshold;
+	m_f64MinDisplayThreshold = f64MinDisplayThreshold;
+	return true;
+}
+
+boolean CVoxelDisplay::setMaxDisplayThreshold(float64 f64MaxDisplayThreshold)
+{
+	m_f64MaxDisplayThreshold = f64MaxDisplayThreshold;
 	return true;
 }
 
@@ -284,125 +302,37 @@ boolean CVoxelDisplay::repositionCamera()
 	return true;
 }
 
-static CVoxel l_oSource;
-static CVoxel l_oSource2;
-static float32 l_f32VoxelOffsetX = 0.f;
-static float32 l_f32VoxelOffsetY = 1.2f;
-static float32 l_f32VoxelOffsetZ = -0.05f;
-static float32 l_f32ScaleFromOffset = 0.015f;
-static float32 l_f32VoxelScale = 0.05f;
-static uint32 s_ui32VoxelStep = 4;
+static float32 s_f32VoxelOffsetX = 0.f;
+static float32 s_f32VoxelOffsetY = 1.2f;
+static float32 s_f32VoxelOffsetZ = -0.05f;
+static float32 s_f32ScaleFromOffset = 0.015f;
+static float32 s_f32VoxelScale = 0.05f;
+static const uint32 s_ui32VoxelStep = 1;
 
 boolean CVoxelDisplay::process3D()
 {
 	//load voxel coords
 	if(m_bVoxelsMatrixLoaded == false)
 	{
-		loadVoxels();
+		return loadVoxels();
 	}
 	//create voxels and load head mesh
 	else if(m_oVoxels.size() == 0)
 	{
-		createVoxels();
+		return createVoxels();
 	}
-	else if(m_bCameraPositioned == false) //objects have been created : auto position camera
+	//objects have been created : auto position camera
+	else if(m_bCameraPositioned == false)
 	{
 		getVisualisationContext().setCameraToEncompassObjects(m_o3DWidgetIdentifier);
 		m_bCameraPositioned = true;
+		return true;
 	}
-	else //proceed with color/shape modification
+	//proceed with color/shape modification
+	else
 	{
-		//shape change
-		if(m_bSetVoxelObject == true)
-		{
-			for(uint32 i=0; i<m_oVoxels.size(); i++)
-			{
-				getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oCubeIdentifier, m_eVoxelObject == Standard3DObject_Cube);
-				getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oSphereIdentifier, m_eVoxelObject == Standard3DObject_Sphere);
-				//object is visible now
-				m_oVoxels[i].m_bVisible = true;
-			}
-
-			m_bSetVoxelObject = false;
-		}
-
-		if(m_bToggleColorModification == true)
-		{
-			if(m_bColorModificationToggled == false)
-			{
-				//reset color
-				for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
-				{
-					getVisualisationContext().setObjectColor(getActiveShapeIdentifier(m_oVoxels[i]), 1, 1, 1);
-				}
-			}
-
-			m_bToggleColorModification = false;
-		}
-
-		if(m_bToggleTransparencyModification == true)
-		{
-			//unset transparency
-			if(m_bTransparencyModificationToggled == false)
-			{
-				for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
-				{
-					getVisualisationContext().setObjectTransparency(getActiveShapeIdentifier(m_oVoxels[i]), 0);
-				}
-			}
-
-			m_bToggleTransparencyModification = false;
-		}
-
-		if(m_bToggleSizeModification == true)
-		{
-			if(m_bSizeModificationToggled == false)
-			{
-				//reset size
-				for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
-				{
-					getVisualisationContext().setObjectScale(getActiveShapeIdentifier(m_oVoxels[i]), l_f32VoxelScale);
-				}
-			}
-
-			m_bToggleSizeModification = false;
-		}
-
-		if(m_bSetSkullOpacity == true)
-		{
-			getVisualisationContext().setObjectVisible(m_oFaceId, m_f64SkullOpacity > 0);
-			getVisualisationContext().setObjectVisible(m_oScalpId, m_f64SkullOpacity > 0);
-			getVisualisationContext().setObjectTransparency(m_oFaceId, 1.f-(float32)m_f64SkullOpacity);
-			getVisualisationContext().setObjectTransparency(m_oScalpId, 1.f-(float32)m_f64SkullOpacity);
-			m_bSetSkullOpacity = false;
-		}
-
-		if(m_bRepositionCamera == true)
-		{
-			getVisualisationContext().setCameraToEncompassObjects(m_o3DWidgetIdentifier);
-			m_bRepositionCamera = false;
-		}
-
-		//get current time
-		if(!m_bPaused)
-		{
-			uint64 l_ui64Time = getBoxAlgorithmContext()->getPlayerContext()->getCurrentTime();
-			//uint64 l_ui64Time = getBoxAlgorithmContext()->getPlayerContext()->getCurrentRealTime();
-			m_f64Time = (float64)l_ui64Time / (float64)(1LL<<32);
-			if(m_f64Time > 1000)
-			{
-				m_f64Time = 0;
-			}
-		}
-
-		//REMOVE ME
-		computePotentials();
-
-		//update voxels
-		updateVoxels();
+		return updateVoxels();
 	}
-
-	return true;
 }
 
 boolean CVoxelDisplay::loadVoxels()
@@ -426,11 +356,6 @@ boolean CVoxelDisplay::createVoxels()
 	//set background color
 	getVisualisationContext().setBackgroundColor(m_o3DWidgetIdentifier, 0, 0, 0);
 
-	l_oSource.m_oSphereIdentifier = getVisualisationContext().createObject("ov_unitsphere_80faces");
-	getVisualisationContext().setObjectColor(l_oSource.m_oSphereIdentifier, 0, 1, 0);
-	getVisualisationContext().setObjectScale(l_oSource.m_oSphereIdentifier, 0.001f, 0.001f, 0.001f);
-	getVisualisationContext().setObjectVisible(l_oSource.m_oSphereIdentifier, false);
-
 	//load skull meshes
 	m_oFaceId = getVisualisationContext().createObject("ov_voxeldisplay_face");
 	m_oScalpId = getVisualisationContext().createObject("ov_voxeldisplay_scalp");
@@ -447,6 +372,7 @@ boolean CVoxelDisplay::createVoxels()
 	}
 	m_oVoxels.resize(op_pVoxelsMatrix->getDimensionSize(0));
 	CNameValuePairList l_oParamsList;
+	//clone voxel materials so that color changes don't interfere with each other
 	l_oParamsList.setValue("CloneMaterials", true);
 
 	for(uint32 i=0; i<op_pVoxelsMatrix->getDimensionSize(0); i+=s_ui32VoxelStep)
@@ -455,99 +381,189 @@ boolean CVoxelDisplay::createVoxels()
 		m_oVoxels[i].m_bVisible = true;
 		//store voxel position
 		m_oVoxels[i].setPosition(
-			(*(op_pVoxelsMatrix->getBuffer() + 3*i) - l_f32VoxelOffsetX) * l_f32ScaleFromOffset + l_f32VoxelOffsetX,
-			(*(op_pVoxelsMatrix->getBuffer() + 3*i+1) - l_f32VoxelOffsetY) * l_f32ScaleFromOffset + l_f32VoxelOffsetY,
-			(*(op_pVoxelsMatrix->getBuffer() + 3*i+2) - l_f32VoxelOffsetZ) * l_f32ScaleFromOffset + l_f32VoxelOffsetZ);
+			(*(op_pVoxelsMatrix->getBuffer() + 3*i) - s_f32VoxelOffsetX) * s_f32ScaleFromOffset + s_f32VoxelOffsetX,
+			(*(op_pVoxelsMatrix->getBuffer() + 3*i+1) - s_f32VoxelOffsetY) * s_f32ScaleFromOffset + s_f32VoxelOffsetY,
+			(*(op_pVoxelsMatrix->getBuffer() + 3*i+2) - s_f32VoxelOffsetZ) * s_f32ScaleFromOffset + s_f32VoxelOffsetZ);
 
 		//load shapes
 		m_oVoxels[i].setObjectIdentifiers(
 			getVisualisationContext().createObject("ov_unitcube", &l_oParamsList),
-			getVisualisationContext().createObject("ov_unitsphere_80faces", &l_oParamsList));
+			OV_UndefinedIdentifier/*getVisualisationContext().createObject("ov_unitsphere_80faces", &l_oParamsList)*/);
 
 		//show active shape and hide the other one
 		getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oCubeIdentifier, m_eVoxelObject == Standard3DObject_Cube);
-		getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oSphereIdentifier, m_eVoxelObject == Standard3DObject_Sphere);
+		//getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oSphereIdentifier, m_eVoxelObject == Standard3DObject_Sphere);
 		//position 3D objects
 		getVisualisationContext().setObjectPosition(m_oVoxels[i].m_oCubeIdentifier, m_oVoxels[i].m_f32X, m_oVoxels[i].m_f32Y, m_oVoxels[i].m_f32Z);
-		getVisualisationContext().setObjectPosition(m_oVoxels[i].m_oSphereIdentifier, m_oVoxels[i].m_f32X, m_oVoxels[i].m_f32Y, m_oVoxels[i].m_f32Z);
+		//getVisualisationContext().setObjectPosition(m_oVoxels[i].m_oSphereIdentifier, m_oVoxels[i].m_f32X, m_oVoxels[i].m_f32Y, m_oVoxels[i].m_f32Z);
 		//scale 3D objects
-		getVisualisationContext().setObjectScale(m_oVoxels[i].m_oCubeIdentifier, l_f32VoxelScale, l_f32VoxelScale, l_f32VoxelScale);
-		getVisualisationContext().setObjectScale(m_oVoxels[i].m_oSphereIdentifier, l_f32VoxelScale, l_f32VoxelScale, l_f32VoxelScale);
+		getVisualisationContext().setObjectScale(m_oVoxels[i].m_oCubeIdentifier, s_f32VoxelScale, s_f32VoxelScale, s_f32VoxelScale);
+		//getVisualisationContext().setObjectScale(m_oVoxels[i].m_oSphereIdentifier, s_f32VoxelScale, s_f32VoxelScale, s_f32VoxelScale);
 	}
 
-	//REMOVE ME
 	m_oPotentialMatrix.setDimensionCount(1);
 	m_oPotentialMatrix.setDimensionSize(0, m_oVoxels.size());
-	//
 
 	return true;
 }
 
-boolean CVoxelDisplay::computePotentials()
+boolean CVoxelDisplay::updateVoxels()
 {
-#if 1
-	//update source position
-	static float64 l_f64OrbitCenterX = 0;
-	static float64 l_f64OrbitCenterY = 1.5;
-	static float64 l_f64OrbitCenterZ = -0.3;
-	static float64 l_f64OrbitRadius = 1;
-	l_oSource.m_f32X = (float32)(l_f64OrbitCenterX + l_f64OrbitRadius * cos(m_f64Time * 3.1415926535f));
-	l_oSource.m_f32Y = (float32)l_f64OrbitCenterY;
-	l_oSource.m_f32Z = (float32)(l_f64OrbitCenterZ + l_f64OrbitRadius * sin(m_f64Time * 3.1415926535f));
-
-	//update source attenuation factor
-	float64 l_f64SourceAttenuationFactor = cos(m_f64Time * 0.7);
-	if(l_f64SourceAttenuationFactor < 0)
+	if(computeActivationLevels() == false)
 	{
-		l_f64SourceAttenuationFactor = -l_f64SourceAttenuationFactor;
+		return false;
 	}
 
-	//update voxel activation levels
-	// float64 l_f64MinDistance = 0;
-	float64 l_f64MaxDistance = 1.3;
-	float64 l_f64SquareMaxDistance = 1.3*1.3;
-
-	//getVisualisationContext().setObjectPosition(l_oSource.m_oSphereIdentifier, l_oSource.m_f32X, l_oSource.m_f32Y, l_oSource.m_f32Z);
-
-	//fill matrix
-	for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
+	if(processActivationLevels() == false)
 	{
-		//voxel potential, assumed to stay in [0, 1]
-		float64 l_f64Potential = 0;
-
-		//compute voxel activation level based on distance from source
-		float64 squareDistance = (m_oVoxels[i].m_f32X - l_oSource.m_f32X) *  (m_oVoxels[i].m_f32X - l_oSource.m_f32X) +
-		(m_oVoxels[i].m_f32Y - l_oSource.m_f32Y) *  (m_oVoxels[i].m_f32Y - l_oSource.m_f32Y) +
-		(m_oVoxels[i].m_f32Z - l_oSource.m_f32Z) *  (m_oVoxels[i].m_f32Z - l_oSource.m_f32Z);
-
-		if(squareDistance < l_f64SquareMaxDistance)
-		{
-			l_f64Potential = (1 - sqrt(squareDistance) / l_f64MaxDistance) * l_f64SourceAttenuationFactor;
-		}
-
-		//ensure potential doesn't exceed 1
-		if(l_f64Potential > 1)
-		{
-			l_f64Potential = 1;
-		}
-
-		*(m_oPotentialMatrix.getBuffer() + i) = l_f64Potential;
+		return false;
 	}
+
+	//shape change
+	if(m_bSetVoxelObject == true)
+	{
+		for(uint32 i=0; i<m_oVoxels.size(); i++)
+		{
+			getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oCubeIdentifier, m_eVoxelObject == Standard3DObject_Cube);
+			//getVisualisationContext().setObjectVisible(m_oVoxels[i].m_oSphereIdentifier, m_eVoxelObject == Standard3DObject_Sphere);
+			//object is visible now
+			m_oVoxels[i].m_bVisible = true;
+		}
+
+		m_bSetVoxelObject = false;
+	}
+
+	//color toggled on/off
+	if(m_bToggleColorModification == true)
+	{
+		if(m_bColorModificationToggled == false)
+		{
+			//reset color
+			for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
+			{
+				getVisualisationContext().setObjectColor(getActiveShapeIdentifier(m_oVoxels[i]), 1, 1, 1);
+			}
+		}
+
+		m_bToggleColorModification = false;
+	}
+
+	//transparency toggled on/off
+	if(m_bToggleTransparencyModification == true)
+	{
+		//unset transparency
+		if(m_bTransparencyModificationToggled == false)
+		{
+			for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
+			{
+				getVisualisationContext().setObjectTransparency(getActiveShapeIdentifier(m_oVoxels[i]), 0);
+			}
+		}
+
+		m_bToggleTransparencyModification = false;
+	}
+
+	//size modification toggled on/off
+	if(m_bToggleSizeModification == true)
+	{
+		if(m_bSizeModificationToggled == false)
+		{
+			//reset size
+			for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
+			{
+				getVisualisationContext().setObjectScale(getActiveShapeIdentifier(m_oVoxels[i]), s_f32VoxelScale);
+			}
+		}
+
+		m_bToggleSizeModification = false;
+	}
+
+	//skull opacity changed
+	if(m_bSetSkullOpacity == true)
+	{
+		getVisualisationContext().setObjectVisible(m_oFaceId, m_f64SkullOpacity > 0);
+		getVisualisationContext().setObjectVisible(m_oScalpId, m_f64SkullOpacity > 0);
+		getVisualisationContext().setObjectTransparency(m_oFaceId, 1.f-(float32)m_f64SkullOpacity);
+		getVisualisationContext().setObjectTransparency(m_oScalpId, 1.f-(float32)m_f64SkullOpacity);
+		m_bSetSkullOpacity = false;
+	}
+
+	//camera reset requested
+	if(m_bRepositionCamera == true)
+	{
+		getVisualisationContext().setCameraToEncompassObjects(m_o3DWidgetIdentifier);
+		m_bRepositionCamera = false;
+	}
+
+	return true;
+}
+
+//Quake III code
+inline float32 SquareRootFloat(const float32 & number)
+{
+	int32 i;
+	float32 x, y;
+	const float32 f = 1.5F;
+
+	x = number * 0.5F;
+	y  = number;
+#if 0
+	i  = * ( int32 * ) &y;
 #else
-	//retrieve matrix
-	const float64* l_pBuffer = m_pStreamedMatrixDatabase->getBuffer(m_pStreamedMatrixDatabase->getBufferCount()-1);
+	memcpy(&i, &y, sizeof(i));
+#endif
+	i  = 0x5f3759df - ( i >> 1 );
+#if 0
+	y  = * ( float32 * ) &i;
+#else
+	memcpy(&y, &i, sizeof(y));
+#endif
+	y  = y * ( f - ( x * y * y ) );
+	y  = y * ( f - ( x * y * y ) );
+	return number * y;
+}
+
+boolean CVoxelDisplay::computeActivationLevels()
+{
+	//retrieve sources matrix
+	const float64* l_pBuffer = m_pStreamedMatrixDatabase->getBuffer(m_pStreamedMatrixDatabase->getCurrentBufferCount()-1);
+
+	if(l_pBuffer == NULL)
+	{
+		//don't disable plugin but wait for sources matrix to be received
+		return true;
+	}
+
+	//ensure matrix has the right size
+	if(m_pStreamedMatrixDatabase->getBufferElementCount() != 3 * m_oVoxels.size())
+	{
+		getLogManager() << LogLevel_Warning << "Sources matrix triplets count (3*" << m_pStreamedMatrixDatabase->getBufferElementCount()/3
+			<< ") differs from voxels count (" << (uint32)m_oVoxels.size()
+			<<")! Please ensure the spatial filter used to reconstruct sources corresponds to the voxel grid used by this plugin.\n";
+		return false;
+	}
+
+	m_f64MinPotential = FLT_MAX;
+	m_f64MaxPotential = FLT_MIN;
 
 	//compute vector norm
-	for(uint32 i=0; i<m_oVoxels.size(); i++)
+	for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
 	{
 		//FIXME take into account number of samples per buffer and use last buffer!
 		const float64* l_pVoxelBuffer = l_pBuffer + 3 * (i /** nbEchantillons*/);
 
+#if 0
+		//FIXME use a fast sqrt here!
 		float64 f64Potential = sqrt(*l_pVoxelBuffer * *l_pVoxelBuffer +
 			*(l_pVoxelBuffer+1) * *(l_pVoxelBuffer+1) + *(l_pVoxelBuffer+2) * *(l_pVoxelBuffer+2));
+#else
+		//$$$ this will probably need to be fixed on 64 bits
+		float64 f64Potential = SquareRootFloat((float32)(*l_pVoxelBuffer * *l_pVoxelBuffer +
+			*(l_pVoxelBuffer+1) * *(l_pVoxelBuffer+1) + *(l_pVoxelBuffer+2) * *(l_pVoxelBuffer+2)));
+#endif
 
 		*(m_oPotentialMatrix.getBuffer() + i) = f64Potential;
-/*
+
 		if(m_f64MinPotential > f64Potential)
 		{
 			m_f64MinPotential = f64Potential;
@@ -556,58 +572,26 @@ boolean CVoxelDisplay::computePotentials()
 		{
 			m_f64MaxPotential = f64Potential;
 		}
-*/
 	}
-#endif
 
 	return true;
 }
 
-boolean CVoxelDisplay::getMinMaxPotentials(float64& rMinPotential, float64& rMaxPotential)
+boolean CVoxelDisplay::processActivationLevels()
 {
-#if 1
-	rMinPotential = -1;
-	rMaxPotential = 1;
-#else
-	m_rStreamedMatrixDatabase->getLastBufferMinMaxValues(rMinPotential, rMaxPotential);
-#endif
-	return true;
-}
+	float64 l_f64InvPotentialStep = m_ui32NbColors / (m_f64MaxPotential - m_f64MinPotential);
 
-boolean CVoxelDisplay::updateVoxels()
-{
-	float64 l_f64MinPotential = 0;
-	float64 l_f64MaxPotential = 0;
-	getMinMaxPotentials(l_f64MinPotential, l_f64MaxPotential);
-
-	float64 l_f64PotentialStep = (l_f64MaxPotential - l_f64MinPotential) / m_ui32NbColors;
+	float64 l_f64InvPotentialInterval = 1. / (m_f64MaxPotential - m_f64MinPotential);
 
 	//update each voxel
 	for(uint32 i=0; i<m_oVoxels.size(); i+=s_ui32VoxelStep)
 	{
-#if 1
-		//voxel potential, assumed to stay in [0, 1]
 		float64 l_f64Potential = *(m_oPotentialMatrix.getBuffer() + i);
-#else
-		const float64* l_pBuffer = m_pStreamedMatrixDatabase->getBuffer(m_pStreamedMatrixDatabase->getBufferCount()-1);
-		if(l_pBuffer == NULL)
-		{
-			return false;
-		}
-		float64 l_f64Potential = *(l_pBuffer + i);
-#endif
 
 		//determine whether this voxel should be displayed
-		float64 l_f64ActivationFactor = (l_f64Potential - l_f64MinPotential) / (l_f64MaxPotential - l_f64MinPotential); //0<x<1
-		/*
-		l_f64ActivationFactor -= 0.5; //-0.5<x<0.5
-		l_f64ActivationFactor *= 2; //-1<x<1
-		if(l_f64ActivationFactor < 0)
-		{
-			l_f64ActivationFactor = -l_f64ActivationFactor;
-		}*/
+		float64 l_f64ActivationFactor = (l_f64Potential - m_f64MinPotential) * l_f64InvPotentialInterval; //0<x<1
 
-		boolean l_bDisplayVoxel = (l_f64ActivationFactor >= m_f64VoxelDisplayThreshold);
+		boolean l_bDisplayVoxel = (l_f64ActivationFactor >= m_f64MinDisplayThreshold && l_f64ActivationFactor <= m_f64MaxDisplayThreshold);
 		if(l_bDisplayVoxel != m_oVoxels[i].m_bVisible)
 		{
 			m_oVoxels[i].m_bVisible = l_bDisplayVoxel;
@@ -620,7 +604,7 @@ boolean CVoxelDisplay::updateVoxels()
 		}
 
 		//retrieve corresponding color index
-		uint32 l_ui32ColorIndex = (uint32)((l_f64Potential - l_f64MinPotential) / l_f64PotentialStep);
+		uint32 l_ui32ColorIndex = (uint32)((l_f64Potential - m_f64MinPotential) * l_f64InvPotentialStep);
 		if(l_ui32ColorIndex >= m_ui32NbColors)
 		{
 			l_ui32ColorIndex = m_ui32NbColors-1;
@@ -637,7 +621,7 @@ boolean CVoxelDisplay::updateVoxels()
 
 		if(m_bTransparencyModificationToggled == true)
 		{
-			float32 l_f32Opacity = (float32)((l_f64Potential - m_f64VoxelDisplayThreshold) / (1 - m_f64VoxelDisplayThreshold));
+			float32 l_f32Opacity = l_f64ActivationFactor;
 
 			getVisualisationContext().setObjectTransparency(getActiveShapeIdentifier(m_oVoxels[i]),	1 - l_f32Opacity);
 		}
@@ -645,10 +629,8 @@ boolean CVoxelDisplay::updateVoxels()
 		if(m_bSizeModificationToggled == true)
 		{
 			getVisualisationContext().setObjectScale(
-				getActiveShapeIdentifier(m_oVoxels[i]), l_f32VoxelScale * (
-				l_f64Potential < 0 ?
-				(float32)(m_f64MinScaleFactor - l_f64Potential * (m_f64MaxScaleFactor - m_f64MinScaleFactor)) :
-				(float32)(m_f64MinScaleFactor + l_f64Potential * (m_f64MaxScaleFactor - m_f64MinScaleFactor)))
+				getActiveShapeIdentifier(m_oVoxels[i]), s_f32VoxelScale * (
+					(float32)(m_f64MinScaleFactor + l_f64ActivationFactor * (m_f64MaxScaleFactor - m_f64MinScaleFactor)))
 				);
 		}
 	}

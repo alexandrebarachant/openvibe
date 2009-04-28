@@ -130,8 +130,8 @@ private:
 	/// Pointer to the associated RenderWindow
 	Ogre::RenderWindow* m_pRenderWindow;
 	/** \brief Pointer to the scene manager whose contents are visualised in this window
-		* \remark This object is created and destroyed by a COgreScene instance
-		*/
+	 * \remarks This object is created and destroyed by a COgreScene instance
+	 */
 	Ogre::SceneManager* m_pSceneManager;
 	/// Camera used by this window
 	Ogre::Camera* m_pCamera;
@@ -156,12 +156,12 @@ private:
 	//@{
 	/**
 	 * \brief X cursor coordinate
-	 * \remark May be negative when a button is kept pressed and the cursor subsequently leaves the RenderWindow area
+	 * \remarks May be negative when a button is kept pressed and the cursor subsequently leaves the RenderWindow area
 	 */
 	OpenViBE::int32 m_i32X;
 	/**
 	 * \brief Y cursor coordinate
-	 * \remark May be negative when a button is kept pressed and the cursor subsequently leaves the RenderWindow area
+	 * \remarks May be negative when a button is kept pressed and the cursor subsequently leaves the RenderWindow area
 	 */
 	OpenViBE::int32 m_i32Y;
 	//@}
@@ -185,8 +185,8 @@ private:
 	/** \ name 'Rotate around look-at point' camera model */
 	//@{
 	/** \brief Look at point
-	  * \remark By default, this is the center of the AABB encompassing all scene objects
-	  */
+	 * \remarks By default, this is the center of the AABB encompassing all scene objects
+	 */
 	Ogre::Vector3 m_oLookAt;
 	/// Theta angle of camera in a spherical coordinate system
 	OpenViBE::float32 m_f32Theta;

@@ -35,7 +35,7 @@ public:
 
 	/**
 	 * \brief Create a new scene manager and a default 3D scene
-	 * \remark This method should only be called after primary render window
+	 * \remarks This method should only be called after primary render window
 	 * is created and resources are loaded
 	 * \return True if new scene was successfully created, false otherwise
 	 */

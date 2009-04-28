@@ -561,7 +561,7 @@ void CPlayerVisualisation::showTopLevelWindows(void)
 	if(m_pActiveToolbarButton != NULL)
 	{
 		//show active toolbar
-		gtk_widget_show_all(m_mToolbars[m_pActiveToolbarButton]);
+		gtk_widget_show(m_mToolbars[m_pActiveToolbarButton]);
 	}
 }
 
@@ -576,7 +576,7 @@ void CPlayerVisualisation::hideTopLevelWindows(void)
 	if(m_pActiveToolbarButton != NULL)
 	{
 		//hide active toolbar
-		gtk_widget_hide_all(m_mToolbars[m_pActiveToolbarButton]);
+		gtk_widget_hide(m_mToolbars[m_pActiveToolbarButton]);
 	}
 }
 
@@ -841,12 +841,12 @@ OpenViBE::boolean CPlayerVisualisation::toggleToolbarCB(::GtkToggleButton* pTool
 		//hiding active toolbar
 		if(gtk_toggle_button_get_active(pToolbarButton) == FALSE)
 		{
-			gtk_widget_hide_all(l_pToolbar);
+			gtk_widget_hide(l_pToolbar);
 			m_pActiveToolbarButton = NULL;
 		}
 		else //showing active toolbar
 		{
-			gtk_widget_show_all(l_pToolbar);
+			gtk_widget_show(l_pToolbar);
 		}
 	}
 	else //a new toolbar is to be shown
@@ -854,7 +854,7 @@ OpenViBE::boolean CPlayerVisualisation::toggleToolbarCB(::GtkToggleButton* pTool
 		//hide previously active toolbar, if any
 		if(m_pActiveToolbarButton != NULL)
 		{
-			gtk_widget_hide_all(m_mToolbars[m_pActiveToolbarButton]);
+			gtk_widget_hide(m_mToolbars[m_pActiveToolbarButton]);
 
 			g_signal_handlers_disconnect_by_func(m_pActiveToolbarButton, G_CALLBACK2(toolbar_button_toggled_cb), this);
 			gtk_toggle_button_set_active(m_pActiveToolbarButton, FALSE);
@@ -873,7 +873,7 @@ OpenViBE::boolean CPlayerVisualisation::toggleToolbarCB(::GtkToggleButton* pTool
 		}
 */
 		//show new toolbar
-		gtk_widget_show_all(l_pToolbar);
+		gtk_widget_show(l_pToolbar);
 
 		//update active toolbar button
 		m_pActiveToolbarButton = pToolbarButton;
@@ -895,7 +895,7 @@ OpenViBE::boolean CPlayerVisualisation::deleteToolbarCB(GtkWidget* pToolbarWidge
 	if(m_pActiveToolbarButton == NULL || m_mToolbars[m_pActiveToolbarButton] != pToolbarWidget)
 	{
 		//error : active toolbar isn't the one registered as such
-		gtk_widget_hide_all(pToolbarWidget);
+		gtk_widget_hide(pToolbarWidget);
 		return FALSE;
 	}
 
@@ -905,7 +905,7 @@ OpenViBE::boolean CPlayerVisualisation::deleteToolbarCB(GtkWidget* pToolbarWidge
 	g_signal_connect(m_pActiveToolbarButton, "toggled", G_CALLBACK(toolbar_button_toggled_cb), this);
 
 	//hide toolbar
-	gtk_widget_hide_all(pToolbarWidget);
+	gtk_widget_hide(pToolbarWidget);
 
 	//clear active toolbar button pointer
 	m_pActiveToolbarButton = NULL;

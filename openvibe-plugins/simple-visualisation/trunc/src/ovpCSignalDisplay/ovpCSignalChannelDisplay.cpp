@@ -616,7 +616,7 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 		uint64 l_ui64FirstBufferDuration = m_pDatabase->m_oEndTime[ui32FirstBufferToDisplay] - m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay];
 		uint64 l_ui64LastBufferDuration = m_pDatabase->m_oEndTime[ui32LastBufferToDisplay] - m_pDatabase->m_oStartTime[ui32LastBufferToDisplay];
 
-		uint64 l_ui64StartTime = m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay] + 
+		uint64 l_ui64StartTime = m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay] +
 			l_ui64FirstBufferDuration * ui32FirstSampleToDisplay / l_ui32SamplesPerBuffer;
 
 		uint64 l_ui64EndTime = m_pDatabase->m_oStartTime[ui32LastBufferToDisplay] + l_ui64LastBufferDuration;
@@ -636,7 +636,7 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 				}
 
 				GdkColor l_oLineColor;
-				m_pParentDisplayView->getStimulationColor(it->second, l_oLineColor);				
+				m_pParentDisplayView->getStimulationColor(it->second, l_oLineColor);
 				gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
 
 #if 0

@@ -130,13 +130,16 @@ namespace OpenViBEPlugins
 
 			int32 l_i32LeftRulerHeightRequest = 20;
 			int32 l_i32ChannelDisplayHeightRequest = 20;
+			int32 l_i32HorizontalSeparatorHeightRequest = 5;
 			int32 l_i32BottomRulerHeightRequest = 20;
 
 			//sets a minimum size for the table (needed to scroll)
 			gtk_widget_set_size_request(
 				m_pDisplayTable,
 				l_i32LeftRulerWidthRequest + l_i32ChannelDisplayWidthRequest,
-				l_ui32ChannelCount*l_i32ChannelDisplayHeightRequest);
+				//vertical size request is larger than needed and corresponds to the size requested by the signal display plugin. This
+				//ensures both plugins look the same when displayed next to each other
+				(l_ui32ChannelCount+1)*l_i32ChannelDisplayHeightRequest + l_ui32ChannelCount*l_i32HorizontalSeparatorHeightRequest);
 
 			//add a vertical separator
 			::GtkWidget* l_pSeparator = gtk_vseparator_new();
@@ -152,7 +155,7 @@ namespace OpenViBEPlugins
 
 			//channels selection widget
 			GtkWidget* l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectList");
-			
+
 			stringstream l_oLabelString;
 
 			//create channel widgets and add them to display table

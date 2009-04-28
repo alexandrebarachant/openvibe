@@ -27,7 +27,8 @@ CStreamedMatrixDatabase::CStreamedMatrixDatabase(OpenViBEToolkit::TBoxAlgorithm<
 	m_bBufferTimeStepComputed(false),
 	m_ui64BufferTimeStep(0),
 	//m_ui32SamplingFrequency(0),
-	m_ui64MaxBufferCount(2), //store at least 2 buffers so that it is possible to determine if they overlap
+	m_ui64MaxBufferCount(2), //store at least 2 buffers so that it is possible to determine whether they overlap
+	m_bIgnoreTimeScale(false),
 	m_f64TimeScale(10)
 	//m_bError(false)
 {
@@ -78,12 +79,27 @@ boolean CStreamedMatrixDatabase::isFirstBufferReceived()
 	return m_bFirstBufferReceived;
 }
 
+boolean CStreamedMatrixDatabase::setMaxBufferCount(uint64 ui64MaxBufferCount)
+{
+	//max buffer count computed directly
+	m_bIgnoreTimeScale = true;
+
+	m_ui64MaxBufferCount = ui64MaxBufferCount;
+
+	onBufferCountChanged();
+
+	return true;
+}
+
 boolean CStreamedMatrixDatabase::setTimeScale(float64 f64TimeScale)
 {
 	if(f64TimeScale <= 0)
 	{
 		return false;
 	}
+
+	//max buffer count computed from time scale
+	m_bIgnoreTimeScale = false;
 
 	//update time scale
 	m_f64TimeScale = f64TimeScale;
@@ -115,22 +131,28 @@ boolean CStreamedMatrixDatabase::setTimeScale(float64 f64TimeScale)
 	{
 		m_ui64MaxBufferCount = l_ui64MaxBufferCount;
 		l_bMaxBufferCountChanged = true;
-
-		//if new number of buffers is smaller than before, destroy extra buffers
-		while(m_oStreamedMatrices.size() > m_ui64MaxBufferCount)
-		{
-			delete m_oStreamedMatrices.front();
-			m_oStreamedMatrices.pop_front();
-			m_oStartTime.pop_front();
-			m_oEndTime.pop_front();
-			for(uint32 c=0 ; c<getChannelCount(); c++)
-			{
-				m_oChannelMinMaxValues[c].pop_front();
-			}
-		}
+		onBufferCountChanged();
 	}
 
 	return l_bMaxBufferCountChanged;
+}
+
+boolean CStreamedMatrixDatabase::onBufferCountChanged()
+{
+	//if new number of buffers is smaller than before, destroy extra buffers
+	while(m_oStreamedMatrices.size() > m_ui64MaxBufferCount)
+	{
+		delete m_oStreamedMatrices.front();
+		m_oStreamedMatrices.pop_front();
+		m_oStartTime.pop_front();
+		m_oEndTime.pop_front();
+		for(uint32 c=0 ; c<getChannelCount(); c++)
+		{
+			m_oChannelMinMaxValues[c].pop_front();
+		}
+	}
+
+	return true;
 }
 
 boolean CStreamedMatrixDatabase::decodeMemoryBuffer(const IMemoryBuffer* pMemoryBuffer, uint64 ui64StartTime, uint64 ui64EndTime)
@@ -208,6 +230,18 @@ uint64 CStreamedMatrixDatabase::getEndTime(uint32 ui32BufferIndex)
 	else
 	{
 		return m_oEndTime[ui32BufferIndex];
+	}
+}
+
+uint32 CStreamedMatrixDatabase::getBufferElementCount()
+{
+	if(m_oStreamedMatrices.size() == 0)
+	{
+		return 0;
+	}
+	else
+	{
+		return m_oStreamedMatrices[0]->getBufferElementCount();
 	}
 }
 
@@ -419,8 +453,11 @@ boolean CStreamedMatrixDatabase::decodeBuffer(uint64 ui64StartTime, uint64 ui64E
 		m_ui64BufferTimeStep = m_oStartTime[1] - m_oStartTime[0];
 		m_bBufferTimeStepComputed = true;
 
-		//compute number of buffers needed to cover time scale
-		setTimeScale(m_f64TimeScale);
+		if(m_bIgnoreTimeScale == false)
+		{
+			//compute maximum number of buffers from time scale
+			setTimeScale(m_f64TimeScale);
+		}
 	}
 
 	//store new buffer data

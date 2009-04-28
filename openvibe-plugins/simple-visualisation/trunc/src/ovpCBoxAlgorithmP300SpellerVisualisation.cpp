@@ -363,11 +363,11 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 		{
 			ip_pTargetMemoryBuffer=l_rDynamicBoxContext.getInputChunk(1, i);
 			m_pTargetStimulationDecoder->process();
-	
+
 			if(m_pTargetStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
 			}
-	
+
 			if(m_pTargetStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
 				IStimulationSet* l_pStimulationSet=op_pTargetStimulationSet;
@@ -387,7 +387,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 						m_iTargetColumn=l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase;
 						l_bTarget=true;
 					}
-	
+
 					if(/*!m_bIsInSegment && */l_bTarget && m_iTargetRow!=-1 && m_iTargetColumn!=-1)
 					{
 						this->_cache_for_each_if_(
@@ -411,7 +411,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 							&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
 							m_pTargetFontDescription,
 							NULL);
-	
+
 						std::vector < ::GtkWidget* > l_vWidgets;
 						this->_cache_for_each_if_(
 							m_iTargetRow,
@@ -420,7 +420,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 							&CBoxAlgorithmP300SpellerVisualisation::_cache_collect_child_widget_cb_,
 							&l_vWidgets,
 							NULL);
-	
+
 						if(l_vWidgets.size() == 1)
 						{
 							if(GTK_IS_LABEL(l_vWidgets[0]))
@@ -465,11 +465,11 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 			{
 				ip_pSelectionMemoryBuffer=l_rDynamicBoxContext.getInputChunk(k, i);
 				l_pSelectionStimulationDecoder->process();
-	
+
 				if(l_pSelectionStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader))
 				{
 				}
-	
+
 				if(l_pSelectionStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 				{
 					IStimulationSet* l_pStimulationSet=op_pSelectionStimulationSet;
@@ -493,7 +493,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 						{
 							l_bRejected=true;
 						}
-*/	
+*/
 						if(/*!m_bIsInSegment && */l_bSelected && m_iSelectedRow!=-1 && m_iSelectedColumn!=-1)
 						{
 							this->_cache_for_each_if_(
@@ -517,7 +517,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 								&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
 								m_pSelectedFontDescription,
 								NULL);
-	
+
 							std::vector < ::GtkWidget* > l_vWidgets;
 							this->_cache_for_each_if_(
 								m_iSelectedRow,
@@ -526,7 +526,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 								&CBoxAlgorithmP300SpellerVisualisation::_cache_collect_child_widget_cb_,
 								&l_vWidgets,
 								NULL);
-	
+
 							if(l_vWidgets.size() == 1)
 							{
 								if(GTK_IS_LABEL(l_vWidgets[0]))
@@ -545,17 +545,17 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 							{
 								this->getLogManager() << LogLevel_Warning << "Did not find a unique widget at row:" << (uint32)m_iSelectedRow << " column:" << (uint32) m_iSelectedColumn << "\n";
 							}
-	
+
 							m_iSelectedRow=-1;
 							m_iSelectedColumn=-1;
 						}
 					}
 				}
-	
+
 				if(l_pSelectionStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
 				{
 				}
-	
+
 				l_rDynamicBoxContext.markInputAsDeprecated(k, i);
 			}
 		}

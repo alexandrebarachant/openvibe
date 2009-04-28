@@ -580,3 +580,10 @@ HR
 	float: right;
 	height: 75px;
 }
+
+span#openvibe-software
+{
+	color: #07478a;
+	font-weight: bold;
+	text-decoration: underline;
+}

@@ -448,9 +448,9 @@ boolean CGDFFileReader::readFileHeader()
 					<< "The sampling rate isn't a multiple of the buffer size\n";
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning
 					<< "Please consider adjusting the GDFReader settings to correct this!\n";
-				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning
 					<< "Sampling rate was " << m_pSignalDescription.m_ui32SamplingRate << "\n";
-				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Debug
+				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning
 					<< "Buffer size was " << m_ui32SamplesPerBuffer << "\n";
 			}
 

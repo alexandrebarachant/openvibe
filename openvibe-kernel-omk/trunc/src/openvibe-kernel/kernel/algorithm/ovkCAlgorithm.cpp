@@ -398,7 +398,7 @@ void CAlgorithm::handleCrash(const char* sWhere)
 	this->getLogManager() << LogLevel_Error << "Plugin code caused crash " << m_ui32CrashCount << " time(s)\n";
 	this->getLogManager() << LogLevel_Error << "  [name:" << m_rAlgorithmDesc.getName() << "]\n";
 	this->getLogManager() << LogLevel_Error << "  [class identifier:" << m_rAlgorithm.getClassIdentifier() << "]\n";
-	this->getLogManager() << LogLevel_Error << "  [place:" << sWhere << "]\n";
+	this->getLogManager() << LogLevel_Error << "  [location:" << sWhere << "]\n";
 
 	if(m_ui32CrashCount>=_MaxCrash_)
 	{

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.3 on Tue Sep 23 18:40:15 2008 -->
+<!--Generated with glade3 3.4.3 on Fri Apr 10 15:51:13 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="Toolbar">
     <property name="title" translatable="yes">Voxel Display Toolbar</property>
@@ -15,8 +15,11 @@
         <child>
           <widget class="GtkRadioToolButton" id="CubeButton">
             <property name="visible">True</property>
+            <property name="visible_horizontal">False</property>
+            <property name="visible_vertical">False</property>
             <property name="label" translatable="yes">Cubes</property>
             <property name="stock_id">gtk-convert</property>
+            <property name="active">True</property>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -25,9 +28,10 @@
         <child>
           <widget class="GtkRadioToolButton" id="SphereButton">
             <property name="visible">True</property>
+            <property name="visible_horizontal">False</property>
+            <property name="visible_vertical">False</property>
             <property name="label" translatable="yes">Spheres</property>
             <property name="stock_id">gtk-convert</property>
-            <property name="active">True</property>
             <property name="group">CubeButton</property>
           </widget>
           <packing>
@@ -37,6 +41,8 @@
         <child>
           <widget class="GtkSeparatorToolItem" id="seperator1">
             <property name="visible">True</property>
+            <property name="visible_horizontal">False</property>
+            <property name="visible_vertical">False</property>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -99,7 +105,7 @@
                 <child>
                   <widget class="GtkLabel" id="label3">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Min Scale Factor</property>
+                    <property name="label" translatable="yes"> Min Scale Factor </property>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -130,7 +136,7 @@
                 <child>
                   <widget class="GtkLabel" id="label4">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Max Scale Factor</property>
+                    <property name="label" translatable="yes"> Max Scale Factor </property>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -160,7 +166,7 @@
               <widget class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkHScale" id="DisplayThresholdScale">
+                  <widget class="GtkHScale" id="MinDisplayThresholdScale">
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -170,7 +176,7 @@
                 <child>
                   <widget class="GtkLabel" id="label2">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Voxel Display Threshold</property>
+                    <property name="label" translatable="yes"> Min Display Threshold </property>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -182,6 +188,35 @@
           <packing>
             <property name="expand">False</property>
             <property name="homogeneous">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkToolItem" id="toolbutton7">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkVBox" id="vbox5">
+                <property name="visible">True</property>
+                <child>
+                  <widget class="GtkHScale" id="MaxDisplayThresholdScale">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">0 0 1 0.050000000000000003 0.10000000000000001 10</property>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label5">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes"> Max Display Threshold </property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
           </packing>
         </child>
         <child>
@@ -210,7 +245,7 @@
                 <child>
                   <widget class="GtkLabel" id="label1">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Skull Opacity</property>
+                    <property name="label" translatable="yes">Face Opacity</property>
                   </widget>
                   <packing>
                     <property name="position">1</property>
@@ -236,6 +271,8 @@
         <child>
           <widget class="GtkToggleToolButton" id="FreezeButton">
             <property name="visible">True</property>
+            <property name="visible_horizontal">False</property>
+            <property name="visible_vertical">False</property>
             <property name="label" translatable="yes">Freeze</property>
             <property name="stock_id">gtk-media-pause</property>
           </widget>

@@ -109,7 +109,7 @@ public:
 			}
 
 			// message
-			rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Overrided " << m_ui32SettingIndex << " settings with this configuration file...\n";
+			rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Overrode " << m_ui32SettingIndex << " settings with this configuration file...\n";
 
 			// cleans up internal state
 			m_pBox=NULL;

@@ -10,11 +10,11 @@ OVTK_NodeId_Acquisition_ChannelName                                    EBML::CId
 OVTK_NodeId_Acquisition_GainFactors                                    EBML::CIdentifier(0x00000000, 0x00004248) master
 OVTK_NodeId_Acquisition_GainFactor                                     EBML::CIdentifier(0x00000000, 0x00004249) float
 OVTK_NodeId_Acquisition_ChannelLocations                               EBML::CIdentifier(0x00000000, 0x00004250) master
-OVTK_NodeId_Acquisition_ChannelLocation                                EBML::CIdentifier(0x00000000, 0x00004251) binary
+OVTK_NodeId_Acquisition_ChannelLocation                                EBML::CIdentifier(0x00000000, 0x00004251) binary(float64)
 OVTK_NodeId_Acquisition_Buffer                                         EBML::CIdentifier(0x00000000, 0x0000005A) master
 OVTK_NodeId_Acquisition_Samples                                        EBML::CIdentifier(0x00000000, 0x0000005B) master
 OVTK_NodeId_Acquisition_SamplesPerChannelCount                         EBML::CIdentifier(0x00000000, 0x0000005C) uinteger
-OVTK_NodeId_Acquisition_SampleBlock                                    EBML::CIdentifier(0x00000000, 0x0000005D) binary
+OVTK_NodeId_Acquisition_SampleBlock                                    EBML::CIdentifier(0x00000000, 0x0000005D) binary(float32)
 OVTK_NodeId_Acquisition_Stimulations                                   EBML::CIdentifier(0x00000000, 0x00000060) master
 OVTK_NodeId_Acquisition_StimulationsCount                              EBML::CIdentifier(0x00000000, 0x00000061) uinteger
 OVTK_NodeId_Acquisition_Stimulation                                    EBML::CIdentifier(0x00000000, 0x00000062) master
@@ -33,7 +33,7 @@ OVTK_NodeId_Header_StreamedMatrix_Dimmension                           EBML::CId
 OVTK_NodeId_Header_StreamedMatrix_Dimmension_Size                      EBML::CIdentifier(0x001302F7, 0x36D8438A) uinteger
 OVTK_NodeId_Header_StreamedMatrix_Dimmension_Label                     EBML::CIdentifier(0x00153E40, 0x190227E0) string
 OVTK_NodeId_Buffer_StreamedMatrix                                      EBML::CIdentifier(0x00120663, 0x08FBC165) master
-OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer                            EBML::CIdentifier(0x00B18C10, 0x427D098C) binary
+OVTK_NodeId_Buffer_StreamedMatrix_RawBuffer                            EBML::CIdentifier(0x00B18C10, 0x427D098C) binary(float64)
 
 OVTK_NodeId_Header_Signal                                              EBML::CIdentifier(0x007855DE, 0x3748D375) master
 OVTK_NodeId_Header_Signal_SamplingRate                                 EBML::CIdentifier(0x00141C43, 0x0C37006B) uinteger

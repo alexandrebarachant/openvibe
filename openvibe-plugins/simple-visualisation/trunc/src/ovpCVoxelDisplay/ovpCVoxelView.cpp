@@ -25,7 +25,8 @@ namespace OpenViBEPlugins
 		static void toggleSizeModificationCallback(::GtkWidget* pWidget, gpointer data);
 		static gboolean setMinScaleFactorCallback(::GtkWidget* pWidget, gpointer data);
 		static gboolean setMaxScaleFactorCallback(::GtkWidget* pWidget, gpointer data);
-		static void setVoxelDisplayThresholdCallback(::GtkRange *range, gpointer data);
+		static void setMinDisplayThresholdCallback(::GtkRange *range, gpointer data);
+		static void setMaxDisplayThresholdCallback(::GtkRange *range, gpointer data);
 		static void setSkullOpacityCallback(::GtkRange *range, gpointer data);
 		static void toggleFreezeCallback(GtkButton *button, gpointer data);
 		static void repositionCameraCallback(GtkButton *button, gpointer data);
@@ -34,7 +35,15 @@ namespace OpenViBEPlugins
 			m_rVoxelDisplay(rVoxelDisplay),
 			m_pGladeInterface(NULL),
 			m_pCubeButton(NULL),
-			m_pSphereButton(NULL)
+			m_pSphereButton(NULL),
+			m_pMinScaleFactorSpinButton(NULL),
+			m_pMaxScaleFactorSpinButton(NULL),
+			m_f64MinScaleFactor(0),
+			m_f64MaxScaleFactor(1),
+			m_pMinDisplayThresholdScale(NULL),
+			m_pMaxDisplayThresholdScale(NULL),
+			m_f64MinDisplayThreshold(0),
+			m_f64MaxDisplayThreshold(1)
 		{
 			//load the glade interface
 			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-VoxelDisplay.glade", NULL, NULL);
@@ -62,13 +71,13 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "ModifySizeToolButton")), "toggled", G_CALLBACK(toggleSizeModificationCallback), this);
 
 			//min voxel scale factor
-			GtkSpinButton* l_pMinScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MinScaleFactorSpinButton"));
-			float64 l_f64MinScaleFactor = 1;
-			m_rVoxelDisplay.setMinScaleFactor(l_f64MinScaleFactor);
+			m_pMinScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MinScaleFactorSpinButton"));
+			m_f64MinScaleFactor = 1;
+			m_rVoxelDisplay.setMinScaleFactor(m_f64MinScaleFactor);
 			gtk_spin_button_configure(
-				l_pMinScaleFactorSpinButton,
+				m_pMinScaleFactorSpinButton,
 				GTK_ADJUSTMENT(gtk_adjustment_new(
-					l_f64MinScaleFactor, //initial value
+					m_f64MinScaleFactor, //initial value
 					0, //lower
 					1, //upper
 					0.1, //step increment
@@ -76,16 +85,16 @@ namespace OpenViBEPlugins
 					1)), //page size
 					0.1, //climb rate
 					1); //digits
-			g_signal_connect(G_OBJECT(l_pMinScaleFactorSpinButton), "value-changed", G_CALLBACK(setMinScaleFactorCallback), this);
+			g_signal_connect(G_OBJECT(m_pMinScaleFactorSpinButton), "value-changed", G_CALLBACK(setMinScaleFactorCallback), this);
 
 			//max voxel scale factor
-			GtkSpinButton* l_pMaxScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MaxScaleFactorSpinButton"));
-			float64 l_f64MaxScaleFactor = 2;
-			m_rVoxelDisplay.setMaxScaleFactor(l_f64MaxScaleFactor);
+			m_pMaxScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MaxScaleFactorSpinButton"));
+			m_f64MaxScaleFactor = 2;
+			m_rVoxelDisplay.setMaxScaleFactor(m_f64MaxScaleFactor);
 			gtk_spin_button_configure(
-				l_pMaxScaleFactorSpinButton,
+				m_pMaxScaleFactorSpinButton,
 				GTK_ADJUSTMENT(gtk_adjustment_new(
-					l_f64MaxScaleFactor, //initial value
+					m_f64MaxScaleFactor, //initial value
 					0, //lower
 					4, //upper
 					0.1, //step increment
@@ -93,33 +102,61 @@ namespace OpenViBEPlugins
 					1)), //page size
 					0.1, //climb rate
 					1); //digits
-			g_signal_connect(G_OBJECT(l_pMaxScaleFactorSpinButton), "value-changed", G_CALLBACK(setMaxScaleFactorCallback), this);
+			g_signal_connect(G_OBJECT(m_pMaxScaleFactorSpinButton), "value-changed", G_CALLBACK(setMaxScaleFactorCallback), this);
 
-			//voxel display threshold slider
-			GtkWidget* l_pDisplayThresholdScale = gtk_hscale_new_with_range(0.0, 1.0, 0.05);
-			gtk_range_set_value(GTK_RANGE(l_pDisplayThresholdScale), 0);
-			gtk_scale_set_value_pos(GTK_SCALE(l_pDisplayThresholdScale), GTK_POS_TOP);
-			gtk_range_set_update_policy(GTK_RANGE(l_pDisplayThresholdScale), GTK_UPDATE_CONTINUOUS);
-			gtk_widget_set_size_request(l_pDisplayThresholdScale, 100, -1);
-			gtk_widget_show_all(l_pDisplayThresholdScale);
-			g_signal_connect(G_OBJECT(l_pDisplayThresholdScale), "value_changed", G_CALLBACK(setVoxelDisplayThresholdCallback), this);
+			//min display threshold slider
+			m_pMinDisplayThresholdScale = GTK_SCALE(gtk_hscale_new_with_range(0.0, 1.0, 0.05));
+			m_f64MinDisplayThreshold = 0;
+			m_rVoxelDisplay.setMinDisplayThreshold(m_f64MinDisplayThreshold);
+			gtk_range_set_value(GTK_RANGE(m_pMinDisplayThresholdScale), m_f64MinDisplayThreshold);
+			gtk_scale_set_value_pos(m_pMinDisplayThresholdScale, GTK_POS_TOP);
+			gtk_range_set_update_policy(GTK_RANGE(m_pMinDisplayThresholdScale), GTK_UPDATE_CONTINUOUS);
+			gtk_widget_set_size_request(GTK_WIDGET(m_pMinDisplayThresholdScale), 100, -1);
+			gtk_widget_show_all(GTK_WIDGET(m_pMinDisplayThresholdScale));
+			g_signal_connect(G_OBJECT(m_pMinDisplayThresholdScale), "value_changed", G_CALLBACK(setMinDisplayThresholdCallback), this);
 
 			//replace existing scale (which somehow can't be used) with the newly created one
-			GtkWidget* l_pOldScale = glade_xml_get_widget(m_pGladeInterface, "DisplayThresholdScale");
-			GtkWidget* l_pScaleParent = gtk_widget_get_parent(l_pOldScale);
-			if(l_pScaleParent != NULL && GTK_IS_CONTAINER(l_pScaleParent))
+			GtkWidget* l_pOldMinScale = glade_xml_get_widget(m_pGladeInterface, "MinDisplayThresholdScale");
+			GtkWidget* l_pMinScaleParent = gtk_widget_get_parent(l_pOldMinScale);
+			if(l_pMinScaleParent != NULL && GTK_IS_CONTAINER(l_pMinScaleParent))
 			{
-				gtk_container_remove(GTK_CONTAINER(l_pScaleParent), l_pOldScale);
-				if(GTK_IS_BOX(l_pScaleParent))
+				gtk_container_remove(GTK_CONTAINER(l_pMinScaleParent), l_pOldMinScale);
+				if(GTK_IS_BOX(l_pMinScaleParent))
 				{
-					gtk_box_pack_start(GTK_BOX(l_pScaleParent), l_pDisplayThresholdScale, TRUE, TRUE, 0);
-					gtk_box_reorder_child(GTK_BOX(l_pScaleParent), l_pDisplayThresholdScale, 0);
+					gtk_box_pack_start(GTK_BOX(l_pMinScaleParent), GTK_WIDGET(m_pMinDisplayThresholdScale), TRUE, TRUE, 0);
+					gtk_box_reorder_child(GTK_BOX(l_pMinScaleParent), GTK_WIDGET(m_pMinDisplayThresholdScale), 0);
+				}
+			}
+
+			//max display threshold slider
+			m_pMaxDisplayThresholdScale = GTK_SCALE(gtk_hscale_new_with_range(0.0, 1.0, 0.05));
+			m_f64MaxDisplayThreshold = 1;
+			m_rVoxelDisplay.setMaxDisplayThreshold(m_f64MaxDisplayThreshold);
+			gtk_range_set_value(GTK_RANGE(m_pMaxDisplayThresholdScale), m_f64MaxDisplayThreshold);
+			gtk_scale_set_value_pos(m_pMaxDisplayThresholdScale, GTK_POS_TOP);
+			gtk_range_set_update_policy(GTK_RANGE(m_pMaxDisplayThresholdScale), GTK_UPDATE_CONTINUOUS);
+			gtk_widget_set_size_request(GTK_WIDGET(m_pMaxDisplayThresholdScale), 100, -1);
+			gtk_widget_show_all(GTK_WIDGET(m_pMaxDisplayThresholdScale));
+			g_signal_connect(G_OBJECT(m_pMaxDisplayThresholdScale), "value_changed", G_CALLBACK(setMaxDisplayThresholdCallback), this);
+
+			//replace existing scale (which somehow can't be used) with the newly created one
+			GtkWidget* l_pOldMaxScale = glade_xml_get_widget(m_pGladeInterface, "MaxDisplayThresholdScale");
+			GtkWidget* l_pMaxScaleParent = gtk_widget_get_parent(l_pOldMaxScale);
+			if(l_pMaxScaleParent != NULL && GTK_IS_CONTAINER(l_pMaxScaleParent))
+			{
+				gtk_container_remove(GTK_CONTAINER(l_pMaxScaleParent), l_pOldMaxScale);
+				if(GTK_IS_BOX(l_pMaxScaleParent))
+				{
+					gtk_box_pack_start(GTK_BOX(l_pMaxScaleParent), GTK_WIDGET(m_pMaxDisplayThresholdScale), TRUE, TRUE, 0);
+					gtk_box_reorder_child(GTK_BOX(l_pMaxScaleParent), GTK_WIDGET(m_pMaxDisplayThresholdScale), 0);
 				}
 			}
 
 			//skull opacity slider
 			GtkWidget* l_pSkullOpacityScale = gtk_hscale_new_with_range(0.0, 1.0, 0.05);
-			gtk_range_set_value(GTK_RANGE(l_pSkullOpacityScale), 0);
+			float64 l_f64SkullOpacity = 0.07;
+			gtk_range_set_value(GTK_RANGE(l_pSkullOpacityScale), l_f64SkullOpacity);
+			m_rVoxelDisplay.setSkullOpacity(l_f64SkullOpacity);
 			gtk_scale_set_value_pos(GTK_SCALE(l_pSkullOpacityScale), GTK_POS_TOP);
 			gtk_range_set_update_policy(GTK_RANGE(l_pSkullOpacityScale), GTK_UPDATE_CONTINUOUS);
 			gtk_widget_set_size_request(l_pSkullOpacityScale, 100, -1);
@@ -127,8 +164,8 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(l_pSkullOpacityScale), "value_changed", G_CALLBACK(setSkullOpacityCallback), this);
 
 			//replace existing scale (which somehow can't be used) with the newly created one
-			l_pOldScale = glade_xml_get_widget(m_pGladeInterface, "SkullOpacityScale");
-			l_pScaleParent = gtk_widget_get_parent(l_pOldScale);
+			GtkWidget* l_pOldScale = glade_xml_get_widget(m_pGladeInterface, "SkullOpacityScale");
+			GtkWidget* l_pScaleParent = gtk_widget_get_parent(l_pOldScale);
 			if(l_pScaleParent != NULL && GTK_IS_CONTAINER(l_pScaleParent))
 			{
 				gtk_container_remove(GTK_CONTAINER(l_pScaleParent), l_pOldScale);
@@ -206,35 +243,70 @@ namespace OpenViBEPlugins
 
 		void CVoxelView::setMinVoxelScaleFactorCB(GtkSpinButton* pButton)
 		{
-			//ensure minimum value is smaller than maximum value
-			float64 l_f64MinScaleFactor = gtk_spin_button_get_value(pButton);
-			GtkSpinButton* l_pMaxButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MaxScaleFactorSpinButton"));
-			if(l_f64MinScaleFactor > gtk_spin_button_get_value(l_pMaxButton))
-			{
-				l_f64MinScaleFactor = gtk_spin_button_get_value(l_pMaxButton);
-			}
+			m_f64MinScaleFactor = gtk_spin_button_get_value(pButton);
+			m_rVoxelDisplay.setMinScaleFactor(m_f64MinScaleFactor);
 
-			//set min value
-			m_rVoxelDisplay.setMinScaleFactor(l_f64MinScaleFactor);
+			//ensure minimum value is smaller than maximum value
+			if(m_f64MinScaleFactor > gtk_spin_button_get_value(m_pMaxScaleFactorSpinButton))
+			{
+				m_f64MaxScaleFactor = m_f64MinScaleFactor;
+				m_rVoxelDisplay.setMinScaleFactor(m_f64MinScaleFactor);
+
+				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pMaxScaleFactorSpinButton), (void*)(G_CALLBACK (setMaxDisplayThresholdCallback)), this);
+				gtk_spin_button_set_value(m_pMaxScaleFactorSpinButton, m_f64MaxScaleFactor);
+				g_signal_connect(G_OBJECT(m_pMaxDisplayThresholdScale), "value_changed", G_CALLBACK(setMaxDisplayThresholdCallback), this);
+			}
 		}
 
 		void CVoxelView::setMaxVoxelScaleFactorCB(GtkSpinButton* pButton)
 		{
-			//ensure maximum value is bigger than minimum value
-			float64 l_f64MaxScaleFactor = gtk_spin_button_get_value(pButton);
-			GtkSpinButton* l_pMinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MinScaleFactorSpinButton"));
-			if(l_f64MaxScaleFactor < gtk_spin_button_get_value(l_pMinButton))
-			{
-				l_f64MaxScaleFactor = gtk_spin_button_get_value(l_pMinButton);
-			}
+			m_f64MaxScaleFactor = gtk_spin_button_get_value(pButton);
+			m_rVoxelDisplay.setMaxScaleFactor(m_f64MaxScaleFactor);
 
-			//set max value
-			m_rVoxelDisplay.setMaxScaleFactor(l_f64MaxScaleFactor);
+			//ensure maximum value is bigger than minimum value
+			if(m_f64MaxScaleFactor < gtk_spin_button_get_value(m_pMinScaleFactorSpinButton))
+			{
+				m_f64MinScaleFactor = m_f64MaxScaleFactor;
+				m_rVoxelDisplay.setMinScaleFactor(m_f64MinScaleFactor);
+
+				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pMinScaleFactorSpinButton), (void*)(G_CALLBACK (setMinDisplayThresholdCallback)), this);
+				gtk_spin_button_set_value(m_pMinScaleFactorSpinButton, m_f64MinScaleFactor);
+				g_signal_connect(G_OBJECT(m_pMinDisplayThresholdScale), "value_changed", G_CALLBACK(setMinDisplayThresholdCallback), this);
+			}
 		}
 
-		void CVoxelView::setVoxelDisplayThresholdCB(float64 f64Threshold)
+		void CVoxelView::setMinDisplayThresholdCB(float64 f64MinDisplayThreshold)
 		{
-			m_rVoxelDisplay.setVoxelDisplayThreshold(f64Threshold);
+			m_f64MinDisplayThreshold = f64MinDisplayThreshold;
+			m_rVoxelDisplay.setMinDisplayThreshold(m_f64MinDisplayThreshold);
+
+			//ensure minimum value is smaller than maximum value
+			if(m_f64MinDisplayThreshold > m_f64MaxDisplayThreshold)
+			{
+				m_f64MaxDisplayThreshold = m_f64MinDisplayThreshold;
+				m_rVoxelDisplay.setMaxDisplayThreshold(m_f64MaxDisplayThreshold);
+
+				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pMaxDisplayThresholdScale), (void*)(G_CALLBACK (setMaxDisplayThresholdCallback)), this);
+				gtk_range_set_value(GTK_RANGE(m_pMaxDisplayThresholdScale), m_f64MaxDisplayThreshold);
+				g_signal_connect(G_OBJECT(m_pMaxDisplayThresholdScale), "value_changed", G_CALLBACK(setMaxDisplayThresholdCallback), this);
+			}
+		}
+
+		void CVoxelView::setMaxDisplayThresholdCB(float64 f64MaxDisplayThreshold)
+		{
+			m_f64MaxDisplayThreshold = f64MaxDisplayThreshold;
+			m_rVoxelDisplay.setMaxDisplayThreshold(m_f64MaxDisplayThreshold);
+
+			//ensure maximum value is bigger than minimum value
+			if(m_f64MaxDisplayThreshold < m_f64MinDisplayThreshold)
+			{
+				m_f64MinDisplayThreshold = m_f64MaxDisplayThreshold;
+				m_rVoxelDisplay.setMinDisplayThreshold(m_f64MinDisplayThreshold);
+
+				g_signal_handlers_disconnect_by_func(G_OBJECT(m_pMinDisplayThresholdScale), (void*)(G_CALLBACK (setMinDisplayThresholdCallback)), this);
+				gtk_range_set_value(GTK_RANGE(m_pMinDisplayThresholdScale), m_f64MinDisplayThreshold);
+				g_signal_connect(G_OBJECT(m_pMinDisplayThresholdScale), "value_changed", G_CALLBACK(setMinDisplayThresholdCallback), this);
+			}
 		}
 
 		void CVoxelView::setSkullOpacityCB(float64 f64Opacity)
@@ -292,10 +364,16 @@ namespace OpenViBEPlugins
 			return FALSE;
 		}
 
-		void setVoxelDisplayThresholdCallback(::GtkRange *pRange, gpointer data)
+		void setMinDisplayThresholdCallback(::GtkRange *pRange, gpointer data)
 		{
 			CVoxelView* l_pVoxelView = reinterpret_cast<CVoxelView*>(data);
-			l_pVoxelView->setVoxelDisplayThresholdCB(gtk_range_get_value(pRange));
+			l_pVoxelView->setMinDisplayThresholdCB(gtk_range_get_value(pRange));
+		}
+
+		void setMaxDisplayThresholdCallback(::GtkRange *pRange, gpointer data)
+		{
+			CVoxelView* l_pVoxelView = reinterpret_cast<CVoxelView*>(data);
+			l_pVoxelView->setMaxDisplayThresholdCB(gtk_range_get_value(pRange));
 		}
 
 		void setSkullOpacityCallback(::GtkRange *pRange, gpointer data)

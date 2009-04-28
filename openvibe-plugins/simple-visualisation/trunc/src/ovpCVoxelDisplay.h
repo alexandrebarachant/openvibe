@@ -84,8 +84,11 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean setMaxScaleFactor(
 				OpenViBE::float64 f64MaxScaleFactor);
 
-			OpenViBE::boolean setVoxelDisplayThreshold(
-				OpenViBE::float64 f64Threshold);
+			OpenViBE::boolean setMinDisplayThreshold(
+				OpenViBE::float64 f64MinDisplayThreshold);
+
+			OpenViBE::boolean setMaxDisplayThreshold(
+				OpenViBE::float64 f64MaxDisplayThreshold);
 
 			OpenViBE::boolean setSkullOpacity(
 				OpenViBE::float64 f64Opacity);
@@ -100,18 +103,42 @@ namespace OpenViBEPlugins
 		private:
 			OpenViBE::CIdentifier getActiveShapeIdentifier(CVoxel& rVoxel);
 
+			/**
+			 * \brief Handle 3D scene (voxels loading, creation and update)
+			 * \remarks When this method returns false, the plugin is disabled
+			 * \return True if processing was successful, false otherwise
+			 */
 			OpenViBE::boolean process3D();
 
-				OpenViBE::boolean loadVoxels();
+			/**
+			 * \brief Voxel grid loading
+			 * \return True if loading was successful, false otherwise
+			 */
+			OpenViBE::boolean loadVoxels();
 
-				OpenViBE::boolean createVoxels();
+			/**
+			 * \brief Voxel 3D objects creation
+			 * \return True if creation was successful, false otherwise
+			 */
+			OpenViBE::boolean createVoxels();
 
-				//REMOVE ME
-				OpenViBE::boolean computePotentials();
-				OpenViBE::boolean getMinMaxPotentials(OpenViBE::float64& rMinPotential, OpenViBE::float64& rMaxPotential);
-				//
+			/**
+			 * \brief Voxels updating
+			 * \return True if updating was successful, false otherwise
+			 */
+			OpenViBE::boolean updateVoxels();
 
-				OpenViBE::boolean updateVoxels();
+			/**
+			 * \brief Voxel activation levels computation
+			 * \return True if computation was successful, false otherwise
+			 */
+			OpenViBE::boolean computeActivationLevels();
+
+			/**
+			 * \brief Voxel grid update based on latest activation levels
+			 * \return True if update was successful, false otherwise
+			 */
+			OpenViBE::boolean processActivationLevels();
 
 		private:
 			//Voxel coordinates file reader
@@ -131,8 +158,9 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bPaused;
 			OpenViBE::float64 m_f64Time;
 
-			//REMOVE ME : get matrix from database!
 			OpenViBE::CMatrix m_oPotentialMatrix;
+			OpenViBE::float64 m_f64MinPotential;
+			OpenViBE::float64 m_f64MaxPotential;
 
 			OpenViBE::uint32 m_ui32NbColors; //number of predefined colors
 			OpenViBE::float32* m_pColorScale; //scale of predefined colors potentials are converted to
@@ -141,9 +169,6 @@ namespace OpenViBEPlugins
 			std::vector<OpenViBEPlugins::SimpleVisualisation::CVoxel> m_oVoxels; //voxels vector
 			OpenViBE::CIdentifier m_oScalpId;
 			OpenViBE::CIdentifier m_oFaceId;
-
-			//load voxel grid
-			//OpenViBE::boolean m_bLoadVoxelGrid;
 
 			/** \name Members modified by CVoxelView requests */
 			//@{
@@ -167,8 +192,9 @@ namespace OpenViBEPlugins
 			OpenViBE::float64 m_f64MinScaleFactor;
 			OpenViBE::float64 m_f64MaxScaleFactor;
 
-			//voxel display threshold
-			OpenViBE::float64 m_f64VoxelDisplayThreshold;
+			//voxel display thresholds
+			OpenViBE::float64 m_f64MinDisplayThreshold;
+			OpenViBE::float64 m_f64MaxDisplayThreshold;
 
 			//set skull opacity
 			OpenViBE::boolean m_bSetSkullOpacity;
@@ -185,7 +211,7 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { }
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Voxel visualizer"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Voxel display"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Vincent Delannoy"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Displays brain activity as voxels"); }
@@ -206,7 +232,7 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addSetting("Voxels filename", OV_TypeId_Filename, "");
-				rPrototype.addInput("Streamed matrix", OV_TypeId_StreamedMatrix);
+				rPrototype.addInput("Voxel activity levels", OV_TypeId_StreamedMatrix);
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
@@ -216,4 +242,4 @@ namespace OpenViBEPlugins
 	};
 };
 
-#endif // __SamplePlugin_CTopographicMap3DDisplay_H__
+#endif // __SamplePlugin_CVoxelDisplay_H__

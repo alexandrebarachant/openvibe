@@ -55,8 +55,17 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean isFirstBufferReceived() = 0;
 
 			/**
+			 * \brief Set max buffer count
+			 * Set max buffer count directly (as opposed to computing it from time scale)
+			 * \remarks This method sets m_bIgnoreTimeScale to true
+			 */
+			virtual OpenViBE::boolean setMaxBufferCount(
+				OpenViBE::uint64 ui64MaxBufferCount) = 0;
+
+			/**
 			 * \brief Set time scale
 			 * Computes the maximum number of buffers that can be displayed simultaneously
+			 * \remarks This method sets m_bIgnoreTimeScale to false
 			 * \param f64TimeScale Time window's width in seconds.
 			 * \return True if buffer count changed, false otherwise
 			 */
@@ -112,6 +121,12 @@ namespace OpenViBEPlugins
 			 */
 			virtual OpenViBE::uint64 getEndTime(
 				OpenViBE::uint32 ui32BufferIndex) = 0;
+
+			/**
+			 * \brief Get number of elements contained in a buffer
+			 * \return Buffer element count or 0 if no buffer has been received yet
+			 */
+			virtual OpenViBE::uint32 getBufferElementCount() = 0;
 
 			/**
 			 * \brief Get time span covered by a buffer

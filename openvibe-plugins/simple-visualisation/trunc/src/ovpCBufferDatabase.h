@@ -270,7 +270,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Get electrode normalized position
-			 * \remark Position expressed in normalized cartesian frame where X is right, Y front, Z up
+			 * \remarks Position expressed in normalized cartesian frame where X is right, Y front, Z up
 			 * \param[in] ui32ElectrodeIndex Index of electrode in database whose position is to be retrieved
 			 * \param[out] pElectrodePosition Pointer to an array of 3 floats where to store coordinates
 			 * \return True if electrode position could be retrieved
@@ -281,7 +281,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Get electrode normalized position
-			 * \remark Position expressed in normalized cartesian frame where X is right, Y front, Z up
+			 * \remarks Position expressed in normalized cartesian frame where X is right, Y front, Z up
 			 * \param[in] rElectrodeLabel Label of electrode whose position is to be retrieved
 			 * \param[out] pElectrodePosition Pointer to an array of 3 floats where to store coordinates
 			 * \return True if electrode position could be retrieved
@@ -308,7 +308,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Get channel normalized position
-			 * \remark Position expressed in normalized cartesian frame where X is right, Y front, Z up
+			 * \remarks Position expressed in normalized cartesian frame where X is right, Y front, Z up
 			 * \param[in] ui32ChannelIndex Index of channel whose position is to be retrieved
 			 * \param[out] rChannelPosition Reference on a float64 pointer
 			 * \return True if channel position could be retrieved (rChannelPosition then points to an array of 3 floats)
@@ -362,7 +362,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Set display mode
-			 * \remark Used by signal display and time ruler to determine how they should be updated
+			 * \remarks Used by signal display and time ruler to determine how they should be updated
 			 * \param oDisplayMode New display mode
 			 */
 			virtual void setDisplayMode(

@@ -180,7 +180,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Compute normalized coordinates of 2D samples
-			 * \remark This method should first be called with bComputeCoordinates = false, allowing caller
+			 * \remarks This method should first be called with bComputeCoordinates = false, allowing caller
 			 * to resize data structures appropriately, and then it may be called with bComputeCoordinates = true
 			 * \param bComputeCoordinates If false, this method only computes the number of visible samples
 			 * \return Number of visible samples (samples lying within the actual skull area)
@@ -191,6 +191,20 @@ namespace OpenViBEPlugins
 			void resizeData();
 
 			void redrawClipmask();
+
+			OpenViBE::float64 getThetaFromCartesianCoordinates(
+				const OpenViBE::float64* l_pCartesianCoords) const;
+
+			OpenViBE::float64 getPhiFromCartesianCoordinates(
+				const OpenViBE::float64* l_pCartesianCoords) const;
+
+			OpenViBE::boolean compute2DCoordinates(
+				OpenViBE::float64 f64Theta,
+				OpenViBE::float64 f64Phi,
+				OpenViBE::uint32 ui32SkullCenterX,
+				OpenViBE::uint32 ui32SkullCenterY,
+				gint& rX,
+				gint& rY) const;
 
 		private:
 			//! The database that contains the information to use to draw the signals
@@ -319,7 +333,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Main pixmap
-			 * \remark This pixmap is 32-bit aligned. Each row is m_ui32RowStride wide, and the pixmap has the height of the DrawingArea's
+			 * \remarks This pixmap is 32-bit aligned. Each row is m_ui32RowStride wide, and the pixmap has the height of the DrawingArea's
 			 * window. It is pasted into the DrawingArea's window upon redraw
 			 */
 			//TODO
@@ -327,7 +341,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Skull pixmap
-			 * \remark This pixmap is 32-bit aligned. Each row is m_ui32RowStride wide, and the pixmap has m_ui32SkullDiameter rows.
+			 * \remarks This pixmap is 32-bit aligned. Each row is m_ui32RowStride wide, and the pixmap has m_ui32SkullDiameter rows.
 			 * It is pasted into the main pixmap everytime changes happen (window resizing, display options toggled on/off, etc)
 			 */
 			guchar* m_pSkullRGBBuffer;

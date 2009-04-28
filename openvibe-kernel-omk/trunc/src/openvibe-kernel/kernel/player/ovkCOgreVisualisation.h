@@ -99,7 +99,7 @@ public:
 
 	/**
 	 * \brief Create a RenderWindow from an external window handle
-	 * \remark This function is used to create the primary render window which
+	 * \remarks This function is used to create the primary render window which
 	 * is then hidden and destroyed only when the application is shut down.
 	 * Secondary windows should be created by COgreWindow objects
 	 * \return Pointer to RenderWindow or NULL if it couldn't be created
@@ -132,7 +132,7 @@ public:
 
 	/**
 	 * \brief Add a resource location
-	 * \remark Resources can't be added once Resource Group has been initialized
+	 * \remarks Resources can't be added once Resource Group has been initialized
 	 * \param rResourceGroupIdentifier Resource group identifier
 	 * \param rPath Resources location path
 	 * \param type Resources type (path or zip file)
@@ -147,7 +147,7 @@ public:
 
 	/**
 	 * \brief Initialize resource group
-	 * \remark Each call to this method increments the group's internal reference counter.
+	 * \remarks Each call to this method increments the group's internal reference counter.
 	 * When it is set to one (upon first call to this method) the group is actually initialized, but isn't upon
 	 * subsequent calls. It has to be destroyed (its ref count set back to 0) and recreated to be reinitialized.
 	 * \param rResourceGroupIdentifier Resource group identifier
@@ -158,7 +158,7 @@ public:
 
 	/**
 	 * \brief Destroy resource group
-	 * \remark Each call to this method decrements the group's internal reference counter.
+	 * \remarks Each call to this method decrements the group's internal reference counter.
 	 * Only when this counter reaches 0 is the group actually destroyed.
 	 * \param rResourceGroupIdentifier Resource group identifier
 	 * \return True if resource group could be destroyed (or was initialized already), false if an error occured
@@ -221,7 +221,7 @@ public:
 		OpenViBE::CIdentifier rWindowIdentifier);
 
 	/**
-   * \remark Windows using this scene should be deleted first
+	 * \remarks Windows using this scene should be deleted first
 	 */
 	OpenViBE::boolean deleteScene(
 		OpenViBE::CIdentifier rSceneIdentifier);
@@ -233,7 +233,7 @@ private:
 
 	/**
 	 * \brief Notify Ogre of resources locations.
-	 * \remark Actual parsing (performed in completeOgreInitialisation) should not
+	 * \remarks Actual parsing (performed in completeOgreInitialisation) should not
 	 * take place before the first RenderWindow is created.
 	 * \param resourcesFile File containing paths to Ogre resources
 	 */

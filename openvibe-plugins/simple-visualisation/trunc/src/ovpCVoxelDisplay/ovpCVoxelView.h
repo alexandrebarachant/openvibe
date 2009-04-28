@@ -42,7 +42,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Initialize widgets.
-			 * \remark Called automatically by spectrum database when first buffer is received
+			 * \remarks Called automatically by spectrum database when first buffer is received
 			 * \return True if initialization was successful, false otherwise
 			 */
 			virtual OpenViBE::boolean init(void);
@@ -78,7 +78,8 @@ namespace OpenViBEPlugins
 			void toggleSizeModificationCB(OpenViBE::boolean bModifySize);
 			void setMinVoxelScaleFactorCB(::GtkSpinButton* pWidget);
 			void setMaxVoxelScaleFactorCB(::GtkSpinButton* pWidget);
-			void setVoxelDisplayThresholdCB(OpenViBE::float64 f64Threshold);
+			void setMinDisplayThresholdCB(OpenViBE::float64 f64MinDisplayThreshold);
+			void setMaxDisplayThresholdCB(OpenViBE::float64 f64MaxDisplayThreshold);
 			void setSkullOpacityCB(OpenViBE::float64 f64Delay);
 			void setPausedCB(OpenViBE::boolean bPaused);
 			void repositionCameraCB();
@@ -91,6 +92,18 @@ namespace OpenViBEPlugins
 			//! View radio buttons
 			::GtkRadioToolButton* m_pCubeButton;
 			::GtkRadioToolButton* m_pSphereButton;
+
+			GtkSpinButton* m_pMinScaleFactorSpinButton;
+			GtkSpinButton* m_pMaxScaleFactorSpinButton;
+
+			OpenViBE::float64 m_f64MinScaleFactor;
+			OpenViBE::float64 m_f64MaxScaleFactor;
+
+			GtkScale* m_pMinDisplayThresholdScale;
+			GtkScale* m_pMaxDisplayThresholdScale;
+
+			OpenViBE::float64 m_f64MinDisplayThreshold;
+			OpenViBE::float64 m_f64MaxDisplayThreshold;
 		};
 	}
 }

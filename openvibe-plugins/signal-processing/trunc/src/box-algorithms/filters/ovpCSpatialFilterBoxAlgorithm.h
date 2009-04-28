@@ -30,7 +30,6 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pApplySpatialFilter;
 
 			std::vector<OpenViBE::float64> m_oCoefficients;
-			OpenViBE::uint64 m_ui64LastStartTime;
 		};
 
 		class CSpatialFilterBoxAlgorithmDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc

@@ -131,7 +131,7 @@ namespace OpenViBEPlugins
 					rPrototype.addSetting("CUE display Start", OV_TypeId_Float, "3.0");
 					rPrototype.addSetting("Feedback start", OV_TypeId_Float, "4.0");
 
-
+					rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 					return true;
 				}
 

@@ -85,7 +85,7 @@ boolean CAlgorithmOVMatrixFileReader::process(void)
 
 boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 {
-	std::locale l_oLocale;
+	std::locale l_oLocale("C");
 	//current string to parse
 	std::string l_sWhat;
 	//current parsing status

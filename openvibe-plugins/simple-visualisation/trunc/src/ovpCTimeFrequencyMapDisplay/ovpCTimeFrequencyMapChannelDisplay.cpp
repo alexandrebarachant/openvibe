@@ -501,7 +501,7 @@ namespace OpenViBEPlugins
 
 		gboolean timeFrequencyMapChannelDisplaySizeAllocateCallback(::GtkWidget *widget, ::GtkAllocation *allocation, gpointer data)
 		{
-			CTimeFrequencyMapChannelDisplay * l_pDisplay = reinterpret_cast<CTimeFrequencyMapChannelDisplay*>(data);			
+			CTimeFrequencyMapChannelDisplay * l_pDisplay = reinterpret_cast<CTimeFrequencyMapChannelDisplay*>(data);
 			l_pDisplay->resizeRGBBuffer(allocation->width,allocation->height);
 			return FALSE;
 		}

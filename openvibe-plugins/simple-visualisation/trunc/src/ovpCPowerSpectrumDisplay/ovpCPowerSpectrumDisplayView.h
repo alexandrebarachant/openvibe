@@ -46,7 +46,7 @@ namespace OpenViBEPlugins
 
 			/**
 			 * \brief Initialize widgets
-			 * \remark Called automatically by spectrum database when first buffer is received
+			 * \remarks Called automatically by spectrum database when first buffer is received
 			 */
 			virtual void init();
 
