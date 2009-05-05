@@ -14,6 +14,7 @@ OpenViBE_branch=
 OpenViBE_kernel_branch=
 OpenViBE_toolkit_branch=
 OpenViBE_documentation_branch=
+OpenViBE_scenarios_branch=
 
 ########################################################################################################################
 #MODULES
@@ -88,6 +89,9 @@ fi
 if [ "$OpenViBE_documentation_branch" == "" ]; then
 	OpenViBE_documentation_branch=$OpenViBE_default_branch
 fi
+if [ "$OpenViBE_scenarios_branch" == "" ]; then
+	OpenViBE_scenarios_branch=$OpenViBE_default_branch
+fi
 
 ########################################################################################################################
 
@@ -95,6 +99,7 @@ export OpenViBE=$OpenViBE_base/openvibe/$OpenViBE_branch
 export OpenViBE_kernel=$OpenViBE_base/openvibe-kernel-omk/$OpenViBE_kernel_branch
 export OpenViBE_toolkit=$OpenViBE_base/openvibe-toolkit/$OpenViBE_toolkit_branch
 export OpenViBE_documentation=$OpenViBE_base/openvibe-documentation/$OpenViBE_documentation_branch
+export OpenViBE_scenarios=$OpenViBE_base/openvibe-scenarios/$OpenViBE_scenarios_branch
 export OpenViBE_cmake_modules=$OpenViBE_base/cmake-modules
 
 ########################################################################################################################
@@ -155,6 +160,7 @@ $OpenViBE_plugin_classification
 $OpenViBE_plugin_classification_gpl
 $OpenViBE_plugin_feature_extraction
 $OpenViBE_plugin_file_io
+$OpenViBE_plugin_local
 $OpenViBE_plugin_samples
 $OpenViBE_plugin_signal_processing
 $OpenViBE_plugin_signal_processing_gpl
@@ -167,15 +173,15 @@ $OpenViBE_plugin_vrpn
 $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
 $OpenViBE_application_plugin_inspector
+$OpenViBE_application_vr_demo
+$OpenViBE_scenarios
 $OpenViBE_documentation
 "
 
-#$OpenViBE_plugin_local
 #$OpenViBE_plugin_matlab
 #$OpenViBE_plugin_turbofieldtrip
 
 #$OpenViBE_application_omk_test
-#$OpenViBE_application_vr_demo
 #$OpenViBE_application_vrpn_simulator
 
 #$OpenViBE_plugin_wip_brenier
