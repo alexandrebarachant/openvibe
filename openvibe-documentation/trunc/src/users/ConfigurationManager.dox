@@ -55,7 +55,7 @@ Path_Ogre = $Environment{OGRE_HOME}
 
 The following subsections list all recognized tokens, grouped by category.
 
-	\subsection Doc_Configuration Manager_Tokens_Paths OpenViBE Paths
+	\subsection Doc_ConfigurationManager_Tokens_Paths OpenViBE Paths
 
 These tokens tell applications about OpenViBE installation directories.
 
@@ -66,7 +66,7 @@ These tokens tell applications about OpenViBE installation directories.
  - Path_Tmp is the application temporary directory
  - Path_Data is \TODO
 
-	\subsection Doc_Configuration Manager_Tokens_Kernel OpenViBE Kernel
+	\subsection Doc_ConfigurationManager_Tokens_Kernel OpenViBE Kernel
 
 This section lists tokens that may be used to configure the OpenViBE kernel.
 
@@ -88,7 +88,7 @@ The following tokens are related to the 3D visualisation :
  - Kernel_3DVisualisationOgrePlugins is a token that specifies where to look for Ogre plugins while abstracting the operating system OpenViBE is being run on. It can look like : 3D${Kernel_3DVisualisationOgrePlugins${OperatingSystem}}
  - Kernel_3DVisualisationOgreLogLevel specifies the log level to use when forwarding Ogre messages to OpenViBE log manager.
 
-	\subsection Doc_Configuration Manager_Tokens_Designer OpenViBE Designer
+	\subsection Doc_ConfigurationManager_Tokens_Designer OpenViBE Designer
 
 One can configure several OpenViBE Designer parameters using the following tokens : 
 
@@ -96,7 +96,7 @@ One can configure several OpenViBE Designer parameters using the following token
  - Designer_FullscreenEditor specifies whether to start the Designer in fullscreen or windowed mode
  - Designer_DefaultWorkingDirectory is a path to the default directory where to load and save scenario files, relative from the execution directory.
 
-	\subsection Doc_Configuration Manager_Tokens_Acquisition_Server OpenViBE Acquisition Server
+	\subsection Doc_ConfigurationManager_Tokens_Acquisition_Server OpenViBE Acquisition Server
 
 A few acquisition server parameters may be initialized in the configuration file :
 
@@ -104,7 +104,7 @@ A few acquisition server parameters may be initialized in the configuration file
  - AcquisitionServer_DefaultDriver is the default driver to be used (example : Generic oscillator)
  - AcquisitionServer_DefaultConnectionPort is the default port to use to send data (example : 1024)
 
-	\subsection Doc_Configuration Manager_Tokens_Plugin_Inspector OpenViBE Plugin Inspector
+	\subsection Doc_ConfigurationManager_Tokens_Plugin_Inspector OpenViBE Plugin Inspector
 
 Default plugin inspector output directories may be specified here :
 

@@ -8,8 +8,8 @@ In this first tutorial, we are going to build a basic signal processing scenario
 \section designertutorial1_step1 Step 1 : Creating a new scenario
 
 First off, we must start the Designer by :
-	- [Windows] double-clicking on the test-designer.cmd batch file, or
-	- [Linux] executing ???
+	- [Windows] double-clicking on the \c test-designer.cmd batch file, or
+	- [Linux] executing \c linux-test
 
 The Designer main window should appear, and a default untitled scenario should be open and ready to be edited.
 

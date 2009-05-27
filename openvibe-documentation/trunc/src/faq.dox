@@ -92,12 +92,13 @@
  *
 \htmlonly
 <!-- os-compatibility start -->
-<table border=1 cellpading=0 cellspacing=0>
+<table class='faq-os' cellpading=0 cellspacing=0>
 <tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> </tr>
-<tr> <td rowspan=9>x86</td>    <td rowspan=3>Windows</td> <td rowspan=2>XP SP2</td> <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> </tr>
+<tr> <td rowspan=10>x86</td>   <td rowspan=3>Windows</td> <td rowspan=2>XP SP2</td> <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> </tr>
 <tr>                                                                                <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Vista</td>            <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
-<tr>                           <td rowspan=6>Linux</td>   <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                           <td rowspan=7>Linux</td>   <td>Ubuntu 9.04</td>      <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Fedora Core 3</td>    <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> </tr>
 <tr>                                                      <td>Fedora Core 4</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
@@ -125,7 +126,7 @@
  * \section Doc_FAQ_DownloadSources Where can I download OpenViBE sources ?
  *
  * The latest unstable sources can be downloaded with subversion from the gforge at https://gforge.inria.fr/projects/openvibe .
- * Alternatively, you may want to download the latest stable source package from TODO
+ * Alternatively, you may want to download the latest stable source package from http://openvibe.inria.fr
  *
  * \section Doc_FAQ_DownloadBinaries Where can I download OpenViBE precompiled binaries ?
  *
@@ -140,7 +141,7 @@
  * First, make sure you followed the install procedure described in \ref Doc_Install . If problems persist, you can get some help from
  * the people involved in this project. See \ref Doc_Contact for how to contact us.
  *
- * \section Doc_FAQ_BranchChanging The branch changes I did does not seam to be considered at comilation time, why is that ?
+ * \section Doc_FAQ_BranchChanging The branch changes are not considered at compilation time, why is that ?
  *
  * Don't forget to clean everything before editing your <i>win32-init_env_command.cmd</i> or <i>linux-init_env_command</i>
  * to switch your developements to other branches. If you don't do this, <i>cmake</i> will keep compiling the software
@@ -154,10 +155,11 @@
  *
  * \section Doc_FAQ_ProblemsUsing I have problems using OpenViBE, what should I do ?
  *
- * A good place to start learning about the platform is to read the existing documentation. Several documentation files are dedicated to 
+ * A good place to start learning about the platform is to read the existing documentation. Several documentation files are dedicated to
  * explaining the use of the platform and its associated tools.
  *
- * TODO
+ * If still having problems after this reading, you may contact the community to discuss the problem. Visit the forum or send a message to
+ * the mailing lists.
  *
  * \section Doc_FAQ_Bug I think I found a bug, what should I do ?
  *
@@ -174,18 +176,9 @@
  *  - documentation : you can enhance the existing documentation or write new tutorials
  *  - testing : you can help test new features, new operating systems, new hardware, and send us feedback or fill bug reports when needed
  *  - support : you can provide help to the community by regularly visiting the forum and joining the IRC and mailing lists
- *  - packaging :
- *  - funding : you can help fund the project and its permanent developers FIXME
+ *  - packaging : you can build <i>RPMs</i>, <i>DEBs</i> or whatever package your linux distro uses
  *
  * In any case, you should start by reading the \ref Doc_ContributionRules . If you still have questions, you can also \ref Doc_Contact us.
- *
- * \section Doc_FAQ_Roadmap What is the planned roadmap for OpenViBE development ?
- *
- * TODO
- *
- * \section Doc_FAQ_OtherBCISoftwareDifferences How does OpenViBE differ from other BCI platforms ?
- *
- * TODO
  *
  * \section Doc_FAQ_OtherBCISoftwareConnections Are there any existing connections with other BCI platforms ?
  *
@@ -222,6 +215,18 @@
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 19!)
+ * this question currently is 17!)
  *
+ */
+
+/*
+ *  - funding : you can help fund the project and its permanent developers FIXME
+ *
+ * \section Doc_FAQ_Roadmap What is the planned roadmap for OpenViBE development ?
+ *
+ * TODO
+ *
+ * \section Doc_FAQ_OtherBCISoftwareDifferences How does OpenViBE differ from other BCI platforms ?
+ *
+ * TODO
  */

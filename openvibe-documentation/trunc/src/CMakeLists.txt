@@ -40,7 +40,7 @@ IF(doxygen_bin)
 		MESSAGE(STATUS "    [  OK  ] Candidate directory found ${current_project_src}")
 
 		# looks for resources and stores thm in a list
-		FILE(GLOB_RECURSE resource_files_tmp "${current_project_src}/*.png" "${current_project_src}/*.css")
+		FILE(GLOB_RECURSE resource_files_tmp "${current_project_src}/*.png" "${current_project_src}/*.css" "${current_project_src}/*.php")
 		SET(resource_files ${resource_files} ${resource_files_tmp})
 
 		# looks for partial hand written documentation
