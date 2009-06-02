@@ -127,6 +127,11 @@ boolean CVisualisationContext::setCameraToEncompassObjects(const CIdentifier& rW
 	return m_pSimulatedBox->setCameraToEncompassObjects(rWidgetIdentifier);
 }
 
+boolean CVisualisationContext::setCameraSphericalCoordinates(const CIdentifier& rWidgetIdentifier, float32 rTheta, float32 rPhi, float32 rRadius)
+{
+	return m_pSimulatedBox->setCameraSphericalCoordinates(rWidgetIdentifier, rTheta, rPhi, rRadius);
+}
+
 CIdentifier CVisualisationContext::createObject(const CString& rObjectFileName, const CNameValuePairList* pObjectParams)
 {
 	return m_pSimulatedBox->createObject(rObjectFileName, pObjectParams);
@@ -205,6 +210,11 @@ boolean CVisualisationContext::setObjectTriangleIndexArray(const CIdentifier& rI
 {
 	getLogManager() << LogLevel_Warning << "setObjectTriangleIndexArray is not implemented yet!\n";
 	return false;
+}
+
+boolean CVisualisationContext::getCameraSphericalCoordinates(const CIdentifier& rWidgetIdentifier, float32& rTheta, float32& rPhi, float32& rRadius)
+{
+	return m_pSimulatedBox->getCameraSphericalCoordinates(rWidgetIdentifier, rTheta, rPhi, rRadius);
 }
 
 boolean CVisualisationContext::getObjectAxisAlignedBoundingBox(const CIdentifier& rIdentifier, float32* pMinimum, float32* pMaximum)

@@ -90,11 +90,14 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean setMaxDisplayThreshold(
 				OpenViBE::float64 f64MaxDisplayThreshold);
 
+			OpenViBE::boolean setDisplayThresholdBoundaryType(
+				OpenViBE::boolean bInclusiveBoundary);
+
 			OpenViBE::boolean setSkullOpacity(
 				OpenViBE::float64 f64Opacity);
 
-			OpenViBE::boolean setPaused(
-				OpenViBE::boolean bPaused);
+			OpenViBE::boolean enableAutoCameraMovement(
+				OpenViBE::boolean bEnable);
 
 			OpenViBE::boolean repositionCamera();
 
@@ -140,6 +143,11 @@ namespace OpenViBEPlugins
 			 */
 			OpenViBE::boolean processActivationLevels();
 
+			/**
+			 * \brief To enhance parallax feeling, camera may be automatically moved
+			 */
+			OpenViBE::boolean updateCameraPosition();
+
 		private:
 			//Voxel coordinates file reader
 			OpenViBE::Kernel::IAlgorithmProxy* m_pOVMatrixFileReader;
@@ -155,8 +163,13 @@ namespace OpenViBEPlugins
 			OpenViBE::CIdentifier m_oResourceGroupIdentifier;
 
 			OpenViBE::boolean m_bCameraPositioned;
-			OpenViBE::boolean m_bPaused;
-			OpenViBE::float64 m_f64Time;
+			OpenViBE::boolean m_bAutoCameraMovementEnabled;
+			//time when auto camera movement was last turned on. Theta/Phi offsets are computed from that time step.
+			OpenViBE::float64 m_f64AutoCameraMovementStartTime;
+			//total theta offset since auto camera movement was last turned on. Reset to 0 when movement is stopped.
+			OpenViBE::float32 m_f32ThetaOffset;
+			//total phi offset since auto camera movement was last turned on. Reset to 0 when movement is stopped.
+			OpenViBE::float32 m_f32PhiOffset;
 
 			OpenViBE::CMatrix m_oPotentialMatrix;
 			OpenViBE::float64 m_f64MinPotential;
@@ -191,6 +204,9 @@ namespace OpenViBEPlugins
 			//scale factors
 			OpenViBE::float64 m_f64MinScaleFactor;
 			OpenViBE::float64 m_f64MaxScaleFactor;
+
+			//display threshold boundary type
+			OpenViBE::boolean m_bInclusiveDisplayThresholdBoundary;
 
 			//voxel display thresholds
 			OpenViBE::float64 m_f64MinDisplayThreshold;

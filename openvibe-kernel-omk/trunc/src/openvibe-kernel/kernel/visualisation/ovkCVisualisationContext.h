@@ -71,6 +71,12 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setCameraToEncompassObjects(
 				const OpenViBE::CIdentifier& rWidgetIdentifier);
 
+			virtual OpenViBE::boolean setCameraSphericalCoordinates(
+				const OpenViBE::CIdentifier& rWindowIdentifier,
+				OpenViBE::float32 f32Theta,
+				OpenViBE::float32 f32Phi,
+				OpenViBE::float32 f32Radius);
+
 			virtual OpenViBE::CIdentifier createObject(
 				const OpenViBE::CString& rObjectFileName,
 				const CNameValuePairList* pObjectParams);
@@ -143,6 +149,12 @@ namespace OpenViBE
 				const OpenViBE::uint32* pTriangleIndexArray);
 
 			// =====================================
+
+			virtual OpenViBE::boolean getCameraSphericalCoordinates(
+				const OpenViBE::CIdentifier& rWindowIdentifier,
+				OpenViBE::float32& rTheta,
+				OpenViBE::float32& rPhi,
+				OpenViBE::float32& rRadius);
 
 			virtual OpenViBE::boolean getObjectAxisAlignedBoundingBox(
 				const OpenViBE::CIdentifier& rIdentifier,

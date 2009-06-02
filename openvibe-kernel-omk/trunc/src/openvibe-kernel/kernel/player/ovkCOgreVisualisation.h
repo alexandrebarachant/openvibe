@@ -226,6 +226,12 @@ public:
 	OpenViBE::boolean deleteScene(
 		OpenViBE::CIdentifier rSceneIdentifier);
 
+	/**
+	 * \brief Checks whether Ogre statistics overlay should be enabled in 3d windows
+	 * \return True if stats overlay should be enabled, false otherwise
+	 */
+	OpenViBE::boolean isOgreStatsOverlayEnabled();
+
 	_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject<OpenViBE::IObject>, OV_UndefinedIdentifier);
 
 private:

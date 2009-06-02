@@ -150,6 +150,69 @@ boolean CScenario::clear(void)
 	return true;
 }
 
+boolean CScenario::merge(
+	const IScenario& rScenario)
+{
+	this->getLogManager() << LogLevel_ImportantWarning << "Scenario merging is not yet implemented\n";
+
+#if 0
+	// Prepares copy
+	map < CIdentifier, CIdentifier > l_vIdMapping;
+
+	// Copies boxes
+	CIdentifier l_oBoxIdentifier;
+	while((l_oBoxIdentifier=rScenario.getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
+	{
+		CIdentifier l_oNewIdentifier;
+		const IBox* l_pBox=rScenario.getBoxDetails(l_oBoxIdentifier);
+		this->addBox(
+			*l_pBox,
+			l_oNewIdentifier);
+		l_vIdMapping[l_oBoxIdentifier]=l_oNewIdentifier;
+
+		// Updates visualisation manager
+		CIdentifier l_oBoxAlgorithmIdentifier=l_pBox->getAlgorithmClassIdentifier();
+		const IPluginObjectDesc* l_pPOD = this->getPluginManager().getPluginObjectDescCreating(l_oBoxAlgorithmIdentifier);
+
+		// If a visualisation box was dropped, add it in window manager
+		if(l_pPOD && l_pPOD->hasFunctionality(PluginFunctionality_Visualization))
+		{
+			CIdentifier l_oVisualisationWidgetIdentifier;
+
+			// Let window manager know about new box
+			this->getVisualisationTreeDetails().addVisualisationWidget(
+				l_oVisualisationWidgetIdentifier,
+				l_pBox->getName(),
+				EVisualisationWidget_VisualisationBox,
+				OV_UndefinedIdentifier,
+				0,
+				l_oNewIdentifier,
+				0);
+
+			// this->getVisualisationTreeDetails().reloadTree();
+		}
+	}
+
+	// Copies links
+	CIdentifier l_oLinkIdentifier;
+	while((l_oLinkIdentifier=rScenario.getNextLinkIdentifier(l_oLinkIdentifier))!=OV_UndefinedIdentifier)
+	{
+		CIdentifier l_oNewIdentifier;
+		const ILink* l_pLink=rScenario.getLinkDetails(l_oLinkIdentifier);
+		this->connect(
+			l_vIdMapping[l_pLink->getSourceBoxIdentifier()],
+			l_pLink->getSourceBoxOutputIndex(),
+			l_vIdMapping[l_pLink->getTargetBoxIdentifier()],
+			l_pLink->getTargetBoxInputIndex(),
+			l_oNewIdentifier);
+	}
+
+	return true;
+#else
+	return false;
+#endif
+}
+
 //___________________________________________________________________//
 //                                                                   //
 

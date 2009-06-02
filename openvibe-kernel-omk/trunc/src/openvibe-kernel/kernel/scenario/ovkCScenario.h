@@ -24,6 +24,8 @@ namespace OpenViBE
 			virtual ~CScenario(void);
 
 			virtual OpenViBE::boolean clear(void);
+			virtual OpenViBE::boolean merge(
+				const OpenViBE::Kernel::IScenario& rScenario);
 
 			virtual OpenViBE::boolean setVisualisationTreeIdentifier(
 				const OpenViBE::CIdentifier& rVisualisationTreeIdentifier);

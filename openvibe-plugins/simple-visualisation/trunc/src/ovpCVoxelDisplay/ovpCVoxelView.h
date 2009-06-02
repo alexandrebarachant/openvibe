@@ -80,8 +80,9 @@ namespace OpenViBEPlugins
 			void setMaxVoxelScaleFactorCB(::GtkSpinButton* pWidget);
 			void setMinDisplayThresholdCB(OpenViBE::float64 f64MinDisplayThreshold);
 			void setMaxDisplayThresholdCB(OpenViBE::float64 f64MaxDisplayThreshold);
+			void setDisplayThresholdBoundaryTypeCB(OpenViBE::boolean bInclusiveBoundary);
 			void setSkullOpacityCB(OpenViBE::float64 f64Delay);
-			void setPausedCB(OpenViBE::boolean bPaused);
+			void enableAutoCameraMovementCB(OpenViBE::boolean bEnable);
 			void repositionCameraCB();
 
 		private:
@@ -98,6 +99,10 @@ namespace OpenViBEPlugins
 
 			OpenViBE::float64 m_f64MinScaleFactor;
 			OpenViBE::float64 m_f64MaxScaleFactor;
+
+			GtkLabel* m_pThresholdRangeAndOrLabel;
+			GtkButton* m_pMinDisplayThresholdBoundaryButton;
+			GtkButton* m_pMaxDisplayThresholdBoundaryButton;
 
 			GtkScale* m_pMinDisplayThresholdScale;
 			GtkScale* m_pMaxDisplayThresholdScale;

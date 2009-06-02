@@ -6,6 +6,7 @@
 #include "ovkCOgreVisualisation.h"
 #include "ovkCOgreScene.h"
 #include "ovkCOgreWindow.h"
+#include "ovkCOgreFrameListener.h"
 
 using namespace std;
 using namespace OpenViBE;
@@ -21,6 +22,7 @@ COgreWindow::COgreWindow(const IKernelContext& rKernelContext, const Ogre::Strin
 	,m_pCamera(NULL)
 	,m_f32NearFarClipRatio(1.f/1000)
 	,m_pViewport(NULL)
+	,m_pFrameListener(NULL)
 	,m_bLeftButtonPressed(false)
 	,m_bMiddleButtonPressed(false)
 	,m_bRightButtonPressed(false)
@@ -93,6 +95,11 @@ void COgreWindow::update()
 		return;
 	}
 	m_pRenderWindow->update(true);
+	//FIXME : this call shouldn't have to be made, but for some reason,
+	//the frameEnded callback doesn't get called...
+	Ogre::FrameEvent e;
+	m_pFrameListener->frameEnded(e);
+	//
 }
 
 boolean COgreWindow::handleRealizeEvent()
@@ -138,8 +145,8 @@ boolean COgreWindow::handleSizeAllocateEvent(unsigned int uiWidth, unsigned int 
 #elif defined OVK_OS_Linux
 	m_pRenderWindow->resize(uiWidth, uiHeight);
 #endif
-	m_pRenderWindow->update(true);
 
+	update();
 	return true;
 }
 
@@ -159,22 +166,9 @@ boolean COgreWindow::handleMotionEvent(int i32X, int i32Y)
 	if(m_bLeftButtonPressed == true)
 	{
 		//rotate camera
-		m_f32Phi -= m_f32RotationFactor * (i32X - m_i32X);
-		get360Angle(m_f32Phi);
-
-		m_f32Theta -= m_f32RotationFactor * (i32Y - m_i32Y);
-		get180Angle(m_f32Theta);
-		//FIXME : when using angles of 0 or 180 degrees, camera up vector is set to (1, 0, 0)
-		//when using forcedYawAxis on camera, resulting in break of continuity in camera orientation
-#define THETA_THRESHOLD 0.1f
-		if(m_f32Theta < THETA_THRESHOLD)
-		{
-			m_f32Theta = THETA_THRESHOLD;
-		}
-		else if(m_f32Theta > 180 - THETA_THRESHOLD)
-		{
-			m_f32Theta = 180 - THETA_THRESHOLD;
-		}
+		float32 f32Theta = get180Angle(m_f32Theta - m_f32RotationFactor * (i32Y - m_i32Y));
+		float32 f32Phi = get360Angle(m_f32Phi - m_f32RotationFactor * (i32X - m_i32X));
+		setCameraSphericalAngles(f32Theta, f32Phi);
 	}
 	else if(m_bRightButtonPressed == true)
 	{
@@ -190,7 +184,7 @@ boolean COgreWindow::handleMotionEvent(int i32X, int i32Y)
 	}
 
 	updateCamera();
-	m_pRenderWindow->update(true);
+	//update();
 	m_i32X = i32X;
 	m_i32Y = i32Y;
 
@@ -233,6 +227,23 @@ boolean COgreWindow::handleButtonReleaseEvent(unsigned int uiButton, int i32X, i
 		m_bRightButtonPressed = false;
 	}
 
+	return true;
+}
+
+boolean COgreWindow::getCameraSphericalCoordinates(float32& rTheta, float32& rPhi, float32& rRadius)
+{
+	rTheta = m_f32Theta;
+	rPhi = m_f32Phi;
+	rRadius = m_f32Radius;
+	return true;
+}
+
+boolean COgreWindow::setCameraSphericalCoordinates(float32 f32Theta, float32 f32Phi, float32 f32Radius)
+{
+	setCameraSphericalAngles(f32Theta, f32Phi);
+	m_f32Radius = f32Radius;
+	//reflect changes
+	updateCamera();
 	return true;
 }
 
@@ -320,6 +331,16 @@ boolean COgreWindow::createView()
 	m_pViewport = m_pRenderWindow->addViewport(m_pCamera);
 	m_pViewport->setBackgroundColour(Ogre::ColourValue(0.5, 0.5, 0.5));
 
+	//create frame listener
+	m_pFrameListener= new COgreFrameListener(m_pRenderWindow);
+
+	if(m_pOgreVis->isOgreStatsOverlayEnabled() == true)
+	{
+		m_pFrameListener->showDebugOverlay(true);
+	}
+
+	m_pOgreVis->getOgreRoot()->addFrameListener(m_pFrameListener);
+
 	return true;
 }
 
@@ -334,6 +355,11 @@ boolean COgreWindow::destroyView()
 	m_pSceneManager->destroyCamera(m_pCamera);
 
 	//viewport will be destroyed along with render window
+
+	if(m_pFrameListener != NULL)
+	{
+		delete m_pFrameListener;
+	}
 
 	return true;
 }
@@ -350,7 +376,7 @@ boolean COgreWindow::computeTranslationFactor(OpenViBE::float32 f32SceneSize)
 //weird things happen with cursor values
 #define ANGLE_MAX_VAL 1E3
 
-void COgreWindow::get360Angle(float32& f32Angle)
+float32 COgreWindow::get360Angle(float32 f32Angle)
 {
 	if(f32Angle > ANGLE_MAX_VAL || f32Angle < -ANGLE_MAX_VAL)
 	{
@@ -363,9 +389,11 @@ void COgreWindow::get360Angle(float32& f32Angle)
 	{
 		f32Angle += 360;
 	}
+
+	return f32Angle;
 }
 
-void COgreWindow::get180Angle(float32& f32Angle)
+float32 COgreWindow::get180Angle(float32 f32Angle)
 {
 	if(f32Angle > ANGLE_MAX_VAL || f32Angle < -ANGLE_MAX_VAL)
 	{
@@ -380,6 +408,31 @@ void COgreWindow::get180Angle(float32& f32Angle)
 	{
 		f32Angle = 180;
 	}
+
+	return f32Angle;
+}
+
+boolean COgreWindow::setCameraSphericalAngles(float32 f32Theta, float32 f32Phi)
+{
+	//FIXME : when using angles of 0 or 180 degrees, camera up vector is set to (1, 0, 0)
+	//when using forcedYawAxis on camera, resulting in break of continuity in camera orientation
+#define THETA_THRESHOLD 0.1f
+	if(f32Theta < THETA_THRESHOLD)
+	{
+		m_f32Theta = THETA_THRESHOLD;
+	}
+	else if(f32Theta > 180 - THETA_THRESHOLD)
+	{
+		m_f32Theta = 180 - THETA_THRESHOLD;
+	}
+	else
+	{
+		m_f32Theta = f32Theta;
+	}
+
+	m_f32Phi = f32Phi;
+
+	return true;
 }
 
 boolean COgreWindow::updateCamera()

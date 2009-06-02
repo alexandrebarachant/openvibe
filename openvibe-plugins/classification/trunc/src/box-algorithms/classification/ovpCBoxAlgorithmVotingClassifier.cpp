@@ -162,6 +162,12 @@ boolean CBoxAlgorithmVotingClassifier::process(void)
 			this->getLogManager() << LogLevel_Trace << "Chosed rejection " << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, l_ui64ResultClassLabel) << "\n";
 		}
 
+		for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+		{
+			this->getLogManager() << LogLevel_Trace << "Input " << i << " got score " << l_vScores[i] << "\n";
+		}
+
+
 		CStimulationSet l_oStimulationSet;
 		l_oStimulationSet.appendStimulation(l_ui64ResultClassLabel, l_ui64Time, 0);
 		ip_pClassificationChoiceStimulationSet=&l_oStimulationSet;

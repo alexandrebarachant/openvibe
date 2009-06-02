@@ -826,7 +826,7 @@ void CPlayerVisualisation::toolbar_button_toggled_cb(::GtkToggleButton* pButton,
 	static_cast<CPlayerVisualisation*>(user_data)->toggleToolbarCB(pButton);
 }
 
-OpenViBE::boolean CPlayerVisualisation::toggleToolbarCB(::GtkToggleButton* pToolbarButton)
+boolean CPlayerVisualisation::toggleToolbarCB(::GtkToggleButton* pToolbarButton)
 {
 	//retrieve toolbar
 	if(m_mToolbars.find(pToolbarButton) == m_mToolbars.end())
@@ -890,7 +890,7 @@ gboolean CPlayerVisualisation::toolbar_delete_event_cb(GtkWidget* widget, GdkEve
 	return TRUE;
 }
 
-OpenViBE::boolean CPlayerVisualisation::deleteToolbarCB(GtkWidget* pToolbarWidget)
+boolean CPlayerVisualisation::deleteToolbarCB(GtkWidget* pToolbarWidget)
 {
 	if(m_pActiveToolbarButton == NULL || m_mToolbars[m_pActiveToolbarButton] != pToolbarWidget)
 	{

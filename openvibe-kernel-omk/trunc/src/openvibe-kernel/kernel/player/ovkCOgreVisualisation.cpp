@@ -387,6 +387,11 @@ boolean COgreVisualisation::deleteScene(CIdentifier rSceneIdentifier)
 	return true;
 }
 
+boolean COgreVisualisation::isOgreStatsOverlayEnabled()
+{
+	return getConfigurationManager().expandAsBoolean("${Kernel_3DVisualisationOgreStatisticsOverlayEnabled}", false);
+}
+
 void COgreVisualisation::addResourceLocations(const std::string& resourcesFile)
 {
 	try

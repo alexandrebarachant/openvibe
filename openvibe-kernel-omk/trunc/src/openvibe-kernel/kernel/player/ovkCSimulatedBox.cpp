@@ -306,6 +306,34 @@ boolean CSimulatedBox::setCameraToEncompassObjects(const CIdentifier& rWindowIde
 	return true;
 }
 
+boolean CSimulatedBox::setCameraSphericalCoordinates(const CIdentifier& rWindowIdentifier, float32 f32Theta, float32 f32Phi, float32 f32Radius)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(rWindowIdentifier);
+	if(l_pOgreWindow != NULL)
+	{
+		l_pOgreWindow->setCameraSphericalCoordinates(f32Theta, f32Phi, f32Radius);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+boolean CSimulatedBox::getCameraSphericalCoordinates(const CIdentifier& rWindowIdentifier, float32& rTheta, float32& rPhi, float32& rRadius)
+{
+	COgreWindow* l_pOgreWindow = m_pOgreVis->getOgreWindow(rWindowIdentifier);
+	if(l_pOgreWindow != NULL)
+	{
+		l_pOgreWindow->getCameraSphericalCoordinates(rTheta, rPhi, rRadius);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 CIdentifier CSimulatedBox::createObject(const CString& rObjectFileName, const CNameValuePairList* pObjectParams)
 {
 	if(rObjectFileName == CString(""))

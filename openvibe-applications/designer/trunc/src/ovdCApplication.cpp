@@ -728,8 +728,8 @@ void CApplication::openScenarioCB(void)
 					{
 						const IBox* l_pBox = l_rScenario.getBoxDetails(l_oBoxIdentifier);
 						CIdentifier l_oAlgorithmIdentifier = l_pBox->getAlgorithmClassIdentifier();
-						const Plugins::IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
-						if(l_pPOD != NULL && l_pPOD->hasFunctionality(OpenViBE::Kernel::PluginFunctionality_Visualization))
+						const IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
+						if(l_pPOD != NULL && l_pPOD->hasFunctionality(PluginFunctionality_Visualization))
 						{
 							//a visualisation widget was found in scenario : manually add it to visualisation tree
 							l_rVisualisationTree.addVisualisationWidget(
@@ -1001,8 +1001,8 @@ void CApplication::closeScenarioCB(CInterfacedScenario* pInterfacedScenario)
 			GTK_BUTTONS_YES_NO,
 			"Save scenario ?");
 		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pDialog),
-			"The scenario you are trying to close has modifications. "
-			"Would you like to save those modifications before to close it ?");
+			"The scenario you are trying to close has been modified. "
+			"Would you like to save those modifications before closing it ?");
 		gtk_window_set_title(GTK_WINDOW(l_pDialog), "Warning");
 		if(gtk_dialog_run(GTK_DIALOG(l_pDialog))==GTK_RESPONSE_YES)
 		{
@@ -1059,6 +1059,9 @@ void CApplication::createPlayer(void)
 	CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
 	if(l_pCurrentInterfacedScenario && !l_pCurrentInterfacedScenario->m_pPlayer)
 	{
+		// create a snapshot so settings override does not modify the scenario !
+		l_pCurrentInterfacedScenario->snapshotCB();
+
 		// generate player windows
 		l_pCurrentInterfacedScenario->createPlayerVisualisation();
 
@@ -1094,6 +1097,9 @@ void CApplication::releasePlayer(void)
 
 		l_pCurrentInterfacedScenario->m_oPlayerIdentifier=OV_UndefinedIdentifier;
 		l_pCurrentInterfacedScenario->m_pPlayer=NULL;
+
+		// restore the snapshot so settings override does not modify the scenario !
+		l_pCurrentInterfacedScenario->undoCB();
 
 		// destroy player windows
 		l_pCurrentInterfacedScenario->releasePlayerVisualisation();

@@ -138,9 +138,12 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 #if defined OVAS_OS_Windows
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B());
 #endif
-	m_vDriver.push_back(new CDriverBrainAmpScalpEEG());
-	m_vDriver.push_back(new CDriverMicromedIntraEEG());
-	m_vDriver.push_back(new CDriverCtfVsmMeg());
+	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
+	{
+		m_vDriver.push_back(new CDriverBrainAmpScalpEEG());
+		m_vDriver.push_back(new CDriverMicromedIntraEEG());
+		m_vDriver.push_back(new CDriverCtfVsmMeg());
+	}
 	m_vDriver.push_back(new CDriverGenericOscillator());
 }
 
@@ -201,16 +204,48 @@ boolean CAcquisitionServer::initialize(void)
 	g_signal_connect(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"),      "changed", G_CALLBACK(combobox_driver_changed_cb),  this);
 	glade_xml_signal_autoconnect(m_pGladeInterface);
 
+	::GtkComboBox* l_pComboBoxDriver=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"));
+
+	enum
+	{
+		Resource_StringMarkup,
+	};
+
 	// Prepares drivers combo box
 
-	::GtkComboBox* l_pComboBoxDriver=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"));
+	gtk_combo_box_set_model(l_pComboBoxDriver, NULL);
+
+	::GtkCellRenderer* l_pCellRendererName=gtk_cell_renderer_text_new();
+
+	gtk_cell_layout_clear(GTK_CELL_LAYOUT(l_pComboBoxDriver));
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(l_pComboBoxDriver), l_pCellRendererName, TRUE);
+	gtk_cell_layout_add_attribute(GTK_CELL_LAYOUT(l_pComboBoxDriver), l_pCellRendererName, "markup", Resource_StringMarkup);
+
+	::GtkTreeStore* l_pDriverTreeStore=gtk_tree_store_new(1, G_TYPE_STRING);
+	gtk_combo_box_set_model(l_pComboBoxDriver, GTK_TREE_MODEL(l_pDriverTreeStore));
+
 	vector<IDriver*>::size_type i;
 	string l_sDefaultDriverName=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_DefaultDriver}").toASCIIString();
 	transform(l_sDefaultDriverName.begin(), l_sDefaultDriverName.end(), l_sDefaultDriverName.begin(), ::to_lower<string::value_type>);
 	for(i=0; i<m_vDriver.size(); i++)
 	{
+		::GtkTreeIter l_oIter;
+		gtk_tree_store_append(l_pDriverTreeStore, &l_oIter, NULL);
+
 		string l_sDriverName=m_vDriver[i]->getName();
-		gtk_combo_box_append_text(l_pComboBoxDriver, l_sDriverName.c_str());
+		if(m_vDriver[i]->isFlagSet(DriverFlag_IsUnstable))
+		{
+			gtk_tree_store_set(l_pDriverTreeStore, &l_oIter,
+				Resource_StringMarkup, (string("<span foreground=\"#6f6f6f\">")+l_sDriverName+string("</span> <span size=\"smaller\" style=\"italic\">(<span foreground=\"#202060\">unstable</span>)</span>")).c_str(),
+				-1);
+		}
+		else
+		{
+			gtk_tree_store_set(l_pDriverTreeStore, &l_oIter,
+				Resource_StringMarkup, (string("")+l_sDriverName+string("")).c_str(),
+				-1);
+		}
+
 		transform(l_sDriverName.begin(), l_sDriverName.end(), l_sDriverName.begin(), ::to_lower<string::value_type>);
 		if(l_sDefaultDriverName==l_sDriverName)
 		{
@@ -275,7 +310,7 @@ void CAcquisitionServer::idleCB(void)
 			{
 				m_rKernelContext.getLogManager() << LogLevel_Trace << "Received new connection\n";
 
-				m_vConnection.push_back(pair < Socket::IConnection*, uint64 >(l_pConnection, m_ui64SampleCount));
+				m_vConnection.push_back(pair < Socket::IConnection*, uint64 >(l_pConnection, 0));
 
 				l_bLabelNeedsUpdate=true;
 
@@ -326,7 +361,7 @@ void CAcquisitionServer::idleCB(void)
 				op_pExperimentInformationMemoryBuffer->setSize(0, true);
 				op_pAcquisitionMemoryBuffer->setSize(0, true);
 
-				uint64 l_ui64TimeOffset=(((m_ui64SampleCount-itConnection->second)<<32)/m_pDriver->getHeader()->getSamplingFrequency());
+				uint64 l_ui64TimeOffset=((itConnection->second<<32)/m_pDriver->getHeader()->getSamplingFrequency());
 				TParameterHandler < IStimulationSet* > ip_pStimulationSet(m_pStimulationStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
 				OpenViBEToolkit::Tools::StimulationSet::copy(*ip_pStimulationSet, m_oStimulationSet, l_ui64TimeOffset);
 
@@ -339,6 +374,8 @@ void CAcquisitionServer::idleCB(void)
 				uint64 l_ui64MemoryBufferSize=op_pAcquisitionMemoryBuffer->getSize();
 				l_pConnection->sendBufferBlocking(&l_ui64MemoryBufferSize, sizeof(l_ui64MemoryBufferSize));
 				l_pConnection->sendBufferBlocking(op_pAcquisitionMemoryBuffer->getDirectPointer(), (uint32)op_pAcquisitionMemoryBuffer->getSize());
+
+				itConnection->second+=m_ui32SampleCountPerSentBlock;
 			}
 			itConnection++;
 		}
@@ -562,12 +599,9 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 			{
 				ip_pMatrix->getBuffer()[i]=pSample[i];
 			}
+			m_ui64SampleCount+=m_ui32SampleCountPerSentBlock;
 		}
-
 		m_bGotData=true;
-
-		m_oStimulationSet.setStimulationCount(0);
-		m_ui64SampleCount+=m_ui32SampleCountPerSentBlock;
 	}
 	else
 	{

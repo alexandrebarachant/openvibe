@@ -3,7 +3,6 @@
 
 #include "ov_base.h"
 
-#if 1
 namespace OpenViBE
 {
 	typedef struct CNameValuePairListImpl CNameValuePairListImpl;
@@ -137,6 +136,5 @@ namespace OpenViBE
 		OpenViBE::CNameValuePairListImpl* m_pNameValuePairListImpl; ///< The list implementation
 	};
 };
-#endif
 
 #endif // __OpenViBE_CNameValuePairList_H__

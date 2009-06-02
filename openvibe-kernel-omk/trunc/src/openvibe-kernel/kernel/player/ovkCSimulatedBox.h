@@ -194,6 +194,16 @@ namespace OpenViBE
 				OpenViBE::float32 f32ColorBlue);
 			OpenViBE::boolean setCameraToEncompassObjects(
 				const OpenViBE::CIdentifier& rWindowIdentifier);
+			OpenViBE::boolean setCameraSphericalCoordinates(
+				const CIdentifier& rWindowIdentifier,
+				OpenViBE::float32 f32Theta,
+				OpenViBE::float32 f32Phi,
+				OpenViBE::float32 f32Radius);
+			OpenViBE::boolean getCameraSphericalCoordinates(
+				const CIdentifier& rWindowIdentifier,
+				OpenViBE::float32& rTheta,
+				OpenViBE::float32& rPhi,
+				OpenViBE::float32& rRadius);
 			//@}
 
 			/** \name 3D API - scene management */

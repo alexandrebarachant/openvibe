@@ -27,8 +27,10 @@ namespace OpenViBEPlugins
 		static gboolean setMaxScaleFactorCallback(::GtkWidget* pWidget, gpointer data);
 		static void setMinDisplayThresholdCallback(::GtkRange *range, gpointer data);
 		static void setMaxDisplayThresholdCallback(::GtkRange *range, gpointer data);
+		static void setMinDisplayThresholdBoundaryTypeCallback(::GtkButton *button, gpointer data);
+		static void setMaxDisplayThresholdBoundaryTypeCallback(::GtkButton *button, gpointer data);
 		static void setSkullOpacityCallback(::GtkRange *range, gpointer data);
-		static void toggleFreezeCallback(GtkButton *button, gpointer data);
+		static void toggleAnimateCameraCallback(GtkButton *button, gpointer data);
 		static void repositionCameraCallback(GtkButton *button, gpointer data);
 
 		CVoxelView::CVoxelView(CVoxelDisplay& rVoxelDisplay) :
@@ -38,12 +40,15 @@ namespace OpenViBEPlugins
 			m_pSphereButton(NULL),
 			m_pMinScaleFactorSpinButton(NULL),
 			m_pMaxScaleFactorSpinButton(NULL),
-			m_f64MinScaleFactor(0),
-			m_f64MaxScaleFactor(1),
+			m_f64MinScaleFactor(1),
+			m_f64MaxScaleFactor(2),
+			m_pThresholdRangeAndOrLabel(NULL),
+			m_pMinDisplayThresholdBoundaryButton(NULL),
+			m_pMaxDisplayThresholdBoundaryButton(NULL),
 			m_pMinDisplayThresholdScale(NULL),
 			m_pMaxDisplayThresholdScale(NULL),
-			m_f64MinDisplayThreshold(0),
-			m_f64MaxDisplayThreshold(1)
+			m_f64MinDisplayThreshold(0.25),
+			m_f64MaxDisplayThreshold(0.75)
 		{
 			//load the glade interface
 			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-VoxelDisplay.glade", NULL, NULL);
@@ -72,14 +77,13 @@ namespace OpenViBEPlugins
 
 			//min voxel scale factor
 			m_pMinScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MinScaleFactorSpinButton"));
-			m_f64MinScaleFactor = 1;
 			m_rVoxelDisplay.setMinScaleFactor(m_f64MinScaleFactor);
 			gtk_spin_button_configure(
 				m_pMinScaleFactorSpinButton,
 				GTK_ADJUSTMENT(gtk_adjustment_new(
 					m_f64MinScaleFactor, //initial value
 					0, //lower
-					1, //upper
+					5, //upper
 					0.1, //step increment
 					0.5, //page increment
 					1)), //page size
@@ -89,14 +93,13 @@ namespace OpenViBEPlugins
 
 			//max voxel scale factor
 			m_pMaxScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MaxScaleFactorSpinButton"));
-			m_f64MaxScaleFactor = 2;
 			m_rVoxelDisplay.setMaxScaleFactor(m_f64MaxScaleFactor);
 			gtk_spin_button_configure(
 				m_pMaxScaleFactorSpinButton,
 				GTK_ADJUSTMENT(gtk_adjustment_new(
 					m_f64MaxScaleFactor, //initial value
 					0, //lower
-					4, //upper
+					5, //upper
 					0.1, //step increment
 					0.5, //page increment
 					1)), //page size
@@ -104,9 +107,25 @@ namespace OpenViBEPlugins
 					1); //digits
 			g_signal_connect(G_OBJECT(m_pMaxScaleFactorSpinButton), "value-changed", G_CALLBACK(setMaxScaleFactorCallback), this);
 
+			boolean l_bInclusiveDisplayThresholdBoundary = true;
+			m_rVoxelDisplay.setDisplayThresholdBoundaryType(l_bInclusiveDisplayThresholdBoundary);
+
+			//AND/OR label
+			m_pThresholdRangeAndOrLabel = GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "ThresholdRangeAndOrLabel"));
+			gtk_label_set_label(m_pThresholdRangeAndOrLabel, l_bInclusiveDisplayThresholdBoundary? "AND" : "OR");
+
+			//min display threshold boundary type
+			m_pMinDisplayThresholdBoundaryButton = GTK_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MinDisplayThresholdBoundaryButton"));
+			gtk_button_set_label(m_pMinDisplayThresholdBoundaryButton, l_bInclusiveDisplayThresholdBoundary ? ">" : "<");
+			g_signal_connect(G_OBJECT(m_pMinDisplayThresholdBoundaryButton), "clicked", G_CALLBACK(setMinDisplayThresholdBoundaryTypeCallback), this);
+
+			//max display threshold boundary type
+			m_pMaxDisplayThresholdBoundaryButton = GTK_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MaxDisplayThresholdBoundaryButton"));
+			gtk_button_set_label(m_pMaxDisplayThresholdBoundaryButton, l_bInclusiveDisplayThresholdBoundary ? "<" : ">");
+			g_signal_connect(G_OBJECT(m_pMaxDisplayThresholdBoundaryButton), "clicked", G_CALLBACK(setMaxDisplayThresholdBoundaryTypeCallback), this);
+
 			//min display threshold slider
-			m_pMinDisplayThresholdScale = GTK_SCALE(gtk_hscale_new_with_range(0.0, 1.0, 0.05));
-			m_f64MinDisplayThreshold = 0;
+			m_pMinDisplayThresholdScale = GTK_SCALE(gtk_hscale_new_with_range(0.0, 1.0, 0.01));
 			m_rVoxelDisplay.setMinDisplayThreshold(m_f64MinDisplayThreshold);
 			gtk_range_set_value(GTK_RANGE(m_pMinDisplayThresholdScale), m_f64MinDisplayThreshold);
 			gtk_scale_set_value_pos(m_pMinDisplayThresholdScale, GTK_POS_TOP);
@@ -124,13 +143,12 @@ namespace OpenViBEPlugins
 				if(GTK_IS_BOX(l_pMinScaleParent))
 				{
 					gtk_box_pack_start(GTK_BOX(l_pMinScaleParent), GTK_WIDGET(m_pMinDisplayThresholdScale), TRUE, TRUE, 0);
-					gtk_box_reorder_child(GTK_BOX(l_pMinScaleParent), GTK_WIDGET(m_pMinDisplayThresholdScale), 0);
+					gtk_box_reorder_child(GTK_BOX(l_pMinScaleParent), GTK_WIDGET(m_pMinDisplayThresholdScale), 1);
 				}
 			}
 
 			//max display threshold slider
-			m_pMaxDisplayThresholdScale = GTK_SCALE(gtk_hscale_new_with_range(0.0, 1.0, 0.05));
-			m_f64MaxDisplayThreshold = 1;
+			m_pMaxDisplayThresholdScale = GTK_SCALE(gtk_hscale_new_with_range(0.0, 1.0, 0.01));
 			m_rVoxelDisplay.setMaxDisplayThreshold(m_f64MaxDisplayThreshold);
 			gtk_range_set_value(GTK_RANGE(m_pMaxDisplayThresholdScale), m_f64MaxDisplayThreshold);
 			gtk_scale_set_value_pos(m_pMaxDisplayThresholdScale, GTK_POS_TOP);
@@ -148,7 +166,7 @@ namespace OpenViBEPlugins
 				if(GTK_IS_BOX(l_pMaxScaleParent))
 				{
 					gtk_box_pack_start(GTK_BOX(l_pMaxScaleParent), GTK_WIDGET(m_pMaxDisplayThresholdScale), TRUE, TRUE, 0);
-					gtk_box_reorder_child(GTK_BOX(l_pMaxScaleParent), GTK_WIDGET(m_pMaxDisplayThresholdScale), 0);
+					gtk_box_reorder_child(GTK_BOX(l_pMaxScaleParent), GTK_WIDGET(m_pMaxDisplayThresholdScale), 1);
 				}
 			}
 
@@ -176,13 +194,17 @@ namespace OpenViBEPlugins
 				}
 			}
 
-			//freeze button
-			GtkToggleToolButton* l_pFreezeButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "FreezeButton"));
-			gtk_toggle_tool_button_set_active(l_pFreezeButton, false);
-			g_signal_connect(G_OBJECT(l_pFreezeButton), "toggled", G_CALLBACK(toggleFreezeCallback), this);
+			//camera animation button
+			GtkToggleToolButton* l_pAnimateCameraButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "AnimateCameraButton"));
+			g_signal_connect(G_OBJECT(l_pAnimateCameraButton), "toggled", G_CALLBACK(toggleAnimateCameraCallback), this);
 
 			//reposition camera
 			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "RepositionCamera")),	"clicked", G_CALLBACK(repositionCameraCallback), this);
+
+			this->toggleColorModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ModifyColorToolButton")))?true:false);
+			this->toggleTransparencyModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ModifyTransparencyToolButton")))?true:false);
+			this->toggleSizeModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ModifySizeToolButton")))?true:false);
+			this->enableAutoCameraMovementCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "AnimateCameraButton")))?true:false);
 		}
 
 		CVoxelView::~CVoxelView()
@@ -309,14 +331,22 @@ namespace OpenViBEPlugins
 			}
 		}
 
+		void CVoxelView::setDisplayThresholdBoundaryTypeCB(boolean bInclusiveBoundary)
+		{
+			gtk_button_set_label(m_pMinDisplayThresholdBoundaryButton, bInclusiveBoundary ? ">" : "<");
+			gtk_button_set_label(m_pMaxDisplayThresholdBoundaryButton, bInclusiveBoundary ? "<" : ">");
+			gtk_label_set_label(m_pThresholdRangeAndOrLabel, bInclusiveBoundary? "AND" : "OR");
+			m_rVoxelDisplay.setDisplayThresholdBoundaryType(bInclusiveBoundary);
+		}
+
 		void CVoxelView::setSkullOpacityCB(float64 f64Opacity)
 		{
 			m_rVoxelDisplay.setSkullOpacity(f64Opacity);
 		}
 
-		void CVoxelView::setPausedCB(boolean bPaused)
+		void CVoxelView::enableAutoCameraMovementCB(boolean bEnable)
 		{
-			m_rVoxelDisplay.setPaused(bPaused);
+			m_rVoxelDisplay.enableAutoCameraMovement(bEnable);
 		}
 
 		void CVoxelView::repositionCameraCB()
@@ -376,16 +406,30 @@ namespace OpenViBEPlugins
 			l_pVoxelView->setMaxDisplayThresholdCB(gtk_range_get_value(pRange));
 		}
 
+		void setMinDisplayThresholdBoundaryTypeCallback(::GtkButton* pButton, gpointer data)
+		{
+			boolean l_bIsCurrentBoundaryTypeInclusive = strcmp(gtk_button_get_label(pButton), ">") == 0;
+			CVoxelView* l_pVoxelView = reinterpret_cast<CVoxelView*>(data);
+			l_pVoxelView->setDisplayThresholdBoundaryTypeCB(!l_bIsCurrentBoundaryTypeInclusive);
+		}
+
+		void setMaxDisplayThresholdBoundaryTypeCallback(::GtkButton* pButton, gpointer data)
+		{
+			boolean l_bIsCurrentBoundaryTypeInclusive = strcmp(gtk_button_get_label(pButton), "<") == 0;
+			CVoxelView* l_pVoxelView = reinterpret_cast<CVoxelView*>(data);
+			l_pVoxelView->setDisplayThresholdBoundaryTypeCB(!l_bIsCurrentBoundaryTypeInclusive);
+		}
+
 		void setSkullOpacityCallback(::GtkRange *pRange, gpointer data)
 		{
 			CVoxelView* l_pVoxelView = reinterpret_cast<CVoxelView*>(data);
 			l_pVoxelView->setSkullOpacityCB(gtk_range_get_value(pRange));
 		}
 
-		void toggleFreezeCallback(GtkButton *button, gpointer data)
+		void toggleAnimateCameraCallback(GtkButton *button, gpointer data)
 		{
 			CVoxelView* l_pVoxelView = reinterpret_cast<CVoxelView*>(data);
-			l_pVoxelView->setPausedCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(button)) != 0);
+			l_pVoxelView->enableAutoCameraMovementCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(button)) != 0);
 		}
 
 		void repositionCameraCallback(GtkButton *pButton, gpointer data)

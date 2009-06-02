@@ -211,16 +211,10 @@ boolean CScheduler::initialize(void)
 		return false;
 	}
 
-	CIdentifier l_oNewScenarioIdentifier=m_oScenarioIdentifier;
-/*
-	getScenarioManager().getScenario(m_oScenarioIdentifier).save("tmp.scenario.xml", CIdentifier(0x77075b3b, 0x3d632492)); // $$$
-	getScenarioManager().createScenario(l_oNewScenarioIdentifier);
-	getScenarioManager().getScenario(l_oNewScenarioIdentifier).load("tmp.scenario.xml", CIdentifier(0x440BF3AC, 0x2D960300)); // $$$
-*/
-	m_pScenario=&getScenarioManager().getScenario(l_oNewScenarioIdentifier);
+	m_pScenario=&getScenarioManager().getScenario(m_oScenarioIdentifier);
 	if(!m_pScenario)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Scenario " << l_oNewScenarioIdentifier << " does not exist !\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Scenario " << m_oScenarioIdentifier << " does not exist !\n";
 		return false;
 	}
 
@@ -250,7 +244,6 @@ boolean CScheduler::initialize(void)
 	m_bIsInitialized=true;
 
 	m_oBenchmarkChrono.reset((System::uint32)m_ui64Frequency);
-
 	return true;
 
 }
@@ -278,6 +271,8 @@ boolean CScheduler::uninitialize(void)
 		delete itSimulatedBox->second;
 	}
 	m_vSimulatedBox.clear();
+
+	m_pScenario=NULL;
 
 	m_bIsInitialized=false;
 	return true;

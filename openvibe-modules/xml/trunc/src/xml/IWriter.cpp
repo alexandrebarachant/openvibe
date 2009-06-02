@@ -20,6 +20,9 @@ namespace XML
 		virtual boolean closeChild(void);
 		virtual void release(void);
 
+	private:
+		void sanitize(string& sString);
+
 	protected:
 		IWriterCallback& m_rWriterCallback;
 		stack<string> m_vNodes;
@@ -83,7 +86,10 @@ boolean CWriter::setChildData(const char* sData)
 		m_bHasClosedOpeningNode=true;
 	}
 
-	m_rWriterCallback.write(sData);
+	string l_sData(sData);
+	this->sanitize(l_sData);
+
+	m_rWriterCallback.write(l_sData.c_str());
 	m_bHasChild=false;
 	m_bHasData=true;
 	return true;
@@ -116,7 +122,10 @@ boolean CWriter::setAttribute(const char* sAttributeName, const char* sAttribute
 		return false;
 	}
 
-	string l_sResult=string(" ")+string(sAttributeName)+string("=\"")+string(sAttributeValue)+string("\"");
+	string l_sAttributeValue(sAttributeValue);
+	this->sanitize(l_sAttributeValue);
+
+	string l_sResult=string(" ")+string(sAttributeName)+string("=\"")+string(l_sAttributeValue)+string("\"");
 	m_rWriterCallback.write(l_sResult.c_str());
 	return true;
 }
@@ -150,6 +159,24 @@ void CWriter::release(void)
 		closeChild();
 	}
 	delete this;
+}
+
+void CWriter::sanitize(string& sString)
+{
+	string::size_type i;
+	if(sString.length()!=0)
+	{
+		// mandatory, this one should be the first because the other ones add & symbols
+		for(i=sString.find("&", 0); i!=string::npos; i=sString.find("&", i+1))
+			sString.replace(i, 1, "&amp;");
+		// other escape sequences
+		for(i=sString.find("\"", 0); i!=string::npos; i=sString.find("\"", i+1))
+			sString.replace(i, 1, "&quot;");
+		for(i=sString.find("<", 0); i!=string::npos; i=sString.find("<", i+1))
+			sString.replace(i, 1, "&lt;");
+		for(i=sString.find(">", 0); i!=string::npos; i=sString.find(">", i+1))
+			sString.replace(i, 1, "&gt;");
+	}
 }
 
 XML_API XML::IWriter* XML::createWriter(IWriterCallback& rWriterCallback)

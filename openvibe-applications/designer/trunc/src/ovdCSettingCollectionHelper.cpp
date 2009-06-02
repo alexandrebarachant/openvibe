@@ -57,6 +57,11 @@ namespace
 		if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 		{
 			char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
+			char* l_pBackslash = NULL;
+			while(l_pBackslash = strchr(l_sFileName, '\\'))
+			{
+				*l_pBackslash = '/';
+			}
 			gtk_entry_set_text(l_pWidget, l_sFileName);
 			g_free(l_sFileName);
 		}

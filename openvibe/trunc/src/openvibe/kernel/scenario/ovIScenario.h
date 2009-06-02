@@ -40,6 +40,14 @@ namespace OpenViBE
 			 * \return \e false in case of error.
 			 */
 			virtual OpenViBE::boolean clear(void)=0;
+			/**
+			 * \brief Merges this scenario with an other existing scenario
+			 * \param rScenario [in] : a reference to the scenario to merge this scenario with
+			 * \return \e true in case of success
+			 * \return \e false in case of error
+			 */
+			virtual OpenViBE::boolean merge(
+				const OpenViBE::Kernel::IScenario& rScenario)=0;
 
 			//@{
 			/** \name Visualisation tree management */

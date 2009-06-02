@@ -7,6 +7,11 @@ namespace OpenViBEAcquisitionServer
 {
 	class IHeader;
 
+	typedef enum
+	{
+		DriverFlag_IsUnstable,
+	} EDriverFlag;
+
 	/**
 	 * \class IDriverCallback
 	 * \author Yann Renard (INRIA/IRISA)
@@ -120,6 +125,18 @@ namespace OpenViBEAcquisitionServer
 		 * \return the driver name.
 		 */
 		virtual const char* getName(void)=0;
+		/**
+		 * \brief Tests if a flag is set for this driver
+		 * \param eFlag [in] : the flag to test
+		 * \return \e true if the tested flag is set
+		 * \return \e false if the tested flag is not set
+		 * \note Default implementation always returns false, meaning that no flag is set
+		 */
+		virtual OpenViBE::boolean isFlagSet(
+			const OpenViBEAcquisitionServer::EDriverFlag eFlag) const
+		{
+			return false;
+		}
 
 		//@}
 		/** \name Driver configuration */

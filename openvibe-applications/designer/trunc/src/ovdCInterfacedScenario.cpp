@@ -1687,7 +1687,7 @@ void CInterfacedScenario::copySelection(void)
 			if(m_rScenario.isBox(it->first))
 			{
 				CIdentifier l_oNewIdentifier;
-				IBox* l_pBox=m_rScenario.getBoxDetails(it->first);
+				const IBox* l_pBox=m_rScenario.getBoxDetails(it->first);
 				m_rApplication.m_pClipboardScenario->addBox(
 					*l_pBox,
 					l_oNewIdentifier);
@@ -1704,7 +1704,7 @@ void CInterfacedScenario::copySelection(void)
 			if(m_rScenario.isLink(it->first))
 			{
 				CIdentifier l_oNewIdentifier;
-				ILink* l_pLink=m_rScenario.getLinkDetails(it->first);
+				const ILink* l_pLink=m_rScenario.getLinkDetails(it->first);
 				m_rApplication.m_pClipboardScenario->connect(
 					l_vIdMapping[l_pLink->getSourceBoxIdentifier()],
 					l_pLink->getSourceBoxOutputIndex(),
@@ -1856,8 +1856,10 @@ void CInterfacedScenario::contextMenuBoxRenameCB(IBox& rBox)
 void CInterfacedScenario::contextMenuBoxDeleteCB(IBox& rBox)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxDeleteCB\n";
+	m_pDesignerVisualisation->onVisualisationBoxRemoved(rBox.getIdentifier());
 	m_rScenario.removeBox(rBox.getIdentifier());
 	this->snapshotCB();
+	this->redraw();
 }
 void CInterfacedScenario::contextMenuBoxAddInputCB(IBox& rBox)
 {

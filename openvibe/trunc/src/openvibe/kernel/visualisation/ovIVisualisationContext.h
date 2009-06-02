@@ -196,6 +196,20 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rWidgetIdentifier)=0;
 
 			/**
+			 * \brief Set camera spherical coordinates
+			 * \param rWindowIdentifier Identifier of 3D widget whose camera is to be set
+			 * \param rTheta Camera theta angle, in degrees
+			 * \param rPhi Camera phi angle, in degrees
+			 * \param rRadius Distance of camera from origin
+			 * \return True if camera parameters could be set
+			 */
+			virtual OpenViBE::boolean setCameraSphericalCoordinates(
+				const OpenViBE::CIdentifier& rWidgetIdentifier,
+				OpenViBE::float32 f32Theta,
+				OpenViBE::float32 f32Phi,
+				OpenViBE::float32 f32Radius)=0;
+
+			/**
 			 * \brief Create a new 3D object
 			 * \details
 			 * Possible parameters to store in pObjectParams include :
@@ -355,8 +369,21 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rIdentifier,
 				OpenViBE::uint32 ui32TriangleCount,
 				const OpenViBE::uint32* pTriangleIndexArray)=0;
-
 			// =====================================
+
+			/**
+			 * \brief Get camera spherical coordinates
+			 * \param rWindowIdentifier Identifier of 3D widget whose camera is to be set
+			 * \param rTheta Camera theta angle, in degrees
+			 * \param rPhi Camera phi angle, in degrees
+			 * \param rRadius Distance of camera from origin
+			 * \return True if camera parameters could be retrieved
+			 */
+			virtual OpenViBE::boolean getCameraSphericalCoordinates(
+				const OpenViBE::CIdentifier& rWidgetIdentifier,
+				OpenViBE::float32& rTheta,
+				OpenViBE::float32& rPhi,
+				OpenViBE::float32& rRadius)=0;
 
 			/**
 			 * \brief Get object axis aligned bounding box

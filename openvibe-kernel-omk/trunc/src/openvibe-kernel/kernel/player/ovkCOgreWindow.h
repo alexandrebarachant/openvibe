@@ -6,6 +6,7 @@
 
 class COgreScene;
 class COgreVisualisation;
+class COgreFrameListener;
 
 /**
  * \class COgreWindow
@@ -101,6 +102,14 @@ public:
 		OpenViBE::float32 f32ColorGreen,
 		OpenViBE::float32 f32ColorBlue);
 	OpenViBE::boolean setCameraToEncompassObjects();
+	OpenViBE::boolean setCameraSphericalCoordinates(
+		OpenViBE::float32 f32Theta,
+		OpenViBE::float32 f32Phi,
+		OpenViBE::float32 f32Radius);
+	OpenViBE::boolean getCameraSphericalCoordinates(
+		OpenViBE::float32& rTheta,
+		OpenViBE::float32& rPhi,
+		OpenViBE::float32& rRadius);
 	//@}
 
 private:
@@ -110,9 +119,15 @@ private:
 	OpenViBE::boolean computeTranslationFactor(
 		OpenViBE::float32 f32SceneSize);
 	/// \brief Get value of an angle in degrees in the [0, 360[ range
-	void get360Angle(OpenViBE::float32& f32Angle);
+	OpenViBE::float32 get360Angle(
+		OpenViBE::float32 f32Angle);
 	/// \brief Get value of an angle in degrees in the [0, 180[ range
-	void get180Angle(OpenViBE::float32& f32Angle);
+	OpenViBE::float32 get180Angle(
+		OpenViBE::float32 f32Angle);
+	/// \brief Set theta/phi camera angles
+	OpenViBE::boolean setCameraSphericalAngles(
+		OpenViBE::float32 f32Theta,
+		OpenViBE::float32 f32Phi);
 	/// \brief Updates camera from current settings
 	OpenViBE::boolean updateCamera();
 	/// \brief Generate a unique identifier
@@ -129,7 +144,8 @@ private:
 	COgreScene* m_pOgreScene;
 	/// Pointer to the associated RenderWindow
 	Ogre::RenderWindow* m_pRenderWindow;
-	/** \brief Pointer to the scene manager whose contents are visualised in this window
+	/**
+	 * \brief Pointer to the scene manager whose contents are visualised in this window
 	 * \remarks This object is created and destroyed by a COgreScene instance
 	 */
 	Ogre::SceneManager* m_pSceneManager;
@@ -141,6 +157,7 @@ private:
 	/// Viewport displayed in this window
 	Ogre::Viewport* m_pViewport;
 	//eViewportType m_oViewportType;
+	COgreFrameListener* m_pFrameListener;
 
 	/** \name Mouse button states */
 	//@{

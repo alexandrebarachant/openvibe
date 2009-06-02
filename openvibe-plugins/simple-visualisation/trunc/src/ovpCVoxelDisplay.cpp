@@ -47,8 +47,10 @@ CVoxelDisplay::CVoxelDisplay(void) :
 	m_o3DWidgetIdentifier(OV_UndefinedIdentifier),
 	m_oResourceGroupIdentifier(OV_UndefinedIdentifier),
 	m_bCameraPositioned(false),
-	m_bPaused(false),
-	m_f64Time(0),
+	m_bAutoCameraMovementEnabled(false),
+	m_f64AutoCameraMovementStartTime(0),
+	m_f32ThetaOffset(0),
+	m_f32PhiOffset(0),
 	m_f64MinPotential(FLT_MAX),
 	m_f64MaxPotential(FLT_MIN),
 	m_ui32NbColors(0),
@@ -65,6 +67,7 @@ CVoxelDisplay::CVoxelDisplay(void) :
 	m_bSizeModificationToggled(false),
 	m_f64MinScaleFactor(1),
 	m_f64MaxScaleFactor(2),
+	m_bInclusiveDisplayThresholdBoundary(false),
 	m_f64MinDisplayThreshold(0),
 	m_f64MaxDisplayThreshold(1),
 	m_bSetSkullOpacity(false),
@@ -192,7 +195,9 @@ boolean CVoxelDisplay::processClock(IMessageClock& rMessageClock)
 	{
 		return true;
 	}
-	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+	updateCameraPosition();
+	getBoxAlgorithmContext()->getVisualisationContext()->update3DWidget(m_o3DWidgetIdentifier);
+	//getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 
@@ -225,9 +230,17 @@ boolean CVoxelDisplay::process(void)
 	}
 }
 
-boolean CVoxelDisplay::setPaused(boolean bPaused)
+boolean CVoxelDisplay::enableAutoCameraMovement(boolean bEnable)
 {
-	m_bPaused = bPaused;
+	m_bAutoCameraMovementEnabled = bEnable;
+	if(bEnable == true)
+	{
+		//reset time base used to compute theta/phi offsets
+		m_f64AutoCameraMovementStartTime = 0;
+		//reset offsets
+		m_f32ThetaOffset = 0;
+		m_f32PhiOffset = 0;
+	}
 	return true;
 }
 
@@ -286,6 +299,12 @@ boolean CVoxelDisplay::setMinDisplayThreshold(float64 f64MinDisplayThreshold)
 boolean CVoxelDisplay::setMaxDisplayThreshold(float64 f64MaxDisplayThreshold)
 {
 	m_f64MaxDisplayThreshold = f64MaxDisplayThreshold;
+	return true;
+}
+
+boolean CVoxelDisplay::setDisplayThresholdBoundaryType(boolean bInclusiveBoundary)
+{
+	m_bInclusiveDisplayThresholdBoundary = bInclusiveBoundary;
 	return true;
 }
 
@@ -493,6 +512,10 @@ boolean CVoxelDisplay::updateVoxels()
 	{
 		getVisualisationContext().setCameraToEncompassObjects(m_o3DWidgetIdentifier);
 		m_bRepositionCamera = false;
+		//reset offsets so that camera animation oscillates around new position
+		m_f64AutoCameraMovementStartTime = 0;
+		m_f32PhiOffset = 0;
+		m_f32ThetaOffset = 0;
 	}
 
 	return true;
@@ -553,7 +576,6 @@ boolean CVoxelDisplay::computeActivationLevels()
 		const float64* l_pVoxelBuffer = l_pBuffer + 3 * (i /** nbEchantillons*/);
 
 #if 0
-		//FIXME use a fast sqrt here!
 		float64 f64Potential = sqrt(*l_pVoxelBuffer * *l_pVoxelBuffer +
 			*(l_pVoxelBuffer+1) * *(l_pVoxelBuffer+1) + *(l_pVoxelBuffer+2) * *(l_pVoxelBuffer+2));
 #else
@@ -591,7 +613,16 @@ boolean CVoxelDisplay::processActivationLevels()
 		//determine whether this voxel should be displayed
 		float64 l_f64ActivationFactor = (l_f64Potential - m_f64MinPotential) * l_f64InvPotentialInterval; //0<x<1
 
-		boolean l_bDisplayVoxel = (l_f64ActivationFactor >= m_f64MinDisplayThreshold && l_f64ActivationFactor <= m_f64MaxDisplayThreshold);
+		boolean l_bDisplayVoxel = false;
+		if(m_bInclusiveDisplayThresholdBoundary == true)
+		{
+			l_bDisplayVoxel = (l_f64ActivationFactor >= m_f64MinDisplayThreshold && l_f64ActivationFactor <= m_f64MaxDisplayThreshold);
+		}
+		else
+		{
+			l_bDisplayVoxel = (l_f64ActivationFactor < m_f64MinDisplayThreshold || l_f64ActivationFactor > m_f64MaxDisplayThreshold);
+		}
+
 		if(l_bDisplayVoxel != m_oVoxels[i].m_bVisible)
 		{
 			m_oVoxels[i].m_bVisible = l_bDisplayVoxel;
@@ -633,6 +664,84 @@ boolean CVoxelDisplay::processActivationLevels()
 					(float32)(m_f64MinScaleFactor + l_f64ActivationFactor * (m_f64MaxScaleFactor - m_f64MinScaleFactor)))
 				);
 		}
+	}
+
+	return true;
+}
+
+boolean CVoxelDisplay::updateCameraPosition()
+{
+	const float32 l_f32PhiAmplitude = 2; //in degrees
+	const float32 l_f32ThetaAmplitude = 1;
+	const float32 l_f32PhiAmplitudeTime = 2; //in seconds
+	const float32 l_f32ThetaAmplitudeTime = l_f32PhiAmplitudeTime;
+	const float32 l_f32ThetaAmplitudePhase = 0;
+	const float32 l_f32Pi = 3.14159265359f;
+
+	if(m_bAutoCameraMovementEnabled == true)
+	{
+		//get current time
+		uint64 l_ui64Time = getBoxAlgorithmContext()->getPlayerContext()->getCurrentTime();
+		float64 l_f64CurTime = (float64)l_ui64Time / (float64)(1LL<<32);
+
+		//ensure base time is initialized
+		if(m_f64AutoCameraMovementStartTime == 0)
+		{
+			m_f64AutoCameraMovementStartTime = l_f64CurTime;
+		}
+
+		float32 l_f32CurTheta=0;
+		float32 l_f32CurPhi=0;
+		float32 l_f32CurDist=0;
+
+		//retrieve cam coords
+		getBoxAlgorithmContext()->getVisualisationContext()->getCameraSphericalCoordinates(
+			m_o3DWidgetIdentifier, l_f32CurTheta, l_f32CurPhi, l_f32CurDist);
+
+		//retrieve camera 'base' position (without offsets)
+		l_f32CurTheta -= m_f32ThetaOffset;
+		l_f32CurPhi -= m_f32PhiOffset;
+
+		//compute new theta/phi offsets
+		float32 l_f32ThetaAmplitudeCoef = (l_f64CurTime - m_f64AutoCameraMovementStartTime) / l_f32ThetaAmplitudeTime;
+		l_f32ThetaAmplitudeCoef -= (float32)((int32)l_f32ThetaAmplitudeCoef); //normalize coef
+
+		if(l_f32ThetaAmplitudeCoef < 0.25)
+		{
+			m_f32ThetaOffset = sinf(l_f32Pi/2 * 4 * l_f32ThetaAmplitudeCoef + l_f32ThetaAmplitudePhase) * l_f32ThetaAmplitude/2;
+		}
+		else if(l_f32ThetaAmplitudeCoef > 0.75)
+		{
+			m_f32ThetaOffset = sinf(l_f32Pi/2 * 4 * (l_f32ThetaAmplitudeCoef-1.f) + l_f32ThetaAmplitudePhase) * l_f32ThetaAmplitude/2;
+		}
+		else
+		{
+			m_f32ThetaOffset = l_f32ThetaAmplitude/2 - sinf(l_f32Pi/2 * 2 * (l_f32ThetaAmplitudeCoef - 0.25) + l_f32ThetaAmplitudePhase) * l_f32ThetaAmplitude;
+		}
+
+		//Phi coef
+		float32 l_f32PhiAmplitudeCoef = (l_f64CurTime - m_f64AutoCameraMovementStartTime) / l_f32PhiAmplitudeTime;
+		l_f32PhiAmplitudeCoef -= (float32)((int32)l_f32PhiAmplitudeCoef); //normalize coef
+
+		if(l_f32PhiAmplitudeCoef < 0.25)
+		{
+			m_f32PhiOffset = sinf(l_f32Pi/2 * 4 * l_f32PhiAmplitudeCoef) * l_f32PhiAmplitude/2;
+		}
+		else if(l_f32PhiAmplitudeCoef > 0.75)
+		{
+			m_f32PhiOffset = sinf(l_f32Pi/2 * 4 * (l_f32PhiAmplitudeCoef-1.f)) * l_f32PhiAmplitude/2;
+		}
+		else
+		{
+			m_f32PhiOffset = l_f32PhiAmplitude/2 - sinf(l_f32Pi/2 * 2 * (l_f32PhiAmplitudeCoef - 0.25)) * l_f32PhiAmplitude;
+		}
+
+		//update camera position
+		getBoxAlgorithmContext()->getVisualisationContext()->setCameraSphericalCoordinates(
+			m_o3DWidgetIdentifier,
+			l_f32CurTheta + m_f32ThetaOffset,
+			l_f32CurPhi + m_f32PhiOffset,
+			l_f32CurDist);
 	}
 
 	return true;
