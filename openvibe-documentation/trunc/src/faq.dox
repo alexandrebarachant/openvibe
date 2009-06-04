@@ -104,8 +104,9 @@
 <tr>                                                      <td>Fedora Core 4</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Fedora Core 5</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Fedora 8</td>         <td>GCC</td>                                <td bgcolor=green>OK</td> </tr>
-<tr> <td rowspan=4>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested</td> </tr>
-<tr>                           <td rowspan=3>Linux</td>   <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
+<tr> <td rowspan=5>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested</td> </tr>
+<tr>                           <td rowspan=4>Linux</td>   <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Fedora 9</td>         <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> </tr>
 <tr>                                                      <td>Fedora 10</td>        <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
 </table>
