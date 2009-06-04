@@ -13,29 +13,32 @@ public:
 	vrpn_Analog_Remote* m_pAnalog;
 };
 
-static void handle_button(void* pUserData, const vrpn_BUTTONCB b)
+namespace
 {
-	CAbstractVrpnPeripheric* l_pAbstractVrpnPeripheric=(CAbstractVrpnPeripheric *)pUserData;
-
-	VrpnButtonState l_oVrpnButtonState;
-	l_oVrpnButtonState.first=b.button;
-	l_oVrpnButtonState.second=b.state;
-
-	l_pAbstractVrpnPeripheric->m_vButton.push_back(l_oVrpnButtonState);
-}
-
-static void handle_analog(void* pUserData, const vrpn_ANALOGCB a)
-{
-	CAbstractVrpnPeripheric* l_pAbstractVrpnPeripheric=(CAbstractVrpnPeripheric *)pUserData;
-
-	VrpnAnalogState l_oVrpnAnalogState;
-
-	for(int i=0; i<a.num_channel; i++)
+	void VRPN_CALLBACK handle_button(void* pUserData, const vrpn_BUTTONCB b)
 	{
-		l_oVrpnAnalogState.push_back(a.channel[i]*l_pAbstractVrpnPeripheric->m_dAnalogScale+l_pAbstractVrpnPeripheric->m_dAnalogOffset);
+		CAbstractVrpnPeripheric* l_pAbstractVrpnPeripheric=(CAbstractVrpnPeripheric *)pUserData;
+
+		VrpnButtonState l_oVrpnButtonState;
+		l_oVrpnButtonState.first=b.button;
+		l_oVrpnButtonState.second=b.state;
+
+		l_pAbstractVrpnPeripheric->m_vButton.push_back(l_oVrpnButtonState);
 	}
 
-	l_pAbstractVrpnPeripheric->m_vAnalog.push_back(l_oVrpnAnalogState);
+	void VRPN_CALLBACK handle_analog(void* pUserData, const vrpn_ANALOGCB a)
+	{
+		CAbstractVrpnPeripheric* l_pAbstractVrpnPeripheric=(CAbstractVrpnPeripheric *)pUserData;
+
+		VrpnAnalogState l_oVrpnAnalogState;
+
+		for(int i=0; i<a.num_channel; i++)
+		{
+			l_oVrpnAnalogState.push_back(a.channel[i]*l_pAbstractVrpnPeripheric->m_dAnalogScale+l_pAbstractVrpnPeripheric->m_dAnalogOffset);
+		}
+
+		l_pAbstractVrpnPeripheric->m_vAnalog.push_back(l_oVrpnAnalogState);
+	}
 }
 
 REGISTER_OBJECT_FACTORY(CAbstractVrpnPeripheric, "ovaCAbstractVrpnPeripheric");
@@ -62,8 +65,8 @@ void CAbstractVrpnPeripheric::init(void)
 	m_pDevice->m_pAnalog=new vrpn_Analog_Remote(m_sDeviceName.c_str());
 	m_pDevice->m_pButton=new vrpn_Button_Remote(m_sDeviceName.c_str());
 
-	m_pDevice->m_pButton->register_change_handler(this, handle_button);
-	m_pDevice->m_pAnalog->register_change_handler(this, handle_analog);
+	m_pDevice->m_pButton->register_change_handler(this, &handle_button);
+	m_pDevice->m_pAnalog->register_change_handler(this, &handle_analog);
 }
 
 void CAbstractVrpnPeripheric::compute(void)
