@@ -60,4 +60,6 @@ for project_directory in $OpenViBE_build_order; do
 	cp -rf $project_directory/doc/*     $target_dist/doc     2> /dev/null
 done
 
+find $target_dist/doc -name *.html -exec sed -i -e "s/\xC2\?\xA7OpenViBE\xC2\?\xA7/OpenViBE/g" "{}" \; # \xC2\?\xA7 is the § character that has been put everywhere to clearly make the distinction between the project and the software
+
 true
