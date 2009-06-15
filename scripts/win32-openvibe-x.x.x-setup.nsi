@@ -75,7 +75,7 @@ Section "-OpenViBE"
   File ..\dependencies\arch\openvibe-dependency-gtk-2.10.11.zip
   File ..\dependencies\arch\openvibe-dependency-itpp-4.0.6.zip
   File ..\dependencies\arch\openvibe-dependency-obt-22.zip
-  File ..\dependencies\arch\openvibe-dependency-ogre-1.4.9.zip
+  File ..\dependencies\arch\openvibe-dependency-ogre-1.6.2-vc2008.zip
   File ..\dependencies\arch\openvibe-dependency-openmask4~dotsceneloader-164.zip
   File ..\dependencies\arch\openvibe-dependency-vrpn-7.13.zip
 
@@ -86,7 +86,7 @@ Section "-OpenViBE"
   ZipDLL::extractall "arch\openvibe-dependency-gtk-2.10.11.zip" "gtk"
   ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.6.zip" "itpp"
   ZipDLL::extractall "arch\openvibe-dependency-obt-22.zip" "obt"
-  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.4.9.zip" "ogre"
+  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2008" "ogre-vc2008"
   ZipDLL::extractall "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip" "openmask"
   ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.13.zip" "vrpn"
 
@@ -100,12 +100,12 @@ Section "-OpenViBE"
   FileWrite $0 "SET OV_DEP_GLADE=$INSTDIR\dependencies\gtk$\r$\n"
   FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\dependencies\itpp$\r$\n"
   FileWrite $0 "SET OV_DEP_OBT=$INSTDIR\dependencies\obt$\r$\n"
-  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\dependencies\ogre$\r$\n"
+  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\dependencies\ogre-vc2008$\r$\n"
   FileWrite $0 "SET OV_DEP_OPENMASK=$INSTDIR\dependencies\openmask$\r$\n"
   FileWrite $0 "SET OV_DEP_DSI=$INSTDIR\dependencies\openmask$\r$\n"
   FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\dependencies\vrpn$\r$\n"
   FileWrite $0 "$\r$\n"
-  FileWrite $0 "SET OGRE_HOME=$INSTDIR\dependencies\ogre$\r$\n"
+  FileWrite $0 "SET OGRE_HOME=$INSTDIR\dependencies\ogre-vc2008$\r$\n"
   FileWrite $0 "SET OMK_HOME=$INSTDIR\dependencies\openmask$\r$\n"
   FileWrite $0 "SET OMK_BIN=$INSTDIR\dependencies\openmask$\r$\n"
   FileWrite $0 "SET VRPNROOT=$INSTDIR\dependencies\vrpn$\r$\n"

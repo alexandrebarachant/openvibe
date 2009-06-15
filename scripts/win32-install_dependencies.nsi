@@ -63,8 +63,8 @@ base_go_on:
   ;clears dependencies file
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" w
   FileWrite $0 "@echo off$\r$\n"
-  FileWrite $0 "\r$\n"
-  FileWrite $0 "set OV_DEP_MSSDK=$r0$\r$\n"
+  FileWrite $0 "$\r$\n"
+  FileWrite $0 "SET OV_DEP_MSSDK=$r0$\r$\n"
   FileClose $0
 
 SectionEnd
@@ -272,32 +272,88 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "Ogre3D"
+SectionGroup /e "Ogre3D"
+Section /o "Ogre3D for Visual C++ 2003" ogre_vc_2003
 
   SetOutPath "$INSTDIR"
   CreateDirectory "$INSTDIR\arch"
 
-  IfFileExists "arch\openvibe-dependency-ogre-1.4.9.zip" no_need_to_download_ogre
-  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.4.9.zip "arch\openvibe-dependency-ogre-1.4.9.zip"
+  IfFileExists "arch\openvibe-dependency-ogre-1.6.2-vc2003.zip" no_need_to_download_ogre_vc2003
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.6.2-vc2003.zip "arch\openvibe-dependency-ogre-1.6.2-vc2003.zip"
   Pop $R0 ; Get the return value
     StrCmp $R0 "success" +3
       MessageBox MB_OK "Download failed: $R0"
       Quit
 
-no_need_to_download_ogre:
+no_need_to_download_ogre_vc2003:
 
-  IfFileExists "ogre" no_need_to_install_ogre
-  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.4.9.zip" "ogre"
+  IfFileExists "ogre-vc2003" no_need_to_install_ogre_vc2003
+  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2003.zip" "ogre-vc2003"
 
-no_need_to_install_ogre:
+no_need_to_install_ogre_vc2003:
 
   FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
   FileSeek $0 0 END
-  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre$\r$\n"
-  FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre$\r$\n"
+  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre-vc2003$\r$\n"
+  FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre-vc2003$\r$\n"
   FileClose $0
 
 SectionEnd
+
+Section /o "Ogre3D for Visual C++ 2005" ogre_vc_2005
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  IfFileExists "arch\openvibe-dependency-ogre-1.6.2-vc2005.zip" no_need_to_download_ogre_vc2005
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.6.2-vc2005.zip "arch\openvibe-dependency-ogre-1.6.2-vc2005.zip"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_ogre_vc2005:
+
+  IfFileExists "ogre-vc2005" no_need_to_install_ogre_vc2005
+  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2005.zip" "ogre-vc2005"
+
+no_need_to_install_ogre_vc2005:
+
+  FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+  FileSeek $0 0 END
+  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre-vc2005$\r$\n"
+  FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre-vc2005$\r$\n"
+  FileClose $0
+
+SectionEnd
+
+Section "Ogre3D for Visual C++ 2008" ogre_vc_2008
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  IfFileExists "arch\openvibe-dependency-ogre-1.6.2-vc2008.zip" no_need_to_download_ogre_vc2008
+  NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.6.2-vc2008.zip "arch\openvibe-dependency-ogre-1.6.2-vc2008.zip"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_ogre_vc2008:
+
+  IfFileExists "ogre-vc2008" no_need_to_install_ogre_vc2008
+  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2008.zip" "ogre-vc2008"
+
+no_need_to_install_ogre_vc2008:
+
+  FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+  FileSeek $0 0 END
+  FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre-vc2008$\r$\n"
+  FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre-vc2008$\r$\n"
+  FileClose $0
+
+SectionEnd
+SectionGroupEnd
 
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
@@ -386,3 +442,20 @@ Section "Uninstall"
   RMDir "$INSTDIR"
 
 SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Function .onInit
+  StrCpy $1 ${ogre_vc_2008}
+FunctionEnd
+
+Function .onSelChange
+	!insertmacro StartRadioButtons $1
+		!insertmacro RadioButton ${ogre_vc_2003}
+		!insertmacro RadioButton ${ogre_vc_2005}
+		!insertmacro RadioButton ${ogre_vc_2008}
+	!insertmacro EndRadioButtons
+FunctionEnd
+

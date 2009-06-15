@@ -98,31 +98,31 @@ echo cd lib                                                  >> %target_dist%\te
 echo ..\bin\OpenViBE-plugin-inspector-dynamic.exe            >> %target_dist%\test-plugin-inspector.cmd
 echo pause                                                   >> %target_dist%\test-plugin-inspector.cmd
 
-echo @echo off                                               >  %target_dist%\test-vr-demo-tie.cmd
-echo pushd ..\scripts                                        >> %target_dist%\test-vr-demo-tie.cmd
-echo call win32-init_env_command.cmd                         >> %target_dist%\test-vr-demo-tie.cmd
-echo popd                                                    >> %target_dist%\test-vr-demo-tie.cmd
-echo set PATH=%%PATH%%;%%CD%%\lib;                           >> %target_dist%\test-vr-demo-tie.cmd
-echo cd share\openvibe-applications\vr-demo\tie-fighter      >> %target_dist%\test-vr-demo-tie.cmd
-echo %%OMK_HOME%%\bin\OMKReferenceApplication omk\demo.omk   >> %target_dist%\test-vr-demo-tie.cmd
-echo pause                                                   >> %target_dist%\test-vr-demo-tie.cmd
+REM echo @echo off                                               >  %target_dist%\test-vr-demo-tie.cmd
+REM echo pushd ..\scripts                                        >> %target_dist%\test-vr-demo-tie.cmd
+REM echo call win32-init_env_command.cmd                         >> %target_dist%\test-vr-demo-tie.cmd
+REM echo popd                                                    >> %target_dist%\test-vr-demo-tie.cmd
+REM echo set PATH=%%PATH%%;%%CD%%\lib;                           >> %target_dist%\test-vr-demo-tie.cmd
+REM echo cd share\openvibe-applications\vr-demo\tie-fighter      >> %target_dist%\test-vr-demo-tie.cmd
+REM echo %%OMK_HOME%%\bin\OMKReferenceApplication omk\demo.omk   >> %target_dist%\test-vr-demo-tie.cmd
+REM echo pause                                                   >> %target_dist%\test-vr-demo-tie.cmd
 
-echo @echo off                                               >  %target_dist%\test-vr-demo-handball.cmd
-echo pushd ..\scripts                                        >> %target_dist%\test-vr-demo-handball.cmd
-echo call win32-init_env_command.cmd                         >> %target_dist%\test-vr-demo-handball.cmd
-echo popd                                                    >> %target_dist%\test-vr-demo-handball.cmd
-echo set PATH=%%PATH%%;%%CD%%\lib;                           >> %target_dist%\test-vr-demo-handball.cmd
-echo cd share\openvibe-applications\vr-demo\football         >> %target_dist%\test-vr-demo-handball.cmd
-echo %%OMK_HOME%%\bin\OMKReferenceApplication omk\demo.omk   >> %target_dist%\test-vr-demo-handball.cmd
-echo pause                                                   >> %target_dist%\test-vr-demo-handball.cmd
+REM echo @echo off                                               >  %target_dist%\test-vr-demo-handball.cmd
+REM echo pushd ..\scripts                                        >> %target_dist%\test-vr-demo-handball.cmd
+REM echo call win32-init_env_command.cmd                         >> %target_dist%\test-vr-demo-handball.cmd
+REM echo popd                                                    >> %target_dist%\test-vr-demo-handball.cmd
+REM echo set PATH=%%PATH%%;%%CD%%\lib;                           >> %target_dist%\test-vr-demo-handball.cmd
+REM echo cd share\openvibe-applications\vr-demo\football         >> %target_dist%\test-vr-demo-handball.cmd
+REM echo %%OMK_HOME%%\bin\OMKReferenceApplication omk\demo.omk   >> %target_dist%\test-vr-demo-handball.cmd
+REM echo pause                                                   >> %target_dist%\test-vr-demo-handball.cmd
 
-echo @echo off                                               >  %target_dist%\test-vrpn-simulator.cmd
-echo pushd ..\scripts                                        >> %target_dist%\test-vrpn-simulator.cmd
-echo call win32-init_env_command.cmd                         >> %target_dist%\test-vrpn-simulator.cmd
-echo popd                                                    >> %target_dist%\test-vrpn-simulator.cmd
-echo cd lib                                                  >> %target_dist%\test-vrpn-simulator.cmd
-echo ..\bin\OpenViBE-vrpn-simulator-dynamic.exe              >> %target_dist%\test-vrpn-simulator.cmd
-echo pause                                                   >> %target_dist%\test-vrpn-simulator.cmd
+REM echo @echo off                                               >  %target_dist%\test-vrpn-simulator.cmd
+REM echo pushd ..\scripts                                        >> %target_dist%\test-vrpn-simulator.cmd
+REM echo call win32-init_env_command.cmd                         >> %target_dist%\test-vrpn-simulator.cmd
+REM echo popd                                                    >> %target_dist%\test-vrpn-simulator.cmd
+REM echo cd lib                                                  >> %target_dist%\test-vrpn-simulator.cmd
+REM echo ..\bin\OpenViBE-vrpn-simulator-dynamic.exe              >> %target_dist%\test-vrpn-simulator.cmd
+REM echo pause                                                   >> %target_dist%\test-vrpn-simulator.cmd
 
 for /F %%s in (%OpenViBE_build_order%) do (
 	xcopy /q /s %%s\bin\*.exe          %target_dist%\bin     > NULL 2<&1
