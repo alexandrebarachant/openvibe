@@ -1,6 +1,7 @@
 #include "ovpCDownsamplingBoxAlgorithm.h"
 
 #include <stdlib.h>
+#include <limits.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -26,6 +27,9 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 	m_pStreamDecoder->initialize();
 	m_pStreamEncoder->initialize();
 
+	ip_pMemoryBufferToDecode.initialize(m_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
+	op_pEncodedMemoryBuffer.initialize(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+
 	// Compute filter coeff algorithm
 	m_pComputeTemporalFilterCoefficients=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_ComputeTemporalFilterCoefficients));
 	m_pComputeTemporalFilterCoefficients->initialize();
@@ -38,7 +42,7 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 	m_pDownsampling=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_Downsampling));
 	m_pDownsampling->initialize();
 
-	// compute filter coefs settings
+	// Compute filter coefs settings
 	CString l_oNewSamplingRate;
 	CString l_oNameFilter;
 	CString l_oFilterOrder;
@@ -74,7 +78,7 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 	float64 l_f64HighCutFrequency = (float64)m_ui64NewSamplingRate*l_f64Ratio;
 	float64 l_f64PassBandRipple = atof(l_oPassBandRipple);
 
-	// compute filter settings
+	// Compute filter settings
 	m_pComputeTemporalFilterCoefficients->getInputParameter(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputParameterId_SamplingFrequency)->setReferenceTarget(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
 	m_pComputeTemporalFilterCoefficients->getInputParameter(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputParameterId_FilterMethod)->setValue(&l_iu64NameFilter);
 	m_pComputeTemporalFilterCoefficients->getInputParameter(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputParameterId_FilterType)->setValue(&l_iu64KindFilter);
@@ -83,7 +87,7 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 	m_pComputeTemporalFilterCoefficients->getInputParameter(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputParameterId_HighCutFrequency)->setValue(&l_f64HighCutFrequency);
 	m_pComputeTemporalFilterCoefficients->getInputParameter(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputParameterId_BandPassRipple)->setValue(&l_f64PassBandRipple);
 
-	// apply filter settings
+	// Apply filter settings
 	m_pApplyTemporalFilter->getInputParameter(OVP_Algorithm_ApplyTemporalFilter_InputParameterId_SignalMatrix)->setReferenceTarget(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix));
 	m_pApplyTemporalFilter->getInputParameter(OVP_Algorithm_ApplyTemporalFilter_InputParameterId_FilterCoefficientsMatrix)->setReferenceTarget(m_pComputeTemporalFilterCoefficients->getOutputParameter(OVP_Algorithm_ComputeTemporalFilterCoefficients_OutputParameterId_Matrix));
 
@@ -92,7 +96,7 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 	m_pDownsampling->getInputParameter(OVP_Algorithm_Downsampling_InputParameterId_SamplingFrequency)->setReferenceTarget(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
 	m_pDownsampling->getInputParameter(OVP_Algorithm_Downsampling_InputParameterId_NewSamplingFrequency)->setValue(&m_ui64NewSamplingRate);
 
-	// encoder settings
+	// Encoder settings
 	m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate)->setValue(&m_ui64NewSamplingRate);
 
 	m_pInputSignal.initialize(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix));
@@ -101,8 +105,10 @@ boolean CDownsamplingBoxAlgorithm::initialize(void)
 
 	m_pOutputSignalDescription=new CMatrix();
 
-	m_ui64LastEndTime = 0;
+	m_ui64LastEndTime = (uint64)-1;
 	m_bFlagFirstTime = true;
+	m_ui64LastBufferSize = 0;
+	m_ui64CurrentBufferSize = 0;
 
 	return true;
 }
@@ -111,7 +117,7 @@ boolean CDownsamplingBoxAlgorithm::uninitialize(void)
 {
 	delete m_pOutputSignalDescription;
 	m_pOutputSignalDescription=NULL;
-
+	
 	m_pApplyTemporalFilter->uninitialize();
 	m_pComputeTemporalFilterCoefficients->uninitialize();
 	m_pStreamEncoder->uninitialize();
@@ -139,10 +145,8 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 
 	for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(0); j++)
 	{
-		TParameterHandler < const IMemoryBuffer* > l_oInputMemoryBufferHandle(m_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
-		TParameterHandler < IMemoryBuffer* > l_oOutputMemoryBufferHandle(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-		l_oInputMemoryBufferHandle=l_rDynamicBoxContext.getInputChunk(0, j);
-		l_oOutputMemoryBufferHandle=l_rDynamicBoxContext.getOutputChunk(0);
+		ip_pMemoryBufferToDecode=l_rDynamicBoxContext.getInputChunk(0, j);
+		op_pEncodedMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
 
 		uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(0, j);
 		uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(0, j);
@@ -150,52 +154,52 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 		m_pStreamDecoder->process();
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
+			m_pComputeTemporalFilterCoefficients->process(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputTriggerId_Initialize);
+			m_pComputeTemporalFilterCoefficients->process(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputTriggerId_ComputeCoefficients);
+			m_pApplyTemporalFilter->process(OVP_Algorithm_ApplyTemporalFilter_InputTriggerId_Initialize);
 		}
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
-			if (m_bFlagFirstTime)
-			{
-				m_pComputeTemporalFilterCoefficients->process(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputTriggerId_Initialize);
-				m_pComputeTemporalFilterCoefficients->process(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputTriggerId_ComputeCoefficients);
-				m_pApplyTemporalFilter->process(OVP_Algorithm_ApplyTemporalFilter_InputTriggerId_Initialize);
-			}
-
 			if (m_ui64LastEndTime==l_ui64StartTime)
 			{
 				m_pApplyTemporalFilter->process(OVP_Algorithm_ApplyTemporalFilter_InputTriggerId_ApplyFilterWithHistoric);
+				m_pDownsampling->process(OVP_Algorithm_Downsampling_InputTriggerId_ResampleWithHistoric);
 			}
 			else
 			{
 				m_pApplyTemporalFilter->process(OVP_Algorithm_ApplyTemporalFilter_InputTriggerId_ApplyFilter);
+				m_pDownsampling->process(OVP_Algorithm_Downsampling_InputTriggerId_Resample);
 			}
 
-			m_pDownsampling->process(OVP_Algorithm_Downsampling_InputTriggerId_Resample);
-
-			if (m_bFlagFirstTime)
+			TParameterHandler < IMatrix* > l_pTempOutputSignal(m_pDownsampling->getOutputParameter(OVP_Algorithm_Downsampling_OutputParameterId_SignalMatrix));
+			m_ui64CurrentBufferSize = l_pTempOutputSignal->getDimensionSize(1);
+			
+			if ((m_bFlagFirstTime) || (m_ui64CurrentBufferSize != m_ui64LastBufferSize))
 			{
-				uint64 l_ui64InputSamplingFrequency=m_ui64SamplingRate;
-				if(l_ui64InputSamplingFrequency%m_ui64NewSamplingRate != 0)
+				if (!m_bFlagFirstTime)
 				{
-					this->getLogManager() << LogLevel_Warning << "This box is not stable yet and settings should be chosen with care\n";
-					this->getLogManager() << LogLevel_ImportantWarning << "The input sampling frequency (" << l_ui64InputSamplingFrequency << ") is not a multiple of the new sampling frequency (" << m_ui64NewSamplingRate << ")\n";
-					return false;
+					this->getLogManager() << LogLevel_Warning << "This box is flagged as unstable !\n";
+					this->getLogManager() << LogLevel_ImportantWarning << "The original sampling frenquency is not an exact multiple of the new sampling frequency resulting in creation of size varying output chunks. This may cause crash for next boxes.\n";
+					this->getLogManager() << LogLevel_Trace << "(current block size is " << m_ui64CurrentBufferSize << ", new block size is " << m_ui64LastBufferSize << ")\n";
 				}
 
 				m_pOutputSignalDescription->setDimensionCount(2);
 				m_pOutputSignalDescription->setDimensionSize(0, m_pInputSignal->getDimensionSize(0));
-				m_pOutputSignalDescription->setDimensionSize(1,(m_pInputSignal->getDimensionSize(1)*m_ui64NewSamplingRate)/m_ui64SamplingRate);
+				m_pOutputSignalDescription->setDimensionSize(1, m_ui64CurrentBufferSize);
 				for(uint32 k=0; k< m_pInputSignal->getDimensionSize(0); k++)
 				{
 					m_pOutputSignalDescription->setDimensionLabel(0, k, m_pInputSignal->getDimensionLabel(0, k));
 				}
 				m_pOutputSignal.setReferenceTarget(m_pOutputSignalDescription);
 				m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
+				m_ui64LastBufferSize = m_ui64CurrentBufferSize;
+				
 				m_bFlagFirstTime = false;
 			}
 			m_pOutputSignal.setReferenceTarget(m_pDownsampling->getOutputParameter(OVP_Algorithm_Downsampling_OutputParameterId_SignalMatrix));
 			m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
 			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
+			m_ui64LastBufferSize = m_ui64CurrentBufferSize;
 		}
 
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd))
@@ -205,6 +209,7 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 		}
 
 		m_ui64LastEndTime=l_ui64EndTime;
+
 		l_rDynamicBoxContext.markInputAsDeprecated(0, j);
 	}
 

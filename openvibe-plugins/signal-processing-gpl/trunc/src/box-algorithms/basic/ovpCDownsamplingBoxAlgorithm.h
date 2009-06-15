@@ -31,6 +31,9 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pApplyTemporalFilter;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pDownsampling;
 
+			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pMemoryBufferToDecode;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pEncodedMemoryBuffer;
+
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputSignal;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputSignal;
 			OpenViBE::IMatrix* m_pOutputSignalDescription;
@@ -39,6 +42,9 @@ namespace OpenViBEPlugins
 
 			OpenViBE::uint64 m_ui64LastEndTime;
 			OpenViBE::boolean m_bFlagFirstTime;
+			OpenViBE::uint64 m_ui64LastBufferSize;
+			OpenViBE::uint64 m_ui64CurrentBufferSize;
+			OpenViBE::uint64 m_ui64SignalType;
 		};
 
 		class CDownsamplingBoxAlgorithmDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -47,12 +53,12 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { }
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Downsampling - GPL"); }
-			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Guillaume Gibert"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("G. Gibert - E. Maby - P.E. Aguera"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM/U821"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Filters and downsamples input buffer."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("First, applies a low-pass (Butterworth, Chebychev or Yule-Walker) filter (frequency cut is 1/4, 1/3 or 1/2 of the new sampling rate) to input buffers of signal for anti-aliasing. Then, the input buffers of signal is downsampled."); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.01"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString(""); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_Box_DownsamplingBoxAlgorithm; }

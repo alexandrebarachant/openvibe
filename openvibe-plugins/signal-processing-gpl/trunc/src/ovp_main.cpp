@@ -25,6 +25,9 @@
 #include "algorithms/basic/ovpCDetectingMinMax.h"
 #include "box-algorithms/basic/ovpCDetectingMinMaxBoxAlgorithm.h"
 
+#include "algorithms/classif/ovpCNaiveBayesApplyFunction.h"
+#include "box-algorithms/classif/ovpCNaiveBayesApplyBoxAlgorithm.h"
+
 OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerBitMaskType (OVP_TypeId_SpectralComponent, "Spectral component");
 	rPluginModuleContext.getTypeManager().registerBitMaskEntry(OVP_TypeId_SpectralComponent, "Amplitude",      OVP_TypeId_SpectralComponent_Amplitude.toUInteger());
@@ -76,4 +79,7 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CLDABoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDetectingMinMaxDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDetectingMinMaxBoxAlgorithmDesc);
-OVP_Declare_End();
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyFunctionDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyBoxAlgorithmDesc);
+	
+	OVP_Declare_End();

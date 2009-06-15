@@ -25,6 +25,9 @@ boolean CTemporalFilterBoxAlgorithm::initialize(void)
 	m_pStreamDecoder->initialize();
 	m_pStreamEncoder->initialize();
 
+	ip_pMemoryBufferToDecode.initialize(m_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
+	op_pEncodedMemoryBuffer.initialize(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+
 	// Compute filter coeff algorithm
 	m_pComputeTemporalFilterCoefficients=&getAlgorithmManager().getAlgorithm(getAlgorithmManager().createAlgorithm(OVP_ClassId_Algorithm_ComputeTemporalFilterCoefficients));
 	m_pComputeTemporalFilterCoefficients->initialize();
@@ -111,10 +114,12 @@ boolean CTemporalFilterBoxAlgorithm::process(void)
 	{
 		for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(i); j++)
 		{
-			TParameterHandler < const IMemoryBuffer* > l_oInputMemoryBufferHandle(m_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
-			TParameterHandler < IMemoryBuffer* > l_oOutputMemoryBufferHandle(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-			l_oInputMemoryBufferHandle=l_rDynamicBoxContext.getInputChunk(i, j);
-			l_oOutputMemoryBufferHandle=l_rDynamicBoxContext.getOutputChunk(i);
+//			TParameterHandler < const IMemoryBuffer* > l_oInputMemoryBufferHandle(m_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
+//			TParameterHandler < IMemoryBuffer* > l_oOutputMemoryBufferHandle(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+//			l_oInputMemoryBufferHandle=l_rDynamicBoxContext.getInputChunk(i, j);
+//			l_oOutputMemoryBufferHandle=l_rDynamicBoxContext.getOutputChunk(i);
+			ip_pMemoryBufferToDecode=l_rDynamicBoxContext.getInputChunk(i, j);
+			op_pEncodedMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(i);
 			uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(i, j);
 			uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(i, j);
 
@@ -129,7 +134,7 @@ boolean CTemporalFilterBoxAlgorithm::process(void)
 			}
 			if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
-				if (m_ui64LastEndTime==l_rDynamicBoxContext.getInputChunkStartTime(i, j))
+				if (m_ui64LastEndTime==l_ui64StartTime)
 				{
 					m_pApplyTemporalFilter->process(OVP_Algorithm_ApplyTemporalFilter_InputTriggerId_ApplyFilterWithHistoric);
 				}
@@ -146,8 +151,8 @@ boolean CTemporalFilterBoxAlgorithm::process(void)
 				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_ui64StartTime, l_ui64EndTime);
 			}
 
-			m_ui64LastStartTime=l_rDynamicBoxContext.getInputChunkStartTime(i, j);
-			m_ui64LastEndTime=l_rDynamicBoxContext.getInputChunkEndTime(i, j);
+//			m_ui64LastStartTime=l_ui64StartTime;
+			m_ui64LastEndTime=l_ui64EndTime;
 			l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 		}
 	}

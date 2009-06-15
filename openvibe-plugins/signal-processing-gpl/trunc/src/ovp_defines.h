@@ -160,6 +160,7 @@
 #define OVP_Algorithm_Downsampling_InputParameterId_NewSamplingFrequency                OpenViBE::CIdentifier(0x8617E5FA, 0xC39CDBE7)
 #define OVP_Algorithm_Downsampling_InputTriggerId_Initialize                            OpenViBE::CIdentifier(0x82D96F84, 0x9479A701)
 #define OVP_Algorithm_Downsampling_InputTriggerId_Resample                              OpenViBE::CIdentifier(0x2A88AFF5, 0x79ECAEB3)
+#define OVP_Algorithm_Downsampling_InputTriggerId_ResampleWithHistoric                              OpenViBE::CIdentifier(0xD5740B33, 0x3785C886)
 #define OVP_Algorithm_Downsampling_InputParameterId_SignalMatrix                        OpenViBE::CIdentifier(0xBB09054A, 0xEF13B2C6)
 #define OVP_Algorithm_Downsampling_OutputParameterId_SignalMatrix                       OpenViBE::CIdentifier(0x4B9BE135, 0x14C10757)
 
@@ -198,7 +199,19 @@
 
 #define OVP_ClassId_Box_LDABoxAlgorithm                                                 OpenViBE::CIdentifier(0xF37C8DBC, 0x18FEA50E)
 #define OVP_ClassId_Box_LDABoxAlgorithmDesc                                             OpenViBE::CIdentifier(0x89E0A991, 0x4E0680D5)
-#define OVP_Algorithm_LDABoxAlgorithm_InputParameterId_SignalMatrix                     OpenViBE::CIdentifier(0xEC68E737, 0x59E1B68B)
+//#define OVP_Algorithm_LDABoxAlgorithm_InputParameterId_SignalMatrix                     OpenViBE::CIdentifier(0xEC68E737, 0x59E1B68B)
+
+#define OVP_ClassId_Box_NaiveBayesApplyBoxAlgorithm                                                 OpenViBE::CIdentifier(0xCCE94653, 0x690907D9)
+#define OVP_ClassId_Box_NaiveBayesApplyBoxAlgorithmDesc                                             OpenViBE::CIdentifier(0x7C0C9AFC, 0xC806CC84)
+#define OVP_ClassId_Algorithm_NaiveBayesApplyFunction                                	OpenViBE::CIdentifier(0xF9C21D2C, 0x9E6ABE8E)
+#define OVP_ClassId_Algorithm_NaiveBayesApplyDesc                                  	OpenViBE::CIdentifier(0xCDE5EFEB, 0x0689C756)
+#define OVP_Algorithm_NaiveBayesApplyFunction_InputParameterId_MatrixSignal		OpenViBE::CIdentifier(0xF1D46621, 0x9CAE8931)
+#define OVP_Algorithm_NaiveBayesApplyFunction_InputParameterId_MatrixMean		OpenViBE::CIdentifier(0xDD1479AC, 0xB2E13471)
+#define OVP_Algorithm_NaiveBayesApplyFunction_InputParameterId_MatrixVariance		OpenViBE::CIdentifier(0xEB3CD401, 0x54E4692D)
+#define OVP_Algorithm_NaiveBayesApplyFunction_InputParameterId_LogTerm			OpenViBE::CIdentifier(0xB10D8B3C, 0x2A1D3705)
+#define OVP_Algorithm_NaiveBayesApplyFunction_OutputParameterId_MatrixClassFunctional	OpenViBE::CIdentifier(0x57A78D33, 0x724CE7F9)
+#define OVP_Algorithm_NaiveBayesApplyFunction_InputTriggerId_Initialize			OpenViBE::CIdentifier(0x0B3F7D98, 0x70D9D6E6)
+#define OVP_Algorithm_NaiveBayesApplyFunction_InputTriggerId_Apply			OpenViBE::CIdentifier(0x622D05B7, 0x002F601F)
 
 #define OVP_ClassId_Algorithm_DetectingMinMax                                           OpenViBE::CIdentifier(0x46C14A64, 0xE00541DD)
 #define OVP_ClassId_Algorithm_DetectingMinMaxDesc                                       OpenViBE::CIdentifier(0x5B194CDA, 0x54E6DEC7)

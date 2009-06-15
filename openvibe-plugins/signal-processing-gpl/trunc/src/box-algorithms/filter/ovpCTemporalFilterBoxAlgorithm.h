@@ -30,7 +30,9 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pComputeTemporalFilterCoefficients;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pApplyTemporalFilter;
 
-			OpenViBE::uint64 m_ui64LastStartTime;
+			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pMemoryBufferToDecode;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pEncodedMemoryBuffer;
+//			OpenViBE::uint64 m_ui64LastStartTime;
 			OpenViBE::uint64 m_ui64LastEndTime;
 		};
 

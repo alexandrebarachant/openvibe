@@ -22,6 +22,8 @@ boolean CApplyFisherLdaFunction::initialize(void)
 
 	op_pFisherLdaDecision.initialize(getOutputParameter(OVP_Algorithm_ApplyFisherLdaFunction_OutputParameterId_FisherLdaDecision));
 
+
+
 	return true;
 }
 

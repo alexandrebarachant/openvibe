@@ -70,8 +70,8 @@ boolean CApplyTemporalFilter::process(void)
 		// signal input vars
 		float64* l_pSignalInput = l_pSignalInputMatrix->getBuffer();
 
-		// dimension of input signal biuffer
-		uint32 l_ui32SignalInputMatrixDimensionCount=ip_pSignalMatrix->getDimensionCount();
+		// dimension of input signal buffer
+		// uint32 l_ui32SignalInputMatrixDimensionCount=ip_pSignalMatrix->getDimensionCount();
 		uint32 l_ui32SignalInputMatrixDimensionNbChannels=ip_pSignalMatrix->getDimensionSize(0);
 		uint32 l_ui32SignalInputMatrixDimensionSizeEpoch=ip_pSignalMatrix->getDimensionSize(1);
 
@@ -111,7 +111,7 @@ boolean CApplyTemporalFilter::process(void)
 		float64* l_pSignalInput = l_pSignalInputMatrix->getBuffer();
 
 		// dimension of input signal biuffer
-		uint32 l_ui32SignalInputMatrixDimensionCount=ip_pSignalMatrix->getDimensionCount();
+		// uint32 l_ui32SignalInputMatrixDimensionCount=ip_pSignalMatrix->getDimensionCount();
 		uint32 l_ui32SignalInputMatrixDimensionNbChannels=ip_pSignalMatrix->getDimensionSize(0);
 		uint32 l_ui32SignalInputMatrixDimensionSizeEpoch=ip_pSignalMatrix->getDimensionSize(1);
 
