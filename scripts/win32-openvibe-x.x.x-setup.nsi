@@ -86,7 +86,7 @@ Section "-OpenViBE"
   ZipDLL::extractall "arch\openvibe-dependency-gtk-2.10.11.zip" "gtk"
   ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.6.zip" "itpp"
   ZipDLL::extractall "arch\openvibe-dependency-obt-22.zip" "obt"
-  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2008" "ogre-vc2008"
+  ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2008.zip" "ogre-vc2008"
   ZipDLL::extractall "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip" "openmask"
   ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.13.zip" "vrpn"
 
