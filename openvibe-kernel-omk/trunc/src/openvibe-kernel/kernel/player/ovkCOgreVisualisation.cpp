@@ -9,6 +9,8 @@ using namespace Ogre;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 
+#define uint64 OpenViBE::uint64
+
 COgreVisualisation::COgreVisualisation(const OpenViBE::Kernel::IKernelContext& rKernelContext)
 	:TKernelObject<IObject>(rKernelContext)
 	,m_eLogLevel(LogLevel_Trace)
