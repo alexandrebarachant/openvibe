@@ -1,7 +1,10 @@
 #include <openvibe/ov_all.h>
 
+#include "ovp_defines.h"
 #include "ovpCVRPNAnalogServer.h"
 #include "ovpCVRPNButtonServer.h"
+
+#include <vector>
 
 OVP_Declare_Begin();
 
