@@ -731,6 +731,7 @@ uint32 CInterfacedScenario::pickInterfacedObject(int x, int y)
 {
 	if(!GDK_DRAWABLE(m_pStencilBuffer))
 	{
+		m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "No stencil buffer defined - couldn't pick object... this should never happen !\n";
 		return 0xffffffff;
 	}
 
@@ -743,12 +744,14 @@ uint32 CInterfacedScenario::pickInterfacedObject(int x, int y)
 		::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, x, y, 0, 0, 1, 1);
 		if(!l_pPixbuf)
 		{
+			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Could not get pixbuf from stencil buffer - couldn't pick object... this should never happen !\n";
 			return 0xffffffff;
 		}
 
 		guchar* l_pPixels=gdk_pixbuf_get_pixels(l_pPixbuf);
 		if(!l_pPixels)
 		{
+			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Could not get pixels from pixbuf - couldn't pick object... this should never happen !\n";
 			return 0xffffffff;
 		}
 
@@ -765,6 +768,7 @@ boolean CInterfacedScenario::pickInterfacedObject(int x, int y, int iSizeX, int 
 {
 	if(!GDK_DRAWABLE(m_pStencilBuffer))
 	{
+		m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "No stencil buffer defined - couldn't pick object... this should never happen !\n";
 		return false;
 	}
 
@@ -795,12 +799,14 @@ boolean CInterfacedScenario::pickInterfacedObject(int x, int y, int iSizeX, int 
 	::GdkPixbuf* l_pPixbuf=gdk_pixbuf_get_from_drawable(NULL, GDK_DRAWABLE(m_pStencilBuffer), NULL, iStartX, iStartY, 0, 0, iSizeX, iSizeY);
 	if(!l_pPixbuf)
 	{
+		m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Could not get pixbuf from stencil buffer - couldn't pick object... this should never happen !\n";
 		return false;
 	}
 
 	guchar* l_pPixels=gdk_pixbuf_get_pixels(l_pPixbuf);
 	if(!l_pPixels)
 	{
+		m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Could not get pixels from pixbuf - couldn't pick object... this should never happen !\n";
 		return false;
 	}
 
@@ -955,7 +961,7 @@ void CInterfacedScenario::scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 
 	gdk_window_get_size(GTK_WIDGET(m_pScenarioDrawingArea)->window, &x, &y);
 	if(m_pStencilBuffer) g_object_unref(m_pStencilBuffer);
-	m_pStencilBuffer=gdk_pixmap_new(NULL, x, y, 24);
+	m_pStencilBuffer=gdk_pixmap_new(GTK_WIDGET(m_pScenarioDrawingArea)->window, x, y, -1);
 
 	::GdkGC* l_pStencilGC=gdk_gc_new(m_pStencilBuffer);
 	::GdkColor l_oColor={0, 0, 0, 0};
