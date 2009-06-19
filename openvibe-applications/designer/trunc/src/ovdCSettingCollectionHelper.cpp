@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -58,7 +59,7 @@ namespace
 		{
 			char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
 			char* l_pBackslash = NULL;
-			while(l_pBackslash = strchr(l_sFileName, '\\'))
+			while((l_pBackslash = strchr(l_sFileName, '\\'))!=NULL)
 			{
 				*l_pBackslash = '/';
 			}

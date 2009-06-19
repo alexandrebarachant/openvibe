@@ -36,6 +36,7 @@
 <!-- hardware-compatibility start -->
 \endhtmlonly
  *   - Mindmedia NeXus32B
+ *   - ANT Neuro ASALAB EEG / ERP amplifier (32-256 channels) has been reported to work with NeXus32B driver
  *   - Micromed IntraEEG
  *   - Brainamp ScalpEEG
  *   - CTF/VSM MEG
@@ -187,6 +188,16 @@
  *
  * Other connections are not planned yet, but feel free to \ref Doc_Contact us if you think a connection with your software could be a plus.
  *
+ * \section Doc_FAQ_DirectX On Windows, launching OpenViBE complains about missing d3dx9_33.dll or d3dx9_38.dll, what should I do ?
+ *
+ * This message is a generic message that Windows prints when a DLL should be loaded and can't be found. The d3dx9_33.dll and d3dx9_38.dll file are part of
+ * DirectX (Microsoft 3D acceleration API) which is used by Ogre3D. The best thing to do is to actually install DirectX on your
+ * computer. You can find it searching for Direct X redist on google (or following this link http://www.google.fr/search?q=directx+redist+site%3Amicrosoft.com).
+ * Be carefull with the release date because you still can find 2004 versions of DirectX and these versions may be proposed first.
+ *
+ * Anyway, if you don't want or can't install DirextX, Ogre3D will use OpenGL and just work with no limitation. You will just have to
+ * click the OK button each time you try to launch OpenViBE.
+ *
  * \section Doc_FAQ_DependencyInstallationLinux Why did you write this crappy dependency installation script for Linux ?
  *
  * OK, most Linux users will wonder what this installation script was created for in the first place. 
@@ -216,7 +227,7 @@
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 17!)
+ * this question currently is 18!)
  *
  */
 

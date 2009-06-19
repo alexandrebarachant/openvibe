@@ -14,8 +14,8 @@ INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindThirdPartyGlade")
 INCLUDE("FindThirdPartyOgre3D")
-INCLUDE("FindThirdPartyOBT")
-INCLUDE("FindThirdPartyDotSceneLoader")
+#INCLUDE("FindThirdPartyOBT")
+#INCLUDE("FindThirdPartyDotSceneLoader")
 
 # ---------------------------------
 # Finds standard library dl

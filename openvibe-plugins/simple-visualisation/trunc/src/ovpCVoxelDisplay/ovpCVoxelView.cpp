@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include <math.h>
+#include <string.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

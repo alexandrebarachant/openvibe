@@ -28,6 +28,14 @@ using namespace std;
 
 namespace
 {
+	::guint __g_idle_add__(::GSourceFunc fpCallback, ::gpointer pUserData, ::gint iPriority=G_PRIORITY_DEFAULT_IDLE)
+	{
+		::GSource* l_pSource=g_idle_source_new();
+		g_source_set_priority(l_pSource, G_PRIORITY_LOW);
+		g_source_set_callback(l_pSource, fpCallback, pUserData, NULL);
+		return g_source_attach(l_pSource, NULL);
+	}
+
 	void drag_data_get_cb(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->dragDataGetCB(pWidget, pDragContex, pSelectionData, uiInfo, uiT);
@@ -321,7 +329,7 @@ void CApplication::initialize(void)
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-algorithm_title_button_expand")),   "clicked", G_CALLBACK(algorithm_title_button_expand_cb),   this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
 
-	g_idle_add(idle_application_loop, this);
+	__g_idle_add__(idle_application_loop, this);
 
 	// Prepares main notebooks
 	m_pScenarioNotebook=GTK_NOTEBOOK(glade_xml_get_widget(m_pGladeInterface, "openvibe-scenario_notebook"));
@@ -1074,7 +1082,7 @@ void CApplication::createPlayer(void)
 		l_pCurrentInterfacedScenario->m_ui64LastLoopTime=System::Time::zgetTime();
 
 		//set up idle function
-		g_idle_add(idle_scenario_loop, l_pCurrentInterfacedScenario);
+		__g_idle_add__(idle_scenario_loop, l_pCurrentInterfacedScenario);
 
 		// redraws scenario
 		l_pCurrentInterfacedScenario->redraw();
