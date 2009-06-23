@@ -1,9 +1,9 @@
 /**
- * \page Doc_Scenario_InsermP300Speller The Open-ViBE P300-speller
+ * \page Doc_Scenario_InsermP300Speller The Inserm P300-speller
  *
  * \section Doc_Scenario_InsermP300Speller_Principle Principle :
  *
- * The user focuses attention on one of the 36 character cells of a 6 × 6 matrix while each
+ * The user focuses attention on one of the 36 character cells of a 6 x 6 matrix while each
  * row and column of the matrix is intensified in a random sequence. The row and column
  * intensifications that intersect at the attended cell represent the target stimuli, which
  * occur with a probability of 1/6. The rare presentation of the target stimuli in the random
@@ -17,7 +17,7 @@
  *
  * \subsubsection Doc_Scenario_InsermP300Speller_Protocol_Step1_Stimulation Stimulation
  *
- * - 6 × 6 matrix of letters (a-z), numbers (1-9) and symbol ( _ )
+ * - 6 x 6 matrix of letters (a-z), numbers (1-9) and symbol ( _ )
  * - Off-line mode, i.e. the subject was instructed to focus his attention on the current
  *   target symbol (which was displayed in between brackets next to the target word) and
  *   to count the number of times this symbol was intensified.
@@ -105,7 +105,7 @@
  *
  * \subsubsection Doc_Scenario_InsermP300Speller_Protocol_Step3_Stimulation Stimulation
  *
- * - 6 × 6 matrix of letters (a-z), numbers (1-9) and symbol (_ ) 
+ * - 6 x 6 matrix of letters (a-z), numbers (1-9) and symbol (_ ) 
  * - On-line mode, i.e. the subject was instructed to focus his attention on the desired symbol
  *   and to count the number of times this symbol was intensified.
  * - After all flashes were presented, the stimulator presents the symbol selected by the OpenViBE

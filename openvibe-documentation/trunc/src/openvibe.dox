@@ -65,6 +65,8 @@
  *     - \subpage Doc_DesignerTutorial2
  *     - \subpage Doc_DesignerTutorial3
  *     - \subpage Doc_DesignerTutorial4 (should be completed - YR)
+ * - \subpage Doc_Scenario
+ *   - \subpage Doc_Scenario_InsermP300Speller
  *
  * \section Doc_DeveloperDocumentationSection Developer Documentation
  * - \subpage Doc_Install "Installation procedure"
@@ -113,6 +115,8 @@
  *     - \subpage Doc_DesignerTutorial2
  *     - \subpage Doc_DesignerTutorial3
  *     - \subpage Doc_DesignerTutorial4
+ * - \subpage Doc_Scenario
+ *   - \subpage Doc_Scenario_InsermP300Speller
  */
 
 /** \page Doc_DeveloperDocumentation Developer Documentation
@@ -151,4 +155,9 @@
  * - \subpage Doc_DesignerTutorial2
  * - \subpage Doc_DesignerTutorial3
  * - \subpage Doc_DesignerTutorial4
+ */
+
+/**
+ * \page Doc_Scenario Existing scenarios
+ * - \subpage Doc_Scenario_InsermP300Speller
  */
