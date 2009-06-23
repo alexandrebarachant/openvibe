@@ -1,0 +1,15 @@
+This directory contains the Inserm P300 Speller based on OpenViBE
+
+In order to test this speller, you will have to compile the P300 speller stimulator
+located in openvibe-applications/p300-speller/branches/wip-ggibert . The reason why
+this stimulator is not in trunc is it has not been fully OpenViBE integrated yet.
+
+Refer to the http://openvibe.inria.fr/documentation/unstable/Doc_Scenario_InsermP300Speller.html
+page for instructions about how to use this stimulator and the associated scenarios / MATLAB scripts
+
+The archived should be decompressed in /, resulting in the following tree :
+ /openvibe                 : the directory containing OpenViBE scenarios
+ /openvibe/BoxSettings_XML : the target directory for external box configurations
+ /openvibe/OV_P300         : the directory containing MATLAB training scripts
+
+For any additional information, feel free to contact mail "aguera at lyon.inserm.fr"

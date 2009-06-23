@@ -1,64 +1,64 @@
 <OpenViBE-Scenario>
 	<Boxes>
 		<Box>
-			<Identifier>(0x701e8a0d, 0x41e690d0)</Identifier>
-			<Name>Sinus oscillator</Name>
-			<AlgorithmClassIdentifier>(0x7e33bdb8, 0x68194a4a)</AlgorithmClassIdentifier>
+			<Identifier>(0x2c6cd881, 0x0ab87e9c)</Identifier>
+			<Name>Generic stream reader</Name>
+			<AlgorithmClassIdentifier>(0x6468099f, 0x0370095a)</AlgorithmClassIdentifier>
 			<Outputs>
 				<Output>
 					<TypeIdentifier>(0x5ba36127, 0x195feae1)</TypeIdentifier>
-					<Name>Generated signal</Name>
+					<Name>Output stream 1</Name>
 				</Output>
 			</Outputs>
 			<Settings>
 				<Setting>
-					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
-					<Name>Channel count</Name>
-					<DefaultValue>4</DefaultValue>
-					<Value>4</Value>
-				</Setting>
-				<Setting>
-					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
-					<Name>Sampling frequency</Name>
-					<DefaultValue>512</DefaultValue>
-					<Value>512</Value>
-				</Setting>
-				<Setting>
-					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
-					<Name>Generated epoch sample count</Name>
-					<DefaultValue>32</DefaultValue>
-					<Value>32</Value>
+					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
+					<Name>Filename</Name>
+					<DefaultValue></DefaultValue>
+					<Value>${Path_Samples}/signals/bci-motor-imagery.ov</Value>
 				</Setting>
 			</Settings>
 			<Attributes>
+				<Attribute>
+					<Identifier>(0x17ee7c08, 0x94c14893)</Identifier>
+					<Value></Value>
+				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
 					<Value>96</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
-					<Value>25</Value>
+					<Value>38</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
 					<Value>304</Value>
 				</Attribute>
 				<Attribute>
+					<Identifier>(0x30a4e5c9, 0x83502953)</Identifier>
+					<Value></Value>
+				</Attribute>
+				<Attribute>
 					<Identifier>(0x4e7b798a, 0x183beafb)</Identifier>
-					<Value>(0x0b214ed8, 0x1f9ad83a)</Value>
+					<Value>(0xf37b8e7a, 0x1bc33e4e)</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>122</Value>
+					<Value>177</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xc46b3d00, 0x3e0454e1)</Identifier>
-					<Value>(0x00000000, 0x00a11800)</Value>
+					<Value>(0x00000000, 0x01b25f63)</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0xc67a01dc, 0x28ce06c1)</Identifier>
+					<Value></Value>
 				</Attribute>
 			</Attributes>
 		</Box>
 		<Box>
-			<Identifier>(0x76490b01, 0x36b19cc0)</Identifier>
+			<Identifier>(0x56fa5c33, 0x42722a79)</Identifier>
 			<Name>Signal display</Name>
 			<AlgorithmClassIdentifier>(0x0055be5f, 0x087bdd12)</AlgorithmClassIdentifier>
 			<Inputs>
@@ -106,28 +106,24 @@
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
 					<Value>109</Value>
 				</Attribute>
-				<Attribute>
-					<Identifier>(0xc67a01dc, 0x28ce06c1)</Identifier>
-					<Value></Value>
-				</Attribute>
 			</Attributes>
 		</Box>
 	</Boxes>
 	<Links>
 		<Link>
-			<Identifier>(0x103b2716, 0x156827fc)</Identifier>
+			<Identifier>(0x5619d775, 0x1885eb9b)</Identifier>
 			<Source>
-				<BoxIdentifier>(0x701e8a0d, 0x41e690d0)</BoxIdentifier>
+				<BoxIdentifier>(0x2c6cd881, 0x0ab87e9c)</BoxIdentifier>
 				<BoxOutputIndex>0</BoxOutputIndex>
 			</Source>
 			<Target>
-				<BoxIdentifier>(0x76490b01, 0x36b19cc0)</BoxIdentifier>
+				<BoxIdentifier>(0x56fa5c33, 0x42722a79)</BoxIdentifier>
 				<BoxInputIndex>0</BoxInputIndex>
 			</Target>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
-					<Value>115</Value>
+					<Value>121</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
@@ -146,14 +142,14 @@
 	</Links>
 	<VisualisationTree>
 		<VisualisationWidget>
-			<Identifier>(0x645ec5ab, 0x11c5abef)</Identifier>
+			<Identifier>(0x2c686488, 0x33321410)</Identifier>
 			<Type>3</Type>
 			<ParentIdentifier>(0xffffffff, 0xffffffff)</ParentIdentifier>
-			<BoxIdentifier>(0x76490b01, 0x36b19cc0)</BoxIdentifier>
+			<BoxIdentifier>(0x56fa5c33, 0x42722a79)</BoxIdentifier>
 			<NumChildren>0</NumChildren>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x663bfe95, 0x31e0986f)</Identifier>
+			<Identifier>(0x77dc7174, 0x49113dde)</Identifier>
 			<Name>Default window</Name>
 			<Type>1</Type>
 			<ParentIdentifier>(0xffffffff, 0xffffffff)</ParentIdentifier>
@@ -171,19 +167,19 @@
 			</Attributes>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x41fcf274, 0x294614f7)</Identifier>
+			<Identifier>(0x3c5d4877, 0x0acb676d)</Identifier>
 			<Name>Default tab</Name>
 			<Type>2</Type>
-			<ParentIdentifier>(0x663bfe95, 0x31e0986f)</ParentIdentifier>
+			<ParentIdentifier>(0x77dc7174, 0x49113dde)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>1</NumChildren>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x517df487, 0x5ebe0eab)</Identifier>
+			<Identifier>(0x323268f8, 0x7e55ee3a)</Identifier>
 			<Name>Empty</Name>
 			<Type>0</Type>
-			<ParentIdentifier>(0x41fcf274, 0x294614f7)</ParentIdentifier>
+			<ParentIdentifier>(0x3c5d4877, 0x0acb676d)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>0</NumChildren>
