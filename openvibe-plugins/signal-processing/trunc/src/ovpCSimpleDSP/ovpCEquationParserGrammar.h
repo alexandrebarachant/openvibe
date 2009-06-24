@@ -3,6 +3,10 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/symbols/symbols.hpp>
 #include <boost/spirit/tree/ast.hpp>

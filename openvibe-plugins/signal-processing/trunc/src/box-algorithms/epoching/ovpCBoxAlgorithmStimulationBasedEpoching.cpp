@@ -148,7 +148,7 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 						l_oEpocher.m_ui64EndTime=op_pStimulationSet->getStimulationDate(j)+m_i64EpochOffset+m_ui64EpochDuration;
 						l_oEpocher.m_bNeedsReset=true;
 						m_vStimulationBasedEpoching.push_back(l_oEpocher);
-						getLogManager() << LogLevel_Trace << "Created new epocher at time "
+						getLogManager() << LogLevel_Debug << "Created new epocher at time "
 							<< l_oEpocher.m_ui64StimulationTime << ":"
 							<< l_oEpocher.m_ui64StartTime << ":"
 							<< l_oEpocher.m_ui64EndTime << "\n";
