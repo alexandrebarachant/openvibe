@@ -37,7 +37,7 @@ CIdentifier CAlgorithmManager::createAlgorithm(
 		return OV_UndefinedIdentifier;
 	}
 
-	getLogManager() << LogLevel_Trace << "Creating algorithm with class identifier " << rAlgorithmClassIdentifier << "\n";
+	getLogManager() << LogLevel_Debug << "Creating algorithm with class identifier " << rAlgorithmClassIdentifier << "\n";
 
 	CIdentifier l_oAlgorithmIdentifier=getUnusedIdentifier();
 	CAlgorithm* l_pTrueAlgorithm=new CAlgorithm(getKernelContext(), *l_pAlgorithm, *l_pAlgorithmDesc);
@@ -56,7 +56,7 @@ boolean CAlgorithmManager::releaseAlgorithm(
 		getLogManager() << LogLevel_Warning << "Algorithm release failed, identifier " << rAlgorithmIdentifier << "\n";
 		return false;
 	}
-	getLogManager() << LogLevel_Trace << "Releasing algorithm with identifier " << rAlgorithmIdentifier << "\n";
+	getLogManager() << LogLevel_Debug << "Releasing algorithm with identifier " << rAlgorithmIdentifier << "\n";
 	IAlgorithm& l_rAlgorithm=itAlgorithm->second.first->getAlgorithm();
 	delete itAlgorithm->second.second;
 	delete itAlgorithm->second.first;
@@ -73,7 +73,7 @@ boolean CAlgorithmManager::releaseAlgorithm(
 	{
 		if((IAlgorithmProxy*)itAlgorithm->second.second==&rAlgorithm)
 		{
-			getLogManager() << LogLevel_Trace << "Releasing algorithm\n";
+			getLogManager() << LogLevel_Debug << "Releasing algorithm\n";
 			IAlgorithm& l_rAlgorithm=itAlgorithm->second.first->getAlgorithm();
 			delete itAlgorithm->second.second;
 			delete itAlgorithm->second.first;

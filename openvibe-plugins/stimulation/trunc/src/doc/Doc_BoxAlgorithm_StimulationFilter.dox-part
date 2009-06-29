@@ -1,0 +1,89 @@
+/**
+ * \page BoxAlgorithm_StimulationFilter Stimulation Filter
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Description|
+ * Filters a stimulation stream in order to select or reject some
+ * specific stimulation ranges. The configuration of the box consists
+ * of a set of rules which will be exectuted consecutively. The first
+ * rule is the default one, specifying what to do if no other rule
+ * matches. The next rules will specify what to do for their respective
+ * range of stimulations. The last matching rule is chosen so you should
+ * build up your rules from general purpose to specific purpose.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Inputs|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Input1|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Input1|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Output1|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Settings|
+ * You can add as many settings as you want. They will be grouped
+ * in order to have one action and two stimulation identifiers.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting1|
+ * This is the default action to perform if no rule is matching.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Setting1|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting2|
+ * This setting contains the action to perform on the specified range of stimulations.
+ * The range of stimulations is specified with next two settings.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Setting2|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting3|
+ * The stimulation starting the range.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Setting3|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting4|
+ * The stumulation ending the range.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Setting4|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Examples|
+ * A simple example could be to select Label 00 to 0F in a stimulation
+ * stream. For such example, you would have to turn first setting value
+ * to \c Reject and use one \c Select rule for range Label 00 to Label 0F.
+ *
+ * Another example coulb be that you want to select Label 00 to 0F but
+ * and single stimulations GDF LEFT and GDF RIGHT. Additionnaly, for a
+ * reason, you want to avoid this Label 07 and Label 08. In this case, you
+ * will have to turn the first setting to \c Reject then build up 4 rules :
+ *  - rule 1 : \c Select range Label 00 to Label 0F
+ *  - rule 2 : \c Select range GDF Left to GDF Left (only 1 stim in this range)
+ *  - rule 3 : \c Select range GDF Right to GDF Right (only 1 stim in this range)
+ *  - rule 4 : \c Reject range Label 07 to Label 08
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Examples|
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Miscellaneous|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Miscellaneous|
+ */

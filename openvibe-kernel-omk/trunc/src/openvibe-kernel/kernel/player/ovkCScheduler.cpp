@@ -106,10 +106,15 @@ public:
 					l_bStatusOk=l_pReader->processData(l_sBuffer, l_iBufferLen);
 				}
 				l_oFile.close();
-			}
 
-			// message
-			rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Overrode " << m_ui32SettingIndex << " settings with this configuration file...\n";
+				// message
+				rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Overrode " << m_ui32SettingIndex << " settings with this configuration file...\n";
+			}
+			else
+			{
+				// override file was not found
+				rObjectVisitorContext.getLogManager() << LogLevel_Warning << "Could not override [" << rBox.getName() << "] settings because configuration file [" << l_sSettingOverrideFilenameFinal << "] could not be opened\n";
+			}
 
 			// cleans up internal state
 			m_pBox=NULL;

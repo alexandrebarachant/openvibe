@@ -37,6 +37,7 @@
 \endhtmlonly
  *   - Mindmedia NeXus32B
  *   - ANT Neuro ASALAB EEG / ERP amplifier (32-256 channels) has been reported to work with NeXus32B driver
+ *   - TMSi Porti32 has been reported to work with NeXus32B driver
  *   - Micromed IntraEEG
  *   - Brainamp ScalpEEG
  *   - CTF/VSM MEG
