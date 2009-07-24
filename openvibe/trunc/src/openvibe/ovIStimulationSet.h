@@ -23,6 +23,10 @@ namespace OpenViBE
 	public:
 
 		/**
+		 * \brief Clears this stimulation set removing every existing stimulation
+		 */
+		virtual void clear(void)=0;
+		/**
 		 * \brief Gets the number of stimulations contained in this stimulation set
 		 * \return the number of stimulations contained in this stimulation set.
 		 */

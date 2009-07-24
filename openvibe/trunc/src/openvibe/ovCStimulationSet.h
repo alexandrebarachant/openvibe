@@ -40,6 +40,7 @@ namespace OpenViBE
 
 		//@}
 
+		virtual void clear(void);
 		virtual const OpenViBE::uint64 getStimulationCount(void) const;
 		virtual const OpenViBE::uint64 getStimulationIdentifier(
 			const OpenViBE::uint64 ui64StimulationIndex) const;

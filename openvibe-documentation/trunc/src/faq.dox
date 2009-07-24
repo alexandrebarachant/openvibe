@@ -117,6 +117,11 @@
  *
  * If you have tested §OpenViBE§ on another platform, please fill free to report its status for this platform.
  *
+ * \section Doc_FAQ_Cite I'm a scientist and I wan't to cite OpenViBE, how should I proceed ?
+ *
+ * There is no reference article accepted yet so you should cite the OpenViBE website. We will update this FAQ entry as soon as a reference paper
+ * is accepted, stay tuned.
+ *
  * \section Doc_FAQ_GTK Why did you favor GTK over Qt ?
  *
  * People often wonder why GTK was chosen to handle $OpenViBE$ GUI requirements, arguing that Qt presents a number of advantages over 
@@ -166,7 +171,7 @@
  *
  * \section Doc_FAQ_Bug I think I found a bug, what should I do ?
  *
- * If you think you found a bug, please take a few minutes to file a bug report. A bug tracker can be found at http://gforge.inria.fr/tracker/?group_id=276 .
+ * If you think you found a bug, please take a few minutes to fill a bug report at http://openvibe.inria.fr/tracker/bug_report_page.php .
  * You will first want to check that your bug is not already listed in the tracker. If it is not, then you may fill in a complete bug report. 
  * Try to provide detailed information regarding the conditions in which the bug occured, this will help us reproduce it. We will typically want to know what 
  * hardware you have, the name/version of your operating system and compiler. Additional data such as a sample scenario and/or EEG record may also prove
@@ -228,7 +233,7 @@
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 18!)
+ * this question currently is 19!)
  *
  */
 

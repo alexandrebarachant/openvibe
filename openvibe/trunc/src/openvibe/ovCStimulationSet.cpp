@@ -36,6 +36,8 @@ namespace OpenViBE
 		{
 		public:
 
+			virtual void clear(void);
+
 			virtual const uint64 getStimulationCount(void) const;
 			virtual const uint64 getStimulationIdentifier(const uint64 ui64StimulationIndex) const;
 			virtual const uint64 getStimulationDate(const uint64 ui64StimulationIndex) const;
@@ -61,6 +63,11 @@ namespace OpenViBE
 
 // ________________________________________________________________________________________________________________
 //
+
+void CStimulationSetImpl::clear(void)
+{
+	m_vStimulation.clear();
+}
 
 const uint64 CStimulationSetImpl::getStimulationCount(void) const
 {
@@ -151,6 +158,11 @@ CStimulationSet::CStimulationSet(void)
 CStimulationSet::~CStimulationSet(void)
 {
 	delete m_pStimulationSetImpl;
+}
+
+void CStimulationSet::clear(void)
+{
+	m_pStimulationSetImpl->clear();
 }
 
 const uint64 CStimulationSet::getStimulationCount(void) const
