@@ -4,8 +4,11 @@
 
 #include "box-algorithms/basic/ovpCBoxAlgorithmEpochAverage.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmSignalDecimation.h"
 #include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
 #include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
+
+#include "box-algorithms/spectral-analysis/ovpCBoxAlgorithmFrequencyBandSelector.h"
 
 #include "ovpCTimeBasedEpoching.h"
 #include "ovpCReferenceChannel.h"
@@ -47,6 +50,7 @@ OVP_Declare_Begin()
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCropDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSignalDecimationDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmStimulationBasedEpochingDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSpatialFilterBoxAlgorithmDesc)
 
@@ -63,5 +67,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBandFrequencyAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochingDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSteadyStateFrequencyComparisonDesc)
+
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmFrequencyBandSelectorDesc)
 
 OVP_Declare_End()

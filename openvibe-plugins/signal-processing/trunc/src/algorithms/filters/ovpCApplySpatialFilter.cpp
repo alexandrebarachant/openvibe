@@ -35,7 +35,6 @@ boolean CApplySpatialFilter::uninitialize(void)
 
 boolean CApplySpatialFilter::process(void)
 {
-
 	IMatrix* l_pFilterCoefficientsInputMatrix = m_oFilterCoefficientsInputMatrixHandle;
 	IMatrix* l_pSignalInputMatrix = m_oSignalIntputMatrixHandle;
 	IMatrix* l_pSignalOutputMatrix = m_oSignalOutputMatrixHandle;
@@ -48,10 +47,11 @@ boolean CApplySpatialFilter::process(void)
 	uint32 l_ui32SignalInputLineDimensionSize=m_oSignalIntputMatrixHandle->getDimensionSize(0);
 	uint32 l_ui32SignalInputColumnDimensionSize=m_oSignalIntputMatrixHandle->getDimensionSize(1);
 
-	if (l_ui32FilterCoefficientsColumnDimensionSize != l_ui32SignalInputLineDimensionSize)
+	if(l_ui32FilterCoefficientsColumnDimensionSize != l_ui32SignalInputLineDimensionSize)
 	{
-		getLogManager() << LogLevel_Warning  << "bad matrix size!";
-		getLogManager() << LogLevel_Warning  << "Number of column of filter coefficients = " << l_ui32FilterCoefficientsColumnDimensionSize << " while Number of Line of Signal = " << l_ui32SignalInputLineDimensionSize;
+		getLogManager() << LogLevel_Warning  << "Bad matrix size!\n";
+		getLogManager() << LogLevel_Warning  << "Number of column of filter coefficients = " << l_ui32FilterCoefficientsColumnDimensionSize << " while Number of Line of Signal = " << l_ui32SignalInputLineDimensionSize << "\n";
+		return false;
 	}
 
 	// Input vars
