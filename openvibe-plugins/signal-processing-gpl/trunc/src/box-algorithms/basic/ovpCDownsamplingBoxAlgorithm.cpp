@@ -117,7 +117,7 @@ boolean CDownsamplingBoxAlgorithm::uninitialize(void)
 {
 	delete m_pOutputSignalDescription;
 	m_pOutputSignalDescription=NULL;
-	
+
 	m_pApplyTemporalFilter->uninitialize();
 	m_pComputeTemporalFilterCoefficients->uninitialize();
 	m_pStreamEncoder->uninitialize();
@@ -173,7 +173,7 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 
 			TParameterHandler < IMatrix* > l_pTempOutputSignal(m_pDownsampling->getOutputParameter(OVP_Algorithm_Downsampling_OutputParameterId_SignalMatrix));
 			m_ui64CurrentBufferSize = l_pTempOutputSignal->getDimensionSize(1);
-			
+
 			if ((m_bFlagFirstTime) || (m_ui64CurrentBufferSize != m_ui64LastBufferSize))
 			{
 				if (!m_bFlagFirstTime)
@@ -192,8 +192,9 @@ boolean CDownsamplingBoxAlgorithm::process(void)
 				}
 				m_pOutputSignal.setReferenceTarget(m_pOutputSignalDescription);
 				m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64StartTime);
 				m_ui64LastBufferSize = m_ui64CurrentBufferSize;
-				
+
 				m_bFlagFirstTime = false;
 			}
 			m_pOutputSignal.setReferenceTarget(m_pDownsampling->getOutputParameter(OVP_Algorithm_Downsampling_OutputParameterId_SignalMatrix));

@@ -55,9 +55,11 @@ boolean CNaiveBayesApplyBoxAlgorithm::initialize(void)
 	{
 		// Number of classes
 		l_oFile.read((char *)&m_ui32NbClasses, sizeof(uint32));
+		this -> getLogManager() << LogLevel_Trace << "Nb classes : " << m_ui32NbClasses << "\n";
 
 		// Number of features
 		l_oFile.read((char *)&m_ui32NbFeatures, sizeof(uint32));
+		this -> getLogManager() << LogLevel_Trace << "Nb features : " << m_ui32NbFeatures << "\n";
 
 		l_oMeanClassFeaturesMatrix->setDimensionCount(2);
 		l_oVarianceClassFeaturesMatrix->setDimensionCount(2);
@@ -187,7 +189,7 @@ boolean CNaiveBayesApplyBoxAlgorithm::process(void)
 					}
 					else
 					{
-						this->getLogManager()<<LogLevel_Error<<"Bad dimension of data or input training data.\n";
+						this->getLogManager()<<LogLevel_Error<<"Bad dimension of data or input training data : expected " << m_ui32NbFeatures << " features and input matrix size is " << l_opMatrix->getBufferElementCount() << "\n";
 					}
 
 					m_pf64AllEntriesClassFunctionalNB = (float64 **)calloc(m_ui64NbEntries, sizeof(float64*));
