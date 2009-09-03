@@ -836,7 +836,7 @@ boolean CInterfacedScenario::pickInterfacedObject(int x, int y, int iSizeX, int 
 
 #define OV_ClassId_Selected OpenViBE::CIdentifier(0xC67A01DC, 0x28CE06C1)
 
-void CInterfacedScenario::undoCB(void)
+void CInterfacedScenario::undoCB(boolean bManageModifiedStatusFlag)
 {
 	if(m_oStateStack.undo())
 	{
@@ -850,7 +850,10 @@ void CInterfacedScenario::undoCB(void)
 				m_vCurrentObject[l_oIdentifier]=true;
 
 		m_pDesignerVisualisation->load();
-		m_bHasBeenModified=true;
+		if(bManageModifiedStatusFlag)
+		{
+			m_bHasBeenModified=true;
+		}
 		this->redraw();
 	}
 	else
@@ -859,7 +862,7 @@ void CInterfacedScenario::undoCB(void)
 	}
 }
 
-void CInterfacedScenario::redoCB(void)
+void CInterfacedScenario::redoCB(boolean bManageModifiedStatusFlag)
 {
 	if(m_oStateStack.redo())
 	{
@@ -873,7 +876,10 @@ void CInterfacedScenario::redoCB(void)
 				m_vCurrentObject[l_oIdentifier]=true;
 
 		m_pDesignerVisualisation->load();
-		m_bHasBeenModified=true;
+		if(bManageModifiedStatusFlag)
+		{
+			m_bHasBeenModified=true;
+		}
 		this->redraw();
 	}
 	else
@@ -882,7 +888,7 @@ void CInterfacedScenario::redoCB(void)
 	}
 }
 
-void CInterfacedScenario::snapshotCB(void)
+void CInterfacedScenario::snapshotCB(boolean bManageModifiedStatusFlag)
 {
 	CIdentifier l_oIdentifier;
 	while((l_oIdentifier=m_rScenario.getNextBoxIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
@@ -896,7 +902,10 @@ void CInterfacedScenario::snapshotCB(void)
 		else
 			m_rScenario.getLinkDetails(l_oIdentifier)->removeAttribute(OV_ClassId_Selected);
 
-	m_bHasBeenModified=true;
+	if(bManageModifiedStatusFlag)
+	{
+		m_bHasBeenModified=true;
+	}
 	this->updateScenarioLabel();
 	m_oStateStack.snapshot();
 }
@@ -1637,7 +1646,11 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 					CString l_sHTMLName=CString("Doc_BoxAlgorithm_")+CString(getBoxAlgorithmURL(l_pPluginObjectDesc->getName().toASCIIString()).c_str())+CString(".html");
 					CString l_sFullURL=l_sURLBase+CString("/")+l_sHTMLName;
 					m_rKernelContext.getLogManager() << LogLevel_Trace << "Requesting web browser on URL " << l_sFullURL << "\n";
-					int l_iResult=system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
+					int l_iResult=::system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
+					if(l_iResult<0)
+					{
+						m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not launch command " << l_sWebBrowser+CString(" ")+l_sFullURL << "\n";
+					}
 				}
 			}
 		}

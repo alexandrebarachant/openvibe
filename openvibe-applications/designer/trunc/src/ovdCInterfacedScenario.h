@@ -33,9 +33,9 @@ namespace OpenViBEDesigner
 		OpenViBE::uint32 pickInterfacedObject(int x, int y);
 		OpenViBE::boolean pickInterfacedObject(int x, int y, int iSizeX, int iSizeY);
 
-		void undoCB(void);
-		void redoCB(void);
-		void snapshotCB(void);
+		void undoCB(OpenViBE::boolean bManageModifiedStatusFlag=true);
+		void redoCB(OpenViBE::boolean bManageModifiedStatusFlag=true);
+		void snapshotCB(OpenViBE::boolean bManageModifiedStatusFlag=true);
 
 		void scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent);
 		void scenarioDrawingAreaDragDataReceivedCB(::GdkDragContext* pDragContext, gint iX, gint iY, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT);

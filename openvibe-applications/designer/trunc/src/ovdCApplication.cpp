@@ -1068,7 +1068,7 @@ void CApplication::createPlayer(void)
 	if(l_pCurrentInterfacedScenario && !l_pCurrentInterfacedScenario->m_pPlayer)
 	{
 		// create a snapshot so settings override does not modify the scenario !
-		l_pCurrentInterfacedScenario->snapshotCB();
+		l_pCurrentInterfacedScenario->snapshotCB(false);
 
 		// generate player windows
 		l_pCurrentInterfacedScenario->createPlayerVisualisation();
@@ -1107,7 +1107,7 @@ void CApplication::releasePlayer(void)
 		l_pCurrentInterfacedScenario->m_pPlayer=NULL;
 
 		// restore the snapshot so settings override does not modify the scenario !
-		l_pCurrentInterfacedScenario->undoCB();
+		l_pCurrentInterfacedScenario->undoCB(false);
 
 		// destroy player windows
 		l_pCurrentInterfacedScenario->releasePlayerVisualisation();
