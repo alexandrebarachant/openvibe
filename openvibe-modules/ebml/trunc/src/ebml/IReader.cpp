@@ -1,12 +1,7 @@
 #include "IReader.h"
 #include <string.h>
 
-#define _Debug_ 0
-
-#if _Debug_
 #include <stdio.h>
-#endif
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -14,6 +9,29 @@ using namespace EBML;
 
 // ________________________________________________________________________________________________________________
 //
+
+#if 0
+#define _Debug_ _is_in_debug_mode_(m_ui64TotalBytes)
+static bool _is_in_debug_mode_(uint64 ui64Value)
+{
+	static int i=0;
+	// bool result=i++>5500000;
+	bool result=ui64Value>29605500;
+	if(result)printf("Arround %llu\n", ui64Value);
+	return result;
+
+}
+#else
+#define _Debug_ false
+#endif
+
+// ________________________________________________________________________________________________________________
+//
+
+inline bool needsTwoBytesToGetCodedSizeLength(unsigned char* pBuffer)
+{
+	return pBuffer[0]==0;
+}
 
 inline unsigned long getCodedSizeLength(unsigned char* pBuffer)
 {
@@ -133,6 +151,8 @@ namespace EBML
 			Status m_eLastStatus;
 			CIdentifier m_oCurrentIdentifier;
 			uint64 m_ui64CurrentContentSize;
+
+			uint64 m_ui64TotalBytes;
 		};
 	};
 };
@@ -149,6 +169,7 @@ CReader::CReader(IReaderCallback& rReaderCallback)
 	,m_eStatus(FillingIdentifier)
 	,m_oCurrentIdentifier(0)
 	,m_ui64CurrentContentSize(0)
+	,m_ui64TotalBytes(0)
 {
 }
 
@@ -165,12 +186,15 @@ CReader::~CReader(void)
 
 boolean CReader::processData(const void* pBuffer, const uint64 ui64BufferSize)
 {
-#if _Debug_
-printf("Received %i byte(s) new buffer :", (int)ui64BufferSize);
-for(int i=0; i<(int)ui64BufferSize && i<4; i++)
-	printf("[%02X]", ((unsigned char*)pBuffer)[i]);
-printf("...\n");
-#endif
+	m_ui64TotalBytes+=ui64BufferSize;
+
+if(_Debug_)
+{
+	printf("Received %i byte(s) new buffer :", (int)ui64BufferSize);
+	for(int i=0; i<(int)ui64BufferSize /* && i<4*/; i++)
+		printf("[%02X]", ((unsigned char*)pBuffer)[i]);
+	printf("...\n");
+}
 
 	if(!pBuffer || !ui64BufferSize)
 	{
@@ -186,7 +210,8 @@ printf("...\n");
 		uint64 l_ui64ProcessedBytes=0;
 		m_eLastStatus=m_eStatus;
 
-#if _Debug_
+if(_Debug_)
+{
 		if(m_ui64PendingCount)
 		{
 			printf("%i byte(s) pending : ", (int)m_ui64PendingCount);
@@ -194,38 +219,38 @@ printf("...\n");
 				printf("[%02X]", m_pPending[i]);
 			printf("\n");
 		}
-#endif
+}
 
 		// Processes data
 		switch(m_eStatus)
 		{
 			case FillingIdentifier:
-				{
-					unsigned long l_ulCodedSizeLength=getCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer);
-					if(l_ulCodedSizeLength>l_ui64BufferSize+m_ui64PendingCount)
-					{
-						l_bFinished=true;
-					}
-					else
-					{
-						unsigned char* l_pIdentifierBuffer=new unsigned char[l_ulCodedSizeLength];
-						memcpy(l_pIdentifierBuffer, m_pPending, (size_t)(m_ui64PendingCount));
-						memcpy(l_pIdentifierBuffer+m_ui64PendingCount, l_pBuffer, (size_t)(l_ulCodedSizeLength-m_ui64PendingCount));
-						m_oCurrentIdentifier=getValue(l_pIdentifierBuffer);
-						delete [] l_pIdentifierBuffer;
-						l_ui64ProcessedPendingBytes=m_ui64PendingCount;
-						l_ui64ProcessedBytes=l_ulCodedSizeLength;
-
-						m_eStatus=FillingContentSize;
-#if _Debug_
-						printf("Found identifier 0x%08X - Changing status to FillingContentSize...\n", (int)m_oCurrentIdentifier);
-#endif
-					}
-				}
-				break;
-
 			case FillingContentSize:
 				{
+					if(needsTwoBytesToGetCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer))
+					{
+						if(m_ui64PendingCount==1)
+						{
+							if(l_ui64BufferSize!=0)
+							{
+								m_pPending[1]=l_pBuffer[0];
+								l_pBuffer++;
+								m_ui64PendingCount++;
+								l_ui64BufferSize--;
+							}
+							else
+							{
+								// l_bFinished=true;
+								break;
+							}
+						}
+						else if(m_ui64PendingCount==0 && l_ui64BufferSize==1)
+						{
+							l_bFinished=true;
+							break;
+						}
+					}
+
 					unsigned long l_ulCodedSizeLength=getCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer);
 					if(l_ulCodedSizeLength>l_ui64BufferSize+m_ui64PendingCount)
 					{
@@ -233,27 +258,53 @@ printf("...\n");
 					}
 					else
 					{
-						unsigned char* l_pContentSizeBuffer=new unsigned char[l_ulCodedSizeLength];
-						memcpy(l_pContentSizeBuffer, m_pPending, (size_t)(m_ui64PendingCount));
-						memcpy(l_pContentSizeBuffer+m_ui64PendingCount, l_pBuffer, (size_t)(l_ulCodedSizeLength-m_ui64PendingCount));
-						m_ui64CurrentContentSize=getValue(l_pContentSizeBuffer);
-						delete [] l_pContentSizeBuffer;
-						l_ui64ProcessedPendingBytes=m_ui64PendingCount;
+						unsigned char* l_pEncodedBuffer=new unsigned char[l_ulCodedSizeLength];
+						uint64 l_ui64PendingBytesToCopy=(l_ulCodedSizeLength>m_ui64PendingCount?m_ui64PendingCount:l_ulCodedSizeLength);
+						::memcpy(l_pEncodedBuffer, m_pPending, (size_t)(l_ui64PendingBytesToCopy));
+						::memcpy(l_pEncodedBuffer+l_ui64PendingBytesToCopy, l_pBuffer, (size_t)(l_ulCodedSizeLength-l_ui64PendingBytesToCopy));
+						uint64 l_ui64DecodedValue=getValue(l_pEncodedBuffer);
+						delete [] l_pEncodedBuffer;
+						l_ui64ProcessedPendingBytes=l_ui64PendingBytesToCopy;
 						l_ui64ProcessedBytes=l_ulCodedSizeLength;
 
-						if(m_rReaderCallback.isMasterChild(m_oCurrentIdentifier))
+						switch(m_eStatus)
 						{
-							m_eStatus=FillingIdentifier;
-#if _Debug_
-							printf("Found content size %i of master node - Changing status to FillingIdentifier...\n", (int)m_ui64CurrentContentSize);
-#endif
-						}
-						else
-						{
-							m_eStatus=FillingContent;
-#if _Debug_
-							printf("Found content size %i of *non* master node - Changing status to FillingContent...\n", (int)m_ui64CurrentContentSize);
-#endif
+							case FillingIdentifier:
+								{
+									m_oCurrentIdentifier=l_ui64DecodedValue;
+									m_eStatus=FillingContentSize;
+if(_Debug_)
+{
+									printf("Found identifier 0x%llX - Changing status to FillingContentSize...\n", (unsigned long long)m_oCurrentIdentifier);
+}
+								}
+								break;
+
+							case FillingContentSize:
+								{
+									m_ui64CurrentContentSize=l_ui64DecodedValue;
+									if(m_rReaderCallback.isMasterChild(m_oCurrentIdentifier))
+									{
+										m_eStatus=FillingIdentifier;
+if(_Debug_)
+{
+										printf("Found content size %llu of master node - Changing status to FillingIdentifier...\n", (unsigned long long)m_ui64CurrentContentSize);
+}
+									}
+									else
+									{
+										m_eStatus=FillingContent;
+if(_Debug_)
+{
+										printf("Found content size %llu of *non* master node - Changing status to FillingContent...\n", (unsigned long long)m_ui64CurrentContentSize);
+}
+									}
+								}
+								break;
+
+							case FillingContent:
+								// Should never happen - avoids the warning
+								break;
 						}
 					}
 				}
@@ -264,9 +315,10 @@ printf("...\n");
 					if(m_pCurrentNode->m_ui64ContentSize==0)
 					{
 						m_eStatus=FillingIdentifier;
-#if _Debug_
-						printf("Finished with %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
-#endif
+if(_Debug_)
+{
+						printf("Finished with %llu byte(s) content - Changing status to FillingIdentifier...\n", (unsigned long long)m_pCurrentNode->m_ui64ContentSize);
+}
 						m_rReaderCallback.processChildData(NULL, 0);
 					}
 					else
@@ -276,28 +328,30 @@ printf("...\n");
 							m_eStatus=FillingIdentifier;
 
 							l_ui64ProcessedBytes=m_pCurrentNode->m_ui64ContentSize;
-#if _Debug_
-							printf("Optimized processing of %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
-#endif
+if(_Debug_)
+{
+							printf("Optimized processing of %llu byte(s) content - Changing status to FillingIdentifier...\n", (unsigned long long)m_pCurrentNode->m_ui64ContentSize);
+}
 							m_rReaderCallback.processChildData(l_pBuffer, m_pCurrentNode->m_ui64ContentSize);
 						}
 						else
 						{
 							if(m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize>l_ui64BufferSize)
 							{
-								memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(l_ui64BufferSize));
+								::memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(l_ui64BufferSize));
 								l_ui64ProcessedBytes=l_ui64BufferSize;
 								l_bFinished=true;
 							}
 							else
 							{
-								memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize));
+								::memcpy(m_pCurrentNode->m_pBuffer+m_pCurrentNode->m_ui64ReadContentSize, l_pBuffer, (size_t)(m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize));
 								l_ui64ProcessedBytes=m_pCurrentNode->m_ui64ContentSize-m_pCurrentNode->m_ui64ReadContentSize;
 
 								m_eStatus=FillingIdentifier;
-#if _Debug_
-								printf("Finished with %i byte(s) content - Changing status to FillingIdentifier...\n", (int)m_pCurrentNode->m_ui64ContentSize);
-#endif
+if(_Debug_)
+{
+								printf("Finished with %llu byte(s) content - Changing status to FillingIdentifier...\n", (unsigned long long)m_pCurrentNode->m_ui64ContentSize);
+}
 								m_rReaderCallback.processChildData(m_pCurrentNode->m_pBuffer, m_pCurrentNode->m_ui64ContentSize);
 							}
 						}
@@ -345,29 +399,37 @@ printf("...\n");
 	// Updates pending data
 	if(m_ui64PendingCount+l_ui64BufferSize>m_ui64PendingSize)
 	{
-		unsigned char* l_pPending=new unsigned char[(unsigned int)(m_ui64PendingCount+l_ui64BufferSize)];
-		memcpy(l_pPending, m_pPending, (size_t)(m_ui64PendingCount));
+		unsigned char* l_pPending=new unsigned char[(unsigned int)(m_ui64PendingCount+l_ui64BufferSize+1)]; // Ugly hack, reserve 1 more byte on pending data so we are sure we can insert this additional pending byte when only one byte is pending and two bytes are needed for decoding identifier and/or buffer size
+		::memcpy(l_pPending, m_pPending, (size_t)(m_ui64PendingCount));
 		delete [] m_pPending;
 		m_pPending=l_pPending;
 		m_ui64PendingSize=m_ui64PendingCount+l_ui64BufferSize;
 	}
-	memcpy(m_pPending+m_ui64PendingCount, l_pBuffer, (size_t)(l_ui64BufferSize));
+	::memcpy(m_pPending+m_ui64PendingCount, l_pBuffer, (size_t)(l_ui64BufferSize));
 	m_ui64PendingCount+=l_ui64BufferSize;
 
-#if _Debug_
-printf("\n");
-#endif
-
+if(_Debug_)
+{
+	printf("\n");
+}
 	return true;
 }
 
 CIdentifier CReader::getCurrentNodeIdentifier(void) const
 {
+if(_Debug_)
+{
+	printf("getCurrentNodeIdentifier : %p\n", m_pCurrentNode);
+}
 	return m_pCurrentNode?m_pCurrentNode->m_oIdentifier:CIdentifier();
 }
 
 uint64 CReader::getCurrentNodeSize(void) const
 {
+if(_Debug_)
+{
+	printf("getCurrentNodeSize : %p\n", m_pCurrentNode);
+}
 	return m_pCurrentNode?m_pCurrentNode->m_ui64ContentSize:0;
 }
 

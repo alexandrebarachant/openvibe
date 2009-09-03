@@ -5,6 +5,7 @@
 
 #include "ebml/IReader.h"
 #include "ebml/IReaderHelper.h"
+#include "ebml/CReader.h"
 #include "ebml/CReaderHelper.h"
 
 using namespace std;
@@ -25,6 +26,7 @@ public:
 	{
 		if(rIdentifier==EBML_Identifier_Header) return true;
 		if(rIdentifier==EBML::CIdentifier(0xffff)) return true;
+
 		return false;
 	}
 
@@ -72,25 +74,33 @@ public:
 
 int main(int argc, char** argv)
 {
+	srand(time(NULL));
+
 	if(argc<2)
 	{
 		cout << "syntax : " << argv[0] << " filein.ebml\n";
 		return -1;
 	}
 
-	CReaderCallBack cb;
-	EBML::IReader* l_pReader=EBML::createReader(cb);
-
-	FILE* f=fopen(argv[1], "rb");
-	unsigned char c[13];
-	int i=0;
-	while(!feof(f))
+	// for(unsigned long n=17; n>=1; n--)
+	unsigned long n=rand()&0xf;
 	{
-		i=fread(c, 1, sizeof(c), f);
-		cout << "\n --> reader has read " << dec << i << " bytes\n\n";
-		l_pReader->processData(c, i);
+		CReaderCallBack cb;
+		EBML::CReader l_oReader(cb);
+
+		cout << "testing with n=" << n << endl;;
+		FILE* f=fopen(argv[1], "rb");
+		unsigned char* c=new unsigned char[n];
+		int i=0;
+		while(!feof(f))
+		{
+			i=fread(c, 1, n*sizeof(unsigned char), f);
+			// cout << " --> reader has read " << dec << i << " bytes\n";
+			l_oReader.processData(c, i);
+		}
+		delete [] c;
+		fclose(f);
 	}
-	fclose(f);
 
 	return 0;
 }

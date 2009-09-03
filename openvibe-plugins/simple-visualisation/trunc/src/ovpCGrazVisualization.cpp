@@ -557,19 +557,19 @@ namespace OpenViBEPlugins
 				}
 
 				m_ui32WindowIndex++;
+
+				if(fabs(l_f64CurrentAmplitude) > m_f64MaxAmplitude)
+				{
+					m_f64MaxAmplitude = fabs(l_f64CurrentAmplitude);
+				}
+
+				m_f64BarScale = (l_f64CurrentAmplitude/m_f64MaxAmplitude);
+
+				gdk_window_invalidate_rect(m_pDrawingArea->window,
+						NULL,
+						true);
 			}
 #endif
-
-			if(fabs(l_f64CurrentAmplitude) > m_f64MaxAmplitude)
-			{
-				m_f64MaxAmplitude = fabs(l_f64CurrentAmplitude);
-			}
-
-			m_f64BarScale = (l_f64CurrentAmplitude/m_f64MaxAmplitude);
-
-			gdk_window_invalidate_rect(m_pDrawingArea->window,
-					NULL,
-					true);
 		}
 
 		void CGrazVisualization::resize(uint32 ui32Width, uint32 ui32Height)

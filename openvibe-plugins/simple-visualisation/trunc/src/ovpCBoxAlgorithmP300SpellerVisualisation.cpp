@@ -114,8 +114,6 @@ boolean CBoxAlgorithmP300SpellerVisualisation::initialize(void)
 	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_target_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "label-target-title"));
 	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_result_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "label-result"));
 	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_result_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "label-result-title"));
-	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_repetition_progress_bar"), "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "p300-speller-progressbar_repetition"));
-	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_trial_progress_bar"),      "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "p300-speller-progressbar_trial"));
 
 	getVisualisationContext().setWidget(m_pMainWindow);
 	getVisualisationContext().setToolbar(m_pToolbarWidget);
@@ -153,17 +151,14 @@ boolean CBoxAlgorithmP300SpellerVisualisation::initialize(void)
 
 	pango_font_description_free(l_pMaxFontDescription);
 
+	m_iLastTargetRow=-1;
+	m_iLastTargetColumn=-1;
 	m_iTargetRow=-1;
 	m_iTargetColumn=-1;
 	m_iSelectedRow=-1;
 	m_iSelectedColumn=-1;
 
-	m_ui64FlashIndex=0;
-	m_ui64RepetitionIndex=0;
-	m_ui64RepetitionCount=0;
-
 	m_bTableInitialized=false;
-	m_bIsInSegment=false;
 
 	return true;
 }
@@ -262,7 +257,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 				{
 					l_iRow=l_ui64StimulationIdentifier-m_ui64RowStimulationBase;
 					l_bFlash=true;
-					if(l_iRow==m_iTargetRow)
+					if(l_iRow==m_iLastTargetRow)
 					{
 						l_oFlaggingStimulationSet.appendStimulation(OVTK_StimulationId_Target, l_pStimulationSet->getStimulationDate(j), 0);
 					}
@@ -271,11 +266,11 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 						l_oFlaggingStimulationSet.appendStimulation(OVTK_StimulationId_NonTarget, l_pStimulationSet->getStimulationDate(j), 0);
 					}
 				}
-				if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64RowCount)
+				if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64ColumnCount)
 				{
 					l_iColumn=l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase;
 					l_bFlash=true;
-					if(l_iColumn==m_iTargetColumn)
+					if(l_iColumn==m_iLastTargetColumn)
 					{
 						l_oFlaggingStimulationSet.appendStimulation(OVTK_StimulationId_Target, l_pStimulationSet->getStimulationDate(j), 0);
 					}
@@ -284,28 +279,9 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 						l_oFlaggingStimulationSet.appendStimulation(OVTK_StimulationId_NonTarget, l_pStimulationSet->getStimulationDate(j), 0);
 					}
 				}
-				if(l_ui64StimulationIdentifier == OVTK_StimulationId_SegmentStart)
-				{
-					m_bIsInSegment=true;
-					m_ui64FlashIndex=0;
-					m_ui64RepetitionIndex++;
-				}
-				if(l_ui64StimulationIdentifier == OVTK_StimulationId_SegmentStop)
-				{
-					m_bIsInSegment=false;
-				}
-				if(l_ui64StimulationIdentifier == OVTK_StimulationId_TrialStart)
-				{
-					m_ui64RepetitionCount=m_ui64RepetitionIndex;
-					m_ui64RepetitionIndex=0;
-				}
-				if(l_ui64StimulationIdentifier == OVTK_StimulationId_RestStart)
-				{
-					m_iTargetRow=-1;
-					m_iTargetColumn=-1;
-				}
 				if(l_ui64StimulationIdentifier == OVTK_StimulationId_VisualStimulationStop)
 				{
+					this->getLogManager() << LogLevel_Debug << "Received OVTK_StimulationId_VisualStimulationStop - resets grid\n";
 					this->_cache_for_each_(&CBoxAlgorithmP300SpellerVisualisation::_cache_change_background_cb_, &m_oNoFlashBackgroundColor);
 					this->_cache_for_each_(&CBoxAlgorithmP300SpellerVisualisation::_cache_change_foreground_cb_, &m_oNoFlashForegroundColor);
 					this->_cache_for_each_(&CBoxAlgorithmP300SpellerVisualisation::_cache_change_font_cb_, m_pNoFlashFontDescription);
@@ -313,8 +289,6 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 
 				if(l_bFlash)
 				{
-					m_ui64FlashIndex++;
-
 					this->_cache_for_each_if_(
 						l_iRow,
 						l_iColumn,
@@ -338,11 +312,6 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 						m_pNoFlashFontDescription);
 				}
 			}
-
-			uint64 l_ui64FlashCount=m_ui64RowCount+m_ui64ColumnCount;
-			gtk_progress_bar_update(GTK_PROGRESS_BAR(glade_xml_get_widget(m_pMainWidgetInterface, "p300-speller-progressbar_repetition")), m_ui64FlashIndex*1./l_ui64FlashCount);
-			gtk_progress_bar_update(GTK_PROGRESS_BAR(glade_xml_get_widget(m_pMainWidgetInterface, "p300-speller-progressbar_trial")),      m_ui64RepetitionCount==0?0:((m_ui64RepetitionIndex-1)*l_ui64FlashCount+m_ui64FlashIndex)*1./(m_ui64RepetitionCount*l_ui64FlashCount));
-
 			m_pTargetFlaggingStimulationEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 		}
 
@@ -375,21 +344,22 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 				{
 					uint64 l_ui64StimulationIdentifier=l_pStimulationSet->getStimulationIdentifier(j);
 					boolean l_bTarget=false;
-					if(l_ui64StimulationIdentifier >= m_ui64RowStimulationBase && l_ui64StimulationIdentifier < m_ui64RowStimulationBase+m_ui64RowCount && m_iTargetRow == -1)
+					if(l_ui64StimulationIdentifier >= m_ui64RowStimulationBase && l_ui64StimulationIdentifier < m_ui64RowStimulationBase+m_ui64RowCount)
 					{
-						m_ui64LastTargetStimulationRow=l_ui64StimulationIdentifier;
+						this->getLogManager() << LogLevel_Debug << "Received Target Row " << l_ui64StimulationIdentifier << "\n";
 						m_iTargetRow=l_ui64StimulationIdentifier-m_ui64RowStimulationBase;
 						l_bTarget=true;
 					}
-					if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64RowCount && m_iTargetColumn == -1)
+					if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64ColumnCount)
 					{
-						m_ui64LastTargetStimulationColumn=l_ui64StimulationIdentifier;
+						this->getLogManager() << LogLevel_Debug << "Received Target Column " << l_ui64StimulationIdentifier << "\n";
 						m_iTargetColumn=l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase;
 						l_bTarget=true;
 					}
 
-					if(/*!m_bIsInSegment && */l_bTarget && m_iTargetRow!=-1 && m_iTargetColumn!=-1)
+					if(l_bTarget && m_iTargetRow!=-1 && m_iTargetColumn!=-1)
 					{
+						this->getLogManager() << LogLevel_Debug << "Displays Target Cell\n";
 						this->_cache_for_each_if_(
 							m_iTargetRow,
 							m_iTargetColumn,
@@ -439,16 +409,21 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 						{
 							this->getLogManager() << LogLevel_Warning << "Did not find a unique widget at row:" << (uint32)m_iTargetRow << " column:" << (uint32) m_iTargetColumn << "\n";
 						}
+
+						m_iLastTargetRow=m_iTargetRow;
+						m_iLastTargetColumn=m_iTargetColumn;
+						m_iTargetRow=-1;
+						m_iTargetColumn=-1;
 					}
 				}
 			}
-		}
 
-		if(m_pTargetStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
-		{
-		}
+			if(m_pTargetStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
+			{
+			}
 
-		l_rDynamicBoxContext.markInputAsDeprecated(1, i);
+			l_rDynamicBoxContext.markInputAsDeprecated(1, i);
+		}
 	}
 
 	// --- Selection stimulations
@@ -477,73 +452,86 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 					{
 						uint64 l_ui64StimulationIdentifier=l_pStimulationSet->getStimulationIdentifier(j);
 						boolean l_bSelected=false;
-//						boolean l_bRejected=false;
-						if(l_ui64StimulationIdentifier >= m_ui64RowStimulationBase && l_ui64StimulationIdentifier < m_ui64RowStimulationBase+m_ui64RowCount && m_iSelectedRow == -1)
+						if(l_ui64StimulationIdentifier >= m_ui64RowStimulationBase && l_ui64StimulationIdentifier < m_ui64RowStimulationBase+m_ui64RowCount)
 						{
+							this->getLogManager() << LogLevel_Debug << "Received Selected Row " << l_ui64StimulationIdentifier << "\n";
 							m_iSelectedRow=l_ui64StimulationIdentifier-m_ui64RowStimulationBase;
 							l_bSelected=true;
 						}
-						if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64RowCount && m_iSelectedColumn == -1)
+						if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64RowCount)
 						{
+							this->getLogManager() << LogLevel_Debug << "Received Selected Column " << l_ui64StimulationIdentifier << "\n";
 							m_iSelectedColumn=l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase;
 							l_bSelected=true;
 						}
-/*
-						if(l_ui64StimulationIdentifier == OVTK_StimulationId_Label_00 && (m_iSelectedRow == -1 || m_iSelectedColumn == -1))
+						if(l_ui64StimulationIdentifier == OVTK_StimulationId_Label_00)
 						{
-							l_bRejected=true;
+							if(k==2) m_iSelectedRow=-2;
+							if(k==3) m_iSelectedColumn=-2;
+							l_bSelected=true;
 						}
-*/
-						if(/*!m_bIsInSegment && */l_bSelected && m_iSelectedRow!=-1 && m_iSelectedColumn!=-1)
+						if(l_bSelected && m_iSelectedRow!=-1 && m_iSelectedColumn!=-1)
 						{
-							this->_cache_for_each_if_(
-								m_iSelectedRow,
-								m_iSelectedColumn,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_change_background_cb_,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
-								&m_oSelectedBackgroundColor,
-								NULL);
-							this->_cache_for_each_if_(
-								m_iSelectedRow,
-								m_iSelectedColumn,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_change_foreground_cb_,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
-								&m_oSelectedForegroundColor,
-								NULL);
-							this->_cache_for_each_if_(
-								m_iSelectedRow,
-								m_iSelectedColumn,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_change_font_cb_,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
-								m_pSelectedFontDescription,
-								NULL);
-
-							std::vector < ::GtkWidget* > l_vWidgets;
-							this->_cache_for_each_if_(
-								m_iSelectedRow,
-								m_iSelectedColumn,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_collect_child_widget_cb_,
-								&CBoxAlgorithmP300SpellerVisualisation::_cache_collect_child_widget_cb_,
-								&l_vWidgets,
-								NULL);
-
-							if(l_vWidgets.size() == 1)
+							if(m_iSelectedRow>=0 && m_iSelectedColumn>=0)
 							{
-								if(GTK_IS_LABEL(l_vWidgets[0]))
+								this->getLogManager() << LogLevel_Debug << "Displays Selected Cell\n";
+								this->_cache_for_each_if_(
+									m_iSelectedRow,
+									m_iSelectedColumn,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_change_background_cb_,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
+									&m_oSelectedBackgroundColor,
+									NULL);
+								this->_cache_for_each_if_(
+									m_iSelectedRow,
+									m_iSelectedColumn,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_change_foreground_cb_,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
+									&m_oSelectedForegroundColor,
+									NULL);
+								this->_cache_for_each_if_(
+									m_iSelectedRow,
+									m_iSelectedColumn,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_change_font_cb_,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_change_null_cb_,
+									m_pSelectedFontDescription,
+									NULL);
+
+								std::vector < ::GtkWidget* > l_vWidgets;
+								this->_cache_for_each_if_(
+									m_iSelectedRow,
+									m_iSelectedColumn,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_collect_child_widget_cb_,
+									&CBoxAlgorithmP300SpellerVisualisation::_cache_collect_child_widget_cb_,
+									&l_vWidgets,
+									NULL);
+
+								if(l_vWidgets.size() == 1)
 								{
-									std::string l_sString;
-									l_sString=gtk_label_get_text(m_pResult);
-									l_sString+=gtk_label_get_text(GTK_LABEL(l_vWidgets[0]));
-									gtk_label_set_text(m_pResult, l_sString.c_str());
+									if(GTK_IS_LABEL(l_vWidgets[0]))
+									{
+										std::string l_sString;
+										l_sString=gtk_label_get_text(m_pResult);
+										l_sString+=gtk_label_get_text(GTK_LABEL(l_vWidgets[0]));
+										gtk_label_set_text(m_pResult, l_sString.c_str());
+									}
+									else
+									{
+										this->getLogManager() << LogLevel_Warning << "Expected label class widget... could not find a valid text to append\n";
+									}
 								}
 								else
 								{
-									this->getLogManager() << LogLevel_Warning << "Expected label class widget... could not find a valid text to append\n";
+									this->getLogManager() << LogLevel_Warning << "Did not find a unique widget at row : " << (uint32)m_iSelectedRow << " column : " << (uint32) m_iSelectedColumn << "\n";
 								}
 							}
 							else
 							{
-								this->getLogManager() << LogLevel_Warning << "Did not find a unique widget at row:" << (uint32)m_iSelectedRow << " column:" << (uint32) m_iSelectedColumn << "\n";
+								this->getLogManager() << LogLevel_Trace << "Selection Rejected !\n";
+								std::string l_sString;
+								l_sString=gtk_label_get_text(m_pResult);
+								l_sString+="*";
+								gtk_label_set_text(m_pResult, l_sString.c_str());
 							}
 
 							m_iSelectedRow=-1;

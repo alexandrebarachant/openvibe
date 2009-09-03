@@ -8,11 +8,11 @@
 #include <ebml/CReader.h>
 #include <ebml/CReaderHelper.h>
 
-#include <fstream>
 #include <stack>
 #include <map>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 // TODO:
 // - please move the identifier definitions in ovp_defines.h
@@ -56,7 +56,7 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bPending;
 			OpenViBE::boolean m_bUseCompression;
 
-			std::ifstream m_oFile;
+			::FILE* m_pFile;
 			std::stack < EBML::CIdentifier > m_vNodes;
 			std::map < OpenViBE::uint32, OpenViBE::uint32 > m_vStreamIndexToOutputIndex;
 			std::map < OpenViBE::uint32, OpenViBE::CIdentifier > m_vStreamIndexToTypeIdentifier;

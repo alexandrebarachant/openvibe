@@ -12,12 +12,14 @@ boolean CBoxAlgorithmStimulationFilter::initialize(void)
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
 	m_ui64DefaultAction=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
-	for(uint32 i=1; i<l_rStaticBoxContext.getSettingCount(); i+=3)
+	for(uint32 i=1; i<l_rStaticBoxContext.getSettingCount(); i+=5)
 	{
 		SRule l_oRule;
-		l_oRule.ui64Action=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i  );
-		l_oRule.ui64Start =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+1);
-		l_oRule.ui64End   =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+2);
+		l_oRule.ui64Action            =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i  );
+		l_oRule.ui64StartStimulationId=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+1);
+		l_oRule.ui64EndStimulationId  =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+2);
+		l_oRule.ui64StartTime         =(uint64)(((float64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+3))*(1LL<<32));
+		l_oRule.ui64EndTime           =(uint64)(((float64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+4))*(1LL<<32));
 		m_vRules.push_back(l_oRule);
 	}
 
@@ -79,12 +81,18 @@ boolean CBoxAlgorithmStimulationFilter::process(void)
 			for(uint64 s=0; s<op_pStimulationSet->getStimulationCount(); s++)
 			{
 				uint64 l_ui64StimulationId=op_pStimulationSet->getStimulationIdentifier(s);
+				uint64 l_ui64StimulationDate=op_pStimulationSet->getStimulationDate(s);
 				uint64 l_ui64Action=m_ui64DefaultAction;
+
 				for(size_t r=0; r<m_vRules.size(); r++)
 				{
-					if(m_vRules[i].ui64Start <= l_ui64StimulationId && l_ui64StimulationId <= m_vRules[i].ui64End)
+					const SRule& l_rRule=m_vRules[i];
+					if(l_rRule.ui64StartStimulationId <= l_ui64StimulationId && l_ui64StimulationId <= l_rRule.ui64EndStimulationId)
 					{
-						l_ui64Action=m_vRules[i].ui64Action;
+						if(l_rRule.ui64StartTime <= l_ui64StimulationDate && l_ui64StimulationDate <= l_rRule.ui64EndTime)
+						{
+							l_ui64Action=l_rRule.ui64Action;
+						}
 					}
 				}
 
@@ -92,7 +100,7 @@ boolean CBoxAlgorithmStimulationFilter::process(void)
 				{
 					ip_pStimulationSet->appendStimulation(
 						l_ui64StimulationId,
-						op_pStimulationSet->getStimulationDate(s),
+						l_ui64StimulationDate,
 						op_pStimulationSet->getStimulationDuration(s));
 				}
 				if(l_ui64Action==OVP_TypeId_StimulationFilterAction_Reject.toUInteger())

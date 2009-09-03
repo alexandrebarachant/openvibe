@@ -57,13 +57,13 @@ boolean CBoxAlgorithmGenericStreamWriter::initialize(void)
 		return false;
 	}
 	m_oFile.write(reinterpret_cast<const char*>(m_oSwap.getDirectPointer()), (std::streamsize)m_oSwap.getSize());
-	m_oFile.close();
 
 	return true;
 }
 
 boolean CBoxAlgorithmGenericStreamWriter::uninitialize(void)
 {
+	m_oFile.close();
 	return true;
 }
 
@@ -77,12 +77,6 @@ boolean CBoxAlgorithmGenericStreamWriter::process(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
-
-	if(!m_oFile.good())
-	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Could not open file " << m_sFilename << "\n";
-		return false;
-	}
 
 	m_oSwap.setSize(0, true);
 
@@ -106,19 +100,19 @@ boolean CBoxAlgorithmGenericStreamWriter::process(void)
 			 m_oWriterHelper.closeChild();
 			m_oWriterHelper.closeChild();
 			m_oWriterHelper.disconnect();
-
 			l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 		}
 	}
 
-	m_oFile.open(m_sFilename.toASCIIString(), std::ios::binary | std::ios::app);
-	if(!m_oFile.good())
+	if(m_oSwap.getSize() != 0)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Could not open file " << m_sFilename << "\n";
-		return false;
+		m_oFile.write(reinterpret_cast<const char*>(m_oSwap.getDirectPointer()), (std::streamsize)m_oSwap.getSize());
+		if(!m_oFile.good())
+		{
+			this->getLogManager() << LogLevel_ImportantWarning << "Could not write to file " << m_sFilename << "\n";
+			return false;
+		}
 	}
-	m_oFile.write(reinterpret_cast<const char*>(m_oSwap.getDirectPointer()), (std::streamsize)m_oSwap.getSize());
-	m_oFile.close();
 
 	return true;
 }

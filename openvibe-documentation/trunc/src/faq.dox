@@ -204,6 +204,12 @@
  * Anyway, if you don't want or can't install DirextX, Ogre3D will use OpenGL and just work with no limitation. You will just have to
  * click the OK button each time you try to launch OpenViBE.
  *
+ * \section Doc_FAQ_ColorDepth On Windows, I can drag and drop the boxes but I can't select / click / connect / configure anything, what should I do ?
+ *
+ * Your screen is probably configured with a bad color depth. You should consider changing the color depth to 24 or 32 bits. In
+ * order to do that, right clik on the desktop, chose "properties" and go in the "parameters" tab. You can change the colore depth
+ * on the right side of this panel. Restart OpenViBE when the change is done.
+ *
  * \section Doc_FAQ_DependencyInstallationLinux Why did you write this crappy dependency installation script for Linux ?
  *
  * OK, most Linux users will wonder what this installation script was created for in the first place. 
@@ -233,7 +239,7 @@
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 19!)
+ * this question currently is 20!)
  *
  */
 

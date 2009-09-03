@@ -111,7 +111,7 @@ boolean CBoxAlgorithmSoundPlayer::process(void)
 					l_sCommand+="cat ";
 					l_sCommand+=m_sSoundFilename.toASCIIString();
 					l_sCommand+=" > /dev/dsp &";
-					int l_iResult=system(l_sCommand.c_str());
+					int l_iResult=::system(l_sCommand.c_str());
 #else
 					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Sound player not yet implemented for this OS\n";
 #endif

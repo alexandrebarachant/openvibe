@@ -9,6 +9,7 @@ using namespace OpenViBEPlugins::FileIO;
 
 CBoxAlgorithmGenericStreamReader::CBoxAlgorithmGenericStreamReader(void)
 	:m_oReader(*this)
+	,m_pFile(NULL)
 {
 }
 
@@ -21,8 +22,8 @@ boolean CBoxAlgorithmGenericStreamReader::initialize(void)
 {
 	getStaticBoxContext().getSettingValue(0, m_sFilename);
 
-	m_oFile.open(m_sFilename.toASCIIString(), std::ios::binary);
-	if(!m_oFile.good())
+	m_pFile=::fopen(m_sFilename.toASCIIString(), "rb");
+	if(!m_pFile)
 	{
 		this->getLogManager() << LogLevel_ImportantWarning << "Unable to open file " << m_sFilename << "\n";
 		return false;
@@ -39,9 +40,10 @@ boolean CBoxAlgorithmGenericStreamReader::initialize(void)
 
 boolean CBoxAlgorithmGenericStreamReader::uninitialize(void)
 {
-	if(m_oFile.is_open())
+	if(m_pFile)
 	{
-		m_oFile.close();
+		::fclose(m_pFile);
+		m_pFile=NULL;
 	}
 
 	return true;
@@ -62,7 +64,7 @@ boolean CBoxAlgorithmGenericStreamReader::process(void)
 	uint64 l_ui64Time=this->getPlayerContext().getCurrentTime();
 	boolean l_bFinished=false;
 
-	while(!l_bFinished && (!m_oFile.eof() || m_bPending))
+	while(!l_bFinished && (!::feof(m_pFile) || m_bPending))
 	{
 		if(m_bPending)
 		{
@@ -86,17 +88,31 @@ boolean CBoxAlgorithmGenericStreamReader::process(void)
 		}
 		else
 		{
-			while(!m_oFile.eof() && m_oReader.getCurrentNodeIdentifier()==EBML::CIdentifier())
+			boolean l_bJustStarted=true;
+			while(!::feof(m_pFile) && m_oReader.getCurrentNodeIdentifier()==EBML::CIdentifier())
 			{
 				uint8 l_ui8Byte;
-				m_oFile >> l_ui8Byte;
-				m_oReader.processData(&l_ui8Byte, sizeof(l_ui8Byte));
-			}
+				size_t s=::fread(&l_ui8Byte, sizeof(uint8), 1, m_pFile);
 
-			if(!m_oFile.eof())
+				if(s!=1 && !l_bJustStarted)
+				{
+					this->getLogManager() << LogLevel_ImportantWarning << "Unexpected end of file " << m_sFilename << "\n";
+					return false;
+				}
+
+				m_oReader.processData(&l_ui8Byte, sizeof(l_ui8Byte));
+				l_bJustStarted=false;
+			}
+			if(!::feof(m_pFile) && m_oReader.getCurrentNodeSize()!=0)
 			{
 				m_oSwap.setSize(m_oReader.getCurrentNodeSize(), true);
-				m_oFile.read(reinterpret_cast<char*>(m_oSwap.getDirectPointer()), (std::streamsize)m_oSwap.getSize());
+				size_t s=::fread(m_oSwap.getDirectPointer(), sizeof(uint8), m_oSwap.getSize(), m_pFile);
+
+				if(s!=m_oSwap.getSize())
+				{
+					this->getLogManager() << LogLevel_ImportantWarning << "Unexpected end of file " << m_sFilename << "\n";
+					return false;
+				}
 
 				m_oPendingChunk.setSize(0, true);
 				m_ui64StartTime=(uint64)-1;
@@ -281,4 +297,3 @@ void CBoxAlgorithmGenericStreamReader::closeChild(void)
 
 	m_vNodes.pop();
 }
-

@@ -104,20 +104,14 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64RowCount;
 			OpenViBE::uint64 m_ui64ColumnCount;
 
+			int m_iLastTargetRow;
+			int m_iLastTargetColumn;
 			int m_iTargetRow;
 			int m_iTargetColumn;
 			int m_iSelectedRow;
 			int m_iSelectedColumn;
 
-			OpenViBE::uint64 m_ui64FlashIndex;
-			OpenViBE::uint64 m_ui64RepetitionIndex;
-			OpenViBE::uint64 m_ui64RepetitionCount;
-
-			OpenViBE::uint64 m_ui64LastTargetStimulationRow;
-			OpenViBE::uint64 m_ui64LastTargetStimulationColumn;
-
 			OpenViBE::boolean m_bTableInitialized;
-			OpenViBE::boolean m_bIsInSegment;
 
 			std::map < unsigned long, std::map < unsigned long, CBoxAlgorithmP300SpellerVisualisation::SWidgetStyle > > m_vCache;
 		};
