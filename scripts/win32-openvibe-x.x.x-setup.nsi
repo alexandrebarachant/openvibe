@@ -46,7 +46,7 @@ Function .onInit
   ${If} $0 != ""
     IfFileExists "$0\Uninstall.exe" +1 +5
       MessageBox MB_YESNO "A previous installation of OpenViBE is installed under $0.$\nContinuing the install procedure will remove previous installation of OpenViBE (including all files you eventually added in the installation directory).$\nWould you like to accept this removal and continue on installation process ?" IDNO +1 IDYES +2
-	    Abort
+      Abort
     StrCpy $OLDINSTDIR $0
     StrCpy $INSTDIR $0
   ${EndIf}
@@ -68,7 +68,34 @@ Section "-OpenViBE"
   WriteRegStr HKLM "SOFTWARE\openvibe" "InstallDir" "$INSTDIR"
   WriteUninstaller Uninstall.exe
 
-  SetOutPath $INSTDIR\dependencies\arch
+  CreateDirectory "$INSTDIR\dependencies\arch"
+
+  SetOutPath "$INSTDIR\dependencies"
+  IfFileExists "$SYSDIR\d3dx9_38.dll" no_need_to_install_directx
+  IfFileExists "arch\openvibe-directx.exe" no_need_to_download_directx
+  NSISdl::download http://www.microsoft.com/downloads/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=04ac064b-00d1-474e-b7b1-442d8712d553&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fB%2f7%2f9%2fB79FC9D7-47B8-48B7-A75E-101DEBEB5AB4%2fdirectx_aug2009_redist.exe "arch\openvibe-directx.exe"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+no_need_to_download_directx:
+  ExecWait '"arch\openvibe-directx.exe" /T:$INSTDIR\tmp /Q'
+  ExecWait '"tmp\DXSETUP.exe" /silent'
+no_need_to_install_directx:
+
+  SetOutPath "$INSTDIR\dependencies"
+  ;IfFileExists "$SYSDIR\d3dx9_38.dll" no_need_to_install_vcredist
+  IfFileExists "arch\openvibe-vcredist.exe" no_need_to_download_vcredist
+  NSISdl::download http://www.microsoft.com/DOWNLOADS/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f1%2f1%2f1%2f1116b75a-9ec3-481a-a3c8-1777b5381140%2fvcredist_x86.exe "arch\openvibe-vcredist.exe"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+no_need_to_download_vcredist:
+  ExecWait '"arch\openvibe-vcredist.exe" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /q!"" "'
+no_need_to_install_vcredist:
+
+  SetOutPath "$INSTDIR\dependencies\arch"
   File ..\dependencies\arch\openvibe-dependency-boost-1.34.0.zip
   File ..\dependencies\arch\openvibe-dependency-cmake-2.6.2.zip
   File ..\dependencies\arch\openvibe-dependency-expat-2.0.1.zip
@@ -79,7 +106,7 @@ Section "-OpenViBE"
   File ..\dependencies\arch\openvibe-dependency-openmask4~dotsceneloader-164.zip
   File ..\dependencies\arch\openvibe-dependency-vrpn-7.13.zip
 
-  SetOutPath $INSTDIR\dependencies
+  SetOutPath "$INSTDIR\dependencies"
   ZipDLL::extractall "arch\openvibe-dependency-boost-1.34.0" "boost"
   ZipDLL::extractall "arch\openvibe-dependency-cmake-2.6.2.zip" "cmake"
   ZipDLL::extractall "arch\openvibe-dependency-expat-2.0.1.zip" "expat"
@@ -123,22 +150,22 @@ Section "-OpenViBE"
   FileWrite $0 "SET PATH=%OV_DEP_VRPN%\bin;%PATH%$\r$\n"
   FileClose $0
 
-  SetOutPath $INSTDIR
+  SetOutPath "$INSTDIR"
   File /nonfatal /r ..\dist\bin
-  File /nonfatal /r ..\dist\doc
-  File /nonfatal /r ..\dist\etc
-  File /nonfatal /r ..\dist\include
-  File /nonfatal /r ..\dist\lib
+  ; File /nonfatal /r ..\dist\doc
+  ; File /nonfatal /r ..\dist\etc
+  ; File /nonfatal /r ..\dist\include
+  ; File /nonfatal /r ..\dist\lib
   File /nonfatal /r ..\dist\log
   File /nonfatal /r ..\dist\share
-  File /nonfatal /r ..\dist\tmp
+  ; File /nonfatal /r ..\dist\tmp
 
   FileOpen $0 "$INSTDIR\openvibe-designer.cmd" w
   FileWrite $0 "@echo off$\r$\n"
   FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
   FileWrite $0 "$\r$\n"
-  FileWrite $0 "cd lib$\r$\n"
-  FileWrite $0 "..\bin\OpenViBE-designer-dynamic.exe$\r$\n"
+  FileWrite $0 "cd bin$\r$\n"
+  FileWrite $0 "OpenViBE-designer-dynamic.exe$\r$\n"
   FileWrite $0 "$\r$\n"
   FileWrite $0 "pause$\r$\n"
   FileClose $0
@@ -147,8 +174,8 @@ Section "-OpenViBE"
   FileWrite $0 "@echo off$\r$\n"
   FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
   FileWrite $0 "$\r$\n"
-  FileWrite $0 "cd lib$\r$\n"
-  FileWrite $0 "..\bin\OpenViBE-acquisition-server-dynamic.exe$\r$\n"
+  FileWrite $0 "cd bin$\r$\n"
+  FileWrite $0 "OpenViBE-acquisition-server-dynamic.exe$\r$\n"
   FileWrite $0 "$\r$\n"
   FileWrite $0 "pause$\r$\n"
   FileClose $0
@@ -157,8 +184,8 @@ Section "-OpenViBE"
   FileWrite $0 "@echo off$\r$\n"
   FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
   FileWrite $0 "$\r$\n"
-  FileWrite $0 "cd lib$\r$\n"
-  FileWrite $0 "..\bin\OpenViBE-id-generator-dynamic.exe$\r$\n"
+  FileWrite $0 "cd bin$\r$\n"
+  FileWrite $0 "OpenViBE-id-generator-dynamic.exe$\r$\n"
   FileWrite $0 "$\r$\n"
   FileWrite $0 "pause$\r$\n"
   FileClose $0
@@ -167,8 +194,8 @@ Section "-OpenViBE"
   FileWrite $0 "@echo off$\r$\n"
   FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
   FileWrite $0 "$\r$\n"
-  FileWrite $0 "cd lib$\r$\n"
-  FileWrite $0 "..\bin\OpenViBE-plugin-inspector-dynamic.exe$\r$\n"
+  FileWrite $0 "cd bin$\r$\n"
+  FileWrite $0 "OpenViBE-plugin-inspector-dynamic.exe$\r$\n"
   FileWrite $0 "$\r$\n"
   FileWrite $0 "pause$\r$\n"
   FileClose $0

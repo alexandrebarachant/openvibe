@@ -423,6 +423,57 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
+Section "DirectX"
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  IfFileExists "$SYSDIR\d3dx9_38.dll" no_need_to_install_directx
+  IfFileExists "arch\openvibe-directx.exe" no_need_to_download_directx
+  NSISdl::download http://www.microsoft.com/downloads/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=04ac064b-00d1-474e-b7b1-442d8712d553&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fB%2f7%2f9%2fB79FC9D7-47B8-48B7-A75E-101DEBEB5AB4%2fdirectx_aug2009_redist.exe "arch\openvibe-directx.exe"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_directx:
+
+  ExecWait '"arch\openvibe-directx.exe" /T:$INSTDIR\tmp /Q'
+  ExecWait '"tmp\DXSETUP.exe" /silent'
+
+no_need_to_install_directx:
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Visual Redistributable Package"
+
+  SetOutPath "$INSTDIR"
+  CreateDirectory "$INSTDIR\arch"
+
+  ;IfFileExists "$SYSDIR\d3dx9_38.dll" no_need_to_install_vcredist
+  IfFileExists "arch\openvibe-vcredist.exe" no_need_to_download_vcredist
+  NSISdl::download http://www.microsoft.com/DOWNLOADS/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=9b2da534-3e03-4391-8a4d-074b9f2bc1bf&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f1%2f1%2f1%2f1116b75a-9ec3-481a-a3c8-1777b5381140%2fvcredist_x86.exe "arch\openvibe-vcredist.exe"
+  Pop $R0 ; Get the return value
+    StrCmp $R0 "success" +3
+      MessageBox MB_OK "Download failed: $R0"
+      Quit
+
+no_need_to_download_vcredist:
+
+  ExecWait '"arch\openvibe-vcredist.exe" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /q!"" "'
+
+no_need_to_install_vcredist:
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
 Section "Uninstall"
 
   RMDir /r "$INSTDIR\gtk"
@@ -434,6 +485,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\ogre"
   RMDir /r "$INSTDIR\openmask"
   RMDir /r "$INSTDIR\vrpn"
+  RMDir /r "$INSTDIR\tmp"
 
   Delete "$INSTDIR\..\scripts\win32-dependencies.cmd"
 
