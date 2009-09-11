@@ -35,7 +35,7 @@ for project_directory in $OpenViBE_build_order; do
 		if [ $? -eq 0 ]; then
 			echo Make OpenViBE-documentation has been called successfully !
 		else
-			# exit -1
+			true # exit -1
 		fi;
 
 		make install
