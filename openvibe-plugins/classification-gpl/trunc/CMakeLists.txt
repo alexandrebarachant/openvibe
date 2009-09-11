@@ -21,7 +21,7 @@ INCLUDE("FindOpenViBEPluginsGlobalDefines")
 
 INCLUDE("FindThirdPartyBLiFF")
 INCLUDE("FindThirdPartyITPP")
-INCLUDE("FindThirdPartyGSL")
+#INCLUDE("FindThirdPartyGSL")
 
 # ---------------------------------
 # Target macros
