@@ -12,17 +12,19 @@ cd ../dist/bin
 
 export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
 export LC_ALL=C
+#renice 19 $$
 
 killall OpenViBE-id-generator-dynamic
 killall OpenViBE-plugin-inspector-dynamic
 killall OpenViBE-acquisition-server-dynamic
 killall OpenViBE-designer-dynamic
 
+
 #gdb ./OpenViBE-id-generator-dynamic
 #gdb ./OpenViBE-plugin-inspector-dynamic
 #gdb ./OpenViBE-acquisition-server-dynamic
 #gdb ./OpenViBE-designer-dynamic
 
-#./OpenViBE-plugin-inspector-dynamic
+#./OpenViBE-plugin-inspector-dynamic &
 ./OpenViBE-acquisition-server-dynamic &
-./OpenViBE-designer-dynamic &
+#./OpenViBE-designer-dynamic &
