@@ -50,6 +50,7 @@ IF(UNIX)
 		MESSAGE(STATUS "  FAILED to find pthread...")
 	ENDIF(LIB_STANDARD_MODULE_PTHREAD)
 ENDIF(UNIX)
+
 # ---------------------------------
 # Target macros
 # Defines target operating system
