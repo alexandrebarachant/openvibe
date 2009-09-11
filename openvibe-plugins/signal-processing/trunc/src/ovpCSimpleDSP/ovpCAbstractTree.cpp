@@ -33,6 +33,21 @@ void CAbstractTree::levelOperators()
 	m_pRoot->levelOperators();
 }
 
+// Dirty hack to avoid GCC 4.3 crash at compilation time
+static void clear_m_oChildren(std::vector<CAbstractTreeNode *>& m_oChildren)
+{
+	for(size_t i=0 ; i<m_oChildren.size() ; i++)
+	{
+		delete m_oChildren[i];
+	}
+}
+
+CAbstractTreeParentNode::~CAbstractTreeParentNode(void)
+{
+	// Dirty hack to avoid GCC 4.3 crash at compilation time
+	::clear_m_oChildren(m_oChildren);
+}
+
 void CAbstractTreeParentNode::levelOperators()
 {
 

@@ -164,7 +164,7 @@ IF(doxygen_bin)
 				TARGET ${PROJECT_NAME}
 				POST_BUILD
 				COMMAND ${CMAKE_COMMAND}
-				ARGS -E copy "${current_resource}" "${PROJECT_SOURCE_DIR}/doc/html/${current_resource_stripped}"
+				ARGS -E copy "${current_resource}" "${PROJECT_SOURCE_DIR}/doc/openvibe/html/${current_resource_stripped}"
 				COMMENT "      --->   Copying resource file ${current_resource_stripped}..."
 			VERBATIM)
 		ENDFOREACH(current_resource)

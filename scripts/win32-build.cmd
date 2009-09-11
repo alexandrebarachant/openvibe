@@ -38,11 +38,19 @@ for /F %%s in (%OpenViBE_build_order%) do (
 
 	mkdir ..\local-tmp\!OpenViBE_project_name_rel! 2> NULL
 	cd ..\local-tmp\!OpenViBE_project_name_rel!
-	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -Wno-dev -DCMAKE_MODULE_PATH="%saved_directory:\=/%/../cmake-modules;${CMAKE_MODULE_PATH}" !OpenViBE_project_name_full! -G"NMake Makefiles"
+
+	cmake -DCMAKE_INSTALL_PREFIX="%%s" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -Wno-dev -DCMAKE_MODULE_PATH="%saved_directory:\=/%/../cmake-modules;${CMAKE_MODULE_PATH}" !OpenViBE_project_name_full! -G"NMake Makefiles"
 	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
+
 	nmake
 	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
+
 	REM nmake OpenViBE-documentation
+	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
+
+	nmake install
+	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
+
 	cd %saved_directory%
 )
 
@@ -72,63 +80,36 @@ echo @echo off                                               >  %target_dist%\te
 echo pushd ..\scripts                                        >> %target_dist%\test-acquisition-server.cmd
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-acquisition-server.cmd
 echo popd                                                    >> %target_dist%\test-acquisition-server.cmd
-echo cd lib                                                  >> %target_dist%\test-acquisition-server.cmd
-echo ..\bin\OpenViBE-acquisition-server-dynamic.exe          >> %target_dist%\test-acquisition-server.cmd
+echo cd bin                                                  >> %target_dist%\test-acquisition-server.cmd
+echo OpenViBE-acquisition-server-dynamic.exe                 >> %target_dist%\test-acquisition-server.cmd
 
 echo @echo off                                               >  %target_dist%\test-designer.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-designer.cmd
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-designer.cmd
 echo popd                                                    >> %target_dist%\test-designer.cmd
-echo cd lib                                                  >> %target_dist%\test-designer.cmd
-echo ..\bin\OpenViBE-designer-dynamic.exe                    >> %target_dist%\test-designer.cmd
+echo cd bin                                                  >> %target_dist%\test-designer.cmd
+echo OpenViBE-designer-dynamic.exe                           >> %target_dist%\test-designer.cmd
 
 echo @echo off                                               >  %target_dist%\test-id-generator.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-id-generator.cmd
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-id-generator.cmd
 echo popd                                                    >> %target_dist%\test-id-generator.cmd
-echo cd lib                                                  >> %target_dist%\test-id-generator.cmd
-echo ..\bin\OpenViBE-id-generator-dynamic.exe                >> %target_dist%\test-id-generator.cmd
+echo cd bin                                                  >> %target_dist%\test-id-generator.cmd
+echo OpenViBE-id-generator-dynamic.exe                       >> %target_dist%\test-id-generator.cmd
 echo pause                                                   >> %target_dist%\test-id-generator.cmd
 
 echo @echo off                                               >  %target_dist%\test-plugin-inspector.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-plugin-inspector.cmd
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-plugin-inspector.cmd
 echo popd                                                    >> %target_dist%\test-plugin-inspector.cmd
-echo cd lib                                                  >> %target_dist%\test-plugin-inspector.cmd
-echo ..\bin\OpenViBE-plugin-inspector-dynamic.exe            >> %target_dist%\test-plugin-inspector.cmd
+echo cd bin                                                  >> %target_dist%\test-plugin-inspector.cmd
+echo OpenViBE-plugin-inspector-dynamic.exe                   >> %target_dist%\test-plugin-inspector.cmd
 echo pause                                                   >> %target_dist%\test-plugin-inspector.cmd
 
-REM echo @echo off                                               >  %target_dist%\test-vr-demo-tie.cmd
-REM echo pushd ..\scripts                                        >> %target_dist%\test-vr-demo-tie.cmd
-REM echo call win32-init_env_command.cmd                         >> %target_dist%\test-vr-demo-tie.cmd
-REM echo popd                                                    >> %target_dist%\test-vr-demo-tie.cmd
-REM echo set PATH=%%PATH%%;%%CD%%\lib;                           >> %target_dist%\test-vr-demo-tie.cmd
-REM echo cd share\openvibe-applications\vr-demo\tie-fighter      >> %target_dist%\test-vr-demo-tie.cmd
-REM echo %%OMK_HOME%%\bin\OMKReferenceApplication omk\demo.omk   >> %target_dist%\test-vr-demo-tie.cmd
-REM echo pause                                                   >> %target_dist%\test-vr-demo-tie.cmd
-
-REM echo @echo off                                               >  %target_dist%\test-vr-demo-handball.cmd
-REM echo pushd ..\scripts                                        >> %target_dist%\test-vr-demo-handball.cmd
-REM echo call win32-init_env_command.cmd                         >> %target_dist%\test-vr-demo-handball.cmd
-REM echo popd                                                    >> %target_dist%\test-vr-demo-handball.cmd
-REM echo set PATH=%%PATH%%;%%CD%%\lib;                           >> %target_dist%\test-vr-demo-handball.cmd
-REM echo cd share\openvibe-applications\vr-demo\football         >> %target_dist%\test-vr-demo-handball.cmd
-REM echo %%OMK_HOME%%\bin\OMKReferenceApplication omk\demo.omk   >> %target_dist%\test-vr-demo-handball.cmd
-REM echo pause                                                   >> %target_dist%\test-vr-demo-handball.cmd
-
-REM echo @echo off                                               >  %target_dist%\test-vrpn-simulator.cmd
-REM echo pushd ..\scripts                                        >> %target_dist%\test-vrpn-simulator.cmd
-REM echo call win32-init_env_command.cmd                         >> %target_dist%\test-vrpn-simulator.cmd
-REM echo popd                                                    >> %target_dist%\test-vrpn-simulator.cmd
-REM echo cd lib                                                  >> %target_dist%\test-vrpn-simulator.cmd
-REM echo ..\bin\OpenViBE-vrpn-simulator-dynamic.exe              >> %target_dist%\test-vrpn-simulator.cmd
-REM echo pause                                                   >> %target_dist%\test-vrpn-simulator.cmd
-
 for /F %%s in (%OpenViBE_build_order%) do (
-	xcopy /q /s %%s\bin\*.exe          %target_dist%\bin     > NULL 2<&1
+	xcopy /q /s %%s\bin\*.*            %target_dist%\bin     > NULL 2<&1
 	xcopy /q /s %%s\include\*.*        %target_dist%\include > NULL 2<&1
-	xcopy /q /s %%s\lib\*.lib          %target_dist%\lib     > NULL 2<&1
-	xcopy /q /s %%s\lib\*.dll          %target_dist%\lib     > NULL 2<&1
+	xcopy /q /s %%s\lib\*.*            %target_dist%\lib     > NULL 2<&1
 	xcopy /q /s %%s\share\*.*          %target_dist%\share   > NULL 2<&1
 	xcopy /q /s %%s\etc\*.*            %target_dist%\etc     > NULL 2<&1
 	xcopy /q /s %%s\doc\*.*            %target_dist%\doc     > NULL 2<&1

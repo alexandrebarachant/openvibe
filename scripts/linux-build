@@ -17,14 +17,14 @@ for project_directory in $OpenViBE_build_order; do
 		mkdir -p "../local-tmp/$temp_sub_directory" 2> /dev/null
 		pushd "../local-tmp/$temp_sub_directory" 2> /dev/null
 
-		cmake -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="$OpenViBE_base/cmake-modules" -Wno-dev "$project_directory"
+		cmake -DCMAKE_INSTALL_PREFIX="$project_directory" -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="$OpenViBE_base/cmake-modules" -Wno-dev "$project_directory"
 		if [ $? -eq 0 ]; then
 			echo CMake has been called successfully !
 		else
 			exit -1
 		fi;
 
-		make $1 -j 2 # VERBOSE=1
+		make $1 -j 8 # VERBOSE=1
 		if [ $? -eq 0 ]; then
 			echo Make has been called successfully !
 		else
@@ -32,6 +32,18 @@ for project_directory in $OpenViBE_build_order; do
 		fi;
 
 		make OpenViBE-documentation
+		if [ $? -eq 0 ]; then
+			echo Make OpenViBE-documentation has been called successfully !
+		else
+			# exit -1
+		fi;
+
+		make install
+		if [ $? -eq 0 ]; then
+			echo Make install has been called successfully !
+		else
+			exit -1
+		fi;
 
 		popd 2> /dev/null
 	fi;

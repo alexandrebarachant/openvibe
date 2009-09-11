@@ -19,9 +19,17 @@
 int g_iAnalogCount=0;
 int g_iButtonCount=0;
 
+typedef union
+{
+	gpointer pUserData;
+	int iData;
+} TUserData;
+
 void fScrollCB(::GtkRange* pRange, gpointer pUserData)
 {
-	g_pAnalogServer->channels()[(int)(pUserData)]=gtk_range_get_value(pRange);
+	TUserData  l_oUserData;
+	l_oUserData.pUserData=pUserData;
+	g_pAnalogServer->channels()[l_oUserData.iData]=gtk_range_get_value(pRange);
 
 #if defined _DEBUG
 	std::cout << (int)(pUserData) << " value changed\n";
@@ -30,7 +38,9 @@ void fScrollCB(::GtkRange* pRange, gpointer pUserData)
 
 void fSwitchCB(::GtkToggleButton* pTogglebutton, gpointer pUserData)
 {
-	g_pButtonServer->set_button((int)(pUserData), gtk_toggle_button_get_active(pTogglebutton));
+	TUserData  l_oUserData;
+	l_oUserData.pUserData=pUserData;
+	g_pButtonServer->set_button(l_oUserData.iData, gtk_toggle_button_get_active(pTogglebutton));
 
 #if defined _DEBUG
 	std::cout << (int)(pUserData) << " toggled\n";

@@ -5,6 +5,26 @@ SET(PROJECT_VERSION_MINOR x)
 SET(PROJECT_VERSION_PATCH x)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
+FILE(GLOB_RECURSE header_files src/*.h)
+
+ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
+
+SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR}
+	COMPILE_FLAGS "-DStream_Shared -DStream_Exports")
+
+INCLUDE("FindOpenViBEModuleSystem")
+
+# ---------------------------------
+# Test applications
+# ---------------------------------
+OPTION(BUILD_OPENVIBE_MODULE_Stream_EXAMPLES "Build OpenViBE module Stream examples" OFF)
+IF(BUILD_OPENVIBE_MODULE_Stream_EXAMPLES)
+	SUBDIRS(test)
+ENDIF(BUILD_OPENVIBE_MODULE_Stream_EXAMPLES)
+
 # ---------------------------------
 # Target macros
 # Defines target operating system
@@ -26,24 +46,18 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
 
-# ---------------------------------
-# Configures paths if not already defined
-# Defines executable path
-# Defines library output path
-# Defines include output path
-# ---------------------------------
-IF(NOT EXECUTABLE_OUTPUT_PATH)
-	SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-	MESSAGE(STATUS "EXECUTABLE_OUTPUT_PATH configured to default ${EXECUTABLE_OUTPUT_PATH}")
-ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
-IF(NOT LIBRARY_OUTPUT_PATH)
-	SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-	MESSAGE(STATUS "LIBRARY_OUTPUT_PATH configured to default ${LIBRARY_OUTPUT_PATH}")
-ENDIF(NOT LIBRARY_OUTPUT_PATH)
-SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
+# -----------------------------
+# Install files
+# -----------------------------
+INSTALL(TARGETS ${PROJECT_NAME}-dynamic
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib)
 
-OPTION(BUILD_OPENVIBE_MODULE_STREAM_EXAMPLES "Build OpenViBE module Stream examples" OFF)
-SUBDIRS(src)
-IF(BUILD_OPENVIBE_MODULE_STREAM_EXAMPLES)
-	SUBDIRS(test)
-ENDIF(BUILD_OPENVIBE_MODULE_STREAM_EXAMPLES)
+INSTALL(DIRECTORY bin/   DESTINATION bin     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY doc/   DESTINATION doc     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY etc/   DESTINATION etc     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY lib/   DESTINATION lib     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY share/ DESTINATION share   PATTERN ".svn" EXCLUDE)
+
+INSTALL(DIRECTORY src/   DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN ".svn" EXCLUDE PATTERN "doc" EXCLUDE)

@@ -107,14 +107,15 @@ class CAbstractTreeNode
 */
 class CAbstractTreeParentNode : public CAbstractTreeNode
 {
-	//! The node operator's identifier
-	OpenViBE::uint64 m_ui64Identifier;
+	public:
+		//! Children of this node
+		std::vector<CAbstractTreeNode *> m_oChildren;
 
-	//! True if the node is "associative"
-	OpenViBE::boolean m_bIsAssociative;
+		//! The node operator's identifier
+		OpenViBE::uint64 m_ui64Identifier;
 
-	//! Children of this node
-	std::vector<CAbstractTreeNode *> m_oChildren;
+		//! True if the node is "associative"
+		OpenViBE::boolean m_bIsAssociative;
 
 	public:
 		//Constructors
@@ -162,13 +163,7 @@ class CAbstractTreeParentNode : public CAbstractTreeNode
 		virtual void addChild(CAbstractTreeNode * pChild) { m_oChildren.push_back(pChild); }
 
 		//! Destructor.
-		virtual ~CAbstractTreeParentNode()
-		{
-			for(size_t i=0 ; i<m_oChildren.size() ; i++)
-			{
-				delete m_oChildren[i];
-			}
-		}
+		virtual ~CAbstractTreeParentNode(void);
 
 		//! Debug function, prints the node and its children (prefix notation)
 		virtual void print()

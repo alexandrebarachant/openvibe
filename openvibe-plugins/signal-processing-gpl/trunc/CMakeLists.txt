@@ -5,6 +5,21 @@ SET(PROJECT_VERSION_MINOR x)
 SET(PROJECT_VERSION_PATCH x)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
+ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
+SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR}
+	COMPILE_FLAGS "-DOVP_Exports -DOVP_Shared")
+
+INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBEToolkit")
+INCLUDE("FindOpenViBEModuleEBML")
+INCLUDE("FindOpenViBEModuleSystem")
+INCLUDE("FindOpenViBEPluginsGlobalDefines")
+INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindThirdPartyITPP")
+
 # ---------------------------------
 # Target macros
 # Defines target operating system
@@ -19,33 +34,25 @@ IF(WIN32)
 ENDIF(WIN32)
 IF(UNIX)
 	# ADD_DEFINITIONS(-fvisibility=hidden) # This flag should be present... man gcc
-	ADD_DEFINITIONS(-fnon-call-exceptions)
 	ADD_DEFINITIONS(-g)
+	ADD_DEFINITIONS(-fnon-call-exceptions)
 	ADD_DEFINITIONS(-DTARGET_OS_Linux)
 	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
 
-# ---------------------------------
-# Configures paths if not already defined
-# Defines executable path
-# Defines library output path
-# Defines include output path
-# ---------------------------------
-IF(NOT EXECUTABLE_OUTPUT_PATH)
-	SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-	MESSAGE(STATUS "EXECUTABLE_OUTPUT_PATH configured to default ${EXECUTABLE_OUTPUT_PATH}")
-ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
-IF(NOT LIBRARY_OUTPUT_PATH)
-	SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-	MESSAGE(STATUS "LIBRARY_OUTPUT_PATH configured to default ${LIBRARY_OUTPUT_PATH}")
-ENDIF(NOT LIBRARY_OUTPUT_PATH)
-SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
+# -----------------------------
+# Install files
+# -----------------------------
+INSTALL(TARGETS ${PROJECT_NAME}-dynamic
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib)
 
-# ------------------------------------#
-# Adds configuration among link stage #
-# ------------------------------------#
-SET(MODULE_LINKING dynamic CACHE STRING "")
-SET(OPENVIBE_LINKING dynamic CACHE STRING "")
+INSTALL(DIRECTORY bin/   DESTINATION bin     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY doc/   DESTINATION doc     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY etc/   DESTINATION etc     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY lib/   DESTINATION lib     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY share/ DESTINATION share   PATTERN ".svn" EXCLUDE)
 
-SUBDIRS(src)
+#INSTALL(DIRECTORY src/   DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN ".svn" EXCLUDE PATTERN "doc" EXCLUDE)

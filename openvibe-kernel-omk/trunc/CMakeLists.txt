@@ -3,8 +3,53 @@ PROJECT(OpenViBE-kernel)
 SET(PROJECT_VERSION_MAJOR x)
 SET(PROJECT_VERSION_MINOR x)
 SET(PROJECT_VERSION_PATCH x)
-SET(PROJECT_VERSION OMK-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
+SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
+FILE(GLOB_RECURSE header_files src/*.h)
+
+ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
+SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION_MAJOR}
+	COMPILE_FLAGS "-DOVK_Exports -DOVK_Shared")
+
+INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBEModuleFS")
+INCLUDE("FindOpenViBEModuleSystem")
+INCLUDE("FindOpenViBEModuleXML")
+INCLUDE("FindThirdPartyGlade")
+INCLUDE("FindThirdPartyOgre3D")
+
+# ---------------------------------
+# Finds standard library dl
+# Adds library to target
+# Adds include path
+# ---------------------------------
+IF(UNIX)
+	FIND_LIBRARY(LIB_STANDARD_MODULE_DL dl)
+	IF(LIB_STANDARD_MODULE_DL)
+		MESSAGE(STATUS "  Found dl...")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_DL})
+	ELSE(LIB_STANDARD_MODULE_PTHREAD)
+		MESSAGE(STATUS "  FAILED to find dl...")
+	ENDIF(LIB_STANDARD_MODULE_DL)
+ENDIF(UNIX)
+
+# ---------------------------------
+# Finds standard library pthread
+# Adds library to target
+# Adds include path
+# ---------------------------------
+IF(UNIX)
+	FIND_LIBRARY(LIB_STANDARD_MODULE_PTHREAD pthread)
+	IF(LIB_STANDARD_MODULE_PTHREAD)
+		MESSAGE(STATUS "  Found pthread...")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_PTHREAD})
+	ELSE(LIB_STANDARD_MODULE_PTHREAD)
+		MESSAGE(STATUS "  FAILED to find pthread...")
+	ENDIF(LIB_STANDARD_MODULE_PTHREAD)
+ENDIF(UNIX)
 # ---------------------------------
 # Target macros
 # Defines target operating system
@@ -20,7 +65,6 @@ ENDIF(WIN32)
 IF(UNIX)
 	# ADD_DEFINITIONS(-fvisibility=hidden) # This flag should be present... man gcc
 	ADD_DEFINITIONS(-g)
-	ADD_DEFINITIONS(-fnon-call-exceptions)
 	ADD_DEFINITIONS(-DTARGET_OS_Linux)
 	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
@@ -36,26 +80,18 @@ IF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 	ADD_DEFINITIONS(-DTARGET_BUILDTYPE_Debug)
 ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 
-# ---------------------------------
-# Configures paths if not already defined
-# Defines executable path
-# Defines library output path
-# Defines include output path
-# ---------------------------------
-IF(NOT EXECUTABLE_OUTPUT_PATH)
-	SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-	MESSAGE(STATUS "EXECUTABLE_OUTPUT_PATH configured to default ${EXECUTABLE_OUTPUT_PATH}")
-ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
-IF(NOT LIBRARY_OUTPUT_PATH)
-	SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
-	MESSAGE(STATUS "LIBRARY_OUTPUT_PATH configured to default ${LIBRARY_OUTPUT_PATH}")
-ENDIF(NOT LIBRARY_OUTPUT_PATH)
-SET(INCLUDE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/include)
+# -----------------------------
+# Install files
+# -----------------------------
+INSTALL(TARGETS ${PROJECT_NAME}-dynamic
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib)
 
-# ------------------------------------#
-# Adds configuration among link stage #
-# ------------------------------------#
-SET(MODULE_LINKING dynamic CACHE STRING "")
-SET(OPENVIBE_LINKING dynamic CACHE STRING "")
+INSTALL(DIRECTORY bin/   DESTINATION bin     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY doc/   DESTINATION doc     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY etc/   DESTINATION etc     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY lib/   DESTINATION lib     PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY share/ DESTINATION share   PATTERN ".svn" EXCLUDE)
 
-SUBDIRS(src)
+#INSTALL(DIRECTORY src/   DESTINATION include FILES_MATCHING PATTERN "*.h" PATTERN ".svn" EXCLUDE PATTERN "doc" EXCLUDE)
