@@ -25,26 +25,41 @@
  *
  * For now, this software should be considered as being in alpha stage with a reasonably stable API.
  *
+ * \section Doc_FAQ_Environment What kind of computer / operating system do I need to run OpenViBE ?
+ *
+ * §OpenViBE§ currently only runs on standard desktop PCs and compiles on differents targets.
+ * The following table shows a summary of these different configurations...
+ *
+\htmlonly
+<!-- os-compatibility start -->
+<table class='faq-os' cellpading=0 cellspacing=0>
+<tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> </tr>
+<tr> <td rowspan=10>x86</td>   <td rowspan=3>Windows</td> <td rowspan=2>XP SP2</td> <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> </tr>
+<tr>                                                                                <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Vista</td>            <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
+<tr>                           <td rowspan=7>Linux</td>   <td>Ubuntu 9.04</td>      <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora Core 3</td>    <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> </tr>
+<tr>                                                      <td>Fedora Core 4</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora Core 5</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora 8</td>         <td>GCC</td>                                <td bgcolor=green>OK</td> </tr>
+<tr> <td rowspan=5>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested</td> </tr>
+<tr>                           <td rowspan=4>Linux</td>   <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora 9</td>         <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> </tr>
+<tr>                                                      <td>Fedora 10</td>        <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
+</table>
+<!-- os-compatibility stop -->
+\endhtmlonly
+ *
+ * If you have tested §OpenViBE§ on another platform, please fill free to report its status for this platform.
+ *
  * \section Doc_FAQ_Functionalities What are the current functionalities of OpenViBE ?
  *
  * Here is a non exhaustive list of §OpenViBE§ functionalities :
 \htmlonly
 <!-- features start -->
-\endhtmlonly
- * - Acquisition
-\htmlonly
-<!-- hardware-compatibility start -->
-\endhtmlonly
- *   - Mindmedia NeXus32B
- *   - ANT Neuro ASALAB EEG / ERP amplifier (32-256 channels) has been reported to work with NeXus32B driver
- *   - TMSi Porti32 has been reported to work with NeXus32B driver
- *   - Micromed IntraEEG
- *   - Brainamp ScalpEEG
- *   - CTF/VSM MEG
- *   - Brainquiry QPET9 (in progress)
- *
-\htmlonly
-<!-- hardware-compatibility stop -->
 \endhtmlonly
  * - File reading and writing
  *   - Generic files (r/w)
@@ -87,35 +102,42 @@
 <!-- features stop -->
 \endhtmlonly
  *
- * \section Doc_FAQ_Environment What kind of software / hardware do I need to run OpenViBE ?
- *
- * §OpenViBE§ currently only runs on PCs and compiles on differents targets. The following
- * table shows a summary of these different configurations...
+ * \section Doc_FAQ_Devices What acqusition devices are compatible with OpenViBE ?
  *
 \htmlonly
-<!-- os-compatibility start -->
-<table class='faq-os' cellpading=0 cellspacing=0>
-<tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> </tr>
-<tr> <td rowspan=10>x86</td>   <td rowspan=3>Windows</td> <td rowspan=2>XP SP2</td> <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> </tr>
-<tr>                                                                                <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Vista</td>            <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
-<tr>                           <td rowspan=7>Linux</td>   <td>Ubuntu 9.04</td>      <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora Core 3</td>    <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> </tr>
-<tr>                                                      <td>Fedora Core 4</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora Core 5</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora 8</td>         <td>GCC</td>                                <td bgcolor=green>OK</td> </tr>
-<tr> <td rowspan=5>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested</td> </tr>
-<tr>                           <td rowspan=4>Linux</td>   <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora 9</td>         <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora 10</td>        <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
-</table>
-<!-- os-compatibility stop -->
+<!-- hardware-compatibility start -->
+\endhtmlonly
+ * The following hardware devices are fully compatible with OpenViBE :
+ *   - Mindmedia NeXus32B
+ *   - ANT Neuro ASALAB EEG / ERP amplifier (32-256 channels) has been reported to work with NeXus32B driver
+ *   - TMSi Porti32 has been reported to work with NeXus32B driver
+ *
+ * The following hardware devices are partially supported with OpenViBE :
+ *   - Brainamp Standard (through the recording software Vision Recorder)
+ *   - Micromed IntraEEG
+ *   - CTF/VSM MEG
+ *
+ * The following hardware devices are currently being integrated in OpenViBE :
+ *   - g.Tec g.USBamp
+ *   - OpenEEG modularEEG / monolithEEG
+ *   - Mitsar EEG 202
+ *   - Neuroscan SynAmps2 (through the recording software Scan 4.3)
+ *   - Brainquiry QPET9 (developement is stalled)
+ *
+\htmlonly
+<!-- hardware-compatibility stop -->
 \endhtmlonly
  *
- * If you have tested §OpenViBE§ on another platform, please fill free to report its status for this platform.
+ * \section Doc_FAQ_UnstableDrivers I want to use "partially supported" acquisition drivers but they do not appear in the acquisition server driver combo box.
+ *
+ * Those drivers are flagged as \e unstable in the sense they will work only in some specific conditions.
+ * In order to make them appear, you will have to edit the configuration file and add it this line
+ * \code
+AcquisitionServer_ShowUnstable = true
+ * \endcode
+ * Your configuration file is \e %HOME%/.openviberc under linux and \e %USERPROFILE%/openvibe.conf under windows.
+ *
+ * Please come on the forum / IRC to discuss what conditions should be considered in order to use those drivers successfully.
  *
  * \section Doc_FAQ_Cite I'm a scientist and I wan't to cite OpenViBE, how should I proceed ?
  *
@@ -239,7 +261,7 @@
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 20!)
+ * this question currently is 22!)
  *
  */
 
