@@ -1,7 +1,7 @@
 #include "ovasCAcquisitionServer.h"
 
 #include "mindmedia-nexus32b/ovasCDriverMindMediaNeXus32B.h"
-#include "brainamp-scalpeeg/ovasCDriverBrainAmpScalpEEG.h"
+#include "brainamp-standard/ovasCDriverBrainAmpScalpEEG.h"
 #include "micromed-intraeeg/ovasCDriverMicromedIntraEEG.h"
 #include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
 #include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"

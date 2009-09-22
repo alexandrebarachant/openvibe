@@ -35,7 +35,7 @@ CDriverBrainAmpScalpEEG::~CDriverBrainAmpScalpEEG(void)
 
 const char* CDriverBrainAmpScalpEEG::getName(void)
 {
-	return "BrainAmp Scalp EEG";
+	return "BrainAmp Standard (through Vision Recorder)";
 }
 
 //___________________________________________________________________//
