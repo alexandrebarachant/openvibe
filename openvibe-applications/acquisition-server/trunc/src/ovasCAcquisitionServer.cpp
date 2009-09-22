@@ -1,7 +1,7 @@
 #include "ovasCAcquisitionServer.h"
 
 #include "mindmedia-nexus32b/ovasCDriverMindMediaNeXus32B.h"
-#include "brainamp-standard/ovasCDriverBrainAmpScalpEEG.h"
+#include "brainamp-standard/ovasCDriverBrainampStandard.h"
 #include "micromed-intraeeg/ovasCDriverMicromedIntraEEG.h"
 #include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
 #include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
@@ -145,7 +145,7 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 		m_vDriver.push_back(new CDriverGTecGUSBamp());
 #endif
-		m_vDriver.push_back(new CDriverBrainAmpScalpEEG());
+		m_vDriver.push_back(new CDriverBrainampStandard());
 		m_vDriver.push_back(new CDriverMicromedIntraEEG());
 		m_vDriver.push_back(new CDriverCtfVsmMeg());
 	}

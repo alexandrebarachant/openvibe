@@ -17,7 +17,7 @@
         <child>
           <widget class="GtkLabel" id="label_title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Brainamp Scalp EEG</property>
+            <property name="label" translatable="yes">Brainamp Standard (through Vision Recorder)</property>
             <property name="justify">GTK_JUSTIFY_CENTER</property>
           </widget>
           <packing>
@@ -82,7 +82,7 @@
                     <child>
                       <widget class="GtkLabel" id="label_host_port">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Connection host port</property>
+                        <property name="label" translatable="yes">Vision Recorder connection port</property>
                       </widget>
                       <packing>
                         <property name="top_attach">4</property>
@@ -92,7 +92,7 @@
                     <child>
                       <widget class="GtkLabel" id="label_host_name">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Connection host name</property>
+                        <property name="label" translatable="yes">Vision Recorder host name</property>
                       </widget>
                       <packing>
                         <property name="top_attach">3</property>

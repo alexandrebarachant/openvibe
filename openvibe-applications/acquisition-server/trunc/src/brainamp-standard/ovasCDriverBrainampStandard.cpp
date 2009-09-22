@@ -1,4 +1,4 @@
-#include "ovasCDriverBrainAmpScalpEEG.h"
+#include "ovasCDriverBrainampStandard.h"
 #include "../ovasCConfigurationNetworkGlade.h"
 
 #include <system/Time.h>
@@ -17,7 +17,7 @@ using namespace std;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverBrainAmpScalpEEG::CDriverBrainAmpScalpEEG(void)
+CDriverBrainampStandard::CDriverBrainampStandard(void)
 	:m_pCallback(NULL)
 	,m_pConnectionClient(NULL)
 	,m_sServerHostName("194.57.166.229")
@@ -29,19 +29,19 @@ CDriverBrainAmpScalpEEG::CDriverBrainAmpScalpEEG(void)
 {
 }
 
-CDriverBrainAmpScalpEEG::~CDriverBrainAmpScalpEEG(void)
+CDriverBrainampStandard::~CDriverBrainampStandard(void)
 {
 }
 
-const char* CDriverBrainAmpScalpEEG::getName(void)
+const char* CDriverBrainampStandard::getName(void)
 {
-	return "BrainAmp Standard (through Vision Recorder)";
+	return "Brainamp Standard (through Vision Recorder)";
 }
 
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CDriverBrainAmpScalpEEG::initialize(
+boolean CDriverBrainampStandard::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
@@ -193,7 +193,7 @@ boolean CDriverBrainAmpScalpEEG::initialize(
 	return m_bInitialized;
 }
 
-boolean CDriverBrainAmpScalpEEG::start(void)
+boolean CDriverBrainampStandard::start(void)
 {
 	if(!m_bInitialized)
 	{
@@ -211,7 +211,7 @@ boolean CDriverBrainAmpScalpEEG::start(void)
 
 }
 
-boolean CDriverBrainAmpScalpEEG::loop(void)
+boolean CDriverBrainampStandard::loop(void)
 {
 	if(!m_bInitialized)
 	{
@@ -653,7 +653,7 @@ boolean CDriverBrainAmpScalpEEG::loop(void)
 
 }
 
-boolean CDriverBrainAmpScalpEEG::stop(void)
+boolean CDriverBrainampStandard::stop(void)
 {
 	cout << "> Connection stopped" << std::endl;
 
@@ -671,7 +671,7 @@ boolean CDriverBrainAmpScalpEEG::stop(void)
 	return !m_bStarted;
 }
 
-boolean CDriverBrainAmpScalpEEG::uninitialize(void)
+boolean CDriverBrainampStandard::uninitialize(void)
 {
 	if(!m_bInitialized)
 	{
@@ -708,14 +708,14 @@ boolean CDriverBrainAmpScalpEEG::uninitialize(void)
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CDriverBrainAmpScalpEEG::isConfigurable(void)
+boolean CDriverBrainampStandard::isConfigurable(void)
 {
 	return true;
 }
 
-boolean CDriverBrainAmpScalpEEG::configure(void)
+boolean CDriverBrainampStandard::configure(void)
 {
-	CConfigurationNetworkGlade l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-BrainAmp-ScalpEEG.glade");
+	CConfigurationNetworkGlade l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Brainamp-Standard.glade");
 
 	l_oConfiguration.setHostName(m_sServerHostName);
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);

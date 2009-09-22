@@ -1,5 +1,5 @@
-#ifndef __OpenViBE_AcquisitionServer_CDriverBrainAmpScalpEEG_H__
-#define __OpenViBE_AcquisitionServer_CDriverBrainAmpScalpEEG_H__
+#ifndef __OpenViBE_AcquisitionServer_CDriverBrainampStandard_H__
+#define __OpenViBE_AcquisitionServer_CDriverBrainampStandard_H__
 
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
@@ -38,12 +38,12 @@ typedef struct
 
 namespace OpenViBEAcquisitionServer
 {
-	class CDriverBrainAmpScalpEEG : public OpenViBEAcquisitionServer::IDriver
+	class CDriverBrainampStandard : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 
-		CDriverBrainAmpScalpEEG(void);
-		virtual ~CDriverBrainAmpScalpEEG(void);
+		CDriverBrainampStandard(void);
+		virtual ~CDriverBrainampStandard(void);
 		virtual const char* getName(void);
 
 		virtual OpenViBE::boolean isFlagSet(
@@ -112,7 +112,7 @@ namespace OpenViBEAcquisitionServer
 		};
 
 		// **** Messages sent by the RDA server to the clients. ****
-		struct RDA_MessageStart : OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_MessageHeader
+		struct RDA_MessageStart : OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_MessageHeader
 		//; Setup / Start infos, Header -> nType = 1
 		{
 			OpenViBE::uint32  nChannels;          // Number of channels
@@ -121,12 +121,12 @@ namespace OpenViBEAcquisitionServer
 			char              sChannelNames[1];   // Channel names delimited by '\0'. The real size is larger than 1.
 		};
 
-		struct RDA_MessageStop : OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_MessageHeader
+		struct RDA_MessageStop : OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_MessageHeader
 		//; Data acquisition has been stopped. // Header -> nType = 3
 		{
 		};
 
-		struct RDA_MessageData32 : OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_MessageHeader
+		struct RDA_MessageData32 : OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_MessageHeader
 		//; Block of 32-bit floating point data, Header -> nType = 4, sent only from port 51244
 		{
 			OpenViBE::uint32  nBlock;             // Block number, i.e. acquired blocks since acquisition started.
@@ -137,13 +137,13 @@ namespace OpenViBEAcquisitionServer
 		};
 		#pragma pack(pop)
 
-		OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_MessageHeader* m_pStructRDA_MessageHeader;
+		OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_MessageHeader* m_pStructRDA_MessageHeader;
 		char* m_pcharStructRDA_MessageHeader;
-		OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_MessageStart* m_pStructRDA_MessageStart;
-		OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_MessageStop* m_pStructRDA_MessageStop;
-		OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_MessageData32* m_pStructRDA_MessageData32;
-		OpenViBEAcquisitionServer::CDriverBrainAmpScalpEEG::RDA_Marker* m_pStructRDA_Marker;
+		OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_MessageStart* m_pStructRDA_MessageStart;
+		OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_MessageStop* m_pStructRDA_MessageStop;
+		OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_MessageData32* m_pStructRDA_MessageData32;
+		OpenViBEAcquisitionServer::CDriverBrainampStandard::RDA_Marker* m_pStructRDA_Marker;
 	};
 };
 
-#endif // __OpenViBE_AcquisitionServer_CDriverBrainAmpScalpEEG_H__
+#endif // __OpenViBE_AcquisitionServer_CDriverBrainampStandard_H__
