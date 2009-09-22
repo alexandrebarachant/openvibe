@@ -4,6 +4,7 @@
 #include "brainamp-scalpeeg/ovasCDriverBrainAmpScalpEEG.h"
 #include "micromed-intraeeg/ovasCDriverMicromedIntraEEG.h"
 #include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
+#include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
 #include <openvibe-toolkit/ovtk_all.h>
@@ -138,6 +139,7 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 #if defined OVAS_OS_Windows
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B());
 #endif
+	m_vDriver.push_back(new CDriverOpenEEGModularEEG());
 	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
 	{
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
@@ -414,9 +416,15 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 	{
 		m_ui32SampleCountPerSentBlock=atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"))));
 		m_ui64SampleCount=0;
+		m_ui32IdleCallbackId=gtk_idle_add(idle_cb, this);
 
 		// Initializes driver
-		m_pDriver->initialize(m_ui32SampleCountPerSentBlock, *this);
+		if(!m_pDriver->initialize(m_ui32SampleCountPerSentBlock, *this))
+		{
+			gtk_toggle_button_set_active(pButton, false);
+			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Initialization failed !");
+			return;
+		}
 
 		uint32 l_ui32ConnectionPort=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port")));
 		m_pConnectionServer=Socket::createConnectionServer();
@@ -435,7 +443,6 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connected ! Ready...");
 			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), "0 host connected...");
 
-			m_ui32IdleCallbackId=gtk_idle_add(idle_cb, this);
 			m_bGotData=false;
 			m_bInitialized=true;
 
@@ -488,14 +495,8 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 		}
 		else
 		{
-			// Uninitializes driver
-			m_pDriver->uninitialize();
-
 			gtk_toggle_button_set_active(pButton, false);
-
 			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connection failed !");
-
-			m_bInitialized=false;
 		}
 	}
 	else
@@ -505,8 +506,10 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 			gtk_button_pressed(GTK_BUTTON(glade_xml_get_widget(m_pGladeInterface, "button_stop")));
 		}
 
-		// Uninitializes driver
-		m_pDriver->uninitialize();
+		if(m_bInitialized)
+		{
+			m_pDriver->uninitialize();
+		}
 
 		gtk_idle_remove(m_ui32IdleCallbackId);
 
@@ -517,8 +520,11 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 			itConnection=m_vConnection.erase(itConnection);
 		}
 
-		m_pConnectionServer->release();
-		m_pConnectionServer=NULL;
+		if(m_pConnectionServer)
+		{
+			m_pConnectionServer->release();
+			m_pConnectionServer=NULL;
+		}
 
 		gtk_button_set_label(GTK_BUTTON(pButton), "gtk-connect");
 
@@ -541,13 +547,16 @@ void CAcquisitionServer::buttonStartPressedCB(::GtkButton* pButton)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "buttonStartPressedCB\n";
 
+	// Starts driver
+	if(!m_pDriver->start())
+	{
+		return;
+	}
+
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), false);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
 
 	gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Sending...");
-
-	// Starts driver
-	m_pDriver->start();
 
 	m_bStarted=true;
 }
