@@ -59,7 +59,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint16 m_ui16ExtractPosition;
 		OpenViBE::uint8  m_ui8PacketNumber;
 		OpenViBE::uint8  m_ui8LastPacketNumber;
-		OpenViBE::int32  m_i32ChannelBuffer[6];
+		OpenViBE::int32* m_pChannelBuffer;
 		OpenViBE::uint16 m_ui16Switches;
 	};
 };

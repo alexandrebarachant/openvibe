@@ -300,7 +300,15 @@ void CAcquisitionServer::idleCB(void)
 {
 	// m_rKernelContext.getLogManager() << LogLevel_Debug << "idleCB\n";
 
-	m_pDriver->loop();
+	if(m_bStarted)
+	{
+		if(!m_pDriver->loop())
+		{
+			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Something bad happened in the loop callback, stoping the acquisition\n";
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(glade_xml_get_widget(m_pGladeInterface, "togglebutton_connect")), false);
+			return;
+		}
+	}
 
 	boolean l_bLabelNeedsUpdate=false;
 

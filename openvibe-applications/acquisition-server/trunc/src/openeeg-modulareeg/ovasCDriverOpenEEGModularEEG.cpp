@@ -24,7 +24,7 @@
 #else
 #endif
 
-
+#define boolean OpenViBE::boolean
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
 
@@ -80,10 +80,13 @@ boolean CDriverOpenEEGModularEEG::initialize(
 	}
 
 	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
-	if(!m_pSample)
+	m_pChannelBuffer=new int32[m_oHeader.getChannelCount()];
+	if(!m_pSample || !m_pChannelBuffer)
 	{
 		delete [] m_pSample;
 		m_pSample=NULL;
+		delete [] m_pChannelBuffer;
+		m_pChannelBuffer=NULL;
 		return false;
 	}
 
@@ -125,8 +128,9 @@ boolean CDriverOpenEEGModularEEG::loop(void)
 		return false;
 	}
 
-	uint32  l_i32ReceivedSamples=0;
-	while(l_i32ReceivedSamples < m_ui32SampleCountPerSentBlock)
+	uint32 l_i32ReceivedSamples=0;
+	uint32 l_ui32StartTime=System::Time::getTime();
+	while(l_i32ReceivedSamples < m_ui32SampleCountPerSentBlock && System::Time::getTime()-l_ui32StartTime < 1000)
 	{
 		switch(this->readPacketFromTTY(m_i32FileDescriptor))
 		{
@@ -134,19 +138,24 @@ boolean CDriverOpenEEGModularEEG::loop(void)
 				break;
 
 			case 1: // Packet with Samples arrived
-			// m_ui8LastPacketNumber++;
-			m_ui8LastPacketNumber=m_ui8PacketNumber;
+				// m_ui8LastPacketNumber++;
+				m_ui8LastPacketNumber=m_ui8PacketNumber;
+				for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
+				{
+					m_pSample[j*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples]=(float32)m_pChannelBuffer[j]-512.f;
+				}
+				l_i32ReceivedSamples++;
+				break;
 
-			for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
-			{
-				m_pSample[j*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples]=(float32)m_i32ChannelBuffer[j]-512.f;
-			}
-			l_i32ReceivedSamples++;
-			break;
-
-		case -1: // Timeout, could inidicate communication error
-			return false;
+			case -1: // Timeout, could inidicate communication error
+				return false;
 		}
+	}
+
+	if(l_i32ReceivedSamples!=m_ui32SampleCountPerSentBlock)
+	{
+		// Timeout
+		return false;
 	}
 
 	m_pCallback->setSamples(m_pSample);
@@ -218,7 +227,7 @@ void CDriverOpenEEGModularEEG::logPacket(void)
 	printf("\nPacket %d received:\n", m_ui8PacketNumber);
 	for(ui32I=0; ui32I<6; ui32I++)
 	{
-		printf("Channel %d:%d\n", ui32I+1, m_i32ChannelBuffer[ui32I]);
+		printf("Channel %d:%d\n", ui32I+1, m_pChannelBuffer[ui32I]);
 	}
 }
 */
@@ -260,11 +269,11 @@ boolean CDriverOpenEEGModularEEG::parseByteP2(uint8 ui8Actbyte)
 			{
 				if((m_ui16ExtractPosition & 1) == 0)
 				{
-					m_i32ChannelBuffer[m_ui16ExtractPosition>>1]= ((int32)ui8Actbyte)<<8;
+					m_pChannelBuffer[m_ui16ExtractPosition>>1]= ((int32)ui8Actbyte)<<8;
 				}
 				else
 				{
-					m_i32ChannelBuffer[m_ui16ExtractPosition>>1]+=ui8Actbyte;
+					m_pChannelBuffer[m_ui16ExtractPosition>>1]+=ui8Actbyte;
 				}
 				m_ui16ExtractPosition++;
 			}
@@ -311,7 +320,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 		return false;
 	}
 
-    // update DCB rate, byte size, parity, and stop bits size
+	// update DCB rate, byte size, parity, and stop bits size
 	dcb.DCBlength = sizeof(dcb);
 	dcb.BaudRate  = CBR_56000;
 	dcb.ByteSize  = 8;
@@ -319,7 +328,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	dcb.StopBits  = ONESTOPBIT;
 	dcb.EvtChar   = '\0';
 
-    // update flow control settings
+	// update flow control settings
 	dcb.fDtrControl       = DTR_CONTROL_ENABLE;
 	dcb.fRtsControl       = RTS_CONTROL_ENABLE;
 	dcb.fOutxCtsFlow      = FALSE;
@@ -409,13 +418,14 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 
 	uint32 l_ui32ReadLength=0;
 	uint32 l_ui32ReadOk=0;
-	struct _COMSTAT l_status;
-	uint32 l_ui32etat;
+	struct _COMSTAT l_oStatus;
+	::DWORD l_dwState;
 
-	if(::ClearCommError(i32FileDescriptor, (LPDWORD)&l_ui32etat, &l_status))
+	if(::ClearCommError(i32FileDescriptor, &l_dwState, &l_oStatus))
 	{
-		l_ui32ReadLength=l_status.cbInQue;
+		l_ui32ReadLength=l_oStatus.cbInQue;
 	}
+
 	for(l_ui32BytesProcessed=0; l_ui32BytesProcessed<l_ui32ReadLength; l_ui32BytesProcessed++)
 	{
 		// Read the data from the serial port.
@@ -424,10 +434,10 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 		{
 			if(this->parseByteP2(l_ui8ReadBuffer[0]))
 			{
-			   l_i32PacketsProcessed++;
+				l_i32PacketsProcessed++;
 			}
 		}
-	 }
+	}
 
 #elif defined OVAS_OS_Linux
 
@@ -443,7 +453,7 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 
 	switch(::select(i32FileDescriptor+1, &l_inputFileDescriptorSet, NULL, NULL, &l_timeout))
 	{
- 		case -1: // error or timeout
+		case -1: // error or timeout
 		case  0:
 			return (-1);
 
