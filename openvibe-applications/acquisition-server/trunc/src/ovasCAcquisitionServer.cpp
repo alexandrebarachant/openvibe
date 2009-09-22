@@ -5,7 +5,7 @@
 #include "micromed-intraeeg/ovasCDriverMicromedIntraEEG.h"
 #include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
-
+#include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Memory.h>
@@ -140,6 +140,9 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 #endif
 	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
 	{
+#if defined TARGET_HAS_ThirdPartyGUSBampCAPI
+		m_vDriver.push_back(new CDriverGTecGUSBamp());
+#endif
 		m_vDriver.push_back(new CDriverBrainAmpScalpEEG());
 		m_vDriver.push_back(new CDriverMicromedIntraEEG());
 		m_vDriver.push_back(new CDriverCtfVsmMeg());

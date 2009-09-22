@@ -15,6 +15,7 @@ INCLUDE("FindOpenViBEModuleSocket")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 INCLUDE("FindThirdPartyGlade")
+INCLUDE("FindThirdPartyGUSBampCAPI")
 
 # ---------------------------------
 # Target macros
