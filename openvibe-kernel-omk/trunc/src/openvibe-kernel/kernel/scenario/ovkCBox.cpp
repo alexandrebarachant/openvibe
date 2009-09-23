@@ -96,7 +96,7 @@ boolean CBox::setAlgorithmClassIdentifier(
 
 	if(!getKernelContext().getPluginManager().canCreatePluginObject(rAlgorithmClassIdentifier))
 	{
-		this->getLogManager() << LogLevel_Warning << "Algorithm descriptor not found\n";
+		this->getLogManager() << LogLevel_Warning << "Box algorithm descriptor not found\n";
 
 		return false;
 	}
@@ -518,11 +518,25 @@ boolean CBox::addSetting(
 	const CIdentifier& rTypeIdentifier,
 	const CString& sDefaultValue)
 {
+	CString l_sValue(sDefaultValue);
+	if(this->getTypeManager().isEnumeration(rTypeIdentifier))
+	{
+		if(this->getTypeManager().getEnumerationEntryValueFromName(rTypeIdentifier, sDefaultValue)==OV_UndefinedIdentifier)
+		{
+			if(this-getTypeManager().getEnumerationEntryCount(rTypeIdentifier)!=0)
+			{
+				uint64 l_ui64Value=0;
+				this->getTypeManager().getEnumerationEntry(rTypeIdentifier, 0, l_sValue, l_ui64Value);
+			}
+		}
+	}
+
 	CSetting s;
 	s.m_sName=sName;
 	s.m_oTypeIdentifier=rTypeIdentifier;
-	s.m_sDefaultValue=sDefaultValue;
-	s.m_sValue=sDefaultValue;
+	s.m_sDefaultValue=l_sValue;
+	s.m_sValue=l_sValue;
+
 	m_vSetting.push_back(s);
 
 	this->notify(BoxModification_SettingAdded, m_vSetting.size()-1);

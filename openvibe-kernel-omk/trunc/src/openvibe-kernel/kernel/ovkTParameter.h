@@ -16,13 +16,13 @@ namespace OpenViBE
 		{
 		public:
 
-			TBaseParameter(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::EParameterType eParameterType, const OpenViBE::CIdentifier& rEnumerationTypeIdentifier=OV_UndefinedIdentifier)
+			TBaseParameter(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::EParameterType eParameterType, const OpenViBE::CIdentifier& rSubTypeIdentifier=OV_UndefinedIdentifier)
 				:IBase(rKernelContext)
 				,m_pParameterRef(0)
 				,m_pValueRef(0)
 				,m_Value(0)
 				,m_eParameterType(eParameterType)
-				,m_oEnumerationTypeIdentifier(rEnumerationTypeIdentifier)
+				,m_oSubTypeIdentifier(rSubTypeIdentifier)
 			{
 			}
 
@@ -36,9 +36,9 @@ namespace OpenViBE
 				return m_eParameterType;
 			}
 
-			virtual OpenViBE::CIdentifier getEnumerationTypeIdentifier(void) const
+			virtual OpenViBE::CIdentifier getSubTypeIdentifier(void) const
 			{
-				return m_oEnumerationTypeIdentifier;
+				return m_oSubTypeIdentifier;
 			}
 
 			virtual OpenViBE::boolean clearReferenceTarget(void)
@@ -122,7 +122,7 @@ namespace OpenViBE
 			IType* m_pValueRef;
 			IType m_Value;
 			OpenViBE::Kernel::EParameterType m_eParameterType;
-			OpenViBE::CIdentifier m_oEnumerationTypeIdentifier;
+			OpenViBE::CIdentifier m_oSubTypeIdentifier;
 		};
 	};
 };
