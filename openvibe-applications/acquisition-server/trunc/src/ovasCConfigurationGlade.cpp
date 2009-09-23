@@ -48,7 +48,7 @@ static void button_change_channel_names_cb(::GtkButton* pButton, void* pUserData
 #if defined _DEBUG_Callbacks_
 	cout << "button_change_channel_names_cb" << endl;
 #endif
-	static_cast<CConfigurationGlade*>(pUserData)->buttonChangeChannelNamesCB(pButton);
+	static_cast<CConfigurationGlade*>(pUserData)->buttonChangeChannelNamesCB();
 }
 
 static void button_apply_channel_name_cb(::GtkButton* pButton, void* pUserData)
@@ -56,7 +56,7 @@ static void button_apply_channel_name_cb(::GtkButton* pButton, void* pUserData)
 #if defined _DEBUG_Callbacks_
 	cout << "button_apply_channel_name_cb" << endl;
 #endif
-	static_cast<CConfigurationGlade*>(pUserData)->buttonApplyChannelNameCB(pButton);
+	static_cast<CConfigurationGlade*>(pUserData)->buttonApplyChannelNameCB();
 }
 
 static void button_remove_channel_name_cb(::GtkButton* pButton, void* pUserData)
@@ -64,7 +64,15 @@ static void button_remove_channel_name_cb(::GtkButton* pButton, void* pUserData)
 #if defined _DEBUG_Callbacks_
 	cout << "button_remove_channel_name_cb" << endl;
 #endif
-	static_cast<CConfigurationGlade*>(pUserData)->buttonRemoveChannelNameCB(pButton);
+	static_cast<CConfigurationGlade*>(pUserData)->buttonRemoveChannelNameCB();
+}
+
+static void treeview_apply_channel_name_cb(::GtkTreeView* pTreeview, ::GtkTreePath* pPath, ::GtkTreeViewColumn* pColumn, void* pUserData)
+{
+#if defined _DEBUG_Callbacks_
+	cout << "treeview_apply_channel_name_cb" << endl;
+#endif
+	static_cast<CConfigurationGlade*>(pUserData)->treeviewApplyChannelNameCB();
 }
 
 //___________________________________________________________________//
@@ -142,9 +150,10 @@ boolean CConfigurationGlade::preConfigure(void)
 
 	// Connects custom GTK signals
 
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface,        "button_change_channel_names"), "pressed", G_CALLBACK(button_change_channel_names_cb), this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "button_apply_channel_name"),   "pressed", G_CALLBACK(button_apply_channel_name_cb),   this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "button_remove_channel_name"),  "pressed", G_CALLBACK(button_remove_channel_name_cb),  this);
+	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface,        "button_change_channel_names"), "pressed",       G_CALLBACK(button_change_channel_names_cb), this);
+	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "button_apply_channel_name"),   "pressed",       G_CALLBACK(button_apply_channel_name_cb),   this);
+	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "button_remove_channel_name"),  "pressed",       G_CALLBACK(button_remove_channel_name_cb),  this);
+	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureChannelInterface, "treeview_electrode_names"),    "row-activated", G_CALLBACK(treeview_apply_channel_name_cb), this);
 	glade_xml_signal_autoconnect(m_pGladeConfigureInterface);
 	glade_xml_signal_autoconnect(m_pGladeConfigureChannelInterface);
 
@@ -245,7 +254,7 @@ boolean CConfigurationGlade::postConfigure(void)
 	return true;
 }
 
-void CConfigurationGlade::buttonChangeChannelNamesCB(::GtkButton* pButton)
+void CConfigurationGlade::buttonChangeChannelNamesCB(void)
 {
 	uint32 i;
 	::GtkTreeIter itElectrodeName, itChannelName;
@@ -297,22 +306,138 @@ void CConfigurationGlade::buttonChangeChannelNamesCB(::GtkButton* pButton)
 	gtk_tree_view_set_model(l_pElectrodeNameTreeView, GTK_TREE_MODEL(m_pElectrodeNameListStore));
 	gtk_tree_view_set_model(l_pChannelNameTreeView, GTK_TREE_MODEL(m_pChannelNameListStore));
 
+	// Selects first line of each
+	if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pElectrodeNameListStore), &itElectrodeName))
+	{
+		gtk_tree_selection_select_iter(gtk_tree_view_get_selection(l_pElectrodeNameTreeView), &itElectrodeName);
+	}
+	if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+	{
+		gtk_tree_selection_select_iter(gtk_tree_view_get_selection(l_pChannelNameTreeView), &itChannelName);
+	}
+
 	// Runs dialog !
 
-	if(gtk_dialog_run(l_pDialog)==GTK_RESPONSE_APPLY)
+	gint l_iDialogResponse;
+	do
 	{
-		int i=0;
-		gchar* l_sChannelName=NULL;
-		if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+		l_iDialogResponse=gtk_dialog_run(l_pDialog);
+		switch(l_iDialogResponse)
 		{
-			do
-			{
-				gtk_tree_model_get(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName, 1, &l_sChannelName, -1);
-				m_vChannelName[i++]=l_sChannelName;
-			}
-			while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName));
+			case GTK_RESPONSE_APPLY:
+				{
+					int i=0;
+					gchar* l_sChannelName=NULL;
+					if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+					{
+						do
+						{
+							gtk_tree_model_get(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName, 1, &l_sChannelName, -1);
+							m_vChannelName[i++]=l_sChannelName;
+						}
+						while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName));
+					}
+				}
+				break;
+
+			case 1: // Load
+				{
+					::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
+						"Select file to open...",
+						NULL,
+						GTK_FILE_CHOOSER_ACTION_OPEN,
+						GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+						NULL);
+/*
+					gtk_file_chooser_set_current_folder(
+						GTK_FILE_CHOOSER(l_pWidgetDialogOpen),
+						this->getWorkingDirectory().toASCIIString());
+*/
+					if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
+					{
+						char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
+						list<string> l_vElectrodeName;
+						list<string>::iterator l;
+						ifstream l_oFile(l_sFileName);
+						if(l_oFile.is_open())
+						{
+							// Reads channel names from file
+							while(!l_oFile.eof())
+							{
+								string l_sElectrodeName;
+								l_oFile >> l_sElectrodeName;
+								l_vElectrodeName.push_back(l_sElectrodeName);
+							}
+							l_oFile.close();
+
+							// Clears list store
+							if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+							{
+								do
+								{
+									gtk_list_store_set(m_pChannelNameListStore, &itChannelName, 1, "", -1);
+								}
+								while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName) && l!=l_vElectrodeName.end());
+							}
+
+							// Fills list store with channel names
+							l=l_vElectrodeName.begin();
+							if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName) && l!=l_vElectrodeName.end())
+							{
+								do
+								{
+									gtk_list_store_set(m_pChannelNameListStore, &itChannelName, 1, l->c_str(), -1);
+									l++;
+								}
+								while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName) && l!=l_vElectrodeName.end());
+							}
+						}
+						g_free(l_sFileName);
+					}
+					gtk_widget_destroy(l_pWidgetDialogOpen);
+				}
+				break;
+
+			case 2: // Save
+				{
+					::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
+						"Select file to save to...",
+						NULL,
+						GTK_FILE_CHOOSER_ACTION_OPEN,
+						GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+						NULL);
+/*
+					gtk_file_chooser_set_current_folder(
+						GTK_FILE_CHOOSER(l_pWidgetDialogOpen),
+						this->getWorkingDirectory().toASCIIString());
+*/
+					if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
+					{
+						char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
+						ofstream l_oFile(l_sFileName);
+						if(l_oFile.is_open())
+						{
+							gchar* l_sChannelName=NULL;
+							if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+							{
+								do
+								{
+									gtk_tree_model_get(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName, 1, &l_sChannelName, -1);
+									l_oFile << l_sChannelName << "\n";
+								}
+								while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName));
+							}
+						}
+						g_free(l_sFileName);
+					}
+					gtk_widget_destroy(l_pWidgetDialogOpen);
+				}
+				break;
 		}
 	}
+	while(l_iDialogResponse!=GTK_RESPONSE_APPLY && l_iDialogResponse!=GTK_RESPONSE_CANCEL);
 
 	gtk_widget_hide(GTK_WIDGET(l_pDialog));
 	g_object_unref(m_pChannelNameListStore);
@@ -321,7 +446,7 @@ void CConfigurationGlade::buttonChangeChannelNamesCB(::GtkButton* pButton)
 	m_pElectrodeNameListStore=NULL;
 }
 
-void CConfigurationGlade::buttonApplyChannelNameCB(::GtkButton* pButton)
+void CConfigurationGlade::buttonApplyChannelNameCB(void)
 {
 	::GtkTreeIter itElectrodeName, itChannelName;
 	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(m_pElectrodeNameTreeView);
@@ -330,6 +455,14 @@ void CConfigurationGlade::buttonApplyChannelNameCB(::GtkButton* pButton)
 	::GtkTreeSelection* l_pChannelNameTreeViewSelection=gtk_tree_view_get_selection(l_pChannelNameTreeView);
 	::GtkTreeSelection* l_pElectrodeNameTreeViewSelection=gtk_tree_view_get_selection(l_pElectrodeNameTreeView);
 
+	if(!gtk_tree_selection_get_selected(l_pChannelNameTreeViewSelection, NULL, &itChannelName))
+	{
+		if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+		{
+			gtk_tree_selection_select_iter(l_pChannelNameTreeViewSelection, &itChannelName);
+		}
+	}
+
 	if(gtk_tree_selection_get_selected(l_pChannelNameTreeViewSelection, NULL, &itChannelName))
 	{
 		if(gtk_tree_selection_get_selected(l_pElectrodeNameTreeViewSelection, NULL, &itElectrodeName))
@@ -337,11 +470,22 @@ void CConfigurationGlade::buttonApplyChannelNameCB(::GtkButton* pButton)
 			gchar* l_sElectrodeName=NULL;
 			gtk_tree_model_get(GTK_TREE_MODEL(m_pElectrodeNameListStore), &itElectrodeName, 0, &l_sElectrodeName, -1);
 			gtk_list_store_set(m_pChannelNameListStore, &itChannelName, 1, l_sElectrodeName, -1);
+			if(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+			{
+				gtk_tree_selection_select_iter(l_pChannelNameTreeViewSelection, &itChannelName);
+			}
+			else
+			{
+				if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+				{
+					gtk_tree_selection_select_iter(l_pChannelNameTreeViewSelection, &itChannelName);
+				}
+			}
 		}
 	}
 }
 
-void CConfigurationGlade::buttonRemoveChannelNameCB(::GtkButton* pButton)
+void CConfigurationGlade::buttonRemoveChannelNameCB(void)
 {
 	::GtkTreeIter itChannelName;
 	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(m_pChannelNameTreeView);
@@ -350,5 +494,22 @@ void CConfigurationGlade::buttonRemoveChannelNameCB(::GtkButton* pButton)
 	if(gtk_tree_selection_get_selected(l_pChannelNameTreeViewSelection, NULL, &itChannelName))
 	{
 		gtk_list_store_set(m_pChannelNameListStore, &itChannelName, 1, "", -1);
+		if(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+		{
+			gtk_tree_selection_select_iter(l_pChannelNameTreeViewSelection, &itChannelName);
+		}
+		else
+		{
+			if(gtk_tree_model_get_iter_first(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName))
+			{
+				gtk_tree_selection_select_iter(l_pChannelNameTreeViewSelection, &itChannelName);
+			}
+		}
 	}
 }
+
+void CConfigurationGlade::treeviewApplyChannelNameCB(void)
+{
+	this->buttonApplyChannelNameCB();
+}
+

@@ -23,9 +23,10 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean configure(
 			OpenViBEAcquisitionServer::IHeader& rHeader);
 
-		virtual void buttonChangeChannelNamesCB(::GtkButton* pButton);
-		virtual void buttonApplyChannelNameCB(::GtkButton* pButton);
-		virtual void buttonRemoveChannelNameCB(::GtkButton* pButton);
+		virtual void buttonChangeChannelNamesCB(void);
+		virtual void buttonApplyChannelNameCB(void);
+		virtual void buttonRemoveChannelNameCB(void);
+		virtual void treeviewApplyChannelNameCB(void);
 
 	protected:
 
