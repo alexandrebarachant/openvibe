@@ -198,7 +198,7 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::process(void)
 				uint64 l_ui64StimulationIdentifier=l_pStimulationSet->getStimulationIdentifier(j);
 				if(l_ui64StimulationIdentifier >= m_ui64CardStimulationBase && l_ui64StimulationIdentifier < m_ui64CardStimulationBase+m_ui64CardCount)
 				{
-					int l_iCard=l_ui64StimulationIdentifier-m_ui64CardStimulationBase;
+					int l_iCard=(int)(l_ui64StimulationIdentifier-m_ui64CardStimulationBase);
 					if(l_iCard==m_iTargetCard)
 					{
 						l_oFlaggingStimulationSet.appendStimulation(OVTK_StimulationId_Target, l_pStimulationSet->getStimulationDate(j), 0);
@@ -263,7 +263,7 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::process(void)
 					if(l_ui64StimulationIdentifier >= m_ui64CardStimulationBase && l_ui64StimulationIdentifier < m_ui64CardStimulationBase+m_ui64CardCount)
 					{
 						this->getLogManager() << LogLevel_Debug << "Received Target Card " << l_ui64StimulationIdentifier << "\n";
-						m_iTargetCard=l_ui64StimulationIdentifier-m_ui64CardStimulationBase;
+						m_iTargetCard=(int)(l_ui64StimulationIdentifier-m_ui64CardStimulationBase);
 
 						this->getLogManager() << LogLevel_Debug << "Displays Target Cell\n";
 						this->_cache_for_each_if_(
@@ -315,7 +315,7 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::process(void)
 					if(l_ui64StimulationIdentifier >= m_ui64CardStimulationBase && l_ui64StimulationIdentifier < m_ui64CardStimulationBase+m_ui64CardCount)
 					{
 						this->getLogManager() << LogLevel_Debug << "Received Selected Card " << l_ui64StimulationIdentifier << "\n";
-						int l_iSelectedCard=l_ui64StimulationIdentifier-m_ui64CardStimulationBase;
+						int l_iSelectedCard=(int)(l_ui64StimulationIdentifier-m_ui64CardStimulationBase);
 
 						this->getLogManager() << LogLevel_Debug << "Displays Selected Cell\n";
 
