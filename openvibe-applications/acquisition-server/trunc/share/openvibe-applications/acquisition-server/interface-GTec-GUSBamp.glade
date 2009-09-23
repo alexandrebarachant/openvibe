@@ -43,79 +43,34 @@
                 <child>
                   <widget class="GtkTable" id="table2">
                     <property name="visible">True</property>
-                    <property name="n_rows">5</property>
+                    <property name="n_rows">6</property>
                     <property name="n_columns">2</property>
                     <property name="homogeneous">True</property>
                     <child>
-                      <widget class="GtkLabel" id="label_gender">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Gender :</property>
-                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
-                        <property name="single_line_mode">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_age">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Age :</property>
-                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
-                        <property name="single_line_mode">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_identifier">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Identifier :</property>
-                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
-                        <property name="single_line_mode">True</property>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkSpinButton" id="spinbutton_age">
+                      <widget class="GtkSpinButton" id="spinbutton_number_of_channels">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="adjustment">0 0 100 1 10 10</property>
+                        <property name="adjustment">4 1 16 1 10 10</property>
                         <property name="snap_to_ticks">True</property>
                         <property name="numeric">True</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">4</property>
+                        <property name="bottom_attach">5</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkSpinButton" id="spinbutton_identifier">
+                      <widget class="GtkLabel" id="label_number_of_channels">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="adjustment">0 0 100 1 10 10</property>
-                        <property name="snap_to_ticks">True</property>
-                        <property name="numeric">True</property>
+                        <property name="label" translatable="yes">Number of channels :</property>
+                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
+                        <property name="single_line_mode">True</property>
                       </widget>
                       <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkComboBox" id="combobox_device">
-                        <property name="visible">True</property>
-                        <property name="items" translatable="yes"></property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">4</property>
+                        <property name="bottom_attach">5</property>
                       </packing>
                     </child>
                     <child>
@@ -128,21 +83,6 @@
                       <packing>
                         <property name="top_attach">3</property>
                         <property name="bottom_attach">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkComboBox" id="combobox_gender">
-                        <property name="visible">True</property>
-                        <property name="items" translatable="yes">unspecified
-female
-male
-unknown</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
                       </packing>
                     </child>
                     <child>
@@ -164,8 +104,8 @@ unknown</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
                       </packing>
                     </child>
                     <child>
@@ -176,8 +116,95 @@ unknown</property>
                         <property name="single_line_mode">True</property>
                       </widget>
                       <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkComboBox" id="combobox_gender">
+                        <property name="visible">True</property>
+                        <property name="items" translatable="yes">unspecified
+female
+male
+unknown</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkComboBox" id="combobox_device">
+                        <property name="visible">True</property>
+                        <property name="items" translatable="yes"></property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkSpinButton" id="spinbutton_identifier">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="adjustment">0 0 100 1 10 10</property>
+                        <property name="snap_to_ticks">True</property>
+                        <property name="numeric">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkSpinButton" id="spinbutton_age">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="adjustment">0 0 100 1 10 10</property>
+                        <property name="snap_to_ticks">True</property>
+                        <property name="numeric">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_identifier">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Identifier :</property>
+                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
+                        <property name="single_line_mode">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_age">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Age :</property>
+                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
+                        <property name="single_line_mode">True</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_gender">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Gender :</property>
+                        <property name="justify">GTK_JUSTIFY_RIGHT</property>
+                        <property name="single_line_mode">True</property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
                       </packing>
                     </child>
                   </widget>
@@ -237,126 +264,6 @@ unknown</property>
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">GTK_PACK_END</property>
-          </packing>
-        </child>
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkWindow" id="window_dummy">
-    <child>
-      <widget class="GtkTable" id="table1">
-        <property name="visible">True</property>
-        <property name="n_rows">16</property>
-        <property name="n_columns">2</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <widget class="GtkLabel" id="label_number_of_channels">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Number of channels :</property>
-            <property name="justify">GTK_JUSTIFY_RIGHT</property>
-            <property name="single_line_mode">True</property>
-          </widget>
-        </child>
-        <child>
-          <widget class="GtkSpinButton" id="spinbutton_number_of_channels">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">1 1 16 1 10 10</property>
-            <property name="snap_to_ticks">True</property>
-            <property name="numeric">True</property>
-          </widget>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
           </packing>
         </child>
       </widget>

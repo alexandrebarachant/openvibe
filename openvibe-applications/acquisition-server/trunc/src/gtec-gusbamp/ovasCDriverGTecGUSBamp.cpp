@@ -19,6 +19,8 @@ using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
 using namespace std;
 
+static const uint32 g_ui32AcquiredChannelCount=16;
+
 //___________________________________________________________________//
 //                                                                   //
 
@@ -36,7 +38,7 @@ CDriverGTecGUSBamp::CDriverGTecGUSBamp(void)
 	,m_pOverlapped(NULL)
 {
 	m_oHeader.setSamplingFrequency(512);
-	m_oHeader.setChannelCount(16);
+	m_oHeader.setChannelCount(4);
 }
 
 void CDriverGTecGUSBamp::release(void)
@@ -91,7 +93,7 @@ boolean CDriverGTecGUSBamp::initialize(
 		return false;
 	}
 
-	m_ui32BufferSize=(m_oHeader.getChannelCount()+1)*ui32SampleCountPerSentBlock*sizeof(float)+HEADER_SIZE;
+	m_ui32BufferSize=(g_ui32AcquiredChannelCount+1)*ui32SampleCountPerSentBlock*sizeof(float)+HEADER_SIZE;
 	m_pBuffer=new uint8[m_ui32BufferSize];
 	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
 	if(!m_pBuffer || !m_pSample)
@@ -175,11 +177,11 @@ boolean CDriverGTecGUSBamp::loop(void)
 			::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
 			if(l_dwByteCount==m_ui32BufferSize)
 			{
-				for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
+				for(uint32 i=0; i<m_oHeader.getChannelCount() && i<g_ui32AcquiredChannelCount; i++)
 				{
 					for(uint32 j=0; j<m_ui32SampleCountPerSentBlock; j++)
 					{
-						m_pSample[i*m_ui32SampleCountPerSentBlock+j]=m_pSampleTranspose[j*(m_oHeader.getChannelCount()+1)+i];
+						m_pSample[i*m_ui32SampleCountPerSentBlock+j]=m_pSampleTranspose[j*(g_ui32AcquiredChannelCount+1)+i];
 					}
 				}
 				m_pCallback->setSamples(m_pSample);
