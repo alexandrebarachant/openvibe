@@ -1,0 +1,185 @@
+<Automaton>
+	<Variable name="ExperimentStop"      value="0x00008002"></Variable>
+	<Variable name="TrialStop"           value="0x00008006"></Variable>
+	<Variable name="TrialRestStart"      value="0x00008009"></Variable>
+
+	<Variable name="TargetCard1"         value="0x00008101"></Variable>
+	<Variable name="TargetCard2"         value="0x00008102"></Variable>
+	<Variable name="TargetCard3"         value="0x00008103"></Variable>
+	<Variable name="TargetCard4"         value="0x00008104"></Variable>
+	<Variable name="TargetCard5"         value="0x00008105"></Variable>
+	<Variable name="TargetCard6"         value="0x00008106"></Variable>
+	<Variable name="TargetCard7"         value="0x00008107"></Variable>
+	<Variable name="TargetCard8"         value="0x00008108"></Variable>
+	<Variable name="TargetCard9"         value="0x00008109"></Variable>
+	<Variable name="TargetCard10"        value="0x0000810A"></Variable>
+	<Variable name="TargetCard11"        value="0x0000810B"></Variable>
+	<Variable name="TargetCard12"        value="0x0000810C"></Variable>
+
+	<Variable name="Train"               value="0x00008201"></Variable>
+
+	<Variable name="PreTrialWait"        value="100"></Variable>
+	<Variable name="PreTrainWait"        value="100"></Variable>
+
+	<Node class="LoopWaitEvent">
+		<Property class="Event">
+			<Parameter class="IVariable">ExperimentStop</Parameter>
+		</Property>
+		<Child>
+
+			<Node class="ActionWaitEvent">
+				<Property class="Event">
+					<Parameter class="IVariable">TrialRestStart</Parameter>
+				</Property>
+			</Node>
+
+			<Node class="ActionWaitTime">
+				<Property class="Duration">
+					<Parameter class="IVariable">PreTrialWait</Parameter>
+				</Property>
+			</Node>
+
+			<Node class="SwitchProbabilist">
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard1</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard2</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard3</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard4</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard5</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard6</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard7</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard8</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard9</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard10</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard11</Parameter>
+						</Property>
+					</Node>
+				</Child>
+				<Child>
+					<Property class="Probability">
+						<Parameter class="IValue">1</Parameter>
+					</Property>
+					<Node class="ActionSendEvent">
+						<Property class="Event">
+							<Parameter class="IVariable">TargetCard12</Parameter>
+						</Property>
+					</Node>
+				</Child>
+			</Node>
+
+			<Node class="ActionWaitEvent">
+				<Property class="Event">
+					<Parameter class="IVariable">TrialStop</Parameter>
+				</Property>
+			</Node>
+
+		</Child>
+	</Node>
+
+	<Node class="ActionWaitTime">
+		<Property class="Duration">
+			<Parameter class="IVariable">PreTrainWait</Parameter>
+		</Property>
+	</Node>
+
+	<Node class="ActionSendEvent">
+		<Property class="Event">
+			<Parameter class="IVariable">Train</Parameter>
+		</Property>
+	</Node>
+</Automaton>
