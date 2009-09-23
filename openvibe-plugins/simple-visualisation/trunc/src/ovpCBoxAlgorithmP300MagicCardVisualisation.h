@@ -38,6 +38,8 @@ namespace OpenViBEPlugins
 			typedef struct
 			{
 				int iIndex;
+				::GdkColor oBackgroundColor;
+				::GtkWidget* pParent;
 				::GtkWidget* pWidget;
 				::GtkWidget* pImage;
 			} SWidgetStyle;
@@ -49,6 +51,7 @@ namespace OpenViBEPlugins
 			void _cache_for_each_if_(int iCard, _cache_callback_ fpIfCallback, _cache_callback_ fpElseCallback, void* pIfUserData, void* pElseUserData);
 			void _cache_change_null_cb_(CBoxAlgorithmP300MagicCardVisualisation::SWidgetStyle& rWidgetStyle, void* pUserData);
 			void _cache_change_image_cb_(CBoxAlgorithmP300MagicCardVisualisation::SWidgetStyle& rWidgetStyle, void* pUserData);
+			void _cache_change_background_cb_(CBoxAlgorithmP300MagicCardVisualisation::SWidgetStyle& rWidgetStyle, void* pUserData);
 
 		protected:
 
@@ -76,6 +79,9 @@ namespace OpenViBEPlugins
 			::GtkTable* m_pTable;
 			::GtkLabel* m_pResult;
 			::GtkLabel* m_pTarget;
+			::GdkColor m_oBackgroundColor;
+			::GdkColor m_oTargetBackgroundColor;
+			::GdkColor m_oSelectedBackgroundColor;
 			OpenViBE::uint64 m_ui64TableRowCount;
 			OpenViBE::uint64 m_ui64TableColumnCount;
 			OpenViBE::uint64 m_ui64CardCount;
@@ -119,20 +125,23 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addOutput("Target / Non target flagging",     OV_TypeId_Stimulations);
 
 				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card.glade");
+				rBoxAlgorithmPrototype.addSetting("Background color",                OV_TypeId_Color,       "90,90,90");
+				rBoxAlgorithmPrototype.addSetting("Target background color",         OV_TypeId_Color,       "10,40,10");
+				rBoxAlgorithmPrototype.addSetting("Selected background color",       OV_TypeId_Color,       "70,20,20");
 				rBoxAlgorithmPrototype.addSetting("Card stimulation base",           OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/openvibe-logo.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/arkanoid.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/bomberman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/doom.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/dott.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/lemmings.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/mario.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/megaman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/pacman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/sonic.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/space-invaders.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/worms.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/magic-card/zelda.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png");
 
 				return true;
 			}

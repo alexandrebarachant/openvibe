@@ -14,13 +14,12 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SimpleVisualisation;
 
-#if 0
 namespace
 {
 	class _AutoCast_
 	{
 	public:
-		_AutoCast_(IBox& rBox, IConfigurationManager& rConfigurationManager, const uint32 ui32Index) : m_rConfigurationManager(rConfigurationManager) { rBox.getSettingValue(ui32Index, m_sSettingValue); }
+		_AutoCast_(IBoxAlgorithmContext& rBoxAlgorithtmContext, const uint32 ui32Index) : m_rBoxAlgorithmContext(rBoxAlgorithtmContext) { m_rBoxAlgorithmContext.getStaticBoxContext()->getSettingValue(ui32Index, m_sSettingValue); }
 		operator ::GdkColor (void)
 		{
 			::GdkColor l_oColor;
@@ -33,32 +32,22 @@ namespace
 			return l_oColor;
 		}
 	protected:
-		IConfigurationManager& m_rConfigurationManager;
+		IBoxAlgorithmContext& m_rBoxAlgorithmContext;
 		CString m_sSettingValue;
 	};
-
-	static void toggle_button_show_hide_cb(::GtkToggleToolButton* pToggleButton, gpointer pUserData)
-	{
-		if(gtk_toggle_tool_button_get_active(pToggleButton))
-		{
-			gtk_widget_show(GTK_WIDGET(pUserData));
-		}
-		else
-		{
-			gtk_widget_hide(GTK_WIDGET(pUserData));
-		}
-	}
 };
-#endif
 
 boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
-	m_sInterfaceFilename         =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
-	m_ui64CardStimulationBase    =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
+	m_sInterfaceFilename      =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+	m_oBackgroundColor        =_AutoCast_(*this->getBoxAlgorithmContext(), 1);
+	m_oTargetBackgroundColor  =_AutoCast_(*this->getBoxAlgorithmContext(), 2);
+	m_oSelectedBackgroundColor=_AutoCast_(*this->getBoxAlgorithmContext(), 3);
+	m_ui64CardStimulationBase =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 4);
 
-	for(uint32 i=3; i<l_rStaticBoxContext.getSettingCount(); i++)
+	for(uint32 i=6; i<l_rStaticBoxContext.getSettingCount(); i++)
 	{
 		CString l_sForegroundImageFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
 		::GtkWidget* l_pForegroundImage=gtk_image_new_from_file(l_sForegroundImageFilename.toASCIIString());
@@ -66,7 +55,7 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 		g_object_ref(l_pForegroundImage);
 		m_vForegroundImage.push_back(l_pForegroundImage);
 
-		CString l_sBackgroundImageFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
+		CString l_sBackgroundImageFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 5);
 		::GtkWidget* l_pBackgroundImage=gtk_image_new_from_file((l_sBackgroundImageFilename+CString("-offscreen")).toASCIIString());
 		gtk_widget_show(l_pBackgroundImage);
 		g_object_ref(l_pBackgroundImage);
@@ -104,13 +93,7 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 	m_pMainWindow=glade_xml_get_widget(m_pMainWidgetInterface, "p300-magic-card-main");
 	m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "p300-magic-card-toolbar");
 	m_pTable=GTK_TABLE(glade_xml_get_widget(m_pMainWidgetInterface, "p300-magic-card-table"));
-
-	::GdkColor l_oWhite;
-	l_oWhite.red=0;
-	l_oWhite.green=0;
-	l_oWhite.blue=0;
-	l_oWhite.pixel=0;
-	gtk_widget_modify_bg(m_pMainWindow, GTK_STATE_NORMAL, &l_oWhite);
+	gtk_widget_modify_bg(m_pMainWindow, GTK_STATE_NORMAL, &m_oBackgroundColor);
 
 	glade_xml_signal_autoconnect(m_pMainWidgetInterface);
 	glade_xml_signal_autoconnect(m_pToolbarWidgetInterface);
@@ -131,6 +114,7 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 	m_bTableInitialized=false;
 	this->_cache_build_from_table_(m_pTable);
 	this->_cache_for_each_(&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_image_cb_, &m_vForegroundImage);
+	this->_cache_for_each_(&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_background_cb_, &m_oBackgroundColor);
 
 	return true;
 }
@@ -230,6 +214,9 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::process(void)
 						&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_image_cb_,
 						&m_vForegroundImage,
 						&m_vBackgroundImage);
+					this->_cache_for_each_(
+						&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_background_cb_,
+						&m_oBackgroundColor);
 				}
 				if(l_ui64StimulationIdentifier == OVTK_StimulationId_ExperimentStart)
 				{
@@ -285,6 +272,12 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::process(void)
 							&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_null_cb_,
 							&m_vForegroundImage,
 							NULL);
+						this->_cache_for_each_if_(
+							m_iTargetCard,
+							&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_background_cb_,
+							&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_null_cb_,
+							&m_oTargetBackgroundColor,
+							NULL);
 					}
 				}
 			}
@@ -332,6 +325,12 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::process(void)
 							&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_null_cb_,
 							&m_vForegroundImage,
 							NULL);
+						this->_cache_for_each_if_(
+							l_iSelectedCard,
+							&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_background_cb_,
+							&CBoxAlgorithmP300MagicCardVisualisation::_cache_change_null_cb_,
+							&m_oSelectedBackgroundColor,
+							NULL);
 					}
 					if(l_ui64StimulationIdentifier == OVTK_StimulationId_Label_00)
 					{
@@ -375,8 +374,9 @@ void CBoxAlgorithmP300MagicCardVisualisation::_cache_build_from_table_(::GtkTabl
 					int l_iIndex=(int)(i*m_ui64TableColumnCount+j);
 					CBoxAlgorithmP300MagicCardVisualisation::SWidgetStyle& l_rWidgetStyle=m_vCache[l_iIndex];
 					l_rWidgetStyle.iIndex=l_iIndex;
-					l_rWidgetStyle.pWidget=l_pTableChild->widget;
-					l_rWidgetStyle.pImage=gtk_bin_get_child(GTK_BIN(l_pTableChild->widget));
+					l_rWidgetStyle.pParent=l_pTableChild->widget;
+					l_rWidgetStyle.pWidget=gtk_bin_get_child(GTK_BIN(l_rWidgetStyle.pParent));
+					l_rWidgetStyle.pImage=gtk_bin_get_child(GTK_BIN(l_rWidgetStyle.pWidget));
 				}
 			}
 		}
@@ -431,3 +431,16 @@ void CBoxAlgorithmP300MagicCardVisualisation::_cache_change_image_cb_(CBoxAlgori
 		rWidgetStyle.pImage=l_pImage;
 	}
 }
+
+void CBoxAlgorithmP300MagicCardVisualisation::_cache_change_background_cb_(CBoxAlgorithmP300MagicCardVisualisation::SWidgetStyle& rWidgetStyle, void* pUserData)
+{
+	::GdkColor oColor=*(::GdkColor*)pUserData;
+	if(!System::Memory::compare(&rWidgetStyle.oBackgroundColor, &oColor, sizeof(::GdkColor)))
+	{
+		gtk_widget_modify_bg(rWidgetStyle.pParent, GTK_STATE_NORMAL, &oColor);
+		gtk_widget_modify_bg(rWidgetStyle.pWidget, GTK_STATE_NORMAL, &oColor);
+		gtk_widget_modify_bg(rWidgetStyle.pImage, GTK_STATE_NORMAL, &oColor);
+		rWidgetStyle.oBackgroundColor=oColor;
+	}
+}
+
