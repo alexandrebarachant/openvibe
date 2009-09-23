@@ -4,6 +4,7 @@
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Time.h>
+#include <system/Memory.h>
 #include <math.h>
 #include <iostream>
 
@@ -89,6 +90,7 @@ boolean CDriverOpenEEGModularEEG::initialize(
 		m_pChannelBuffer=NULL;
 		return false;
 	}
+	System::Memory::set(m_pChannelBuffer, 0, m_oHeader.getChannelCount()*sizeof(int32));
 
 	m_pCallback=&rCallback;
 	m_bInitialized=true;
@@ -223,17 +225,17 @@ boolean CDriverOpenEEGModularEEG::configure(void)
 /*
 void CDriverOpenEEGModularEEG::logPacket(void)
 {
-	uint32 ui32I;
 	printf("\nPacket %d received:\n", m_ui8PacketNumber);
-	for(ui32I=0; ui32I<6; ui32I++)
+	for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 	{
-		printf("Channel %d:%d\n", ui32I+1, m_pChannelBuffer[ui32I]);
+		printf("Channel %d:%d\n", i+1, m_pChannelBuffer[i]);
 	}
 }
 */
 
 boolean CDriverOpenEEGModularEEG::parseByteP2(uint8 ui8Actbyte)
 {
+	uint32 m_ui32ChannelCount=m_oHeader.getChannelCount();
 	switch(m_ui16Readstate)
 	{
 		case 0:
@@ -269,11 +271,17 @@ boolean CDriverOpenEEGModularEEG::parseByteP2(uint8 ui8Actbyte)
 			{
 				if((m_ui16ExtractPosition & 1) == 0)
 				{
-					m_pChannelBuffer[m_ui16ExtractPosition>>1]= ((int32)ui8Actbyte)<<8;
+					if((uint32)(m_ui16ExtractPosition>>1)<m_ui32ChannelCount)
+					{
+						m_pChannelBuffer[m_ui16ExtractPosition>>1]= ((int32)ui8Actbyte)<<8;
+					}
 				}
 				else
 				{
-					m_pChannelBuffer[m_ui16ExtractPosition>>1]+=ui8Actbyte;
+					if((uint32)(m_ui16ExtractPosition>>1)<m_ui32ChannelCount)
+					{
+						m_pChannelBuffer[m_ui16ExtractPosition>>1]+=ui8Actbyte;
+					}
 				}
 				m_ui16ExtractPosition++;
 			}
