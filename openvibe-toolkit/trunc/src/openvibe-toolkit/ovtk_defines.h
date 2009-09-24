@@ -15,8 +15,7 @@
 #define OVTK_TypeId_Stimulation                                        OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
 #define OVTK_TypeId_GDF_Stimulation                                    OpenViBE::CIdentifier(0xA538DBF0, 0xBC229750)
 
-#define OVTK_TypeId_ClassificationProcessorAlgorithm                   OpenViBE::CIdentifier(0xFC8700C6, 0x2285747B)
-#define OVTK_TypeId_ClassificationTrainerAlgorithm                     OpenViBE::CIdentifier(0x73142A5A, 0xACA98DA3)
+#define OVTK_TypeId_ClassificationAlgorithm                            OpenViBE::CIdentifier(0x21CE7F37, 0x28DEF186)
 
 //___________________________________________________________________//
 //                                                                   //

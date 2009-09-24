@@ -34,7 +34,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pFeaturesDecoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pLabelsEncoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pClassificationStateEncoder;
-			OpenViBE::Kernel::IAlgorithmProxy* m_pClassifierProcessor;
+			OpenViBE::Kernel::IAlgorithmProxy* m_pClassifier;
 
 			std::map < OpenViBE::float64, OpenViBE::uint64 > m_vStimulation;
 			OpenViBE::boolean m_bOutputHeaderSent;
@@ -64,7 +64,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addInput  ("Features",                            OV_TypeId_FeatureVector);
 				rBoxAlgorithmPrototype.addOutput ("Labels",                              OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput ("Classification state",                OV_TypeId_StreamedMatrix);
-				rBoxAlgorithmPrototype.addSetting("Classifier processor to use",         OVTK_TypeId_ClassificationProcessorAlgorithm, "");
+				rBoxAlgorithmPrototype.addSetting("Classifier to use",                   OVTK_TypeId_ClassificationAlgorithm, "");
 				rBoxAlgorithmPrototype.addSetting("Filename to load configuration from", OV_TypeId_Filename,    "");
 				rBoxAlgorithmPrototype.addSetting("Reject class label",                  OV_TypeId_Stimulation, "OVTK_StimulationId_Label_00");
 				rBoxAlgorithmPrototype.addSetting("Class 1 label",                       OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
@@ -72,7 +72,7 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmCommonClassifierListener(5); }
+			// virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmCommonClassifierListener(5); }
 			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) { delete pBoxListener; }
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_ClassifierProcessorDesc);

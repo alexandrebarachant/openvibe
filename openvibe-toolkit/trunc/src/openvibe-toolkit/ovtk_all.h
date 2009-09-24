@@ -36,8 +36,7 @@
 #endif
 
 #include "algorithms/ovtkTAlgorithm.h"
-#include "algorithms/classification/ovtkCAlgorithmClassifierProcessor.h"
-#include "algorithms/classification/ovtkCAlgorithmClassifierTrainer.h"
+#include "algorithms/classification/ovtkCAlgorithmClassifier.h"
 
 #include "algorithms/scenario-io/ovtkCAlgorithmScenarioImporter.h"
 #include "algorithms/scenario-io/ovtkCAlgorithmScenarioExporter.h"

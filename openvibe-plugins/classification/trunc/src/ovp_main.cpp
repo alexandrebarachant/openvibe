@@ -3,7 +3,6 @@
 #include "box-algorithms/classification/ovpCBoxAlgorithmVotingClassifier.h"
 #include "box-algorithms/classification/ovpCBoxAlgorithmClassifierTrainer.h"
 #include "box-algorithms/classification/ovpCBoxAlgorithmClassifierProcessor.h"
-#include "box-algorithms/classification/ovpCBoxAlgorithmMultiInputClassifierTrainer.h"
 
 #include <vector>
 
@@ -13,7 +12,6 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::Classification::CBoxAlgorithmVotingClassifierDesc);
 	OVP_Declare_New(OpenViBEPlugins::Classification::CBoxAlgorithmClassifierTrainerDesc);
 	OVP_Declare_New(OpenViBEPlugins::Classification::CBoxAlgorithmClassifierProcessorDesc);
-	OVP_Declare_New(OpenViBEPlugins::Classification::CBoxAlgorithmMultiInputClassifierTrainerDesc);
 
 	// OVP_Declare_New(OpenViBEPlugins::Classification::CLDAClassifierDesc);
 OVP_Declare_End();

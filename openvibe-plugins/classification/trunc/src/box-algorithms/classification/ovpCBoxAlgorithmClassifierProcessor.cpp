@@ -14,14 +14,14 @@ boolean CBoxAlgorithmClassifierProcessor::initialize(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
-	CIdentifier l_oClassifierProcessorAlgorithmClassIdentifier;
-	CString l_sClassifierProcessorAlgorithmClassIdentifier;
-	l_rStaticBoxContext.getSettingValue(0, l_sClassifierProcessorAlgorithmClassIdentifier);
-	l_oClassifierProcessorAlgorithmClassIdentifier=this->getTypeManager().getEnumerationEntryValueFromName(OVTK_TypeId_ClassificationProcessorAlgorithm, l_sClassifierProcessorAlgorithmClassIdentifier);
+	CIdentifier l_oClassifierAlgorithmClassIdentifier;
+	CString l_sClassifierAlgorithmClassIdentifier;
+	l_rStaticBoxContext.getSettingValue(0, l_sClassifierAlgorithmClassIdentifier);
+	l_oClassifierAlgorithmClassIdentifier=this->getTypeManager().getEnumerationEntryValueFromName(OVTK_TypeId_ClassificationAlgorithm, l_sClassifierAlgorithmClassIdentifier);
 
-	if(l_oClassifierProcessorAlgorithmClassIdentifier==OV_UndefinedIdentifier)
+	if(l_oClassifierAlgorithmClassIdentifier==OV_UndefinedIdentifier)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Unknown classifier processor algorithm [" << l_sClassifierProcessorAlgorithmClassIdentifier << "]\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Unknown classifier algorithm [" << l_sClassifierAlgorithmClassIdentifier << "]\n";
 		return false;
 	}
 
@@ -38,18 +38,18 @@ boolean CBoxAlgorithmClassifierProcessor::initialize(void)
 	m_pFeaturesDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder));
 	m_pLabelsEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamEncoder));
 	m_pClassificationStateEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamEncoder));
-	m_pClassifierProcessor=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(l_oClassifierProcessorAlgorithmClassIdentifier));
+	m_pClassifier=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(l_oClassifierAlgorithmClassIdentifier));
 
 	m_pFeaturesDecoder->initialize();
 	m_pLabelsEncoder->initialize();
 	m_pClassificationStateEncoder->initialize();
-	m_pClassifierProcessor->initialize();
+	m_pClassifier->initialize();
 
-	m_pClassifierProcessor->getInputParameter(OVTK_Algorithm_ClassifierProcessor_InputParameterId_FeatureVector)->setReferenceTarget(m_pFeaturesDecoder->getOutputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix));
-	m_pClassificationStateEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setReferenceTarget(m_pClassifierProcessor->getOutputParameter(OVTK_Algorithm_ClassifierProcessor_OutputParameterId_ClassificationValues));
+	m_pClassifier->getInputParameter(OVTK_Algorithm_Classifier_InputParameterId_FeatureVector)->setReferenceTarget(m_pFeaturesDecoder->getOutputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix));
+	m_pClassificationStateEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setReferenceTarget(m_pClassifier->getOutputParameter(OVTK_Algorithm_Classifier_OutputParameterId_ClassificationValues));
 
-	TParameterHandler < IMemoryBuffer* > ip_pClassificationProcessorConfiguration(m_pClassifierProcessor->getInputParameter(OVTK_Algorithm_ClassifierProcessor_InputParameterId_Configuration));
-	IMemoryBuffer* l_pConfigurationFile=ip_pClassificationProcessorConfiguration;
+	TParameterHandler < IMemoryBuffer* > ip_pClassificationConfiguration(m_pClassifier->getInputParameter(OVTK_Algorithm_Classifier_InputParameterId_Configuration));
+	IMemoryBuffer* l_pConfigurationFile=ip_pClassificationConfiguration;
 	ifstream l_oFile(l_sConfigurationFilename.toASCIIString(), ios::binary);
 	if(l_oFile.is_open())
 	{
@@ -60,7 +60,7 @@ boolean CBoxAlgorithmClassifierProcessor::initialize(void)
 		l_pConfigurationFile->setSize(l_iFileLen, true);
 		l_oFile.read((char*)l_pConfigurationFile->getDirectPointer(), l_iFileLen);
 		l_oFile.close();
-		m_pClassifierProcessor->process(OVTK_Algorithm_ClassifierProcessor_InputTriggerId_LoadConfiguration);
+		m_pClassifier->process(OVTK_Algorithm_Classifier_InputTriggerId_LoadConfiguration);
 	}
 	else
 	{
@@ -73,12 +73,12 @@ boolean CBoxAlgorithmClassifierProcessor::initialize(void)
 
 boolean CBoxAlgorithmClassifierProcessor::uninitialize(void)
 {
-	m_pClassifierProcessor->uninitialize();
+	m_pClassifier->uninitialize();
 	m_pClassificationStateEncoder->uninitialize();
 	m_pLabelsEncoder->uninitialize();
 	m_pFeaturesDecoder->uninitialize();
 
-	this->getAlgorithmManager().releaseAlgorithm(*m_pClassifierProcessor);
+	this->getAlgorithmManager().releaseAlgorithm(*m_pClassifier);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pClassificationStateEncoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pLabelsEncoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pFeaturesDecoder);
@@ -107,7 +107,7 @@ boolean CBoxAlgorithmClassifierProcessor::process(void)
 		TParameterHandler < IMemoryBuffer* > op_pClassificationStateMemoryBuffer(m_pClassificationStateEncoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
 		TParameterHandler < IStimulationSet* > ip_pLabelsStimulationSet(m_pLabelsEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
-		TParameterHandler < float64 > op_f64ClassificationStateClass(m_pClassifierProcessor->getOutputParameter(OVTK_Algorithm_ClassifierProcessor_OutputParameterId_Class));
+		TParameterHandler < float64 > op_f64ClassificationStateClass(m_pClassifier->getOutputParameter(OVTK_Algorithm_Classifier_OutputParameterId_Class));
 
 		ip_pFeatureVectorMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
 		op_pLabelsMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
@@ -120,7 +120,7 @@ boolean CBoxAlgorithmClassifierProcessor::process(void)
 		}
 		if(m_pFeaturesDecoder->isOutputTriggerActive(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
-			if(m_pClassifierProcessor->process(OVTK_Algorithm_ClassifierProcessor_InputTriggerId_Classify))
+			if(m_pClassifier->process(OVTK_Algorithm_Classifier_InputTriggerId_Classify))
 			{
 				if(!m_bOutputHeaderSent)
 				{

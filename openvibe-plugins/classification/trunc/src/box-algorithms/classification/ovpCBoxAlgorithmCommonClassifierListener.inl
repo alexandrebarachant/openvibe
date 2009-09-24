@@ -5,6 +5,8 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 #include <cstdio>
+#include <cstring>
+#include <cstdlib>
 
 namespace OpenViBEPlugins
 {
@@ -35,7 +37,6 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			// FOR MULTI INPUT CLASSIFIER TRAINER ONLY
 			virtual OpenViBE::boolean onInputAddedOrRemoved(OpenViBE::Kernel::IBox& rBox)
 			{
 				while(rBox.getInputCount()<m_ui32CustomSettingBase)
@@ -54,50 +55,35 @@ namespace OpenViBEPlugins
 				}
 				return true;
 			}
+
 			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
 				return this->onInputAddedOrRemoved(rBox);
 			}
+
 			virtual OpenViBE::boolean onInputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
 				return this->onInputAddedOrRemoved(rBox);
 			}
 
-			// FOR ADDITIONAL BOX SETTINGS
 			virtual OpenViBE::boolean onInitialized(OpenViBE::Kernel::IBox& rBox)
 			{
-				return onAlgorithmClassIdentifierChanged(rBox);
-			}
-			virtual OpenViBE::boolean onAlgorithmClassIdentifierChanged(OpenViBE::Kernel::IBox& rBox)
-			{
-				OpenViBE::CString l_sClassifierName;
-				OpenViBE::CIdentifier l_oClassifierType;
-				OpenViBE::CIdentifier l_oClassifierIdentifier;
-
-				rBox.getSettingValue(0, l_sClassifierName);
-				rBox.getSettingType(0, l_oClassifierType);
-
-				l_oClassifierIdentifier=this->getTypeManager().getEnumerationEntryValueFromName(l_oClassifierType, l_sClassifierName);
-				if(l_oClassifierIdentifier != m_oClassifierClassIdentifier)
-				{
-					this->uninitialize();
-					this->initialize();
-				}
-				return true;
+				return this->onAlgorithmClassIdentifierChanged(rBox);
 			}
 			virtual OpenViBE::boolean onSettingValueChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
-				if(ui32Index==0)
-				{
+				return ui32Index==0?this->onAlgorithmClassIdentifierChanged(rBox):true;
+			}
+
+			virtual OpenViBE::boolean onAlgorithmClassIdentifierChanged(OpenViBE::Kernel::IBox& rBox)
+			{
 					OpenViBE::CString l_sClassifierName;
-					OpenViBE::CIdentifier l_oClassifierType;
 					OpenViBE::CIdentifier l_oClassifierIdentifier;
 					OpenViBE::CIdentifier l_oIdentifier;
 
 					rBox.getSettingValue(0, l_sClassifierName);
-					rBox.getSettingType(0, l_oClassifierType);
 
-					l_oClassifierIdentifier=this->getTypeManager().getEnumerationEntryValueFromName(l_oClassifierType, l_sClassifierName);
+					l_oClassifierIdentifier=this->getTypeManager().getEnumerationEntryValueFromName(OVTK_TypeId_ClassificationAlgorithm, l_sClassifierName);
 					if(l_oClassifierIdentifier != m_oClassifierClassIdentifier)
 					{
 						this->uninitialize();
@@ -114,32 +100,38 @@ namespace OpenViBEPlugins
 
 						while((l_oIdentifier=m_pClassifier->getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
 						{
-							if(l_oIdentifier!=OVTK_Algorithm_ClassifierTrainer_InputParameterId_FeatureVectorSet)
+							if((l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVector)
+							&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVectorSet)
+							&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_Configuration))
 							{
 								OpenViBE::CString l_sParameterName=m_pClassifier->getInputParameterName(l_oIdentifier);
 								OpenViBE::Kernel::IParameter* l_pParameter=m_pClassifier->getInputParameter(l_oIdentifier);
-								OpenViBE::CIdentifier l_oSettingType;
+								OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64Parameter(l_pParameter);
+								OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64Parameter(l_pParameter);
+								OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > ip_f64Parameter(l_pParameter);
+								OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > ip_bParameter(l_pParameter);
+								char l_sBuffer[1024];
 								switch(l_pParameter->getType())
 								{
 									case OpenViBE::Kernel::ParameterType_Enumeration:
-										rBox.addSetting(l_sParameterName, l_pParameter->getSubTypeIdentifier(), "");
+										strcpy(l_sBuffer, this->getTypeManager().getEnumerationEntryNameFromValue(l_pParameter->getSubTypeIdentifier(), ip_ui64Parameter).toASCIIString());
+										rBox.addSetting(l_sParameterName, l_pParameter->getSubTypeIdentifier(), l_sBuffer);
 										break;
 
 									case OpenViBE::Kernel::ParameterType_Integer:
 									case OpenViBE::Kernel::ParameterType_UInteger:
-										rBox.addSetting(l_sParameterName, OV_TypeId_Integer, "");
+										sprintf(l_sBuffer, "%lli", (OpenViBE::int64)ip_i64Parameter);
+										rBox.addSetting(l_sParameterName, OV_TypeId_Integer, l_sBuffer);
 										break;
 
 									case OpenViBE::Kernel::ParameterType_Boolean:
-										rBox.addSetting(l_sParameterName, OV_TypeId_Boolean, "");
+										sprintf(l_sBuffer, "%s", ((OpenViBE::boolean)ip_bParameter)?"true":"false");
+										rBox.addSetting(l_sParameterName, OV_TypeId_Boolean, l_sBuffer);
 										break;
 
 									case OpenViBE::Kernel::ParameterType_Float:
-										rBox.addSetting(l_sParameterName, OV_TypeId_Float, "");
-										break;
-
-									case OpenViBE::Kernel::ParameterType_String:
-										rBox.addSetting(l_sParameterName, OV_TypeId_String, "");
+										sprintf(l_sBuffer, "%lf", (OpenViBE::float64)ip_f64Parameter);
+										rBox.addSetting(l_sParameterName, OV_TypeId_Float, l_sBuffer);
 										break;
 
 									default:
@@ -148,9 +140,22 @@ namespace OpenViBEPlugins
 							}
 						}
 					}
+/*
+				OpenViBE::CString l_sClassifierName;
+				OpenViBE::CIdentifier l_oClassifierIdentifier;
+
+				rBox.getSettingValue(0, l_sClassifierName);
+
+				l_oClassifierIdentifier=this->getTypeManager().getEnumerationEntryValueFromName(OVTK_TypeId_ClassificationAlgorithm, l_sClassifierName);
+				if(l_oClassifierIdentifier != m_oClassifierClassIdentifier)
+				{
+					this->uninitialize();
+					this->initialize();
 				}
+*/
 				return true;
 			}
+
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
 

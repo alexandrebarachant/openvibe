@@ -40,6 +40,7 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64NonTargetClassLabel;
 			OpenViBE::uint64 m_ui64RejectClassLabel;
 			OpenViBE::uint64 m_ui64ResultClassLabelBase;
+			OpenViBE::boolean m_bChooseOneIfExAequo;
 
 		private:
 
@@ -48,7 +49,8 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IAlgorithmProxy* m_pDecoder;
 				OpenViBE::Kernel::TParameterHandler<const OpenViBE::IMemoryBuffer*> ip_pMemoryBuffer;
 				OpenViBE::Kernel::TParameterHandler<OpenViBE::IStimulationSet*> op_pStimulationSet;
-				std::vector < std::pair < OpenViBE::uint64, OpenViBE::uint64 > > m_vStimulationId;
+				OpenViBE::Kernel::TParameterHandler<OpenViBE::IMatrix*> op_pMatrix;
+				std::vector < std::pair < OpenViBE::float64, OpenViBE::uint64 > > m_vScore;
 			} SInput;
 
 			std::map < OpenViBE::uint32, CBoxAlgorithmVotingClassifier::SInput > m_vClassificationResults;
@@ -58,24 +60,58 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler<OpenViBE::IMemoryBuffer*> op_pClassificationChoiceMemoryBuffer;
 
 			OpenViBE::uint64 m_ui64LastTime;
+			OpenViBE::boolean m_bMatrixBased;
+			OpenViBE::CIdentifier m_oStreamDecoder_OutputTriggerId_ReceivedHeader;
+			OpenViBE::CIdentifier m_oStreamDecoder_OutputTriggerId_ReceivedBuffer;
+			OpenViBE::CIdentifier m_oStreamDecoder_OutputTriggerId_ReceivedEnd;
 		};
 
 
 		class CBoxAlgorithmVotingClassifierListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
 		{
 		public:
+
+			CBoxAlgorithmVotingClassifierListener(void)
+				:m_oInputTypeIdentifier(OV_TypeId_Stimulations)
+			{
+			}
+
+			virtual OpenViBE::boolean onInputTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				OpenViBE::CIdentifier l_oInputTypeIdentifier;
+				rBox.getInputType(ui32Index, l_oInputTypeIdentifier);
+				if(l_oInputTypeIdentifier==OV_TypeId_Stimulations || l_oInputTypeIdentifier==OV_TypeId_StreamedMatrix)
+				{
+					m_oInputTypeIdentifier=l_oInputTypeIdentifier;
+					for(OpenViBE::uint32 i=0; i<rBox.getInputCount(); i++)
+					{
+						rBox.setInputType(i, m_oInputTypeIdentifier);
+					}
+				}
+				else
+				{
+					rBox.setInputType(ui32Index, m_oInputTypeIdentifier);
+				}
+				return true;
+			}
+
 			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
 				for(OpenViBE::uint32 i=0; i<rBox.getInputCount(); i++)
 				{
 					char l_sBuffer[1024];
 					sprintf(l_sBuffer, "Classification result %i", i);
-					rBox.setInputType(i, OV_TypeId_Stimulations);
+					rBox.setInputType(i, m_oInputTypeIdentifier);
 					rBox.setInputName(i, l_sBuffer);
 				}
 				return true;
 			}
+
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+
+		protected:
+
+			OpenViBE::CIdentifier m_oInputTypeIdentifier;
 		};
 
 		class CBoxAlgorithmVotingClassifierDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -100,13 +136,16 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
 				rBoxAlgorithmPrototype.addInput  ("Classification result 1", OV_TypeId_Stimulations);
+				rBoxAlgorithmPrototype.addInput  ("Classification result 2", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput ("Classification choice",   OV_TypeId_Stimulations);
-				rBoxAlgorithmPrototype.addSetting("Number of repetitions",   OV_TypeId_Integer,     "15");
+				rBoxAlgorithmPrototype.addSetting("Number of repetitions",   OV_TypeId_Integer,     "12");
 				rBoxAlgorithmPrototype.addSetting("Target class label",      OV_TypeId_Stimulation, "OVTK_StimulationId_Target");
 				rBoxAlgorithmPrototype.addSetting("Non target class label",  OV_TypeId_Stimulation, "OVTK_StimulationId_NonTarget");
 				rBoxAlgorithmPrototype.addSetting("Reject class label",      OV_TypeId_Stimulation, "OVTK_StimulationId_Label_00");
 				rBoxAlgorithmPrototype.addSetting("Result class label base", OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
+				rBoxAlgorithmPrototype.addSetting("Choose one if ex-aequo",  OV_TypeId_Boolean,     "false");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyInput);
 				return true;
 			}
 

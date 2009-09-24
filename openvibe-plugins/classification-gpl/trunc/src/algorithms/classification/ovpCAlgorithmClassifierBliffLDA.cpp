@@ -1,4 +1,4 @@
-#include "ovpCAlgorithmClassifierTrainerBliffLDA.h"
+#include "ovpCAlgorithmClassifierBliffLDA.h"
 
 #if defined TARGET_HAS_ThirdPartyBLiFF
 
@@ -20,9 +20,9 @@ using namespace OpenViBEToolkit;
 
 using namespace std;
 
-#define _ParameterFile_ "./CAlgorithmClassifierTrainerBliffLDA-config.tmp"
+#define _ParameterFile_ "./CAlgorithmClassifierBliffLDA-config.tmp"
 
-boolean CAlgorithmClassifierTrainerBliffLDA::train(const IFeatureVectorSet& rFeatureVectorSet)
+boolean CAlgorithmClassifierBliffLDA::train(const IFeatureVectorSet& rFeatureVectorSet)
 {
 	float64 l_f64BliffLDASign=1;
 	float64 l_f64BliffLDALabel1=rFeatureVectorSet[0].getLabel();
@@ -61,8 +61,8 @@ boolean CAlgorithmClassifierTrainerBliffLDA::train(const IFeatureVectorSet& rFea
 	}
 	else
 	{
-		l_vLabel[l_f64BliffLDALabel2]=l_f64BliffLDALabel1;
-		l_vLabel[l_f64BliffLDALabel1]=l_f64BliffLDALabel2;
+		l_vLabel[l_f64BliffLDALabel1]=l_f64BliffLDALabel1;
+		l_vLabel[l_f64BliffLDALabel2]=l_f64BliffLDALabel2;
 		l_f64BliffLDASign=1;
 	}
 
@@ -80,8 +80,8 @@ boolean CAlgorithmClassifierTrainerBliffLDA::train(const IFeatureVectorSet& rFea
 
 	bliff::CLDAClassifier l_oBliffLDAClassifier;
 
-	l_oBliffLDAClassifier.kFoldTest(l_oFeatureVectorSet, 10, 10);
-	this->getLogManager() << LogLevel_Info << "KFoldTest returned : " << (float64)l_oBliffLDAClassifier.getAccuracy() << "%\n";
+	// l_oBliffLDAClassifier.kFoldTest(l_oFeatureVectorSet, 10, 10);
+	// this->getLogManager() << LogLevel_Trace << "BLiFF KFoldTest returned : " << (float64)l_oBliffLDAClassifier.getAccuracy() << "%\n";
 
 	l_oBliffLDAClassifier.train(l_oFeatureVectorSet);
 	vector<double> l_vCoefficients=l_oBliffLDAClassifier.getCoefficients();
@@ -91,28 +91,67 @@ boolean CAlgorithmClassifierTrainerBliffLDA::train(const IFeatureVectorSet& rFea
 	}
 	l_oBliffLDAClassifier.saveParams(_ParameterFile_);
 
-	ifstream l_oFile(_ParameterFile_, ios::binary);
-	if(l_oFile.is_open())
+	FILE* l_pFile=::fopen(_ParameterFile_, "rb");
+	if(l_pFile)
 	{
-		size_t l_iFileLen;
-		l_oFile.seekg(0, ios::end);
-		l_iFileLen=l_oFile.tellg();
-		l_oFile.seekg(0, ios::beg);
+		size_t l_iFileLen, l_iReadLen;
+		::fseek(l_pFile, 0, SEEK_END);
+		l_iFileLen=::ftell(l_pFile);
+		::fseek(l_pFile, 0, SEEK_SET);
 		m_oConfiguration.setSize(l_iFileLen, true);
-		l_oFile.read((char*)m_oConfiguration.getDirectPointer(), l_iFileLen);
-		l_oFile.close();
+		l_iReadLen=::fread(m_oConfiguration.getDirectPointer(), 1, l_iFileLen, l_pFile);
+		::fclose(l_pFile);
 	}
 
 	l_oBliffLDAClassifier.test(l_oFeatureVectorSet);
-	this->getLogManager() << LogLevel_Info << "Test returned : " << (float64)l_oBliffLDAClassifier.getAccuracy() << "%\n";
+	this->getLogManager() << LogLevel_Trace << "BLiFF Test returned : " << (float64)l_oBliffLDAClassifier.getAccuracy() << "%\n";
+	this->getLogManager() << LogLevel_Trace << "True positive rate  : " << (float64)l_oBliffLDAClassifier.getTPRate() << "%\n";
+	this->getLogManager() << LogLevel_Trace << "False positive rate : " << (float64)l_oBliffLDAClassifier.getFPRate() << "%\n";
+	// this->getLogManager() << LogLevel_Trace << "Confusion matrix    : " << (float64)l_oBliffLDAClassifier.getConfusionMatrix() << "\n";
 
 	return true;
 }
 
-boolean CAlgorithmClassifierTrainerBliffLDA::saveConfiguration(IMemoryBuffer& rMemoryBuffer)
+boolean CAlgorithmClassifierBliffLDA::classify(const IFeatureVector& rFeatureVector, float64& rf64Class, IVector& rClassificationValues)
+{
+	bliff::FeatureVector l_oFeatureVector(rFeatureVector.getSize(), 0);
+	for(uint32 j=0; j<rFeatureVector.getSize(); j++)
+	{
+		l_oFeatureVector[j]=rFeatureVector[j];
+	}
+
+	FILE* l_pFile=::fopen(_ParameterFile_, "wb");
+	::fwrite(m_oConfiguration.getDirectPointer(), m_oConfiguration.getSize(), 1, l_pFile);
+	::fclose(l_pFile);
+
+	itpp::Vec<double> l_vResult;
+	double l_dResult;
+	bliff::CLDAClassifier l_oBliffLDAClassifier;
+	l_oBliffLDAClassifier.readParams(_ParameterFile_);
+	l_vResult=l_oBliffLDAClassifier.classify(l_oFeatureVector);
+	l_dResult=l_oBliffLDAClassifier.assign(l_oFeatureVector);
+
+	rf64Class=l_dResult;
+	rClassificationValues.setSize(l_vResult.size());
+	for(size_t i=0; i<rClassificationValues.getSize(); i++)
+	{
+		rClassificationValues[i]=-l_vResult[i];
+	}
+
+	return true;
+}
+
+boolean CAlgorithmClassifierBliffLDA::saveConfiguration(IMemoryBuffer& rMemoryBuffer)
 {
 	rMemoryBuffer.setSize(0, true);
 	rMemoryBuffer.append(m_oConfiguration);
+	return true;
+}
+
+boolean CAlgorithmClassifierBliffLDA::loadConfiguration(const IMemoryBuffer& rMemoryBuffer)
+{
+	m_oConfiguration.setSize(0, true);
+	m_oConfiguration.append(rMemoryBuffer);
 	return true;
 }
 
