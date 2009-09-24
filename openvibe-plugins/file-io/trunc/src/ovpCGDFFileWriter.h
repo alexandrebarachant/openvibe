@@ -123,7 +123,7 @@ namespace OpenViBEPlugins
 				// Adds box outputs
 
 				// Adds box settings
-				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
+				rPrototype.addSetting("Filename", OV_TypeId_Filename, "record-[$core{date}-$core{time}].gdf");
 
 				return true;
 			}
