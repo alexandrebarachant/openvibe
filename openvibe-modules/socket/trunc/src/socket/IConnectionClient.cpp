@@ -2,10 +2,10 @@
 #include "IConnectionClient.h"
 #include "IConnection.inl"
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <fcntl.h>
-#include <errno.h>
+#include <cerrno>
 
 #if defined Socket_OS_Linux
  #include <netinet/in.h>
@@ -14,7 +14,7 @@
  #include <unistd.h>
 #elif defined Socket_OS_Windows
  #include <fcntl.h>
- #include <errno.h>
+ #include <cerrno>
 #else
 #endif
 

@@ -1,7 +1,7 @@
 #include "ovpCPowerSpectrumChannelDisplay.h"
 #include "ovpCPowerSpectrumDisplayView.h"
 #include "../ovpCBufferDatabase.h"
-#include <math.h>
+#include <cmath>
 #include <sstream>
 
 using namespace OpenViBE;

@@ -9,7 +9,7 @@
 #include <ebml/CWriterHelper.h>
 #include <ebml/CReader.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <fstream>
 

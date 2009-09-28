@@ -4,7 +4,6 @@
 
 #if defined Socket_OS_Linux
  #include <sys/select.h>
- #include <sys/time.h>
  #include <sys/types.h>
  #include <sys/socket.h>
  // #include <netinet/in.h>
@@ -12,7 +11,7 @@
  #include <arpa/inet.h>
  #include <unistd.h>
  // #include <netdb.h>
- #include <time.h>
+ #include <ctime>
 
  #define Socket_SendFlags    MSG_NOSIGNAL
  #define Socket_ReceiveFlags MSG_NOSIGNAL

@@ -1,7 +1,7 @@
 #include "ovpCSignalConcat.h"
 #include <system/Memory.h>
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 

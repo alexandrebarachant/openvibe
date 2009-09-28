@@ -1,7 +1,7 @@
 #include "ovpCDownsamplingBoxAlgorithm.h"
 
-#include <stdlib.h>
-#include <limits.h>
+#include <cstdlib>
+#include <climits>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <math.h>
+#include <cmath>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

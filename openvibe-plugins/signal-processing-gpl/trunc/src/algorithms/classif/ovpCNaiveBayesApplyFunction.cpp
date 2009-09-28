@@ -1,6 +1,6 @@
 #include "ovpCNaiveBayesApplyFunction.h"
 
-#include <math.h>
+#include <cmath>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -17,8 +17,8 @@
 #include <vector>
 #include <stack>
 
-#include <stdio.h>
-#include <errno.h>
+#include <cstdio>
+#include <cerrno>
 
 namespace OpenViBEPlugins
 {

@@ -1,5 +1,5 @@
 #include "ovpCApplySpatialFilter.h"
-#include <math.h>
+#include <cmath>
 #include <system/Memory.h>
 
 using namespace OpenViBE;

@@ -4,12 +4,12 @@
 
 #include <sstream>
 
-#include <math.h>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 
 #ifdef OVP_OS_Windows
 #ifndef NDEBUG
-#include <assert.h>
+#include <cassert>
 #endif
 #endif
 

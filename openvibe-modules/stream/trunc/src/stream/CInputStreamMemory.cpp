@@ -1,7 +1,7 @@
 #include "CInputStreamMemory.hpp"
 
 #include <system/Memory.h>
-#include <stdio.h>
+#include <cstdio>
 
 using namespace Stream;
 

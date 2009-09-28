@@ -2,10 +2,10 @@
 
 #include <system/Memory.h>
 
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
-#include <float.h>
+#include <cstring>
+#include <cmath>
+#include <cstdlib>
+#include <cfloat>
 
 #if defined OVTK_OS_Windows
 #define isnan _isnan

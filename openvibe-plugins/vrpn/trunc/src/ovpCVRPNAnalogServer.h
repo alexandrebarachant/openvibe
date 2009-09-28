@@ -6,7 +6,7 @@
 #include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
-#include <stdio.h>
+#include <cstdio>
 #include <map>
 
 namespace OpenViBEPlugins

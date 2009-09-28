@@ -4,7 +4,7 @@
 
 #include <sstream>
 #if defined OVP_OS_Windows
-#include <errno.h>
+#include <cerrno>
 #endif
 
 using namespace OpenViBE;

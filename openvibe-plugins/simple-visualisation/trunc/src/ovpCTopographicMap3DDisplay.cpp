@@ -1,8 +1,8 @@
 #include "ovpCTopographicMap3DDisplay.h"
 #include "ovpCTopographicMap3DDisplay/ovpCTopographicMap3DView.h"
 #include "algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <memory.h>
 
 using namespace OpenViBE;

@@ -1,11 +1,11 @@
 #include <sstream>
 #include <locale>
 #if defined OVP_OS_Windows
-#include <errno.h>
+#include <cerrno>
 #endif
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 
 #include "Ogre.h"
 #include "OgreSceneNode.h"

@@ -1,7 +1,7 @@
 #include "ovpCTimeFrequencyMapDisplay.h"
 #include "ovp_defines.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

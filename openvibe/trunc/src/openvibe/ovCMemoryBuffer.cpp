@@ -1,6 +1,6 @@
 #include "ovCMemoryBuffer.h"
 
-#include <string.h> // memcpy
+#include <cstring> // memcpy
 
 using namespace OpenViBE;
 

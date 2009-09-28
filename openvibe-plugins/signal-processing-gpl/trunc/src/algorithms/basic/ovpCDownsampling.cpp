@@ -1,7 +1,7 @@
 #include "ovpCDownsampling.h"
 
-#include <math.h> //floor, ceil
-#include <stdlib.h>
+#include <cmath> //floor, ceil
+#include <cstdlib>
 
 
 using namespace OpenViBE;

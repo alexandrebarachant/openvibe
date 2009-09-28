@@ -1,5 +1,5 @@
 #include "ovpCBoxAlgorithmStimulationBasedEpoching.h"
-#include <stdio.h>
+#include <cstdio>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

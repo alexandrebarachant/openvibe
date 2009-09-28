@@ -14,7 +14,7 @@
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <memory.h>
-#include <math.h>
+#include <cmath>
 
 #include <vector>
 

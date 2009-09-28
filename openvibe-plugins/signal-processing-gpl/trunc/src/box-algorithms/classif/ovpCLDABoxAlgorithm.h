@@ -5,7 +5,7 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 #include <vector>
-#include <stdio.h>
+#include <cstdio>
 
 namespace OpenViBEPlugins
 {

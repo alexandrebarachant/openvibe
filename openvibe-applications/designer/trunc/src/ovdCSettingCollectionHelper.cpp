@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <string.h>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

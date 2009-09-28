@@ -1,8 +1,8 @@
 #include "ovpCSinusSignalGenerator.h"
 
 #include <iostream>
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -28,8 +28,8 @@
 #  include <gdk/gdkx.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

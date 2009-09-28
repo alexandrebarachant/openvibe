@@ -1,6 +1,6 @@
 #include "ovpCApplyTemporalFilter.h"
 
-#include <math.h>
+#include <cmath>
 
 using namespace OpenViBE;
 using namespace Kernel;

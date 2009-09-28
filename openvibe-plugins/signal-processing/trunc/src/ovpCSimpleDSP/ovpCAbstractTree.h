@@ -3,9 +3,9 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 
 #include <boost/spirit/core.hpp>
 #include <boost/random/linear_congruential.hpp>

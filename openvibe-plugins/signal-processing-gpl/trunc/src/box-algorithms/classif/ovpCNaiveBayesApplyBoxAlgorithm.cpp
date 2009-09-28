@@ -4,10 +4,10 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <stdlib.h>
-#include <math.h>
-#include <limits.h>
-#include <float.h>
+#include <cstdlib>
+#include <cmath>
+#include <climits>
+#include <cfloat>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -4,9 +4,9 @@
 
 #include <sstream>
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

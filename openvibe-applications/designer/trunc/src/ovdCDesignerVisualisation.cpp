@@ -6,7 +6,7 @@
 #include "ovdCInputDialog.h"
 
 #include <gdk/gdkkeysyms.h>
-#include <string.h>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -3,7 +3,7 @@
 
 #include <system/Time.h>
 
-#include <math.h>
+#include <cmath>
 
 #include <iostream>
 

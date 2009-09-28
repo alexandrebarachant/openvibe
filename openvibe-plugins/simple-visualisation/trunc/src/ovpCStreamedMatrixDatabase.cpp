@@ -1,6 +1,6 @@
 #include <system/Memory.h>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 #include "ovpCStreamedMatrixDatabase.h"
 

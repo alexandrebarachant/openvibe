@@ -3,12 +3,12 @@
 
 #include <system/Time.h>
 
-#include <math.h>
+#include <cmath>
 
 #include <iostream>
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

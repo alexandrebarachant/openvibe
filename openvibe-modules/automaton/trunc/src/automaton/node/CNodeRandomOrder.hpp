@@ -11,8 +11,8 @@
 #include <vector>
 #include <iostream>
 
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 
 namespace Automaton
 {

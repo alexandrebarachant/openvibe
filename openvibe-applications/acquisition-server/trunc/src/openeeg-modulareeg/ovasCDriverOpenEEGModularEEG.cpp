@@ -5,18 +5,18 @@
 
 #include <system/Time.h>
 #include <system/Memory.h>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #if defined OVAS_OS_Windows
  #include <windows.h>
  #include <winbase.h>
- #include <stdio.h>
- #include <stdlib.h>
+ #include <cstdio>
+ #include <cstdlib>
  #include <commctrl.h>
  #define TERM_SPEED 57600
 #elif defined OVAS_OS_Linux
- #include <stdio.h>
+ #include <cstdio>
  #include <unistd.h>
  #include <fcntl.h>
  #include <termios.h>

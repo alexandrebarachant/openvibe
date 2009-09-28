@@ -1,9 +1,9 @@
 #include "IReader.h"
-#include <string.h>
+#include <cstring>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 using namespace EBML;
 

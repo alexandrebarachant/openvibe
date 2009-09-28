@@ -4,7 +4,7 @@
 #include "defines.h"
 #include <xml/IReader.h>
 
-#include <string.h>
+#include <cstring>
 
 namespace Automaton
 {

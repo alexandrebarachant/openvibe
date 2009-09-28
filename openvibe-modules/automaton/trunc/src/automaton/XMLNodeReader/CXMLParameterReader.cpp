@@ -1,7 +1,7 @@
 #include "CXMLParameterReader.hpp"
 
 //rand
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace std;
 using namespace Automaton;

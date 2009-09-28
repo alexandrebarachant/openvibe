@@ -15,9 +15,9 @@
 #include <functional>
 #include <cctype>
 
-#include <time.h>
+#include <ctime>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -1,7 +1,7 @@
 #include "ovpCVoxelDisplay.h"
 #include "ovpCVoxelDisplay/ovpCVoxelView.h"
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <memory.h>
 
 using namespace OpenViBE;

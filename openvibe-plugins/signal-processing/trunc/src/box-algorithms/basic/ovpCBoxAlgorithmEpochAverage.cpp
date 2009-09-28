@@ -1,5 +1,5 @@
 #include "ovpCBoxAlgorithmEpochAverage.h"
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

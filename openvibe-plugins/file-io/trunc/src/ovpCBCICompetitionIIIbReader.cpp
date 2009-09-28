@@ -1,10 +1,10 @@
 #include "ovpCBCICompetitionIIIbReader.h"
 
 #include <iostream>
-#include <math.h>
-#include <float.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cmath>
+#include <cfloat>
+#include <cstdlib>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

@@ -1,6 +1,6 @@
 #include "ovpCBottomTimeRuler.h"
 
-#include <math.h>
+#include <cmath>
 
 #include <sstream>
 

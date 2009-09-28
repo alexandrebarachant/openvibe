@@ -5,8 +5,8 @@
 #include "ovkTParameter.h"
 
 #include <iostream>
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 
 namespace OpenViBE
 {

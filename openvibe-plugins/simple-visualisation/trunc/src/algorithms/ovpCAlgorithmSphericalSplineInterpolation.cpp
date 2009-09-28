@@ -3,10 +3,10 @@
 //INSERM lib
 #include "spline_sph.h"
 
-#include <float.h> //DBL_MAX
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include <cfloat> //DBL_MAX
+#include <cmath>
+#include <cstdio>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

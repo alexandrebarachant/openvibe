@@ -1,6 +1,6 @@
 #include "Memory.h"
 
-#include <string.h>
+#include <cstring>
 
 using namespace System;
 

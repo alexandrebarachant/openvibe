@@ -7,7 +7,7 @@
 #include <string>
 
 //atoi
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace std;
 

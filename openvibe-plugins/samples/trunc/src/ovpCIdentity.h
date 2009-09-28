@@ -3,7 +3,7 @@
 
 #include "ovp_defines.h"
 #include <openvibe-toolkit/ovtk_all.h>
-#include <stdio.h>
+#include <cstdio>
 
 namespace OpenViBEPlugins
 {

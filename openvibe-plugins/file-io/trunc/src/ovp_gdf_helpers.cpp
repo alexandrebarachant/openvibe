@@ -1,9 +1,9 @@
 #include "ovp_gdf_helpers.h"
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBEPlugins;

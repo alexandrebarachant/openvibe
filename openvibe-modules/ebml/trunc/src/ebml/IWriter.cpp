@@ -1,8 +1,8 @@
 #include "IWriter.h"
 
 #include <vector>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 using namespace EBML;
 using namespace std;

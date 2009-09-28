@@ -4,7 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

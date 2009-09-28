@@ -1,8 +1,8 @@
 #include "ovpCGDFFileWriter.h"
 
-#include <math.h>
+#include <cmath>
 #include <cfloat>
-#include <string.h>
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

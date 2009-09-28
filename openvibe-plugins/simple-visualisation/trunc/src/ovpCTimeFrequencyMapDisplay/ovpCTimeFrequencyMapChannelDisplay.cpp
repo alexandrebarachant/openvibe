@@ -1,6 +1,6 @@
 #include "ovpCTimeFrequencyMapChannelDisplay.h"
 
-#include <math.h>
+#include <cmath>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

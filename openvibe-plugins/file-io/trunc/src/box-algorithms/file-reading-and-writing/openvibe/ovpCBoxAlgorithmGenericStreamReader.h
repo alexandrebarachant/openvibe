@@ -11,8 +11,8 @@
 #include <stack>
 #include <map>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 // TODO:
 // - please move the identifier definitions in ovp_defines.h

@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include <sstream>
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 #include <system/Memory.h>
 
 using namespace OpenViBE;

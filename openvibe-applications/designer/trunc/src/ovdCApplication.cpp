@@ -10,7 +10,7 @@
 #include <sstream>
 #include <fstream>
 
-#include <string.h>
+#include <cstring>
 
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.glade"
 

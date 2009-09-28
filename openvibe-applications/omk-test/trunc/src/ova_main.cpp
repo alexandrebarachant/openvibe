@@ -16,8 +16,8 @@
 #include <OMKPluginsLoader.h>
 
 #include <unistd.h>
-#include <time.h>
-#include <sys/time.h>
+#include <ctime>
+#include <sys/ctime>
 
 #include <string>
 

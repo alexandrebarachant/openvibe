@@ -1,7 +1,7 @@
 #include "ovpCComputeTemporalFilterCoefficients.h"
 
 #include <limits>
-#include <math.h>
+#include <cmath>
 
 using namespace OpenViBE;
 using namespace Kernel;

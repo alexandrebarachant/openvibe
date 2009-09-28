@@ -22,7 +22,7 @@
 #include <functional>
 #include <cctype>
 
-#include <assert.h>
+#include <cassert>
 
 namespace
 {

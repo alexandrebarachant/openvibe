@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <sstream>
-#include <math.h>
+#include <cmath>
 #include <glib.h>
 #include <glib/gprintf.h>
 

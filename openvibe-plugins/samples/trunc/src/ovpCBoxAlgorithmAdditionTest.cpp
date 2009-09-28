@@ -1,7 +1,7 @@
 #include "ovpCBoxAlgorithmAdditionTest.h"
 
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Samples;

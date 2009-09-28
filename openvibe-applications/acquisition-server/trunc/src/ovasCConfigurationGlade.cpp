@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <list>
-#include <stdlib.h>
+#include <cstdlib>
 
 #define OVAS_ElectrodeNames_File           "../share/openvibe-applications/acquisition-server/electrode-names.txt"
 #define OVAS_ConfigureGUIElectrodes_File   "../share/openvibe-applications/acquisition-server/interface-channel-names.glade"

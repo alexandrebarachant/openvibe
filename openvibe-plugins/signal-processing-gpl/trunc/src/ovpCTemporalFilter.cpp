@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <sstream>
-#include <locale.h>
+#include <clocale>
 
 using namespace itpp;
 

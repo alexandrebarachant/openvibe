@@ -1,7 +1,7 @@
 #include "ovpCBoxAlgorithmClock.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

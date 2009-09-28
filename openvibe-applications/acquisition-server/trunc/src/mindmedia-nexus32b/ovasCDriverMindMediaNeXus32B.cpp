@@ -6,7 +6,7 @@
 #include <system/Time.h>
 #include <system/Memory.h>
 
-#include <math.h>
+#include <cmath>
 
 #if defined OVAS_OS_Windows
  #include <windows.h>

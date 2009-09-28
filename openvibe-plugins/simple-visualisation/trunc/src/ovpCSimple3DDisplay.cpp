@@ -1,6 +1,6 @@
 #include "ovpCSimple3DDisplay.h"
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <memory.h>
 
 using namespace OpenViBE;

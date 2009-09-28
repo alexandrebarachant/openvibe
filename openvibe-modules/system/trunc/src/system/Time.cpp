@@ -1,10 +1,10 @@
 #include "Time.h"
 
-#include <math.h>
+#include <cmath>
 
 #if defined System_OS_Linux
  #include <unistd.h>
- #include <time.h>
+ #include <ctime>
  #include <sys/time.h>
 #elif defined System_OS_Windows
  #include <windows.h>

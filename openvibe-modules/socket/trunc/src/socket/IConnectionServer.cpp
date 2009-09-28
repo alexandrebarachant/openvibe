@@ -2,14 +2,14 @@
 #include "IConnectionServer.h"
 #include "IConnection.inl"
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 
 #if defined Socket_OS_Linux
  #include <netinet/in.h>
  #include <netinet/tcp.h>
  #include <netdb.h>
- #include <errno.h>
+ #include <cerrno>
 #elif defined Socket_OS_Windows
 #else
 #endif

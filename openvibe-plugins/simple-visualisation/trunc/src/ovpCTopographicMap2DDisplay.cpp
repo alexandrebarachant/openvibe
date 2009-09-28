@@ -1,7 +1,7 @@
 #include "ovpCTopographicMap2DDisplay.h"
 #include "algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <memory.h>
 
 using namespace OpenViBE;

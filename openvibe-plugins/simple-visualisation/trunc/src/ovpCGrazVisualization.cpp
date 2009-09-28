@@ -1,6 +1,6 @@
 #include "ovpCGrazVisualization.h"
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #if defined OVP_OS_Linux
