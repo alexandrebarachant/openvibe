@@ -3,6 +3,7 @@
 #include <system/Memory.h>
 
 #include <iostream>
+#include <cstdio>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

@@ -2,6 +2,7 @@
 
 //rand
 #include <cstdlib>
+#include <cstdio>
 
 using namespace std;
 using namespace Automaton;

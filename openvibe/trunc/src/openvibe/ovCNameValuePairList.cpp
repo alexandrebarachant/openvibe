@@ -1,6 +1,7 @@
 #include "ovCString.h"
 #include "ovCNameValuePairList.h"
 
+#include <cstdio>
 #include <string>
 #include <map>
 

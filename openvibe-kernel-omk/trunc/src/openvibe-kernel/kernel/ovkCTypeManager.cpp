@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <functional>
 #include <cctype>
+#include <cstdio>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

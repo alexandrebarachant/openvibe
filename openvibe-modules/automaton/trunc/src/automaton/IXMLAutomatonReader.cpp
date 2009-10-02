@@ -13,6 +13,7 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <cstdio>
 
 #include "TXMLReader.hpp"
 

@@ -2,6 +2,7 @@
 #include <system/Memory.h>
 
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 #include <sstream>
 
