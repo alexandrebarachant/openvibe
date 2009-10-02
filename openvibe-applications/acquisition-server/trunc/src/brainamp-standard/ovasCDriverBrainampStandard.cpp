@@ -20,7 +20,7 @@ using namespace std;
 CDriverBrainampStandard::CDriverBrainampStandard(void)
 	:m_pCallback(NULL)
 	,m_pConnectionClient(NULL)
-	,m_sServerHostName("194.57.166.229")
+	,m_sServerHostName("localhost")
 	,m_ui32ServerHostPort(51244)
 	,m_bInitialized(false)
 	,m_bStarted(false)

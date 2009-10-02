@@ -16,7 +16,7 @@ using namespace std;
 CConfigurationNetworkGlade::CConfigurationNetworkGlade(const char* sGladeXMLFileName)
 	:CConfigurationGlade(sGladeXMLFileName)
 	,m_sHostName("localhost")
-	,m_ui32HostPort(2048)
+	,m_ui32HostPort(4000)
 {
 }
 

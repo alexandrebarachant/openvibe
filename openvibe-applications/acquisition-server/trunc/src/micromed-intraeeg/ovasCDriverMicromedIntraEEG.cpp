@@ -510,12 +510,10 @@ boolean CDriverMicromedIntraEEG::configure(void)
 {
 	CConfigurationNetworkGlade l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Micromed-IntraEEG.glade");
 
-	// l_oConfiguration.setHostName(m_sServerHostName);
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);
 
 	if(l_oConfiguration.configure(m_oHeader))
 	{
-		// m_sServerHostName=l_oConfiguration.getHostName();
 		m_ui32ServerHostPort=l_oConfiguration.getHostPort();
 		return true;
 	}

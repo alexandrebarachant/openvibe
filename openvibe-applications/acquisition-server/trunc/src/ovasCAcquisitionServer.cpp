@@ -7,6 +7,7 @@
 #include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
+// #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Memory.h>
@@ -148,6 +149,7 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 		m_vDriver.push_back(new CDriverBrainampStandard());
 		m_vDriver.push_back(new CDriverMicromedIntraEEG());
 		m_vDriver.push_back(new CDriverCtfVsmMeg());
+		// m_vDriver.push_back(new CDriverNeuroscanSynamps2());
 	}
 	m_vDriver.push_back(new CDriverGenericOscillator());
 }
