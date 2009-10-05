@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <cstdio>
 
 namespace OpenViBEPlugins
 {
