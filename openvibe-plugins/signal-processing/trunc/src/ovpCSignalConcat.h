@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdio>
 
 namespace OpenViBEPlugins
 {
