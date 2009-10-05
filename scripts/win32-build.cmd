@@ -20,8 +20,8 @@ REM ############################################################################
 
 if not exist "win32-init_env_command.cmd" (
 	echo You have to configure your `win32-init_env_command` file.
-	echo `win32-init_env_command-skeleton` is a good file to start with...
-	goto terminate
+	echo `win32-init_env_command.cmd-skeleton` is a good file to start with... (I'll copy this file for you^)
+	xcopy /q /s win32-init_env_command.cmd-skeleton win32-init_env_command.cmd
 )
 
 call "win32-init_env_command.cmd"

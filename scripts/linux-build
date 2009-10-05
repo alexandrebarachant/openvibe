@@ -2,8 +2,8 @@
 
 if [ ! -e linux-init_env_command ]; then
 	echo "You have to configure your \`linux-init_env_command\` file."
-	echo "\`linux-init_env_command-skeleton\` is a good file to start with..."
-	exit
+	echo "\`linux-init_env_command-skeleton\` is a good file to start with... (I'll copy this file for you)"
+	cp linux-init_env_command-skeleton linux-init_env_command
 fi
 
 source linux-init_env_command
@@ -24,7 +24,7 @@ for project_directory in $OpenViBE_build_order; do
 			exit -1
 		fi;
 
-		make $1 -j 8 # VERBOSE=1
+		make $1 -j 3 # VERBOSE=1
 		if [ $? -eq 0 ]; then
 			echo Make has been called successfully !
 		else
