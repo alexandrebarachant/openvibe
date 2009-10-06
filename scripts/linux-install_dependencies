@@ -1,12 +1,282 @@
 #!/bin/bash
 
-ov_gnu_mirror=ftp://mirror.cict.fr/gnu
+ov_gnu_mirror=ftp://ftp.cw.net/pub/gnu
 ov_sourceforge_mirror=http://downloads.sourceforge.net
 ov_freedesktop_mirror=http://xorg.freedesktop.org
 ov_gnome_mirror=ftp://ftp.gnome.org/pub/GNOME
 
 ov_should_skip_download=true
 ov_should_backup_after_install=false
+
+############################
+##                        ##
+##  installation scripts  ##
+##                        ##
+############################
+
+function ov_hit_package
+{
+	# $1 is package name
+
+	touch "$ov_target_folder_hit/$1.hit"
+}
+
+function ov_install_package
+{
+	# $1 is package name
+
+	eval 'ov_current_package='$1
+	eval 'ov_current_package_log_file=$ov_target_folder_log/'$1'.log'
+	eval 'ov_current_package_hit_file=$ov_target_folder_hit/'$1'.hit'
+	eval 'ov_current_package_archive_name=$ov_package_archive_'$1
+	eval 'ov_current_package_url=$ov_package_url_'$1
+	eval 'ov_current_package_additional_configure_flags=$ov_package_additional_configure_flags_'$1
+	eval 'ov_current_package_backup=post-install-backup-'$1'.tar'
+
+	eval 'ov_current_package_hook_download=$ov_package_download_hook_'$1
+	eval 'ov_current_package_hook_download_pre=$ov_package_pre_download_hook_'$1
+	eval 'ov_current_package_hook_download_post=$ov_package_post_download_hook_'$1
+	eval 'ov_current_package_hook_checkout=$ov_package_checkout_hook_'$1
+	eval 'ov_current_package_hook_checkout_pre=$ov_package_pre_checkout_hook_'$1
+	eval 'ov_current_package_hook_checkout_post=$ov_package_post_checkout_hook_'$1
+	eval 'ov_current_package_hook_uncompress=$ov_package_uncompress_hook_'$1
+	eval 'ov_current_package_hook_uncompress_pre=$ov_package_pre_uncompress_hook_'$1
+	eval 'ov_current_package_hook_uncompress_post=$ov_package_post_uncompress_hook_'$1
+	eval 'ov_current_package_hook_configure=$ov_package_configure_hook_'$1
+	eval 'ov_current_package_hook_configure_pre=$ov_package_pre_configure_hook_'$1
+	eval 'ov_current_package_hook_configure_post=$ov_package_post_configure_hook_'$1
+	eval 'ov_current_package_hook_make=$ov_package_make_hook_'$1
+	eval 'ov_current_package_hook_make_pre=$ov_package_pre_make_hook_'$1
+	eval 'ov_current_package_hook_make_post=$ov_package_post_make_hook_'$1
+	eval 'ov_current_package_hook_install=$ov_package_install_hook_'$1
+	eval 'ov_current_package_hook_install_pre=$ov_package_pre_install_hook_'$1
+	eval 'ov_current_package_hook_install_post=$ov_package_post_install_hook_'$1
+
+	ov_current_operation_result=0
+	ov_current_operation_hook_result=0
+	ov_current_operation_hook_pre_result=0
+	ov_current_operation_hook_post_result=0
+
+	if [ ! -e "$ov_current_package_hit_file" ]; then
+
+		echo "Trying to install package [$ov_current_package]..."
+
+		# goes to temporary folder
+		pushd "$ov_target_folder_tmp" >> $ov_current_package_log_file 2>&1
+
+		# empties temporary folder
+		rm -rf *
+
+		# resets log file
+		rm -f $ov_current_package_log_file 2> /dev/null
+		touch $ov_current_package_log_file
+
+		# downloads package archive when needed
+		echo "  Downloading [$ov_current_package_url] as [$ov_current_package_archive_name]..."
+		if [[ "$ov_should_skip_download" == "true" && -e "$ov_target_folder_arch/$ov_current_package_archive_name" && ! "$ov_current_package_archive_name" == "" ]]; then
+			echo "  Downloading [$ov_current_package_url] succeeded... (cached)"
+		else
+			if [ ! "$ov_current_package_hook_download" == "" ]; then
+				# completely replace download phase with hook
+				`eval $ov_current_package_hook_download >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_result=$?
+			else
+				# executes download hook pre
+				`eval $ov_current_package_hook_download_pre >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_pre_result=$?
+				# effectively download file(s)
+				if [ ! "$ov_current_package_archive_name" == "" ]; then
+					$ov_wget -c -O "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" $ov_current_package_url >> $ov_current_package_log_file 2>&1
+					ov_current_operation_result=$?
+					if [[ $ov_current_operation_result -eq 0 ]]; then
+						mv -f "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" "$ov_target_folder_arch/$ov_current_package_archive_name"
+					fi;
+				else
+					$ov_svn checkout $ov_current_package_url >> $ov_current_package_log_file 2>&1
+					ov_current_operation_result=$?
+				fi;
+				# executes download hook post
+				`eval $ov_current_package_hook_download_post >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_post_result=$?
+			fi;
+			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
+				echo "  Downloading [$ov_current_package_url] succeeded..."
+			else
+				echo "  Downloading [$ov_current_package_url] failed !"
+				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
+				echo ""
+				echo "`$ov_tail "$ov_current_package_log_file"`"
+				exit
+			fi;
+		fi;
+
+		# decompresses package archive in temporary folder
+		if [ ! "$ov_current_package_archive_name" == "" ]; then
+			echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name]..."
+			if [ ! "$ov_current_package_hook_uncompress" == "" ]; then
+				# completely replace uncompress phase with hook
+				`eval $ov_current_package_hook_uncompress >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_result=$?
+			else
+				# trying to figure out what kind of archive to decompress
+				ov_package_type=`echo $ov_current_package_archive_name | $ov_sed '
+					s/\(.*\)\.\(tar\.\)/\2/g
+					s/\(.*\)\.\(tgz\)/\2/g
+					s/\(.*\)\.\(zip\)/\2/g'`
+				case $ov_package_type in
+					"tgz")
+						ov_decompress_command="$ov_tar xvfz"
+						;;
+					"tar.gz")
+						ov_decompress_command="$ov_tar xvfz"
+						;;
+					"tar.bz2")
+						ov_decompress_command="$ov_tar xvfj"
+						;;
+					"zip")
+						ov_decompress_command="$ov_unzip"
+						;;
+					*)
+						echo "  Uhandled file extension [$ov_target_folder_arch/$ov_current_package_archive_name], sorry (may you try hook system ?) !"
+						exit
+						;;
+				esac;
+				# executes uncompress hook pre
+				`eval $ov_current_package_hook_uncompress_pre >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_pre_result=$?
+				# effectively uncompress file(s)
+				$ov_decompress_command "$ov_target_folder_arch/$ov_current_package_archive_name" >> $ov_current_package_log_file 2>&1
+				ov_current_operation_result=$?
+				# executes uncompress hook post
+				`eval $ov_current_package_hook_uncompress_post >> $ov_current_package_log_file 2>&1`
+				ov_current_operation_hook_post_result=$?
+			fi;
+			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
+				echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name] succeeded..."
+			else
+				echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name] failed !"
+				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
+				echo ""
+				echo "`$ov_tail "$ov_current_package_log_file"`"
+				exit
+			fi;
+		fi;
+
+		# configures the package
+		echo "  Configuring [$ov_current_package]..."
+		if [ ! "$ov_current_package_hook_configure" == "" ]; then
+			# completely replace configure phase with hook
+			`eval $ov_current_package_hook_configure >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_result=$?
+		else
+			# executes configure hook pre
+			`eval $ov_current_package_hook_configure_pre >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_pre_result=$?
+			# effectively configure file
+			pushd * >> $ov_current_package_log_file 2>&1
+			./configure --prefix=$ov_target_folder $ov_current_package_additional_configure_flags CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" >> $ov_current_package_log_file 2>&1
+			ov_current_operation_result=$?
+			popd >> $ov_current_package_log_file 2>&1
+			# executes configure hook post
+			`eval $ov_current_package_hook_configure_post >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_post_result=$?
+		fi;
+		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
+			echo "  Configuring [$ov_current_package] succeeded..."
+		else
+			echo "  Configuring [$ov_current_package] failed !"
+			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
+			echo ""
+			echo "`$ov_tail "$ov_current_package_log_file"`"
+			exit
+		fi;
+
+		# builds the package
+		echo "  Building [$ov_current_package]..."
+		if [ ! "$ov_current_package_hook_make" == "" ]; then
+			# completely replace make phase with hook
+			`eval $ov_current_package_hook_make >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_result=$?
+		else
+			# executes make hook pre
+			`eval $ov_current_package_hook_make_pre >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_pre_result=$?
+			# effectively make file
+			pushd * >> $ov_current_package_log_file 2>&1
+			$ov_make -j 2 >> $ov_current_package_log_file 2>&1
+			ov_current_operation_result=$?
+			popd >> $ov_current_package_log_file 2>&1
+			# executes make hook post
+			`eval $ov_current_package_hook_make_post >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_post_result=$?
+		fi;
+		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
+			echo "  Building [$ov_current_package] succeeded..."
+		else
+			echo "  Building [$ov_current_package] failed !"
+			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
+			echo ""
+			echo "`$ov_tail "$ov_current_package_log_file"`"
+			exit
+		fi;
+
+		# installs the package
+		echo "  Installing [$ov_current_package]..."
+		if [ ! "$ov_current_package_hook_install" == "" ]; then
+			# completely replace install phase with hook
+			`eval $ov_current_package_hook_install >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_result=$?
+		else
+			# executes install hook pre
+			`eval $ov_current_package_hook_install_pre >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_pre_result=$?
+			# effectively install file
+			pushd * >> $ov_current_package_log_file 2>&1
+			$ov_make install >> $ov_current_package_log_file 2>&1
+			ov_current_operation_result=$?
+			popd >> $ov_current_package_log_file 2>&1
+			# executes install hook post
+			`eval $ov_current_package_hook_install_post >> $ov_current_package_log_file 2>&1`
+			ov_current_operation_hook_post_result=$?
+		fi;
+		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
+			echo "  Installing [$ov_current_package] succeeded..."
+		else
+			echo "  Installing [$ov_current_package] failed !"
+			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
+			echo ""
+			echo "`$ov_tail "$ov_current_package_log_file"`"
+			exit
+		fi;
+
+		# hits this package
+		touch "$ov_current_package_hit_file"
+
+		# goes back to calling folder
+		popd >> $ov_current_package_log_file 2>&1
+
+		# backups target directory
+		if [[ "$ov_should_backup_after_install" == "true" ]]; then
+			echo "  Backuping target directory [$ov_current_package_backup]..."
+			$ov_tar cf $ov_current_package_backup $ov_target_folder >> $ov_current_package_log_file 2>&1
+			ov_current_operation_result=$?
+			if [[ $ov_current_operation_result -eq 0 ]]; then
+				echo "  Backuping target directory [$ov_current_package_backup] succeeded..."
+			else
+				echo "  Backuping target directory [$ov_current_package_backup] failed !"
+				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
+v				echo ""
+				echo "`$ov_tail "$ov_current_package_log_file"`"
+				# exit
+			fi;
+		fi;
+
+	else
+
+		echo "Package [$ov_current_package] is already built, skipped..."
+
+	fi;
+}
 
 ######################################
 ##                                  ##
@@ -37,6 +307,233 @@ fi;
 
 echo "Setting target folder to [$ov_target_folder]..."
 echo "Setting environment configuration script to [$ov_environment_configuration_script]..."
+echo ""
+
+##############################################
+##                                          ##
+##  creates target directories when needed  ##
+##                                          ##
+##############################################
+
+ov_target_folder_arch=$ov_target_folder/arch
+ov_target_folder_tmp=$ov_target_folder/tmp
+ov_target_folder_log=$ov_target_folder/log
+ov_target_folder_hit=$ov_target_folder/hit
+ov_target_folder_include=$ov_target_folder/include
+ov_target_folder_bin=$ov_target_folder/bin
+ov_target_folder_lib=$ov_target_folder/lib
+ov_target_folder_lib64=$ov_target_folder/lib64
+
+echo "Creating target tree structure..."
+mkdir "$ov_target_folder" 2> /dev/null
+mkdir "$ov_target_folder_arch" 2> /dev/null
+mkdir "$ov_target_folder_tmp" 2> /dev/null
+mkdir "$ov_target_folder_log" 2> /dev/null
+mkdir "$ov_target_folder_hit" 2> /dev/null
+mkdir "$ov_target_folder_include" 2> /dev/null
+mkdir "$ov_target_folder_bin" 2> /dev/null
+mkdir "$ov_target_folder_lib" 2> /dev/null
+mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
+echo "
+	# Define plugin folder
+	PluginFolder=/usr/lib/OGRE
+
+	# Define plugins
+	Plugin=RenderSystem_GL
+	Plugin=Plugin_ParticleFX
+	Plugin=Plugin_BSPSceneManager
+	Plugin=Plugin_OctreeSceneManager
+	#Plugin=Plugin_CgProgramManager
+	" > "$ov_target_folder_lib/OGRE/Plugins.cfg"
+echo ""
+
+####################################
+##                                ##
+##  checks current distribution   ##
+##                                ##
+####################################
+
+ov_native_package_installed=false
+
+if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
+
+	echo "Checking native dependencies..."
+
+	if [[ "`grep Ubuntu /etc/lsb-release`" != "" ]]; then
+		ov_native_package_installed=true
+		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libogre-dev libglade2-dev libitpp-dev libgsl0-dev libboost-dev libexpat1-dev libois-dev"
+		for package in $ov_ubuntu_packages; do
+			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
+			ov_dpkg_retcode=$?
+
+			if [[ $ov_dpkg_retcode != 0 ]]; then
+				ov_native_package_installed=false
+			fi;
+			if [[ "$ov_dpkg_output" == "" ]]; then
+				ov_native_package_installed=false
+			fi;
+		done;
+
+		if [[ $ov_native_package_installed == false ]]; then
+			echo "  You are currently running Ubuntu"
+			echo ""
+			echo "  It is possible to install native packages in order to avoid some potential"
+			echo "  errors / save time. Such installation requires root access. If you want"
+			echo "  to continue with native packages, answer 'yes' (recommanded)"
+			echo ""
+			echo -n "  Do you want to install native packages (y) ?"
+			read ov_answer
+			if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+
+				echo "  Installing native packages on background..."
+
+				sudo -k # revokes root privilege
+				sudo apt-get --assume-yes install $ov_ubuntu_packages > $ov_native_package_log_file 2>&1
+				sudo -k # revokes root privilege
+
+				echo "  Installing native packages on background... done."
+
+				ov_should_hit_native=true
+				ov_native_package_installed=true
+			else
+				echo "  All right, we will compile everything..."
+			fi;
+		else
+			if [[ -e "$ov_target_folder_hit/native-packages.hit" ]]; then
+				echo "  You are currently running Ubuntu and all required native packages were"
+				echo "  installed previously, continuing..."
+				ov_should_hit_native=true
+				ov_native_package_installed=true
+			else
+				echo "  You are currently running Ubuntu and all necessary native dependencies are"
+				echo "  already installed."
+				echo ""
+				echo "  It is possible to install use those native packages in order to avoid some potential"
+				echo "  errors / save time. Such installation requires root access. If you want"
+				echo "  to continue with native packages, answer 'yes' (recommanded)"
+				echo ""
+				echo -n "  Do you want to use native packages (y) ?"
+				read ov_answer
+				if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+					ov_should_hit_native=true
+					ov_native_package_installed=true
+				fi;
+			fi;
+		fi;
+
+		if [[ $ov_should_hit_native == true ]]; then
+
+			ov_hit_package "native-packages"
+
+			ov_hit_package "pkgconfig"
+
+			ov_hit_package "expat"
+			ov_hit_package "libxml"
+			ov_hit_package "gettext"
+			ov_hit_package "pthreadstubs"
+			ov_hit_package "zlib"
+			ov_hit_package "libpng"
+			ov_hit_package "freetype"
+			ov_hit_package "fontconfig"
+			ov_hit_package "libtool"
+
+			ov_hit_package "libxproto"
+			ov_hit_package "libxextproto"
+			ov_hit_package "libxtrans"
+			ov_hit_package "libxslt"
+			ov_hit_package "libxau"
+			ov_hit_package "libxcbproto"
+			ov_hit_package "libxcb"
+			ov_hit_package "libkbproto"
+			ov_hit_package "libinputproto"
+			ov_hit_package "libxdmcp"
+			ov_hit_package "libx11"
+			ov_hit_package "libxext"
+			ov_hit_package "renderproto"
+			ov_hit_package "libxdmcp"
+			ov_hit_package "libxrender"
+			ov_hit_package "libice"
+			ov_hit_package "libsm"
+			ov_hit_package "libxt"
+			ov_hit_package "libxmu"
+			ov_hit_package "libxpm"
+			ov_hit_package "libxaw"
+			ov_hit_package "libxf86vidmodeproto"
+			ov_hit_package "libXxf86vm"
+			ov_hit_package "librandrproto"
+			ov_hit_package "libXrandr"
+
+			ov_hit_package "mesa"
+
+			ov_hit_package "glib"
+			ov_hit_package "pixman"
+			ov_hit_package "cairo"
+			ov_hit_package "pango"
+			ov_hit_package "atk"
+			ov_hit_package "gtk"
+			ov_hit_package "clearlooks"
+			ov_hit_package "libglade"
+			ov_hit_package "glade"
+			ov_hit_package "boost"
+
+			ov_hit_package "itpp_external"
+			ov_hit_package "itpp"
+			ov_hit_package "gsl"
+
+			ov_hit_package "freeimage"
+			ov_hit_package "ois"
+			ov_hit_package "zziplib"
+			ov_hit_package "cg"
+			ov_hit_package "ogre"
+
+		else
+
+			ov_hit_package "no-native-packages"
+
+		fi;
+	fi;
+
+#	if [[ -e /etc/fedora-release ]]; then
+#		ov_native_package_installed=false
+#		ov_fedora_packages="subversion doxygen make automake autoconf cmake unzip gcc gcc-c++ gtk2-devel ogre-devel libglade2-devel itpp-devel boost-devel expat-devel ois-devel"
+#
+##		for package in $ov_ubuntu_packages; do
+##			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
+##			ov_dpkg_retcode=$?
+##
+##			if [[ $ov_dpkg_retcode != 0 ]]; then
+##				ov_native_package_installed=false
+##			fi;
+##			if [[ "$ov_dpkg_output" == "" ]]; then
+##				ov_native_package_installed=false
+##			fi;
+##		done;
+#	
+#		if [[ $ov_native_package_installed == false ]]; then
+#			echo "  You are currently running Fedora"
+#			echo ""
+#			echo "  It is possible to install native packages in order to avoid some compilation"
+#			echo "  time / potential errors. Such installation requires root access. If you want"
+#			echo "  to continue with native packages, answer 'yes' (recommanded)"
+#			echo ""
+#			echo -n "  Do you want to install native packages (y) ?"
+#			read ov_answer
+#			if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+#				su -c "yum -y install $ov_fedora_packages"
+#				ov_native_package_installed=true
+#			else
+#				echo "  All right, we will compile everything..."
+#			fi;
+#		else
+#			echo "  You are currently running Fedora and all required native packages were"
+#			echo "  installed previously, continuing..."
+#		fi;
+#	fi;
+
+	echo ""
+
+fi;
 
 ####################################
 ##                                ##
@@ -44,6 +541,7 @@ echo "Setting environment configuration script to [$ov_environment_configuration
 ##                                ##
 ####################################
 
+echo "Checking software script dependencies..."
 ov_sh=`which sh`
 ov_svn=`which svn`
 ov_wget=`which wget`
@@ -77,7 +575,6 @@ else
 	fi;
 fi;
 
-echo "Checking software script dependencies..."
 echo "  Using as sh           : [$ov_sh]..."
 echo "  Using as subversion   : [$ov_svn]..."
 echo "  Using as wget         : [$ov_wget]..."
@@ -97,33 +594,63 @@ echo "  Using as false        : [$ov_false]..."
 echo "  Using as tail         : [$ov_tail]..."
 echo "  Using as automake     : [$ov_automake]..."
 echo "  Using as autoconf     : [$ov_autoconf]..."
+echo ""
 
 ov_machine=`$ov_uname -m`
 
-##############################################
-##                                          ##
-##  creates target directories when needed  ##
-##                                          ##
-##############################################
+####################################
+##                                ##
+##  installation script excution  ##
+##                                ##
+####################################
 
-ov_target_folder_arch=$ov_target_folder/arch
-ov_target_folder_tmp=$ov_target_folder/tmp
-ov_target_folder_log=$ov_target_folder/log
-ov_target_folder_hit=$ov_target_folder/hit
-ov_target_folder_include=$ov_target_folder/include
-ov_target_folder_bin=$ov_target_folder/bin
-ov_target_folder_lib=$ov_target_folder/lib
-ov_target_folder_lib64=$ov_target_folder/lib64
+if [[ $ov_native_package_installed == false ]]; then
 
-echo "Creating target tree structure..."
-mkdir "$ov_target_folder" 2> /dev/null
-mkdir "$ov_target_folder_arch" 2> /dev/null
-mkdir "$ov_target_folder_tmp" 2> /dev/null
-mkdir "$ov_target_folder_log" 2> /dev/null
-mkdir "$ov_target_folder_hit" 2> /dev/null
-mkdir "$ov_target_folder_include" 2> /dev/null
-mkdir "$ov_target_folder_bin" 2> /dev/null
-mkdir "$ov_target_folder_lib" 2> /dev/null
+	echo "Checking gl/glu/glx dev files..."
+
+	echo "
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+	#include <GL/glx.h>
+	int main(int argc, char** argv)
+	{
+		return 0;
+	}" > test_gl.cpp
+	$ov_gcc -c test_gl.cpp -o test_gl.o 2>/dev/null
+	ov_has_gl=$?
+	rm test_gl.cpp 2>/dev/null
+	rm test_gl.o 2>/dev/null
+
+	if [[ $ov_has_gl -eq 0 ]]; then
+		echo ""
+		echo "  Looks like you already have gl/glu/glx dev files... that would be great."
+		echo "  Or you installed the mesa software rendering version thanks to this script... that would simply be ok :)"
+		echo ""
+	else
+		echo ""
+		echo "  Looks like you don't have gl/glu/glx dev files installed."
+		echo "  I recommand you use your distro package system to install it and get them for your video card."
+		echo "  Alternatively, I could build software rendering version of mesa for you but you won't have 3D acceleration."
+		echo ""
+		echo "  If you want to install gl/glu/glx dev files for your distro outside of this script, press CTRL+C now."
+		echo "  After you actually installed them, you will be able to continue the dependencies installation by relaunching this script."
+		echo ""
+		echo "  If you want to install software rendering version of mesa within this script, answer 'continue'"
+		echo ""
+		echo -n "  What is your choice (break) ? "
+		read ov_answer
+		if [[ $ov_answer == "continue" ]]; then
+			echo ""
+			echo "  All right, you won't have 3D acceleration, and you've been warned !"
+			echo ""
+		else
+			echo ""
+			echo "  You did not answer 'continue'."
+			echo "  You did the right choice, see you soon."
+			exit
+		fi;
+	fi;
+fi;
 
 ##############################################
 ##                                          ##
@@ -812,6 +1339,8 @@ ov_package_configure_hook_openmask4='
 	pushd * &&
 	$ov_sed -i "4s/^/ADD_DEFINITIONS(-pthread)\nSET(CMAKE_VERBOSE_MAKEFILE 1)\nFIND_LIBRARY(LIB_STANDARD_MODULE_PTHREAD pthread)\nLINK_LIBRARIES(\$\{LIB_STANDARD_MODULE_PTHREAD\})/g" CMakeLists.txt &&
 	$ov_sed -i "s/, _tNode/, this->Animator::_tNode/g" Source/Vis/Source/OMKOgreAnimatorT.h &&
+	$ov_sed -i "s/numKeyboard/numKeyBoard/g" Source/Inputs/Source/OMKInputExtension.cpp &&
+	$ov_sed -i "s/numJoySticks/numJoysticks/g" Source/Inputs/Source/OMKInputExtension.cpp &&
 	cmake . -DINSTALLPREFIX:PATH=$ov_target_folder -DCMAKE_BUILD_TYPE=Release &&
 	popd'
 
@@ -837,269 +1366,6 @@ ov_package_make_hook_lua='
 	make linux &&
 	popd'
 
-############################
-##                        ##
-##  installation scripts  ##
-##                        ##
-############################
-
-function ov_install_package
-{
-	# $1 is package name
-
-	eval 'ov_current_package='$1
-	eval 'ov_current_package_log_file=$ov_target_folder_log/'$1'.log'
-	eval 'ov_current_package_hit_file=$ov_target_folder_hit/'$1'.hit'
-	eval 'ov_current_package_archive_name=$ov_package_archive_'$1
-	eval 'ov_current_package_url=$ov_package_url_'$1
-	eval 'ov_current_package_additional_configure_flags=$ov_package_additional_configure_flags_'$1
-	eval 'ov_current_package_backup=post-install-backup-'$1'.tar'
-
-	eval 'ov_current_package_hook_download=$ov_package_download_hook_'$1
-	eval 'ov_current_package_hook_download_pre=$ov_package_pre_download_hook_'$1
-	eval 'ov_current_package_hook_download_post=$ov_package_post_download_hook_'$1
-	eval 'ov_current_package_hook_checkout=$ov_package_checkout_hook_'$1
-	eval 'ov_current_package_hook_checkout_pre=$ov_package_pre_checkout_hook_'$1
-	eval 'ov_current_package_hook_checkout_post=$ov_package_post_checkout_hook_'$1
-	eval 'ov_current_package_hook_uncompress=$ov_package_uncompress_hook_'$1
-	eval 'ov_current_package_hook_uncompress_pre=$ov_package_pre_uncompress_hook_'$1
-	eval 'ov_current_package_hook_uncompress_post=$ov_package_post_uncompress_hook_'$1
-	eval 'ov_current_package_hook_configure=$ov_package_configure_hook_'$1
-	eval 'ov_current_package_hook_configure_pre=$ov_package_pre_configure_hook_'$1
-	eval 'ov_current_package_hook_configure_post=$ov_package_post_configure_hook_'$1
-	eval 'ov_current_package_hook_make=$ov_package_make_hook_'$1
-	eval 'ov_current_package_hook_make_pre=$ov_package_pre_make_hook_'$1
-	eval 'ov_current_package_hook_make_post=$ov_package_post_make_hook_'$1
-	eval 'ov_current_package_hook_install=$ov_package_install_hook_'$1
-	eval 'ov_current_package_hook_install_pre=$ov_package_pre_install_hook_'$1
-	eval 'ov_current_package_hook_install_post=$ov_package_post_install_hook_'$1
-
-	ov_current_operation_result=0
-	ov_current_operation_hook_result=0
-	ov_current_operation_hook_pre_result=0
-	ov_current_operation_hook_post_result=0
-
-	if [ ! -e "$ov_current_package_hit_file" ]; then
-
-		echo "Trying to install package [$ov_current_package]..."
-
-		# goes to temporary folder
-		pushd "$ov_target_folder_tmp" >> $ov_current_package_log_file 2>&1
-
-		# empties temporary folder
-		rm -rf *
-
-		# resets log file
-		rm -f $ov_current_package_log_file 2> /dev/null
-		touch $ov_current_package_log_file
-
-		# downloads package archive when needed
-		echo "  Downloading [$ov_current_package_url] as [$ov_current_package_archive_name]..."
-		if [[ "$ov_should_skip_download" == "true" && -e "$ov_target_folder_arch/$ov_current_package_archive_name" && ! "$ov_current_package_archive_name" == "" ]]; then
-			echo "  Downloading [$ov_current_package_url] succeeded... (cached)"
-		else
-			if [ ! "$ov_current_package_hook_download" == "" ]; then
-				# completely replace download phase with hook
-				`eval $ov_current_package_hook_download >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_result=$?
-			else
-				# executes download hook pre 
-				`eval $ov_current_package_hook_download_pre >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_pre_result=$?
-				# effectively download file(s)
-				if [ ! "$ov_current_package_archive_name" == "" ]; then
-					$ov_wget -c -O "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" $ov_current_package_url >> $ov_current_package_log_file 2>&1
-					ov_current_operation_result=$?
-					if [[ $ov_current_operation_result -eq 0 ]]; then
-						mv -f "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" "$ov_target_folder_arch/$ov_current_package_archive_name"
-					fi;
-				else
-					$ov_svn checkout $ov_current_package_url >> $ov_current_package_log_file 2>&1
-					ov_current_operation_result=$?
-				fi;
-				# executes download hook post
-				`eval $ov_current_package_hook_download_post >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_post_result=$?
-			fi;
-			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
-				echo "  Downloading [$ov_current_package_url] succeeded..."
-			else
-				echo "  Downloading [$ov_current_package_url] failed !"
-				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
-				echo ""
-				echo "`$ov_tail "$ov_current_package_log_file"`"
-				exit
-			fi;
-		fi;
-
-		# decompresses package archive in temporary folder
-		if [ ! "$ov_current_package_archive_name" == "" ]; then
-			echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name]..."
-			if [ ! "$ov_current_package_hook_uncompress" == "" ]; then
-				# completely replace uncompress phase with hook
-				`eval $ov_current_package_hook_uncompress >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_result=$?
-			else
-				# trying to figure out what kind of archive to decompress
-				ov_package_type=`echo $ov_current_package_archive_name | $ov_sed '
-					s/\(.*\)\.\(tar\.\)/\2/g
-					s/\(.*\)\.\(tgz\)/\2/g
-					s/\(.*\)\.\(zip\)/\2/g'`
-				case $ov_package_type in
-					"tgz")
-						ov_decompress_command="$ov_tar xvfz"
-						;;
-					"tar.gz")
-						ov_decompress_command="$ov_tar xvfz"
-						;;
-					"tar.bz2")
-						ov_decompress_command="$ov_tar xvfj"
-						;;
-					"zip")
-						ov_decompress_command="$ov_unzip"
-						;;
-					*)
-						echo "  Uhandled file extension [$ov_target_folder_arch/$ov_current_package_archive_name], sorry (may you try hook system ?) !"
-						exit
-						;;
-				esac;
-				# executes uncompress hook pre 
-				`eval $ov_current_package_hook_uncompress_pre >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_pre_result=$?
-				# effectively uncompress file(s)
-				$ov_decompress_command "$ov_target_folder_arch/$ov_current_package_archive_name" >> $ov_current_package_log_file 2>&1
-				ov_current_operation_result=$?
-				# executes uncompress hook post
-				`eval $ov_current_package_hook_uncompress_post >> $ov_current_package_log_file 2>&1`
-				ov_current_operation_hook_post_result=$?
-			fi;
-			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
-				echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name] succeeded..."
-			else
-				echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name] failed !"
-				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
-				echo ""
-				echo "`$ov_tail "$ov_current_package_log_file"`"
-				exit
-			fi;
-		fi;
-
-		# configures the package
-		echo "  Configuring [$ov_current_package]..."
-		if [ ! "$ov_current_package_hook_configure" == "" ]; then
-			# completely replace configure phase with hook
-			`eval $ov_current_package_hook_configure >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_result=$?
-		else
-			# executes configure hook pre 
-			`eval $ov_current_package_hook_configure_pre >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_pre_result=$?
-			# effectively configure file
-			pushd * >> $ov_current_package_log_file 2>&1
-			./configure --prefix=$ov_target_folder $ov_current_package_additional_configure_flags CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" >> $ov_current_package_log_file 2>&1
-			ov_current_operation_result=$?
-			popd >> $ov_current_package_log_file 2>&1
-			# executes configure hook post
-			`eval $ov_current_package_hook_configure_post >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_post_result=$?
-		fi;
-		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
-			echo "  Configuring [$ov_current_package] succeeded..."
-		else
-			echo "  Configuring [$ov_current_package] failed !"
-			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
-			echo ""
-			echo "`$ov_tail "$ov_current_package_log_file"`"
-			exit
-		fi;
-
-		# builds the package
-		echo "  Building [$ov_current_package]..."
-		if [ ! "$ov_current_package_hook_make" == "" ]; then
-			# completely replace make phase with hook
-			`eval $ov_current_package_hook_make >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_result=$?
-		else
-			# executes make hook pre 
-			`eval $ov_current_package_hook_make_pre >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_pre_result=$?
-			# effectively make file
-			pushd * >> $ov_current_package_log_file 2>&1
-			$ov_make -j 3 >> $ov_current_package_log_file 2>&1
-			ov_current_operation_result=$?
-			popd >> $ov_current_package_log_file 2>&1
-			# executes make hook post
-			`eval $ov_current_package_hook_make_post >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_post_result=$?
-		fi;
-		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
-			echo "  Building [$ov_current_package] succeeded..."
-		else
-			echo "  Building [$ov_current_package] failed !"
-			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
-			echo ""
-			echo "`$ov_tail "$ov_current_package_log_file"`"
-			exit
-		fi;
-
-		# installs the package
-		echo "  Installing [$ov_current_package]..."
-		if [ ! "$ov_current_package_hook_install" == "" ]; then
-			# completely replace install phase with hook
-			`eval $ov_current_package_hook_install >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_result=$?
-		else
-			# executes install hook pre 
-			`eval $ov_current_package_hook_install_pre >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_pre_result=$?
-			# effectively install file
-			pushd * >> $ov_current_package_log_file 2>&1
-			$ov_make install >> $ov_current_package_log_file 2>&1
-			ov_current_operation_result=$?
-			popd >> $ov_current_package_log_file 2>&1
-			# executes install hook post
-			`eval $ov_current_package_hook_install_post >> $ov_current_package_log_file 2>&1`
-			ov_current_operation_hook_post_result=$?
-		fi;
-		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
-			echo "  Installing [$ov_current_package] succeeded..."
-		else
-			echo "  Installing [$ov_current_package] failed !"
-			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
-			echo ""
-			echo "`$ov_tail "$ov_current_package_log_file"`"
-			exit
-		fi;
-
-		# hits this package
-		touch "$ov_current_package_hit_file"
-
-		# goes back to calling folder
-		popd >> $ov_current_package_log_file 2>&1
-
-		# backups target directory
-		if [[ "$ov_should_backup_after_install" == "true" ]]; then
-			echo "  Backuping target directory [$ov_current_package_backup]..."
-			$ov_tar cf $ov_current_package_backup $ov_target_folder >> $ov_current_package_log_file 2>&1
-			ov_current_operation_result=$?
-			if [[ $ov_current_operation_result -eq 0 ]]; then
-				echo "  Backuping target directory [$ov_current_package_backup] succeeded..."
-			else
-				echo "  Backuping target directory [$ov_current_package_backup] failed !"
-				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
-v				echo ""
-				echo "`$ov_tail "$ov_current_package_log_file"`"
-				# exit
-			fi;
-		fi;
-
-	else
-
-		echo "Package [$ov_current_package] is already built, skipped..."
-
-	fi;
-}
-
 ##################################################
 ##                                              ##
 ##  generates environment configuration script  ##
@@ -1117,147 +1383,105 @@ echo 'export PKG_CONFIG_PATH='$ov_target_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:
 echo 'export LD_LIBRARY_PATH='$ov_target_folder'/lib64:'$ov_target_folder'/lib:'$ov_target_folder'/lib/opt:$LD_LIBRARY_PATH' >> $ov_environment_configuration_script
 echo 'export PATH='$ov_target_folder'/bin:$PATH' >> $ov_environment_configuration_script
 echo '' >> $ov_environment_configuration_script
+if [[ ! $ov_native_package_installed == true ]]; then
+	echo '' >> $ov_environment_configuration_script
+	echo 'export BOOST_ROOT='$ov_target_folder'/include/boost_1_34_1' >> $ov_environment_configuration_script
+	echo 'export GTK2_RC_FILES='$ov_target_folder'/share/themes/Clearlooks/gtk-2.0/gtkrc' >> $ov_environment_configuration_script
+	echo 'export GTK_PATH='$ov_target_folder >> $ov_environment_configuration_script
+	echo '' >> $ov_environment_configuration_script
+fi;
 echo 'export OGRE_HOME='$ov_target_folder >> $ov_environment_configuration_script
+echo 'export VRPN_ROOT='$ov_target_folder >> $ov_environment_configuration_script
 echo 'export OMK_BIN='$ov_target_folder >> $ov_environment_configuration_script
 echo 'export OMK_HOME=$OMK_BIN' >> $ov_environment_configuration_script
-echo '' >> $ov_environment_configuration_script
-echo 'export BOOST_ROOT='$ov_target_folder'/include/boost_1_34_1' >> $ov_environment_configuration_script
-echo 'export GTK2_RC_FILES='$ov_target_folder'/share/themes/Clearlooks/gtk-2.0/gtkrc' >> $ov_environment_configuration_script
-echo 'export GTK_PATH='$ov_target_folder >> $ov_environment_configuration_script
-echo '' >> $ov_environment_configuration_script
-echo 'export VRPN_ROOT='$ov_target_folder >> $ov_environment_configuration_script
-echo 'export PVM_ROOT=' >> $ov_environment_configuration_script
-echo 'export PVM_ARCH=' >> $ov_environment_configuration_script
-# echo 'export PVM_ROOT='$ov_target_folder >> $ov_environment_configuration_script
-# echo 'export PVM_ARCH=LINUX' >> $ov_environment_configuration_script
 echo '' >> $ov_environment_configuration_script
 
 source $ov_environment_configuration_script
 
 ####################################
 ##                                ##
-##  installation script excution  ##
+##  actually install packages     ##
 ##                                ##
 ####################################
 
-	echo "
-	#include <GL/gl.h>
-	#include <GL/glu.h>
-	#include <GL/glx.h>
-	int main(int argc, char** argv)
-	{
-		return 0;
-	}" > test_gl.cpp
-	$ov_gcc -c test_gl.cpp -o test_gl.o 2>/dev/null
-	ov_has_gl=$?
-	rm test_gl.cpp 2>/dev/null
-	rm test_gl.o 2>/dev/null
+	# package management related packages
+	ov_install_package "pkgconfig"
 
-if [[ $ov_has_gl -eq 0 ]]; then
-	echo ""
-	echo "Looks like you already have gl/glu/glx dev files... that would be great."
-	echo "Or you installed the mesa software rendering version thanks to this script... that would simply be ok :)"
-	echo ""
-else
-	echo ""
-	echo "Looks like you don't have gl/glu/glx dev files installed."
-	echo "I recommand you use your distro package system to install it and get them for your video card."
-	echo "Alternatively, I could build software rendering version of mesa for you but you won't have 3D acceleration."
-	echo ""
-	echo "If you want to install gl/glu/glx dev files for your distro outside of this script, press CTRL+C now."
-	echo "After you actually installed them, you will be able to continue the dependencies installation by relaunching this script."
-	echo ""
-	echo "If you want to install software rendering version of mesa within this script, answer 'continue'"
-	echo ""
-	echo -n "What is your choice ? "
-	read ov_should_break
-	if [[ $ov_should_break == "continue" ]]; then
-		echo ""
-		echo "All right, you won't have 3D acceleration, and you've been warned !"
-		echo ""
-	else
-		echo ""
-		echo "You did not answer 'continue'."
-		echo "You did the right choice, see you soon."
-		exit
+	# base libraries
+	ov_install_package "expat"
+	ov_install_package "libxml"
+	ov_install_package "gettext"
+	ov_install_package "pthreadstubs"
+	ov_install_package "zlib"
+	ov_install_package "libpng"
+	ov_install_package "freetype"
+	ov_install_package "fontconfig"
+	ov_install_package "libtool"
+
+	# base graphic libraries
+	ov_install_package "libxproto"
+	ov_install_package "libxextproto"
+	ov_install_package "libxtrans"
+	ov_install_package "libxslt"
+	ov_install_package "libxau"
+	ov_install_package "libxcbproto"
+	ov_install_package "libxcb"
+	ov_install_package "libkbproto"
+	ov_install_package "libinputproto"
+	ov_install_package "libxdmcp"
+	ov_install_package "libx11"
+	ov_install_package "libxext"
+	ov_install_package "renderproto"
+	ov_install_package "libxdmcp"
+	ov_install_package "libxrender"
+	ov_install_package "libice"
+	ov_install_package "libsm"
+	ov_install_package "libxt"
+	ov_install_package "libxmu"
+	ov_install_package "libxpm"
+	ov_install_package "libxaw"
+	ov_install_package "libxf86vidmodeproto"
+	ov_install_package "libXxf86vm"
+	ov_install_package "librandrproto"
+	ov_install_package "libXrandr"
+
+	# is this one necessary ?
+	if [[ ! $ov_has_gl -eq 0 ]]; then
+		ov_install_package "mesa"
 	fi;
-fi;
 
-# package management related packages
-ov_install_package "pkgconfig"
+	# GTK+ related packages
+	ov_install_package "glib"
+	ov_install_package "pixman"
+	ov_install_package "cairo"
+	ov_install_package "pango"
+	ov_install_package "atk"
+	ov_install_package "gtk"
+	ov_install_package "clearlooks"
+	ov_install_package "libglade"
+	ov_install_package "glade"
+	ov_install_package "boost"
 
-# base libraries
-ov_install_package "expat"
-ov_install_package "libxml"
-ov_install_package "gettext"
-ov_install_package "pthreadstubs"
-ov_install_package "zlib"
-ov_install_package "libpng"
-ov_install_package "freetype"
-ov_install_package "fontconfig"
-ov_install_package "libtool"
+	# Computation and signal processing packages
+	ov_install_package "itpp_external"
+	ov_install_package "itpp"
 
-# base graphic libraries
-ov_install_package "libxproto"
-ov_install_package "libxextproto"
-ov_install_package "libxtrans"
-ov_install_package "libxslt"
-ov_install_package "libxau"
-ov_install_package "libxcbproto"
-ov_install_package "libxcb"
-ov_install_package "libkbproto"
-ov_install_package "libinputproto"
-ov_install_package "libxdmcp"
-ov_install_package "libx11"
-ov_install_package "libxext"
-ov_install_package "renderproto"
-ov_install_package "libxdmcp"
-ov_install_package "libxrender"
-ov_install_package "libice"
-ov_install_package "libsm"
-ov_install_package "libxt"
-ov_install_package "libxmu"
-ov_install_package "libxpm"
-ov_install_package "libxaw"
-ov_install_package "libxf86vidmodeproto"
-ov_install_package "libXxf86vm"
-ov_install_package "librandrproto"
-ov_install_package "libXrandr"
+	# OpenMASK 4 related packages
+	ov_install_package "freeimage"
+	ov_install_package "ois"
+	ov_install_package "zziplib"
+	ov_install_package "cg"
+	ov_install_package "ogre"
 
-# is this one necessary ?
-if [[ ! $ov_has_gl -eq 0 ]]; then
-	ov_install_package "mesa"
-fi;
+# If you want BLiFF++
+# ov_install_package "gsl"
+# ov_install_package "torch"
+# ov_install_package "bliff"
 
-# GTK+ related packages
-ov_install_package "glib"
-ov_install_package "pixman"
-ov_install_package "cairo"
-ov_install_package "pango"
-ov_install_package "atk"
-ov_install_package "gtk"
-ov_install_package "clearlooks"
-ov_install_package "libglade"
-ov_install_package "glade"
-ov_install_package "boost"
-
-# Computation and signal processing packages
-ov_install_package "itpp_external"
-ov_install_package "itpp"
-ov_install_package "gsl"
-ov_install_package "torch"
-ov_install_package "bliff"
-
-# OpenMASK 4 related packages
-ov_install_package "freeimage"
-ov_install_package "ois"
-ov_install_package "zziplib"
-ov_install_package "cg"
-ov_install_package "vrpn"
-ov_install_package "ogre"
 ov_install_package "cmake"
-ov_install_package "obt"
-ov_install_package "openmask4"
+ov_install_package "vrpn"
+# ov_install_package "obt"
+# ov_install_package "openmask4"
 # ov_install_package "openmask4tutorial"
 
 # Scripting packages
