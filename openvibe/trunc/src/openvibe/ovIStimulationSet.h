@@ -135,6 +135,18 @@ namespace OpenViBE
 			const OpenViBE::uint64 ui64StimulationIndex)=0;
 
 		_IsDerivedFromClass_(OpenViBE::IObject, OV_ClassId_StimulationSet);
+
+	public:
+
+		static OpenViBE::uint64 sampleIndexToTime(OpenViBE::uint32 ui32SamplingRate, OpenViBE::uint64 ui64SampleIndex)
+		{
+			return ((ui64SampleIndex<<32)+(ui32SamplingRate-1))/ui32SamplingRate;
+		}
+
+		static OpenViBE::uint64 timeToSampleIndex(OpenViBE::uint32 ui32SamplingRate, OpenViBE::uint64 ui64Time)
+		{
+			return (ui64Time*ui32SamplingRate)>>32;
+		}
 	};
 };
 
