@@ -246,15 +246,23 @@ uint64 $l_box_algorithm_class_name::getClockFrequency(void)
 
 boolean $l_box_algorithm_class_name::initialize(void)
 {
-	// CString l_sSettingValue;
-	// getStaticBoxContext().getSettingValue(0, l_sSettingValue);
+	// CString   l_sSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+	// uint64 l_ui64SettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
+	// float64 l_f64SettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);
 	// ...
+
+	// m_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_...StreamDecoder));
+	// m_pStreamDecoder->initialize();
 
 	return true;
 }
 
 boolean $l_box_algorithm_class_name::uninitialize(void)
 {
+	// m_pStreamDecoder->uninitialize();
+	// this->getAlgorithmManager().releaseAlgorithm(*m_pStreamDecoder);
+	// m_pStreamDecoder=NULL;
+
 	// ...
 
 	return true;
