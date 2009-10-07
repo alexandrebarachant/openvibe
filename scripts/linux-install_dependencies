@@ -333,18 +333,6 @@ mkdir "$ov_target_folder_hit" 2> /dev/null
 mkdir "$ov_target_folder_include" 2> /dev/null
 mkdir "$ov_target_folder_bin" 2> /dev/null
 mkdir "$ov_target_folder_lib" 2> /dev/null
-mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
-echo "
-	# Define plugin folder
-	PluginFolder=/usr/lib/OGRE
-
-	# Define plugins
-	Plugin=RenderSystem_GL
-	Plugin=Plugin_ParticleFX
-	Plugin=Plugin_BSPSceneManager
-	Plugin=Plugin_OctreeSceneManager
-	#Plugin=Plugin_CgProgramManager
-	" > "$ov_target_folder_lib/OGRE/Plugins.cfg"
 echo ""
 
 ####################################
@@ -494,6 +482,18 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "cg"
 			ov_hit_package "ogre"
 
+			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
+			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
+			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+
 		else
 
 			ov_hit_package "no-native-packages"
@@ -634,6 +634,18 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "zziplib"
 			ov_hit_package "cg"
 			ov_hit_package "ogre"
+
+			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
+			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
+			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
 
 		else
 
@@ -1450,10 +1462,10 @@ ov_package_configure_hook_openmask4='
 	pushd * &&
 	$ov_sed -i "4s/^/ADD_DEFINITIONS(-pthread)\nSET(CMAKE_VERBOSE_MAKEFILE 1)\nFIND_LIBRARY(LIB_STANDARD_MODULE_PTHREAD pthread)\nLINK_LIBRARIES(\$\{LIB_STANDARD_MODULE_PTHREAD\})/g" CMakeLists.txt &&
 	$ov_sed -i "s/, _tNode/, this->Animator::_tNode/g" Source/Vis/Source/OMKOgreAnimatorT.h &&
-	$ov_sed -i "s/numKeyboard/numKeyBoard/g" Source/Inputs/Source/OMKInputExtension.cpp &&
-	$ov_sed -i "s/numJoySticks/numJoysticks/g" Source/Inputs/Source/OMKInputExtension.cpp &&
 	cmake . -DINSTALLPREFIX:PATH=$ov_target_folder -DCMAKE_BUILD_TYPE=Release &&
 	popd'
+#	$ov_sed -i "s/numKeyboard/numKeyBoard/g" Source/Inputs/Source/OMKInputExtension.cpp &&
+#	$ov_sed -i "s/numJoySticks/numJoysticks/g" Source/Inputs/Source/OMKInputExtension.cpp &&
 
 ov_package_configure_hook_openmask4tutorial='
 	pushd * &&
