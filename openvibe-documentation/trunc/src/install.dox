@@ -18,7 +18,7 @@ Windows users will prefer a GUI for subversion. We recommand \e TortoiseSVN whic
 can be downloaded from http://tortoisesvn.tigris.org
 
 <b>Please avoid any special caracters such as &, |, !, ?, spaces etc in the path
-where you download the sources</b>. This would break some of the build scripts
+where you download and build the sources</b>. This would break some of the build scripts
 (especially with \b Windows).
 
 \section Doc_RepositoryOrganisation Repository organisation
@@ -75,18 +75,17 @@ Finally, in each branch, each software module is divided in the following UNIX-l
 
 \section Doc_BuildTarget Build target
 
-OpenViBE should compile on \b x86 architecture running \b Microsoft \b Windows \b 2k/XP/Vista
-with \b Visual \b C++ \b 2005 \b express \b edition (make sure the \b SP1 \b platform \b SDK
-is installed).
+OpenViBE should compile on \b x86 and \b x86_64 architectures running \b Microsoft \b Windows \b 2k/XP/Vista
+with \b Visual \b C++.
 
-OpenViBE should compile on x86 and x86_64 architectures running \b Linux with \b gcc \b 4.*
+OpenViBE should compile on x86 and x86_64 architectures running \b Linux with \b gcc.
+
+See \ref Doc_FAQ_Environment in for a detailed table of what target has been tested.
 
 Please consider that trying to compile OpenViBE on other hardware/OS/compiler
 is experimental and has not been tested. If you wish to try
 and get OpenViBE to run on other hardware/OS/compilers, your efforts are welcome
 but you should not expect to get support on the short term.
-
-Check \ref Doc_FAQ_Environment for a list of known-to-work configurations.
 
 \section Doc_PrerequesiteDependencies Prerequesite dependencies
 
@@ -118,12 +117,17 @@ Similarly, most Windows users will simply want to copy
 
 \section Doc_Building Building the platform
 
+<b>Please avoid any special caracters such as &, |, !, ?, spaces etc in the path
+where you download and build the sources</b>. This would break some of the build scripts
+(especially with \b Windows).
+
 If you want to build all projects at once, you can use the \e linux-build or
 \e win32-build scripts. Both scripts call the appropriate
 \e init_env_command, which must have been properly configured.
 
-The \e linux-test and \e win32-test scripts will collect the build and then launch
-the most interesting softwares for you.
+For Linux, the \e linux-test script will launch the most interesting softwares for you.
+
+For Windows, each of the \e test-* scripts in the \e dist folder will launch the desired applciation.
 
 If you made it this far, congratulations : you should now have OpenViBE working !
 
