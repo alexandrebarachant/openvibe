@@ -118,16 +118,6 @@ namespace OpenViBEPlugins
 				OpenViBE::uint8 ui8Green,
 				OpenViBE::uint8 ui8Blue);
 
-			/**
-			 * \brief Set minimum/maximum values attenuation
-			 * \remarks Attenuation is not implemented yet!
-			 * The attenuation is performed between last min/max values and current values, according to this formula :
-			 * minimum = f64Attenuation * minimum + (1-f64Attenuation) * previous minimum. Therefore, 1 corresponds to no attenuation.
-			 * \param f64Attenuation Attenuation of min/max values between 2 consecutive buffers
-			 */
-			void setMinMaxAttenuation(
-				OpenViBE::float64 f64Attenuation);
-
 		private:
 			//Parent plugin
 			CPowerSpectrumDisplayView* m_pParentDisplay;
@@ -143,12 +133,6 @@ namespace OpenViBEPlugins
 			CPowerSpectrumDatabase* m_pDatabase;
 			//Channel index
 			OpenViBE::uint32 m_ui32Channel;
-			//Minimum amplitude value for this channel in current spectrum
-			OpenViBE::float64 m_f64MinimumValue;
-			//Maximum amplitude value for this channel in current spectrum
-			OpenViBE::float64 m_f64MaximumValue;
-			//Attenuation coefficient between previous min/max values and current ones
-			OpenViBE::float64 m_f64Attenuation;
 			//RGB buffer storing current spectrum
 			guchar * m_pRGBBuffer;
 			//RGB buffer width

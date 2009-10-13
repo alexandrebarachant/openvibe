@@ -64,7 +64,7 @@ namespace OpenViBEPlugins
 };
 
 CTimeFrequencyMapChannelDisplay::CTimeFrequencyMapChannelDisplay(CSpectrumDatabase& rSpectrumDatabase, uint32 ui32Channel,
-	float64 f64Attenuation,	float64 f64MinimumDisplayedFrequency, float64 f64MaximumDisplayedFrequency,
+	float64 f64Attenuation, float64 f64MinimumDisplayedFrequency, float64 f64MaximumDisplayedFrequency,
 	int32 i32ChannelDisplayWidthRequest, int32 i32ChannelDisplayHeightRequest,
 	int32 i32LeftRulerWidthRequest, int32 i32LeftRulerHeightRequest) :
 	m_rSpectrumDatabase(rSpectrumDatabase),
@@ -218,12 +218,9 @@ void CTimeFrequencyMapChannelDisplay::update()
 		drawBoxToBuffer(m_pRGBBuffer, m_ui32Rowstride, 0, 0, (uint32)l_i64BaseX, (uint32)l_iHeight, 0xFF, 0xFF, 0xFF);
 	}
 
-	//compute current minimum and maximum power values
-	float64 l_f64CurrentBufferMax;
-	float64 l_f64CurrentBufferMin;
-	m_rSpectrumDatabase.getChannelMinMaxValues(m_ui32Channel, l_f64CurrentBufferMin, l_f64CurrentBufferMax);
-	m_f64MaximumValue = (1-m_f64Attenuation)*m_f64MaximumValue + (m_f64Attenuation)*l_f64CurrentBufferMax;
-	m_f64MinimumValue = (1-m_f64Attenuation)*m_f64MinimumValue + (m_f64Attenuation)*l_f64CurrentBufferMin;
+	//values to compute current minimum and maximum power values
+	float64 l_f64CurrentBufferMax=-DBL_MAX;
+	float64 l_f64CurrentBufferMin=DBL_MAX;
 
 	//compute color scale factor
 	float64 l_f64ScaleCoef = 0;
@@ -247,11 +244,14 @@ void CTimeFrequencyMapChannelDisplay::update()
 		l_f64YPosition=l_iHeight;
 
 		//calculates the coordinates of the point in the new base
-		for(uint32 f = l_ui32MinDisplayedFrequencyIndex ; f<=l_ui32MaxDisplayedFrequencyIndex; f++)
+		for(uint32 f = l_ui32MinDisplayedFrequencyIndex ; f<=l_ui32MaxDisplayedFrequencyIndex; f++, l_pCurrentChannelSampleBuffer++)
 		{
 			l_f64YPosition-=l_f64HeightPerPoint;
 
-			int32 l_i32ColorIndex=static_cast<int32>((*(l_pCurrentChannelSampleBuffer++) - m_f64MinimumValue)*l_f64ScaleCoef);
+			if(*l_pCurrentChannelSampleBuffer>l_f64CurrentBufferMax) l_f64CurrentBufferMax=*l_pCurrentChannelSampleBuffer;
+			if(*l_pCurrentChannelSampleBuffer<l_f64CurrentBufferMin) l_f64CurrentBufferMin=*l_pCurrentChannelSampleBuffer;
+
+			int32 l_i32ColorIndex=static_cast<int32>((*l_pCurrentChannelSampleBuffer - m_f64MinimumValue)*l_f64ScaleCoef);
 			if(l_i32ColorIndex>0xff) l_i32ColorIndex=0xff;
 			if(l_i32ColorIndex<0x00) l_i32ColorIndex=0x00;
 			uint8 l_ui8ColorR=(uint8)((l_pLookUpTable[l_i32ColorIndex]    )&0xff);
@@ -271,6 +271,9 @@ void CTimeFrequencyMapChannelDisplay::update()
 		}
 		l_f64XPosition+=l_f64WidthPerPoint;
 	}
+
+	m_f64MaximumValue = (1-m_f64Attenuation)*m_f64MaximumValue + (m_f64Attenuation)*l_f64CurrentBufferMax;
+	m_f64MinimumValue = (1-m_f64Attenuation)*m_f64MinimumValue + (m_f64Attenuation)*l_f64CurrentBufferMin;
 }
 
 void CTimeFrequencyMapChannelDisplay::drawLeftRuler()

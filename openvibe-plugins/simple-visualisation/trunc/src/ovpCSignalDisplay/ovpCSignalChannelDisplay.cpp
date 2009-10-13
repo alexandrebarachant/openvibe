@@ -14,40 +14,44 @@ using namespace OpenViBEPlugins::SimpleVisualisation;
 
 #define convert_time(i) (float64)(i>>32) + (float64)((float64)(i&0xFFFFFFFF) / (float64)((uint64)1<<32))
 
-gboolean drawingAreaExposeEventCallback(GtkWidget *widget, GdkEventExpose *pEvent, gpointer data);
+gboolean drawingAreaExposeEventCallback(GtkWidget* pWidget, GdkEventExpose* pEvent, gpointer data);
 gboolean drawingAreaResizeEventCallback(GtkWidget* pWidget, GtkAllocation* pAllocation, gpointer data);
-void drawingAreaClickedEventCallback(GtkWidget *widget, GdkEventButton *pEvent, gpointer data);
-void drawingAreaEnterEventCallback(GtkWidget *widget, GdkEventCrossing *event, gpointer data);
-void drawingAreaLeaveEventCallback(GtkWidget *widget, GdkEventCrossing *event, gpointer data);
+void drawingAreaClickedEventCallback(GtkWidget* pWidget, GdkEventButton* pEvent, gpointer data);
+void drawingAreaEnterEventCallback(GtkWidget* pWidget, GdkEventCrossing* pEvent, gpointer data);
+void drawingAreaLeaveEventCallback(GtkWidget* pWidget, GdkEventCrossing* pEvent, gpointer data);
 
-CSignalChannelDisplay::CSignalChannelDisplay(CSignalDisplayView* pDisplayView, int32 i32ChannelDisplayWidthRequest,
-			int32 i32ChannelDisplayHeightRequest, int32 i32LeftRulerWidthRequest,	int32 i32LeftRulerHeightRequest) :
-	m_pLeftRuler(NULL),
-	m_pDrawingArea(NULL),
-	m_ui32Width(0),
-	m_ui32Height(0),
-	m_f64WidthPerBuffer(0),
-	m_f64PointStep(0),
-	m_pParentDisplayView(pDisplayView),
-	m_pDatabase(pDisplayView->m_pBufferDatabase),
-	m_f64LocalMaximum(0),
-	m_f64LocalMinimum(0),
-	m_f64ScaleX(1),
-	m_f64ScaleY(1),
-	m_f64TranslateX(0),
-	m_f64TranslateY(0),
-	m_f64ZoomTranslateX(0),
-	m_f64ZoomTranslateY(0),
-	m_f64ZoomScaleX(1),
-	m_f64ZoomScaleY(1),
-	m_f64ZoomFactor(1.5),
-	m_f64MaximumTopMargin(0),
-	m_f64MaximumBottomMargin(0),
-	m_f64MinimumTopMargin(0),
-	m_f64MinimumBottomMargin(0),
-	m_eCurrentSignalMode(DisplayMode_GlobalBestFit),
-	m_ui64LatestDisplayedTime(0),
-	m_bRedrawAll(false)
+CSignalChannelDisplay::CSignalChannelDisplay(
+	CSignalDisplayView* pDisplayView,
+	int32 i32ChannelDisplayWidthRequest,
+	int32 i32ChannelDisplayHeightRequest,
+	int32 i32LeftRulerWidthRequest,
+	int32 i32LeftRulerHeightRequest)
+	:m_pLeftRuler(NULL)
+	,m_pDrawingArea(NULL)
+	,m_ui32Width(0)
+	,m_ui32Height(0)
+	,m_f64WidthPerBuffer(0)
+	,m_f64PointStep(0)
+	,m_pParentDisplayView(pDisplayView)
+	,m_pDatabase(pDisplayView->m_pBufferDatabase)
+	,m_f64LocalMaximum(0)
+	,m_f64LocalMinimum(0)
+	,m_f64ScaleX(1)
+	,m_f64ScaleY(1)
+	,m_f64TranslateX(0)
+	,m_f64TranslateY(0)
+	,m_f64ZoomTranslateX(0)
+	,m_f64ZoomTranslateY(0)
+	,m_f64ZoomScaleX(1)
+	,m_f64ZoomScaleY(1)
+	,m_f64ZoomFactor(1.5)
+	,m_f64MaximumTopMargin(0)
+	,m_f64MaximumBottomMargin(0)
+	,m_f64MinimumTopMargin(0)
+	,m_f64MinimumBottomMargin(0)
+	,m_eCurrentSignalMode(DisplayMode_GlobalBestFit)
+	,m_ui64LatestDisplayedTime(0)
+	,m_bRedrawAll(false)
 {
 	//creates the drawing area
 	m_pDrawingArea = gtk_drawing_area_new();
@@ -563,15 +567,31 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 	//compute and draw sample points
 	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimmensionSizes[1];
 
-	if(m_eCurrentSignalMode != DisplayMode_GlobalBestFit)
-	{
-		GdkColor l_oLineColor;
-		l_oLineColor.red = 65535; l_oLineColor.green = 0; l_oLineColor.blue = 0;
-		gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
-	}
+	GdkColor l_oLineColor;
 
 	for(size_t k=0; k<m_oChannelList.size(); k++)
 	{
+		if(m_oChannelList.size()!=1)
+		{
+			m_pParentDisplayView->getMultiViewColor(m_oChannelList[k], l_oLineColor);
+		}
+		else
+		{
+			if(m_eCurrentSignalMode != DisplayMode_GlobalBestFit)
+			{
+				l_oLineColor.red = 65535;
+				l_oLineColor.green = 0;
+				l_oLineColor.blue = 0;
+			}
+			else
+			{
+				l_oLineColor.red = 0;
+				l_oLineColor.green = 0;
+				l_oLineColor.blue = 0;
+			}
+		}
+		gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
+
 		size_t l_ui64PointIndex = 0;
 
 		for(size_t j=ui32FirstBufferToDisplay; j<=ui32LastBufferToDisplay; j++)
@@ -596,13 +616,6 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 		}
 	}
 
-	if(m_eCurrentSignalMode != DisplayMode_GlobalBestFit)
-	{
-		GdkColor l_oLineColor;
-		l_oLineColor.red = 0; l_oLineColor.green = 0; l_oLineColor.blue = 0;
-		gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
-	}
-
 	if(m_pDatabase->m_oStimulations.size() != 0)
 	{
 		//switch to dashed line
@@ -615,10 +628,7 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 #else
 		uint64 l_ui64FirstBufferDuration = m_pDatabase->m_oEndTime[ui32FirstBufferToDisplay] - m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay];
 		uint64 l_ui64LastBufferDuration = m_pDatabase->m_oEndTime[ui32LastBufferToDisplay] - m_pDatabase->m_oStartTime[ui32LastBufferToDisplay];
-
-		uint64 l_ui64StartTime = m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay] +
-			l_ui64FirstBufferDuration * ui32FirstSampleToDisplay / l_ui32SamplesPerBuffer;
-
+		uint64 l_ui64StartTime = m_pDatabase->m_oStartTime[ui32FirstBufferToDisplay] + l_ui64FirstBufferDuration * ui32FirstSampleToDisplay / l_ui32SamplesPerBuffer;
 		uint64 l_ui64EndTime = m_pDatabase->m_oStartTime[ui32LastBufferToDisplay] + l_ui64LastBufferDuration;
 #endif
 
@@ -635,7 +645,6 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 					j++;
 				}
 
-				GdkColor l_oLineColor;
 				m_pParentDisplayView->getStimulationColor(it->second, l_oLineColor);
 				gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
 
@@ -649,13 +658,13 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 				gdk_draw_line(m_pDrawingArea->window, m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], l_ui32StimulationX, 0, l_ui32StimulationX, m_ui32Height);
 			}
 		}
-
-		//switch back to normal line
-		GdkColor l_oLineColor;
-		l_oLineColor.red = 0; l_oLineColor.green = 0; l_oLineColor.blue = 0;
-		gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
-		gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 	}
+
+	l_oLineColor.red = 0;
+	l_oLineColor.green = 0;
+	l_oLineColor.blue = 0;
+	gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
+	gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 }
 
 void CSignalChannelDisplay::drawProgressLine(uint32 ui32FirstBufferToDisplay, uint32 ui32FirstBufferToDisplayPosition)

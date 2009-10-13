@@ -136,6 +136,15 @@ namespace OpenViBEPlugins
 				OpenViBE::uint64 ui64StimulationCode,
 				::GdkColor& rColor);
 
+			/**
+			 * \brief Get a color from a signal
+			 * \param[in] ui32SignalIndex channel index
+			 * \param[out] rColor Color computed from stimulation code
+			 */
+			void getMultiViewColor(
+				OpenViBE::uint32 ui32ChannelIndex,
+				::GdkColor& rColor);
+
 		private:
 			/**
 			 * \brief Update stimulations color dialog with a new (stimulation, color) pair
@@ -161,7 +170,8 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget*> m_oChannelLabel;
 
 			//! Array of CSignalChannelDisplays (one per channel, displays the corresponding channel)
-			std::vector<CSignalChannelDisplay*> m_oChannelDisplay;
+			std::vector < CSignalChannelDisplay* > m_oChannelDisplay;
+			std::map < OpenViBE::uint32, ::GtkWidget* > m_vSeparator;
 
 			//! Show left rulers when true
 			OpenViBE::boolean m_bShowLeftRulers;
@@ -206,20 +216,19 @@ namespace OpenViBEPlugins
 			//! Vector of raw points. Stores the points' coordinates before cropping.
 			std::vector<std::pair<OpenViBE::float64,OpenViBE::float64> > m_pRawPoints;
 
-			//! Vector of pointers to the select channels dialog's check buttons
-			std::vector<GtkWidget *> m_vChannelsCheckButtons;
 			//! Vector of indexes of the channels to display
-			std::vector<OpenViBE::uint32> m_vSelectedChannels;
+			std::map<OpenViBE::uint32, OpenViBE::boolean> m_vSelectedChannels;
 
 			//! Flag set to true once multi view configuration dialog is initialized
 			OpenViBE::boolean m_bMultiViewInitialized;
-			//! Vector of pointers to channel check buttons
-			std::vector<GtkWidget *> m_vMultiViewChannelsCheckButtons;
 			//! Vector of indices of selected channels
-			std::vector<OpenViBE::uint32> m_vMultiViewSelectedChannels;
+			std::map<OpenViBE::uint32, OpenViBE::boolean> m_vMultiViewSelectedChannels;
 
 			//Map of stimulation codes received so far, and their corresponding name and color
 			std::map< OpenViBE::uint64, std::pair< OpenViBE::CString, ::GdkColor > > m_mStimulations;
+
+			//Map of signal indices received so far, and their corresponding name and color
+			std::map< OpenViBE::uint64, std::pair< OpenViBE::CString, ::GdkColor > > m_mSignals;
 
 			//! Bottom box containing bottom ruler
 			GtkBox* m_pBottomBox;

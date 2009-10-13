@@ -30,9 +30,6 @@ namespace OpenViBEPlugins
 			m_pGraphicsContext(NULL),
 			m_pDatabase(&pDatabase),
 			m_ui32Channel(ui32Channel),
-			m_f64MinimumValue(+DBL_MAX),
-			m_f64MaximumValue(-DBL_MAX),
-			m_f64Attenuation(0.95),
 			m_pRGBBuffer(NULL),
 			m_ui32RGBBufferWidth(0),
 			m_ui32RGBBufferHeight(0),
@@ -149,11 +146,21 @@ namespace OpenViBEPlugins
 			// uint8 l_ui8IndexedColor = 0;
 
 			//get current buffer min/max values
-			float64 l_f64CurrentBufferMax;
-			float64 l_f64CurrentBufferMin;
+			float64 l_f64CurrentBufferMax=-DBL_MAX;
+			float64 l_f64CurrentBufferMin=DBL_MAX;
 			if(m_pParentDisplay->isAutoVerticalScaleEnabled() == true)
 			{
-				m_pDatabase->getLastBufferMinMaxValue(l_f64CurrentBufferMin, l_f64CurrentBufferMax);
+				for(uint32 i=0; i<m_pDatabase->getChannelCount(); i++)
+				{
+					if(m_pParentDisplay->isSelected(i))
+					{
+						float64 l_f64CurrentBufferMax2;
+						float64 l_f64CurrentBufferMin2;
+						m_pDatabase->getLastBufferChannelMinMaxValue(i, l_f64CurrentBufferMin2, l_f64CurrentBufferMax2);
+						if(l_f64CurrentBufferMax2 > l_f64CurrentBufferMax) l_f64CurrentBufferMax=l_f64CurrentBufferMax2;
+						if(l_f64CurrentBufferMin2 < l_f64CurrentBufferMin) l_f64CurrentBufferMin=l_f64CurrentBufferMin2;
+					}
+				}
 			}
 			else
 			{
@@ -345,11 +352,6 @@ namespace OpenViBEPlugins
 
 				l_pLineBase+=(m_ui32Rowstride);
 			}
-		}
-
-		void CPowerSpectrumChannelDisplay::setMinMaxAttenuation(OpenViBE::float64 f64Attenuation)
-		{
-			m_f64Attenuation = f64Attenuation;
 		}
 
 		//CALLBACKS

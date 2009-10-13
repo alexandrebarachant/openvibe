@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace OpenViBEPlugins
 {
@@ -125,6 +126,8 @@ namespace OpenViBEPlugins
 
 			//@}
 
+			OpenViBE::boolean isSelected(OpenViBE::uint32 ui32Channel) { return m_vSelectedChannels[ui32Channel]; }
+
 		private:
 			/**
 			 * \brief Invalidate window contents and have it redraw itself
@@ -152,6 +155,7 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget*> m_oChannelLabels;
 			//! Array of channel displays
 			std::vector<CPowerSpectrumChannelDisplay*> m_oChannelDisplays;
+			std::map < OpenViBE::uint32, ::GtkWidget* > m_vSeparator;
 			//! Bottom box containing bottom ruler
 			GtkBox* m_pBottomBox;
 			//! Bottom ruler widget
@@ -169,10 +173,8 @@ namespace OpenViBEPlugins
 
 			//! The database that contains the information to use to draw the signals
 			CPowerSpectrumDatabase* m_pPowerSpectrumDatabase;
-			//! Vector of pointers to the select channels dialog's check buttons
-			std::vector<GtkWidget*> m_vChannelsCheckButtons;
 			//! Vector of indexes of the channels to display
-			std::vector<OpenViBE::uint32> m_vSelectedChannels;
+			std::map<OpenViBE::uint32, OpenViBE::boolean> m_vSelectedChannels;
 			//! Minimum frequency to display
 			OpenViBE::float64 m_f64MinDisplayedFrequency;
 			//! Maximum frequency to display

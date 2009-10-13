@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace OpenViBEPlugins
 {
@@ -139,10 +140,12 @@ namespace OpenViBEPlugins
 			std::vector<GtkWidget*> m_vChannelLabels;
 			//! Array of Displays (one per channel, displays the corresponding channel)
 			std::vector<CTimeFrequencyMapChannelDisplay*> m_vChannelDisplays;
+			std::map < OpenViBE::uint32, ::GtkWidget* > m_vSeparator;
 			//! Vector of pointers to the select channels dialog's check buttons
 			std::vector<GtkWidget *> m_vChannelsCheckButtons;
 			//! Vector of indexes of the channels to display
-			std::vector<OpenViBE::uint32> m_vSelectedChannels;
+			std::map<OpenViBE::uint32, OpenViBE::boolean> m_vSelectedChannels;
+
 			//! Show left rulers when true
 			OpenViBE::boolean m_bShowLeftRulers;
 			//!Show bottom time ruler when true
@@ -156,7 +159,7 @@ namespace OpenViBEPlugins
 			//! Bottom box containing bottom ruler
 			GtkBox* m_pBottomBox;
 			//! Pointer to time ruler
-			CTimeRuler* m_pTimeRuler;
+			CTimeRuler* m_pBottomRuler;
 		};
 	};
 };
