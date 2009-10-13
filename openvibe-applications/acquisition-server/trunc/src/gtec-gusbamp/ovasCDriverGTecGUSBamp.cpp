@@ -38,7 +38,7 @@ CDriverGTecGUSBamp::CDriverGTecGUSBamp(void)
 	,m_pOverlapped(NULL)
 {
 	m_oHeader.setSamplingFrequency(512);
-	m_oHeader.setChannelCount(4);
+	m_oHeader.setChannelCount(16);
 }
 
 void CDriverGTecGUSBamp::release(void)
@@ -127,9 +127,40 @@ boolean CDriverGTecGUSBamp::initialize(
 		return false;
 	}
 
-	::GT_SetSampleRate(m_pDevice, 512);
-	::GT_SetBufferSize(m_pDevice, ui32SampleCountPerSentBlock);
-	::GT_EnableTriggerLine(m_pDevice, TRUE);
+	::UCHAR l_oChannel[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+
+	::REF l_oReference;
+	l_oReference.ref1=FALSE;
+	l_oReference.ref2=FALSE;
+	l_oReference.ref3=FALSE;
+	l_oReference.ref4=FALSE;
+
+	::GND l_oGround;
+	l_oGround.GND1=FALSE;
+	l_oGround.GND2=FALSE;
+	l_oGround.GND3=FALSE;
+	l_oGround.GND4=FALSE;
+
+	if(!::GT_SetMode(m_pDevice, M_NORMAL)) std::cout << "err GT_SetMode\n";
+	if(!::GT_SetBufferSize(m_pDevice, ui32SampleCountPerSentBlock)) std::cout << "err GT_SetBufferSize\n";
+	if(!::GT_SetChannels(m_pDevice, l_oChannel, sizeof(l_oChannel)/sizeof(::UCHAR))) std::cout << "err GT_SetChannels\n";
+	if(!::GT_SetSlave(m_pDevice, FALSE)) std::cout << "err GT_SetSlave\n";
+	if(!::GT_EnableTriggerLine(m_pDevice, TRUE)) std::cout << "err GT_EnableTriggerLine\n";
+// GT_EnableSC
+// GT_SetBipolar
+/* */
+	for(uint32 i=0; i<g_ui32AcquiredChannelCount; i++)
+	{
+		if(!::GT_SetBandPass(m_pDevice, i+1, -1)) std::cout << "err GT_SetBandPass for channel " << i << "\n";
+		if(!::GT_SetNotch(m_pDevice, i+1, -1)) std::cout << "err GT_SetNotch for channel " << i << "\n";
+	}
+/* */
+	if(!::GT_SetSampleRate(m_pDevice, m_oHeader.getSamplingFrequency())) std::cout << "err GT_SetSampleRate\n";
+#if 1 // most probably not necessary with g.GAMMAbox
+	if(!::GT_SetReference(m_pDevice, l_oReference)) std::cout << "err GT_SetReference\n";
+	if(!::GT_SetGround(m_pDevice, l_oGround)) std::cout << "err GT_SetGround\n";
+#endif
+// GT_SetDAC
 
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 	m_pCallback=&rCallback;
@@ -188,15 +219,21 @@ boolean CDriverGTecGUSBamp::loop(void)
 
 				// TODO manage stims
 			}
+			else
+			{
+				// std::cout << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
+			}
 		}
 		else
 		{
 			// TIMEOUT
+			// std::cout << "timeout 1\n";
 		}
 	}
 	else
 	{
 		// TIMEOUT
+		// std::cout << "timeout 2\n";
 	}
 
 	return true;

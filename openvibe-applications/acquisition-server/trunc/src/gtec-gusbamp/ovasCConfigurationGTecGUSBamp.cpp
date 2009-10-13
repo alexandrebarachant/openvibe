@@ -63,9 +63,13 @@ boolean CConfigurationGTecGUSBamp::postConfigure(void)
 	if(m_bApplyConfiguration)
 	{
 		int l_iUSBIndex=0;
-		if(::sscanf(gtk_combo_box_get_active_text(l_pComboBox), "USB port %i", &l_iUSBIndex)==1)
+		const char* l_sUSBIndex=::gtk_combo_box_get_active_text(l_pComboBox);
+		if(l_sUSBIndex)
 		{
-			m_rUSBIndex=(uint32)l_iUSBIndex;
+			if(::sscanf(l_sUSBIndex, "USB port %i", &l_iUSBIndex)==1)
+			{
+				m_rUSBIndex=(uint32)l_iUSBIndex;
+			}
 		}
 	}
 

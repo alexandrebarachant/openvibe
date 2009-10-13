@@ -254,6 +254,8 @@ boolean CConfigurationGlade::postConfigure(void)
 	return true;
 }
 
+#include <iostream>
+
 void CConfigurationGlade::buttonChangeChannelNamesCB(void)
 {
 	uint32 i;
@@ -378,7 +380,7 @@ void CConfigurationGlade::buttonChangeChannelNamesCB(void)
 								{
 									gtk_list_store_set(m_pChannelNameListStore, &itChannelName, 1, "", -1);
 								}
-								while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName) && l!=l_vElectrodeName.end());
+								while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName));
 							}
 
 							// Fills list store with channel names
@@ -392,6 +394,7 @@ void CConfigurationGlade::buttonChangeChannelNamesCB(void)
 								}
 								while(gtk_tree_model_iter_next(GTK_TREE_MODEL(m_pChannelNameListStore), &itChannelName) && l!=l_vElectrodeName.end());
 							}
+
 						}
 						g_free(l_sFileName);
 					}
