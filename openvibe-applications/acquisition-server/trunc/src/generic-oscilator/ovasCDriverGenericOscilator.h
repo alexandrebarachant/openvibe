@@ -10,7 +10,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CDriverGenericOscillator(void);
+		CDriverGenericOscillator(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual void release(void);
 		virtual const char* getName(void);
 

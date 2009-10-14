@@ -20,7 +20,7 @@ namespace OpenViBEAcquisitionServer
 		typedef char str32[32];
 		typedef char str100[100];
 
-		CDriverCtfVsmMeg(void);
+		CDriverCtfVsmMeg(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual ~CDriverCtfVsmMeg(void);
 		virtual const char* getName(void);
 

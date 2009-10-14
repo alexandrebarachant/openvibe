@@ -7,17 +7,16 @@
 
 #include <cmath>
 
-#include <iostream>
-
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
-using namespace std;
+using namespace OpenViBE::Kernel;
 
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverGenericOscillator::CDriverGenericOscillator(void)
-	:m_pCallback(NULL)
+CDriverGenericOscillator::CDriverGenericOscillator(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pCallback(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
@@ -25,17 +24,23 @@ CDriverGenericOscillator::CDriverGenericOscillator(void)
 	,m_ui32TotalSampleCount(0)
 	,m_ui32StartTime(0)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::CDriverGenericOscillator\n";
+
 	m_oHeader.setSamplingFrequency(512);
 	m_oHeader.setChannelCount(4);
 }
 
 void CDriverGenericOscillator::release(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::release\n";
+
 	delete this;
 }
 
 const char* CDriverGenericOscillator::getName(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::getName\n";
+
 	return "Generic Oscillator";
 }
 
@@ -46,6 +51,8 @@ boolean CDriverGenericOscillator::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::initialize\n";
+
 	if(m_bInitialized)
 	{
 		return false;
@@ -76,6 +83,8 @@ boolean CDriverGenericOscillator::initialize(
 
 boolean CDriverGenericOscillator::start(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::start\n";
+
 	if(!m_bInitialized)
 	{
 		return false;
@@ -92,6 +101,8 @@ boolean CDriverGenericOscillator::start(void)
 
 boolean CDriverGenericOscillator::loop(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::loop\n";
+
 	if(!m_bInitialized)
 	{
 		return false;
@@ -118,9 +129,9 @@ boolean CDriverGenericOscillator::loop(void)
 			{
 #if 1
 				float64 l_f64Value=
-					sin(((i+m_ui32TotalSampleCount)*(j+1)*12.3)/m_oHeader.getSamplingFrequency())+
-					sin(((i+m_ui32TotalSampleCount)*(j+1)* 4.5)/m_oHeader.getSamplingFrequency())+
-					sin(((i+m_ui32TotalSampleCount)*(j+1)*67.8)/m_oHeader.getSamplingFrequency());
+					::sin(((i+m_ui32TotalSampleCount)*(j+1)*12.3)/m_oHeader.getSamplingFrequency())+
+					::sin(((i+m_ui32TotalSampleCount)*(j+1)* 4.5)/m_oHeader.getSamplingFrequency())+
+					::sin(((i+m_ui32TotalSampleCount)*(j+1)*67.8)/m_oHeader.getSamplingFrequency());
 				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=(float32)l_f64Value;
 #else
 				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=j;
@@ -138,6 +149,8 @@ boolean CDriverGenericOscillator::loop(void)
 
 boolean CDriverGenericOscillator::stop(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::stop\n";
+
 	if(!m_bInitialized)
 	{
 		return false;
@@ -154,6 +167,8 @@ boolean CDriverGenericOscillator::stop(void)
 
 boolean CDriverGenericOscillator::uninitialize(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::uninitialize\n";
+
 	if(!m_bInitialized)
 	{
 		return false;
@@ -178,11 +193,15 @@ boolean CDriverGenericOscillator::uninitialize(void)
 
 boolean CDriverGenericOscillator::isConfigurable(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::isConfigurable\n";
+
 	return true;
 }
 
 boolean CDriverGenericOscillator::configure(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::configure\n";
+
 	CConfigurationGlade m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.glade");
 	return m_oConfiguration.configure(m_oHeader);
 }

@@ -97,6 +97,7 @@ static void combobox_driver_changed_cb(::GtkComboBox* pComboBox, void* pUserData
 
 CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& rKernelContext)
 	:m_rKernelContext(rKernelContext)
+	,m_oDriverContext(rKernelContext)
 	,m_pAcquisitionStreamEncoder(NULL)
 	,m_pExperimentInformationStreamEncoder(NULL)
 	,m_pSignalStreamEncoder(NULL)
@@ -138,20 +139,20 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 	// ip_pAcquisitionChannelLocalisationMemoryBuffer.setReferenceTarget(op_pStimulationMemoryBuffer);
 
 #if defined OVAS_OS_Windows
-	m_vDriver.push_back(new CDriverMindMediaNeXus32B());
+	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_oDriverContext));
 #endif
-	m_vDriver.push_back(new CDriverOpenEEGModularEEG());
+	m_vDriver.push_back(new CDriverOpenEEGModularEEG(m_oDriverContext));
 	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
 	{
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
-		m_vDriver.push_back(new CDriverGTecGUSBamp());
+		m_vDriver.push_back(new CDriverGTecGUSBamp(m_oDriverContext));
 #endif
-		m_vDriver.push_back(new CDriverBrainampStandard());
-		m_vDriver.push_back(new CDriverMicromedIntraEEG());
-		m_vDriver.push_back(new CDriverCtfVsmMeg());
-		// m_vDriver.push_back(new CDriverNeuroscanSynamps2());
+		m_vDriver.push_back(new CDriverBrainampStandard(m_oDriverContext));
+		m_vDriver.push_back(new CDriverMicromedIntraEEG(m_oDriverContext));
+		m_vDriver.push_back(new CDriverCtfVsmMeg(m_oDriverContext));
+		// m_vDriver.push_back(new CDriverNeuroscanSynamps2(m_oDriverContext));
 	}
-	m_vDriver.push_back(new CDriverGenericOscillator());
+	m_vDriver.push_back(new CDriverGenericOscillator(m_oDriverContext));
 }
 
 CAcquisitionServer::~CAcquisitionServer(void)

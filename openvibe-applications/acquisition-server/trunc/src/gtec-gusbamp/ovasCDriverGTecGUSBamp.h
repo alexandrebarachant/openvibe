@@ -12,7 +12,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CDriverGTecGUSBamp(void);
+		CDriverGTecGUSBamp(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual void release(void);
 		virtual const char* getName(void);
 

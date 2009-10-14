@@ -17,8 +17,9 @@ using namespace std;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverBrainampStandard::CDriverBrainampStandard(void)
-	:m_pCallback(NULL)
+CDriverBrainampStandard::CDriverBrainampStandard(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pCallback(NULL)
 	,m_pConnectionClient(NULL)
 	,m_sServerHostName("localhost")
 	,m_ui32ServerHostPort(51244)

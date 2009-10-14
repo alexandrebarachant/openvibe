@@ -13,6 +13,30 @@ namespace OpenViBEAcquisitionServer
 	} EDriverFlag;
 
 	/**
+	 * \class IDriverContext
+	 * \author Yann Renard (INRIA/IRISA)
+	 * \date 2009-10-12
+	 * \brief Base class for kernel functioanlities access from the driver classes
+	 * \sa IDriver
+	 */
+	class IDriverContext
+	{
+	public:
+
+		/**
+		 * \brief Destructor
+		 */
+		virtual ~IDriverContext(void) { }
+
+		/**
+		 * \brief Gets the kernel Log Manager
+		 * \return the kernel Log Manager
+		 * \sa OpenViBE::Kernel::ILogManager
+		 */
+		virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const=0;
+	};
+
+	/**
 	 * \class IDriverCallback
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-04-01
@@ -111,6 +135,15 @@ namespace OpenViBEAcquisitionServer
 	class IDriver
 	{
 	public:
+
+		/**
+		 * \brief Constructor
+		 * \param rDriverContext [in] : the driver context
+		 */
+		IDriver(IDriverContext& rDriverContext)
+			:m_rDriverContext(rDriverContext)
+		{
+		}
 
 		/**
 		 * \brief Destructor
@@ -284,6 +317,17 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean loop(void)=0;
 
 		//@}
+
+	protected:
+
+		OpenViBEAcquisitionServer::IDriverContext& m_rDriverContext; ///< The driver context
+
+	private:
+
+		/**
+		 * \brief Default constructor can not be used because a context is needed
+		 */
+		IDriver(void);
 	};
 };
 

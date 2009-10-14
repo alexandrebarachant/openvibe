@@ -17,7 +17,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CDriverOpenEEGModularEEG(void);
+		CDriverOpenEEGModularEEG(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual void release(void);
 		virtual const char* getName(void);
 

@@ -15,8 +15,9 @@ using namespace std;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(void)
-	:m_pConnectionServer(NULL)
+CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pConnectionServer(NULL)
 	,m_ui32ServerHostPort(3000)
 	,m_pConnection(NULL)
 	,m_pCallback(NULL)

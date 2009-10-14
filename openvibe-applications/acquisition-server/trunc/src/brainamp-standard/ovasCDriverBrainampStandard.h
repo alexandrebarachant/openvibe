@@ -42,7 +42,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CDriverBrainampStandard(void);
+		CDriverBrainampStandard(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual ~CDriverBrainampStandard(void);
 		virtual const char* getName(void);
 

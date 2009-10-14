@@ -14,8 +14,9 @@ using namespace std;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverCtfVsmMeg::CDriverCtfVsmMeg(void)
-	:m_pConnectionClient(NULL)
+CDriverCtfVsmMeg::CDriverCtfVsmMeg(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pConnectionClient(NULL)
 	,m_sServerHostName("localhost")
 	,m_ui32ServerHostPort(9999)
 	,m_pCallback(NULL)

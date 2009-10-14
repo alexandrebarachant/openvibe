@@ -32,8 +32,9 @@ using namespace OpenViBE;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverOpenEEGModularEEG::CDriverOpenEEGModularEEG(void)
-	:m_pCallback(NULL)
+CDriverOpenEEGModularEEG::CDriverOpenEEGModularEEG(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pCallback(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)

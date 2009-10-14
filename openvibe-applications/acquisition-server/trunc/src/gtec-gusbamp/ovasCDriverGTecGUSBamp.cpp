@@ -24,8 +24,9 @@ static const uint32 g_ui32AcquiredChannelCount=16;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverGTecGUSBamp::CDriverGTecGUSBamp(void)
-	:m_pCallback(NULL)
+CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pCallback(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)

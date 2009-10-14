@@ -10,7 +10,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CDriverMindMediaNeXus32B(void);
+		CDriverMindMediaNeXus32B(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual void release(void);
 		virtual const char* getName(void);
 

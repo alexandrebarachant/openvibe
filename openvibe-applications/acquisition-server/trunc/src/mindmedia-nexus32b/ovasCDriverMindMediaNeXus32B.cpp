@@ -21,8 +21,9 @@ using namespace OpenViBE;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverMindMediaNeXus32B::CDriverMindMediaNeXus32B(void)
-	:m_pCallback(NULL)
+CDriverMindMediaNeXus32B::CDriverMindMediaNeXus32B(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pCallback(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)

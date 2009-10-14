@@ -33,7 +33,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CDriverMicromedIntraEEG(void);
+		CDriverMicromedIntraEEG(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual ~CDriverMicromedIntraEEG(void);
 		virtual const char* getName(void);
 

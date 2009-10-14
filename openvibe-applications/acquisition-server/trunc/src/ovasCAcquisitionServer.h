@@ -17,7 +17,26 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CAcquisitionServer : OpenViBEAcquisitionServer::IDriverCallback
+	class CDriverContext : public OpenViBEAcquisitionServer::IDriverContext
+	{
+	public:
+
+		CDriverContext(const OpenViBE::Kernel::IKernelContext& rKernelContext)
+			:m_rKernelContext(rKernelContext)
+		{
+		}
+
+		virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const
+		{
+			return m_rKernelContext.getLogManager();
+		}
+
+	protected:
+
+		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
+	};
+
+	class CAcquisitionServer : public OpenViBEAcquisitionServer::IDriverCallback
 	{
 	public:
 
@@ -43,6 +62,7 @@ namespace OpenViBEAcquisitionServer
 	protected :
 
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
+		OpenViBEAcquisitionServer::CDriverContext m_oDriverContext;
 
 		OpenViBE::Kernel::IAlgorithmProxy* m_pAcquisitionStreamEncoder;
 		OpenViBE::Kernel::IAlgorithmProxy* m_pExperimentInformationStreamEncoder;
