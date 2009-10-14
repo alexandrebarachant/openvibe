@@ -70,8 +70,13 @@ __________________________________________________________________
  * - Number of input channels: 10
  *
  * The output channels becomes :
- * - OC1 = 4 * C3 + 0 * C4 + (-1) * FC3 + 0 * FC4 + (-1) * C5 + (-1) * C1 + 0 * C2 + 0 * C6 + (-1) * CP3 + 0 * CP4 = 4 * C3 - FC3 - C5 - C1 - CP3
- * - OC2 = 0 * C3 + 4 * C4 + 0 * FC3 + (-1) * FC4 + 0 * C5 + 0 * C1 + (-1) * C2 + (-1) * C6 + 0 * CP3 + (-1) * CP4 = 4 * C4 - FC4 - C2 - C6 - CP4
+ * \code
+ * OC1 = 4 * C3 + 0 * C4 + (-1) * FC3 + 0 * FC4 + (-1) * C5 + (-1) * C1 + 0 * C2 + 0 * C6 + (-1) * CP3 + 0 * CP4
+ *     = 4 * C3 - FC3 - C5 - C1 - CP3
+ *
+ * OC2 = 0 * C3 + 4 * C4 + 0 * FC3 + (-1) * FC4 + 0 * C5 + 0 * C1 + (-1) * C2 + (-1) * C6 + 0 * CP3 + (-1) * CP4
+ *     = 4 * C4 - FC4 - C2 - C6 - CP4
+ * \endcode
  *
  * This is basically a Surface Laplacian around C4 and C5.
  * |OVP_DocEnd_BoxAlgorithm_SpatialFilter_Examples|
