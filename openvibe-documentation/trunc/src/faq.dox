@@ -27,28 +27,43 @@
  *
  * \section Doc_FAQ_Environment What kind of computer / operating system do I need to run OpenViBE ?
  *
- * §OpenViBE§ currently only runs on standard desktop PCs and compiles on differents targets.
- * The following table shows a summary of these different configurations...
- *
 \htmlonly
 <!-- os-compatibility start -->
+\endhtmlonly
+ *
+ * §OpenViBE§ currently runs on standard desktop PCs and compiles on differents targets.
+ * Note that even if §OpenViBE§ has been reported to compile / run on many different platforms, we can't provide
+ * support for all of them at the same time... On windows, we support the latest version of visual C++ express.
+ * On the linux side, we basically support both the latest Long Term Support (LTS) and latest non-LTS version
+ * of Ubuntu on one hand and the two latest Fedora on the other hand.
+ *
+ * The following table shows a summary of these different configurations... and of the configrations we officially support.
+ *
+\htmlonly
 <table class='faq-os' cellpading=0 cellspacing=0>
-<tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> </tr>
-<tr> <td rowspan=10>x86</td>   <td rowspan=3>Windows</td> <td rowspan=2>XP SP2</td> <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> </tr>
-<tr>                                                                                <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Vista</td>            <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> </tr>
-<tr>                           <td rowspan=7>Linux</td>   <td>Ubuntu 9.04</td>      <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora Core 3</td>    <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> </tr>
-<tr>                                                      <td>Fedora Core 4</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora Core 5</td>    <td>GCC ?</td>                              <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora 8</td>         <td>GCC</td>                                <td bgcolor=green>OK</td> </tr>
-<tr> <td rowspan=5>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested</td> </tr>
-<tr>                           <td rowspan=4>Linux</td>   <td>Ubuntu 8.10</td>      <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Ubuntu 8.04</td>      <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora 9</td>         <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> </tr>
-<tr>                                                      <td>Fedora 10</td>        <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> </tr>
+<tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> <th>Officially supported</th> </tr>
+<tr> <td rowspan=13>x86</td>   <td rowspan=3>Windows</td> <td rowspan=2>XP SP2</td>      <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                                                     <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Vista</td>                 <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                           <td rowspan=10>Linux</td>  <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Fedora 8</td>              <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Fedora Core 5</td>         <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Fedora Core 4</td>         <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Fedora Core 3</td>         <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Debian 5</td>              <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr> <td rowspan=9>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
+<tr>                           <td rowspan=8>Linux</td>   <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                      <td>Fedora 9</td>              <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                      <td>Gentoo</td>                <td>GCC ?</td>                              <td bgcolor=red>Dependencies installation fails</td> <td bgcolor=red>No</td> </tr>
+<tr>                                                      <td>Arch 2009.08</td>          <td>GCC ?</td>                              <td bgcolor=orange>Needs some tuning on dependencies installation</td> <td bgcolor=orange>No</td> </tr>
 </table>
 <!-- os-compatibility stop -->
 \endhtmlonly
