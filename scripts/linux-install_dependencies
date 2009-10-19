@@ -347,7 +347,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 
 	echo "Checking native dependencies..."
 
-	if [[ "`grep Ubuntu /etc/lsb-release`" != "" ]]; then
+	if [[ "`grep Ubuntu /etc/lsb-release 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
 		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libogre-dev libglade2-dev libitpp-dev libgsl0-dev libboost-dev libexpat1-dev libois-dev"
@@ -500,6 +500,163 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 
 		fi;
 	fi;
+
+	if [[ "`grep Debian /etc/issue 2> /dev/null`" != "" ]]; then
+		ov_native_package_installed=true
+		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libogre-dev libglade2-dev libitpp-dev libgsl0-dev libboost-dev libexpat1-dev libois-dev"
+		for package in $ov_ubuntu_packages; do
+			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
+			ov_dpkg_retcode=$?
+
+			if [[ $ov_dpkg_retcode != 0 ]]; then
+				ov_native_package_installed=false
+			fi;
+			if [[ "$ov_dpkg_output" == "" ]]; then
+				ov_native_package_installed=false
+			fi;
+		done;
+
+		if [[ $ov_native_package_installed == false ]]; then
+			echo "  You are currently running Debian"
+			echo ""
+			echo "  It is possible to install native packages in order to avoid some potential"
+			echo "  errors / save time. Such installation requires root access. If you want"
+			echo "  to continue with native packages, answer 'yes' (recommanded)"
+			echo ""
+
+			if [[ -e "$ov_target_folder_hit/native-packages.hit" ]]; then
+				echo "  Do you want to install native packages (y) ? automatically selected yes"
+				ov_answer=yes
+			else
+				echo -n "  Do you want to install native packages (y) ?"
+				read ov_answer
+			fi;
+
+			if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+
+				echo "  Installing native packages on background..."
+
+				# sudo -k # revokes root privilege
+				# sudo apt-get --assume-yes install $ov_ubuntu_packages > $ov_native_package_log_file 2>&1
+				# sudo -k # revokes root privilege
+
+				su -c "apt-get --assume-yes install $ov_ubuntu_packages > $ov_native_package_log_file 2>&1"
+
+				echo "  Installing native packages on background... done."
+
+				ov_should_hit_native=true
+				ov_native_package_installed=true
+			else
+				echo "  All right, we will compile everything..."
+			fi;
+		else
+			if [[ -e "$ov_target_folder_hit/native-packages.hit" ]]; then
+				echo "  You are currently running Debian and all required native packages were"
+				echo "  installed previously, continuing..."
+				ov_should_hit_native=true
+				ov_native_package_installed=true
+			else
+				echo "  You are currently running Debian and all necessary native dependencies are"
+				echo "  already installed."
+				echo ""
+				echo "  It is possible to install use those native packages in order to avoid some potential"
+				echo "  errors / save time. Such installation requires root access. If you want"
+				echo "  to continue with native packages, answer 'yes' (recommanded)"
+				echo ""
+				echo -n "  Do you want to use native packages (y) ?"
+				read ov_answer
+				if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+					ov_should_hit_native=true
+					ov_native_package_installed=true
+				fi;
+			fi;
+		fi;
+
+		if [[ $ov_should_hit_native == true ]]; then
+
+			ov_hit_package "native-packages"
+
+			ov_hit_package "pkgconfig"
+
+			ov_hit_package "expat"
+			ov_hit_package "libxml"
+			ov_hit_package "gettext"
+			ov_hit_package "pthreadstubs"
+			ov_hit_package "zlib"
+			ov_hit_package "libpng"
+			ov_hit_package "freetype"
+			ov_hit_package "fontconfig"
+			ov_hit_package "libtool"
+
+			ov_hit_package "libxproto"
+			ov_hit_package "libxextproto"
+			ov_hit_package "libxtrans"
+			ov_hit_package "libxslt"
+			ov_hit_package "libxau"
+			ov_hit_package "libxcbproto"
+			ov_hit_package "libxcb"
+			ov_hit_package "libkbproto"
+			ov_hit_package "libinputproto"
+			ov_hit_package "libxdmcp"
+			ov_hit_package "libx11"
+			ov_hit_package "libxext"
+			ov_hit_package "renderproto"
+			ov_hit_package "libxdmcp"
+			ov_hit_package "libxrender"
+			ov_hit_package "libice"
+			ov_hit_package "libsm"
+			ov_hit_package "libxt"
+			ov_hit_package "libxmu"
+			ov_hit_package "libxpm"
+			ov_hit_package "libxaw"
+			ov_hit_package "libxf86vidmodeproto"
+			ov_hit_package "libXxf86vm"
+			ov_hit_package "librandrproto"
+			ov_hit_package "libXrandr"
+
+			ov_hit_package "mesa"
+
+			ov_hit_package "glib"
+			ov_hit_package "pixman"
+			ov_hit_package "cairo"
+			ov_hit_package "pango"
+			ov_hit_package "atk"
+			ov_hit_package "gtk"
+			ov_hit_package "clearlooks"
+			ov_hit_package "libglade"
+			ov_hit_package "glade"
+			ov_hit_package "boost"
+
+			ov_hit_package "itpp_external"
+			ov_hit_package "itpp"
+			ov_hit_package "gsl"
+
+			ov_hit_package "freeimage"
+			ov_hit_package "ois"
+			ov_hit_package "zziplib"
+			ov_hit_package "cg"
+			ov_hit_package "ogre"
+
+			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
+			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
+			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+
+		else
+
+			ov_hit_package "no-native-packages"
+
+		fi;
+	fi;
+
 
 	if [[ -e /etc/fedora-release ]]; then
 		ov_native_package_installed=true
