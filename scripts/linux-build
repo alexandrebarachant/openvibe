@@ -42,7 +42,7 @@ for project_directory in $OpenViBE_build_order; do
 		if [ $? -eq 0 ]; then
 			echo Make install has been called successfully !
 		else
-			exit -1
+			true # exit -1
 		fi;
 
 		popd 2> /dev/null
