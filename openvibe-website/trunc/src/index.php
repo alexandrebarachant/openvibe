@@ -188,6 +188,56 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 -->
 		<h1>News</h1>
 
+		<h2>Release policy of OpenViBE<br><span style="font-size:x-small">2009/10/23</span></h2>
+
+		<p>Starting from release 0.4.0, we decided that OpenViBE would be released every three months. You can expect a 0.5.0 release
+		around christmas, 0.6.0 release by the end of march etc...</p>
+
+		<h2>New release of OpenViBE 0.4.0 is now available<br><span style="font-size:x-small">2009/10/23</span></h2>
+
+		<p>New release of OpenViBE 0.4.0 is now available for download at the <a href="http://openvibe.inria.fr/?q=download">download</a> page.</p>
+		<p>In this new release, you will find the following modifiactions (+ for adds, * for modifications, - for removes) :</p>
+		<ul>
+			<li>+ Mr. Christoph Veigl contributed and added a new driver for OpenEEG Modular EEG / Monolith EEG</li>
+			<li>+ We added a new driver : g.Tec's gUSBamp acquisition device</li>
+			<li>+ We added a new P300-based entertaining application called "Magic Card" + We added tooltips for new users :)</li>
+			<li>+ We updated the sample scenarios</li>
+			<li>* We propose a stabilized P300-based pipeline</li>
+			<li>* We made the development of new classifiers easier thanks to base algorithms</li>
+			<li>* We updated the dependencies installation script for linux so that it uses native packages instead of compiling everything from scratch</li>
+			<li>* We updated the dependencies installation for windows so that DirectX and Visual C++ Runtime gets installed automatically if needed</li>
+			<li>* We updated the online documentation and tutorials</li>
+			<li>* We fixed lots of bugs !</li>
+			<li>- The VR demo are no more built by default as OpenMASK is not compiling on recent Linux distributions</li>
+		</ul>
+		<ul>
+			<li>+ We added several tooltips for new users :)</li>
+			<li>+ We added a k-fold test in the classifier trainer box</li>
+			<li>+ We added a functionnality to load/save channel names in the acquisition server</li>
+			<li>+ We enabled the voting classifier box to vote either on streamed matrix or on stimulations</li>
+			<li>+ We added a frequency band selector box</li>
+			<li>+ We added a signal decimation box</li>
+			<li>+ We added a CSV file writer box (text based)</li>
+			<li>* We changed the way chanels can be selected in the signal display, power spectrum display and time frequency map display</li>
+			<li>* We reimplemented the common average reference box</li>
+		</ul>
+		<p>Here is a snapshot of what we are currently doing and what you can expect from the next release :</p>
+		<ul>
+			<li>+ A BrainProducts V-Amp acquisition driver</li>
+			<li>+ A Neuroscan acquisition driver</li>
+			<li>+ A MitsarEEG driver</li>
+			<li>+ Online comparison of different processing pipelines performance (e.g. multiple classifiers)</li>
+			<li>+ More documentation on the sample scenarios</li>
+			<li>* GUI definition will move from glade to gtk-builder</li>
+			<li>* VR demos will move from OpenMASK to native Ogre3D</li>
+		</ul>
+		<p>We want to thank Christoph Veigl for his quick and efficient contribution. Feel free to join us and to contribute as Christoph and others are doing...</p>
+
+		<h2>Two new fulltime OpenViBE enginners at INRIA<br><span style="font-size:x-small">2009/10/01</span></h2>
+
+		<p>Warm welcome to Laurent Bonnet and Batpiste Payan who join the INRIA team working on OpenViBE.</p>
+		<p>They will be present for at least two years, participating in the development and support of the platform.</p>
+
 		<h2>OpenViBE bug tracker switches to Mantis<br><span style="font-size:x-small">2009/07/24</span></h2>
 
 		<p>The bug/issue tracker of the INRIA gForge was quite hard to use so we decided to switch to the excellent <a href="http://www.mantisbt.org" class="leaving-link" onclick="window.open(this.href); return false;">Mantis</a>
@@ -445,12 +495,12 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Windows (32 bits)</h2>
 
 		<script language=javascript type='text/javascript'>
-			precompiled("OpenViBE 0.4.0 RC 4", "pub/bin/win32/openvibe-0.4.0-rc4-svn1651-setup", "2009/06/29", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
+			precompiled("OpenViBE 0.4.0", "pub/bin/win32/openvibe-0.4.0-svn1737-setup", "2009/10/23", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
 		</script>
 		<div id="win32-installer-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
+				precompiled("OpenViBE 0.4.0 RC 4", "pub/bin/win32/openvibe-0.4.0-rc4-svn1651-setup", "2009/06/29", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
 				precompiled("OpenViBE 0.4.0 RC 3", "pub/bin/win32/openvibe-0.4.0-rc3-setup", "2009/05/05", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
-				precompiled("OpenViBE 0.4.0 RC 2", "pub/bin/win32/openvibe-0.4.0-rc2-setup", "2009/04/01", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
 			</script>
 			<div class="older-installer"><p><img src="openvibe-precompiled-older.png" class="screenshot">Want even older versions ?</p><p>Browse the <a href="pub/bin/win32" onclick="window.open(this.href,'openvibe-file-browser'); return false;">archives</a>...</p></div>
 		</div>
@@ -487,10 +537,11 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>Stable code is distributed as compressed source archives :</p>
 
 		<script language=javascript type='text/javascript'>
-			archive("OpenViBE 0.4.0 RC 4 (svn 1651)", "pub/src/openvibe-0.4.0-rc4-svn1651-src", "2009/06/29", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+			archive("OpenViBE 0.4.0 (svn 1737)", "pub/src/openvibe-0.4.0-svn1737-src", "2009/10/23", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 		</script>
 		<div id="src-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
+				archive("OpenViBE 0.4.0 RC 4 (svn 1651)", "pub/src/openvibe-0.4.0-rc4-svn1651-src", "2009/06/29", "", "openvibe-sources.png");
 				archive("OpenViBE 0.3.0", "pub/src/openvibe-0.3.0-src", "2007/10/17", "", "openvibe-sources.png");
 			</script>
 			<div class="older-archive"><p><img src="openvibe-sources-older.png" class="screenshot">Want even older versions ?</p><p>Browse the <a href="pub/src" onclick="window.open(this.href,'openvibe-file-browser'); return false;">archives</a>...</p></div>
@@ -531,11 +582,18 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p><span style="font-weight: bold; color: red">Latest versions of <a href="www.virtualbox.org" class="leaving-link">VirtualBox</a> have import/export feature</span>.
 
 		<script language=javascript type='text/javascript'>
+			virtualmachine("OpenViBE 0.4.0 (svn 1737)", "pub/vm/openvibe-0.4.0-svn1737-vm", "2009/10/23", "This virtual machine is based on minimal install of <a href=http://www.xubuntu.org class=leaving-link>xubuntu 9.04 i386</a>. "+
+			               "OpenViBE dependencies have been installed from the distro repository. OpenViBE has been checkedout and compiled directly on the virtual machine. "+
+			               "In case you need it, the login name is <em>openvibe</em> and the password is <em>openvibe</em> (but autologin is activated so you don't have "+
+			               "to enter this (until you actually logout or require root access). The virtual machine has been generated on ubuntu 9.04 with Virtual Box 2.1.4_OSE. "+
+			               "", "openvibe-virtualmachine.png");
+/*
 			virtualmachine("OpenViBE 0.4.0 RC 4 (svn 1651)", "pub/vm/openvibe-0.4.0-rc4-svn1651-vm", "2009/06/29", "This virtual machine is based on minimal install of <a href=http://www.xubuntu.org class=leaving-link>xubuntu 9.04 i386</a>. "+
 			               "OpenViBE dependencies have been installed from the distro repository. OpenViBE has been checkedout and compiled directly on the virtual machine. "+
 			               "In case you need it, the login name is <em>openvibe</em> and the password is <em>openvibe</em> (but autologin is activated so you don't have "+
 			               "to enter this (until you actually logout or require root access). The virtual machine has been generated on ubuntu 8.04.2 with Virtual Box 1.5.6_OSE. "+
 			               "", "openvibe-virtualmachine.png");
+*/
 		</script>
 
 	</div>
@@ -768,12 +826,10 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Developers</h2>
 
 		<ul>
-			<li>Vincent Delannoy, software engineer, INRIA (<i>vincent dot delannoy at irisa dot fr</i>)</li>
-			<li>Guillaume Gibert, postdoctoral fellow, INSERM (<i>guillaume dot gibert at inserm dot fr</i>)</li>
-			<li>Bruno Renier, trainee, INRIA</li>
+			<li>Laurent Bonner, software engineer, INRIA (<i>laurent dot bonnet at irisa dot fr</i>)</li>
+			<li>Baptiste Payan, software engineer, INRIA (<i>baptiste dot payan at loria dot fr</i>)</li>
 			<li>Fabien Lotte, doctoral student, INRIA (<i>fabien dot lotte at irisa dot fr</i>)</li>
 			<li>Pierre Emmanuel Aguera, research engineer, INSERM (<i>aguera at lyon dot inserm dot fr</i>)</li>
-			<li>Jean Baptiste Sauvan, trainee, INRIA</li>
 			<li>Emmanuel Maby, postdoctoral fellow, INSERM (<i>maby at lyon dot inserm dot fr</i>)</li>
 			<li>Gelu Ionescu, research engineer, GIPSA-Lab (<i>gelu dot ionescu at lis dot inpg dot fr</i>)</li>
 		</ul>
@@ -792,6 +848,15 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li>Ornella Plos, doctoral student, AFM</li>
 			<li>Bertrand Rivet, postdoctoral fellow, CEA-List</li>
 			<li>Bernard Hennion, senior researcher, Orange Labs</li>
+		</ul>
+
+		<h2>Previous Developers</h2>
+
+		<ul>
+			<li>Vincent Delannoy, software engineer, INRIA (<i>vincent dot delannoy at irisa dot fr</i>)</li>
+			<li>Guillaume Gibert, postdoctoral fellow, INSERM (<i>guillaume dot gibert at inserm dot fr</i>)</li>
+			<li>Bruno Renier, trainee, INRIA</li>
+			<li>Jean Baptiste Sauvan, trainee, INRIA</li>
 		</ul>
 
 		<h1>OpenViBE Users</h1>
