@@ -46,10 +46,10 @@ for /F %%s in (%OpenViBE_build_order%) do (
 	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
 	REM nmake OpenViBE-documentation
-	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
+	REM IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
 	nmake install
-	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
+	REM IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
 	cd %saved_directory%
 )
