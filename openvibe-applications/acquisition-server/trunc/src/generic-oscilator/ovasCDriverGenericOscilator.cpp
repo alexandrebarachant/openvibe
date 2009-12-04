@@ -17,8 +17,6 @@ using namespace OpenViBE::Kernel;
 CDriverGenericOscillator::CDriverGenericOscillator(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
-	,m_bInitialized(false)
-	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
 	,m_ui32TotalSampleCount(0)
@@ -53,10 +51,7 @@ boolean CDriverGenericOscillator::initialize(
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::initialize\n";
 
-	if(m_bInitialized)
-	{
-		return false;
-	}
+	if(m_rDriverContext.isConnected()) { return false; }
 
 	if(!m_oHeader.isChannelCountSet()
 	 ||!m_oHeader.isSamplingFrequencySet())
@@ -73,7 +68,6 @@ boolean CDriverGenericOscillator::initialize(
 	}
 
 	m_pCallback=&rCallback;
-	m_bInitialized=true;
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 	m_ui32TotalSampleCount=0;
 
@@ -85,33 +79,17 @@ boolean CDriverGenericOscillator::start(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::start\n";
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bStarted=true;
-	return m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
+	return true;
 }
 
 boolean CDriverGenericOscillator::loop(void)
 {
-	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::loop\n";
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "CDriverGenericOscillator::loop\n";
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return true; }
 
 	uint32 l_ui32CurrentTime=System::Time::getTime();
 
@@ -151,35 +129,17 @@ boolean CDriverGenericOscillator::stop(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::stop\n";
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
-
-	m_bStarted=false;
-	return !m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return false; }
+	return true;
 }
 
 boolean CDriverGenericOscillator::uninitialize(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::uninitialize\n";
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bInitialized=false;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
 
 	delete [] m_pSample;
 	m_pSample=NULL;

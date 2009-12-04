@@ -9,6 +9,7 @@
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace std;
 
 //___________________________________________________________________//
@@ -20,8 +21,6 @@ CDriverCtfVsmMeg::CDriverCtfVsmMeg(IDriverContext& rDriverContext)
 	,m_sServerHostName("localhost")
 	,m_ui32ServerHostPort(9999)
 	,m_pCallback(NULL)
-	,m_bInitialized(false)
-	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
 {
@@ -43,11 +42,7 @@ boolean CDriverCtfVsmMeg::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
-
-	if(m_bInitialized)
-	{
-		return false;
-	}
+	if(m_rDriverContext.isConnected()) { return false; }
 
 	// Builds up client connection
 	m_pConnectionClient=Socket::createConnectionClient();
@@ -64,13 +59,13 @@ boolean CDriverCtfVsmMeg::initialize(
 
 	if(!m_pConnectionClient->isConnected())
 	{
-		cout << "Connection problem! Tried 2 times without success! :(" << std::endl;
-		cout << "Verify port number and/or Hostname..." << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Connection problem! Tried 2 times without success! :(\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Verify port number and/or Hostname...\n";
 		return false;
 	}
 	else
 	{
-		cout << "> Client connected" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "> Client connected\n";
 		// Initialize vars for reception
 		uint32 l_ui32Received = 0;
 		uint32 l_ui32ReqLength = 0;
@@ -84,9 +79,9 @@ boolean CDriverCtfVsmMeg::initialize(
 
 			l_ui32Received += l_ui32Result;
 			m_pStructHeader += l_ui32Result;
-			cout << "	> Receiving Header...." << std::endl;
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "> Receiving Header....\n";
 		}
-		cout << "> Header received" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "> Header received\n";
 
 		// Save Header info into m_oHeader
 		//m_oHeader.setExperimentIdentifier();
@@ -124,7 +119,6 @@ boolean CDriverCtfVsmMeg::initialize(
 		}
 
 		m_pCallback=&rCallback;
-		m_bInitialized=true;
 
 		m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 
@@ -140,15 +134,8 @@ boolean CDriverCtfVsmMeg::initialize(
 
 boolean CDriverCtfVsmMeg::start(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
 
 	if (m_ui32BuffDataIndex==0)
 	{
@@ -164,28 +151,18 @@ boolean CDriverCtfVsmMeg::start(void)
 			l_ui32ReqLength = sizeof(m_ui32SocketFlag) -  l_ui32Sent;
 			l_ui32Result = m_pConnectionClient->sendBuffer((uint32*)l_pSocketFlag, l_ui32ReqLength);
 			l_ui32Sent += l_ui32Result;
-			cout << " > Sending flag to start...." << std::endl;
+			m_rDriverContext.getLogManager() << LogLevel_Trace << " > Sending flag to start....\n";
 		}
-		cout << "> Flag sent" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "> Flag sent\n";
 	}
 
-	m_bStarted=true;
-
-	return m_bStarted;
+	return true;
 }
 
 boolean CDriverCtfVsmMeg::loop(void)
 {
-
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return true; }
 
 	// Initialize var to receive buffer of data
 	uint32 l_ui32Received = 0;
@@ -201,7 +178,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 		l_ui32Result = m_pConnectionClient->receiveBuffer((char*)m_pStructBuffData, l_ui32ReqLength);
 		l_ui32Received += l_ui32Result;
 		m_pStructBuffData += l_ui32Result;
-		cout << " > Receiving buffer of data....nb: " << m_ui32BuffDataIndex << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Trace << " > Receiving buffer of data....nb: " << m_ui32BuffDataIndex << "\n";
 	}
 
 	// if input flow is equal to output one
@@ -259,7 +236,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 
 					l_ui32Received += l_ui32Result;
 					m_pStructBuffData += l_ui32Result;
-					cout << " > Receiving buffer of data....nb: " << m_ui32BuffDataIndex << std::endl;
+					m_rDriverContext.getLogManager() << LogLevel_Trace << " > Receiving buffer of data....nb: " << m_ui32BuffDataIndex << "\n";
 				}
 
 			}
@@ -361,35 +338,17 @@ boolean CDriverCtfVsmMeg::loop(void)
 
 boolean CDriverCtfVsmMeg::stop(void)
 {
-	cout << "> Connection stopped" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Connection stopped\n";
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
-
-	m_bStarted=false;
-	return !m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return false; }
+	return true;
 }
 
 boolean CDriverCtfVsmMeg::uninitialize(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bInitialized=false;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return false; }
 
 	delete [] m_pSample;
 	m_pSample=NULL;
@@ -400,7 +359,7 @@ boolean CDriverCtfVsmMeg::uninitialize(void)
 	m_pConnectionClient->release();
 	m_pConnectionClient=NULL;
 
-	cout << "> Client disconnected" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Client disconnected\n";
 
 	return true;
 }

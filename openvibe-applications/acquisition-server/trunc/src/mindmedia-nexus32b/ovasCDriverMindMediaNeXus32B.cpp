@@ -15,6 +15,7 @@
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 
 #define OVAS_MaxSampleCountJitter 16
 
@@ -24,8 +25,6 @@ using namespace OpenViBE;
 CDriverMindMediaNeXus32B::CDriverMindMediaNeXus32B(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
-	,m_bInitialized(false)
-	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
 	,m_ui32SampleIndex(0)
@@ -86,10 +85,7 @@ boolean CDriverMindMediaNeXus32B::initialize(
 {
 #if defined OVAS_OS_Windows
 
-	if(m_bInitialized)
-	{
-		return false;
-	}
+	if(m_rDriverContext.isConnected()) { return false; }
 
 	g_hNeXusDLLInstance=::LoadLibrary(_MindMedia_NeXus32B_DLLFileName_);
 	if(!g_hNeXusDLLInstance)
@@ -149,7 +145,6 @@ boolean CDriverMindMediaNeXus32B::initialize(
 	}
 
 	m_pCallback=&rCallback;
-	m_bInitialized=true;
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 	m_ui32SampleIndex=0;
 	g_pDriver=this;
@@ -167,26 +162,22 @@ boolean CDriverMindMediaNeXus32B::start(void)
 {
 #if defined OVAS_OS_Windows
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
 
 	::DWORD l_dwSamplingFrequency=::DWORD(m_oHeader.getSamplingFrequency());
 	::DWORD l_dwError=g_fpNeXusDLLStart(&l_dwSamplingFrequency);
-	m_bStarted=(l_dwError?false:true);
+	if(l_dwError)
+	{
+		return false;
+	}
 
 	m_ui32StartTime=System::Time::getTime();
 	m_ui64SampleCountTotal=0;
 	m_ui64AutoAddedSampleCount=0;
 	m_ui64AutoRemovedSampleCount=0;
 
-	return m_bStarted;
+	return true;
 
 #else
 
@@ -195,21 +186,12 @@ boolean CDriverMindMediaNeXus32B::start(void)
 #endif
 }
 
-#include <iostream>
-
 boolean CDriverMindMediaNeXus32B::loop(void)
 {
 #if defined OVAS_OS_Windows
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return true; }
 
 	uint32 l_ui32ElapsedTime=System::Time::getTime()-m_ui32StartTime;
 
@@ -260,7 +242,7 @@ boolean CDriverMindMediaNeXus32B::loop(void)
 		static uint64 l_ui64AutoRemovedSampleCount=0;
 		if(((l_ui64AutoAddedSampleCount>>5)-(m_ui64AutoAddedSampleCount>>5)!=0) || ((l_ui64AutoRemovedSampleCount>>5)-(m_ui64AutoRemovedSampleCount>>5)!=0))
 		{
-			std::cout << "time:" << l_ui32ElapsedTime << "ms [" << m_ui64AutoAddedSampleCount << ":" << m_ui64AutoRemovedSampleCount << "] [added:removed] dummy samples so far...\n";
+			m_rDriverContext.getLogManager() << LogLevel_Warning << "time:" << l_ui32ElapsedTime << "ms [" << m_ui64AutoAddedSampleCount << ":" << m_ui64AutoRemovedSampleCount << "] [added:removed] dummy samples so far...\n";
 
 			l_ui64AutoAddedSampleCount=m_ui64AutoAddedSampleCount;
 			l_ui64AutoRemovedSampleCount=m_ui64AutoRemovedSampleCount;
@@ -294,19 +276,15 @@ boolean CDriverMindMediaNeXus32B::stop(void)
 {
 #if defined OVAS_OS_Windows
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return false; }
 
 	::DWORD l_dwError=g_fpNeXusDLLStop();
-	m_bStarted=(l_dwError?true:false);
-	return !m_bStarted;
+	if(l_dwError)
+	{
+		return false;
+	}
+	return true;
 
 #else
 
@@ -319,17 +297,8 @@ boolean CDriverMindMediaNeXus32B::uninitialize(void)
 {
 #if defined OVAS_OS_Windows
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bInitialized=false;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
 
 	::FreeLibrary(g_hNeXusDLLInstance);
 	delete [] m_pSample;

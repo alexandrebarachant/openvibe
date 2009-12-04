@@ -34,6 +34,37 @@ namespace OpenViBEAcquisitionServer
 		 * \sa OpenViBE::Kernel::ILogManager
 		 */
 		virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const=0;
+		/**
+		 * \brief Gets connection status
+		 * \return \e true if the driver is connected
+		 * \return \e false if the driver is not connected
+		 * \sa isStarted
+		 */
+		virtual OpenViBE::boolean isConnected(void) const=0;
+		/**
+		 * \brief Gets acquisition status
+		 * \return \e true if acquisition is started
+		 * \return \e false if acquisition is stoped
+		 * \sa isConnected
+		 */
+		virtual OpenViBE::boolean isStarted(void) const=0;
+
+		/**
+		 * \brief Updates impedance for a specific channel
+		 * \param ui32ChannelIndex [in] : the index of the channel should be updated
+		 * \param f64Impedance [in] : the impedance of the specified channel
+		 * \return \e true in case of success.
+		 * \return \e false in case of error.
+		 *
+		 * This can be used during initialization phase to check
+		 * if impedances are correct. This function should be connected
+		 * while the driver is initialized and not started.
+		 *
+		 * If \c f64Impedance is -1, then the impedance is considered as "unknown / measuring"
+		 * If \c f64Impedance is -2, then the impedance is considered as "unknown / not available"
+		 * If \c f64Impedance is any other negative value, then the impedance is considered as "unknown"
+		 */
+		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance)=0;
 	};
 
 	/**

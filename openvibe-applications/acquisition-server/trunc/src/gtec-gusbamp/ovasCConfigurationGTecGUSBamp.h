@@ -17,8 +17,15 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);
 
+		void buttonCalibratePressedCB(void);
+		void idleCalibrateCB(void);
+
 	protected:
 		OpenViBE::uint32& m_rUSBIndex;
+
+	private:
+		::GtkWidget* m_pCalibrateDialog;
+		OpenViBE::boolean m_bCalibrationDone;
 	};
 };
 

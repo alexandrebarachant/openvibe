@@ -10,6 +10,7 @@
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace std;
 
 //___________________________________________________________________//
@@ -21,8 +22,6 @@ CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(IDriverContext& rDriverContext)
 	,m_ui32ServerHostPort(3000)
 	,m_pConnection(NULL)
 	,m_pCallback(NULL)
-	,m_bInitialized(false)
-	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
 {
@@ -50,11 +49,7 @@ boolean CDriverMicromedIntraEEG::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
-
-	if(m_bInitialized)
-	{
-		return false;
-	}
+	if(m_rDriverContext.isConnected()) { return false; }
 
 	// Initialize var for connection
 	uint32 l_ui32Listen = 0;
@@ -63,13 +58,13 @@ boolean CDriverMicromedIntraEEG::initialize(
 	m_pConnectionServer=Socket::createConnectionServer();
 	if (m_pConnectionServer)
 	{
-		cout <<"> Server is on " << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Trace <<"> Server is on \n";
 		// Server start listening on defined port
 		l_ui32Listen = m_pConnectionServer->listen(m_ui32ServerHostPort);
 
 		if (l_ui32Listen)
 		{
-			cout <<"> Server is listening on port : " <<  m_ui32ServerHostPort << std::endl;
+			m_rDriverContext.getLogManager() << LogLevel_Trace <<"> Server is listening on port : " <<  m_ui32ServerHostPort << "\n";
 			// Accept new client
 			m_pConnection=m_pConnectionServer->accept();
 
@@ -88,23 +83,23 @@ boolean CDriverMicromedIntraEEG::initialize(
 
 				l_ui32Received += l_ui32Result;
 				m_pStructHeader += l_ui32Result;
-				cout << "	> Receiving Header...." << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Trace << "> Receiving Header....\n";
 			}
 
 			// Verify header validity
 			if (strcmp(m_structHeader.fixCode,"MICM"))
 			{
-				cout << "Header received not in correct form : pb with fixCode" << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with fixCode\n";
 				return false;
 			}
 			if (m_structHeader.infoType!=0)
 			{
-				cout << "Header received not in correct form : pb with infoType" << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with infoType\n";
 				return false;
 			}
 			if (m_structHeader.lenData <= 0)
 			{
-				cout << "Header received not in correct form : pb with lenData" << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with lenData\n";
 				return false;
 			}
 
@@ -122,9 +117,9 @@ boolean CDriverMicromedIntraEEG::initialize(
 
 				l_ui32Received += l_ui32Result;
 				m_pStructHeaderInfo += l_ui32Result;
-				cout << "	> Receiving Header Info..." << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Trace << "> Receiving Header Info...\n";
 			}
-			cout << "> Header received" << std::endl;
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "> Header received\n";
 
 			// Initialize vars for reception
 			l_ui32Received = 0;
@@ -142,12 +137,12 @@ boolean CDriverMicromedIntraEEG::initialize(
 
 				l_ui32Received += l_ui32Result;
 				l_pcharHdBuffer += l_ui32Result;
-				cout << "	> Receiving Header Info..." << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Trace << "> Receiving Header Info...\n";
 			}
-			cout << "> Header received" << std::endl;
-			cout << "m_structHeaderInfo.positiveInputLabel = " << m_structHeaderInfo.positiveInputLabel<< std::endl;
-			cout << "m_structHeaderInfo.negativeInputLabel = " << m_structHeaderInfo.negativeInputLabel<< std::endl;
-			cout << "SSStartOffsetCode = " << m_structHeaderInfo.SSStartOffsetCode << std::endl;
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "> Header received\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "m_structHeaderInfo.positiveInputLabel = " << m_structHeaderInfo.positiveInputLabel << "\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "m_structHeaderInfo.negativeInputLabel = " << m_structHeaderInfo.negativeInputLabel << "\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "SSStartOffsetCode = " << (uint32)m_structHeaderInfo.SSStartOffsetCode << "\n";
 			delete [] l_charHdBuffer;
 
 			// Save Header info into m_oHeader
@@ -194,40 +189,24 @@ boolean CDriverMicromedIntraEEG::initialize(
 			m_ui32IndexOut = 0;
 			m_ui32BuffDataIndex = 0;
 
-			m_bInitialized=true;
+			return true;
 		}
 	}
 
-	return m_bInitialized;
+	return false;
 }
 
 boolean CDriverMicromedIntraEEG::start(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bStarted=true;
-	return m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
+	return true;
 }
 
 boolean CDriverMicromedIntraEEG::loop(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return true; }
 
 	// Initialize vars for reception
 	uint32 l_ui32Received = 0;
@@ -244,26 +223,26 @@ boolean CDriverMicromedIntraEEG::loop(void)
 		l_ui32Received += l_ui32Result;
 		m_pStructHeader += l_ui32Result;
 	}
-	cout << "> Header received" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Header received\n";
 
-	cout << "m_structHeader.fixCode = " << m_structHeader.fixCode<< std::endl;
-	cout << "m_structHeader.infoType = " << m_structHeader.infoType<< std::endl;
-	cout << "m_structHeader.lenData = " << m_structHeader.lenData<< std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "m_structHeader.fixCode = " << m_structHeader.fixCode << "\n";
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "m_structHeader.infoType = " << m_structHeader.infoType << "\n";
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "m_structHeader.lenData = " << m_structHeader.lenData << "\n";
 
 	// Verify header validity
 	//~ if (strcmp(m_structHeader.fixCode,"MICM"))
 	//~ {
-		//~ cout << "Header received not in correct form : pb with fixCode" << std::endl;
+		//~ m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with fixCode\n";
 		//~ return false;
 	//~ }
 	if (m_structHeader.infoType!=1)
 	{
-		cout << "Header received not in correct form : pb with infoType" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with infoType\n";
 		return false;
 	}
 	if (m_structHeader.lenData <= 0)
 	{
-		cout << "Header received not in correct form : pb with lenData" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with lenData\n";
 		return false;
 	}
 
@@ -284,7 +263,7 @@ boolean CDriverMicromedIntraEEG::loop(void)
 		l_ui32Received += l_ui32Result;
 		m_pStructBuffData += l_ui32Result;
 	}
-	cout << " > Buffer of data, nb: " << m_ui32BuffDataIndex << " received" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << " > Buffer of data, nb: " << m_ui32BuffDataIndex << " received\n";
 
 	// if input flow is equal to output one
 	if (m_ui32SampleCountPerSentBlock == (uint32)m_structHeader.lenData/m_structHeaderInfo.nbOfChannels)
@@ -331,22 +310,22 @@ boolean CDriverMicromedIntraEEG::loop(void)
 					l_ui32Received += l_ui32Result;
 					m_pStructHeader += l_ui32Result;
 				}
-				cout << "	> Header received" << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Trace << "> Header received\n";
 
 				// Verify header validity
 				//~ if (strcmp(m_structHeader.fixCode,"MICM"))
 				//~ {
-					//~ cout << "Header received not in correct form : pb with fixCode" << std::endl;
+					//~ m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with fixCode\n";
 					//~ return false;
 				//~ }
 				if (m_structHeader.infoType!=1)
 				{
-					cout << "Header received not in correct form : pb with infoType" << std::endl;
+					m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with infoType\n";
 					return false;
 				}
 				if (m_structHeader.lenData <= 0)
 				{
-					cout << "Header received not in correct form : pb with lenData" << std::endl;
+					m_rDriverContext.getLogManager() << LogLevel_Error << "Header received not in correct form : pb with lenData\n";
 					return false;
 				}
 
@@ -367,7 +346,7 @@ boolean CDriverMicromedIntraEEG::loop(void)
 					l_ui32Received += l_ui32Result;
 					m_pStructBuffData += l_ui32Result;
 				}
-				cout << " > Buffer of data, nb: " << m_ui32BuffDataIndex << " received" << std::endl;
+				m_rDriverContext.getLogManager() << LogLevel_Trace << " > Buffer of data, nb: " << m_ui32BuffDataIndex << " received\n";
 
 			}
 
@@ -455,35 +434,17 @@ boolean CDriverMicromedIntraEEG::loop(void)
 
 boolean CDriverMicromedIntraEEG::stop(void)
 {
-	cout << "> Server stopped" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Server stopped\n";
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
-
-	m_bStarted=false;
-	return !m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return false; }
+	return true;
 }
 
 boolean CDriverMicromedIntraEEG::uninitialize(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bInitialized=false;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
 
 	delete [] m_pSample;
 	m_pSample=NULL;
@@ -494,7 +455,7 @@ boolean CDriverMicromedIntraEEG::uninitialize(void)
 	m_pConnectionServer->release();
 	m_pConnectionServer=NULL;
 
-	cout << "> Server disconnected" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Server disconnected\n";
 
 	return true;
 }

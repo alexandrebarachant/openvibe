@@ -6,6 +6,9 @@
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 
+#include <gtk/gtk.h>
+#include <vector>
+
 namespace OpenViBEAcquisitionServer
 {
 	class CDriverGTecGUSBamp : public OpenViBEAcquisitionServer::IDriver
@@ -34,11 +37,9 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
 		OpenViBEAcquisitionServer::CHeader m_oHeader;
 
-		OpenViBE::boolean m_bInitialized;
-		OpenViBE::boolean m_bStarted;
-
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::uint32 m_ui32DeviceIndex;
+		OpenViBE::uint32 m_ui32ActualDeviceIndex;
 		OpenViBE::uint32 m_ui32BufferSize;
 		OpenViBE::uint8* m_pBuffer;
 		OpenViBE::float32* m_pSampleTranspose;
@@ -46,6 +47,8 @@ namespace OpenViBEAcquisitionServer
 		void* m_pDevice;
 		void* m_pEvent;
 		void* m_pOverlapped;
+
+		OpenViBE::uint32 m_ui32ActualImpedanceIndex;
 	};
 };
 

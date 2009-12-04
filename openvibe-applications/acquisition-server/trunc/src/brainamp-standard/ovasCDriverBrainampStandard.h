@@ -74,8 +74,6 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBEAcquisitionServer::CHeader m_oHeader;
 
-		OpenViBE::boolean m_bInitialized;
-		OpenViBE::boolean m_bStarted;
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::float32* m_pSample;
 

@@ -28,6 +28,7 @@
 #define boolean OpenViBE::boolean
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 
 //___________________________________________________________________//
 //                                                                   //
@@ -35,8 +36,6 @@ using namespace OpenViBE;
 CDriverOpenEEGModularEEG::CDriverOpenEEGModularEEG(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
-	,m_bInitialized(false)
-	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_ui32DeviceIdentifier(uint32(-1))
 	,m_pSample(NULL)
@@ -62,10 +61,7 @@ boolean CDriverOpenEEGModularEEG::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
-	if(m_bInitialized)
-	{
-		return false;
-	}
+	if(m_rDriverContext.isConnected()) { return false; }
 
 	if(!m_oHeader.isChannelCountSet()
 	 ||!m_oHeader.isSamplingFrequencySet())
@@ -94,42 +90,25 @@ boolean CDriverOpenEEGModularEEG::initialize(
 	System::Memory::set(m_pChannelBuffer, 0, m_oHeader.getChannelCount()*sizeof(int32));
 
 	m_pCallback=&rCallback;
-	m_bInitialized=true;
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 	m_ui8LastPacketNumber=0;
 
-	// printf("ModulerEEG Device Driver initialized.\n");
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver initialized.\n";
 	return true;
 }
 
 boolean CDriverOpenEEGModularEEG::start(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	// printf("ModulerEEG Device Driver started.\n");
-	m_bStarted=true;
-	return m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver started.\n";
+	return true;
 }
 
 boolean CDriverOpenEEGModularEEG::loop(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return true; }
 
 	uint32 l_i32ReceivedSamples=0;
 	uint32 l_ui32StartTime=System::Time::getTime();
@@ -167,37 +146,20 @@ boolean CDriverOpenEEGModularEEG::loop(void)
 
 boolean CDriverOpenEEGModularEEG::stop(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
-
-	// printf("ModulerEEG Device Driver stopped.\n");
-	m_bStarted=false;
-	return !m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return false; }
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver stopped.\n";
+	return true;
 }
 
 boolean CDriverOpenEEGModularEEG::uninitialize(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bInitialized=false;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
 
 	this->closeTTY(m_i32FileDescriptor);
-	// printf("ModulerEEG Device Driver closed.\n");
+
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver closed.\n";
 
 	delete [] m_pSample;
 	m_pSample=NULL;
@@ -226,10 +188,10 @@ boolean CDriverOpenEEGModularEEG::configure(void)
 /*
 void CDriverOpenEEGModularEEG::logPacket(void)
 {
-	printf("\nPacket %d received:\n", m_ui8PacketNumber);
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "\nPacket " << m_ui8PacketNumber << " received:\n";
 	for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 	{
-		printf("Channel %d:%d\n", i+1, m_pChannelBuffer[i]);
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "Channel " << i+1 << ":" << m_pChannelBuffer[i] << "\n";
 	}
 }
 */
@@ -307,7 +269,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 
 #if defined OVAS_OS_Windows
 
-	sprintf(l_sTTYName, "\\\\.\\COM%d", ui32TTYNumber);
+	::sprintf(l_sTTYName, "\\\\.\\COM%d", ui32TTYNumber);
 	DCB dcb = {0};
 	*pFileDescriptor=::CreateFile(
 		(LPCSTR)l_sTTYName,
@@ -320,7 +282,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 
 	if(*pFileDescriptor == INVALID_HANDLE_VALUE)
 	{
-		printf("Could not open Communication Port %s for ModulerEEG Driver.\n", l_sTTYName);
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not open Communication Port " << CString(l_sTTYName) << " for ModulerEEG Driver.\n";
 		return false;
 	}
 
@@ -364,16 +326,16 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	// open ttyS<i> for i < 10, else open ttyUSB<i-10>
 	if(ui32TTYNumber<10)
 	{
-		sprintf(l_sTTYName, "/dev/ttyS%d", ui32TTYNumber);
+		::sprintf(l_sTTYName, "/dev/ttyS%d", ui32TTYNumber);
 	}
 	else
 	{
-		sprintf(l_sTTYName, "/dev/ttyUSB%d", ui32TTYNumber-10);
+		::sprintf(l_sTTYName, "/dev/ttyUSB%d", ui32TTYNumber-10);
 	}
 
 	if((*pFileDescriptor=::open(l_sTTYName, O_RDWR))==-1)
 	{
-		printf("Could not open Communication Port %s for ModulerEEG Driver.\n", l_sTTYName);
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not open Communication Port " << CString(l_sTTYName) << " for ModulerEEG Driver.\n";
 		return false;
 	}
 
@@ -381,7 +343,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	{
 		::close(*pFileDescriptor);
 		*pFileDescriptor=-1;
-		printf("terminal: tcgetattr() failed\n");
+		m_rDriverContext.getLogManager() << LogLevel_Error << "terminal: tcgetattr() failed\n";
 		return false;
 	}
 
@@ -394,7 +356,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	{
 		::close(*pFileDescriptor);
 		*pFileDescriptor=-1;
-		printf("terminal: tcsetattr() failed\n");
+		m_rDriverContext.getLogManager() << LogLevel_Error << "terminal: tcsetattr() failed\n";
 		return false;
 	}
 

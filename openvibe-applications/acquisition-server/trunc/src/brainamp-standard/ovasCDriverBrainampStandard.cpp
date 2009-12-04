@@ -12,6 +12,7 @@
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace std;
 
 //___________________________________________________________________//
@@ -23,8 +24,6 @@ CDriverBrainampStandard::CDriverBrainampStandard(IDriverContext& rDriverContext)
 	,m_pConnectionClient(NULL)
 	,m_sServerHostName("localhost")
 	,m_ui32ServerHostPort(51244)
-	,m_bInitialized(false)
-	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
 {
@@ -46,10 +45,7 @@ boolean CDriverBrainampStandard::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
-	if(m_bInitialized)
-	{
-		return false;
-	}
+	if(m_rDriverContext.isConnected()) { return false; }
 
 	// Initialize GUID value
 	DEFINE_GUID(GUID_RDAHeader,
@@ -71,12 +67,12 @@ boolean CDriverBrainampStandard::initialize(
 
 	if(!m_pConnectionClient->isConnected())
 	{
-		cout << "Connection problem! Tried 2 times without success! :(" << std::endl;
-		cout << "Verify port number and/or Hostname..." << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Connection problem! Tried 2 times without success! :(\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Verify port number and/or Hostname...\n";
 		return false;
 	}
 
-	cout << "> Client connected" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Client connected\n";
 
 	// Initialize vars for reception
 	m_pStructRDA_MessageHeader = NULL;
@@ -101,22 +97,22 @@ boolean CDriverBrainampStandard::initialize(
 	// Check for correct header GUID.
 	if (!COMPARE_GUID(l_structRDA_MessageHeader.guid, GUID_RDAHeader))
 	{
-		cout << "GUID received is not correct!" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "GUID received is not correct!\n";
 		return false;
 	}
 
 	// Check for correct header nType
 	if (l_structRDA_MessageHeader.nType !=1)
 	{
-		cout << "First Message received is not an header!" << std::endl;
-		cout << "Try to reconnect...." << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "First Message received is not an header!\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Try to reconnect....\n";
 		return false;
 	}
 
 	// Retrieve rest of data
 	if (!(*(&m_pStructRDA_MessageHeader) = (RDA_MessageHeader*)malloc(l_structRDA_MessageHeader.nSize)))
 	{
-		cout << "Couldn't allocate memory" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't allocate memory\n";
 		return false;
 	}
 	else
@@ -140,7 +136,7 @@ boolean CDriverBrainampStandard::initialize(
 	m_pStructRDA_MessageStart = NULL;
 	m_pStructRDA_MessageStart = (RDA_MessageStart*)m_pStructRDA_MessageHeader;
 
-	cout << "> Header received" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Header received\n";
 
 	// Save Header info into m_oHeader
 	//m_oHeader.setExperimentIdentifier();
@@ -189,40 +185,22 @@ boolean CDriverBrainampStandard::initialize(
 	m_ui32DataOffset =0;
 	m_ui32MarkerCount =0;
 	m_ui32NumberOfMarkers = 0;
-	m_bInitialized=true;
 
-	return m_bInitialized;
+	return true;
 }
 
 boolean CDriverBrainampStandard::start(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bStarted=true;
-
-	return m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
+	return true;
 
 }
 
 boolean CDriverBrainampStandard::loop(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return true; }
 
 	DEFINE_GUID(GUID_RDAHeader,
 		1129858446, 51606, 19590, char(175), char(74), char(152), char(187), char(246), char(201), char(20), char(80)
@@ -251,14 +229,12 @@ boolean CDriverBrainampStandard::loop(void)
 	// Check for correct header nType
 	if (l_structRDA_MessageHeader.nType == 1)
 	{
-		cout << "Message received is a header!" << std::endl;
-		m_bStarted = false;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Message received is a header!\n";
 		return false;
 	}
 	if (l_structRDA_MessageHeader.nType == 3)
 	{
-		cout << "Message received is a STOP!" << std::endl;
-		m_bStarted = false;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Message received is a STOP!\n";
 		return false;
 	}
 	if (l_structRDA_MessageHeader.nType !=4)
@@ -268,14 +244,14 @@ boolean CDriverBrainampStandard::loop(void)
 	// Check for correct header GUID.
 	if (!COMPARE_GUID(l_structRDA_MessageHeader.guid, GUID_RDAHeader))
 	{
-		cout << "GUID received is not correct!" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "GUID received is not correct!\n";
 		return false;
 	}
 
 	// Retrieve rest of block.
 	if (!(*(&m_pStructRDA_MessageHeader) = (RDA_MessageHeader*)malloc(l_structRDA_MessageHeader.nSize)))
 	{
-		cout << "Couldn't allocate memory" << std::endl;
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't allocate memory\n";
 		return false;
 	}
 	else
@@ -323,7 +299,7 @@ boolean CDriverBrainampStandard::loop(void)
 			char* pszType = m_pStructRDA_Marker->sTypeDesc;
 			char* pszDescription = pszType + strlen(pszType) + 1;
 
-			// cout << "Stim " << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< std::endl;
+			// m_rDriverContext.getLogManager() << LogLevel_Trace << "Stim " << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< "\n";
 
 			m_vStimulationIdentifier[i] = atoi(strtok (pszDescription,"S"));
 			m_vStimulationDate[i] = (((uint64)(m_pStructRDA_Marker->nPosition + m_ui32DataOffset)) << 32) / m_oHeader.getSamplingFrequency();
@@ -403,14 +379,12 @@ boolean CDriverBrainampStandard::loop(void)
 				// Check for correct header nType
 				if (l_structRDA_MessageHeader.nType == 1)
 				{
-					cout << "Message received is a header!" << std::endl;
-					m_bStarted = false;
+					m_rDriverContext.getLogManager() << LogLevel_Error << "Message received is a header!\n";
 					return false;
 				}
 				if (l_structRDA_MessageHeader.nType == 3)
 				{
-					cout << "Message received is a STOP!" << std::endl;
-					m_bStarted = false;
+					m_rDriverContext.getLogManager() << LogLevel_Error << "Message received is a STOP!\n";
 					return false;
 				}
 				if (l_structRDA_MessageHeader.nType !=4)
@@ -420,14 +394,14 @@ boolean CDriverBrainampStandard::loop(void)
 				// Check for correct header GUID.
 				if (!COMPARE_GUID(l_structRDA_MessageHeader.guid, GUID_RDAHeader))
 				{
-					cout << "GUID received is not correct!" << std::endl;
+					m_rDriverContext.getLogManager() << LogLevel_Error << "GUID received is not correct!\n";
 					return false;
 				}
 
 				//Retrieve rest of data
 				if (!(*(&m_pStructRDA_MessageHeader) = (RDA_MessageHeader*)malloc(l_structRDA_MessageHeader.nSize)))
 				{
-					cout << "Couldn't allocate memory" << std::endl;
+					m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't allocate memory\n";
 					return false;
 				}
 				else
@@ -478,7 +452,7 @@ boolean CDriverBrainampStandard::loop(void)
 						char* pszType = m_pStructRDA_Marker->sTypeDesc;
 						char* pszDescription = pszType + strlen(pszType) + 1;
 
-						// cout << "Stim " << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< std::endl;
+						// m_rDriverContext.getLogManager() << LogLevel_Trace << "Stim " << m_ui32MarkerCount + i + 1 << ", " << atoi(strtok (pszDescription,"S")) << ", " << m_pStructRDA_Marker->nPosition + m_ui32DataOffset<< "\n";
 
 						m_vStimulationIdentifier[i+l_ui32NumberOfMarkers] = atoi(strtok (pszDescription,"S"));
 						m_vStimulationDate[i+l_ui32NumberOfMarkers] = (((uint64)(m_pStructRDA_Marker->nPosition + m_ui32DataOffset)) << 32) / m_oHeader.getSamplingFrequency();
@@ -510,7 +484,7 @@ boolean CDriverBrainampStandard::loop(void)
 					l_ui32NumberOfMarkersToSend++;
 				}
 			}
-			// cout << "l_ui32NumberOfMarkersToSend = " << l_ui32NumberOfMarkersToSend<<endl;
+			// m_rDriverContext.getLogManager() << LogLevel_Trace << "l_ui32NumberOfMarkersToSend = " << l_ui32NumberOfMarkersToSend << "\n";
 
 			// send buffers
 			CStimulationSet l_oStimulationSet;
@@ -656,35 +630,17 @@ boolean CDriverBrainampStandard::loop(void)
 
 boolean CDriverBrainampStandard::stop(void)
 {
-	cout << "> Connection stopped" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Connection stopped\n";
 
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(!m_bStarted)
-	{
-		return false;
-	}
-
-	m_bStarted=false;
-	return !m_bStarted;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(!m_rDriverContext.isStarted()) { return false; }
+	return true;
 }
 
 boolean CDriverBrainampStandard::uninitialize(void)
 {
-	if(!m_bInitialized)
-	{
-		return false;
-	}
-
-	if(m_bStarted)
-	{
-		return false;
-	}
-
-	m_bInitialized=false;
+	if(!m_rDriverContext.isConnected()) { return false; }
+	if(m_rDriverContext.isStarted()) { return false; }
 
 	if (m_pcharStructRDA_MessageHeader!=NULL) m_pcharStructRDA_MessageHeader=NULL;
 	if (m_pStructRDA_MessageHeader!=NULL) m_pStructRDA_MessageHeader= NULL;
@@ -701,7 +657,7 @@ boolean CDriverBrainampStandard::uninitialize(void)
 	m_pConnectionClient->close();
 	m_pConnectionClient->release();
 	m_pConnectionClient=NULL;
-	cout << "> Client disconnected" << std::endl;
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Client disconnected\n";
 
 	return true;
 }
