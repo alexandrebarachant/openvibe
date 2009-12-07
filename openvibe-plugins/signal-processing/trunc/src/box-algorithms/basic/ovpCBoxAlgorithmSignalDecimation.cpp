@@ -80,7 +80,7 @@ boolean CBoxAlgorithmSignalDecimation::process(void)
 				this->getLogManager() << LogLevel_Error << "Input signal sampling frequency " << l_ui64SourceSamplingFrequency << " is not a multiple of the decimation factor " << m_i64DecimationFactor << "\n";
 				return false;
 			}
-			if(l_ui64SourceSamplingFrequency%l_ui64SourceSampleCountPerBuffer != 0)
+			if(l_ui64SourceSampleCountPerBuffer%m_i64DecimationFactor != 0)
 			{
 				this->getLogManager() << LogLevel_ImportantWarning << "Input signal sample count per buffer " << l_ui64SourceSampleCountPerBuffer << " is not a multiple of the decimation factor " << m_i64DecimationFactor << "\n";
 				// return false;
