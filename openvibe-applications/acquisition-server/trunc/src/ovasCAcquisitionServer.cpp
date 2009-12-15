@@ -284,14 +284,14 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B(*m_pDriverContext));
 #endif
 	m_vDriver.push_back(new CDriverOpenEEGModularEEG(*m_pDriverContext));
-	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
-	{
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 		m_vDriver.push_back(new CDriverGTecGUSBamp(*m_pDriverContext));
 #endif
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 		m_vDriver.push_back(new CDriverBrainProductsVAmp(*m_pDriverContext));
 #endif
+	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
+	{
 		m_vDriver.push_back(new CDriverBrainampStandard(*m_pDriverContext));
 		m_vDriver.push_back(new CDriverMicromedIntraEEG(*m_pDriverContext));
 		m_vDriver.push_back(new CDriverCtfVsmMeg(*m_pDriverContext));

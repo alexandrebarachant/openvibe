@@ -17,8 +17,7 @@
         <child>
           <widget class="GtkLabel" id="label_title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Brain Products V-Amp 16
-FirstAmp Driver</property>
+            <property name="label" translatable="yes">Brain Products V-Amp</property>
             <property name="justify">center</property>
           </widget>
           <packing>

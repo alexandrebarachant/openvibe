@@ -35,7 +35,7 @@ CDriverBrainampStandard::~CDriverBrainampStandard(void)
 
 const char* CDriverBrainampStandard::getName(void)
 {
-	return "Brainamp Standard (through Vision Recorder)";
+	return "Brain Products Brainamp Standard (through Vision Recorder)";
 }
 
 //___________________________________________________________________//

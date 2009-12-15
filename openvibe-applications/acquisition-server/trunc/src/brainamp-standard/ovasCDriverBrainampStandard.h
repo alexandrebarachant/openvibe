@@ -10,16 +10,6 @@
 
 #include <socket/IConnectionClient.h>
 
-#ifndef GUID
-typedef struct
-{
-	OpenViBE::uint32  Data1;
-    unsigned short Data2;
-    unsigned short Data3;
-    unsigned char  Data4[8];
-} GUID;
-#endif
-
 #ifndef DEFINE_GUID
 	#define DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
 		GUID name = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
@@ -91,6 +81,15 @@ namespace OpenViBEAcquisitionServer
 
 		#pragma pack(push)
 		#pragma pack(1)
+
+		typedef struct
+		{
+			OpenViBE::uint32  Data1;
+			unsigned short Data2;
+			unsigned short Data3;
+			unsigned char  Data4[8];
+		} GUID;
+
 		struct RDA_Marker
 		//; A single marker in the marker array of RDA_MessageData
 		{

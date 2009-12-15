@@ -14,6 +14,7 @@
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace std;
 
 //___________________________________________________________________//

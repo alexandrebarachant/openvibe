@@ -15,6 +15,7 @@
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace std;
 
 #define boolean OpenViBE::boolean
@@ -22,8 +23,9 @@ using namespace std;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverBrainProductsVAmp::CDriverBrainProductsVAmp(void)
-	:m_pCallback(NULL)
+CDriverBrainProductsVAmp::CDriverBrainProductsVAmp(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pCallback(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
@@ -351,7 +353,7 @@ boolean CDriverBrainProductsVAmp::isConfigurable(void)
 
 boolean CDriverBrainProductsVAmp::configure(void)
 {
-	CConfigurationBrainProductsVAmp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp.glade", &m_oHeader); // the specific header is passed into the specific configuration
+	CConfigurationBrainProductsVAmp m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp.glade", &m_oHeader); // the specific header is passed into the specific configuration
 
 	if(!m_oConfiguration.configure(*(m_oHeader.getBasicHeader()))) // the basic configure will use the basic header
 	{

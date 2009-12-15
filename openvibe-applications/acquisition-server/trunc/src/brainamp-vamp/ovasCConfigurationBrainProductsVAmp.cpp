@@ -7,6 +7,7 @@
 #define OVAS_ConfigureGUIFastModeSettings   "../share/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp-FastModeSettings.glade"
 
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBEAcquisitionServer;
 using namespace std;
 
@@ -72,8 +73,9 @@ void initFastModeSettingsComboBox(GtkWidget * comboBox, uint32 activeValue)
 
 //____________________________________________________________________________________
 
-CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(const char* sGladeXMLFileName, CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp)
+CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(IDriverContext& rDriverContext, const char* sGladeXMLFileName, CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp)
 	:CConfigurationGlade(sGladeXMLFileName)
+	,m_rDriverContext(rDriverContext)
 	,m_sGladeXMLFastModeSettingsFileName(OVAS_ConfigureGUIFastModeSettings)
 	,m_pHeaderBrainProductsVAmp(pHeaderBrainProductsVAmp)
 {
@@ -138,11 +140,11 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 		}
 	}
 
-	m_rDriverContext.getLogManger() << LogLevel_Trace << "VAmp Configuration: " << l_uint32DeviceCount << " device(s) connected.\n";
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "VAmp Configuration: " << l_uint32DeviceCount << " device(s) connected.\n";
 
 	if(l_uint32DeviceCount != 0 )
 	{
-		m_rDriverContext.getLogManger() << LogLevel_Trace << "VAmp Configuration: Device(s) information :\n";
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "VAmp Configuration: Device(s) information :\n";
 
 		t_faInformation l_oInformation;
 		char l_sBuffer[1024];
@@ -152,7 +154,7 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 		{
 			int32 l_int32DeviceId = faGetId(i);
 			faGetInformation(l_int32DeviceId,  &l_oInformation);
-			m_rDriverContext.getLogManger() << LogLevel_Trace << "     device#" << i << " > Model(" << CString(l_oInformation.Model == 1 ? "VAmp 16" : "VAmp 8") << ") | SN(" <<  l_oInformation.SerialNumber << ")\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "     device#" << i << " > Model(" << CString(l_oInformation.Model == 1 ? "VAmp 16" : "VAmp 8") << ") | SN(" <<  l_oInformation.SerialNumber << ")\n";
 			::sprintf(l_sBuffer, "device#%u", i);
 			gtk_combo_box_append_text(l_pComboBox, l_sBuffer);
 		}
@@ -266,7 +268,7 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 		}
 
 		m_pHeaderBrainProductsVAmp->setPairCount(l_uint32PairCount);
-		m_rDriverContext.getLogManger() << LogLevel_Trace << l_uint32PairCount << " channel pairs used.\n";
+		m_rDriverContext.getLogManager() << LogLevel_Trace << l_uint32PairCount << " channel pairs used.\n";
 
 		// we need to rename the 4 first channels, in order to match the pairs
 		vector<string> l_vPairNames;
