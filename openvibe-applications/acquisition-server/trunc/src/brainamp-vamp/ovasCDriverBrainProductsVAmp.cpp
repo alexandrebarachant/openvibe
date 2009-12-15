@@ -26,8 +26,6 @@ using namespace std;
 CDriverBrainProductsVAmp::CDriverBrainProductsVAmp(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
-	,m_bInitialized(false)
-	,m_bStarted(false)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_ui32TotalSampleCount(0)
 	,m_pSample(NULL)
@@ -68,7 +66,7 @@ boolean CDriverBrainProductsVAmp::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
-	if(m_bInitialized)
+	if(m_rDriverContext.isConnected())
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] VAmp Driver: Driver already initialized.\n";
 		return false;
@@ -172,20 +170,19 @@ boolean CDriverBrainProductsVAmp::initialize(
 	//__________________________________
 	// Saves parameters
 	m_pCallback=&rCallback;
-	m_bInitialized=true;
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
 
-	return m_bInitialized;
+	return true;
 }
 
 boolean CDriverBrainProductsVAmp::start(void)
 {
-	if(!m_bInitialized)
+	if(!m_rDriverContext.isConnected())
 	{
 		return false;
 	}
 
-	if(m_bStarted)
+	if(m_rDriverContext.isStarted())
 	{
 		return false;
 	}
@@ -197,23 +194,20 @@ boolean CDriverBrainProductsVAmp::start(void)
 		m_rDriverContext.getLogManager() << LogLevel_Error << "[START] VAmp Driver: BMP load failed.\n";
 	}
 
-	//____________________________
-
-	m_bStarted=true;
-	return m_bStarted;
+	return true;
 
 }
 
 boolean CDriverBrainProductsVAmp::loop(void)
 {
-	if(!m_bInitialized)
+	if(!m_rDriverContext.isConnected())
 	{
 		return false;
 	}
 
-	if(!m_bStarted)
+	if(!m_rDriverContext.isStarted())
 	{
-		return false;
+		return true;
 	}
 
 	//____________________________
@@ -305,36 +299,33 @@ boolean CDriverBrainProductsVAmp::loop(void)
 boolean CDriverBrainProductsVAmp::stop(void)
 {
 
-	if(!m_bInitialized)
+	if(!m_rDriverContext.isConnected())
 	{
 		return false;
 	}
 
-	if(!m_bStarted)
+	if(!m_rDriverContext.isStarted())
 	{
 		return false;
 	}
 
-	m_bStarted=false;
-	return !m_bStarted;
+	return true;
 }
 
 boolean CDriverBrainProductsVAmp::uninitialize(void)
 {
-	if(!m_bInitialized)
+	if(!m_rDriverContext.isConnected())
 	{
 		return false;
 	}
 
-	if(m_bStarted)
+	if(m_rDriverContext.isStarted())
 	{
 		return false;
 	}
 
 	faStop(m_oHeader.getDeviceId());
 	faClose(m_oHeader.getDeviceId());
-
-	m_bInitialized=false;
 
 	delete [] m_pSample;
 	m_pSample=NULL;
