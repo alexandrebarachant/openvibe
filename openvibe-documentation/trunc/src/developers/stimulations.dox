@@ -6,7 +6,7 @@
 
 \dontinclude "openvibe-toolkit/ovtk_defines.h"
 \skip OVTK_StimulationId_ExperimentStart
-\until OVTK_StimulationId_Rest
+\until OVTK_StimulationId_NonTarget
 
 \section Doc_Stimulations_GDF GDF stimulation codes translated into OpenViBE
 
