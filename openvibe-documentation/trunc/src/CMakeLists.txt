@@ -11,18 +11,26 @@ ADD_CUSTOM_TARGET(${PROJECT_NAME})
 
 # look for doxygen, if not present, no need to generate documentation
 FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin NO_DEFAULT_PATH)
-FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin)
+FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin "C:/Program Files/doxygen/bin")
 
 IF(doxygen_bin)
 	MESSAGE(STATUS "  Found doxygen...")
 
 	# intializes the variable that will be used in the doxyfile for input
 	# directories
-	SET(ov_doxy_input "$ENV{OpenViBE_base}/cmake-modules")
+	STRING(REPLACE "\\" "/" ov_doxy_input "\"$ENV{OpenViBE_base}/cmake-modules\"")
 
 	# intializes the variable that will contain the list of resource files to
 	# copy to the target directory
 	SET(resource_files "")
+
+	# builds a valid "build order" variable for both linux and windows
+	IF(WIN32)
+		FILE(READ "$ENV{OpenViBE_base}/scripts/OpenViBE_build_order.txt" OpenViBE_Build_Order)
+		STRING(REPLACE "\\" "/" OpenViBE_Build_Order ${OpenViBE_Build_Order})
+	ELSE(WIN32)
+		SET(OpenViBE_Build_Order $ENV{OpenViBE_build_order})
+	ENDIF(WIN32)
 
 	# iterates on each project we have
 	#
@@ -31,8 +39,9 @@ IF(doxygen_bin)
 	# parse them to get |ov[a-zA-Z0-9_]*_begin| or |ov[a-zA-Z0-9_]*_end|
 	# tokens. This tokens will later be included in the skeleton doxumentation
 	# files (.dox-skeleton)
-	STRING(REPLACE "\n" ";" currrent_projects "$ENV{OpenViBE_build_order}")
+	STRING(REPLACE "\n" ";" currrent_projects "${OpenViBE_Build_Order}")
 	FOREACH(current_project ${currrent_projects})
+		STRING(REGEX REPLACE " +$" "" current_project ${current_project})
 		SET(current_project_src "${current_project}/src")
 
 		# updates the doxyfile variable for input directories
@@ -170,6 +179,12 @@ IF(doxygen_bin)
 		ENDFOREACH(current_resource)
 	ENDIF(resource_files)
 
+	# the final doxyfile filename is generated, platform compliantly
+	SET(ov_doxy_final "${PROJECT_SOURCE_DIR}/src/doxyfile")
+	IF(WIN32)
+		STRING(REPLACE "/" "\\" ov_doxy_final ${ov_doxy_final})
+	ENDIF(WIN32)
+
 	# these two lines configure the variables used to configure the doxyfile
 	SET(ov_doxy_strip_from_path ${ov_doxy_input})
 	SET(ov_doxy_version ${PROJECT_VERSION})
@@ -177,14 +192,15 @@ IF(doxygen_bin)
 	# then the doxyfile is configured
 	CONFIGURE_FILE(
 		doxyfile-skeleton
-		${PROJECT_SOURCE_DIR}/src/doxyfile
+		${ov_doxy_final}
+		# ${PROJECT_SOURCE_DIR}/src/doxyfile
 		@ONLY)
 
 	# and a post-build command is added in order to run doxygen
 	ADD_CUSTOM_COMMAND(
 		TARGET ${PROJECT_NAME}
 		PRE_BUILD
-		COMMAND ${doxygen_bin} ${PROJECT_SOURCE_DIR}/src/doxyfile
+		COMMAND "${doxygen_bin}" "${ov_doxy_final}"
 		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/doc"
 		COMMENT "      --->   Running doxygen..."
 		VERBATIM)

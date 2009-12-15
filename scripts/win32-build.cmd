@@ -31,10 +31,16 @@ REM ############################################################################
 set saved_directory=%CD%
 set target_dist=..\dist
 
+echo.
+echo _______________________________________________________________________________
+echo.
+
 mkdir ..\local-tmp 2> NULL
 for /F %%s in (%OpenViBE_build_order%) do (
 	set OpenViBE_project_name_full=%%s
 	set OpenViBE_project_name_rel=!OpenViBE_project_name_full:%OpenViBE_base%\=!
+	echo Configuring and building !OpenViBE_project_name_rel! ...
+	echo.
 
 	mkdir ..\local-tmp\!OpenViBE_project_name_rel! 2> NULL
 	cd ..\local-tmp\!OpenViBE_project_name_rel!
@@ -45,13 +51,17 @@ for /F %%s in (%OpenViBE_build_order%) do (
 	nmake
 	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
-	REM nmake OpenViBE-documentation
+	nmake OpenViBE-documentation 2> NULL
 	REM IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
 	nmake install
 	REM IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
 	cd %saved_directory%
+
+	echo.
+	echo _______________________________________________________________________________
+	echo.
 )
 
 echo.
@@ -61,10 +71,10 @@ echo.
 REM #######################################################################################
 
 echo.
-echo Copying files to 'dist' folder, this can take a few seconds...
+echo Installing files to 'dist' folder, this can take a few seconds - maybe a few minutes...
 echo.
 
-rmdir /s /q %target_dist%         > NULL 2<&1
+REM rmdir /s /q %target_dist%         > NULL 2<&1
 
 mkdir %target_dist%               > NULL 2<&1
 mkdir %target_dist%\bin           > NULL 2<&1
@@ -106,17 +116,22 @@ echo cd bin                                                  >> %target_dist%\te
 echo OpenViBE-plugin-inspector-dynamic.exe                   >> %target_dist%\test-plugin-inspector.cmd
 echo pause                                                   >> %target_dist%\test-plugin-inspector.cmd
 
+echo.
 for /F %%s in (%OpenViBE_build_order%) do (
-	xcopy /q /s %%s\bin\*.*            %target_dist%\bin     > NULL 2<&1
-	xcopy /q /s %%s\include\*.*        %target_dist%\include > NULL 2<&1
-	xcopy /q /s %%s\lib\*.*            %target_dist%\lib     > NULL 2<&1
-	xcopy /q /s %%s\share\*.*          %target_dist%\share   > NULL 2<&1
-	xcopy /q /s %%s\etc\*.*            %target_dist%\etc     > NULL 2<&1
-	xcopy /q /s %%s\doc\*.*            %target_dist%\doc     > NULL 2<&1
+	set OpenViBE_project_name_full=%%s
+	set OpenViBE_project_name_rel=!OpenViBE_project_name_full:%OpenViBE_base%\=!
+	echo ## Installing !OpenViBE_project_name_rel! ...
+	xcopy /q /e /y /c %%s\bin\*.*         %target_dist%\bin     >> NULL
+	xcopy /q /e /y %%s\include\*.*        %target_dist%\include >> NULL
+	xcopy /q /e /y %%s\lib\*.*            %target_dist%\lib     >> NULL
+	xcopy /q /e /y %%s\share\*.*          %target_dist%\share   >> NULL
+	xcopy /q /e /y %%s\etc\*.*            %target_dist%\etc     >> NULL
+	xcopy /q /e /y %%s\doc\*.*            %target_dist%\doc     >> NULL
 )
+echo.
 
 echo.
-echo Copy successfully completed !
+echo Install completed !
 echo.
 
 goto terminate_success
