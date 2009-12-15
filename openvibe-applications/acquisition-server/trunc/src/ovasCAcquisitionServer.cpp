@@ -7,6 +7,7 @@
 #include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
+#include "brainamp-vamp/ovasCDriverBrainProductsVAmp.h"
 // #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -25,6 +26,8 @@
 #include <cstring>
 
 #include <cassert>
+
+#define boolean OpenViBE::boolean
 
 namespace
 {
@@ -285,6 +288,9 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 	{
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 		m_vDriver.push_back(new CDriverGTecGUSBamp(*m_pDriverContext));
+#endif
+#if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
+		m_vDriver.push_back(new CDriverBrainProductsVAmp(*m_pDriverContext));
 #endif
 		m_vDriver.push_back(new CDriverBrainampStandard(*m_pDriverContext));
 		m_vDriver.push_back(new CDriverMicromedIntraEEG(*m_pDriverContext));

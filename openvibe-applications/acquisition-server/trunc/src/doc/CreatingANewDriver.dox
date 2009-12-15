@@ -250,6 +250,9 @@
  * be tuned to match your needs for any specific driver and also could be
  * used to test your §OpenViBE§ platform.
  *
+ * Now that you understand the structure of a driver, you can go to the next step: 
+ * \ref Doc_ConfiguringANewDriver. 
+ *
  * \section Doc_CreatingANewDriver_Support Support
  *
  * In case you have problem in developing the driver, feel free to contact
