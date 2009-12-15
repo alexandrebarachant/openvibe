@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <functional>
 #include <cctype>
+#include <cstring>
 
 #include <cassert>
 
