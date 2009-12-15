@@ -186,6 +186,23 @@ AcquisitionServer_ShowUnstable = true
  * First, make sure you followed the install procedure described in \ref Doc_Install . If problems persist, you can get some help from
  * the people involved in this project. See \ref Doc_Contact for how to contact us.
  *
+ * \section Doc_FAQ_CompileTime Compiling OpenViBE is far too long especially on Windows, what could I do to speed it up ?
+ *
+ * You have to build the whole software at least once...
+ *
+ * Then suppose you are working on a classification plugin, simply edit your <i>win32-init_env_command.cmd</i> or
+ * <i>linux-init_env_command</i> and remove all the projects of the build order (at the end of the file) except
+ * the openvibe classification plugin project.
+ *
+ * Now when you call <i>win32-build.cmd</i> or <i>linux-build</i>, only your project will be checked, compiled
+ * and installed.
+ *
+ * <b>Warning</b>: You should use this functionnality with care because it won't guarantee a perfect behavior.
+ * For example, if you are modifying the toolkit, all the projects depending on the toolkit will have to be rebuilt.
+ * Additionnaly, if you clean everything with <i>win32-clean.cmd</i> or <i>linux-clean</i>, you will have to reactivate
+ * all the projects back in <i>win32-init_env_command.cmd</i> or <i>linux-init_env_command</i> to have a new working
+ * environment. You've been warned, use with care !
+ *
  * \section Doc_FAQ_BranchChanging The branch changes are not considered at compilation time, why is that ?
  *
  * Don't forget to clean everything before editing your <i>win32-init_env_command.cmd</i> or <i>linux-init_env_command</i>
@@ -276,7 +293,7 @@ AcquisitionServer_ShowUnstable = true
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 22!)
+ * this question currently is 23!)
  *
  */
 
