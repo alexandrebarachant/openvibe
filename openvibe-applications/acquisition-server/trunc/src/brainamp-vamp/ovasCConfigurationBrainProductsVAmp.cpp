@@ -46,24 +46,26 @@ static void gtk_combo_box_set_active_text(::GtkComboBox* pComboBox, const gchar*
 
 // Inits the combo box, and sets the active value
 // Warning : active value must be 7 8 9 10 or -1.
-void initFastModeSettingsComboBox(GtkWidget * comboBox, uint32 activeValue)
+void initFastModeSettingsComboBox(GtkWidget * comboBox, uint32 activeValue, boolean initComboBox=true)
 {
-	//-1
-	char l_sPairValue[1024];
-	::sprintf(l_sPairValue, "%i", (int)-1);
-	gtk_combo_box_append_text(
-		GTK_COMBO_BOX(comboBox),
-		l_sPairValue);
-	//7-10
-	for(uint32 i = 7;i<11;i++)
+	if(initComboBox)
 	{
+		//-1
 		char l_sPairValue[1024];
-		::sprintf(l_sPairValue, "%i", (int)i);
+		::sprintf(l_sPairValue, "%i", (int)-1);
 		gtk_combo_box_append_text(
 			GTK_COMBO_BOX(comboBox),
 			l_sPairValue);
+		//7-10
+		for(uint32 i = 7;i<11;i++)
+		{
+			char l_sPairValue[1024];
+			::sprintf(l_sPairValue, "%i", (int)i);
+			gtk_combo_box_append_text(
+				GTK_COMBO_BOX(comboBox),
+				l_sPairValue);
+		}
 	}
-
 	char l_sPairActiveValue[1024];
 	::sprintf(l_sPairActiveValue, "%i", (int)activeValue);
 	gtk_combo_box_set_active_text(
@@ -181,33 +183,6 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 	initFastModeSettingsComboBox(m_pPair4PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[3]);
 	initFastModeSettingsComboBox(m_pPair4NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[3]);
 
-	/*gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair1PositiveInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[0]);
-	gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair1NegativeInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[0]);
-
-	gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair2PositiveInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[1]);
-	gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair2NegativeInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[1]);
-
-	gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair3PositiveInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[2]);
-	gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair3NegativeInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[2]);
-
-	gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair4PositiveInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[3]);
-	gtk_spin_button_set_value(
-			GTK_SPIN_BUTTON(m_pPair4NegativeInputs),
-			m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[3]);*/
 
 	return true;
 }
@@ -379,34 +354,17 @@ void CConfigurationBrainProductsVAmp::buttonFastModeSettingsCB(void)
 					GTK_COMBO_BOX(m_pAcquisitionMode), (m_pHeaderBrainProductsVAmp->getDataMode() == dmNormal ? "Normal" : "Fast"));
 
 				//Settings
-				t_faDataModeSettings l_tFastModeSettings = m_pHeaderBrainProductsVAmp->getFastModeSettings();
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair1PositiveInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsPos[0]);
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair1NegativeInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsNeg[0]);
+				
+				initFastModeSettingsComboBox(m_pPair1PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[0],false);
+				initFastModeSettingsComboBox(m_pPair1NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[0],false);
+				initFastModeSettingsComboBox(m_pPair2PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[1],false);
+				initFastModeSettingsComboBox(m_pPair2NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[1],false);
+				initFastModeSettingsComboBox(m_pPair3PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[2],false);
+				initFastModeSettingsComboBox(m_pPair3NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[2],false);
+				initFastModeSettingsComboBox(m_pPair4PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[3],false);
+				initFastModeSettingsComboBox(m_pPair4NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[3],false);
 
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair2PositiveInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsPos[1]);
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair2NegativeInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsNeg[1]);
-
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair3PositiveInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsPos[2]);
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair3NegativeInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsNeg[2]);
-
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair4PositiveInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsPos[3]);
-				gtk_spin_button_set_value(
-						GTK_SPIN_BUTTON(m_pPair4NegativeInputs),
-						l_tFastModeSettings.Mode20kHz4Channels.ChannelsNeg[3]);
+			
 				break;
 			}
 		}
