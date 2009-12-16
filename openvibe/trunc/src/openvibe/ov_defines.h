@@ -121,6 +121,7 @@
 #define OV_AttributeId_Box_SettingOverrideFilename           OpenViBE::CIdentifier(0x8D21FF41, 0xDF6AFE7E)
 #define OV_AttributeId_Box_InitialPrototypeHashValue         OpenViBE::CIdentifier(0x4E7B798A, 0x183BEAFB)
 #define OV_AttributeId_Box_ComputationTimeLastSecond         OpenViBE::CIdentifier(0xC46B3D00, 0x3E0454E1)
+#define OV_AttributeId_Box_Priority                          OpenViBE::CIdentifier(0xAC367A9C, 0x2DA95ABE)
 
 #define OV_AttributeId_Box_FlagCanAddInput                   OpenViBE::CIdentifier(0xFBA64161, 0x65304E21)
 #define OV_AttributeId_Box_FlagCanModifyInput                OpenViBE::CIdentifier(0x527AD68D, 0x16D746A0)
