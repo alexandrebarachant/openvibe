@@ -122,7 +122,7 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pLogManager->activate(true);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring file log listener\n";
-	m_pLogListenerFile=new CLogListenerFile(*this, rApplicationName, CString("openvibe-")+rApplicationName+CString(".log"));
+	m_pLogListenerFile=new CLogListenerFile(*this, rApplicationName, CString("../log/openvibe-")+rApplicationName+CString(".log"));
 	m_pLogListenerFile->activate(true);
 	this->getLogManager().addListener(m_pLogListenerFile);
 

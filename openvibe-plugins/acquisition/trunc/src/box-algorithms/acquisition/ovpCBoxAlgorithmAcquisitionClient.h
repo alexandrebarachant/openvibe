@@ -51,8 +51,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Acquisition client"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Performs epoching near a stimulation"); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("A generic network based acquisition client"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This algorithm waits for EEG data from the network and distributes it into the scenario"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Acquisition"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
@@ -67,7 +67,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addOutput ("Signal strea",                OV_TypeId_Signal);
 				rBoxAlgorithmPrototype.addOutput ("Stimulations",                OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput ("Channel localisation",        OV_TypeId_ChannelLocalisation);
-				rBoxAlgorithmPrototype.addSetting("Acquisition server hostname", OV_TypeId_String,  "localhost");
+				rBoxAlgorithmPrototype.addSetting("Acquisition server hostname", OV_TypeId_String,  "${AcquisitionServer_HostName}");
 				rBoxAlgorithmPrototype.addSetting("Acquisition server port",     OV_TypeId_Integer, "1024");
 				return true;
 			}

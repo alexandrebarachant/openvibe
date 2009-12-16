@@ -62,7 +62,7 @@ boolean CBoxAlgorithmAcquisitionClient::processClock(IMessageClock& rMessageCloc
 		CString l_sSettingValue;
 
 		getStaticBoxContext().getSettingValue(0, l_sSettingValue);
-		CString l_sServerName=l_sSettingValue;
+		CString l_sServerName=this->getConfigurationManager().expand(l_sSettingValue);
 
 		getStaticBoxContext().getSettingValue(1, l_sSettingValue);
 		uint32 l_ui32ServerPort=::atoi(l_sSettingValue.toASCIIString());
@@ -76,7 +76,7 @@ boolean CBoxAlgorithmAcquisitionClient::processClock(IMessageClock& rMessageCloc
 		}
 	}
 
-	if(m_pConnectionClient && m_pConnectionClient->isReadyToReceive() && rMessageClock.getTime()>m_ui64LastChunkEndTime+op_ui64BufferDuration)
+	if(m_pConnectionClient && m_pConnectionClient->isReadyToReceive() && rMessageClock.getTime()>m_ui64LastChunkEndTime)
 	{
 		getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	}

@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 //___________________________________________________________________//
 //                                                                   //
@@ -69,7 +70,7 @@ public:
 		// settings from external file
 		if(rBox.hasAttribute(OVD_AttributeId_SettingOverrideFilename))
 		{
-			CString l_sSettingOverrideFilename=rBox.getAttributeValue(OVD_AttributeId_SettingOverrideFilename);;
+			CString l_sSettingOverrideFilename=rBox.getAttributeValue(OVD_AttributeId_SettingOverrideFilename);
 			CString l_sSettingOverrideFilenameFinal=rObjectVisitorContext.getConfigurationManager().expand(l_sSettingOverrideFilename);
 
 			// message
@@ -229,15 +230,20 @@ boolean CScheduler::initialize(void)
 	CIdentifier l_oBoxIdentifier;
 	while((l_oBoxIdentifier=m_pScenario->getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
 	{
+		int l_iPriority=0;
+		const IBox* l_pBox=m_pScenario->getBoxDetails(l_oBoxIdentifier);
 		CSimulatedBox* l_pSimulatedBox=new CSimulatedBox(getKernelContext(), *this);
 		l_pSimulatedBox->setScenarioIdentifier(m_oScenarioIdentifier);
 		l_pSimulatedBox->setBoxIdentifier(l_oBoxIdentifier);
-		m_vSimulatedBox[l_oBoxIdentifier]=l_pSimulatedBox;
+		::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_Priority).toASCIIString(), "%i", &l_iPriority);
+		m_vSimulatedBox[std::make_pair(-l_iPriority, l_oBoxIdentifier)]=l_pSimulatedBox;
 		m_vSimulatedBoxChrono[l_oBoxIdentifier].reset(static_cast<uint32>(m_ui64Frequency));
 	}
 
-	for(map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
+	for(map < pair < int32, CIdentifier >, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
 	{
+		const IBox* l_pBox=m_pScenario->getBoxDetails(itSimulatedBox->first.second);
+		this->getLogManager() << LogLevel_Trace << "Scheduled box : id = " << itSimulatedBox->first.second << " priority = " << -itSimulatedBox->first.first << " name = " << l_pBox->getName() << "\n";
 		if(itSimulatedBox->second)
 		{
 			itSimulatedBox->second->initialize();
@@ -263,7 +269,7 @@ boolean CScheduler::uninitialize(void)
 		return false;
 	}
 
-	for(map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
+	for(map < pair < int32, CIdentifier >, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
 	{
 		if(itSimulatedBox->second)
 		{
@@ -271,7 +277,7 @@ boolean CScheduler::uninitialize(void)
 		}
 	}
 
-	for(map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
+	for(map < pair < int32, CIdentifier >, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
 	{
 		delete itSimulatedBox->second;
 	}
@@ -294,10 +300,10 @@ boolean CScheduler::loop(void)
 	}
 
 	m_oBenchmarkChrono.stepIn();
-	for(map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
+	for(map < pair < int32, CIdentifier >, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin(); itSimulatedBox!=m_vSimulatedBox.end(); itSimulatedBox++)
 	{
 		CSimulatedBox* l_pSimulatedBox=itSimulatedBox->second;
-		System::CChrono& l_rSimulatedBoxChrono=m_vSimulatedBoxChrono[itSimulatedBox->first];
+		System::CChrono& l_rSimulatedBoxChrono=m_vSimulatedBoxChrono[itSimulatedBox->first.second];
 
 		l_rSimulatedBoxChrono.stepIn();
 		if(l_pSimulatedBox)
@@ -309,7 +315,7 @@ boolean CScheduler::loop(void)
 				l_pSimulatedBox->process();
 			}
 
-			map < uint32, list < CChunk > >& l_rSimulatedBoxInput=m_vSimulatedBoxInput[itSimulatedBox->first];
+			map < uint32, list < CChunk > >& l_rSimulatedBoxInput=m_vSimulatedBoxInput[itSimulatedBox->first.second];
 			map < uint32, list < CChunk > >::iterator itSimulatedBoxInput;
 			for(itSimulatedBoxInput=l_rSimulatedBoxInput.begin(); itSimulatedBoxInput!=l_rSimulatedBoxInput.end(); itSimulatedBoxInput++)
 			{
@@ -331,7 +337,7 @@ boolean CScheduler::loop(void)
 
 		if(l_rSimulatedBoxChrono.hasNewEstimation())
 		{
-			IBox* l_pBox=m_pScenario->getBoxDetails(itSimulatedBox->first);
+			IBox* l_pBox=m_pScenario->getBoxDetails(itSimulatedBox->first.second);
 			l_pBox->addAttribute(OV_AttributeId_Box_ComputationTimeLastSecond, "");
 			l_pBox->setAttributeValue(OV_AttributeId_Box_ComputationTimeLastSecond, CIdentifier(l_rSimulatedBoxChrono.getTotalStepInDuration()).toString());
 		}
@@ -380,14 +386,18 @@ boolean CScheduler::sendInput(
 		getLogManager() << LogLevel_Warning << "Tried to send data chunk with invalid input index " << ui32InputIndex << " for box identifier" << rBoxIdentifier << "\n";
 		return false;
 	}
-
-	map < CIdentifier, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.find(rBoxIdentifier);
+#if 1
+	map < pair < int32, CIdentifier >, CSimulatedBox* >::iterator itSimulatedBox=m_vSimulatedBox.begin();
+	while(itSimulatedBox!=m_vSimulatedBox.end() && itSimulatedBox->first.second != rBoxIdentifier)
+	{
+		itSimulatedBox++;
+	}
 	if(itSimulatedBox==m_vSimulatedBox.end())
 	{
 		getLogManager() << LogLevel_ImportantWarning << "Tried to send data chunk with valid box identifier but invalid simulated box identifier " << rBoxIdentifier << "\n";
 		return false;
 	}
-
+#endif
 	CSimulatedBox* l_pSimulatedBox=itSimulatedBox->second;
 	if(!l_pSimulatedBox)
 	{

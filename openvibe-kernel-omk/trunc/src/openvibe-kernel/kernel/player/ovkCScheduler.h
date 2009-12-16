@@ -48,7 +48,7 @@ namespace OpenViBE
 			OpenViBE::uint64 m_ui64CurrentTime;
 			OpenViBE::boolean m_bIsInitialized;
 
-			std::map < OpenViBE::CIdentifier, OpenViBE::Kernel::CSimulatedBox* > m_vSimulatedBox;
+			std::map < std::pair < OpenViBE::int32, OpenViBE::CIdentifier>, OpenViBE::Kernel::CSimulatedBox* > m_vSimulatedBox;
 			std::map < OpenViBE::CIdentifier, System::CChrono > m_vSimulatedBoxChrono;
 			std::map < OpenViBE::CIdentifier, std::map < OpenViBE::uint32, std::list < OpenViBE::Kernel::CChunk > > > m_vSimulatedBoxInput;
 
