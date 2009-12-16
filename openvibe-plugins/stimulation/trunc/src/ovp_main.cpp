@@ -11,6 +11,7 @@
 #include "box-algorithms/stimulation/adaptation/ovpCBoxAlgorithmStimulationFilter.h"
 
 #include "ovpCBoxAlgorithmP300SpellerStimulator.h"
+#include "ovpCBoxAlgorithmP300IdentifierStimulator.h"
 
 OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerEnumerationType(OVP_TypeId_StimulationFilterAction, "Stimulation Filter Action");
@@ -28,4 +29,5 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmStimulationFilterDesc);
 
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmP300SpellerStimulatorDesc);
+	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmP300IdentifierStimulatorDesc);
 OVP_Declare_End();
