@@ -402,7 +402,7 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 				}
 			}
 			fprintf(l_pFile, "</SettingValue>\n");
-			fprintf(l_pFile, "\t<SettingValue>%d</SettingValue>\n", m_ui64FilterDimension);
+			fprintf(l_pFile, "\t<SettingValue>%d</SettingValue>\n", uint32(m_ui64FilterDimension));
 			fprintf(l_pFile, "\t<SettingValue>%d</SettingValue>\n", l_ui32ChannelCount);
 			fprintf(l_pFile, "</OpenViBE-SettingsOverride>\n");
 			fclose(l_pFile);
