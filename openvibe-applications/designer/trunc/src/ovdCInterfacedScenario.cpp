@@ -1368,6 +1368,8 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 								boolean l_bFlagCanModifyInput=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyInput);
 								if(l_bFlagCanAddInput || l_bFlagCanModifyInput)
 								{
+									uint32 l_ui32FixedInputCount=0;
+									::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_InitialInputCount).toASCIIString(), "%d", &l_ui32FixedInputCount);
 									::GtkMenu* l_pMenuInput=GTK_MENU(gtk_menu_new());
 									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemInput, GTK_STOCK_PROPERTIES, "modify inputs");
 									for(i=0; i<l_pBox->getInputCount(); i++)
@@ -1379,10 +1381,17 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 										sprintf(l_sCompleteName, "%i : %s", (int)i+1, l_sName.toASCIIString());
 										gtk_menu_add_new_image_menu_item(l_pMenuInput, l_pMenuInputMenuItem, GTK_STOCK_PROPERTIES, l_sCompleteName);
 
-										::GtkMenu* l_pMenuInputMenuAction=GTK_MENU(gtk_menu_new());
-										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifyInput, l_pMenuInputMenuAction, l_pMenuInputInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, ContextMenu_BoxEditInput, i);
-										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddInput, l_pMenuInputMenuAction, l_pMenuInputInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, ContextMenu_BoxRemoveInput, i);
-										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuInputMenuItem), GTK_WIDGET(l_pMenuInputMenuAction));
+										if(l_bFlagCanModifyInput || l_ui32FixedInputCount <= i)
+										{
+											::GtkMenu* l_pMenuInputMenuAction=GTK_MENU(gtk_menu_new());
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifyInput, l_pMenuInputMenuAction, l_pMenuInputInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, ContextMenu_BoxEditInput, i);
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddInput && l_ui32FixedInputCount <= i, l_pMenuInputMenuAction, l_pMenuInputInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, ContextMenu_BoxRemoveInput, i);
+											gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuInputMenuItem), GTK_WIDGET(l_pMenuInputMenuAction));
+										}
+										else
+										{
+											gtk_widget_set_sensitive(GTK_WIDGET(l_pMenuInputMenuItem), false);
+										}
 									}
 									gtk_menu_add_separator_menu_item(l_pMenuInput);
 									gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddInput, l_pMenuInput, l_pMenuInputMenuItemAdd, GTK_STOCK_ADD, "new...", context_menu_cb, l_pBox, ContextMenu_BoxAddInput, -1);
@@ -1395,6 +1404,8 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 								boolean l_bFlagCanModifyOutput=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifyOutput);
 								if(l_bFlagCanAddOutput || l_bFlagCanModifyOutput)
 								{
+									uint32 l_ui32FixedOutputCount=0;
+									::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_InitialOutputCount).toASCIIString(), "%d", &l_ui32FixedOutputCount);
 									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemOutput, GTK_STOCK_PROPERTIES, "modify outputs");
 									::GtkMenu* l_pMenuOutput=GTK_MENU(gtk_menu_new());
 									for(i=0; i<l_pBox->getOutputCount(); i++)
@@ -1406,10 +1417,17 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 										sprintf(l_sCompleteName, "%i : %s", (int)i+1, l_sName.toASCIIString());
 										gtk_menu_add_new_image_menu_item(l_pMenuOutput, l_pMenuOutputMenuItem, GTK_STOCK_PROPERTIES, l_sCompleteName);
 
-										::GtkMenu* l_pMenuOutputMenuAction=GTK_MENU(gtk_menu_new());
-										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifyOutput, l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, ContextMenu_BoxEditOutput, i);
-										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddOutput, l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, ContextMenu_BoxRemoveOutput, i);
-										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuOutputMenuItem), GTK_WIDGET(l_pMenuOutputMenuAction));
+										if(l_bFlagCanModifyOutput || l_ui32FixedOutputCount <= i)
+										{
+											::GtkMenu* l_pMenuOutputMenuAction=GTK_MENU(gtk_menu_new());
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifyOutput, l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, ContextMenu_BoxEditOutput, i);
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddOutput && l_ui32FixedOutputCount <= i, l_pMenuOutputMenuAction, l_pMenuOutputInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, ContextMenu_BoxRemoveOutput, i);
+											gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuOutputMenuItem), GTK_WIDGET(l_pMenuOutputMenuAction));
+										}
+										else
+										{
+											gtk_widget_set_sensitive(GTK_WIDGET(l_pMenuOutputMenuItem), false);
+										}
 									}
 									gtk_menu_add_separator_menu_item(l_pMenuOutput);
 									gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddOutput, l_pMenuOutput, l_pMenuOutputMenuItemAdd, GTK_STOCK_ADD, "new...", context_menu_cb, l_pBox, ContextMenu_BoxAddOutput, -1);
@@ -1422,6 +1440,8 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 								boolean l_bFlagCanModifySetting=l_pBox->hasAttribute(OV_AttributeId_Box_FlagCanModifySetting);
 								if(l_bFlagCanAddSetting || l_bFlagCanModifySetting)
 								{
+									uint32 l_ui32FixedSettingCount=0;
+									::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_InitialSettingCount).toASCIIString(), "%d", &l_ui32FixedSettingCount);
 									gtk_menu_add_new_image_menu_item(l_pMenu, l_pMenuItemSetting, GTK_STOCK_PROPERTIES, "modify settings");
 									::GtkMenu* l_pMenuSetting=GTK_MENU(gtk_menu_new());
 									for(i=0; i<l_pBox->getSettingCount(); i++)
@@ -1433,10 +1453,17 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 										sprintf(l_sCompleteName, "%i : %s", (int)i+1, l_sName.toASCIIString());
 										gtk_menu_add_new_image_menu_item(l_pMenuSetting, l_pMenuSettingMenuItem, GTK_STOCK_PROPERTIES, l_sCompleteName);
 
-										::GtkMenu* l_pMenuSettingMenuAction=GTK_MENU(gtk_menu_new());
-										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifySetting, l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, ContextMenu_BoxEditSetting, i);
-										gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddSetting, l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, ContextMenu_BoxRemoveSetting, i);
-										gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuSettingMenuItem), GTK_WIDGET(l_pMenuSettingMenuAction));
+										if(l_bFlagCanModifySetting || l_ui32FixedSettingCount <= i)
+										{
+											::GtkMenu* l_pMenuSettingMenuAction=GTK_MENU(gtk_menu_new());
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanModifySetting, l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemConfigure, GTK_STOCK_EDIT, "configure...", context_menu_cb, l_pBox, ContextMenu_BoxEditSetting, i);
+											gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddSetting && l_ui32FixedSettingCount <= i, l_pMenuSettingMenuAction, l_pMenuSettingInputMenuItemRemove, GTK_STOCK_REMOVE, "delete...", context_menu_cb, l_pBox, ContextMenu_BoxRemoveSetting, i);
+											gtk_menu_item_set_submenu(GTK_MENU_ITEM(l_pMenuSettingMenuItem), GTK_WIDGET(l_pMenuSettingMenuAction));
+										}
+										else
+										{
+											gtk_widget_set_sensitive(GTK_WIDGET(l_pMenuSettingMenuItem), false);
+										}
 									}
 									gtk_menu_add_separator_menu_item(l_pMenuSetting);
 									gtk_menu_add_new_image_menu_item_with_cb_condition(l_bFlagCanAddSetting, l_pMenuSetting, l_pMenuSettingMenuItemAdd, GTK_STOCK_ADD, "new...", context_menu_cb, l_pBox, ContextMenu_BoxAddSetting, -1);

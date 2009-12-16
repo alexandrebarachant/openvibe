@@ -29,7 +29,6 @@ CBox::CBox(const IKernelContext& rKernelContext, CScenario& rOwnerScenario)
 
 CBox::~CBox(void)
 {
-
 	if(m_pBoxAlgorithmDescriptor && m_pBoxListener)
 	{
 		CBoxListenerContext l_oContext(this->getKernelContext(), *this, 0xffffffff);

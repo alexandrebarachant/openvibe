@@ -122,6 +122,9 @@
 #define OV_AttributeId_Box_InitialPrototypeHashValue         OpenViBE::CIdentifier(0x4E7B798A, 0x183BEAFB)
 #define OV_AttributeId_Box_ComputationTimeLastSecond         OpenViBE::CIdentifier(0xC46B3D00, 0x3E0454E1)
 #define OV_AttributeId_Box_Priority                          OpenViBE::CIdentifier(0xAC367A9C, 0x2DA95ABE)
+#define OV_AttributeId_Box_InitialInputCount                 OpenViBE::CIdentifier(0xCFAD85B0, 0x7C6D841C)
+#define OV_AttributeId_Box_InitialOutputCount                OpenViBE::CIdentifier(0xC80CE8AF, 0xF699F813)
+#define OV_AttributeId_Box_InitialSettingCount               OpenViBE::CIdentifier(0xCE18836A, 0x9C0EB403)
 
 #define OV_AttributeId_Box_FlagCanAddInput                   OpenViBE::CIdentifier(0xFBA64161, 0x65304E21)
 #define OV_AttributeId_Box_FlagCanModifyInput                OpenViBE::CIdentifier(0x527AD68D, 0x16D746A0)

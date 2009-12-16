@@ -1,5 +1,9 @@
 #include "ovkCBoxProto.h"
 
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -14,14 +18,46 @@ uint32 CBoxProto::addInput(
 	const CString& sName,
 	const CIdentifier& rTypeIdentifier)
 {
-	return m_rBox.addInput(sName, rTypeIdentifier);
+	if(!m_rBox.addInput(sName, rTypeIdentifier))
+	{
+		return false;
+	}
+
+	char l_sBuffer[1024];
+	::sprintf(l_sBuffer, "%d", m_rBox.getInputCount());
+	if(m_rBox.hasAttribute(OV_AttributeId_Box_InitialInputCount))
+	{
+		m_rBox.setAttributeValue(OV_AttributeId_Box_InitialInputCount, l_sBuffer);
+	}
+	else
+	{
+		m_rBox.addAttribute(OV_AttributeId_Box_InitialInputCount, l_sBuffer);
+	}
+
+	return true;
 }
 
 uint32 CBoxProto::addOutput(
 	const CString& sName,
 	const CIdentifier& rTypeIdentifier)
 {
-	return m_rBox.addOutput(sName, rTypeIdentifier);
+	if(!m_rBox.addOutput(sName, rTypeIdentifier))
+	{
+		return false;
+	}
+
+	char l_sBuffer[1024];
+	::sprintf(l_sBuffer, "%d", m_rBox.getOutputCount());
+	if(m_rBox.hasAttribute(OV_AttributeId_Box_InitialOutputCount))
+	{
+		m_rBox.setAttributeValue(OV_AttributeId_Box_InitialOutputCount, l_sBuffer);
+	}
+	else
+	{
+		m_rBox.addAttribute(OV_AttributeId_Box_InitialOutputCount, l_sBuffer);
+	}
+
+	return true;
 }
 
 uint32 CBoxProto::addSetting(
@@ -29,7 +65,23 @@ uint32 CBoxProto::addSetting(
 	const CIdentifier& rTypeIdentifier,
 	const CString& sDefaultValue)
 {
-	return m_rBox.addSetting(sName, rTypeIdentifier, sDefaultValue);
+	if(!m_rBox.addSetting(sName, rTypeIdentifier, sDefaultValue))
+	{
+		return false;
+	}
+
+	char l_sBuffer[1024];
+	::sprintf(l_sBuffer, "%d", m_rBox.getSettingCount());
+	if(m_rBox.hasAttribute(OV_AttributeId_Box_InitialSettingCount))
+	{
+		m_rBox.setAttributeValue(OV_AttributeId_Box_InitialSettingCount, l_sBuffer);
+	}
+	else
+	{
+		m_rBox.addAttribute(OV_AttributeId_Box_InitialSettingCount, l_sBuffer);
+	}
+
+	return true;
 }
 
 boolean CBoxProto::addFlag(
