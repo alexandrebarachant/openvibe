@@ -810,7 +810,7 @@
           <widget class="GtkToolbar" id="openvibe-toolbar">
             <property name="visible">True</property>
             <property name="toolbar_style">both-horiz</property>
-            <property name="icon_size">0</property>
+            <property name="icon_size">1</property>
             <child>
               <widget class="GtkToolButton" id="openvibe-button_new">
                 <property name="visible">True</property>
@@ -951,7 +951,8 @@ possible...</property>
                 <property name="visible">True</property>
                 <property name="tooltip" translatable="yes">toggles the window
 manager...</property>
-                <property name="icon">windowmanager_icon.png</property>
+                <property name="label" translatable="yes">window manager</property>
+                <property name="stock_id">gtk-preferences</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
