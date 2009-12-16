@@ -400,9 +400,9 @@ boolean CVoxelDisplay::createVoxels()
 		m_oVoxels[i].m_bVisible = true;
 		//store voxel position
 		m_oVoxels[i].setPosition(
-			(*(op_pVoxelsMatrix->getBuffer() + 3*i) - s_f32VoxelOffsetX) * s_f32ScaleFromOffset + s_f32VoxelOffsetX,
-			(*(op_pVoxelsMatrix->getBuffer() + 3*i+1) - s_f32VoxelOffsetY) * s_f32ScaleFromOffset + s_f32VoxelOffsetY,
-			(*(op_pVoxelsMatrix->getBuffer() + 3*i+2) - s_f32VoxelOffsetZ) * s_f32ScaleFromOffset + s_f32VoxelOffsetZ);
+			float32((*(op_pVoxelsMatrix->getBuffer() + 3*i) - s_f32VoxelOffsetX) * s_f32ScaleFromOffset + s_f32VoxelOffsetX),
+			float32((*(op_pVoxelsMatrix->getBuffer() + 3*i+1) - s_f32VoxelOffsetY) * s_f32ScaleFromOffset + s_f32VoxelOffsetY),
+			float32((*(op_pVoxelsMatrix->getBuffer() + 3*i+2) - s_f32VoxelOffsetZ) * s_f32ScaleFromOffset + s_f32VoxelOffsetZ));
 
 		//load shapes
 		m_oVoxels[i].setObjectIdentifiers(
@@ -652,7 +652,7 @@ boolean CVoxelDisplay::processActivationLevels()
 
 		if(m_bTransparencyModificationToggled == true)
 		{
-			float32 l_f32Opacity = l_f64ActivationFactor;
+			float32 l_f32Opacity = float32(l_f64ActivationFactor);
 
 			getVisualisationContext().setObjectTransparency(getActiveShapeIdentifier(m_oVoxels[i]),	1 - l_f32Opacity);
 		}
@@ -703,7 +703,7 @@ boolean CVoxelDisplay::updateCameraPosition()
 		l_f32CurPhi -= m_f32PhiOffset;
 
 		//compute new theta/phi offsets
-		float32 l_f32ThetaAmplitudeCoef = (l_f64CurTime - m_f64AutoCameraMovementStartTime) / l_f32ThetaAmplitudeTime;
+		float32 l_f32ThetaAmplitudeCoef = float32(l_f64CurTime - m_f64AutoCameraMovementStartTime) / l_f32ThetaAmplitudeTime;
 		l_f32ThetaAmplitudeCoef -= (float32)((int32)l_f32ThetaAmplitudeCoef); //normalize coef
 
 		if(l_f32ThetaAmplitudeCoef < 0.25)
@@ -716,11 +716,11 @@ boolean CVoxelDisplay::updateCameraPosition()
 		}
 		else
 		{
-			m_f32ThetaOffset = l_f32ThetaAmplitude/2 - sinf(l_f32Pi/2 * 2 * (l_f32ThetaAmplitudeCoef - 0.25) + l_f32ThetaAmplitudePhase) * l_f32ThetaAmplitude;
+			m_f32ThetaOffset = l_f32ThetaAmplitude/2 - sinf(l_f32Pi/2 * 2 * (l_f32ThetaAmplitudeCoef - 0.25f) + l_f32ThetaAmplitudePhase) * l_f32ThetaAmplitude;
 		}
 
 		//Phi coef
-		float32 l_f32PhiAmplitudeCoef = (l_f64CurTime - m_f64AutoCameraMovementStartTime) / l_f32PhiAmplitudeTime;
+		float32 l_f32PhiAmplitudeCoef = float32(l_f64CurTime - m_f64AutoCameraMovementStartTime) / l_f32PhiAmplitudeTime;
 		l_f32PhiAmplitudeCoef -= (float32)((int32)l_f32PhiAmplitudeCoef); //normalize coef
 
 		if(l_f32PhiAmplitudeCoef < 0.25)
@@ -733,7 +733,7 @@ boolean CVoxelDisplay::updateCameraPosition()
 		}
 		else
 		{
-			m_f32PhiOffset = l_f32PhiAmplitude/2 - sinf(l_f32Pi/2 * 2 * (l_f32PhiAmplitudeCoef - 0.25)) * l_f32PhiAmplitude;
+			m_f32PhiOffset = l_f32PhiAmplitude/2 - sinf(l_f32Pi/2 * 2 * (l_f32PhiAmplitudeCoef - 0.25f)) * l_f32PhiAmplitude;
 		}
 
 		//update camera position

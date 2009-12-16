@@ -27,7 +27,7 @@ CStreamedMatrixDatabase::CStreamedMatrixDatabase(OpenViBEToolkit::TBoxAlgorithm<
 	m_bBufferTimeStepComputed(false),
 	m_ui64BufferTimeStep(0),
 	//m_ui32SamplingFrequency(0),
-	m_ui64MaxBufferCount(2), //store at least 2 buffers so that it is possible to determine whether they overlap
+	m_ui32MaxBufferCount(2), //store at least 2 buffers so that it is possible to determine whether they overlap
 	m_bIgnoreTimeScale(false),
 	m_f64TimeScale(10)
 	//m_bError(false)
@@ -79,12 +79,12 @@ boolean CStreamedMatrixDatabase::isFirstBufferReceived()
 	return m_bFirstBufferReceived;
 }
 
-boolean CStreamedMatrixDatabase::setMaxBufferCount(uint64 ui64MaxBufferCount)
+boolean CStreamedMatrixDatabase::setMaxBufferCount(uint32 ui32MaxBufferCount)
 {
 	//max buffer count computed directly
 	m_bIgnoreTimeScale = true;
 
-	m_ui64MaxBufferCount = ui64MaxBufferCount;
+	m_ui32MaxBufferCount = ui32MaxBufferCount;
 
 	onBufferCountChanged();
 
@@ -111,25 +111,25 @@ boolean CStreamedMatrixDatabase::setTimeScale(float64 f64TimeScale)
 	}
 
 	//compute maximum number of buffers needed to cover time scale
-	uint64 l_ui64MaxBufferCount = 0;
+	uint32 l_ui32MaxBufferCount = 0;
 
 	if(m_ui64BufferTimeStep > 0)
 	{
 		uint64 l_ui64TimeScale = convert_floating_time(m_f64TimeScale);
-		l_ui64MaxBufferCount = (uint64)(ceil((float64)l_ui64TimeScale / m_ui64BufferTimeStep));
+		l_ui32MaxBufferCount = (uint32)(ceil((float64)l_ui64TimeScale / m_ui64BufferTimeStep));
 	}
 
 	//display at least one buffer
-	if(l_ui64MaxBufferCount == 0)
+	if(l_ui32MaxBufferCount == 0)
 	{
-		l_ui64MaxBufferCount = 1;
+		l_ui32MaxBufferCount = 1;
 	}
 
 	//acknowledge maximum buffer count
 	boolean l_bMaxBufferCountChanged = false;
-	if(l_ui64MaxBufferCount != m_ui64MaxBufferCount)
+	if(l_ui32MaxBufferCount != m_ui32MaxBufferCount)
 	{
-		m_ui64MaxBufferCount = l_ui64MaxBufferCount;
+		m_ui32MaxBufferCount = l_ui32MaxBufferCount;
 		l_bMaxBufferCountChanged = true;
 		onBufferCountChanged();
 	}
@@ -140,7 +140,7 @@ boolean CStreamedMatrixDatabase::setTimeScale(float64 f64TimeScale)
 boolean CStreamedMatrixDatabase::onBufferCountChanged()
 {
 	//if new number of buffers is smaller than before, destroy extra buffers
-	while(m_oStreamedMatrices.size() > m_ui64MaxBufferCount)
+	while(m_oStreamedMatrices.size() > m_ui32MaxBufferCount)
 	{
 		delete m_oStreamedMatrices.front();
 		m_oStreamedMatrices.pop_front();
@@ -187,14 +187,14 @@ boolean CStreamedMatrixDatabase::decodeMemoryBuffer(const IMemoryBuffer* pMemory
 	return true;
 }
 
-uint64 CStreamedMatrixDatabase::getMaxBufferCount()
+uint32 CStreamedMatrixDatabase::getMaxBufferCount()
 {
-	return m_ui64MaxBufferCount;
+	return m_ui32MaxBufferCount;
 }
 
-uint64 CStreamedMatrixDatabase::getCurrentBufferCount()
+uint32 CStreamedMatrixDatabase::getCurrentBufferCount()
 {
-	return (uint64)m_oStreamedMatrices.size();
+	return (uint32)m_oStreamedMatrices.size();
 }
 
 const float64* CStreamedMatrixDatabase::getBuffer(uint32 ui32Index)
@@ -462,7 +462,7 @@ boolean CStreamedMatrixDatabase::decodeBuffer(uint64 ui64StartTime, uint64 ui64E
 
 	//store new buffer data
 	CMatrix* l_pCurrentMatrix = NULL;
-	if(m_oStreamedMatrices.size() < m_ui64MaxBufferCount)
+	if(m_oStreamedMatrices.size() < m_ui32MaxBufferCount)
 	{
 		l_pCurrentMatrix = new CMatrix();
 		Tools::Matrix::copyDescription(*l_pCurrentMatrix, m_oStreamedMatrixHeader);

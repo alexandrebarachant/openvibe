@@ -48,7 +48,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean isFirstBufferReceived();
 
 			virtual OpenViBE::boolean setMaxBufferCount(
-				OpenViBE::uint64 ui64MaxBufferCount);
+				OpenViBE::uint32 ui32MaxBufferCount);
 
 			virtual OpenViBE::boolean setTimeScale(
 				OpenViBE::float64 f64TimeScale);
@@ -58,9 +58,9 @@ namespace OpenViBEPlugins
 				OpenViBE::uint64 ui64StartTime,
 				OpenViBE::uint64 ui64EndTime);
 
-			virtual OpenViBE::uint64 getMaxBufferCount();
+			virtual OpenViBE::uint32 getMaxBufferCount();
 
-			virtual OpenViBE::uint64 getCurrentBufferCount();
+			virtual OpenViBE::uint32 getCurrentBufferCount();
 
 			virtual const OpenViBE::float64* getBuffer(
 				OpenViBE::uint32 ui32BufferIndex);
@@ -132,7 +132,7 @@ namespace OpenViBEPlugins
 			//sampling frequency of incoming stream
 			//OpenViBE::uint32 m_ui32SamplingFrequency;
 			//maximum number of buffers stored in database
-			OpenViBE::uint64 m_ui64MaxBufferCount;
+			OpenViBE::uint32 m_ui32MaxBufferCount;
 			//flag stating whether time scale should be ignored (max buffer count externally set)
 			OpenViBE::boolean m_bIgnoreTimeScale;
 			//maximum duration of displayed buffers (in seconds)

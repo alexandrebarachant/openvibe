@@ -60,7 +60,7 @@ namespace OpenViBEPlugins
 			 * \remarks This method sets m_bIgnoreTimeScale to true
 			 */
 			virtual OpenViBE::boolean setMaxBufferCount(
-				OpenViBE::uint64 ui64MaxBufferCount) = 0;
+				OpenViBE::uint32 ui32MaxBufferCount) = 0;
 
 			/**
 			 * \brief Set time scale
@@ -90,13 +90,13 @@ namespace OpenViBEPlugins
 			 * the time step between the start of 2 consecutive buffers must be known
 			 * \return Maximum number of buffers stored in this object
 			 */
-			virtual OpenViBE::uint64 getMaxBufferCount() = 0;
+			virtual OpenViBE::uint32 getMaxBufferCount() = 0;
 
 			/**
 			 * \brief Get current buffer count
 			 * \return Current buffer count
 			 */
-			virtual OpenViBE::uint64 getCurrentBufferCount() = 0;
+			virtual OpenViBE::uint32 getCurrentBufferCount() = 0;
 
 			/**
 			 * \brief Get pointer on a given buffer

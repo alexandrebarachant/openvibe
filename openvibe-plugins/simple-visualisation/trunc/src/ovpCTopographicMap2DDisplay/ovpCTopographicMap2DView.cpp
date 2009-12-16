@@ -1412,13 +1412,13 @@ namespace OpenViBEPlugins
 								else //radial
 								{
 									//theta = (X,Y) arc length
-									float32 l_f32Theta = M_PI/2 * sqrtf(l_f32X*l_f32X + l_f32Y*l_f32Y);
+									float32 l_f32Theta = float32(M_PI/2 * sqrtf(l_f32X*l_f32X + l_f32Y*l_f32Y));
 									float32 l_f32ScalingFactor = (l_f32Theta <= 1e-3) ? 0 : (sinf(l_f32Theta) / l_f32Theta);
 									float32 l_f32SampleLocalCoordinates[3];
 									//x = sin(theta) / theta * X
-									l_f32SampleLocalCoordinates[0] = l_f32ScalingFactor * l_f32X * (M_PI/2);
+									l_f32SampleLocalCoordinates[0] = float32(l_f32ScalingFactor * l_f32X * (M_PI/2));
 									//y = sin(theta) / theta * Y
-									l_f32SampleLocalCoordinates[1] = l_f32ScalingFactor * l_f32Y * (M_PI/2);
+									l_f32SampleLocalCoordinates[1] = float32(l_f32ScalingFactor * l_f32Y * (M_PI/2));
 									//z = cos(theta)
 									l_f32SampleLocalCoordinates[2] = cosf(l_f32Theta);
 

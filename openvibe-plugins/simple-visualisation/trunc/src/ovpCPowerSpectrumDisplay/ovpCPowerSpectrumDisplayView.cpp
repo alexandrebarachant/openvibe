@@ -586,8 +586,8 @@ namespace OpenViBEPlugins
 			{
 				do
 				{
-					m_vSelectedChannels[l_ui32Index]=::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter);
-					toggleChannel(l_ui32Index, ::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter));
+					m_vSelectedChannels[l_ui32Index]=(::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter)?true:false);
+					toggleChannel(l_ui32Index, (::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter)?true:false));
 					l_ui32Index++;
 				}
 				while(::gtk_tree_model_iter_next(l_pChannelSelectTreeModel, &l_oIter));

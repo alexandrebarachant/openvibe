@@ -8,6 +8,10 @@ fi
 
 source linux-init_env_command
 
+echo ""
+echo "_______________________________________________________________________________"
+echo ""
+
 for project_directory in $OpenViBE_build_order; do
 	if [ -e "$project_directory/CMakeLists.txt" ]; then
 
@@ -16,6 +20,9 @@ for project_directory in $OpenViBE_build_order; do
 			'`
 		mkdir -p "../local-tmp/$temp_sub_directory" 2> /dev/null
 		pushd "../local-tmp/$temp_sub_directory" 2> /dev/null
+
+		echo "Configuring and building $temp_sub_directory ..."
+		echo ""
 
 		cmake -DCMAKE_INSTALL_PREFIX="$project_directory" -DCMAKE_CXX_FLAGS=-Wall -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="$OpenViBE_base/cmake-modules" -Wno-dev "$project_directory"
 		if [ $? -eq 0 ]; then
@@ -46,13 +53,24 @@ for project_directory in $OpenViBE_build_order; do
 		fi;
 
 		popd 2> /dev/null
+
+		echo ""
+		echo "_______________________________________________________________________________"
+		echo ""
 	fi;
 done
 
+echo ""
+echo "Building process terminated successfully !"
+echo ""
+
+# rm -rf $target_dist           2> /dev/null
+
+echo ""
+echo "Installing files to 'dist' folder, this can take a few seconds - maybe a few minutes..."
+echo ""
+
 target_dist=../dist
-
-rm -rf $target_dist           2> /dev/null
-
 mkdir -p $target_dist/bin     2> /dev/null
 mkdir -p $target_dist/include 2> /dev/null
 mkdir -p $target_dist/lib     2> /dev/null
@@ -62,7 +80,12 @@ mkdir -p $target_dist/log     2> /dev/null
 mkdir -p $target_dist/etc     2> /dev/null
 mkdir -p $target_dist/doc     2> /dev/null
 
+echo ""
 for project_directory in $OpenViBE_build_order; do
+	temp_sub_directory=`echo $project_directory | sed '
+		s:'$OpenViBE_base'/::g
+		'`
+	echo "## Installing $temp_sub_directory ..."
 	cp -rf $project_directory/bin/*     $target_dist/bin     2> /dev/null
 	cp -rf $project_directory/include/* $target_dist/include 2> /dev/null
 	cp -rf $project_directory/lib/*.a*  $target_dist/lib     2> /dev/null
@@ -71,6 +94,11 @@ for project_directory in $OpenViBE_build_order; do
 	cp -rf $project_directory/etc/*     $target_dist/etc     2> /dev/null
 	cp -rf $project_directory/doc/*     $target_dist/doc     2> /dev/null
 done
+echo ""
+
+echo ""
+echo "Install completed !"
+echo ""
 
 find $target_dist/doc -name *.html -exec sed -i -e "s/\xC2\?\xA7OpenViBE\xC2\?\xA7/OpenViBE/g" "{}" \; # \xC2\?\xA7 is the § character that has been put everywhere to clearly make the distinction between the project and the software
 

@@ -985,8 +985,8 @@ namespace OpenViBEPlugins
 			{
 				do
 				{
-					l_pView->m_vSelectedChannels[l_ui32Index]=::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter);
-					l_pView->toggleChannel(l_ui32Index, ::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter));
+					l_pView->m_vSelectedChannels[l_ui32Index]=(::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter)?true:false);
+					l_pView->toggleChannel(l_ui32Index, ::gtk_tree_selection_iter_is_selected(l_pChannelSelectTreeSelection, &l_oIter)?true:false);
 					l_ui32Index++;
 				}
 				while(::gtk_tree_model_iter_next(l_pChannelSelectTreeModel, &l_oIter));
@@ -1096,7 +1096,7 @@ namespace OpenViBEPlugins
 			{
 				do
 				{
-					l_pView->m_vMultiViewSelectedChannels[l_ui32Index]=::gtk_tree_selection_iter_is_selected(l_pMultiViewTreeSelection, &l_oIter);
+					l_pView->m_vMultiViewSelectedChannels[l_ui32Index]=(::gtk_tree_selection_iter_is_selected(l_pMultiViewTreeSelection, &l_oIter)?true:false);
 					l_ui32Index++;
 				}
 				while(::gtk_tree_model_iter_next(l_pMultiViewTreeModel, &l_oIter));
