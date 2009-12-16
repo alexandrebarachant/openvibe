@@ -3,8 +3,9 @@
 #include <system/Memory.h>
 
 #include <complex>
-#include <iostream>
 #include <sstream>
+#include <cstdio>
+#include <cstdlib>
 #include <vector>
 #include <map>
 
