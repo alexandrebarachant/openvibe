@@ -47,12 +47,39 @@ namespace OpenViBEPlugins
 				OpenViBE::uint64 ui64Action;
 				OpenViBE::uint64 ui64StartStimulationId;
 				OpenViBE::uint64 ui64EndStimulationId;
-				OpenViBE::uint64 ui64StartTime;
-				OpenViBE::uint64 ui64EndTime;
 			} SRule;
 
 			OpenViBE::uint64 m_ui64DefaultAction;
+			OpenViBE::uint64 m_ui64StartTime;
+			OpenViBE::uint64 m_ui64EndTime;
 			std::vector < OpenViBEPlugins::Stimulation::CBoxAlgorithmStimulationFilter::SRule > m_vRules;
+		};
+
+		class CBoxAlgorithmStimulationFilterListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+
+		public:
+			virtual OpenViBE::boolean onSettingAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				rBox.removeSetting(ui32Index);
+				//we had a whole rule (3 settings)
+				rBox.addSetting("Action to perform",       OVP_TypeId_StimulationFilterAction, "Select");
+				rBox.addSetting("Stimulation range begin", OV_TypeId_Stimulation, "OVTK_StimulationId_Label_00");
+				rBox.addSetting("Stimulation range end",   OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0F");
+
+				return true;
+			}
+
+			virtual OpenViBE::boolean onSettingRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				//we must remove the 2 other settings corresponding to the rule
+				OpenViBE::uint32 l_ui32SettingGroupIndex = (ui32Index-3) / 3;
+				rBox.removeSetting(l_ui32SettingGroupIndex*3+3);
+				rBox.removeSetting(l_ui32SettingGroupIndex*3+3);
+				return true;
+			}
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
 		};
 
 		class CBoxAlgorithmStimulationFilterDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -78,17 +105,21 @@ namespace OpenViBEPlugins
 			{
 				rBoxAlgorithmPrototype.addInput  ("Stimulations",            OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput ("Modified Stimulations",   OV_TypeId_Stimulations);
+
 				rBoxAlgorithmPrototype.addSetting("Default action",          OVP_TypeId_StimulationFilterAction, "Reject");
+				rBoxAlgorithmPrototype.addSetting("Time range begin",        OV_TypeId_Float, "0");
+				rBoxAlgorithmPrototype.addSetting("Time range end",          OV_TypeId_Float, "0");
 				rBoxAlgorithmPrototype.addSetting("Action to perform",       OVP_TypeId_StimulationFilterAction, "Select");
 				rBoxAlgorithmPrototype.addSetting("Stimulation range begin", OV_TypeId_Stimulation, "OVTK_StimulationId_Label_00");
 				rBoxAlgorithmPrototype.addSetting("Stimulation range end",   OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0F");
-				rBoxAlgorithmPrototype.addSetting("Time range begin", OV_TypeId_Float, "0");
-				rBoxAlgorithmPrototype.addSetting("Time range end",   OV_TypeId_Float, "0");
-				// rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
-				// rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifySetting);
-				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
+
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
+				// rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
+
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmStimulationFilterListener; }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) { delete pBoxListener; }
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_StimulationFilterDesc);
 		};

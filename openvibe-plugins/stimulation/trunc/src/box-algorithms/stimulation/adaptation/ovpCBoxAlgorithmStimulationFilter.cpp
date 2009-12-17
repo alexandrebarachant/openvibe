@@ -12,14 +12,22 @@ boolean CBoxAlgorithmStimulationFilter::initialize(void)
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
 	m_ui64DefaultAction=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
-	for(uint32 i=1; i<l_rStaticBoxContext.getSettingCount(); i+=5)
+	m_ui64StartTime    =(uint64)(((float64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1)) * (1LL<<32));
+	m_ui64EndTime      =(uint64)(((float64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2)) * (1LL<<32));
+
+	if(m_ui64StartTime>m_ui64EndTime)
+	{
+		this->getLogManager() << LogLevel_ImportantWarning << "End time is lower than start time\n";
+		return false;
+	}
+
+	// we iterate over all Rules. One rule has 3 settings
+	for(uint32 i=3; i<l_rStaticBoxContext.getSettingCount(); i+=3)
 	{
 		SRule l_oRule;
-		l_oRule.ui64Action            =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i  );
-		l_oRule.ui64StartStimulationId=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+1);
-		l_oRule.ui64EndStimulationId  =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+2);
-		l_oRule.ui64StartTime         =(uint64)(((float64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+3))*(1LL<<32));
-		l_oRule.ui64EndTime           =(uint64)(((float64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+4))*(1LL<<32));
+		l_oRule.ui64Action            =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i  ); // the action to perform
+		l_oRule.ui64StartStimulationId=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+1); // first stim
+		l_oRule.ui64EndStimulationId  =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+2); // last stim in the desired range
 		m_vRules.push_back(l_oRule);
 	}
 
@@ -84,20 +92,22 @@ boolean CBoxAlgorithmStimulationFilter::process(void)
 				uint64 l_ui64StimulationDate=op_pStimulationSet->getStimulationDate(s);
 				uint64 l_ui64Action=m_ui64DefaultAction;
 
-				for(size_t r=0; r<m_vRules.size(); r++)
+				if((m_ui64StartTime == m_ui64EndTime) || (m_ui64StartTime != m_ui64EndTime && m_ui64StartTime <= l_ui64StimulationDate && l_ui64StimulationDate <= m_ui64EndTime))
 				{
-					const SRule& l_rRule=m_vRules[i];
-					if(l_rRule.ui64StartStimulationId <= l_ui64StimulationId && l_ui64StimulationId <= l_rRule.ui64EndStimulationId)
+					for(size_t r=0; r<m_vRules.size(); r++)
 					{
-						if(l_rRule.ui64StartTime <= l_ui64StimulationDate && l_ui64StimulationDate <= l_rRule.ui64EndTime)
+						const SRule& l_rRule=m_vRules[r];
+						if(l_rRule.ui64StartStimulationId <= l_ui64StimulationId && l_ui64StimulationId <= l_rRule.ui64EndStimulationId)
 						{
 							l_ui64Action=l_rRule.ui64Action;
+							this->getLogManager() << LogLevel_Debug << "Switches to rule " << uint32(r) << "\n";
 						}
 					}
 				}
 
 				if(l_ui64Action==OVP_TypeId_StimulationFilterAction_Select.toUInteger())
 				{
+					this->getLogManager() << LogLevel_Trace << "Selects stimulation " << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, l_ui64StimulationId) << " !\n";
 					ip_pStimulationSet->appendStimulation(
 						l_ui64StimulationId,
 						l_ui64StimulationDate,
@@ -105,6 +115,7 @@ boolean CBoxAlgorithmStimulationFilter::process(void)
 				}
 				if(l_ui64Action==OVP_TypeId_StimulationFilterAction_Reject.toUInteger())
 				{
+					this->getLogManager() << LogLevel_Trace << "Rejects stimulation " << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, l_ui64StimulationId) << " !\n";
 				}
 			}
 
