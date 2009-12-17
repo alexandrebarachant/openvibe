@@ -363,8 +363,8 @@ boolean CScenario::removeBox(
 
 	// Found the box,
 	// now find all the links that are used by this box
-	map<CIdentifier, CLink*>::iterator itLink;
-	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); )
+	map<CIdentifier, CLink*>::iterator itLink=m_vLink.begin();
+	while(itLink!=m_vLink.end())
 	{
 		map<CIdentifier, CLink*>::iterator itLinkCurrent=itLink;
 		itLink++;
@@ -502,16 +502,19 @@ boolean CScenario::connect(
 	}
 
 	// Looks for any connected link to this box input and removes it
-	map<CIdentifier, CLink*>::iterator itLink;
-	for(itLink=m_vLink.begin(); itLink!=m_vLink.end(); itLink++)
+	map<CIdentifier, CLink*>::iterator itLink=m_vLink.begin();
+	while(itLink!=m_vLink.end())
 	{
-		CLink* l_pLink=itLink->second;
+		map<CIdentifier, CLink*>::iterator itLinkCurrent=itLink;
+		itLink++;
+
+		CLink* l_pLink=itLinkCurrent->second;
 		if(l_pLink)
 		{
 			if(l_pLink->getTargetBoxIdentifier()==rTargetBoxIdentifier && l_pLink->getTargetBoxInputIndex()==ui32TargetBoxInputIndex)
 			{
 				delete l_pLink;
-				m_vLink.erase(itLink);
+				m_vLink.erase(itLinkCurrent);
 			}
 		}
 	}
