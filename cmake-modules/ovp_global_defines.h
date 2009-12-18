@@ -2,32 +2,23 @@
 #define __OpenViBEPlugins_Global_Defines_H__
 
 // -----------------------------------------------------
-// LDA classifier processor - GPL
+// LDA classifier - GPL
 // -----------------------------------------------------
 
-#define OVP_GD_ClassId_Algorithm_LDAClassifierProcessorGPL                                                                      OpenViBE::CIdentifier(0x11784ab1, 0xea05f77c)
-#define OVP_GD_ClassId_Algorithm_LDAClassifierProcessorGPLDesc                                                                  OpenViBE::CIdentifier(0xb2fa0286, 0x87a54ac3)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_InputParameterId_FeatureVector                                               OpenViBE::CIdentifier(0x6d69bf98, 0x1eb9ee66)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_InputParameterId_Configuration                                               OpenViBE::CIdentifier(0xa705428e, 0x5bb1cadd)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_OutputParameterId_Class                                                      OpenViBE::CIdentifier(0x8a39a7ea, 0xf2ee45c4)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_OutputParameterId_ClassificationValues                                       OpenViBE::CIdentifier(0xda77d7e4, 0x766b48ea)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_InputTriggerId_Classify                                                      OpenViBE::CIdentifier(0x843a87d8, 0x566e85a1)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_InputTriggerId_LoadConfiguration                                             OpenViBE::CIdentifier(0xf346bbe0, 0xadafc735)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_OutputTriggerId_Success                                                      OpenViBE::CIdentifier(0x24fab755, 0x78868782)
-#define OVP_GD_Algorithm_LDAClassifierProcessorGPL_OutputTriggerId_Failed                                                       OpenViBE::CIdentifier(0x6e72b255, 0x317faa04)
-
-// -----------------------------------------------------
-// LDA classifier trainer - GPL
-// -----------------------------------------------------
-
-#define OVP_GD_ClassId_Algorithm_LDAClassifierTrainerGPL                                                                        OpenViBE::CIdentifier(0xd7183fc7, 0xbd74f298)
-#define OVP_GD_ClassId_Algorithm_LDAClassifierTrainerGPLDesc                                                                    OpenViBE::CIdentifier(0xd42d544a, 0x7a28ddb1)
-#define OVP_GD_Algorithm_LDAClassifierTrainerGPL_InputParameterId_FeatureVectorSet                                              OpenViBE::CIdentifier(0x27c05927, 0x5de9103a)
-#define OVP_GD_Algorithm_LDAClassifierTrainerGPL_OutputParameterId_Configuration                                                OpenViBE::CIdentifier(0x30590936, 0x61ce5971)
-#define OVP_GD_Algorithm_LDAClassifierTrainerGPL_InputTriggerId_Train                                                           OpenViBE::CIdentifier(0x34684752, 0x78a46de2)
-#define OVP_GD_Algorithm_LDAClassifierTrainerGPL_InputTriggerId_SaveConfiguration                                               OpenViBE::CIdentifier(0x79750528, 0x6cc85fc1)
-#define OVP_GD_Algorithm_LDAClassifierTrainerGPL_OutputTriggerId_Failed                                                         OpenViBE::CIdentifier(0x31b97c83, 0x59015d0e)
-#define OVP_GD_Algorithm_LDAClassifierTrainerGPL_OutputTriggerId_Success                                                        OpenViBE::CIdentifier(0x7b8c0eff, 0x26224d6b)
+#define OVP_GD_ClassId_Algorithm_LDAClassifierGPL                                                                               OpenViBE::CIdentifier(0xd7183fc7, 0xbd74f298)
+#define OVP_GD_ClassId_Algorithm_LDAClassifierGPLDesc                                                                           OpenViBE::CIdentifier(0xd42d544a, 0x7a28ddb1)
+#define OVP_GD_Algorithm_LDAClassifierGPL_InputParameterId_FeatureVectorSet                                                     OpenViBE::CIdentifier(0x27c05927, 0x5de9103a)
+#define OVP_GD_Algorithm_LDAClassifierGPL_InputParameterId_FeatureVector                                                        OpenViBE::CIdentifier(0x6d69bf98, 0x1eb9ee66)
+#define OVP_GD_Algorithm_LDAClassifierGPL_InputParameterId_Configuration                                                        OpenViBE::CIdentifier(0xa705428e, 0x5bb1cadd)
+#define OVP_GD_Algorithm_LDAClassifierGPL_OutputParameterId_Configuration                                                       OpenViBE::CIdentifier(0x30590936, 0x61ce5971)
+#define OVP_GD_Algorithm_LDAClassifierGPL_OutputParameterId_Class                                                               OpenViBE::CIdentifier(0x8a39a7ea, 0xf2ee45c4)
+#define OVP_GD_Algorithm_LDAClassifierGPL_OutputParameterId_ClassificationValues                                                OpenViBE::CIdentifier(0xda77d7e4, 0x766b48ea)
+#define OVP_GD_Algorithm_LDAClassifierGPL_InputTriggerId_Train                                                                  OpenViBE::CIdentifier(0x34684752, 0x78a46de2)
+#define OVP_GD_Algorithm_LDAClassifierGPL_InputTriggerId_SaveConfiguration                                                      OpenViBE::CIdentifier(0x79750528, 0x6cc85fc1)
+#define OVP_GD_Algorithm_LDAClassifierGPL_InputTriggerId_Classify                                                               OpenViBE::CIdentifier(0x843a87d8, 0x566e85a1)
+#define OVP_GD_Algorithm_LDAClassifierGPL_InputTriggerId_LoadConfiguration                                                      OpenViBE::CIdentifier(0xf346bbe0, 0xadafc735)
+#define OVP_GD_Algorithm_LDAClassifierGPL_OutputTriggerId_Success                                                               OpenViBE::CIdentifier(0x24fab755, 0x78868782)
+#define OVP_GD_Algorithm_LDAClassifierGPL_OutputTriggerId_Failed                                                                OpenViBE::CIdentifier(0x6e72b255, 0x317faa04)
 
 // -----------------------------------------------------
 // Brainamp file reader
@@ -157,6 +148,20 @@
 #define OVP_GD_Algorithm_ApplyTemporalFilter_InputTriggerId_ApplyFilter                                                         OpenViBE::CIdentifier(0xbc1f5655, 0x9807b400)
 
 // -----------------------------------------------------
+// Apply Linear Naive Bayes function
+// -----------------------------------------------------
+
+#define OVP_GD_ClassId_Algorithm_ApplyLinearNaiveBayesFunction                                                                  OpenViBE::CIdentifier(0xf9c21d2c, 0x9e6abe8e)
+#define OVP_GD_ClassId_Algorithm_ApplyLinearNaiveBayesFunctionDesc                                                              OpenViBE::CIdentifier(0xcde5efeb, 0x0689c756)
+#define OVP_GD_Algorithm_ApplyLinearNaiveBayesFunction_InputParameterId_MatrixLogTerm                                           OpenViBE::CIdentifier(0xb10d8b3c, 0x2a1d3705)
+#define OVP_GD_Algorithm_ApplyLinearNaiveBayesFunction_InputParameterId_MatrixMean                                              OpenViBE::CIdentifier(0xdd1479ac, 0xb2e13471)
+#define OVP_GD_Algorithm_ApplyLinearNaiveBayesFunction_InputParameterId_MatrixVariance                                          OpenViBE::CIdentifier(0xeb3cd401, 0x54e4692d)
+#define OVP_GD_Algorithm_ApplyLinearNaiveBayesFunction_InputParameterId_MatrixSignal                                            OpenViBE::CIdentifier(0xf1d46621, 0x9cae8931)
+#define OVP_GD_Algorithm_ApplyLinearNaiveBayesFunction_OutputParameterId_MatrixClassFunctional                                  OpenViBE::CIdentifier(0x57a78d33, 0x724ce7f9)
+#define OVP_GD_Algorithm_ApplyLinearNaiveBayesFunction_InputTriggerId_Initialize                                                OpenViBE::CIdentifier(0x0b3f7d98, 0x70d9d6e6)
+#define OVP_GD_Algorithm_ApplyLinearNaiveBayesFunction_InputTriggerId_ApplyFunction                                             OpenViBE::CIdentifier(0x622d05b7, 0x002f601f)
+
+// -----------------------------------------------------
 // Downsampling
 // -----------------------------------------------------
 
@@ -168,6 +173,7 @@
 #define OVP_GD_Algorithm_Downsampling_OutputParameterId_SignalMatrix                                                            OpenViBE::CIdentifier(0x4b9be135, 0x14c10757)
 #define OVP_GD_Algorithm_Downsampling_InputTriggerId_Resample                                                                   OpenViBE::CIdentifier(0x2a88aff5, 0x79ecaeb3)
 #define OVP_GD_Algorithm_Downsampling_InputTriggerId_Initialize                                                                 OpenViBE::CIdentifier(0x82d96f84, 0x9479a701)
+#define OVP_GD_Algorithm_Downsampling_InputTriggerId_ResampleWithHistoric                                                       OpenViBE::CIdentifier(0xd5740b33, 0x3785c886)
 
 // -----------------------------------------------------
 // Compute Fisher Lda function
