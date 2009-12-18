@@ -42,16 +42,16 @@
 \htmlonly
 <table class='faq-os' cellpading=0 cellspacing=0>
 <tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> <th>Officially supported</th> </tr>
-<tr> <td rowspan=15>x86</td>   <td rowspan=3>Windows</td>  <td rowspan=2>XP SP2</td>      <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK</td> <td bgcolor=green>Yes (last built 12/2009)</td> </tr>
+<tr> <td rowspan=15>x86</td>   <td rowspan=3>Windows</td>  <td rowspan=2>XP SP2</td>      <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                                                     <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Vista</td>                 <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr>                           <td rowspan=12>Linux</td>   <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes (last built 12/2009)</td> </tr>
-<tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No (last built 12/2009)</td> </tr>
+<tr>                           <td rowspan=12>Linux</td>   <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr>                                                       <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes (last built 12/2009)</td> </tr>
-<tr>                                                       <td>Fedora 12</td>             <td>GCC      </td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes (last built 12/2009)</td> </tr>
-<tr>                                                       <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes (last built 12/2009)</td> </tr>
-<tr>                                                       <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes (last built 12/2009)</td> </tr>
+<tr>                                                       <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 12</td>             <td>GCC 4.4.2</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Fedora 8</td>              <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora Core 5</td>         <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora Core 4</td>         <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
@@ -59,10 +59,10 @@
 <tr>                                                       <td>Debian 5</td>              <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr> <td rowspan=11>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
 <tr>                            <td rowspan=10>Linux</td>  <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>No (last built 12/2009)</td> </tr>
+<tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                       <td>Fedora 12</td>             <td>GCC      </td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 12</td>             <td>GCC 4.4.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Fedora 9</td>              <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
@@ -130,6 +130,9 @@
  *   - Mindmedia NeXus32B
  *   - ANT Neuro ASALAB EEG / ERP amplifier (32-256 channels) has been reported to work with NeXus32B driver
  *   - TMSi Porti32 has been reported to work with NeXus32B driver
+ *   - Brain Products V-Amp
+ *   - g.Tec g.USBamp
+ *   - OpenEEG modularEEG / monolithEEG
  *
  * The following hardware devices are partially supported with OpenViBE :
  *   - Brainamp Standard (through the recording software Vision Recorder)
@@ -137,10 +140,9 @@
  *   - CTF/VSM MEG
  *
  * The following hardware devices are currently being integrated in OpenViBE :
- *   - g.Tec g.USBamp
- *   - OpenEEG modularEEG / monolithEEG
  *   - Mitsar EEG 202
  *   - Neuroscan SynAmps2 (through the recording software Scan 4.3)
+ *   - TMSi Refa
  *   - Brainquiry QPET9 (developement is stalled)
  *
 \htmlonly
