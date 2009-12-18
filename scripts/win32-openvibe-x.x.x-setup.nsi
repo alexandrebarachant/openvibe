@@ -83,12 +83,18 @@ Section "-OpenViBE"
 	NSISdl::download "http://www.microsoft.com/downloads/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=04ac064b-00d1-474e-b7b1-442d8712d553&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fB%2f7%2f9%2fB79FC9D7-47B8-48B7-A75E-101DEBEB5AB4%2fdirectx_aug2009_redist.exe" "arch\openvibe-directx.exe"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
+			MessageBox MB_OK "Download failed: $R0$\nDirect X won't be installed and 3D functionalities won't be available...$\nYou can install DirectX later to enable 3D functionalities !"
+			Goto no_need_to_install_directx ; Quit
 no_need_to_download_directx:
 	ExecWait '"arch\openvibe-directx.exe" /T:"$INSTDIR\tmp" /Q'
 	ExecWait '"$INSTDIR\tmp\DXSETUP.exe" /silent'
 no_need_to_install_directx:
+
+
+	SetOutPath "$INSTDIR\dependencies\arch"
+	File ..\dependencies\arch\openvibe-vcredist-2005-sp1.exe
+	File ..\dependencies\arch\openvibe-vcredist-2008-sp1.exe
+
 
 	SetOutPath "$INSTDIR\dependencies"
 	IfFileExists "arch\openvibe-vcredist-2005-sp1.exe" no_need_to_download_vcredist_2005_sp1

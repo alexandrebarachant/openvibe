@@ -188,6 +188,23 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 -->
 		<h1>News</h1>
 
+		<h2>New release of OpenViBE 0.5.0 is now available<br><span style="font-size:x-small">2009/12/18</span></h2>
+
+		<p>New release of OpenViBE 0.5.0 "Christmas edition" is now available for download at the <a href=http://openvibe.inria.fr/?q=download>download</a> page.</p>
+		<p>In this new release, you will find the following modifiactions (+ for adds, * for modifications, - for removes) :</p>
+		<ul>
+			<li> + We added a new driver : brain products vAmp acquisition device</li>
+			<li> + We added a new driver : g.Tec's gUSBamp acquisition device</li>
+			<li> + We updated the sample scenarios</li>
+			<li> + We propose a new P300-based pipeline based on the xDAWN algorithm</li>
+			<li> + We added an online comparison of different processing pipelines performance (e.g. multiple classifiers)</li>
+			<li> * We updated the dependencies installation for windows so that Visual C++ Runtime gets included in the package</li>
+			<li> * We updated the dependencies installation for windows so that the lack of internet connection does not abort the installation when DirectX is not present</li>
+			<li> * We updated the online documentation and tutorials</li>
+			<li> * We fixed lots of bugs !</li>
+		</ul>
+		<p>Feel free to join us and to contribute as others are doing...</p>
+
 		<h2>Release policy of OpenViBE<br><span style="font-size:x-small">2009/10/23</span></h2>
 
 		<p>Starting from release 0.4.0, we decided that OpenViBE would be released every three months. You can expect a 0.5.0 release
