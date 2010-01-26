@@ -9,6 +9,7 @@
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
 #include "brainamp-vamp/ovasCDriverBrainProductsVAmp.h"
 // #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
+#include "TMSI-Refa/ovasCDriverTMSiRefa32B.h"
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Memory.h>
@@ -285,10 +286,10 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 #endif
 	m_vDriver.push_back(new CDriverOpenEEGModularEEG(*m_pDriverContext));
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
-		m_vDriver.push_back(new CDriverGTecGUSBamp(*m_pDriverContext));
+	m_vDriver.push_back(new CDriverGTecGUSBamp(*m_pDriverContext));
 #endif
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
-		m_vDriver.push_back(new CDriverBrainProductsVAmp(*m_pDriverContext));
+	m_vDriver.push_back(new CDriverBrainProductsVAmp(*m_pDriverContext));
 #endif
 	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
 	{
@@ -296,6 +297,9 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 		m_vDriver.push_back(new CDriverMicromedIntraEEG(*m_pDriverContext));
 		m_vDriver.push_back(new CDriverCtfVsmMeg(*m_pDriverContext));
 		// m_vDriver.push_back(new CDriverNeuroscanSynamps2(*m_pDriverContext));
+#if defined OVAS_OS_Windows
+		m_vDriver.push_back(new CDriverTMSiRefa32B(*m_pDriverContext));
+#endif
 	}
 	m_vDriver.push_back(new CDriverGenericOscillator(*m_pDriverContext));
 }
