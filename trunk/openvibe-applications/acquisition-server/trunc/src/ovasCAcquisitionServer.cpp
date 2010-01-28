@@ -306,6 +306,20 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 
 CAcquisitionServer::~CAcquisitionServer(void)
 {
+	if(m_bStarted)
+	{
+		m_pDriver->stop();
+		m_pDriverContext->onStop(*m_pDriver->getHeader());
+		m_bStarted=false;
+	}
+
+	if(m_bInitialized)
+	{
+		m_pDriver->uninitialize();
+		m_pDriverContext->onUninitialize(*m_pDriver->getHeader());
+		m_bInitialized=false;
+	}
+
 	if(m_pConnectionServer)
 	{
 		m_pConnectionServer->release();
@@ -325,6 +339,7 @@ CAcquisitionServer::~CAcquisitionServer(void)
 		delete (*itDriver);
 	}
 	m_vDriver.clear();
+	m_pDriver=NULL;
 
 	// op_pChannelLocalisationMemoryBuffer.uninitialize();
 	op_pStimulationMemoryBuffer.uninitialize();
@@ -345,6 +360,7 @@ CAcquisitionServer::~CAcquisitionServer(void)
 	m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*m_pAcquisitionStreamEncoder);
 
 	delete m_pDriverContext;
+	m_pDriverContext=NULL;
 }
 
 //___________________________________________________________________//
