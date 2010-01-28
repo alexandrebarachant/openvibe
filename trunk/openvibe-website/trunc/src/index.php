@@ -27,9 +27,9 @@
 			$s_argument_variable='(none)';
 		}
 	}
-	
+
 	argument_collector($g_v_argument_list, $g_s_argument_method, $g_s_argument_variable);
-	
+
 	if($g_v_argument_list['q']=="")
 	{
 		$id='home';
@@ -102,7 +102,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<table width=95%>
 			<tr>
 				<td><a href="http://openvibe.inria.fr"><img src="logo.png" alt="OpenViBE logo"/></a></td>
-				<td>A Software for Brain Computer Interfaces and Real Time Neurosciences</td>
+				<td>OpenViBE Software for Brain Computer Interfaces and Real Time Neurosciences</td>
 			</tr>
 		</table>
 		</center>
@@ -121,6 +121,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<ul>
 				<li <?php if ($id=='about') echo "id=selected"; ?> ><a href="?q=about">About</a></li>
 				<li <?php if ($id=='features') echo "id=selected"; ?> ><a href="?q=features">Features</a></li>
+				<li <?php if ($id=='made-with') echo "id=selected"; ?> ><a href="?q=made-with">Made with...</a></li>
 				<li <?php if ($id=='download') echo "id=selected"; ?> ><a href="?q=download">Download</a></li>
 				<li <?php if ($id=='jobs') echo "id=selected"; ?> ><a href="?q=jobs">Job Offers</a></li>
 			</ul>
@@ -149,7 +150,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 -->
 			</ul>
 			<div class="menu-title">Search</div>
-	
+
 			<form action="search.php" method="get" id="search">
 				<fieldset>
 					<input class="search" type="text" name="q" value="Quick Search..." onfocus="this.value='';" />
@@ -180,13 +181,32 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<p>OpenViBE is free and open source. Don't hesitate to download it and <a href="?q=download">give it a try.</a></p>
 
-<!--
+<!-- -->
 		<h1>Job Offers</h1>
 
-		<p><span style="color: red; font-weight: bold;">OpenViBE project is recruiting</span> : we are looking for software engineers, post-doctoral fellows and PhD students interested in BCI.</p>
+		<p><span style="color: red; font-weight: bold;">OpenViBE project is recruiting</span></p>
 		<p>Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
--->
+<!-- -->
+
+<!-- -->
+		<h1>Latest "Made With OpenViBE" Entry</h1>
+
+		<p>Dieter Devlaminck, researcher at <a href=http://www.ugent.be/en>Ghent University</a>, reported his recent results with OpenViBE : controlling a robotic arm
+		thanks to P300 signals. What he did with OpenViBE was basically to derive the xDAWN based P300 signals speller scenario. Each letter in the grid allows to
+		send a specific command to the robot. He posted a video demonstrating those results.</p>
+
+		<div style="padding:1em; margin-top: 1em; margin-bottom: 1em; margin-left: 4em; margin-right: 4em; border: 1px solid #D0D0D0; background-color: #F0F0F0; text-align: center; -moz-border-radius: 0.5em"><object width="400" height="300"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=8841995&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=8841995&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed></object><p><a href="http://vimeo.com/8841995">Robotic toy arm controlled through brain-computer interface</a> from <a href="http://vimeo.com/user2212371">Dieter Devlaminck</a> on <a href="http://vimeo.com">Vimeo</a>.</p></div>
+
+		Warm thanks to Dieter Devlaminck for reporting this work to us !
+<!-- -->
+
+		<p>If you want to see more <i>Made With OpenViBE</i> applications, visit the <a href="?q=made-with">Made With...</a> section</p>
+
 		<h1>News</h1>
+
+		<h2>Two Years Post-Doc Positions Opened at INRIA<br><span style="font-size:x-small">2010/01/08</span></h2>
+
+		<p>There are opened positions to work on and with OpenViBE at INRIA. Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
 
 		<h2>New release of OpenViBE 0.5.0 is now available<br><span style="font-size:x-small">2009/12/18</span></h2>
 
@@ -294,15 +314,14 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Training session<br><span style="font-size:x-small">2009/01/15</span></h2>
 
 		<p>A training session took place at INRIA, Rennes, France. The objective of this training session was to
-		present the software and its capabilities, as well as to provide hands-on training. In addition to an 
-		overview of the main features of OpenViBE, the session included information targeted at developers. After core 
-		OpenViBE concepts and the software architecture were presented, tutorials and exercises offered trainees the 
-		opportunity to try their hand at modifying and/or extending the OpenViBE software (e.g. by writing new 
+		present the software and its capabilities, as well as to provide hands-on training. In addition to an
+		overview of the main features of OpenViBE, the session included information targeted at developers. After core
+		OpenViBE concepts and the software architecture were presented, tutorials and exercises offered trainees the
+		opportunity to try their hand at modifying and/or extending the OpenViBE software (e.g. by writing new
 		acquisition drivers and new signal processing boxes).</p>
 		<p>15 people attended this training session.</p>
 		<p>You can download <a href="pub/doc/training/2009-01-14-training-course.pdf">the slides</a> and the <a href="pub/src/exercices">exercises</a>.</p>
 	</div>
-
 
 <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
 
@@ -375,7 +394,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		</p>
 		<p>As compared to other BCI softwares, the OpenViBE platform stands out for its high modularity. It addresses the needs
 		of different types of users (programmers and non-programmers) and proposes a user-friendly graphical language which allows
-		non-programmers to design a BCI without writing a single line of code. Moreover, OpenViBE is portable, independent of 
+		non-programmers to design a BCI without writing a single line of code. Moreover, OpenViBE is portable, independent of
 		hardware or software targets, can run under Windows and Linux and is entirely based on free and open-source software.</p>
 
 		<h1>Existing scenarios</h1>
@@ -411,22 +430,69 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
 
+	<div class="content" id="made-with">
+
+		<h1>Made With OpenViBE !</h1>
+
+		<p>This section shows what our users are doing with OpenViBE.</p>
+		<p>Do you want to be listed here ? We are interested in your feedback. Feel free to post a short presentation on the
+		<a href=http://openvibe.inria.fr/forum/viewtopic.php?t=270>dedicated forum topic</a>.</p>
+
+		<h2>2009/01/28 Robotic arm controlled by OpenViBE<br><span style="font-size:x-small">Reported by Dieter Devlaminck</span></h2>
+
+		Dieter Devlaminck, researcher at <a href=http://www.ugent.be/en>Ghent University</a>, reported his recent results with OpenViBE : controlling a robotic arm
+		thanks to P300 signals. What he did with OpenViBE was basically to derive the xDAWN based P300 signals speller scenario. Each letter in the grid allows to
+		send a specific command to the robot. He posted a video demonstrating those results.
+
+		<div style="padding:1em; margin-top: 1em; margin-bottom: 1em; margin-left: 4em; margin-right: 4em; border: 1px solid #D0D0D0; background-color: #F0F0F0; text-align: center; -moz-border-radius: 0.5em"><object width="400" height="300"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=8841995&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=8841995&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=&amp;fullscreen=1" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="300"></embed></object><p><a href="http://vimeo.com/8841995">Robotic toy arm controlled through brain-computer interface</a> from <a href="http://vimeo.com/user2212371">Dieter Devlaminck</a> on <a href="http://vimeo.com">Vimeo</a>.</p></div>
+
+		Warm thanks to Dieter Devlaminck for reporting this work to us !
+
+	</div>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+
 	<div class="content" id="jobs">
 
 		<h1>Job Offers</h1>
 
+<!-- -->
+		<p>OpenViBE project is recruiting</p>
 <!--
-		<p>OpenViBE project is recruiting : we are looking for software engineers, post-doctoral fellows and PhD students interested in BCI.</p>
--->
 		<p>OpenViBE project is not recruiting for now...</p>
-
+-->
 <!--
 		<script language=javascript type='text/javascript'>
 			document.write(available_soon('#FIXME'));
 		</script>
 -->
 
-		<h2>One engineer and two post-doc and positions at Gipsa-lab<br><span style="font-size:x-small">2009-06 - CLOSED</span></h2>
+		<h2>One post-doc position at INRIA<br><span style="font-size:x-small">2010-01</span></h2>
+
+		<b>
+		<p><u>Post-doctoral position on:</u></p>
+		<p>"The use of Brain-Computer Interfaces for 3D Interaction with Videogames and Virtual Environments"</p>
+		</b>
+
+		<p>2-year post-doctoral position is available at INRIA (National Institute of Research in Computer Science and Control), Rennes, France.</p>
+		<p>The project is in the area of <i>virtual reality</i> (VR) and <i>Brain-Computer Interfaces</i> (BCI). It concerns the use of BCI for the purpose of 3D interaction with virtual worlds and videogames. The postdoc is strongly related to OpenViBE software for BCI and VR (<a href=http://openvibe.inria.fr>http://openvibe.inria.fr</a>) and to OpenViBE2 research project, which targets "future BCI usages for videogames". The postdoctoral fellow will work within a research team devoted to BCI and VR and under the supervision of Dr. Anatole L&eacute;cuyer (<a href=http://www.irisa.fr/bunraku/anatole.lecuyer>http://www.irisa.fr/bunraku/anatole.lecuyer</a>).</p>
+		<p>The post-doctoral stay is funded for 2 years. The post-doctoral program aims at designing and testing novel 3D interaction techniques with virtual worlds based on Brain-Computer Interfaces. Brain-computer Interfaces (BCI) enable a user to send commands to a computer using only variations of his brain activity. Traditionally, BCI aim at providing communication to those who have lost their voluntary muscle control. They can also be used for multimedia applications, such as for the purpose of interacting with videogames and 3D virtual worlds.</p>
+		<p>Main objective of the post-doctoral work is to investigate and design novel interaction techniques specifically adapted to the use of a brain-computer interfaces for 3D virtual environments. These BCI-based techniques are expected to improve 3D tasks such as navigation in the virtual world or selection and manipulation of virtual objects "by thought". A series of experiments with participants will be conducted to evaluate the various proposed techniques.</p>
+		<p>The candidate must have a PhD and an excellent background in either: virtual reality, 3D user interfaces, brain-computer interaction, human-computer interfaces, or other relevant topics.</p>
+		<p>Interested candidates should send CV, selected publications and names and addresses of three references to :</p>
+		<br>
+		<p>Dr. Anatole L&eacute;cuyer, INRIA Rennes (<i>anatole dot lecuyer at irisa dot fr</i>)</p>
+		<br>
+		<p>References</p>
+		<ul>
+			<li>F. Lotte, A. Van Langhenhove, F. Lamarche, T. Ernest, Y. Renard, B. Arnaldi, A. L&eacute;cuyer, "Exploring Large Virtual Environments by Thoughts using a Brain-Computer Interface based on Motor Imagery and High-Level Commands", Presence : teleoperators and virtual environments, vol. 19, no 1, 2010 (in press)</li>
+			<li>Y. Renard, F. Lotte, G. Gibert, M. Congedo, E. Maby, V. Delannoy, O. Bertrand, A. L&eacute;cuyer, "OpenViBE: An Open-Source Software Platform to Design, Test and Use Brain-Computer Interfaces in Real and Virtual Environments", Presence : teleoperators and virtual environments, vol. 19, no 1, 2010 (in press)</li>
+			<li>J.B. Sauvan, A. L&eacute;cuyer, F. Lotte, G. Casiez, "A Performance Model of Selection Techniques for P300-Based Brain-Computer Interfaces", ACM SIGCHI Conference on Human Factors in Computing Systems (ACM CHI), 2009</li>
+			<li>F. Lotte, J. Fujisawa, H. Touyama, R. Ito, M. Hirose, A. L&eacute;cuyer, "Towards Ambulatory Brain-Computer Interfaces: A Pilot Study with P300 Signals", Advances in Computer Entertainment Technology Conference (ACE), 2009</li>
+			<li>A. L&eacute;cuyer, F. Lotte, R. Reilly, R. Leeb, M. Hirose, M. Slater, "Brain-Computer Interfaces, Virtual Reality, and Videogames", IEEE Computer, vol. 41, num 10, pp. 66-72, 2008</li>
+		</ul>
+
+		<h2>One engineer and two post-doc positions at Gipsa-lab<br><span style="font-size:x-small">2009-06 - <span style="text-color:red">CLOSED</span></span></h2>
 
 		<p>Two opened positions in the framework of the GAZE &amp; EEG (Gipsa-lab, Grenoble, France) :</p>
 		<ul>
@@ -439,7 +505,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		</ul>
 		<p>Feel free to contact us for more information : marco [dot] congedo [at] gmail [dot] com</p>
 
-		<h2>Two software engineer positions at INRIA<br><span style="font-size:x-small">2009-06 - CLOSED</span></h2>
+		<h2>Two software engineer positions at INRIA<br><span style="font-size:x-small">2009-06 - <span style="text-color:red">CLOSED</span></span></h2>
 
 		<p>One software engineer (INRIA, Nancy, France)</p>
 		<p>One software engineer (INRIA, Rennes, France)</p>
@@ -468,7 +534,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		</ul>
 		<p>Feel free to contact us for more information : anatole [dot] lecuyer [at] irisa [dot] fr</p>
 
-		<h2>One PhD Thesis position at INRIA<br><span style="font-size:x-small">2009-06 - CLOSED</span></h2>
+		<h2>One PhD Thesis position at INRIA<br><span style="font-size:x-small">2009-06 - <span style="text-color:red">CLOSED</span></span></h2>
 
 		<p>One PhD Thesis on "3D interaction with video games based on Brain-Computer Interfaces"
 		(INRIA, Rennes, France)</p>
@@ -555,7 +621,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>Stable code is distributed as compressed source archives :</p>
 
 		<script language=javascript type='text/javascript'>
-			archive("OpenViBE 0.5.0 (svn 1827)", "pub/src/openvibe-0.4.0-svn1827-src", "2009/12/18", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+			archive("OpenViBE 0.5.0 (svn 1827)", "pub/src/openvibe-0.5.0-svn1827-src", "2009/12/18", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 		</script>
 		<div id="src-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
@@ -574,9 +640,9 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>The software is available under the terms of the <a href="documentation/unstable/Doc_Licence.html" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">LGPL-v2+</a>
 		with the exception of a couple of plugins that rely on GPL libraries and become GPL themselves.</p>
 		<p>The most recent code may be retrieved anonymously from the <a href="http://gforge.inria.fr/projects/openvibe" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">INRIA gForge</a> using <i>subversion</i> :</p>
-		<p><div class="code">svn checkout svn://scm.gforge.inria.fr/svn/openvibe</div></p>
+		<p><div class="code">svn checkout svn://scm.gforge.inria.fr/svn/openvibe/trunk</div></p>
 		<p>Alternatively, if you plan to directly contribute into the INRIA gForge and already have an account, you should use <i>subversion</i> over <i>ssh</i> :</p>
-		<p><div class="code">svn checkout ssh+svn://<b>accountname</b>@scm.gforge.inria.fr/svn/openvibe</div></p>
+		<p><div class="code">svn checkout ssh+svn://<b>accountname</b>@scm.gforge.inria.fr/svn/openvibe/trunk</div></p>
 
 		<h1>Virtual Machine</h1>
 
@@ -635,7 +701,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		and the <a href="documentation/unstable/Doc_FAQ.html" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">frequently asked questions</a>.
 		Developers should head the <a href="documentation/unstable/Doc_DeveloperDocumentation.html" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">developer documentation</a>
 		to find tutorials on how to create a new <a href="documentation/unstable/Doc_CreatingANewDriver.html" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">acquisition driver</a>
-		or a new <a href="documentation/unstable/Doc_Tutorial_Developer_SignalProcessing.html" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">box</a>. 
+		or a new <a href="documentation/unstable/Doc_Tutorial_Developer_SignalProcessing.html" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">box</a>.
 		<p>If you need further support, the <a href="http://openvibe.inria.fr/forum" class="leaving-link" onclick="window.open(this.href,'openvibe-forum'); return false;">forum</a> is a good place to start with.</p>
 		<p>Additionally, you can use the <a href="https://gforge.inria.fr/mail/?group_id=276" class="leaving-link" onclick="window.open(this.href,'openvibe-forge'); return false;">mailing lists</a>
 		or <b>IRC</b> to contact us (<i>#openvibe</i> on <i>irc.freenode.net</i>).</p>
@@ -651,7 +717,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<p>Brain-Computer Interaction (or BCI) corresponds to the direct use of brain signals to send "mental commands" to
 		an automated system such as a robot, a prosthesis, or a cursor on a computer screen. BCI is a rapidly growing area
-		of research and several impressive prototypes are already available. Indeed, severely disabled people are 
+		of research and several impressive prototypes are already available. Indeed, severely disabled people are
 		enabled to control the motion of their wheelchair or to communicate with their relatives using adapted mental "spellers"!</p>
 
 		<h1>Applications</h1>
@@ -844,15 +910,27 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<ul><li>Yann Renard, INRIA (<i>yann dot renard at irisa dot fr</i>)</li></ul>
 
+		<h2>INRIA Support and Development Team</h2>
+
+		<ul>
+			<li>Yann Renard, lead Software Engineer, INRIA Bunraku Team (<i>yann dot renard at irisa dot fr</i>)</li>
+			<li>Laurent Bonnet, software engineer, INRIA Bunraku Team (<i>laurent dot bonnet at irisa dot fr</i>)</li>
+			<li>Baptiste Payan, software engineer, INRIA Cortex Team (<i>baptiste dot payan at loria dot fr</i>)</li>
+			<li>Guillermo Andrade Barroso, research engineer, INRIA SED Team (<i>guillermo dot andrade at irisa dot fr</i>)</li>
+			<li>Olivier Rochel, research engineer, INRIA SED Team (<i>olivier dot rochel at loria dot fr</i>)</li>
+			<li>Laurent Bougrain, assitant professor, INRIA Cortex Team (<i>laurent dot bougrain at loria dot fr</i>)</li>
+		</ul>
+
 		<h2>Developers</h2>
 
 		<ul>
-			<li>Laurent Bonner, software engineer, INRIA (<i>laurent dot bonnet at irisa dot fr</i>)</li>
+			<li>Laurent Bonnet, software engineer, INRIA (<i>laurent dot bonnet at irisa dot fr</i>)</li>
 			<li>Baptiste Payan, software engineer, INRIA (<i>baptiste dot payan at loria dot fr</i>)</li>
-			<li>Fabien Lotte, doctoral student, INRIA (<i>fabien dot lotte at irisa dot fr</i>)</li>
 			<li>Pierre Emmanuel Aguera, research engineer, INSERM (<i>aguera at lyon dot inserm dot fr</i>)</li>
 			<li>Emmanuel Maby, postdoctoral fellow, INSERM (<i>maby at lyon dot inserm dot fr</i>)</li>
 			<li>Gelu Ionescu, research engineer, GIPSA-Lab (<i>gelu dot ionescu at lis dot inpg dot fr</i>)</li>
+			<li>Matthieu Goyat, software engineer, GIPSA-Lab (<i>matthieu dot goyat at gipsa-lab dot grenoble-inp dot fr</i>)</li>
+			<li>Guillaume Lio, software engineer, GIPSA-Lab (<i>guillaume dot lio at gipsa-lab dot grenoble-inp dot fr</i>)</li>
 		</ul>
 
 		<h2>Scientific Contributors</h2>
@@ -863,21 +941,28 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li>Antoine Souloumiac, research engineer, CEA-List</li>
 			<li>J&eacute;r&eacute;mie Mattout, research scientist, INSERM</li>
 			<li>Christian Jutten, senior researcher, GIPSA-Lab</li>
+			<li>Laurent Bougrain, assitant professor, INRIA Cortex Team</li>
+		</ul>
+
+		<h2>Previous Developers</h2>
+
+		<ul>
+			<li>Fabien Lotte, doctoral student, INRIA (<i>fabien dot lotte at irisa dot fr</i>)</li>
+			<li>Vincent Delannoy, software engineer, INRIA (<i>vincent dot delannoy at irisa dot fr</i>)</li>
+			<li>Guillaume Gibert, postdoctoral fellow, INSERM (<i>guillaume dot gibert at inserm dot fr</i>)</li>
+			<li>Bruno Renier, trainee, INRIA</li>
+			<li>Jean Baptiste Sauvan, trainee, INRIA</li>
+		</ul>
+
+		<h2>Previous Scientific Contributors</h2>
+
+		<ul>
 			<li>Denis Ch&ecirc;ne, senior expert, Orange Labs</li>
 			<li>Virginie Attina, INSERM</li>
 			<li>Cedric Gouy-Pailler, doctoral student, GIPSA-Lab</li>
 			<li>Ornella Plos, doctoral student, AFM</li>
 			<li>Bertrand Rivet, postdoctoral fellow, CEA-List</li>
 			<li>Bernard Hennion, senior researcher, Orange Labs</li>
-		</ul>
-
-		<h2>Previous Developers</h2>
-
-		<ul>
-			<li>Vincent Delannoy, software engineer, INRIA (<i>vincent dot delannoy at irisa dot fr</i>)</li>
-			<li>Guillaume Gibert, postdoctoral fellow, INSERM (<i>guillaume dot gibert at inserm dot fr</i>)</li>
-			<li>Bruno Renier, trainee, INRIA</li>
-			<li>Jean Baptiste Sauvan, trainee, INRIA</li>
 		</ul>
 
 		<h1>OpenViBE Users</h1>
@@ -890,7 +975,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li><a href="http://www.gipsa-lab.inpg.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">GIPSA-Lab</a>, France</li>
 			<li><a href="http://www-list.cea.fr/" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">CEA-List</a>, France</li>
 			<li><a href="http://www.inria.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">INRIA Nancy - Grand Est Research Centre</a>, France (Cortex team)</li>
-			<li><a href="http://www.inria.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">INRIA Sophia Antipolis - Mediterranee</a>, France (Odysee tema)</li>
+			<li><a href="http://www.inria.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">INRIA Sophia Antipolis - Mediterranee</a>, France (Odysee team)</li>
 			<li><a href="http://lagis.ec-lille.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">LAGIS</a>, France</li>
 			<li><a href="http://www.college-de-france.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">College de France</a>, France</li>
 			<li><a href="http://www.insa-rouen.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">INSA Rouen</a>, France</li>
