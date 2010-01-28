@@ -1,12 +1,55 @@
 /**
  * \page Doc_FAQ Frequently asked questions
  *
+ * On this page, you will find the most frequently asked question. If you don't find what you need here, feel free to ask on the forum.
+ *
+ * \section Doc_FAQ_WhatDoIFind What do I find in this FAQ ?
+ *
+ * In this FAQ, you will find the following information :
+ * - \ref Doc_FAQ_What
+ * - \ref Doc_FAQ_Vibe
+ * - \ref Doc_FAQ_Licence
+ * - \ref Doc_FAQ_Status
+ * - \ref Doc_FAQ_Environment
+ * - \ref Doc_FAQ_Functionalities
+ * - \ref Doc_FAQ_Devices
+ * - \ref Doc_FAQ_UnstableDrivers
+ * - \ref Doc_FAQ_Cite
+ * - \ref Doc_FAQ_GTK
+ * - \ref Doc_FAQ_DownloadSources
+ * - \ref Doc_FAQ_DownloadBinaries
+ * - \ref Doc_FAQ_ProblemsCompiling
+ * - \ref Doc_FAQ_BuildUnderEclipse
+ * - \ref Doc_FAQ_CompileTime
+ * - \ref Doc_FAQ_BranchChanging
+ * - \ref Doc_FAQ_ProblemsUsing
+ * - \ref Doc_FAQ_Bug
+ * - \ref Doc_FAQ_Contribute
+ * - \ref Doc_FAQ_OtherBCISoftwareConnections
+ * - \ref Doc_FAQ_DirectX
+ * - \ref Doc_FAQ_ColorDepth
+ * - \ref Doc_FAQ_DependencyInstallationLinux
+ * - \ref Doc_FAQ_LinuxMatlabWontRun
+ * - \ref Doc_FAQ_FAQCount
+ *
  * \section Doc_FAQ_What What is OpenViBE ?
  *
  * §OpenViBE§ is a software platform that enables to design, test and use
  * Brain-Computer Interfaces. Brain-Computer Interfaces (BCI) are communication systems that enable users to
  * send commands to computers only by means of brain activity. BCI are gaining interest inside the Virtual
  * Reality (VR) community as they have appeared as promising interaction devices for Virtual Environments (VE).
+ *
+ * \section Doc_FAQ_Vibe What does the ViBE stand for ?
+ *
+ * Well, intially, OpenViBE was for "Open Virtual Brain Environment"... We no longer want to limit the use
+ * of OpenViBE to Virtual Environments... So you could now just take OpenViBE as a noun, it's no longer an acronym :)
+\htmlonly
+<!--
+\endhtmlonly
+ * Or you could consider the \e vibe as the brainwave ;)
+\htmlonly
+-->
+\endhtmlonly
  *
  * \section Doc_FAQ_Licence What is the licence of OpenViBE ?
  *
@@ -59,7 +102,7 @@
 <tr>                                                       <td>Debian 5</td>              <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr> <td rowspan=11>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
 <tr>                            <td rowspan=10>Linux</td>  <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=green>No</td> </tr>
+<tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Fedora 12</td>             <td>GCC 4.4.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
@@ -162,8 +205,10 @@ AcquisitionServer_ShowUnstable = true
  *
  * \section Doc_FAQ_Cite I'm a scientist and I wan't to cite OpenViBE, how should I proceed ?
  *
- * There is no reference article accepted yet so you should cite the OpenViBE website. We will update this FAQ entry as soon as a reference paper
- * is accepted, stay tuned.
+ * Please use the following refence to cite OpenViBE in your publications :
+ * <em>Y. Renard, F. Lotte, G. Gibert, M. Congedo, E. Maby, V. Delannoy, O. Bertrand, A. Lécuyer,
+ * "OpenViBE: An Open-Source Software Platform to Design, Test and Use Brain-Computer Interfaces in Real and Virtual Environments",
+ * Presence : teleoperators and virtual environments, vol. 19, no 1, 2010 (in press)</em>
  *
  * \section Doc_FAQ_GTK Why did you favor GTK over Qt ?
  *
@@ -191,6 +236,43 @@ AcquisitionServer_ShowUnstable = true
  *
  * First, make sure you followed the install procedure described in \ref Doc_Install . If problems persist, you can get some help from
  * the people involved in this project. See \ref Doc_Contact for how to contact us.
+ *
+ * \section Doc_FAQ_BuildUnderEclipse Is it possible to build and run OpenViBE with Eclipse ?
+ *
+ * Well, it's almost possible yes :)
+ *
+ * After, you have made a project for OpenViBE under Eclipse. you can used the OpenViBE commands files with the Eclipse's function "External Tools". 
+ *
+ * All configuration is located in the menu "Run > External Tools > External Tools Configuration...".
+ * First, make a new "Program" and choose a name for it.
+ *   - Example: "Openvibe-Build"
+ *
+ * In the tab "Main", fill next fields (for Linux):
+ *   - Location: "${workspace_loc:/openvibe/trunk/scripts/linux-build}"
+ *   - Working directory: "${workspace_loc:/openvibe/trunk/scripts}"
+ *
+ * For Windows, it's the same process but the value of fields change.
+ *   - Location: "${workspace_loc:/openvibe/trunk/scripts/win32-build.cmd}"
+ *   - Working directory: "${workspace_loc:/openvibe/trunk/scripts}"
+ *
+ * Now, if you want run OpenViBE under Eclipse it's the same process.
+ * For Linux, only one "Program" is necessary. create a new "Program" with a different name and fill fields.
+ *   - Example name : "openvibe-linux-test"
+ *   - Location: "${workspace_loc:/openvibe/trunk/scripts/linux-test}"
+ *   - Working directory: "${workspace_loc:/openvibe/trunk/scripts}"
+ *
+ * For Windows, if you want lauch the "Acquisition Server" and the "Designer", you must create 2 "Program":
+ *   - Example name : "openvibe-test-acquisition-server"
+ *   - Location: "${workspace_loc:/openvibe/trunk/dist/test-acquisition-server.cmd}"
+ *   - Working directory: "${workspace_loc:/openvibe/trunk/dist}"
+ *
+ * And for the "Designer":
+ *   - Example name : "openvibe-test-designer"
+ *   - Location: "${workspace_loc:/openvibe/trunk/dist/test-designer.cmd}"
+ *   - Working directory: "${workspace_loc:/openvibe/trunk/dist}"
+ *
+ * Then, you can launch the builder and runners with this same menu "Run > External Tools > External Tools Configuration...".
+ * Select the "Program" you want execute and use the button "Run" at the down of the dialog box.
  *
  * \section Doc_FAQ_CompileTime Compiling OpenViBE is far too long especially on Windows, what could I do to speed it up ?
  *
@@ -299,10 +381,9 @@ AcquisitionServer_ShowUnstable = true
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
- * this question currently is 23!)
+ * this question currently is 26!)
  *
  */
-
 /*
  *  - funding : you can help fund the project and its permanent developers FIXME
  *
