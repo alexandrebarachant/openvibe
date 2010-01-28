@@ -269,7 +269,6 @@ CDriverTMSiRefa32B::CDriverTMSiRefa32B(IDriverContext& rDriverContext)
 
 CDriverTMSiRefa32B::~CDriverTMSiRefa32B(void)
 {
-	reset();
 }
 
 void CDriverTMSiRefa32B::release(void)
