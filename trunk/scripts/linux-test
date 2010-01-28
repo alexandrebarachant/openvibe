@@ -8,6 +8,12 @@ fi
 
 source linux-init_env_command
 
+ov_debugger=
+if [ "$1" == "--debug" ]; then
+	ov_debugger=gdb
+	shift
+fi
+
 cd ../dist/bin
 
 export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
@@ -19,12 +25,13 @@ killall OpenViBE-plugin-inspector-dynamic
 killall OpenViBE-acquisition-server-dynamic
 killall OpenViBE-designer-dynamic
 
-
-#gdb ./OpenViBE-id-generator-dynamic
-#gdb ./OpenViBE-plugin-inspector-dynamic
-#gdb ./OpenViBE-acquisition-server-dynamic
-#gdb ./OpenViBE-designer-dynamic
-
+#./OpenViBE-id-generator-dynamic
 #./OpenViBE-plugin-inspector-dynamic &
-./OpenViBE-acquisition-server-dynamic &
-./OpenViBE-designer-dynamic &
+
+if [ "$ov_debugger" == "" ]; then
+	./OpenViBE-acquisition-server-dynamic &
+	./OpenViBE-designer-dynamic &
+else
+	$ov_debugger ./OpenViBE-acquisition-server-dynamic
+	$ov_debugger ./OpenViBE-designer-dynamic
+fi
