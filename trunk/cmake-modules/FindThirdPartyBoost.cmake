@@ -7,6 +7,7 @@
 IF(UNIX)
 	SET(Boost_ADDITIONAL_VERSIONS 1.34.1)
 	FIND_PACKAGE(Boost 1.36.0)
+	FIND_PACKAGE(Boost 1.36.0)
 
 	IF(Boost_FOUND)
 		MESSAGE(STATUS "  Found boost...")
