@@ -19,7 +19,7 @@ boolean CBoxAlgorithmRunCommand::initialize(void)
 
 	for(uint32 i=0; i<l_rStaticBoxContext.getSettingCount(); i+=2)
 	{
-		m_vCommand[(uint64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i)].push_back(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+1));
+		m_vCommand[(uint64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i)].push_back(this->getConfigurationManager().expand(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i+1)));
 	}
 
 	return true;
