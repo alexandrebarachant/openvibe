@@ -16,7 +16,7 @@ fi
 
 cd ../dist/bin
 
-export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=../lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH
 export LC_ALL=C
 #renice 19 $$
 

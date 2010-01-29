@@ -213,7 +213,7 @@ static int lua_send_stimulation_cb(lua_State* pState)
 }
 
 CBoxAlgorithmLuaStimulator::CBoxAlgorithmLuaStimulator(void)
-#if defined OVP_OS_Windows
+#if BOOST_VERSION >= 103500
 	:m_oInnerLock(m_oMutex, boost::defer_lock)
 	,m_oOuterLock(m_oMutex, boost::defer_lock)
 #else

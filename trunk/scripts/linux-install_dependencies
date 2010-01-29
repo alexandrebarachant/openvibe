@@ -1164,7 +1164,11 @@ ov_package_post_uncompress_hook_libxml='
 	popd'
 
 ov_package_additional_configure_flags_boost='
-	--with-libraries=serialization,regex'
+	--with-libraries=serialization,regex,thread'
+ov_package_post_install_hook_boost='
+	pushd ../lib &&
+	ln -sf libboost_thread-*-mt.so libboost_thread.so &&
+	popd'
 
 ov_package_pre_configure_hook_libx11='
 	pushd * &&
