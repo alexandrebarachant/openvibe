@@ -1638,7 +1638,7 @@ ov_package_install_hook_openmask4tutorial='
 ov_package_configure_hook_lua='
 	pushd * &&
 	$ov_sed -i "s#^INSTALL_TOP.*#INSTALL_TOP=$ov_target_folder#g" Makefile &&
-	$ov_sed -i "s#^\\(CFLAGS.*\\)#\1 -I$ov_target_folder_include#g" src/Makefile &&
+	$ov_sed -i "s#^\\(CFLAGS.*\\)#\1 -fPIC -I$ov_target_folder_include#g" src/Makefile &&
 	$ov_sed -i "s#^\\(MYLDFLAGS.*\\)#\1 -L$ov_target_folder_lib64 -L$ov_target_folder_lib#g" src/Makefile &&
 	popd'
 ov_package_make_hook_lua='
@@ -1767,7 +1767,7 @@ ov_install_package "vrpn"
 # Scripting packages
 #ov_install_package "readline"
 #ov_install_package "ncurses"
-#ov_install_package "lua"
+ov_install_package "lua"
 #ov_install_package "swig"
 
 rm -f linux-dependencies 2> /dev/null
