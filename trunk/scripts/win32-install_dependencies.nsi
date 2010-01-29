@@ -138,8 +138,8 @@ Section "BOOST"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-boost-1.34.0.zip" no_need_to_download_boost
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/boost_1_34_0.zip "arch\openvibe-dependency-boost-1.34.0.zip"
+	IfFileExists "arch\openvibe-dependency-boost-1.41.0.zip" no_need_to_download_boost
+	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/boost-1.41.0.zip "arch\openvibe-dependency-boost-1.41.0.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -148,13 +148,13 @@ Section "BOOST"
 no_need_to_download_boost:
 
 	IfFileExists "boost" no_need_to_install_boost
-	ZipDLL::extractall "arch\openvibe-dependency-boost-1.34.0.zip" "boost"
+	ZipDLL::extractall "arch\openvibe-dependency-boost-1.41.0.zip" "boost"
 
 no_need_to_install_boost:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\boost\boost_1_34_0$\r$\n"
+	FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\boost$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -234,6 +234,36 @@ no_need_to_install_itpp:
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
 	FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\itpp$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Lua"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\openvibe-dependency-lua-5.1.4-30.zip" no_need_to_download_lua
+	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/lua-5.1.4-30.zip "arch\openvibe-dependency-lua-5.1.4-30.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+
+no_need_to_download_lua:
+
+	IfFileExists "lua" no_need_to_install_lua
+	ZipDLL::extractall "arch\openvibe-dependency-lua-5.1.4-30.zip" "lua"
+
+no_need_to_install_lua:
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_LUA=$INSTDIR\lua$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -484,6 +514,7 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\expat"
 	RMDir /r "$INSTDIR\cmake"
 	RMDir /r "$INSTDIR\itpp"
+	RMDir /r "$INSTDIR\lua"
 	RMDir /r "$INSTDIR\obt"
 	RMDir /r "$INSTDIR\ogre"
 	RMDir /r "$INSTDIR\openmask"

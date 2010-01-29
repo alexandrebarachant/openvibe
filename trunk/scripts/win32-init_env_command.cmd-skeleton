@@ -164,6 +164,7 @@ REM ############################################################################
 SET INCLUDE=%OV_DEP_MSSDK%\include;%INCLUDE%
 SET INCLUDE=%OV_DEP_BOOST%;%INCLUDE%
 
+SET LIB=%OV_DEP_BOOST%\lib;%LIB%
 SET LIB=%OV_DEP_MSSDK%\lib;%LIB%
 
 SET PATH=%OV_DEP_MSSDK%\bin;%PATH%

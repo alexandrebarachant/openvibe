@@ -1,13 +1,14 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_LuaStimulator_H__
 #define __OpenViBEPlugins_BoxAlgorithm_LuaStimulator_H__
 
-#if 0 // defined TARGET_HAS_ThirdPartyLua
+#if 1 // defined TARGET_HAS_ThirdPartyLua
 
 #include "../../ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
 
 #include <map>
 #include <vector>
@@ -134,9 +135,10 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
 				rBoxAlgorithmPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
-				rBoxAlgorithmPrototype.addSetting("Lua Script", OV_TypeId_Filename, "/home/yrenard/openvibe/scripts/pipo.lua");
+				rBoxAlgorithmPrototype.addSetting("Lua Script", OV_TypeId_Filename, "");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddOutput);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 

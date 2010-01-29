@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmLuaStimulator.h"
 
-#if 0 // defined TARGET_HAS_ThirdPartyLua
+#if 1 // defined TARGET_HAS_ThirdPartyLua
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -213,8 +213,13 @@ static int lua_send_stimulation_cb(lua_State* pState)
 }
 
 CBoxAlgorithmLuaStimulator::CBoxAlgorithmLuaStimulator(void)
+#if defined OVP_OS_Windows
+	:m_oInnerLock(m_oMutex, boost::defer_lock)
+	,m_oOuterLock(m_oMutex, boost::defer_lock)
+#else
 	:m_oInnerLock(m_oMutex, false)
 	,m_oOuterLock(m_oMutex, false)
+#endif
 {
 }
 
