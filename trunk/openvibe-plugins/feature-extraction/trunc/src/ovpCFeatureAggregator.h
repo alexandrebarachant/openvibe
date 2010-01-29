@@ -132,7 +132,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("Input stream 1", OV_TypeId_StreamedMatrix);
-				rPrototype.addInput("Input stream 2", OV_TypeId_StreamedMatrix);
+				// rPrototype.addInput("Input stream 2", OV_TypeId_StreamedMatrix);
 				rPrototype.addOutput("Feature vector stream", OV_TypeId_FeatureVector);
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);
 
