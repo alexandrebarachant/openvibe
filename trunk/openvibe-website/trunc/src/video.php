@@ -141,11 +141,11 @@
 	<?php
 		if($playlist=="true")
 		{
-			echo "	createPlayer('/medias/".$id."-playlist.xml', '800', '450', '800', '850');";
+			echo "	createPlayer('/medias/".$id."-playlist.xml', '780', '450', '780', '850');";
 		}
 		else
 		{
-			echo "	createPlayer('/medias/".$id.".flv', '800', '450', '800', '450');";
+			echo "	createPlayer('/medias/".$id.".flv', '780', '450', '780', '450');";
 		}
 	?>
 	show_div('video');">
@@ -171,38 +171,43 @@
 	<div id="menu">
 		<div id="menu-content">
 			<ul>
-				<li <?php if ($id=='home') echo "id=selected"; ?> ><a href="/?q=home">OpenViBE Home</a></li>
+				<li <?php if ($id=='home') echo "id=selected"; ?> ><a href="index.php?q=home">OpenViBE Home</a></li>
 			</ul>
 			<div class="menu-title">General</div>
 			<ul>
-				<li <?php if ($id=='about') echo "id=selected"; ?> ><a href="/?q=about">About</a></li>
-				<li <?php if ($id=='features') echo "id=selected"; ?> ><a href="/?q=features">Features</a></li>
-				<li <?php if ($id=='download') echo "id=selected"; ?> ><a href="/?q=download">Download</a></li>
-				<li <?php if ($id=='jobs') echo "id=selected"; ?> ><a href="/?q=jobs">Job Offers</a></li>
+				<li <?php if ($id=='about') echo "id=selected"; ?> ><a href="index.php?q=about">About</a></li>
+				<li <?php if ($id=='features') echo "id=selected"; ?> ><a href="index.php?q=features">Features</a></li>
+				<li <?php if ($id=='made-with') echo "id=selected"; ?> ><a href="index.php?q=made-with">Made with...</a></li>
+				<li <?php if ($id=='download') echo "id=selected"; ?> ><a href="index.php?q=download">Download</a></li>
+				<li <?php if ($id=='jobs') echo "id=selected"; ?> ><a href="index.php?q=jobs">Job Offers</a></li>
 			</ul>
 			<div class="menu-title">Help</div>
 			<ul>
 			<li><a href="documentation/unstable" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">Documentation</a>
 				<li><a href="documentation/unstable/Doc_FAQ.html" class="leaving-link" onclick="window.open(this.href,'openvibe-doc'); return false;">FAQ</a></li>
-				<li <?php if ($id=='support') echo "id=selected"; ?> ><a href="/?q=support">Support</a></li>
-				<li <?php if ($id=='bci') echo "id=selected"; ?> ><a href="/?q=bci">What is a BCI ?</a></li>
-				<li <?php if ($id=='medias') echo "id=selected"; ?> ><a href="/?q=medias">Medias</a></li>
-				<li <?php if ($id=='publications') echo "id=selected"; ?> ><a href="/?q=publications">Publications</a></li>
+				<li <?php if ($id=='support') echo "id=selected"; ?> ><a href="index.php?q=support">Support</a></li>
+				<li <?php if ($id=='bci') echo "id=selected"; ?> ><a href="index.php?q=bci">What is a BCI ?</a></li>
+				<li <?php if ($id=='medias') echo "id=selected"; ?> ><a href="index.php?q=medias">Medias</a></li>
+				<li <?php if ($id=='publications') echo "id=selected"; ?> ><a href="index.php?q=publications">Publications</a></li>
 			</ul>
 			<div class="menu-title">Contact</div>
 			<ul>
-				<li <?php if ($id=='contributions') echo "id=selected"; ?> ><a href="/?q=contributions">Contributions</a></li>
+				<li <?php if ($id=='contributions') echo "id=selected"; ?> ><a href="index.php?q=contributions">Contributions</a></li>
+				<li <?php if ($id=='related') echo "id=selected"; ?> ><a href="index.php?q=related">Related Projects</a></li>
 				<li><a href="http://openvibe.inria.fr/forum" class="leaving-link" onclick="window.open(this.href,'openvibe-forum'); return false;">Forum</a></li>
 				<li><a href="https://gforge.inria.fr/projects/openvibe" class="leaving-link" onclick="window.open(this.href,'openvibe-forge'); return false;">INRIA gForge</a></li>
 				<li><a href="https://gforge.inria.fr/mail/?group_id=276" class="leaving-link" onclick="window.open(this.href,'openvibe-forge'); return false;">Mailing Lists</a></li>
-				<li><a href="https://gforge.inria.fr/tracker/?group_id=276" class="leaving-link" onclick="window.open(this.href,'openvibe-forge'); return false;">Bug Tracker</a></li>
-				<li><a href="http://www.irisa.fr/bunraku/OpenViBE" class="leaving-link" onclick="window.open(this.href,'openvibe-wiki'); return false;">Research Project</a></li>
-				<li><b>IRC</b> : <span style="font-size: x-small; font-style: italic;">#openvibe</span> on <span style="font-size: x-small; font-style: italic;">irc.freenode.net</span></li>
+				<li><a href="http://openvibe.inria.fr/tracker" class="leaving-link" onclick="window.open(this.href,'openvibe-tracker'); return false;">Bug Tracker</a></li>
+<!--				<li><a href="http://www.irisa.fr/bunraku/OpenViBE" class="leaving-link" onclick="window.open(this.href,'openvibe-wiki'); return false;">Research Project</a></li> -->
+				<li <?php if ($id=='contact') echo "id=selected"; ?> ><a href="index.php?q=contact">Contact</a></li>
+				<li><b>IRC</b> : <span style="font-size: x-small; font-style: italic;">#openvibe</span> on <a href="http://webchat.freenode.net"><span style="font-size: x-small; font-style: italic;">irc.freenode.net</span></a></li>
+<!--
 				<li><b>Project Leader</b> : Anatole L&eacute;cuyer, INRIA <span style="font-size: x-small; font-style: italic;">(anatole dot lecuyer at irisa dot fr)</span></li>
 				<li><b>Lead Software Engineer</b> : Yann Renard, INRIA <span style="font-size: x-small; font-style: italic;">(yann dot renard at irisa dot fr)</span></li>
+-->
 			</ul>
 			<div class="menu-title">Search</div>
-	
+
 			<form action="search.php" method="get" id="search">
 				<fieldset>
 					<input class="search" type="text" name="q" value="Quick Search..." onfocus="this.value='';" />

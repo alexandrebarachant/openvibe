@@ -122,7 +122,7 @@ div.content p
 div.content-container
 {
 	padding: 0;
-	margin-left: 168px;
+	margin-left: 188px;
 	margin-top: 0;
 	margin-bottom: 0;
 	margin-right: 0;
@@ -191,7 +191,7 @@ div#title table, div#title td, div#footer table, div#footer td
 div#menu
 {
 	float: left;
-	width: 160px;
+	width: 180px;
 	padding: 0;
 
 	background-color: #ffffff;

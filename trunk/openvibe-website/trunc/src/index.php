@@ -137,13 +137,14 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<div class="menu-title">Contact</div>
 			<ul>
 				<li <?php if ($id=='contributions') echo "id=selected"; ?> ><a href="?q=contributions">Contributions</a></li>
+				<li <?php if ($id=='related') echo "id=selected"; ?> ><a href="?q=related">Related Projects</a></li>
 				<li><a href="http://openvibe.inria.fr/forum" class="leaving-link" onclick="window.open(this.href,'openvibe-forum'); return false;">Forum</a></li>
 				<li><a href="https://gforge.inria.fr/projects/openvibe" class="leaving-link" onclick="window.open(this.href,'openvibe-forge'); return false;">INRIA gForge</a></li>
 				<li><a href="https://gforge.inria.fr/mail/?group_id=276" class="leaving-link" onclick="window.open(this.href,'openvibe-forge'); return false;">Mailing Lists</a></li>
 				<li><a href="http://openvibe.inria.fr/tracker" class="leaving-link" onclick="window.open(this.href,'openvibe-tracker'); return false;">Bug Tracker</a></li>
-				<li><a href="http://www.irisa.fr/bunraku/OpenViBE" class="leaving-link" onclick="window.open(this.href,'openvibe-wiki'); return false;">Research Project</a></li>
+<!--				<li><a href="http://www.irisa.fr/bunraku/OpenViBE" class="leaving-link" onclick="window.open(this.href,'openvibe-wiki'); return false;">Research Project</a></li> -->
 				<li <?php if ($id=='contact') echo "id=selected"; ?> ><a href="?q=contact">Contact</a></li>
-				<li><b>IRC</b> : <span style="font-size: x-small; font-style: italic;">#openvibe</span> on <span style="font-size: x-small; font-style: italic;">irc.freenode.net</span></li>
+				<li><b>IRC</b> : <span style="font-size: x-small; font-style: italic;">#openvibe</span> on <a href="http://webchat.freenode.net"><span style="font-size: x-small; font-style: italic;">irc.freenode.net</span></a></li>
 <!--
 				<li><b>Project Leader</b> : Anatole L&eacute;cuyer, INRIA <span style="font-size: x-small; font-style: italic;">(anatole dot lecuyer at irisa dot fr)</span></li>
 				<li><b>Lead Software Engineer</b> : Yann Renard, INRIA <span style="font-size: x-small; font-style: italic;">(yann dot renard at irisa dot fr)</span></li>
@@ -990,6 +991,23 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li><a href="http://ewi.utwente.nl" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">University of Twente</a>, Netherlands</li>
 			<li><a href="http://www.u-bordeaux2.fr" class="leaving-link" onclick="window.open(this.href,'openvibe-users'); return false;">Universit&eacute; de Bordeaux 2</a>, France</li>
 			<li>...</li>
+		</ul>
+
+	</div>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+
+	<div class="content" id="related">
+
+		<h1>Related Projects</h1>
+
+		<p>The following projects are related to the OpenViBE software.</p>
+		<ul>
+			<li><a class="leaving-link" onclick="window.open(this.href,'openvibe-related'); return false;" href="related/adt-loic">ADT LOIC</a> (this website is in french)</li>
+			<!-- <li><a class="leaving-link" onclick="window.open(this.href,'openvibe-related'); return false;" href="related/adt-immersive-bci">ADT Immersive BCI</a></li> -->
+			<li><a class="leaving-link" onclick="window.open(this.href,'openvibe-related'); return false;" href="related/anr-openvibe1">ANR OpenViBE 1</a> (this project is over)</li>
+			<!-- <li><a class="leaving-link" onclick="window.open(this.href,'openvibe-related'); return false;" href="related/anr-openvibe2">ANR OpenViBE 2</a></li> -->
+			<!-- <li><a class="leaving-link" onclick="window.open(this.href,'openvibe-related'); return false;" href="related/anr-robik">ANR Robik</a></li> -->
 		</ul>
 
 	</div>
