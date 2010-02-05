@@ -248,8 +248,32 @@
  * be tuned to match your needs for any specific driver and also could be
  * used to test your §OpenViBE§ platform.
  *
- * Now that you understand the structure of a driver, you can go to the next step: 
- * \ref Doc_ConfiguringANewDriver. 
+ * Now that you understand the structure of a driver, you can go to the next step:
+ * \ref Doc_ConfiguringANewDriver.
+ *
+ * \section Doc_CreatingANewDriver_UsingTheNewDriver Using the driver
+ *
+ * Now that you have a working driver you probably want to test / use it. In order
+ * to achieve this task, you have to register the driver to the acquisition server.
+ * Put your .h / .cpp files in the acquisition server project :
+ * <em>openvibe-applications/acquisition-server/trunc/src/<b>your-driver-name</b></em>
+ * Then edit the main acquisition server file <em>ovasCAcquisitionServer.cpp</em> and
+ * add your driver in the driver list.
+ *
+ * \code
+ * #include "your-driver-name/ovasCDriverYourDriverName.h"
+ *
+ * // ...
+ *
+ * CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& rKernelContext)
+ * {
+ *   // ...
+ *
+ *   m_vDriver.push_back(new CDriverYourDriverName(*m_pDriverContext));
+ *
+ *   // ...
+ * }
+ * \endcode
  *
  * \section Doc_CreatingANewDriver_Support Support
  *
