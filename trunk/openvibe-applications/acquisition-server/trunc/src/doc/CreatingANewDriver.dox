@@ -88,7 +88,7 @@
  * class CYourDriver : public OpenViBEAcquisitionServer::IDriver
  * {
  * public:
- *   CYourDriver(void);
+ *   CYourDriver(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
  *   virtual ~CYourDriver(void);
  *   virtual void release(void) { delete this; }
  *   virtual const char* getName(void) { return "put your driver name here"; }
@@ -107,9 +107,8 @@
  *   virtual OpenViBE::boolean loop(void);
  *
  * protected:
+ *   OpenViBEAcquisitionServer::IDriverContext& m_rDriverContext;
  *   OpenViBEAcquisitionServer::IHeader* m_pHeader;
- *   OpenViBE::boolean m_bInitialized;
- *   OpenViBE::boolean m_bStarted;
  *   OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
  *   OpenViBE::float32* m_pSample;
  * };
@@ -146,7 +145,7 @@
  * \code
  * boolean CYourDriver::initialize(const uint32 ui32SampleCountPerSentBlock, IDriverCallback& rCallback)
  * {
- *   if(m_bInitialized) return false;
+ *   if(m_rDriverContext.isConnected()) return false;
  *   if(!m_pHeader->isChannelCountSet()||!m_pHeader->isSamplingFrequencySet()) return false;
  *
  *   // Builds up a buffer to store
@@ -169,21 +168,19 @@
  *
  *   // Saves parameters
  *   m_pCallback=&rCallback;
- *   m_bInitialized=true;
  *   m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
  *   return true;
  * }
  *
  * boolean CYourDriver::uninitialize(void)
  * {
- *   if(!m_bInitialized) return false;
- *   if(m_bStarted) return false;
+ *   if(!m_rDriverContext.isConnected()) return false;
+ *   if(m_rDriverContext.isStarted()) return false;
  *
  *   // ...
  *   // uninitialize hardware here
  *   // ...
  *
- *   m_bInitialized=false;
  *   delete [] m_pSample;
  *   m_pSample=NULL;
  *   m_pCallback=NULL;
@@ -197,22 +194,21 @@
  * \code
  * boolean CYourDriver::start(void)
  * {
- *   if(!m_bInitialized) return false;
- *   if(m_bStarted) return false;
+ *   if(!m_rDriverContext.isConnected()) return false;
+ *   if(m_rDriverContext.isStarted()) return false;
  *
  *   // ...
  *   // request hardware to start
  *   // sending data
  *   // ...
  *
- *   m_bStarted=true;
- *   return m_bStarted;
+ *   return true;
  * }
  *
  * boolean CYourDriver::loop(void)
  * {
- *   if(!m_bInitialized) return false;
- *   if(!m_bStarted) return false;
+ *   if(!m_rDriverContext.isConnected()) return false;
+ *   if(!m_rDriverContext.isStarted()) return true;
  *
  *   OpenViBE::CStimulationSet l_oStimulationSet;
  *
@@ -234,16 +230,15 @@
  *
  * boolean CYourDriver::stop(void)
  * {
- *   if(!m_bInitialized) return false;
- *   if(!m_bStarted) return false;
+ *   if(!m_rDriverContext.isConnected()) return false;
+ *   if(!m_rDriverContext.isStarted()) return false;
  *
  *   // ...
  *   // request the hardware to stop
  *   // sending data
  *   // ...
  *
- *   m_bStarted=false;
- *   return !m_bStarted;
+ *   return true;
  * }
  * \endcode
  *
