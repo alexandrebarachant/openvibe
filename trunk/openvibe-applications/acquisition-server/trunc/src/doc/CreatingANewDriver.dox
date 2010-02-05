@@ -59,6 +59,9 @@
  * hardware. Once the driver is initialized (this means
  * OpenViBEAcquisitionServer::IDriver::initialize returns), the driver
  * should have a complete header ready to be sent to the acquisition server.
+ * The driver's OpenViBEAcquisitionServer::IDriver::loop is regularly called
+ * so that the driver may be able to keep the connection to the device alive,
+ * of can he drop some data if needed.
  *
  * The acquisition stage comes when OpenViBEAcquisitionServer::IDriver::start
  * is called. From this stage, the driver is regularly requested to provide
@@ -90,25 +93,25 @@
  *   virtual void release(void) { delete this; }
  *   virtual const char* getName(void) { return "put your driver name here"; }
  *
- *   virtual OpenViBEAcquisitionServer::boolean isConfigurable(void);
- *   virtual OpenViBEAcquisitionServer::boolean configure(void);
+ *   virtual OpenViBE::boolean isConfigurable(void);
+ *   virtual OpenViBE::boolean configure(void);
  *
- *   virtual OpenViBEAcquisitionServer::boolean initialize(
- *     const OpenViBEAcquisitionServer::uint32 ui32SampleCountPerChannel,
+ *   virtual OpenViBE::boolean initialize(
+ *     const OpenViBE::uint32 ui32SampleCountPerChannel,
  *     OpenViBEAcquisitionServer::IDriverCallback& rCallback);
- *   virtual OpenViBEAcquisitionServer::boolean uninitialize(void);
+ *   virtual OpenViBE::boolean uninitialize(void);
  *   virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void);
  *
- *   virtual OpenViBEAcquisitionServer::boolean start(void);
- *   virtual OpenViBEAcquisitionServer::boolean stop(void);
- *   virtual OpenViBEAcquisitionServer::boolean loop(void);
+ *   virtual OpenViBE::boolean start(void);
+ *   virtual OpenViBE::boolean stop(void);
+ *   virtual OpenViBE::boolean loop(void);
  *
  * protected:
  *   OpenViBEAcquisitionServer::IHeader* m_pHeader;
- *   OpenViBEAcquisitionServer::boolean m_bInitialized;
- *   OpenViBEAcquisitionServer::boolean m_bStarted;
- *   OpenViBEAcquisitionServer::uint32 m_ui32SampleCountPerSentBlock;
- *   OpenViBEAcquisitionServer::float32* m_pSample;
+ *   OpenViBE::boolean m_bInitialized;
+ *   OpenViBE::boolean m_bStarted;
+ *   OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
+ *   OpenViBE::float32* m_pSample;
  * };
  * \endcode
  *
