@@ -18,7 +18,7 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CDriverTMSiRefa32B : virtual public OpenViBEAcquisitionServer::IDriver
+	class CDriverTMSiRefa32B : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 
