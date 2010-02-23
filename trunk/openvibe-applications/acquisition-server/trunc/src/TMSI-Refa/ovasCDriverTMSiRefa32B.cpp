@@ -487,7 +487,7 @@ boolean CDriverTMSiRefa32B::loop(void)
 
 	if(!m_bStarted)
 	{
-		return false;
+		return true;
 	}
 	//get size of data receive
 	ULONG l_lsize;
