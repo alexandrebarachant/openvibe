@@ -409,7 +409,7 @@ boolean CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::callback(const IPlug
 		<< " * - Plugin name : " << rPluginObjectDesc.getName() << "\n"
 		<< " * - Version : " << rPluginObjectDesc.getVersion() << "\n"
 		<< " * - Author : " << rPluginObjectDesc.getAuthorName() << "\n"
-		<< " * - Compnay : " << rPluginObjectDesc.getAuthorCompanyName() << "\n"
+		<< " * - Company : " << rPluginObjectDesc.getAuthorCompanyName() << "\n"
 		<< " * - Short description : " << rPluginObjectDesc.getShortDescription() << "\n"
 		<< " * - Documentation template generation date : " << __DATE__ << "\n";
 
