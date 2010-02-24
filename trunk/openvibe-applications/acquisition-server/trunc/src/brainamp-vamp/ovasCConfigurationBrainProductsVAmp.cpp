@@ -78,7 +78,7 @@ void initFastModeSettingsComboBox(GtkWidget * comboBox, uint32 activeValue, bool
 CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(IDriverContext& rDriverContext, const char* sGladeXMLFileName, CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp)
 	:CConfigurationGlade(sGladeXMLFileName)
 	,m_rDriverContext(rDriverContext)
-	,m_sGladeXMLFastModeSettingsFileName(OVAS_ConfigureGUIFastModeSettings)
+	//,m_sGladeXMLFastModeSettingsFileName(OVAS_ConfigureGUIFastModeSettings)
 	,m_pHeaderBrainProductsVAmp(pHeaderBrainProductsVAmp)
 {
 }
@@ -91,10 +91,10 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 	}
 
 	// prepares interface
-	m_pGladeConfigureFastModeSettingsInterface=glade_xml_new(m_sGladeXMLFastModeSettingsFileName.c_str(), NULL, NULL);
+	//m_pGladeConfigureFastModeSettingsInterface=glade_xml_new(m_sGladeXMLFastModeSettingsFileName.c_str(), NULL, NULL);
 
 	// Finds all the widgets
-	m_pDialogFastModeSettings=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "dialog_fast_mode_settings");
+	m_pDialogFastModeSettings=glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_fast_mode_settings");
 
 	// the acquisition mode combo box in the main interface
 	m_pAcquisitionMode=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_acquisition_mode");
@@ -103,17 +103,17 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 	m_pDevice=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device");
 
 	// the 8 spin buttons for the settings in the "fast mode settings" interface
-	m_pPair1PositiveInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair1_positive_input");
-	m_pPair1NegativeInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair1_negative_input");
+	m_pPair1PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair1_positive_input");
+	m_pPair1NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair1_negative_input");
 
-	m_pPair2PositiveInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair2_positive_input");
-	m_pPair2NegativeInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair2_negative_input");
+	m_pPair2PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair2_positive_input");
+	m_pPair2NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair2_negative_input");
 
-	m_pPair3PositiveInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair3_positive_input");
-	m_pPair3NegativeInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair3_negative_input");
+	m_pPair3PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair3_positive_input");
+	m_pPair3NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair3_negative_input");
 
-	m_pPair4PositiveInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair4_positive_input");
-	m_pPair4NegativeInputs=glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "combobox_pair4_negative_input");
+	m_pPair4PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair4_positive_input");
+	m_pPair4NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair4_negative_input");
 
 	// connects callbacks to buttons
 	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface,"button_fast_mode_settings"),	"pressed", G_CALLBACK(button_fast_mode_settings_cb), this);
@@ -224,8 +224,8 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 	//releasing ressources as we dont need it anymore
 	gtk_widget_hide(m_pDialogFastModeSettings);
 
-	g_object_unref(m_pGladeConfigureFastModeSettingsInterface);
-	m_pGladeConfigureFastModeSettingsInterface=NULL;
+	//g_object_unref(m_pGladeConfigureFastModeSettingsInterface);
+	//m_pGladeConfigureFastModeSettingsInterface=NULL;
 
 	// making the pairs names
 	if(m_pHeaderBrainProductsVAmp->getDataMode() == dm20kHz4Channels)
@@ -320,7 +320,7 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 
 void CConfigurationBrainProductsVAmp::buttonFastModeSettingsCB(void)
 {
-	::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureFastModeSettingsInterface, "dialog_fast_mode_settings"));
+	::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_fast_mode_settings"));
 	int32 l_iDialogResponse;
 	do
 	{
