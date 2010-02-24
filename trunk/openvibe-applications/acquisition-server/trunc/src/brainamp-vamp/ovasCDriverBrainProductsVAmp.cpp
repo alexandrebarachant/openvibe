@@ -191,7 +191,7 @@ boolean CDriverBrainProductsVAmp::start(void)
 	HBITMAP l_bitmap = (HBITMAP) LoadImage(NULL, "../share/openvibe-applications/acquisition-server/vamp.bmp",IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	if(l_bitmap == NULL || faSetBitmap(m_oHeader.getDeviceId(),l_bitmap ) != FA_ERR_OK)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "[START] VAmp Driver: BMP load failed.\n";
+		m_rDriverContext.getLogManager() << LogLevel_Warning << "[START] VAmp Driver: BMP load failed.\n";
 	}
 
 	return true;
@@ -324,6 +324,8 @@ boolean CDriverBrainProductsVAmp::uninitialize(void)
 		return false;
 	}
 
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "[UINIT] VAmp Driver: Uninitialize called. Closing the device.\n";
+	
 	faStop(m_oHeader.getDeviceId());
 	faClose(m_oHeader.getDeviceId());
 
