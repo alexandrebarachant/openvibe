@@ -53,6 +53,7 @@
  *
  * \section Doc_UserDocumentationSection User Documentation
  * - \subpage Doc_ConfigurationManager
+ * - \subpage Doc_ExperimentEnvironment
  * - \subpage Doc_AcquisitionServerUserDocumentation
  *   - \subpage Doc_AcquisitionServerOverview
  * - \subpage Doc_DesignerUserDocumentation
@@ -110,6 +111,7 @@
  *   - \subpage Doc_DesignerOverview
  *   - \subpage Doc_WindowManagerUsage
  *   - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
+ *   - \subpage Doc_ExperimentEnvironment
  *   - \subpage Doc_DesignerUserDocumentationTutorial
  *     - \subpage Doc_DesignerTutorial1
  *     - \subpage Doc_DesignerTutorial2
@@ -121,12 +123,15 @@
 
 /** \page Doc_DeveloperDocumentation Developer Documentation
  * - \subpage Doc_Install "Installation procedure"
- * - \subpage Doc_CreatingANewDriver
- * - \subpage Doc_Tutorial_Developer_SignalProcessing
+ * - \subpage Doc_DeveloperTutorials "Developer tutorials"
+ *   - \subpage Doc_CreatingANewDriver
+ *   - \subpage Doc_ConfiguringANewDriver
+ *   - \subpage Doc_Tutorial_Developer_SignalProcessing
+ *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ *   - \subpage Doc_VRApplicationAndVRPN
  * - \subpage Doc_GlobalDefines
  * - \subpage Doc_OpenViBEStreams
  * - \subpage Doc_Stimulations
- * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  * - \subpage Doc_MatrixFileFormat
  * - \subpage todo "Things that should be done"
  */
@@ -142,6 +147,7 @@
  * - \subpage Doc_DesignerOverview
  * - \subpage Doc_WindowManagerUsage
  * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
+ * - \subpage Doc_EnvironmentVariables
  * - \subpage Doc_DesignerUserDocumentationTutorial
  *   - \subpage Doc_DesignerTutorial1
  *   - \subpage Doc_DesignerTutorial2
@@ -155,6 +161,14 @@
  * - \subpage Doc_DesignerTutorial2
  * - \subpage Doc_DesignerTutorial3
  * - \subpage Doc_DesignerTutorial4
+ */
+ 
+ /**
+ * \page Doc_DeveloperTutorials Developer tutorials
+ * - \subpage Doc_CreatingANewDriver
+ * - \subpage Doc_ConfiguringANewDriver
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing
+ * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  */
 
 /**

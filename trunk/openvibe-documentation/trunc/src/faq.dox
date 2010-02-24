@@ -128,6 +128,7 @@
  *   - GDF files (r/w)
  *   - BCI Competition IIIb (r)
  *   - Brainamp files (r)
+ *   - CSV files (w)
  *
  * - Preprocessing
  *   - Time based epoching

@@ -1,7 +1,7 @@
 /*
- * \page Doc_DocumentationHowTo Writing documentation for OpenViBE
+ * \page Doc_DocumentationHowTo Writing documentation for §OpenViBE§
  *
- * The goal of this page is to propose a way to produce OpenViBE documentation for developers.
+ * The goal of this page is to propose a way to produce §OpenViBE§ documentation for developers.
  *
  * \section Doc_DocumentationHowTo_Developers Writing documentation for developers
  * TODO
@@ -74,9 +74,24 @@
  *
  * Now you are ready to write your own box algorithm user documentation.
  *
+ * \section Doc_DocumentationHowTo_Users_BoxAlgorithms_Procedure The procedure
+ * 
+ * Here is the step-by-step procedure to generate the documentation.
+ *  - Doxygen is not a part of the OpenViBE dependencies, you have to manually install it. You can download Doxygen 
+ \htmlonly <a href="http://www.stack.nl/~dimitri/doxygen/index.html "> here </a> \endhtmlonly .
+ *  - Check the <em>linux-init_env_command</em> script (or <em>win32-init_env_command.cmd</em> on Windows) to be sure that the build process includes your branch.
+ *  - Build OpenViBE, using the provided script.
+ *  - Go in the generated <em>dist</em> folder, and launch the Plugin Inspector. 
+ *  - All <em>dox-part-skeleton</em> and <em>dox-skeleton</em> files are generated in  <em>openvibe-documentation/trunc/src/box-algorithm-doc</em>.
+ *  - Complete the file <em>Doc_BoxAlgorithm_YourBoxName.dox-part-skeleton</em> with your documentation, and rename the file with the extension <em>dox-part</em>.
+ *  - Move the <em>dox-part</em> file in the <em>/src/doc</em> directory of your project, in your own branch.
+ *  - Check the <em>linux-init_env_command</em> script (or <em>win32-init_env_command.cmd</em> on Windows) to be sure that \b all projects are built, including <em>openvibe-documentation</em>.
+ *  - Build OpenViBE once again. The HTML documentation is generated in <em>dist/doc/openvibe/html</em>.
+ *  - Enjoy a cup of coffee.
+ *
  * \section Doc_DocumentationHowTo_Users_BoxAlgorithms_Example Example
  *
- * As an example, one can look at the documentation of the \ref Doc_BoxAlgorithm_BrainampFileReader .
+ * As an example, we will look at the documentation of the \ref Doc_BoxAlgorithm_BrainampFileReader.
  *
  * \subsection Doc_DocumentationHowTo_Users_BoxAlgorithms_Example_DoxSekeleton 1. The .dox-skeleton file
  *

@@ -948,6 +948,19 @@ table.faq-os th
 	border: 1px solid black;
 }
 
+table.variables td
+{
+	border: 1px solid black;
+	padding: 3px;
+	padding-right: 5px;
+}
+
+table.variables th
+{
+	border: 1px solid black;
+	padding: 3px;
+}
+
 div.qindex
 {
 	width: 100%;

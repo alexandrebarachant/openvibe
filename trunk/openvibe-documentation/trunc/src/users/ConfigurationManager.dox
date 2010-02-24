@@ -64,7 +64,7 @@ These tokens tell applications about OpenViBE installation directories.
  - Path_Lib is the libraries directory
  - Path_Log is the directory where the application should save its log file, if any
  - Path_Tmp is the application temporary directory
- - Path_Data is \TODO
+ - Path_Data is the data directory. By default it is equals to Path_Root, but it can be set to a specific directory.
 
 	\subsection Doc_ConfigurationManager_Tokens_Kernel OpenViBE Kernel
 
