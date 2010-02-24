@@ -1,4 +1,5 @@
 #include "ovaCTieBCI.h"
+#define M_PI  3.141592654f
 
 REGISTER_OBJECT_FACTORY(CTieBCI, "ovaCTieBCI");
 

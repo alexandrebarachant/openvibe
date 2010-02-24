@@ -1,4 +1,5 @@
 #include "ovaCFootballBCI.h"
+#define M_PI  3.141592654f
 
 template <typename T> const T _abs_(const T& t) { return t<0?-t:t; }
 template <typename T> const T _min_(const T& t1, const T& t2) { return t1<t2?t1:t2; }
