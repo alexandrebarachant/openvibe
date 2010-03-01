@@ -106,7 +106,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Spectral analysis - GPL"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Guillaume Gibert"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Compute spectral analysis of input buffer"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Compute spectral analysis using Fast Fourier Transform"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Spectral analysis"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
