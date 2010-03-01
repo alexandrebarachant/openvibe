@@ -6,7 +6,7 @@ Detailed description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SpectralAnalysisGPL_Description|
- The Spectral Analysis box performs spectrum computations on incoming signals and possible outputs include the spectrum amplitude (the power of the signal in a number of frequency bands), as well as its phase, real part and imaginary part. Output computations may be enabled/disabled from the settings dialog box.
+ The Spectral Analysis box performs spectrum computations on incoming signals and possible outputs include the spectrum amplitude (the power of the signal in a number of frequency bands), as well as its phase, real part and imaginary part. Output computations may be enabled/disabled from the settings dialog box. The analysis is performed using a <b> Fast Fourier Transform </b>.
  * |OVP_DocEnd_BoxAlgorithm_SpectralAnalysisGPL_Description|
 __________________________________________________________________
 
