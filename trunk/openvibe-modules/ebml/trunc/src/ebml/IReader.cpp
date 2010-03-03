@@ -33,7 +33,7 @@ inline bool needsTwoBytesToGetCodedSizeLength(unsigned char* pBuffer)
 	return pBuffer[0]==0;
 }
 
-inline unsigned long getCodedSizeLength(unsigned char* pBuffer)
+inline unsigned long getCodedSizeLength(unsigned char* pBuffer, unsigned long ulBufferLength)
 {
 	unsigned long l_ulCodedSizeLength;
 	     if(pBuffer[0]>>7)
@@ -52,18 +52,23 @@ inline unsigned long getCodedSizeLength(unsigned char* pBuffer)
 		l_ulCodedSizeLength=7;
 	else if(pBuffer[0])
 		l_ulCodedSizeLength=8;
-	else if(pBuffer[1]>>7)
-		l_ulCodedSizeLength=9;
 	else
-		l_ulCodedSizeLength=10;
+	{
+		if(_Debug_ && ulBufferLength<2)
+			printf("EBML::getCodedSizeLength called with smaller buffer size %lu - needs at least 2\n", ulBufferLength);
+
+		if(pBuffer[1]>>7)
+			l_ulCodedSizeLength=9;
+		else
+			l_ulCodedSizeLength=10;
+	}
 	return l_ulCodedSizeLength;
 }
 
-inline uint64 getValue(unsigned char* pBuffer, unsigned long ulBufferLength=0)
+inline uint64 getValue(unsigned char* pBuffer, unsigned long ulBufferLength)
 {
 	uint64 l_uiResult=0;
-	unsigned long l_ulCodedSizeLength=getCodedSizeLength(pBuffer);
-
+	unsigned long l_ulCodedSizeLength=getCodedSizeLength(pBuffer, ulBufferLength);
 	unsigned long i;
 	unsigned long l_ulIthBit=l_ulCodedSizeLength;
 	for(i=0; i<l_ulCodedSizeLength; i++)
@@ -229,29 +234,23 @@ if(_Debug_)
 				{
 					if(needsTwoBytesToGetCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer))
 					{
-						if(m_ui64PendingCount==1)
-						{
-							if(l_ui64BufferSize!=0)
-							{
-								m_pPending[1]=l_pBuffer[0];
-								l_pBuffer++;
-								m_ui64PendingCount++;
-								l_ui64BufferSize--;
-							}
-							else
-							{
-								// l_bFinished=true;
-								break;
-							}
-						}
-						else if(m_ui64PendingCount==0 && l_ui64BufferSize==1)
+						if(m_ui64PendingCount+l_ui64BufferSize<2)
 						{
 							l_bFinished=true;
 							break;
 						}
+
+						if(m_ui64PendingCount==1)
+						{
+							// assumes (l_ui64BufferSize != 0) because (m_ui64PendingCount + l_ui64BufferSize >= 2) and (m_ui64PendingCount == 1)
+							m_pPending[1]=l_pBuffer[0];
+							l_pBuffer++;
+							m_ui64PendingCount++;
+							l_ui64BufferSize--;
+						}
 					}
 
-					unsigned long l_ulCodedSizeLength=getCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer);
+					unsigned long l_ulCodedSizeLength=getCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer, m_ui64PendingCount?m_ui64PendingCount:l_ui64BufferSize);
 					if(l_ulCodedSizeLength>l_ui64BufferSize+m_ui64PendingCount)
 					{
 						l_bFinished=true;
@@ -262,7 +261,7 @@ if(_Debug_)
 						uint64 l_ui64PendingBytesToCopy=(l_ulCodedSizeLength>m_ui64PendingCount?m_ui64PendingCount:l_ulCodedSizeLength);
 						::memcpy(l_pEncodedBuffer, m_pPending, (size_t)(l_ui64PendingBytesToCopy));
 						::memcpy(l_pEncodedBuffer+l_ui64PendingBytesToCopy, l_pBuffer, (size_t)(l_ulCodedSizeLength-l_ui64PendingBytesToCopy));
-						uint64 l_ui64DecodedValue=getValue(l_pEncodedBuffer);
+						uint64 l_ui64DecodedValue=getValue(l_pEncodedBuffer, l_ulCodedSizeLength);
 						delete [] l_pEncodedBuffer;
 						l_ui64ProcessedPendingBytes=l_ui64PendingBytesToCopy;
 						l_ui64ProcessedBytes=l_ulCodedSizeLength;
