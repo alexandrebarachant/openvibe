@@ -23,8 +23,9 @@ You can add as many inputs as you need depending on the number of preceeding sta
 The inputs of this classifier can be changed to either streamed matrix of stimulations.
 
 In the case you choose stimulations, each active stimulation gives a point
-to the preceeding state. An inactive stimulation gives no point. After a number of repetitions, the
-state whith the best score is chossen.
+to the preceeding state. Both an inactive and a reject stimulation gives no point.
+Any other stimulation is ignored.
+After a number of repetitions, the state whith the best score is chossen.
 
 In the case you choose streamed matrix, the matrix must have only one
 element. This element is used as a score coefficient (in place of the simple 1-0 of the previous

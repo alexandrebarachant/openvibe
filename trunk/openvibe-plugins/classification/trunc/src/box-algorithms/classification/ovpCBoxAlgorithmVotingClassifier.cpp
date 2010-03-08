@@ -137,7 +137,7 @@ boolean CBoxAlgorithmVotingClassifier::process(void)
 					for(k=0; k<l_rInput.op_pStimulationSet->getStimulationCount(); k++)
 					{
 						uint64 l_ui64StimulationIdentifier=l_rInput.op_pStimulationSet->getStimulationIdentifier(k);
-						if(l_ui64StimulationIdentifier == m_ui64TargetClassLabel || l_ui64StimulationIdentifier == m_ui64NonTargetClassLabel)
+						if(l_ui64StimulationIdentifier == m_ui64TargetClassLabel || l_ui64StimulationIdentifier == m_ui64NonTargetClassLabel || l_ui64StimulationIdentifier == m_ui64RejectClassLabel)
 						{
 							l_rInput.m_vScore.push_back(std::pair<float64, uint64>(l_ui64StimulationIdentifier == m_ui64TargetClassLabel ? 1 : 0, l_rInput.op_pStimulationSet->getStimulationDate(k)));
 						}
