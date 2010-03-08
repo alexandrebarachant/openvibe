@@ -593,7 +593,6 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 	if(gtk_toggle_button_get_active(pButton))
 	{
 		m_ui32SampleCountPerSentBlock=atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"))));
-		m_ui64SampleCount=0;
 		m_ui32IdleCallbackId=gtk_idle_add(idle_cb, this);
 
 		// Initializes driver
@@ -739,6 +738,9 @@ void CAcquisitionServer::buttonStartPressedCB(::GtkButton* pButton)
 
 	gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Sending...");
 
+	m_ui64SampleCount=0;
+	m_ui64StartTime=System::Time::zgetTime();
+
 	m_bStarted=true;
 }
 
@@ -796,6 +798,23 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 			m_ui64SampleCount+=m_ui32SampleCountPerSentBlock;
 		}
 		m_bGotData=true;
+
+		{
+			uint64 l_ui64TheoricalSampleCount=(m_pDriver->getHeader()->getSamplingFrequency() * (System::Time::zgetTime()-m_ui64StartTime))>>32;
+			uint64 l_ui64ToleranceSampleCount=2*m_ui32SampleCountPerSentBlock;
+
+			if(m_ui64SampleCount < l_ui64TheoricalSampleCount + l_ui64ToleranceSampleCount && l_ui64TheoricalSampleCount + l_ui64ToleranceSampleCount < m_ui64SampleCount + 2*l_ui64ToleranceSampleCount)
+			{
+			}
+			else
+			{
+				m_rKernelContext.getLogManager() << LogLevel_Warning << "Theorical sample per seconds and real sample per seconds does not match.\n";
+				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Received : " << m_ui64SampleCount << " samples.\n";
+				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Should have received : " << l_ui64TheoricalSampleCount << " samples.\n";
+				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Difference is : " << (l_ui64TheoricalSampleCount>m_ui64SampleCount?l_ui64TheoricalSampleCount-m_ui64SampleCount:m_ui64SampleCount-l_ui64TheoricalSampleCount) << " samples.\n";
+				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Please submit a bug report for the driver you are using.\n";
+			}
+		}
 	}
 	else
 	{
