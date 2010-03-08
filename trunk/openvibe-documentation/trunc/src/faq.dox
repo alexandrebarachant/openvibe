@@ -100,8 +100,8 @@
 <tr>                                                       <td>Fedora Core 4</td>         <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora Core 3</td>         <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Debian 5</td>              <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr> <td rowspan=11>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
-<tr>                            <td rowspan=10>Linux</td>  <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr> <td rowspan=12>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
+<tr>                            <td rowspan=11>Linux</td>  <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
@@ -111,6 +111,7 @@
 <tr>                                                       <td>Fedora 9</td>              <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Gentoo</td>                <td>GCC ?</td>                              <td bgcolor=red>Dependencies installation fails</td> <td bgcolor=red>No</td> </tr>
 <tr>                                                       <td>Arch 2009.08</td>          <td>GCC ?</td>                              <td bgcolor=orange>Needs some tuning on dependencies installation</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                       <td>Gentoo</td>                <td>GCC ?</td>                              <td bgcolor=orange>Dependencies installed manually with native packages</td> <td bgcolor=orange>No</td> </tr>
 </table>
 <!-- os-compatibility stop -->
 \endhtmlonly
