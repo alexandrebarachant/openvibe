@@ -246,6 +246,10 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<h1>News</h1>
 
+		<h2>18 Months Software Engineer Position Opened at CEA/Leti<br><span style="font-size:x-small">2010/03/18</span></h2>
+
+		<p>There are opened positions to work on and with OpenViBE at CEA/Leti. Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
+
 		<h2>Two Years Post-Doc Positions Opened at INRIA<br><span style="font-size:x-small">2010/01/08</span></h2>
 
 		<p>There are opened positions to work on and with OpenViBE at INRIA. Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
@@ -508,6 +512,21 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			document.write(available_soon('#FIXME'));
 		</script>
 -->
+
+		<h2>One software engineer (CEA/Leti, Grenoble, France) for an 18-mounth fixed perdio contract<br><span style="font-size:x-small">2010-03</span></h2>
+
+		<p><u><b>Short Description:</b></u></p>
+		<p>The overall goal of the BCI project under the scientific direction of Pr BENABID is to develop an implantable device to allow tetraplaegic patients pilot n degrees of freedom effectors (wheelchair, robotized arm, exosqueletton).</p>
+		<p>The software engineer will work within a team of electronics, software and signal processing engineers, researchers and biologists. He will be in charge to implement OpenViBE as an experimental framework for advanced BCI projects, with another software engineer. The framework must be able to:</p>
+		<ul>
+			<li>Acquire data from CEA/LETI devices during preclinical studies</li>
+			<li>Perform some data processing</li>
+			<li>Control some effectors</li>
+		</ul>
+		<p>Integrated to the Clinatec team, the engineer will be mainly in charge of designing new OpenViBE boxes. Based on biologists and neurosurgeons requests he will have to deliver them with new boxes they will need during an innovative BCI project. Boxes will mainly do very basic data processing and control effectors. Possibly, you may also be asked to design standalone C++/Qt applications.</p>
+		<p>Main missions will be to implement and extend the functionalities of the OpenViBE-based framework (C++ programming, object oriented design) and ensure its support and deployment. Skills in GTK/Qt are appreciated.</p>
+		<p>Feel free to contact us for more information: <i>jean [dot] porcherot [at] cea [dot] fr</i></p>
+		<p>You can download the <a href=jobs/2010-03-CEA-Leti-Grenoble-Software-Engineer.pdf>french PDF description</a>.</p>
 
 		<h2>One post-doc position at INRIA<br><span style="font-size:x-small">2010-01</span></h2>
 
