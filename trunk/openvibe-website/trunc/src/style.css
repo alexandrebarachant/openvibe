@@ -247,6 +247,29 @@ img.screenshot
 	-moz-border-radius: 0px;
 }
 
+div.dataset
+{
+	margin: 0;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	margin-left: 5em;
+	padding: 1em;
+	background-color: #f8f8f8;
+	border: 1px solid #d0d0d0;
+}
+
+table.dataset3, table.dataset3 td, table.dataset3 tr
+{
+	border: 0;
+	margin: 0;
+	padding: 0;
+}
+
+table.dataset3
+{
+	width: 100%
+}
+
 div.archive
 {
 	margin: 0;
@@ -388,4 +411,28 @@ div.clear-right
 	padding: 0;
 }
 
+form.register
+{
+	background-color: #e1a9a9;
+	border: 1px solid #e15151;
+	padding: 0.5em;
+	margin-left: 4em;
+	margin-right: 4em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+	-moz-border-radius: 4px;
+}
 
+form.register table, form.register td, form.register table, form.register td
+{
+	border: 0;
+	margin: 0;
+	padding: 0.25em;
+}
+
+form.register .register
+{
+	padding: 0.15em;
+	margin: 0.15em;
+	-moz-border-radius: 4px;
+}

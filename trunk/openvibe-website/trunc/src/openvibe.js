@@ -300,3 +300,45 @@ function precompiled(name, baseurl, releasedate, comment, screenshot)
 	document.write("</p></div>");
 }
 
+function checkRegisterForm()
+{
+	g_name=document.register.name.value;
+	g_email=document.register.email.value;
+	g_country=document.register.country.value;
+	g_entity=document.register.entity.value;
+	g_entityname=document.register.entityname.value;
+	g_otherinfo=document.register.otherinfo.value;
+
+	if(g_name=='')
+	{
+		alert("You did not enter your name."); 
+		return false;
+	}
+
+	if(g_email.indexOf('@')==-1 || g_email.indexOf('.')==-1 || g_email.length <= 7)
+	{
+		alert("The e-mail adress you have entered seems to be invalid.\nPlease check it again."); 
+		return false;
+	}
+
+	if(g_country=='')
+	{
+		alert("You did not enter your country."); 
+		return false;
+	}
+
+	if(g_entity=='')
+	{
+		alert("You did not enter your entity kind."); 
+		return false;
+	}
+
+	if(g_entityname=='')
+	{
+		alert("You did not enter your entity name."); 
+		return false;
+	}
+
+	return true;
+}
+

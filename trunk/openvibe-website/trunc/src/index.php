@@ -1,5 +1,19 @@
 <?php
 
+	function register_for_datasets($sName, $sEMail, $sCountry, $sEntity, $sEntityName, $sOtherInfo)
+	{
+		$email_to="yann.renard@irisa.fr";
+		$email_subject="[openvibe-datasets] Registration for download (".$sName.")";
+		$email_body="The following user registered for datasets download:\n".
+			"name:        ".$sName."\n".
+			"email:       ".$sEMail."\n".
+			"country:     ".$sCountry."\n".
+			"entity:      ".$sEntity."\n".
+			"entity-name: ".$sEntityName."\n".
+			"other info:\n".$sOtherInfo;
+		mail($email_to, $email_subject, $email_body);
+	}
+
 	function argument_collector(&$v_argument_list, &$s_argument_method, &$s_argument_variable)
 	{
 		if($_POST['q']!='')
@@ -37,6 +51,33 @@
 	else
 	{
 		$id=$g_v_argument_list['q'];
+	}
+
+	if($id=='datasets-download')
+	{
+		$l_b_missing_data=false;
+		if($_POST['name'] == '') $l_b_missing_data=true;
+		if($_POST['email'] == '') $l_b_missing_data=true;
+		if($_POST['country'] == '') $l_b_missing_data=true;
+		if($_POST['entity'] == '') $l_b_missing_data=true;
+		if($_POST['entityname'] == '') $l_b_missing_data=true;
+
+		if($l_b_missing_data==false)
+		{
+			register_for_datasets($_POST['name'], $_POST['email'], $_POST['country'], $_POST['entity'], $_POST['entityname'], $_POST['otherinfo']);
+		}
+		else
+		{
+			$_hostname=gethostbyaddr($_SERVER['REMOTE_ADDR']);
+			if($_hostname!='cervelet.irisa.fr')
+			{
+				header('Location: /?q=datasets');
+			}
+			else
+			{
+				echo "NO RELOCATION BECAUSE PAGE WAS ACCESSED FROM cervelet.irisa.fr";
+			}
+		}
 	}
 
 ?>
@@ -1009,6 +1050,112 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<!-- <li><a class="leaving-link" onclick="window.open(this.href,'openvibe-related'); return false;" href="related/anr-openvibe2">ANR OpenViBE 2</a></li> -->
 			<!-- <li><a class="leaving-link" onclick="window.open(this.href,'openvibe-related'); return false;" href="related/anr-robik">ANR Robik</a></li> -->
 		</ul>
+
+	</div>
+
+<!------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
+
+	<div class="content" id="datasets">
+
+		<h1>Introduction</h1>
+
+		<p>During the past experiments, we recorded several datasets under different circumstances. These datasets
+		can be downloaded for free in the hope that they can help research on signal processing. They have all been
+		recorded using OpenViBE.</p>
+
+		<h1>Register for Datasets Download</h1>
+
+		<p>Before you can access to the download page, please register a few information so we can have a feedback
+		about who you are and what you want to do. This could help us in proposing other datasets...</p>
+		<p>The information you enter in this form won't be used to send you emails or so. Please consider filling
+		it correctly.</p>
+
+		<form method="post" action="index.php?q=datasets-download" class="register" name="register" onsubmit="return checkRegisterForm();">
+			<table width=100% border=0>
+				<tr><td></td><td width=70%></td><td></td></tr>
+				<tr><td>name:</td><td><input type="text" name="name" class="register" style="width:100%" /></td><td><span style="text-color:red">*</span></td></tr>
+				<tr><td>e-mail:</td><td><input type="text" name="email" class="register" style="width:100%" /></td><td><span style="text-color:red">*</span></td></tr>
+				<tr><td>country:</td><td><input type="text" name="country" class="register" style="width:100%" /></td><td><span style="text-color:red">*</span></td></tr>
+				<tr><td>are you a:</td><td><select name="entity" class="register" style="width:100%" /><option value="lab" selected="true">lab</option><option value="company">company</option><option value="school">school</option><option value="individual">individual</option><option name="other">other</option></select></td><td><span style="text-color:red">*</span></td></tr>
+				<tr><td>lab / company / school name:</td><td><input type="text" name="entityname" class="register" style="width:100%" /></td><td><span style="text-color:red">*</span></td></tr>
+				<tr><td>other information you'd like to give to us:</td><td><textarea name="otherinfo" class="register" style="width:100%" rows="8"></textarea></td></td><td></tr>
+				<tr><td></td><td><center><input type="submit" class="register" value="proceed to download" /></center></td><td></td></tr>
+			</table>
+		</form>
+
+	</div>
+
+	<div class="content" id="datasets-download">
+
+		<h1>Introduction</h1>
+
+		<p>During the past experiments, we recorded several datasets under different circumstances. These datasets
+		can be downloaded for free in the hope that they can help research on signal processing. They have all been
+		recorded using OpenViBE.</p>
+
+		<h1>Download Datasets</h1>
+
+		<h2>Dataset #1 - Motor Imagery of Hands<br><span style="font-size:x-small">Recorded 2008/03</span><br><span style="font-size:x-small">Uploaded 2010/03</span></h2>
+
+		<p>This datasets includes 14 records of left and right hand motor iomagery.</p>
+		<p>They include 11 channels : C3, C4, Nz, FC3, FC4, C5, C1, C2, C6, CP3 and CP4.</p>
+		<p>The channels are recorded in common average mode and Nz can be used as a reference if needed.</p>
+		<p>The signal is sampled at 512 Hz and was recorded with our Mindmedia NeXus32B amplifier.</p>
+		<p>Each file consists in 40 trials where the subject was requested to imagine either left or right hand movements (20 each).</p>
+		<p>The experiment followed the Graz University protocol as described in [ref].</p>
+		<p>The files were recorded on three different days of the same month.</p>
+		<p>There are 3 CSV files you can download for each record :</p>
+		<ul>
+			<li>signal: contains the raw signal of the experiment.</li>
+			<li>labels: contains the stimulation codes that happened during the experiment.</li>
+			<li>spectrum: contains the spectrum of the signal computed on 1 second moving windows.</li>
+		</ul>
+		<p>Please note that stimulation code signification can be retrieved from <a href=http://openvibe.inria.fr/documentation/unstable/Doc_Stimulations.html>dedicated documentation page</a>.</p>
+
+		<div class="dataset">
+		<?php
+
+			$dirname='i68Xg0jL6Z4JJ7cBQSl4y';
+
+			$dir=opendir($dirname);
+			$files=array();
+			while(($file=readdir($dir))!=false)
+			{
+				array_push($files, $file);
+			}
+			closedir($dir);
+			sort($files);
+
+			$i=0;
+			echo "<table class='dataset3'><tr>";
+			foreach($files as $file)
+			{
+				if($file!="." && $file!="..")
+				{
+					$_filename=$dirname."/".$file;
+					$_filesize=intval((filesize($_filename)*10)/(1024*1024))/10;
+					echo "<td><a href=".$_filename.">".$file."</a> ";
+					if($_filesize>0)
+					{
+						echo "(".$_filesize."mb)";
+					}
+					else
+					{
+						echo "(<1mb)";
+					}
+					echo "</td>";
+					$i++;
+					if($i==3)
+					{
+						echo "</tr><tr>";
+						$i=0;
+					}
+				}
+			}
+			echo "</tr></td></table>";
+
+		?>
+		</div>
 
 	</div>
 
