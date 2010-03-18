@@ -513,7 +513,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		</script>
 -->
 
-		<h2>One software engineer (CEA/Leti, Grenoble, France) for an 18-mounth fixed perdio contract<br><span style="font-size:x-small">2010-03</span></h2>
+		<h2>One software engineer (CEA/Leti, Grenoble, France) for a 18-months fixed period contract<br><span style="font-size:x-small">2010-03</span></h2>
 
 		<p><u><b>Short Description:</b></u></p>
 		<p>The overall goal of the BCI project under the scientific direction of Pr BENABID is to develop an implantable device to allow tetraplaegic patients pilot n degrees of freedom effectors (wheelchair, robotized arm, exosqueletton).</p>
