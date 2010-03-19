@@ -100,7 +100,10 @@
                 <child>
                   <widget class="GtkComboBox" id="combobox_sample_count_per_sent_block">
                     <property name="visible">True</property>
-                    <property name="items" translatable="yes">32
+                    <property name="items" translatable="yes">4
+8
+16
+32
 64
 128
 256

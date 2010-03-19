@@ -7,6 +7,7 @@
 #include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
+#include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
 #include "brainamp-vamp/ovasCDriverBrainProductsVAmp.h"
 // #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 #include "TMSI-Refa/ovasCDriverTMSiRefa32B.h"
@@ -293,6 +294,9 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 #endif
 	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
 	{
+#if defined TARGET_HAS_ThirdPartyGMobiLabPlusAPI
+		m_vDriver.push_back(new CDriverGTecGMobiLabPlus(*m_pDriverContext));
+#endif
 		m_vDriver.push_back(new CDriverBrainampStandard(*m_pDriverContext));
 		m_vDriver.push_back(new CDriverMicromedIntraEEG(*m_pDriverContext));
 		m_vDriver.push_back(new CDriverCtfVsmMeg(*m_pDriverContext));
