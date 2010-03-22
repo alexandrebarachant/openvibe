@@ -11,6 +11,7 @@
 
 #if defined TARGET_HAS_ThirdPartyGMobiLabPlusAPI
 
+#include <string>
 #include <gMOBIlabplus.h>
 
 class CDriverGTecGMobiLabPlus : public OpenViBEAcquisitionServer::IDriver
@@ -21,6 +22,12 @@ public:
 	virtual ~CDriverGTecGMobiLabPlus(void);
 	virtual void release(void);
 	virtual const char* getName(void);
+
+	virtual OpenViBE::boolean isFlagSet(
+		const OpenViBEAcquisitionServer::EDriverFlag eFlag) const
+	{
+		return eFlag==DriverFlag_IsUnstable;
+	}
 
 	//configuration
 	virtual OpenViBE::boolean isConfigurable(void);

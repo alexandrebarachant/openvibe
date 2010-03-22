@@ -107,7 +107,7 @@ boolean CDriverGTecGMobiLabPlus::configure(void)
 
 	//...and the port name
 	m_oPortName=m_oConfiguration.getPortName();
-	m_rDriverContext.getLogManager() << LogLevel_Debug << "Port name after configuration " << m_oPortName << "\n";
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "Port name after configuration " << CString(m_oPortName.c_str()) << " \n";
 	return true;
 }
 
@@ -120,7 +120,7 @@ boolean CDriverGTecGMobiLabPlus::configure(void)
 boolean CDriverGTecGMobiLabPlus::initialize(const uint32 ui32SampleCountPerSentBlock, IDriverCallback& rCallback)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGTecGMobiLabPlus::initialize\n";
-	m_rDriverContext.getLogManager() << LogLevel_Debug << "Port name after initialisation " << m_oPortName << "\n";
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "Port name after initialisation " << CString(m_oPortName.c_str()) << "\n";
 
 	if(m_rDriverContext.isConnected())
 	{
@@ -129,7 +129,7 @@ boolean CDriverGTecGMobiLabPlus::initialize(const uint32 ui32SampleCountPerSentB
 
 	if(!m_pHeader->isChannelCountSet() || !m_pHeader->isSamplingFrequencySet())
 	{
-		this->getLogManager() << LogLevel_Trace << "either channel count or sampling frequency is not set\n";
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "either channel count or sampling frequency is not set\n";
 		return false;
 	}
 
@@ -243,14 +243,14 @@ boolean CDriverGTecGMobiLabPlus::start(void)
 	// channel initialisation
 	if(!::GT_InitChannels(m_oDevice, m_oAnalogIn, l_oDigitalInOut))
 	{
-		this->getLogManager() << LogLevel_Trace << "GT_InitChannels failed\n";
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "GT_InitChannels failed\n";
 		return false;
 	}
 
 	// requests hardware to start sending data
 	if(!::GT_StartAcquisition(m_oDevice))
 	{
-		this->getLogManager() << LogLevel_Trace << "GT_StartAcquisition failed\n";
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "GT_StartAcquisition failed\n";
 		return false;
 	}
 	return true;
@@ -273,21 +273,19 @@ boolean CDriverGTecGMobiLabPlus::loop(void)
 	{
 		if (!::GT_GetData(m_oDevice, &m_oBuffer))// receive samples from hardware (one per channel)
 		{
-			this->getLogManager() << LogLevel_Trace << "GT_GetData failed\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "GT_GetData failed\n";
 			return false;
 		}
 
-#if 0
 		// here the "l_ui32ChannelCount" measures just acquired are stored in m_pSample not to be deleted by the next acquisition
-		this->getLogManager() << LogLevel_Debug << "Here are the " << l_ui32ChannelCount << " measures of the " << i << " th sample\n" << LogLevel_Debug;
+		m_rDriverContext.getLogManager() << LogLevel_Debug << "Here are the " << l_ui32ChannelCount << " measures of the " << i << " th sample\n" << LogLevel_Debug;
 		for(j=0; j<l_ui32ChannelCount; j++)
 		{
-			m_rDriverContext.getLogManager() << " " << (m_oBuffer.pBuffer[j]*0.5)/32768.;
+			m_rDriverContext.getLogManager() << (m_oBuffer.pBuffer[j]*0.5)/32768. << " ";
 			//operation made to modify the short int in a number between 0 and 500mV (in Volt)
 			m_pSample[m_ui32SampleCountPerSentBlock*j+i] = (m_oBuffer.pBuffer[j]*0.5)/32768.;
 		}
 		m_rDriverContext.getLogManager() << "\n";
-#endif
 	}
 
 	// the buffer is full : it is send to the acquisition server
@@ -306,7 +304,7 @@ boolean CDriverGTecGMobiLabPlus::stop(void)
 	// requests the hardware to stop sending data
 	if(!::GT_StopAcquisition(m_oDevice))
 	{
-		this->getLogManager() << LogLevel_Trace << "GT_StopAcquisition failed\n";
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "GT_StopAcquisition failed\n";
 		return false;
 	}
 
@@ -328,7 +326,7 @@ void CDriverGTecGMobiLabPlus::allowAnalogInputs(uint32 ui32ChannelIndex)
 		case 2: m_oAnalogIn.ain2 = true; break;
 		case 1: m_oAnalogIn.ain1 = true; break;
 		default:
-			this->getLogManager() << LogLevel_Trace << "Unexpected value " << ui32ChannelCount << " in CDriverGTecGMobiLabPlus::allowAnalogInputs\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "Unexpected value " << ui32ChannelIndex << " in CDriverGTecGMobiLabPlus::allowAnalogInputs\n";
 			break;
 	}
 }
