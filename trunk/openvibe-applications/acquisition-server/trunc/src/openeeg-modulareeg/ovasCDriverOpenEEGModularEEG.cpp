@@ -78,16 +78,13 @@ boolean CDriverOpenEEGModularEEG::initialize(
 	}
 
 	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
-	m_pChannelBuffer=new int32[m_oHeader.getChannelCount()];
-	if(!m_pSample || !m_pChannelBuffer)
+	if(!m_pSample)
 	{
 		delete [] m_pSample;
 		m_pSample=NULL;
-		delete [] m_pChannelBuffer;
-		m_pChannelBuffer=NULL;
 		return false;
 	}
-	System::Memory::set(m_pChannelBuffer, 0, m_oHeader.getChannelCount()*sizeof(int32));
+	m_vChannelBuffer2.resize(6);
 
 	m_pCallback=&rCallback;
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
@@ -107,40 +104,76 @@ boolean CDriverOpenEEGModularEEG::start(void)
 
 boolean CDriverOpenEEGModularEEG::loop(void)
 {
+	// printf("enter loop\n");
 	if(!m_rDriverContext.isConnected()) { return false; }
-	if(!m_rDriverContext.isStarted()) { return true; }
+	// printf("connection ok\n");
 
-	uint32 l_i32ReceivedSamples=0;
+	uint32 l_ui32ReceivedSamples=0;
 	uint32 l_ui32StartTime=System::Time::getTime();
-	while(l_i32ReceivedSamples < m_ui32SampleCountPerSentBlock && System::Time::getTime()-l_ui32StartTime < 1000)
+	while(l_ui32ReceivedSamples < m_ui32SampleCountPerSentBlock && System::Time::getTime()-l_ui32StartTime < 1000)
 	{
-		switch(this->readPacketFromTTY(m_i32FileDescriptor))
+		boolean l_bHasSamplesPending=(m_vChannelBuffer.size()!=0);
+
+		// printf("enter while at counter= %d\n", counter);
+		if(!l_bHasSamplesPending)
 		{
-			case 0: // No Packet finished
-				break;
+			int32 l_i32PacketCount=this->readPacketFromTTY(m_i32FileDescriptor);
+			switch(l_i32PacketCount)
+			{
+				case 0: // No Packet finished
+					// printf("switch 0: No Packet finished\n");
+					break;
 
-			case 1: // Packet with Samples arrived
-				// m_ui8LastPacketNumber++;
-				m_ui8LastPacketNumber=m_ui8PacketNumber;
-				for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
+				default:
+				case 1: // Packet with Samples arrived
+					break;
+
+				case -1: // Timeout, could inidicate communication error
+					printf("switch -1 : Timeout\n");
+					return false;
+			}
+		}
+		else
+		{
+			uint32 i, j;
+			uint32 l_ui32PacketCountToKeep = m_vChannelBuffer.size();
+
+			if(l_ui32PacketCountToKeep + l_ui32ReceivedSamples > m_ui32SampleCountPerSentBlock)
+			{
+				l_ui32PacketCountToKeep = m_ui32SampleCountPerSentBlock - l_ui32ReceivedSamples;
+			}
+
+			m_ui8LastPacketNumber=m_ui8PacketNumber;
+			// printf("Will appended %i packet(s) !\n", l_i32PacketCountToKeep);
+			for(j=0; j<m_oHeader.getChannelCount(); j++)
+			{
+				for(i=0; i<l_ui32PacketCountToKeep; i++)
 				{
-					m_pSample[j*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples]=(float32)m_pChannelBuffer[j]-512.f;
+					m_pSample[j*m_ui32SampleCountPerSentBlock+l_ui32ReceivedSamples+i]=(float32)m_vChannelBuffer[i][j]-512.f;
 				}
-				l_i32ReceivedSamples++;
-				break;
-
-			case -1: // Timeout, could inidicate communication error
-				return false;
+			}
+			m_vChannelBuffer.erase(m_vChannelBuffer.begin(), m_vChannelBuffer.begin()+l_ui32PacketCountToKeep);
+			if(m_vChannelBuffer.size())
+			{
+				// printf("Still %i packet(s) pending...\n", m_vChannelBuffer.size());
+			}
+			l_ui32ReceivedSamples+=l_ui32PacketCountToKeep;
 		}
 	}
 
-	if(l_i32ReceivedSamples!=m_ui32SampleCountPerSentBlock)
+	if(l_ui32ReceivedSamples!=m_ui32SampleCountPerSentBlock)
 	{
 		// Timeout
+		// printf("  l_i32ReceivedSamples!=m_ui32SampleCountPerSentBlock => Timeout\n");
 		return false;
 	}
 
-	m_pCallback->setSamples(m_pSample);
+	if(m_rDriverContext.isStarted())
+	{
+		m_pCallback->setSamples(m_pSample);
+	}
+
+	// printf("end loop\n");
 	return true;
 }
 
@@ -185,17 +218,6 @@ boolean CDriverOpenEEGModularEEG::configure(void)
 //___________________________________________________________________//
 //                                                                   //
 
-/*
-void CDriverOpenEEGModularEEG::logPacket(void)
-{
-	m_rDriverContext.getLogManager() << LogLevel_Trace << "\nPacket " << m_ui8PacketNumber << " received:\n";
-	for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
-	{
-		m_rDriverContext.getLogManager() << LogLevel_Trace << "Channel " << i+1 << ":" << m_pChannelBuffer[i] << "\n";
-	}
-}
-*/
-
 boolean CDriverOpenEEGModularEEG::parseByteP2(uint8 ui8Actbyte)
 {
 	uint32 m_ui32ChannelCount=m_oHeader.getChannelCount();
@@ -236,20 +258,21 @@ boolean CDriverOpenEEGModularEEG::parseByteP2(uint8 ui8Actbyte)
 				{
 					if((uint32)(m_ui16ExtractPosition>>1)<m_ui32ChannelCount)
 					{
-						m_pChannelBuffer[m_ui16ExtractPosition>>1]= ((int32)ui8Actbyte)<<8;
+						m_vChannelBuffer2[m_ui16ExtractPosition>>1]=((int32)ui8Actbyte)<<8;
 					}
 				}
 				else
 				{
 					if((uint32)(m_ui16ExtractPosition>>1)<m_ui32ChannelCount)
 					{
-						m_pChannelBuffer[m_ui16ExtractPosition>>1]+=ui8Actbyte;
+						m_vChannelBuffer2[m_ui16ExtractPosition>>1]+=ui8Actbyte;
 					}
 				}
 				m_ui16ExtractPosition++;
 			}
 			else
 			{
+				m_vChannelBuffer.push_back(m_vChannelBuffer2);
 				m_ui16Switches=ui8Actbyte;
 				m_ui16Readstate=0;
 				return true;
@@ -381,6 +404,8 @@ void CDriverOpenEEGModularEEG::closeTTY(::FD_TYPE i32FileDescriptor)
 
 int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "Enters readPacketFromTTY\n";
+
 	uint8  l_ui8ReadBuffer[100];
 	uint32 l_ui32BytesProcessed=0;
 	int32  l_i32PacketsProcessed=0;
@@ -396,15 +421,26 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 	{
 		l_ui32ReadLength=l_oStatus.cbInQue;
 	}
+	if(l_ui32ReadLength)
+	{
+		// printf("Read length = %i\n", l_ui32ReadLength);
+	}
+	else
+	{
+		// printf(".");
+	}
 
 	for(l_ui32BytesProcessed=0; l_ui32BytesProcessed<l_ui32ReadLength; l_ui32BytesProcessed++)
 	{
+		// printf("readPacketFromTTY : for : %d\n", l_ui32BytesProcessed);
 		// Read the data from the serial port.
 		::ReadFile(i32FileDescriptor, l_ui8ReadBuffer, 1, (LPDWORD)&l_ui32ReadOk, 0);
 		if(l_ui32ReadOk==1)
 		{
+			// printf("readPacketFromTTY : l_ui32ReadOk==1 \n");
 			if(this->parseByteP2(l_ui8ReadBuffer[0]))
 			{
+				// printf("readPacketFromTTY : parseByteP2(l_ui8ReadBuffer[0]) = true => l_i32PacketsProcessed++\n");
 				l_i32PacketsProcessed++;
 			}
 		}
@@ -448,7 +484,9 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 #else
 
 #endif
-
+	// printf("l_i32PacketsProcessed=%d\n",l_i32PacketsProcessed);
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "Leaves readPacketFromTTY\n";
 	return l_i32PacketsProcessed;
  }
+
 

@@ -11,6 +11,8 @@
 #else
 #endif
 
+#include <vector>
+
 namespace OpenViBEAcquisitionServer
 {
 	class CDriverOpenEEGModularEEG : public OpenViBEAcquisitionServer::IDriver
@@ -57,8 +59,10 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint16 m_ui16ExtractPosition;
 		OpenViBE::uint8  m_ui8PacketNumber;
 		OpenViBE::uint8  m_ui8LastPacketNumber;
-		OpenViBE::int32* m_pChannelBuffer;
 		OpenViBE::uint16 m_ui16Switches;
+
+		std::vector < std::vector < OpenViBE::int32 > > m_vChannelBuffer;
+		std::vector < OpenViBE::int32 > m_vChannelBuffer2;
 	};
 };
 
