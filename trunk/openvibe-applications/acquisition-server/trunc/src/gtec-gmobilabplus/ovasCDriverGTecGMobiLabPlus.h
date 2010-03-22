@@ -14,52 +14,54 @@
 #include <string>
 #include <gMOBIlabplus.h>
 
-class CDriverGTecGMobiLabPlus : public OpenViBEAcquisitionServer::IDriver
+namespace OpenViBEAcquisitionServer
 {
-public:
-
-	CDriverGTecGMobiLabPlus(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
-	virtual ~CDriverGTecGMobiLabPlus(void);
-	virtual void release(void);
-	virtual const char* getName(void);
-
-	virtual OpenViBE::boolean isFlagSet(
-		const OpenViBEAcquisitionServer::EDriverFlag eFlag) const
+	class CDriverGTecGMobiLabPlus : public OpenViBEAcquisitionServer::IDriver
 	{
-		return eFlag==DriverFlag_IsUnstable;
-	}
+	public:
 
-	//configuration
-	virtual OpenViBE::boolean isConfigurable(void);
-	virtual OpenViBE::boolean configure(void);
-	//initialisation
-	virtual OpenViBE::boolean initialize(const OpenViBE::uint32 ui32SampleCountPerChannel, OpenViBEAcquisitionServer::IDriverCallback& rCallback);
-	virtual OpenViBE::boolean uninitialize(void);
-	virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void);
+		CDriverGTecGMobiLabPlus(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
+		virtual ~CDriverGTecGMobiLabPlus(void);
+		virtual void release(void);
+		virtual const char* getName(void);
 
-	//acquisition
-	virtual OpenViBE::boolean start(void);
-	virtual OpenViBE::boolean stop(void);
-	virtual OpenViBE::boolean loop(void);
+		virtual OpenViBE::boolean isFlagSet(
+			const OpenViBEAcquisitionServer::EDriverFlag eFlag) const
+		{
+			return eFlag==DriverFlag_IsUnstable;
+		}
 
-protected:
+		//configuration
+		virtual OpenViBE::boolean isConfigurable(void);
+		virtual OpenViBE::boolean configure(void);
+		//initialisation
+		virtual OpenViBE::boolean initialize(const OpenViBE::uint32 ui32SampleCountPerChannel, OpenViBEAcquisitionServer::IDriverCallback& rCallback);
+		virtual OpenViBE::boolean uninitialize(void);
+		virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void);
 
-	//usefull data to communicate with OpenViBE
-	OpenViBEAcquisitionServer::IHeader* m_pHeader;
-	OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
-	OpenViBE::uint32 m_ui32SampleCountPerSentBlock;//number of sample you want to send in a row
-	OpenViBE::float32* m_pSample;//array containing the data to sent to OpenViBE once they had been recovered from the gTec module
+		//acquisition
+		virtual OpenViBE::boolean start(void);
+		virtual OpenViBE::boolean stop(void);
+		virtual OpenViBE::boolean loop(void);
 
-	//usefull data to communicate with the gTec module
-	std::string m_oPortName;
-	_BUFFER_ST m_oBuffer;
-	HANDLE m_oDevice;
-	_AIN m_oAnalogIn;
+	protected:
 
-private:
+		//usefull data to communicate with OpenViBE
+		OpenViBEAcquisitionServer::IHeader* m_pHeader;
+		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
+		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;//number of sample you want to send in a row
+		OpenViBE::float32* m_pSample;//array containing the data to sent to OpenViBE once they had been recovered from the gTec module
 
-	void allowAnalogInputs(OpenViBE::uint32 ui32ChannelIndex);
+		//usefull data to communicate with the gTec module
+		std::string m_oPortName;
+		_BUFFER_ST m_oBuffer;
+		HANDLE m_oDevice;
+		_AIN m_oAnalogIn;
 
+	private:
+
+		void allowAnalogInputs(OpenViBE::uint32 ui32ChannelIndex);
+	};
 };
 
 #endif // TARGET_HAS_ThirdPartyGMobiLabPlusAPI
