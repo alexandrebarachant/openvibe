@@ -15,6 +15,7 @@
 #include "ovpCTopographicMap2DDisplay.h"
 #include "box-algorithms/simple-visualisation/ovpCBoxAlgorithmLevelMeasure.h"
 #include "box-algorithms/simple-visualisation/ovpCBoxAlgorithmClassifierAccuracyMeasure.h"
+#include "ovpCBoxAlgorithmMatrixDisplay.h"
 //3D plugins
 #include "ovpCSimple3DDisplay.h"
 #include "ovpCTopographicMap3DDisplay.h"
@@ -43,6 +44,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CTopographicMap2DDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CBoxAlgorithmLevelMeasureDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CBoxAlgorithmClassifierAccuracyMeasureDesc)
+	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CBoxAlgorithmMatrixDisplayDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CSimple3DDisplayDesc)
 	OVP_Declare_New(OpenViBEPlugins::SimpleVisualisation::CTopographicMap3DDisplayDesc)

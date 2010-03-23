@@ -35,6 +35,22 @@ __________________________________________________________________
  * |OVP_DocBegin_BoxAlgorithm_SignalDisplay_Setting1|
 Size of time window to display, in seconds.
  * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_Setting1|
+
+ * |OVP_DocBegin_BoxAlgorithm_SignalDisplay_Setting2|
+Type of display, could be either Scan mode or Scroll mode. In Scan mode, the new data arrives
+from left to right and the displayed data does not move. In Scroll mode, the new data always
+arrives on the right and all displayed data moves right to left.
+ * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_Setting2|
+
+ * |OVP_DocBegin_BoxAlgorithm_SignalDisplay_Setting1|
+Tells the signal display whether vertical scale should be automatically updated or not.
+This can be changed online.
+ * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_Setting1|
+
+ * |OVP_DocBegin_BoxAlgorithm_SignalDisplay_Setting1|
+In case the vertical scale is manual, this settings provides a default value.
+ * |OVP_DocEnd_BoxAlgorithm_SignalDisplay_Setting1|
+
 __________________________________________________________________
 
 Online visualisation settings

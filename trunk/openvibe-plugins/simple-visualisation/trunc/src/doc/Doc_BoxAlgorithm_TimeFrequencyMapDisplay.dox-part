@@ -15,7 +15,7 @@ A Time-Frequency (TF) map displays power spectra of signals over time, making it
  frequency bands, while in bigger maps, each frequency band will be allotted an area that is one pixel high or more.
 
  Since a TF map displays a series of power spectra, input data should be preprocessed by a Spectral Analysis box, as is the case with the Power Spectrum plugin.
- See \ref BoxAlgorithm_PowerSpectrumDisplay for an example, and \ref BoxAlgorithm_SpectralAnalysis for more information.
+ See \ref Doc_BoxAlgorithm_PowerSpectrumDisplay for an example, and \ref Doc_BoxAlgorithm_SpectralAnalysis for more information.
 
  * |OVP_DocEnd_BoxAlgorithm_TimeFrequencyMapDisplay_Description|
 __________________________________________________________________

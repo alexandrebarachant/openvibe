@@ -32,6 +32,31 @@ namespace OpenViBEPlugins
 		void multiViewButtonCallback(::GtkButton *button, gpointer data);
 		void multiViewDialogApplyButtonCallback(::GtkButton *button, gpointer data);
 
+		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode, boolean bAutoVerticalScale, float64 f64VerticalScale)
+			:m_pGladeInterface(NULL)
+			,m_bShowLeftRulers(false)
+			,m_bShowBottomRuler(true)
+			,m_ui64LeftmostDisplayedTime(0)
+			,m_f64LargestDisplayedValueRange(0)
+			,m_f64ValueRangeMargin(0)
+			,m_f64MarginFactor(0.4f) //add 40% space above and below extremums
+			,m_bVerticalScaleChanged(false)
+			,m_bAutoVerticalScale(true)
+			,m_f64CustomVerticalScaleValue(1.)
+			,m_pBufferDatabase(&oBufferDatabase)
+			,m_bMultiViewInitialized(false)
+			,m_pBottomBox(NULL)
+			,m_pBottomRuler(NULL)
+		{
+			m_bAutoVerticalScale=bAutoVerticalScale;
+			m_bVerticalScaleChanged=!bAutoVerticalScale;
+			if(!bAutoVerticalScale)
+			{
+				m_f64CustomVerticalScaleValue=f64VerticalScale;
+			}
+			construct(oBufferDatabase,f64TimeScale,oDisplayMode);
+		}
+
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode)
 			:m_pGladeInterface(NULL)
 			,m_bShowLeftRulers(false)
@@ -47,6 +72,11 @@ namespace OpenViBEPlugins
 			,m_bMultiViewInitialized(false)
 			,m_pBottomBox(NULL)
 			,m_pBottomRuler(NULL)
+		{
+			construct(oBufferDatabase,f64TimeScale,oDisplayMode);
+		}
+
+		void CSignalDisplayView::construct(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode)
 		{
 			//load the glade interface
 			m_pGladeInterface=::glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.glade", NULL, NULL);
@@ -80,10 +110,10 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton")),       "clicked", G_CALLBACK(informationButtonCallback),       this);
 
 			//initialize vertical scale
-			m_bAutoVerticalScale = true;
-			m_f64CustomVerticalScaleValue = 1;
 			::gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayVerticalScaleToggleButton")), m_bAutoVerticalScale);
 			::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64CustomVerticalScaleValue);
+			::gtk_spin_button_set_increments(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")),0.001,1.0);
+			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"), !m_bAutoVerticalScale);
 
 			//connect vertical scale callbacks
 			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayVerticalScaleToggleButton")),     "toggled",       G_CALLBACK(toggleAutoVerticalScaleButtonCallback), this);
@@ -1043,9 +1073,14 @@ namespace OpenViBEPlugins
 					"clicked",
 					G_CALLBACK(::gtk_widget_hide),
 					G_OBJECT(l_pInformationDialog));
+			
+			g_signal_connect(G_OBJECT(l_pInformationDialog),
+				"delete_event",
+				G_CALLBACK(::gtk_widget_hide),
+				NULL);
 
 			//finally, show the information dialog
-			::gtk_widget_show(l_pInformationDialog);
+			::gtk_widget_show_all(l_pInformationDialog);
 		}
 
 		//called when the channel select button is pressed (opens the channel selection dialog)

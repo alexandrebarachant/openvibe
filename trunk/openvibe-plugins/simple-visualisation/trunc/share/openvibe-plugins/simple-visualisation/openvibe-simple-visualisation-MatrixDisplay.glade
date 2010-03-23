@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<glade-interface>
+  <!-- interface-requires gtk+ 2.6 -->
+  <!-- interface-naming-policy toplevel-contextual -->
+  <widget class="GtkWindow" id="matrix-display">
+    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+    <child>
+      <widget class="GtkTable" id="matrix-display-table">
+        <property name="visible">True</property>
+        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+        <property name="border_width">8</property>
+        <property name="column_spacing">8</property>
+        <property name="row_spacing">8</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <placeholder/>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="matrix-display-toolbar">
+    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+    <property name="title" translatable="yes">Matrix Display</property>
+    <child>
+      <widget class="GtkToolbar" id="matrix-display-settings">
+        <property name="visible">True</property>
+        <property name="show_arrow">False</property>
+        <child>
+          <widget class="GtkToggleToolButton" id="show-values-toggle-button">
+            <property name="visible">True</property>
+            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="label" translatable="yes">show values</property>
+            <property name="stock_id">gtk-refresh</property>
+			<property name="active">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkSeparatorToolItem" id="separator">
+            <property name="visible">True</property>
+            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkToggleToolButton" id="show-colors-toggle-button">
+            <property name="visible">True</property>
+            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="label" translatable="yes">show colors</property>
+            <property name="stock_id">gtk-select-color</property>
+			<property name="active">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  
+  <widget class="GtkWindow" id="dummy-window">
+    <child>
+      <widget class="GtkEventBox" id="matrix-value-eventbox">
+        <property name="visible">True</property>
+        <child>
+          <widget class="GtkLabel" id="matrix-value-label">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">X</property>
+          </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</glade-interface>

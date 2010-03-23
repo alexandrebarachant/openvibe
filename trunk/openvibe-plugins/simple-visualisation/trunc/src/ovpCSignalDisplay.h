@@ -23,8 +23,8 @@ namespace OpenViBEPlugins
 		* the width of the time window displayed, ...
 		*/
 		class CSignalDisplay : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
-		virtual public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback,
-		virtual public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
+			public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback,
+			public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
 		{
 		public:
 
@@ -93,6 +93,8 @@ namespace OpenViBEPlugins
 			{
 				rPrototype.addSetting("Time Scale", OV_TypeId_Float, "10");
 				rPrototype.addSetting("Display Mode", OVP_TypeId_SignalDisplayMode, "Scan");
+				rPrototype.addSetting("Manual Vertical Scale",OV_TypeId_Boolean, "false");
+				rPrototype.addSetting("Vertical Scale",OV_TypeId_Float, "100");
 				rPrototype.addInput("Signal", OV_TypeId_StreamedMatrix);
 				rPrototype.addInput("Stimulations", OV_TypeId_Stimulations);
 

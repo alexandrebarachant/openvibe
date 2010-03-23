@@ -101,14 +101,14 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { }
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Classifier accuracy measure"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Classifier Accuracy Measure"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Laurent Bonnet"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Visualisation/Classification"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
-			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-go-up"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-sort-ascending"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_ClassifierAccuracyMeasure; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SimpleVisualisation::CBoxAlgorithmClassifierAccuracyMeasure; }
@@ -124,7 +124,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
-				rBoxAlgorithmPrototype.addInput("Targets", OV_TypeId_Stimulations);
+				rBoxAlgorithmPrototype.addInput("Targets",      OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addInput("Classifier 1", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addFlag (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				rBoxAlgorithmPrototype.addFlag (OpenViBE::Kernel::BoxFlag_CanModifyInput);

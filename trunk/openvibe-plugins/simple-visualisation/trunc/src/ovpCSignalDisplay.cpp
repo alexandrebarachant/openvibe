@@ -5,6 +5,7 @@
 #include <cstdlib>
 
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
 using namespace OpenViBEPlugins;
@@ -42,16 +43,23 @@ namespace OpenViBEPlugins
 			m_pBufferDatabase = new CBufferDatabase(*this);
 
 			//retrieve settings
-			CString l_sTimeScaleSettingValue;
-			getStaticBoxContext().getSettingValue(0, l_sTimeScaleSettingValue);
-			CString l_sDisplayModeSettingValue;
-			getStaticBoxContext().getSettingValue(1, l_sDisplayModeSettingValue);
+			CString l_sTimeScaleSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+			CString l_sDisplayModeSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
+			CString l_sManualVerticalScaleSettingValue="false";
+			CString l_sVerticalScaleSettingValue="100.";
+			if(this->getStaticBoxContext().getSettingCount() > 2) l_sManualVerticalScaleSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);
+			if(this->getStaticBoxContext().getSettingCount() > 3) l_sVerticalScaleSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 3);
+
+			this->getLogManager() << LogLevel_Debug << "l_sManualVerticalScaleSettingValue=" << l_sManualVerticalScaleSettingValue << "\n";
+			this->getLogManager() << LogLevel_Debug << "l_sVerticalScaleSettingValue=" << l_sVerticalScaleSettingValue << "\n";
 
 			//create GUI
 			m_pSignalDisplayView = new CSignalDisplayView(
 				*m_pBufferDatabase,
-				atof(l_sTimeScaleSettingValue),
-				CIdentifier(getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_SignalDisplayMode, l_sDisplayModeSettingValue)));
+				::atof(l_sTimeScaleSettingValue),
+				CIdentifier(getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_SignalDisplayMode, l_sDisplayModeSettingValue)),
+				!this->getConfigurationManager().expandAsBoolean(l_sManualVerticalScaleSettingValue),
+				::atof(l_sVerticalScaleSettingValue));
 
 			m_pBufferDatabase->setDrawable(m_pSignalDisplayView);
 
