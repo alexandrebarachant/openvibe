@@ -94,6 +94,7 @@
 #define OVTK_StimulationId_EndOfFile                         0x00008204
 #define OVTK_StimulationId_Target                            0x00008205
 #define OVTK_StimulationId_NonTarget                         0x00008206
+#define OVTK_StimulationId_TrainCompleted                    0x00008207
 
 //___________________________________________________________________//
 //                                                                   //
@@ -272,7 +273,6 @@
  * OVTK_NodeId_Acquisition_Buffer
  * ...
  */
-
 
 /*
  * Acquisition stream description (fixed on march 2008)
