@@ -15,7 +15,7 @@ are labelled depending on the input they arrive on. When a specific stimulation 
 process is triggered. This process can take some time so this box should be used offline. Depending on the
 settings you enter, you will be able to perform a k-fold test in order to train a better classifier. When
 this training stimulation is received, the box requests the selected classification algorithm to generate
-a configuration file that will be useable online by the \ref Doc_BoxAlgorithm_ClassifierProcessor box.
+a configuration file that will be useable online by the \ref Doc_BoxAlgorithm_ClassifierProcessor box. Finally, the box releases a particular stimulation (OVTK_StimulationId_TrainCompleted) on its ouput, that can be used to trigger further treatments in the scenario.
  * |OVP_DocEnd_BoxAlgorithm_ClassifierTrainer_Description|
 __________________________________________________________________
 
@@ -43,6 +43,18 @@ This input receives the feature vector for the second class.
  * |OVP_DocEnd_BoxAlgorithm_ClassifierTrainer_Input3|
 __________________________________________________________________
 
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_ClassifierTrainer_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_ClassifierTrainer_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_ClassifierTrainer_Output1|
+The stimulation OVTK_StimulationId_TrainCompleted is raised on this output when the classifier trainer has finished its job.
+ * |OVP_DocEnd_BoxAlgorithm_ClassifierTrainer_Output1|
+
+__________________________________________________________________
+
 Settings description
 __________________________________________________________________
 
@@ -63,12 +75,12 @@ algorithm you want.
 
  * |OVP_DocBegin_BoxAlgorithm_ClassifierTrainer_Setting2|
 This setting points to the configuration file where to save the result of the training for later online use. This
-configuration file is used by the \ref Doc_BoxAlgorithm_ClassifierProcesor box. Its syntax
+configuration file is used by the \ref Doc_BoxAlgorithm_ClassifierProcessor box. Its syntax
 depends on the selected algorithm.
  * |OVP_DocEnd_BoxAlgorithm_ClassifierTrainer_Setting2|
 
  * |OVP_DocBegin_BoxAlgorithm_ClassifierTrainer_Setting3|
-This is the stimualation to consider to trigger the training process.	
+This is the stimulation to consider to trigger the training process.	
  * |OVP_DocEnd_BoxAlgorithm_ClassifierTrainer_Setting3|
 
  * |OVP_DocBegin_BoxAlgorithm_ClassifierTrainer_Setting4|

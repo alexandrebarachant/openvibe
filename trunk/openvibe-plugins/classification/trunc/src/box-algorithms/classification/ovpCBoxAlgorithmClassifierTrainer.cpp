@@ -44,6 +44,9 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 
 	m_vFeatureCount.clear();
 
+	m_pStimulationsEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamEncoder));
+	m_pStimulationsEncoder->initialize();
+
 	return true;
 }
 
@@ -54,9 +57,11 @@ boolean CBoxAlgorithmClassifierTrainer::uninitialize(void)
 
 	m_pClassifier->uninitialize();
 	m_pStimulationsDecoder->uninitialize();
+	m_pStimulationsEncoder->uninitialize();
 
 	this->getAlgorithmManager().releaseAlgorithm(*m_pClassifier);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationsDecoder);
+	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationsEncoder);
 
 	for(uint32 i=1; i<l_rStaticBoxContext.getInputCount(); i++)
 	{
@@ -88,10 +93,21 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 	{
 		TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_pStimulationsDecoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
 		TParameterHandler < const IStimulationSet* > op_pStimulationSet(m_pStimulationsDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
+
 		ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
+
+		TParameterHandler < IStimulationSet* > ip_pStimulationSet(m_pStimulationsEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
+		TParameterHandler < const IMemoryBuffer* > op_pEncodedMemoryBuffer(m_pStimulationsEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+
+		CStimulationSet l_oStimulationSet;
+		ip_pStimulationSet=&l_oStimulationSet;
+		op_pEncodedMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+
 		m_pStimulationsDecoder->process();
+
 		if(m_pStimulationsDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
+			m_pStimulationsEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
 		}
 		if(m_pStimulationsDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
@@ -100,12 +116,20 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 				if(op_pStimulationSet->getStimulationIdentifier(j)==m_ui64TrainStimulation)
 				{
 					l_bTrainStimulationReceived=true;
+
+					this->getLogManager() << LogLevel_Trace << "Raising train-completed Flag.\n";
+					uint64 l_ui32TrainCompletedStimulation = this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation,"OVTK_StimulationId_TrainCompleted");
+					l_oStimulationSet.appendStimulation(l_ui32TrainCompletedStimulation, op_pStimulationSet->getStimulationDate(j), 0);
 				}
 			}
+			m_pStimulationsEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 		}
 		if(m_pStimulationsDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
 		{
+			m_pStimulationsEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeEnd);
 		}
+
+		l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 		l_rDynamicBoxContext.markInputAsDeprecated(0, i);
 	}
 
@@ -161,6 +185,9 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 			float64 l_f64BestPartitionAccuracy=0;
 			float64 l_f64PartitionAccuracy=0;
 			float64 l_f64FinalAccuracy=0;
+
+			vector<float64> l_vPartitionAccuracies(m_ui64PartitionCount);
+
 			for(uint64 i=0; i<m_ui64PartitionCount; i++)
 			{
 				size_t l_uiStartIndex=((i  )*m_vFeatureVector.size())/m_ui64PartitionCount;
@@ -170,6 +197,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 				if(this->train(l_uiStartIndex, l_uiStopIndex))
 				{
 					l_f64PartitionAccuracy=this->getAccuracy(l_uiStartIndex, l_uiStopIndex);
+					l_vPartitionAccuracies[i] = l_f64PartitionAccuracy;
 					if(l_f64PartitionAccuracy>l_f64BestPartitionAccuracy)
 					{
 						l_ui64BestPartition=i;
@@ -180,7 +208,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 				}
 				this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount << " (performance : " << l_f64PartitionAccuracy << "%)\n";
 			}
-			this->getLogManager() << LogLevel_Info << "Best classifier performance was for partition " << l_ui64BestPartition+1 << "... Traininng on this partition again !\n";
+			this->getLogManager() << LogLevel_Info << "Best classifier performance was for partition " << l_ui64BestPartition+1 << "... Training on this partition again !\n";
 			l_oConfiguration.setSize(0, true);
 			l_oConfiguration.append(l_oBestConfiguration);
 			l_f64FinalAccuracy=this->getAccuracy(0, m_vFeatureVector.size());

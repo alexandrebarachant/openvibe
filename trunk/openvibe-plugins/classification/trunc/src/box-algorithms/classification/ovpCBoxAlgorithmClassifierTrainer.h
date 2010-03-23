@@ -8,6 +8,7 @@
 #include "ovpCBoxAlgorithmCommonClassifierListener.inl"
 
 #include <map>
+#include <iostream>
 
 #define OVP_ClassId_BoxAlgorithm_ClassifierTrainer     OpenViBE::CIdentifier(0x128703B1, 0x0E2441F6)
 #define OVP_ClassId_BoxAlgorithm_ClassifierTrainerDesc OpenViBE::CIdentifier(0x0A0A3F0A, 0x17C8569F)
@@ -42,6 +43,8 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pClassifier;
 			OpenViBE::uint64 m_ui64TrainStimulation;
 			OpenViBE::uint64 m_ui64PartitionCount;
+
+			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationsEncoder;
 
 			typedef struct
 			{
@@ -78,10 +81,14 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addInput  ("Stimulations",                         OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addInput  ("Features for class 1",                 OV_TypeId_FeatureVector);
 				rBoxAlgorithmPrototype.addInput  ("Features for class 2",                 OV_TypeId_FeatureVector);
+
+				rBoxAlgorithmPrototype.addOutput ("Train-completed Flag",                 OV_TypeId_Stimulations);
+
 				rBoxAlgorithmPrototype.addSetting("Classifier to use",                    OVTK_TypeId_ClassificationAlgorithm, "");
 				rBoxAlgorithmPrototype.addSetting("Filename to save configuration to",    OV_TypeId_Filename,                  "");
 				rBoxAlgorithmPrototype.addSetting("Train trigger",                        OV_TypeId_Stimulation,               "OVTK_StimulationId_Train");
 				rBoxAlgorithmPrototype.addSetting("Number of partitions for k-fold test", OV_TypeId_Integer,                   "10");
+
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				return true;
 			}
