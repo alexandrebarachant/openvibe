@@ -69,6 +69,11 @@ namespace OpenViBEAcquisitionServer
 			return m_rKernelContext.getLogManager();
 		}
 
+		virtual IConfigurationManager& getConfigurationManager(void) const
+		{
+			return m_rKernelContext.getConfigurationManager();
+		}
+
 		virtual boolean isConnected(void) const
 		{
 			return m_rAcquisitionServer.isConnected();
@@ -298,7 +303,9 @@ CAcquisitionServer::CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& r
 		m_vDriver.push_back(new CDriverGTecGMobiLabPlus(*m_pDriverContext));
 #endif
 		m_vDriver.push_back(new CDriverBrainampStandard(*m_pDriverContext));
+#if defined OVAS_OS_Windows
 		m_vDriver.push_back(new CDriverMicromedIntraEEG(*m_pDriverContext));
+#endif
 		m_vDriver.push_back(new CDriverCtfVsmMeg(*m_pDriverContext));
 		// m_vDriver.push_back(new CDriverNeuroscanSynamps2(*m_pDriverContext));
 #if defined OVAS_OS_Windows
@@ -627,6 +634,7 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 
 			m_bGotData=false;
 			m_bInitialized=true;
+			m_eDriverLatencyLogLevel=LogLevel_ImportantWarning;
 
 			TParameterHandler < uint64 > ip_ui64BuferDuration(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_BufferDuration));
 
@@ -812,11 +820,12 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 			}
 			else
 			{
-				m_rKernelContext.getLogManager() << LogLevel_Warning << "Theorical sample per seconds and real sample per seconds does not match.\n";
-				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Received : " << m_ui64SampleCount << " samples.\n";
-				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Should have received : " << l_ui64TheoricalSampleCount << " samples.\n";
-				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Difference is : " << (l_ui64TheoricalSampleCount>m_ui64SampleCount?l_ui64TheoricalSampleCount-m_ui64SampleCount:m_ui64SampleCount-l_ui64TheoricalSampleCount) << " samples.\n";
-				m_rKernelContext.getLogManager() << LogLevel_Warning << "  Please submit a bug report for the driver you are using.\n";
+				m_rKernelContext.getLogManager() << m_eDriverLatencyLogLevel << "Theorical sample per seconds and real sample per seconds does not match.\n";
+				m_rKernelContext.getLogManager() << m_eDriverLatencyLogLevel << "  Received : " << m_ui64SampleCount << " samples.\n";
+				m_rKernelContext.getLogManager() << m_eDriverLatencyLogLevel << "  Should have received : " << l_ui64TheoricalSampleCount << " samples.\n";
+				m_rKernelContext.getLogManager() << m_eDriverLatencyLogLevel << "  Difference is : " << (l_ui64TheoricalSampleCount>m_ui64SampleCount?l_ui64TheoricalSampleCount-m_ui64SampleCount:m_ui64SampleCount-l_ui64TheoricalSampleCount) << " samples.\n";
+				m_rKernelContext.getLogManager() << m_eDriverLatencyLogLevel << "  Please submit a bug report for the driver you are using.\n";
+				m_eDriverLatencyLogLevel=LogLevel_Trace;
 			}
 		}
 	}

@@ -63,6 +63,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pStimulationMemoryBuffer;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pChannelLocalisationMemoryBuffer;
 
+		OpenViBE::Kernel::ELogLevel m_eDriverLatencyLogLevel;
+
 		::GladeXML* m_pGladeInterface;
 
 		std::list < std::pair < Socket::IConnection*, OpenViBE::uint64 > > m_vConnection;

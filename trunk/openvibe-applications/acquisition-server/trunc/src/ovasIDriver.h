@@ -35,6 +35,12 @@ namespace OpenViBEAcquisitionServer
 		 */
 		virtual OpenViBE::Kernel::ILogManager& getLogManager(void) const=0;
 		/**
+		 * \brief Gets the kernel Configuration Manager
+		 * \return the kernel Configuration Manager
+		 * \sa OpenViBE::Kernel::IConfigurationManager
+		 */
+		virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void) const=0;
+		/**
 		 * \brief Gets connection status
 		 * \return \e true if the driver is connected
 		 * \return \e false if the driver is not connected
