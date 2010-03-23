@@ -149,6 +149,7 @@
 #define OV_TypeId_Float                                      OpenViBE::CIdentifier(0x512A166F, 0x5C3EF83F)
 #define OV_TypeId_String                                     OpenViBE::CIdentifier(0x79A9EDEB, 0x245D83FC)
 #define OV_TypeId_Filename                                   OpenViBE::CIdentifier(0x330306DD, 0x74A95F98)
+#define OV_TypeId_Script                                     OpenViBE::CIdentifier(0xB0D0DB45, 0x49CBC34A)
 #define OV_TypeId_Stimulation                                OpenViBE::CIdentifier(0x2C132D6E, 0x44AB0D97)
 #define OV_TypeId_LogLevel                                   OpenViBE::CIdentifier(0xA88B3667, 0x0871638C)
 #define OV_TypeId_Color                                      OpenViBE::CIdentifier(0x7F45A2A9, 0x7DB12219)
