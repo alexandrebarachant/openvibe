@@ -201,31 +201,36 @@ namespace
 		if(l_pCurrentInterfacedScenario)
 		{
 			float64 l_f64Time=(l_pCurrentInterfacedScenario->m_pPlayer?((l_pCurrentInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
-			uint32 l_ui32Milli  = ((uint32)(l_f64Time*1000)%1000);
-			uint32 l_ui32Seconds=  ((uint32)l_f64Time)%60;
-			uint32 l_ui32Minutes= (((uint32)l_f64Time)/60)%60;
-			uint32 l_ui32Hours  =((((uint32)l_f64Time)/60)/60);
-
-			float64 l_f64CPUUsage=(l_pCurrentInterfacedScenario->m_pPlayer?l_pCurrentInterfacedScenario->m_pPlayer->getCPUUsage(OV_UndefinedIdentifier):0);
-
-			std::stringstream ss;
-			ss << "Time : ";
-			if(l_ui32Hours)                                            ss << l_ui32Hours << "h ";
-			if(l_ui32Hours||l_ui32Minutes)                             ss << (l_ui32Minutes<10?"0":"") << l_ui32Minutes << "m ";
-			if(l_ui32Hours||l_ui32Minutes||l_ui32Seconds)              ss << (l_ui32Seconds<10?"0":"") << l_ui32Seconds << "s ";
-			ss << (l_ui32Milli<100?"0":"") << (l_ui32Milli<10?"0":"") << l_ui32Milli << "ms";
-
-			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-label_current_time")), ss.str().c_str());
-
-			char l_sCPU[1024];
-			sprintf(l_sCPU, "%3.01f%%", l_f64CPUUsage);
-
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_f64CPUUsage*.01);
-			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_sCPU);
-			if(l_pCurrentInterfacedScenario->m_pPlayer&&l_pCurrentInterfacedScenario->m_bDebugCPUUsage)
+			if(l_pApplication->m_ui64LastTimeRefresh!=l_f64Time)
 			{
-				// redraws scenario
-				l_pCurrentInterfacedScenario->redraw();
+				l_pApplication->m_ui64LastTimeRefresh=l_f64Time;
+
+				uint32 l_ui32Milli  = ((uint32)(l_f64Time*1000)%1000);
+				uint32 l_ui32Seconds=  ((uint32)l_f64Time)%60;
+				uint32 l_ui32Minutes= (((uint32)l_f64Time)/60)%60;
+				uint32 l_ui32Hours  =((((uint32)l_f64Time)/60)/60);
+
+				float64 l_f64CPUUsage=(l_pCurrentInterfacedScenario->m_pPlayer?l_pCurrentInterfacedScenario->m_pPlayer->getCPUUsage(OV_UndefinedIdentifier):0);
+
+				std::stringstream ss;
+				ss << "Time : ";
+				if(l_ui32Hours)                                            ss << l_ui32Hours << "h ";
+				if(l_ui32Hours||l_ui32Minutes)                             ss << (l_ui32Minutes<10?"0":"") << l_ui32Minutes << "m ";
+				if(l_ui32Hours||l_ui32Minutes||l_ui32Seconds)              ss << (l_ui32Seconds<10?"0":"") << l_ui32Seconds << "s ";
+				ss << (l_ui32Milli<100?"0":"") << (l_ui32Milli<10?"0":"") << l_ui32Milli << "ms";
+
+				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-label_current_time")), ss.str().c_str());
+
+				char l_sCPU[1024];
+				sprintf(l_sCPU, "%3.01f%%", l_f64CPUUsage);
+
+				gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_f64CPUUsage*.01);
+				gtk_progress_bar_set_text(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_sCPU);
+				if(l_pCurrentInterfacedScenario->m_pPlayer&&l_pCurrentInterfacedScenario->m_bDebugCPUUsage)
+				{
+					// redraws scenario
+					l_pCurrentInterfacedScenario->redraw();
+				}
 			}
 		}
 		else
@@ -237,7 +242,7 @@ namespace
 
 		if(!l_pApplication->hasScenarioRunning())
 		{
-			System::Time::sleep(5);
+			System::Time::sleep(50);
 		}
 
 		return TRUE;
@@ -432,6 +437,136 @@ void CApplication::initialize(void)
 	gtk_widget_show(m_pMainWindow);
 	// gtk_window_set_icon_name(GTK_WINDOW(m_pMainWindow), "ov-logo");
 	// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/openvibe-applications/designer/ov-logo.png", NULL);
+}
+
+void CApplication::openScenario(char* sFileName)
+{
+	CIdentifier l_oScenarioIdentifier;
+	if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
+	{
+		IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
+
+		CMemoryBuffer l_oMemoryBuffer;
+		boolean l_bSuccess=false;
+
+		std::ifstream l_oFile(sFileName, ios::binary);
+		if(l_oFile.good())
+		{
+			l_oFile.seekg(0, ios::end);
+			l_oMemoryBuffer.setSize(l_oFile.tellg(), true);
+			l_oFile.seekg(0, ios::beg);
+			l_oFile.read(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize());
+			l_oFile.close();
+
+			CIdentifier l_oImporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_XMLScenarioImporter);
+			if(l_oImporterIdentifier!=OV_UndefinedIdentifier)
+			{
+				IAlgorithmProxy* l_pImporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oImporterIdentifier);
+				if(l_pImporter)
+				{
+					m_rKernelContext.getLogManager() << LogLevel_Info << "Importing scenario...\n";
+
+					l_pImporter->initialize();
+
+					TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(l_pImporter->getInputParameter(OVTK_Algorithm_ScenarioImporter_InputParameterId_MemoryBuffer));
+					TParameterHandler < IScenario* > op_pScenario(l_pImporter->getOutputParameter(OVTK_Algorithm_ScenarioImporter_OutputParameterId_Scenario));
+
+					ip_pMemoryBuffer=&l_oMemoryBuffer;
+					op_pScenario=&l_rScenario;
+
+					l_pImporter->process();
+					l_pImporter->uninitialize();
+					m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pImporter);
+
+					l_bSuccess=true;
+				}
+			}
+		}
+
+		if(l_bSuccess)
+		{
+			CIdentifier l_oVisualisationWidgetIdentifier;
+			CIdentifier l_oBoxIdentifier;
+
+			//ensure visualisation widgets contained in the scenario (if any) appear in the window manager
+			//even when the <VisualisationTree> section of a scenario file is missing, erroneous or deprecated
+			IVisualisationTree& l_rVisualisationTree = m_rKernelContext.getVisualisationManager().getVisualisationTree(l_rScenario.getVisualisationTreeIdentifier());
+
+			//no visualisation widget was added to visualisation tree : ensure there aren't any in scenario
+			while((l_oBoxIdentifier=l_rScenario.getNextBoxIdentifier(l_oBoxIdentifier)) != OV_UndefinedIdentifier)
+			{
+				if(l_rVisualisationTree.getVisualisationWidgetFromBoxIdentifier(l_oBoxIdentifier)==NULL)
+				{
+					const IBox* l_pBox = l_rScenario.getBoxDetails(l_oBoxIdentifier);
+					CIdentifier l_oAlgorithmIdentifier = l_pBox->getAlgorithmClassIdentifier();
+					const IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
+					if(l_pPOD != NULL && l_pPOD->hasFunctionality(PluginFunctionality_Visualization))
+					{
+						//a visualisation widget was found in scenario : manually add it to visualisation tree
+						l_rVisualisationTree.addVisualisationWidget(
+							l_oVisualisationWidgetIdentifier,
+							l_pBox->getName(),
+							EVisualisationWidget_VisualisationBox,
+							OV_UndefinedIdentifier,
+							0,
+							l_pBox->getIdentifier(),
+							0);
+					}
+				}
+			}
+
+			// Closes first unnamed scenario
+			if(m_vInterfacedScenario.size()==1)
+			{
+				if(m_vInterfacedScenario[0]->m_bHasBeenModified==false && !m_vInterfacedScenario[0]->m_bHasFileName)
+				{
+					CIdentifier l_oScenarioIdentifier=m_vInterfacedScenario[0]->m_oScenarioIdentifier;
+					delete m_vInterfacedScenario[0];
+					m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
+					m_vInterfacedScenario.clear();
+				}
+			}
+
+			// Creates interfaced scenario
+			CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
+			if(l_pInterfacedScenario->m_pDesignerVisualisation != NULL)
+			{
+				l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);
+				l_pInterfacedScenario->m_pDesignerVisualisation->load();
+			}
+			l_pInterfacedScenario->snapshotCB();
+			l_pInterfacedScenario->m_sFileName=sFileName;
+			l_pInterfacedScenario->m_bHasFileName=true;
+			l_pInterfacedScenario->m_bHasBeenModified=false;
+			l_pInterfacedScenario->updateScenarioLabel();
+			m_vInterfacedScenario.push_back(l_pInterfacedScenario);
+			gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
+			//this->changeCurrentScenario(gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
+		}
+		else
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "Importing scenario failed...\n";
+
+			m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
+
+			std::stringstream l_oStringStream;
+			l_oStringStream << "The requested file: " << sFileName << "\n";
+			l_oStringStream << "may either not be an OpenViBE scenario file, \n";
+			l_oStringStream << "be corrupted or not be compatible with \n";
+			l_oStringStream << "the selected scenario importer...";
+
+			::GtkWidget* l_pErrorDialog=gtk_message_dialog_new(
+				NULL,
+				GTK_DIALOG_MODAL,
+				GTK_MESSAGE_WARNING,
+				GTK_BUTTONS_OK,
+				"Scenario importation process failed !");
+			gtk_message_dialog_format_secondary_text(
+				GTK_MESSAGE_DIALOG(l_pErrorDialog), l_oStringStream.str().c_str());
+			gtk_dialog_run(GTK_DIALOG(l_pErrorDialog));
+			gtk_widget_destroy(l_pErrorDialog);
+		}
+	}
 }
 
 CString CApplication::getWorkingDirectory(void)
@@ -677,131 +812,7 @@ void CApplication::openScenarioCB(void)
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 	{
 		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
-
-		CIdentifier l_oScenarioIdentifier;
-		if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
-		{
-			IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
-
-			CMemoryBuffer l_oMemoryBuffer;
-			boolean l_bSuccess=false;
-
-			std::ifstream l_oFile(l_sFileName, ios::binary);
-			if(l_oFile.good())
-			{
-				l_oFile.seekg(0, ios::end);
-				l_oMemoryBuffer.setSize(l_oFile.tellg(), true);
-				l_oFile.seekg(0, ios::beg);
-				l_oFile.read(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize());
-				l_oFile.close();
-
-				CIdentifier l_oImporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_XMLScenarioImporter);
-				if(l_oImporterIdentifier!=OV_UndefinedIdentifier)
-				{
-					IAlgorithmProxy* l_pImporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oImporterIdentifier);
-					if(l_pImporter)
-					{
-						m_rKernelContext.getLogManager() << LogLevel_Info << "Importing scenario...\n";
-
-						l_pImporter->initialize();
-
-						TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(l_pImporter->getInputParameter(OVTK_Algorithm_ScenarioImporter_InputParameterId_MemoryBuffer));
-						TParameterHandler < IScenario* > op_pScenario(l_pImporter->getOutputParameter(OVTK_Algorithm_ScenarioImporter_OutputParameterId_Scenario));
-
-						ip_pMemoryBuffer=&l_oMemoryBuffer;
-						op_pScenario=&l_rScenario;
-
-						l_pImporter->process();
-						l_pImporter->uninitialize();
-						m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pImporter);
-
-						l_bSuccess=true;
-					}
-				}
-			}
-
-			if(l_bSuccess)
-			{
-				CIdentifier l_oVisualisationWidgetIdentifier;
-				CIdentifier l_oBoxIdentifier;
-
-				//ensure visualisation widgets contained in the scenario (if any) appear in the window manager
-				//even when the <VisualisationTree> section of a scenario file is missing, erroneous or deprecated
-				IVisualisationTree& l_rVisualisationTree = m_rKernelContext.getVisualisationManager().getVisualisationTree(l_rScenario.getVisualisationTreeIdentifier());
-
-				//no visualisation widget was added to visualisation tree : ensure there aren't any in scenario
-				while((l_oBoxIdentifier=l_rScenario.getNextBoxIdentifier(l_oBoxIdentifier)) != OV_UndefinedIdentifier)
-				{
-					if(l_rVisualisationTree.getVisualisationWidgetFromBoxIdentifier(l_oBoxIdentifier)==NULL)
-					{
-						const IBox* l_pBox = l_rScenario.getBoxDetails(l_oBoxIdentifier);
-						CIdentifier l_oAlgorithmIdentifier = l_pBox->getAlgorithmClassIdentifier();
-						const IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oAlgorithmIdentifier);
-						if(l_pPOD != NULL && l_pPOD->hasFunctionality(PluginFunctionality_Visualization))
-						{
-							//a visualisation widget was found in scenario : manually add it to visualisation tree
-							l_rVisualisationTree.addVisualisationWidget(
-								l_oVisualisationWidgetIdentifier,
-								l_pBox->getName(),
-								EVisualisationWidget_VisualisationBox,
-								OV_UndefinedIdentifier,
-								0,
-								l_pBox->getIdentifier(),
-								0);
-						}
-					}
-				}
-
-				// Closes first unnamed scenario
-				if(m_vInterfacedScenario.size()==1)
-				{
-					if(m_vInterfacedScenario[0]->m_bHasBeenModified==false && !m_vInterfacedScenario[0]->m_bHasFileName)
-					{
-						CIdentifier l_oScenarioIdentifier=m_vInterfacedScenario[0]->m_oScenarioIdentifier;
-						delete m_vInterfacedScenario[0];
-						m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
-						m_vInterfacedScenario.clear();
-					}
-				}
-
-				// Creates interfaced scenario
-				CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
-				if(l_pInterfacedScenario->m_pDesignerVisualisation != NULL)
-				{
-					l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);
-					l_pInterfacedScenario->m_pDesignerVisualisation->load();
-				}
-				l_pInterfacedScenario->snapshotCB();
-				l_pInterfacedScenario->m_sFileName=l_sFileName;
-				l_pInterfacedScenario->m_bHasFileName=true;
-				l_pInterfacedScenario->m_bHasBeenModified=false;
-				l_pInterfacedScenario->updateScenarioLabel();
-				m_vInterfacedScenario.push_back(l_pInterfacedScenario);
-				gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
-				//this->changeCurrentScenario(gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
-			}
-			else
-			{
-				m_rKernelContext.getLogManager() << LogLevel_Warning << "Importing scenario failed...\n";
-
-				m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
-
-				::GtkWidget* l_pErrorDialog=gtk_message_dialog_new(
-					NULL,
-					GTK_DIALOG_MODAL,
-					GTK_MESSAGE_WARNING,
-					GTK_BUTTONS_OK,
-					"Scenario importation process failed !");
-				gtk_message_dialog_format_secondary_text(
-					GTK_MESSAGE_DIALOG(l_pErrorDialog),
-					"The requested file may either not be an OpenViBE "
-					"scenario file, be corrupted or not be compatible with "
-					"the selected scenario importer...");
-				gtk_dialog_run(GTK_DIALOG(l_pErrorDialog));
-				gtk_widget_destroy(l_pErrorDialog);
-			}
-		}
-
+		this->openScenario(l_sFileName);
 		g_free(l_sFileName);
 	}
 	gtk_widget_destroy(l_pWidgetDialogOpen);

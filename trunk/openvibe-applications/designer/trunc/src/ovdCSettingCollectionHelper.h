@@ -22,6 +22,7 @@ namespace OpenViBEDesigner
 		OpenViBE::CString getValueFloat(::GtkWidget* pWidget);
 		OpenViBE::CString getValueString(::GtkWidget* pWidget);
 		OpenViBE::CString getValueFilename(::GtkWidget* pWidget);
+		OpenViBE::CString getValueScript(::GtkWidget* pWidget);
 		OpenViBE::CString getValueColor(::GtkWidget* pWidget);
 		OpenViBE::CString getValueColorGradient(::GtkWidget* pWidget);
 		OpenViBE::CString getValueEnumeration(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget);
@@ -33,6 +34,7 @@ namespace OpenViBEDesigner
 		void setValueFloat(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueString(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueFilename(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
+		void setValueScript(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueColor(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueColorGradient(::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueEnumeration(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const OpenViBE::CString& rValue);

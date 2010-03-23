@@ -16,6 +16,8 @@ namespace OpenViBEDesigner
 
 		void initialize(void);
 
+		void openScenario(char* sFileName);
+
 		/** \name Drag and drop management */
 		//@{
 
@@ -133,6 +135,8 @@ namespace OpenViBEDesigner
 		::GtkTreeView* m_pBoxAlgorithmTreeView;
 		::GtkTreeStore* m_pAlgorithmTreeModel;
 		::GtkTreeView* m_pAlgorithmTreeView;
+
+		OpenViBE::uint64 m_ui64LastTimeRefresh;
 
 		std::vector < OpenViBEDesigner::CInterfacedScenario* > m_vInterfacedScenario;
 	};

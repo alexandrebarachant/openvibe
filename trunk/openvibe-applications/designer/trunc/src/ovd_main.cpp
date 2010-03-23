@@ -312,7 +312,7 @@ int go(int argc, char ** argv)
 
 	CKernelLoader l_oKernelLoader;
 
-	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
+	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<"\n";
 	CString m_sError;
 #if defined OVD_OS_Windows
 	if(!l_oKernelLoader.load("../bin/OpenViBE-kernel-dynamic.dll", &m_sError))
@@ -320,26 +320,26 @@ int go(int argc, char ** argv)
 	if(!l_oKernelLoader.load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
 #endif
 	{
-			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
+			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<"\n";
 	}
 	else
 	{
-		cout<<"[  INF  ] Kernel module loaded, trying to get kernel descriptor"<<endl;
+		cout<<"[  INF  ] Kernel module loaded, trying to get kernel descriptor"<<"\n";
 		IKernelDesc* l_pKernelDesc=NULL;
 		IKernelContext* l_pKernelContext=NULL;
 		l_oKernelLoader.initialize();
 		l_oKernelLoader.getKernelDesc(l_pKernelDesc);
 		if(!l_pKernelDesc)
 		{
-			cout<<"[ FAILED ] No kernel descriptor"<<endl;
+			cout<<"[ FAILED ] No kernel descriptor"<<"\n";
 		}
 		else
 		{
-			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<endl;
+			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<"\n";
 			l_pKernelContext=l_pKernelDesc->createKernel("designer", "../share/openvibe.conf");
 			if(!l_pKernelContext)
 			{
-				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;
+				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<"\n";
 			}
 			else
 			{
@@ -376,30 +376,109 @@ int go(int argc, char ** argv)
 				{
 					::CApplication app(*l_pKernelContext);
 					app.initialize();
-					app.newScenarioCB();
 
-					CPluginObjectDescCollector cb_collector1(*l_pKernelContext);
-					CPluginObjectDescCollector cb_collector2(*l_pKernelContext);
-					CPluginObjectDescLogger cb_logger(*l_pKernelContext);
-					cb_logger.enumeratePluginObjectDesc();
-					cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
-					cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
-					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
-					insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+					/************************************************************************
+					 * Command parameters: [option] <path-to-a-scenario>
+					 * Options :
+					 *   -p  --play      : plays the scenario at start
+					 *   -pf --play-fast : plays the scenario "fast forward" at start
+					 *
+					 * If the option is not recognized, the designer stops
+					 * Without any parameter, the designer starts with a new empty scenario
+					 ************************************************************************/
 
-					l_pKernelContext->getLogManager() << LogLevel_Info << "Initialization took " << l_pKernelContext->getConfigurationManager().expand("$Core{real-time}") << " ms\n";
-
-					try
+					boolean l_bValid = false;
+					string l_sValue;
+					switch(argc)
 					{
-						gtk_main();
+						case 2:
+							cout << "[  INF  ] Opening scenario " << argv[1] << "\n";
+							app.openScenario(argv[1]);
+							if(!app.m_vInterfacedScenario.empty())
+							{
+								l_bValid=true;
+							}
+							else
+							{
+								cout << "[ ERROR ] Command line error, could not open [" << argv[1] << "]\n";
+							}
+							break;
+
+						case 3:
+							l_sValue=argv[1];
+							if(l_sValue == "-p" || l_sValue == "--play")
+							{
+								cout << "[  INF  ] Opening and playing scenario " << argv[2] << "\n";
+								app.openScenario(argv[2]);
+								if(!app.m_vInterfacedScenario.empty())
+								{
+									app.playScenarioCB();
+									l_bValid=true;
+								}
+								else
+								{
+									cout << "[ ERROR ] Command line error, could not open [" << argv[2] << "]\n";
+								}
+							}
+							else if(l_sValue == "-pf" || l_sValue == "--play-fast")
+							{
+								cout << "[  INF  ] Opening and playing fast scenario " << argv[2] << "\n";
+								app.openScenario(argv[2]);
+								if(!app.m_vInterfacedScenario.empty())
+								{
+									app.forwardScenarioCB();
+									l_bValid=true;
+								}
+								else
+								{
+									cout << "[ ERROR ] Command line error, could not open [" << argv[2] << "]\n";
+								}
+							}
+							else
+							{
+								cout << "[ ERROR ] Command line error, invalid switch [" << argv[1] << "]\n";
+							}
+							break;
+
+						case 1:
+							app.newScenarioCB();
+							l_bValid=true;
+							break;
 					}
-					catch(...)
+
+					if(!l_bValid)
 					{
-						l_pKernelContext->getLogManager() << LogLevel_Fatal << "Catched top level exception\n";
+						cout << "[  INF  ] Syntax : " << argv[0] << " [ switch ] [ scenario_name ]\n";
+						cout << "[  INF  ] Providing scenario_name opens the scenario immediatly\n";
+						cout << "[  INF  ] Possible switches :\n";
+						cout << "[  INF  ]   -p --play       : plays the opened scenario\n";
+						cout << "[  INF  ]   -pf --play-fast : plays fast forward the opened scenario\n";
+					}
+					else
+					{
+						CPluginObjectDescCollector cb_collector1(*l_pKernelContext);
+						CPluginObjectDescCollector cb_collector2(*l_pKernelContext);
+						CPluginObjectDescLogger cb_logger(*l_pKernelContext);
+						cb_logger.enumeratePluginObjectDesc();
+						cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+						cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
+						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
+						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+
+						l_pKernelContext->getLogManager() << LogLevel_Info << "Initialization took " << l_pKernelContext->getConfigurationManager().expand("$Core{real-time}") << " ms\n";
+
+						try
+						{
+							gtk_main();
+						}
+						catch(...)
+						{
+							l_pKernelContext->getLogManager() << LogLevel_Fatal << "Catched top level exception\n";
+						}
 					}
 				}
 
-				cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;
+				cout<<"[  INF  ] Application terminated, releasing allocated objects\n";
 
 				OpenViBEToolkit::uninitialize(*l_pKernelContext);
 

@@ -25,7 +25,7 @@ The following sections are an overview of the main features of the Designer tool
  - the status bar, which provides performance information when a scenario is being run
  - a scenario edition window, where box algorithms may be arranged together in order to fulfill the task at hand.
 
-<img src="designer.png"></img>
+<img src="designer0.5.0.png"></img>
 <center><strong>Fig.1 Designer interface under WindowsXP, as a new scenario is being edited.</strong></center>
 
 \section designer_gui_menubar Menubar
@@ -33,24 +33,19 @@ The following sections are an overview of the main features of the Designer tool
 Options available from the menu bar presently are restricted to scenario files handling and exiting application. Scenarios may be saved to XML files. Several scenarios may be edited
 simultaneously, and the active scenario may be changed by clicking onto the corresponding tab at the top of the scenario edition window. Here is a list of options available from the menu bar:
  
- <ul>
- <li>File
- 	<ul>
- 	<li>New
- 	<li>Open
- 	<li>Save
- 	<li>Save As
- 	<li>Close
- 	<li>Quit
- 	</ul>
- <li>Edit
- 	<ul>
- 	<li>Cut
- 	<li>Copy
- 	<li>Paste
- 	<li>Delete
- 	<li>Preferences
- </ul>
+ - File
+ 	- New
+ 	- Open
+ 	- Save
+ 	- Save As
+ 	- Close
+ 	- Quit
+ - Edit
+ 	- Cut
+ 	- Copy
+ 	- Paste
+ 	- Delete
+ 	- Preferences
 
 The File menu handles standard scenario operations such as creation, saving and closing. Note that the application won't quit as long as at least one scenario is running.
 
@@ -114,7 +109,7 @@ Overall performance is displayed in a green gauge overlaid with the same informa
 
 To identify the bottlenecks in a scenario, one can press the button to the right of the gauge as a scenario is being run. This will highlight boxes from green to red, depending on how much time is spent in each box relative to the others.
 
-\section designer_gui_scenario_edition_area
+\section designer_gui_scenario_edition_area Edition Area
 
 The last section of this overview covers the working area of the Designer, which is where OpenViBE scenarios are assembled by connecting box algorithms together.
 
@@ -122,7 +117,7 @@ The last section of this overview covers the working area of the Designer, which
 
 Box algorithms are added to the active scenario by drag and dropping them from the tree view to the scenario edition window. They appear as rounded rectangles with their name inside the box, inputs (if any) on top and outputs (if any) at the bottom. These connectors are displayed as color-coded triangles. Colors vary with the connector type, and help users making sure they connect boxes properly. See \ref Doc_BoxAlgorithmConnectorTypes for an overview of the different connector types. 
 
-<img src="boxalgorithm.png"></img>
+<img src="Doc_BoxAlgorithm_GDFFileReader.png"></img>
 <center><strong>Fig.4 A file reading box algorithm which owns 3 outputs (experiment information, signal and stimulations streams)</strong></center>
 
 Additionally, if the box has customizable settings, the may be set by double clicking onto the box (tip : when a box owns such settings, its name is displayed in bold case). The settings are listed in the popup dialog that appears, along with their default values. Settings may be overriden by directly typing in their desired values, or they may be read from a file. In the latter case, one should expand the 'Override settings with configuration file' section to check the 'File' button and pick a configuration file.
@@ -134,11 +129,11 @@ Additionally, if the box has customizable settings, the may be set by double cli
 
 By default, the status of a box is 'normal', and the box is drawn with a white background. However, some boxes may have a different status depending on the situation. Here are the other possible status of a box :
 
- - Unstable : a box which is under development should be flagged as 'unstable', meaning it has probably not been tested enough to guarantee correct behaviour. Such a box is drawn with a dark grey background in the Designer, and the 'unstable' label appears below the box name.
+ - \b Unstable: a box which is under development should be flagged as 'unstable', meaning it has probably not been tested enough to guarantee correct behaviour. Such a box is drawn with a dark grey background in the Designer, and the 'unstable' label appears below the box name.
 
- - Update : when a box is not up to date with the latest version used in a given distribution of OpenViBE, it is drawn with a light grey background and the mention 'update' appears below the box name. This situation arises when the prototype of a box has changed between the time the scenario it is stored in is saved and the time it is loaded again. Since scenario files contain information about box prototypes, such as the number of connectors, they may need to be updated when the OpenViBE distribution used to manipulate scenarios changes. To update such a box, simply delete the box from the scenario then add it again. The new box will use the latest version. Tip : after such an update, one should make sure to reconfigure the box settings if needed!
+ - \b Update : when a box is not up to date with the latest version used in a given distribution of OpenViBE, it is drawn with a light grey background and the mention 'update' appears below the box name. This situation arises when the prototype of a box has changed between the time the scenario it is stored in is saved and the time it is loaded again. Since scenario files contain information about box prototypes, such as the number of connectors, they may need to be updated when the OpenViBE distribution used to manipulate scenarios changes. To update such a box, simply delete the box from the scenario then add it again. The new box will use the latest version. Tip : after such an update, one should make sure to reconfigure the box settings if needed!
 
- - Deprecated : as OpenViBE evolves with time, some boxes are added to the platform and others are deleted. It can also happen that a box is replaced with another one (maybe for performance reasons). However, the 'old' box is not necessarily deleted from the platform, but may be kept for backward compatibility with older versions (ensuring older scenarios may still be run, for example). In that case, the documentation should mention that from that time on, the new box should be preferred over the deprecated one (which may be removed from the platform at any time, and in any case which probably won't be maintained anymore). Such boxes are displayed with a dark green background and the 'deprecated' label below the box name.
+ - \b Deprecated : as OpenViBE evolves with time, some boxes are added to the platform and others are deleted. It can also happen that a box is replaced with another one (maybe for performance reasons). However, the 'old' box is not necessarily deleted from the platform, but may be kept for backward compatibility with older versions (ensuring older scenarios may still be run, for example). In that case, the documentation should mention that from that time on, the new box should be preferred over the deprecated one (which may be removed from the platform at any time, and in any case which probably won't be maintained anymore). Such boxes are displayed with a dark green background and the 'deprecated' label below the box name.
 
 Note : when a box is deprecated and also needs to be updated to the newest version, both 'deprecated' and 'update' labels will appear below its name in the Designer. As to its color, it will appear as dark green, reflecting its deprecated state.
 
@@ -150,9 +145,9 @@ To illustrate box edition functionalities, let's start by creating a new scenari
 
 Box edition functionalities appear in the lower part of the menu :
 
- - 'Rename box' allows to rename the box. Click this option and enter a new name such as 'Dummy Box' to test this functionality.
- - 'Delete box' removes this box from the scenario. Note that a box may also be deleted by selecting it, then pressing the 'Delete' key.
- - 'About box' displays a dialog containing a summary of the box details, such as its author, version, class name, as well as a short and long description of its purpose. Note that the 'short description' field also appears in the second column of the box algorithms tab.
+ - <b> 'Rename box' </b> allows to rename the box. Click this option and enter a new name such as 'Dummy Box' to test this functionality.
+ - <b> 'Delete box' </b> removes this box from the scenario. Note that a box may also be deleted by selecting it, then pressing the 'Delete' key.
+ - <b> 'About box' </b> displays a dialog containing a summary of the box details, such as its author, version, class name, as well as a short and long description of its purpose. Note that the 'short description' field also appears in the second column of the box algorithms tab.
 
 Another option only gets listed for those boxes that offer configurable settings, such as the Clock box (this may be guessed from its name displayed in bold case). Right click on this box and select : 
  - 'Configure box', which displays the Box Settings dialog (for more information on this, refer to \ref Doc_DesignerTutorial2). Note that this dialog may also be displayed by double clicking on the box itself.

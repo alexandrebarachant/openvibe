@@ -217,6 +217,12 @@ void CPlayerVisualisation::init(void)
 			//set it transient for main window
 			gtk_window_set_transient_for(GTK_WINDOW(l_pTreeWidget), GTK_WINDOW(m_rInterfacedScenario.m_rApplication.m_pMainWindow));
 
+			//centered on the main window
+			if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_WindowManager_Center}", false))
+			{
+				gtk_window_set_position(GTK_WINDOW(l_pTreeWidget),GTK_WIN_POS_CENTER_ON_PARENT);
+			}
+
 			//FIXME wrong spelling (-)
 			gtk_signal_connect(GTK_OBJECT(l_pTreeWidget), "configure_event", G_CALLBACK(configure_event_cb), this);
 			//FIXME wrong spelling (-)
@@ -449,6 +455,13 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 		gtk_container_add(GTK_CONTAINER(l_pWindow), (::GtkWidget*)pWidgetBox);
 		//prevent user from closing this window
 		g_signal_connect(l_pWindow, "delete_event", G_CALLBACK(dummy_callback), NULL);
+
+		//position: centered in the main window
+		if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_WindowManager_Center}", false))
+		{
+			gtk_window_set_position(GTK_WINDOW(l_pWindow), GTK_WIN_POS_CENTER_ON_PARENT);
+		}
+
 		//show window (and realize widget in doing so)
 		gtk_widget_show(l_pWindow);
 	}

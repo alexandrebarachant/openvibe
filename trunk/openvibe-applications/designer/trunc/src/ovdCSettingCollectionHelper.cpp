@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <cstring>
+#include <cstdlib>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -29,6 +30,8 @@ namespace
 
 	static void on_button_setting_filename_browse_pressed(::GtkButton* pButton, gpointer pUserData)
 	{
+		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+
 		vector< ::GtkWidget* > l_vWidget;
 		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
 		::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
@@ -41,14 +44,14 @@ namespace
 			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 			NULL);
 
-		const char* l_sInitialFileName=gtk_entry_get_text(l_pWidget);
-		if(g_path_is_absolute(l_sInitialFileName))
+		CString l_sInitialFileName=l_rKernelContext.getConfigurationManager().expand(gtk_entry_get_text(l_pWidget));
+		if(g_path_is_absolute(l_sInitialFileName.toASCIIString()))
 		{
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sInitialFileName);
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sInitialFileName.toASCIIString());
 		}
 		else
 		{
-			char* l_sFullPath=g_build_filename(g_get_current_dir(), l_sInitialFileName, NULL);
+			char* l_sFullPath=g_build_filename(g_get_current_dir(), l_sInitialFileName.toASCIIString(), NULL);
 			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sFullPath);
 			g_free(l_sFullPath);
 		}
@@ -67,6 +70,35 @@ namespace
 			g_free(l_sFileName);
 		}
 		gtk_widget_destroy(l_pWidgetDialogOpen);
+	}
+
+// ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
+
+	static void on_button_setting_script_edit_pressed(::GtkButton* pButton, gpointer pUserData)
+	{
+		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+
+		vector< ::GtkWidget* > l_vWidget;
+		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
+		::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+		CString l_sFileName=l_rKernelContext.getConfigurationManager().expand(gtk_entry_get_text(l_pWidget));
+		CString l_sEditorCommand=l_rKernelContext.getConfigurationManager().expand("${Designer_ScriptEditorCommand}");
+
+		if(l_sEditorCommand != CString(""))
+		{
+			CString l_sFullCommand=l_sEditorCommand + CString(" ") + l_sFileName;
+#if defined OVD_OS_Windows
+			l_sFullCommand = "START " + l_sFullCommand;
+#elif defined OVD_OS_Linux
+			l_sFullCommand = l_sFullCommand + " &";
+#else
+#endif
+			if(::system(l_sFullCommand.toASCIIString())<0)
+			{
+				l_rKernelContext.getLogManager() << LogLevel_Warning << "Could not run command " << l_sFullCommand << "\n";
+			}
+		}
 	}
 
 // ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
@@ -345,6 +377,7 @@ CString CSettingCollectionHelper::getSettingWidgetName(const CIdentifier& rTypeI
 	if(rTypeIdentifier==OV_TypeId_Float)         return "settings_collection-spin_button_setting_float";
 	if(rTypeIdentifier==OV_TypeId_String)        return "settings_collection-entry_setting_string";
 	if(rTypeIdentifier==OV_TypeId_Filename)      return "settings_collection-hbox_setting_filename";
+	if(rTypeIdentifier==OV_TypeId_Script)        return "settings_collection-hbox_setting_script";
 	if(rTypeIdentifier==OV_TypeId_Color)         return "settings_collection-hbox_setting_color";
 	if(rTypeIdentifier==OV_TypeId_ColorGradient) return "settings_collection-hbox_setting_color_gradient";
 	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return "settings_collection-combobox_setting_enumeration";
@@ -362,6 +395,7 @@ CString CSettingCollectionHelper::getValue(const CIdentifier& rTypeIdentifier, :
 	if(rTypeIdentifier==OV_TypeId_Float)         return getValueFloat(pWidget);
 	if(rTypeIdentifier==OV_TypeId_String)        return getValueString(pWidget);
 	if(rTypeIdentifier==OV_TypeId_Filename)      return getValueFilename(pWidget);
+	if(rTypeIdentifier==OV_TypeId_Script)        return getValueScript(pWidget);
 	if(rTypeIdentifier==OV_TypeId_Color)         return getValueColor(pWidget);
 	if(rTypeIdentifier==OV_TypeId_ColorGradient) return getValueColorGradient(pWidget);
 	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return getValueEnumeration(rTypeIdentifier, pWidget);
@@ -407,6 +441,16 @@ CString CSettingCollectionHelper::getValueString(::GtkWidget* pWidget)
 }
 
 CString CSettingCollectionHelper::getValueFilename(::GtkWidget* pWidget)
+{
+	vector< ::GtkWidget* > l_vWidget;
+	if(!GTK_IS_CONTAINER(pWidget)) return "";
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	if(!GTK_IS_ENTRY(l_vWidget[0])) return "";
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+	return CString(gtk_entry_get_text(l_pWidget));
+}
+
+CString CSettingCollectionHelper::getValueScript(::GtkWidget* pWidget)
 {
 	vector< ::GtkWidget* > l_vWidget;
 	if(!GTK_IS_CONTAINER(pWidget)) return "";
@@ -475,6 +519,7 @@ void CSettingCollectionHelper::setValue(const CIdentifier& rTypeIdentifier, ::Gt
 	if(rTypeIdentifier==OV_TypeId_Float)         return setValueFloat(pWidget, rValue);
 	if(rTypeIdentifier==OV_TypeId_String)        return setValueString(pWidget, rValue);
 	if(rTypeIdentifier==OV_TypeId_Filename)      return setValueFilename(pWidget, rValue);
+	if(rTypeIdentifier==OV_TypeId_Script)        return setValueScript(pWidget, rValue);
 	if(rTypeIdentifier==OV_TypeId_Color)         return setValueColor(pWidget, rValue);
 	if(rTypeIdentifier==OV_TypeId_ColorGradient) return setValueColorGradient(pWidget, rValue);
 	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return setValueEnumeration(rTypeIdentifier, pWidget, rValue);
@@ -529,7 +574,19 @@ void CSettingCollectionHelper::setValueFilename(::GtkWidget* pWidget, const CStr
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), NULL);
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+
+	gtk_entry_set_text(l_pWidget, rValue);
+}
+
+void CSettingCollectionHelper::setValueScript(::GtkWidget* pWidget, const CString& rValue)
+{
+	vector< ::GtkWidget* > l_vWidget;
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_script_edit_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
 
 	gtk_entry_set_text(l_pWidget, rValue);
 }
@@ -540,7 +597,7 @@ void CSettingCollectionHelper::setValueColor(::GtkWidget* pWidget, const CString
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "color-set", G_CALLBACK(on_button_setting_color_choose_pressed), NULL);
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "color-set", G_CALLBACK(on_button_setting_color_choose_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
 
 	int r=0, g=0, b=0;
 	sscanf(rValue.toASCIIString(), "%i,%i,%i", &r, &g, &b);
