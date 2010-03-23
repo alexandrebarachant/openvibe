@@ -95,7 +95,7 @@ boolean CDriverGenericOscillator::loop(void)
 
 	uint32 l_ui32CurrentTime=System::Time::getTime();
 
-	if(l_ui32CurrentTime-m_ui32StartTime > (1000*m_ui32TotalSampleCount)/m_oHeader.getSamplingFrequency())
+	if(l_ui32CurrentTime-m_ui32StartTime > (1000*(m_ui32TotalSampleCount+m_ui32SampleCountPerSentBlock))/m_oHeader.getSamplingFrequency())
 	{
 		CStimulationSet l_oStimulationSet;
 		l_oStimulationSet.setStimulationCount(1);
