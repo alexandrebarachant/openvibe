@@ -77,6 +77,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::uint64 m_ui64SampleCount;
 		OpenViBE::uint64 m_ui64StartTime;
+		OpenViBE::uint64 m_ui64ToleranceDurationBeforeWarning;
 
 		OpenViBE::uint8* m_pSampleBuffer;
 		OpenViBE::boolean m_bGotData;

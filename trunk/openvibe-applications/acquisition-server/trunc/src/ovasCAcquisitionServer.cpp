@@ -635,6 +635,9 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 			m_bGotData=false;
 			m_bInitialized=true;
 			m_eDriverLatencyLogLevel=LogLevel_ImportantWarning;
+			m_ui64ToleranceDurationBeforeWarning=m_rKernelContext.getConfigurationManager().expandAsInteger("${AcquisitionServer_ToleranceDuration}", 100);
+
+			m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver monitoring tolerance set to " << m_ui64ToleranceDurationBeforeWarning << " milliseconds\n";
 
 			TParameterHandler < uint64 > ip_ui64BuferDuration(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_BufferDuration));
 
@@ -813,7 +816,7 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 
 		{
 			uint64 l_ui64TheoricalSampleCount=(m_pDriver->getHeader()->getSamplingFrequency() * (System::Time::zgetTime()-m_ui64StartTime))>>32;
-			uint64 l_ui64ToleranceSampleCount=2*m_ui32SampleCountPerSentBlock;
+			uint64 l_ui64ToleranceSampleCount=(m_pDriver->getHeader()->getSamplingFrequency() * m_ui64ToleranceDurationBeforeWarning) / 1000;
 
 			if(m_ui64SampleCount < l_ui64TheoricalSampleCount + l_ui64ToleranceSampleCount && l_ui64TheoricalSampleCount + l_ui64ToleranceSampleCount < m_ui64SampleCount + 2*l_ui64ToleranceSampleCount)
 			{
