@@ -606,14 +606,20 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 		m_ui32SampleCountPerSentBlock=atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"))));
 		m_ui32IdleCallbackId=gtk_idle_add(idle_cb, this);
 
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Connecting to device...\n";
+
 		// Initializes driver
 		if(!m_pDriver->initialize(m_ui32SampleCountPerSentBlock, *this))
 		{
 			gtk_toggle_button_set_active(pButton, false);
-			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Initialization failed !");
+			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connection failed !");
+			m_rKernelContext.getLogManager() << LogLevel_Error << "Connection failed...\n";
 			return;
 		}
+
 		m_pDriverContext->onInitialize(*m_pDriver->getHeader());
+
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Connection succeeded !\n";
 
 		uint32 l_ui32ConnectionPort=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port")));
 		m_pConnectionServer=Socket::createConnectionServer();
@@ -634,7 +640,7 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 
 			m_bGotData=false;
 			m_bInitialized=true;
-			m_eDriverLatencyLogLevel=LogLevel_ImportantWarning;
+			m_eDriverLatencyLogLevel=LogLevel_Trace; // Until we solved the acquisition stuff, hide this message - ImportantWarning;
 			m_ui64ToleranceDurationBeforeWarning=m_rKernelContext.getConfigurationManager().expandAsInteger("${AcquisitionServer_ToleranceDuration}", 100);
 
 			m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver monitoring tolerance set to " << m_ui64ToleranceDurationBeforeWarning << " milliseconds\n";
@@ -688,6 +694,7 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 		}
 		else
 		{
+			m_rKernelContext.getLogManager() << LogLevel_Error << "Could not listen on TCP port (firewall problem ?)\n";
 			gtk_toggle_button_set_active(pButton, false);
 			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connection failed !");
 		}
@@ -698,6 +705,8 @@ void CAcquisitionServer::buttonConnectToggledCB(::GtkToggleButton* pButton)
 		{
 			gtk_button_pressed(GTK_BUTTON(glade_xml_get_widget(m_pGladeInterface, "button_stop")));
 		}
+
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Disconnecting.\n";
 
 		if(m_bInitialized)
 		{
@@ -741,12 +750,17 @@ void CAcquisitionServer::buttonStartPressedCB(::GtkButton* pButton)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "buttonStartPressedCB\n";
 
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Starting the acquisition...\n";
+
 	// Starts driver
 	if(!m_pDriver->start())
 	{
+		m_rKernelContext.getLogManager() << LogLevel_Error << "Starting failed !\n";
 		return;
 	}
 	m_pDriverContext->onStart(*m_pDriver->getHeader());
+
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Now acquiring...\n";
 
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), false);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
@@ -767,6 +781,8 @@ void CAcquisitionServer::buttonStopPressedCB(::GtkButton* pButton)
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), false);
 
 	gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connected ! Ready...");
+
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Stoping the acquisition.\n";
 
 	// Stops driver
 	m_pDriver->stop();
@@ -834,7 +850,7 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "not started\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "The acquisition is not started\n";
 	}
 }
 
@@ -846,6 +862,6 @@ void CAcquisitionServer::setStimulationSet(const IStimulationSet& rStimulationSe
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "not started\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "The acquisition is not started\n";
 	}
 }

@@ -129,7 +129,7 @@ boolean CDriverOpenEEGModularEEG::loop(void)
 					break;
 
 				case -1: // Timeout, could inidicate communication error
-					printf("switch -1 : Timeout\n");
+					m_rDriverContext.getLogManager() << LogLevel_ImportantWarning << "Could not receive data from " << m_sTTYName << "\n";
 					return false;
 			}
 		}
@@ -388,6 +388,8 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	return false;
 
 #endif
+
+	m_sTTYName = l_sTTYName;
 
 	return true;
  }

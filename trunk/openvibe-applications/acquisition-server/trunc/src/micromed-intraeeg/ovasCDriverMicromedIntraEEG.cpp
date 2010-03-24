@@ -282,7 +282,7 @@ CDriverMicromedIntraEEG::~CDriverMicromedIntraEEG(void)
 
 const char* CDriverMicromedIntraEEG::getName(void)
 {
-	return "Micromed SD LTM";
+	return "Micromed SD LTM (through SystemPlus Evolution)";
 }
 
 short CDriverMicromedIntraEEG::MyReceive(char* buf, long dataLen)

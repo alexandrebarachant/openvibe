@@ -63,6 +63,8 @@ namespace OpenViBEAcquisitionServer
 
 		std::vector < std::vector < OpenViBE::int32 > > m_vChannelBuffer;
 		std::vector < OpenViBE::int32 > m_vChannelBuffer2;
+
+		OpenViBE::CString m_sTTYName;
 	};
 };
 
