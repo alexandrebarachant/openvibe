@@ -97,7 +97,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 		ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
 
 		TParameterHandler < IStimulationSet* > ip_pStimulationSet(m_pStimulationsEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
-		TParameterHandler < const IMemoryBuffer* > op_pEncodedMemoryBuffer(m_pStimulationsEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+		TParameterHandler < IMemoryBuffer* > op_pEncodedMemoryBuffer(m_pStimulationsEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
 		CStimulationSet l_oStimulationSet;
 		ip_pStimulationSet=&l_oStimulationSet;
@@ -105,6 +105,10 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 		if(l_rStaticBoxContext.getOutputCount()>=1)
 		{
 			op_pEncodedMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+		}
+		else
+		{
+			op_pEncodedMemoryBuffer->setSize(0, true);
 		}
 
 		m_pStimulationsDecoder->process();
