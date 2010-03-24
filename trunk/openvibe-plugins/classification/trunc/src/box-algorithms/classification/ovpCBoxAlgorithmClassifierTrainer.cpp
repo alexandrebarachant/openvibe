@@ -101,7 +101,11 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 
 		CStimulationSet l_oStimulationSet;
 		ip_pStimulationSet=&l_oStimulationSet;
-		op_pEncodedMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+
+		if(l_rStaticBoxContext.getOutputCount()>=1)
+		{
+			op_pEncodedMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+		}
 
 		m_pStimulationsDecoder->process();
 
@@ -129,7 +133,11 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 			m_pStimulationsEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeEnd);
 		}
 
-		l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+		if(l_rStaticBoxContext.getOutputCount()>=1)
+		{
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+		}
+
 		l_rDynamicBoxContext.markInputAsDeprecated(0, i);
 	}
 
