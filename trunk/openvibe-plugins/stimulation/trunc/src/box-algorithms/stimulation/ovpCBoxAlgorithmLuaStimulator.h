@@ -1,7 +1,7 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_LuaStimulator_H__
 #define __OpenViBEPlugins_BoxAlgorithm_LuaStimulator_H__
 
-#if 1 // defined TARGET_HAS_ThirdPartyLua
+#if defined TARGET_HAS_ThirdPartyLua
 
 #include "../../ovp_defines.h"
 #include <openvibe/ov_all.h>
@@ -61,8 +61,6 @@ namespace OpenViBEPlugins
 
 			void doThread(void);
 
-		protected:
-
 			enum
 			{
 				State_Unstarted,
@@ -71,6 +69,9 @@ namespace OpenViBEPlugins
 			};
 
 			OpenViBE::uint32 m_ui32State;
+
+		protected:
+
 			lua_State* m_pLuaState;
 
 			OpenViBE::uint64 m_ui64LastTime;
@@ -136,7 +137,7 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
 				rBoxAlgorithmPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
-				rBoxAlgorithmPrototype.addSetting("Lua Script", OV_TypeId_Filename, "");
+				rBoxAlgorithmPrototype.addSetting("Lua Script", OV_TypeId_Script, "");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddOutput);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);

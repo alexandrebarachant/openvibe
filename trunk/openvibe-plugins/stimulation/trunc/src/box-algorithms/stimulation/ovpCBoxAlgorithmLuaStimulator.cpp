@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmLuaStimulator.h"
 
-#if 1 // defined TARGET_HAS_ThirdPartyLua
+#if defined TARGET_HAS_ThirdPartyLua
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -57,7 +57,7 @@ static int lua_get_current_time_cb(lua_State* pState)
 	int l_iArguments=lua_gettop(pState);
 	if(l_iArguments!=0)
 	{
-		lua_pushstring(pState, "function takes 0 parameter");
+		lua_pushstring(pState, "get_current_time takes 0 parameter");
 		lua_error(pState);
 		return 0;
 	}
@@ -65,10 +65,17 @@ static int lua_get_current_time_cb(lua_State* pState)
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
 	if(l_pThis)
 	{
+		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
+		{
+			lua_pushstring(pState, "You should only call openvibe functions in process");
+			lua_error(pState);
+			return 0;
+		}
+
 		uint64 l_ui64Time=0;
 		if(!l_pThis->getCurrentTimeCB(l_ui64Time))
 		{
-			lua_pushstring(pState, "Failed - Script has been interupted");
+			lua_pushstring(pState, "get_current_time failed for unknown reason");
 			lua_error(pState);
 			return 0;
 		}
@@ -86,7 +93,7 @@ static int lua_sleep_cb(lua_State* pState)
 	int l_iArguments=lua_gettop(pState);
 	if(l_iArguments!=0)
 	{
-		lua_pushstring(pState, "function takes 0 parameter");
+		lua_pushstring(pState, "sleep takes 0 parameter");
 		lua_error(pState);
 		return 0;
 	}
@@ -94,9 +101,16 @@ static int lua_sleep_cb(lua_State* pState)
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
 	if(l_pThis)
 	{
+		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
+		{
+			lua_pushstring(pState, "You should only call openvibe functions in process");
+			lua_error(pState);
+			return 0;
+		}
+
 		if(!l_pThis->sleepCB())
 		{
-			lua_pushstring(pState, "Failed - Script has been interupted");
+			lua_pushstring(pState, "sleep failed for unknown reason");
 			lua_error(pState);
 			return 0;
 		}
@@ -109,7 +123,7 @@ static int lua_get_stimulation_count_cb(lua_State* pState)
 	int l_iArguments=lua_gettop(pState);
 	if(l_iArguments!=1)
 	{
-		lua_pushstring(pState, "function takes 1 parameter");
+		lua_pushstring(pState, "get_stimulation_count takes 1 parameter");
 		lua_error(pState);
 		return 0;
 	}
@@ -117,10 +131,17 @@ static int lua_get_stimulation_count_cb(lua_State* pState)
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
 	if(l_pThis)
 	{
+		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
+		{
+			lua_pushstring(pState, "You should only call openvibe functions in process");
+			lua_error(pState);
+			return 0;
+		}
+
 		uint32 l_ui32Count=0;
 		if(!l_pThis->getStimulationCountCB(lua_tointeger(pState, 1)-1, l_ui32Count))
 		{
-			lua_pushstring(pState, "Failed - Script has been interupted");
+			lua_pushstring(pState, "get_stimulation_count failed for unknown reason");
 			lua_error(pState);
 			return 0;
 		}
@@ -138,7 +159,7 @@ static int lua_get_stimulation_cb(lua_State* pState)
 	int l_iArguments=lua_gettop(pState);
 	if(l_iArguments!=2)
 	{
-		lua_pushstring(pState, "function takes 2 parameter");
+		lua_pushstring(pState, "get_stimulation takes 2 parameter");
 		lua_error(pState);
 		return 0;
 	}
@@ -146,12 +167,19 @@ static int lua_get_stimulation_cb(lua_State* pState)
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
 	if(l_pThis)
 	{
+		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
+		{
+			lua_pushstring(pState, "You should only call openvibe functions in process");
+			lua_error(pState);
+			return 0;
+		}
+
 		uint64 l_ui64Identifier;
 		uint64 l_ui64Time;
 		uint64 l_ui64Duration;
 		if(!l_pThis->getStimulationCB(lua_tointeger(pState, 1)-1, lua_tointeger(pState, 2)-1, l_ui64Identifier, l_ui64Time, l_ui64Duration))
 		{
-			lua_pushstring(pState, "Failed - Script has been interupted");
+			lua_pushstring(pState, "get_stimulation failed for unknown reason");
 			lua_error(pState);
 			return 0;
 		}
@@ -171,7 +199,7 @@ static int lua_remove_stimulation_cb(lua_State* pState)
 	int l_iArguments=lua_gettop(pState);
 	if(l_iArguments!=2)
 	{
-		lua_pushstring(pState, "function takes 2 parameter");
+		lua_pushstring(pState, "remove_stimulation takes 2 parameter");
 		lua_error(pState);
 		return 0;
 	}
@@ -179,9 +207,16 @@ static int lua_remove_stimulation_cb(lua_State* pState)
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
 	if(l_pThis)
 	{
+		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
+		{
+			lua_pushstring(pState, "You should only call openvibe functions in process");
+			lua_error(pState);
+			return 0;
+		}
+
 		if(!l_pThis->removeStimulationCB(lua_tointeger(pState, 1)-1, lua_tointeger(pState, 2)-1))
 		{
-			lua_pushstring(pState, "Failed - Script has been interupted");
+			lua_pushstring(pState, "remove_stimulation failed for unknown reason");
 			lua_error(pState);
 			return 0;
 		}
@@ -194,7 +229,7 @@ static int lua_send_stimulation_cb(lua_State* pState)
 	int l_iArguments=lua_gettop(pState);
 	if(l_iArguments!=4 && l_iArguments!=3)
 	{
-		lua_pushstring(pState, "function takes either 3 or 4 parameter");
+		lua_pushstring(pState, "send_stimulation takes either 3 or 4 parameter");
 		lua_error(pState);
 		return 0;
 	}
@@ -202,11 +237,23 @@ static int lua_send_stimulation_cb(lua_State* pState)
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
 	if(l_pThis)
 	{
-		l_pThis->sendStimulationCB(
+		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
+		{
+			lua_pushstring(pState, "You should only call openvibe functions in process");
+			lua_error(pState);
+			return 0;
+		}
+
+		if(!l_pThis->sendStimulationCB(
 			lua_tointeger(pState, 1)-1,
 			lua_tointeger(pState, 2),
 			uint64(lua_tonumber(pState, 3)*(1LL<<32)),
-			l_iArguments==4?uint64(lua_tonumber(pState, 4)*(1LL<<32)):0);
+			l_iArguments==4?uint64(lua_tonumber(pState, 4)*(1LL<<32)):0))
+		{
+			lua_pushstring(pState, "send_stimulation failed for unknown reason");
+			lua_error(pState);
+			return 0;
+		}
 	}
 
 	return 0;
@@ -240,6 +287,7 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
 	CString l_sLuaScriptFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+	l_sLuaScriptFilename=this->getConfigurationManager().expand(l_sLuaScriptFilename);
 
 	m_ui32State=State_Unstarted;
 	m_pLuaState=lua_open();
@@ -477,8 +525,9 @@ boolean CBoxAlgorithmLuaStimulator::getStimulationCountCB(uint32 ui32InputIndex,
 {
 	if(ui32InputIndex >= m_vInputStimulation.size())
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Input " << ui32InputIndex << " does not exist\n";
-		return false;
+		this->getLogManager() << LogLevel_Warning << "Input " << ui32InputIndex+1 << " does not exist\n";
+		rui32Count = 0;
+		return true;
 	}
 
 	rui32Count=m_vInputStimulation[ui32InputIndex].size();
@@ -500,7 +549,7 @@ boolean CBoxAlgorithmLuaStimulator::getStimulationCB(uint32 ui32InputIndex, uint
 	rui64Time=l_itStimulation->first;
 	rui64Duration=l_itStimulation->second.second;
 
-	this->getLogManager() << LogLevel_Debug << "getStimulationCB " << ui32InputIndex << " " << ui32StimulationIndex << " " << rui64Identifier << " " << rui64Time << " " << rui64Duration << "\n";
+	this->getLogManager() << LogLevel_Debug << "getStimulationCB " << ui32InputIndex+1 << " " << ui32StimulationIndex+1 << " " << rui64Identifier << " " << rui64Time << " " << rui64Duration << "\n";
 
 	return true;
 }
@@ -518,7 +567,7 @@ boolean CBoxAlgorithmLuaStimulator::removeStimulationCB(uint32 ui32InputIndex, u
 
 	m_vInputStimulation[ui32InputIndex].erase(l_itStimulation);
 
-	this->getLogManager() << LogLevel_Debug << "removeStimulationCB " << ui32InputIndex << " " << ui32StimulationIndex << "\n";
+	this->getLogManager() << LogLevel_Debug << "removeStimulationCB " << ui32InputIndex+1 << " " << ui32StimulationIndex+1 << "\n";
 
 	return true;
 }
@@ -529,17 +578,17 @@ boolean CBoxAlgorithmLuaStimulator::sendStimulationCB(uint32 ui32OutputIndex, ui
 	{
 		if(ui64Time >= this->getPlayerContext().getCurrentTime())
 		{
-			this->getLogManager() << LogLevel_Debug << "sendStimulationCB " << ui32OutputIndex << " " << ui64Identifier << " " << ui64Time << " " << ui64Duration << "\n";
+			this->getLogManager() << LogLevel_Debug << "sendStimulationCB " << ui32OutputIndex+1 << " " << ui64Identifier << " " << ui64Time << " " << ui64Duration << "\n";
 			m_vOutputStimulation[ui32OutputIndex].insert(std::make_pair(ui64Time, std::make_pair(ui64Identifier, ui64Duration)));
 		}
 		else
 		{
-			this->getLogManager() << LogLevel_ImportantWarning << "Ignored deprecated stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on output " << ui32OutputIndex << "\n";
+			this->getLogManager() << LogLevel_ImportantWarning << "Ignored deprecated stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on output " << ui32OutputIndex+1 << "\n";
 		}
 	}
 	else
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Ignored stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on unexistant output " << ui32OutputIndex << "\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Ignored stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on unexistant output " << ui32OutputIndex+1 << "\n";
 	}
 	return true;
 }
