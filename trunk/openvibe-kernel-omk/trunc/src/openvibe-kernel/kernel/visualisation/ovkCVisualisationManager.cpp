@@ -134,7 +134,7 @@ COgreVisualisation* CVisualisationManager::getOgreVisualisation()
 	return m_pOgreVisualisation;
 }
 
-boolean CVisualisationManager::handleRealizeEvent(GtkWidget* pOVCustomWidget)
+boolean CVisualisationManager::handleRealizeEvent(::GtkWidget* pOVCustomWidget)
 {
 	//ensure Ogre could be initialized
 	if(m_pOgreVisualisation->ogreInitialized() == false)
@@ -142,11 +142,17 @@ boolean CVisualisationManager::handleRealizeEvent(GtkWidget* pOVCustomWidget)
 		return false;
 	}
 
+	//added for Ogre 1.7
+	gtk_widget_realize(pOVCustomWidget);
+	gtk_widget_set_double_buffered(pOVCustomWidget, FALSE);
+
 	//create primary render window
 	std::string l_sExternalHandle;
 #if defined OVK_OS_Windows
 	l_sExternalHandle=Ogre::StringConverter::toString((unsigned long)GDK_WINDOW_HWND(pOVCustomWidget->window));
 #elif defined OVK_OS_Linux
+	::XSync(GDK_WINDOW_XDISPLAY(pOVCustomWidget->window), False);
+
 	::GdkDisplay* l_pGdkDisplay=gdk_drawable_get_display(GDK_DRAWABLE(pOVCustomWidget->window));
 	::GdkScreen* l_pGdkScreen=gdk_drawable_get_screen(GDK_DRAWABLE(pOVCustomWidget->window));
 	::GdkVisual* l_pGdkVisual=gdk_drawable_get_visual(GDK_DRAWABLE(pOVCustomWidget->window));
@@ -169,6 +175,9 @@ boolean CVisualisationManager::handleRealizeEvent(GtkWidget* pOVCustomWidget)
 		Ogre::StringConverter::toString(static_cast<unsigned int>(l_iScreenIndex))+":"+
 		Ogre::StringConverter::toString(static_cast<unsigned long>(l_pXWindow))+":"+
 		Ogre::StringConverter::toString(reinterpret_cast<unsigned long>(&l_oXVisualInfo));
+
+	// added for Ogre 1.7
+	l_sExternalHandle=Ogre::StringConverter::toString(static_cast<unsigned long>(l_pXWindow));
 #else
 		#error failed compilation
 #endif

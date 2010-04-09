@@ -216,7 +216,7 @@ RenderWindow* COgreVisualisation::createRenderWindow(const std::string& rName, c
 
 	//store external window handle in struct
 	Ogre::NameValuePairList params;
-	params["externalWindowHandle"] = rExternalHandle;
+	params["parentWindowHandle"] = rExternalHandle;
 
 	//create render window from settings passed in argument
 	try
@@ -438,7 +438,7 @@ CIdentifier COgreVisualisation::getUnusedResourceGroupIdentifier(void) const
 {
 	uint64 l_ui64Identifier=(((uint64)rand())<<32)+((uint64)rand());
 	CIdentifier l_oResult;
-	map<CIdentifier, COgreResourceGroup*>::const_iterator it;
+	std::map<CIdentifier, COgreResourceGroup*>::const_iterator it;
 	do
 	{
 		l_oResult=CIdentifier(l_ui64Identifier++);

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ov_gnu_mirror=ftp://ftp.cw.net/pub/gnu
-ov_sourceforge_mirror=http://downloads.sourceforge.net
+ov_sourceforge_mirror=http://downloads.sourceforge.net/project
 ov_freedesktop_mirror=http://xorg.freedesktop.org
 ov_gnome_mirror=ftp://ftp.gnome.org/pub/GNOME
 
@@ -350,7 +350,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep Ubuntu /etc/lsb-release 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libogre-dev libglade2-dev libitpp-dev libgsl0-dev libboost-dev libexpat1-dev libois-dev libreadline5-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libreadline5-dev libzzip-dev libtool libxaw7-dev libpcre3-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
@@ -470,17 +470,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "clearlooks"
 			ov_hit_package "libglade"
 			ov_hit_package "glade"
-			ov_hit_package "boost"
+#			ov_hit_package "boost"
 
 			ov_hit_package "itpp_external"
 			ov_hit_package "itpp"
 			ov_hit_package "gsl"
 
 			ov_hit_package "freeimage"
-			ov_hit_package "ois"
+#			ov_hit_package "ois"
 			ov_hit_package "zziplib"
 			ov_hit_package "cg"
-			ov_hit_package "ogre"
+#			ov_hit_package "ogre"
 
 			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
 			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
@@ -504,7 +504,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep Debian /etc/issue 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libogre-dev libglade2-dev libitpp-dev libgsl0-dev libboost-dev libexpat1-dev libois-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libois-dev libzzip-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
@@ -626,17 +626,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "clearlooks"
 			ov_hit_package "libglade"
 			ov_hit_package "glade"
-			ov_hit_package "boost"
+#			ov_hit_package "boost"
 
 			ov_hit_package "itpp_external"
 			ov_hit_package "itpp"
 			ov_hit_package "gsl"
 
 			ov_hit_package "freeimage"
-			ov_hit_package "ois"
+#			ov_hit_package "ois"
 			ov_hit_package "zziplib"
 			ov_hit_package "cg"
-			ov_hit_package "ogre"
+#			ov_hit_package "ogre"
 
 			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
 			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
@@ -661,7 +661,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ -e /etc/fedora-release ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_fedora_packages="subversion doxygen make automake autoconf cmake unzip gcc gcc-c++ gtk2-devel ogre-devel libglade2-devel itpp-devel boost-devel expat-devel ois-devel"
+		ov_fedora_packages="subversion doxygen make automake autoconf unzip gcc gcc-c++ gtk2-devel libglade2-devel itpp-devel expat-devel libzzip-dev libtool libXaw-devel pcre-devel readline-devel"
 #		for package in $ov_ubuntu_packages; do
 #			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 #			ov_dpkg_retcode=$?
@@ -780,17 +780,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "clearlooks"
 			ov_hit_package "libglade"
 			ov_hit_package "glade"
-			ov_hit_package "boost"
+#			ov_hit_package "boost"
 
 			ov_hit_package "itpp_external"
 			ov_hit_package "itpp"
 			ov_hit_package "gsl"
 
 			ov_hit_package "freeimage"
-			ov_hit_package "ois"
+#			ov_hit_package "ois"
 			ov_hit_package "zziplib"
 			ov_hit_package "cg"
-			ov_hit_package "ogre"
+#			ov_hit_package "ogre"
 
 			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
 			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
@@ -978,7 +978,7 @@ fi;
 ov_package_url_pkgconfig=http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
 
 # base libraries
-ov_package_url_boost=$ov_sourceforge_mirror/boost/boost_1_36_0.tar.bz2
+ov_package_url_boost=$ov_sourceforge_mirror/boost/boost/1.41.0/boost_1_41_0.tar.bz2
 ov_package_url_expat=$ov_sourceforge_mirror/expat/expat-2.0.0.tar.gz
 ov_package_url_libxml=ftp://xmlsoft.org/libxml2/libxml2-sources-2.6.31.tar.gz
 ov_package_url_gettext=$ov_gnu_mirror/gettext/gettext-0.16.1.tar.gz
@@ -1039,14 +1039,15 @@ ov_package_url_bliff=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/bliff
 ov_package_url_cmake=http://www.cmake.org/files/v2.6/cmake-2.6.2.tar.gz
 ov_package_url_obt=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/obt-src-22.tar.bz2
 ov_package_url_freeimage=$ov_sourceforge_mirror/freeimage/FreeImage3110.zip
-ov_package_url_ois=$ov_sourceforge_mirror/wgois/ois-1.0.tar.gz
+ov_package_url_ois=$ov_sourceforge_mirror/wgois/Source%20Release/1.2/ois_1.2.0.tar.gz
 ov_package_url_zziplib=$ov_sourceforge_mirror/zziplib/zziplib-0.10.82.tar.bz2
 if [ "$ov_machine" == "x86_64" ]; then
 ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86_64.tar.gz
 else
 ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86.tar.gz
 fi;
-ov_package_url_ogre=$ov_sourceforge_mirror/ogre/ogre-v1-4-9.tar.bz2
+ov_package_url_cegui=$ov_sourceforge_mirror/crayzedsgui/CEGUI%20Mk-2/0.7.1/CEGUI-0.7.1.tar.gz
+ov_package_url_ogre=$ov_sourceforge_mirror/ogre/ogre/1.7/ogre-v1-7-0p1.tar.bz2
 ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/old_versions/vrpn_07_15.zip
 ov_package_url_openmask4=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4~dotsceneloader-src-164.tar.bz2
 ov_package_url_openmask4tutorial=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4-tutorial-src-164.tar.bz2
@@ -1136,6 +1137,7 @@ ov_package_archive_freeimage=`echo "$ov_package_url_freeimage" | $ov_sed 's#.*/#
 ov_package_archive_ois=`echo "$ov_package_url_ois" | $ov_sed 's#.*/##g'`
 ov_package_archive_zziplib=`echo "$ov_package_url_zziplib" | $ov_sed 's#.*/##g'`
 ov_package_archive_cg=`echo "$ov_package_url_cg" | $ov_sed 's#.*/##g'`
+ov_package_archive_cegui=`echo "$ov_package_url_cegui" | $ov_sed 's#.*/##g'`
 ov_package_archive_ogre=`echo "$ov_package_url_ogre" | $ov_sed 's#.*/##g'`
 ov_package_archive_vrpn=`echo "$ov_package_url_vrpn" | $ov_sed 's#.*/##g'`
 ov_package_archive_openmask4=`echo "$ov_package_url_openmask4" | $ov_sed 's#.*/##g'`
@@ -1163,8 +1165,19 @@ ov_package_post_uncompress_hook_libxml='
 	$ov_sed -i "12,19s#^#// commented by script //#" libxml.h &&
 	popd'
 
-ov_package_additional_configure_flags_boost='
-	--with-libraries=serialization,regex,thread'
+ov_package_configure_hook_boost='
+	pushd * &&
+	./bootstrap.sh --with-libraries=serialization,regex,thread --prefix=$ov_target_folder &&
+	popd'
+ov_package_make_hook_boost='
+	pushd * &&
+	./bjam --layout=tagged threading=multi stage &&
+	popd'
+ov_package_install_hook_boost='
+	pushd * &&
+	./bjam --layout=tagged threading=multi install &&
+	popd'
+
 ov_package_post_install_hook_boost='
 	pushd ../lib &&
 	ln -sf libboost_thread-*-mt.so libboost_thread.so &&
@@ -1310,7 +1323,7 @@ ov_package_configure_hook_freeimage='
 	$ov_find Source -name \*.c\* -exec $ov_sed -i "s#Z_#FI_Z_#g" "{}" \; &&
 	popd'
 
-ov_package_configure_hook_ois='
+ov_package_configure_hook_ois___='
 	pushd * &&
 	./bootstrap &&
 	$ov_sed -i "1i#include <stdlib.h>" includes/config.h.in &&
@@ -1319,10 +1332,16 @@ ov_package_configure_hook_ois='
 	$ov_sed -i "s/ECHO=/echo=/g" libtool &&
 	popd'
 
+ov_package_configure_hook_ois='
+	pushd * &&
+	./bootstrap &&
+	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" &&
+	popd'
+
 # http://www.ogre3d.org/phpBB2/viewtopic.php?t=33562
 # http://www.ogre3d.org/wiki/index.php/Detailed_Fedora_Walkthrough#Compiling_the_OGRE
 # http://www.ogre3d.org/phpBB2/viewtopic.php?t=21073
-ov_package_post_uncompress_hook_ogre='
+ov_package_post_uncompress_hook_ogre___='
 	pushd * &&
 	$ov_sed -i "35,59s/^/# commented by script #/" configure.in &&
 	$ov_sed -i "60s/^.*/CFLAGS_VISIBILITY=\"\"/" configure.in &&
@@ -1574,9 +1593,9 @@ ov_package_post_uncompress_hook_ogre='
 		-e "108i	\	\	void setStereoEyeSeparation(Real r) { mStereoEyeSeparation=r; }"
 		RenderSystems/GL/include/GLX/OgreGLXWindow.h &&
 	popd'
-ov_package_additional_configure_flags_ogre='
+ov_package_additional_configure_flags_ogre___='
 	--with-pic --disable-ogre-demos'
-ov_package_post_install_hook_ogre='
+ov_package_post_install_hook_ogre___='
 	echo "# Defines plugins to load" > $ov_target_folder_lib/OGRE/Plugins.cfg &&
 	echo "" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
 	echo "# Define plugin folder" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
@@ -1588,6 +1607,51 @@ ov_package_post_install_hook_ogre='
 	echo "Plugin=Plugin_BSPSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
 	echo "Plugin=Plugin_OctreeSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
 	echo "Plugin=Plugin_CgProgramManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg'
+
+ov_package_post_uncompress_hook_ogre='
+	pushd * &&
+	$ov_sed -i
+		-e "13iif \( NOT APPLE AND NOT WIN32 \)"
+		-e "13s/^/#/"
+		CMake/InstallDependencies.cmake &&
+	$ov_sed -i
+		-e "132ifind_package(Boost COMPONENTS \${OGRE_BOOST_COMPONENTS} QUIET NO_DEFAULT_PATH)"
+		CMake/Dependencies.cmake &&
+	popd'
+#	$ov_sed -i
+#		-e "29,34s#^#//#g"
+#		-e "35i#include <boost/thread.hpp>"
+#		-e "35i#include <boost/thread/condition.hpp>"
+#		OgreMain/include/Threading/OgreThreadHeadersBoost.h &&
+
+ov_package_configure_hook_ogre='
+	pushd * &&
+	mkdir build &&
+	cd build &&
+	cmake .. -DOGRE_DEPENDENCIES_DIR=$ov_target_folder -DBoost_LIBRARY_DIRS=$ov_target_folder/lib -DCMAKE_INSTALL_PREFIX=$ov_target_folder -DOGRE_BUILD_SAMPLES=OFF &&
+	popd'
+ov_package_make_hook_ogre='
+	pushd * &&
+	cd build &&
+	make -j 3 &&
+	popd'
+ov_package_install_hook_ogre='
+	pushd * &&
+	cd build &&
+	make install &&
+	cd .. &&
+	echo "# Defines plugins to load" > $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "# Define plugin folder" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "PluginFolder=$ov_target_folder_lib/OGRE" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "# Define plugins" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "Plugin=RenderSystem_GL" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "Plugin=Plugin_ParticleFX" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "Plugin=Plugin_BSPSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	echo "Plugin=Plugin_OctreeSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+	popd'
+#	echo "Plugin=Plugin_CgProgramManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
 
 if [ "$ov_machine" == "x86_64" ]; then
 ov_package_configure_hook_vrpn='
@@ -1688,6 +1752,8 @@ source $ov_environment_configuration_script
 ##                                ##
 ####################################
 
+ov_install_package "cmake"
+
 	# package management related packages
 	ov_install_package "pkgconfig"
 
@@ -1756,13 +1822,13 @@ source $ov_environment_configuration_script
 	ov_install_package "zziplib"
 	ov_install_package "cg"
 	ov_install_package "ogre"
+	ov_install_package "cegui"
 
 # If you want BLiFF++
 # ov_install_package "gsl"
 # ov_install_package "torch"
 # ov_install_package "bliff"
 
-ov_install_package "cmake"
 ov_install_package "vrpn"
 # ov_install_package "obt"
 # ov_install_package "openmask4"

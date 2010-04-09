@@ -804,7 +804,7 @@ boolean COgreObject::getVertexPositionArray(Ogre::uint32 ui32VertexCount, Ogre::
 
 	//get world matrix
 	Ogre::Matrix4 l_oMatrix4;
-	l_pEntity->getParentSceneNode()->getWorldTransforms(&l_oMatrix4);
+	l_oMatrix4=l_pEntity->getParentSceneNode()->_getFullTransform();
 
 	//get pointer to POSITION element
 	const Ogre::VertexElement* l_pPositionElement = l_pSubMesh->vertexData->vertexDeclaration->findElementBySemantic(Ogre::VES_POSITION);

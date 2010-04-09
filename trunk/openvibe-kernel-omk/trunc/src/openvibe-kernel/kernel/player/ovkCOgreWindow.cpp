@@ -70,12 +70,12 @@ boolean COgreWindow::createRenderWindow(const std::string& rExternalHandle, unsi
 	//create render window from settings passed in argument
 	try
 	{
-	m_pRenderWindow = Ogre::Root::getSingleton().createRenderWindow(
-		m_sName,// + "_RenderWindow",
-		uiWidth,
-		uiHeight,
-		false, //don't use fullscreen with non top level windows
-		&params);
+		m_pRenderWindow = Ogre::Root::getSingleton().createRenderWindow(
+			m_sName,// + "_RenderWindow",
+			uiWidth,
+			uiHeight,
+			false, //don't use fullscreen with non top level windows
+			&params);
 	}
 	catch(Ogre::Exception& e)
 	{
