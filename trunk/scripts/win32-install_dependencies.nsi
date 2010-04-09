@@ -272,98 +272,13 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "OBT"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-obt-22.zip" no_need_to_download_obt
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/obt-22.zip "arch\openvibe-dependency-obt-22.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_obt:
-
-	IfFileExists "obt" no_need_to_install_obt
-	ZipDLL::extractall "arch\openvibe-dependency-obt-22.zip" "obt"
-
-no_need_to_install_obt:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OBT=$INSTDIR\obt$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-SectionGroup /e "Ogre3D"
-Section /o "Ogre3D for Visual C++ 2003" ogre_vc_2003
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-ogre-1.6.2-vc2003.zip" no_need_to_download_ogre_vc2003
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.6.2-vc2003.zip "arch\openvibe-dependency-ogre-1.6.2-vc2003.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_ogre_vc2003:
-
-	IfFileExists "ogre-vc2003" no_need_to_install_ogre_vc2003
-	ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2003.zip" "ogre-vc2003"
-
-no_need_to_install_ogre_vc2003:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre-vc2003$\r$\n"
-	FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre-vc2003$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-Section /o "Ogre3D for Visual C++ 2005" ogre_vc_2005
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-ogre-1.6.2-vc2005.zip" no_need_to_download_ogre_vc2005
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.6.2-vc2005.zip "arch\openvibe-dependency-ogre-1.6.2-vc2005.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_ogre_vc2005:
-
-	IfFileExists "ogre-vc2005" no_need_to_install_ogre_vc2005
-	ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2005.zip" "ogre-vc2005"
-
-no_need_to_install_ogre_vc2005:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre-vc2005$\r$\n"
-	FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre-vc2005$\r$\n"
-	FileClose $0
-
-SectionEnd
-
 Section "Ogre3D for Visual C++ 2008" ogre_vc_2008
 
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-ogre-1.6.2-vc2008.zip" no_need_to_download_ogre_vc2008
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/ogre-1.6.2-vc2008.zip "arch\openvibe-dependency-ogre-1.6.2-vc2008.zip"
+	IfFileExists "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip" no_need_to_download_ogre_vc2008
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openvibe-dependency-ogre-1.7.0-vc2008.zip "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -372,7 +287,7 @@ Section "Ogre3D for Visual C++ 2008" ogre_vc_2008
 no_need_to_download_ogre_vc2008:
 
 	IfFileExists "ogre-vc2008" no_need_to_install_ogre_vc2008
-	ZipDLL::extractall "arch\openvibe-dependency-ogre-1.6.2-vc2008.zip" "ogre-vc2008"
+	ZipDLL::extractall "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip" "ogre-vc2008"
 
 no_need_to_install_ogre_vc2008:
 
@@ -383,37 +298,33 @@ no_need_to_install_ogre_vc2008:
 	FileClose $0
 
 SectionEnd
-SectionGroupEnd
 
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "OpenMASK 4 / DotSceneLoader"
+Section "CEGUI for Visual C++ 2008" cegui_vc_2008
 
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip" no_need_to_download_openmask
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/openmask4~dotsceneloader-164.zip "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip"
+	IfFileExists "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip" no_need_to_download_cegui_vc2008
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openvibe-dependency-cegui-0.7.1-vc2008.zip "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 
-no_need_to_download_openmask:
+no_need_to_download_cegui_vc2008:
 
-	IfFileExists "openmask" no_need_to_install_openmask
-	ZipDLL::extractall "arch\openvibe-dependency-openmask4~dotsceneloader-164.zip" "openmask"
+	IfFileExists "cegui-vc2008" no_need_to_install_cegui_vc2008
+	ZipDLL::extractall "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip" "cegui-vc2008"
 
-no_need_to_install_openmask:
+no_need_to_install_cegui_vc2008:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OPENMASK=$INSTDIR\openmask$\r$\n"
-	FileWrite $0 "SET OV_DEP_DSI=$INSTDIR\openmask$\r$\n"
-	FileWrite $0 "SET OMK_HOME=$INSTDIR\openmask$\r$\n"
-	FileWrite $0 "SET OMK_BIN=$INSTDIR\openmask$\r$\n"
+	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\cegui-vc2008$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -533,15 +444,5 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Function .onInit
-	StrCpy $1 ${ogre_vc_2008}
-FunctionEnd
 
-Function .onSelChange
-	!insertmacro StartRadioButtons $1
-		!insertmacro RadioButton ${ogre_vc_2003}
-		!insertmacro RadioButton ${ogre_vc_2005}
-		!insertmacro RadioButton ${ogre_vc_2008}
-	!insertmacro EndRadioButtons
-FunctionEnd
 

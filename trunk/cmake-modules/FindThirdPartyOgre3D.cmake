@@ -15,16 +15,17 @@
 # ---------------------------------
 
 IF(WIN32)
-	FIND_PATH(PATH_Ogre3D include/Ogre.h PATHS $ENV{OV_DEP_OGRE} $ENV{OGRE_HOME})
+	INCLUDE("FindThirdPartyBoost_Thread")
+	FIND_PATH(PATH_Ogre3D include/OGRE/Ogre.h PATHS $ENV{OV_DEP_OGRE} $ENV{OGRE_HOME})
 	IF(PATH_Ogre3D)
 		SET(Ogre3D_FOUND TRUE)
-		SET(Ogre3D_INCLUDE_DIRS ${PATH_Ogre3D}/include)
+		SET(Ogre3D_INCLUDE_DIRS ${PATH_Ogre3D}/include/OGRE ${PATH_Ogre3D}/include/OIS)
 		IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-			SET(Ogre3D_LIBRARIES OgreMain_d OIS_d CEGUIBase_d OgreGUIRenderer_d)
+			SET(Ogre3D_LIBRARIES OgreMain_d OIS_d)
 		ELSE(CMAKE_BUILD_TYPE STREQUAL "Debug")
-			SET(Ogre3D_LIBRARIES OgreMain OIS CEGUIBase OgreGUIRenderer)
+			SET(Ogre3D_LIBRARIES OgreMain OIS)
 		ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-		SET(Ogre3D_LIBRARY_DIRS ${PATH_Ogre3D}/lib )
+		SET(Ogre3D_LIBRARY_DIRS ${PATH_Ogre3D}/lib/${CMAKE_BUILD_TYPE} )
 	ENDIF(PATH_Ogre3D)
 ENDIF(WIN32)
 
