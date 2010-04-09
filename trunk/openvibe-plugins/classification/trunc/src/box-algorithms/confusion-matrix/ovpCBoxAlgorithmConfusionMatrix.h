@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <sstream>
+#include <cstdio>
 
 #define OVP_ClassId_BoxAlgorithm_ConfusionMatrix     OpenViBE::CIdentifier(0x1AB625DA, 0x3B2502CE)
 #define OVP_ClassId_BoxAlgorithm_ConfusionMatrixDesc OpenViBE::CIdentifier(0x52237A64, 0x63555613)
