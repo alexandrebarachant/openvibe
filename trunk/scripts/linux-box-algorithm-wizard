@@ -186,8 +186,44 @@ namespace OpenViBEPlugins
 
 		protected:
 
+			// OpenViBE::Kernel::IAlgorithmProxy* m_pStreamDecoder;
 			// ...
 		};
+
+/*
+		class ${l_box_algorithm_class_name}Listener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+		public:
+
+			virtual OpenViBE::boolean initialize(void) { return true; }
+			virtual OpenViBE::boolean uninitialize(void) { return true; }
+			virtual OpenViBE::boolean onInitialized(OpenViBE::Kernel::IBox& rBox) { return true; };
+			virtual OpenViBE::boolean onNameChanged(OpenViBE::Kernel::IBox& rBox) { return true; };
+			virtual OpenViBE::boolean onIdentifierChanged(OpenViBE::Kernel::IBox& rBox) { return true; };
+			virtual OpenViBE::boolean onAlgorithmClassIdentifierChanged(OpenViBE::Kernel::IBox& rBox) { return true; };
+			virtual OpenViBE::boolean onProcessingUnitChanged(OpenViBE::Kernel::IBox& rBox) { return true; };
+			virtual OpenViBE::boolean onInputConnected(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onInputDisconnected(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onInputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onInputTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onInputNameChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onOutputConnected(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onOutputDisconnected(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onOutputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onOutputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onOutputTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onOutputNameChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onSettingAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onSettingRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onSettingTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onSettingNameChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onSettingDefaultValueChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+			virtual OpenViBE::boolean onSettingValueChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index) { return true; };
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+		};
+*/
 
 		class $l_box_algorithm_desc_class_name : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
@@ -206,6 +242,8 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return $l_box_algorithm_class_identifier_def; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::$l_box_algorithm_namespace_final::$l_box_algorithm_class_name; }
+			// virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new ${l_box_algorithm_class_name}Listener; }
+			// virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
@@ -213,6 +251,7 @@ namespace OpenViBEPlugins
 				// rBoxAlgorithmPrototype.addInput  (\"input name\", /* input type (OV_TypeId_Signal) */);
 				// rBoxAlgorithmPrototype.addOutput (\"output name\", /* output type (OV_TypeId_Signal) */);
 				// rBoxAlgorithmPrototype.addSetting(\"setting name\", /* setting type (OV_TypeId_Integer), \"default value\" */);
+				// rBoxAlgorithmPrototype.addFlag   (/* flag name (OpenViBE::Kernel::BoxFlag_CanAddOutput) */);
 
 				return true;
 			}
