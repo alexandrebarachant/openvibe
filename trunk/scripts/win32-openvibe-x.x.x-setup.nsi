@@ -157,6 +157,7 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "SET OGRE_HOME=$INSTDIR\dependencies\ogre-vc2008$\r$\n"
 	FileWrite $0 "SET VRPNROOT=$INSTDIR\dependencies\vrpn$\r$\n"
 	FileWrite $0 "$\r$\n"
+	FileWrite $0 "SET PATH=%OV_DEP_LUA%\lib;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_ITPP%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_CMAKE%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_EXPAT%\bin;%PATH%$\r$\n"
