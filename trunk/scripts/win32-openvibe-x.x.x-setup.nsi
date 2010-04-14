@@ -119,6 +119,7 @@ no_need_to_download_vcredist_2008_sp1:
 ;no_need_to_install_vcredist_2008_sp1:
 
 	SetOutPath "$INSTDIR\dependencies\arch"
+	File ..\dependencies\arch\openvibe-dependency-lua-5.1.4-30.zip
 	File ..\dependencies\arch\openvibe-dependency-boost-1.41.0.zip
 	File ..\dependencies\arch\openvibe-dependency-cmake-2.6.2.zip
 	File ..\dependencies\arch\openvibe-dependency-expat-2.0.1.zip
@@ -129,6 +130,7 @@ no_need_to_download_vcredist_2008_sp1:
 	File ..\dependencies\arch\openvibe-dependency-vrpn-7.13.zip
 
 	SetOutPath "$INSTDIR\dependencies"
+	ZipDLL::extractall "arch\openvibe-dependency-lua-5.1.4-30.zip" "lua"
 	ZipDLL::extractall "arch\openvibe-dependency-boost-1.41.0" "boost"
 	ZipDLL::extractall "arch\openvibe-dependency-cmake-2.6.2.zip" "cmake"
 	ZipDLL::extractall "arch\openvibe-dependency-expat-2.0.1.zip" "expat"
@@ -150,6 +152,7 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\dependencies\ogre-vc2008$\r$\n"
 	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\dependencies\cegui-vc2008$\r$\n"
 	FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\dependencies\vrpn$\r$\n"
+	FileWrite $0 "SET OV_DEP_LUA=$INSTDIR\dependencies\lua$\r$\n"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "SET OGRE_HOME=$INSTDIR\dependencies\ogre-vc2008$\r$\n"
 	FileWrite $0 "SET VRPNROOT=$INSTDIR\dependencies\vrpn$\r$\n"
