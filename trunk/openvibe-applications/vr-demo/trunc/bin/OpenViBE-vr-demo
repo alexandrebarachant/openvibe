@@ -1,25 +1,29 @@
 #!/bin/bash
 
-# g_GDB=gdb --args
-g_OMKReferenceApplication="///noway///"
+# g_GDB="gdb --args"
 
-if [ ! -e $g_OMKReferenceApplication ]; then
-	g_OMKReferenceApplication=$OMK_BIN/bin/OMKReferenceApplication
+OpenViBE_app=`pwd`/OpenViBE-vr-demo-dynamic
+
+if [[ "$1" == "" ]]; then
+	echo "no application specified."
+	echo "USAGE: test-vr-demo.cmd application-name"
+	exit -1
 fi;
 
-if [ ! -e $g_OMKReferenceApplication ]; then
-	g_OMKReferenceApplication=$OMK_HOME/bin/OMKReferenceApplication
-fi;
+pushd "../../scripts"
+source linux-init_env_command
+popd
 
-if [ ! -e $g_OMKReferenceApplication ]; then
-	g_OMKReferenceApplication=`which OMKReferenceApplication`
-fi;
+echo "##############################"
+echo " You chose the VR application "
+echo " [$1]"
+echo "##############################"
 
-if [ ! -e $g_OMKReferenceApplication ]; then
-	echo OpenMASK reference application was not found
-	echo please update your OMK_BIN, OMK_HOME or PATH environment variables
-	exit 1
-fi;
+pushd "../share/openvibe-applications/vr-demo/$1"
 
-cd $1
-$g_GDB $g_OMKReferenceApplication omk/demo.omk
+cp resources.cfg-base resources.cfg
+cat $OpenViBE_dependencies/share/CEGUI/resources.cfg >> resources.cfg
+
+$g_GDB "$OpenViBE_app" "$1"
+
+popd
