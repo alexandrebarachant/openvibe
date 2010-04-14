@@ -48,7 +48,7 @@ for /F %%s in (%OpenViBE_build_order%) do (
 	cmake -DCMAKE_INSTALL_PREFIX="%%s" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -Wno-dev -DCMAKE_MODULE_PATH="%saved_directory:\=/%/../cmake-modules;${CMAKE_MODULE_PATH}" !OpenViBE_project_name_full! -G"NMake Makefiles"
 	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
-	nmake 
+	nmake
 	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
 	nmake OpenViBE-documentation 2> NULL
@@ -96,7 +96,7 @@ echo type %OV_DEP_CEGUI%\resources.cfg ^>^> share\openvibe-applications\vr-demo\
 echo cd share\openvibe-applications\vr-demo\tie-fighter                   >> %target_dist%\test-vr-demo-tie-fighter.cmd
 echo %%OpenViBE_DistRoot%%\bin\OpenViBE-vr-demo-dynamic.exe tie-fighter   >> %target_dist%\test-vr-demo-tie-fighter.cmd
 echo cd %%OpenViBE_DistRoot%%                                             >> %target_dist%\test-vr-demo-tie-fighter.cmd
-echo exit                                                                 >> %target_dist%\test-vr-demo-tie-fighter.cmd                                                         >> %target_dist%\test-vr-demo-handball.cmd
+echo exit                                                                 >> %target_dist%\test-vr-demo-tie-fighter.cmd
 
 echo @echo off                                               >  %target_dist%\test-acquisition-server.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-acquisition-server.cmd
