@@ -517,3 +517,4 @@ void CConfigurationGlade::treeviewApplyChannelNameCB(void)
 	this->buttonApplyChannelNameCB();
 }
 
+

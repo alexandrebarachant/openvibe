@@ -3,9 +3,6 @@
 
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 
-//Path to the glade xml file used for the fast mode settings GUI
-#define OVAS_ConfigureGUIFastModeSettings   "../share/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp-FastModeSettings.glade"
-
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBEAcquisitionServer;
@@ -78,7 +75,6 @@ void initFastModeSettingsComboBox(GtkWidget * comboBox, uint32 activeValue, bool
 CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(IDriverContext& rDriverContext, const char* sGladeXMLFileName, CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp)
 	:CConfigurationGlade(sGladeXMLFileName)
 	,m_rDriverContext(rDriverContext)
-	//,m_sGladeXMLFastModeSettingsFileName(OVAS_ConfigureGUIFastModeSettings)
 	,m_pHeaderBrainProductsVAmp(pHeaderBrainProductsVAmp)
 {
 }
@@ -89,9 +85,6 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 	{
 		return false;
 	}
-
-	// prepares interface
-	//m_pGladeConfigureFastModeSettingsInterface=glade_xml_new(m_sGladeXMLFastModeSettingsFileName.c_str(), NULL, NULL);
 
 	// Finds all the widgets
 	m_pDialogFastModeSettings=glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_fast_mode_settings");
@@ -223,9 +216,6 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 
 	//releasing ressources as we dont need it anymore
 	gtk_widget_hide(m_pDialogFastModeSettings);
-
-	//g_object_unref(m_pGladeConfigureFastModeSettingsInterface);
-	//m_pGladeConfigureFastModeSettingsInterface=NULL;
 
 	// making the pairs names
 	if(m_pHeaderBrainProductsVAmp->getDataMode() == dm20kHz4Channels)

@@ -1,6 +1,10 @@
 #ifndef __OpenViBE_AcquisitionServer_Defines_H__
 #define __OpenViBE_AcquisitionServer_Defines_H__
 
+#define OVAS_Impedance_NotAvailable -2
+#define OVAS_Impedance_Unknown -1
+#define OVAS_Impedance_Zero 0
+
 //___________________________________________________________________//
 //                                                                   //
 // Gloabal defines                                                   //

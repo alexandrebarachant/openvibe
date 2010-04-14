@@ -54,11 +54,92 @@ namespace OpenViBEAcquisitionServer
 		 * \sa isConnected
 		 */
 		virtual OpenViBE::boolean isStarted(void) const=0;
+		/**
+		 * \brief Gets jitter sample count
+		 * \return \e the jitter sample count
+		 * \sa correctJitterSampleCount
+		 *
+		 * This function returns the difference between the theorical
+		 * number of samples this driver should have sent so far and
+		 * the number of samples it actually sent. This jitter sample
+		 * count is computed by the acquisition server and can be used
+		 * to correct a drifting device behavior.
+		 *
+		 * \note If this number is less than 0 then samples are missing
+		 * \note If this number if more than 0 then there are too much samples
+		 * \note If this number is exactly 0 then the driver sent the exact
+		 *        number of samples it had to send
+		 */
+		virtual OpenViBE::int64 getJitterSampleCount(void) const=0;
+		/**
+		 * \brief Gets the jitter sample count tolerance
+		 * \return \e the jitter sample count tolerance
+		 *
+		 * Gets the tolerance configured for the acquisition server. This
+		 * tolerance is present to avoid numerous corrections on a jitter
+		 * value that would oscilate in a small range around 0. In such case,
+		 * a correction in a way would probably turn in a correction in the
+		 * opposite way a few seconds later, resulting in crap measurements
+		 * even because of irregular but valid source.
+		 *
+		 * If the actual jitter is in the [-tolerance +tolerance] range,
+		 * better don't correct it.
+		 */
+		virtual OpenViBE::int64 getJitterToleranceSampleCount(void) const=0;
+		/**
+		 * \brief Gets the suggested jitter correction sample count
+		 * \return \e the suggested jitter correction sample count
+		 *
+		 * In case you don't want to manage yourself how much samples should
+		 * be used to correct, you could simply use this function. The
+		 * algorithm used to compute the returned value should be considered
+		 * as undefined. This computation could change over time and versions
+		 * of OpenViBE. That means the driver should not make any assumption
+		 * on the way of computing the actual value returned by this function.
+		 */
+		virtual OpenViBE::int64 getSuggestedJitterCorrectionSampleCount(void) const=0;
+		/**
+		 * \brief Corrects a drifting device
+		 * \return \e true in case of success
+		 * \return \e false in case of error
+		 * \sa getJitterSampleCount
+		 *
+		 * Some devices don't sent the number of samples they promised to
+		 * while requesting sampling rate. This can be for multiple reasons
+		 * but the most probable one is that the device does not have its
+		 * internal clock synchronized with the internal computer clock.
+		 * OpenViBE data being dated with a start / end time, it is important
+		 * for synchronisation purpose that all the theorical number of
+		 * samples per second is preserved.
+		 *
+		 * In case the difference between the theorical number of samples
+		 * this driver should have sent so far and the number of samples
+		 * it actually sent becomes too big, this function helps to
+		 * correct the drifting, removing or adding dummy samples.
+		 * In a strict signal processing point of view those samples
+		 * can't be considered as valid. However, this is the only way
+		 * to guarantee that the timings are preserved.
+		 *
+		 * \note Passing a negative value removes samples
+		 * \note Passing a positive value adds samples
+		 * \note Passing 0 does nothing
+		 * \note This function can be called several times if needed
+		 *        but does not change what \ref getJitterSampleCount
+		 *        returns until the next \ref IDriver::loop execution
+		 * \warning Please be carefull when calling this function.
+		 *           Consider the fact that there could be some jittering
+		 *           in the device and ths OS-level driver itself, or even
+		 *           in the communication pipeline to the prorprietary
+		 *           acquisition software. As an OpenViBE driver developer,
+		 *           you should allow an arbitrary small jittering (which
+		 *           range depends of the actual driver you are creating).
+		 */
+		virtual OpenViBE::boolean correctJitterSampleCount(OpenViBE::int64 i64SampleCount)=0;
 
 		/**
 		 * \brief Updates impedance for a specific channel
 		 * \param ui32ChannelIndex [in] : the index of the channel should be updated
-		 * \param f64Impedance [in] : the impedance of the specified channel
+		 * \param f64Impedance [in] : the impedance of the specified channel (in ohm)
 		 * \return \e true in case of success.
 		 * \return \e false in case of error.
 		 *

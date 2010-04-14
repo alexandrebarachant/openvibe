@@ -42,10 +42,6 @@ namespace OpenViBEAcquisitionServer
 
 		CHeaderBrainProductsVAmp* m_pHeaderBrainProductsVAmp;
 
-		//::GladeXML* m_pGladeConfigureFastModeSettingsInterface;
-
-		//std::string m_sGladeXMLFastModeSettingsFileName;
-
 		//widgets
 		::GtkWidget* m_pDialogFastModeSettings;
 

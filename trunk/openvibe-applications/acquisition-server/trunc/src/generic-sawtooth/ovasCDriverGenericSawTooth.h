@@ -1,21 +1,16 @@
-#ifndef __OpenViBE_AcquisitionServer_CDriverGTecGUSBamp_H__
-#define __OpenViBE_AcquisitionServer_CDriverGTecGUSBamp_H__
-
-#if defined TARGET_HAS_ThirdPartyGUSBampCAPI
+#ifndef __OpenViBE_AcquisitionServer_CDriverGenericSawTooth_H__
+#define __OpenViBE_AcquisitionServer_CDriverGenericSawTooth_H__
 
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 
-#include <gtk/gtk.h>
-#include <vector>
-
 namespace OpenViBEAcquisitionServer
 {
-	class CDriverGTecGUSBamp : public OpenViBEAcquisitionServer::IDriver
+	class CDriverGenericSawTooth : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 
-		CDriverGTecGUSBamp(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
+		CDriverGenericSawTooth(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual void release(void);
 		virtual const char* getName(void);
 
@@ -38,21 +33,11 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::CHeader m_oHeader;
 
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
-		OpenViBE::uint32 m_ui32DeviceIndex;
-		OpenViBE::uint32 m_ui32ActualDeviceIndex;
-		OpenViBE::uint32 m_ui32BufferSize;
-		OpenViBE::uint8* m_pBuffer;
-		OpenViBE::float32* m_pSampleTranspose;
 		OpenViBE::float32* m_pSample;
-		void* m_pDevice;
-		void* m_pEvent;
-		void* m_pOverlapped;
 
-		OpenViBE::boolean m_bImpedanceCheck;
-		OpenViBE::uint32 m_ui32ActualImpedanceIndex;
+		OpenViBE::uint32 m_ui32TotalSampleCount;
+		OpenViBE::uint32 m_ui32StartTime;
 	};
 };
 
-#endif // TARGET_HAS_ThirdPartyGUSBampCAPI
-
-#endif // __OpenViBE_AcquisitionServer_CDriverGTecGUSBamp_H__
+#endif // __OpenViBE_AcquisitionServer_CDriverGenericSawTooth_H__

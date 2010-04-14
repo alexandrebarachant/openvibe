@@ -13,6 +13,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <windows.h>
+#include <cstring>
 
 #define boolean OpenViBE::boolean
 using namespace OpenViBEAcquisitionServer;
@@ -144,7 +145,7 @@ CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(IDriverContext& rDriverContext)
 	::lstrcat(l_sPath, MicromedDLL);
 	m_oLibMicromed = ::LoadLibrary(l_sPath);
 
-	//if it can't be opend return FALSE;
+	//if it can't be open return FALSE;
 	if( m_oLibMicromed == NULL)
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't load DLL: " << CString(l_sPath) << "\n";
@@ -177,7 +178,7 @@ CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(IDriverContext& rDriverContext)
 #if 1
 	if(ERROR_SUCCESS!=::RegOpenKeyEx(HKEY_CURRENT_USER, g_sRegisteryKeyName, 0, KEY_QUERY_VALUE, &g_hRegistryKey))
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Warning << "Registery key " << CString(g_sRegisteryKeyName) << " is not initialized";
+		m_rDriverContext.getLogManager() << LogLevel_Warning << "Registery key " << CString(g_sRegisteryKeyName) << " is not initialized\n";
 		::strcpy(g_sTCPPortNumber, "");
 		::strcpy(g_sTCPSendAcq, "");
 		::strcpy(g_sTCPServerName, "");
@@ -298,7 +299,7 @@ short CDriverMicromedIntraEEG::MyReceive(char* buf, long dataLen)
 		}
 
 		nDati += recByte;
-		m_rDriverContext.getLogManager() << LogLevel_Trace << "Received Data: = " << nDati << " /" << dataLen << "\n";
+		m_rDriverContext.getLogManager() << LogLevel_Debug << "Received Data: = " << nDati << " /" << dataLen << "\n";
 	}
 	return 0;
 }
@@ -444,7 +445,8 @@ boolean CDriverMicromedIntraEEG::initialize(
 
 	if(!m_pSample)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_ImportantWarning << "Could not allocate sample buffer\n"; // $$$ their should probabaly be uninitializations here
+		m_rDriverContext.getLogManager() << LogLevel_ImportantWarning << "Could not allocate sample buffer\n";
+		uninitialize();
 		return false;
 	}
 	m_ui32BuffDataIndex = 0;
@@ -454,10 +456,25 @@ boolean CDriverMicromedIntraEEG::initialize(
 
 boolean CDriverMicromedIntraEEG::start(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "start device\n";
 	if(!m_bValid) { return false; }
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
 	if(!m_pConnection) { return false; }
+	return true;
+}
+
+boolean CDriverMicromedIntraEEG::dropData(void)
+{
+	//drop data
+	uint32 l_ui32TotalReceived=0;
+	do
+	{
+		uint32 l_ui32MaxByteRecv=min(m_oFgetStructBuffDataSize(), m_oFgetDataLength()-l_ui32TotalReceived);
+		this->MyReceive((char*)m_pStructBuffData, l_ui32MaxByteRecv);
+		l_ui32TotalReceived+=l_ui32MaxByteRecv;
+	}
+	while(l_ui32TotalReceived<m_oFgetDataLength());
 	return true;
 }
 
@@ -486,32 +503,28 @@ boolean CDriverMicromedIntraEEG::loop(void)
 
 		// Receive Data
 		uint32 l_ui32MaxByteRecv=0;
-		uint32 l_ui32Received=0;
+		uint32 l_ui32TotalReceived=0;
 		uint32 l_ui32nbSamplesBlock=m_oHeader.getChannelCount()*m_ui32SampleCountPerSentBlock;
 		uint32 l_ui32DataSizeInByte=m_oFgetSizeOfEachDataInByte();
 		uint32 l_ui32ReceivedSampleCount=0;
 		uint32 l_ui32BuffSize=m_oFgetStructBuffDataSize();
 
+		//if the device is not start or the first block after start haven't been received, data will be dropped
 		if(!m_rDriverContext.isStarted())
 		{
-			//drop data
-			do
-			{
-				l_ui32MaxByteRecv=min(l_ui32BuffSize, m_oFgetDataLength()-l_ui32Received);
-				this->MyReceive((char*)m_pStructBuffData, l_ui32MaxByteRecv);
-				l_ui32Received+=l_ui32MaxByteRecv;
-			}
-			while(l_ui32Received<m_oFgetDataLength());
-			m_rDriverContext.getLogManager() << LogLevel_Trace << "Device not started, dropped data: data.len = " << m_oFgetDataLength() << "\n";
+			dropData();
+			m_rDriverContext.getLogManager() << LogLevel_Debug << "Device not started, dropped data: data.len = " << m_oFgetDataLength() << "\n";
+			return true;
 		}
+
 		if(m_rDriverContext.isStarted())
 		{
 			do
 			{
-				l_ui32MaxByteRecv=min(l_ui32BuffSize, min(m_oFgetDataLength()-l_ui32Received, (l_ui32nbSamplesBlock-m_ui32BuffDataIndex*m_oHeader.getChannelCount())*l_ui32DataSizeInByte));
+				l_ui32MaxByteRecv=min(l_ui32BuffSize, min(m_oFgetDataLength()-l_ui32TotalReceived, (l_ui32nbSamplesBlock-m_ui32BuffDataIndex*m_oHeader.getChannelCount())*l_ui32DataSizeInByte));
 				this->MyReceive((char*)m_pStructBuffData, l_ui32MaxByteRecv);
 				l_ui32ReceivedSampleCount=l_ui32MaxByteRecv/(l_ui32DataSizeInByte*m_oHeader.getChannelCount());
-				m_rDriverContext.getLogManager() << LogLevel_Trace << "Number of Sample Received:" << l_ui32ReceivedSampleCount << "\n";
+				m_rDriverContext.getLogManager() << LogLevel_Debug << "Number of Samples Received:" << l_ui32ReceivedSampleCount << "\n";
 
 				for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 				{
@@ -524,10 +537,10 @@ boolean CDriverMicromedIntraEEG::loop(void)
 					m_rDriverContext.getLogManager() << LogLevel_Debug << "}" << "\n";
 				}
 
-				m_rDriverContext.getLogManager() << LogLevel_Trace << "Convert Data: dataConvert = " << l_ui32Received << "/" << m_oFgetDataLength() << "\n";
-				l_ui32Received+=l_ui32MaxByteRecv;
+				m_rDriverContext.getLogManager() << LogLevel_Debug << "Convert Data: dataConvert = " << l_ui32TotalReceived << "/" << m_oFgetDataLength() << "\n";
+				l_ui32TotalReceived+=l_ui32MaxByteRecv;
 				m_ui32BuffDataIndex+=l_ui32ReceivedSampleCount;
-				m_rDriverContext.getLogManager() << LogLevel_Trace << "Convert Data: dataConvert = " << l_ui32Received << "/" << m_oFgetDataLength() << "\n";
+				m_rDriverContext.getLogManager() << LogLevel_Debug << "Convert Data: dataConvert = " << l_ui32TotalReceived << "/" << m_oFgetDataLength() << "\n";
 
 				if(l_ui32nbSamplesBlock<m_ui32BuffDataIndex)
 				{
@@ -538,10 +551,10 @@ boolean CDriverMicromedIntraEEG::loop(void)
 				if(l_ui32nbSamplesBlock==m_ui32BuffDataIndex*m_oHeader.getChannelCount())
 				{
 					m_pCallback->setSamples(m_pSample);
+					m_rDriverContext.getLogManager() << LogLevel_Debug << "Send samples back to CAcquisitionServer: samples.len = " << m_ui32BuffDataIndex << "\n";
 					m_ui32BuffDataIndex=0;
-					m_rDriverContext.getLogManager() << LogLevel_Trace << "Send data back to CAcquisitionServer: data.len = " << m_oFgetDataLength() << "\n";
 				}
-			} while(l_ui32Received<m_oFgetDataLength());
+			} while(l_ui32TotalReceived<m_oFgetDataLength());
 		}
 	}
 	return true;

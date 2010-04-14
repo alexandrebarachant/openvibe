@@ -46,6 +46,7 @@ namespace OpenViBEAcquisitionServer
 
 	protected:
 
+		virtual OpenViBE::boolean dropData();
 		OpenViBE::boolean m_bValid;
 
 		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;

@@ -243,6 +243,24 @@ namespace OpenViBEAcquisitionServer
 		 * \brief Destructor
 		 */
 		virtual ~IHeader(void) { }
+
+	public:
+
+		static void copy(OpenViBEAcquisitionServer::IHeader& rDestination, const OpenViBEAcquisitionServer::IHeader& rSource)
+		{
+			OpenViBE::uint32 i, l_ui32ChannelCount=rSource.getChannelCount();
+			rDestination.setExperimentIdentifier(rSource.getExperimentIdentifier());
+			rDestination.setSubjectAge(rSource.getSubjectAge());
+			rDestination.setSubjectGender(rSource.getSubjectGender());
+			rDestination.setChannelCount(rSource.getChannelCount());
+			rDestination.setSamplingFrequency(rSource.getSamplingFrequency());
+			rDestination.setChannelCount(rSource.getChannelCount());
+			for(i=0; i<l_ui32ChannelCount; i++)
+			{
+				rDestination.setChannelName(i, rSource.getChannelName(i));
+				rDestination.setChannelGain(i, rSource.getChannelGain(i));
+			}
+		}
 	};
 };
 

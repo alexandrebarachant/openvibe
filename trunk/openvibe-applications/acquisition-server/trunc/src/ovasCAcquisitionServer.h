@@ -7,9 +7,9 @@
 
 #include <socket/IConnectionServer.h>
 
-#include <glade/glade.h>
-
-#include <gtk/gtk.h>
+#include <boost/thread.hpp>
+#include <boost/thread/condition.hpp>
+#include <boost/version.hpp>
 
 #include <string>
 #include <vector>
@@ -18,7 +18,6 @@
 namespace OpenViBEAcquisitionServer
 {
 	class CDriverContext;
-
 	class CAcquisitionServer : public OpenViBEAcquisitionServer::IDriverCallback
 	{
 	public:
@@ -26,17 +25,17 @@ namespace OpenViBEAcquisitionServer
 		CAcquisitionServer(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 		virtual ~CAcquisitionServer(void);
 
-		virtual OpenViBE::boolean initialize(void);
+		virtual OpenViBEAcquisitionServer::IDriverContext& getDriverContext();
 
-		// GTK idle callback
-		virtual void idleCB(void);
+		OpenViBE::uint32 getClientCount(void);
+		OpenViBE::float64 getImpedance(const OpenViBE::uint32 ui32ChannelIndex);
 
-		// GTK button callbacks
-		virtual void buttonConfigurePressedCB(::GtkButton* pButton);
-		virtual void buttonConnectToggledCB(::GtkToggleButton* pButton);
-		virtual void buttonStartPressedCB(::GtkButton* pButton);
-		virtual void buttonStopPressedCB(::GtkButton* pButton);
-		virtual void comboBoxDriverChanged(::GtkComboBox* pComboBox);
+		OpenViBE::boolean loop(void);
+
+		OpenViBE::boolean connect(OpenViBEAcquisitionServer::IDriver& rDriver, OpenViBEAcquisitionServer::IHeader& rHeaderCopy, OpenViBE::uint32 ui32SamplingCountPerSentBlock, OpenViBE::uint32 ui32ConnectionPort);
+		OpenViBE::boolean start(void);
+		OpenViBE::boolean stop(void);
+		OpenViBE::boolean disconnect(void);
 
 		// Driver samples information callback
 		virtual void setSamples(const OpenViBE::float32* pSample);
@@ -45,11 +44,22 @@ namespace OpenViBEAcquisitionServer
 		// Driver context callback
 		virtual OpenViBE::boolean isConnected(void) const { return m_bInitialized; }
 		virtual OpenViBE::boolean isStarted(void) const { return m_bStarted; }
+		virtual OpenViBE::int64 getJitterSampleCount(void) const { return m_i64JitterSampleCount; }
+		virtual OpenViBE::int64 getJitterToleranceSampleCount(void) const { return m_i64JitterToleranceSampleCount; }
+		virtual OpenViBE::int64 getSuggestedJitterCorrectionSampleCount(void) const;
+		virtual OpenViBE::boolean correctJitterSampleCount(OpenViBE::int64 i64SampleCount);
+		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance);
+
+	public:
+
+		boost::mutex m_oExecutionMutex;
+		boost::mutex m_oProtectionMutex;
 
 	protected :
 
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBEAcquisitionServer::CDriverContext* m_pDriverContext;
+		OpenViBEAcquisitionServer::IDriver* m_pDriver;
 
 		OpenViBE::Kernel::IAlgorithmProxy* m_pAcquisitionStreamEncoder;
 		OpenViBE::Kernel::IAlgorithmProxy* m_pExperimentInformationStreamEncoder;
@@ -63,28 +73,28 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pStimulationMemoryBuffer;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pChannelLocalisationMemoryBuffer;
 
-		OpenViBE::Kernel::ELogLevel m_eDriverLatencyLogLevel;
-
-		::GladeXML* m_pGladeInterface;
-
 		std::list < std::pair < Socket::IConnection*, OpenViBE::uint64 > > m_vConnection;
+		std::vector < std::vector < OpenViBE::float32 > > m_vPendingBuffer;
+		std::vector < OpenViBE::float32 > m_vSwapBuffer;
+		std::vector < OpenViBE::float64 > m_vImpedance;
 		Socket::IConnectionServer* m_pConnectionServer;
 
-		std::vector<OpenViBEAcquisitionServer::IDriver*> m_vDriver;
 		OpenViBE::boolean m_bInitialized;
 		OpenViBE::boolean m_bStarted;
-		OpenViBE::uint32 m_ui32IdleCallbackId;
+		OpenViBE::uint32 m_ui32ChannelCount;
+		OpenViBE::uint32 m_ui32SamplingFrequency;
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::uint64 m_ui64SampleCount;
+		OpenViBE::uint64 m_ui64LastSampleCount;
 		OpenViBE::uint64 m_ui64StartTime;
-		OpenViBE::uint64 m_ui64ToleranceDurationBeforeWarning;
+
+		OpenViBE::int64 m_i64JitterSampleCount;
+		OpenViBE::int64 m_i64JitterToleranceSampleCount;
+		OpenViBE::int64 m_i64JitterCorrectionSampleCountAdded;
+		OpenViBE::int64 m_i64JitterCorrectionSampleCountRemoved;
 
 		OpenViBE::uint8* m_pSampleBuffer;
-		OpenViBE::boolean m_bGotData;
-
-		OpenViBE::CStimulationSet m_oStimulationSet;
-
-		OpenViBEAcquisitionServer::IDriver* m_pDriver;
+		OpenViBE::CStimulationSet m_oPendingStimulationSet;
 	};
 };
 

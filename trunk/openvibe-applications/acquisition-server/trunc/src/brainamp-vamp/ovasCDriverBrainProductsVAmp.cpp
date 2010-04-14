@@ -29,7 +29,7 @@ CDriverBrainProductsVAmp::CDriverBrainProductsVAmp(IDriverContext& rDriverContex
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_ui32TotalSampleCount(0)
 	,m_pSample(NULL)
-	,m_ui32StartTime(0)
+	,m_bFirstStart(false)
 {
 	m_oHeader.setChannelCount(16);
 	m_oHeader.setSamplingFrequency(2000);
@@ -66,6 +66,7 @@ boolean CDriverBrainProductsVAmp::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "INIT called.\n";
 	if(m_rDriverContext.isConnected())
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] VAmp Driver: Driver already initialized.\n";
@@ -89,8 +90,6 @@ boolean CDriverBrainProductsVAmp::initialize(
 		return false;
 	}
 
-	m_ui32StartTime=System::Time::getTime();
-
 	int32 l_i32DeviceId = m_oHeader.getDeviceId();
 	//__________________________________
 	// Hardware initialization
@@ -99,25 +98,10 @@ boolean CDriverBrainProductsVAmp::initialize(
 	// we take the last device connected
 	if(l_i32DeviceId == FA_ID_INVALID)
 	{
-		uint32 l_uint32LastOpenedDeviceID = FA_ID_INVALID;
-		uint32 l_uint32RetriesCount = 0;
+		// We try to get the last opened device,
+		uint32 l_uint32LastOpenedDeviceID = faGetCount(); // Get the last opened Device id.
 
-		// We try to get the last opened device, (max 5 tries, 500ms sleep between tries)
-		while (l_uint32RetriesCount++ < 5)
-		{
-			l_uint32LastOpenedDeviceID = faGetCount(); // Get the last opened Device id.
-
-			if (l_uint32LastOpenedDeviceID < 1)
-			{
-				Sleep(500);
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		if (l_uint32LastOpenedDeviceID == FA_ID_INVALID) // all tries failed
+		if (l_uint32LastOpenedDeviceID == FA_ID_INVALID) // failed
 		{
 			m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] VAmp Driver: faGetCount failed to get last opened device.\n";
 			return false;
@@ -142,30 +126,26 @@ boolean CDriverBrainProductsVAmp::initialize(
 	if (l_uint32OpenReturn != FA_ERR_OK)
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] VAmp Driver: faOpen(" << l_i32DeviceId << ") FAILED(" << l_uint32OpenReturn << ").\n";
-		faStop(l_i32DeviceId); // Stop serving data.
-		faClose(l_i32DeviceId);
 		return false;
 	}
 
-	//set data mode
-	if(m_oHeader.getDataMode() == dm20kHz4Channels)
-	{
-		faSetDataMode(l_i32DeviceId, dm20kHz4Channels, &(m_oHeader.getFastModeSettings()));
-	}
-	else
-	{
-		faSetDataMode(l_i32DeviceId, dmNormal, NULL);
-	}
+    if(m_oHeader.getDataMode() == dm20kHz4Channels)
+    {
+        faSetDataMode(l_i32DeviceId, dm20kHz4Channels, &(m_oHeader.getFastModeSettings()));
+    }
+    else
+    {
+        faSetDataMode(l_i32DeviceId, dmNormal, NULL);
+    }
 
-	//Starting the Device...
-	uint32 l_uint32ErrorCode = faStart(l_i32DeviceId);
-	if (l_uint32ErrorCode != FA_ERR_OK)
-	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "[START] VAmp Driver: faStart FAILED(" << l_uint32ErrorCode << ").\n";
-		faStop(l_i32DeviceId); // Stop serving data.
-		faClose(l_i32DeviceId);
-		return false;
-	}
+    uint32 l_uint32ErrorCode = faStart(l_i32DeviceId);
+
+    if (l_uint32ErrorCode != FA_ERR_OK)
+    {
+        m_rDriverContext.getLogManager() << LogLevel_Error << "[START] VAmp Driver: faStart FAILED(" << l_uint32ErrorCode << "). Closing device.\n";
+        faClose(l_i32DeviceId);
+        return false;
+    }
 
 	//__________________________________
 	// Saves parameters
@@ -177,6 +157,7 @@ boolean CDriverBrainProductsVAmp::initialize(
 
 boolean CDriverBrainProductsVAmp::start(void)
 {
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "START called.\n";
 	if(!m_rDriverContext.isConnected())
 	{
 		return false;
@@ -187,6 +168,7 @@ boolean CDriverBrainProductsVAmp::start(void)
 		return false;
 	}
 
+	m_bFirstStart = true;
 	//The bonus...
 	HBITMAP l_bitmap = (HBITMAP) LoadImage(NULL, "../share/openvibe-applications/acquisition-server/vamp.bmp",IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	if(l_bitmap == NULL || faSetBitmap(m_oHeader.getDeviceId(),l_bitmap ) != FA_ERR_OK)
@@ -205,93 +187,112 @@ boolean CDriverBrainProductsVAmp::loop(void)
 		return false;
 	}
 
-	if(!m_rDriverContext.isStarted())
+    t_faDataModel16 l_DataBufferNormalMode; // buffer for the next block in normal mode
+    uint32 l_uint32ReadLengthNormalMode = sizeof(t_faDataModel16);
+
+    t_faDataFormatMode20kHz l_DataBufferFastMode; // buffer for fast mode acquisition
+    uint32 l_uint32ReadLengthFastMode = sizeof(t_faDataFormatMode20kHz);
+
+    int32 l_i32DeviceId = m_oHeader.getDeviceId();
+
+	if(m_rDriverContext.isStarted())
 	{
-		return true;
-	}
+		//uint32 l_i32Timeout = 1000; // 1 second timeout
+		uint32 l_i32ReceivedSamples=0;
+		//uint32 l_ui32StartTime=System::Time::getTime();
 
-	//____________________________
+#if DEBUG
+		uint32 l_uint32ReadErrorCount = 0;
+		uint32 l_uint32ReadSuccessCount = 0;
+		uint32 l_uint32ReadZeroCount = 0;
+#endif
+		//------------------------------------------
+ 		if(m_bFirstStart)
+ 		{
+ 			int32 l_i32ReturnValue = 1;
+			int32 l_i32BufferCount = 0;
+ 			while(l_i32ReturnValue > 0)
+ 			{
+ 				if(m_oHeader.getDataMode() == dmNormal)
+ 				{
+ 					l_i32ReturnValue = faGetData(l_i32DeviceId, &l_DataBufferNormalMode, l_uint32ReadLengthNormalMode);
+ 				}
 
-	t_faDataModel16 l_DataBufferNormalMode; // buffer for the next block in normal mode
-	uint32 l_uint32ReadLengthNormalMode = sizeof(t_faDataModel16);
+ 				if(m_oHeader.getDataMode() == dm20kHz4Channels)
+ 				{
+ 					l_i32ReturnValue = faGetData(l_i32DeviceId, &l_DataBufferFastMode, l_uint32ReadLengthFastMode);
+ 				}
+				if(l_i32ReturnValue>0) l_i32BufferCount+=l_i32ReturnValue;
+ 			}
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "[LOOP] cleaning buffer ("<<l_i32BufferCount<<" bytes). \n";
+ 			m_bFirstStart = false;
+ 		}
 
-	t_faDataFormatMode20kHz l_DataBufferFastMode; // buffer for fast mode acquisition
-	uint32 l_uint32ReadLengthFastMode = sizeof(t_faDataFormatMode20kHz);
-
-	uint32 l_i32Timeout = 1000; // 1 second timeout
-	uint32 l_i32ReceivedSamples=0;
-	uint32 l_ui32StartTime=System::Time::getTime();
-
-	//For debug purpose, not even used for now
-	uint32 l_uint32ReadErrorCount = 0;
-	uint32 l_uint32ReadSuccessCount = 0;
-	uint32 l_uint32ReadZeroCount = 0;
-	//------------------------------------------
-
-	int32 l_i32DeviceId = m_oHeader.getDeviceId();
-	while(l_i32ReceivedSamples < m_ui32SampleCountPerSentBlock && System::Time::getTime()-l_ui32StartTime < l_i32Timeout)
-	{
-		// we need to "getData" with the right output structure according to acquisition mode
-
-		uint32 l_uint32ReturnLength;
-		if(m_oHeader.getDataMode() == dmNormal)
+		while(l_i32ReceivedSamples < m_ui32SampleCountPerSentBlock /*&& System::Time::getTime()-l_ui32StartTime < l_i32Timeout*/)
 		{
-			l_uint32ReturnLength = faGetData(l_i32DeviceId, &l_DataBufferNormalMode, l_uint32ReadLengthNormalMode);
-		}
+			// we need to "getData" with the right output structure according to acquisition mode
 
-		if(m_oHeader.getDataMode() == dm20kHz4Channels)
-		{
-			l_uint32ReturnLength = faGetData(l_i32DeviceId, &l_DataBufferFastMode, l_uint32ReadLengthFastMode);
-		}
-
-		if(l_uint32ReturnLength > 0)
-		{
-			l_uint32ReadSuccessCount++;
-
-			//we just received one set of samples from device, one sample per channel
+			int32 l_i32ReturnLength = 0;
 			if(m_oHeader.getDataMode() == dmNormal)
 			{
-				for (uint32 i=0; i < m_oHeader.getChannelCount(); i++)
-				{
-					m_pSample[i*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples] = (float32)(l_DataBufferNormalMode.Main[i]*m_oHeader.getChannelGain(i));
-				}
+				l_i32ReturnLength = faGetData(l_i32DeviceId, &l_DataBufferNormalMode, l_uint32ReadLengthNormalMode);
 			}
-			// 4 pairs, not related to channel count
+
 			if(m_oHeader.getDataMode() == dm20kHz4Channels)
 			{
-				for (uint32 i=0; i < m_oHeader.getChannelCount(); i++) // channel count returns the pair count is that case
-				{
-					m_pSample[i*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples] = (float32)(l_DataBufferFastMode.Main[i]*m_oHeader.getChannelGain(i));
-				}
+				l_i32ReturnLength = faGetData(l_i32DeviceId, &l_DataBufferFastMode, l_uint32ReadLengthFastMode);
 			}
 
-			l_i32ReceivedSamples++;
-		}
-		if(l_uint32ReturnLength < 0)
-		{
-			l_uint32ReadErrorCount++;
-		}
-		else
-		{
-			l_uint32ReadZeroCount++;
-		}
-	}// while received < m_ui32SampleCountPerSentBlock
+			if(l_i32ReturnLength > 0)
+			{
+#if DEBUG
+				l_uint32ReadSuccessCount++;
+#endif
+				//we just received one set of samples from device, one sample per channel
+				if(m_oHeader.getDataMode() == dmNormal)
+				{
+					for (uint32 i=0; i < m_oHeader.getChannelCount(); i++)
+					{
+						m_pSample[i*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples] = (float32)(l_DataBufferNormalMode.Main[i]*m_oHeader.getChannelGain(i));
+					}
+				}
+				// 4 pairs, not related to channel count
+				if(m_oHeader.getDataMode() == dm20kHz4Channels)
+				{
+					for (uint32 i=0; i < m_oHeader.getChannelCount(); i++) // channel count returns the pair count is that case
+					{
+						m_pSample[i*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples] = (float32)(l_DataBufferFastMode.Main[i]*m_oHeader.getChannelGain(i));
+					}
+				}
 
-	if(l_i32ReceivedSamples!=m_ui32SampleCountPerSentBlock)
-	{
-		// Timeout reached
-		m_rDriverContext.getLogManager() << LogLevel_Error << "[LOOP] VAmp Driver: timeout !\n";
-		return false;
+				l_i32ReceivedSamples++;
+			}
+#if DEBUG
+			if(l_i32ReturnLength < 0)
+			{
+
+				l_uint32ReadErrorCount++;
+
+			}
+			if(l_i32ReturnLength == 0)
+			{
+				l_uint32ReadZeroCount++;
+
+			}
+#endif
+		}// while received < m_ui32SampleCountPerSentBlock
+#if DEBUG
+        m_rDriverContext.getLogManager() << LogLevel_Debug << "[LOOP] VAmp Driver: stats for the current block : Success="<<l_uint32ReadSuccessCount<<" Error="<<l_uint32ReadErrorCount<<" Zero="<<l_uint32ReadZeroCount<<"\n";
+#endif
+		//____________________________
+
+		// no stimulations received from hardware, the set is empty
+		CStimulationSet l_oStimulationSet;
+
+		m_pCallback->setSamples(m_pSample);
+
+		m_pCallback->setStimulationSet(l_oStimulationSet);
 	}
-
-	//____________________________
-
-	// no stimulations received from hardware
-	CStimulationSet l_oStimulationSet;
-
-	m_pCallback->setSamples(m_pSample);
-
-	m_pCallback->setStimulationSet(l_oStimulationSet);
 
 	return true;
 }
@@ -299,6 +300,7 @@ boolean CDriverBrainProductsVAmp::loop(void)
 boolean CDriverBrainProductsVAmp::stop(void)
 {
 
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "STOP called.\n";
 	if(!m_rDriverContext.isConnected())
 	{
 		return false;
@@ -308,6 +310,8 @@ boolean CDriverBrainProductsVAmp::stop(void)
 	{
 		return false;
 	}
+
+	m_bFirstStart = false;
 
 	return true;
 }
@@ -324,11 +328,23 @@ boolean CDriverBrainProductsVAmp::uninitialize(void)
 		return false;
 	}
 
-	m_rDriverContext.getLogManager() << LogLevel_Trace << "[UINIT] VAmp Driver: Uninitialize called. Closing the device.\n";
-	
-	faStop(m_oHeader.getDeviceId());
-	faClose(m_oHeader.getDeviceId());
+	uint32 l_uint32ErrorCode = faStop(m_oHeader.getDeviceId());
+	if (l_uint32ErrorCode != FA_ERR_OK)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[STOP] VAmp Driver: faStop FAILED(" << l_uint32ErrorCode << ").\n";
+		faClose(m_oHeader.getDeviceId());
+		return false;
+	}
 
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "Uninitialize called. Closing the device.\n";
+
+	l_uint32ErrorCode = faClose(m_oHeader.getDeviceId());
+	if (l_uint32ErrorCode != FA_ERR_OK)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[UINIT] VAmp Driver: faClose FAILED(" << l_uint32ErrorCode << ").\n";
+		faClose(m_oHeader.getDeviceId());
+		return false;
+	}
 	delete [] m_pSample;
 	m_pSample=NULL;
 	m_pCallback=NULL;

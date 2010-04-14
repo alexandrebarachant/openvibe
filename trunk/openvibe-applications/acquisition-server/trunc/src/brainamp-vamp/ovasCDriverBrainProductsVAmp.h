@@ -60,9 +60,9 @@ namespace OpenViBEAcquisitionServer
 		std::vector<OpenViBE::uint32> m_vStimulationIdentifier;
 		std::vector<OpenViBE::uint64> m_vStimulationDate;
 		std::vector<OpenViBE::uint64> m_vStimulationSample;
-
 	private:
-		OpenViBE::uint32 m_ui32StartTime;
+		OpenViBE::boolean m_bFirstStart;
+
 	};
 };
 
