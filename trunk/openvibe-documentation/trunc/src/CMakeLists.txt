@@ -193,7 +193,6 @@ IF(doxygen_bin)
 	CONFIGURE_FILE(
 		doxyfile-skeleton
 		${ov_doxy_final}
-		# ${PROJECT_SOURCE_DIR}/src/doxyfile
 		@ONLY)
 
 	# and a post-build command is added in order to run doxygen
