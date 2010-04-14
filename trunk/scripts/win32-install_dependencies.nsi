@@ -326,6 +326,17 @@ no_need_to_install_cegui_vc2008:
 	FileSeek $0 0 END
 	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\cegui-vc2008$\r$\n"
 	FileClose $0
+	
+	FileOpen $0 "$INSTDIR\cegui-vc2008\resources.cfg" w
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\configs$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\fonts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\imagesets$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\layouts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\looknfeel$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\lua_scripts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\schemes$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\xml_schemes$\r$\n"
+	FileClose $0
 
 SectionEnd
 
@@ -426,9 +437,7 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\cmake"
 	RMDir /r "$INSTDIR\itpp"
 	RMDir /r "$INSTDIR\lua"
-	RMDir /r "$INSTDIR\obt"
 	RMDir /r "$INSTDIR\ogre"
-	RMDir /r "$INSTDIR\openmask"
 	RMDir /r "$INSTDIR\vrpn"
 	RMDir /r "$INSTDIR\tmp"
 

@@ -86,43 +86,17 @@ mkdir %target_dist%\doc           > NULL 2<&1
 mkdir %target_dist%\log           > NULL 2<&1
 mkdir %target_dist%\tmp           > NULL 2<&1
 
-echo @echo off                                                        >  %target_dist%\test-vr-demo.cmd
-echo SET OpenViBE_DistRoot=%%CD%%>> %target_dist%\test-vr-demo.cmd
-echo SET app=%%1>> %target_dist%\test-vr-demo.cmd
-echo if dummy==dummy%%1 (                                              >> %target_dist%\test-vr-demo.cmd
-echo    echo -~/ Welcome to the OpenViBE VR demonstration Center ! \-~>> %target_dist%\test-vr-demo.cmd
-echo    goto choose                                                   >> %target_dist%\test-vr-demo.cmd
-echo    :verif                                                        >> %target_dist%\test-vr-demo.cmd
-echo    if dummy2==dummy2%%app%% (                                      >> %target_dist%\test-vr-demo.cmd
-echo 	   echo no application specified.                             >> %target_dist%\test-vr-demo.cmd
-echo 	   echo USAGE: test-vr-demo.cmd application-name              >> %target_dist%\test-vr-demo.cmd
-echo       goto end                                                   >> %target_dist%\test-vr-demo.cmd
-echo    )                                                             >> %target_dist%\test-vr-demo.cmd
-echo )                                                                >> %target_dist%\test-vr-demo.cmd
-echo echo ###############################                             >> %target_dist%\test-vr-demo.cmd
-echo echo  You chose the VR application                               >> %target_dist%\test-vr-demo.cmd
-echo echo  : %%app%%                                                    >> %target_dist%\test-vr-demo.cmd
-echo echo ###############################                             >> %target_dist%\test-vr-demo.cmd
-echo pushd ..\scripts                                                 >> %target_dist%\test-vr-demo.cmd      
-echo call win32-init_env_command.cmd                                  >> %target_dist%\test-vr-demo.cmd  
-echo popd                                                             >> %target_dist%\test-vr-demo.cmd
-echo cd share\openvibe-applications\vr-demo\%%app%%                     >> %target_dist%\test-vr-demo.cmd                   
-echo %%OpenViBE_DistRoot%%\bin\OpenViBE-vr-demo-dynamic.exe %%app%%       >> %target_dist%\test-vr-demo.cmd
-echo cd %%OpenViBE_DistRoot%%                                           >> %target_dist%\test-vr-demo.cmd
-echo :end                                                             >> %target_dist%\test-vr-demo.cmd                                      
-echo pause                                                            >> %target_dist%\test-vr-demo.cmd                         
-echo exit                                                             >> %target_dist%\test-vr-demo.cmd
-echo :choose                                                          >> %target_dist%\test-vr-demo.cmd
-echo SET /p app=Your choice:>> %target_dist%\test-vr-demo.cmd
-echo goto verif                                                       >> %target_dist%\test-vr-demo.cmd
-
-REM : old script generation, without command line parameters
-REM echo @echo off                                               >  %target_dist%\test-vr-demo.cmd
-REM echo pushd ..\scripts                                        >> %target_dist%\test-vr-demo.cmd
-REM echo call win32-init_env_command.cmd                         >> %target_dist%\test-vr-demo.cmd
-REM echo popd                                                    >> %target_dist%\test-vr-demo.cmd
-REM echo cd bin                                                  >> %target_dist%\test-vr-demo.cmd
-REM echo OpenViBE-vr-demo-dynamic.exe                 			 >> %target_dist%\test-vr-demo.cmd
+echo @echo off                                                            >  %target_dist%\test-vr-demo-tie-fighter.cmd
+echo SET OpenViBE_DistRoot=%%CD%%>> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo pushd ..\scripts                                                     >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo call win32-init_env_command.cmd                                      >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo popd                                                                 >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo copy share\openvibe-applications\vr-demo\tie-fighter\resources.cfg-base share\openvibe-applications\vr-demo\tie-fighter\resources.cfg >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo type %OV_DEP_CEGUI%\resources.cfg ^>^> share\openvibe-applications\vr-demo\tie-fighter\resources.cfg >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo cd share\openvibe-applications\vr-demo\tie-fighter                   >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo %%OpenViBE_DistRoot%%\bin\OpenViBE-vr-demo-dynamic.exe tie-fighter   >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo cd %%OpenViBE_DistRoot%%                                             >> %target_dist%\test-vr-demo-tie-fighter.cmd
+echo exit                                                                 >> %target_dist%\test-vr-demo-tie-fighter.cmd                                                         >> %target_dist%\test-vr-demo-handball.cmd
 
 echo @echo off                                               >  %target_dist%\test-acquisition-server.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-acquisition-server.cmd

@@ -166,6 +166,17 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "SET PATH=%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_VRPN%\bin;%PATH%$\r$\n"
 	FileClose $0
+	
+	FileOpen $0 "$INSTDIR\dependencies\cegui-vc2008\resources.cfg" w
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\configs$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\fonts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\imagesets$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\layouts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\looknfeel$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\lua_scripts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\schemes$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\xml_schemes$\r$\n"
+	FileClose $0
 
 	SetOutPath "$INSTDIR"
 	File /nonfatal /r ..\dist\bin
@@ -216,12 +227,27 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "pause$\r$\n"
 	FileClose $0
+	
+	FileOpen $0 "$INSTDIR\openvibe-vr-demo.cmd" w
+	FileWrite $0 "@echo off$\r$\n"
+	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "SET OpenViBE_DistRoot=%CD%"
+	FileWrite $0 "copy share\openvibe-applications\vr-demo\tie-fighter\resources.cfg-base share\openvibe-applications\vr-demo\tie-fighter\resources.cfg$\r$\n"
+	FileWrite $0 "type dependencies\cegui-vc2008\resources.cfg >> share\openvibe-applications\vr-demo\tie-fighter\resources.cfg$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "cd share\openvibe-applications\vr-demo\tie-fighter"
+	FileWrite $0 "$\"%OpenViBE_DistRoot%\bin\OpenViBE-vr-demo-dynamic.exe$\" tie-fighter"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "pause$\r$\n"
+	FileClose $0
 
 	CreateDirectory "$SMPROGRAMS\OpenViBE"
 	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe designer.lnk"           "$INSTDIR\openvibe-designer.cmd"           "" "%SystemRoot%\system32\shell32.dll" 137
 	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe acquisition server.lnk" "$INSTDIR\openvibe-acquisition-server.cmd" "" "%SystemRoot%\system32\shell32.dll" 18
 	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe id generator.lnk"       "$INSTDIR\openvibe-id-generator.cmd"       "" "%SystemRoot%\system32\shell32.dll" 57
 	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe plugin inspector.lnk"   "$INSTDIR\openvibe-plugin-inspector.cmd"   "" "%SystemRoot%\system32\shell32.dll" 55
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo tie-fighter.lnk"           "$INSTDIR\openvibe-vr-demo.cmd"           "" "%SystemRoot%\system32\shell32.dll" 200
 	CreateShortCut "$SMPROGRAMS\OpenViBE\uninstall.lnk"                   "$INSTDIR\Uninstall.exe"
 
 SectionEnd

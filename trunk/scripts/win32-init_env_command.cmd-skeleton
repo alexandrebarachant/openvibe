@@ -134,16 +134,6 @@ REM ############################################################################
 SET VSTOOLS=
 SET VSCMake=
 
-if exist "%VS70COMNTOOLS%\vsvars32.bat" (
-	SET VSTOOLS=%VS70COMNTOOLS%\vsvars32.bat
-	SET VSCMake=Visual Studio 7 2003
-)
-
-if exist "%VS80COMNTOOLS%\vsvars32.bat" (
-	SET VSTOOLS=%VS80COMNTOOLS%\vsvars32.bat
-	SET VSCMake=Visual Studio 8 2005
-)
-
 if exist "%VS90COMNTOOLS%\vsvars32.bat" (
 	SET VSTOOLS=%VS90COMNTOOLS%\vsvars32.bat
 	SET VSCMake=Visual Studio 9 2008
@@ -172,12 +162,10 @@ SET PATH=%OV_DEP_BOOST%\bin;%PATH%
 SET PATH=%OV_DEP_GLADE%\bin;%PATH%
 SET PATH=%OV_DEP_CMAKE%\bin;%PATH%
 SET PATH=%OV_DEP_EXPAT%\bin;%PATH%
-SET PATH=%OV_DEP_OPENMASK%\bin;%PATH%
 SET PATH=%OV_DEP_ITPP%\bin;%PATH%
 SET PATH=%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;%PATH%
-SET PATH=%OV_DEP_OBT%\lib;%PATH%
+SET PATH=%OV_DEP_CEGUI%\bin;%PATH%
 SET PATH=%OV_DEP_LUA%\lib;%PATH%
-SET PATH=%OV_DEP_OPENMASK%\lib;%PATH%
 
 SET PATH=%PATH%;%LIB%;%LIBPATH%
 
@@ -216,7 +204,7 @@ echo %OpenViBE_plugin_vrpn% >> %OpenViBE_build_order%
 echo %OpenViBE_application_designer% >> %OpenViBE_build_order%
 echo %OpenViBE_application_acquisition_server% >> %OpenViBE_build_order%
 echo %OpenViBE_application_plugin_inspector% >> %OpenViBE_build_order%
-REM echo %OpenViBE_application_vr_demo% >> %OpenViBE_build_order%
+echo %OpenViBE_application_vr_demo% >> %OpenViBE_build_order%
 REM echo %OpenViBE_application_vrpn_simulator% >> %OpenViBE_build_order%
 
 REM echo %OpenViBE_plugin_local% >> %OpenViBE_build_order%
