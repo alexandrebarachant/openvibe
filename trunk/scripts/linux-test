@@ -14,24 +14,30 @@ if [ "$1" == "--debug" ]; then
 	shift
 fi
 
-cd ../dist/bin
+cd "$OpenViBE_base/dist"
 
-export LD_LIBRARY_PATH=../lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$OpenViBE_base/dist/lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH
 export LC_ALL=C
 #renice 19 $$
+
+cd bin
 
 killall OpenViBE-id-generator-dynamic
 killall OpenViBE-plugin-inspector-dynamic
 killall OpenViBE-acquisition-server-dynamic
 killall OpenViBE-designer-dynamic
 
-#./OpenViBE-id-generator-dynamic
-#./OpenViBE-plugin-inspector-dynamic &
-
 if [ "$ov_debugger" == "" ]; then
+	#./OpenViBE-id-generator-dynamic
 	./OpenViBE-acquisition-server-dynamic &
 	./OpenViBE-designer-dynamic &
+	#./OpenViBE-plugin-inspector-dynamic &
+	./OpenViBE-vr-demo "tie-fighter" &
 else
+	#$ov_debugger ./OpenViBE-id-generator-dynamic
 	$ov_debugger ./OpenViBE-acquisition-server-dynamic
 	$ov_debugger ./OpenViBE-designer-dynamic
+	#$ov_debugger ./OpenViBE-plugin-inspector-dynamic
+	$ov_debugger ./OpenViBE-vr-demo "tie-fighter"
 fi
+
