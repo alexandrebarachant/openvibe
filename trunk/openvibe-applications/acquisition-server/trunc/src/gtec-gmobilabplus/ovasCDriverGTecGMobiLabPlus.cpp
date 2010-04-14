@@ -290,6 +290,7 @@ boolean CDriverGTecGMobiLabPlus::loop(void)
 
 	// the buffer is full : it is send to the acquisition server
 	m_pCallback->setSamples(m_pSample);
+	m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
 
 	return true;
 }

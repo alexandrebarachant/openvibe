@@ -171,6 +171,7 @@ boolean CDriverOpenEEGModularEEG::loop(void)
 	if(m_rDriverContext.isStarted())
 	{
 		m_pCallback->setSamples(m_pSample);
+		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
 	}
 
 	// printf("end loop\n");
