@@ -79,7 +79,7 @@ Section "CMake"
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-cmake-2.6.2.zip" no_need_to_download_cmake
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/cmake-2.6.2-win32-x86.zip "arch\openvibe-dependency-cmake-2.6.2.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.6.2.zip "arch\openvibe-dependency-cmake-2.6.2.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -109,7 +109,7 @@ Section "eXpat"
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-expat-2.0.1.zip" no_need_to_download_expat
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/expat-win32bin-2.0.1.zip "arch\openvibe-dependency-expat-2.0.1.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/expat-2.0.1.zip "arch\openvibe-dependency-expat-2.0.1.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -139,7 +139,7 @@ Section "BOOST"
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-boost-1.41.0.zip" no_need_to_download_boost
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/boost-1.41.0.zip "arch\openvibe-dependency-boost-1.41.0.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.41.0.zip "arch\openvibe-dependency-boost-1.41.0.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -169,7 +169,7 @@ Section "GTK/Glade"
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-gtk-2.10.11.zip" no_need_to_download_glade
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/gtk-dev-2.10.11-win32-1.zip "arch\openvibe-dependency-gtk-2.10.11.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.10.11.zip "arch\openvibe-dependency-gtk-2.10.11.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -218,7 +218,7 @@ Section "IT++"
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-itpp-4.0.6.zip" no_need_to_download_itpp
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/itpp-4.0.6.zip "arch\openvibe-dependency-itpp-4.0.6.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.6.zip "arch\openvibe-dependency-itpp-4.0.6.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -248,7 +248,7 @@ Section "Lua"
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-lua-5.1.4-30.zip" no_need_to_download_lua
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/lua-5.1.4-30.zip "arch\openvibe-dependency-lua-5.1.4-30.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/lua-5.1.4-30.zip "arch\openvibe-dependency-lua-5.1.4-30.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -278,7 +278,7 @@ Section "Ogre3D for Visual C++ 2008" ogre_vc_2008
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip" no_need_to_download_ogre_vc2008
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openvibe-dependency-ogre-1.7.0-vc2008.zip "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.0-vc2008.zip "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -309,7 +309,7 @@ Section "CEGUI for Visual C++ 2008" cegui_vc_2008
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip" no_need_to_download_cegui_vc2008
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openvibe-dependency-cegui-0.7.1-vc2008.zip "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.1-vc2008.zip "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -326,7 +326,7 @@ no_need_to_install_cegui_vc2008:
 	FileSeek $0 0 END
 	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\cegui-vc2008$\r$\n"
 	FileClose $0
-	
+
 	FileOpen $0 "$INSTDIR\cegui-vc2008\resources.cfg" w
 	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\configs$\r$\n"
 	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\fonts$\r$\n"
@@ -350,7 +350,7 @@ Section "VRPN"
 	CreateDirectory "$INSTDIR\arch"
 
 	IfFileExists "arch\openvibe-dependency-vrpn-7.73.zip" no_need_to_download_vrpn
-	NSISdl::download http://www.irisa.fr/bunraku/OpenViBE/dependencies/win32/vrpn-7.13.zip "arch\openvibe-dependency-vrpn-7.13.zip"
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.13.zip "arch\openvibe-dependency-vrpn-7.13.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
