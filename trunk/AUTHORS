@@ -9,9 +9,14 @@
 
 Yann Renard (yann.renard@irisa.fr)
 Vincent Delannoy (vincent.delannoy@irisa.fr)
+Laurent Bonnet (laurent.bonnet@irisa.fr)
+Baptiste Payan (bpayan@loria.fr)
 Guillaume Gibert (guillaume.gibert@inserm.fr)
 Fabien Lotte (fabien.lotte@irisa.fr)
 Bruno Renier (bruno.renier@irisa.fr)
+
+Chris Veigl from University of Applied Sciences Technikum Wien contributed the Modular EEG P2 driver
+Lucie Daubigney from Supelec Metz contributed the g.Mobilab+ driver
 
 |End.of.file|
 

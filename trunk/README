@@ -21,7 +21,7 @@ https://gforge.inria.fr/tracker/?group_id=276 (bug tracker)
 Getting the latest (unstable) version of the source code from the forge can
 be done thanks to this command :
 
-svn checkout svn+ssh://developername@scm.gforge.inria.fr/svn/openvibe
+svn checkout svn+ssh://developername@scm.gforge.inria.fr/svn/openvibe/trunk
 
 |Repository.organisation|
 
