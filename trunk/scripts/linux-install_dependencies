@@ -323,6 +323,7 @@ ov_target_folder_include=$ov_target_folder/include
 ov_target_folder_bin=$ov_target_folder/bin
 ov_target_folder_lib=$ov_target_folder/lib
 ov_target_folder_lib64=$ov_target_folder/lib64
+ov_target_folder_share=$ov_target_folder/share
 
 echo "Creating target tree structure..."
 mkdir "$ov_target_folder" 2> /dev/null
@@ -333,6 +334,7 @@ mkdir "$ov_target_folder_hit" 2> /dev/null
 mkdir "$ov_target_folder_include" 2> /dev/null
 mkdir "$ov_target_folder_bin" 2> /dev/null
 mkdir "$ov_target_folder_lib" 2> /dev/null
+mkdir "$ov_target_folder_share" 2> /dev/null
 echo ""
 
 ####################################
@@ -482,17 +484,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "cg"
 #			ov_hit_package "ogre"
 
-			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
-			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
-			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
+#			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
+#			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
 
 		else
 
@@ -638,17 +640,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "cg"
 #			ov_hit_package "ogre"
 
-			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
-			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
-			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
+#			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
+#			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
 
 		else
 
@@ -792,17 +794,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "cg"
 #			ov_hit_package "ogre"
 
-			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
-			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
-			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
-			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
+#			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
+#			echo "# Define plugin folder" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "PluginFolder=/usr/lib/OGRE" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "# Define plugins" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=RenderSystem_GL" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_ParticleFX" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_BSPSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "Plugin=Plugin_OctreeSceneManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
+#			echo "#Plugin=Plugin_CgProgramManager" >> "$ov_target_folder_lib/OGRE/Plugins.cfg"
 
 		else
 
@@ -1323,290 +1325,11 @@ ov_package_configure_hook_freeimage='
 	$ov_find Source -name \*.c\* -exec $ov_sed -i "s#Z_#FI_Z_#g" "{}" \; &&
 	popd'
 
-ov_package_configure_hook_ois___='
-	pushd * &&
-	./bootstrap &&
-	$ov_sed -i "1i#include <stdlib.h>" includes/config.h.in &&
-	$ov_sed -i "1i#include <string.h>" includes/config.h.in &&
-	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" &&
-	$ov_sed -i "s/ECHO=/echo=/g" libtool &&
-	popd'
-
 ov_package_configure_hook_ois='
 	pushd * &&
 	./bootstrap &&
 	./configure --prefix=$ov_target_folder CPPFLAGS="-I$ov_target_folder_include" LDFLAGS="-L$ov_target_folder_lib -L$ov_target_folder_lib64" &&
 	popd'
-
-# http://www.ogre3d.org/phpBB2/viewtopic.php?t=33562
-# http://www.ogre3d.org/wiki/index.php/Detailed_Fedora_Walkthrough#Compiling_the_OGRE
-# http://www.ogre3d.org/phpBB2/viewtopic.php?t=21073
-ov_package_post_uncompress_hook_ogre___='
-	pushd * &&
-	$ov_sed -i "35,59s/^/# commented by script #/" configure.in &&
-	$ov_sed -i "60s/^.*/CFLAGS_VISIBILITY=\"\"/" configure.in &&
-	$ov_sed -i
-		-e "55i		\	ConfigOption optStereoMode;"
-		-e "75i		\	optVideoMode.possibleValues.push_back(\"1400 x 1050\");"
-		-e "95i		\	optStereoMode.name = \"Stereovision\";"
-		-e "95i		\	optStereoMode.possibleValues.push_back(\"Enabled\");"
-		-e "95i		\	optStereoMode.possibleValues.push_back(\"Disabled\");"
-		-e "95i		\	optStereoMode.currentValue = \"Disabled\";"
-		-e "95i		\	optStereoMode.immutable = false;"
-		-e "100i	\	mOptions[optStereoMode.name] = optStereoMode;"
-		-e "134i	\	\	opt = mOptions.find(\"Stereovision\");"
-		-e "134i	\	\	if(opt != mOptions.end())"
-		-e "134i	\	\	{"
-		-e "134i	\	\	\	winOptions[\"Stereovision\"] = opt->second.currentValue;"
-		-e "134i	\	\	}"
-		RenderSystems/GL/src/GLX/OgreGLXGLSupport.cpp &&
-	$ov_sed -i
-		-e "39i		#include \"OgreString.h\""
-		-e "39i		#include \"OgreConfigFile.h\""
-		-e "39i		#include \"OgreVector3.h\""
-		-e "64i		\	mStereoEnabled(false), mLeftStereoBuffer(false), mStereoFocalLength(1), mStereoEyeSeparation(0.07),"
-		-e "121i//"
-		-e "121i	\	\	// Stereovision enabled"
-		-e "121i	\	\	opt = miscParams->find(\"Stereovision\");"
-		-e "121i	\	\	if(opt != miscParams->end()) //check for FSAA parameter, if not ignore it..."
-		-e "121i	\	\	{"
-		-e "121i	\	\	\	String stereo_str = (opt->second);"
-		-e "121i	\	\	\	if(stereo_str==\"Enabled\")"
-		-e "121i	\	\	\	{"
-		-e "121i	\	\	\		mStereoEnabled = true;"
-		-e "121i	\	\	\	}"
-		-e "121i	\	\	\	else"
-		-e "121i	\	\	\	{"
-		-e "121i	\	\	\	\	mStereoEnabled = false;"
-		-e "121i	\	\	\	}"
-		-e "121i	\	\	}"
-		-e "121i	\	\	String stereoFileName = \"stereovision.cfg\" ;"
-		-e "121i	\	\	ConfigFile cfg;"
-		-e "121i	\	\	bool stereoFileAvailable = true ;"
-		-e "121i//"
-		-e "121i	\	\	try"
-		-e "121i	\	\	{"
-		-e "121i	\	\	\	cfg.load( stereoFileName );"
-		-e "121i	\	\	}"
-		-e "121i	\	\	catch (Exception)"
-		-e "121i	\	\	{"
-		-e "121i	\	\	\	LogManager::getSingleton().logMessage(stereoFileName + \" not found, automatic stereo settings loading disabled.\");"
-		-e "121i	\	\	\	stereoFileAvailable = false ;"
-		-e "121i	\	\	}"
-		-e "121i//"
-		-e "121i	\	\	if(stereoFileAvailable)"
-		-e "121i	\	\	{"
-		-e "121i	\	\	\	mStereoFocalLength = atof((cfg.getSetting(\"FocalLength\")).c_str());"
-		-e "121i	\	\	\	mStereoEyeSeparation = atof((cfg.getSetting(\"EyeSeparation\")).c_str());"
-		-e "121i	\	\	}"
-		-e "121i	\	\	else"
-		-e "121i	\	\	{"
-		-e "121i	\	\	\	mStereoFocalLength = 1.0 ;"
-		-e "121i	\	\	\	mStereoEyeSeparation = 0.07 ;"
-		-e "121i//"
-		-e "121i	\	\	\	std::ofstream of(stereoFileName.c_str());"
-		-e "121i	\	\	\	if (!of)"
-		-e "121i	\	\	\	{"
-		-e "121i	\	\	\		OGRE_EXCEPT(Exception::ERR_CANNOT_WRITE_TO_FILE, \"Cannot create stereovision settings file.\", \"GLXWindow::create\");"
-		-e "121i	\	\	\	}"
-		-e "121i	\	\	\	else"
-		-e "121i	\	\	\	{"
-		-e "121i	\	\	\	\	of << \"# Focal Length (distance from user to screen, convert it in simulation units)\" << std::endl;"
-		-e "121i	\	\	\	\	of << \"FocalLength=\" << mStereoFocalLength << std::endl;"
-		-e "121i	\	\	\	\	of << \"# Inter-Occular Distance (eye separation is about 7cm in real world, convert it in simulation units)\" << std::endl;"
-		-e "121i	\	\	\	\	of << \"EyeSeparation=\" << mStereoEyeSeparation << std::endl;"
-		-e "121i	\	\	\	\	of.close();"
-		-e "121i	\	\	\	}"
-		-e "121i	\	\	}"
-		-e "121i//"
-		-e "574i//"
-		-e "574i	void GLXWindow::update()"
-		-e "574i	{"
-		-e "574i	\	if(mStereoEnabled)"
-		-e "574i	\	{"
-		-e "574i	\	\	// Using stereovision"
-		-e "574i	\	\	Viewport *currentViewPort;"
-		-e "574i	\	\	Camera *currentCamera;"
-		-e "574i//"
-		-e "574i	\	\	// Which buffer is to be drawn"
-		-e "574i	\	\	// if(mLeftStereoBuffer)"
-		-e "574i	\	\	{"
-		-e "574i	\	\	\	// Rendering for left eye"
-		-e "574i	\	\	\	unsigned short nViewPorts = getNumViewports(); "
-		-e "574i	\	\	\	Vector3 currentCameraPosition[nViewPorts]; "
-		-e "574i	\	\	\	unsigned short nvp;"
-		-e "574i	\	\	\	for (nvp=0; nvp<nViewPorts ; nvp++)"
-		-e "574i	\	\	\	{"
-		-e "574i	\	\	\	\	currentViewPort = getViewport(nvp);"
-		-e "574i	\	\	\	\	currentCamera = currentViewPort->getCamera() ;"
-		-e "574i//"
-		-e "574i	\	\	\	\	currentCameraPosition[nvp] = currentCamera->getPosition();"
-		-e "574i	\	\	\	\	currentCamera->moveRelative(Vector3(-mStereoEyeSeparation/2,0,0));"
-		-e "574i//"
-		-e "574i	\	\	\	\	currentCamera->setFocalLength(mStereoFocalLength);"
-		-e "574i	\	\	\	\	//currentCamera->setFOVy(Radian(2.0*atan(screen.y/2.0/mStereoFocalLength)));"
-		-e "574i	\	\	\	\	currentCamera->setFrustumOffset(mStereoEyeSeparation/2.0,0);"
-		-e "574i	\	\	\	}"
-		-e "574i	\	\	\	RenderWindow::update();"
-		-e "574i	\	\	\	glDrawBuffer( GL_BACK_LEFT );"
-		-e "574i	\	\	\	for (nvp=0; nvp<nViewPorts ; nvp++)"
-		-e "574i	\	\	\	{"
-		-e "574i	\	\	\	\	currentViewPort =   getViewport(nvp);"
-		-e "574i	\	\	\	\	currentCamera =currentViewPort->getCamera() ;"
-		-e "574i	\	\	\	\	currentCamera->setPosition(currentCameraPosition[nvp]);"
-		-e "574i	\	\	\	\	currentCamera->setFrustumOffset(0,0);"
-		-e "574i	\	\	\	}"
-		-e "574i//"
-		-e "574i	\	\	\	// Next rendering is for right eye"
-		-e "574i	\	\	\	mLeftStereoBuffer = false ;"
-		-e "574i	\	\	}"
-		-e "574i	\	\	// else"
-		-e "574i	\	\	{"
-		-e "574i	\	\	\	// Rendering for right eye"
-		-e "574i	\	\	\	unsigned short nViewPorts = getNumViewports();"
-		-e "574i	\	\	\	Vector3 currentCameraPosition[nViewPorts];"
-		-e "574i	\	\	\	unsigned short nvp;"
-		-e "574i	\	\	\	for (nvp=0; nvp<nViewPorts ; nvp++)"
-		-e "574i	\	\	\	{"
-		-e "574i	\	\	\	\	currentViewPort =   getViewport(nvp);"
-		-e "574i	\	\	\	\	currentCamera =currentViewPort->getCamera() ;"
-		-e "574i	\	\	\	\	currentCameraPosition[nvp] = currentCamera->getPosition();"
-		-e "574i	\	\	\	\	currentCamera->moveRelative(Vector3(mStereoEyeSeparation/2,0,0));"
-		-e "574i	\	\	\	\	currentCamera->setFocalLength(mStereoFocalLength);"
-		-e "574i	\	\	\	\	currentCamera->setFrustumOffset(-mStereoEyeSeparation/2.0,0);"
-		-e "574i	\	\	\	}"
-		-e "574i	\	\	\	RenderWindow::update();"
-		-e "574i	\	\	\	glDrawBuffer( GL_BACK_RIGHT );"
-		-e "574i	\	\	\	for (nvp=0; nvp<nViewPorts ; nvp++)"
-		-e "574i	\	\	\	{"
-		-e "574i	\	\	\	\	currentViewPort =   getViewport(nvp);"
-		-e "574i	\	\	\	\	currentCamera =currentViewPort->getCamera() ;"
-		-e "574i	\	\	\	\	currentCamera->setPosition(currentCameraPosition[nvp]);"
-		-e "574i	\	\	\	\	currentCamera->setFrustumOffset(0,0);"
-		-e "574i	\	\	\	}"
-		-e "574i	\	\	\	// Next rendering is for left eye"
-		-e "574i	\	\	\	mLeftStereoBuffer = true ;"
-		-e "574i	\	\	}"
-		-e "574i	\	}"
-		-e "574i	\	else"
-		-e "574i	\	{"
-		-e "574i	\	\	RenderWindow::update();"
-		-e "574i	\	}"
-		-e "574i	}"
-		RenderSystems/GL/src/GLX/OgreGLXWindow.cpp &&
-	$ov_sed -i
-		-e "294s/)$/, bool stereoVisionRequested)/"
-		-e "315i	#if 0"
-		-e "355i	#endif"
-		-e "355i	\	bool requestedVisualFound = false ;"
-		-e "355i	\	int currentVis = 0 ;"
-		-e "355i	\	for (currentVis; (currentVis < numVisuals) && !requestedVisualFound; currentVis++)"
-		-e "355i	\	{"
-		-e "355i	\	\	get_visual_attribs(dpy, &visuals[currentVis], &bestVis);"
-		-e "355i	\	\	requestedVisualFound = (bestVis.stereo == stereoVisionRequested) ;"
-		-e "355i	\	}"
-		-e "355i//"
-		-e "355i	\	if(requestedVisualFound)"
-		-e "355i	\	{"
-		-e "355i	\	\	// There is at least one visual matching the requested stereo flag"
-		-e "355i	\	\	// Try to find a \"better\" visual"
-		-e "355i	\	\	for (i = 1; i < numVisuals; i++)"
-		-e "355i	\	\	{"
-		-e "355i	\	\	\	struct visual_attribs vis;"
-		-e "355i	\	\	\	get_visual_attribs(dpy, &visuals[i], &vis);"
-		-e "355i//"
-		-e "355i	\	\	\	// Always skip visuals that do not match requested stereo flag"
-		-e "355i	\	\	\	if (vis.stereo != stereoVisionRequested)"
-		-e "355i	\	\	\	\	continue;"
-		-e "355i//"
-		-e "355i	\	\	\	// Always skip visuals that are slow"
-		-e "355i	\	\	\	if (vis.visualCaveat == GLX_SLOW_VISUAL_EXT)"
-		-e "355i	\	\	\	\	continue;"
-		-e "355i//"
-		-e "355i	\	\	\	// Skip visual if it doesnt have the desired number of multisamples"
-		-e "355i	\	\	\	if (multiSample != -1 && vis.numSamples != multiSample)"
-		-e "355i	\	\	\	\	continue;"
-		-e "355i//"
-		-e "355i	\	\	\	// See if this vis is better than bestVis"
-		-e "355i	\	\	\	if ((!bestVis.supportsGL && vis.supportsGL) ||"
-		-e "355i	\	\	\	\	(bestVis.visualCaveat != GLX_NONE_EXT) ||"
-		-e "355i	\	\	\	\	(!bestVis.rgba && vis.rgba) ||"
-		-e "355i	\	\	\	\	(!bestVis.doubleBuffer && vis.doubleBuffer) ||"
-		-e "355i	\	\	\	\	(bestVis.redSize < vis.redSize) ||"
-		-e "355i	\	\	\	\	(bestVis.greenSize < vis.greenSize) ||"
-		-e "355i	\	\	\	\	(bestVis.blueSize < vis.blueSize) ||"
-		-e "355i	\	\	\	\	(bestVis.alphaSize < vis.alphaSize) ||"
-		-e "355i	\	\	\	\	(bestVis.depthSize < vis.depthSize) ||"
-		-e "355i	\	\	\	\	(bestVis.stencilSize < vis.stencilSize) ||"
-		-e "355i	\	\	\	\	(bestVis.accumRedSize < vis.accumRedSize))"
-		-e "355i	\	\	\	{"
-		-e "355i	\	\	\	\	// A better visual was found"
-		-e "355i	\	\	\	\	bestVis = vis;"
-		-e "355i	\	\	\	}"
-		-e "355i	\	\	}"
-		-e "355i	\	}"
-		-e "355i	\	else"
-		-e "355i	\	{"
-		-e "355i	\	\	// There is no visuals matching the requested stereo flag"
-		-e "355i	\	\	if(stereoVisionRequested)"
-		-e "355i	\	\	{"
-		-e "355i	\	\	\	LogManager::getSingleton().logMessage(\"NO STEREO SUPPORT AVAILABLE\") ;"
-		-e "355i	\	\	}"
-		-e "355i	\	\	else"
-		-e "355i	\	\	{"
-		-e "355i	\	\	\	LogManager::getSingleton().logMessage(\"ONLY STEREO SUPPORT AVAILABLE\") ;"
-		-e "355i	\	\	}"
-		-e "355i	\	\	return -1;"
-		-e "355i	\	}"
-		-e "355i//"
-		-e "355i	\	XFree(visuals);"
-		-e "355i//"
-		-e "355i	\	if (bestVis.stereo)"
-		-e "355i	\	{"
-		-e "355i	\	\	LogManager::getSingleton().logMessage(\"STEREO VISION ENABLED\") ;"
-		-e "355i	\	}"
-		-e "355i	\	else"
-		-e "355i	\	{"
-		-e "355i	\	\	LogManager::getSingleton().logMessage(\"STEREO VISION DISABLED\") ;"
-		-e "355i	\	}"
-		-e "355i//"
-		-e "355i	\	if (multiSample != -1 && bestVis.numSamples != multiSample)"
-		-e "355i	\	{"
-		-e "355i	\	\	// We found no visual with the desired FSAA"
-		-e "355i	\	\	return -1;"
-		-e "355i	\	}"
-		RenderSystems/GL/src/GLX/OgreGLXUtils.cpp &&
-	$ov_sed -i
-		-e "95s/);$/, bool stereoVisionRequested = false);/"
-		RenderSystems/GL/include/GLX/OgreGLXUtils.h &&
-	$ov_sed -i
-		-e "36i		#include <OgreMath.h>"
-		-e "60i		\	\	bool mStereoEnabled;       // Is stereovision enabled ?"
-		-e "60i		\	\	bool mLeftStereoBuffer;    // Is next buffer to update is the left one ?"
-		-e "60i		\	\	Real mStereoFocalLength;   // Distance to screen"
-		-e "60i		\	\	Real mStereoEyeSeparation; // InterOcularDistance value"
-		-e "98i		\	\	virtual void update();"
-		-e "108i	\	\	bool getStereoEnabled() const { return mStereoEnabled; }"
-		-e "108i	\	\	Real getStereoFocalLength() const { return mStereoFocalLength; }"
-		-e "108i	\	\	Real getStereoEyeSeparation() const { return mStereoEyeSeparation; }"
-		-e "108i	\	\	void setStereoFocalLength(Real r) { mStereoFocalLength=r; }"
-		-e "108i	\	\	void setStereoEyeSeparation(Real r) { mStereoEyeSeparation=r; }"
-		RenderSystems/GL/include/GLX/OgreGLXWindow.h &&
-	popd'
-ov_package_additional_configure_flags_ogre___='
-	--with-pic --disable-ogre-demos'
-ov_package_post_install_hook_ogre___='
-	echo "# Defines plugins to load" > $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "# Define plugin folder" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "PluginFolder=$ov_target_folder_lib/OGRE" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "# Define plugins" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "Plugin=RenderSystem_GL" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "Plugin=Plugin_ParticleFX" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "Plugin=Plugin_BSPSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "Plugin=Plugin_OctreeSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
-	echo "Plugin=Plugin_CgProgramManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg'
 
 ov_package_post_uncompress_hook_ogre='
 	pushd * &&
@@ -1618,12 +1341,6 @@ ov_package_post_uncompress_hook_ogre='
 		-e "132ifind_package(Boost COMPONENTS \${OGRE_BOOST_COMPONENTS} QUIET NO_DEFAULT_PATH)"
 		CMake/Dependencies.cmake &&
 	popd'
-#	$ov_sed -i
-#		-e "29,34s#^#//#g"
-#		-e "35i#include <boost/thread.hpp>"
-#		-e "35i#include <boost/thread/condition.hpp>"
-#		OgreMain/include/Threading/OgreThreadHeadersBoost.h &&
-
 ov_package_configure_hook_ogre='
 	pushd * &&
 	mkdir build &&
@@ -1652,6 +1369,17 @@ ov_package_install_hook_ogre='
 	echo "Plugin=Plugin_OctreeSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
 	popd'
 #	echo "Plugin=Plugin_CgProgramManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+
+ov_package_post_install_hook_cegui='
+	pushd * &&
+	echo "FileSystem=$ov_target_folder_share/CEGUI/fonts/" >> $ov_target_folder_share/CEGUI/resources.cfg &&
+	echo "FileSystem=$ov_target_folder_share/CEGUI/imagesets/" >> $ov_target_folder_share/CEGUI/resources.cfg &&
+	echo "FileSystem=$ov_target_folder_share/CEGUI/layouts/" >> $ov_target_folder_share/CEGUI/resources.cfg &&
+	echo "FileSystem=$ov_target_folder_share/CEGUI/looknfeel/" >> $ov_target_folder_share/CEGUI/resources.cfg &&
+	echo "FileSystem=$ov_target_folder_share/CEGUI/lua_scripts/" >> $ov_target_folder_share/CEGUI/resources.cfg &&
+	echo "FileSystem=$ov_target_folder_share/CEGUI/schemes/" >> $ov_target_folder_share/CEGUI/resources.cfg &&
+	echo "FileSystem=$ov_target_folder_share/CEGUI/xml_schemas/" >> $ov_target_folder_share/CEGUI/resources.cfg &&
+	popd'
 
 if [ "$ov_machine" == "x86_64" ]; then
 ov_package_configure_hook_vrpn='
