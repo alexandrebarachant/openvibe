@@ -2,9 +2,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <list>
+#include <map>
 
 using namespace OpenViBEVRDemos;
 using namespace Ogre;
+using namespace std;
 
 static const float g_fSmallObjectMinHeight=-2.0f;
 static const float g_fSmallObjectMaxHeight=0.0f;
@@ -20,7 +23,7 @@ static const float g_fMoveSpeed=0.01f; // 0.004;
 
 static const float g_fOffsetWithoutVador = 2.0f;
 
-CTieFighterBCI::CTieFighterBCI() : COgreVRApplication()
+CTieFighterBCI::CTieFighterBCI(string s_localization) : COgreVRApplication()
 {
 	m_iScore=0;
 	m_iAttemptCount = 0;
@@ -39,6 +42,21 @@ CTieFighterBCI::CTieFighterBCI() : COgreVRApplication()
 
 	m_dBetaOffset = 0;
 	m_iBetaOffsetPercentage = 0;
+
+	if(_strcmpi(s_localization.c_str(),"fr") == 0)
+	{
+		m_mLocalizedFilenames.insert(make_pair("phase-init","pret.png"));
+		m_mLocalizedFilenames.insert(make_pair("phase-move","bouge-les-pieds.png"));
+		m_mLocalizedFilenames.insert(make_pair("phase-stop","stop.png"));
+		m_mLocalizedFilenames.insert(make_pair("phase-end","fin-de-partie.png"));
+	}
+	else
+	{
+		m_mLocalizedFilenames.insert(make_pair("phase-init","ready.png"));
+		m_mLocalizedFilenames.insert(make_pair("phase-move","move-your-feet.png"));
+		m_mLocalizedFilenames.insert(make_pair("phase-stop","stop.png"));
+		m_mLocalizedFilenames.insert(make_pair("phase-end","game-over.png"));
+	}
 }
 
 bool CTieFighterBCI::initialise()
@@ -94,23 +112,16 @@ bool CTieFighterBCI::initialise()
 
 void CTieFighterBCI::loadGUI()
 {
-	//FR
-	//const std::string l_sMoveImage = "bouge.png";
-	const std::string l_sMoveImage = "bouge-les-pieds.png";
-	const std::string l_sNoMoveImage = "stop.png";
-	
-	//const std::string l_sCalibrationImage = "calibration.png";
-	const std::string l_sCalibrationImage = "pret.png";
-	
-	//const std::string l_sStatisticsImage = "statistiques.png";
-	//const std::string l_sStatisticsImage = "game-over.png";
-	const std::string l_sStatisticsImage = "fin-de-partie.png";
+	const string l_sMoveImage= m_mLocalizedFilenames["phase-move"];
+	const string l_sStopImage= m_mLocalizedFilenames["phase-stop"];
+	const string l_sInitImage= m_mLocalizedFilenames["phase-init"];
+	const string l_sEndImage=  m_mLocalizedFilenames["phase-end"];
 	
 
 	//ENG
 	//const string l_sMoveImage = "move.png";
-	//const string l_sNoMoveImage = "stop-move.png";
-	//const std::string l_sCalibrationImage = "calibration.png";
+	//const string l_sStopImage = "stop-move.png";
+	//const string l_sInitImage = "calibration.png";
 
 	/*CEGUI::Window * l_poWidget  = m_poGUIWindowManager->createWindow("TaharezLook/StaticText", "score");
 	l_poWidget->setPosition(CEGUI::UVector2(cegui_reldim(0.01f), cegui_reldim(0.01f)) );
@@ -134,7 +145,7 @@ void CTieFighterBCI::loadGUI()
 	l_poNoMove->setPosition(CEGUI::UVector2(cegui_reldim(0.35f), cegui_reldim(0.8f)) );
 	l_poNoMove->setSize(CEGUI::UVector2(CEGUI::UDim(0.3f, 0.f), CEGUI::UDim(0.2f, 0.f)));
 	m_poSheet->addChildWindow(l_poNoMove);	
-	CEGUI::ImagesetManager::getSingleton().createFromImageFile("ImageNoMove",l_sNoMoveImage); 
+	CEGUI::ImagesetManager::getSingleton().createFromImageFile("ImageNoMove",l_sStopImage); 
 	l_poNoMove->setProperty("Image","set:ImageNoMove image:full_image");
 	l_poNoMove->setProperty("FrameEnabled","False");
 	l_poNoMove->setProperty("BackgroundEnabled","False");
@@ -143,7 +154,7 @@ void CTieFighterBCI::loadGUI()
 	l_poCalibration->setPosition(CEGUI::UVector2(cegui_reldim(0.35f), cegui_reldim(0.8f)) );
 	l_poCalibration->setSize(CEGUI::UVector2(CEGUI::UDim(0.3f, 0.f), CEGUI::UDim(0.2f, 0.f)));
 	m_poSheet->addChildWindow(l_poCalibration);	
-	CEGUI::ImagesetManager::getSingleton().createFromImageFile("ImageCalibration",l_sCalibrationImage); 
+	CEGUI::ImagesetManager::getSingleton().createFromImageFile("ImageCalibration",l_sInitImage); 
 	l_poCalibration->setProperty("Image","set:ImageCalibration image:full_image");
 	l_poCalibration->setProperty("FrameEnabled","False");
 	l_poCalibration->setProperty("BackgroundEnabled","False");
@@ -152,7 +163,7 @@ void CTieFighterBCI::loadGUI()
 	l_poStatsImage->setPosition(CEGUI::UVector2(cegui_reldim(0.25f), cegui_reldim(0.2f)) );
 	l_poStatsImage->setSize(CEGUI::UVector2(CEGUI::UDim(0.5f, 0.f), CEGUI::UDim(0.2f, 0.f)));
 	m_poSheet->addChildWindow(l_poStatsImage);	
-	CEGUI::ImagesetManager::getSingleton().createFromImageFile("ImageStatistics",l_sStatisticsImage); 
+	CEGUI::ImagesetManager::getSingleton().createFromImageFile("ImageStatistics",l_sEndImage); 
 	l_poStatsImage->setProperty("Image","set:ImageStatistics image:full_image");
 	l_poStatsImage->setProperty("FrameEnabled","False");
 	l_poStatsImage->setProperty("BackgroundEnabled","False");
@@ -175,7 +186,7 @@ void CTieFighterBCI::loadGUI()
 	l_poThreshold->setProperty("HorzFormatting","WordWrapCentred");
 	l_poThreshold->setProperty("VertFormatting","WordWrapCentred");
 	l_poThreshold->setVisible(false);
-	stringstream ss;
+	std::stringstream ss;
 	ss << "Seuil : 0%";
 	l_poThreshold->setText(ss.str());
 }
@@ -341,7 +352,7 @@ bool CTieFighterBCI::process(const FrameEvent& evt)
 {
 	while(!m_poVrpnPeripheral->m_vButton.empty())
 	{
-		std::pair < int, int >& l_rVrpnButtonState=m_poVrpnPeripheral->m_vButton.front();
+		pair < int, int >& l_rVrpnButtonState=m_poVrpnPeripheral->m_vButton.front();
 
 		if(l_rVrpnButtonState.second) // if the button is ON
 		{
@@ -367,7 +378,7 @@ bool CTieFighterBCI::process(const FrameEvent& evt)
 		m_dFeedback = *(l_rVrpnAnalogState.begin());
 		m_dMinimumFeedback = (m_dMinimumFeedback > m_dFeedback ?  m_dFeedback : m_dMinimumFeedback);
 
-		//std::cout<< "New analog state received. Feedback is : "<<m_dFeedback<<std::endl;
+		//cout<< "New analog state received. Feedback is : "<<m_dFeedback<<endl;
 
 		m_poVrpnPeripheral->m_vAnalog.pop_front();
 	}
@@ -422,9 +433,9 @@ bool CTieFighterBCI::process(const FrameEvent& evt)
 			m_poGUIWindowManager->getWindow("NoMove")->setVisible(false);
 			break;
 	}
-	stringstream ss;
+	std::stringstream ss;
 	int l_iCount ;
-	std::string l_sRang;
+	string l_sRang;
 	switch(m_iStage)
 	{
 		case Stage_Baseline:
@@ -473,7 +484,7 @@ bool CTieFighterBCI::process(const FrameEvent& evt)
 
 	// -------------------------------------------------------------------------------
 	// End of computation
-	stringstream ss2;
+	std::stringstream ss2;
 	ss2 << "Offset : "<<m_iBetaOffsetPercentage<<"%";
 	m_poGUIWindowManager->getWindow("Threshold")->setText(ss2.str());
 
@@ -487,12 +498,12 @@ bool CTieFighterBCI::keyPressed(const OIS::KeyEvent& evt)
 {
 	if(evt.key == OIS::KC_ESCAPE)
 	{
-		std::cout<<"[ESC] pressed, user termination."<<std::endl;
-		std::cout<<"      Saving statistics..."<<std::endl;
-		stringstream l_ssPath;
+		cout<<"[ESC] pressed, user termination."<<endl;
+		cout<<"      Saving statistics..."<<endl;
+		std::stringstream l_ssPath;
 		l_ssPath << "stats.txt";
 		remove( l_ssPath.str().c_str() );
-		std::ofstream l_ofsSubjectConf(l_ssPath.str().c_str());
+		ofstream l_ofsSubjectConf(l_ssPath.str().c_str());
 		l_ofsSubjectConf << "Temps total = " << m_dStat_TieFighterLiftTime << "\n";
 		m_bContinue = false;
 	}
@@ -599,7 +610,7 @@ void CTieFighterBCI::processStageFreetime(const FrameEvent& evt)
 
 	//score
 // 	CEGUI::Window * l_poWidget  = m_poGUIWindowManager->getWindow("score");
-// 	std::stringstream ss;
+// 	stringstream ss;
 // 	ss << "Score: "<< m_iScore << " / "<<m_iAttemptCount<<"\n";
 // 	l_poWidget->setText(ss.str());
 

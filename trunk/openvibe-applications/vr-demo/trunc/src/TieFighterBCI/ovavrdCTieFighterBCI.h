@@ -29,9 +29,9 @@ namespace OpenViBEVRDemos {
 		public:
 
 			/**
-			* \brief Default constructor.
+			* \brief constructor.
 			*/
-			CTieFighterBCI();
+			CTieFighterBCI(std::string s_localization="eng");
 
 		private:
 
@@ -129,6 +129,12 @@ namespace OpenViBEVRDemos {
 
 			double m_dBetaOffset;
 			int m_iBetaOffsetPercentage;
+
+			/****************
+			* Localization. *
+			*****************/
+			std::map<std::string,std::string> m_mLocalizedFilenames;
+		
 	};
 };
 #endif //__OpenViBEApplication_CTieFighterBCI_H__

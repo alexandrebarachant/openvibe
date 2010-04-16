@@ -17,7 +17,7 @@ namespace CEGUI
 
 int main(int argc, char **argv)
 {
-	if(argc!=2)
+	if(argc < 2)
 	{
 		printf("Syntax: %s demo-name\n", argv[0]);
 		printf("\n");
@@ -30,6 +30,17 @@ int main(int argc, char **argv)
 	OpenViBEVRDemos::COgreVRApplication * app;
 	if(strcmp(argv[1],"tie-fighter") == 0)
 	{
+		std::string l_slocalization = "eng";
+		if( argc != 3 )
+		{
+			printf("No language selected. Default is: english (eng).\n\n");
+		}
+		else
+		{
+			l_slocalization = argv[2];
+			printf("User defined language: l_slocalization \n");
+			printf("WARNING: if the language keyword is not found, default language will be loaded (eng).\n\n");
+		}
 		printf("\n");
 		printf("  _                       _  \n");
 		printf(" | |                     | | \n");
@@ -45,8 +56,9 @@ int main(int argc, char **argv)
 		printf(" | |                     | | \n");
 		printf(" | |                     | | \n");
 		printf(" |_|                     |_| \n\n");
-		printf("Tie-fighter application started ! \nMay the Force be with you, young padawan.\n");
-		app = new OpenViBEVRDemos::CTieFighterBCI();
+		printf("Tie-fighter application started ! \nMay the Force be with you, young padawan.\n\n");
+		
+		app = new OpenViBEVRDemos::CTieFighterBCI(l_slocalization);
 	}
 	else if(strcmp(argv[1],"handball") == 0)
 	{
@@ -56,6 +68,9 @@ int main(int argc, char **argv)
 	else
 	{
 		printf("ERROR: the application specified does not exist (%s).\n",argv[1]);
+		printf("Please use one of the following applications:\n");
+		printf("  - tie-fighter\n");
+		printf("  - handball\n");
 		return 2;
 	}
 
