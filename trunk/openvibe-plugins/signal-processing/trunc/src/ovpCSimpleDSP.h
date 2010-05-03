@@ -1,5 +1,5 @@
-#ifndef __OpenViBEPlugins_SignalProcessing_CSignalEquationFilter_H__
-#define __OpenViBEPlugins_SignalProcessing_CSignalEquationFilter_H__
+#ifndef __OpenViBEPlugins_SignalProcessing_CSimpleDSP_H__
+#define __OpenViBEPlugins_SignalProcessing_CSimpleDSP_H__
 
 #include "ovp_defines.h"
 
@@ -18,137 +18,129 @@
 
 #include <string>
 #include <vector>
+#include <cstdio>
+#include <cstdlib>
 
 namespace OpenViBEPlugins
 {
 	namespace SignalProcessing
 	{
-		namespace SimpleDSP
-		{
-			// Used to store information about the signal stream
-			class CSignalDescription
-			{
-				public:
-
-					CSignalDescription(void)
-						:m_ui32StreamVersion(1)
-						,m_ui32SamplingRate(0)
-						,m_ui32ChannelCount(0)
-						,m_ui32SampleCount(0)
-						,m_ui32CurrentChannel(0)
-						,m_bReadyToSend(false)
-					{
-					}
-
-				public:
-
-					EBML::uint32 m_ui32StreamVersion;
-					EBML::uint32 m_ui32SamplingRate;
-					EBML::uint32 m_ui32ChannelCount;
-					EBML::uint32 m_ui32SampleCount;
-					std::vector<std::string> m_pChannelName;
-					EBML::uint32 m_ui32CurrentChannel;
-
-					OpenViBE::boolean m_bReadyToSend;
-			};
-		};
-
-		/**
-		* The Simple DSP plugin's main class.
-		*/
-		class CSimpleDSP : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, virtual public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
+		class CSimpleDSP : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
 		{
 		public:
 
 			CSimpleDSP(void);
 
-			virtual void release(void);
+			virtual void release(void) { delete this; }
 
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);
-
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
-
 			virtual OpenViBE::boolean process(void);
+			virtual void evaluate(void);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_SimpleDSP)
 
 		public:
 
-			virtual void writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
+			std::vector < OpenViBE::IMatrix* > m_vMatrix;
+			std::vector < OpenViBE::Kernel::IAlgorithmProxy* > m_vStreamDecoder;
+			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder;
 
-			virtual void setChannelCount(const OpenViBE::uint32 ui32ChannelCount);
-			virtual void setChannelName(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName);
-			virtual void setSampleCountPerBuffer(const OpenViBE::uint32 ui32SampleCountPerBuffer);
-			virtual void setSamplingRate(const OpenViBE::uint32 ui32SamplingFrequency);
-			virtual void setSampleBuffer(const OpenViBE::float64* pBuffer);
-
-		public:
-
-			// Needed to read the input
-			EBML::IReader* m_pReader;
-			OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback* m_pSignalReaderCallBack;
-
-			// the current node identifier
-			EBML::CIdentifier m_oCurrentIdentifier;
-
-			//start time and end time of the last arrived chunk
-			OpenViBE::uint64 m_ui64LastChunkStartTime;
-			OpenViBE::uint64 m_ui64LastChunkEndTime;
-
-			// Needed to write on the plugin output
-			EBML::IWriter* m_pWriter;
-			EBML::TWriterCallbackProxy1<OpenViBEPlugins::SignalProcessing::CSimpleDSP> m_oSignalOutputWriterCallbackProxy;
-			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter* m_pSignalOutputWriterHelper;
-
-			//! Structure containing information about the signal stream
-			SimpleDSP::CSignalDescription * m_pSignalDescription;
-
-			//! Size of the matrix buffer (output signal)
-			OpenViBE::uint64 m_ui64MatrixBufferSize;
-			//! Output signal's matrix buffer
-			EBML::float64* m_pMatrixBuffer;
-
-			//! True if the equation is a valid one (parsed successfuly)
-			OpenViBE::boolean m_bValidEquation;
-
-			//! The equation parser.
 			CEquationParser * m_pEquationParser;
 
-			//! The variable referenced by X in the equation.
-			OpenViBE::float64 m_f64Variable;
-
-			//! The type of the equation (userdef or special one)
 			OpenViBE::uint64 m_ui64EquationType;
-			//! The optional parameter used if the equation is a special one.
 			OpenViBE::float64 m_f64SpecialEquationParameter;
-
+			OpenViBE::float64** m_ppVariable;
 		};
 
-		/**
-		* Description of the channel selection plugin
-		*/
+		class CSimpleDSPListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+		public:
+
+			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				char l_sName[1024];
+				::sprintf(l_sName, "Input - %c", 'A' + ui32Index);
+				OpenViBE::CIdentifier l_oTypeIdentifier;
+				rBox.getOutputType(0, l_oTypeIdentifier);
+				rBox.setInputType(ui32Index, l_oTypeIdentifier);
+				rBox.setInputName(ui32Index, l_sName);
+				return true;
+			}
+
+			virtual OpenViBE::boolean onInputTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				OpenViBE::uint32 i;
+				OpenViBE::CIdentifier l_oTypeIdentifier;
+				rBox.getInputType(ui32Index, l_oTypeIdentifier);
+				if(this->getTypeManager().isDerivedFromStream(l_oTypeIdentifier, OV_TypeId_StreamedMatrix))
+				{
+					rBox.setOutputType(0, l_oTypeIdentifier);
+					for(i=0; i<rBox.getInputCount(); i++)
+					{
+						rBox.setInputType(i, l_oTypeIdentifier);
+					}
+				}
+				else
+				{
+					rBox.getOutputType(0, l_oTypeIdentifier);
+					rBox.setInputType(ui32Index, l_oTypeIdentifier);
+				}
+				return true;
+			}
+
+			virtual OpenViBE::boolean onOutputTypeChanged(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				OpenViBE::uint32 i;
+				OpenViBE::CIdentifier l_oTypeIdentifier;
+				rBox.getOutputType(ui32Index, l_oTypeIdentifier);
+				if(this->getTypeManager().isDerivedFromStream(l_oTypeIdentifier, OV_TypeId_StreamedMatrix))
+				{
+					rBox.setOutputType(0, l_oTypeIdentifier);
+					for(i=0; i<rBox.getInputCount(); i++)
+					{
+						rBox.setInputType(i, l_oTypeIdentifier);
+					}
+				}
+				else
+				{
+					rBox.getInputType(0, l_oTypeIdentifier);
+					rBox.setOutputType(ui32Index, l_oTypeIdentifier);
+				}
+				return true;
+			};
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+		};
+
 		class CSimpleDSPDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
 			virtual void release(void) { }
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Simple DSP"); }
-			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier"); }
-			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Apply mathematical formulaes to the signal."); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier / Yann Renard"); }
+			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA / IRISA"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Apply mathematical formulaes to matrices."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_SimpleDSP; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessing::CSimpleDSP(); }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new CSimpleDSPListener; }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("Input signal", OV_TypeId_Signal);
-				rPrototype.addOutput("Filtered signal", OV_TypeId_Signal);
-				rPrototype.addSetting("Equation", OV_TypeId_String, "X");
+				rPrototype.addInput("Input - A", OV_TypeId_Signal);
+				rPrototype.addOutput("Output", OV_TypeId_Signal);
+				rPrototype.addSetting("Equation", OV_TypeId_String, "x");
+
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyOutput);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyInput);
 
 				return true;
 			}
@@ -158,5 +150,4 @@ namespace OpenViBEPlugins
 	}
 }
 
-#endif // __OpenViBEPlugins_SignalProcessing_CSignalEquationFilter_H__
-
+#endif // __OpenViBEPlugins_SignalProcessing_CSimpleDSP_H__

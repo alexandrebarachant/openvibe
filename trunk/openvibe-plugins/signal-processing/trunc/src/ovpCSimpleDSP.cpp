@@ -6,66 +6,262 @@
 #include <sstream>
 
 using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SignalProcessing;
-using namespace OpenViBEPlugins::SignalProcessing::SimpleDSP;
-using namespace OpenViBEToolkit;
 using namespace std;
 
-
-void CSimpleDSP::setChannelCount(const uint32 ui32ChannelCount)
+CSimpleDSP::CSimpleDSP(void)
+	:m_pStreamEncoder(NULL)
+	,m_pEquationParser(NULL)
+	,m_ui64EquationType(OP_USERDEF)
+	,m_f64SpecialEquationParameter(0)
 {
-	//gets the channel count
-	m_pSignalDescription->m_ui32ChannelCount = ui32ChannelCount;
-	m_pSignalDescription->m_pChannelName.resize(ui32ChannelCount);
 }
 
-void CSimpleDSP::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
+boolean CSimpleDSP::initialize(void)
 {
-	m_pSignalDescription->m_pChannelName[ui32ChannelIndex]=sChannelName;
-}
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	uint32 i;
 
-void CSimpleDSP::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuffer)
-{
-	//gets the sample count
-	m_pSignalDescription->m_ui32SampleCount = ui32SampleCountPerBuffer;
-
-	//the matrix buffer hasn't been allocated yet, allocate it
-	if(!m_pMatrixBuffer)
+	m_ppVariable=new float64*[l_rStaticBoxContext.getInputCount()];
+	if(!m_ppVariable)
 	{
-		m_ui64MatrixBufferSize = m_pSignalDescription -> m_ui32SampleCount * m_pSignalDescription -> m_ui32ChannelCount;
-
-		m_pMatrixBuffer = new EBML::float64[(size_t)m_ui64MatrixBufferSize];
+		return false;
 	}
 
-	//we have everything needed to send the stream header
-	m_pSignalOutputWriterHelper->setSamplingRate(m_pSignalDescription->m_ui32SamplingRate);
-	m_pSignalOutputWriterHelper->setChannelCount(m_pSignalDescription->m_ui32ChannelCount);
-
-	for(uint32 i=0 ; i<m_pSignalDescription->m_ui32ChannelCount ; i++)
+	CString l_sEquation=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+	m_pEquationParser=new CEquationParser(*this, m_ppVariable, l_rStaticBoxContext.getInputCount());
+	if(!m_pEquationParser->compileEquation(l_sEquation.toASCIIString()))
 	{
-		m_pSignalOutputWriterHelper->setChannelName(i, m_pSignalDescription->m_pChannelName[i].c_str());
+		return false;
+	}
+	m_ui64EquationType=m_pEquationParser->getTreeCategory();
+	m_f64SpecialEquationParameter=m_pEquationParser->getTreeParameter();
+
+	CIdentifier l_oStreamType;
+	l_rStaticBoxContext.getOutputType(0, l_oStreamType);
+	if(!this->getTypeManager().isDerivedFromStream(l_oStreamType, OV_TypeId_StreamedMatrix))
+	{
+		return false;
+	}
+	if(l_oStreamType==OV_TypeId_StreamedMatrix)
+	{
+		m_pStreamEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamEncoder));
+		m_pStreamEncoder->initialize();
+		for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+		{
+			IAlgorithmProxy* l_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder));
+			l_pStreamDecoder->initialize();
+			m_vStreamDecoder.push_back(l_pStreamDecoder);
+		}
+	}
+	else if(l_oStreamType==OV_TypeId_FeatureVector)
+	{
+		m_pStreamEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamEncoder));
+		m_pStreamEncoder->initialize();
+		for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+		{
+			IAlgorithmProxy* l_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder));
+			l_pStreamDecoder->initialize();
+			m_vStreamDecoder.push_back(l_pStreamDecoder);
+		}
+	}
+	else if(l_oStreamType==OV_TypeId_Signal)
+	{
+		m_pStreamEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamEncoder));
+		m_pStreamEncoder->initialize();
+		for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+		{
+			IAlgorithmProxy* l_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamDecoder));
+			l_pStreamDecoder->initialize();
+			TParameterHandler<uint64> ip_ui64SamplingRate(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate));
+			TParameterHandler<uint64> op_ui64SamplingRate(l_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
+			ip_ui64SamplingRate.setReferenceTarget(op_ui64SamplingRate);
+			m_vStreamDecoder.push_back(l_pStreamDecoder);
+		}
+	}
+	else if(l_oStreamType==OV_TypeId_Spectrum)
+	{
+		m_pStreamEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SpectrumStreamEncoder));
+		m_pStreamEncoder->initialize();
+		for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+		{
+			IAlgorithmProxy* l_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SpectrumStreamDecoder));
+			l_pStreamDecoder->initialize();
+			TParameterHandler<IMatrix*> op_ui64MinMaxFrequencyBands(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands));
+			TParameterHandler<IMatrix*> ip_ui64MinMaxFrequencyBands(l_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands));
+			ip_ui64MinMaxFrequencyBands.setReferenceTarget(op_ui64MinMaxFrequencyBands);
+			m_vStreamDecoder.push_back(l_pStreamDecoder);
+		}
+	}
+	else
+	{
+		this->getLogManager() << LogLevel_ImportantWarning << "The type [name=" << this->getTypeManager().getTypeName(l_oStreamType) << ":id=" << l_oStreamType << "] is not yet implemented\n";
+		return false;
 	}
 
-	m_pSignalOutputWriterHelper->setSampleCountPerBuffer(m_pSignalDescription->m_ui32SampleCount);
-	m_pSignalOutputWriterHelper->setSampleBuffer(m_pMatrixBuffer);
-
-	m_pSignalOutputWriterHelper->writeHeader(*m_pWriter);
-
-	getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
-
-
+	return true;
 }
 
-void CSimpleDSP::setSamplingRate(const uint32 ui32SamplingFrequency)
+boolean CSimpleDSP::uninitialize(void)
 {
-	m_pSignalDescription->m_ui32SamplingRate = ui32SamplingFrequency;
+	std::vector < IAlgorithmProxy* >::iterator it;
+	for(it=m_vStreamDecoder.begin(); it!=m_vStreamDecoder.end(); it++)
+	{
+		(*it)->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(**it);
+	}
+	m_vStreamDecoder.clear();
+
+	if(m_pStreamEncoder)
+	{
+		m_pStreamEncoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pStreamEncoder);
+		m_pStreamEncoder=NULL;
+	}
+
+	delete m_pEquationParser;
+	m_pEquationParser=NULL;
+
+	delete [] m_ppVariable;
+	m_ppVariable=NULL;
+
+	return true;
 }
 
-void CSimpleDSP::setSampleBuffer(const float64* pBuffer)
+boolean CSimpleDSP::processInput(uint32 ui32InputIndex)
 {
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	IDynamicBoxContext& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
+	if(l_rDynamicBoxContext.getInputChunkCount(0) == 0)
+	{
+		return true;
+	}
+
+	uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(0, 0);
+	uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(0, 0);
+	for(uint32 i=1; i<l_rStaticBoxContext.getInputCount(); i++)
+	{
+		if(l_rDynamicBoxContext.getInputChunkCount(i)==0)
+		{
+			return true;
+		}
+		if(l_ui64StartTime!=l_rDynamicBoxContext.getInputChunkStartTime(i, 0)) { return false; }
+		if(l_ui64EndTime!=l_rDynamicBoxContext.getInputChunkEndTime(i, 0)) { return false; }
+	}
+
+	this->getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+
+	return true;
+}
+
+boolean CSimpleDSP::process(void)
+{
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	IDynamicBoxContext& l_rDynamicBoxContext=this->getDynamicBoxContext();
+
+	uint32 i;
+	uint32 l_ui32HeaderCount=0;
+	uint32 l_ui32BufferCount=0;
+	uint32 l_ui32EndCount=0;
+
+	TParameterHandler < IMatrix* > ip_pMatrix(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix));
+	TParameterHandler < IMemoryBuffer* > op_pMemoryBuffer(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+
+	m_vMatrix.clear();
+
+	op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+	for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+	{
+		TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_vStreamDecoder[i]->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_InputParameterId_MemoryBufferToDecode));
+		TParameterHandler < IMatrix* > op_pMatrix(m_vStreamDecoder[i]->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
+		ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(i, 0);
+		m_vStreamDecoder[i]->process();
+		if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader))
+		{
+			if(i!=0)
+			{
+				if(m_vMatrix[0]->getBufferElementCount() != op_pMatrix->getBufferElementCount())
+				{
+					this->getLogManager() << LogLevel_Warning << "Matrix dimension mismatch\n";
+					return false;
+				}
+			}
+			l_ui32HeaderCount++;
+		}
+		if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
+		{
+			l_ui32BufferCount++;
+		}
+		if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd))
+		{
+			l_ui32EndCount++;
+		}
+		m_vMatrix.push_back(op_pMatrix);
+		l_rDynamicBoxContext.markInputAsDeprecated(i, 0);
+	}
+
+	if((l_ui32HeaderCount && l_ui32HeaderCount!=l_rStaticBoxContext.getInputCount())
+	|| (l_ui32BufferCount && l_ui32BufferCount!=l_rStaticBoxContext.getInputCount())
+	|| (l_ui32EndCount && l_ui32EndCount!=l_rStaticBoxContext.getInputCount()))
+	{
+		this->getLogManager() << LogLevel_Warning << "Stream structure mismatch\n";
+		return false;
+	}
+
+	if(l_ui32HeaderCount)
+	{
+		OpenViBEToolkit::Tools::Matrix::copyDescription(*ip_pMatrix, *m_vMatrix[0]);
+		m_pStreamEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader);
+	}
+	if(l_ui32BufferCount)
+	{
+		this->evaluate();
+		m_pStreamEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeBuffer);
+	}
+	if(l_ui32EndCount)
+	{
+		m_pStreamEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeEnd);
+	}
+
+	if(l_ui32HeaderCount || l_ui32BufferCount || l_ui32EndCount)
+	{
+		l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, 0), l_rDynamicBoxContext.getInputChunkEndTime(0, 0));
+	}
+
+	return true;
+}
+
+void CSimpleDSP::evaluate(void)
+{
+	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	IDynamicBoxContext& l_rDynamicBoxContext=this->getDynamicBoxContext();
+
+	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+	{
+		m_ppVariable[i]=m_vMatrix[i]->getBuffer();
+	}
+
+	TParameterHandler < IMatrix* > ip_pMatrix(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix));
+	float64* l_pBuffer=ip_pMatrix->getBuffer();
+	float64* l_pBufferEnd=ip_pMatrix->getBuffer() + ip_pMatrix->getBufferElementCount();
+
+	while(l_pBuffer!=l_pBufferEnd)
+	{
+		*l_pBuffer=m_pEquationParser->executeEquation();
+
+		for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+		{
+			m_ppVariable[i]++;
+		}
+
+		l_pBuffer++;
+	}
+
+#if 0
 	switch(m_ui64EquationType)
 	{
 		//The equation is not a special one, we have to execute the whole stack of function calls
@@ -200,131 +396,5 @@ void CSimpleDSP::setSampleBuffer(const float64* pBuffer)
 			}
 			break;
 	}
-
-
-	//the matrix is ready to be sent
-	m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter);
-	getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
-
-}
-
-void CSimpleDSP::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
-{
-	appendOutputChunkData<0>(pBuffer, ui64BufferSize);
-}
-
-CSimpleDSP::CSimpleDSP(void)
-	: m_pReader(NULL),
-	m_pSignalReaderCallBack(NULL),
-	m_ui64LastChunkStartTime(0),
-	m_ui64LastChunkEndTime(0),
-	m_pWriter(NULL),
-	m_oSignalOutputWriterCallbackProxy(
-		*this,
-		&CSimpleDSP::writeSignalOutput),
-	m_pSignalOutputWriterHelper(NULL),
-	m_pSignalDescription(NULL),
-	m_ui64MatrixBufferSize(0),
-	m_pMatrixBuffer(NULL),
-	m_bValidEquation(false),
-	m_pEquationParser(NULL),
-	m_ui64EquationType(OP_USERDEF),
-	m_f64SpecialEquationParameter(0)
-{
-}
-
-void CSimpleDSP::release(void)
-{
-}
-
-boolean CSimpleDSP::initialize()
-{
-
-	//reads the plugin settings
-	CString l_oEquation;
-	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_oEquation);
-
-
-	//initialises the signal description structure
-	m_pSignalDescription = new CSignalDescription();
-
-	// Prepares EBML reader
-	m_pSignalReaderCallBack = createBoxAlgorithmSignalInputReaderCallback(*this);
-	m_pReader=EBML::createReader(*m_pSignalReaderCallBack);
-
-	// Prepares EBML writer
-	m_pSignalOutputWriterHelper=createBoxAlgorithmSignalOutputWriter();
-	m_pWriter=EBML::createWriter(m_oSignalOutputWriterCallbackProxy);
-
-	m_pEquationParser = new CEquationParser(*this, &m_f64Variable);
-
-	if(m_pEquationParser->compileEquation((const char*)l_oEquation))
-	{
-		m_bValidEquation = true;
-		m_ui64EquationType = m_pEquationParser->getTreeCategory();
-		m_f64SpecialEquationParameter = m_pEquationParser->getTreeParameter();
-		return true;
-	}
-
-	return false;
-}
-
-boolean CSimpleDSP::uninitialize()
-{
-
-	if(m_pMatrixBuffer)
-	{
-		delete[] m_pMatrixBuffer;
-	}
-
-	// Cleans up EBML writer
-	m_pWriter->release();
-	m_pWriter=NULL;
-
-	releaseBoxAlgorithmSignalOutputWriter(m_pSignalOutputWriterHelper);
-	m_pSignalOutputWriterHelper=NULL;
-
-	// Cleans up EBML reader
-	releaseBoxAlgorithmSignalInputReaderCallback(m_pSignalReaderCallBack);
-
-	m_pReader->release();
-	m_pReader=NULL;
-
-	delete m_pSignalDescription;
-	m_pSignalDescription = NULL;
-
-	delete m_pEquationParser;
-
-	return true;
-}
-
-boolean CSimpleDSP::processInput( uint32 ui32InputIndex)
-{
-	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
-	return true;
-}
-
-boolean CSimpleDSP::process()
-{
-	IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
-
-	//reset the OutPut chunk
-	l_pDynamicBoxContext->setOutputChunkSize(0, 0);
-
-	//if the equation is valid, we can process the data
-	if(m_bValidEquation)
-	{
-		// Process input data
-		for(uint32 i=0; i<l_pDynamicBoxContext->getInputChunkCount(0); i++)
-		{
-
-			uint64 l_ui64ChunkSize;
-			const uint8* l_pBuffer;
-			l_pDynamicBoxContext->getInputChunk(0, i, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pBuffer);
-			l_pDynamicBoxContext->markInputAsDeprecated(0, i);
-			m_pReader->processData(l_pBuffer, l_ui64ChunkSize);
-		}
-	}
-
-	return true;
+#endif
 }

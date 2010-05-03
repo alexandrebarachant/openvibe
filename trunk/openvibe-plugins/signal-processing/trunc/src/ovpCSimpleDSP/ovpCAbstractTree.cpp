@@ -50,7 +50,6 @@ CAbstractTreeParentNode::~CAbstractTreeParentNode(void)
 
 void CAbstractTreeParentNode::levelOperators()
 {
-
 	uint64 l_ui64NumberOfChildren = m_oChildren.size();
 
 	vector<CAbstractTreeNode*> l_oNewChildren;
@@ -77,7 +76,6 @@ void CAbstractTreeParentNode::levelOperators()
 			//if the child and the current node have the same id
 			if(m_ui64Identifier == l_pChildParentNode->getOperatorIdentifier())
 			{
-
 				switch(m_ui64Identifier)
 				{
 					//check if it is the ID of the + or * operators
@@ -107,8 +105,6 @@ void CAbstractTreeParentNode::levelOperators()
 				l_oNewChildren.push_back(l_pChild);
 			}
 		}
-
-
 	}
 
 	m_oChildren = l_oNewChildren;
@@ -119,7 +115,6 @@ void CAbstractTreeParentNode::levelOperators()
 		//if the node is associative/commutative, reorder the children
 		sort(m_oChildren.begin(), m_oChildren.end(), CAbstractTreeNodeOrderingFunction());
 	}
-
 }
 
 boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
@@ -153,7 +148,6 @@ boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
 				//delete the old one and replace it
 				delete m_oChildren[i];
 				m_oChildren[i] = l_pChild;
-
 			}
 		}
 	}
@@ -165,7 +159,6 @@ boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
 		if(m_oChildren[0]->isConstant())
 		{
 			float64 l_f64ChildValue = reinterpret_cast<CAbstractTreeValueNode*>(m_oChildren[0])->getValue();
-
 			switch(m_ui64Identifier)
 			{
 				case OP_NEG: pModifiedNode = new CAbstractTreeValueNode(-l_f64ChildValue); break;
@@ -237,7 +230,6 @@ boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
 					m_oChildren.clear();
 					l_bHasChanged = true;
 				}
-
 			}
 		}
 	}
@@ -295,7 +287,6 @@ boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
 		//if there are still some other children, but we reduced at least two children
 		else if(i > 1)
 		{
-
 			//adds the new result node to the list
 			l_oNewChildren.push_back(new CAbstractTreeValueNode(l_f64TotalValue));
 
@@ -311,7 +302,6 @@ boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
 		}
 		else if(i == 1)
 		{
-
 			//nothing changed
 			if( (l_f64TotalValue == 0 && m_ui64Identifier==OP_ADD) ||
 			(l_f64TotalValue == 1 && m_ui64Identifier==OP_MUL) )
@@ -351,9 +341,6 @@ boolean CAbstractTreeParentNode::simplify(CAbstractTreeNode *& pModifiedNode)
 
 	return l_bHasChanged;
 }
-
-
-
 
 void CAbstractTreeParentNode::useNegationOperator()
 {
@@ -412,7 +399,6 @@ void CAbstractTreeParentNode::useNegationOperator()
 	}
 }
 
-
 void CAbstractTree::generateCode(CEquationParser& oParser)
 {
 	m_pRoot->generateCode(oParser);
@@ -421,6 +407,12 @@ void CAbstractTree::generateCode(CEquationParser& oParser)
 void CAbstractTreeParentNode::generateCode(CEquationParser& oParser)
 {
 	uint64 l_ui64NumberOfChildren = m_oChildren.size();
+
+#if 0
+
+// REMOVED BY YRD
+// Bruno's implementation of the stack filling looked weird
+// and bugged to me. I simplified/corrected it
 
 	//if it is a unary operator/function
 	if(l_ui64NumberOfChildren==1)
@@ -436,7 +428,13 @@ void CAbstractTreeParentNode::generateCode(CEquationParser& oParser)
 		}
 	}
 	m_oChildren[(size_t)(l_ui64NumberOfChildren-1)] -> generateCode(oParser);
-
+#else
+	oParser.push_op(m_ui64Identifier);
+	for(size_t i=0; i<l_ui64NumberOfChildren; i++)
+	{
+		m_oChildren[i] -> generateCode(oParser);
+	}
+#endif
 }
 
 void CAbstractTreeValueNode::generateCode(CEquationParser& oParser)
@@ -446,7 +444,7 @@ void CAbstractTreeValueNode::generateCode(CEquationParser& oParser)
 
 void CAbstractTreeVariableNode::generateCode(CEquationParser& oParser)
 {
-	oParser.push_var();
+	oParser.push_var(m_ui32Index);
 }
 
 void CAbstractTree::recognizeSpecialTree(uint64& ui64TreeIdentifier, float64& f64Parameter)
@@ -510,8 +508,5 @@ void CAbstractTree::recognizeSpecialTree(uint64& ui64TreeIdentifier, float64& f6
 			f64Parameter = reinterpret_cast<CAbstractTreeValueNode*>(l_oChildren[1])->getValue();
 		}
 	}
-
 	//else do nothing
 }
-
-
