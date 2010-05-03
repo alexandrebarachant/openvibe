@@ -331,6 +331,75 @@ namespace OpenViBE
 				const OpenViBE::CIdentifier& rLinkIdentifier)=0;
 
 			//@}
+			/** \name Comment management */
+			//@{
+
+			/**
+			 * \brief Gets next comment identifier
+			 * \param rPreviousIdentifier [in] : The identifier
+			 *        for the preceeding comment
+			 * \return The identifier of the next comment in case of success.
+			 * \return \c OV_UndefinedIdentifier on error.
+			 * \note Giving \c OV_UndefinedIdentifier as \c rPreviousIdentifier
+			 *       will cause this function to return the first comment
+			 *       identifier.
+			 */
+			virtual OpenViBE::CIdentifier getNextCommentIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const=0;
+			/**
+			 * \brief Tests whether a given identifier is a comment or not
+			 * \param rCommentIdentifier [in] : the identifier to test
+			 * \return \e true if the identified object is a comment
+			 * \return \e false if the identified object is not a comment
+			 * \note Requesting a bad identifier returns \e false
+			 */
+			virtual OpenViBE::boolean isComment(
+				const OpenViBE::CIdentifier& rCommentIdentifier) const=0;
+			/**
+			 * \brief Gets the details for a specific comment
+			 * \param rCommentIdentifier [in] : The identifier
+			 *        of the comment which details should be
+			 *        sent.
+			 * \return The comment details
+			 */
+			virtual const OpenViBE::Kernel::IComment* getCommentDetails(
+				const OpenViBE::CIdentifier& rCommentIdentifier) const=0;
+			/// \copydoc getCommentDetails(const OpenViBE::CIdentifier&)const
+			virtual OpenViBE::Kernel::IComment* getCommentDetails(
+				const OpenViBE::CIdentifier& rCommentIdentifier)=0;
+			/**
+			 * \brief Adds a new comment in the scenario
+			 * \param rCommentIdentifier [out] : The identifier of
+			 *        the created comment
+			 * \return \e true in case of success.
+			 * \return \e false in case of error. In such case,
+			 *         \c rCommentIdentifier remains unchanged.
+			 * \note This produces an empty and unconfigured comment !
+			 */
+			virtual OpenViBE::boolean addComment(
+				OpenViBE::CIdentifier& rCommentIdentifier)=0;
+			/**
+			 * \brief Adds a new comment in the scenario based on an existing comment
+			 * \param rComment [in] : the comment to copy in this scenario
+			 * \param rCommentIdentifier [out] : The identifier of
+			 *        the created comment
+			 * \return \e true in case of success.
+			 * \return \e false in case of error. In such case,
+			 *         \c rCommentIdentifier remains unchanged.
+			 */
+			virtual OpenViBE::boolean addComment(
+				const OpenViBE::Kernel::IComment& rComment,
+				OpenViBE::CIdentifier& rCommentIdentifier)=0;
+			/**
+			 * \brief Removes a comment of the scenario
+			 * \param rCommentIdentifier [in] : The comment identifier
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
+			virtual OpenViBE::boolean removeComment(
+				const OpenViBE::CIdentifier& rCommentIdentifier)=0;
+
+			//@}
 			/** \name Processing units management */
 			//@{
 

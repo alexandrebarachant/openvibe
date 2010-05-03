@@ -66,6 +66,15 @@ boolean CAlgorithmXMLScenarioExporter::exportStart(IMemoryBuffer& rMemoryBuffer,
 	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Box_Attribute_Identifier                 ) l_sNodeName="Identifier";
 	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Box_Attribute_Value                      ) l_sNodeName="Value";
 
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comments                                 ) l_sNodeName="Comments";
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comment                                  ) l_sNodeName="Comment";
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Identifier                       ) l_sNodeName="Identifier";
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Text                             ) l_sNodeName="Text";
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Attributes                       ) l_sNodeName="Attributes";
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Attribute                        ) l_sNodeName="Attribute";
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Attribute_Identifier             ) l_sNodeName="Identifier";
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Attribute_Value                  ) l_sNodeName="Value";
+
 	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Links                                    ) l_sNodeName="Links";
 	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Link                                     ) l_sNodeName="Link";
 	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Link_Identifier                          ) l_sNodeName="Identifier";

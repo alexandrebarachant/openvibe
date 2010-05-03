@@ -415,8 +415,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -608,8 +608,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -788,6 +788,20 @@
                 <child>
                   <widget class="GtkMenu" id="openvibe-menu_help_content">
                     <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImageMenuItem" id="openvibe-menu_scenario_about">
+                        <property name="label" translatable="yes">About scenario</property>
+                        <property name="visible">True</property>
+                        <property name="use_stock">False</property>
+                        <child internal-child="image">
+                          <widget class="GtkImage" id="image1">
+                            <property name="visible">True</property>
+                            <property name="yalign">0.47999998927116394</property>
+                            <property name="stock">gtk-about</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
                     <child>
                       <widget class="GtkImageMenuItem" id="openvibe-menu_about">
                         <property name="label">gtk-about</property>
@@ -1609,8 +1623,8 @@ the scenario...</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2293,8 +2307,8 @@ the scenario...</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2684,8 +2698,8 @@ the scenario...</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2894,6 +2908,263 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="setting_editor-color_gradient-button_cancel">
+                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkDialog" id="scenario_about">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Scenario Description</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="dialog-vbox12">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <widget class="GtkTable" id="scenario_about-table">
+            <property name="visible">True</property>
+            <property name="n_rows">6</property>
+            <property name="n_columns">2</property>
+            <property name="column_spacing">4</property>
+            <child>
+              <widget class="GtkLabel" id="scenario_about-label_author_name">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Author name :</property>
+              </widget>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="scenario_about-label_name">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Name :</property>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkEntry" id="scenario_about-entry_author_name">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkEntry" id="scenario_about-entry_name">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="scenario_about-label_author_company_name">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Company name :</property>
+              </widget>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkEntry" id="scenario_about-entry_company_name">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="scenario_about-label_category">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Category :</property>
+              </widget>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="scenario_about-label_version">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Version :</property>
+              </widget>
+              <packing>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkEntry" id="scenario_about-entry_category">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkEntry" id="scenario_about-entry_version">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="scenario_about-label_documentation_page">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Documentation page :</property>
+              </widget>
+              <packing>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkEntry" id="scenario_about-entry_documentation_page">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </widget>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="dialog-action_area12">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <widget class="GtkButton" id="scenario_about-button_close">
+                <property name="label" translatable="yes">gtk-close</property>
+                <property name="response_id">-6</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <accelerator key="Escape" signal="clicked"/>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkDialog" id="comment">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Modify Comment</property>
+    <property name="modal">True</property>
+    <property name="window_position">center</property>
+    <property name="type_hint">normal</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <widget class="GtkVBox" id="dialog-vbox12">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <widget class="GtkScrolledWindow" id="comment-scrolledwindow">
+            <property name="width_request">480</property>
+            <property name="height_request">240</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <child>
+              <widget class="GtkTextView" id="comment-textview_description">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="wrap_mode">word</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <widget class="GtkHButtonBox" id="dialog-action_area12">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <widget class="GtkButton" id="comment-button_apply">
+                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="response_id">-10</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="comment-button_cancel">
                 <property name="label" translatable="yes">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>

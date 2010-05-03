@@ -28,6 +28,7 @@ namespace OpenViBEDesigner
 		virtual OpenViBE::boolean isLocked(void) const;
 		virtual void redraw(void);
 		virtual void redraw(OpenViBE::Kernel::IBox& rBox);
+		virtual void redraw(OpenViBE::Kernel::IComment& rComment);
 		virtual void redraw(OpenViBE::Kernel::ILink& rLink);
 		virtual void updateScenarioLabel(void);
 		OpenViBE::uint32 pickInterfacedObject(int x, int y);
@@ -63,6 +64,8 @@ namespace OpenViBEDesigner
 		void contextMenuBoxRemoveSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
 		void contextMenuBoxConfigureCB(OpenViBE::Kernel::IBox& rBox);
 		void contextMenuBoxAboutCB(OpenViBE::Kernel::IBox& rBox);
+
+		void contextMenuScenarioAboutCB(void);
 
 		void toggleDesignerVisualisation();
 		OpenViBE::boolean isDesignerVisualisationToggled();
@@ -123,6 +126,7 @@ namespace OpenViBEDesigner
 		OpenViBE::uint32 m_ui32CurrentMode;
 
 		OpenViBE::uint32 m_ui32BoxCount;
+		OpenViBE::uint32 m_ui32CommentCount;
 		OpenViBE::uint32 m_ui32LinkCount;
 
 		OpenViBE::uint32 m_ui32InterfacedObjectId;

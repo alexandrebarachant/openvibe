@@ -1,6 +1,7 @@
 #include "ovdCInterfacedScenario.h"
 #include "ovdCApplication.h"
 #include "ovdCBoxProxy.h"
+#include "ovdCCommentProxy.h"
 #include "ovdCLinkProxy.h"
 #include "ovdCConnectorEditor.h"
 #include "ovdCBoxConfigurationDialog.h"
@@ -10,7 +11,9 @@
 #include "ovdCPlayerVisualisation.h"
 #include "ovdCRenameDialog.h"
 #include "ovdCAboutPluginDialog.h"
+#include "ovdCAboutScenarioDialog.h"
 #include "ovdCSettingEditorDialog.h"
+#include "ovdCCommentEditorDialog.h"
 
 #include <vector>
 #include <iostream>
@@ -152,6 +155,8 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		case ContextMenu_BoxRemoveSetting: l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRemoveSettingCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
 		case ContextMenu_BoxConfigure:     l_pContextMenuCB->pInterfacedScenario->contextMenuBoxConfigureCB(*l_pContextMenuCB->pBox); break;
 		case ContextMenu_BoxAbout:         l_pContextMenuCB->pInterfacedScenario->contextMenuBoxAboutCB(*l_pContextMenuCB->pBox); break;
+
+		case ContextMenu_ScenarioAbout:    l_pContextMenuCB->pInterfacedScenario->contextMenuScenarioAboutCB(); break;
 	}
 }
 
@@ -670,6 +675,66 @@ void CInterfacedScenario::redraw(IBox& rBox)
 */
 }
 
+void CInterfacedScenario::redraw(IComment& rComment)
+{
+	::GtkWidget* l_pWidget=GTK_WIDGET(m_pScenarioDrawingArea);
+	::GdkGC* l_pStencilGC=gdk_gc_new(GDK_DRAWABLE(m_pStencilBuffer));
+	::GdkGC* l_pDrawGC=gdk_gc_new(l_pWidget->window);
+
+	uint32 i;
+	const int xMargin=16;
+	const int yMargin=16;
+
+	CCommentProxy l_oCommentProxy(m_rKernelContext, rComment);
+	int xSize=l_oCommentProxy.getWidth(GTK_WIDGET(m_pScenarioDrawingArea))+xMargin*2;
+	int ySize=l_oCommentProxy.getHeight(GTK_WIDGET(m_pScenarioDrawingArea))+yMargin*2;
+	int xStart=l_oCommentProxy.getXCenter()+m_i32ViewOffsetX-(xSize>>1);
+	int yStart=l_oCommentProxy.getYCenter()+m_i32ViewOffsetY-(ySize>>1);
+
+	updateStencilIndex(m_ui32InterfacedObjectId, l_pStencilGC);
+	gdk_draw_rounded_rectangle(
+		GDK_DRAWABLE(m_pStencilBuffer),
+		l_pStencilGC,
+		TRUE,
+		xStart, yStart, xSize, ySize, 16);
+	m_vInterfacedObject[m_ui32InterfacedObjectId]=CInterfacedObject(rComment.getIdentifier());
+
+	gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rComment.getIdentifier()]?Color_CommentBackgroundSelected:Color_CommentBackground]);
+	gdk_draw_rounded_rectangle(
+		l_pWidget->window,
+		l_pDrawGC,
+		TRUE,
+		xStart, yStart, xSize, ySize, 16);
+	gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[m_vCurrentObject[rComment.getIdentifier()]?Color_CommentBorderSelected:Color_CommentBorder]);
+	gdk_draw_rounded_rectangle(
+		l_pWidget->window,
+		l_pDrawGC,
+		FALSE,
+		xStart, yStart, xSize, ySize, 16);
+
+	::PangoContext* l_pPangoContext=NULL;
+	::PangoLayout* l_pPangoLayout=NULL;
+	l_pPangoContext=gtk_widget_get_pango_context(l_pWidget);
+	l_pPangoLayout=pango_layout_new(l_pPangoContext);
+	pango_layout_set_alignment(l_pPangoLayout, PANGO_ALIGN_CENTER);
+	if(pango_parse_markup(rComment.getText().toASCIIString(), -1, 0, NULL, NULL, NULL, NULL))
+	{
+		pango_layout_set_markup(l_pPangoLayout, rComment.getText().toASCIIString(), -1);
+	}
+	else
+	{
+		pango_layout_set_text(l_pPangoLayout, rComment.getText().toASCIIString(), -1);
+	}
+	gdk_draw_layout(
+		l_pWidget->window,
+		l_pWidget->style->text_gc[GTK_WIDGET_STATE(l_pWidget)],
+		xStart+xMargin, yStart+yMargin, l_pPangoLayout);
+	g_object_unref(l_pPangoLayout);
+
+	g_object_unref(l_pDrawGC);
+	g_object_unref(l_pStencilGC);
+}
+
 void CInterfacedScenario::redraw(ILink& rLink)
 {
 	::GtkWidget* l_pWidget=GTK_WIDGET(m_pScenarioDrawingArea);
@@ -923,7 +988,7 @@ void CInterfacedScenario::scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 		gint l_iMaxY=-0x7fff;
 
 		gint l_iMarginX=128;
-		gint l_iMarginY=64;
+		gint l_iMarginY=128;
 
 		CIdentifier l_oBoxIdentifier;
 		while((l_oBoxIdentifier=m_rScenario.getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
@@ -933,6 +998,16 @@ void CInterfacedScenario::scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 			if(l_iMaxX<l_oBoxProxy.getXCenter()) l_iMaxX=l_oBoxProxy.getXCenter();
 			if(l_iMinY>l_oBoxProxy.getYCenter()) l_iMinY=l_oBoxProxy.getYCenter();
 			if(l_iMaxY<l_oBoxProxy.getYCenter()) l_iMaxY=l_oBoxProxy.getYCenter();
+		}
+
+		CIdentifier l_oCommentIdentifier;
+		while((l_oCommentIdentifier=m_rScenario.getNextCommentIdentifier(l_oCommentIdentifier))!=OV_UndefinedIdentifier)
+		{
+			CCommentProxy l_oCommentProxy(m_rKernelContext, *m_rScenario.getCommentDetails(l_oCommentIdentifier));
+			if(l_iMinX>l_oCommentProxy.getXCenter()) l_iMinX=l_oCommentProxy.getXCenter();
+			if(l_iMaxX<l_oCommentProxy.getXCenter()) l_iMaxX=l_oCommentProxy.getXCenter();
+			if(l_iMinY>l_oCommentProxy.getYCenter()) l_iMinY=l_oCommentProxy.getYCenter();
+			if(l_iMaxY<l_oCommentProxy.getYCenter()) l_iMaxY=l_oCommentProxy.getYCenter();
 		}
 
 		gint l_iNewScenarioSizeX=l_iMaxX-l_iMinX;
@@ -945,10 +1020,6 @@ void CInterfacedScenario::scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 
 		if(l_iNewScenarioSizeX>=0 && l_iNewScenarioSizeY>=0)
 		{
-			if(l_iMarginX-m_i32ViewOffsetX                                       >l_iMinX) { m_i32ViewOffsetX=l_iMarginX-l_iMinX; }
-			if(l_iMarginX-m_i32ViewOffsetX+max(l_iViewportX, l_iNewScenarioSizeX)<l_iMaxX) { m_i32ViewOffsetX=l_iMarginX-l_iMaxX+max(l_iViewportX, l_iNewScenarioSizeX); }
-			if(l_iMarginY-m_i32ViewOffsetY                                       >l_iMinY) { m_i32ViewOffsetY=l_iMarginY-l_iMinY; }
-			if(l_iMarginY-m_i32ViewOffsetY+max(l_iViewportY, l_iNewScenarioSizeY)<l_iMaxY) { m_i32ViewOffsetY=l_iMarginY-l_iMaxY+max(l_iViewportY, l_iNewScenarioSizeY); }
 			if(l_iOldScenarioSizeX!=l_iNewScenarioSizeX+2*l_iMarginX || l_iOldScenarioSizeY!=l_iNewScenarioSizeY+2*l_iMarginY)
 			{
 				gtk_widget_set_size_request(GTK_WIDGET(m_pScenarioDrawingArea), l_iNewScenarioSizeX+2*l_iMarginX, l_iNewScenarioSizeY+2*l_iMarginY);
@@ -963,6 +1034,24 @@ void CInterfacedScenario::scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 				gtk_viewport_set_vadjustment(m_pScenarioViewport, l_pVAdjustment);
 */
 			}
+
+#if 0
+m_rKernelContext.getLogManager() << LogLevel_Info << "scenarioDrawingAreaExposeCB:\n";
+m_rKernelContext.getLogManager() << LogLevel_Info << "m_i32ViewOffsetX=" << m_i32ViewOffsetX << "\n";
+m_rKernelContext.getLogManager() << LogLevel_Info << "m_i32ViewOffsetY=" << m_i32ViewOffsetY << "\n";
+m_rKernelContext.getLogManager() << LogLevel_Info << "l_iMinX=" << int32(l_iMinX) << "\n";
+m_rKernelContext.getLogManager() << LogLevel_Info << "l_iMinY=" << int32(l_iMinY) << "\n";
+m_rKernelContext.getLogManager() << LogLevel_Info << "l_iMaxX=" << int32(l_iMaxX) << "\n";
+m_rKernelContext.getLogManager() << LogLevel_Info << "l_iMaxY=" << int32(l_iMaxY) << "\n";
+
+m_rKernelContext.getLogManager() << LogLevel_Info << "l_iNewScenarioSizeX=" << int32(l_iNewScenarioSizeX) << "\n";
+m_rKernelContext.getLogManager() << LogLevel_Info << "l_iNewScenarioSizeY=" << int32(l_iNewScenarioSizeY) << "\n";
+#endif
+
+			if(l_iMaxX+m_i32ViewOffsetX>-l_iMarginX+max(l_iViewportX, l_iNewScenarioSizeX+2*l_iMarginX)) { m_i32ViewOffsetX=-l_iMaxX-l_iMarginX+max(l_iViewportX, l_iNewScenarioSizeX+2*l_iMarginX); }
+			if(l_iMinX+m_i32ViewOffsetX< l_iMarginX)                                                     { m_i32ViewOffsetX=-l_iMinX+l_iMarginX; }
+			if(l_iMaxY+m_i32ViewOffsetY>-l_iMarginY+max(l_iViewportY, l_iNewScenarioSizeY+2*l_iMarginY)) { m_i32ViewOffsetY=-l_iMaxY-l_iMarginY+max(l_iViewportY, l_iNewScenarioSizeY+2*l_iMarginY); }
+			if(l_iMinY+m_i32ViewOffsetY< l_iMarginY)                                                     { m_i32ViewOffsetY=-l_iMinY+l_iMarginY; }
 		}
 	}
 
@@ -1003,6 +1092,15 @@ void CInterfacedScenario::scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent)
 
 	m_ui32InterfacedObjectId=0;
 	m_vInterfacedObject.clear();
+
+	uint32 l_ui32CommentCount=0;
+	CIdentifier l_oCommentIdentifier;
+	while((l_oCommentIdentifier=m_rScenario.getNextCommentIdentifier(l_oCommentIdentifier))!=OV_UndefinedIdentifier)
+	{
+		redraw(*m_rScenario.getCommentDetails(l_oCommentIdentifier));
+		l_ui32CommentCount++;
+	}
+	m_ui32CommentCount=l_ui32CommentCount;
 
 	uint32 l_ui32BoxCount=0;
 	CIdentifier l_oBoxIdentifier;
@@ -1182,6 +1280,13 @@ void CInterfacedScenario::scenarioDrawingAreaMotionNotifyCB(::GtkWidget* pWidget
 						l_oBoxProxy.getXCenter()+(int32)(pEvent->x-m_f64CurrentMouseX),
 						l_oBoxProxy.getYCenter()+(int32)(pEvent->y-m_f64CurrentMouseY));
 				}
+				if(i->second && m_rScenario.isComment(i->first))
+				{
+					CCommentProxy l_oCommentProxy(m_rKernelContext, m_rScenario, i->first);
+					l_oCommentProxy.setCenter(
+						l_oCommentProxy.getXCenter()+(int32)(pEvent->x-m_f64CurrentMouseX),
+						l_oCommentProxy.getYCenter()+(int32)(pEvent->y-m_f64CurrentMouseY));
+				}
 			}
 		}
 
@@ -1278,13 +1383,28 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 						}
 						else
 						{
-							IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
-							if(l_pBox)
+							if(m_rScenario.isBox(m_oCurrentObject.m_oIdentifier))
 							{
-								if(l_pBox->getSettingCount()!=0)
+								IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
+								if(l_pBox)
 								{
-									CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, *l_pBox, m_sGUIFilename.c_str());
-									if(l_oBoxConfigurationDialog.run())
+									if(l_pBox->getSettingCount()!=0)
+									{
+										CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, *l_pBox, m_sGUIFilename.c_str());
+										if(l_oBoxConfigurationDialog.run())
+										{
+											this->snapshotCB();
+										}
+									}
+								}
+							}
+							if(m_rScenario.isComment(m_oCurrentObject.m_oIdentifier))
+							{
+								IComment* l_pComment=m_rScenario.getCommentDetails(m_oCurrentObject.m_oIdentifier);
+								if(l_pComment)
+								{
+									CCommentEditorDialog l_oCommentEditorDialog(m_rKernelContext, *l_pComment, m_sGUIFilename.c_str());
+									if(l_oCommentEditorDialog.run())
 									{
 										this->snapshotCB();
 									}
@@ -1352,7 +1472,7 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 						if(m_rApplication.m_pClipboardScenario->getNextBoxIdentifier(OV_UndefinedIdentifier)!=OV_UndefinedIdentifier) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionPaste, GTK_STOCK_PASTE, "paste...", context_menu_cb, NULL, ContextMenu_SelectionPaste, -1); }
 						if(this->hasSelection()) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionCut, GTK_STOCK_DELETE, "delete...", context_menu_cb, NULL, ContextMenu_SelectionDelete, -1); }
 
-						if(m_oCurrentObject.m_oIdentifier!=OV_UndefinedIdentifier)
+						if(m_oCurrentObject.m_oIdentifier!=OV_UndefinedIdentifier && m_rScenario.isBox(m_oCurrentObject.m_oIdentifier))
 						{
 							IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
 							if(l_pBox)
@@ -1492,6 +1612,8 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 							}
 						}
 
+						gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemScenarioAbout, GTK_STOCK_ABOUT, "about scenario...", context_menu_cb, NULL, ContextMenu_ScenarioAbout, -1);
+
 						// -------------- RUN --------------
 
 						#undef gtk_menu_add_separator_menu_item
@@ -1595,6 +1717,13 @@ void CInterfacedScenario::scenarioDrawingAreaButtonReleasedCB(::GtkWidget* pWidg
 							((l_oBoxProxy.getXCenter()+8)&0xfffffff0),
 							((l_oBoxProxy.getYCenter()+8)&0xfffffff0));
 					}
+					if(i->second && m_rScenario.isComment(i->first))
+					{
+						CCommentProxy l_oCommentProxy(m_rKernelContext, m_rScenario, i->first);
+						l_oCommentProxy.setCenter(
+							((l_oCommentProxy.getXCenter()+8)&0xfffffff0),
+							((l_oCommentProxy.getYCenter()+8)&0xfffffff0));
+					}
 				}
 				this->snapshotCB();
 			}
@@ -1621,6 +1750,42 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 	if((pEvent->keyval==GDK_Y || pEvent->keyval==GDK_y) && m_bControlPressed)
 	{
 		this->redoCB();
+	}
+
+	if((pEvent->keyval==GDK_C || pEvent->keyval==GDK_c) && m_ui32CurrentMode==Mode_None)
+	{
+		CIdentifier l_oIdentifier;
+		m_rScenario.addComment(l_oIdentifier);
+
+		gint iX=0;
+		gint iY=0;
+		::gdk_window_get_pointer(GTK_WIDGET(m_pScenarioDrawingArea)->window, &iX, &iY, NULL);
+
+		CCommentProxy l_oCommentProxy(m_rKernelContext, m_rScenario, l_oIdentifier);
+		l_oCommentProxy.setCenter(iX-m_i32ViewOffsetX, iY-m_i32ViewOffsetY);
+
+		// Aligns comemnts on grid
+		l_oCommentProxy.setCenter(
+			((l_oCommentProxy.getXCenter()+8)&0xfffffff0),
+			((l_oCommentProxy.getYCenter()+8)&0xfffffff0));
+
+		// Applies modifications before snapshot
+		l_oCommentProxy.apply();
+
+		CCommentEditorDialog l_oCommentEditorDialog(m_rKernelContext, *m_rScenario.getCommentDetails(l_oIdentifier), m_sGUIFilename.c_str());
+		if(!l_oCommentEditorDialog.run())
+		{
+			m_rScenario.removeComment(l_oIdentifier);
+		}
+		else
+		{
+			m_vCurrentObject.clear();
+			m_vCurrentObject[l_oIdentifier]=true;
+
+			this->snapshotCB();
+		}
+
+		this->redraw();
 	}
 
 	if(pEvent->keyval==GDK_F12 && m_bShiftPressed)
@@ -1663,21 +1828,37 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 			}
 		}
 
-		for(it=l_vSelectedBoxAlgorithm.begin(); it!=l_vSelectedBoxAlgorithm.end(); it++)
+		if(l_vSelectedBoxAlgorithm.size())
 		{
-			if(it->first!=OV_UndefinedIdentifier)
+			for(it=l_vSelectedBoxAlgorithm.begin(); it!=l_vSelectedBoxAlgorithm.end(); it++)
 			{
-				if(m_rKernelContext.getPluginManager().canCreatePluginObject(it->first))
+				if(it->first!=OV_UndefinedIdentifier)
 				{
-					const IPluginObjectDesc* l_pPluginObjectDesc=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(it->first);
-					CString l_sHTMLName=CString("Doc_BoxAlgorithm_")+CString(getBoxAlgorithmURL(l_pPluginObjectDesc->getName().toASCIIString()).c_str())+CString(".html");
-					CString l_sFullURL=l_sURLBase+CString("/")+l_sHTMLName;
-					m_rKernelContext.getLogManager() << LogLevel_Trace << "Requesting web browser on URL " << l_sFullURL << "\n";
-					int l_iResult=::system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
-					if(l_iResult<0)
+					if(m_rKernelContext.getPluginManager().canCreatePluginObject(it->first))
 					{
-						m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not launch command " << l_sWebBrowser+CString(" ")+l_sFullURL << "\n";
+						const IPluginObjectDesc* l_pPluginObjectDesc=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(it->first);
+						CString l_sHTMLName=CString("Doc_BoxAlgorithm_")+CString(getBoxAlgorithmURL(l_pPluginObjectDesc->getName().toASCIIString()).c_str())+CString(".html");
+						CString l_sFullURL=l_sURLBase+CString("/")+l_sHTMLName;
+						m_rKernelContext.getLogManager() << LogLevel_Trace << "Requesting web browser on URL " << l_sFullURL << "\n";
+						int l_iResult=::system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
+						if(l_iResult<0)
+						{
+							m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not launch command " << l_sWebBrowser+CString(" ")+l_sFullURL << "\n";
+						}
 					}
+				}
+			}
+		}
+		else
+		{
+			CString l_sFullURL=m_rScenario.getAttributeValue(OV_AttributeId_Scenario_DocumentationPage);
+			if(l_sFullURL!=CString(""))
+			{
+				m_rKernelContext.getLogManager() << LogLevel_Trace << "Requesting web browser on URL " << l_sFullURL << "\n";
+				int l_iResult=::system((l_sWebBrowser+CString(" ")+l_sFullURL).toASCIIString());
+				if(l_iResult<0)
+				{
+					m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not launch command " << l_sWebBrowser+CString(" ")+l_sFullURL << "\n";
 				}
 			}
 		}
@@ -1736,6 +1917,23 @@ void CInterfacedScenario::copySelection(void)
 				const IBox* l_pBox=m_rScenario.getBoxDetails(it->first);
 				m_rApplication.m_pClipboardScenario->addBox(
 					*l_pBox,
+					l_oNewIdentifier);
+				l_vIdMapping[it->first]=l_oNewIdentifier;
+			}
+		}
+	}
+
+	// Copies comments to clipboard
+	for(it=m_vCurrentObject.begin(); it!=m_vCurrentObject.end(); it++)
+	{
+		if(it->second)
+		{
+			if(m_rScenario.isComment(it->first))
+			{
+				CIdentifier l_oNewIdentifier;
+				const IComment* l_pComment=m_rScenario.getCommentDetails(it->first);
+				m_rApplication.m_pClipboardScenario->addComment(
+					*l_pComment,
 					l_oNewIdentifier);
 				l_vIdMapping[it->first]=l_oNewIdentifier;
 			}
@@ -1808,6 +2006,17 @@ void CInterfacedScenario::pasteSelection(void)
 		l_iBoxCount++;
 	}
 
+	// Pastes comments from clipboard
+	while((l_oIdentifier=m_rApplication.m_pClipboardScenario->getNextCommentIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+	{
+		CIdentifier l_oNewIdentifier;
+		IComment* l_pComment=m_rApplication.m_pClipboardScenario->getCommentDetails(l_oIdentifier);
+		m_rScenario.addComment(
+			*l_pComment,
+			l_oNewIdentifier);
+		l_vIdMapping[l_oIdentifier]=l_oNewIdentifier;
+	}
+
 	// Pastes links from clipboard
 	while((l_oIdentifier=m_rApplication.m_pClipboardScenario->getNextLinkIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
 	{
@@ -1823,24 +2032,43 @@ void CInterfacedScenario::pasteSelection(void)
 
 	// Makes pasted stuff the default selection
 	// Moves boxes under cursor
-	if(m_rApplication.m_pClipboardScenario->getNextBoxIdentifier(OV_UndefinedIdentifier)!=OV_UndefinedIdentifier)
+	// Moves comments under cursor
+	if(m_rApplication.m_pClipboardScenario->getNextBoxIdentifier(OV_UndefinedIdentifier)!=OV_UndefinedIdentifier || m_rApplication.m_pClipboardScenario->getNextCommentIdentifier(OV_UndefinedIdentifier)!=OV_UndefinedIdentifier)
 	{
 		m_vCurrentObject.clear();
 		for(it=l_vIdMapping.begin(); it!=l_vIdMapping.end(); it++)
 		{
 			m_vCurrentObject[it->second]=true;
 
-			// Moves boxes under cursor
-			CBoxProxy l_oBoxProxy(m_rKernelContext, m_rScenario, it->second);
-			l_oBoxProxy.setCenter(
-				(int32)(l_oBoxProxy.getXCenter()),
-				(int32)(l_oBoxProxy.getYCenter()-32));
-			// Ok, why 32 would you ask, just because it is fine
+			if(m_rScenario.isBox(it->second))
+			{
+				// Moves boxes under cursor
+				CBoxProxy l_oBoxProxy(m_rKernelContext, m_rScenario, it->second);
+				l_oBoxProxy.setCenter(
+					(int32)(l_oBoxProxy.getXCenter()),
+					(int32)(l_oBoxProxy.getYCenter()-32));
+				// Ok, why 32 would you ask, just because it is fine
 
-			// Aligns boxes on grid
-			l_oBoxProxy.setCenter(
-				((l_oBoxProxy.getXCenter()+8)&0xfffffff0),
-				((l_oBoxProxy.getYCenter()+8)&0xfffffff0));
+				// Aligns boxes on grid
+				l_oBoxProxy.setCenter(
+					((l_oBoxProxy.getXCenter()+8)&0xfffffff0),
+					((l_oBoxProxy.getYCenter()+8)&0xfffffff0));
+			}
+
+			if(m_rScenario.isComment(it->second))
+			{
+				// Moves commentes under cursor
+				CCommentProxy l_oCommentProxy(m_rKernelContext, m_rScenario, it->second);
+				l_oCommentProxy.setCenter(
+					(int32)(l_oCommentProxy.getXCenter()),
+					(int32)(l_oCommentProxy.getYCenter()-32));
+				// Ok, why 32 would you ask, just because it is fine
+
+				// Aligns commentes on grid
+				l_oCommentProxy.setCenter(
+					((l_oCommentProxy.getXCenter()+8)&0xfffffff0),
+					((l_oCommentProxy.getYCenter()+8)&0xfffffff0));
+			}
 		}
 	}
 
@@ -1863,6 +2091,11 @@ void CInterfacedScenario::deleteSelection(void)
 
 				// removes box from scenario
 				m_rScenario.removeBox(i->first);
+			}
+			if(m_rScenario.isComment(i->first))
+			{
+				// removes comment from scenario
+				m_rScenario.removeComment(i->first);
 			}
 			if(m_rScenario.isLink(i->first))
 			{
@@ -2029,6 +2262,13 @@ void CInterfacedScenario::contextMenuBoxAboutCB(IBox& rBox)
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxAboutCB\n";
 	CAboutPluginDialog l_oAboutPluginDialog(m_rKernelContext, rBox.getAlgorithmClassIdentifier(), m_sGUIFilename.c_str());
 	l_oAboutPluginDialog.run();
+}
+
+void CInterfacedScenario::contextMenuScenarioAboutCB(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuScenarioAboutCB\n";
+	CAboutScenarioDialog l_oAboutScenarioDialog(m_rKernelContext, m_rScenario, m_sGUIFilename.c_str());
+	l_oAboutScenarioDialog.run();
 }
 
 void CInterfacedScenario::toggleDesignerVisualisation()

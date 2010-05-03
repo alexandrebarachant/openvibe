@@ -55,6 +55,7 @@
 #define OV_ClassId_Kernel_Scenario_BoxIO                     OpenViBE::CIdentifier(0x110AAB4F, 0x157CBEF1)
 #define OV_ClassId_Kernel_Scenario_BoxListenerContext        OpenViBE::CIdentifier(0xB4344A89, 0xC5044324)
 #define OV_ClassId_Kernel_Scenario_BoxProto                  OpenViBE::CIdentifier(0x169ED1C1, 0x639C5957)
+#define OV_ClassId_Kernel_Scenario_Comment                   OpenViBE::CIdentifier(0x13597D48, 0xB7268440)
 #define OV_ClassId_Kernel_Scenario_Link                      OpenViBE::CIdentifier(0x38F6E10D, 0x6BA2721A)
 #define OV_ClassId_Kernel_Scenario_ProcessingUnit            OpenViBE::CIdentifier(0x3681EC07, 0x337DE51F)
 #define OV_ClassId_Kernel_Scenario_Scenario                  OpenViBE::CIdentifier(0x6EED456C, 0x2FC6F03A)
@@ -113,6 +114,14 @@
 //___________________________________________________________________//
 //                                                                   //
 
+#define OV_AttributeId_Scenario_Name                         OpenViBE::CIdentifier(0x9F5C4075, 0x4A0D3666)
+#define OV_AttributeId_Scenario_Author                       OpenViBE::CIdentifier(0x790D75B8, 0x3BB90C33)
+#define OV_AttributeId_Scenario_Company                      OpenViBE::CIdentifier(0xF8034A49, 0x8B3F37CC)
+#define OV_AttributeId_Scenario_Description                  OpenViBE::CIdentifier(0x84009D7C, 0x3C4E763B)
+#define OV_AttributeId_Scenario_Category                     OpenViBE::CIdentifier(0xF6B2E3FA, 0x7BD43926)
+#define OV_AttributeId_Scenario_Version                      OpenViBE::CIdentifier(0x8C1FC55B, 0x7B433DC2)
+#define OV_AttributeId_Scenario_DocumentationPage            OpenViBE::CIdentifier(0xF36A1567, 0xD13C53DA)
+
 #define OV_AttributeId_Box_XCenterPosition                   OpenViBE::CIdentifier(0x207C9054, 0x3C841B63)
 #define OV_AttributeId_Box_YCenterPosition                   OpenViBE::CIdentifier(0x1FA7A38F, 0x54EDBE0B)
 #define OV_AttributeId_Box_XSize                             OpenViBE::CIdentifier(0xAD100179, 0xA3C984AB)
@@ -132,6 +141,11 @@
 #define OV_AttributeId_Box_FlagCanModifyOutput               OpenViBE::CIdentifier(0x30A4E5C9, 0x83502953)
 #define OV_AttributeId_Box_FlagCanAddSetting                 OpenViBE::CIdentifier(0x61D11811, 0x71E65362)
 #define OV_AttributeId_Box_FlagCanModifySetting              OpenViBE::CIdentifier(0xF191C1C8, 0xA0123976)
+
+#define OV_AttributeId_Comment_XCenterPosition               OpenViBE::CIdentifier(0x473D9A43, 0x97FC0A97)
+#define OV_AttributeId_Comment_YCenterPosition               OpenViBE::CIdentifier(0x7234B86B, 0x2B8651A5)
+// #define OV_AttributeId_Comment_XSize                         OpenViBE::CIdentifier(0xE680C753, 0x605306E0)
+// #define OV_AttributeId_Comment_YSize                         OpenViBE::CIdentifier(0x6E73BAD9, 0x92143DB3)
 
 #define OV_AttributeId_Link_XSourcePosition                  OpenViBE::CIdentifier(0x358AE8B5, 0x0F8BACD1)
 #define OV_AttributeId_Link_YSourcePosition                  OpenViBE::CIdentifier(0x1B32C44C, 0x1905E0E9)

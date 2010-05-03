@@ -31,6 +31,8 @@ namespace OpenViBEDesigner
 		ContextMenu_BoxEditSetting,
 		ContextMenu_BoxConfigure,
 		ContextMenu_BoxAbout,
+
+		ContextMenu_ScenarioAbout,
 	};
 
 	enum
@@ -60,6 +62,10 @@ namespace OpenViBEDesigner
 		Color_BoxOutputBorder,
 		Color_BoxSettingBackground,
 		Color_BoxSettingBorder,
+		Color_CommentBackground,
+		Color_CommentBackgroundSelected,
+		Color_CommentBorder,
+		Color_CommentBorderSelected,
 		Color_Link,
 		Color_LinkSelected,
 		Color_LinkDownCast,

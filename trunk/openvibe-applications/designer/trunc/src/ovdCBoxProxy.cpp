@@ -10,6 +10,7 @@ CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, const IBox& rBox)
 	:m_rKernelContext(rKernelContext)
 	,m_pConstBox(&rBox)
 	,m_pBox(NULL)
+	,m_bApplied(false)
 	,m_iXCenter(0)
 	,m_iYCenter(0)
 {
@@ -25,6 +26,7 @@ CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, IScenario& rScenario,
 	:m_rKernelContext(rKernelContext)
 	,m_pConstBox(rScenario.getBoxDetails(rBoxIdentifier))
 	,m_pBox(rScenario.getBoxDetails(rBoxIdentifier))
+	,m_bApplied(false)
 	,m_iXCenter(0)
 	,m_iYCenter(0)
 {
@@ -38,7 +40,10 @@ CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, IScenario& rScenario,
 
 CBoxProxy::~CBoxProxy(void)
 {
-	this->apply();
+	if(!m_bApplied)
+	{
+		this->apply();
+	}
 }
 
 CBoxProxy::operator IBox* (void)
@@ -79,7 +84,9 @@ void CBoxProxy::setCenter(int32 i32XCenter, int32 i32YCenter)
 {
 	m_iXCenter=i32XCenter;
 	m_iYCenter=i32YCenter;
+	m_bApplied=false;
 }
+
 void CBoxProxy::apply(void)
 {
 	if(m_pBox)
@@ -95,6 +102,8 @@ void CBoxProxy::apply(void)
 			l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
 		else
 			l_oAttributeHandler.addAttribute<int>(OV_AttributeId_Box_YCenterPosition, m_iYCenter);
+
+		m_bApplied=true;
 	}
 }
 

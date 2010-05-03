@@ -3,6 +3,7 @@
 #include "ovkCScenarioImporterContext.h"
 
 #include "ovkCBox.h"
+#include "ovkCComment.h"
 #include "ovkCLink.h"
 #include "ovkCProcessingUnit.h"
 
@@ -127,6 +128,14 @@ boolean CScenario::clear(void)
 		delete itBox->second;
 	}
 	m_vBox.clear();
+
+	// Clears comments
+	map<CIdentifier, CComment*>::iterator itComment;
+	for(itComment=m_vComment.begin(); itComment!=m_vComment.end(); itComment++)
+	{
+		delete itComment->second;
+	}
+	m_vComment.clear();
 
 	// Clears links
 	map<CIdentifier, CLink*>::iterator itLink;
@@ -388,6 +397,114 @@ boolean CScenario::removeBox(
 	m_vBox.erase(itBox);
 
 	this->getLogManager() << LogLevel_Trace << "The box has been removed\n";
+
+	return true;
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+CIdentifier CScenario::getNextCommentIdentifier(
+	const CIdentifier& rPreviousIdentifier) const
+{
+	return getNextTIdentifier<CComment, TTestTrue<CComment> >(m_vComment, rPreviousIdentifier, TTestTrue<CComment>());
+}
+
+const IComment* CScenario::getCommentDetails(
+	const CIdentifier& rCommentIdentifier) const
+{
+	this->getLogManager() << LogLevel_Debug << "Getting const comment details from scenario\n";
+
+	map<CIdentifier, CComment*>::const_iterator itComment;
+	itComment=m_vComment.find(rCommentIdentifier);
+	if(itComment==m_vComment.end())
+	{
+		this->getLogManager() << LogLevel_Warning << "The comment does not exist\n";
+		return NULL;
+	}
+	return itComment->second;
+}
+
+boolean CScenario::isComment(
+	const CIdentifier& rIdentifier) const
+{
+	map<CIdentifier, CComment*>::const_iterator itComment;
+	itComment=m_vComment.find(rIdentifier);
+	return itComment!=m_vComment.end();
+}
+
+IComment* CScenario::getCommentDetails(
+	const CIdentifier& rCommentIdentifier)
+{
+	this->getLogManager() << LogLevel_Debug << "Getting comment details from scenario\n";
+
+	map<CIdentifier, CComment*>::const_iterator itComment;
+	itComment=m_vComment.find(rCommentIdentifier);
+	if(itComment==m_vComment.end())
+	{
+		this->getLogManager() << LogLevel_Warning << "The comment does not exist\n";
+		return NULL;
+	}
+	return itComment->second;
+}
+
+boolean CScenario::addComment(
+	CIdentifier& rCommentIdentifier)
+{
+	this->getLogManager() << LogLevel_Trace << "Adding new empty comment in scenario\n";
+
+	rCommentIdentifier=getUnusedIdentifier();
+	CComment* l_pComment=new CComment(this->getKernelContext(), *this);
+	l_pComment->setIdentifier(rCommentIdentifier);
+
+	m_vComment[rCommentIdentifier]=l_pComment;
+	return true;
+}
+
+boolean CScenario::addComment(
+	const IComment& rComment,
+	CIdentifier& rCommentIdentifier)
+{
+	this->getLogManager() << LogLevel_Trace << "Adding a new comment in the scenario based on an existing one\n";
+
+	if(!addComment(rCommentIdentifier))
+	{
+		return false;
+	}
+
+	IComment* l_pComment=getCommentDetails(rCommentIdentifier);
+	if(!l_pComment)
+	{
+		return false;
+	}
+
+	return l_pComment->initializeFromExistingComment(rComment);
+}
+
+boolean CScenario::removeComment(
+	const CIdentifier& rCommentIdentifier)
+{
+	this->getLogManager() << LogLevel_Trace << "Removing comment from scenario\n";
+
+	// Finds the comment according to its identifier
+	map<CIdentifier, CComment*>::iterator itComment;
+	itComment=m_vComment.find(rCommentIdentifier);
+	if(itComment==m_vComment.end())
+	{
+		// The comment does not exist !
+		this->getLogManager() << LogLevel_Warning << "The comment does not exist\n";
+		return false;
+	}
+
+	this->getLogManager() << LogLevel_Trace << "Found the comment !\n";
+
+	// Deletes the comment itself
+	delete itComment->second;
+
+	// Removes comment from the comment list
+	m_vComment.erase(itComment);
+
+	this->getLogManager() << LogLevel_Trace << "The comment has been removed\n";
 
 	return true;
 }
@@ -710,8 +827,8 @@ boolean CScenario::acceptVisitor(
 		}
 	}
 
-	map<CIdentifier, CLink*>::iterator j;
-	for(j=m_vLink.begin(); j!=m_vLink.end(); j++)
+	map<CIdentifier, CComment*>::iterator j;
+	for(j=m_vComment.begin(); j!=m_vComment.end(); j++)
 	{
 		if(!j->second->acceptVisitor(rObjectVisitor))
 		{
@@ -719,10 +836,19 @@ boolean CScenario::acceptVisitor(
 		}
 	}
 
-	map<CIdentifier, CProcessingUnit*>::iterator k;
-	for(k=m_vProcessingUnit.begin(); k!=m_vProcessingUnit.end(); k++)
+	map<CIdentifier, CLink*>::iterator k;
+	for(k=m_vLink.begin(); k!=m_vLink.end(); k++)
 	{
 		if(!k->second->acceptVisitor(rObjectVisitor))
+		{
+			return false;
+		}
+	}
+
+	map<CIdentifier, CProcessingUnit*>::iterator l;
+	for(l=m_vProcessingUnit.begin(); l!=m_vProcessingUnit.end(); l++)
+	{
+		if(!l->second->acceptVisitor(rObjectVisitor))
 		{
 			return false;
 		}

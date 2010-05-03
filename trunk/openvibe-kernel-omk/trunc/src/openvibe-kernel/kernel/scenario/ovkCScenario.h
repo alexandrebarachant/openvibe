@@ -13,6 +13,7 @@ namespace OpenViBE
 	namespace Kernel
 	{
 		class CBox;
+		class CComment;
 		class CLink;
 		class CProcessingUnit;
 
@@ -54,6 +55,22 @@ namespace OpenViBE
 				OpenViBE::CIdentifier& rBoxIdentifier);
 			virtual OpenViBE::boolean removeBox(
 				const OpenViBE::CIdentifier& rBoxIdentifier);
+
+			virtual OpenViBE::CIdentifier getNextCommentIdentifier(
+				const OpenViBE::CIdentifier& rPreviousIdentifier) const;
+			virtual OpenViBE::boolean isComment(
+				const OpenViBE::CIdentifier& rCommentIdentifier) const;
+			virtual const OpenViBE::Kernel::IComment* getCommentDetails(
+				const OpenViBE::CIdentifier& rCommentIdentifier) const;
+			virtual OpenViBE::Kernel::IComment* getCommentDetails(
+				const OpenViBE::CIdentifier& rCommentIdentifier);
+			virtual OpenViBE::boolean addComment(
+				OpenViBE::CIdentifier& rCommentIdentifier);
+			virtual OpenViBE::boolean addComment(
+				const OpenViBE::Kernel::IComment& rComment,
+				OpenViBE::CIdentifier& rCommentIdentifier);
+			virtual OpenViBE::boolean removeComment(
+				const OpenViBE::CIdentifier& rCommentIdentifier);
 
 			virtual OpenViBE::CIdentifier getNextLinkIdentifier(
 				const OpenViBE::CIdentifier& rPreviousIdentifier) const;
@@ -118,6 +135,7 @@ namespace OpenViBE
 			OpenViBE::CIdentifier m_oIdentifier;
 			OpenViBE::CIdentifier m_oVisualisationTreeIdentifier;
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CBox*> m_vBox;
+			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CComment*> m_vComment;
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CLink*> m_vLink;
 			std::map<OpenViBE::CIdentifier, OpenViBE::Kernel::CProcessingUnit*> m_vProcessingUnit;
 		};

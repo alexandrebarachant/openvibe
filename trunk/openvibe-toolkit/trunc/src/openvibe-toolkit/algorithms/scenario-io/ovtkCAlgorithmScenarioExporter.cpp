@@ -17,6 +17,7 @@ namespace OpenViBEToolkit
 
 			CAlgorithmScenarioExporterHelper(IAlgorithmContext& rKernelContext, CAlgorithmScenarioExporter& rParent);
 			boolean exportBox(IMemoryBuffer& rMemoryBuffer, const IBox& rBox);
+			boolean exportComment(IMemoryBuffer& rMemoryBuffer, const IComment& rComment);
 			boolean exportLink(IMemoryBuffer& rMemoryBuffer, const ILink& rLink);
 			boolean exportVisualisationTree(IMemoryBuffer& rMemoryBuffer, const IVisualisationTree& rVisualisationTree);
 			boolean exportVisualisationWidget(IMemoryBuffer& rMemoryBuffer, const IVisualisationTree& rVisualisationTree, const IVisualisationWidget& rVisualisationWidget);
@@ -49,6 +50,7 @@ boolean CAlgorithmScenarioExporter::process(void)
 	CAlgorithmScenarioExporterHelper l_oHelper(this->getAlgorithmContext(), *this);
 	CMemoryBuffer l_oTemporaryMemoryBuffer;
 	CIdentifier l_oBoxIdentifer;
+	CIdentifier l_oCommentIdentifier;
 	CIdentifier l_oLinkIdentifier;
 	CIdentifier l_oVisualisationWidgetIdentifier;
 
@@ -81,6 +83,11 @@ boolean CAlgorithmScenarioExporter::process(void)
 	 this->exportStart(l_oTemporaryMemoryBuffer, OVTK_Algorithm_ScenarioExporter_NodeId_Links);
 	  while((l_oLinkIdentifier=l_pScenario->getNextLinkIdentifier(l_oLinkIdentifier))!=OV_UndefinedIdentifier)
 	   l_oHelper.exportLink(l_oTemporaryMemoryBuffer, *l_pScenario->getLinkDetails(l_oLinkIdentifier));
+	 this->exportStop(l_oTemporaryMemoryBuffer);
+
+	 this->exportStart(l_oTemporaryMemoryBuffer, OVTK_Algorithm_ScenarioExporter_NodeId_Comments);
+	  while((l_oCommentIdentifier=l_pScenario->getNextCommentIdentifier(l_oCommentIdentifier))!=OV_UndefinedIdentifier)
+	   l_oHelper.exportComment(l_oTemporaryMemoryBuffer, *l_pScenario->getCommentDetails(l_oCommentIdentifier));
 	 this->exportStop(l_oTemporaryMemoryBuffer);
 
 	 this->exportStart(l_oTemporaryMemoryBuffer, OVTK_Algorithm_ScenarioExporter_NodeId_VisualisationTree);
@@ -168,6 +175,19 @@ boolean CAlgorithmScenarioExporterHelper::exportBox(IMemoryBuffer& rMemoryBuffer
 	}
 
 	__export_attributes__(rBox, m_rParent, rMemoryBuffer, Box);
+
+	m_rParent.exportStop(rMemoryBuffer);
+
+	return true;
+}
+
+boolean CAlgorithmScenarioExporterHelper::exportComment(IMemoryBuffer& rMemoryBuffer, const IComment& rComment)
+{
+	m_rParent.exportStart(rMemoryBuffer, OVTK_Algorithm_ScenarioExporter_NodeId_Comment);
+	 m_rParent.exportIdentifier(rMemoryBuffer, OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Identifier, rComment.getIdentifier());
+	 m_rParent.exportString(rMemoryBuffer, OVTK_Algorithm_ScenarioExporter_NodeId_Comment_Text, rComment.getText());
+
+	__export_attributes__(rComment, m_rParent, rMemoryBuffer, Comment);
 
 	m_rParent.exportStop(rMemoryBuffer);
 

@@ -298,6 +298,12 @@ int go(int argc, char ** argv)
 	gdk_color_set(g_vColors[Color_BoxOutputBorder],          16383, 16383, 16383);
 	gdk_color_set(g_vColors[Color_BoxSettingBackground],     49151, 32767, 65535);
 	gdk_color_set(g_vColors[Color_BoxSettingBorder],         16383, 16383, 16383);
+
+	gdk_color_set(g_vColors[Color_CommentBackground],        65535, 65535, 57343);
+	gdk_color_set(g_vColors[Color_CommentBackgroundSelected],65535, 65535, 49151);
+	gdk_color_set(g_vColors[Color_CommentBorder],            32767, 32767, 32767);
+	gdk_color_set(g_vColors[Color_CommentBorderSelected],    32767, 32767, 32767);
+
 	gdk_color_set(g_vColors[Color_Link],                         0,     0,     0);
 	gdk_color_set(g_vColors[Color_LinkSelected],             49151, 49151, 16383);
 	gdk_color_set(g_vColors[Color_LinkUpCast],               32767, 16383, 16383);

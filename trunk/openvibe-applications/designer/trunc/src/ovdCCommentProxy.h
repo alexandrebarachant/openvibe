@@ -1,5 +1,5 @@
-#ifndef __OpenViBEDesigner_CBoxProxy_H__
-#define __OpenViBEDesigner_CBoxProxy_H__
+#ifndef __OpenViBEDesigner_CCommentProxy_H__
+#define __OpenViBEDesigner_CCommentProxy_H__
 
 #include "ovd_base.h"
 
@@ -7,21 +7,21 @@
 
 namespace OpenViBEDesigner
 {
-	class CBoxProxy
+	class CCommentProxy
 	{
 	public:
 
-		CBoxProxy(
+		CCommentProxy(
 			const OpenViBE::Kernel::IKernelContext& rKernelContext,
-			const OpenViBE::Kernel::IBox& rBox);
-		CBoxProxy(
+			const OpenViBE::Kernel::IComment& rComment);
+		CCommentProxy(
 			const OpenViBE::Kernel::IKernelContext& rKernelContext,
 			OpenViBE::Kernel::IScenario& rScenario,
-			const OpenViBE::CIdentifier& rBoxIdentifier);
-		virtual ~CBoxProxy(void);
+			const OpenViBE::CIdentifier& rCommentIdentifier);
+		virtual ~CCommentProxy(void);
 
-		operator OpenViBE::Kernel::IBox* (void);
-		operator const OpenViBE::Kernel::IBox* (void);
+		operator OpenViBE::Kernel::IComment* (void);
+		operator const OpenViBE::Kernel::IComment* (void);
 
 		OpenViBE::int32 getWidth(
 			::GtkWidget* pWidget) const;
@@ -39,11 +39,6 @@ namespace OpenViBEDesigner
 
 		virtual const char* getLabel(void) const;
 
-		OpenViBE::boolean isBoxAlgorithmPluginPresent(void) const;
-		OpenViBE::boolean isUpToDate(void) const;
-		OpenViBE::boolean isDeprecated(void) const;
-		OpenViBE::boolean isUnstable(void) const;
-
 	protected:
 
 		virtual void updateSize(
@@ -55,8 +50,8 @@ namespace OpenViBEDesigner
 	protected:
 
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
-		const OpenViBE::Kernel::IBox* m_pConstBox;
-		OpenViBE::Kernel::IBox* m_pBox;
+		const OpenViBE::Kernel::IComment* m_pConstComment;
+		OpenViBE::Kernel::IComment* m_pComment;
 		OpenViBE::boolean m_bApplied;
 		int m_iXCenter;
 		int m_iYCenter;
@@ -64,4 +59,4 @@ namespace OpenViBEDesigner
 	};
 };
 
-#endif // __OpenViBEDesigner_CBoxProxy_H__
+#endif // __OpenViBEDesigner_CCommentProxy_H__

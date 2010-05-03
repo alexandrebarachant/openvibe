@@ -73,6 +73,7 @@
 #include "kernel/scenario/ovIBoxIO.h"
 #include "kernel/scenario/ovIBoxListenerContext.h"
 #include "kernel/scenario/ovIBoxProto.h"
+#include "kernel/scenario/ovIComment.h"
 #include "kernel/scenario/ovILink.h"
 #include "kernel/scenario/ovIProcessingUnit.h"
 #include "kernel/scenario/ovIScenario.h"

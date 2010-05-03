@@ -105,7 +105,7 @@ IParameter* CAlgorithm::getInputParameter(
 	IParameter* l_pParameter=m_pInputConfigurable->getParameter(rInputParameterIdentifier);
 	if(!l_pParameter)
 	{
-		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Requested null input parameter id " << rInputParameterIdentifier << ".";
+		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Requested null input parameter id " << rInputParameterIdentifier;
 		if(m_pOutputConfigurable->getParameter(rInputParameterIdentifier))
 		{
 			getLogManager() << " Did you mean " << CString("output") << " parameter ?";
@@ -176,7 +176,7 @@ IParameter* CAlgorithm::getOutputParameter(
 	IParameter* l_pParameter=m_pOutputConfigurable->getParameter(rOutputParameterIdentifier);
 	if(!l_pParameter)
 	{
-		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Requested null output parameter id " << rOutputParameterIdentifier << "\n";
+		getLogManager() << LogLevel_Warning << "For algorithm " << m_rAlgorithmDesc.getName() << " : Requested null output parameter id " << rOutputParameterIdentifier;
 		if(m_pInputConfigurable->getParameter(rOutputParameterIdentifier))
 		{
 			getLogManager() << " Did you mean " << CString("input") << " parameter ?";
