@@ -28,7 +28,14 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 	}
 
 	m_ui64TrainStimulation=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);
-	m_ui64PartitionCount=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 3);
+
+	int64 l_i64PartitionCount=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 3);
+	if(l_i64PartitionCount<0)
+	{
+		this->getLogManager() << LogLevel_ImportantWarning << "Parition count can not be less than 0 (was " << l_i64PartitionCount << ")\n";
+		return false;
+	}
+	m_ui64PartitionCount=uint64(l_i64PartitionCount);
 
 	for(uint32 i=1; i<l_rStaticBoxContext.getInputCount(); i++)
 	{
@@ -184,53 +191,56 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 		}
 		else
 		{
-			this->getLogManager() << LogLevel_Info << "Received train stimulation - k-fold test could take quite a long time, be patient\n";
+			this->getLogManager() << LogLevel_Info << "Received train stimulation\n";
+			for(i=1; i<l_rStaticBoxContext.getInputCount(); i++)
+			{
+				this->getLogManager() << LogLevel_Trace << "For information, we have " << m_vFeatureCount[i] << " feature vector(s) for input " << i << "\n";
+			}
 
 			CMemoryBuffer l_oConfiguration;
-			CMemoryBuffer l_oBestConfiguration;
 			TParameterHandler < IMemoryBuffer* > op_pConfiguration(m_pClassifier->getOutputParameter(OVTK_Algorithm_Classifier_OutputParameterId_Configuration));
 			TParameterHandler < IMemoryBuffer* > ip_pConfiguration(m_pClassifier->getInputParameter(OVTK_Algorithm_Classifier_InputParameterId_Configuration));
 			op_pConfiguration=&l_oConfiguration;
 			ip_pConfiguration=&l_oConfiguration;
 
-			uint64 l_ui64BestPartition=0;
-			float64 l_f64BestPartitionAccuracy=0;
 			float64 l_f64PartitionAccuracy=0;
 			float64 l_f64FinalAccuracy=0;
-
 			vector<float64> l_vPartitionAccuracies(m_ui64PartitionCount);
 
-			for(uint64 i=0; i<m_ui64PartitionCount; i++)
+			if(m_ui64PartitionCount>=2)
 			{
-				size_t l_uiStartIndex=((i  )*m_vFeatureVector.size())/m_ui64PartitionCount;
-				size_t l_uiStopIndex =((i+1)*m_vFeatureVector.size())/m_ui64PartitionCount;
-
-				this->getLogManager() << LogLevel_Trace << "Training on partition " << i << " (feature vectors " << (uint32)l_uiStartIndex << " to " << (uint32)l_uiStopIndex-1 << ")...\n";
-				if(this->train(l_uiStartIndex, l_uiStopIndex))
+				this->getLogManager() << LogLevel_Info << "k-fold test could take quite a long time, be patient\n";
+				for(uint64 i=0; i<m_ui64PartitionCount; i++)
 				{
-					l_f64PartitionAccuracy=this->getAccuracy(l_uiStartIndex, l_uiStopIndex);
-					l_vPartitionAccuracies[i] = l_f64PartitionAccuracy;
-					if(l_f64PartitionAccuracy>l_f64BestPartitionAccuracy)
+					size_t l_uiStartIndex=((i  )*m_vFeatureVector.size())/m_ui64PartitionCount;
+					size_t l_uiStopIndex =((i+1)*m_vFeatureVector.size())/m_ui64PartitionCount;
+
+					this->getLogManager() << LogLevel_Trace << "Training on partition " << i << " (feature vectors " << (uint32)l_uiStartIndex << " to " << (uint32)l_uiStopIndex-1 << ")...\n";
+					if(this->train(l_uiStartIndex, l_uiStopIndex))
 					{
-						l_ui64BestPartition=i;
-						l_f64BestPartitionAccuracy=l_f64PartitionAccuracy;
-						l_oBestConfiguration.setSize(0, true);
-						l_oBestConfiguration.append(l_oConfiguration);
+						l_f64PartitionAccuracy=this->getAccuracy(l_uiStartIndex, l_uiStopIndex);
+						l_vPartitionAccuracies[i]=l_f64PartitionAccuracy;
+						l_f64FinalAccuracy+=l_f64PartitionAccuracy;
 					}
+					this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount << " (performance : " << l_f64PartitionAccuracy << "%)\n";
 				}
-				this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount << " (performance : " << l_f64PartitionAccuracy << "%)\n";
+
+				this->getLogManager() << LogLevel_Trace << "Training on whole set...\n";
+				this->train(0, 0);
+				this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << l_f64FinalAccuracy/m_ui64PartitionCount << "%\n";
 			}
-			this->getLogManager() << LogLevel_Info << "Best classifier performance was for partition " << l_ui64BestPartition+1 << "... Training on this partition again !\n";
-			l_oConfiguration.setSize(0, true);
-			l_oConfiguration.append(l_oBestConfiguration);
-			l_f64FinalAccuracy=this->getAccuracy(0, m_vFeatureVector.size());
-			this->getLogManager() << LogLevel_Info << "Best classifier performance on whole set is " << l_f64FinalAccuracy << "%\n";
+			else
+			{
+				this->getLogManager() << LogLevel_Trace << "Training on whole set...\n";
+				this->train(0, 0);
+				this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << this->getAccuracy(0, m_vFeatureVector.size()) << "% (trained without k-fold test - performance estimation may not be accurate)\n";
+			}
 
 			CString l_sConfigurationFilename(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1));
 			std::ofstream l_oFile(l_sConfigurationFilename.toASCIIString(), ios::binary);
 			if(l_oFile.is_open())
 			{
-				l_oFile.write((char*)l_oBestConfiguration.getDirectPointer(), (std::streamsize)l_oBestConfiguration.getSize());
+				l_oFile.write((char*)l_oConfiguration.getDirectPointer(), (std::streamsize)l_oConfiguration.getSize());
 				l_oFile.close();
 			}
 			else
