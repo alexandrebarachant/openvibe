@@ -260,11 +260,11 @@ boolean CGDFFileWriter::initialize()
 	{
 		m_oFile.open(m_sFileName, ios::binary | ios::trunc);
 
-		if(m_oFile.bad())
+		if(!m_oFile.good())
 		{
 			m_bError = true;
 
-			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the output file : "<<m_sFileName<<".\n";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << m_sFileName << "]\n";
 			return false;
 		}
 	}
@@ -344,11 +344,11 @@ void CGDFFileWriter::saveMatrixData()
 	{
 		m_oFile.open(m_sFileName, ios::binary | ios::trunc);
 
-		if(m_oFile.bad())
+		if(!m_oFile.good())
 		{
 			m_bError = true;
 
-			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the output file : "<<m_sFileName<<".\n";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << m_sFileName << "]\n";
 			return;
 		}
 	}
@@ -381,11 +381,11 @@ void CGDFFileWriter::saveEvents()
 	{
 		m_oFile.open(m_sFileName, ios::binary | ios::trunc);
 
-		if(m_oFile.bad())
+		if(!m_oFile.good())
 		{
 			m_bError = true;
 
-			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Couldn't open the output file : "<<m_sFileName<<".\n";
+			getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << m_sFileName << "]\n";
 			return;
 		}
 	}

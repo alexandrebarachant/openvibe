@@ -71,7 +71,7 @@ boolean CAlgorithmBrainampFileReader::process(void)
 		m_oHeaderFile.open(ip_sFilename->toASCIIString(), std::ios::binary);
 		if(!m_oHeaderFile.good())
 		{
-			getLogManager() << LogLevel_Error << "Opening " << *ip_sFilename << " failed\n";
+			getLogManager() << LogLevel_Error << "Could not open file [" << *ip_sFilename << "]\n";
 		}
 		else
 		{
@@ -288,7 +288,7 @@ boolean CAlgorithmBrainampFileReader::process(void)
 			m_oDataFile.open(l_sDataFilename.c_str(), std::ios::binary);
 			if(!m_oDataFile.good())
 			{
-				getLogManager() << LogLevel_Error << "Opening " << CString(l_sDataFilename.c_str()) << " failed\n";
+				getLogManager() << LogLevel_Error << "Could not open file [" << CString(l_sDataFilename.c_str()) << "]\n";
 			}
 			else
 			{
@@ -299,7 +299,7 @@ boolean CAlgorithmBrainampFileReader::process(void)
 			m_oMarkerFile.open(l_sMarkerFilename.c_str(), std::ios::binary);
 			if(!m_oMarkerFile.good())
 			{
-				getLogManager() << LogLevel_Error << "Opening " << CString(l_sMarkerFilename.c_str()) << " failed\n";
+				getLogManager() << LogLevel_Error << "Could not open file [" << CString(l_sMarkerFilename.c_str()) << "]\n";
 			}
 			else
 			{

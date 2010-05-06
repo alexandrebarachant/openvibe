@@ -80,6 +80,11 @@ namespace OpenViBEPlugins
 			{
 				m_oSignalFile.open(l_oParameter);
 			}
+			if(!m_oSignalFile.good())
+			{
+				this->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << l_oParameter << "]\n";
+				return false;
+			}
 
 			m_oSignalFile.seekg(0, ios::end);
 			m_ui64FileSize = (uint64)m_oSignalFile.tellg();
@@ -436,7 +441,5 @@ namespace OpenViBEPlugins
 
 			return true;
 		}
-
 	};
 };
-

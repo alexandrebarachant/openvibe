@@ -92,6 +92,11 @@ boolean CGDFFileReader::initialize()
 	if(m_sFileName)
 	{
 		m_oFile.open(m_sFileName, ios::binary);
+		if(!m_oFile.good())
+		{
+			this->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << m_sFileName << "]\n";
+			return false;
+		}
 	}
 
 	m_oFile.seekg(0, ios::end);
