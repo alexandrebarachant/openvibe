@@ -3,15 +3,15 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
+#include <boost/spirit/include/classic_core.hpp>
+#include <boost/spirit/include/classic_symbols.hpp>
+#include <boost/spirit/include/classic_ast.hpp>
+
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
 
-#include <boost/spirit/core.hpp>
-#include <boost/spirit/symbols/symbols.hpp>
-#include <boost/spirit/tree/ast.hpp>
-
-using namespace boost::spirit;
+using namespace boost::spirit::classic;
 
 /**
 * Enum of parent nodes identifiers.
@@ -48,6 +48,11 @@ enum ByteCodes
 	OP_CMP_E,
 	OP_CMP_NE,
 
+	OP_BOOL_AND,
+	OP_BOOL_OR,
+	OP_BOOL_NOT,
+	OP_BOOL_XOR,
+
 	//used for special tree recognition
 
 	//The equation is not a special one
@@ -80,41 +85,6 @@ enum Variables
 };
 
 /**
-* Symbols table for binary functions.
-*
-*/
-struct CBinaryFunctionSymbols : symbols<OpenViBE::uint64>
-{
-	CBinaryFunctionSymbols()
-	{
-		add
-			("pow" , OP_POW)
-			;
-	}
-
-} ;
-
-/**
-* Symbols table for comparison functions.
-*
-*/
-struct CComparisonFunctionSymbols : symbols<OpenViBE::uint64>
-{
-	CComparisonFunctionSymbols()
-	{
-		add
-			("<"   , OP_CMP_L)
-			(">"   , OP_CMP_G)
-			("<="  , OP_CMP_LE)
-			(">="  , OP_CMP_GE)
-			("=="  , OP_CMP_E)
-			("!="  , OP_CMP_NE)
-			("<>"  , OP_CMP_NE)
-			;
-	}
-} ;
-
-/**
 * Symbols table for unary functions.
 *
 */
@@ -138,7 +108,114 @@ struct CUnaryFunctionSymbols : symbols<OpenViBE::uint64>
 			("tan"  , OP_TAN)
 			;
 	}
-} ;
+};
+
+/**
+* Symbols table for binary functions.
+*
+*/
+struct CBinaryFunctionSymbols : symbols<OpenViBE::uint64>
+{
+	CBinaryFunctionSymbols()
+	{
+		add
+			("pow" , OP_POW)
+			;
+	}
+
+};
+
+/**
+* Symbol tables for unary boolean operators
+*
+*/
+struct CUnaryBooleanFunctionSymbols : symbols<OpenViBE::uint64>
+{
+	CUnaryBooleanFunctionSymbols()
+	{
+		add
+			("!"   , OP_BOOL_NOT)
+			;
+	}
+};
+
+/**
+* Symbol tables for binary boolean operators
+*
+*/
+struct CBinaryBoolean1FunctionSymbols : symbols<OpenViBE::uint64>
+{
+	CBinaryBoolean1FunctionSymbols()
+	{
+		add
+			("&&"  , OP_BOOL_AND)
+			("&"   , OP_BOOL_AND)
+			;
+	}
+};
+
+/**
+* Symbol tables for binary boolean operators
+*
+*/
+struct CBinaryBoolean2FunctionSymbols : symbols<OpenViBE::uint64>
+{
+	CBinaryBoolean2FunctionSymbols()
+	{
+		add
+			("~"   , OP_BOOL_XOR)
+			("^"   , OP_BOOL_XOR)
+			;
+	}
+};
+
+/**
+* Symbol tables for binary boolean operators
+*
+*/
+struct CBinaryBoolean3FunctionSymbols : symbols<OpenViBE::uint64>
+{
+	CBinaryBoolean3FunctionSymbols()
+	{
+		add
+			("||"  , OP_BOOL_OR)
+			("|"   , OP_BOOL_OR)
+			;
+	}
+};
+
+/**
+* Symbols table for comparison 1 functions.
+*
+*/
+struct CComparison1FunctionSymbols : symbols<OpenViBE::uint64>
+{
+	CComparison1FunctionSymbols()
+	{
+		add
+			("<"   , OP_CMP_L)
+			(">"   , OP_CMP_G)
+			("<="  , OP_CMP_LE)
+			(">="  , OP_CMP_GE)
+			;
+	}
+};
+
+/**
+* Symbols table for comparison 2 functions.
+*
+*/
+struct CComparison2FunctionSymbols : symbols<OpenViBE::uint64>
+{
+	CComparison2FunctionSymbols()
+	{
+		add
+			("=="  , OP_CMP_E)
+			("!="  , OP_CMP_NE)
+			("<>"  , OP_CMP_NE)
+			;
+	}
+};
 
 /**
 * Symbols table for mathematical constants.
@@ -164,7 +241,7 @@ struct CMathConstantSymbols : symbols<OpenViBE::float64>
 			("m_ln10"   , 2.30258509299404568402)
 			;
 	}
-} ;
+};
 
 /**
 * Symbols table for variables.
@@ -194,11 +271,16 @@ struct CVariableSymbols : symbols<OpenViBE::uint64>
 			("p", OP_VAR_P)
 			;
 	}
-} ;
+};
 
 static CUnaryFunctionSymbols unaryFunction_p;
 static CBinaryFunctionSymbols binaryFunction_p;
-static CComparisonFunctionSymbols comparisonFunction_p;
+static CUnaryBooleanFunctionSymbols unaryBooleanFunction_p;
+static CBinaryBoolean1FunctionSymbols binaryBoolean1Function_p;
+static CBinaryBoolean2FunctionSymbols binaryBoolean2Function_p;
+static CBinaryBoolean3FunctionSymbols binaryBoolean3Function_p;
+static CComparison1FunctionSymbols comparison1Function_p;
+static CComparison2FunctionSymbols comparison2Function_p;
 static CMathConstantSymbols mathConstant_p;
 static CVariableSymbols variable_p;
 
@@ -216,43 +298,63 @@ struct CEquationGrammar : public grammar<CEquationGrammar>
 	static const int expressionID = 8;
 	static const int ifthenID = 9;
 	static const int comparisonID = 10;
+	static const int booleanID = 11;
 
 	template <typename ScannerT>
 	struct definition
 	{
 		definition(CEquationGrammar const&)
 		{
-			real = leaf_node_d[real_p];
+			real = reduced_node_d/*leaf_node_d*/[real_p];
 
 			// variable = leaf_node_d[as_lower_d[ch_p('x')]];
-			variable = leaf_node_d[as_lower_d[variable_p]];
+			variable = reduced_node_d/*leaf_node_d*/[as_lower_d[variable_p]];
 
-			constant = leaf_node_d[as_lower_d[mathConstant_p]];
+			constant = reduced_node_d/*leaf_node_d*/[as_lower_d[mathConstant_p]];
 
 			function =
 				(root_node_d[as_lower_d[unaryFunction_p]] >> no_node_d[ch_p('(')] >> ifthen >> no_node_d[ch_p(')')]) |
 				(root_node_d[as_lower_d[binaryFunction_p]] >> no_node_d[ch_p('(')] >> infix_node_d[(ifthen >> ',' >> ifthen)]);
 
 			factor = (function | real | variable | constant)
-//				| inner_node_d['(' >> expression >> ')']
 				| inner_node_d['(' >> ifthen >> ')']
 				| (root_node_d[ch_p('-')] >> factor)
 				| (root_node_d[ch_p('+')] >> factor);
 
+			boolean =
+				(root_node_d[unaryBooleanFunction_p] >> factor) | factor;
+
 			term =
-				factor >> *((root_node_d[ch_p('*')] >> factor) | (root_node_d[ch_p('/')] >> factor));
+				boolean >> *((root_node_d[ch_p('*')] >> boolean) | (root_node_d[ch_p('/')] >> boolean));
 
 			expression =
 				term >> *((root_node_d[ch_p('+')] >> term) | (root_node_d[ch_p('-')] >> term));
 
-			comparison =
-				( expression >> root_node_d[comparisonFunction_p] >> expression ) | expression;
+			comparison1 =
+				( expression >> root_node_d[comparison1Function_p] >> expression ) | expression;
+
+			comparison2 =
+				( comparison1 >> root_node_d[comparison2Function_p] >> comparison1 ) | comparison1;
+
+			boolean1 =
+				( comparison2 >> root_node_d[binaryBoolean1Function_p] >> comparison2 ) | comparison2;
+
+			boolean2 =
+				( boolean1 >> root_node_d[binaryBoolean2Function_p] >> boolean1 ) | boolean1;
+
+			boolean3 =
+				( boolean2 >> root_node_d[binaryBoolean3Function_p] >> boolean2 ) | boolean2;
 
 			ifthen =
-				( comparison >> root_node_d[ch_p('?')] >> comparison >> no_node_d[ch_p(':')] >> comparison ) | comparison;
+				( boolean3 >> root_node_d[ch_p('?')] >> boolean3 >> no_node_d[ch_p(':')] >> boolean3 ) | boolean3;
 		}
 
-		rule<ScannerT, parser_context<>, parser_tag<comparisonID> > comparison;
+		rule<ScannerT, parser_context<>, parser_tag<booleanID> > boolean;
+		rule<ScannerT, parser_context<>, parser_tag<booleanID> > boolean1;
+		rule<ScannerT, parser_context<>, parser_tag<booleanID> > boolean2;
+		rule<ScannerT, parser_context<>, parser_tag<booleanID> > boolean3;
+		rule<ScannerT, parser_context<>, parser_tag<comparisonID> > comparison1;
+		rule<ScannerT, parser_context<>, parser_tag<comparisonID> > comparison2;
 		rule<ScannerT, parser_context<>, parser_tag<ifthenID> > ifthen;
 		rule<ScannerT, parser_context<>, parser_tag<expressionID> > expression;
 		rule<ScannerT, parser_context<>, parser_tag<termID> > term;

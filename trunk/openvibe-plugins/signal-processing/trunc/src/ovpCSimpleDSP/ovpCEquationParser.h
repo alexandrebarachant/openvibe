@@ -6,22 +6,14 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
+#include <boost/spirit/include/classic_core.hpp>
+#include <boost/spirit/include/classic_symbols.hpp>
+#include <boost/spirit/include/classic_ast.hpp>
+
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
 #include <vector>
-
-#include <boost/spirit/core.hpp>
-#include <boost/spirit/symbols/symbols.hpp>
-#include <boost/spirit/tree/ast.hpp>
-
-#include <boost/random/linear_congruential.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/variate_generator.hpp>
-
-#include <boost/spirit/tree/tree_to_xml.hpp>
-
-#include <boost/timer.hpp>
 
 using namespace boost::spirit;
 
@@ -189,12 +181,17 @@ public:
 
 	static void op_if_then_else(OpenViBE::float64*& pStack, functionContext& pContext);
 
-	static void op_lower(OpenViBE::float64*& pStack, functionContext& pContext);
-	static void op_greater(OpenViBE::float64*& pStack, functionContext& pContext);
-	static void op_lower_equal(OpenViBE::float64*& pStack, functionContext& pContext);
-	static void op_greater_equal(OpenViBE::float64*& pStack, functionContext& pContext);
-	static void op_equal(OpenViBE::float64*& pStack, functionContext& pContext);
-	static void op_not_equal(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_cmp_lower(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_cmp_greater(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_cmp_lower_equal(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_cmp_greater_equal(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_cmp_equal(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_cmp_not_equal(OpenViBE::float64*& pStack, functionContext& pContext);
+
+	static void op_bool_and(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_bool_or(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_bool_not(OpenViBE::float64*& pStack, functionContext& pContext);
+	static void op_bool_xor(OpenViBE::float64*& pStack, functionContext& pContext);
 
 	static void op_loadVal(OpenViBE::float64*& pStack, functionContext& pContext);
 	static void op_loadVar(OpenViBE::float64*& pStack, functionContext& pContext);

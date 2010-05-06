@@ -1,27 +1,23 @@
 #ifndef __OpenViBEPlugins_SignalProcessing_CAbstractTree_H__
 #define __OpenViBEPlugins_SignalProcessing_CAbstractTree_H__
 
+#include "ovpCEquationParserGrammar.h"
+#include "ovpCEquationParser.h"
+
 #include <openvibe-toolkit/ovtk_all.h>
+
+#include <boost/spirit/include/classic_core.hpp>
+#include <boost/spirit/include/classic_symbols.hpp>
+#include <boost/spirit/include/classic_ast.hpp>
 
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
 
-#include <boost/spirit/core.hpp>
-#include <boost/random/linear_congruential.hpp>
-#include <boost/random/uniform_real.hpp>
-#include <boost/random/variate_generator.hpp>
-
-#include <boost/spirit/tree/ast.hpp>
-#include <boost/spirit/tree/tree_to_xml.hpp>
-
 #include <iostream>
 #include <vector>
 #include <string>
 #include <algorithm>
-
-#include "ovpCEquationParserGrammar.h"
-#include "ovpCEquationParser.h"
 
 class CEquationParser;
 

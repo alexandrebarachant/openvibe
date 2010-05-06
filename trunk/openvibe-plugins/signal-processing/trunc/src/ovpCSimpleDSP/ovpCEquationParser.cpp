@@ -35,12 +35,16 @@ functionPointer CEquationParser::m_pFunctionTable[]=
 	&op_log, &op_log10, &op_power, &op_sin,
 	&op_sqrt, &op_tan,
 	&op_if_then_else,
-	&op_lower,
-	&op_greater,
-	&op_lower_equal,
-	&op_greater_equal,
-	&op_equal,
-	&op_not_equal,
+	&op_cmp_lower,
+	&op_cmp_greater,
+	&op_cmp_lower_equal,
+	&op_cmp_greater_equal,
+	&op_cmp_equal,
+	&op_cmp_not_equal,
+	&op_bool_and,
+	&op_bool_or,
+	&op_bool_not,
+	&op_bool_xor,
 };
 
 CEquationParser::CEquationParser(TBoxAlgorithm<IBoxAlgorithm>& oPlugin, float64** ppVariable, uint32 ui32VariableCount)
@@ -214,7 +218,7 @@ CAbstractTreeNode * CEquationParser::createNode(iter_t const& i)
 		if(l_sValue!="x") l_ui32Index=l_sValue[0]-'a';
 		if(l_ui32Index>=m_ui32VariableCount)
 		{
-			m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "No such input " << l_ui32Index+1 << " (referenced with variable " << CString(l_sValue.c_str()) << ")\n";
+			m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "No such input " << l_ui32Index+1 << " (referenced with variable [" << CString(l_sValue.c_str()) << "])\n";
 			return new CAbstractTreeValueNode(0);
 		}
 		return new CAbstractTreeVariableNode(l_ui32Index);
@@ -275,7 +279,7 @@ CAbstractTreeNode * CEquationParser::createNode(iter_t const& i)
 		std::transform(l_sValue.begin(), l_sValue.end(), l_sValue.begin(), ::to_lower<std::string::value_type>);
 
 		//gets the function's Id from the comparison function's symbols table
-		if( (l_ui64FunctionIdentifier = find(comparisonFunction_p, l_sValue.c_str())) != NULL)
+		if( (l_ui64FunctionIdentifier = find(comparison1Function_p, l_sValue.c_str())) != NULL)
 		{
 			std::string l_sValue(i->children.begin()->value.begin(), i->children.begin()->value.end());
 
@@ -283,6 +287,69 @@ CAbstractTreeNode * CEquationParser::createNode(iter_t const& i)
 				*l_ui64FunctionIdentifier,
 				createNode(i->children.begin()),
 				createNode(i->children.begin()+1),
+				false);
+		}
+		//gets the function's Id from the comparison function's symbols table
+		else if( (l_ui64FunctionIdentifier = find(comparison2Function_p, l_sValue.c_str())) != NULL)
+		{
+			std::string l_sValue(i->children.begin()->value.begin(), i->children.begin()->value.end());
+
+			return new CAbstractTreeParentNode(
+				*l_ui64FunctionIdentifier,
+				createNode(i->children.begin()),
+				createNode(i->children.begin()+1),
+				false);
+		}
+	}
+	else if (i->value.id() == CEquationGrammar::booleanID)
+	{
+		std::string l_sValue(i->value.begin(), i->value.end());
+		uint64 * l_ui64FunctionIdentifier;
+
+		//converts the string to lowercase
+		std::transform(l_sValue.begin(), l_sValue.end(), l_sValue.begin(), ::to_lower<std::string::value_type>);
+
+		//gets the function's Id from the binary boolean function's symbols table
+		if( (l_ui64FunctionIdentifier = find(binaryBoolean1Function_p, l_sValue.c_str()))!= NULL)
+		{
+			std::string l_sValue(i->children.begin()->value.begin(), i->children.begin()->value.end());
+
+			return new CAbstractTreeParentNode(
+				*l_ui64FunctionIdentifier,
+				createNode(i->children.begin()),
+				createNode(i->children.begin()+1),
+				false);
+		}
+		//gets the function's Id from the binary boolean function's symbols table
+		else if( (l_ui64FunctionIdentifier = find(binaryBoolean2Function_p, l_sValue.c_str()))!= NULL)
+		{
+			std::string l_sValue(i->children.begin()->value.begin(), i->children.begin()->value.end());
+
+			return new CAbstractTreeParentNode(
+				*l_ui64FunctionIdentifier,
+				createNode(i->children.begin()),
+				createNode(i->children.begin()+1),
+				false);
+		}
+		//gets the function's Id from the binary boolean function's symbols table
+		else if( (l_ui64FunctionIdentifier = find(binaryBoolean3Function_p, l_sValue.c_str()))!= NULL)
+		{
+			std::string l_sValue(i->children.begin()->value.begin(), i->children.begin()->value.end());
+
+			return new CAbstractTreeParentNode(
+				*l_ui64FunctionIdentifier,
+				createNode(i->children.begin()),
+				createNode(i->children.begin()+1),
+				false);
+		}
+		//gets the function's Id from the binary boolean function's symbols table
+		else if( (l_ui64FunctionIdentifier = find(unaryBooleanFunction_p, l_sValue.c_str()))!= NULL)
+		{
+			std::string l_sValue(i->children.begin()->value.begin(), i->children.begin()->value.end());
+
+			return new CAbstractTreeParentNode(
+				*l_ui64FunctionIdentifier,
+				createNode(i->children.begin()),
 				false);
 		}
 	}
@@ -461,37 +528,60 @@ void CEquationParser::op_if_then_else(float64*& pStack, functionContext& pContex
 	}
 }
 
-void CEquationParser::op_lower(float64*& pStack, functionContext& pContext)
+void CEquationParser::op_cmp_lower(float64*& pStack, functionContext& pContext)
 {
 	pStack--;
 	pStack[0] = (pStack[1]<pStack[0]?1:0);
 }
 
-void CEquationParser::op_greater(float64*& pStack, functionContext& pContext)
+void CEquationParser::op_cmp_greater(float64*& pStack, functionContext& pContext)
 {
 	pStack--;
 	pStack[0] = (pStack[1]>pStack[0]?1:0);
 }
 
-void CEquationParser::op_lower_equal(float64*& pStack, functionContext& pContext)
+void CEquationParser::op_cmp_lower_equal(float64*& pStack, functionContext& pContext)
 {
 	pStack--;
 	pStack[0] = (pStack[1]<=pStack[0]?1:0);
 }
 
-void CEquationParser::op_greater_equal(float64*& pStack, functionContext& pContext)
+void CEquationParser::op_cmp_greater_equal(float64*& pStack, functionContext& pContext)
 {
 	pStack--;
 	pStack[0] = (pStack[1]>=pStack[0]?1:0);
 }
 
-void CEquationParser::op_equal(float64*& pStack, functionContext& pContext)
+void CEquationParser::op_cmp_equal(float64*& pStack, functionContext& pContext)
 {
 	pStack--;
 	pStack[0] = (pStack[1]==pStack[0]?1:0);
 }
 
-void CEquationParser::op_not_equal(float64*& pStack, functionContext& pContext)
+void CEquationParser::op_cmp_not_equal(float64*& pStack, functionContext& pContext)
+{
+	pStack--;
+	pStack[0] = (pStack[1]!=pStack[0]?1:0);
+}
+
+void CEquationParser::op_bool_and(float64*& pStack, functionContext& pContext)
+{
+	pStack--;
+	pStack[0] = (pStack[1]!=0 && pStack[0]!=0?1:0);
+}
+
+void CEquationParser::op_bool_or(float64*& pStack, functionContext& pContext)
+{
+	pStack--;
+	pStack[0] = (pStack[1]!=0 || pStack[0]!=0?1:0);
+}
+
+void CEquationParser::op_bool_not(float64*& pStack, functionContext& pContext)
+{
+	pStack[0] = pStack[0]!=0?0:1;
+}
+
+void CEquationParser::op_bool_xor(float64*& pStack, functionContext& pContext)
 {
 	pStack--;
 	pStack[0] = (pStack[1]!=pStack[0]?1:0);
