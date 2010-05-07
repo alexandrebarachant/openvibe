@@ -23,6 +23,10 @@ static const float g_fMoveSpeed=0.01f; // 0.004;
 
 static const float g_fOffsetWithoutVador = 2.0f;
 
+#if defined OVA_OS_Linux
+ #define _strcmpi strcasecmp
+#endif
+
 CTieFighterBCI::CTieFighterBCI(string s_localization) : COgreVRApplication()
 {
 	m_iScore=0;
