@@ -63,6 +63,9 @@ boolean CBoxAlgorithmP300SpellerStimulator::initialize(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
+	m_pStimulationDecoder=NULL;
+	m_pStimulationEncoder=NULL;
+
 	m_ui64StartStimulation       =this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, _AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 0));
 	m_ui64RowStimulationBase     =this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, _AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 1));
 	m_ui64ColumnStimulationBase  =this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, _AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 2));
@@ -72,13 +75,13 @@ boolean CBoxAlgorithmP300SpellerStimulator::initialize(void)
 
 	if(m_ui64RowCount==0 || m_ui64ColumnCount==0)
 	{
-		_OPTIONAL_LOG_(this->getLogManager(), LogLevel_ImportantWarning << "This stimulator should at least have 1 row and 1 column (got " << m_ui64RowCount << " and " << m_ui64ColumnCount << "\n");
+		_LOG_(this->getLogManager(), LogLevel_ImportantWarning << "This stimulator should at least have 1 row and 1 column (got " << m_ui64RowCount << " and " << m_ui64ColumnCount << "\n");
 		return false;
 	}
 
 	if(m_ui64RowCount!=m_ui64ColumnCount)
 	{
-		_OPTIONAL_LOG_(this->getLogManager(), LogLevel_ImportantWarning << "This stimulator should have the same number of row(s) and columns(s) (got " << m_ui64RowCount << " and " << m_ui64ColumnCount << "\n");
+		_LOG_(this->getLogManager(), LogLevel_ImportantWarning << "This stimulator should have the same number of row(s) and columns(s) (got " << m_ui64RowCount << " and " << m_ui64ColumnCount << "\n");
 		return false;
 	}
 
@@ -93,19 +96,19 @@ boolean CBoxAlgorithmP300SpellerStimulator::initialize(void)
 
 	if(m_ui64InterRepetitionDuration<(10LL<<32)/1000)
 	{
-		_OPTIONAL_LOG_(this->getLogManager(), LogLevel_Warning << "Inter repetition duration should not be less than 10 ms\n");
+		_LOG_(this->getLogManager(), LogLevel_Warning << "Inter repetition duration should not be less than 10 ms\n");
 		m_ui64InterRepetitionDuration=(10LL<<32)/1000;
 	}
 
 	if(m_ui64InterTrialDuration<(10LL<<32)/1000)
 	{
-		_OPTIONAL_LOG_(this->getLogManager(), LogLevel_Warning << "Inter trial duration should not be less than 10 ms\n");
+		_LOG_(this->getLogManager(), LogLevel_Warning << "Inter trial duration should not be less than 10 ms\n");
 		m_ui64InterTrialDuration=(10LL<<32)/1000;
 	}
 
 	if(m_bAvoidNeighborFlashing)
 	{
-		_OPTIONAL_LOG_(this->getLogManager(), LogLevel_ImportantWarning << "Avoid neighbor flashing setting is not considered yet\n");
+		_LOG_(this->getLogManager(), LogLevel_ImportantWarning << "Avoid neighbor flashing setting is not considered yet\n");
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -134,11 +137,19 @@ boolean CBoxAlgorithmP300SpellerStimulator::initialize(void)
 
 boolean CBoxAlgorithmP300SpellerStimulator::uninitialize(void)
 {
-	m_pStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationDecoder);
+	if(m_pStimulationDecoder)
+	{
+		m_pStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationDecoder);
+		m_pStimulationDecoder=NULL;
+	}
 
-	m_pStimulationEncoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationEncoder);
+	if(m_pStimulationEncoder)
+	{
+		m_pStimulationEncoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationEncoder);
+		m_pStimulationEncoder=NULL;
+	}
 
 	return true;
 }
