@@ -67,6 +67,8 @@
 #define OVTK_StimulationId_RestStop                          0x0000800a
 #define OVTK_StimulationId_VisualStimulationStart            0x0000800b
 #define OVTK_StimulationId_VisualStimulationStop             0x0000800c
+#define OVTK_StimulationId_VisualSteadyStateStimulationStart 0x00008010
+#define OVTK_StimulationId_VisualSteadyStateStimulationStop  0x00008011
 
 #define OVTK_StimulationId_Label(i)                          0x00008100|((i)&0x0f)
 #define OVTK_StimulationId_LabelStart                        0x00008100
@@ -86,6 +88,22 @@
 #define OVTK_StimulationId_Label_0D                          0x0000810d
 #define OVTK_StimulationId_Label_0E                          0x0000810e
 #define OVTK_StimulationId_Label_0F                          0x0000810f
+#define OVTK_StimulationId_Label_10                          0x00008110
+#define OVTK_StimulationId_Label_11                          0x00008111
+#define OVTK_StimulationId_Label_12                          0x00008112
+#define OVTK_StimulationId_Label_13                          0x00008113
+#define OVTK_StimulationId_Label_14                          0x00008114
+#define OVTK_StimulationId_Label_15                          0x00008115
+#define OVTK_StimulationId_Label_16                          0x00008116
+#define OVTK_StimulationId_Label_17                          0x00008117
+#define OVTK_StimulationId_Label_18                          0x00008118
+#define OVTK_StimulationId_Label_19                          0x00008119
+#define OVTK_StimulationId_Label_1A                          0x0000811a
+#define OVTK_StimulationId_Label_1B                          0x0000811b
+#define OVTK_StimulationId_Label_1C                          0x0000811c
+#define OVTK_StimulationId_Label_1D                          0x0000811d
+#define OVTK_StimulationId_Label_1E                          0x0000811e
+#define OVTK_StimulationId_Label_1F                          0x0000811f
 #define OVTK_StimulationId_LabelEnd                          0x000081ff
 
 #define OVTK_StimulationId_Train                             0x00008201
