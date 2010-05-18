@@ -106,15 +106,15 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 	m_vDriver.push_back(new CDriverBrainProductsVAmp(m_pAcquisitionServer->getDriverContext()));
 #endif
+#if defined OVAS_OS_Windows
+	m_vDriver.push_back(new CDriverMicromedIntraEEG(m_pAcquisitionServer->getDriverContext()));
+#endif
 	if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false))
 	{
 #if defined TARGET_HAS_ThirdPartyGMobiLabPlusAPI
 		m_vDriver.push_back(new CDriverGTecGMobiLabPlus(m_pAcquisitionServer->getDriverContext()));
 #endif
 		m_vDriver.push_back(new CDriverBrainampStandard(m_pAcquisitionServer->getDriverContext()));
-#if defined OVAS_OS_Windows
-		// m_vDriver.push_back(new CDriverMicromedIntraEEG(m_pAcquisitionServer->getDriverContext()));
-#endif
 		m_vDriver.push_back(new CDriverCtfVsmMeg(m_pAcquisitionServer->getDriverContext()));
 		// m_vDriver.push_back(new CDriverNeuroscanSynamps2(m_pAcquisitionServer->getDriverContext()));
 #if defined OVAS_OS_Windows

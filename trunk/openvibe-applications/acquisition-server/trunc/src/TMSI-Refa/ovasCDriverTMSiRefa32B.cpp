@@ -264,7 +264,7 @@ boolean CDriverTMSiRefa32B::initialize(
 
 	if(m_lNrOfDevicesConnected==0)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "There are no device connected to the PC\n\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "There is no device connected to the PC\n";
 		return false;
 	}
 
