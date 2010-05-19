@@ -245,7 +245,28 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>If you want to see more <i>Made With OpenViBE</i> applications, visit the <a href="?q=made-with">Made With...</a> section</p>
 
 		<h1>News</h1>
+		
+		<h2>OpenViBE demonstrator at La Cité des Sciences et de l'Industrie, Paris.<br><span style="font-size:x-small">2010/05/07</span></h2>
 
+		<p>A show room dedicated to innovative technologies, the Tech'Gallery, is now opened at <a href=http://www.cite-sciences.fr/en/cite-des-sciences>La Cité des Sciences et de l'Industrie</a> (the City of Sciences and Industry) in Paris.</p>
+		<p>In association with the laboratory <a href=http://www.lutin-userlab.fr/accueil>Lutin Userlab</a> and the EEG manufacturer <a href=http://www.gtec.at/>g.tec</a>, we present OpenViBE and the "Use-The-Force" demonstrator.</p>
+		<p>Don't hesitate, come and try ! Exhibition is opened every day (9:30 AM - 6 PM), visitors can try the demonstrator on tuesday and saturday (2 PM - 4 PM).</p>
+		
+		<!--
+		<h2>Datasets<br><span style="font-size:x-small">2010/05/07</span></h2>
+
+		<p>During the past experiments, we recorded several datasets under different circumstances. These datasets can be downloaded for free in the hope that they can help research on signal processing. They have all been recorded using OpenViBE.</p>
+		<p>They are available on the <a href=http://openvibe.inria.fr/?q=datasets>datasets</a> page.</p>		
+		-->
+		<h2>OpenViBE publications in Presence Teleoperators & Virtual Environments<br><span style="font-size:x-small">2010/05/07</span></h2>
+
+		<p> The latest edition of the journal <a href="http://www.mitpressjournals.org/toc/pres/19/1">Presence</a> includes two "OpenViBE" publications.
+		<ul>
+			<li>Y. Renard, F. Lotte, G. Gibert, M. Congedo, E. Maby, V. Delannoy, O. Bertrand, A. Lécuyer, "OpenViBE: An Open-Source Software Platform to Design, Test and Use Brain-Computer Interfaces in Real and Virtual Environments", Presence : teleoperators and virtual environments, vol. 19, no 1, 2010 (in press) (<a href="http://www.hal.inserm.fr/docs/00/47/71/53/PDF/Renard_et_al_2010_draft.pdf"> pdf version</a>)</li>
+			<li>F. Lotte, A. Van Langhenhove, F. Lamarche, T. Ernest, Y. Renard, B. Arnaldi, A. Lécuyer, “Exploring Large Virtual Environments by Thoughts using a Brain-Computer Interface based on Motor Imagery and High-Level Commands”, Presence: teleoperators and virtual environments, vol. 19, no. 1, 2010 (in press)(<a href="http://hal.archives-ouvertes.fr/docs/00/44/56/14/PDF/presence_2010_Museum_revisedDraft.pdf"> pdf version</a>)</li>
+		</ul>
+		<p>If you want to cite OpenViBE in your work, please refer to the first article. </p>
+				
 		<h2>New release of OpenViBE 0.6.0 is now available<br><span style="font-size:x-small">2010/04/14</span></h2>
 
 		<p>New release of OpenViBE 0.6.0 "Spring edition" is now available for download at the <a href=http://openvibe.inria.fr/?q=download>download</a> page.</p>
@@ -548,22 +569,6 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			document.write(available_soon('#FIXME'));
 		</script>
 -->
-
-		<h2>One software engineer (CEA/Leti, Grenoble, France) for a 18-months fixed period contract<br><span style="font-size:x-small">2010-03</span></h2>
-
-		<p><u><b>Short Description:</b></u></p>
-		<p>The overall goal of the BCI project under the scientific direction of Pr BENABID is to develop an implantable device to allow tetraplaegic patients pilot n degrees of freedom effectors (wheelchair, robotized arm, exosqueletton).</p>
-		<p>The software engineer will work within a team of electronics, software and signal processing engineers, researchers and biologists. He will be in charge to implement OpenViBE as an experimental framework for advanced BCI projects, with another software engineer. The framework must be able to:</p>
-		<ul>
-			<li>Acquire data from CEA/LETI devices during preclinical studies</li>
-			<li>Perform some data processing</li>
-			<li>Control some effectors</li>
-		</ul>
-		<p>Integrated to the Clinatec team, the engineer will be mainly in charge of designing new OpenViBE boxes. Based on biologists and neurosurgeons requests he will have to deliver them with new boxes they will need during an innovative BCI project. Boxes will mainly do very basic data processing and control effectors. Possibly, you may also be asked to design standalone C++/Qt applications.</p>
-		<p>Main missions will be to implement and extend the functionalities of the OpenViBE-based framework (C++ programming, object oriented design) and ensure its support and deployment. Skills in GTK/Qt are appreciated.</p>
-		<p>Feel free to contact us for more information: <i>jean [dot] porcherot [at] cea [dot] fr</i></p>
-		<p>You can download the <a href=jobs/2010-03-CEA-Leti-Grenoble-Software-Engineer.pdf>french PDF description</a>.</p>
-
 		<h2>One post-doc position at INRIA<br><span style="font-size:x-small">2010-01</span></h2>
 
 		<b>
@@ -588,6 +593,21 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li>F. Lotte, J. Fujisawa, H. Touyama, R. Ito, M. Hirose, A. L&eacute;cuyer, "Towards Ambulatory Brain-Computer Interfaces: A Pilot Study with P300 Signals", Advances in Computer Entertainment Technology Conference (ACE), 2009</li>
 			<li>A. L&eacute;cuyer, F. Lotte, R. Reilly, R. Leeb, M. Hirose, M. Slater, "Brain-Computer Interfaces, Virtual Reality, and Videogames", IEEE Computer, vol. 41, num 10, pp. 66-72, 2008</li>
 		</ul>
+
+		<h2>One software engineer (CEA/Leti, Grenoble, France) for a 18-months fixed period contract<br><span style="font-size:x-small">2010-03 - <span style="text-color:red">CLOSED</span></span></h2>
+
+		<p><u><b>Short Description:</b></u></p>
+		<p>The overall goal of the BCI project under the scientific direction of Pr BENABID is to develop an implantable device to allow tetraplaegic patients pilot n degrees of freedom effectors (wheelchair, robotized arm, exosqueletton).</p>
+		<p>The software engineer will work within a team of electronics, software and signal processing engineers, researchers and biologists. He will be in charge to implement OpenViBE as an experimental framework for advanced BCI projects, with another software engineer. The framework must be able to:</p>
+		<ul>
+			<li>Acquire data from CEA/LETI devices during preclinical studies</li>
+			<li>Perform some data processing</li>
+			<li>Control some effectors</li>
+		</ul>
+		<p>Integrated to the Clinatec team, the engineer will be mainly in charge of designing new OpenViBE boxes. Based on biologists and neurosurgeons requests he will have to deliver them with new boxes they will need during an innovative BCI project. Boxes will mainly do very basic data processing and control effectors. Possibly, you may also be asked to design standalone C++/Qt applications.</p>
+		<p>Main missions will be to implement and extend the functionalities of the OpenViBE-based framework (C++ programming, object oriented design) and ensure its support and deployment. Skills in GTK/Qt are appreciated.</p>
+		<p>Feel free to contact us for more information: <i>jean [dot] porcherot [at] cea [dot] fr</i></p>
+		<p>You can download the <a href=jobs/2010-03-CEA-Leti-Grenoble-Software-Engineer.pdf>french PDF description</a>.</p>
 
 		<h2>One engineer and two post-doc positions at Gipsa-lab<br><span style="font-size:x-small">2009-06 - <span style="text-color:red">CLOSED</span></span></h2>
 
@@ -924,6 +944,8 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<p>The main publications based on or using OpenViBE software include :</p>
 		<ul>
+			<li>Y. Renard, F. Lotte, G. Gibert, M. Congedo, E. Maby, V. Delannoy, O. Bertrand, A. Lécuyer, "OpenViBE: An Open-Source Software Platform to Design, Test and Use Brain-Computer Interfaces in Real and Virtual Environments", Presence : teleoperators and virtual environments, vol. 19, no 1, 2010 (in press) (<a href="http://www.hal.inserm.fr/docs/00/47/71/53/PDF/Renard_et_al_2010_draft.pdf"> pdf version</a>)</li>
+			<li>F. Lotte, A. Van Langhenhove, F. Lamarche, T. Ernest, Y. Renard, B. Arnaldi, A. Lécuyer, "Exploring Large Virtual Environments by Thoughts using a Brain-Computer Interface based on Motor Imagery and High-Level Commands", Presence: teleoperators and virtual environments, vol. 19, no. 1, 2010 (in press)(<a href="http://hal.archives-ouvertes.fr/docs/00/44/56/14/PDF/presence_2010_Museum_revisedDraft.pdf"> pdf version</a>)</li>
 			<li>J.B. Sauvan, A. L&eacute;cuyer, F. Lotte, G. Casiez, "A Performance Model of Selection Techniques for P300-Based Brain-Computer Interfaces", (note) ACM SIGCHI Conference on Human Factors in Computing Systems (ACM CHI), 2009 (<a href="http://sites.google.com/site/fabienlotte/publications/CHI09.pdf?attredirects=0">pdf version</a>)</li>
 			<li>F. Lotte, "Study of Electroencephalographic Signal Processing and Classification Techniques towards the use of Brain-Computer Interfaces in Virtual Reality Applications", PhD Thesis from the National Institute of Applied Sciences (INSA) Rennes, 2008 (<a href="http://tel.archives-ouvertes.fr/docs/00/35/71/65/PDF/PhDThesis_Lotte_2008.pdf">pdf version</a>)</li>
 			<li>A. L&eacute;cuyer, F. Lotte, R. Reilly, R. Leeb, M. Hirose, M. Slater, "Brain-Computer Interfaces, Virtual Reality, and Videogames", IEEE Computer, vol. 41, no. 10, pp 66-72, 2008 (<a href="http://www.irisa.fr/bunraku/GENS/alecuyer/Lecuyer_computer_draft.pdf">pdf version</a>)</li>
