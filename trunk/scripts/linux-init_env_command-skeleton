@@ -173,6 +173,7 @@ $OpenViBE_plugin_vrpn
 $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
 $OpenViBE_application_plugin_inspector
+$OpenViBE_application_vr_demo
 $OpenViBE_scenarios
 $OpenViBE_documentation
 "
@@ -182,7 +183,6 @@ $OpenViBE_documentation
 
 #$OpenViBE_application_omk_test
 #$OpenViBE_application_vrpn_simulator
-#$OpenViBE_application_vr_demo
 
 #$OpenViBE_plugin_wip_brenier
 #$OpenViBE_plugin_wip_jsauvan

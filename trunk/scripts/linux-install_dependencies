@@ -352,7 +352,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep Ubuntu /etc/lsb-release 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libreadline5-dev libzzip-dev libtool libxaw7-dev libpcre3-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libreadline5-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
@@ -506,7 +506,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep Debian /etc/issue 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libois-dev libzzip-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libois-dev libzzip-dev libfreeimage-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
