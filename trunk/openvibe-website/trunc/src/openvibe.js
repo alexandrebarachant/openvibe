@@ -283,9 +283,9 @@ function virtualmachine(name, baseurl, releasedate, comment, screenshot)
 	document.write("</p></div>");
 }
 
-function precompiled(name, baseurl, releasedate, comment, screenshot)
+function precompiled(name, baseurl, releasedate, comment, screenshot, height)
 {
-	document.write("<div class='installer'><p>");
+	document.write("<div class='installer'"+(height==undefined?"":" style='height: "+height+"px'")+"><p>");
 	if(screenshot!=undefined)
 	{
 		document.write("<img src='"+screenshot+"' class='screenshot'>");

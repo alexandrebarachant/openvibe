@@ -695,6 +695,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Windows (32 bits)</h2>
 
 		<script language=javascript type='text/javascript'>
+			precompiled("OpenViBE 0.6.1", "pub/bin/win32/openvibe-0.6.1-svn2075-setup", "2010/05/20", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...<br><br><br><br><br>This is a bug fix release :<br><ul><li>Restores the TMSi driver</li><li>Restores the Micromed driver</li><li>Translates the Tie-Fighter demo in english</li></ul>", "openvibe-precompiled.png", 190);
 			precompiled("OpenViBE 0.6.0", "pub/bin/win32/openvibe-0.6.0-svn2044-setup", "2010/04/14", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 		</script>
 		<div id="win32-installer-download-n" class="old-download">
