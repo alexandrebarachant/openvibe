@@ -257,7 +257,7 @@
  * to achieve this task, you have to register the driver to the acquisition server.
  * Put your .h / .cpp files in the acquisition server project :
  * <em>openvibe-applications/acquisition-server/trunc/src/<b>your-driver-name</b></em>
- * Then edit the main acquisition server file <em>ovasCAcquisitionServer.cpp</em> and
+ * Then edit the main acquisition server file <em>ovasCAcquisitionServerGUI.cpp</em> and
  * add your driver in the driver list.
  *
  * \code
