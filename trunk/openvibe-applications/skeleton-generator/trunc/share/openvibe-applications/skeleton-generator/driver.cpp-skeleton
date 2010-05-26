@@ -1,0 +1,148 @@
+#include "ovasCDriver@@ClassName@@.h"
+#include "ovasCConfiguration@@ClassName@@.h"
+
+#include <openvibe-toolkit/ovtk_all.h>
+
+using namespace OpenViBEAcquisitionServer;
+using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
+using namespace std;
+
+//___________________________________________________________________//
+//                                                                   //
+
+CDriver@@ClassName@@::CDriver@@ClassName@@(IDriverContext& rDriverContext)
+	:IDriver(rDriverContext)
+	,m_pCallback(NULL)
+	,m_ui32SampleCountPerSentBlock(0)
+	,m_pSample(NULL)
+{
+	m_oHeader.setSamplingFrequency(@@SamplingFrequency@@);
+	m_oHeader.setChannelCount(@@MaxChannel@@);
+}
+
+void CDriver@@ClassName@@::release(void)
+{
+	delete this;
+}
+
+const char* CDriver@@ClassName@@::getName(void)
+{
+	return "@@DriverName@@";
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+boolean CDriver@@ClassName@@::initialize(
+	const uint32 ui32SampleCountPerSentBlock,
+	IDriverCallback& rCallback)
+{
+	if(m_rDriverContext.isConnected()) return false;
+	if(!m_pHeader->isChannelCountSet()||!m_pHeader->isSamplingFrequencySet()) return false;
+	
+	// Builds up a buffer to store
+	// acquired samples. This buffer
+	// will be sent to the acquisition
+	// server later...
+	m_pSample=new float32[m_pHeader->getChannelCount()*ui32SampleCountPerSentBlock];
+	if(!m_pSample)
+	{
+		delete [] m_pSample;
+		m_pSample=NULL;
+		return false;
+	}
+	
+	// ...
+	// initialize hardware and get
+	// available header information
+	// from it
+	// ...
+
+	// Saves parameters
+	m_pCallback=&rCallback;
+	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
+	return true;
+}
+
+boolean CDriver@@ClassName@@::start(void)
+{
+	if(!m_rDriverContext.isConnected()) return false;
+	if(m_rDriverContext.isStarted()) return false;
+
+	// ...
+	// request hardware to start
+	// sending data
+	// ...
+
+	return true;
+}
+
+boolean CDriver@@ClassName@@::loop(void)
+{
+	if(!m_rDriverContext.isConnected()) return false;
+	if(!m_rDriverContext.isStarted()) return true;
+
+	OpenViBE::CStimulationSet l_oStimulationSet;
+
+	// ...
+	// receive samples from hardware
+	// put them the correct way in the sample array
+	// whether the buffer is full, send it to the acquisition server
+	//...
+	m_pCallback->setSamples(m_pSample);
+
+	// ...
+	// receive events from hardware
+	// and put them the correct way in a CStimulationSet object
+	//...
+	m_pCallback->setStimulationSet(l_oStimulationSet);
+
+	return true;
+}
+
+boolean CDriver@@ClassName@@::stop(void)
+{
+	if(!m_rDriverContext.isConnected()) return false;
+	if(!m_rDriverContext.isStarted()) return false;
+
+	// ...
+	// request the hardware to stop
+	// sending data
+	// ...
+
+	return true;
+}
+
+boolean CDriver@@ClassName@@::uninitialize(void)
+{
+	if(!m_rDriverContext.isConnected()) return false;
+	if(m_rDriverContext.isStarted()) return false;
+
+	// ...
+	// uninitialize hardware here
+	// ...
+
+	delete [] m_pSample;
+	m_pSample=NULL;
+	m_pCallback=NULL;
+
+	return true;
+}
+
+//___________________________________________________________________//
+//                                                                   //
+boolean CDriver@@ClassName@@::isConfigurable(void)
+{
+	return true; // change to false if your device is not configurable
+}
+
+boolean CDriver@@ClassName@@::configure(void)
+{
+	CConfiguration@@ClassName@@ m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-@@ClassName@@.glade");
+	if(!m_oConfiguration.configure(m_oHeader))
+	{
+		return false;
+	}
+	return true;
+}

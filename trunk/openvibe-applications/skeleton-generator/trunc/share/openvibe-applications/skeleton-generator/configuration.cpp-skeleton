@@ -1,0 +1,67 @@
+#include "ovasCConfiguration@@ClassName@@.h"
+
+using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
+using namespace OpenViBEAcquisitionServer;
+using namespace std;
+
+/*_________________________________________________
+
+Insert callback to specific widget here
+Example with a button that launch a calibration of the device:
+
+//Callback connected to a dedicated gtk button:
+static void button_calibrate_pressed_cb(::GtkButton* pButton, void* pUserData)
+{
+	CConfiguration@@ClassName@@* l_pConfig=static_cast<CConfiguration@@ClassName@@*>(pUserData);
+	l_pConfig->buttonCalibratePressedCB();
+}
+
+//Callback actually called:
+void CConfigurationGTecGUSBamp::buttonCalibratePressedCB(void)
+{
+	// Connect to the hardware, ask for calibration, verify the return code, etc.
+}
+_________________________________________________*/
+
+CConfiguration@@ClassName@@::CConfiguration@@ClassName@@(IDriverContext& rDriverContext, const char* sGladeXMLFileName)
+	:CConfigurationGlade(sGladeXMLFileName)
+	,m_rDriverContext(rDriverContext)
+{
+}
+
+boolean CConfiguration@@ClassName@@::preConfigure(void)
+{
+	if(! CConfigurationGlade::preConfigure())
+	{
+		return false;
+	}
+	
+	// Connect here all callbacks
+	// Example:
+	// g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface,"button_calibrate"),"pressed", G_CALLBACK(button_calibrate_pressed_cb), this);
+	
+	// Insert here the pre-configure code.
+	// For example, you may want to check if a device is currently connected
+	// and if more than one are connected. Then you can list in a dedicated combo-box 
+	// the device currently connected so the user can choose which one he wants to acquire from.
+
+	return true;
+}
+
+boolean CConfiguration@@ClassName@@::postConfigure(void)
+{
+	if(m_bApplyConfiguration)
+	{
+		// If the user pressed the "apply" button, you need to save the changes made in the configuration.
+		// For example, you can save the ID of the selected device.
+	}
+
+	if(! CConfigurationGlade::postConfigure()) // normal header is filled (Subject ID, Age, Gender, channels, sampling frequency), ressources are realesed
+	{
+		return false;
+	}
+
+	return true;
+}
+
