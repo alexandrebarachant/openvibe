@@ -200,9 +200,6 @@ void CSkeletonGenerator::buttonOkCB()
 	if(! g_file_test("../share/openvibe-applications/skeleton-generator/driver.h-skeleton", G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'driver.h-skeleton' is missing.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Error <<"Driver: the file 'driver.h-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
@@ -227,15 +224,17 @@ void CSkeletonGenerator::buttonOkCB()
 		
 		// execute the sed command !
 		l_sCommandSed = l_sCommandSed + "\" driver.h-skeleton > " + l_sDest;
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) != -1);
+		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
 		 
 		if(l_bSuccess)
 		{
-			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			gtk_text_buffer_set_text (l_pTextBuffer, 
-				l_ssTextBuffer.str().c_str()
-				, -1);
+			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";	
 			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+		}
+		else
+		{
+			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
+			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
 		}
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
@@ -244,18 +243,12 @@ void CSkeletonGenerator::buttonOkCB()
 	if(! g_file_test("../share/openvibe-applications/skeleton-generator/driver.cpp-skeleton", G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'driver.cpp-skeleton' is missing.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Error <<"Driver: the file 'driver.cpp-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'driver.cpp-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'driver.cpp-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
@@ -270,15 +263,17 @@ void CSkeletonGenerator::buttonOkCB()
 		
 		// execute the sed command !
 		l_sCommandSed = l_sCommandSed + "\" driver.cpp-skeleton > " + l_sDest;
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) != -1);
+		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
 		 
 		if(l_bSuccess)
 		{
 			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			gtk_text_buffer_set_text (l_pTextBuffer, 
-				l_ssTextBuffer.str().c_str()
-				, -1);
 			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+		}
+		else
+		{
+			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
+			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
 		}
 	}
 	
@@ -288,18 +283,12 @@ void CSkeletonGenerator::buttonOkCB()
 	if(! g_file_test("../share/openvibe-applications/skeleton-generator/configuration.h-skeleton", G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'configuration.h-skeleton' is missing.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Error <<"Driver: the file 'configuration.h-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'configuration.h-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'configuration.h-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
@@ -317,15 +306,17 @@ void CSkeletonGenerator::buttonOkCB()
 		
 		// execute the sed command !
 		l_sCommandSed = l_sCommandSed + "\" configuration.h-skeleton > " + l_sDest;
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) != -1);
+		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
 		 
 		if(l_bSuccess)
 		{
 			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			gtk_text_buffer_set_text (l_pTextBuffer, 
-				l_ssTextBuffer.str().c_str()
-				, -1);
 			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+		}
+		else
+		{
+			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
+			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
 		}
 	}
 	
@@ -335,18 +326,12 @@ void CSkeletonGenerator::buttonOkCB()
 	if(! g_file_test("../share/openvibe-applications/skeleton-generator/configuration.cpp-skeleton", G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'configuration.cpp-skeleton' is missing.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Error <<"the file 'configuration.cpp-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'configuration.cpp-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'configuration.cpp-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
@@ -359,15 +344,17 @@ void CSkeletonGenerator::buttonOkCB()
 						
 		// execute the sed command !
 		l_sCommandSed = l_sCommandSed + "\" configuration.cpp-skeleton > " + l_sDest;
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) != -1);
+		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
 		 
 		if(l_bSuccess)
 		{
 			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			gtk_text_buffer_set_text (l_pTextBuffer, 
-				l_ssTextBuffer.str().c_str()
-				, -1);
 			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+		}
+		else
+		{
+			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
+			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
 		}
 	}
 
@@ -377,25 +364,19 @@ void CSkeletonGenerator::buttonOkCB()
 	if(! g_file_test("../share/openvibe-applications/skeleton-generator/interface.glade-skeleton", G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'interface.glade-skeleton' is missing.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Error <<"the file 'interface.glade-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'interface.glade-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
-			l_ssTextBuffer.str().c_str()
-			, -1);
 		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'interface.glade-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/interface-" + m_sClassName + ".glade";
 
 		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@DriverName@@/"+m_sClassName+"/g";
+		l_sCommandSed = l_sCommandSed + " \"s/@@DriverName@@/"+m_sDriverName+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@MinChannel@@/"+m_sMinChannel+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@SamplingFrequencyList@@/";
@@ -408,19 +389,73 @@ void CSkeletonGenerator::buttonOkCB()
 		
 		// execute the sed command !
 		l_sCommandSed = l_sCommandSed + "\" interface.glade-skeleton > " + l_sDest;
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) != -1);
+		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
 		 
 		if(l_bSuccess)
 		{
 			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			gtk_text_buffer_set_text (l_pTextBuffer, 
-				l_ssTextBuffer.str().c_str()
-				, -1);
 			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+		}
+		else
+		{
+			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
+			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
+		}
+	}
+	//-------------------------------------------------------------------------------------------------------------------------------------------//
+	// readme-driver.txt
+	// we check if the skeleton is in place.
+	if(! g_file_test("../share/openvibe-applications/skeleton-generator/readme-driver.txt-skeleton", G_FILE_TEST_EXISTS))
+	{
+		l_ssTextBuffer << "[FAILED] the file 'readme-driver.txt-skeleton' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error <<"the file 'readme-driver.txt-skeleton' is missing.\n";
+		l_bSuccess = false;
+	}
+	else
+	{
+		l_ssTextBuffer << "[   OK   ] -- 'readme-driver.txt-skeleton' found.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'readme-driver.txt-skeleton' found.\n";
+
+		//Using GNU sed for parsing and replacing tags
+		CString l_sDest = m_sTargetDirectory + "/readme-driver.txt";
+
+		CString l_sCommandSed = l_sSed;
+		l_sCommandSed = l_sCommandSed + " \"s/@@ClassName@@/"+m_sClassName+"/g";
+		l_sCommandSed = l_sCommandSed + " ;s/@@Date@@/"+l_sDate+"/g";
+		
+		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
+		
+		// execute the sed command !
+		l_sCommandSed = l_sCommandSed + "\" readme-driver.txt-skeleton > " + l_sDest;
+		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		 
+		if(l_bSuccess)
+		{
+			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+		}
+		else
+		{
+			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
+			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
 		}
 	}
 	
+
+	//-------------------------------------------------------------------------------------------------------------------------------------------//
+	if(!l_bSuccess)
+	{
+		l_ssTextBuffer << "Generation process did not completly succeed. Some files may have not been produced.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning <<"Generation process did not completly succeed. Some files may have not been produced.\n";
+	}
 	
+	CString l_sBrowser = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand_${OperatingSystem}}");
+	CString l_sBrowserCmd =  l_sBrowser +" "+  m_sTargetDirectory;
+#ifdef OV_OS_Windows
+	l_sBrowserCmd =  l_sBrowser +" file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
+#endif
+	system((const char *)l_sBrowserCmd);
+
 	gtk_text_buffer_set_text (l_pTextBuffer, 
 		l_ssTextBuffer.str().c_str()
 		, -1);
