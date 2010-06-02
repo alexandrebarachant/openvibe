@@ -456,7 +456,7 @@ IPluginObjectT* CPluginManager::createPluginObjectT(
 	}
 
 	IPluginObject* l_pPluginObject=l_pPluginObjectDesc->create();
-	if(!l_pPluginObjectDesc)
+	if(!l_pPluginObject)
 	{
 		return NULL;
 	}
