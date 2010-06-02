@@ -14,18 +14,14 @@ organisation.
 
 |Build.target|
 
-OpenViBE should compile on x86 architecture running Microsoft Windows 2k/XP/Vista
-with Visual C++ 2005 express edition (take care of having the SP1 platform SDK
+OpenViBE should compile on x86 / x86_64 architecture running Microsoft Windows 2k/XP/Vista/7
+with Visual C++ 2008 express edition (take care of having the SP1 platform SDK
 installed).
 
-OpenViBE should compile on x86 architectures running Linux with gcc 4.*
-
-Some of OpenViBE dependencies are known not to be compiling on x86-64. This is being
-investigated.
+OpenViBE should compile on x86 / x86_64 architectures running Linux with gcc 4.*
 
 Please consider that trying to compile OpenViBE on other hardware/OS/compiler
-is experimental and has not been tested. Several people reported some problems
-on x86-64 architectures because of some of its dependencies. If you wish to try
+is experimental and has not been tested. If you wish to try
 and get OpenViBE to run on other hardware/OS/compilers, your efforts are welcome
 but you should not expect to get support on the short term.
 
@@ -39,11 +35,10 @@ automatically set up your environment.
 
 The Windows installer processes prebuilt packages and therefore is quite fast.
 
-The Linux installer processes source packages and builds them from scratch,
-assuming almost no pre-requisite dependencies. One should be able to install
-each dependency in a local directory without requiring root access and without using
-any package manager such as apt-get or yum. The build process takes quite a
-long time, typically 2 to 3 hours on recent computers.
+The Linux installer processes a few source packages and builds them from scratch.
+One should be able to install each dependency in a local directory without requiring
+root access and without using any package manager such as apt-get or yum. 
+However, it is safer to use native packages.
 
 |Preparing.environment|
 
