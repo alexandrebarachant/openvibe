@@ -1031,8 +1031,8 @@ ov_package_url_libglade=$ov_gnome_mirror/sources/libglade/2.6/libglade-2.6.3.tar
 ov_package_url_glade=$ov_gnome_mirror/sources/glade3/3.5/glade3-3.5.2.tar.bz2
 
 # Computation and signal processing packages
-ov_package_url_itpp_external=$ov_sourceforge_mirror/itpp/itpp-external-3.0.0.tar.bz2
-ov_package_url_itpp=$ov_sourceforge_mirror/itpp/itpp-4.0.6.tar.bz2
+ov_package_url_itpp_external=$ov_sourceforge_mirror/itpp/itpp-external/3.0.0/itpp-external-3.0.0.tar.bz2
+ov_package_url_itpp=$ov_sourceforge_mirror/itpp/itpp/4.0.6/itpp-4.0.6.tar.bz2
 ov_package_url_gsl=$ov_gnu_mirror/gsl/gsl-1.9.tar.gz
 ov_package_url_torch=http://www.torch.ch/archives/Torch3src.tgz
 ov_package_url_bliff=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/bliff-src-16.tar.bz2
