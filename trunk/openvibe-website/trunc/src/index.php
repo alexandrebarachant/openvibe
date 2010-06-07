@@ -245,18 +245,27 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>If you want to see more <i>Made With OpenViBE</i> applications, visit the <a href="?q=made-with">Made With...</a> section</p>
 
 		<h1>News</h1>
-		
+
+		<h2>OpenViBE Tutorial Slides<br><span style="font-size:x-small">2010/06/07</span></h2>
+
+		<p>We are back from the <a href=http://bcimeeting.org/2010>BCI Meeting</a> and really enjoyed the event. Attenders had the opportunity to come to the OpenViBE tutorial special session...</p>
+		<p>You can now download the tutorial slides from the dedicated <a href=http://bcimeeting.org/wiki/tiki-index.php?page=Session+1>wiki page</a> of the BCI meeting website !</p>
+
+		<h2>One Software Engineer Position at Hopital Raymond Poincare, France<br><span style="font-size:x-small">2010/06/07</span></h2>
+
+		<p>There are opened positions to work on and with OpenViBE at Hopital Raymond Poincare. Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
+
 		<h2>OpenViBE demonstrator at La Cité des Sciences et de l'Industrie, Paris.<br><span style="font-size:x-small">2010/05/07</span></h2>
 
 		<p>A show room dedicated to innovative technologies, the Tech'Gallery, is now opened at <a href=http://www.cite-sciences.fr/en/cite-des-sciences>La Cité des Sciences et de l'Industrie</a> (the City of Sciences and Industry) in Paris.</p>
 		<p>In association with the laboratory <a href=http://www.lutin-userlab.fr/accueil>Lutin Userlab</a> and the EEG manufacturer <a href=http://www.gtec.at/>g.tec</a>, we present OpenViBE and the "Use-The-Force" demonstrator.</p>
 		<p>Don't hesitate, come and try ! Exhibition is opened every day (9:30 AM - 6 PM), visitors can try the demonstrator on tuesday and saturday (2 PM - 4 PM).</p>
-		
+
 		<!--
 		<h2>Datasets<br><span style="font-size:x-small">2010/05/07</span></h2>
 
 		<p>During the past experiments, we recorded several datasets under different circumstances. These datasets can be downloaded for free in the hope that they can help research on signal processing. They have all been recorded using OpenViBE.</p>
-		<p>They are available on the <a href=http://openvibe.inria.fr/?q=datasets>datasets</a> page.</p>		
+		<p>They are available on the <a href=http://openvibe.inria.fr/?q=datasets>datasets</a> page.</p>
 		-->
 		<h2>OpenViBE publications in Presence Teleoperators & Virtual Environments<br><span style="font-size:x-small">2010/05/07</span></h2>
 
@@ -266,7 +275,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li>F. Lotte, A. Van Langhenhove, F. Lamarche, T. Ernest, Y. Renard, B. Arnaldi, A. Lécuyer, “Exploring Large Virtual Environments by Thoughts using a Brain-Computer Interface based on Motor Imagery and High-Level Commands”, Presence: teleoperators and virtual environments, vol. 19, no. 1, 2010 (in press)(<a href="http://hal.archives-ouvertes.fr/docs/00/44/56/14/PDF/presence_2010_Museum_revisedDraft.pdf"> pdf version</a>)</li>
 		</ul>
 		<p>If you want to cite OpenViBE in your work, please refer to the first article. </p>
-				
+
 		<h2>New release of OpenViBE 0.6.0 is now available<br><span style="font-size:x-small">2010/04/14</span></h2>
 
 		<p>New release of OpenViBE 0.6.0 "Spring edition" is now available for download at the <a href=http://openvibe.inria.fr/?q=download>download</a> page.</p>
@@ -569,6 +578,17 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			document.write(available_soon('#FIXME'));
 		</script>
 -->
+		<h2>One software engineer position at Hopital Raymond Poincare<br><span style="font-size:x-small">2010-06</span></h2>
+
+		<p><u><b>Short Description:</b></u></p>
+		<p>Robust Brain Computer Interface virtual Keyboard (RoBIK)</p>
+		<p>The principle of a Brain-Computer Interface or BCI is to control a device through the extraction and interpretation of signal features from electroencephalographic (EEG) collected on the surface of the scalp or by the mean of invasive measurements. This old idea of communication technique (Vidal 1973), offers the advantage to bypass need of muscle activity in the control chain and therefore is naturally presented as a promising alternative for restoration of control and communication of people with neuromuscular disabilities (Wolpow, et al. 2002).</p>
+		<p>However BCI technology remains an object of study for research laboratories, it is not spread out in patients¿ daily life. We have identified the lack of robustness and bad ergonomics of current BCI to be the main reasons of this situation. Therefore, despite the large number of research around this topic today, there is little offer of BCI system for disabled users. The project aims at developing a patient-dedicated application using the open-source project called OpenViBE.</p>
+		<br>
+		<p>You can download the full <a href=jobs/2010-06-HRP-Garches-Software-Engineer-en.pdf>english PDF description</a>.</p>
+		<br>
+		<p>Interested candidates should contact Louis Mayaud (<i>louis dot mayaud at rpc dot aphp dot fr</i>)</p>
+
 		<h2>One post-doc position at INRIA<br><span style="font-size:x-small">2010-01</span></h2>
 
 		<b>
