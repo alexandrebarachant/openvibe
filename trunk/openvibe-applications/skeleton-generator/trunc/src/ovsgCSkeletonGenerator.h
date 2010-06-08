@@ -8,37 +8,25 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
-#include <vector>
-
 namespace OpenViBESkeletonGenerator
 {
 	class CSkeletonGenerator
 	{
 	public:
-		CSkeletonGenerator(OpenViBE::Kernel::IKernelContext & rKernelContext, const char* sGladeXMLFileName);
+		CSkeletonGenerator(OpenViBE::Kernel::IKernelContext & rKernelContext, ::GladeXML * pGladeInterface);
 		virtual ~CSkeletonGenerator(void);
 
-		void go(void);
-
-		void initializeAlgoGenerator(void);
-		void initializeBoxGenerator(void);
-		void initializeDriverGenerator(void);
+		virtual void initialize(void)=0;
 
 		::GladeXML * m_pGladeInterface;
 
 		OpenViBE::CString             m_sAuthor;
 		OpenViBE::CString             m_sCompany;
-		OpenViBE::CString             m_sDriverName;
-		OpenViBE::CString             m_sClassName;
-		std::vector<OpenViBE::CString> m_vSamplingFrequencies;
-		OpenViBE::CString              m_sMinChannel;
-		OpenViBE::CString              m_sMaxChannel;
 		OpenViBE::CString             m_sTargetDirectory;
 
-		void buttonCheckCB(void);
-		void buttonOkCB(void);
-		void buttonTooltipCB(::GtkButton* pButton);
-	private:
+		void getCommon(void);
+
+	protected:
 
 		OpenViBE::Kernel::IKernelContext &m_rKernelContext;
 

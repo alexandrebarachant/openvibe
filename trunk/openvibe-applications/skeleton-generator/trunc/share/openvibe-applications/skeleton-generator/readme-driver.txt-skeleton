@@ -19,7 +19,7 @@ The Driver class:
 Please put these files in your local repository.
 If you have a branch in the repository, put the driver files in a dedicated directory:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/branches/[my-branch-name]/src/[my-device]/
-If you don't use a branch, put the driver files in a dedicated directory in your local trunk:
+If you don't use svn branching, you can put the driver files in the trunk directory in your local repository:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/trunk/src/[my-device]/
 
 The configuration class:
@@ -28,7 +28,7 @@ The configuration class:
 Please put these files in your local repository.
 If you have a branch in the repository, put the configuration files in a dedicated directory:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/branches/[my-branch-name]/src/[my-device]/
-If you don't use a branch, put the configuration files in in a dedicated directory:
+If you don't use svn branching, you can put the driver files in the trunk directory in your local repository:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/trunk/src/[my-device]/
 
 The glade interface:
@@ -36,16 +36,17 @@ The glade interface:
 Please put this file in your local repository.
 If you have a branch in the repository, put the file in:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/branches/[my-branch-name]/share/openvibe-applications/acquisition-server/
-If you don't use a branch, put the file in your local trunk:
+If you don't use svn branching, you can put the driver files in the trunk directory in your local repository:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/trunk/share/openvibe-applications/acquisition-server/
 
 
+Don't forget to declare your driver in the Acquisition Server application.
+Look in ovasCAquisitionServerGUI.cpp, you will find examples of such declarations.
 	 
-	 
-For more information about building a new driver and filling the blancks in your skeleton, please read the official tutorial:
+For more information about building a new driver and filling your skeleton, please read the official tutorial:
 http://openvibe.inria.fr/documentation/unstable/Doc_CreatingANewDriver.html
 
-Feel free to propose your contribution for integration on the forum ! 
+Feel free to propose your contributionon the forum ! 
 
 Enjoy OpenViBE !
 

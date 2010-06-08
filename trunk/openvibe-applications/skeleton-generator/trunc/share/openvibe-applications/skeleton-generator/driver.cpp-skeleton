@@ -21,9 +21,8 @@ CDriver@@ClassName@@::CDriver@@ClassName@@(IDriverContext& rDriverContext)
 	m_oHeader.setChannelCount(@@MaxChannel@@);
 }
 
-void CDriver@@ClassName@@::release(void)
+CDriver@@ClassName@@::~CDriver@@ClassName@@(void)
 {
-	delete this;
 }
 
 const char* CDriver@@ClassName@@::getName(void)
@@ -39,13 +38,13 @@ boolean CDriver@@ClassName@@::initialize(
 	IDriverCallback& rCallback)
 {
 	if(m_rDriverContext.isConnected()) return false;
-	if(!m_pHeader->isChannelCountSet()||!m_pHeader->isSamplingFrequencySet()) return false;
+	if(!m_oHeader.isChannelCountSet()||!m_oHeader.isSamplingFrequencySet()) return false;
 	
 	// Builds up a buffer to store
 	// acquired samples. This buffer
 	// will be sent to the acquisition
 	// server later...
-	m_pSample=new float32[m_pHeader->getChannelCount()*ui32SampleCountPerSentBlock];
+	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
 	if(!m_pSample)
 	{
 		delete [] m_pSample;
@@ -139,7 +138,7 @@ boolean CDriver@@ClassName@@::isConfigurable(void)
 
 boolean CDriver@@ClassName@@::configure(void)
 {
-	CConfiguration@@ClassName@@ m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-@@ClassName@@.glade");
+	CConfiguration@@ClassName@@ m_oConfiguration(m_rDriverContext,"../share/openvibe-applications/acquisition-server/interface-@@ClassName@@.glade");
 	if(!m_oConfiguration.configure(m_oHeader))
 	{
 		return false;

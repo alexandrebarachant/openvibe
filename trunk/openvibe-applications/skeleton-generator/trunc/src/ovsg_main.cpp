@@ -4,7 +4,9 @@
 
 #include <iostream>
 
-#include "ovsgCSkeletonGenerator.h"
+#include "ovsgCDriverSkeletonGenerator.h"
+#include "ovsgCBoxAlgorithmSkeletonGenerator.h"
+#include "ovsgCAlgorithmSkeletonGenerator.h"
 
 #if defined TARGET_OS_Windows
  #define OVSG_OS_Windows
@@ -63,9 +65,53 @@ int main(int argc, char** argv)
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
 	
-				CSkeletonGenerator l_Generator(*l_pKernelContext,"../share/openvibe-applications/skeleton-generator/generator-interface.glade");;
+				//CSkeletonGenerator l_Generator(*l_pKernelContext,"../share/openvibe-applications/skeleton-generator/generator-interface.glade");
+				
+				::GladeXML * l_pGladeInterface = glade_xml_new("../share/openvibe-applications/skeleton-generator/generator-interface.glade", NULL, NULL);
 
-				l_Generator.go();
+				::GtkWidget * l_pDialog = glade_xml_get_widget(l_pGladeInterface, "sg-selection-dialog");
+	
+				gtk_dialog_add_button (GTK_DIALOG (l_pDialog),
+					GTK_STOCK_OK,
+					GTK_RESPONSE_OK);
+
+				gtk_dialog_add_button (GTK_DIALOG (l_pDialog),
+					GTK_STOCK_CANCEL,
+					GTK_RESPONSE_CANCEL);
+
+				::GtkWidget * l_pRadioDriver = glade_xml_get_widget(l_pGladeInterface, "sg-driver-selection-radio-button");
+				::GtkWidget * l_pRadioAlgo = glade_xml_get_widget(l_pGladeInterface, "sg-algo-selection-radio-button");
+				::GtkWidget * l_pRadioBox = glade_xml_get_widget(l_pGladeInterface, "sg-box-selection-radio-button");
+
+				CDriverSkeletonGenerator l_DriverGenerator(*l_pKernelContext,l_pGladeInterface);
+
+				gint resp = gtk_dialog_run(GTK_DIALOG(l_pDialog)); 
+	
+				if(resp== GTK_RESPONSE_OK)
+				{
+					gtk_widget_hide(GTK_WIDGET(l_pDialog));
+
+					if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pRadioDriver)))
+					{
+						l_DriverGenerator.initialize();
+					}
+					if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pRadioAlgo)))
+					{
+						std::cout<< "NOT YET AVAILABLE." <<std::endl;
+						return 0;
+					}
+					if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pRadioBox)))
+					{
+						std::cout<< "NOT YET AVAILABLE." <<std::endl;
+						return 0;					
+					}
+					gtk_main();
+				}
+				else
+				{
+					std::cout<< "User cancelled. Exit." <<std::endl;
+					return 0 ;
+				}
 			}
 		}
 	}
