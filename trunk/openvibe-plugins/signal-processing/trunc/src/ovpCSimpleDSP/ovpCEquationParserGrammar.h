@@ -305,18 +305,17 @@ struct CEquationGrammar : public grammar<CEquationGrammar>
 	{
 		definition(CEquationGrammar const&)
 		{
-			real = reduced_node_d/*leaf_node_d*/[real_p];
+			real = leaf_node_d[real_p];
 
-			// variable = leaf_node_d[as_lower_d[ch_p('x')]];
-			variable = reduced_node_d/*leaf_node_d*/[as_lower_d[variable_p]];
+			variable = leaf_node_d[as_lower_d[variable_p]];
 
-			constant = reduced_node_d/*leaf_node_d*/[as_lower_d[mathConstant_p]];
+			constant = leaf_node_d[as_lower_d[mathConstant_p]];
 
 			function =
 				(root_node_d[as_lower_d[unaryFunction_p]] >> no_node_d[ch_p('(')] >> ifthen >> no_node_d[ch_p(')')]) |
 				(root_node_d[as_lower_d[binaryFunction_p]] >> no_node_d[ch_p('(')] >> infix_node_d[(ifthen >> ',' >> ifthen)]);
 
-			factor = (function | real | variable | constant)
+			factor = (function | constant | variable | real)
 				| inner_node_d['(' >> ifthen >> ')']
 				| (root_node_d[ch_p('-')] >> factor)
 				| (root_node_d[ch_p('+')] >> factor);

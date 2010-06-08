@@ -4,6 +4,7 @@
 #include "ovpCEquationParserGrammar.h"
 #include "ovpCEquationParser.h"
 
+#include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <boost/spirit/include/classic_core.hpp>
@@ -66,7 +67,7 @@ public:
 	}
 
 	//! Prints the node to stdout.
-	virtual void print() = 0 ;
+	virtual void print(OpenViBE::Kernel::ILogManager& rLogManager) = 0 ;
 
 	/**
 	* Used to simplify this node (and its children if any).
@@ -177,46 +178,54 @@ public:
 	virtual ~CAbstractTreeParentNode(void);
 
 	//! Debug function, prints the node and its children (prefix notation)
-	virtual void print()
+	virtual void print(OpenViBE::Kernel::ILogManager& rLogManager)
 	{
 		std::string op;
 		switch(m_ui64Identifier)
 		{
-			case OP_ADD:
-				op = "+";
-				break;
+			case OP_NEG:           op="-"; break;
+			case OP_ADD:           op="+"; break;
+			case OP_SUB:           op="-"; break;
+			case OP_MUL:           op="*"; break;
+			case OP_DIV:           op="/"; break;
 
-			case OP_SUB:
-				op = "-";
-				break;
+			case OP_ABS:           op="abs"; break;
+			case OP_ACOS:          op="cos"; break;
+			case OP_ASIN:          op="sin"; break;
+			case OP_ATAN:          op="atan"; break;
+			case OP_CEIL:          op="ceil"; break;
+			case OP_COS:           op="cos"; break;
+			case OP_EXP:           op="exp"; break;
+			case OP_FLOOR:         op="floor"; break;
+			case OP_LOG:           op="log"; break;
+			case OP_LOG10:         op="log10"; break;
+			case OP_POW:           op="pow"; break;
+			case OP_SIN:           op="sin"; break;
+			case OP_SQRT:          op="sqrt"; break;
+			case OP_TAN:           op="tan"; break;
 
-			case OP_MUL:
-				op = "*";
-				break;
+			case OP_IF_THEN_ELSE:  op="?:"; break;
 
-			case OP_DIV:
-				op = "/";
-				break;
+			case OP_CMP_L:         op="<"; break;
+			case OP_CMP_G:         op=">"; break;
+			case OP_CMP_LE:        op="<="; break;
+			case OP_CMP_GE:        op=">="; break;
+			case OP_CMP_E:         op="=="; break;
+			case OP_CMP_NE:        op="!="; break;
 
-			case OP_NEG:
-				op = "NEG";
-				break;
+			case OP_BOOL_AND:      op="&"; break;
+			case OP_BOOL_OR:       op="|"; break;
+			case OP_BOOL_NOT:      op="!"; break;
+			case OP_BOOL_XOR:      op="^"; break;
 
-			case OP_EXP:
-				op = "exp";
-				break;
+			case OP_USERDEF:       op="UserDefined"; break;
+			case OP_NONE:          op="None"; break;
+			case OP_X2:            op="X²"; break;
 
-			case OP_IF_THEN_ELSE:
-				op = "?:";
-				break;
-
-			default:
-				op = "unknownOp";
-				break;
+			default:               op="UnknownOp"; break;
 		}
 
-		std::cout<<"("<<op<<" ";
-
+		rLogManager << "(" << op.c_str() << " ";
 		for(size_t i=0 ; i<m_oChildren.size() ; i++)
 		{
 			if(m_oChildren[i] == NULL)
@@ -224,11 +233,11 @@ public:
 			}
 			else
 			{
-				m_oChildren[i] -> print();
+				m_oChildren[i] -> print(rLogManager);
 			}
-			std::cout<<" ";
+			rLogManager << " ";
 		}
-		std::cout<<")";
+		rLogManager << ")";
 	}
 
 	virtual OpenViBE::boolean simplify(CAbstractTreeNode *& pModifiedNode);
@@ -269,7 +278,10 @@ public:
 	 */
 	OpenViBE::float64 getValue() { return m_f64Value; }
 
-	virtual void print(){ std::cout<<m_f64Value; }
+	virtual void print(OpenViBE::Kernel::ILogManager& rLogManager)
+	{
+		rLogManager << m_f64Value;
+	}
 
 	virtual OpenViBE::boolean simplify(CAbstractTreeNode *& pModifiedNode)
 	{
@@ -305,9 +317,12 @@ public:
 	{
 	}
 
-	virtual void print()
+	virtual void print(OpenViBE::Kernel::ILogManager& rLogManager)
 	{
-		std::cout<<"X"<<m_ui32Index;
+		char l_sName[2];
+		l_sName[0]='a' + m_ui32Index;
+		l_sName[1]=0;
+		rLogManager << l_sName;
 	}
 
 	virtual OpenViBE::boolean simplify(CAbstractTreeNode *& pModifiedNode)
@@ -357,9 +372,9 @@ public:
 	}
 
 	//! Prints the whole tree.
-	void printTree()
+	void printTree(OpenViBE::Kernel::ILogManager& rLogManager)
 	{
-		m_pRoot -> print();
+		m_pRoot -> print(rLogManager);
 	}
 
 	/**

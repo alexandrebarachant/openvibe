@@ -13,7 +13,13 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEToolkit;
 
-//#define EQ_PARSER_DEBUG
+#if 1
+ #define _EQ_PARSER_DEBUG_LOG_(level, message) m_oParentPlugin.getLogManager() << level << message << "\n";
+ #define _EQ_PARSER_DEBUG_PRINT_TREE_(level) { m_oParentPlugin.getLogManager() << LogLevel_Warning; m_pTree->printTree(m_oParentPlugin.getLogManager()); m_oParentPlugin.getLogManager() << "\n"; }
+#else
+ #define _EQ_PARSER_DEBUG_LOG_(level, message)
+ #define _EQ_PARSER_DEBUG_PRINT_TREE_(level)
+#endif
 
 namespace
 {
@@ -76,46 +82,46 @@ CEquationParser::~CEquationParser()
 boolean CEquationParser::compileEquation(const char * pEquation)
 {
 	//parses the equation
-	tree_parse_info<> l_oInfo = ast_parse(pEquation, m_oGrammar, space_p);
+	_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Parsing equation [" << CString(pEquation) << "]...");
+	tree_parse_info<> l_oInfo = ast_parse(pEquation, m_oGrammar >> end_p, space_p);
 
 	//If the parsing was successful
 	if (l_oInfo.full)
 	{
-#ifdef EQ_PARSER_DEBUG
-		std::cout << "parsing succeeded\n";
-		createAbstractTree(l_oInfo);
-
-		m_pTree->printTree();
-		std::cout << "leveling tree ......." << std::endl;
-
-		m_pTree->levelOperators();
-		m_pTree->printTree();
-		std::cout << "simplifying tree ......." << std::endl;
-
-		m_pTree->simplifyTree();
-		m_pTree->printTree();
-		std::cout << "using Neg tree ......." << std::endl;
-
-		m_pTree->useNegationOperator();
-		m_pTree->printTree();
-		std::cout << "generating code ......." << std::endl;
-#else
 		//creates the AST
+		_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Creating abstract tree...");
 		createAbstractTree(l_oInfo);
+		_EQ_PARSER_DEBUG_PRINT_TREE_(LogLevel_Debug);
 
+#if 0
 		//CONSTANT FOLDING
 		//levels the associative/commutative operators (+ and *)
+		_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Leveling tree...");
 		m_pTree->levelOperators();
+		_EQ_PARSER_DEBUG_PRINT_TREE_(LogLevel_Debug);
+
 		//simplifies the AST
+		_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Simplifying tree...");
 		m_pTree->simplifyTree();
+		_EQ_PARSER_DEBUG_PRINT_TREE_(LogLevel_Debug);
+
 		//tries to replace nodes to use the NEG operator and reduce complexity
+		_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Generating bytecode...");
 		m_pTree->useNegationOperator();
+		_EQ_PARSER_DEBUG_PRINT_TREE_(LogLevel_Debug);
 #endif
+
+#if 0
 		//Detects if it is a special tree (updates m_ui64TreeCategory and m_f64TreeParameter)
+		_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Recognizing special tree...");
 		m_pTree->recognizeSpecialTree(m_ui64TreeCategory, m_f64TreeParameter);
+		_EQ_PARSER_DEBUG_PRINT_TREE_(LogLevel_Debug);
 
 		//Unrecognize special tree
+		_EQ_PARSER_DEBUG_LOG_("Unrecognizing special tree...");
 		m_ui64TreeCategory = OP_USERDEF;
+		_EQ_PARSER_DEBUG_PRINT_TREE_(LogLevel_Debug);
+#endif
 
 		//If it is not a special tree, we need to generate some code to reach the result
 		if(m_ui64TreeCategory == OP_USERDEF)
@@ -215,7 +221,12 @@ CAbstractTreeNode * CEquationParser::createNode(iter_t const& i)
 	{
 		uint32 l_ui32Index=0;
 		std::string l_sValue(i->value.begin(), i->value.end());
-		if(l_sValue!="x") l_ui32Index=l_sValue[0]-'a';
+		if(l_sValue!="x" && l_sValue!="X")
+		{
+			if(l_sValue[0] >= 'a' && l_sValue[0] <= 'z') l_ui32Index=l_sValue[0]-'a';
+			if(l_sValue[0] >= 'A' && l_sValue[0] <= 'Z') l_ui32Index=l_sValue[0]-'A';
+		}
+
 		if(l_ui32Index>=m_ui32VariableCount)
 		{
 			m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "No such input " << l_ui32Index+1 << " (referenced with variable [" << CString(l_sValue.c_str()) << "])\n";
