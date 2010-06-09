@@ -70,7 +70,7 @@
 #define OVTK_StimulationId_VisualSteadyStateStimulationStart 0x00008010
 #define OVTK_StimulationId_VisualSteadyStateStimulationStop  0x00008011
 
-#define OVTK_StimulationId_Label(i)                          0x00008100|((i)&0x0f)
+#define OVTK_StimulationId_Label(i)                          0x00008100|((i)&0xff)
 #define OVTK_StimulationId_LabelStart                        0x00008100
 #define OVTK_StimulationId_Label_00                          0x00008100
 #define OVTK_StimulationId_Label_01                          0x00008101
