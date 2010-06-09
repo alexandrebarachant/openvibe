@@ -15,7 +15,7 @@ using namespace OpenViBEToolkit;
 
 #if 1
  #define _EQ_PARSER_DEBUG_LOG_(level, message) m_oParentPlugin.getLogManager() << level << message << "\n";
- #define _EQ_PARSER_DEBUG_PRINT_TREE_(level) { m_oParentPlugin.getLogManager() << LogLevel_Warning; m_pTree->printTree(m_oParentPlugin.getLogManager()); m_oParentPlugin.getLogManager() << "\n"; }
+ #define _EQ_PARSER_DEBUG_PRINT_TREE_(level) { m_oParentPlugin.getLogManager() << level; m_pTree->printTree(m_oParentPlugin.getLogManager()); m_oParentPlugin.getLogManager() << "\n"; }
 #else
  #define _EQ_PARSER_DEBUG_LOG_(level, message)
  #define _EQ_PARSER_DEBUG_PRINT_TREE_(level)
