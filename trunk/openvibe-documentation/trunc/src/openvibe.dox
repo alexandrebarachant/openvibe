@@ -57,7 +57,7 @@
  * - \subpage Doc_AcquisitionServerUserDocumentation
  *   - \subpage Doc_AcquisitionServerOverview
  * - \subpage Doc_DesignerUserDocumentation
- *   - \subpage Doc_BoxAlgorithms (documentation in progress)
+ *   - \subpage Doc_BoxAlgorithms  "Existing Boxes"
  *   - \subpage Doc_DesignerOverview
  *   - \subpage Doc_WindowManagerUsage
  *   - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
@@ -65,18 +65,22 @@
  *     - \subpage Doc_DesignerTutorial1
  *     - \subpage Doc_DesignerTutorial2
  *     - \subpage Doc_DesignerTutorial3
- *     - \subpage Doc_DesignerTutorial4 (should be completed - YR)
+ *     - \subpage Doc_DesignerTutorial4
  * - \subpage Doc_Scenario
  *   - \subpage Doc_Scenario_InsermP300Speller
  *
  * \section Doc_DeveloperDocumentationSection Developer Documentation
  * - \subpage Doc_Install "Installation procedure"
- * - \subpage Doc_CreatingANewDriver
- * - \subpage Doc_Tutorial_Developer_SignalProcessing
+ * - \subpage Doc_DeveloperTutorials "Developer tutorials"
+ *   - \subpage Doc_CreatingANewDriver
+ *   - \subpage Doc_ConfiguringANewDriver
+ *   - \subpage Doc_DriverCheckAndCorrection
+ *   - \subpage Doc_Tutorial_Developer_SignalProcessing
+ *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ *   - \subpage Doc_VRApplicationAndVRPN
  * - \subpage Doc_GlobalDefines
- * - \subpage Doc_OpenViBEStreams (should be improved - YR)
+ * - \subpage Doc_OpenViBEStreams
  * - \subpage Doc_Stimulations
- * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  * - \subpage Doc_MatrixFileFormat
  * - \subpage todo "Things that should be done"
  *
@@ -107,7 +111,7 @@
  * - \subpage Doc_AcquisitionServerUserDocumentation
  *   - \subpage Doc_AcquisitionServerOverview
  * - \subpage Doc_DesignerUserDocumentation
- *   - \subpage Doc_BoxAlgorithms
+ *   - \subpage Doc_BoxAlgorithms "Existing Boxes"
  *   - \subpage Doc_DesignerOverview
  *   - \subpage Doc_WindowManagerUsage
  *   - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
@@ -126,6 +130,7 @@
  * - \subpage Doc_DeveloperTutorials "Developer tutorials"
  *   - \subpage Doc_CreatingANewDriver
  *   - \subpage Doc_ConfiguringANewDriver
+ *   - \subpage Doc_DriverCheckAndCorrection
  *   - \subpage Doc_Tutorial_Developer_SignalProcessing
  *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  *   - \subpage Doc_VRApplicationAndVRPN
@@ -143,11 +148,11 @@
 
 /**
  * \page Doc_DesignerUserDocumentation Designer user documentation
- * - \subpage Doc_BoxAlgorithms (documentation in progress)
+ * - \subpage Doc_BoxAlgorithms "Existing Boxes"
  * - \subpage Doc_DesignerOverview
  * - \subpage Doc_WindowManagerUsage
  * - \subpage Doc_BoxAlgorithmSettingsOverrideFileFormat
- * - \subpage Doc_EnvironmentVariables
+ * - \subpage Doc_ExperimentEnvironment
  * - \subpage Doc_DesignerUserDocumentationTutorial
  *   - \subpage Doc_DesignerTutorial1
  *   - \subpage Doc_DesignerTutorial2
@@ -167,6 +172,7 @@
  * \page Doc_DeveloperTutorials Developer tutorials
  * - \subpage Doc_CreatingANewDriver
  * - \subpage Doc_ConfiguringANewDriver
+ * - \subpage Doc_DriverCheckAndCorrection
  * - \subpage Doc_Tutorial_Developer_SignalProcessing
  * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  */
