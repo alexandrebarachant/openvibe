@@ -36,7 +36,7 @@
  * to write those parts of the documentation that are box-specific. Writing documentation this way guarantees that all
  * pages will all have the same aspect and structure, making it easier to navigate through them.
  *
- * The \ref Doc_Application_PluginInspector "plugin inspector" application is responsible for the generation
+ * The \ref Doc_PluginInspector "plugin inspector" application is responsible for the generation
  * of several documentation elements for each box algorithm. 
  * - An up-to-date snapshot of each box, as it would appear in the \ref Doc_Application_Designer Designer 
  * - A template documentation for each box, as "skeleton" file
