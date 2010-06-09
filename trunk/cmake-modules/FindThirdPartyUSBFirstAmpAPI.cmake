@@ -16,6 +16,15 @@ IF(WIN32)
 			MESSAGE(STATUS "    [FAILED] lib FirstAmp")
 		ENDIF(LIB_USBFirstAmpAPI)
 
+		# Copying the DLL file at postbuild
+		ADD_CUSTOM_COMMAND(
+				TARGET ${PROJECT_NAME}-dynamic
+				POST_BUILD
+				COMMAND ${CMAKE_COMMAND}
+				ARGS -E copy "${PATH_USBFirstAmpAPI}/FirstAmp.dll" "${PROJECT_SOURCE_DIR}/bin"
+				COMMENT "      --->   Copying dll file ${PATH_USBFirstAmpAPI}/FirstAmp.dll for the BrainProducts VAmp driver."
+			VERBATIM)
+		
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyUSBFirstAmpAPI)
 	ELSE(PATH_USBFirstAmpAPI)
 		MESSAGE(STATUS "  FAILED to find FirstAmp API - cmake looked in 'C:/Program Files/FaSDK' and '$ENV{OpenViBE_dependencies}'")
