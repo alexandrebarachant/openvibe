@@ -1,0 +1,19 @@
+/**
+\page Doc_DriverJitterCorrection Tutorial: Using the built-in Impedance Checker
+
+- \b NB: Tutorial based on <b> OpenViBE 0.6.1 </b> (20-may-2010).
+
+\section Doc_DriverJitterCorrection_Introduction Introduction
+
+The OpenViBE framework provides some mechanisms to improve your acquisition drivers. These services are given by the IDriverContext.
+We present in this tutorial the jitter monitoring and correction service. 
+
+You can ask the driver to compare in real-time the number of samples sent by the driver to the theorical sample count, 
+based on the sampling frequency. If the difference between these values rises too high, you can ask the driver to correct the jitter automatically.
+
+\section Doc_DriverJitterCorrection_Monitoring Monitoring
+AcquisitionServer_ToleranceDuration = 100
+
+
+
+*/
