@@ -1,5 +1,6 @@
 #include "ovkCScheduler.h"
 #include "ovkCSimulatedBox.h"
+#include "ovkCPlayer.h"
 
 #include <system/Time.h>
 
@@ -151,8 +152,9 @@ public:
 //___________________________________________________________________//
 //                                                                   //
 
-CScheduler::CScheduler(const IKernelContext& rKernelContext)
+CScheduler::CScheduler(const IKernelContext& rKernelContext, CPlayer& rPlayer)
 	:TKernelObject<IKernelObject>(rKernelContext)
+	,m_rPlayer(rPlayer)
 	,m_oScenarioIdentifier(OV_UndefinedIdentifier)
 	,m_pScenario(NULL)
 	,m_ui64Steps(0)

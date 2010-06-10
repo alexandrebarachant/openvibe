@@ -1,5 +1,7 @@
 #include "ovkCPlayerContext.h"
 #include "ovkCSimulatedBox.h"
+#include "ovkCScheduler.h"
+#include "ovkCPlayer.h"
 
 #include "../../tools/ovk_bridge_bind_function.h"
 
@@ -242,6 +244,31 @@ boolean CPlayerContext::sendMessage(
 uint64 CPlayerContext::getCurrentTime(void)
 {
 	return m_pSimulatedBox->getCurrentTime();
+}
+
+boolean CPlayerContext::stop(void)
+{
+	return m_pSimulatedBox->getScheduler().getPlayer().stop();
+}
+
+boolean CPlayerContext::pause(void)
+{
+	return m_pSimulatedBox->getScheduler().getPlayer().pause();
+}
+
+boolean CPlayerContext::play(void)
+{
+	return m_pSimulatedBox->getScheduler().getPlayer().play();
+}
+
+boolean CPlayerContext::forward(void)
+{
+	return m_pSimulatedBox->getScheduler().getPlayer().forward();
+}
+
+EPlayerStatus CPlayerContext::getStatus(void) const
+{
+	return m_pSimulatedBox->getScheduler().getPlayer().getStatus();
 }
 
 IAlgorithmManager& CPlayerContext::getAlgorithmManager(void)

@@ -28,6 +28,14 @@ namespace OpenViBE
 
 			virtual OpenViBE::uint64 getCurrentTime(void);
 
+			virtual OpenViBE::boolean stop(void);
+			virtual OpenViBE::boolean pause(void);
+			virtual OpenViBE::boolean play(void);
+			virtual OpenViBE::boolean forward(void);
+			virtual OpenViBE::Kernel::EPlayerStatus getStatus(void) const;
+
+			//@}
+
 			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void);
 			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void);
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void);

@@ -101,6 +101,8 @@ namespace OpenViBE
 			 *
 			 * \note Returning 0 means the algorithm should not be
 			 *       clock activated.
+			 *
+			 * \sa processClock
 			 */
 			virtual OpenViBE::uint64 getClockFrequency(
 				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext) { return 0; }
@@ -204,6 +206,7 @@ namespace OpenViBE
 			 * 'viewed-window' on lastly received data.
 			 *
 			 * \sa OpenViBE::Kernel::IBoxAlgorithmContext
+			 * \sa getClockFrequency
 			 */
 			virtual OpenViBE::boolean processClock(
 				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,

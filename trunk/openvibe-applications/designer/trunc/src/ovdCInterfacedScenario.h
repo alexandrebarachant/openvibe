@@ -84,6 +84,7 @@ namespace OpenViBEDesigner
 
 	public:
 
+		OpenViBE::Kernel::EPlayerStatus m_ePlayerStatus;
 		OpenViBE::CIdentifier m_oScenarioIdentifier;
 		OpenViBE::CIdentifier m_oPlayerIdentifier;
 		OpenViBE::CIdentifier m_oVisualisationTreeIdentifier;

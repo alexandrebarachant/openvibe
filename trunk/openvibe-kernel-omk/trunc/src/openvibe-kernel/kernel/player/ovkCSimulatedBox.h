@@ -272,7 +272,13 @@ namespace OpenViBE
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IBoxIO >, OVK_ClassId_Kernel_Player_SimulatedBox);
 
+			OpenViBE::Kernel::CScheduler& getScheduler(void)
+			{
+				return m_rScheduler;
+			}
+
 		private:
+
 			CIdentifier createOgreWindow();
 
 			CIdentifier getUnusedIdentifier(void) const;

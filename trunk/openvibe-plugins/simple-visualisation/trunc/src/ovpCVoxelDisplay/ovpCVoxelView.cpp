@@ -87,7 +87,7 @@ namespace OpenViBEPlugins
 					5, //upper
 					0.1, //step increment
 					0.5, //page increment
-					1)), //page size
+					0)), //page size - deprecated
 					0.1, //climb rate
 					1); //digits
 			g_signal_connect(G_OBJECT(m_pMinScaleFactorSpinButton), "value-changed", G_CALLBACK(setMinScaleFactorCallback), this);
@@ -103,7 +103,7 @@ namespace OpenViBEPlugins
 					5, //upper
 					0.1, //step increment
 					0.5, //page increment
-					1)), //page size
+					0)), //page size - deprecated
 					0.1, //climb rate
 					1); //digits
 			g_signal_connect(G_OBJECT(m_pMaxScaleFactorSpinButton), "value-changed", G_CALLBACK(setMaxScaleFactorCallback), this);

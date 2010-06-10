@@ -262,7 +262,8 @@ void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 }
 
 CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, CApplication& rApplication, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
-	:m_oScenarioIdentifier(rScenarioIdentifier)
+	:m_ePlayerStatus(PlayerStatus_Uninitialized)
+	,m_oScenarioIdentifier(rScenarioIdentifier)
 	,m_rApplication(rApplication)
 	,m_rKernelContext(rKernelContext)
 	,m_rScenario(rScenario)

@@ -200,36 +200,50 @@ namespace
 		CInterfacedScenario* l_pCurrentInterfacedScenario=l_pApplication->getCurrentInterfacedScenario();
 		if(l_pCurrentInterfacedScenario)
 		{
-			float64 l_f64Time=(l_pCurrentInterfacedScenario->m_pPlayer?((l_pCurrentInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
-			if(l_pApplication->m_ui64LastTimeRefresh!=l_f64Time)
+			if(l_pApplication->getPlayer() && l_pCurrentInterfacedScenario->m_ePlayerStatus != l_pApplication->getPlayer()->getStatus())
 			{
-				l_pApplication->m_ui64LastTimeRefresh=l_f64Time;
-
-				uint32 l_ui32Milli  = ((uint32)(l_f64Time*1000)%1000);
-				uint32 l_ui32Seconds=  ((uint32)l_f64Time)%60;
-				uint32 l_ui32Minutes= (((uint32)l_f64Time)/60)%60;
-				uint32 l_ui32Hours  =((((uint32)l_f64Time)/60)/60);
-
-				float64 l_f64CPUUsage=(l_pCurrentInterfacedScenario->m_pPlayer?l_pCurrentInterfacedScenario->m_pPlayer->getCPUUsage(OV_UndefinedIdentifier):0);
-
-				std::stringstream ss;
-				ss << "Time : ";
-				if(l_ui32Hours)                                            ss << l_ui32Hours << "h ";
-				if(l_ui32Hours||l_ui32Minutes)                             ss << (l_ui32Minutes<10?"0":"") << l_ui32Minutes << "m ";
-				if(l_ui32Hours||l_ui32Minutes||l_ui32Seconds)              ss << (l_ui32Seconds<10?"0":"") << l_ui32Seconds << "s ";
-				ss << (l_ui32Milli<100?"0":"") << (l_ui32Milli<10?"0":"") << l_ui32Milli << "ms";
-
-				gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-label_current_time")), ss.str().c_str());
-
-				char l_sCPU[1024];
-				sprintf(l_sCPU, "%3.01f%%", l_f64CPUUsage);
-
-				gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_f64CPUUsage*.01);
-				gtk_progress_bar_set_text(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_sCPU);
-				if(l_pCurrentInterfacedScenario->m_pPlayer&&l_pCurrentInterfacedScenario->m_bDebugCPUUsage)
+				switch(l_pApplication->getPlayer()->getStatus())
 				{
-					// redraws scenario
-					l_pCurrentInterfacedScenario->redraw();
+					case PlayerStatus_Stop:    gtk_signal_emit_by_name(GTK_OBJECT(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-button_stop")), "clicked"); break;
+					case PlayerStatus_Pause:   while(l_pCurrentInterfacedScenario->m_ePlayerStatus != PlayerStatus_Pause) gtk_signal_emit_by_name(GTK_OBJECT(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-button_play_pause")), "clicked"); break;
+					case PlayerStatus_Play:    while(l_pCurrentInterfacedScenario->m_ePlayerStatus != PlayerStatus_Play)  gtk_signal_emit_by_name(GTK_OBJECT(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-button_play_pause")), "clicked"); break;
+					case PlayerStatus_Forward: gtk_signal_emit_by_name(GTK_OBJECT(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-button_forward")), "clicked"); break;
+					default: std::cout << "unhandled :(\n"; break;
+				}
+			}
+			else
+			{
+				float64 l_f64Time=(l_pCurrentInterfacedScenario->m_pPlayer?((l_pCurrentInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
+				if(l_pApplication->m_ui64LastTimeRefresh!=l_f64Time)
+				{
+					l_pApplication->m_ui64LastTimeRefresh=l_f64Time;
+
+					uint32 l_ui32Milli  = ((uint32)(l_f64Time*1000)%1000);
+					uint32 l_ui32Seconds=  ((uint32)l_f64Time)%60;
+					uint32 l_ui32Minutes= (((uint32)l_f64Time)/60)%60;
+					uint32 l_ui32Hours  =((((uint32)l_f64Time)/60)/60);
+
+					float64 l_f64CPUUsage=(l_pCurrentInterfacedScenario->m_pPlayer?l_pCurrentInterfacedScenario->m_pPlayer->getCPUUsage(OV_UndefinedIdentifier):0);
+
+					std::stringstream ss;
+					ss << "Time : ";
+					if(l_ui32Hours)                                            ss << l_ui32Hours << "h ";
+					if(l_ui32Hours||l_ui32Minutes)                             ss << (l_ui32Minutes<10?"0":"") << l_ui32Minutes << "m ";
+					if(l_ui32Hours||l_ui32Minutes||l_ui32Seconds)              ss << (l_ui32Seconds<10?"0":"") << l_ui32Seconds << "s ";
+					ss << (l_ui32Milli<100?"0":"") << (l_ui32Milli<10?"0":"") << l_ui32Milli << "ms";
+
+					gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-label_current_time")), ss.str().c_str());
+
+					char l_sCPU[1024];
+					sprintf(l_sCPU, "%3.01f%%", l_f64CPUUsage);
+
+					gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_f64CPUUsage*.01);
+					gtk_progress_bar_set_text(GTK_PROGRESS_BAR(glade_xml_get_widget(l_pApplication->m_pGladeInterface, "openvibe-progressbar_cpu_usage")), l_sCPU);
+					if(l_pCurrentInterfacedScenario->m_pPlayer&&l_pCurrentInterfacedScenario->m_bDebugCPUUsage)
+					{
+						// redraws scenario
+						l_pCurrentInterfacedScenario->redraw();
+					}
 				}
 			}
 		}
@@ -1133,6 +1147,7 @@ void CApplication::stopScenarioCB(void)
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "stopScenarioCB\n";
 
 	this->getPlayer()->stop();
+	this->getCurrentInterfacedScenario()->m_ePlayerStatus=this->getPlayer()->getStatus();
 	this->releasePlayer();
 
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          false);
@@ -1149,6 +1164,7 @@ void CApplication::pauseScenarioCB(void)
 
 	this->createPlayer();
 	this->getPlayer()->pause();
+	this->getCurrentInterfacedScenario()->m_ePlayerStatus=this->getPlayer()->getStatus();
 
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
@@ -1164,6 +1180,7 @@ void CApplication::nextScenarioCB(void)
 
 	this->createPlayer();
 	this->getPlayer()->step();
+	this->getCurrentInterfacedScenario()->m_ePlayerStatus=this->getPlayer()->getStatus();
 
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
@@ -1179,6 +1196,7 @@ void CApplication::playScenarioCB(void)
 
 	this->createPlayer();
 	this->getPlayer()->play();
+	this->getCurrentInterfacedScenario()->m_ePlayerStatus=this->getPlayer()->getStatus();
 
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);
@@ -1194,6 +1212,7 @@ void CApplication::forwardScenarioCB(void)
 
 	this->createPlayer();
 	this->getPlayer()->forward();
+	this->getCurrentInterfacedScenario()->m_ePlayerStatus=this->getPlayer()->getStatus();
 
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop"),          true);
 	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause"),    true);

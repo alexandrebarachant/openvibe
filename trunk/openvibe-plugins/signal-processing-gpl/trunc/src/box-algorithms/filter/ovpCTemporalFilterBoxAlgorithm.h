@@ -58,8 +58,8 @@ namespace OpenViBEPlugins
 			{
 				rPrototype.addInput  ("Input signal",            OV_TypeId_Signal);
 				rPrototype.addOutput ("Filtered signal",         OV_TypeId_Signal);
-				rPrototype.addSetting("Filter method",           OVP_TypeId_FilterMethod, "Butterworth");
-				rPrototype.addSetting("Filter type",             OVP_TypeId_FilterType,   "Low pass");
+				rPrototype.addSetting("Filter method",           OVP_TypeId_FilterMethod, OVP_TypeId_FilterMethod_Butterworth.toString());
+				rPrototype.addSetting("Filter type",             OVP_TypeId_FilterType,   OVP_TypeId_FilterType_BandPass.toString());
 				rPrototype.addSetting("Filter order",            OV_TypeId_Integer,       "4");
 				rPrototype.addSetting("Low cut frequency (Hz)",  OV_TypeId_Float,         "29");
 				rPrototype.addSetting("High cut frequency (Hz)", OV_TypeId_Float,         "40");

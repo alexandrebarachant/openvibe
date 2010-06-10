@@ -50,13 +50,42 @@ namespace OpenViBE
 			virtual OpenViBE::boolean initialize(void)=0;
 			virtual OpenViBE::boolean uninitialize(void)=0;
 
+			/**
+			 * \brief Stops player execution
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean stop(void)=0;
+			/**
+			 * \brief Pauses player execution
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean pause(void)=0;
+			/**
+			 * \brief Executes one more step and pauses
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean step(void)=0;
+			/**
+			 * \brief Makes player run normal speed
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean play(void)=0;
+			/**
+			 * \brief Makes player run as fast as possible
+			 * \return \e true in case of success.
+			 * \return \e false in case of error.
+			 */
 			virtual OpenViBE::boolean forward(void)=0;
-
+			/**
+			 * \brief Gets current player status
+			 * \return current player status
+			 */
 			virtual OpenViBE::Kernel::EPlayerStatus getStatus(void) const=0;
+
 			virtual OpenViBE::float64 getCPUUsage(const OpenViBE::CIdentifier& rProcessingUnitIdentifier) const=0;
 
 			/**

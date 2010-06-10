@@ -32,6 +32,7 @@
 #define OVP_ClassId_XMLStimulationScenarioPlayer              OpenViBE::CIdentifier(0x00646136, 0x44853D76)
 #define OVP_ClassId_KeyboardStimulator                        OpenViBE::CIdentifier(0x00D317B9, 0x6324C3FF)
 #define OVP_ClassId_BoxAlgorithm_P300IdentifierStimulator     OpenViBE::CIdentifier(0x00F27FDB,0x8203D1A5)
+
 //___________________________________________________________________//
 //                                                                   //
 // Gloabal defines                                                   //

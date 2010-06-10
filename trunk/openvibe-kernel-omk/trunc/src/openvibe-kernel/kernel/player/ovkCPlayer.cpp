@@ -27,7 +27,7 @@ using namespace OpenViBE::Plugins;
 
 CPlayer::CPlayer(const IKernelContext& rKernelContext)
 	:TKernelObject<IPlayer>(rKernelContext)
-	,m_oScheduler(rKernelContext)
+	,m_oScheduler(rKernelContext, *this)
 	,m_ui64CurrentTimeToReach(0)
 	,m_ui64Lateness(0)
 	,m_eStatus(PlayerStatus_Uninitialized)

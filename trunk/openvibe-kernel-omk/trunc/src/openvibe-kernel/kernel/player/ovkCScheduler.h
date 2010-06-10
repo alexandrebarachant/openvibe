@@ -14,12 +14,13 @@ namespace OpenViBE
 	{
 		class CSimulatedBox;
 		class CChunk;
+		class CPlayer;
 
 		class CScheduler : public OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IKernelObject >
 		{
 		public:
 
-			CScheduler(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			CScheduler(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::CPlayer& rPlayer);
 			virtual ~CScheduler(void);
 
 			virtual OpenViBE::boolean setScenario(
@@ -39,8 +40,14 @@ namespace OpenViBE
 
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IKernelObject >, OVK_ClassId_Kernel_Player_Scheduler);
 
+			CPlayer& getPlayer(void)
+			{
+				return m_rPlayer;
+			}
+
 		protected:
 
+			OpenViBE::Kernel::CPlayer& m_rPlayer;
 			OpenViBE::CIdentifier m_oScenarioIdentifier;
 			OpenViBE::Kernel::IScenario* m_pScenario;
 			OpenViBE::uint64 m_ui64Steps;

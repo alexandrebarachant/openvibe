@@ -352,7 +352,7 @@
                   <widget class="GtkSpinButton" id="PowerSpectrumDisplayMinFrequencyButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment">0 0 100 1 10 10</property>
+                    <property name="adjustment">0 0 100 1 10 0</property>
                   </widget>
                   <packing>
                     <property name="position">0</property>
@@ -385,7 +385,7 @@
                   <widget class="GtkSpinButton" id="PowerSpectrumDisplayMaxFrequencyButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="adjustment">0 0 100 1 10 10</property>
+                    <property name="adjustment">0 0 100 1 10 0</property>
                   </widget>
                   <packing>
                     <property name="position">0</property>

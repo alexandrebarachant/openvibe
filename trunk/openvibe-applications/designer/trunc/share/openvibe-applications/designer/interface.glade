@@ -36,7 +36,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="configuration_manager-button_close">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -293,7 +293,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="plugin_about-button_close">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -394,7 +394,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="rename-button_revert">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="response_id">2</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -409,14 +409,14 @@
             </child>
             <child>
               <widget class="GtkButton" id="rename-button_apply">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -426,7 +426,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="rename-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -525,7 +525,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="setting_editor-setting_name_revert_button">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -540,7 +540,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="setting_editor-setting_type_revert_button">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -557,7 +557,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="setting_editor-setting_deafult_value_revert_button">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -587,7 +587,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="setting_editor-button_revert">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="response_id">2</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -602,14 +602,14 @@
             </child>
             <child>
               <widget class="GtkButton" id="setting_editor-button_apply">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -619,7 +619,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="setting_editor-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -1602,7 +1602,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="box_configuration-button_revert">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="response_id">2</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -1617,14 +1617,14 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="box_configuration-button_apply">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -1634,7 +1634,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="box_configuration-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -1712,7 +1712,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="settings_collection-button_setting_revert">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
@@ -1741,7 +1741,7 @@ the scenario...</property>
           <widget class="GtkSpinButton" id="settings_collection-spin_button_setting_integer">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="adjustment">0 0 100 1 10 10</property>
+            <property name="adjustment">0 0 100 1 10 0</property>
           </widget>
           <packing>
             <property name="position">2</property>
@@ -1751,7 +1751,7 @@ the scenario...</property>
           <widget class="GtkSpinButton" id="settings_collection-spin_button_setting_float">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="adjustment">0 0 100 1 10 10</property>
+            <property name="adjustment">0 0 100 1 10 0</property>
             <property name="digits">8</property>
           </widget>
           <packing>
@@ -2301,14 +2301,14 @@ the scenario...</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="loglevel-button_apply">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2318,7 +2318,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="loglevel-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
@@ -2533,7 +2533,7 @@ the scenario...</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="input-button_ok">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -2548,7 +2548,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="input-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -2635,7 +2635,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="connector_editor-connector_name_revert_button">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -2650,7 +2650,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="connector_editor-connector_type_revert_button">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
@@ -2677,7 +2677,7 @@ the scenario...</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="connector_editor-button_revert">
-                <property name="label" translatable="yes">gtk-revert-to-saved</property>
+                <property name="label">gtk-revert-to-saved</property>
                 <property name="response_id">2</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -2692,14 +2692,14 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="connector_editor-button_apply">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2709,7 +2709,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="connector_editor-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -2893,7 +2893,7 @@ the scenario...</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="setting_editor-color_gradient-button_apply">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -2908,7 +2908,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="setting_editor-color_gradient-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -2938,7 +2938,6 @@ the scenario...</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox12">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <widget class="GtkTable" id="scenario_about-table">
@@ -3089,7 +3088,7 @@ the scenario...</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="scenario_about-button_close">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3123,7 +3122,6 @@ the scenario...</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox12">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <widget class="GtkScrolledWindow" id="comment-scrolledwindow">
@@ -3150,7 +3148,7 @@ the scenario...</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="comment-button_apply">
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="response_id">-10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3165,7 +3163,7 @@ the scenario...</property>
             </child>
             <child>
               <widget class="GtkButton" id="comment-button_cancel">
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

@@ -524,8 +524,22 @@ boolean CBox::addSetting(
 		{
 			if(this-getTypeManager().getEnumerationEntryCount(rTypeIdentifier)!=0)
 			{
+				// get value to the first enum entry
+				// and eventually correct this after
 				uint64 l_ui64Value=0;
 				this->getTypeManager().getEnumerationEntry(rTypeIdentifier, 0, l_sValue, l_ui64Value);
+
+				// Find if the default value string actually is an identifier
+				CIdentifier l_oIdentifier;
+				l_oIdentifier.fromString(sDefaultValue);
+
+				// Finally, if it is an identifier, then a name should be found
+				// from the type manager !
+				CString l_sCandidateValue=this->getTypeManager().getEnumerationEntryNameFromValue(rTypeIdentifier, l_oIdentifier.toUInteger());
+				if(l_sCandidateValue!=CString(""))
+				{
+					l_sValue=l_sCandidateValue;
+				}
 			}
 		}
 	}
