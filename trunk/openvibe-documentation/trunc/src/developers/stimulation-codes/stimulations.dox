@@ -2,6 +2,8 @@
 
 \page Doc_Stimulations Stimulation codes
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 \section Doc_Stimulations_OpenViBE OpenViBE stimulation codes
 
 \dontinclude "openvibe-toolkit/ovtk_defines.h"

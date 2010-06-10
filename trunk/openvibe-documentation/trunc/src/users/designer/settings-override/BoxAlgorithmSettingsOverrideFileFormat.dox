@@ -1,6 +1,8 @@
 /**
 \page Doc_BoxAlgorithmSettingsOverrideFileFormat Box Algorithm 'settings override' file format
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 In addition to input and output connectors, box algorithms may have configurable settings (e.g. the Time Scale of a Signal Display box,
 or the filename of a GDF File Reader box). These settings have a default value which can be changed on a per-box basis from the scenario
 edition window of the Designer application (see \ref designer_gui_boxalgorithms). However, it is sometimes desirable to load these settings

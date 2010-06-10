@@ -1,6 +1,8 @@
 /*
  * \page Doc_DocumentationHowTo Writing documentation for §OpenViBE§
  *
+ * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+ *
  * The goal of this page is to propose a way to produce §OpenViBE§ documentation for developers.
  *
  * \section Doc_DocumentationHowTo_Developers Writing documentation for developers

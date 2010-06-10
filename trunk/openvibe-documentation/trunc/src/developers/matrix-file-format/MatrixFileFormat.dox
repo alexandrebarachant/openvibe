@@ -1,6 +1,8 @@
 /**
 \page Doc_MatrixFileFormat OpenViBE matrix file format
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 In some cases, it is useful to be able to load OpenViBE matrices from disk. Examples include channel localization files, which store a list of electrode names and their coordinates, or color scales, which may be used by visualisation plugins to map potentials to colors. To that end, an 
 OpenViBE matrix file format was defined and OpenViBE matrix file reader/writer algorithms created.
 

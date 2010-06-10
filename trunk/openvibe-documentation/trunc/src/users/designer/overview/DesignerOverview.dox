@@ -1,6 +1,8 @@
 /** 
 \page Doc_DesignerOverview OpenViBE Designer
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 \section designer_introduction Introduction
 
 OpenViBE Designer is an authoring tool dedicated to creating and executing OpenViBE scenarios. It is targeted at a broad range of users, including

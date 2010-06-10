@@ -2,6 +2,8 @@
 
 \page Doc_WindowManagerUsage The Window Manager
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 \section Doc_WindowManagerUsage_Introduction Introduction
 
 The Window Manager is a module dedicated to the handling of 2D and 3D graphical windows in an OpenViBE scenario. It relies on functionalities made available

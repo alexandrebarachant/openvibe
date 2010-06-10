@@ -1,6 +1,8 @@
 /**
 \page Doc_ConfigurationManager The Configuration Manager
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 OpenViBE Configuration Manager is a software component in charge of configuring OpenViBE applications and modules according to the user's wishes. Configuration settings are saved in a configuration file, which is loaded upon application startup. This file uses a simple syntax, where configuration tokens are listed in turn and attributed a value. 
 
 \section Doc_ConfigurationManager_Syntax Syntax

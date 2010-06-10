@@ -1,6 +1,8 @@
 /**
  * \page Doc_CreatingANewDriver Tutorial: creating a new driver for the acquisition server
  *
+ * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+ *
  * \section Doc_CreatingANewDriver_Introduction Introduction
  *
  * This page is intended to driver developers and shows how to create a new

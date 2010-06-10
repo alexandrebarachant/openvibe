@@ -1,6 +1,8 @@
 /**
  * \page Doc_Scenario_InsermP300Speller The Inserm P300-speller
  *
+ * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+ *
  * \section Doc_Scenario_InsermP300Speller_Principle Principle :
  *
  * The user focuses attention on one of the 36 character cells of a 6 x 6 matrix while each

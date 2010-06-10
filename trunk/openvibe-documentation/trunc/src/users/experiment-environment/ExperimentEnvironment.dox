@@ -1,6 +1,8 @@
 /**
 * \page Doc_ExperimentEnvironment Setting up an experiment environment
 *
+* - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+*
 * This document is based on an article from  
 \htmlonly <a href="http://stickyvibe.tuxfamily.org/blog/?p=106">Yann Renard's blog </a> \endhtmlonly .
 * It covers the use of the configuration file and configuration tokens to 

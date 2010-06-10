@@ -1,6 +1,8 @@
 /**
  * \page Doc_ConfiguringANewDriver Tutorial: configuring a new driver
  *
+ * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+ *
  * \section Doc_ConfiguringANewDriver_Introduction Introduction
  *
  * This part of the tutorial will introduce the use of Gtk and Glade, to design the GUI

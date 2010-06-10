@@ -1,6 +1,8 @@
 /**
  * \page Doc_OpenViBEStreams Stream structures
  *
+ * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+ *
  * \section Doc_Streams_Hierarchy Hierarchy
  *
  * \code

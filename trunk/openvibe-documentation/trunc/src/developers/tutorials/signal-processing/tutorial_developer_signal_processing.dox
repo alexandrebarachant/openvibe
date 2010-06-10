@@ -1,6 +1,8 @@
 /**
  * \page Doc_Tutorial_Developer_SignalProcessing Tutorial: create a signal processing algorithm and use it in a box
  *
+ * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+ *
  * \section Doc_Tutorial_Developer_SignalProcessing_ExtendingOpenViBE Extending OpenViBE
  
  * There are two ways

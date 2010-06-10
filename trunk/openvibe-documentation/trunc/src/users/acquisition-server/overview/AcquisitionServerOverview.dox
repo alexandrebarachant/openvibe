@@ -1,6 +1,8 @@
 /** 
 \page Doc_AcquisitionServerOverview OpenViBE Acquisition Server
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 \section Doc_AcquisitionServerOverview_Introduction Introduction
 
 OpenViBE Acquisition Server is a tool designed to communicate with hardware signal acquisition devices and forward acquired signals and other experiment information to OpenViBE applications in

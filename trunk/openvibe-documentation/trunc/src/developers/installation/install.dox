@@ -2,6 +2,8 @@
 
 \page Doc_Install Install
 
+- \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
+
 \section Doc_SourceCodeAccess Source code acess
 
 The source code of the project can be found on the INRIA gForge :
