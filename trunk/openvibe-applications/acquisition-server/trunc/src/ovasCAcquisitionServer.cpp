@@ -480,7 +480,7 @@ boolean CAcquisitionServer::stop(void)
 	else
 	{
 		uint64 l_ui64TheoricalSampleCount=m_ui64SampleCount-m_i64JitterSampleCount;
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "After " << (((System::Time::zgetTime()-m_ui64StartTime) * 1000) >> 32) * .001f << " seconds, theorical sample per seconds and real sample per seconds does not match.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "After " << (((System::Time::zgetTime()-m_ui64StartTime) * 1000) >> 32) * .001f << " seconds, theorical samples per second does not match real samples per second.\n";
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Received : " << m_ui64SampleCount << " samples.\n";
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Should have received : " << l_ui64TheoricalSampleCount << " samples.\n";
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Difference was : " << m_i64JitterSampleCount << " samples.\n";
