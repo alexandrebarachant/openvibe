@@ -19,7 +19,7 @@ namespace OpenViBEDesigner
 
 	class CInterfacedScenario
 	{
-		public:
+	public:
 
 		CInterfacedScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBEDesigner::CApplication& rApplication, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier,
 			::GtkNotebook& rNotebook, const char* sGUIFilename);
@@ -37,6 +37,7 @@ namespace OpenViBEDesigner
 		void undoCB(OpenViBE::boolean bManageModifiedStatusFlag=true);
 		void redoCB(OpenViBE::boolean bManageModifiedStatusFlag=true);
 		void snapshotCB(OpenViBE::boolean bManageModifiedStatusFlag=true);
+		void addCommentCB(int x=-1, int y=-1);
 
 		void scenarioDrawingAreaExposeCB(::GdkEventExpose* pEvent);
 		void scenarioDrawingAreaDragDataReceivedCB(::GdkDragContext* pDragContext, gint iX, gint iY, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT);
@@ -134,6 +135,9 @@ namespace OpenViBEDesigner
 		std::map<OpenViBE::uint32, OpenViBEDesigner::CInterfacedObject> m_vInterfacedObject;
 		std::map<OpenViBE::CIdentifier, OpenViBE::boolean> m_vCurrentObject;
 		OpenViBEDesigner::CInterfacedObject m_oCurrentObject;
+
+		OpenViBE::float64 m_f64HPanInitialPosition;
+		OpenViBE::float64 m_f64VPanInitialPosition;
 
 		typedef struct _BoxContextMenuCB
 		{

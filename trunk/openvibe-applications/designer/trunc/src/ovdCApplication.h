@@ -73,6 +73,9 @@ namespace OpenViBEDesigner
 
 		void forwardScenarioCB(void);
 
+		void addCommentCB(
+			OpenViBEDesigner::CInterfacedScenario* pScenario);
+
 		void changeCurrentScenario(
 			OpenViBE::int32 i32PageIndex);
 
@@ -102,6 +105,9 @@ namespace OpenViBEDesigner
 		//@{
 
 		OpenViBE::boolean quitApplicationCB(void);
+		void aboutOpenViBECB(void);
+		void aboutScenarioCB(OpenViBEDesigner::CInterfacedScenario* pScenario);
+		void browseDocumentationCB(void);
 
 		//@}
 

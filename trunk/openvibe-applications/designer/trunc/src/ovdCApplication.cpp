@@ -93,6 +93,19 @@ namespace
 		}
 	}
 
+	void menu_about_scenario_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->aboutScenarioCB(static_cast<CApplication*>(pUserData)->getCurrentInterfacedScenario());
+	}
+	void menu_about_openvibe_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->aboutOpenViBECB();
+	}
+	void menu_browse_documentation_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->browseDocumentationCB();
+	}
+
 	void button_new_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->newScenarioCB();
@@ -121,6 +134,15 @@ namespace
 	void button_toggle_window_manager_cb(::GtkToggleToolButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->toggleDesignerVisualisationCB();
+	}
+
+	void button_comment_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->addCommentCB(static_cast<CApplication*>(pUserData)->getCurrentInterfacedScenario());
+	}
+	void button_about_scenario_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->aboutScenarioCB(static_cast<CApplication*>(pUserData)->getCurrentInterfacedScenario());
 	}
 
 	void stop_scenario_cb(::GtkButton* pButton, gpointer pUserData)
@@ -325,6 +347,10 @@ void CApplication::initialize(void)
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_close")),       "activate", G_CALLBACK(menu_close_scenario_cb),     this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_quit")),        "activate", G_CALLBACK(menu_quit_application_cb),   this);
 
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_about")),          "activate", G_CALLBACK(menu_about_openvibe_cb),  this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_scenario_about")), "activate", G_CALLBACK(menu_about_scenario_cb),  this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_documentation")),  "activate", G_CALLBACK(menu_browse_documentation_cb),   this);
+
 	// g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-menu_test")),        "activate", G_CALLBACK(menu_test_cb),               this);
 
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_new")),       "clicked",  G_CALLBACK(button_new_scenario_cb),     this);
@@ -333,14 +359,16 @@ void CApplication::initialize(void)
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_save_as")),   "clicked",  G_CALLBACK(button_save_scenario_as_cb), this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_close")),     "clicked",  G_CALLBACK(button_close_scenario_cb),   this);
 
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager")),   "toggled",  G_CALLBACK(button_toggle_window_manager_cb), this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_log_level")),     "clicked",  G_CALLBACK(log_level_cb),                    this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager")), "toggled",  G_CALLBACK(button_toggle_window_manager_cb), this);
+
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_comment")),       "clicked", G_CALLBACK(button_comment_cb),        this);
+	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_aboutscenario")), "clicked", G_CALLBACK(button_about_scenario_cb), this);
 
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_stop")),       "clicked",  G_CALLBACK(stop_scenario_cb),          this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_play_pause")), "clicked",  G_CALLBACK(play_pause_scenario_cb),    this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_next")),       "clicked",  G_CALLBACK(next_scenario_cb),          this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_forward")),    "clicked",  G_CALLBACK(forward_scenario_cb),       this);
-
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_log_level")), "clicked",  G_CALLBACK(log_level_cb),               this);
 
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-box_algorithm_title_button_expand")),   "clicked", G_CALLBACK(box_algorithm_title_button_expand_cb),   this);
 	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "openvibe-box_algorithm_title_button_collapse")), "clicked", G_CALLBACK(box_algorithm_title_button_collapse_cb), this);
@@ -576,7 +604,7 @@ void CApplication::openScenario(char* sFileName)
 				GTK_BUTTONS_OK,
 				"Scenario importation process failed !");
 			gtk_message_dialog_format_secondary_text(
-				GTK_MESSAGE_DIALOG(l_pErrorDialog), l_oStringStream.str().c_str());
+				GTK_MESSAGE_DIALOG(l_pErrorDialog), "%s", l_oStringStream.str().c_str());
 			gtk_dialog_run(GTK_DIALOG(l_pErrorDialog));
 			gtk_widget_destroy(l_pErrorDialog);
 		}
@@ -813,6 +841,13 @@ void CApplication::openScenarioCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "openScenarioCB\n";
 
+	::GtkFileFilter* l_pFileFilterXML=gtk_file_filter_new();
+	::GtkFileFilter* l_pFileFilterAll=gtk_file_filter_new();
+	gtk_file_filter_set_name(l_pFileFilterXML, "OpenViBE XML scenario");
+	gtk_file_filter_add_pattern(l_pFileFilterXML, "*.xml");
+	gtk_file_filter_set_name(l_pFileFilterAll, "All files");
+	gtk_file_filter_add_pattern(l_pFileFilterAll, "*");
+
 	::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
 		"Select scenario to open...",
 		NULL,
@@ -820,6 +855,8 @@ void CApplication::openScenarioCB(void)
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 		NULL);
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_pFileFilterXML);
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_pFileFilterAll);
 	gtk_file_chooser_set_current_folder(
 		GTK_FILE_CHOOSER(l_pWidgetDialogOpen),
 		this->getWorkingDirectory().toASCIIString());
@@ -905,11 +942,14 @@ void CApplication::saveScenarioAsCB(void)
 	}
 
 	::GtkFileFilter* l_pFileFilterXML=gtk_file_filter_new();
-	::GtkFileFilter* l_pFileFilterSVG=gtk_file_filter_new();
+	// ::GtkFileFilter* l_pFileFilterSVG=gtk_file_filter_new();
+	::GtkFileFilter* l_pFileFilterAll=gtk_file_filter_new();
 	gtk_file_filter_set_name(l_pFileFilterXML, "OpenViBE XML scenario");
 	gtk_file_filter_add_pattern(l_pFileFilterXML, "*.xml");
-	gtk_file_filter_set_name(l_pFileFilterSVG, "SVG image");
-	gtk_file_filter_add_pattern(l_pFileFilterSVG, "*.svg");
+	// gtk_file_filter_set_name(l_pFileFilterSVG, "SVG image");
+	// gtk_file_filter_add_pattern(l_pFileFilterSVG, "*.svg");
+	gtk_file_filter_set_name(l_pFileFilterAll, "All files");
+	gtk_file_filter_add_pattern(l_pFileFilterAll, "*");
 
 	::GtkWidget* l_pWidgetDialogSaveAs=gtk_file_chooser_dialog_new(
 		"Select scenario to save...",
@@ -920,7 +960,7 @@ void CApplication::saveScenarioAsCB(void)
 		NULL);
 
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), l_pFileFilterXML);
-	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), l_pFileFilterSVG);
+	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), l_pFileFilterAll);
 	// gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), true);
 	if(l_pCurrentInterfacedScenario->m_bHasFileName)
 	{
@@ -936,56 +976,25 @@ void CApplication::saveScenarioAsCB(void)
 	{
 		//ensure file extension is added after filename
 		char* l_sTempFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
-
-#if 0
 		char l_sFileName[1024];
-		sprintf(l_sFileName, l_sTempFileName);
-
-		char l_sTempLowercaseFileName[1024];
-		int i=0;
-		do
-		{
-			l_sTempLowercaseFileName[i] = tolower(l_sFileName[i]);
-		}
-		while(l_sFileName[i++] != '\0');
-
+		::sprintf(l_sFileName, "%s", l_sTempFileName);
 		g_free(l_sTempFileName);
 
-		GtkFileFilter* l_pFilter = gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
-		if(l_pFilter == NULL) //no filter
+		::GtkFileFilter* l_pFileFilter=gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
+		if(l_pFileFilter == l_pFileFilterXML)
 		{
-			if(strstr(l_sTempLowercaseFileName, ".xml") == NULL) //default to .xml extension
+			if(::strlen(l_sFileName) > 4 && ::strcasecmp(l_sFileName+strlen(l_sFileName)-4, ".xml")!=0)
 			{
-				strcat(l_sFileName, ".xml");
+				::strcat(l_sFileName, ".xml");
 			}
 		}
-		else
-		{
-			const char* l_sFilterName = gtk_file_filter_get_name(l_pFilter);
-			if(strcmp(l_sFilterName, gtk_file_filter_get_name(l_pFileFilterXML)) == 0) //xml filter
-			{
-				if(strstr(l_sTempLowercaseFileName, ".xml") == NULL)
-				{
-					strcat(l_sFileName, ".xml");
-				}
-			}
-			else //svg filter
-			{
-				if(strstr(l_sTempLowercaseFileName, ".svg") == NULL)
-				{
-					strcat(l_sFileName, ".svg");
-				}
-			}
-		}
-#endif
 
-		l_pCurrentInterfacedScenario->m_sFileName=l_sTempFileName;
+		l_pCurrentInterfacedScenario->m_sFileName=l_sFileName;
 		l_pCurrentInterfacedScenario->m_bHasFileName=true;
 		l_pCurrentInterfacedScenario->m_bHasBeenModified=false;
 		l_pCurrentInterfacedScenario->updateScenarioLabel();
 
-		::GtkFileFilter* l_pFileFilter=gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
-		if(l_pFileFilter==l_pFileFilterSVG)
+		if(true /* l_pFileFilter==l_pFileFilterSVG */)
 		{
 			l_pCurrentInterfacedScenario->m_oExporterIdentifier=OVP_GD_ClassId_Algorithm_XMLScenarioExporter;
 		}
@@ -1064,6 +1073,12 @@ void CApplication::deleteDesignerVisualisationCB()
 {
 	//untoggle window manager button when its associated dialog is closed
 	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "openvibe-button_windowmanager")), FALSE);
+
+	CInterfacedScenario* l_pCurrentInterfacedScenario = getCurrentInterfacedScenario();
+	if(l_pCurrentInterfacedScenario)
+	{
+		l_pCurrentInterfacedScenario->snapshotCB();
+	}
 }
 
 void CApplication::toggleDesignerVisualisationCB()
@@ -1076,6 +1091,42 @@ void CApplication::toggleDesignerVisualisationCB()
 		{
 			m_vInterfacedScenario[l_ui32Index]->toggleDesignerVisualisation();
 		}
+	}
+}
+
+void CApplication::aboutOpenViBECB(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "CApplication::aboutOpenViBECB\n";
+	::GladeXML* l_pGlade=glade_xml_new(OVD_GUI_File, "about", NULL);
+	::GtkWidget* l_pDialog=glade_xml_get_widget(l_pGlade, "about");
+	glade_xml_signal_autoconnect(l_pGlade);
+	gtk_dialog_set_response_sensitive(GTK_DIALOG(l_pDialog), GTK_RESPONSE_CLOSE, true);
+	gtk_dialog_run(GTK_DIALOG(l_pDialog));
+	gtk_widget_destroy(l_pDialog);
+	g_object_unref(l_pGlade);
+}
+
+void CApplication::aboutScenarioCB(CInterfacedScenario* pScenario)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "CApplication::aboutScenarioCB\n";
+	if(pScenario && !pScenario->isLocked())
+	{
+		pScenario->contextMenuScenarioAboutCB();
+	}
+}
+
+void CApplication::browseDocumentationCB(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "CApplication::browseDocumentationCB\n";
+}
+
+void CApplication::addCommentCB(
+	CInterfacedScenario* pScenario)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "CApplication::addCommentCB\n";
+	if(pScenario && !pScenario->isLocked())
+	{
+		pScenario->addCommentCB();
 	}
 }
 
