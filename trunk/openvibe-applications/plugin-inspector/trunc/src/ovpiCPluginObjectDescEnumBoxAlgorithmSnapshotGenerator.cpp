@@ -224,7 +224,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlg
 		}
 
 		l_oBoxAlgorithmsFile << " * ";
-		for(uint32 k=0; k<l_ui32Level+1; k++)
+		for(uint32 k=0; k<l_ui32Level; k++)
 			l_oBoxAlgorithmsFile << "   ";
 		l_oBoxAlgorithmsFile << " - \\subpage Doc_BoxAlgorithm_" << transform(l_sName).c_str() << " \"" << l_sName << "\"\n";
 	}
