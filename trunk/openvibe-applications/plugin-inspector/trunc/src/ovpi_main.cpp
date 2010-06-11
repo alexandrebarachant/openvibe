@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
 		else
 		{
 			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<endl;
-			l_pKernelContext=l_pKernelDesc->createKernel("acquisition-server", "../share/openvibe.conf");
+			l_pKernelContext=l_pKernelDesc->createKernel("plugin-inspector", "../share/openvibe.conf");
 			if(!l_pKernelContext)
 			{
 				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;
