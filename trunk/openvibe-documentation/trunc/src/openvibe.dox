@@ -128,9 +128,11 @@
 /** \page Doc_DeveloperDocumentation Developer Documentation
  * - \subpage Doc_Install "Installation procedure"
  * - \subpage Doc_DeveloperTutorials "Developer tutorials"
- *   - \subpage Doc_CreatingANewDriver
- *   - \subpage Doc_ConfiguringANewDriver
- *   - \subpage Doc_DriverCheckAndCorrection
+ *   - \subpage Doc_DeveloperDocumentation_Driver
+ *     - \subpage Doc_CreatingANewDriver
+ *     - \subpage Doc_ConfiguringANewDriver
+ *     - \subpage Doc_DriverImpedanceChecker
+ *     - \subpage Doc_DriverJitterCorrection
  *   - \subpage Doc_Tutorial_Developer_SignalProcessing
  *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  *   - \subpage Doc_VRApplicationAndVRPN
@@ -170,9 +172,11 @@
  
  /**
  * \page Doc_DeveloperTutorials Developer tutorials
- * - \subpage Doc_CreatingANewDriver
- * - \subpage Doc_ConfiguringANewDriver
- * - \subpage Doc_DriverCheckAndCorrection
+ * - \subpage Doc_DeveloperDocumentation_Driver
+ *   - \subpage Doc_CreatingANewDriver
+ *   - \subpage Doc_ConfiguringANewDriver
+ *   - \subpage Doc_DriverImpedanceChecker
+ *   - \subpage Doc_DriverJitterCorrection
  * - \subpage Doc_Tutorial_Developer_SignalProcessing
  * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  */
@@ -180,4 +184,12 @@
 /**
  * \page Doc_Scenario Existing scenarios
  * - \subpage Doc_Scenario_InsermP300Speller
+ */
+ 
+ /**
+ * \page Doc_DeveloperDocumentation_Driver Developing a Driver
+ * - \subpage Doc_CreatingANewDriver
+ * - \subpage Doc_ConfiguringANewDriver
+ * - \subpage Doc_DriverImpedanceChecker
+ * - \subpage Doc_DriverJitterCorrection
  */
