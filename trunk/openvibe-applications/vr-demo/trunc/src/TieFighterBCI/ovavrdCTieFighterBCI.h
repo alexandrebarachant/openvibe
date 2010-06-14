@@ -72,9 +72,9 @@ namespace OpenViBEVRDemos {
 			/**
 			* \brief Lifts the barrels and spaceship according to the feedback received from the analog server.
 			*/
-			virtual bool process(const Ogre::FrameEvent& evt);
+			virtual bool process(double timeSinceLastProcess);
 
-			virtual void processStageFreetime(const Ogre::FrameEvent& evt);
+			virtual void processStageFreetime(double timeSinceLastProcess);
 			
 			int m_iScore;                      //!<Current score.
 			int m_iAttemptCount;               //!<Current attempt count.

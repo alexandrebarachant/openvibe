@@ -352,7 +352,7 @@ void CTieFighterBCI::loadHangarBarrels()
 	l_poBarrel4Node->rotate(Vector3::UNIT_X,Radian(Math::PI));
 }
 
-bool CTieFighterBCI::process(const FrameEvent& evt)
+bool CTieFighterBCI::process(double timeSinceLastProcess)
 {
 	while(!m_poVrpnPeripheral->m_vButton.empty())
 	{
@@ -453,13 +453,13 @@ bool CTieFighterBCI::process(const FrameEvent& evt)
 			m_poGUIWindowManager->getWindow("Calibration")->setVisible(false);
 			m_poGUIWindowManager->getWindow("Statistics")->setVisible(false);
 			m_poGUIWindowManager->getWindow("StatsImage")->setVisible(false);
-			processStageFreetime(evt);
+			processStageFreetime(timeSinceLastProcess);
 			break;
 		case Stage_FreetimeImaginary:
 			m_poGUIWindowManager->getWindow("Calibration")->setVisible(false);
 			m_poGUIWindowManager->getWindow("Statistics")->setVisible(false);
 			m_poGUIWindowManager->getWindow("StatsImage")->setVisible(false);
-			processStageFreetime(evt);
+			processStageFreetime(timeSinceLastProcess);
 			break;
 		case Stage_Statistics :
 			l_iCount = 10;
@@ -531,7 +531,7 @@ bool CTieFighterBCI::keyPressed(const OIS::KeyEvent& evt)
 }
 
 // -------------------------------------------------------------------------------
-void CTieFighterBCI::processStageFreetime(const FrameEvent& evt)
+void CTieFighterBCI::processStageFreetime(double timeSinceLastProcess)
 {
 	// -------------------------------------------------------------------------------
 	// Tie 
@@ -550,7 +550,7 @@ void CTieFighterBCI::processStageFreetime(const FrameEvent& evt)
 		m_vTieOrientation[1] += g_fRotationSpeed *((rand()&1)==0?-1:1);
 		m_vTieOrientation[2] += g_fRotationSpeed *((rand()&1)==0?-1:1);
 		m_fTieHeight += (m_dFeedback-m_dBetaOffset)* g_fMoveSpeed;
-		if(m_bShouldIncrementStat) m_dStat_TieFighterLiftTime += evt.timeSinceLastFrame;
+		if(m_bShouldIncrementStat) m_dStat_TieFighterLiftTime += timeSinceLastProcess;
 
 		if(m_vTieOrientation[0]>5)  m_vTieOrientation[0]=5;
 		if(m_vTieOrientation[1]>5)  m_vTieOrientation[1]=5;

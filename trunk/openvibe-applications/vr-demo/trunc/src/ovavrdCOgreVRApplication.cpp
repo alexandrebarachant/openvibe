@@ -250,7 +250,7 @@ bool COgreVRApplication::frameStarted(const FrameEvent& evt)
 		//the button states are added in the peripheric, but they have to be popped.
 		//the basic class does not pop the states.
 
-		this->process(evt);
+		this->process(m_dClock);
 		m_dClock -= 1/MAX_FREQUENCY;
 	}
 	else
