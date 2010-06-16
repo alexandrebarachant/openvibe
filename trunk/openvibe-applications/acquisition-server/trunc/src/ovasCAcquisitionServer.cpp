@@ -367,7 +367,7 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 	m_vImpedance.resize(m_ui32ChannelCount, OVAS_Impedance_NotAvailable);
 	m_vSwapBuffer.resize(m_ui32ChannelCount);
 
-	m_rKernelContext.getLogManager() << LogLevel_Info << "Connecting to device...\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Connecting to device [" << CString(m_pDriver->getName()) << "]...\n";
 
 	m_pConnectionServer=Socket::createConnectionServer();
 	if(m_pConnectionServer->listen(ui32ConnectionPort))
@@ -411,6 +411,11 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 		ip_pMatrix->setDimensionCount(2);
 		ip_pMatrix->setDimensionSize(0, m_ui32ChannelCount);
 		ip_pMatrix->setDimensionSize(1, m_ui32SampleCountPerSentBlock);
+
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Sampling rate     : " << m_ui32SamplingFrequency << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Samples per block : " << m_ui32SampleCountPerSentBlock << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Channel count     : " << m_ui32ChannelCount << "\n";
+
 		for(uint32 i=0; i<m_ui32ChannelCount; i++)
 		{
 			string l_sChannelName=l_rHeader.getChannelName(i);
@@ -424,6 +429,7 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 				ss << "Channel " << i+1;
 				ip_pMatrix->setDimensionLabel(0, i, ss.str().c_str());
 			}
+			m_rKernelContext.getLogManager() << LogLevel_Trace << "Channel name      : " << CString(ip_pMatrix->getDimensionLabel(0, i)) << "\n";
 		}
 
 		// TODO Gain is ignored
