@@ -1009,8 +1009,16 @@ void CInterfacedScenario::addCommentCB(int x, int y)
 		::GtkAdjustment* l_pHAdjustment=gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(l_pScrolledWindow));
 		::GtkAdjustment* l_pVAdjustment=gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(l_pScrolledWindow));
 
+#if defined OVD_OS_Linux
 		x=gtk_adjustment_get_value(l_pHAdjustment)+gtk_adjustment_get_page_size(l_pHAdjustment)/2;
 		y=gtk_adjustment_get_value(l_pVAdjustment)+gtk_adjustment_get_page_size(l_pVAdjustment)/2;
+#elif defined OVD_OS_Windows
+		x=gtk_adjustment_get_value(l_pHAdjustment)+32;
+		y=gtk_adjustment_get_value(l_pVAdjustment)+32;
+#else
+		x=gtk_adjustment_get_value(l_pHAdjustment)+32;
+		y=gtk_adjustment_get_value(l_pVAdjustment)+32;
+#endif
 	}
 
 	CCommentProxy l_oCommentProxy(m_rKernelContext, m_rScenario, l_oIdentifier);
