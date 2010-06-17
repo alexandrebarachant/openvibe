@@ -134,6 +134,7 @@ namespace OpenViBEVRDemos {
 			* Localization. *
 			*****************/
 			std::map<std::string,std::string> m_mLocalizedFilenames;
+			std::string m_sLocalization;
 		
 	};
 };

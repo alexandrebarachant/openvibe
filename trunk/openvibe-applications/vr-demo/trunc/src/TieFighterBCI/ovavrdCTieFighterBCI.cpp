@@ -47,6 +47,7 @@ CTieFighterBCI::CTieFighterBCI(string s_localization) : COgreVRApplication()
 	m_dBetaOffset = 0;
 	m_iBetaOffsetPercentage = 0;
 
+	m_sLocalization = s_localization;
 	if(_strcmpi(s_localization.c_str(),"fr") == 0)
 	{
 		m_mLocalizedFilenames.insert(make_pair("phase-init","pret.png"));
@@ -468,16 +469,33 @@ bool CTieFighterBCI::process(double timeSinceLastProcess)
 			m_poGUIWindowManager->getWindow("Calibration")->setVisible(false);
 			m_poGUIWindowManager->getWindow("Statistics")->setVisible(true);
 			m_poGUIWindowManager->getWindow("StatsImage")->setVisible(true);	
-			ss << " Merci d'avoir participé !" << "\n------------\n";
+			
+			if(_strcmpi(m_sLocalization.c_str(),"fr") == 0)
+			{
+				ss << " Merci d'avoir participé !" << "\n------------\n";
 
-			ss << "Le vaisseau s'est soulevé pendant :\n" << m_dStat_TieFighterLiftTime << " secondes.\n\n";
-			ss << "Temps moyen par essai :\n" << m_dStat_TieFighterLiftTime/l_iCount << " secondes.\n\n";
-			ss << "------------\n";
-			ss << "Votre rang : \n";
-			l_sRang = "- Apprenti Jedi -";
-			if(m_dStat_TieFighterLiftTime/l_iCount > 1.0 ) l_sRang = "{ Chevalier Jedi }";
-			if(m_dStat_TieFighterLiftTime/l_iCount > 2.0 ) l_sRang = "-oO Maître Jedi Oo-";
-			ss << l_sRang << "\n";		
+				ss << "Le vaisseau s'est soulevé pendant :\n" << m_dStat_TieFighterLiftTime << " secondes.\n\n";
+				ss << "Temps moyen par essai :\n" << m_dStat_TieFighterLiftTime/l_iCount << " secondes.\n\n";
+				ss << "------------\n";
+				ss << "Votre rang : \n";
+				l_sRang = "- Apprenti Jedi -";
+				if(m_dStat_TieFighterLiftTime/l_iCount > 1.0 ) l_sRang = "{ Chevalier Jedi }";
+				if(m_dStat_TieFighterLiftTime/l_iCount > 2.0 ) l_sRang = "-oO Maître Jedi Oo-";
+				ss << l_sRang << "\n";
+			}
+			else
+			{
+				ss << " Thanks for your participation" << "\n------------\n";
+
+				ss << "You lifted the spaceship during :\n" << m_dStat_TieFighterLiftTime << " seconds.\n\n";
+				ss << "Mean time per attempt :\n" << m_dStat_TieFighterLiftTime/l_iCount << " seconds.\n\n";
+				ss << "------------\n";
+				ss << "Rank : \n";
+				l_sRang = "- Jedi Apprentice -";
+				if(m_dStat_TieFighterLiftTime/l_iCount > 1.0 ) l_sRang = "{ Jedi Knight }";
+				if(m_dStat_TieFighterLiftTime/l_iCount > 2.0 ) l_sRang = "-oO Jedi Master Oo-";
+				ss << l_sRang << "\n";
+			}
 
 			m_poGUIWindowManager->getWindow("Statistics")->setText(ss.str());
 			break;
