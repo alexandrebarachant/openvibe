@@ -1013,8 +1013,10 @@ void CInterfacedScenario::addCommentCB(int x, int y)
 		x=gtk_adjustment_get_value(l_pHAdjustment)+gtk_adjustment_get_page_size(l_pHAdjustment)/2;
 		y=gtk_adjustment_get_value(l_pVAdjustment)+gtk_adjustment_get_page_size(l_pVAdjustment)/2;
 #elif defined OVD_OS_Windows
-		x=gtk_adjustment_get_value(l_pHAdjustment)+32;
-		y=gtk_adjustment_get_value(l_pVAdjustment)+32;
+		gint wx,wy;
+		::gdk_window_get_size(gtk_widget_get_parent(GTK_WIDGET(m_pScenarioDrawingArea))->window, &wx, &wy);
+		x=gtk_adjustment_get_value(l_pHAdjustment)+wx/2;
+		y=gtk_adjustment_get_value(l_pVAdjustment)+wy/2;
 #else
 		x=gtk_adjustment_get_value(l_pHAdjustment)+32;
 		y=gtk_adjustment_get_value(l_pVAdjustment)+32;
