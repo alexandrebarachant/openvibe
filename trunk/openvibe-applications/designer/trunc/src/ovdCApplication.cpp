@@ -12,6 +12,10 @@
 
 #include <cstring>
 
+#if defined OVA_OS_Linux
+ #define _strcmpi _strcmpi
+#endif
+
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.glade"
 
 #include "ovdCDesignerVisualisation.h"
@@ -983,7 +987,7 @@ void CApplication::saveScenarioAsCB(void)
 		::GtkFileFilter* l_pFileFilter=gtk_file_chooser_get_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
 		if(l_pFileFilter == l_pFileFilterXML)
 		{
-			if(::strlen(l_sFileName) > 4 && ::strcasecmp(l_sFileName+strlen(l_sFileName)-4, ".xml")!=0)
+			if(::strlen(l_sFileName) > 4 && ::_strcmpi(l_sFileName+strlen(l_sFileName)-4, ".xml")!=0)
 			{
 				::strcat(l_sFileName, ".xml");
 			}
