@@ -45,6 +45,22 @@ boolean OpenViBEToolkit::initialize(const IKernelContext& rKernelContext)
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0D", OVTK_StimulationId_Label_0D);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0E", OVTK_StimulationId_Label_0E);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_0F", OVTK_StimulationId_Label_0F);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_10", OVTK_StimulationId_Label_10);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_11", OVTK_StimulationId_Label_11);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_12", OVTK_StimulationId_Label_12);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_13", OVTK_StimulationId_Label_13);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_14", OVTK_StimulationId_Label_14);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_15", OVTK_StimulationId_Label_15);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_16", OVTK_StimulationId_Label_16);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_17", OVTK_StimulationId_Label_17);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_18", OVTK_StimulationId_Label_18);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_19", OVTK_StimulationId_Label_19);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_1A", OVTK_StimulationId_Label_1A);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_1B", OVTK_StimulationId_Label_1B);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_1C", OVTK_StimulationId_Label_1C);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_1D", OVTK_StimulationId_Label_1D);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_1E", OVTK_StimulationId_Label_1E);
+	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Label_1F", OVTK_StimulationId_Label_1F);
 
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Train", OVTK_StimulationId_Train);
 	l_rTypeManager.registerEnumerationEntry(OV_TypeId_Stimulation, "OVTK_StimulationId_Beep", OVTK_StimulationId_Beep);
