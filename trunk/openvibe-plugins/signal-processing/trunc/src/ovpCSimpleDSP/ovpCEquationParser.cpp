@@ -31,6 +31,21 @@ namespace
 	{
 		return std::tolower(c);
 	}
+
+	// BOOST::Ast should be able to remove spaces / tabs etc but
+	// unfortunately, it seems it does not work correcly in some
+	// cases so I add this sanitizer function to clear the Simple DSP
+	// equation before sending it to BOOST::Ast
+	static std::string find_and_replace(std::string s, const std::string& f, const std::string& r)
+	{
+		size_t i;
+		while((i=s.find(f))!=std::string::npos)
+		{
+			s.replace(i, f.length(), r);
+		}
+		return s;
+	}
+
 };
 
 functionPointer CEquationParser::m_pFunctionTable[]=
@@ -81,9 +96,18 @@ CEquationParser::~CEquationParser()
 
 boolean CEquationParser::compileEquation(const char * pEquation)
 {
+	// BOOST::Ast should be able to remove spaces / tabs etc but
+	// unfortunately, it seems it does not work correcly in some
+	// cases so I add this sanitizer function to clear the Simple DSP
+	// equation before sending it to BOOST::Ast
+	std::string l_sEquation(pEquation);
+	l_sEquation=::find_and_replace(l_sEquation, " ", "");
+	l_sEquation=::find_and_replace(l_sEquation, "\t", "");
+	l_sEquation=::find_and_replace(l_sEquation, "\n", "");
+
 	//parses the equation
-	_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Parsing equation [" << CString(pEquation) << "]...");
-	tree_parse_info<> l_oInfo = ast_parse(pEquation, m_oGrammar >> end_p, space_p);
+	_EQ_PARSER_DEBUG_LOG_(LogLevel_Trace, "Parsing equation [" << CString(l_sEquation.c_str()) << "]...");
+	tree_parse_info<> l_oInfo = ast_parse(l_sEquation.c_str(), m_oGrammar >> end_p, space_p);
 
 	//If the parsing was successful
 	if (l_oInfo.full)
