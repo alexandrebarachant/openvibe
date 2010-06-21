@@ -191,7 +191,7 @@ CDriverTMSiRefa32B::CDriverTMSiRefa32B(IDriverContext& rDriverContext)
 
 	//Open library
 	GetCurrentDirectory(1024, l_sPath);
-	::lstrcat(l_sPath,"\\..\\lib");
+	::lstrcat(l_sPath,"\\..\\bin");
 	::lstrcat(l_sPath,RTLOADER);
 	m_oLibHandle = ::LoadLibrary(l_sPath);
 

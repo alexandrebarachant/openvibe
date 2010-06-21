@@ -141,7 +141,7 @@ CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(IDriverContext& rDriverContext)
 
 	//Open libratry
 	::GetCurrentDirectory(1024, l_sPath);
-	::lstrcat(l_sPath, "\\..\\lib");
+	::lstrcat(l_sPath, "\\..\\bin");
 	::lstrcat(l_sPath, MicromedDLL);
 	m_oLibMicromed = ::LoadLibrary(l_sPath);
 
