@@ -13,7 +13,7 @@
 #include <cstring>
 
 #if defined OVA_OS_Linux
- #define _strcmpi _strcmpi
+ #define _strcmpi strcasecmp
 #endif
 
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.glade"
