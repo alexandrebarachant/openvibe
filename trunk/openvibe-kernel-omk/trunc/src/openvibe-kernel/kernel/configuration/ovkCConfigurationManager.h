@@ -86,6 +86,7 @@ namespace OpenViBE
 			OpenViBE::CString getTime(void) const;
 			OpenViBE::CString getDate(void) const;
 			OpenViBE::uint32 getRealTime(void) const;
+			OpenViBE::uint32 getProcessId(void) const;
 
 		protected:
 

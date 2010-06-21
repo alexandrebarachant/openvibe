@@ -19,6 +19,13 @@
 
 #include <cstdlib>
 
+#if defined OVK_OS_Linux
+ #include <unistd.h> // for getpid
+#elif defined OVK_OS_Windows
+ #include <windows.h> // for GetCurrentProcessId
+#else
+#endif
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -158,6 +165,8 @@ namespace OpenViBE
 		};
 	};
 };
+
+#define boolean OpenViBE::boolean
 
 CConfigurationManager::CConfigurationManager(const IKernelContext& rKernelContext)
 	:TKernelObject<IConfigurationManager>(rKernelContext)
@@ -441,6 +450,11 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 						sprintf(l_sLocalValue, "%u", this->getRealTime());
 						l_sValue=l_sLocalValue;
 					}
+					else if(l_sLowerPostfix=="process-id")
+					{
+						sprintf(l_sLocalValue, "%u", this->getProcessId());
+						l_sValue=l_sLocalValue;
+					}
 					else
 					{
 						this->getLogManager() << LogLevel_Warning << "Could not expand token with " << CString(l_sPrefix.c_str()) << " prefix and " << CString(l_sPostfix.c_str()) << " postfix while expanding " << CString(sValue.c_str()) << "\n";
@@ -608,4 +622,15 @@ CString CConfigurationManager::getDate(void) const
 uint32 CConfigurationManager::getRealTime(void) const
 {
 	return System::Time::getTime()-m_ui32StartTime;
+}
+
+uint32 CConfigurationManager::getProcessId(void) const
+{
+#if defined OVK_OS_Linux
+	return (uint32)getpid();
+#elif defined OVK_OS_Windows
+	return (uint32)GetCurrentProcessId();
+#else
+	#error TODO
+#endif
 }
