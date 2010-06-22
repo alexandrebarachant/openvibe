@@ -9,11 +9,24 @@ FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
 INCLUDE("FindOpenViBEModuleSystem")
-
-INCLUDE("FindThirdPartyOgre3D") #OGRE + OIS included
-INCLUDE("FindThirdPartyCEGUI") #CEGUI + CEGUIOgreRender included
-
+INCLUDE("FindThirdPartyOgre3D") # OGRE + OIS included
+INCLUDE("FindThirdPartyCEGUI") # CEGUI + CEGUIOgreRender included
 INCLUDE("FindThirdPartyVRPN")
+
+# ---------------------------------
+# Finds standard library pthread
+# Adds library to target
+# Adds include path
+# ---------------------------------
+IF(UNIX)
+	FIND_LIBRARY(LIB_STANDARD_MODULE_PTHREAD pthread)
+	IF(LIB_STANDARD_MODULE_PTHREAD)
+		MESSAGE(STATUS "  Found pthread...")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_PTHREAD})
+	ELSE(LIB_STANDARD_MODULE_PTHREAD)
+		MESSAGE(STATUS "  FAILED to find pthread...")
+	ENDIF(LIB_STANDARD_MODULE_PTHREAD)
+ENDIF(UNIX)
 
 # ---------------------------------
 # Target macros
