@@ -663,7 +663,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ -e /etc/fedora-release ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_fedora_packages="subversion doxygen make automake autoconf unzip gcc gcc-c++ gtk2-devel libglade2-devel itpp-devel expat-devel libzzip-dev libtool libXaw-devel pcre-devel readline-devel freeimage-devel mesa-libGLU-devel"
+		ov_fedora_packages="wget subversion doxygen make automake autoconf unzip gcc gcc-c++ gtk2-devel libglade2-devel itpp-devel expat-devel libzzip-dev libtool libXaw-devel pcre-devel readline-devel freeimage-devel mesa-libGLU-devel"
 #		for package in $ov_ubuntu_packages; do
 #			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 #			ov_dpkg_retcode=$?
