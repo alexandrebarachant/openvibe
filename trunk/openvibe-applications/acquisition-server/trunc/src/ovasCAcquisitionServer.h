@@ -81,6 +81,7 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBE::boolean m_bInitialized;
 		OpenViBE::boolean m_bStarted;
+		OpenViBE::boolean m_bGotData;
 		OpenViBE::uint32 m_ui32ChannelCount;
 		OpenViBE::uint32 m_ui32SamplingFrequency;
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
@@ -88,10 +89,15 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint64 m_ui64LastSampleCount;
 		OpenViBE::uint64 m_ui64StartTime;
 
+		OpenViBE::uint64 m_ui64JitterToleranceDuration;
 		OpenViBE::int64 m_i64JitterSampleCount;
 		OpenViBE::int64 m_i64JitterToleranceSampleCount;
 		OpenViBE::int64 m_i64JitterCorrectionSampleCountAdded;
 		OpenViBE::int64 m_i64JitterCorrectionSampleCountRemoved;
+
+		OpenViBE::uint64 m_ui64DriverTimeoutDuration;
+		OpenViBE::uint64 m_ui64StartedDriverSleepDuration;
+		OpenViBE::uint64 m_ui64StoppedDriverSleepDuration;
 
 		OpenViBE::uint8* m_pSampleBuffer;
 		OpenViBE::CStimulationSet m_oPendingStimulationSet;

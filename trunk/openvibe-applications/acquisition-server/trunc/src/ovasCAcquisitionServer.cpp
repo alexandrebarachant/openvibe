@@ -143,6 +143,11 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	ip_pAcquisitionSignalMemoryBuffer.setReferenceTarget(op_pSignalMemoryBuffer);
 	ip_pAcquisitionStimulationMemoryBuffer.setReferenceTarget(op_pStimulationMemoryBuffer);
 	// ip_pAcquisitionChannelLocalisationMemoryBuffer.setReferenceTarget(op_pStimulationMemoryBuffer);
+
+	m_ui64JitterToleranceDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_JitterToleranceDuration}", 100);
+	m_ui64StartedDriverSleepDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_StartedDriverSleepDuration}", 2);
+	m_ui64StoppedDriverSleepDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_StoppedDriverSleepDuration}", 100);
+	m_ui64DriverTimeoutDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriverTimeoutDuration}", 5000);
 }
 
 CAcquisitionServer::~CAcquisitionServer(void)
@@ -236,25 +241,33 @@ boolean CAcquisitionServer::loop(void)
 			{
 				m_rKernelContext.getLogManager() << LogLevel_Trace << "Received new connection\n";
 
-				m_vConnection.push_back(pair < Socket::IConnection*, uint64 >(l_pConnection, ((m_ui64SampleCount-m_vPendingBuffer.size())<<32)/m_ui32SamplingFrequency));
+				if(this->isStarted())
+				{
+					m_vConnection.push_back(pair < Socket::IConnection*, uint64 >(l_pConnection, ((m_ui64SampleCount-m_vPendingBuffer.size())<<32)/m_ui32SamplingFrequency));
 
-				m_rKernelContext.getLogManager() << LogLevel_Debug << "Creating header\n";
+					m_rKernelContext.getLogManager() << LogLevel_Debug << "Creating header\n";
 
-				// op_pChannelLocalisationMemoryBuffer->setSize(0, true);
-				op_pStimulationMemoryBuffer->setSize(0, true);
-				op_pSignalMemoryBuffer->setSize(0, true);
-				op_pExperimentInformationMemoryBuffer->setSize(0, true);
-				op_pAcquisitionMemoryBuffer->setSize(0, true);
+					// op_pChannelLocalisationMemoryBuffer->setSize(0, true);
+					op_pStimulationMemoryBuffer->setSize(0, true);
+					op_pSignalMemoryBuffer->setSize(0, true);
+					op_pExperimentInformationMemoryBuffer->setSize(0, true);
+					op_pAcquisitionMemoryBuffer->setSize(0, true);
 
-				// m_pChannelLocalisationStreamEncoder->process(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pStimulationStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pExperimentInformationStreamEncoder->process(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pAcquisitionStreamEncoder->process(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputTriggerId_EncodeHeader);
+					// m_pChannelLocalisationStreamEncoder->process(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputTriggerId_EncodeHeader);
+					m_pStimulationStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
+					m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
+					m_pExperimentInformationStreamEncoder->process(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeHeader);
+					m_pAcquisitionStreamEncoder->process(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputTriggerId_EncodeHeader);
 
-				uint64 l_ui64MemoryBufferSize=op_pAcquisitionMemoryBuffer->getSize();
-				l_pConnection->sendBufferBlocking(&l_ui64MemoryBufferSize, sizeof(l_ui64MemoryBufferSize));
-				l_pConnection->sendBufferBlocking(op_pAcquisitionMemoryBuffer->getDirectPointer(), (uint32)op_pAcquisitionMemoryBuffer->getSize());
+					uint64 l_ui64MemoryBufferSize=op_pAcquisitionMemoryBuffer->getSize();
+					l_pConnection->sendBufferBlocking(&l_ui64MemoryBufferSize, sizeof(l_ui64MemoryBufferSize));
+					l_pConnection->sendBufferBlocking(op_pAcquisitionMemoryBuffer->getDirectPointer(), (uint32)op_pAcquisitionMemoryBuffer->getSize());
+				}
+				else
+				{
+					m_rKernelContext.getLogManager() << LogLevel_Warning << "Dropping connection - acquisition is not started\n";
+					l_pConnection->release();
+				}
 			}
 		}
 	}
@@ -281,8 +294,39 @@ boolean CAcquisitionServer::loop(void)
 	}
 	else
 	{
+		boolean l_bResult;
+		boolean l_bTimeout;
+		if(this->isStarted())
+		{
+			l_bResult=true;
+			l_bTimeout=false;
+			m_bGotData=false;
+			uint32 l_ui32StartTime=System::Time::getTime();
+			while(l_bResult && !m_bGotData && !l_bTimeout)
+			{
+				// Calls driver's loop
+				l_bResult=m_pDriver->loop();
+				if(!m_bGotData)
+				{
+					System::Time::sleep((uint32)m_ui64StartedDriverSleepDuration);
+					l_bTimeout=(System::Time::getTime()>l_ui32StartTime+m_ui64DriverTimeoutDuration);
+				}
+			}
+			if(l_bTimeout)
+			{
+				m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Did not receive anything from the driver - timed out.\n";
+				return false;
+			}
+		}
+		else
+		{
+			// Calls driver's loop
+			l_bResult=m_pDriver->loop();
+			System::Time::sleep((uint32)m_ui64StoppedDriverSleepDuration);
+		}
+
 		// Calls driver's loop
-		if(!m_pDriver->loop())
+		if(!l_bResult)
 		{
 			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Something bad happened in the loop callback, stoping the acquisition\n";
 			return false;
@@ -374,14 +418,15 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 	{
 		m_bInitialized=true;
 
-		uint64 l_ui64ToleranceDurationBeforeWarning=m_rKernelContext.getConfigurationManager().expandAsInteger("${AcquisitionServer_ToleranceDuration}", 100);
-
 		m_i64JitterSampleCount=0;
-		m_i64JitterToleranceSampleCount=(l_ui64ToleranceDurationBeforeWarning * m_ui32SamplingFrequency) / 1000;
+		m_i64JitterToleranceSampleCount=(m_ui64JitterToleranceDuration * m_ui32SamplingFrequency) / 1000;
 		m_i64JitterCorrectionSampleCountAdded=0;
 		m_i64JitterCorrectionSampleCountRemoved=0;
 
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver monitoring tolerance set to " << l_ui64ToleranceDurationBeforeWarning << " milliseconds - eq " << m_i64JitterToleranceSampleCount << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver monitoring jitter tolerance set to " << m_ui64JitterToleranceDuration << " milliseconds - eq " << m_i64JitterToleranceSampleCount << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Started driver sleeping duration is " << m_ui64StartedDriverSleepDuration << " milliseconds\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Stopped driver sleeping duration is " << m_ui64StoppedDriverSleepDuration << " milliseconds\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver timeout duration set to " << m_ui64DriverTimeoutDuration << " milliseconds\n";
 
 		TParameterHandler < uint64 > ip_ui64BufferDuration(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_BufferDuration));
 
@@ -482,6 +527,13 @@ boolean CAcquisitionServer::stop(void)
 
 	if(-m_i64JitterToleranceSampleCount * 5 < m_i64JitterSampleCount && m_i64JitterSampleCount < m_i64JitterToleranceSampleCount * 5)
 	{
+		uint64 l_ui64TheoricalSampleCount=m_ui64SampleCount-m_i64JitterSampleCount;
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "For information, after " << (((System::Time::zgetTime()-m_ui64StartTime) * 1000) >> 32) * .001f << " seconds we got the following statistics :\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Received : " << m_ui64SampleCount << " samples.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Should have received : " << l_ui64TheoricalSampleCount << " samples.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Difference was : " << m_i64JitterSampleCount << " samples.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Added : " << m_i64JitterCorrectionSampleCountAdded << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Removed : " << m_i64JitterCorrectionSampleCountRemoved << " samples\n";
 	}
 	else
 	{
@@ -505,6 +557,13 @@ boolean CAcquisitionServer::stop(void)
 	m_pDriver->stop();
 	// m_pDriverContext->onStop(*m_pDriver->getHeader());
 
+	list < pair < Socket::IConnection*, uint64 > >::iterator itConnection=m_vConnection.begin();
+	while(itConnection!=m_vConnection.end())
+	{
+		itConnection->first->release();
+		itConnection=m_vConnection.erase(itConnection);
+	}
+
 	m_bStarted=false;
 	return true;
 }
@@ -520,13 +579,6 @@ boolean CAcquisitionServer::disconnect(void)
 	}
 
 	m_vImpedance.clear();
-
-	list < pair < Socket::IConnection*, uint64 > >::iterator itConnection=m_vConnection.begin();
-	while(itConnection!=m_vConnection.end())
-	{
-		itConnection->first->release();
-		itConnection=m_vConnection.erase(itConnection);
-	}
 
 	if(m_pConnectionServer)
 	{
@@ -562,6 +614,8 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 
 			m_rKernelContext.getLogManager() << LogLevel_Trace << "Sample count jitter is : " << m_i64JitterSampleCount << " samples.\n";
 		}
+
+		m_bGotData=true;
 	}
 	else
 	{

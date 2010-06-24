@@ -4,6 +4,8 @@
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 
+#if defined OVAS_OS_Windows
+
 namespace OpenViBEAcquisitionServer
 {
 	class CDriverMindMediaNeXus32B : public OpenViBEAcquisitionServer::IDriver
@@ -36,14 +38,10 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::float32* m_pSample;
-
 		OpenViBE::uint32 m_ui32SampleIndex;
-
-		OpenViBE::uint32 m_ui32StartTime;
-		OpenViBE::uint64 m_ui64SampleCountTotal;
-		OpenViBE::uint64 m_ui64AutoAddedSampleCount;
-		OpenViBE::uint64 m_ui64AutoRemovedSampleCount;
 	};
 };
+
+#endif // defined OVAS_OS_Windows
 
 #endif // __OpenViBE_AcquisitionServer_CDriverMindMediaNeXus32B_H__

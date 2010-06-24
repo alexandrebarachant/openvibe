@@ -357,15 +357,15 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 			// Impedance window creation
 			{
 				uint64 l_ui64ColumnCount=m_rKernelContext.getConfigurationManager().expandAsInteger("${AcquisitionServer_CheckImpedance_ColumnCount}", 8);
-				uint32 l_ui32LineCount=m_oHeaderCopy.getChannelCount()/l_ui64ColumnCount;
-				uint32 l_ui32LastCount=m_oHeaderCopy.getChannelCount()%l_ui64ColumnCount;
+				uint32 l_ui32LineCount=(uint32)(m_oHeaderCopy.getChannelCount()/l_ui64ColumnCount);
+				uint32 l_ui32LastCount=(uint32)(m_oHeaderCopy.getChannelCount()%l_ui64ColumnCount);
 
-				::GtkWidget* l_pTable=gtk_table_new(l_ui32LineCount+(l_ui32LastCount?1:0), (l_ui32LineCount?l_ui64ColumnCount:l_ui32LastCount), true);
+				::GtkWidget* l_pTable=gtk_table_new((gint)(l_ui32LineCount+(l_ui32LastCount?1:0)), (gint)((l_ui32LineCount?l_ui64ColumnCount:l_ui32LastCount)), true);
 
 				for(uint32 i=0; i<m_oHeaderCopy.getChannelCount(); i++)
 				{
-					uint32 j=i/l_ui64ColumnCount;
-					uint32 k=i%l_ui64ColumnCount;
+					uint32 j=(uint32)(i/l_ui64ColumnCount);
+					uint32 k=(uint32)(i%l_ui64ColumnCount);
 					::GtkWidget* l_pProgressBar=::gtk_progress_bar_new();
 					::gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(l_pProgressBar), GTK_PROGRESS_BOTTOM_TO_TOP);
 					::gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(l_pProgressBar), 0);

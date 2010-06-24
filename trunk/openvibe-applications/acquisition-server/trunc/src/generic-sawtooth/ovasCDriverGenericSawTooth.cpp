@@ -69,7 +69,6 @@ boolean CDriverGenericSawTooth::initialize(
 
 	m_pCallback=&rCallback;
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
-	m_ui32TotalSampleCount=0;
 
 	return true;
 }
@@ -81,7 +80,9 @@ boolean CDriverGenericSawTooth::start(void)
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
 
+	m_ui32TotalSampleCount=0;
 	m_ui32StartTime=System::Time::getTime();
+
 	return true;
 }
 
