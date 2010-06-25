@@ -58,6 +58,7 @@ namespace OpenViBEDesigner
 		const OpenViBE::Kernel::IBox* m_pConstBox;
 		OpenViBE::Kernel::IBox* m_pBox;
 		OpenViBE::boolean m_bApplied;
+		OpenViBE::boolean m_bShowOriginalNameWhenModified;
 		int m_iXCenter;
 		int m_iYCenter;
 		mutable std::string m_sLabel;

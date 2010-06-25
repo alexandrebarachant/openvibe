@@ -3,6 +3,7 @@
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace OpenViBE::Plugins;
 using namespace OpenViBEDesigner;
 using namespace std;
 
@@ -20,6 +21,7 @@ CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, const IBox& rBox)
 		m_iXCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_XCenterPosition);
 		m_iYCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_YCenterPosition);
 	}
+	m_bShowOriginalNameWhenModified=m_rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ShowOriginalBoxName}", true);
 }
 
 CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, IScenario& rScenario, const CIdentifier& rBoxIdentifier)
@@ -36,6 +38,7 @@ CBoxProxy::CBoxProxy(const IKernelContext& rKernelContext, IScenario& rScenario,
 		m_iXCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_XCenterPosition);
 		m_iYCenter=l_oAttributeHandler.getAttributeValue<int>(OV_AttributeId_Box_YCenterPosition);
 	}
+	m_bShowOriginalNameWhenModified=m_rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ShowOriginalBoxName}", true);
 }
 
 CBoxProxy::~CBoxProxy(void)
@@ -116,8 +119,15 @@ const char* CBoxProxy::getLabel(void) const
 	boolean l_bBoxIsDeprecated    (this->isBoxAlgorithmPluginPresent() && this->isDeprecated());
 	boolean l_bBoxIsUnstable      (this->isBoxAlgorithmPluginPresent() && this->isUnstable());
 
+	const IPluginObjectDesc* l_pDesc=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(m_pConstBox->getAlgorithmClassIdentifier());
+
 	string l_sBoxName(m_pConstBox->getName());
 	string l_sBoxIden(m_pConstBox->getIdentifier().toString());
+
+	string l_sRed("#602020");
+	string l_sGreen("#206020");
+	string l_sBlue("#202060");
+	string l_sGrey("#404040");
 
 	m_sLabel=l_sBoxName;
 
@@ -126,9 +136,14 @@ const char* CBoxProxy::getLabel(void) const
 		m_sLabel="<span weight=\"bold\">"+m_sLabel+"</span>";
 	}
 
-	string l_sRed("#602020");
-	string l_sGreen("#206020");
-	string l_sBlue("#202060");
+	if(m_bShowOriginalNameWhenModified)
+	{
+		string l_sBoxOriginalName(l_pDesc?string(l_pDesc->getName()):l_sBoxName);
+		if(l_sBoxOriginalName!=l_sBoxName)
+		{
+			m_sLabel="<small><i><span foreground=\""+l_sGrey+"\">"+l_sBoxOriginalName+"</span></i></small>\n"+m_sLabel;
+		}
+	}
 
 	if(l_bBoxCanChangeInput || l_bBoxCanChangeOutput || l_bBoxCanChangeSetting)
 	{

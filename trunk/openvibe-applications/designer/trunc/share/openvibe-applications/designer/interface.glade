@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+  <!-- interface-requires gtk+ 2.12 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkDialog" id="configuration_manager">
     <property name="border_width">5</property>
@@ -415,8 +415,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -608,8 +608,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -972,6 +972,8 @@ active log levels...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_comment">
                         <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">allows you to add a new
+comment in the scenario...</property>
                         <property name="label" translatable="yes">add comment</property>
                         <property name="stock_id">gtk-index</property>
                       </widget>
@@ -983,6 +985,8 @@ active log levels...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_aboutscenario">
                         <property name="visible">True</property>
+                        <property name="tooltip" translatable="yes">allows you to read / modify
+the information about the scenario...</property>
                         <property name="label" translatable="yes">about scenario</property>
                         <property name="use_underline">True</property>
                         <property name="stock_id">gtk-about</property>
@@ -2128,8 +2132,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2812,8 +2816,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -3203,8 +3207,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
