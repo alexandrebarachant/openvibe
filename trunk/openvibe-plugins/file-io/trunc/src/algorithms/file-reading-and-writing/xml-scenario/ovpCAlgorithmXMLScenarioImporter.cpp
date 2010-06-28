@@ -74,7 +74,7 @@ void CAlgorithmXMLScenarioImporter::openChild(const char* sName, const char** sA
 	if(false) { }
 
 	else if(l_sTop=="OpenViBE-Scenario"   && m_ui32Status==Status_ParsingNothing)  { m_ui32Status=Status_ParsingScenario;          m_pContext->processStart(OVTK_Algorithm_ScenarioExporter_NodeId_OpenViBEScenario); }
-	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingScenario) { m_ui32Status=Status_ParsingScenarioAttribute; m_pContext->processStart(OVTK_Algorithm_ScenarioExporter_NodeId_Scenario_Attributes); }
+	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingScenario) { m_ui32Status=Status_ParsingScenarioAttribute; m_pContext->processStart(OVTK_Algorithm_ScenarioExporter_NodeId_Scenario_Attribute); }
 
 	else if(l_sTop=="Box"                 && m_ui32Status==Status_ParsingScenario) { m_ui32Status=Status_ParsingBox;               m_pContext->processStart(OVTK_Algorithm_ScenarioExporter_NodeId_Box); }
 	else if(l_sTop=="Input"               && m_ui32Status==Status_ParsingBox)      { m_ui32Status=Status_ParsingBoxInput;          m_pContext->processStart(OVTK_Algorithm_ScenarioExporter_NodeId_Box_Input); }
@@ -179,6 +179,7 @@ void CAlgorithmXMLScenarioImporter::closeChild(void)
 	if(false) { }
 
 	else if(l_sTop=="OpenViBE-Scenario"   && m_ui32Status==Status_ParsingScenario)          { m_ui32Status=Status_ParsingNothing;  m_pContext->processStop(); }
+	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingScenarioAttribute) { m_ui32Status=Status_ParsingScenario; m_pContext->processStop(); }
 
 	else if(l_sTop=="Box"                 && m_ui32Status==Status_ParsingBox)               { m_ui32Status=Status_ParsingScenario; m_pContext->processStop(); }
 	else if(l_sTop=="Input"               && m_ui32Status==Status_ParsingBoxInput)          { m_ui32Status=Status_ParsingBox;      m_pContext->processStop(); }
@@ -194,10 +195,10 @@ void CAlgorithmXMLScenarioImporter::closeChild(void)
 	else if(l_sTop=="Target"              && m_ui32Status==Status_ParsingLinkTarget)        { m_ui32Status=Status_ParsingLink;     m_pContext->processStop(); }
 	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingLinkAttribute)     { m_ui32Status=Status_ParsingLink;     m_pContext->processStop(); }
 
-	else if(l_sTop=="VisualisationWidget" && m_ui32Status==Status_ParsingVisualisationWidget)        { m_ui32Status=Status_ParsingVisualisationTree;   m_pContext->processStop(); }
-	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingVisualisationWidgetAttribute) { m_ui32Status=Status_ParsingVisualisationWidget; m_pContext->processStop(); }
+	else if(l_sTop=="VisualisationTree"   && m_ui32Status==Status_ParsingVisualisationTree) { m_ui32Status=Status_ParsingScenario; m_pContext->processStop(); }
 
-	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingScenarioAttribute) { m_ui32Status=Status_ParsingScenario; m_pContext->processStop(); }
+	else if(l_sTop=="VisualisationWidget" && m_ui32Status==Status_ParsingVisualisationWidget)          { m_ui32Status=Status_ParsingVisualisationTree;   m_pContext->processStop(); }
+	else if(l_sTop=="Attribute"           && m_ui32Status==Status_ParsingVisualisationWidgetAttribute) { m_ui32Status=Status_ParsingVisualisationWidget; m_pContext->processStop(); }
 
 	m_vNodes.pop();
 }
