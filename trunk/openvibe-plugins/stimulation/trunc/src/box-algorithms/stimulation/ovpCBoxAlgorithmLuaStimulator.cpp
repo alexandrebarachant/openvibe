@@ -583,7 +583,7 @@ boolean CBoxAlgorithmLuaStimulator::sendStimulationCB(uint32 ui32OutputIndex, ui
 		}
 		else
 		{
-			this->getLogManager() << LogLevel_ImportantWarning << "Ignored deprecated stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on output " << ui32OutputIndex+1 << "\n";
+			this->getLogManager() << LogLevel_ImportantWarning << "Ignored outdated stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on output " << ui32OutputIndex+1 << " - current time is " << this->getPlayerContext().getCurrentTime() << "\n";
 		}
 	}
 	else
