@@ -1,8 +1,8 @@
 <OpenViBE-Scenario>
 	<Boxes>
 		<Box>
-			<Identifier>(0x0f3693c0, 0x7d36ba77)</Identifier>
-			<Name>Clock stimulator - Triggers a stimulation every 10 seconds</Name>
+			<Identifier>(0x42f8bf57, 0x71efc888)</Identifier>
+			<Name>Clock stimulator</Name>
 			<AlgorithmClassIdentifier>(0x4f756d3f, 0x29ff0b96)</AlgorithmClassIdentifier>
 			<Outputs>
 				<Output>
@@ -27,11 +27,11 @@
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
-					<Value>208</Value>
+					<Value>32</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
-					<Value>25</Value>
+					<Value>24</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
@@ -43,13 +43,13 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>435</Value>
+					<Value>114</Value>
 				</Attribute>
 			</Attributes>
 		</Box>
 		<Box>
-			<Identifier>(0x3af732a7, 0x305e241b)</Identifier>
-			<Name>Run Command - Opens a browser with the OpenViBE website on stim reception</Name>
+			<Identifier>(0x642d51bb, 0x4df5f322)</Identifier>
+			<Name>Run Command</Name>
 			<AlgorithmClassIdentifier>(0x48843891, 0x7bfc57f4)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>
@@ -86,11 +86,11 @@
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
-					<Value>288</Value>
+					<Value>128</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
-					<Value>38</Value>
+					<Value>36</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
@@ -106,26 +106,26 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>579</Value>
+					<Value>101</Value>
 				</Attribute>
 			</Attributes>
 		</Box>
 	</Boxes>
 	<Links>
 		<Link>
-			<Identifier>(0x397078a8, 0x57ea90a4)</Identifier>
+			<Identifier>(0x072a525b, 0x544ef3ed)</Identifier>
 			<Source>
-				<BoxIdentifier>(0x0f3693c0, 0x7d36ba77)</BoxIdentifier>
+				<BoxIdentifier>(0x42f8bf57, 0x71efc888)</BoxIdentifier>
 				<BoxOutputIndex>0</BoxOutputIndex>
 			</Source>
 			<Target>
-				<BoxIdentifier>(0x3af732a7, 0x305e241b)</BoxIdentifier>
+				<BoxIdentifier>(0x642d51bb, 0x4df5f322)</BoxIdentifier>
 				<BoxInputIndex>0</BoxInputIndex>
 			</Target>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
-					<Value>227</Value>
+					<Value>50</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
@@ -133,7 +133,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x3f0a3b27, 0x570913d2)</Identifier>
-					<Value>264</Value>
+					<Value>105</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x6267b5c5, 0x676e3e42)</Identifier>
@@ -142,9 +142,59 @@
 			</Attributes>
 		</Link>
 	</Links>
+	<Comments>
+		<Comment>
+			<Identifier>(0x015cb409, 0x03490d65)</Identifier>
+			<Text>You can browse each box' documentation by selecting the box and pressing &lt;b&gt;F1&lt;/b&gt;</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>512</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>208</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+		<Comment>
+			<Identifier>(0x44a39962, 0x4b0bfcad)</Identifier>
+			<Text>The &lt;i&gt;&lt;b&gt;Run Command&lt;/b&gt;&lt;/i&gt; box
+launches a web browser each  time
+a stimulation is received. This box
+can be used to launch whatever
+command most fits your needs.</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>592</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>128</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+		<Comment>
+			<Identifier>(0x4afd0495, 0x0b2b4bf2)</Identifier>
+			<Text>The &lt;i&gt;Clock Stimulator&lt;/i&gt; box
+is configured to trigger a stimulation
+every 10 seconds.</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>592</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>32</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+	</Comments>
 	<VisualisationTree>
 		<VisualisationWidget>
-			<Identifier>(0x7df2d48a, 0x10116573)</Identifier>
+			<Identifier>(0x04b1b9ca, 0x49fdacb7)</Identifier>
 			<Name>Default window</Name>
 			<Type>1</Type>
 			<ParentIdentifier>(0xffffffff, 0xffffffff)</ParentIdentifier>
@@ -162,19 +212,19 @@
 			</Attributes>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x223d5289, 0x77165a90)</Identifier>
+			<Identifier>(0x08218b08, 0x6e0a3371)</Identifier>
 			<Name>Default tab</Name>
 			<Type>2</Type>
-			<ParentIdentifier>(0x7df2d48a, 0x10116573)</ParentIdentifier>
+			<ParentIdentifier>(0x04b1b9ca, 0x49fdacb7)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>1</NumChildren>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x4d169576, 0x2525f47f)</Identifier>
+			<Identifier>(0x15e14689, 0x29e46499)</Identifier>
 			<Name>Empty</Name>
 			<Type>0</Type>
-			<ParentIdentifier>(0x223d5289, 0x77165a90)</ParentIdentifier>
+			<ParentIdentifier>(0x08218b08, 0x6e0a3371)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>0</NumChildren>

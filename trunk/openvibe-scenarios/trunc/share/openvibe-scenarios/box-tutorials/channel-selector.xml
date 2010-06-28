@@ -1,8 +1,8 @@
 <OpenViBE-Scenario>
 	<Boxes>
 		<Box>
-			<Identifier>(0x066be6b9, 0x62234364)</Identifier>
-			<Name>Signal display : selected channels</Name>
+			<Identifier>(0x064af49b, 0x397c46bd)</Identifier>
+			<Name>Signal display</Name>
 			<AlgorithmClassIdentifier>(0x0055be5f, 0x087bdd12)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>
@@ -43,7 +43,7 @@
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
-					<Value>240</Value>
+					<Value>272</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
@@ -59,7 +59,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>229</Value>
+					<Value>100</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xce18836a, 0x9c0eb403)</Identifier>
@@ -72,8 +72,8 @@
 			</Attributes>
 		</Box>
 		<Box>
-			<Identifier>(0x2622ad0c, 0x67997557)</Identifier>
-			<Name>Channel selector : channels #0 and #3</Name>
+			<Identifier>(0x1afe3625, 0x3ca88ed0)</Identifier>
+			<Name>Channel selector</Name>
 			<AlgorithmClassIdentifier>(0x39484563, 0x46386889)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>
@@ -104,7 +104,7 @@
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
-					<Value>144</Value>
+					<Value>192</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
@@ -120,7 +120,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>259</Value>
+					<Value>119</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xc46b3d00, 0x3e0454e1)</Identifier>
@@ -129,8 +129,8 @@
 			</Attributes>
 		</Box>
 		<Box>
-			<Identifier>(0x5749361f, 0x73bc6771)</Identifier>
-			<Name>Signal display : all channels</Name>
+			<Identifier>(0x6ebe4208, 0x0c058df6)</Identifier>
+			<Name>Signal display</Name>
 			<AlgorithmClassIdentifier>(0x0055be5f, 0x087bdd12)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>
@@ -171,7 +171,7 @@
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
-					<Value>192</Value>
+					<Value>112</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
@@ -179,7 +179,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
-					<Value>160</Value>
+					<Value>240</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x4e7b798a, 0x183beafb)</Identifier>
@@ -187,7 +187,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>190</Value>
+					<Value>100</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xce18836a, 0x9c0eb403)</Identifier>
@@ -200,8 +200,8 @@
 			</Attributes>
 		</Box>
 		<Box>
-			<Identifier>(0x66d385c9, 0x596f6d8b)</Identifier>
-			<Name>Sinus oscillator : 4 channels</Name>
+			<Identifier>(0x7e448de9, 0x5a9cc3e6)</Identifier>
+			<Name>Sinus oscillator</Name>
 			<AlgorithmClassIdentifier>(0x7e33bdb8, 0x68194a4a)</AlgorithmClassIdentifier>
 			<Outputs>
 				<Output>
@@ -232,7 +232,7 @@
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
-					<Value>80</Value>
+					<Value>32</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
@@ -240,7 +240,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
-					<Value>272</Value>
+					<Value>304</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x4e7b798a, 0x183beafb)</Identifier>
@@ -248,7 +248,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>191</Value>
+					<Value>109</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xc46b3d00, 0x3e0454e1)</Identifier>
@@ -259,52 +259,81 @@
 	</Boxes>
 	<Links>
 		<Link>
-			<Identifier>(0x06d71a2b, 0x0cfc7322)</Identifier>
+			<Identifier>(0x0697d2d2, 0x06d68ab3)</Identifier>
 			<Source>
-				<BoxIdentifier>(0x66d385c9, 0x596f6d8b)</BoxIdentifier>
+				<BoxIdentifier>(0x1afe3625, 0x3ca88ed0)</BoxIdentifier>
 				<BoxOutputIndex>0</BoxOutputIndex>
 			</Source>
 			<Target>
-				<BoxIdentifier>(0x2622ad0c, 0x67997557)</BoxIdentifier>
+				<BoxIdentifier>(0x064af49b, 0x397c46bd)</BoxIdentifier>
 				<BoxInputIndex>0</BoxInputIndex>
 			</Target>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
-					<Value>98</Value>
+					<Value>210</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
-					<Value>272</Value>
+					<Value>368</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x3f0a3b27, 0x570913d2)</Identifier>
-					<Value>127</Value>
+					<Value>255</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x6267b5c5, 0x676e3e42)</Identifier>
-					<Value>368</Value>
+					<Value>360</Value>
 				</Attribute>
 			</Attributes>
 		</Link>
 		<Link>
-			<Identifier>(0x1421971b, 0x1f404302)</Identifier>
+			<Identifier>(0x3a966cd0, 0x63f37e86)</Identifier>
 			<Source>
-				<BoxIdentifier>(0x66d385c9, 0x596f6d8b)</BoxIdentifier>
+				<BoxIdentifier>(0x7e448de9, 0x5a9cc3e6)</BoxIdentifier>
 				<BoxOutputIndex>0</BoxOutputIndex>
 			</Source>
 			<Target>
-				<BoxIdentifier>(0x5749361f, 0x73bc6771)</BoxIdentifier>
+				<BoxIdentifier>(0x6ebe4208, 0x0c058df6)</BoxIdentifier>
 				<BoxInputIndex>0</BoxInputIndex>
 			</Target>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
-					<Value>98</Value>
+					<Value>50</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
-					<Value>272</Value>
+					<Value>304</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x3f0a3b27, 0x570913d2)</Identifier>
+					<Value>95</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x6267b5c5, 0x676e3e42)</Identifier>
+					<Value>232</Value>
+				</Attribute>
+			</Attributes>
+		</Link>
+		<Link>
+			<Identifier>(0x67906f60, 0x10db9dab)</Identifier>
+			<Source>
+				<BoxIdentifier>(0x7e448de9, 0x5a9cc3e6)</BoxIdentifier>
+				<BoxOutputIndex>0</BoxOutputIndex>
+			</Source>
+			<Target>
+				<BoxIdentifier>(0x1afe3625, 0x3ca88ed0)</BoxIdentifier>
+				<BoxInputIndex>0</BoxInputIndex>
+			</Target>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
+					<Value>50</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
+					<Value>304</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x3f0a3b27, 0x570913d2)</Identifier>
@@ -312,43 +341,91 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x6267b5c5, 0x676e3e42)</Identifier>
-					<Value>152</Value>
-				</Attribute>
-			</Attributes>
-		</Link>
-		<Link>
-			<Identifier>(0x18333c89, 0x4ba9831b)</Identifier>
-			<Source>
-				<BoxIdentifier>(0x2622ad0c, 0x67997557)</BoxIdentifier>
-				<BoxOutputIndex>0</BoxOutputIndex>
-			</Source>
-			<Target>
-				<BoxIdentifier>(0x066be6b9, 0x62234364)</BoxIdentifier>
-				<BoxInputIndex>0</BoxInputIndex>
-			</Target>
-			<Attributes>
-				<Attribute>
-					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
-					<Value>162</Value>
-				</Attribute>
-				<Attribute>
-					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
 					<Value>368</Value>
-				</Attribute>
-				<Attribute>
-					<Identifier>(0x3f0a3b27, 0x570913d2)</Identifier>
-					<Value>223</Value>
-				</Attribute>
-				<Attribute>
-					<Identifier>(0x6267b5c5, 0x676e3e42)</Identifier>
-					<Value>361</Value>
 				</Attribute>
 			</Attributes>
 		</Link>
 	</Links>
+	<Comments>
+		<Comment>
+			<Identifier>(0x0cbe5be9, 0x3102bbe3)</Identifier>
+			<Text>You can browse each box' documentation by selecting the box and pressing &lt;b&gt;F1&lt;/b&gt;</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>464</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>352</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+		<Comment>
+			<Identifier>(0x2817e7ec, 0x71482546)</Identifier>
+			<Text>Those 4 channels are displayed with the left
+&lt;i&gt;Signal Display&lt;/i&gt; box</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>576</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>112</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+		<Comment>
+			<Identifier>(0x425eb207, 0x334a6f20)</Identifier>
+			<Text>The &lt;i&gt;Sinus Oscillator&lt;/i&gt; box generates
+a 4 channels sinusoidal signal</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>576</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>32</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+		<Comment>
+			<Identifier>(0x51a27aa6, 0x613183f3)</Identifier>
+			<Text>The &lt;i&gt;&lt;b&gt;Channel Selector&lt;/b&gt;&lt;/i&gt; box takes only
+the &lt;b&gt;first&lt;/b&gt; and &lt;b&gt;fourth&lt;/b&gt; channels
+&lt;small&gt;(channel names are 0 indexed)&lt;/small&gt;</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>576</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>192</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+		<Comment>
+			<Identifier>(0x59b76e28, 0x4252c2db)</Identifier>
+			<Text>Finally, the right &lt;i&gt;Signal Display&lt;/i&gt; box
+displays the 2 selected channels</Text>
+			<Attributes>
+				<Attribute>
+					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
+					<Value>576</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
+					<Value>272</Value>
+				</Attribute>
+			</Attributes>
+		</Comment>
+	</Comments>
 	<VisualisationTree>
 		<VisualisationWidget>
-			<Identifier>(0x766d98c2, 0x3c09d4a1)</Identifier>
+			<Identifier>(0x5895f5fa, 0x38a5d054)</Identifier>
 			<Name>Default window</Name>
 			<Type>1</Type>
 			<ParentIdentifier>(0xffffffff, 0xffffffff)</ParentIdentifier>
@@ -366,19 +443,19 @@
 			</Attributes>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x159c74cf, 0x4ad3afd2)</Identifier>
+			<Identifier>(0x0f3f09d8, 0x4b793735)</Identifier>
 			<Name>Default tab</Name>
 			<Type>2</Type>
-			<ParentIdentifier>(0x766d98c2, 0x3c09d4a1)</ParentIdentifier>
+			<ParentIdentifier>(0x5895f5fa, 0x38a5d054)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>1</NumChildren>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x3cf93092, 0x6863e8d2)</Identifier>
+			<Identifier>(0x4a10b4e8, 0x43d3bcd4)</Identifier>
 			<Name>Horizontal split</Name>
 			<Type>5</Type>
-			<ParentIdentifier>(0x159c74cf, 0x4ad3afd2)</ParentIdentifier>
+			<ParentIdentifier>(0x0f3f09d8, 0x4b793735)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>2</NumChildren>
@@ -394,19 +471,19 @@
 			</Attributes>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x76896198, 0x4365174b)</Identifier>
+			<Identifier>(0x4c2a7166, 0x2e534a82)</Identifier>
 			<Type>3</Type>
-			<ParentIdentifier>(0x3cf93092, 0x6863e8d2)</ParentIdentifier>
+			<ParentIdentifier>(0x4a10b4e8, 0x43d3bcd4)</ParentIdentifier>
 			<Index>0</Index>
-			<BoxIdentifier>(0x5749361f, 0x73bc6771)</BoxIdentifier>
+			<BoxIdentifier>(0x6ebe4208, 0x0c058df6)</BoxIdentifier>
 			<NumChildren>0</NumChildren>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x4a872c35, 0x5d5ce761)</Identifier>
+			<Identifier>(0x26f2d364, 0x71c1af98)</Identifier>
 			<Type>3</Type>
-			<ParentIdentifier>(0x3cf93092, 0x6863e8d2)</ParentIdentifier>
+			<ParentIdentifier>(0x4a10b4e8, 0x43d3bcd4)</ParentIdentifier>
 			<Index>1</Index>
-			<BoxIdentifier>(0x066be6b9, 0x62234364)</BoxIdentifier>
+			<BoxIdentifier>(0x064af49b, 0x397c46bd)</BoxIdentifier>
 			<NumChildren>0</NumChildren>
 		</VisualisationWidget>
 	</VisualisationTree>
