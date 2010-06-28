@@ -18,8 +18,10 @@ namespace
 {
 	typedef struct
 	{
+		const IKernelContext& m_rKernelContext;
 		vector< ::GtkWidget* >& m_vSettingValue;
 		CSettingCollectionHelper& m_rHelper;
+		::GtkWidget* m_pSettingOverrideValue;
 		IBox& m_rBox;
 	} SButtonCB;
 
@@ -150,6 +152,19 @@ static void on_button_load_clicked(::GtkButton* pButton, gpointer pUserData)
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 		NULL);
+
+	CString l_sInitialFileName=l_pUserData->m_rKernelContext.getConfigurationManager().expand(l_pUserData->m_rHelper.getValue(OV_TypeId_Filename, l_pUserData->m_pSettingOverrideValue));
+	if(g_path_is_absolute(l_sInitialFileName.toASCIIString()))
+	{
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sInitialFileName.toASCIIString());
+	}
+	else
+	{
+		char* l_sFullPath=g_build_filename(g_get_current_dir(), l_sInitialFileName.toASCIIString(), NULL);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sFullPath);
+		g_free(l_sFullPath);
+	}
+
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 	{
 		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
@@ -194,6 +209,19 @@ static void on_button_save_clicked(::GtkButton* pButton, gpointer pUserData)
 		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 		NULL);
+
+	CString l_sInitialFileName=l_pUserData->m_rKernelContext.getConfigurationManager().expand(l_pUserData->m_rHelper.getValue(OV_TypeId_Filename, l_pUserData->m_pSettingOverrideValue));
+	if(g_path_is_absolute(l_sInitialFileName.toASCIIString()))
+	{
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sInitialFileName.toASCIIString());
+	}
+	else
+	{
+		char* l_sFullPath=g_build_filename(g_get_current_dir(), l_sInitialFileName.toASCIIString(), NULL);
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_sFullPath);
+		g_free(l_sFullPath);
+	}
+
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 	{
 		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
@@ -323,12 +351,6 @@ boolean CBoxConfigurationDialog::run(void)
 		}
 
 #if 1
-		SButtonCB l_oButtonCB = { l_vSettingValue, l_oHelper, m_rBox };
-
-		g_signal_connect(G_OBJECT(l_pFileOverrideCheck), "toggled", G_CALLBACK(on_file_override_check_toggled), GTK_WIDGET(l_pSettingTable));
-		g_signal_connect(G_OBJECT(l_pButtonLoad),        "clicked", G_CALLBACK(on_button_load_clicked), &l_oButtonCB);
-		g_signal_connect(G_OBJECT(l_pButtonSave),        "clicked", G_CALLBACK(on_button_save_clicked), &l_oButtonCB);
-
 		string l_sSettingOverrideWidgetName=l_oHelper.getSettingWidgetName(OV_TypeId_Filename).toASCIIString();
 		::GladeXML* l_pGladeInterfaceSettingCollection=glade_xml_new(m_sGUIFilename.toASCIIString(), l_sSettingOverrideWidgetName.c_str(), NULL);
 		::GtkWidget* l_pSettingOverrideValue=glade_xml_get_widget(l_pGladeInterfaceSettingCollection, l_sSettingOverrideWidgetName.c_str());
@@ -338,6 +360,12 @@ boolean CBoxConfigurationDialog::run(void)
 		gtk_widget_unparent(l_pSettingOverrideValue);
 		gtk_container_add(l_pFileOverrideContainer, l_pSettingOverrideValue);
 		gtk_widget_unref(l_pSettingOverrideValue);
+
+		SButtonCB l_oButtonCB = { m_rKernelContext, l_vSettingValue, l_oHelper, l_pSettingOverrideValue, m_rBox };
+
+		g_signal_connect(G_OBJECT(l_pFileOverrideCheck), "toggled", G_CALLBACK(on_file_override_check_toggled), GTK_WIDGET(l_pSettingTable));
+		g_signal_connect(G_OBJECT(l_pButtonLoad),        "clicked", G_CALLBACK(on_button_load_clicked), &l_oButtonCB);
+		g_signal_connect(G_OBJECT(l_pButtonSave),        "clicked", G_CALLBACK(on_button_save_clicked), &l_oButtonCB);
 
 		if(m_rBox.hasAttribute(OV_AttributeId_Box_SettingOverrideFilename))
 		{

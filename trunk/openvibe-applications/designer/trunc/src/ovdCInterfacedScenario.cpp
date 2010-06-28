@@ -2294,6 +2294,7 @@ void CInterfacedScenario::contextMenuScenarioAboutCB(void)
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuScenarioAboutCB\n";
 	CAboutScenarioDialog l_oAboutScenarioDialog(m_rKernelContext, m_rScenario, m_sGUIFilename.c_str());
 	l_oAboutScenarioDialog.run();
+	this->snapshotCB();
 }
 
 void CInterfacedScenario::toggleDesignerVisualisation()
