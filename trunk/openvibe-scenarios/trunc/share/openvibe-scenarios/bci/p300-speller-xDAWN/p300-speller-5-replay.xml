@@ -1294,7 +1294,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>/home/yrenard/openvibe/dist/share/openvibe-scenarios/bci/p300-speller-xDAWN/p300-speller-visualisation.cfg</Value>
+					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-speller-visualisation.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xac367a9c, 0x2da95abe)</Identifier>
