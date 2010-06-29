@@ -12,6 +12,7 @@
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
 #include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
 #include "brainamp-vamp/ovasCDriverBrainProductsVAmp.h"
+#include "neurosky-mindset/ovasCDriverNeuroskyMindset.h"
 // #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 #include "TMSI-Refa/ovasCDriverTMSiRefa32B.h"
 #include <openvibe-toolkit/ovtk_all.h>
@@ -96,6 +97,9 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 {
 	m_pAcquisitionServer=new CAcquisitionServer(rKernelContext);
 
+#if defined TARGET_HAS_ThirdPartyThinkGearAPI
+	m_vDriver.push_back(new CDriverNeuroskyMindset(m_pAcquisitionServer->getDriverContext()));
+#endif
 #if defined OVAS_OS_Windows
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));
 #endif
