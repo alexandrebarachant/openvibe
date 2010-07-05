@@ -37,7 +37,7 @@
  * §OpenViBE§ is a software platform that enables to design, test and use
  * Brain-Computer Interfaces. Brain-Computer Interfaces (BCI) are communication systems that enable users to
  * send commands to computers only by means of brain activity. BCI are gaining interest inside the Virtual
- * Reality (VR) community as they have appeared as promising interaction devices for Virtual Environments (VE). 
+ * Reality (VR) community as they have appeared as promising interaction devices for Virtual Environments (VE).
  *
  * \section Doc_FAQ_Vibe What does the ViBE stand for ?
  *
@@ -53,17 +53,17 @@
  *
  * \section Doc_FAQ_Licence What is the licence of OpenViBE ?
  *
- * The licence for §OpenViBE§ basically is L-GPL, see \ref Doc_Licence for details about this licence. Some 
+ * The licence for §OpenViBE§ basically is L-GPL, see \ref Doc_Licence for details about this licence. Some
  * §OpenViBE§ plugins are based on GPL libraries. Consequently, those plugins are GPL.
  *
  * \section Doc_FAQ_Status What is the current status of OpenViBE ?
  *
  * §OpenViBE§ is quite a young software. The development began from scratch in 2006. It already offers several
  * complete processing pipelines. It has been successfully used by the authors in different contexts, including
- * motor imagery interactions and basic neurofeedback experiments. Currently available functionalities are far 
- * from complete, but the plugin architecture should facilitate the integration of new functionalities and 
+ * motor imagery interactions and basic neurofeedback experiments. Currently available functionalities are far
+ * from complete, but the plugin architecture should facilitate the integration of new functionalities and
  * limit the number of changes to the API (which is bound to evolve in the next few months anyway, if only to be
- * improved). Additionally, it is expected that external contributions will soon help enlarge §OpenViBE§ 
+ * improved). Additionally, it is expected that external contributions will soon help enlarge §OpenViBE§
  * functionalities.
  *
  * For now, this software should be considered as being in alpha stage with a reasonably stable API.
@@ -84,6 +84,7 @@
  *
 \htmlonly
 <table class='faq-os' cellpading=0 cellspacing=0>
+<tr> <td colspan=6 bgcolor=black style="color: white"><center>The following target platforms have been tested</center></td> </tr>
 <tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> <th>Officially supported</th> </tr>
 <tr> <td rowspan=15>x86</td>   <td rowspan=3>Windows</td>  <td rowspan=2>XP SP2</td>      <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK (last built 2010/04)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                                                     <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
@@ -124,44 +125,38 @@
 \htmlonly
 <!-- features start -->
 \endhtmlonly
- * - File reading and writing
- *   - Generic files (r/w)
- *   - GDF files (r/w)
- *   - BCI Competition IIIb (r)
- *   - Brainamp files (r)
- *   - CSV files (w)
- *
- * - Preprocessing
- *   - Time based epoching
- *   - Stimulation based epoching
- *   - Moving average
- *   - Windowing
- *   - Channel selection
- *   - Simple DSP
- *   - Temporal filter
- *   - Downsampling (in progress)
- *
- * - Feature extraction
- *   - Spectral analysis
- *   - Spatial filter
- *
- * - Classification
- *   - Linear Discriminant Analysis
- *
- * - Stimulation presentation
- *   - Graz-like motor imagery presentation
- *
- * - Visualisation
- *   - Simple levels
- *   - Raw signal
- *   - Spectrum
- *   - Time/Frequency analysis
- *   - 2D/3D topography
- *
- * - Connection to external software
- *   - VRPN integration (Virtual Reality Peripheral Network)
- *   - TurboFieldTrip integration (r/w, in progress)
- *
+\htmlonly
+<table class='faq-os' cellpading=0 cellspacing=0>
+<tr> <td colspan=2 bgcolor=black style="color: white"><center>The following functionnalities are already integrated</center></td> </tr>
+<tr bgcolor=lightgrey> <th>Category</th> <th>Box</th> </tr>
+<tr> <td rowspan=5>File reading and writing</td> <td>Generic files (r/w)</td> </tr>
+<tr>                                             <td>GDF files (r/w)</td> </tr>
+<tr>                                             <td>BCI Competition IIIb (r)</td> </tr>
+<tr>                                             <td>Brainamp files (r)</td> </tr>
+<tr>                                             <td>CSV files (w)</td> </tr>
+<tr> <td rowspan=8>Preprocessing</td> <td>Time based epoching</td> </tr>
+<tr>                                  <td>Stimulation based epoching</td> </tr>
+<tr>                                  <td>Moving average</td> </tr>
+<tr>                                  <td>Windowing</td> </tr>
+<tr>                                  <td>Channel selection</td> </tr>
+<tr>                                  <td>Simple DSP</td> </tr>
+<tr>                                  <td>Temporal filter</td> </tr>
+<tr>                                  <td>Downsampling (in progress)</td> </tr>
+<tr> <td rowspan=2>Feature extraction</td> <td>Spectral analysis</td> </tr>
+<tr>                                       <td>Spatial filter</td> </tr>
+<tr> <td rowspan=1>Classification</td> <td>Linear Discriminant Analysis</td> </tr>
+<tr> <td rowspan=4>Stimulation presentation</td> <td>Graz-like motor imagery presentation</td> </tr>
+<tr>                                             <td>P300 Speller</td> </tr>
+<tr>                                             <td>P300 Magic Card</td> </tr>
+<tr>                                             <td>P300 Identifier</td> </tr>
+<tr> <td rowspan=5>Visualisation</td> <td>Simple levels</td> </tr>
+<tr>                                  <td>Raw signal</td> </tr>
+<tr>                                  <td>Spectrum</td> </tr>
+<tr>                                  <td>Time/Frequency analysis</td> </tr>
+<tr>                                  <td>2D/3D topography</td> </tr>
+<tr> <td rowspan=2>Connection to external software</td> <td>VRPN integration (Virtual Reality Peripheral Network)</td> </tr>
+<tr>                                                    <td>TurboFieldTrip integration (r/w, in progress)</td> </tr>
+</table>
 \htmlonly
 <!-- features stop -->
 \endhtmlonly
@@ -171,26 +166,38 @@
 \htmlonly
 <!-- hardware-compatibility start -->
 \endhtmlonly
- * The following hardware devices are fully compatible with OpenViBE :
- *   - Mindmedia NeXus32B
- *   - ANT Neuro ASALAB EEG / ERP amplifier (32-256 channels) has been reported to work with NeXus32B driver
- *   - TMSi Porti32 has been reported to work with NeXus32B driver
- *   - Brain Products V-Amp
- *   - g.Tec g.USBamp
- *   - OpenEEG modularEEG / monolithEEG
- *
- * The following hardware devices are partially supported with OpenViBE :
- *   - Brainamp Standard (through the recording software Vision Recorder)
- *   - Micromed IntraEEG
- *   - CTF/VSM MEG
- *
- * The following hardware devices are currently being integrated in OpenViBE :
- *   - Mitsar EEG 202
- *   - Neuroscan SynAmps2 (through the recording software Scan 4.3)
- *   - TMSi Refa
- *   - Brainquiry QPET9 (developement is stalled)
- *
+ * The following table sums up current device integration in OpenViBE :
 \htmlonly
+<table class='faq-os' cellpading=0 cellspacing=0>
+<tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices have been integrated</center></td> </tr>
+<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
+<tr> <td rowspan=2>ANT</td>            <td>Neuro ASALAB EEG / ERP amplifier</td> <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>has been reported to work</td> <td bgcolor=red>no</td> </tr>
+<tr>                                   <td>Others TMSi derived devices</td>      <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
+<tr> <td rowspan=2>Brain Products</td> <td>V-Amp</td>                <td>Brain Products V-Amp</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>Brainamp Standard</td>    <td>Brain Products Brainamp Standard (through Vision Recorder)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=1>CTF/VSM</td>        <td>MEG</td>                  <td>CTF/VSM MEG</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=2>gTec</td>           <td>gUSBamp</td>              <td>g.Tec gUSBamp</td> <td bgcolor=green>stable - multi amplifier is missing</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>gMobilab+</td>            <td>gTec gMOBIlab+</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=1>Micromed</td>       <td>SD LTM</td>               <td>Micromed SD LTM (through SystemPlus Evolution)</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr> <td rowspan=1>MindMedia</td>      <td>NeXus32</td>              <td>MindMedia Nexus32B</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr> <td rowspan=1>Neurosky</td>       <td>Mindset</td>              <td>NeuroSky MindSet</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr> <td rowspan=2>OpenEEG</td>        <td>MonolithEEG</td>          <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community</td> </tr>
+<tr>                                   <td>ModularEEG</td>           <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=3>TMSi</td>           <td>Porti32</td>              <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>Refa32</td>               <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>Others</td>               <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
+
+<tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices are currently <b>being integrated</b><br>You can contact us for beta tests</center></td> </tr>
+<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
+<tr> <td rowspan=1>Mitsar</td>         <td>EEG 202</td>              <td>Mitsar EEG 202</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=1>Neuroscan</td>      <td>SynAmps2</td>             <td>Neuroscan SynAmps2 (through Scan 4.3)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
+
+<tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices are <b>not yet supported</b></center></td> </tr>
+<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
+<tr> <td rowspan=1>Biosemi</td>           <td>All</td>                  <td>.</td> <td bgcolor=red>none</td> <td bgcolor=red>no</td> </tr>
+<tr> <td rowspan=1>Brainquiry</td>        <td>QPET9</td>                <td>Brainquiry Qpet-9</td> <td bgcolor=red>development is stalled</td> <td bgcolor=red>no</td> </tr>
+<tr> <td rowspan=1>Legacy amplifiers</td> <td>All</td>                  <td>.</td> <td bgcolor=red>none</td> <td bgcolor=red>no</td> </tr>
+</table>
 <!-- hardware-compatibility stop -->
 \endhtmlonly
  *
@@ -210,14 +217,14 @@ AcquisitionServer_ShowUnstable = true
  * Please use the following refence to cite OpenViBE in your publications :
  * <em>Y. Renard, F. Lotte, G. Gibert, M. Congedo, E. Maby, V. Delannoy, O. Bertrand, A. Lécuyer,
  * "OpenViBE: An Open-Source Software Platform to Design, Test and Use Brain-Computer Interfaces in Real and Virtual Environments",
- * Presence : teleoperators and virtual environments, vol. 19, no 1, 2010 (in press)</em>
+ * Presence : teleoperators and virtual environments, vol. 19, no 1, 2010</em>
  *
  * \section Doc_FAQ_GTK Why did you favor GTK over Qt ?
  *
- * People often wonder why GTK was chosen to handle $OpenViBE$ GUI requirements, arguing that Qt presents a number of advantages over 
+ * People often wonder why GTK was chosen to handle $OpenViBE$ GUI requirements, arguing that Qt presents a number of advantages over
  * GTK, particularly under Windows. This choice comes from the authors decision not to distribute the §OpenViBE§ platform under a GPL licence,
  * which would make it possible for private companies to base their software on §OpenViBE§ without their having to release their source code.
- * Even though Qt probably has better support and better implementation/integration under Windows, using this library would have required  
+ * Even though Qt probably has better support and better implementation/integration under Windows, using this library would have required
  * most §OpenViBE§ components to be distributed under the GPL. Since the §OpenViBE§ platform is developed in an open source spirit, the GTK
  * library was found to better fit the context of the project.
  *
@@ -243,7 +250,7 @@ AcquisitionServer_ShowUnstable = true
  *
  * Well, it's almost possible yes :)
  *
- * After, you have made a project for OpenViBE under Eclipse. you can used the OpenViBE commands files with the Eclipse's function "External Tools". 
+ * After, you have made a project for OpenViBE under Eclipse. you can used the OpenViBE commands files with the Eclipse's function "External Tools".
  *
  * All configuration is located in the menu "Run > External Tools > External Tools Configuration...".
  * First, make a new "Program" and choose a name for it.
@@ -316,8 +323,8 @@ AcquisitionServer_ShowUnstable = true
  * \section Doc_FAQ_Bug I think I found a bug, what should I do ?
  *
  * If you think you found a bug, please take a few minutes to fill a bug report at http://openvibe.inria.fr/tracker/bug_report_page.php .
- * You will first want to check that your bug is not already listed in the tracker. If it is not, then you may fill in a complete bug report. 
- * Try to provide detailed information regarding the conditions in which the bug occured, this will help us reproduce it. We will typically want to know what 
+ * You will first want to check that your bug is not already listed in the tracker. If it is not, then you may fill in a complete bug report.
+ * Try to provide detailed information regarding the conditions in which the bug occured, this will help us reproduce it. We will typically want to know what
  * hardware you have, the name/version of your operating system and compiler. Additional data such as a sample scenario and/or EEG record may also prove
  * useful. Overall, the more information you provide in your bug report, the easier it is for us to try to solve the bug.
  *
@@ -356,23 +363,23 @@ AcquisitionServer_ShowUnstable = true
  *
  * \section Doc_FAQ_DependencyInstallationLinux Why did you write this crappy dependency installation script for Linux ?
  *
- * OK, most Linux users will wonder what this installation script was created for in the first place. 
+ * OK, most Linux users will wonder what this installation script was created for in the first place.
  *
- * First, it was estimated at the start of the project that the installation of dependencies in one click would be a plus for a certain 
- * category of users. While this is the standard way of installing an application under Windows, it isn't under Linux, where most 
+ * First, it was estimated at the start of the project that the installation of dependencies in one click would be a plus for a certain
+ * category of users. While this is the standard way of installing an application under Windows, it isn't under Linux, where most
  * distributions come with their own packaging system, be it rpm or apt-get. However, some of our dependencies (namely, OpenMASK and VRPN)
- * do not appear in the official packages of common Linux distributions. Second, it was decided that the installation process should not 
- * require users to have root access to their computer to install the §OpenViBE§ dependencies. Third, minor patches are applied to some of 
+ * do not appear in the official packages of common Linux distributions. Second, it was decided that the installation process should not
+ * require users to have root access to their computer to install the §OpenViBE§ dependencies. Third, minor patches are applied to some of
  * the installed dependencies. Last, using such a script guarantees that all Linux users have the same version of the dependencies.
  *
- * These are the reasons why an installation script is used. However, it is still possible that dependencies are handled differently in the future, 
- * especially if precompiled packages for dedicated distributions are made available. Until then, one should rather go for the installation script 
+ * These are the reasons why an installation script is used. However, it is still possible that dependencies are handled differently in the future,
+ * especially if precompiled packages for dedicated distributions are made available. Until then, one should rather go for the installation script
  * rather than official precompiled packages.
  *
  * Also, one might want to know why this script installs so many low level packages such as Xlib, xproto and so on. In fact, it was decided to
  * keep the number of required preinstalled dependencies to a minimum (including compiling tools such as g++, gfortran, autotools etc...) and
- * to compile everything from scratch. The script was conceived so that everything can be built from a very basic configuration, e.g. from a fresh 
- * Ubuntu installation, with \c build-essentials, \c g77, and \c subversion the only required tools before a user may proceed with the installation of 
+ * to compile everything from scratch. The script was conceived so that everything can be built from a very basic configuration, e.g. from a fresh
+ * Ubuntu installation, with \c build-essentials, \c g77, and \c subversion the only required tools before a user may proceed with the installation of
  * §OpenViBE§.
  *
  * \section Doc_FAQ_LinuxMatlabWontRun On Linux, MATLAB filter keeps saying 'Can't start MATLAB engine', what do I do ?
@@ -382,7 +389,7 @@ AcquisitionServer_ShowUnstable = true
  *
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
- * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to 
+ * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to
  * this question currently is 26!)
  *
  */
