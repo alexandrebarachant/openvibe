@@ -25,6 +25,11 @@
 #include "ovpCEpoching.h"
 #include "ovpCSteadyStateFrequencyComparison.h"
 
+#if 1
+#include "ovpCAlgorithmUnivariateStatistics.h"
+#include "ovpCBoxAlgorithmUnivariateStatistics.h"
+#endif
+
 OVP_Declare_Begin()
 
 	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_EpochAverageMethod, "Epoch average method");
@@ -69,5 +74,10 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSteadyStateFrequencyComparisonDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmFrequencyBandSelectorDesc)
+
+#if 1
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CAlgoUnivariateStatisticDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxUnivariateStatisticDesc);
+#endif
 
 OVP_Declare_End()
