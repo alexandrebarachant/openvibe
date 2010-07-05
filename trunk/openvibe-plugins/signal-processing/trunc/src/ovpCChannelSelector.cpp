@@ -23,7 +23,22 @@ void CChannelSelector::setChannelCount(const uint32 ui32ChannelCount)
 void CChannelSelector::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
 {
 	//adds this name to the list
-	m_vChannelNames.push_back(sChannelName);
+	std::string l_sChannelName(sChannelName);
+	std::string::size_type i=l_sChannelName.length();
+	boolean l_bFinished=false;
+	while(i!=0 && !l_bFinished)
+	{
+		if(l_sChannelName[i-1]==' ')
+		{
+			i--;
+		}
+		else
+		{
+			l_bFinished=true;
+		}
+	}
+
+	m_vChannelNames.push_back(l_sChannelName.substr(0, i));
 }
 
 void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuffer)
@@ -44,7 +59,6 @@ void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBu
 				m_pSignalDescription->m_oChannelName.push_back(m_vChannelNames[m_vSelectedChannelIndexes[i]]);
 			}
 		}
-
 	}
 	//if the selection is done by names
 	else
@@ -54,7 +68,7 @@ void CChannelSelector::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBu
 			//check if the current name is indeed a channel's name
 			for(uint32 j=0 ; j<m_vChannelNames.size() ; j++)
 			{
-				if(m_vSelectedChannelNames[i].compare(0, m_vSelectedChannelNames[i].length(), m_vChannelNames[j], 0, m_vSelectedChannelNames[i].length()) == 0)
+				if(m_vSelectedChannelNames[i] == m_vChannelNames[j])
 				{
 					//if is is, adds it to the list of kept channels
 					m_pSignalDescription->m_oChannelName.push_back(m_vSelectedChannelNames[i].c_str());
