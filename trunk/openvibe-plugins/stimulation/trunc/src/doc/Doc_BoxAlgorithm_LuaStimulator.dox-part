@@ -98,8 +98,11 @@ function process()
 			-- loops on every received stimulation for a given input
 			for stimulation = 1, get_stimulation_count(input) do
 
+				-- gets the received stimulation
+				identifier, date, duration = get_stimulation(input, 1)
+
 				-- logs the received stimulation
-				io.write(string.format("At time %f on input %i got stimulation id:%s date:%s duration:%s\n", t, input, get_stimulation(input, 1)))
+				io.write(string.format("At time %f on input %i got stimulation id:%s date:%s duration:%s\n", t, input, identifier, date, duration))
 
 				-- discards it
 				remove_stimulation(input, 1)
@@ -209,6 +212,7 @@ __________________________________________________________________
  * \code
  * function wait_until(time)
  *   while get_current_time() < time do
+ *     sleep()
  *   end
  * end
  * \endcode
