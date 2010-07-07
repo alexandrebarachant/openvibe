@@ -1,0 +1,224 @@
+/**
+ * \page BoxAlgorithm_LuaStimulator Lua Stimulator
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Description|
+This box gives a fast control over stimulation streams thanks to Lua scripts.
+
+Scripts are very simple programming languages. They are usually easy to understand,
+fast to write and reasonably fast to execute. They are used for high level operations
+and do not need compilation. There are a number of scripting languages around.
+Lua is one of those sciprting languages. It is know for its exectution speed and it's ease
+of use. It can be used on a large number of platforms. For all those reasons, Lua is widely
+used in the video game industry. If you want more information about Lua, feel free to visit
+their website at http://www.lua.org and on their documentation website http://www.lua.org/manual/5.1
+
+This box has a variable number of inputs and outputs. The author is able to add as many
+of them as necessary. The box automatically decodes the incoming streams and automatically
+encodes the outgoing streams, leaving the interesting part to the script : doing something with
+input stimulations and produce output stimulations.
+
+The script should be divided in three functions :
+- the \c initialize function is called at the begining when the box is initialized (see \ref LuaScriptAPI_initialize)
+- the \c uninitialize function is called at the end when the box is uninitialized (see \ref LuaScriptAPI_uninitialize)
+- the \c process function is called when the first call to the \c IBoxAlgorithm::process function is performed (see \ref LuaScriptAPI_process)
+
+The whole script behavior should be executed in a single execution of the \c process function.
+Thanks to this, the script code is made a lots more easy to understand than the usual C++ boxes.
+Of course, in case it is necessary, the script can yield, letting the kernel perform a new step
+of execution.
+
+A simple API is proposed allowing the script to
+- get the number of pending input stimulations (see \ref LuaScriptAPI_get_stimulation_count)
+- read a specific input stimulation (see \ref LuaScriptAPI_get_stimulation)
+- discard a specific input stimulation (see \ref LuaScriptAPI_remove_stimulation)
+- send an output stimulation (see \ref LuaScriptAPI_send_stimulation)
+- get current time (see \ref LuaScriptAPI_get_current_time)
+- sleep, letting the kernel perform a new step of execution (see \ref LuaScriptAPI_sleep)
+
+(\b WARNING: the API is not freezed yet, expect some changes in the near future)
+ * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Description|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Output1|
+ * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Setting1|
+ * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Setting1|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Examples|
+Here is a sample script
+\code
+
+-- this function is called when the box is initialized
+function initialize()
+	io.write("initialize has been called\n");
+end
+
+-- this function is called when the box is uninitialized
+function uninitialize()
+	io.write("uninitialize had been called\n");
+end
+
+-- this function is called once by the box
+function process()
+	io.write("process has been called\n");
+
+	-- enters infinite loop
+	-- cpu will be released with a call to sleep
+	-- at the end of the loop
+	while true do
+
+		-- gets current simulated time
+		t = get_current_time()
+
+		-- loops on all inputs of the box
+		for input = 1, 2 do
+
+			-- loops on every received stimulation for a given input
+			for stimulation = 1, get_stimulation_count(input) do
+
+				-- logs the received stimulation
+				io.write(string.format("At time %f on input %i got stimulation id:%s date:%s duration:%s\n", t, input, get_stimulation(input, 1)))
+
+				-- discards it
+				remove_stimulation(input, 1)
+
+				-- triggers a new OVTK_StimulationId_Label_00 stimulation five seconds after
+				send_stimulation(1, OVTK_StimulationId_Label_00, t+5, 0)
+			end
+		end
+
+		-- releases cpu
+		sleep()
+	end
+end
+
+\endcode
+ * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Examples|
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Miscellaneous|
+ *
+ * \subsection LuaScriptAPI_initialize initialize
+ *
+ * TODO
+ *
+ * \b WARNING: don't call any API function in initialize
+ *
+ * \subsection LuaScriptAPI_uninitialize uninitialize
+ *
+ * TODO
+ *
+ * \b WARNING: don't call any API function in initialize
+ *
+ * \subsection LuaScriptAPI_process process
+ *
+ * TODO
+ *
+ * \subsection LuaScriptAPI_get_current_time get_current_time()
+ *
+ * This function returns the elapsed time in seconds since the scneario started. The retuned value is a float.
+ *
+ * \subsection LuaScriptAPI_get_stimulation_count get_stimulation_count(input_index)
+ *
+ * This function returns the number of pending stimulation on a specific input given with \c input_index.
+ *
+ * \c input_index can range from 1 to \e n if the box has \e n inputs.
+ *
+ * If you call this function on an unexisting input, it returns 0.
+ *
+ * \subsection LuaScriptAPI_get_stimulation get_stimulation(input_index, stimulation_index)
+ *
+ * This function returns the details of a specific pending stimulation for a specific input given with \c input_index.
+ *
+ * \c input_index can range from 1 to \e n if the box has \e n inputs.
+ *
+ * \c stimulation_index can range from 1 to \e m if the valid input \c input_index has \e m inputs.
+ *
+ * The result is in the form of a 3-tuple containing :
+ * - the stimulation code as an integer
+ * - the stimulation date as a float
+ * - the stimulation duration as a float
+ *
+ * If you call this function with an \c stimulation_index bigger than what \c get_stimulation_count would have returned for
+ * the \c input_index input, then the Lua script sleeps until enough stimulation arrived and this function can return.
+ *
+ * \b WARNING: if you call this function on an unexisting input, the behavior is undefined
+ *
+ * \subsection LuaScriptAPI_remove_stimulation remove_stimulation(input_index, stimulation_index)
+ *
+ * Removes a pending stimulation on a specific input given with \c input_index.
+ *
+ * \c input_index can range from 1 to \e n if the box has \e n inputs.
+ *
+ * \c stimulation_index can range from 1 to \e m if the valid input \c input_index has \e m inputs.
+ *
+ * If you call this function with an \c stimulation_index bigger than what \c get_stimulation_count would have returned for
+ * the \c input_index input, then the Lua script sleeps until enough stimulation arrived and this function can return.
+ *
+ * After this call, the pending stimulations order is changed, stimulations \c stimulation_index+1, \c stimulation_index+2, ...
+ * being moved to \c stimulation_index, \c stimulation_index+1, ... respectively.
+ *
+ * \subsection LuaScriptAPI_send_stimulation send_stimulation(output_index, stimulation_identifier, stimulation_date, opt:stimulation_duration=0)
+ *
+ * Sends a stimulation with code \c stimulation_identifier, date \c stimulation_date and duration \c stimulation_duration on output
+ * \c output_index.
+ *
+ * \c output_index can range from 1 to \e n if the box has \e n outputs.
+ *
+ * \c stimulation_identifier is an integer with the identifier of the stimulation to send. See \ref Doc_Stimulations for stimulation codes.
+ *
+ * \c stimulation_date is a float (in seconds) with the date of the stimulation. The box will take care of buffering the stimulation if needed before
+ * actually sending it. However, you can't send a stimulation in "the past".
+ *
+ * \c stimulation_duration is a float (in seconds) with the duration of the stimulation. It is usually unused so if you don't know what to
+ * put here, just ignore this parameter, or let it be 0.
+ *
+ * \subsection LuaScriptAPI_sleep sleep
+ *
+ * Pauses the script execution. The box then continues its execution, so the kernel can perform an additional step. Next time the box
+ * is executed, it will restore the script execution so you can eventually continue or sleep again.
+ *
+ * \b NOTE: The \e current \e time is affected by this call !
+ *
+ * If you want to wait until a fixed date, just use this simple Lua function :
+ * \code
+ * function wait_until(time)
+ *   while get_current_time() < time do
+ *   end
+ * end
+ * \endcode
+ *
+ * If you want to wait for a fixed duration, just use this simple Lua function :
+ * \code
+ * function wait_for(duration)
+ *   wait_until(get_current_time() + duration)
+ * end
+ * \endcode
+ *
+ * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Miscellaneous|
+ */
