@@ -52,7 +52,7 @@ __________________________________________________________________
  - Toggle Electrodes : toggle electrodes on/off.
  - Toggle Sampling Points : toggle sampling points on/off. Sampling points lie at the vertices of the skull mesh.
 
- \image html topographicmap3d_toolbar.png "3D Topographic Map toolbar"
+ \image html topographicmap3ddisplay_toolbar.png "3D Topographic Map toolbar"
  * |OVP_DocEnd_BoxAlgorithm_3DTopographicMap_OnlineVisualizationSettings|
 __________________________________________________________________
 
@@ -60,13 +60,13 @@ Examples description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_3DTopographicMap_Examples|
-This example is based on the following scenario file : tutorials/visualisation/sample_3D_topographic_map
+This example is based on the following scenario file : <i>box-tutorials/topographic_map.xml</i>
 
- In this example an EEG recording is read using a GDF file reader, and data is processed and filtered before being mapped onto the scalp surface. For details on this data processing step, see the example in \ref Doc_DataVisualisation_2DVisualisation_2DTopographicMap.
+ In this example an EEG recording is read using a GDF file reader, and data is processed and filtered before being mapped onto the scalp surface. For details on this data processing step, see the example in \ref Doc_BoxAlgorithm_2DTopographicMap.
 
- A 2D topographic map is displayed next to the 3D verion for comparison purposes.
+ A 2D topographic map is displayed next to the 3D version for comparison purposes.
 
- \image html topographicmap3ddisplay_toolbar.png "Mapping brain activity in 2D and 3D"
+ \image html topographicmap3ddisplay_2d_vs_3d_online.png "Mapping brain activity in 2D and 3D"
  * |OVP_DocEnd_BoxAlgorithm_3DTopographicMap_Examples|
 
 __________________________________________________________________
