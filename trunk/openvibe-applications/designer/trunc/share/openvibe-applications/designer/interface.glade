@@ -857,7 +857,6 @@
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_new">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">creates a new
 scenario...</property>
                         <property name="label">new</property>
@@ -871,7 +870,6 @@ scenario...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_open">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">opens an existing
 scenario...</property>
                         <property name="label">open</property>
@@ -885,7 +883,6 @@ scenario...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_save">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">saves the current
 scenario...</property>
                         <property name="label">save</property>
@@ -899,7 +896,6 @@ scenario...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_save_as">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">saves the current
 scenario letting you
 choose a filename...</property>
@@ -914,7 +910,6 @@ choose a filename...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_close">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">closes the current
 scenario...</property>
                         <property name="label">close</property>
@@ -936,7 +931,6 @@ scenario...</property>
                     <child>
                       <widget class="GtkToggleToolButton" id="openvibe-button_windowmanager">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">toggles the window
 manager...</property>
                         <property name="label" translatable="yes">window manager</property>
@@ -950,7 +944,6 @@ manager...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_log_level">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">allows you to modify the
 active log levels...</property>
                         <property name="label">log levels...</property>
@@ -1026,7 +1019,6 @@ the information about the scenario...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_stop">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">stops the execution of
 the current scenario...</property>
                         <property name="label">stop</property>
@@ -1040,7 +1032,6 @@ the current scenario...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_next">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">steps a fraction of time on
 the current scenario...</property>
                         <property name="label">one step</property>
@@ -1054,7 +1045,6 @@ the current scenario...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_play_pause">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">starts / pauses the execution
 of the current scenario...</property>
                         <property name="label">play</property>
@@ -1068,7 +1058,6 @@ of the current scenario...</property>
                     <child>
                       <widget class="GtkToolButton" id="openvibe-button_forward">
                         <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
                         <property name="tooltip" translatable="yes">executes the current
 scenario as fast as
 possible...</property>
@@ -1460,7 +1449,6 @@ possible...</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="has_tooltip">True</property>
                     <property name="tooltip" translatable="yes">toggles the cpu usage
 display for each box of
 the scenario...</property>

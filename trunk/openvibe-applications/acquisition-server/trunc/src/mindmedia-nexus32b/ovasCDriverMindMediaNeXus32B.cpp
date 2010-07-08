@@ -16,6 +16,11 @@ using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 
+namespace
+{
+	const uint32 gst_ui32InternaleBufferCount=32;
+}
+
 //___________________________________________________________________//
 //                                                                   //
 
@@ -87,7 +92,7 @@ boolean CDriverMindMediaNeXus32B::initialize(
 	g_fpNeXusDLLInit=(NeXusDLL_Init)GetProcAddress(g_hNeXusDLLInstance, "InitNeXusDevice");
 	g_fpNeXusDLLStart=(NeXusDLL_Start)GetProcAddress(g_hNeXusDLLInstance,"StartNeXusDevice");
 	g_fpNeXusDLLStop=(NeXusDLL_Stop)GetProcAddress(g_hNeXusDLLInstance, "StopNeXusDevice");
-	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock*16];
+	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock*gst_ui32InternaleBufferCount];
 
 	if(!g_fpNeXusDLLInit || !g_fpNeXusDLLStart || !g_fpNeXusDLLStop || !m_pSample)
 	{
@@ -242,7 +247,7 @@ void CDriverMindMediaNeXus32B::processData(
 {
 	WaitForSingleObject(g_pMutex, INFINITE);
 
-	if(m_ui32SampleIndex<m_ui32SampleCountPerSentBlock*16)
+	if(m_ui32SampleIndex<m_ui32SampleCountPerSentBlock*gst_ui32InternaleBufferCount)
 	{
 		uint32 l_ui32BufferIndex=m_ui32SampleIndex/m_ui32SampleCountPerSentBlock;
 		uint32 l_ui32SampleIndex=m_ui32SampleIndex%m_ui32SampleCountPerSentBlock;
@@ -253,9 +258,9 @@ void CDriverMindMediaNeXus32B::processData(
 				l_ui32BufferIndex*m_ui32SampleCountPerSentBlock*m_oHeader.getChannelCount()+
 				i*m_ui32SampleCountPerSentBlock+l_ui32SampleIndex]=pSample[i];
 		}
-	}
 
-	m_ui32SampleIndex++; // Please don't overflow :o)
+		m_ui32SampleIndex++; // Please don't overflow :o)
+	}
 
 	ReleaseMutex(g_pMutex);
 }
