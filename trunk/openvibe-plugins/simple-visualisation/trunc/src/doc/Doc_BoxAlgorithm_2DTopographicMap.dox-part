@@ -92,7 +92,7 @@ __________________________________________________________________
 
  Here is what an EEG recording may look like using the scenario that was just described :
 
- \img html topographicmap2ddisplay_online.png "Top view mapping of potentials interpolated from 9 EEG electrodes."
+ \image html topographicmap2ddisplay_online.png "Top view mapping of potentials interpolated from 9 EEG electrodes."
 
  * |OVP_DocEnd_BoxAlgorithm_2DTopographicMap_Examples|
 
