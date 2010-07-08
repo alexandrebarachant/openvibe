@@ -69,7 +69,7 @@ __________________________________________________________________
  * This box has 3 output connectors, corresponding to experiment information, stimulations
  * and signals. One can connect the last two to the two input connectors of a Signal Display box to visualise the signals and/or stimulations stored in the GDF file.
  *
- * \img html gdffilereader_online.png "Loading and visualising a GDF file."
+ * \image html gdffilereader_online.png "Loading and visualising a GDF file."
  * |OVP_DocEnd_BoxAlgorithm_GDFFileReader_Examples|
 
 __________________________________________________________________
