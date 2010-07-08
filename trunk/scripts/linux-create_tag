@@ -62,3 +62,8 @@ done;
 
 svn cp ../cmake-modules ../../tags/$version_major.$version_minor.$version_patch
 svn cp ../scripts ../../tags/$version_major.$version_minor.$version_patch
+
+svn cp ../AUTHORS ../../tags/$version_major.$version_minor.$version_patch
+svn cp ../COPYING ../../tags/$version_major.$version_minor.$version_patch
+svn cp ../INSTALL ../../tags/$version_major.$version_minor.$version_patch
+svn cp ../README ../../tags/$version_major.$version_minor.$version_patch
