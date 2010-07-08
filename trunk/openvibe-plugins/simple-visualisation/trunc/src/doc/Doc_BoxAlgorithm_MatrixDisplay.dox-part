@@ -65,6 +65,9 @@ Examples description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_MatrixDisplay_Examples|
+ Here is an example using a \ref BoxAlgorithm_ConfusionMatrix box that computes confusion matrix from classifier results.
+
+ \image html "matrix_display_online.png" "Confusion matrix displayed using the Matrix Display".
  * |OVP_DocEnd_BoxAlgorithm_MatrixDisplay_Examples|
 
 __________________________________________________________________
