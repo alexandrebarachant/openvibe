@@ -23,6 +23,7 @@ Inputs description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SimpleDSP_Inputs|
+ You can use from 1 to 16 inputs.
  * |OVP_DocEnd_BoxAlgorithm_SimpleDSP_Inputs|
 
  * |OVP_DocBegin_BoxAlgorithm_SimpleDSP_Input1|
@@ -75,7 +76,9 @@ Miscellaneous description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SimpleDSP_Miscellaneous|
- * The sample's variable in the equation is named 'X'.
+ * The equation can use at most 16 variables, for 16 input signals.
+ * The variable names are the 16 first letters of the alphabet, i.e. 'a' (or 'A') to 'p' (or 'P') matche inputs 1 to 16.
+ * \b NB : The first input variable can be named 'x' or 'X'.
  *
  * Here is a list of supported functions/operators :
  *
