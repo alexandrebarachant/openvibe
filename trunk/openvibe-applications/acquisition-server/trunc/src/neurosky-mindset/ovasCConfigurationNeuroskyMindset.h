@@ -31,10 +31,9 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);
 
-		virtual void buttonCheckSignalQualityCB(void);
-		virtual void buttonRefreshCB(void);
-		//virtual void buttonCheckOkCB(void);
-
+		//virtual void buttonCheckSignalQualityCB(void);
+		//virtual void buttonRefreshCB(void);
+	
 	protected:
 
 		OpenViBEAcquisitionServer::IDriverContext& m_rDriverContext;

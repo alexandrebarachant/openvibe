@@ -224,7 +224,6 @@ unknown</property>
             <child>
               <widget class="GtkButton" id="button_check_signal_quality">
                 <property name="label" translatable="yes">Check signal quality</property>
-                <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
               </widget>

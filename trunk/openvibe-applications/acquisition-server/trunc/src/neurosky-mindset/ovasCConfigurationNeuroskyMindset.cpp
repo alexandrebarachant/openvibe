@@ -11,8 +11,14 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBEAcquisitionServer;
 using namespace std;
 
-
 //------------------------------------------------------------------------------------------
+// NOTE : The signal checker is implemented but the device does not seem to handle 
+//        a lot of connection/reconnection and this functionnality may cause 
+//        the bluetooth connection to crash when configuring, checking, 
+//        then reconnecting, and reading data. The signal check button in the 
+//        configuration window is not visible, but the checking is always performed online.
+//------------------------------------------------------------------------------------------
+/*
 static void button_check_signal_quality_cb(::GtkButton* pButton, void* pUserData)
 {
 	static_cast<CConfigurationNeuroskyMindset*>(pUserData)->buttonCheckSignalQualityCB();
@@ -32,13 +38,13 @@ void CConfigurationNeuroskyMindset::buttonCheckSignalQualityCB()
 		}
 	}
 
-	/* Get a new connection ID handle to ThinkGear API */	
+	// Get a new connection ID handle to ThinkGear API //	
 	int l_iConnectionId = TG_GetNewConnectionId();
 	if( l_iConnectionId >= 0 )
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Info << "New connection to ThinkGear driver (ID "<<l_iConnectionId<<").\n";
 
-		/* Attempt to connect the connection ID handle to serial port */
+		// Attempt to connect the connection ID handle to serial port //
 		stringstream l_ssComPortName;
 		l_ssComPortName << "\\\\.\\COM" << l_iComPort;
 		m_rDriverContext.getLogManager() << LogLevel_Info << "Communication through selected serial port COM"<<l_iComPort<<"...";
@@ -125,17 +131,7 @@ void CConfigurationNeuroskyMindset::buttonRefreshCB()
 		m_rDriverContext.getLogManager() << LogLevel_Warning << "Can't read new value - Timeout.\n";
 	}
 }
-
-//-----------------------------------------------------------------------------
-//static void button_check_ok_cb(::GtkButton* pButton, void* pUserData)
-//{
-//	static_cast<CConfigurationNeuroskyMindset*>(pUserData)->buttonCheckOkCB();
-//}
-//void CConfigurationNeuroskyMindset::buttonCheckOkCB()
-//{
-//	gtk_widget_hide(glade_xml_get_widget(m_pGladeConfigureInterface, "window_check_signal_quality"));
-//}
-
+*/
 //_________________________________________________
 
 CConfigurationNeuroskyMindset::CConfigurationNeuroskyMindset(IDriverContext& rDriverContext, const char* sGladeXMLFileName,OpenViBE::uint32& rComPort)
@@ -158,9 +154,8 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 
 	::GtkWidget * l_pWindowCheckSignalQuality=glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_check_signal_quality");
 
+	/*
 	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_check_signal_quality"),"pressed",G_CALLBACK(button_check_signal_quality_cb), this);
-	
-	//g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_check_ok"),"pressed",G_CALLBACK(button_check_ok_cb), this);
 	
 	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_refresh"),"pressed",G_CALLBACK(button_refresh_cb), this);
 
@@ -168,6 +163,7 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 	g_signal_connect (G_OBJECT(l_pWindowCheckSignalQuality),
 					"delete_event",
 					G_CALLBACK(::gtk_widget_hide), NULL);
+	*/
 
 	char l_sBuffer[1024];
 	int l_iCount=0;

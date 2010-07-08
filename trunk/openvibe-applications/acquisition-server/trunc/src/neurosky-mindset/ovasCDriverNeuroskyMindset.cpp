@@ -22,6 +22,7 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_ui32TotalSampleCount(0)
 	,m_pSample(NULL)
+	,m_ui32WarningCount(-1)
 {
 	/*
 	11 channels
@@ -44,27 +45,42 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 	TG_DATA_GAMMA2  (41 - 49.75 Hz)
 	*/
 
-	// this token allows user to use all data coming from headset. 
+	// the tokens allow user to use all data coming from headset. 
 	// Raw EEG is sampled at 512Hz, other data are sampled around 1Hz 
 	// so the driver sends these data at 512 Hz, changing value every seconds (we obtain a square signal)
-	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_FullData}", false))
+
+
+	// CHANNEL COUNT
+	m_oHeader.setChannelCount(1); // one channel on the forhead
+	
+	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
 	{
-		m_oHeader.setChannelCount(11);
+		m_oHeader.setChannelCount(m_oHeader.getChannelCount()+2);
+	}
+	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
+	{
+		m_oHeader.setChannelCount(m_oHeader.getChannelCount()+8);
+	}
+
+	// NAMES
+	m_oHeader.setChannelName(0,"Electrode");
+
+	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
+	{
 		m_oHeader.setChannelName(1,"Attention");
 		m_oHeader.setChannelName(2,"Meditation");
-		m_oHeader.setChannelName(3,"Delta");
-		m_oHeader.setChannelName(4,"Theta");
-		m_oHeader.setChannelName(5,"Low Alpha");
-		m_oHeader.setChannelName(6,"High Alpha");
-		m_oHeader.setChannelName(7,"Low Beta");
-		m_oHeader.setChannelName(8,"High Beta");
-		m_oHeader.setChannelName(9,"Low Gamma");
-		m_oHeader.setChannelName(10,"Mid Gamma");
 	}
-	else
+	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
 	{
-		m_oHeader.setChannelCount(1); // one channel on the forhead
-		m_oHeader.setChannelName(0,"Forehead");
+		uint32 i = m_oHeader.getChannelCount()-1;
+		m_oHeader.setChannelName(i--,"Mid Gamma");
+		m_oHeader.setChannelName(i--,"Low Gamma");
+		m_oHeader.setChannelName(i--,"High Beta");
+		m_oHeader.setChannelName(i--,"Low Beta");
+		m_oHeader.setChannelName(i--,"High Alpha");
+		m_oHeader.setChannelName(i--,"Low Alpha");
+		m_oHeader.setChannelName(i--,"Theta");
+		m_oHeader.setChannelName(i--,"Delta");
 	}
 
 	m_oHeader.setSamplingFrequency(512); // raw signal sampling frequency, from the official documentation.
@@ -116,9 +132,9 @@ boolean CDriverNeuroskyMindset::initialize(
 	}
 
 
-	int   l_iDllVersion = 0;
-	int   l_iConnectionId = 0;
-	int   l_iErrCode = 0;
+	int32 l_iDllVersion = 0;
+	int32 l_iConnectionId = 0;
+	int32 l_iErrCode = 0;
 
 	/* Print driver version number */
 	l_iDllVersion = TG_GetDriverVersion();
@@ -258,14 +274,34 @@ boolean CDriverNeuroskyMindset::loop(void)
 
 					// Special warning for value 200 (no contact with electrode)
 					// Noise warning after 25% contamination.
-					if(signal_quality == 200) m_rDriverContext.getLogManager() << LogLevel_Warning << "Poor Signal detected (electrode not in contact with the forehead)\n";
-					else if(signal_quality > 50) m_rDriverContext.getLogManager() << LogLevel_Warning << "Poor Signal detected (noise at "<< (1-(signal_quality/200.0f))*100 << "%)\n";
+					if(signal_quality == 200)
+					{
+						m_rDriverContext.getLogManager() 
+							<< LogLevel_Warning 
+							<< "("<<++m_ui32WarningCount
+							<<") Poor Signal detected (electrode not in contact with the forehead)\n";
+					}
+					else if(signal_quality > 25)
+					{
+						m_rDriverContext.getLogManager() 
+							<< LogLevel_Warning 
+							<< "("<<++m_ui32WarningCount
+							<<") Poor Signal detected (noise at "<< (1-(signal_quality/200.0f))*100 << "%)\n";
+					}
+					else 
+					{
+						if( m_ui32WarningCount != 0) m_rDriverContext.getLogManager() 
+														<< LogLevel_Warning 
+														<<"Signal Quality acceptable - noise < 12.5%\n";
+						m_ui32WarningCount = 0;
+						
+					}
      			}
 
-				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_FullData}", false))
+				float32 l_f32Value;
+				uint32 l_ui32ChannelIndex = 1;
+				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
 				{
-					float32 l_f32Value;
-					uint32 l_ui32ChannelIndex = 1;
 					// we don't check if the value has changed, we construct a square signal (1Hz --> 512Hz)
 					
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_ATTENTION);
@@ -275,7 +311,9 @@ boolean CDriverNeuroskyMindset::loop(void)
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_MEDITATION);
 					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
-
+				}
+				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
+				{
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_DELTA);
 					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;

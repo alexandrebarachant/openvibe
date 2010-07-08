@@ -53,6 +53,8 @@ namespace OpenViBEAcquisitionServer
 	private:
 		OpenViBE::int32 m_i32ConnectionID;
 		OpenViBE::uint32 m_ui32ComPort;
+
+		OpenViBE::uint32 m_ui32WarningCount;
 	};
 };
 
