@@ -75,6 +75,7 @@ void CReader::closeChild(void)
 	{
 		m_rReaderCallback.processChildData(m_sData.c_str());
 	}
+	m_sData="";
 	m_rReaderCallback.closeChild();
 }
 
