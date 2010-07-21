@@ -287,11 +287,10 @@ boolean CDriverBrainProductsVAmp::loop(void)
 		//____________________________
 
 		// no stimulations received from hardware, the set is empty
-		CStimulationSet l_oStimulationSet;
-
+		// CStimulationSet l_oStimulationSet;
 		m_pCallback->setSamples(m_pSample);
-
-		m_pCallback->setStimulationSet(l_oStimulationSet);
+		// m_pCallback->setStimulationSet(l_oStimulationSet);
+		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
 	}
 
 	return true;
