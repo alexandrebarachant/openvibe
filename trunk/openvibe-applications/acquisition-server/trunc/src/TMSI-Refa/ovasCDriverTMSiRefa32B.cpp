@@ -224,6 +224,7 @@ CDriverTMSiRefa32B::CDriverTMSiRefa32B(IDriverContext& rDriverContext)
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "Succeeded in loading DLL: " << CString(l_sPath) << "\n";
 	m_pDevicePathMaster = "";
 	m_lNrOfDevicesOpen=0;
+	m_bCheckImpedance=m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_CheckImpedance}", false);
 }
 
 CDriverTMSiRefa32B::~CDriverTMSiRefa32B(void)
@@ -395,9 +396,12 @@ boolean CDriverTMSiRefa32B::initialize(
 	}
 
 	//activate the mode Impedance of the device
-	if(!this->measureMode(MEASURE_MODE_IMPEDANCE, IC_OHM_005)){
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Error impedance measure mode ic_ohm_005\n";
-		return false;
+	if(m_bCheckImpedance)
+	{
+		if(!this->measureMode(MEASURE_MODE_IMPEDANCE, IC_OHM_005)){
+			m_rDriverContext.getLogManager() << LogLevel_Error << "Error impedance measure mode ic_ohm_005\n";
+			return false;
+		}
 	}
 	return true;
 }
@@ -409,7 +413,10 @@ boolean CDriverTMSiRefa32B::start(void)
 	if(m_rDriverContext.isStarted()){ return false;}
 
 	m_rDriverContext.getLogManager() << LogLevel_Trace << ">start TMSI\n";
-	this->measureMode(MEASURE_MODE_NORMAL, 0);
+	if(m_bCheckImpedance)
+	{
+		this->measureMode(MEASURE_MODE_NORMAL, 0);
+	}
 	m_ui32SampleIndex=0;
 	return true;
 }
@@ -488,17 +495,14 @@ boolean CDriverTMSiRefa32B::loop(void)
 				//sent the data block
 				m_pCallback->setSamples(m_pSample);
 
-				if(m_rDriverContext.getSuggestedJitterCorrectionSampleCount()>0)
-				{
-					m_rDriverContext.correctJitterSampleCount(-m_rDriverContext.getJitterSampleCount());
-				}
+				m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
 
 				//calculate the index of the new block
 				m_ui32SampleIndex-=m_ui32SampleCountPerSentBlock;
 			}
 		}
 	}
-	else
+	else if(m_bCheckImpedance)
 	{
 
 		//get Impedance value
@@ -510,6 +514,10 @@ boolean CDriverTMSiRefa32B::loop(void)
 			m_rDriverContext.updateImpedance(i, m_ulSignalBuffer[i]*1000);
 		}
 	}
+	else
+	{
+		m_oFpGetSamples(m_HandleMaster, (PULONG)m_ulSignalBuffer, m_ui32BufferSize);
+	}
 	return true;
 }
 
@@ -519,7 +527,10 @@ boolean CDriverTMSiRefa32B::stop(void)
 	if(!m_rDriverContext.isStarted()){ return false;}
 	m_rDriverContext.getLogManager() << LogLevel_Trace << ">Stop TMSI\n";
 
-	this->measureMode(MEASURE_MODE_IMPEDANCE, IC_OHM_005);
+	if(m_bCheckImpedance)
+	{
+		this->measureMode(MEASURE_MODE_IMPEDANCE, IC_OHM_005);
+	}
 	m_ui32SampleIndex=0;
 	return true;
 }

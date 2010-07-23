@@ -57,6 +57,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32SampleIndex;
 
 		OpenViBE::boolean refreshDevicePath(void);
+		OpenViBE::boolean m_bCheckImpedance;
 
 		//----------- TYPE ---------------------
 		//constants used by set chantype
