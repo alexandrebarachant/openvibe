@@ -109,8 +109,7 @@
 256
 512
 1024
-2048
-4096</property>
+2048</property>
                   </widget>
                   <packing>
                     <property name="left_attach">1</property>

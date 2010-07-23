@@ -601,18 +601,23 @@ boolean CAcquisitionServer::disconnect(void)
 
 void CAcquisitionServer::setSamples(const float32* pSample)
 {
+	this->setSamples(pSample, m_ui32SampleCountPerSentBlock);
+}
+
+void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32SampleCount)
+{
 	if(m_bStarted)
 	{
-		for(uint32 i=0; i<m_ui32SampleCountPerSentBlock; i++)
+		for(uint32 i=0; i<ui32SampleCount; i++)
 		{
 			for(uint32 j=0; j<m_ui32ChannelCount; j++)
 			{
-				m_vSwapBuffer[j]=pSample[j*m_ui32SampleCountPerSentBlock+i];
+				m_vSwapBuffer[j]=pSample[j*ui32SampleCount+i];
 			}
 			m_vPendingBuffer.push_back(m_vSwapBuffer);
 		}
 		m_ui64LastSampleCount=m_ui64SampleCount;
-		m_ui64SampleCount+=m_ui32SampleCountPerSentBlock;
+		m_ui64SampleCount+=ui32SampleCount;
 
 		{
 			uint64 l_ui64TheoricalSampleCount=(m_ui32SamplingFrequency * (System::Time::zgetTime()-m_ui64StartTime))>>32;

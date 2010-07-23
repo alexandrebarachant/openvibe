@@ -39,6 +39,7 @@ namespace OpenViBEAcquisitionServer
 
 		// Driver samples information callback
 		virtual void setSamples(const OpenViBE::float32* pSample);
+		virtual void setSamples(const OpenViBE::float32* pSample, const OpenViBE::uint32 ui32SampleCount);
 		virtual void setStimulationSet(const OpenViBE::IStimulationSet& rStimulationSet);
 
 		// Driver context callback

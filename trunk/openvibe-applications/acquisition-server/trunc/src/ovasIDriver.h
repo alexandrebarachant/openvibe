@@ -197,6 +197,33 @@ namespace OpenViBEAcquisitionServer
 			const OpenViBE::float32* pSample)=0;
 
 		/**
+		 * \brief Gives new sample buffer
+		 * \param pSample [in] : a buffer containing all the samples
+		 *
+		 * This is used by the acquisition server to be notified when the
+		 * driver has finished to build the whole buffer of data to send.
+		 * This function is called by the driver during the \e IDriver::loop
+		 * and should give an array of \c nSamplesPerChannel x \c nChannel
+		 * organised by channel first.
+		 *
+		 * \code
+		 * pSample[0] is channel 0 sample 0
+		 * pSample[1] is channel 0 sample 1
+		 * ...
+		 * pSample[nSamplesPerChannel-1] is channel 0 sample nSamplesPerChannel-1
+		 * pSample[nSamplesPerChannel  ] is channel 1 sample 0
+		 * pSample[nSamplesPerChannel+1] is channel 1 sample 1
+		 * ...
+		 * pSample[i*nSamplesPerChannel+j] is channel i sample j
+		 * \endcode
+		 *
+		 * \sa IDriver::loop
+		 */
+		virtual void setSamples(
+			const OpenViBE::float32* pSample,
+			const OpenViBE::uint32 ui32SampleCount)=0;
+
+		/**
 		 * \brief Gives a new stimulation set corresponding to the last sample buffer
 		 * \param rStimulationSet [in] : the stimulation set associated with the last sample buffer
 		 *
