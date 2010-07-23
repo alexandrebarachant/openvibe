@@ -525,32 +525,38 @@ boolean CAcquisitionServer::stop(void)
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Stoping the acquisition.\n";
 
-	if(-m_i64JitterToleranceSampleCount * 5 < m_i64JitterSampleCount && m_i64JitterSampleCount < m_i64JitterToleranceSampleCount * 5)
+	int64 l_i64DriftSampleCount=m_i64JitterSampleCount-(m_i64JitterCorrectionSampleCountAdded-m_i64JitterCorrectionSampleCountRemoved);
+	uint64 l_ui64TheoricalSampleCount=m_ui64SampleCount-m_i64JitterSampleCount;
+	uint64 l_ui64ReceivedSampleCount=m_ui64SampleCount-(m_i64JitterCorrectionSampleCountAdded-m_i64JitterCorrectionSampleCountRemoved);
+	float64 l_f64DriftRatio=(l_ui64ReceivedSampleCount?((l_i64DriftSampleCount*10000)/int64(l_ui64ReceivedSampleCount))/100.:100);
+	float64 l_f64AddedRatio=(l_ui64ReceivedSampleCount?((m_i64JitterCorrectionSampleCountAdded*10000)/int64(l_ui64ReceivedSampleCount))/100.:100);
+	float64 l_f64RemovedRatio=(l_ui64ReceivedSampleCount?((m_i64JitterCorrectionSampleCountRemoved*10000)/int64(l_ui64ReceivedSampleCount))/100.:100);
+	if(-m_i64JitterToleranceSampleCount * 5 < m_i64JitterSampleCount && m_i64JitterSampleCount < m_i64JitterToleranceSampleCount * 5 && l_f64DriftRatio <= 5)
 	{
-		uint64 l_ui64TheoricalSampleCount=m_ui64SampleCount-m_i64JitterSampleCount;
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "For information, after " << (((System::Time::zgetTime()-m_ui64StartTime) * 1000) >> 32) * .001f << " seconds we got the following statistics :\n";
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Received : " << m_ui64SampleCount << " samples.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Should have received : " << l_ui64TheoricalSampleCount << " samples.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Difference was : " << m_i64JitterSampleCount << " samples.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Added : " << m_i64JitterCorrectionSampleCountAdded << " samples\n";
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Removed : " << m_i64JitterCorrectionSampleCountRemoved << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Received : " << l_ui64ReceivedSampleCount << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Should have received : " << l_ui64TheoricalSampleCount << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Drift was : " << l_i64DriftSampleCount << " samples (" << l_f64DriftRatio << "%)\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Added : " << m_i64JitterCorrectionSampleCountAdded << " samples (" << l_f64AddedRatio << "%)\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Removed : " << m_i64JitterCorrectionSampleCountRemoved << " samples (" << l_f64RemovedRatio << "%)\n";
 	}
 	else
 	{
-		uint64 l_ui64TheoricalSampleCount=m_ui64SampleCount-m_i64JitterSampleCount;
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "After " << (((System::Time::zgetTime()-m_ui64StartTime) * 1000) >> 32) * .001f << " seconds, theorical samples per second does not match real samples per second.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Received : " << m_ui64SampleCount << " samples.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Should have received : " << l_ui64TheoricalSampleCount << " samples.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Difference was : " << m_i64JitterSampleCount << " samples.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "After " << (((System::Time::zgetTime()-m_ui64StartTime) * 1000) >> 32) * .001f << " seconds, theorical samples per second does not match real samples per second\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Received : " << l_ui64ReceivedSampleCount << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Should have received : " << l_ui64TheoricalSampleCount << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Drift was : " << l_i64DriftSampleCount << " samples (" << l_f64DriftRatio << "%)\n";
 		if(m_i64JitterCorrectionSampleCountAdded==0 && m_i64JitterCorrectionSampleCountRemoved==0)
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Warning << "  The driver did not try to correct this difference.\n";
+			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "  The driver did not try to correct this difference\n";
 		}
 		else
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Warning << "  The driver however tried to correct this difference and added/removed " << m_i64JitterCorrectionSampleCountAdded << "/" << m_i64JitterCorrectionSampleCountRemoved << " samples .\n";
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "  Added : " << m_i64JitterCorrectionSampleCountAdded << " samples (" << l_f64AddedRatio << "%)\n";
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "  Removed : " << m_i64JitterCorrectionSampleCountRemoved << " samples (" << l_f64RemovedRatio << "%)\n";
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "  The driver obviously tried to correct this difference\n";
 		}
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "  Please submit a bug report (including the acquisition server log file or at least this complete message) for the driver you are using.\n";
+		m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "  Please submit a bug report (including the acquisition server log file or at least this complete message) for the driver you are using\n";
 	}
 
 	// Stops driver
@@ -612,7 +618,7 @@ void CAcquisitionServer::setSamples(const float32* pSample)
 			uint64 l_ui64TheoricalSampleCount=(m_ui32SamplingFrequency * (System::Time::zgetTime()-m_ui64StartTime))>>32;
 			m_i64JitterSampleCount=int64(m_ui64SampleCount-l_ui64TheoricalSampleCount);
 
-			m_rKernelContext.getLogManager() << LogLevel_Trace << "Sample count jitter is : " << m_i64JitterSampleCount << " samples.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Sample count jitter is : " << m_i64JitterSampleCount << " samples.\n";
 		}
 
 		m_bGotData=true;
@@ -663,7 +669,7 @@ boolean CAcquisitionServer::correctJitterSampleCount(int64 i64SampleCount)
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "Correcting jitter with " << i64SampleCount << " samples\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "At time " << System::Time::zgetTime()-m_ui64StartTime << " : Correcting drift by " << i64SampleCount << " samples\n";
 		if(i64SampleCount > 0)
 		{
 			for(int64 i=0; i<i64SampleCount; i++)
@@ -681,19 +687,19 @@ boolean CAcquisitionServer::correctJitterSampleCount(int64 i64SampleCount)
 		}
 		else if(i64SampleCount < 0)
 		{
-			int64 l_i64SamplesToRemove=-i64SampleCount;
-			if(l_i64SamplesToRemove>m_vPendingBuffer.size())
+			uint64 l_ui64SamplesToRemove=uint64(-i64SampleCount);
+			if(l_ui64SamplesToRemove>m_vPendingBuffer.size())
 			{
-				l_i64SamplesToRemove=m_vPendingBuffer.size();
+				l_ui64SamplesToRemove=m_vPendingBuffer.size();
 			}
 
-			m_vPendingBuffer.erase(m_vPendingBuffer.begin()+m_vPendingBuffer.size()-l_i64SamplesToRemove, m_vPendingBuffer.begin()+m_vPendingBuffer.size());
-			OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, ((m_ui64SampleCount-l_i64SamplesToRemove)<<32)/m_ui32SamplingFrequency, (m_ui64SampleCount<<32)/m_ui32SamplingFrequency);
+			m_vPendingBuffer.erase(m_vPendingBuffer.begin()+m_vPendingBuffer.size()-l_ui64SamplesToRemove, m_vPendingBuffer.begin()+m_vPendingBuffer.size());
+			OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, ((m_ui64SampleCount-l_ui64SamplesToRemove)<<32)/m_ui32SamplingFrequency, (m_ui64SampleCount<<32)/m_ui32SamplingFrequency);
 
-			m_i64JitterSampleCount-=l_i64SamplesToRemove;
+			m_i64JitterSampleCount-=l_ui64SamplesToRemove;
 			m_ui64LastSampleCount=m_ui64SampleCount;
-			m_ui64SampleCount-=l_i64SamplesToRemove;
-			m_i64JitterCorrectionSampleCountRemoved+=l_i64SamplesToRemove;
+			m_ui64SampleCount-=l_ui64SamplesToRemove;
+			m_i64JitterCorrectionSampleCountRemoved+=l_ui64SamplesToRemove;
 		}
 	}
 
