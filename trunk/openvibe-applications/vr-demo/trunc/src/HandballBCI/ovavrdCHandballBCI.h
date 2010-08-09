@@ -25,48 +25,64 @@ namespace OpenViBEVRDemos {
 		private:
 
 			virtual bool initialise(void);
+			virtual void initSceneGymnasium();
+			virtual void initSceneAds();
+			virtual void initSceneGoals();
+			virtual void initSceneBalls();
+			virtual void initSceneCrossArrowAndFeedback();
+
+			//virtual bool initGUI(void);
 	
 			virtual bool process(double timeSinceLastProcess);	
 			
-			int m_iGoalScore;
-			int m_iSideScore;
+			int m_iGoalScore;      // goal !
+			int m_iLeftScore;      // ball successfully sent on the left side (but maybe no goal)
+			int m_iRightScore;     // ball successfully sent on the left side (but maybe no goal)
+
+			//for stats
+			int m_iTrialRightCount;
+			int m_iTrialLeftCount;
+			
 			int m_iClassificationScore;
-			int m_iFeedbackLoopCount;
+			
 			int m_iPhase;
 			int m_iLastPhase;
-			int m_iMark;
-			int m_iLastMark;
-
+			
 			double m_dFeedback;
 			double m_dLastFeedback;
 
-			bool m_bShowMark;
-			bool m_bGoalMarkedAtThisPhase;
-			bool m_bScoreChanged;
-			float m_fBallSpeed;
-			float m_fBallPosition;
-			float m_fBallOrientation;
-			float m_fGoalScoreScale;
-			float m_fSideScoreScale;
-			float m_fClassificationScoreScale;
-
-			double m_dMinAnalog;
-			double m_dMaxAnalog;
+			double m_dMaxFeedback;
+			double m_dMinFeedback;
 			std::list < double > m_vAnalogHistory;
 
-			enum
-			{
-				Mark_None,
-				Mark_Left,
-				Mark_Right,
-			} EMark;
+			int m_iMark;
+			int m_iLastMark;
+			bool m_bGoalMarkedAtThisPhase;
+
+			float m_fBallSpeed;
+			float m_fBallPosition;
+			float m_fLastBallPosition;
+			float m_fBallOrientation;
+
+			float m_fCrossSize;
+			
+			bool m_bShowCross;
+			bool m_bShowClue;
+			bool m_bShowFeedback;
 
 			enum
 			{
-				Phase_Passive,
 				Phase_GetReady,
 				Phase_Active,
+				Phase_Rest,
 			} EPhase;
+
+			enum
+			{
+				Mark_Right,
+				Mark_Left,
+				Mark_None,
+			} EMark;
 	};
 };
 #endif //__OpenViBEApplication_CHandballBCI_H__

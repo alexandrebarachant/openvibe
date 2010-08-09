@@ -15,16 +15,22 @@
 using namespace OpenViBEVRDemos;
 using namespace Ogre;
 
+static const float g_fRotationSpeedMouse = 0.5f;
+static const float g_fTranslationSpeed = 0.2f;
+
 COgreVRApplication::COgreVRApplication()
 {
 	m_dClock = 0;
 	m_sResourcePath = "./resources.cfg";
 	m_bContinue=true;
 	m_rGUIRenderer = NULL;
+	m_bCameraMode = false;
 }
 
 COgreVRApplication::~COgreVRApplication()
 {
+	m_poSceneManager->clearScene(); // does not destroy cameras
+
 	if(m_poVrpnPeripheral)
 		delete m_poVrpnPeripheral;
 
@@ -112,6 +118,17 @@ bool COgreVRApplication::setup()
 
 	//Camera
 	m_poCamera = m_poSceneManager->createCamera("DefaultCamera");
+	
+	m_poCameraNodeYawAndPos = m_poSceneManager->getRootSceneNode()->createChildSceneNode();
+	m_poCameraNodeYawAndPos->setPosition(Ogre::Vector3::ZERO);
+	m_poCameraNodeYawAndPos->setOrientation(Ogre::Quaternion::IDENTITY);
+
+	m_poCameraNodePitch = m_poCameraNodeYawAndPos->createChildSceneNode();
+	m_poCameraNodePitch->setPosition(Ogre::Vector3::ZERO);
+	m_poCameraNodePitch->setOrientation(Ogre::Quaternion::IDENTITY);
+	
+	m_poCameraNodePitch->attachObject(m_poCamera);
+
 	m_poCamera->setNearClipDistance(0.05f);
 	m_poCamera->setFarClipDistance(300.0f);
 	m_poCamera->setRenderingDistance(0.01f);
@@ -234,8 +251,111 @@ bool COgreVRApplication::keyPressed(const OIS::KeyEvent& evt)
 		std::cout<<"[ESC] pressed, user termination."<<std::endl;
 		m_bContinue = false;
 	}
+	if(evt.key == OIS::KC_RCONTROL)
+	{
+		std::cout<<"Camera mode ON"<<std::endl;
+		m_bCameraMode = true;
+	}
 
+	
+	if(evt.key == OIS::KC_UP)
+	{
+		//m_poCameraNodeYawAndPos->translate(-0.1f,0,0);
+		m_mKeysPressed[OIS::KC_UP] = true;
+	}
+	if(evt.key == OIS::KC_RIGHT)
+	{
+		//m_poCameraNodeYawAndPos->translate(0,0,0.1f);
+		m_mKeysPressed[OIS::KC_RIGHT] = true;
+	}
+	if(evt.key == OIS::KC_LEFT)
+	{
+		//m_poCameraNodeYawAndPos->translate(0,0,-0.1f);
+		m_mKeysPressed[OIS::KC_LEFT] = true;
+	}
+	if(evt.key == OIS::KC_DOWN)
+	{
+		//m_poCameraNodeYawAndPos->translate(0.1f,0,0);
+		m_mKeysPressed[OIS::KC_DOWN] = true;
+	}
+	
 	return true;
+}
+
+
+bool COgreVRApplication::keyReleased(const OIS::KeyEvent& evt)
+{
+	if(evt.key == OIS::KC_RCONTROL)
+	{
+		std::cout<<"Camera mode OFF"<<std::endl;
+		m_bCameraMode = false;
+	}
+
+	if(evt.key == OIS::KC_UP)
+	{
+		//m_poCameraNodeYawAndPos->translate(-0.1f,0,0);
+		m_mKeysPressed[OIS::KC_UP] = false;
+	}
+	if(evt.key == OIS::KC_RIGHT)
+	{
+		//m_poCameraNodeYawAndPos->translate(0,0,0.1f);
+		m_mKeysPressed[OIS::KC_RIGHT] = false;
+	}
+	if(evt.key == OIS::KC_LEFT)
+	{
+		//m_poCameraNodeYawAndPos->translate(0,0,-0.1f);
+		m_mKeysPressed[OIS::KC_LEFT] = false;
+	}
+	if(evt.key == OIS::KC_DOWN)
+	{
+		//m_poCameraNodeYawAndPos->translate(0.1f,0,0);
+		m_mKeysPressed[OIS::KC_DOWN] = false;
+	}
+
+	
+	return true;
+}
+
+bool COgreVRApplication::mouseMoved(const OIS::MouseEvent &arg)
+{
+	if(m_bCameraMode)
+	{
+		m_poCameraNodeYawAndPos->yaw(Ogre::Degree(-arg.state.X.rel * g_fRotationSpeedMouse));
+		m_poCameraNodePitch->pitch(Ogre::Degree(-arg.state.Y.rel * g_fRotationSpeedMouse));
+	}
+
+	
+	return true;
+}
+
+void COgreVRApplication::updateCamera()
+{
+	if(!m_bCameraMode) return;
+	
+	Vector3 l_vTranslation(0,0,0);
+	if(m_mKeysPressed[OIS::KC_UP])
+	{
+		l_vTranslation.z -= g_fTranslationSpeed;
+		//m_poCameraNodeYawAndPos->translate(-g_fTranslationSpeed,0,0);
+	}
+	if(m_mKeysPressed[OIS::KC_RIGHT])
+	{
+		l_vTranslation.x += g_fTranslationSpeed;
+		//m_poCameraNodeYawAndPos->translate(0,0,g_fTranslationSpeed);
+	}
+	if(m_mKeysPressed[OIS::KC_LEFT])
+	{
+		l_vTranslation.x -= g_fTranslationSpeed;
+		//m_poCameraNodeYawAndPos->translate(0,0,-g_fTranslationSpeed);
+	}
+	if(m_mKeysPressed[OIS::KC_DOWN])
+	{
+		l_vTranslation.z += g_fTranslationSpeed;
+		//m_poCameraNodeYawAndPos->translate(g_fTranslationSpeed,0,0);
+	}
+	//m_poCameraNodeYawAndPos->translate(l_vTranslation);
+	Vector3 l_vTranslateVectorFinal = m_poCamera->getDerivedOrientation() * l_vTranslation;
+	m_poCameraNodeYawAndPos->translate(l_vTranslateVectorFinal, Ogre::Node::TS_WORLD);
 }
 
 bool COgreVRApplication::frameStarted(const FrameEvent& evt)
@@ -250,6 +370,8 @@ bool COgreVRApplication::frameStarted(const FrameEvent& evt)
 		//the button states are added in the peripheric, but they have to be popped.
 		//the basic class does not pop the states.
 
+		if(m_bCameraMode) this->updateCamera();
+
 		this->process(m_dClock);
 		m_dClock -= 1/MAX_FREQUENCY;
 	}
@@ -258,10 +380,10 @@ bool COgreVRApplication::frameStarted(const FrameEvent& evt)
 		System::Time::sleep(1);
 	}
 
-	if(!m_bContinue)
+	/*if(!m_bContinue)
 	{
 
-	}
+	}*/
 
 	return m_bContinue;
 }

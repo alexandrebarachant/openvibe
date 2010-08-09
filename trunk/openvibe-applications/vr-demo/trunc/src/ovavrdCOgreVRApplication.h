@@ -9,6 +9,8 @@
 
 #include "ovaCAbstractVrpnPeripheral.h"
 
+#include <map>
+
 #define MAX_FREQUENCY 60.f
 
 /**
@@ -74,9 +76,14 @@ namespace OpenViBEVRDemos {
 			Ogre::SceneManager* m_poSceneManager;	//!< The scene manager used.
 			Ogre::RenderWindow* m_poWindow;			//!< The render window used.
 			Ogre::Camera* m_poCamera;				//!< The camera used.
+			Ogre::SceneNode* m_poCameraNodeYawAndPos;		//!< The camera node.
+			Ogre::SceneNode* m_poCameraNodePitch;		//!< The camera node.
 			Ogre::String m_sResourcePath;			//!< Path to the file resource.cfg for Ogre.
 
-			//----- FUNCTIONS TO DERIVE ------//
+			bool m_bCameraMode;
+			std::map<OIS::KeyCode,bool> m_mKeysPressed;
+			virtual void updateCamera(void);
+
 			/**
 			* \brief Initialize the scene. This function has to be implemented
 			* with the specific Ogre code.
@@ -116,7 +123,7 @@ namespace OpenViBEVRDemos {
 			* \brief Mouse moved callback, launched when the mouse is moved.
 			* \return \em true if the rendering engine should continue.
 			*/
-			bool mouseMoved(const OIS::MouseEvent& arg) { return true; }
+			bool mouseMoved(const OIS::MouseEvent& arg);
 
 			/**
 			* \brief Mouse pressed callback, launched when a mouse button is pressed.
@@ -139,7 +146,7 @@ namespace OpenViBEVRDemos {
 			* \brief Key released callback, launched when a key is released.
 			* \return \em true if the rendering engine should continue.
 			*/
-			bool keyReleased(const OIS::KeyEvent& evt) { return true; }
+			bool keyReleased(const OIS::KeyEvent& evt) ;
 
 			//-------CEGUI-------//
 			CEGUI::OgreRenderer * m_rGUIRenderer;  //!< The CEGUI renderer.
