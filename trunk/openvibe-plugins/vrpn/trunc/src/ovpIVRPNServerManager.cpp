@@ -115,7 +115,8 @@ boolean CVRPNServerManager::initialize(void)
 {
 	if(!m_ui32InitializeCount)
 	{
-		m_pConnection=new vrpn_Connection;
+		//m_pConnection=new vrpn_Connection;
+		m_pConnection=vrpn_create_server_connection();
 	}
 	m_ui32InitializeCount++;
 	return true;
@@ -139,6 +140,9 @@ boolean CVRPNServerManager::uninitialize(void)
 		}
 		m_vButtonServer.clear();
 		delete m_pConnection;
+		// $$$ UGLY !
+		// The following function should destroy correctly the connection, but does not.
+		//vrpn_ConnectionManager::instance().deleteConnection(m_pConnection);
 		m_pConnection=NULL;
 	}
 	return true;
