@@ -115,8 +115,8 @@ boolean CVRPNServerManager::initialize(void)
 {
 	if(!m_ui32InitializeCount)
 	{
-		//m_pConnection=new vrpn_Connection;
-		m_pConnection=vrpn_create_server_connection();
+		m_pConnection=new vrpn_Connection;
+		//m_pConnection=vrpn_create_server_connection();
 	}
 	m_ui32InitializeCount++;
 	return true;
