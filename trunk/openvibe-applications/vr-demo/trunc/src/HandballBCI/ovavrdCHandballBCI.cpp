@@ -71,8 +71,8 @@ bool CHandballBCI::initialise()
 	m_poCamera->setFOVy(Radian(Degree(100)));
 	m_poCamera->setProjectionType(PT_PERSPECTIVE);
 
-	m_poCameraNodeYawAndPos->setPosition(5.5f,0.9f,0.f);
-	m_poCameraNodeYawAndPos->yaw(Radian(Math::PI/2.f));
+	m_poCameraNode->setPosition(5.5f,0.9f,0.f);
+	m_poCameraNode->yaw(Radian(Math::PI/2.f));
 	
 	this->initSceneGymnasium();
 	this->initSceneAds();

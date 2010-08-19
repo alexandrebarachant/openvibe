@@ -76,8 +76,8 @@ namespace OpenViBEVRDemos {
 			Ogre::SceneManager* m_poSceneManager;	//!< The scene manager used.
 			Ogre::RenderWindow* m_poWindow;			//!< The render window used.
 			Ogre::Camera* m_poCamera;				//!< The camera used.
-			Ogre::SceneNode* m_poCameraNodeYawAndPos;		//!< The camera node.
-			Ogre::SceneNode* m_poCameraNodePitch;		//!< The camera node.
+			Ogre::SceneNode* m_poCameraNode;			//!< The camera node.
+			
 			Ogre::String m_sResourcePath;			//!< Path to the file resource.cfg for Ogre.
 
 			bool m_bCameraMode;

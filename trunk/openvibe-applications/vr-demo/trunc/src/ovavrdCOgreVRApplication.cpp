@@ -59,12 +59,6 @@ COgreVRApplication::~COgreVRApplication()
 		CEGUI::OgreRenderer::destroySystem();
 	}
 
-	/*
-	if(m_poSceneManager)
-		m_poRoot->destroySceneManager(m_poSceneManager);
-
-	if(m_poRoot)
-		delete m_poRoot;*/
 }
 
 void COgreVRApplication::go(void)
@@ -118,16 +112,17 @@ bool COgreVRApplication::setup()
 
 	//Camera
 	m_poCamera = m_poSceneManager->createCamera("DefaultCamera");
-	
-	m_poCameraNodeYawAndPos = m_poSceneManager->getRootSceneNode()->createChildSceneNode();
-	m_poCameraNodeYawAndPos->setPosition(Ogre::Vector3::ZERO);
-	m_poCameraNodeYawAndPos->setOrientation(Ogre::Quaternion::IDENTITY);
+	m_poCameraNode = m_poSceneManager->getRootSceneNode()->createChildSceneNode();
+	m_poCameraNode->attachObject(m_poCamera);
+	//m_poCameraNodeYawAndPos = m_poSceneManager->getRootSceneNode()->createChildSceneNode();
+	//m_poCameraNodeYawAndPos->setPosition(Ogre::Vector3::ZERO);
+	//m_poCameraNodeYawAndPos->setOrientation(Ogre::Quaternion::IDENTITY);
 
-	m_poCameraNodePitch = m_poCameraNodeYawAndPos->createChildSceneNode();
-	m_poCameraNodePitch->setPosition(Ogre::Vector3::ZERO);
-	m_poCameraNodePitch->setOrientation(Ogre::Quaternion::IDENTITY);
-	
-	m_poCameraNodePitch->attachObject(m_poCamera);
+	//m_poCameraNodePitch = m_poCameraNodeYawAndPos->createChildSceneNode();
+	//m_poCameraNodePitch->setPosition(Ogre::Vector3::ZERO);
+	//m_poCameraNodePitch->setOrientation(Ogre::Quaternion::IDENTITY);
+	//
+	//m_poCameraNodePitch->attachObject(m_poCamera);
 
 	m_poCamera->setNearClipDistance(0.05f);
 	m_poCamera->setFarClipDistance(300.0f);
@@ -228,10 +223,8 @@ bool COgreVRApplication::initOIS()
 
 bool COgreVRApplication::initCEGUI()
 {
-	//RenderTarget* l_pRenderTarget = Root::getSingleton().getRenderTarget();
 	m_rGUIRenderer = &(CEGUI::OgreRenderer::bootstrapSystem());
-	//m_rGUISystem = CEGUI::System::create(m_rGUIRenderer);
-
+	
 	CEGUI::SchemeManager::getSingleton().create((CEGUI::utf8*)"TaharezLook-ov.scheme");
 
 	m_poGUIWindowManager = CEGUI::WindowManager::getSingletonPtr();
@@ -260,22 +253,18 @@ bool COgreVRApplication::keyPressed(const OIS::KeyEvent& evt)
 	
 	if(evt.key == OIS::KC_UP)
 	{
-		//m_poCameraNodeYawAndPos->translate(-0.1f,0,0);
 		m_mKeysPressed[OIS::KC_UP] = true;
 	}
 	if(evt.key == OIS::KC_RIGHT)
 	{
-		//m_poCameraNodeYawAndPos->translate(0,0,0.1f);
 		m_mKeysPressed[OIS::KC_RIGHT] = true;
 	}
 	if(evt.key == OIS::KC_LEFT)
 	{
-		//m_poCameraNodeYawAndPos->translate(0,0,-0.1f);
 		m_mKeysPressed[OIS::KC_LEFT] = true;
 	}
 	if(evt.key == OIS::KC_DOWN)
 	{
-		//m_poCameraNodeYawAndPos->translate(0.1f,0,0);
 		m_mKeysPressed[OIS::KC_DOWN] = true;
 	}
 	
@@ -293,22 +282,18 @@ bool COgreVRApplication::keyReleased(const OIS::KeyEvent& evt)
 
 	if(evt.key == OIS::KC_UP)
 	{
-		//m_poCameraNodeYawAndPos->translate(-0.1f,0,0);
 		m_mKeysPressed[OIS::KC_UP] = false;
 	}
 	if(evt.key == OIS::KC_RIGHT)
 	{
-		//m_poCameraNodeYawAndPos->translate(0,0,0.1f);
 		m_mKeysPressed[OIS::KC_RIGHT] = false;
 	}
 	if(evt.key == OIS::KC_LEFT)
 	{
-		//m_poCameraNodeYawAndPos->translate(0,0,-0.1f);
 		m_mKeysPressed[OIS::KC_LEFT] = false;
 	}
 	if(evt.key == OIS::KC_DOWN)
 	{
-		//m_poCameraNodeYawAndPos->translate(0.1f,0,0);
 		m_mKeysPressed[OIS::KC_DOWN] = false;
 	}
 
@@ -320,42 +305,35 @@ bool COgreVRApplication::mouseMoved(const OIS::MouseEvent &arg)
 {
 	if(m_bCameraMode)
 	{
-		m_poCameraNodeYawAndPos->yaw(Ogre::Degree(-arg.state.X.rel * g_fRotationSpeedMouse));
-		m_poCameraNodePitch->pitch(Ogre::Degree(-arg.state.Y.rel * g_fRotationSpeedMouse));
+		m_poCamera->yaw(Ogre::Degree(-arg.state.X.rel * g_fRotationSpeedMouse));
+		m_poCamera->pitch(Ogre::Degree(-arg.state.Y.rel * g_fRotationSpeedMouse));
+		
 	}
 
-	
 	return true;
 }
 
 void COgreVRApplication::updateCamera()
 {
-	if(!m_bCameraMode) return;
-	
 	Vector3 l_vTranslation(0,0,0);
 	if(m_mKeysPressed[OIS::KC_UP])
 	{
 		l_vTranslation.z -= g_fTranslationSpeed;
-		//m_poCameraNodeYawAndPos->translate(-g_fTranslationSpeed,0,0);
 	}
 	if(m_mKeysPressed[OIS::KC_RIGHT])
 	{
 		l_vTranslation.x += g_fTranslationSpeed;
-		//m_poCameraNodeYawAndPos->translate(0,0,g_fTranslationSpeed);
 	}
 	if(m_mKeysPressed[OIS::KC_LEFT])
 	{
 		l_vTranslation.x -= g_fTranslationSpeed;
-		//m_poCameraNodeYawAndPos->translate(0,0,-g_fTranslationSpeed);
 	}
 	if(m_mKeysPressed[OIS::KC_DOWN])
 	{
 		l_vTranslation.z += g_fTranslationSpeed;
-		//m_poCameraNodeYawAndPos->translate(g_fTranslationSpeed,0,0);
 	}
-	//m_poCameraNodeYawAndPos->translate(l_vTranslation);
 	Vector3 l_vTranslateVectorFinal = m_poCamera->getDerivedOrientation() * l_vTranslation;
-	m_poCameraNodeYawAndPos->translate(l_vTranslateVectorFinal, Ogre::Node::TS_WORLD);
+	m_poCameraNode->translate(l_vTranslateVectorFinal, Ogre::Node::TS_WORLD);
 }
 
 bool COgreVRApplication::frameStarted(const FrameEvent& evt)
@@ -379,11 +357,6 @@ bool COgreVRApplication::frameStarted(const FrameEvent& evt)
 	{
 		System::Time::sleep(1);
 	}
-
-	/*if(!m_bContinue)
-	{
-
-	}*/
 
 	return m_bContinue;
 }

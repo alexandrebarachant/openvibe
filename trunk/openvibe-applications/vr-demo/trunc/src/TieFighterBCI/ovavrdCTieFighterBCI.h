@@ -11,7 +11,7 @@ namespace OpenViBEVRDemos {
 	 * \date 2010-02-16
 	 * \brief Ogre application for the application "Use-The-Force".
 	 *
-	 * \details The HandballBCI application is based on motor imagery of the feet. 
+	 * \details The TieFighterBCI application is based on motor imagery of the feet. 
 	 * The 3D scene is a hangar, with few barrels stored. 
 	 * A spaceship (tie-fighter) is parked on the center of the screen.
 	 * The subject has to move his feet to lift the spaceship.
