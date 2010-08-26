@@ -33,7 +33,7 @@ namespace OpenViBEPlugins
 		void multiViewDialogApplyButtonCallback(::GtkButton *button, gpointer data);
 
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode, boolean bAutoVerticalScale, float64 f64VerticalScale)
-			:m_pGladeInterface(NULL)
+			:m_pBuilderInterface(NULL)
 			,m_bShowLeftRulers(false)
 			,m_bShowBottomRuler(true)
 			,m_ui64LeftmostDisplayedTime(0)
@@ -58,7 +58,7 @@ namespace OpenViBEPlugins
 		}
 
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode)
-			:m_pGladeInterface(NULL)
+			:m_pBuilderInterface(NULL)
 			,m_bShowLeftRulers(false)
 			,m_bShowBottomRuler(true)
 			,m_ui64LeftmostDisplayedTime(0)
@@ -78,50 +78,51 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplayView::construct(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode)
 		{
-			//load the glade interface
-			m_pGladeInterface=::glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.glade", NULL, NULL);
+			//load the gtk builder interface
+			m_pBuilderInterface=::gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.ui", NULL);
 
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return;
 			}
 
-			::glade_xml_signal_autoconnect(m_pGladeInterface);
+			::gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			//initialize display mode
 			m_pBufferDatabase->setDisplayMode(oDisplayMode);
 			::gtk_toggle_tool_button_set_active(
-				GTK_TOGGLE_TOOL_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrollModeButton")),
+				GTK_TOGGLE_TOOL_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayScrollModeButton")),
 				oDisplayMode == OVP_TypeId_SignalDisplayMode_Scroll);
 
 			//connect display mode callbacks
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrollModeButton")), "toggled", G_CALLBACK (scrollModeButtonCallback), this);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScanModeButton")),   "toggled", G_CALLBACK (scanModeButtonCallback),   this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayScrollModeButton")), "toggled", G_CALLBACK (scrollModeButtonCallback), this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayScanModeButton")),   "toggled", G_CALLBACK (scanModeButtonCallback),   this);
 
 			//creates the cursors
 			m_pCursor[0] = gdk_cursor_new(GDK_LEFT_PTR);
 			m_pCursor[1] = gdk_cursor_new(GDK_SIZING);
 
 			//button callbacks
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectButton")),     "clicked", G_CALLBACK(channelSelectButtonCallback),     this);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayStimulationColorsButton")), "clicked", G_CALLBACK(stimulationColorsButtonCallback), this);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewButton")),         "clicked", G_CALLBACK(multiViewButtonCallback),         this);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton")),       "clicked", G_CALLBACK(informationButtonCallback),       this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayChannelSelectButton")),     "clicked", G_CALLBACK(channelSelectButtonCallback),     this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayStimulationColorsButton")), "clicked", G_CALLBACK(stimulationColorsButtonCallback), this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewButton")),         "clicked", G_CALLBACK(multiViewButtonCallback),         this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayInformationButton")),       "clicked", G_CALLBACK(informationButtonCallback),       this);
 
 			//initialize vertical scale
-			::gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayVerticalScaleToggleButton")), m_bAutoVerticalScale);
-			::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64CustomVerticalScaleValue);
-			::gtk_spin_button_set_increments(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")),0.001,1.0);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"), !m_bAutoVerticalScale);
+			::gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayVerticalScaleToggleButton")), m_bAutoVerticalScale);
+			::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64CustomVerticalScaleValue);
+			::gtk_spin_button_set_increments(GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")),0.001,1.0);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")), !m_bAutoVerticalScale);
 
 			//connect vertical scale callbacks
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayVerticalScaleToggleButton")),     "toggled",       G_CALLBACK(toggleAutoVerticalScaleButtonCallback), this);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), "value-changed", G_CALLBACK(customVerticalScaleChangedCallback), this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayVerticalScaleToggleButton")),     "toggled",       G_CALLBACK(toggleAutoVerticalScaleButtonCallback), this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")), "value-changed", G_CALLBACK(customVerticalScaleChangedCallback), this);
 
 			//time scale
 			//----------
-			::GtkSpinButton* l_pSpinButton = GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayTimeScale"));
+			::GtkSpinButton* l_pSpinButton = GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayTimeScale"));
 			::gtk_spin_button_set_value(l_pSpinButton, f64TimeScale);
 			g_signal_connect(G_OBJECT(l_pSpinButton), "value-changed", G_CALLBACK(spinButtonValueChangedCallback),  this);
 			//notify database of current time scale
@@ -129,56 +130,56 @@ namespace OpenViBEPlugins
 
 			//channel select dialog's signals
 			//-------------------------------
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectApplyButton")), "clicked", G_CALLBACK(channelSelectDialogApplyButtonCallback), this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayChannelSelectApplyButton")), "clicked", G_CALLBACK(channelSelectDialogApplyButtonCallback), this);
 
 			//connect the cancel button to the dialog's hide command
-			g_signal_connect_swapped(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectCancelButton")),
+			g_signal_connect_swapped(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayChannelSelectCancelButton")),
 					"clicked",
 					G_CALLBACK(::gtk_widget_hide),
-					G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")));
+					G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayChannelSelectDialog")));
 
 			//hides the dialog if the user tries to close it
-			g_signal_connect (G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectDialog")),
+			g_signal_connect (G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayChannelSelectDialog")),
 					"delete_event",
 					G_CALLBACK(::gtk_widget_hide), NULL);
 
 			//stimulation colors dialog's signals
 			//-----------------------------------
 			//connect the close button to the dialog's hide command
-			g_signal_connect_swapped(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayStimulationColorsCloseButton")),
+			g_signal_connect_swapped(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayStimulationColorsCloseButton")),
 					"clicked",
 					G_CALLBACK(::gtk_widget_hide),
-					G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayStimulationColorsDialog")));
+					G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayStimulationColorsDialog")));
 
 			//hides the dialog if the user tries to close it
-			g_signal_connect (G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayStimulationColorsDialog")),
+			g_signal_connect (G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayStimulationColorsDialog")),
 					"delete_event",
 					G_CALLBACK(::gtk_widget_hide), NULL);
 
 			//multiview signals
 			//-----------------
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewApplyButton")), "clicked", G_CALLBACK(multiViewDialogApplyButtonCallback), this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewApplyButton")), "clicked", G_CALLBACK(multiViewDialogApplyButtonCallback), this);
 
 			//connect the cancel button to the dialog's hide command
-			g_signal_connect_swapped(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewCancelButton")),
+			g_signal_connect_swapped(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewCancelButton")),
 				"clicked",
 				G_CALLBACK(::gtk_widget_hide),
-				G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewDialog")));
+				G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewDialog")));
 
 			//hides the dialog if the user tries to close it
-			g_signal_connect (G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewDialog")),
+			g_signal_connect (G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewDialog")),
 				"delete_event",
 				G_CALLBACK(::gtk_widget_hide), NULL);
 
 			//bottom box
 			//----------
-			m_pBottomBox = GTK_BOX(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayBottomBox"));
+			m_pBottomBox = GTK_BOX(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayBottomBox"));
 		}
 
 		CSignalDisplayView::~CSignalDisplayView()
 		{
 			//destroy the window and its children
-			::gtk_widget_destroy(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainWindow"));
+			::gtk_widget_destroy(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMainWindow")));
 
 			//destroy the rest
 			for(int i=0 ; i<2 ; i++)
@@ -187,14 +188,14 @@ namespace OpenViBEPlugins
 			}
 
 			//unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 		}
 
 		void CSignalDisplayView::getWidgets(::GtkWidget*& pWidget, ::GtkWidget*& pToolbarWidget)
 		{
-			pWidget=::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrolledWindow");
-			pToolbarWidget=::glade_xml_get_widget(m_pGladeInterface, "Toolbar");
+			pWidget=GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayScrolledWindow"));
+			pToolbarWidget=GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "Toolbar"));
 		}
 
 		void CSignalDisplayView::changeMultiView()
@@ -259,7 +260,7 @@ namespace OpenViBEPlugins
 			m_oChannelLabel.resize(l_ui32ChannelCount+1);
 
 			//retrieve and allocate main table accordingly
-			m_pSignalDisplayTable = ::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMainTable");
+			m_pSignalDisplayTable = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMainTable"));
 			//rows : for each channel, [0] channel data, [1] horizontal separator
 			//columns : [0] label, [1] vertical separator, [2] left ruler, [3] signal display
 			::gtk_table_resize(GTK_TABLE(m_pSignalDisplayTable), l_ui32ChannelCount*2+1, 4);
@@ -292,10 +293,10 @@ namespace OpenViBEPlugins
 			::GtkSizeGroup* l_pSizeGroup = ::gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
 			//channels selection widget
-			::GtkWidget * l_pChannelSelectList = ::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectList");
+			::GtkWidget * l_pChannelSelectList = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayChannelSelectList"));
 
 			//multiple channels selection widget
-			::GtkWidget * l_pMultiViewSelectList = ::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewSelectList");
+			::GtkWidget * l_pMultiViewSelectList = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewSelectList"));
 
 			//vector of channel names
 			vector<string>& l_oChannelName = m_pBufferDatabase->m_pDimmesionLabels[0];
@@ -418,7 +419,7 @@ namespace OpenViBEPlugins
 			//create bottom ruler
 			//-------------------
 			m_pBottomRuler = new CBottomTimeRuler(*m_pBufferDatabase, l_i32BottomRulerWidthRequest, l_i32BottomRulerHeightRequest);
-			::gtk_size_group_add_widget(l_pSizeGroup, ::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayEmptyLabel1"));
+			::gtk_size_group_add_widget(l_pSizeGroup, GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayEmptyLabel1")));
 			::gtk_box_pack_start(m_pBottomBox, m_pBottomRuler->getWidget(), false, false, 0);
 			// tell ruler has to resize when channel displays are resized
 			if(m_oChannelDisplay.size() != 0)
@@ -438,14 +439,14 @@ namespace OpenViBEPlugins
 			//Don't display left ruler (default)
 			m_bShowLeftRulers = false;
 			toggleLeftRulers(m_bShowLeftRulers);
-			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRulerButton")), m_bShowLeftRulers);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRulerButton")),     "toggled",       G_CALLBACK(toggleLeftRulerButtonCallback),   this);
+			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayToggleLeftRulerButton")), m_bShowLeftRulers);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayToggleLeftRulerButton")),     "toggled",       G_CALLBACK(toggleLeftRulerButtonCallback),   this);
 
 			//Display bottom ruler
 			m_bShowBottomRuler = true;
 			toggleBottomRuler(m_bShowBottomRuler);
-			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRulerButton")), m_bShowBottomRuler);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRulerButton")),   "toggled",       G_CALLBACK(toggleBottomRulerButtonCallback), this);
+			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayToggleBottomRulerButton")), m_bShowBottomRuler);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayToggleBottomRulerButton")),   "toggled",       G_CALLBACK(toggleBottomRulerButtonCallback), this);
 
 			activateToolbarButtons(true);
 		}
@@ -687,14 +688,14 @@ namespace OpenViBEPlugins
 
 		void CSignalDisplayView::activateToolbarButtons(boolean bActive)
 		{
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScrollModeButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayScanModeButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleLeftRulerButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayToggleBottomRulerButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayChannelSelectButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayStimulationColorsButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayMultiViewButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayInformationButton"), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayScrollModeButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayScanModeButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayToggleLeftRulerButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayToggleBottomRulerButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayChannelSelectButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayStimulationColorsButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayInformationButton")), bActive);
 		}
 
 		boolean CSignalDisplayView::onDisplayModeToggledCB(CIdentifier oDisplayMode)
@@ -720,16 +721,16 @@ namespace OpenViBEPlugins
 #if 0
 			if(m_bAutoVerticalScale)
 			{
-				::gtk_widget_hide(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"));
+				::gtk_widget_hide(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")));
 			}
 			else
 			{
-				::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64LargestDisplayedValueRange);
-				::gtk_widget_show(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"));
+				::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64LargestDisplayedValueRange);
+				::gtk_widget_show(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")));
 			}
 #else
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton"), !m_bAutoVerticalScale);
-			::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64LargestDisplayedValueRange);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")), !m_bAutoVerticalScale);
+			::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayCustomVerticalScaleSpinButton")), m_f64LargestDisplayedValueRange);
 #endif
 			return true;
 		}
@@ -842,7 +843,7 @@ namespace OpenViBEPlugins
 		void CSignalDisplayView::updateStimulationColorsDialog(const CString& rStimulationLabel, const GdkColor& rStimulationColor)
 		{
 			//retrieve table
-			::GtkTable* l_pStimulationColorsTable = GTK_TABLE(::glade_xml_get_widget(m_pGladeInterface, "SignalDisplayStimulationColorsTable"));
+			::GtkTable* l_pStimulationColorsTable = GTK_TABLE(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayStimulationColorsTable"));
 
 			//resize table and store new colors
 			::gtk_table_resize(l_pStimulationColorsTable, l_pStimulationColorsTable->nrows + 1, 2);
@@ -972,8 +973,8 @@ namespace OpenViBEPlugins
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast < CSignalDisplayView* >(data);
 
-			::GtkWidget * l_pChannelSelectDialog = ::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayChannelSelectDialog");
-			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayChannelSelectList"));
+			::GtkWidget * l_pChannelSelectDialog = GTK_WIDGET(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayChannelSelectDialog"));
+			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayChannelSelectList"));
 			::GtkTreeSelection* l_pChannelSelectTreeSelection = ::gtk_tree_view_get_selection(l_pChannelSelectTreeView);
 			::GtkTreeModel* l_pChannelSelectTreeModel = ::gtk_tree_view_get_model(l_pChannelSelectTreeView);
 			::GtkTreeIter l_oIter;
@@ -1005,7 +1006,7 @@ namespace OpenViBEPlugins
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast < CSignalDisplayView* >(data);
 
-			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayChannelSelectList"));
+			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayChannelSelectList"));
 			::GtkTreeSelection* l_pChannelSelectTreeSelection = ::gtk_tree_view_get_selection(l_pChannelSelectTreeView);
 			::GtkTreeModel* l_pChannelSelectTreeModel = ::gtk_tree_view_get_model(l_pChannelSelectTreeView);
 			::GtkTreeIter l_oIter;
@@ -1025,13 +1026,13 @@ namespace OpenViBEPlugins
 			l_pView->updateMainTableStatus();
 
 			//hides the channel selection dialog
-			::gtk_widget_hide(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayChannelSelectDialog"));
+			::gtk_widget_hide(GTK_WIDGET(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayChannelSelectDialog")));
 		}
 
 		void stimulationColorsButtonCallback(::GtkButton *button, gpointer data)
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast < CSignalDisplayView* >(data);
-			::GtkWidget* l_pStimulationColorsDialog = ::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayStimulationColorsDialog");
+			::GtkWidget* l_pStimulationColorsDialog = GTK_WIDGET(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayStimulationColorsDialog"));
 			::gtk_widget_show_all(l_pStimulationColorsDialog);
 		}
 
@@ -1043,33 +1044,33 @@ namespace OpenViBEPlugins
 			//gets the different values from the database and updates the corresponding label's text field
 			stringstream l_oValueString;
 			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimmensionSizes[0];
-			::gtk_label_set_text(GTK_LABEL(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayNumberOfChannels")),
+			::gtk_label_set_text(GTK_LABEL(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayNumberOfChannels")),
 				 l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
 			l_oValueString<<l_pView->m_pBufferDatabase->m_ui32SamplingFrequency;
-			::gtk_label_set_text(GTK_LABEL(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplaySamplingFrequency")),
+			::gtk_label_set_text(GTK_LABEL(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplaySamplingFrequency")),
 				l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
 			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimmensionSizes[1];
-			::gtk_label_set_text(GTK_LABEL(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplaySamplesPerBuffer")),
+			::gtk_label_set_text(GTK_LABEL(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplaySamplesPerBuffer")),
 				l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
 			l_oValueString<<l_pView->m_pBufferDatabase->m_f64MinimumValue;
-			::gtk_label_set_text(GTK_LABEL(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMinimumValue")),
+			::gtk_label_set_text(GTK_LABEL(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayMinimumValue")),
 				l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
 			l_oValueString<<l_pView->m_pBufferDatabase->m_f64MaximumValue;
-			::gtk_label_set_text(GTK_LABEL(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMaximumValue")),
+			::gtk_label_set_text(GTK_LABEL(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayMaximumValue")),
 				   l_oValueString.str().c_str() );
 
-			::GtkWidget * l_pInformationDialog = ::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayInformationDialog");
+			::GtkWidget * l_pInformationDialog = GTK_WIDGET(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayInformationDialog"));
 
 			//connect the close button to the dialog's hide command
-			g_signal_connect_swapped(G_OBJECT(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayInformationClose")),
+			g_signal_connect_swapped(G_OBJECT(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayInformationClose")),
 					"clicked",
 					G_CALLBACK(::gtk_widget_hide),
 					G_OBJECT(l_pInformationDialog));
@@ -1088,8 +1089,8 @@ namespace OpenViBEPlugins
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast < CSignalDisplayView* >(data);
 
-			::GtkWidget * l_pMultiViewDialog = ::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewDialog");
-			::GtkTreeView* l_pMultiViewTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewSelectList"));
+			::GtkWidget * l_pMultiViewDialog = GTK_WIDGET(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayMultiViewDialog"));
+			::GtkTreeView* l_pMultiViewTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayMultiViewSelectList"));
 			::GtkTreeSelection* l_pMultiViewTreeSelection = ::gtk_tree_view_get_selection(l_pMultiViewTreeView);
 			::GtkTreeModel* l_pMultiViewTreeModel = ::gtk_tree_view_get_model(l_pMultiViewTreeView);
 			::GtkTreeIter l_oIter;
@@ -1121,7 +1122,7 @@ namespace OpenViBEPlugins
 		{
 			CSignalDisplayView* l_pView = reinterpret_cast < CSignalDisplayView* >(data);
 
-			::GtkTreeView* l_pMultiViewTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewSelectList"));
+			::GtkTreeView* l_pMultiViewTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayMultiViewSelectList"));
 			::GtkTreeSelection* l_pMultiViewTreeSelection = ::gtk_tree_view_get_selection(l_pMultiViewTreeView);
 			::GtkTreeModel* l_pMultiViewTreeModel = ::gtk_tree_view_get_model(l_pMultiViewTreeView);
 			::GtkTreeIter l_oIter;
@@ -1141,7 +1142,7 @@ namespace OpenViBEPlugins
 			l_pView->updateMainTableStatus();
 
 			//hides the channel selection dialog
-			::gtk_widget_hide(::glade_xml_get_widget(l_pView->m_pGladeInterface, "SignalDisplayMultiViewDialog"));
+			::gtk_widget_hide(GTK_WIDGET(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayMultiViewDialog")));
 		}
 	}
 }

@@ -17,7 +17,7 @@ using namespace OpenViBEToolkit;
 using namespace std;
 
 //REMOVE ME
-GtkWidget* customWidgetHandler(GladeXML *xml,gchar *func_name,gchar *name,gchar *string1,gchar *string2,gint int1,gint int2,gpointer user_data)
+GtkWidget* customWidgetHandler(GtkBuilder *xml,gchar *func_name,gchar *name,gchar *string1,gchar *string2,gint int1,gint int2,gpointer user_data)
 {
 	return gtk_button_new();
 }
@@ -53,7 +53,7 @@ namespace OpenViBEPlugins
 
 		CSimple3DView::CSimple3DView(CSimple3DDatabase& rSimple3DDatabase) :
 			m_rSimple3DDatabase(rSimple3DDatabase),
-			m_pGladeInterface(NULL),
+			m_pBuilderInterface(NULL),
 			m_pCreateObjectTable(NULL),
 			m_pCreateObjectName(NULL),
 			m_pCreateObjectStandardRadioButton(NULL),
@@ -78,40 +78,37 @@ namespace OpenViBEPlugins
 			m_pBlueEntry(NULL),
 			m_pTransparencyEntry(NULL)
 		{
-			//REMOVE ME
-			//glade_set_custom_handler(customWidgetHandler, NULL);
-			/////////////
+			//load the gtk builder interface
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-Simple3DDisplay.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-Simple3DDisplay.ui", NULL);
 
-			//load the glade interface
-			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-Simple3DDisplay.glade", NULL, NULL);
-
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return;
 			}
 
-			glade_xml_signal_autoconnect(m_pGladeInterface);
+			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			//toolbar buttons connections
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "CreateObject")),
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "CreateObject")),
 				"clicked", G_CALLBACK(createObjectButtonCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "DeleteObject")),
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "DeleteObject")),
 				"clicked", G_CALLBACK(deleteObjectButtonCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SetPosition")),
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "SetPosition")),
 				"clicked", G_CALLBACK(setPositionButtonCallback), this);/*
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SetOrientation")),
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "SetOrientation")),
 				"clicked", G_CALLBACK(setOrientationButtonCallback), this);*/
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SetScale")),
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "SetScale")),
 				"clicked", G_CALLBACK(setScaleButtonCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "SetColor")),
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "SetColor")),
 				"clicked", G_CALLBACK(setColorButtonCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "RepositionCamera")),
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "RepositionCamera")),
 				"clicked", G_CALLBACK(repositionCameraButtonCallback), this);
 
 			//create object connections
 			//-------------------------
-			m_pCreateObjectTable = GTK_TABLE(glade_xml_get_widget(m_pGladeInterface, "CreateObjectTable"));
+			m_pCreateObjectTable = GTK_TABLE(gtk_builder_get_object(m_pBuilderInterface, "CreateObjectTable"));
 			//remove table from its parent
 			gtk_object_ref(GTK_OBJECT(m_pCreateObjectTable));
 			GtkWidget* l_pTableParent = gtk_widget_get_parent(GTK_WIDGET(m_pCreateObjectTable));
@@ -119,17 +116,17 @@ namespace OpenViBEPlugins
 			{
 				gtk_container_remove(GTK_CONTAINER(l_pTableParent), GTK_WIDGET(m_pCreateObjectTable));
 			}
-			m_pCreateObjectName = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "CreateObjectName"));
-			m_pCreateObjectStandardRadioButton = GTK_RADIO_BUTTON(glade_xml_get_widget(m_pGladeInterface, "CreateObjectStandard"));
+			m_pCreateObjectName = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "CreateObjectName"));
+			m_pCreateObjectStandardRadioButton = GTK_RADIO_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "CreateObjectStandard"));
 			std::vector<std::string> l_oStandardObjectComboBoxEntries;
 			l_oStandardObjectComboBoxEntries.push_back("Sphere");
 			l_oStandardObjectComboBoxEntries.push_back("Cone");
 			m_pStandardObjectComboBox = createTextComboBox("StandardObjectComboBoxTable", l_oStandardObjectComboBoxEntries);
-			m_pCustomObjectEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "CustomObjectEntry"));
+			m_pCustomObjectEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "CustomObjectEntry"));
 
 			//delete object connections
 			//-------------------------
-			m_pDeleteObjectTable = GTK_TABLE(glade_xml_get_widget(m_pGladeInterface, "DeleteObjectTable"));
+			m_pDeleteObjectTable = GTK_TABLE(gtk_builder_get_object(m_pBuilderInterface, "DeleteObjectTable"));
 			//remove table from its parent
 			gtk_object_ref(GTK_OBJECT(m_pDeleteObjectTable));
 			l_pTableParent = gtk_widget_get_parent(GTK_WIDGET(m_pDeleteObjectTable));
@@ -137,11 +134,11 @@ namespace OpenViBEPlugins
 			{
 				gtk_container_remove(GTK_CONTAINER(l_pTableParent), GTK_WIDGET(m_pDeleteObjectTable));
 			}
-			m_pDeleteObjectName = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "DeleteObjectName"));
+			m_pDeleteObjectName = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "DeleteObjectName"));
 
 			//set position connections
 			//------------------------
-			m_pSetPositionTable = GTK_TABLE(glade_xml_get_widget(m_pGladeInterface, "SetPositionTable"));
+			m_pSetPositionTable = GTK_TABLE(gtk_builder_get_object(m_pBuilderInterface, "SetPositionTable"));
 			//remove table from its parent
 			gtk_object_ref(GTK_OBJECT(m_pSetPositionTable));
 			l_pTableParent = gtk_widget_get_parent(GTK_WIDGET(m_pSetPositionTable));
@@ -149,10 +146,10 @@ namespace OpenViBEPlugins
 			{
 				gtk_container_remove(GTK_CONTAINER(l_pTableParent), GTK_WIDGET(m_pSetPositionTable));
 			}
-			m_pPositionObjectName = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "PositionObjectName"));
-			m_pXPositionEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "XPositionEntry"));
-			m_pYPositionEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "YPositionEntry"));
-			m_pZPositionEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "ZPositionEntry"));
+			m_pPositionObjectName = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "PositionObjectName"));
+			m_pXPositionEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "XPositionEntry"));
+			m_pYPositionEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "YPositionEntry"));
+			m_pZPositionEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "ZPositionEntry"));
 
 			//set orientation connections
 			//---------------------------
@@ -160,7 +157,7 @@ namespace OpenViBEPlugins
 
 			//set scale connections
 			//---------------------
-			m_pSetScaleTable = GTK_TABLE(glade_xml_get_widget(m_pGladeInterface, "SetScaleTable"));
+			m_pSetScaleTable = GTK_TABLE(gtk_builder_get_object(m_pBuilderInterface, "SetScaleTable"));
 			//remove table from its parent
 			gtk_object_ref(GTK_OBJECT(m_pSetScaleTable));
 			l_pTableParent = gtk_widget_get_parent(GTK_WIDGET(m_pSetScaleTable));
@@ -168,14 +165,14 @@ namespace OpenViBEPlugins
 			{
 				gtk_container_remove(GTK_CONTAINER(l_pTableParent), GTK_WIDGET(m_pSetScaleTable));
 			}
-			m_pScaleObjectName = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "ScaleObjectName"));
-			m_pXScaleEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "XScaleEntry"));
-			m_pYScaleEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "YScaleEntry"));
-			m_pZScaleEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "ZScaleEntry"));
+			m_pScaleObjectName = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "ScaleObjectName"));
+			m_pXScaleEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "XScaleEntry"));
+			m_pYScaleEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "YScaleEntry"));
+			m_pZScaleEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "ZScaleEntry"));
 
 			//set color connections
 			//---------------------
-			m_pSetColorTable = GTK_TABLE(glade_xml_get_widget(m_pGladeInterface, "SetColorTable"));
+			m_pSetColorTable = GTK_TABLE(gtk_builder_get_object(m_pBuilderInterface, "SetColorTable"));
 			//remove table from its parent
 			gtk_object_ref(GTK_OBJECT(m_pSetColorTable));
 			l_pTableParent = gtk_widget_get_parent(GTK_WIDGET(m_pSetColorTable));
@@ -183,29 +180,29 @@ namespace OpenViBEPlugins
 			{
 				gtk_container_remove(GTK_CONTAINER(l_pTableParent), GTK_WIDGET(m_pSetColorTable));
 			}
-			m_pColorObjectName = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "ColorObjectName"));
-			m_pSetMaterialColorRadioButton = GTK_RADIO_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SetMaterialColorRadioButton"));
-			m_pRedEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "RedEntry"));
-			m_pGreenEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "GreenEntry"));
-			m_pBlueEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "BlueEntry"));
-			m_pTransparencyEntry = GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "TransparencyEntry"));
+			m_pColorObjectName = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "ColorObjectName"));
+			m_pSetMaterialColorRadioButton = GTK_RADIO_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "SetMaterialColorRadioButton"));
+			m_pRedEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "RedEntry"));
+			m_pGreenEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "GreenEntry"));
+			m_pBlueEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "BlueEntry"));
+			m_pTransparencyEntry = GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "TransparencyEntry"));
 
 			//REMOVE ME
-			//GtkWidget* custom = glade_xml_get_widget(m_pGladeInterface, "customwidget");
+			//GtkWidget* custom = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "customwidget"));
 			///////////
 		}
 
 		CSimple3DView::~CSimple3DView()
 		{
 			//unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 		}
 
 		void CSimple3DView::init()
 		{
 			/*
-			m_pDrawingArea = glade_xml_get_widget(m_pGladeInterface, "TopographicMap2DDrawingArea");
+			m_pDrawingArea = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "TopographicMap2DDrawingArea"));
 
 			gtk_widget_set_double_buffered(m_pDrawingArea, TRUE);
 
@@ -226,7 +223,7 @@ namespace OpenViBEPlugins
 
 		void CSimple3DView::getToolbar(GtkWidget*& pToolbarWidget)
 		{
-			pToolbarWidget = glade_xml_get_widget(m_pGladeInterface, "Toolbar");
+			pToolbarWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "Toolbar"));
 		}
 /*
 		void CSimple3DView::refreshObjectComboBox(GtkComboBox*& pComboBox, guint left_attach, guint right_attach,	guint top_attach, guint bottom_attach)
@@ -250,7 +247,7 @@ namespace OpenViBEPlugins
 		GtkComboBox* CSimple3DView::createTextComboBox(const gchar* pParentTableName, const std::vector<std::string>& rComboBoxEntries)
 		{
 			//retrieve parent table
-			GtkTable* l_pTable = GTK_TABLE(glade_xml_get_widget(m_pGladeInterface, pParentTableName));
+			GtkTable* l_pTable = GTK_TABLE(gtk_builder_get_object(m_pBuilderInterface, pParentTableName));
 			if(l_pTable == NULL)
 			{
 				return NULL;

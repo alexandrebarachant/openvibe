@@ -8,7 +8,6 @@
 
 #include <ebml/IReader.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include "ovpCTopographicMapDatabase.h"

@@ -4,7 +4,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
@@ -13,12 +12,11 @@ namespace OpenViBESkeletonGenerator
 	class CSkeletonGenerator
 	{
 	public:
-		CSkeletonGenerator(OpenViBE::Kernel::IKernelContext & rKernelContext, ::GladeXML * pGladeInterface);
+
+		CSkeletonGenerator(OpenViBE::Kernel::IKernelContext & rKernelContext, ::GtkBuilder * pBuilderInterface);
 		virtual ~CSkeletonGenerator(void);
 
 		virtual void initialize(void)=0;
-
-		::GladeXML * m_pGladeInterface;
 
 		OpenViBE::CString             m_sAuthor;
 		OpenViBE::CString             m_sCompany;
@@ -30,7 +28,9 @@ namespace OpenViBESkeletonGenerator
 
 		OpenViBE::Kernel::IKernelContext &m_rKernelContext;
 
-		
+	public:
+
+		::GtkBuilder * m_pBuilderInterface;
 	};
 
 }

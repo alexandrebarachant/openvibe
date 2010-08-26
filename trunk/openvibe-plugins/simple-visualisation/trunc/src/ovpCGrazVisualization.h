@@ -8,7 +8,6 @@
 
 #include <ebml/IReader.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include <vector>
@@ -76,8 +75,8 @@ namespace OpenViBEPlugins
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_GrazVisualization)
 
 		public:
-			//! The Glade handler used to create the interface
-			::GladeXML* m_pGladeInterface;
+			//! The Builder handler used to create the interface
+			::GtkBuilder* m_pBuilderInterface;
 
 			GtkWidget * m_pMainWindow;
 

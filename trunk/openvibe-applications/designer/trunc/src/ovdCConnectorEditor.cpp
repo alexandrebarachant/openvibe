@@ -54,10 +54,13 @@ boolean CConnectorEditor::run(void)
 	(m_rBox.*getConnectorName)(m_ui32ConnectorIndex, l_oConnectorName);
 	(m_rBox.*getConnectorType)(m_ui32ConnectorIndex, l_oConnectorType);
 
-	::GladeXML* l_pGladeInterfaceConnector=glade_xml_new(m_sGUIFilename.c_str(), "connector_editor", NULL);
-	::GtkWidget* l_pConnectorDialog=glade_xml_get_widget(l_pGladeInterfaceConnector, "connector_editor");
-	::GtkEntry* l_pConnectorNameEntry=GTK_ENTRY(glade_xml_get_widget(l_pGladeInterfaceConnector, "connector_editor-connector_name_entry"));
-	::GtkComboBox* l_pConnectorTypeComboBox=GTK_COMBO_BOX(glade_xml_get_widget(l_pGladeInterfaceConnector,"connector_editor-connector_type_combobox"));
+	::GtkBuilder* l_pBuilderInterfaceConnector=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.c_str(), "connector_editor", NULL);
+	gtk_builder_add_from_file(l_pBuilderInterfaceConnector, m_sGUIFilename.c_str(), NULL);
+	gtk_builder_connect_signals(l_pBuilderInterfaceConnector, NULL);
+
+	::GtkWidget* l_pConnectorDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceConnector, "connector_editor"));
+	::GtkEntry* l_pConnectorNameEntry=GTK_ENTRY(gtk_builder_get_object(l_pBuilderInterfaceConnector, "connector_editor-connector_name_entry"));
+	::GtkComboBox* l_pConnectorTypeComboBox=GTK_COMBO_BOX(gtk_builder_get_object(l_pBuilderInterfaceConnector,"connector_editor-connector_type_combobox"));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_combo_box_get_model(l_pConnectorTypeComboBox)));
 	gtk_window_set_title(GTK_WINDOW(l_pConnectorDialog), m_sTitle.c_str());
 
@@ -115,7 +118,7 @@ boolean CConnectorEditor::run(void)
 
 	gtk_widget_destroy(l_pConnectorDialog);
 
-	g_object_unref(l_pGladeInterfaceConnector);
+	g_object_unref(l_pBuilderInterfaceConnector);
 
 	return l_bResult;
 }

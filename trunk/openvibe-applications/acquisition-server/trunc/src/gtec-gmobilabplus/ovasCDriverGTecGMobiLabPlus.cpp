@@ -5,7 +5,7 @@
 
 #include "ovasCDriverGTecGMobiLabPlus.h"
 #include "ovasCConfigurationGTecGMobiLabPlus.h"
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 
 #if defined TARGET_HAS_ThirdPartyGMobiLabPlusAPI
 
@@ -95,9 +95,9 @@ boolean CDriverGTecGMobiLabPlus::configure(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGTecGMobiLabPlus::configure\n";
 
-	// We use CConfigurationGTecMobilabPlus configuration which is a class that inheritate from the CConfigurationGlade class
+	// We use CConfigurationGTecMobilabPlus configuration which is a class that inheritate from the CConfigurationBuilder class
 	// The difference between these two classes is the addition of a member of class. This member allows to change the port where is connected the device.
-	CConfigurationGTecGMobiLabPlus m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GMobiLabPlus.glade");
+	CConfigurationGTecGMobiLabPlus m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GMobiLabPlus.ui");
 
 	// We configure the Header with it...
 	if(!m_oConfiguration.configure(*m_pHeader))

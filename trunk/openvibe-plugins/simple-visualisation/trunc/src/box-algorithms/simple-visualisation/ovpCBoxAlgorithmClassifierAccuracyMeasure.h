@@ -4,7 +4,6 @@
 #include "../../ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <map>
 #include <vector>
@@ -47,8 +46,8 @@ namespace OpenViBEPlugins
 			std::vector<OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > > m_vOutputClassifierStimulationSet;
 
 			// Outputs: visualization in a gtk window
-			::GladeXML* m_pMainWidgetInterface;
-			::GladeXML* m_pToolbarWidgetInterface;
+			::GtkBuilder* m_pMainWidgetInterface;
+			::GtkBuilder* m_pToolbarWidgetInterface;
 			::GtkWidget* m_pMainWidget;
 			::GtkWidget* m_pToolbarWidget;
 

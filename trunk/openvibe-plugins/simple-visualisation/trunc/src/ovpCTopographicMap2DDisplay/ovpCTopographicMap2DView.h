@@ -6,7 +6,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include "../ovpCTopographicMapDatabase.h"
@@ -213,7 +212,7 @@ namespace OpenViBEPlugins
 			//Maximum delay that can be applied to displayed data
 			OpenViBE::float64 m_f64MaxDelay;
 
-			::GladeXML* m_pGladeInterface;
+			::GtkBuilder* m_pBuilderInterface;
 
 			::GtkWidget* m_pDrawingArea;
 			::GdkBitmap* m_pClipmask; //origin (m_ui32SkullX, m_ui32SkullY)

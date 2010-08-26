@@ -5,8 +5,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
-#include <gtk/gtk.h>
 #include <map>
 
 // TODO:

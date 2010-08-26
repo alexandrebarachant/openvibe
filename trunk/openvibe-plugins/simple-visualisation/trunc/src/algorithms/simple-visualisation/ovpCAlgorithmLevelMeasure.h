@@ -5,7 +5,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <vector>
 #include <map>
@@ -32,8 +31,8 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler < ::GtkWidget* > op_pMainWidget;
 			OpenViBE::Kernel::TParameterHandler < ::GtkWidget* > op_pToolbarWidget;
 
-			::GladeXML* m_pMainWidgetInterface;
-			::GladeXML* m_pToolbarWidgetInterface;
+			::GtkBuilder* m_pMainWidgetInterface;
+			::GtkBuilder* m_pToolbarWidgetInterface;
 			::GtkWidget* m_pMainWindow;
 			::GtkWidget* m_pToolbarWidget;
 

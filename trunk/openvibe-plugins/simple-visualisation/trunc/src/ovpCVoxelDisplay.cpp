@@ -15,13 +15,13 @@ using namespace OpenViBEToolkit;
 
 using namespace std;
 
-CVoxel::CVoxel():
-	m_oCubeIdentifier(OV_UndefinedIdentifier),
-	m_oSphereIdentifier(OV_UndefinedIdentifier),
-	m_bVisible(false),
-	m_f32X(0),
-	m_f32Y(0),
-	m_f32Z(0)
+CVoxel::CVoxel()
+	:m_oCubeIdentifier(OV_UndefinedIdentifier)
+	,m_oSphereIdentifier(OV_UndefinedIdentifier)
+	,m_bVisible(false)
+	,m_f32X(0)
+	,m_f32Y(0)
+	,m_f32Z(0)
 {
 }
 

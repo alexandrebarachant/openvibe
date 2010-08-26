@@ -17,7 +17,7 @@ INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleAutomaton")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
-INCLUDE("FindThirdPartyGlade")
+INCLUDE("FindThirdPartyGTK")
 INCLUDE("FindThirdPartyLua")
 INCLUDE("FindThirdPartyBoost_Thread")
 

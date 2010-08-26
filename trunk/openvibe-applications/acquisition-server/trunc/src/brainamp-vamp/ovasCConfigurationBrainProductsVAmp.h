@@ -3,7 +3,7 @@
 
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 #include "../ovasIDriver.h"
 #include "ovasCHeaderBrainProductsVAmp.h"
 
@@ -24,11 +24,11 @@ namespace OpenViBEAcquisitionServer
 	 *
 	 * \sa CDriverBrainProductsVAmp
 	 */
-	class CConfigurationBrainProductsVAmp : public OpenViBEAcquisitionServer::CConfigurationGlade
+	class CConfigurationBrainProductsVAmp : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
 
-		CConfigurationBrainProductsVAmp(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGladeXMLFileName, OpenViBEAcquisitionServer::CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp);
+		CConfigurationBrainProductsVAmp(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName, OpenViBEAcquisitionServer::CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);

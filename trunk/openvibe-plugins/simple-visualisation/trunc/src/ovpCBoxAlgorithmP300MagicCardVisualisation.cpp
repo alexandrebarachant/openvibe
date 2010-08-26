@@ -41,6 +41,9 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
+	m_pMainWidgetInterface=NULL;
+	m_pToolbarWidgetInterface=NULL;
+
 	m_sInterfaceFilename      =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	m_oBackgroundColor        =_AutoCast_(*this->getBoxAlgorithmContext(), 1);
 	m_oTargetBackgroundColor  =_AutoCast_(*this->getBoxAlgorithmContext(), 2);
@@ -87,16 +90,24 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 
 	m_ui64LastTime=0;
 
-	m_pMainWidgetInterface=glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-magic-card-main", NULL);
-	m_pToolbarWidgetInterface=glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-magic-card-toolbar", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-magic-card-main", NULL);
+	if(!gtk_builder_add_from_file(m_pMainWidgetInterface, m_sInterfaceFilename.toASCIIString(), NULL))
+	{
+		this->getLogManager() << LogLevel_ImportantWarning << "Could not load interface file [" << m_sInterfaceFilename << "]\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "The file may be missing. However, the interface files now use gtk-builder instead of glade. Did you update your files ?\n";
+		return false;
+	}
 
-	m_pMainWindow=glade_xml_get_widget(m_pMainWidgetInterface, "p300-magic-card-main");
-	m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "p300-magic-card-toolbar");
-	m_pTable=GTK_TABLE(glade_xml_get_widget(m_pMainWidgetInterface, "p300-magic-card-table"));
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-magic-card-toolbar", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, m_sInterfaceFilename.toASCIIString(), NULL);
+
+	m_pMainWindow=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "p300-magic-card-main"));
+	m_pToolbarWidget=GTK_WIDGET(gtk_builder_get_object(m_pToolbarWidgetInterface, "p300-magic-card-toolbar"));
+	m_pTable=GTK_TABLE(gtk_builder_get_object(m_pMainWidgetInterface, "p300-magic-card-table"));
 	gtk_widget_modify_bg(m_pMainWindow, GTK_STATE_NORMAL, &m_oBackgroundColor);
 
-	glade_xml_signal_autoconnect(m_pMainWidgetInterface);
-	glade_xml_signal_autoconnect(m_pToolbarWidgetInterface);
+	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
+	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
 
 	getVisualisationContext().setWidget(m_pMainWindow);
 	getVisualisationContext().setToolbar(m_pToolbarWidget);
@@ -121,11 +132,17 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 
 boolean CBoxAlgorithmP300MagicCardVisualisation::uninitialize(void)
 {
-	g_object_unref(m_pToolbarWidgetInterface);
-	m_pToolbarWidgetInterface=NULL;
+	if(m_pToolbarWidgetInterface)
+	{
+		g_object_unref(m_pToolbarWidgetInterface);
+		m_pToolbarWidgetInterface=NULL;
+	}
 
-	g_object_unref(m_pMainWidgetInterface);
-	m_pMainWidgetInterface=NULL;
+	if(m_pMainWidgetInterface)
+	{
+		g_object_unref(m_pMainWidgetInterface);
+		m_pMainWidgetInterface=NULL;
+	}
 
 	ip_pTargetFlaggingStimulationSet.uninitialize();
 	op_pTargetFlaggingMemoryBuffer.uninitialize();
@@ -136,17 +153,33 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::uninitialize(void)
 	op_pSequenceStimulationSet.uninitialize();
 	ip_pSequenceMemoryBuffer.uninitialize();
 
-	m_pCardSelectionStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pCardSelectionStimulationDecoder);
+	if(m_pCardSelectionStimulationDecoder)
+	{
+		m_pCardSelectionStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pCardSelectionStimulationDecoder);
+		m_pCardSelectionStimulationDecoder=NULL;
+	}
 
-	m_pTargetFlaggingStimulationEncoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pTargetFlaggingStimulationEncoder);
+	if(m_pTargetFlaggingStimulationEncoder)
+	{
+		m_pTargetFlaggingStimulationEncoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pTargetFlaggingStimulationEncoder);
+		m_pTargetFlaggingStimulationEncoder=NULL;
+	}
 
-	m_pTargetStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pTargetStimulationDecoder);
+	if(m_pTargetStimulationDecoder)
+	{
+		m_pTargetStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pTargetStimulationDecoder);
+		m_pTargetStimulationDecoder=NULL;
+	}
 
-	m_pSequenceStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pSequenceStimulationDecoder);
+	if(m_pSequenceStimulationDecoder)
+	{
+		m_pSequenceStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pSequenceStimulationDecoder);
+		m_pSequenceStimulationDecoder=NULL;
+	}
 
 	return true;
 }

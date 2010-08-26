@@ -103,6 +103,41 @@ done
 echo ""
 
 echo ""
+echo "Creating launch scripts..."
+echo ""
+
+script_base='
+#!/bin/bash
+cd "'`pwd`'"
+source linux-init_env_command
+export LD_LIBRARY_PATH=$OpenViBE_base/dist/lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH
+export LC_ALL=C
+renice 19 $$
+cd "$OpenViBE_base/dist/bin"
+
+ov_debugger=
+if [ "$1" == "--debug" ]; then
+	ov_debugger="gdb --args"
+	shift
+fi
+'
+echo "$script_base\$ov_debugger ./OpenViBE-designer-dynamic \$*" > $target_dist/ov-designer.sh
+echo "$script_base\$ov_debugger ./OpenViBE-acquisition-server-dynamic \$*" > $target_dist/ov-acquisition-server.sh
+echo "$script_base\$ov_debugger ./OpenViBE-plugin-inspector-dynamic \$*" > $target_dist/ov-plugin-inspector.sh
+echo "$script_base\$ov_debugger ./OpenViBE-id-generator-dynamic \$*" > $target_dist/ov-id-generator.sh
+echo "$script_base\$ov_debugger ./OpenViBE-vr-demo \"tie-fighter\" \$*" > $target_dist/ov-vr-demo-tie-fighter.sh
+echo "$script_base\$ov_debugger ./OpenViBE-vrpn-simulator-dynamic \$*" > $target_dist/ov-vrpn-simulator.sh
+echo "$script_base\$ov_debugger ./OpenViBE-skeleton-generator-dynamic \$*" > $target_dist/ov-skeleton-generator.sh
+ln -sf $target_dist/ov-designer.sh
+ln -sf $target_dist/ov-acquisition-server.sh
+ln -sf $target_dist/ov-plugin-inspector.sh
+ln -sf $target_dist/ov-id-generator.sh
+ln -sf $target_dist/ov-vr-demo-tie-fighter.sh
+ln -sf $target_dist/ov-vrpn-simulator.sh
+ln -sf $target_dist/ov-skeleton-generator.sh
+chmod 755 $target_dist/*.sh
+
+echo ""
 echo "Install completed !"
 echo ""
 

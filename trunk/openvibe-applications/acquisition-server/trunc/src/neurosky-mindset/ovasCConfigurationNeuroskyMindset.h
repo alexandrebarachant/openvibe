@@ -3,7 +3,7 @@
 
 #if defined TARGET_HAS_ThirdPartyThinkGearAPI
 
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 #include "../ovasIDriver.h"
 
 #include <gtk/gtk.h>
@@ -22,11 +22,11 @@ namespace OpenViBEAcquisitionServer
 	 *
 	 * \sa CDriverNeuroskyMindset
 	 */
-	class CConfigurationNeuroskyMindset : public OpenViBEAcquisitionServer::CConfigurationGlade
+	class CConfigurationNeuroskyMindset : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
 
-		CConfigurationNeuroskyMindset(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGladeXMLFileName,OpenViBE::uint32& rComPort);
+		CConfigurationNeuroskyMindset(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName,OpenViBE::uint32& rComPort);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);
@@ -47,8 +47,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::boolean m_bCheckSignalQuality;
 
 	private:
-		OpenViBE::uint32 m_ui32CurrentConnectionId;
 
+		OpenViBE::uint32 m_ui32CurrentConnectionId;
 	};
 };
 

@@ -6,7 +6,7 @@
 #ifndef __OpenViBE_AcquisitionServer_ovasCConfigurationGTecGMobiLabPlus_H__
 #define __OpenViBE_AcquisitionServer_ovasCConfigurationGTecGMobiLabPlus_H__
 
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 
 #if defined TARGET_HAS_ThirdPartyGMobiLabPlusAPI
 
@@ -16,11 +16,11 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CConfigurationGTecGMobiLabPlus : public OpenViBEAcquisitionServer::CConfigurationGlade
+	class CConfigurationGTecGMobiLabPlus : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
 
-		CConfigurationGTecGMobiLabPlus(const char* sGladeXMLFileName);
+		CConfigurationGTecGMobiLabPlus(const char* sGtkBuilderFileName);
 
 		virtual OpenViBE::boolean postConfigure(void);
 		std::string getPortName(void);

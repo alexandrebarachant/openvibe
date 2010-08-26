@@ -5,18 +5,21 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBEDesigner;
 
-CInputDialog::CInputDialog(const char* sGladeXML, fpButtonCB fpOKButtonCB, void* pUserData, const char* sTitle, const char* sLabel, const char* sEntry)
+CInputDialog::CInputDialog(const char* sGtkBuilder, fpButtonCB fpOKButtonCB, void* pUserData, const char* sTitle, const char* sLabel, const char* sEntry)
 {
 	m_fpOKButtonCB = fpOKButtonCB;
 	m_pUserData = pUserData;
 
 	//retrieve input dialog
-	::GladeXML* l_pInputDialogInterface = glade_xml_new(sGladeXML, "input", NULL);
-	m_pInputDialog = GTK_DIALOG(glade_xml_get_widget(l_pInputDialogInterface, "input"));
-	m_pInputDialogLabel = GTK_LABEL(glade_xml_get_widget(l_pInputDialogInterface, "input-label"));
-	m_pInputDialogEntry = GTK_ENTRY(glade_xml_get_widget(l_pInputDialogInterface, "input-entry"));
-	m_pInputDialogOKButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "input-button_ok"));
-	m_pInputDialogCancelButton = GTK_BUTTON(glade_xml_get_widget(l_pInputDialogInterface, "input-button_cancel"));
+	::GtkBuilder* l_pInputDialogInterface = gtk_builder_new(); // glade_xml_new(sGtkBuilder, "input", NULL);
+	gtk_builder_add_from_file(l_pInputDialogInterface, sGtkBuilder, NULL);
+	gtk_builder_connect_signals(l_pInputDialogInterface, NULL);
+
+	m_pInputDialog = GTK_DIALOG(gtk_builder_get_object(l_pInputDialogInterface, "input"));
+	m_pInputDialogLabel = GTK_LABEL(gtk_builder_get_object(l_pInputDialogInterface, "input-label"));
+	m_pInputDialogEntry = GTK_ENTRY(gtk_builder_get_object(l_pInputDialogInterface, "input-entry"));
+	m_pInputDialogOKButton = GTK_BUTTON(gtk_builder_get_object(l_pInputDialogInterface, "input-button_ok"));
+	m_pInputDialogCancelButton = GTK_BUTTON(gtk_builder_get_object(l_pInputDialogInterface, "input-button_cancel"));
 
 	GTK_WIDGET_SET_FLAGS(GTK_WIDGET(m_pInputDialogEntry), GDK_KEY_PRESS_MASK);
 	g_signal_connect(G_OBJECT(m_pInputDialogEntry), "key-press-event", G_CALLBACK(key_press_event_cb), m_pInputDialog);

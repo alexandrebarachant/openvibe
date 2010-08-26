@@ -34,7 +34,7 @@ namespace OpenViBEPlugins
 		CTimeFrequencyMapDisplayView::CTimeFrequencyMapDisplayView(CSpectrumDatabase& rSpectrumDatabase,
 			float64 f64MinDisplayedFrequency, float64 f64MaxDisplayedFrequency, float64 f64TimeScale) :
 			m_rSpectrumDatabase(rSpectrumDatabase),
-			m_pGladeInterface(NULL),
+			m_pBuilderInterface(NULL),
 			m_pDisplayTable(NULL),
 			m_bShowLeftRulers(false),
 			m_bShowBottomRuler(true),
@@ -44,45 +44,47 @@ namespace OpenViBEPlugins
 			m_pBottomBox(NULL),
 			m_pBottomRuler(NULL)
 		{
-			//load the glade interface
-			m_pGladeInterface=::glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TimeFrequencyMapDisplay.glade", NULL, NULL);
+			//load the gtk builder interface
+			m_pBuilderInterface=::gtk_builder_new(); // ::glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TimeFrequencyMapDisplay.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TimeFrequencyMapDisplay.ui", NULL);
 
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return;
 			}
 
-			::glade_xml_signal_autoconnect(m_pGladeInterface);
+			::gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectButton")), "clicked",       G_CALLBACK(timeFrequencyMapChannelSelectButtonCallback),     this);
-			GtkSpinButton* l_pSpinButton = GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayTimeScaleButton"));
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectButton")), "clicked",       G_CALLBACK(timeFrequencyMapChannelSelectButtonCallback),     this);
+			GtkSpinButton* l_pSpinButton = GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayTimeScaleButton"));
 			::gtk_spin_button_set_value(l_pSpinButton, f64TimeScale);
 			g_signal_connect(G_OBJECT(l_pSpinButton), "value-changed", G_CALLBACK(timeFrequencyMapTimeScaleChangedCallback),  this);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayMinMaxAttenuationButton")), "value-changed", G_CALLBACK(timeFrequencyMapMinMaxAttenuationSpinButtonValueChangedCallback),  this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayMinMaxAttenuationButton")), "value-changed", G_CALLBACK(timeFrequencyMapMinMaxAttenuationSpinButtonValueChangedCallback),  this);
 
 			//channel select dialog's signals
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectApplyButton")), "clicked", G_CALLBACK(timeFrequencyMapChannelSelectDialogApplyButtonCallback), this);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectApplyButton")), "clicked", G_CALLBACK(timeFrequencyMapChannelSelectDialogApplyButtonCallback), this);
 
 			//connect the cancel button to the dialog's hide command
-			g_signal_connect_swapped(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectCancelButton")),
+			g_signal_connect_swapped(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectCancelButton")),
 				"clicked",
 				G_CALLBACK(::gtk_widget_hide),
-				G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectDialog")));
+				G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectDialog")));
 
 			//hides the dialog if the user tries to close it
-			g_signal_connect (G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectDialog")),
+			g_signal_connect (G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectDialog")),
 				"delete_event", G_CALLBACK(::gtk_widget_hide), NULL);
 
 			//does nothing on the main window if the user tries to close it
-			g_signal_connect (G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayMainWindow")),
+			g_signal_connect (G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayMainWindow")),
 				"delete_event", G_CALLBACK(::gtk_widget_hide), NULL);
 
 			// gets attenuation
-			m_f64Attenuation=(::gtk_spin_button_get_value(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayMinMaxAttenuationButton"))));
+			::gtk_spin_button_set_value(GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayMinMaxAttenuationButton")), 0.9);
+			m_f64Attenuation=::gtk_spin_button_get_value(GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayMinMaxAttenuationButton")));
 
 			//bottom box
-			m_pBottomBox = GTK_BOX(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayBottomBox"));
+			m_pBottomBox = GTK_BOX(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayBottomBox"));
 		}
 
 		CTimeFrequencyMapDisplayView::~CTimeFrequencyMapDisplayView()
@@ -94,8 +96,8 @@ namespace OpenViBEPlugins
 			}
 
 			//unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 		}
 
 		boolean CTimeFrequencyMapDisplayView::init()
@@ -104,8 +106,8 @@ namespace OpenViBEPlugins
 			m_rSpectrumDatabase.setTimeScale(
 				::gtk_spin_button_get_value(
 					GTK_SPIN_BUTTON(
-						::glade_xml_get_widget(
-							m_pGladeInterface, "TimeFrequencyMapDisplayTimeScaleButton"))));
+						::gtk_builder_get_object(
+							m_pBuilderInterface, "TimeFrequencyMapDisplayTimeScaleButton"))));
 
 			//tell database about frequency range to display
 			//TODO
@@ -119,7 +121,7 @@ namespace OpenViBEPlugins
 			m_vChannelLabels.resize(l_ui32ChannelCount);
 
 			//get pointer to channels table
-			m_pDisplayTable = ::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayMainTable");
+			m_pDisplayTable = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayMainTable"));
 
 			//resize this table according to the number of channels
 			::gtk_table_resize(GTK_TABLE(m_pDisplayTable), (l_ui32ChannelCount)*2, 3);
@@ -154,7 +156,7 @@ namespace OpenViBEPlugins
 			GtkSizeGroup* l_pSizeGroup = ::gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
 			//channels selection widget
-			GtkWidget* l_pChannelSelectList = ::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectList");
+			GtkWidget* l_pChannelSelectList = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectList"));
 
 			stringstream l_oLabelString;
 
@@ -229,7 +231,7 @@ namespace OpenViBEPlugins
 			//bottom ruler
 			//------------
 			m_pBottomRuler = new CTimeRuler(m_rSpectrumDatabase, l_i32BottomRulerWidthRequest, l_i32BottomRulerHeightRequest);
-			::gtk_size_group_add_widget(l_pSizeGroup, ::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayBottomBoxLabel1"));
+			::gtk_size_group_add_widget(l_pSizeGroup, GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayBottomBoxLabel1")));
 			::gtk_box_pack_start(m_pBottomBox, m_pBottomRuler->getWidget(), false, false, 0);
 			if(m_vChannelDisplays.size() != 0)
 			{
@@ -269,7 +271,7 @@ namespace OpenViBEPlugins
 			m_pBufferDatabase->setMaxDisplayedFrequency(m_f64MaxDisplayedFrequency);*/
 
 			//initialize spin buttons and connect callbacks
-			GtkSpinButton* l_pMinFrequencySpinButton = GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayMinFrequencyButton"));
+			GtkSpinButton* l_pMinFrequencySpinButton = GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayMinFrequencyButton"));
 			if(l_pMinFrequencySpinButton != NULL)
 			{
 				::gtk_spin_button_set_range(l_pMinFrequencySpinButton, 0, l_f64MaxFrequency);
@@ -277,7 +279,7 @@ namespace OpenViBEPlugins
 				g_signal_connect(G_OBJECT(l_pMinFrequencySpinButton), "value-changed", G_CALLBACK(timeFrequencyMapMinDisplayedFrequencyChangedCallback), this);
 			}
 
-			GtkSpinButton* l_pMaxFrequencySpinButton = GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayMaxFrequencyButton"));
+			GtkSpinButton* l_pMaxFrequencySpinButton = GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayMaxFrequencyButton"));
 			if(l_pMaxFrequencySpinButton != NULL)
 			{
 				::gtk_spin_button_set_range(l_pMaxFrequencySpinButton, 0, l_f64MaxFrequency);
@@ -295,13 +297,13 @@ namespace OpenViBEPlugins
 
 			//display left rulers
 			toggleLeftRulers(false);
-			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayToggleLeftRulerButton")), m_bShowLeftRulers);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayToggleLeftRulerButton")),	"toggled", G_CALLBACK(timeFrequencyMapToggleLeftRulerButtonCallback), this);
+			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayToggleLeftRulerButton")), m_bShowLeftRulers);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayToggleLeftRulerButton")),	"toggled", G_CALLBACK(timeFrequencyMapToggleLeftRulerButtonCallback), this);
 
 			//display bottom ruler
 			toggleBottomRuler(true);
-			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayToggleBottomRulerButton")), m_bShowBottomRuler);
-			g_signal_connect(G_OBJECT(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayToggleBottomRulerButton")),	"toggled", G_CALLBACK(timeFrequencyMapToggleBottomRulerButtonCallback), this);
+			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayToggleBottomRulerButton")), m_bShowBottomRuler);
+			g_signal_connect(G_OBJECT(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayToggleBottomRulerButton")),	"toggled", G_CALLBACK(timeFrequencyMapToggleBottomRulerButtonCallback), this);
 
 			activateToolbarButtons(true);
 
@@ -339,8 +341,8 @@ namespace OpenViBEPlugins
 
 		void CTimeFrequencyMapDisplayView::getWidgets(::GtkWidget*& pWidget, ::GtkWidget*& pToolbarWidget)
 		{
-			pWidget=::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayScrolledWindow");
-			pToolbarWidget=::glade_xml_get_widget(m_pGladeInterface, "Toolbar");
+			pWidget=GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayScrolledWindow"));
+			pToolbarWidget=GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "Toolbar"));
 		}
 
 		void CTimeFrequencyMapDisplayView::toggleLeftRulers(boolean bActive)
@@ -425,10 +427,10 @@ namespace OpenViBEPlugins
 
 		void CTimeFrequencyMapDisplayView::activateToolbarButtons(boolean bActive)
 		{
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayToggleLeftRulerButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayToggleBottomRulerButton"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayTimeScaleItem"), bActive);
-			::gtk_widget_set_sensitive(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectButton"), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayToggleLeftRulerButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayToggleBottomRulerButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayTimeScaleItem")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectButton")), bActive);
 		}
 
 		void CTimeFrequencyMapDisplayView::setMinMaxAttenuation(float64 f64Attenuation)
@@ -487,8 +489,8 @@ namespace OpenViBEPlugins
 
 		void CTimeFrequencyMapDisplayView::channelSelectionDialogOpenedCB(GtkButton* pButton)
 		{
-			::GtkWidget * l_pChannelSelectDialog = ::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectDialog");
-			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectList"));
+			::GtkWidget * l_pChannelSelectDialog = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectDialog"));
+			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectList"));
 			::GtkTreeSelection* l_pChannelSelectTreeSelection = ::gtk_tree_view_get_selection(l_pChannelSelectTreeView);
 			::GtkTreeModel* l_pChannelSelectTreeModel = ::gtk_tree_view_get_model(l_pChannelSelectTreeView);
 			::GtkTreeIter l_oIter;
@@ -517,7 +519,7 @@ namespace OpenViBEPlugins
 
 		void CTimeFrequencyMapDisplayView::channelSelectionChangedCB(GtkButton* pButton)
 		{
-			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectList"));
+			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectList"));
 			::GtkTreeSelection* l_pChannelSelectTreeSelection = ::gtk_tree_view_get_selection(l_pChannelSelectTreeView);
 			::GtkTreeModel* l_pChannelSelectTreeModel = ::gtk_tree_view_get_model(l_pChannelSelectTreeView);
 			::GtkTreeIter l_oIter;
@@ -537,7 +539,7 @@ namespace OpenViBEPlugins
 			this->updateMainTableStatus();
 
 			//hides the channel selection dialog
-			::gtk_widget_hide(::glade_xml_get_widget(m_pGladeInterface, "TimeFrequencyMapDisplayChannelSelectDialog"));
+			::gtk_widget_hide(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "TimeFrequencyMapDisplayChannelSelectDialog")));
 		}
 
 		boolean CTimeFrequencyMapDisplayView::isChannelDisplayVisible(uint32 ui32ChannelIndex)

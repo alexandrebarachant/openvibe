@@ -5,8 +5,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
-#include <gtk/gtk.h>
 #include <map>
 
 namespace OpenViBEPlugins
@@ -84,7 +82,7 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { }
 
-			virtual OpenViBE::CString getName(void) const				 { return OpenViBE::CString("P300 Identifier Stimulator"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("P300 Identifier Stimulator"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Baptiste Payan"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }
@@ -129,7 +127,4 @@ namespace OpenViBEPlugins
 	};
 };
 
-
-
-
-#endif /* __OpenViBEPlugins_BoxAlgorithm_P300IdentifierStimulator_H__ */
+#endif // __OpenViBEPlugins_BoxAlgorithm_P300IdentifierStimulator_H__

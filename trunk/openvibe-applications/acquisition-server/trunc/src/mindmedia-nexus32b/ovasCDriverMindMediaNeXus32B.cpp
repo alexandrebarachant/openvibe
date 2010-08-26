@@ -1,5 +1,5 @@
 #include "ovasCDriverMindMediaNeXus32B.h"
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -236,7 +236,7 @@ boolean CDriverMindMediaNeXus32B::isConfigurable(void)
 
 boolean CDriverMindMediaNeXus32B::configure(void)
 {
-	CConfigurationGlade m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.glade");
+	CConfigurationBuilder m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.ui");
 	return m_oConfiguration.configure(m_oHeader);
 }
 

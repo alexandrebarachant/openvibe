@@ -250,11 +250,14 @@ namespace
 		l_pUserData->vSpinButtonMap.clear();
 		for(it=l_pUserData->vColorGradient.begin(); it!=l_pUserData->vColorGradient.end(); it++, i++)
 		{
-			::GladeXML* l_pGladeInterface=glade_xml_new(l_pUserData->sGUIFilename.c_str(), "setting_editor-color_gradient-hbox", NULL);
-			::GtkWidget* l_pWidget=glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-hbox");
+			::GtkBuilder* l_pBuilderInterface=gtk_builder_new(); // glade_xml_new(l_pUserData->sGUIFilename.c_str(), "setting_editor-color_gradient-hbox", NULL);
+			gtk_builder_add_from_file(l_pBuilderInterface, l_pUserData->sGUIFilename.c_str(), NULL);
+			gtk_builder_connect_signals(l_pBuilderInterface, NULL);
 
-			it->pColorButton=GTK_COLOR_BUTTON(glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-colorbutton"));
-			it->pSpinButton=GTK_SPIN_BUTTON(glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-spinbutton"));
+			::GtkWidget* l_pWidget=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-hbox"));
+
+			it->pColorButton=GTK_COLOR_BUTTON(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-colorbutton"));
+			it->pSpinButton=GTK_SPIN_BUTTON(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-spinbutton"));
 
 			gtk_color_button_set_color(it->pColorButton, &it->oColor);
 			gtk_spin_button_set_value(it->pSpinButton, it->fPercent);
@@ -264,7 +267,7 @@ namespace
 
 			gtk_container_add(GTK_CONTAINER(l_pUserData->pContainer), l_pWidget);
 
-			g_object_unref(l_pGladeInterface);
+			g_object_unref(l_pBuilderInterface);
 
 			l_pUserData->vColorButtonMap[it->pColorButton]=i;
 			l_pUserData->vSpinButtonMap[it->pSpinButton]=i;
@@ -307,9 +310,11 @@ namespace
 		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
 		::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-		::GladeXML* l_pGladeInterface=glade_xml_new(l_oUserData.sGUIFilename.c_str(), "setting_editor-color_gradient-dialog", NULL);
+		::GtkBuilder* l_pBuilderInterface=gtk_builder_new(); // glade_xml_new(l_oUserData.sGUIFilename.c_str(), "setting_editor-color_gradient-dialog", NULL);
+		gtk_builder_add_from_file(l_pBuilderInterface, l_oUserData.sGUIFilename.c_str(), NULL);
+		gtk_builder_connect_signals(l_pBuilderInterface, NULL);
 
-		l_oUserData.pDialog=glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-dialog");
+		l_oUserData.pDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-dialog"));
 
 		CString l_sInitialGradient=gtk_entry_get_text(l_pWidget);
 		CMatrix l_oInitialGradient;
@@ -325,13 +330,13 @@ namespace
 			l_oUserData.vColorGradient[i].oColor.blue =(guint)(l_oInitialGradient[i*4+3]*.01*65535.);
 		}
 
-		l_oUserData.pContainer=glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-vbox");
-		l_oUserData.pDrawingArea=glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-drawingarea");
+		l_oUserData.pContainer=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-vbox"));
+		l_oUserData.pDrawingArea=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-drawingarea"));
 
 		g_signal_connect(G_OBJECT(l_oUserData.pDialog), "show", G_CALLBACK(on_initialize_color_gradient), &l_oUserData);
 		g_signal_connect(G_OBJECT(l_oUserData.pDrawingArea), "expose_event", G_CALLBACK(on_refresh_color_gradient), &l_oUserData);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-add_button")), "pressed", G_CALLBACK(on_button_color_gradient_add_pressed), &l_oUserData);
-		g_signal_connect(G_OBJECT(glade_xml_get_widget(l_pGladeInterface, "setting_editor-color_gradient-remove_button")), "pressed", G_CALLBACK(on_button_color_gradient_remove_pressed), &l_oUserData);
+		g_signal_connect(G_OBJECT(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-add_button")), "pressed", G_CALLBACK(on_button_color_gradient_add_pressed), &l_oUserData);
+		g_signal_connect(G_OBJECT(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-remove_button")), "pressed", G_CALLBACK(on_button_color_gradient_remove_pressed), &l_oUserData);
 
 		if(gtk_dialog_run(GTK_DIALOG(l_oUserData.pDialog))==GTK_RESPONSE_APPLY)
 		{
@@ -352,7 +357,7 @@ namespace
 		}
 
 		gtk_widget_destroy(l_oUserData.pDialog);
-		g_object_unref(l_pGladeInterface);
+		g_object_unref(l_pBuilderInterface);
 	}
 }
 
@@ -698,16 +703,17 @@ void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifie
 		uint64 l_ui64EntryValue;
 		if(m_rKernelContext.getTypeManager().getBitMaskEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
 		{
-			::GladeXML* l_pGladeInterfaceDummy=glade_xml_new(m_sGUIFilename.toASCIIString(), "settings_collection-check_button_setting_boolean", NULL);
-			::GtkWidget* l_pSettingButton=glade_xml_get_widget(l_pGladeInterfaceDummy, "settings_collection-check_button_setting_boolean");
-			g_object_unref(l_pGladeInterfaceDummy);
+			::GtkBuilder* l_pBuilderInterfaceDummy=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "settings_collection-check_button_setting_boolean", NULL);
+			gtk_builder_add_from_file(l_pBuilderInterfaceDummy, m_sGUIFilename.toASCIIString(), NULL);
+			gtk_builder_connect_signals(l_pBuilderInterfaceDummy, NULL);
 
-			gtk_widget_ref(l_pSettingButton);
-			gtk_widget_unparent(l_pSettingButton);
+			::GtkWidget* l_pSettingButton=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceDummy, "settings_collection-check_button_setting_boolean"));
+
+			gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pSettingButton)), l_pSettingButton);
 			gtk_table_attach_defaults(l_pBitMaskTable, l_pSettingButton, (guint)(i&1), (guint)((i&1)+1), (guint)(i>>1), (guint)((i>>1)+1));
-			gtk_widget_unref(l_pSettingButton);
-
 			gtk_button_set_label(GTK_BUTTON(l_pSettingButton), (const char*)l_sEntryName);
+
+			g_object_unref(l_pBuilderInterfaceDummy);
 
 			if(l_sValue.find((const char*)l_sEntryName)!=string::npos)
 			{

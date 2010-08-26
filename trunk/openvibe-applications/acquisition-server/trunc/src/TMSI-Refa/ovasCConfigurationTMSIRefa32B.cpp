@@ -32,8 +32,8 @@ static void button_add_slave_device(::GtkButton* pButton, void* pUserData)
 	static_cast<CConfigurationTMSIRefa32B*>(pUserData)->buttonAddSlaveDevice();
 }
 
-CConfigurationTMSIRefa32B::CConfigurationTMSIRefa32B(const char* sGladeXMLFileName)
-	:CConfigurationGlade(sGladeXMLFileName)
+CConfigurationTMSIRefa32B::CConfigurationTMSIRefa32B(const char* sGtkBuilderFileName)
+	:CConfigurationBuilder(sGtkBuilderFileName)
 {
 }
 
@@ -53,11 +53,11 @@ boolean CConfigurationTMSIRefa32B::setDeviceList(const std::vector <std::string>
 
 boolean CConfigurationTMSIRefa32B::preConfigure(void)
 {
-	if(!CConfigurationGlade::preConfigure())
+	if(!CConfigurationBuilder::preConfigure())
 	{
 		return false;
 	}
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 	int l_iCount=0;
 	boolean l_bSelected=false;
@@ -84,7 +84,7 @@ boolean CConfigurationTMSIRefa32B::preConfigure(void)
 	GtkTreeViewColumn   *colSlaves;
 	GtkCellRenderer     *rendererSlaves;
 
-	m_pViewSlaves = GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "Devices SlavesTree"));
+	m_pViewSlaves = GTK_TREE_VIEW(gtk_builder_get_object(m_pBuilderConfigureInterface, "Devices SlavesTree"));
 
 	rendererSlaves = gtk_cell_renderer_text_new();
 
@@ -104,7 +104,7 @@ boolean CConfigurationTMSIRefa32B::preConfigure(void)
 	GtkTreeViewColumn   *colList;
 	GtkCellRenderer     *rendererList;
 
-	m_pViewList = GTK_TREE_VIEW(glade_xml_get_widget(m_pGladeConfigureInterface, "Device ListTree"));
+	m_pViewList = GTK_TREE_VIEW(gtk_builder_get_object(m_pBuilderConfigureInterface, "Device ListTree"));
 
 	rendererList = gtk_cell_renderer_text_new();
 
@@ -145,15 +145,15 @@ boolean CConfigurationTMSIRefa32B::preConfigure(void)
 	}
 
 	// Connects custom GTK signals
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_add_slave_device"),   "pressed", G_CALLBACK(button_add_slave_device),   this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_remove_slave_device"),  "pressed", G_CALLBACK(button_remove_slave_device),  this);
-	glade_xml_signal_autoconnect(m_pGladeConfigureInterface);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_add_slave_device"),   "pressed", G_CALLBACK(button_add_slave_device),   this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_remove_slave_device"),  "pressed", G_CALLBACK(button_remove_slave_device),  this);
+	gtk_builder_connect_signals(m_pBuilderConfigureInterface, NULL);
 	return true;
 }
 
 boolean CConfigurationTMSIRefa32B::postConfigure(void)
 {
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 	if(m_bApplyConfiguration)
 	{
@@ -164,7 +164,7 @@ boolean CConfigurationTMSIRefa32B::postConfigure(void)
 		*m_vDeviceSlaves=m_vDeviceSlavesTemp;
 	}
 
-	if(!CConfigurationGlade::postConfigure())
+	if(!CConfigurationBuilder::postConfigure())
 	{
 		return false;
 	}

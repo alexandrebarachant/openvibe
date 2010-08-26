@@ -9,10 +9,11 @@ FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
 INCLUDE("FindOpenViBE")
-INCLUDE("FindThirdPartyBoost")
 INCLUDE("FindOpenViBEToolkit")
-INCLUDE("FindThirdPartyGlade")
-
+INCLUDE("FindOpenViBEModuleSystem")
+INCLUDE("FindOpenViBEModuleEBML")
+INCLUDE("FindThirdPartyGTK")
+INCLUDE("FindThirdPartyBoost_Regex")
 
 # ---------------------------------
 # Target macros

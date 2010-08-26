@@ -12,7 +12,7 @@ namespace OpenViBEDesigner
 	public:
 
 		CInputDialog(
-			const char* sGladeXML,
+			const char* sGtkBuilder,
 			fpButtonCB fpOKButtonCB,
 			void* pUserData=NULL,
 			const char* sTitle=NULL,

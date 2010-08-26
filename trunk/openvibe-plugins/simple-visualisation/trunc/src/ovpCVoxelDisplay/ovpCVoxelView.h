@@ -6,7 +6,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include "../ovpCVoxelDisplay.h"
@@ -88,7 +87,7 @@ namespace OpenViBEPlugins
 		private:
 			CVoxelDisplay& m_rVoxelDisplay;
 
-			::GladeXML* m_pGladeInterface;
+			::GtkBuilder* m_pBuilderInterface;
 
 			//! View radio buttons
 			::GtkRadioToolButton* m_pCubeButton;

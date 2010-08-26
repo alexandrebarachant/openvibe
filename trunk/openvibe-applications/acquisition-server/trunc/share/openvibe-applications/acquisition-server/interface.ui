@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<!--Generated with glade3 3.0.2 on Fri Mar 16 18:19:18 2007 by yrenard@KanaRd-->
+<interface>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">65535</property>
+    <property name="lower">1024</property>
+    <property name="page_increment">0</property>
+    <property name="step_increment">1</property>
+    <property name="page_size">0</property>
+    <property name="value">9999</property>
+  </object>
+  <object class="GtkListStore" id="model1">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">4</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">8</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">16</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">32</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">64</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">128</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">256</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">512</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1024</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">2048</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="openvibe-acquisition-server">
+    <property name="title" translatable="yes">OpenViBE acquisition server</property>
+    <property name="resizable">False</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
+    <signal handler="gtk_main_quit" name="delete_event"/>
+    <child>
+      <object class="GtkVBox" id="vbox">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkHBox" id="hbox">
+            <property name="visible">True</property>
+            <property name="border_width">8</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkTable" id="table">
+                <property name="visible">True</property>
+                <property name="n_rows">5</property>
+                <property name="n_columns">2</property>
+                <property name="column_spacing">8</property>
+                <property name="row_spacing">8</property>
+                <child>
+                  <object class="GtkLabel" id="label_driver">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Driver :</property>
+                    <property name="justify">GTK_JUSTIFY_RIGHT</property>
+                    <property name="single_line_mode">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_connection_port">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Connection port :</property>
+                    <property name="justify">GTK_JUSTIFY_RIGHT</property>
+                    <property name="single_line_mode">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_sample_count_per_sent_block">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Sample count per sent block :</property>
+                    <property name="justify">GTK_JUSTIFY_RIGHT</property>
+                    <property name="single_line_mode">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">3</property>
+                    <property name="bottom_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="combobox_driver">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="spinbutton_connection_port">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="adjustment">adjustment1</property>
+                    <property name="snap_to_ticks">True</property>
+                    <property name="numeric">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="combobox_sample_count_per_sent_block">
+                    <property name="visible">True</property>
+                    <property name="model">model1</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="renderer1"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">3</property>
+                    <property name="bottom_attach">4</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVSeparator" id="vseparator">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVButtonBox" id="vbuttonbox">
+                <property name="visible">True</property>
+                <property name="spacing">8</property>
+                <property name="layout_style">GTK_BUTTONBOX_SPREAD</property>
+                <child>
+                  <object class="GtkButton" id="button_configure">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="label" translatable="yes">gtk-properties</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="togglebutton_connect">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">gtk-connect</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_play">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="label" translatable="yes">gtk-media-play</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_stop">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="label" translatable="yes">gtk-media-stop</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label_status">
+            <property name="width_request">128</property>
+            <property name="visible">True</property>
+            <property name="justify">GTK_JUSTIFY_CENTER</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label_connected_host_count">
+            <property name="width_request">128</property>
+            <property name="visible">True</property>
+            <property name="wrap">True</property>
+          </object>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

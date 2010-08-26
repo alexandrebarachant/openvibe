@@ -153,7 +153,7 @@ namespace OpenViBEPlugins
 		* Constructor
 		*/
 		CGrazVisualization::CGrazVisualization(void) :
-			m_pGladeInterface(NULL),
+			m_pBuilderInterface(NULL),
 			m_pMainWindow(NULL),
 			m_pDrawingArea(NULL),
 			m_pStimulationReaderCallBack(NULL),
@@ -210,29 +210,30 @@ namespace OpenViBEPlugins
 			m_pStreamedMatrixReaderCallBack = createBoxAlgorithmStreamedMatrixInputReaderCallback(*this);
 			m_pReader[1] =EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
-			//load the glade interface
-			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.glade", NULL, NULL);
+			//load the gtk builder interface
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.ui", NULL);
 
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return false;
 			}
 
-			glade_xml_signal_autoconnect(m_pGladeInterface);
+			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
-			m_pDrawingArea = glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationDrawingArea");
+			m_pDrawingArea = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "GrazVisualizationDrawingArea"));
 			g_signal_connect(G_OBJECT(m_pDrawingArea), "expose_event", G_CALLBACK(GrazVisualization_RedrawCallback), this);
 			g_signal_connect(G_OBJECT(m_pDrawingArea), "size-allocate", G_CALLBACK(GrazVisualization_SizeAllocateCallback), this);
 
 #if 0
 			//does nothing on the main window if the user tries to close it
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationWindow")),
+			g_signal_connect (G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "GrazVisualizationWindow")),
 					"delete_event",
 					G_CALLBACK(gtk_widget_do_nothing), NULL);
 
 			//creates the window
-			m_pMainWindow = glade_xml_get_widget(m_pGladeInterface, "GrazVisualizationWindow");
+			m_pMainWindow = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "GrazVisualizationWindow"));
 #endif
 
 			//set widget bg color
@@ -302,8 +303,8 @@ namespace OpenViBEPlugins
 			}
 
 			/* unref the xml file as it's not needed anymore */
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 
 			if(m_pOriginalBar){ g_object_unref(G_OBJECT(m_pOriginalBar)); }
 			if(m_pLeftBar){ g_object_unref(G_OBJECT(m_pLeftBar)); }

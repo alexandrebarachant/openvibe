@@ -270,10 +270,13 @@ boolean CBoxConfigurationDialog::run(void)
 		CString l_oSettingValue;
 		CIdentifier l_oSettingType;
 
-		::GladeXML* l_pGladeInterfaceSetting=glade_xml_new(m_sGUIFilename.toASCIIString(), "box_configuration", NULL);
+		::GtkBuilder* l_pBuilderInterfaceSetting=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "box_configuration", NULL);
+		gtk_builder_add_from_file(l_pBuilderInterfaceSetting, m_sGUIFilename.toASCIIString(), NULL);
+		gtk_builder_connect_signals(l_pBuilderInterfaceSetting, NULL);
 
-#if 1 //this approach fails to set a modal dialog
-		::GtkWidget* l_pSettingDialog=glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration");
+#if 1 // this approach fails to set a modal dialog
+
+		::GtkWidget* l_pSettingDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSetting, "box_configuration"));
 		char l_sTitle[1024];
 		sprintf(l_sTitle, "Configure %s settings", m_rBox.getName().toASCIIString());
 		gtk_window_set_title(GTK_WINDOW(l_pSettingDialog), l_sTitle);
@@ -282,30 +285,24 @@ boolean CBoxConfigurationDialog::run(void)
 			"Configure Box Settings",
 			&m_rMainWindow, //set dialog transient for main window
 			GTK_DIALOG_MODAL,
-			"Revert", 0, "Apply", GTK_RESPONSE_APPLY,	"Cancel",	GTK_RESPONSE_CANCEL, NULL);	 //set up action buttons
+			"Revert", 0, "Apply", GTK_RESPONSE_APPLY, "Cancel", GTK_RESPONSE_CANCEL, NULL); //set up action buttons
 
-		//unparent contents from glade interface
-		::GtkWidget* l_pContents = glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-table");
-		::GtkWidget* l_pContentsParent = gtk_widget_get_parent(l_pContents);
-		if(GTK_IS_CONTAINER(l_pContentsParent))
-		{
-			gtk_object_ref(GTK_OBJECT(l_pContents));
-			gtk_container_remove(GTK_CONTAINER(l_pContentsParent), l_pContents);
-		}
+		//unparent contents from builder interface
+		::GtkWidget* l_pContents=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSetting, "box_configuration-table"));
+		gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pContents)), l_pContents);
 
 		//add contents to dialog
-		::GtkWidget* l_pContentsArea = GTK_DIALOG(l_pSettingDialog)->vbox;//gtk_dialog_get_content_area() not available in current Gtk distribution
-		gtk_container_add (GTK_CONTAINER (l_pContentsArea), l_pContents);
-		gtk_object_unref(GTK_OBJECT(l_pContents));
+		::GtkWidget* l_pContentsArea=GTK_DIALOG(l_pSettingDialog)->vbox; //gtk_dialog_get_content_area() not available in current Gtk distribution
+		gtk_container_add(GTK_CONTAINER(l_pContentsArea), l_pContents);
 
-		//action buttons can't be unparented from glade interface and added to dialog, which is why they are added at dialog creation time
+		//action buttons can't be unparented from builder interface and added to dialog, which is why they are added at dialog creation time
 #endif
-		::GtkTable* l_pSettingTable=GTK_TABLE(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-table"));
-		::GtkContainer* l_pFileOverrideContainer=GTK_CONTAINER(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-hbox_filename_override"));
-		::GtkCheckButton* l_pFileOverrideCheck=GTK_CHECK_BUTTON(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-checkbutton_filename_override"));
-		::GtkButton* l_pButtonLoad=GTK_BUTTON(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-button_load_current_from_file"));
-		::GtkButton* l_pButtonSave=GTK_BUTTON(glade_xml_get_widget(l_pGladeInterfaceSetting, "box_configuration-button_save_current_to_file"));
-		g_object_unref(l_pGladeInterfaceSetting);
+		::GtkTable* l_pSettingTable=GTK_TABLE(gtk_builder_get_object(l_pBuilderInterfaceSetting, "box_configuration-table"));
+		::GtkContainer* l_pFileOverrideContainer=GTK_CONTAINER(gtk_builder_get_object(l_pBuilderInterfaceSetting, "box_configuration-hbox_filename_override"));
+		::GtkCheckButton* l_pFileOverrideCheck=GTK_CHECK_BUTTON(gtk_builder_get_object(l_pBuilderInterfaceSetting, "box_configuration-checkbutton_filename_override"));
+		::GtkButton* l_pButtonLoad=GTK_BUTTON(gtk_builder_get_object(l_pBuilderInterfaceSetting, "box_configuration-button_load_current_from_file"));
+		::GtkButton* l_pButtonSave=GTK_BUTTON(gtk_builder_get_object(l_pBuilderInterfaceSetting, "box_configuration-button_save_current_to_file"));
+		g_object_unref(l_pBuilderInterfaceSetting);
 
 		gtk_table_resize(l_pSettingTable, m_rBox.getSettingCount(), 4);
 
@@ -316,33 +313,33 @@ boolean CBoxConfigurationDialog::run(void)
 			m_rBox.getSettingValue(i, l_oSettingValue);
 			m_rBox.getSettingType(i, l_oSettingType);
 
-			::GladeXML* l_pGladeInterfaceDummy=glade_xml_new(m_sGUIFilename.toASCIIString(), "settings_collection-dummy_setting_content", NULL);
-			::GtkWidget* l_pSettingName=glade_xml_get_widget(l_pGladeInterfaceDummy, "settings_collection-label_setting_name");
-			::GtkWidget* l_pSettingRevert=glade_xml_get_widget(l_pGladeInterfaceDummy, "settings_collection-button_setting_revert");
-			::GtkWidget* l_pSettingDefault=glade_xml_get_widget(l_pGladeInterfaceDummy, "settings_collection-button_setting_default");
-			g_object_unref(l_pGladeInterfaceDummy);
+			::GtkBuilder* l_pBuilderInterfaceDummy=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "settings_collection-dummy_setting_content", NULL);
+			gtk_builder_add_from_file(l_pBuilderInterfaceDummy, m_sGUIFilename.toASCIIString(), NULL);
+			gtk_builder_connect_signals(l_pBuilderInterfaceDummy, NULL);
+
+			::GtkWidget* l_pSettingName=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceDummy, "settings_collection-label_setting_name"));
+			::GtkWidget* l_pSettingRevert=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceDummy, "settings_collection-button_setting_revert"));
+			::GtkWidget* l_pSettingDefault=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceDummy, "settings_collection-button_setting_default"));
 
 			string l_sWidgetName=l_oHelper.getSettingWidgetName(l_oSettingType).toASCIIString();
-			::GladeXML* l_pGladeInterfaceSettingCollection=glade_xml_new(m_sGUIFilename.toASCIIString(), l_sWidgetName.c_str(), NULL);
-			::GtkWidget* l_pSettingValue=glade_xml_get_widget(l_pGladeInterfaceSettingCollection, l_sWidgetName.c_str());
-			g_object_unref(l_pGladeInterfaceSettingCollection);
+			::GtkBuilder* l_pBuilderInterfaceSettingCollection=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), l_sWidgetName.c_str(), NULL);
+			gtk_builder_add_from_file(l_pBuilderInterfaceSettingCollection, m_sGUIFilename.toASCIIString(), NULL);
+			gtk_builder_connect_signals(l_pBuilderInterfaceSettingCollection, NULL);
 
-			gtk_widget_ref(l_pSettingName);
-			gtk_widget_ref(l_pSettingValue);
-			gtk_widget_ref(l_pSettingRevert);
-			gtk_widget_ref(l_pSettingDefault);
-			gtk_widget_unparent(l_pSettingName);
-			gtk_widget_unparent(l_pSettingValue);
-			gtk_widget_unparent(l_pSettingRevert);
-			gtk_widget_unparent(l_pSettingDefault);
+			::GtkWidget* l_pSettingValue=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSettingCollection, l_sWidgetName.c_str()));
+
+			gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pSettingName)), l_pSettingName);
+			gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pSettingValue)), l_pSettingValue);
+			gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pSettingRevert)), l_pSettingRevert);
+			gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pSettingDefault)), l_pSettingDefault);
+
 			gtk_table_attach(l_pSettingTable, l_pSettingName,    0, 1, i, i+1, ::GtkAttachOptions(GTK_FILL),            ::GtkAttachOptions(GTK_FILL),            0, 0);
 			gtk_table_attach(l_pSettingTable, l_pSettingValue,   1, 2, i, i+1, ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), 0, 0);
 			gtk_table_attach(l_pSettingTable, l_pSettingRevert,  3, 4, i, i+1, ::GtkAttachOptions(GTK_SHRINK),          ::GtkAttachOptions(GTK_SHRINK),          0, 0);
 			gtk_table_attach(l_pSettingTable, l_pSettingDefault, 2, 3, i, i+1, ::GtkAttachOptions(GTK_SHRINK),          ::GtkAttachOptions(GTK_SHRINK),          0, 0);
-			gtk_widget_unref(l_pSettingDefault);
-			gtk_widget_unref(l_pSettingRevert);
-			gtk_widget_unref(l_pSettingValue);
-			gtk_widget_unref(l_pSettingName);
+
+			g_object_unref(l_pBuilderInterfaceDummy);
+			g_object_unref(l_pBuilderInterfaceSettingCollection);
 
 			l_vSettingValue.push_back(l_pSettingValue);
 
@@ -352,20 +349,22 @@ boolean CBoxConfigurationDialog::run(void)
 
 #if 1
 		string l_sSettingOverrideWidgetName=l_oHelper.getSettingWidgetName(OV_TypeId_Filename).toASCIIString();
-		::GladeXML* l_pGladeInterfaceSettingCollection=glade_xml_new(m_sGUIFilename.toASCIIString(), l_sSettingOverrideWidgetName.c_str(), NULL);
-		::GtkWidget* l_pSettingOverrideValue=glade_xml_get_widget(l_pGladeInterfaceSettingCollection, l_sSettingOverrideWidgetName.c_str());
-		g_object_unref(l_pGladeInterfaceSettingCollection);
+		::GtkBuilder* l_pBuilderInterfaceSettingCollection=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), l_sSettingOverrideWidgetName.c_str(), NULL);
+		gtk_builder_add_from_file(l_pBuilderInterfaceSettingCollection, m_sGUIFilename.toASCIIString(), NULL);
+		gtk_builder_connect_signals(l_pBuilderInterfaceSettingCollection, NULL);
 
-		gtk_widget_ref(l_pSettingOverrideValue);
-		gtk_widget_unparent(l_pSettingOverrideValue);
+		::GtkWidget* l_pSettingOverrideValue=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSettingCollection, l_sSettingOverrideWidgetName.c_str()));
+
+		gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pSettingOverrideValue)), l_pSettingOverrideValue);
 		gtk_container_add(l_pFileOverrideContainer, l_pSettingOverrideValue);
-		gtk_widget_unref(l_pSettingOverrideValue);
+
+		g_object_unref(l_pBuilderInterfaceSettingCollection);
 
 		SButtonCB l_oButtonCB = { m_rKernelContext, l_vSettingValue, l_oHelper, l_pSettingOverrideValue, m_rBox };
 
 		g_signal_connect(G_OBJECT(l_pFileOverrideCheck), "toggled", G_CALLBACK(on_file_override_check_toggled), GTK_WIDGET(l_pSettingTable));
-		g_signal_connect(G_OBJECT(l_pButtonLoad),        "clicked", G_CALLBACK(on_button_load_clicked), &l_oButtonCB);
-		g_signal_connect(G_OBJECT(l_pButtonSave),        "clicked", G_CALLBACK(on_button_save_clicked), &l_oButtonCB);
+		g_signal_connect(G_OBJECT(l_pButtonLoad),        "button_press_event", G_CALLBACK(on_button_load_clicked), &l_oButtonCB);
+		g_signal_connect(G_OBJECT(l_pButtonSave),        "button_press_event", G_CALLBACK(on_button_save_clicked), &l_oButtonCB);
 
 		if(m_rBox.hasAttribute(OV_AttributeId_Box_SettingOverrideFilename))
 		{

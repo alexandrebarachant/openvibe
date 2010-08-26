@@ -1,5 +1,5 @@
 #include "ovasCDriverGenericOscilator.h"
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -164,6 +164,6 @@ boolean CDriverGenericOscillator::configure(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::configure\n";
 
-	CConfigurationGlade m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.glade");
+	CConfigurationBuilder m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.ui");
 	return m_oConfiguration.configure(m_oHeader);
 }

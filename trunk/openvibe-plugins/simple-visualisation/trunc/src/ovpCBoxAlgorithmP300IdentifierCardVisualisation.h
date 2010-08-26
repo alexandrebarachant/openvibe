@@ -5,7 +5,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <map>
 
@@ -66,8 +65,8 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler<OpenViBE::IMemoryBuffer*> op_pTargetFlaggingMemoryBuffer;
 			OpenViBE::uint64 m_ui64LastTime;
 
-			::GladeXML* m_pMainWidgetInterface;
-			::GladeXML* m_pToolbarWidgetInterface;
+			::GtkBuilder* m_pMainWidgetInterface;
+			::GtkBuilder* m_pToolbarWidgetInterface;
 			::GtkWidget* m_pMainWindow;
 			::GtkWidget* m_pToolbarWidget;
 			::GtkTable* m_pTable;
@@ -122,7 +121,7 @@ namespace OpenViBEPlugins
 
 				rBoxAlgorithmPrototype.addOutput("Target / Non target flagging",     OV_TypeId_Stimulations);
 
-				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-identifier-card.glade");
+				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-identifier-card.ui");
 				rBoxAlgorithmPrototype.addSetting("Background color",                OV_TypeId_Color,       "0,0,0");
 				rBoxAlgorithmPrototype.addSetting("Target background color",         OV_TypeId_Color,       "10,40,10");
 				rBoxAlgorithmPrototype.addSetting("Selected background color",       OV_TypeId_Color,       "70,20,20");

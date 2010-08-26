@@ -3,15 +3,14 @@
 #include "ovasCDriverNeuroskyMindset.h"
 #include "ovasCConfigurationNeuroskyMindset.h"
 
-#include "thinkgear.h"
-
 #include <sstream>
+
+#include <thinkgear.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
-
 
 //___________________________________________________________________//
 //                                                                   //
@@ -88,7 +87,6 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 	m_i32ConnectionID = -1;
 
 	m_ui32ComPort = OVAS_MINDSET_INVALID_COM_PORT;
-
 }
 
 CDriverNeuroskyMindset::~CDriverNeuroskyMindset(void)
@@ -234,7 +232,6 @@ boolean CDriverNeuroskyMindset::start(void)
 	}
 
 	return true;
-
 }
 
 boolean CDriverNeuroskyMindset::loop(void)
@@ -243,7 +240,6 @@ boolean CDriverNeuroskyMindset::loop(void)
 	{
 		return false;
 	}
-
 
 	if(m_rDriverContext.isStarted())
 	{
@@ -290,20 +286,20 @@ boolean CDriverNeuroskyMindset::loop(void)
 					}
 					else 
 					{
-						if( m_ui32WarningCount != 0) m_rDriverContext.getLogManager() 
-														<< LogLevel_Warning 
-														<<"Signal Quality acceptable - noise < 12.5%\n";
+						if(m_ui32WarningCount != 0)
+							m_rDriverContext.getLogManager()
+								<< LogLevel_Warning
+								<< "Signal Quality acceptable - noise < 12.5%\n";
 						m_ui32WarningCount = 0;
-						
 					}
-     			}
+				}
 
 				float32 l_f32Value;
 				uint32 l_ui32ChannelIndex = 1;
 				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
 				{
 					// we don't check if the value has changed, we construct a square signal (1Hz --> 512Hz)
-					
+
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_ATTENTION);
 					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
@@ -348,11 +344,9 @@ boolean CDriverNeuroskyMindset::loop(void)
 			}
 		}
 
-		// no stimulations received from hardware, the set is empty
-		CStimulationSet l_oStimulationSet;
-
 		m_pCallback->setSamples(m_pSample);
-
+		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+/*
 		// Jitter correction (preliminary tests showed a 1 sec jitter for 3 minutes of measurement)
 		if(m_rDriverContext.getJitterSampleCount() > m_rDriverContext.getJitterToleranceSampleCount()
 			|| m_rDriverContext.getJitterSampleCount() < - m_rDriverContext.getJitterToleranceSampleCount())
@@ -366,6 +360,7 @@ boolean CDriverNeuroskyMindset::loop(void)
 			}
 		}
 		m_pCallback->setStimulationSet(l_oStimulationSet);
+*/
 	}
 
 	return true;
@@ -373,7 +368,6 @@ boolean CDriverNeuroskyMindset::loop(void)
 
 boolean CDriverNeuroskyMindset::stop(void)
 {
-
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "Mindset Driver: STOP called.\n";
 	if(!m_rDriverContext.isConnected())
 	{
@@ -423,13 +417,12 @@ boolean CDriverNeuroskyMindset::isConfigurable(void)
 
 boolean CDriverNeuroskyMindset::configure(void)
 {
-	CConfigurationNeuroskyMindset m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Neurosky-Mindset.glade",m_ui32ComPort);
+	CConfigurationNeuroskyMindset m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Neurosky-Mindset.ui",m_ui32ComPort);
 
 	if(!m_oConfiguration.configure(m_oHeader)) // the basic configure will use the basic header
 	{
 		return false;
 	}
-
 
 	return true;
 }

@@ -1,4 +1,3 @@
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
@@ -65,11 +64,13 @@ int main(int argc, char** argv)
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
 	
-				//CSkeletonGenerator l_Generator(*l_pKernelContext,"../share/openvibe-applications/skeleton-generator/generator-interface.glade");
+				//CSkeletonGenerator l_Generator(*l_pKernelContext,"../share/openvibe-applications/skeleton-generator/generator-interface.ui");
 				
-				::GladeXML * l_pGladeInterface = glade_xml_new("../share/openvibe-applications/skeleton-generator/generator-interface.glade", NULL, NULL);
+				::GtkBuilder * l_pBuilderInterface = gtk_builder_new(); // glade_xml_new("../share/openvibe-applications/skeleton-generator/generator-interface.ui", NULL, NULL);
+				gtk_builder_add_from_file(l_pBuilderInterface, "../share/openvibe-applications/skeleton-generator/generator-interface.ui", NULL);
+				gtk_builder_connect_signals(l_pBuilderInterface, NULL);
 
-				::GtkWidget * l_pDialog = glade_xml_get_widget(l_pGladeInterface, "sg-selection-dialog");
+				::GtkWidget * l_pDialog = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-selection-dialog"));
 	
 				gtk_dialog_add_button (GTK_DIALOG (l_pDialog),
 					GTK_STOCK_OK,
@@ -79,11 +80,11 @@ int main(int argc, char** argv)
 					GTK_STOCK_CANCEL,
 					GTK_RESPONSE_CANCEL);
 
-				::GtkWidget * l_pRadioDriver = glade_xml_get_widget(l_pGladeInterface, "sg-driver-selection-radio-button");
-				::GtkWidget * l_pRadioAlgo = glade_xml_get_widget(l_pGladeInterface, "sg-algo-selection-radio-button");
-				::GtkWidget * l_pRadioBox = glade_xml_get_widget(l_pGladeInterface, "sg-box-selection-radio-button");
+				::GtkWidget * l_pRadioDriver = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-driver-selection-radio-button"));
+				::GtkWidget * l_pRadioAlgo = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-algo-selection-radio-button"));
+				::GtkWidget * l_pRadioBox = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-box-selection-radio-button"));
 
-				CDriverSkeletonGenerator l_DriverGenerator(*l_pKernelContext,l_pGladeInterface);
+				CDriverSkeletonGenerator l_DriverGenerator(*l_pKernelContext,l_pBuilderInterface);
 
 				gint resp = gtk_dialog_run(GTK_DIALOG(l_pDialog)); 
 	

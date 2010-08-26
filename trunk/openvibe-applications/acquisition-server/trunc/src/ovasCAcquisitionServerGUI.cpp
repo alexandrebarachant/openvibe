@@ -47,7 +47,7 @@ namespace
 	}
 };
 
-#define OVAS_GUI_File            "../share/openvibe-applications/acquisition-server/interface.glade"
+#define OVAS_GUI_File            "../share/openvibe-applications/acquisition-server/interface.ui"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -91,7 +91,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	,m_pDriverContext(NULL)
 	,m_pAcquisitionServer(NULL)
 	,m_pAcquisitionServerThread(NULL)
-	,m_pGladeInterface(NULL)
+	,m_pBuilderInterface(NULL)
 	,m_pImpedanceWindow(NULL)
 	,m_pThread(NULL)
 {
@@ -164,18 +164,19 @@ CAcquisitionServerGUI::~CAcquisitionServerGUI(void)
 
 boolean CAcquisitionServerGUI::initialize(void)
 {
-	m_pGladeInterface=glade_xml_new(OVAS_GUI_File, NULL, NULL);
+	m_pBuilderInterface=gtk_builder_new(); // glade_xml_new(OVAS_GUI_File, NULL, NULL);
+	gtk_builder_add_from_file(m_pBuilderInterface, OVAS_GUI_File, NULL);
 
 	// Connects custom GTK signals
 
-	g_signal_connect(glade_xml_get_widget(m_pGladeInterface, "button_configure"),     "pressed", G_CALLBACK(button_configure_pressed_cb), this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeInterface, "togglebutton_connect"), "toggled", G_CALLBACK(button_connect_toggled_cb),   this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeInterface, "button_play"),          "pressed", G_CALLBACK(button_start_pressed_cb),     this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeInterface, "button_stop"),          "pressed", G_CALLBACK(button_stop_pressed_cb),      this);
-	g_signal_connect(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"),      "changed", G_CALLBACK(combobox_driver_changed_cb),  this);
-	glade_xml_signal_autoconnect(m_pGladeInterface);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_configure"),     "pressed", G_CALLBACK(button_configure_pressed_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "togglebutton_connect"), "toggled", G_CALLBACK(button_connect_toggled_cb),   this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_play"),          "pressed", G_CALLBACK(button_start_pressed_cb),     this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_stop"),          "pressed", G_CALLBACK(button_stop_pressed_cb),      this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver"),      "changed", G_CALLBACK(combobox_driver_changed_cb),  this);
+	gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
-	::GtkComboBox* l_pComboBoxDriver=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"));
+	::GtkComboBox* l_pComboBoxDriver=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver"));
 
 	enum
 	{
@@ -231,7 +232,7 @@ boolean CAcquisitionServerGUI::initialize(void)
 	// Prepares sample count per buffer combo box
 
 	string l_sDefaultSampleCountPerBuffer=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_DefaultSampleCountPerBuffer}").toASCIIString();
-	::GtkComboBox* l_pComboBoxSampleCountPerBuffer=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"));
+	::GtkComboBox* l_pComboBoxSampleCountPerBuffer=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block"));
 	for(int i=0; ; i++)
 	{
 		gtk_combo_box_set_active(l_pComboBoxSampleCountPerBuffer, i);
@@ -248,13 +249,13 @@ boolean CAcquisitionServerGUI::initialize(void)
 
 	// Prepares default connection port
 
-	::GtkSpinButton* l_pSpinButtonConnectionPort=GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port"));
+	::GtkSpinButton* l_pSpinButtonConnectionPort=GTK_SPIN_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_connection_port"));
 	uint64 l_ui64DefaultConnectionPort=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DefaultConnectionPort}", 1024);
 	gtk_spin_button_set_value(l_pSpinButtonConnectionPort, (gdouble)l_ui64DefaultConnectionPort);
 
 	// Shows main window
 
-	gtk_widget_show(glade_xml_get_widget(m_pGladeInterface, "openvibe-acquisition-server"));
+	gtk_widget_show(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-acquisition-server")));
 
 	return true;
 }
@@ -269,12 +270,12 @@ IDriver& CAcquisitionServerGUI::getDriver(void)
 
 uint32 CAcquisitionServerGUI::getSampleCountPerBuffer(void)
 {
-	return ::atoi(::gtk_combo_box_get_active_text(GTK_COMBO_BOX(::glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"))));
+	return ::atoi(::gtk_combo_box_get_active_text(GTK_COMBO_BOX(::gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block"))));
 }
 
 uint32 CAcquisitionServerGUI::getTCPPort(void)
 {
-	return ::gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(::glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port")));
+	return ::gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(::gtk_builder_get_object(m_pBuilderInterface, "spinbutton_connection_port")));
 }
 
 IHeader& CAcquisitionServerGUI::getHeaderCopy(void)
@@ -287,7 +288,7 @@ void CAcquisitionServerGUI::setClientCount(uint32 ui32ClientCount)
 	// Updates 'host count' label when needed
 	char l_sLabel[1024];
 	::sprintf(l_sLabel, "%u host%s connected...", (unsigned int)ui32ClientCount, ui32ClientCount?"s":"");
-	::gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), l_sLabel);
+	::gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_connected_host_count")), l_sLabel);
 }
 
 void CAcquisitionServerGUI::setImpedance(OpenViBE::uint32 ui32ChannelIndex, OpenViBE::float64 f64Impedance)
@@ -389,16 +390,16 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 
 			gtk_button_set_label(GTK_BUTTON(pButton), "gtk-disconnect");
 
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_configure"), false);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), false);
+			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_configure")), false);
+			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_play")), true);
+			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_stop")), false);
 
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port"), false);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"), false);
-			gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"), false);
+			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_connection_port")), false);
+			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block")), false);
+			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver")), false);
 
-			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connected ! Ready...");
-			gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), "0 host connected...");
+			gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_status")), "Connected ! Ready...");
+			gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_connected_host_count")), "0 host connected...");
 		}
 		else
 		{
@@ -418,16 +419,16 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 
 		gtk_button_set_label(GTK_BUTTON(pButton), "gtk-connect");
 
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_configure"), m_pDriver->isConfigurable());
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), false);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_configure")), m_pDriver->isConfigurable());
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_play")), false);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_stop")), false);
 
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "spinbutton_connection_port"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_sample_count_per_sent_block"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "combobox_driver"), true);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_connection_port")), true);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block")), true);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver")), true);
 
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "");
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), "");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_status")), "");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_connected_host_count")), "");
 	}
 }
 
@@ -442,15 +443,15 @@ void CAcquisitionServerGUI::buttonStartPressedCB(::GtkButton* pButton)
 			::gtk_widget_hide(m_pImpedanceWindow);
 		}
 
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), false);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), true);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_play")), false);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_stop")), true);
 
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Sending...");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_status")), "Sending...");
 	}
 	else
 	{
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Failed !");
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), "");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_status")), "Failed !");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_connected_host_count")), "");
 	}
 }
 
@@ -460,15 +461,15 @@ void CAcquisitionServerGUI::buttonStopPressedCB(::GtkButton* pButton)
 
 	if(m_pAcquisitionServerThread->stop())
 	{
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_play"), true);
-		gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_stop"), false);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_play")), true);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_stop")), false);
 
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Connected ! Ready...");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_status")), "Connected ! Ready...");
 	}
 	else
 	{
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_status")), "Failed !");
-		gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "label_connected_host_count")), "");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_status")), "Failed !");
+		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_connected_host_count")), "");
 	}
 }
 
@@ -486,5 +487,5 @@ void CAcquisitionServerGUI::comboBoxDriverChanged(::GtkComboBox* pComboBox)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "comboBoxDriverChanged\n";
 	m_pDriver=m_vDriver[gtk_combo_box_get_active(pComboBox)];
-	gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "button_configure"), m_pDriver->isConfigurable());
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_configure")), m_pDriver->isConfigurable());
 }

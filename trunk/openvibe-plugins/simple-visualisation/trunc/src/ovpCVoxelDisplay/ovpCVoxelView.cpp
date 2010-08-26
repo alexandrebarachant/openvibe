@@ -36,7 +36,7 @@ namespace OpenViBEPlugins
 
 		CVoxelView::CVoxelView(CVoxelDisplay& rVoxelDisplay) :
 			m_rVoxelDisplay(rVoxelDisplay),
-			m_pGladeInterface(NULL),
+			m_pBuilderInterface(NULL),
 			m_pCubeButton(NULL),
 			m_pSphereButton(NULL),
 			m_pMinScaleFactorSpinButton(NULL),
@@ -51,33 +51,34 @@ namespace OpenViBEPlugins
 			m_f64MinDisplayThreshold(0.25),
 			m_f64MaxDisplayThreshold(0.75)
 		{
-			//load the glade interface
-			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-VoxelDisplay.glade", NULL, NULL);
+			//load the gtk builder interface
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-VoxelDisplay.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-VoxelDisplay.ui", NULL);
 
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return;
 			}
 
-			glade_xml_signal_autoconnect(m_pGladeInterface);
+			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			//toolbar
 			//-------
 
 			//voxel object buttons
-			m_pCubeButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "CubeButton"));
-			m_pSphereButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "SphereButton"));
+			m_pCubeButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "CubeButton"));
+			m_pSphereButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "SphereButton"));
 
 			g_signal_connect(G_OBJECT(m_pCubeButton), "toggled", G_CALLBACK(setVoxelObjectCallback), this);
 			g_signal_connect(G_OBJECT(m_pSphereButton), "toggled", G_CALLBACK(setVoxelObjectCallback), this);
 
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "ModifyColorToolButton")), "toggled", G_CALLBACK(toggleColorModificationCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "ModifyTransparencyToolButton")), "toggled", G_CALLBACK(toggleTransparencyModificationCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "ModifySizeToolButton")), "toggled", G_CALLBACK(toggleSizeModificationCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "ModifyColorToolButton")), "toggled", G_CALLBACK(toggleColorModificationCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "ModifyTransparencyToolButton")), "toggled", G_CALLBACK(toggleTransparencyModificationCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "ModifySizeToolButton")), "toggled", G_CALLBACK(toggleSizeModificationCallback), this);
 
 			//min voxel scale factor
-			m_pMinScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MinScaleFactorSpinButton"));
+			m_pMinScaleFactorSpinButton = GTK_SPIN_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MinScaleFactorSpinButton"));
 			m_rVoxelDisplay.setMinScaleFactor(m_f64MinScaleFactor);
 			gtk_spin_button_configure(
 				m_pMinScaleFactorSpinButton,
@@ -93,7 +94,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(m_pMinScaleFactorSpinButton), "value-changed", G_CALLBACK(setMinScaleFactorCallback), this);
 
 			//max voxel scale factor
-			m_pMaxScaleFactorSpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MaxScaleFactorSpinButton"));
+			m_pMaxScaleFactorSpinButton = GTK_SPIN_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MaxScaleFactorSpinButton"));
 			m_rVoxelDisplay.setMaxScaleFactor(m_f64MaxScaleFactor);
 			gtk_spin_button_configure(
 				m_pMaxScaleFactorSpinButton,
@@ -112,16 +113,16 @@ namespace OpenViBEPlugins
 			m_rVoxelDisplay.setDisplayThresholdBoundaryType(l_bInclusiveDisplayThresholdBoundary);
 
 			//AND/OR label
-			m_pThresholdRangeAndOrLabel = GTK_LABEL(glade_xml_get_widget(m_pGladeInterface, "ThresholdRangeAndOrLabel"));
+			m_pThresholdRangeAndOrLabel = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "ThresholdRangeAndOrLabel"));
 			gtk_label_set_label(m_pThresholdRangeAndOrLabel, l_bInclusiveDisplayThresholdBoundary? "AND" : "OR");
 
 			//min display threshold boundary type
-			m_pMinDisplayThresholdBoundaryButton = GTK_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MinDisplayThresholdBoundaryButton"));
+			m_pMinDisplayThresholdBoundaryButton = GTK_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MinDisplayThresholdBoundaryButton"));
 			gtk_button_set_label(m_pMinDisplayThresholdBoundaryButton, l_bInclusiveDisplayThresholdBoundary ? ">" : "<");
 			g_signal_connect(G_OBJECT(m_pMinDisplayThresholdBoundaryButton), "clicked", G_CALLBACK(setMinDisplayThresholdBoundaryTypeCallback), this);
 
 			//max display threshold boundary type
-			m_pMaxDisplayThresholdBoundaryButton = GTK_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MaxDisplayThresholdBoundaryButton"));
+			m_pMaxDisplayThresholdBoundaryButton = GTK_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MaxDisplayThresholdBoundaryButton"));
 			gtk_button_set_label(m_pMaxDisplayThresholdBoundaryButton, l_bInclusiveDisplayThresholdBoundary ? "<" : ">");
 			g_signal_connect(G_OBJECT(m_pMaxDisplayThresholdBoundaryButton), "clicked", G_CALLBACK(setMaxDisplayThresholdBoundaryTypeCallback), this);
 
@@ -136,7 +137,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(m_pMinDisplayThresholdScale), "value_changed", G_CALLBACK(setMinDisplayThresholdCallback), this);
 
 			//replace existing scale (which somehow can't be used) with the newly created one
-			GtkWidget* l_pOldMinScale = glade_xml_get_widget(m_pGladeInterface, "MinDisplayThresholdScale");
+			GtkWidget* l_pOldMinScale = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "MinDisplayThresholdScale"));
 			GtkWidget* l_pMinScaleParent = gtk_widget_get_parent(l_pOldMinScale);
 			if(l_pMinScaleParent != NULL && GTK_IS_CONTAINER(l_pMinScaleParent))
 			{
@@ -159,7 +160,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(m_pMaxDisplayThresholdScale), "value_changed", G_CALLBACK(setMaxDisplayThresholdCallback), this);
 
 			//replace existing scale (which somehow can't be used) with the newly created one
-			GtkWidget* l_pOldMaxScale = glade_xml_get_widget(m_pGladeInterface, "MaxDisplayThresholdScale");
+			GtkWidget* l_pOldMaxScale = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "MaxDisplayThresholdScale"));
 			GtkWidget* l_pMaxScaleParent = gtk_widget_get_parent(l_pOldMaxScale);
 			if(l_pMaxScaleParent != NULL && GTK_IS_CONTAINER(l_pMaxScaleParent))
 			{
@@ -183,7 +184,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(l_pSkullOpacityScale), "value_changed", G_CALLBACK(setSkullOpacityCallback), this);
 
 			//replace existing scale (which somehow can't be used) with the newly created one
-			GtkWidget* l_pOldScale = glade_xml_get_widget(m_pGladeInterface, "SkullOpacityScale");
+			GtkWidget* l_pOldScale = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "SkullOpacityScale"));
 			GtkWidget* l_pScaleParent = gtk_widget_get_parent(l_pOldScale);
 			if(l_pScaleParent != NULL && GTK_IS_CONTAINER(l_pScaleParent))
 			{
@@ -196,23 +197,23 @@ namespace OpenViBEPlugins
 			}
 
 			//camera animation button
-			GtkToggleToolButton* l_pAnimateCameraButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "AnimateCameraButton"));
+			GtkToggleToolButton* l_pAnimateCameraButton = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "AnimateCameraButton"));
 			g_signal_connect(G_OBJECT(l_pAnimateCameraButton), "toggled", G_CALLBACK(toggleAnimateCameraCallback), this);
 
 			//reposition camera
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "RepositionCamera")),	"clicked", G_CALLBACK(repositionCameraCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "RepositionCamera")),	"clicked", G_CALLBACK(repositionCameraCallback), this);
 
-			this->toggleColorModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ModifyColorToolButton")))?true:false);
-			this->toggleTransparencyModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ModifyTransparencyToolButton")))?true:false);
-			this->toggleSizeModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ModifySizeToolButton")))?true:false);
-			this->enableAutoCameraMovementCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "AnimateCameraButton")))?true:false);
+			this->toggleColorModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "ModifyColorToolButton")))?true:false);
+			this->toggleTransparencyModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "ModifyTransparencyToolButton")))?true:false);
+			this->toggleSizeModificationCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "ModifySizeToolButton")))?true:false);
+			this->enableAutoCameraMovementCB(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "AnimateCameraButton")))?true:false);
 		}
 
 		CVoxelView::~CVoxelView()
 		{
 			//unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 		}
 
 		boolean CVoxelView::init()
@@ -229,7 +230,7 @@ namespace OpenViBEPlugins
 
 		void CVoxelView::getToolbar(GtkWidget*& pToolbarWidget)
 		{
-			pToolbarWidget = glade_xml_get_widget(m_pGladeInterface, "Toolbar");
+			pToolbarWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "Toolbar"));
 		}
 
 		void CVoxelView::setVoxelObjectCB(GtkWidget* pWidget)

@@ -77,24 +77,26 @@ boolean CBoxAlgorithmMatrixDisplay::initialize(void)
 	op_pMatrix.initialize(m_pMatrixDecoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 
 	//widgets
-	m_pMainWidgetInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.glade", "matrix-display-table", NULL);
-	m_pToolbarWidgetInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.glade", "matrix-display-toolbar", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-display-table", NULL);
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-display-toolbar", NULL);
+	gtk_builder_add_from_file(m_pMainWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
 
-	glade_xml_signal_autoconnect(m_pMainWidgetInterface);
-	glade_xml_signal_autoconnect(m_pToolbarWidgetInterface);
+	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
+	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
 
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-values-toggle-button")), "toggled",       G_CALLBACK(::show_values_toggle_button_cb), this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-colors-toggle-button")), "toggled",       G_CALLBACK(::show_colors_toggle_button_cb), this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "matrix-display-toolbar")),    "delete_event",  G_CALLBACK(gtk_widget_hide),                     NULL);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-values-toggle-button")), "toggled",       G_CALLBACK(::show_values_toggle_button_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-colors-toggle-button")), "toggled",       G_CALLBACK(::show_colors_toggle_button_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "matrix-display-toolbar")),    "delete_event",  G_CALLBACK(gtk_widget_hide),                     NULL);
 
-	m_pMainWidget=glade_xml_get_widget(m_pMainWidgetInterface, "matrix-display-table");
-	m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "matrix-display-toolbar");
+	m_pMainWidget=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "matrix-display-table"));
+	m_pToolbarWidget=GTK_WIDGET(gtk_builder_get_object(m_pToolbarWidgetInterface, "matrix-display-toolbar"));
 
 	getVisualisationContext().setWidget(m_pMainWidget);
 	getVisualisationContext().setToolbar(m_pToolbarWidget);
 
-	m_bShowValues=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-values-toggle-button")))?true:false);
-	m_bShowColors=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-colors-toggle-button")))?true:false);
+	m_bShowValues=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-values-toggle-button")))?true:false);
+	m_bShowColors=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-colors-toggle-button")))?true:false);
 
 	CString l_sColorGradientSetting;
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0,l_sColorGradientSetting);
@@ -160,7 +162,7 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 		{
 			//header received
 			//adding the event  to the window
-			::GtkTable* l_pTable=GTK_TABLE(glade_xml_get_widget(m_pMainWidgetInterface, "matrix-display-table"));
+			::GtkTable* l_pTable=GTK_TABLE(gtk_builder_get_object(m_pMainWidgetInterface, "matrix-display-table"));
 			if(op_pMatrix->getDimensionCount() != 2)
 			{
 				getLogManager() << LogLevel_Error << "The streamed matrix received has not 2 dimensions (found "<< op_pMatrix->getDimensionCount() <<" dimensions)\n";
@@ -176,16 +178,18 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 			uint32 row = 0;
 			for(uint32 c=1; c<l_ui32ColumnCount+1; c++)
 			{
-				::GladeXML* l_pGladeXMLLabel=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.glade", "matrix-value-label", NULL);
+				::GtkBuilder* l_pGtkBuilderLabel=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-value-label", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilderLabel, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
 
-				::GtkWidget* l_pWidgetLabel=glade_xml_get_widget(l_pGladeXMLLabel, "matrix-value-label");
+				::GtkWidget* l_pWidgetLabel=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderLabel, "matrix-value-label"));
+				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidgetLabel)), l_pWidgetLabel);
 				gtk_table_attach(
 					l_pTable, l_pWidgetLabel,
 					c, c+1, row, row+1,
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					0, 0);
-				g_object_unref(l_pGladeXMLLabel);
+				g_object_unref(l_pGtkBuilderLabel);
 
 				stringstream ss;
 				ss << c;
@@ -197,16 +201,18 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 			uint32 col = 0;
 			for(uint32 r=1; r<l_ui32RowCount+1; r++)
 			{
-				::GladeXML* l_pGladeXMLLabel=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.glade", "matrix-value-label", NULL);
+				::GtkBuilder* l_pGtkBuilderLabel=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-value-label", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilderLabel, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
 
-				::GtkWidget* l_pWidgetLabel=glade_xml_get_widget(l_pGladeXMLLabel, "matrix-value-label");
+				::GtkWidget* l_pWidgetLabel=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderLabel, "matrix-value-label"));
+				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidgetLabel)), l_pWidgetLabel);
 				gtk_table_attach(
 					l_pTable, l_pWidgetLabel,
 					col, col+1, r, r+1,
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					0, 0);
-				g_object_unref(l_pGladeXMLLabel);
+				g_object_unref(l_pGtkBuilderLabel);
 
 				stringstream ss;
 				ss << (char) (r-1+(int)'A');
@@ -218,17 +224,19 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 			{
 				for(uint32 c=1; c<l_ui32ColumnCount+1; c++)
 				{
-					::GladeXML* l_pGladeXMLEventBox=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.glade", "matrix-value-eventbox", NULL);
+					::GtkBuilder* l_pGtkBuilderEventBox=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-value-eventbox", NULL);
+					gtk_builder_add_from_file(l_pGtkBuilderEventBox, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
 
-					::GtkWidget* l_pWidgetEventBox=glade_xml_get_widget(l_pGladeXMLEventBox, "matrix-value-eventbox");
-					::GtkWidget* l_pWidgetLabel=glade_xml_get_widget(l_pGladeXMLEventBox, "matrix-value-label");
+					::GtkWidget* l_pWidgetEventBox=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderEventBox, "matrix-value-eventbox"));
+					::GtkWidget* l_pWidgetLabel=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderEventBox, "matrix-value-label"));
+					gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidgetEventBox)), l_pWidgetEventBox);
 					gtk_table_attach(
 						l_pTable, l_pWidgetEventBox,
 						c, c+1, r, r+1,
 						(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 						(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 						0, 0);
-					g_object_unref(l_pGladeXMLEventBox);
+					g_object_unref(l_pGtkBuilderEventBox);
 
 					GdkColor   l_ColorWhite;
 					l_ColorWhite.red=65535;
@@ -267,7 +275,7 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 				{
 					float64 l_f64Value = op_pMatrix->getBuffer()[r*l_ui32ColumnCount+c];
 					m_f64MaxValue = (l_f64Value>m_f64MaxValue?l_f64Value:m_f64MaxValue);
-					m_f64MinValue = (l_f64Value>m_f64MaxValue?m_f64MaxValue:l_f64Value);
+					m_f64MinValue = (l_f64Value<m_f64MinValue?l_f64Value:m_f64MinValue);
 
 					if(m_bSymetricMinMax)
 					{
@@ -285,7 +293,7 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 					float64 l_f64Value = op_pMatrix->getBuffer()[r*l_ui32ColumnCount+c];
 					if(m_f64MaxValue != 0 || m_f64MinValue != 0) // if the first value ever sent is 0, both are 0, and we dont want to divide by 0 :)
 					{
-						float64 l_f64Step = (l_f64Value - m_f64MinValue)/(m_f64MaxValue-m_f64MinValue)	*	(m_GradientSteps-1);
+						float64 l_f64Step = ((l_f64Value - m_f64MinValue) / (m_f64MaxValue-m_f64MinValue)) * (m_GradientSteps-1);
 						uint32  l_ui32Step = (uint32)l_f64Step;
 
 						// gtk_widget_modify_bg uses 16bit colors, the interpolated gradients gives 8bits colors.
@@ -294,7 +302,7 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 						l_ColorEventBox.green = (uint16)(m_MatrixInterpolatedColorGardient[l_ui32Step*4+2] * 65535./100.);
 						l_ColorEventBox.blue  = (uint16)(m_MatrixInterpolatedColorGardient[l_ui32Step*4+3] * 65535./100.);
 
-						if(System::Memory::compare(&(m_vEventBoxCache[r*l_ui32ColumnCount+c].second),&l_ColorEventBox,sizeof(GdkColor)) && m_bShowColors)
+						if(!System::Memory::compare(&(m_vEventBoxCache[r*l_ui32ColumnCount+c].second),&l_ColorEventBox,sizeof(GdkColor)) && m_bShowColors)
 						{
 							gtk_widget_modify_bg(m_vEventBoxCache[r*l_ui32ColumnCount+c].first,GTK_STATE_NORMAL,&l_ColorEventBox);
 						}

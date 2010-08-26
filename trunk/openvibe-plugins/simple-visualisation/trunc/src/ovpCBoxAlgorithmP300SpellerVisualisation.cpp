@@ -53,6 +53,15 @@ boolean CBoxAlgorithmP300SpellerVisualisation::initialize(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
+	m_pMainWidgetInterface=NULL;
+	m_pToolbarWidgetInterface=NULL;
+	m_pFlashFontDescription=NULL;
+	m_pNoFlashFontDescription=NULL;
+	m_pTargetFontDescription=NULL;
+	m_pSelectedFontDescription=NULL;
+
+	// ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 	m_sInterfaceFilename         =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	m_ui64RowStimulationBase     =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
 	m_ui64ColumnStimulationBase  =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);
@@ -98,22 +107,30 @@ boolean CBoxAlgorithmP300SpellerVisualisation::initialize(void)
 
 	m_ui64LastTime=0;
 
-	m_pMainWidgetInterface=glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-speller-main", NULL);
-	m_pToolbarWidgetInterface=glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-speller-toolbar", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-speller-main", NULL);
+	if(!gtk_builder_add_from_file(m_pMainWidgetInterface, m_sInterfaceFilename.toASCIIString(), NULL))
+	{
+		this->getLogManager() << LogLevel_ImportantWarning << "Could not load interface file [" << m_sInterfaceFilename << "]\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "The file may be missing. However, the interface files now use gtk-builder instead of glade. Did you update your files ?\n";
+		return false;
+	}
 
-	m_pMainWindow=glade_xml_get_widget(m_pMainWidgetInterface, "p300-speller-main");
-	m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "p300-speller-toolbar");
-	m_pTable=GTK_TABLE(glade_xml_get_widget(m_pMainWidgetInterface, "p300-speller-table"));
-	m_pResult=GTK_LABEL(glade_xml_get_widget(m_pMainWidgetInterface, "label-result"));
-	m_pTarget=GTK_LABEL(glade_xml_get_widget(m_pMainWidgetInterface, "label-target"));
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-speller-toolbar", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, m_sInterfaceFilename.toASCIIString(), NULL);
 
-	glade_xml_signal_autoconnect(m_pMainWidgetInterface);
-	glade_xml_signal_autoconnect(m_pToolbarWidgetInterface);
+	m_pMainWindow=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "p300-speller-main"));
+	m_pToolbarWidget=GTK_WIDGET(gtk_builder_get_object(m_pToolbarWidgetInterface, "p300-speller-toolbar"));
+	m_pTable=GTK_TABLE(gtk_builder_get_object(m_pMainWidgetInterface, "p300-speller-table"));
+	m_pResult=GTK_LABEL(gtk_builder_get_object(m_pMainWidgetInterface, "label-result"));
+	m_pTarget=GTK_LABEL(gtk_builder_get_object(m_pMainWidgetInterface, "label-target"));
 
-	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_target_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "label-target"));
-	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_target_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "label-target-title"));
-	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_result_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "label-result"));
-	g_signal_connect(glade_xml_get_widget(m_pToolbarWidgetInterface, "toolbutton-show_result_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), glade_xml_get_widget(m_pMainWidgetInterface, "label-result-title"));
+	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
+	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
+
+	g_signal_connect(gtk_builder_get_object(m_pToolbarWidgetInterface, "toolbutton-show_target_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), gtk_builder_get_object(m_pMainWidgetInterface, "label-target"));
+	g_signal_connect(gtk_builder_get_object(m_pToolbarWidgetInterface, "toolbutton-show_target_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), gtk_builder_get_object(m_pMainWidgetInterface, "label-target-title"));
+	g_signal_connect(gtk_builder_get_object(m_pToolbarWidgetInterface, "toolbutton-show_result_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), gtk_builder_get_object(m_pMainWidgetInterface, "label-result"));
+	g_signal_connect(gtk_builder_get_object(m_pToolbarWidgetInterface, "toolbutton-show_result_text"),             "toggled", G_CALLBACK(toggle_button_show_hide_cb), gtk_builder_get_object(m_pMainWidgetInterface, "label-result-title"));
 
 	getVisualisationContext().setWidget(m_pMainWindow);
 	getVisualisationContext().setToolbar(m_pToolbarWidget);
@@ -165,16 +182,41 @@ boolean CBoxAlgorithmP300SpellerVisualisation::initialize(void)
 
 boolean CBoxAlgorithmP300SpellerVisualisation::uninitialize(void)
 {
-	pango_font_description_free(m_pSelectedFontDescription);
-	pango_font_description_free(m_pTargetFontDescription);
-	pango_font_description_free(m_pNoFlashFontDescription);
-	pango_font_description_free(m_pFlashFontDescription);
+	if(m_pSelectedFontDescription)
+	{
+		pango_font_description_free(m_pSelectedFontDescription);
+		m_pSelectedFontDescription=NULL;
+	}
 
-	g_object_unref(m_pToolbarWidgetInterface);
-	m_pToolbarWidgetInterface=NULL;
+	if(m_pTargetFontDescription)
+	{
+		pango_font_description_free(m_pTargetFontDescription);
+		m_pTargetFontDescription=NULL;
+	}
 
-	g_object_unref(m_pMainWidgetInterface);
-	m_pMainWidgetInterface=NULL;
+	if(m_pNoFlashFontDescription)
+	{
+		pango_font_description_free(m_pNoFlashFontDescription);
+		m_pNoFlashFontDescription=NULL;
+	}
+
+	if(m_pFlashFontDescription)
+	{
+		pango_font_description_free(m_pFlashFontDescription);
+		m_pFlashFontDescription=NULL;
+	}
+
+	if(m_pToolbarWidgetInterface)
+	{
+		g_object_unref(m_pToolbarWidgetInterface);
+		m_pToolbarWidgetInterface=NULL;
+	}
+
+	if(m_pMainWidgetInterface)
+	{
+		g_object_unref(m_pMainWidgetInterface);
+		m_pMainWidgetInterface=NULL;
+	}
 
 	ip_pTargetFlaggingStimulationSet.uninitialize();
 	op_pTargetFlaggingMemoryBuffer.uninitialize();
@@ -185,20 +227,40 @@ boolean CBoxAlgorithmP300SpellerVisualisation::uninitialize(void)
 	op_pSequenceStimulationSet.uninitialize();
 	ip_pSequenceMemoryBuffer.uninitialize();
 
-	m_pColumnSelectionStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pColumnSelectionStimulationDecoder);
+	if(m_pColumnSelectionStimulationDecoder)
+	{
+		m_pColumnSelectionStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pColumnSelectionStimulationDecoder);
+		m_pColumnSelectionStimulationDecoder=NULL;
+	}
 
-	m_pRowSelectionStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pRowSelectionStimulationDecoder);
+	if(m_pRowSelectionStimulationDecoder)
+	{
+		m_pRowSelectionStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pRowSelectionStimulationDecoder);
+		m_pRowSelectionStimulationDecoder=NULL;
+	}
 
-	m_pTargetFlaggingStimulationEncoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pTargetFlaggingStimulationEncoder);
+	if(m_pTargetFlaggingStimulationEncoder)
+	{
+		m_pTargetFlaggingStimulationEncoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pTargetFlaggingStimulationEncoder);
+		m_pTargetFlaggingStimulationEncoder=NULL;
+	}
 
-	m_pTargetStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pTargetStimulationDecoder);
+	if(m_pTargetStimulationDecoder)
+	{
+		m_pTargetStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pTargetStimulationDecoder);
+		m_pTargetStimulationDecoder=NULL;
+	}
 
-	m_pSequenceStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pSequenceStimulationDecoder);
+	if(m_pSequenceStimulationDecoder)
+	{
+		m_pSequenceStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pSequenceStimulationDecoder);
+		m_pSequenceStimulationDecoder=NULL;
+	}
 
 	return true;
 }

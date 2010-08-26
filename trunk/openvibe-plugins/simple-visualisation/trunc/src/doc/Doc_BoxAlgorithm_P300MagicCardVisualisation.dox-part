@@ -64,7 +64,7 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting1|
-This is the glade interface to use for the GUI.
+This is the gtk builder interface to use for the GUI.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting1|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting2|

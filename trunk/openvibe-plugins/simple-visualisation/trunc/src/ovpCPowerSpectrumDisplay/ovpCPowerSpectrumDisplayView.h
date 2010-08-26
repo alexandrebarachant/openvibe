@@ -6,7 +6,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include "../ovpCBufferDatabase.h"
@@ -147,8 +146,8 @@ namespace OpenViBEPlugins
 				OpenViBE::boolean bActive);
 
 		private:
-			//! The Glade handler used to create the interface
-			::GladeXML* m_pGladeInterface;
+			//! The Builder handler used to create the interface
+			::GtkBuilder* m_pBuilderInterface;
 			//! Table (3*N) containing (channel label, vertical separator, channel display) triplets
 			GtkWidget* m_pDisplayTable;
 			//! Array of channels labels

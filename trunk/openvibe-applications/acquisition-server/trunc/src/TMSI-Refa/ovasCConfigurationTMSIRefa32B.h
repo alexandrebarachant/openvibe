@@ -1,17 +1,17 @@
 #ifndef __OpenViBE_AcquisitionServer_CConfigurationTMSIRefa32B_H__
 #define __OpenViBE_AcquisitionServer_CConfigurationTMSIRefa32B_H__
 
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 #include <gtk/gtk.h>
 #include <string.h>
 
 namespace OpenViBEAcquisitionServer
 {
 
-	class CConfigurationTMSIRefa32B : public OpenViBEAcquisitionServer::CConfigurationGlade
+	class CConfigurationTMSIRefa32B : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
-		CConfigurationTMSIRefa32B(const char* sGladeXMLFileName);
+		CConfigurationTMSIRefa32B(const char* sGtkBuilderFileName);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);

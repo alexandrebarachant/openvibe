@@ -8,7 +8,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
-INCLUDE("FindThirdPartyGlade")
+INCLUDE("FindThirdPartyGTK")
 INCLUDE("FindThirdPartyVRPN")
 
 # ---------------------------------

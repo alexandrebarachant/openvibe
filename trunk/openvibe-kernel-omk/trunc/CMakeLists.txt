@@ -18,7 +18,7 @@ INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
-INCLUDE("FindThirdPartyGlade")
+INCLUDE("FindThirdPartyGTK")
 INCLUDE("FindThirdPartyOgre3D")
 
 # ---------------------------------

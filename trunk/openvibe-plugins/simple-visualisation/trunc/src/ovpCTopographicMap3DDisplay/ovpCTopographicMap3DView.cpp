@@ -30,7 +30,7 @@ namespace OpenViBEPlugins
 			m_rTopographicMap3DDisplay(rTopographicMap3DDisplay),
 			m_rTopographicMapDatabase(rTopographicMapDatabase),
 			m_f64MaxDelay(2.0), //maximum delay : 2s
-			m_pGladeInterface(NULL),
+			m_pBuilderInterface(NULL),
 			m_ui64CurrentInterpolation(ui64DefaultInterpolation),
 			m_pMapPotentials(NULL),
 			m_pMapCurrents(NULL),
@@ -39,29 +39,30 @@ namespace OpenViBEPlugins
 			//m_pSamplingPointsToggleButton(NULL),
 			//m_bSamplingPointsToggledOn(false)
 		{
-			//load the glade interface
-			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap3D.glade", NULL, NULL);
+			//load the gtk builder interface
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap3D.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap3D.ui", NULL);
 
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return;
 			}
 
-			glade_xml_signal_autoconnect(m_pGladeInterface);
+			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			//toolbar
 			//-------
 
 			//get pointers to interpolation type buttons
-			m_pMapPotentials = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MapPotentials"));
-			m_pMapCurrents = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MapCurrents"));
+			m_pMapPotentials = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MapPotentials"));
+			m_pMapCurrents = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MapCurrents"));
 
 			g_signal_connect(G_OBJECT(m_pMapPotentials), "toggled", G_CALLBACK (setInterpolationCallback), this);
 			g_signal_connect(G_OBJECT(m_pMapCurrents), "toggled", G_CALLBACK (setInterpolationCallback), this);
 
 			//get pointer to electrodes toggle button
-			m_pElectrodesToggleButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ToggleElectrodes"));
+			m_pElectrodesToggleButton = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "ToggleElectrodes"));
 			//disable electrodes by default
 			m_bElectrodesToggledOn = false;
 			gtk_toggle_tool_button_set_active(m_pElectrodesToggleButton, m_bElectrodesToggledOn);
@@ -69,7 +70,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(m_pElectrodesToggleButton), "toggled", G_CALLBACK(toggleElectrodesCallback), this);
 
 			//get pointer to sampling points toggle button
-			//m_pSamplingPointsToggleButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ToggleSamplingPoints"));
+			//m_pSamplingPointsToggleButton = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "ToggleSamplingPoints"));
 			//disable sampling points by default
 			//m_bSamplingPointsToggledOn = false;
 			//gtk_toggle_tool_button_set_active(m_pSamplingPointsToggleButton, m_bSamplingPointsToggledOn);
@@ -95,7 +96,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(l_pDelayScale), "value_changed", G_CALLBACK(setDelayCallback), this);
 
 			//replace existing scale (which somehow can't be used) with the newly created one
-			GtkWidget* l_pOldScale = glade_xml_get_widget(m_pGladeInterface, "DelayScale");
+			GtkWidget* l_pOldScale = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "DelayScale"));
 			GtkWidget* l_pScaleParent = gtk_widget_get_parent(l_pOldScale);
 			if(l_pScaleParent != NULL && GTK_IS_CONTAINER(l_pScaleParent))
 			{
@@ -111,8 +112,8 @@ namespace OpenViBEPlugins
 		CTopographicMap3DView::~CTopographicMap3DView()
 		{
 			//unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 		}
 
 		void CTopographicMap3DView::init()
@@ -127,7 +128,7 @@ namespace OpenViBEPlugins
 
 		void CTopographicMap3DView::getToolbar(GtkWidget*& pToolbarWidget)
 		{
-			pToolbarWidget = glade_xml_get_widget(m_pGladeInterface, "Toolbar");
+			pToolbarWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "Toolbar"));
 		}
 
 		void CTopographicMap3DView::setInterpolationCB(GtkWidget* pWidget)

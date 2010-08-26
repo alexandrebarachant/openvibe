@@ -11,12 +11,12 @@
  * Gtk is a LGPL toolkit for creating Graphic User Interface (GUI), written in C. 
  * Glade is a Rapid Development Tool (RAD) that enables quick and easy development 
  * of such user interfaces. Glade saves the GUI as XML, then the §OpenViBE§ acquisition server
- * uses the GtkBuilder to load the interface dynamically as needed.
+ * uses the Gtk Builder to load the interface dynamically as needed.
  *
  * The Gtk toolkit is already installed with the §OpenViBE§ dependencies, but you have to install 
  * Glade on your own (http://glade.gnome.org/).
  *
- * The glade XML files have to be placed in the directory:
+ * The <i>.ui</i> XML files have to be placed in the directory:
  * "\openvibe-applications\acquisition-server\branches\[YourBranchDirectory]\share\openvibe-applications\acquisition-server".
  * You will find in this directory several interfaces you may want to start with.
  *
@@ -28,7 +28,7 @@
  * - The Configuration, which one instance is created in the configure(void) function of the driver.
  *  
  * The purpose of the configuration process is to fill the Header with user-defined data.
- * The driver creates an instance of the Configuration given a glade file name, and calls the 
+ * The driver creates an instance of the Configuration given a <i>.ui</i> file name, and calls the 
  * configure(&IHeader) function on the Header member. The user has to fill in the data in the GUI, 
  * then when he presses "Apply", all data stored into the Configuration object will be
  * used to fill the Header.
@@ -41,14 +41,14 @@
  * See OpenViBEAcquisitionServer::IHeader for more details about this header.
  *
  The Generic Oscillator driver uses such basic Header. The configuration GUI looks like this:
- * \image html basic_config.png "The basic configuration dialog (interface-Generic-Oscillator.glade)"
+ * \image html basic_config.png "The basic configuration dialog (interface-Generic-Oscillator.ui)"
  *
  * The corresponding configure(void) function in OpenViBEAcquisitionServer::CDriverGenericOscillator is:
  * \code 
  * boolean CDriverGenericOscillator::configure(void)
  * {
- *	// We use the basic CConfigurationGlade, with the corresponding glade file
- *	CConfigurationGlade m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.glade");
+ *	// We use the basic CConfigurationBuilder, with the corresponding .ui file
+ *	CConfigurationBuilder m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.ui");
  *	// We configure the Header with it
  *	return m_oConfiguration.configure(m_oHeader);
  * }
@@ -58,47 +58,47 @@
  * a slightly different configuration. For example, the g.Tec driver handles more than one 
  * device connected through USB ports.
  * Besides the basic information, user can select a device in a list of connected devices.
- * \image html gtec_config.png "The g.Tec configuration dialog (interface-GTec-GUSBamp.glade)"
+ * \image html gtec_config.png "The g.Tec configuration dialog (interface-GTec-GUSBamp.ui)"
  *
- * The OpenViBEAcquisitionServer::CConfigurationGTecGUSBamp inherits from OpenViBEAcquisitionServer::CConfigurationGlade,
+ * The OpenViBEAcquisitionServer::CConfigurationGTecGUSBamp inherits from OpenViBEAcquisitionServer::CConfigurationBuilder,
  * and needs a reference to the variable (member of the driver) which will contains the device USB index selected. 
  * Thus, the configure(void) function in the driver looks like this:
  * \code 
  * boolean CDriverGTecGUSBamp::configure(void)
  * {
  *	// We use a specialized Configuration object that will fill the m_ui32DeviceIndex of the driver with the right value
- *	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.glade"
+ *	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.ui"
  *								, m_ui32DeviceIndex);
  *	// We configure the basic Header
  *	return m_oConfiguration.configure(m_oHeader);
  * }
  * \endcode
  * 
- * \section Doc_ConfiguringANewDriver_CodingTheConfigurationAndGui Coding the Configuration class and designing the glade GUI
- * The simplest solution is to start from the CConfigurationGlade class and the interface-Generic-Oscillator.glade file.
+ * \section Doc_ConfiguringANewDriver_CodingTheConfigurationAndGui Coding the Configuration class and designing the GUI with Glade
+ * The simplest solution is to start from the CConfigurationBuilder class and the interface-Generic-Oscillator.ui file.
  * First of all, think about the basic information that the acquisition client will need.
  * You may want to keep what is related to the subject's information "As is", but the max-min channels number may change 
- * depending on the device, so as the allowed sampling frequencies. Tweak the glade file according to your device.
+ * depending on the device, so as the allowed sampling frequencies. Tweak the <i>.ui</i> file according to your device.
  *
  * Then list what your driver will need besides these information: USB port ? Serial port ? Hostname/port to a third party acquisition software ?
  * You will have to translate this into code:
  *  - Driver class: add new member variables describing these information.
  *  - GUI: use Glade to Drag'n'Drop combo-box, spin-button, labels, etc. to make your own GUI.
- *  - Configuration class: the CConfigurationGlade class is probably not enough, implement your own inherited class. 
+ *  - Configuration class: the CConfigurationBuilder class is probably not enough, implement your own inherited class. 
  *
  * Your configuration class will need references to the driver variables, and will redefine the preConfigure(void) 
- * and PostConfigure(void) functions of OpenViBEAcquisitionServer::CConfigurationGlade. 
+ * and PostConfigure(void) functions of OpenViBEAcquisitionServer::CConfigurationBuilder. 
  * See the ovasCConfigurationGTecGUSBamp.h/cpp files for a complete example:
  *  - preConfigure(void): scan USB ports, fill the gtk-combo-box with available devices
  * \code
  * boolean CConfigurationGTecGUSBamp::preConfigure(void)
  * {
- *	if(!CConfigurationGlade::preConfigure())
+ *	if(!CConfigurationBuilder::preConfigure())
  *	{
  *		return false;
  *	}
  *
- *	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+ *	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
  *
  *	char l_sBuffer[1024];
  *	int l_iCount=0;
@@ -135,7 +135,7 @@
  *\code
  * boolean CConfigurationGTecGUSBamp::postConfigure(void)
  *{
- *	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+ *	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
  *
  *	if(m_bApplyConfiguration)
  *	{
@@ -146,7 +146,7 @@
  *		}
  *	}
  *
- *	if(!CConfigurationGlade::postConfigure())
+ *	if(!CConfigurationBuilder::postConfigure())
  *	{
  *		return false;
  *	}
@@ -154,7 +154,7 @@
  *}
  * \endcode
  *
- * Please note the calls to CConfigurationGlade::preConfigure(void) and CConfigurationGlade::postConfigure(void), so that basic header information are set.
+ * Please note the calls to CConfigurationBuilder::preConfigure(void) and CConfigurationBuilder::postConfigure(void), so that basic header information are set.
  *
  * \section Doc_ConfiguringANewDriver_ComplexConfiguration Complex configuration
  *

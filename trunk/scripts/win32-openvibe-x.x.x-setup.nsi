@@ -120,34 +120,31 @@ no_need_to_download_vcredist_2008_sp1:
 
 	SetOutPath "$INSTDIR\dependencies\arch"
 	File ..\dependencies\arch\openvibe-dependency-lua-5.1.4-30.zip
-	File ..\dependencies\arch\openvibe-dependency-boost-1.41.0.zip
-	File ..\dependencies\arch\openvibe-dependency-cmake-2.6.2.zip
+	File ..\dependencies\arch\openvibe-dependency-boost-1.42.0.zip
 	File ..\dependencies\arch\openvibe-dependency-expat-2.0.1.zip
-	File ..\dependencies\arch\openvibe-dependency-gtk-2.10.11.zip
-	File ..\dependencies\arch\openvibe-dependency-itpp-4.0.6.zip
+	File ..\dependencies\arch\openvibe-dependency-gtk-2.16.6.zip
+	File ..\dependencies\arch\openvibe-dependency-itpp-4.0.7-vs90.zip
 	File ..\dependencies\arch\openvibe-dependency-ogre-1.7.0-vc2008.zip
 	File ..\dependencies\arch\openvibe-dependency-cegui-0.7.1-vc2008.zip
-	File ..\dependencies\arch\openvibe-dependency-vrpn-7.13.zip
+	File ..\dependencies\arch\openvibe-dependency-vrpn-7.26-vs90.zip
 
 	SetOutPath "$INSTDIR\dependencies"
 	ZipDLL::extractall "arch\openvibe-dependency-lua-5.1.4-30.zip" "lua"
-	ZipDLL::extractall "arch\openvibe-dependency-boost-1.41.0" "boost"
-	ZipDLL::extractall "arch\openvibe-dependency-cmake-2.6.2.zip" "cmake"
+	ZipDLL::extractall "arch\openvibe-dependency-boost-1.42.0" "boost"
 	ZipDLL::extractall "arch\openvibe-dependency-expat-2.0.1.zip" "expat"
-	ZipDLL::extractall "arch\openvibe-dependency-gtk-2.10.11.zip" "gtk"
-	ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.6.zip" "itpp"
+	ZipDLL::extractall "arch\openvibe-dependency-gtk-2.16.6.zip" "gtk"
+	ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.7-vs90.zip" "itpp"
 	ZipDLL::extractall "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip" "ogre-vc2008"
 	ZipDLL::extractall "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip" "cegui-vc2008"
-	ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.13.zip" "vrpn"
+	ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.26-vs90.zip" "vrpn"
 
 	FileOpen $0 "$INSTDIR\dependencies\set-env.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\dependencies\itpp$\r$\n"
-	FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\dependencies\cmake\cmake-2.6.2-win32-x86$\r$\n"
 	FileWrite $0 "SET OV_DEP_EXPAT=$INSTDIR\dependencies\expat$\r$\n"
 	FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\dependencies\boost$\r$\n"
-	FileWrite $0 "SET OV_DEP_GLADE=$INSTDIR\dependencies\gtk$\r$\n"
+	FileWrite $0 "SET OV_DEP_GTK=$INSTDIR\dependencies\gtk$\r$\n"
 	FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\dependencies\itpp$\r$\n"
 	FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\dependencies\ogre-vc2008$\r$\n"
 	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\dependencies\cegui-vc2008$\r$\n"
@@ -159,10 +156,9 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_LUA%\lib;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_ITPP%\bin;%PATH%$\r$\n"
-	FileWrite $0 "SET PATH=%OV_DEP_CMAKE%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_EXPAT%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_BOOST%\bin;%PATH%$\r$\n"
-	FileWrite $0 "SET PATH=%OV_DEP_GLADE%\bin;%PATH%$\r$\n"
+	FileWrite $0 "SET PATH=%OV_DEP_GTK%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_ITPP%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_CEGUI%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;%PATH%$\r$\n"
@@ -229,7 +225,27 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "pause$\r$\n"
 	FileClose $0
-	
+
+	FileOpen $0 "$INSTDIR\openvibe-skeleton-generator.cmd" w
+	FileWrite $0 "@echo off$\r$\n"
+	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "cd bin$\r$\n"
+	FileWrite $0 "OpenViBE-skeleton-generator-dynamic.exe$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "pause$\r$\n"
+	FileClose $0
+
+	FileOpen $0 "$INSTDIR\openvibe-vrpn-simulator.cmd" w
+	FileWrite $0 "@echo off$\r$\n"
+	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "cd bin$\r$\n"
+	FileWrite $0 "OpenViBE-vrpn-simulator-dynamic.exe$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "pause$\r$\n"
+	FileClose $0
+
 	FileOpen $0 "$INSTDIR\openvibe-vr-demo.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
 	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"

@@ -3,16 +3,16 @@
 
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 
 #include <gtk/gtk.h>
 
 namespace OpenViBEAcquisitionServer
 {
-	class CConfigurationGTecGUSBamp : public OpenViBEAcquisitionServer::CConfigurationGlade
+	class CConfigurationGTecGUSBamp : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
-		CConfigurationGTecGUSBamp(const char* sGladeXMLFileName, OpenViBE::uint32& rUSBIndex);
+		CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName, OpenViBE::uint32& rUSBIndex);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);

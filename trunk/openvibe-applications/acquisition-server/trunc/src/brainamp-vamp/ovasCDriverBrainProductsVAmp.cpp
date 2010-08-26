@@ -286,10 +286,7 @@ boolean CDriverBrainProductsVAmp::loop(void)
 #endif
 		//____________________________
 
-		// no stimulations received from hardware, the set is empty
-		// CStimulationSet l_oStimulationSet;
 		m_pCallback->setSamples(m_pSample);
-		// m_pCallback->setStimulationSet(l_oStimulationSet);
 		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
 	}
 
@@ -361,7 +358,7 @@ boolean CDriverBrainProductsVAmp::isConfigurable(void)
 
 boolean CDriverBrainProductsVAmp::configure(void)
 {
-	CConfigurationBrainProductsVAmp m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp.glade", &m_oHeader); // the specific header is passed into the specific configuration
+	CConfigurationBrainProductsVAmp m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp.ui", &m_oHeader); // the specific header is passed into the specific configuration
 
 	if(!m_oConfiguration.configure(*(m_oHeader.getBasicHeader()))) // the basic configure will use the basic header
 	{

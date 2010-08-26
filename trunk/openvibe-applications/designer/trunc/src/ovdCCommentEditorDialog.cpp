@@ -1,5 +1,6 @@
 #include "ovdCCommentEditorDialog.h"
 
+#include <stdlib.h>
 using namespace OpenViBEDesigner;
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
@@ -20,9 +21,12 @@ boolean CCommentEditorDialog::run(void)
 {
 	boolean l_bResult=false;
 
-	::GladeXML* l_pInterface=glade_xml_new(m_sGUIFilename.toASCIIString(), "comment", NULL);
-	::GtkWidget* l_pDialog=glade_xml_get_widget(l_pInterface, "comment");
-	::GtkWidget* l_pDescription=glade_xml_get_widget(l_pInterface, "comment-textview_description");
+	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "comment", NULL);
+	gtk_builder_add_from_file(l_pInterface, m_sGUIFilename.toASCIIString(), NULL);
+	gtk_builder_connect_signals(l_pInterface, NULL);
+
+	::GtkWidget* l_pDialog=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "comment"));
+	::GtkWidget* l_pDescription=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "comment-textview_description"));
 	g_object_unref(l_pInterface);
 
 	::GtkTextBuffer* l_pDescriptionBuffer=gtk_text_buffer_new(NULL);

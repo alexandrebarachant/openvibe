@@ -65,23 +65,26 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::initialize(void)
 	op_pTargetStimulationSet.initialize(m_pTargetStimulationDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
 
 	//widgets
-	m_pMainWidgetInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.glade", "classifier-accuracy-measure-table", NULL);
-	m_pToolbarWidgetInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.glade", "classifier-accuracy-measure-toolbar", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "classifier-accuracy-measure-table", NULL);
+	gtk_builder_add_from_file(m_pMainWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
-	glade_xml_signal_autoconnect(m_pMainWidgetInterface);
-	glade_xml_signal_autoconnect(m_pToolbarWidgetInterface);
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "classifier-accuracy-measure-toolbar", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "reset-score-button")),                  "clicked",      G_CALLBACK(::reset_scores_button_cb),            this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-percentages-toggle-button")),      "toggled",      G_CALLBACK(::show_percentages_toggle_button_cb), this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "classifier-accuracy-measure-toolbar")), "delete_event", G_CALLBACK(gtk_widget_hide),                     NULL);
+	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
+	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
 
-	m_pMainWidget=glade_xml_get_widget(m_pMainWidgetInterface, "classifier-accuracy-measure-table");
-	m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "classifier-accuracy-measure-toolbar");
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "reset-score-button")),                  "clicked",      G_CALLBACK(::reset_scores_button_cb),            this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-percentages-toggle-button")),      "toggled",      G_CALLBACK(::show_percentages_toggle_button_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "classifier-accuracy-measure-toolbar")), "delete_event", G_CALLBACK(gtk_widget_hide),                     NULL);
+
+	m_pMainWidget=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "classifier-accuracy-measure-table"));
+	m_pToolbarWidget=GTK_WIDGET(gtk_builder_get_object(m_pToolbarWidgetInterface, "classifier-accuracy-measure-toolbar"));
 
 	getVisualisationContext().setWidget(m_pMainWidget);
 	getVisualisationContext().setToolbar(m_pToolbarWidget);
 
-	m_bShowPercentages=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-percentages-toggle-button")))?true:false);
+	m_bShowPercentages=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-percentages-toggle-button")))?true:false);
 
 	return true;
 }
@@ -141,23 +144,28 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::process(void)
 		{
 			//header received
 			//adding the progress bars to the window
-			::GtkTable* l_pTable=GTK_TABLE(glade_xml_get_widget(m_pMainWidgetInterface, "classifier-accuracy-measure-table"));
+			::GtkTable* l_pTable=GTK_TABLE(gtk_builder_get_object(m_pMainWidgetInterface, "classifier-accuracy-measure-table"));
 			gtk_table_resize(l_pTable, 1, l_rStaticBoxContext.getInputCount()-1);
 
 			for(uint32 i=0; i<l_rStaticBoxContext.getInputCount()-1; i++)
 			{
-				::GladeXML* l_pGladeXMLBar=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.glade", "progress-bar-classifier-accuracy", NULL);
-				::GtkWidget* l_pWidgetBar=glade_xml_get_widget(l_pGladeXMLBar, "progress-bar-classifier-accuracy");
+				::GtkBuilder* l_pGtkBuilderBar=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "progress-bar-classifier-accuracy", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilderBar, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
-				::GladeXML* l_pGladeXMLLabel=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.glade", "label-classifier-name", NULL);
-				::GtkWidget* l_pWidgetLabel=glade_xml_get_widget(l_pGladeXMLLabel, "label-classifier-name");
+				::GtkBuilder* l_pGtkBuilderLabel=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "label-classifier-name", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilderLabel, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
+				::GtkWidget* l_pWidgetBar=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderBar, "progress-bar-classifier-accuracy"));
+				::GtkWidget* l_pWidgetLabel=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderLabel, "label-classifier-name"));
+
+				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidgetBar)), l_pWidgetBar);
 				gtk_table_attach(
 					l_pTable, l_pWidgetBar,
 					i, i+1, 0, 6,
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					0, 0);
+				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidgetLabel)), l_pWidgetLabel);
 				gtk_table_attach(
 					l_pTable, l_pWidgetLabel,
 					i, i+1, 6, 7,
@@ -165,8 +173,8 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::process(void)
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					0, 0);
 
-				g_object_unref(l_pGladeXMLBar);
-				g_object_unref(l_pGladeXMLLabel);
+				g_object_unref(l_pGtkBuilderBar);
+				g_object_unref(l_pGtkBuilderLabel);
 
 				CBoxAlgorithmClassifierAccuracyMeasure::SProgressBar l_oProgressBar;
 				l_oProgressBar.m_pProgressBar=GTK_PROGRESS_BAR(l_pWidgetBar);

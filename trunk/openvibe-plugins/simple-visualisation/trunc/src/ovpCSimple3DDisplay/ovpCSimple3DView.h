@@ -6,7 +6,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include "ovpCSimple3DDatabase.h"
@@ -67,8 +66,8 @@ namespace OpenViBEPlugins
 				guint top_attach,
 				guint bottom_attach);
 */
-			//create a text combo box at the placeholder's location (if a combo box is created within Glade, critical
-			//warnings are triggered at interface loading time because there is no way to tell Glade to use a text combo box,
+			//create a text combo box at the placeholder's location (if a combo box is created within Builder, critical
+			//warnings are triggered at interface loading time because there is no way to tell Builder to use a text combo box,
 			//and Gtk looks for a non existent TreeModel to use with the combo box
 			//TODO : move this to a higher level class?
 			::GtkComboBox* createTextComboBox(
@@ -99,7 +98,7 @@ namespace OpenViBEPlugins
 			//! The database that contains the information to use to draw the signals
 			CSimple3DDatabase& m_rSimple3DDatabase;
 
-			::GladeXML* m_pGladeInterface;
+			::GtkBuilder* m_pBuilderInterface;
 
 			::GtkTable* m_pCreateObjectTable;
 			::GtkEntry* m_pCreateObjectName;

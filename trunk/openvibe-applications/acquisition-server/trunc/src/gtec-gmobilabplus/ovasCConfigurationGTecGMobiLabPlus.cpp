@@ -14,20 +14,20 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
 
-CConfigurationGTecGMobiLabPlus::CConfigurationGTecGMobiLabPlus(const char* sGladeXMLFileName)
-	:CConfigurationGlade(sGladeXMLFileName)
+CConfigurationGTecGMobiLabPlus::CConfigurationGTecGMobiLabPlus(const char* sGtkBuilderFileName)
+	:CConfigurationBuilder(sGtkBuilderFileName)
 {
 }
 
 boolean CConfigurationGTecGMobiLabPlus::postConfigure(void)
 {
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_port"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_port"));
 	if(m_bApplyConfiguration)
 	{
 		m_oPortName=::gtk_combo_box_get_active_text(l_pComboBox);
 	}
 
-	if(!CConfigurationGlade::postConfigure())
+	if(!CConfigurationBuilder::postConfigure())
 	{
 		return false;
 	}

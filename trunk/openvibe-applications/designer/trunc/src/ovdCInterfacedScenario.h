@@ -100,9 +100,9 @@ namespace OpenViBEDesigner
 		OpenViBE::boolean m_bDesignerVisualisationToggled;
 		OpenViBEDesigner::CDesignerVisualisation* m_pDesignerVisualisation;
 		OpenViBEDesigner::CPlayerVisualisation* m_pPlayerVisualisation;
-		::GladeXML* m_pGladeDummyScenarioNotebookTitle;
-		::GladeXML* m_pGladeDummyScenarioNotebookClient;
-		::GladeXML* m_pGladeTooltip;
+		::GtkBuilder* m_pBuilderDummyScenarioNotebookTitle;
+		::GtkBuilder* m_pBuilderDummyScenarioNotebookClient;
+		::GtkBuilder* m_pBuilderTooltip;
 		::GtkWidget* m_pNotebookPageTitle;
 		::GtkWidget* m_pNotebookPageContent;
 		::GtkViewport* m_pScenarioViewport;

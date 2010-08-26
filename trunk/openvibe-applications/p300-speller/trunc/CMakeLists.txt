@@ -48,7 +48,7 @@ ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
 INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEToolkit")
-INCLUDE("FindThirdPartyGlade")
+INCLUDE("FindThirdPartyGTK")
 
 # ---------------------------------
 # Finds standard library pthread

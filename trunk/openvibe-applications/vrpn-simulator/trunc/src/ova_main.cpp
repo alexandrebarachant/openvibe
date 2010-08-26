@@ -1,11 +1,10 @@
-#include <glade/glade.h>
-
 #include <gtk/gtk.h>
 
 #include <gdk/gdk.h>
 
 #include <vrpn_Button.h>
 #include <vrpn_Analog.h>
+#include <vrpn_Connection.h>
 
 #include <iostream>
 
@@ -74,20 +73,23 @@ gboolean fIdleApplicationLoop(gpointer pUserData)
 int main(int argc, char ** argv)
 {
 	gtk_init(&argc, &argv);
-	g_pConnection=new ::vrpn_Connection;
+	// g_pConnection=new ::vrpn_Connection;
+	g_pConnection=vrpn_create_server_connection();
 	g_pButtonServer=new ::vrpn_Button_Server(_vrpn_peripheral_name_, g_pConnection, 10);
 	g_pAnalogServer=new ::vrpn_Analog_Server(_vrpn_peripheral_name_, g_pConnection);
 	g_pAnalogServer->setNumChannels(10);
 
-	::GladeXML* l_pInterface=glade_xml_new("../share/openvibe-applications/vrpn-simulator/interface.glade", "window", NULL);
-	::GtkWidget* l_pMainWindow=glade_xml_get_widget(l_pInterface, "window");
-	::GtkWidget* l_pHBoxButton=glade_xml_get_widget(l_pInterface, "hbox_button");
-	::GtkWidget* l_pHBoxAnalog=glade_xml_get_widget(l_pInterface, "hbox_analog");
+	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-applications/vrpn-simulator/interface.ui", "window", NULL);
+	gtk_builder_add_from_file(l_pInterface, "../share/openvibe-applications/vrpn-simulator/interface.ui", NULL);
+
+	::GtkWidget* l_pMainWindow=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "window"));
+	::GtkWidget* l_pHBoxButton=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "hbox_button"));
+	::GtkWidget* l_pHBoxAnalog=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "hbox_analog"));
 
 	g_signal_connect(G_OBJECT(l_pMainWindow), "destroy", gtk_main_quit, NULL);
 	gtk_container_foreach(GTK_CONTAINER(l_pHBoxButton), fConnectCB, NULL);
 	gtk_container_foreach(GTK_CONTAINER(l_pHBoxAnalog), fConnectCB, NULL);
-	glade_xml_signal_autoconnect(l_pInterface);
+	gtk_builder_connect_signals(l_pInterface, NULL);
 
 	std::cout << "got " << g_iAnalogCount << " analogs...\n";
 	std::cout << "got " << g_iButtonCount << " buttons...\n";

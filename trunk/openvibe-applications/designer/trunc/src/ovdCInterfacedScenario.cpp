@@ -295,9 +295,9 @@ CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, C
 	,m_bDesignerVisualisationToggled(false)
 	,m_pDesignerVisualisation(NULL)
 	,m_pPlayerVisualisation(NULL)
-	,m_pGladeDummyScenarioNotebookTitle(NULL)
-	,m_pGladeDummyScenarioNotebookClient(NULL)
-	,m_pGladeTooltip(NULL)
+	,m_pBuilderDummyScenarioNotebookTitle(NULL)
+	,m_pBuilderDummyScenarioNotebookClient(NULL)
+	,m_pBuilderTooltip(NULL)
 	,m_pNotebookPageTitle(NULL)
 	,m_pNotebookPageContent(NULL)
 	,m_pScenarioViewport(NULL)
@@ -316,25 +316,30 @@ CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, C
 	,m_ui32CurrentMode(Mode_None)
 	,m_oStateStack(rKernelContext, rApplication, rScenario)
 {
-	m_pGladeDummyScenarioNotebookTitle=glade_xml_new(m_sGUIFilename.c_str(), "openvibe_scenario_notebook_title", NULL);
-	m_pGladeDummyScenarioNotebookClient=glade_xml_new(m_sGUIFilename.c_str(), "openvibe_scenario_notebook_scrolledwindow", NULL);
-	m_pGladeTooltip=glade_xml_new(m_sGUIFilename.c_str(), "tooltip", NULL);
+	m_pBuilderDummyScenarioNotebookTitle=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.c_str(), "openvibe_scenario_notebook_title", NULL);
+	gtk_builder_add_from_file(m_pBuilderDummyScenarioNotebookTitle, m_sGUIFilename.c_str(), NULL);
+	gtk_builder_connect_signals(m_pBuilderDummyScenarioNotebookTitle, NULL);
 
-	m_pNotebookPageTitle=glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe_scenario_notebook_title");
-	m_pNotebookPageContent=glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe_scenario_notebook_scrolledwindow");
-	gtk_widget_ref(m_pNotebookPageTitle);
-	gtk_widget_ref(m_pNotebookPageContent);
-	gtk_widget_unparent(m_pNotebookPageTitle);
-	gtk_widget_unparent(m_pNotebookPageContent);
+	m_pBuilderDummyScenarioNotebookClient=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.c_str(), "openvibe_scenario_notebook_scrolledwindow", NULL);
+	gtk_builder_add_from_file(m_pBuilderDummyScenarioNotebookClient, m_sGUIFilename.c_str(), NULL);
+	gtk_builder_connect_signals(m_pBuilderDummyScenarioNotebookClient, NULL);
+
+	m_pBuilderTooltip=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.c_str(), "tooltip", NULL);
+	gtk_builder_add_from_file(m_pBuilderTooltip, m_sGUIFilename.c_str(), NULL);
+	gtk_builder_connect_signals(m_pBuilderTooltip, NULL);
+
+	m_pNotebookPageTitle=GTK_WIDGET(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookTitle, "openvibe_scenario_notebook_title"));
+	m_pNotebookPageContent=GTK_WIDGET(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookClient, "openvibe_scenario_notebook_scrolledwindow"));
+
+	gtk_notebook_remove_page(GTK_NOTEBOOK(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookTitle, "openvibe-scenario_notebook")), 0);
+	gtk_notebook_remove_page(GTK_NOTEBOOK(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookClient, "openvibe-scenario_notebook")), 0);
 	gtk_notebook_append_page(&m_rNotebook, m_pNotebookPageContent, m_pNotebookPageTitle);
-	gtk_widget_unref(m_pNotebookPageContent);
-	gtk_widget_unref(m_pNotebookPageTitle);
 
-	GtkWidget* l_pCloseWidget = glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe-scenario_button_close");
+	GtkWidget* l_pCloseWidget=GTK_WIDGET(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookTitle, "openvibe-scenario_button_close"));
 	g_signal_connect(G_OBJECT(l_pCloseWidget), "clicked", G_CALLBACK(scenario_title_button_close_cb), this);
 
-	m_pScenarioDrawingArea=GTK_DRAWING_AREA(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_drawing_area"));
-	m_pScenarioViewport=GTK_VIEWPORT(glade_xml_get_widget(m_pGladeDummyScenarioNotebookClient, "openvibe-scenario_viewport"));
+	m_pScenarioDrawingArea=GTK_DRAWING_AREA(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookClient, "openvibe-scenario_drawing_area"));
+	m_pScenarioViewport=GTK_VIEWPORT(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookClient, "openvibe-scenario_viewport"));
 	gtk_drag_dest_set(GTK_WIDGET(m_pScenarioDrawingArea), GTK_DEST_DEFAULT_ALL, g_vTargetEntry, sizeof(g_vTargetEntry)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
 	g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "expose_event", G_CALLBACK(scenario_drawing_area_expose_cb), this);
 	g_signal_connect(G_OBJECT(m_pScenarioDrawingArea), "drag_data_received", G_CALLBACK(scenario_drawing_area_drag_data_received_cb), this);
@@ -371,9 +376,9 @@ CInterfacedScenario::~CInterfacedScenario(void)
 		g_object_unref(m_pStencilBuffer);
 	}
 
-	g_object_unref(m_pGladeDummyScenarioNotebookTitle);
-	g_object_unref(m_pGladeDummyScenarioNotebookClient);
-	g_object_unref(m_pGladeTooltip);
+	g_object_unref(m_pBuilderDummyScenarioNotebookTitle);
+	g_object_unref(m_pBuilderDummyScenarioNotebookClient);
+	g_object_unref(m_pBuilderTooltip);
 
 	gtk_notebook_remove_page(
 		&m_rNotebook,
@@ -395,7 +400,7 @@ void CInterfacedScenario::redraw(void)
 
 void CInterfacedScenario::updateScenarioLabel(void)
 {
-	::GtkLabel* l_pTitleLabel=GTK_LABEL(glade_xml_get_widget(m_pGladeDummyScenarioNotebookTitle, "openvibe-scenario_label"));
+	::GtkLabel* l_pTitleLabel=GTK_LABEL(gtk_builder_get_object(m_pBuilderDummyScenarioNotebookTitle, "openvibe-scenario_label"));
 	string l_sLabel;
 	string l_sTempFileName=m_sFileName;
 	string::size_type l_iBackSlashIndex;
@@ -1262,7 +1267,7 @@ void CInterfacedScenario::scenarioDrawingAreaMotionNotifyCB(::GtkWidget* pWidget
 
 	if(this->isLocked()) return;
 
-	::GtkWidget* l_pTooltip=glade_xml_get_widget(m_pGladeTooltip, "tooltip");
+	::GtkWidget* l_pTooltip=GTK_WIDGET(gtk_builder_get_object(m_pBuilderTooltip, "tooltip"));
 	gtk_widget_set_name(l_pTooltip, "gtk-tooltips");
 	uint32 l_ui32InterfacedObjectId=pickInterfacedObject((int)pEvent->x, (int)pEvent->y);
 	CInterfacedObject& l_rObject=m_vInterfacedObject[l_ui32InterfacedObjectId];
@@ -1290,8 +1295,8 @@ void CInterfacedScenario::scenarioDrawingAreaMotionNotifyCB(::GtkWidget* pWidget
 				l_sType=m_rKernelContext.getTypeManager().getTypeName(l_oType);
 			}
 			l_sType=CString("[")+l_sType+CString("]");
-			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "tooltip-label_name_content")), l_sName);
-			gtk_label_set_text(GTK_LABEL(glade_xml_get_widget(m_pGladeTooltip, "tooltip-label_type_content")), l_sType);
+			gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(m_pBuilderTooltip, "tooltip-label_name_content")), l_sName);
+			gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(m_pBuilderTooltip, "tooltip-label_type_content")), l_sType);
 			gtk_window_move(GTK_WINDOW(l_pTooltip), (gint)pEvent->x_root, (gint)pEvent->y_root+40);
 			gtk_widget_show(l_pTooltip);
 		}
@@ -1353,7 +1358,7 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 
 	if(this->isLocked()) return;
 
-	::GtkWidget* l_pTooltip=glade_xml_get_widget(m_pGladeTooltip, "tooltip");
+	::GtkWidget* l_pTooltip=GTK_WIDGET(gtk_builder_get_object(m_pBuilderTooltip, "tooltip"));
 	gtk_widget_hide(l_pTooltip);
 	gtk_widget_grab_focus(pWidget);
 
@@ -1440,13 +1445,10 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 								IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
 								if(l_pBox)
 								{
-									if(l_pBox->getSettingCount()!=0)
+									CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, *l_pBox, m_sGUIFilename.c_str());
+									if(l_oBoxConfigurationDialog.run())
 									{
-										CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, *l_pBox, m_sGUIFilename.c_str());
-										if(l_oBoxConfigurationDialog.run())
-										{
-											this->snapshotCB();
-										}
+										this->snapshotCB();
 									}
 								}
 							}

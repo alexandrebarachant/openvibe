@@ -1,10 +1,12 @@
 #if defined TARGET_HAS_ThirdPartyThinkGearAPI
 
 #include "ovasCConfigurationNeuroskyMindset.h"
-#include <thinkgear.h>
+
+#include <system/Time.h>
+
 #include <sstream>
 
-#include <System/Time.h>
+#include <thinkgear.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -28,7 +30,7 @@ void CConfigurationNeuroskyMindset::buttonCheckSignalQualityCB()
 	m_bCheckSignalQuality = true;
 
 	int l_iComPort;
-	const char* l_sUSBIndex=::gtk_combo_box_get_active_text(GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_com_port")));
+	const char* l_sUSBIndex=::gtk_combo_box_get_active_text(GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port")));
 	if(l_sUSBIndex)
 	{
 		if(!::sscanf(l_sUSBIndex, "COM%i", &l_iComPort)==1)
@@ -54,7 +56,7 @@ void CConfigurationNeuroskyMindset::buttonCheckSignalQualityCB()
 			printf(" established !.\n");
 					
 			m_ui32CurrentConnectionId = l_iConnectionId;
-			::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_check_signal_quality"));
+			::GtkDialog* l_pDialog=GTK_DIALOG(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog_check_signal_quality"));
 			int32 l_iDialogResponse;
 			
 			do
@@ -78,7 +80,7 @@ void CConfigurationNeuroskyMindset::buttonCheckSignalQualityCB()
 	else
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "The driver was unable to connect to the ThinkGear Communication Driver. (error code "<<l_iConnectionId<<").\n";;	
-		gtk_widget_hide(glade_xml_get_widget(m_pGladeConfigureInterface, "window_check_signal_quality"));
+		gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "window_check_signal_quality")));
 	}
 }
 
@@ -107,18 +109,18 @@ void CConfigurationNeuroskyMindset::buttonRefreshCB()
 				float32 signal_quality = (float32) TG_GetValue(m_ui32CurrentConnectionId, TG_DATA_POOR_SIGNAL); //0-200
 				m_rDriverContext.getLogManager() << LogLevel_Info << "Poor signal value received: "<<signal_quality<<".\n";
 
-				gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(glade_xml_get_widget(m_pGladeConfigureInterface, "progressbar_signal_quality")),1-(signal_quality/200.0));
+				gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(gtk_builder_get_object(m_pBuilderConfigureInterface, "progressbar_signal_quality")),1-(signal_quality/200.0));
 				if(signal_quality ==200)
 				{
-					gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeConfigureInterface, "label_status")),"No contact between the forehead and the electrode.");
+					gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderConfigureInterface, "label_status")),"No contact between the forehead and the electrode.");
 				}
 				else if(signal_quality > 50)
 				{
-					gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeConfigureInterface, "label_status")),"Poor signal detected, please check the electrodes (forehead and ear).");
+					gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderConfigureInterface, "label_status")),"Poor signal detected, please check the electrodes (forehead and ear).");
 				}
 				else
 				{
-					gtk_label_set_label(GTK_LABEL(glade_xml_get_widget(m_pGladeConfigureInterface, "label_status")),"The signal is good !");
+					gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderConfigureInterface, "label_status")),"The signal is good !");
 				}
 				//System::Time::sleep(500);
 				l_bValueUpdated = true;
@@ -134,8 +136,8 @@ void CConfigurationNeuroskyMindset::buttonRefreshCB()
 */
 //_________________________________________________
 
-CConfigurationNeuroskyMindset::CConfigurationNeuroskyMindset(IDriverContext& rDriverContext, const char* sGladeXMLFileName,OpenViBE::uint32& rComPort)
-	:CConfigurationGlade(sGladeXMLFileName)
+CConfigurationNeuroskyMindset::CConfigurationNeuroskyMindset(IDriverContext& rDriverContext, const char* sGtkBuilderFileName,OpenViBE::uint32& rComPort)
+	:CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rDriverContext(rDriverContext)
 	,m_rComPort(rComPort)
 	,m_bCheckSignalQuality(false)
@@ -145,24 +147,24 @@ CConfigurationNeuroskyMindset::CConfigurationNeuroskyMindset(IDriverContext& rDr
 
 boolean CConfigurationNeuroskyMindset::preConfigure(void)
 {
-	if(! CConfigurationGlade::preConfigure())
+	if(! CConfigurationBuilder::preConfigure())
 	{
 		return false;
 	}
 
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_com_port"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port"));
 
-	::GtkWidget * l_pWindowCheckSignalQuality=glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_check_signal_quality");
+	::GtkWidget * l_pWindowCheckSignalQuality=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog_check_signal_quality"));
 
 	/*
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_check_signal_quality"),"pressed",G_CALLBACK(button_check_signal_quality_cb), this);
-	
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_refresh"),"pressed",G_CALLBACK(button_refresh_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_check_signal_quality"),"pressed",G_CALLBACK(button_check_signal_quality_cb), this);
+
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_refresh"),"pressed",G_CALLBACK(button_refresh_cb), this);
 
 	//hide on close
 	g_signal_connect (G_OBJECT(l_pWindowCheckSignalQuality),
-					"delete_event",
-					G_CALLBACK(::gtk_widget_hide), NULL);
+		"delete_event",
+		G_CALLBACK(::gtk_widget_hide), NULL);
 	*/
 
 	char l_sBuffer[1024];
@@ -236,8 +238,7 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 
 boolean CConfigurationNeuroskyMindset::postConfigure(void)
 {
-
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_com_port"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port"));
 
 	if(m_bApplyConfiguration)
 	{
@@ -252,7 +253,7 @@ boolean CConfigurationNeuroskyMindset::postConfigure(void)
 		}
 	}
 
-	if(! CConfigurationGlade::postConfigure()) // normal header is filled, ressources are realesed
+	if(! CConfigurationBuilder::postConfigure()) // normal header is filled, ressources are realesed
 	{
 		return false;
 	}

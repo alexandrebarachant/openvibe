@@ -1,5 +1,5 @@
 #include "ovasCDriverCtfVsmMeg.h"
-#include "../ovasCConfigurationNetworkGlade.h"
+#include "../ovasCConfigurationNetworkBuilder.h"
 
 #include <system/Time.h>
 
@@ -374,7 +374,7 @@ boolean CDriverCtfVsmMeg::isConfigurable(void)
 
 boolean CDriverCtfVsmMeg::configure(void)
 {
-	CConfigurationNetworkGlade l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-CtfVsm-Meg.glade");
+	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-CtfVsm-Meg.ui");
 
 	l_oConfiguration.setHostName(m_sServerHostName);
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);

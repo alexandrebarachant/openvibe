@@ -13,7 +13,7 @@ resulting in an evoked potential in the user's brain activity. This evoked poten
 detected and used to find which line and which column the user was focused on, thus resulting
 in the ability to write text.
 
-This box relies on a glade interface that contains the actual letters & numbers. This glade
+This box relies on a gtk builder interface that contains the actual letters & numbers. This glade
 interface can be freely adpated if you need for example more than 6 lines or 6 columns, or
 if you need something else than letters & words (e.g. words).
 
@@ -83,7 +83,7 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_P300SpellerVisualisation_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_P300SpellerVisualisation_Setting1|
-This is the glade interface to use for the GUI. This file can be adapted depending on your needs, for example
+This is the gtk builder interface to use for the GUI. This file can be adapted depending on your needs, for example
 if you want to replace the letters / numbers by e.g. words or symbols, or if you want to add more lines / columns.
 However, the structure of the GUI is important (wee need some specific hierarchies to allow flash/selection coloring
 to work). So please, respect this structure.

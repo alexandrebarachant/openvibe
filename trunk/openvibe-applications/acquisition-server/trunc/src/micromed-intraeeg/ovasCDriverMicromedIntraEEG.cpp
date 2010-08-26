@@ -1,5 +1,5 @@
 #include "ovasCDriverMicromedIntraEEG.h"
-#include "../ovasCConfigurationNetworkGlade.h"
+#include "../ovasCConfigurationNetworkBuilder.h"
 
 #if defined OVAS_OS_Windows
 
@@ -615,7 +615,7 @@ boolean CDriverMicromedIntraEEG::isConfigurable(void)
 
 boolean CDriverMicromedIntraEEG::configure(void)
 {
-	CConfigurationNetworkGlade l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Micromed-IntraEEG.glade");
+	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Micromed-IntraEEG.ui");
 
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);
 

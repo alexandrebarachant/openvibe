@@ -6,7 +6,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include "../ovpCSpectrumDatabase.h"
@@ -132,8 +131,8 @@ namespace OpenViBEPlugins
 		private:
 			//! The spectrum database that contains the information to use to draw TF maps
 			CSpectrumDatabase& m_rSpectrumDatabase;
-			//! The Glade handler used to create the interface
-			::GladeXML* m_pGladeInterface;
+			//! The Builder handler used to create the interface
+			::GtkBuilder* m_pBuilderInterface;
 			//! The table containing the displays
 			GtkWidget * m_pDisplayTable;
 			//! Array of channel label widgets

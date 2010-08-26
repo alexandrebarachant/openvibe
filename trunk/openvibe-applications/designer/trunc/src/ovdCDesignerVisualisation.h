@@ -147,7 +147,7 @@ namespace OpenViBEDesigner
 
 		GtkTable* newWidgetsTable();
 		void setupNewEventBoxTable(
-			GladeXML* xml);
+			GtkBuilder* xml);
 
 		//visualisation windows
 		void askNewVisualisationWindow(void);

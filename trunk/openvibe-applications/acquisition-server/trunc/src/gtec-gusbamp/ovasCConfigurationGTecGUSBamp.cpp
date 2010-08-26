@@ -24,21 +24,20 @@ static gboolean idle_calibrate_cb(void* pUserData)
 	return FALSE;
 }
 
-CConfigurationGTecGUSBamp::CConfigurationGTecGUSBamp(const char* sGladeXMLFileName, OpenViBE::uint32& rUSBIndex)
-	:CConfigurationGlade(sGladeXMLFileName)
+CConfigurationGTecGUSBamp::CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName, OpenViBE::uint32& rUSBIndex)
+	:CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rUSBIndex(rUSBIndex)
 {
 }
 
-
 boolean CConfigurationGTecGUSBamp::preConfigure(void)
 {
-	if(!CConfigurationGlade::preConfigure())
+	if(!CConfigurationBuilder::preConfigure())
 	{
 		return false;
 	}
 
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 	char l_sBuffer[1024];
 	int l_iCount=0;
@@ -63,7 +62,7 @@ boolean CConfigurationGTecGUSBamp::preConfigure(void)
 		}
 	}
 
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface, "button_calibrate"), "pressed", G_CALLBACK(button_calibrate_pressed_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_calibrate"), "pressed", G_CALLBACK(button_calibrate_pressed_cb), this);
 
 	if(!l_bSelected && l_iCount!=0)
 	{
@@ -75,7 +74,7 @@ boolean CConfigurationGTecGUSBamp::preConfigure(void)
 
 boolean CConfigurationGTecGUSBamp::postConfigure(void)
 {
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 	if(m_bApplyConfiguration)
 	{
@@ -90,7 +89,7 @@ boolean CConfigurationGTecGUSBamp::postConfigure(void)
 		}
 	}
 
-	if(!CConfigurationGlade::postConfigure())
+	if(!CConfigurationBuilder::postConfigure())
 	{
 		return false;
 	}
@@ -115,7 +114,6 @@ void CConfigurationGTecGUSBamp::buttonCalibratePressedCB(void)
 	else
 	{
 		::GtkWidget* l_pDialog=::gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Calibration failed !");
-		::gtk_dialog_add_button(GTK_DIALOG(l_pDialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
 		::gtk_dialog_run(GTK_DIALOG(l_pDialog));
 		::gtk_widget_destroy(l_pDialog);
 	}
@@ -123,11 +121,12 @@ void CConfigurationGTecGUSBamp::buttonCalibratePressedCB(void)
 
 void CConfigurationGTecGUSBamp::idleCalibrateCB(void)
 {
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 	m_bCalibrationDone=false;
 	int l_iUSBIndex=0;
 	const char* l_sUSBIndex=::gtk_combo_box_get_active_text(l_pComboBox);
+
 	if(l_sUSBIndex)
 	{
 		if(::sscanf(l_sUSBIndex, "USB port %i", &l_iUSBIndex)==1)

@@ -51,6 +51,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::float32* m_pSample;
 
 	private:
+
 		OpenViBE::int32 m_i32ConnectionID;
 		OpenViBE::uint32 m_ui32ComPort;
 

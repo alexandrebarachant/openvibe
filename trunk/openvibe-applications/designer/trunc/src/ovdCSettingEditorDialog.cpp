@@ -29,13 +29,16 @@ CSettingEditorDialog::~CSettingEditorDialog(void)
 
 boolean CSettingEditorDialog::run(void)
 {
-	::GladeXML* l_pGladeInterfaceSetting=glade_xml_new(m_sGUIFilename.toASCIIString(), "setting_editor", NULL);
-	::GtkWidget* l_pDialog=glade_xml_get_widget(l_pGladeInterfaceSetting, "setting_editor");
-	::GtkWidget* l_pName=glade_xml_get_widget(l_pGladeInterfaceSetting, "setting_editor-setting_name_entry");
-	m_pTable=glade_xml_get_widget(l_pGladeInterfaceSetting, "setting_editor-table");
-	m_pType=glade_xml_get_widget(l_pGladeInterfaceSetting, "setting_editor-setting_type_combobox");
+	::GtkBuilder* l_pBuilderInterfaceSetting=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "setting_editor", NULL);
+	gtk_builder_add_from_file(l_pBuilderInterfaceSetting, m_sGUIFilename.toASCIIString(), NULL);
+	gtk_builder_connect_signals(l_pBuilderInterfaceSetting, NULL);
+
+	::GtkWidget* l_pDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSetting, "setting_editor"));
+	::GtkWidget* l_pName=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSetting, "setting_editor-setting_name_entry"));
+	m_pTable=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSetting, "setting_editor-table"));
+	m_pType=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSetting, "setting_editor-setting_type_combobox"));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(m_pType))));
-	g_object_unref(l_pGladeInterfaceSetting);
+	g_object_unref(l_pBuilderInterfaceSetting);
 
 	gtk_window_set_title(GTK_WINDOW(l_pDialog), m_sTitle.c_str());
 
@@ -116,11 +119,15 @@ void CSettingEditorDialog::typeChangedCB(void)
 	CIdentifier l_oSettingType=m_vSettingTypes[gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pType))];
 
 	CString l_sWidgetName=l_oHelper.getSettingWidgetName(l_oSettingType).toASCIIString();
-	::GladeXML* l_pGladeInterfaceDefaultValueDummy=glade_xml_new(m_sGUIFilename.toASCIIString(), l_sWidgetName.toASCIIString(), NULL);
+	::GtkBuilder* l_pBuilderInterfaceDefaultValueDummy=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), l_sWidgetName.toASCIIString(), NULL);
+	gtk_builder_add_from_file(l_pBuilderInterfaceDefaultValueDummy, m_sGUIFilename.toASCIIString(), NULL);
+	gtk_builder_connect_signals(l_pBuilderInterfaceDefaultValueDummy, NULL);
+
 	if(m_pDefaultValue) gtk_container_remove(GTK_CONTAINER(m_pTable), m_pDefaultValue);
-	m_pDefaultValue=glade_xml_get_widget(l_pGladeInterfaceDefaultValueDummy, l_sWidgetName.toASCIIString());
+	m_pDefaultValue=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceDefaultValueDummy, l_sWidgetName.toASCIIString()));
+	gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(m_pDefaultValue)), m_pDefaultValue);
 	gtk_table_attach(GTK_TABLE(m_pTable), m_pDefaultValue, 1, 2, 2, 3, ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), ::GtkAttachOptions(GTK_FILL|GTK_EXPAND), 0, 0);
-	g_object_unref(l_pGladeInterfaceDefaultValueDummy);
+	g_object_unref(l_pBuilderInterfaceDefaultValueDummy);
 
 	CString l_sDefaultValue;
 	m_rBox.getSettingDefaultValue(m_ui32SettingIndex, l_sDefaultValue);

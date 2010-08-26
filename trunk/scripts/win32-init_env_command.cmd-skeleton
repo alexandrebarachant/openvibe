@@ -159,7 +159,7 @@ SET LIB=%OV_DEP_MSSDK%\lib;%LIB%
 
 SET PATH=%OV_DEP_MSSDK%\bin;%PATH%
 SET PATH=%OV_DEP_BOOST%\bin;%PATH%
-SET PATH=%OV_DEP_GLADE%\bin;%PATH%
+SET PATH=%OV_DEP_GTK%\bin;%PATH%
 SET PATH=%OV_DEP_CMAKE%\bin;%PATH%
 SET PATH=%OV_DEP_EXPAT%\bin;%PATH%
 SET PATH=%OV_DEP_ITPP%\bin;%PATH%
@@ -170,7 +170,7 @@ SET PATH=%OV_DEP_MATLAB%\bin\win32;%PATH%
 
 SET PATH=%PATH%;%LIB%;%LIBPATH%
 
-SET PKG_CONFIG_PATH=%OV_DEP_GLADE%\lib\pkgconfig
+SET PKG_CONFIG_PATH=%OV_DEP_GTK%\lib\pkgconfig
 
 SET OpenViBE_build_order=OpenViBE_build_order.txt
 
@@ -206,7 +206,8 @@ echo %OpenViBE_application_designer% >> %OpenViBE_build_order%
 echo %OpenViBE_application_acquisition_server% >> %OpenViBE_build_order%
 echo %OpenViBE_application_plugin_inspector% >> %OpenViBE_build_order%
 echo %OpenViBE_application_vr_demo% >> %OpenViBE_build_order%
-REM echo %OpenViBE_application_vrpn_simulator% >> %OpenViBE_build_order%
+echo %OpenViBE_application_vrpn_simulator% >> %OpenViBE_build_order%
+echo %OpenViBE_application_skeleton_generator% >> %OpenViBE_build_order%
 
 REM echo %OpenViBE_plugin_local% >> %OpenViBE_build_order%
 REM echo %OpenViBE_plugin_matlab% >> %OpenViBE_build_order%

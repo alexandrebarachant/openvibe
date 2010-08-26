@@ -1,43 +1,9 @@
 #!/bin/bash
 
-if [ ! -e linux-init_env_command ]; then
-	echo "You have to configure your \`linux-init_env_command\` file."
-	echo "\`linux-init_env_command-skeleton\` is a good file to start with..."
-	exit
-fi
-
-source linux-init_env_command
-
-ov_debugger=
-if [ "$1" == "--debug" ]; then
-	ov_debugger=gdb
-	shift
-fi
-
-cd "$OpenViBE_base/dist"
-
-export LD_LIBRARY_PATH=$OpenViBE_base/dist/lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH
-export LC_ALL=C
-#renice 19 $$
-
-cd bin
-
-killall OpenViBE-id-generator-dynamic
-killall OpenViBE-plugin-inspector-dynamic
-killall OpenViBE-acquisition-server-dynamic
-killall OpenViBE-designer-dynamic
-
-if [ "$ov_debugger" == "" ]; then
-	#./OpenViBE-id-generator-dynamic
-	./OpenViBE-acquisition-server-dynamic &
-	./OpenViBE-designer-dynamic &
-	#./OpenViBE-plugin-inspector-dynamic &
-	./OpenViBE-vr-demo "tie-fighter" &
-else
-	#$ov_debugger ./OpenViBE-id-generator-dynamic
-	$ov_debugger ./OpenViBE-acquisition-server-dynamic
-	$ov_debugger ./OpenViBE-designer-dynamic
-	#$ov_debugger ./OpenViBE-plugin-inspector-dynamic
-	$ov_debugger ./OpenViBE-vr-demo "tie-fighter"
-fi
-
+./ov-acquisition-server.sh $*
+./ov-designer.sh $*
+./ov-id-generator.sh $*
+./ov-plugin-inspector.sh $*
+./ov-skeleton-generator.sh $*
+./ov-vr-demo-tie-fighter.sh $*
+./ov-vrpn-simulator.sh $*

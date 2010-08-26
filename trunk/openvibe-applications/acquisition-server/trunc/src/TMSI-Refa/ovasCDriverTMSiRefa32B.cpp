@@ -588,7 +588,7 @@ boolean CDriverTMSiRefa32B::configure(void)
 	//refresh the information of the device connected
 	this->refreshDevicePath();
 
-	CConfigurationTMSIRefa32B l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-TMSI-Refa32B.glade");
+	CConfigurationTMSIRefa32B l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-TMSI-Refa32B.ui");
 	//create a vector with all name of device connected
 	std::vector<string> l_vDevicePath;
 	for(map<PSP_DEVICE_PATH, std::string>::iterator  i=m_vDevicePathMap.begin();i!=m_vDevicePathMap.end();i++)

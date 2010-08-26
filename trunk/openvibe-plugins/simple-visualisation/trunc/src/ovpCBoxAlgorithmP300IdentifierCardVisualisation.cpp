@@ -41,14 +41,14 @@ boolean CBoxAlgorithmP300IdentifierCardVisualisation::initialize(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
+	m_pMainWidgetInterface=NULL;
+
 	//get value of settings given in the configuration box
 	m_sInterfaceFilename      =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	m_oBackgroundColor        =_AutoCast_(*this->getBoxAlgorithmContext(), 1);
 	m_oTargetBackgroundColor  =_AutoCast_(*this->getBoxAlgorithmContext(), 2);
 	m_oSelectedBackgroundColor=_AutoCast_(*this->getBoxAlgorithmContext(), 3);
 	m_ui64CardStimulationBase =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 4);
-
-
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -74,24 +74,31 @@ boolean CBoxAlgorithmP300IdentifierCardVisualisation::initialize(void)
 	op_pTargetFlaggingMemoryBuffer.initialize(m_pTargetFlaggingStimulationEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
 	m_ui64LastTime=0;
-	m_pMainWidgetInterface=glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-Identifier-card-main", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-Identifier-card-main", NULL);
+	if(!gtk_builder_add_from_file(m_pMainWidgetInterface, m_sInterfaceFilename.toASCIIString(), NULL))
+	{
+		this->getLogManager() << LogLevel_ImportantWarning << "Could not load interface file [" << m_sInterfaceFilename << "]\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "The file may be missing. However, the interface files now use gtk-builder instead of glade. Did you update your files ?\n";
+		return false;
+	}
+
 	// m_pToolbarWidgetInterface=glade_xml_new(m_sInterfaceFilename.toASCIIString(), "p300-Identifier-card-toolbar", NULL);
-	m_pMainWindow=glade_xml_get_widget(m_pMainWidgetInterface, "p300-Identifier-card-main");
-	// m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "p300-Identifier-card-toolbar");
-	m_pTable=GTK_TABLE(glade_xml_get_widget(m_pMainWidgetInterface, "p300-Identifier-card-table"));
+	m_pMainWindow=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "p300-Identifier-card-main"));
+	// m_pToolbarWidget=gtk_builder_get_object(m_pToolbarWidgetInterface, "p300-Identifier-card-toolbar");
+	m_pTable=GTK_TABLE(gtk_builder_get_object(m_pMainWidgetInterface, "p300-Identifier-card-table"));
 	gtk_widget_modify_bg(m_pMainWindow, GTK_STATE_NORMAL, &m_oBackgroundColor);
 	
-	m_oTargetLabel=GTK_LABEL(glade_xml_get_widget(m_pMainWidgetInterface, "labelTarget"));
+	m_oTargetLabel=GTK_LABEL(gtk_builder_get_object(m_pMainWidgetInterface, "labelTarget"));
 	char l_oLabelTarget[80];
 	sprintf(l_oLabelTarget, "<span weight=\"bold\" size=\"xx-large\" color=\"#%2x%2x%2x\">Target</span>", (m_oTargetBackgroundColor.red),(m_oTargetBackgroundColor.green),(m_oTargetBackgroundColor.blue));
 	gtk_label_set_label(m_oTargetLabel,l_oLabelTarget);
-	m_oSelectedLabel=GTK_LABEL(glade_xml_get_widget(m_pMainWidgetInterface, "labelResult"));
+	m_oSelectedLabel=GTK_LABEL(gtk_builder_get_object(m_pMainWidgetInterface, "labelResult"));
 	char l_oLabelSelected[80];
 	sprintf(l_oLabelSelected, "<span weight=\"bold\" size=\"xx-large\" color=\"#%2x%2x%2x\">Selected</span>", (m_oSelectedBackgroundColor.red),(m_oSelectedBackgroundColor.green),(m_oSelectedBackgroundColor.blue));
 	gtk_label_set_label(m_oSelectedLabel,l_oLabelSelected);
 
-	glade_xml_signal_autoconnect(m_pMainWidgetInterface);
-	// glade_xml_signal_autoconnect(m_pToolbarWidgetInterface);
+	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
+	// gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
 
 	getVisualisationContext().setWidget(m_pMainWindow);
 	// getVisualisationContext().setToolbar(m_pToolbarWidget);
@@ -163,8 +170,11 @@ boolean CBoxAlgorithmP300IdentifierCardVisualisation::uninitialize(void)
 	// g_object_unref(m_pToolbarWidgetInterface);
 	// m_pToolbarWidgetInterface=NULL;
 
-	g_object_unref(m_pMainWidgetInterface);
-	m_pMainWidgetInterface=NULL;
+	if(m_pMainWidgetInterface)
+	{
+		g_object_unref(m_pMainWidgetInterface);
+		m_pMainWidgetInterface=NULL;
+	}
 
 	ip_pTargetFlaggingStimulationSet.uninitialize();
 	op_pTargetFlaggingMemoryBuffer.uninitialize();
@@ -175,17 +185,33 @@ boolean CBoxAlgorithmP300IdentifierCardVisualisation::uninitialize(void)
 	op_pSequenceStimulationSet.uninitialize();
 	ip_pSequenceMemoryBuffer.uninitialize();
 
-	m_pCardSelectionStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pCardSelectionStimulationDecoder);
+	if(m_pCardSelectionStimulationDecoder)
+	{
+		m_pCardSelectionStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pCardSelectionStimulationDecoder);
+		m_pCardSelectionStimulationDecoder=NULL;
+	}
 
-	m_pTargetFlaggingStimulationEncoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pTargetFlaggingStimulationEncoder);
+	if(m_pTargetFlaggingStimulationEncoder)
+	{
+		m_pTargetFlaggingStimulationEncoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pTargetFlaggingStimulationEncoder);
+		m_pTargetFlaggingStimulationEncoder=NULL;
+	}
 
-	m_pTargetStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pTargetStimulationDecoder);
+	if(m_pTargetStimulationDecoder)
+	{
+		m_pTargetStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pTargetStimulationDecoder);
+		m_pTargetStimulationDecoder=NULL;
+	}
 
-	m_pSequenceStimulationDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pSequenceStimulationDecoder);
+	if(m_pSequenceStimulationDecoder)
+	{
+		m_pSequenceStimulationDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pSequenceStimulationDecoder);
+		m_pSequenceStimulationDecoder=NULL;
+	}
 
 	return true;
 }

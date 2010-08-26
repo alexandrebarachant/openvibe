@@ -1,5 +1,5 @@
 #include "ovasCDriverBrainampStandard.h"
-#include "../ovasCConfigurationNetworkGlade.h"
+#include "../ovasCConfigurationNetworkBuilder.h"
 
 #include <system/Time.h>
 
@@ -672,7 +672,7 @@ boolean CDriverBrainampStandard::isConfigurable(void)
 
 boolean CDriverBrainampStandard::configure(void)
 {
-	CConfigurationNetworkGlade l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Brainamp-Standard.glade");
+	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Brainamp-Standard.ui");
 
 	l_oConfiguration.setHostName(m_sServerHostName);
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);

@@ -980,7 +980,7 @@ fi;
 ov_package_url_pkgconfig=http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
 
 # base libraries
-ov_package_url_boost=$ov_sourceforge_mirror/boost/boost/1.41.0/boost_1_41_0.tar.bz2
+ov_package_url_boost=$ov_sourceforge_mirror/boost/boost/1.42.0/boost_1_42_0.tar.bz2
 ov_package_url_expat=$ov_sourceforge_mirror/expat/expat-2.0.0.tar.gz
 ov_package_url_libxml=ftp://xmlsoft.org/libxml2/old/libxml2-sources-2.6.31.tar.gz
 ov_package_url_gettext=$ov_gnu_mirror/gettext/gettext-0.16.1.tar.gz
@@ -1050,7 +1050,7 @@ ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0
 fi;
 ov_package_url_cegui=$ov_sourceforge_mirror/crayzedsgui/CEGUI%20Mk-2/0.7.1/CEGUI-0.7.1.tar.gz
 ov_package_url_ogre=$ov_sourceforge_mirror/ogre/ogre/1.7/ogre_src_v1-7-1.tar.bz2
-ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/old_versions/vrpn_07_15.zip
+ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/vrpn_07_26.zip
 ov_package_url_openmask4=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4~dotsceneloader-src-164.tar.bz2
 ov_package_url_openmask4tutorial=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4-tutorial-src-164.tar.bz2
 
@@ -1383,12 +1383,12 @@ ov_package_post_install_hook_cegui='
 
 if [ "$ov_machine" == "x86_64" ]; then
 ov_package_configure_hook_vrpn='
-	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux64/g" quat/makefile &&
+	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux64/g" quat/Makefile &&
 	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux64/g" vrpn/Makefile'
 else
 ov_package_configure_hook_vrpn='
-	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux/g" quat/makefile &&
-	$ov_sed -i "s/CC := gcc/CC := gcc -fPIC/g" quat/makefile &&
+	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux/g" quat/Makefile &&
+	$ov_sed -i "s/CC := gcc/CC := gcc -fPIC/g" quat/Makefile &&
 	$ov_sed -i "s/#HW_OS := pc_linux$/HW_OS := pc_linux/g" vrpn/Makefile &&
 	$ov_sed -i "s/CC := gcc/CC := gcc -fPIC/g" vrpn/Makefile &&
 	$ov_sed -i "s/CC := g++/CC := g++ -fPIC/g" vrpn/Makefile'

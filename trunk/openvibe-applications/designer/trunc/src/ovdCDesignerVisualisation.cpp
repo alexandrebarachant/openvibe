@@ -88,8 +88,8 @@ namespace OpenViBEDesigner
 		do
 		{
 			pTC = (::GtkTableChild*)pList->data;
-			if(	pTC->left_attach == leftAttach && pTC->right_attach == rightAttach &&
-					pTC->top_attach == topAttach && pTC->bottom_attach == bottomAttach)
+			if(pTC->left_attach == leftAttach && pTC->right_attach == rightAttach &&
+			   pTC->top_attach == topAttach && pTC->bottom_attach == bottomAttach)
 			{
 				return pTC;
 			}
@@ -418,8 +418,8 @@ static gboolean s_iconFill = TRUE;
 			}
 		}
 	}
-	else if(pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit ||	pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit ||
-					pVisualisationWidget->getType() == EVisualisationWidget_Undefined || pVisualisationWidget->getType() == EVisualisationWidget_VisualisationBox)
+	else if(pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit || pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit ||
+	        pVisualisationWidget->getType() == EVisualisationWidget_Undefined || pVisualisationWidget->getType() == EVisualisationWidget_VisualisationBox)
 	{
 		//tree widget = table containing event boxes + visualisation widget in the center
 		l_pTreeWidget = GTK_WIDGET(newWidgetsTable());
@@ -429,8 +429,13 @@ static gboolean s_iconFill = TRUE;
 			gtk_container_remove(GTK_CONTAINER(l_pTreeWidget), l_pCurrentVisualisationWidget);
 		}
 
-		if(pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit ||	pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit)
+		if(pVisualisationWidget->getType() == EVisualisationWidget_VerticalSplit || pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit)
 		{
+			if(gtk_widget_get_parent(l_pTreeWidget) != NULL)
+			{
+				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pTreeWidget)), l_pTreeWidget);
+			}
+
 			//create a paned and insert it in table
 			::GtkWidget* l_pPaned = (pVisualisationWidget->getType() == EVisualisationWidget_HorizontalSplit) ? gtk_hpaned_new() : gtk_vpaned_new();
 			gtk_table_attach(GTK_TABLE(l_pTreeWidget), l_pPaned, 1, 2, 1, 2,
@@ -439,6 +444,11 @@ static gboolean s_iconFill = TRUE;
 		}
 		else //undefined or visualisation box : visualisation widget is a GtkButton (left : icon, right : label)
 		{
+			if(gtk_widget_get_parent(l_pTreeWidget) != NULL)
+			{
+				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pTreeWidget)), l_pTreeWidget);
+			}
+
 			//create a button and insert it in table
 			::GtkWidget* l_pButton = gtk_button_new();
 			gtk_widget_set_size_request(l_pButton, 0, 0);
@@ -818,31 +828,31 @@ gboolean CDesignerVisualisation::notify_position_paned_cb(::GtkWidget *widget, G
 //Event box table management
 //--------------------------
 
-void CDesignerVisualisation::setupNewEventBoxTable(GladeXML* xml)
+void CDesignerVisualisation::setupNewEventBoxTable(GtkBuilder* xml)
 {
 	//set up event boxes as drag targets
-	gtk_drag_dest_set(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox2"), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
-	gtk_drag_dest_set(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox4"), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
-	gtk_drag_dest_set(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox6"), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
-	gtk_drag_dest_set(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox8"), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
+	gtk_drag_dest_set(GTK_WIDGET(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox2")), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
+	gtk_drag_dest_set(GTK_WIDGET(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox4")), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
+	gtk_drag_dest_set(GTK_WIDGET(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox6")), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
+	gtk_drag_dest_set(GTK_WIDGET(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox8")), GTK_DEST_DEFAULT_ALL, targets, sizeof(targets)/sizeof(::GtkTargetEntry), GDK_ACTION_COPY);
 
 	//set up event boxes callbacks for drag data received events
 	char buf[256];
 	sprintf(buf, "%p %s", this, "top");
 	m_sTopEventBoxData = buf;
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox2")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox2")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sTopEventBoxData.c_str()));
 	sprintf(buf, "%p %s", this, "left");
 	m_sLeftEventBoxData = buf;
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox4")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox4")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sLeftEventBoxData.c_str()));
 	sprintf(buf, "%p %s", this, "right");
 	m_sRightEventBoxData = buf;
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox6")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox6")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sRightEventBoxData.c_str()));
 	sprintf(buf, "%p %s", this, "bottom");
 	m_sBottomEventBoxData = buf;
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(xml, "window_manager_eventbox-eventbox8")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(xml, "window_manager_eventbox-eventbox8")), "drag_data_received", G_CALLBACK(drag_data_received_in_event_box_cb),
 		gpointer(m_sBottomEventBoxData.c_str()));
 }
 
@@ -989,12 +999,14 @@ void CDesignerVisualisation::setActiveVisualisation(const char* _activeWindow, c
 //creates a new widgets table and sets it as current
 ::GtkTable* CDesignerVisualisation::newWidgetsTable()
 {
-	GladeXML* pGladeXMLTable = glade_xml_new(m_sGuiFile.c_str(), "window_manager_eventbox-table", NULL);
+	GtkBuilder* pGtkBuilderTable = gtk_builder_new(); // glade_xml_new(m_sGuiFile.c_str(), "window_manager_eventbox-table", NULL);
+	gtk_builder_add_from_file(pGtkBuilderTable, m_sGuiFile.c_str(), NULL);
+	gtk_builder_connect_signals(pGtkBuilderTable, NULL);
 
 	//set up event boxes
-	setupNewEventBoxTable(pGladeXMLTable);
+	setupNewEventBoxTable(pGtkBuilderTable);
 
-	::GtkTable* pTable = GTK_TABLE(glade_xml_get_widget(pGladeXMLTable, "window_manager_eventbox-table"));
+	::GtkTable* pTable = GTK_TABLE(gtk_builder_get_object(pGtkBuilderTable, "window_manager_eventbox-table"));
 
 	//clear central button label
 	::GtkTableChild* pTC = getTableChild(pTable, 1, 2, 1, 2);

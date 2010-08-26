@@ -47,19 +47,20 @@ namespace OpenViBEAcquisitionServer
 	protected:
 
 		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
-		
+
 		// Replace this generic Header with any specific header you might have written
 		OpenViBEAcquisitionServer::CHeader m_oHeader;
 
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::float32* m_pSample;
 	
-	/*
-	 * Insert here all specific attributes, such as USB port number or device ID.
-	 * Example: 
-	 private:
-		OpenViBE::uint32 m_ui32USBPort;
-	 */
+	private:
+
+		/*
+		 * Insert here all specific attributes, such as USB port number or device ID.
+		 * Example :
+		 */
+		// OpenViBE::uint32 m_ui32USBPort;
 	};
 };
 

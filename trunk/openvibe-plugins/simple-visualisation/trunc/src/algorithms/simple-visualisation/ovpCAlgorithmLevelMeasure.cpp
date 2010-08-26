@@ -43,22 +43,25 @@ boolean CAlgorithmLevelMeasure::initialize(void)
 	op_pMainWidget.initialize(getOutputParameter(OVP_Algorithm_LevelMeasure_OutputParameterId_MainWidget));
 	op_pToolbarWidget.initialize(getOutputParameter(OVP_Algorithm_LevelMeasure_OutputParameterId_ToolbarWidget));
 
-	m_pMainWidgetInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.glade", "level-measure-table", NULL);
-	m_pToolbarWidgetInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.glade", "level-measure-toolbar", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "level-measure-table", NULL);
+	gtk_builder_add_from_file(m_pMainWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
 
-	glade_xml_signal_autoconnect(m_pMainWidgetInterface);
-	glade_xml_signal_autoconnect(m_pToolbarWidgetInterface);
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "level-measure-toolbar", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
 
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "reset-score-button")),             "clicked",       G_CALLBACK(::reset_scores_button_cb),            this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-percentages-toggle-button")), "toggled",       G_CALLBACK(::show_percentages_toggle_button_cb), this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "threshold-spinbutton")),           "value-changed", G_CALLBACK(::threshold_spinbutton_cb),           this);
-	g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pToolbarWidgetInterface, "level-measure-toolbar")),          "delete_event",  G_CALLBACK(gtk_widget_hide),                     NULL);
+	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
+	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
 
-	m_pMainWindow=glade_xml_get_widget(m_pMainWidgetInterface, "level-measure-table");
-	m_pToolbarWidget=glade_xml_get_widget(m_pToolbarWidgetInterface, "level-measure-toolbar");
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "reset-score-button")),             "clicked",       G_CALLBACK(::reset_scores_button_cb),            this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-percentages-toggle-button")), "toggled",       G_CALLBACK(::show_percentages_toggle_button_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "threshold-spinbutton")),           "value-changed", G_CALLBACK(::threshold_spinbutton_cb),           this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "level-measure-toolbar")),          "delete_event",  G_CALLBACK(gtk_widget_hide),                     NULL);
 
-	m_bShowPercentages=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "show-percentages-toggle-button")))?true:false);
-	m_f64Threshold=.01*gtk_spin_button_get_value(GTK_SPIN_BUTTON(glade_xml_get_widget(m_pToolbarWidgetInterface, "threshold-spinbutton")));
+	m_pMainWindow=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "level-measure-table"));
+	m_pToolbarWidget=GTK_WIDGET(gtk_builder_get_object(m_pToolbarWidgetInterface, "level-measure-toolbar"));
+
+	m_bShowPercentages=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-percentages-toggle-button")))?true:false);
+	m_f64Threshold=.01*gtk_spin_button_get_value(GTK_SPIN_BUTTON(gtk_builder_get_object(m_pToolbarWidgetInterface, "threshold-spinbutton")));
 
 	return true;
 }
@@ -92,22 +95,25 @@ boolean CAlgorithmLevelMeasure::process(void)
 		uint32 l_ui32RowCount=(ip_pMatrix->getDimensionCount()==2?ip_pMatrix->getDimensionSize(0):1);
 		uint32 l_ui32ColumnCount=(ip_pMatrix->getDimensionCount()==2?ip_pMatrix->getDimensionSize(1):ip_pMatrix->getDimensionSize(0));
 
-		::GtkTable* l_pTable=GTK_TABLE(glade_xml_get_widget(m_pMainWidgetInterface, "level-measure-table"));
+		::GtkTable* l_pTable=GTK_TABLE(gtk_builder_get_object(m_pMainWidgetInterface, "level-measure-table"));
 		gtk_table_resize(l_pTable, l_ui32RowCount, l_ui32ColumnCount);
 
 		for(uint32 i=0; i<l_ui32RowCount; i++)
 		{
 			for(uint32 j=0; j<l_ui32ColumnCount; j++)
 			{
-				::GladeXML* l_pGladeXML=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.glade", "progress-bar-level", NULL);
-				::GtkWidget* l_pWidget=glade_xml_get_widget(l_pGladeXML, "progress-bar-level");
+				::GtkBuilder* l_pGtkBuilder=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "progress-bar-level", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilder, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
+
+				::GtkWidget* l_pWidget=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilder, "progress-bar-level"));
+				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidget)), l_pWidget);
 				gtk_table_attach(
 					l_pTable, l_pWidget,
 					j, j+1, i, i+1,
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					(::GtkAttachOptions)(GTK_EXPAND|GTK_FILL),
 					0, 0);
-				g_object_unref(l_pGladeXML);
+				g_object_unref(l_pGtkBuilder);
 
 				CAlgorithmLevelMeasure::SProgressBar l_oProgressBar;
 				l_oProgressBar.m_pProgressBar=GTK_PROGRESS_BAR(l_pWidget);

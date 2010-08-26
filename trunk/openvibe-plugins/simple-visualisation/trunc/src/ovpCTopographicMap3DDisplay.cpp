@@ -754,6 +754,7 @@ boolean CTopographicMap3DDisplay::process3D()
 		//disable plugin upon errors
 		return l_bProcess == true;
 	}
+	return true;
 }
 
 boolean CTopographicMap3DDisplay::createSkull()

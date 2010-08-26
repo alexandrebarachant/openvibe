@@ -78,8 +78,8 @@ Section "CMake"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-cmake-2.6.2.zip" no_need_to_download_cmake
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.6.2.zip "arch\openvibe-dependency-cmake-2.6.2.zip"
+	IfFileExists "arch\openvibe-dependency-cmake-2.8.2-win32-x86.zip" no_need_to_download_cmake
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.8.2-win32-x86.zip "arch\openvibe-dependency-cmake-2.8.2-win32-x86.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -88,13 +88,13 @@ Section "CMake"
 no_need_to_download_cmake:
 
 	IfFileExists "cmake" no_need_to_install_cmake
-	ZipDLL::extractall "arch\openvibe-dependency-cmake-2.6.2.zip" "cmake"
+	ZipDLL::extractall "arch\openvibe-dependency-cmake-2.8.2-win32-x86.zip" "cmake"
 
 no_need_to_install_cmake:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.6.2-win32-x86$\r$\n"
+	FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.8.2-win32-x86$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -138,8 +138,8 @@ Section "BOOST"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-boost-1.41.0.zip" no_need_to_download_boost
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.41.0.zip "arch\openvibe-dependency-boost-1.41.0.zip"
+	IfFileExists "arch\openvibe-dependency-boost-1.42.0.zip" no_need_to_download_boost
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.42.0.zip "arch\openvibe-dependency-boost-1.42.0.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -148,7 +148,7 @@ Section "BOOST"
 no_need_to_download_boost:
 
 	IfFileExists "boost" no_need_to_install_boost
-	ZipDLL::extractall "arch\openvibe-dependency-boost-1.41.0.zip" "boost"
+	ZipDLL::extractall "arch\openvibe-dependency-boost-1.42.0.zip" "boost"
 
 no_need_to_install_boost:
 
@@ -163,47 +163,43 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "GTK/Glade"
+Section "GTK+"
 
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-gtk-2.10.11.zip" no_need_to_download_glade
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.10.11.zip "arch\openvibe-dependency-gtk-2.10.11.zip"
+	IfFileExists "arch\openvibe-dependency-gtk-2.16.6.zip" no_need_to_download_gtk
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.16.6.zip "arch\openvibe-dependency-gtk-2.16.6.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 
-no_need_to_download_glade:
+no_need_to_download_gtk:
 
-	IfFileExists "GTK" no_need_to_install_glade
-	ZipDLL::extractall "arch\openvibe-dependency-gtk-2.10.11.zip" "gtk"
+	IfFileExists "GTK" no_need_to_install_gtk
+	ZipDLL::extractall "arch\openvibe-dependency-gtk-2.16.6.zip" "gtk"
 
-no_need_to_install_glade:
+no_need_to_install_gtk:
 
-	FileOpen $0 "$INSTDIR\gtk\lib\pkgconfig\libglade-2.0.pc" w
+	FileOpen $0 "$INSTDIR\gtk\lib\pkgconfig\gtk+-win32-2.0.pc" w
 	FileWrite $0 "prefix=$INSTDIR\gtk$\r$\n"
 	FileWrite $0 "exec_prefix=$${prefix}$\r$\n"
 	FileWrite $0 "libdir=$${exec_prefix}/lib$\r$\n"
 	FileWrite $0 "includedir=$${prefix}/include$\r$\n"
+	FileWrite $0 "target=win32$\r$\n"
 	FileWrite $0 "$\r$\n"
-	FileWrite $0 "# so people can do $\"pkg-config --variable moduledir libglade-2.0$\"$\r$\n"
-	FileWrite $0 "# (which is broken - users can now use the LIBGLADE_MODULE_PATH$\r$\n"
-	FileWrite $0 "# environment variable$\r$\n"
-	FileWrite $0 "moduledir=$${libdir}/libglade/2.0$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "Name: Libglade$\r$\n"
-	FileWrite $0 "Description: a library for dynamically loading GLADE interface files$\r$\n"
-	FileWrite $0 "Version: 2.5.1$\r$\n"
-	FileWrite $0 "Requires: gtk+-2.0 libxml-2.0$\r$\n"
-	FileWrite $0 "Libs: -L$${libdir} -lglade-2.0$\r$\n"
-	FileWrite $0 "Cflags: -I$${includedir}/libglade-2.0$\r$\n"
+	FileWrite $0 "Name: GTK+$\r$\n"
+	FileWrite $0 "Description: GTK+ Graphical UI Library ($${target} target)$\r$\n"
+	FileWrite $0 "Version: 2.16.6$\r$\n"
+	FileWrite $0 "Requires: gdk-$${target}-2.0 atk cairo gio-2.0$\r$\n"
+	FileWrite $0 "Libs: -L$${libdir} -lgtk-$${target}-2.0$\r$\n"
+	FileWrite $0 "Cflags: -I$${includedir}/gtk-2.0$\r$\n"
 	FileClose $0
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_GLADE=$INSTDIR\gtk$\r$\n"
+	FileWrite $0 "SET OV_DEP_GTK=$INSTDIR\gtk$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -212,13 +208,47 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "IT++"
+Section /o "GTK+ themes"
 
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-itpp-4.0.6.zip" no_need_to_download_itpp
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.6.zip "arch\openvibe-dependency-itpp-4.0.6.zip"
+	IfFileExists "arch\openvibe-dependency-gtk-themes-2009.09.07.zip" no_need_to_download_gtk_themes
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-themes-2009.09.07.zip "arch\openvibe-dependency-gtk-themes-2009.09.07.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+
+no_need_to_download_gtk_themes:
+
+;	IfFileExists "GTK" no_need_to_install_gtk_themes
+	ZipDLL::extractall "arch\openvibe-dependency-gtk-themes-2009.09.07.zip" "gtk"
+
+;no_need_to_install_gtk_themes:
+
+	FileOpen $0 "$INSTDIR\gtk\etc\gtk-2.0\gtkrc" w
+	FileWrite $0 "gtk-theme-name = $\"Clearlooks$\"$\r$\n"
+	FileWrite $0 "style $\"user-font$\"$\r$\n"
+	FileWrite $0 "{$\r$\n"
+	FileWrite $0 "	font_name=$\"Sans 8$\"$\r$\n"
+	FileWrite $0 "}$\r$\n"
+	FileWrite $0 "widget_class $\"*$\" style $\"user-font$\"$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "IT++ for Visual C++ 2008"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\openvibe-dependency-itpp-4.0.7-vs90.zip" no_need_to_download_itpp
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-vs90.zip "arch\openvibe-dependency-itpp-4.0.7-vs90.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -227,7 +257,7 @@ Section "IT++"
 no_need_to_download_itpp:
 
 	IfFileExists "itpp" no_need_to_install_itpp
-	ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.6.zip" "itpp"
+	ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.7-vs90.zip" "itpp"
 
 no_need_to_install_itpp:
 
@@ -344,13 +374,13 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "VRPN"
+Section "VRPN for Visual C++ 2008"
 
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\openvibe-dependency-vrpn-7.73.zip" no_need_to_download_vrpn
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.13.zip "arch\openvibe-dependency-vrpn-7.13.zip"
+	IfFileExists "arch\openvibe-dependency-vrpn-7.26-vs90.zip" no_need_to_download_vrpn
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-vs90.zip "arch\openvibe-dependency-vrpn-7.26-vs90.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
@@ -359,7 +389,7 @@ Section "VRPN"
 no_need_to_download_vrpn:
 
 	IfFileExists "vrpn" no_need_to_install_vrpn
-	ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.13.zip" "vrpn"
+	ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.26-vs90.zip" "vrpn"
 
 no_need_to_install_vrpn:
 
@@ -398,7 +428,7 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "Visual Redistributable Package"
+Section "Visual Redistributable Packages"
 
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
@@ -452,6 +482,3 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
-
-
-

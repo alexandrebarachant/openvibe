@@ -46,7 +46,7 @@ namespace OpenViBEPlugins
 			uint64 ui64DefaultInterpolation, float64 f64Delay)
 			:m_rTopographicMapDatabase(rTopographicMapDatabase)
 			,m_f64MaxDelay(2.0) //maximum delay : 2s
-			,m_pGladeInterface(NULL)
+			,m_pBuilderInterface(NULL)
 			,m_pDrawingArea(NULL)
 			,m_pClipmask(NULL)
 			,m_ui32ClipmaskWidth(0)
@@ -84,16 +84,17 @@ namespace OpenViBEPlugins
 		{
 			m_oSampleCoordinatesMatrix.setDimensionCount(2);
 
-			//load the glade interface
-			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap2D.glade", NULL, NULL);
+			//load the gtk builder interface
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap2D.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap2D.ui", NULL);
 
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return;
 			}
 
-			glade_xml_signal_autoconnect(m_pGladeInterface);
+			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			m_oBackgroundColor.pixel = 0;
 			m_oBackgroundColor.red = 0xFFFF;
@@ -104,17 +105,17 @@ namespace OpenViBEPlugins
 			//-------
 
 			//get pointers to projection mode buttons
-			m_pAxialProjectionButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "AxialProjection"));
-			m_pRadialProjectionButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "RadialProjection"));
+			m_pAxialProjectionButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "AxialProjection"));
+			m_pRadialProjectionButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "RadialProjection"));
 
 			g_signal_connect(G_OBJECT(m_pAxialProjectionButton), "toggled", G_CALLBACK (setProjectionCallback), this);
 			g_signal_connect(G_OBJECT(m_pRadialProjectionButton), "toggled", G_CALLBACK (setProjectionCallback), this);
 
 			//get pointers to view buttons
-			m_pTopViewButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "TopView"));
-			m_pLeftViewButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "LeftView"));
-			m_pRightViewButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "RightView"));
-			m_pBackViewButton = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "BackView"));
+			m_pTopViewButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "TopView"));
+			m_pLeftViewButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "LeftView"));
+			m_pRightViewButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "RightView"));
+			m_pBackViewButton = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "BackView"));
 
 			g_signal_connect(G_OBJECT(m_pTopViewButton), "toggled", G_CALLBACK (setViewCallback), this);
 			g_signal_connect(G_OBJECT(m_pLeftViewButton), "toggled", G_CALLBACK (setViewCallback), this);
@@ -122,14 +123,14 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(m_pBackViewButton), "toggled", G_CALLBACK (setViewCallback), this);
 
 			//get pointers to interpolation type buttons
-			m_pMapPotentials = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MapPotentials"));
-			m_pMapCurrents = GTK_RADIO_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "MapCurrents"));
+			m_pMapPotentials = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MapPotentials"));
+			m_pMapCurrents = GTK_RADIO_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "MapCurrents"));
 
 			g_signal_connect(G_OBJECT(m_pMapPotentials), "toggled", G_CALLBACK (setInterpolationCallback), this);
 			g_signal_connect(G_OBJECT(m_pMapCurrents), "toggled", G_CALLBACK (setInterpolationCallback), this);
 
 			//get pointer to electrodes toggle button
-			m_pElectrodesToggleButton = GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "ToggleElectrodes"));
+			m_pElectrodesToggleButton = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "ToggleElectrodes"));
 
 			g_signal_connect(G_OBJECT(m_pElectrodesToggleButton), "toggled", G_CALLBACK(toggleElectrodesCallback), this);
 
@@ -152,7 +153,7 @@ namespace OpenViBEPlugins
 			g_signal_connect(G_OBJECT(l_pDelayScale), "value_changed", G_CALLBACK(setDelayCallback), this);
 
 			//replace existing scale (which somehow can't be used) with the newly created one
-			GtkWidget* l_pOldScale = glade_xml_get_widget(m_pGladeInterface, "DelayScale");
+			GtkWidget* l_pOldScale = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "DelayScale"));
 			GtkWidget* l_pScaleParent = gtk_widget_get_parent(l_pOldScale);
 			if(l_pScaleParent != NULL && GTK_IS_CONTAINER(l_pScaleParent))
 			{
@@ -221,13 +222,13 @@ namespace OpenViBEPlugins
 			}
 
 			//unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 		}
 
 		void CTopographicMap2DView::init()
 		{
-			m_pDrawingArea = glade_xml_get_widget(m_pGladeInterface, "TopographicMap2DDrawingArea");
+			m_pDrawingArea = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "TopographicMap2DDrawingArea"));
 
 			gtk_widget_set_double_buffered(m_pDrawingArea, TRUE);
 
@@ -290,8 +291,8 @@ namespace OpenViBEPlugins
 
 		void CTopographicMap2DView::getWidgets(GtkWidget*& pWidget, GtkWidget*& pToolbarWidget)
 		{
-			pWidget = glade_xml_get_widget(m_pGladeInterface, "TopographicMap2DDrawingArea");
-			pToolbarWidget = glade_xml_get_widget(m_pGladeInterface, "Toolbar");
+			pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "TopographicMap2DDrawingArea"));
+			pToolbarWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "Toolbar"));
 		}
 
 		CTopographicMap2DView::ETopographicMap2DView CTopographicMap2DView::getCurrentView()

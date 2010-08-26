@@ -1,7 +1,5 @@
 #include "ovpCKeyboardStimulator.h"
 
-#include <glade/glade.h>
-
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -165,17 +163,17 @@ namespace OpenViBEPlugins
 				ss << "\t</span>\n";
 			}
 
-			::GladeXML* l_pGlade=glade_xml_new("../share/openvibe-plugins/stimulation/keyboard-stimulator.glade", NULL, NULL);
+			::GtkBuilder* l_pBuilder=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/stimulation/keyboard-stimulator.ui", NULL, NULL);
+			gtk_builder_add_from_file(l_pBuilder, "../share/openvibe-plugins/stimulation/keyboard-stimulator.ui", NULL);
+			gtk_builder_connect_signals(l_pBuilder, NULL);
 
-			glade_xml_signal_autoconnect(l_pGlade);
+			m_pWidget=GTK_WIDGET(gtk_builder_get_object(l_pBuilder, "keyboard_stimulator-eventbox"));
 
-			m_pWidget=glade_xml_get_widget(l_pGlade, "keyboard_stimulator-eventbox");
-
-			gtk_label_set_markup(GTK_LABEL(glade_xml_get_widget(l_pGlade, "keyboard_stimulator-label")), ss.str().c_str());
+			gtk_label_set_markup(GTK_LABEL(gtk_builder_get_object(l_pBuilder, "keyboard_stimulator-label")), ss.str().c_str());
 
 			g_signal_connect(m_pWidget, "key-press-event",   G_CALLBACK(KeyboardStimulator_KeyPressCallback),   this);
 			g_signal_connect(m_pWidget, "key-release-event", G_CALLBACK(KeyboardStimulator_KeyReleaseCallback), this);
-			g_object_unref(l_pGlade);
+			g_object_unref(l_pBuilder);
 
 			this->getVisualisationContext().setWidget(m_pWidget);
 

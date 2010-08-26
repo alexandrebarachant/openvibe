@@ -72,8 +72,8 @@ void initFastModeSettingsComboBox(GtkWidget * comboBox, uint32 activeValue, bool
 
 //____________________________________________________________________________________
 
-CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(IDriverContext& rDriverContext, const char* sGladeXMLFileName, CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp)
-	:CConfigurationGlade(sGladeXMLFileName)
+CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(IDriverContext& rDriverContext, const char* sGtkBuilderFileName, CHeaderBrainProductsVAmp * pHeaderBrainProductsVAmp)
+	:CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rDriverContext(rDriverContext)
 	,m_pHeaderBrainProductsVAmp(pHeaderBrainProductsVAmp)
 {
@@ -81,35 +81,35 @@ CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(IDriverContext&
 
 boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 {
-	if(! CConfigurationGlade::preConfigure())
+	if(! CConfigurationBuilder::preConfigure())
 	{
 		return false;
 	}
 
 	// Finds all the widgets
-	m_pDialogFastModeSettings=glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_fast_mode_settings");
+	m_pDialogFastModeSettings=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog_fast_mode_settings"));
 
 	// the acquisition mode combo box in the main interface
-	m_pAcquisitionMode=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_acquisition_mode");
+	m_pAcquisitionMode=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_acquisition_mode"));
 
 	// the device combo box autofilled with all connected device
-	m_pDevice=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device");
+	m_pDevice=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 	// the 8 spin buttons for the settings in the "fast mode settings" interface
-	m_pPair1PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair1_positive_input");
-	m_pPair1NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair1_negative_input");
+	m_pPair1PositiveInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair1_positive_input"));
+	m_pPair1NegativeInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair1_negative_input"));
 
-	m_pPair2PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair2_positive_input");
-	m_pPair2NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair2_negative_input");
+	m_pPair2PositiveInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair2_positive_input"));
+	m_pPair2NegativeInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair2_negative_input"));
 
-	m_pPair3PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair3_positive_input");
-	m_pPair3NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair3_negative_input");
+	m_pPair3PositiveInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair3_positive_input"));
+	m_pPair3NegativeInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair3_negative_input"));
 
-	m_pPair4PositiveInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair4_positive_input");
-	m_pPair4NegativeInputs=glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_pair4_negative_input");
+	m_pPair4PositiveInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair4_positive_input"));
+	m_pPair4NegativeInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair4_negative_input"));
 
 	// connects callbacks to buttons
-	g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface,"button_fast_mode_settings"),	"pressed", G_CALLBACK(button_fast_mode_settings_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface,"button_fast_mode_settings"),	"pressed", G_CALLBACK(button_fast_mode_settings_cb), this);
 
 	// Configures interface with given values
 
@@ -143,7 +143,7 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 
 		t_faInformation l_oInformation;
 		char l_sBuffer[1024];
-		::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+		::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 		for(uint32 i = 0; i<l_uint32DeviceCount; i++)
 		{
@@ -192,7 +192,7 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 		// Device number
 		if(m_iDeviceCount != 0){
 			int l_iDeviceNumber;
-			::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(glade_xml_get_widget(m_pGladeConfigureInterface, "combobox_device"));
+			::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 			if(::sscanf(gtk_combo_box_get_active_text(l_pComboBox), "device#%i", &l_iDeviceNumber)==1)
 			{
 				m_pHeaderBrainProductsVAmp->setDeviceId(faGetId((uint32)l_iDeviceNumber));
@@ -200,7 +200,7 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 		}
 	}
 
-	// Code from CConfigurationGlade::postConfigure() in order to have the channel names before making the pairs !
+	// Code from CConfigurationBuilder::postConfigure() in order to have the channel names before making the pairs !
 	if(m_bApplyConfiguration)
 	{
 		m_pHeader->setChannelCount(gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pNumberOfChannels)));
@@ -298,7 +298,7 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 		}
 	}
 
-	if(! CConfigurationGlade::postConfigure()) // normal header is filled, ressources are realesed
+	if(! CConfigurationBuilder::postConfigure()) // normal header is filled, ressources are realesed
 	{
 		return false;
 	}
@@ -310,7 +310,7 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 
 void CConfigurationBrainProductsVAmp::buttonFastModeSettingsCB(void)
 {
-	::GtkDialog* l_pDialog=GTK_DIALOG(glade_xml_get_widget(m_pGladeConfigureInterface, "dialog_fast_mode_settings"));
+	::GtkDialog* l_pDialog=GTK_DIALOG(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog_fast_mode_settings"));
 	int32 l_iDialogResponse;
 	do
 	{

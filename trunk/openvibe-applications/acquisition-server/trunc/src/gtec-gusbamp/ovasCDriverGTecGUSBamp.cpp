@@ -290,7 +290,7 @@ boolean CDriverGTecGUSBamp::isConfigurable(void)
 
 boolean CDriverGTecGUSBamp::configure(void)
 {
-	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.glade", m_ui32DeviceIndex);
+	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.ui", m_ui32DeviceIndex);
 	if(!m_oConfiguration.configure(m_oHeader))
 	{
 		return false;

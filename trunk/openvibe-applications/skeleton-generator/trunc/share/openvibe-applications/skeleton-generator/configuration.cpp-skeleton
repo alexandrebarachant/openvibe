@@ -24,23 +24,23 @@ void CConfigurationGTecGUSBamp::buttonCalibratePressedCB(void)
 }
 _________________________________________________*/
 
-CConfiguration@@ClassName@@::CConfiguration@@ClassName@@(IDriverContext& rDriverContext, const char* sGladeXMLFileName)
-	:CConfigurationGlade(sGladeXMLFileName)
+CConfiguration@@ClassName@@::CConfiguration@@ClassName@@(IDriverContext& rDriverContext, const char* sGtkBuilderFileName)
+	:CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rDriverContext(rDriverContext)
 {
 }
 
 boolean CConfiguration@@ClassName@@::preConfigure(void)
 {
-	if(! CConfigurationGlade::preConfigure())
+	if(! CConfigurationBuilder::preConfigure())
 	{
 		return false;
 	}
-	
+
 	// Connect here all callbacks
 	// Example:
-	// g_signal_connect(glade_xml_get_widget(m_pGladeConfigureInterface,"button_calibrate"),"pressed", G_CALLBACK(button_calibrate_pressed_cb), this);
-	
+	// g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_calibrate"), "pressed", G_CALLBACK(button_calibrate_pressed_cb), this);
+
 	// Insert here the pre-configure code.
 	// For example, you may want to check if a device is currently connected
 	// and if more than one are connected. Then you can list in a dedicated combo-box 
@@ -57,11 +57,10 @@ boolean CConfiguration@@ClassName@@::postConfigure(void)
 		// For example, you can save the ID of the selected device.
 	}
 
-	if(! CConfigurationGlade::postConfigure()) // normal header is filled (Subject ID, Age, Gender, channels, sampling frequency), ressources are realesed
+	if(! CConfigurationBuilder::postConfigure()) // normal header is filled (Subject ID, Age, Gender, channels, sampling frequency), ressources are realesed
 	{
 		return false;
 	}
 
 	return true;
 }
-

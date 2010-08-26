@@ -6,7 +6,6 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 #include "ovpCSignalChannelDisplay.h"
@@ -183,8 +182,8 @@ namespace OpenViBEPlugins
 
 		public:
 
-			//! The Glade handler used to create the interface
-			::GladeXML* m_pGladeInterface;
+			//! The Builder handler used to create the interface
+			::GtkBuilder* m_pBuilderInterface;
 
 			//! The main window
 			GtkWidget * m_pMainWindow;

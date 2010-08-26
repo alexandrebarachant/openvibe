@@ -4,14 +4,14 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBESkeletonGenerator;
 
-CAlgorithmSkeletonGenerator::CAlgorithmSkeletonGenerator(IKernelContext & rKernelContext, ::GladeXML * pGladeInterface)
-: CSkeletonGenerator(rKernelContext,pGladeInterface)
+CAlgorithmSkeletonGenerator::CAlgorithmSkeletonGenerator(IKernelContext & rKernelContext, ::GtkBuilder * pBuilderInterface)
+	:CSkeletonGenerator(rKernelContext, pBuilderInterface)
 {
 }
 CAlgorithmSkeletonGenerator::~CAlgorithmSkeletonGenerator(void)
-{	
+{
 }
 
-void CAlgorithmSkeletonGenerator::initialize( void )
+void CAlgorithmSkeletonGenerator::initialize(void)
 {
 }

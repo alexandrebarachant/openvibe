@@ -1,10 +1,11 @@
 #ifndef __OpenViBEDesigner_CPlayerVisualisation_H__
 #define __OpenViBEDesigner_CPlayerVisualisation_H__
 
+#include "ovd_base.h"
+
 #include <string>
 #include <vector>
 #include <map>
-#include <gtk/gtk.h>
 
 namespace OpenViBEDesigner
 {

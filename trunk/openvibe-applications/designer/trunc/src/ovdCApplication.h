@@ -133,7 +133,7 @@ namespace OpenViBEDesigner
 		OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManager;
 		OpenViBE::Kernel::IScenario* m_pClipboardScenario;
 
-		::GladeXML* m_pGladeInterface;
+		::GtkBuilder* m_pBuilderInterface;
 		::GtkWidget* m_pMainWindow;
 		::GtkNotebook* m_pScenarioNotebook;
 		::GtkNotebook* m_pResourceNotebook;

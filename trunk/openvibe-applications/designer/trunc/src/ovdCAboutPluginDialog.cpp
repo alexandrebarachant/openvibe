@@ -21,16 +21,19 @@ boolean CAboutPluginDialog::run(void)
 	const IPluginObjectDesc* l_pPluginObjectDescriptor=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(m_oPluginClassIdentifier);
 	if(!l_pPluginObjectDescriptor) return false;
 
-	::GladeXML* l_pInterface=glade_xml_new(m_sGUIFilename.toASCIIString(), "plugin_about", NULL);
-	::GtkWidget* l_pDialog=glade_xml_get_widget(l_pInterface, "plugin_about");
-	::GtkWidget* l_pType=glade_xml_get_widget(l_pInterface, "plugin_about-entry_type");
-	::GtkWidget* l_pName=glade_xml_get_widget(l_pInterface, "plugin_about-entry_name");
-	::GtkWidget* l_pAuthorName=glade_xml_get_widget(l_pInterface, "plugin_about-entry_author_name");
-	::GtkWidget* l_pAuthorCompanyName=glade_xml_get_widget(l_pInterface, "plugin_about-entry_company_name");
-	::GtkWidget* l_pCategory=glade_xml_get_widget(l_pInterface, "plugin_about-entry_category");
-	::GtkWidget* l_pVersion=glade_xml_get_widget(l_pInterface, "plugin_about-entry_version");
-	::GtkWidget* l_pShortDescription=glade_xml_get_widget(l_pInterface, "plugin_about-textview_short_description");
-	::GtkWidget* l_pDetailedDescription=glade_xml_get_widget(l_pInterface, "plugin_about-textview_detailed_description");
+	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "plugin_about", NULL);
+	gtk_builder_add_from_file(l_pInterface, m_sGUIFilename.toASCIIString(), NULL);
+	gtk_builder_connect_signals(l_pInterface, NULL);
+
+	::GtkWidget* l_pDialog=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about"));
+	::GtkWidget* l_pType=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-entry_type"));
+	::GtkWidget* l_pName=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-entry_name"));
+	::GtkWidget* l_pAuthorName=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-entry_author_name"));
+	::GtkWidget* l_pAuthorCompanyName=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-entry_company_name"));
+	::GtkWidget* l_pCategory=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-entry_category"));
+	::GtkWidget* l_pVersion=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-entry_version"));
+	::GtkWidget* l_pShortDescription=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-textview_short_description"));
+	::GtkWidget* l_pDetailedDescription=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "plugin_about-textview_detailed_description"));
 	g_object_unref(l_pInterface);
 
 	if(l_pPluginObjectDescriptor->isDerivedFromClass(OV_ClassId_Plugins_AlgorithmDesc))

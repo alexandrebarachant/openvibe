@@ -138,7 +138,7 @@ boolean CDriver@@ClassName@@::isConfigurable(void)
 
 boolean CDriver@@ClassName@@::configure(void)
 {
-	CConfiguration@@ClassName@@ m_oConfiguration(m_rDriverContext,"../share/openvibe-applications/acquisition-server/interface-@@ClassName@@.glade");
+	CConfiguration@@ClassName@@ m_oConfiguration(m_rDriverContext,"../share/openvibe-applications/acquisition-server/interface-@@ClassName@@.ui");
 	if(!m_oConfiguration.configure(m_oHeader))
 	{
 		return false;

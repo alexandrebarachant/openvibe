@@ -1,5 +1,5 @@
 #include "ovasCDriverGenericSawTooth.h"
-#include "../ovasCConfigurationGlade.h"
+#include "../ovasCConfigurationBuilder.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 

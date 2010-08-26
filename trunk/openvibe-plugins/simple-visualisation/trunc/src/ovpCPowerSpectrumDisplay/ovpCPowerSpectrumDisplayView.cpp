@@ -30,7 +30,7 @@ namespace OpenViBEPlugins
 		gboolean bottomRulerResizeEventCallback(::GtkWidget *widget, ::GtkAllocation *allocation, gpointer data);
 
 		CPowerSpectrumDisplayView::CPowerSpectrumDisplayView(CPowerSpectrumDatabase& oPowerSpectrumDatabase, float64 f64MinDisplayedFrequency, float64 f64MaxDisplayedFrequency)
-			:m_pGladeInterface(NULL)
+			:m_pBuilderInterface(NULL)
 			,m_pDisplayTable(NULL)
 			,m_pBottomBox(NULL)
 			,m_pBottomRuler(NULL)
@@ -41,55 +41,56 @@ namespace OpenViBEPlugins
 			,m_f64MinDisplayedFrequency(f64MinDisplayedFrequency)
 			,m_f64MaxDisplayedFrequency(f64MaxDisplayedFrequency)
 		{
-			//load the glade interface
-			m_pGladeInterface=glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-PowerSpectrumDisplay.glade", NULL, NULL);
+			//load the gtk builder interface
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-PowerSpectrumDisplay.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-PowerSpectrumDisplay.ui", NULL);
 
-			if(!m_pGladeInterface)
+			if(!m_pBuilderInterface)
 			{
 				g_warning("Couldn't load the interface!");
 				return;
 			}
 
-			glade_xml_signal_autoconnect(m_pGladeInterface);
+			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			//toolbar
 			//-------
 
 			//initialize vertical scale
-			m_pAutoVerticalScaleRadioButton = GTK_RADIO_BUTTON(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayAutoVerticalScaleButton"));
+			m_pAutoVerticalScaleRadioButton = GTK_RADIO_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayAutoVerticalScaleButton"));
 			m_bAutoVerticalScale = true;
 			::gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(m_pAutoVerticalScaleRadioButton), m_bAutoVerticalScale);
 			m_f64CustomVerticalScaleValue = 1;
-			::gtk_entry_set_text(GTK_ENTRY(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayCustomVerticalScaleEntry")), "1");
+			::gtk_entry_set_text(GTK_ENTRY(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayCustomVerticalScaleEntry")), "1");
 
 			//connect vertical scale callbacks
 			g_signal_connect(G_OBJECT(m_pAutoVerticalScaleRadioButton),                                                          "toggled", G_CALLBACK(powerSpectrumToggleVerticalScaleButtonCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayCustomVerticalScaleButton")), "toggled", G_CALLBACK(powerSpectrumToggleVerticalScaleButtonCallback), this);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayCustomVerticalScaleEntry")),  "changed", G_CALLBACK(powerSpectrumCustomVerticalScaleChangedCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayCustomVerticalScaleButton")), "toggled", G_CALLBACK(powerSpectrumToggleVerticalScaleButtonCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayCustomVerticalScaleEntry")),  "changed", G_CALLBACK(powerSpectrumCustomVerticalScaleChangedCallback), this);
 
 			//select channels button
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplaySelectChannelsButton")), "clicked", G_CALLBACK(powerSpectrumChannelSelectButtonCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplaySelectChannelsButton")), "clicked", G_CALLBACK(powerSpectrumChannelSelectButtonCallback), this);
 
 			//bottom box
-			m_pBottomBox = GTK_BOX(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayBottomBox"));
+			m_pBottomBox = GTK_BOX(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayBottomBox"));
 
 			//channels selection
 			//------------------
 
 			//apply button click
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectApplyButton")), "clicked", G_CALLBACK(powerSpectrumChannelSelectDialogApplyButtonCallback), this);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectApplyButton")), "clicked", G_CALLBACK(powerSpectrumChannelSelectDialogApplyButtonCallback), this);
 			//cancel button click
-			g_signal_connect_swapped(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectCancelButton")),
-				"clicked", G_CALLBACK(::gtk_widget_hide), G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectDialog")));
+			g_signal_connect_swapped(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectCancelButton")),
+				"clicked", G_CALLBACK(::gtk_widget_hide), G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectDialog")));
 			//hide dialog on delete event
-			g_signal_connect (G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectDialog")),
+			g_signal_connect (G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectDialog")),
 				"delete_event", G_CALLBACK(::gtk_widget_hide), NULL);
 		}
 
 		void CPowerSpectrumDisplayView::getWidgets(::GtkWidget*& pWidget, ::GtkWidget*& pToolbarWidget)
 		{
-			pWidget = glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayScrolledWindow");
-			pToolbarWidget = glade_xml_get_widget(m_pGladeInterface, "Toolbar");
+			pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayScrolledWindow"));
+			pToolbarWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "Toolbar"));
 		}
 
 		CPowerSpectrumDisplayView::~CPowerSpectrumDisplayView()
@@ -101,8 +102,8 @@ namespace OpenViBEPlugins
 			}
 
 			//unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pGladeInterface));
-			m_pGladeInterface=NULL;
+			g_object_unref(G_OBJECT(m_pBuilderInterface));
+			m_pBuilderInterface=NULL;
 		}
 
 		void CPowerSpectrumDisplayView::init()
@@ -115,7 +116,7 @@ namespace OpenViBEPlugins
 			m_oChannelDisplays.resize(l_ui32ChannelCount);
 
 			//retrieve and allocate main table accordingly
-			m_pDisplayTable = glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayMainTable");
+			m_pDisplayTable = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayMainTable"));
 			//rows : for each channel, [0] channel data, [1] horizontal separator
 			//columns : [0] labels, [1] vertical separator, [2] spectrum displays
 			::gtk_table_resize(GTK_TABLE(m_pDisplayTable), l_ui32ChannelCount*2-1, 3);
@@ -150,7 +151,7 @@ namespace OpenViBEPlugins
 			::GtkSizeGroup* l_pSizeGroup = ::gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
 			//channels selection widget
-			::GtkWidget* l_pChannelSelectList = glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectList");
+			::GtkWidget* l_pChannelSelectList = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectList"));
 
 			stringstream l_oLabelString;
 
@@ -225,7 +226,7 @@ namespace OpenViBEPlugins
 			//------------
 			m_pBottomRuler = ::gtk_drawing_area_new();
 			::gtk_widget_set_size_request(m_pBottomRuler, l_i32BottomRulerWidthRequest, l_i32BottomRulerHeightRequest);
-			::gtk_size_group_add_widget(l_pSizeGroup, glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayBottomBoxLabel1"));
+			::gtk_size_group_add_widget(l_pSizeGroup, GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayBottomBoxLabel1")));
 			::gtk_box_pack_start(m_pBottomBox, m_pBottomRuler, false, false, 0);
 			g_signal_connect_after(G_OBJECT(m_pBottomRuler), "expose_event", G_CALLBACK(bottomRulerExposeEventCallback), this);
 			g_signal_connect(G_OBJECT(m_oChannelDisplays[0]->getSpectrumDisplayWidget()), "size-allocate", G_CALLBACK(bottomRulerResizeEventCallback), m_pBottomRuler);
@@ -263,7 +264,7 @@ namespace OpenViBEPlugins
 			m_pPowerSpectrumDatabase->setMaxDisplayedFrequency(m_f64MaxDisplayedFrequency);
 
 			//initialize spin buttons and connect callbacks
-			::GtkSpinButton* l_pMinFrequencySpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayMinFrequencyButton"));
+			::GtkSpinButton* l_pMinFrequencySpinButton = GTK_SPIN_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayMinFrequencyButton"));
 			if(l_pMinFrequencySpinButton != NULL)
 			{
 				::gtk_spin_button_set_range(l_pMinFrequencySpinButton, 0, l_f64MaxFrequency);
@@ -271,7 +272,7 @@ namespace OpenViBEPlugins
 				g_signal_connect(G_OBJECT(l_pMinFrequencySpinButton), "value-changed", G_CALLBACK(powerSpectrumMinDisplayedFrequencyChangedCallback), this);
 			}
 
-			::GtkSpinButton* l_pMaxFrequencySpinButton = GTK_SPIN_BUTTON(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayMaxFrequencyButton"));
+			::GtkSpinButton* l_pMaxFrequencySpinButton = GTK_SPIN_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayMaxFrequencyButton"));
 			if(l_pMaxFrequencySpinButton != NULL)
 			{
 				::gtk_spin_button_set_range(l_pMaxFrequencySpinButton, 0, l_f64MaxFrequency);
@@ -287,14 +288,14 @@ namespace OpenViBEPlugins
 			//don't display left rulers by default
 			boolean l_bDefaultLeftRulersToggleState = false;
 			toggleLeftRulers(l_bDefaultLeftRulersToggleState);
-			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayToggleLeftRulerButton")), l_bDefaultLeftRulersToggleState ? TRUE : FALSE);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayToggleLeftRulerButton")), "toggled", G_CALLBACK(powerSpectrumToggleLeftRulerButtonCallback), this);
+			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayToggleLeftRulerButton")), l_bDefaultLeftRulersToggleState ? TRUE : FALSE);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayToggleLeftRulerButton")), "toggled", G_CALLBACK(powerSpectrumToggleLeftRulerButtonCallback), this);
 
 			//display bottom ruler by default
 			boolean l_bDefaultBottomRulerToggleState = true;
 			toggleBottomRuler(l_bDefaultBottomRulerToggleState);
-			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayToggleBottomRulerButton")), l_bDefaultBottomRulerToggleState ? TRUE : FALSE);
-			g_signal_connect(G_OBJECT(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayToggleBottomRulerButton")), "toggled", G_CALLBACK(powerSpectrumToggleBottomRulerButtonCallback), this);
+			::gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayToggleBottomRulerButton")), l_bDefaultBottomRulerToggleState ? TRUE : FALSE);
+			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayToggleBottomRulerButton")), "toggled", G_CALLBACK(powerSpectrumToggleBottomRulerButtonCallback), this);
 		}
 
 		void CPowerSpectrumDisplayView::redraw()
@@ -498,17 +499,17 @@ namespace OpenViBEPlugins
 
 		void CPowerSpectrumDisplayView::activateToolbarButtons(boolean bActive)
 		{
-			::gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayBestFitButton"), bActive);
-			::gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayBestFitPerChannelButton"), bActive);
-			::gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplaySelectChannelsButton"), bActive);
-			::gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayToggleLeftRulerButton"), bActive);
-			::gtk_widget_set_sensitive(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayToggleBottomRulerButton"), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayBestFitButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayBestFitPerChannelButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplaySelectChannelsButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayToggleLeftRulerButton")), bActive);
+			::gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayToggleBottomRulerButton")), bActive);
 		}
 
 		void CPowerSpectrumDisplayView::showChannelSelectionDialogCB()
 		{
 #if 0
-			::GtkWidget * l_pChannelSelectDialog = glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectDialog");
+			::GtkWidget * l_pChannelSelectDialog = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectDialog"));
 
 			//reset all checkbuttons
 			for(size_t i=0 ; i<m_vChannelsCheckButtons.size() ; i++)
@@ -520,8 +521,8 @@ namespace OpenViBEPlugins
 
 			::gtk_widget_show_all(l_pChannelSelectDialog);
 #else
-			::GtkWidget * l_pChannelSelectDialog = ::glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectDialog");
-			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectList"));
+			::GtkWidget * l_pChannelSelectDialog = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectDialog"));
+			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectList"));
 			::GtkTreeSelection* l_pChannelSelectTreeSelection = ::gtk_tree_view_get_selection(l_pChannelSelectTreeView);
 			::GtkTreeModel* l_pChannelSelectTreeModel = ::gtk_tree_view_get_model(l_pChannelSelectTreeView);
 			::GtkTreeIter l_oIter;
@@ -574,9 +575,9 @@ namespace OpenViBEPlugins
 			updateMainTableStatus();
 
 			//hides the channel selection dialog
-			::gtk_widget_hide(glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectDialog"));
+			::gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectDialog")));
 #else
-			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectList"));
+			::GtkTreeView* l_pChannelSelectTreeView = GTK_TREE_VIEW(::gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectList"));
 			::GtkTreeSelection* l_pChannelSelectTreeSelection = ::gtk_tree_view_get_selection(l_pChannelSelectTreeView);
 			::GtkTreeModel* l_pChannelSelectTreeModel = ::gtk_tree_view_get_model(l_pChannelSelectTreeView);
 			::GtkTreeIter l_oIter;
@@ -596,7 +597,7 @@ namespace OpenViBEPlugins
 			updateMainTableStatus();
 
 			//hides the channel selection dialog
-			::gtk_widget_hide(::glade_xml_get_widget(m_pGladeInterface, "PowerSpectrumDisplayChannelSelectDialog"));
+			::gtk_widget_hide(GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "PowerSpectrumDisplayChannelSelectDialog")));
 #endif
 		}
 
