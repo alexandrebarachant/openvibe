@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="value">6</property>
     <property name="lower">1</property>
@@ -47,7 +47,25 @@
     </columns>
     <data>
       <row>
+        <col id="0" translatable="yes">253</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">254</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">255</col>
+      </row>
+      <row>
         <col id="0" translatable="yes">256</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">257</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">258</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">259</col>
       </row>
     </data>
   </object>
@@ -66,7 +84,11 @@
         <child>
           <object class="GtkLabel" id="label_title">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Modular-EEG Configuration (6 channels)</property>
+            <property name="label" translatable="yes">Modular-EEG Configuration (6 channels)
+
+&lt;small&gt;&lt;span color="darkred"&gt;Attention: Sampling frequency may need
+some adjustment to best fit the device clock&lt;/span&gt;&lt;/small&gt;</property>
+            <property name="use_markup">True</property>
             <property name="justify">center</property>
           </object>
           <packing>
@@ -94,7 +116,7 @@
                 <child>
                   <object class="GtkTable" id="table2">
                     <property name="visible">True</property>
-                    <property name="n_rows">5</property>
+                    <property name="n_rows">6</property>
                     <property name="n_columns">2</property>
                     <property name="homogeneous">True</property>
                     <child>
@@ -231,6 +253,36 @@
                         <property name="single_line_mode">True</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkComboBox" id="combobox_sampling_frequency">
+                        <property name="visible">True</property>
+                        <property name="model">model2</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer3"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_sampling_frequency">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Sampling frequency :</property>
+                        <property name="justify">right</property>
+                        <property name="single_line_mode">True</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="position">0</property>
@@ -313,56 +365,5 @@
       <action-widget response="-10">button_apply</action-widget>
       <action-widget response="-6">button_cancel</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkWindow" id="window_dummy">
-    <child>
-      <object class="GtkTable" id="table1">
-        <property name="visible">True</property>
-        <property name="n_rows">3</property>
-        <property name="n_columns">2</property>
-        <child>
-          <object class="GtkLabel" id="label_sampling_frequency">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Sampling frequency :</property>
-            <property name="justify">right</property>
-            <property name="single_line_mode">True</property>
-          </object>
-          <packing>
-            <property name="top_attach">1</property>
-            <property name="bottom_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkComboBox" id="combobox_sampling_frequency">
-            <property name="visible">True</property>
-            <property name="model">model2</property>
-            <child>
-              <object class="GtkCellRendererText" id="renderer3"/>
-              <attributes>
-                <attribute name="text">0</attribute>
-              </attributes>
-            </child>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">1</property>
-            <property name="bottom_attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-    </child>
   </object>
 </interface>

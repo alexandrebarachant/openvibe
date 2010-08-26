@@ -36,12 +36,12 @@ using namespace OpenViBE::Kernel;
 CDriverOpenEEGModularEEG::CDriverOpenEEGModularEEG(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
-	,m_ui32SampleCountPerSentBlock(0)
+	,m_ui32ChannelCount(6)
 	,m_ui32DeviceIdentifier(uint32(-1))
 	,m_pSample(NULL)
 {
 	m_oHeader.setSamplingFrequency(256);
-	m_oHeader.setChannelCount(6);
+	m_oHeader.setChannelCount(m_ui32ChannelCount);
 }
 
 void CDriverOpenEEGModularEEG::release(void)
@@ -77,7 +77,7 @@ boolean CDriverOpenEEGModularEEG::initialize(
 		return false;
 	}
 
-	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
+	m_pSample=new float32[m_oHeader.getChannelCount()];
 	if(!m_pSample)
 	{
 		delete [] m_pSample;
@@ -87,10 +87,10 @@ boolean CDriverOpenEEGModularEEG::initialize(
 	m_vChannelBuffer2.resize(6);
 
 	m_pCallback=&rCallback;
-	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
+	m_ui32ChannelCount=m_oHeader.getChannelCount();
 	m_ui8LastPacketNumber=0;
 
-	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver initialized.\n";
+	m_rDriverContext.getLogManager() << LogLevel_Debug << CString(this->getName()) << " driver initialized.\n";
 	return true;
 }
 
@@ -98,83 +98,37 @@ boolean CDriverOpenEEGModularEEG::start(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
-	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver started.\n";
+	m_rDriverContext.getLogManager() << LogLevel_Debug << CString(this->getName()) << " driver started.\n";
 	return true;
 }
 
 boolean CDriverOpenEEGModularEEG::loop(void)
 {
-	// printf("enter loop\n");
 	if(!m_rDriverContext.isConnected()) { return false; }
-	// printf("connection ok\n");
 
-	uint32 l_ui32ReceivedSamples=0;
-	uint32 l_ui32StartTime=System::Time::getTime();
-	while(l_ui32ReceivedSamples < m_ui32SampleCountPerSentBlock && System::Time::getTime()-l_ui32StartTime < 1000)
+	if(this->readPacketFromTTY(m_i32FileDescriptor)<0)
 	{
-		boolean l_bHasSamplesPending=(m_vChannelBuffer.size()!=0);
-
-		// printf("enter while at counter= %d\n", counter);
-		if(!l_bHasSamplesPending)
-		{
-			int32 l_i32PacketCount=this->readPacketFromTTY(m_i32FileDescriptor);
-			switch(l_i32PacketCount)
-			{
-				case 0: // No Packet finished
-					// printf("switch 0: No Packet finished\n");
-					break;
-
-				default:
-				case 1: // Packet with Samples arrived
-					break;
-
-				case -1: // Timeout, could inidicate communication error
-					m_rDriverContext.getLogManager() << LogLevel_ImportantWarning << "Could not receive data from " << m_sTTYName << "\n";
-					return false;
-			}
-		}
-		else
-		{
-			uint32 i, j;
-			uint32 l_ui32PacketCountToKeep = m_vChannelBuffer.size();
-
-			if(l_ui32PacketCountToKeep + l_ui32ReceivedSamples > m_ui32SampleCountPerSentBlock)
-			{
-				l_ui32PacketCountToKeep = m_ui32SampleCountPerSentBlock - l_ui32ReceivedSamples;
-			}
-
-			m_ui8LastPacketNumber=m_ui8PacketNumber;
-			// printf("Will appended %i packet(s) !\n", l_i32PacketCountToKeep);
-			for(j=0; j<m_oHeader.getChannelCount(); j++)
-			{
-				for(i=0; i<l_ui32PacketCountToKeep; i++)
-				{
-					m_pSample[j*m_ui32SampleCountPerSentBlock+l_ui32ReceivedSamples+i]=(float32)m_vChannelBuffer[i][j]-512.f;
-				}
-			}
-			m_vChannelBuffer.erase(m_vChannelBuffer.begin(), m_vChannelBuffer.begin()+l_ui32PacketCountToKeep);
-			if(m_vChannelBuffer.size())
-			{
-				// printf("Still %i packet(s) pending...\n", m_vChannelBuffer.size());
-			}
-			l_ui32ReceivedSamples+=l_ui32PacketCountToKeep;
-		}
-	}
-
-	if(l_ui32ReceivedSamples!=m_ui32SampleCountPerSentBlock)
-	{
-		// Timeout
-		// printf("  l_i32ReceivedSamples!=m_ui32SampleCountPerSentBlock => Timeout\n");
+		m_rDriverContext.getLogManager() << LogLevel_ImportantWarning << "Could not receive data from " << m_sTTYName << "\n";
 		return false;
 	}
 
-	if(m_rDriverContext.isStarted())
+	if(m_vChannelBuffer.size()!=0)
 	{
-		m_pCallback->setSamples(m_pSample);
-		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+		if(m_rDriverContext.isStarted())
+		{
+			for(uint32 i=0; i<m_vChannelBuffer.size(); i++)
+			{
+				for(uint32 j=0; j<m_ui32ChannelCount; j++)
+				{
+					m_pSample[j]=(float32)m_vChannelBuffer[i][j]-512.f;
+				}
+				m_pCallback->setSamples(m_pSample, 1);
+			}
+			m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+		}
+		m_vChannelBuffer.clear();
 	}
 
-	// printf("end loop\n");
 	return true;
 }
 
@@ -182,7 +136,7 @@ boolean CDriverOpenEEGModularEEG::stop(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(!m_rDriverContext.isStarted()) { return false; }
-	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver stopped.\n";
+	m_rDriverContext.getLogManager() << LogLevel_Debug << CString(this->getName()) << " driver stopped.\n";
 	return true;
 }
 
@@ -193,7 +147,7 @@ boolean CDriverOpenEEGModularEEG::uninitialize(void)
 
 	this->closeTTY(m_i32FileDescriptor);
 
-	m_rDriverContext.getLogManager() << LogLevel_Debug << "ModulerEEG Device Driver closed.\n";
+	m_rDriverContext.getLogManager() << LogLevel_Debug << CString(this->getName()) << " driver closed.\n";
 
 	delete [] m_pSample;
 	m_pSample=NULL;
@@ -221,7 +175,6 @@ boolean CDriverOpenEEGModularEEG::configure(void)
 
 boolean CDriverOpenEEGModularEEG::parseByteP2(uint8 ui8Actbyte)
 {
-	uint32 m_ui32ChannelCount=m_oHeader.getChannelCount();
 	switch(m_ui16Readstate)
 	{
 		case 0:
@@ -306,12 +259,13 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 
 	if(*pFileDescriptor == INVALID_HANDLE_VALUE)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not open Communication Port " << CString(l_sTTYName) << " for ModulerEEG Driver.\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not open port [" << CString(l_sTTYName) << "]\n";
 		return false;
 	}
 
 	if(!::GetCommState(*pFileDescriptor, &dcb))
 	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not get comm state on port [" << CString(l_sTTYName) << "]\n";
 		return false;
 	}
 
@@ -339,7 +293,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	dcb.fParity           = FALSE;
 
 	::SetCommState(*pFileDescriptor, &dcb);
-	::SetupComm(*pFileDescriptor, 1024, 1024);
+	::SetupComm(*pFileDescriptor, 64/*1024*/, 64/*1024*/);
 	::EscapeCommFunction(*pFileDescriptor, SETDTR);
 	::SetCommMask (*pFileDescriptor, EV_RXCHAR | EV_CTS | EV_DSR | EV_RLSD | EV_RING);
 
@@ -359,15 +313,15 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 
 	if((*pFileDescriptor=::open(l_sTTYName, O_RDWR))==-1)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not open Communication Port " << CString(l_sTTYName) << " for ModulerEEG Driver.\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not open port [" << CString(l_sTTYName) << "]\n";
 		return false;
 	}
 
-	if(tcgetattr(*pFileDescriptor, &l_oTerminalAttributes)!=0)
+	if(::tcgetattr(*pFileDescriptor, &l_oTerminalAttributes)!=0)
 	{
 		::close(*pFileDescriptor);
 		*pFileDescriptor=-1;
-		m_rDriverContext.getLogManager() << LogLevel_Error << "terminal: tcgetattr() failed\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "terminal: tcgetattr() failed - did you use the right port [" << CString(l_sTTYName) << "] ?\n";
 		return false;
 	}
 
@@ -380,7 +334,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	{
 		::close(*pFileDescriptor);
 		*pFileDescriptor=-1;
-		m_rDriverContext.getLogManager() << LogLevel_Error << "terminal: tcsetattr() failed\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "terminal: tcsetattr() failed - did you use the right port [" << CString(l_sTTYName) << "] ?\n";
 		return false;
 	}
 
@@ -424,26 +378,14 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 	{
 		l_ui32ReadLength=l_oStatus.cbInQue;
 	}
-	if(l_ui32ReadLength)
-	{
-		// printf("Read length = %i\n", l_ui32ReadLength);
-	}
-	else
-	{
-		// printf(".");
-	}
 
 	for(l_ui32BytesProcessed=0; l_ui32BytesProcessed<l_ui32ReadLength; l_ui32BytesProcessed++)
 	{
-		// printf("readPacketFromTTY : for : %d\n", l_ui32BytesProcessed);
-		// Read the data from the serial port.
 		::ReadFile(i32FileDescriptor, l_ui8ReadBuffer, 1, (LPDWORD)&l_ui32ReadOk, 0);
 		if(l_ui32ReadOk==1)
 		{
-			// printf("readPacketFromTTY : l_ui32ReadOk==1 \n");
 			if(this->parseByteP2(l_ui8ReadBuffer[0]))
 			{
-				// printf("readPacketFromTTY : parseByteP2(l_ui8ReadBuffer[0]) = true => l_i32PacketsProcessed++\n");
 				l_i32PacketsProcessed++;
 			}
 		}
@@ -454,40 +396,50 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 	fd_set  l_inputFileDescriptorSet;
 	struct timeval l_timeout;
 	ssize_t l_ui32ReadLength=0;
+	bool finished=false;
 
-	l_timeout.tv_sec=1;
+	l_timeout.tv_sec=0;
 	l_timeout.tv_usec=0;
 
-	FD_ZERO(&l_inputFileDescriptorSet);
-	FD_SET(i32FileDescriptor, &l_inputFileDescriptorSet);
-
-	switch(::select(i32FileDescriptor+1, &l_inputFileDescriptorSet, NULL, NULL, &l_timeout))
+	do
 	{
-		case -1: // error or timeout
-		case  0:
-			return (-1);
+		FD_ZERO(&l_inputFileDescriptorSet);
+		FD_SET(i32FileDescriptor, &l_inputFileDescriptorSet);
 
-		default:
-			if(FD_ISSET(i32FileDescriptor, &l_inputFileDescriptorSet))
-			{
-				if((l_ui32ReadLength=::read(i32FileDescriptor, l_ui8ReadBuffer, 1)) > 0)
+		switch(::select(i32FileDescriptor+1, &l_inputFileDescriptorSet, NULL, NULL, &l_timeout))
+		{
+			case -1: // error or timeout
+			case  0:
+				finished=true;
+				break;
+
+			default:
+				if(FD_ISSET(i32FileDescriptor, &l_inputFileDescriptorSet))
 				{
-					for(l_ui32BytesProcessed=0; l_ui32BytesProcessed<l_ui32ReadLength; l_ui32BytesProcessed++)
+					if((l_ui32ReadLength=::read(i32FileDescriptor, l_ui8ReadBuffer, 1)) > 0)
 					{
-						if(this->parseByteP2(l_ui8ReadBuffer[l_ui32BytesProcessed]))
+						for(l_ui32BytesProcessed=0; l_ui32BytesProcessed<l_ui32ReadLength; l_ui32BytesProcessed++)
 						{
-							l_i32PacketsProcessed++;
+							if(this->parseByteP2(l_ui8ReadBuffer[l_ui32BytesProcessed]))
+							{
+								l_i32PacketsProcessed++;
+							}
 						}
 					}
 				}
-			}
-			break;
+				else
+				{
+					finished=true;
+				}
+				break;
+		}
 	}
+	while(!finished);
 
 #else
 
 #endif
-	// printf("l_i32PacketsProcessed=%d\n",l_i32PacketsProcessed);
+
 	m_rDriverContext.getLogManager() << LogLevel_Debug << "Leaves readPacketFromTTY\n";
 	return l_i32PacketsProcessed;
  }
