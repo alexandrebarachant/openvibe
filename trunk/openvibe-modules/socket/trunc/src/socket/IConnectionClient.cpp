@@ -81,7 +81,7 @@ namespace Socket
 			l_oServerAddress.sin_family=AF_INET;
 			l_oServerAddress.sin_port=htons((unsigned short)ui32ServerPort);
 			l_oServerAddress.sin_addr=*((struct in_addr*)l_pServerHostEntry->h_addr);
-			if(::connect(m_i32Socket, (struct sockaddr*)&l_oServerAddress, sizeof(struct sockaddr))<0)
+			if(::connect(m_i32Socket, (struct sockaddr*)&l_oServerAddress, sizeof(struct sockaddr_in))<0)
 			{
 				boolean l_bInProgress=false;
 
