@@ -51,7 +51,7 @@ CMemoryBufferImpl::CMemoryBufferImpl(const IMemoryBuffer& rMemoryBuffer)
 	,m_ui64BufferSize(0)
 	,m_ui64AllocatedSize(0)
 {
-	m_pBuffer=new uint8[static_cast<size_t>(rMemoryBuffer.getSize())]; // $$$
+	m_pBuffer=new uint8[static_cast<size_t>(rMemoryBuffer.getSize()+1)]; // $$$
 	if(m_pBuffer)
 	{
 		m_ui64BufferSize=rMemoryBuffer.getSize();
@@ -69,7 +69,7 @@ CMemoryBufferImpl::CMemoryBufferImpl(const uint8* pMemoryBuffer, const uint64 ui
 	,m_ui64BufferSize(0)
 	,m_ui64AllocatedSize(0)
 {
-	m_pBuffer=new uint8[static_cast<size_t>(ui64BufferSize)]; // $$$
+	m_pBuffer=new uint8[static_cast<size_t>(ui64BufferSize+1)]; // $$$
 	if(m_pBuffer)
 	{
 		m_ui64BufferSize=ui64BufferSize;
