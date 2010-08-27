@@ -1720,29 +1720,50 @@ void CInterfacedScenario::scenarioDrawingAreaButtonReleasedCB(::GtkWidget* pWidg
 		}
 		if(m_ui32CurrentMode==Mode_Connect)
 		{
+			boolean l_bIsActuallyConnecting=false;
 			uint32 l_ui32InterfacedObjectId=pickInterfacedObject((int)m_f64ReleaseMouseX, (int)m_f64ReleaseMouseY);
 			CInterfacedObject l_oCurrentObject=m_vInterfacedObject[l_ui32InterfacedObjectId];
+			CInterfacedObject l_oSourceObject;
+			CInterfacedObject l_oTargetObject;
 			if(l_oCurrentObject.m_ui32ConnectorType==Connector_Output && m_oCurrentObject.m_ui32ConnectorType==Connector_Input)
 			{
-				CIdentifier l_oLinkIdentifier;
-				m_rScenario.connect(
-					l_oCurrentObject.m_oIdentifier,
-					l_oCurrentObject.m_ui32ConnectorIndex,
-					m_oCurrentObject.m_oIdentifier,
-					m_oCurrentObject.m_ui32ConnectorIndex,
-					l_oLinkIdentifier);
-				this->snapshotCB();
+				l_oSourceObject=l_oCurrentObject;
+				l_oTargetObject=m_oCurrentObject;
+				l_bIsActuallyConnecting=true;
 			}
 			if(l_oCurrentObject.m_ui32ConnectorType==Connector_Input && m_oCurrentObject.m_ui32ConnectorType==Connector_Output)
 			{
-				CIdentifier l_oLinkIdentifier;
-				m_rScenario.connect(
-					m_oCurrentObject.m_oIdentifier,
-					m_oCurrentObject.m_ui32ConnectorIndex,
-					l_oCurrentObject.m_oIdentifier,
-					l_oCurrentObject.m_ui32ConnectorIndex,
-					l_oLinkIdentifier);
-				this->snapshotCB();
+				l_oSourceObject=m_oCurrentObject;
+				l_oTargetObject=l_oCurrentObject;
+				l_bIsActuallyConnecting=true;
+			}
+			if(l_bIsActuallyConnecting)
+			{
+				CIdentifier l_oSourceTypeIdentifier;
+				CIdentifier l_oTargetTypeIdentifier;
+				const IBox* l_pSourceBox=m_rScenario.getBoxDetails(l_oSourceObject.m_oIdentifier);
+				const IBox* l_pTargetBox=m_rScenario.getBoxDetails(l_oTargetObject.m_oIdentifier);
+				if(l_pSourceBox && l_pTargetBox)
+				{
+					l_pSourceBox->getOutputType(l_oSourceObject.m_ui32ConnectorIndex, l_oSourceTypeIdentifier);
+					l_pTargetBox->getInputType(l_oTargetObject.m_ui32ConnectorIndex, l_oTargetTypeIdentifier);
+					if(m_rKernelContext.getTypeManager().isDerivedFromStream(l_oSourceTypeIdentifier, l_oTargetTypeIdentifier)
+					|| m_rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_AllowUpCastConnection}", false))
+					{
+						CIdentifier l_oLinkIdentifier;
+						m_rScenario.connect(
+							l_oSourceObject.m_oIdentifier,
+							l_oSourceObject.m_ui32ConnectorIndex,
+							l_oTargetObject.m_oIdentifier,
+							l_oTargetObject.m_ui32ConnectorIndex,
+							l_oLinkIdentifier);
+						this->snapshotCB();
+					}
+					else
+					{
+						m_rKernelContext.getLogManager() << LogLevel_Warning << "Invalid connection\n";
+					}
+				}
 			}
 		}
 		if(m_ui32CurrentMode==Mode_MoveSelection)
