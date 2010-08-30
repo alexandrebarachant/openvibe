@@ -363,8 +363,8 @@ boolean CBoxConfigurationDialog::run(void)
 		SButtonCB l_oButtonCB = { m_rKernelContext, l_vSettingValue, l_oHelper, l_pSettingOverrideValue, m_rBox };
 
 		g_signal_connect(G_OBJECT(l_pFileOverrideCheck), "toggled", G_CALLBACK(on_file_override_check_toggled), GTK_WIDGET(l_pSettingTable));
-		g_signal_connect(G_OBJECT(l_pButtonLoad),        "button_press_event", G_CALLBACK(on_button_load_clicked), &l_oButtonCB);
-		g_signal_connect(G_OBJECT(l_pButtonSave),        "button_press_event", G_CALLBACK(on_button_save_clicked), &l_oButtonCB);
+		g_signal_connect(G_OBJECT(l_pButtonLoad),        "clicked", G_CALLBACK(on_button_load_clicked), &l_oButtonCB);
+		g_signal_connect(G_OBJECT(l_pButtonSave),        "clicked", G_CALLBACK(on_button_save_clicked), &l_oButtonCB);
 
 		if(m_rBox.hasAttribute(OV_AttributeId_Box_SettingOverrideFilename))
 		{
