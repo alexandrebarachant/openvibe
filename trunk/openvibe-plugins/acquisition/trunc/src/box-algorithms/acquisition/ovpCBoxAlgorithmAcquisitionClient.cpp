@@ -76,7 +76,7 @@ boolean CBoxAlgorithmAcquisitionClient::processClock(IMessageClock& rMessageCloc
 		}
 	}
 
-	if(m_pConnectionClient && m_pConnectionClient->isReadyToReceive() && rMessageClock.getTime()>m_ui64LastChunkEndTime)
+	if(m_pConnectionClient && m_pConnectionClient->isReadyToReceive() /* && rMessageClock.getTime()>m_ui64LastChunkEndTime */)
 	{
 		getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	}
