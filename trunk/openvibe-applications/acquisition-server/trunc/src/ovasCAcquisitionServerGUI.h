@@ -34,6 +34,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::IHeader& getHeaderCopy(void);
 		void setClientCount(OpenViBE::uint32 ui32ClientCount);
 		void setImpedance(OpenViBE::uint32 ui32ChannelIndex, OpenViBE::float64 f64Impedance);
+		void disconnect(void);
 
 		// GTK button callbacks
 		virtual void buttonConfigurePressedCB(::GtkButton* pButton);

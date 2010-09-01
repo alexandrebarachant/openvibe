@@ -348,6 +348,16 @@ void CAcquisitionServerGUI::setImpedance(OpenViBE::uint32 ui32ChannelIndex, Open
 	}
 }
 
+void CAcquisitionServerGUI::disconnect(void)
+{
+	::GtkToggleButton* l_pConnectButton=GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "togglebutton_connect"));
+
+	if(gtk_toggle_button_get_active(l_pConnectButton))
+	{
+		gtk_toggle_button_set_active(l_pConnectButton, false);
+	}
+}
+
 //___________________________________________________________________//
 //                                                                   //
 

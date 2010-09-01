@@ -34,8 +34,8 @@ namespace OpenViBEAcquisitionServer
 			OpenViBE::boolean l_bFinished=false;
 			while(!l_bFinished)
 			{
-
 				OpenViBE::boolean l_bShouldSleep=false;
+				OpenViBE::boolean l_bShouldDisconnect=false;
 				OpenViBE::uint32 i, l_ui32ClientCount;
 
 				{
@@ -56,15 +56,14 @@ namespace OpenViBEAcquisitionServer
 							{
 								if(!m_rAcquisitionServer.loop())
 								{
-									m_rAcquisitionServer.stop();
-									m_rAcquisitionServer.disconnect();
-									m_ui32Status=Status_Idle;
-									// should update GTK
+									l_bShouldDisconnect=true;
 								}
-
-								for(i=0; i<m_vImpedance.size(); i++)
+								else
 								{
-									m_vImpedance[i]=m_rAcquisitionServer.getImpedance(i);
+									for(i=0; i<m_vImpedance.size(); i++)
+									{
+										m_vImpedance[i]=m_rAcquisitionServer.getImpedance(i);
+									}
 								}
 							}
 							break;
@@ -97,6 +96,13 @@ namespace OpenViBEAcquisitionServer
 						}
 						gdk_threads_leave();
 						m_vImpedanceLast=m_vImpedance;
+					}
+
+					if(l_bShouldDisconnect)
+					{
+						gdk_threads_enter();
+						m_rGUI.disconnect();
+						gdk_threads_leave();
 					}
 
 					if(l_bShouldSleep)

@@ -14,9 +14,22 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <deque>
 
 namespace OpenViBEAcquisitionServer
 {
+	class CConnectionServerHandlerThread;
+	class CConnectionClientHandlerThread;
+
+	typedef struct
+	{
+		OpenViBE::uint64 m_ui64ConnectionTime;
+		OpenViBE::uint64 m_ui64StimulationTimeOffset;
+		OpenViBE::uint64 m_ui64SignalSampleCountToSkip;
+		CConnectionClientHandlerThread* m_pConnectionClientHandlerThread;
+		boost::thread* m_pConnectionClientHandlerBoostThread;
+	} SConnectionInfo;
+
 	class CDriverContext;
 	class CAcquisitionServer : public OpenViBEAcquisitionServer::IDriverCallback
 	{
@@ -51,12 +64,20 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean correctJitterSampleCount(OpenViBE::int64 i64SampleCount);
 		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance);
 
+		//
+		virtual OpenViBE::boolean acceptNewConnection(Socket::IConnection* pConnection);
+
 	public:
 
 		boost::mutex m_oExecutionMutex;
 		boost::mutex m_oProtectionMutex;
 
-	protected :
+		boost::mutex m_oPendingConnectionExectutionMutex;
+		boost::mutex m_oPendingConnectionProtectionMutex;
+
+		boost::thread* m_pConnectionServerHandlerBoostThread;
+
+	public:
 
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBEAcquisitionServer::CDriverContext* m_pDriverContext;
@@ -74,7 +95,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pStimulationMemoryBuffer;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pChannelLocalisationMemoryBuffer;
 
-		std::list < std::pair < Socket::IConnection*, OpenViBE::uint64 > > m_vConnection;
+		std::list < std::pair < Socket::IConnection*, SConnectionInfo > > m_vConnection;
+		std::list < std::pair < Socket::IConnection*, SConnectionInfo > > m_vPendingConnection;
 		std::vector < std::vector < OpenViBE::float32 > > m_vPendingBuffer;
 		std::vector < OpenViBE::float32 > m_vSwapBuffer;
 		std::vector < OpenViBE::float64 > m_vImpedance;
