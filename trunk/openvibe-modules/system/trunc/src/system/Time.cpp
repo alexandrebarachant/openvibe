@@ -60,6 +60,8 @@ uint64 Time::zgetTime(void)
 
 	l_ui64Result=((l_i64TimeMicroSecond/1000000)<<32)+(((l_i64TimeMicroSecond%1000000)<<32)/1000000);
 #elif defined System_OS_Windows
+
+#if 0
 	static boolean l_bInitialized=false;
 	static uint64 l_ui64Frequency;
 	static uint64 l_ui64CounterStart;
@@ -83,6 +85,26 @@ uint64 Time::zgetTime(void)
 	l_ui64Counter=l_oPerformanceCounter.QuadPart-l_ui64CounterStart;
 
 	l_ui64Result=((l_ui64Counter/l_ui64Frequency)<<32)+(((l_ui64Counter%l_ui64Frequency)<<32)/l_ui64Frequency);
+
+#else
+
+	static boolean l_bInitialized=false;
+	static uint64 l_ui64CounterStart;
+	uint64 l_ui64Counter;
+
+	l_ui64Counter=uint64(timeGetTime());
+	l_ui64Counter=((l_ui64Counter/1000)<<32)+(((l_ui64Counter%1000)<<32)/1000);
+
+	if(!l_bInitialized)
+	{
+		l_ui64CounterStart=l_ui64Counter;
+		l_bInitialized=true;
+	}
+
+	l_ui64Result=l_ui64Counter-l_ui64CounterStart;
+
+#endif
+
 #else
 #endif
 	return l_ui64Result;
