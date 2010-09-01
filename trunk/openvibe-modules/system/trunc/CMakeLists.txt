@@ -16,6 +16,21 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	COMPILE_FLAGS "-DSystem_Shared -DSystem_Exports")
 
 # ---------------------------------
+# Finds standard library winmm
+# Adds library to target
+# Adds include path
+# ---------------------------------
+IF(WIN32)
+	FIND_LIBRARY(LIB_STANDARD_MODULE_WINMM winmm)
+	IF(LIB_STANDARD_MODULE_WINMM)
+		MESSAGE(STATUS "  Found winmm...")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_WINMM})
+	ELSE(LIB_STANDARD_MODULE_WINMM)
+		MESSAGE(STATUS "  FAILED to find winmm...")
+	ENDIF(LIB_STANDARD_MODULE_WINMM)
+ENDIF(WIN32)
+
+# ---------------------------------
 # Test applications
 # ---------------------------------
 OPTION(BUILD_OPENVIBE_MODULE_System_EXAMPLES "Build OpenViBE module System examples" OFF)
