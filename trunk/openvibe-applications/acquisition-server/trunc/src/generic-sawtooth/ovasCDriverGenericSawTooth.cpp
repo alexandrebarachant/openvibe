@@ -111,7 +111,7 @@ boolean CDriverGenericSawTooth::loop(void)
 
 		m_pCallback->setSamples(m_pSample);
 		// m_pCallback->setStimulationSet(l_oStimulationSet);
-		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+		m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 
 		m_ui32TotalSampleCount+=m_ui32SampleCountPerSentBlock;
 	}

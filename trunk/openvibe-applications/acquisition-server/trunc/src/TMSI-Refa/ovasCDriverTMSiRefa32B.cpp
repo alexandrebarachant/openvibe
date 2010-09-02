@@ -495,7 +495,7 @@ boolean CDriverTMSiRefa32B::loop(void)
 				//sent the data block
 				m_pCallback->setSamples(m_pSample);
 
-				m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+				m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 
 				//calculate the index of the new block
 				m_ui32SampleIndex-=m_ui32SampleCountPerSentBlock;

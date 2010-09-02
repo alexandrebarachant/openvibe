@@ -124,7 +124,7 @@ boolean CDriverOpenEEGModularEEG::loop(void)
 				}
 				m_pCallback->setSamples(m_pSample, 1);
 			}
-			m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+			m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 		}
 		m_vChannelBuffer.clear();
 	}

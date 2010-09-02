@@ -345,18 +345,18 @@ boolean CDriverNeuroskyMindset::loop(void)
 		}
 
 		m_pCallback->setSamples(m_pSample);
-		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+		m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 /*
-		// Jitter correction (preliminary tests showed a 1 sec jitter for 3 minutes of measurement)
-		if(m_rDriverContext.getJitterSampleCount() > m_rDriverContext.getJitterToleranceSampleCount()
-			|| m_rDriverContext.getJitterSampleCount() < - m_rDriverContext.getJitterToleranceSampleCount())
+		// Drift correction (preliminary tests showed a 1 sec drift for 3 minutes of measurement)
+		if(m_rDriverContext.getDriftSampleCount() > m_rDriverContext.getDriftToleranceSampleCount()
+			|| m_rDriverContext.getDriftSampleCount() < - m_rDriverContext.getDriftToleranceSampleCount())
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Trace << "Jitter detected: "<< m_rDriverContext.getJitterSampleCount() <<" samples.\n";
-			m_rDriverContext.getLogManager() << LogLevel_Trace << "Suggested correction: "<< m_rDriverContext.getSuggestedJitterCorrectionSampleCount() <<" samples.\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "Drift detected: "<< m_rDriverContext.getDriftSampleCount() <<" samples.\n";
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "Suggested correction: "<< m_rDriverContext.getSuggestedDriftCorrectionSampleCount() <<" samples.\n";
 
-			if(! m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount()))
+			if(! m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount()))
 			{
-				m_rDriverContext.getLogManager() << LogLevel_Error << "ERROR while correcting a jitter.\n";
+				m_rDriverContext.getLogManager() << LogLevel_Error << "ERROR while correcting a drift.\n";
 			}
 		}
 		m_pCallback->setStimulationSet(l_oStimulationSet);

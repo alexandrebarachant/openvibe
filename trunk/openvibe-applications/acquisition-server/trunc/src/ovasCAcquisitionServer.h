@@ -58,10 +58,10 @@ namespace OpenViBEAcquisitionServer
 		// Driver context callback
 		virtual OpenViBE::boolean isConnected(void) const { return m_bInitialized; }
 		virtual OpenViBE::boolean isStarted(void) const { return m_bStarted; }
-		virtual OpenViBE::int64 getJitterSampleCount(void) const { return m_i64JitterSampleCount; }
-		virtual OpenViBE::int64 getJitterToleranceSampleCount(void) const { return m_i64JitterToleranceSampleCount; }
-		virtual OpenViBE::int64 getSuggestedJitterCorrectionSampleCount(void) const;
-		virtual OpenViBE::boolean correctJitterSampleCount(OpenViBE::int64 i64SampleCount);
+		virtual OpenViBE::int64 getDriftSampleCount(void) const { return m_i64DriftSampleCount; }
+		virtual OpenViBE::int64 getDriftToleranceSampleCount(void) const { return m_i64DriftToleranceSampleCount; }
+		virtual OpenViBE::int64 getSuggestedDriftCorrectionSampleCount(void) const;
+		virtual OpenViBE::boolean correctDriftSampleCount(OpenViBE::int64 i64SampleCount);
 		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance);
 
 		//
@@ -112,11 +112,13 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint64 m_ui64LastSampleCount;
 		OpenViBE::uint64 m_ui64StartTime;
 
-		OpenViBE::uint64 m_ui64JitterToleranceDuration;
-		OpenViBE::int64 m_i64JitterSampleCount;
-		OpenViBE::int64 m_i64JitterToleranceSampleCount;
-		OpenViBE::int64 m_i64JitterCorrectionSampleCountAdded;
-		OpenViBE::int64 m_i64JitterCorrectionSampleCountRemoved;
+		std::list < OpenViBE::int64 > m_vJitterSampleCount;
+		OpenViBE::uint64 m_ui64DriftToleranceDuration;
+		OpenViBE::int64 m_i64DriftSampleCount;
+		OpenViBE::int64 m_i64DriftToleranceSampleCount;
+		OpenViBE::int64 m_i64DriftCorrectionSampleCountAdded;
+		OpenViBE::int64 m_i64DriftCorrectionSampleCountRemoved;
+		// OpenViBE::int64 m_i64JitterSampleCount;
 
 		OpenViBE::uint64 m_ui64DriverTimeoutDuration;
 		OpenViBE::uint64 m_ui64StartedDriverSleepDuration;

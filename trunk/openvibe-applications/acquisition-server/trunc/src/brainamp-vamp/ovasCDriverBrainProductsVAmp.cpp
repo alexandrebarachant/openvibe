@@ -287,7 +287,7 @@ boolean CDriverBrainProductsVAmp::loop(void)
 		//____________________________
 
 		m_pCallback->setSamples(m_pSample);
-		m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+		m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 	}
 
 	return true;

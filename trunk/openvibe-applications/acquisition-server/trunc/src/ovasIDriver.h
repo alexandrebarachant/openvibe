@@ -55,13 +55,13 @@ namespace OpenViBEAcquisitionServer
 		 */
 		virtual OpenViBE::boolean isStarted(void) const=0;
 		/**
-		 * \brief Gets jitter sample count
-		 * \return \e the jitter sample count
-		 * \sa correctJitterSampleCount
+		 * \brief Gets drift sample count
+		 * \return \e the drift sample count
+		 * \sa correctDriftSampleCount
 		 *
 		 * This function returns the difference between the theorical
 		 * number of samples this driver should have sent so far and
-		 * the number of samples it actually sent. This jitter sample
+		 * the number of samples it actually sent. This drift sample
 		 * count is computed by the acquisition server and can be used
 		 * to correct a drifting device behavior.
 		 *
@@ -70,39 +70,39 @@ namespace OpenViBEAcquisitionServer
 		 * \note If this number is exactly 0 then the driver sent the exact
 		 *        number of samples it had to send
 		 */
-		virtual OpenViBE::int64 getJitterSampleCount(void) const=0;
+		virtual OpenViBE::int64 getDriftSampleCount(void) const=0;
 		/**
-		 * \brief Gets the jitter sample count tolerance
-		 * \return \e the jitter sample count tolerance
+		 * \brief Gets the drift sample count tolerance
+		 * \return \e the drift sample count tolerance
 		 *
 		 * Gets the tolerance configured for the acquisition server. This
-		 * tolerance is present to avoid numerous corrections on a jitter
+		 * tolerance is present to avoid numerous corrections on a drift
 		 * value that would oscilate in a small range around 0. In such case,
 		 * a correction in a way would probably turn in a correction in the
 		 * opposite way a few seconds later, resulting in crap measurements
-		 * even because of irregular but valid source.
+		 * because of irregular but valid source.
 		 *
-		 * If the actual jitter is in the [-tolerance +tolerance] range,
+		 * If the actual drift is in the [-tolerance +tolerance] range,
 		 * better don't correct it.
 		 */
-		virtual OpenViBE::int64 getJitterToleranceSampleCount(void) const=0;
+		virtual OpenViBE::int64 getDriftToleranceSampleCount(void) const=0;
 		/**
-		 * \brief Gets the suggested jitter correction sample count
-		 * \return \e the suggested jitter correction sample count
+		 * \brief Gets the suggested drift correction sample count
+		 * \return \e the suggested drift correction sample count
 		 *
-		 * In case you don't want to manage yourself how much samples should
-		 * be used to correct, you could simply use this function. The
+		 * In case you don't want to manage how much samples should
+		 * be used to correct the drift, you could simply use this function. The
 		 * algorithm used to compute the returned value should be considered
 		 * as undefined. This computation could change over time and versions
 		 * of OpenViBE. That means the driver should not make any assumption
 		 * on the way of computing the actual value returned by this function.
 		 */
-		virtual OpenViBE::int64 getSuggestedJitterCorrectionSampleCount(void) const=0;
+		virtual OpenViBE::int64 getSuggestedDriftCorrectionSampleCount(void) const=0;
 		/**
 		 * \brief Corrects a drifting device
 		 * \return \e true in case of success
 		 * \return \e false in case of error
-		 * \sa getJitterSampleCount
+		 * \sa getDriftSampleCount
 		 *
 		 * Some devices don't sent the number of samples they promised to
 		 * while requesting sampling rate. This can be for multiple reasons
@@ -124,17 +124,17 @@ namespace OpenViBEAcquisitionServer
 		 * \note Passing a positive value adds samples
 		 * \note Passing 0 does nothing
 		 * \note This function can be called several times if needed
-		 *        but does not change what \ref getJitterSampleCount
-		 *        returns until the next \ref IDriver::loop execution
+		 *       but does not change what \ref getDriftSampleCount
+		 *       returns until the next \ref IDriver::loop execution
 		 * \warning Please be carefull when calling this function.
-		 *           Consider the fact that there could be some jittering
-		 *           in the device and ths OS-level driver itself, or even
-		 *           in the communication pipeline to the prorprietary
-		 *           acquisition software. As an OpenViBE driver developer,
-		 *           you should allow an arbitrary small jittering (which
-		 *           range depends of the actual driver you are creating).
+		 *          Consider the fact that there could be some drifting
+		 *          in the device and ths OS-level driver itself, or even
+		 *          in the communication pipeline to the prorprietary
+		 *          acquisition software. As an OpenViBE driver developer,
+		 *          you should allow an arbitrary small drifting (which
+		 *          range depends of the actual driver you are creating).
 		 */
-		virtual OpenViBE::boolean correctJitterSampleCount(OpenViBE::int64 i64SampleCount)=0;
+		virtual OpenViBE::boolean correctDriftSampleCount(OpenViBE::int64 i64SampleCount)=0;
 
 		/**
 		 * \brief Updates impedance for a specific channel

@@ -181,7 +181,7 @@ boolean CDriverMindMediaNeXus32B::loop(void)
 	}
 
 	m_pCallback->setSamples(m_pSample);
-	m_rDriverContext.correctJitterSampleCount(m_rDriverContext.getSuggestedJitterCorrectionSampleCount());
+	m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 	System::Memory::copy(
 		m_pSample,
 		m_pSample+m_oHeader.getChannelCount()*m_ui32SampleCountPerSentBlock,
