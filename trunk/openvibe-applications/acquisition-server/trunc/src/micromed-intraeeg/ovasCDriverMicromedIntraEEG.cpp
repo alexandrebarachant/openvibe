@@ -551,6 +551,7 @@ boolean CDriverMicromedIntraEEG::loop(void)
 				if(l_ui32nbSamplesBlock==m_ui32BuffDataIndex*m_oHeader.getChannelCount())
 				{
 					m_pCallback->setSamples(m_pSample);
+					m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 					m_rDriverContext.getLogManager() << LogLevel_Debug << "Send samples back to CAcquisitionServer: samples.len = " << m_ui32BuffDataIndex << "\n";
 					m_ui32BuffDataIndex=0;
 				}
