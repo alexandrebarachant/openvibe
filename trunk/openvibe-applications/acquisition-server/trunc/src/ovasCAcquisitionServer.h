@@ -118,8 +118,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::int64 m_i64DriftToleranceSampleCount;
 		OpenViBE::int64 m_i64DriftCorrectionSampleCountAdded;
 		OpenViBE::int64 m_i64DriftCorrectionSampleCountRemoved;
-		// OpenViBE::int64 m_i64JitterSampleCount;
 
+		OpenViBE::uint64 m_ui64JitterEstimationCountForDrift;
 		OpenViBE::uint64 m_ui64DriverTimeoutDuration;
 		OpenViBE::uint64 m_ui64StartedDriverSleepDuration;
 		OpenViBE::uint64 m_ui64StoppedDriverSleepDuration;
