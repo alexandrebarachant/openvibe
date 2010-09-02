@@ -90,8 +90,8 @@ boolean CSimpleDSP::initialize(void)
 		{
 			IAlgorithmProxy* l_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SpectrumStreamDecoder));
 			l_pStreamDecoder->initialize();
-			TParameterHandler<IMatrix*> op_ui64MinMaxFrequencyBands(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands));
-			TParameterHandler<IMatrix*> ip_ui64MinMaxFrequencyBands(l_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands));
+			TParameterHandler<IMatrix*> op_ui64MinMaxFrequencyBands(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands));
+			TParameterHandler<IMatrix*> ip_ui64MinMaxFrequencyBands(l_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands));
 			ip_ui64MinMaxFrequencyBands.setReferenceTarget(op_ui64MinMaxFrequencyBands);
 			m_vStreamDecoder.push_back(l_pStreamDecoder);
 		}
