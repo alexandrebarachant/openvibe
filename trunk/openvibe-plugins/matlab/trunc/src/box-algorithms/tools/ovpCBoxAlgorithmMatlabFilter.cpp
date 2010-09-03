@@ -219,11 +219,12 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 
 				m_pMatlabStimulationHandle=::mxCreateDoubleMatrix(l_oStimulationSet.getStimulationCount(), 3, mxREAL);
 				float64* l_pMatlabStimulationBuffer=(float64*)::mxGetPr(m_pMatlabStimulation);
-				for(j=0; j<l_oStimulationSet.getStimulationCount(); j++)
+				uint32 l_ui32StimulationCount=l_oStimulationSet.getStimulationCount();
+				for(j=0; j<l_ui32StimulationCount; j++)
 				{
-					l_pMatlabStimulationBuffer[j*3+0]=l_oStimulationSet.getStimulationIdentifier(j);
-					l_pMatlabStimulationBuffer[j*3+1]=((l_oStimulationSet.getStimulationDate(j)-l_ui64StartTime) >> 16) / 65536.0;
-					l_pMatlabStimulationBuffer[j*3+2]=( l_oStimulationSet.getStimulationDuration(j) >> 16) / 65536.0;
+					l_pMatlabStimulationBuffer[j+0*l_ui32StimulationCount]=l_oStimulationSet.getStimulationIdentifier(j);
+					l_pMatlabStimulationBuffer[j+1*l_ui32StimulationCount]=((l_oStimulationSet.getStimulationDate(j)-l_ui64StartTime) >> 16) / 65536.0;
+					l_pMatlabStimulationBuffer[j+2*l_ui32StimulationCount]=( l_oStimulationSet.getStimulationDuration(j) >> 16) / 65536.0;
 				}
 
 				System::Memory::copy(::mxGetPr(m_pMatlabMatrix), op_pMatrix->getBuffer(), op_pMatrix->getBufferElementCount()*sizeof(float64));
