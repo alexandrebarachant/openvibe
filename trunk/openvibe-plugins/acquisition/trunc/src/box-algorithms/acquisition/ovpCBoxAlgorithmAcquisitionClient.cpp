@@ -99,7 +99,7 @@ boolean CBoxAlgorithmAcquisitionClient::process(void)
 	op_pStimulationMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(2);
 	op_pChannelLocalisationMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(3);
 
-	if(m_pConnectionClient->isReadyToReceive())
+	while(m_pConnectionClient->isReadyToReceive())
 	{
 		uint64 l_ui64MemoryBufferSize=0;
 		if(!m_pConnectionClient->receiveBufferBlocking(&l_ui64MemoryBufferSize, sizeof(l_ui64MemoryBufferSize)))
@@ -130,11 +130,8 @@ boolean CBoxAlgorithmAcquisitionClient::process(void)
 			l_rDynamicBoxContext.markOutputAsReadyToSend(3, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
 			m_ui64LastChunkStartTime=m_ui64LastChunkEndTime;
 			m_ui64LastChunkEndTime+=op_ui64BufferDuration;
+			this->getLogManager() << LogLevel_Debug << "Acquisition inner latency : " << int64(m_ui64LastChunkEndTime-this->getPlayerContext().getCurrentTime()) << "\n";
 		}
-	}
-	else
-	{
-		getLogManager() << LogLevel_Info << "Skipped...\n";
 	}
 
 	return true;
