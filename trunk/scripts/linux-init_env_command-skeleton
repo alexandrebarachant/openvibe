@@ -61,10 +61,6 @@ OpenViBE_plugin_tools_branch=
 OpenViBE_plugin_turbofieldtrip_branch=
 OpenViBE_plugin_vrpn_branch=
 
-OpenViBE_plugin_wip_brenier_branch=branches/wip-brenier
-OpenViBE_plugin_wip_jsauvan_branch=branches/wip-jsauvan
-OpenViBE_plugin_wip_gionescu_branch=branches/wip-gionescu
-
 ########################################################################################################################
 
 export OpenViBE_base=`pwd`/..
@@ -143,6 +139,19 @@ done
 
 ########################################################################################################################
 
+OpenViBE_externals=$OpenViBE_base/openvibe-externals
+OpenViBE_externals_all=`find $OpenViBE_externals -follow -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | grep -v \.svn | sort`
+for v in $OpenViBE_externals_all; do
+	vv=`echo $v | sed 's/\-/_/g'`
+	eval 'v_branch=$OpenViBE_external_'$vv'_branch'
+	if [ "$v_branch" == "" ]; then
+		eval 'OpenViBE_external_'$vv'_branch=$OpenViBE_default_branch'
+	fi
+	eval 'export OpenViBE_external_'$vv'=$OpenViBE_externals/'$v'/$OpenViBE_external_'$vv'_branch'
+done
+
+########################################################################################################################
+
 export OpenViBE_build_order="
 $OpenViBE
 $OpenViBE_application_id_generator
@@ -160,7 +169,6 @@ $OpenViBE_plugin_classification
 $OpenViBE_plugin_classification_gpl
 $OpenViBE_plugin_feature_extraction
 $OpenViBE_plugin_file_io
-$OpenViBE_plugin_local
 $OpenViBE_plugin_samples
 $OpenViBE_plugin_signal_processing
 $OpenViBE_plugin_signal_processing_gpl
@@ -180,14 +188,15 @@ $OpenViBE_scenarios
 $OpenViBE_documentation
 "
 
+# Use this line to temporarily overwrite the default one
+export OpenViBE_build_order_="
+"
+
+#$OpenViBE_external_
+
 #$OpenViBE_plugin_matlab
 #$OpenViBE_plugin_turbofieldtrip
-
 #$OpenViBE_application_omk_test
-
-#$OpenViBE_plugin_wip_brenier
-#$OpenViBE_plugin_wip_jsauvan
-#$OpenViBE_plugin_wip_gionescu
 
 if [ -e ./linux-dependencies ]; then
 	source ./linux-dependencies
