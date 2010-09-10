@@ -125,7 +125,7 @@ for /D %%s in (%OpenViBE_plugins%/*) do (
 
 REM ########################################################################################################################
 
-SET OpenViBE_plugins=%OpenViBE_base%\openvibe-externals
+SET OpenViBE_externals=%OpenViBE_base%\openvibe-externals
 for /D %%s in (%OpenViBE_externals%/*) do (
 	set OpenViBE_project_name=%%~ns
 	set OpenViBE_project_name=!OpenViBE_project_name:-=_!
