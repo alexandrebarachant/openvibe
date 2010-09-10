@@ -135,16 +135,16 @@ boolean CBoxAlgorithmFrequencyBandSelector::process(void)
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
 			m_vSelectionFactor.clear();
-			for(uint32 i=0; i<ip_pBands->getDimensionSize(1); i++)
+			for(uint32 j=0; j<ip_pBands->getDimensionSize(1); j++)
 			{
 				boolean l_bSelected=false;
-				for(size_t j=0; j<m_vSelected.size(); j++)
+				for(size_t k=0; k<m_vSelected.size(); k++)
 				{
-					float64 l_f64Min=ip_pBands->getBuffer()[i*2+0];
-					float64 l_f64Max=ip_pBands->getBuffer()[i*2+1];
+					float64 l_f64Min=ip_pBands->getBuffer()[j*2+0];
+					float64 l_f64Max=ip_pBands->getBuffer()[j*2+1];
 					float64 l_f64Mean=(l_f64Min+l_f64Max)*.5;
 					// if(!(m_vSelected[j].second < l_f64Min || l_f64Max < m_vSelected[j].first))
-					if(m_vSelected[j].first <= l_f64Mean && l_f64Mean <= m_vSelected[j].second)
+					if(m_vSelected[k].first <= l_f64Mean && l_f64Mean <= m_vSelected[k].second)
 					{
 						l_bSelected=true;
 					}
@@ -157,11 +157,11 @@ boolean CBoxAlgorithmFrequencyBandSelector::process(void)
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
 			uint32 l_ui32Offset=0;
-			for(uint32 i=0; i<m_oMatrix.getDimensionSize(0); i++)
+			for(uint32 j=0; j<m_oMatrix.getDimensionSize(0); j++)
 			{
-				for(uint32 j=0; j<m_oMatrix.getDimensionSize(1); j++)
+				for(uint32 k=0; k<m_oMatrix.getDimensionSize(1); k++)
 				{
-					m_oMatrix.getBuffer()[l_ui32Offset]=m_vSelectionFactor[j]*m_oMatrix.getBuffer()[l_ui32Offset];
+					m_oMatrix.getBuffer()[l_ui32Offset]=m_vSelectionFactor[k]*m_oMatrix.getBuffer()[l_ui32Offset];
 					l_ui32Offset++;
 				}
 			}
