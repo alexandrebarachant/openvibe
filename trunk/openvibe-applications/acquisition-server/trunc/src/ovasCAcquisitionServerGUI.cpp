@@ -13,6 +13,7 @@
 #include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
 #include "brainamp-vamp/ovasCDriverBrainProductsVAmp.h"
 #include "neurosky-mindset/ovasCDriverNeuroskyMindset.h"
+#include "emotiv-epoc/ovasCDriverEmotivEPOC.h"
 // #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 #include "TMSI-Refa/ovasCDriverTMSiRefa32B.h"
 #include <openvibe-toolkit/ovtk_all.h>
@@ -96,14 +97,9 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	,m_pThread(NULL)
 {
 	m_pAcquisitionServer=new CAcquisitionServer(rKernelContext);
-
-#if defined TARGET_HAS_ThirdPartyThinkGearAPI
-	m_vDriver.push_back(new CDriverNeuroskyMindset(m_pAcquisitionServer->getDriverContext()));
-#endif
 #if defined OVAS_OS_Windows
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));
 #endif
-	m_vDriver.push_back(new CDriverOpenEEGModularEEG(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 	m_vDriver.push_back(new CDriverGTecGUSBamp(m_pAcquisitionServer->getDriverContext()));
 #endif
@@ -126,6 +122,13 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #endif
 	}
 
+#if defined TARGET_HAS_ThirdPartyEmotivAPI
+	m_vDriver.push_back(new CDriverEmotivEPOC(m_pAcquisitionServer->getDriverContext()));
+#endif
+#if defined TARGET_HAS_ThirdPartyThinkGearAPI
+	m_vDriver.push_back(new CDriverNeuroskyMindset(m_pAcquisitionServer->getDriverContext()));
+#endif
+	m_vDriver.push_back(new CDriverOpenEEGModularEEG(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericOscillator(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericSawTooth(m_pAcquisitionServer->getDriverContext()));
 
