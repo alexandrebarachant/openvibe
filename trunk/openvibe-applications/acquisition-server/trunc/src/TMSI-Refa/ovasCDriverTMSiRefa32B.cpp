@@ -382,7 +382,7 @@ boolean CDriverTMSiRefa32B::initialize(
 			}
 		}
 	}
-	m_oHeader.setChannelCount(m_ui32NbTotalChannels);
+	//m_oHeader.setChannelCount(m_ui32NbTotalChannels);
 	m_rDriverContext.getLogManager() << LogLevel_Trace << ">Number of Channels: " << (uint32)m_oHeader.getChannelCount() << "\n";
 	m_pSample=new float32[m_oHeader.getChannelCount()*m_ui32SampleCountPerSentBlock*2] ;
 
@@ -468,13 +468,17 @@ boolean CDriverTMSiRefa32B::loop(void)
 			}
 
 			//loop on the channel
-			for(uint32 i=0; i<m_ui32NbTotalChannels; i++)
+			for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 			{
 				//loop on the samples by channel
 				for(uint32 j=0; j<l_lmin; j++)
 				{
 					// save the data of one sample for one channel on the table
-					if(m_bSignalBufferUnsigned)
+					if(m_ui32NbTotalChannels<=i)
+					{
+						m_pSample[m_ui32SampleIndex+j + i*m_ui32SampleCountPerSentBlock] =0;
+					}
+					else if(m_bSignalBufferUnsigned)
 					{
 						m_pSample[m_ui32SampleIndex+j + i*m_ui32SampleCountPerSentBlock] =(((float32)m_ulSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +i])*m_vUnitGain[i]+m_vUnitOffSet[i])*pow(10.,(double)m_vExponentChannel[i]);
 					}

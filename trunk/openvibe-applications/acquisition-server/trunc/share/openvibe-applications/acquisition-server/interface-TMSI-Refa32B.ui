@@ -66,6 +66,11 @@
       </row>
     </data>
   </object>
+  <object class="GtkListStore" id="model3">
+  	<columns>
+  		<column type="gchararray"/>
+  	</columns>
+  </object>
   <object class="GtkDialog" id="openvibe-acquisition-server-settings">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Device configuration</property>
@@ -250,6 +255,13 @@
                     <child>
                       <object class="GtkComboBox" id="combobox_device">
                         <property name="visible">True</property>
+                        <property name="model">model3</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer3"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>

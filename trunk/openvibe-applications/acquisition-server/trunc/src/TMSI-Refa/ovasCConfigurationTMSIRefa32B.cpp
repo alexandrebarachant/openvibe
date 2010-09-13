@@ -59,23 +59,32 @@ boolean CConfigurationTMSIRefa32B::preConfigure(void)
 	}
 	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
-	int l_iCount=0;
+	int l_iCount=-1;
 	boolean l_bSelected=false;
 
 	// autodetection of the connected device
+	::GtkListStore* l_pListStoreComboBox= GTK_LIST_STORE(gtk_combo_box_get_model(l_pComboBox));
+
 	for(uint32 i=0; i<m_vDeviceList.size(); i++)
 	{
-		::gtk_combo_box_append_text(l_pComboBox,m_vDeviceList[i].c_str());
+		GtkTreeIter    iter;
+		gtk_list_store_append(l_pListStoreComboBox,&iter);
+		gtk_list_store_set (l_pListStoreComboBox, &iter,0, m_vDeviceList[i].c_str(),-1);
+		//::gtk_combo_box_append_text(l_pComboBox,m_vDeviceList[i].c_str());
+
 		if(m_sDeviceMaster!=NULL&&m_vDeviceList[i].compare(*m_sDeviceMaster)==0)
 		{
-			::gtk_combo_box_set_active(l_pComboBox, l_iCount);
+			l_iCount=i;
 			l_bSelected=true;
 		}
 
-		l_iCount++;
 	}
-
-	if(!l_bSelected && l_iCount!=0)
+	gtk_combo_box_set_model(l_pComboBox,GTK_TREE_MODEL(l_pListStoreComboBox));
+	if(l_bSelected)
+	{
+		::gtk_combo_box_set_active(l_pComboBox, l_iCount);
+	}
+	else if(!l_bSelected && m_vDeviceList.size()>0)
 	{
 		::gtk_combo_box_set_active(l_pComboBox, 0);
 	}
