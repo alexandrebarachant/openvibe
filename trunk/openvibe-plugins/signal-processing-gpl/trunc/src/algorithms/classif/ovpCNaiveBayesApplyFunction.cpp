@@ -43,7 +43,7 @@ boolean CNaiveBayesApplyFunction::uninitialize(void)
 boolean CNaiveBayesApplyFunction::process(void)
 {
 	IMatrix* l_pOutputMatrixFunctionalNB = op_pMatrixFunctionalNB;
-
+	float64 l_f64DiffSigMeanClass1,l_f64DiffSigMeanClass2;
 	float64 l_f64SumClass1, l_f64SqrClass1, l_f64NBFunctionalClass1;
 	float64 l_f64SumClass2, l_f64SqrClass2, l_f64NBFunctionalClass2;
 	float64 *l_pBufferData, *l_pBufferMean, *l_pBufferVariance, *l_pBufferLogTerm, *l_pOutputFunctionalNB ;
@@ -85,27 +85,27 @@ boolean CNaiveBayesApplyFunction::process(void)
 			l_pOutputMatrixFunctionalNB->setDimensionSize(1, 1);
 			l_pOutputFunctionalNB = l_pOutputMatrixFunctionalNB->getBuffer();
 			
-			l_f64SumClass1=0;
+			l_f64SumClass1=0.0;
 			for (uint32 i=0; i<l_ui32NbChannel; i++)
 			{
 				for (uint32 j=0; j<l_ui32NbSample; j++)
-				{					
-					l_pBufferData[(i*l_ui32NbSample)+j] -= l_pBufferMean[(i*l_ui32NbSample)+j];
-					l_f64SqrClass1 = l_pBufferData[(i*l_ui32NbSample)+j]*l_pBufferData[(i*l_ui32NbSample)+j];
+				{						
+					l_f64DiffSigMeanClass1 = l_pBufferData[(i*l_ui32NbSample)+j] - l_pBufferMean[(i*l_ui32NbSample)+j];
+					l_f64SqrClass1 = l_f64DiffSigMeanClass1 * l_f64DiffSigMeanClass1;
 					l_f64SqrClass1 /= l_pBufferVariance[(i*l_ui32NbSample)+j];
 					l_f64SumClass1 += l_f64SqrClass1;
 				}
 			}
 			l_f64NBFunctionalClass1 = l_pBufferLogTerm[0]-(0.5*l_f64SumClass1);
 			
-			l_f64SumClass2=0;
+			l_f64SumClass2=0.0;
 			l_ui32Offset = l_ui32NbChannel*l_ui32NbSample;
 			for (uint32 i=0; i<l_ui32NbChannel; i++)
 			{
 				for (uint32 j=0; j<l_ui32NbSample; j++)
 				{
-					l_pBufferData[(i*l_ui32NbSample)+j] -= l_pBufferMean[l_ui32Offset+(i*l_ui32NbSample)+j];
-					l_f64SqrClass2 = l_pBufferData[(i*l_ui32NbSample)+j]*l_pBufferData[(i*l_ui32NbSample)+j];
+					l_f64DiffSigMeanClass2 = l_pBufferData[(i*l_ui32NbSample)+j] - l_pBufferMean[l_ui32Offset+(i*l_ui32NbSample)+j];
+					l_f64SqrClass2 = l_f64DiffSigMeanClass2 * l_f64DiffSigMeanClass2;
 					l_f64SqrClass2 /= l_pBufferVariance[l_ui32Offset+(i*l_ui32NbSample)+j];
 					l_f64SumClass2 += l_f64SqrClass2;
 				}
