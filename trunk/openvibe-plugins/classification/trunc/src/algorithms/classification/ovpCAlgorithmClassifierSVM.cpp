@@ -3,8 +3,7 @@
 //#include <map>
 #include <sstream>
 #include <iostream>
-
-
+#include <cstring>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -94,7 +93,6 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	}
 	m_pModel=svm_train(&l_oProb,&l_oParam);
 
-
 	if(m_pModel == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "the training with SVM had failed\n";
@@ -164,31 +162,31 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	    l_pWriter->setChildData(svm_type_table[m_pModel->param.svm_type]);
 	   l_pWriter->closeChild();
 	   l_pWriter->openChild("kernel_type");
-		l_pWriter->setChildData(kernel_type_table[m_pModel->param.kernel_type]);
+	    l_pWriter->setChildData(kernel_type_table[m_pModel->param.kernel_type]);
 	   l_pWriter->closeChild();
 	   if(m_pModel->param.kernel_type == POLY)
 	   {
-		   l_pWriter->openChild("degree");
-		   std::stringstream l_sParamDegree;
-		   l_sParamDegree << m_pModel->param.degree;
-		   l_pWriter->setChildData(l_sParamDegree.str().c_str());
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("degree");
+	       std::stringstream l_sParamDegree;
+	       l_sParamDegree << m_pModel->param.degree;
+	       l_pWriter->setChildData(l_sParamDegree.str().c_str());
+	       l_pWriter->closeChild();
 	   }
 	   if(m_pModel->param.kernel_type == POLY || m_pModel->param.kernel_type == RBF || m_pModel->param.kernel_type == SIGMOID)
 	   {
-		   l_pWriter->openChild("gamma");
-		   std::stringstream l_sParamGamma;
-		   l_sParamGamma << m_pModel->param.gamma;
-		   l_pWriter->setChildData(l_sParamGamma.str().c_str());
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("gamma");
+	       std::stringstream l_sParamGamma;
+	       l_sParamGamma << m_pModel->param.gamma;
+	       l_pWriter->setChildData(l_sParamGamma.str().c_str());
+	       l_pWriter->closeChild();
 	   }
 	   if(m_pModel->param.kernel_type == POLY || m_pModel->param.kernel_type == SIGMOID)
 	   {
-		   l_pWriter->openChild("coef0");
-		   std::stringstream l_sParamCoef0;
-		   l_sParamCoef0 << m_pModel->param.coef0;
-		   l_pWriter->setChildData(l_sParamCoef0.str().c_str());
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("coef0");
+	       std::stringstream l_sParamCoef0;
+	       l_sParamCoef0 << m_pModel->param.coef0;
+	       l_pWriter->setChildData(l_sParamCoef0.str().c_str());
+	       l_pWriter->closeChild();
 	   }
 	  l_pWriter->closeChild();
 	  l_pWriter->openChild("Model");
@@ -199,7 +197,7 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	   l_pWriter->closeChild();
 	   l_pWriter->openChild("total_sv");
 	    std::stringstream l_sModelTotalSV;
-	   	l_sModelTotalSV << m_pModel->l;
+	    l_sModelTotalSV << m_pModel->l;
 	    l_pWriter->setChildData(l_sModelTotalSV.str().c_str());
 	   l_pWriter->closeChild();
 	   l_pWriter->openChild("rho");
@@ -207,68 +205,67 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	   l_pWriter->closeChild();
 	   if(m_pModel->label)
 	   {
-		   l_pWriter->openChild("label");
-		   //std::cout<<"model save: label"<<std::endl;
-		   std::stringstream l_sLabel;
-		   l_sLabel << m_pModel->label[0];
-		   for(int i=1;i<m_pModel->nr_class;i++)
-		   {
-			   l_sLabel << " " << m_pModel->label[i];
-		   }
-		    l_pWriter->setChildData(l_sLabel.str().c_str());
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("label");
+	       //std::cout<<"model save: label"<<std::endl;
+	       std::stringstream l_sLabel;
+	       l_sLabel << m_pModel->label[0];
+	       for(int i=1;i<m_pModel->nr_class;i++)
+	       {
+	           l_sLabel << " " << m_pModel->label[i];
+	       }
+	        l_pWriter->setChildData(l_sLabel.str().c_str());
+	       l_pWriter->closeChild();
 	   }
 	   if(m_pModel->probA)
 	   {
-		   l_pWriter->openChild("probA");
-		   //std::cout<<"model save: probA"<<std::endl;
-		   std::stringstream l_sProbA;
-		   for(int i=1;i<m_pModel->nr_class*(m_pModel->nr_class-1)/2;i++)
-		   {
-			   l_sProbA << " " << m_pModel->probA[i];
-		   }
-		   l_sProbA << std::scientific << m_pModel->probA[0];
-		   l_pWriter->setChildData(l_sProbA.str().c_str());
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("probA");
+	       //std::cout<<"model save: probA"<<std::endl;
+	       std::stringstream l_sProbA;
+	       for(int i=1;i<m_pModel->nr_class*(m_pModel->nr_class-1)/2;i++)
+	       {
+	           l_sProbA << " " << m_pModel->probA[i];
+	       }
+	       l_sProbA << std::scientific << m_pModel->probA[0];
+	       l_pWriter->setChildData(l_sProbA.str().c_str());
+	       l_pWriter->closeChild();
 	   }
 	   if(m_pModel->probB)
 	   {
-		   l_pWriter->openChild("probB");
-		   //std::cout<<"model save: probB"<<std::endl;
-		   std::stringstream l_sProbB;
-		   for(int i=1;i<m_pModel->nr_class*(m_pModel->nr_class-1)/2;i++)
-		   {
-		   		l_sProbB << " " << m_pModel->probB[i];
-		   }
-		   l_sProbB << std::scientific << m_pModel->probB[0];
-		   l_pWriter->setChildData(l_sProbB.str().c_str());
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("probB");
+	       //std::cout<<"model save: probB"<<std::endl;
+	       std::stringstream l_sProbB;
+	       for(int i=1;i<m_pModel->nr_class*(m_pModel->nr_class-1)/2;i++)
+	       {
+	       		l_sProbB << " " << m_pModel->probB[i];
+	       }
+	       l_sProbB << std::scientific << m_pModel->probB[0];
+	       l_pWriter->setChildData(l_sProbB.str().c_str());
+	       l_pWriter->closeChild();
 	   }
-
 	   if(m_pModel->nSV)
 	   {
-		   l_pWriter->openChild("nr_sv");
-		   //std::cout<<"model save: nSV"<<std::endl;
-		   std::stringstream l_sNrSV;
-		   l_sNrSV << m_pModel->nSV[0];
-		   for(int i=1;i<m_pModel->nr_class;i++)
-		   {
-			   l_sNrSV << " " << m_pModel->nSV[i];
-		   }
-		    l_pWriter->setChildData(l_sNrSV.str().c_str());
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("nr_sv");
+	       //std::cout<<"model save: nSV"<<std::endl;
+	       std::stringstream l_sNrSV;
+	       l_sNrSV << m_pModel->nSV[0];
+	       for(int i=1;i<m_pModel->nr_class;i++)
+	       {
+	           l_sNrSV << " " << m_pModel->nSV[i];
+	       }
+	        l_pWriter->setChildData(l_sNrSV.str().c_str());
+	       l_pWriter->closeChild();
 	   }
 	   l_pWriter->openChild("SVs");
 	   for(int i=0;i<m_pModel->l;i++)
 	   {
-		   l_pWriter->openChild("SV");
-		    l_pWriter->openChild("coef");
-		     l_pWriter->setChildData(l_vSVCoef[i]);
-		    l_pWriter->closeChild();
-		    l_pWriter->openChild("value");
-		     l_pWriter->setChildData(l_vSVValue[i]);
-		    l_pWriter->closeChild();
-		   l_pWriter->closeChild();
+	       l_pWriter->openChild("SV");
+	        l_pWriter->openChild("coef");
+	         l_pWriter->setChildData(l_vSVCoef[i]);
+	        l_pWriter->closeChild();
+	        l_pWriter->openChild("value");
+	         l_pWriter->setChildData(l_vSVValue[i]);
+	        l_pWriter->closeChild();
+	       l_pWriter->closeChild();
 	   }
 	   l_pWriter->closeChild();
 	  l_pWriter->closeChild();
@@ -301,7 +298,7 @@ boolean CAlgorithmClassifierSVM::classify(const IFeatureVector& rFeatureVector, 
 	//std::cout<<"create l_pX"<<std::endl;
 	svm_node* l_pX=new svm_node[rFeatureVector.getSize()+1];
 	//std::cout<<"rFeatureVector.getSize():"<<rFeatureVector.getSize()<<"m_ui32NumberOfFeatures"<<m_ui32NumberOfFeatures<<std::endl;
-	for(int i=0;i<rFeatureVector.getSize();i++)
+	for(unsigned int i=0;i<rFeatureVector.getSize();i++)
 	{
 		l_pX[i].index=i;
 		l_pX[i].value=rFeatureVector.getBuffer()[i];
@@ -316,19 +313,7 @@ boolean CAlgorithmClassifierSVM::classify(const IFeatureVector& rFeatureVector, 
 	{
 		l_pProbEstimates[i]=0;
 	}
-	//std::cout<<"call svm_predict_probability "<<m_pModel<<" "<<m_pModel->SV<<std::endl;
-	/*for(int i=0;i<m_pModel->l;i++)
-			{
-				svm_node* j=m_pModel->SV[i];
-				while(j->index!=-1)
-				{
-					std::cout<<j<<"/";
-					std::cout<<j->index << ":";
-					std::cout<< j->value<<" ";
-					j++;
-				}
-			}*/
-	//std::cout<<std::endl;
+
 	rf64Class=svm_predict_probability(m_pModel,l_pX,l_pProbEstimates);
 	//std::cout<<rf64Class<<std::endl;
 	//std::cout<<"probability"<<std::endl;
@@ -344,34 +329,12 @@ boolean CAlgorithmClassifierSVM::classify(const IFeatureVector& rFeatureVector, 
 
 		}
 	}
+
 	//std::cout<<";"<<rf64Class<<";"<<rClassificationValues[0] <<";"<<l_pProbEstimates[0]<<";"<<l_pProbEstimates[1]<<std::endl;
 	//std::cout<<"Label predict "<<rf64Class<< " proba:"<<rClassificationValues[0]<<std::endl;
 	//std::cout<<"end classify"<<std::endl;
 	delete[] l_pX;
 	delete[] l_pProbEstimates;
-	/*if(rFeatureVector.getSize()+1!=(unsigned int)m_oCoefficients.size())
-	{
-		this->getLogManager() << LogLevel_Warning << "Feature vector size " << rFeatureVector.getSize() << " and hyperplane parameter size " << (uint32) m_oCoefficients.size() << " does not match\n";
-		return false;
-	}
-
-	itpp::vec l_oFeatures(rFeatureVector.getBuffer(), rFeatureVector.getSize());
-
-	l_oFeatures.ins(0, 1);
-
-	float64 l_f64Result=-l_oFeatures*m_oCoefficients;
-
-	rClassificationValues.setSize(1);
-	rClassificationValues[0]=l_f64Result;
-
-	if(l_f64Result < 0)
-	{
-		rf64Class=m_f64Class1;
-	}
-	else
-	{
-		rf64Class=m_f64Class2;
-	}*/
 
 	return true;
 }
