@@ -142,10 +142,8 @@ boolean CBoxAlgorithmFrequencyBandSelector::process(void)
 				{
 					float64 l_f64Min=ip_pBands->getBuffer()[j*2+0];
 					float64 l_f64Max=ip_pBands->getBuffer()[j*2+1];
-					float64 l_f64Mean=(l_f64Min+l_f64Max)*.5;
-					// if(!(m_vSelected[j].second < l_f64Min || l_f64Max < m_vSelected[j].first))
-					// if(m_vSelected[k].first <= l_f64Mean && l_f64Mean <= m_vSelected[k].second)
-					if(m_vSelected[k].first < l_f64Max && l_f64Min <= m_vSelected[k].second)
+					float64 l_f64HalfStep=(l_f64Max-l_f64Min)*.5;
+					if(m_vSelected[k].first < l_f64Max+l_f64HalfStep && l_f64Min+l_f64HalfStep <= m_vSelected[k].second)
 					{
 						l_bSelected=true;
 					}
