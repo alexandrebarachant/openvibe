@@ -9,6 +9,9 @@ using namespace OpenViBEPlugins::SignalProcessing;
 
 boolean CBoxAlgorithmSignalDecimation::initialize(void)
 {
+	m_pStreamDecoder=NULL;
+	m_pStreamEncoder=NULL;
+
 	m_i64DecimationFactor=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	if(m_i64DecimationFactor<=1)
 	{
@@ -39,17 +42,23 @@ boolean CBoxAlgorithmSignalDecimation::uninitialize(void)
 	ip_pMatrix.uninitialize();
 	ip_ui64SamplingRate.uninitialize();
 
-	m_pStreamEncoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pStreamEncoder);
-	m_pStreamEncoder=NULL;
+	if(m_pStreamEncoder)
+	{
+		m_pStreamEncoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pStreamEncoder);
+		m_pStreamEncoder=NULL;
+	}
 
 	op_ui64SamplingRate.uninitialize();
 	op_pMatrix.uninitialize();
 	ip_pMemoryBuffer.uninitialize();
 
-	m_pStreamDecoder->uninitialize();
-	this->getAlgorithmManager().releaseAlgorithm(*m_pStreamDecoder);
-	m_pStreamDecoder=NULL;
+	if(m_pStreamDecoder)
+	{
+		m_pStreamDecoder->uninitialize();
+		this->getAlgorithmManager().releaseAlgorithm(*m_pStreamDecoder);
+		m_pStreamDecoder=NULL;
+	}
 
 	return true;
 }
