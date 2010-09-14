@@ -7,6 +7,7 @@
 
 #include <gtk/gtk.h>
 #include <map>
+#include <list>
 
 // TODO:
 // - please move the identifier definitions in ovp_defines.h
@@ -113,6 +114,7 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bTableInitialized;
 
 			std::map < unsigned long, std::map < unsigned long, CBoxAlgorithmP300SpellerVisualisation::SWidgetStyle > > m_vCache;
+			std::list < std::pair < int, int > > m_vTargetHistory;
 		};
 
 		class CBoxAlgorithmP300SpellerVisualisationDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc

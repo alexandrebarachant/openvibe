@@ -472,6 +472,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 							this->getLogManager() << LogLevel_Warning << "Did not find a unique widget at row:" << (uint32)m_iTargetRow << " column:" << (uint32) m_iTargetColumn << "\n";
 						}
 
+						m_vTargetHistory.push_back(std::make_pair(m_iTargetRow, m_iTargetColumn));
 						m_iLastTargetRow=m_iTargetRow;
 						m_iLastTargetColumn=m_iTargetColumn;
 						m_iTargetRow=-1;
@@ -573,9 +574,24 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 									if(GTK_IS_LABEL(l_vWidgets[0]))
 									{
 										std::string l_sString;
-										l_sString=gtk_label_get_text(m_pResult);
-										l_sString+=gtk_label_get_text(GTK_LABEL(l_vWidgets[0]));
-										gtk_label_set_text(m_pResult, l_sString.c_str());
+										l_sString=gtk_label_get_text(GTK_LABEL(l_vWidgets[0]));
+										if(m_vTargetHistory.size())
+										{
+											std::list < std::pair < int, int > >::const_iterator it=m_vTargetHistory.begin();
+											boolean l_bCorrect=(it->first==m_iSelectedRow && it->second==m_iSelectedColumn);
+											boolean l_bHalfCorrect=(it->first==m_iSelectedRow || it->second==m_iSelectedColumn);
+											m_vTargetHistory.pop_front();
+											if(l_bCorrect)
+											{
+												l_sString="<span color=\"darkgreen\">" + l_sString + "</span>";
+											}
+											else if (l_bHalfCorrect)
+											{
+												l_sString="<span color=\"darkorange\">" + l_sString + "</span>";
+											}
+										}
+										l_sString=std::string(gtk_label_get_label(m_pResult))+l_sString;
+										gtk_label_set_markup(m_pResult, l_sString.c_str());
 									}
 									else
 									{
