@@ -22,6 +22,8 @@ namespace OpenViBEPlugins
 		{
 		public:
 
+			CAlgorithmClassifierSVM(void);
+
 			virtual OpenViBE::boolean train(const OpenViBEToolkit::IFeatureVectorSet& rFeatureVectorSet);
 			virtual OpenViBE::boolean classify(const OpenViBEToolkit::IFeatureVector& rFeatureVector, OpenViBE::float64& rf64Class, OpenViBEToolkit::IVector& rClassificationValues);
 
@@ -43,8 +45,8 @@ namespace OpenViBEPlugins
 
 			std::vector <OpenViBE::float64> m_vClass;
 
-			//struct svm_parameter *m_oParam;		// set by parse_command_line
-			//struct svm_problem m_oProb;		// set by read_problem
+			//struct svm_parameter *m_oParam; // set by parse_command_line
+			//struct svm_problem m_oProb;     // set by read_problem
 			struct svm_model *m_pModel;
 			OpenViBE::int32 m_i32IndexSV;
 			OpenViBE::uint32 m_ui32NumberOfFeatures;

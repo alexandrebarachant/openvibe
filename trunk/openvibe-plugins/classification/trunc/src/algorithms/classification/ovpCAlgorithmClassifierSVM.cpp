@@ -14,6 +14,11 @@ using namespace OpenViBEPlugins::Classification;
 
 using namespace OpenViBEToolkit;
 
+CAlgorithmClassifierSVM::CAlgorithmClassifierSVM(void)
+	:m_pModel(NULL)
+{
+}
+
 boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSet)
 {
 	// default Param values
@@ -349,7 +354,6 @@ boolean CAlgorithmClassifierSVM::saveConfiguration(IMemoryBuffer& rMemoryBuffer)
 
 boolean CAlgorithmClassifierSVM::loadConfiguration(const IMemoryBuffer& rMemoryBuffer)
 {
-
 	if(m_pModel)
 	{
 		//std::cout<<"delete m_pModel load config"<<std::endl;
