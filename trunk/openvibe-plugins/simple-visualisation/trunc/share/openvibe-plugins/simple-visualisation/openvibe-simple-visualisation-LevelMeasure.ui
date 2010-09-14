@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <interface>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">2</property>
-    <property name="step_increment">0.10000000000000001</property>
-    <property name="page_size">0</property>
-    <property name="value">85</property>
-  </object>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="value">85</property>
+    <property name="upper">100</property>
+    <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">2</property>
+  </object>
   <object class="GtkWindow" id="level-measure">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <child>
@@ -29,6 +27,7 @@
   <object class="GtkWindow" id="level-measure-toolbar">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="title" translatable="yes">Level measure</property>
+    <property name="type_hint">dialog</property>
     <child>
       <object class="GtkToolbar" id="level-measure-settings">
         <property name="visible">True</property>

@@ -21,6 +21,7 @@
   <object class="GtkWindow" id="classifier-accuracy-measure-toolbar">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="title" translatable="yes">Classifier Accuracy Measure</property>
+    <property name="type_hint">dialog</property>
     <child>
       <object class="GtkToolbar" id="classifier-accuracy-measure-settings">
         <property name="visible">True</property>
@@ -67,7 +68,6 @@
       <object class="GtkVPaned" id="vertical-pannel">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkProgressBar" id="progress-bar-classifier-accuracy">
             <property name="visible">True</property>

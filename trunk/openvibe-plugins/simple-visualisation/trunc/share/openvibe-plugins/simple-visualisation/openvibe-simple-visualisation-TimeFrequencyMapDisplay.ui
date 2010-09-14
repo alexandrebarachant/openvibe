@@ -208,6 +208,7 @@
     <property name="title" translatable="yes">Time-Frequency Map Toolbar</property>
     <property name="resizable">False</property>
     <property name="window_position">mouse</property>
+    <property name="type_hint">dialog</property>
     <child>
       <object class="GtkToolbar" id="TimeFrequencyMapDisplayToolbar">
         <property name="visible">True</property>

@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
-<!--Generated with glade3 3.4.3 on Tue Oct 07 13:53:11 2008 -->
 <interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">2</property>
-    <property name="lower">0</property>
-    <property name="page_increment">0.5</property>
     <property name="step_increment">0.10000000000000001</property>
+    <property name="page_increment">0.5</property>
     <property name="page_size">10</property>
-    <property name="value">0</property>
   </object>
   <object class="GtkWindow" id="Toolbar">
     <property name="title" translatable="yes">3D Topographic Map Toolbar</property>
     <property name="resizable">False</property>
-    <property name="window_position">GTK_WIN_POS_MOUSE</property>
+    <property name="window_position">mouse</property>
+    <property name="type_hint">dialog</property>
     <child>
       <object class="GtkToolbar" id="DisplayToolbar">
         <property name="visible">True</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-        <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
+        <property name="toolbar_style">both</property>
         <property name="show_arrow">False</property>
         <child>
           <object class="GtkRadioToolButton" id="MapPotentials">
@@ -28,6 +28,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="homogeneous">True</property>
           </packing>
         </child>
         <child>
@@ -39,6 +40,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="homogeneous">True</property>
           </packing>
         </child>
         <child>
@@ -47,7 +49,6 @@
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="homogeneous">False</property>
           </packing>
         </child>
         <child>
@@ -58,6 +59,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="homogeneous">True</property>
           </packing>
         </child>
         <child>
@@ -66,7 +68,6 @@
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="homogeneous">False</property>
           </packing>
         </child>
         <child>
@@ -82,6 +83,9 @@
                     <property name="can_focus">True</property>
                     <property name="adjustment">adjustment1</property>
                   </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label1">
@@ -97,7 +101,6 @@
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="homogeneous">False</property>
           </packing>
         </child>
       </object>

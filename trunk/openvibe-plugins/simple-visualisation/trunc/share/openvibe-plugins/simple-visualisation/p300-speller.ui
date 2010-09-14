@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <interface>
+  <!-- interface-requires gtk+ 2.12 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="p300-speller">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <child>
       <object class="GtkTable" id="p300-speller-main">
         <property name="visible">True</property>
         <property name="n_rows">3</property>
-        <property name="n_columns">1</property>
         <property name="row_spacing">4</property>
         <child>
           <object class="GtkTable" id="p300-speller-table">
@@ -22,7 +23,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">0</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -41,7 +42,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">9</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -60,7 +61,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">8</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -79,7 +80,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">7</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -98,7 +99,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">6</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -117,7 +118,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Z</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -136,7 +137,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">X</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -155,7 +156,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">W</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -174,7 +175,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">T</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -193,7 +194,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">R</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -212,7 +213,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Q</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -231,7 +232,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">O</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -250,7 +251,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">N</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -269,7 +270,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">L</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -288,7 +289,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">K</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -307,7 +308,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">J</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -326,7 +327,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">I</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -345,7 +346,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">H</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -364,7 +365,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">G</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -381,7 +382,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">F</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -398,7 +399,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">E</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -415,7 +416,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">D</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -432,7 +433,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">C</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -449,7 +450,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">B</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -466,7 +467,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">A</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -479,7 +480,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">5</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -496,7 +497,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">Y</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -513,7 +514,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">S</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -530,7 +531,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">M</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -547,7 +548,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">1</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -566,7 +567,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">2</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -585,7 +586,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">3</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -604,7 +605,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">4</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -623,7 +624,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">P</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -642,7 +643,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">V</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -661,7 +662,7 @@
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">U</property>
                     <property name="use_markup">True</property>
-                    <property name="justify">GTK_JUSTIFY_CENTER</property>
+                    <property name="justify">center</property>
                   </object>
                 </child>
               </object>
@@ -744,8 +745,8 @@
               </object>
               <packing>
                 <property name="bottom_attach">2</property>
-                <property name="x_options"/>
-                <property name="y_options"/>
+                <property name="x_options"></property>
+                <property name="y_options"></property>
               </packing>
             </child>
           </object>
@@ -772,11 +773,12 @@
   <object class="GtkWindow" id="p300-speller-toolbar">
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="title" translatable="yes">P300 Speller</property>
+    <property name="type_hint">dialog</property>
     <child>
       <object class="GtkToolbar" id="toolbar">
         <property name="width_request">640</property>
         <property name="visible">True</property>
-        <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
+        <property name="toolbar_style">both</property>
         <child>
           <object class="GtkToggleToolButton" id="toolbutton-show_target_text">
             <property name="visible">True</property>
@@ -786,6 +788,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="homogeneous">True</property>
           </packing>
         </child>
         <child>
@@ -797,6 +800,7 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="homogeneous">True</property>
           </packing>
         </child>
       </object>
