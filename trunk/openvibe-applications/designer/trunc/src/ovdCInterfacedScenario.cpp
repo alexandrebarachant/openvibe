@@ -283,7 +283,7 @@ void scenario_title_button_close_cb(::GtkButton* pButton, gpointer pUserData)
 	static_cast<CInterfacedScenario*>(pUserData)->m_rApplication.closeScenarioCB(static_cast<CInterfacedScenario*>(pUserData));
 }
 
-CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, CApplication& rApplication, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename)
+CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, CApplication& rApplication, IScenario& rScenario, CIdentifier& rScenarioIdentifier, ::GtkNotebook& rNotebook, const char* sGUIFilename, const char* sGUISettingsFilename)
 	:m_ePlayerStatus(PlayerStatus_Uninitialized)
 	,m_oScenarioIdentifier(rScenarioIdentifier)
 	,m_rApplication(rApplication)
@@ -311,6 +311,7 @@ CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, C
 	,m_bAltPressed(false)
 	,m_bDebugCPUUsage(false)
 	,m_sGUIFilename(sGUIFilename)
+	,m_sGUISettingsFilename(sGUISettingsFilename)
 	,m_i32ViewOffsetX(0)
 	,m_i32ViewOffsetY(0)
 	,m_ui32CurrentMode(Mode_None)
@@ -1445,7 +1446,7 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 								IBox* l_pBox=m_rScenario.getBoxDetails(m_oCurrentObject.m_oIdentifier);
 								if(l_pBox)
 								{
-									CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, *l_pBox, m_sGUIFilename.c_str());
+									CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, *l_pBox, m_sGUIFilename.c_str(), m_sGUISettingsFilename.c_str());
 									if(l_oBoxConfigurationDialog.run())
 									{
 										this->snapshotCB();
@@ -2268,7 +2269,7 @@ void CInterfacedScenario::contextMenuBoxAddSettingCB(IBox& rBox)
 	rBox.addSetting("New setting", OV_UndefinedIdentifier, "");
 	if(rBox.hasAttribute(OV_AttributeId_Box_FlagCanModifySetting))
 	{
-		CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, rBox.getSettingCount()-1, "Add Setting", m_sGUIFilename.c_str());
+		CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, rBox.getSettingCount()-1, "Add Setting", m_sGUIFilename.c_str(), m_sGUISettingsFilename.c_str());
 		if(l_oSettingEditorDialog.run())
 		{
 			this->snapshotCB();
@@ -2286,7 +2287,7 @@ void CInterfacedScenario::contextMenuBoxAddSettingCB(IBox& rBox)
 void CInterfacedScenario::contextMenuBoxEditSettingCB(IBox& rBox, uint32 ui32Index)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxEditSettingCB\n";
-	CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, ui32Index, "Edit Setting", m_sGUIFilename.c_str());
+	CSettingEditorDialog l_oSettingEditorDialog(m_rKernelContext, rBox, ui32Index, "Edit Setting", m_sGUIFilename.c_str(), m_sGUISettingsFilename.c_str());
 	if(l_oSettingEditorDialog.run())
 	{
 		this->snapshotCB();
@@ -2301,7 +2302,7 @@ void CInterfacedScenario::contextMenuBoxRemoveSettingCB(IBox& rBox, uint32 ui32I
 void CInterfacedScenario::contextMenuBoxConfigureCB(IBox& rBox)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxConfigureCB\n";
-	CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, rBox, m_sGUIFilename.c_str());
+	CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, rBox, m_sGUIFilename.c_str(), m_sGUISettingsFilename.c_str());
 	l_oBoxConfigurationDialog.run();
 	this->snapshotCB();
 }

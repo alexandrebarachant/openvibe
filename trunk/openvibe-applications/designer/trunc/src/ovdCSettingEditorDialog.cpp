@@ -13,11 +13,12 @@ static void type_changed_cb(::GtkComboBox* pWidget, gpointer pUserData)
 	static_cast<CSettingEditorDialog*>(pUserData)->typeChangedCB();
 }
 
-CSettingEditorDialog::CSettingEditorDialog(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32SettingIndex, const char* sTitle, const char* sGUIFilename)
+CSettingEditorDialog::CSettingEditorDialog(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32SettingIndex, const char* sTitle, const char* sGUIFilename, const char* sGUISettingsFilename)
 	:m_rKernelContext(rKernelContext)
 	,m_rBox(rBox)
 	,m_ui32SettingIndex(ui32SettingIndex)
 	,m_sGUIFilename(sGUIFilename)
+	,m_sGUISettingsFilename(sGUISettingsFilename)
 	,m_sTitle(sTitle)
 	,m_pDefaultValue(NULL)
 {
@@ -82,7 +83,7 @@ boolean CSettingEditorDialog::run(void)
 			if(l_sActiveText)
 			{
 				CIdentifier l_oSettingType=m_vSettingTypes[l_sActiveText];
-				CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUIFilename.toASCIIString());
+				CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUISettingsFilename.toASCIIString());
 				m_rBox.setSettingName(m_ui32SettingIndex, gtk_entry_get_text(GTK_ENTRY(l_pName)));
 				m_rBox.setSettingType(m_ui32SettingIndex, l_oSettingType);
 				m_rBox.setSettingValue(m_ui32SettingIndex, l_oHelper.getValue(l_oSettingType, m_pDefaultValue));
@@ -114,7 +115,7 @@ boolean CSettingEditorDialog::run(void)
 
 void CSettingEditorDialog::typeChangedCB(void)
 {
-	CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUIFilename.toASCIIString());
+	CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUISettingsFilename.toASCIIString());
 
 	CIdentifier l_oSettingType=m_vSettingTypes[gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pType))];
 

@@ -22,7 +22,7 @@ namespace OpenViBEDesigner
 	public:
 
 		CInterfacedScenario(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBEDesigner::CApplication& rApplication, OpenViBE::Kernel::IScenario& rScenario, OpenViBE::CIdentifier& rScenarioIdentifier,
-			::GtkNotebook& rNotebook, const char* sGUIFilename);
+			::GtkNotebook& rNotebook, const char* sGUIFilename, const char* sGUISettingsFilename);
 		virtual ~CInterfacedScenario(void);
 
 		virtual OpenViBE::boolean isLocked(void) const;
@@ -117,6 +117,7 @@ namespace OpenViBEDesigner
 		OpenViBE::boolean m_bDebugCPUUsage;
 		std::string m_sFileName;
 		std::string m_sGUIFilename;
+		std::string m_sGUISettingsFilename;
 		OpenViBE::float64 m_f64PressMouseX;
 		OpenViBE::float64 m_f64PressMouseY;
 		OpenViBE::float64 m_f64ReleaseMouseX;

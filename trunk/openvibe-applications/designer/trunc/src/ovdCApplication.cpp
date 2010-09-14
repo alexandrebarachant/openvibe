@@ -17,6 +17,7 @@
 #endif
 
 #define OVD_GUI_File "../share/openvibe-applications/designer/interface.ui"
+#define OVD_GUI_Settings_File "../share/openvibe-applications/designer/interface-settings.ui"
 
 #include "ovdCDesignerVisualisation.h"
 #include "ovdCPlayerVisualisation.h"
@@ -577,7 +578,7 @@ void CApplication::openScenario(char* sFileName)
 			}
 
 			// Creates interfaced scenario
-			CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
+			CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File, OVD_GUI_Settings_File);
 			if(l_pInterfacedScenario->m_pDesignerVisualisation != NULL)
 			{
 				l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);
@@ -834,7 +835,7 @@ void CApplication::newScenarioCB(void)
 	if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
 	{
 		IScenario& l_rScenario=m_pScenarioManager->getScenario(l_oScenarioIdentifier);
-		CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File);
+		CInterfacedScenario* l_pInterfacedScenario=new CInterfacedScenario(m_rKernelContext, *this, l_rScenario, l_oScenarioIdentifier, *m_pScenarioNotebook, OVD_GUI_File, OVD_GUI_Settings_File);
 		if(l_pInterfacedScenario->m_pDesignerVisualisation != NULL)
 		{
 			l_pInterfacedScenario->m_pDesignerVisualisation->setDeleteEventCB(&::delete_designer_visualisation_cb, this);

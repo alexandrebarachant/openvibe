@@ -248,10 +248,11 @@ static void on_button_save_clicked(::GtkButton* pButton, gpointer pUserData)
 
 // ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
 
-CBoxConfigurationDialog::CBoxConfigurationDialog(const IKernelContext& rKernelContext, IBox& rBox, const char* sGUIFilename)
+CBoxConfigurationDialog::CBoxConfigurationDialog(const IKernelContext& rKernelContext, IBox& rBox, const char* sGUIFilename, const char* sGUISettingsFilename)
 	:m_rKernelContext(rKernelContext)
 	,m_rBox(rBox)
 	,m_sGUIFilename(sGUIFilename)
+	,m_sGUISettingsFilename(sGUISettingsFilename)
 {
 }
 
@@ -262,7 +263,7 @@ CBoxConfigurationDialog::~CBoxConfigurationDialog(void)
 boolean CBoxConfigurationDialog::run(void)
 {
 	boolean l_bModified=false;
-	CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUIFilename.toASCIIString());
+	CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUISettingsFilename.toASCIIString());
 	if(m_rBox.getSettingCount())
 	{
 		uint32 i;

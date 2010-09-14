@@ -1,31 +1,25 @@
 <?xml version="1.0"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">10</property>
     <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">0</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment2">
     <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">10</property>
     <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">0</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment3">
     <property name="upper">100</property>
-    <property name="lower">0</property>
-    <property name="page_increment">10</property>
     <property name="step_increment">1</property>
-    <property name="page_size">0</property>
-    <property name="value">0</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkListStore" id="model1">
     <columns>
+      <!-- column-name gchararray -->
       <column type="gchararray"/>
     </columns>
     <data>
@@ -36,6 +30,7 @@
   </object>
   <object class="GtkListStore" id="model2">
     <columns>
+      <!-- column-name gchararray -->
       <column type="gchararray"/>
     </columns>
     <data>
@@ -46,6 +41,7 @@
   </object>
   <object class="GtkListStore" id="model3">
     <columns>
+      <!-- column-name gchararray -->
       <column type="gchararray"/>
     </columns>
     <data>
@@ -54,145 +50,7 @@
       </row>
     </data>
   </object>
-  <object class="GtkUIManager" id="uimanager1">
-    <child>
-      <object class="GtkActionGroup" id="actiongroup1">
-        <child>
-          <object class="GtkAction" id="openvibe-menu_file">
-            <property name="name">openvibe-menu_file</property>
-            <property name="label" translatable="yes">_File</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_new">
-            <property name="stock_id">gtk-new</property>
-            <property name="name">openvibe-menu_new</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_open">
-            <property name="stock_id">gtk-open</property>
-            <property name="name">openvibe-menu_open</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_save">
-            <property name="stock_id">gtk-save</property>
-            <property name="name">openvibe-menu_save</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_save_as">
-            <property name="stock_id">gtk-save-as</property>
-            <property name="name">openvibe-menu_save_as</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_close">
-            <property name="stock_id">gtk-close</property>
-            <property name="name">openvibe-menu_close</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_quit">
-            <property name="stock_id">gtk-quit</property>
-            <property name="name">openvibe-menu_quit</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_edit">
-            <property name="name">openvibe-menu_edit</property>
-            <property name="label" translatable="yes">_Edit</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_cut">
-            <property name="stock_id">gtk-cut</property>
-            <property name="name">openvibe-menu_cut</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_copy">
-            <property name="stock_id">gtk-copy</property>
-            <property name="name">openvibe-menu_copy</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_paste">
-            <property name="stock_id">gtk-paste</property>
-            <property name="name">openvibe-menu_paste</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_delete">
-            <property name="stock_id">gtk-delete</property>
-            <property name="name">openvibe-menu_delete</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_preferences">
-            <property name="stock_id">gtk-preferences</property>
-            <property name="name">openvibe-menu_preferences</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_help">
-            <property name="name">openvibe-menu_help</property>
-            <property name="label" translatable="yes">_Help</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_scenario_about">
-            <property name="stock_id">gtk-about</property>
-            <property name="name">openvibe-menu_scenario_about</property>
-            <property name="label" translatable="yes">About this _scenario</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_about">
-            <property name="stock_id">gtk-about</property>
-            <property name="name">openvibe-menu_about</property>
-            <property name="label">_About OpenViBE</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkAction" id="openvibe-menu_documentation">
-            <property name="stock_id">gtk-help</property>
-            <property name="name">openvibe-menu_documentation</property>
-            <property name="label" translatable="yes">Browse documentation _website</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <ui>
-      <menubar name="openvibe-menu">
-        <menu action="openvibe-menu_file">
-          <menuitem action="openvibe-menu_new"/>
-          <menuitem action="openvibe-menu_open"/>
-          <menuitem action="openvibe-menu_save"/>
-          <menuitem action="openvibe-menu_save_as"/>
-          <separator/>
-          <menuitem action="openvibe-menu_close"/>
-          <menuitem action="openvibe-menu_quit"/>
-        </menu>
-        <menu action="openvibe-menu_edit">
-          <menuitem action="openvibe-menu_cut"/>
-          <menuitem action="openvibe-menu_copy"/>
-          <menuitem action="openvibe-menu_paste"/>
-          <menuitem action="openvibe-menu_delete"/>
-          <separator/>
-          <menuitem action="openvibe-menu_preferences"/>
-        </menu>
-        <menu action="openvibe-menu_help">
-          <menuitem action="openvibe-menu_scenario_about"/>
-          <menuitem action="openvibe-menu_about"/>
-          <menuitem action="openvibe-menu_documentation"/>
-        </menu>
-      </menubar>
-    </ui>
-  </object>
-  <!-- interface-requires gtk+ 2.12 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <object class="GtkUIManager" id="uimanager1"/>
   <object class="GtkDialog" id="configuration_manager">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Configuration Manager (read only)</property>
@@ -601,8 +459,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -693,8 +551,8 @@
               <object class="GtkComboBox" id="setting_editor-setting_type_combobox">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="wrap_width">4</property>
                 <property name="model">model1</property>
+                <property name="wrap_width">4</property>
                 <child>
                   <object class="GtkCellRendererText" id="renderer1"/>
                   <attributes>
@@ -803,8 +661,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -854,8 +712,166 @@
       <object class="GtkVBox" id="openvibe-vertical_container">
         <property name="visible">True</property>
         <child>
-          <object class="GtkMenuBar" constructor="uimanager1" id="openvibe-menu">
+          <object class="GtkMenuBar" id="openvibe-menu">
             <property name="visible">True</property>
+            <child>
+              <object class="GtkMenuItem" id="openvibe-menu_file">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_File</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="openvibe-menu_file_content">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_new">
+                        <property name="label">gtk-new</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_open">
+                        <property name="label">gtk-open</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_save">
+                        <property name="label">gtk-save</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_save_as">
+                        <property name="label">gtk-save-as</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="openvibe-separator">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_close">
+                        <property name="label">gtk-close</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_quit">
+                        <property name="label">gtk-quit</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="openvibe-menu_edit">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_Edit</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="openvibe-menu_edit_content">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_cut">
+                        <property name="label">gtk-cut</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_copy">
+                        <property name="label">gtk-copy</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_paste">
+                        <property name="label">gtk-paste</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_delete">
+                        <property name="label">gtk-delete</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="openvibe-separator4">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_preferences">
+                        <property name="label">gtk-preferences</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkMenuItem" id="openvibe-menu_help">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_Help</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="openvibe-menu_help_content">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_scenario_about">
+                        <property name="label" translatable="yes">About this _scenario</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_about">
+                        <property name="label">_About OpenViBE</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="openvibe-menu_documentation">
+                        <property name="label" translatable="yes">Browse documentation _website</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">False</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -880,7 +896,7 @@
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_new">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">creates a new
+                        <property name="tooltip_text" translatable="yes">creates a new
 scenario...</property>
                         <property name="label">new</property>
                         <property name="stock_id">gtk-new</property>
@@ -893,7 +909,7 @@ scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_open">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">opens an existing
+                        <property name="tooltip_text" translatable="yes">opens an existing
 scenario...</property>
                         <property name="label">open</property>
                         <property name="stock_id">gtk-open</property>
@@ -906,7 +922,7 @@ scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_save">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">saves the current
+                        <property name="tooltip_text" translatable="yes">saves the current
 scenario...</property>
                         <property name="label">save</property>
                         <property name="stock_id">gtk-save</property>
@@ -919,7 +935,7 @@ scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_save_as">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">saves the current
+                        <property name="tooltip_text" translatable="yes">saves the current
 scenario letting you
 choose a filename...</property>
                         <property name="label">save as ...</property>
@@ -933,7 +949,7 @@ choose a filename...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_close">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">closes the current
+                        <property name="tooltip_text" translatable="yes">closes the current
 scenario...</property>
                         <property name="label">close</property>
                         <property name="stock_id">gtk-close</property>
@@ -954,7 +970,7 @@ scenario...</property>
                     <child>
                       <object class="GtkToggleToolButton" id="openvibe-button_windowmanager">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">toggles the window
+                        <property name="tooltip_text" translatable="yes">toggles the window
 manager...</property>
                         <property name="label" translatable="yes">window manager</property>
                         <property name="stock_id">gtk-preferences</property>
@@ -967,7 +983,7 @@ manager...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_log_level">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">allows you to modify the
+                        <property name="tooltip_text" translatable="yes">allows you to modify the
 active log levels...</property>
                         <property name="label">log levels...</property>
                         <property name="stock_id">gtk-edit</property>
@@ -988,7 +1004,7 @@ active log levels...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_comment">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">allows you to add a new
+                        <property name="tooltip_text" translatable="yes">allows you to add a new
 comment in the scenario...</property>
                         <property name="label" translatable="yes">add comment</property>
                         <property name="stock_id">gtk-index</property>
@@ -1001,7 +1017,7 @@ comment in the scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_aboutscenario">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">allows you to read / modify
+                        <property name="tooltip_text" translatable="yes">allows you to read / modify
 the information about the scenario...</property>
                         <property name="label" translatable="yes">about scenario</property>
                         <property name="use_underline">True</property>
@@ -1042,7 +1058,7 @@ the information about the scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_stop">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">stops the execution of
+                        <property name="tooltip_text" translatable="yes">stops the execution of
 the current scenario...</property>
                         <property name="label">stop</property>
                         <property name="stock_id">gtk-media-stop</property>
@@ -1055,7 +1071,7 @@ the current scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_next">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">steps a fraction of time on
+                        <property name="tooltip_text" translatable="yes">steps a fraction of time on
 the current scenario...</property>
                         <property name="label">one step</property>
                         <property name="stock_id">gtk-media-next</property>
@@ -1068,7 +1084,7 @@ the current scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_play_pause">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">starts / pauses the execution
+                        <property name="tooltip_text" translatable="yes">starts / pauses the execution
 of the current scenario...</property>
                         <property name="label">play</property>
                         <property name="stock_id">gtk-media-play</property>
@@ -1081,7 +1097,7 @@ of the current scenario...</property>
                     <child>
                       <object class="GtkToolButton" id="openvibe-button_forward">
                         <property name="visible">True</property>
-                        <property name="tooltip-text" translatable="yes">executes the current
+                        <property name="tooltip_text" translatable="yes">executes the current
 scenario as fast as
 possible...</property>
                         <property name="label">start</property>
@@ -1337,6 +1353,9 @@ possible...</property>
                       </object>
                     </child>
                   </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
                 <child type="tab">
                   <object class="GtkHBox" id="openvibe-algorithm_title_container">
@@ -1466,9 +1485,6 @@ possible...</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="tooltip-text" translatable="yes">toggles the cpu usage
-display for each box of
-the scenario...</property>
                     <child>
                       <object class="GtkHBox" id="openvibe-togglebutton_cpu_usage-hbox">
                         <property name="visible">True</property>
@@ -2129,8 +2145,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2286,8 +2302,8 @@ Previous Documenters :
         <child>
           <object class="GtkComboBox" id="settings_collection-combobox_setting_enumeration">
             <property name="visible">True</property>
-            <property name="wrap_width">4</property>
             <property name="model">model2</property>
+            <property name="wrap_width">4</property>
             <child>
               <object class="GtkCellRendererText" id="renderer2"/>
               <attributes>
@@ -2825,8 +2841,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3147,8 +3163,8 @@ Previous Documenters :
               <object class="GtkComboBox" id="connector_editor-connector_type_combobox">
                 <property name="visible">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                <property name="wrap_width">4</property>
                 <property name="model">model3</property>
+                <property name="wrap_width">4</property>
                 <child>
                   <object class="GtkCellRendererText" id="renderer3"/>
                   <attributes>
@@ -3226,8 +3242,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>

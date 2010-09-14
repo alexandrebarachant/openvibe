@@ -12,7 +12,7 @@ namespace OpenViBEDesigner
 	{
 	public:
 
-		CSettingEditorDialog(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32SettingIndex, const char* sTitle, const char* sGUIFilename);
+		CSettingEditorDialog(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32SettingIndex, const char* sTitle, const char* sGUIFilename, const char* sGUISettingsFilename);
 		virtual ~CSettingEditorDialog(void);
 		virtual OpenViBE::boolean run(void);
 
@@ -24,6 +24,7 @@ namespace OpenViBEDesigner
 		OpenViBE::Kernel::IBox& m_rBox;
 		OpenViBE::uint32 m_ui32SettingIndex;
 		OpenViBE::CString m_sGUIFilename;
+		OpenViBE::CString m_sGUISettingsFilename;
 		std::string m_sTitle;
 		::GtkWidget* m_pTable;
 		::GtkWidget* m_pType;
