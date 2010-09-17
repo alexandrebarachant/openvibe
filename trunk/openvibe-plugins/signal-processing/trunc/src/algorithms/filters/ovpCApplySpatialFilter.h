@@ -30,6 +30,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_oFilterCoefficientsInputMatrixHandle;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_oSignalOutputMatrixHandle;
 
+			OpenViBE::boolean m_bActive;
 			OpenViBE::CMatrix* m_vInputMatrixCache;
 		};
 

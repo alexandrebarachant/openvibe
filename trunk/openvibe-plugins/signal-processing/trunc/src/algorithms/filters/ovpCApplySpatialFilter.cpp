@@ -17,6 +17,7 @@ boolean CApplySpatialFilter::initialize(void)
 	m_oSignalIntputMatrixHandle.initialize(getInputParameter(OVP_Algorithm_ApplySpatialFilter_InputParameterId_SignalMatrix));
 	m_oFilterCoefficientsInputMatrixHandle.initialize(getInputParameter(OVP_Algorithm_ApplySpatialFilter_InputParameterId_FilterCoefficientsMatrix));
 	m_oSignalOutputMatrixHandle.initialize(getOutputParameter(OVP_Algorithm_ApplySpatialFilter_OutputParameterId_FilteredSignalMatrix));
+	m_bActive=true;
 
 	return true;
 }
@@ -35,6 +36,11 @@ boolean CApplySpatialFilter::uninitialize(void)
 
 boolean CApplySpatialFilter::process(void)
 {
+	if(!m_bActive)
+	{
+		return false;
+	}
+
 	IMatrix* l_pFilterCoefficientsInputMatrix = m_oFilterCoefficientsInputMatrixHandle;
 	IMatrix* l_pSignalInputMatrix = m_oSignalIntputMatrixHandle;
 	IMatrix* l_pSignalOutputMatrix = m_oSignalOutputMatrixHandle;
@@ -49,8 +55,8 @@ boolean CApplySpatialFilter::process(void)
 
 	if(l_ui32FilterCoefficientsColumnDimensionSize != l_ui32SignalInputLineDimensionSize)
 	{
-		getLogManager() << LogLevel_Warning  << "Bad matrix size!\n";
-		getLogManager() << LogLevel_Warning  << "Number of column of filter coefficients = " << l_ui32FilterCoefficientsColumnDimensionSize << " while Number of Line of Signal = " << l_ui32SignalInputLineDimensionSize << "\n";
+		getLogManager() << LogLevel_ImportantWarning  << "Bad matrix size - number of column of filter coefficients = " << l_ui32FilterCoefficientsColumnDimensionSize << " while Number of Line of Signal = " << l_ui32SignalInputLineDimensionSize << "\n";
+		m_bActive=false;
 		return false;
 	}
 
