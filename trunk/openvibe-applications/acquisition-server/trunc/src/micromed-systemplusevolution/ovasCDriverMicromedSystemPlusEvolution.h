@@ -1,5 +1,5 @@
-#ifndef __OpenViBE_AcquisitionServer_CDriverMicromedIntraEEG_H__
-#define __OpenViBE_AcquisitionServer_CDriverMicromedIntraEEG_H__
+#ifndef __OpenViBE_AcquisitionServer_CDriverMicromedSystemPlusEvolution_H__
+#define __OpenViBE_AcquisitionServer_CDriverMicromedSystemPlusEvolution_H__
 
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
@@ -12,12 +12,12 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CDriverMicromedIntraEEG : public OpenViBEAcquisitionServer::IDriver
+	class CDriverMicromedSystemPlusEvolution : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 
-		CDriverMicromedIntraEEG(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
-		virtual ~CDriverMicromedIntraEEG(void);
+		CDriverMicromedSystemPlusEvolution(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
+		virtual ~CDriverMicromedSystemPlusEvolution(void);
 		virtual const char* getName(void);
 
 /*
@@ -68,4 +68,4 @@ namespace OpenViBEAcquisitionServer
 };
 
 #endif
-#endif // __OpenViBE_AcquisitionServer_CDriverMicromedIntraEEG_H__
+#endif // __OpenViBE_AcquisitionServer_CDriverMicromedSystemPlusEvolution_H__

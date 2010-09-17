@@ -1,4 +1,4 @@
-#include "ovasCDriverMicromedIntraEEG.h"
+#include "ovasCDriverMicromedSystemPlusEvolution.h"
 #include "../ovasCConfigurationNetworkBuilder.h"
 
 #if defined OVAS_OS_Windows
@@ -125,7 +125,7 @@ namespace
 		return; \
 	}
 
-CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(IDriverContext& rDriverContext)
+CDriverMicromedSystemPlusEvolution::CDriverMicromedSystemPlusEvolution(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_bValid(true)
 	,m_pConnectionServer(NULL)
@@ -212,7 +212,7 @@ CDriverMicromedIntraEEG::CDriverMicromedIntraEEG(IDriverContext& rDriverContext)
 #endif
 }
 
-CDriverMicromedIntraEEG::~CDriverMicromedIntraEEG(void)
+CDriverMicromedSystemPlusEvolution::~CDriverMicromedSystemPlusEvolution(void)
 {
 	if(m_pConnectionServer)
 	{
@@ -281,12 +281,12 @@ CDriverMicromedIntraEEG::~CDriverMicromedIntraEEG(void)
 #endif
 }
 
-const char* CDriverMicromedIntraEEG::getName(void)
+const char* CDriverMicromedSystemPlusEvolution::getName(void)
 {
 	return "Micromed SD LTM (through SystemPlus Evolution)";
 }
 
-short CDriverMicromedIntraEEG::MyReceive(char* buf, long dataLen)
+short CDriverMicromedSystemPlusEvolution::MyReceive(char* buf, long dataLen)
 {
 	long nDati=0;
 	long recByte;
@@ -307,7 +307,7 @@ short CDriverMicromedIntraEEG::MyReceive(char* buf, long dataLen)
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CDriverMicromedIntraEEG::initialize(
+boolean CDriverMicromedSystemPlusEvolution::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
@@ -454,7 +454,7 @@ boolean CDriverMicromedIntraEEG::initialize(
 	return true;
 }
 
-boolean CDriverMicromedIntraEEG::start(void)
+boolean CDriverMicromedSystemPlusEvolution::start(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "start device\n";
 	if(!m_bValid) { return false; }
@@ -464,7 +464,7 @@ boolean CDriverMicromedIntraEEG::start(void)
 	return true;
 }
 
-boolean CDriverMicromedIntraEEG::dropData(void)
+boolean CDriverMicromedSystemPlusEvolution::dropData(void)
 {
 	//drop data
 	uint32 l_ui32TotalReceived=0;
@@ -478,7 +478,7 @@ boolean CDriverMicromedIntraEEG::dropData(void)
 	return true;
 }
 
-boolean CDriverMicromedIntraEEG::loop(void)
+boolean CDriverMicromedSystemPlusEvolution::loop(void)
 {
 	if(!m_bValid) { return false; }
 	if(!m_rDriverContext.isConnected()) { return false; }
@@ -562,7 +562,7 @@ boolean CDriverMicromedIntraEEG::loop(void)
 
 }
 
-boolean CDriverMicromedIntraEEG::stop(void)
+boolean CDriverMicromedSystemPlusEvolution::stop(void)
 {
 	if(!m_bValid) { return false; }
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Server stopped\n";
@@ -572,7 +572,7 @@ boolean CDriverMicromedIntraEEG::stop(void)
 	return true;
 }
 
-boolean CDriverMicromedIntraEEG::uninitialize(void)
+boolean CDriverMicromedSystemPlusEvolution::uninitialize(void)
 {
 	if(!m_bValid) { return false; }
 	if(!m_rDriverContext.isConnected()) { return false; }
@@ -609,14 +609,14 @@ boolean CDriverMicromedIntraEEG::uninitialize(void)
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CDriverMicromedIntraEEG::isConfigurable(void)
+boolean CDriverMicromedSystemPlusEvolution::isConfigurable(void)
 {
 	return true;
 }
 
-boolean CDriverMicromedIntraEEG::configure(void)
+boolean CDriverMicromedSystemPlusEvolution::configure(void)
 {
-	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Micromed-IntraEEG.ui");
+	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Micromed-SystemPlusEvolution.ui");
 
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);
 

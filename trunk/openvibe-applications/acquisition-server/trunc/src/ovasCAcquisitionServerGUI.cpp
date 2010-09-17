@@ -4,13 +4,13 @@
 
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
 #include "generic-sawtooth/ovasCDriverGenericSawTooth.h"
-#include "brainproducts-brainvisionrecorder/ovasCDriverBrainampStandard.h"
+#include "brainproducts-brainvisionrecorder/ovasCDriverBrainProductsBrainVisionRecorder.h"
 #include "brainproducts-vamp/ovasCDriverBrainProductsVAmp.h"
 #include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
 #include "emotiv-epoc/ovasCDriverEmotivEPOC.h"
 #include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
-#include "micromed-systemplusevolution/ovasCDriverMicromedIntraEEG.h"
+#include "micromed-systemplusevolution/ovasCDriverMicromedSystemPlusEvolution.h"
 #include "mindmedia-nexus32b/ovasCDriverMindMediaNeXus32B.h"
 #include "neurosky-mindset/ovasCDriverNeuroskyMindset.h"
 #include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
@@ -103,7 +103,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 
 	m_vDriver.push_back(new CDriverGenericOscillator(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericSawTooth(m_pAcquisitionServer->getDriverContext()));
-	if(l_bShowUnstable) m_vDriver.push_back(new CDriverBrainampStandard(m_pAcquisitionServer->getDriverContext()));
+	if(l_bShowUnstable) m_vDriver.push_back(new CDriverBrainProductsBrainVisionRecorder(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 	m_vDriver.push_back(new CDriverBrainProductsVAmp(m_pAcquisitionServer->getDriverContext()));
 #endif
@@ -118,7 +118,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverGTecGUSBamp(m_pAcquisitionServer->getDriverContext()));
 #endif
 #if defined OVAS_OS_Windows
-	m_vDriver.push_back(new CDriverMicromedIntraEEG(m_pAcquisitionServer->getDriverContext()));
+	m_vDriver.push_back(new CDriverMicromedSystemPlusEvolution(m_pAcquisitionServer->getDriverContext()));
 #endif
 #if defined OVAS_OS_Windows
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));

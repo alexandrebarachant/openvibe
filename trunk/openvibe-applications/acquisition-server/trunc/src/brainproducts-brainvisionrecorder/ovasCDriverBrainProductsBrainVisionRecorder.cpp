@@ -1,4 +1,4 @@
-#include "ovasCDriverBrainampStandard.h"
+#include "ovasCDriverBrainProductsBrainVisionRecorder.h"
 #include "../ovasCConfigurationNetworkBuilder.h"
 
 #include <system/Time.h>
@@ -18,7 +18,7 @@ using namespace std;
 //___________________________________________________________________//
 //                                                                   //
 
-CDriverBrainampStandard::CDriverBrainampStandard(IDriverContext& rDriverContext)
+CDriverBrainProductsBrainVisionRecorder::CDriverBrainProductsBrainVisionRecorder(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
 	,m_pConnectionClient(NULL)
@@ -29,11 +29,11 @@ CDriverBrainampStandard::CDriverBrainampStandard(IDriverContext& rDriverContext)
 {
 }
 
-CDriverBrainampStandard::~CDriverBrainampStandard(void)
+CDriverBrainProductsBrainVisionRecorder::~CDriverBrainProductsBrainVisionRecorder(void)
 {
 }
 
-const char* CDriverBrainampStandard::getName(void)
+const char* CDriverBrainProductsBrainVisionRecorder::getName(void)
 {
 	return "Brain Products Brainamp Standard (through Vision Recorder)";
 }
@@ -41,7 +41,7 @@ const char* CDriverBrainampStandard::getName(void)
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CDriverBrainampStandard::initialize(
+boolean CDriverBrainProductsBrainVisionRecorder::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
@@ -189,7 +189,7 @@ boolean CDriverBrainampStandard::initialize(
 	return true;
 }
 
-boolean CDriverBrainampStandard::start(void)
+boolean CDriverBrainProductsBrainVisionRecorder::start(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
@@ -197,7 +197,7 @@ boolean CDriverBrainampStandard::start(void)
 
 }
 
-boolean CDriverBrainampStandard::loop(void)
+boolean CDriverBrainProductsBrainVisionRecorder::loop(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(!m_rDriverContext.isStarted()) { return true; }
@@ -628,7 +628,7 @@ boolean CDriverBrainampStandard::loop(void)
 
 }
 
-boolean CDriverBrainampStandard::stop(void)
+boolean CDriverBrainProductsBrainVisionRecorder::stop(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Connection stopped\n";
 
@@ -637,7 +637,7 @@ boolean CDriverBrainampStandard::stop(void)
 	return true;
 }
 
-boolean CDriverBrainampStandard::uninitialize(void)
+boolean CDriverBrainProductsBrainVisionRecorder::uninitialize(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
@@ -665,14 +665,14 @@ boolean CDriverBrainampStandard::uninitialize(void)
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CDriverBrainampStandard::isConfigurable(void)
+boolean CDriverBrainProductsBrainVisionRecorder::isConfigurable(void)
 {
 	return true;
 }
 
-boolean CDriverBrainampStandard::configure(void)
+boolean CDriverBrainProductsBrainVisionRecorder::configure(void)
 {
-	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Brainamp-Standard.ui");
+	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-BrainProducts-BrainVisionRecorder.ui");
 
 	l_oConfiguration.setHostName(m_sServerHostName);
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);
