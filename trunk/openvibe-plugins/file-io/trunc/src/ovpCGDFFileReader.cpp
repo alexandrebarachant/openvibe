@@ -85,20 +85,6 @@ boolean CGDFFileReader::initialize()
 {
 	const IBox* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
-	// Parses box settings to find filename
-	l_pBoxContext->getSettingValue(0, m_sFileName);
-
-	//opens the gdf file
-	if(m_sFileName)
-	{
-		m_oFile.open(m_sFileName, ios::binary);
-		if(!m_oFile.good())
-		{
-			this->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << m_sFileName << "]\n";
-			return false;
-		}
-	}
-
 	m_oFile.seekg(0, ios::end);
 	m_ui64FileSize = (uint64)m_oFile.tellg();
 	m_oFile.seekg(0, ios::beg);
@@ -127,6 +113,20 @@ boolean CGDFFileReader::initialize()
 
 	//allocate the structure used to store the experiment information
 	m_pExperimentInfoHeader = new CExperimentInfoHeader;
+
+	// Parses box settings to find filename
+	l_pBoxContext->getSettingValue(0, m_sFileName);
+
+	//opens the gdf file
+	if(m_sFileName)
+	{
+		m_oFile.open(m_sFileName, ios::binary);
+		if(!m_oFile.good())
+		{
+			this->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << m_sFileName << "]\n";
+			return false;
+		}
+	}
 
 	//reads the gdf headers and sends the corresponding buffers
 	return readFileHeader();
