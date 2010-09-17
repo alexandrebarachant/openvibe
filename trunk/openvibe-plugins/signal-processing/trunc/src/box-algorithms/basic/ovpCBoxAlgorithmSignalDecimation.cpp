@@ -109,7 +109,17 @@ boolean CBoxAlgorithmSignalDecimation::process(void)
 
 			while(l_pInputBuffer < l_pInputBufferEnd && l_pOutputBuffer < l_pOutputBufferEnd)
 			{
+#if 1
+				float64 l_f64Sum=0;
+				float64* l_pInputBufferTmp=l_pInputBuffer;
+				for( ; l_pInputBufferTmp < l_pInputBufferEnd && l_pInputBufferTmp < l_pInputBuffer+m_i64DecimationFactor; l_pInputBufferTmp++)
+				{
+					l_f64Sum+=*l_pInputBufferTmp;
+				}
+				*l_pOutputBuffer=l_f64Sum/m_i64DecimationFactor;
+#else
 				*l_pOutputBuffer=*l_pInputBuffer;
+#endif
 				l_pInputBuffer+=m_i64DecimationFactor;
 				l_pOutputBuffer++;
 			}
