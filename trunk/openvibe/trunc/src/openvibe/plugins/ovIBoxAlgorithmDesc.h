@@ -44,7 +44,7 @@ namespace OpenViBE
 			 * When this function is called by the §OpenViBE§
 			 * platform, the plugin descriptor should fill in
 			 * the structure to let the §OpenViBE§ platform know
-			 * whet the corresponding box should look like
+			 * what the corresponding box should look like
 			 * (inputs/outputs/settings).
 			 *
 			 * \sa OpenViBE::Plugins::IBoxProto
