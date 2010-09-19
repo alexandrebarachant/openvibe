@@ -682,7 +682,7 @@ boolean CAcquisitionServer::stop(void)
 	float64 l_f64DriftRatio=(l_ui64ReceivedSampleCount?((l_i64DriftSampleCount*10000)/int64(l_ui64ReceivedSampleCount))/100.:100);
 	float64 l_f64AddedRatio=(l_ui64ReceivedSampleCount?((m_i64DriftCorrectionSampleCountAdded*10000)/int64(l_ui64ReceivedSampleCount))/100.:100);
 	float64 l_f64RemovedRatio=(l_ui64ReceivedSampleCount?((m_i64DriftCorrectionSampleCountRemoved*10000)/int64(l_ui64ReceivedSampleCount))/100.:100);
-	if(-m_i64DriftToleranceSampleCount * 5 < m_i64DriftSampleCount && m_i64DriftSampleCount < m_i64DriftToleranceSampleCount * 5 && l_f64DriftRatio <= 5)
+	if(-m_i64DriftToleranceSampleCount * 5 <= m_i64DriftSampleCount && m_i64DriftSampleCount <= m_i64DriftToleranceSampleCount * 5 && l_f64DriftRatio <= 5)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "For information, after " << (((System::Time::zgetTime()-m_ui64StartTime) * 1000) >> 32) * .001f << " seconds we got the following statistics :\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "  Received : " << l_ui64ReceivedSampleCount << " samples\n";
