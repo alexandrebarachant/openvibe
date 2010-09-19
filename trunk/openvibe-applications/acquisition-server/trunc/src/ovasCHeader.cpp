@@ -83,8 +83,8 @@ namespace OpenViBEAcquisitionServer
 
 CHeaderImpl::CHeaderImpl(void)
 	:m_ui32ExperimentIdentifier(_NoValueI_)
-	,m_ui32SubjectAge(_NoValueI_)
-	,m_ui32SubjectGender(_NoValueI_)
+	,m_ui32SubjectAge(18)
+	,m_ui32SubjectGender(OVTK_Value_Gender_NotSpecified)
 	,m_ui32ChannelCount(_NoValueI_)
 	,m_ui32SamplingFrequency(_NoValueI_)
 {
