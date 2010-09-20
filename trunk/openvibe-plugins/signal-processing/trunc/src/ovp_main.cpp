@@ -2,6 +2,7 @@
 #include "algorithms/epoching/ovpCAlgorithmStimulationBasedEpoching.h"
 #include "algorithms/filters/ovpCApplySpatialFilter.h"
 
+#include "box-algorithms/basic/ovpCBoxAlgorithmChannelRename.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmEpochAverage.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmSignalDecimation.h"
@@ -54,6 +55,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CAlgorithmStimulationBasedEpochingDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CApplySpatialFilterDesc)
 
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelRenameDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCropDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSignalDecimationDesc)
