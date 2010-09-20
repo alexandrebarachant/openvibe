@@ -22,6 +22,21 @@ INCLUDE("FindThirdPartyLua")
 INCLUDE("FindThirdPartyBoost_Thread")
 
 # ---------------------------------
+# Finds standard library winmm
+# Adds library to target
+# Adds include path
+# ---------------------------------
+IF(WIN32)
+	FIND_LIBRARY(LIB_STANDARD_MODULE_WINMM winmm)
+	IF(LIB_STANDARD_MODULE_WINMM)
+		MESSAGE(STATUS "  Found winmm...")
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_WINMM})
+	ELSE(LIB_STANDARD_MODULE_WINMM)
+		MESSAGE(STATUS "  FAILED to find winmm...")
+	ENDIF(LIB_STANDARD_MODULE_WINMM)
+ENDIF(WIN32)
+
+# ---------------------------------
 # Target macros
 # Defines target operating system
 # Defines target architecture
