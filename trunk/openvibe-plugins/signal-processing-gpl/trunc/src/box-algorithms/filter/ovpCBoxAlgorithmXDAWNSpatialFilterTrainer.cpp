@@ -391,21 +391,27 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 #endif
 
 			std::map < double, itpp::vec >::const_reverse_iterator it;
-			FILE* l_pFile=fopen(m_sSpatialFilterConfigurationFilename.toASCIIString(), "wb");
-			fprintf(l_pFile, "<OpenViBE-SettingsOverride>\n");
-			fprintf(l_pFile, "\t<SettingValue>");
+			FILE* l_pFile=::fopen(m_sSpatialFilterConfigurationFilename.toASCIIString(), "wb");
+			if(!l_pFile)
+			{
+				this->getLogManager() << LogLevel_Error << "The file [" << m_sSpatialFilterConfigurationFilename << "] could not be opened for writing...";
+				return false;
+			}
+
+			::fprintf(l_pFile, "<OpenViBE-SettingsOverride>\n");
+			::fprintf(l_pFile, "\t<SettingValue>");
 			for(it=l_vEigenVector.rbegin(), i=0; it!=l_vEigenVector.rend() && i<m_ui64FilterDimension; it++, i++)
 			{
 				for(j=0; j<l_ui32ChannelCount; j++)
 				{
-					fprintf(l_pFile, "%e ", it->second[j]);
+					::fprintf(l_pFile, "%e ", it->second[j]);
 				}
 			}
-			fprintf(l_pFile, "</SettingValue>\n");
-			fprintf(l_pFile, "\t<SettingValue>%d</SettingValue>\n", uint32(m_ui64FilterDimension));
-			fprintf(l_pFile, "\t<SettingValue>%d</SettingValue>\n", l_ui32ChannelCount);
-			fprintf(l_pFile, "</OpenViBE-SettingsOverride>\n");
-			fclose(l_pFile);
+			::fprintf(l_pFile, "</SettingValue>\n");
+			::fprintf(l_pFile, "\t<SettingValue>%d</SettingValue>\n", uint32(m_ui64FilterDimension));
+			::fprintf(l_pFile, "\t<SettingValue>%d</SettingValue>\n", l_ui32ChannelCount);
+			::fprintf(l_pFile, "</OpenViBE-SettingsOverride>\n");
+			::fclose(l_pFile);
 
 			this->getLogManager() << LogLevel_Info << "Training finished... Eigen values are ";
 			for(it=l_vEigenVector.rbegin(), i=0; it!=l_vEigenVector.rend() && i<m_ui64FilterDimension; it++, i++)
