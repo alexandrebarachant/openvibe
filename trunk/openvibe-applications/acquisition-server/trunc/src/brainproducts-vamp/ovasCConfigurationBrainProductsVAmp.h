@@ -14,6 +14,13 @@
 
 namespace OpenViBEAcquisitionServer
 {
+	enum
+	{
+		AcquisitionMode_VAmp16 = 0,
+		AcquisitionMode_VAmp8 = 1,
+		AcquisitionMode_VAmp4Fast = 2,
+	};
+
 	/**
 	 * \class CConfigurationBrainProductsVAmp
 	 * \author Laurent Bonnet (INRIA)
@@ -34,6 +41,7 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean postConfigure(void);
 
 		virtual void buttonFastModeSettingsCB(void);
+		virtual void comboBoxAcquisitionModeCB(::GtkComboBox* pComboBox);
 
 	protected:
 

@@ -51,21 +51,29 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
 
+		OpenViBE::boolean m_bAcquireAuxiliaryAsEEG;
+		OpenViBE::boolean m_bAcquireTriggerAsEEG;
+
 		OpenViBEAcquisitionServer::CHeaderBrainProductsVAmp m_oHeader;
 
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::uint32 m_ui32TotalSampleCount;
+		OpenViBE::uint32 m_ui32AcquisitionMode;
+		OpenViBE::uint32 m_ui32EEGChannelCount;
+		OpenViBE::uint32 m_ui32AuxiliaryChannelCount;
+		OpenViBE::uint32 m_ui32TriggerChannelCount;
 		OpenViBE::float32* m_pSample;
 
 		std::vector<OpenViBE::uint32> m_vStimulationIdentifier;
 		std::vector<OpenViBE::uint64> m_vStimulationDate;
 		std::vector<OpenViBE::uint64> m_vStimulationSample;
-	private:
-		OpenViBE::boolean m_bFirstStart;
 
+	private:
+
+		OpenViBE::boolean m_bFirstStart;
 	};
 };
 
-#endif // TARGET_HAS_ThirdPartyGUSBampCAPI
+#endif // TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 
 #endif // __OpenViBE_AcquisitionServer_CDriverBrainProductsVAmp_H__

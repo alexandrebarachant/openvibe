@@ -26,7 +26,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CHeaderBrainProductsVAmp(void);
+		CHeaderBrainProductsVAmp(OpenViBE::boolean bAcquireAuxiliaryAsEEG, OpenViBE::boolean bAcquireTriggerAsEEG);
 		virtual ~CHeaderBrainProductsVAmp(void);
 		virtual void reset(void);
 
@@ -65,37 +65,41 @@ namespace OpenViBEAcquisitionServer
 
 		//------------- SPECIFIC FUNCTIONS -------------
 
+		virtual OpenViBE::uint32 getAcquisitionMode(void) { return m_ui32AcquisitionMode; }
+		virtual OpenViBE::boolean setAcquisitionMode(OpenViBE::uint32 ui32AcquisitionMode) { m_ui32AcquisitionMode = ui32AcquisitionMode; return true; }
+
+		virtual OpenViBE::uint32 getEEGChannelCount(OpenViBE::uint32 ui32AcquisitionMode);
+		virtual OpenViBE::uint32 getAuxiliaryChannelCount(OpenViBE::uint32 ui32AcquisitionMode);
+		virtual OpenViBE::uint32 getTriggerChannelCount(OpenViBE::uint32 ui32AcquisitionMode);
+
 		// Pair information
 		virtual OpenViBE::boolean setPairCount(const OpenViBE::uint32 ui32PairCount);
 		virtual OpenViBE::boolean setPairName(const OpenViBE::uint32 ui32PairIndex, const char* sPairName);
 		virtual OpenViBE::boolean setPairGain(const OpenViBE::uint32 ui32PairIndex, const OpenViBE::float32 f32PairGain);
-		virtual OpenViBE::boolean setDataMode(t_faDataMode tDataMode);
 		virtual OpenViBE::boolean setDeviceId(OpenViBE::int32 i32DeviceId);
 		virtual OpenViBE::boolean setFastModeSettings(t_faDataModeSettings tFastModeSettings);
 
 		virtual OpenViBE::uint32 getPairCount(void) const;
 		virtual const char* getPairName(const OpenViBE::uint32 ui32PairIndex) const;
 		virtual OpenViBE::float32 getPairGain(const OpenViBE::uint32 ui32PairIndex) const;
-		virtual t_faDataMode getDataMode(void) const;
 		virtual OpenViBE::int32 getDeviceId(void) const;
 		virtual t_faDataModeSettings getFastModeSettings(void) const;
 
 		virtual OpenViBE::boolean isPairCountSet(void) const;
 		virtual OpenViBE::boolean isPairNameSet(void) const;
 		virtual OpenViBE::boolean isPairGainSet(void) const;
-		virtual OpenViBE::boolean isDataModeSet(void) const;
 		virtual OpenViBE::boolean isDeviceIdSet(void) const;
 		virtual OpenViBE::boolean isFastModeSettingsSet(void) const;
 
-		OpenViBEAcquisitionServer::CHeader*  getBasicHeader() const { return m_pBasicHeader; } ;
+		OpenViBEAcquisitionServer::CHeader* getBasicHeader() const { return m_pBasicHeader; } ;
 
 	protected:
 
-		OpenViBEAcquisitionServer::CHeader*  m_pBasicHeader; // the basic header
+		OpenViBEAcquisitionServer::CHeader* m_pBasicHeader; // the basic header
 
 		// additional information
 		OpenViBE::int32 m_i32DeviceId;
-		t_faDataMode  m_tDataMode;
+		OpenViBE::uint32 m_ui32AcquisitionMode;
 		t_faDataModeSettings m_tFastModeSettings;
 
 		// Pair information

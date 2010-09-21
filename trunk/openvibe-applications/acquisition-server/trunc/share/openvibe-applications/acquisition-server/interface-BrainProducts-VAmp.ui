@@ -13,10 +13,10 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adjustment3">
+  <object class="GtkAdjustment" id="adjustment_number_of_channels">
     <property name="value">16</property>
     <property name="lower">1</property>
-    <property name="upper">16</property>
+    <property name="upper">19</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
@@ -47,10 +47,13 @@
     </columns>
     <data>
       <row>
-        <col id="0" translatable="yes">Normal</col>
+        <col id="0" translatable="yes">VAmp 16</col>
       </row>
       <row>
-        <col id="0" translatable="yes">Fast</col>
+        <col id="0" translatable="yes">VAmp/FirstAmp 8</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">VAmp/FirstAmp Fast 4</col>
       </row>
     </data>
   </object>
@@ -97,7 +100,17 @@
           </packing>
         </child>
         <child>
-          <placeholder/>
+          <object class="GtkSpinButton" id="spinbutton_number_of_channels">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+            <property name="adjustment">adjustment_number_of_channels</property>
+            <property name="snap_to_ticks">True</property>
+            <property name="numeric">True</property>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
     </child>
@@ -523,11 +536,56 @@ Fast mode: 4 channels only, 20 kHz sampling frequency.
         <child>
           <object class="GtkVBox" id="vbox1">
             <property name="visible">True</property>
+            <property name="spacing">8</property>
             <child>
-              <object class="GtkTable" id="table1">
+              <object class="GtkTable" id="table3">
                 <property name="visible">True</property>
-                <property name="n_rows">4</property>
-                <property name="n_columns">2</property>
+                <property name="n_rows">6</property>
+                <property name="n_columns">3</property>
+                <child>
+                  <object class="GtkButton" id="button_fast_mode_settings">
+                    <property name="label" translatable="yes">Fast mode settings</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">5</property>
+                    <property name="bottom_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="combobox_acquisition_mode">
+                    <property name="visible">True</property>
+                    <property name="model">model2</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="renderer2"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">5</property>
+                    <property name="bottom_attach">6</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_acquisition_mode">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Acquisition Mode :</property>
+                    <property name="justify">right</property>
+                    <property name="single_line_mode">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">5</property>
+                    <property name="bottom_attach">6</property>
+                  </packing>
+                </child>
                 <child>
                   <object class="GtkLabel" id="label_identifier">
                     <property name="visible">True</property>
@@ -535,30 +593,6 @@ Fast mode: 4 channels only, 20 kHz sampling frequency.
                     <property name="justify">right</property>
                     <property name="single_line_mode">True</property>
                   </object>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label_age1">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">Age :</property>
-                    <property name="justify">right</property>
-                    <property name="single_line_mode">True</property>
-                  </object>
-                  <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label_gender">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">Gender :</property>
-                    <property name="justify">right</property>
-                    <property name="single_line_mode">True</property>
-                  </object>
-                  <packing>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkSpinButton" id="spinbutton_identifier">
@@ -571,7 +605,7 @@ Fast mode: 4 channels only, 20 kHz sampling frequency.
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
+                    <property name="right_attach">3</property>
                   </packing>
                 </child>
                 <child>
@@ -585,7 +619,7 @@ Fast mode: 4 channels only, 20 kHz sampling frequency.
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
+                    <property name="right_attach">3</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                   </packing>
@@ -603,19 +637,9 @@ Fast mode: 4 channels only, 20 kHz sampling frequency.
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
+                    <property name="right_attach">3</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label_device">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">Device</property>
-                  </object>
-                  <packing>
-                    <property name="top_attach">3</property>
-                    <property name="bottom_attach">4</property>
                   </packing>
                 </child>
                 <child>
@@ -631,9 +655,53 @@ Fast mode: 4 channels only, 20 kHz sampling frequency.
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
+                    <property name="right_attach">3</property>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkHSeparator" id="hseparator">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="right_attach">3</property>
+                    <property name="top_attach">4</property>
+                    <property name="bottom_attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_device">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Device</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">3</property>
+                    <property name="bottom_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_gender">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Gender :</property>
+                    <property name="justify">right</property>
+                    <property name="single_line_mode">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_age1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Age :</property>
+                    <property name="justify">right</property>
+                    <property name="single_line_mode">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
               </object>
@@ -642,100 +710,15 @@ Fast mode: 4 channels only, 20 kHz sampling frequency.
               </packing>
             </child>
             <child>
-              <object class="GtkHSeparator" id="hseparator">
+              <object class="GtkButton" id="button_change_channel_names">
+                <property name="label" translatable="yes">Change channel names...</property>
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkTable" id="table3">
-                <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">3</property>
-                <child>
-                  <object class="GtkLabel" id="label_acquisition_mode">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">Acquisition Mode :</property>
-                    <property name="justify">right</property>
-                    <property name="single_line_mode">True</property>
-                  </object>
-                  <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label_number_of_channels">
-                    <property name="visible">True</property>
-                    <property name="label" translatable="yes">Number of channels :</property>
-                    <property name="justify">right</property>
-                    <property name="single_line_mode">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkComboBox" id="combobox_acquisition_mode">
-                    <property name="visible">True</property>
-                    <property name="model">model2</property>
-                    <child>
-                      <object class="GtkCellRendererText" id="renderer2"/>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="button_change_channel_names">
-                    <property name="label" translatable="yes">Change channel names</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSpinButton" id="spinbutton_number_of_channels">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x25CF;</property>
-                    <property name="adjustment">adjustment3</property>
-                    <property name="snap_to_ticks">True</property>
-                    <property name="numeric">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="button_fast_mode_settings">
-                    <property name="label" translatable="yes">Fast mode settings</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="position">2</property>
               </packing>
             </child>
           </object>

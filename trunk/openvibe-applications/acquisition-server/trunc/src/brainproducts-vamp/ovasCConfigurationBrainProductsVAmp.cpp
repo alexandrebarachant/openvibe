@@ -11,9 +11,15 @@ using namespace std;
 #define boolean OpenViBE::boolean
 
 //____________________________________________________________________________________
+
 static void button_fast_mode_settings_cb(::GtkButton* pButton, void* pUserData)
 {
 	static_cast<CConfigurationBrainProductsVAmp*>(pUserData)->buttonFastModeSettingsCB();
+}
+
+static void combo_box_acquisition_mode_cb(::GtkComboBox* pComboBox, void* pUserData)
+{
+	static_cast<CConfigurationBrainProductsVAmp*>(pUserData)->comboBoxAcquisitionModeCB(pComboBox);
 }
 
 static void gtk_combo_box_set_active_text(::GtkComboBox* pComboBox, const gchar* sActiveText)
@@ -81,7 +87,7 @@ CConfigurationBrainProductsVAmp::CConfigurationBrainProductsVAmp(IDriverContext&
 
 boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 {
-	if(! CConfigurationBuilder::preConfigure())
+	if(!CConfigurationBuilder::preConfigure())
 	{
 		return false;
 	}
@@ -109,13 +115,13 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 	m_pPair4NegativeInputs=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_pair4_negative_input"));
 
 	// connects callbacks to buttons
-	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface,"button_fast_mode_settings"),	"pressed", G_CALLBACK(button_fast_mode_settings_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface,"button_fast_mode_settings"), "pressed", G_CALLBACK(button_fast_mode_settings_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface,"combobox_acquisition_mode"), "changed", G_CALLBACK(combo_box_acquisition_mode_cb), this);
 
 	// Configures interface with given values
 
 	//Data mode
-	gtk_combo_box_set_active_text(
-		GTK_COMBO_BOX(m_pAcquisitionMode), (m_pHeaderBrainProductsVAmp->getDataMode() == dmNormal ? "Normal" : "Fast"));
+	gtk_combo_box_set_active(GTK_COMBO_BOX(m_pAcquisitionMode), m_pHeaderBrainProductsVAmp->getAcquisitionMode());
 
 	//Device(s)
 	uint32 l_uint32DeviceCount = 0;
@@ -160,13 +166,13 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 	m_iDeviceCount = l_uint32DeviceCount;
 
 	// acquisition mode
-	gtk_combo_box_set_active_text(
-		GTK_COMBO_BOX(m_pAcquisitionMode), (m_pHeaderBrainProductsVAmp->getDataMode() == dmNormal ? "Normal" : "Fast"));
+	gtk_combo_box_set_active(GTK_COMBO_BOX(m_pAcquisitionMode), m_pHeaderBrainProductsVAmp->getAcquisitionMode());
 
 	//SETTINGS:
 	//Adding all possible settings : 7/8/9/10 and -1
 	// and setting active text
 	//_______________________________________________________
+
 	initFastModeSettingsComboBox(m_pPair1PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[0]);
 	initFastModeSettingsComboBox(m_pPair1NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[0]);
 	initFastModeSettingsComboBox(m_pPair2PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[1]);
@@ -176,21 +182,19 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 	initFastModeSettingsComboBox(m_pPair4PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[3]);
 	initFastModeSettingsComboBox(m_pPair4NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[3]);
 
-
 	return true;
 }
 
 boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 {
-
 	if(m_bApplyConfiguration)
 	{
-		string l_sMode = gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pAcquisitionMode));
-		m_pHeaderBrainProductsVAmp->setDataMode((l_sMode == "Normal" ? dmNormal : dm20kHz4Channels));
+		m_pHeaderBrainProductsVAmp->setAcquisitionMode(gtk_combo_box_get_active(GTK_COMBO_BOX(m_pAcquisitionMode)));
 		int l_iUSBIndex=0;
 
 		// Device number
-		if(m_iDeviceCount != 0){
+		if(m_iDeviceCount != 0)
+		{
 			int l_iDeviceNumber;
 			::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 			if(::sscanf(gtk_combo_box_get_active_text(l_pComboBox), "device#%i", &l_iDeviceNumber)==1)
@@ -200,6 +204,7 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 		}
 	}
 
+#if 0
 	// Code from CConfigurationBuilder::postConfigure() in order to have the channel names before making the pairs !
 	if(m_bApplyConfiguration)
 	{
@@ -213,19 +218,20 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 			}
 		}
 	}
+#endif
 
 	//releasing ressources as we dont need it anymore
 	gtk_widget_hide(m_pDialogFastModeSettings);
 
 	// making the pairs names
-	if(m_pHeaderBrainProductsVAmp->getDataMode() == dm20kHz4Channels)
+	if(m_pHeaderBrainProductsVAmp->getAcquisitionMode() == AcquisitionMode_VAmp4Fast)
 	{
 		uint32 l_uint32PairCount = 0;
 		vector<uint32> l_vPairIndex; // if the user has n<4 pairs but not in the n first settings, we need the indexes
 		for (uint32 i=0; i < 4; i++)
 		{
-			if(		m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[i] != -1
-				||	m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[i] != -1)
+			if(m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[i] != -1
+			|| m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[i] != -1)
 			{
 				l_uint32PairCount++;
 				l_vPairIndex.push_back(i);
@@ -289,7 +295,6 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 			}
 
 			l_vPairNames.push_back(l_sPairName);
-
 		}
 
 		for (uint32 i=0; i < l_uint32PairCount; i++)
@@ -298,10 +303,13 @@ boolean CConfigurationBrainProductsVAmp::postConfigure(void)
 		}
 	}
 
-	if(! CConfigurationBuilder::postConfigure()) // normal header is filled, ressources are realesed
+	if(!CConfigurationBuilder::postConfigure()) // normal header is filled, ressources are realesed
 	{
 		return false;
 	}
+
+	// Force sampling frequency
+	m_pHeaderBrainProductsVAmp->setSamplingFrequency(m_pHeaderBrainProductsVAmp->getAcquisitionMode()==AcquisitionMode_VAmp4Fast?20000:2000);
 
 	return true;
 }
@@ -333,18 +341,17 @@ void CConfigurationBrainProductsVAmp::buttonFastModeSettingsCB(void)
 				l_tFastModeSettings.Mode20kHz4Channels.ChannelsNeg[3] = atoi(gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pPair4NegativeInputs)));
 
 				m_pHeaderBrainProductsVAmp->setFastModeSettings(l_tFastModeSettings);
-				gtk_combo_box_set_active_text(
-					GTK_COMBO_BOX(m_pAcquisitionMode), "Fast");
+				gtk_combo_box_set_active_text(GTK_COMBO_BOX(m_pAcquisitionMode), "Fast");
+
 				break;
 			}
 			case GTK_RESPONSE_CANCEL:
 			{
 				//Data mode
-				gtk_combo_box_set_active_text(
-					GTK_COMBO_BOX(m_pAcquisitionMode), (m_pHeaderBrainProductsVAmp->getDataMode() == dmNormal ? "Normal" : "Fast"));
+				gtk_combo_box_set_active(GTK_COMBO_BOX(m_pAcquisitionMode), m_pHeaderBrainProductsVAmp->getAcquisitionMode());
 
 				//Settings
-				
+
 				initFastModeSettingsComboBox(m_pPair1PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[0],false);
 				initFastModeSettingsComboBox(m_pPair1NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[0],false);
 				initFastModeSettingsComboBox(m_pPair2PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[1],false);
@@ -354,13 +361,24 @@ void CConfigurationBrainProductsVAmp::buttonFastModeSettingsCB(void)
 				initFastModeSettingsComboBox(m_pPair4PositiveInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsPos[3],false);
 				initFastModeSettingsComboBox(m_pPair4NegativeInputs, m_pHeaderBrainProductsVAmp->getFastModeSettings().Mode20kHz4Channels.ChannelsNeg[3],false);
 
-			
 				break;
 			}
 		}
-	}while(l_iDialogResponse!=GTK_RESPONSE_APPLY && l_iDialogResponse!=GTK_RESPONSE_CANCEL);
+	}
+	while(l_iDialogResponse!=GTK_RESPONSE_APPLY && l_iDialogResponse!=GTK_RESPONSE_CANCEL);
 
 	gtk_widget_hide(GTK_WIDGET(l_pDialog));
+}
+
+void CConfigurationBrainProductsVAmp::comboBoxAcquisitionModeCB(::GtkComboBox* pComboBox)
+{
+	gint l_iAcquisitionMode=gtk_combo_box_get_active(pComboBox);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(m_pNumberOfChannels),
+		m_pHeaderBrainProductsVAmp->getEEGChannelCount(l_iAcquisitionMode)+
+		m_pHeaderBrainProductsVAmp->getAuxiliaryChannelCount(l_iAcquisitionMode)+
+		m_pHeaderBrainProductsVAmp->getTriggerChannelCount(l_iAcquisitionMode));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_change_channel_names")), l_iAcquisitionMode!=AcquisitionMode_VAmp4Fast);
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_fast_mode_settings")), l_iAcquisitionMode==AcquisitionMode_VAmp4Fast);
 }
 
 #endif // TARGET_HAS_ThirdPartyUSBFirstAmpAPI

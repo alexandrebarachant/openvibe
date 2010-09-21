@@ -1,5 +1,8 @@
 #include "ovasCHeaderBrainProductsVAmp.h"
+#include "ovasCConfigurationBrainProductsVAmp.h"
 #include "../ovasCHeader.h"
+
+#include <system/Memory.h>
 
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 
@@ -17,16 +20,26 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
 
+namespace
+{
+	uint32 g_vEEGChannelCount[] = { 16, 8, 4 };
+	uint32 g_vAuxiliaryChannelCount[] = { 2, 2, 0 };
+	uint32 g_vTriggerChannelCount[] = { 1, 1, 1 };
+};
+
 //___________________________________________________________________//
 //                                                                   //
 
-CHeaderBrainProductsVAmp::CHeaderBrainProductsVAmp(void)
+CHeaderBrainProductsVAmp::CHeaderBrainProductsVAmp(boolean bAcquireAuxiliaryAsEEG, boolean bAcquireTriggerAsEEG)
 {
+	System::Memory::set(g_vAuxiliaryChannelCount, sizeof(g_vAuxiliaryChannelCount)*(bAcquireAuxiliaryAsEEG?0:1), 0);
+	System::Memory::set(g_vTriggerChannelCount, sizeof(g_vTriggerChannelCount)*(bAcquireTriggerAsEEG?0:1), 0);
+
 	m_pBasicHeader = new CHeader();
 
 	// additional information
 	m_i32DeviceId = -1;
-	m_tDataMode = dmNormal;
+	m_ui32AcquisitionMode = AcquisitionMode_VAmp16;
 
 	// Pair information
 	m_ui32PairCount = 0;
@@ -41,7 +54,6 @@ void CHeaderBrainProductsVAmp::reset(void)
 {
 	m_pBasicHeader->reset();
 	m_i32DeviceId = FA_ID_INVALID;
-	m_tDataMode = dmNormal;
 
 	// Pair information
 	m_ui32PairCount = 0;
@@ -49,6 +61,21 @@ void CHeaderBrainProductsVAmp::reset(void)
 
 //___________________________________________________________________//
 //                                                                   //
+
+uint32 CHeaderBrainProductsVAmp::getEEGChannelCount(uint32 ui32AcquisitionMode)
+{
+	return g_vEEGChannelCount[ui32AcquisitionMode];
+}
+
+uint32 CHeaderBrainProductsVAmp::getAuxiliaryChannelCount(uint32 ui32AcquisitionMode)
+{
+	return g_vAuxiliaryChannelCount[ui32AcquisitionMode];
+}
+
+uint32 CHeaderBrainProductsVAmp::getTriggerChannelCount(uint32 ui32AcquisitionMode)
+{
+	return g_vTriggerChannelCount[ui32AcquisitionMode];
+}
 
 // Pair information
 
@@ -70,6 +97,12 @@ boolean CHeaderBrainProductsVAmp::setPairGain(const uint32 ui32PairIndex, const 
 {
 	m_vPairGain[ui32PairIndex]=f32PairGain;
 	return ui32PairIndex<m_ui32PairCount;
+}
+
+boolean CHeaderBrainProductsVAmp::setFastModeSettings(t_faDataModeSettings tFastModeSettings)
+{
+	m_tFastModeSettings=tFastModeSettings;
+	return isFastModeSettingsSet();
 }
 
 uint32 CHeaderBrainProductsVAmp::getPairCount(void) const
@@ -95,6 +128,11 @@ float32 CHeaderBrainProductsVAmp::getPairGain(const uint32 ui32PairIndex) const
 		return(ui32PairIndex<m_ui32PairCount?1.0f:0.0f);
 	}
 	return i->second;
+}
+
+t_faDataModeSettings CHeaderBrainProductsVAmp::getFastModeSettings(void) const
+{
+	return m_tFastModeSettings;
 }
 
 boolean CHeaderBrainProductsVAmp::isPairCountSet(void) const
@@ -163,11 +201,6 @@ boolean CHeaderBrainProductsVAmp::isSubjectGenderSet(void) const
 
 //___________________________________________________________________//
 //                                                                   //
-boolean CHeaderBrainProductsVAmp::setDataMode(t_faDataMode tDataMode)
-{
-	m_tDataMode=tDataMode;
-	return (m_tDataMode != dmNormal && m_tDataMode != dm20kHz4Channels);
-}
 
 boolean CHeaderBrainProductsVAmp::setDeviceId(int32 i32DeviceId)
 {
@@ -175,32 +208,9 @@ boolean CHeaderBrainProductsVAmp::setDeviceId(int32 i32DeviceId)
 	return m_i32DeviceId!=_NoValueI_;
 }
 
-boolean CHeaderBrainProductsVAmp::setFastModeSettings(t_faDataModeSettings tFastModeSettings)
-{
-	m_tFastModeSettings=tFastModeSettings;
-
-	return isFastModeSettingsSet();
-
-}
-
-t_faDataMode CHeaderBrainProductsVAmp::getDataMode(void) const
-{
-	return m_tDataMode;
-}
-
 int32 CHeaderBrainProductsVAmp::getDeviceId(void) const
 {
 	return m_i32DeviceId;
-}
-
-t_faDataModeSettings CHeaderBrainProductsVAmp::getFastModeSettings(void) const
-{
-	return m_tFastModeSettings;
-}
-
-boolean CHeaderBrainProductsVAmp::isDataModeSet(void) const
-{
-	return (m_tDataMode != dmNormal && m_tDataMode != dm20kHz4Channels);
 }
 
 boolean CHeaderBrainProductsVAmp::isDeviceIdSet(void) const
@@ -227,119 +237,119 @@ boolean CHeaderBrainProductsVAmp::isFastModeSettingsSet(void) const
 
 boolean CHeaderBrainProductsVAmp::setChannelCount(const uint32 ui32ChannelCount)
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->setChannelCount(ui32ChannelCount);
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->setPairCount(ui32ChannelCount);
+	}
+	else
+	{
+		return m_pBasicHeader->setChannelCount(ui32ChannelCount);
 	}
 }
 
 boolean CHeaderBrainProductsVAmp::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->setChannelName(ui32ChannelIndex, sChannelName);
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->setPairName(ui32ChannelIndex, sChannelName);
+	}
+	else
+	{
+		return m_pBasicHeader->setChannelName(ui32ChannelIndex, sChannelName);
 	}
 
 }
 
 boolean CHeaderBrainProductsVAmp::setChannelGain(const uint32 ui32ChannelIndex, const float32 f32ChannelGain)
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->setChannelGain(ui32ChannelIndex,f32ChannelGain);
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->setPairGain(ui32ChannelIndex,f32ChannelGain);
+	}
+	else
+	{
+		return m_pBasicHeader->setChannelGain(ui32ChannelIndex,f32ChannelGain);
 	}
 }
 
 uint32 CHeaderBrainProductsVAmp::getChannelCount(void) const
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->getChannelCount();
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->getPairCount();
+	}
+	else
+	{
+		return m_pBasicHeader->getChannelCount();
 	}
 }
 
 const char* CHeaderBrainProductsVAmp::getChannelName(const uint32 ui32ChannelIndex) const
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->getChannelName(ui32ChannelIndex);
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->getPairName(ui32ChannelIndex);
+	}
+	else
+	{
+		return m_pBasicHeader->getChannelName(ui32ChannelIndex);
 	}
 }
 
 float32 CHeaderBrainProductsVAmp::getChannelGain(const uint32 ui32ChannelIndex) const
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->getChannelGain(ui32ChannelIndex);
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->getPairGain(ui32ChannelIndex);
+	}
+	else
+	{
+		return m_pBasicHeader->getChannelGain(ui32ChannelIndex);
 	}
 }
 
 boolean CHeaderBrainProductsVAmp::isChannelCountSet(void) const
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->isChannelCountSet();
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->isPairCountSet();
+	}
+	else
+	{
+		return m_pBasicHeader->isChannelCountSet();
 	}
 }
 
 boolean CHeaderBrainProductsVAmp::isChannelNameSet(void) const
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->isChannelNameSet();
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->isPairNameSet();
+	}
+	else
+	{
+		return m_pBasicHeader->isChannelNameSet();
 	}
 }
 
 boolean CHeaderBrainProductsVAmp::isChannelGainSet(void) const
 {
-	if(m_tDataMode == dmNormal)
-	{
-		return m_pBasicHeader->isChannelGainSet();
-	}
-	else
+	if(m_ui32AcquisitionMode == AcquisitionMode_VAmp4Fast)
 	{
 		// in fast mode the channel count is the pair count (to display in the designer as a "channel")
 		return this->isPairGainSet();
+	}
+	else
+	{
+		return m_pBasicHeader->isChannelGainSet();
 	}
 }
 
