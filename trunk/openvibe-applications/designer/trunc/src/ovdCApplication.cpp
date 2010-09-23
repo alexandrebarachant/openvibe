@@ -45,6 +45,14 @@ namespace
 	{
 		static_cast<CApplication*>(pUserData)->dragDataGetCB(pWidget, pDragContex, pSelectionData, uiInfo, uiT);
 	}
+	void menu_undo_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->undoCB();
+	}
+	void menu_redo_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->redoCB();
+	}
 	void menu_copy_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->copySelectionCB();
@@ -342,6 +350,9 @@ void CApplication::initialize(void)
 	g_signal_connect(m_pMainWindow, "delete_event", G_CALLBACK(button_quit_application_cb), this);
 
 	// Connects menu actions
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_undo")),        "activate", G_CALLBACK(menu_undo_cb),               this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_redo")),        "activate", G_CALLBACK(menu_redo_cb),               this);
+
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_copy")),        "activate", G_CALLBACK(menu_copy_selection_cb),     this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_cut")),         "activate", G_CALLBACK(menu_cut_selection_cb),      this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_paste")),       "activate", G_CALLBACK(menu_paste_selection_cb),    this);
@@ -691,6 +702,28 @@ void CApplication::dragDataGetCB(::GtkWidget* pWidget, ::GdkDragContext* pDragCo
 				(const guchar*)l_sBoxAlgorithmIdentifier,
 				strlen(l_sBoxAlgorithmIdentifier)+1);
 		}
+	}
+}
+
+void CApplication::undoCB(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "undoCB\n";
+
+	CInterfacedScenario* l_pCurrentInterfacedScenario=this->getCurrentInterfacedScenario();
+	if(l_pCurrentInterfacedScenario)
+	{
+		l_pCurrentInterfacedScenario->undoCB();
+	}
+}
+
+void CApplication::redoCB(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "redoCB\n";
+
+	CInterfacedScenario* l_pCurrentInterfacedScenario=this->getCurrentInterfacedScenario();
+	if(l_pCurrentInterfacedScenario)
+	{
+		l_pCurrentInterfacedScenario->redoCB();
 	}
 }
 

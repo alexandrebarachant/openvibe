@@ -33,6 +33,9 @@ namespace OpenViBEDesigner
 		/** \name Selection management */
 		//@{
 
+		void undoCB(void);
+		void redoCB(void);
+
 		void copySelectionCB(void);
 		void cutSelectionCB(void);
 		void pasteSelectionCB(void);
