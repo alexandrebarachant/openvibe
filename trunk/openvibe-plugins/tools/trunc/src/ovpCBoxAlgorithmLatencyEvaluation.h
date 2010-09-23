@@ -1,11 +1,11 @@
-#if 0
-
 #ifndef __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
 #define __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
 
 #include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
+
+#include <system/Time.h>
 
 namespace OpenViBEPlugins
 {
@@ -24,6 +24,7 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_BoxAlgorithm_LatencyEvaluation);
 
+			OpenViBE::uint64 m_ui64StartTime;
 			OpenViBE::Kernel::ELogLevel m_eLogLevel;
 		};
 
@@ -50,7 +51,7 @@ namespace OpenViBEPlugins
 			{
 				rBoxAlgorithmPrototype.addInput("input", OV_UndefinedIdentifier);
 				rBoxAlgorithmPrototype.addSetting("Log level to use", OV_TypeId_LogLevel, "Trace");
-
+				rBoxAlgorithmPrototype.addFlag (OpenViBE::Kernel::BoxFlag_CanModifyInput);
 				return true;
 			}
 
@@ -60,5 +61,3 @@ namespace OpenViBEPlugins
 };
 
 #endif // __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
-
-#endif
