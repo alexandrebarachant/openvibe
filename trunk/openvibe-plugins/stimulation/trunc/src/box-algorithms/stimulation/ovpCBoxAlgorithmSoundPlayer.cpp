@@ -20,6 +20,8 @@ using namespace OpenViBEPlugins::Stimulation;
 
 using namespace std;
 
+#define boolean OpenViBE::boolean
+
 boolean CBoxAlgorithmSoundPlayer::initialize(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
