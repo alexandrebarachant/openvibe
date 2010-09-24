@@ -208,7 +208,7 @@ boolean CDriverBrainProductsVAmp::loop(void)
 	t_faDataModel16 l_DataBufferVAmp16; // buffer for the next block in normal mode
 	uint32 l_uint32ReadLengthVAmp16 = sizeof(t_faDataModel16);
 
-	t_faDataModel16 l_DataBufferVAmp8; // buffer for the next block in normal mode
+	t_faDataModel8 l_DataBufferVAmp8; // buffer for the next block in normal mode
 	uint32 l_uint32ReadLengthVAmp8 = sizeof(t_faDataModel8);
 
 	t_faDataFormatMode20kHz l_DataBufferVamp4Fast; // buffer for fast mode acquisition
@@ -230,56 +230,39 @@ boolean CDriverBrainProductsVAmp::loop(void)
 			// we need to "getData" with the right output structure according to acquisition mode
 
 			int32 l_i32ReturnLength = 0;
-			uint32 i;
+			signed int* l_pEEGArray=NULL;
+			signed int* l_pAuxiliaryArray=NULL;
+			unsigned int l_uiStatus=0;
 			switch(m_ui32AcquisitionMode)
 			{
 				case AcquisitionMode_VAmp16:
 					l_i32ReturnLength = faGetData(l_i32DeviceId, &l_DataBufferVAmp16, l_uint32ReadLengthVAmp16);
+					l_pEEGArray=l_DataBufferVAmp16.Main;
+					l_pAuxiliaryArray=l_DataBufferVAmp16.Aux;
+					l_uiStatus=l_DataBufferVAmp16.Status;
 					break;
 
 				case AcquisitionMode_VAmp8:
 					l_i32ReturnLength = faGetData(l_i32DeviceId, &l_DataBufferVAmp8, l_uint32ReadLengthVAmp8);
+					l_pEEGArray=l_DataBufferVAmp8.Main;
+					l_pAuxiliaryArray=l_DataBufferVAmp8.Aux;
+					l_uiStatus=l_DataBufferVAmp8.Status;
 					break;
 
 				case AcquisitionMode_VAmp4Fast:
 					l_i32ReturnLength = faGetData(l_i32DeviceId, &l_DataBufferVamp4Fast, l_uint32ReadLengthVamp4Fast);
+					l_pEEGArray=l_DataBufferVamp4Fast.Main;
+					// l_pAuxiliaryArray=l_DataBufferVamp4Fast.Aux;
+					l_uiStatus=l_DataBufferVamp4Fast.Status;
 					break;
 			}
 
 			if(l_i32ReturnLength > 0)
 			{
+				uint32 i;
 #if DEBUG
 				l_uint32ReadSuccessCount++;
 #endif
-
-				signed int* l_pEEGArray=NULL;
-				signed int* l_pAuxiliaryArray=NULL;
-				unsigned int l_uiStatus=0;
-
-				//we just received one set of samples from device, one sample per channel
-				switch(m_ui32AcquisitionMode)
-				{
-					case AcquisitionMode_VAmp16:
-						l_pEEGArray=l_DataBufferVAmp16.Main;
-						l_pAuxiliaryArray=l_DataBufferVAmp16.Aux;
-						l_uiStatus=l_DataBufferVAmp16.Status;
-						break;
-
-						break;
-
-					case AcquisitionMode_VAmp8:
-						l_pEEGArray=l_DataBufferVAmp8.Main;
-						l_pAuxiliaryArray=l_DataBufferVAmp8.Aux;
-						l_uiStatus=l_DataBufferVAmp8.Status;
-						break;
-
-					case AcquisitionMode_VAmp4Fast:
-						l_pEEGArray=l_DataBufferVamp4Fast.Main;
-						// l_pAuxiliaryArray=l_DataBufferVamp4Fast.Aux;
-						l_uiStatus=l_DataBufferVamp4Fast.Status;
-						break;
-				}
-
 				for(i=0; i < m_ui32EEGChannelCount; i++)
 				{
 					m_pSample[i*m_ui32SampleCountPerSentBlock+l_i32ReceivedSamples] = (float32)(l_pEEGArray[i]*m_oHeader.getChannelGain(i));
