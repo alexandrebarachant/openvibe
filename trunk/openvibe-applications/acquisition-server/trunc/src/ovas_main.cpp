@@ -72,10 +72,12 @@ int main(int argc, char ** argv)
 				gtk_init(&argc, &argv);
 				// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
 
+#if 0 // This is not needed in the acquisition server
 				if(l_rConfigurationManager.expandAsBoolean("${Kernel_3DVisualisationEnabled}"))
 				{
 					l_pKernelContext->getVisualisationManager().initialize3DContext();
 				}
+#endif
 
 				{
 					OpenViBEAcquisitionServer::CAcquisitionServerGUI app(*l_pKernelContext);
