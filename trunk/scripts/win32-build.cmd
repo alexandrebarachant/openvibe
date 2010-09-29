@@ -128,6 +128,14 @@ echo cd bin                                                  >> %target_dist%\te
 echo OpenViBE-plugin-inspector-dynamic.exe                   >> %target_dist%\test-plugin-inspector.cmd
 echo pause                                                   >> %target_dist%\test-plugin-inspector.cmd
 
+echo @echo off                                               >  %target_dist%\test-skeleton-generator.cmd
+echo pushd ..\scripts                                        >> %target_dist%\test-skeleton-generator.cmd
+echo call win32-init_env_command.cmd                         >> %target_dist%\test-skeleton-generator.cmd
+echo popd                                                    >> %target_dist%\test-skeleton-generator.cmd
+echo cd bin                                                  >> %target_dist%\test-skeleton-generator.cmd
+echo OpenViBE-skeleton-generator-dynamic.exe                 >> %target_dist%\test-skeleton-generator.cmd
+echo pause                                                   >> %target_dist%\test-skeleton-generator.cmd
+
 echo.
 for /F %%s in (%OpenViBE_build_order%) do (
 	set OpenViBE_project_name_full=%%s

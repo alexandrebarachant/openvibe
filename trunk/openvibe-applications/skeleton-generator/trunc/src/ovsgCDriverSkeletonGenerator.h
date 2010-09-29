@@ -16,8 +16,8 @@ namespace OpenViBESkeletonGenerator
 		virtual ~CDriverSkeletonGenerator(void);
 
 		void initialize(void);
-		void save(void);
-		void load(void);
+		OpenViBE::boolean save(void);
+		OpenViBE::boolean load(void);
 
 		OpenViBE::CString              m_sDriverName;
 		OpenViBE::CString              m_sClassName;
@@ -43,7 +43,6 @@ namespace OpenViBESkeletonGenerator
 
 		std::map < ::GtkButton*, EWidgetName > m_vWidgetName;
 	};
-
 }
 
 #endif //__OpenViBESkeletonGenerator_CDriverSkeletonGenerator_H__

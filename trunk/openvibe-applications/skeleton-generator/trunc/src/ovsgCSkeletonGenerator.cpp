@@ -33,54 +33,55 @@ void CSkeletonGenerator::getCommon()
 	m_sAuthor=gtk_entry_get_text(GTK_ENTRY(l_pEntryAuthor));
 }
 
-void CSkeletonGenerator::saveCommon(void)
+boolean CSkeletonGenerator::saveCommon(void)
 {
 	// we get the latest values
 	getCommon();
 
 	FILE* l_pFile=::fopen(m_sConfigurationFile.toASCIIString(), "ab");
-	if(l_pFile)
-	{
-		::fprintf(l_pFile, "SkeletonGenerator_Common_Author = %s\n", m_sAuthor.toASCIIString());
-		::fprintf(l_pFile, "SkeletonGenerator_Common_Company = %s\n", m_sCompany.toASCIIString());
-
-		::fclose(l_pFile);
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Common entries saved in [" << m_sConfigurationFile << "]\n";
-	}
-	else
+	if(!l_pFile)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "Saving the common entries in [" << m_sConfigurationFile << "] failed !\n";
+		return false;
 	}
+
+	::fprintf(l_pFile, "SkeletonGenerator_Common_Author = %s\n", m_sAuthor.toASCIIString());
+	::fprintf(l_pFile, "SkeletonGenerator_Common_Company = %s\n", m_sCompany.toASCIIString());
+	::fclose(l_pFile);
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Common entries saved in [" << m_sConfigurationFile << "]\n";
+
+	return true;
 }
 
-void CSkeletonGenerator::cleanConfigurationFile(void)
+boolean CSkeletonGenerator::cleanConfigurationFile(void)
 {
 	FILE* l_pFile=::fopen(m_sConfigurationFile.toASCIIString(), "wb");
-	if(l_pFile)
-	{
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Configuration file [" << m_sConfigurationFile << "] cleaned.\n";
-		::fclose(l_pFile);
-	}
-	else
+	if(!l_pFile)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "Failed to clean [" << m_sConfigurationFile << "]\n";
+		return false;
 	}
+
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Configuration file [" << m_sConfigurationFile << "] cleaned.\n";
+	::fclose(l_pFile);
+	return true;
 }
 
-void CSkeletonGenerator::loadCommon(void)
+boolean CSkeletonGenerator::loadCommon(void)
 {
-	if(m_rKernelContext.getConfigurationManager().addConfigurationFromFile(m_sConfigurationFile))
-	{
-		::GtkWidget* l_pEntryCompany=GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_company_name"));
-		gtk_entry_set_text(GTK_ENTRY(l_pEntryCompany),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Common_Company}"));
-
-		::GtkWidget * l_pEntryAuthorName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_author_name"));
-		gtk_entry_set_text(GTK_ENTRY(l_pEntryAuthorName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Common_Author}"));
-
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Common entries from [" << m_sConfigurationFile << "] loaded.\n";
-	}
-	else
+	if(!m_rKernelContext.getConfigurationManager().addConfigurationFromFile(m_sConfigurationFile))
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "Common: Configuration file [" << m_sConfigurationFile << "] could not be loaded. It will be automatically generated after first use.\n";
+		return false;
 	}
+
+	::GtkWidget* l_pEntryCompany=GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_company_name"));
+	gtk_entry_set_text(GTK_ENTRY(l_pEntryCompany),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Common_Company}"));
+
+	::GtkWidget * l_pEntryAuthorName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_author_name"));
+	gtk_entry_set_text(GTK_ENTRY(l_pEntryAuthorName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Common_Author}"));
+
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Common entries from [" << m_sConfigurationFile << "] loaded.\n";
+
+	return true;
 }

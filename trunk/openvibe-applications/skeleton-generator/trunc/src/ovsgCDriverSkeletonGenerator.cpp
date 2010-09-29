@@ -498,6 +498,14 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
+
+	if(l_bSuccess)
+	{
+		l_bSuccess&=cleanConfigurationFile();
+		l_bSuccess&=saveCommon();
+		l_bSuccess&=save();
+	}
+
 	if(!l_bSuccess)
 	{
 		l_ssTextBuffer << "Generation process did not completly succeed. Some files may have not been produced.\n";
@@ -505,10 +513,6 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	}
 	else
 	{
-		cleanConfigurationFile();
-		saveCommon();
-		save();
-
 		l_ssTextBuffer << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
 		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
 	}
@@ -624,63 +628,65 @@ void CDriverSkeletonGenerator::initialize( void )
 	gtk_widget_show_all(l_pWindowDriver);
 }
 
-void CDriverSkeletonGenerator::save(void)
+boolean CDriverSkeletonGenerator::save(void)
 {
 	FILE* l_pFile=::fopen(m_sConfigurationFile.toASCIIString(), "ab");
-	if(l_pFile)
-	{
-		string::iterator it;
-		string l_sTempTargetDirectory(m_sTargetDirectory.toASCIIString());
-		for(it=l_sTempTargetDirectory.begin(); it<l_sTempTargetDirectory.end(); it++)
-		{
-			if((*it)=='\\')
-			{
-				l_sTempTargetDirectory.replace(it, it+1, 1, '/');
-			}
-		}
-
-		::fprintf(l_pFile, "SkeletonGenerator_Driver_DriverName = %s\n", m_sDriverName.toASCIIString());
-		::fprintf(l_pFile, "SkeletonGenerator_Driver_ClassName = %s\n", m_sClassName.toASCIIString());
-		::fprintf(l_pFile, "SkeletonGenerator_Driver_MinChannel = %s\n", m_sMinChannel.toASCIIString());
-		::fprintf(l_pFile, "SkeletonGenerator_Driver_MaxChannel = %s\n", m_sMaxChannel.toASCIIString());
-		::fprintf(l_pFile, "SkeletonGenerator_Driver_SamplingFrequencies = %s\n", m_sSamplingFrequencies.toASCIIString());
-		::fprintf(l_pFile, "SkeletonGenerator_Driver_TargetDirectory = %s\n", l_sTempTargetDirectory.c_str());
-		::fclose(l_pFile);
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries saved in [" << m_sConfigurationFile << "]\n";
-	}
-	else
+	if(!l_pFile)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "Saving the driver entries in [" << m_sConfigurationFile << "] failed !\n";
+		return false;
 	}
+
+	string::iterator it;
+	string l_sTempTargetDirectory(m_sTargetDirectory.toASCIIString());
+	for(it=l_sTempTargetDirectory.begin(); it<l_sTempTargetDirectory.end(); it++)
+	{
+		if((*it)=='\\')
+		{
+			l_sTempTargetDirectory.replace(it, it+1, 1, '/');
+		}
+	}
+
+	::fprintf(l_pFile, "SkeletonGenerator_Driver_DriverName = %s\n", m_sDriverName.toASCIIString());
+	::fprintf(l_pFile, "SkeletonGenerator_Driver_ClassName = %s\n", m_sClassName.toASCIIString());
+	::fprintf(l_pFile, "SkeletonGenerator_Driver_MinChannel = %s\n", m_sMinChannel.toASCIIString());
+	::fprintf(l_pFile, "SkeletonGenerator_Driver_MaxChannel = %s\n", m_sMaxChannel.toASCIIString());
+	::fprintf(l_pFile, "SkeletonGenerator_Driver_SamplingFrequencies = %s\n", m_sSamplingFrequencies.toASCIIString());
+	::fprintf(l_pFile, "SkeletonGenerator_Driver_TargetDirectory = %s\n", l_sTempTargetDirectory.c_str());
+	::fclose(l_pFile);
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries saved in [" << m_sConfigurationFile << "]\n";
+
+	return true;
 }
 
-void CDriverSkeletonGenerator::load(void)
+boolean CDriverSkeletonGenerator::load(void)
 {
-	if(m_rKernelContext.getConfigurationManager().addConfigurationFromFile(m_sConfigurationFile))
+	if(!m_rKernelContext.getConfigurationManager().addConfigurationFromFile(m_sConfigurationFile))
 	{
-		::GtkWidget * l_pEntryDriverName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_driver_name"));
-		gtk_entry_set_text(GTK_ENTRY(l_pEntryDriverName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_DriverName}"));
-
-		::GtkWidget * l_pEntryClassName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_class_name"));
-		gtk_entry_set_text(GTK_ENTRY(l_pEntryClassName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_ClassName}"));
-
-		::GtkWidget * l_pSpinbuttonMinChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_min_channel"));
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMinChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MinChannel}"));
-
-		::GtkWidget * l_pSpinbuttonMaxChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_max_channel"));
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMaxChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MaxChannel}"));
-
-		::GtkWidget * l_pEntrySF = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_sampling_frequencies"));
-		gtk_entry_set_text(GTK_ENTRY(l_pEntrySF),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_SamplingFrequencies}"));
-
-		::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
-		CString l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_TargetDirectory}");
-
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries from [" << m_sConfigurationFile << "] loaded.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Driver: Configuration file [" << m_sConfigurationFile << "] could not be loaded. It will be automatically generated after first use.\n";
+		return false;
 	}
-	else
-	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "Common: Configuration file [" << m_sConfigurationFile << "] could not be loaded. It will be automatically generated after first use.\n";
-	}
+
+	::GtkWidget * l_pEntryDriverName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_driver_name"));
+	gtk_entry_set_text(GTK_ENTRY(l_pEntryDriverName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_DriverName}"));
+
+	::GtkWidget * l_pEntryClassName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_class_name"));
+	gtk_entry_set_text(GTK_ENTRY(l_pEntryClassName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_ClassName}"));
+
+	::GtkWidget * l_pSpinbuttonMinChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_min_channel"));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMinChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MinChannel}"));
+
+	::GtkWidget * l_pSpinbuttonMaxChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_max_channel"));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMaxChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MaxChannel}"));
+
+	::GtkWidget * l_pEntrySF = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_sampling_frequencies"));
+	gtk_entry_set_text(GTK_ENTRY(l_pEntrySF),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_SamplingFrequencies}"));
+
+	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
+	CString l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_TargetDirectory}");
+
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries from [" << m_sConfigurationFile << "] loaded.\n";
+
+	return true;
 }

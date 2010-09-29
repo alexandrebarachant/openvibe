@@ -323,7 +323,7 @@ CEntryEnumeratorWindows::CEntryEnumeratorWindows(IEntryEnumeratorCallBack& rEntr
 
 boolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
 {
-	if(!sWildCard)
+	if(!sWildCard || strlen(sWildCard)==0)
 	{
 		return false;
 	}
@@ -336,7 +336,7 @@ boolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
 	// $$$ TODO
 
 	char l_sExtendedWildCard[1024];
-	char* l_sExtendedWildCardFileName;
+	char* l_sExtendedWildCardFileName=NULL;
 	int a=GetFullPathName(sWildCard, sizeof(l_sExtendedWildCard), l_sExtendedWildCard, &l_sExtendedWildCardFileName);
 	std::string l_sPath(sWildCard, strlen(sWildCard)-(l_sExtendedWildCardFileName?strlen(l_sExtendedWildCardFileName):0));
 

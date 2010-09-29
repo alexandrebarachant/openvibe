@@ -272,12 +272,14 @@ no_need_to_download_vcredist_2008_sp1:
 	FileClose $0
 
 	CreateDirectory "$SMPROGRAMS\OpenViBE"
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe designer.lnk"           "$INSTDIR\openvibe-designer.cmd"           "" "%SystemRoot%\system32\shell32.dll" 137
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe acquisition server.lnk" "$INSTDIR\openvibe-acquisition-server.cmd" "" "%SystemRoot%\system32\shell32.dll" 18
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe id generator.lnk"       "$INSTDIR\openvibe-id-generator.cmd"       "" "%SystemRoot%\system32\shell32.dll" 57
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe plugin inspector.lnk"   "$INSTDIR\openvibe-plugin-inspector.cmd"   "" "%SystemRoot%\system32\shell32.dll" 55
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo tie-fighter.lnk"           "$INSTDIR\openvibe-vr-demo.cmd"           "" "%SystemRoot%\system32\shell32.dll" 200
-	CreateShortCut "$SMPROGRAMS\OpenViBE\uninstall.lnk"                   "$INSTDIR\Uninstall.exe"
+	CreateDirectory "$SMPROGRAMS\OpenViBE\Developer tools"
+	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe id generator.lnk"       "$INSTDIR\openvibe-id-generator.cmd"        "" "%SystemRoot%\system32\shell32.dll" 57
+	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe plugin inspector.lnk"   "$INSTDIR\openvibe-plugin-inspector.cmd"    "" "%SystemRoot%\system32\shell32.dll" 57
+	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe skeleton generator.lnk" "$INSTDIR\openvibe-skeleton-generator.cmd"  "" "%SystemRoot%\system32\shell32.dll" 57
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe designer.lnk"                           "$INSTDIR\openvibe-designer.cmd"            "" "%SystemRoot%\system32\shell32.dll" 137
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe acquisition server.lnk"                 "$INSTDIR\openvibe-acquisition-server.cmd"  "" "%SystemRoot%\system32\shell32.dll" 18
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo tie-fighter.lnk"                "$INSTDIR\openvibe-vr-demo.cmd"             "" "%SystemRoot%\system32\shell32.dll" 200
+	CreateShortCut "$SMPROGRAMS\OpenViBE\uninstall.lnk"                                   "$INSTDIR\Uninstall.exe"
 
 SectionEnd
 
