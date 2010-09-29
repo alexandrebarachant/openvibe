@@ -4,7 +4,7 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32" $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32" "C:\Program Files\MindSet Development Tools\ThinkGear Communications Driver\win32" $ENV{OpenViBE_dependencies})
 	IF(PATH_ThinkGearAPI)
 		MESSAGE(STATUS "  Found ThinkGear API...")
 		INCLUDE_DIRECTORIES(${PATH_ThinkGearAPI})
