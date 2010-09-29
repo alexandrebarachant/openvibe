@@ -16,11 +16,20 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBESkeletonGenerator;
 
-
+//-----------------------------------------------------------------------
 static void button_check_cb(::GtkButton* pButton, void* pUserData)
 {
 	static_cast<CDriverSkeletonGenerator*>(pUserData)->buttonCheckCB();
 }
+static void button_tooltip_cb(::GtkButton* pButton, void* pUserData)
+{
+	static_cast<CDriverSkeletonGenerator*>(pUserData)->buttonTooltipCB(pButton);
+}
+static void button_ok_cb(::GtkButton* pButton, void* pUserData)
+{
+	static_cast<CDriverSkeletonGenerator*>(pUserData)->buttonOkCB();
+}
+//-----------------------------------------------------------------------
 void CDriverSkeletonGenerator::buttonCheckCB()
 {
 	//Author and Company
@@ -36,7 +45,7 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	::GtkWidget * l_pEntryDriverName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_driver_name"));
 	m_sDriverName = gtk_entry_get_text(GTK_ENTRY(l_pEntryDriverName));
-	const boost::regex l_RegExpDriverName("([a-z]|[A-Z]|[1-9])+([a-z]|[A-Z]|[1-9]|[ \t\r\n]|[\\.-_])*",boost::regex::perl);
+	const boost::regex l_RegExpDriverName("([a-z]|[A-Z]|[1-9])+([a-z]|[A-Z]|[1-9]|[ \t\r\n]|[\\.-_\\(\\)])*",boost::regex::perl);
 	if(boost::regex_match(string(m_sDriverName),l_RegExpDriverName) == false)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning <<"-- Driver Name: INVALID\n";
@@ -112,11 +121,12 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 		}
 
 		l_ssTextBuffer << "[   OK   ] "<<l_ui32SamplingFrequencyCount<<" valid sampling frequencie(s).\n";
+		m_sSamplingFrequencies = CString(l_sSamplingFrequencies);
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
 	char * l_pTargetDirectory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pFileChooser));
-	m_sTargetDirectory = l_pTargetDirectory;
+	m_sTargetDirectory = CString(l_pTargetDirectory);
 	g_free(l_pTargetDirectory);
 
 #ifdef OV_OS_Windows
@@ -154,10 +164,6 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 		, -1);
 }
 
-static void button_ok_cb(::GtkButton* pButton, void* pUserData)
-{
-	static_cast<CDriverSkeletonGenerator*>(pUserData)->buttonOkCB();
-}
 void CDriverSkeletonGenerator::buttonOkCB()
 {
 
@@ -175,7 +181,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	
 	CString l_sSed;
 #ifdef OV_OS_Windows
-		l_sSed = "cd ../share/openvibe-applications/skeleton-generator & sed";
+		l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
 #else
 #ifdef OV_OS_Linux
 		l_sSed = "sed";
@@ -198,6 +204,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	m_rKernelContext.getLogManager() << LogLevel_Info <<"MINCHAN: "+m_sMinChannel+"\n";
 	m_rKernelContext.getLogManager() << LogLevel_Info <<"MAXCHAN: "+m_sMaxChannel+"\n";
 	m_rKernelContext.getLogManager() << LogLevel_Info <<"DATE: "+l_sDate+"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info <<"Target directory: "+m_sTargetDirectory+"\n";
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// driver.h
@@ -229,6 +236,9 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
+//#ifdef OV_OS_Windows
+//		l_sDriverHSkel = "driver.h-skeleton"; // we already "cd" in the shared directory
+//#endif
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverHSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -273,6 +283,9 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
+//#ifdef OV_OS_Windows
+//		l_sDriverCppSkel = "driver.cpp-skeleton";
+//#endif
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverCppSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -320,6 +333,9 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
+//#ifdef OV_OS_Windows
+//		l_sConfigurationHSkel = "configuration.h-skeleton";
+//#endif		
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationHSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -362,6 +378,9 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
+//#ifdef OV_OS_Windows
+//		l_sConfigurationCppSkel = "configuration.cpp-skeleton";
+//#endif	
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationCppSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -412,6 +431,9 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
+//#ifdef OV_OS_Windows
+//		l_sInterfaceUISkel = "interface.ui-skeleton";
+//#endif	
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sInterfaceUISkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -454,6 +476,9 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
+//#ifdef OV_OS_Windows
+//		l_sReadMeDriverTxtSkel = "readme-driver.txt-skeleton";
+//#endif	
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sReadMeDriverTxtSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -479,6 +504,15 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		l_ssTextBuffer << "Generation process did not completly succeed. Some files may have not been produced.\n";
 		m_rKernelContext.getLogManager() << LogLevel_Warning <<"Generation process did not completly succeed. Some files may have not been produced.\n";
 	}
+	else
+	{
+		cleanConfigurationFile();
+		saveCommon();
+		save();
+
+		l_ssTextBuffer << "Generation process successful. All entries saved in "<<m_sConfigurationFile<<"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All enntries saved in"<<m_sConfigurationFile<<"\n";
+	}
 
 	CString l_sBrowser = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand_${OperatingSystem}}");
 	CString l_sBrowserCmd = l_sBrowser + " " +  m_sTargetDirectory;
@@ -493,11 +527,6 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		l_pTextBuffer,
 		l_ssTextBuffer.str().c_str(),
 		-1);
-}
-
-static void button_tooltip_cb(::GtkButton* pButton, void* pUserData)
-{
-	static_cast<CDriverSkeletonGenerator*>(pUserData)->buttonTooltipCB(pButton);
 }
 
 void CDriverSkeletonGenerator::buttonTooltipCB(::GtkButton* pButton)
@@ -545,6 +574,7 @@ void CDriverSkeletonGenerator::buttonTooltipCB(::GtkButton* pButton)
 CDriverSkeletonGenerator::CDriverSkeletonGenerator(IKernelContext & rKernelContext, ::GtkBuilder * pBuilderInterface)
 	:CSkeletonGenerator(rKernelContext, pBuilderInterface)
 {
+	load();
 }
 CDriverSkeletonGenerator::~CDriverSkeletonGenerator(void)
 {
@@ -580,9 +610,6 @@ void CDriverSkeletonGenerator::initialize( void )
 	g_signal_connect(l_pTooltipButton_samplingFrequencies,"pressed",G_CALLBACK(button_tooltip_cb), this);
 	g_signal_connect(l_pTooltipButton_targetDirectory,    "pressed",G_CALLBACK(button_tooltip_cb), this);
 
-	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
-	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser), m_rKernelContext.getConfigurationManager().expand("${Path_Root}"));
-
 	//Close with X and "cancel" button
 	g_signal_connect (
 		G_OBJECT(l_pWindowDriver),
@@ -594,4 +621,81 @@ void CDriverSkeletonGenerator::initialize( void )
 	g_signal_connect(l_pButtonCancel,"pressed", G_CALLBACK(::gtk_exit), 0);
 
 	gtk_widget_show_all(l_pWindowDriver);
+}
+
+void CDriverSkeletonGenerator::save(void)
+{
+	CString l_sCommand = "echo SkeletonGenerator_Driver_DriverName="+ m_sDriverName +" >> \"" + m_sConfigurationFile + "\"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
+	boolean l_bSuccess = (system(((string)l_sCommand).c_str()) == 0);
+	
+	l_sCommand = "echo SkeletonGenerator_Driver_ClassName="+ m_sClassName +" >> \"" + m_sConfigurationFile + "\"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
+	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
+	
+	l_sCommand = "echo SkeletonGenerator_Driver_MinChannel="+ m_sMinChannel +" >> \"" + m_sConfigurationFile + "\"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
+	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
+	
+	l_sCommand = "echo SkeletonGenerator_Driver_MaxChannel="+ m_sMaxChannel +" >> \"" + m_sConfigurationFile + "\"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
+	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
+	
+	l_sCommand = "echo SkeletonGenerator_Driver_SamplingFrequencies="+ m_sSamplingFrequencies +" >> \"" + m_sConfigurationFile + "\"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
+	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
+	
+	string::iterator it;
+	string l_sTemp = m_sTargetDirectory;
+	for ( it=l_sTemp.begin() ; it < l_sTemp.end(); it++ )
+	{
+		if((*it)=='\\')
+		{
+			l_sTemp.replace(it,it+1,1,'/');
+		}
+	}
+	m_sTargetDirectory = CString(l_sTemp.c_str());
+	l_sCommand = "echo SkeletonGenerator_Driver_TargetDirectory="+ m_sTargetDirectory +" >> \"" + m_sConfigurationFile + "\"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
+	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
+	
+	if(l_bSuccess)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries saved in "+m_sConfigurationFile+"\n";
+	}
+	else
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Saving the driver entries in "+m_sConfigurationFile+" failed !\n";
+	}
+}
+
+void CDriverSkeletonGenerator::load(void)
+{
+	if(m_rKernelContext.getConfigurationManager().addConfigurationFromFile(m_sConfigurationFile))
+	{
+		::GtkWidget * l_pEntryDriverName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_driver_name"));
+		gtk_entry_set_text(GTK_ENTRY(l_pEntryDriverName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_DriverName}"));
+		
+		::GtkWidget * l_pEntryClassName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_class_name"));
+		gtk_entry_set_text(GTK_ENTRY(l_pEntryClassName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_ClassName}"));
+	
+		::GtkWidget * l_pSpinbuttonMinChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_min_channel"));
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMinChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MinChannel}"));
+	
+		::GtkWidget * l_pSpinbuttonMaxChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_max_channel"));
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMaxChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MaxChannel}"));
+	
+		::GtkWidget * l_pEntrySF = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_sampling_frequencies"));
+		gtk_entry_set_text(GTK_ENTRY(l_pEntrySF),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_SamplingFrequencies}"));
+	
+		::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
+		CString l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_TargetDirectory}");
+
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+		m_rKernelContext.getLogManager() << LogLevel_Info <<"Driver entries from "+ m_sConfigurationFile+" loaded.\n";
+	}
+	else
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Driver: No configuration file specified. It will be automatically generated after first use. \n";
+	}
 }

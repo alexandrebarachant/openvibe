@@ -16,9 +16,12 @@ namespace OpenViBESkeletonGenerator
 		virtual ~CDriverSkeletonGenerator(void);
 
 		void initialize(void);
+		void save(void);
+		void load(void);
 
 		OpenViBE::CString              m_sDriverName;
 		OpenViBE::CString              m_sClassName;
+		OpenViBE::CString              m_sSamplingFrequencies;
 		std::vector<OpenViBE::CString> m_vSamplingFrequencies;
 		OpenViBE::CString              m_sMinChannel;
 		OpenViBE::CString              m_sMaxChannel;

@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
   <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">1024</property>
-    <property name="lower">1</property>
-    <property name="page_increment">10</property>
-    <property name="step_increment">1</property>
-    <property name="page_size">0</property>
     <property name="value">1</property>
+    <property name="lower">1</property>
+    <property name="upper">1024</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkAdjustment" id="adjustment2">
-    <property name="upper">1024</property>
-    <property name="lower">1</property>
-    <property name="page_increment">10</property>
-    <property name="step_increment">1</property>
-    <property name="page_size">0</property>
     <property name="value">1</property>
+    <property name="lower">1</property>
+    <property name="upper">1024</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkTextBuffer" id="textbuffer1">
     <property name="text">Press any "Help !" button for more detail about a field.
@@ -26,8 +26,6 @@
 
 </property>
   </object>
-  <!-- interface-requires gtk+ 2.16 -->
-  <!-- interface-naming-policy project-wide -->
   <object class="GtkDialog" id="sg-selection-dialog">
     <property name="width_request">800</property>
     <property name="height_request">300</property>
@@ -454,7 +452,7 @@ Please select the skeleton you want to generate :
             </child>
             <child>
               <object class="GtkButton" id="sg-driver-cancel-button">
-                <property name="label" translatable="yes">Cancel</property>
+                <property name="label" translatable="yes">Exit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
