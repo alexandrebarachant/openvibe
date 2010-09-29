@@ -575,7 +575,6 @@ boolean CGDFFileReader::process()
 
 	IBoxIO * l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
 
-
 	// Process Matrices
 	if(m_bSignalDescriptionSent && !m_bMatricesSent)
 	{
@@ -758,7 +757,8 @@ boolean CGDFFileReader::process()
 				return true;
 			}
 
-			uint8 l_pEventTableHeader[7];
+			uint32 l_pEventTableHeaderMain[7];
+			uint8* l_pEventTableHeader=reinterpret_cast<uint8*>(l_pEventTableHeaderMain);
 			m_oFile.read(reinterpret_cast<char*>(l_pEventTableHeader), 7);
 
 			if(m_f32FileVersion > 1.90)
