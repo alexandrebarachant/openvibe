@@ -759,6 +759,7 @@ boolean CGDFFileReader::process()
 
 			uint32 l_pEventTableHeaderMain[7];
 			uint8* l_pEventTableHeader=reinterpret_cast<uint8*>(l_pEventTableHeaderMain);
+			System::Memory::set(l_pEventTableHeaderMain, sizeof(l_pEventTableHeaderMain), 0);
 			m_oFile.read(reinterpret_cast<char*>(l_pEventTableHeader), 7);
 
 			if(m_f32FileVersion > 1.90)
