@@ -35,10 +35,10 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	//Author and Company
 	getCommon();
 
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"Checking values... \n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Checking values... \n";
 
 	boolean l_bSuccess = true;
-	
+
 	stringstream l_ssTextBuffer;
 	l_ssTextBuffer << "----- STATUS -----\n";
 
@@ -48,13 +48,13 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	const boost::regex l_RegExpDriverName("([a-z]|[A-Z]|[1-9])+([a-z]|[A-Z]|[1-9]|[ \t\r\n]|[\\.-_\\(\\)])*",boost::regex::perl);
 	if(boost::regex_match(string(m_sDriverName),l_RegExpDriverName) == false)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning <<"-- Driver Name: INVALID\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- Driver Name: INVALID\n";
 		l_bSuccess = false;
 		l_ssTextBuffer << "[FAILED] Invalid driver name. Please use only characters (lower or uppercase) and numbers (blanck allowed).\n";
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Info <<"-- Driver Name: VALID ("<<(const char *)m_sDriverName<<")\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "-- Driver Name: VALID (" << (const char *)m_sDriverName << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid driver name.\n";
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
@@ -63,13 +63,13 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	const boost::regex l_RegExpClassName("([a-z]|[A-Z]|[1-9])+",boost::regex::perl);
 	if(boost::regex_match(string(m_sClassName),l_RegExpClassName) == false)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning <<"-- Class Name: INVALID\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- Class Name: INVALID\n";
 		l_bSuccess = false;
 		l_ssTextBuffer << "[FAILED] Invalid class name. Please use only characters (lower or uppercase) and numbers  (no blanck allowed).\n";
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Info <<"-- Class Name: VALID ("<<(const char *)m_sClassName<<")\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "-- Class Name: VALID (" << (const char *)m_sClassName << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid class name.\n";
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
@@ -78,17 +78,17 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	ss1 << (uint32) gtk_spin_button_get_value(GTK_SPIN_BUTTON(l_pSpinbuttonMinChannel));
 	m_sMinChannel = CString(ss1.str().c_str());
 	::GtkWidget * l_pSpinbuttonMaxChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_max_channel"));
-	ss2<< (uint32) gtk_spin_button_get_value(GTK_SPIN_BUTTON(l_pSpinbuttonMaxChannel));
+	ss2 << (uint32) gtk_spin_button_get_value(GTK_SPIN_BUTTON(l_pSpinbuttonMaxChannel));
 	m_sMaxChannel = CString(ss2.str().c_str());
 	if(gtk_spin_button_get_value(GTK_SPIN_BUTTON(l_pSpinbuttonMinChannel)) > gtk_spin_button_get_value(GTK_SPIN_BUTTON(l_pSpinbuttonMaxChannel)))
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning <<"-- Channels: INVALID\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- Channels: INVALID\n";
 		l_bSuccess = false;
 		l_ssTextBuffer << "[FAILED] Invalid channel count. Be sure that Min <= Max.\n";
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Info <<"-- Channels: VALID ("<<(const char *)m_sMinChannel<<"/"<<(const char *)m_sMaxChannel<<")\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "-- Channels: VALID (" << (const char *)m_sMinChannel << "/" << (const char *)m_sMaxChannel << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid channel count.\n";
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
@@ -97,7 +97,7 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	const boost::regex l_RegExpSamplingFrequencies("(([1-9][0-9]*);)*([1-9][0-9]*)",boost::regex::perl);
 	if(boost::regex_match(string(l_sSamplingFrequencies),l_RegExpSamplingFrequencies) == false)
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning <<"-- Sampling frequencies: INVALID\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- Sampling frequencies: INVALID\n";
 		l_bSuccess = false;
 		l_ssTextBuffer << "[FAILED] Invalid sampling frequencies. Please use only whole numbers separated with ';' (no blanck allowed).\n";
 	}
@@ -110,7 +110,7 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 			&l_pSF[0],&l_pSF[1],&l_pSF[2],&l_pSF[3],&l_pSF[4],&l_pSF[5],&l_pSF[6],&l_pSF[7],
 			&l_pSF[8],&l_pSF[9],&l_pSF[10],&l_pSF[11],&l_pSF[12],&l_pSF[13],&l_pSF[14],&l_pSF[15]);
 
-		m_rKernelContext.getLogManager() << LogLevel_Info <<"-- Sampling frequencies: VALID\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "-- Sampling frequencies: VALID\n";
 		m_vSamplingFrequencies.clear();
 		for(unsigned int i = 0;i<l_ui32SamplingFrequencyCount;i++)
 		{
@@ -120,7 +120,7 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 			printf("- %s Hz\n", ss.str().c_str());
 		}
 
-		l_ssTextBuffer << "[   OK   ] "<<l_ui32SamplingFrequencyCount<<" valid sampling frequencie(s).\n";
+		l_ssTextBuffer << "[   OK   ] " << l_ui32SamplingFrequencyCount << " valid sampling frequencie(s).\n";
 		m_sSamplingFrequencies = CString(l_sSamplingFrequencies);
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
@@ -133,33 +133,33 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	string space("%20");
 	if(((string)m_sTargetDirectory).rfind(space) != string::npos)
 	{
-		l_ssTextBuffer << "[FAILED] Invalid destination folder :"<<(const char *)m_sTargetDirectory<<".\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error <<"Invalid destination folder :"<<(const char *)m_sTargetDirectory<<".\n";
+		l_ssTextBuffer << "[FAILED] Invalid destination folder :" << (const char *)m_sTargetDirectory << ".\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "Invalid destination folder :" << (const char *)m_sTargetDirectory << ".\n";
 		l_bSuccess = false;
 	}
 	else
 #endif
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Info <<"-- Target directory: "<<(const char *)m_sTargetDirectory<<"\n";
-		l_ssTextBuffer << "[   OK   ] Valid target directory: "<<(const char *)m_sTargetDirectory<<"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "-- Target directory: " << (const char *)m_sTargetDirectory << "\n";
+		l_ssTextBuffer << "[   OK   ] Valid target directory: " << (const char *)m_sTargetDirectory << "\n";
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	::GtkWidget * l_pTooltipTextview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-tooltips-textview"));
 	::GtkTextBuffer * l_pTextBuffer  = gtk_text_view_get_buffer(GTK_TEXT_VIEW(l_pTooltipTextview));
 	if(l_bSuccess)
 	{
-		l_ssTextBuffer <<"----- SUCCESS -----\nPress OK to generate the files. If you want to modify your choice(s), please press the \"Check\" button again.";
+		l_ssTextBuffer << "----- SUCCESS -----\nPress OK to generate the files. If you want to modify your choice(s), please press the \"Check\" button again.";
 		::GtkWidget * l_pButtonOk = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-ok-button"));
 		gtk_widget_set_sensitive(l_pButtonOk,true);
 	}
 	else
 	{
-		l_ssTextBuffer <<"----- PROCESS FAILED -----\nModify your choices and press the \"Check\" button again.";
+		l_ssTextBuffer << "----- PROCESS FAILED -----\nModify your choices and press the \"Check\" button again.";
 		::GtkWidget * l_pButtonOk = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-ok-button"));
 		gtk_widget_set_sensitive(l_pButtonOk,false);
 	}
 
-	gtk_text_buffer_set_text (l_pTextBuffer, 
+	gtk_text_buffer_set_text (l_pTextBuffer,
 		l_ssTextBuffer.str().c_str()
 		, -1);
 }
@@ -167,18 +167,18 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 void CDriverSkeletonGenerator::buttonOkCB()
 {
 
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"Generating files... \n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Generating files... \n";
 	boolean l_bSuccess = true;
-	
+
 	::GtkWidget * l_pTooltipTextview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-tooltips-textview"));
 	::GtkTextBuffer * l_pTextBuffer  = gtk_text_view_get_buffer(GTK_TEXT_VIEW(l_pTooltipTextview));
-	
+
 	stringstream l_ssTextBuffer;
 	l_ssTextBuffer << "Generating files...\n";
 	gtk_text_buffer_set_text (l_pTextBuffer,
 		l_ssTextBuffer.str().c_str(),
 		-1);
-	
+
 	CString l_sSed;
 #ifdef OV_OS_Windows
 		l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
@@ -197,14 +197,14 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	string_time = string_time.substr(0,string_time.size()-1); // the ascitime ends with a "\n"
 	CString l_sDate(string_time.c_str());
 
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"AUTHOR: "+m_sAuthor+"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"COMPANY: "+m_sCompany+"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"DRIVER: "+m_sDriverName+"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"CLASS: "+m_sClassName+"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"MINCHAN: "+m_sMinChannel+"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"MAXCHAN: "+m_sMaxChannel+"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"DATE: "+l_sDate+"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info <<"Target directory: "+m_sTargetDirectory+"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "AUTHOR: " << m_sAuthor << "\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "COMPANY: " << m_sCompany << "\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "DRIVER: " << m_sDriverName << "\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "CLASS: " << m_sClassName << "\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "MINCHAN: " << m_sMinChannel << "\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "MAXCHAN: " << m_sMaxChannel << "\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "DATE: " << l_sDate << "\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Target directory: " << m_sTargetDirectory << "\n";
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// driver.h
@@ -213,16 +213,16 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	if(! g_file_test(l_sDriverHSkel, G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'driver.h-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error <<"Driver: the file 'driver.h-skeleton' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver: the file 'driver.h-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'driver.h-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer, 
+		gtk_text_buffer_set_text (l_pTextBuffer,
 			l_ssTextBuffer.str().c_str()
 			, -1);
-		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'driver.h-skeleton' found.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'driver.h-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".h";
@@ -233,7 +233,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		l_sCommandSed = l_sCommandSed + ";s/@@Date@@/"+l_sDate+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@DriverName@@/"+m_sDriverName+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@ClassName@@/"+m_sClassName+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
 //#ifdef OV_OS_Windows
@@ -247,13 +247,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 		if(l_bSuccess)
 		{
-			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";	
-			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
 		}
 		else
 		{
-			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
-			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
+			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
 		}
 	}
 
@@ -264,13 +264,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	if(! g_file_test(l_sDriverCppSkel, G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'driver.cpp-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error <<"Driver: the file 'driver.cpp-skeleton' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver: the file 'driver.cpp-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'driver.cpp-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'driver.cpp-skeleton' found.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'driver.cpp-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".cpp";
@@ -280,7 +280,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		l_sCommandSed = l_sCommandSed + ";s/@@ClassName@@/"+m_sClassName+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@SamplingFrequency@@/"+ m_vSamplingFrequencies[0]+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
 //#ifdef OV_OS_Windows
@@ -294,13 +294,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 		if(l_bSuccess)
 		{
-			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
 		}
 		else
 		{
-			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
-			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
+			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
 		}
 	}
 
@@ -311,13 +311,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	if(! g_file_test(l_sConfigurationHSkel, G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'configuration.h-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error <<"Driver: the file 'configuration.h-skeleton' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver: the file 'configuration.h-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'configuration.h-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'configuration.h-skeleton' found.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'configuration.h-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".h";
@@ -330,12 +330,12 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		l_sCommandSed = l_sCommandSed + ";s/@@ClassName@@/"+m_sClassName+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@SamplingFrequency@@/"+m_vSamplingFrequencies[0]+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
 //#ifdef OV_OS_Windows
 //		l_sConfigurationHSkel = "configuration.h-skeleton";
-//#endif		
+//#endif
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationHSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -344,13 +344,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 		if(l_bSuccess)
 		{
-			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
 		}
 		else
 		{
-			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
-			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
+			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
 		}
 	}
 
@@ -361,13 +361,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	if(! g_file_test(l_sConfigurationCppSkel, G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'configuration.cpp-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error <<"the file 'configuration.cpp-skeleton' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "the file 'configuration.cpp-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'configuration.cpp-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'configuration.cpp-skeleton' found.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'configuration.cpp-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".cpp";
@@ -375,12 +375,12 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		CString l_sCommandSed = l_sSed;
 		l_sCommandSed = l_sCommandSed + " \"s/@@ClassName@@/"+m_sClassName+"/g";
 		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
 //#ifdef OV_OS_Windows
 //		l_sConfigurationCppSkel = "configuration.cpp-skeleton";
-//#endif	
+//#endif
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationCppSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -389,13 +389,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 		if(l_bSuccess)
 		{
-			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
 		}
 		else
 		{
-			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
-			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
+			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
 		}
 	}
 
@@ -406,13 +406,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	if(! g_file_test(l_sInterfaceUISkel, G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'interface.ui-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error <<"the file 'interface.ui-skeleton' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "the file 'interface.ui-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'interface.ui-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'interface.ui-skeleton' found.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'interface.ui-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/interface-" + m_sClassName + ".ui";
@@ -428,27 +428,27 @@ void CDriverSkeletonGenerator::buttonOkCB()
 			if(it!=m_vSamplingFrequencies.end()) l_sCommandSed = l_sCommandSed + "<\\/col><\\/row><row><col id=\\\"0\\\" translatable=\\\"yes\\\">";
 		}
 		l_sCommandSed = l_sCommandSed + "/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
 //#ifdef OV_OS_Windows
 //		l_sInterfaceUISkel = "interface.ui-skeleton";
-//#endif	
+//#endif
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sInterfaceUISkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
 
 		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
-		 
+
 		if(l_bSuccess)
 		{
-			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
 		}
 		else
 		{
-			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
-			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
+			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
 		}
 	}
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
@@ -458,13 +458,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	if(! g_file_test(l_sReadMeDriverTxtSkel, G_FILE_TEST_EXISTS))
 	{
 		l_ssTextBuffer << "[FAILED] the file 'readme-driver.txt-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error <<"the file 'readme-driver.txt-skeleton' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "the file 'readme-driver.txt-skeleton' is missing.\n";
 		l_bSuccess = false;
 	}
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'readme-driver.txt-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info <<" -- 'readme-driver.txt-skeleton' found.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'readme-driver.txt-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/readme-driver.txt";
@@ -473,12 +473,12 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		l_sCommandSed = l_sCommandSed + " \"s/@@ClassName@@/"+m_sClassName+"/g";
 		l_sCommandSed = l_sCommandSed + " ;s/@@Date@@/"+l_sDate+"/g\" ";
 
-		m_rKernelContext.getLogManager() << LogLevel_Debug <<"CMD: "+l_sCommandSed+"\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
 //#ifdef OV_OS_Windows
 //		l_sReadMeDriverTxtSkel = "readme-driver.txt-skeleton";
-//#endif	
+//#endif
 		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sReadMeDriverTxtSkel) + CString("\" > ") + l_sDest;
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
@@ -487,22 +487,21 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 		if(l_bSuccess)
 		{
-			l_ssTextBuffer << "[   OK   ] -- "<<l_sDest<<" written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info <<" -- "<<l_sDest<<" written.\n";
+			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
 		}
 		else
 		{
-			l_ssTextBuffer << "[FAILED] -- "<<l_sDest<<" cannot be written.\n";	
-			m_rKernelContext.getLogManager() << LogLevel_Error <<" -- "<<l_sDest<<" cannot be written.\n";
+			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
 		}
 	}
-	
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	if(!l_bSuccess)
 	{
 		l_ssTextBuffer << "Generation process did not completly succeed. Some files may have not been produced.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Warning <<"Generation process did not completly succeed. Some files may have not been produced.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Generation process did not completly succeed. Some files may have not been produced.\n";
 	}
 	else
 	{
@@ -510,8 +509,8 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		saveCommon();
 		save();
 
-		l_ssTextBuffer << "Generation process successful. All entries saved in "<<m_sConfigurationFile<<"\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All enntries saved in"<<m_sConfigurationFile<<"\n";
+		l_ssTextBuffer << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
 	}
 
 	CString l_sBrowser = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand_${OperatingSystem}}");
@@ -521,7 +520,9 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	l_sBrowserCmd =  l_sBrowser + " file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
 #endif
 
-	system((const char *)l_sBrowserCmd);
+	if(system((const char *)l_sBrowserCmd))
+	{
+	}
 
 	gtk_text_buffer_set_text(
 		l_pTextBuffer,
@@ -538,31 +539,31 @@ void CDriverSkeletonGenerator::buttonTooltipCB(::GtkButton* pButton)
 
 	if(l_eWidgetName == WidgetName_DriverName)
 	{
-		gtk_text_buffer_set_text (l_pTextBuffer, 
+		gtk_text_buffer_set_text (l_pTextBuffer,
 			"Driver Name: \nThis name will be the one dislayed in the Acquisition Server selection combobox.\nUsually, the driver is named according to the EEG device (with precisions such as a version number).\n------\nExample: OpenEEG Modular EEG (P2)\n\n\n"
 			, -1);
 	}
 	else if(l_eWidgetName == WidgetName_ClassName)
 	{
-		gtk_text_buffer_set_text (l_pTextBuffer, 
+		gtk_text_buffer_set_text (l_pTextBuffer,
 			"Class Name: \nThis name will be used to generate all source and GUI files.\nYou should choose a class name close to the device name (no blank allowed !).\n------\nExample: OpenEEGModularEEG will generate\n - ovasCDriverOpenEEGModularEEG.h/.cpp, the driver skeleton \n - ovasCConfigurationOpenEEGModularEEG.h/.cpp, the configuration class skeleton\n - interface-OpenEEG-ModularEEG.ui, the GUI description file"
 			, -1);
 	}
 	else if(l_eWidgetName == WidgetName_ChannelCount)
 	{
-		gtk_text_buffer_set_text (l_pTextBuffer, 
+		gtk_text_buffer_set_text (l_pTextBuffer,
 			"Channel count: \nEnter in the two fields the minimum and maximum number of channels the device is capable of.\nOf course you can still change it later in the source code.\n------\nExample: Min(1) Max(16)\n\n\n"
 			, -1);
 	}
 	else if(l_eWidgetName == WidgetName_SamplingFrequencies)
 	{
-		gtk_text_buffer_set_text (l_pTextBuffer, 
+		gtk_text_buffer_set_text (l_pTextBuffer,
 			"Sampling frequencies: \nEnter in the text field the sampling frequencies your device is capable of.\nYou can specify a list of defined frequencies (value separator ';').\n------\nExample:\n\"128;256;512\" for three defined frequencies.\n\n"
 			, -1);
 	}
 	else if(l_eWidgetName == WidgetName_TargetDirectory)
 	{
-		gtk_text_buffer_set_text (l_pTextBuffer, 
+		gtk_text_buffer_set_text (l_pTextBuffer,
 			"Target directory: \nEnter the destination directory in which all files will be generated. \nAny existing files will be overwritten.\n------\nExample: ~/skeleton-generator/foobar-driver/\n\n\n"
 			, -1);
 	}
@@ -625,47 +626,31 @@ void CDriverSkeletonGenerator::initialize( void )
 
 void CDriverSkeletonGenerator::save(void)
 {
-	CString l_sCommand = "echo SkeletonGenerator_Driver_DriverName="+ m_sDriverName +" >> \"" + m_sConfigurationFile + "\"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
-	boolean l_bSuccess = (system(((string)l_sCommand).c_str()) == 0);
-	
-	l_sCommand = "echo SkeletonGenerator_Driver_ClassName="+ m_sClassName +" >> \"" + m_sConfigurationFile + "\"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
-	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
-	
-	l_sCommand = "echo SkeletonGenerator_Driver_MinChannel="+ m_sMinChannel +" >> \"" + m_sConfigurationFile + "\"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
-	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
-	
-	l_sCommand = "echo SkeletonGenerator_Driver_MaxChannel="+ m_sMaxChannel +" >> \"" + m_sConfigurationFile + "\"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
-	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
-	
-	l_sCommand = "echo SkeletonGenerator_Driver_SamplingFrequencies="+ m_sSamplingFrequencies +" >> \"" + m_sConfigurationFile + "\"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
-	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
-	
-	string::iterator it;
-	string l_sTemp = m_sTargetDirectory;
-	for ( it=l_sTemp.begin() ; it < l_sTemp.end(); it++ )
+	FILE* l_pFile=::fopen(m_sConfigurationFile.toASCIIString(), "ab");
+	if(l_pFile)
 	{
-		if((*it)=='\\')
+		string::iterator it;
+		string l_sTempTargetDirectory(m_sTargetDirectory.toASCIIString());
+		for(it=l_sTempTargetDirectory.begin(); it<l_sTempTargetDirectory.end(); it++)
 		{
-			l_sTemp.replace(it,it+1,1,'/');
+			if((*it)=='\\')
+			{
+				l_sTempTargetDirectory.replace(it, it+1, 1, '/');
+			}
 		}
-	}
-	m_sTargetDirectory = CString(l_sTemp.c_str());
-	l_sCommand = "echo SkeletonGenerator_Driver_TargetDirectory="+ m_sTargetDirectory +" >> \"" + m_sConfigurationFile + "\"\n";
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "Command: "+l_sCommand+"\n";
-	l_bSuccess &= (system(((string)l_sCommand).c_str()) == 0);
-	
-	if(l_bSuccess)
-	{
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries saved in "+m_sConfigurationFile+"\n";
+
+		::fprintf(l_pFile, "SkeletonGenerator_Driver_DriverName = %s\n", m_sDriverName.toASCIIString());
+		::fprintf(l_pFile, "SkeletonGenerator_Driver_ClassName = %s\n", m_sClassName.toASCIIString());
+		::fprintf(l_pFile, "SkeletonGenerator_Driver_MinChannel = %s\n", m_sMinChannel.toASCIIString());
+		::fprintf(l_pFile, "SkeletonGenerator_Driver_MaxChannel = %s\n", m_sMaxChannel.toASCIIString());
+		::fprintf(l_pFile, "SkeletonGenerator_Driver_SamplingFrequencies = %s\n", m_sSamplingFrequencies.toASCIIString());
+		::fprintf(l_pFile, "SkeletonGenerator_Driver_TargetDirectory = %s\n", l_sTempTargetDirectory.c_str());
+		::fclose(l_pFile);
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries saved in [" << m_sConfigurationFile << "]\n";
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "Saving the driver entries in "+m_sConfigurationFile+" failed !\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Saving the driver entries in [" << m_sConfigurationFile << "] failed !\n";
 	}
 }
 
@@ -675,27 +660,27 @@ void CDriverSkeletonGenerator::load(void)
 	{
 		::GtkWidget * l_pEntryDriverName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_driver_name"));
 		gtk_entry_set_text(GTK_ENTRY(l_pEntryDriverName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_DriverName}"));
-		
+
 		::GtkWidget * l_pEntryClassName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_class_name"));
 		gtk_entry_set_text(GTK_ENTRY(l_pEntryClassName),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_ClassName}"));
-	
+
 		::GtkWidget * l_pSpinbuttonMinChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_min_channel"));
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMinChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MinChannel}"));
-	
+
 		::GtkWidget * l_pSpinbuttonMaxChannel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "spinbutton_max_channel"));
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSpinbuttonMaxChannel),(gdouble)m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Driver_MaxChannel}"));
-	
+
 		::GtkWidget * l_pEntrySF = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_sampling_frequencies"));
 		gtk_entry_set_text(GTK_ENTRY(l_pEntrySF),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_SamplingFrequencies}"));
-	
+
 		::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
 		CString l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_TargetDirectory}");
 
 		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
-		m_rKernelContext.getLogManager() << LogLevel_Info <<"Driver entries from "+ m_sConfigurationFile+" loaded.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries from [" << m_sConfigurationFile << "] loaded.\n";
 	}
 	else
 	{
-		m_rKernelContext.getLogManager() << LogLevel_Warning << "Driver: No configuration file specified. It will be automatically generated after first use. \n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Common: Configuration file [" << m_sConfigurationFile << "] could not be loaded. It will be automatically generated after first use.\n";
 	}
 }
