@@ -123,6 +123,7 @@ no_need_to_download_vcredist_2008_sp1:
 	File ..\dependencies\arch\openvibe-dependency-boost-1.42.0.zip
 	File ..\dependencies\arch\openvibe-dependency-expat-2.0.1.zip
 	File ..\dependencies\arch\openvibe-dependency-gtk-2.16.6.zip
+	File ..\dependencies\arch\openvibe-dependency-gtk-themes-2009.09.07.zip
 	File ..\dependencies\arch\openvibe-dependency-itpp-4.0.7-vs90.zip
 	File ..\dependencies\arch\openvibe-dependency-ogre-1.7.0-vc2008.zip
 	File ..\dependencies\arch\openvibe-dependency-cegui-0.7.1-vc2008.zip
@@ -133,6 +134,7 @@ no_need_to_download_vcredist_2008_sp1:
 	ZipDLL::extractall "arch\openvibe-dependency-boost-1.42.0" "boost"
 	ZipDLL::extractall "arch\openvibe-dependency-expat-2.0.1.zip" "expat"
 	ZipDLL::extractall "arch\openvibe-dependency-gtk-2.16.6.zip" "gtk"
+	ZipDLL::extractall "arch\openvibe-dependency-gtk-themes-2009.09.07.zip" "gtk"
 	ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.7-vs90.zip" "itpp"
 	ZipDLL::extractall "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip" "ogre-vc2008"
 	ZipDLL::extractall "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip" "cegui-vc2008"
@@ -174,6 +176,15 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\lua_scripts$\r$\n"
 	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\schemes$\r$\n"
 	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\xml_schemes$\r$\n"
+	FileClose $0
+
+	FileOpen $0 "$INSTDIR\gtk\etc\gtk-2.0\gtkrc" w
+	FileWrite $0 "gtk-theme-name = $\"Redmond$\"$\r$\n"
+	FileWrite $0 "style $\"user-font$\"$\r$\n"
+	FileWrite $0 "{$\r$\n"
+	FileWrite $0 "	font_name=$\"Sans 8$\"$\r$\n"
+	FileWrite $0 "}$\r$\n"
+	FileWrite $0 "widget_class $\"*$\" style $\"user-font$\"$\r$\n"
 	FileClose $0
 
 	SetOutPath "$INSTDIR"

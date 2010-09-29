@@ -228,7 +228,7 @@ no_need_to_download_gtk_themes:
 ;no_need_to_install_gtk_themes:
 
 	FileOpen $0 "$INSTDIR\gtk\etc\gtk-2.0\gtkrc" w
-	FileWrite $0 "gtk-theme-name = $\"Clearlooks$\"$\r$\n"
+	FileWrite $0 "gtk-theme-name = $\"Redmond$\"$\r$\n"
 	FileWrite $0 "style $\"user-font$\"$\r$\n"
 	FileWrite $0 "{$\r$\n"
 	FileWrite $0 "	font_name=$\"Sans 8$\"$\r$\n"
