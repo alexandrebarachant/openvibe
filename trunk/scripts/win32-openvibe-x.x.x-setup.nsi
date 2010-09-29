@@ -178,7 +178,7 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "FileSystem=$INSTDIR\dependencies\cegui-vc2008\datafiles\xml_schemes$\r$\n"
 	FileClose $0
 
-	FileOpen $0 "$INSTDIR\gtk\etc\gtk-2.0\gtkrc" w
+	FileOpen $0 "$INSTDIR\dependencies\gtk\etc\gtk-2.0\gtkrc" w
 	FileWrite $0 "gtk-theme-name = $\"Redmond$\"$\r$\n"
 	FileWrite $0 "style $\"user-font$\"$\r$\n"
 	FileWrite $0 "{$\r$\n"
