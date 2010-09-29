@@ -41,6 +41,8 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean postConfigure(void);
 
 		virtual void buttonFastModeSettingsCB(void);
+		virtual void buttonStartServiceCB(void);
+		virtual void buttonStopServiceCB(void);
 		virtual void comboBoxAcquisitionModeCB(::GtkComboBox* pComboBox);
 
 	protected:
@@ -68,6 +70,12 @@ namespace OpenViBEAcquisitionServer
 
 		::GtkWidget* m_pPair4PositiveInputs;
 		::GtkWidget* m_pPair4NegativeInputs;
+
+	private:
+		OpenViBE::boolean controlVampService(OpenViBE::boolean state);
+		//DWORD startWindowsService(SC_HANDLE hService);
+		//gboolean idleCheckVampService(gpointer data);
+		gint m_giIdleID;
 	};
 };
 
