@@ -257,7 +257,7 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "pause$\r$\n"
 	FileClose $0
 
-	FileOpen $0 "$INSTDIR\openvibe-vr-demo.cmd" w
+	FileOpen $0 "$INSTDIR\openvibe-vr-demo-tie-fighter.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
 	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
 	FileWrite $0 "$\r$\n"
@@ -271,6 +271,20 @@ no_need_to_download_vcredist_2008_sp1:
 	FileWrite $0 "pause$\r$\n"
 	FileClose $0
 
+	FileOpen $0 "$INSTDIR\openvibe-vr-demo-handball.cmd" w
+	FileWrite $0 "@echo off$\r$\n"
+	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "SET OpenViBE_DistRoot=%CD%$\r$\n"
+	FileWrite $0 "copy share\openvibe-applications\vr-demo\handball\resources.cfg-base share\openvibe-applications\vr-demo\handball\resources.cfg$\r$\n"
+	FileWrite $0 "type dependencies\cegui-vc2008\resources.cfg >> share\openvibe-applications\vr-demo\handball\resources.cfg$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "cd share\openvibe-applications\vr-demo\handball$\r$\n"
+	FileWrite $0 "$\"%OpenViBE_DistRoot%\bin\OpenViBE-vr-demo-dynamic.exe$\" handball"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "pause$\r$\n"
+	FileClose $0
+
 	CreateDirectory "$SMPROGRAMS\OpenViBE"
 	CreateDirectory "$SMPROGRAMS\OpenViBE\Developer tools"
 	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe id generator.lnk"       "$INSTDIR\openvibe-id-generator.cmd"        "" "%SystemRoot%\system32\shell32.dll" 57
@@ -278,7 +292,8 @@ no_need_to_download_vcredist_2008_sp1:
 	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe skeleton generator.lnk" "$INSTDIR\openvibe-skeleton-generator.cmd"  "" "%SystemRoot%\system32\shell32.dll" 57
 	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe designer.lnk"                           "$INSTDIR\openvibe-designer.cmd"            "" "%SystemRoot%\system32\shell32.dll" 137
 	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe acquisition server.lnk"                 "$INSTDIR\openvibe-acquisition-server.cmd"  "" "%SystemRoot%\system32\shell32.dll" 18
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo tie-fighter.lnk"                "$INSTDIR\openvibe-vr-demo.cmd"             "" "%SystemRoot%\system32\shell32.dll" 200
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo tie-fighter.lnk"                "$INSTDIR\openvibe-vr-demo-tie-fighter.cmd" "" "%SystemRoot%\system32\shell32.dll" 200
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo handball.lnk"                   "$INSTDIR\openvibe-vr-demo-handball.cmd"    "" "%SystemRoot%\system32\shell32.dll" 200
 	CreateShortCut "$SMPROGRAMS\OpenViBE\uninstall.lnk"                                   "$INSTDIR\Uninstall.exe"
 
 SectionEnd

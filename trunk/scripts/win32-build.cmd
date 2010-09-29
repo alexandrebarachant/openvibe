@@ -98,6 +98,18 @@ echo %%OpenViBE_DistRoot%%\bin\OpenViBE-vr-demo-dynamic.exe tie-fighter   >> %ta
 echo cd %%OpenViBE_DistRoot%%                                             >> %target_dist%\test-vr-demo-tie-fighter.cmd
 echo exit                                                                 >> %target_dist%\test-vr-demo-tie-fighter.cmd
 
+echo @echo off                                                            >  %target_dist%\test-vr-demo-handball.cmd
+echo SET OpenViBE_DistRoot=%%CD%%>> %target_dist%\test-vr-demo-handball.cmd
+echo pushd ..\scripts                                                     >> %target_dist%\test-vr-demo-handball.cmd
+echo call win32-init_env_command.cmd                                      >> %target_dist%\test-vr-demo-handball.cmd
+echo popd                                                                 >> %target_dist%\test-vr-demo-handball.cmd
+echo copy share\openvibe-applications\vr-demo\handball\resources.cfg-base share\openvibe-applications\vr-demo\handball\resources.cfg >> %target_dist%\test-vr-demo-handball.cmd
+echo type %OV_DEP_CEGUI%\resources.cfg ^>^> share\openvibe-applications\vr-demo\handball\resources.cfg >> %target_dist%\test-vr-demo-handball.cmd
+echo cd share\openvibe-applications\vr-demo\handball                      >> %target_dist%\test-vr-demo-handball.cmd
+echo %%OpenViBE_DistRoot%%\bin\OpenViBE-vr-demo-dynamic.exe handball      >> %target_dist%\test-vr-demo-handball.cmd
+echo cd %%OpenViBE_DistRoot%%                                             >> %target_dist%\test-vr-demo-handball.cmd
+echo exit                                                                 >> %target_dist%\test-vr-demo-handball.cmd
+
 echo @echo off                                               >  %target_dist%\test-acquisition-server.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-acquisition-server.cmd
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-acquisition-server.cmd
