@@ -259,6 +259,11 @@ CEntryEnumeratorLinux::CEntryEnumeratorLinux(IEntryEnumeratorCallBack& rEntryEnu
 
 boolean CEntryEnumeratorLinux::enumerate(const char* sWildCard)
 {
+	if(!sWildCard)
+	{
+		return false;
+	}
+
 	glob_t l_oGlobStruc;
 	memset(&l_oGlobStruc, GLOB_NOSORT, sizeof(l_oGlobStruc));
 	if(glob(sWildCard, 0, NULL, &l_oGlobStruc))
@@ -318,6 +323,11 @@ CEntryEnumeratorWindows::CEntryEnumeratorWindows(IEntryEnumeratorCallBack& rEntr
 
 boolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
 {
+	if(!sWildCard)
+	{
+		return false;
+	}
+
 	// $$$ TODO
 	// $$$ Find better method to enumerate files
 	// $$$ under windows including their initial path
@@ -376,6 +386,11 @@ CEntryEnumeratorDummy::CEntryEnumeratorDummy(IEntryEnumeratorCallBack& rEntryEnu
 
 boolean CEntryEnumeratorDummy::enumerate(const char* sWildCard)
 {
+	if(!sWildCard)
+	{
+		return false;
+	}
+
 	return true;
 }
 
