@@ -1,3 +1,6 @@
+	SetCompressor /FINAL /SOLID lzma
+	SetCompressorDictSize 64
+
 	!include "MUI.nsh"
 	!include "zipdll.nsh"
 
