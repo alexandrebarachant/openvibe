@@ -10,11 +10,12 @@ using namespace std;
 
 #define boolean OpenViBE::boolean
 
-//--------------------------------------
-gboolean idle_check_service(gpointer data)
+//____________________________________________________________________________________
+//
+gboolean idle_check_service(gpointer pData)
 {
-	GtkBuilder * l_pInterface= ((GtkBuilder*) data);
-	
+	::GtkBuilder* l_pInterface=(::GtkBuilder*)pData;
+
 	SC_HANDLE l_hSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	SC_HANDLE l_hService = NULL;
 	if (l_hSCM == NULL || l_hSCM == INVALID_HANDLE_VALUE)
@@ -25,22 +26,22 @@ gboolean idle_check_service(gpointer data)
 		gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_DIALOG_ERROR,GTK_ICON_SIZE_BUTTON);
 		return false;
 	}
-	
+
 	l_hService = OpenService(l_hSCM, "VampService", SERVICE_ALL_ACCESS);
 	if (l_hService != NULL)
 	{
 		SERVICE_STATUS l_ssStatus;
 		QueryServiceStatus(l_hService, &l_ssStatus);
-		 
-		if (l_ssStatus.dwCurrentState == SERVICE_RUNNING) 
+
+		if (l_ssStatus.dwCurrentState == SERVICE_RUNNING)
 		{
 			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),false);
 			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),true);
 			gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")),"VampService is Enabled");
 			gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_YES,GTK_ICON_SIZE_BUTTON);
 		}
-		else 
-		{ 
+		else
+		{
 			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),true);
 			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),false);
 			gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")),"VampService is Disabled");
@@ -50,9 +51,8 @@ gboolean idle_check_service(gpointer data)
 
 	return true;
 }
-//--------------------------------------
-
 //____________________________________________________________________________________
+//
 static void button_start_service_cb(::GtkButton* pButton, void* pUserData)
 {
 	static_cast<CConfigurationBrainProductsVAmp*>(pUserData)->buttonStartServiceCB();
@@ -95,6 +95,7 @@ static void gtk_combo_box_set_active_text(::GtkComboBox* pComboBox, const gchar*
 		while(gtk_tree_model_iter_next(l_pTreeModel, &itComboEntry));
 	}
 }
+
 //____________________________________________________________________________________
 
 // Inits the combo box, and sets the active value
@@ -173,7 +174,7 @@ boolean CConfigurationBrainProductsVAmp::preConfigure(void)
 
 	// start the idle function that checks the VampService
 	m_giIdleID = g_idle_add(idle_check_service, m_pBuilderConfigureInterface);
-	
+
 	// Configures interface with given values
 	//Data mode
 	gtk_combo_box_set_active(GTK_COMBO_BOX(m_pAcquisitionMode), m_pHeaderBrainProductsVAmp->getAcquisitionMode());
@@ -457,7 +458,7 @@ boolean CConfigurationBrainProductsVAmp::controlVampService(boolean bStartServic
 
 	if (l_handleSCM == NULL || l_handleSCM == INVALID_HANDLE_VALUE)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] The driver was unable to create the handler to the SCManager (err code "<<(uint32)GetLastError()<<".\n";	
+		m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] The driver was unable to create the handler to the SCManager (err code "<<(uint32)GetLastError()<<".\n";
 		return false;
 	}
 	try
@@ -471,18 +472,18 @@ boolean CConfigurationBrainProductsVAmp::controlVampService(boolean bStartServic
 			{
 				if (Status.dwCurrentState != SERVICE_RUNNING)
 				{
-					m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] Starting VampService...\n";	
+					m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] Starting VampService...\n";
 					if (!StartService(
-							l_handleService,	// handle to service 
-							0,          // number of arguments 
-							NULL))      // no arguments 
+							l_handleService, // handle to service
+							0,               // number of arguments
+							NULL))           // no arguments
 					{
-						m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] The driver was unable to restart the service (err code "<<(uint32)GetLastError()<<".\n";	
+						m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] The driver was unable to restart the service (err code "<<(uint32)GetLastError()<<".\n";
 						return false;
 					}
 					else
 					{
-						m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] VampService started successfully.\n";	
+						m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] VampService started successfully.\n";
 						return true;
 					}
 				}
@@ -495,19 +496,19 @@ boolean CConfigurationBrainProductsVAmp::controlVampService(boolean bStartServic
 					boolean l_bStopped=false;
 					for (int i = 0; i < 5 && !l_bStopped; i++) // about 5 seconds
 					{
-						m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] Checking the VampService...\n";	
+						m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] Checking the VampService...\n";
 						Sleep(1000);
 						ControlService(l_handleService, SERVICE_CONTROL_INTERROGATE, &Status);
-						if (Status.dwCurrentState == SERVICE_STOPPED) 
+						if (Status.dwCurrentState == SERVICE_STOPPED)
 						{
-							m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] VampService stopped successfully.\n";	
+							m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] VampService stopped successfully.\n";
 							l_bStopped = true;
 						}
 					}
 					if(!l_bStopped) m_rDriverContext.getLogManager() << LogLevel_Warning << " [VampService] After 5 seconds check, VampService did not stop.\n";
 				}
 			}
-			m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] Closing handlers.\n";	
+			m_rDriverContext.getLogManager() << LogLevel_Trace << " [VampService] Closing handlers.\n";
 			CloseServiceHandle(l_handleService);
 			l_handleService = NULL;
 			CloseServiceHandle(l_handleSCM);
@@ -515,7 +516,7 @@ boolean CConfigurationBrainProductsVAmp::controlVampService(boolean bStartServic
 		}
 		else
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] The driver was unable to create the handler to VampService (err code "<<(uint32)GetLastError()<<".\n";	
+			m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] The driver was unable to create the handler to VampService (err code "<<(uint32)GetLastError()<<".\n";
 			return false;
 		}
 	}
@@ -523,13 +524,13 @@ boolean CConfigurationBrainProductsVAmp::controlVampService(boolean bStartServic
 	{
 		if (l_handleService != NULL)
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] An error occured with the VampService handler (err code "<<(uint32)GetLastError()<<".\n";	
+			m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] An error occured with the VampService handler (err code "<<(uint32)GetLastError()<<".\n";
 			CloseServiceHandle(l_handleService);
-			l_handleService = NULL;	
+			l_handleService = NULL;
 		}
 		if (l_handleSCM != NULL)
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] An error occured with the SCManager handler (err code "<<(uint32)GetLastError()<<".\n";	
+			m_rDriverContext.getLogManager() << LogLevel_Error << " [VampService] An error occured with the SCManager handler (err code "<<(uint32)GetLastError()<<".\n";
 			CloseServiceHandle(l_handleSCM);
 			l_handleSCM = NULL;
 		}
@@ -537,6 +538,5 @@ boolean CConfigurationBrainProductsVAmp::controlVampService(boolean bStartServic
 	}
 	return true;
 }
-
 
 #endif // TARGET_HAS_ThirdPartyUSBFirstAmpAPI

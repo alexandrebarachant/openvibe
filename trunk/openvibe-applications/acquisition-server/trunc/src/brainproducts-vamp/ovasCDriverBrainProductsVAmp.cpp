@@ -98,6 +98,7 @@ boolean CDriverBrainProductsVAmp::initialize(
 	}
 
 	int32 l_i32DeviceId = m_oHeader.getDeviceId();
+
 	//__________________________________
 	// Hardware initialization
 
