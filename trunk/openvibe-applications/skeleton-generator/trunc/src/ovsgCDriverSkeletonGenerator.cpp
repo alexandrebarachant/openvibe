@@ -515,10 +515,10 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	}
 
 	CString l_sBrowser = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand_${OperatingSystem}}");
-	CString l_sBrowserCmd = l_sBrowser + " " +  m_sTargetDirectory;
+	CString l_sBrowserCmd = l_sBrowser + " \"" +  m_sTargetDirectory+"\"";
 
 #ifdef OV_OS_Windows
-	l_sBrowserCmd =  l_sBrowser + " file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
+	l_sBrowserCmd =  l_sBrowser + "file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
 #endif
 
 	if(system((const char *)l_sBrowserCmd))
