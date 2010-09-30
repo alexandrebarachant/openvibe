@@ -88,7 +88,7 @@
 <table class='faq-os' cellpading=0 cellspacing=0>
 <tr> <td colspan=6 bgcolor=black style="color: white"><center>The following target platforms have been tested</center></td> </tr>
 <tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> <th>Officially supported</th> </tr>
-<tr> <td rowspan=18>x86</td>   <td rowspan=3>Windows</td>  <td rowspan=2>XP SP2</td>      <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK (last built 2010/04)</td> <td bgcolor=green>Yes</td> </tr>
+<tr> <td rowspan=18>x86</td>   <td rowspan=3>Windows</td>  <td rowspan=2>XP SP2</td>      <td>Visual C++ 2008 Express</td>            <td bgcolor=green>OK (last built 2010/09)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                                                      <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Vista</td>                 <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                           <td rowspan=15>Linux</td>   <td>Ubuntu 10.10 Maverick</td> <td>GCC 4.4.5</td>                          <td bgcolor=green>OK (last built 2010/09)</td> <td bgcolor=orange>No</td> </tr>
@@ -108,7 +108,7 @@
 <tr>                                                       <td>Debian 5</td>              <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr> <td rowspan=15>x86_64</td> <td rowspan=1>Windows</td> <td colspan=2>Any</td>                                                     <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
 <tr>                            <td rowspan=14>Linux</td>  <td>Ubuntu 10.10 Maverick</td> <td>GCC 4.4.5</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr>                                                       <td>Ubuntu 10.04 LTS Lucid</td><td>GCC 4.4.3</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Ubuntu 10.04 LTS Lucid</td><td>GCC 4.4.3</td>                          <td bgcolor=green>OK (last built 2010/09)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2010/04)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
@@ -178,35 +178,36 @@
  * The following table sums up current device integration in OpenViBE :
 \htmlonly
 <table class='faq-os' cellpading=0 cellspacing=0>
-<tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices have been integrated</center></td> </tr>
-<tr bgcolor=lightgrey> <th width=10%>Manufacturer</th> <th width=25%>Amplifier</th>      <th width=25%>Driver Name</th> <th width=15%>Status</th><th width=25%>Officially supported</th> </tr>
-<tr> <td rowspan=2>ANT</td>            <td>Neuro ASALAB EEG / ERP amplifier</td> <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>has been reported to work</td> <td bgcolor=red>no</td> </tr>
-<tr>                                   <td>Others TMSi derived devices</td>      <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
-<tr> <td rowspan=3>Brain Products</td> <td>V-Amp</td>                <td>Brain Products V-Amp</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr>                                   <td>Brainamp series</td>      <td>Brain Products Brainamp Standard (through Vision Recorder)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Emmanuel Maby (<i>INSERM</i>)</li><li>Pierre-Emmanuel Aguera (<i>INSERM</i>)</li></ul></div></td> </tr>
-<tr>                                   <td>Brainamp series</td>      <td>Brain Products Brainamp Series</td> <td bgcolor=green>stable<br>multi amp missing</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Yann Renard</li></ul></div></td> </tr>
-<tr> <td rowspan=1>CTF/VSM</td>        <td>MEG</td>                  <td>CTF/VSM MEG</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Emmanuel Maby (<i>INSERM</i>)</li><li>Pierre-Emmanuel Aguera (<i>INSERM</i>)</li></ul></div></td> </tr>
-<tr> <td rowspan=2>gTec</td>           <td>gUSBamp</td>              <td>g.Tec gUSBamp</td> <td bgcolor=green>stable<br>multi amp missing</td> <td bgcolor=green>yes</td> </tr>
-<tr>                                   <td>gMobilab+</td>            <td>gTec gMOBIlab+</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Lucie Daubigney (<i>Supelec</i>)</li></ul></div></td> </tr>
-<tr> <td rowspan=1>Micromed</td>       <td>SD LTM</td>               <td>Micromed SD LTM (through SystemPlus Evolution)</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr> <td rowspan=1>MindMedia</td>      <td>NeXus32</td>              <td>MindMedia Nexus32B</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr> <td rowspan=1>Neurosky</td>       <td>Mindset</td>              <td>NeuroSky MindSet</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr> <td rowspan=2>OpenEEG</td>        <td>MonolithEEG</td>          <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Christoph Veigl (<i>University of Applied Sciences Technikum Wien</i>)</li><li>Yann Renard</li></ul></div></td> </tr>
-<tr>                                   <td>ModularEEG</td>           <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Christoph Veigl (<i>University of Applied Sciences Technikum Wien</i>)</li><li>Yann Renard</li></ul></div></td> </tr>
-<tr> <td rowspan=3>TMSi</td>           <td>Porti32</td>              <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr>                                   <td>Refa32</td>               <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr>                                   <td>Others</td>               <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
+<tr> <td colspan=6 bgcolor=black style="color: white"><center>The following devices have been integrated</center></td> </tr>
+<tr bgcolor=lightgrey> <th width=10%>Manufacturer</th> <th width=20%>Amplifier</th> <th width=20%>Driver Name</th> <th width=10%>OS</th> <th width=15%>Status</th><th width=25%>Officially supported</th> </tr>
+<tr> <td rowspan=2>ANT</td>            <td>Neuro ASALAB EEG / ERP amplifier</td> <td>Either MindMedia Nexus32B or TMSi drivers</td>                  <td><img src=windows.svg.png /></td> <td bgcolor=green>has been reported to work</td> <td bgcolor=red>no</td> </tr>
+<tr>                                   <td>Others TMSi derived devices</td>      <td>Either MindMedia Nexus32B or TMSi drivers</td>                  <td><img src=windows.svg.png /></td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
+<tr> <td rowspan=3>Brain Products</td> <td>V-Amp</td>                            <td>Brain Products V-Amp</td>                                       <td><img src=windows.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>Brainamp series</td>                  <td>Brain Products Brainamp Standard (through Vision Recorder)</td> <td><img src=windows.svg.png /><img src=linux.svg.png /></td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Emmanuel Maby (<i>INSERM</i>)</li><li>Pierre-Emmanuel Aguera (<i>INSERM</i>)</li></ul></div></td> </tr>
+<tr>                                   <td>Brainamp series</td>                  <td>Brain Products Brainamp Series</td>                             <td><img src=windows.svg.png /></td> <td bgcolor=green>stable<br>multi amp missing</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Yann Renard</li></ul></div></td> </tr>
+<tr> <td rowspan=1>CTF/VSM</td>        <td>MEG</td>                              <td>CTF/VSM MEG</td>                                                <td><img src=windows.svg.png /><img src=linux.svg.png /></td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Emmanuel Maby (<i>INSERM</i>)</li><li>Pierre-Emmanuel Aguera (<i>INSERM</i>)</li></ul></div></td> </tr>
+<tr> <td rowspan=2>gTec</td>           <td>gUSBamp</td>                          <td>g.Tec gUSBamp</td>                                              <td><img src=windows.svg.png /></td> <td bgcolor=green>stable<br>multi amp missing</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>gMobilab+</td>                        <td>gTec gMOBIlab+</td>                                             <td><img src=none.svg.png /><img src=linux.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Lucie Daubigney (<i>Supelec</i>)</li></ul></div></td> </tr>
+<tr> <td rowspan=1>Emotiv</td>         <td>EPOC</td>                             <td>Emotiv EPOC</td>                                                <td><img src=windows.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr> <td rowspan=1>Micromed</td>       <td>SD LTM</td>                           <td>Micromed SD LTM (through SystemPlus Evolution)</td>             <td><img src=windows.svg.png /><img src=linux.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr> <td rowspan=1>MindMedia</td>      <td>NeXus32</td>                          <td>MindMedia Nexus32B</td>                                         <td><img src=windows.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr> <td rowspan=1>Neurosky</td>       <td>Mindset</td>                          <td>NeuroSky MindSet</td>                                           <td><img src=windows.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr> <td rowspan=2>OpenEEG</td>        <td>MonolithEEG</td>                      <td>OpenEEG Modular EEG P2</td>                                     <td><img src=windows.svg.png /><img src=linux.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Christoph Veigl (<i>University of Applied Sciences Technikum Wien</i>)</li><li>Yann Renard</li></ul></div></td> </tr>
+<tr>                                   <td>ModularEEG</td>                       <td>OpenEEG Modular EEG P2</td>                                     <td><img src=windows.svg.png /><img src=linux.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Christoph Veigl (<i>University of Applied Sciences Technikum Wien</i>)</li><li>Yann Renard</li></ul></div></td> </tr>
+<tr> <td rowspan=3>TMSi</td>           <td>Porti32</td>                          <td>Either MindMedia Nexus32B or TMSi drivers</td>                  <td><img src=windows.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>Refa32</td>                           <td>Either MindMedia Nexus32B or TMSi drivers</td>                  <td><img src=windows.svg.png /></td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>Others</td>                           <td>Either MindMedia Nexus32B or TMSi drivers</td>                  <td><img src=windows.svg.png /></td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
 
-<tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices are currently <b>being integrated</b><br>You can contact us for beta tests</center></td> </tr>
-<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
-<tr> <td rowspan=1>Mitsar</td>         <td>EEG 202</td>              <td>Mitsar EEG 202</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Guillaume Lio (<i>GipsaLab</i>)</li></ul></div></td> </tr>
-<tr> <td rowspan=1>Neuroscan</td>      <td>SynAmps2</td>             <td>Neuroscan SynAmps2 (through Scan 4.3)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>David White (<i>Swinburne University of Technology</i>)</li></ul></div></td> </tr>
+<tr> <td colspan=6 bgcolor=black style="color: white"><center>The following devices are currently <b>being integrated</b><br>You can contact us for beta tests</center></td> </tr>
+<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>                  <th>Driver Name</th> <th>OS</th> <th>Status</th><th>Officially supported</th> </tr>
+<tr> <td rowspan=1>Mitsar</td>         <td>EEG 202</td>                          <td>Mitsar EEG 202</td>                                             <td><img src=windows.svg.png /></td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Guillaume Lio (<i>GipsaLab</i>)</li></ul></div></td> </tr>
+<tr> <td rowspan=1>Neuroscan</td>      <td>SynAmps2</td>                         <td>Neuroscan SynAmps2 (through Scan 4.3)</td>                      <td><img src=windows.svg.png /><img src=linux.svg.png /></td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>David White (<i>Swinburne University of Technology</i>)</li></ul></div></td> </tr>
 
-<tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices are <b>not yet supported</b></center></td> </tr>
-<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
-<tr> <td rowspan=1>Biosemi</td>           <td>All</td>                  <td>.</td> <td bgcolor=red>none</td> <td bgcolor=red>no</td> </tr>
-<tr> <td rowspan=1>Brainquiry</td>        <td>QPET9</td>                <td>Brainquiry Qpet-9</td> <td bgcolor=red>development is stalled</td> <td bgcolor=red>no</td> </tr>
-<tr> <td rowspan=1>Legacy amplifiers</td> <td>All</td>                  <td>.</td> <td bgcolor=red>none</td> <td bgcolor=red>no</td> </tr>
+<tr> <td colspan=6 bgcolor=black style="color: white"><center>The following devices are <b>not yet supported</b></center></td> </tr>
+<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>OS</th> <th>Status</th><th>Officially supported</th> </tr>
+<tr> <td rowspan=1>Biosemi</td>           <td>All</td>                           <td>.</td>                                                          <td>.</td> <td bgcolor=red>none</td> <td bgcolor=red>no</td> </tr>
+<tr> <td rowspan=1>Brainquiry</td>        <td>QPET9</td>                         <td>Brainquiry Qpet-9</td>                                          <td>.</td> <td bgcolor=red>development is stalled</td> <td bgcolor=red>no</td> </tr>
+<tr> <td rowspan=1>Legacy amplifiers</td> <td>All</td>                           <td>.</td>                                                          <td>.</td> <td bgcolor=red>none</td> <td bgcolor=red>no</td> </tr>
 </table>
 <!-- hardware-compatibility stop -->
 \endhtmlonly
