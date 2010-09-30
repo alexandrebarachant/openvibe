@@ -553,24 +553,6 @@ HR
 	vertical-align: -30%;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *
 {
 	border: 0;
@@ -921,16 +903,6 @@ div.clear-both
 	padding: 0;
 }
 
-
-
-
-
-
-
-
-
-
-
 div.navigation
 {
 	margin: 0em;
@@ -986,3 +958,9 @@ h1
 {
 	text-align: center;
 }
+
+div.maintainer     { font-size: x-small; border: 0; padding: 0; list-style-type: none; }
+div.maintainer ul  { font-size: x-small; border: 0; padding: 0; list-style-type: none; }
+div.maintainer li  { font-size: x-small; border: 0; padding: 0; list-style-type: none; }
+div.maintainer li  i { font-size: x-small; border: 0; padding: 0; list-style-type: none; }
+

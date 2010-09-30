@@ -14,6 +14,7 @@
  * - \ref Doc_FAQ_Functionalities
  * - \ref Doc_FAQ_Devices
  * - \ref Doc_FAQ_UnstableDrivers
+ * - \ref Doc_FAQ_UnstableBoxes
  * - \ref Doc_FAQ_Cite
  * - \ref Doc_FAQ_GTK
  * - \ref Doc_FAQ_DownloadSources
@@ -150,7 +151,8 @@
 <tr>                                  <td>Downsampling (in progress)</td> </tr>
 <tr> <td rowspan=2>Feature extraction</td> <td>Spectral analysis</td> </tr>
 <tr>                                       <td>Spatial filter</td> </tr>
-<tr> <td rowspan=1>Classification</td> <td>Linear Discriminant Analysis</td> </tr>
+<tr> <td rowspan=2>Classification</td> <td>Linear Discriminant Analysis</td> </tr>
+<tr>                                   <td>Support Vector Machine</td> </tr>
 <tr> <td rowspan=4>Stimulation presentation</td> <td>Graz-like motor imagery presentation</td> </tr>
 <tr>                                             <td>P300 Speller</td> </tr>
 <tr>                                             <td>P300 Magic Card</td> </tr>
@@ -176,27 +178,28 @@
 \htmlonly
 <table class='faq-os' cellpading=0 cellspacing=0>
 <tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices have been integrated</center></td> </tr>
-<tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
+<tr bgcolor=lightgrey> <th width=10%>Manufacturer</th> <th width=25%>Amplifier</th>      <th width=25%>Driver Name</th> <th width=15%>Status</th><th width=25%>Officially supported</th> </tr>
 <tr> <td rowspan=2>ANT</td>            <td>Neuro ASALAB EEG / ERP amplifier</td> <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>has been reported to work</td> <td bgcolor=red>no</td> </tr>
 <tr>                                   <td>Others TMSi derived devices</td>      <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
-<tr> <td rowspan=2>Brain Products</td> <td>V-Amp</td>                <td>Brain Products V-Amp</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr>                                   <td>Brainamp Standard</td>    <td>Brain Products Brainamp Standard (through Vision Recorder)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
-<tr> <td rowspan=1>CTF/VSM</td>        <td>MEG</td>                  <td>CTF/VSM MEG</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
-<tr> <td rowspan=2>gTec</td>           <td>gUSBamp</td>              <td>g.Tec gUSBamp</td> <td bgcolor=green>stable - multi amplifier is missing</td> <td bgcolor=green>yes</td> </tr>
-<tr>                                   <td>gMobilab+</td>            <td>gTec gMOBIlab+</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=3>Brain Products</td> <td>V-Amp</td>                <td>Brain Products V-Amp</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>Brainamp series</td>      <td>Brain Products Brainamp Standard (through Vision Recorder)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Emmanuel Maby (<i>INSERM</i>)</li><li>Pierre-Emmanuel Aguera (<i>INSERM</i>)</li></ul></div></td> </tr>
+<tr>                                   <td>Brainamp series</td>      <td>Brain Products Brainamp Series</td> <td bgcolor=green>stable<br>multi amp missing</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Yann Renard</li></ul></div></td> </tr>
+<tr> <td rowspan=1>CTF/VSM</td>        <td>MEG</td>                  <td>CTF/VSM MEG</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Emmanuel Maby (<i>INSERM</i>)</li><li>Pierre-Emmanuel Aguera (<i>INSERM</i>)</li></ul></div></td> </tr>
+<tr> <td rowspan=2>gTec</td>           <td>gUSBamp</td>              <td>g.Tec gUSBamp</td> <td bgcolor=green>stable<br>multi amp missing</td> <td bgcolor=green>yes</td> </tr>
+<tr>                                   <td>gMobilab+</td>            <td>gTec gMOBIlab+</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Lucie Daubigney (<i>Supelec</i>)</li></ul></div></td> </tr>
 <tr> <td rowspan=1>Micromed</td>       <td>SD LTM</td>               <td>Micromed SD LTM (through SystemPlus Evolution)</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
 <tr> <td rowspan=1>MindMedia</td>      <td>NeXus32</td>              <td>MindMedia Nexus32B</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
 <tr> <td rowspan=1>Neurosky</td>       <td>Mindset</td>              <td>NeuroSky MindSet</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
-<tr> <td rowspan=2>OpenEEG</td>        <td>MonolithEEG</td>          <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community</td> </tr>
-<tr>                                   <td>ModularEEG</td>           <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=2>OpenEEG</td>        <td>MonolithEEG</td>          <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Christoph Veigl (<i>University of Applied Sciences Technikum Wien</i>)</li><li>Yann Renard</li></ul></div></td> </tr>
+<tr>                                   <td>ModularEEG</td>           <td>OpenEEG Modular EEG P2</td> <td bgcolor=green>stable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Christoph Veigl (<i>University of Applied Sciences Technikum Wien</i>)</li><li>Yann Renard</li></ul></div></td> </tr>
 <tr> <td rowspan=3>TMSi</td>           <td>Porti32</td>              <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
 <tr>                                   <td>Refa32</td>               <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=green>stable</td> <td bgcolor=green>yes</td> </tr>
 <tr>                                   <td>Others</td>               <td>Either MindMedia Nexus32B or TMSi drivers</td> <td bgcolor=grey>untested</td> <td bgcolor=red>no</td> </tr>
 
 <tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices are currently <b>being integrated</b><br>You can contact us for beta tests</center></td> </tr>
 <tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
-<tr> <td rowspan=1>Mitsar</td>         <td>EEG 202</td>              <td>Mitsar EEG 202</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
-<tr> <td rowspan=1>Neuroscan</td>      <td>SynAmps2</td>             <td>Neuroscan SynAmps2 (through Scan 4.3)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community</td> </tr>
+<tr> <td rowspan=1>Mitsar</td>         <td>EEG 202</td>              <td>Mitsar EEG 202</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>Guillaume Lio (<i>GipsaLab</i>)</li></ul></div></td> </tr>
+<tr> <td rowspan=1>Neuroscan</td>      <td>SynAmps2</td>             <td>Neuroscan SynAmps2 (through Scan 4.3)</td> <td bgcolor=orange>unstable</td> <td bgcolor=orange>community :<div class=maintainer><ul><li>David White (<i>Swinburne University of Technology</i>)</li></ul></div></td> </tr>
 
 <tr> <td colspan=5 bgcolor=black style="color: white"><center>The following devices are <b>not yet supported</b></center></td> </tr>
 <tr bgcolor=lightgrey> <th>Manufacturer</th> <th>Amplifier</th>      <th>Driver Name</th> <th>Status</th><th>Officially supported</th> </tr>
@@ -217,6 +220,17 @@ AcquisitionServer_ShowUnstable = true
  * Your configuration file is \e %HOME%/.openviberc under linux and \e %USERPROFILE%/openvibe.conf under windows.
  *
  * Please come on the forum / IRC to discuss what conditions should be considered in order to use those drivers successfully.
+ *
+ * \section Doc_FAQ_UnstableBoxes I want to use "partially supported" boxes but they do not appear in the designer box tree.
+ *
+ * Those boxes are flagged as \e unstable in the sense they will work only in some specific conditions.
+ * In order to make them appear, you will have to edit the configuration file and add it this line
+ * \code
+Designer_ShowUnstable = true
+ * \endcode
+ * Your configuration file is \e %HOME%/.openviberc under linux and \e %USERPROFILE%/openvibe.conf under windows.
+ *
+ * Please come on the forum / IRC to discuss what conditions should be considered in order to use those boxes successfully.
  *
  * \section Doc_FAQ_Cite I'm a scientist and I wan't to cite OpenViBE, how should I proceed ?
  *
@@ -351,9 +365,9 @@ AcquisitionServer_ShowUnstable = true
  *
  * Other connections are not planned yet, but feel free to \ref Doc_Contact us if you think a connection with your software could be a plus.
  *
- * \section Doc_FAQ_DirectX On Windows, launching OpenViBE complains about missing d3dx9_33.dll or d3dx9_38.dll, what should I do ?
+ * \section Doc_FAQ_DirectX On Windows, launching OpenViBE complains about missing d3dx9_33.dll, d3dx9_38.dll or d3dx9_42.dll what should I do ?
  *
- * This message is a generic message that Windows prints when a DLL should be loaded and can't be found. The d3dx9_33.dll and d3dx9_38.dll file are part of
+ * This message is a generic message that Windows prints when a DLL should be loaded and can't be found. The d3dx9_33.dll, d3dx9_38.dll and d3dx9_42.dll files are part of
  * DirectX (Microsoft 3D acceleration API) which is used by Ogre3D. The best thing to do is to actually install DirectX on your
  * computer. You can find it searching for Direct X redist on google (or following this link http://www.google.fr/search?q=directx+redist+site%3Amicrosoft.com).
  * Be carefull with the release date because you still can find 2004 versions of DirectX and these versions may be proposed first.
@@ -373,8 +387,9 @@ AcquisitionServer_ShowUnstable = true
  *
  * First, it was estimated at the start of the project that the installation of dependencies in one click would be a plus for a certain
  * category of users. While this is the standard way of installing an application under Windows, it isn't under Linux, where most
- * distributions come with their own packaging system, be it rpm or apt-get. However, some of our dependencies (namely, OpenMASK and VRPN)
- * do not appear in the official packages of common Linux distributions. Second, it was decided that the installation process should not
+ * distributions come with their own packaging system, be it rpm or apt-get. However, some of our dependencies (e.g VRPN)
+ * do not appear in the official packages of common Linux distributions, or their version could vary from a distribution to another.
+ * Second, it was decided that the installation process should not
  * require users to have root access to their computer to install the §OpenViBE§ dependencies. Third, minor patches are applied to some of
  * the installed dependencies. Last, using such a script guarantees that all Linux users have the same version of the dependencies.
  *
@@ -396,7 +411,7 @@ AcquisitionServer_ShowUnstable = true
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to
- * this question currently is 26!)
+ * this question currently is 27!)
  *
  */
 /*
