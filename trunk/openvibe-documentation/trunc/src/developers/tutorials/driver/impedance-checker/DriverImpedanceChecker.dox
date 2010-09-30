@@ -101,6 +101,7 @@ In this example we assumed that the call to the API \c FooBarAPI::getImpedance(i
 If the device needs more time the program will hang for few seconds in the loop, maybe more. 
 For example, the g.Tec gUSBamp needs 1 second for each call. In this case, you can ask for the impedance value of only one channel, 
 and change the channel in every \c loop() call. Please look at \c ovasCDriverGTecGUSBamp.cpp for further details.
+*/
 
 \section Doc_DriverImpedanceChecker_Results Results
 
@@ -112,4 +113,3 @@ TODO : snapshot
 
 
  
-*/
