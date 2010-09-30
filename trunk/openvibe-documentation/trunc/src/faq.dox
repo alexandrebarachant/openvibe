@@ -13,6 +13,7 @@
  * - \ref Doc_FAQ_Environment
  * - \ref Doc_FAQ_Functionalities
  * - \ref Doc_FAQ_Devices
+ * - \ref Doc_FAQ_Emotiv
  * - \ref Doc_FAQ_UnstableDrivers
  * - \ref Doc_FAQ_UnstableBoxes
  * - \ref Doc_FAQ_Cite
@@ -209,6 +210,16 @@
 </table>
 <!-- hardware-compatibility stop -->
 \endhtmlonly
+ *
+ * \section Doc_FAQ_Emotiv How can I use the Emotiv Driver ?
+ * We provide an acquisition driver for the Emotiv EPOC headset, with some constraints:
+ * - You must have the <a href=http://www.emotiv.com/apps/sdk/209/> Emotiv Research SDK</a> (or any superior version)
+ * - You need to build the driver from sources. Look \ref Doc_Install "here" for a dedicated documentation.
+ * 
+ * The build scripts look in <em>C:/Program Files/Emotiv/Emotiv Development Kit_v1.0.0.3-PREMIUM</em> or <em>C:/Program Files/Emotiv Development Kit_v1.0.0.3-PREMIUM</em> to find the SDK.
+ * If you want to modify this path, modify the file <em>cmake-modules/FindThirdPartyEmotivAPI.cmake</em>.
+ *
+ * Please note that you can't use both Emotiv Control Panel and the OpenViBE driver at the same time.
  *
  * \section Doc_FAQ_UnstableDrivers I want to use "partially supported" acquisition drivers but they do not appear in the acquisition server driver combo box.
  *
@@ -411,7 +422,7 @@ Designer_ShowUnstable = true
  * \section Doc_FAQ_FAQCount How many questions does this FAQ contains ?
  *
  * You will be asked this question when you request support from the development team, in order to make sure you actually read this FAQ! (the answer to
- * this question currently is 27!)
+ * this question currently is 28!)
  *
  */
 /*
