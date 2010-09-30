@@ -1,3 +1,6 @@
+	SetCompressor /FINAL /SOLID lzma
+	SetCompressorDictSize 16
+
 	!include "MUI.nsh"
 	!include "zipdll.nsh"
 
@@ -410,7 +413,7 @@ Section "DirectX"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "$SYSDIR\d3dx9_38.dll" no_need_to_install_directx
+	IfFileExists "$SYSDIR\d3dx9_42.dll" no_need_to_install_directx
 	IfFileExists "arch\openvibe-directx.exe" no_need_to_download_directx
 	NSISdl::download "http://www.microsoft.com/downloads/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=04ac064b-00d1-474e-b7b1-442d8712d553&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fB%2f7%2f9%2fB79FC9D7-47B8-48B7-A75E-101DEBEB5AB4%2fdirectx_aug2009_redist.exe" "arch\openvibe-directx.exe"
 	Pop $R0 ; Get the return value
