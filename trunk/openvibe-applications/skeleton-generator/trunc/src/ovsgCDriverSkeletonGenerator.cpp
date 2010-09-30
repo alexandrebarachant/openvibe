@@ -236,10 +236,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
 
 		// execute the sed command !
-//#ifdef OV_OS_Windows
-//		l_sDriverHSkel = "driver.h-skeleton"; // we already "cd" in the shared directory
-//#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverHSkel) + CString("\" > ") + l_sDest;
+		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverHSkel) + CString("\" > \"") + l_sDest + CString("\"");
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
 
@@ -286,7 +283,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 //#ifdef OV_OS_Windows
 //		l_sDriverCppSkel = "driver.cpp-skeleton";
 //#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverCppSkel) + CString("\" > ") + l_sDest;
+		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverCppSkel) + CString("\" > \"") + l_sDest + CString("\"");
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
 
@@ -336,7 +333,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 //#ifdef OV_OS_Windows
 //		l_sConfigurationHSkel = "configuration.h-skeleton";
 //#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationHSkel) + CString("\" > ") + l_sDest;
+		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationHSkel) + CString("\" > \"") + l_sDest + CString("\"");
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
 
@@ -381,7 +378,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 //#ifdef OV_OS_Windows
 //		l_sConfigurationCppSkel = "configuration.cpp-skeleton";
 //#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationCppSkel) + CString("\" > ") + l_sDest;
+		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationCppSkel) + + CString("\" > \"") + l_sDest + CString("\"");
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
 
@@ -434,7 +431,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 //#ifdef OV_OS_Windows
 //		l_sInterfaceUISkel = "interface.ui-skeleton";
 //#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sInterfaceUISkel) + CString("\" > ") + l_sDest;
+		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sInterfaceUISkel) + CString("\" > \"") + l_sDest + CString("\"");
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
 
@@ -479,7 +476,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 //#ifdef OV_OS_Windows
 //		l_sReadMeDriverTxtSkel = "readme-driver.txt-skeleton";
 //#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sReadMeDriverTxtSkel) + CString("\" > ") + l_sDest;
+		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sReadMeDriverTxtSkel) + CString("\" > \"") + l_sDest + CString("\"");
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Invoking [" << l_sCommandSed << "]...\n";
 
