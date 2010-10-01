@@ -132,8 +132,6 @@
  * Here is a non exhaustive list of §OpenViBE§ functionalities :
 \htmlonly
 <!-- features start -->
-\endhtmlonly
-\htmlonly
 <table class='faq-os' cellpading=0 cellspacing=0>
 <tr> <td colspan=2 bgcolor=black style="color: white"><center>The following functionnalities are already integrated</center></td> </tr>
 <tr bgcolor=lightgrey> <th>Category</th> <th>Box</th> </tr>
@@ -166,7 +164,6 @@
 <tr> <td rowspan=2>Connection to external software</td> <td>VRPN integration (Virtual Reality Peripheral Network)</td> </tr>
 <tr>                                                    <td>TurboFieldTrip integration (r/w, in progress)</td> </tr>
 </table>
-\htmlonly
 <!-- features stop -->
 \endhtmlonly
  *
