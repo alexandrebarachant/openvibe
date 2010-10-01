@@ -279,6 +279,10 @@ boolean CDriverBrainProductsVAmp::loop(void)
 
 				l_i32ReceivedSamples++;
 			}
+			else if(l_i32ReturnLength==0)
+			{
+				System::Time::sleep(2);
+			}
 #if DEBUG
 			if(l_i32ReturnLength < 0)
 			{
