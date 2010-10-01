@@ -85,10 +85,6 @@ boolean CGDFFileReader::initialize()
 {
 	const IBox* l_pBoxContext=getBoxAlgorithmContext()->getStaticBoxContext();
 
-	m_oFile.seekg(0, ios::end);
-	m_ui64FileSize = (uint64)m_oFile.tellg();
-	m_oFile.seekg(0, ios::beg);
-
 	// Gets the size of output buffers
 	CString l_sParam;
 	l_pBoxContext->getSettingValue(1, l_sParam);
@@ -118,15 +114,19 @@ boolean CGDFFileReader::initialize()
 	l_pBoxContext->getSettingValue(0, m_sFileName);
 
 	//opens the gdf file
-	if(m_sFileName)
+	if(m_sFileName != CString(""))
 	{
-		m_oFile.open(m_sFileName, ios::binary);
+		m_oFile.open(m_sFileName.toASCIIString(), ios::binary);
 		if(!m_oFile.good())
 		{
 			this->getLogManager() << LogLevel_ImportantWarning << "Could not open file [" << m_sFileName << "]\n";
 			return false;
 		}
 	}
+
+	m_oFile.seekg(0, ios::end);
+	m_ui64FileSize = (uint64)m_oFile.tellg();
+	m_oFile.seekg(0, ios::beg);
 
 	//reads the gdf headers and sends the corresponding buffers
 	return readFileHeader();
