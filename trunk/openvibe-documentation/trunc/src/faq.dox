@@ -118,7 +118,6 @@
 <tr>                                                       <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 9</td>              <td>GCC 4.3.0</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr>                                                       <td>Gentoo</td>                <td>GCC ?</td>                              <td bgcolor=red>Dependencies installation fails</td> <td bgcolor=red>No</td> </tr>
 <tr>                                                       <td>Arch 2009.08</td>          <td>GCC ?</td>                              <td bgcolor=orange>Needs some tuning on dependencies installation</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Gentoo</td>                <td>GCC ?</td>                              <td bgcolor=orange>Dependencies installed manually with native packages</td> <td bgcolor=orange>No</td> </tr>
 </table>
