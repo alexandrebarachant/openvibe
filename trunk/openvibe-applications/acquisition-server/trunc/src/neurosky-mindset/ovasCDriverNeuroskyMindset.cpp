@@ -4,6 +4,7 @@
 #include "ovasCConfigurationNeuroskyMindset.h"
 
 #include <sstream>
+#include <system/Time.h>
 
 #include <thinkgear.h>
 
@@ -341,6 +342,10 @@ boolean CDriverNeuroskyMindset::loop(void)
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_GAMMA2);
 					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
 				}
+			}
+			else
+			{
+				System::Time::sleep(2);
 			}
 		}
 
