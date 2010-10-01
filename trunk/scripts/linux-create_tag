@@ -1,7 +1,7 @@
 #!/bin/bash
 
 version_major=0
-version_minor=7
+version_minor=8
 version_patch=0
 
 projects="
@@ -15,7 +15,7 @@ openvibe-modules/stream
 openvibe-modules/xml
 openvibe-modules/automaton
 openvibe-toolkit
-openvibe-kernel-omk
+openvibe-kernel
 openvibe-plugins/acquisition
 openvibe-plugins/classification
 openvibe-plugins/classification-gpl
@@ -33,10 +33,11 @@ openvibe-plugins/vrpn
 openvibe-applications/designer
 openvibe-applications/acquisition-server
 openvibe-applications/plugin-inspector
+openvibe-applications/vr-demo
+openvibe-applications/vrpn-simulator
+openvibe-applications/skeleton-generator
 openvibe-scenarios
 openvibe-documentation
-openvibe-applications/vrpn-simulator
-openvibe-applications/vr-demo
 "
 
 for project in $projects ; do
