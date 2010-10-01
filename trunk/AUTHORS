@@ -17,7 +17,8 @@ Bruno Renier (bruno.renier@irisa.fr)
 
 Chris Veigl from University of Applied Sciences Technikum Wien contributed the Modular EEG P2 driver
 Lucie Daubigney from Supelec Metz contributed the g.Mobilab+ driver
-Matthieu Goyat from INP Grenoble contributed the Univariate Statisctics box
+Matthieu Goyat from INP Grenoble contributed the Univariate Statisctics box and proposed a windows port of the Sound Player box
+Guillaume Lio from INP Grenoble contributed the Signal Merger box
 
 |End.of.file|
 
