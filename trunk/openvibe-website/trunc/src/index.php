@@ -254,7 +254,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li> + Matthieu Goyat and Guillaume Lio contributed a box to join multiple signal streams in a single stream</li>
 			<li> + Matthieu Goyat contributed an update to the Sound Player box to make it work on Windows</li>
 			<li> + Yann Renard contributed a Brainamp Series driver using Brain Products low level API</li>
-			<li> + We added a driver for the Emotiv EPOC - see later note for using this driver</li>
+			<li> + We added a driver for the Emotiv EPOC</li>
 			<li> + We implemented impedance check on the TMSi Refa driver</li>
 			<li> + We updated the Brain Products VAmp driver to support FirstAmp8</li>
 			<li> + We multithreaded the acquisition server for better performance and synchronization</li>
@@ -283,6 +283,9 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			<li> + Sample scenarios and VR demos should unable the use of SSVEP</li>
 			<li> + Visual C++ Express 2010 will definitely be supported :)</li>
 		</ul>
+		<p><u>Note</u>: due to licence limitations, the Emotiv EPOC driver is not included in the
+		pre-compiled package for Windows. See <a href=http://openvibe.inria.fr/documentation/0.8.0/Doc_FAQ.html#Doc_FAQ_Emotiv>this FAQ entry</a>
+		for details about how to build this driver.</p>
 
 		<h2>New release of OpenViBE 0.7.0 is now available<br><span style="font-size:x-small">2010/07/08</span></h2>
 
