@@ -18,38 +18,38 @@ gboolean idle_check_service(gpointer pData)
 
 	SC_HANDLE l_hSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	SC_HANDLE l_hService = NULL;
-	if (l_hSCM == NULL || l_hSCM == INVALID_HANDLE_VALUE)
+	if (l_hSCM != NULL && l_hSCM != INVALID_HANDLE_VALUE)
 	{
-		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),false);
-		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),false);
-		gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")),"Service Manager not Available");
-		gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_DIALOG_ERROR,GTK_ICON_SIZE_BUTTON);
-		return false;
-	}
-
-	l_hService = OpenService(l_hSCM, "VampService", SERVICE_ALL_ACCESS);
-	if (l_hService != NULL)
-	{
-		SERVICE_STATUS l_ssStatus;
-		QueryServiceStatus(l_hService, &l_ssStatus);
-
-		if (l_ssStatus.dwCurrentState == SERVICE_RUNNING)
+		l_hService = OpenService(l_hSCM, "VampService", SERVICE_ALL_ACCESS);
+		if (l_hService != NULL)
 		{
-			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),false);
-			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),true);
-			gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")),"VampService is Enabled");
-			gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_YES,GTK_ICON_SIZE_BUTTON);
-		}
-		else
-		{
-			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),true);
-			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),false);
-			gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")),"VampService is Disabled");
-			gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_NO,GTK_ICON_SIZE_BUTTON);
+			SERVICE_STATUS l_ssStatus;
+			QueryServiceStatus(l_hService, &l_ssStatus);
+
+			if (l_ssStatus.dwCurrentState == SERVICE_RUNNING)
+			{
+				gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),false);
+				gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),true);
+				gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")),"VampService is Enabled");
+				gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_YES,GTK_ICON_SIZE_BUTTON);
+				return true;
+			}
+			else
+			{
+				gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),true);
+				gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),false);
+				gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")),"VampService is Disabled");
+				gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_NO,GTK_ICON_SIZE_BUTTON);
+				return true;
+			}
 		}
 	}
 
-	return true;
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_start_service")),false);
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pInterface, "button_stop_service")),false);
+	gtk_label_set(GTK_LABEL(gtk_builder_get_object(l_pInterface, "label_service")), (l_hSCM!=NULL && l_hSCM!=INVALID_HANDLE_VALUE)?"VampService has not been Detected":"Service Manager not Available (you must be administrator)");
+	gtk_image_set_from_stock(GTK_IMAGE(gtk_builder_get_object(l_pInterface, "image_service")),GTK_STOCK_DIALOG_ERROR,GTK_ICON_SIZE_BUTTON);
+	return false;
 }
 //____________________________________________________________________________________
 //
