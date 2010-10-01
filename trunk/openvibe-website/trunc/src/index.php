@@ -246,6 +246,79 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<h1>News</h1>
 
+		<h2>New release of OpenViBE 0.8.0 is now available<br><span style="font-size:x-small">2010/10/01</span></h2>
+
+		<p>New release of OpenViBE 0.8.0 "Autumn edition" is now available for download at the <a href=http://openvibe.inria.fr/?q=download>download</a> page.</p>
+		<p>In this new release, you will find the following modifications (+ for adds, * for modifications, - for removes) :</p>
+		<ul>
+			<li> + Matthieu Goyat and Guillaume Lio contributed a box to join multiple signal streams in a single stream</li>
+			<li> + Matthieu Goyat contributed an update to the Sound Player box to make it work on Windows</li>
+			<li> + Yann Renard contributed a Brainamp Series driver using Brain Products low level API</li>
+			<li> + We added a driver for the Emotiv EPOC - see later note for using this driver</li>
+			<li> + We implemented impedance check on the TMSi Refa driver</li>
+			<li> + We updated the Brain Products VAmp driver to support FirstAmp8</li>
+			<li> + We multithreaded the acquisition server for better performance and synchronization</li>
+			<li> + We significantly enhanced drift management in the acquisition server</li>
+			<li> + We added a driver seketon generator for driver developers</li>
+			<li> + We restored the handball VR application for interaction from the motor imagery BCI</li>
+			<li> + We added a box to compute the power of a spectrum frequency band</li>
+			<li> + We added a box to rename signal channels</li>
+			<li> + We added a SVM classifier (based on libsvm)</li>
+			<li> * We updated the ModularEEG driver</li>
+			<li> * We updated the temporal filter box to correct errors - should be very close to MATLAB now</li>
+			<li> * We moved from libglade to gtk_builder allowing upgrading GTK</li>
+			<li> * We updated windows dependencies to it++ 4.0.7, vrpn 7.26, boost 1.42, cmake 2.8.2, gtk 2.16.6</li>
+			<li> * We updated the online documentation and tutorials</li>
+			<li> * We updated many documentation pages</li>
+			<li> * We fixed lots of bugs !</li>
+		</ul>
+		<p>We want to thank Matthieu Goyat and Guillaule Lui for their contributions.</p>
+		<p>We also want to thank again all the forum and bug tracker participants who help in making the software better every day.</p>
+		<p>Feel free to join us and to <a href=?q=contributions>contribute</a> as Matthieu, Guillaume and others are doing... !</p>
+		<br>
+		<p>Here is a snapshot of what we are currently doing and what you can expect from the next release :</p>
+		<ul>
+			<li> + An updated/stable Brain Products driver through Vision Recorder should be available</li>
+			<li> + An EGI acquisition driver through AmpServer Pro should be available</li>
+			<li> + Sample scenarios and VR demos should unable the use of SSVEP</li>
+			<li> + Visual C++ Express 2010 will definitely be supported :)</li>
+		</ul>
+
+		<h2>New release of OpenViBE 0.7.0 is now available<br><span style="font-size:x-small">2010/07/08</span></h2>
+
+		<p>New release of OpenViBE 0.7.0 "Summer edition" is now available for download at the <a href=http://openvibe.inria.fr/?q=download>download</a> page.</p>
+		<p>In this new release, you will find the following modifications (+ for adds, * for modifications, - for removes) :</p>
+		<ul>
+			<li> + Matthieu Goyat contributed the Univariate Statistics box</li>
+			<li> + We added a new driver : Neurosky Mindset</li>
+			<li> + We added the possibility to comment scenarios in the designer</li>
+			<li> + We added some control over the player execution from the boxes</li>
+			<li> + We added a box that is able to control the player execution</li>
+			<li> + We added more configuration possibilities with the configuration file tokens</li>
+			<li> + We added many small "user oriented" features in the designer such as left/right scroll with mouse wheel and better overview of renamed boxes</li>
+			<li> + We added a lot of great features to the Simple DSP box - see documentation and sample scenarios</li>
+			<li> * The acquisition server is now smarter on CPU use</li>
+			<li> * We reviewed and commented all the box-tutorials and xDAWN p300 speller / motor imagery scenarios</li>
+			<li> * We alphabetically sorted the stimulations for quicker configuration of the boxes</li>
+			<li> * We restored automatic filename extension/filtering when loading/saving a scenario</li>
+			<li> * We corrected a bug on the k-fold test in the classifier trainer</li>
+			<li> * We updated the online documentation and tutorials</li>
+			<li> * We updated many documentation pages</li>
+			<li> * We fixed lots of bugs !</li>
+		</ul>
+		<p>We want to thank Matthieu Goyat for his contribution to the Univariate Statistics box.</p>
+		<p>We also want to thank all the forum and bug tracker participants who help in making the software better every day.</p>
+		<p>Feel free to join us and to <a href=?q=contributions>contribute</a> as Matthieu and others are doing... !</p>
+		<br>
+		<p>Here is a snapshot of what we are currently doing and what you can expect from the next release :</p>
+		<ul>
+			<li> + An EGI acquisition driver</li>
+			<li> + More tools dedicated to plugins developpers (base classes, code generators etc...)</li>
+			<li> + More tools dedicated to authors / designer users</li>
+			<li> + Hopefully, we should support Visual C++ express 2010 and Windows 7</li>
+			<li>...</li>
+		</ul>
+
 		<h2>OpenViBE Tutorial Slides<br><span style="font-size:x-small">2010/06/07</span></h2>
 
 		<p>We are back from the <a href=http://bcimeeting.org/2010>BCI Meeting</a> and really enjoyed the event. Attenders had the opportunity to come to the OpenViBE tutorial special session...</p>
@@ -715,12 +788,14 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Windows (32 bits)</h2>
 
 		<script language=javascript type='text/javascript'>
-			precompiled("OpenViBE 0.6.1", "pub/bin/win32/openvibe-0.6.1-svn2075-setup", "2010/05/20", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...<br><br><br><br><br>This is a bug fix release :<br><ul><li>Restores the TMSi driver</li><li>Restores the Micromed driver</li><li>Translates the Tie-Fighter demo in english</li></ul>", "openvibe-precompiled.png", 190);
-			precompiled("OpenViBE 0.6.0", "pub/bin/win32/openvibe-0.6.0-svn2044-setup", "2010/04/14", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+			precompiled("OpenViBE 0.8.0", "pub/bin/win32/openvibe-0.8.0-svn2427-setup", "2010/10/01", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 		</script>
 		<div id="win32-installer-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
-				precompiled("OpenViBE 0.5.0", "pub/bin/win32/openvibe-0.5.0-svn1827-setup", "2009/12/18", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
+				precompiled("OpenViBE 0.7.0", "pub/bin/win32/openvibe-0.7.0-svn2254-setup", "2010/07/08", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+				// precompiled("OpenViBE 0.6.1", "pub/bin/win32/openvibe-0.6.1-svn2075-setup", "2010/05/20", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...<br><br><br><br><br>This is a bug fix release :<br><ul><li>Restores the TMSi driver</li><li>Restores the Micromed driver</li><li>Translates the Tie-Fighter demo in english</li></ul>", "openvibe-precompiled.png", 190);
+				// precompiled("OpenViBE 0.6.0", "pub/bin/win32/openvibe-0.6.0-svn2044-setup", "2010/04/14", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+				// precompiled("OpenViBE 0.5.0", "pub/bin/win32/openvibe-0.5.0-svn1827-setup", "2009/12/18", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
 				// precompiled("OpenViBE 0.4.0", "pub/bin/win32/openvibe-0.4.0-svn1737-setup", "2009/10/23", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
 				// precompiled("OpenViBE 0.4.0 RC 4", "pub/bin/win32/openvibe-0.4.0-rc4-svn1651-setup", "2009/06/29", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
 				// precompiled("OpenViBE 0.4.0 RC 3", "pub/bin/win32/openvibe-0.4.0-rc3-setup", "2009/05/05", "Requires Windows 2000/XP/Vista<br>Includes the Acquisition Server, the Designer, some sample scenarios and data files...", "openvibe-precompiled.png");
@@ -760,11 +835,13 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>Stable code is distributed as compressed source archives :</p>
 
 		<script language=javascript type='text/javascript'>
-				archive("OpenViBE 0.6.0 (svn 2044)", "pub/src/openvibe-0.6.0-svn2044-src", "2010/04/14", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+			archive("OpenViBE 0.8.0 (svn 2427)", "pub/src/openvibe-0.8.0-svn2427-src", "2010/10/01", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 		</script>
 		<div id="src-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
-				archive("OpenViBE 0.5.0 (svn 1827)", "pub/src/openvibe-0.5.0-svn1827-src", "2009/12/18", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+				archive("OpenViBE 0.7.0 (svn 2254)", "pub/src/openvibe-0.7.0-svn2254-src", "2010/07/08", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+				// archive("OpenViBE 0.6.0 (svn 2044)", "pub/src/openvibe-0.6.0-svn2044-src", "2010/04/14", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+				// archive("OpenViBE 0.5.0 (svn 1827)", "pub/src/openvibe-0.5.0-svn1827-src", "2009/12/18", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 				// archive("OpenViBE 0.4.0 (svn 1737)", "pub/src/openvibe-0.4.0-svn1737-src", "2009/10/23", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 				// archive("OpenViBE 0.4.0 RC 4 (svn 1651)", "pub/src/openvibe-0.4.0-rc4-svn1651-src", "2009/06/29", "", "openvibe-sources.png");
 				// archive("OpenViBE 0.3.0", "pub/src/openvibe-0.3.0-src", "2007/10/17", "", "openvibe-sources.png");
@@ -784,6 +861,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>Alternatively, if you plan to directly contribute into the INRIA gForge and already have an account, you should use <i>subversion</i> over <i>ssh</i> :</p>
 		<p><div class="code">svn checkout ssh+svn://<b>accountname</b>@scm.gforge.inria.fr/svn/openvibe/trunk</div></p>
 
+<!--
 		<h1>Virtual Machine</h1>
 
 		<p><span style="font-weight: bold; color: red">WARNING:</span> The virtual machine is outdated ! We will update is as soon as possible.</p>
@@ -822,6 +900,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 			               "", "openvibe-virtualmachine.png");
 */
 		</script>
+-->
 
 	</div>
 
