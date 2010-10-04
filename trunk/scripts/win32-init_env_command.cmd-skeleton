@@ -146,9 +146,14 @@ REM ############################################################################
 SET VSTOOLS=
 SET VSCMake=
 
-if exist "%VS90COMNTOOLS%\vsvars32.bat" (
-	SET VSTOOLS=%VS90COMNTOOLS%\vsvars32.bat
+if exist "!VS90COMNTOOLS!\vsvars32.bat" (
+	SET VSTOOLS=!VS90COMNTOOLS!\vsvars32.bat
 	SET VSCMake=Visual Studio 9 2008
+)
+
+if exist "!VS100COMNTOOLS!\vsvars32.bat" (
+	SET VSTOOLS=!VS100COMNTOOLS!\vsvars32.bat
+	SET VSCMake=Visual Studio 10 2010
 )
 
 if exist "%VSTOOLS%" (
