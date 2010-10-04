@@ -76,339 +76,19 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "CMake"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-cmake-2.8.2-win32-x86.zip" no_need_to_download_cmake
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.8.2-win32-x86.zip "arch\openvibe-dependency-cmake-2.8.2-win32-x86.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_cmake:
-
-	IfFileExists "cmake" no_need_to_install_cmake
-	ZipDLL::extractall "arch\openvibe-dependency-cmake-2.8.2-win32-x86.zip" "cmake"
-
-no_need_to_install_cmake:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.8.2-win32-x86$\r$\n"
-	FileClose $0
-
+SectionGroup "!Compilation platform"
+Section "Visual C++ 2008" vs90
 SectionEnd
 
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "eXpat"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-expat-2.0.1.zip" no_need_to_download_expat
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/expat-2.0.1.zip "arch\openvibe-dependency-expat-2.0.1.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_expat:
-
-	IfFileExists "expat" no_need_to_install_expat
-	ZipDLL::extractall "arch\openvibe-dependency-expat-2.0.1.zip" "expat"
-
-no_need_to_install_expat:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_EXPAT=$INSTDIR\expat$\r$\n"
-	FileClose $0
-
+Section /o "Visual C++ 2010" vs100
 SectionEnd
+SectionGroupEnd
 
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
-Section "BOOST"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-boost-1.42.0.zip" no_need_to_download_boost
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.42.0.zip "arch\openvibe-dependency-boost-1.42.0.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_boost:
-
-	IfFileExists "boost" no_need_to_install_boost
-	ZipDLL::extractall "arch\openvibe-dependency-boost-1.42.0.zip" "boost"
-
-no_need_to_install_boost:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\boost$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "GTK+"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-gtk-2.16.6.zip" no_need_to_download_gtk
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.16.6.zip "arch\openvibe-dependency-gtk-2.16.6.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_gtk:
-
-	IfFileExists "GTK" no_need_to_install_gtk
-	ZipDLL::extractall "arch\openvibe-dependency-gtk-2.16.6.zip" "gtk"
-
-no_need_to_install_gtk:
-
-	FileOpen $0 "$INSTDIR\gtk\lib\pkgconfig\gtk+-win32-2.0.pc" w
-	FileWrite $0 "prefix=$INSTDIR\gtk$\r$\n"
-	FileWrite $0 "exec_prefix=$${prefix}$\r$\n"
-	FileWrite $0 "libdir=$${exec_prefix}/lib$\r$\n"
-	FileWrite $0 "includedir=$${prefix}/include$\r$\n"
-	FileWrite $0 "target=win32$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "Name: GTK+$\r$\n"
-	FileWrite $0 "Description: GTK+ Graphical UI Library ($${target} target)$\r$\n"
-	FileWrite $0 "Version: 2.16.6$\r$\n"
-	FileWrite $0 "Requires: gdk-$${target}-2.0 atk cairo gio-2.0$\r$\n"
-	FileWrite $0 "Libs: -L$${libdir} -lgtk-$${target}-2.0$\r$\n"
-	FileWrite $0 "Cflags: -I$${includedir}/gtk-2.0$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_GTK=$INSTDIR\gtk$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section /o "GTK+ themes"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-gtk-themes-2009.09.07.zip" no_need_to_download_gtk_themes
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-themes-2009.09.07.zip "arch\openvibe-dependency-gtk-themes-2009.09.07.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_gtk_themes:
-
-;	IfFileExists "GTK" no_need_to_install_gtk_themes
-	ZipDLL::extractall "arch\openvibe-dependency-gtk-themes-2009.09.07.zip" "gtk"
-
-;no_need_to_install_gtk_themes:
-
-	FileOpen $0 "$INSTDIR\gtk\etc\gtk-2.0\gtkrc" w
-	FileWrite $0 "gtk-theme-name = $\"Redmond$\"$\r$\n"
-	FileWrite $0 "style $\"user-font$\"$\r$\n"
-	FileWrite $0 "{$\r$\n"
-	FileWrite $0 "	font_name=$\"Sans 8$\"$\r$\n"
-	FileWrite $0 "}$\r$\n"
-	FileWrite $0 "widget_class $\"*$\" style $\"user-font$\"$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "IT++ for Visual C++ 2008"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-itpp-4.0.7-vs90.zip" no_need_to_download_itpp
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-vs90.zip "arch\openvibe-dependency-itpp-4.0.7-vs90.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_itpp:
-
-	IfFileExists "itpp" no_need_to_install_itpp
-	ZipDLL::extractall "arch\openvibe-dependency-itpp-4.0.7-vs90.zip" "itpp"
-
-no_need_to_install_itpp:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\itpp$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "Lua"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-lua-5.1.4-30.zip" no_need_to_download_lua
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/lua-5.1.4-30.zip "arch\openvibe-dependency-lua-5.1.4-30.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_lua:
-
-	IfFileExists "lua" no_need_to_install_lua
-	ZipDLL::extractall "arch\openvibe-dependency-lua-5.1.4-30.zip" "lua"
-
-no_need_to_install_lua:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_LUA=$INSTDIR\lua$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "Ogre3D for Visual C++ 2008" ogre_vc_2008
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip" no_need_to_download_ogre_vc2008
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.0-vc2008.zip "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_ogre_vc2008:
-
-	IfFileExists "ogre-vc2008" no_need_to_install_ogre_vc2008
-	ZipDLL::extractall "arch\openvibe-dependency-ogre-1.7.0-vc2008.zip" "ogre-vc2008"
-
-no_need_to_install_ogre_vc2008:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre-vc2008$\r$\n"
-	FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre-vc2008$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "CEGUI for Visual C++ 2008" cegui_vc_2008
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip" no_need_to_download_cegui_vc2008
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.1-vc2008.zip "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_cegui_vc2008:
-
-	IfFileExists "cegui-vc2008" no_need_to_install_cegui_vc2008
-	ZipDLL::extractall "arch\openvibe-dependency-cegui-0.7.1-vc2008.zip" "cegui-vc2008"
-
-no_need_to_install_cegui_vc2008:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\cegui-vc2008$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\cegui-vc2008\resources.cfg" w
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\configs$\r$\n"
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\fonts$\r$\n"
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\imagesets$\r$\n"
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\layouts$\r$\n"
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\looknfeel$\r$\n"
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\lua_scripts$\r$\n"
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\schemes$\r$\n"
-	FileWrite $0 "FileSystem=$INSTDIR\cegui-vc2008\datafiles\xml_schemes$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "VRPN for Visual C++ 2008"
-
-	SetOutPath "$INSTDIR"
-	CreateDirectory "$INSTDIR\arch"
-
-	IfFileExists "arch\openvibe-dependency-vrpn-7.26-vs90.zip" no_need_to_download_vrpn
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-vs90.zip "arch\openvibe-dependency-vrpn-7.26-vs90.zip"
-	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-
-no_need_to_download_vrpn:
-
-	IfFileExists "vrpn" no_need_to_install_vrpn
-	ZipDLL::extractall "arch\openvibe-dependency-vrpn-7.26-vs90.zip" "vrpn"
-
-no_need_to_install_vrpn:
-
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\vrpn$\r$\n"
-	FileWrite $0 "SET VRPNROOT=$INSTDIR\vrpn$\r$\n"
-	FileClose $0
-
-SectionEnd
-
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-;##########################################################################################################################################################
-
-Section "DirectX"
+Section "DirectX Runtime"
 
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
@@ -462,6 +142,347 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
+Section "CMake"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\cmake-2.8.2-win32-x86.zip" no_need_to_download_cmake
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.8.2-win32-x86.zip "arch\cmake-2.8.2-win32-x86.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_cmake:
+	ZipDLL::extractall "arch\cmake-2.8.2-win32-x86.zip" "cmake"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.8.2-win32-x86$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "eXpat"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\expat-2.0.1.zip" no_need_to_download_expat
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/expat-2.0.1.zip "arch\expat-2.0.1.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_expat:
+	ZipDLL::extractall "arch\expat-2.0.1.zip" "expat"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_EXPAT=$INSTDIR\expat$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "BOOST"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\boost-1.42.0.zip" no_need_to_download_boost
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.42.0.zip "arch\boost-1.42.0.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_boost:
+	ZipDLL::extractall "arch\boost-1.42.0.zip" "boost"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\boost$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "GTK+"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\gtk-2.16.6-dev.zip" no_need_to_download_gtk_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.16.6-dev.zip "arch\gtk-2.16.6-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_gtk_dev:
+	ZipDLL::extractall "arch\gtk-2.16.6-dev.zip" "gtk"
+
+	IfFileExists "arch\gtk-2.16.6-runtime.zip" no_need_to_download_gtk_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.16.6-runtime.zip "arch\gtk-2.16.6-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_gtk_runtime:
+	ZipDLL::extractall "arch\gtk-2.16.6-runtime.zip" "gtk"
+
+	FileOpen $0 "$INSTDIR\gtk\lib\pkgconfig\gtk+-win32-2.0.pc" w
+	FileWrite $0 "prefix=$INSTDIR\gtk$\r$\n"
+	FileWrite $0 "exec_prefix=$${prefix}$\r$\n"
+	FileWrite $0 "libdir=$${exec_prefix}/lib$\r$\n"
+	FileWrite $0 "includedir=$${prefix}/include$\r$\n"
+	FileWrite $0 "target=win32$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "Name: GTK+$\r$\n"
+	FileWrite $0 "Description: GTK+ Graphical UI Library ($${target} target)$\r$\n"
+	FileWrite $0 "Version: 2.16.6$\r$\n"
+	FileWrite $0 "Requires: gdk-$${target}-2.0 atk cairo gio-2.0$\r$\n"
+	FileWrite $0 "Libs: -L$${libdir} -lgtk-$${target}-2.0$\r$\n"
+	FileWrite $0 "Cflags: -I$${includedir}/gtk-2.0$\r$\n"
+	FileClose $0
+
+	FileOpen $0 "$INSTDIR\gtk\lib\pkgconfig\gthread-2.0.pc" w
+	FileWrite $0 "prefix=$INSTDIR\gtk$\r$\n"
+	FileWrite $0 "exec_prefix=$${prefix}$\r$\n"
+	FileWrite $0 "libdir=$${exec_prefix}/lib$\r$\n"
+	FileWrite $0 "includedir=$${prefix}/include$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "Name: GThread$\r$\n"
+	FileWrite $0 "Description: Thread support for GLib$\r$\n"
+	FileWrite $0 "Requires: glib-2.0$\r$\n"
+	FileWrite $0 "Version: 2.22.4$\r$\n"
+	FileWrite $0 "Libs: -L$${libdir} -lgthread-2.0$\r$\n"
+	FileWrite $0 "Cflags:$\r$\n"
+	FileClose $0
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_GTK=$INSTDIR\gtk$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section /o "GTK+ themes"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\gtk-themes-2009.09.07.zip" no_need_to_download_gtk_themes
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-themes-2009.09.07.zip "arch\gtk-themes-2009.09.07.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_gtk_themes:
+	ZipDLL::extractall "arch\gtk-themes-2009.09.07.zip" "gtk"
+
+	FileOpen $0 "$INSTDIR\gtk\etc\gtk-2.0\gtkrc" w
+	FileWrite $0 "gtk-theme-name = $\"Redmond$\"$\r$\n"
+	FileWrite $0 "style $\"user-font$\"$\r$\n"
+	FileWrite $0 "{$\r$\n"
+	FileWrite $0 "	font_name=$\"Sans 8$\"$\r$\n"
+	FileWrite $0 "}$\r$\n"
+	FileWrite $0 "widget_class $\"*$\" style $\"user-font$\"$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "IT++"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\itpp-4.0.7-vs90-dev.zip" no_need_to_download_itpp_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-vs90-dev.zip "arch\itpp-4.0.7-vs90-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_itpp_dev:
+	ZipDLL::extractall "arch\itpp-4.0.7-vs90-dev.zip" "itpp"
+
+	IfFileExists "arch\itpp-4.0.7-runtime.zip" no_need_to_download_itpp_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-runtime.zip "arch\itpp-4.0.7-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_itpp_runtime:
+	ZipDLL::extractall "arch\itpp-4.0.7-runtime.zip" "itpp"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\itpp$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Lua"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\lua-5.1.4-30.zip" no_need_to_download_lua
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/lua-5.1.4-30.zip "arch\lua-5.1.4-30.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_lua:
+	ZipDLL::extractall "arch\lua-5.1.4-30.zip" "lua"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_LUA=$INSTDIR\lua$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Ogre3D"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\ogre-1.7.1-vs90-dev.zip" no_need_to_download_ogre_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-vs90-dev.zip "arch\ogre-1.7.1-vs90-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_ogre_dev:
+	ZipDLL::extractall "arch\ogre-1.7.1-vs90-dev.zip" "ogre"
+
+	IfFileExists "arch\ogre-1.7.1-vs90-runtime.zip" no_need_to_download_ogre_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-vs90-runtime.zip "arch\ogre-1.7.1-vs90-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_ogre_runtime:
+	ZipDLL::extractall "arch\ogre-1.7.1-vs90-runtime.zip" "ogre"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre$\r$\n"
+	FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "CEGUI"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\cegui-0.7.2-vs90-dev.zip" no_need_to_download_cegui_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.2-vs90-dev.zip "arch\cegui-0.7.2-vs90-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_cegui_dev:
+	ZipDLL::extractall "arch\cegui-0.7.2-vs90-dev.zip" "cegui"
+
+	IfFileExists "arch\cegui-0.7.2-vs90-runtime.zip" no_need_to_download_cegui_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.2-vs90-runtime.zip "arch\cegui-0.7.2-vs90-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_cegui_runtime:
+	ZipDLL::extractall "arch\cegui-0.7.2-vs90-runtime.zip" "cegui"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\cegui$\r$\n"
+	FileClose $0
+
+	FileOpen $0 "$INSTDIR\cegui\resources.cfg" w
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\configs$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\fonts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\imagesets$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\layouts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\looknfeel$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\lua_scripts$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\schemes$\r$\n"
+	FileWrite $0 "FileSystem=$INSTDIR\cegui\datafiles\xml_schemes$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "VRPN"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\vrpn-7.26-vs90-dev.zip" no_need_to_download_vrpn_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-vs90-dev.zip "arch\vrpn-7.26-vs90-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_vrpn_dev:
+	ZipDLL::extractall "arch\vrpn-7.26-vs90-dev.zip" "vrpn"
+
+	IfFileExists "arch\vrpn-7.26-runtime.zip" no_need_to_download_vrpn_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-runtime.zip "arch\vrpn-7.26-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_vrpn_runtime:
+	ZipDLL::extractall "arch\vrpn-7.26-runtime.zip" "vrpn"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\vrpn$\r$\n"
+	FileWrite $0 "SET VRPNROOT=$INSTDIR\vrpn$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
 Section "Uninstall"
 
 	RMDir /r "$INSTDIR\gtk"
@@ -485,3 +506,14 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
+
+Function .onInit
+  StrCpy $9 ${vs90}
+FunctionEnd
+
+Function .onSelChange
+  !insertmacro StartRadioButtons $9
+    !insertmacro RadioButton ${vs90}
+    !insertmacro RadioButton ${vs100}
+  !insertmacro EndRadioButtons
+FunctionEnd
