@@ -32,6 +32,10 @@
 	Icon "${NSISDIR}\Contrib\Graphics\Icons\box-install.ico"
 	UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\box-uninstall.ico"
 
+;VS90/VS100 suffix
+
+	Var suffix
+
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
@@ -78,9 +82,11 @@ SectionEnd
 
 SectionGroup "!Compilation platform"
 Section "Visual C++ 2008" vs90
+	StrCpy $suffix "vs90"
 SectionEnd
 
 Section /o "Visual C++ 2010" vs100
+	StrCpy $suffix "vs100"
 SectionEnd
 SectionGroupEnd
 
@@ -314,14 +320,14 @@ Section "IT++"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\itpp-4.0.7-vs90-dev.zip" no_need_to_download_itpp_dev
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-vs90-dev.zip "arch\itpp-4.0.7-vs90-dev.zip"
+	IfFileExists "arch\itpp-4.0.7-$suffix-dev.zip" no_need_to_download_itpp_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-$suffix-dev.zip "arch\itpp-4.0.7-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_itpp_dev:
-	ZipDLL::extractall "arch\itpp-4.0.7-vs90-dev.zip" "itpp"
+	ZipDLL::extractall "arch\itpp-4.0.7-$suffix-dev.zip" "itpp"
 
 	IfFileExists "arch\itpp-4.0.7-runtime.zip" no_need_to_download_itpp_runtime
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-runtime.zip "arch\itpp-4.0.7-runtime.zip"
@@ -373,23 +379,23 @@ Section "Ogre3D"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\ogre-1.7.1-vs90-dev.zip" no_need_to_download_ogre_dev
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-vs90-dev.zip "arch\ogre-1.7.1-vs90-dev.zip"
+	IfFileExists "arch\ogre-1.7.1-$suffix-dev.zip" no_need_to_download_ogre_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-$suffix-dev.zip "arch\ogre-1.7.1-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_ogre_dev:
-	ZipDLL::extractall "arch\ogre-1.7.1-vs90-dev.zip" "ogre"
+	ZipDLL::extractall "arch\ogre-1.7.1-$suffix-dev.zip" "ogre"
 
-	IfFileExists "arch\ogre-1.7.1-vs90-runtime.zip" no_need_to_download_ogre_runtime
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-vs90-runtime.zip "arch\ogre-1.7.1-vs90-runtime.zip"
+	IfFileExists "arch\ogre-1.7.1-$suffix-runtime.zip" no_need_to_download_ogre_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-$suffix-runtime.zip "arch\ogre-1.7.1-$suffix-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_ogre_runtime:
-	ZipDLL::extractall "arch\ogre-1.7.1-vs90-runtime.zip" "ogre"
+	ZipDLL::extractall "arch\ogre-1.7.1-$suffix-runtime.zip" "ogre"
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
@@ -408,23 +414,23 @@ Section "CEGUI"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\cegui-0.7.2-vs90-dev.zip" no_need_to_download_cegui_dev
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.2-vs90-dev.zip "arch\cegui-0.7.2-vs90-dev.zip"
+	IfFileExists "arch\cegui-0.7.2-$suffix-dev.zip" no_need_to_download_cegui_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.2-$suffix-dev.zip "arch\cegui-0.7.2-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_cegui_dev:
-	ZipDLL::extractall "arch\cegui-0.7.2-vs90-dev.zip" "cegui"
+	ZipDLL::extractall "arch\cegui-0.7.2-$suffix-dev.zip" "cegui"
 
-	IfFileExists "arch\cegui-0.7.2-vs90-runtime.zip" no_need_to_download_cegui_runtime
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.2-vs90-runtime.zip "arch\cegui-0.7.2-vs90-runtime.zip"
+	IfFileExists "arch\cegui-0.7.2-$suffix-runtime.zip" no_need_to_download_cegui_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.2-$suffix-runtime.zip "arch\cegui-0.7.2-$suffix-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_cegui_runtime:
-	ZipDLL::extractall "arch\cegui-0.7.2-vs90-runtime.zip" "cegui"
+	ZipDLL::extractall "arch\cegui-0.7.2-$suffix-runtime.zip" "cegui"
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
@@ -453,14 +459,14 @@ Section "VRPN"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\vrpn-7.26-vs90-dev.zip" no_need_to_download_vrpn_dev
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-vs90-dev.zip "arch\vrpn-7.26-vs90-dev.zip"
+	IfFileExists "arch\vrpn-7.26-$suffix-dev.zip" no_need_to_download_vrpn_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-$suffix-dev.zip "arch\vrpn-7.26-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_vrpn_dev:
-	ZipDLL::extractall "arch\vrpn-7.26-vs90-dev.zip" "vrpn"
+	ZipDLL::extractall "arch\vrpn-7.26-$suffix-dev.zip" "vrpn"
 
 	IfFileExists "arch\vrpn-7.26-runtime.zip" no_need_to_download_vrpn_runtime
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-runtime.zip "arch\vrpn-7.26-runtime.zip"
