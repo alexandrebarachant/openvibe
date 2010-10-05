@@ -45,7 +45,7 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	::GtkWidget * l_pEntryDriverName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_driver_name"));
 	m_sDriverName = gtk_entry_get_text(GTK_ENTRY(l_pEntryDriverName));
-	const boost::regex l_RegExpDriverName("([a-z]|[A-Z]|[1-9])+([a-z]|[A-Z]|[1-9]|[ \t\r\n]|[\\.-_\\(\\)])*",boost::regex::perl);
+	const boost::regex l_RegExpDriverName("([a-z]|[A-Z]|[1-9])+([a-z]|[A-Z]|[0-9]|[ \t\r\n]|[\\.-_\\(\\)])*",boost::regex::perl);
 	if(boost::regex_match(string(m_sDriverName),l_RegExpDriverName) == false)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- Driver Name: INVALID\n";
@@ -60,7 +60,7 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	::GtkWidget * l_pEntryClassName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_class_name"));
 	m_sClassName = gtk_entry_get_text(GTK_ENTRY(l_pEntryClassName));
-	const boost::regex l_RegExpClassName("([a-z]|[A-Z]|[1-9])+",boost::regex::perl);
+	const boost::regex l_RegExpClassName("([a-z]|[A-Z]|[0-9])+",boost::regex::perl);
 	if(boost::regex_match(string(m_sClassName),l_RegExpClassName) == false)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- Class Name: INVALID\n";
@@ -518,7 +518,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	CString l_sBrowserCmd = l_sBrowser + " \"" +  m_sTargetDirectory+"\"";
 
 #ifdef OV_OS_Windows
-	l_sBrowserCmd =  l_sBrowser + "file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
+	l_sBrowserCmd =  l_sBrowser + " file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
 #endif
 
 	if(system((const char *)l_sBrowserCmd))
