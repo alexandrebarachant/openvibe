@@ -39,26 +39,16 @@ using namespace OpenViBE::Plugins;
 namespace
 {
 	template <typename T>
-	T& _my_get_(list<T>& rList, uint32 ui32Index)
+	T& _my_get_(deque<T>& rList, uint32 ui32Index)
 	{
-		uint32 i;
-		typename list<T>::iterator it=rList.begin();
-		for(i=0; i<ui32Index; i++)
-		{
-			++it;
-		}
+		typename deque<T>::iterator it=rList.begin()+ui32Index;
 		return *it;
 	}
 
 	template <typename T>
-	const T& _my_get_(const list<T>& rList, uint32 ui32Index)
+	const T& _my_get_(const deque<T>& rList, uint32 ui32Index)
 	{
-		uint32 i;
-		typename list<T>::const_iterator it=rList.begin();
-		for(i=0; i<ui32Index; i++)
-		{
-			++it;
-		}
+		typename deque<T>::const_iterator it=rList.begin()+ui32Index;
 		return *it;
 	}
 }
@@ -946,7 +936,7 @@ boolean CSimulatedBox::process(void)
 			uint32 l_ui32TargetBoxInputIndex=l_pLink->getTargetBoxInputIndex();
 
 			uint32 l_ui32SourceOutputIndex=l_pLink->getSourceBoxOutputIndex();
-			list < CChunk >::iterator i=m_vOutput[l_ui32SourceOutputIndex].begin();
+			deque < CChunk >::iterator i=m_vOutput[l_ui32SourceOutputIndex].begin();
 			while(i!=m_vOutput[l_ui32SourceOutputIndex].end())
 			{
 				m_rScheduler.sendInput(*i, l_oTargetBoxIdentifier, l_ui32TargetBoxInputIndex);
@@ -957,8 +947,8 @@ boolean CSimulatedBox::process(void)
 	}
 
 	// iterators for input and output chunks
-	vector < list< CChunk > >::iterator i;
-	list < CChunk >::iterator j;
+	vector < deque< CChunk > >::iterator i;
+	deque < CChunk >::iterator j;
 	vector < CChunk >::iterator k;
 
 	// perform input cleaning

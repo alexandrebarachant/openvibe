@@ -9,7 +9,7 @@
 #include <system/CChrono.h>
 #include <vector>
 #include <string>
-#include <list>
+#include <deque>
 
 class COgreVisualisation;
 
@@ -321,8 +321,8 @@ namespace OpenViBE
 
 		public:
 
-			std::vector < std::list < OpenViBE::Kernel::CChunk > > m_vInput;
-			std::vector < std::list < OpenViBE::Kernel::CChunk > > m_vOutput;
+			std::vector < std::deque < OpenViBE::Kernel::CChunk > > m_vInput;
+			std::vector < std::deque < OpenViBE::Kernel::CChunk > > m_vOutput;
 			std::vector < OpenViBE::Kernel::CChunk > m_vCurrentOutput;
 		};
 	};
