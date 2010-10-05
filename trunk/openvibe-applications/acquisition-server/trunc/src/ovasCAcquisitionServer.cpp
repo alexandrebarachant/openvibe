@@ -894,7 +894,19 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 			}
 
 			m_vPendingBuffer.erase(m_vPendingBuffer.begin()+m_vPendingBuffer.size()-l_ui64SamplesToRemove, m_vPendingBuffer.begin()+m_vPendingBuffer.size());
+
+#if 0
 			OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, ((m_ui64SampleCount-l_ui64SamplesToRemove)<<32)/m_ui32SamplingFrequency, (m_ui64SampleCount<<32)/m_ui32SamplingFrequency);
+#else
+			uint64 l_ui64LastSampleDate=((m_ui64SampleCount-l_ui64SamplesToRemove)<<32)/m_ui32SamplingFrequency;
+			for(uint32 i=0; i<m_oPendingStimulationSet.getStimulationCount(); i++)
+			{
+				if(m_oPendingStimulationSet.getStimulationDate(i) > l_ui64LastSampleDate)
+				{
+					m_oPendingStimulationSet.setStimulationDate(i, l_ui64LastSampleDate);
+				}
+			}
+#endif
 
 			m_f64DriftSampleCount-=l_ui64SamplesToRemove;
 			m_i64DriftSampleCount-=l_ui64SamplesToRemove;
