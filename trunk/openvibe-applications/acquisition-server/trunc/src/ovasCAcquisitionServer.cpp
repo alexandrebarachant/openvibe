@@ -243,6 +243,8 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	m_ui64StartedDriverSleepDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_StartedDriverSleepDuration}", 2);
 	m_ui64StoppedDriverSleepDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_StoppedDriverSleepDuration}", 100);
 	m_ui64DriverTimeoutDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriverTimeoutDuration}", 5000);
+
+	m_i64DriftSampleCount=0;
 }
 
 CAcquisitionServer::~CAcquisitionServer(void)
@@ -307,6 +309,11 @@ IDriverContext& CAcquisitionServer::getDriverContext(void)
 uint32 CAcquisitionServer::getClientCount(void)
 {
 	return uint32(m_vConnection.size());
+}
+
+float64 CAcquisitionServer::getDrift(void)
+{
+	return m_f64DriftSampleCount*1000./m_ui32SamplingFrequency;
 }
 
 float64 CAcquisitionServer::getImpedance(const uint32 ui32ChannelIndex)
@@ -803,7 +810,8 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 			{
 				m_i64DriftSampleCount+=*j;
 			}
-			m_i64DriftSampleCount/=m_vJitterSampleCount.size();
+			m_f64DriftSampleCount=m_i64DriftSampleCount/float64(m_vJitterSampleCount.size());
+			m_i64DriftSampleCount/=int64(m_vJitterSampleCount.size());
 
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Acquisition monitoring [drift:" << m_i64DriftSampleCount << "][jitter:" << l_i64JitterSampleCount << "] samples.\n";
 		}
@@ -871,6 +879,7 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 			m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Incorrect, ((m_ui64SampleCount-1               ) << 32) / m_ui32SamplingFrequency, (i64SampleCount << 32) / m_ui32SamplingFrequency);
 			m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Correct,   ((m_ui64SampleCount-1+i64SampleCount) << 32) / m_ui32SamplingFrequency, 0);
 
+			m_f64DriftSampleCount+=i64SampleCount;
 			m_i64DriftSampleCount+=i64SampleCount;
 			m_ui64LastSampleCount=m_ui64SampleCount;
 			m_ui64SampleCount+=i64SampleCount;
@@ -887,6 +896,7 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 			m_vPendingBuffer.erase(m_vPendingBuffer.begin()+m_vPendingBuffer.size()-l_ui64SamplesToRemove, m_vPendingBuffer.begin()+m_vPendingBuffer.size());
 			OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, ((m_ui64SampleCount-l_ui64SamplesToRemove)<<32)/m_ui32SamplingFrequency, (m_ui64SampleCount<<32)/m_ui32SamplingFrequency);
 
+			m_f64DriftSampleCount-=l_ui64SamplesToRemove;
 			m_i64DriftSampleCount-=l_ui64SamplesToRemove;
 			m_ui64LastSampleCount=m_ui64SampleCount;
 			m_ui64SampleCount-=l_ui64SamplesToRemove;

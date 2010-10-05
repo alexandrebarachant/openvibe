@@ -298,6 +298,49 @@ void CAcquisitionServerGUI::setClientCount(uint32 ui32ClientCount)
 	::gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_connected_host_count")), l_sLabel);
 }
 
+void CAcquisitionServerGUI::setDrift(float64 f64Drift)
+{
+	float64 l_f64DriftToleranceDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriftToleranceDuration}", 5);
+	float64 l_f64DriftRatio=f64Drift/l_f64DriftToleranceDuration;
+	boolean l_bDriftWarning=false;
+	char l_sLabel[1024];
+
+	// std::cout << f64Drift << " " << l_f64DriftRatio << "\n";
+
+	if(l_f64DriftRatio<-1)
+	{
+		l_f64DriftRatio=-1;
+		l_bDriftWarning=true;
+	}
+
+	if(l_f64DriftRatio>1)
+	{
+		l_f64DriftRatio=1;
+		l_bDriftWarning=true;
+	}
+
+	if(l_f64DriftRatio<0)
+	{
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(gtk_builder_get_object(m_pBuilderInterface, "progressbar_drift_1")), -l_f64DriftRatio);
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(gtk_builder_get_object(m_pBuilderInterface, "progressbar_drift_2")), 0);
+	}
+	else
+	{
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(gtk_builder_get_object(m_pBuilderInterface, "progressbar_drift_1")), 0);
+		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(gtk_builder_get_object(m_pBuilderInterface, "progressbar_drift_2")), l_f64DriftRatio);
+	}
+
+	if(l_bDriftWarning)
+	{
+		::sprintf(l_sLabel, "<b>Device drift is too high</b> : %3.2lf ms\n<small>(tolerance is set to %3.2lf ms)</small>", f64Drift, l_f64DriftToleranceDuration);
+	}
+	else
+	{
+		::sprintf(l_sLabel, "Device drift : %3.2lf ms\n<small>(tolerance is set to %3.2lf ms)</small>", f64Drift, l_f64DriftToleranceDuration);
+	}
+	::gtk_label_set_markup(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_drift")), l_sLabel);
+}
+
 void CAcquisitionServerGUI::setImpedance(OpenViBE::uint32 ui32ChannelIndex, OpenViBE::float64 f64Impedance)
 {
 	if(m_pImpedanceWindow)

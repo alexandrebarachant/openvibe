@@ -31,12 +31,14 @@ namespace OpenViBEAcquisitionServer
 
 		void main(void)
 		{
+			OpenViBE::float64 l_f64LastDrift=-1;
 			OpenViBE::boolean l_bFinished=false;
 			while(!l_bFinished)
 			{
 				OpenViBE::boolean l_bShouldSleep=false;
 				OpenViBE::boolean l_bShouldDisconnect=false;
 				OpenViBE::uint32 i, l_ui32ClientCount;
+				OpenViBE::float64 l_f64Drift;
 
 				{
 					boost::mutex::scoped_lock m_oProtectionLock(m_rAcquisitionServer.m_oProtectionMutex);
@@ -44,6 +46,7 @@ namespace OpenViBEAcquisitionServer
 					m_oProtectionLock.unlock();
 
 					l_ui32ClientCount=m_rAcquisitionServer.getClientCount();
+					l_f64Drift=(m_ui32Status==Status_Started?m_rAcquisitionServer.getDrift():0);
 
 					switch(m_ui32Status)
 					{
@@ -96,6 +99,14 @@ namespace OpenViBEAcquisitionServer
 						}
 						gdk_threads_leave();
 						m_vImpedanceLast=m_vImpedance;
+					}
+
+					if(l_f64Drift!=l_f64LastDrift)
+					{
+						gdk_threads_enter();
+						m_rGUI.setDrift(l_f64Drift);
+						gdk_threads_leave();
+						l_f64LastDrift=l_f64Drift;
 					}
 
 					if(l_bShouldDisconnect)

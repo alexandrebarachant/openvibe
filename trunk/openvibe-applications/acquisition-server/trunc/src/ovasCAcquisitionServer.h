@@ -41,6 +41,7 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBEAcquisitionServer::IDriverContext& getDriverContext();
 
 		OpenViBE::uint32 getClientCount(void);
+		OpenViBE::float64 getDrift(void);
 		OpenViBE::float64 getImpedance(const OpenViBE::uint32 ui32ChannelIndex);
 
 		OpenViBE::boolean loop(void);
@@ -114,6 +115,7 @@ namespace OpenViBEAcquisitionServer
 
 		std::list < OpenViBE::int64 > m_vJitterSampleCount;
 		OpenViBE::uint64 m_ui64DriftToleranceDuration;
+		OpenViBE::float64 m_f64DriftSampleCount;
 		OpenViBE::int64 m_i64DriftSampleCount;
 		OpenViBE::int64 m_i64DriftToleranceSampleCount;
 		OpenViBE::int64 m_i64DriftCorrectionSampleCountAdded;
