@@ -116,6 +116,7 @@ echo call win32-init_env_command.cmd                         >> %target_dist%\te
 echo popd                                                    >> %target_dist%\test-acquisition-server.cmd
 echo cd bin                                                  >> %target_dist%\test-acquisition-server.cmd
 echo OpenViBE-acquisition-server-dynamic.exe %%1 %%2         >> %target_dist%\test-acquisition-server.cmd
+echo pause                                                   >> %target_dist%\test-acquisition-server.cmd
 
 echo @echo off                                               >  %target_dist%\test-designer.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-designer.cmd
@@ -123,6 +124,7 @@ echo call win32-init_env_command.cmd                         >> %target_dist%\te
 echo popd                                                    >> %target_dist%\test-designer.cmd
 echo cd bin                                                  >> %target_dist%\test-designer.cmd
 echo OpenViBE-designer-dynamic.exe                           >> %target_dist%\test-designer.cmd
+echo pause                                                   >> %target_dist%\test-designer.cmd
 
 echo @echo off                                               >  %target_dist%\test-id-generator.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-id-generator.cmd

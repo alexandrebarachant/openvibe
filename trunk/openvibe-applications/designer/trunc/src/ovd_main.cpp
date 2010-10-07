@@ -359,6 +359,7 @@ int go(int argc, char ** argv)
 #endif
 
 				IConfigurationManager& l_rConfigurationManager=l_pKernelContext->getConfigurationManager();
+				ILogManager& l_rLogManager=l_pKernelContext->getLogManager();
 
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 
@@ -383,108 +384,123 @@ int go(int argc, char ** argv)
 					::CApplication app(*l_pKernelContext);
 					app.initialize();
 
-					/************************************************************************
-					 * Command parameters: [option] <path-to-a-scenario>
-					 * Options :
-					 *   -p  --play      : plays the scenario at start
-					 *   -pf --play-fast : plays the scenario "fast forward" at start
-					 *
-					 * If the option is not recognized, the designer stops
-					 * Without any parameter, the designer starts with a new empty scenario
-					 ************************************************************************/
-
-					boolean l_bValid = false;
-					string l_sValue;
-					switch(argc)
+					boolean l_bIsScreenValid=false;
+					switch(gdk_drawable_get_depth(GTK_WIDGET(app.m_pMainWindow)->window))
 					{
-						case 2:
-							cout << "[  INF  ] Opening scenario " << argv[1] << "\n";
-							app.openScenario(argv[1]);
-							if(!app.m_vInterfacedScenario.empty())
-							{
+						case 24:
+						case 32:
+							l_bIsScreenValid=true;
+							break;
+						default:
+							l_rLogManager << LogLevel_Error << "Please change the color depth of your screen to either 24 or 32 bits\n";
+							break;
+					}
+
+					if(l_bIsScreenValid)
+					{
+						/************************************************************************
+						 * Command parameters: [option] <path-to-a-scenario>
+						 * Options :
+						 *   -p  --play      : plays the scenario at start
+						 *   -pf --play-fast : plays the scenario "fast forward" at start
+						 *
+						 * If the option is not recognized, the designer stops
+						 * Without any parameter, the designer starts with a new empty scenario
+						 ************************************************************************/
+	
+						boolean l_bValid = false;
+						string l_sValue;
+						switch(argc)
+						{
+							case 2:
+								l_rLogManager << LogLevel_Info << "Opening scenario " << argv[1] << "\n";
+								app.openScenario(argv[1]);
+								if(!app.m_vInterfacedScenario.empty())
+								{
+									l_bValid=true;
+								}
+								else
+								{
+									l_rLogManager << LogLevel_Error << "Command line error, could not open [" << argv[1] << "]\n";
+								}
+								break;
+	
+							case 3:
+								l_sValue=argv[1];
+								if(l_sValue == "-p" || l_sValue == "--play")
+								{
+									l_rLogManager << LogLevel_Info << "Opening and playing scenario " << argv[2] << "\n";
+									app.openScenario(argv[2]);
+									if(!app.m_vInterfacedScenario.empty())
+									{
+										app.playScenarioCB();
+										l_bValid=true;
+									}
+									else
+									{
+										l_rLogManager << LogLevel_Error << "Command line error, could not open [" << argv[2] << "]\n";
+									}
+								}
+								else if(l_sValue == "-pf" || l_sValue == "--play-fast")
+								{
+									l_rLogManager << LogLevel_Info << "Opening and playing fast scenario " << argv[2] << "\n";
+									app.openScenario(argv[2]);
+									if(!app.m_vInterfacedScenario.empty())
+									{
+										app.forwardScenarioCB();
+										l_bValid=true;
+									}
+									else
+									{
+										l_rLogManager << LogLevel_Error << "Command line error, could not open [" << argv[2] << "]\n";
+									}
+								}
+								else
+								{
+									l_rLogManager << LogLevel_Error << "Command line error, invalid switch [" << argv[1] << "]\n";
+								}
+								break;
+
+							case 1:
+								app.newScenarioCB();
 								l_bValid=true;
-							}
-							else
-							{
-								cout << "[ ERROR ] Command line error, could not open [" << argv[1] << "]\n";
-							}
-							break;
-
-						case 3:
-							l_sValue=argv[1];
-							if(l_sValue == "-p" || l_sValue == "--play")
-							{
-								cout << "[  INF  ] Opening and playing scenario " << argv[2] << "\n";
-								app.openScenario(argv[2]);
-								if(!app.m_vInterfacedScenario.empty())
-								{
-									app.playScenarioCB();
-									l_bValid=true;
-								}
-								else
-								{
-									cout << "[ ERROR ] Command line error, could not open [" << argv[2] << "]\n";
-								}
-							}
-							else if(l_sValue == "-pf" || l_sValue == "--play-fast")
-							{
-								cout << "[  INF  ] Opening and playing fast scenario " << argv[2] << "\n";
-								app.openScenario(argv[2]);
-								if(!app.m_vInterfacedScenario.empty())
-								{
-									app.forwardScenarioCB();
-									l_bValid=true;
-								}
-								else
-								{
-									cout << "[ ERROR ] Command line error, could not open [" << argv[2] << "]\n";
-								}
-							}
-							else
-							{
-								cout << "[ ERROR ] Command line error, invalid switch [" << argv[1] << "]\n";
-							}
-							break;
-
-						case 1:
-							app.newScenarioCB();
-							l_bValid=true;
-							break;
-					}
-
-					if(!l_bValid)
-					{
-						cout << "[  INF  ] Syntax : " << argv[0] << " [ switch ] [ scenario_name ]\n";
-						cout << "[  INF  ] Providing scenario_name opens the scenario immediatly\n";
-						cout << "[  INF  ] Possible switches :\n";
-						cout << "[  INF  ]   -p --play       : plays the opened scenario\n";
-						cout << "[  INF  ]   -pf --play-fast : plays fast forward the opened scenario\n";
-					}
-					else
-					{
-						CPluginObjectDescCollector cb_collector1(*l_pKernelContext);
-						CPluginObjectDescCollector cb_collector2(*l_pKernelContext);
-						CPluginObjectDescLogger cb_logger(*l_pKernelContext);
-						cb_logger.enumeratePluginObjectDesc();
-						cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
-						cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
-						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
-						insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
-
-						l_pKernelContext->getLogManager() << LogLevel_Info << "Initialization took " << l_pKernelContext->getConfigurationManager().expand("$Core{real-time}") << " ms\n";
-
-						try
-						{
-							gtk_main();
+								break;
 						}
-						catch(...)
+
+						if(!l_bValid)
 						{
-							l_pKernelContext->getLogManager() << LogLevel_Fatal << "Catched top level exception\n";
+							l_rLogManager << LogLevel_Info << "Syntax : " << argv[0] << " [ switch ] [ scenario_name ]\n";
+							l_rLogManager << LogLevel_Info << "Providing scenario_name opens the scenario immediatly\n";
+							l_rLogManager << LogLevel_Info << "Possible switches :\n";
+							l_rLogManager << LogLevel_Info << "  -p --play       : plays the opened scenario\n";
+							l_rLogManager << LogLevel_Info << "  -pf --play-fast : plays fast forward the opened scenario\n";
+						}
+						else
+						{
+							CPluginObjectDescCollector cb_collector1(*l_pKernelContext);
+							CPluginObjectDescCollector cb_collector2(*l_pKernelContext);
+							CPluginObjectDescLogger cb_logger(*l_pKernelContext);
+							cb_logger.enumeratePluginObjectDesc();
+							cb_collector1.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+							cb_collector2.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
+							insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector1.getPluginObjectDescMap(), app.m_pBoxAlgorithmTreeModel);
+							insertPluginObjectDesc_to_GtkTreeStore(*l_pKernelContext, cb_collector2.getPluginObjectDescMap(), app.m_pAlgorithmTreeModel);
+	
+							l_pKernelContext->getLogManager() << LogLevel_Info << "Initialization took " << l_pKernelContext->getConfigurationManager().expand("$Core{real-time}") << " ms\n";
+	
+							try
+							{
+								gtk_main();
+							}
+							catch(...)
+							{
+								l_pKernelContext->getLogManager() << LogLevel_Fatal << "Catched top level exception\n";
+							}
 						}
 					}
 				}
 
-				cout<<"[  INF  ] Application terminated, releasing allocated objects\n";
+				l_rLogManager << LogLevel_Info << "Application terminated, releasing allocated objects\n";
 
 				OpenViBEToolkit::uninitialize(*l_pKernelContext);
 
