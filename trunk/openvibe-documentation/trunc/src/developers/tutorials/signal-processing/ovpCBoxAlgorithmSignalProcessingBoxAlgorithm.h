@@ -5,6 +5,9 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
+#define OVP_ClassId_BoxAlgorithm_SignalProcessingBoxAlgorithm = OpenViBE::CIdentifier(0x330E3A87, 0x31565BA6)
+#define OVP_ClassId_BoxAlgorithm_SignalProcessingBoxAlgorithmDesc = OpenViBE::CIdentifier(0x376A4712, 0x1AA65567)
+
 namespace OpenViBEPlugins
 {
 	namespace Samples
