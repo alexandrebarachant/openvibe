@@ -472,8 +472,8 @@
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Interface filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card.glade</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card.glade</Value>
+					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card.ui</DefaultValue>
+					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card.ui</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x7f45a2a9, 0x7db12219)</TypeIdentifier>
