@@ -838,12 +838,12 @@ void CAcquisitionServer::setStimulationSet(const IStimulationSet& rStimulationSe
 
 int64 CAcquisitionServer::getSuggestedDriftCorrectionSampleCount(void) const
 {
-	if(this->getDriftSampleCount() > this->getDriftToleranceSampleCount())
+	if(this->getDriftSampleCount() >= this->getDriftToleranceSampleCount())
 	{
 		return -this->getDriftSampleCount();
 	}
 
-	if(this->getDriftSampleCount() < -this->getDriftToleranceSampleCount())
+	if(this->getDriftSampleCount() <= -this->getDriftToleranceSampleCount())
 	{
 		return -this->getDriftSampleCount();
 	}
