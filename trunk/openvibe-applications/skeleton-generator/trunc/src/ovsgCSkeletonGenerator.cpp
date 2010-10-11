@@ -12,7 +12,8 @@ CSkeletonGenerator::CSkeletonGenerator(IKernelContext & rKernelContext, ::GtkBui
 	:m_rKernelContext(rKernelContext)
 	,m_pBuilderInterface(pBuilderInterface)
 {
-	m_sConfigurationFile = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_ConfigurationFile}");
+	//m_sConfigurationFile = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_ConfigurationFile}");
+	m_sConfigurationFile = m_rKernelContext.getConfigurationManager().expand("${CustomConfigurationApplication}");
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "Configuration file [" << m_sConfigurationFile << "]\n";
 	loadCommon();
 }
