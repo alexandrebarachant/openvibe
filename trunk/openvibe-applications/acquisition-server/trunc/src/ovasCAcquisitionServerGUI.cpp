@@ -148,6 +148,20 @@ CAcquisitionServerGUI::~CAcquisitionServerGUI(void)
 	m_pAcquisitionServerThread->terminate();
 	m_pThread->join();
 
+	// Saves current configuration
+	FILE* l_pFile=::fopen(m_rKernelContext.getConfigurationManager().expand("${CustomConfigurationApplication}").toASCIIString(), "wt");
+	if(l_pFile)
+	{
+		::fprintf(l_pFile, "# This file is generated\n");
+		::fprintf(l_pFile, "# Do not modify\n");
+		::fprintf(l_pFile, "\n");
+		::fprintf(l_pFile, "# Last settings set in the acquisition server\n");
+		::fprintf(l_pFile, "AcquisitionServer_LastDriver = %s\n", m_pDriver->getName());
+		::fprintf(l_pFile, "AcquisitionServer_LastSampleCountPerBuffer = %i\n", this->getSampleCountPerBuffer());
+		::fprintf(l_pFile, "AcquisitionServer_LastConnectionPort = %i\n", this->getTCPPort());
+		::fclose(l_pFile);
+	}
+
 	vector<IDriver*>::iterator itDriver;
 	for(itDriver=m_vDriver.begin(); itDriver!=m_vDriver.end(); itDriver++)
 	{
