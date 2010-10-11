@@ -49,31 +49,23 @@ namespace OpenViBEDesigner
 
 		OpenViBE::CString getWorkingDirectory(void);
 
-		OpenViBE::boolean hasScenarioRunning(void);
+		OpenViBE::boolean hasRunningScenario(void);
+		OpenViBE::boolean hasUnsavedScenario(void);
 
 		OpenViBEDesigner::CInterfacedScenario* getCurrentInterfacedScenario(void);
 
 		void testCB(void);
-
 		void newScenarioCB(void);
-
 		void openScenarioCB(void);
-
-		void saveScenarioCB(void);
-
-		void saveScenarioAsCB(void);
-
+		void saveScenarioCB(OpenViBEDesigner::CInterfacedScenario* pInterfacedScenario=NULL); // defaults to current scenario if NULL
+		void saveScenarioAsCB(OpenViBEDesigner::CInterfacedScenario* pInterfacedScenario=NULL); // defaults to current scenario if NULL
 		void closeScenarioCB(
 			OpenViBEDesigner::CInterfacedScenario* pInterfacedScenario);
 
 		void stopScenarioCB(void);
-
 		void pauseScenarioCB(void);
-
 		void nextScenarioCB(void);
-
 		void playScenarioCB(void);
-
 		void forwardScenarioCB(void);
 
 		void addCommentCB(

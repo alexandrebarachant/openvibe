@@ -289,7 +289,7 @@ namespace
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(gtk_builder_get_object(l_pApplication->m_pBuilderInterface, "openvibe-progressbar_cpu_usage")), 0);
 		}
 
-		if(!l_pApplication->hasScenarioRunning())
+		if(!l_pApplication->hasRunningScenario())
 		{
 			System::Time::sleep(50);
 		}
@@ -655,12 +655,25 @@ CString CApplication::getWorkingDirectory(void)
 	return l_sWorkingDirectory;
 }
 
-boolean CApplication::hasScenarioRunning(void)
+boolean CApplication::hasRunningScenario(void)
 {
 	vector<CInterfacedScenario*>::const_iterator itInterfacedScenario;
 	for(itInterfacedScenario=m_vInterfacedScenario.begin(); itInterfacedScenario!=m_vInterfacedScenario.end(); itInterfacedScenario++)
 	{
 		if((*itInterfacedScenario)->m_pPlayer)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+boolean CApplication::hasUnsavedScenario(void)
+{
+	vector<CInterfacedScenario*>::const_iterator itInterfacedScenario;
+	for(itInterfacedScenario=m_vInterfacedScenario.begin(); itInterfacedScenario!=m_vInterfacedScenario.end(); itInterfacedScenario++)
+	{
+		if((*itInterfacedScenario)->m_bHasBeenModified)
 		{
 			return true;
 		}
@@ -913,18 +926,18 @@ void CApplication::openScenarioCB(void)
 	gtk_widget_destroy(l_pWidgetDialogOpen);
 }
 
-void CApplication::saveScenarioCB(void)
+void CApplication::saveScenarioCB(CInterfacedScenario* pScenario)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "saveScenarioCB\n";
 
-	CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+	CInterfacedScenario* l_pCurrentInterfacedScenario=pScenario?pScenario:getCurrentInterfacedScenario();
 	if(!l_pCurrentInterfacedScenario)
 	{
 		return;
 	}
 	if(!l_pCurrentInterfacedScenario->m_bHasFileName)
 	{
-		saveScenarioAsCB();
+		saveScenarioAsCB(pScenario);
 	}
 	else
 	{
@@ -975,11 +988,11 @@ void CApplication::saveScenarioCB(void)
 	}
 }
 
-void CApplication::saveScenarioAsCB(void)
+void CApplication::saveScenarioAsCB(CInterfacedScenario* pScenario)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "saveScenarioAsCB\n";
 
-	CInterfacedScenario* l_pCurrentInterfacedScenario=getCurrentInterfacedScenario();
+	CInterfacedScenario* l_pCurrentInterfacedScenario=pScenario?pScenario:getCurrentInterfacedScenario();
 	if(!l_pCurrentInterfacedScenario)
 	{
 		return;
@@ -1047,7 +1060,7 @@ void CApplication::saveScenarioAsCB(void)
 			l_pCurrentInterfacedScenario->m_oExporterIdentifier=OVP_GD_ClassId_Algorithm_XMLScenarioExporter;
 		}
 
-		saveScenarioCB();
+		saveScenarioCB(l_pCurrentInterfacedScenario);
 	}
 	gtk_widget_destroy(l_pWidgetDialogSaveAs);
 }
@@ -1062,39 +1075,48 @@ void CApplication::closeScenarioCB(CInterfacedScenario* pInterfacedScenario)
 	}
 	if(pInterfacedScenario->isLocked())
 	{
-		::GtkWidget* l_pDialog=gtk_message_dialog_new(
-			GTK_WINDOW(m_pMainWindow),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_WARNING,
-			GTK_BUTTONS_OK,
-			"Scenario is locked !");
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pDialog),
-			"The scenario you are trying to close is locked. "
-			"It is most probably being used by a player engine, "
-			"and either started or paused. If you really want to close "
-			"it, you'll have to stop its execution first.");
-		gtk_window_set_title(GTK_WINDOW(l_pDialog), "Warning");
+		::GtkBuilder* l_pBuilder=gtk_builder_new(); // glade_xml_new(OVD_GUI_File, "about", NULL);
+		gtk_builder_add_from_file(l_pBuilder, OVD_GUI_File, NULL);
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+
+		::GtkWidget* l_pDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilder, "dialog_running_scenario"));
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+		// gtk_dialog_set_response_sensitive(GTK_DIALOG(l_pDialog), GTK_RESPONSE_CLOSE, true);
 		gtk_dialog_run(GTK_DIALOG(l_pDialog));
 		gtk_widget_destroy(l_pDialog);
+		g_object_unref(l_pBuilder);
 		return;
 	}
 	if(pInterfacedScenario->m_bHasBeenModified)
 	{
-		::GtkWidget* l_pDialog=gtk_message_dialog_new(
-			GTK_WINDOW(m_pMainWindow),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_QUESTION,
-			GTK_BUTTONS_YES_NO,
-			"Save scenario ?");
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pDialog),
-			"The scenario you are trying to close has been modified. "
-			"Would you like to save those modifications before closing it ?");
-		gtk_window_set_title(GTK_WINDOW(l_pDialog), "Warning");
-		if(gtk_dialog_run(GTK_DIALOG(l_pDialog))==GTK_RESPONSE_YES)
-		{
-			this->saveScenarioCB();
-		}
+		gint l_iResponseId;
+
+		::GtkBuilder* l_pBuilder=gtk_builder_new(); // glade_xml_new(OVD_GUI_File, "about", NULL);
+		gtk_builder_add_from_file(l_pBuilder, OVD_GUI_File, NULL);
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+
+		::GtkWidget* l_pDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilder, "dialog_unsaved_scenario"));
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+		// gtk_dialog_set_response_sensitive(GTK_DIALOG(l_pDialog), GTK_RESPONSE_CLOSE, true);
+		l_iResponseId=gtk_dialog_run(GTK_DIALOG(l_pDialog));
 		gtk_widget_destroy(l_pDialog);
+		g_object_unref(l_pBuilder);
+
+		switch(l_iResponseId)
+		{
+			case GTK_RESPONSE_OK:
+				this->saveScenarioCB(pInterfacedScenario);
+				if(pInterfacedScenario->m_bHasBeenModified)
+				{
+					return;
+				}
+				break;
+			case GTK_RESPONSE_DELETE_EVENT:
+			case GTK_RESPONSE_CANCEL:
+				return;
+			default:
+				break;
+		}
 	}
 
 	vector<CInterfacedScenario*>::iterator i=m_vInterfacedScenario.begin();
@@ -1326,24 +1348,58 @@ boolean CApplication::quitApplicationCB(void)
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "quitApplicationCB\n";
 
 	// can't quit while scenarios are running
-	if(hasScenarioRunning() == true)
+	if(this->hasRunningScenario() == true)
 	{
-		// display warning dialog
-		::GtkWidget* l_pDialog=gtk_message_dialog_new(
-			GTK_WINDOW(m_pMainWindow),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_WARNING,
-			GTK_BUTTONS_OK,
-			"A scenario is locked !");
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(l_pDialog),
-			"The application can't be exited while scenarios are being played. "
-			"If you really want to quit, you'll have to stop all scenarios first.");
-		gtk_window_set_title(GTK_WINDOW(l_pDialog), "Warning");
+		::GtkBuilder* l_pBuilder=gtk_builder_new(); // glade_xml_new(OVD_GUI_File, "about", NULL);
+		gtk_builder_add_from_file(l_pBuilder, OVD_GUI_File, NULL);
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+
+		::GtkWidget* l_pDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilder, "dialog_running_scenario_global"));
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+		// gtk_dialog_set_response_sensitive(GTK_DIALOG(l_pDialog), GTK_RESPONSE_CLOSE, true);
 		gtk_dialog_run(GTK_DIALOG(l_pDialog));
 		gtk_widget_destroy(l_pDialog);
+		g_object_unref(l_pBuilder);
 
 		// prevent Gtk from handling delete_event and killing app
 		return false;
+	}
+
+	// can't quit while scenarios are unsaved
+	if(this->hasUnsavedScenario() == true)
+	{
+		gint l_iResponseId;
+
+		::GtkBuilder* l_pBuilder=gtk_builder_new(); // glade_xml_new(OVD_GUI_File, "about", NULL);
+		gtk_builder_add_from_file(l_pBuilder, OVD_GUI_File, NULL);
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+
+		::GtkWidget* l_pDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilder, "dialog_unsaved_scenario_global"));
+		gtk_builder_connect_signals(l_pBuilder, NULL);
+		l_iResponseId=gtk_dialog_run(GTK_DIALOG(l_pDialog));
+		gtk_widget_destroy(l_pDialog);
+		g_object_unref(l_pBuilder);
+
+		switch(l_iResponseId)
+		{
+			case GTK_RESPONSE_OK:
+				for(std::vector < CInterfacedScenario* >::iterator i=m_vInterfacedScenario.begin(); i!=m_vInterfacedScenario.end(); i++)
+				{
+					this->saveScenarioCB(*i);
+				}
+				if(this->hasUnsavedScenario())
+				{
+					// prevent Gtk from handling delete_event and killing app
+					return false;
+				}
+				break;
+			case GTK_RESPONSE_DELETE_EVENT:
+			case GTK_RESPONSE_CANCEL:
+				// prevent Gtk from handling delete_event and killing app
+				return false;
+			default:
+				break;
+		}
 	}
 
 	// Clears all existing interfaced scenarios
