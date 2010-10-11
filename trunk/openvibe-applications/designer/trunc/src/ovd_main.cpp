@@ -462,8 +462,37 @@ int go(int argc, char ** argv)
 								break;
 
 							case 1:
-								app.newScenarioCB();
-								l_bValid=true;
+								{
+									CString l_sFilename;
+									char l_sVarName[1024];
+									unsigned i=0;
+									do
+									{
+										sprintf(l_sVarName, "${Designer_LastScenarioFilename_%03i}", ++i);
+										l_sFilename=l_rConfigurationManager.expand(l_sVarName);
+										if(l_sFilename!=CString(""))
+										{
+											unsigned int l_uiLastSize=app.m_vInterfacedScenario.size();
+											app.openScenario(l_sFilename.toASCIIString());
+											if(l_uiLastSize!=app.m_vInterfacedScenario.size())
+											{
+												l_rLogManager << LogLevel_Info << "Restored scenario [" << l_sFilename << "]\n";
+											}
+											else
+											{
+												l_rLogManager << LogLevel_Warning << "Failed to restore scenario [" << l_sFilename << "]\n";
+											}
+										}
+									}
+									while(l_sFilename!=CString(""));
+
+									if(app.m_vInterfacedScenario.empty())
+									{
+										app.newScenarioCB();
+									}
+
+									l_bValid=true;
+								}
 								break;
 						}
 

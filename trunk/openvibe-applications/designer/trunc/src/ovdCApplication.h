@@ -16,7 +16,7 @@ namespace OpenViBEDesigner
 
 		void initialize(void);
 
-		void openScenario(char* sFileName);
+		void openScenario(const char* sFileName);
 
 		/** \name Drag and drop management */
 		//@{

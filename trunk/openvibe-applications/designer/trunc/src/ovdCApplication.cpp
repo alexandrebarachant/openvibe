@@ -500,7 +500,7 @@ void CApplication::initialize(void)
 	// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/openvibe-applications/designer/ov-logo.png", NULL);
 }
 
-void CApplication::openScenario(char* sFileName)
+void CApplication::openScenario(const char* sFileName)
 {
 	CIdentifier l_oScenarioIdentifier;
 	if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
@@ -1344,6 +1344,8 @@ void CApplication::forwardScenarioCB(void)
 
 boolean CApplication::quitApplicationCB(void)
 {
+	std::vector < CInterfacedScenario* >::iterator it;
+
 	CIdentifier l_oIdentifier;
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "quitApplicationCB\n";
 
@@ -1402,10 +1404,30 @@ boolean CApplication::quitApplicationCB(void)
 		}
 	}
 
-	// Clears all existing interfaced scenarios
-	for(std::vector < CInterfacedScenario* >::iterator i=m_vInterfacedScenario.begin(); i!=m_vInterfacedScenario.end(); i++)
+	// Saves opened scenarios
+	FILE* l_pFile=::fopen(m_rKernelContext.getConfigurationManager().expand("${CustomConfigurationApplication}").toASCIIString(), "wt");
+	if(l_pFile)
 	{
-		delete *i;
+		unsigned int i=1;
+		::fprintf(l_pFile, "# This file is generated\n");
+		::fprintf(l_pFile, "# Do not modify\n");
+		::fprintf(l_pFile, "\n");
+		::fprintf(l_pFile, "# Last files opened in the designer\n");
+		for(it=m_vInterfacedScenario.begin(); it!=m_vInterfacedScenario.end(); it++)
+		{
+			if((*it)->m_sFileName != "")
+			{
+				::fprintf(l_pFile, "Designer_LastScenarioFilename_%03i = %s\n", i, (*it)->m_sFileName.c_str());
+				i++;
+			}
+		}
+		::fclose(l_pFile);
+	}
+
+	// Clears all existing interfaced scenarios
+	for(it=m_vInterfacedScenario.begin(); it!=m_vInterfacedScenario.end(); it++)
+	{
+		delete *it;
 	}
 
 	// Clears all existing scenarios
