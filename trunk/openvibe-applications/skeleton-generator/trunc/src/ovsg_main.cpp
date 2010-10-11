@@ -23,7 +23,6 @@ using namespace OpenViBESkeletonGenerator;
 
 using namespace std;
 
-
 int main(int argc, char** argv)
 {
 
@@ -60,18 +59,18 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-				
+
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
-	
+
 				//CSkeletonGenerator l_Generator(*l_pKernelContext,"../share/openvibe-applications/skeleton-generator/generator-interface.ui");
-				
+
 				::GtkBuilder * l_pBuilderInterface = gtk_builder_new(); // glade_xml_new("../share/openvibe-applications/skeleton-generator/generator-interface.ui", NULL, NULL);
 				gtk_builder_add_from_file(l_pBuilderInterface, "../share/openvibe-applications/skeleton-generator/generator-interface.ui", NULL);
 				gtk_builder_connect_signals(l_pBuilderInterface, NULL);
 
 				::GtkWidget * l_pDialog = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-selection-dialog"));
-	
+
 				gtk_dialog_add_button (GTK_DIALOG (l_pDialog),
 					GTK_STOCK_OK,
 					GTK_RESPONSE_OK);
@@ -86,8 +85,8 @@ int main(int argc, char** argv)
 
 				CDriverSkeletonGenerator l_DriverGenerator(*l_pKernelContext,l_pBuilderInterface);
 
-				gint resp = gtk_dialog_run(GTK_DIALOG(l_pDialog)); 
-	
+				gint resp = gtk_dialog_run(GTK_DIALOG(l_pDialog));
+
 				if(resp== GTK_RESPONSE_OK)
 				{
 					gtk_widget_hide(GTK_WIDGET(l_pDialog));
@@ -104,7 +103,7 @@ int main(int argc, char** argv)
 					if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pRadioBox)))
 					{
 						std::cout<< "NOT YET AVAILABLE." <<std::endl;
-						return 0;					
+						return 0;
 					}
 					gtk_main();
 				}
