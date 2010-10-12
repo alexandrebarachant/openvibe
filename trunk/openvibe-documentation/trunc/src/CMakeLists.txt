@@ -152,7 +152,7 @@ IF(doxygen_bin)
 	#
 	# in order to do so, we look after all the (.dox-skeleton) files and call
 	# the configure command to build the final documentation (.dox) file.
-	FILE(GLOB_RECURSE dox_skeletons "${current_project_src}/*.dox-skeleton")
+	FILE(GLOB_RECURSE dox_skeletons "${project_source_dir}/src/*.dox-skeleton")
 	FOREACH(dox_skeleton ${dox_skeletons})
 		GET_FILENAME_COMPONENT(dox_skeleton_filename ${dox_skeleton} NAME_WE)
 		GET_FILENAME_COMPONENT(dox_skeleton_path     ${dox_skeleton} PATH)
