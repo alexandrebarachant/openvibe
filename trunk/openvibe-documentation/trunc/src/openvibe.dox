@@ -77,8 +77,11 @@
  *     - \subpage Doc_ConfiguringANewDriver
  *     - \subpage Doc_DriverImpedanceChecker
  *     - \subpage Doc_DriverJitterCorrection
- *   - \subpage Doc_Tutorial_Developer_SignalProcessing
- *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ *   - \subpage Doc_DeveloperDocumentation_Plugin
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_IntroductionPage
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
+ *     - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  *   - \subpage Doc_VRApplicationAndVRPN
  * - \subpage Doc_GlobalDefines
  * - \subpage Doc_OpenViBEStreams
@@ -135,8 +138,11 @@
  *     - \subpage Doc_ConfiguringANewDriver
  *     - \subpage Doc_DriverImpedanceChecker
  *     - \subpage Doc_DriverJitterCorrection
- *   - \subpage Doc_Tutorial_Developer_SignalProcessing
- *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ *   - \subpage Doc_DeveloperDocumentation_Plugin
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_IntroductionPage
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
+ *     - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  *   - \subpage Doc_VRApplicationAndVRPN
  * - \subpage Doc_GlobalDefines
  * - \subpage Doc_OpenViBEStreams
@@ -179,8 +185,11 @@
  *   - \subpage Doc_ConfiguringANewDriver
  *   - \subpage Doc_DriverImpedanceChecker
  *   - \subpage Doc_DriverJitterCorrection
- * - \subpage Doc_Tutorial_Developer_SignalProcessing
- * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ * - \subpage Doc_DeveloperDocumentation_Plugin
+ *   - \subpage Doc_Tutorial_Developer_SignalProcessing_IntroductionPage
+ *   - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
+ *   - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
+ *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  */
 
 /**
@@ -194,4 +203,12 @@
  * - \subpage Doc_ConfiguringANewDriver
  * - \subpage Doc_DriverImpedanceChecker
  * - \subpage Doc_DriverJitterCorrection
+ */
+ 
+ /**
+ * \page Doc_DeveloperDocumentation_Plugin Developing a Plugin
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing_IntroductionPage
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
+ * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
  */

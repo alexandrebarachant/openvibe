@@ -19,7 +19,7 @@
  *
  * The next part defines all the unique CIdentifier objects that identify the box and its descriptor.
  * These random identifiers can be generated randomly using the dedicated tool \b id-generator, provided by the OpenViBE software platform. Please be sure to use \b unique identifiers.
- * \until ProcessDone
+ * \until BoxAlgorithmDesc
  *
  * In order to avoid name collisions, it is desirable to define 
  * all classes within namespaces. All standard OpenViBE plugins 
