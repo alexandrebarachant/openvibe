@@ -229,7 +229,8 @@ echo %OpenViBE_application_skeleton_generator% >> %OpenViBE_build_order%
 REM echo %OpenViBE_plugin_matlab% >> %OpenViBE_build_order%
 REM echo %OpenViBE_plugin_turbofieldtrip% >> %OpenViBE_build_order%
 
-REM echo %OpenViBE_documentation% >> %OpenViBE_build_order%
 echo %OpenViBE_scenarios% >> %OpenViBE_build_order%
+
+REM echo %OpenViBE_documentation% >> %OpenViBE_build_order%
 
 REM echo %OpenViBE_external_% >> %OpenViBE_build_order%
