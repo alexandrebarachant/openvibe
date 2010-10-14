@@ -62,7 +62,7 @@ namespace
 		{
 			char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
 			char* l_pBackslash = NULL;
-			while((l_pBackslash = strchr(l_sFileName, '\\'))!=NULL)
+			while((l_pBackslash = ::strchr(l_sFileName, '\\'))!=NULL)
 			{
 				*l_pBackslash = '/';
 			}

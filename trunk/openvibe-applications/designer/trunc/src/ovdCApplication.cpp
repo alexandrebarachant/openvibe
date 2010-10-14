@@ -920,6 +920,11 @@ void CApplication::openScenarioCB(void)
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 	{
 		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
+		char* l_pBackslash = NULL;
+		while((l_pBackslash = ::strchr(l_sFileName, '\\'))!=NULL)
+		{
+			*l_pBackslash = '/';
+		}
 		this->openScenario(l_sFileName);
 		g_free(l_sFileName);
 	}
@@ -1033,6 +1038,12 @@ void CApplication::saveScenarioAsCB(CInterfacedScenario* pScenario)
 	{
 		//ensure file extension is added after filename
 		char* l_sTempFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs));
+		char* l_pBackslash = NULL;
+		while((l_pBackslash = ::strchr(l_sTempFileName, '\\'))!=NULL)
+		{
+			*l_pBackslash = '/';
+		}
+
 		char l_sFileName[1024];
 		::sprintf(l_sFileName, "%s", l_sTempFileName);
 		g_free(l_sTempFileName);
