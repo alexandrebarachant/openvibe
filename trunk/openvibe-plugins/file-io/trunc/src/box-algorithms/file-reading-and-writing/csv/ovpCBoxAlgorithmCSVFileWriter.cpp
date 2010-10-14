@@ -33,8 +33,24 @@ boolean CBoxAlgorithmCSVFileWriter::initialize(void)
 
 	if(this->getTypeManager().isDerivedFromStream(m_oTypeIdentifier, OV_TypeId_StreamedMatrix))
 	{
-		m_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder));
-		m_pStreamDecoder->initialize();
+		if(m_oTypeIdentifier==OV_TypeId_Signal)
+		{
+			m_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamDecoder));
+			m_pStreamDecoder->initialize();
+			op_ui64SamplingFrequency.initialize(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_SamplingRate));
+		}
+		else if(m_oTypeIdentifier==OV_TypeId_Spectrum)
+		{
+			m_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SpectrumStreamDecoder));
+			m_pStreamDecoder->initialize();
+			op_pMinMaxFrequencyBand.initialize(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands));
+		}
+		else
+		{
+			m_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder));
+			m_pStreamDecoder->initialize();
+		}
+
 		ip_pMemoryBuffer.initialize(m_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_InputParameterId_MemoryBufferToDecode));
 		op_pMatrix.initialize(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 		m_fpRealProcess=&CBoxAlgorithmCSVFileWriter::process_streamedMatrix;
@@ -58,6 +74,7 @@ boolean CBoxAlgorithmCSVFileWriter::initialize(void)
 		this->getLogManager() << LogLevel_Warning << "Compression flag not used yet, the file will be flagged uncompressed and stored as is\n";
 	}
 
+	m_bFirstBuffer=true;
 	return true;
 }
 
@@ -125,6 +142,26 @@ boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 					m_sSeparator.toASCIIString(),
 					l_sLabel.c_str());
 			}
+
+			if(m_oTypeIdentifier==OV_TypeId_Signal)
+			{
+				::fprintf(m_pFile,
+					"%sSampling Rate",
+					m_sSeparator.toASCIIString());
+			}
+			else if(m_oTypeIdentifier==OV_TypeId_Spectrum)
+			{
+				::fprintf(m_pFile,
+					"%sMin frequency band",
+					m_sSeparator.toASCIIString());
+				::fprintf(m_pFile,
+					"%sMax frequency band",
+					m_sSeparator.toASCIIString());
+			}
+			else
+			{
+			}
+
 			::fprintf(m_pFile, "\n");
 		}
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
@@ -140,8 +177,59 @@ boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 						m_sSeparator.toASCIIString(),
 						op_pMatrix->getBuffer()[c*op_pMatrix->getDimensionSize(1)+s]);
 				}
+
+				if(m_bFirstBuffer)
+				{
+					if(m_oTypeIdentifier==OV_TypeId_Signal)
+					{
+						::fprintf(m_pFile,
+							"%s%lli",
+							m_sSeparator.toASCIIString(),
+							(uint64)op_ui64SamplingFrequency);
+
+						m_bFirstBuffer=false;
+					}
+					else if(m_oTypeIdentifier==OV_TypeId_Spectrum)
+					{
+						::fprintf(m_pFile,
+							"%s%f",
+							m_sSeparator.toASCIIString(),
+							op_pMinMaxFrequencyBand->getBuffer()[s*2+0]);
+						::fprintf(m_pFile,
+							"%s%f",
+							m_sSeparator.toASCIIString(),
+							op_pMinMaxFrequencyBand->getBuffer()[s*2+1]);
+					}
+					else
+					{
+					}
+				}
+				else
+				{
+					if(m_oTypeIdentifier==OV_TypeId_Signal)
+					{
+						::fprintf(m_pFile,
+							"%s",
+							m_sSeparator.toASCIIString());
+					}
+					else if(m_oTypeIdentifier==OV_TypeId_Spectrum)
+					{
+						::fprintf(m_pFile,
+							"%s",
+							m_sSeparator.toASCIIString());
+						::fprintf(m_pFile,
+							"%s",
+							m_sSeparator.toASCIIString());
+					}
+					else
+					{
+					}
+				}
+
 				::fprintf(m_pFile, "\n");
 			}
+
+			m_bFirstBuffer=false;
 		}
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd))
 		{
