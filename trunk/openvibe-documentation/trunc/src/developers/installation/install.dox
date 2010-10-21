@@ -122,25 +122,10 @@ or Visual Studio 2010. Please use VS2010 if it is available on your computer,
 as the build process checks for <b>the most recent compiler</b>. A mismatch between dependencies 
 and build won't please the linker.
 
-The Linux installer processes source packages and builds them from scratch,
-assuming almost no pre-requisite dependencies. One should be able to install
-each dependency in a local directory without requiring root access and without using
-any package manager such as apt-get or yum. 
-
-\section Doc_PreparingEnvironment Preparing environment
-
-The build process uses many environment variables. The 'script' directory
-contains the necessary files to build the whole platform and plugins.
-However, the script initializing the environment variables is missing because
-it must be tuned according to each local installation and usage. However, the
-\e linux-init_env_command-skeleton and \e win32-init_env_command-skeleton files
-may be used as a basis to create such scripts. Most Linux users will simply
-need to copy the \e linux-init_env_command-skeleton to \e linux-init_env_command.
-Similarly, most Windows users will simply need to copy
-\e win32-init_env_command.cmd-skeleton to \e win32-init_env_command.cmd.
-
-Please keep in mind that this initialisation script is the place where you will be able to
-tune your build, for example by specifying a SVN branch you need rather than the trunk.
+The Linux installer processes some prebuilt packages using the native disto tools (e.g. apt-get or yum).
+It also processes some some source packages for some of the dependencies that vary
+too much from a distro to another. Therefore, the Linux dependencies installation can
+be a little longer than on Windows.
 
 \section Doc_Building Building the platform
 
@@ -157,7 +142,7 @@ If you want to build all projects at once, you can use the \e linux-build or
 
 Once the build is done, all generated files are stored in the \e dist folder.
 The build also generates launch scripts for you:
-- On Linux, the \e linux-test script will launch \b all softwares. \e ov-[application-name].sh will only launch the application you want.
+- On Linux, the \e linux-test script will launch \b all softwares. \e ov-[\e application-name].sh will only launch the application you want.
 - On Windows each of the \e test-[application-name] scripts in the \e dist folder will launch the desired application.
 
 The applications available can be divided in two sets. The user applications are:
@@ -179,31 +164,47 @@ In case you have trouble using your modified script, the \e skeletons may repres
 Here is some tips for common developer needs :
 - Default behaviour: 
 The script will build all the modules, except the documentation (that you find on the website anyway). After a fresh checkout, please build the software like this once.
+
 - Build a branch instead of module's trunk:
-Modify the \e init_env_command script by specifying the branch path. For example, 
-we are on Windows and want to try a specific - unstable - driver located in a branch:
+Modify the \e init_env_command script by specifying the branch path. For example,
+if you want to try a specific - unstable - driver located in a branch on Windows:
 \code
 SET OpenViBE_application_acquisition_server_branch=
 \endcode
-Will become :
+will become :
 \code
 SET OpenViBE_application_acquisition_server_branch=branches/wip-unstable-driver
 \endcode
-- Build only few modules (will work only if all modules have been compiled at least one time):
-Modify the \e init_env_command script by choosing the project to be added in the build order. Example on windows:
+if you want to try a specific - unstable - driver located in a branch on Linux:
+\code
+OpenViBE_application_acquisition_server_branch=
+\endcode
+will become :
+\code
+OpenViBE_application_acquisition_server_branch=branches/wip-unstable-driver
+\endcode
 
-You want to build the signal processing plugin :
+- Build only few modules (will work only if all modules have been compiled at least once):
+Modify the \e init_env_command script by choosing the project to be added in the build order. For example if you accept to rebuild the signal processing plugin on Windows:
 \code
 echo %OpenViBE_plugin_signal_processing% >> %OpenViBE_build_order%
 \endcode
-You do not want to build it, just remove the line or comment it like this:
+If you want to avoid building the signal processing plugin on Windows, just remove the line or comment it like this:
 \code
 REM echo %OpenViBE_plugin_signal_processing% >> %OpenViBE_build_order%
+\endcode
+Similarly, if you accept to rebuild the signal processing plugin on Linux:
+\code
+$OpenViBE_plugin_signal_processing
+\endcode
+If you want to avoid building the signal processing plugin on Linux, just remove the line or comment it like this:
+\code
+#$OpenViBE_plugin_signal_processing
 \endcode
 
 \section Doc_Contribute Contribute
 If you want to contribute to the OpenViBE open-source project, you are warmly welcomed !
-Here is the most useful links :
+Here are the most useful links :
  - This <a href=http://openvibe.inria.fr/?q=contributions>dedicated webpage</a> explains on which part of the project you can contribute and how the integration process is organised.
  - The \ref Doc_Contribution are coding rules you must follow if you want your work to be integrated in the main trunk.
  - The \ref Doc_DeveloperDocumentation contains various tutorials and code examples.
