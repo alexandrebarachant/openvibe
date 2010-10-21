@@ -134,7 +134,7 @@ namespace OpenViBEAcquisitionServer
 	public:
 
 		CDriverTestSkGenerator(OpenViBEAcquisitionServer
-								::IDriverContext& rDriverContext);
+				::IDriverContext& rDriverContext);
 		virtual ~CDriverTestSkGenerator(void);
 		virtual const char* getName(void);
 
@@ -251,7 +251,7 @@ boolean CDriverTestSkGenerator::configure(void)
 	// will be sent to the acquisition
 	// server later...
 	m_pSample=new float32[m_oHeader.getChannelCount()
-							*ui32SampleCountPerSentBlock];
+			*ui32SampleCountPerSentBlock];
 	if(!m_pSample)
 	{
 		delete [] m_pSample;
@@ -353,12 +353,10 @@ boolean CDriverTestSkGenerator::loop(void)
  * be tuned to match your needs for any specific driver and also could be
  * used to test your §OpenViBE§ platform.
  *
- * Now that you understand the structure of a driver, you can go to the next step:
- * \ref Doc_ConfiguringANewDriver.
  *
  * \section Doc_CreatingANewDriver_UsingTheNewDriver Using the driver
  *
- * Now that you have a working driver you probably want to test / use it. In order
+ * When you have a working driver you probably want to test / use it. In order
  * to achieve this task, you have to register the driver to the acquisition server.
  * Put your .h / .cpp files in the acquisition server project :
  * <em>openvibe-applications/acquisition-server/trunc/src/<b>your-driver-name</b></em>
@@ -382,6 +380,13 @@ boolean CDriverTestSkGenerator::loop(void)
  *
  * If you used the skeleton-generator, please look at the \b readme file for further details.
  *
+ * \section Doc_CreatingANewDriver_More Advanced developments
+ * Your driver may be functionnal, but not complete. You should be able to connect it and start it in the 
+ * Acquisition Server, however more developments are possible to improve your driver.
+ * The following tutotials will help you with more advanced developments:
+ * - \ref Doc_ConfiguringANewDriver : how to set up a dedicated GUI so the user can configure the driver.
+ * - \ref Doc_DriverImpedanceChecker : how to use the given impedance checker mechanism, if your device is capable of.
+ * - \ref Doc_DriverJitterCorrection : the acquisition is somehow drifting from its theorical sampling rate ? Correct it with jitter monitoring and drift correction.
  * \section Doc_CreatingANewDriver_Support Support
  *
  * In case you have problem in developing the driver, feel free to contact
