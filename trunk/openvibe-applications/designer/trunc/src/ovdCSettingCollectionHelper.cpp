@@ -87,7 +87,7 @@ namespace
 
 		if(l_sEditorCommand != CString(""))
 		{
-			CString l_sFullCommand=l_sEditorCommand + CString(" ") + l_sFileName;
+			CString l_sFullCommand=l_sEditorCommand + CString(" \"") + l_sFileName + CString("\"");
 #if defined OVD_OS_Windows
 			l_sFullCommand = "START " + l_sFullCommand;
 #elif defined OVD_OS_Linux
