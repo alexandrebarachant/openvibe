@@ -9,6 +9,14 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Stimulation;
 
+#define __CB_Assert__(condition) \
+	if(!(condition)) \
+	{ \
+		lua_pushstring(pState, "Assertion failed : ["#condition"]"); \
+		lua_error(pState); \
+		return 0; \
+	}
+
 namespace
 {
 	class CLuaThread
@@ -38,9 +46,10 @@ namespace
 
 static void lua_setcallback(lua_State* pState, const char* sName, int (*fpCallback)(lua_State* pState), void* pUserData)
 {
+	lua_getglobal(pState, "__openvibe_box_context");
 	lua_pushlightuserdata(pState, pUserData);
 	lua_pushcclosure(pState, fpCallback, 1);
-	lua_setglobal(pState, sName);
+	lua_setfield(pState, -2, sName);
 }
 
 static void lua_report(ILogManager& rLogManager, lua_State* pLuaState, int iCode)
@@ -52,210 +61,193 @@ static void lua_report(ILogManager& rLogManager, lua_State* pLuaState, int iCode
 	}
 }
 
+static bool lua_check_argument_count(lua_State* pState, const char* sName, int iCount1, int iCount2=-1)
+{
+	char l_sMessage[1024];
+	if(iCount2<0)
+	{
+		if(lua_gettop(pState)!=iCount1+1)
+		{
+			::sprintf(l_sMessage, "[%s] takes %i parameter%s", sName, iCount1, (iCount1>=2?"s":""));
+			lua_pushstring(pState, l_sMessage);
+			lua_error(pState);
+			return false;
+		}
+	}
+	else
+	{
+		if(lua_gettop(pState)!=iCount1+1 && lua_gettop(pState)!=iCount2+1)
+		{
+			::sprintf(l_sMessage, "[%s] takes either %i or %i parameter%s", sName, iCount1, iCount2, (iCount2>=2?"s":""));
+			lua_pushstring(pState, l_sMessage);
+			lua_error(pState);
+			return false;
+		}
+	}
+	return true;
+}
+
+static bool lua_check_box_status(lua_State* pState, const char* sName, uint32 ui32CurrentState)
+{
+	char l_sMessage[1024];
+	if(ui32CurrentState != CBoxAlgorithmLuaStimulator::State_Processing)
+	{
+		::sprintf(l_sMessage, "[%s] should only be called in the [process] callback", sName);
+		lua_pushstring(pState, l_sMessage);
+		lua_error(pState);
+		return false;
+	}
+	return true;
+}
+
+static int lua_get_input_count_cb(lua_State* pState)
+{
+	uint32 l_ui32InputCount=0;
+	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
+	__CB_Assert__(l_pThis != NULL);
+
+	if(!lua_check_argument_count(pState, "get_input_count", 0)) return 0;
+
+	__CB_Assert__(l_pThis->getInputCountCB(l_ui32InputCount));
+	lua_pushinteger(pState, l_ui32InputCount);
+	return 1;
+}
+
+static int lua_get_output_count_cb(lua_State* pState)
+{
+	uint32 l_ui32OutputCount=0;
+	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
+	__CB_Assert__(l_pThis != NULL);
+
+	if(!lua_check_argument_count(pState, "get_output_count", 0)) return 0;
+
+	__CB_Assert__(l_pThis->getOutputCountCB(l_ui32OutputCount));
+	lua_pushinteger(pState, l_ui32OutputCount);
+	return 1;
+}
+
+static int lua_get_setting_count_cb(lua_State* pState)
+{
+	uint32 l_ui32SettingCount=0;
+	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
+	__CB_Assert__(l_pThis != NULL);
+
+	if(!lua_check_argument_count(pState, "get_setting_count", 0)) return 0;
+
+	__CB_Assert__(l_pThis->getSettingCountCB(l_ui32SettingCount));
+	lua_pushinteger(pState, l_ui32SettingCount);
+	return 1;
+}
+
+static int lua_get_setting_cb(lua_State* pState)
+{
+	CString l_sSetting;
+	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
+	__CB_Assert__(l_pThis != NULL);
+
+	if(!lua_check_argument_count(pState, "get_setting", 1)) return 0;
+
+	__CB_Assert__(l_pThis->getSettingCB(lua_tointeger(pState, 2)-1, l_sSetting));
+	lua_pushstring(pState, l_sSetting.toASCIIString());
+	return 1;
+}
+
+static int lua_get_config_cb(lua_State* pState)
+{
+	CString l_sConfiguration;
+	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
+	__CB_Assert__(l_pThis != NULL);
+
+	if(!lua_check_argument_count(pState, "get_config", 1)) return 0;
+
+	__CB_Assert__(l_pThis->getConfigCB(lua_tostring(pState, 2), l_sConfiguration));
+	lua_pushstring(pState, l_sConfiguration.toASCIIString());
+	return 1;
+}
+
 static int lua_get_current_time_cb(lua_State* pState)
 {
-	int l_iArguments=lua_gettop(pState);
-	if(l_iArguments!=0)
-	{
-		lua_pushstring(pState, "get_current_time takes 0 parameter");
-		lua_error(pState);
-		return 0;
-	}
-
+	uint64 l_ui64Time=0;
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
-	if(l_pThis)
-	{
-		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
-		{
-			lua_pushstring(pState, "You should only call openvibe functions in process");
-			lua_error(pState);
-			return 0;
-		}
+	__CB_Assert__(l_pThis != NULL);
 
-		uint64 l_ui64Time=0;
-		if(!l_pThis->getCurrentTimeCB(l_ui64Time))
-		{
-			lua_pushstring(pState, "get_current_time failed for unknown reason");
-			lua_error(pState);
-			return 0;
-		}
-		else
-		{
-			lua_pushnumber(pState, (float64(l_ui64Time))/(1LL<<32));
-			return 1;
-		}
-	}
-	return 0;
+	if(!lua_check_argument_count(pState, "get_current_time", 0)) return 0;
+
+	__CB_Assert__(l_pThis->getCurrentTimeCB(l_ui64Time));
+	lua_pushnumber(pState, (float64(l_ui64Time))/(1LL<<32));
+	return 1;
 }
 
 static int lua_sleep_cb(lua_State* pState)
 {
-	int l_iArguments=lua_gettop(pState);
-	if(l_iArguments!=0)
-	{
-		lua_pushstring(pState, "sleep takes 0 parameter");
-		lua_error(pState);
-		return 0;
-	}
-
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
-	if(l_pThis)
-	{
-		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
-		{
-			lua_pushstring(pState, "You should only call openvibe functions in process");
-			lua_error(pState);
-			return 0;
-		}
+	__CB_Assert__(l_pThis != NULL);
 
-		if(!l_pThis->sleepCB())
-		{
-			lua_pushstring(pState, "sleep failed for unknown reason");
-			lua_error(pState);
-			return 0;
-		}
-	}
+	if(!lua_check_box_status(pState, "sleep", l_pThis->m_ui32State)) return 0;
+	if(!lua_check_argument_count(pState, "sleep", 0)) return 0;
+
+	__CB_Assert__(l_pThis->sleepCB());
 	return 0;
 }
 
 static int lua_get_stimulation_count_cb(lua_State* pState)
 {
-	int l_iArguments=lua_gettop(pState);
-	if(l_iArguments!=1)
-	{
-		lua_pushstring(pState, "get_stimulation_count takes 1 parameter");
-		lua_error(pState);
-		return 0;
-	}
-
+	uint32 l_ui32Count=0;
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
-	if(l_pThis)
-	{
-		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
-		{
-			lua_pushstring(pState, "You should only call openvibe functions in process");
-			lua_error(pState);
-			return 0;
-		}
+	__CB_Assert__(l_pThis != NULL);
 
-		uint32 l_ui32Count=0;
-		if(!l_pThis->getStimulationCountCB(lua_tointeger(pState, 1)-1, l_ui32Count))
-		{
-			lua_pushstring(pState, "get_stimulation_count failed for unknown reason");
-			lua_error(pState);
-			return 0;
-		}
-		else
-		{
-			lua_pushinteger(pState, l_ui32Count);
-			return 1;
-		}
-	}
-	return 0;
+	if(!lua_check_box_status(pState, "get_stimulation_count", l_pThis->m_ui32State)) return 0;
+	if(!lua_check_argument_count(pState, "get_stimulation_count", 1)) return 0;
+
+	__CB_Assert__(l_pThis->getStimulationCountCB(lua_tointeger(pState, 2)-1, l_ui32Count));
+	lua_pushinteger(pState, l_ui32Count);
+	return 1;
 }
 
 static int lua_get_stimulation_cb(lua_State* pState)
 {
-	int l_iArguments=lua_gettop(pState);
-	if(l_iArguments!=2)
-	{
-		lua_pushstring(pState, "get_stimulation takes 2 parameter");
-		lua_error(pState);
-		return 0;
-	}
-
+	uint64 l_ui64Identifier=uint64(-1);
+	uint64 l_ui64Time=uint64(-1);
+	uint64 l_ui64Duration=uint64(-1);
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
-	if(l_pThis)
-	{
-		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
-		{
-			lua_pushstring(pState, "You should only call openvibe functions in process");
-			lua_error(pState);
-			return 0;
-		}
+	__CB_Assert__(l_pThis != NULL);
 
-		uint64 l_ui64Identifier;
-		uint64 l_ui64Time;
-		uint64 l_ui64Duration;
-		if(!l_pThis->getStimulationCB(lua_tointeger(pState, 1)-1, lua_tointeger(pState, 2)-1, l_ui64Identifier, l_ui64Time, l_ui64Duration))
-		{
-			lua_pushstring(pState, "get_stimulation failed for unknown reason");
-			lua_error(pState);
-			return 0;
-		}
-		else
-		{
-			lua_pushinteger(pState, l_ui64Identifier);
-			lua_pushnumber(pState, l_ui64Time/float64(1LL<<32));
-			lua_pushnumber(pState, l_ui64Duration/float64(1LL<<32));
-			return 3;
-		}
-	}
-	return 0;
+	if(!lua_check_box_status(pState, "get_stimulation", l_pThis->m_ui32State)) return 0;
+	if(!lua_check_argument_count(pState, "get_stimulation", 2)) return 0;
+
+	__CB_Assert__(l_pThis->getStimulationCB(lua_tointeger(pState, 2)-1, lua_tointeger(pState, 3)-1, l_ui64Identifier, l_ui64Time, l_ui64Duration));
+	lua_pushinteger(pState, l_ui64Identifier);
+	lua_pushnumber(pState, l_ui64Time/float64(1LL<<32));
+	lua_pushnumber(pState, l_ui64Duration/float64(1LL<<32));
+	return 3;
 }
 
 static int lua_remove_stimulation_cb(lua_State* pState)
 {
-	int l_iArguments=lua_gettop(pState);
-	if(l_iArguments!=2)
-	{
-		lua_pushstring(pState, "remove_stimulation takes 2 parameter");
-		lua_error(pState);
-		return 0;
-	}
-
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
-	if(l_pThis)
-	{
-		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
-		{
-			lua_pushstring(pState, "You should only call openvibe functions in process");
-			lua_error(pState);
-			return 0;
-		}
+	__CB_Assert__(l_pThis != NULL);
 
-		if(!l_pThis->removeStimulationCB(lua_tointeger(pState, 1)-1, lua_tointeger(pState, 2)-1))
-		{
-			lua_pushstring(pState, "remove_stimulation failed for unknown reason");
-			lua_error(pState);
-			return 0;
-		}
-	}
+	if(!lua_check_box_status(pState, "remove_stimulation", l_pThis->m_ui32State)) return 0;
+	if(!lua_check_argument_count(pState, "remove_stimulation", 2)) return 0;
+
+	__CB_Assert__(l_pThis->removeStimulationCB(lua_tointeger(pState, 2)-1, lua_tointeger(pState, 3)-1));
 	return 0;
 }
 
 static int lua_send_stimulation_cb(lua_State* pState)
 {
 	int l_iArguments=lua_gettop(pState);
-	if(l_iArguments!=4 && l_iArguments!=3)
-	{
-		lua_pushstring(pState, "send_stimulation takes either 3 or 4 parameter");
-		lua_error(pState);
-		return 0;
-	}
-
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
-	if(l_pThis)
-	{
-		if(l_pThis->m_ui32State != CBoxAlgorithmLuaStimulator::State_Processing)
-		{
-			lua_pushstring(pState, "You should only call openvibe functions in process");
-			lua_error(pState);
-			return 0;
-		}
+	__CB_Assert__(l_pThis != NULL);
 
-		if(!l_pThis->sendStimulationCB(
-			lua_tointeger(pState, 1)-1,
-			lua_tointeger(pState, 2),
-			uint64(lua_tonumber(pState, 3)*(1LL<<32)),
-			l_iArguments==4?uint64(lua_tonumber(pState, 4)*(1LL<<32)):0))
-		{
-			lua_pushstring(pState, "send_stimulation failed for unknown reason");
-			lua_error(pState);
-			return 0;
-		}
-	}
+	if(!lua_check_box_status(pState, "send_stimulation", l_pThis->m_ui32State)) return 0;
+	if(!lua_check_argument_count(pState, "send_stimulation", 3, 4)) return 0;
 
+	__CB_Assert__(l_pThis->sendStimulationCB(
+			lua_tointeger(pState, 2)-1,
+			lua_tointeger(pState, 3),
+			uint64(lua_tonumber(pState, 4)*(1LL<<32)),
+			l_iArguments==5?uint64(lua_tonumber(pState, 5)*(1LL<<32)):0));
 	return 0;
 }
 
@@ -294,6 +286,14 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 
 	luaL_openlibs(m_pLuaState);
 
+	lua_newtable(m_pLuaState);
+	lua_setglobal(m_pLuaState, "__openvibe_box_context");
+
+	lua_setcallback(m_pLuaState, "get_input_count", ::lua_get_input_count_cb, this);
+	lua_setcallback(m_pLuaState, "get_output_count", ::lua_get_output_count_cb, this);
+	lua_setcallback(m_pLuaState, "get_setting_count", ::lua_get_setting_count_cb, this);
+	lua_setcallback(m_pLuaState, "get_setting", ::lua_get_setting_cb, this);
+	lua_setcallback(m_pLuaState, "get_config", ::lua_get_config_cb, this);
 	lua_setcallback(m_pLuaState, "get_current_time", ::lua_get_current_time_cb, this);
 	lua_setcallback(m_pLuaState, "sleep", ::lua_sleep_cb, this);
 	lua_setcallback(m_pLuaState, "get_stimulation_count", ::lua_get_stimulation_count_cb, this);
@@ -301,12 +301,12 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 	lua_setcallback(m_pLuaState, "remove_stimulation", ::lua_remove_stimulation_cb, this);
 	lua_setcallback(m_pLuaState, "send_stimulation", ::lua_send_stimulation_cb, this);
 
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function initialize() end"));
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function uninitialize() end"));
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function process() end"));
+	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function initialize(box) end"));
+	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function uninitialize(box) end"));
+	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function process(box) end"));
 	lua_report(this->getLogManager(), m_pLuaState, luaL_dofile(m_pLuaState, l_sLuaScriptFilename.toASCIIString()));
 
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "initialize()"));
+	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "initialize(__openvibe_box_context)"));
 
 	m_vInputStimulation.resize(l_rStaticBoxContext.getInputCount());
 	m_vOutputStimulation.resize(l_rStaticBoxContext.getOutputCount());
@@ -352,7 +352,7 @@ boolean CBoxAlgorithmLuaStimulator::uninitialize(void)
 
 	delete m_pLuaThread;
 
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "uninitialize()"));
+	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "uninitialize(__openvibe_box_context)"));
 	lua_close(m_pLuaState);
 
 	return true;
@@ -485,7 +485,7 @@ boolean CBoxAlgorithmLuaStimulator::_waitForStimulation(uint32 ui32InputIndex, u
 {
 	if(ui32InputIndex >= m_vInputStimulation.size())
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Input " << ui32InputIndex << " does not exist\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Input " << (ui32InputIndex+1) << " does not exist\n";
 		return false;
 	}
 
@@ -508,6 +508,42 @@ boolean CBoxAlgorithmLuaStimulator::_waitForStimulation(uint32 ui32InputIndex, u
 	return true;
 }
 
+boolean CBoxAlgorithmLuaStimulator::getInputCountCB(uint32& rui32Count)
+{
+	rui32Count=this->getStaticBoxContext().getInputCount();
+	return true;
+}
+
+boolean CBoxAlgorithmLuaStimulator::getOutputCountCB(uint32& rui32Count)
+{
+	rui32Count=this->getStaticBoxContext().getOutputCount();
+	return true;
+}
+
+boolean CBoxAlgorithmLuaStimulator::getSettingCountCB(uint32& rui32Count)
+{
+	rui32Count=this->getStaticBoxContext().getSettingCount();
+	return true;
+}
+
+boolean CBoxAlgorithmLuaStimulator::getSettingCB(uint32 ui32SettingIndex, CString& rsSetting)
+{
+	if(ui32SettingIndex >= this->getStaticBoxContext().getSettingCount())
+	{
+		this->getLogManager() << LogLevel_Warning << "Setting " << (ui32SettingIndex+1) << " does not exist\n";
+		rsSetting=CString("");
+		return true;
+	}
+
+	return this->getStaticBoxContext().getSettingValue(ui32SettingIndex, rsSetting);
+}
+
+boolean CBoxAlgorithmLuaStimulator::getConfigCB(const CString& rsString, CString& rsConfig)
+{
+	rsConfig=this->getConfigurationManager().expand(rsString);
+	return true;
+}
+
 boolean CBoxAlgorithmLuaStimulator::getCurrentTimeCB(uint64& rui64Time)
 {
 	rui64Time=this->getPlayerContext().getCurrentTime();
@@ -525,7 +561,7 @@ boolean CBoxAlgorithmLuaStimulator::getStimulationCountCB(uint32 ui32InputIndex,
 {
 	if(ui32InputIndex >= m_vInputStimulation.size())
 	{
-		this->getLogManager() << LogLevel_Warning << "Input " << ui32InputIndex+1 << " does not exist\n";
+		this->getLogManager() << LogLevel_Warning << "Input " << (ui32InputIndex+1) << " does not exist\n";
 		rui32Count = 0;
 		return true;
 	}
@@ -538,7 +574,10 @@ boolean CBoxAlgorithmLuaStimulator::getStimulationCB(uint32 ui32InputIndex, uint
 {
 	if(!this->_waitForStimulation(ui32InputIndex, ui32StimulationIndex))
 	{
-		return false;
+		rui64Identifier=uint64(-1);
+		rui64Time=uint64(-1);
+		rui64Duration=uint64(-1);
+		return true;
 	}
 
 	std::multimap < uint64, std::pair < uint64, uint64 > >::iterator l_itStimulation=m_vInputStimulation[ui32InputIndex].begin();
@@ -549,7 +588,7 @@ boolean CBoxAlgorithmLuaStimulator::getStimulationCB(uint32 ui32InputIndex, uint
 	rui64Time=l_itStimulation->first;
 	rui64Duration=l_itStimulation->second.second;
 
-	this->getLogManager() << LogLevel_Debug << "getStimulationCB " << ui32InputIndex+1 << " " << ui32StimulationIndex+1 << " " << rui64Identifier << " " << rui64Time << " " << rui64Duration << "\n";
+	this->getLogManager() << LogLevel_Debug << "getStimulationCB " << (ui32InputIndex+1) << " " << (ui32StimulationIndex+1) << " " << rui64Identifier << " " << rui64Time << " " << rui64Duration << "\n";
 
 	return true;
 }
@@ -558,7 +597,7 @@ boolean CBoxAlgorithmLuaStimulator::removeStimulationCB(uint32 ui32InputIndex, u
 {
 	if(!this->_waitForStimulation(ui32InputIndex, ui32StimulationIndex))
 	{
-		return false;
+		return true;
 	}
 
 	std::multimap < uint64, std::pair < uint64, uint64 > >::iterator l_itStimulation=m_vInputStimulation[ui32InputIndex].begin();
@@ -567,7 +606,7 @@ boolean CBoxAlgorithmLuaStimulator::removeStimulationCB(uint32 ui32InputIndex, u
 
 	m_vInputStimulation[ui32InputIndex].erase(l_itStimulation);
 
-	this->getLogManager() << LogLevel_Debug << "removeStimulationCB " << ui32InputIndex+1 << " " << ui32StimulationIndex+1 << "\n";
+	this->getLogManager() << LogLevel_Debug << "removeStimulationCB " << (ui32InputIndex+1) << " " << (ui32StimulationIndex+1) << "\n";
 
 	return true;
 }
@@ -578,17 +617,17 @@ boolean CBoxAlgorithmLuaStimulator::sendStimulationCB(uint32 ui32OutputIndex, ui
 	{
 		if(ui64Time >= this->getPlayerContext().getCurrentTime())
 		{
-			this->getLogManager() << LogLevel_Debug << "sendStimulationCB " << ui32OutputIndex+1 << " " << ui64Identifier << " " << ui64Time << " " << ui64Duration << "\n";
+			this->getLogManager() << LogLevel_Debug << "sendStimulationCB " << (ui32OutputIndex+1) << " " << ui64Identifier << " " << ui64Time << " " << ui64Duration << "\n";
 			m_vOutputStimulation[ui32OutputIndex].insert(std::make_pair(ui64Time, std::make_pair(ui64Identifier, ui64Duration)));
 		}
 		else
 		{
-			this->getLogManager() << LogLevel_ImportantWarning << "Ignored outdated stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on output " << ui32OutputIndex+1 << " - current time is " << this->getPlayerContext().getCurrentTime() << "\n";
+			this->getLogManager() << LogLevel_ImportantWarning << "Ignored outdated stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on output " << (ui32OutputIndex+1) << " - current time is " << this->getPlayerContext().getCurrentTime() << "\n";
 		}
 	}
 	else
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Ignored stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on unexistant output " << ui32OutputIndex+1 << "\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Ignored stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on unexistant output " << (ui32OutputIndex+1) << "\n";
 	}
 	return true;
 }
@@ -596,7 +635,7 @@ boolean CBoxAlgorithmLuaStimulator::sendStimulationCB(uint32 ui32OutputIndex, ui
 void CBoxAlgorithmLuaStimulator::doThread(void)
 {
 	m_oInnerLock.lock();
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "process()"));
+	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "process(__openvibe_box_context)"));
 	m_ui32State=State_Finished;
 	m_oInnerLock.unlock();
 

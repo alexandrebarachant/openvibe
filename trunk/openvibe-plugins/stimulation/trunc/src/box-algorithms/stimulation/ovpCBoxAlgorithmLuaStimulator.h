@@ -13,6 +13,8 @@
 
 #include <map>
 #include <vector>
+#include <cstdio>
+#include <cstring>
 
 extern "C"
 {
@@ -50,6 +52,13 @@ namespace OpenViBEPlugins
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_BoxAlgorithm_LuaStimulator);
 
 			virtual OpenViBE::boolean _waitForStimulation(OpenViBE::uint32 ui32InputIndex, OpenViBE::uint32 ui32StimulationIndex);
+
+			virtual OpenViBE::boolean getInputCountCB(OpenViBE::uint32& rui64Count);
+			virtual OpenViBE::boolean getOutputCountCB(OpenViBE::uint32& rui64Count);
+			virtual OpenViBE::boolean getSettingCountCB(OpenViBE::uint32& rui64Count);
+			virtual OpenViBE::boolean getSettingCB(OpenViBE::uint32 ui32SettingIndex, OpenViBE::CString& rsSetting);
+			virtual OpenViBE::boolean getConfigCB(const OpenViBE::CString& rsString, OpenViBE::CString& rsConfig);
+
 			virtual OpenViBE::boolean getCurrentTimeCB(OpenViBE::uint64& rui64Time);
 			virtual OpenViBE::boolean sleepCB(void);
 			virtual OpenViBE::boolean getStimulationCountCB(OpenViBE::uint32 ui32InputIndex, OpenViBE::uint32& rui32Count);
@@ -110,6 +119,15 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
+			virtual OpenViBE::boolean onSettingAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				char l_sSettingName[1024];
+				::sprintf(l_sSettingName, "Setting %i", ui32Index);
+				rBox.setSettingType(ui32Index, OV_TypeId_String);
+				rBox.setSettingName(ui32Index, l_sSettingName);
+				return true;
+			}
+
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
 		};
 
@@ -140,7 +158,8 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addSetting("Lua Script", OV_TypeId_Script, "");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddOutput);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
-				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifySetting);
 				return true;
 			}
 
