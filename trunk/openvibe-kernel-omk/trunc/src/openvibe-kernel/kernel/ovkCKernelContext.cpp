@@ -197,6 +197,8 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pTypeManager->registerType(OV_TypeId_String,   "String");
 	m_pTypeManager->registerType(OV_TypeId_Filename, "Filename");
 	m_pTypeManager->registerType(OV_TypeId_Script,   "Script");
+	m_pTypeManager->registerType(OV_TypeId_Color,    "Color");
+	m_pTypeManager->registerType(OV_TypeId_ColorGradient, "Color Gradient");
 
 	m_pTypeManager->registerEnumerationType(OV_TypeId_Stimulation, "Stimulation");
 
