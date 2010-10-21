@@ -20,7 +20,18 @@ BODY,TD
 	font-family: Geneva, Arial, Helvetica, sans-serif;
 	font-size: small;
 }
-
+div.important
+{
+	text-align: center;
+	background-color: #e1b0b0;
+	border: 3px solid #990000;
+	padding: 0.5em;
+	margin-left: 4em;
+	margin-right: 4em;
+	margin-top: 0em;
+	margin-bottom: 0em;
+	-moz-border-radius: 4px;
+}
 h1
 {
 	margin-top: 0.75em;

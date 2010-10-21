@@ -131,10 +131,13 @@
  */
 
 /** \page Doc_DeveloperDocumentation Developer Documentation
- * <span style="color:red">If you want to see your work integrated in the project, you must follow the coding rules specified by the lead developer team.
- * These rules are available on this page : \ref Doc_Contribution</a>. Please read this page carefully ! 
- * We won't integrate any candidate modules that does not follow these rules.</span>
- * 
+ <p><div class="important"> 
+ If you want to see your work integrated in the project, you must follow the coding rules specified by the lead developer team.
+ These rules are available on this page : \ref Doc_Contribution</a>. Please read this page carefully ! 
+ <br />
+ We won't integrate any candidate modules that does not follow these rules.</div></p>
+ * <br />
+ * <br />
  * 
  * <b>Developer Tutorials</b> :
  * - \subpage Doc_Install "Installation procedure"
