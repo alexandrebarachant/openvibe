@@ -131,6 +131,12 @@
  */
 
 /** \page Doc_DeveloperDocumentation Developer Documentation
+ * <span style="color:red">If you want to see your work integrated in the project, you must follow the coding rules specified by the lead developer team.
+ * These rules are available on this page : \ref Doc_Contribution</a>. Please read this page carefully ! 
+ * We won't integrate any candidate modules that does not follow these rules.</span>
+ * 
+ * 
+ * <b>Developer Tutorials</b> :
  * - \subpage Doc_Install "Installation procedure"
  * - \subpage Doc_DeveloperTutorials "Developer tutorials"
  *   - \subpage Doc_DeveloperDocumentation_Driver
