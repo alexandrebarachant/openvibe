@@ -93,49 +93,154 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSpinButton" id="settings_collection-spin_button_setting_integer">
+          <object class="GtkHBox" id="settings_collection-hbox_setting_integer">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">adjustment</property>
+            <child>
+              <object class="GtkEntry" id="settings_collection-entry_setting_integer_string">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="settings_collection-button_setting_integer_up">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkImage" id="settings_collection-image_setting_integer_up">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-go-up</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="settings_collection-button_setting_integer_down">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkImage" id="settings_collection-image_setting_integer_down">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-go-down</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <object class="GtkSpinButton" id="settings_collection-spin_button_setting_float">
+          <object class="GtkHBox" id="settings_collection-hbox_setting_float">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">adjustment</property>
-            <property name="digits">8</property>
+            <child>
+              <object class="GtkEntry" id="settings_collection-entry_setting_float_string">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="settings_collection-button_setting_float_up">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkImage" id="settings_collection-image_setting_float_up">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-go-up</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="settings_collection-button_setting_float_down">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkImage" id="settings_collection-image_setting_float_down">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-go-down</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="position">3</property>
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton" id="settings_collection-check_button_setting_boolean">
+          <object class="GtkHBox" id="settings_collection-hbox_setting_boolean">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="use_stock">True</property>
-            <property name="draw_indicator">True</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkCheckButton" id="settings_collection-checkbutton_setting_boolean">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEntry" id="settings_collection-entry_setting_boolean">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="position">4</property>
           </packing>
         </child>
         <child>
-          <object class="GtkComboBox" id="settings_collection-combobox_setting_enumeration">
+          <object class="GtkComboBoxEntry" id="settings_collection-comboboxentry_setting_enumeration">
             <property name="visible">True</property>
             <property name="model">model</property>
             <property name="wrap_width">4</property>
-            <child>
-              <object class="GtkCellRendererText" id="renderer2"/>
-              <attributes>
-                <attribute name="text">0</attribute>
-              </attributes>
-            </child>
+            <property name="text_column">0</property>
           </object>
           <packing>
             <property name="position">5</property>
@@ -304,6 +409,21 @@
           <packing>
             <property name="position">10</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
         <child>
           <placeholder/>

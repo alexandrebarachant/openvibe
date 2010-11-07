@@ -459,8 +459,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -661,8 +661,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2174,8 +2174,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2215,304 +2215,6 @@ Previous Documenters :
       <action-widget response="-10">box_configuration-button_apply</action-widget>
       <action-widget response="-6">box_configuration-button_cancel</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkWindow" id="settings_collection">
-    <property name="skip_taskbar_hint">True</property>
-    <child>
-      <object class="GtkVBox" id="settings_collection-container">
-        <property name="visible">True</property>
-        <child>
-          <object class="GtkHBox" id="settings_collection-dummy_setting_content">
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkLabel" id="settings_collection-label_setting_name">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes"> </property>
-              </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="settings_collection-button_setting_default">
-                <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-                <child>
-                  <object class="GtkHBox" id="settings_collection-button_setting_default_hbox">
-                    <property name="visible">True</property>
-                    <child>
-                      <object class="GtkImage" id="settings_collection-button_setting_default_image">
-                        <property name="visible">True</property>
-                        <property name="stock">gtk-revert-to-saved</property>
-                      </object>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="settings_collection-button_setting_default_label">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Default</property>
-                      </object>
-                      <packing>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="settings_collection-button_setting_revert">
-                <property name="label">gtk-revert-to-saved</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="settings_collection-entry_setting_string">
-            <property name="visible">True</property>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="settings_collection-spin_button_setting_integer">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">adjustment1</property>
-          </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="settings_collection-spin_button_setting_float">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="adjustment">adjustment2</property>
-            <property name="digits">8</property>
-          </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkCheckButton" id="settings_collection-check_button_setting_boolean">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="use_stock">True</property>
-            <property name="draw_indicator">True</property>
-          </object>
-          <packing>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkComboBox" id="settings_collection-combobox_setting_enumeration">
-            <property name="visible">True</property>
-            <property name="model">model2</property>
-            <property name="wrap_width">4</property>
-            <child>
-              <object class="GtkCellRendererText" id="renderer2"/>
-              <attributes>
-                <attribute name="text">0</attribute>
-              </attributes>
-            </child>
-          </object>
-          <packing>
-            <property name="position">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkTable" id="settings_collection-table_setting_bitmask">
-            <property name="visible">True</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="position">6</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkHBox" id="settings_collection-hbox_setting_filename">
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkEntry" id="settings_collection-entry_setting_filename_string">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="settings_collection-button_setting_filename_browse">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">False</property>
-                <child>
-                  <object class="GtkImage" id="settings_collection-image_setting_filename_browse">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-open</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="position">7</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkHBox" id="settings_collection-hbox_setting_color">
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkEntry" id="settings_collection-hbox_setting_color_string">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkColorButton" id="settings_collection-hbox_setting_color_choose">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="color">#000000000000</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="position">8</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkHBox" id="settings_collection-hbox_setting_color_gradient">
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkEntry" id="settings_collection-hbox_setting_color_gradient_string">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="settings_collection-hbox_setting_color_gradient_choose">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <child>
-                  <object class="GtkImage" id="settings_collection-hbox_setting_color_gradient_image">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-select-color</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="position">9</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkHBox" id="settings_collection-hbox_setting_script">
-            <property name="visible">True</property>
-            <child>
-              <object class="GtkEntry" id="settings_collection-entry_setting_script_string">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
-              </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="settings_collection-button_setting_script_edit">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <child>
-                  <object class="GtkImage" id="settings_collection-image_setting_script_edit">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-edit</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="settings_collection-button_setting_script_browse">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <child>
-                  <object class="GtkImage" id="settings_collection-image_setting_script_browse">
-                    <property name="visible">True</property>
-                    <property name="stock">gtk-open</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="position">10</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-    </child>
   </object>
   <object class="GtkWindow" id="tooltip">
     <property name="type">popup</property>
@@ -2870,8 +2572,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3271,8 +2973,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>

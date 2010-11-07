@@ -168,11 +168,17 @@ namespace OpenViBE
 
 #define boolean OpenViBE::boolean
 
-CConfigurationManager::CConfigurationManager(const IKernelContext& rKernelContext)
+CConfigurationManager::CConfigurationManager(const IKernelContext& rKernelContext, IConfigurationManager* pParentConfigurationManager)
 	:TKernelObject<IConfigurationManager>(rKernelContext)
+	,m_pParentConfigurationManager(pParentConfigurationManager)
 {
 	m_ui32Index=0;
 	m_ui32StartTime=System::Time::getTime();
+}
+
+void CConfigurationManager::clear(void)
+{
+	m_vConfigurationToken.clear();
 }
 
 boolean CConfigurationManager::addConfigurationFromFile(
@@ -190,6 +196,7 @@ boolean CConfigurationManager::addConfigurationFromFile(
 
 // ----------------------------------------------------------------------------------------------------------------------------
 //
+
 CIdentifier CConfigurationManager::createConfigurationToken(
 	const CString& rConfigurationTokenName,
 	const CString& rConfigurationTokenValue)
@@ -416,7 +423,8 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 
 				if(l_sLowerPrefix=="")
 				{
-					l_sValue=this->getConfigurationTokenValue(this->lookUpConfigurationTokenIdentifier(l_sPostfix.c_str()));
+					// l_sValue=this->getConfigurationTokenValue(this->lookUpConfigurationTokenIdentifier(l_sPostfix.c_str()));
+					this->internalGetConfigurationTokenValueFromName(l_sPostfix, l_sValue);
 				}
 				else if(l_sLowerPrefix=="environment" || l_sLowerPrefix=="env")
 				{
@@ -507,6 +515,20 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 	return true;
 }
 
+boolean CConfigurationManager::internalGetConfigurationTokenValueFromName(const std::string& sTokenName, std::string& sTokenValue) const
+{
+	CIdentifier l_oTokenIdentifier=this->lookUpConfigurationTokenIdentifier(sTokenName.c_str());
+	if(l_oTokenIdentifier == OV_UndefinedIdentifier && m_pParentConfigurationManager)
+	{
+		std::string l_sNewString=std::string("${")+sTokenName+("}");
+		sTokenValue=m_pParentConfigurationManager->expand(l_sNewString.c_str());
+	}
+	else
+	{
+		sTokenValue=this->getConfigurationTokenValue(l_oTokenIdentifier);
+	}
+	return true;
+}
 
 float64 CConfigurationManager::expandAsFloat(
 	const CString& rExpression,

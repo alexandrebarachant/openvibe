@@ -28,6 +28,96 @@ namespace
 
 // ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- ----------- -----------
 
+	static void on_entry_setting_boolean_edited(::GtkEntry* pEntry, gpointer pUserData)
+	{
+		vector< ::GtkWidget* > l_vWidget;
+		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pEntry))), collect_widget_cb, &l_vWidget);
+		::GtkToggleButton* l_pWidget=GTK_TOGGLE_BUTTON(l_vWidget[0]);
+
+		std::string l_sEntryValue=::gtk_entry_get_text(pEntry);
+		if(l_sEntryValue=="true")
+		{
+			::gtk_toggle_button_set_active(l_pWidget, true);
+			::gtk_toggle_button_set_inconsistent(l_pWidget, false);
+		}
+		else if (l_sEntryValue=="false")
+		{
+			::gtk_toggle_button_set_active(l_pWidget, false);
+			::gtk_toggle_button_set_inconsistent(l_pWidget, false);
+		}
+		else
+		{
+			::gtk_toggle_button_set_inconsistent(l_pWidget, true);
+		}
+	}
+
+	static void on_checkbutton_setting_boolean_pressed(::GtkToggleButton* pButton, gpointer pUserData)
+	{
+		vector< ::GtkWidget* > l_vWidget;
+		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
+		::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[1]);
+
+		if(::gtk_toggle_button_get_active(pButton))
+		{
+			::gtk_entry_set_text(l_pWidget, "true");
+		}
+		else
+		{
+			::gtk_entry_set_text(l_pWidget, "false");
+		}
+		::gtk_toggle_button_set_inconsistent(pButton, false);
+	}
+
+	static void on_button_setting_integer_pressed(::GtkButton* pButton, gpointer pUserData, gint iOffset)
+	{
+		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+
+		vector< ::GtkWidget* > l_vWidget;
+		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
+		::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+		char l_sValue[1024];
+		int64 l_i64lValue=l_rKernelContext.getConfigurationManager().expandAsInteger(gtk_entry_get_text(l_pWidget), 0);
+		l_i64lValue+=iOffset;
+		::sprintf(l_sValue, "%lli", l_i64lValue);
+		gtk_entry_set_text(l_pWidget, l_sValue);
+	}
+
+	static void on_button_setting_integer_up_pressed(::GtkButton* pButton, gpointer pUserData)
+	{
+		on_button_setting_integer_pressed(pButton, pUserData, 1);
+	}
+
+	static void on_button_setting_integer_down_pressed(::GtkButton* pButton, gpointer pUserData)
+	{
+		on_button_setting_integer_pressed(pButton, pUserData, -1);
+	}
+
+	static void on_button_setting_float_pressed(::GtkButton* pButton, gpointer pUserData, gdouble dOffset)
+	{
+		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+
+		vector< ::GtkWidget* > l_vWidget;
+		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
+		::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+		char l_sValue[1024];
+		float64 l_f64lValue=l_rKernelContext.getConfigurationManager().expandAsFloat(gtk_entry_get_text(l_pWidget), 0);
+		l_f64lValue+=dOffset;
+		::sprintf(l_sValue, "%lf", l_f64lValue);
+		gtk_entry_set_text(l_pWidget, l_sValue);
+	}
+
+	static void on_button_setting_float_up_pressed(::GtkButton* pButton, gpointer pUserData)
+	{
+		on_button_setting_float_pressed(pButton, pUserData, 1);
+	}
+
+	static void on_button_setting_float_down_pressed(::GtkButton* pButton, gpointer pUserData)
+	{
+		on_button_setting_float_pressed(pButton, pUserData, -1);
+	}
+
 	static void on_button_setting_filename_browse_pressed(::GtkButton* pButton, gpointer pUserData)
 	{
 		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
@@ -377,15 +467,15 @@ CSettingCollectionHelper::~CSettingCollectionHelper(void)
 
 CString CSettingCollectionHelper::getSettingWidgetName(const CIdentifier& rTypeIdentifier)
 {
-	if(rTypeIdentifier==OV_TypeId_Boolean)       return "settings_collection-check_button_setting_boolean";
-	if(rTypeIdentifier==OV_TypeId_Integer)       return "settings_collection-spin_button_setting_integer";
-	if(rTypeIdentifier==OV_TypeId_Float)         return "settings_collection-spin_button_setting_float";
+	if(rTypeIdentifier==OV_TypeId_Boolean)       return "settings_collection-hbox_setting_boolean";
+	if(rTypeIdentifier==OV_TypeId_Integer)       return "settings_collection-hbox_setting_integer";
+	if(rTypeIdentifier==OV_TypeId_Float)         return "settings_collection-hbox_setting_float";
 	if(rTypeIdentifier==OV_TypeId_String)        return "settings_collection-entry_setting_string";
 	if(rTypeIdentifier==OV_TypeId_Filename)      return "settings_collection-hbox_setting_filename";
 	if(rTypeIdentifier==OV_TypeId_Script)        return "settings_collection-hbox_setting_script";
 	if(rTypeIdentifier==OV_TypeId_Color)         return "settings_collection-hbox_setting_color";
 	if(rTypeIdentifier==OV_TypeId_ColorGradient) return "settings_collection-hbox_setting_color_gradient";
-	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return "settings_collection-combobox_setting_enumeration";
+	if(m_rKernelContext.getTypeManager().isEnumeration(rTypeIdentifier)) return "settings_collection-comboboxentry_setting_enumeration";
 	if(m_rKernelContext.getTypeManager().isBitMask(rTypeIdentifier))     return "settings_collection-table_setting_bitmask";
 	return "settings_collection-entry_setting_string";
 }
@@ -410,32 +500,32 @@ CString CSettingCollectionHelper::getValue(const CIdentifier& rTypeIdentifier, :
 
 CString CSettingCollectionHelper::getValueBoolean(::GtkWidget* pWidget)
 {
-	if(!GTK_IS_TOGGLE_BUTTON(pWidget)) return "false";
-	::GtkToggleButton* l_pWidget=GTK_TOGGLE_BUTTON(pWidget);
-	boolean l_bActive=gtk_toggle_button_get_active(l_pWidget)?true:false;
-	return CString(l_bActive?"true":"false");
+	vector< ::GtkWidget* > l_vWidget;
+	if(!GTK_IS_CONTAINER(pWidget)) return "false";
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	if(!GTK_IS_ENTRY(l_vWidget[1])) return "false";
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[1]);
+	return CString(gtk_entry_get_text(l_pWidget));
 }
 
 CString CSettingCollectionHelper::getValueInteger(::GtkWidget* pWidget)
 {
-	if(!GTK_IS_SPIN_BUTTON(pWidget)) return "0";
-	::GtkSpinButton* l_pWidget=GTK_SPIN_BUTTON(pWidget);
-	gtk_spin_button_update(l_pWidget);
-	int l_iValue=gtk_spin_button_get_value_as_int(l_pWidget);
-	char l_sValue[1024];
-	sprintf(l_sValue, "%i", l_iValue);
-	return CString(l_sValue);
+	vector< ::GtkWidget* > l_vWidget;
+	if(!GTK_IS_CONTAINER(pWidget)) return "0";
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	if(!GTK_IS_ENTRY(l_vWidget[0])) return "O";
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+	return CString(gtk_entry_get_text(l_pWidget));
 }
 
 CString CSettingCollectionHelper::getValueFloat(::GtkWidget* pWidget)
 {
-	if(!GTK_IS_SPIN_BUTTON(pWidget)) return "0";
-	::GtkSpinButton* l_pWidget=GTK_SPIN_BUTTON(pWidget);
-	gtk_spin_button_update(l_pWidget);
-	double l_fValue=gtk_spin_button_get_value_as_float(l_pWidget);
-	char l_sValue[1024];
-	sprintf(l_sValue, "%f", l_fValue);
-	return CString(l_sValue);
+	vector< ::GtkWidget* > l_vWidget;
+	if(!GTK_IS_CONTAINER(pWidget)) return "0";
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	if(!GTK_IS_ENTRY(l_vWidget[0])) return "O";
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+	return CString(gtk_entry_get_text(l_pWidget));
 }
 
 CString CSettingCollectionHelper::getValueString(::GtkWidget* pWidget)
@@ -534,37 +624,52 @@ void CSettingCollectionHelper::setValue(const CIdentifier& rTypeIdentifier, ::Gt
 
 void CSettingCollectionHelper::setValueBoolean(::GtkWidget* pWidget, const CString& rValue)
 {
-	::GtkToggleButton* l_pWidget=GTK_TOGGLE_BUTTON(pWidget);
+	vector< ::GtkWidget* > l_vWidget;
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	::GtkToggleButton* l_pToggleButtonWidget=GTK_TOGGLE_BUTTON(l_vWidget[0]);
+	::GtkEntry* l_pEntryWidget=GTK_ENTRY(l_vWidget[1]);
+
 	if(rValue==CString("true"))
 	{
-		gtk_toggle_button_set_active(l_pWidget, true);
+		gtk_toggle_button_set_active(l_pToggleButtonWidget, true);
 	}
 	else if(rValue==CString("false"))
 	{
-		gtk_toggle_button_set_active(l_pWidget, false);
+		gtk_toggle_button_set_active(l_pToggleButtonWidget, false);
 	}
 	else
 	{
-		gtk_toggle_button_set_active(l_pWidget, false);
+		gtk_toggle_button_set_inconsistent(l_pToggleButtonWidget, true);
 	}
+
+	gtk_entry_set_text(l_pEntryWidget, rValue);
+
+	g_signal_connect(G_OBJECT(l_vWidget[0]), "toggled", G_CALLBACK(on_checkbutton_setting_boolean_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "changed", G_CALLBACK(on_entry_setting_boolean_edited), const_cast < IKernelContext* > (&m_rKernelContext));
 }
 
 void CSettingCollectionHelper::setValueInteger(::GtkWidget* pWidget, const CString& rValue)
 {
-	::GtkSpinButton* l_pWidget=GTK_SPIN_BUTTON(pWidget);
-	int l_iValue=0;
-	sscanf(rValue, "%i", &l_iValue);
-	gtk_spin_button_set_range(l_pWidget, -G_MAXDOUBLE, G_MAXDOUBLE);
-	gtk_spin_button_set_value(l_pWidget, l_iValue);
+	vector< ::GtkWidget* > l_vWidget;
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_integer_up_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_integer_down_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+
+	gtk_entry_set_text(l_pWidget, rValue);
 }
 
 void CSettingCollectionHelper::setValueFloat(::GtkWidget* pWidget, const CString& rValue)
 {
-	::GtkSpinButton* l_pWidget=GTK_SPIN_BUTTON(pWidget);
-	double l_fValue=0;
-	sscanf(rValue, "%lf", &l_fValue);
-	gtk_spin_button_set_range(l_pWidget, -G_MAXDOUBLE, G_MAXDOUBLE);
-	gtk_spin_button_set_value(l_pWidget, l_fValue);
+	vector< ::GtkWidget* > l_vWidget;
+	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
+	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
+
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_float_up_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_float_down_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+
+	gtk_entry_set_text(l_pWidget, rValue);
 }
 
 void CSettingCollectionHelper::setValueString(::GtkWidget* pWidget, const CString& rValue)
@@ -685,7 +790,9 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 
 	if(gtk_combo_box_get_active(l_pWidget)==-1)
 	{
-		gtk_combo_box_set_active(l_pWidget, 0);
+		gtk_list_store_append(l_pList, &l_oListIter);
+		gtk_list_store_set(l_pList, &l_oListIter, 0, rValue.toASCIIString(), -1);
+		gtk_combo_box_set_active(l_pWidget, (gint)i); // $$$ i should be ok :)
 	}
 }
 
@@ -694,8 +801,10 @@ void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifie
 	gtk_container_foreach(GTK_CONTAINER(pWidget), remove_widget_cb, pWidget);
 
 	string l_sValue(rValue);
+
+	gint l_iTableSize=(guint)((m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1);
 	::GtkTable* l_pBitMaskTable=GTK_TABLE(pWidget);
-	gtk_table_resize(l_pBitMaskTable, 2, (guint)((m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier)+1)>>1));
+	gtk_table_resize(l_pBitMaskTable, 2, l_iTableSize);
 
 	for(uint64 i=0; i<m_rKernelContext.getTypeManager().getBitMaskEntryCount(rTypeIdentifier); i++)
 	{
@@ -703,17 +812,9 @@ void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifie
 		uint64 l_ui64EntryValue;
 		if(m_rKernelContext.getTypeManager().getBitMaskEntry(rTypeIdentifier, i, l_sEntryName, l_ui64EntryValue))
 		{
-			::GtkBuilder* l_pBuilderInterfaceDummy=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "settings_collection-check_button_setting_boolean", NULL);
-			gtk_builder_add_from_file(l_pBuilderInterfaceDummy, m_sGUIFilename.toASCIIString(), NULL);
-			gtk_builder_connect_signals(l_pBuilderInterfaceDummy, NULL);
-
-			::GtkWidget* l_pSettingButton=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceDummy, "settings_collection-check_button_setting_boolean"));
-
-			gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pSettingButton)), l_pSettingButton);
+			::GtkWidget* l_pSettingButton=::gtk_check_button_new();
 			gtk_table_attach_defaults(l_pBitMaskTable, l_pSettingButton, (guint)(i&1), (guint)((i&1)+1), (guint)(i>>1), (guint)((i>>1)+1));
 			gtk_button_set_label(GTK_BUTTON(l_pSettingButton), (const char*)l_sEntryName);
-
-			g_object_unref(l_pBuilderInterfaceDummy);
 
 			if(l_sValue.find((const char*)l_sEntryName)!=string::npos)
 			{
@@ -721,4 +822,11 @@ void CSettingCollectionHelper::setValueBitMask(const CIdentifier& rTypeIdentifie
 			}
 		}
 	}
+
+/*
+ * TODO - Add an entry text somewhere to manage
+ * configuration through configuration manager !
+ */
+
+	gtk_widget_show_all(GTK_WIDGET(l_pBitMaskTable));
 }

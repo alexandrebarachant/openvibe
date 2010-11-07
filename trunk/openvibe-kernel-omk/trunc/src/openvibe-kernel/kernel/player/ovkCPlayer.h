@@ -4,6 +4,8 @@
 #include "../ovkTKernelObject.h"
 #include "ovkCScheduler.h"
 
+#include "../ovkCKernelContext.h"
+
 #include <system/CChrono.h>
 
 #include <map>
@@ -42,6 +44,9 @@ namespace OpenViBE
 			_IsDerivedFromClass_Final_(OpenViBE::Kernel::TKernelObject < OpenViBE::Kernel::IPlayer >, OVK_ClassId_Kernel_Player_Player);
 
 		protected:
+
+			OpenViBE::Kernel::CKernelContextBridge m_oKernelContextBridge;
+			OpenViBE::Kernel::IConfigurationManager* m_pLocalConfigurationManager;
 
 			OpenViBE::Kernel::CScheduler m_oScheduler;
 

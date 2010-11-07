@@ -85,6 +85,7 @@ namespace OpenViBE
 					{
 						return false;
 					}
+#if 0
 					if(l_oTypeIdentifier==OV_TypeId_Filename)
 					{
 						rValue=this->getConfigurationManager().expand(l_sResult);
@@ -94,6 +95,10 @@ namespace OpenViBE
 						rValue=l_sResult;
 					}
 					return true;
+#else
+					rValue=this->getConfigurationManager().expand(l_sResult);
+					return true;
+#endif
 				}
 #endif
 				virtual __BridgeImplFunc2__((*m_pBox), boolean, setSettingType, , return false, const uint32, ui32SettingIndex, const CIdentifier&, rTypeIdentifier);

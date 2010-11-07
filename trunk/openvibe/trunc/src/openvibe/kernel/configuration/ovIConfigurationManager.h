@@ -11,6 +11,8 @@ namespace OpenViBE
 		{
 		public:
 
+			virtual void clear(void)=0;
+
 			virtual OpenViBE::boolean addConfigurationFromFile(
 				const OpenViBE::CString& rFileNameWildCard)=0;
 

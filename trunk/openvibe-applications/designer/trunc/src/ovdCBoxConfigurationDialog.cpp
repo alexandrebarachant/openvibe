@@ -315,7 +315,7 @@ boolean CBoxConfigurationDialog::run(void)
 			m_rBox.getSettingType(i, l_oSettingType);
 
 			::GtkBuilder* l_pBuilderInterfaceDummy=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), "settings_collection-dummy_setting_content", NULL);
-			gtk_builder_add_from_file(l_pBuilderInterfaceDummy, m_sGUIFilename.toASCIIString(), NULL);
+			gtk_builder_add_from_file(l_pBuilderInterfaceDummy, m_sGUISettingsFilename.toASCIIString(), NULL);
 			gtk_builder_connect_signals(l_pBuilderInterfaceDummy, NULL);
 
 			::GtkWidget* l_pSettingName=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceDummy, "settings_collection-label_setting_name"));
@@ -324,7 +324,7 @@ boolean CBoxConfigurationDialog::run(void)
 
 			string l_sWidgetName=l_oHelper.getSettingWidgetName(l_oSettingType).toASCIIString();
 			::GtkBuilder* l_pBuilderInterfaceSettingCollection=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), l_sWidgetName.c_str(), NULL);
-			gtk_builder_add_from_file(l_pBuilderInterfaceSettingCollection, m_sGUIFilename.toASCIIString(), NULL);
+			gtk_builder_add_from_file(l_pBuilderInterfaceSettingCollection, m_sGUISettingsFilename.toASCIIString(), NULL);
 			gtk_builder_connect_signals(l_pBuilderInterfaceSettingCollection, NULL);
 
 			::GtkWidget* l_pSettingValue=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSettingCollection, l_sWidgetName.c_str()));
@@ -351,7 +351,7 @@ boolean CBoxConfigurationDialog::run(void)
 #if 1
 		string l_sSettingOverrideWidgetName=l_oHelper.getSettingWidgetName(OV_TypeId_Filename).toASCIIString();
 		::GtkBuilder* l_pBuilderInterfaceSettingCollection=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), l_sSettingOverrideWidgetName.c_str(), NULL);
-		gtk_builder_add_from_file(l_pBuilderInterfaceSettingCollection, m_sGUIFilename.toASCIIString(), NULL);
+		gtk_builder_add_from_file(l_pBuilderInterfaceSettingCollection, m_sGUISettingsFilename.toASCIIString(), NULL);
 		gtk_builder_connect_signals(l_pBuilderInterfaceSettingCollection, NULL);
 
 		::GtkWidget* l_pSettingOverrideValue=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterfaceSettingCollection, l_sSettingOverrideWidgetName.c_str()));

@@ -537,7 +537,7 @@ void CInterfacedScenario::redraw(IBox& rBox)
 	else
 		l_oAttributeHandler.setAttributeValue<int>(OV_AttributeId_Box_YSize, ySize);
 
-	int l_iInputOffset=(xSize-rBox.getInputCount()*(iCircleSpace+iCircleSize)+iCircleSize/2)/2;
+	int l_iInputOffset=xSize/2-rBox.getInputCount()*(iCircleSpace+iCircleSize)/2+iCircleSize/4;
 	for(i=0; i<rBox.getInputCount(); i++)
 	{
 		CIdentifier l_oInputIdentifier;
@@ -605,7 +605,7 @@ void CInterfacedScenario::redraw(IBox& rBox)
 		}
 	}
 
-	int l_iOutputOffset=(xSize-rBox.getOutputCount()*(iCircleSpace+iCircleSize)+iCircleSize/2)/2;
+	int l_iOutputOffset=xSize/2-rBox.getOutputCount()*(iCircleSpace+iCircleSize)/2+iCircleSize/4;
 	for(i=0; i<rBox.getOutputCount(); i++)
 	{
 		CIdentifier l_oOutputIdentifier;

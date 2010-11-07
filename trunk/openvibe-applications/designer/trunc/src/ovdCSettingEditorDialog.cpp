@@ -121,7 +121,7 @@ void CSettingEditorDialog::typeChangedCB(void)
 
 	CString l_sWidgetName=l_oHelper.getSettingWidgetName(l_oSettingType).toASCIIString();
 	::GtkBuilder* l_pBuilderInterfaceDefaultValueDummy=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), l_sWidgetName.toASCIIString(), NULL);
-	gtk_builder_add_from_file(l_pBuilderInterfaceDefaultValueDummy, m_sGUIFilename.toASCIIString(), NULL);
+	gtk_builder_add_from_file(l_pBuilderInterfaceDefaultValueDummy, m_sGUISettingsFilename.toASCIIString(), NULL);
 	gtk_builder_connect_signals(l_pBuilderInterfaceDefaultValueDummy, NULL);
 
 	if(m_pDefaultValue) gtk_container_remove(GTK_CONTAINER(m_pTable), m_pDefaultValue);

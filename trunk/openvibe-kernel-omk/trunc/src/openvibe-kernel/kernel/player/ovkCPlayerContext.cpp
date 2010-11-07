@@ -39,6 +39,8 @@ namespace OpenViBE
 
 				CConfigurationManagerBridge(const IKernelContext& rKernelContext, CSimulatedBox* pSimulatedBox) : TKernelObject<IConfigurationManager>(rKernelContext), m_pSimulatedBox(pSimulatedBox) { }
 
+				__BridgeBindFunc0__(getKernelContext().getConfigurationManager(), void, clear, );
+
 				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), boolean, addConfigurationFromFile, , const CString&, rFileNameWildCard);
 
 				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), CIdentifier, createConfigurationToken, , const CString&, rConfigurationTokenName, const CString&, rConfigurationTokenValue);

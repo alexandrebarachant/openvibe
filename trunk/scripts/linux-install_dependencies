@@ -1050,7 +1050,7 @@ ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0
 fi;
 ov_package_url_cegui=$ov_sourceforge_mirror/crayzedsgui/CEGUI%20Mk-2/0.7.1/CEGUI-0.7.1.tar.gz
 ov_package_url_ogre=$ov_sourceforge_mirror/ogre/ogre/1.7/ogre_src_v1-7-1.tar.bz2
-ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/vrpn_07_26.zip
+ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/old_versions/vrpn_07_26.zip
 ov_package_url_openmask4=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4~dotsceneloader-src-164.tar.bz2
 ov_package_url_openmask4tutorial=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4-tutorial-src-164.tar.bz2
 

@@ -20,7 +20,9 @@ namespace OpenViBE
 		{
 		public:
 
-			CConfigurationManager(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+			CConfigurationManager(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::IConfigurationManager* pParentConfigurationManager=NULL);
+
+			virtual void clear(void);
 
 			virtual OpenViBE::boolean addConfigurationFromFile(
 				const OpenViBE::CString& rFileNameWildCard);
@@ -75,6 +77,11 @@ namespace OpenViBE
 			virtual OpenViBE::CIdentifier getUnusedIdentifier(void) const;
 
 			OpenViBE::boolean internalExpand(const std::string& sValue, std::string& sResult) const;
+			OpenViBE::boolean internalGetConfigurationTokenValueFromName(const std::string& sTokenName, std::string& sTokenValue) const;
+
+		protected:
+
+			OpenViBE::Kernel::IConfigurationManager* m_pParentConfigurationManager;
 
 		protected:
 

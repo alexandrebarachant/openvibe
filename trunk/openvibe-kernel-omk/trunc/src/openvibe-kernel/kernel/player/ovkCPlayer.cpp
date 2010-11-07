@@ -2,6 +2,8 @@
 #include "ovkCSimulatedBox.h"
 #include "ovkCScheduler.h"
 
+#include "../configuration/ovkCConfigurationManager.h"
+
 #include <system/Time.h>
 
 #include <xml/IReader.h>
@@ -27,7 +29,8 @@ using namespace OpenViBE::Plugins;
 
 CPlayer::CPlayer(const IKernelContext& rKernelContext)
 	:TKernelObject<IPlayer>(rKernelContext)
-	,m_oScheduler(rKernelContext, *this)
+	,m_oKernelContextBridge(rKernelContext)
+	,m_oScheduler(m_oKernelContextBridge, *this)
 	,m_ui64CurrentTimeToReach(0)
 	,m_ui64Lateness(0)
 	,m_eStatus(PlayerStatus_Uninitialized)
@@ -80,6 +83,11 @@ boolean CPlayer::initialize(void)
 
 	this->getLogManager() << LogLevel_Trace << "Player initialize\n";
 
+	m_pLocalConfigurationManager=new CConfigurationManager(this->getKernelContext(), &this->getKernelContext().getConfigurationManager());
+	m_pLocalConfigurationManager->addConfigurationFromFile(this->getKernelContext().getConfigurationManager().expand("${Kernel_DelayedConfiguration}"));
+	// m_pLocalConfigurationManager->addConfigurationFromFile(this->getKernelContext().getConfigurationManager().expand("")); // TODO ADD SCENARIO DEPENDANT CONFIGURATION FILE
+	m_oKernelContextBridge.setConfigurationManager(m_pLocalConfigurationManager);
+
 	m_oScheduler.initialize();
 	m_oBenchmarkChrono.reset(static_cast<uint32>(m_oScheduler.getFrequency()));
 
@@ -102,6 +110,10 @@ boolean CPlayer::uninitialize(void)
 	this->getLogManager() << LogLevel_Trace << "Player uninitialize\n";
 
 	m_oScheduler.uninitialize();
+
+	m_oKernelContextBridge.setConfigurationManager(NULL);
+	delete m_pLocalConfigurationManager;
+	m_pLocalConfigurationManager=NULL;
 
 	m_eStatus=PlayerStatus_Uninitialized;
 	return true;
