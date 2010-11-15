@@ -326,6 +326,7 @@ CApplication::CApplication(const IKernelContext& rKernelContext)
 	,m_pBoxAlgorithmTreeView(NULL)
 	,m_pAlgorithmTreeModel(NULL)
 	,m_pAlgorithmTreeView(NULL)
+	,m_bIsQuitting(false)
 {
 	m_pPluginManager=&m_rKernelContext.getPluginManager();
 	m_pScenarioManager=&m_rKernelContext.getScenarioManager();
@@ -1446,6 +1447,9 @@ boolean CApplication::quitApplicationCB(void)
 		}
 	}
 
+	// Switch to quitting mode
+	m_bIsQuitting=true;
+
 	// Saves opened scenarios
 	if(!(m_eCommandLineFlags&CommandLineFlag_NoManageSession))
 	{
@@ -1536,6 +1540,8 @@ void CApplication::CPUUsageCB(void)
 
 void CApplication::changeCurrentScenario(int32 i32PageIndex)
 {
+	if(m_bIsQuitting) return;
+
 	//hide window manager of previously active scenario, if any
 	int i = gtk_notebook_get_current_page(m_pScenarioNotebook);
 	if(i >= 0 && i < (int)m_vInterfacedScenario.size())

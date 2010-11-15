@@ -140,6 +140,7 @@ namespace OpenViBEDesigner
 		::GtkTreeView* m_pAlgorithmTreeView;
 
 		OpenViBE::uint64 m_ui64LastTimeRefresh;
+		OpenViBE::boolean m_bIsQuitting;
 
 		std::vector < OpenViBEDesigner::CInterfacedScenario* > m_vInterfacedScenario;
 	};
