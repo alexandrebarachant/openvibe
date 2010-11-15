@@ -130,7 +130,8 @@ boolean CBoxAlgorithmAcquisitionClient::process(void)
 			l_rDynamicBoxContext.markOutputAsReadyToSend(3, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
 			m_ui64LastChunkStartTime=m_ui64LastChunkEndTime;
 			m_ui64LastChunkEndTime+=op_ui64BufferDuration;
-			this->getLogManager() << LogLevel_Debug << "Acquisition inner latency : " << int64(m_ui64LastChunkEndTime-this->getPlayerContext().getCurrentTime()) << "\n";
+			float64 l_f64Latency=(int64(m_ui64LastChunkEndTime-this->getPlayerContext().getCurrentTime())/(1LL<<22))/1024.;
+			this->getLogManager() << LogLevel_Debug << "Acquisition inner latency : " << l_f64Latency << "\n";
 		}
 	}
 
