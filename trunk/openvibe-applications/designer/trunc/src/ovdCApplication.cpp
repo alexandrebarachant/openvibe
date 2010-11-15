@@ -317,6 +317,7 @@ CApplication::CApplication(const IKernelContext& rKernelContext)
 	,m_pScenarioManager(NULL)
 	,m_pVisualisationManager(NULL)
 	,m_pClipboardScenario(NULL)
+	,m_eCommandLineFlags(CommandLineFlag_None)
 	,m_pBuilderInterface(NULL)
 	,m_pMainWindow(NULL)
 	,m_pScenarioNotebook(NULL)
@@ -331,8 +332,10 @@ CApplication::CApplication(const IKernelContext& rKernelContext)
 	m_pVisualisationManager=&m_rKernelContext.getVisualisationManager();
 }
 
-void CApplication::initialize(void)
+void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 {
+	m_eCommandLineFlags=eCommandLineFlags;
+
 	// Prepares scenario clipboard
 	CIdentifier l_oClipboardScenarioIdentifier;
 	if(m_pScenarioManager->createScenario(l_oClipboardScenarioIdentifier))
@@ -495,12 +498,37 @@ void CApplication::initialize(void)
 		gtk_notebook_remove_page(GTK_NOTEBOOK(gtk_builder_get_object(m_pBuilderInterface, "openvibe-resource_notebook")), 1);
 	}
 
-	gtk_widget_show(m_pMainWindow);
 	// gtk_window_set_icon_name(GTK_WINDOW(m_pMainWindow), "ov-logo");
 	// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/openvibe-applications/designer/ov-logo.png", NULL);
+
+	if(!(m_eCommandLineFlags&CommandLineFlag_NoManageSession))
+	{
+		CString l_sFilename;
+		char l_sVarName[1024];
+		unsigned i=0;
+		do
+		{
+			::sprintf(l_sVarName, "${Designer_LastScenarioFilename_%03i}", ++i);
+			l_sFilename=m_rKernelContext.getConfigurationManager().expand(l_sVarName);
+			if(l_sFilename!=CString(""))
+			{
+				m_rKernelContext.getLogManager() << LogLevel_Info << "Restoring scenario [" << l_sFilename << "]\n";
+				if(!this->openScenario(l_sFilename.toASCIIString()))
+				{
+					m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Failed to restore scenario [" << l_sFilename << "]\n";
+				}
+			}
+		}
+		while(l_sFilename!=CString(""));
+	}
+
+	if(!(m_eCommandLineFlags&CommandLineFlag_NoGui))
+	{
+		gtk_widget_show(m_pMainWindow);
+	}
 }
 
-void CApplication::openScenario(const char* sFileName)
+boolean CApplication::openScenario(const char* sFileName)
 {
 	CIdentifier l_oScenarioIdentifier;
 	if(m_pScenarioManager->createScenario(l_oScenarioIdentifier))
@@ -603,6 +631,8 @@ void CApplication::openScenario(const char* sFileName)
 			m_vInterfacedScenario.push_back(l_pInterfacedScenario);
 			gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
 			//this->changeCurrentScenario(gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
+
+			return true;
 		}
 		else
 		{
@@ -628,6 +658,7 @@ void CApplication::openScenario(const char* sFileName)
 			gtk_widget_destroy(l_pErrorDialog);
 		}
 	}
+	return false;
 }
 
 CString CApplication::getWorkingDirectory(void)
@@ -1416,23 +1447,26 @@ boolean CApplication::quitApplicationCB(void)
 	}
 
 	// Saves opened scenarios
-	FILE* l_pFile=::fopen(m_rKernelContext.getConfigurationManager().expand("${CustomConfigurationApplication}").toASCIIString(), "wt");
-	if(l_pFile)
+	if(!(m_eCommandLineFlags&CommandLineFlag_NoManageSession))
 	{
-		unsigned int i=1;
-		::fprintf(l_pFile, "# This file is generated\n");
-		::fprintf(l_pFile, "# Do not modify\n");
-		::fprintf(l_pFile, "\n");
-		::fprintf(l_pFile, "# Last files opened in the designer\n");
-		for(it=m_vInterfacedScenario.begin(); it!=m_vInterfacedScenario.end(); it++)
+		FILE* l_pFile=::fopen(m_rKernelContext.getConfigurationManager().expand("${CustomConfigurationApplication}").toASCIIString(), "wt");
+		if(l_pFile)
 		{
-			if((*it)->m_sFileName != "")
+			unsigned int i=1;
+			::fprintf(l_pFile, "# This file is generated\n");
+			::fprintf(l_pFile, "# Do not modify\n");
+			::fprintf(l_pFile, "\n");
+			::fprintf(l_pFile, "# Last files opened in the designer\n");
+			for(it=m_vInterfacedScenario.begin(); it!=m_vInterfacedScenario.end(); it++)
 			{
-				::fprintf(l_pFile, "Designer_LastScenarioFilename_%03i = %s\n", i, (*it)->m_sFileName.c_str());
-				i++;
+				if((*it)->m_sFileName != "")
+				{
+					::fprintf(l_pFile, "Designer_LastScenarioFilename_%03i = %s\n", i, (*it)->m_sFileName.c_str());
+					i++;
+				}
 			}
+			::fclose(l_pFile);
 		}
-		::fclose(l_pFile);
 	}
 
 	// Clears all existing interfaced scenarios

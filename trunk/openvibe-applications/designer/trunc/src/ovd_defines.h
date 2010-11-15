@@ -11,6 +11,19 @@
 
 namespace OpenViBEDesigner
 {
+
+	typedef enum
+	{
+		CommandLineFlag_None             =0x00000000,
+		CommandLineFlag_Open             =0x00000001,
+		CommandLineFlag_Play             =0x00000002,
+		CommandLineFlag_PlayFast         =0x00000004,
+		CommandLineFlag_NoGui            =0x00000008,
+		CommandLineFlag_NoCheckColorDepth=0x00000010,
+		CommandLineFlag_NoManageSession  =0x00000020,
+		CommandLineFlag_Define           =0x00000040,
+	} ECommandLineFlag;
+
 	enum
 	{
 		ContextMenu_SelectionCopy,

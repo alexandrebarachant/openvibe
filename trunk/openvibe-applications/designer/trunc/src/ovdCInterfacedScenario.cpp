@@ -393,10 +393,13 @@ boolean CInterfacedScenario::isLocked(void) const
 
 void CInterfacedScenario::redraw(void)
 {
-	gdk_window_invalidate_rect(
-		GTK_WIDGET(m_pScenarioDrawingArea)->window,
-		NULL,
-		true);
+	if(GDK_IS_WINDOW(GTK_WIDGET(m_pScenarioDrawingArea)->window))
+	{
+		gdk_window_invalidate_rect(
+			GTK_WIDGET(m_pScenarioDrawingArea)->window,
+			NULL,
+			true);
+	}
 }
 
 void CInterfacedScenario::updateScenarioLabel(void)

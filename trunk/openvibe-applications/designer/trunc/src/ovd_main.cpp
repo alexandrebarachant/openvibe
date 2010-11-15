@@ -272,6 +272,102 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 // ------------------------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------------
 
+typedef struct _SConfiguration
+{
+	_SConfiguration(void)
+		:m_eNoGui(CommandLineFlag_None)
+		,m_eNoCheckColorDepth(CommandLineFlag_None)
+		,m_eNoManageSession(CommandLineFlag_None)
+	{
+	}
+
+	OpenViBEDesigner::ECommandLineFlag getFlags(void)
+	{
+		return OpenViBEDesigner::ECommandLineFlag(m_eNoGui|m_eNoCheckColorDepth|m_eNoManageSession);
+	}
+
+	std::vector < std::pair < ECommandLineFlag, std::string > > m_vFlag;
+	OpenViBEDesigner::ECommandLineFlag m_eNoGui;
+	OpenViBEDesigner::ECommandLineFlag m_eNoCheckColorDepth;
+	OpenViBEDesigner::ECommandLineFlag m_eNoManageSession;
+} SConfiguration;
+
+boolean parse_arguments(int argc, char** argv, SConfiguration& rConfiguration)
+{
+	SConfiguration l_oConfiguration;
+
+	int i;
+	std::vector < std::string > l_vArgValue;
+	std::vector < std::string >::const_iterator it;
+	for(i=1; i<argc; i++)
+	{
+		l_vArgValue.push_back(argv[i]);
+	}
+	l_vArgValue.push_back("");
+
+	for(it=l_vArgValue.begin(); it!=l_vArgValue.end(); it++)
+	{
+		if(*it=="")
+		{
+		}
+		else if(*it=="-h" || *it=="--help")
+		{
+			return false;
+		}
+		else if(*it=="-o" || *it=="--open")
+		{
+			l_oConfiguration.m_vFlag.push_back(std::make_pair(CommandLineFlag_Open, *++it));
+		}
+		else if(*it=="-p" || *it=="--play")
+		{
+			l_oConfiguration.m_vFlag.push_back(std::make_pair(CommandLineFlag_Play, *++it));
+		}
+		else if(*it=="-pf" || *it=="--play-fast")
+		{
+			l_oConfiguration.m_vFlag.push_back(std::make_pair(CommandLineFlag_PlayFast, *++it));
+		}
+		else if(*it=="--no-gui")
+		{
+			l_oConfiguration.m_eNoGui=CommandLineFlag_NoGui;
+			l_oConfiguration.m_eNoCheckColorDepth=CommandLineFlag_NoCheckColorDepth;
+			l_oConfiguration.m_eNoManageSession=CommandLineFlag_NoManageSession;
+		}
+		else if(*it=="--no-check-color-depth")
+		{
+			l_oConfiguration.m_eNoCheckColorDepth=CommandLineFlag_NoCheckColorDepth;
+		}
+		else if(*it=="--no-session-management")
+		{
+			l_oConfiguration.m_eNoManageSession=CommandLineFlag_NoManageSession;
+		}
+//		else if(*it=="--define")
+//		{
+//			l_oConfiguration.m_vFlag.push_back(std::make_pair(Flag_NoGui, *++it));
+//		}
+		else
+		{
+#if 0
+			// Assumes we just open a scenario - this is for retro compatibility and should not be supported in the future
+			l_oConfiguration.m_vFlag.push_back(std::make_pair(CommandLineFlag_Open, *++it));
+#endif
+			return false;
+		}
+	}
+
+#if 0
+	rConfiguration.m_vFlag=l_oConfiguration.m_vFlag;
+	rConfiguration.m_bCheckColorDepth=l_oConfiguration.m_bCheckColorDepth;
+	rConfiguration.m_bShowGui=l_oConfiguration.m_bShowGui;
+#else
+	rConfiguration=l_oConfiguration;
+#endif
+	return true;
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
+
 int go(int argc, char ** argv)
 {
 	/*
@@ -375,136 +471,85 @@ int go(int argc, char ** argv)
 				gtk_init(&argc, &argv);
 				// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
 
-				if(l_rConfigurationManager.expandAsBoolean("${Kernel_3DVisualisationEnabled}"))
+				SConfiguration l_oConfiguration;
+				if(!parse_arguments(argc, argv, l_oConfiguration))
 				{
-					l_pKernelContext->getVisualisationManager().initialize3DContext();
+					l_rLogManager << LogLevel_Info << "Syntax : " << argv[0] << " [ switches ]\n";
+					l_rLogManager << LogLevel_Info << "Possible switches :\n";
+					l_rLogManager << LogLevel_Info << "  --help                  : displays this help message and exits\n";
+					l_rLogManager << LogLevel_Info << "  --open filename         : opens a scenario (see also --no-session-management)\n";
+					l_rLogManager << LogLevel_Info << "  --play filename         : plays the opened scenario (see also --no-session-management)\n";
+					l_rLogManager << LogLevel_Info << "  --play-fast filename    : plays fast forward the opened scenario (see also --no-session-management)\n";
+					l_rLogManager << LogLevel_Info << "  --no-gui                : hides the designer graphical user interface (assumes --no-color-depth-test)\n";
+					l_rLogManager << LogLevel_Info << "  --no-check-color-depth  : does not check 24/32 bits color depth\n";
+					l_rLogManager << LogLevel_Info << "  --no-session-management : neither restore last used scenarios nor saves them at exit\n";
+//					l_rLogManager << LogLevel_Info << "  --define                : defines a variable in the configuration manager\n";
 				}
-
+				else
 				{
-					::CApplication app(*l_pKernelContext);
-					app.initialize();
-
-					boolean l_bIsScreenValid=false;
-					switch(gdk_drawable_get_depth(GTK_WIDGET(app.m_pMainWindow)->window))
+					if(l_rConfigurationManager.expandAsBoolean("${Kernel_3DVisualisationEnabled}"))
 					{
-						case 24:
-						case 32:
-							l_bIsScreenValid=true;
-							break;
-						default:
-							l_rLogManager << LogLevel_Error << "Please change the color depth of your screen to either 24 or 32 bits\n";
-							break;
+						l_pKernelContext->getVisualisationManager().initialize3DContext();
 					}
 
-					if(l_bIsScreenValid)
 					{
-						/************************************************************************
-						 * Command parameters: [option] <path-to-a-scenario>
-						 * Options :
-						 *   -p  --play      : plays the scenario at start
-						 *   -pf --play-fast : plays the scenario "fast forward" at start
-						 *
-						 * If the option is not recognized, the designer stops
-						 * Without any parameter, the designer starts with a new empty scenario
-						 ************************************************************************/
-	
-						boolean l_bValid = false;
-						string l_sValue;
-						switch(argc)
+						::CApplication app(*l_pKernelContext);
+						app.initialize(l_oConfiguration.getFlags());
+
+						boolean l_bIsScreenValid=true;
+						if(!l_oConfiguration.m_eNoCheckColorDepth)
 						{
-							case 2:
-								l_rLogManager << LogLevel_Info << "Opening scenario " << argv[1] << "\n";
-								app.openScenario(argv[1]);
-								if(!app.m_vInterfacedScenario.empty())
+							if(GDK_IS_DRAWABLE(GTK_WIDGET(app.m_pMainWindow)->window))
+							{
+								l_bIsScreenValid=false;
+								switch(gdk_drawable_get_depth(GTK_WIDGET(app.m_pMainWindow)->window))
 								{
-									l_bValid=true;
+									case 24:
+									case 32:
+										l_bIsScreenValid=true;
+										break;
+									default:
+										l_rLogManager << LogLevel_Error << "Please change the color depth of your screen to either 24 or 32 bits\n";
+										// TODO find a way to break
+										break;
 								}
-								else
-								{
-									l_rLogManager << LogLevel_Error << "Command line error, could not open [" << argv[1] << "]\n";
-								}
-								break;
-	
-							case 3:
-								l_sValue=argv[1];
-								if(l_sValue == "-p" || l_sValue == "--play")
-								{
-									l_rLogManager << LogLevel_Info << "Opening and playing scenario " << argv[2] << "\n";
-									app.openScenario(argv[2]);
-									if(!app.m_vInterfacedScenario.empty())
+							}
+						}
+
+						for(size_t i=0; i<l_oConfiguration.m_vFlag.size(); i++)
+						{
+							switch(l_oConfiguration.m_vFlag[i].first)
+							{
+								case CommandLineFlag_Open:
+									l_rLogManager << LogLevel_Info << "Opening scenario [" << CString(l_oConfiguration.m_vFlag[i].second.c_str()) << "]\n";
+									app.openScenario(l_oConfiguration.m_vFlag[i].second.c_str());
+									break;
+								case CommandLineFlag_Play:
+									l_rLogManager << LogLevel_Info << "Opening and playing scenario [" << CString(l_oConfiguration.m_vFlag[i].second.c_str()) << "]\n";
+									if(app.openScenario(l_oConfiguration.m_vFlag[i].second.c_str()))
 									{
 										app.playScenarioCB();
-										l_bValid=true;
 									}
-									else
-									{
-										l_rLogManager << LogLevel_Error << "Command line error, could not open [" << argv[2] << "]\n";
-									}
-								}
-								else if(l_sValue == "-pf" || l_sValue == "--play-fast")
-								{
-									l_rLogManager << LogLevel_Info << "Opening and playing fast scenario " << argv[2] << "\n";
-									app.openScenario(argv[2]);
-									if(!app.m_vInterfacedScenario.empty())
+									break;
+								case CommandLineFlag_PlayFast:
+									l_rLogManager << LogLevel_Info << "Opening and fast playing scenario [" << CString(l_oConfiguration.m_vFlag[i].second.c_str()) << "]\n";
+									if(app.openScenario(l_oConfiguration.m_vFlag[i].second.c_str()))
 									{
 										app.forwardScenarioCB();
-										l_bValid=true;
 									}
-									else
-									{
-										l_rLogManager << LogLevel_Error << "Command line error, could not open [" << argv[2] << "]\n";
-									}
-								}
-								else
-								{
-									l_rLogManager << LogLevel_Error << "Command line error, invalid switch [" << argv[1] << "]\n";
-								}
-								break;
-
-							case 1:
-								{
-									CString l_sFilename;
-									char l_sVarName[1024];
-									unsigned i=0;
-									do
-									{
-										sprintf(l_sVarName, "${Designer_LastScenarioFilename_%03i}", ++i);
-										l_sFilename=l_rConfigurationManager.expand(l_sVarName);
-										if(l_sFilename!=CString(""))
-										{
-											unsigned int l_uiLastSize=app.m_vInterfacedScenario.size();
-											app.openScenario(l_sFilename.toASCIIString());
-											if(l_uiLastSize!=app.m_vInterfacedScenario.size())
-											{
-												l_rLogManager << LogLevel_Info << "Restored scenario [" << l_sFilename << "]\n";
-											}
-											else
-											{
-												l_rLogManager << LogLevel_Warning << "Failed to restore scenario [" << l_sFilename << "]\n";
-											}
-										}
-									}
-									while(l_sFilename!=CString(""));
-
-									if(app.m_vInterfacedScenario.empty())
-									{
-										app.newScenarioCB();
-									}
-
-									l_bValid=true;
-								}
-								break;
+									break;
+//								case CommandLineFlag_Define:
+//									break;
+								default:
+									break;
+							}
 						}
 
-						if(!l_bValid)
+						if(app.m_vInterfacedScenario.empty())
 						{
-							l_rLogManager << LogLevel_Info << "Syntax : " << argv[0] << " [ switch ] [ scenario_name ]\n";
-							l_rLogManager << LogLevel_Info << "Providing scenario_name opens the scenario immediatly\n";
-							l_rLogManager << LogLevel_Info << "Possible switches :\n";
-							l_rLogManager << LogLevel_Info << "  -p --play       : plays the opened scenario\n";
-							l_rLogManager << LogLevel_Info << "  -pf --play-fast : plays fast forward the opened scenario\n";
+							app.newScenarioCB();
 						}
-						else
+
 						{
 							CPluginObjectDescCollector cb_collector1(*l_pKernelContext);
 							CPluginObjectDescCollector cb_collector2(*l_pKernelContext);

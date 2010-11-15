@@ -14,9 +14,9 @@ namespace OpenViBEDesigner
 	public:
 		CApplication(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 
-		void initialize(void);
+		void initialize(OpenViBEDesigner::ECommandLineFlag eCommandLineFlags);
 
-		void openScenario(const char* sFileName);
+		OpenViBE::boolean openScenario(const char* sFileName);
 
 		/** \name Drag and drop management */
 		//@{
@@ -127,6 +127,8 @@ namespace OpenViBEDesigner
 		OpenViBE::Kernel::IScenarioManager* m_pScenarioManager;
 		OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManager;
 		OpenViBE::Kernel::IScenario* m_pClipboardScenario;
+
+		OpenViBEDesigner::ECommandLineFlag m_eCommandLineFlags;
 
 		::GtkBuilder* m_pBuilderInterface;
 		::GtkWidget* m_pMainWindow;
