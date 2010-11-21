@@ -228,23 +228,23 @@ Section "GTK+"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\gtk-2.16.6-dev.zip" no_need_to_download_gtk_dev
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.16.6-dev.zip "arch\gtk-2.16.6-dev.zip"
+	IfFileExists "arch\gtk-2.20.0-dev.zip" no_need_to_download_gtk_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.20.0-dev.zip "arch\gtk-2.20.0-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_gtk_dev:
-	ZipDLL::extractall "arch\gtk-2.16.6-dev.zip" "gtk"
+	ZipDLL::extractall "arch\gtk-2.20.0-dev.zip" "gtk"
 
-	IfFileExists "arch\gtk-2.16.6-runtime.zip" no_need_to_download_gtk_runtime
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.16.6-runtime.zip "arch\gtk-2.16.6-runtime.zip"
+	IfFileExists "arch\gtk-2.20.0-runtime.zip" no_need_to_download_gtk_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.20.0-runtime.zip "arch\gtk-2.20.0-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0"
 			Quit
 no_need_to_download_gtk_runtime:
-	ZipDLL::extractall "arch\gtk-2.16.6-runtime.zip" "gtk"
+	ZipDLL::extractall "arch\gtk-2.20.0-runtime.zip" "gtk"
 
 	FileOpen $0 "$INSTDIR\gtk\lib\pkgconfig\gtk+-win32-2.0.pc" w
 	FileWrite $0 "prefix=$INSTDIR\gtk$\r$\n"
@@ -255,7 +255,7 @@ no_need_to_download_gtk_runtime:
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "Name: GTK+$\r$\n"
 	FileWrite $0 "Description: GTK+ Graphical UI Library ($${target} target)$\r$\n"
-	FileWrite $0 "Version: 2.16.6$\r$\n"
+	FileWrite $0 "Version: 2.20.0$\r$\n"
 	FileWrite $0 "Requires: gdk-$${target}-2.0 atk cairo gio-2.0$\r$\n"
 	FileWrite $0 "Libs: -L$${libdir} -lgtk-$${target}-2.0$\r$\n"
 	FileWrite $0 "Cflags: -I$${includedir}/gtk-2.0$\r$\n"
@@ -270,7 +270,7 @@ no_need_to_download_gtk_runtime:
 	FileWrite $0 "Name: GThread$\r$\n"
 	FileWrite $0 "Description: Thread support for GLib$\r$\n"
 	FileWrite $0 "Requires: glib-2.0$\r$\n"
-	FileWrite $0 "Version: 2.22.4$\r$\n"
+	FileWrite $0 "Version: 2.26.0$\r$\n"
 	FileWrite $0 "Libs: -L$${libdir} -lgthread-2.0$\r$\n"
 	FileWrite $0 "Cflags:$\r$\n"
 	FileClose $0
