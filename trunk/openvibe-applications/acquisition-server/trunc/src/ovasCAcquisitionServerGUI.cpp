@@ -8,6 +8,7 @@
 #include "brainproducts-brainvisionrecorder/ovasCDriverBrainProductsBrainVisionRecorder.h"
 #include "brainproducts-vamp/ovasCDriverBrainProductsVAmp.h"
 #include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
+#include "egi-ampserver/ovasCDriverEGIAmpServer.h"
 #include "emotiv-epoc/ovasCDriverEmotivEPOC.h"
 #include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
 #include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
@@ -112,6 +113,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverBrainProductsVAmp(m_pAcquisitionServer->getDriverContext()));
 #endif
 	if(l_bShowUnstable) m_vDriver.push_back(new CDriverCtfVsmMeg(m_pAcquisitionServer->getDriverContext()));
+	if(l_bShowUnstable) m_vDriver.push_back(new CDriverEGIAmpServer(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyEmotivAPI
 	m_vDriver.push_back(new CDriverEmotivEPOC(m_pAcquisitionServer->getDriverContext()));
 #endif
