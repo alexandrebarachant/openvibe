@@ -487,7 +487,7 @@ boolean CAcquisitionServer::loop(void)
 		m_vPendingBuffer.erase(m_vPendingBuffer.begin(), m_vPendingBuffer.begin()+m_ui32SampleCountPerSentBlock);
 
 		// Clears pending stimulations
-		OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, 0, ((m_ui64SampleCount-m_vPendingBuffer.size())<<32)/m_ui32SamplingFrequency);
+		OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, 0, ((m_ui64SampleCount+m_ui32SampleCountPerSentBlock-m_vPendingBuffer.size())<<32)/m_ui32SamplingFrequency);
 	}
 
 	// Handles driver's main loop
