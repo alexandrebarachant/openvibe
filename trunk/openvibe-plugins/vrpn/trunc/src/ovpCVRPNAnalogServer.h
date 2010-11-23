@@ -73,7 +73,7 @@ namespace OpenViBEPlugins
 		{
 		public:
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Analog VRPN server"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Analog VRPN Server"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier/Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Creates VRPN analog servers (one per input)."); }

@@ -104,7 +104,7 @@ namespace OpenViBEPlugins
 		{
 		public:
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Button VRPN server"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Button VRPN Server"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Creates VRPN button servers (one per input)."); }
