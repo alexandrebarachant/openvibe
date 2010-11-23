@@ -1,50 +1,12 @@
 <?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="value">9999</property>
     <property name="lower">1024</property>
     <property name="upper">65535</property>
     <property name="step_increment">1</property>
-  </object>
-  <object class="GtkListStore" id="model1">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">4</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">8</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">16</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">32</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">64</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">128</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">256</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">512</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">1024</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">2048</col>
-      </row>
-    </data>
   </object>
   <object class="GtkWindow" id="openvibe-acquisition-server">
     <property name="title" translatable="yes">OpenViBE acquisition server</property>
@@ -130,15 +92,22 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBox" id="combobox_sample_count_per_sent_block">
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <object class="GtkComboBoxEntry" id="combobox_sample_count_per_sent_block">
                     <property name="visible">True</property>
-                    <property name="model">model1</property>
-                    <child>
-                      <object class="GtkCellRendererText" id="renderer1"/>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
-                    </child>
+                    <property name="model">model-sample_count_per_sent_block</property>
+                    <property name="text_column">0</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -146,18 +115,6 @@
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </object>
               <packing>
@@ -356,5 +313,45 @@
     <property name="upper">100</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
+  </object>
+  <object class="GtkWindow" id="window1">
+    <child>
+      <object class="GtkComboBox" id="combobox_sample_count_per_sent_block_old">
+        <property name="visible">True</property>
+        <property name="model">model-sample_count_per_sent_block</property>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListStore" id="model-sample_count_per_sent_block">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">4</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">8</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">16</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">32</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">64</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">128</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">256</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">512</col>
+      </row>
+    </data>
   </object>
 </interface>

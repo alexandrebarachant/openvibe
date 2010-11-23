@@ -86,6 +86,11 @@ static void combobox_driver_changed_cb(::GtkComboBox* pComboBox, void* pUserData
 	static_cast<CAcquisitionServerGUI*>(pUserData)->comboBoxDriverChanged(pComboBox);
 }
 
+static void combobox_sample_count_per_sent_block_changed_cb(::GtkComboBox* pComboBox, void* pUserData)
+{
+	static_cast<CAcquisitionServerGUI*>(pUserData)->comboBoxSampleCountPerSentBlockChanged(pComboBox);
+}
+
 //___________________________________________________________________//
 //                                                                   //
 
@@ -192,11 +197,12 @@ boolean CAcquisitionServerGUI::initialize(void)
 
 	// Connects custom GTK signals
 
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_configure"),     "pressed", G_CALLBACK(button_configure_pressed_cb), this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "togglebutton_connect"), "toggled", G_CALLBACK(button_connect_toggled_cb),   this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_play"),          "pressed", G_CALLBACK(button_start_pressed_cb),     this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_stop"),          "pressed", G_CALLBACK(button_stop_pressed_cb),      this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver"),      "changed", G_CALLBACK(combobox_driver_changed_cb),  this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_configure"),                     "pressed", G_CALLBACK(button_configure_pressed_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "togglebutton_connect"),                 "toggled", G_CALLBACK(button_connect_toggled_cb),   this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_play"),                          "pressed", G_CALLBACK(button_start_pressed_cb),     this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_stop"),                          "pressed", G_CALLBACK(button_stop_pressed_cb),      this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver"),                      "changed", G_CALLBACK(combobox_driver_changed_cb),  this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block"), "changed", G_CALLBACK(combobox_sample_count_per_sent_block_changed_cb),  this);
 	gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 	::GtkComboBox* l_pComboBoxDriver=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver"));
@@ -254,6 +260,7 @@ boolean CAcquisitionServerGUI::initialize(void)
 
 	// Prepares sample count per buffer combo box
 
+	boolean l_bFound=false;
 	string l_sDefaultSampleCountPerBuffer=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_DefaultSampleCountPerBuffer}").toASCIIString();
 	::GtkComboBox* l_pComboBoxSampleCountPerBuffer=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block"));
 	for(int i=0; ; i++)
@@ -261,13 +268,21 @@ boolean CAcquisitionServerGUI::initialize(void)
 		gtk_combo_box_set_active(l_pComboBoxSampleCountPerBuffer, i);
 		if(gtk_combo_box_get_active(l_pComboBoxSampleCountPerBuffer)==-1)
 		{
-			gtk_combo_box_set_active(l_pComboBoxSampleCountPerBuffer, 0);
 			break;
 		}
 		if(l_sDefaultSampleCountPerBuffer==gtk_combo_box_get_active_text(l_pComboBoxSampleCountPerBuffer))
 		{
+			l_bFound=true;
 			break;
 		}
+	}
+	if(!l_bFound)
+	{
+		if(l_sDefaultSampleCountPerBuffer != "-1")
+		{
+			gtk_combo_box_prepend_text(l_pComboBoxSampleCountPerBuffer, l_sDefaultSampleCountPerBuffer.c_str());
+		}
+		gtk_combo_box_set_active(l_pComboBoxSampleCountPerBuffer, 0);
 	}
 
 	// Prepares default connection port
@@ -293,7 +308,7 @@ IDriver& CAcquisitionServerGUI::getDriver(void)
 
 uint32 CAcquisitionServerGUI::getSampleCountPerBuffer(void)
 {
-	return ::atoi(::gtk_combo_box_get_active_text(GTK_COMBO_BOX(::gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block"))));
+	return m_ui32SampleCountPerBuffer;
 }
 
 uint32 CAcquisitionServerGUI::getTCPPort(void)
@@ -433,7 +448,7 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 
 	if(gtk_toggle_button_get_active(pButton))
 	{
-		if(m_pAcquisitionServerThread->connect())
+		if(m_ui32SampleCountPerBuffer!=uint32(-1) && m_pAcquisitionServerThread->connect())
 		{
 			// Impedance window creation
 			{
@@ -479,6 +494,11 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 		}
 		else
 		{
+			if(m_ui32SampleCountPerBuffer==uint32(-1))
+			{
+				m_rKernelContext.getLogManager() << LogLevel_Warning << "Sample count per sent block is invalid.\n";
+			}
+
 			gtk_toggle_button_set_active(pButton, false);
 		}
 	}
@@ -564,4 +584,18 @@ void CAcquisitionServerGUI::comboBoxDriverChanged(::GtkComboBox* pComboBox)
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "comboBoxDriverChanged\n";
 	m_pDriver=m_vDriver[gtk_combo_box_get_active(pComboBox)];
 	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_configure")), m_pDriver->isConfigurable());
+}
+
+void CAcquisitionServerGUI::comboBoxSampleCountPerSentBlockChanged(::GtkComboBox* pComboBox)
+{
+	int l_iSampleCountPerSentBlock=0;
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "comboBoxSampleCountPerSentBlockChanged\n";
+	if(::sscanf(::gtk_combo_box_get_active_text(GTK_COMBO_BOX(::gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block"))), "%i", &l_iSampleCountPerSentBlock)==1 && l_iSampleCountPerSentBlock>0)
+	{
+		m_ui32SampleCountPerBuffer=uint32(l_iSampleCountPerSentBlock);
+	}
+	else
+	{
+		m_ui32SampleCountPerBuffer=uint32(-1);
+	}
 }

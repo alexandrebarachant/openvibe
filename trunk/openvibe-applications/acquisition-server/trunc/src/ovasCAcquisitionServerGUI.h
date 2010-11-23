@@ -43,6 +43,7 @@ namespace OpenViBEAcquisitionServer
 		virtual void buttonStartPressedCB(::GtkButton* pButton);
 		virtual void buttonStopPressedCB(::GtkButton* pButton);
 		virtual void comboBoxDriverChanged(::GtkComboBox* pComboBox);
+		virtual void comboBoxSampleCountPerSentBlockChanged(::GtkComboBox* pComboBox);
 
 	protected :
 
@@ -52,6 +53,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::CAcquisitionServer* m_pAcquisitionServer;
 		OpenViBEAcquisitionServer::CAcquisitionServerThread* m_pAcquisitionServerThread;
 		OpenViBEAcquisitionServer::CHeader m_oHeaderCopy;
+
+		OpenViBE::uint32 m_ui32SampleCountPerBuffer;
 
 		std::vector < OpenViBEAcquisitionServer::IDriver* > m_vDriver;
 
