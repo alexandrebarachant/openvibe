@@ -7,9 +7,11 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::VRPN;
 
+#define boolean OpenViBE::boolean
+
 namespace
 {
-	static void vrpn_button_cb(void* pUserData, const vrpn_BUTTONCB b)
+	static void VRPN_CALLBACK vrpn_button_cb(void* pUserData, const vrpn_BUTTONCB b)
 	{
 		OpenViBEPlugins::VRPN::CBoxAlgorithmVRPNButtonClient* l_pClient=static_cast < OpenViBEPlugins::VRPN::CBoxAlgorithmVRPNButtonClient* > (pUserData);
 		l_pClient->setButton(b.button, b.state?true:false);
