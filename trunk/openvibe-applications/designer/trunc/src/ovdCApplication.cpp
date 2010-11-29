@@ -41,6 +41,14 @@ namespace
 		return g_source_attach(l_pSource, NULL);
 	}
 
+	::guint __g_timeout_add__(::guint uiInterval, ::GSourceFunc fpCallback, ::gpointer pUserData, ::gint iPriority=G_PRIORITY_DEFAULT)
+	{
+		::GSource* l_pSource=g_timeout_source_new(uiInterval);
+		g_source_set_priority(l_pSource, G_PRIORITY_LOW);
+		g_source_set_callback(l_pSource, fpCallback, pUserData, NULL);
+		return g_source_attach(l_pSource, NULL);
+	}
+
 	void drag_data_get_cb(::GtkWidget* pWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->dragDataGetCB(pWidget, pDragContex, pSelectionData, uiInfo, uiT);
@@ -305,6 +313,18 @@ namespace
 		l_pInterfacedScenario->m_ui64LastLoopTime=l_ui64CurrentTime;
 		return TRUE;
 	}
+
+	gboolean timeout_application_loop(gpointer pUserData)
+	{
+		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
+		if(!l_pApplication->hasRunningScenario() && l_pApplication->m_eCommandLineFlags&CommandLineFlag_NoGui)
+		{
+			l_pApplication->quitApplicationCB();
+			gtk_main_quit();
+			return FALSE;
+		}
+		return TRUE;
+	}
 }
 
 static ::GtkTargetEntry g_vTargetEntry[]= {
@@ -400,6 +420,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
 
 	__g_idle_add__(idle_application_loop, this);
+	__g_timeout_add__(1000, timeout_application_loop, this);
 
 	// Prepares main notebooks
 	m_pScenarioNotebook=GTK_NOTEBOOK(gtk_builder_get_object(m_pBuilderInterface, "openvibe-scenario_notebook"));
