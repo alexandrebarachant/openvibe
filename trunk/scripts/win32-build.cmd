@@ -115,7 +115,7 @@ echo pushd ..\scripts                                        >> %target_dist%\te
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-acquisition-server.cmd
 echo popd                                                    >> %target_dist%\test-acquisition-server.cmd
 echo cd bin                                                  >> %target_dist%\test-acquisition-server.cmd
-echo OpenViBE-acquisition-server-dynamic.exe %%1 %%2         >> %target_dist%\test-acquisition-server.cmd
+echo OpenViBE-acquisition-server-dynamic.exe %%1 %%2 %%3 %%4 >> %target_dist%\test-acquisition-server.cmd
 echo pause                                                   >> %target_dist%\test-acquisition-server.cmd
 
 echo @echo off                                               >  %target_dist%\test-designer.cmd
@@ -123,7 +123,7 @@ echo pushd ..\scripts                                        >> %target_dist%\te
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-designer.cmd
 echo popd                                                    >> %target_dist%\test-designer.cmd
 echo cd bin                                                  >> %target_dist%\test-designer.cmd
-echo OpenViBE-designer-dynamic.exe                           >> %target_dist%\test-designer.cmd
+echo OpenViBE-designer-dynamic.exe %%1 %%2 %%3 %%4 %%5 %%6   >> %target_dist%\test-designer.cmd
 echo pause                                                   >> %target_dist%\test-designer.cmd
 
 echo @echo off                                               >  %target_dist%\test-id-generator.cmd
@@ -131,7 +131,7 @@ echo pushd ..\scripts                                        >> %target_dist%\te
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-id-generator.cmd
 echo popd                                                    >> %target_dist%\test-id-generator.cmd
 echo cd bin                                                  >> %target_dist%\test-id-generator.cmd
-echo OpenViBE-id-generator-dynamic.exe                       >> %target_dist%\test-id-generator.cmd
+echo OpenViBE-id-generator-dynamic.exe %%1 %%2 %%3 %%4 %%5   >> %target_dist%\test-id-generator.cmd
 echo pause                                                   >> %target_dist%\test-id-generator.cmd
 
 echo @echo off                                               >  %target_dist%\test-plugin-inspector.cmd
@@ -139,7 +139,7 @@ echo pushd ..\scripts                                        >> %target_dist%\te
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-plugin-inspector.cmd
 echo popd                                                    >> %target_dist%\test-plugin-inspector.cmd
 echo cd bin                                                  >> %target_dist%\test-plugin-inspector.cmd
-echo OpenViBE-plugin-inspector-dynamic.exe                   >> %target_dist%\test-plugin-inspector.cmd
+echo OpenViBE-plugin-inspector-dynamic.exe %%1 %%2 %%3 %%4   >> %target_dist%\test-plugin-inspector.cmd
 echo pause                                                   >> %target_dist%\test-plugin-inspector.cmd
 
 echo @echo off                                               >  %target_dist%\test-skeleton-generator.cmd
@@ -147,7 +147,7 @@ echo pushd ..\scripts                                        >> %target_dist%\te
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-skeleton-generator.cmd
 echo popd                                                    >> %target_dist%\test-skeleton-generator.cmd
 echo cd bin                                                  >> %target_dist%\test-skeleton-generator.cmd
-echo OpenViBE-skeleton-generator-dynamic.exe                 >> %target_dist%\test-skeleton-generator.cmd
+echo OpenViBE-skeleton-generator-dynamic.exe %%1 %%2 %%3 %%4 >> %target_dist%\test-skeleton-generator.cmd
 echo pause                                                   >> %target_dist%\test-skeleton-generator.cmd
 
 echo.
