@@ -321,6 +321,10 @@
 			</Settings>
 			<Attributes>
 				<Attribute>
+					<Identifier>(0xac367a9c, 0x2da95abe)</Identifier>
+					<Value>15</Value>
+				</Attribute>
+				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
 					<Value>256</Value>
 				</Attribute>
