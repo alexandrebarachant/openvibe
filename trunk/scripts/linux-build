@@ -106,8 +106,7 @@ echo ""
 echo "Creating launch scripts..."
 echo ""
 
-script_base='
-#!/bin/bash
+script_base='#!/bin/bash
 cd "'`pwd`'"
 source linux-init_env_command
 export LD_LIBRARY_PATH=$OpenViBE_base/dist/lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH
