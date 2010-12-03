@@ -16,9 +16,10 @@ namespace OpenViBESkeletonGenerator
 		virtual ~CDriverSkeletonGenerator(void);
 
 		void initialize(void);
-		OpenViBE::boolean save(void);
-		OpenViBE::boolean load(void);
-
+		OpenViBE::boolean save(OpenViBE::CString sFileName);
+		OpenViBE::boolean load(OpenViBE::CString sFileName);
+		void getCurrentParameters(void);
+		
 		OpenViBE::CString              m_sDriverName;
 		OpenViBE::CString              m_sClassName;
 		OpenViBE::CString              m_sSamplingFrequencies;

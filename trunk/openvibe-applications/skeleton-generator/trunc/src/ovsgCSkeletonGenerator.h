@@ -28,15 +28,18 @@ namespace OpenViBESkeletonGenerator
 
 		virtual void initialize(void)=0;
 		
-		void getCommon(void);
-		OpenViBE::boolean saveCommon(void);
-		OpenViBE::boolean loadCommon(void);
+		OpenViBE::CString m_sConfigurationFile; // basic application config file
+		OpenViBE::boolean m_bConfigurationFileLoaded;
 
-		OpenViBE::CString m_sConfigurationFile;
-		OpenViBE::boolean cleanConfigurationFile(void);
+		void getCommonParameters(void);
+		OpenViBE::boolean saveCommonParameters(OpenViBE::CString sFileName);
+		OpenViBE::boolean loadCommonParameters(OpenViBE::CString sFileName);
+
+		OpenViBE::boolean cleanConfigurationFile(OpenViBE::CString sFileName);
 		
-		virtual OpenViBE::boolean save(void) = 0;
-		virtual OpenViBE::boolean load(void) = 0;
+		virtual void getCurrentParameters(void) = 0;
+		virtual OpenViBE::boolean save(OpenViBE::CString sFileName) = 0;
+		virtual OpenViBE::boolean load(OpenViBE::CString sFileName) = 0;
 		
 
 	};

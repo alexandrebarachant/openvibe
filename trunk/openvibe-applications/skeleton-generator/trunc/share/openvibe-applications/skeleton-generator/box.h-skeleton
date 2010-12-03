@@ -1,0 +1,87 @@
+#ifndef __OpenViBEPlugins_BoxAlgorithm_@@ClassName@@_H__
+#define __OpenViBEPlugins_BoxAlgorithm_@@ClassName@@_H__
+
+//You may have to change this path to match your folder organisation
+#include "../ovp_defines.h"
+
+#include <openvibe/ov_all.h>
+#include <openvibe-toolkit/ovtk_all.h>
+
+// The unique identifiers for the box and its descriptor.
+// Identifier are randomly chosen by the skeleton-generator.
+#define OVP_ClassId_BoxAlgorithm_@@ClassName@@ @@RandomIdentifierClass@@
+#define OVP_ClassId_BoxAlgorithm_@@ClassName@@Desc @@RandomIdentifierDescriptor@@
+
+namespace OpenViBEPlugins
+{
+	namespace Sample
+	{
+		/**
+		 * \class CBoxAlgorithm@@ClassName@@
+		 * \author @@Author@@ (@@Company@@)
+		 * \date @@Date@@
+		 * \erief The class CBoxAlgorithm@@ClassName@@ describes the box @@BoxName@@.
+		 *
+		 */
+		class CBoxAlgorithm@@ClassName@@ : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		{
+		public:
+
+			virtual void release(void) { delete this; }
+
+			virtual OpenViBE::boolean initialize(void);
+			virtual OpenViBE::boolean uninitialize(void);
+			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
+			virtual OpenViBE::boolean process(void);
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_BoxAlgorithm_@@ClassName@@);
+
+		protected:
+
+			@@Algorithms@@
+		};
+
+
+		class CBoxAlgorithm@@ClassName@@Desc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		{
+		public:
+
+			virtual void release(void) { }
+
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("@@ClassName@@"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("@@Author@@"); }
+			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("@@Company@@"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("@@ShortDescription@@"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("@@DetailedDescription@@"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("@@Category@@"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("@@Version@@"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("@@StockItemName@@"); }
+
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_@@ClassName@@; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Sample::CBoxAlgorithm@@ClassName@@; }
+			
+			virtual OpenViBE::boolean getBoxPrototype(
+				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
+			{
+				@@Inputs@@
+				@@InputFlagCanModify@@
+				@@InputFlagCanAdd@@
+				
+				@@Outputs@@
+				@@OutputFlagCanModify@@
+				@@OutputFlagCanAdd@@
+				
+				@@Settings@@
+				@@SettingFlagCanModify@@
+				@@SettingFlagCanAdd@@
+				
+				@@FlagUnstable@@
+				
+				return true;
+			}
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_@@ClassName@@Desc);
+		};
+	};
+};
+
+#endif // __OpenViBEPlugins_BoxAlgorithm_@@ClassName@@_H__

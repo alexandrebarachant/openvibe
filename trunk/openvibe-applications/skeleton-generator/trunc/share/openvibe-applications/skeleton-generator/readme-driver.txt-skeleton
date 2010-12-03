@@ -16,27 +16,18 @@ The generator produced the following files:
 The Driver class:
 - ovasCDriver@@ClassName@@.h
 - ovasCDriver@@ClassName@@.cpp
-Please put these files in your local repository.
-If you have a branch in the repository, put the driver files in a dedicated directory:
-     [openvibe-repository]/trunk/openvibe-applications/acquisition-server/branches/[my-branch-name]/src/[my-device]/
-If you don't use svn branching, you can put the driver files in the trunk directory in your local repository:
+You can put the driver files in the trunk directory in your local repository:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/trunk/src/[my-device]/
 
 The configuration class:
 - ovasCConfiguration@@ClassName@@.h
 - ovasCConfiguration@@ClassName@@.cpp
-Please put these files in your local repository.
-If you have a branch in the repository, put the configuration files in a dedicated directory:
-     [openvibe-repository]/trunk/openvibe-applications/acquisition-server/branches/[my-branch-name]/src/[my-device]/
-If you don't use svn branching, you can put the driver files in the trunk directory in your local repository:
+You can put these files in the trunk directory in your local repository:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/trunk/src/[my-device]/
 
 The glade interface:
 - interface-@@ClassName@@.glade
-Please put this file in your local repository.
-If you have a branch in the repository, put the file in:
-     [openvibe-repository]/trunk/openvibe-applications/acquisition-server/branches/[my-branch-name]/share/openvibe-applications/acquisition-server/
-If you don't use svn branching, you can put the driver files in the trunk directory in your local repository:
+You can put these files in the trunk directory in your local repository:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/trunk/share/openvibe-applications/acquisition-server/
 
 Don't forget to declare your driver in the Acquisition Server application.
@@ -45,7 +36,8 @@ Look in ovasCAquisitionServerGUI.cpp, you will find examples of such declaration
 For more information about building a new driver and filling your skeleton, please read the official tutorial:
 http://openvibe.inria.fr/documentation/unstable/Doc_CreatingANewDriver.html
 
-Feel free to propose your contributionon the forum ! 
+Feel free to propose your contribution on the forum ! 
+http://openvibe.inria.fr/forum/
 
 Enjoy OpenViBE !
 

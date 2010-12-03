@@ -1,0 +1,47 @@
+#include "ovpCBoxAlgorithm@@ClassName@@.h"
+
+using namespace OpenViBE;
+using namespace OpenViBE::Kernel;
+using namespace OpenViBE::Plugins;
+
+using namespace OpenViBEPlugins;
+using namespace OpenViBEPlugins::Sample;
+
+boolean ovpCBoxAlgorithm@@ClassName@@::initialize(void)
+{
+    IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+
+@@AlgorithmInitialisation@@
+	
+@@AlgorithmInitialisationReferenceTargets@@
+	
+    return true;
+}
+
+boolean ovpCBoxAlgorithm@@ClassName@@::uninitialize(void)
+{
+@@AlgorithmUninitialisation@@
+
+    return true;
+}
+
+boolean ovpCBoxAlgorithm@@ClassName@@::processInput(uint32 ui32InputIndex)
+{
+	this->getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
+
+    return true;
+}
+
+boolean ovpCBoxAlgorithm@@ClassName@@::process(void)
+{
+    IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
+
+    for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
+    {
+       // Process incoming chunk here.
+	   // "l_rDynamicBoxContext.getInputChunk(input_index, chunk_index);" will give you a Memory Buffer, that you need to decode
+	   // using the corresponding algorithm (for instance the "signal stream decoder" if the input is a signal)
+    }
+
+    return true;
+}

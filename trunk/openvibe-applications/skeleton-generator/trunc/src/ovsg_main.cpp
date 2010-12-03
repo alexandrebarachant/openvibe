@@ -59,7 +59,9 @@ int main(int argc, char** argv)
 			}
 			else
 			{
-
+				OpenViBEToolkit::initialize(*l_pKernelContext);
+				IConfigurationManager& l_rConfigurationManager=l_pKernelContext->getConfigurationManager();
+				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
 
@@ -83,10 +85,12 @@ int main(int argc, char** argv)
 				::GtkWidget * l_pRadioAlgo = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-algo-selection-radio-button"));
 				::GtkWidget * l_pRadioBox = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-box-selection-radio-button"));
 
+
+				CBoxAlgorithmSkeletonGenerator l_BoxGenerator(*l_pKernelContext,l_pBuilderInterface);
 				CDriverSkeletonGenerator l_DriverGenerator(*l_pKernelContext,l_pBuilderInterface);
 
 				gint resp = gtk_dialog_run(GTK_DIALOG(l_pDialog));
-
+				
 				if(resp== GTK_RESPONSE_OK)
 				{
 					gtk_widget_hide(GTK_WIDGET(l_pDialog));
@@ -102,8 +106,7 @@ int main(int argc, char** argv)
 					}
 					if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pRadioBox)))
 					{
-						std::cout<< "NOT YET AVAILABLE." <<std::endl;
-						return 0;
+						l_BoxGenerator.initialize();
 					}
 					gtk_main();
 				}
@@ -116,5 +119,7 @@ int main(int argc, char** argv)
 		}
 	}
 
+	l_oKernelLoader.uninitialize();
+	l_oKernelLoader.unload();
 	return 0;
 }
