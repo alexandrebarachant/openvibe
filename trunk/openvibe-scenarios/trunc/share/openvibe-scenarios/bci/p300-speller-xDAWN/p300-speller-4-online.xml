@@ -7687,11 +7687,15 @@ the speller.
 When you start this scenario, just press
 the &lt;b&gt;&quot;a&quot;&lt;/b&gt; key to start the flash sequence.
 
-You will then be presented a green letter that
+You will then be presented a blue letter that
 you have to focus on, followed by a 12 times
 flashing sequence of the whole grid. The detected
-letter will be presented in red. This will be repeated
+letter will be presented in green. This will be repeated
 10 times.
+
+If the performance of the system does not fit your
+requirements, just run &lt;i&gt;2-train-xDAWN&lt;/i&gt; and &lt;i&gt;3-train-classifier&lt;/i&gt;
+scenarios again on the data you just recorded.
 
 &lt;small&gt;&lt;i&gt;&lt;b&gt;note:&lt;/b&gt; the recorded files go to the
 &lt;span color=&quot;darkblue&quot;&gt;${Path_Samples}/signals&lt;/span&gt; folder.&lt;/i&gt;&lt;/small&gt;</Text>

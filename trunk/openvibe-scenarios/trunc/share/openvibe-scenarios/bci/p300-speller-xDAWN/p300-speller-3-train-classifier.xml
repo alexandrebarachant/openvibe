@@ -1554,7 +1554,7 @@ this scenario.
 At the end of the training, you will have an estimation
 of the classifier performance printed in the console.
 If this performance is lower than 70%, just run a new
-&lt;i&gt;1-acquisition&lt;/i&gt; session to have better results.
+&lt;i&gt;4-online&lt;/i&gt; session to have better results.
 
 &lt;u&gt;&lt;b&gt;Note:&lt;/b&gt;&lt;/u&gt; in order to run this scenario,
 the spatial filter should have been trained using
