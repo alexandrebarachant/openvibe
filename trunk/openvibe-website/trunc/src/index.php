@@ -226,7 +226,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 <!-- -->
 		<h1>Job Offers</h1>
 
-		<p><span style="color: red; font-weight: bold;">OpenViBE project is recruiting</span></p>
+		<p><span style="color: red; font-weight: bold;">There are opened positions to work on and with OpenViBE...</span></p>
 		<p>Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
 <!-- -->
 
@@ -245,6 +245,14 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>If you want to see more <i>Made With OpenViBE</i> applications, visit the <a href="?q=made-with">Made With...</a> section</p>
 
 		<h1>News</h1>
+
+		<h2>One Post-Doc Position at Hopital Raymond Poincare, France<br><span style="font-size:x-small">2010/12/03</span></h2>
+
+		<p>There are opened positions to work on and with OpenViBE at Hopital Raymond Poincare. Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
+
+		<h2>Three Positions at INRIA Sophia Antipolis, France<br><span style="font-size:x-small">2010/12/03</span></h2>
+
+		<p>There are opened positions to work on and with OpenViBE at INRIA Sophia Antipolis. Check the <a href="?q=jobs">Job Offers</a> page for more details.</p>
 
 		<h2>New release of OpenViBE 0.8.0 is now available<br><span style="font-size:x-small">2010/10/01</span></h2>
 
@@ -645,16 +653,38 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h1>Job Offers</h1>
 
 <!-- -->
-		<p>OpenViBE project is recruiting</p>
+		<p>There are several opened positinos to work on and with OpenViBE...</p>
 <!--
-		<p>OpenViBE project is not recruiting for now...</p>
+		<p>There is currently no opened positions to work on and with OpenViBE...</p>
 -->
 <!--
 		<script language=javascript type='text/javascript'>
 			document.write(available_soon('#FIXME'));
 		</script>
 -->
-		<h2>One software engineer position at Hopital Raymond Poincare<br><span style="font-size:x-small">2010-06</span></h2>
+		<h2>One post-doc position at Hopital Raymond Poincare<br><span style="font-size:x-small">2010-12</span></h2>
+
+		<p><u><b>Short Description:</b></u></p>
+		<p>The Raymond Poincaré Hospital in Paris (France) has an open position for a Post-Doc to support clinical trials in Brain-Computer Interfaces, as described in the enclosed document.</p>
+		<br>
+		<p>You will find more information on the dedicated pages:</p>
+		<ul>
+		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptEngineer>Experienced Engineer</a> position descriptions</li>
+		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPhD>Internship + PhD</a> position descriptions</li>
+		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPostdoc>Post-doc</a> position descriptions</li>
+		<br>
+		<p>Interested candidates should contact Maureen Clerc (<i>maureen dot clerc at inria dot fr</i>)</p>
+
+		<h2>Three open positions at INRIA Sophia Antipolis<br><span style="font-size:x-small">2010-12</span></h2>
+
+		<p><u><b>Short Description:</b></u></p>
+		<p>The Athena Team is looking after one experienced engineer, one phd and one post-doc in the particular field of Brain-Computer Interfaces.</p>
+		<br>
+		<p>You can download the full <a href=jobs/2010-12-APHP-Post-Doc.pdf>english PDF description</a>.</p>
+		<br>
+		<p>Interested candidates should contact Louis Mayaud (<i>louis dot mayaud at rpc dot aphp dot fr</i>)</p>
+
+		<h2>One software engineer position at Hopital Raymond Poincare<br><span style="font-size:x-small">2010-06 - <span style="text-color:red">CLOSED</span></span></h2>
 
 		<p><u><b>Short Description:</b></u></p>
 		<p>Robust Brain Computer Interface virtual Keyboard (RoBIK)</p>
@@ -665,7 +695,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<br>
 		<p>Interested candidates should contact Louis Mayaud (<i>louis dot mayaud at rpc dot aphp dot fr</i>)</p>
 
-		<h2>One post-doc position at INRIA<br><span style="font-size:x-small">2010-01</span></h2>
+		<h2>One post-doc position at INRIA<br><span style="font-size:x-small">2010-01 - <span style="text-color:red">CLOSED</span></span></h2>
 
 		<b>
 		<p><u>Post-doctoral position on:</u></p>
