@@ -9,7 +9,6 @@
 
 #include <boost/regex.hpp>
 
-//#include <time.h>
 #include <ctime>
 #include <cmath>
 
@@ -96,7 +95,23 @@ static void algorithm_selected_cb(::GtkComboBox* pCombobox, void* pUserData)
 	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->algorithmSelectedCB(gtk_combo_box_get_active(pCombobox));
 }
 
+static void button_exit_cb(::GtkButton* pButton, void* pUserData)
+{
+	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->buttonExitCB();
+	::gtk_exit(0);
+}
+
 //-----------------------------------------------------------------------
+void CBoxAlgorithmSkeletonGenerator::buttonExitCB()
+{
+	getCommonParameters();
+	getCurrentParameters();
+	cleanConfigurationFile(m_sConfigurationFile);
+	saveCommonParameters(m_sConfigurationFile);
+	save(m_sConfigurationFile);
+
+	m_rKernelContext.getLogManager() << LogLevel_Info << "All entries saved in ["<< m_sConfigurationFile<<"]. Exiting.\n";
+}
 void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 {
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Extracting values... \n";
@@ -122,6 +137,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	}
 	else
 	{
+		//m_sName = ensureSedCompliancy(m_sName);
 		m_rKernelContext.getLogManager() << LogLevel_Info << "-- box name: VALID (" << (const char *)m_sName << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid box name.\n";
 	}
@@ -145,6 +161,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	}
 	else
 	{
+		//m_sCategory = ensureSedCompliancy(m_sCategory);
 		m_rKernelContext.getLogManager() << LogLevel_Info << "-- category: VALID (" << (const char *)m_sCategory << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid category.\n";
 	}
@@ -163,12 +180,14 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	}
 
 	{
+		//m_sShortDescription = ensureSedCompliancy(m_sShortDescription);
 		m_rKernelContext.getLogManager() << LogLevel_Info << "-- short description: VALID (" << (const char *)m_sShortDescription << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid short description.\n";
 	}
 
 	if(((string)m_sDetailedDescription).length()<500)
 	{
+		//m_sDetailedDescription = ensureSedCompliancy(m_sDetailedDescription);
 		m_rKernelContext.getLogManager() << LogLevel_Info << "-- detailed description: VALID (" << (const char *)m_sDetailedDescription << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid detailed description.\n";
 	}
@@ -198,6 +217,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 		}
 		else
 		{
+			m_vInputs[i]._name = ensureSedCompliancy(m_vInputs[i]._name);
 			m_rKernelContext.getLogManager() << LogLevel_Info << "--~~ Input "<<i<<": [" << (const char *)m_vInputs[i]._name<<"],["<< (const char *)m_vInputs[i]._type << "] VALID.\n";
 			l_ssTextBuffer << ">>[   OK   ] Valid input "<<i<<" [" << (const char *)m_vInputs[i]._name<<"]\n";
 		}
@@ -224,6 +244,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 		}
 		else
 		{
+			m_vOutputs[i]._name = ensureSedCompliancy(m_vOutputs[i]._name);
 			m_rKernelContext.getLogManager() << LogLevel_Info << "--~~ Output "<<i<<": [" << (const char *)m_vOutputs[i]._name<<"],["<< (const char *)m_vOutputs[i]._type << "] VALID.\n";
 			l_ssTextBuffer << ">>[   OK   ] Valid output "<<i<<" [" << (const char *)m_vOutputs[i]._name<<"]\n";
 		}
@@ -250,6 +271,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 		}
 		else
 		{
+			m_vSettings[i]._name = ensureSedCompliancy(m_vSettings[i]._name);
 			m_rKernelContext.getLogManager() << LogLevel_Info << "--~~ Setting "<<i<<": [" << (const char *)m_vSettings[i]._name<<"],["<< (const char *)m_vSettings[i]._type <<"],["<< (const char *)m_vSettings[i]._defaultValue << "] VALID.\n";
 			l_ssTextBuffer << ">>[   OK   ] Valid setting "<<i<<" [" << (const char *)m_vSettings[i]._name<<"]\n";
 		}
@@ -282,11 +304,6 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
-	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-target-directory-filechooserbutton"));
-	char * l_pTargetDirectory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pFileChooser));
-	m_sTargetDirectory = CString(l_pTargetDirectory);
-	g_free(l_pTargetDirectory);
-
 #ifdef OV_OS_Windows
 	string space("%20");
 	if(((string)m_sTargetDirectory).rfind(space) != string::npos)
@@ -318,9 +335,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 		gtk_widget_set_sensitive(l_pButtonOk,false);
 	}
 
-	gtk_text_buffer_set_text (l_pTextBuffer,
-		l_ssTextBuffer.str().c_str()
-		, -1);
+	gtk_text_buffer_set_text (l_pTextBuffer,l_ssTextBuffer.str().c_str(), -1);
 
 }
 
@@ -335,33 +350,10 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 
 	stringstream l_ssTextBuffer;
 	l_ssTextBuffer << "Generating files...\n";
-	gtk_text_buffer_set_text (l_pTextBuffer,
-		l_ssTextBuffer.str().c_str(),
-		-1);
-
-	CString l_sSed;
-#ifdef OV_OS_Windows
-		l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
-#else
-#ifdef OV_OS_Linux
-		l_sSed = "sed";
-#endif
-#endif
-
-	time_t rawtime;
-	struct tm * timeinfo;
-	time ( &rawtime );
-	timeinfo = localtime ( &rawtime );
-	stringstream ssTime;
-	string string_time(asctime (timeinfo));
-	string_time = string_time.substr(0,string_time.size()-1); // the ascitime ends with a "\n"
-	CString l_sDate(string_time.c_str());
+	gtk_text_buffer_set_text (l_pTextBuffer,l_ssTextBuffer.str().c_str(),-1);
 	
-	m_rKernelContext.getLogManager() << LogLevel_Info << "AUTHOR: " << m_sAuthor << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "DATE: " << l_sDate << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "Target directory: " << m_sTargetDirectory << "\n";
-	
-//-------------------------------------------------------------------------------------------------------------------------------------------//
+	CString l_sDate = getDate();
+
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// box.h
 	// we check if the skeleton is in place.
@@ -375,60 +367,41 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'box.h-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer,
-			l_ssTextBuffer.str().c_str()
-			, -1);
+		gtk_text_buffer_set_text (l_pTextBuffer,l_ssTextBuffer.str().c_str(), -1);
 		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'box.h-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovpCBoxAlgorithm" + m_sClassName + ".h";
 		
-		//Modifying the strings to be sed compliant 
-		string l_sCategoryForSed = string((const char *)m_sCategory);
-		size_t l_iStringIndex = l_sCategoryForSed.find('/');
-		while(l_iStringIndex != string::npos)
-		{
-			l_sCategoryForSed.insert(l_iStringIndex,1,'\\');
-			l_iStringIndex = l_sCategoryForSed.find('/',l_iStringIndex+2);
-		}
-		string l_sDetailedDescriptionForSed = string((const char *)m_sDetailedDescription);
-		l_iStringIndex = l_sDetailedDescriptionForSed.find('\n');
-		while(l_iStringIndex != string::npos)
-		{
-			l_sDetailedDescriptionForSed.replace(l_iStringIndex,1,"\\\\n");
-			l_iStringIndex = l_sDetailedDescriptionForSed.find('\n',l_iStringIndex+2);
-		}
-
 		// generating some random identifiers
 		CString l_sClassIdentifier = getRandomIdentifierString();
 		CString l_sDescriptorIdentifier = getRandomIdentifierString();
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@Author@@/"+m_sAuthor+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Company@@/"+m_sCompany+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Date@@/"+l_sDate+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@BoxName@@/"+m_sName+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@ClassName@@/"+m_sClassName+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@RandomIdentifierClass@@/"+l_sClassIdentifier+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@RandomIdentifierDescriptor@@/"+l_sDescriptorIdentifier+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@ShortDescription@@/"+m_sShortDescription+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@DetailedDescription@@/"+CString(l_sDetailedDescriptionForSed.c_str())+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Category@@/"+CString(l_sCategoryForSed.c_str())+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Version@@/"+m_sVersion+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@StockItemName@@/"+m_sGtkStockItemName+"/g";
+		l_bSuccess &= executeSedSubstitution(l_sBoxHSkel,"@@Author@@",                     m_sAuthor, l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@Company@@",                    m_sCompany);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@Date@@",                       l_sDate);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@BoxName@@",                    m_sName);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@ClassName@@",                  m_sClassName);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@RandomIdentifierClass@@",      l_sClassIdentifier);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@RandomIdentifierDescriptor@@", l_sDescriptorIdentifier);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@ShortDescription@@",           m_sShortDescription);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@DetailedDescription@@",        m_sDetailedDescription);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@Category@@",                   m_sCategory);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@Version@@",                    m_sVersion);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@StockItemName@@",              m_sGtkStockItemName);
 		
 		//--------------------------------------------------------------------------------------
 		//Inputs
 		//--------------------------------------------------------------------------------------
 		if(m_bCanAddInputs)
-			l_sCommandSed = l_sCommandSed + " ;s/@@InputFlagCanAdd@@/"+"rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);/g";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@InputFlagCanAdd@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);");
 		else
-			l_sCommandSed = l_sCommandSed + " ;s/@@InputFlagCanAdd@@/"+"\\/\\/You cannot add or remove input./g";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@InputFlagCanAdd@@","//You cannot add or remove input.");
 		if(m_bCanModifyInputs)
-			l_sCommandSed = l_sCommandSed + " ;s/@@InputFlagCanModify@@/"+"rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyInput);/g";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@InputFlagCanModify@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyInput);");
 		else
-			l_sCommandSed = l_sCommandSed + " ;s/@@InputFlagCanModify@@/"+"\\/\\/You cannot modify input./g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Inputs@@/";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@InputFlagCanModify@@","//You cannot modify input.");
+		CString l_sCommandSed = "s/@@Inputs@@/";
 		for(vector<IOSStruct>::iterator it = m_vInputs.begin(); it != m_vInputs.end(); it++)
 		{
 			if(it != m_vInputs.begin()) 
@@ -448,19 +421,20 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			l_sCommandSed = l_sCommandSed + "rBoxAlgorithmPrototype.addInput(\\\""+(*it)._name+"\\\",OV_TypeId_"+CString(l_sTypeName.c_str())+");\\n";
 		}
 		l_sCommandSed = l_sCommandSed +  "/g";
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
 
 		//--------------------------------------------------------------------------------------
 		//Outputs
 		//--------------------------------------------------------------------------------------
 		if(m_bCanAddOutputs)
-			l_sCommandSed = l_sCommandSed + " ;s/@@OutputFlagCanAdd@@/"+"rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddOutput);/g";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@OutputFlagCanAdd@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddOutput);");
 		else
-			l_sCommandSed = l_sCommandSed + " ;s/@@OutputFlagCanAdd@@/"+"\\/\\/You cannot add or remove Output./g";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@OutputFlagCanAdd@@","//You cannot add or remove Output.");
 		if(m_bCanModifyOutputs)
-			l_sCommandSed = l_sCommandSed + " ;s/@@OutputFlagCanModify@@/"+"rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyOutput);/g";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@OutputFlagCanModify@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifyOutput);");
 		else
-			l_sCommandSed = l_sCommandSed + " ;s/@@OutputFlagCanModify@@/"+"\\/\\/You cannot modify Output./g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Outputs@@/";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@OutputFlagCanModify@@","//You cannot modify Output.");
+		l_sCommandSed = " s/@@Outputs@@/";
 		for(vector<IOSStruct>::iterator it = m_vOutputs.begin(); it != m_vOutputs.end(); it++)
 		{
 			if(it != m_vOutputs.begin()) 
@@ -480,19 +454,20 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			l_sCommandSed = l_sCommandSed + "rBoxAlgorithmPrototype.addOutput(\\\""+(*it)._name+"\\\",OV_TypeId_"+CString(l_sTypeName.c_str())+");\\n";
 		}
 		l_sCommandSed = l_sCommandSed +  "/g";
-		
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
+
 		//--------------------------------------------------------------------------------------
 		//Settings
 		//--------------------------------------------------------------------------------------
-		if(m_bCanAddSettings)
-			l_sCommandSed = l_sCommandSed + " ;s/@@SettingFlagCanAdd@@/"+"rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddSetting);/g";
+		if(m_bCanAddOutputs)
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanAdd@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddSetting);");
 		else
-			l_sCommandSed = l_sCommandSed + " ;s/@@SettingFlagCanAdd@@/"+"\\/\\/You cannot add or remove Setting./g";
-		if(m_bCanModifySettings)
-			l_sCommandSed = l_sCommandSed + " ;s/@@SettingFlagCanModify@@/"+"rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifySetting);/g";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanAdd@@","//You cannot add or remove Setting.");
+		if(m_bCanModifyOutputs)
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanModify@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifySetting);");
 		else
-			l_sCommandSed = l_sCommandSed + " ;s/@@SettingFlagCanModify@@/"+"\\/\\/You cannot modify Setting./g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Settings@@/";
+			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanModify@@","//You cannot modify Setting.");
+		l_sCommandSed = "s/@@Settings@@/";
 		for(vector<IOSStruct>::iterator it = m_vSettings.begin(); it != m_vSettings.end(); it++)
 		{
 			if(it != m_vSettings.begin()) 
@@ -512,13 +487,17 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			l_sCommandSed = l_sCommandSed + "rBoxAlgorithmPrototype.addSetting(\\\""+(*it)._name+"\\\",OV_TypeId_"+CString(l_sTypeName.c_str())+",\\\""+(*it)._defaultValue+"\\\");\\n";
 		}
 		l_sCommandSed = l_sCommandSed +  "/g";
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
 
 		//--------------------------------------------------------------------------------------
 		//Algorithms
 		//--------------------------------------------------------------------------------------
-		l_sCommandSed = l_sCommandSed + ";s/\\t\\t\\t@@Algorithms@@/";
+		l_sCommandSed = "s/@@Algorithms@@/";
 		for(uint32 a=0; a<m_vAlgorithms.size(); a++)
 		{
+			if(a != 0) 
+				l_sCommandSed = l_sCommandSed + "\\t\\t\\t\\t";
+
 			string l_sBlock = string((const char *)m_mAlgorithmHeaderDeclaration[m_vAlgorithms[a]]);
 			stringstream ss; ss << "Algo" << a << "_";
 			string l_sUniqueMarker = ss.str();
@@ -534,17 +513,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		}
 		
 		l_sCommandSed = l_sCommandSed + "/g";
-
-		l_sCommandSed = l_sCommandSed + " ;s/@@FlagUnstable@@/"+"rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);/g\" ";
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
-
-		// execute the sed command !
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sBoxHSkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
 
 		if(l_bSuccess)
 		{
@@ -571,16 +540,15 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'box.cpp-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer,
-			l_ssTextBuffer.str().c_str()
-			, -1);
+		gtk_text_buffer_set_text (l_pTextBuffer,l_ssTextBuffer.str().c_str(), -1);
 		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'box.cpp-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovpCBoxAlgorithm" + m_sClassName + ".cpp";
+		
+		l_bSuccess &= executeSedSubstitution(l_sBoxCppSkel,"@@ClassName@@",m_sClassName,l_sDest);
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@AlgorithmInitialisation@@/";
+		CString l_sCommandSed = "s/@@AlgorithmInitialisation@@/";
 		for(uint32 a=0; a<m_vAlgorithms.size(); a++)
 		{
 			string l_sBlock = string((const char *)m_mAlgorithmInitialisation[m_vAlgorithms[a]]);
@@ -597,8 +565,9 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			l_sCommandSed = l_sCommandSed + CString(l_sBlock.c_str());
 		}
 		l_sCommandSed = l_sCommandSed + "/g";
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
 		
-		l_sCommandSed = l_sCommandSed + ";s/@@AlgorithmInitialisationReferenceTargets@@/";
+		l_sCommandSed = "s/@@AlgorithmInitialisationReferenceTargets@@/";
 		for(uint32 a=0; a<m_vAlgorithms.size(); a++)
 		{
 			string l_sBlock = string((const char *)m_mAlgorithmInitialisation_ReferenceTargets[m_vAlgorithms[a]]);
@@ -615,14 +584,16 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			l_sCommandSed = l_sCommandSed + CString(l_sBlock.c_str());
 		}
 		l_sCommandSed = l_sCommandSed + "/g";
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
 		
-		l_sCommandSed = l_sCommandSed + ";s/@@AlgorithmUninitialisation@@/";
+		
+		l_sCommandSed = "s/@@AlgorithmUninitialisation@@/";
 		for(uint32 a=0; a<m_vAlgorithms.size(); a++)
 		{
 			string l_sBlock = string((const char *)m_mAlgorithmUninitialisation[m_vAlgorithms[a]]);
 			stringstream ss; ss << "Algo" << a << "_";
 			string l_sUniqueMarker = ss.str();
-			for(int s=0; s<l_sBlock.length(); s++)
+			for(uint32 s=0; s<l_sBlock.length(); s++)
 			{
 				if(l_sBlock[s]=='@')
 				{
@@ -633,18 +604,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			l_sCommandSed = l_sCommandSed + CString(l_sBlock.c_str());
 		}
 		l_sCommandSed = l_sCommandSed + "/g";
-
-		l_sCommandSed = l_sCommandSed + " ;s/@@ClassName@@/"+m_sClassName+"/g";
-		
-
-		l_sCommandSed = l_sCommandSed + "\" ";
-
-		// execute the sed command !
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sBoxCppSkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
 
 		if(l_bSuccess)
 		{
@@ -671,24 +631,14 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 	else
 	{
 		l_ssTextBuffer << "[   OK   ] -- 'readme-box.txt-skeleton' found.\n";
-		gtk_text_buffer_set_text (l_pTextBuffer,
-			l_ssTextBuffer.str().c_str()
-			, -1);
+		gtk_text_buffer_set_text (l_pTextBuffer,l_ssTextBuffer.str().c_str(), -1);
 		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'readme-box.txt-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/README" + m_sClassName + ".txt";
-
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@Date@@/"+l_sDate+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@ClassName@@/"+m_sClassName+"/g\" ";
-
-		// execute the sed command !
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sReadmeSkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		CString l_sDest = m_sTargetDirectory + "/README-SKGEN-BOX.txt";
+		
+		l_bSuccess &= executeSedSubstitution(l_sBoxCppSkel,"@@Date@@",     l_sDate,l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,      "@@ClassName@@",m_sClassName);
 
 		if(l_bSuccess)
 		{
@@ -700,7 +650,6 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
 			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
 		}
-
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
@@ -708,6 +657,10 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 	if(l_bSuccess)
 	{
 		l_bSuccess&=cleanConfigurationFile(m_sConfigurationFile);
+		//re-load all entries, the internal variables may have been modified to be sed compliant.
+		getCommonParameters();
+		getCurrentParameters();
+		//save the entries as the user typed them
 		l_bSuccess&=saveCommonParameters(m_sConfigurationFile);
 		l_bSuccess&=save(m_sConfigurationFile);
 	}
@@ -722,22 +675,20 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		l_ssTextBuffer << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
 		l_ssTextBuffer << "PLEASE LOOK AT THE README FILE PRODUCED !\n";
 		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
+		
+		// opening browser to see the produced files
 		CString l_sBrowser = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand_${OperatingSystem}}");
 		CString l_sBrowserCmd = l_sBrowser + " \"" +  m_sTargetDirectory+"\"";
 
 #ifdef OV_OS_Windows
 		l_sBrowserCmd =  l_sBrowser + " file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
 #endif
-
 		if(system((const char *)l_sBrowserCmd))
 		{
 		}
 	}
 
-	gtk_text_buffer_set_text(
-		l_pTextBuffer,
-		l_ssTextBuffer.str().c_str(),
-		-1);
+	gtk_text_buffer_set_text(l_pTextBuffer,l_ssTextBuffer.str().c_str(),-1);
 }
 
 void CBoxAlgorithmSkeletonGenerator::buttonTooltipCB(::GtkButton* pButton)
@@ -1333,7 +1284,7 @@ void CBoxAlgorithmSkeletonGenerator::initialize( void )
 	m_vParameterType_EnumTypeCorrespondance[ParameterType_String]         = "OpenViBE::CString";
 	m_vParameterType_EnumTypeCorrespondance[ParameterType_Identifier]     = "OpenViBE::CIdentifier";
 	m_vParameterType_EnumTypeCorrespondance[ParameterType_Matrix]         = "OpenViBE::IMatrix *";
-	m_vParameterType_EnumTypeCorrespondance[ParameterType_StimulationSet] = "OpenViBE::IStimulationSet";
+	m_vParameterType_EnumTypeCorrespondance[ParameterType_StimulationSet] = "OpenViBE::IStimulationSet *";
 	m_vParameterType_EnumTypeCorrespondance[ParameterType_MemoryBuffer]   = "OpenViBE::IMemoryBuffer *";
 	m_vParameterType_EnumTypeCorrespondance[ParameterType_Object]         = "OpenViBE::IObject *";
 	m_vParameterType_EnumTypeCorrespondance[ParameterType_Pointer]        = "OpenViBE::uint8*";
@@ -1398,7 +1349,13 @@ void CBoxAlgorithmSkeletonGenerator::initialize( void )
 					}
 				}
 				CString l_sInputHandler ="ip_p@"+ CString(l_sInputNameStdSTr.c_str());
-				l_sHeaderDeclaration = l_sHeaderDeclaration + "\\t\\t\\tOpenViBE::Kernel::TParameterHandler < " + (const char *)m_vParameterType_EnumTypeCorrespondance[l_oDummyProto.m_vInputs[(*it).first]] + "> "+ l_sInputHandler +";\\n";
+				// input handlers for pointer must be "const"
+				CString l_sConst = "";
+				if(l_oDummyProto.m_vInputs[(*it).first] >= ParameterType_Matrix)
+				{
+					l_sConst = "const ";
+				}
+				l_sHeaderDeclaration = l_sHeaderDeclaration + "\\t\\t\\tOpenViBE::Kernel::TParameterHandler < " + l_sConst + (const char *)m_vParameterType_EnumTypeCorrespondance[l_oDummyProto.m_vInputs[(*it).first]] + "> "+ l_sInputHandler +";\\n";
 				l_sInitialisation = l_sInitialisation + "\\t" +
 					 l_sInputHandler + ".initialize("+ l_sAlgorithmProxy +"->getInputParameter(OVP_GD_Algorithm_"+CString(l_sAlgoNameStdSTr.c_str())+"_InputParameterId_"+CString(l_sInputNameStdSTr.c_str())+"));\\n";
 				l_sInitialisation_ReferenceTargets = l_sInitialisation_ReferenceTargets + "\\t\\/\\/"+l_sInputHandler +".setReferenceTarget( ... )\\n";
@@ -1443,14 +1400,9 @@ void CBoxAlgorithmSkeletonGenerator::initialize( void )
 	g_signal_connect(G_OBJECT(l_pAlgoCombobox),"changed", G_CALLBACK(algorithm_selected_cb),this);
 	
 	//Close with X and "cancel" button
-	g_signal_connect (
-		G_OBJECT(l_pBox),
-		"delete_event",
-		G_CALLBACK(::gtk_exit),
-		0);
-
+	g_signal_connect (G_OBJECT(l_pBox),"delete_event",G_CALLBACK(::gtk_exit),0);
 	::GtkWidget * l_pButtonCancel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-exit-button"));
-	g_signal_connect(l_pButtonCancel,"pressed", G_CALLBACK(::gtk_exit), 0);
+	g_signal_connect(l_pButtonCancel,"pressed", G_CALLBACK(button_exit_cb), this);
 
 	//load everything from config file
 	load(m_sConfigurationFile);
@@ -1487,9 +1439,9 @@ boolean CBoxAlgorithmSkeletonGenerator::save(CString sFileName)
 	::fprintf(l_pFile, "SkeletonGenerator_Box_ShortDescription = %s\n", (const char *) m_sShortDescription);
 	
 	//we need to escape with '\' the special characters of the configuration manager files
-		string l_sTempDetailedDescr(m_sDetailedDescription.toASCIIString());
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "SAVE > DESCR FROM WIDGET: "<<l_sTempDetailedDescr.c_str()<<"\n";
-	l_sTempDetailedDescr.reserve(1000);
+	string l_sTempDetailedDescr((const char *)m_sDetailedDescription);
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "SAVE > DESCRIPTION FROM WIDGET: "<<l_sTempDetailedDescr.c_str()<<"\n";
+	l_sTempDetailedDescr.reserve(1000); // if we need to insert characters
 	string::iterator it_descr=l_sTempDetailedDescr.begin();
 	while(it_descr<l_sTempDetailedDescr.end())
 	{
@@ -1601,7 +1553,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	//we need to UNescape the special characters of the configuration manager files
 	string::iterator it_descr;
 	string l_sTempDetailedDescr(l_sDetailedDescr.toASCIIString());
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "LOAD > DESCR LOADED: "<<l_sTempDetailedDescr.c_str()<<"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "LOAD > DESCR LOADED: "<<l_sTempDetailedDescr.c_str()<<"\n";
 	for(it_descr=l_sTempDetailedDescr.begin(); it_descr<l_sTempDetailedDescr.end(); it_descr++)
 	{
 		// juste erase the escape character
@@ -1616,7 +1568,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 			l_sTempDetailedDescr.insert(it_descr,'\n');
 		}
 	}	
-	m_rKernelContext.getLogManager() << LogLevel_Trace << "LOAD > DESCR MODIFIED: "<<l_sTempDetailedDescr.c_str()<<"\n";
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "LOAD > DESCR MODIFIED: "<<l_sTempDetailedDescr.c_str()<<"\n";
 	gtk_text_buffer_set_text(l_pDetailedDescrTextBuffer,l_sTempDetailedDescr.c_str(),((string)l_sTempDetailedDescr).length());
 
 	GtkWidget * l_pIconCombobox =  GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-icon-combobox"));
@@ -1720,10 +1672,32 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 		gtk_list_store_set (GTK_LIST_STORE(l_pAlgoListStore), &l_iter, 0, (const char *)l_sName,-1);
 	}
 
-	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
-	CString l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Box_TargetDirectory}");
+	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-target-directory-filechooserbutton"));
+	CString l_sTargetDirectory;
+	// if the user specified a target directory, it has full priority
+	l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_TargetDirectory}");
+	if((string)l_sTargetDirectory != string(""))
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir user  [" << l_sTargetDirectory << "]\n";
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+	}
+	else
+	{
+		//previous entry
+		l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Box_TargetDirectory}");
+		if((string)l_sTargetDirectory != string(""))
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target previous  [" << l_sTargetDirectory << "]\n";
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+		}
+		else
+		{
+			//default path = dist
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target default  [dist]\n";
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),"..");
+		}
+	}
 
-	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
 	m_rKernelContext.getLogManager() << LogLevel_Info << "box entries from [" << m_sConfigurationFile << "] loaded.\n";
 	
 	return true;
@@ -1773,6 +1747,11 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 	m_bCanModifySettings = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanModifySettingsCheckbox));
 	::GtkWidget * l_pCanAddSettingsCheckbox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-settings-add-checkbutton"));
 	m_bCanAddSettings = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanAddSettingsCheckbox));
+
+	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-target-directory-filechooserbutton"));
+	char * l_pTargetDirectory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pFileChooser));
+	m_sTargetDirectory = CString(l_pTargetDirectory);
+	g_free(l_pTargetDirectory);
 
 	::GtkWidget * l_pInputsTreeview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-inputs-treeview"));
 	::GtkTreeModel * l_pInputListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pInputsTreeview));

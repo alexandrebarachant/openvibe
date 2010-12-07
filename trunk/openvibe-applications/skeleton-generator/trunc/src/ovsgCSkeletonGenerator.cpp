@@ -2,6 +2,8 @@
 
 #include <string>
 #include <cstdlib>
+#include <ctime>
+#include <sstream>
 
 using namespace std;
 using namespace OpenViBE;
@@ -26,11 +28,9 @@ void CSkeletonGenerator::getCommonParameters()
 {
 	//Author and Company
 	::GtkWidget* l_pEntryCompany=GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_company_name"));
-	m_sCompany=CString("");
-	m_sCompany=gtk_entry_get_text(GTK_ENTRY(l_pEntryCompany));
+	m_sCompany = gtk_entry_get_text(GTK_ENTRY(l_pEntryCompany));
 
 	::GtkWidget* l_pEntryAuthor =GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_author_name"));
-	m_sAuthor=CString("");
 	m_sAuthor=gtk_entry_get_text(GTK_ENTRY(l_pEntryAuthor));
 }
 
@@ -91,3 +91,146 @@ boolean CSkeletonGenerator::loadCommonParameters(CString sFileName)
 
 	return true;
 }
+
+CString CSkeletonGenerator::ensureSedCompliancy(CString sExpression)
+{
+	string l_sExpression((const char*)sExpression);
+	string::iterator it=l_sExpression.begin();
+	while(it<l_sExpression.end())
+	{
+		if((*it)=='\\')
+		{
+			l_sExpression.insert(it,'\\');
+			l_sExpression.insert(it,'\\');
+			it++;
+			it++;
+		}
+		else if((*it)=='/')
+		{
+			l_sExpression.insert(it,'\\');
+			it++;
+		}
+		it++;
+	}
+
+	size_t l_iStringIndex = l_sExpression.find('\n');
+	while(l_iStringIndex != string::npos)
+	{
+		l_sExpression.replace(l_iStringIndex,1,"\\\\n");
+		l_iStringIndex = l_sExpression.find('\n',l_iStringIndex+2);
+	}
+
+	return CString(l_sExpression.c_str());
+}
+
+OpenViBE::boolean CSkeletonGenerator::executeSedCommand(OpenViBE::CString sTemplateFile, OpenViBE::CString sCommand, OpenViBE::CString sDestinationFile)
+{
+	CString l_sSed;
+	CString l_sMove;
+#ifdef OV_OS_Windows
+	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
+	l_sMove = "move";
+#else
+#ifdef OV_OS_Linux
+	l_sSed = "sed";
+	l_sMove = "mv";
+#endif
+#endif
+
+	boolean l_bSuccess = false;
+
+	CString l_sCommandSed = l_sSed + " \"" + sCommand+"\" \"" + sTemplateFile + "\"";
+	if(string(sDestinationFile) != string(""))
+	{
+		l_sCommandSed =  l_sCommandSed + " > \"" + sDestinationFile + "\"";
+		l_bSuccess = (system(((string)l_sCommandSed).c_str()) == 0);
+	}
+	else
+	{
+		l_sCommandSed =  l_sCommandSed + " > tmp-sed";
+		l_bSuccess = (system(l_sCommandSed) == 0);
+		CString l_sMoveCommand = l_sMove + " tmp-sed \"" + sTemplateFile + "\" >> NULL";
+		l_bSuccess &= (system(l_sMoveCommand) == 0);
+		m_rKernelContext.getLogManager() << LogLevel_Trace << " -- Move command : [" << l_sMoveCommand << "]\n";
+	}
+	
+	l_bSuccess = (system(((string)l_sCommandSed).c_str()) == 0);
+
+	if(l_bSuccess)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Trace << " -- Sed command successfully called : [" << l_sCommandSed << "]\n";
+	}
+	else
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Error << " -- Faulty substitution command : [" << l_sCommandSed <<"]\n";
+	}
+
+	return l_bSuccess;
+
+}
+
+OpenViBE::boolean CSkeletonGenerator::executeSedSubstitution(OpenViBE::CString sTemplateFile, OpenViBE::CString sTag, OpenViBE::CString sSubstitute, OpenViBE::CString sDestinationFile)
+{
+	CString l_sSed;
+	CString l_sMove;
+	CString l_sNull;
+#ifdef OV_OS_Windows
+	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
+	l_sMove = "move";
+	l_sNull = "NULL";
+#else
+#ifdef OV_OS_Linux
+	l_sSed = "sed";
+	l_sMove = "mv";
+	l_sNull = "/dev/null";
+#endif
+#endif
+
+	boolean l_bSuccess = false;
+
+	CString l_sSubstitute = ensureSedCompliancy(sSubstitute);
+
+	CString l_sCommandSed = l_sSed + " \"s/" + sTag + "/" + l_sSubstitute+ "/g\" \"" + sTemplateFile + "\"";
+	if(string(sDestinationFile) != string(""))
+	{
+		l_sCommandSed =  l_sCommandSed + " > \"" + sDestinationFile + "\"";
+		l_bSuccess = (system(((string)l_sCommandSed).c_str()) == 0);
+	}
+	else
+	{
+		l_sCommandSed =  l_sCommandSed + " > tmp-sed";
+		l_bSuccess = (system(l_sCommandSed) == 0);
+		CString l_sMoveCommand = l_sMove + " tmp-sed \"" + sTemplateFile + "\" >> NULL";
+		l_bSuccess &= (system(l_sMoveCommand) == 0);
+		m_rKernelContext.getLogManager() << LogLevel_Trace << " -- Move command : [" << l_sMoveCommand << "]\n";
+#ifdef OV_OS_Windows
+		l_bSuccess &= (system("del NULL") == 0);
+#endif
+	}
+
+	if(l_bSuccess)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Trace << " -- Sed command successfully called : [" << l_sCommandSed << "]\n";
+	}
+	else
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Error << " -- Faulty substitution command : [" << l_sCommandSed <<"]\n";
+	}
+
+	return l_bSuccess;
+}
+
+CString CSkeletonGenerator::getDate()
+{
+	time_t rawtime;
+	struct tm * timeinfo;
+	time ( &rawtime );
+	timeinfo = localtime ( &rawtime );
+	stringstream ssTime;
+	string string_time(asctime (timeinfo));
+	string_time = string_time.substr(0,string_time.size()-1); // the ascitime ends with a "\n"
+	CString l_sDate(string_time.c_str());
+	
+	return l_sDate;
+}
+

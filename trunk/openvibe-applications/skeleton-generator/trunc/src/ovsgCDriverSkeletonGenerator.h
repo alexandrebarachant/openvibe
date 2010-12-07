@@ -30,6 +30,7 @@ namespace OpenViBESkeletonGenerator
 		void buttonCheckCB(void);
 		void buttonOkCB(void);
 		void buttonTooltipCB(::GtkButton* pButton);
+		void buttonExitCB(void);
 
 	private:
 

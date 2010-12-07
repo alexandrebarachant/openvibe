@@ -75,7 +75,7 @@ namespace OpenViBEPlugins
 				@@SettingFlagCanModify@@
 				@@SettingFlagCanAdd@@
 				
-				@@FlagUnstable@@
+				rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				
 				return true;
 			}

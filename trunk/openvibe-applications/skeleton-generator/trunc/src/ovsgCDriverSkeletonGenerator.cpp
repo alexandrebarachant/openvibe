@@ -8,8 +8,6 @@
 
 #include <boost/regex.hpp>
 
-#include <time.h>
-
 using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -28,7 +26,24 @@ static void button_ok_cb(::GtkButton* pButton, void* pUserData)
 {
 	static_cast<CDriverSkeletonGenerator*>(pUserData)->buttonOkCB();
 }
+static void button_exit_cb(::GtkButton* pButton, void* pUserData)
+{
+	static_cast<CDriverSkeletonGenerator*>(pUserData)->buttonExitCB();
+	::gtk_exit(0);
+}
+
 //-----------------------------------------------------------------------
+void CDriverSkeletonGenerator::buttonExitCB()
+{
+	getCommonParameters();
+	getCurrentParameters();
+	cleanConfigurationFile(m_sConfigurationFile);
+	saveCommonParameters(m_sConfigurationFile);
+	save(m_sConfigurationFile);
+
+	m_rKernelContext.getLogManager() << LogLevel_Info << "All entries saved in ["<< m_sConfigurationFile<<"]. Exiting.\n";
+}
+
 void CDriverSkeletonGenerator::buttonCheckCB()
 {
 	//Author and Company
@@ -180,30 +195,14 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 	CString l_sSed;
 #ifdef OV_OS_Windows
-		l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
+	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
 #else
 #ifdef OV_OS_Linux
-		l_sSed = "sed";
+	l_sSed = "sed";
 #endif
 #endif
 
-	time_t rawtime;
-	struct tm * timeinfo;
-	time ( &rawtime );
-	timeinfo = localtime ( &rawtime );
-	stringstream ssTime;
-	string string_time(asctime (timeinfo));
-	string_time = string_time.substr(0,string_time.size()-1); // the ascitime ends with a "\n"
-	CString l_sDate(string_time.c_str());
-
-	m_rKernelContext.getLogManager() << LogLevel_Info << "AUTHOR: " << m_sAuthor << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "COMPANY: " << m_sCompany << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "DRIVER: " << m_sDriverName << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "CLASS: " << m_sClassName << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "MINCHAN: " << m_sMinChannel << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "MAXCHAN: " << m_sMaxChannel << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "DATE: " << l_sDate << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Info << "Target directory: " << m_sTargetDirectory << "\n";
+	CString l_sDate = getDate();
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// driver.h
@@ -226,20 +225,11 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".h";
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@AuthorName@@/"+m_sAuthor+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@CompanyName@@/"+m_sCompany+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@Date@@/"+l_sDate+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@DriverName@@/"+m_sDriverName+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@ClassName@@/"+m_sClassName+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
-
-		// execute the sed command !
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverHSkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_bSuccess &= executeSedSubstitution(l_sDriverHSkel,"@@AuthorName@@",  m_sAuthor, l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@CompanyName@@", m_sCompany);
+		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@Date@@",        l_sDate);
+		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@DriverName@@",  m_sDriverName);
+		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@ClassName@@",   m_sClassName);
 
 		if(l_bSuccess)
 		{
@@ -271,22 +261,12 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".cpp";
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@DriverName@@/"+m_sDriverName+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@ClassName@@/"+m_sClassName+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@SamplingFrequency@@/"+ m_vSamplingFrequencies[0]+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
-
-		// execute the sed command !
-//#ifdef OV_OS_Windows
-//		l_sDriverCppSkel = "driver.cpp-skeleton";
-//#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sDriverCppSkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_bSuccess &= executeSedSubstitution(l_sDriverCppSkel,"@@AuthorName@@",        m_sAuthor, l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@CompanyName@@",       m_sCompany);
+		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@DriverName@@",        m_sDriverName);
+		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@ClassName@@",         m_sClassName);
+		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@SamplingFrequency@@", m_vSamplingFrequencies[0]);
+		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@MaxChannel@@",        m_sMaxChannel);
 
 		if(l_bSuccess)
 		{
@@ -318,25 +298,13 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".h";
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@AuthorName@@/"+m_sAuthor+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@CompanyName@@/"+m_sCompany+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@Date@@/"+l_sDate+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@DriverName@@/"+m_sDriverName+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@ClassName@@/"+m_sClassName+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@SamplingFrequency@@/"+m_vSamplingFrequencies[0]+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
-
-		// execute the sed command !
-//#ifdef OV_OS_Windows
-//		l_sConfigurationHSkel = "configuration.h-skeleton";
-//#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationHSkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_bSuccess &= executeSedSubstitution(l_sConfigurationHSkel,"@@AuthorName@@",        m_sAuthor, l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@CompanyName@@",       m_sCompany);
+		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@Date@@",              l_sDate);
+		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@DriverName@@",        m_sDriverName);
+		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@ClassName@@",         m_sClassName);
+		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@SamplingFrequency@@", m_vSamplingFrequencies[0]);
+		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@MaxChannel@@",        m_sMaxChannel);
 
 		if(l_bSuccess)
 		{
@@ -368,20 +336,8 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".cpp";
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@ClassName@@/"+m_sClassName+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
-
-		// execute the sed command !
-//#ifdef OV_OS_Windows
-//		l_sConfigurationCppSkel = "configuration.cpp-skeleton";
-//#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sConfigurationCppSkel) + + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_bSuccess &= executeSedSubstitution(l_sConfigurationCppSkel,"@@ClassName@@",        m_sClassName, l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,                "@@MaxChannel@@",       m_sMaxChannel);
 
 		if(l_bSuccess)
 		{
@@ -413,28 +369,17 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/interface-" + m_sClassName + ".ui";
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@DriverName@@/"+m_sDriverName+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@MinChannel@@/"+m_sMinChannel+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@MaxChannel@@/"+m_sMaxChannel+"/g";
-		l_sCommandSed = l_sCommandSed + ";s/@@SamplingFrequencyList@@/";
+		l_bSuccess &= executeSedSubstitution(l_sInterfaceUISkel,"@@DriverName@@",        m_sDriverName, l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,           "@@MinChannel@@",       m_sMinChannel);
+		l_bSuccess &= executeSedSubstitution(l_sDest,           "@@MaxChannel@@",       m_sMaxChannel);
+		CString l_sCommandSed = "s/@@SamplingFrequencyList@@/";
 		for(vector<CString>::iterator it = m_vSamplingFrequencies.begin(); it != m_vSamplingFrequencies.end(); )
 		{
 			l_sCommandSed = l_sCommandSed + (*it++);
 			if(it!=m_vSamplingFrequencies.end()) l_sCommandSed = l_sCommandSed + "<\\/col><\\/row><row><col id=\\\"0\\\" translatable=\\\"yes\\\">";
 		}
-		l_sCommandSed = l_sCommandSed + "/g\" ";
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "CMD: "+l_sCommandSed+"\n";
-
-		// execute the sed command !
-//#ifdef OV_OS_Windows
-//		l_sInterfaceUISkel = "interface.ui-skeleton";
-//#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sInterfaceUISkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_sCommandSed = l_sCommandSed +  "/g";
+		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
 
 		if(l_bSuccess)
 		{
@@ -463,21 +408,10 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'readme-driver.txt-skeleton' found.\n";
 
 		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/README.txt";
+		CString l_sDest = m_sTargetDirectory + "/README-SKGEN-DRIVER.txt";
 
-		CString l_sCommandSed = l_sSed;
-		l_sCommandSed = l_sCommandSed + " \"s/@@ClassName@@/"+m_sClassName+"/g";
-		l_sCommandSed = l_sCommandSed + " ;s/@@Date@@/"+l_sDate+"/g\" ";
-
-		// execute the sed command !
-//#ifdef OV_OS_Windows
-//		l_sReadMeDriverTxtSkel = "readme-driver.txt-skeleton";
-//#endif
-		l_sCommandSed = l_sCommandSed + CString("\"") + CString(l_sReadMeDriverTxtSkel) + CString("\" > \"") + l_sDest + CString("\"");
-
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Invoking [" << l_sCommandSed << "]...\n";
-
-		l_bSuccess &= (system(((string)l_sCommandSed).c_str()) == 0);
+		l_bSuccess &= executeSedSubstitution(l_sReadMeDriverTxtSkel,"@@ClassName@@", m_sClassName, l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sDest,               "@@Date@@",      l_sDate);
 
 		if(l_bSuccess)
 		{
@@ -512,6 +446,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
 	}
 
+	// Launch the browser to display the produced files
 	CString l_sBrowser = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand_${OperatingSystem}}");
 	CString l_sBrowserCmd = l_sBrowser + " \"" +  m_sTargetDirectory+"\"";
 
@@ -590,6 +525,15 @@ void CDriverSkeletonGenerator::initialize( void )
 	g_signal_connect(l_pButtonCheck,"pressed",G_CALLBACK(button_check_cb), this);
 	g_signal_connect(l_pButtonOk,"pressed",G_CALLBACK(button_ok_cb), this);
 
+	////target directory
+	//::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
+	//CString l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_TargetDirectory}");
+	//if(!gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory))
+	//{
+	//	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),"..");
+	//}
+	
+
 	// Tooltips buttons and signal
 	::GtkButton * l_pTooltipButton_driverName          = GTK_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-driver-name-tooltip-button"));
 	::GtkButton * l_pTooltipButton_className           = GTK_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-class-name-tooltip-button"));
@@ -610,14 +554,9 @@ void CDriverSkeletonGenerator::initialize( void )
 	g_signal_connect(l_pTooltipButton_targetDirectory,    "pressed",G_CALLBACK(button_tooltip_cb), this);
 
 	//Close with X and "cancel" button
-	g_signal_connect (
-		G_OBJECT(l_pWindowDriver),
-		"delete_event",
-		G_CALLBACK(::gtk_exit),
-		0);
-
+	g_signal_connect (G_OBJECT(l_pWindowDriver),"delete_event",G_CALLBACK(::gtk_exit),0);
 	::GtkWidget * l_pButtonCancel = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-cancel-button"));
-	g_signal_connect(l_pButtonCancel,"pressed", G_CALLBACK(::gtk_exit), 0);
+	g_signal_connect(l_pButtonCancel,"pressed", G_CALLBACK(button_exit_cb), this);
 
 	//load everything from file
 	load(m_sConfigurationFile);
@@ -683,11 +622,33 @@ boolean CDriverSkeletonGenerator::load(OpenViBE::CString sFileName)
 	gtk_entry_set_text(GTK_ENTRY(l_pEntrySF),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_SamplingFrequencies}"));
 
 	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "filechooserbutton_target_directory"));
-	CString l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_TargetDirectory}");
+	CString l_sTargetDirectory;
 
-	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+	// if the user specified a target directory, it has full priority
+	l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_TargetDirectory}");
+	if((string)l_sTargetDirectory != string(""))
+	{
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir1  [" << l_sTargetDirectory << "]\n";
+	}
+	else
+	{
+		//previous entry
+		l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_TargetDirectory}");
+		if((string)l_sTargetDirectory != string(""))
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir2  [" << l_sTargetDirectory << "]\n";
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+		}
+		else
+		{
+			//default path = dist
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir3  [" << l_sTargetDirectory << "]\n";
+			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),"..");
+		}
+	}
+
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries from [" << sFileName << "] loaded.\n";
-
 	return true;
 }
 

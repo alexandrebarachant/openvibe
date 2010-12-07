@@ -61,6 +61,7 @@ namespace OpenViBESkeletonGenerator
 			void buttonCheckCB(void);
 			void buttonOkCB(void);
 			void buttonTooltipCB(::GtkButton* pButton);
+			void buttonExitCB(void);
 
 			void buttonAddInputCB(void);
 			void buttonRemoveInputCB(void);
@@ -99,6 +100,7 @@ namespace OpenViBESkeletonGenerator
 			OpenViBE::CString getRandomIdentifierString(void);
 
 			std::vector<OpenViBE::CString> m_vParameterType_EnumTypeCorrespondance;
+
 	};
 
 	class CDummyAlgoProto : public OpenViBE::Kernel::IAlgorithmProto

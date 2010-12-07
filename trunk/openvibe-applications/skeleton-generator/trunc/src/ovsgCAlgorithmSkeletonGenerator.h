@@ -13,6 +13,7 @@ namespace OpenViBESkeletonGenerator
 		virtual ~CAlgorithmSkeletonGenerator(void);
 
 		void initialize(void);
+
 	};
 }
 

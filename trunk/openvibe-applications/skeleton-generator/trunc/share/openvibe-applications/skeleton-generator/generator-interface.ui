@@ -477,7 +477,7 @@ Please select the skeleton you want to generate :
             </child>
             <child>
               <object class="GtkButton" id="sg-driver-cancel-button">
-                <property name="label" translatable="yes">Exit</property>
+                <property name="label" translatable="yes">Save &amp; Exit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1860,7 +1860,7 @@ The connection between algorithm has to be done manually.
             </child>
             <child>
               <object class="GtkButton" id="sg-box-exit-button">
-                <property name="label" translatable="yes">Exit</property>
+                <property name="label" translatable="yes">Save &amp; Exit</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
