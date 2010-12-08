@@ -667,20 +667,19 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p><u><b>Short Description:</b></u></p>
 		<p>The Raymond Poincaré Hospital in Paris (France) has an open position for a Post-Doc to support clinical trials in Brain-Computer Interfaces, as described in the enclosed document.</p>
 		<br>
-		<p>You will find more information on the dedicated pages:</p>
-		<ul>
-		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptEngineer>Experienced Engineer</a> position descriptions</li>
-		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPhD>Internship + PhD</a> position descriptions</li>
-		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPostdoc>Post-doc</a> position descriptions</li>
+		<p>You can download the full <a href=jobs/2010-12-APHP-Post-Doc.pdf>english PDF description</a>.</p>
 		<br>
 		<p>Interested candidates should contact Louis Mayaud (<i>louis dot mayaud at rpc dot aphp dot fr</i>)</p>
-
 		<h2>Three open positions at INRIA Sophia Antipolis<br><span style="font-size:x-small">2010-12</span></h2>
 
 		<p><u><b>Short Description:</b></u></p>
 		<p>The Athena Team is looking after one experienced engineer, one phd and one post-doc in the particular field of Brain-Computer Interfaces.</p>
 		<br>
-		<p>You can download the full <a href=jobs/2010-12-APHP-Post-Doc.pdf>english PDF description</a>.</p>
+		<p>You will find more information on the dedicated pages:</p>
+		<ul>
+		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptEngineer>Experienced Engineer</a> position descriptions</li>
+		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPhD>Internship + PhD</a> position descriptions</li>
+		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPostdoc>Post-doc</a> position descriptions</li>
 		<br>
 		<p>Interested candidates should contact Maureen Clerc (<i>maureen dot clerc at inria dot fr</i>)</p>
 
