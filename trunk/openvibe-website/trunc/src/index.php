@@ -673,7 +673,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPhD>Internship + PhD</a> position descriptions</li>
 		<li><a href=http://www-sop.inria.fr/athena/Site/CoAdaptPostdoc>Post-doc</a> position descriptions</li>
 		<br>
-		<p>Interested candidates should contact Maureen Clerc (<i>maureen dot clerc at inria dot fr</i>)</p>
+		<p>Interested candidates should contact Louis Mayaud (<i>louis dot mayaud at rpc dot aphp dot fr</i>)</p>
 
 		<h2>Three open positions at INRIA Sophia Antipolis<br><span style="font-size:x-small">2010-12</span></h2>
 
@@ -682,7 +682,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<br>
 		<p>You can download the full <a href=jobs/2010-12-APHP-Post-Doc.pdf>english PDF description</a>.</p>
 		<br>
-		<p>Interested candidates should contact Louis Mayaud (<i>louis dot mayaud at rpc dot aphp dot fr</i>)</p>
+		<p>Interested candidates should contact Maureen Clerc (<i>maureen dot clerc at inria dot fr</i>)</p>
 
 		<h2>One software engineer position at Hopital Raymond Poincare<br><span style="font-size:x-small">2010-06 - <span style="text-color:red">CLOSED</span></span></h2>
 
