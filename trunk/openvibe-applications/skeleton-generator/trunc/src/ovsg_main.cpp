@@ -62,12 +62,10 @@ int main(int argc, char** argv)
 				OpenViBEToolkit::initialize(*l_pKernelContext);
 				IConfigurationManager& l_rConfigurationManager=l_pKernelContext->getConfigurationManager();
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
-				//initialise Gtk before 3D context
+				
 				gtk_init(&argc, &argv);
 
-				//CSkeletonGenerator l_Generator(*l_pKernelContext,"../share/openvibe-applications/skeleton-generator/generator-interface.ui");
-
-				::GtkBuilder * l_pBuilderInterface = gtk_builder_new(); // glade_xml_new("../share/openvibe-applications/skeleton-generator/generator-interface.ui", NULL, NULL);
+				::GtkBuilder * l_pBuilderInterface = gtk_builder_new(); 
 				gtk_builder_add_from_file(l_pBuilderInterface, "../share/openvibe-applications/skeleton-generator/generator-interface.ui", NULL);
 				gtk_builder_connect_signals(l_pBuilderInterface, NULL);
 

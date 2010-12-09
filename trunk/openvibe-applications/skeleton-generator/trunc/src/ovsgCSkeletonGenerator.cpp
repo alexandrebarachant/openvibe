@@ -123,7 +123,7 @@ CString CSkeletonGenerator::ensureSedCompliancy(CString sExpression)
 	return CString(l_sExpression.c_str());
 }
 
-OpenViBE::boolean CSkeletonGenerator::executeSedCommand(OpenViBE::CString sTemplateFile, OpenViBE::CString sCommand, OpenViBE::CString sDestinationFile)
+boolean CSkeletonGenerator::executeSedCommand(CString sTemplateFile, CString sCommand, CString sDestinationFile)
 {
 	CString l_sSed;
 	CString l_sMove;
@@ -169,7 +169,7 @@ OpenViBE::boolean CSkeletonGenerator::executeSedCommand(OpenViBE::CString sTempl
 
 }
 
-OpenViBE::boolean CSkeletonGenerator::executeSedSubstitution(OpenViBE::CString sTemplateFile, OpenViBE::CString sTag, OpenViBE::CString sSubstitute, OpenViBE::CString sDestinationFile)
+boolean CSkeletonGenerator::executeSedSubstitution(CString sTemplateFile, CString sTag, CString sSubstitute, CString sDestinationFile)
 {
 	CString l_sSed;
 	CString l_sMove;
