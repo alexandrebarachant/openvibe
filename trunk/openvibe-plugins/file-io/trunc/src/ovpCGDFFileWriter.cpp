@@ -412,7 +412,7 @@ void CGDFFileWriter::saveEvents()
 	vector<pair<uint64, uint64> >::iterator l_oIterator;
 	for(l_oIterator=m_oEvents.begin() ; l_oIterator!=m_oEvents.end() ; l_oIterator++)
 	{
-		l_ui32Position = (uint32)((l_oIterator->second * m_ui64SamplingFrequency)>>32);
+		l_ui32Position = (uint32)(((l_oIterator->second + 1) * m_ui64SamplingFrequency - 1)>>32);
 
 		System::Memory::hostToLittleEndian(l_ui32Position, l_pLittleEndianBuffer);
 		m_oFile.write(reinterpret_cast<char *>(l_pLittleEndianBuffer), 4);
