@@ -76,7 +76,7 @@ This function returns the number of outputs the box has.
 \subsection LuaScriptAPI_get_setting_count box:get_setting_count()
 This function returns the number of settings the box has, including the script filename itself.
 
-\subsection LuaScriptAPI_get_setting box:get_setting_count(setting_index)
+\subsection LuaScriptAPI_get_setting box:get_setting(setting_index)
 This function returns a string containing the value of a given setting in the box. This
 setting value may be expanded using the configuration manager thanks to a \ref LuaScriptAPI_get_config call.
 - \c setting_index can range from 1 to \e n if the box has \e n settings.
