@@ -42,16 +42,17 @@ void ComputeFilterInitialCondition(vec b, vec a, vec &zi)
 		b1[j-1] =   b[j];
 		a2[j-1] =   a[j];
 	}
-	
+
 	mat mat_conc_01;
 	mat mat_zeros_1;
 
-	mat_zeros_1 = zeros_1;
+	mat_zeros_1 = zeros(na-2,1);	
 	mat_conc_01 = concat_vertical(eye_2,transpose(mat_zeros_1));
 	
 	mat mat_a1;
-	mat_a1 = a1;
-	
+	mat_a1 =zeros(na-1,1);
+	mat_a1.set_col (0, a1);
+
 	mat mat_conc_02;
 	mat_conc_02 = concat_horizontal(mat_a1,mat_conc_01);
 	
