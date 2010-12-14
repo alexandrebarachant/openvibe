@@ -1466,6 +1466,9 @@ if [[ ! $ov_native_package_installed == true ]]; then
 	echo 'export GTK_PATH='$ov_target_folder >> $ov_environment_configuration_script
 	echo '' >> $ov_environment_configuration_script
 fi;
+echo 'export LUA_PATH='$ov_target_folder_share'/lua/5.1/?.lua\;?.lua' >> $ov_environment_configuration_script
+echo 'export LUA_CPATH='$ov_target_folder_lib'/lua/5.1/?.so\;?.so' >> $ov_environment_configuration_script
+echo '' >> $ov_environment_configuration_script
 echo 'export OGRE_HOME='$ov_target_folder >> $ov_environment_configuration_script
 echo 'export VRPN_ROOT='$ov_target_folder >> $ov_environment_configuration_script
 echo 'export OMK_BIN='$ov_target_folder >> $ov_environment_configuration_script
