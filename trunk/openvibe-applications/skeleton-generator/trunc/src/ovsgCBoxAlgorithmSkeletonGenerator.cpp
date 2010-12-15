@@ -1436,7 +1436,21 @@ boolean CBoxAlgorithmSkeletonGenerator::save(CString sFileName)
 	::fprintf(l_pFile, "SkeletonGenerator_Box_Category = %s\n",(const char *)m_sCategory);
 	::fprintf(l_pFile, "SkeletonGenerator_Box_ClassName = %s\n",(const char *)m_sClassName);
 	
-	::fprintf(l_pFile, "SkeletonGenerator_Box_ShortDescription = %s\n", (const char *) m_sShortDescription);
+	//we need to escape with '\' the special characters of the configuration manager files
+	string l_sTempShortDescr((const char *)m_sShortDescription);
+	l_sTempShortDescr.reserve(1000); // if we need to insert characters
+	string::iterator it_sdescr=l_sTempShortDescr.begin();
+	while(it_sdescr<l_sTempShortDescr.end())
+	{
+		//characters to escape
+		if((*it_sdescr)=='\\' || (*it_sdescr)=='=' || (*it_sdescr)=='$' || (*it_sdescr)=='\t')
+		{
+			l_sTempShortDescr.insert(it_sdescr, '\\');
+			it_sdescr++;
+		}
+		it_sdescr++;
+	}
+	::fprintf(l_pFile, "SkeletonGenerator_Box_ShortDescription = %s\n", l_sTempShortDescr.c_str());
 	
 	//we need to escape with '\' the special characters of the configuration manager files
 	string l_sTempDetailedDescr((const char *)m_sDetailedDescription);
@@ -1679,8 +1693,6 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	if((string)l_sTargetDirectory != string(""))
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir user  [" << l_sTargetDirectory << "]\n";
-		l_sTargetDirectory = "file://"+l_sTargetDirectory;
-		gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
 	}
 	else
 	{
@@ -1689,19 +1701,25 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 		if((string)l_sTargetDirectory != string(""))
 		{
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target previous  [" << l_sTargetDirectory << "]\n";
-			//gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
-			l_sTargetDirectory = "file://"+l_sTargetDirectory;
-			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sTargetDirectory);
 		}
 		else
 		{
 			//default path = dist
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target default  [dist]\n";
-			CString l_sCurrentUri(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
-			l_sCurrentUri = l_sCurrentUri + "/..";
-			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sCurrentUri);
+#ifdef OV_OS_Linux
+			l_sTargetDirectory = CString(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
+			l_sTargetDirectory = l_sTargetDirectory + "/..";
+#elif defined OV_OS_Windows
+			l_sTargetDirectory = "..";
+#endif
 		}
 	}
+#ifdef OV_OS_Linux
+		l_sTargetDirectory = "file://"+l_sTargetDirectory;
+		gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+#elif defined OV_OS_Windows
+		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+#endif
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "box entries from [" << m_sConfigurationFile << "] loaded.\n";
 	

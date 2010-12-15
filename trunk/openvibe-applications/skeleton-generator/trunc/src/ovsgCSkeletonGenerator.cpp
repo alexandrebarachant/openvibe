@@ -128,9 +128,11 @@ CString CSkeletonGenerator::ensureSedCompliancy(CString sExpression)
 		else if((*it)=='\n')
 		{
 			it = l_sExpression.erase(it);
+#ifdef OV_OS_Linux
 			it = l_sExpression.insert(it,'\\');
 			it = l_sExpression.insert(it,'\\');
 			it+=2;
+#endif
 			it = l_sExpression.insert(it,'\\');
 			it = l_sExpression.insert(it,'\\');
 			it+=2;
