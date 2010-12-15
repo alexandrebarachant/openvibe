@@ -7,8 +7,6 @@ using namespace OpenViBE;
 //const Transform Transform::sk_identity;
 
 CVertexData::CVertexData() :
-/*	_verticesAction(CVertexData::VertexDataAction_None),
-	_colorsAction(CVertexData::VertexDataAction_None)*/
 	m_ui32VertexPositionCount(0)
 #ifndef USE_STL_CONTAINERS
 	,m_pVertexPositionArray(NULL)
@@ -40,17 +38,6 @@ void CVertexData::cleanup()
 #endif
 }
 
-/*
-void CVertexData::setVerticesAction(EVertexDataAction action)
-{
-	_verticesAction = action;
-}
-
-void CVertexData::setVertices( const std::vector< Wm4::Vector3f >& vertices )
-{
-  _vertices = vertices;
-}*/
-
 void CVertexData::setVertexPositionArray( uint32 ui32VertexPositionCount, const float32* pVertexPositionArray )
 {
 	m_ui32VertexPositionCount = ui32VertexPositionCount;
@@ -77,17 +64,6 @@ void CVertexData::setVertexPositionArray( uint32 ui32VertexPositionCount, const 
 	}
 #endif
 }
-/*
-CVertexData::EVertexDataAction CVertexData::getVerticesAction()
-{
-	return _verticesAction;
-}
-
-const std::vector< Wm4::Vector3f >& CVertexData::getVertices() const
-{
-	return _vertices;
-}
-*/
 
 void CVertexData::getVertexPositionArray( uint32& ui32VertexPositionCount, const float32*& pVertexPositionArray) const
 {
@@ -97,17 +73,7 @@ void CVertexData::getVertexPositionArray( uint32& ui32VertexPositionCount, const
 	else
 		pVertexPositionArray = NULL;
 }
-/*
-void CVertexData::setColorsAction(EVertexDataAction action)
-{
-	_colorsAction = action;
-}
 
-void CVertexData::setColors( const std::vector< Wm4::Vector4f >& colors )
-{
-  _colors = colors;
-}
-*/
 void CVertexData::setVertexColorArray( uint32 ui32VertexColorCount, const float32* pVertexColorArray )
 {
 	m_ui32VertexColorCount = ui32VertexColorCount;
@@ -133,16 +99,6 @@ void CVertexData::setVertexColorArray( uint32 ui32VertexColorCount, const float3
 	}
 #endif
 }
-/*
-CVertexData::EVertexDataAction CVertexData::getColorsAction()
-{
-	return _colorsAction;
-}
-
-const std::vector< Wm4::Vector4f >& CVertexData::getColors() const
-{
-	return _colors;
-}*/
 
 void CVertexData::getVertexColorArray( uint32& ui32VertexColorCount, const float32*& pVertexColorArray) const
 {
@@ -153,42 +109,6 @@ void CVertexData::getVertexColorArray( uint32& ui32VertexColorCount, const float
 		pVertexColorArray = NULL;
 }
 
-/*
-bool
-OMK::Type::operator == ( const CVertexData& vd0, const CVertexData& vd1 )
-{
-  if(vd0._verticesAction != vd1._verticesAction || vd0._vertices.size() != vd1._vertices.size() ||
-		vd0._colorsAction != vd1._colorsAction || vd0._colors.size() != vd1._colors.size())
-		return false;
-
-	size_t vsize = vd0._vertices.size();
-
-	for(size_t i = 0; i<vsize; i++)
-	{
-		if( vd0._vertices[i].X() != vd1._vertices[i].X())
-			return false;
-		if( vd0._vertices[i].Y() != vd1._vertices[i].Y())
-			return false;
-		if( vd0._vertices[i].Z() != vd1._vertices[i].Z())
-			return false;
-	}
-
-	vsize = vd0._colors.size();
-
-	for(size_t i = 0; i<vsize; i++)
-	{
-		if( vd0._colors[i].X() != vd1._colors[i].X())
-			return false;
-		if( vd0._colors[i].Y() != vd1._colors[i].Y())
-			return false;
-		if( vd0._colors[i].Z() != vd1._colors[i].Z())
-			return false;
-		if( vd0._colors[i].W() != vd1._colors[i].W())
-			return false;
-	}
-
-	return true;
-}*/
 bool operator == ( const CVertexData& vd0, const CVertexData& vd1 )
 {
   if(vd0.m_ui32VertexPositionCount != vd1.m_ui32VertexPositionCount ||
@@ -224,286 +144,3 @@ bool operator != ( const CVertexData& vd0, const CVertexData& vd1 )
 {
   return !( vd0 == vd1 ) ;
 }
-
-/*
-//old version
-std::ostream& OMK::Type::operator << ( std::ostream& out, const CVertexData& vd )
-{
-	const std::vector< Wm4::Vector3f > &v = vd.getVertices();
-
-	int toto = (int)vd._verticesAction;
-  out << toto << " " << v.size() << " " ;
-
-	for(size_t i = 0; i<v.size(); i++)
-	{
-		out << v[i].X()  << " "
-        << v[i].Y()  << " "
-        << v[i].Z()  << " "  ;
-  }
-
-	const std::vector< Wm4::Vector4f > &c = vd.getColors();
-
-	toto = (int)vd._colorsAction;
-	out << toto << " " << c.size() << " " ;
-
-	for(size_t i = 0; i<c.size(); i++)
-	{
-		out << c[i].X()  << " "
-        << c[i].Y()  << " "
-        << c[i].Z()  << " "
-				<< c[i].W()  << " "  ;
-  }
-
-  return out;
-}*/
-/*
-std::ostream& OMK::Type::operator << ( std::ostream& out, const CVertexData& vd )
-{
-	out << vd.m_ui32VertexPositionCount << " ";
-
-	for(uint32 i=0; i<vd.m_ui32VertexPositionCount; i+=3)
-	{
-		out << vd.m_pVertexPositionArray[i]  << " "
-        << vd.m_pVertexPositionArray[i+1]  << " "
-        << vd.m_pVertexPositionArray[i+2]  << " ";
-  }
-
-	out << vd.m_ui32VertexColorCount << " ";
-
-	for(uint32 i=0; i<vd.m_ui32VertexColorCount; i+=4)
-	{
-		out << vd.m_pVertexColorArray[i]  << " "
-        << vd.m_pVertexColorArray[i+1]  << " "
-        << vd.m_pVertexColorArray[i+2]  << " "
-				<< vd.m_pVertexColorArray[i+3]  << " ";
-  }
-
-  return out;
-}*/
-
-/*
-//old version
-std::istream& OMK::Type::operator >> ( std::istream& in, CVertexData& vd )
-{
-	int toto;
-	in >> toto;
-	vd._verticesAction = (CVertexData::EVertexDataAction)toto;
-
-	size_t vsize;
-	in >> vsize;
-
-	vd._vertices.resize(vsize);
-
-	for(size_t i = 0; i<vsize; i++)
-	{
-		in >> vd._vertices[i].X()
-       >> vd._vertices[i].Y()
-       >> vd._vertices[i].Z();
-  }
-
-	in >> toto;
-	vd._colorsAction = (CVertexData::EVertexDataAction)toto;
-
-	in >> vsize;
-  vd._colors.resize(vsize);
-
-	for(size_t i = 0; i<vsize; i++)
-	{
-		in >> vd._colors[i].X()
-			 >> vd._colors[i].Y()
-       >> vd._colors[i].Z()
-			 >>	vd._colors[i].W();
-  }
-
-  return in;
-}
-*/
-
-/*
-std::istream& OMK::Type::operator >> ( std::istream& in, CVertexData& vd )
-{
-	in >> vd.m_ui32VertexPositionCount;
-
-	if(vd.m_ui32VertexPositionCount != 0)
-	{
-		float32* l_pVertexPositionArray = new float32[vd.m_ui32VertexPositionCount * 3];
-
-		for(uint32 i=0; i<vd.m_ui32VertexPositionCount; i+=3)
-		{
-			in >> l_pVertexPositionArray[i]
-				 >> l_pVertexPositionArray[i+1]
-				 >> l_pVertexPositionArray[i+2];
-		}
-
-#ifndef USE_STL_CONTAINERS
-		vd.m_pVertexPositionArray = l_pVertexPositionArray;
-#else
-		vd.setVertexPositionArray(vd.m_ui32VertexPositionCount, l_pVertexPositionArray);
-		delete l_pVertexPositionArray;
-#endif
-	}
-
-	in >> vd.m_ui32VertexColorCount;
-
-	if(vd.m_ui32VertexColorCount != 0)
-	{
-		float32* l_pVertexColorArray = new float32[vd.m_ui32VertexColorCount * 4];
-
-		for(uint32 i=0; i<vd.m_ui32VertexColorCount; i+=4)
-		{
-			in >> l_pVertexColorArray[i]
-				 >> l_pVertexColorArray[i+1]
-				 >> l_pVertexColorArray[i+2]
-				 >> l_pVertexColorArray[i+3];
-		}
-
-#ifndef USE_STL_CONTAINERS
-		vd.m_pVertexColorArray = l_pVertexColorArray;
-#else
-		vd.setVertexColorArray(vd.m_ui32VertexColorCount, l_pVertexColorArray);
-		delete l_pVertexColorArray;
-#endif
-	}
-
-  return in;
-}
-*/
-
-/*
-//old version
-OutgoingSynchronisationMessage& OMK::Type::operator << ( OutgoingSynchronisationMessage& out, const CVertexData& vd )
-{
-	int toto = (int)vd._verticesAction;
-	out << toto << vd._vertices.size() ;
-
-	for(size_t i = 0; i<vd._vertices.size(); i++)
-	{
-		out << vd._vertices[i].X()
-        << vd._vertices[i].Y()
-        << vd._vertices[i].Z() ;
-  }
-
-	toto = (int)vd._colorsAction;
-	out << toto << vd._colors.size() ;
-
-	for(size_t i = 0; i<vd._colors.size(); i++)
-	{
-		out << vd._colors[i].X()
-        << vd._colors[i].Y()
-        << vd._colors[i].Z()
-				<< vd._colors[i].W() ;
-  }
-
-  return out;
-}
-*/
-
-/*
-OutgoingSynchronisationMessage& OMK::Type::operator << ( OutgoingSynchronisationMessage& out, const CVertexData& vd )
-{
-	out << vd.m_ui32VertexPositionCount;
-
-	for(uint32 i=0; i<vd.m_ui32VertexPositionCount; i+=3)
-	{
-		out << vd.m_pVertexPositionArray[i]
-        << vd.m_pVertexPositionArray[i+1]
-        << vd.m_pVertexPositionArray[i+2];
-  }
-
-	out << vd.m_ui32VertexColorCount;
-
-	for(uint32 i=0; i<vd.m_ui32VertexColorCount; i+=4)
-	{
-		out << vd.m_pVertexColorArray[i]
-        << vd.m_pVertexColorArray[i+1]
-        << vd.m_pVertexColorArray[i+2]
-				<< vd.m_pVertexColorArray[i+3];
-  }
-
-  return out;
-}*/
-
-/*
-//old version
-IncomingSynchronisationMessage& OMK::Type::operator >> ( IncomingSynchronisationMessage& in, CVertexData& vd )
-{
-	int toto;
-	in >> toto;
-	vd._verticesAction = (CVertexData::EVertexDataAction)toto;
-
-	size_t vsize;
-	in >> vsize;
-  vd._vertices.resize(vsize);
-
-	for(size_t i = 0; i<vsize; i++)
-	{
-		in >> vd._vertices[i].X()
-       >> vd._vertices[i].Y()
-       >> vd._vertices[i].Z();
-  }
-
-	in >> toto;
-	vd._colorsAction = (CVertexData::EVertexDataAction)toto;
-
-	in >> vsize;
-  vd._colors.resize(vsize);
-
-	for(size_t i = 0; i<vsize; i++)
-	{
-		in >> vd._colors[i].X()
-			 >> vd._colors[i].Y()
-       >> vd._colors[i].Z()
-			 >>	vd._colors[i].W();
-  }
-
-  return in;
-}
-*/
-/*
-IncomingSynchronisationMessage& OMK::Type::operator >> ( IncomingSynchronisationMessage& in, CVertexData& vd )
-{
-	in >> vd.m_ui32VertexPositionCount;
-
-	if(vd.m_ui32VertexPositionCount != 0)
-	{
-		float32* l_pVertexPositionArray = new float32[vd.m_ui32VertexPositionCount * 3];
-
-		for(uint32 i=0; i<vd.m_ui32VertexPositionCount; i+=3)
-		{
-			in >> l_pVertexPositionArray[i]
-				 >> l_pVertexPositionArray[i+1]
-				 >> l_pVertexPositionArray[i+2];
-		}
-
-#ifndef USE_STL_CONTAINERS
-		vd.m_pVertexPositionArray = l_pVertexPositionArray;
-#else
-		vd.setVertexPositionArray(vd.m_ui32VertexPositionCount, l_pVertexPositionArray);
-		delete l_pVertexPositionArray;
-#endif
-	}
-
-	in >> vd.m_ui32VertexColorCount;
-
-	if(vd.m_ui32VertexColorCount != 0)
-	{
-		float32* l_pVertexColorArray = new float32[vd.m_ui32VertexColorCount * 4];
-
-		for(uint32 i=0; i<vd.m_ui32VertexColorCount; i+=4)
-		{
-			in >> l_pVertexColorArray[i]
-				 >> l_pVertexColorArray[i+1]
-				 >> l_pVertexColorArray[i+2]
-				 >> l_pVertexColorArray[i+3];
-		}
-
-#ifndef USE_STL_CONTAINERS
-		vd.m_pVertexColorArray = l_pVertexColorArray;
-#else
-		vd.setVertexColorArray(vd.m_ui32VertexColorCount, l_pVertexColorArray);
-		delete l_pVertexColorArray;
-#endif
-	}
-
-  return in;
-}*/

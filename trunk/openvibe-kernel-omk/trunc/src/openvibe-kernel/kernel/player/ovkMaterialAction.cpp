@@ -151,8 +151,11 @@ bool MaterialVertexBuffer::entityAction(EntityMaterial* entity) const
 	return true;
 }
 
-bool MaterialVertexBuffer::setSubMeshColors(EntityMaterial* entity, unsigned short mesh_index,
-																						size_t ui32VertexColorCount, const float* pVertexColorArray) const
+bool MaterialVertexBuffer::setSubMeshColors(
+	EntityMaterial* entity,
+	unsigned short mesh_index,
+	size_t ui32VertexColorCount,
+	const float* pVertexColorArray) const
 {
 	if(entity->getOgreEntity() == NULL)
 	{
@@ -178,7 +181,10 @@ bool MaterialVertexBuffer::setSubMeshColors(EntityMaterial* entity, unsigned sho
 	else
 	{
 		if(ui32VertexColorCount != submesh->vertexData->vertexCount)
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Error << "Can't set colors : vertex count mismatch!\n";
 			return false;
+		}
 
 		//get pointer to submesh vertex data
 		Ogre::VertexData* vertex_data = submesh->vertexData;

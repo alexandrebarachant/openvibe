@@ -517,7 +517,7 @@ boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier,
 	}
 	else
 	{
-		Ogre::Real* l_pOgreVertexColorArray(new Ogre::Real[ui32VertexColorCount]);
+		Ogre::Real* l_pOgreVertexColorArray(new Ogre::Real[4*ui32VertexColorCount]);
 		for(uint32 i=0; i<ui32VertexColorCount; i++)
 		{
 			l_pOgreVertexColorArray[4*i] = pVertexColorArray[4*i];
