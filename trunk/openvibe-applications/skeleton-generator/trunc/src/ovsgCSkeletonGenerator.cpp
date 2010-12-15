@@ -106,6 +106,14 @@ CString CSkeletonGenerator::ensureSedCompliancy(CString sExpression)
 			it++;
 			it = l_sExpression.insert(it,'\\');
 			it++;
+#ifdef OV_OS_Linux
+			it = l_sExpression.insert(it,'\\');
+			it = l_sExpression.insert(it,'\\');
+			it+=2;
+			it = l_sExpression.insert(it,'\\');
+			it = l_sExpression.insert(it,'\\');
+			it+=2;
+#endif
 		}
 		else if((*it)=='/')
 		{

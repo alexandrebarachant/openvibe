@@ -626,11 +626,11 @@ boolean CDriverSkeletonGenerator::load(OpenViBE::CString sFileName)
 
 	// if the user specified a target directory, it has full priority
 	l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_TargetDirectory}");
+	boolean l_bNeedFilePrefix = false;
 	if((string)l_sTargetDirectory != string(""))
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir user  [" << l_sTargetDirectory << "]\n";
-		l_sTargetDirectory = "file://"+l_sTargetDirectory;
-		gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+		l_bNeedFilePrefix = true;
 	}
 	else
 	{
@@ -639,19 +639,26 @@ boolean CDriverSkeletonGenerator::load(OpenViBE::CString sFileName)
 		if((string)l_sTargetDirectory != string(""))
 		{
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target previous  [" << l_sTargetDirectory << "]\n";
-			//gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
-			l_sTargetDirectory = "file://"+l_sTargetDirectory;
-			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sTargetDirectory);
+			l_bNeedFilePrefix = true;
 		}
 		else
 		{
 			//default path = dist
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target default  [dist]\n";
-			CString l_sCurrentUri(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
-			l_sCurrentUri = l_sCurrentUri + "/..";
-			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sCurrentUri);
+#ifdef OV_OS_Linux
+			l_sTargetDirectory = CString(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
+			l_sTargetDirectory = l_sTargetDirectory + "/..";
+#elif defined OV_OS_Windows
+			l_sTargetDirectory = "..";
+#endif
 		}
 	}
+#ifdef OV_OS_Linux
+	if(l_bNeedFilePrefix) l_sTargetDirectory = "file://"+l_sTargetDirectory;
+	gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+#elif defined OV_OS_Windows
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+#endif
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Driver entries from [" << sFileName << "] loaded.\n";
 	return true;

@@ -1557,8 +1557,29 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	CString l_sVersion = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Box_Version}");
 	gtk_entry_set_text(GTK_ENTRY(l_pVersionEntry),(const char *) l_sVersion);
 	::GtkWidget * l_pSDEntry = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-short-description-entry"));
+	
 	CString l_sShortDescr = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Box_ShortDescription}");
-	gtk_entry_set_text(GTK_ENTRY(l_pSDEntry),(const char *) l_sShortDescr);
+	//we need to UNescape the special characters of the configuration manager files
+	string::iterator it_sdescr;
+	string l_sTempShortDescr(l_sShortDescr.toASCIIString());
+	for(it_sdescr=l_sTempShortDescr.begin(); it_sdescr<l_sTempShortDescr.end(); it_sdescr++)
+	{
+		// juste erase the escape character
+		if((*it_sdescr)=='\\' && (it_sdescr+1) != l_sTempShortDescr.end())
+		{
+			if((*(it_sdescr+1))=='\\' || (*(it_sdescr+1))=='=' || (*(it_sdescr+1))=='$' || (*(it_sdescr+1))=='\t' || (*(it_sdescr+1))=='@')
+			{
+				l_sTempShortDescr.erase(it_sdescr);
+			}
+		}
+		// replace the special character @ by \n in the textview
+		else if((*it_sdescr)=='@')
+		{
+			l_sTempShortDescr.erase(it_sdescr);
+			l_sTempShortDescr.insert(it_sdescr,'\n');
+		}
+	}	
+	gtk_entry_set_text(GTK_ENTRY(l_pSDEntry),l_sTempShortDescr.c_str());
 	
 	::GtkWidget * l_pDetailedDescrTextView = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-detailed-description-textview"));
 	::GtkTextBuffer * l_pDetailedDescrTextBuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(l_pDetailedDescrTextView));
@@ -1571,9 +1592,12 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	for(it_descr=l_sTempDetailedDescr.begin(); it_descr<l_sTempDetailedDescr.end(); it_descr++)
 	{
 		// juste erase the escape character
-		if((*it_descr)=='\\')
+		if((*it_descr)=='\\' && (it_descr+1) != l_sTempDetailedDescr.end())
 		{
-			l_sTempDetailedDescr.erase(it_descr);
+			if((*(it_sdescr+1))=='\\' || (*(it_sdescr+1))=='=' || (*(it_sdescr+1))=='$' || (*(it_sdescr+1))=='\t' || (*(it_sdescr+1))=='@')
+			{
+				l_sTempDetailedDescr.erase(it_descr);
+			}
 		}
 		// replace the special character @ by \n in the textview
 		else if((*it_descr)=='@')
@@ -1690,9 +1714,11 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	CString l_sTargetDirectory;
 	// if the user specified a target directory, it has full priority
 	l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_TargetDirectory}");
+	boolean l_bNeedFilePrefix = false;
 	if((string)l_sTargetDirectory != string(""))
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir user  [" << l_sTargetDirectory << "]\n";
+		l_bNeedFilePrefix = true;
 	}
 	else
 	{
@@ -1701,6 +1727,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 		if((string)l_sTargetDirectory != string(""))
 		{
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target previous  [" << l_sTargetDirectory << "]\n";
+			l_bNeedFilePrefix = true;
 		}
 		else
 		{
@@ -1715,10 +1742,10 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 		}
 	}
 #ifdef OV_OS_Linux
-		l_sTargetDirectory = "file://"+l_sTargetDirectory;
-		gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+	if(l_bNeedFilePrefix) l_sTargetDirectory = "file://"+l_sTargetDirectory;
+	gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
 #elif defined OV_OS_Windows
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
 #endif
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "box entries from [" << m_sConfigurationFile << "] loaded.\n";
