@@ -628,8 +628,9 @@ boolean CDriverSkeletonGenerator::load(OpenViBE::CString sFileName)
 	l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_TargetDirectory}");
 	if((string)l_sTargetDirectory != string(""))
 	{
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
-		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir1  [" << l_sTargetDirectory << "]\n";
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir user  [" << l_sTargetDirectory << "]\n";
+		l_sTargetDirectory = "file://"+l_sTargetDirectory;
+		gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
 	}
 	else
 	{
@@ -637,14 +638,18 @@ boolean CDriverSkeletonGenerator::load(OpenViBE::CString sFileName)
 		l_sTargetDirectory = m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Driver_TargetDirectory}");
 		if((string)l_sTargetDirectory != string(""))
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir2  [" << l_sTargetDirectory << "]\n";
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target previous  [" << l_sTargetDirectory << "]\n";
+			//gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+			l_sTargetDirectory = "file://"+l_sTargetDirectory;
+			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sTargetDirectory);
 		}
 		else
 		{
 			//default path = dist
-			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir3  [" << l_sTargetDirectory << "]\n";
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),"..");
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target default  [dist]\n";
+			CString l_sCurrentUri(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
+			l_sCurrentUri = l_sCurrentUri + "/..";
+			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sCurrentUri);
 		}
 	}
 

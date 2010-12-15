@@ -1679,7 +1679,8 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	if((string)l_sTargetDirectory != string(""))
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Debug << "Target dir user  [" << l_sTargetDirectory << "]\n";
-		gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+		l_sTargetDirectory = "file://"+l_sTargetDirectory;
+		gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
 	}
 	else
 	{
@@ -1688,13 +1689,17 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 		if((string)l_sTargetDirectory != string(""))
 		{
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target previous  [" << l_sTargetDirectory << "]\n";
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+			//gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
+			l_sTargetDirectory = "file://"+l_sTargetDirectory;
+			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sTargetDirectory);
 		}
 		else
 		{
 			//default path = dist
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target default  [dist]\n";
-			gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),"..");
+			CString l_sCurrentUri(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
+			l_sCurrentUri = l_sCurrentUri + "/..";
+			gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),l_sCurrentUri);
 		}
 	}
 

@@ -100,24 +100,44 @@ CString CSkeletonGenerator::ensureSedCompliancy(CString sExpression)
 	{
 		if((*it)=='\\')
 		{
-			l_sExpression.insert(it,'\\');
-			l_sExpression.insert(it,'\\');
+			it = l_sExpression.insert(it,'\\');
 			it++;
+			it = l_sExpression.insert(it,'\\');
+			it++;
+			it = l_sExpression.insert(it,'\\');
 			it++;
 		}
 		else if((*it)=='/')
 		{
-			l_sExpression.insert(it,'\\');
+			it = l_sExpression.insert(it,'\\');
 			it++;
 		}
+		else if((*it)=='"')
+		{
+			it = l_sExpression.insert(it,'\\');
+			it++;
+			it = l_sExpression.insert(it,'\\');
+			it++;
+			it = l_sExpression.insert(it,'\\');
+			it++;
+			it = l_sExpression.insert(it,'\\');
+			it++;
+			it = l_sExpression.insert(it,'\\');
+			it++;
+		}
+		else if((*it)=='\n')
+		{
+			it = l_sExpression.erase(it);
+			it = l_sExpression.insert(it,'\\');
+			it = l_sExpression.insert(it,'\\');
+			it+=2;
+			it = l_sExpression.insert(it,'\\');
+			it = l_sExpression.insert(it,'\\');
+			it+=2;
+			it = l_sExpression.insert(it,'n');
+			//it++;
+		}
 		it++;
-	}
-
-	size_t l_iStringIndex = l_sExpression.find('\n');
-	while(l_iStringIndex != string::npos)
-	{
-		l_sExpression.replace(l_iStringIndex,1,"\\\\n");
-		l_iStringIndex = l_sExpression.find('\n',l_iStringIndex+2);
 	}
 
 	return CString(l_sExpression.c_str());
