@@ -81,6 +81,15 @@ boolean GtkOVCustom::setHandler(IGtkOVCustomHandler* pHandler)
 	return m_pHandler != NULL;
 }
 
+/*
+gboolean blah(::GtkWidget* pWidget, ::GdkEventCrossing* pEvent, gpointer pUserData)
+{
+	gtk_widget_grab_focus(gtk_widget_get_parent(pWidget));
+	::SetFocus((HWND)GDK_WINDOW_HWND(gtk_widget_get_parent(pWidget)->window));
+	return FALSE;
+}
+*/
+
 boolean GtkOVCustom::handleRealizeEvent()
 {
 	//set realized flag
@@ -105,6 +114,19 @@ boolean GtkOVCustom::handleRealizeEvent()
 	//create child window
 	m_oWidget.window = GDK_DRAWABLE(gdk_window_new(l_pParent, &l_oWindowAttributes, GDK_WA_X | GDK_WA_Y));
 
+#if defined OVK_OS_Windows
+	::gdk_window_ensure_native(m_oWidget.window);
+	// ::gtk_widget_reparent(&m_oWidget, ::gtk_widget_get_parent(&m_oWidget));
+	::SetWindowPos((HWND)GDK_WINDOW_HWND(m_oWidget.window), 0, l_oWindowAttributes.x, l_oWindowAttributes.y, l_oWindowAttributes.width, l_oWindowAttributes.height, SWP_SHOWWINDOW);
+	::gdk_window_set_events(m_oWidget.window, GdkEventMask(GDK_ALL_EVENTS_MASK&~GDK_FOCUS_CHANGE_MASK));
+	::gtk_widget_add_events(&m_oWidget, GdkEventMask(GDK_ALL_EVENTS_MASK&~GDK_FOCUS_CHANGE_MASK));
+	//::gtk_widget_set_can_focus(&m_oWidget, FALSE);
+	//::gdk_window_set_accept_focus(m_oWidget.window, FALSE);
+	//::gdk_window_set_focus_on_map(m_oWidget.window, FALSE);
+	//printf("%i\n", gdk_window_get_window_type(m_oWidget.window));
+	//printf("%p %p\n", ::GetParent((HWND)GDK_WINDOW_HWND(m_oWidget.window)), (HWND)GDK_WINDOW_HWND(l_pParent));
+#endif
+
 	//widget has a window now
 	GTK_WIDGET_UNSET_FLAGS(&m_oWidget, GTK_NO_WINDOW);
 
@@ -118,9 +140,12 @@ boolean GtkOVCustom::handleRealizeEvent()
 	//gdk_window_set_events(widget->window, GDK_ALL_EVENTS_MASK);
 
 	//setup event handlers
-	g_signal_connect(G_OBJECT(this), "button-press-event", G_CALLBACK(button_press_event_in_frame_cb), this);
-	g_signal_connect(G_OBJECT(this), "button-release-event", G_CALLBACK(button_release_event_in_frame_cb), this);
-	g_signal_connect(G_OBJECT(this), "motion-notify-event", G_CALLBACK(motion_notify_event_in_frame_cb), this);
+	g_signal_connect(G_OBJECT(&m_oWidget), "button-press-event", G_CALLBACK(button_press_event_in_frame_cb), this);
+	g_signal_connect(G_OBJECT(&m_oWidget), "button-release-event", G_CALLBACK(button_release_event_in_frame_cb), this);
+	g_signal_connect(G_OBJECT(&m_oWidget), "motion-notify-event", G_CALLBACK(motion_notify_event_in_frame_cb), this);
+	g_signal_connect(G_OBJECT(&m_oWidget), "show", G_CALLBACK(show_cb), this);
+	g_signal_connect(G_OBJECT(&m_oWidget), "visibility-notify-event", G_CALLBACK(visibility_notify_event_cb), this);
+//	g_signal_connect(G_OBJECT(&m_oWidget), "leave-notify-event", G_CALLBACK(blah), this);
 
 	gtk_widget_set_double_buffered(&m_oWidget, FALSE);
 	gdk_window_set_user_data(m_oWidget.window, G_OBJECT(this));
@@ -138,14 +163,21 @@ boolean GtkOVCustom::handleSizeRequestEvent(GtkRequisition* pRequisition)
 boolean GtkOVCustom::handleSizeAllocateEvent(GtkAllocation* pAllocation)
 {
 	// Chain up - this will adjust the size of the actual window
-  if (GTK_WIDGET_CLASS(parent_class)->size_allocate)
-    (*GTK_WIDGET_CLASS(parent_class)->size_allocate)(&m_oWidget, pAllocation);
+	if (GTK_WIDGET_CLASS(parent_class)->size_allocate)
+	{
+		(*GTK_WIDGET_CLASS(parent_class)->size_allocate)(&m_oWidget, pAllocation);
+	}
 
 	m_oWidget.allocation = *pAllocation;
 
 	if(m_oWidget.window != NULL)
 	{
+#if defined OVK_OS_Windows
+		::SetWindowPos((HWND)GDK_WINDOW_HWND(m_oWidget.window), 0, pAllocation->x, pAllocation->y, pAllocation->width, pAllocation->height, SWP_SHOWWINDOW);
+		// ::gdk_window_show(m_oWidget.window);
+#else
 		gdk_window_move_resize(m_oWidget.window, pAllocation->x, pAllocation->y, pAllocation->width, pAllocation->height);
+#endif
 	}
 
 	if(m_pHandler != NULL)
@@ -211,11 +243,11 @@ boolean GtkOVCustom::handleUnrealizeEvent()
 	{
 		(*GTK_WIDGET_CLASS(parent_class)->unrealize)(&m_oWidget);
 	}
-#else
+#elif 0
 	gdk_window_destroy(m_oWidget.window);
+#endif
 	GTK_WIDGET_SET_FLAGS(&m_oWidget, GTK_NO_WINDOW);
 	GTK_WIDGET_UNSET_FLAGS(&m_oWidget, GTK_REALIZED);
-#endif
 
 	return true;
 }
@@ -230,21 +262,23 @@ boolean GtkOVCustom::handleDestroyEvent()
 	destroy();
 
 	// Chain up
-  if (GTK_OBJECT_CLASS(parent_class)->destroy)
+	if (GTK_OBJECT_CLASS(parent_class)->destroy)
+	{
 		(*GTK_OBJECT_CLASS(parent_class)->destroy)(GTK_OBJECT(this));
+	}
 
 	return true;
 }
 
 static void gtk_ov_custom_class_init(GtkOVCustomClass *klass)
 {
-  GtkObjectClass *object_class;
-  GtkWidgetClass *widget_class;
+	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 
-  object_class = (GtkObjectClass*)klass;
-  widget_class = (GtkWidgetClass*)klass;
+	object_class = (GtkObjectClass*)klass;
+	widget_class = (GtkWidgetClass*)klass;
 
-  parent_class = (GtkWidgetClass*)gtk_type_class(gtk_widget_get_type());
+	parent_class = (GtkWidgetClass*)gtk_type_class(gtk_widget_get_type());
 
 	object_class->destroy = GtkOVCustom::gtk_ov_custom_destroy;
 
@@ -341,20 +375,33 @@ void GtkOVCustom::gtk_ov_custom_size_allocate(GtkWidget *pWidget, GtkAllocation 
 // Update the render window and swap buffers
 gint GtkOVCustom::gtk_ov_custom_expose(GtkWidget *pWidget, GdkEventExpose *pEvent)
 {
-	return GTK_OV_CUSTOM(pWidget)->handleExposeEvent();
+	GTK_OV_CUSTOM(pWidget)->handleExposeEvent();
+	return FALSE;
 }
 
 gboolean GtkOVCustom::button_press_event_in_frame_cb(GtkWidget *pWidget, GdkEventButton *pEvent, gpointer user_data)
 {
-	return GTK_OV_CUSTOM(pWidget)->handleButtonPressEvent(pEvent);
+	GTK_OV_CUSTOM(pWidget)->handleButtonPressEvent(pEvent);
+	return FALSE;
 }
 
 gboolean GtkOVCustom::motion_notify_event_in_frame_cb(GtkWidget *pWidget, GdkEventButton *pEvent, gpointer user_data)
 {
-	return GTK_OV_CUSTOM(pWidget)->handleMotionEvent(pEvent);
+	GTK_OV_CUSTOM(pWidget)->handleMotionEvent(pEvent);
+	return FALSE;
 }
 
 gboolean GtkOVCustom::button_release_event_in_frame_cb(GtkWidget *pWidget, GdkEventButton *pEvent, gpointer user_data)
 {
-	return GTK_OV_CUSTOM(pWidget)->handleButtonReleaseEvent(pEvent);
+	GTK_OV_CUSTOM(pWidget)->handleButtonReleaseEvent(pEvent);
+	return FALSE;
+}
+
+void GtkOVCustom::show_cb(GtkWidget *pWidget, gpointer user_data)
+{
+	::gdk_window_show(GTK_WIDGET(user_data)->window);
+}
+
+void GtkOVCustom::visibility_notify_event_cb(GtkWidget *pWidget, GdkEventVisibility* pEvent, gpointer user_data)
+{
 }

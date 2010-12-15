@@ -187,6 +187,15 @@ public:
 		GtkWidget *widget,
 		GdkEventButton *bevent,
 		gpointer user_data);
+	/// \brief Widget show callback
+	static void show_cb(
+		GtkWidget *widget,
+		gpointer user_data);
+	/// \brief Widget visibility notification callback
+	static void visibility_notify_event_cb(
+		GtkWidget *pWidget,
+		GdkEventVisibility* pEvent,
+		gpointer user_data);
 
 //WARNING : since this is a Gtk widget, the constructor doesn't get called,
 //so any member that requires its constructor to be called upon object creation

@@ -576,16 +576,33 @@ void CPlayerVisualisation::showTopLevelWindows(void)
 		//show active toolbar
 		gtk_widget_show(m_mToolbars[m_pActiveToolbarButton]);
 	}
+	std::map < OpenViBE::CIdentifier, CPlayerVisualisation::CPluginWidgets >::iterator it=m_mPlugins.begin();
+	while(it!=m_mPlugins.end())
+	{
+		if(GTK_IS_WIDGET(it->second.m_pWidget))
+		{
+			gtk_widget_show(it->second.m_pWidget);
+		}
+		it++;
+	}
 }
 
 //called upon Player stop
 void CPlayerVisualisation::hideTopLevelWindows(void)
 {
+	std::map < OpenViBE::CIdentifier, CPlayerVisualisation::CPluginWidgets >::iterator it=m_mPlugins.begin();
+	while(it!=m_mPlugins.end())
+	{
+		if(GTK_IS_WIDGET(it->second.m_pWidget))
+		{
+			gtk_widget_hide(it->second.m_pWidget);
+		}
+		it++;
+	}
 	for(unsigned int i=0; i<m_vWindows.size(); i++)
 	{
 		gtk_widget_hide(GTK_WIDGET(m_vWindows[i]));
 	}
-
 	if(m_pActiveToolbarButton != NULL)
 	{
 		//hide active toolbar
