@@ -35,7 +35,7 @@ CDriverBrainProductsBrainVisionRecorder::~CDriverBrainProductsBrainVisionRecorde
 
 const char* CDriverBrainProductsBrainVisionRecorder::getName(void)
 {
-	return "Brain Products Brainamp Standard (through Vision Recorder)";
+	return "Brain Products amplifiers (through BrainVision Recorder)";
 }
 
 //___________________________________________________________________//

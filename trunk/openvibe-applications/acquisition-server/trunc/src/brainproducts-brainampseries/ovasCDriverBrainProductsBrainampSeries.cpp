@@ -130,7 +130,7 @@ void CDriverBrainProductsBrainampSeries::release(void)
 
 const char* CDriverBrainProductsBrainampSeries::getName(void)
 {
-	return "Brain Products Brainamp Series";
+	return "Brain Products BrainAmp Series";
 }
 
 //___________________________________________________________________//
