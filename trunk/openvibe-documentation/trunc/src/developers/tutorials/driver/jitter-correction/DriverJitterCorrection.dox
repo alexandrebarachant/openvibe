@@ -77,34 +77,11 @@ boolean CDriverFooBarDevice::loop(void)
 
     m_pCallback->setSamples(m_pSample);
 
-    // The jitter can be negative or positive !
-    if(m_rDriverContext.getDriftSampleCount()
-          > m_rDriverContext.getDriftToleranceSampleCount()
-     || m_rDriverContext.getDriftSampleCount()
-          < - m_rDriverContext.getDriftToleranceSampleCount())
-    {
-      m_rDriverContext.getLogManager()
-               << LogLevel_Trace
-               << "Drift detected: "
-               << m_rDriverContext.getDriftSampleCount()
-               <<" samples.\n";
-      m_rDriverContext.getLogManager()
-               << LogLevel_Trace
-               << "Suggested correction: "
-               << m_rDriverContext
-                     .getSuggestedDriftCorrectionSampleCount()
-               <<" samples.\n";
+    //... and finally, correct drift according to what the
+    // acquisition server suggests !
 
-      if(! m_rDriverContext
-               .correctDriftSampleCount(
-                     m_rDriverContext
-                          .getSuggestedDriftCorrectionSampleCount()))
-      {
-        m_rDriverContext.getLogManager()
-               << LogLevel_Error
-               << "ERROR while correcting drift.\n";
-      }
-    }
+    m_rDriverContext.correctDriftSampleCount(
+       m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
   }
   return true;
 }
