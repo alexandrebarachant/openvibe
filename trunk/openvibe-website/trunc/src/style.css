@@ -247,6 +247,14 @@ img.screenshot
 	-moz-border-radius: 0px;
 }
 
+img.fixed-screenshot
+{
+	margin-right: 16px;
+
+	border: 1px solid black;
+	-moz-border-radius: 0px;
+}
+
 div.dataset
 {
 	margin: 0;

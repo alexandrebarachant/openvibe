@@ -223,6 +223,11 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<p>OpenViBE is free and open source. Don't hesitate to download it and <a href="?q=download">give it a try.</a></p>
 
+		<h1>OpenViBE Users Around The World</h1>
+
+		<p>The following map shows the different places where people use OpenViBE !</p>
+		<center><img class="fixed-screenshot" src=openvibe-users-cartography.png></img></center>
+
 <!-- -->
 		<h1>Job Offers</h1>
 
@@ -557,6 +562,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<p>OpenViBE is open source and available for free on the INRIA forge.</p>
 		<p>Don't hesitate to download OpenViBE and <a href="?q=download">give it a try.</a></p>
+
 	</div>
 
 <!------------------------------------------------------------------------------------------------------------------------------------------------------------------------>
