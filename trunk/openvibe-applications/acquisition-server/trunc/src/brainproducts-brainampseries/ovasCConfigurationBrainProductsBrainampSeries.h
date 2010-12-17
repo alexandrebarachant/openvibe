@@ -29,13 +29,18 @@
 
 #include <gtk/gtk.h>
 
+#include <vector>
+
 namespace OpenViBEAcquisitionServer
 {
+	class CDriverBrainProductsBrainampSeries;
+
 	class CConfigurationBrainProductsBrainampSeries : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
 
 		CConfigurationBrainProductsBrainampSeries(
+			CDriverBrainProductsBrainampSeries& rDriver,
 			const char* sGtkBuilderFileName,
 			OpenViBE::uint32& rUSBIndex,
 			OpenViBE::uint32& rui32DecimationFactor,
@@ -52,9 +57,11 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean postConfigure(void);
 
 		void buttonChannelDetailsPressedCB(void);
+		void comboBoxDeviceChangedCB(void);
 
 	protected:
 
+		OpenViBEAcquisitionServer::CDriverBrainProductsBrainampSeries& m_rDriver;
 		OpenViBE::uint32& m_rUSBIndex;
 		OpenViBE::uint32& m_rui32DecimationFactor;
 		EParameter* m_peChannelSelected;
@@ -67,6 +74,7 @@ namespace OpenViBEAcquisitionServer
 		EParameter& m_reImpedance;
 
 	private:
+
 		::GtkWidget* m_pCalibrateDialog;
 		OpenViBE::boolean m_bCalibrationDone;
 	};

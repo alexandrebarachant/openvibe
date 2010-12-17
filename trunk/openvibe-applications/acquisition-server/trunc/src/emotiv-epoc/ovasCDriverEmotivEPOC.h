@@ -1,7 +1,6 @@
 #ifndef __OpenViBE_AcquisitionServer_CDriverEmotivEPOC_H__
 #define __OpenViBE_AcquisitionServer_CDriverEmotivEPOC_H__
 
-
 #if defined TARGET_HAS_ThirdPartyEmotivAPI
 
 #include "../ovasIDriver.h"
@@ -13,11 +12,9 @@
 #include "edk.h"
 #include "edkErrorCode.h"
 
-#include <windows.h>
-
 #include <vector>
 
-
+#include <windows.h>
 
 namespace OpenViBEAcquisitionServer
 {
@@ -68,8 +65,6 @@ namespace OpenViBEAcquisitionServer
 
 		DataHandle m_tDataHandle;
 		OpenViBE::boolean m_bFirstStart;
-
-
 	};
 };
 

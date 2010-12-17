@@ -1,10 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkAdjustment" id="adjustment1">
     <property name="value">32</property>
-    <property name="lower">1</property>
     <property name="upper">256</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
@@ -57,7 +56,6 @@
     <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
     <property name="gravity">center</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox">
         <property name="visible">True</property>
@@ -99,7 +97,7 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
                 <child>
                   <object class="GtkTable" id="table2">
                     <property name="visible">True</property>
-                    <property name="n_rows">11</property>
+                    <property name="n_rows">14</property>
                     <property name="n_columns">3</property>
                     <child>
                       <object class="GtkComboBox" id="combobox_gender">
@@ -177,71 +175,6 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="button_channel_details">
-                        <property name="label" translatable="yes">...</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">8</property>
-                        <property name="bottom_attach">11</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkHSeparator" id="hseparator2">
-                        <property name="visible">True</property>
-                      </object>
-                      <packing>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">7</property>
-                        <property name="bottom_attach">8</property>
-                        <property name="y_padding">8</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_decimation_factor">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Decimation factor :</property>
-                        <property name="single_line_mode">True</property>
-                      </object>
-                      <packing>
-                        <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_impedance">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Impedance :</property>
-                        <property name="single_line_mode">True</property>
-                      </object>
-                      <packing>
-                        <property name="top_attach">5</property>
-                        <property name="bottom_attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBox" id="combobox_impedance">
-                        <property name="visible">True</property>
-                        <property name="model">model_impedance</property>
-                        <child>
-                          <object class="GtkCellRendererText" id="renderer7"/>
-                          <attributes>
-                            <attribute name="text">0</attribute>
-                          </attributes>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">5</property>
-                        <property name="bottom_attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkLabel" id="label_device">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Device :</property>
@@ -282,43 +215,106 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label_lowpass_filter">
+                      <object class="GtkButton" id="button_channel_details">
+                        <property name="label" translatable="yes">...</property>
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Low pass filter :</property>
-                        <property name="single_line_mode">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
                       </object>
                       <packing>
-                        <property name="top_attach">8</property>
-                        <property name="bottom_attach">9</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">11</property>
+                        <property name="bottom_attach">14</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label_resolution">
+                      <object class="GtkLabel" id="label_device_montage">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Resolution :</property>
+                        <property name="label" translatable="yes">Multiamp montage :</property>
+                        <property name="justify">right</property>
                         <property name="single_line_mode">True</property>
                       </object>
                       <packing>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="combobox_resolution">
+                      <object class="GtkLabel" id="label_number_of_channels">
                         <property name="visible">True</property>
-                        <property name="model">model_resolution</property>
+                        <property name="label" translatable="yes">Number of channels :</property>
+                        <property name="justify">right</property>
+                        <property name="single_line_mode">True</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkVBox" id="table_multiamp_montage">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <child>
-                          <object class="GtkCellRendererText" id="renderer5"/>
-                          <attributes>
-                            <attribute name="text">0</attribute>
-                          </attributes>
+                          <object class="GtkLabel" id="label_multiamp_montage_1">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">-- Not found --</property>
+                          </object>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label_multiamp_montage_2">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">-- Not found --</property>
+                          </object>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label_multiamp_montage_3">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">-- Not found --</property>
+                          </object>
+                          <packing>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label_multiamp_montage_4">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">-- Not found --</property>
+                          </object>
+                          <packing>
+                            <property name="position">3</property>
+                          </packing>
                         </child>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">9</property>
-                        <property name="bottom_attach">10</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSpinButton" id="spinbutton_number_of_channels">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">●</property>
+                        <property name="adjustment">adjustment1</property>
+                        <property name="snap_to_ticks">True</property>
+                        <property name="numeric">True</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
                       </packing>
                     </child>
                     <child>
@@ -328,8 +324,41 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
                         <property name="single_line_mode">True</property>
                       </object>
                       <packing>
+                        <property name="top_attach">13</property>
+                        <property name="bottom_attach">14</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_resolution">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Resolution :</property>
+                        <property name="single_line_mode">True</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">12</property>
+                        <property name="bottom_attach">13</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_lowpass_filter">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Low pass filter :</property>
+                        <property name="single_line_mode">True</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">11</property>
+                        <property name="bottom_attach">12</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHSeparator" id="hseparator2">
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="right_attach">3</property>
                         <property name="top_attach">10</property>
                         <property name="bottom_attach">11</property>
+                        <property name="y_padding">8</property>
                       </packing>
                     </child>
                     <child>
@@ -346,8 +375,55 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">10</property>
-                        <property name="bottom_attach">11</property>
+                        <property name="top_attach">13</property>
+                        <property name="bottom_attach">14</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBox" id="combobox_resolution">
+                        <property name="visible">True</property>
+                        <property name="model">model_resolution</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer5"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">12</property>
+                        <property name="bottom_attach">13</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBox" id="combobox_lowpass_filter">
+                        <property name="visible">True</property>
+                        <property name="model">model_lowpass_filter</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer4"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">11</property>
+                        <property name="bottom_attach">12</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_decimation_factor">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Decimation factor :</property>
+                        <property name="single_line_mode">True</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">9</property>
+                        <property name="bottom_attach">10</property>
                       </packing>
                     </child>
                     <child>
@@ -364,8 +440,48 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
+                        <property name="top_attach">9</property>
+                        <property name="bottom_attach">10</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_impedance">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Impedance :</property>
+                        <property name="single_line_mode">True</property>
+                      </object>
+                      <packing>
+                        <property name="top_attach">8</property>
+                        <property name="bottom_attach">9</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBox" id="combobox_impedance">
+                        <property name="visible">True</property>
+                        <property name="model">model_impedance</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer7"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">8</property>
+                        <property name="bottom_attach">9</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkHSeparator" id="hseparator4">
+                        <property name="visible">True</property>
+                      </object>
+                      <packing>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">7</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="y_padding">8</property>
                       </packing>
                     </child>
                     <child>
@@ -387,21 +503,19 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
                       <placeholder/>
                     </child>
                     <child>
-                      <object class="GtkComboBox" id="combobox_lowpass_filter">
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <object class="GtkImage" id="image_montage_status_icon">
                         <property name="visible">True</property>
-                        <property name="model">model_lowpass_filter</property>
-                        <child>
-                          <object class="GtkCellRendererText" id="renderer4"/>
-                          <attributes>
-                            <attribute name="text">0</attribute>
-                          </attributes>
-                        </child>
+                        <property name="tooltip_markup">the multi amplifier montage is not correct ; &lt;i&gt;slot 1 should not be empty&lt;/i&gt;</property>
+                        <property name="stock">gtk-no</property>
                       </object>
                       <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">8</property>
-                        <property name="bottom_attach">9</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
                       </packing>
                     </child>
                   </object>
@@ -530,32 +644,10 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label_number_of_channels">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Number of channels :</property>
-            <property name="justify">right</property>
-            <property name="single_line_mode">True</property>
-          </object>
-          <packing>
-            <property name="top_attach">2</property>
-            <property name="bottom_attach">3</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
-          <object class="GtkSpinButton" id="spinbutton_number_of_channels">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="invisible_char">&#x25CF;</property>
-            <property name="adjustment">adjustment1</property>
-            <property name="snap_to_ticks">True</property>
-            <property name="numeric">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-            <property name="top_attach">2</property>
-            <property name="bottom_attach">3</property>
-          </packing>
+          <placeholder/>
         </child>
         <child>
           <placeholder/>
@@ -602,10 +694,10 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
         <col id="0" translatable="yes">500 nV</col>
       </row>
       <row>
-        <col id="0" translatable="yes">10 &#xB5;V</col>
+        <col id="0" translatable="yes">10 µV</col>
       </row>
       <row>
-        <col id="0" translatable="yes">152.6 &#xB5;V</col>
+        <col id="0" translatable="yes">152.6 µV</col>
       </row>
     </data>
   </object>
@@ -669,7 +761,6 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
     <property name="title" translatable="yes">Individual channel configuration</property>
     <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
@@ -822,10 +913,10 @@ Brainamp MR, Brainamp MR plus&lt;/small&gt;</property>
         <col id="0" translatable="yes">500 nV</col>
       </row>
       <row>
-        <col id="0" translatable="yes">10 &#xB5;V</col>
+        <col id="0" translatable="yes">10 µV</col>
       </row>
       <row>
-        <col id="0" translatable="yes">152.6 &#xB5;V</col>
+        <col id="0" translatable="yes">152.6 µV</col>
       </row>
     </data>
   </object>

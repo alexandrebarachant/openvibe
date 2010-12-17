@@ -53,6 +53,7 @@ namespace OpenViBEAcquisitionServer
 
 		virtual OpenViBE::boolean isConfigurable(void);
 		virtual OpenViBE::boolean configure(void);
+
 		virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void) { return &m_oHeader; }
 
 	protected:
@@ -71,7 +72,6 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32IndexOut;
 		OpenViBE::uint32 m_ui32BuffDataIndex;
 
-		OpenViBE::uint32 m_ui32DataOffset;
 		OpenViBE::uint32 m_ui32MarkerCount;
 		OpenViBE::uint32 m_ui32NumberOfMarkers;
 
@@ -136,6 +136,7 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBEAcquisitionServer::CDriverBrainProductsBrainVisionRecorder::RDA_MessageHeader* m_pStructRDA_MessageHeader;
 		char* m_pcharStructRDA_MessageHeader;
+
 		OpenViBEAcquisitionServer::CDriverBrainProductsBrainVisionRecorder::RDA_MessageStart* m_pStructRDA_MessageStart;
 		OpenViBEAcquisitionServer::CDriverBrainProductsBrainVisionRecorder::RDA_MessageStop* m_pStructRDA_MessageStop;
 		OpenViBEAcquisitionServer::CDriverBrainProductsBrainVisionRecorder::RDA_MessageData32* m_pStructRDA_MessageData32;

@@ -179,10 +179,6 @@ boolean CConfigurationBuilder::preConfigure(void)
 		gtk_spin_button_set_value(
 			GTK_SPIN_BUTTON(m_pNumberOfChannels),
 			m_pHeader->getChannelCount());
-		for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
-		{
-			m_vChannelName[i]=m_pHeader->getChannelName(i);
-		}
 	}
 	if(m_pHeader->isSamplingFrequencySet())
 	{
@@ -258,8 +254,6 @@ boolean CConfigurationBuilder::postConfigure(void)
 	return true;
 }
 
-#include <iostream>
-
 void CConfigurationBuilder::buttonChangeChannelNamesCB(void)
 {
 	uint32 i;
@@ -267,6 +261,13 @@ void CConfigurationBuilder::buttonChangeChannelNamesCB(void)
 	::GtkDialog* l_pDialog=GTK_DIALOG(gtk_builder_get_object(m_pBuilderConfigureChannelInterface, "channel-names"));
 	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(m_pElectrodeNameTreeView);
 	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(m_pChannelNameTreeView);
+
+	// Prepares channel name cache
+
+	for(i=0; i<m_pHeader->getChannelCount(); i++)
+	{
+		m_vChannelName[i]=m_pHeader->getChannelName(i);
+	}
 
 	// Creates electrode name and channel name models
 

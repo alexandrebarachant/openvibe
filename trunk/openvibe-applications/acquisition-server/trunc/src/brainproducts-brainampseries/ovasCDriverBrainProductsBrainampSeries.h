@@ -40,6 +40,8 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
+		friend class CConfigurationBrainProductsBrainampSeries;
+
 		static char* getErrorMessage(OpenViBE::uint32 ui32Error);
 
 	public:
@@ -62,6 +64,10 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean isConfigurable(void);
 		virtual OpenViBE::boolean configure(void);
 		virtual const OpenViBEAcquisitionServer::IHeader* getHeader(void) { return &m_oHeaderAdapter; }
+
+	protected:
+
+		OpenViBE::boolean getDeviceDetails(const OpenViBE::uint32 ui32Index, OpenViBE::uint32* pAmplifierCount, OpenViBE::uint32* pAmplifierType);
 
 	protected:
 

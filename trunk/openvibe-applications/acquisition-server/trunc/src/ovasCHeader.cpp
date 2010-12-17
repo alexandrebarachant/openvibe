@@ -165,8 +165,8 @@ boolean CHeaderImpl::isSubjectGenderSet(void) const
 boolean CHeaderImpl::setChannelCount(const uint32 ui32ChannelCount)
 {
 	m_ui32ChannelCount=ui32ChannelCount;
-	m_vChannelName.clear();
-	m_vChannelGain.clear();
+	// m_vChannelName.clear();
+	// m_vChannelGain.clear();
 	return m_ui32ChannelCount!=_NoValueI_;
 }
 

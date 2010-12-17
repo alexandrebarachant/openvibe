@@ -183,7 +183,38 @@ namespace OpenViBEAcquisitionServer
 		WaveForm_Triangle=1,
 		WaveForm_Square=2,
 		WaveForm_SineWave=3,
+
+		AmplifierType_None=0,
+		AmplifierType_BrainAmp=1,
+		AmplifierType_BrainAmpMR=2,
+		AmplifierType_BrainAmpDC=3,
 	} EParameter;
+
+	inline const char* getDeviceType(const OpenViBE::uint32 ui32DeviceType)
+	{
+		const char* l_sAmplifierType;
+		switch(ui32DeviceType)
+		{
+			case AmplifierType_None:
+				l_sAmplifierType="-- Not found --";
+				break;
+			case AmplifierType_BrainAmp:
+				l_sAmplifierType="BrainAmp Standard";
+				break;
+			case AmplifierType_BrainAmpMR:
+				l_sAmplifierType="BrainAmp MR";
+				break;
+			case AmplifierType_BrainAmpDC:
+				l_sAmplifierType="BrainAmp DC / MR Plus";
+				break;
+			default:
+				l_sAmplifierType="-- Unknown --";
+				break;
+		}
+		return l_sAmplifierType;
+	}
+
+	#define BrainAmp_MaximumAmplifierCount 4
 };
 
 #endif // __OVAS_DEFINES_BRAINAMP_SERIES__

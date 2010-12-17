@@ -105,11 +105,14 @@ CDriverBrainProductsBrainampSeries::CDriverBrainProductsBrainampSeries(IDriverCo
 	                                  "AFp1", "AFp2", "FFT9h", "FFT7h", "FFC5h", "FFC3h", "FFC1h", "FFC2h", "FFC4h", "FFC6h", "FFT8h", "FFT10h", "TTP7h", "CCP5h", "CCP3h", "CCP1h", "CCP2h", "CCP4h", "CCP6h", "TTP8h", "P9", "PPO9h", "PPO5h", "PPO1h", "PPO2h", "PPO6h", "PPO10h", "P10", "I1", "OI1h", "OI2h", "I2", };
 	char** l_sChannelName=l_sChannelNameActiCap128;
 
+	uint32 l_ui32AmplifierCount=1;
+	this->getDeviceDetails(m_ui32USBIndex, &l_ui32AmplifierCount, NULL);
+
 	m_oHeader.setSamplingFrequency(500);
-	m_oHeader.setChannelCount(32);
-	for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
+	m_oHeader.setChannelCount(l_ui32AmplifierCount*32);
+	for(uint32 i=0; i<256; i++)
 	{
-		m_oHeader.setChannelName(i, l_sChannelName[i]);
+		m_oHeader.setChannelName(i, (i<sizeof(l_sChannelNameActiCap128)/sizeof(void*)?l_sChannelName[i]:""));
 		m_peChannelSelected[i]=Channel_Selected;
 		m_peLowPassFilterFull[i]=Parameter_Default;
 		m_peResolutionFull[i]=Parameter_Default;
@@ -139,10 +142,33 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 {
 // #define ui32SampleCountPerSentBlock 20*5
 
+	uint32 i, j;
+
 	if(m_rDriverContext.isConnected()) { return false; }
+
+
+	// --
 
 	char l_sDeviceName[1024];
 	::sprintf(l_sDeviceName, "\\\\.\\BrainAmpUSB%i", m_ui32USBIndex);
+	m_rDriverContext.getLogManager() << LogLevel_Info << "Preparing device [" << CString(l_sDeviceName) << "]\n";
+
+	// -- Gets amplifiers type
+
+	uint32 l_ui32AmplifierCount=BrainAmp_MaximumAmplifierCount;
+	uint32 l_pAmplifierType[BrainAmp_MaximumAmplifierCount];
+	if(!this->getDeviceDetails(m_ui32USBIndex, &l_ui32AmplifierCount, l_pAmplifierType))
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not get amplifier(s) type - got error " << uint32(::GetLastError()) << "\n";
+		return false;
+	}
+
+	for(i=0; i<BrainAmp_MaximumAmplifierCount; i++)
+	{
+		CString l_sAmplifierType(::getDeviceType(l_pAmplifierType[i]));
+		m_rDriverContext.getLogManager() << LogLevel_Info << " - Amplifier " << i+1 << " : " << l_sAmplifierType << "\n";
+	}
+	m_rDriverContext.getLogManager() << LogLevel_Info << "Found " << l_ui32AmplifierCount << " amplifier(s)\n";
 
 	// -- Opens device
 
@@ -165,6 +191,7 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 	if(!::DeviceIoControl(m_pDevice, BRAINAMP_DRIVERVERSION, NULL, 0, &l_ui32DriverVersion, sizeof(l_ui32DriverVersion), &m_ui32BytesReturned, NULL))
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not get driver version from device - got error " << uint32(::GetLastError()) << "\n";
+		::CloseHandle(m_pDevice);
 		return false;
 	}
 	l_ui32DriverVersionPatch= l_ui32DriverVersion%10000;
@@ -181,6 +208,7 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 	if(!::DeviceIoControl(m_pDevice, BRAINAMP_GET_SERIALNUMBER, NULL, 0, &l_ui32DeviceSerialNumber, sizeof(l_ui32DeviceSerialNumber), &m_ui32BytesReturned, NULL))
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not get serial number from device - got error " << uint32(::GetLastError()) << "\n";
+		::CloseHandle(m_pDevice);
 		return false;
 	}
 	if(m_ui32BytesReturned != 0)
@@ -202,6 +230,7 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 	if(!::DeviceIoControl(m_pDevice, BRAINAMP_CALIBRATION_SETTINGS, m_pDeviceCalibrationSettings, sizeof(CBrainampCalibrationSettings), NULL, 0, &m_ui32BytesReturned, NULL))
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not set calibration settings - got error " << uint32(::GetLastError()) << "\n";
+		::CloseHandle(m_pDevice);
 		return false;
 	}
 
@@ -216,10 +245,11 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 	m_pDeviceSetup->m_ui16HoldValue=0x0; // Value without trigger
 	m_pDeviceSetup->m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock*m_ui32DecimationFactor;
 	m_pDeviceSetup->m_ui8LowImpedance=uint8(m_eImpedance);
-	for(uint32 j=0, i=0; i<m_oHeader.getChannelCount(); i++)
+	for(j=0, i=0; i<m_oHeader.getChannelCount(); i++)
 	{
 		if(m_peChannelSelected[i]==Channel_Selected)
 		{
+			// Should I care about j being greater than 
 			m_pDeviceSetup->m_pChannelLookup[j]=i;
 			m_pDeviceSetup->m_pLowPassFilter[j]=uint8(m_peLowPassFilterFull[i]==Parameter_Default?m_eLowPass:m_peLowPassFilterFull[i]); // 0 - 1000Hz, 1 - 250Hz
 			m_pDeviceSetup->m_pResolution[j]=uint8(m_peResolutionFull[i]==Parameter_Default?m_eResolution:m_peResolutionFull[i]); // 0 - 100 nV, 1 - 500 nV, 2 - 10 µV, 3 - 152.6 µV
@@ -243,6 +273,7 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 	if(!::DeviceIoControl(m_pDevice, BRAINAMP_SETUP, m_pDeviceSetup, sizeof(CBrainampSetup), NULL, 0, &m_ui32BytesReturned, NULL))
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not send setup parameters to device - got error " << uint32(::GetLastError()) << "\n";
+		::CloseHandle(m_pDevice);
 		return false;
 	}
 
@@ -257,6 +288,7 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 		delete [] m_pBuffer;
 		m_pSample=NULL;
 		m_pBuffer=NULL;
+		::CloseHandle(m_pDevice);
 		return false;
 	}
 
@@ -301,6 +333,7 @@ boolean CDriverBrainProductsBrainampSeries::start(void)
 	if(!::DeviceIoControl(m_pDevice, BRAINAMP_DIGITALINPUT_PULL_UP, &l_ui16PullUp, sizeof(l_ui16PullUp), NULL, 0, &m_ui32BytesReturned, NULL))
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not switch pull up\n";
+		::CloseHandle(m_pDevice);
 		return false;
 	}
 
@@ -352,7 +385,8 @@ boolean CDriverBrainProductsBrainampSeries::loop(void)
 
 		if(!::ReadFile(m_pDevice, m_pBuffer, (m_oHeaderAdapter.getChannelCount()+1)*m_ui32SampleCountPerSentBlock*m_ui32DecimationFactor*sizeof(int16), &m_ui32BytesReturned, NULL))
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Warning << "Could not read from device - Got error " << uint32(::GetLastError()) << "\n";
+			uint32 l_ui32LastError=::GetLastError();
+			m_rDriverContext.getLogManager() << LogLevel_Warning << "Could not read from device - Got error " << uint32(::GetLastError()) << " " << CString(l_ui32LastError==ERROR_MORE_DATA?"(buffer overflow)":"") << "\n";
 			return true;
 		}
 
@@ -366,14 +400,19 @@ boolean CDriverBrainProductsBrainampSeries::loop(void)
 #if 0
 	// -- Gets buffer filling state
 
-	uint32 l_ui32BufferFillingState=0;
+	static uint32 l_ui32LastBufferFillingState=0;
+	static uint32 l_ui32BufferFillingState=0;
 	m_rDriverContext.getLogManager() << LogLevel_TraceAPI << "BRAINAMP_BUFFERFILLING_STATE\n";
 	if (!::DeviceIoControl(m_pDevice, BRAINAMP_BUFFERFILLING_STATE, NULL, 0, &l_ui32BufferFillingState, sizeof(l_ui32BufferFillingState), &m_ui32BytesReturned, NULL))
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "Could not retrieve buffer filling state\n";
 		return false;
 	}
-	m_rDriverContext.getLogManager() << LogLevel_Trace << "Buffer filling state : " << l_ui32BufferFillingState << "\n";
+	if(l_ui32BufferFillingState!=l_ui32LastBufferFillingState)
+	{
+		l_ui32LastBufferFillingState=l_ui32BufferFillingState;
+		m_rDriverContext.getLogManager() << LogLevel_Info << "Buffer filling state : " << l_ui32BufferFillingState << "\n";
+	}
 #endif
 
 	if(!m_rDriverContext.isStarted())
@@ -600,6 +639,7 @@ boolean CDriverBrainProductsBrainampSeries::isConfigurable(void)
 boolean CDriverBrainProductsBrainampSeries::configure(void)
 {
 	CConfigurationBrainProductsBrainampSeries l_oConfiguration(
+		*this,
 		"../share/openvibe-applications/acquisition-server/interface-BrainProducts-BrainampSeries.ui",
 		m_ui32USBIndex,
 		m_ui32DecimationFactor,
@@ -613,6 +653,57 @@ boolean CDriverBrainProductsBrainampSeries::configure(void)
 		m_eImpedance);
 	l_oConfiguration.configure(m_oHeader);
 	m_oHeader.setSamplingFrequency(5000/m_ui32DecimationFactor);
+	return true;
+}
+
+boolean CDriverBrainProductsBrainampSeries::getDeviceDetails(const uint32 ui32Index, uint32* pAmplifierCount, uint32* pAmplifierType)
+{
+	uint32 i;
+
+	char l_sDeviceName[1024];
+	::sprintf(l_sDeviceName, "\\\\.\\BrainAmpUSB%i", ui32Index);
+
+	// -- Opens device
+
+	void* l_pDevice=::CreateFile(l_sDeviceName, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, NULL);
+	if(l_pDevice==INVALID_HANDLE_VALUE)
+	{
+		return false;
+	}
+
+	// -- Gets amplifiers type
+
+	uint16 l_pAmplifierType[BrainAmp_MaximumAmplifierCount];
+	m_rDriverContext.getLogManager() << LogLevel_TraceAPI << "BRAINAMP_AMPLIFIER_TYPE\n";
+	if(!::DeviceIoControl(l_pDevice, BRAINAMP_AMPLIFIER_TYPE, NULL, 0, l_pAmplifierType, sizeof(l_pAmplifierType), &m_ui32BytesReturned, NULL))
+	{
+		::CloseHandle(l_pDevice);
+		return false;
+	}
+
+	// -- Closes device
+
+	::CloseHandle(l_pDevice);
+
+	// -- Formats result
+
+	uint32 l_ui32AmplifierCount=BrainAmp_MaximumAmplifierCount;
+	for(i=0; i<BrainAmp_MaximumAmplifierCount; i++)
+	{
+		if(pAmplifierType)
+		{
+			pAmplifierType[i]=l_pAmplifierType[i];
+		}
+		if(l_ui32AmplifierCount==BrainAmp_MaximumAmplifierCount && l_pAmplifierType[i]==AmplifierType_None)
+		{
+			l_ui32AmplifierCount=i;
+		}
+	}
+	if(pAmplifierCount)
+	{
+		*pAmplifierCount=l_ui32AmplifierCount;
+	}
+
 	return true;
 }
 

@@ -122,6 +122,7 @@ boolean CDriverGenericOscillator::loop(void)
 		m_ui32TotalSampleCount+=m_ui32SampleCountPerSentBlock;
 		m_pCallback->setSamples(m_pSample);
 		m_pCallback->setStimulationSet(l_oStimulationSet);
+		m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 	}
 
 	return true;
