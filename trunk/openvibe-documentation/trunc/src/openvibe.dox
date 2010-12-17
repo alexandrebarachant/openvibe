@@ -72,6 +72,9 @@
  * \section Doc_DeveloperDocumentationSection Developer Documentation
  * - \subpage Doc_Install "Installation procedure"
  * - \subpage Doc_DeveloperTutorials "Developer tutorials"
+ *   - \subpage Doc_DeveloperDocumentation_Tools
+ *     - \subpage Doc_DeveloperTools_SkeletonGenerator
+ *     - \subpage Doc_DeveloperTools_IdGenerator
  *   - \subpage Doc_DeveloperDocumentation_Driver
  *     - \subpage Doc_CreatingANewDriver
  *     - \subpage Doc_ConfiguringANewDriver
@@ -139,9 +142,11 @@
  * <br />
  * <br />
  * 
- * <b>Developer Tutorials</b> :
  * - \subpage Doc_Install "Installation procedure"
  * - \subpage Doc_DeveloperTutorials "Developer tutorials"
+ *   - \subpage Doc_DeveloperDocumentation_Tools
+ *     - \subpage Doc_DeveloperTools_SkeletonGenerator
+ *     - \subpage Doc_DeveloperTools_IdGenerator
  *   - \subpage Doc_DeveloperDocumentation_Driver
  *     - \subpage Doc_CreatingANewDriver
  *     - \subpage Doc_ConfiguringANewDriver
@@ -189,6 +194,9 @@
  
  /**
  * \page Doc_DeveloperTutorials Developer tutorials
+ * - \subpage Doc_DeveloperDocumentation_Tools
+ *   - \subpage Doc_DeveloperTools_SkeletonGenerator
+ *   - \subpage Doc_DeveloperTools_IdGenerator
  * - \subpage Doc_DeveloperDocumentation_Driver
  *   - \subpage Doc_CreatingANewDriver
  *   - \subpage Doc_ConfiguringANewDriver
@@ -220,4 +228,10 @@
  * - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
  * - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
  * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ */
+ 
+ /**
+ * \page Doc_DeveloperDocumentation_Tools Developer Tools
+ * - \subpage Doc_DeveloperTools_SkeletonGenerator
+ * - \subpage Doc_DeveloperTools_IdGenerator
  */
