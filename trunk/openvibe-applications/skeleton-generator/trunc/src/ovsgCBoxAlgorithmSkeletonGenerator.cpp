@@ -154,14 +154,14 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 		l_ssTextBuffer << "[   OK   ] Valid class name.\n";
 	}
 
-	if(string((const char *)m_sCategory) == "")
+	const boost::regex l_RegExpCategory("([a-z]|[A-Z])+([a-z]|[A-Z]|[ ]|[/])*",boost::regex::perl);
+	if(boost::regex_match(string(m_sCategory),l_RegExpCategory) == false)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- category: INVALID (" << (const char *)m_sCategory << ")\n";
-		l_ssTextBuffer << "[FAILED] No category found. Please provide a category (for sub-category, use '/' separator).\n";
+		l_ssTextBuffer << "[FAILED] Category invalid. Please provide a category using only letters and spaces (for sub-category, use '/' separator).\n";
 	}
 	else
 	{
-		//m_sCategory = ensureSedCompliancy(m_sCategory);
 		m_rKernelContext.getLogManager() << LogLevel_Info << "-- category: VALID (" << (const char *)m_sCategory << ")\n";
 		l_ssTextBuffer << "[   OK   ] Valid category.\n";
 	}
@@ -353,6 +353,26 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 	gtk_text_buffer_set_text (l_pTextBuffer,l_ssTextBuffer.str().c_str(),-1);
 	
 	CString l_sDate = getDate();
+	
+	// construction of the namespace name from category
+	string l_sNamespace(m_sCategory);
+	for(int s=0; s<l_sNamespace.length(); s++)
+	{
+		if(s == 0 && l_sNamespace[s] >= 'a' && l_sNamespace[s]<= 'z')
+		{
+			l_sNamespace.replace(s,1,1,(char)(l_sNamespace[s]+'A'-'a'));
+		}
+		boolean l_bErase = false;
+		while(s<l_sNamespace.length() && (l_sNamespace[s]==' ' || l_sNamespace[s]=='/'))
+		{
+			l_sNamespace.erase(s,1);
+			l_bErase = true;
+		}
+		if(l_bErase && s<l_sNamespace.length() && l_sNamespace[s] >= 'a' && l_sNamespace[s]<= 'z')
+		{	
+			l_sNamespace.replace(s,1,1,(char)(l_sNamespace[s]+'A'-'a'));
+		}
+	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// box.h
@@ -387,9 +407,11 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@ShortDescription@@",           m_sShortDescription);
 		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@DetailedDescription@@",        m_sDetailedDescription);
 		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@Category@@",                   m_sCategory);
+		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@Namespace@@",                  CString(l_sNamespace.c_str()));
 		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@Version@@",                    m_sVersion);
 		l_bSuccess &= executeSedSubstitution(l_sDest,    "@@StockItemName@@",              m_sGtkStockItemName);
 		
+
 		//--------------------------------------------------------------------------------------
 		//Inputs
 		//--------------------------------------------------------------------------------------
@@ -402,6 +424,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		else
 			l_bSuccess &= executeSedSubstitution(l_sDest, "@@InputFlagCanModify@@","//You cannot modify input.");
 		CString l_sCommandSed = "s/@@Inputs@@/";
+		if(m_vInputs.empty()) l_sCommandSed = l_sCommandSed + "\\/\\/No input specified.To add inputs use :\\n\\/\\/rBoxAlgorithmPrototype.addInput(\\\"Input Name\\\",OV_TypeId_XXXX);\\n";
 		for(vector<IOSStruct>::iterator it = m_vInputs.begin(); it != m_vInputs.end(); it++)
 		{
 			if(it != m_vInputs.begin()) 
@@ -435,6 +458,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		else
 			l_bSuccess &= executeSedSubstitution(l_sDest, "@@OutputFlagCanModify@@","//You cannot modify Output.");
 		l_sCommandSed = " s/@@Outputs@@/";
+		if(m_vOutputs.empty()) l_sCommandSed = l_sCommandSed + "\\/\\/No output specified.To add outputs use :\\n\\/\\/rBoxAlgorithmPrototype.addOutput(\\\"Output Name\\\",OV_TypeId_XXXX);\\n";
 		for(vector<IOSStruct>::iterator it = m_vOutputs.begin(); it != m_vOutputs.end(); it++)
 		{
 			if(it != m_vOutputs.begin()) 
@@ -468,6 +492,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		else
 			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanModify@@","//You cannot modify Setting.");
 		l_sCommandSed = "s/@@Settings@@/";
+		if(m_vSettings.empty()) l_sCommandSed = l_sCommandSed + "\\/\\/No setting specified.To add settings use :\\n\\/\\/rBoxAlgorithmPrototype.addSetting(\\\"Setting Name\\\",OV_TypeId_XXXX,\\\"default value\\\");\\n";
 		for(vector<IOSStruct>::iterator it = m_vSettings.begin(); it != m_vSettings.end(); it++)
 		{
 			if(it != m_vSettings.begin()) 
@@ -547,7 +572,8 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		CString l_sDest = m_sTargetDirectory + "/ovpCBoxAlgorithm" + m_sClassName + ".cpp";
 		
 		l_bSuccess &= executeSedSubstitution(l_sBoxCppSkel,"@@ClassName@@",m_sClassName,l_sDest);
-
+		l_bSuccess &= executeSedSubstitution(l_sDest,      "@@Namespace@@",CString(l_sNamespace.c_str()));
+		
 		CString l_sCommandSed = "s/@@AlgorithmInitialisation@@/";
 		for(uint32 a=0; a<m_vAlgorithms.size(); a++)
 		{
@@ -639,7 +665,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		
 		l_bSuccess &= executeSedSubstitution(l_sBoxCppSkel,"@@Date@@",     l_sDate,l_sDest);
 		l_bSuccess &= executeSedSubstitution(l_sDest,      "@@ClassName@@",m_sClassName);
-
+		
 		if(l_bSuccess)
 		{
 			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
@@ -713,7 +739,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonTooltipCB(::GtkButton* pButton)
 	else if(l_eWidgetName == WidgetName_Category)
 	{
 		gtk_text_buffer_set_text (l_pTextBuffer,
-			"Category: \nThe category decides where the box will be strored in designer's box panel.\nYou can refer to an existing category, already used in the designer, or choose a new one.\nIf you need to specifiy a subcategory, use the character '\\'.\nAuthorized characters: letters (lower and upper case), numbers, any special characters, any blank.\n------\nExample: Samples\\Seleton Generator\n"
+			"Category: \nThe category decides where the box will be strored in designer's box panel.\nYou can refer to an existing category, already used in the designer, or choose a new one.\nIf you need to specifiy a subcategory, use the character '\\'.\nAuthorized characters: letters (lower and upper case) and spaces.\n------\nExample: Samples\\Seleton Generator\n"
 			, -1);
 	}
 	else if(l_eWidgetName == WidgetName_Description)
