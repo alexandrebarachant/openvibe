@@ -22,7 +22,7 @@ CDriverBrainProductsBrainVisionRecorder::CDriverBrainProductsBrainVisionRecorder
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
 	,m_pConnectionClient(NULL)
-	,m_sServerHostName("192.168.0.2")
+	,m_sServerHostName("localhost")
 	,m_ui32ServerHostPort(51244)
 	,m_ui32SampleCountPerSentBlock(0)
 	,m_pSample(NULL)
@@ -37,8 +37,6 @@ const char* CDriverBrainProductsBrainVisionRecorder::getName(void)
 {
 	return "Brain Products Brainamp Standard (through Vision Recorder)";
 }
-
-
 
 //___________________________________________________________________//
 //                                                                   //
@@ -76,7 +74,6 @@ boolean CDriverBrainProductsBrainVisionRecorder::initialize(
 
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Client connected\n";
 
-	
 	// Initialize vars for reception
 	m_pStructRDA_MessageHeader = NULL;
 	RDA_MessageHeader l_structRDA_MessageHeader;
@@ -95,7 +92,7 @@ boolean CDriverBrainProductsBrainVisionRecorder::initialize(
 
 		l_ui32Received += l_ui32Result;
 		m_pcharStructRDA_MessageHeader += l_ui32Result;
-	}	
+	}
 
 	// Check for correct header GUID.
 	if (!COMPARE_GUID(l_structRDA_MessageHeader.guid, GUID_RDAHeader))
@@ -169,7 +166,7 @@ boolean CDriverBrainProductsBrainVisionRecorder::initialize(
 	m_oHeader.setSamplingFrequency((uint32)(1000000/m_pStructRDA_MessageStart->dSamplingInterval)); //dSamplingInterval in microseconds
 
 	m_ui32SampleCountPerSentBlock=ui32SampleCountPerSentBlock;
-	
+
 	m_pCallback=&rCallback;
 
 	m_ui32IndexIn = 0;
@@ -182,32 +179,21 @@ boolean CDriverBrainProductsBrainVisionRecorder::initialize(
 	return true;
 }
 
-
-
-
-
-
-
 boolean CDriverBrainProductsBrainVisionRecorder::start(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
 	return true;
-
 }
-
-
 
 boolean CDriverBrainProductsBrainVisionRecorder::loop(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(!m_rDriverContext.isStarted()) { return true; }
 
-
 	DEFINE_GUID(GUID_RDAHeader,
 		1129858446, 51606, 19590, char(175), char(74), char(152), char(187), char(246), char(201), char(20), char(80)
 	);
-
 
 	// Initialize var to receive buffer of data
 	m_pStructRDA_MessageHeader = NULL;
@@ -217,20 +203,16 @@ boolean CDriverBrainProductsBrainVisionRecorder::loop(void)
 	uint32 l_ui32ReqLength = 0;
 	uint32 l_ui32Result = 0;
 	uint32 l_ui32Datasize = sizeof(l_structRDA_MessageHeader);
-			
+
 	// Receive Header
 	while(l_ui32Received < l_ui32Datasize)
-	{	
-
+	{
 		l_ui32ReqLength = l_ui32Datasize -  l_ui32Received;
 		l_ui32Result = m_pConnectionClient->receiveBuffer((char*)m_pcharStructRDA_MessageHeader, l_ui32ReqLength);
 		l_ui32Received += l_ui32Result;
 		m_pcharStructRDA_MessageHeader += l_ui32Result;
 	}
 
-		
-
-		
 	// Check for correct header nType
 	if (l_structRDA_MessageHeader.nType == 1)
 	{
@@ -316,35 +298,29 @@ boolean CDriverBrainProductsBrainVisionRecorder::loop(void)
 
 	m_pSample=new float32[m_oHeader.getChannelCount()*(uint32)m_pStructRDA_MessageData32->nPoints];
 
-	
-		for (uint32 i=0; i < m_oHeader.getChannelCount(); i++)
+	for (uint32 i=0; i < m_oHeader.getChannelCount(); i++)
+	{
+		for (uint32 j=0; j < (uint32)m_pStructRDA_MessageData32->nPoints; j++)
 		{
-			for (uint32 j=0; j < (uint32)m_pStructRDA_MessageData32->nPoints; j++)
-			{
-					m_pSample[j + (i*(uint32)m_pStructRDA_MessageData32->nPoints)] = (float32)m_pStructRDA_MessageData32->fData[(m_oHeader.getChannelCount()*j) + i]*m_oHeader.getChannelGain(i);	
-			}
-
+			m_pSample[j + (i*(uint32)m_pStructRDA_MessageData32->nPoints)] = (float32)m_pStructRDA_MessageData32->fData[(m_oHeader.getChannelCount()*j) + i]*m_oHeader.getChannelGain(i);
 		}
+	}
 
+	// send data
+	CStimulationSet l_oStimulationSet;
+	l_oStimulationSet.setStimulationCount(m_ui32NumberOfMarkers);
+	for (uint32 i = 0; i < m_ui32NumberOfMarkers; i++)
+	{
+		l_oStimulationSet.setStimulationIdentifier(i, OVTK_StimulationId_Label(m_vStimulationIdentifier[i]));
+		l_oStimulationSet.setStimulationDate(i, m_vStimulationDate[i]);
+		l_oStimulationSet.setStimulationDuration(i, 0);
+	}
 
-		// send data
-		CStimulationSet l_oStimulationSet;
-		l_oStimulationSet.setStimulationCount(m_ui32NumberOfMarkers);
-		for (uint32 i = 0; i < m_ui32NumberOfMarkers; i++)
-		{
-			l_oStimulationSet.setStimulationIdentifier(i, OVTK_StimulationId_Label(m_vStimulationIdentifier[i]));
-			l_oStimulationSet.setStimulationDate(i, m_vStimulationDate[i]);
-			l_oStimulationSet.setStimulationDuration(i, 0);
+	m_pCallback->setSamples(m_pSample,(uint32)m_pStructRDA_MessageData32->nPoints);
+	m_pCallback->setStimulationSet(l_oStimulationSet);
+	m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 
-		}
-
-		m_pCallback->setSamples(m_pSample,(uint32)m_pStructRDA_MessageData32->nPoints);
-
-		m_pCallback->setStimulationSet(l_oStimulationSet);
-	//m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
-
-		m_ui32NumberOfMarkers = 0;
-
+	m_ui32NumberOfMarkers = 0;
 
 	return true;
 
@@ -408,7 +384,3 @@ boolean CDriverBrainProductsBrainVisionRecorder::configure(void)
 
 	return false;
 }
-
-
-
-
