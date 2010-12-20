@@ -103,6 +103,7 @@ no_need_to_install_directx:
 	File ..\dependencies\arch\cegui-0.7.2-vs90-runtime.zip
 	File ..\dependencies\arch\vrpn-7.26-runtime.zip
 
+	SetOutPath "$INSTDIR\dependencies"
 	ExecWait '"arch\openvibe-vcredist-2005-sp1.exe" /q'
 	ExecWait '"arch\openvibe-vcredist-2008-sp1.exe" /q'
 
