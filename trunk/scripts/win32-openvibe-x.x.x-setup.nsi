@@ -11,6 +11,7 @@
 	;Default installation folder
 	InstallDir "$PROGRAMFILES\openvibe"
 	Var OLDINSTDIR
+	Var DIRECTX_MISSING
 
 ;Interface Settings
 
@@ -79,13 +80,15 @@ Section "-OpenViBE"
 	WriteUninstaller Uninstall.exe
 
 	CreateDirectory "$INSTDIR\dependencies\arch"
+	StrCpy $DIRECTX_MISSING "false"
 
 	SetOutPath "$INSTDIR\dependencies"
 	IfFileExists "$SYSDIR\d3dx9_42.dll" no_need_to_install_directx
 	NSISdl::download "http://www.microsoft.com/downloads/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=04ac064b-00d1-474e-b7b1-442d8712d553&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fB%2f7%2f9%2fB79FC9D7-47B8-48B7-A75E-101DEBEB5AB4%2fdirectx_aug2009_redist.exe" "arch\openvibe-directx.exe"
 	Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
+		StrCmp $R0 "success" +4
 			MessageBox MB_OK "Download failed: $R0$\nDirect X won't be installed and 3D functionalities won't be available...$\nYou can install DirectX later to enable 3D functionalities !"
+			StrCpy $DIRECTX_MISSING "true"
 			Goto no_need_to_install_directx ; Quit
 	ExecWait '"arch\openvibe-directx.exe" /T:"$INSTDIR\tmp" /Q'
 	ExecWait '"$INSTDIR\tmp\DXSETUP.exe" /silent'
@@ -116,6 +119,27 @@ no_need_to_install_directx:
 	ZipDLL::extractall "arch\ogre-1.7.1-vs90-runtime.zip" "ogre"
 	ZipDLL::extractall "arch\cegui-0.7.2-vs90-runtime.zip" "cegui"
 	ZipDLL::extractall "arch\vrpn-7.26-runtime.zip" "vrpn"
+
+	SetOutPath "$INSTDIR"
+	File /nonfatal /r ..\dist\bin
+	; File /nonfatal /r ..\dist\doc
+	; File /nonfatal /r ..\dist\etc
+	; File /nonfatal /r ..\dist\include
+	; File /nonfatal /r ..\dist\lib
+	File /nonfatal /r ..\dist\log
+	File /nonfatal /r ..\dist\share
+	; File /nonfatal /r ..\dist\tmp
+
+	StrCmp $DIRECTX_MISSING "false" no_need_to_patch_3d_functionnality
+	FileOpen $0 "$INSTDIR\share\openvibe.conf" a
+	FileSeek $0 0 END
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "#####################################################################################$\r$\n"
+	FileWrite $0 "# Patched by installer because DirectX is missing$\r$\n"
+	FileWrite $0 "#####################################################################################$\r$\n"
+	FileWrite $0 "Kernel_3DVisualisationEnabled = false$\r$\n"
+	FileClose $0
+no_need_to_patch_3d_functionnality:
 
 	FileOpen $0 "$INSTDIR\dependencies\set-env.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
@@ -161,16 +185,6 @@ no_need_to_install_directx:
 	FileWrite $0 "}$\r$\n"
 	FileWrite $0 "widget_class $\"*$\" style $\"user-font$\"$\r$\n"
 	FileClose $0
-
-	SetOutPath "$INSTDIR"
-	File /nonfatal /r ..\dist\bin
-	; File /nonfatal /r ..\dist\doc
-	; File /nonfatal /r ..\dist\etc
-	; File /nonfatal /r ..\dist\include
-	; File /nonfatal /r ..\dist\lib
-	File /nonfatal /r ..\dist\log
-	File /nonfatal /r ..\dist\share
-	; File /nonfatal /r ..\dist\tmp
 
 	FileOpen $0 "$INSTDIR\openvibe-designer.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
