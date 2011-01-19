@@ -250,7 +250,13 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>If you want to see more <i>Made With OpenViBE</i> applications, visit the <a href="?q=made-with">Made With...</a> section</p>
 
 		<h1>News</h1>
-
+		
+		<h2>
+		OpenViBE at Techfest 2011, Mumbai (India).<br><span style="font-size:x-small">2011/01/7</span></h2>
+		<p>
+		The OpenViBE developer team is representing the INRIA at <a href=http://techfest.org>Techfest 2011</a>, probably the largest event in Asia related to new technologies. This event takes place at the India Institute of Technology (IIT-Bombay) in Mumbai, from 7th to 9th january. </p>
+		<p>We will present the OpenViBE software and show some nice demonstrations of BCI using OpenViBE. Rendez vous in the international exhibitor's pavilion !</p>
+		
 		<h2>New release of OpenViBE 0.9.0 is now available<br><span style="font-size:x-small">2010/12/28</span></h2>
 
 		<p>New release of OpenViBE 0.9.0 "Christmas edition" is now available for download at the <a href=http://openvibe.inria.fr/?q=download>download</a> page.</p>
