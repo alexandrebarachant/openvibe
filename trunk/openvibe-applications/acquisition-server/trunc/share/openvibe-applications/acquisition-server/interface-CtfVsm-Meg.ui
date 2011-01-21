@@ -182,7 +182,6 @@
                       <object class="GtkEntry" id="entry_host_name">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="max_length">15</property>
                         <property name="invisible_char">&#x2022;</property>
                         <property name="text" translatable="yes">localhost</property>
                       </object>
