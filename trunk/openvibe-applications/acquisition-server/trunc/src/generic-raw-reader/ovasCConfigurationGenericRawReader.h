@@ -12,6 +12,7 @@ namespace OpenViBEAcquisitionServer
 	public:
 
 		CConfigurationGenericRawReader(const char* sGtkBuilderFileName,
+			OpenViBE::boolean& rLimitSpeed,
 			OpenViBE::uint32& rSampleFormat,
 			OpenViBE::uint32& rSampleEndian,
 			OpenViBE::uint32& rHeaderSkip,
@@ -25,6 +26,7 @@ namespace OpenViBEAcquisitionServer
 
 	public:
 
+		OpenViBE::boolean& m_rLimitSpeed;
 		OpenViBE::uint32& m_rSampleFormat;
 		OpenViBE::uint32& m_rSampleEndian;
 		OpenViBE::uint32& m_rHeaderSkip;

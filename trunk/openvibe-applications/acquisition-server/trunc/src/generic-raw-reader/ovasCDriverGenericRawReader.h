@@ -56,8 +56,11 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32HeaderSkip;
 		OpenViBE::uint32 m_ui32FrameSkip;
 		OpenViBE::uint32 m_ui32DataFrameSize;
+		OpenViBE::boolean m_bLimitSpeed;
 		OpenViBE::uint8* m_pDataFrame;
 		OpenViBE::float32* m_pSample;
+		OpenViBE::uint64 m_ui64StartTime;
+		OpenViBE::uint64 m_ui64TotalSampleCount;
 	};
 };
 

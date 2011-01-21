@@ -4,6 +4,7 @@
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Memory.h>
+#include <system/Time.h>
 
 #include <cmath>
 
@@ -41,6 +42,7 @@ CDriverGenericRawReader::CDriverGenericRawReader(IDriverContext& rDriverContext)
 	,m_ui32SampleEndian(Endian_Little)
 	,m_ui32HeaderSkip(0)
 	,m_ui32FrameSkip(20)
+	,m_bLimitSpeed(false)
 	,m_pDataFrame(NULL)
 	,m_pSample(NULL)
 {
@@ -112,6 +114,8 @@ boolean CDriverGenericRawReader::start(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
+	m_ui64TotalSampleCount=0;
+	m_ui64StartTime=System::Time::zgetTime();
 	return true;
 }
 
@@ -119,6 +123,11 @@ boolean CDriverGenericRawReader::loop(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
 	// if(!m_rDriverContext.isStarted()) { return true; }
+
+	if(m_bLimitSpeed && ((m_ui64TotalSampleCount << 32) / m_oHeader.getSamplingFrequency() > System::Time::zgetTime() - m_ui64StartTime))
+	{
+		return true;
+	}
 
 	uint32 i, j;
 	for(j=0; j<m_ui32SampleCountPerSentBlock; j++)
@@ -177,6 +186,8 @@ boolean CDriverGenericRawReader::loop(void)
 	{
 		m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 	}
+
+	m_ui64TotalSampleCount+=m_ui32SampleCountPerSentBlock;
 
 	return true;
 }
