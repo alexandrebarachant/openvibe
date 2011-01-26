@@ -5,15 +5,15 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#define OVP_ClassId_Algorithm_SignalProcessingAlgorithm     = OpenViBE::CIdentifier(0x3B7523EC, 0x16C30A39)
-#define OVP_ClassId_Algorithm_SignalProcessingAlgorithmDesc = OpenViBE::CIdentifier(0x11BE2168, 0x5B494BBB)
+#define OVP_ClassId_Algorithm_SignalProcessingAlgorithm     OpenViBE::CIdentifier(0x3B7523EC, 0x16C30A39)
+#define OVP_ClassId_Algorithm_SignalProcessingAlgorithmDesc OpenViBE::CIdentifier(0x11BE2168, 0x5B494BBB)
 
-#define OVP_Algorithm_SignalProcessingAlgorithm_InputParameterId_Matrix  = OpenViBE::CIdentifier(0x56154223, 0x42180588)
-#define OVP_Algorithm_SignalProcessingAlgorithm_OutputParameterId_Matrix = OpenViBE::CIdentifier(0x023A4450, 0x6DFD17DB)
+#define OVP_Algorithm_SignalProcessingAlgorithm_InputParameterId_Matrix  OpenViBE::CIdentifier(0x56154223, 0x42180588)
+#define OVP_Algorithm_SignalProcessingAlgorithm_OutputParameterId_Matrix OpenViBE::CIdentifier(0x023A4450, 0x6DFD17DB)
 
-#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Initialize  = OpenViBE::CIdentifier(0x01803B07, 0x667A69BC)
-#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Process     = OpenViBE::CIdentifier(0x661A59C0, 0x12FB7F74)
-#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_ProcessDone = OpenViBE::CIdentifier(0x33802521, 0x785D51FD)
+#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Initialize  OpenViBE::CIdentifier(0x01803B07, 0x667A69BC)
+#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_Process     OpenViBE::CIdentifier(0x661A59C0, 0x12FB7F74)
+#define OVP_Algorithm_SignalProcessingAlgorithm_InputTriggerId_ProcessDone OpenViBE::CIdentifier(0x33802521, 0x785D51FD)
 
 
 namespace OpenViBEPlugins
