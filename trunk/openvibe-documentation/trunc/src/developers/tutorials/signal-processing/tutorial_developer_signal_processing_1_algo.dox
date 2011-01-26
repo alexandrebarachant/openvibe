@@ -205,7 +205,7 @@
  * Similarly, op_pMatrix is the output matrix pointer
  * of this algorithm. The parameter can be retrieved
  * with the getOutputParameter function and given to the
- * handler. Past this point, ip_pMatrix can be used
+ * handler. Past this point, op_pMatrix can be used
  * as an IMatrix* pointer using the -> operator.
  * \until initialize
  *
