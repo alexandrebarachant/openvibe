@@ -155,7 +155,6 @@ l_header_file_content="#ifndef $l_algorithm_header_decoration
 #include <openvibe-toolkit/ovtk_all.h>
 
 // TODO:
-// - please move the identifier definitions in ovp_defines.h
 // - please include your desciptor in ovp_main.cpp
 
 #define $l_algorithm_class_identifier_def     $l_algorithm_class_identifier
