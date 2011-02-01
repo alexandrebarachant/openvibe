@@ -50,24 +50,14 @@ namespace OpenViBEPlugins
 				l_bStateUpdated = true;
 			}
 			else
-				if(ui64StimulationIdentifier == OVTK_GDF_Cross_On_Screen)
-				{
-					m_eCurrentState = EDisplayCueImageState_Reference;
-					l_bStateUpdated = true;
-				}
-				else
-				{
-					for(uint i=0; i<=m_ui32NuberOfCue; i++)
+				for(uint32 i=0; i<=m_ui32NuberOfCue; i++)
+					if(ui64StimulationIdentifier == m_pStimulationsId[i])
 					{
-						if(ui64StimulationIdentifier == m_pStimulationsId[i])
-						{
-							m_eCurrentState = EDisplayCueImageState_Cue;
-							m_uint32CurrentCueID = i;
-							l_bStateUpdated = true;
-							break;
-						}
+						m_eCurrentState = EDisplayCueImageState_Cue;
+						m_uint32CurrentCueID = i;
+						l_bStateUpdated = true;
+						break;
 					}
-				}
 
 			if(l_bStateUpdated)
 			{
@@ -93,7 +83,6 @@ namespace OpenViBEPlugins
 			m_pOriginalPicture(NULL),
 			m_pScaledPicture(NULL),
 			m_bFullScreen(false),
-			m_bPhotoDiodeOn(false),
 			m_bError(false)
 		{
 			m_pReader[0] = NULL;
@@ -117,34 +106,25 @@ namespace OpenViBEPlugins
 
 			//Number of Cues:
 			CString l_sSettingValue;
-			getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_sSettingValue);
-			m_ui32NuberOfCue=::atoi(l_sSettingValue);
-			if(m_ui32NuberOfCue>6)
-			{
-				m_ui32NuberOfCue = 6;
-				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Warning: number of cues for diplay images must be <=6 !\n";
-			}
-
-			//Stimulation ID and images file names for each cue
-			m_pImageNames = new CString[m_ui32NuberOfCue+1];
-			m_pStimulationsId = new uint64[m_ui32NuberOfCue+1];
-			for(uint i=0; i<=m_ui32NuberOfCue; i++)
-			{
-				getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(2*i+1, m_pImageNames[i]);
-				getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(2*i+2, l_sSettingValue);
-				m_pStimulationsId[i]=getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, l_sSettingValue);
-			}
-
-			getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(15, l_sSettingValue);
-			m_ui64ClearScreenStimulation=getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, l_sSettingValue);
+			m_ui32NuberOfCue = getStaticBoxContext().getSettingCount()/2 -1;
 
 			//Do we display the images in full screen?
-			getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(16, l_sSettingValue);
+			getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_sSettingValue);
 			m_bFullScreen=(l_sSettingValue==CString("true")?true:false);
 
-			//Do we display a white square for the photodiode with each cue?
-			getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(17, l_sSettingValue);
-			m_bPhotoDiodeOn=(l_sSettingValue==CString("true")?true:false);
+			//Clear screen stimulation:
+			getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(1, l_sSettingValue);
+			m_ui64ClearScreenStimulation=getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, l_sSettingValue);
+
+			//Stimulation ID and images file names for each cue
+			m_pImageNames = new CString[m_ui32NuberOfCue];
+			m_pStimulationsId = new uint64[m_ui32NuberOfCue];
+			for(uint32 i=0; i<m_ui32NuberOfCue; i++)
+			{
+				getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(2*i+2, m_pImageNames[i]);
+				getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(2*i+3, l_sSettingValue);
+				m_pStimulationsId[i]=getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation, l_sSettingValue);
+			}
 
 			//>>>> Initialisation
 
@@ -179,10 +159,10 @@ namespace OpenViBEPlugins
 			gtk_widget_modify_fg(m_pDrawingArea, GTK_STATE_ACTIVE, &m_oForegroundColor);
 
 			//Load the pictures:
-			m_pOriginalPicture = new GdkPixbuf*[m_ui32NuberOfCue+1];
-			m_pScaledPicture = new GdkPixbuf*[m_ui32NuberOfCue+1];
+			m_pOriginalPicture = new GdkPixbuf*[m_ui32NuberOfCue];
+			m_pScaledPicture = new GdkPixbuf*[m_ui32NuberOfCue];
 
-			for(uint i=0; i<=m_ui32NuberOfCue; i++)
+			for(uint32 i=0; i<m_ui32NuberOfCue; i++)
 			{
 				m_pOriginalPicture[i] = gdk_pixbuf_new_from_file_at_size(m_pImageNames[i], -1, -1, NULL);
 				m_pScaledPicture[i]=0;
@@ -226,7 +206,7 @@ namespace OpenViBEPlugins
 			delete[] m_pStimulationsId;
 			delete[] m_pImageNames;
 
-			for(uint i=0; i<=m_ui32NuberOfCue; i++)
+			for(uint32 i=0; i<m_ui32NuberOfCue; i++)
 			{
 				if(m_pOriginalPicture[i]){ g_object_unref(G_OBJECT(m_pOriginalPicture[i])); }
 				if(m_pScaledPicture[i]){ g_object_unref(G_OBJECT(m_pScaledPicture[i])); }
@@ -274,10 +254,6 @@ namespace OpenViBEPlugins
 		{
 			switch(m_eCurrentState)
 			{
-				case EDisplayCueImageState_Reference:
-					drawReferenceCross();
-					break;
-
 				case EDisplayCueImageState_Cue:
 					drawCuePicture(m_uint32CurrentCueID);
 					break;
@@ -285,31 +261,6 @@ namespace OpenViBEPlugins
 				case EDisplayCueImageState_Idle:
 					break;
 			}
-		}
-
-		void CDisplayCueImage::drawReferenceCross()
-		{
-			gint l_iWindowWidth = m_pDrawingArea->allocation.width;
-			gint l_iWindowHeight = m_pDrawingArea->allocation.height;
-			gint l_iCrossSize = min(l_iWindowHeight,l_iWindowWidth)/16;
-
-			//increase line's width
-			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 4, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
-
-			//horizontal line
-			gdk_draw_line(m_pDrawingArea->window,
-				m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)],
-				(l_iWindowWidth/2-l_iCrossSize), (l_iWindowHeight/2),
-				(l_iWindowWidth/2+l_iCrossSize), (l_iWindowHeight/2));
-
-			//vertical line
-			gdk_draw_line(m_pDrawingArea->window,
-				m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)],
-				(l_iWindowWidth/2), (l_iWindowHeight/2-l_iCrossSize),
-				(l_iWindowWidth/2), (l_iWindowHeight/2+l_iCrossSize));
-
-			//decrease line's width
-			gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 		}
 
 		void CDisplayCueImage::drawCuePicture(OpenViBE::uint32 uint32CueID)
@@ -327,24 +278,18 @@ namespace OpenViBEPlugins
 				gint l_iY = (l_iWindowHeight/2) - gdk_pixbuf_get_height(m_pScaledPicture[uint32CueID])/2;;
 				gdk_draw_pixbuf(m_pDrawingArea->window, NULL, m_pScaledPicture[uint32CueID], 0, 0, l_iX, l_iY, -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
 			}
-
-			//a white square for the photodiode:
-			if(m_bPhotoDiodeOn && (uint32CueID>0))
-			{
-				gdk_draw_rectangle(m_pDrawingArea->window,m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)],TRUE, 0,l_iWindowHeight-100,100,100);
-			}
 		}
 
 		void CDisplayCueImage::resize(uint32 ui32Width, uint32 ui32Height)
 		{
-			for(uint i=0; i<=m_ui32NuberOfCue; i++)
+			for(uint32 i=0; i<m_ui32NuberOfCue; i++)
 			{
 				if(m_pScaledPicture[i]){ g_object_unref(G_OBJECT(m_pScaledPicture[i])); }
 			}
 
 			if(m_bFullScreen)
 			{
-				for(uint i=0; i<=m_ui32NuberOfCue; i++)
+				for(uint32 i=0; i<m_ui32NuberOfCue; i++)
 				{
 					m_pScaledPicture[i] = gdk_pixbuf_scale_simple(m_pOriginalPicture[i], ui32Width, ui32Height, GDK_INTERP_BILINEAR);
 				}
@@ -353,7 +298,7 @@ namespace OpenViBEPlugins
 			{
 				float l_fX = (ui32Width<64?64:ui32Width);
 				float l_fY = (ui32Height<64?64:ui32Height);
-				for(uint i=0; i<=m_ui32NuberOfCue; i++)
+				for(uint32 i=0; i<m_ui32NuberOfCue; i++)
 				{
 					float l_fx = gdk_pixbuf_get_width(m_pOriginalPicture[i]);
 					float l_fy = gdk_pixbuf_get_height(m_pOriginalPicture[i]);
