@@ -1,9 +1,13 @@
+#if 0
 #ifndef __OpenViBEPlugins_SignalProcessing_BoxAlgorithms_Filter_CSpatialFilterBoxAlgorithm_H__
 #define __OpenViBEPlugins_SignalProcessing_BoxAlgorithms_Filter_CSpatialFilterBoxAlgorithm_H__
 
 #include "../../ovp_defines.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
+
+#define OVP_ClassId_Box_SpatialFilterBoxAlgorithm     OpenViBE::CIdentifier(0xDD332C6C, 0x195B4FD4)
+#define OVP_ClassId_Box_SpatialFilterBoxAlgorithmDesc OpenViBE::CIdentifier(0x72A01C92, 0xF8C1FA24)
 
 namespace OpenViBEPlugins
 {
@@ -37,7 +41,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Spatial filter"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Spatial filter Deprecated"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Guillaume Gibert"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM/U821"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }
@@ -69,3 +73,4 @@ namespace OpenViBEPlugins
 };
 
 #endif // __OpenViBEPlugins_SignalProcessing_BoxAlgorithms_Filter_CSpatialFilterBoxAlgorithm_H__
+#endif

@@ -122,6 +122,7 @@ namespace OpenViBEPlugins
 							rPrototype.addSetting("Input training data file name", OV_TypeId_Filename, "NB_training.bin");
 
 							rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
+							rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsDeprecated);
 
 							return true;
 						}

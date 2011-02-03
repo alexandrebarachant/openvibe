@@ -23,9 +23,6 @@
 #define OVP_ClassId_BoxAlgorithm_SteadyStateFrequencyComparison                        OpenViBE::CIdentifier(0xC13EFA6C, 0x7757834D)
 #define OVP_ClassId_BoxAlgorithm_SteadyStateFrequencyComparisonDesc                    OpenViBE::CIdentifier(0x50DC8D3E, 0x22B235DB)
 
-#define OVP_ClassId_Box_SpatialFilterBoxAlgorithm                                      OpenViBE::CIdentifier(0xDD332C6C, 0x195B4FD4)
-#define OVP_ClassId_Box_SpatialFilterBoxAlgorithmDesc                                  OpenViBE::CIdentifier(0x72A01C92, 0xF8C1FA24)
-
 #define OVP_ClassId_Algorithm_ApplySpatialFilter                                       OpenViBE::CIdentifier(0xC5DC28FF, 0x2394AFBC)
 #define OVP_ClassId_Algorithm_ApplySpatialFilterDesc                                   OpenViBE::CIdentifier(0x0601FABE, 0x85692BFD)
 #define OVP_Algorithm_ApplySpatialFilter_InputParameterId_SignalMatrix                 OpenViBE::CIdentifier(0x6FF50741, 0xB9757B1F)

@@ -1,14 +1,15 @@
 #include "algorithms/basic/ovpCMatrixAverage.h"
 #include "algorithms/epoching/ovpCAlgorithmStimulationBasedEpoching.h"
-#include "algorithms/filters/ovpCApplySpatialFilter.h"
+//#include "algorithms/filters/ovpCApplySpatialFilter.h"
 
 #include "box-algorithms/basic/ovpCBoxAlgorithmChannelRename.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmEpochAverage.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmSignalDecimation.h"
 #include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
-#include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
+//#include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
 #include "box-algorithms/filters/ovpCBoxAlgorithmCommonAverageReference.h"
+#include "box-algorithms/filters/ovpCBoxAlgorithmSpatialFilter.h"
 
 #include "box-algorithms/spectral-analysis/ovpCBoxAlgorithmFrequencyBandSelector.h"
 #include "box-algorithms/spectral-analysis/ovpCBoxAlgorithmSpectrumAverage.h"
@@ -53,15 +54,16 @@ OVP_Declare_Begin()
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CMatrixAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CAlgorithmStimulationBasedEpochingDesc)
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CApplySpatialFilterDesc)
+//	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CApplySpatialFilterDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelRenameDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCropDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSignalDecimationDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmStimulationBasedEpochingDesc)
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSpatialFilterBoxAlgorithmDesc)
+//	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSpatialFilterBoxAlgorithmDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCommonAverageReferenceDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSpatialFilterDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CReferenceChannelDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CChannelSelectorDesc)

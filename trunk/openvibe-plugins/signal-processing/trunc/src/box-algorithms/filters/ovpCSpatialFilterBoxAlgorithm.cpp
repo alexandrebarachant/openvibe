@@ -1,3 +1,4 @@
+#if 0
 #include "ovpCSpatialFilterBoxAlgorithm.h"
 
 #include <iostream>
@@ -131,3 +132,4 @@ boolean CSpatialFilterBoxAlgorithm::process(void)
 
 	return true;
 }
+#endif

@@ -1,3 +1,4 @@
+#if 0
 #include "ovpCApplySpatialFilter.h"
 #include <cmath>
 #include <system/Memory.h>
@@ -107,3 +108,4 @@ boolean CApplySpatialFilter::process(void)
 
 	return true;
 }
+#endif

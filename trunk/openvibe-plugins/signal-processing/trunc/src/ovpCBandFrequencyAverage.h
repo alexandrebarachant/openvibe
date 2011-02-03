@@ -117,6 +117,7 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Low Frequency (Hz)",        OV_TypeId_String, "21");
 				rPrototype.addSetting("High Frequency (Hz)",       OV_TypeId_String, "29");
 				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsDeprecated);
 				return true;
 			}
 

@@ -1,3 +1,4 @@
+#if 0
 #ifndef __OpenViBEPlugins_SignalProcessing_Algorithms_Filter_CApplySpatialFilter_H__
 #define __OpenViBEPlugins_SignalProcessing_Algorithms_Filter_CApplySpatialFilter_H__
 
@@ -70,3 +71,4 @@ namespace OpenViBEPlugins
 };
 
 #endif // __OpenViBEPlugins_SignalProcessing_Algorithms_Filter_CApplySpatialFilter_H__
+#endif

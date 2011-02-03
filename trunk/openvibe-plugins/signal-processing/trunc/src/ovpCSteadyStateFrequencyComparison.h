@@ -91,6 +91,7 @@ namespace OpenViBEPlugins
 					rPrototype.addOutput ("Comparison Amplitude", OV_TypeId_StreamedMatrix);
 					rPrototype.addSetting("Kind of Comparison",   OVP_TypeId_ComparisonMethod, OVP_TypeId_ComparisonMethod_Ratio.toString());
 					rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
+					rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsDeprecated);
 					return true;
 				}
 
