@@ -137,9 +137,53 @@ ln -sf $target_dist/ov-skeleton-generator.sh
 chmod 755 $target_dist/*.sh
 
 echo ""
-echo "Install completed !"
+echo "Patching documentation..."
 echo ""
 
 find $target_dist/doc -name *.html -exec sed -i -e "s/\xC2\?\xA7OpenViBE\xC2\?\xA7/OpenViBE/g" "{}" \; # \xC2\?\xA7 is the § character that has been put everywhere to clearly make the distinction between the project and the software
+
+if [[ "$OpenViBE_building_package" == "debian" ]]; then
+
+	echo ""
+	echo "_______________________________________________________________________________"
+	echo ""
+
+	echo ""
+	echo "Specific install for debian packaging purpose, this can take a few seconds - maybe a few minutes..."
+	echo ""
+
+	echo ""
+	for project_directory in $OpenViBE_build_order; do
+		temp_sub_directory=`echo $project_directory | sed '
+			s:'$OpenViBE_base'/::g
+			s:/trunc::g
+			s:/:-:g
+			'`
+
+		target_dist=../debian/$temp_sub_directory
+		# mkdir -p $target_dist/bin     2> /dev/null
+		# mkdir -p $target_dist/include 2> /dev/null
+		# mkdir -p $target_dist/lib     2> /dev/null
+		# mkdir -p $target_dist/share   2> /dev/null
+		# mkdir -p $target_dist/tmp     2> /dev/null
+		# mkdir -p $target_dist/log     2> /dev/null
+		# mkdir -p $target_dist/etc     2> /dev/null
+		# mkdir -p $target_dist/doc     2> /dev/null
+
+		echo "## Installing $temp_sub_directory ..."
+		cp -rf $project_directory/bin/*     $target_dist/usr/bin     2> /dev/null
+		rm -f $target_dist/usr/bin/*.dll     $target_dist/usr/bin     2> /dev/null
+		# cp -rf $project_directory/include/* $target_dist-dev/usr/include 2> /dev/null
+		# cp -rf $project_directory/lib/*.a*  $target_dist-dev/usr/lib     2> /dev/null
+		cp -rf $project_directory/lib/*.so* $target_dist/usr/openvibe/lib     2> /dev/null
+		cp -rf $project_directory/share/*   $target_dist/usr/share/openvibe   2> /dev/null
+		# cp -rf $project_directory/doc/*     $target_dist/doc     2> /dev/null
+	done
+	echo ""
+fi
+
+echo ""
+echo "Install completed !"
+echo ""
 
 true
