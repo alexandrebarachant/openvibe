@@ -158,13 +158,17 @@ if [[ "$OpenViBE_building_package" == "debian" ]]; then
 			s:'$OpenViBE_base'/::g
 			s:/trunc::g
 			s:/:-:g
+			s:-modules-:-module-:g
+			s:-plugins-:-plugin-:g
+			s:-applications-:-application-:g
+			s:-omk::g
 			'`
 
 		target_dist=../debian/$temp_sub_directory
-		# mkdir -p $target_dist/bin     2> /dev/null
-		# mkdir -p $target_dist/include 2> /dev/null
-		# mkdir -p $target_dist/lib     2> /dev/null
-		# mkdir -p $target_dist/share   2> /dev/null
+		mkdir -p $target_dist/usr/bin     2> /dev/null
+		# mkdir -p $target_dist/usr/include 2> /dev/null
+		mkdir -p $target_dist/usr/openvibe/lib     2> /dev/null
+		mkdir -p $target_dist/usr/share/openvibe   2> /dev/null
 		# mkdir -p $target_dist/tmp     2> /dev/null
 		# mkdir -p $target_dist/log     2> /dev/null
 		# mkdir -p $target_dist/etc     2> /dev/null
