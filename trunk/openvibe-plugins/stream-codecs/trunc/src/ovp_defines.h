@@ -208,6 +208,22 @@
 
 //___________________________________________________________________//
 //                                                                   //
+// Master Acquisition encoder
+//___________________________________________________________________//
+//                                                                   //
+
+#define OVP_ClassId_Algorithm_MasterAcquisitionStreamEncoder                                               OpenViBE::CIdentifier(0x2D15E00B, 0x51414EB6)
+#define OVP_ClassId_Algorithm_MasterAcquisitionStreamEncoderDesc                                           OpenViBE::CIdentifier(0xE6EC841D, 0x9E75A8FB)
+#define OVP_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SubjectIdentifier                    OpenViBE::CIdentifier(0xD5BB5231, 0x59389B72)
+#define OVP_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SubjectAge                           OpenViBE::CIdentifier(0x9EF355E4, 0xC8531112)
+#define OVP_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SubjectGender                        OpenViBE::CIdentifier(0xA9056AE3, 0x57FE6AF0)
+#define OVP_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SignalMatrix                         OpenViBE::CIdentifier(0xE9AC8077, 0xE369A51D)
+#define OVP_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SignalSamplingRate                   OpenViBE::CIdentifier(0xB84AD0CA, 0x4F316DD3)
+#define OVP_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_StimulationSet                       OpenViBE::CIdentifier(0x5B728D37, 0xFD088887)
+#define OVP_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_BufferDuration                       OpenViBE::CIdentifier(0xE1FC7385, 0x586A4F3F)
+
+//___________________________________________________________________//
+//                                                                   //
 // Operating System identification                                   //
 //___________________________________________________________________//
 //                                                                   //
