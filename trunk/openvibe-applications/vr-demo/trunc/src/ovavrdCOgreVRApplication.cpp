@@ -140,6 +140,9 @@ bool COgreVRApplication::setup()
 	//Listening the frame rendering
 	m_poRoot->addFrameListener(this);
 
+	//Listening the window events
+	WindowEventUtilities::addWindowEventListener(m_poWindow,this);
+
 	//OIS
 	this->initOIS();
 
@@ -209,7 +212,7 @@ bool COgreVRApplication::initOIS()
 	// Create the input manager
 	m_poInputManager = OIS::InputManager::createInputSystem( l_oParamList );
 
-	//Create all devices (TODO: create joystick)
+	//Create all devices
 	m_poKeyboard = static_cast<OIS::Keyboard*>(m_poInputManager->createInputObject( OIS::OISKeyboard, true ));
 	m_poMouse = static_cast<OIS::Mouse*>(m_poInputManager->createInputObject( OIS::OISMouse, true ));
 
@@ -350,7 +353,7 @@ bool COgreVRApplication::frameStarted(const FrameEvent& evt)
 
 		if(m_bCameraMode) this->updateCamera();
 
-		this->process(m_dClock);
+		m_bContinue = this->process(m_dClock);
 		m_dClock -= 1/MAX_FREQUENCY;
 	}
 	else
@@ -359,4 +362,9 @@ bool COgreVRApplication::frameStarted(const FrameEvent& evt)
 	}
 
 	return m_bContinue;
+}
+
+void COgreVRApplication::windowResized(RenderWindow* rw)
+{
+	CEGUI::System::getSingleton().notifyDisplaySizeChanged(CEGUI::Size(rw->getWidth(), rw->getHeight()));
 }

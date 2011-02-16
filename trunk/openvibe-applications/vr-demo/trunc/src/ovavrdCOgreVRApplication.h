@@ -31,7 +31,7 @@ namespace OpenViBEVRDemos {
 	 * It handles the rendering engine setup and configuration. Developer has to initialise the right 3D scene,
 	 * and give the loop code that will be called each time a frame is rendered.
 	 */
-	class COgreVRApplication : public Ogre::FrameListener ,OIS::KeyListener, OIS::MouseListener
+	class COgreVRApplication : public Ogre::FrameListener ,OIS::KeyListener, OIS::MouseListener, Ogre::WindowEventListener
 	{
 		public:
 
@@ -147,6 +147,8 @@ namespace OpenViBEVRDemos {
 			* \return \em true if the rendering engine should continue.
 			*/
 			bool keyReleased(const OIS::KeyEvent& evt) ;
+
+			virtual void windowResized(Ogre::RenderWindow* rw);
 
 			//-------CEGUI-------//
 			CEGUI::OgreRenderer * m_rGUIRenderer;  //!< The CEGUI renderer.
