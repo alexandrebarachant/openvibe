@@ -38,6 +38,7 @@ namespace OpenViBEAcquisitionServer
 		void disconnect(void);
 
 		// GTK button callbacks
+		virtual void buttonPreferencePressedCB(::GtkButton* pButton);
 		virtual void buttonConfigurePressedCB(::GtkButton* pButton);
 		virtual void buttonConnectToggledCB(::GtkToggleButton* pButton);
 		virtual void buttonStartPressedCB(::GtkButton* pButton);

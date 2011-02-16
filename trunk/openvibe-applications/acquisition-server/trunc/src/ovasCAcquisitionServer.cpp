@@ -67,6 +67,11 @@ namespace OpenViBEAcquisitionServer
 			return m_rAcquisitionServer.isStarted();
 		}
 
+		virtual boolean isImpedanceCheckRequested(void) const
+		{
+			return m_rAcquisitionServer.isImpedanceCheckRequested();
+		}
+
 		virtual int64 getDriftSampleCount(void) const
 		{
 			return m_rAcquisitionServer.getDriftSampleCount();
@@ -200,46 +205,31 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	,m_rKernelContext(rKernelContext)
 	,m_pDriverContext(NULL)
 	,m_pDriver(NULL)
-	,m_pAcquisitionStreamEncoder(NULL)
-	,m_pExperimentInformationStreamEncoder(NULL)
-	,m_pSignalStreamEncoder(NULL)
-	,m_pStimulationStreamEncoder(NULL)
-	,m_pChannelLocalisationStreamEncoder(NULL)
+	,m_pStreamEncoder(NULL)
 	,m_pConnectionServer(NULL)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 {
 	m_pDriverContext=new CDriverContext(rKernelContext, *this);
-	m_pAcquisitionStreamEncoder=&m_rKernelContext.getAlgorithmManager().getAlgorithm(m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_AcquisitionStreamEncoder));
-	m_pExperimentInformationStreamEncoder=&m_rKernelContext.getAlgorithmManager().getAlgorithm(m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_ExperimentInformationStreamEncoder));
-	m_pSignalStreamEncoder=&m_rKernelContext.getAlgorithmManager().getAlgorithm(m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamEncoder));
-	m_pStimulationStreamEncoder=&m_rKernelContext.getAlgorithmManager().getAlgorithm(m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamEncoder));
-	// m_pChannelLocalisationStreamEncoder=&m_rKernelContext.getAlgorithmManager().getAlgorithm(m_rKernelContext.getAlgorithmManager().createAlgorithm(/*TODO*/));
 
-	m_pAcquisitionStreamEncoder->initialize();
-	m_pExperimentInformationStreamEncoder->initialize();
-	m_pSignalStreamEncoder->initialize();
-	m_pStimulationStreamEncoder->initialize();
-	// m_pChannelLocalisationStreamEncoder->initialize();
+	m_pStreamEncoder=&m_rKernelContext.getAlgorithmManager().getAlgorithm(m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_MasterAcquisitionStreamEncoder));
+	// m_pStreamEncoder=&m_rKernelContext.getAlgorithmManager().getAlgorithm(m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_ClassId_GD_Algorithm_MasterAcquisitionStreamEncoderCSV));
+	m_pStreamEncoder->initialize();
 
-	op_pAcquisitionMemoryBuffer.initialize(m_pAcquisitionStreamEncoder->getOutputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-	op_pExperimentInformationMemoryBuffer.initialize(m_pExperimentInformationStreamEncoder->getOutputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-	op_pSignalMemoryBuffer.initialize(m_pSignalStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-	op_pStimulationMemoryBuffer.initialize(m_pStimulationStreamEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-	// op_pChannelLocalisationMemoryBuffer.initialize(m_pChannelLocalisationStreamEncoder->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+	ip_ui64SubjectIdentifier.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SubjectIdentifier));
+	ip_ui64SubjectAge.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SubjectAge));
+	ip_ui64SubjectGender.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SubjectGender));
+	ip_pSignalMatrix.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SignalMatrix));
+	ip_ui64SignalSamplingRate.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_SignalSamplingRate));
+	ip_pStimulationSet.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_StimulationSet));
+	ip_ui64BufferDuration.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_BufferDuration));
+	op_pEncodedMemoryBuffer.initialize(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
-	TParameterHandler < IMemoryBuffer* > ip_pAcquisitionExperimentInformationMemoryBuffer(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_ExperimentInformationStream));
-	TParameterHandler < IMemoryBuffer* > ip_pAcquisitionSignalMemoryBuffer(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_SignalStream));
-	TParameterHandler < IMemoryBuffer* > ip_pAcquisitionStimulationMemoryBuffer(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_StimulationStream));
-	// TParameterHandler < IMemoryBuffer* > ip_pAcquisitionChannelLocalisationMemoryBuffer(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_ChannelLocalisationStream));
+	this->setDriftToleranceDuration(m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriftToleranceDuration}", 5));
+	this->setJitterEstimationCountForDrift(m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_JitterEstimationCountForDrift}", 128));
+	this->setOversamplingFactor(m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_OverSamplingFactor}", 1));
+	this->setImpedanceCheckRequest(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_CheckImpedance}", false));
 
-	ip_pAcquisitionExperimentInformationMemoryBuffer.setReferenceTarget(op_pExperimentInformationMemoryBuffer);
-	ip_pAcquisitionSignalMemoryBuffer.setReferenceTarget(op_pSignalMemoryBuffer);
-	ip_pAcquisitionStimulationMemoryBuffer.setReferenceTarget(op_pStimulationMemoryBuffer);
-	// ip_pAcquisitionChannelLocalisationMemoryBuffer.setReferenceTarget(op_pStimulationMemoryBuffer);
-
-	m_ui64DriftToleranceDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriftToleranceDuration}", 5);
-	m_ui64JitterEstimationCountForDrift=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_JitterEstimationCountForDrift}", 128);
 	m_ui64StartedDriverSleepDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_StartedDriverSleepDuration}", 2);
 	m_ui64StoppedDriverSleepDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_StoppedDriverSleepDuration}", 100);
 	m_ui64DriverTimeoutDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriverTimeoutDuration}", 5000);
@@ -279,23 +269,18 @@ CAcquisitionServer::~CAcquisitionServer(void)
 	}
 */
 
-	// op_pChannelLocalisationMemoryBuffer.uninitialize();
-	op_pStimulationMemoryBuffer.uninitialize();
-	op_pSignalMemoryBuffer.uninitialize();
-	op_pExperimentInformationMemoryBuffer.uninitialize();
-	op_pAcquisitionMemoryBuffer.uninitialize();
+	ip_ui64SubjectIdentifier.uninitialize();
+	ip_ui64SubjectAge.uninitialize();
+	ip_ui64SubjectGender.uninitialize();
+	ip_pSignalMatrix.uninitialize();
+	ip_ui64SignalSamplingRate.uninitialize();
+	ip_pStimulationSet.uninitialize();
+	ip_ui64BufferDuration.uninitialize();
+	op_pEncodedMemoryBuffer.uninitialize();
 
-	// m_pChannelLocalisationStreamEncoder->uninitialize();
-	m_pStimulationStreamEncoder->uninitialize();
-	m_pSignalStreamEncoder->uninitialize();
-	m_pExperimentInformationStreamEncoder->uninitialize();
-	m_pAcquisitionStreamEncoder->uninitialize();
-
-	// m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*m_pChannelLocalisationStreamEncoder);
-	m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*m_pStimulationStreamEncoder);
-	m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*m_pSignalStreamEncoder);
-	m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*m_pExperimentInformationStreamEncoder);
-	m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*m_pAcquisitionStreamEncoder);
+	m_pStreamEncoder->uninitialize();
+	m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*m_pStreamEncoder);
+	m_pStreamEncoder=NULL;
 
 	delete m_pDriverContext;
 	m_pDriverContext=NULL;
@@ -379,24 +364,15 @@ boolean CAcquisitionServer::loop(void)
 				m_rKernelContext.getLogManager() << LogLevel_Debug << "Creating header\n";
 #endif
 
-				// op_pChannelLocalisationMemoryBuffer->setSize(0, true);
-				op_pStimulationMemoryBuffer->setSize(0, true);
-				op_pSignalMemoryBuffer->setSize(0, true);
-				op_pExperimentInformationMemoryBuffer->setSize(0, true);
-				op_pAcquisitionMemoryBuffer->setSize(0, true);
-
-				// m_pChannelLocalisationStreamEncoder->process(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pStimulationStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pExperimentInformationStreamEncoder->process(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeHeader);
-				m_pAcquisitionStreamEncoder->process(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputTriggerId_EncodeHeader);
+				op_pEncodedMemoryBuffer->setSize(0, true);
+				m_pStreamEncoder->process(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputTriggerId_EncodeHeader);
 
 #if 0
-				uint64 l_ui64MemoryBufferSize=op_pAcquisitionMemoryBuffer->getSize();
+				uint64 l_ui64MemoryBufferSize=op_pEncodedMemoryBuffer->getSize();
 				l_pConnection->sendBufferBlocking(&l_ui64MemoryBufferSize, sizeof(l_ui64MemoryBufferSize));
-				l_pConnection->sendBufferBlocking(op_pAcquisitionMemoryBuffer->getDirectPointer(), (uint32)op_pAcquisitionMemoryBuffer->getSize());
+				l_pConnection->sendBufferBlocking(op_pEncodedMemoryBuffer->getDirectPointer(), (uint32)op_pEncodedMemoryBuffer->getSize());
 #else
-				l_oInfo.m_pConnectionClientHandlerThread->scheduleBuffer(*op_pAcquisitionMemoryBuffer);
+				l_oInfo.m_pConnectionClientHandlerThread->scheduleBuffer(*op_pEncodedMemoryBuffer);
 #endif
 			}
 			else
@@ -492,12 +468,11 @@ boolean CAcquisitionServer::loop(void)
 #endif
 
 				// Signal buffer
-				TParameterHandler < IMatrix* > ip_pMatrix(m_pSignalStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix));
 				for(uint32 j=0; j<m_ui32ChannelCount; j++)
 				{
 					for(uint32 i=0; i<m_ui32SampleCountPerSentBlock; i++)
 					{
-						ip_pMatrix->getBuffer()[j*m_ui32SampleCountPerSentBlock+i]=m_vPendingBuffer[i+l_rInfo.m_ui64SignalSampleCountToSkip][j];
+						ip_pSignalMatrix->getBuffer()[j*m_ui32SampleCountPerSentBlock+i]=m_vPendingBuffer[i+l_rInfo.m_ui64SignalSampleCountToSkip][j];
 					}
 				}
 
@@ -509,28 +484,19 @@ boolean CAcquisitionServer::loop(void)
 					(((m_ui64SampleCount-m_vPendingBuffer.size()                              )+l_rInfo.m_ui64SignalSampleCountToSkip)<<32)/m_ui32SamplingFrequency,
 					(((m_ui64SampleCount-m_vPendingBuffer.size()+m_ui32SampleCountPerSentBlock)+l_rInfo.m_ui64SignalSampleCountToSkip)<<32)/m_ui32SamplingFrequency);
 
-				// op_pChannelLocalisationMemoryBuffer->setSize(0, true);
-				op_pStimulationMemoryBuffer->setSize(0, true);
-				op_pSignalMemoryBuffer->setSize(0, true);
-				op_pExperimentInformationMemoryBuffer->setSize(0, true);
-				op_pAcquisitionMemoryBuffer->setSize(0, true);
-
 				// uint64 l_ui64TimeOffset=((itConnection->second<<32)/m_ui32SamplingFrequency);
-				TParameterHandler < IStimulationSet* > ip_pStimulationSet(m_pStimulationStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
 				// OpenViBEToolkit::Tools::StimulationSet::copy(*ip_pStimulationSet, m_oStimulationSet, l_ui64TimeOffset);
 				OpenViBEToolkit::Tools::StimulationSet::copy(*ip_pStimulationSet, l_oStimulationSet, -int64(l_rInfo.m_ui64StimulationTimeOffset));
 
-				// m_pChannelLocalisationStreamEncoder->process(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputTriggerId_EncodeBuffer);
-				m_pStimulationStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
-				m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
-				m_pExperimentInformationStreamEncoder->process(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeBuffer);
-				m_pAcquisitionStreamEncoder->process(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputTriggerId_EncodeBuffer);
+				op_pEncodedMemoryBuffer->setSize(0, true);
+				m_pStreamEncoder->process(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputTriggerId_EncodeBuffer);
+
 #if 0
-				uint64 l_ui64MemoryBufferSize=op_pAcquisitionMemoryBuffer->getSize();
+				uint64 l_ui64MemoryBufferSize=op_pEncodedMemoryBuffer->getSize();
 				l_pConnection->sendBufferBlocking(&l_ui64MemoryBufferSize, sizeof(l_ui64MemoryBufferSize));
-				l_pConnection->sendBufferBlocking(op_pAcquisitionMemoryBuffer->getDirectPointer(), (uint32)op_pAcquisitionMemoryBuffer->getSize());
+				l_pConnection->sendBufferBlocking(op_pEncodedMemoryBuffer->getDirectPointer(), (uint32)op_pEncodedMemoryBuffer->getSize());
 #else
-				l_rInfo.m_pConnectionClientHandlerThread->scheduleBuffer(*op_pAcquisitionMemoryBuffer);
+				l_rInfo.m_pConnectionClientHandlerThread->scheduleBuffer(*op_pEncodedMemoryBuffer);
 #endif
 			}
 			else
@@ -561,9 +527,6 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 
 	m_pDriver=&rDriver;
 	m_ui32SampleCountPerSentBlock=ui32SamplingCountPerSentBlock;
-	m_ui32OverSamplingFactor=m_rKernelContext.getConfigurationManager().expandAsInteger("${AcquisitionServer_OverSamplingFactor}", 1);
-	if(m_ui32OverSamplingFactor<1) m_ui32OverSamplingFactor=1;
-	if(m_ui32OverSamplingFactor>16) m_ui32OverSamplingFactor=16;
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Connecting to device [" << CString(m_pDriver->getName()) << "]...\n";
 
@@ -582,7 +545,7 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 	const IHeader& l_rHeader=*rDriver.getHeader();
 
 	m_ui32ChannelCount=l_rHeader.getChannelCount();
-	m_ui32SamplingFrequency=l_rHeader.getSamplingFrequency()*m_ui32OverSamplingFactor;
+	m_ui32SamplingFrequency=l_rHeader.getSamplingFrequency()*m_ui64OverSamplingFactor;
 
 	m_vImpedance.resize(m_ui32ChannelCount, OVAS_Impedance_NotAvailable);
 	m_vSwapBuffer.resize(m_ui32ChannelCount);
@@ -597,7 +560,7 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 		m_i64DriftCorrectionSampleCountAdded=0;
 		m_i64DriftCorrectionSampleCountRemoved=0;
 
-		m_rKernelContext.getLogManager() << LogLevel_Trace << "Oversampling factor set to " << m_ui32OverSamplingFactor << "\n";
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Oversampling factor set to " << m_ui64OverSamplingFactor << "\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Sampling frequency set to " << m_ui32SamplingFrequency << "Hz\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver monitoring drift tolerance set to " << m_ui64DriftToleranceDuration << " milliseconds - eq " << m_i64DriftToleranceSampleCount << " samples\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver monitoring drift estimation on " << m_ui64JitterEstimationCountForDrift << " jitter measures\n";
@@ -605,34 +568,16 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Stopped driver sleeping duration is " << m_ui64StoppedDriverSleepDuration << " milliseconds\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver timeout duration set to " << m_ui64DriverTimeoutDuration << " milliseconds\n";
 
-		TParameterHandler < uint64 > ip_ui64BufferDuration(m_pAcquisitionStreamEncoder->getInputParameter(OVP_GD_Algorithm_AcquisitionStreamEncoder_InputParameterId_BufferDuration));
-
-		TParameterHandler < uint64 > ip_ui64ExperimentIdentifier(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_ExperimentIdentifier));
-		TParameterHandler < CString* > ip_pExperimentDate(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_ExperimentDate));
-		TParameterHandler < uint64 > ip_ui64SubjectIdentifier(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectIdentifier));
-		TParameterHandler < CString* > ip_pSubjectName(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectName));
-		TParameterHandler < uint64 > ip_ui64SubjectAge(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectAge));
-		TParameterHandler < uint64 > ip_ui64SubjectGender(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_SubjectGender));
-		TParameterHandler < uint64 > ip_ui64LaboratoryIdentifier(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_LaboratoryIdentifier));
-		TParameterHandler < CString* > ip_pLaboratoryName(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_LaboratoryName));
-		TParameterHandler < uint64 > ip_ui64TechnicianIdentifier(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianIdentifier));
-		TParameterHandler < CString* > ip_pTechnicianName(m_pExperimentInformationStreamEncoder->getInputParameter(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputParameterId_TechnicianName));
-
-		TParameterHandler < IMatrix* > ip_pMatrix(m_pSignalStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_Matrix));
-		TParameterHandler < uint64 > ip_ui64SamplingRate(m_pSignalStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate));
-
-		TParameterHandler < IStimulationSet* > ip_pStimulationSet(m_pStimulationStreamEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
-
 		ip_ui64BufferDuration=(((uint64)m_ui32SampleCountPerSentBlock)<<32)/m_ui32SamplingFrequency;
 
-		ip_ui64ExperimentIdentifier=l_rHeader.getExperimentIdentifier();
-		ip_ui64SubjectIdentifier=l_rHeader.getSubjectAge();
+		ip_ui64SubjectIdentifier=l_rHeader.getExperimentIdentifier();
+		ip_ui64SubjectAge=l_rHeader.getSubjectAge();
 		ip_ui64SubjectGender=l_rHeader.getSubjectGender();
 
-		ip_ui64SamplingRate=m_ui32SamplingFrequency;
-		ip_pMatrix->setDimensionCount(2);
-		ip_pMatrix->setDimensionSize(0, m_ui32ChannelCount);
-		ip_pMatrix->setDimensionSize(1, m_ui32SampleCountPerSentBlock);
+		ip_ui64SignalSamplingRate=m_ui32SamplingFrequency;
+		ip_pSignalMatrix->setDimensionCount(2);
+		ip_pSignalMatrix->setDimensionSize(0, m_ui32ChannelCount);
+		ip_pSignalMatrix->setDimensionSize(1, m_ui32SampleCountPerSentBlock);
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Sampling rate     : " << m_ui32SamplingFrequency << "\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Samples per block : " << m_ui32SampleCountPerSentBlock << "\n";
@@ -643,15 +588,15 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 			string l_sChannelName=l_rHeader.getChannelName(i);
 			if(l_sChannelName!="")
 			{
-				ip_pMatrix->setDimensionLabel(0, i, l_sChannelName.c_str());
+				ip_pSignalMatrix->setDimensionLabel(0, i, l_sChannelName.c_str());
 			}
 			else
 			{
 				std::stringstream ss;
 				ss << "Channel " << i+1;
-				ip_pMatrix->setDimensionLabel(0, i, ss.str().c_str());
+				ip_pSignalMatrix->setDimensionLabel(0, i, ss.str().c_str());
 			}
-			m_rKernelContext.getLogManager() << LogLevel_Trace << "Channel name      : " << CString(ip_pMatrix->getDimensionLabel(0, i)) << "\n";
+			m_rKernelContext.getLogManager() << LogLevel_Trace << "Channel name      : " << CString(ip_pSignalMatrix->getDimensionLabel(0, i)) << "\n";
 		}
 
 		// TODO Gain is ignored
@@ -813,9 +758,9 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 		for(uint32 i=0; i<ui32SampleCount; i++)
 		{
 			m_vOverSamplingSwapBuffer=m_vSwapBuffer;
-			for(uint32 k=0; k<m_ui32OverSamplingFactor; k++)
+			for(uint32 k=0; k<m_ui64OverSamplingFactor; k++)
 			{
-				float32 alpha=float32(k+1)/m_ui32OverSamplingFactor;
+				float32 alpha=float32(k+1)/m_ui64OverSamplingFactor;
 				for(uint32 j=0; j<m_ui32ChannelCount; j++)
 				{
 					m_vSwapBuffer[j]=alpha*pSample[j*ui32SampleCount+i]+(1-alpha)*m_vOverSamplingSwapBuffer[j];
@@ -824,7 +769,7 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 			}
 		}
 		m_ui64LastSampleCount=m_ui64SampleCount;
-		m_ui64SampleCount+=ui32SampleCount*m_ui32OverSamplingFactor;
+		m_ui64SampleCount+=ui32SampleCount*m_ui64OverSamplingFactor;
 
 		{
 			uint64 l_ui64TheoricalSampleCount=(m_ui32SamplingFrequency * (System::Time::zgetTime()-m_ui64StartTime))>>32;
@@ -966,6 +911,58 @@ boolean CAcquisitionServer::updateImpedance(const uint32 ui32ChannelIndex, const
 	m_vImpedance[ui32ChannelIndex]=f64Impedance;
 	return true;
 }
+
+// ____________________________________________________________________________
+//
+
+uint64 CAcquisitionServer::getDriftToleranceDuration(void)
+{
+	return m_ui64DriftToleranceDuration;
+}
+
+uint64 CAcquisitionServer::getJitterEstimationCountForDrift(void)
+{
+	return m_ui64JitterEstimationCountForDrift;
+}
+
+uint64 CAcquisitionServer::getOversamplingFactor(void)
+{
+	return m_ui64OverSamplingFactor;
+}
+
+boolean CAcquisitionServer::isImpedanceCheckRequested(void)
+{
+	return m_bIsImpedanceCheckRequested;
+}
+
+boolean CAcquisitionServer::setDriftToleranceDuration(uint64 ui64DriftToleranceDuration)
+{
+	m_ui64DriftToleranceDuration=ui64DriftToleranceDuration;
+	return true;
+}
+
+boolean CAcquisitionServer::setJitterEstimationCountForDrift(uint64 ui64JitterEstimationCountForDrift)
+{
+	m_ui64JitterEstimationCountForDrift=ui64JitterEstimationCountForDrift;
+	return true;
+}
+
+boolean CAcquisitionServer::setOversamplingFactor(uint64 ui64OversamplingFactor)
+{
+	m_ui64OverSamplingFactor=ui64OversamplingFactor;
+	if(m_ui64OverSamplingFactor<1) m_ui64OverSamplingFactor=1;
+	if(m_ui64OverSamplingFactor>16) m_ui64OverSamplingFactor=16;
+	return true;
+}
+
+boolean CAcquisitionServer::setImpedanceCheckRequest(boolean bActive)
+{
+	m_bIsImpedanceCheckRequested=bActive;
+	return true;
+}
+
+// ____________________________________________________________________________
+//
 
 boolean CAcquisitionServer::acceptNewConnection(Socket::IConnection* pConnection)
 {

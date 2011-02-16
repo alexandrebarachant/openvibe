@@ -55,6 +55,16 @@ namespace OpenViBEAcquisitionServer
 		 */
 		virtual OpenViBE::boolean isStarted(void) const=0;
 		/**
+		 * \brief Checks if impedance check is required (when available)
+		 * \return \e true if impedance check is required
+		 * \return \e false if impedance check is not required
+		 *
+		 * It is up to the driver to check whether impedance check is required by
+		 * the acquisition server or not. If this test is required, then the driver
+		 * should perform impedance measures while initialized but not yet started.
+		 */
+		virtual OpenViBE::boolean isImpedanceCheckRequested(void) const=0;
+		/**
 		 * \brief Gets drift sample count
 		 * \return \e the drift sample count
 		 * \sa correctDriftSampleCount

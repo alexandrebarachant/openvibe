@@ -63,6 +63,11 @@ using namespace std;
 //___________________________________________________________________//
 //                                                                   //
 
+static void button_preference_pressed_cb(::GtkButton* pButton, void* pUserData)
+{
+	static_cast<CAcquisitionServerGUI*>(pUserData)->buttonPreferencePressedCB(pButton);
+}
+
 static void button_configure_pressed_cb(::GtkButton* pButton, void* pUserData)
 {
 	static_cast<CAcquisitionServerGUI*>(pUserData)->buttonConfigurePressedCB(pButton);
@@ -201,11 +206,12 @@ boolean CAcquisitionServerGUI::initialize(void)
 
 	// Connects custom GTK signals
 
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_configure"),                     "pressed", G_CALLBACK(button_configure_pressed_cb), this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "togglebutton_connect"),                 "toggled", G_CALLBACK(button_connect_toggled_cb),   this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_play"),                          "pressed", G_CALLBACK(button_start_pressed_cb),     this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_stop"),                          "pressed", G_CALLBACK(button_stop_pressed_cb),      this);
-	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver"),                      "changed", G_CALLBACK(combobox_driver_changed_cb),  this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_preference"),                    "pressed", G_CALLBACK(button_preference_pressed_cb), this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_configure"),                     "pressed", G_CALLBACK(button_configure_pressed_cb),  this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "togglebutton_connect"),                 "toggled", G_CALLBACK(button_connect_toggled_cb),    this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_play"),                          "pressed", G_CALLBACK(button_start_pressed_cb),      this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "button_stop"),                          "pressed", G_CALLBACK(button_stop_pressed_cb),       this);
+	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "combobox_driver"),                      "changed", G_CALLBACK(combobox_driver_changed_cb),   this);
 	g_signal_connect(gtk_builder_get_object(m_pBuilderInterface, "combobox_sample_count_per_sent_block"), "changed", G_CALLBACK(combobox_sample_count_per_sent_block_changed_cb),  this);
 	gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
@@ -335,7 +341,7 @@ void CAcquisitionServerGUI::setClientCount(uint32 ui32ClientCount)
 
 void CAcquisitionServerGUI::setDrift(float64 f64Drift)
 {
-	float64 l_f64DriftToleranceDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriftToleranceDuration}", 5);
+	float64 l_f64DriftToleranceDuration=m_pAcquisitionServer->getDriftToleranceDuration();
 	float64 l_f64DriftRatio=f64Drift/l_f64DriftToleranceDuration;
 	boolean l_bDriftWarning=false;
 	char l_sLabel[1024];
@@ -486,6 +492,7 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 			gtk_button_set_label(GTK_BUTTON(pButton), "gtk-disconnect");
 
 			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_configure")), false);
+			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_preference")), false);
 			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_play")), true);
 			gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_stop")), false);
 
@@ -520,6 +527,7 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 		gtk_button_set_label(GTK_BUTTON(pButton), "gtk-connect");
 
 		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_configure")), m_pDriver->isConfigurable());
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_preference")), true);
 		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_play")), false);
 		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "button_stop")), false);
 
@@ -571,6 +579,42 @@ void CAcquisitionServerGUI::buttonStopPressedCB(::GtkButton* pButton)
 		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_status")), "Failed !");
 		gtk_label_set_label(GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "label_connected_host_count")), "");
 	}
+}
+
+void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "buttonPreferencePressedCB\n";
+
+	::GtkBuilder* l_pInterface=gtk_builder_new();
+	::gtk_builder_add_from_file(l_pInterface, OVAS_GUI_File, NULL);
+	::GtkDialog* l_pDialog=GTK_DIALOG(::gtk_builder_get_object(l_pInterface, "openvibe-acquisition-server-configuration"));
+	::GtkSpinButton* l_pDriftTolerance=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_drift_tolerance"));
+	::GtkSpinButton* l_pJitterMeasureCount=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_jitter_measure_count"));
+	::GtkSpinButton* l_pOverSamplingFactor=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_oversampling_factor"));
+	::GtkToggleButton* l_pImpedanceCheck=GTK_TOGGLE_BUTTON(::gtk_builder_get_object(l_pInterface, "checkbutton_impedance"));
+
+	::gtk_spin_button_set_value(l_pDriftTolerance, m_pAcquisitionServer->getDriftToleranceDuration());
+	::gtk_spin_button_set_value(l_pJitterMeasureCount, m_pAcquisitionServer->getJitterEstimationCountForDrift());
+	::gtk_spin_button_set_value(l_pOverSamplingFactor, m_pAcquisitionServer->getOversamplingFactor());
+	::gtk_toggle_button_set_active(l_pImpedanceCheck, m_pAcquisitionServer->isImpedanceCheckRequested()?TRUE:FALSE);
+
+	gint l_iResponseId=::gtk_dialog_run(l_pDialog);
+	switch(l_iResponseId)
+	{
+		case GTK_RESPONSE_APPLY:
+		case GTK_RESPONSE_OK:
+		case GTK_RESPONSE_YES:
+			m_pAcquisitionServer->setDriftToleranceDuration(::gtk_spin_button_get_value_as_int(l_pDriftTolerance));
+			m_pAcquisitionServer->setJitterEstimationCountForDrift(::gtk_spin_button_get_value_as_int(l_pJitterMeasureCount));
+			m_pAcquisitionServer->setOversamplingFactor(::gtk_spin_button_get_value_as_int(l_pOverSamplingFactor));
+			m_pAcquisitionServer->setImpedanceCheckRequest(::gtk_toggle_button_get_active(l_pImpedanceCheck)?true:false);
+			break;
+		case GTK_RESPONSE_CANCEL:
+		case GTK_RESPONSE_NO:
+			break;
+	}
+	::gtk_widget_destroy(GTK_WIDGET(l_pDialog));
+	g_object_unref(l_pInterface);
 }
 
 void CAcquisitionServerGUI::buttonConfigurePressedCB(::GtkButton* pButton)

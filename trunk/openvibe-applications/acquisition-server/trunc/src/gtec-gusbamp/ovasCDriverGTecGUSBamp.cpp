@@ -40,9 +40,6 @@ CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
 {
 	m_oHeader.setSamplingFrequency(512);
 	m_oHeader.setChannelCount(16);
-
-	m_bImpedanceCheck=m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_CheckImpedance}", false);
-	m_rDriverContext.getLogManager() << LogLevel_Trace << (m_bImpedanceCheck?"Impedance will be checked":"Impedance won't be checked") << "\n";
 }
 
 void CDriverGTecGUSBamp::release(void)
@@ -227,7 +224,7 @@ boolean CDriverGTecGUSBamp::loop(void)
 	}
 	else
 	{
-		if(m_bImpedanceCheck)
+		if(m_rDriverContext.isImpedanceCheckRequested())
 		{
 			double l_dImpedance=0;
 			::GT_GetImpedance(m_pDevice, m_ui32ActualImpedanceIndex+1, &l_dImpedance);

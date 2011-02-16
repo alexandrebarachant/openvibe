@@ -118,9 +118,6 @@ CDriverBrainProductsBrainampSeries::CDriverBrainProductsBrainampSeries(IDriverCo
 		m_peResolutionFull[i]=Parameter_Default;
 		m_peDCCouplingFull[i]=Parameter_Default;
 	}
-
-	m_bImpedanceCheck=m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_CheckImpedance}", false);
-	m_rDriverContext.getLogManager() << LogLevel_Trace << (m_bImpedanceCheck?"Impedance will be checked":"Impedance won't be checked") << "\n";
 }
 
 void CDriverBrainProductsBrainampSeries::release(void)
@@ -300,7 +297,8 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 
 	// -- Optionnaly starts impedance check
 
-	if(m_bImpedanceCheck)
+	m_rDriverContext.getLogManager() << LogLevel_Trace << (m_rDriverContext.isImpedanceCheckRequested()?"Impedance will be checked":"Impedance won't be checked") << "\n";
+	if(m_rDriverContext.isImpedanceCheckRequested())
 	{
 		if(!this->startImpedanceCheck())
 		{
@@ -318,7 +316,7 @@ boolean CDriverBrainProductsBrainampSeries::start(void)
 
 	// -- Optionnaly stops impedance check
 
-	if(m_bImpedanceCheck)
+	if(m_rDriverContext.isImpedanceCheckRequested())
 	{
 		if(!this->stopImpedanceCheck())
 		{
@@ -354,7 +352,7 @@ boolean CDriverBrainProductsBrainampSeries::start(void)
 boolean CDriverBrainProductsBrainampSeries::loop(void)
 {
 	if(!m_rDriverContext.isConnected()) { return false; }
-	if(!m_rDriverContext.isStarted() && !m_bImpedanceCheck) { return true; }
+	if(!m_rDriverContext.isStarted() && !m_rDriverContext.isImpedanceCheckRequested()) { return true; }
 
 	uint32 i,j;
 
@@ -519,7 +517,7 @@ boolean CDriverBrainProductsBrainampSeries::stop(void)
 
 	// -- Optionnaly starts impedance check
 
-	if(m_bImpedanceCheck)
+	if(m_rDriverContext.isImpedanceCheckRequested())
 	{
 		if(!this->startImpedanceCheck())
 		{
@@ -537,7 +535,7 @@ boolean CDriverBrainProductsBrainampSeries::uninitialize(void)
 
 	// -- Optionnaly stops impedance check
 
-	if(m_bImpedanceCheck)
+	if(m_rDriverContext.isImpedanceCheckRequested())
 	{
 		if(!this->stopImpedanceCheck())
 		{
@@ -571,7 +569,7 @@ boolean CDriverBrainProductsBrainampSeries::uninitialize(void)
 
 boolean CDriverBrainProductsBrainampSeries::startImpedanceCheck(void)
 {
-	if(!m_bImpedanceCheck) return true;
+	if(!m_rDriverContext.isImpedanceCheckRequested()) return true;
 
 	// Configures impedance frequency
 
@@ -615,7 +613,7 @@ boolean CDriverBrainProductsBrainampSeries::startImpedanceCheck(void)
 
 boolean CDriverBrainProductsBrainampSeries::stopImpedanceCheck(void)
 {
-	if(!m_bImpedanceCheck) return true;
+	if(!m_rDriverContext.isImpedanceCheckRequested()) return true;
 
 	// Stops impedance acquisition
 

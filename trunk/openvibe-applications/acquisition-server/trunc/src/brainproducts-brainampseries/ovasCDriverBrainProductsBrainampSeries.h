@@ -75,8 +75,6 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::CHeader m_oHeader;
 		OpenViBEAcquisitionServer::CHeaderAdapterBrainProductsBrainampSeries m_oHeaderAdapter;
 
-		OpenViBE::boolean m_bImpedanceCheck;
-
 		void* m_pDevice;
 		CBrainampSetup* m_pDeviceSetup;
 		CBrainampCalibrationSettings* m_pDeviceCalibrationSettings;

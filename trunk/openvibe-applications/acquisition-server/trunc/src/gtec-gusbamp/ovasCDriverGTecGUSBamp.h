@@ -48,7 +48,6 @@ namespace OpenViBEAcquisitionServer
 		void* m_pEvent;
 		void* m_pOverlapped;
 
-		OpenViBE::boolean m_bImpedanceCheck;
 		OpenViBE::uint32 m_ui32ActualImpedanceIndex;
 	};
 };

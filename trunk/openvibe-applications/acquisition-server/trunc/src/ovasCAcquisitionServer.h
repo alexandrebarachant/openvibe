@@ -65,6 +65,16 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean correctDriftSampleCount(OpenViBE::int64 i64SampleCount);
 		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance);
 
+		// General parameters configurable from the GUI
+		OpenViBE::uint64 getDriftToleranceDuration(void);
+		OpenViBE::uint64 getJitterEstimationCountForDrift(void);
+		OpenViBE::uint64 getOversamplingFactor(void);
+		OpenViBE::boolean isImpedanceCheckRequested(void);
+		OpenViBE::boolean setDriftToleranceDuration(OpenViBE::uint64 ui64DriftToleranceDuration);
+		OpenViBE::boolean setJitterEstimationCountForDrift(OpenViBE::uint64 ui64JitterEstimationCountForDrift);
+		OpenViBE::boolean setOversamplingFactor(OpenViBE::uint64 ui64OversamplingFactor);
+		OpenViBE::boolean setImpedanceCheckRequest(OpenViBE::boolean bActive);
+
 		//
 		virtual OpenViBE::boolean acceptNewConnection(Socket::IConnection* pConnection);
 
@@ -84,17 +94,15 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::CDriverContext* m_pDriverContext;
 		OpenViBEAcquisitionServer::IDriver* m_pDriver;
 
-		OpenViBE::Kernel::IAlgorithmProxy* m_pAcquisitionStreamEncoder;
-		OpenViBE::Kernel::IAlgorithmProxy* m_pExperimentInformationStreamEncoder;
-		OpenViBE::Kernel::IAlgorithmProxy* m_pSignalStreamEncoder;
-		OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationStreamEncoder;
-		OpenViBE::Kernel::IAlgorithmProxy* m_pChannelLocalisationStreamEncoder;
-
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pAcquisitionMemoryBuffer;
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pExperimentInformationMemoryBuffer;
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pSignalMemoryBuffer;
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pStimulationMemoryBuffer;
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pChannelLocalisationMemoryBuffer;
+		OpenViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64SubjectIdentifier;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64SubjectAge;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64SubjectGender;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pSignalMatrix;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64SignalSamplingRate;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > ip_pStimulationSet;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64BufferDuration;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pEncodedMemoryBuffer;
 
 		std::list < std::pair < Socket::IConnection*, SConnectionInfo > > m_vConnection;
 		std::list < std::pair < Socket::IConnection*, SConnectionInfo > > m_vPendingConnection;
@@ -106,9 +114,10 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBE::boolean m_bInitialized;
 		OpenViBE::boolean m_bStarted;
+		OpenViBE::boolean m_bIsImpedanceCheckRequested;
 		OpenViBE::boolean m_bGotData;
 		OpenViBE::boolean m_bDriftCorrectionCalled;
-		OpenViBE::uint32 m_ui32OverSamplingFactor;
+		OpenViBE::uint32 m_ui64OverSamplingFactor;
 		OpenViBE::uint32 m_ui32ChannelCount;
 		OpenViBE::uint32 m_ui32SamplingFrequency;
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;

@@ -91,38 +91,50 @@ boolean CDriverGenericOscillator::loop(void)
 	m_rDriverContext.getLogManager() << LogLevel_Debug << "CDriverGenericOscillator::loop\n";
 
 	if(!m_rDriverContext.isConnected()) { return false; }
-	if(!m_rDriverContext.isStarted()) { return true; }
 
-	uint32 l_ui32CurrentTime=System::Time::getTime();
-
-	if(l_ui32CurrentTime-m_ui32StartTime > (1000*(m_ui32TotalSampleCount+m_ui32SampleCountPerSentBlock))/m_oHeader.getSamplingFrequency())
+	if(m_rDriverContext.isStarted())
 	{
-		CStimulationSet l_oStimulationSet;
-		l_oStimulationSet.setStimulationCount(1);
-		l_oStimulationSet.setStimulationIdentifier(0, 0);
-		l_oStimulationSet.setStimulationDate(0, 0);
-		l_oStimulationSet.setStimulationDuration(0, 0);
+		uint32 l_ui32CurrentTime=System::Time::getTime();
 
-		for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
+		if(l_ui32CurrentTime-m_ui32StartTime > (1000*(m_ui32TotalSampleCount+m_ui32SampleCountPerSentBlock))/m_oHeader.getSamplingFrequency())
 		{
-			for(uint32 i=0; i<m_ui32SampleCountPerSentBlock; i++)
+			CStimulationSet l_oStimulationSet;
+			l_oStimulationSet.setStimulationCount(1);
+			l_oStimulationSet.setStimulationIdentifier(0, 0);
+			l_oStimulationSet.setStimulationDate(0, 0);
+			l_oStimulationSet.setStimulationDuration(0, 0);
+
+			for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
 			{
+				for(uint32 i=0; i<m_ui32SampleCountPerSentBlock; i++)
+				{
 #if 1
-				float64 l_f64Value=
-					::sin(((i+m_ui32TotalSampleCount)*(j+1)*12.3)/m_oHeader.getSamplingFrequency())+
-					::sin(((i+m_ui32TotalSampleCount)*(j+1)* 4.5)/m_oHeader.getSamplingFrequency())+
-					::sin(((i+m_ui32TotalSampleCount)*(j+1)*67.8)/m_oHeader.getSamplingFrequency());
-				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=(float32)l_f64Value;
+					float64 l_f64Value=
+						::sin(((i+m_ui32TotalSampleCount)*(j+1)*12.3)/m_oHeader.getSamplingFrequency())+
+						::sin(((i+m_ui32TotalSampleCount)*(j+1)* 4.5)/m_oHeader.getSamplingFrequency())+
+						::sin(((i+m_ui32TotalSampleCount)*(j+1)*67.8)/m_oHeader.getSamplingFrequency());
+					m_pSample[j*m_ui32SampleCountPerSentBlock+i]=(float32)l_f64Value;
 #else
-				m_pSample[j*m_ui32SampleCountPerSentBlock+i]=j;
+					m_pSample[j*m_ui32SampleCountPerSentBlock+i]=j;
 #endif
+				}
+			}
+
+			m_ui32TotalSampleCount+=m_ui32SampleCountPerSentBlock;
+			m_pCallback->setSamples(m_pSample);
+			m_pCallback->setStimulationSet(l_oStimulationSet);
+			m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
+		}
+	}
+	else
+	{
+		if(m_rDriverContext.isImpedanceCheckRequested())
+		{
+			for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
+			{
+				m_rDriverContext.updateImpedance(j, 1);
 			}
 		}
-
-		m_ui32TotalSampleCount+=m_ui32SampleCountPerSentBlock;
-		m_pCallback->setSamples(m_pSample);
-		m_pCallback->setStimulationSet(l_oStimulationSet);
-		m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 	}
 
 	return true;
