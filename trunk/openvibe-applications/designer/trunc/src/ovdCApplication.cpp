@@ -560,37 +560,52 @@ boolean CApplication::openScenario(const char* sFileName)
 		CMemoryBuffer l_oMemoryBuffer;
 		boolean l_bSuccess=false;
 
-		std::ifstream l_oFile(sFileName, ios::binary);
-		if(l_oFile.good())
+		if(::strcmp(sFileName, "-")==0)
 		{
-			l_oFile.seekg(0, ios::end);
-			l_oMemoryBuffer.setSize(l_oFile.tellg(), true);
-			l_oFile.seekg(0, ios::beg);
-			l_oFile.read(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize());
-			l_oFile.close();
-
-			CIdentifier l_oImporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_XMLScenarioImporter);
-			if(l_oImporterIdentifier!=OV_UndefinedIdentifier)
+			m_rKernelContext.getLogManager() << LogLevel_Trace << "Reading from standard input...\n";
+			unsigned int l_uiSize=0;
+			FILE* l_pFile=stdin;
+			while(1)
 			{
-				IAlgorithmProxy* l_pImporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oImporterIdentifier);
-				if(l_pImporter)
-				{
-					m_rKernelContext.getLogManager() << LogLevel_Info << "Importing scenario...\n";
+				unsigned char c=::fgetc(l_pFile);
+				if(::feof(l_pFile)) break;
+				l_uiSize++;
+				l_oMemoryBuffer.setSize(l_uiSize, false);
+				l_oMemoryBuffer[l_uiSize-1]=c;
+			}
+			m_rKernelContext.getLogManager() << LogLevel_Debug << "Finished reading standard input...\n" << (const char*)&l_oMemoryBuffer[0] << "\n";
+		}
+		else
+		{
+			FILE* l_pFile=fopen(sFileName, "rb");
+			::fseek(l_pFile, 0, SEEK_END);
+			l_oMemoryBuffer.setSize(::ftell(l_pFile), true);
+			::fseek(l_pFile, 0, SEEK_SET);
+			::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize(), 1, l_pFile);
+			::fclose(l_pFile);
+		}
 
-					l_pImporter->initialize();
+		CIdentifier l_oImporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_XMLScenarioImporter);
+		if(l_oImporterIdentifier!=OV_UndefinedIdentifier)
+		{
+			IAlgorithmProxy* l_pImporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oImporterIdentifier);
+			if(l_pImporter)
+			{
+				m_rKernelContext.getLogManager() << LogLevel_Info << "Importing scenario...\n";
 
-					TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(l_pImporter->getInputParameter(OVTK_Algorithm_ScenarioImporter_InputParameterId_MemoryBuffer));
-					TParameterHandler < IScenario* > op_pScenario(l_pImporter->getOutputParameter(OVTK_Algorithm_ScenarioImporter_OutputParameterId_Scenario));
+				l_pImporter->initialize();
 
-					ip_pMemoryBuffer=&l_oMemoryBuffer;
-					op_pScenario=&l_rScenario;
+				TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(l_pImporter->getInputParameter(OVTK_Algorithm_ScenarioImporter_InputParameterId_MemoryBuffer));
+				TParameterHandler < IScenario* > op_pScenario(l_pImporter->getOutputParameter(OVTK_Algorithm_ScenarioImporter_OutputParameterId_Scenario));
 
-					l_pImporter->process();
-					l_pImporter->uninitialize();
-					m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pImporter);
+				ip_pMemoryBuffer=&l_oMemoryBuffer;
+				op_pScenario=&l_rScenario;
 
-					l_bSuccess=true;
-				}
+				l_pImporter->process();
+				l_pImporter->uninitialize();
+				m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pImporter);
+
+				l_bSuccess=true;
 			}
 		}
 
