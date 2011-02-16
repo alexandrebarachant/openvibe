@@ -249,6 +249,13 @@
                     <child>
                       <object class="GtkComboBox" id="combobox_com_port">
                         <property name="visible">True</property>
+                        <property name="model">liststore1</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -447,5 +454,11 @@ to check the MindSet.</property>
     <action-widgets>
       <action-widget response="-10">button_check_signal_apply</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name com-port -->
+      <column type="gchararray"/>
+    </columns>
   </object>
 </interface>
