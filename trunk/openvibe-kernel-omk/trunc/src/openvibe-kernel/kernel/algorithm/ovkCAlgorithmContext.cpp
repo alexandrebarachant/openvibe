@@ -86,6 +86,16 @@ CAlgorithmContext::~CAlgorithmContext(void)
 	delete m_pLogManager;
 }
 
+IConfigurationManager& CAlgorithmContext::getConfigurationManager(void)
+{
+	return getKernelContext().getConfigurationManager();
+}
+
+IAlgorithmManager& CAlgorithmContext::getAlgorithmManager(void)
+{
+	return getKernelContext().getAlgorithmManager();
+}
+
 ILogManager& CAlgorithmContext::getLogManager(void)
 {
 	return *m_pLogManager;

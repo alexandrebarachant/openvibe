@@ -50,6 +50,16 @@ namespace OpenViBEToolkit
 
 	protected:
 
+		virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void)
+		{
+			return m_pAlgorithmContext->getConfigurationManager(); // should never be null
+		}
+
+		virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void)
+		{
+			return m_pAlgorithmContext->getAlgorithmManager(); // should never be null
+		}
+
 		virtual OpenViBE::Kernel::ILogManager& getLogManager(void)
 		{
 			return m_pAlgorithmContext->getLogManager(); // should never be null

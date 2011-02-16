@@ -24,6 +24,16 @@ namespace OpenViBE
 		public:
 
 			/**
+			 * \brief Gets a reference on the current configuration manager
+			 * \return a reference on the configuration manager
+			 */
+			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void)=0;
+			/**
+			 * \brief Gets a reference on the current algorithm manager
+			 * \return a reference on the algorithm manager
+			 */
+			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void)=0;
+			/**
 			 * \brief Gets a reference on the current log manager
 			 * \return a reference on the current log manager
 			 */

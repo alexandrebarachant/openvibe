@@ -16,6 +16,8 @@ namespace OpenViBE
 			CAlgorithmContext(const OpenViBE::Kernel::IKernelContext& rKernelContext, OpenViBE::Kernel::CAlgorithm& rAlgorithm, const OpenViBE::Plugins::IPluginObjectDesc& rPluginObjectDesc);
 			virtual ~CAlgorithmContext(void);
 
+			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void);
+			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void);
 			virtual OpenViBE::Kernel::ILogManager& getLogManager(void);
 			virtual OpenViBE::Kernel::ITypeManager& getTypeManager(void);
 
