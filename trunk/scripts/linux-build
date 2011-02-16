@@ -120,13 +120,13 @@ if [ "$1" == "--debug" ]; then
 	shift
 fi
 '
-echo "exec $script_base\$ov_debugger ./OpenViBE-designer-dynamic \$*" > $target_dist/ov-designer.sh
-echo "exec $script_base\$ov_debugger ./OpenViBE-acquisition-server-dynamic \$*" > $target_dist/ov-acquisition-server.sh
-echo "exec $script_base\$ov_debugger ./OpenViBE-plugin-inspector-dynamic \$*" > $target_dist/ov-plugin-inspector.sh
-echo "exec $script_base\$ov_debugger ./OpenViBE-id-generator-dynamic \$*" > $target_dist/ov-id-generator.sh
-echo "exec $script_base\$ov_debugger ./OpenViBE-vr-demo \"tie-fighter\" \$*" > $target_dist/ov-vr-demo-tie-fighter.sh
-echo "exec $script_base\$ov_debugger ./OpenViBE-vrpn-simulator-dynamic \$*" > $target_dist/ov-vrpn-simulator.sh
-echo "exec $script_base\$ov_debugger ./OpenViBE-skeleton-generator-dynamic \$*" > $target_dist/ov-skeleton-generator.sh
+echo "$script_base\exec \$ov_debugger ./OpenViBE-designer-dynamic \$*" > $target_dist/ov-designer.sh
+echo "$script_base\exec \$ov_debugger ./OpenViBE-acquisition-server-dynamic \$*" > $target_dist/ov-acquisition-server.sh
+echo "$script_base\exec \$ov_debugger ./OpenViBE-plugin-inspector-dynamic \$*" > $target_dist/ov-plugin-inspector.sh
+echo "$script_base\exec \$ov_debugger ./OpenViBE-id-generator-dynamic \$*" > $target_dist/ov-id-generator.sh
+echo "$script_base\exec \$ov_debugger ./OpenViBE-vr-demo \"tie-fighter\" \$*" > $target_dist/ov-vr-demo-tie-fighter.sh
+echo "$script_base\exec \$ov_debugger ./OpenViBE-vrpn-simulator-dynamic \$*" > $target_dist/ov-vrpn-simulator.sh
+echo "$script_base\exec \$ov_debugger ./OpenViBE-skeleton-generator-dynamic \$*" > $target_dist/ov-skeleton-generator.sh
 ln -sf $target_dist/ov-designer.sh
 ln -sf $target_dist/ov-acquisition-server.sh
 ln -sf $target_dist/ov-plugin-inspector.sh
