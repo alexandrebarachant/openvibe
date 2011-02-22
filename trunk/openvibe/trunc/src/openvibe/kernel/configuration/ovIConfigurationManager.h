@@ -71,7 +71,7 @@ namespace OpenViBE
 			 * {
 			 *     // do some stuff with current token identified with l_oTokenIdentifier
 			 * }
-			 * \encode
+			 * \endcode
 			 */
 			virtual OpenViBE::CIdentifier getNextConfigurationTokenIdentifier(
 				const OpenViBE::CIdentifier& rPreviousConfigurationTokenIdentifier) const=0;
