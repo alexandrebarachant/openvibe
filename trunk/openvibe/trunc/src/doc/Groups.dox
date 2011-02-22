@@ -12,6 +12,11 @@
  */
 
 /**
+ * \defgroup Group_Configuration Configuration management
+ * \ingroup Group_Kernel
+ */
+
+/**
  * \defgroup Group_Log Log and traces
  * \ingroup Group_Kernel
  */
