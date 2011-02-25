@@ -14,6 +14,7 @@ using namespace std;
 
 boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 {
+	uint32 i;
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
 	CIdentifier l_oClassifierAlgorithmClassIdentifier;
@@ -32,22 +33,67 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 	int64 l_i64PartitionCount=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 3);
 	if(l_i64PartitionCount<0)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Parition count can not be less than 0 (was " << l_i64PartitionCount << ")\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Partition count can not be less than 0 (was " << l_i64PartitionCount << ")\n";
 		return false;
 	}
 	m_ui64PartitionCount=uint64(l_i64PartitionCount);
 
-	for(uint32 i=1; i<l_rStaticBoxContext.getInputCount(); i++)
+	for(i=1; i<l_rStaticBoxContext.getInputCount(); i++)
 	{
 		m_vFeatureVectorsDecoder[i-1]=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder));
 		m_vFeatureVectorsDecoder[i-1]->initialize();
 	}
 
 	m_pStimulationsDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamDecoder));
-	m_pClassifier=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(l_oClassifierAlgorithmClassIdentifier));
-
 	m_pStimulationsDecoder->initialize();
+
+	m_pClassifier=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(l_oClassifierAlgorithmClassIdentifier));
 	m_pClassifier->initialize();
+
+	CIdentifier l_oIdentifier;
+	i=4; // number of settings when no additional setting is added
+	while(i < l_rStaticBoxContext.getSettingCount() && (l_oIdentifier=m_pClassifier->getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+	{
+		if((l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVector)
+		&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVectorSet)
+		&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_Configuration))
+		{
+			IParameter* l_pParameter=m_pClassifier->getInputParameter(l_oIdentifier);
+			TParameterHandler < int64 > ip_i64Parameter(l_pParameter);
+			TParameterHandler < uint64 > ip_ui64Parameter(l_pParameter);
+			TParameterHandler < float64 > ip_f64Parameter(l_pParameter);
+			TParameterHandler < boolean > ip_bParameter(l_pParameter);
+
+			bool l_bValid=true;
+			switch(l_pParameter->getType())
+			{
+				case ParameterType_Enumeration:
+				case ParameterType_UInteger:
+					ip_ui64Parameter=(uint64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
+					break;
+
+				case ParameterType_Integer:
+					ip_i64Parameter=(int64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
+					break;
+
+				case ParameterType_Boolean:
+					ip_bParameter=(boolean)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
+					break;
+
+				case ParameterType_Float:
+					ip_f64Parameter=(float64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
+					break;
+
+				default:
+					l_bValid=false;
+					break;
+			}
+			if(l_bValid)
+			{
+				i++;
+			}
+		}
+	}
 
 	m_vFeatureCount.clear();
 
