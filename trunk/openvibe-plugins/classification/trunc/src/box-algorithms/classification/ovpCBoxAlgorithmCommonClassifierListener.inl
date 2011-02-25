@@ -175,6 +175,11 @@ namespace OpenViBEPlugins
 					}
 				}
 
+				while(i<rBox.getSettingCount())
+				{
+					rBox.removeSetting(i);
+				}
+
 				return true;
 			}
 
