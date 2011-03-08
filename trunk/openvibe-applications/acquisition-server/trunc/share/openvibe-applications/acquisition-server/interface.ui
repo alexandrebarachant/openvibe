@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
@@ -373,7 +373,6 @@
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -434,7 +433,7 @@ Configuration </property>
               <object class="GtkSpinButton" id="spinbutton_drift_tolerance">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
                 <property name="adjustment">adjustment_drift_tolerance</property>
               </object>
               <packing>
@@ -446,7 +445,7 @@ Configuration </property>
               <object class="GtkSpinButton" id="spinbutton_jitter_measure_count">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
                 <property name="adjustment">adjustment_jitter_measure_count</property>
               </object>
               <packing>
@@ -460,7 +459,7 @@ Configuration </property>
               <object class="GtkSpinButton" id="spinbutton_oversampling_factor">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
                 <property name="adjustment">adjustment_oversampling_factor</property>
               </object>
               <packing>
@@ -471,10 +470,28 @@ Configuration </property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel" id="label_oversampling_factor1">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Impedance Check (when available)</property>
+              </object>
+              <packing>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkCheckButton" id="checkbutton_impedance">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">3</property>
+                <property name="bottom_attach">4</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -590,11 +607,6 @@ Configuration </property>
         <property name="n_rows">10</property>
         <property name="n_columns">2</property>
         <child>
-          <object class="GtkLabel" id="label_oversampling_factor1">
-            <property name="label" translatable="yes">Impedance Check (when available)</property>
-          </object>
-        </child>
-        <child>
           <placeholder/>
         </child>
         <child>
@@ -649,15 +661,10 @@ Configuration </property>
           <placeholder/>
         </child>
         <child>
-          <object class="GtkCheckButton" id="checkbutton_impedance">
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="draw_indicator">True</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="right_attach">2</property>
-          </packing>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

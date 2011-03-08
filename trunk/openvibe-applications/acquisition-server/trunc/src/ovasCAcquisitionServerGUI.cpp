@@ -483,7 +483,7 @@ void CAcquisitionServerGUI::buttonConnectToggledCB(::GtkToggleButton* pButton)
 				m_pImpedanceWindow=::gtk_window_new(GTK_WINDOW_TOPLEVEL);
 				::gtk_window_set_title(GTK_WINDOW(m_pImpedanceWindow), "Impedance check");
 				::gtk_container_add(GTK_CONTAINER(m_pImpedanceWindow), l_pTable);
-				if(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_CheckImpedance}", false))
+				if(m_pAcquisitionServer->isImpedanceCheckRequested())
 				{
 					::gtk_widget_show_all(m_pImpedanceWindow);
 				}
