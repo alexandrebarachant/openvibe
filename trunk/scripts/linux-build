@@ -127,6 +127,7 @@ echo "$script_base exec \$ov_debugger ./OpenViBE-id-generator-dynamic \$*" > $ta
 echo "$script_base exec \$ov_debugger ./OpenViBE-vr-demo \"tie-fighter\" \$*" > $target_dist/ov-vr-demo-tie-fighter.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-vrpn-simulator-dynamic \$*" > $target_dist/ov-vrpn-simulator.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-skeleton-generator-dynamic \$*" > $target_dist/ov-skeleton-generator.sh
+echo "$script_base exec \$ov_debugger ./OpenViBE-ssvep-demo-dynamic \$* &" > $target_dist/ov-ssvep-demo.sh
 ln -sf $target_dist/ov-designer.sh
 ln -sf $target_dist/ov-acquisition-server.sh
 ln -sf $target_dist/ov-plugin-inspector.sh
@@ -134,6 +135,7 @@ ln -sf $target_dist/ov-id-generator.sh
 ln -sf $target_dist/ov-vr-demo-tie-fighter.sh
 ln -sf $target_dist/ov-vrpn-simulator.sh
 ln -sf $target_dist/ov-skeleton-generator.sh
+ln -sf $target_dist/ov-ssvep-demo.sh
 chmod 755 $target_dist/*.sh
 
 echo ""
