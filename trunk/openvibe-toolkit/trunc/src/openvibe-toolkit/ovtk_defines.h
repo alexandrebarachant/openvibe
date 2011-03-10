@@ -113,6 +113,7 @@
 #define OVTK_StimulationId_Target                            0x00008205
 #define OVTK_StimulationId_NonTarget                         0x00008206
 #define OVTK_StimulationId_TrainCompleted                    0x00008207
+#define OVTK_StimulationId_Reset                             0x00008208
 
 //___________________________________________________________________//
 //                                                                   //

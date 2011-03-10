@@ -61,6 +61,7 @@ OVTK_StimulationId_EndOfFile                          = 0x00008204
 OVTK_StimulationId_Target                             = 0x00008205
 OVTK_StimulationId_NonTarget                          = 0x00008206
 OVTK_StimulationId_TrainCompleted                     = 0x00008207
+OVTK_StimulationId_Reset                              = 0x00008208
 
  -- ___________________________________________________________________ --
  --                                                                     --
