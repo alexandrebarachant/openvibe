@@ -25,8 +25,6 @@ uint64 CBoxAlgorithmVRPNAnalogClient::getClockFrequency(void)
 
 boolean CBoxAlgorithmVRPNAnalogClient::initialize(void)
 {
-	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
-
 	m_pVRPNAnalogRemote=NULL;
 
 	m_sPeripheralName=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
@@ -52,8 +50,6 @@ boolean CBoxAlgorithmVRPNAnalogClient::initialize(void)
 
 boolean CBoxAlgorithmVRPNAnalogClient::uninitialize(void)
 {
-	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
-
 	if(m_pVRPNAnalogRemote)
 	{
 		delete m_pVRPNAnalogRemote;
@@ -81,7 +77,6 @@ boolean CBoxAlgorithmVRPNAnalogClient::processClock(IMessageClock& rMessageClock
 
 boolean CBoxAlgorithmVRPNAnalogClient::process(void)
 {
-	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 	uint32 i, j;
 
@@ -116,7 +111,7 @@ boolean CBoxAlgorithmVRPNAnalogClient::process(void)
 
 	if(l_ui32SampleCountToFill>m_ui32SampleIndex)
 	{
-		for(uint32 i=m_ui32SampleIndex; i<m_ui32SampleIndex+l_ui32SampleCountToFill && i<m_ui32SampleCountPerSentBlock; i++)
+		for(i=m_ui32SampleIndex; i<m_ui32SampleIndex+l_ui32SampleCountToFill && i<m_ui32SampleCountPerSentBlock; i++)
 		{
 			if(m_vAnalog.size()!=0)
 			{
@@ -145,8 +140,6 @@ boolean CBoxAlgorithmVRPNAnalogClient::process(void)
 
 void CBoxAlgorithmVRPNAnalogClient::setAnalog(uint32 ui32AnalogCount, const float64* pAnalog)
 {
-	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
-
 	for(uint32 i=0; i<ui32AnalogCount && i<m_ui32ChannelCount; i++)
 	{
 		m_vSwapAnalog[i]=pAnalog[i];
