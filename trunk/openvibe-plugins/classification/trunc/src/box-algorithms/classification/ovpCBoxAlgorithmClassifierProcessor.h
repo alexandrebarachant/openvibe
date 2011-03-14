@@ -5,8 +5,7 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include "ovpCBoxAlgorithmCommonClassifierListener.inl"
-
+#include <cstdio>
 #include <map>
 
 #define OVP_ClassId_BoxAlgorithm_ClassifierProcessor     OpenViBE::CIdentifier(0x40AB4835, 0x1AE96E9E)
@@ -40,6 +39,26 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bOutputHeaderSent;
 		};
 
+		class CBoxAlgorithmClassifierProcessorListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
+		{
+		public:
+
+			virtual OpenViBE::boolean onSettingAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
+			{
+				char l_sSettingValue[1024];
+				char l_sSettingName[1024];
+				::sprintf(l_sSettingValue, "OVTK_StimulationId_Label_%02X", ui32Index-2);
+				::sprintf(l_sSettingName, "Class %i label", ui32Index-2);
+				rBox.setSettingName(ui32Index, l_sSettingName);
+				rBox.setSettingValue(ui32Index, l_sSettingValue);
+				rBox.setSettingDefaultValue(ui32Index, l_sSettingValue);
+				rBox.setSettingType(ui32Index, OV_TypeId_Stimulation);
+				return true;
+			}
+
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >, OV_UndefinedIdentifier);
+		};
+
 		class CBoxAlgorithmClassifierProcessorDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
@@ -69,10 +88,11 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addSetting("Reject class label",                  OV_TypeId_Stimulation, "OVTK_StimulationId_Label_00");
 				rBoxAlgorithmPrototype.addSetting("Class 1 label",                       OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
 				rBoxAlgorithmPrototype.addSetting("Class 2 label",                       OV_TypeId_Stimulation, "OVTK_StimulationId_Label_02");
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
 				return true;
 			}
 
-			// virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmCommonClassifierListener(5); }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmClassifierProcessorListener; }
 			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) { delete pBoxListener; }
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_ClassifierProcessorDesc);

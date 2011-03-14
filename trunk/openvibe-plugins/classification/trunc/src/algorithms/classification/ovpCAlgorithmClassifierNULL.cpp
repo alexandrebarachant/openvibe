@@ -1,6 +1,6 @@
 #include "ovpCAlgorithmClassifierNULL.h"
 
-//#include <map>
+#include <cstdlib>
 #include <sstream>
 #include <iostream>
 #include <cstring>
@@ -47,7 +47,7 @@ boolean CAlgorithmClassifierNULL::train(const IFeatureVectorSet& rFeatureVectorS
 
 boolean CAlgorithmClassifierNULL::classify(const IFeatureVector& rFeatureVector, float64& rf64Class, IVector& rClassificationValues)
 {
-	rf64Class=1;
+	rf64Class=1+(::rand()%3);
 	return true;
 }
 
