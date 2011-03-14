@@ -1,7 +1,7 @@
 #!/bin/bash
 
 version_major=0
-version_minor=8
+version_minor=9
 version_patch=0
 
 projects="
@@ -15,7 +15,8 @@ openvibe-modules/stream
 openvibe-modules/xml
 openvibe-modules/automaton
 openvibe-toolkit
-openvibe-kernel
+openvibe-externals
+openvibe-kernel-omk
 openvibe-plugins/acquisition
 openvibe-plugins/classification
 openvibe-plugins/classification-gpl
