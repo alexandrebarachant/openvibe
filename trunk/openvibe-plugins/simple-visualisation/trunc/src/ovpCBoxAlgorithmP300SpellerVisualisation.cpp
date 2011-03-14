@@ -348,6 +348,11 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 					this->_cache_for_each_(&CBoxAlgorithmP300SpellerVisualisation::_cache_change_foreground_cb_, &m_oNoFlashForegroundColor);
 					this->_cache_for_each_(&CBoxAlgorithmP300SpellerVisualisation::_cache_change_font_cb_, m_pNoFlashFontDescription);
 				}
+				if(l_ui64StimulationIdentifier == OVTK_StimulationId_Reset)
+				{
+					gtk_label_set_text(m_pTarget, "");
+					gtk_label_set_text(m_pResult, "");
+				}
 
 				if(l_bFlash)
 				{
