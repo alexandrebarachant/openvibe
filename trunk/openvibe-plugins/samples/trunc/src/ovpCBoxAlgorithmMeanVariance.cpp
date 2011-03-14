@@ -49,7 +49,8 @@ boolean CBoxAlgorithmMeanVariance::initialize(void)
 	m_ui64ActivityStartTime=(uint64)((1LL<<32)*::atof(l_sSettingValue.toASCIIString()));
 	getStaticBoxContext().getSettingValue(3, l_sSettingValue);
 	m_ui64ActivityEndTime=(uint64)((1LL<<32)*::atof(l_sSettingValue.toASCIIString()));
-
+	getStaticBoxContext().getSettingValue(4, l_sSettingValue);
+	m_ui32StandardDeviationFactor = ::atoi(l_sSettingValue);
 	//end and start time
 	m_ui64StartTime=0;
 	m_ui64EndTime=0;
@@ -215,7 +216,7 @@ boolean CBoxAlgorithmMeanVariance::process(void)
 						else
 						{
 							fprintf(l_pFile, "<OpenViBE-SettingsOverride>\n");
-							fprintf(l_pFile, "\t<SettingValue>x-%f</SettingValue>\n", l_pBufferOuput1[0]+3*::sqrt(l_pBufferOuput2[0]));
+							fprintf(l_pFile, "\t<SettingValue>x-%f</SettingValue>\n", l_pBufferOuput1[0]+m_ui32StandardDeviationFactor*::sqrt(l_pBufferOuput2[0]));
 							fprintf(l_pFile, "</OpenViBE-SettingsOverride>\n");
 							fclose(l_pFile);
 						}
@@ -230,7 +231,7 @@ boolean CBoxAlgorithmMeanVariance::process(void)
 							fprintf(l_pFile, "<OpenViBE-SettingsOverride>\n");
 							fprintf(l_pFile, "\t<SettingValue>Min/Max</SettingValue>\n");
 							fprintf(l_pFile, "\t<SettingValue>%f</SettingValue>\n", l_pBufferOuput1[0]);
-							fprintf(l_pFile, "\t<SettingValue>%f</SettingValue>\n", l_pBufferOuput1[0]+6*::sqrt(l_pBufferOuput2[0]));
+							fprintf(l_pFile, "\t<SettingValue>%f</SettingValue>\n", l_pBufferOuput1[0]+2*m_ui32StandardDeviationFactor*::sqrt(l_pBufferOuput2[0]));
 							fprintf(l_pFile, "</OpenViBE-SettingsOverride>\n");
 							fclose(l_pFile);
 						}

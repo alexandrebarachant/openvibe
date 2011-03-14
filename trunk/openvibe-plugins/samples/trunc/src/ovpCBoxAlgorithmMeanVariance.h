@@ -36,6 +36,7 @@ namespace OpenViBEPlugins
 
 			OpenViBE::CString m_sDSPConfigurationFilename;
 			OpenViBE::CString m_sMinMaxConfigurationFilename;
+			OpenViBE::uint32 m_ui32StandardDeviationFactor;
 
 			//variables for incremental estimation of mean and variance
 			std::vector<OpenViBE::float64> m_f64S1List; //sum of input data for each channel
@@ -98,6 +99,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addSetting("Min max configuration filename", OV_TypeId_Filename, "");
 				rBoxAlgorithmPrototype.addSetting("Start time (in sec)", OV_TypeId_Float, "5");
 				rBoxAlgorithmPrototype.addSetting("Stop time (in sec)", OV_TypeId_Float, "25");
+				rBoxAlgorithmPrototype.addSetting("Standard Deviation Factor", OV_TypeId_Float, "3");
 				rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
