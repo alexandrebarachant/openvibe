@@ -1,5 +1,11 @@
 #!/bin/lua
 
+-- This Lua script generates target stimulations for the P300 visualisation
+-- box based on the matrix of letters / numbers a P300 speller has
+--
+-- Author : Yann Renard, INRIA
+-- Date   : 2011-03-15
+
 dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 grid =

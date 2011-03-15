@@ -1,5 +1,10 @@
 #!/bin/lua
 
+-- This Lua script generates target stimulations for the magic card demo
+--
+-- Author : Yann Renard, INRIA
+-- Date   : 2011-03-15
+
 dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 -- this function is called when the box is initialized
