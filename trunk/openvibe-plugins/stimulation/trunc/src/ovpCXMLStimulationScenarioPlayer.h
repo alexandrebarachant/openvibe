@@ -84,10 +84,10 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
-				rPrototype.addInput("Incoming Stimulations", OV_TypeId_Stimulations);
-				rPrototype.addOutput("Outgoing Stimulations", OV_TypeId_Stimulations);
-
+				rPrototype.addInput  ("Incoming Stimulations", OV_TypeId_Stimulations);
+				rPrototype.addOutput ("Outgoing Stimulations", OV_TypeId_Stimulations);
 				rPrototype.addSetting("Filename", OV_TypeId_Filename, "");
+				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsDeprecated);
 
 				return true;
 			}

@@ -8,6 +8,11 @@ __________________________________________________________________
  * |OVP_DocBegin_BoxAlgorithm_XMLStimulationScenarioPlayer_Description|
  * This plugin generates stimulations according to a scenario written in an XML file.
  * This scenario's state can be perturbed by incoming stimulations.
+ *
+ * <b>Warning:</b> this box has been deprecated because it was not reliable and
+ * was not easily expandable. If you were using this box, we recommand that you move
+ * to the \ref Doc_BoxAlgorithm_LuaStimulator box. You will find a far better replacement
+ * for what you are trying to achieve.
  * |OVP_DocEnd_BoxAlgorithm_XMLStimulationScenarioPlayer_Description|
 __________________________________________________________________
 
