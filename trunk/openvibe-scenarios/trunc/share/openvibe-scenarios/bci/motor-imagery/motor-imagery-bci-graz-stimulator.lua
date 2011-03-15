@@ -83,4 +83,9 @@ function process(box)
 
 	end
 
+	box:send_stimulation(1, OVTK_StimulationId_ExperimentStop, t, 0)
+	t = t + 5
+
+	box:send_stimulation(1, OVTK_StimulationId_Train, t, 0)
+
 end
