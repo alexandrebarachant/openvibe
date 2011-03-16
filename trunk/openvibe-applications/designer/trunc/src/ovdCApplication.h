@@ -5,9 +5,12 @@
 
 #include <vector>
 
+
 namespace OpenViBEDesigner
 {
 	class CInterfacedScenario;
+
+	class CLogListenerDesigner;
 
 	class CApplication
 	{
@@ -110,6 +113,7 @@ namespace OpenViBEDesigner
 		//@{
 
 		void logLevelCB(void);
+		void logLevelMessagesCB(void);
 
 		//@}
 
@@ -128,6 +132,8 @@ namespace OpenViBEDesigner
 		OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManager;
 		OpenViBE::Kernel::IScenario* m_pClipboardScenario;
 
+		OpenViBEDesigner::CLogListenerDesigner* m_pLogListenerDesigner;
+
 		OpenViBEDesigner::ECommandLineFlag m_eCommandLineFlags;
 
 		::GtkBuilder* m_pBuilderInterface;
@@ -138,7 +144,7 @@ namespace OpenViBEDesigner
 		::GtkTreeView* m_pBoxAlgorithmTreeView;
 		::GtkTreeStore* m_pAlgorithmTreeModel;
 		::GtkTreeView* m_pAlgorithmTreeView;
-
+		
 		OpenViBE::uint64 m_ui64LastTimeRefresh;
 		OpenViBE::boolean m_bIsQuitting;
 

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
@@ -1461,6 +1461,248 @@ possible...</property>
           </packing>
         </child>
         <child>
+          <object class="GtkExpander" id="openvibe-expander_messages">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkToolbar" id="toolbar1">
+                    <property name="visible">True</property>
+                    <property name="toolbar_style">both-horiz</property>
+                    <property name="icon_size">1</property>
+                    <child>
+                      <object class="GtkToolButton" id="openvibe-messages_tb_clear">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">Clear</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-clear</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_debug">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">DEBUG</property>
+                        <property name="stock_id">gtk-info</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_bench">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">BENCH</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-info</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_trace">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">TRACE</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-info</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_info">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">INF</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-info</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_warning">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">WARNING</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-dialog-warning</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_impwarning">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">IMPORTANT WARNING</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-dialog-warning</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_error">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">ERROR</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-dialog-error</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToggleToolButton" id="openvibe-messages_tb_fatal">
+                        <property name="visible">True</property>
+                        <property name="is_important">True</property>
+                        <property name="label" translatable="yes">FATAL</property>
+                        <property name="use_underline">True</property>
+                        <property name="stock_id">gtk-dialog-error</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkToolItem" id="Alert">
+                        <property name="visible">True</property>
+                        <child>
+                          <object class="GtkCheckButton" id="openvibe-messages_alert_on_error">
+                            <property name="label" translatable="yes">Show pop-up
+on Warnings and Errors</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="draw_indicator">True</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkTextView" id="openvibe-textview_messages">
+                        <property name="height_request">250</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="editable">False</property>
+                        <property name="buffer">openvibe-textbuffer_messages</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkHBox" id="hbox1">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkImage" id="openvibe-messages_count_message_image">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-info</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="openvibe-messages_count_message_label">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;0&lt;/b&gt; Messages</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="openvibe-messages_count_warning_image">
+                    <property name="stock">gtk-dialog-warning</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="openvibe-messages_count_warning_label">
+                    <property name="label" translatable="yes">&lt;b&gt;0&lt;/b&gt; Warnings</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="padding">10</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="openvibe-messages_count_error_image">
+                    <property name="stock">gtk-dialog-error</property>
+                  </object>
+                  <packing>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="openvibe-messages_count_error_label">
+                    <property name="label" translatable="yes">&lt;b&gt;0&lt;/b&gt; Errors</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="padding">10</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkHBox" id="openvibe-hbox">
             <property name="visible">True</property>
             <child>
@@ -1514,6 +1756,7 @@ possible...</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="yalign">0.49000000953674316</property>
                     <child>
                       <object class="GtkHBox" id="openvibe-togglebutton_cpu_usage-hbox">
                         <property name="visible">True</property>
@@ -1544,7 +1787,7 @@ possible...</property>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
@@ -3015,7 +3258,6 @@ Previous Documenters :
   <object class="GtkDialog" id="setting_editor-color_gradient-dialog">
     <property name="border_width">5</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="setting_editor-color_gradient-dialog-vbox1">
         <property name="visible">True</property>
@@ -3247,7 +3489,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_author_name">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3260,7 +3502,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_name">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3281,7 +3523,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_company_name">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3314,7 +3556,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_category">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3327,7 +3569,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_version">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3350,7 +3592,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_documentation_page">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">&#x25CF;</property>
+                <property name="invisible_char">●</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3402,7 +3644,6 @@ Previous Documenters :
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox12">
         <property name="visible">True</property>
@@ -3478,7 +3719,6 @@ Previous Documenters :
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -3550,11 +3790,10 @@ Previous Documenters :
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="unsaved_scenario-button_delete">
-                <property name="label">gtk-delete</property>
+                <property name="label">Quit Without Saving</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3612,7 +3851,6 @@ Previous Documenters :
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox16">
         <property name="visible">True</property>
@@ -3715,7 +3953,6 @@ Previous Documenters :
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox18">
         <property name="visible">True</property>
@@ -3818,7 +4055,6 @@ Previous Documenters :
     <property name="modal">True</property>
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox20">
         <property name="visible">True</property>
@@ -3890,11 +4126,10 @@ Previous Documenters :
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="unsaved_scenario_global-button_delete">
-                <property name="label">gtk-delete</property>
+                <property name="label">Quit Without Saving</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3945,5 +4180,150 @@ Previous Documenters :
       <action-widget response="-6">unsaved_scenario_global-button_cancel</action-widget>
       <action-widget response="-5">unsaved_scenario_global-button_save</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkTextBuffer" id="openvibe-textbuffer_messages"/>
+  <object class="GtkWindow" id="dialog_error_alert">
+    <property name="destroy_with_parent">True</property>
+    <property name="deletable">False</property>
+    <child>
+      <object class="GtkVBox" id="vbox4">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkHBox" id="hbox4">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkVBox" id="vbox5">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkImage" id="image2">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-dialog-warning</property>
+                    <property name="icon-size">6</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkDrawingArea" id="drawingarea1">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox3">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkLabel" id="label2">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">An error has occured during the execution of the scenario.
+</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="padding">20</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="dialog_error_alert_warning_count">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;0&lt;/b&gt; Warnings</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="dialog_error_alert_error_count">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;0&lt;/b&gt; Errors</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="padding">20</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHButtonBox" id="hbuttonbox1">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="error_alert-button_view">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <child>
+                  <object class="GtkHBox" id="hbox3">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkImage" id="image1">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-jump-to</property>
+                      </object>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label1">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">View Messages</property>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="error_alert-button_ok">
+                <property name="label" translatable="yes">OK</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
 </interface>

@@ -24,6 +24,7 @@
 #include "ovdCInterfacedObject.h"
 #include "ovdCInterfacedScenario.h"
 #include "ovdCApplication.h"
+#include "ovdCLogListenerDesigner.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -199,6 +200,7 @@ namespace
 		}
 		return TRUE;
 	}
+
 	void log_level_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->logLevelCB();
@@ -237,6 +239,11 @@ namespace
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(gtk_builder_get_object(static_cast<CApplication*>(pUserData)->m_pBuilderInterface, "openvibe-resource_notebook")), 1);
 	}
 
+	void clear_messages_cb(::GtkButton* pButton, gpointer pUserData)
+	{
+		static_cast<CLogListenerDesigner*>(pUserData)->clearMessages();
+	}
+	
 	gboolean idle_application_loop(gpointer pUserData)
 	{
 		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
@@ -419,6 +426,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-algorithm_title_button_expand")),   "clicked", G_CALLBACK(algorithm_title_button_expand_cb),   this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
 
+
 	__g_idle_add__(idle_application_loop, this);
 	__g_timeout_add__(1000, timeout_application_loop, this);
 
@@ -546,10 +554,37 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		while(l_oTokenIdentifier!=OV_UndefinedIdentifier);
 	}
 
+	// Add the designer log listener
+	
+
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_debug")), m_rKernelContext.getLogManager().isActive(LogLevel_Debug));
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_bench")), m_rKernelContext.getLogManager().isActive(LogLevel_Benchmark));
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_trace")), m_rKernelContext.getLogManager().isActive(LogLevel_Trace));
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_info")), m_rKernelContext.getLogManager().isActive(LogLevel_Info));
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_warning")), m_rKernelContext.getLogManager().isActive(LogLevel_Warning));
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_impwarning")), m_rKernelContext.getLogManager().isActive(LogLevel_ImportantWarning));
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_error")), m_rKernelContext.getLogManager().isActive(LogLevel_Error));
+	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_fatal")), m_rKernelContext.getLogManager().isActive(LogLevel_Fatal));
+
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_debug")), m_rKernelContext.getLogManager().isActive(LogLevel_Debug));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_bench")), m_rKernelContext.getLogManager().isActive(LogLevel_Benchmark));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_trace")), m_rKernelContext.getLogManager().isActive(LogLevel_Trace));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_info")), m_rKernelContext.getLogManager().isActive(LogLevel_Info));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_warning")), m_rKernelContext.getLogManager().isActive(LogLevel_Warning));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_impwarning")), m_rKernelContext.getLogManager().isActive(LogLevel_ImportantWarning));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_error")), m_rKernelContext.getLogManager().isActive(LogLevel_Error));
+	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_fatal")), m_rKernelContext.getLogManager().isActive(LogLevel_Fatal));
+
+	m_pLogListenerDesigner = new CLogListenerDesigner(m_rKernelContext, m_pBuilderInterface);
+	m_rKernelContext.getLogManager().addListener(m_pLogListenerDesigner);
+
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_clear")),       "clicked",  G_CALLBACK(clear_messages_cb), m_pLogListenerDesigner);
+
 	if(!(m_eCommandLineFlags&CommandLineFlag_NoGui))
 	{
 		gtk_widget_show(m_pMainWindow);
 	}
+
 }
 
 boolean CApplication::openScenario(const char* sFileName)
@@ -638,13 +673,13 @@ boolean CApplication::openScenario(const char* sFileName)
 					{
 						//a visualisation widget was found in scenario : manually add it to visualisation tree
 						l_rVisualisationTree.addVisualisationWidget(
-							l_oVisualisationWidgetIdentifier,
-							l_pBox->getName(),
-							EVisualisationWidget_VisualisationBox,
-							OV_UndefinedIdentifier,
-							0,
-							l_pBox->getIdentifier(),
-							0);
+								l_oVisualisationWidgetIdentifier,
+								l_pBox->getName(),
+								EVisualisationWidget_VisualisationBox,
+								OV_UndefinedIdentifier,
+								0,
+								l_pBox->getIdentifier(),
+								0);
 					}
 				}
 			}
@@ -692,13 +727,13 @@ boolean CApplication::openScenario(const char* sFileName)
 			l_oStringStream << "the selected scenario importer...";
 
 			::GtkWidget* l_pErrorDialog=gtk_message_dialog_new(
-				NULL,
-				GTK_DIALOG_MODAL,
-				GTK_MESSAGE_WARNING,
-				GTK_BUTTONS_OK,
-				"Scenario importation process failed !");
+					NULL,
+					GTK_DIALOG_MODAL,
+					GTK_MESSAGE_WARNING,
+					GTK_BUTTONS_OK,
+					"Scenario importation process failed !");
 			gtk_message_dialog_format_secondary_text(
-				GTK_MESSAGE_DIALOG(l_pErrorDialog), "%s", l_oStringStream.str().c_str());
+					GTK_MESSAGE_DIALOG(l_pErrorDialog), "%s", l_oStringStream.str().c_str());
 			gtk_dialog_run(GTK_DIALOG(l_pErrorDialog));
 			gtk_widget_destroy(l_pErrorDialog);
 		}
@@ -779,17 +814,17 @@ void CApplication::dragDataGetCB(::GtkWidget* pWidget, ::GdkDragContext* pDragCo
 	{
 		const char* l_sBoxAlgorithmIdentifier=NULL;
 		gtk_tree_model_get(
-			l_pTreeModel, &l_oTreeIter,
-			Resource_StringIdentifier, &l_sBoxAlgorithmIdentifier,
-			-1);
+				l_pTreeModel, &l_oTreeIter,
+				Resource_StringIdentifier, &l_sBoxAlgorithmIdentifier,
+				-1);
 		if(l_sBoxAlgorithmIdentifier)
 		{
 			gtk_selection_data_set(
-				pSelectionData,
-				GDK_SELECTION_TYPE_STRING,
-				8,
-				(const guchar*)l_sBoxAlgorithmIdentifier,
-				strlen(l_sBoxAlgorithmIdentifier)+1);
+					pSelectionData,
+					GDK_SELECTION_TYPE_STRING,
+					8,
+					(const guchar*)l_sBoxAlgorithmIdentifier,
+					strlen(l_sBoxAlgorithmIdentifier)+1);
 		}
 	}
 }
@@ -923,16 +958,16 @@ void CApplication::preferencesCB(void)
 		CString l_sTokenValue=m_rKernelContext.getConfigurationManager().getConfigurationTokenValue(l_oTokenIdentifier);
 		CString l_sTokenExpand=m_rKernelContext.getConfigurationManager().expand(l_sTokenValue);
 		gtk_tree_store_append(
-			l_pConfigurationManagerTreeModel,
-			&l_oGtkIterChild,
-			NULL);
+				l_pConfigurationManagerTreeModel,
+				&l_oGtkIterChild,
+				NULL);
 		gtk_tree_store_set(
-			l_pConfigurationManagerTreeModel,
-			&l_oGtkIterChild,
-			Resource_TokenName, l_sTokenName.toASCIIString(),
-			Resource_TokenValue, l_sTokenValue.toASCIIString(),
-			Resource_TokenExpand, l_sTokenExpand.toASCIIString(),
-			-1);
+				l_pConfigurationManagerTreeModel,
+				&l_oGtkIterChild,
+				Resource_TokenName, l_sTokenName.toASCIIString(),
+				Resource_TokenValue, l_sTokenValue.toASCIIString(),
+				Resource_TokenExpand, l_sTokenExpand.toASCIIString(),
+				-1);
 	}
 	gtk_tree_view_set_model(l_pConfigurationManagerTreeView, GTK_TREE_MODEL(l_pConfigurationManagerTreeModel));
 	g_signal_emit_by_name(l_pTreeViewColumnTokenName, "clicked");
@@ -982,17 +1017,17 @@ void CApplication::openScenarioCB(void)
 	gtk_file_filter_add_pattern(l_pFileFilterAll, "*");
 
 	::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
-		"Select scenario to open...",
-		NULL,
-		GTK_FILE_CHOOSER_ACTION_OPEN,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-		NULL);
+			"Select scenario to open...",
+			NULL,
+			GTK_FILE_CHOOSER_ACTION_OPEN,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+			NULL);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_pFileFilterXML);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogOpen), l_pFileFilterAll);
 	gtk_file_chooser_set_current_folder(
-		GTK_FILE_CHOOSER(l_pWidgetDialogOpen),
-		this->getWorkingDirectory().toASCIIString());
+			GTK_FILE_CHOOSER(l_pWidgetDialogOpen),
+			this->getWorkingDirectory().toASCIIString());
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 	{
 		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
@@ -1090,12 +1125,12 @@ void CApplication::saveScenarioAsCB(CInterfacedScenario* pScenario)
 	gtk_file_filter_add_pattern(l_pFileFilterAll, "*");
 
 	::GtkWidget* l_pWidgetDialogSaveAs=gtk_file_chooser_dialog_new(
-		"Select scenario to save...",
-		NULL,
-		GTK_FILE_CHOOSER_ACTION_SAVE,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-		NULL);
+			"Select scenario to save...",
+			NULL,
+			GTK_FILE_CHOOSER_ACTION_SAVE,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			NULL);
 
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), l_pFileFilterXML);
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs), l_pFileFilterAll);
@@ -1107,8 +1142,8 @@ void CApplication::saveScenarioAsCB(CInterfacedScenario* pScenario)
 	else
 	{
 		gtk_file_chooser_set_current_folder(
-			GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs),
-			this->getWorkingDirectory().toASCIIString());
+				GTK_FILE_CHOOSER(l_pWidgetDialogSaveAs),
+				this->getWorkingDirectory().toASCIIString());
 	}
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogSaveAs))==GTK_RESPONSE_ACCEPT)
 	{
@@ -1277,7 +1312,7 @@ void CApplication::browseDocumentationCB(void)
 }
 
 void CApplication::addCommentCB(
-	CInterfacedScenario* pScenario)
+		CInterfacedScenario* pScenario)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "CApplication::addCommentCB\n";
 	if(pScenario && !pScenario->isLocked())
@@ -1534,6 +1569,14 @@ boolean CApplication::quitApplicationCB(void)
 		m_rKernelContext.getScenarioManager().releaseScenario(*i);
 	}
 
+	// release the log manager and free the memory
+
+
+	/*
+	   m_rKernelContext.getLogManager().removeListener( m_pLogListenerDesigner );
+	   delete m_pLogListenerDesigner;
+	   */
+
 	// OK to kill app
 	return true;
 }
@@ -1566,6 +1609,15 @@ void CApplication::logLevelCB(void)
 		m_rKernelContext.getLogManager().activate(LogLevel_Trace,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gtk_builder_get_object(l_pBuilderInterface, "loglevel-checkbutton_loglevel_trace")))?true:false);
 		m_rKernelContext.getLogManager().activate(LogLevel_Benchmark,        gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gtk_builder_get_object(l_pBuilderInterface, "loglevel-checkbutton_loglevel_benchmark")))?true:false);
 		m_rKernelContext.getLogManager().activate(LogLevel_Debug,            gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gtk_builder_get_object(l_pBuilderInterface, "loglevel-checkbutton_loglevel_debug")))?true:false);
+
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_debug")), m_rKernelContext.getLogManager().isActive(LogLevel_Debug));
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_bench")), m_rKernelContext.getLogManager().isActive(LogLevel_Benchmark));
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_trace")), m_rKernelContext.getLogManager().isActive(LogLevel_Trace));
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_info")), m_rKernelContext.getLogManager().isActive(LogLevel_Info));
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_warning")), m_rKernelContext.getLogManager().isActive(LogLevel_Warning));
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_impwarning")), m_rKernelContext.getLogManager().isActive(LogLevel_ImportantWarning));
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_error")), m_rKernelContext.getLogManager().isActive(LogLevel_Error));
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_fatal")), m_rKernelContext.getLogManager().isActive(LogLevel_Fatal));
 	}
 
 	gtk_widget_destroy(GTK_WIDGET(l_pLogLevelDialog));
