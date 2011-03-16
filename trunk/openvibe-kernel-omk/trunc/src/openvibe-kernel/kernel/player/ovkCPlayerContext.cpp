@@ -112,7 +112,7 @@ namespace OpenViBE
 						<< eLogLevel
 						<< "At time "
 						<< m_rPlayerContext.getCurrentTime()
-						<< "<"
+						<< " <"
 						<< LogColor_PushStateBit
 						<< LogColor_ForegroundBlue
 						<< "Box algorithm"

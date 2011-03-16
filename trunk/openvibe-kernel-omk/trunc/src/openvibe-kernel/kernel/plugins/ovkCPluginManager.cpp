@@ -8,6 +8,7 @@
 
 #include <system/Memory.h>
 
+#include <cstdio>
 #include <iostream>
 #include <map>
 
@@ -441,11 +442,28 @@ IPluginObjectT* CPluginManager::createPluginObjectT(
 		*ppPluginObjectDescT=NULL;
 	}
 
+	CIdentifier l_oSubstitutionTokenIdentifier;
+	char l_sSubstitutionTokenName[1024];
+	uint64 l_ui64SourceClassIdentifier=rClassIdentifier.toUInteger();
+	uint64 l_ui64TargetClassIdentifier=l_ui64SourceClassIdentifier;
+	::sprintf(l_sSubstitutionTokenName, "Kernel_PluginSubstitution_%0llx", l_ui64SourceClassIdentifier);
+	if((l_oSubstitutionTokenIdentifier=this->getConfigurationManager().lookUpConfigurationTokenIdentifier(l_sSubstitutionTokenName))!=OV_UndefinedIdentifier)
+	{
+		CString l_sSubstitutionTokenValue;
+		l_sSubstitutionTokenValue=this->getConfigurationManager().getConfigurationTokenValue(l_oSubstitutionTokenIdentifier);
+		l_sSubstitutionTokenValue=this->getConfigurationManager().expand(l_sSubstitutionTokenValue);
+		::sscanf(l_sSubstitutionTokenValue.toASCIIString(), "%llx", &l_ui64TargetClassIdentifier);
+	}
+	if(l_ui64TargetClassIdentifier!=l_ui64SourceClassIdentifier)
+	{
+		this->getLogManager() << LogLevel_Trace << "Substituting plugin class identifier " << CIdentifier(l_ui64SourceClassIdentifier) << " with new class identifier " << CIdentifier(l_ui64TargetClassIdentifier) << "\n";
+	}
+
 	IPluginObjectDesc* l_pPluginObjectDesc=NULL;
 	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
 	{
-		if(i->first->getCreatedClass()==rClassIdentifier)
+		if(i->first->getCreatedClass()==CIdentifier(l_ui64TargetClassIdentifier))
 		{
 			l_pPluginObjectDesc=i->first;
 		}

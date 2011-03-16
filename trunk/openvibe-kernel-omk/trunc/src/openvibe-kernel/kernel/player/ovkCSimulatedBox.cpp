@@ -26,7 +26,8 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
 #define boolean OpenViBE::boolean
-#define _ScopeTester_
+//#define _BoxAlgorithm_ScopeTester_
+//#define _SimulatedBox_ScopeTester_
 #define _MaxCrash_ 5
 
 #define __OV_FUNC__ CString("unknown_function_name")
@@ -75,14 +76,18 @@ CSimulatedBox::CSimulatedBox(const IKernelContext& rKernelContext, CScheduler& r
 	,m_pOgreVis(NULL)
 	,m_oSceneIdentifier(OV_UndefinedIdentifier)
 {
+#if defined _SimulatedBox_ScopeTester_
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+#endif
 
 	m_pOgreVis = ((CVisualisationManager*)(&rKernelContext.getVisualisationManager()))->getOgreVisualisation();
 }
 
 CSimulatedBox::~CSimulatedBox(void)
 {
+#if defined _SimulatedBox_ScopeTester_
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+#endif
 
 	//delete OgreWidgets
 	std::map<GtkWidget*, OpenViBE::CIdentifier>::iterator it;
@@ -693,7 +698,9 @@ boolean CSimulatedBox::setBoxIdentifier(const CIdentifier& rBoxIdentifier)
 
 boolean CSimulatedBox::initialize(void)
 {
+#if defined _SimulatedBox_ScopeTester_
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+#endif
 
 	if(m_bSuspended) return false;
 	if(m_bCrashed) return false;
@@ -725,7 +732,7 @@ boolean CSimulatedBox::initialize(void)
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 		{
-#if defined _ScopeTester_
+#if defined _BoxAlgorithm_ScopeTester_
 			Tools::CScopeTester l_oScopeTester(getKernelContext(), m_pBox->getName() + CString(" (IBoxAlgorithm::initialize)"));
 #endif
 			try
@@ -748,7 +755,9 @@ boolean CSimulatedBox::initialize(void)
 
 boolean CSimulatedBox::uninitialize(void)
 {
+#if defined _SimulatedBox_ScopeTester_
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+#endif
 
 	if(m_bCrashed) return false;
 	if(!m_pBoxAlgorithm) return false;
@@ -756,7 +765,7 @@ boolean CSimulatedBox::uninitialize(void)
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 		{
-#if defined _ScopeTester_
+#if defined _BoxAlgorithm_ScopeTester_
 			Tools::CScopeTester l_oScopeTester(getKernelContext(), m_pBox->getName() + CString(" (IBoxAlgorithm::uninitialize)"));
 #endif
 			{
@@ -784,7 +793,9 @@ boolean CSimulatedBox::uninitialize(void)
 
 boolean CSimulatedBox::processClock(void)
 {
+#if defined _SimulatedBox_ScopeTester_
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+#endif
 
 	if(m_bSuspended) return false;
 	if(m_bCrashed) return false;
@@ -792,7 +803,7 @@ boolean CSimulatedBox::processClock(void)
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 		{
-#if defined _ScopeTester_
+#if defined _BoxAlgorithm_ScopeTester_
 			Tools::CScopeTester l_oScopeTester(getKernelContext(), m_pBox->getName() + CString(" (IBoxAlgorithm::getClockFrequency)"));
 #endif
 			try
@@ -829,7 +840,7 @@ boolean CSimulatedBox::processClock(void)
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 		{
-#if defined _ScopeTester_
+#if defined _BoxAlgorithm_ScopeTester_
 			Tools::CScopeTester l_oScopeTester(getKernelContext(), m_pBox->getName() + CString(" (IBoxAlgorithm::processClock)"));
 #endif
 			try
@@ -863,7 +874,9 @@ boolean CSimulatedBox::processClock(void)
 
 boolean CSimulatedBox::processInput(const uint32 ui32InputIndex, const CChunk& rChunk)
 {
+#if defined _SimulatedBox_ScopeTester_
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+#endif
 
 	if(m_bSuspended) return false;
 	if(m_bCrashed) return false;
@@ -873,7 +886,7 @@ boolean CSimulatedBox::processInput(const uint32 ui32InputIndex, const CChunk& r
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 		{
-#if defined _ScopeTester_
+#if defined _BoxAlgorithm_ScopeTester_
 			Tools::CScopeTester l_oScopeTester(getKernelContext(), m_pBox->getName() + CString(" (IBoxAlgorithm::processInput)"));
 #endif
 			try
@@ -895,7 +908,9 @@ boolean CSimulatedBox::processInput(const uint32 ui32InputIndex, const CChunk& r
 
 boolean CSimulatedBox::process(void)
 {
+#if defined _SimulatedBox_ScopeTester_
 	this->getLogManager() << LogLevel_Debug << __OV_FUNC__ << " - " << __OV_FILE__ << ":" << __OV_LINE__ << "\n";
+#endif
 
 	if(m_bSuspended) return false;
 	if(m_bCrashed) return false;
@@ -905,7 +920,7 @@ boolean CSimulatedBox::process(void)
 	{
 		CBoxAlgorithmContext l_oBoxAlgorithmContext(getKernelContext(), this, m_pBox);
 		{
-#if defined _ScopeTester_
+#if defined _BoxAlgorithm_ScopeTester_
 			Tools::CScopeTester l_oScopeTester(getKernelContext(), m_pBox->getName() + CString(" (IBoxAlgorithm::process)"));
 #endif
 			try

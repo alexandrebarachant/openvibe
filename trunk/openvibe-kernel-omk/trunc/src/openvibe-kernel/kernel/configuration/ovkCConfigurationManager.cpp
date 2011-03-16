@@ -518,10 +518,17 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 boolean CConfigurationManager::internalGetConfigurationTokenValueFromName(const std::string& sTokenName, std::string& sTokenValue) const
 {
 	CIdentifier l_oTokenIdentifier=this->lookUpConfigurationTokenIdentifier(sTokenName.c_str());
-	if(l_oTokenIdentifier == OV_UndefinedIdentifier && m_pParentConfigurationManager)
+	if(l_oTokenIdentifier == OV_UndefinedIdentifier)
 	{
-		std::string l_sNewString=std::string("${")+sTokenName+("}");
-		sTokenValue=m_pParentConfigurationManager->expand(l_sNewString.c_str());
+		if(m_pParentConfigurationManager)
+		{
+			std::string l_sNewString=std::string("${")+sTokenName+("}");
+			sTokenValue=m_pParentConfigurationManager->expand(l_sNewString.c_str());
+		}
+		else
+		{
+			this->getLogManager() << LogLevel_Warning << "Could not expand token [" << CString(sTokenName.c_str()) << "]. This token does not exist. If this is expected behavior, please add \"" << sTokenName.c_str() << " = \" to your configuration file\n";
+		}
 	}
 	else
 	{

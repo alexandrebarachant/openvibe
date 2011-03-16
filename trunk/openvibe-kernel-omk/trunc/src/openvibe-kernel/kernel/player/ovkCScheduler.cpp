@@ -110,7 +110,14 @@ public:
 				l_oFile.close();
 
 				// message
-				rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Overrode " << m_ui32SettingIndex << " settings with this configuration file...\n";
+				if(m_ui32SettingIndex == rBox.getSettingCount())
+				{
+					rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Overrode " << m_ui32SettingIndex << " setting(s) with this configuration file...\n";
+				}
+				else
+				{
+					rObjectVisitorContext.getLogManager() << LogLevel_Warning << "Overrode " << m_ui32SettingIndex << " setting(s) with configuration file [" << l_sSettingOverrideFilenameFinal << "]. That does not match the box setting count " << rBox.getSettingCount() << "...\n";
+				}
 			}
 			else
 			{
