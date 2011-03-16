@@ -525,15 +525,17 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 
 	if(!(m_eCommandLineFlags&CommandLineFlag_NoManageSession))
 	{
-		CString l_sFilename;
+		CIdentifier l_oTokenIdentifier;
 		char l_sVarName[1024];
 		unsigned i=0;
 		do
 		{
-			::sprintf(l_sVarName, "${Designer_LastScenarioFilename_%03i}", ++i);
-			l_sFilename=m_rKernelContext.getConfigurationManager().expand(l_sVarName);
-			if(l_sFilename!=CString(""))
+			::sprintf(l_sVarName, "Designer_LastScenarioFilename_%03i", ++i);
+			if((l_oTokenIdentifier=m_rKernelContext.getConfigurationManager().lookUpConfigurationTokenIdentifier(l_sVarName))!=OV_UndefinedIdentifier)
 			{
+				CString l_sFilename;
+				l_sFilename=m_rKernelContext.getConfigurationManager().getConfigurationTokenValue(l_oTokenIdentifier);
+				l_sFilename=m_rKernelContext.getConfigurationManager().expand(l_sFilename);
 				m_rKernelContext.getLogManager() << LogLevel_Info << "Restoring scenario [" << l_sFilename << "]\n";
 				if(!this->openScenario(l_sFilename.toASCIIString()))
 				{
@@ -541,7 +543,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 				}
 			}
 		}
-		while(l_sFilename!=CString(""));
+		while(l_oTokenIdentifier!=OV_UndefinedIdentifier);
 	}
 
 	if(!(m_eCommandLineFlags&CommandLineFlag_NoGui))
@@ -578,34 +580,40 @@ boolean CApplication::openScenario(const char* sFileName)
 		else
 		{
 			FILE* l_pFile=fopen(sFileName, "rb");
-			::fseek(l_pFile, 0, SEEK_END);
-			l_oMemoryBuffer.setSize(::ftell(l_pFile), true);
-			::fseek(l_pFile, 0, SEEK_SET);
-			::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize(), 1, l_pFile);
-			::fclose(l_pFile);
+			if(l_pFile)
+			{
+				::fseek(l_pFile, 0, SEEK_END);
+				l_oMemoryBuffer.setSize(::ftell(l_pFile), true);
+				::fseek(l_pFile, 0, SEEK_SET);
+				::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize(), 1, l_pFile);
+				::fclose(l_pFile);
+			}
 		}
 
-		CIdentifier l_oImporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_XMLScenarioImporter);
-		if(l_oImporterIdentifier!=OV_UndefinedIdentifier)
+		if(l_oMemoryBuffer.getSize())
 		{
-			IAlgorithmProxy* l_pImporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oImporterIdentifier);
-			if(l_pImporter)
+			CIdentifier l_oImporterIdentifier=m_rKernelContext.getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_XMLScenarioImporter);
+			if(l_oImporterIdentifier!=OV_UndefinedIdentifier)
 			{
-				m_rKernelContext.getLogManager() << LogLevel_Info << "Importing scenario...\n";
+				IAlgorithmProxy* l_pImporter=&m_rKernelContext.getAlgorithmManager().getAlgorithm(l_oImporterIdentifier);
+				if(l_pImporter)
+				{
+					m_rKernelContext.getLogManager() << LogLevel_Info << "Importing scenario...\n";
 
-				l_pImporter->initialize();
+					l_pImporter->initialize();
 
-				TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(l_pImporter->getInputParameter(OVTK_Algorithm_ScenarioImporter_InputParameterId_MemoryBuffer));
-				TParameterHandler < IScenario* > op_pScenario(l_pImporter->getOutputParameter(OVTK_Algorithm_ScenarioImporter_OutputParameterId_Scenario));
+					TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(l_pImporter->getInputParameter(OVTK_Algorithm_ScenarioImporter_InputParameterId_MemoryBuffer));
+					TParameterHandler < IScenario* > op_pScenario(l_pImporter->getOutputParameter(OVTK_Algorithm_ScenarioImporter_OutputParameterId_Scenario));
 
-				ip_pMemoryBuffer=&l_oMemoryBuffer;
-				op_pScenario=&l_rScenario;
+					ip_pMemoryBuffer=&l_oMemoryBuffer;
+					op_pScenario=&l_rScenario;
 
-				l_pImporter->process();
-				l_pImporter->uninitialize();
-				m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pImporter);
+					l_pImporter->process();
+					l_pImporter->uninitialize();
+					m_rKernelContext.getAlgorithmManager().releaseAlgorithm(*l_pImporter);
 
-				l_bSuccess=true;
+					l_bSuccess=true;
+				}
 			}
 		}
 
