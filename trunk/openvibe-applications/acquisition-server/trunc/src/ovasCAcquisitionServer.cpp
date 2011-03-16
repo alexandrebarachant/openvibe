@@ -207,6 +207,7 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	,m_pDriver(NULL)
 	,m_pStreamEncoder(NULL)
 	,m_pConnectionServer(NULL)
+	,m_eDriftCorrectionPolicy(DriftCorrectionPolicy_DriverChoice)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 {
@@ -224,6 +225,20 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	ip_pStimulationSet.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_StimulationSet));
 	ip_ui64BufferDuration.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_BufferDuration));
 	op_pEncodedMemoryBuffer.initialize(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+
+	CString l_sDriftCorrectionPolicy=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_DriftCorrectionPolicy}");
+	if(l_sDriftCorrectionPolicy==CString("Forced"))
+	{
+		this->setDriftCorrectionPolicy(DriftCorrectionPolicy_Forced);
+	}
+	else if(l_sDriftCorrectionPolicy==CString("Disabled"))
+	{
+		this->setDriftCorrectionPolicy(DriftCorrectionPolicy_Disabled);
+	}
+	else
+	{
+		this->setDriftCorrectionPolicy(DriftCorrectionPolicy_DriverChoice);
+	}
 
 	this->setDriftToleranceDuration(m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriftToleranceDuration}", 5));
 	this->setJitterEstimationCountForDrift(m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_JitterEstimationCountForDrift}", 128));
@@ -436,6 +451,10 @@ boolean CAcquisitionServer::loop(void)
 				m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "After " << m_ui64DriverTimeoutDuration << " milliseconds, did not receive anything from the driver - Timed out\n";
 				return false;
 			}
+			if(m_bGotData && m_eDriftCorrectionPolicy == DriftCorrectionPolicy_Forced)
+			{
+				this->correctDriftSampleCount(this->getSuggestedDriftCorrectionSampleCount());
+			}
 		}
 		else
 		{
@@ -559,6 +578,15 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 		m_i64DriftToleranceSampleCount=(m_ui64DriftToleranceDuration * m_ui32SamplingFrequency) / 1000;
 		m_i64DriftCorrectionSampleCountAdded=0;
 		m_i64DriftCorrectionSampleCountRemoved=0;
+
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Drift correction is set to ";
+		switch(m_eDriftCorrectionPolicy)
+		{
+			default:
+			case DriftCorrectionPolicy_DriverChoice: m_rKernelContext.getLogManager() << CString("DriverChoice") << "\n"; break;
+			case DriftCorrectionPolicy_Forced:       m_rKernelContext.getLogManager() << CString("Forced") << "\n"; break;
+			case DriftCorrectionPolicy_Disabled:     m_rKernelContext.getLogManager() << CString("Disabled") << "\n"; break;
+		};
 
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Oversampling factor set to " << m_ui64OverSamplingFactor << "\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Sampling frequency set to " << m_ui32SamplingFrequency << "Hz\n";
@@ -814,6 +842,11 @@ void CAcquisitionServer::setStimulationSet(const IStimulationSet& rStimulationSe
 
 int64 CAcquisitionServer::getSuggestedDriftCorrectionSampleCount(void) const
 {
+	if(m_eDriftCorrectionPolicy == DriftCorrectionPolicy_Disabled)
+	{
+		return 0;
+	}
+
 	if(this->getDriftSampleCount() >= this->getDriftToleranceSampleCount())
 	{
 		return -this->getDriftSampleCount();
@@ -842,6 +875,11 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 	}
 	else
 	{
+		if(m_eDriftCorrectionPolicy == DriftCorrectionPolicy_Disabled)
+		{
+			return false;
+		}
+
 		char l_sTime[1024];
 		uint64 l_ui64Time=System::Time::zgetTime()-m_ui64StartTime;
 		float64 l_f64Time=(l_ui64Time>>22)/1024.;
@@ -915,6 +953,11 @@ boolean CAcquisitionServer::updateImpedance(const uint32 ui32ChannelIndex, const
 // ____________________________________________________________________________
 //
 
+EDriftCorrectionPolicy CAcquisitionServer::getDriftCorrectionPolicy(void)
+{
+	return m_eDriftCorrectionPolicy;
+}
+
 uint64 CAcquisitionServer::getDriftToleranceDuration(void)
 {
 	return m_ui64DriftToleranceDuration;
@@ -928,6 +971,12 @@ uint64 CAcquisitionServer::getJitterEstimationCountForDrift(void)
 uint64 CAcquisitionServer::getOversamplingFactor(void)
 {
 	return m_ui64OverSamplingFactor;
+}
+
+boolean CAcquisitionServer::setDriftCorrectionPolicy(EDriftCorrectionPolicy eDriftCorrectionPolicy)
+{
+	m_eDriftCorrectionPolicy=eDriftCorrectionPolicy;
+	return true;
 }
 
 boolean CAcquisitionServer::isImpedanceCheckRequested(void)

@@ -30,6 +30,13 @@ namespace OpenViBEAcquisitionServer
 		boost::thread* m_pConnectionClientHandlerBoostThread;
 	} SConnectionInfo;
 
+	typedef enum
+	{
+		DriftCorrectionPolicy_DriverChoice=0,
+		DriftCorrectionPolicy_Forced,
+		DriftCorrectionPolicy_Disabled,
+	} EDriftCorrectionPolicy;
+
 	class CDriverContext;
 	class CAcquisitionServer : public OpenViBEAcquisitionServer::IDriverCallback
 	{
@@ -59,16 +66,18 @@ namespace OpenViBEAcquisitionServer
 		// Driver context callback
 		virtual OpenViBE::boolean isConnected(void) const { return m_bInitialized; }
 		virtual OpenViBE::boolean isStarted(void) const { return m_bStarted; }
-		virtual OpenViBE::int64 getDriftSampleCount(void) const { return m_i64DriftSampleCount; }
+		virtual OpenViBE::int64 getDriftSampleCount(void) const { return m_eDriftCorrectionPolicy==DriftCorrectionPolicy_Disabled?0:m_i64DriftSampleCount; }
 		virtual OpenViBE::int64 getDriftToleranceSampleCount(void) const { return m_i64DriftToleranceSampleCount; }
 		virtual OpenViBE::int64 getSuggestedDriftCorrectionSampleCount(void) const;
 		virtual OpenViBE::boolean correctDriftSampleCount(OpenViBE::int64 i64SampleCount);
 		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance);
 
 		// General parameters configurable from the GUI
+		OpenViBEAcquisitionServer::EDriftCorrectionPolicy getDriftCorrectionPolicy(void);
 		OpenViBE::uint64 getDriftToleranceDuration(void);
 		OpenViBE::uint64 getJitterEstimationCountForDrift(void);
 		OpenViBE::uint64 getOversamplingFactor(void);
+		OpenViBE::boolean setDriftCorrectionPolicy(OpenViBEAcquisitionServer::EDriftCorrectionPolicy eDriftCorrectionPolicy);
 		OpenViBE::boolean isImpedanceCheckRequested(void);
 		OpenViBE::boolean setDriftToleranceDuration(OpenViBE::uint64 ui64DriftToleranceDuration);
 		OpenViBE::boolean setJitterEstimationCountForDrift(OpenViBE::uint64 ui64JitterEstimationCountForDrift);
@@ -111,6 +120,8 @@ namespace OpenViBEAcquisitionServer
 		std::vector < OpenViBE::float32 > m_vOverSamplingSwapBuffer;
 		std::vector < OpenViBE::float64 > m_vImpedance;
 		Socket::IConnectionServer* m_pConnectionServer;
+
+		OpenViBEAcquisitionServer::EDriftCorrectionPolicy m_eDriftCorrectionPolicy;
 
 		OpenViBE::boolean m_bInitialized;
 		OpenViBE::boolean m_bStarted;

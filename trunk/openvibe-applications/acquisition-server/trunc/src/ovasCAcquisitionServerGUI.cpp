@@ -588,11 +588,13 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 	::GtkBuilder* l_pInterface=gtk_builder_new();
 	::gtk_builder_add_from_file(l_pInterface, OVAS_GUI_File, NULL);
 	::GtkDialog* l_pDialog=GTK_DIALOG(::gtk_builder_get_object(l_pInterface, "openvibe-acquisition-server-configuration"));
+	::GtkComboBox* l_pDriftCorrectionPolicy=GTK_COMBO_BOX(::gtk_builder_get_object(l_pInterface, "combobox_drift_correction"));
 	::GtkSpinButton* l_pDriftTolerance=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_drift_tolerance"));
 	::GtkSpinButton* l_pJitterMeasureCount=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_jitter_measure_count"));
 	::GtkSpinButton* l_pOverSamplingFactor=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_oversampling_factor"));
 	::GtkToggleButton* l_pImpedanceCheck=GTK_TOGGLE_BUTTON(::gtk_builder_get_object(l_pInterface, "checkbutton_impedance"));
 
+	::gtk_combo_box_set_active(l_pDriftCorrectionPolicy, (int)m_pAcquisitionServer->getDriftCorrectionPolicy());
 	::gtk_spin_button_set_value(l_pDriftTolerance, m_pAcquisitionServer->getDriftToleranceDuration());
 	::gtk_spin_button_set_value(l_pJitterMeasureCount, m_pAcquisitionServer->getJitterEstimationCountForDrift());
 	::gtk_spin_button_set_value(l_pOverSamplingFactor, m_pAcquisitionServer->getOversamplingFactor());
@@ -604,6 +606,7 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 		case GTK_RESPONSE_APPLY:
 		case GTK_RESPONSE_OK:
 		case GTK_RESPONSE_YES:
+			m_pAcquisitionServer->setDriftCorrectionPolicy((EDriftCorrectionPolicy)::gtk_combo_box_get_active(l_pDriftCorrectionPolicy));
 			m_pAcquisitionServer->setDriftToleranceDuration(::gtk_spin_button_get_value_as_int(l_pDriftTolerance));
 			m_pAcquisitionServer->setJitterEstimationCountForDrift(::gtk_spin_button_get_value_as_int(l_pJitterMeasureCount));
 			m_pAcquisitionServer->setOversamplingFactor(::gtk_spin_button_get_value_as_int(l_pOverSamplingFactor));

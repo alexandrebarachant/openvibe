@@ -210,6 +210,13 @@ boolean CConfigurationBuilder::preConfigure(void)
 			0);
 	}
 
+	// Prepares channel name cache
+
+	for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+	{
+		m_vChannelName[i]=m_pHeader->getChannelName(i);
+	}
+
 	return true;
 }
 
@@ -235,10 +242,7 @@ boolean CConfigurationBuilder::postConfigure(void)
 			OVTK_Value_Gender_NotSpecified);
 		for(uint32 i=0; i!=m_pHeader->getChannelCount(); i++)
 		{
-			if(m_vChannelName[i]!="")
-			{
-				m_pHeader->setChannelName(i, m_vChannelName[i].c_str());
-			}
+			m_pHeader->setChannelName(i, m_vChannelName[i].c_str());
 		}
 	}
 
@@ -261,13 +265,6 @@ void CConfigurationBuilder::buttonChangeChannelNamesCB(void)
 	::GtkDialog* l_pDialog=GTK_DIALOG(gtk_builder_get_object(m_pBuilderConfigureChannelInterface, "channel-names"));
 	::GtkTreeView* l_pElectrodeNameTreeView=GTK_TREE_VIEW(m_pElectrodeNameTreeView);
 	::GtkTreeView* l_pChannelNameTreeView=GTK_TREE_VIEW(m_pChannelNameTreeView);
-
-	// Prepares channel name cache
-
-	for(i=0; i<m_pHeader->getChannelCount(); i++)
-	{
-		m_vChannelName[i]=m_pHeader->getChannelName(i);
-	}
 
 	// Creates electrode name and channel name models
 

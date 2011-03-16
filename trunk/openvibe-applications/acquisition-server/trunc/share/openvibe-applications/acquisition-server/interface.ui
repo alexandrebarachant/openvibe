@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
@@ -105,12 +105,12 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="button_configure">
-                        <property name="label">gtk-properties</property>
+                        <property name="label">Driver Properties</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="image">image_driver_properties</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -151,6 +151,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="padding">8</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -404,69 +405,13 @@ Configuration </property>
             <property name="n_rows">10</property>
             <property name="n_columns">2</property>
             <child>
-              <object class="GtkLabel" id="label_drift_tolerance">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Drift Tolerance (ms)</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label_jitter_measure_count">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Jitter Estimation Count For Drift</property>
-              </object>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkLabel" id="label_oversampling_factor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Oversampling Factor</property>
               </object>
               <packing>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="spinbutton_drift_tolerance">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
-                <property name="adjustment">adjustment_drift_tolerance</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="spinbutton_jitter_measure_count">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
-                <property name="adjustment">adjustment_jitter_measure_count</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="spinbutton_oversampling_factor">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
-                <property name="adjustment">adjustment_oversampling_factor</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">2</property>
-                <property name="bottom_attach">3</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
               </packing>
             </child>
             <child>
@@ -475,8 +420,22 @@ Configuration </property>
                 <property name="label" translatable="yes">Impedance Check (when available)</property>
               </object>
               <packing>
-                <property name="top_attach">3</property>
-                <property name="bottom_attach">4</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="spinbutton_oversampling_factor">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+                <property name="adjustment">adjustment_oversampling_factor</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">4</property>
+                <property name="bottom_attach">5</property>
               </packing>
             </child>
             <child>
@@ -489,27 +448,99 @@ Configuration </property>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="right_attach">2</property>
+                <property name="top_attach">6</property>
+                <property name="bottom_attach">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label_jitter_measure_count">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Jitter Estimation Count For Drift</property>
+              </object>
+              <packing>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label_drift_tolerance">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Drift Tolerance (ms)</property>
+              </object>
+              <packing>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="spinbutton_jitter_measure_count">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+                <property name="adjustment">adjustment_jitter_measure_count</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">2</property>
+                <property name="bottom_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSpinButton" id="spinbutton_drift_tolerance">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="invisible_char">&#x25CF;</property>
+                <property name="adjustment">adjustment_drift_tolerance</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">1</property>
+                <property name="bottom_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHSeparator" id="hseparator2">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="right_attach">2</property>
                 <property name="top_attach">3</property>
                 <property name="bottom_attach">4</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkHSeparator" id="hseparator4">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="right_attach">2</property>
+                <property name="top_attach">5</property>
+                <property name="bottom_attach">6</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel" id="label_drift_correction">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Drift Correction</property>
+              </object>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkComboBox" id="combobox_drift_correction">
+                <property name="visible">True</property>
+                <property name="model">model_drift_correction</property>
+                <child>
+                  <object class="GtkCellRendererText" id="renderer2"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -668,5 +699,26 @@ Configuration </property>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="model_drift_correction">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Let the driver decide</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Force</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Disable</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkImage" id="image_driver_properties">
+    <property name="visible">True</property>
+    <property name="stock">gtk-properties</property>
   </object>
 </interface>
