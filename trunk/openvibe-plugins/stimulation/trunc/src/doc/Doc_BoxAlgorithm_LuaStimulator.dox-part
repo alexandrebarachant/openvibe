@@ -37,6 +37,7 @@ A simple API is proposed allowing the script to :
 - \ref LuaScriptAPI_get_setting_count
 - \ref LuaScriptAPI_get_setting
 - \ref LuaScriptAPI_get_config
+- \ref LuaScriptAPI_log
 
 During the process function, you can also :
 - \ref LuaScriptAPI_get_current_time
@@ -80,6 +81,15 @@ This function returns the number of settings the box has, including the script f
 This function returns a string containing the value of a given setting in the box. This
 setting value may be expanded using the configuration manager thanks to a \ref LuaScriptAPI_get_config call.
 - \c setting_index can range from 1 to \e n if the box has \e n settings.
+
+\subsection LuaScriptAPI_log box:log(log_level, line_of_text)
+This function sends a string to the log manager. This message may be printed in the console
+for the user or may be poped up to him if this is important enough. In any case, it will appear
+in the log file.
+- \c log_level the log level which you want to use to print this line of text ; this is represented in
+string and can take the following values : \c Debug, \c Trace, \c Info, \c Warning, \c ImportantWarning, \c Error and \c Fatal.
+If you use an invalid value, then \c Debug is used.
+- \c line_of_text can be any line of text you want to print
 
 \subsection LuaScriptAPI_get_config box:get_config(token)
 This function uses the configuration manager to expand a configuration token. The configuration token
@@ -198,26 +208,26 @@ dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 -- this function is called when the box is initialized
 function initialize(box)
-	io.write("initialize has been called\n");
+	box:log("Trace", "initialize has been called");
 
 	-- inspects the box topology
-	io.write(string.format("box has %i input(s)\n", box:get_input_count()))
-	io.write(string.format("box has %i output(s)\n", box:get_output_count()))
-	io.write(string.format("box has %i setting(s)\n", box:get_setting_count()))
+	box:log("Info", string.format("box has %i input(s)", box:get_input_count()))
+	box:log("Info", string.format("box has %i output(s)", box:get_output_count()))
+	box:log("Info", string.format("box has %i setting(s)", box:get_setting_count()))
 	for i = 1, box:get_setting_count() do
-		io.write(string.format(" - setting %i has value [%s]\n", i, box:get_setting(i)))
+		box:log("Info", string.format(" - setting %i has value [%s]", i, box:get_setting(i)))
 	end
 
 end
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)
-	io.write("uninitialize has been called\n")
+	box:log("Trace", "uninitialize has been called")
 end
 
 -- this function is called once by the box
 function process(box)
-	io.write("process has been called\n")
+	box:log("Trace", "process has been called")
 
 	-- enters infinite loop
 	-- cpu will be released with a call to sleep
@@ -237,7 +247,7 @@ function process(box)
 				identifier, date, duration = box:get_stimulation(input, 1)
 
 				-- logs the received stimulation
-				io.write(string.format("At time %f on input %i got stimulation id:%s date:%s duration:%s\n", t, input, identifier, date, duration))
+				box:log("Trace", string.format("At time %f on input %i got stimulation id:%s date:%s duration:%s", t, input, identifier, date, duration))
 
 				-- discards it
 				box:remove_stimulation(input, 1)

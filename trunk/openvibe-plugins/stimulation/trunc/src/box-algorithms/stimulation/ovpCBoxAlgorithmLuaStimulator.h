@@ -65,6 +65,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getStimulationCB(OpenViBE::uint32 ui32InputIndex, OpenViBE::uint32 ui32StimulationIndex, OpenViBE::uint64& rui64Identifier, OpenViBE::uint64& rui64Time, OpenViBE::uint64& rui64Duration);
 			virtual OpenViBE::boolean removeStimulationCB(OpenViBE::uint32 ui32InputIndex, OpenViBE::uint32 ui32StimulationIndex);
 			virtual OpenViBE::boolean sendStimulationCB(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64Identifier, OpenViBE::uint64 ui64Time, OpenViBE::uint64 ui64Duration);
+			virtual OpenViBE::boolean log(const OpenViBE::Kernel::ELogLevel eLogLevel, const OpenViBE::CString& sText);
 
 		public:
 

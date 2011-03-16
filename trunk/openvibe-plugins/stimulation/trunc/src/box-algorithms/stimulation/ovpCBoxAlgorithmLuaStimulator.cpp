@@ -251,6 +251,44 @@ static int lua_send_stimulation_cb(lua_State* pState)
 	return 0;
 }
 
+static int lua_log_cb(lua_State* pState)
+{
+	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
+	__CB_Assert__(l_pThis != NULL);
+
+	if(!lua_check_argument_count(pState, "log", 2)) return 0;
+
+	ELogLevel l_eLogLevel=LogLevel_Debug;
+	CString l_sLogLevel(lua_tostring(pState, 2));
+	if(l_sLogLevel==CString("Trace"))
+	{
+		l_eLogLevel=LogLevel_Trace;
+	}
+	else if(l_sLogLevel==CString("Info"))
+	{
+		l_eLogLevel=LogLevel_Info;
+	}
+	else if(l_sLogLevel==CString("Warning"))
+	{
+		l_eLogLevel=LogLevel_Warning;
+	}
+	else if(l_sLogLevel==CString("ImportantWarning"))
+	{
+		l_eLogLevel=LogLevel_ImportantWarning;
+	}
+	else if(l_sLogLevel==CString("Error"))
+	{
+		l_eLogLevel=LogLevel_Error;
+	}
+	else if(l_sLogLevel==CString("Fatal"))
+	{
+		l_eLogLevel=LogLevel_Fatal;
+	}
+	__CB_Assert__(l_pThis->log(l_eLogLevel, lua_tostring(pState, 3)));
+
+	return 0;
+}
+
 CBoxAlgorithmLuaStimulator::CBoxAlgorithmLuaStimulator(void)
 #if BOOST_VERSION >= 103500
 	:m_oInnerLock(m_oMutex, boost::defer_lock)
@@ -300,6 +338,7 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 	lua_setcallback(m_pLuaState, "get_stimulation", ::lua_get_stimulation_cb, this);
 	lua_setcallback(m_pLuaState, "remove_stimulation", ::lua_remove_stimulation_cb, this);
 	lua_setcallback(m_pLuaState, "send_stimulation", ::lua_send_stimulation_cb, this);
+	lua_setcallback(m_pLuaState, "log", ::lua_log_cb, this);
 
 	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function initialize(box) end"));
 	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function uninitialize(box) end"));
@@ -629,6 +668,21 @@ boolean CBoxAlgorithmLuaStimulator::sendStimulationCB(uint32 ui32OutputIndex, ui
 	{
 		this->getLogManager() << LogLevel_ImportantWarning << "Ignored stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on unexistant output " << (ui32OutputIndex+1) << "\n";
 	}
+	return true;
+}
+
+boolean CBoxAlgorithmLuaStimulator::log(const ELogLevel eLogLevel, const CString& sText)
+{
+	this->getLogManager()
+		<< eLogLevel
+		<< "<"
+		<< LogColor_PushStateBit
+		<< LogColor_ForegroundGreen
+		<< "In Script"
+		<< LogColor_PopStateBit
+		<< "> "
+		<< sText.toASCIIString()
+		<< "\n";
 	return true;
 }
 
