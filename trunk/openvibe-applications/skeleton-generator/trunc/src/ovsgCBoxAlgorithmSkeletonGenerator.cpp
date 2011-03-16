@@ -663,7 +663,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		//Using GNU sed for parsing and replacing tags
 		CString l_sDest = m_sTargetDirectory + "/README-SKGEN-BOX.txt";
 		
-		l_bSuccess &= executeSedSubstitution(l_sBoxCppSkel,"@@Date@@",     l_sDate,l_sDest);
+		l_bSuccess &= executeSedSubstitution(l_sReadmeSkel,"@@Date@@",     l_sDate,l_sDest);
 		l_bSuccess &= executeSedSubstitution(l_sDest,      "@@ClassName@@",m_sClassName);
 		
 		if(l_bSuccess)

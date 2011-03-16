@@ -8,7 +8,7 @@ using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::@@Namespace@@;
 
 /*
-uint64 CBoxAlgorithmMaBoite::getClockFrequency(void)
+uint64 CBoxAlgorithm@@ClassName@@::getClockFrequency(void)
 {
 	return 0; // the box clock frequency
 }
@@ -39,7 +39,7 @@ boolean CBoxAlgorithm@@ClassName@@::uninitialize(void)
 //Uncomment the callback you want to use for calling process function
 
 /*
-boolean CBoxAlgorithmMaBoite::processClock(IMessageClock& rMessageClock)
+boolean CBoxAlgorithm@@ClassName@@::processClock(IMessageClock& rMessageClock)
 {
 	// some pre-processing code if needed...
 
@@ -51,7 +51,7 @@ boolean CBoxAlgorithmMaBoite::processClock(IMessageClock& rMessageClock)
 */
 
 /*
-boolean CBoxAlgorithmMaBoite::processInput(uint32 ui32InputIndex)
+boolean CBoxAlgorithm@@ClassName@@::processInput(uint32 ui32InputIndex)
 {
 	// some pre-processing code if needed...
 
