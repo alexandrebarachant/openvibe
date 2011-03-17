@@ -7,6 +7,8 @@ ov_gnome_mirror=ftp://ftp.gnome.org/pub/GNOME
 
 ov_should_skip_download=true
 ov_should_backup_after_install=false
+ov_native_package_installed=false
+ov_native_package_forced=true
 
 ############################
 ##                        ##
@@ -343,8 +345,6 @@ echo ""
 ##                                ##
 ####################################
 
-ov_native_package_installed=false
-
 if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 
 	echo "Checking native dependencies..."
@@ -373,7 +373,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			echo "  to continue with native packages, answer 'yes' (recommanded)"
 			echo ""
 
-			if [[ -e "$ov_target_folder_hit/native-packages.hit" ]]; then
+			if [[ -e "$ov_target_folder_hit/native-packages.hit" || $ov_native_package_forced == true ]]; then
 				echo "  Do you want to install native packages (y) ? automatically selected yes"
 				ov_answer=yes
 			else
@@ -410,11 +410,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 				echo "  errors / save time. Such installation requires root access. If you want"
 				echo "  to continue with native packages, answer 'yes' (recommanded)"
 				echo ""
-				echo -n "  Do you want to use native packages (y) ?"
-				read ov_answer
-				if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+				if [[ $ov_native_package_forced == true ]]; then
+					echo "  Do you want to use native packages (y) ? automatically selected yes"
 					ov_should_hit_native=true
 					ov_native_package_installed=true
+				else
+					echo -n "  Do you want to use native packages (y) ?"
+					read ov_answer
+					if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+						ov_should_hit_native=true
+						ov_native_package_installed=true
+					fi;
 				fi;
 			fi;
 		fi;
@@ -527,7 +533,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			echo "  to continue with native packages, answer 'yes' (recommanded)"
 			echo ""
 
-			if [[ -e "$ov_target_folder_hit/native-packages.hit" ]]; then
+			if [[ -e "$ov_target_folder_hit/native-packages.hit" || $ov_native_package_forced == true ]]; then
 				echo "  Do you want to install native packages (y) ? automatically selected yes"
 				ov_answer=yes
 			else
@@ -566,11 +572,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 				echo "  errors / save time. Such installation requires root access. If you want"
 				echo "  to continue with native packages, answer 'yes' (recommanded)"
 				echo ""
-				echo -n "  Do you want to use native packages (y) ?"
-				read ov_answer
-				if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+				if [[ $ov_native_package_forced == true ]]; then
+					echo "  Do you want to use native packages (y) ? automatically selected yes"
 					ov_should_hit_native=true
 					ov_native_package_installed=true
+				else
+					echo -n "  Do you want to use native packages (y) ?"
+					read ov_answer
+					if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+						ov_should_hit_native=true
+						ov_native_package_installed=true
+					fi;
 				fi;
 			fi;
 		fi;
@@ -685,7 +697,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			echo "  to continue with native packages, answer 'yes' (recommanded)"
 			echo ""
 
-			if [[ -e "$ov_target_folder_hit/native-packages.hit" ]]; then
+			if [[ -e "$ov_target_folder_hit/native-packages.hit" || $ov_native_package_forced == true ]]; then
 				echo "  Do you want to install native packages (y) ? automatically selected yes"
 				ov_answer=yes
 			else
@@ -720,11 +732,17 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 				echo "  errors / save time. Such installation requires root access. If you want"
 				echo "  to continue with native packages, answer 'yes' (recommanded)"
 				echo ""
-				echo -n "  Do you want to use native packages (y) ?"
-				read ov_answer
-				if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+				if [[ $ov_native_package_forced == true ]]; then
+					echo "  Do you want to use native packages (y) ? automatically selected yes"
 					ov_should_hit_native=true
 					ov_native_package_installed=true
+				else
+					echo -n "  Do you want to use native packages (y) ?"
+					read ov_answer
+					if [[ $ov_answer == "yes" || $ov_answer == "y" || $ov_answer == "" ]]; then
+						ov_should_hit_native=true
+						ov_native_package_installed=true
+					fi;
 				fi;
 			fi;
 		fi;
