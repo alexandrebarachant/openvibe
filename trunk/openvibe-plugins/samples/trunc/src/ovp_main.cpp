@@ -20,6 +20,8 @@
 
 #include "ovpCBoxAlgorithmMeanVariance.h"
 
+#include "ovpCTestCodecToolkit.h"
+
 OVP_Declare_Begin();
 	// rPluginModuleContext.getTypeManager().registerStreamType(OpenViBE::CIdentifier(0x1234,0x5678), "producer/consumer", OV_UndefinedIdentifier);
 
@@ -57,4 +59,6 @@ OVP_Declare_Begin();
 	// OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmNothingDesc);
 
 	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmMeanVarianceDesc);
+
+	OVP_Declare_New(OpenViBEPlugins::Samples::CTestCodecToolkitDesc);
 OVP_Declare_End();
