@@ -29,26 +29,26 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			OpenViBEToolkit::TStreamedMatrixDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oStreamedMatrixDecoder;
-			OpenViBEToolkit::TStreamedMatrixEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oStreamedMatrixEncoder;
+			OpenViBEToolkit::TStreamedMatrixDecoder < CTestCodecToolkit > m_oStreamedMatrixDecoder;
+			OpenViBEToolkit::TStreamedMatrixEncoder < CTestCodecToolkit > m_oStreamedMatrixEncoder;
 
-			OpenViBEToolkit::TChannelLocalisationDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oChannelLocalisationDecoder;
-			OpenViBEToolkit::TChannelLocalisationEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oChannelLocalisationEncoder;
+			OpenViBEToolkit::TChannelLocalisationDecoder < CTestCodecToolkit > m_oChannelLocalisationDecoder;
+			OpenViBEToolkit::TChannelLocalisationEncoder < CTestCodecToolkit > m_oChannelLocalisationEncoder;
 
-			OpenViBEToolkit::TFeatureVectorDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oFeatureVectorDecoder;
-			OpenViBEToolkit::TFeatureVectorEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oFeatureVectorEncoder;
+			OpenViBEToolkit::TFeatureVectorDecoder < CTestCodecToolkit > m_oFeatureVectorDecoder;
+			OpenViBEToolkit::TFeatureVectorEncoder < CTestCodecToolkit > m_oFeatureVectorEncoder;
 
-			OpenViBEToolkit::TSpectrumDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oSpectrumDecoder;
-			OpenViBEToolkit::TSpectrumEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oSpectrumEncoder;
+			OpenViBEToolkit::TSpectrumDecoder < CTestCodecToolkit > m_oSpectrumDecoder;
+			OpenViBEToolkit::TSpectrumEncoder < CTestCodecToolkit > m_oSpectrumEncoder;
 
-			OpenViBEToolkit::TSignalDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oSignalDecoder;
-			OpenViBEToolkit::TSignalEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oSignalEncoder;
+			OpenViBEToolkit::TSignalDecoder < CTestCodecToolkit > m_oSignalDecoder;
+			OpenViBEToolkit::TSignalEncoder < CTestCodecToolkit > m_oSignalEncoder;
 
-			OpenViBEToolkit::TStimulationStreamDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oStimDecoder;
-			OpenViBEToolkit::TStimulationStreamEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oStimEncoder;
+			OpenViBEToolkit::TStimulationStreamDecoder < CTestCodecToolkit > m_oStimDecoder;
+			OpenViBEToolkit::TStimulationStreamEncoder < CTestCodecToolkit > m_oStimEncoder;
 
-			OpenViBEToolkit::TExperimentInformationDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oExperimentInformationDecoder;
-			OpenViBEToolkit::TExperimentInformationEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oExperimentInformationEncoder;
+			OpenViBEToolkit::TExperimentInformationDecoder < CTestCodecToolkit > m_oExperimentInformationDecoder;
+			OpenViBEToolkit::TExperimentInformationEncoder < CTestCodecToolkit > m_oExperimentInformationEncoder;
 
 			/* One decoder per input. This vector makes easy the decoding in one iteration over the inputs. */
 			std::vector < OpenViBEToolkit::TDecoder < CTestCodecToolkit > *> m_vDecoders;
