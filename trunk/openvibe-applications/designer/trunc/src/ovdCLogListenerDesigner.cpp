@@ -34,15 +34,15 @@ CLogListenerDesigner::CLogListenerDesigner(const IKernelContext& rKernelContext,
 {
 
 	m_pTextView = GTK_TEXT_VIEW(gtk_builder_get_object(m_pBuilderInterface, "openvibe-textview_messages"));
-	m_pAlertWindow = GTK_WINDOW(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_alert"));
+	m_pAlertWindow = GTK_WINDOW(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_popup"));
 
 	m_pToggleButtonPopup = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_alert_on_error"));
 
 	m_pLabelCountMessages = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_count_message_label"));
 	m_pLabelCountWarnings = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_count_warning_label"));
 	m_pLabelCountErrors = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_count_error_label"));
-	m_pLabelDialogCountWarnings = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_alert_warning_count"));
-	m_pLabelDialogCountErrors = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_alert_error_count"));
+	m_pLabelDialogCountWarnings = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_popup-warning_count"));
+	m_pLabelDialogCountErrors = GTK_LABEL(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_popup-error_count"));
 
 	m_pImageWarnings = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_count_warning_image"));
 	m_pImageErrors = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_count_error_image"));
@@ -56,9 +56,14 @@ CLogListenerDesigner::CLogListenerDesigner(const IKernelContext& rKernelContext,
 	m_pToggleButtonActive_Error = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_error"));
 	m_pToggleButtonActive_Fatal = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_fatal"));
 
+
+	// set the popup-on-error checkbox according to the configuration token
+	gtk_toggle_button_set_active(m_pToggleButtonPopup, (OpenViBE::boolean)(rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_PopUpOnError}")));
+
+
 	g_signal_connect(G_OBJECT(m_pAlertWindow), "delete_event", G_CALLBACK(::gtk_widget_hide), NULL);
-	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "error_alert-button_view")), "clicked", G_CALLBACK(::focus_message_window_cb), this);
-	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "error_alert-button_ok")), "clicked", G_CALLBACK(::close_messages_alert_window_cb), m_pAlertWindow);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_popup-button_view")), "clicked", G_CALLBACK(::focus_message_window_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_popup-button_ok")), "clicked", G_CALLBACK(::close_messages_alert_window_cb), m_pAlertWindow);
 
 	m_pBuffer = gtk_text_view_get_buffer( m_pTextView );
 
