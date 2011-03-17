@@ -184,7 +184,7 @@ void CConfigurationManager::clear(void)
 boolean CConfigurationManager::addConfigurationFromFile(
 	const CString& rFileNameWildCard)
 {
-	this->getLogManager() << LogLevel_Info << "Adding configuration file(s) [" << rFileNameWildCard << "]\n";
+	this->getLogManager() << LogLevel_Trace << "Adding configuration file(s) [" << rFileNameWildCard << "]\n";
 
 	boolean l_bResult;
 	CConfigurationManagerEntryEnumeratorCallBack l_rCB(getKernelContext());

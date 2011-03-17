@@ -96,7 +96,6 @@ boolean CBox::setAlgorithmClassIdentifier(
 	if(!getKernelContext().getPluginManager().canCreatePluginObject(rAlgorithmClassIdentifier))
 	{
 		this->getLogManager() << LogLevel_Warning << "Box algorithm descriptor not found\n";
-
 		return false;
 	}
 

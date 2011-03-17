@@ -237,7 +237,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDesc(
 		}
 	}
 
-	this->getLogManager() << LogLevel_Warning << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
+	this->getLogManager() << LogLevel_Debug << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
 	return NULL;
 }
 
@@ -255,7 +255,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 		}
 	}
 
-	this->getLogManager() << LogLevel_Warning << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
+	this->getLogManager() << LogLevel_Debug << "Plugin object descriptor class identifier " << rClassIdentifier << " not found\n";
 	return NULL;
 
 }
@@ -457,6 +457,10 @@ IPluginObjectT* CPluginManager::createPluginObjectT(
 	if(l_ui64TargetClassIdentifier!=l_ui64SourceClassIdentifier)
 	{
 		this->getLogManager() << LogLevel_Trace << "Substituting plugin class identifier " << CIdentifier(l_ui64SourceClassIdentifier) << " with new class identifier " << CIdentifier(l_ui64TargetClassIdentifier) << "\n";
+	}
+	else
+	{
+		this->getLogManager() << LogLevel_Debug << "Not substitute plugin found for class identifier " << CIdentifier(l_ui64SourceClassIdentifier) << " (configuration token name was " << CString(l_sSubstitutionTokenName) << ")\n";
 	}
 
 	IPluginObjectDesc* l_pPluginObjectDesc=NULL;
