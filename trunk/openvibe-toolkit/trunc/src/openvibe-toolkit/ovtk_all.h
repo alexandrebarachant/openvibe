@@ -21,6 +21,36 @@
 
 //___________________________________________________________________//
 //                                                                   //
+// Codecs                                                            //
+//___________________________________________________________________//
+//                                                                   //
+#include "codecs/ovtkTCodec.h"
+#include "codecs/encoders/ovtkTEncoder.h"
+#include "codecs/decoders/ovtkTDecoder.h"
+
+#include "codecs/encoders/ovtkTStimulationStreamEncoder.h"
+#include "codecs/decoders/ovtkTStimulationStreamDecoder.h"
+
+#include "codecs/encoders/ovtkTStreamedMatrixEncoder.h"
+#include "codecs/decoders/ovtkTStreamedMatrixDecoder.h"
+
+#include "codecs/encoders/ovtkTSignalEncoder.h"
+#include "codecs/decoders/ovtkTSignalDecoder.h"
+
+#include "codecs/encoders/ovtkTChannelLocalisationEncoder.h"
+#include "codecs/decoders/ovtkTChannelLocalisationDecoder.h"
+
+#include "codecs/encoders/ovtkTExperimentInformationEncoder.h"
+#include "codecs/decoders/ovtkTExperimentInformationDecoder.h"
+
+#include "codecs/encoders/ovtkTFeatureVectorEncoder.h"
+#include "codecs/decoders/ovtkTFeatureVectorDecoder.h"
+
+#include "codecs/encoders/ovtkTSpectrumEncoder.h"
+#include "codecs/decoders/ovtkTSpectrumDecoder.h"
+
+//___________________________________________________________________//
+//                                                                   //
 //                                                                   //
 //___________________________________________________________________//
 //                                                                   //
