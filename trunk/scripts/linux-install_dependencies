@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ov_gnu_mirror=ftp://ftp.cw.net/pub/gnu
-ov_sourceforge_mirror=http://downloads.sourceforge.net/project
+ov_sourceforge_mirror=http://sourceforge.net/projects
 ov_freedesktop_mirror=http://xorg.freedesktop.org
 ov_gnome_mirror=ftp://ftp.gnome.org/pub/GNOME
 
@@ -980,14 +980,15 @@ fi;
 ov_package_url_pkgconfig=http://pkgconfig.freedesktop.org/releases/pkg-config-0.22.tar.gz
 
 # base libraries
-ov_package_url_boost=$ov_sourceforge_mirror/boost/boost/1.42.0/boost_1_42_0.tar.bz2
-ov_package_url_expat=$ov_sourceforge_mirror/expat/expat-2.0.0.tar.gz
+# http://sourceforge.net/projects
+ov_package_url_boost=$ov_sourceforge_mirror/boost/files/boost/1.42.0/boost_1_42_0.tar.bz2
+ov_package_url_expat=$ov_sourceforge_mirror/expat/files/expat/2.0.0/expat-2.0.0.tar.gz
 ov_package_url_libxml=ftp://xmlsoft.org/libxml2/old/libxml2-sources-2.6.31.tar.gz
 ov_package_url_gettext=$ov_gnu_mirror/gettext/gettext-0.16.1.tar.gz
 ov_package_url_pthreadstubs=$ov_freedesktop_mirror/releases/individual/lib/libpthread-stubs-0.1.tar.bz2
-ov_package_url_zlib=$ov_sourceforge_mirror/libpng/zlib-1.2.3.tar.gz
-ov_package_url_libpng=$ov_sourceforge_mirror/libpng/libpng-1.2.32.tar.gz
-ov_package_url_freetype=$ov_sourceforge_mirror/freetype/freetype-2.3.4.tar.gz
+ov_package_url_zlib=$ov_sourceforge_mirror/libpng/files/zlib/1.2.3/zlib-1.2.3.tar.gz
+ov_package_url_libpng=$ov_sourceforge_mirror/libpng/files/libpng12/1.2.44/libpng-1.2.44.tar.bz2
+ov_package_url_freetype=$ov_sourceforge_mirror/freetype/files/freetype2/2.3.4/freetype-2.3.4.tar.bz2
 ov_package_url_fontconfig=$ov_freedesktop_mirror/releases/X11R7.2/src/extras/fontconfig-2.4.2.tar.gz
 ov_package_url_libtool=$ov_gnu_mirror/libtool/libtool-1.5.22.tar.gz
 
@@ -1017,7 +1018,7 @@ ov_package_url_libxf86vidmodeproto=$ov_freedesktop_mirror/releases/individual/pr
 ov_package_url_libXxf86vm=$ov_freedesktop_mirror/releases/individual/lib/libXxf86vm-1.0.1.tar.bz2
 ov_package_url_librandrproto=$ov_freedesktop_mirror/releases/individual/proto/randrproto-1.2.1.tar.bz2
 ov_package_url_libXrandr=$ov_freedesktop_mirror/releases/individual/lib/libXrandr-1.2.2.tar.bz2
-ov_package_url_mesa=$ov_sourceforge_mirror/mesa3d/MesaLib-7.2.tar.bz2
+ov_package_url_mesa=$ov_sourceforge_mirror/mesa3d/files/MesaLib/7.2/MesaLib-7.2.tar.bz2
 
 # GTK+ related packages
 ov_package_url_glib=$ov_gnome_mirror/sources/glib/2.17/glib-2.17.3.tar.bz2
@@ -1026,13 +1027,13 @@ ov_package_url_cairo=http://cairographics.org/releases/cairo-1.6.4.tar.gz
 ov_package_url_pango=$ov_gnome_mirror/sources/pango/1.21/pango-1.21.3.tar.bz2
 ov_package_url_atk=$ov_gnome_mirror/sources/atk/1.22/atk-1.22.0.tar.bz2
 ov_package_url_gtk=$ov_gnome_mirror/sources/gtk+/2.12/gtk+-2.12.11.tar.bz2
-ov_package_url_clearlooks=$ov_sourceforge_mirror/clearlooks/clearlooks-0.6.2.tar.bz2
+ov_package_url_clearlooks=$ov_sourceforge_mirror/clearlooks/files/clearlooks/clearlooks%200.6.2/clearlooks-0.6.2.tar.bz2
 ov_package_url_libglade=$ov_gnome_mirror/sources/libglade/2.6/libglade-2.6.3.tar.bz2
 ov_package_url_glade=$ov_gnome_mirror/sources/glade3/3.5/glade3-3.5.2.tar.bz2
 
 # Computation and signal processing packages
-ov_package_url_itpp_external=$ov_sourceforge_mirror/itpp/itpp-external/3.0.0/itpp-external-3.0.0.tar.bz2
-ov_package_url_itpp=$ov_sourceforge_mirror/itpp/itpp/4.0.6/itpp-4.0.6.tar.bz2
+ov_package_url_itpp_external=$ov_sourceforge_mirror/itpp/files/itpp-external/3.0.0/itpp-external-3.0.0.tar.bz2
+ov_package_url_itpp=$ov_sourceforge_mirror/itpp/files/itpp/4.0.6/itpp-4.0.6.tar.bz2
 ov_package_url_gsl=$ov_gnu_mirror/gsl/gsl-1.9.tar.gz
 ov_package_url_torch=http://www.torch.ch/archives/Torch3src.tgz
 ov_package_url_bliff=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/bliff-src-16.tar.bz2
@@ -1040,16 +1041,16 @@ ov_package_url_bliff=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/bliff
 # OpenMASK 4 related packages
 ov_package_url_cmake=http://www.cmake.org/files/v2.6/cmake-2.6.2.tar.gz
 ov_package_url_obt=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/obt-src-22.tar.bz2
-ov_package_url_freeimage=$ov_sourceforge_mirror/freeimage/FreeImage3110.zip
-ov_package_url_ois=$ov_sourceforge_mirror/wgois/Source%20Release/1.2/ois_1.2.0.tar.gz
-ov_package_url_zziplib=$ov_sourceforge_mirror/zziplib/zziplib-0.10.82.tar.bz2
+ov_package_url_freeimage=$ov_sourceforge_mirror/freeimage/files/Source%20Distribution/3.11.0/FreeImage3110.zip
+ov_package_url_ois=$ov_sourceforge_mirror/wgois/files/Source%20Release/1.2/ois_1.2.0.tar.gz
+ov_package_url_zziplib=$ov_sourceforge_mirror/zziplib/files/zziplib10/0.10.82/zziplib-0.10.82.tar.bz2
 if [ "$ov_machine" == "x86_64" ]; then
 ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86_64.tar.gz
 else
 ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86.tar.gz
 fi;
-ov_package_url_cegui=$ov_sourceforge_mirror/crayzedsgui/CEGUI%20Mk-2/0.7.1/CEGUI-0.7.1.tar.gz
-ov_package_url_ogre=$ov_sourceforge_mirror/ogre/ogre/1.7/ogre_src_v1-7-1.tar.bz2
+ov_package_url_cegui=$ov_sourceforge_mirror/crayzedsgui/files/CEGUI%20Mk-2/0.7.1/CEGUI-0.7.1.tar.gz
+ov_package_url_ogre=$ov_sourceforge_mirror/ogre/files/ogre/1.7/ogre_src_v1-7-1.tar.bz2
 ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/old_versions/vrpn_07_26.zip
 ov_package_url_openmask4=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4~dotsceneloader-src-164.tar.bz2
 ov_package_url_openmask4tutorial=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4-tutorial-src-164.tar.bz2
