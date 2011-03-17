@@ -5,10 +5,12 @@
 
 #include "../../ovtk_base.h"
 
+#include "ovtkTDecoder.h"
+
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TStreamedMatrixDecoder : public T
+	class TStreamedMatrixDecoderLocal : public T
 	{
 	protected:
 
@@ -35,7 +37,7 @@ namespace OpenViBEToolkit
 
 		OpenViBE::boolean uninitialize(void)
 		{
-			if(m_pBoxAlgorithm == NULL)
+			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
 			{
 				return false;
 			}
@@ -54,12 +56,6 @@ namespace OpenViBEToolkit
 			return m_pOutputMatrix;
 		}
 
-/*
-		using T::isHeaderReceived;
-		using T::isBufferReceived;
-		using T::isEndReceived;
-*/
-
 		virtual OpenViBE::boolean isHeaderReceived(void)
 		{
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader);
@@ -75,6 +71,11 @@ namespace OpenViBEToolkit
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd);
 		}
 
+	};
+
+	template <class T>
+	class TStreamedMatrixDecoder : public TStreamedMatrixDecoderLocal < TDecoder < T > >
+	{
 	};
 };
 

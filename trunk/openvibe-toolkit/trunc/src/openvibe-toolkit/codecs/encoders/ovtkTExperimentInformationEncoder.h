@@ -5,10 +5,12 @@
 
 #include "../../ovtk_base.h"
 
+#include "ovtkTEncoder.h"
+
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TExperimentInformationEncoder : public T
+	class TExperimentInformationEncoderLocal : public T
 	{
 	protected:
 
@@ -58,7 +60,7 @@ namespace OpenViBEToolkit
 
 		OpenViBE::boolean uninitialize(void)
 		{
-			if(m_pBoxAlgorithm == NULL)
+			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
 			{
 				return false;
 			}
@@ -146,6 +148,11 @@ namespace OpenViBEToolkit
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeEnd);
 		}
+	};
+
+	template <class T>
+	class TExperimentInformationEncoder : public TExperimentInformationEncoderLocal < TEncoder < T > >
+	{
 	};
 };
 

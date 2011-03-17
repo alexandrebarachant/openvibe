@@ -5,10 +5,12 @@
 
 #include "../../ovtk_base.h"
 
+#include "ovtkTDecoder.h"
+
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TStimulationStreamDecoder : public T
+	class TStimulationStreamDecoderLocal : public T
 	{
 	protected:
 
@@ -35,7 +37,7 @@ namespace OpenViBEToolkit
 
 		OpenViBE::boolean uninitialize(void)
 		{
-			if(m_pBoxAlgorithm == NULL)
+			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
 			{
 				return false;
 			}
@@ -68,6 +70,11 @@ namespace OpenViBEToolkit
 		{
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd);
 		}
+	};
+
+	template <class T>
+	class TStimulationStreamDecoder : public TStimulationStreamDecoderLocal < TDecoder < T > >
+	{
 	};
 };
 
