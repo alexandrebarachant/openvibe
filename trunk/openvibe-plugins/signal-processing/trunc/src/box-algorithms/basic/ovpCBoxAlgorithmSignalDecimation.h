@@ -12,7 +12,6 @@
 #define OVP_ClassId_BoxAlgorithm_SignalDecimation     OpenViBE::CIdentifier(0x012F4BEA, 0x3BE37C66)
 #define OVP_ClassId_BoxAlgorithm_SignalDecimationDesc OpenViBE::CIdentifier(0x1C5F1356, 0x1E685777)
 
-
 namespace OpenViBEPlugins
 {
 	namespace SignalProcessing
@@ -33,6 +32,18 @@ namespace OpenViBEPlugins
 		protected:
 
 			OpenViBE::int64 m_i64DecimationFactor;
+			OpenViBE::uint32 m_ui32ChannelCount;
+			OpenViBE::uint32 m_ui32InputSampleIndex;
+			OpenViBE::uint32 m_ui32InputSampleCountPerSentBlock;
+			OpenViBE::uint64 m_ui64InputSamplingFrequency;
+			OpenViBE::uint32 m_ui32OutputSampleIndex;
+			OpenViBE::uint32 m_ui32OutputSampleCountPerSentBlock;
+			OpenViBE::uint64 m_ui64OutputSamplingFrequency;
+
+			OpenViBE::uint64 m_ui64TotalSampleCount;
+			OpenViBE::uint64 m_ui64StartTimeBase;
+			OpenViBE::uint64 m_ui64LastStartTime;
+			OpenViBE::uint64 m_ui64LastEndTime;
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamDecoder;
 			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pMemoryBuffer;
