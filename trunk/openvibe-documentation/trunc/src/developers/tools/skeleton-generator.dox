@@ -13,7 +13,7 @@ Once all entries are filled, they are checked and the generation process can be 
 
 \section Doc_DeveloperTools_SkeletonGenerator_Internals Important Warnings
 
-The <i> skeleton-generator </i> uses the GNU utility \i sed to replace tags by user's specific information. 
+The <i> skeleton-generator </i> uses the GNU utility \i sed to replace tags by user's specific information in template files. 
 To perform these replacements without any problem, the tool checks the information provided. 
 Some particular entries have constraints, for example you cannot use letters in the field "sampling frequencies" of your driver skeleton.
 
@@ -31,7 +31,7 @@ The first interface is simple. You have to enter the developer name and its affi
 
 For both skeleton generator you will have 3 buttons:
  - <b>Check</b> : verify all fields, and asks for modification if needed.
- - <b>Ok</b> : generate the files. This button is enabled only after check process.
+ - <b>Ok</b> : generate the files. This button is enabled only after successful check process. If you modify some entries, please be sure to check them again.
  - <b>Save & Exit</b> : exit the application and save the current fields for the next time.
  
 Press any "help!" buttons for more details about a field.
@@ -45,16 +45,16 @@ Choose the target directory and you're done.
 <img src="sk-gen-driver.png"></img>
 <center><strong>Fig.2 Driver Skeleton Generator.</strong></center>
 
-Please read the \subpage Doc_DeveloperDocumentation_Driver "dedicated tutorials" to learn how to build your new driver.
+Please read the \subpage Doc_DeveloperDocumentation_Driver "dedicated tutorials" to learn how to implement your new driver.
 
 \section Doc_DeveloperTools_SkeletonGenerator_Box The Box Algorithm Skeleton Generator
 
 Bulding a new plugin is lot more complicated. Generating the skeleton can be done in five steps, each one one a different tab.
-- <b>Description</b> : basic information,such as box name, category, icon used in the designer...
-- <b>Inputs</b> : add inputs by specifying name and type
-- <b>Outputs</b> : add outputs by specifying name and type
-- <b>Settings</b> : add settings by specifying name, type and default value
-- <b>Algorithms</b> : add input decoders and output encoders. You should add one algorithm per input/output
+- <b>Description</b> : basic information,such as box name, category, icon used in the designer, etc.
+- <b>Inputs</b> : add box inputs by specifying name and type
+- <b>Outputs</b> : add box outputs by specifying name and type
+- <b>Settings</b> : add box settings by specifying name, type and default value
+- <b>Algorithms</b> : add input decoders and output encoders. You should add one algorithm per input/output, even if they have the same type.
 
 \b WARNING : the settings default values are not checked. Please be sure to enter coherent values.
 
@@ -64,4 +64,6 @@ Bulding a new plugin is lot more complicated. Generating the skeleton can be don
 The skeleton code is widely commented to help you understand the various possibilities of implementation.
 For a first tutorial, please read the \subpage Doc_DeveloperDocumentation_Plugin "dedicated pages".
 
+Feel free to ask your questions on the forum. Experienced developers will answer you asap !
+Thanks for using OpenViBE.
 */
