@@ -18,11 +18,23 @@
 #include "ovkCOgreObject.h"
 #include "ovkCOgreVisualisation.h"
 
+using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
-using namespace std;
+using namespace OpenViBE::Plugins;
 
-COgreObject::COgreObject(const IKernelContext& rKernelContext, OpenViBE::CIdentifier oIdentifier, COgreVisualisation* pOgreVis, Ogre::SceneManager* pSceneManager, const CString& rGeometryFileName) :
+typedef Ogre::Real ogre_float;
+typedef Ogre::uint32 ogre_uint32;
+typedef Ogre::uint64 ogre_uint64;
+typedef Ogre::uint16 ogre_uint16;
+typedef Ogre::uint8  ogre_uint8;
+#define uint8  OpenViBE::uint8
+#define uint16 OpenViBE::uint16
+#define uint32 OpenViBE::uint32
+#define uint64 OpenViBE::uint64
+#define boolean OpenViBE::boolean
+
+COgreObject::COgreObject(const IKernelContext& rKernelContext, CIdentifier oIdentifier, COgreVisualisation* pOgreVis, Ogre::SceneManager* pSceneManager, const CString& rGeometryFileName) :
 	m_rKernelContext(rKernelContext),
 	m_oIdentifier(oIdentifier),
 	m_sName(oIdentifier.toString()),
@@ -683,7 +695,7 @@ boolean COgreObject::setDiffuseColor(const Ogre::ColourValue& oDiffuse)
 	return true;
 }
 
-boolean COgreObject::setDiffuseColor(Ogre::Real r, Ogre::Real g, Ogre::Real b)
+boolean COgreObject::setDiffuseColor(ogre_float r, ogre_float g, ogre_float b)
 {
 	if(m_pColorAnimator != NULL)
 	{
@@ -692,7 +704,7 @@ boolean COgreObject::setDiffuseColor(Ogre::Real r, Ogre::Real g, Ogre::Real b)
 	return true;
 }
 
-boolean COgreObject::setTransparency(Ogre::Real t)
+boolean COgreObject::setTransparency(ogre_float t)
 {
 	if(m_pColorAnimator!= NULL)
 	{
@@ -701,7 +713,7 @@ boolean COgreObject::setTransparency(Ogre::Real t)
 	return true;
 }
 
-boolean COgreObject::setPosition(Ogre::Real positionX, Ogre::Real positionY, Ogre::Real positionZ)
+boolean COgreObject::setPosition(ogre_float positionX, ogre_float positionY, ogre_float positionZ)
 {
 	if(m_pTransformAnimator != NULL)
 	{
@@ -710,7 +722,7 @@ boolean COgreObject::setPosition(Ogre::Real positionX, Ogre::Real positionY, Ogr
 	return true;
 }
 
-boolean COgreObject::setRotation(Ogre::Real rotationX, Ogre::Real rotationY, Ogre::Real rotationZ)
+boolean COgreObject::setRotation(ogre_float rotationX, ogre_float rotationY, ogre_float rotationZ)
 {
 	if(m_pTransformAnimator != NULL)
 	{
@@ -719,7 +731,7 @@ boolean COgreObject::setRotation(Ogre::Real rotationX, Ogre::Real rotationY, Ogr
 	return true;
 }
 
-boolean COgreObject::setRotation(Ogre::Real rotationX, Ogre::Real rotationY, Ogre::Real rotationZ, Ogre::Real rotationW)
+boolean COgreObject::setRotation(ogre_float rotationX, ogre_float rotationY, ogre_float rotationZ, ogre_float rotationW)
 {
 	if(m_pTransformAnimator != NULL)
 	{
@@ -728,7 +740,7 @@ boolean COgreObject::setRotation(Ogre::Real rotationX, Ogre::Real rotationY, Ogr
 	return true;
 }
 
-boolean COgreObject::setScale(Ogre::Real scaleX, Ogre::Real scaleY, Ogre::Real scaleZ)
+boolean COgreObject::setScale(ogre_float scaleX, ogre_float scaleY, ogre_float scaleZ)
 {
 	if(m_pTransformAnimator != NULL)
 	{
@@ -737,7 +749,7 @@ boolean COgreObject::setScale(Ogre::Real scaleX, Ogre::Real scaleY, Ogre::Real s
 	return true;
 }
 
-boolean COgreObject::setVertexColorArray(Ogre::uint32 ui32VertexColorCount, Ogre::Real* pVertexColorArray)
+boolean COgreObject::setVertexColorArray(ogre_uint32 ui32VertexColorCount, ogre_float* pVertexColorArray)
 {
 	if(m_pVertexBufferAnimator != NULL)
 	{
@@ -746,7 +758,7 @@ boolean COgreObject::setVertexColorArray(Ogre::uint32 ui32VertexColorCount, Ogre
 	return true;
 }
 
-boolean COgreObject::getVertexCount(Ogre::uint32& ui32VertexCount) const
+boolean COgreObject::getVertexCount(ogre_uint32& ui32VertexCount) const
 {
 	Ogre::Entity* l_pEntity;
 	if(getFirstEntityInHierarchy(&getSceneNode(), l_pEntity) == false)
@@ -771,7 +783,7 @@ boolean COgreObject::getVertexCount(Ogre::uint32& ui32VertexCount) const
 	return true;
 }
 
-boolean COgreObject::getVertexPositionArray(Ogre::uint32 ui32VertexCount, Ogre::Real* pVertexPositionArray) const
+boolean COgreObject::getVertexPositionArray(ogre_uint32 ui32VertexCount, ogre_float* pVertexPositionArray) const
 {
 	if(pVertexPositionArray == NULL)
 	{
@@ -844,7 +856,7 @@ boolean COgreObject::getVertexPositionArray(Ogre::uint32 ui32VertexCount, Ogre::
 	return true;
 }
 
-boolean COgreObject::getTriangleCount(Ogre::uint32& ui32TriangleCount) const
+boolean COgreObject::getTriangleCount(ogre_uint32& ui32TriangleCount) const
 {
 	Ogre::Entity* l_pEntity;
 	if(getFirstEntityInHierarchy(&getSceneNode(), l_pEntity) == false)
@@ -869,7 +881,7 @@ boolean COgreObject::getTriangleCount(Ogre::uint32& ui32TriangleCount) const
 	return true;
 }
 
-boolean COgreObject::getTriangleIndexArray(Ogre::uint32 ui32TriangleCount, OpenViBE::uint32* pTriangleIndexArray) const
+boolean COgreObject::getTriangleIndexArray(ogre_uint32 ui32TriangleCount, uint32* pTriangleIndexArray) const
 {
 	if(pTriangleIndexArray == NULL)
 	{
@@ -913,14 +925,14 @@ boolean COgreObject::getTriangleIndexArray(Ogre::uint32 ui32TriangleCount, OpenV
 	{
 		for(size_t j = l_ui32StartIndex; j<l_pSubMesh->indexData->indexCount+l_ui32StartIndex; ++j, l_pIndexBufferPointer += l_pIndexBuffer->getIndexSize())
 		{
-			pTriangleIndexArray[j] = *((Ogre::uint16*)l_pIndexBufferPointer);
+			pTriangleIndexArray[j] = *((ogre_uint16*)l_pIndexBufferPointer);
 		}
 	}
 	else //IT_32BIT
 	{
 		for(size_t j = l_ui32StartIndex; j<l_pSubMesh->indexData->indexCount+l_ui32StartIndex; ++j, l_pIndexBufferPointer += l_pIndexBuffer->getIndexSize())
 		{
-			pTriangleIndexArray[j] = *((Ogre::uint32*)l_pIndexBufferPointer);
+			pTriangleIndexArray[j] = *((ogre_uint32*)l_pIndexBufferPointer);
 		}
 	}
 

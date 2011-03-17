@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#if defined Socket_OS_Linux
+#if defined Socket_OS_Linux || defined Socket_OS_MacOS
  #include <sys/select.h>
  #include <sys/types.h>
  #include <sys/socket.h>
@@ -13,8 +13,13 @@
  // #include <netdb.h>
  #include <ctime>
 
- #define Socket_SendFlags    MSG_NOSIGNAL
- #define Socket_ReceiveFlags MSG_NOSIGNAL
+ #if defined Socket_OS_MacOS
+  #define Socket_SendFlags    0
+  #define Socket_ReceiveFlags 0
+ #else
+  #define Socket_SendFlags    MSG_NOSIGNAL
+  #define Socket_ReceiveFlags MSG_NOSIGNAL
+ #endif
 #elif defined Socket_OS_Windows
  #include <winsock2.h>
  #include <windows.h>

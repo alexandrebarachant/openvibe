@@ -5,19 +5,34 @@
 
 #if defined OVK_OS_Windows
 #  include <gdk/gdkwin32.h>
-#else
+#elif defined OVK_OS_Linux
 #  include <gdk/gdkx.h>
+#elif defined OVK_OS_MacOS
+#  define Cursor XCursor
+#  include <gdk/gdkx.h>
+#  undef Cursor
+#else
 #endif
 
-#define boolean OpenViBE::boolean
-
+using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Tools;
-using namespace std;
 
-CVisualisationManager::CVisualisationManager(const OpenViBE::Kernel::IKernelContext& rKernelContext)
-	:OpenViBE::Kernel::TKernelObject<OpenViBE::Kernel::IVisualisationManager>(rKernelContext)
+typedef Ogre::Real ogre_float;
+typedef Ogre::uint32 ogre_uint32;
+typedef Ogre::uint64 ogre_uint64;
+typedef Ogre::uint16 ogre_uint16;
+typedef Ogre::uint8  ogre_uint8;
+#define uint8  OpenViBE::uint8
+#define uint16 OpenViBE::uint16
+#define uint32 OpenViBE::uint32
+#define uint64 OpenViBE::uint64
+#define boolean OpenViBE::boolean
+
+CVisualisationManager::CVisualisationManager(const IKernelContext& rKernelContext)
+	:TKernelObject<IVisualisationManager>(rKernelContext)
 	,m_pPrimaryRenderWindowWidget(NULL)
 	,m_pOgreVisualisation(NULL)
 {

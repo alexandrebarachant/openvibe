@@ -8,8 +8,11 @@
 #include <cfloat>
 
 #if defined OVTK_OS_Windows
-#define isnan _isnan
-#define isinf !_finite
+ #define isnan _isnan
+ #define isinf !_finite
+#elif defined OVTK_OS_MacOS
+ #define isnan std::isnan
+ #define isinf std::isinf
 #endif
 
 using namespace OpenViBE;

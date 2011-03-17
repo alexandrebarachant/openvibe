@@ -7,17 +7,34 @@
 #include "ovkCOgreVisualisation.h"
 #include "ovkCOgreScene.h"
 
-#if defined( __WIN32__ ) || defined( _WIN32 )
+#if defined OVK_OS_Windows
 #  include <gdk/gdkwin32.h>
-#else
+#elif defined OVK_OS_Linux
 #  include <gdk/gdkx.h>
+#elif defined OVK_OS_MacOS
+#  define Cursor XCursor
+#  include <gdk/gdkx.h>
+#  undef Cursor
+#else
 #endif
 
 using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
+using namespace OpenViBE::Plugins;
 
-COgreScene::COgreScene(const OpenViBE::Kernel::IKernelContext& rKernelContext, const Ogre::String& rName, COgreVisualisation* pOgreVis) :
+typedef Ogre::Real ogre_float;
+typedef Ogre::uint32 ogre_uint32;
+typedef Ogre::uint64 ogre_uint64;
+typedef Ogre::uint16 ogre_uint16;
+typedef Ogre::uint8  ogre_uint8;
+#define uint8  OpenViBE::uint8
+#define uint16 OpenViBE::uint16
+#define uint32 OpenViBE::uint32
+#define uint64 OpenViBE::uint64
+#define boolean OpenViBE::boolean
+
+COgreScene::COgreScene(const IKernelContext& rKernelContext, const Ogre::String& rName, COgreVisualisation* pOgreVis) :
 	m_rKernelContext(rKernelContext),
 	m_sName(rName),
 	m_pOgreVis(pOgreVis),
@@ -28,7 +45,7 @@ COgreScene::COgreScene(const OpenViBE::Kernel::IKernelContext& rKernelContext, c
 COgreScene::~COgreScene()
 {
 	//destroy objects
-	std::map<OpenViBE::CIdentifier, COgreObject*>::iterator it = m_mOgreObjectIds.begin();
+	std::map < CIdentifier, COgreObject* >::iterator it = m_mOgreObjectIds.begin();
 	while(it != m_mOgreObjectIds.end())
 	{
 		delete it->second;
@@ -81,19 +98,19 @@ boolean COgreScene::init()
 	//front light
 	Ogre::Light* l_pLight1 = m_pSceneManager->createLight(string(m_sName) + "_Light_0");
 	l_pLight1->setType(Ogre::Light::LT_DIRECTIONAL);
-	l_pLight1->setDirection(Ogre::Real(0), Ogre::Real(0), Ogre::Real(-1));
+	l_pLight1->setDirection(ogre_float(0), ogre_float(0), ogre_float(-1));
 	l_pLight1->setDiffuseColour(1, 1, 1);
 
 	//back light
 	Ogre::Light* l_pLight2 = m_pSceneManager->createLight(string(m_sName) + "_Light_1");
 	l_pLight2->setType(Ogre::Light::LT_DIRECTIONAL);
-	l_pLight2->setDirection(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1));
+	l_pLight2->setDirection(ogre_float(0), ogre_float(0), ogre_float(1));
 	l_pLight2->setDiffuseColour(1, 1, 1);
 
 	//top light
 	Ogre::Light* l_pLight3 = m_pSceneManager->createLight(string(m_sName) + "_Light_2");
 	l_pLight3->setType(Ogre::Light::LT_DIRECTIONAL);
-	l_pLight3->setDirection(Ogre::Real(0), Ogre::Real(-1), Ogre::Real(0));
+	l_pLight3->setDirection(ogre_float(0), ogre_float(-1), ogre_float(0));
 	l_pLight3->setDiffuseColour(1, 1, 1);
 
 	return true;
@@ -117,7 +134,7 @@ void COgreScene::getBoundingBox(float32& rMinX, float32& rMinY, float32& rMinZ, 
 	}
 	else
 	{
-		std::map<OpenViBE::CIdentifier, COgreObject*>::iterator it;
+		std::map < CIdentifier, COgreObject* >::iterator it;
 
 		rMinX = FLT_MAX;
 		rMinY = FLT_MAX;

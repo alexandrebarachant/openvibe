@@ -15,9 +15,14 @@
 #include "../ovkGtkOVCustom.h"
 
 #if defined OVK_OS_Windows
- #include <gdk/gdkwin32.h>
+#  include <gdk/gdkwin32.h>
 #elif defined OVK_OS_Linux
- #include <gdk/gdkx.h>
+#  include <gdk/gdkx.h>
+#elif defined OVK_OS_MacOS
+#  define Cursor XCursor
+#  include <gdk/gdkx.h>
+#  undef Cursor
+#else
 #endif
 
 using namespace std;
@@ -25,7 +30,17 @@ using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
+typedef Ogre::Real ogre_float;
+typedef Ogre::uint32 ogre_uint32;
+typedef Ogre::uint64 ogre_uint64;
+typedef Ogre::uint16 ogre_uint16;
+typedef Ogre::uint8  ogre_uint8;
+#define uint8  OpenViBE::uint8
+#define uint16 OpenViBE::uint16
+#define uint32 OpenViBE::uint32
+#define uint64 OpenViBE::uint64
 #define boolean OpenViBE::boolean
+
 //#define _BoxAlgorithm_ScopeTester_
 //#define _SimulatedBox_ScopeTester_
 #define _MaxCrash_ 5
@@ -90,7 +105,7 @@ CSimulatedBox::~CSimulatedBox(void)
 #endif
 
 	//delete OgreWidgets
-	std::map<GtkWidget*, OpenViBE::CIdentifier>::iterator it;
+	std::map<GtkWidget*, CIdentifier>::iterator it;
 	for(it = m_mOgreWindows.begin(); it != m_mOgreWindows.end(); it = m_mOgreWindows.begin())
 	{
 		//this will destroy widget then call handleDestroyEvent to destroy COgreWindow
@@ -508,7 +523,7 @@ boolean CSimulatedBox::setObjectTransparency(const CIdentifier& rIdentifier, flo
 	return true;
 }
 
-boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier, const OpenViBE::uint32 ui32VertexColorCount, const float32* pVertexColorArray)
+boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier, const uint32 ui32VertexColorCount, const float32* pVertexColorArray)
 {
 	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
 	if(l_pOgreObject == NULL)
@@ -516,13 +531,13 @@ boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier,
 		return false;
 	}
 
-	if(sizeof(Ogre::Real) == sizeof(OpenViBE::float32))
+	if(sizeof(ogre_float) == sizeof(float32))
 	{
-		return l_pOgreObject->setVertexColorArray((Ogre::uint32)ui32VertexColorCount, (Ogre::Real*)pVertexColorArray);
+		return l_pOgreObject->setVertexColorArray((ogre_uint32)ui32VertexColorCount, (ogre_float*)pVertexColorArray);
 	}
 	else
 	{
-		Ogre::Real* l_pOgreVertexColorArray(new Ogre::Real[4*ui32VertexColorCount]);
+		ogre_float* l_pOgreVertexColorArray(new ogre_float[4*ui32VertexColorCount]);
 		for(uint32 i=0; i<ui32VertexColorCount; i++)
 		{
 			l_pOgreVertexColorArray[4*i] = pVertexColorArray[4*i];
@@ -530,7 +545,7 @@ boolean CSimulatedBox::setObjectVertexColorArray(const CIdentifier& rIdentifier,
 			l_pOgreVertexColorArray[4*i+2] = pVertexColorArray[4*i+2];
 			l_pOgreVertexColorArray[4*i+3] = pVertexColorArray[4*i+3];
 		}
-		boolean l_bRes = l_pOgreObject->setVertexColorArray((Ogre::uint32)ui32VertexColorCount, l_pOgreVertexColorArray);
+		boolean l_bRes = l_pOgreObject->setVertexColorArray((ogre_uint32)ui32VertexColorCount, l_pOgreVertexColorArray);
 		delete[] l_pOgreVertexColorArray;
 		return l_bRes;
 	}
@@ -543,8 +558,8 @@ boolean CSimulatedBox::getObjectAxisAlignedBoundingBox(const CIdentifier& rIdent
 	{
 		return false;
 	}
-	Ogre::Real l_oMin[3];
-	Ogre::Real l_oMax[3];
+	ogre_float l_oMin[3];
+	ogre_float l_oMax[3];
 	l_pOgreObject->getWorldBoundingBox(l_oMin[0], l_oMin[1], l_oMin[2], l_oMax[0], l_oMax[1], l_oMax[2]);
 	pMinimum[0] = l_oMin[0];
 	pMinimum[1] = l_oMin[1];
@@ -555,31 +570,31 @@ boolean CSimulatedBox::getObjectAxisAlignedBoundingBox(const CIdentifier& rIdent
 	return true;
 }
 
-boolean CSimulatedBox::getObjectVertexCount(const CIdentifier& rIdentifier, OpenViBE::uint32& ui32VertexCount) const
+boolean CSimulatedBox::getObjectVertexCount(const CIdentifier& rIdentifier, uint32& ui32VertexCount) const
 {
 	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
 	if(l_pOgreObject == NULL)
 	{
 		return false;
 	}
-	return l_pOgreObject->getVertexCount((Ogre::uint32&)ui32VertexCount);
+	return l_pOgreObject->getVertexCount((ogre_uint32&)ui32VertexCount);
 }
 
-boolean CSimulatedBox::getObjectVertexPositionArray( const CIdentifier& rIdentifier, const OpenViBE::uint32 ui32VertexCount, float32* pVertexPositionArray) const
+boolean CSimulatedBox::getObjectVertexPositionArray( const CIdentifier& rIdentifier, const uint32 ui32VertexCount, float32* pVertexPositionArray) const
 {
 	COgreObject* l_pOgreObject = m_pOgreVis->getOgreScene(m_oSceneIdentifier)->getOgreObject(rIdentifier);
 	if(l_pOgreObject == NULL)
 	{
 		return false;
 	}
-	if(sizeof(Ogre::Real) == sizeof(OpenViBE::float32))
+	if(sizeof(ogre_float) == sizeof(float32))
 	{
-		return l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexCount, (Ogre::Real*)pVertexPositionArray);
+		return l_pOgreObject->getVertexPositionArray((ogre_uint32)ui32VertexCount, (ogre_float*)pVertexPositionArray);
 	}
 	else
 	{
-		Ogre::Real* l_pOgreVertexPositionArray(new Ogre::Real[4*ui32VertexCount]);
-		boolean l_bRes = l_pOgreObject->getVertexPositionArray((Ogre::uint32)ui32VertexCount, pVertexPositionArray);
+		ogre_float* l_pOgreVertexPositionArray(new ogre_float[4*ui32VertexCount]);
+		boolean l_bRes = l_pOgreObject->getVertexPositionArray((ogre_uint32)ui32VertexCount, pVertexPositionArray);
 		if(l_bRes == true)
 		{
 			for(uint32 i=0; i<ui32VertexCount; i++)
@@ -602,7 +617,7 @@ boolean CSimulatedBox::getObjectTriangleCount(const CIdentifier& rIdentifier, ui
 	{
 		return false;
 	}
-	return l_pOgreObject->getTriangleCount((Ogre::uint32&)ui32TriangleCount);
+	return l_pOgreObject->getTriangleCount((ogre_uint32&)ui32TriangleCount);
 }
 
 boolean CSimulatedBox::getObjectTriangleIndexArray(const CIdentifier& rIdentifier, uint32 ui32TriangleCount, uint32* pTriangleIndexArray) const
@@ -612,14 +627,14 @@ boolean CSimulatedBox::getObjectTriangleIndexArray(const CIdentifier& rIdentifie
 	{
 		return false;
 	}
-	if(sizeof(Ogre::uint32) == sizeof(OpenViBE::uint32))
+	if(sizeof(ogre_uint32) == sizeof(uint32))
 	{
-		return l_pOgreObject->getTriangleIndexArray((Ogre::uint32)ui32TriangleCount, (Ogre::uint32*)pTriangleIndexArray);
+		return l_pOgreObject->getTriangleIndexArray((ogre_uint32)ui32TriangleCount, (ogre_uint32*)pTriangleIndexArray);
 	}
 	else
 	{
-		Ogre::uint32* l_pOgreTriangleIndexArray(new Ogre::uint32[3*ui32TriangleCount]);
-		boolean l_bRes = l_pOgreObject->getTriangleIndexArray((Ogre::uint32)ui32TriangleCount, pTriangleIndexArray);
+		ogre_uint32* l_pOgreTriangleIndexArray(new ogre_uint32[3*ui32TriangleCount]);
+		boolean l_bRes = l_pOgreObject->getTriangleIndexArray((ogre_uint32)ui32TriangleCount, pTriangleIndexArray);
 		if(l_bRes == true)
 		{
 			for(uint32 i=0; i<ui32TriangleCount; i++)
@@ -856,7 +871,7 @@ boolean CSimulatedBox::processClock(void)
 					m_ui64LastClockActivationDate=m_ui64LastClockActivationDate+m_ui64ClockActivationStep;
 				}
 
-				Kernel::CMessageClock l_oClockMessage(this->getKernelContext());
+				CMessageClock l_oClockMessage(this->getKernelContext());
 				l_oClockMessage.setTime(m_ui64LastClockActivationDate);
 				m_pBoxAlgorithm->processClock(l_oBoxAlgorithmContext, l_oClockMessage);
 				m_oBenchmarkChronoProcessClock.stepOut();
