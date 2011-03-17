@@ -64,7 +64,6 @@ boolean CTestCodecToolkit::initialize(void)
 	m_vDecoders.push_back(&m_oExperimentInformationDecoder);
 	m_vEncoders.push_back(&m_oExperimentInformationEncoder);
 
-	
 	return true;
 }
 
@@ -170,6 +169,5 @@ boolean CTestCodecToolkit::process(void)
 		}
 	}
 
-	
 	return true;
 }

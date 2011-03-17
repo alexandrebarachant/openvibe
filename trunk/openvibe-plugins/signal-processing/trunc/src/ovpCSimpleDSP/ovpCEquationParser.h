@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_SignalProcessing_CEquationParser_H__
 #define __OpenViBEPlugins_SignalProcessing_CEquationParser_H__
 
+#include "../ovp_defines.h"
+
 #include "ovpCEquationParserGrammar.h"
 #include "ovpCAbstractTree.h"
 

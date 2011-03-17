@@ -1,6 +1,11 @@
 #ifndef __OpenViBEToolkit_All_H__
 #define __OpenViBEToolkit_All_H__
 
+
+#ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+ #include "ovp_global_defines.h"
+#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+
 //___________________________________________________________________//
 //                                                                   //
 // Basic includes                                                    //
@@ -24,6 +29,7 @@
 // Codecs                                                            //
 //___________________________________________________________________//
 //                                                                   //
+
 #include "codecs/ovtkTCodec.h"
 #include "codecs/encoders/ovtkTEncoder.h"
 #include "codecs/decoders/ovtkTDecoder.h"

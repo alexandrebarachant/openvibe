@@ -1,7 +1,9 @@
 #ifndef __OpenViBEToolkit_TCodec_H__
 #define __OpenViBEToolkit_TCodec_H__
 
-#include <openvibe/ov_all.h>
+#ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+
+#include "../ovtk_base.h"
 
 namespace OpenViBEToolkit
 {
@@ -9,14 +11,10 @@ namespace OpenViBEToolkit
 	class TCodec
 	{
 	protected:
-		// The Box Algorithm that actually uses this Codec, so we can get the context.
+
 		T* m_pBoxAlgorithm;
 
 		OpenViBE::Kernel::IAlgorithmProxy* m_pCodec;
-
-		//// const is for input
-		//OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > m_pInputMemoryBuffer;
-		//OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > m_pOutputMemoryBuffer;
 
 	public:
 		TCodec()
@@ -40,46 +38,28 @@ namespace OpenViBEToolkit
 
 		virtual OpenViBE::boolean uninitialize(void) { return false;}
 
-		/*virtual void setInputChunk(const OpenViBE::IMemoryBuffer * pInputChunkMemoryBuffer)
-		{
-			m_pInputMemoryBuffer = pInputChunkMemoryBuffer;
-		}
-		virtual void setOutputChunk(OpenViBE::IMemoryBuffer * pOutputChunkMemoryBuffer)
-		{
-			m_pOutputMemoryBuffer = pOutputChunkMemoryBuffer;
-		}
-		virtual OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > getInputMemoryBuffer()
-		{
-			return m_pInputMemoryBuffer;
-		}
-		virtual OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > getOutputMemoryBuffer()
-		{
-			return m_pOutputMemoryBuffer;
-		}*/
-
-		virtual OpenViBE::boolean isOutputTriggerActive(OpenViBE::CIdentifier oTrigger) 
+		virtual OpenViBE::boolean isOutputTriggerActive(OpenViBE::CIdentifier oTrigger)
 		{
 			return m_pCodec->isOutputTriggerActive(oTrigger);
 		}
-		
-		virtual OpenViBE::boolean process(OpenViBE::CIdentifier &oTrigger) 
+
+		virtual OpenViBE::boolean process(OpenViBE::CIdentifier &oTrigger)
 		{
 			return m_pCodec->process(oTrigger);
 		}
-		virtual OpenViBE::boolean process(void) 
+
+		virtual OpenViBE::boolean process(void)
 		{
 			return m_pCodec->process();
 		}
-		//virtual OpenViBE::boolean decode(void) 
-		//{
-		//	return m_pCodec->process();
-		//}
-		
+
 	protected:
+
 		virtual OpenViBE::boolean initialize() { return false;}
 
 	};
 };
 
+#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
 #endif //__OpenViBEToolkit_TCodec_H__

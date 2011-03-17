@@ -49,12 +49,12 @@ namespace OpenViBEPlugins
 
 			OpenViBEToolkit::TExperimentInformationDecoder < OpenViBEToolkit::TDecoder < CTestCodecToolkit > > m_oExperimentInformationDecoder;
 			OpenViBEToolkit::TExperimentInformationEncoder < OpenViBEToolkit::TEncoder < CTestCodecToolkit > > m_oExperimentInformationEncoder;
-		
+
 			/* One decoder per input. This vector makes easy the decoding in one iteration over the inputs. */
 			std::vector < OpenViBEToolkit::TDecoder < CTestCodecToolkit > *> m_vDecoders;
+
 			/* One encoder per output This vector makes easy the encoding in one iteration over the outputs. */
 			std::vector < OpenViBEToolkit::TEncoder < CTestCodecToolkit > *> m_vEncoders;
-
 		};
 
 		class CTestCodecToolkitDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
@@ -108,4 +108,3 @@ namespace OpenViBEPlugins
 };
 
 #endif // __OpenViBEPlugins_TestCodecToolkit_H__
-

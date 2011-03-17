@@ -1,7 +1,9 @@
 #ifndef __OpenViBEToolkit_TSpectrumDecoder_H__
 #define __OpenViBEToolkit_TSpectrumDecoder_H__
 
-#include <openvibe/ov_all.h>
+#ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+
+#include "../../ovtk_base.h"
 
 namespace OpenViBEToolkit
 {
@@ -9,10 +11,12 @@ namespace OpenViBEToolkit
 	class TSpectrumDecoder : public T
 	{
 	protected:
+
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputBands;
 
 	protected:
+
 		OpenViBE::boolean initialize()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SpectrumStreamDecoder));
@@ -25,13 +29,17 @@ namespace OpenViBEToolkit
 		}
 
 	public:
+
 		using T::initialize;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pInputMemoryBuffer;
 
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL)
 			{
-					return false;
+				return false;
 			}
 
 			m_pOutputMatrix.uninitialize();
@@ -44,30 +52,33 @@ namespace OpenViBEToolkit
 			return true;
 		}
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > getOutputMatrix()
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
 		{
 			return m_pOutputMatrix;
 		}
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > getOutputMinMaxFrequencyBands()
+
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMinMaxFrequencyBands()
 		{
 			return m_pOutputBands;
 		}
-		
-		virtual OpenViBE::boolean isHeaderReceived() 
+
+		virtual OpenViBE::boolean isHeaderReceived()
 		{
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedHeader);
 		}
-		virtual OpenViBE::boolean isBufferReceived() 
+
+		virtual OpenViBE::boolean isBufferReceived()
 		{
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedBuffer);
 		}
-		virtual OpenViBE::boolean isEndReceived() 
+
+		virtual OpenViBE::boolean isEndReceived()
 		{
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputTriggerId_ReceivedEnd);
 		}
-
 	};
 };
 
+#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
 #endif //__OpenViBEToolkit_TSpectrumDecoder_H__

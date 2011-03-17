@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_SignalProcessing_CEquationParserGrammar_H__
 #define __OpenViBEPlugins_SignalProcessing_CEquationParserGrammar_H__
 
+#include "../ovp_defines.h"
+
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <boost/spirit/include/classic_core.hpp>

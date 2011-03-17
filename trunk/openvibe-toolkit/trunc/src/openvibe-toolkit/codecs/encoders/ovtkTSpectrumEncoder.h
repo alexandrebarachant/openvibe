@@ -1,7 +1,9 @@
 #ifndef __OpenViBEToolkit_TSpectrumEncoder_H__
 #define __OpenViBEToolkit_TSpectrumEncoder_H__
 
-#include <openvibe/ov_all.h>
+#ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+
+#include "../../ovtk_base.h"
 
 namespace OpenViBEToolkit
 {
@@ -9,10 +11,12 @@ namespace OpenViBEToolkit
 	class TSpectrumEncoder : public T
 	{
 	protected:
+
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputBands;
 
 	protected:
+
 		OpenViBE::boolean initialize()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SpectrumStreamEncoder));
@@ -25,13 +29,17 @@ namespace OpenViBEToolkit
 		}
 
 	public:
+
 		using T::initialize;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pOutputMemoryBuffer;
 
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL)
 			{
-					return false;
+				return false;
 			}
 
 			m_pInputMatrix.uninitialize();
@@ -44,30 +52,33 @@ namespace OpenViBEToolkit
 			return true;
 		}
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > getInputMatrix()
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
 		{
 			return m_pInputMatrix;
 		}
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > getInputMinMaxFrequencyBands()
+
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMinMaxFrequencyBands()
 		{
 			return m_pInputBands;
 		}
 
-		OpenViBE::boolean encodeHeader(void) 
+		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeHeader);
 		}
-		OpenViBE::boolean encodeBuffer(void) 
+
+		OpenViBE::boolean encodeBuffer(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeBuffer);
 		}
-		OpenViBE::boolean encodeEnd(void) 
+
+		OpenViBE::boolean encodeEnd(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeEnd);
 		}
-		
 	};
 };
 
+#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
 #endif //__OpenViBEToolkit_TSpectrumEncoder_H__
