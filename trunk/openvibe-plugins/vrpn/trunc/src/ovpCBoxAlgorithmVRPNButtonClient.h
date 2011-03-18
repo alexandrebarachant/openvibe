@@ -5,6 +5,7 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
+#include <list>
 #include <vrpn_Button.h>
 
 #define OVP_ClassId_BoxAlgorithm_VRPNButtonClient     OpenViBE::CIdentifier(0x40714327, 0x458877D2)
@@ -28,6 +29,7 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_BoxAlgorithm_VRPNButtonClient);
 
+			std::list < std::pair<OpenViBE::uint32, OpenViBE::boolean> > m_vButtonList;
 			void setButton(OpenViBE::uint32 ui32ButtonIndex, OpenViBE::boolean bPressed);
 
 		protected:

@@ -11,10 +11,11 @@ using namespace OpenViBEPlugins::VRPN;
 
 namespace
 {
-	static void VRPN_CALLBACK vrpn_button_cb(void* pUserData, const vrpn_BUTTONCB b)
+	void VRPN_CALLBACK vrpn_button_cb(void* pUserData, const vrpn_BUTTONCB b)
 	{
-		OpenViBEPlugins::VRPN::CBoxAlgorithmVRPNButtonClient* l_pClient=static_cast < OpenViBEPlugins::VRPN::CBoxAlgorithmVRPNButtonClient* > (pUserData);
-		l_pClient->setButton(b.button, b.state?true:false);
+		OpenViBEPlugins::VRPN::CBoxAlgorithmVRPNButtonClient* l_pBox = static_cast< OpenViBEPlugins::VRPN::CBoxAlgorithmVRPNButtonClient* > (pUserData);
+
+		(l_pBox->m_vButtonList).push_back(std::pair<OpenViBE::uint32, boolean>(b.button, b.state ? true : false));
 	}
 }
 
@@ -42,8 +43,9 @@ boolean CBoxAlgorithmVRPNButtonClient::initialize(void)
 	}
 
 	CString l_sPeripheralName=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+
 	m_pVRPNButtonRemote=new vrpn_Button_Remote(l_sPeripheralName.toASCIIString());
-	m_pVRPNButtonRemote->register_change_handler(this, &vrpn_button_cb);
+	m_pVRPNButtonRemote->register_change_handler((void*)(this), vrpn_button_cb);
 
 	m_ui64LastChunkEndTime=uint64(-1);
 
@@ -80,6 +82,7 @@ boolean CBoxAlgorithmVRPNButtonClient::processClock(IMessageClock& rMessageClock
 
 boolean CBoxAlgorithmVRPNButtonClient::process(void)
 {
+
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 	uint32 i;
@@ -93,6 +96,14 @@ boolean CBoxAlgorithmVRPNButtonClient::process(void)
 	// Refreshes VRPN device
 	m_bGotStimulation=false;
 	m_pVRPNButtonRemote->mainloop();
+
+	while (m_vButtonList.size() > 0)
+	{
+		std::pair<OpenViBE::uint32, boolean> button_state = m_vButtonList.front();
+		m_vButtonList.pop_front();
+
+		setButton(button_state.first, button_state.second);
+	}
 
 	// Encodes streams
 	for(i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
@@ -123,6 +134,7 @@ boolean CBoxAlgorithmVRPNButtonClient::process(void)
 void CBoxAlgorithmVRPNButtonClient::setButton(uint32 ui32ButtonIndex, boolean bPressed)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+
 	if(ui32ButtonIndex>=l_rStaticBoxContext.getOutputCount())
 	{
 		this->getLogManager() << LogLevel_Warning << "Ignored button " << ui32ButtonIndex+1 << " with state " << CString(bPressed?"pressed":"released") << "...\n";
