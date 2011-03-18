@@ -15,6 +15,7 @@ namespace OpenViBEToolkit
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputLocalisationMatrix;
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > m_bOutputDynamic;
 
 	protected:
 
@@ -24,6 +25,7 @@ namespace OpenViBEToolkit
 			m_pCodec->initialize();
 			m_pInputMemoryBuffer.initialize(m_pCodec->getInputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_InputParameterId_MemoryBufferToDecode));
 			m_pOutputLocalisationMatrix.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Matrix));
+			m_bOutputDynamic.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Dynamic));
 
 			return true;
 		}
@@ -42,6 +44,7 @@ namespace OpenViBEToolkit
 				return false;
 			}
 
+			m_bOutputDynamic.uninitialize();
 			m_pOutputLocalisationMatrix.uninitialize();
 			m_pInputMemoryBuffer.uninitialize();
 			m_pCodec->uninitialize();
@@ -51,9 +54,14 @@ namespace OpenViBEToolkit
 			return true;
 		}
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputLocalisationMatrix()
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
 		{
 			return m_pOutputLocalisationMatrix;
+		}
+
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getOutputDynamic()
+		{
+			return m_bOutputDynamic;
 		}
 
 		virtual OpenViBE::boolean isHeaderReceived()

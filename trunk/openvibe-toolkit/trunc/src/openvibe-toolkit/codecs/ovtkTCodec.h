@@ -22,7 +22,7 @@ namespace OpenViBEToolkit
 		{
 		}
 
-		OpenViBE::boolean initialize(T& rBoxAlgorithm)
+		virtual OpenViBE::boolean initialize(T& rBoxAlgorithm)
 		{
 			if(m_pBoxAlgorithm == NULL)
 			{

@@ -51,7 +51,7 @@ namespace OpenViBEToolkit
 			return true;
 		}
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputVector()
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
 		{
 			return m_pOutputVector;
 		}
