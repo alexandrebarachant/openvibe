@@ -356,7 +356,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 	
 	// construction of the namespace name from category
 	string l_sNamespace(m_sCategory);
-	for(int s=0; s<l_sNamespace.length(); s++)
+	for(uint32 s=0; s<l_sNamespace.length(); s++)
 	{
 		if(s == 0 && l_sNamespace[s] >= 'a' && l_sNamespace[s]<= 'z')
 		{
@@ -433,7 +433,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			//l_sCommandSed = l_sCommandSed + "rBoxAlgorithmPrototype.addInput(\\\""+(*it)._name+"\\\", OpenViBE::Cidentifier"+(*it)._typeId+");\\n";
 			//reconstruct the type_id
 			string l_sTypeName((const char *)(*it)._type);
-			for(int s=0; s<l_sTypeName.length(); s++)
+			for(uint32 s=0; s<l_sTypeName.length(); s++)
 			{
 				if(l_sTypeName[s]==' ')
 				{
@@ -467,7 +467,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			//l_sCommandSed = l_sCommandSed + "rBoxAlgorithmPrototype.addOutput(\\\""+(*it)._name+"\\\", OpenViBE::Cidentifier"+(*it)._typeId+");\\n";
 			//reconstruct the type_id
 			string l_sTypeName((const char *)(*it)._type);
-			for(int s=0; s<l_sTypeName.length(); s++)
+			for(uint32 s=0; s<l_sTypeName.length(); s++)
 			{
 				if(l_sTypeName[s]==' ')
 				{
@@ -483,11 +483,11 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 		//--------------------------------------------------------------------------------------
 		//Settings
 		//--------------------------------------------------------------------------------------
-		if(m_bCanAddOutputs)
+		if(m_bCanAddSettings)
 			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanAdd@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddSetting);");
 		else
 			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanAdd@@","//You cannot add or remove Setting.");
-		if(m_bCanModifyOutputs)
+		if(m_bCanModifySettings)
 			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanModify@@","rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanModifySetting);");
 		else
 			l_bSuccess &= executeSedSubstitution(l_sDest, "@@SettingFlagCanModify@@","//You cannot modify Setting.");
@@ -501,7 +501,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			//l_sCommandSed = l_sCommandSed + "rBoxAlgorithmPrototype.addSetting(\\\""+(*it)._name+"\\\", OpenViBE::Cidentifier"+(*it)._typeId+",\\\""+(*it)._defaultValue+"\\\");\\n";
 			//reconstruct the type_id by erasing the spaces and upcasing the following letter
 			string l_sTypeName((const char *)(*it)._type);
-			for(int s=0; s<l_sTypeName.length(); s++)
+			for(uint32 s=0; s<l_sTypeName.length(); s++)
 			{
 				if(l_sTypeName[s]==' ')
 				{
@@ -526,7 +526,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			string l_sBlock = string((const char *)m_mAlgorithmHeaderDeclaration[m_vAlgorithms[a]]);
 			stringstream ss; ss << "Algo" << a << "_";
 			string l_sUniqueMarker = ss.str();
-			for(int s=0; s<l_sBlock.length(); s++)
+			for(uint32 s=0; s<l_sBlock.length(); s++)
 			{
 				if(l_sBlock[s]=='@')
 				{
@@ -580,7 +580,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			string l_sBlock = string((const char *)m_mAlgorithmInitialisation[m_vAlgorithms[a]]);
 			stringstream ss; ss << "Algo" << a << "_";
 			string l_sUniqueMarker = ss.str();
-			for(int s=0; s<l_sBlock.length(); s++)
+			for(uint32 s=0; s<l_sBlock.length(); s++)
 			{
 				if(l_sBlock[s]=='@')
 				{
@@ -599,7 +599,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB()
 			string l_sBlock = string((const char *)m_mAlgorithmInitialisation_ReferenceTargets[m_vAlgorithms[a]]);
 			stringstream ss; ss << "Algo" << a << "_";
 			string l_sUniqueMarker = ss.str();
-			for(int s=0; s<l_sBlock.length(); s++)
+			for(uint32 s=0; s<l_sBlock.length(); s++)
 			{
 				if(l_sBlock[s]=='@')
 				{
@@ -1348,7 +1348,7 @@ void CBoxAlgorithmSkeletonGenerator::initialize( void )
 			((IAlgorithmDesc *)l_pDesc)->getAlgorithmPrototype(l_oDummyProto);
 			//algorithm proxy
 			string l_sAlgoNameStdSTr((const char *)l_sAlgo);
-			for(int s=0; s<l_sAlgoNameStdSTr.length(); s++)
+			for(uint32 s=0; s<l_sAlgoNameStdSTr.length(); s++)
 			{
 				if(l_sAlgoNameStdSTr[s]==' ')
 				{
@@ -1366,7 +1366,7 @@ void CBoxAlgorithmSkeletonGenerator::initialize( void )
 			for(map<CString,EParameterType>::iterator it = l_oDummyProto.m_vInputs.begin(); it!=l_oDummyProto.m_vInputs.end(); it++)
 			{
 				string l_sInputNameStdSTr((const char *)(*it).first);
-				for(int s=0; s<l_sInputNameStdSTr.length(); s++)
+				for(uint32 s=0; s<l_sInputNameStdSTr.length(); s++)
 				{
 					if(l_sInputNameStdSTr[s]==' ')
 					{
@@ -1391,7 +1391,7 @@ void CBoxAlgorithmSkeletonGenerator::initialize( void )
 			for(map<CString,EParameterType>::iterator it = l_oDummyProto.m_vOutputs.begin(); it!=l_oDummyProto.m_vOutputs.end(); it++)
 			{
 				string l_sOutputNameStdSTr((const char *)(*it).first);
-				for(int s=0; s<l_sOutputNameStdSTr.length(); s++)
+				for(uint32 s=0; s<l_sOutputNameStdSTr.length(); s++)
 				{
 					if(l_sOutputNameStdSTr[s]==' ')
 					{
@@ -1636,8 +1636,8 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	gtk_text_buffer_set_text(l_pDetailedDescrTextBuffer,l_sTempDetailedDescr.c_str(),((string)l_sTempDetailedDescr).length());
 
 	GtkWidget * l_pIconCombobox =  GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-icon-combobox"));
-	int32 l_iIconSelected = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_IconIndex}");
-	gtk_combo_box_set_active(GTK_COMBO_BOX(l_pIconCombobox),l_iIconSelected);
+	int64 l_iIconSelected = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_IconIndex}");
+	gtk_combo_box_set_active(GTK_COMBO_BOX(l_pIconCombobox),(gint)l_iIconSelected);
 	
 	GtkWidget * l_pCanModifyInputsCheckbox =  GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-inputs-modify-checkbutton"));
 	boolean l_pCanModifyInputs = m_rKernelContext.getConfigurationManager().expandAsBoolean("${SkeletonGenerator_Box_CanModifyInputs}");
@@ -1665,7 +1665,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 
 	::GtkWidget * l_pInputsTreeView = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-inputs-treeview"));
 	::GtkTreeModel * l_pInputsListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pInputsTreeView));
-	int32 l_i32InputCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_InputCount}",0);
+	int64 l_i32InputCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_InputCount}",0);
 	for(int32 i = 0; i < l_i32InputCount; i++)
 	{
 		char l_sTokenName [128];
@@ -1684,7 +1684,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 
 	::GtkWidget * l_pOutputsTreeView = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-outputs-treeview"));
 	::GtkTreeModel * l_pOutputsListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pOutputsTreeView));
-	int32 l_i32OutputCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_OutputCount}",0);
+	int64 l_i32OutputCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_OutputCount}",0);
 	for(int32 i = 0; i < l_i32OutputCount; i++)
 	{
 		char l_sTokenName [128];
@@ -1703,7 +1703,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 
 	::GtkWidget * l_pSettingsTreeView = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-settings-treeview"));
 	::GtkTreeModel * l_pSettingsListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pSettingsTreeView));
-	int32 l_i32SettingCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_SettingCount}",0);
+	int64 l_i32SettingCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_SettingCount}",0);
 	for(int32 i = 0; i < l_i32SettingCount; i++)
 	{
 		char l_sTokenName [128];
@@ -1725,7 +1725,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	
 	::GtkWidget * l_pAlgoTreeView = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-treeview"));
 	::GtkTreeModel * l_pAlgoListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pAlgoTreeView));
-	int32 l_i32AlgoCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_AlgorithmCount}",0);
+	int64 l_i32AlgoCount = m_rKernelContext.getConfigurationManager().expandAsInteger("${SkeletonGenerator_Box_AlgorithmCount}",0);
 	for(int32 i = 0; i < l_i32AlgoCount; i++)
 	{
 		char l_sTokenName [128];
@@ -1812,17 +1812,17 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 	m_sGtkStockItemName = CString((const char *)l_sData);
 
 	::GtkWidget * l_pCanModifyInputsCheckbox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-inputs-modify-checkbutton"));
-	m_bCanModifyInputs = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanModifyInputsCheckbox));
+	m_bCanModifyInputs = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanModifyInputsCheckbox)) ? true : false);
 	::GtkWidget * l_pCanAddInputsCheckbox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-inputs-add-checkbutton"));
-	m_bCanAddInputs = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanAddInputsCheckbox));
+	m_bCanAddInputs = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanAddInputsCheckbox)) ? true : false);
 	::GtkWidget * l_pCanModifyOutputsCheckbox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-outputs-modify-checkbutton"));
-	m_bCanModifyOutputs = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanModifyOutputsCheckbox));
+	m_bCanModifyOutputs = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanModifyOutputsCheckbox)) ? true : false);
 	::GtkWidget * l_pCanAddOutputsCheckbox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-outputs-add-checkbutton"));
-	m_bCanAddOutputs = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanAddOutputsCheckbox));
+	m_bCanAddOutputs = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanAddOutputsCheckbox)) ? true : false);
 	::GtkWidget * l_pCanModifySettingsCheckbox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-settings-modify-checkbutton"));
-	m_bCanModifySettings = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanModifySettingsCheckbox));
+	m_bCanModifySettings = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanModifySettingsCheckbox)) ? true : false);
 	::GtkWidget * l_pCanAddSettingsCheckbox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-settings-add-checkbutton"));
-	m_bCanAddSettings = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanAddSettingsCheckbox));
+	m_bCanAddSettings = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCanAddSettingsCheckbox)) ? true : false);
 
 	::GtkWidget * l_pFileChooser = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-target-directory-filechooserbutton"));
 	char * l_pTargetDirectory = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pFileChooser));
@@ -1832,7 +1832,7 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 	::GtkWidget * l_pInputsTreeview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-inputs-treeview"));
 	::GtkTreeModel * l_pInputListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pInputsTreeview));
 	GtkTreeIter l_iter;
-	boolean l_bValid = gtk_tree_model_get_iter_first(l_pInputListStore,&l_iter);
+	boolean l_bValid = (gtk_tree_model_get_iter_first(l_pInputListStore,&l_iter) ? true : false);
 	gint l_iRowCount = 0;
 	m_vInputs.clear();
 	while(l_bValid)
@@ -1851,13 +1851,13 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 		
 		g_free(l_sName);g_free (l_sType);g_free(l_sTypeOv);
 		l_iRowCount++;
-		l_bValid = gtk_tree_model_iter_next (l_pInputListStore, &l_iter);
+		l_bValid = (gtk_tree_model_iter_next (l_pInputListStore, &l_iter) ? true : false);
 	}
 
 	::GtkWidget * l_pOutputsTreeview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-outputs-treeview"));
 	::GtkTreeModel * l_pOutputListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pOutputsTreeview));
 	GtkTreeIter l_iterOutput;
-	l_bValid = gtk_tree_model_get_iter_first(l_pOutputListStore,&l_iterOutput);
+	l_bValid = (gtk_tree_model_get_iter_first(l_pOutputListStore,&l_iterOutput) ? true : false);
 	l_iRowCount = 0;
 	m_vOutputs.clear();
 	while(l_bValid)
@@ -1876,13 +1876,13 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 			
 		g_free(l_sName);g_free(l_sType);g_free(l_sTypeOv);
 		l_iRowCount++;
-		l_bValid = gtk_tree_model_iter_next (l_pOutputListStore, &l_iterOutput);
+		l_bValid = (gtk_tree_model_iter_next (l_pOutputListStore, &l_iterOutput) ? true : false);
 	}
 
 	::GtkWidget * l_pSettingsTreeview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-settings-treeview"));
 	::GtkTreeModel * l_pSettingListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pSettingsTreeview));
 	GtkTreeIter l_iterSetting;
-	l_bValid = gtk_tree_model_get_iter_first(l_pSettingListStore,&l_iterSetting);
+	l_bValid = (gtk_tree_model_get_iter_first(l_pSettingListStore,&l_iterSetting) ? true : false);
 	l_iRowCount = 0;
 	m_vSettings.clear();
 	while(l_bValid)
@@ -1902,13 +1902,13 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 
 		g_free(l_sName);g_free(l_sType);g_free(l_sDefaultValue);g_free(l_sTypeOv);
 		l_iRowCount++;
-		l_bValid = gtk_tree_model_iter_next (l_pSettingListStore, &l_iterSetting);
+		l_bValid = (gtk_tree_model_iter_next (l_pSettingListStore, &l_iterSetting) ? true : false);
 	}
 
 	::GtkWidget * l_pAlgosTreeview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-treeview"));
 	::GtkTreeModel * l_pAlgosListStore = gtk_tree_view_get_model(GTK_TREE_VIEW(l_pAlgosTreeview));
 	GtkTreeIter l_iterAlgo;
-	l_bValid = gtk_tree_model_get_iter_first(l_pAlgosListStore,&l_iterAlgo);
+	l_bValid = (gtk_tree_model_get_iter_first(l_pAlgosListStore,&l_iterAlgo) ? true : false);
 	l_iRowCount = 0;
 	m_vAlgorithms.clear();
 	while(l_bValid)
@@ -1921,7 +1921,7 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 
 		g_free(l_sName);
 		l_iRowCount++;
-		l_bValid = gtk_tree_model_iter_next (l_pAlgosListStore, &l_iterAlgo);
+		l_bValid = (gtk_tree_model_iter_next (l_pAlgosListStore, &l_iterAlgo) ? true : false);
 	}
 }
 
