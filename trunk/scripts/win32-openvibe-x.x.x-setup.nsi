@@ -97,6 +97,7 @@ no_need_to_install_directx:
 	SetOutPath "$INSTDIR\dependencies\arch"
 	File ..\dependencies\arch\openvibe-vcredist-2005-sp1.exe
 	File ..\dependencies\arch\openvibe-vcredist-2008-sp1.exe
+	File ..\dependencies\arch\openvibe-vcredist-2010.exe
 	File ..\dependencies\arch\lua-5.1.4-30.zip
 	File ..\dependencies\arch\expat-2.0.1.zip
 	File ..\dependencies\arch\gtk-2.20.0-runtime.zip
@@ -109,6 +110,7 @@ no_need_to_install_directx:
 	SetOutPath "$INSTDIR\dependencies"
 	ExecWait '"arch\openvibe-vcredist-2005-sp1.exe" /q'
 	ExecWait '"arch\openvibe-vcredist-2008-sp1.exe" /q'
+	ExecWait '"arch\openvibe-vcredist-2010.exe" /q'
 
 	SetOutPath "$INSTDIR\dependencies"
 	ZipDLL::extractall "arch\lua-5.1.4-30.zip" "lua"

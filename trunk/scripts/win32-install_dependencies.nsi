@@ -14,6 +14,7 @@
 ;Interface Settings
 
 	!define MUI_ABORTWARNING
+	!define MUI_COMPONENTSPAGE_NODESC
 
 ;Pages
 
@@ -81,11 +82,11 @@ SectionEnd
 ;##########################################################################################################################################################
 
 SectionGroup "!Compilation platform"
-Section "Visual C++ 2008" vs90
+Section /o "Visual C++ 2008" vs90
 	StrCpy $suffix "vs90"
 SectionEnd
 
-Section /o "Visual C++ 2010" vs100
+Section "Visual C++ 2010" vs100
 	StrCpy $suffix "vs100"
 SectionEnd
 SectionGroupEnd
@@ -141,6 +142,16 @@ no_need_to_download_vcredist_2005_sp1:
 no_need_to_download_vcredist_2008_sp1:
 	ExecWait '"arch\openvibe-vcredist-2008-sp1.exe" /q'
 ;no_need_to_install_vcredist_2008_sp1:
+
+	IfFileExists "arch\openvibe-vcredist-2010.exe" no_need_to_download_vcredist_2010
+	NSISdl::download "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe" "arch\openvibe-vcredist-2010.exe"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_vcredist_2010:
+	ExecWait '"arch\openvibe-vcredist-2010.exe" /q'
+;no_need_to_install_vcredist_2010:
 
 SectionEnd
 
