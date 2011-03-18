@@ -49,8 +49,7 @@ uint64 CBoxAlgorithmP300IdentifierStimulator::getClockFrequency(void)
 boolean CBoxAlgorithmP300IdentifierStimulator::initialize(void)
 {
 	//get values of the configure windows for all settings
-	// IBox& l_rStaticBoxContext=this->getStaticBoxContext();
-
+	
 	m_ui64StartStimulation    =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	m_ui64StimulationBase     =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
 
@@ -85,8 +84,6 @@ boolean CBoxAlgorithmP300IdentifierStimulator::initialize(void)
 	m_ui64InterRepetitionDuration=float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 8))*(1LL << 32);
 	m_ui64InterTrialDuration     =float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 9))*(1LL << 32);
 
-	// m_bAvoidNeighborFlashing     =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 10);
-
 	//-----------------------------------------------------------------------------------------------------------------------------------------
 
 	m_pStimulationEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamEncoder));
@@ -99,24 +96,31 @@ boolean CBoxAlgorithmP300IdentifierStimulator::initialize(void)
 	m_pStimulationTargetDecoder->initialize();
 
 	//initialized all variables
-	m_ui64LastTime=0;
 	m_bHeaderSent=false;
-	m_bStartReceived=false;
-
 	m_ui32LastState=State_None;
-	m_ui64TrialStartTime=m_ui64InterTrialDuration;
-
+	
 	m_ui64FlashCountInRepetition=m_ui64ImagesCount;
 	m_ui64FlashCountInRepetitionWithoutTarget=m_ui64FlashCountInRepetition-1;
 	m_ui64RepetitionDuration=m_ui64FlashCountInRepetition*(m_ui64FlashDuration+m_ui64NoFlashDuration);
 	m_ui64RepetitionDurationWithoutTarget=m_ui64FlashCountInRepetitionWithoutTarget*(m_ui64FlashDuration+m_ui64NoFlashDuration);
-	m_i64TargetNumber=0;
-	m_ui64TrialIndex=1;
+	
 	m_pRepetitionTarget=new uint64[m_ui64RepetitionCountInTrial];
 
+	reset();
+
+	return true;
+}
+
+boolean CBoxAlgorithmP300IdentifierStimulator::reset(void)
+{	
+	m_ui64LastTime=0;
+	m_bStartReceived=false;
+	m_ui64TrialStartTime=m_ui64InterTrialDuration;
+
+	m_i64TargetNumber=0;
+	m_ui64TrialIndex=1;
 	//generate the first trial variables
 	this->generate_trial_vars();
-
 	return true;
 }
 
@@ -254,6 +258,7 @@ boolean CBoxAlgorithmP300IdentifierStimulator::process(void)
 				else
 				{
 					l_ui32State=State_None;
+					reset();
 				}
 			}
 			else
