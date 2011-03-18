@@ -30,6 +30,7 @@
  * - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
  *
  * After reading this tutorial, you should be able to start building your own plugins.
+ * If you have any trouble when developing with openvibe, feel free to contact experienced developers on the Forum, mailing list, or IRC channel.
  *
  * \section Doc_Tutorial_Developer_SignalProcessing_Introduction Introduction
  * \subsection Doc_Tutorial_Developer_SignalProcessing_AlgoInternals Algorithm internals

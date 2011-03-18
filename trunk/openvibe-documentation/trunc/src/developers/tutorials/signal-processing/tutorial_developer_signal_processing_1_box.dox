@@ -1,5 +1,8 @@
 /**
  * \page Doc_Tutorial_Developer_SignalProcessing_Box Implementing a Box
+ *
+ * - \b NB: Document based on <b> OpenViBE 0.8.0 </b> (30-sep-2010).
+ *
  * This section of the tutorial presents a detailed implementation of the OpenViBE box that uses the signal processing algorithm.
  * It is made of two distinct parts : the \ref Doc_Tutorial_Developer_SignalProcessing_BoxAlgorithmHeader
  * (c++ header file) and the \ref Doc_Tutorial_Developer_SignalProcessing_BoxAlgorithmImplementation (c++ cpp file).

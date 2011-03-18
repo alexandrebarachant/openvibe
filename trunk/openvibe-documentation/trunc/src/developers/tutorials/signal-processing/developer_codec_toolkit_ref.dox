@@ -1,0 +1,221 @@
+/**
+\page Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref Codec Toolkit Reference
+This reference page is divided in the following sections :
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Codec "Codec"
+ 
+And its subclasses for the two subtypes of codec :
+
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder "Decoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder "Encoder"
+ 
+And their subclasses for each stream codec :
+
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_StreamedMatrix "Streamed Matrix Decoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Signal "Signal Decoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_FeatureVector "Feature Vector Decoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Spectrum "Spectrum Decoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Stimulations "Stimulations Decoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ChannelLocalisation "Channel Localisation Decoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ExperimentInformation "Experiment Information Decoder"
+ 
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_StreamedMatrix "Streamed Matrix Encoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Signal "Signal Encoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_FeatureVector "Feature Vector Encoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Spectrum "Spectrum Encoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Stimulations "Stimulations Encoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ChannelLocalisation "Channel Localisation Encoder"
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ExperimentInformation "Experiment Information Encoder"
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Codec Codec
+The TCodec < T > class implements the behavior common to all encoders and decoders.
+The template class T refers to the class of the box in which the codec will work.
+
+\subsection Protected Members
+- The BoxAlgorithm T
+\code
+T* m_pBoxAlgorithm;
+\endcode 
+- The codec algorithm
+\code
+OpenViBE::Kernel::IAlgorithmProxy* m_pCodec;
+\endcode
+
+\subsection Public Methods
+- initialize : sets a reference to the T instance and calls the \c initialize() method, specific to each codec.
+\code
+OpenViBE::boolean initialize(T& rBoxAlgorithm)
+\endcode
+- uninitialize : method overwritten specifically by each codec.
+\code
+OpenViBE::boolean uninitialize(void)
+\endcode
+
+For backward compatibility, we keep the basic methods to handle algorithms directly:
+- isOutputTriggerActive : checks for current trigger states
+\code
+OpenViBE::boolean isOutputTriggerActive(OpenViBE::CIdentifier oTrigger)
+\endcode
+- process : calls the algorithm \c process with or without triggers.
+\code
+OpenViBE::boolean process(void)
+OpenViBE::boolean process(OpenViBE::CIdentifier &oTrigger)
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder Decoder
+The TDecoder < T > class inherits from TCodec and implements the behavior common to all decoders.
+The template class T refers to the class of the box in which the codec will work.
+
+\subsection Protected Members
+- The input memory buffer to be filled with incoming chunks.
+\code
+OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > m_pInputMemoryBuffer;
+\endcode 
+
+\subsection Public Methods
+- Getter & Setter : fills the memory buffer with an input chunk or get a reference to the memory buffer
+\code
+void setInputChunk(const OpenViBE::IMemoryBuffer * pInputChunkMemoryBuffer)
+OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* >& getInputMemoryBuffer()
+\endcode
+- Decode : decode the input memory buffer. Basically, it just calls \c process() on the algorithm.
+\code
+OpenViBE::boolean decode(void)
+\endcode
+- Check : tells which type of memory buffer was just decoded. These methods are implemented by all decoders with respect to their own input triggers.
+\code
+OpenViBE::boolean isHeaderReceived(void)
+OpenViBE::boolean isBufferReceived(void)
+OpenViBE::boolean isEndReceived(void)
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder Encoder
+The TEncoder < T > class inherits from TCodec and implements the behavior common to all encoders.
+The template class T refers to the class of the box in which the codec will work.
+
+\subsection Protected Members
+- The output memory buffer to be filled with outgoing chunks.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > m_pOutputMemoryBuffer;
+\endcode 
+
+\subsection Public Methods
+- Getter & Setter : fills the memory buffer with an output chunk or get a reference to the memory buffer
+\code
+void setOutputChunk(OpenViBE::IMemoryBuffer * pInputChunkMemoryBuffer)
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* >& getOutputMemoryBuffer()
+\endcode
+- Encode : encode the input memory buffer. These methods are specified by each encoder, with respect to their own triggers. Basically, it just calls \c process(trigger) on the algorithm.
+\code
+OpenViBE::boolean encodeHeader(void)
+OpenViBE::boolean encodeBuffer(void)
+OpenViBE::boolean encodeEnd(void)
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_StreamedMatrix Streamed Matrix Decoder
+The Streamed Matrix Decoder is able to process a IMatrix from a Streamed Matrix input chunk. Be aware that you get a \b reference on the TParameterHandler.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Signal Signal Decoder
+The Signal Decoder is able to process a IMatrix and a Sampling Frequency from a Signal input chunk. Be aware that you get \b references on the TParameterHandlers.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& getOutputSamplingRate()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_FeatureVector Feature Vector Decoder
+The Feature Vector Decoder is able to process a IMatrix from a Feature Vector input chunk. Be aware that you get a \b reference on the TParameterHandler.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Spectrum Spectrum Decoder
+The Spectrum Decoder is able to process 2 IMatrix (spectrum & Min-Max frequency bands) from a Spectrum input chunk. Be aware that you get \b references on the TParameterHandlers.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMinMaxFrequencyBands()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Stimulations Stimulations Decoder
+The Stimulations Decoder is able to process a IStimulationSet from a Stimulations input chunk. Be aware that you get a \b reference on the TParameterHandler.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* >& getOutputStimulationSet()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ChannelLocalisation Channel Localisation Decoder
+The Channel Localisation Decoder is able to process a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) from a Channel Localisation input chunk. Be aware that you get \b references on the TParameterHandlers.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getOutputDynamic()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ExperimentInformation Experiment Information Decoder
+The Experiment Information Decoder is able to process various elements from an Experiment Information input chunk. Be aware that you get \b references on the TParameterHandlers.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getOutputExperimentIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getOutputExperimentDate()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getOutputSubjectIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getOutputSubjectName()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getOutputSubjectAge()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getOutputSubjectGender()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getOutputLaboratoryIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getOutputLaboratoryName()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getOutputTechnicianIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getOutputTechnicianName()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_StreamedMatrix Streamed Matrix Encoder
+The Streamed Matrix Encoder needs a IMatrix in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Signal Signal Encoder
+The Signal Encoder needs a IMatrix and a Sampling Frequency in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& getInputSamplingRate()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_FeatureVector Feature Vector Encoder
+The Feature Vector Encoder needs a IMatrix in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Spectrum Spectrum Encoder
+The Spectrum Encoder needs 2 IMatrix (spectrum & Min-Max frequency bands) in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMinMaxFrequencyBands()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Stimulations Stimulations Encoder
+The Stimulations Encoder needs a IStimulationSet in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* >& getInputStimulationSet()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ChannelLocalisation Channel Localisation Encoder
+The Channel Localisation Encoder needs a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getInputDynamic()
+\endcode
+
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ExperimentInformation Experiment Information Encoder
+The Experiment Information Encoder needs various elements in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getInputExperimentIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getInputExperimentDate()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getInputSubjectIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getInputSubjectName()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getInputSubjectAge()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getInputSubjectGender()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getInputLaboratoryIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getInputLaboratoryName()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >&   getInputTechnicianIdentifier()
+OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* >& getInputTechnicianName()
+\endcode
+*/

@@ -85,9 +85,11 @@
  *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
  *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
  *     - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_CodecToolkit
  *   - \subpage Doc_VRApplicationAndVRPN
  * - \subpage Doc_GlobalDefines
  * - \subpage Doc_OpenViBEStreams
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref
  * - \subpage Doc_Stimulations
  * - \subpage Doc_MatrixFileFormat
  * - \subpage todo "Things that should be done"
@@ -157,9 +159,11 @@
  *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
  *     - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
  *     - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ *     - \subpage Doc_Tutorial_Developer_SignalProcessing_CodecToolkit
  *   - \subpage Doc_VRApplicationAndVRPN
  * - \subpage Doc_GlobalDefines
  * - \subpage Doc_OpenViBEStreams
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref
  * - \subpage Doc_Stimulations
  * - \subpage Doc_MatrixFileFormat
  * - \subpage todo "Things that should be done"
@@ -207,6 +211,7 @@
  *   - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
  *   - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
  *   - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ *   - \subpage Doc_Tutorial_Developer_SignalProcessing_CodecToolkit
  */
 
 /**
@@ -228,6 +233,7 @@
  * - \subpage Doc_Tutorial_Developer_SignalProcessing_Algorithm
  * - \subpage Doc_Tutorial_Developer_SignalProcessing_Box
  * - \subpage Doc_DocumentationHowTo_Users_BoxAlgorithms
+ * - \subpage Doc_Tutorial_Developer_SignalProcessing_CodecToolkit
  */
  
  /**
