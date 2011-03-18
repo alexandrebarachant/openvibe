@@ -23,16 +23,14 @@ namespace
 	}
 }
 
-
 CLogListenerDesigner::CLogListenerDesigner(const IKernelContext& rKernelContext, ::GtkBuilder* pBuilderInterface)
-	: m_pBuilderInterface( pBuilderInterface ),
-	m_pAlertWindow( NULL),
-	m_bIngnoreMessages( false ),
-	m_ui32CountMessages( 0 ),
-	m_ui32CountWarnings( 0 ),
-	m_ui32CountErrors( 0 )
+	:m_pBuilderInterface( pBuilderInterface )
+	,m_pAlertWindow( NULL)
+	,m_bIngnoreMessages( false )
+	,m_ui32CountMessages( 0 )
+	,m_ui32CountWarnings( 0 )
+	,m_ui32CountErrors( 0 )
 {
-
 	m_pTextView = GTK_TEXT_VIEW(gtk_builder_get_object(m_pBuilderInterface, "openvibe-textview_messages"));
 	m_pAlertWindow = GTK_WINDOW(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_popup"));
 
@@ -56,10 +54,8 @@ CLogListenerDesigner::CLogListenerDesigner(const IKernelContext& rKernelContext,
 	m_pToggleButtonActive_Error = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_error"));
 	m_pToggleButtonActive_Fatal = GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_fatal"));
 
-
 	// set the popup-on-error checkbox according to the configuration token
 	gtk_toggle_button_set_active(m_pToggleButtonPopup, (OpenViBE::boolean)(rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_PopUpOnError}")));
-
 
 	g_signal_connect(G_OBJECT(m_pAlertWindow), "delete_event", G_CALLBACK(::gtk_widget_hide), NULL);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "dialog_error_popup-button_view")), "clicked", G_CALLBACK(::focus_message_window_cb), this);
@@ -77,7 +73,6 @@ CLogListenerDesigner::CLogListenerDesigner(const IKernelContext& rKernelContext,
 	gtk_text_buffer_create_tag(m_pBuffer, "c_aqua", "foreground", "#00FFFF", NULL); // number
 	gtk_text_buffer_create_tag(m_pBuffer, "c_darkViolet", "foreground", "#6900D7", NULL); // warning
 	gtk_text_buffer_create_tag(m_pBuffer, "c_blueChill", "foreground", "#3d889b", NULL); // information
-
 }
 
 boolean CLogListenerDesigner::isActive(ELogLevel eLogLevel)
@@ -112,7 +107,7 @@ boolean CLogListenerDesigner::activate(boolean bActive)
 
 void CLogListenerDesigner::log(const uint64 ui64Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << ui64Value << " (0x" << hex << ui64Value << ")";
@@ -124,7 +119,7 @@ void CLogListenerDesigner::log(const uint64 ui64Value)
 
 void CLogListenerDesigner::log(const uint32 ui32Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << ui32Value << " (0x" << hex << ui32Value << ")";
@@ -136,7 +131,7 @@ void CLogListenerDesigner::log(const uint32 ui32Value)
 
 void CLogListenerDesigner::log(const uint16 ui16Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << ui16Value << " (0x" << hex << ui16Value << ")";
@@ -148,7 +143,7 @@ void CLogListenerDesigner::log(const uint16 ui16Value)
 
 void CLogListenerDesigner::log(const uint8 ui8Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << ui8Value << " (0x" << hex << ui8Value << ")";
@@ -160,7 +155,7 @@ void CLogListenerDesigner::log(const uint8 ui8Value)
 
 void CLogListenerDesigner::log(const int64 i64Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << i64Value << " (0x" << hex << i64Value << ")";
@@ -172,7 +167,7 @@ void CLogListenerDesigner::log(const int64 i64Value)
 
 void CLogListenerDesigner::log(const int32 i32Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << i32Value << " (0x" << hex << i32Value << ")";
@@ -184,7 +179,7 @@ void CLogListenerDesigner::log(const int32 i32Value)
 
 void CLogListenerDesigner::log(const int16 i16Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << i16Value << " (0x" << hex << i16Value << ")";
@@ -196,7 +191,7 @@ void CLogListenerDesigner::log(const int16 i16Value)
 
 void CLogListenerDesigner::log(const int8 i8Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << dec << i8Value << " (0x" << hex << i8Value << ")";
@@ -208,7 +203,7 @@ void CLogListenerDesigner::log(const int8 i8Value)
 
 void CLogListenerDesigner::log(const float32 f32Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << f32Value;
@@ -220,7 +215,7 @@ void CLogListenerDesigner::log(const float32 f32Value)
 
 void CLogListenerDesigner::log(const float64 f64Value)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << f64Value;
@@ -233,7 +228,7 @@ void CLogListenerDesigner::log(const float64 f64Value)
 
 void CLogListenerDesigner::log(const boolean bValue)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
 	l_sText << (bValue ? "true" : "false");
@@ -245,7 +240,7 @@ void CLogListenerDesigner::log(const boolean bValue)
 
 void CLogListenerDesigner::log(const CIdentifier& rValue)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -254,7 +249,7 @@ void CLogListenerDesigner::log(const CIdentifier& rValue)
 
 void CLogListenerDesigner::log(const CString& rValue)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -263,7 +258,7 @@ void CLogListenerDesigner::log(const CString& rValue)
 
 void CLogListenerDesigner::log(const char* pValue)
 {
-	if (m_bIngnoreMessages) return;
+	if(m_bIngnoreMessages) return;
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -278,9 +273,8 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 	switch(eLogLevel)
 	{
 		case LogLevel_Debug:
-
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_Debug);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountMessages++;
 
@@ -291,7 +285,7 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 
 		case LogLevel_Benchmark:
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_Benchmark);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountMessages++;
 
@@ -302,7 +296,7 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 
 		case LogLevel_Trace:
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_Trace);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountMessages++;
 
@@ -313,7 +307,7 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 
 		case LogLevel_Info:
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_Info);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountMessages++;
 
@@ -324,7 +318,7 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 
 		case LogLevel_Warning:
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_Warning);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountWarnings++;
 
@@ -335,7 +329,7 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 
 		case LogLevel_ImportantWarning:
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_ImportantWarning);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountWarnings++;
 
@@ -346,7 +340,7 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 
 		case LogLevel_Error:
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_Error);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountErrors++;
 
@@ -357,7 +351,7 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 
 		case LogLevel_Fatal:
 			m_bIngnoreMessages = !gtk_toggle_tool_button_get_active(m_pToggleButtonActive_Fatal);
-			if (m_bIngnoreMessages) break;
+			if(m_bIngnoreMessages) break;
 
 			m_ui32CountErrors++;
 
@@ -377,10 +371,9 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 			break;
 	}
 
-	if (gtk_toggle_button_get_active(m_pToggleButtonPopup)
-			&& (eLogLevel == LogLevel_Warning || eLogLevel == LogLevel_ImportantWarning || eLogLevel == LogLevel_Error || eLogLevel == LogLevel_Fatal))
+	if(gtk_toggle_button_get_active(m_pToggleButtonPopup) && (eLogLevel == LogLevel_Warning || eLogLevel == LogLevel_ImportantWarning || eLogLevel == LogLevel_Error || eLogLevel == LogLevel_Fatal))
 	{
-		if (!gtk_widget_get_visible(GTK_WIDGET(m_pAlertWindow)))
+		if(!gtk_widget_get_visible(GTK_WIDGET(m_pAlertWindow)))
 		{
 			gtk_window_set_position(GTK_WINDOW(m_pAlertWindow), GTK_WIN_POS_CENTER);
 			gtk_window_present(GTK_WINDOW(m_pAlertWindow));
@@ -388,18 +381,16 @@ void CLogListenerDesigner::log(const ELogLevel eLogLevel)
 		}
 	}
 
-	updateMessageCounts();
+	this->updateMessageCounts();
 
 	::GtkTextMark l_oMark;
-	l_oMark = *(gtk_text_buffer_get_mark (gtk_text_view_get_buffer( m_pTextView ), "insert")); 
-	gtk_text_view_scroll_to_mark (GTK_TEXT_VIEW (m_pTextView), &l_oMark, 0.0, FALSE, 0.0, 0.0);	
-
+	l_oMark = *(gtk_text_buffer_get_mark (gtk_text_view_get_buffer( m_pTextView ), "insert"));
+	gtk_text_view_scroll_to_mark (GTK_TEXT_VIEW (m_pTextView), &l_oMark, 0.0, FALSE, 0.0, 0.0);
 }
 
 void CLogListenerDesigner::log(const ELogColor eLogColor)
 {
-	if (m_bIngnoreMessages) return;
-
+	if(m_bIngnoreMessages) return;
 }
 
 void CLogListenerDesigner::updateMessageCounts()
@@ -407,20 +398,19 @@ void CLogListenerDesigner::updateMessageCounts()
 	stringstream l_sCountMessages;
 	l_sCountMessages << "<b>" << m_ui32CountMessages << "</b> Message";
 
-	if (m_ui32CountMessages > 1)
+	if(m_ui32CountMessages > 1)
 	{
 		l_sCountMessages << "s";
 	}
 
 	gtk_label_set_markup(m_pLabelCountMessages, l_sCountMessages.str().data());
 
-	if (m_ui32CountWarnings > 0)
+	if(m_ui32CountWarnings > 0)
 	{
-
 		stringstream l_sCountWarnings;
 		l_sCountWarnings << "<b>" << m_ui32CountWarnings << "</b> Warning";
 
-		if (m_ui32CountWarnings > 1)
+		if(m_ui32CountWarnings > 1)
 		{
 			l_sCountWarnings << "s";
 		}
@@ -429,26 +419,23 @@ void CLogListenerDesigner::updateMessageCounts()
 		gtk_label_set_markup(m_pLabelDialogCountWarnings, l_sCountWarnings.str().data());
 		gtk_widget_set_visible(GTK_WIDGET(m_pLabelCountWarnings), true);
 		gtk_widget_set_visible(GTK_WIDGET(m_pImageWarnings), true);
-
 	}
 
-	if (m_ui32CountErrors > 0)
+	if(m_ui32CountErrors > 0)
 	{
 		stringstream l_sCountErrors;
 		l_sCountErrors << "<b>" << m_ui32CountErrors << "</b> Error";
 
-		if (m_ui32CountErrors > 1)
+		if(m_ui32CountErrors > 1)
 		{
 			l_sCountErrors << "s";
 		}
-
 
 		gtk_label_set_markup(m_pLabelCountErrors, l_sCountErrors.str().data());
 		gtk_label_set_markup(m_pLabelDialogCountErrors, l_sCountErrors.str().data());
 
 		gtk_widget_set_visible(GTK_WIDGET(m_pLabelCountErrors), true);
 		gtk_widget_set_visible(GTK_WIDGET(m_pImageErrors), true);
-
 	}
 }
 

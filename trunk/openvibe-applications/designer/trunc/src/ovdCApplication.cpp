@@ -243,7 +243,7 @@ namespace
 	{
 		static_cast<CLogListenerDesigner*>(pUserData)->clearMessages();
 	}
-	
+
 	gboolean idle_application_loop(gpointer pUserData)
 	{
 		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
@@ -426,7 +426,6 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-algorithm_title_button_expand")),   "clicked", G_CALLBACK(algorithm_title_button_expand_cb),   this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
 
-
 	__g_idle_add__(idle_application_loop, this);
 	__g_timeout_add__(1000, timeout_application_loop, this);
 
@@ -555,7 +554,6 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	}
 
 	// Add the designer log listener
-	
 
 	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_debug")), m_rKernelContext.getLogManager().isActive(LogLevel_Debug));
 	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_bench")), m_rKernelContext.getLogManager().isActive(LogLevel_Benchmark));
@@ -575,16 +573,14 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_error")), m_rKernelContext.getLogManager().isActive(LogLevel_Error));
 	gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_fatal")), m_rKernelContext.getLogManager().isActive(LogLevel_Fatal));
 
-	m_pLogListenerDesigner = new CLogListenerDesigner(m_rKernelContext, m_pBuilderInterface);
-	m_rKernelContext.getLogManager().addListener(m_pLogListenerDesigner);
-
-	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_clear")),       "clicked",  G_CALLBACK(clear_messages_cb), m_pLogListenerDesigner);
-
 	if(!(m_eCommandLineFlags&CommandLineFlag_NoGui))
 	{
+		m_pLogListenerDesigner = new CLogListenerDesigner(m_rKernelContext, m_pBuilderInterface);
+		m_rKernelContext.getLogManager().addListener(m_pLogListenerDesigner);
+		g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_clear")),       "clicked",  G_CALLBACK(clear_messages_cb), m_pLogListenerDesigner);
+
 		gtk_widget_show(m_pMainWindow);
 	}
-
 }
 
 boolean CApplication::openScenario(const char* sFileName)
@@ -1571,7 +1567,6 @@ boolean CApplication::quitApplicationCB(void)
 
 	// release the log manager and free the memory
 
-
 	/*
 	   m_rKernelContext.getLogManager().removeListener( m_pLogListenerDesigner );
 	   delete m_pLogListenerDesigner;
@@ -1722,5 +1717,3 @@ void CApplication::changeCurrentScenario(int32 i32PageIndex)
 		g_signal_connect(l_pWindowManagerButton, "toggled", G_CALLBACK(button_toggle_window_manager_cb), this);
 	}
 }
-
-

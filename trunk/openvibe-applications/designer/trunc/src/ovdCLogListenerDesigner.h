@@ -6,9 +6,10 @@
 #include <vector>
 #include <map>
 
-
 namespace OpenViBEDesigner
 {
+	class CApplication;
+
 	class CLogListenerDesigner : public OpenViBE::Kernel::ILogListener
 	{
 		public:
@@ -52,6 +53,7 @@ namespace OpenViBEDesigner
 			std::map<OpenViBE::Kernel::ELogLevel, OpenViBE::boolean> m_vActiveLevel;
 
 		private:
+
 			::GtkBuilder* m_pBuilderInterface;
 			::GtkBuilder* m_pAlertBuilder;
 			::GtkTextView* m_pTextView;
