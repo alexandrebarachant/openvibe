@@ -179,6 +179,8 @@ CDriverTMSiRefa32B::CDriverTMSiRefa32B(IDriverContext& rDriverContext)
  ,m_pCallback(NULL)
  ,m_ui32SampleCountPerSentBlock(0)
  ,m_ui32SampleIndex(0)
+ ,m_i32NumOfTriggerChannel(-1)
+ ,m_ui32LastTriggerValue(255)
  ,m_bValid(true)
  {
 	m_oHeader.setSamplingFrequency(512);
@@ -360,7 +362,15 @@ boolean CDriverTMSiRefa32B::initialize(
 			m_rDriverContext.getLogManager() << LogLevel_Debug << "channel[" << i << "]: Exponent=" << m_vExponentChannel[i] <<
 					" unitGain=" << m_vUnitGain[i] <<
 					" offSet=" << m_vUnitOffSet[i] <<
-					" format data signed=" << ((uint32)l_pSignalFormat[i].Format) << "\n";
+					" format data signed=" << ((uint32)l_pSignalFormat[i].Format) <<
+					" type="<< (uint32)l_pSignalFormat[i].Type<<
+					" sub type="<< (uint32)l_pSignalFormat[i].SubType<<
+					" unit id="<< (uint32)l_pSignalFormat[i].UnitId<<"\n";
+			//if no trigger channel was found and this channel is a digital input, this channel contains information about Trigger
+			if(m_i32NumOfTriggerChannel==-1 && l_pSignalFormat[i].Type==4)
+			{
+				m_i32NumOfTriggerChannel=i;
+			}
 		}
 
 		for(uint32 j = 0; j < m_vHandleSlaves.size() ; j++)
@@ -418,6 +428,7 @@ boolean CDriverTMSiRefa32B::start(void)
 		this->measureMode(MEASURE_MODE_NORMAL, 0);
 	}
 	m_ui32SampleIndex=0;
+	m_ui32TotalSampleReceived=0;
 	return true;
 }
 
@@ -486,19 +497,42 @@ boolean CDriverTMSiRefa32B::loop(void)
 					{
 						m_pSample[m_ui32SampleIndex+j + i*m_ui32SampleCountPerSentBlock] =(((float32)m_lSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +i])*m_vUnitGain[i]+m_vUnitOffSet[i])*pow(10.,(double)m_vExponentChannel[i]);
 					}
+
 				}
 			}
 
+			for(uint32 j=0; j<l_lmin; j++)
+			{
+				uint32 l_ui32Trigger;
+				if(m_bSignalBufferUnsigned)
+				{
+					l_ui32Trigger=m_ulSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +m_i32NumOfTriggerChannel];
+				}
+				else
+				{
+					l_ui32Trigger=m_lSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +m_i32NumOfTriggerChannel];
+				}
+				//std::cout<<l_ui32Trigger<<" ";
+				l_ui32Trigger&=255;
+
+				if(m_ui32LastTriggerValue!=l_ui32Trigger)
+				{
+					uint32 l_ui32IndexStimulation=m_oStimulationSet.getStimulationCount();
+					m_oStimulationSet.appendStimulation(l_ui32Trigger, (uint64(m_ui32SampleIndex+j)<<32)/m_oHeader.getSamplingFrequency(), 0);
+					m_ui32LastTriggerValue=l_ui32Trigger;
+				}
+			}
 			//Calculate the number of index receive on the block
 			m_ui32SampleIndex+=l_lmin;
 			l_ui32IndexBuffer+=l_lmin;
-
+			m_ui32TotalSampleReceived+=l_lmin;
 			//see if the block is complete
 			if(m_ui32SampleIndex>=m_ui32SampleCountPerSentBlock)
 			{
 				//sent the data block
 				m_pCallback->setSamples(m_pSample);
-
+				m_pCallback->setStimulationSet(m_oStimulationSet);
+				m_oStimulationSet.clear();
 				m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 
 				//calculate the index of the new block
@@ -536,6 +570,7 @@ boolean CDriverTMSiRefa32B::stop(void)
 		this->measureMode(MEASURE_MODE_IMPEDANCE, IC_OHM_005);
 	}
 	m_ui32SampleIndex=0;
+	m_ui32TotalSampleReceived=0;
 	return true;
 }
 

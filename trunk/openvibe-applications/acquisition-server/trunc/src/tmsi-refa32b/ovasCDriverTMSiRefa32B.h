@@ -55,10 +55,13 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::boolean m_bValid;
 
 		OpenViBE::uint32 m_ui32SampleIndex;
+		OpenViBE::uint32 m_ui32TotalSampleReceived;
+		OpenViBE::CStimulationSet m_oStimulationSet;
 
 		OpenViBE::boolean refreshDevicePath(void);
 		OpenViBE::boolean m_bCheckImpedance;
-
+		OpenViBE::int32 m_i32NumOfTriggerChannel;
+		OpenViBE::uint32 m_ui32LastTriggerValue;
 		//----------- TYPE ---------------------
 		//constants used by set chantype
 		#define EXG (ULONG) 0x0001
