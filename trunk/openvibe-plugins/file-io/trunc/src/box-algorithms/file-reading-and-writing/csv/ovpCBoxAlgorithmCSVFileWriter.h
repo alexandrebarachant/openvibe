@@ -12,8 +12,8 @@
 // - please move the identifier definitions in ovp_defines.h
 // - please include your desciptor in ovp_main.cpp
 
-#define OVP_ClassId_BoxAlgorithm_CSVFileWriter     OpenViBE::CIdentifier(0x2C9312F1, 0x2D6613E5)
-#define OVP_ClassId_BoxAlgorithm_CSVFileWriterDesc OpenViBE::CIdentifier(0x65075FF7, 0x2B555E97)
+//#define OVP_ClassId_BoxAlgorithm_CSVFileWriter     OpenViBE::CIdentifier(0x2C9312F1, 0x2D6613E5)
+//#define OVP_ClassId_BoxAlgorithm_CSVFileWriterDesc OpenViBE::CIdentifier(0x65075FF7, 0x2B555E97)
 
 
 namespace OpenViBEPlugins

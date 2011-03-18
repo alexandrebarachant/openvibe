@@ -12,6 +12,9 @@
 #define OVP_ClassId_GenericStreamReaderDesc                                    OpenViBE::CIdentifier(0x1E8AAB1A, 0x085D72F6)
 #define OVP_ClassId_GenericStreamWriterDesc                                    OpenViBE::CIdentifier(0x02817C77, 0x77FE3D6A)
 #define OVP_ClassId_BCICompetitionIIIbReaderDesc                               OpenViBE::CIdentifier(0x00CC1B39, 0x206A17AE)
+#define OVP_ClassId_BoxAlgorithm_CSVFileWriterDesc 							   OpenViBE::CIdentifier(0x65075FF7, 0x2B555E97)
+#define OVP_ClassId_BoxAlgorithm_CSVFileReaderDesc 							   OpenViBE::CIdentifier(0x193F22E9, 0x26A67233)
+
 
 //-------------------------------------------------------------------//
 // Brainamp File Reader
@@ -85,6 +88,9 @@
 #define OVP_ClassId_GenericStreamReader                                        OpenViBE::CIdentifier(0x0B1D880D, 0x02A17229)
 #define OVP_ClassId_GenericStreamWriter                                        OpenViBE::CIdentifier(0x78EA86B0, 0x2933E255)
 #define OVP_ClassId_BCICompetitionIIIbReader                                   OpenViBE::CIdentifier(0x0085B814, 0x6E45DA7E)
+#define OVP_ClassId_BoxAlgorithm_CSVFileWriter     							   OpenViBE::CIdentifier(0x2C9312F1, 0x2D6613E5)
+#define OVP_ClassId_BoxAlgorithm_CSVFileReader     							   OpenViBE::CIdentifier(0x641D0717, 0x02884107)
+
 
 //___________________________________________________________________//
 //                                                                   //

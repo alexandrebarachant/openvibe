@@ -14,6 +14,7 @@
 #include "box-algorithms/file-reading-and-writing/brainamp/ovpCBoxAlgorithmBrainampFileReader.h"
 
 #include "box-algorithms/file-reading-and-writing/csv/ovpCBoxAlgorithmCSVFileWriter.h"
+#include "box-algorithms/file-reading-and-writing/csv/ovpCBoxAlgorithmCSVFileReader.h"
 
 #include "box-algorithms/file-reading-and-writing/openvibe/ovpCBoxAlgorithmGenericStreamReader.h"
 #include "box-algorithms/file-reading-and-writing/openvibe/ovpCBoxAlgorithmGenericStreamWriter.h"
@@ -37,6 +38,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmBrainampFileReaderDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmCSVFileWriterDesc)
+	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmCSVFileReaderDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmGenericStreamReaderDesc)
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmGenericStreamWriterDesc)
