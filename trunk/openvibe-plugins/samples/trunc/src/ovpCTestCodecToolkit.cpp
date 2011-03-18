@@ -19,13 +19,14 @@ boolean CTestCodecToolkit::initialize(void)
 
 	m_oChannelLocalisationDecoder.initialize(*this);
 	m_oChannelLocalisationEncoder.initialize(*this);
-	m_oChannelLocalisationEncoder.getInputLocalisationMatrix().setReferenceTarget(m_oChannelLocalisationDecoder.getOutputLocalisationMatrix());
+	m_oChannelLocalisationEncoder.getInputMatrix().setReferenceTarget(m_oChannelLocalisationDecoder.getOutputMatrix());
+	m_oChannelLocalisationEncoder.getInputDynamic().setReferenceTarget(m_oChannelLocalisationDecoder.getOutputDynamic());
 	m_vDecoders.push_back(&m_oChannelLocalisationDecoder);
 	m_vEncoders.push_back(&m_oChannelLocalisationEncoder);
 
 	m_oFeatureVectorDecoder.initialize(*this);
 	m_oFeatureVectorEncoder.initialize(*this);
-	m_oFeatureVectorEncoder.getInputVector().setReferenceTarget(m_oFeatureVectorDecoder.getOutputVector());
+	m_oFeatureVectorEncoder.getInputMatrix().setReferenceTarget(m_oFeatureVectorDecoder.getOutputMatrix());
 	m_vDecoders.push_back(&m_oFeatureVectorDecoder);
 	m_vEncoders.push_back(&m_oFeatureVectorEncoder);
 
@@ -120,12 +121,12 @@ boolean CTestCodecToolkit::process(void)
 				}
 				else if(l_oInputType==OV_TypeId_ChannelLocalisation)
 				{
-					IMatrix* l_pMatrix = m_oChannelLocalisationDecoder.getOutputLocalisationMatrix();
+					IMatrix* l_pMatrix = m_oChannelLocalisationDecoder.getOutputMatrix();
 					this->getLogManager() << LogLevel_Info << "Channel localisation buffer received ("<<l_pMatrix->getBufferElementCount()<<" elements in buffer).\n";
 				}
 				else if(l_oInputType==OV_TypeId_FeatureVector)
 				{
-					IMatrix* l_pMatrix = m_oFeatureVectorDecoder.getOutputVector();
+					IMatrix* l_pMatrix = m_oFeatureVectorDecoder.getOutputMatrix();
 					this->getLogManager() << LogLevel_Info << "Feature Vector buffer received ("<<l_pMatrix->getBufferElementCount()<<" features in vector).\n";
 				}
 				else if(l_oInputType==OV_TypeId_Spectrum)
