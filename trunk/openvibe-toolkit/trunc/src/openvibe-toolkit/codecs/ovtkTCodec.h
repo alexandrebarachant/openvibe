@@ -36,6 +36,8 @@ namespace OpenViBEToolkit
 			return initialize();
 		}
 
+	protected:
+
 		virtual OpenViBE::boolean uninitialize(void) { return false;}
 
 		virtual OpenViBE::boolean isOutputTriggerActive(OpenViBE::CIdentifier oTrigger)
@@ -52,8 +54,6 @@ namespace OpenViBEToolkit
 		{
 			return m_pCodec->process();
 		}
-
-	protected:
 
 		virtual OpenViBE::boolean initialize() { return false;}
 

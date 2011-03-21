@@ -14,12 +14,8 @@ namespace OpenViBEToolkit
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > m_pOutputMemoryBuffer;
 
-	public:
-
 		using TCodec < T >::initialize;
 		using TCodec < T >::m_pCodec;
-
-		virtual OpenViBE::boolean uninitialize(void) { return false;}
 
 		virtual void setOutputChunk(OpenViBE::IMemoryBuffer * pOutputChunkMemoryBuffer)
 		{
@@ -45,12 +41,34 @@ namespace OpenViBEToolkit
 			return m_pCodec->process();
 		}
 
-		virtual OpenViBE::boolean encodeHeader(void) { return false;}
-		virtual OpenViBE::boolean encodeBuffer(void) { return false;}
-		virtual OpenViBE::boolean encodeEnd(void) { return false;}
+	
+		virtual OpenViBE::boolean encodeHeader() { return false;}
+		virtual OpenViBE::boolean encodeBuffer() { return false;}
+		virtual OpenViBE::boolean encodeEnd() { return false;}
 
-	protected:
+	public:
+		OpenViBE::boolean encodeHeader(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		{
+			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
+			if(!this->encodeHeader()) return false;
+			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+		}
 
+		OpenViBE::boolean encodeBuffer(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		{
+			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
+			if(!this->encodeBuffer()) return false;
+			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+		}
+
+		OpenViBE::boolean encodeEnd(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		{
+			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
+			if(!this->encodeEnd()) return false;
+			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+		}
+
+		virtual OpenViBE::boolean uninitialize(void) { return false;}
 		virtual OpenViBE::boolean initialize(void) { return false;}
 
 	};
