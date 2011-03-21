@@ -468,7 +468,7 @@ boolean CDriverMicromedSystemPlusEvolution::initialize(
 
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "> Server is listening on port : " << m_ui32ServerHostPort << "\n";
 
-	uint32 l_ui32TimeOutMilliseconds=m_rDriverContext.getConfigurationManager().expandAsInteger("${AcquisitionServer_Driver_MicromedTimeOut}", 5000);
+	uint32 l_ui32TimeOutMilliseconds=(uint32)m_rDriverContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_Driver_MicromedTimeOut}", 5000);
 	if(m_pConnectionServer->isReadyToReceive(l_ui32TimeOutMilliseconds))
 	{
 		// Accept new client
@@ -566,7 +566,7 @@ boolean CDriverMicromedSystemPlusEvolution::dropData(void)
 
 	do
 	{
-		uint32 l_ui32MaxByteRecv=min(m_oFgetStructBuffDataSize(), m_oFgetDataLength()-l_ui32TotalReceived);
+		uint32 l_ui32MaxByteRecv=min((uint32)m_oFgetStructBuffDataSize(), m_oFgetDataLength()-l_ui32TotalReceived);
 		this->MyReceive((char*)m_pStructBuffData, l_ui32MaxByteRecv);
 		l_ui32TotalReceived+=l_ui32MaxByteRecv;
 	}
@@ -669,7 +669,7 @@ boolean CDriverMicromedSystemPlusEvolution::loop(void)
 
 					while(l_ui32TotalReceived<m_oFgetDataLength())
 					{
-						uint32 l_ui32MaxByteRecv=min(m_oFgetStructBuffDataSize(), m_oFgetDataLength()-l_ui32TotalReceived);
+						uint32 l_ui32MaxByteRecv=min((uint32)m_oFgetStructBuffDataSize(), m_oFgetDataLength()-l_ui32TotalReceived);
 						this->MyReceive((char*)m_pStructBuffData, l_ui32MaxByteRecv);
 						l_ui32TotalReceived+=l_ui32MaxByteRecv;
 						m_rDriverContext.getLogManager() << LogLevel_Debug << "> Data Load = " << l_ui32TotalReceived << " \n";
@@ -808,7 +808,7 @@ boolean CDriverMicromedSystemPlusEvolution::loop(void)
 					}
 					else
 					{
-						uint32 l_ui32TriggerPosition=l_ui32TriggerSample-m_ui64PosFirstSampleOfCurrentBlock;
+						uint32 l_ui32TriggerPosition=l_ui32TriggerSample-(uint32)m_ui64PosFirstSampleOfCurrentBlock;
 						m_oStimulationSet.appendStimulation(m_oFgetTriggerValue(i), (uint64(l_ui32TriggerPosition)<<32)/m_oHeader.getSamplingFrequency(), 0);
 
 					}
