@@ -814,7 +814,6 @@ boolean CDriverMicromedSystemPlusEvolution::loop(void)
 					}
 				}
 
-				/* A voir avec Baptiste
 				if(m_rDriverContext.getLogManager().isActive(LogLevel_Trace))
 				{
 					std::stringstream l_sTrigger;
@@ -822,7 +821,7 @@ boolean CDriverMicromedSystemPlusEvolution::loop(void)
 					//m_rDriverContext.getLogManager() << LogLevel_Warning << "A Trigger was received but this function is not implemented. Please submit a bug report (including the acquisition server log file in debug mode)";
 					m_rDriverContext.getLogManager() << LogLevel_Info << l_sTrigger.str().c_str();
 				}
-				*/
+				
 			}
 		}
 		delete [] l_pTempBuff;
