@@ -566,6 +566,18 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 	m_ui32ChannelCount=l_rHeader.getChannelCount();
 	m_ui32SamplingFrequency=l_rHeader.getSamplingFrequency()*m_ui64OverSamplingFactor;
 
+	if(m_ui32ChannelCount==0)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver claimed to have " << uint32(0) << " channel\n";
+		return false;
+	}
+
+	if(m_ui32SamplingFrequency==0)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver claimed to have a sample frequency of " << uint32(0) << "\n";
+		return false;
+	}
+
 	m_vImpedance.resize(m_ui32ChannelCount, OVAS_Impedance_NotAvailable);
 	m_vSwapBuffer.resize(m_ui32ChannelCount);
 
