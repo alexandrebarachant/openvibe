@@ -73,7 +73,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TStimulationStreamEncoder : public TStimulationStreamEncoderLocal < TEncoder < TCodec < T > > >
+	class TStimulationStreamEncoder : public TStimulationStreamEncoderLocal < TEncoder < T > >
 	{
 	};
 };

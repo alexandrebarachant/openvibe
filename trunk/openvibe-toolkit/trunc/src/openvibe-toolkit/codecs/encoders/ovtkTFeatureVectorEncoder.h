@@ -52,7 +52,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TFeatureVectorEncoder : public TFeatureVectorEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < TCodec < T > > > >
+	class TFeatureVectorEncoder : public TFeatureVectorEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >
 	{
 	};
 };

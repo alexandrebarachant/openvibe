@@ -75,7 +75,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TSpectrumEncoder : public TSpectrumEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < TCodec < T > > > >
+	class TSpectrumEncoder : public TSpectrumEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >
 	{
 	};
 };

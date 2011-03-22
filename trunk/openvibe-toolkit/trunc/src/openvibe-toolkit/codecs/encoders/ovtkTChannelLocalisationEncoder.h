@@ -81,7 +81,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TChannelLocalisationEncoder : public TChannelLocalisationEncoderLocal < TEncoder < TCodec < T > > >
+	class TChannelLocalisationEncoder : public TChannelLocalisationEncoderLocal < TEncoder < T > >
 	{
 	};
 };

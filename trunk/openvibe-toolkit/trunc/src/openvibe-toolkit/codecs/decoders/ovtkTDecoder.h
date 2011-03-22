@@ -10,7 +10,7 @@
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TDecoder : public T
+	class TDecoderLocal : public T
 	{
 	protected:
 
@@ -58,6 +58,15 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::boolean isBufferReceived(void) = 0;
 		virtual OpenViBE::boolean isEndReceived(void) = 0;
 
+	};
+
+	template <class T>
+	class TDecoder : public TDecoderLocal < TCodec < T > >
+	{
+	protected:
+		TDecoder()
+		{
+		}
 	};
 };
 

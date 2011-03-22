@@ -73,7 +73,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TStreamedMatrixDecoder : public TStreamedMatrixDecoderLocal < TDecoder < TCodec < T > > >
+	class TStreamedMatrixDecoder : public TStreamedMatrixDecoderLocal < TDecoder < T > >
 	{
 	};
 };

@@ -10,7 +10,7 @@
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TEncoder : public T
+	class TEncoderLocal : public T
 	{
 	protected:
 
@@ -69,6 +69,15 @@ namespace OpenViBEToolkit
 			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
 			if(!this->encodeEnd()) return false;
 			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+		}
+	};
+
+	template <class T>
+	class TEncoder : public TEncoderLocal < TCodec < T > >
+	{
+	protected:
+		TEncoder()
+		{
 		}
 	};
 };

@@ -152,7 +152,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TExperimentInformationEncoder : public TExperimentInformationEncoderLocal < TEncoder < TCodec < T > > >
+	class TExperimentInformationEncoder : public TExperimentInformationEncoderLocal < TEncoder < T > >
 	{
 	};
 };
