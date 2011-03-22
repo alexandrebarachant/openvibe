@@ -5,13 +5,17 @@
 
 #include "../../ovtk_base.h"
 
-#include "ovtkTStreamedMatrixDecoder.h"
+#include "ovtkTDecoder.h"
 
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TFeatureVectorDecoderLocal : public  TStreamedMatrixDecoderLocal <T>
+	class TFeatureVectorDecoderLocal : public T
 	{
+	protected:
+
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputVector;
+
 	protected:
 
 		OpenViBE::boolean initialize()
@@ -19,18 +23,38 @@ namespace OpenViBEToolkit
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder));
 			m_pCodec->initialize();
 			m_pInputMemoryBuffer.initialize(m_pCodec->getInputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_InputParameterId_MemoryBufferToDecode));
-			m_pOutputMatrix.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix));
+			m_pOutputVector.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix));
 
 			return true;
 		}
 
 	public:
 
-		using TStreamedMatrixDecoderLocal::initialize;
-		using TStreamedMatrixDecoderLocal::uninitialize;
-		using TStreamedMatrixDecoderLocal::m_pCodec;
-		using TStreamedMatrixDecoderLocal::m_pBoxAlgorithm;
-		using TStreamedMatrixDecoderLocal::m_pInputMemoryBuffer;
+		using T::initialize;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pInputMemoryBuffer;
+
+		OpenViBE::boolean uninitialize(void)
+		{
+			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
+			{
+				return false;
+			}
+
+			m_pOutputVector.uninitialize();
+			m_pInputMemoryBuffer.uninitialize();
+			m_pCodec->uninitialize();
+			m_pBoxAlgorithm->getAlgorithmManager().releaseAlgorithm(*m_pCodec);
+			m_pBoxAlgorithm = NULL;
+
+			return true;
+		}
+
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+		{
+			return m_pOutputVector;
+		}
 
 		virtual OpenViBE::boolean isHeaderReceived()
 		{

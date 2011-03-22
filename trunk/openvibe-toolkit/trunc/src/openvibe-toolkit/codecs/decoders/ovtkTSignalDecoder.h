@@ -5,15 +5,16 @@
 
 #include "../../ovtk_base.h"
 
-#include "ovtkTStreamedMatrixDecoder.h"
+#include "ovtkTDecoder.h"
 
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TSignalDecoderLocal : public TStreamedMatrixDecoderLocal <T>
+	class TSignalDecoderLocal : public T
 	{
 	protected:
 
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_pOutputSamplingRate;
 
 	protected:
@@ -31,10 +32,10 @@ namespace OpenViBEToolkit
 
 	public:
 
-		using TStreamedMatrixDecoderLocal::initialize;
-		using TStreamedMatrixDecoderLocal::m_pCodec;
-		using TStreamedMatrixDecoderLocal::m_pBoxAlgorithm;
-		using TStreamedMatrixDecoderLocal::m_pInputMemoryBuffer;
+		using T::initialize;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pInputMemoryBuffer;
 
 		OpenViBE::boolean uninitialize(void)
 		{
@@ -51,6 +52,11 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 
 			return true;
+		}
+
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+		{
+			return m_pOutputMatrix;
 		}
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& getOutputSamplingRate()

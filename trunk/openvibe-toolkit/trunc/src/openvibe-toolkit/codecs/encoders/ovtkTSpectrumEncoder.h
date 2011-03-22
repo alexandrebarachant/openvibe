@@ -4,15 +4,17 @@
 #ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
 #include "../../ovtk_base.h"
-#include "ovtkTStreamedMatrixEncoder.h"
+
+#include "ovtkTEncoder.h"
 
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TSpectrumEncoderLocal : public TStreamedMatrixEncoderLocal <T>
+	class TSpectrumEncoderLocal : public T
 	{
 	protected:
 
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputBands;
 
 	protected:
@@ -30,10 +32,10 @@ namespace OpenViBEToolkit
 
 	public:
 
-		using TStreamedMatrixEncoderLocal::initialize;
-		using TStreamedMatrixEncoderLocal::m_pCodec;
-		using TStreamedMatrixEncoderLocal::m_pBoxAlgorithm;
-		using TStreamedMatrixEncoderLocal::m_pOutputMemoryBuffer;
+		using T::initialize;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pOutputMemoryBuffer;
 
 		OpenViBE::boolean uninitialize(void)
 		{
@@ -52,12 +54,16 @@ namespace OpenViBEToolkit
 			return true;
 		}
 
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+		{
+			return m_pInputMatrix;
+		}
+
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMinMaxFrequencyBands()
 		{
 			return m_pInputBands;
 		}
 
-	protected:
 		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeHeader);

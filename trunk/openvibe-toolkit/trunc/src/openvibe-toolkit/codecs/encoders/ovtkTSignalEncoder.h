@@ -5,15 +5,16 @@
 
 #include "../../ovtk_base.h"
 
-#include "ovtkTStreamedMatrixEncoder.h"
+#include "ovtkTEncoder.h"
 
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TSignalEncoderLocal : public TStreamedMatrixEncoderLocal <T>
+	class TSignalEncoderLocal : public T
 	{
 	protected:
 
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_pInputSamplingRate;
 
 	protected:
@@ -31,10 +32,10 @@ namespace OpenViBEToolkit
 
 	public:
 
-		using TStreamedMatrixEncoderLocal::initialize;
-		using TStreamedMatrixEncoderLocal::m_pCodec;
-		using TStreamedMatrixEncoderLocal::m_pBoxAlgorithm;
-		using TStreamedMatrixEncoderLocal::m_pOutputMemoryBuffer;
+		using T::initialize;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pOutputMemoryBuffer;
 
 		OpenViBE::boolean uninitialize(void)
 		{
@@ -53,25 +54,29 @@ namespace OpenViBEToolkit
 			return true;
 		}
 
+		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+		{
+			return m_pInputMatrix;
+		}
+
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& getInputSamplingRate()
 		{
 			return m_pInputSamplingRate;
 		}
 
-	protected:
 		OpenViBE::boolean encodeHeader(void)
 		{
-			return process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
+			return m_pCodec->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
 		}
 
 		OpenViBE::boolean encodeBuffer(void)
 		{
-			return process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
+			return m_pCodec->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
 		}
 
 		OpenViBE::boolean encodeEnd(void)
 		{
-			return process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd);
+			return m_pCodec->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd);
 		}
 	};
 
