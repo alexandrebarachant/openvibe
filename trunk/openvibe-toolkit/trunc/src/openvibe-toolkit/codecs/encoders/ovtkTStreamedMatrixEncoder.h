@@ -14,7 +14,7 @@ namespace OpenViBEToolkit
 	{
 
 	protected:
-
+		//specific attribute : a matrix handler
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputMatrix;
 		
 		using T::m_pCodec;
@@ -32,6 +32,7 @@ namespace OpenViBEToolkit
 		}
 
 	public:
+		// we propagate the visiblity of TCodec::initialize
 		using T::initialize;
 		
 		OpenViBE::boolean uninitialize(void)
@@ -56,6 +57,10 @@ namespace OpenViBEToolkit
 		}
 
 	protected:
+
+		/*
+		The methods specific to the Streamed Matrix encoder :
+		*/
 		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader);
@@ -72,6 +77,10 @@ namespace OpenViBEToolkit
 		}
 	};
 
+	/*
+	This class provides an access to the Local class.
+	It makes a lot easier the declaration of a Streamed Matrix encoder, as you don't have to specify any more template than the Box class (T).
+	*/
 	template <class T>
 	class TStreamedMatrixEncoder : public TStreamedMatrixEncoderLocal < TEncoder < T > >
 	{

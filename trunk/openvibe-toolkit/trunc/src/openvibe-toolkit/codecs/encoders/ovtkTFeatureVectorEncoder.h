@@ -14,6 +14,8 @@ namespace OpenViBEToolkit
 	{
 		
 	protected:
+		// the feature vector stream is just a streamed matrix with some constraint (dimension = 2).
+		// no specific parameter.
 		
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;

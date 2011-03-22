@@ -14,10 +14,9 @@ namespace OpenViBEToolkit
 	{
 		
 	protected:
-
+		//The signal stream is a streamed matrix plus a sampling rate
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_pInputSamplingRate;
 		
-		using T::process;
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pOutputMemoryBuffer;
@@ -36,6 +35,7 @@ namespace OpenViBEToolkit
 		}
 
 	public:
+		//agin... we propagate initialize from upperclass.
 		using T::initialize;
 		
 		OpenViBE::boolean uninitialize(void)
@@ -61,6 +61,10 @@ namespace OpenViBEToolkit
 		}
 
 	protected:
+
+		/*
+		The methods specific to the Signal encoder (overriding the TStreamedMatrixEncoderLocal implementations):
+		*/
 		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
@@ -77,6 +81,10 @@ namespace OpenViBEToolkit
 		}
 	};
 
+	/*
+	The Signal encoder can be instanciated easily through this class.
+	You just need one template class : the box (T).
+	*/
 	template <class T>
 	class TSignalEncoder : public TSignalEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >
 	{
