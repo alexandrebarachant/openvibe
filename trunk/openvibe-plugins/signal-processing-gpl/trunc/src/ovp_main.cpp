@@ -14,6 +14,7 @@
 #include "algorithms/filter/ovpCApplyTemporalFilter.h"
 #include "box-algorithms/filter/ovpCTemporalFilterBoxAlgorithm.h"
 #include "box-algorithms/filter/ovpCBoxAlgorithmXDAWNSpatialFilterTrainer.h"
+#include "box-algorithms/filter/ovpCBoxAlgorithmCSPSpatialFilterTrainer.h"
 
 #include "algorithms/basic/ovpCDownsampling.h"
 #include "box-algorithms/basic/ovpCDownsamplingBoxAlgorithm.h"
@@ -70,6 +71,7 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CSpectralAnalysisDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CTemporalFilterDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmXDAWNSpatialFilterTrainerDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmCSPSpatialFilterTrainerDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CTemporalFilterBoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CComputeTemporalFilterCoefficientsDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CApplyTemporalFilterDesc);
