@@ -22,7 +22,7 @@ namespace OpenViBEToolkit
 		{
 		}
 
-		virtual OpenViBE::boolean initialize(T& rBoxAlgorithm)
+		OpenViBE::boolean initialize(T& rBoxAlgorithm)
 		{
 			if(m_pBoxAlgorithm == NULL)
 			{
@@ -33,10 +33,12 @@ namespace OpenViBEToolkit
 				return false;
 			}
 
-			return initialize();
+			return initializeImpl();
 		}
+		
+		virtual OpenViBE::boolean uninitialize(void) = 0;
 
-		virtual OpenViBE::boolean uninitialize(void) { return false;}
+		virtual OpenViBE::boolean initializeImpl() = 0;
 
 		virtual OpenViBE::boolean isOutputTriggerActive(OpenViBE::CIdentifier oTrigger)
 		{
@@ -53,9 +55,7 @@ namespace OpenViBEToolkit
 			return m_pCodec->process();
 		}
 
-	protected:
-
-		virtual OpenViBE::boolean initialize() { return false;}
+		
 
 	};
 };

@@ -5,22 +5,20 @@
 
 #include "../../ovtk_base.h"
 
+#include "../ovtkTCodec.h"
+
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TDecoder : public TCodec < T >
+	class TDecoder : public T
 	{
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > m_pInputMemoryBuffer;
 
-	public:
-
-		using TCodec < T >::initialize;
-		using TCodec < T >::m_pCodec;
-
-		virtual OpenViBE::boolean uninitialize(void) { return false;}
-
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		
 		virtual void setInputChunk(const OpenViBE::IMemoryBuffer * pInputChunkMemoryBuffer)
 		{
 			m_pInputMemoryBuffer = pInputChunkMemoryBuffer;
@@ -45,18 +43,18 @@ namespace OpenViBEToolkit
 			return m_pCodec->process();
 		}
 
-		virtual OpenViBE::boolean decode(void)
+	public:
+		using T::initialize;
+		
+		virtual OpenViBE::boolean decode(OpenViBE::uint32 ui32InputIndex, OpenViBE::uint32 ui32ChunkIndex)
 		{
 			return m_pCodec->process();
+			return true;
 		}
 
-		virtual OpenViBE::boolean isHeaderReceived(void) { return false;}
-		virtual OpenViBE::boolean isBufferReceived(void) { return false;}
-		virtual OpenViBE::boolean isEndReceived(void) { return false;}
-
-	protected:
-
-		virtual OpenViBE::boolean initialize(void) { return false;}
+		virtual OpenViBE::boolean isHeaderReceived(void) = 0;
+		virtual OpenViBE::boolean isBufferReceived(void) = 0;
+		virtual OpenViBE::boolean isEndReceived(void) = 0;
 
 	};
 };

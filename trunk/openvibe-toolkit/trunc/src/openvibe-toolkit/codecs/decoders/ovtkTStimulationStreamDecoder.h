@@ -12,13 +12,16 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TStimulationStreamDecoderLocal : public T
 	{
+
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > m_pOutputStimulationSet;
+		
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pInputMemoryBuffer;
 
-	protected:
-
-		OpenViBE::boolean initialize()
+		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamDecoder));
 			m_pCodec->initialize();
@@ -29,12 +32,8 @@ namespace OpenViBEToolkit
 		}
 
 	public:
-
 		using T::initialize;
-		using T::m_pCodec;
-		using T::m_pBoxAlgorithm;
-		using T::m_pInputMemoryBuffer;
-
+		
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -73,7 +72,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TStimulationStreamDecoder : public TStimulationStreamDecoderLocal < TDecoder < T > >
+	class TStimulationStreamDecoder : public TStimulationStreamDecoderLocal < TDecoder < TCodec < T > > >
 	{
 	};
 };

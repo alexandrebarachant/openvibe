@@ -12,6 +12,7 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TExperimentInformationDecoderLocal : public T
 	{
+
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_ui64OutputExperimentIdentifier;
@@ -26,10 +27,12 @@ namespace OpenViBEToolkit
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > m_pOutputpLaboratoryName;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_ui64OutputTechnicianIdentifier;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > m_pOutputpTechnicianName;
+		
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pInputMemoryBuffer;
 
-	protected:
-
-		OpenViBE::boolean initialize()
+		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_ExperimentInformationStreamDecoder));
 			m_pCodec->initialize();
@@ -53,12 +56,8 @@ namespace OpenViBEToolkit
 		}
 
 	public:
-
 		using T::initialize;
-		using T::m_pCodec;
-		using T::m_pBoxAlgorithm;
-		using T::m_pInputMemoryBuffer;
-
+		
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -152,7 +151,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TExperimentInformationDecoder : public TExperimentInformationDecoderLocal < TDecoder < T > >
+	class TExperimentInformationDecoder : public TExperimentInformationDecoderLocal < TDecoder < TCodec < T > > >
 	{
 	};
 };

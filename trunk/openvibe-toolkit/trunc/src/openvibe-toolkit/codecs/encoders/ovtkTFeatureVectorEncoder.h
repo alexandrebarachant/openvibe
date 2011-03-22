@@ -12,13 +12,15 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TFeatureVectorEncoderLocal : public T
 	{
+		
 	protected:
+		
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pOutputMemoryBuffer;
+		using T::m_pInputMatrix;
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputVector;
-
-	protected:
-
-		OpenViBE::boolean initialize()
+		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamEncoder));
 			m_pCodec->initialize();
@@ -27,13 +29,6 @@ namespace OpenViBEToolkit
 
 			return true;
 		}
-
-	public:
-
-		using T::initialize;
-		using T::m_pCodec;
-		using T::m_pBoxAlgorithm;
-		using T::m_pOutputMemoryBuffer;
 
 		OpenViBE::boolean uninitialize(void)
 		{
@@ -56,6 +51,7 @@ namespace OpenViBEToolkit
 			return m_pInputVector;
 		}
 
+	
 		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeHeader);
@@ -70,10 +66,13 @@ namespace OpenViBEToolkit
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeEnd);
 		}
+	public:
+		using T::initialize;
+		using T::uninitialize;
 	};
 
 	template <class T>
-	class TFeatureVectorEncoder : public TFeatureVectorEncoderLocal < TEncoder < T > >
+	class TFeatureVectorEncoder : public TFeatureVectorEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < TCodec < T > > > >
 	{
 	};
 };

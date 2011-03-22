@@ -5,19 +5,20 @@
 
 #include "../../ovtk_base.h"
 
+#include "../ovtkTCodec.h"
+
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TEncoder : public TCodec < T >
+	class TEncoder : public T
 	{
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > m_pOutputMemoryBuffer;
 
-	public:
-
-		using TCodec < T >::initialize;
-		using TCodec < T >::m_pCodec;
+		using T::initialize;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
 
 		virtual OpenViBE::boolean uninitialize(void) { return false;}
 
@@ -51,8 +52,19 @@ namespace OpenViBEToolkit
 
 	protected:
 
-		virtual OpenViBE::boolean initialize(void) { return false;}
+		OpenViBE::boolean encodeBuffer(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		{
+			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
+			if(!this->encodeBuffer()) return false;
+			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+		}
 
+		OpenViBE::boolean encodeEnd(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		{
+			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
+			if(!this->encodeEnd()) return false;
+			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+		}
 	};
 };
 

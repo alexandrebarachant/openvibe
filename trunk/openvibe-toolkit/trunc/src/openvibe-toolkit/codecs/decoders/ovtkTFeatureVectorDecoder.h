@@ -12,13 +12,15 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TFeatureVectorDecoderLocal : public T
 	{
+		
 	protected:
+	
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pInputMemoryBuffer;
+		using T::m_pOutputMatrix;
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputVector;
-
-	protected:
-
-		OpenViBE::boolean initialize()
+		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder));
 			m_pCodec->initialize();
@@ -29,12 +31,9 @@ namespace OpenViBEToolkit
 		}
 
 	public:
-
 		using T::initialize;
-		using T::m_pCodec;
-		using T::m_pBoxAlgorithm;
-		using T::m_pInputMemoryBuffer;
-
+		using T::uninitialize;
+		
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -73,8 +72,8 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TFeatureVectorDecoder : public TFeatureVectorDecoderLocal < TDecoder < T > >
-	{
+	class TFeatureVectorDecoder : public TFeatureVectorDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < TCodec < T > > > >
+	{	
 	};
 };
 

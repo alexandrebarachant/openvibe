@@ -12,14 +12,18 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TSpectrumDecoderLocal : public T
 	{
+		
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputBands;
+		
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pInputMemoryBuffer;
+		using T::m_pOutputMatrix;
 
-	protected:
-
-		OpenViBE::boolean initialize()
+		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SpectrumStreamDecoder));
 			m_pCodec->initialize();
@@ -31,12 +35,8 @@ namespace OpenViBEToolkit
 		}
 
 	public:
-
 		using T::initialize;
-		using T::m_pCodec;
-		using T::m_pBoxAlgorithm;
-		using T::m_pInputMemoryBuffer;
-
+		
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -81,7 +81,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TSpectrumDecoder : public TSpectrumDecoderLocal < TDecoder < T > >
+	class TSpectrumDecoder : public TSpectrumDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < TCodec < T > > > >
 	{
 	};
 };

@@ -12,14 +12,17 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TChannelLocalisationEncoderLocal : public T
 	{
+		
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputLocalisationMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > m_bInputDynamic;
+		
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pOutputMemoryBuffer;
 
-	protected:
-
-		OpenViBE::boolean initialize()
+		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_ChannelLocalisationStreamEncoder));
 			m_pCodec->initialize();
@@ -31,12 +34,8 @@ namespace OpenViBEToolkit
 		}
 
 	public:
-
 		using T::initialize;
-		using T::m_pCodec;
-		using T::m_pBoxAlgorithm;
-		using T::m_pOutputMemoryBuffer;
-
+		
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -81,7 +80,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TChannelLocalisationEncoder : public TChannelLocalisationEncoderLocal < TEncoder < T > >
+	class TChannelLocalisationEncoder : public TChannelLocalisationEncoderLocal < TEncoder < TCodec < T > > >
 	{
 	};
 };

@@ -12,14 +12,20 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TSignalEncoderLocal : public T
 	{
+		
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_pInputSamplingRate;
+		
+		using T::process;
+		using T::m_pCodec;
+		using T::m_pBoxAlgorithm;
+		using T::m_pOutputMemoryBuffer;
+		using T::m_pInputMatrix;
 
-	protected:
 
-		OpenViBE::boolean initialize()
+		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamEncoder));
 			m_pCodec->initialize();
@@ -31,12 +37,8 @@ namespace OpenViBEToolkit
 		}
 
 	public:
-
 		using T::initialize;
-		using T::m_pCodec;
-		using T::m_pBoxAlgorithm;
-		using T::m_pOutputMemoryBuffer;
-
+		
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -81,7 +83,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TSignalEncoder : public TSignalEncoderLocal < TEncoder < T > >
+	class TSignalEncoder : public TSignalEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < TCodec < T > > > >
 	{
 	};
 };
