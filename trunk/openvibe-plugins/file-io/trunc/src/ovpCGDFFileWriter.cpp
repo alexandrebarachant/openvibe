@@ -414,7 +414,7 @@ void CGDFFileWriter::saveEvents()
 	{
 		l_ui32Position = (uint32)(((l_oIterator->second + 1) * m_ui64SamplingFrequency - 1)>>32);
 
-		System::Memory::hostToLittleEndian(l_ui32Position, l_pLittleEndianBuffer);
+		System::Memory::hostToLittleEndian(l_ui32Position+1, l_pLittleEndianBuffer);
 		m_oFile.write(reinterpret_cast<char *>(l_pLittleEndianBuffer), 4);
 
 	}

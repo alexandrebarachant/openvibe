@@ -795,6 +795,8 @@ boolean CGDFFileReader::process()
 			l_oEvent.m_ui32Position = m_pEventsPositionBuffer[m_ui32CurrentEvent];
 			l_oEvent.m_ui16Type = m_pEventsTypeBuffer[m_ui32CurrentEvent];
 
+			if(l_oEvent.m_ui32Position > 0) l_oEvent.m_ui32Position--;
+
 			//adds it to the list of events
 			m_oEvents.push_back(l_oEvent);
 
