@@ -740,8 +740,10 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 	uint64 l_ui64Value=m_rKernelContext.getTypeManager().getEnumerationEntryValueFromName(rTypeIdentifier, rValue);
 	uint64 i;
 
+#if 0
 	if(rTypeIdentifier==OV_TypeId_Stimulation)
 	{
+#endif
 		std::map < CString, uint64 > m_vListEntries;
 		std::map < CString, uint64 >::const_iterator it;
 
@@ -767,6 +769,7 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 				gtk_combo_box_set_active(l_pWidget, (gint)i);
 			}
 		}
+#if 0
 	}
 	else
 	{
@@ -787,7 +790,7 @@ void CSettingCollectionHelper::setValueEnumeration(const CIdentifier& rTypeIdent
 			}
 		}
 	}
-
+#endif
 	if(gtk_combo_box_get_active(l_pWidget)==-1)
 	{
 		gtk_list_store_append(l_pList, &l_oListIter);
