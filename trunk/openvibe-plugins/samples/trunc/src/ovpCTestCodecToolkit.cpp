@@ -99,11 +99,15 @@ boolean CTestCodecToolkit::process(void)
 		for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(i); j++)
 		{
 			// we can manipulate decoders and encoders without knowing their types
-			m_vDecoders[i]->decode(i,j);
+			m_vDecoders[i]->setInputChunk(l_rDynamicBoxContext.getInputChunk(i, j));
+			m_vEncoders[i]->setOutputChunk(l_rDynamicBoxContext.getOutputChunk(i));
+
+			m_vDecoders[i]->decode();
 
 			if(m_vDecoders[i]->isHeaderReceived())
 			{
-				m_vEncoders[i]->encodeHeader(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeHeader();
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
 			if(m_vDecoders[i]->isBufferReceived())
 			{
@@ -153,12 +157,16 @@ boolean CTestCodecToolkit::process(void)
 					this->getLogManager() << LogLevel_Error << "Undefined input type.\n";
 					return true;
 				}
-				m_vEncoders[i]->encodeBuffer(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeBuffer();
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
 			if(m_vDecoders[i]->isEndReceived())
 			{
-				m_vEncoders[i]->encodeEnd(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeEnd();
+				l_rDynamicBoxContext.markOutputAsReadyToSend(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 			}
+
+			l_rDynamicBoxContext.markInputAsDeprecated(i, j);
 		}
 	}
 
