@@ -63,6 +63,7 @@ namespace OpenViBEToolkit
 			return m_bInputDynamic;
 		}
 
+	protected:
 		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputTriggerId_EncodeHeader);

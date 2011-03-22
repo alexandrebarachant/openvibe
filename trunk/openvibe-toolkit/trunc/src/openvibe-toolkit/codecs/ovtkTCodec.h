@@ -38,6 +38,8 @@ namespace OpenViBEToolkit
 		
 		virtual OpenViBE::boolean uninitialize(void) = 0;
 
+	protected:
+
 		virtual OpenViBE::boolean initializeImpl() = 0;
 
 		virtual OpenViBE::boolean isOutputTriggerActive(OpenViBE::CIdentifier oTrigger)

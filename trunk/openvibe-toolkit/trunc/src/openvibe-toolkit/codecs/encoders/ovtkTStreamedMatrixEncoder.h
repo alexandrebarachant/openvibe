@@ -55,6 +55,7 @@ namespace OpenViBEToolkit
 			return m_pInputMatrix;
 		}
 
+	protected:
 		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader);

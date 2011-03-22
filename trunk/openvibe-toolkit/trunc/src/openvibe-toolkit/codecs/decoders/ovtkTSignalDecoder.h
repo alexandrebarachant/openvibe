@@ -5,7 +5,7 @@
 
 #include "../../ovtk_base.h"
 
-#include "ovtkTDecoder.h"
+#include "ovtkTStreamedMatrixDecoder.h"
 
 namespace OpenViBEToolkit
 {
@@ -15,7 +15,6 @@ namespace OpenViBEToolkit
 
 	protected:
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_pOutputSamplingRate;
 		
 		using T::m_pCodec;
@@ -52,11 +51,6 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 
 			return true;
-		}
-
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
-		{
-			return m_pOutputMatrix;
 		}
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& getOutputSamplingRate()

@@ -5,7 +5,7 @@
 
 #include "../../ovtk_base.h"
 
-#include "ovtkTDecoder.h"
+#include "ovtkTStreamedMatrixDecoder.h"
 
 namespace OpenViBEToolkit
 {
@@ -25,7 +25,7 @@ namespace OpenViBEToolkit
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_FeatureVectorStreamDecoder));
 			m_pCodec->initialize();
 			m_pInputMemoryBuffer.initialize(m_pCodec->getInputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_InputParameterId_MemoryBufferToDecode));
-			m_pOutputVector.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix));
+			m_pOutputMatrix.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputParameterId_Matrix));
 
 			return true;
 		}
@@ -34,27 +34,6 @@ namespace OpenViBEToolkit
 		using T::initialize;
 		using T::uninitialize;
 		
-		OpenViBE::boolean uninitialize(void)
-		{
-			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
-			{
-				return false;
-			}
-
-			m_pOutputVector.uninitialize();
-			m_pInputMemoryBuffer.uninitialize();
-			m_pCodec->uninitialize();
-			m_pBoxAlgorithm->getAlgorithmManager().releaseAlgorithm(*m_pCodec);
-			m_pBoxAlgorithm = NULL;
-
-			return true;
-		}
-
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
-		{
-			return m_pOutputVector;
-		}
-
 		virtual OpenViBE::boolean isHeaderReceived()
 		{
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedHeader);

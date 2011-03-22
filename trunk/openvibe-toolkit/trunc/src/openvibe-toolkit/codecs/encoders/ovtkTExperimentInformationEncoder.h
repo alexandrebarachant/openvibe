@@ -133,6 +133,7 @@ namespace OpenViBEToolkit
 			return m_pInputTechnicianName;
 		}
 
+	protected:
 		OpenViBE::boolean encodeHeader(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeHeader);
@@ -147,6 +148,7 @@ namespace OpenViBEToolkit
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_ExperimentInformationStreamEncoder_InputTriggerId_EncodeEnd);
 		}
+
 	};
 
 	template <class T>
