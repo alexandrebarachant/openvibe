@@ -107,6 +107,9 @@ namespace OpenViBEPlugins
 			class CFixedGDF2Header : public CFixedGDFHeader
 			{
 			public:
+
+				CFixedGDF2Header();
+
 				virtual ~CFixedGDF2Header(){}
 
 				/**

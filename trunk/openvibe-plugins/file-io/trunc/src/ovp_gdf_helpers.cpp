@@ -64,7 +64,15 @@ std::string GDF::CFixedGDFHeader::getTechnicianName()
 	return _NoValueS_;
 }
 
-GDF::CFixedGDF1Header::CFixedGDF1Header() : m_i64NumberOfDataRecords(0)
+GDF::CFixedGDF1Header::CFixedGDF1Header()
+	:m_i64NumberOfBytesInHeaderRecord(0)
+	,m_ui64EquipmentProviderId(0)
+	,m_ui64LaboratoryId(0)
+	,m_ui64TechnicianId(0)
+	,m_i64NumberOfDataRecords(0)
+	,m_ui32DurationOfADataRecordNumerator(0)
+	,m_ui32DurationOfADataRecordDenominator(0)
+	,m_ui32NumberOfSignals(0)
 {
 	memset(m_sPatientId, ' ', sizeof(m_sPatientId));
 	memset(m_sRecordingId, ' ', sizeof(m_sRecordingId));
@@ -263,6 +271,33 @@ uint64 GDF::CFixedGDF1Header::getChannelCount()
 	return m_ui32NumberOfSignals;
 }
 
+GDF::CFixedGDF2Header::CFixedGDF2Header()
+	:m_ui8HealthInformation(0)
+	,m_ui8Weight(0)
+	,m_ui8Height(0)
+	,m_ui8SubjectInformation(0)
+	,m_ui16NumberOfBlocksInHeader(0)
+	,m_ui64EquipmentProviderId(0)
+	,m_i64NumberOfDataRecords(0)
+	,m_ui32DurationOfADataRecordNumerator(0)
+	,m_ui32DurationOfADataRecordDenominator(0)
+	,m_ui16NumberOfSignals(0)
+	,m_ui16Reserved3(0)
+{
+	System::Memory::set(&m_sVersionId, sizeof(m_sVersionId), 0);
+	System::Memory::set(&m_sPatientId, sizeof(m_sPatientId), 0);
+	System::Memory::set(&m_ui8Reserved, sizeof(m_ui8Reserved), 0);
+	System::Memory::set(&m_sRecordingId, sizeof(m_sRecordingId), 0);
+	System::Memory::set(&m_ui32RecordingLocation, sizeof(m_ui32RecordingLocation), 0);
+	System::Memory::set(&m_ui32StartDateAndTimeOfRecording, sizeof(m_ui32StartDateAndTimeOfRecording), 0);
+	System::Memory::set(&m_ui32Birthday, sizeof(m_ui32Birthday), 0);
+	System::Memory::set(&m_ui8Reserved2, sizeof(m_ui8Reserved2), 0);
+	System::Memory::set(&m_ui8IPAdress, sizeof(m_ui8IPAdress), 0);
+	System::Memory::set(&m_ui16HeadSize, sizeof(m_ui16HeadSize), 0);
+	System::Memory::set(&m_f32PositionReferenceElectrode, sizeof(m_f32PositionReferenceElectrode), 0);
+	System::Memory::set(&m_f32GroundElectrode, sizeof(m_f32GroundElectrode), 0);
+}
+
 boolean GDF::CFixedGDF2Header::read(std::ifstream& oFile)
 {
 	uint8 l_pHeaderBuffer[104];
@@ -392,6 +427,12 @@ uint64 GDF::CFixedGDF2Header::getChannelCount()
 
 //VARIABLE HEADER
 GDF::CVariableGDF1Header::CVariableGDF1HeaderPerChannel::CVariableGDF1HeaderPerChannel()
+	:m_f64PhysicalMinimum(0)
+	,m_f64PhysicalMaximum(0)
+	,m_i64DigitalMinimum(0)
+	,m_i64DigitalMaximum(0)
+	,m_ui32NumberOfSamplesInEachRecord(0)
+	,m_ui32ChannelType(0)
 {
 	memset(m_sLabel, ' ', sizeof(m_sLabel));
 	memset(m_sTranducerType, ' ', sizeof(m_sTranducerType));
