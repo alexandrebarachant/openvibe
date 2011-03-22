@@ -7,7 +7,7 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <vector>
+#include <deque>
 
 namespace OpenViBEPlugins
 {
@@ -28,20 +28,12 @@ namespace OpenViBEPlugins
 
 		protected:
 
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64AveragingMethod;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64MatrixCount;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pMatrix;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64MatrixCount;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > ip_bMovingAverage;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pAveragedMatrix;
 
-			OpenViBE::uint32 m_ui32MatrixElementCount;
-			OpenViBE::uint64 m_ui64MatrixIndex;
-			OpenViBE::uint64 m_ui64MatrixCount;
-			OpenViBE::uint64 m_ui64MatrixCacheCount;
-			OpenViBE::boolean m_bInfiniteAverage;
-			OpenViBE::boolean m_bMovingAverage;
-			OpenViBE::boolean m_bShouldPerformAverage;
-			OpenViBE::CMatrix m_oSumMatrix;
-			OpenViBE::CMatrix* m_pMatrixCache;
+			std::deque < OpenViBE::CMatrix* > m_vHistory;
 		};
 
 		class CMatrixAverageDesc : public OpenViBE::Plugins::IAlgorithmDesc
@@ -65,8 +57,8 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IAlgorithmProto& rAlgorithmProto) const
 			{
 				rAlgorithmProto.addInputParameter (OVP_Algorithm_MatrixAverage_InputParameterId_Matrix,                    "Matrix",              OpenViBE::Kernel::ParameterType_Matrix);
-				rAlgorithmProto.addInputParameter (OVP_Algorithm_MatrixAverage_InputParameterId_MatrixCount,               "Matrix count",        OpenViBE::Kernel::ParameterType_Integer);
-				rAlgorithmProto.addInputParameter (OVP_Algorithm_MatrixAverage_InputParameterId_MovingAverage,             "Moving average",      OpenViBE::Kernel::ParameterType_Boolean);
+				rAlgorithmProto.addInputParameter (OVP_Algorithm_MatrixAverage_InputParameterId_MatrixCount,               "Matrix count",        OpenViBE::Kernel::ParameterType_UInteger);
+				rAlgorithmProto.addInputParameter (OVP_Algorithm_MatrixAverage_InputParameterId_AveragingMethod,           "Averaging Method",    OpenViBE::Kernel::ParameterType_UInteger);
 
 				rAlgorithmProto.addOutputParameter(OVP_Algorithm_MatrixAverage_OutputParameterId_AveragedMatrix,           "Averaged matrix",     OpenViBE::Kernel::ParameterType_Matrix);
 

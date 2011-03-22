@@ -57,23 +57,18 @@ boolean CEpochAverage::initialize(void)
 		m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_SpectrumStreamEncoder_InputParameterId_MinMaxFrequencyBands)->setReferenceTarget(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_SpectrumStreamDecoder_OutputParameterId_MinMaxFrequencyBands));
 	}
 
-	ip_i64MatrixCount.initialize(m_pMatrixAverage->getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_MatrixCount));
-	ip_bMovingAverage.initialize(m_pMatrixAverage->getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_MovingAverage));
+	ip_ui64AveragingMethod.initialize(m_pMatrixAverage->getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_AveragingMethod));
+	ip_ui64MatrixCount.initialize(m_pMatrixAverage->getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_MatrixCount));
 
-	CString l_sSettingValue;
-
-	getStaticBoxContext().getSettingValue(0, l_sSettingValue);
-	ip_bMovingAverage=(getTypeManager().getEnumerationEntryValueFromName(OVP_TypeId_EpochAverageMethod, l_sSettingValue)==OVP_TypeId_EpochAverageMethod_MovingAverage);
-
-	getStaticBoxContext().getSettingValue(1, l_sSettingValue);
-	ip_i64MatrixCount=::atoi(l_sSettingValue);
+	ip_ui64AveragingMethod=(uint64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+	ip_ui64MatrixCount=(uint64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
 
 	m_pMatrixAverage->getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_Matrix)->setReferenceTarget(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 	m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix)->setReferenceTarget(m_pMatrixAverage->getOutputParameter(OVP_Algorithm_MatrixAverage_OutputParameterId_AveragedMatrix));
 
-	if(ip_i64MatrixCount<=0)
+	if(ip_ui64MatrixCount<=0)
 	{
-		getLogManager() << LogLevel_Error << "You should provide a positive number of epochs better than " << ip_i64MatrixCount << "\n";
+		getLogManager() << LogLevel_Error << "You should provide a positive number of epochs better than " << ip_ui64MatrixCount << "\n";
 		return false;
 	}
 
@@ -82,8 +77,8 @@ boolean CEpochAverage::initialize(void)
 
 boolean CEpochAverage::uninitialize(void)
 {
-	ip_i64MatrixCount.uninitialize();
-	ip_bMovingAverage.uninitialize();
+	ip_ui64AveragingMethod.uninitialize();
+	ip_ui64MatrixCount.uninitialize();
 
 	m_pMatrixAverage->uninitialize();
 	m_pStreamEncoder->uninitialize();

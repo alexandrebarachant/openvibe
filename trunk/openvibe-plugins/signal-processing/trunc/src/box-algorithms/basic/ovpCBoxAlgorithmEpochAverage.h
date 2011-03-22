@@ -29,8 +29,8 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pMatrixAverage;
 
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64MatrixCount;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > ip_bMovingAverage;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64MatrixCount;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64AveragingMethod;
 		};
 
 		class CEpochAverageListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >

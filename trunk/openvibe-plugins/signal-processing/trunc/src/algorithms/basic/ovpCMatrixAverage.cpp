@@ -15,33 +15,27 @@ using namespace OpenViBEPlugins::SignalProcessing;
 
 boolean CMatrixAverage::initialize(void)
 {
+	ip_ui64AveragingMethod.initialize(getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_AveragingMethod));
+	ip_ui64MatrixCount.initialize(getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_MatrixCount));
 	ip_pMatrix.initialize(getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_Matrix));
-	ip_i64MatrixCount.initialize(getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_MatrixCount));
-	ip_bMovingAverage.initialize(getInputParameter(OVP_Algorithm_MatrixAverage_InputParameterId_MovingAverage));
 	op_pAveragedMatrix.initialize(getOutputParameter(OVP_Algorithm_MatrixAverage_OutputParameterId_AveragedMatrix));
-
-	m_ui32MatrixElementCount=0;
-	m_ui64MatrixIndex=0;
-	m_ui64MatrixCacheCount=0;
-	m_ui64MatrixCount=0;
-	m_bInfiniteAverage=false;
-	m_bMovingAverage=false;
-	m_bShouldPerformAverage=false;
-
-	m_pMatrixCache=NULL;
 
 	return true;
 }
 
 boolean CMatrixAverage::uninitialize(void)
 {
-	delete [] m_pMatrixCache;
-	m_pMatrixCache=NULL;
+	std::deque < OpenViBE::CMatrix* >::iterator it;
+	for(it=m_vHistory.begin(); it!=m_vHistory.end(); it++)
+	{
+		delete *it;
+	}
+	m_vHistory.clear();
 
 	op_pAveragedMatrix.uninitialize();
-	ip_bMovingAverage.uninitialize();
-	ip_i64MatrixCount.uninitialize();
 	ip_pMatrix.uninitialize();
+	ip_ui64MatrixCount.uninitialize();
+	ip_ui64AveragingMethod.uninitialize();
 
 	return true;
 }
@@ -55,106 +49,125 @@ boolean CMatrixAverage::process(void)
 	IMatrix* l_pOutputMatrix=op_pAveragedMatrix;
 
 	uint32 l_ui32InputMatrixElementCount=l_pInputMatrix->getBufferElementCount();
+	boolean l_bShouldPerformAverage=false;
 
 	if(this->isInputTriggerActive(OVP_Algorithm_MatrixAverage_InputTriggerId_Reset))
 	{
-		if(ip_i64MatrixCount>0)
+		std::deque < CMatrix* >::iterator it;
+		for(it=m_vHistory.begin(); it!=m_vHistory.end(); it++)
 		{
-			delete [] m_pMatrixCache;
-			m_pMatrixCache=new CMatrix[(size_t)ip_i64MatrixCount];
-			m_ui64MatrixCacheCount=ip_i64MatrixCount;
-			m_bInfiniteAverage=false;
-			m_bMovingAverage=ip_bMovingAverage;
-			m_ui64MatrixCount=0;
-			m_ui64MatrixIndex=0;
+			delete *it;
 		}
-		else
-		{
-			delete [] m_pMatrixCache;
-			m_pMatrixCache=NULL;
-			m_ui64MatrixCacheCount=0;
-			m_bInfiniteAverage=true;
-			m_bMovingAverage=false;
-			m_ui64MatrixCount=0;
-			m_ui64MatrixIndex=0;
-		}
+		m_vHistory.clear();
 
 		OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pOutputMatrix, *l_pInputMatrix);
-		OpenViBEToolkit::Tools::Matrix::copyDescription(m_oSumMatrix, *l_pInputMatrix);
-		for(size_t i=0; i<m_ui64MatrixCacheCount; i++)
-			OpenViBEToolkit::Tools::Matrix::copyDescription(m_pMatrixCache[i], *l_pInputMatrix);
-
-		OpenViBEToolkit::Tools::Matrix::clearContent(*l_pOutputMatrix);
-		OpenViBEToolkit::Tools::Matrix::clearContent(m_oSumMatrix);
-		for(size_t i=0; i<m_ui64MatrixCacheCount; i++)
-			OpenViBEToolkit::Tools::Matrix::clearContent(m_pMatrixCache[i]);
 	}
 
 	if(this->isInputTriggerActive(OVP_Algorithm_MatrixAverage_InputTriggerId_FeedMatrix))
 	{
-		if(m_bInfiniteAverage)
+		if(ip_ui64AveragingMethod==OVP_TypeId_EpochAverageMethod_MovingAverage.toUInteger())
 		{
-			float64* l_pSumMatrixBuffer=m_oSumMatrix.getBuffer();
-			float64* l_pInputMatrixBuffer=l_pInputMatrix->getBuffer();
+			CMatrix* l_pSwapMatrix=NULL;
 
-			uint32 j=l_ui32InputMatrixElementCount;
-			while(j--)
+			if(m_vHistory.size()>=ip_ui64MatrixCount)
 			{
-				*l_pSumMatrixBuffer+++=*l_pInputMatrixBuffer++;
+				l_pSwapMatrix=m_vHistory.front();
+				m_vHistory.pop_front();
+			}
+			else
+			{
+				l_pSwapMatrix=new CMatrix();
+				OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pSwapMatrix, *l_pInputMatrix);
 			}
 
-			m_ui64MatrixCount++;
+			OpenViBEToolkit::Tools::Matrix::copyContent(*l_pSwapMatrix, *l_pInputMatrix);
+
+			m_vHistory.push_back(l_pSwapMatrix);
+			l_bShouldPerformAverage=(m_vHistory.size()==ip_ui64MatrixCount);
+		}
+		else if(ip_ui64AveragingMethod==OVP_TypeId_EpochAverageMethod_MovingAverageImmediate.toUInteger())
+		{
+			CMatrix* l_pSwapMatrix=NULL;
+
+			if(m_vHistory.size()>=ip_ui64MatrixCount)
+			{
+				l_pSwapMatrix=m_vHistory.front();
+				m_vHistory.pop_front();
+			}
+			else
+			{
+				l_pSwapMatrix=new CMatrix();
+				OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pSwapMatrix, *l_pInputMatrix);
+			}
+
+			OpenViBEToolkit::Tools::Matrix::copyContent(*l_pSwapMatrix, *l_pInputMatrix);
+
+			m_vHistory.push_back(l_pSwapMatrix);
+			l_bShouldPerformAverage=(m_vHistory.size()>0);
+		}
+		else if(ip_ui64AveragingMethod==OVP_TypeId_EpochAverageMethod_BlockAverage.toUInteger())
+		{
+			CMatrix* l_pSwapMatrix=new CMatrix();
+
+			if(m_vHistory.size()>=ip_ui64MatrixCount)
+			{
+				std::deque < CMatrix* >::iterator it;
+				for(it=m_vHistory.begin(); it!=m_vHistory.end(); it++)
+				{
+					delete *it;
+				}
+				m_vHistory.clear();
+			}
+
+			OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pSwapMatrix, *l_pInputMatrix);
+			OpenViBEToolkit::Tools::Matrix::copyContent(*l_pSwapMatrix, *l_pInputMatrix);
+
+			m_vHistory.push_back(l_pSwapMatrix);
+			l_bShouldPerformAverage=(m_vHistory.size()==ip_ui64MatrixCount);
+		}
+		else if(ip_ui64AveragingMethod==OVP_TypeId_EpochAverageMethod_CumulativeAverage.toUInteger())
+		{
+			CMatrix* l_pSwapMatrix=new CMatrix();
+
+			OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pSwapMatrix, *l_pInputMatrix);
+			OpenViBEToolkit::Tools::Matrix::copyContent(*l_pSwapMatrix, *l_pInputMatrix);
+
+			m_vHistory.push_back(l_pSwapMatrix);
+			l_bShouldPerformAverage=(m_vHistory.size()!=0);
 		}
 		else
 		{
-			m_ui64MatrixCount++;
-			m_ui64MatrixCount=(m_ui64MatrixCount>m_ui64MatrixCacheCount?m_ui64MatrixCacheCount:m_ui64MatrixCount);
-			m_ui64MatrixIndex++;
-			m_ui64MatrixIndex%=m_ui64MatrixCacheCount;
-			m_bShouldPerformAverage|=(m_bMovingAverage || m_ui64MatrixIndex==0);
-
-			float64* l_pSumMatrixBuffer=m_oSumMatrix.getBuffer();
-			float64* l_pMatrixCacheBuffer=m_pMatrixCache[m_ui64MatrixIndex].getBuffer();
-			float64* l_pInputMatrixBuffer=l_pInputMatrix->getBuffer();
-
-			uint32 j=l_ui32InputMatrixElementCount;
-			while(j--)
-			{
-				*l_pSumMatrixBuffer-=*l_pMatrixCacheBuffer;
-				*l_pSumMatrixBuffer+=*l_pInputMatrixBuffer;
-				*l_pMatrixCacheBuffer=*l_pInputMatrixBuffer;
-
-				l_pSumMatrixBuffer++;
-				l_pMatrixCacheBuffer++;
-				l_pInputMatrixBuffer++;
-			}
+			l_bShouldPerformAverage=false;
 		}
 	}
 
-	if(this->isInputTriggerActive(OVP_Algorithm_MatrixAverage_InputTriggerId_ForceAverage))
+	if(l_bShouldPerformAverage)
 	{
-		m_bShouldPerformAverage|=m_bInfiniteAverage;
-	}
+		OpenViBEToolkit::Tools::Matrix::clearContent(*l_pOutputMatrix);
 
-	if(m_bShouldPerformAverage)
-	{
-		if(m_ui64MatrixCount)
+		if(m_vHistory.size()!=0)
 		{
-			float64* l_pSumMatrixBuffer=m_oSumMatrix.getBuffer();
+			uint32 l_ui32Count=l_pOutputMatrix->getBufferElementCount();
+
+			std::deque < CMatrix* >::iterator it;
+			for(it=m_vHistory.begin(); it!=m_vHistory.end(); it++)
+			{
+				float64* l_pOutputMatrixBuffer=l_pOutputMatrix->getBuffer();
+				float64* l_pInputMatrixBuffer=(*it)->getBuffer();
+				for(uint32 i=0; i<l_ui32Count; i++)
+				{
+					*l_pOutputMatrixBuffer+=*l_pInputMatrixBuffer;
+					l_pOutputMatrixBuffer++;
+					l_pInputMatrixBuffer++;
+				}
+			}
+
 			float64* l_pOutputMatrixBuffer=l_pOutputMatrix->getBuffer();
-
-			uint32 j=l_ui32InputMatrixElementCount;
-			while(j--)
+			for(uint32 i=0; i<l_ui32Count; i++)
 			{
-				*l_pOutputMatrixBuffer++=*l_pSumMatrixBuffer++/m_ui64MatrixCount;
+				*l_pOutputMatrixBuffer/=m_vHistory.size();
 			}
 		}
-		else
-		{
-			OpenViBEToolkit::Tools::Matrix::clearContent(*l_pOutputMatrix);
-		}
-
-		m_bShouldPerformAverage=false;
 
 		this->activateOutputTrigger(OVP_Algorithm_MatrixAverage_OutputTriggerId_AveragePerformed, true);
 	}
