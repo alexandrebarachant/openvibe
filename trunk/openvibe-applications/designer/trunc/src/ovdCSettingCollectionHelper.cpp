@@ -355,7 +355,10 @@ namespace
 			g_signal_connect(G_OBJECT(it->pColorButton), "color-set", G_CALLBACK(on_color_gradient_color_button_pressed), l_pUserData);
 			g_signal_connect(G_OBJECT(it->pSpinButton), "value-changed", G_CALLBACK(on_color_gradient_spin_button_value_changed), l_pUserData);
 
+			g_object_ref(l_pWidget);
+			gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidget)), l_pWidget);
 			gtk_container_add(GTK_CONTAINER(l_pUserData->pContainer), l_pWidget);
+			g_object_unref(l_pWidget);
 
 			g_object_unref(l_pBuilderInterface);
 
