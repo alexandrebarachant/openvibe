@@ -107,7 +107,7 @@ IF(UNIX)
 		MESSAGE(STATUS "  FAILED to find ALUT...")
 	ENDIF(ALUT_FOUND)
 	
-	pkg_check_modules(VORBIS vorbis)
+	pkg_check_modules(VORBIS vorbisfile)
 
 	IF(VORBIS_FOUND)
 		MESSAGE(STATUS "  Found VORBIS...")
