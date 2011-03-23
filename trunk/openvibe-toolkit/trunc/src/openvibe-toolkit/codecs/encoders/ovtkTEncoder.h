@@ -45,9 +45,9 @@ namespace OpenViBEToolkit
 		}
 
 		// The functions that need to be specified by the encoders (specific Trigger ID)
-		virtual OpenViBE::boolean encodeHeader() = 0;
-		virtual OpenViBE::boolean encodeBuffer() = 0;
-		virtual OpenViBE::boolean encodeEnd() = 0;
+		virtual OpenViBE::boolean encodeHeaderImpl() = 0;
+		virtual OpenViBE::boolean encodeBufferImpl() = 0;
+		virtual OpenViBE::boolean encodeEndImpl() = 0;
 
 	public:
 
@@ -61,21 +61,21 @@ namespace OpenViBEToolkit
 		OpenViBE::boolean encodeHeader(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
 		{
 			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
-			if(!this->encodeHeader()) return false;
+			if(!this->encodeHeaderImpl()) return false;
 			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
 		}
 
 		OpenViBE::boolean encodeBuffer(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
 		{
 			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
-			if(!this->encodeBuffer()) return false;
+			if(!this->encodeBufferImpl()) return false;
 			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
 		}
 
 		OpenViBE::boolean encodeEnd(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
 		{
 			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
-			if(!this->encodeEnd()) return false;
+			if(!this->encodeEndImpl()) return false;
 			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
 		}
 	};

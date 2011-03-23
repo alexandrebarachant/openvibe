@@ -56,17 +56,17 @@ namespace OpenViBEToolkit
 		}
 
 	protected:
-		OpenViBE::boolean encodeHeader(void)
+		OpenViBE::boolean encodeHeaderImpl(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
 		}
 
-		OpenViBE::boolean encodeBuffer(void)
+		OpenViBE::boolean encodeBufferImpl(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 		}
 
-		OpenViBE::boolean encodeEnd(void)
+		OpenViBE::boolean encodeEndImpl(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeEnd);
 		}

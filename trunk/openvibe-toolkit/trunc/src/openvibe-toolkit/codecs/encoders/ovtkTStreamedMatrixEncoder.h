@@ -61,17 +61,17 @@ namespace OpenViBEToolkit
 		/*
 		The methods specific to the Streamed Matrix encoder :
 		*/
-		OpenViBE::boolean encodeHeader(void)
+		OpenViBE::boolean encodeHeaderImpl(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader);
 		}
 
-		OpenViBE::boolean encodeBuffer(void)
+		OpenViBE::boolean encodeBufferImpl(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeBuffer);
 		}
 
-		OpenViBE::boolean encodeEnd(void)
+		OpenViBE::boolean encodeEndImpl(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeEnd);
 		}
