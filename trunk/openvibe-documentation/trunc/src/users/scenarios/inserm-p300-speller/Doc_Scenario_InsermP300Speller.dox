@@ -3,9 +3,9 @@
  *
  * \b NOTE: this demo application has been removed of the supported release because of the problems users encountered
  * reproducing the setup. The sources can still be found from the svn repository at the following URL :
- * \verbatim
- * svn co svn://scm.gforge.inria.fr/svn/openvibe/deprecated-branches/openvibe-applications-p300-speller-wip-ggibert
- * \endverbatim
+\verbatim
+svn co svn://scm.gforge.inria.fr/svn/openvibe/deprecated-branches/openvibe-applications-p300-speller-wip-ggibert
+\endverbatim
  * In case of problem, please contact the original authors.
  *
  * Meanwhile, the \e p300-speller and \e p300-speller-xDAWN scenarios included in the \e share/openvibe-scenarios/bci
