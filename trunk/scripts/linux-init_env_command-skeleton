@@ -195,8 +195,6 @@ export OpenViBE_build_order_="
 #$OpenViBE_external_
 
 #$OpenViBE_plugin_matlab
-#$OpenViBE_plugin_turbofieldtrip
-#$OpenViBE_application_omk_test
 
 if [ -e ./linux-dependencies ]; then
 	source ./linux-dependencies
