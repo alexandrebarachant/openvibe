@@ -24,7 +24,7 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 
 	if(l_oClassifierAlgorithmClassIdentifier==OV_UndefinedIdentifier)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Unknown classifier algorithm [" << l_sClassifierAlgorithmClassIdentifier << "]\n";
+		this->getLogManager() << LogLevel_Error << "Unknown classifier algorithm [" << l_sClassifierAlgorithmClassIdentifier << "]\n";
 		return false;
 	}
 
@@ -33,7 +33,7 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 	int64 l_i64PartitionCount=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 3);
 	if(l_i64PartitionCount<0)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Partition count can not be less than 0 (was " << l_i64PartitionCount << ")\n";
+		this->getLogManager() << LogLevel_Error << "Partition count can not be less than 0 (was " << l_i64PartitionCount << ")\n";
 		return false;
 	}
 	m_ui64PartitionCount=uint64(l_i64PartitionCount);
@@ -296,7 +296,8 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 			}
 			else
 			{
-				this->getLogManager() << LogLevel_Warning << "Could not save configuration to file [" << l_sConfigurationFilename << "]\n";
+				this->getLogManager() << LogLevel_Error << "Could not save configuration to file [" << l_sConfigurationFilename << "]\n";
+				return false;
 			}
 		}
 	}
