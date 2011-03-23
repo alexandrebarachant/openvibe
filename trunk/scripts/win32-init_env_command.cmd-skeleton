@@ -184,6 +184,10 @@ SET PATH=%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;%PATH%
 SET PATH=%OV_DEP_CEGUI%\bin;%PATH%
 SET PATH=%OV_DEP_LUA%\lib;%PATH%
 SET PATH=%OV_DEP_MATLAB%\bin\win32;%PATH%
+SET PATH=%OV_DEP_ALUT%\lib;%PATH%
+SET PATH=%OV_DEP_OPENAL%\libs\Win32;%PATH%
+SET PATH=%OV_DEP_OGG%\win32\bin\debug;%OV_DEP_OGG%\win32\bin\release;%PATH%
+SET PATH=%OV_DEP_VORBIS%\win32\bin\debug;%OV_DEP_VORBIS%\win32\bin\release;%PATH%
 
 SET PATH=%PATH%;%LIB%;%LIBPATH%
 

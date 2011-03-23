@@ -500,6 +500,142 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
+Section "OpenAL"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\openal-1.1-dev.zip" no_need_to_download_openal_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openal-1.1-dev.zip "arch\openal-1.1-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_openal_dev:
+	ZipDLL::extractall "arch\openal-1.1-dev.zip" "openal"
+
+	IfFileExists "arch\openal-1.1-runtime.zip" no_need_to_download_openal_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openal-1.1-runtime.zip "arch\openal-1.1-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_openal_runtime:
+	ZipDLL::extractall "arch\openal-1.1-runtime.zip" "openal"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_OPENAL=$INSTDIR\openal$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Alut"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\freealut-1.1.0-bin-dev.zip" no_need_to_download_alut_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/freealut-1.1.0-bin-dev.zip "arch\freealut-1.1.0-bin-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_alut_dev:
+	ZipDLL::extractall "arch\freealut-1.1.0-bin-dev.zip" "freealut"
+
+	IfFileExists "arch\freealut-1.1.0-bin-runtime.zip" no_need_to_download_alut_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/freealut-1.1.0-bin-runtime.zip "arch\freealut-1.1.0-bin-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_alut_runtime:
+	ZipDLL::extractall "arch\freealut-1.1.0-bin-runtime.zip" "freealut"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_ALUT=$INSTDIR\freealut$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Ogg"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\libogg-1.2.1-$suffix-dev.zip" no_need_to_download_ogg_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libogg-1.2.1-$suffix-dev.zip "arch\libogg-1.2.1-$suffix-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_ogg_dev:
+	ZipDLL::extractall "arch\libogg-1.2.1-$suffix-dev.zip" "libogg"
+
+	IfFileExists "arch\libogg-1.2.1-$suffix-runtime.zip" no_need_to_download_ogg_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libogg-1.2.1-$suffix-runtime.zip "arch\libogg-1.2.1-$suffix-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_ogg_runtime:
+	ZipDLL::extractall "arch\libogg-1.2.1-$suffix-runtime.zip" "libogg"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_OGG=$INSTDIR\libogg$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "Vorbis"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\libvorbis-1.3.2-$suffix-dev.zip" no_need_to_download_vorbis_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libvorbis-1.3.2-$suffix-dev.zip "arch\libvorbis-1.3.2-$suffix-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_vorbis_dev:
+	ZipDLL::extractall "arch\libvorbis-1.3.2-$suffix-dev.zip" "libvorbis"
+
+	IfFileExists "arch\libvorbis-1.3.2-$suffix-runtime.zip" no_need_to_download_vorbis_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libvorbis-1.3.2-$suffix-runtime.zip "arch\libvorbis-1.3.2-$suffix-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_vorbis_runtime:
+	ZipDLL::extractall "arch\libvorbis-1.3.2-$suffix-runtime.zip" "libvorbis"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_VORBIS=$INSTDIR\libvorbis$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
 Section "Uninstall"
 
 	RMDir /r "$INSTDIR\gtk"
@@ -510,6 +646,10 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\lua"
 	RMDir /r "$INSTDIR\ogre"
 	RMDir /r "$INSTDIR\vrpn"
+	RMDir /r "$INSTDIR\openal"
+	RMDir /r "$INSTDIR\alut"
+	RMDir /r "$INSTDIR\libogg"
+	RMDir /r "$INSTDIR\libvorbis"
 	RMDir /r "$INSTDIR\tmp"
 
 	Delete "$INSTDIR\..\scripts\win32-dependencies.cmd"
