@@ -148,6 +148,7 @@ boolean CMatrixAverage::process(void)
 		if(m_vHistory.size()!=0)
 		{
 			uint32 l_ui32Count=l_pOutputMatrix->getBufferElementCount();
+			float64 l_f64Scale=1./m_vHistory.size();
 
 			std::deque < CMatrix* >::iterator it;
 			for(it=m_vHistory.begin(); it!=m_vHistory.end(); it++)
@@ -156,16 +157,10 @@ boolean CMatrixAverage::process(void)
 				float64* l_pInputMatrixBuffer=(*it)->getBuffer();
 				for(uint32 i=0; i<l_ui32Count; i++)
 				{
-					*l_pOutputMatrixBuffer+=*l_pInputMatrixBuffer;
+					*l_pOutputMatrixBuffer+=*l_pInputMatrixBuffer*l_f64Scale;
 					l_pOutputMatrixBuffer++;
 					l_pInputMatrixBuffer++;
 				}
-			}
-
-			float64* l_pOutputMatrixBuffer=l_pOutputMatrix->getBuffer();
-			for(uint32 i=0; i<l_ui32Count; i++)
-			{
-				*l_pOutputMatrixBuffer/=m_vHistory.size();
 			}
 		}
 
