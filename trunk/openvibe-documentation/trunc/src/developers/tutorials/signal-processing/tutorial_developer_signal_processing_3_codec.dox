@@ -65,17 +65,14 @@ Let's go on with a concrete use case : a simple box that reads any kind of input
  *
  \skip process(void)
  \until manipulate
- *
- * We feed the corresponding decoder with the chunk, and prepare the encoder with an output chunk.
- * 
- \until m_vEncoders
- * With a simple call to \c decode(), the input chunk is decoded. We can check its content.
+ 
+ * With a simple call to \c decode, the input chunk is decoded. We can check its content.
  \until decode
  * If the incoming chunk contains a Header, we just ask the corresponding encoder to encode it's own header chunk.
  \until isHeaderReceived
  \until }
  * If a buffer is received, we check its content in order to print some information in the console.
- * Based on the input type, we know which decoder is involved. We can access its output(s) by calling the corresponding getOutputXXX methods.
+ * Based on the input type, we know which decoder is involved. We can access its output(s) by calling the corresponding getOutputXXX methods (check the \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref "reference page" for a complete listing).
  \until isBuffer
  \until getInputChunkStartTime
  \until }
