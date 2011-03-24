@@ -1,14 +1,14 @@
 /**
- * \page BoxAlgorithm_SoundPlayer Sound player
+ * \page BoxAlgorithm_SoundPlayer Sound Player
 __________________________________________________________________
 
 Detailed description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Description|
- * This box plays a sound on stimulation reception. Please see
- * \ref Doc_BoxAlgorithm_SoundPlayer_Miscellaneous for important
- * information on the box behavior and portability.
+ The Sound Player box can play a sound in WAV or OGG format. It is based on the OpenAL library.
+ The box has to be configured to define the stimulations used as "play" and "stop" triggers.
+ When the file is stopped, manually or not, the stimulation OVTK_StimulationId_EndOfFile is outputed.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Description|
 __________________________________________________________________
 
@@ -19,10 +19,19 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Inputs|
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Input1|
- * This input receives a \ref Doc_Stream_Stimulation. The box will look
- * at this stream in order to find the specified stimulation and play
- * the sound each time this stimulation is received.
+ The stimulations that trigger "play" or "stop".
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Input1|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Output1|
+ OVTK_StimulationId_EndOfFile is outputed when the sound is stopped. It may happens after a "stop" trigger received or a natural end of file.
+ * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Output1|
 __________________________________________________________________
 
 Settings description
@@ -32,26 +41,27 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Setting1|
- * This setting is the stimulation to wait so to trigger the sound.
+  The stimulation that trigger the sound play.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Setting1|
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Setting2|
- * This setting is the sound file to play when the stimulation is
- * received. Please see \ref Doc_BoxAlgorithm_SoundPlayer_Miscellaneous
- * for important information on the file format.
+ The stimulation that trigger the sound stop.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Setting2|
+
+ * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Setting3|
+ The sound file, in OGG or WAV format.
+ * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Setting3|
+
+ * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Setting4|
+ This setting indicates if the file has to be played in a loop once started.
+ \b note: when enabled the output stimulation is not sent after each loop, but only when a "stop" stimulation is received.
+ * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Setting4|
 __________________________________________________________________
 
 Examples description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Examples|
- * To illustrate the box usage, please drag'n drop a
- * \ref Doc_BoxAlgorithm_ClockStimulator box and change the emitted
- * stimulation to \e OVTK_StimulationId_Beep. Be sure that you run
- * Linux, have free /dev/dsp device (you should not have another sound
- * player using this device). Now press 'start'. You should here a
- * beep each second.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Examples|
 __________________________________________________________________
 
@@ -59,16 +69,6 @@ Miscellaneous description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Miscellaneous|
- * It is important to underline the fact that this box has really basic
- * implementation for now and should be modified in order to meet real
- * needs. First, it only works on Linux for now. Second, it does not use
- * a sound file reading nor a sound card management API. It simply directly
- * sends an uncompressed wave file to the dsp device. This results in a
- * non audible articfact due to the header of the wave file. Also, the
- * wave file sampling rate should be at the exact same value as the
- * configuration of the dsp device.
- *
- * This was quickly developed and can be used for tests but should be
- * enhanced a lot.
+ This box is based on OpenAL (through Alut) and uses the libogg and libvorbis libraries.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Miscellaneous|
  */

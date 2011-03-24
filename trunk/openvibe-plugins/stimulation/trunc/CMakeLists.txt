@@ -20,6 +20,7 @@ INCLUDE("FindOpenViBEPluginsGlobalDefines")
 INCLUDE("FindThirdPartyGTK")
 INCLUDE("FindThirdPartyLua")
 INCLUDE("FindThirdPartyBoost_Thread")
+INCLUDE("FindThirdPartyOpenAL")
 
 # ---------------------------------
 # Finds standard library winmm

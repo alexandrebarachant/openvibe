@@ -86,10 +86,10 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { }
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Sound player"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Sound Player (Deprecated)"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard / Matthieu Goyat"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA / Gipsa-Lab"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Deprecated."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Stimulation"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
@@ -109,6 +109,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 
+				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsDeprecated);
 				return true;
 			}
 
