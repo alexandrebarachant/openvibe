@@ -4,7 +4,12 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32" "C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32" "C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32" $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32"  $ENV{OpenViBE_dependencies})
+	IF(PATH_ThinkGearAPI)
+		MESSAGE(STATUS "  Found a ThinkGear API, but the version seems inferior to 2.1.")
+	ENDIF(PATH_ThinkGearAPI)
+	
+	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32" "C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32" $ENV{OpenViBE_dependencies})
 	IF(PATH_ThinkGearAPI)
 		MESSAGE(STATUS "  Found ThinkGear API...")
 		INCLUDE_DIRECTORIES(${PATH_ThinkGearAPI})
@@ -26,9 +31,9 @@ IF(WIN32)
 				ARGS -E copy "${PATH_ThinkGearAPI}/thinkgear.dll" "${PROJECT_SOURCE_DIR}/bin"
 				COMMENT "      --->   Copying dll file ${PATH_ThinkGearAPI}/thinkgear.dll for the Neurosky MindSet driver."
 			VERBATIM)
-			
+				
 	ELSE(PATH_ThinkGearAPI)
-		MESSAGE(STATUS "  FAILED to find ThinkGear API - cmake looked in 'C:/Program Files/MindSet Development Tools/tgcd/win32', 'C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32' and 'C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32'")
+		MESSAGE(STATUS "  FAILED to find a valid ThinkGear API - cmake looked in 'C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32' and 'C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32'")
 	ENDIF(PATH_ThinkGearAPI)
 ENDIF(WIN32)
 

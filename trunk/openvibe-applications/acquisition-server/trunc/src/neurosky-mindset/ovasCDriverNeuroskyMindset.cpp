@@ -43,13 +43,17 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 	TG_DATA_BETA2   (18 - 29.75 Hz)
 	TG_DATA_GAMMA1  (31 - 39.75 Hz)
 	TG_DATA_GAMMA2  (41 - 49.75 Hz)
+
+	Since MindSet Development Kit 2.1:
+	TG_DATA_BLINK_STRENGTH (1-255)
 	*/
 
 	// the tokens allow user to use all data coming from headset. 
 	// Raw EEG is sampled at 512Hz, other data are sampled around 1Hz 
 	// so the driver sends these data at 512 Hz, changing value every seconds (we obtain a square signal)
-
-
+	// The Blink Strength can be viewed as spike signal, sampled at 512 Hz.
+	// The Blinks can be viewed as an OpenViBE stimulation OVTK_GDF_Eye_Blink
+	
 	// CHANNEL COUNT
 	m_oHeader.setChannelCount(1); // one channel on the forhead
 	
@@ -61,26 +65,35 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 	{
 		m_oHeader.setChannelCount(m_oHeader.getChannelCount()+8);
 	}
+	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false))
+	{
+		m_oHeader.setChannelCount(m_oHeader.getChannelCount()+1);
+	}
 
 	// NAMES
-	m_oHeader.setChannelName(0,"Electrode");
+	uint32 l_ui32ChannelIndex = 0;
+	m_oHeader.setChannelName(l_ui32ChannelIndex++,"Electrode");
 
 	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
 	{
-		m_oHeader.setChannelName(1,"Attention");
-		m_oHeader.setChannelName(2,"Meditation");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Attention");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Meditation");
 	}
 	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
 	{
-		uint32 i = m_oHeader.getChannelCount()-1;
-		m_oHeader.setChannelName(i--,"Mid Gamma");
-		m_oHeader.setChannelName(i--,"Low Gamma");
-		m_oHeader.setChannelName(i--,"High Beta");
-		m_oHeader.setChannelName(i--,"Low Beta");
-		m_oHeader.setChannelName(i--,"High Alpha");
-		m_oHeader.setChannelName(i--,"Low Alpha");
-		m_oHeader.setChannelName(i--,"Theta");
-		m_oHeader.setChannelName(i--,"Delta");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Delta");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Theta");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Low Alpha");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"High Alpha");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Low Beta");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"High Beta");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Low Gamma");
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Mid Gamma");
+	}
+	// spikes for blink strength
+	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false))
+	{
+		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Blink Strength");
 	}
 
 	m_oHeader.setSamplingFrequency(512); // raw signal sampling frequency, from the official documentation.
@@ -96,7 +109,7 @@ CDriverNeuroskyMindset::~CDriverNeuroskyMindset(void)
 
 const char* CDriverNeuroskyMindset::getName(void)
 {
-	return "NeuroSky MindSet";
+	return "NeuroSky MindSet (MindSet Dev. Kit 2.1+)";
 }
 
 //___________________________________________________________________//
@@ -138,6 +151,14 @@ boolean CDriverNeuroskyMindset::initialize(
 	/* Print driver version number */
 	l_iDllVersion = TG_GetDriverVersion();
 	m_rDriverContext.getLogManager() << LogLevel_Info << "ThinkGear DLL version: "<< l_iDllVersion <<"\n";
+	if(l_iDllVersion > 7)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Info << "Eye blink detection is possible. \n";
+	}
+	else
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Info << "Eye blink detection NOT possible. Please use MindSet Dev. Tools v2.1 or sup. \n";
+	}
 
 	/* Get a connection ID handle to ThinkGear */
 	l_iConnectionId = TG_GetNewConnectionId();
@@ -181,7 +202,7 @@ boolean CDriverNeuroskyMindset::initialize(
 					if(l_iErrCode == -2) printf("FAILED (0 bytes on the stream)\n");
 					if(l_iErrCode == -3) printf("FAILED (I/O error occured)\n");
 				}
-				TG_Disconnect(l_iConnectionId);		
+				TG_Disconnect(l_iConnectionId);
 			}
 		}
 
@@ -232,6 +253,12 @@ boolean CDriverNeuroskyMindset::start(void)
 		return false;
 	}
 
+	if(   m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false)
+	   ||(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_Blink}", false)))
+	{
+		TG_EnableBlinkDetection(m_i32ConnectionID, 1);
+	}
+
 	return true;
 }
 
@@ -245,10 +272,12 @@ boolean CDriverNeuroskyMindset::loop(void)
 	if(m_rDriverContext.isStarted())
 	{
 		
-		uint32 l_i32ReceivedSamples=0;
+		uint32 l_ui32ReceivedSamples=0;
 		int32 l_i32ErrorCode;
 
-		while(l_i32ReceivedSamples < m_ui32SampleCountPerSentBlock)
+		CStimulationSet l_oStimulationSet;
+
+		while(l_ui32ReceivedSamples < m_ui32SampleCountPerSentBlock)
 		{
 			/* Attempt to read 1 Packet of data from the connection (numPackets = -1 means all packets) */
 			l_i32ErrorCode = TG_ReadPackets( m_i32ConnectionID, 1 );
@@ -259,9 +288,9 @@ boolean CDriverNeuroskyMindset::loop(void)
 				if( TG_GetValueStatus(m_i32ConnectionID, TG_DATA_RAW ) != 0 )
 				{
 					float32 raw_value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_RAW);
-					m_pSample[l_i32ReceivedSamples] = raw_value;
-					l_i32ReceivedSamples++;
-     			}
+					m_pSample[l_ui32ReceivedSamples] = raw_value;
+					l_ui32ReceivedSamples++;
+				}
 
 				//checking the signal quality
 				//if it has been updated...
@@ -302,45 +331,70 @@ boolean CDriverNeuroskyMindset::loop(void)
 					// we don't check if the value has changed, we construct a square signal (1Hz --> 512Hz)
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_ATTENTION);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_MEDITATION);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 				}
 				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
 				{
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_DELTA);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_THETA);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_ALPHA1);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_ALPHA2);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_BETA1);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_BETA2);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_GAMMA1);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_GAMMA2);
-					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_i32ReceivedSamples-1] = l_f32Value;
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
+					l_ui32ChannelIndex++;
+				}
+
+				boolean l_bBlinkDetected = false;
+				// We construct a "blink" spike signal if requested.
+				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false))
+				{
+					if(TG_GetValueStatus(m_i32ConnectionID,TG_DATA_BLINK_STRENGTH) != 0)
+					{
+						l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_BLINK_STRENGTH);
+						l_bBlinkDetected = true;
+					}
+					else
+					{
+						l_f32Value = 0;
+					}
+					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
+				}
+				// We send a "blink" stimulation if requested.
+				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_Blink}", false))
+				{
+					if(TG_GetValueStatus(m_i32ConnectionID,TG_DATA_BLINK_STRENGTH) != 0 || l_bBlinkDetected)
+					{
+						l_oStimulationSet.appendStimulation(OVTK_GDF_Eye_Blink,(((uint64)l_ui32ReceivedSamples) << 32) / m_oHeader.getSamplingFrequency(),0);
+					}
 				}
 			}
 			else
@@ -351,21 +405,8 @@ boolean CDriverNeuroskyMindset::loop(void)
 
 		m_pCallback->setSamples(m_pSample);
 		m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
-/*
-		// Drift correction (preliminary tests showed a 1 sec drift for 3 minutes of measurement)
-		if(m_rDriverContext.getDriftSampleCount() > m_rDriverContext.getDriftToleranceSampleCount()
-			|| m_rDriverContext.getDriftSampleCount() < - m_rDriverContext.getDriftToleranceSampleCount())
-		{
-			m_rDriverContext.getLogManager() << LogLevel_Trace << "Drift detected: "<< m_rDriverContext.getDriftSampleCount() <<" samples.\n";
-			m_rDriverContext.getLogManager() << LogLevel_Trace << "Suggested correction: "<< m_rDriverContext.getSuggestedDriftCorrectionSampleCount() <<" samples.\n";
-
-			if(! m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount()))
-			{
-				m_rDriverContext.getLogManager() << LogLevel_Error << "ERROR while correcting a drift.\n";
-			}
-		}
 		m_pCallback->setStimulationSet(l_oStimulationSet);
-*/
+
 	}
 
 	return true;
