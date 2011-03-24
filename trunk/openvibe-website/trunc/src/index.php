@@ -191,6 +191,10 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 				<li><b>Lead Software Engineer</b> : Yann Renard, INRIA <span style="font-size: x-small; font-style: italic;">(yann dot renard at irisa dot fr)</span></li>
 -->
 			</ul>
+			<div class="menu-title">Share this</div>
+			<ul><li><span style="font-size: x-small; font-style: italic;">This website is licenced under <b>CC-BY-SA</b></span></li></ul>
+			<td><a href="http://creativecommons.org/licenses/by-sa/3.0/legalcode" class="leaving-link" onclick="window.open(this.href,'cc-by-sa'); return false;"><img src="cc-by-sa.png" /></a></td>
+			<br>
 			<div class="menu-title">Search</div>
 
 			<form action="search.php" method="get" id="search">
