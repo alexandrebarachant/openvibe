@@ -68,7 +68,13 @@
  *     - \subpage Doc_DesignerTutorial4
  * - \subpage Doc_Scenario
  *   - \subpage Doc_Scenario_BoxTutorials
- *   - \subpage Doc_Scenario_BCI_Handball
+ *   - \subpage Doc_Scenario_BCI_Neurofeedback
+ *   - \subpage Doc_Scenario_BCI_TieFighter
+ *   - \subpage Doc_Scenario_BCI_MotorImagery
+ *   - \subpage Doc_Scenario_BCI_Handball 
+ *   - \subpage Doc_Scenario_BCI_P300Speller
+ *   - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
+ *   - \subpage Doc_Scenario_BCI_P300MagicCard
  *   - \subpage Doc_Scenario_InsermP300Speller
  *
  * \section Doc_DeveloperDocumentationSection Developer Documentation
@@ -134,8 +140,14 @@
  *     - \subpage Doc_DesignerTutorial3
  *     - \subpage Doc_DesignerTutorial4
  * - \subpage Doc_Scenario
- *   - \subpage Doc_Scenario_BoxTutorials
+ *   - \subpage Doc_Scenario_BoxTutorials 
+ *   - \subpage Doc_Scenario_BCI_Neurofeedback
+ *   - \subpage Doc_Scenario_BCI_TieFighter 
+ *   - \subpage Doc_Scenario_BCI_MotorImagery
  *   - \subpage Doc_Scenario_BCI_Handball
+ *   - \subpage Doc_Scenario_BCI_P300Speller
+ *   - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
+ *   - \subpage Doc_Scenario_BCI_P300MagicCard
  *   - \subpage Doc_Scenario_InsermP300Speller
  */
 
@@ -221,7 +233,13 @@
 /**
  * \page Doc_Scenario Existing scenarios
  * - \subpage Doc_Scenario_BoxTutorials
+ * - \subpage Doc_Scenario_BCI_Neurofeedback
+ * - \subpage Doc_Scenario_BCI_TieFighter
+ * - \subpage Doc_Scenario_BCI_MotorImagery
  * - \subpage Doc_Scenario_BCI_Handball
+ * - \subpage Doc_Scenario_BCI_P300Speller
+ * - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
+ * - \subpage Doc_Scenario_BCI_P300MagicCard
  * - \subpage Doc_Scenario_InsermP300Speller
  */
  
