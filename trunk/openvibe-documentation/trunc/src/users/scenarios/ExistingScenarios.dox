@@ -1,0 +1,75 @@
+/**
+\page Doc_Scenario_BoxTutorials Box Tutorials
+
+You will find all the box tutorials scenarios in <b> <i> share/openvibe-scenarios/box-tutorials </i> </b>.
+
+This folder contains simple scenarios, widely commented. Each one shows how to design with the provided boxes a basic processing pipeline. Here is a complete listing of these box-tutorials, ordered alphabetically:
+
+- \b channel-selector: shows how to select a specific subset of channels in an EEG signal stream. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_ChannelSelector
+
+- \b crop: shows how to crop an input signal in a defined amplitude range. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_Crop
+
+- \b gdf-reader: shows how to read recorded data in GDF format. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_GDFFileReader
+
+- \b generic-stream-reader: shows how to read recorded data in OpenViBE generic format. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_GenericStreamReader
+
+- \b lua-stimulator: shows how to process stimulations using the LUA script language. <br/>
+<b>Featured boxes:</b> \ref Doc_BoxAlgorithm_LuaStimulator , \ref Doc_BoxAlgorithm_KeyboardStimulator
+
+- \b network-acquisition: shows how to acquire real-time EEG signal. Please note that this scenario can be used only with the \ref Doc_AcquisitionServerOverview "Acquisition Server" runnning in background. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_AcquisitionClient
+
+- \b power-spectrum: shows how to perform a spectral analyis and display the power spectrum <br/>
+<b>Featured boxes:</b> \ref Doc_BoxAlgorithm_TimeBasedEpoching , \ref Doc_BoxAlgorithm_SpectralAnalysisGPL , \ref Doc_BoxAlgorithm_PowerSpectrumDisplay
+
+- \b run-command: shows how to execute system commands directly with OpenViBE. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_RunCommand
+
+- \b signal-display: shows how to display signal in a visualization window. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_SignalDisplay
+
+- \b simple-dsp: shows how to perform mathematical and logic computations on. <br/>
+<b>Featured box:</b> \ref Doc_BoxAlgorithm_SimpleDSP
+
+- \b sound-player: shows how to play a sound in OpenViBE. <br/>
+<b>Featured boxes:</b> \ref Doc_BoxAlgorithm_SoundPlayer , \ref Doc_BoxAlgorithm_KeyboardStimulator
+
+- \b time-frequency-map: shows how to perform a spectral analysis and display the time-frequency map. <br/>
+<b>Featured boxes:</b> \ref Doc_BoxAlgorithm_SpatialFilter , \ref Doc_BoxAlgorithm_TimeBasedEpoching , \ref Doc_BoxAlgorithm_SpectralAnalysisGPL , \ref Doc_BoxAlgorithm_TimeFrequencyMapDisplay 
+
+- \b topographic-map: shows how to display 2d and 3D topographic maps. <br/>
+<b>Featured boxes:</b> \ref Doc_BoxAlgorithm_TimeBasedEpoching , \ref Doc_BoxAlgorithm_EpochAverage , \ref Doc_BoxAlgorithm_ElectrodeLocalisationFileReader , \ref Doc_BoxAlgorithm_2DTopographicMap , \ref Doc_BoxAlgorithm_3DTopographicMap
+
+- \b voxel-display: shows how to display reconstructed brain activity through inverse model and voxel visualizer. <br/>
+<b>Featured boxes:</b>  \ref Doc_BoxAlgorithm_TimeBasedEpoching , \ref Doc_BoxAlgorithm_EpochAverage , \ref Doc_BoxAlgorithm_SpatialFilter , \ref Doc_BoxAlgorithm_2DTopographicMap , \ref Doc_BoxAlgorithm_VoxelDisplay
+*/
+
+/**
+\page Doc_Scenario_BCI_Handball Handball
+
+This application allows anyone to test the handball vr-demo provided with OpenViBE.
+The demonstrator enhances the well-known Graz Motor-Imagery BCI with a motivating visual feedback: a gymnasium with goal on each side, where the user is instructed to push the ball in with only the power of mind.
+
+- \b handball-replay: 
+this scenario replays a MI session and discriminate the mental states using a LDA classifier. The feedback is presented with a \ref Doc_BoxAlgorithm_GrazVisualization : cross and arrow for instructions, progress bar for the real-time feedback. Note that the first trial starts near 0:40.  
+
+To use the handball feedback, you just have to laucnh the \b vr-demo-handball script. Then go back in the Designer and play the scenario. You should see in the 2 consoles (Designer and vr-demo) the connection messages between the two.
+
+The Graz visualization is repeated in the handball visualization, and the ball is moving accordingly to the feedback provided by OpenViBE, as shown on Fig.1&2.
+
+<br/>
+
+<img src="handball-0.png"></img>
+<center><strong>Fig.1 The handball BCI: Handball vr-demo.</strong></center>
+
+<br/>
+
+<img src="handball-1.png"></img>
+<center><strong>Fig.2 The handball BCI: OpenViBE visualization (Graz BCI).</strong></center>
+
+
+*/
