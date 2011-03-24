@@ -14,16 +14,16 @@ And their subclasses for each stream codec :
   - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Signal "Signal Decoder"
   - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_FeatureVector "Feature Vector Decoder"
   - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Spectrum "Spectrum Decoder"
+  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ChannelLocalisation "Channel Localisation Decoder"
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Stimulations "Stimulations Decoder"
- - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ChannelLocalisation "Channel Localisation Decoder"
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ExperimentInformation "Experiment Information Decoder"
  
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_StreamedMatrix "Streamed Matrix Encoder"
   - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Signal "Signal Encoder"
   - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_FeatureVector "Feature Vector Encoder"
   - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Spectrum "Spectrum Encoder"
+  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ChannelLocalisation "Channel Localisation Encoder"
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Stimulations "Stimulations Encoder"
- - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ChannelLocalisation "Channel Localisation Encoder"
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ExperimentInformation "Experiment Information Encoder"
 
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Codec Codec
@@ -121,17 +121,19 @@ OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
 OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMinMaxFrequencyBands()
 \endcode
 
+\subsection Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ChannelLocalisation Channel Localisation Decoder
+The Channel Localisation Decoder inherits from the Streamed Matrix Decoder. It is able to process a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) from a Channel Localisation input chunk. Be aware that you get \b references on the TParameterHandlers.
+\code
+// From TStreamedMatrixDecoder <T> :
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
+// Channel localisation specific :
+OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getOutputDynamic()
+\endcode
+
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Stimulations Stimulations Decoder
 The Stimulations Decoder is able to process a IStimulationSet from a Stimulations input chunk. Be aware that you get a \b reference on the TParameterHandler.
 \code
 OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* >& getOutputStimulationSet()
-\endcode
-
-\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ChannelLocalisation Channel Localisation Decoder
-The Channel Localisation Decoder is able to process a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) from a Channel Localisation input chunk. Be aware that you get \b references on the TParameterHandlers.
-\code
-OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
-OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getOutputDynamic()
 \endcode
 
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_ExperimentInformation Experiment Information Decoder
@@ -180,17 +182,19 @@ OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
 OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMinMaxFrequencyBands()
 \endcode
 
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ChannelLocalisation Channel Localisation Encoder
+The Channel Localisation Encoder inherits from the Streamed Matrix Encoder. It needs a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) in order to process to encoding. As you get a reference you can modify the input directly.
+\code
+// From TStreamedMatrixEncoder <T> :
+OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
+// Channel Localisation specific :
+OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getInputDynamic()
+\endcode
+
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Stimulations Stimulations Encoder
 The Stimulations Encoder needs a IStimulationSet in order to process to encoding. As you get a reference you can modify the input directly.
 \code
 OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* >& getInputStimulationSet()
-\endcode
-
-\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ChannelLocalisation Channel Localisation Encoder
-The Channel Localisation Encoder needs a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) in order to process to encoding. As you get a reference you can modify the input directly.
-\code
-OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
-OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getInputDynamic()
 \endcode
 
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ExperimentInformation Experiment Information Encoder
