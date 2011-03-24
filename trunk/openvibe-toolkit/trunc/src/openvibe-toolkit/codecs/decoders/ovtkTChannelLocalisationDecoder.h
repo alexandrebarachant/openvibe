@@ -3,9 +3,7 @@
 
 #ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
-#include "../../ovtk_base.h"
-
-#include "ovtkTDecoder.h"
+#include "ovtkTStreamedMatrixDecoder.h"
 
 namespace OpenViBEToolkit
 {
@@ -15,19 +13,19 @@ namespace OpenViBEToolkit
 		
 	protected:
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputLocalisationMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > m_bOutputDynamic;
 		
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pInputMemoryBuffer;
+		using T::m_pOutputMatrix;
 
 		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_ChannelLocalisationStreamDecoder));
 			m_pCodec->initialize();
 			m_pInputMemoryBuffer.initialize(m_pCodec->getInputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_InputParameterId_MemoryBufferToDecode));
-			m_pOutputLocalisationMatrix.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Matrix));
+			m_pOutputMatrix.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Matrix));
 			m_bOutputDynamic.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamDecoder_OutputParameterId_Dynamic));
 
 			return true;
@@ -44,18 +42,13 @@ namespace OpenViBEToolkit
 			}
 
 			m_bOutputDynamic.uninitialize();
-			m_pOutputLocalisationMatrix.uninitialize();
+			m_pOutputMatrix.uninitialize();
 			m_pInputMemoryBuffer.uninitialize();
 			m_pCodec->uninitialize();
 			m_pBoxAlgorithm->getAlgorithmManager().releaseAlgorithm(*m_pCodec);
 			m_pBoxAlgorithm = NULL;
 
 			return true;
-		}
-
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getOutputMatrix()
-		{
-			return m_pOutputLocalisationMatrix;
 		}
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getOutputDynamic()
@@ -80,7 +73,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TChannelLocalisationDecoder : public TChannelLocalisationDecoderLocal < TDecoder < T > >
+	class TChannelLocalisationDecoder : public TChannelLocalisationDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > >
 	{
 	};
 };

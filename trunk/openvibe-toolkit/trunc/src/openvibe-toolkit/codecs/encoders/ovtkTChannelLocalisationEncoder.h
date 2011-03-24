@@ -3,9 +3,7 @@
 
 #ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
-#include "../../ovtk_base.h"
-
-#include "ovtkTEncoder.h"
+#include "ovtkTStreamedMatrixEncoder.h"
 
 namespace OpenViBEToolkit
 {
@@ -15,18 +13,18 @@ namespace OpenViBEToolkit
 		
 	protected:
 
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputLocalisationMatrix;
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > m_bInputDynamic;
 		
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pOutputMemoryBuffer;
+		using T::m_pInputMatrix;
 
 		OpenViBE::boolean initializeImpl()
 		{
 			m_pCodec = &m_pBoxAlgorithm->getAlgorithmManager().getAlgorithm(m_pBoxAlgorithm->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_ChannelLocalisationStreamEncoder));
 			m_pCodec->initialize();
-			m_pInputLocalisationMatrix.initialize(m_pCodec->getInputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputParameterId_Matrix));
+			m_pInputMatrix.initialize(m_pCodec->getInputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputParameterId_Matrix));
 			m_bInputDynamic.initialize(m_pCodec->getInputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputParameterId_Dynamic));
 			m_pOutputMemoryBuffer.initialize(m_pCodec->getOutputParameter(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
@@ -43,7 +41,7 @@ namespace OpenViBEToolkit
 				return false;
 			}
 
-			m_pInputLocalisationMatrix.uninitialize();
+			m_pInputMatrix.uninitialize();
 			m_bInputDynamic.uninitialize();
 			m_pOutputMemoryBuffer.uninitialize();
 			m_pCodec->uninitialize();
@@ -51,11 +49,6 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 
 			return true;
-		}
-
-		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMatrix()
-		{
-			return m_pInputLocalisationMatrix;
 		}
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean >& getInputDynamic()
@@ -81,7 +74,7 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TChannelLocalisationEncoder : public TChannelLocalisationEncoderLocal < TEncoder < T > >
+	class TChannelLocalisationEncoder : public TChannelLocalisationEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >
 	{
 	};
 };
