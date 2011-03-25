@@ -53,6 +53,7 @@ namespace OpenViBEDesigner
 		void deleteSelection(void);
 
 		void contextMenuBoxRenameCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxRenameAllCB();
 		void contextMenuBoxDeleteCB(OpenViBE::Kernel::IBox& rBox);
 		void contextMenuBoxAddInputCB(OpenViBE::Kernel::IBox& rBox);
 		void contextMenuBoxEditInputCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
@@ -114,6 +115,8 @@ namespace OpenViBEDesigner
 		OpenViBE::boolean m_bShiftPressed;
 		OpenViBE::boolean m_bControlPressed;
 		OpenViBE::boolean m_bAltPressed;
+		OpenViBE::boolean m_bAPressed;
+		OpenViBE::boolean m_bWPressed;
 		OpenViBE::boolean m_bDebugCPUUsage;
 		std::string m_sFileName;
 		std::string m_sGUIFilename;

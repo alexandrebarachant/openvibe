@@ -165,6 +165,7 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		case ContextMenu_SelectionDelete:  l_pContextMenuCB->pInterfacedScenario->deleteSelection(); break;
 
 		case ContextMenu_BoxRename:        l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRenameCB(*l_pContextMenuCB->pBox); break;
+		//case ContextMenu_BoxRename:        l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRenameAllCB(); break;
 		case ContextMenu_BoxDelete:        l_pContextMenuCB->pInterfacedScenario->contextMenuBoxDeleteCB(*l_pContextMenuCB->pBox); break;
 		case ContextMenu_BoxAddInput:      l_pContextMenuCB->pInterfacedScenario->contextMenuBoxAddInputCB(*l_pContextMenuCB->pBox); break;
 		case ContextMenu_BoxEditInput:     l_pContextMenuCB->pInterfacedScenario->contextMenuBoxEditInputCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
@@ -309,6 +310,8 @@ CInterfacedScenario::CInterfacedScenario(const IKernelContext& rKernelContext, C
 	,m_bShiftPressed(false)
 	,m_bControlPressed(false)
 	,m_bAltPressed(false)
+	,m_bAPressed(false)
+	,m_bWPressed(false)
 	,m_bDebugCPUUsage(false)
 	,m_sGUIFilename(sGUIFilename)
 	,m_sGUISettingsFilename(sGUISettingsFilename)
@@ -1425,6 +1428,8 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 						m_bShiftPressed=false;
 						m_bControlPressed=false;
 						m_bAltPressed=false;
+						m_bAPressed=false;
+						m_bWPressed=false;
 
 						if(m_oCurrentObject.m_ui32ConnectorType==Connector_Input || m_oCurrentObject.m_ui32ConnectorType==Connector_Output)
 						{
@@ -1818,6 +1823,8 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 	m_bShiftPressed  |=(pEvent->keyval==GDK_Shift_L   || pEvent->keyval==GDK_Shift_R);
 	m_bControlPressed|=(pEvent->keyval==GDK_Control_L || pEvent->keyval==GDK_Control_R);
 	m_bAltPressed    |=(pEvent->keyval==GDK_Alt_L     || pEvent->keyval==GDK_Alt_R);
+	m_bAPressed      |=(pEvent->keyval==GDK_a         || pEvent->keyval==GDK_A);
+	m_bWPressed      |=(pEvent->keyval==GDK_w         || pEvent->keyval==GDK_W);
 
 	// m_rKernelContext.getLogManager() << LogLevel_Info << "Key pressed " << (uint32) pEvent->keyval << "\n";
 /*
@@ -1831,6 +1838,23 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 		this->redoCB();
 	}
 */
+	// CTRL+A = select all
+	if(m_bAPressed && m_bControlPressed && !m_bShiftPressed && ! m_bAltPressed)
+	{
+		map < CIdentifier, boolean >::iterator it;
+		for(it=m_vCurrentObject.begin(); it!=m_vCurrentObject.end(); it++)
+		{
+			it->second = true;
+		}
+		this->redraw();
+	}
+
+	//CTRL+W : close current scenario
+	if(m_bWPressed && m_bControlPressed && !m_bShiftPressed && ! m_bAltPressed)
+	{
+		m_rApplication.closeScenarioCB(this);
+		return;
+	}
 
 	if((pEvent->keyval==GDK_C || pEvent->keyval==GDK_c) && m_ui32CurrentMode==Mode_None)
 	{
@@ -1863,6 +1887,7 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 		this->snapshotCB();
 	}
 
+	// F1 : browse documentation
 	if(pEvent->keyval==GDK_F1)
 	{
 		CString l_sWebBrowser=m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand}");
@@ -1917,11 +1942,19 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 		}
 	}
 
+	// F2 : rename all selected box(es)
+	if(pEvent->keyval==GDK_F2)
+	{
+		contextMenuBoxRenameAllCB();
+	}
+
 	m_rKernelContext.getLogManager() << LogLevel_Debug
 		<< "scenarioDrawingAreaKeyPressEventCB ("
 		<< (m_bShiftPressed?"true":"false") << "|"
 		<< (m_bControlPressed?"true":"false") << "|"
 		<< (m_bAltPressed?"true":"false") << "|"
+		<< (m_bAPressed?"true":"false") << "|"
+		<< (m_bWPressed?"true":"false") << "|"
 		<< ")\n";
 
 	if(this->isLocked()) return;
@@ -1937,12 +1970,16 @@ void CInterfacedScenario::scenarioDrawingAreaKeyReleaseEventCB(::GtkWidget* pWid
 	m_bShiftPressed  &=!(pEvent->keyval==GDK_Shift_L   || pEvent->keyval==GDK_Shift_R);
 	m_bControlPressed&=!(pEvent->keyval==GDK_Control_L || pEvent->keyval==GDK_Control_R);
 	m_bAltPressed    &=!(pEvent->keyval==GDK_Alt_L     || pEvent->keyval==GDK_Alt_R);
-
+	m_bAPressed      &=!(pEvent->keyval==GDK_A         || pEvent->keyval==GDK_a);
+	m_bWPressed      &=!(pEvent->keyval==GDK_W         || pEvent->keyval==GDK_w);
+	
 	m_rKernelContext.getLogManager() << LogLevel_Debug
 		<< "scenarioDrawingAreaKeyReleaseEventCB ("
 		<< (m_bShiftPressed?"true":"false") << "|"
 		<< (m_bControlPressed?"true":"false") << "|"
 		<< (m_bAltPressed?"true":"false") << "|"
+		<< (m_bAPressed?"true":"false") << "|"
+		<< (m_bWPressed?"true":"false") << "|"
 		<< ")\n";
 
 	if(this->isLocked()) return;
@@ -2181,10 +2218,78 @@ void CInterfacedScenario::contextMenuBoxRenameCB(IBox& rBox)
 		{
 			m_pDesignerVisualisation->onVisualisationBoxRenamed(rBox.getIdentifier());
 		}
-
 		this->snapshotCB();
 	}
 }
+
+void CInterfacedScenario::contextMenuBoxRenameAllCB()
+{
+	//we find all selected boxes
+	map < CIdentifier, CIdentifier > l_vSelectedBox; // map(object,class)
+	map < CIdentifier, boolean >::const_iterator it_current;
+	for(it_current=m_vCurrentObject.begin(); it_current!=m_vCurrentObject.end(); it_current++)
+	{
+		if(it_current->second)
+		{
+			if(m_rScenario.isBox(it_current->first))
+			{
+				l_vSelectedBox[it_current->first]=m_rScenario.getBoxDetails(it_current->first)->getAlgorithmClassIdentifier();
+			}
+		}
+	}
+
+	map < CIdentifier, CIdentifier >::const_iterator it;
+	if(l_vSelectedBox.size())
+	{
+		boolean l_bDialogOk = true;
+		boolean l_bFirstBox = true;
+		CString l_sNewName = "";
+		for(it=l_vSelectedBox.begin(); it!=l_vSelectedBox.end() && l_bDialogOk; it++)
+		{
+			if(it->second!=OV_UndefinedIdentifier)
+			{
+				if(m_rKernelContext.getPluginManager().canCreatePluginObject(it->second))
+				{
+					IBox* l_pBox=m_rScenario.getBoxDetails(it->first);
+					if(l_bFirstBox)
+					{
+						l_bFirstBox = false;
+						const IPluginObjectDesc* l_pPluginObjectDescriptor=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_pBox->getAlgorithmClassIdentifier());
+						CRenameDialog l_oRename(m_rKernelContext, l_pBox->getName(), l_pPluginObjectDescriptor?l_pPluginObjectDescriptor->getName():l_pBox->getName(), m_sGUIFilename.c_str());
+						if(l_oRename.run())
+						{
+							l_sNewName = l_oRename.getResult();
+						}
+						else
+						{
+							// no rename at all.
+							l_bDialogOk = false;
+						}
+					}
+					if(l_bDialogOk)
+					{
+						l_pBox->setName(l_sNewName);
+
+						//check whether it is a visualisation box
+						CIdentifier l_oId = l_pBox->getAlgorithmClassIdentifier();
+						const IPluginObjectDesc* l_pPOD = m_rKernelContext.getPluginManager().getPluginObjectDescCreating(l_oId);
+
+						//if a visualisation box was renamed, tell window manager about it
+						if(l_pPOD && l_pPOD->hasFunctionality(Kernel::PluginFunctionality_Visualization))
+						{
+							m_pDesignerVisualisation->onVisualisationBoxRenamed(l_pBox->getIdentifier());
+						}
+					}
+				}
+			}
+		}
+		if(l_bDialogOk)
+		{
+			this->snapshotCB();
+		}
+	}
+}
+
 void CInterfacedScenario::contextMenuBoxDeleteCB(IBox& rBox)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxDeleteCB\n";

@@ -1024,16 +1024,27 @@ void CApplication::openScenarioCB(void)
 	gtk_file_chooser_set_current_folder(
 			GTK_FILE_CHOOSER(l_pWidgetDialogOpen),
 			this->getWorkingDirectory().toASCIIString());
+
+	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(l_pWidgetDialogOpen),true);
+
 	if(gtk_dialog_run(GTK_DIALOG(l_pWidgetDialogOpen))==GTK_RESPONSE_ACCEPT)
 	{
-		char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
-		char* l_pBackslash = NULL;
-		while((l_pBackslash = ::strchr(l_sFileName, '\\'))!=NULL)
+		//char* l_sFileName=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
+		GSList * l_pFile, *l_pList;
+		l_pFile = l_pList = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(l_pWidgetDialogOpen));
+		while(l_pFile)
 		{
-			*l_pBackslash = '/';
+			char* l_sFileName = (char*)l_pFile->data;
+			char* l_pBackslash = NULL;
+			while((l_pBackslash = ::strchr(l_sFileName, '\\'))!=NULL)
+			{
+				*l_pBackslash = '/';
+			}
+			this->openScenario(l_sFileName);
+			g_free(l_pFile->data);
+			l_pFile=l_pFile->next;
 		}
-		this->openScenario(l_sFileName);
-		g_free(l_sFileName);
+		g_slist_free(l_pList);
 	}
 	gtk_widget_destroy(l_pWidgetDialogOpen);
 }
