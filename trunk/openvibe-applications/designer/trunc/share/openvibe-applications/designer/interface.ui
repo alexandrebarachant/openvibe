@@ -454,7 +454,6 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -656,7 +655,6 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -2412,7 +2410,6 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="KP_Enter" signal="clicked"/>
                 <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
@@ -2810,7 +2807,6 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -3211,7 +3207,6 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -3586,7 +3581,7 @@ Previous Documenters :
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="unsaved_scenario-button_delete">
-                <property name="label">Quit Without Saving</property>
+                <property name="label">Close Without Saving</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -3980,6 +3975,7 @@ Previous Documenters :
   <object class="GtkTextBuffer" id="openvibe-textbuffer_messages"/>
   <object class="GtkDialog" id="dialog_error_popup">
     <property name="border_width">5</property>
+    <property name="title" translatable="yes"> </property>
     <property name="type_hint">normal</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox21">
