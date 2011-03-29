@@ -21,7 +21,7 @@ boolean CBoxAlgorithmClassifierProcessor::initialize(void)
 
 	if(l_oClassifierAlgorithmClassIdentifier==OV_UndefinedIdentifier)
 	{
-		this->getLogManager() << LogLevel_Error << "Unknown classifier algorithm [" << l_sClassifierAlgorithmClassIdentifier << "]\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Unknown classifier algorithm [" << l_sClassifierAlgorithmClassIdentifier << "]\n";
 		return false;
 	}
 
@@ -64,8 +64,7 @@ boolean CBoxAlgorithmClassifierProcessor::initialize(void)
 	}
 	else
 	{
-		this->getLogManager() << LogLevel_Error << "Could not load configuration from file [" << l_sConfigurationFilename << "]\n";
-		return false;
+		this->getLogManager() << LogLevel_Warning << "Could not load configuration from file [" << l_sConfigurationFilename << "]\n";
 	}
 
 	m_bOutputHeaderSent=false;

@@ -111,83 +111,81 @@ namespace OpenViBEPlugins
 
 				if(m_pClassifier)
 				{
-					OpenViBE::uint32 i=m_ui32CustomSettingBase;
-					while((l_oIdentifier=m_pClassifier->getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+				OpenViBE::uint32 i=m_ui32CustomSettingBase;
+				while((l_oIdentifier=m_pClassifier->getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
+				{
+					if((l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVector)
+					&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVectorSet)
+					&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_Configuration))
 					{
-						if((l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVector)
-						&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVectorSet)
-						&& (l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_Configuration))
+						OpenViBE::CIdentifier l_oTypeIdentifier;
+						OpenViBE::CString l_sParameterName=m_pClassifier->getInputParameterName(l_oIdentifier);
+						OpenViBE::Kernel::IParameter* l_pParameter=m_pClassifier->getInputParameter(l_oIdentifier);
+						OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64Parameter(l_pParameter);
+						OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64Parameter(l_pParameter);
+						OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > ip_f64Parameter(l_pParameter);
+						OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > ip_bParameter(l_pParameter);
+						OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > ip_sParameter(l_pParameter);
+						char l_sBuffer[1024];
+						bool l_bValid=true;
+						switch(l_pParameter->getType())
 						{
-							OpenViBE::CIdentifier l_oTypeIdentifier;
-							OpenViBE::CString l_sParameterName=m_pClassifier->getInputParameterName(l_oIdentifier);
-							OpenViBE::Kernel::IParameter* l_pParameter=m_pClassifier->getInputParameter(l_oIdentifier);
-							OpenViBE::Kernel::TParameterHandler < OpenViBE::int64 > ip_i64Parameter(l_pParameter);
-							OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64Parameter(l_pParameter);
-							OpenViBE::Kernel::TParameterHandler < OpenViBE::float64 > ip_f64Parameter(l_pParameter);
-							OpenViBE::Kernel::TParameterHandler < OpenViBE::boolean > ip_bParameter(l_pParameter);
-							OpenViBE::Kernel::TParameterHandler < OpenViBE::CString* > ip_sParameter(l_pParameter);
-							char l_sBuffer[1024];
-							bool l_bValid=true;
-							switch(l_pParameter->getType())
-							{
-								case OpenViBE::Kernel::ParameterType_Enumeration:
-									::strcpy(l_sBuffer, this->getTypeManager().getEnumerationEntryNameFromValue(l_pParameter->getSubTypeIdentifier(), ip_ui64Parameter).toASCIIString());
-									l_oTypeIdentifier=l_pParameter->getSubTypeIdentifier();
-									break;
+							case OpenViBE::Kernel::ParameterType_Enumeration:
+								::strcpy(l_sBuffer, this->getTypeManager().getEnumerationEntryNameFromValue(l_pParameter->getSubTypeIdentifier(), ip_ui64Parameter).toASCIIString());
+								l_oTypeIdentifier=l_pParameter->getSubTypeIdentifier();
+								break;
 
-								case OpenViBE::Kernel::ParameterType_Integer:
-								case OpenViBE::Kernel::ParameterType_UInteger:
-									::sprintf(l_sBuffer, "%lli", (OpenViBE::int64)ip_i64Parameter);
-									l_oTypeIdentifier=OV_TypeId_Integer;
-									break;
+							case OpenViBE::Kernel::ParameterType_Integer:
+							case OpenViBE::Kernel::ParameterType_UInteger:
+								::sprintf(l_sBuffer, "%lli", (OpenViBE::int64)ip_i64Parameter);
+								l_oTypeIdentifier=OV_TypeId_Integer;
+								break;
 
-								case OpenViBE::Kernel::ParameterType_Boolean:
-									::sprintf(l_sBuffer, "%s", ((OpenViBE::boolean)ip_bParameter)?"true":"false");
-									l_oTypeIdentifier=OV_TypeId_Boolean;
-									break;
+							case OpenViBE::Kernel::ParameterType_Boolean:
+								::sprintf(l_sBuffer, "%s", ((OpenViBE::boolean)ip_bParameter)?"true":"false");
+								l_oTypeIdentifier=OV_TypeId_Boolean;
+								break;
 
-								case OpenViBE::Kernel::ParameterType_Float:
-									::sprintf(l_sBuffer, "%lf", (OpenViBE::float64)ip_f64Parameter);
-									l_oTypeIdentifier=OV_TypeId_Float;
-									break;
-
-								case OpenViBE::Kernel::ParameterType_String:
-									::sprintf(l_sBuffer, "%s", ip_sParameter->toASCIIString());
-									l_oTypeIdentifier=OV_TypeId_String;
-
-								default:
-									l_bValid=false;
-									break;
-							}
-
-							if(l_bValid)
-							{
-								if(i>=rBox.getSettingCount())
-								{
-									rBox.addSetting(l_sParameterName, l_oTypeIdentifier, l_sBuffer);
-								}
-								else
-								{
-									OpenViBE::CIdentifier l_oOldTypeIdentifier;
-									rBox.getSettingType(i, l_oOldTypeIdentifier);
-									if(l_oOldTypeIdentifier != l_oTypeIdentifier)
-									{
-										rBox.setSettingType(i, l_oTypeIdentifier);
-										rBox.setSettingValue(i, l_sBuffer);
-									}
-									rBox.setSettingName(i, l_sParameterName);
-								}
-								i++;
-							}
+							case OpenViBE::Kernel::ParameterType_Float:
+								::sprintf(l_sBuffer, "%lf", (OpenViBE::float64)ip_f64Parameter);
+								l_oTypeIdentifier=OV_TypeId_Float;
+								break;
+							case OpenViBE::Kernel::ParameterType_String:
+								::sprintf(l_sBuffer, "%s", ((OpenViBE::CString*)ip_sParameter)->toASCIIString());
+								l_oTypeIdentifier=OV_TypeId_String;
+								break;
+							default:
+								l_bValid=false;
+								break;
 						}
-					}
 
-					while(i<rBox.getSettingCount())
-					{
-						rBox.removeSetting(i);
+						if(l_bValid)
+						{
+							if(i>=rBox.getSettingCount())
+							{
+								rBox.addSetting(l_sParameterName, l_oTypeIdentifier, l_sBuffer);
+							}
+							else
+							{
+								OpenViBE::CIdentifier l_oOldTypeIdentifier;
+								rBox.getSettingType(i, l_oOldTypeIdentifier);
+								if(l_oOldTypeIdentifier != l_oTypeIdentifier)
+								{
+									rBox.setSettingType(i, l_oTypeIdentifier);
+									rBox.setSettingValue(i, l_sBuffer);
+								}
+								rBox.setSettingName(i, l_sParameterName);
+							}
+							i++;
+						}
 					}
 				}
 
+				while(i<rBox.getSettingCount())
+				{
+					rBox.removeSetting(i);
+				}
+				}
 				return true;
 			}
 

@@ -64,7 +64,7 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 			TParameterHandler < float64 > ip_f64Parameter(l_pParameter);
 			TParameterHandler < boolean > ip_bParameter(l_pParameter);
 			TParameterHandler < CString* > ip_sParameter(l_pParameter);
-
+			CString l_sParam;
 			bool l_bValid=true;
 			switch(l_pParameter->getType())
 			{
@@ -86,9 +86,9 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 					break;
 
 				case ParameterType_String:
-					*ip_sParameter=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
+					l_sParam=(CString)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), i);
+					*ip_sParameter=l_sParam;
 					break;
-
 				default:
 					l_bValid=false;
 					break;
