@@ -4,7 +4,7 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_GUSBampCAPI API/gUSBamp.h PATHS "C:/Program Files/gtec/gUSBampCAPI" $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_GUSBampCAPI API/gUSBamp.h PATHS "C:/Program Files/gtec/gUSBampCAPI" "C:/Program Files (x86)/gtec/gUSBampCAPI" $ENV{OpenViBE_dependencies})
 	IF(PATH_GUSBampCAPI)
 		MESSAGE(STATUS "  Found gUSBampCAPI...")
 		INCLUDE_DIRECTORIES(${PATH_GUSBampCAPI}/API)
