@@ -39,6 +39,7 @@ OpenViBE_application_omk_test_branch=
 OpenViBE_application_plugin_inspector_branch=
 OpenViBE_application_vr_demo_branch=
 OpenViBE_application_vrpn_simulator_branch=
+OpenViBE_application_ssvep_demo_branch=
 
 ########################################################################################################################
 #PLUGINS
@@ -184,6 +185,7 @@ $OpenViBE_application_plugin_inspector
 $OpenViBE_application_vr_demo
 $OpenViBE_application_vrpn_simulator
 $OpenViBE_application_skeleton_generator
+$OpenViBE_application_ssvep_demo
 $OpenViBE_scenarios
 $OpenViBE_documentation
 "

@@ -127,6 +127,8 @@ echo "$script_base exec \$ov_debugger ./OpenViBE-id-generator-dynamic \$*" > $ta
 echo "$script_base exec \$ov_debugger ./OpenViBE-vr-demo \"tie-fighter\" \$*" > $target_dist/ov-vr-demo-tie-fighter.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-vrpn-simulator-dynamic \$*" > $target_dist/ov-vrpn-simulator.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-skeleton-generator-dynamic \$*" > $target_dist/ov-skeleton-generator.sh
+echo "$script_base exec \$ov_debugger ./OpenViBE-ssvep-demo-dynamic training\$* &" > $target_dist/ov-ssvep-demo-training.sh
+echo "$script_base exec \$ov_debugger ./OpenViBE-ssvep-demo-dynamic shooter\$* &" > $target_dist/ov-ssvep-demo-shooter.sh
 ln -sf $target_dist/ov-designer.sh
 ln -sf $target_dist/ov-acquisition-server.sh
 ln -sf $target_dist/ov-plugin-inspector.sh
@@ -134,7 +136,17 @@ ln -sf $target_dist/ov-id-generator.sh
 ln -sf $target_dist/ov-vr-demo-tie-fighter.sh
 ln -sf $target_dist/ov-vrpn-simulator.sh
 ln -sf $target_dist/ov-skeleton-generator.sh
+ln -sf $target_dist/ov-ssvep-demo-training.sh
+ln -sf $target_dist/ov-ssvep-demo-shooter.sh
 chmod 755 $target_dist/*.sh
+
+echo "#!/bin/bash
+cd ..
+./ov-\$1.sh \${*:2}
+" > $target_dist/bin/OpenViBE-external-application-launcher.sh
+chmod 755 $target_dist/bin/OpenViBE-external-application-launcher.sh
+
+
 
 echo ""
 echo "Patching documentation..."
