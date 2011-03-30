@@ -127,15 +127,34 @@ namespace OpenViBE
 			virtual OpenViBE::boolean setConfigurationTokenValue(
 				const OpenViBE::CIdentifier& rConfigurationTokenIdentifier,
 				const OpenViBE::CString& rConfigurationTokenValue)=0;
+
 			/**
 			 * \brief Searches the identifier of a token with a given name
 			 * \param rConfigurationTokenName [in] : the name of the token which identifier should be found
+			 * \param bRecursive [in] : when set to true, asks this configuration manager to propagate
+			 *                          the request to parent configuration manager (if any).
 			 * \return the identifier of the token with the actual name in case of success
 			 * \return \c OV_UndefinedIdentifier in case of error
+			 * \note if \c bRecursive is set to \e true then the returned identifier should
+			 *       not be considered as the identifier of an existing token in this configuration manager
+			 *       as it may have been returned from a parent configuration manager. Instead, one must consider
+			 *       the returned identifier as a kind of boolean value : suck token actually exists or such
+			 *       token does not exists.
 			 */
 			virtual OpenViBE::CIdentifier lookUpConfigurationTokenIdentifier(
+				const OpenViBE::CString& rConfigurationTokenName,
+				const OpenViBE::boolean bRecursive=false) const=0;
+			/**
+			 * \brief Searches the value of a token with a given name
+			 * \param rConfigurationTokenName [in] : the name of the token which value should be found
+			 * \return the value of the token with the actual name in case of success
+			 * \note This function differs of \c getConfigurationTokenName in the sense that it
+			 *       recursively requests a token value to parent configuration managers until it
+			 *       finds one (if any). It also differs from the \c expand function in the sense that
+			 *       it takes a token name as input but does not expand its value when it finds it.
+			 */
+			virtual OpenViBE::CString lookUpConfigurationTokenValue(
 				const OpenViBE::CString& rConfigurationTokenName) const=0;
-
 			/**
 			 * \brief Expands a string to an expanded string based on its use of configuration tokens
 			 * \param rExpression [in] : the string that you want to expan

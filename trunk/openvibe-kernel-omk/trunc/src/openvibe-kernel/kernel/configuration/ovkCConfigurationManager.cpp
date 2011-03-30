@@ -201,7 +201,7 @@ CIdentifier CConfigurationManager::createConfigurationToken(
 	const CString& rConfigurationTokenName,
 	const CString& rConfigurationTokenValue)
 {
-	if(this->lookUpConfigurationTokenIdentifier(rConfigurationTokenName)!=OV_UndefinedIdentifier)
+	if(this->lookUpConfigurationTokenIdentifier(rConfigurationTokenName, false)!=OV_UndefinedIdentifier)
 	{
 		this->getLogManager() << LogLevel_Warning << "Configuration token name " << rConfigurationTokenName << " already exists\n";
 		return false;
@@ -278,7 +278,7 @@ boolean CConfigurationManager::setConfigurationTokenName(
 	const CIdentifier& rConfigurationTokenIdentifier,
 	const CString& rConfigurationTokenName)
 {
-	if(this->lookUpConfigurationTokenIdentifier(rConfigurationTokenName)!=OV_UndefinedIdentifier)
+	if(this->lookUpConfigurationTokenIdentifier(rConfigurationTokenName, false)!=OV_UndefinedIdentifier)
 	{
 		getLogManager() << LogLevel_Warning << "Configuration token " << rConfigurationTokenName << " already exists\n";
 		return false;
@@ -313,7 +313,8 @@ boolean CConfigurationManager::setConfigurationTokenValue(
 // ----------------------------------------------------------------------------------------------------------------------------
 
 CIdentifier CConfigurationManager::lookUpConfigurationTokenIdentifier(
-	const CString& rConfigurationTokenName) const
+	const CString& rConfigurationTokenName,
+	const boolean bRecursive) const
 {
 	std::map < CIdentifier, SConfigurationToken >::const_iterator itConfigurationToken=m_vConfigurationToken.begin();
 	while(itConfigurationToken!=m_vConfigurationToken.end())
@@ -324,7 +325,30 @@ CIdentifier CConfigurationManager::lookUpConfigurationTokenIdentifier(
 		}
 		itConfigurationToken++;
 	}
+	if(bRecursive && m_pParentConfigurationManager)
+	{
+		return m_pParentConfigurationManager->lookUpConfigurationTokenIdentifier(rConfigurationTokenName, bRecursive);
+	}
 	return OV_UndefinedIdentifier;
+}
+
+CString CConfigurationManager::lookUpConfigurationTokenValue(
+	const CString& rConfigurationTokenName) const
+{
+	std::map < CIdentifier, SConfigurationToken >::const_iterator itConfigurationToken=m_vConfigurationToken.begin();
+	while(itConfigurationToken!=m_vConfigurationToken.end())
+	{
+		if(itConfigurationToken->second.m_sConfigurationName==rConfigurationTokenName)
+		{
+			return itConfigurationToken->second.m_sConfigurationValue;
+		}
+		itConfigurationToken++;
+	}
+	if(m_pParentConfigurationManager)
+	{
+		return m_pParentConfigurationManager->lookUpConfigurationTokenValue(rConfigurationTokenName);
+	}
+	return "";
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------
@@ -424,7 +448,8 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 				if(l_sLowerPrefix=="")
 				{
 					// l_sValue=this->getConfigurationTokenValue(this->lookUpConfigurationTokenIdentifier(l_sPostfix.c_str()));
-					this->internalGetConfigurationTokenValueFromName(l_sPostfix, l_sValue);
+					// this->internalGetConfigurationTokenValueFromName(l_sPostfix, l_sValue);
+					l_sValue=this->lookUpConfigurationTokenValue(l_sPostfix.c_str()).toASCIIString();
 				}
 				else if(l_sLowerPrefix=="environment" || l_sLowerPrefix=="env")
 				{
@@ -517,7 +542,7 @@ boolean CConfigurationManager::internalExpand(const std::string& sValue, std::st
 
 boolean CConfigurationManager::internalGetConfigurationTokenValueFromName(const std::string& sTokenName, std::string& sTokenValue) const
 {
-	CIdentifier l_oTokenIdentifier=this->lookUpConfigurationTokenIdentifier(sTokenName.c_str());
+	CIdentifier l_oTokenIdentifier=this->lookUpConfigurationTokenIdentifier(sTokenName.c_str(), false);
 	if(l_oTokenIdentifier == OV_UndefinedIdentifier)
 	{
 		if(m_pParentConfigurationManager)

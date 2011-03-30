@@ -48,6 +48,9 @@ namespace OpenViBE
 				const OpenViBE::CString& rConfigurationTokenValue);
 
 			virtual OpenViBE::CIdentifier lookUpConfigurationTokenIdentifier(
+				const OpenViBE::CString& rConfigurationTokenName,
+				const OpenViBE::boolean bRecursive) const;
+			virtual OpenViBE::CString lookUpConfigurationTokenValue(
 				const OpenViBE::CString& rConfigurationTokenName) const;
 
 			virtual OpenViBE::CString expand(

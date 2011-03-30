@@ -53,7 +53,8 @@ namespace OpenViBE
 				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), boolean, setConfigurationTokenName, , const CIdentifier&, rConfigurationTokenIdentifier, const CString&, rConfigurationTokenName);
 				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), boolean, setConfigurationTokenValue, , const CIdentifier&, rConfigurationTokenIdentifier, const CString&, rConfigurationTokenValue);
 
-				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CIdentifier, lookUpConfigurationTokenIdentifier, const, const CString&, rConfigurationTokenName);
+				__BridgeBindFunc2__(getKernelContext().getConfigurationManager(), CIdentifier, lookUpConfigurationTokenIdentifier, const, const CString&, rConfigurationTokenName, const boolean, bRecursive);
+				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CString, lookUpConfigurationTokenValue, const, const CString&, rConfigurationTokenName);
 				__BridgeBindFunc1__(getKernelContext().getConfigurationManager(), CString, expand, const, const CString&, rExpression);
 
 
