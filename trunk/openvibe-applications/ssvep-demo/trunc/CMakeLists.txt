@@ -8,10 +8,14 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
+INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleSystem")
+INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindThirdPartyOgre3D") # OGRE + OIS included
 INCLUDE("FindThirdPartyCEGUI") # CEGUI + CEGUIOgreRender included
 INCLUDE("FindThirdPartyVRPN")
+INCLUDE("FindThirdPartyBoost_Thread")
 
 # ---------------------------------
 # Finds standard library pthread
