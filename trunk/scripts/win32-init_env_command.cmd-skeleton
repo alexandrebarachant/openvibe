@@ -41,6 +41,7 @@ SET OpenViBE_application_id_generator_branch=
 SET OpenViBE_application_plugin_inspector_branch=
 SET OpenViBE_application_vr_demo_branch=
 SET OpenViBE_application_vrpn_simulator_branch=
+SET OpenViBE_application_ssvep_demo_branch=
 REM
 REM ########################################################################################################################
 REM ## PLUGINS
@@ -229,6 +230,7 @@ echo %OpenViBE_application_plugin_inspector% >> %OpenViBE_build_order%
 echo %OpenViBE_application_vr_demo% >> %OpenViBE_build_order%
 echo %OpenViBE_application_vrpn_simulator% >> %OpenViBE_build_order%
 echo %OpenViBE_application_skeleton_generator% >> %OpenViBE_build_order%
+echo %OpenViBE_application_ssvep_demo% >> %OpenViBE_build_order%
 
 REM echo %OpenViBE_plugin_matlab% >> %OpenViBE_build_order%
 REM echo %OpenViBE_plugin_turbofieldtrip% >> %OpenViBE_build_order%

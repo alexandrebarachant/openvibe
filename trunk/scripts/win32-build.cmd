@@ -150,6 +150,25 @@ echo cd bin                                                  >> %target_dist%\te
 echo OpenViBE-skeleton-generator-dynamic.exe %%1 %%2 %%3 %%4 >> %target_dist%\test-skeleton-generator.cmd
 echo pause                                                   >> %target_dist%\test-skeleton-generator.cmd
 
+echo @echo off                                               >  %target_dist%\test-ssvep-demo-training.cmd
+echo pushd ..\scripts                                        >> %target_dist%\test-ssvep-demo-training.cmd
+echo call win32-init_env_command.cmd                         >> %target_dist%\test-ssvep-demo-training.cmd
+echo popd                                                    >> %target_dist%\test-ssvep-demo-training.cmd
+echo cd bin                                                  >> %target_dist%\test-ssvep-demo-training.cmd
+echo start OpenViBE-ssvep-demo-dynamic.exe 3class-training	 >> %target_dist%\test-ssvep-demo-training.cmd
+
+echo @echo off                                               >  %target_dist%\test-ssvep-demo-shooter.cmd
+echo pushd ..\scripts                                        >> %target_dist%\test-ssvep-demo-shooter.cmd
+echo call win32-init_env_command.cmd                         >> %target_dist%\test-ssvep-demo-shooter.cmd
+echo popd                                                    >> %target_dist%\test-ssvep-demo-shooter.cmd
+echo cd bin                                                  >> %target_dist%\test-ssvep-demo-shooter.cmd
+echo start OpenViBE-ssvep-demo-dynamic.exe shooter			 >> %target_dist%\test-ssvep-demo-shooter.cmd
+
+echo @echo off                                               >  %target_dist%\bin\OpenViBE-external-application-launcher.cmd
+echo pushd ..			                                     >> %target_dist%\bin\OpenViBE-external-application-launcher.cmd
+echo test-%%1.cmd %%2 %%3 %%4 %%5			                 >> %target_dist%\bin\OpenViBE-external-application-launcher.cmd
+
+
 echo.
 for /F %%s in (%OpenViBE_build_order%) do (
 	set OpenViBE_project_name_full=%%s
