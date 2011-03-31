@@ -155,7 +155,7 @@ echo pushd ..\scripts                                        >> %target_dist%\te
 echo call win32-init_env_command.cmd                         >> %target_dist%\test-ssvep-demo-training.cmd
 echo popd                                                    >> %target_dist%\test-ssvep-demo-training.cmd
 echo cd bin                                                  >> %target_dist%\test-ssvep-demo-training.cmd
-echo start OpenViBE-ssvep-demo-dynamic.exe 3class-training	 >> %target_dist%\test-ssvep-demo-training.cmd
+echo start OpenViBE-ssvep-demo-dynamic.exe training	         >> %target_dist%\test-ssvep-demo-training.cmd
 
 echo @echo off                                               >  %target_dist%\test-ssvep-demo-shooter.cmd
 echo pushd ..\scripts                                        >> %target_dist%\test-ssvep-demo-shooter.cmd
