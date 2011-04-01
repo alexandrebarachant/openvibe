@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
@@ -85,6 +85,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="Escape" signal="clicked"/>
               </object>
               <packing>
@@ -338,6 +340,8 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="Escape" signal="clicked"/>
               </object>
               <packing>
@@ -454,6 +458,7 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
+                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -655,6 +660,7 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
+                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -2411,6 +2417,7 @@ Previous Documenters :
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
                 <accelerator key="Return" signal="clicked"/>
+                <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -2807,6 +2814,7 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
+                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -3041,6 +3049,8 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3207,6 +3217,7 @@ Previous Documenters :
                 <property name="can_focus">False</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
+                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="KP_Enter" signal="clicked"/>
               </object>
               <packing>
@@ -3280,7 +3291,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_author_name">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3293,7 +3304,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_name">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3314,7 +3325,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_company_name">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3347,7 +3358,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_category">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3360,7 +3371,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_version">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3383,7 +3394,7 @@ Previous Documenters :
               <object class="GtkEntry" id="scenario_about-entry_documentation_page">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -3408,6 +3419,8 @@ Previous Documenters :
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
                 <accelerator key="Escape" signal="clicked"/>
               </object>
               <packing>
@@ -3469,6 +3482,8 @@ Previous Documenters :
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3718,6 +3733,8 @@ Previous Documenters :
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -3820,6 +3837,8 @@ Previous Documenters :
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -4101,6 +4120,8 @@ Previous Documenters :
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <accelerator key="KP_Enter" signal="clicked"/>
+                <accelerator key="Return" signal="clicked"/>
               </object>
               <packing>
                 <property name="expand">False</property>
