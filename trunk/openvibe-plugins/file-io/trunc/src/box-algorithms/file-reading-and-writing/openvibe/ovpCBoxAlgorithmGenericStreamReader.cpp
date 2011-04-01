@@ -262,7 +262,8 @@ void CBoxAlgorithmGenericStreamReader::closeChild(void)
 			// In case it was not find
 			if(l_ui32Index==(uint32)-1)
 			{
-				this->getLogManager() << LogLevel_Warning << "Did not find output for stream " << it->first << " of type identifier " << it->second << "\n";
+				CString l_sTypeName=this->getTypeManager().getTypeName(it->second);
+				this->getLogManager() << LogLevel_Warning << "Did not find output for stream " << it->first << " of type identifier " << it->second << " (type name is [" << l_sTypeName << "])\n";
 				m_vStreamIndexToOutputIndex[it->first]=(uint32)-1;
 				l_bLostStreams=true;
 			}
