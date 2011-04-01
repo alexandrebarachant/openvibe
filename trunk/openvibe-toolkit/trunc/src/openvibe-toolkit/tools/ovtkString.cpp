@@ -2,6 +2,10 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <functional>
+
+#include <cstring>
 
 using namespace OpenViBE;
 
@@ -23,6 +27,15 @@ namespace OpenViBEToolkit
 						}
 					}
 					return false;
+				}
+
+				// because std::tolower has multiple signatures,
+				// it can not be easily used in std::transform
+				// this workaround is taken from http://www.gcek.net/ref/books/sw/cpp/ticppv2/
+				template <class charT>
+				charT to_lower(charT c)
+				{
+					return std::tolower(c);
 				}
 			}
 		};
@@ -69,4 +82,37 @@ uint32 OpenViBEToolkit::Tools::String::split(const CString& rString, CString* pS
 		pString[i]=l_vResult[i].c_str();
 	}
 	return l_vResult.size();
+}
+
+
+boolean OpenViBEToolkit::Tools::String::isAlmostEqual(const CString& rString1, const CString& rString2, const boolean bCaseSensitive, const boolean bRemoveStartSpaces, const boolean bRemoveEndSpaces)
+{
+	const char* l_pString1_start=rString1.toASCIIString();
+	const char* l_pString1_end=l_pString1_start+::strlen(l_pString1_start)-1;
+
+	const char* l_pString2_start=rString2.toASCIIString();
+	const char* l_pString2_end=l_pString2_start+::strlen(l_pString2_start)-1;
+
+	if(bRemoveStartSpaces)
+	{
+		while(*l_pString1_start==' ') l_pString1_start++;
+		while(*l_pString2_start==' ') l_pString2_start++;
+	}
+
+	if(bRemoveEndSpaces)
+	{
+		while(l_pString1_start<l_pString1_end && *l_pString1_end==' ') l_pString1_end--;
+		while(l_pString2_start<l_pString2_end && *l_pString2_end==' ') l_pString2_end--;
+	}
+
+	std::string l_sString1(l_pString1_start, l_pString1_end-l_pString1_start+1);
+	std::string l_sString2(l_pString2_start, l_pString2_end-l_pString2_start+1);
+
+	if(!bCaseSensitive)
+	{
+		std::transform(l_sString1.begin(), l_sString1.end(), l_sString1.begin(), to_lower<std::string::value_type>);
+		std::transform(l_sString2.begin(), l_sString2.end(), l_sString2.begin(), to_lower<std::string::value_type>);
+	}
+
+	return l_sString1==l_sString2;
 }
