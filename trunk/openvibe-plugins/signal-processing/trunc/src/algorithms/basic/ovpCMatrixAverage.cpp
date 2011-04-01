@@ -48,7 +48,6 @@ boolean CMatrixAverage::process(void)
 	IMatrix* l_pInputMatrix=ip_pMatrix;
 	IMatrix* l_pOutputMatrix=op_pAveragedMatrix;
 
-	uint32 l_ui32InputMatrixElementCount=l_pInputMatrix->getBufferElementCount();
 	boolean l_bShouldPerformAverage=false;
 
 	if(this->isInputTriggerActive(OVP_Algorithm_MatrixAverage_InputTriggerId_Reset))
