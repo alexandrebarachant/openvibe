@@ -1,9 +1,14 @@
 #include "ovtkString.h"
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <cctype>
 
 #include <cstring>
 
