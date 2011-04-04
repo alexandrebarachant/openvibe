@@ -395,6 +395,7 @@ boolean CAlgorithmClassifierSVM::classify(const IFeatureVector& rFeatureVector, 
 	if(m_pModel->nr_class==0||m_pModel->rho==NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "the model wasn't load correctly\n";
+		return false;
 	}
 	//std::cout<<"create l_pX"<<std::endl;
 	svm_node* l_pX=new svm_node[rFeatureVector.getSize()+1];
