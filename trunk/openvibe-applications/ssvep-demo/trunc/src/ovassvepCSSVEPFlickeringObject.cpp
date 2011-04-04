@@ -9,7 +9,6 @@ CSSVEPFlickeringObject::CSSVEPFlickeringObject(Ogre::SceneNode* poObjectNode, Op
 	m_ui32DarkFrames( ui32DarkFrames ),
 	m_bVisible( true )
 {
-	std::cout << "lit " << ui32LitFrames << " dark " << ui32DarkFrames << "\n";
 }
 
 void CSSVEPFlickeringObject::setVisible( bool bVisibility )
