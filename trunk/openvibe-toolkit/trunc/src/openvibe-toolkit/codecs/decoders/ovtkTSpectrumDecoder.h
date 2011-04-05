@@ -35,7 +35,7 @@ namespace OpenViBEToolkit
 
 	public:
 		using T::initialize;
-		
+
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -75,8 +75,25 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TSpectrumDecoder : public TSpectrumDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > >
+	class TSpectrumDecoder : public TSpectrumDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > > 
 	{
+	private:
+		using TSpectrumDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > >::m_pBoxAlgorithm;
+	public:
+		using TSpectrumDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > >::uninitialize;
+
+		TSpectrumDecoder()
+		{
+		}
+		TSpectrumDecoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TSpectrumDecoder()
+		{
+			uninitialize();
+		}
 	};
 };
 

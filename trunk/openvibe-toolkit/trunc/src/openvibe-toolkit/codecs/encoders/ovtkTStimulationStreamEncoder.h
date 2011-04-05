@@ -75,6 +75,23 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TStimulationStreamEncoder : public TStimulationStreamEncoderLocal < TEncoder < T > >
 	{
+	private:
+		using TStimulationStreamEncoderLocal < TEncoder < T > >::m_pBoxAlgorithm;
+	public:
+		using TStimulationStreamEncoderLocal < TEncoder < T > >::uninitialize;
+
+		TStimulationStreamEncoder()
+		{
+		}
+		TStimulationStreamEncoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TStimulationStreamEncoder()
+		{
+			uninitialize();
+		}
 	};
 };
 

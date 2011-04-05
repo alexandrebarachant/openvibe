@@ -84,6 +84,23 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TStreamedMatrixEncoder : public TStreamedMatrixEncoderLocal < TEncoder < T > >
 	{
+	private:
+		using TStreamedMatrixEncoderLocal < TEncoder < T > >::m_pBoxAlgorithm;
+	public:
+		using TStreamedMatrixEncoderLocal < TEncoder < T > >::uninitialize;
+
+		TStreamedMatrixEncoder()
+		{
+		}
+		TStreamedMatrixEncoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TStreamedMatrixEncoder()
+		{
+			uninitialize();
+		}
 	};
 };
 

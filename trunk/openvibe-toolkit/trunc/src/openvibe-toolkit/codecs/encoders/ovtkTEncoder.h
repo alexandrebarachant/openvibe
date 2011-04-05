@@ -55,28 +55,28 @@ namespace OpenViBEToolkit
 		These public methods handle every aspect of the encoding process : 
 		- prepare the output memory buffer with a chunk
 		- encode (specific for each encoder)
-		- mark output as ready to be sent
+		- mark output as ready to be sent has to be done manually, for accurate timing.
 		*/
 
-		OpenViBE::boolean encodeHeader(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		OpenViBE::boolean encodeHeader(OpenViBE::uint32 ui32OutputIndex)
 		{
 			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
 			if(!this->encodeHeaderImpl()) return false;
-			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+			return true;
 		}
 
-		OpenViBE::boolean encodeBuffer(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		OpenViBE::boolean encodeBuffer(OpenViBE::uint32 ui32OutputIndex)
 		{
 			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
 			if(!this->encodeBufferImpl()) return false;
-			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+			return true;
 		}
 
-		OpenViBE::boolean encodeEnd(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+		OpenViBE::boolean encodeEnd(OpenViBE::uint32 ui32OutputIndex)
 		{
 			this->setOutputChunk(m_pBoxAlgorithm->getDynamicBoxContext().getOutputChunk(ui32OutputIndex));
 			if(!this->encodeEndImpl()) return false;
-			return m_pBoxAlgorithm->getDynamicBoxContext().markOutputAsReadyToSend(ui32OutputIndex, ui64StartTime, ui64EndTime);
+			return true;
 		}
 	};
 

@@ -88,6 +88,23 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TSignalEncoder : public TSignalEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >
 	{
+	private:
+		using TSignalEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >::m_pBoxAlgorithm;
+	public:
+		using TSignalEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >::uninitialize;
+
+		TSignalEncoder()
+		{
+		}
+		TSignalEncoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TSignalEncoder()
+		{
+			uninitialize();
+		}
 	};
 };
 

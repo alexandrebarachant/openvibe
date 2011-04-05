@@ -33,7 +33,7 @@ namespace OpenViBEToolkit
 
 	public:
 		using T::initialize;
-		
+
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -75,6 +75,23 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TChannelLocalisationDecoder : public TChannelLocalisationDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > >
 	{
+	private:
+		using TChannelLocalisationDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > >::m_pBoxAlgorithm;
+	public:
+		using TChannelLocalisationDecoderLocal < TStreamedMatrixDecoderLocal < TDecoder < T > > >::uninitialize;
+
+		TChannelLocalisationDecoder()
+		{
+		}
+		TChannelLocalisationDecoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TChannelLocalisationDecoder()
+		{
+			uninitialize();
+		}
 	};
 };
 

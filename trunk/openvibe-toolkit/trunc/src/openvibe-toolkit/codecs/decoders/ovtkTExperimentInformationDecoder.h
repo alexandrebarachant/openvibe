@@ -153,6 +153,23 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TExperimentInformationDecoder : public TExperimentInformationDecoderLocal < TDecoder < T > >
 	{
+	private:
+		using TExperimentInformationDecoderLocal < TDecoder < T > >::m_pBoxAlgorithm;
+	public:
+		using TExperimentInformationDecoderLocal < TDecoder < T > >::uninitialize;
+
+		TExperimentInformationDecoder()
+		{
+		}
+		TExperimentInformationDecoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TExperimentInformationDecoder()
+		{
+			uninitialize();
+		}
 	};
 };
 

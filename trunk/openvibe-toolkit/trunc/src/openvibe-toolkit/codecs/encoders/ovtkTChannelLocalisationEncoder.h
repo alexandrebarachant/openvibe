@@ -76,6 +76,23 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TChannelLocalisationEncoder : public TChannelLocalisationEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >
 	{
+	private:
+		using TChannelLocalisationEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >::m_pBoxAlgorithm;
+	public:
+		using TChannelLocalisationEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >::uninitialize;
+
+		TChannelLocalisationEncoder()
+		{
+		}
+		TChannelLocalisationEncoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TChannelLocalisationEncoder()
+		{
+			uninitialize();
+		}
 	};
 };
 

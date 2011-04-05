@@ -56,6 +56,23 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TFeatureVectorEncoder : public TFeatureVectorEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >
 	{
+	private:
+		using TFeatureVectorEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >::m_pBoxAlgorithm;
+	public:
+		using TFeatureVectorEncoderLocal < TStreamedMatrixEncoderLocal < TEncoder < T > > >::uninitialize;
+
+		TFeatureVectorEncoder()
+		{
+		}
+		TFeatureVectorEncoder(T& rBoxAlgorithm)
+		{
+			m_pBoxAlgorithm = NULL;
+			initialize(rBoxAlgorithm);
+		}
+		~TFeatureVectorEncoder()
+		{
+			uninitialize();
+		}
 	};
 };
 
