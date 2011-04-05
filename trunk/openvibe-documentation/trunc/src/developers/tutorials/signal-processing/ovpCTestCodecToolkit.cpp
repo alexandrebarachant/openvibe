@@ -103,7 +103,7 @@ boolean CTestCodecToolkit::process(void)
 
 			if(m_vDecoders[i]->isHeaderReceived())
 			{
-				m_vEncoders[i]->encodeHeader(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeHeader(i);
 			}
 			if(m_vDecoders[i]->isBufferReceived())
 			{
@@ -127,13 +127,14 @@ boolean CTestCodecToolkit::process(void)
 				}
 				else if(l_oInputType==OV_TypeId_Spectrum)
 				{
-					IMatrix* l_pMatrix = m_oSpectrumDecoder.getOutputMatrix();
-					this->getLogManager() << LogLevel_Info << "Spectrum buffer received ("<<l_pMatrix->getBufferElementCount()<<" elements in buffer).\n";
+					IMatrix* l_pMatrix = m_oSpectrumDecoder.getOutputMinMaxFrequencyBands();
+					this->getLogManager() << LogLevel_Info << "Spectrum min/MAX bands received ("<<l_pMatrix->getBufferElementCount()<<" elements in matrix).\n";
 				}
 				else if(l_oInputType==OV_TypeId_Signal)
 				{
 					IMatrix* l_pMatrix = m_oSignalDecoder.getOutputMatrix();
-					this->getLogManager() << LogLevel_Info << "Signal buffer received ("<<l_pMatrix->getBufferElementCount()<<" elements in buffer).\n";
+					uint64 l_uiSamplingFrequency = m_oSignalDecoder.getOutputSamplingRate();
+					this->getLogManager() << LogLevel_Info << "Signal buffer received ("<<l_pMatrix->getBufferElementCount()<<" elements in buffer) with sampling frequency "<<l_uiSamplingFrequency<<"Hz.\n";
 				}
 				else if(l_oInputType==OV_TypeId_Stimulations)
 				{
@@ -152,12 +153,13 @@ boolean CTestCodecToolkit::process(void)
 					this->getLogManager() << LogLevel_Error << "Undefined input type.\n";
 					return true;
 				}
-				m_vEncoders[i]->encodeBuffer(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeBuffer(i);
 			}
 			if(m_vDecoders[i]->isEndReceived())
 			{
-				m_vEncoders[i]->encodeEnd(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeEnd(i);
 			}
+			l_rDynamicBoxContext.markOutputAsReadyToSend(i,l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 		}
 	}
 

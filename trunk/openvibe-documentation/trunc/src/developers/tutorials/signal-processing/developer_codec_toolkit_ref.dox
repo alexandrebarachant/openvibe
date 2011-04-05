@@ -1,6 +1,11 @@
 /**
 \page Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref Codec Toolkit Reference
 This reference page is divided in the following sections :
+
+ - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Intro "Introduction"
+
+ The superclass :
+
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Codec "Codec"
  
 And its subclasses for the two subtypes of codec :
@@ -26,6 +31,14 @@ And their subclasses for each stream codec :
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Stimulations "Stimulations Encoder"
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ExperimentInformation "Experiment Information Encoder"
 
+\section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Intro Introduction
+All codecs share the same behaviour when it comes to construction and destruction. Be sure to always initialize a codec before use, and never leave an uninitialized codec at stop. Here is what you can expect when manipulating codec objects :
+ - <b>Default constructor</b> : the codec is declared, but not initialized.
+ - <b>TSpecificCodecClass(T& rBoxAlgorithm)</b> : the codec is declared and initialized.
+ - \b Destructor : uninitializes the codec
+ - <b>initialize(T& rBoxAlgorithm)</b> : manually initializes the codec. Does nothing if already initialized.
+ - \b uninitialize() : manually uninitializes the codec. Does nothing if already uninitialized.
+ 
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Codec Codec
 The TCodec < T > class implements the behavior common to all encoders and decoders.
 The template class T refers to the class of the box in which the codec will work.
@@ -41,7 +54,7 @@ OpenViBE::Kernel::IAlgorithmProxy* m_pCodec;
 \endcode
 
 \subsection Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Codec_Methods Public Methods
-- \b Initialize : sets a reference to the T instance and calls the \c initialize() method, specific to each codec.
+- \b Initialize : sets the reference to the T instance and calls the \c initialize() method, specific to each codec.
 \code
 OpenViBE::boolean initialize(T& rBoxAlgorithm)
 \endcode
@@ -83,11 +96,11 @@ OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > m_pOutputMemory
 \endcode 
 
 \subsection Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_Methods Public Methods
-- \b Encode : encode the input memory buffer. Basically, it just sets the output memory buffer, calls \c encodeXXX() and mark the output as ready to send. The \c encodeXXX() methods are specified by each encoder, with respect to their own triggers.
+- \b Encode : encode the input memory buffer. Basically, it just sets the output memory buffer, calls \c encodeXXX(). The \c encodeXXX() methods are specified by each encoder, with respect to their own triggers. The developer has to mark the output as ready to send manually afterward, in order to have accurate timing of the chunks.
 \code
-OpenViBE::boolean encodeHeader(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
-OpenViBE::boolean encodeBuffer(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
-OpenViBE::boolean encodeEnd(OpenViBE::uint32 ui32OutputIndex, OpenViBE::uint64 ui64StartTime, OpenViBE::uint64 ui64EndTime)
+OpenViBE::boolean encodeHeader(OpenViBE::uint32 ui32OutputIndex)
+OpenViBE::boolean encodeBuffer(OpenViBE::uint32 ui32OutputIndex)
+OpenViBE::boolean encodeEnd(OpenViBE::uint32 ui32OutputIndex)
 \endcode
 
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_StreamedMatrix Streamed Matrix Decoder

@@ -9,13 +9,13 @@
  * for input, output and triggers as you only have high level methods.
  <br />
  <p><div class="important"> 
- It is <b>highly</b> recommended to do the \ref Doc_Tutorial_Developer_SignalProcessing_IntroductionPage "Previous tutorials" before this one. <br />
+ It is recommended to do the \ref Doc_Tutorial_Developer_SignalProcessing_IntroductionPage "Previous tutorials" before this one. <br />
  Writing new plugins requires to know how the algorithm mechanism works, and the Codec Toolkit 
- masks a big part of this mechanism for the decoders and encoders algorithms.
+ masks a big part of this mechanism for the decoders and encoders algorithms. 
  </div></p>
  <br />
  
-Let's go on with a concrete use case : a simple box that reads any kind of inputs, extract some information from it, then outputs unmodified data. The code of this \ref BoxAlgorithm_CodecToolkitTestbox "Codec Toolkit testbox" is available on the SVN repository, under <i>openvibe-plugins/samples/trunc/src</i>. The box is available in the Designer in the category <i>Signal Processing/Samples</i>.
+Let's go on with a concrete use case : a simple box that reads any kind of inputs, extract some information from it, then outputs unmodified data. The code of this \ref BoxAlgorithm_CodecToolkitTestbox "Codec Toolkit testbox" is available on the SVN repository, under <i>openvibe-plugins/samples/trunc/src</i>. The box irself is available in the Designer in the category <i>Signal Processing/Samples</i>.
  
  * \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Header Box algorithm definition
  *
@@ -74,11 +74,21 @@ Let's go on with a concrete use case : a simple box that reads any kind of input
  * If a buffer is received, we check its content in order to print some information in the console.
  * Based on the input type, we know which decoder is involved. We can access its output(s) by calling the corresponding getOutputXXX methods (check the \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref "reference page" for a complete listing).
  \until isBuffer
- \until getInputChunkStartTime
+ \until m_vEncoders[i]->encodeBuffer(i);
  \until }
- * Finally, if a End is received we just pass it to the corresponding encoder.
+ * If a End is received we just pass it to the corresponding encoder.
  \until isEndReceived
  \until }
+ * Finally, we mark the output has ready to send, with correct chunk timing.
+ \until markOutputAsReadyToSend
+ *
+ * \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_ConsDestr About Constructors and Destructors
+ * You can manipulate encoders and decoders easily, as long as you \b initialize and \b uninitialize it on the way. The safe practice has been described in this tutorial, as presented in the \c CTestCodecToolkit class, and should always be followed. If not possible, here is what you can expect from the codec classes :
+ - <b>Default constructor</b> : the codec is declared, but not initialized
+ - <b>TUsefulCodec(T& rBoxAlgorithm)</b> : the codec is declared <u>and initialized</u>
+ - \b Destructor : uninitializes the codec
+ - <b>initialize(T& rBoxAlgorithm)</b> : manually initializes the codec. Does nothing if already initialized.
+ - \b uninitialize() : manually uninitializes the codec. Does nothing if already uninitialized.
  *
  * \section Doc_Tutorial_Developer_SignalProcessing_Conclusion Conclusion
  * The Codec Toolkit provides an easy and simple way to use the stream decoders and encoders in OpenViBE.

@@ -224,7 +224,6 @@ The principle is strictly the same, but instead of letters a grid of card is sho
 
 - \b p300-magic-card-1-acquisition.xml: 
 First step is to acquire some data in order to train the LDA classifier that will detect the P300 brainwaves. The default training session is made of 10 trials. Each time the user is instructed to focus on a particular card (instruction in blue). After 12 repetitions (each images is briefly shown and folded) we move on to the next card.
-Change the \ref Doc_BoxAlgorithm_LuaStimulator settings to configure the number of letter, the timings, etc.
 
 - \b p300-magic-card-2-train-classifier.xml: 
 This scenario trains a LDA classifier that try to discriminate the two classes : P300 or not. 
