@@ -11,6 +11,42 @@ using namespace OpenViBEToolkit;
 
 boolean CTestCodecToolkit::initialize(void)
 {
+	//TStreamedMatrixDecoder < CTestCodecToolkit > l_oStreamedMatrixDecoder(*this);
+	TStreamedMatrixDecoder < CTestCodecToolkit > * l_oStreamedMatrixDecoder = new TStreamedMatrixDecoder < CTestCodecToolkit >(*this);
+	delete l_oStreamedMatrixDecoder;
+	TStreamedMatrixEncoder < CTestCodecToolkit > * l_oStreamedMatrixEncoder = new TStreamedMatrixEncoder < CTestCodecToolkit >(*this);
+	delete l_oStreamedMatrixEncoder;
+
+	TChannelLocalisationDecoder < CTestCodecToolkit > * l_oChannelLocalisationDecoder = new TChannelLocalisationDecoder < CTestCodecToolkit >(*this);
+	delete l_oChannelLocalisationDecoder;
+	TChannelLocalisationEncoder < CTestCodecToolkit > * l_oChannelLocalisationEncoder = new TChannelLocalisationEncoder < CTestCodecToolkit >(*this);
+	delete l_oChannelLocalisationEncoder;
+
+	TFeatureVectorDecoder < CTestCodecToolkit > * l_oTFeatureVectorDecoder = new TFeatureVectorDecoder < CTestCodecToolkit >(*this);
+	delete l_oTFeatureVectorDecoder;
+	TFeatureVectorEncoder < CTestCodecToolkit > * l_oTFeatureVectorEncoder = new TFeatureVectorEncoder < CTestCodecToolkit >(*this);
+	delete l_oTFeatureVectorEncoder;
+
+	TSpectrumDecoder < CTestCodecToolkit > * l_oTSpectrumDecoder = new TSpectrumDecoder < CTestCodecToolkit >(*this);
+	delete l_oTSpectrumDecoder;
+	TSpectrumEncoder < CTestCodecToolkit > * l_oTSpectrumEncoder = new TSpectrumEncoder < CTestCodecToolkit >(*this);
+	delete l_oTSpectrumEncoder;
+
+	TSignalDecoder < CTestCodecToolkit > * l_oTSignalDecoder = new TSignalDecoder < CTestCodecToolkit >(*this);
+	delete l_oTSignalDecoder;
+	TSignalEncoder < CTestCodecToolkit > * l_oTSignalEncoder = new TSignalEncoder < CTestCodecToolkit >(*this);
+	delete l_oTSignalEncoder;
+
+	TStimulationStreamDecoder < CTestCodecToolkit > * l_oTStimulationStreamDecoder = new TStimulationStreamDecoder < CTestCodecToolkit >(*this);
+	delete l_oTStimulationStreamDecoder;
+	TStimulationStreamEncoder < CTestCodecToolkit > * l_oTStimulationStreamEncoder = new TStimulationStreamEncoder < CTestCodecToolkit >(*this);
+	delete l_oTStimulationStreamEncoder;
+
+	TExperimentInformationDecoder < CTestCodecToolkit > * l_oTExperimentInformationDecoder = new TExperimentInformationDecoder < CTestCodecToolkit >(*this);
+	delete l_oTExperimentInformationDecoder;
+	TExperimentInformationEncoder < CTestCodecToolkit > * l_oTExperimentInformationEncoder = new TExperimentInformationEncoder < CTestCodecToolkit >(*this);
+	delete l_oTExperimentInformationEncoder;
+
 	m_oStreamedMatrixDecoder.initialize(*this);
 	m_oStreamedMatrixEncoder.initialize(*this);
 	m_oStreamedMatrixEncoder.getInputMatrix().setReferenceTarget(m_oStreamedMatrixDecoder.getOutputMatrix());
@@ -103,7 +139,7 @@ boolean CTestCodecToolkit::process(void)
 
 			if(m_vDecoders[i]->isHeaderReceived())
 			{
-				m_vEncoders[i]->encodeHeader(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeHeader(i);
 			}
 			if(m_vDecoders[i]->isBufferReceived())
 			{
@@ -127,13 +163,14 @@ boolean CTestCodecToolkit::process(void)
 				}
 				else if(l_oInputType==OV_TypeId_Spectrum)
 				{
-					IMatrix* l_pMatrix = m_oSpectrumDecoder.getOutputMatrix();
-					this->getLogManager() << LogLevel_Info << "Spectrum buffer received ("<<l_pMatrix->getBufferElementCount()<<" elements in buffer).\n";
+					IMatrix* l_pMatrix = m_oSpectrumDecoder.getOutputMinMaxFrequencyBands();
+					this->getLogManager() << LogLevel_Info << "Spectrum min/MAX bands received ("<<l_pMatrix->getBufferElementCount()<<" elements in matrix).\n";
 				}
 				else if(l_oInputType==OV_TypeId_Signal)
 				{
 					IMatrix* l_pMatrix = m_oSignalDecoder.getOutputMatrix();
-					this->getLogManager() << LogLevel_Info << "Signal buffer received ("<<l_pMatrix->getBufferElementCount()<<" elements in buffer).\n";
+					uint64 l_uiSamplingFrequency = m_oSignalDecoder.getOutputSamplingRate();
+					this->getLogManager() << LogLevel_Info << "Signal buffer received ("<<l_pMatrix->getBufferElementCount()<<" elements in buffer) with sampling frequency "<<l_uiSamplingFrequency<<"Hz.\n";
 				}
 				else if(l_oInputType==OV_TypeId_Stimulations)
 				{
@@ -152,12 +189,13 @@ boolean CTestCodecToolkit::process(void)
 					this->getLogManager() << LogLevel_Error << "Undefined input type.\n";
 					return true;
 				}
-				m_vEncoders[i]->encodeBuffer(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeBuffer(i);
 			}
 			if(m_vDecoders[i]->isEndReceived())
 			{
-				m_vEncoders[i]->encodeEnd(i, l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
+				m_vEncoders[i]->encodeEnd(i);
 			}
+			l_rDynamicBoxContext.markOutputAsReadyToSend(i,l_rDynamicBoxContext.getInputChunkStartTime(i, j), l_rDynamicBoxContext.getInputChunkEndTime(i, j));
 		}
 	}
 
