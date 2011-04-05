@@ -76,6 +76,7 @@
  *   - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
  *   - \subpage Doc_Scenario_BCI_P300MagicCard
  *   - \subpage Doc_Scenario_InsermP300Speller
+ *   - \subpage Doc_Scenario_SSVEP
  *
  * \section Doc_DeveloperDocumentationSection Developer Documentation
  * - \subpage Doc_Install "Installation procedure"
@@ -149,6 +150,7 @@
  *   - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
  *   - \subpage Doc_Scenario_BCI_P300MagicCard
  *   - \subpage Doc_Scenario_InsermP300Speller
+ *   - \subpage Doc_Scenario_SSVEP
  */
 
 /** \page Doc_DeveloperDocumentation Developer Documentation
@@ -241,6 +243,7 @@
  * - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
  * - \subpage Doc_Scenario_BCI_P300MagicCard
  * - \subpage Doc_Scenario_InsermP300Speller
+ * - \subpage Doc_Scenario_SSVEP
  */
  
  /**
