@@ -49,7 +49,7 @@ boolean CAlgorithmClassifierSVM::initialize(void)
 	ip_f64CacheSize=100;
 	ip_f64EpsilonTolerance=0.001;
 	ip_bShrinking=true;
-	boolean ip_bProbabilityEstimate=true;
+	//boolean ip_bProbabilityEstimate=true;
 	*ip_sWeight="";
 	*ip_sWeightLabel="";
 
@@ -104,7 +104,7 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	}
 	m_oParam.nr_weight = l_vWeight.size();
 	double * l_pWeight=new double[l_vWeight.size()];
-	for(int i=0;i<l_vWeight.size();i++)
+	for(uint32 i=0;i<l_vWeight.size();i++)
 	{
 		l_pWeight[i]=l_vWeight[i];
 	}
@@ -126,7 +126,7 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	}
 
 	int * l_pWeightLabel=new int[l_vWeight.size()];
-	for(int i=0;i<l_vWeight.size();i++)
+	for(uint32 i=0;i<l_vWeight.size();i++)
 	{
 		l_pWeightLabel[i]=l_vWeightLabel[i];
 	}
