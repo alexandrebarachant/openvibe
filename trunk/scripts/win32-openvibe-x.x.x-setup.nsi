@@ -103,9 +103,13 @@ no_need_to_install_directx:
 	File ..\dependencies\arch\gtk-2.20.0-runtime.zip
 	File ..\dependencies\arch\gtk-themes-2009.09.07.zip
 	File ..\dependencies\arch\itpp-4.0.7-runtime.zip
-	File ..\dependencies\arch\ogre-1.7.1-vs90-runtime.zip
-	File ..\dependencies\arch\cegui-0.7.2-vs90-runtime.zip
+	File ..\dependencies\arch\ogre-1.7.1-vs100-runtime.zip
+	File ..\dependencies\arch\cegui-0.7.2-vs100-runtime.zip
 	File ..\dependencies\arch\vrpn-7.26-runtime.zip
+  File ..\dependencies\arch\openal-1.1-runtime.zip
+  File ..\dependencies\arch\freealut-1.1.0-bin-runtime.zip
+  File ..\dependencies\arch\libvorbis-1.3.2-vs100-runtime.zip
+  File ..\dependencies\arch\libogg-1.2.1-vs100-runtime.zip
 
 	SetOutPath "$INSTDIR\dependencies"
 	ExecWait '"arch\openvibe-vcredist-2005-sp1.exe" /q'
@@ -118,9 +122,13 @@ no_need_to_install_directx:
 	ZipDLL::extractall "arch\gtk-2.20.0-runtime.zip" "gtk"
 	ZipDLL::extractall "arch\gtk-themes-2009.09.07.zip" "gtk"
 	ZipDLL::extractall "arch\itpp-4.0.7-runtime.zip" "itpp"
-	ZipDLL::extractall "arch\ogre-1.7.1-vs90-runtime.zip" "ogre"
-	ZipDLL::extractall "arch\cegui-0.7.2-vs90-runtime.zip" "cegui"
+	ZipDLL::extractall "arch\ogre-1.7.1-vs100-runtime.zip" "ogre"
+	ZipDLL::extractall "arch\cegui-0.7.2-vs100-runtime.zip" "cegui"
 	ZipDLL::extractall "arch\vrpn-7.26-runtime.zip" "vrpn"
+  ZipDLL::extractall "arch\openal-1.1-runtime.zip" "openal"
+  ZipDLL::extractall "arch\freealut-1.1.0-bin-runtime.zip" "freealut"
+  ZipDLL::extractall "arch\libvorbis-1.3.2-vs100-runtime.zip" "libvorbis"
+  ZipDLL::extractall "arch\libogg-1.2.1-vs100-runtime.zip" "libogg"
 
 	SetOutPath "$INSTDIR"
 	File /nonfatal /r ..\dist\bin
@@ -154,6 +162,10 @@ no_need_to_patch_3d_functionnality:
 	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\dependencies\cegui$\r$\n"
 	FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\dependencies\vrpn$\r$\n"
 	FileWrite $0 "SET OV_DEP_LUA=$INSTDIR\dependencies\lua$\r$\n"
+	FileWrite $0 "SET OV_DEP_OPENAL=$INSTDIR\dependencies\openal$\r$\n"
+	FileWrite $0 "SET OV_DEP_FREEALUT=$INSTDIR\dependencies\freealut$\r$\n"
+	FileWrite $0 "SET OV_DEP_LIBVORBIS=$INSTDIR\dependencies\libvorbis$\r$\n"
+	FileWrite $0 "SET OV_DEP_LIBOGG=$INSTDIR\dependencies\libogg$\r$\n"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "SET OGRE_HOME=$INSTDIR\dependencies\ogre$\r$\n"
 	FileWrite $0 "SET VRPNROOT=$INSTDIR\dependencies\vrpn$\r$\n"
@@ -166,6 +178,10 @@ no_need_to_patch_3d_functionnality:
 	FileWrite $0 "SET PATH=%OV_DEP_CEGUI%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_VRPN%\bin;%PATH%$\r$\n"
+	FileWrite $0 "SET PATH=%OV_DEP_OPENAL%\libs\Win32;%PATH%$\r$\n"
+	FileWrite $0 "SET PATH=%OV_DEP_FREEALUT%\lib;%PATH%$\r$\n"
+	FileWrite $0 "SET PATH=%OV_DEP_LIBVORBIS%\win32\bin\release;%PATH%$\r$\n"
+	FileWrite $0 "SET PATH=%OV_DEP_LIBOGG%\win32\bin\release\;%PATH%$\r$\n"
 	FileClose $0
 	
 	FileOpen $0 "$INSTDIR\dependencies\cegui\resources.cfg" w
@@ -274,6 +290,31 @@ no_need_to_patch_3d_functionnality:
 	FileWrite $0 "$\"%OpenViBE_DistRoot%\bin\OpenViBE-vr-demo-dynamic.exe$\" handball"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "pause$\r$\n"
+	FileClose $0
+
+  FileOpen $0 "$INSTDIR\openvibe-ssvep-demo-training.cmd" w
+	FileWrite $0 "@echo off$\r$\n"
+	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "cd bin$\r$\n"
+	FileWrite $0 "start OpenViBE-ssvep-demo-dynamic.exe training$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileClose $0
+
+  FileOpen $0 "$INSTDIR\openvibe-ssvep-demo-shooter.cmd" w
+	FileWrite $0 "@echo off$\r$\n"
+	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileWrite $0 "cd bin$\r$\n"
+	FileWrite $0 "start OpenViBE-ssvep-demo-dynamic.exe shooter$\r$\n"
+	FileWrite $0 "$\r$\n"
+	FileClose $0
+
+  FileOpen $0 "$INSTDIR\bin\Openvibe-external-application-launcher.cmd" w
+	FileWrite $0 "@echo off$\r$\n"
+	FileWrite $0 "pushd ..$\r$\n"
+	FileWrite $0 "openvibe-%1.cmd %2 %3 %4 %5$\r$\n"
+	FileWrite $0 "$\r$\n"
 	FileClose $0
 
 	CreateDirectory "$SMPROGRAMS\OpenViBE"
