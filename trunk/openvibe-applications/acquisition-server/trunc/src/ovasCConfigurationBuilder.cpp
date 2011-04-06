@@ -211,10 +211,12 @@ boolean CConfigurationBuilder::preConfigure(void)
 	}
 
 	// Prepares channel name cache
-
-	for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+	if(m_pHeader->isChannelCountSet())
 	{
-		m_vChannelName[i]=m_pHeader->getChannelName(i);
+		for(uint32 i=0; i<m_pHeader->getChannelCount(); i++)
+		{
+			m_vChannelName[i]=m_pHeader->getChannelName(i);
+		}
 	}
 
 	return true;
