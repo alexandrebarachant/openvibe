@@ -54,6 +54,10 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBE::int32 m_i32ConnectionID;
 		OpenViBE::uint32 m_ui32ComPort;
+		OpenViBE::boolean m_bESenseChannels;
+		OpenViBE::boolean m_bBandPowerChannels;
+		OpenViBE::boolean m_bBlinkStimulations;
+		OpenViBE::boolean m_bBlinkStrenghtChannel;
 
 		OpenViBE::uint32 m_ui32WarningCount;
 	};

@@ -136,12 +136,16 @@ void CConfigurationNeuroskyMindset::buttonRefreshCB()
 */
 //_________________________________________________
 
-CConfigurationNeuroskyMindset::CConfigurationNeuroskyMindset(IDriverContext& rDriverContext, const char* sGtkBuilderFileName,OpenViBE::uint32& rComPort)
+CConfigurationNeuroskyMindset::CConfigurationNeuroskyMindset(IDriverContext& rDriverContext, const char* sGtkBuilderFileName,uint32& rComPort,boolean& rESenseChannels,boolean& rBandPowerChannels,boolean& rBlinkStimulations,boolean& rBlinkStrenghtChannel)
 	:CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rDriverContext(rDriverContext)
 	,m_rComPort(rComPort)
 	,m_bCheckSignalQuality(false)
 	,m_ui32CurrentConnectionId((uint32)-1)
+	,m_rESenseChannels(rESenseChannels)
+	,m_rBandPowerChannels(rBandPowerChannels)
+	,m_rBlinkStimulations(rBlinkStimulations)
+	,m_rBlinkStrenghtChannel(rBlinkStrenghtChannel)
 {
 }
 
@@ -152,9 +156,8 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 		return false;
 	}
 
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port"));
-
-	::GtkWidget * l_pWindowCheckSignalQuality=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog_check_signal_quality"));
+	
+	//::GtkWidget * l_pWindowCheckSignalQuality=GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog_check_signal_quality"));
 
 	/*
 	g_signal_connect(gtk_builder_get_object(m_pBuilderConfigureInterface, "button_check_signal_quality"),"pressed",G_CALLBACK(button_check_signal_quality_cb), this);
@@ -170,7 +173,8 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 	char l_sBuffer[1024];
 	int l_iCount=0;
 	boolean l_bSelected=false;
-	
+
+	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port"));
 	
 	/* Get a new connection ID handle to ThinkGear API */
 	int l_iConnectionId = TG_GetNewConnectionId();
@@ -195,7 +199,7 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 				{	
 					printf("OK\n");
 					sprintf(l_sBuffer, "COM%i", i);
-					::gtk_combo_box_append_text(l_pComboBox, l_sBuffer);
+					gtk_combo_box_append_text(l_pComboBox, l_sBuffer);
 					if(m_rComPort==i)
 					{
 						::gtk_combo_box_set_active(l_pComboBox, l_iCount);
@@ -233,15 +237,26 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 		::gtk_combo_box_set_active(l_pComboBox, 0);
 	}
 
+	::GtkToggleButton* l_pToggleESense        = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_esense"));
+	::GtkToggleButton* l_pTogglePower         = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_power"));
+	::GtkToggleButton* l_pToggleBlink         = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_blink"));
+	::GtkToggleButton* l_pToggleBlinkStrenght = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_blink_strenght"));
+
+	gtk_toggle_button_set_active(l_pToggleESense,m_rESenseChannels);
+	gtk_toggle_button_set_active(l_pTogglePower,m_rBandPowerChannels);
+	gtk_toggle_button_set_active(l_pToggleBlink,m_rBlinkStimulations);
+	gtk_toggle_button_set_active(l_pToggleBlinkStrenght,m_rBlinkStrenghtChannel);
+	
+
 	return true;
 }
 
 boolean CConfigurationNeuroskyMindset::postConfigure(void)
 {
-	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port"));
-
 	if(m_bApplyConfiguration)
 	{
+		::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port"));
+
 		int l_iComPort=0;
 		const char* l_sUSBIndex=::gtk_combo_box_get_active_text(l_pComboBox);
 		if(l_sUSBIndex)
@@ -251,6 +266,16 @@ boolean CConfigurationNeuroskyMindset::postConfigure(void)
 				m_rComPort=(uint32)l_iComPort;
 			}
 		}
+
+		::GtkToggleButton* l_pToggleESense        = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_esense"));
+		::GtkToggleButton* l_pTogglePower         = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_power"));
+		::GtkToggleButton* l_pToggleBlink         = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_blink"));
+		::GtkToggleButton* l_pToggleBlinkStrenght = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_blink_strenght"));
+
+		m_rESenseChannels = ::gtk_toggle_button_get_active(l_pToggleESense);
+		m_rBandPowerChannels = ::gtk_toggle_button_get_active(l_pTogglePower);
+		m_rBlinkStimulations = ::gtk_toggle_button_get_active(l_pToggleBlink);
+		m_rBlinkStrenghtChannel = ::gtk_toggle_button_get_active(l_pToggleBlinkStrenght);
 	}
 
 	if(! CConfigurationBuilder::postConfigure()) // normal header is filled, ressources are realesed

@@ -26,7 +26,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CConfigurationNeuroskyMindset(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName,OpenViBE::uint32& rComPort);
+		CConfigurationNeuroskyMindset(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName,OpenViBE::uint32& rComPort,OpenViBE::boolean& rESenseChannels,OpenViBE::boolean& rBandPowerChannels,OpenViBE::boolean& rBlinkStimulations,OpenViBE::boolean& rBlinkStrenghtChannel);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);
@@ -39,7 +39,12 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::IDriverContext& m_rDriverContext;
 		OpenViBE::int32 m_iDeviceCount;
 
+		// the parameters passed to the driver :
 		OpenViBE::uint32& m_rComPort;
+		OpenViBE::boolean& m_rESenseChannels;
+		OpenViBE::boolean& m_rBandPowerChannels;
+		OpenViBE::boolean& m_rBlinkStimulations;
+		OpenViBE::boolean& m_rBlinkStrenghtChannel;
 
 		//widgets
 		::GtkWidget* m_pComPortSpinButton;

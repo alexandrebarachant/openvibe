@@ -24,6 +24,44 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 	,m_pSample(NULL)
 	,m_ui32WarningCount(-1)
 {
+	m_oHeader.setSamplingFrequency(512); // raw signal sampling frequency, from the official documentation.
+	// CHANNEL COUNT
+	m_oHeader.setChannelCount(1); // one channel on the forhead
+	m_oHeader.setChannelName(0,"Electrode");
+
+	m_i32ConnectionID = -1;
+
+	m_ui32ComPort = OVAS_MINDSET_INVALID_COM_PORT;
+
+	m_bESenseChannels       = m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false);
+	m_bBandPowerChannels    = m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false);
+	m_bBlinkStimulations    = m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_Blink}", false);
+	m_bBlinkStrenghtChannel = m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false);
+}
+
+CDriverNeuroskyMindset::~CDriverNeuroskyMindset(void)
+{
+}
+
+const char* CDriverNeuroskyMindset::getName(void)
+{
+	return "NeuroSky MindSet (MindSet Dev. Kit 2.1+)";
+}
+
+//___________________________________________________________________//
+//                                                                   //
+
+boolean CDriverNeuroskyMindset::initialize(
+	const uint32 ui32SampleCountPerSentBlock,
+	IDriverCallback& rCallback)
+{
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "Mindset Driver: INIT called.\n";
+	if(m_rDriverContext.isConnected())
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Mindset Driver: Driver already initialized.\n";
+		return false;
+	}
+
 	/*
 	11 channels
 	-----
@@ -53,33 +91,32 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 	// so the driver sends these data at 512 Hz, changing value every seconds (we obtain a square signal)
 	// The Blink Strength can be viewed as spike signal, sampled at 512 Hz.
 	// The Blinks can be viewed as an OpenViBE stimulation OVTK_GDF_Eye_Blink
-	
-	// CHANNEL COUNT
+
 	m_oHeader.setChannelCount(1); // one channel on the forhead
-	
-	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
+	m_oHeader.setChannelName(0,"Electrode");
+
+	if(m_bESenseChannels)
 	{
 		m_oHeader.setChannelCount(m_oHeader.getChannelCount()+2);
 	}
-	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
+	if(m_bBandPowerChannels)
 	{
 		m_oHeader.setChannelCount(m_oHeader.getChannelCount()+8);
 	}
-	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false))
+	if(m_bBlinkStrenghtChannel)
 	{
 		m_oHeader.setChannelCount(m_oHeader.getChannelCount()+1);
 	}
 
 	// NAMES
-	uint32 l_ui32ChannelIndex = 0;
-	m_oHeader.setChannelName(l_ui32ChannelIndex++,"Electrode");
-
-	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
+	uint32 l_ui32ChannelIndex = 1;
+	
+	if(m_bESenseChannels)
 	{
 		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Attention");
 		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Meditation");
 	}
-	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
+	if(m_bBandPowerChannels)
 	{
 		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Delta");
 		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Theta");
@@ -91,41 +128,11 @@ CDriverNeuroskyMindset::CDriverNeuroskyMindset(IDriverContext& rDriverContext)
 		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Mid Gamma");
 	}
 	// spikes for blink strength
-	if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false))
+	if(m_bBlinkStrenghtChannel)
 	{
 		m_oHeader.setChannelName(l_ui32ChannelIndex++,"Blink Strength");
 	}
-
-	m_oHeader.setSamplingFrequency(512); // raw signal sampling frequency, from the official documentation.
-
-	m_i32ConnectionID = -1;
-
-	m_ui32ComPort = OVAS_MINDSET_INVALID_COM_PORT;
-}
-
-CDriverNeuroskyMindset::~CDriverNeuroskyMindset(void)
-{
-}
-
-const char* CDriverNeuroskyMindset::getName(void)
-{
-	return "NeuroSky MindSet (MindSet Dev. Kit 2.1+)";
-}
-
-//___________________________________________________________________//
-//                                                                   //
-
-boolean CDriverNeuroskyMindset::initialize(
-	const uint32 ui32SampleCountPerSentBlock,
-	IDriverCallback& rCallback)
-{
-	m_rDriverContext.getLogManager() << LogLevel_Trace << "Mindset Driver: INIT called.\n";
-	if(m_rDriverContext.isConnected())
-	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Mindset Driver: Driver already initialized.\n";
-		return false;
-	}
-
+	
 	if(!m_oHeader.isChannelCountSet()
 	 ||!m_oHeader.isSamplingFrequencySet())
 	{
@@ -253,8 +260,7 @@ boolean CDriverNeuroskyMindset::start(void)
 		return false;
 	}
 
-	if(   m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false)
-	   ||(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_Blink}", false)))
+	if(m_bBlinkStimulations || m_bBlinkStrenghtChannel)
 	{
 		TG_EnableBlinkDetection(m_i32ConnectionID, 1);
 	}
@@ -326,7 +332,7 @@ boolean CDriverNeuroskyMindset::loop(void)
 
 				float32 l_f32Value;
 				uint32 l_ui32ChannelIndex = 1;
-				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_ESenseValues}", false))
+				if(m_bESenseChannels)
 				{
 					// we don't check if the value has changed, we construct a square signal (1Hz --> 512Hz)
 
@@ -338,7 +344,7 @@ boolean CDriverNeuroskyMindset::loop(void)
 					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 					l_ui32ChannelIndex++;
 				}
-				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_PowerBands}", false))
+				if(m_bBandPowerChannels)
 				{
 					l_f32Value = (float32) TG_GetValue(m_i32ConnectionID, TG_DATA_DELTA);
 					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
@@ -375,7 +381,7 @@ boolean CDriverNeuroskyMindset::loop(void)
 
 				boolean l_bBlinkDetected = false;
 				// We construct a "blink" spike signal if requested.
-				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_BlinkStrength}", false))
+				if(m_bBlinkStrenghtChannel)
 				{
 					if(TG_GetValueStatus(m_i32ConnectionID,TG_DATA_BLINK_STRENGTH) != 0)
 					{
@@ -389,7 +395,7 @@ boolean CDriverNeuroskyMindset::loop(void)
 					m_pSample[l_ui32ChannelIndex * m_ui32SampleCountPerSentBlock + l_ui32ReceivedSamples-1] = l_f32Value;
 				}
 				// We send a "blink" stimulation if requested.
-				if(m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_NeuroskyMindset_Blink}", false))
+				if(m_bBlinkStimulations)
 				{
 					if(TG_GetValueStatus(m_i32ConnectionID,TG_DATA_BLINK_STRENGTH) != 0 || l_bBlinkDetected)
 					{
@@ -463,7 +469,12 @@ boolean CDriverNeuroskyMindset::isConfigurable(void)
 
 boolean CDriverNeuroskyMindset::configure(void)
 {
-	CConfigurationNeuroskyMindset m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Neurosky-Mindset.ui",m_ui32ComPort);
+	CConfigurationNeuroskyMindset m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Neurosky-Mindset.ui"
+		,m_ui32ComPort
+		,m_bESenseChannels
+		,m_bBandPowerChannels
+		,m_bBlinkStimulations
+		,m_bBlinkStrenghtChannel);
 
 	if(!m_oConfiguration.configure(m_oHeader)) // the basic configure will use the basic header
 	{
