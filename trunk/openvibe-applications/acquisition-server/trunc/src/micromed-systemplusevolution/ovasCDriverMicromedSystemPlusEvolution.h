@@ -9,6 +9,7 @@
 #include <iostream>
 #include <socket/IConnectionClient.h>
 #include <socket/IConnectionServer.h>
+#include <list>
 
 namespace OpenViBEAcquisitionServer
 {
@@ -45,6 +46,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32ServerHostPort;
 		Socket::IConnection* m_pConnection;
 		short MyReceive(char* buf, long dataLen);
+		OpenViBE::boolean receiveAllHeader(void);
+		OpenViBE::boolean loadNextHeader(void);
 
 	protected:
 
@@ -64,6 +67,17 @@ namespace OpenViBEAcquisitionServer
 		char* m_pStructHeader;
 		char* m_pStructHeaderInfo;
 		unsigned short int *m_pStructBuffData;
+		unsigned char *m_pStructBuffNote;
+		unsigned char* m_pStructBuffTrigger;
+		OpenViBE::uint64 m_ui64PosFirstSampleOfCurrentBlock;
+		OpenViBE::CStimulationSet m_oStimulationSet;
+
+		OpenViBE::uint32 m_ui32nbSamplesBlock;
+		OpenViBE::uint32 m_ui32DataSizeInByte;
+		OpenViBE::uint32 m_ui32BuffSize;
+
+		std::list<char*> m_lHeader;
+		std::list<char> m_lTempBuff;
 	};
 };
 
