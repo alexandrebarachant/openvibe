@@ -4,10 +4,10 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32"  $ENV{OpenViBE_dependencies})
-	IF(PATH_ThinkGearAPI)
+	FIND_PATH(PATH_ThinkGearAPIOld thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32"  $ENV{OpenViBE_dependencies})
+	IF(PATH_ThinkGearAPIOld)
 		MESSAGE(STATUS "  Found a ThinkGear API, but the version seems inferior to 2.1.")
-	ENDIF(PATH_ThinkGearAPI)
+	ENDIF(PATH_ThinkGearAPIOld)
 	
 	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32" "C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32" $ENV{OpenViBE_dependencies})
 	IF(PATH_ThinkGearAPI)
