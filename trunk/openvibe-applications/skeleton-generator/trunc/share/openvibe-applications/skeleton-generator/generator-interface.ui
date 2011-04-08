@@ -1592,10 +1592,11 @@ a name, a type and a default value for each setting&lt;/big&gt;</property>
                 <child>
                   <object class="GtkLabel" id="label30">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">&lt;big&gt;Select the algorithm(s) you want to use in the box.
+                    <property name="label" translatable="yes">&lt;big&gt;Select the stream decoder(s) and encoder(s) you want to use in the box.
 The skeleton generator will handle the initialisation and 
 destruction of these algorithms.
-The connection between algorithm has to be done manually.
+The connection between algorithm (reference targets) 
+has to be done manually.
 &lt;/big&gt;</property>
                     <property name="use_markup">True</property>
                     <property name="justify">center</property>
@@ -1729,7 +1730,7 @@ The connection between algorithm has to be done manually.
             <child type="tab">
               <object class="GtkLabel" id="label29">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Algorithms</property>
+                <property name="label" translatable="yes">Codec Algorithms</property>
               </object>
               <packing>
                 <property name="position">4</property>

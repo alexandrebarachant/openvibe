@@ -211,14 +211,14 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	{
 		if(string((const char *)(m_vInputs[i]._name)) == "" || string((const char *)(m_vInputs[i]._type)) == "")
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Warning << "--~~ Input "<<i<<": [" << (const char *)m_vInputs[i]._name<<"],["<< (const char *)m_vInputs[i]._type << "] INVALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "  -- Input "<<i<<": [" << (const char *)m_vInputs[i]._name<<"],["<< (const char *)m_vInputs[i]._type << "] INVALID.\n";
 			l_ssTextBuffer << ">>[FAILED] Invalid input "<<i<<". Please provide a name and a type for each input.\n";
 			l_bSuccess = false;
 		}
 		else
 		{
 			m_vInputs[i]._name = ensureSedCompliancy(m_vInputs[i]._name);
-			m_rKernelContext.getLogManager() << LogLevel_Info << "--~~ Input "<<i<<": [" << (const char *)m_vInputs[i]._name<<"],["<< (const char *)m_vInputs[i]._type << "] VALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << "  -- Input "<<i<<": [" << (const char *)m_vInputs[i]._name<<"],["<< (const char *)m_vInputs[i]._type << "] VALID.\n";
 			l_ssTextBuffer << ">>[   OK   ] Valid input "<<i<<" [" << (const char *)m_vInputs[i]._name<<"]\n";
 		}
 	}
@@ -238,14 +238,14 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	{
 		if(string((const char *)(m_vOutputs[i]._name)) == "" || string((const char *)(m_vOutputs[i]._type)) == "")
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Warning << "--~~ Output "<<i<<": [" << (const char *)m_vOutputs[i]._name<<"],["<< (const char *)m_vOutputs[i]._type << "] INVALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "  -- Output "<<i<<": [" << (const char *)m_vOutputs[i]._name<<"],["<< (const char *)m_vOutputs[i]._type << "] INVALID.\n";
 			l_ssTextBuffer << ">>[FAILED] Invalid output "<<i<<". Please provide a name and a type for each output.\n";
 			l_bSuccess = false;
 		}
 		else
 		{
 			m_vOutputs[i]._name = ensureSedCompliancy(m_vOutputs[i]._name);
-			m_rKernelContext.getLogManager() << LogLevel_Info << "--~~ Output "<<i<<": [" << (const char *)m_vOutputs[i]._name<<"],["<< (const char *)m_vOutputs[i]._type << "] VALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << "  -- Output "<<i<<": [" << (const char *)m_vOutputs[i]._name<<"],["<< (const char *)m_vOutputs[i]._type << "] VALID.\n";
 			l_ssTextBuffer << ">>[   OK   ] Valid output "<<i<<" [" << (const char *)m_vOutputs[i]._name<<"]\n";
 		}
 	}
@@ -265,14 +265,14 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	{
 		if(string((const char *)(m_vSettings[i]._name)) == "" || string((const char *)(m_vSettings[i]._type)) == "")
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Warning << "--~~ Setting "<<i<<": [" << (const char *)m_vSettings[i]._name<<"],["<< (const char *)m_vSettings[i]._type << "] INVALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "  -- Setting "<<i<<": [" << (const char *)m_vSettings[i]._name<<"],["<< (const char *)m_vSettings[i]._type << "] INVALID.\n";
 			l_ssTextBuffer << ">>[FAILED] Invalid setting "<<i<<". Please provide a name, a type and a default value for each setting.\n";
 			l_bSuccess = false;
 		}
 		else
 		{
 			m_vSettings[i]._name = ensureSedCompliancy(m_vSettings[i]._name);
-			m_rKernelContext.getLogManager() << LogLevel_Info << "--~~ Setting "<<i<<": [" << (const char *)m_vSettings[i]._name<<"],["<< (const char *)m_vSettings[i]._type <<"],["<< (const char *)m_vSettings[i]._defaultValue << "] VALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << "  -- Setting "<<i<<": [" << (const char *)m_vSettings[i]._name<<"],["<< (const char *)m_vSettings[i]._type <<"],["<< (const char *)m_vSettings[i]._defaultValue << "] VALID.\n";
 			l_ssTextBuffer << ">>[   OK   ] Valid setting "<<i<<" [" << (const char *)m_vSettings[i]._name<<"]\n";
 		}
 	}
@@ -292,13 +292,13 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB()
 	{
 		if(string((const char *)m_vAlgorithms[i]) == "")
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Warning << "--~~ Algorithm "<<i<<": [" << (const char *)m_vAlgorithms[i]<<"] INVALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Warning << "  -- Algorithm "<<i<<": [" << (const char *)m_vAlgorithms[i]<<"] INVALID.\n";
 			l_ssTextBuffer << ">>[FAILED] Invalid algorithm "<<i<<".\n";
 			l_bSuccess = false;
 		}
 		else
 		{
-			m_rKernelContext.getLogManager() << LogLevel_Info << "--~~ Algorithm "<<i<<": [" << (const char *)m_vAlgorithms[i]<<"] VALID.\n";
+			m_rKernelContext.getLogManager() << LogLevel_Info << "  -- Algorithm "<<i<<": [" << (const char *)m_vAlgorithms[i]<<"] VALID.\n";
 			l_ssTextBuffer << ">>[   OK   ] Valid algorithm "<<i<<" [" << (const char *)m_vAlgorithms[i]<<"]\n";
 		}
 	}
@@ -818,7 +818,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonTooltipCB(::GtkButton* pButton)
 	else if(l_eWidgetName == WidgetName_Algorithm)
 	{
 		gtk_text_buffer_set_text (l_pTextBuffer,
-			"Algorithms: \nChoose the algorithm(s) used by the box. \nYou can choose between all the algorithms currently registered in the OpenViBE kernel.\nWhen choosing an algorithm, the dialog window will display the algorithm description (Inputs, outputs, triggers). \n------\nExample:Signal Decoder, that outputs a StreamMatrix from an EBML Stream.\n\n"
+			"Algorithms: \nChoose the algorithm(s) used by the box. \nYou can choose between all the algorithms currently registered in the OpenViBE kernel.\nWhen choosing an algorithm, the dialog window will display the algorithm description (Inputs, outputs, triggers). \n------\nExample: Signal Decoder, that outputs a Streamed Matrix and a Sampling Frequency value from an EBML Stream.\n\n"
 			, -1);
 	}
 	else
