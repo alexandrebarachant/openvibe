@@ -1,5 +1,5 @@
-#ifndef __OpenViBEToolkit_TStimulationStreamEncoder_H__
-#define __OpenViBEToolkit_TStimulationStreamEncoder_H__
+#ifndef __OpenViBEToolkit_TStimulationEncoder_H__
+#define __OpenViBEToolkit_TStimulationEncoder_H__
 
 #ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
@@ -10,7 +10,7 @@
 namespace OpenViBEToolkit
 {
 	template <class T>
-	class TStimulationStreamEncoderLocal : public T
+	class TStimulationEncoderLocal : public T
 	{
 		
 	protected:
@@ -73,22 +73,22 @@ namespace OpenViBEToolkit
 	};
 
 	template <class T>
-	class TStimulationStreamEncoder : public TStimulationStreamEncoderLocal < TEncoder < T > >
+	class TStimulationEncoder : public TStimulationEncoderLocal < TEncoder < T > >
 	{
 	private:
-		using TStimulationStreamEncoderLocal < TEncoder < T > >::m_pBoxAlgorithm;
+		using TStimulationEncoderLocal < TEncoder < T > >::m_pBoxAlgorithm;
 	public:
-		using TStimulationStreamEncoderLocal < TEncoder < T > >::uninitialize;
+		using TStimulationEncoderLocal < TEncoder < T > >::uninitialize;
 
-		TStimulationStreamEncoder()
+		TStimulationEncoder()
 		{
 		}
-		TStimulationStreamEncoder(T& rBoxAlgorithm)
+		TStimulationEncoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
 			initialize(rBoxAlgorithm);
 		}
-		~TStimulationStreamEncoder()
+		~TStimulationEncoder()
 		{
 			uninitialize();
 		}
@@ -97,4 +97,4 @@ namespace OpenViBEToolkit
 
 #endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
 
-#endif //__OpenViBEToolkit_TStimulationStreamEncoder_H__
+#endif //__OpenViBEToolkit_TStimulationEncoder_H__

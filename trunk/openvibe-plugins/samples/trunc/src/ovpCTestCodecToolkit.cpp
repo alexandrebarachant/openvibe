@@ -37,10 +37,10 @@ boolean CTestCodecToolkit::initialize(void)
 	TSignalEncoder < CTestCodecToolkit > * l_oTSignalEncoder = new TSignalEncoder < CTestCodecToolkit >(*this);
 	delete l_oTSignalEncoder;
 
-	TStimulationStreamDecoder < CTestCodecToolkit > * l_oTStimulationStreamDecoder = new TStimulationStreamDecoder < CTestCodecToolkit >(*this);
-	delete l_oTStimulationStreamDecoder;
-	TStimulationStreamEncoder < CTestCodecToolkit > * l_oTStimulationStreamEncoder = new TStimulationStreamEncoder < CTestCodecToolkit >(*this);
-	delete l_oTStimulationStreamEncoder;
+	TStimulationDecoder < CTestCodecToolkit > * l_oTStimulationDecoder = new TStimulationDecoder < CTestCodecToolkit >(*this);
+	delete l_oTStimulationDecoder;
+	TStimulationEncoder < CTestCodecToolkit > * l_oTStimulationEncoder = new TStimulationEncoder < CTestCodecToolkit >(*this);
+	delete l_oTStimulationEncoder;
 
 	TExperimentInformationDecoder < CTestCodecToolkit > * l_oTExperimentInformationDecoder = new TExperimentInformationDecoder < CTestCodecToolkit >(*this);
 	delete l_oTExperimentInformationDecoder;

@@ -44,8 +44,8 @@ namespace OpenViBEPlugins
 			OpenViBEToolkit::TSignalDecoder < CTestCodecToolkit > m_oSignalDecoder;
 			OpenViBEToolkit::TSignalEncoder < CTestCodecToolkit > m_oSignalEncoder;
 
-			OpenViBEToolkit::TStimulationStreamDecoder < CTestCodecToolkit > m_oStimDecoder;
-			OpenViBEToolkit::TStimulationStreamEncoder < CTestCodecToolkit > m_oStimEncoder;
+			OpenViBEToolkit::TStimulationDecoder < CTestCodecToolkit > m_oStimDecoder;
+			OpenViBEToolkit::TStimulationEncoder < CTestCodecToolkit > m_oStimEncoder;
 
 			OpenViBEToolkit::TExperimentInformationDecoder < CTestCodecToolkit > m_oExperimentInformationDecoder;
 			OpenViBEToolkit::TExperimentInformationEncoder < CTestCodecToolkit > m_oExperimentInformationEncoder;
