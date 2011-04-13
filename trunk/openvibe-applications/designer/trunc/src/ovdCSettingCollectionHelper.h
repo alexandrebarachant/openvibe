@@ -40,7 +40,7 @@ namespace OpenViBEDesigner
 		void setValueEnumeration(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 		void setValueBitMask(const OpenViBE::CIdentifier& rTypeIdentifier, ::GtkWidget* pWidget, const OpenViBE::CString& rValue);
 
-	protected:
+	public:
 
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::CString m_sGUIFilename;

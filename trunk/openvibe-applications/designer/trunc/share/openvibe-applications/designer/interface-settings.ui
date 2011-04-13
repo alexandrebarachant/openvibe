@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
@@ -99,7 +99,7 @@
               <object class="GtkEntry" id="settings_collection-entry_setting_integer_string">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="position">0</property>
@@ -155,7 +155,7 @@
               <object class="GtkEntry" id="settings_collection-entry_setting_float_string">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="position">0</property>
@@ -224,7 +224,7 @@
               <object class="GtkEntry" id="settings_collection-entry_setting_boolean">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -361,7 +361,7 @@
               <object class="GtkEntry" id="settings_collection-entry_setting_script_string">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
+                <property name="invisible_char">&#x25CF;</property>
               </object>
               <packing>
                 <property name="position">0</property>
@@ -438,7 +438,9 @@
   </object>
   <object class="GtkDialog" id="setting_editor-color_gradient-dialog">
     <property name="border_width">5</property>
-    <property name="type_hint">normal</property>
+    <property name="title" translatable="yes">Color Gradient Editor...</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox22">
         <property name="visible">True</property>
@@ -484,7 +486,7 @@
                                   <object class="GtkSpinButton" id="setting_editor-color_gradient-spinbutton">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                     <property name="adjustment">adjustment3</property>
                                   </object>
                                   <packing>

@@ -70,7 +70,7 @@ namespace
 
 	static void on_button_setting_integer_pressed(::GtkButton* pButton, gpointer pUserData, gint iOffset)
 	{
-		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+		const IKernelContext& l_rKernelContext=static_cast < CSettingCollectionHelper* >(pUserData)->m_rKernelContext;
 
 		vector< ::GtkWidget* > l_vWidget;
 		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
@@ -95,7 +95,7 @@ namespace
 
 	static void on_button_setting_float_pressed(::GtkButton* pButton, gpointer pUserData, gdouble dOffset)
 	{
-		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+		const IKernelContext& l_rKernelContext=static_cast < CSettingCollectionHelper* >(pUserData)->m_rKernelContext;
 
 		vector< ::GtkWidget* > l_vWidget;
 		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
@@ -120,7 +120,7 @@ namespace
 
 	static void on_button_setting_filename_browse_pressed(::GtkButton* pButton, gpointer pUserData)
 	{
-		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+		const IKernelContext& l_rKernelContext=static_cast < CSettingCollectionHelper* >(pUserData)->m_rKernelContext;
 
 		vector< ::GtkWidget* > l_vWidget;
 		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
@@ -166,7 +166,7 @@ namespace
 
 	static void on_button_setting_script_edit_pressed(::GtkButton* pButton, gpointer pUserData)
 	{
-		IKernelContext& l_rKernelContext= * static_cast < IKernelContext* >(pUserData);
+		const IKernelContext& l_rKernelContext=static_cast < CSettingCollectionHelper* >(pUserData)->m_rKernelContext;
 
 		vector< ::GtkWidget* > l_vWidget;
 		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
@@ -397,7 +397,7 @@ namespace
 	{
 		SColorGradientData l_oUserData;
 
-		l_oUserData.sGUIFilename=static_cast<char*>(pUserData);
+		l_oUserData.sGUIFilename=static_cast < CSettingCollectionHelper* >(pUserData)->m_sGUIFilename.toASCIIString();
 
 		vector< ::GtkWidget* > l_vWidget;
 		gtk_container_foreach(GTK_CONTAINER(gtk_widget_get_parent(GTK_WIDGET(pButton))), collect_widget_cb, &l_vWidget);
@@ -409,7 +409,7 @@ namespace
 
 		l_oUserData.pDialog=GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "setting_editor-color_gradient-dialog"));
 
-		CString l_sInitialGradient=gtk_entry_get_text(l_pWidget);
+		CString l_sInitialGradient=static_cast < CSettingCollectionHelper* >(pUserData)->m_rKernelContext.getConfigurationManager().expand(gtk_entry_get_text(l_pWidget));
 		CMatrix l_oInitialGradient;
 
 		OpenViBEToolkit::Tools::ColorGradient::parse(l_oInitialGradient, l_sInitialGradient);
@@ -647,8 +647,8 @@ void CSettingCollectionHelper::setValueBoolean(::GtkWidget* pWidget, const CStri
 
 	gtk_entry_set_text(l_pEntryWidget, rValue);
 
-	g_signal_connect(G_OBJECT(l_vWidget[0]), "toggled", G_CALLBACK(on_checkbutton_setting_boolean_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "changed", G_CALLBACK(on_entry_setting_boolean_edited), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[0]), "toggled", G_CALLBACK(on_checkbutton_setting_boolean_pressed), this);
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "changed", G_CALLBACK(on_entry_setting_boolean_edited), this);
 }
 
 void CSettingCollectionHelper::setValueInteger(::GtkWidget* pWidget, const CString& rValue)
@@ -657,8 +657,8 @@ void CSettingCollectionHelper::setValueInteger(::GtkWidget* pWidget, const CStri
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_integer_up_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
-	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_integer_down_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_integer_up_pressed), this);
+	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_integer_down_pressed), this);
 
 	gtk_entry_set_text(l_pWidget, rValue);
 }
@@ -669,8 +669,8 @@ void CSettingCollectionHelper::setValueFloat(::GtkWidget* pWidget, const CString
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_float_up_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
-	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_float_down_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_float_up_pressed), this);
+	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_float_down_pressed), this);
 
 	gtk_entry_set_text(l_pWidget, rValue);
 }
@@ -687,7 +687,7 @@ void CSettingCollectionHelper::setValueFilename(::GtkWidget* pWidget, const CStr
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), this);
 
 	gtk_entry_set_text(l_pWidget, rValue);
 }
@@ -698,8 +698,8 @@ void CSettingCollectionHelper::setValueScript(::GtkWidget* pWidget, const CStrin
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_script_edit_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
-	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_script_edit_pressed), this);
+	g_signal_connect(G_OBJECT(l_vWidget[2]), "clicked", G_CALLBACK(on_button_setting_filename_browse_pressed), this);
 
 	gtk_entry_set_text(l_pWidget, rValue);
 }
@@ -710,10 +710,10 @@ void CSettingCollectionHelper::setValueColor(::GtkWidget* pWidget, const CString
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "color-set", G_CALLBACK(on_button_setting_color_choose_pressed), const_cast < IKernelContext* > (&m_rKernelContext));
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "color-set", G_CALLBACK(on_button_setting_color_choose_pressed), this);
 
 	int r=0, g=0, b=0;
-	sscanf(rValue.toASCIIString(), "%i,%i,%i", &r, &g, &b);
+	::sscanf(m_rKernelContext.getConfigurationManager().expand(rValue).toASCIIString(), "%i,%i,%i", &r, &g, &b);
 
 	::GdkColor l_oColor;
 	l_oColor.red  =(r*65535)/100;
@@ -730,7 +730,7 @@ void CSettingCollectionHelper::setValueColorGradient(::GtkWidget* pWidget, const
 	gtk_container_foreach(GTK_CONTAINER(pWidget), collect_widget_cb, &l_vWidget);
 	::GtkEntry* l_pWidget=GTK_ENTRY(l_vWidget[0]);
 
-	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_color_gradient_configure_pressed), const_cast<char*>(m_sGUIFilename.toASCIIString()));
+	g_signal_connect(G_OBJECT(l_vWidget[1]), "clicked", G_CALLBACK(on_button_setting_color_gradient_configure_pressed), this);
 
 	gtk_entry_set_text(l_pWidget, rValue);
 }
