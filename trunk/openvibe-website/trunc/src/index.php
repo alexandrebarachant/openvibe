@@ -254,7 +254,13 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>If you want to see more <i>Made With OpenViBE</i> applications, visit the <a href="?q=made-with">Made With...</a> section</p>
 
 		<h1>News</h1>
-		
+
+		<h2>A patch for windows installer (0.10.1) is available<br><span style="font-size:x-small">2011/13/04</span></h2>
+
+		<p>A small glitch during the creation of the installer made Brain Products First-Amp and V-Amp unavailable. The issue is now fixed.</p>
+
+		<p>You can download the new installer at our usual <a href="http://openvibe.inria.fr/?q=download">download page</a>. Source releases are unaffected.</p>
+			
 		<h2>New release of OpenViBE 0.10.0 is now available<br><span style="font-size:x-small">2011/12/04</span></h2>
 
 		<p>The OpenViBE development team is happy to announce the release of *OpenViBE* 0.10.0 "Easter edition", available for download at the <a href="http://openvibe.inria.fr/?q=download">download page</a> 
@@ -917,7 +923,7 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Windows (32 bits)</h2>
 
 		<script language=javascript type='text/javascript'>
-			precompiled("OpenViBE 0.10.0", "pub/bin/win32/openvibe-0.10.0-svn2909-setup", "2011/04/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+			precompiled("OpenViBE 0.10.1", "pub/bin/win32/openvibe-0.10.1-svn2909-setup", "2011/04/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 		</script>
 		<div id="win32-installer-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
