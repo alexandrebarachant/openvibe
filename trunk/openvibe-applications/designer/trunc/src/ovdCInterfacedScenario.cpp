@@ -1948,6 +1948,36 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 		contextMenuBoxRenameAllCB();
 	}
 
+	//The shortcuts respect the order in the toolbar
+
+	// F7 :play/pause
+	if(pEvent->keyval==GDK_F7)
+	{
+		if(m_rApplication.getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Play)
+		{
+			m_rApplication.pauseScenarioCB();
+		}
+		else
+		{
+			m_rApplication.playScenarioCB();
+		}
+	}
+	// F6 : step
+	if(pEvent->keyval==GDK_F6)
+	{
+		m_rApplication.nextScenarioCB();
+	}
+	// F8 :fastforward
+	if(pEvent->keyval==GDK_F8)
+	{
+		m_rApplication.forwardScenarioCB();
+	}
+	// F5 : stop
+	if(pEvent->keyval==GDK_F5)
+	{
+		m_rApplication.stopScenarioCB();
+	}
+
 	m_rKernelContext.getLogManager() << LogLevel_Debug
 		<< "scenarioDrawingAreaKeyPressEventCB ("
 		<< (m_bShiftPressed?"true":"false") << "|"
