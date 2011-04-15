@@ -1,7 +1,7 @@
 /** 
 \page Doc_AcquisitionServerOverview OpenViBE Acquisition Server
 
-- \b NB: Document based on <b> OpenViBE 0.9.0 </b> (dec-2010).
+- \b NB: Document based on <b> OpenViBE 0.10.0 </b> (april-2010).
 
 \section Doc_AcquisitionServerOverview_Introduction Introduction
 
@@ -22,21 +22,14 @@ The server GUI should look like the following :
 \subsection Doc_AcquisitionServerOverview_Drivers Acquisition Device Drivers
 
 A list of available drivers is accessible under 'drivers'. Depending on your distribution of OpenViBE, 
-a number of drivers may already be at hand. However, at least one driver should be available : the Generic Oscillator. Contrary to most drivers, this one doesn't connect to
+a number of drivers may already be at hand. At least one driver should be available : the Generic Oscillator. Contrary to most drivers, this one doesn't connect to
 any hardware device, but generates sinusoidal signals. It is appropriate for testing purposes. 
 To change the default driver presented when launching the Acquisition Server, add the following token to your configuration file :
-
-\subsection Doc_AcquisitionServerOverview_Drift Drift Monitoring
-
-The Acquisition Server monitors the behaviour of the driver in order to ensure that it actually sends the number of samples it should, regarding the theorical sampling 
-frequency of the device. When a drift is detected, you will see a progress bar going on the left or right (not enough or too much samples). When the drift reaches a 
-threshold, an automatic correction is done : the Acquisition Server removes or duplicates some samples, and sends a stimulation to any acquisition client connected, 
-so you can know in the signal that a correction just occured.
-The drift threshold can be modified in the configuration file :
 \code
-# set the drift tolerance to 5 seconds :
-AcquisitionServer_DriftToleranceDuration = 5
+# set the default driver :
+AcquisitionServer_DefaultDriver = Generic Raw Telnet Reader
 \endcode
+If you don't specify any driver that way, the driver presented upon startup is the latest used during previous execution.
 
 \subsection Doc_AcquisitionServerOverview_ConnectionSettings Connection Settings
 
@@ -49,19 +42,41 @@ may be set in the Driver Properties dialog (see \ref Doc_AcquisitionServerOvervi
 \subsection Doc_AcquisitionServerOverview_DriverProperties Driver Properties
 
 Once a driver is selected from the drop-down list and before it can be used, its settings should be configured appropriately. Settings provide information about the experiment
-being conducted and the subject undergoing the experiment. The 'Properties' button pops up the settings dialog of the currently selected driver. 
+being conducted and the subject undergoing the experiment. The 'Driver Properties' button pops up the settings dialog of the currently selected driver. 
 It displays settings that can't be retrieved from the hardware and that have to be filled up by the user. They may vary between drivers. For example, the Generic Oscillator 
 settings include information about the subject (identifier, age, gender) and the experiment (number of channels to be acquired, sampling frequency, channel names).
 
 <img src="driver_settings.png"></img>
 <center><strong>Fig.2 Generic Oscillator settings.</strong></center>
  
+\subsection Doc_AcquisitionServerOverview_Drift Acquition Server Preferences
+
+Various global settings can be accessed through the 'Preferences' button.
+Most users will leave these parameters as default.
+
+<img src="acquisition_server_settings.png"></img>
+<center><strong>Fig.3 Global settings.</strong></center>
+
+The Acquisition Server monitors the behaviour of the driver in order to ensure that it actually sends the number of samples it should, regarding the theorical sampling 
+frequency of the device. When a drift is detected, you will see a progress bar going on the left or right (not enough or too much samples). When the drift reaches a 
+threshold, an automatic correction is done : the Acquisition Server removes or duplicates some samples, and sends stimulation(s) to any acquisition client connected, 
+so you can know in the signal that a correction just occured. The stimulations used are tagged \b OVTK_GDF_Correct and \b OVTK_GDF_Incorrect. 
+
+Here is the parameters you can set for the the Drift Correction:
+- \b Drift \b correction : either Forced, Disabled, or driver dependant.
+- \b Drift \b Tolerance (ms) : when reaching a drift duration of that value, a correction is triggered.
+- \b Jitter \b Estimation \b Count \b for \b Drift : the window in number of "block" used to compute the drift.
+
+The other settings are :
+- \b Oversampling \b Factor : multiply the sampling frequency of the acquired signal, using linear interpolation.
+- \b Impedance \b Check : some drivers make use of the Acquisition Server impedance checker, this functionnality can be turned on.
+
 \section Doc_AcquisitionServerOverview_Usage Usage
 
 Once a device driver has been selected and relevant settings configured, data acquisition can start. The server should first connect to the acquisition device, which
 is done by clicking the 'Connect' button. A label will inform the user whether the connection was successful, and the number of connected clients will also be indicated.
 
-If the connection was established and the desired client(s) successfully connected, data sampling can be started/stopped by clicking 'Play'/'Stop'. Once one is done
+If the connection was established and the client(s) successfully connected, data sampling can be started/stopped by clicking 'Play'/'Stop'. Once one is done
 using a given device, one can disconnect from it by clicking 'Disconnect'.
 
 */
