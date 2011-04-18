@@ -124,7 +124,8 @@ namespace OpenViBEToolkit
 		{
 		public:
 			FSettingValueAutoCast(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext, const OpenViBE::uint32 ui32Index)
-				:m_rTypeManager(rBoxAlgorithmContext.getPlayerContext()->getTypeManager())
+				:m_rLogManager(rBoxAlgorithmContext.getPlayerContext()->getLogManager())
+				,m_rTypeManager(rBoxAlgorithmContext.getPlayerContext()->getTypeManager())
 				,m_rConfigurationManager(rBoxAlgorithmContext.getPlayerContext()->getConfigurationManager())
 			{
 				rBoxAlgorithmContext.getStaticBoxContext()->getSettingValue(ui32Index, m_sSettingValue);
@@ -134,7 +135,12 @@ namespace OpenViBEToolkit
 			{
 				if(m_rTypeManager.isEnumeration(m_oSettingType))
 				{
-					return m_rTypeManager.getEnumerationEntryValueFromName(m_oSettingType, m_sSettingValue);
+					OpenViBE::uint64 l_ui64StimId=m_rTypeManager.getEnumerationEntryValueFromName(m_oSettingType, m_sSettingValue);
+					if(l_ui64StimId==0xffffffffffffffffll)
+					{
+						m_rLogManager << OpenViBE::Kernel::LogLevel_ImportantWarning << "Did not find an enumeration value for [" << m_rTypeManager.getTypeName(m_oSettingType) << ":" << m_sSettingValue << "]\n";
+					}
+					return l_ui64StimId;
 				}
 				return m_rConfigurationManager.expandAsUInteger(m_sSettingValue);
 			}
@@ -155,6 +161,7 @@ namespace OpenViBEToolkit
 				return m_sSettingValue;
 			}
 		private:
+			OpenViBE::Kernel::ILogManager& m_rLogManager;
 			OpenViBE::Kernel::ITypeManager& m_rTypeManager;
 			OpenViBE::Kernel::IConfigurationManager& m_rConfigurationManager;
 			OpenViBE::CString m_sSettingValue;
