@@ -1,0 +1,61 @@
+/**
+ * \page BoxAlgorithm_EMA EMA
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Description|
+ * The EMA box do Exponential Moving Average. It generates a signal S(t) which correspond to : S(t)=alpha*X(t)-(1-alpha)*S(t-1)", where alpha is forgetting parameter and X(t) is signal input.
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Inputs|
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Input1|
+ * Input signal #1.
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Input1|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Output1|
+ * Output signal #1.
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Setting1|
+forgetting parameter. Should be between 0 to 1. If not, forgetting is the positive inverse of the setting.
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Setting1|
+
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Examples|
+Practical example : used in ICAneurofeedback
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Examples|
+
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_EMA_Miscellaneous|
+ * |OVP_DocEnd_BoxAlgorithm_EMA_Miscellaneous|
+ */

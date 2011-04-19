@@ -1,0 +1,137 @@
+/**
+ * \page BoxAlgorithm_P300SpellerSteadyStateStimulator P300 Speller Steady State Stimulator
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Description|
+This box is used to generate two Steady State and a 2D P300 stimulation timeline. Depending on its parameters,
+it generates all the necessary flagging stimulations for an P300 experiment with SSVP, such as when
+flashes start, when they stop, when the repetitions are finished etc.
+
+Imagine a P300 speller application. Such application is based on a matrix of letters / numbers.
+The lines and columns of this matrix are flashed consecutively a number of time. Then a decision
+can be made and the user can relax. Then same process restarts and so one. Such experiment can
+be driven by this box.
+Imagine a SSVP application. Such application is based on matrix of letters/numbers.
+Blocs of this matrix are flashed consecutively a number of time. Then a decision
+can be made to improve P300 detection.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Inputs|
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Input1|
+This input is used to start the generation of the pipeline. As soon as the start stimulation
+arrives here, the generation process starts. (see setting 1)
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Input1|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Output1|
+This output contains the stimulations used for P300 based experiments.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting1|
+This first setting tells which stimulation to use to start the generation process. This stimulation
+can be received from a keyboard for example (see \ref Doc_BoxAlgorithm_KeyboardStimulator).
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting1|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting2|
+This setting tells what stimulation base to use when flashing rows of the matrix. When row one should
+be flashed, this exact stimulation will be sent. When row two should be flashed, this stimulation + 1
+will be sent, and so on.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting2|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting3|
+This setting tells what stimulation base to use when flashing columns of the matrix. When column one should
+be flashed, this exact stimulation will be sent. When column two should be flashed, this stimulation + 1
+will be sent, and so on.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting3|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting4|
+This setting tells how many row the matrix has.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting4|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting5|
+This setting tells how many columns the matrix has.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting5|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting6|
+This setting tells how many times each row / column should be flashed in a trial.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting6|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting7|
+This setting tells how many trials should be generated.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting7|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting8|
+This setting tells how long a P300 flash longs.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting8|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting9|
+This setting tells how long this stimulator should wait after a P300 flash is finished before sending a new flash.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting9|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting10|
+This setting tells how much rest is left to the user between the repetitions.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting10|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting11|
+This setting tells how much rest is left to the user between the trials.
+Please note that the end of a trial is also the end of a repetition. So the rest duration includes both times.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting11|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting12|
+This setting tells how long the first SSVP flash longs.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting12|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting13|
+This setting tells how long this stimulator should wait after a SSVP flash is finished before sending a new flash.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting13|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting14|
+This setting tells how long the second SSVP flash longs.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting14|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting15|
+This setting tells how long this stimulator should wait after a SSVP flash is finished before sending a new flash.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting15|
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting16|
+This setting is not used for now.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Setting16|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Examples|
+This box is used in the <em>P300 speller Steady State</em> BCI. Please see this
+scenarios in the sample <em>openvibe-scenarios</em>.
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Examples|
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_P300SpellerSteadyStateStimulator_Miscellaneous|
+ * |OVP_DocEnd_BoxAlgorithm_P300SpellerSteadyStateStimulator_Miscellaneous|
+ */

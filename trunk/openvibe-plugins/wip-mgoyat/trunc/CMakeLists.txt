@@ -1,4 +1,4 @@
-PROJECT(OpenViBE-plugins-TODO)
+PROJECT(OpenViBE-plugins-wip-mgoyat)
 
 SET(PROJECT_VERSION_MAJOR x)
 SET(PROJECT_VERSION_MINOR x)
@@ -16,6 +16,7 @@ INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleSystem")
+INCLUDE("FindOpenViBEModuleSocket")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 
 # ---------------------------------
