@@ -3,9 +3,11 @@
 //#include "algorithms/filters/ovpCApplySpatialFilter.h"
 
 #include "box-algorithms/basic/ovpCBoxAlgorithmChannelRename.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmChannelSelector.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmEpochAverage.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmSignalDecimation.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmReferenceChannel.h"
 #include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
 //#include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
 #include "box-algorithms/filters/ovpCBoxAlgorithmCommonAverageReference.h"
@@ -51,6 +53,15 @@ OVP_Declare_Begin()
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Substraction",     OVP_TypeId_ComparisonMethod_Substraction.toUInteger());
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Laterality index", OVP_TypeId_ComparisonMethod_LateralityIndex.toUInteger());
 
+	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_SelectionMethod, "Selection method");
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_SelectionMethod, "Select", OVP_TypeId_SelectionMethod_Select.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_SelectionMethod, "Reject", OVP_TypeId_SelectionMethod_Reject.toUInteger());
+
+	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_MatchMethod, "Match method");
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_MatchMethod, "Name",  OVP_TypeId_MatchMethod_Name.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_MatchMethod, "Index", OVP_TypeId_MatchMethod_Index.toUInteger());
+	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_MatchMethod, "Smart", OVP_TypeId_MatchMethod_Smart.toUInteger());
+
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CTimeBasedEpochingDesc);
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CMatrixAverageDesc)
@@ -58,6 +69,8 @@ OVP_Declare_Begin()
 //	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CApplySpatialFilterDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelRenameDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelSelectorDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmReferenceChannelDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCropDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSignalDecimationDesc)
@@ -66,7 +79,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCommonAverageReferenceDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSpatialFilterDesc)
 
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CReferenceChannelDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CReferenceChannelOldDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CChannelSelectorDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSimpleDSPDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSignalAverageDesc)

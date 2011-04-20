@@ -127,7 +127,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Channel selector"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Channel selector (deprecated)"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Channel selector filter"); }
@@ -144,7 +144,7 @@ namespace OpenViBEPlugins
 				rPrototype.addOutput("Filtered signal", OV_TypeId_Signal);
 				rPrototype.addSetting("Channels list", OV_TypeId_String, "");
 				rPrototype.addSetting("Selection by index", OV_TypeId_Boolean, "false");
-
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsDeprecated);
 				return true;
 			}
 

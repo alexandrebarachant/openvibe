@@ -1,5 +1,5 @@
-#ifndef __OpenViBEPlugins_SignalProcessing_CReferenceChannel_H__
-#define __OpenViBEPlugins_SignalProcessing_CReferenceChannel_H__
+#ifndef __OpenViBEPlugins_SignalProcessing_CReferenceChannelOld_H__
+#define __OpenViBEPlugins_SignalProcessing_CReferenceChannelOld_H__
 
 #include "ovp_defines.h"
 
@@ -22,11 +22,11 @@ namespace OpenViBEPlugins
 	namespace SignalProcessing
 	{
 
-		class CReferenceChannel : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
+		class CReferenceChannelOld : public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, public OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback
 		{
 		public:
 
-			CReferenceChannel();
+			CReferenceChannelOld();
 
 			virtual void release(void) { delete this; }
 
@@ -59,7 +59,7 @@ namespace OpenViBEPlugins
 
 			// Needed to write on the plugin output
 			EBML::IWriter* m_pWriter;
-			EBML::TWriterCallbackProxy1<OpenViBEPlugins::SignalProcessing::CReferenceChannel> m_oSignalOutputWriterCallbackProxy;
+			EBML::TWriterCallbackProxy1<OpenViBEPlugins::SignalProcessing::CReferenceChannelOld> m_oSignalOutputWriterCallbackProxy;
 			OpenViBEToolkit::IBoxAlgorithmSignalOutputWriter* m_pSignalOutputWriterHelper;
 
 			OpenViBE::uint32 m_ui32SamplingFrequency;
@@ -76,11 +76,11 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64MatrixBufferSize;
 		};
 
-		class CReferenceChannelDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CReferenceChannelOldDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Reference channel"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Reference channel (deprecated)"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Sets a reference channel in the signal stream."); }
@@ -89,16 +89,14 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.5"); }
 			virtual void release(void)                                   { }
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_ReferenceChannel; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessing::CReferenceChannel(); }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessing::CReferenceChannelOld(); }
 
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput("Input signal", OV_TypeId_Signal);
-
 				rPrototype.addSetting("Reference channel", OV_TypeId_Integer, "0");
-
 				rPrototype.addOutput("Filtered signal", OV_TypeId_Signal);
-
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsDeprecated);
 				return true;
 			}
 

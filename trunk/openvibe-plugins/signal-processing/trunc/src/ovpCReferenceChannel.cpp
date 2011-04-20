@@ -10,7 +10,7 @@ using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SignalProcessing;
 using namespace OpenViBEToolkit;
 
-void CReferenceChannel::setChannelCount(const uint32 ui32ChannelCount)
+void CReferenceChannelOld::setChannelCount(const uint32 ui32ChannelCount)
 {
 	m_oChannelNames.resize(ui32ChannelCount);
 
@@ -21,12 +21,12 @@ void CReferenceChannel::setChannelCount(const uint32 ui32ChannelCount)
 	}
 }
 
-void CReferenceChannel::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
+void CReferenceChannelOld::setChannelName(const uint32 ui32ChannelIndex, const char* sChannelName)
 {
 	m_oChannelNames[ui32ChannelIndex] = sChannelName;
 }
 
-void CReferenceChannel::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuffer)
+void CReferenceChannelOld::setSampleCountPerBuffer(const uint32 ui32SampleCountPerBuffer)
 {
 	m_ui32SamplesPerBuffer = ui32SampleCountPerBuffer;
 
@@ -52,12 +52,12 @@ void CReferenceChannel::setSampleCountPerBuffer(const uint32 ui32SampleCountPerB
 
 }
 
-void CReferenceChannel::setSamplingRate(const uint32 ui32SamplingFrequency)
+void CReferenceChannelOld::setSamplingRate(const uint32 ui32SamplingFrequency)
 {
 	m_ui32SamplingFrequency = ui32SamplingFrequency;
 }
 
-void CReferenceChannel::setSampleBuffer(const float64* pBuffer)
+void CReferenceChannelOld::setSampleBuffer(const float64* pBuffer)
 {
 	if(!m_bError)
 	{
@@ -79,12 +79,12 @@ void CReferenceChannel::setSampleBuffer(const float64* pBuffer)
 	}
 }
 
-void CReferenceChannel::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
+void CReferenceChannelOld::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 {
 	appendOutputChunkData<0>(pBuffer, ui64BufferSize);
 }
 
-CReferenceChannel::CReferenceChannel() :
+CReferenceChannelOld::CReferenceChannelOld() :
 	m_pReader(NULL),
 	m_pSignalReaderCallBack(NULL),
 	m_ui64LastChunkStartTime(0),
@@ -92,7 +92,7 @@ CReferenceChannel::CReferenceChannel() :
 	m_pWriter(NULL),
 	m_oSignalOutputWriterCallbackProxy(
 			*this,
-			&CReferenceChannel::writeSignalOutput),
+			&CReferenceChannelOld::writeSignalOutput),
 	m_pSignalOutputWriterHelper(NULL),
 	m_ui32SamplingFrequency(0),
 	m_ui32SamplesPerBuffer(0),
@@ -103,7 +103,7 @@ CReferenceChannel::CReferenceChannel() :
 {
 }
 
-boolean CReferenceChannel::initialize()
+boolean CReferenceChannelOld::initialize()
 {
 	CString l_sSettings;
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_sSettings);
@@ -120,7 +120,7 @@ boolean CReferenceChannel::initialize()
 	return true;
 }
 
-boolean CReferenceChannel::uninitialize()
+boolean CReferenceChannelOld::uninitialize()
 {
 	if(m_pMatrixBuffer)
 	{
@@ -143,7 +143,7 @@ boolean CReferenceChannel::uninitialize()
 	return true;
 }
 
-boolean CReferenceChannel::processInput(uint32 ui32InputIndex)
+boolean CReferenceChannelOld::processInput(uint32 ui32InputIndex)
 {
 	//don't process anything if an error has occured
 	if(m_bError)
@@ -155,7 +155,7 @@ boolean CReferenceChannel::processInput(uint32 ui32InputIndex)
 	return true;
 }
 
-boolean CReferenceChannel::process()
+boolean CReferenceChannelOld::process()
 {
 	IBoxIO* l_pBoxIO = getBoxAlgorithmContext()->getDynamicBoxContext();
 

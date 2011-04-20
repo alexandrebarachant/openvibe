@@ -7,40 +7,17 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SignalProcessing;
 
-namespace
-{
-	bool split(const std::string& sString, std::vector < std::string >& vPart, unsigned char c)
-	{
-		std::string::size_type l_uiStart=-1;
-		vPart.clear();
-		do
-		{
-			std::string l_sSwap;
-			std::string::size_type l_uiNext=sString.find(c, l_uiStart+1);
-			if(l_uiNext==std::string::npos)
-			{
-				if(l_uiStart+1 < sString.length())
-				{
-					l_sSwap=sString.substr(l_uiStart+1, sString.length()-l_uiStart-1);
-				}
-			}
-			else
-			{
-				l_sSwap=sString.substr(l_uiStart+1, l_uiNext-l_uiStart-1);
-			}
-			vPart.push_back(l_sSwap);
-			l_uiStart=l_uiNext;
-		}
-		while(l_uiStart!=std::string::npos);
-
-		return true;
-	}
-}
-
 boolean CBoxAlgorithmChannelRename::initialize(void)
 {
-	CString   l_sSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
-	split(l_sSettingValue.toASCIIString(), m_vChannelName, OV_Value_EnumeratedStringSeparator);
+	CString l_sToken[1024];
+	CString l_sSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
+	uint32 l_ui32TokenCount=OpenViBEToolkit::Tools::String::split(l_sSettingValue, l_sToken, 1024, OV_Value_EnumeratedStringSeparator);
+
+	m_vChannelName.clear();
+	for(uint32 i=0; i<l_ui32TokenCount; i++)
+	{
+		m_vChannelName.push_back(l_sToken[i].toASCIIString());
+	}
 
 	m_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamDecoder));
 	m_pStreamDecoder->initialize();
