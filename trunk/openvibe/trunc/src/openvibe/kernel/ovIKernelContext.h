@@ -34,6 +34,19 @@ namespace OpenViBE
 		public:
 
 			/**
+			 * \brief Initializes the kernel context
+			 * \return \e true in case of success
+			 * \return \e false in case of error
+			 */
+			virtual OpenViBE::boolean initialize(void) { return true; }
+			/**
+			 * \brief Uninitializes the kernel context
+			 * \return \e true in case of success
+			 * \return \e false in case of error
+			 */
+			virtual OpenViBE::boolean uninitialize(void) { return true; }
+
+			/**
 			 * \brief Gets a reference on the kernel's algorithm manager
 			 * \return a reference on the kernel's algorithm manager
 			 */

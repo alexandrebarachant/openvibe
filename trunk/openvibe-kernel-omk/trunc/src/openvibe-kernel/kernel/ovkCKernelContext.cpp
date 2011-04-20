@@ -30,6 +30,7 @@ namespace
 	{
 		return std::tolower(c);
 	}
+
 };
 
 #if defined OVK_OS_Linux
@@ -89,8 +90,10 @@ namespace OpenViBE
 	};
 };
 
-CKernelContext::CKernelContext(const CString& rApplicationName, const CString& rConfigurationFile)
-	:m_pAlgorithmManager(NULL)
+CKernelContext::CKernelContext(const IKernelContext* pMasterKernelContext, const CString& rApplicationName, const CString& rConfigurationFile)
+	:m_rMasterKernelContext(pMasterKernelContext?*pMasterKernelContext:*this)
+	,m_pThis(this)
+	,m_pAlgorithmManager(NULL)
 	,m_pConfigurationManager(NULL)
 	,m_pKernelObjectFactory(NULL)
 	,m_pPlayerManager(NULL)
@@ -99,6 +102,9 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	,m_pTypeManager(NULL)
 	,m_pLogManager(NULL)
 	,m_pVisualisationManager(NULL)
+	,m_bIsInitialized(false)
+	,m_sApplicationName(rApplicationName)
+	,m_sConfigurationFile(rConfigurationFile)
 	,m_pLogListenerConsole(NULL)
 	,m_pLogListenerFile(NULL)
 {
@@ -114,26 +120,45 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	signal(SIGTRAP, _openvibeKernelSignalHandler_); // Trace/breakpoint trap
 
 #endif
+}
 
-	m_pKernelObjectFactory=new CKernelObjectFactory(*this);
+CKernelContext::~CKernelContext(void)
+{
+	if(m_bIsInitialized)
+	{
+		this->uninitialize();
+	}
+}
+
+boolean CKernelContext::initialize(void)
+{
+	if(m_bIsInitialized)
+	{
+		return true;
+	}
+
+	m_bIsInitialized=true;
+
+	m_pKernelObjectFactory=new CKernelObjectFactory(m_rMasterKernelContext);
 
 	this->getLogManager() << LogLevel_Trace << "Creating log manager\n";
-	m_pLogManager=new CLogManager(*this);
+
+	m_pLogManager=new CLogManager(m_rMasterKernelContext);
 	m_pLogManager->activate(true);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring file log listener\n";
-	m_pLogListenerFile=new CLogListenerFile(*this, rApplicationName, CString("../log/openvibe-")+rApplicationName+CString(".log"));
+	m_pLogListenerFile=new CLogListenerFile(m_rMasterKernelContext, m_sApplicationName, CString("../log/openvibe-")+m_sApplicationName+CString(".log"));
 	m_pLogListenerFile->activate(true);
 	this->getLogManager().addListener(m_pLogListenerFile);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring console log listener\n";
-	m_pLogListenerConsole=new CLogListenerConsole(*this, rApplicationName);
+	m_pLogListenerConsole=new CLogListenerConsole(m_rMasterKernelContext, m_sApplicationName);
 	m_pLogListenerConsole->activate(false);
 	m_pLogListenerConsole->activate(LogLevel_Info, LogLevel_Last, true);
 	this->getLogManager().addListener(m_pLogListenerConsole);
 
 	this->getLogManager() << LogLevel_Trace << "Creating configuration manager\n";
-	m_pConfigurationManager=new CConfigurationManager(*this);
+	m_pConfigurationManager=new CConfigurationManager(m_rMasterKernelContext);
 
 #if defined OVK_BUILDTYPE_Release
 	m_pConfigurationManager->createConfigurationToken("BuildType",                    "Release");
@@ -154,7 +179,7 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pConfigurationManager->createConfigurationToken("UserHome",                     "");
 #endif
 
-	m_pConfigurationManager->createConfigurationToken("ApplicationName",              rApplicationName);
+	m_pConfigurationManager->createConfigurationToken("ApplicationName",              m_sApplicationName);
 	m_pConfigurationManager->createConfigurationToken("Path_Root",                    "..");
 	m_pConfigurationManager->createConfigurationToken("Path_Bin",                     "${Path_Root}/bin");
 	m_pConfigurationManager->createConfigurationToken("Path_Lib",                     "${Path_Root}/lib");
@@ -169,7 +194,7 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pConfigurationManager->createConfigurationToken("Kernel_FileLogLevel",          "Debug");
 	m_pConfigurationManager->createConfigurationToken("Kernel_PlayerFrequency",       "128");
 
-	m_pConfigurationManager->addConfigurationFromFile(rConfigurationFile);
+	m_pConfigurationManager->addConfigurationFromFile(m_sConfigurationFile);
 
 	ELogLevel l_eMainLogLevel   =this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_MainLogLevel}"));
 	ELogLevel l_eConsoleLogLevel=this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_ConsoleLogLevel}"));
@@ -183,13 +208,13 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pLogListenerConsole->activate(l_eConsoleLogLevel, LogLevel_Last, true);
 
 	this->getLogManager() << LogLevel_Trace << "Creating algorithm manager\n";
-	m_pAlgorithmManager=new CAlgorithmManager(*this);
+	m_pAlgorithmManager=new CAlgorithmManager(m_rMasterKernelContext);
 
 	this->getLogManager() << LogLevel_Trace << "Creating player manager\n";
-	m_pPlayerManager=new CPlayerManager(*this);
+	m_pPlayerManager=new CPlayerManager(m_rMasterKernelContext);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring type manager\n";
-	m_pTypeManager=new CTypeManager(*this);
+	m_pTypeManager=new CTypeManager(m_rMasterKernelContext);
 
 	m_pTypeManager->registerType(OV_TypeId_Boolean,  "Boolean");
 	m_pTypeManager->registerType(OV_TypeId_Integer,  "Integer");
@@ -223,17 +248,24 @@ CKernelContext::CKernelContext(const CString& rApplicationName, const CString& r
 	m_pTypeManager->registerStreamType(    OV_TypeId_Spectrum, "Spectrum", OV_TypeId_StreamedMatrix);
 
 	this->getLogManager() << LogLevel_Trace << "Creating scenario manager\n";
-	m_pScenarioManager=new CScenarioManager(*this);
+	m_pScenarioManager=new CScenarioManager(m_rMasterKernelContext);
 
 	this->getLogManager() << LogLevel_Trace << "Creating visualisation manager\n";
-	m_pVisualisationManager=new CVisualisationManager(*this);
+	m_pVisualisationManager=new CVisualisationManager(m_rMasterKernelContext);
 
 	this->getLogManager() << LogLevel_Trace << "Creating plugin manager\n";
-	m_pPluginManager=new CPluginManager(*this);
+	m_pPluginManager=new CPluginManager(m_rMasterKernelContext);
+
+	return true;
 }
 
-CKernelContext::~CKernelContext(void)
+boolean CKernelContext::uninitialize(void)
 {
+	if(!m_bIsInitialized)
+	{
+		return true;
+	}
+
 	this->getLogManager() << LogLevel_Trace << "Releasing plugin manager\n";
 	delete m_pPluginManager;
 	m_pPluginManager=NULL;
@@ -276,56 +308,70 @@ CKernelContext::~CKernelContext(void)
 
 	delete m_pKernelObjectFactory;
 	m_pKernelObjectFactory=NULL;
+
+	m_bIsInitialized=false;
+
+	return true;
 }
 
 IAlgorithmManager& CKernelContext::getAlgorithmManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pAlgorithmManager;
 }
 
 IConfigurationManager& CKernelContext::getConfigurationManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pConfigurationManager;
 }
 
 IKernelObjectFactory& CKernelContext::getKernelObjectFactory(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pKernelObjectFactory;
 }
 
 IPlayerManager& CKernelContext::getPlayerManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pPlayerManager;
 }
 
 IPluginManager& CKernelContext::getPluginManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pPluginManager;
 }
 
 IScenarioManager& CKernelContext::getScenarioManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pScenarioManager;
 }
 
 ITypeManager& CKernelContext::getTypeManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pTypeManager;
 }
 
 ILogManager& CKernelContext::getLogManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	static CLogManagerNULL l_oLogManagerNULL;
 	return m_pLogManager?*m_pLogManager:l_oLogManagerNULL;
 }
 
 IVisualisationManager& CKernelContext::getVisualisationManager(void) const
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	return *m_pVisualisationManager;
 }
 
 ELogLevel CKernelContext::earlyGetLogLevel(const CString& rLogLevelName)
 {
+	if(!m_bIsInitialized) m_pThis->initialize();
 	std::string l_sValue(rLogLevelName.toASCIIString());
 	std::transform(l_sValue.begin(), l_sValue.end(), l_sValue.begin(), ::to_lower<std::string::value_type>);
 

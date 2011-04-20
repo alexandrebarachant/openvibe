@@ -14,8 +14,11 @@ namespace OpenViBE
 		{
 		public:
 
-			CKernelContext(const OpenViBE::CString& rApplicationName, const OpenViBE::CString& rConfigurationFile);
+			CKernelContext(const OpenViBE::Kernel::IKernelContext* pMasterKernelContext, const OpenViBE::CString& rApplicationName, const OpenViBE::CString& rConfigurationFile);
 			virtual ~CKernelContext(void);
+
+			virtual OpenViBE::boolean initialize(void);
+			virtual OpenViBE::boolean uninitialize(void);
 
 			virtual OpenViBE::Kernel::IAlgorithmManager& getAlgorithmManager(void) const;
 			virtual OpenViBE::Kernel::IConfigurationManager& getConfigurationManager(void) const;
@@ -35,6 +38,9 @@ namespace OpenViBE
 
 		protected:
 
+			const OpenViBE::Kernel::IKernelContext& m_rMasterKernelContext;
+
+			mutable OpenViBE::Kernel::IKernelContext* m_pThis;
 			mutable OpenViBE::Kernel::IAlgorithmManager* m_pAlgorithmManager;
 			mutable OpenViBE::Kernel::IConfigurationManager* m_pConfigurationManager;
 			mutable OpenViBE::Kernel::IKernelObjectFactory* m_pKernelObjectFactory;
@@ -44,6 +50,10 @@ namespace OpenViBE
 			mutable OpenViBE::Kernel::ITypeManager* m_pTypeManager;
 			mutable OpenViBE::Kernel::ILogManager* m_pLogManager;
 			mutable OpenViBE::Kernel::IVisualisationManager* m_pVisualisationManager;
+
+			OpenViBE::boolean m_bIsInitialized;
+			OpenViBE::CString m_sApplicationName;
+			OpenViBE::CString m_sConfigurationFile;
 
 			OpenViBE::Kernel::CLogListenerConsole* m_pLogListenerConsole;
 			OpenViBE::Kernel::CLogListenerFile* m_pLogListenerFile;
@@ -70,6 +80,9 @@ namespace OpenViBE
 				,m_pVisualisationManager(NULL)
 			{
 			}
+
+			virtual OpenViBE::boolean initialize(void) { return true; }
+			virtual OpenViBE::boolean uninitialize(void) { return true; }
 
 			void setAlgorithmManager(OpenViBE::Kernel::IAlgorithmManager* pAlgorithmManager) { m_pAlgorithmManager=pAlgorithmManager; }
 			void setConfigurationManager(OpenViBE::Kernel::IConfigurationManager* pConfigurationManager) { m_pConfigurationManager=pConfigurationManager; }

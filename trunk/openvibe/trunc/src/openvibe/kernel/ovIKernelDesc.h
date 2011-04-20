@@ -38,7 +38,20 @@ namespace OpenViBE
 			 */
 			virtual OpenViBE::Kernel::IKernelContext* createKernel(const OpenViBE::CString& rApplicationName, const OpenViBE::CString& rConfigurationFilename)=0;
 			/**
+			 * \brief Creates the kernel itself and make it sub kernel of a master kernel
+			 * \param rMasterKernel [in] : the master kernel
+			 * \param rApplicationName [in] : the name of the application requesting kernel creation
+			 *                                (an configuration token will be created so the configuration
+			 *                                file can be tweaked according to the targeted application)
+			 * \param rConfigurationFilename [in] : a bootstrap configuration file
+			 * \return the created kernel.
+			 *
+			 * This method creates the kernel itself and returns it.
+			 */
+			virtual OpenViBE::Kernel::IKernelContext* createKernel(const OpenViBE::Kernel::IKernelContext& rMasterKernel, const OpenViBE::CString& rApplicationName, const OpenViBE::CString& rConfigurationFilename)=0;
+			/**
 			 * \brief Releases the kernel itself
+			 * \param pKernel [in] : the kernel to release
 			 *
 			 * This method releases an existing kernel.
 			 */
