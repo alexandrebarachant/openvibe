@@ -39,8 +39,8 @@ namespace
 		}
 		else if(rMatchMethodIdentifier==OVP_TypeId_MatchMethod_Smart)
 		{
-			if(l_ui32Result==uint32(-1)) l_ui32Result=::_find_channel_(rMatrix, rChannel, OVP_TypeId_MatchMethod_Name, uiStart);
-			if(l_ui32Result==uint32(-1)) l_ui32Result=::_find_channel_(rMatrix, rChannel, OVP_TypeId_MatchMethod_Index, uiStart);
+			if(l_ui32Result==uint32(-1)) l_ui32Result=_find_channel_(rMatrix, rChannel, OVP_TypeId_MatchMethod_Name, uiStart);
+			if(l_ui32Result==uint32(-1)) l_ui32Result=_find_channel_(rMatrix, rChannel, OVP_TypeId_MatchMethod_Index, uiStart);
 		}
 
 		return l_ui32Result;
