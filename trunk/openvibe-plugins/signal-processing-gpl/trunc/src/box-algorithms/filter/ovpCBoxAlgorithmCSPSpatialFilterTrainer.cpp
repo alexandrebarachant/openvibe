@@ -230,7 +230,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 			FILE* l_pFile=::fopen(m_sSpatialFilterConfigurationFilename.toASCIIString(), "wb");
 			if(!l_pFile)
 			{
-				this->getLogManager() << LogLevel_Error << "The file [" << m_sSpatialFilterConfigurationFilename << "] could not be opened for writing...";
+				this->getLogManager() << LogLevel_Error << "The file [" << m_sSpatialFilterConfigurationFilename << "] could not be opened for writing...\n";
 				return false;
 			}
 
