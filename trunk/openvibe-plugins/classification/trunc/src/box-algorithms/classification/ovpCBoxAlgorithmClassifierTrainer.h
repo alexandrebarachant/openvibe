@@ -8,10 +8,15 @@
 #include "ovpCBoxAlgorithmCommonClassifierListener.inl"
 
 #include <map>
+#include <vector>
 #include <iostream>
+
+#include <algorithm>
 
 #define OVP_ClassId_BoxAlgorithm_ClassifierTrainer     OpenViBE::CIdentifier(0x128703B1, 0x0E2441F6)
 #define OVP_ClassId_BoxAlgorithm_ClassifierTrainerDesc OpenViBE::CIdentifier(0x0A0A3F0A, 0x17C8569F)
+
+#define OVP_BoxAlgorithm_ClassifierTrainer_CommonSettingsCount 4
 
 namespace OpenViBEPlugins
 {
@@ -38,6 +43,7 @@ namespace OpenViBEPlugins
 		protected:
 
 			std::map < OpenViBE::uint32, OpenViBE::uint32 > m_vFeatureCount;
+			std::vector < OpenViBE::uint32 > m_vFeatureVectorIndex;
 			std::map < OpenViBE::uint32, OpenViBE::Kernel::IAlgorithmProxy*> m_vFeatureVectorsDecoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationsDecoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pClassifier;
@@ -93,7 +99,7 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmCommonClassifierListener(4); }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const { return new CBoxAlgorithmCommonClassifierListener(OVP_BoxAlgorithm_ClassifierTrainer_CommonSettingsCount); }
 			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) { delete pBoxListener; }
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_ClassifierTrainerDesc);

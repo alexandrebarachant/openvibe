@@ -51,7 +51,7 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 	m_pClassifier->initialize();
 
 	CIdentifier l_oIdentifier;
-	i=4; // number of settings when no additional setting is added
+	i = OVP_BoxAlgorithm_ClassifierTrainer_CommonSettingsCount; // number of settings when no additional setting is added
 	while(i < l_rStaticBoxContext.getSettingCount() && (l_oIdentifier=m_pClassifier->getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
 	{
 		if((l_oIdentifier!=OVTK_Algorithm_Classifier_InputParameterId_FeatureVector)
@@ -260,6 +260,22 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 
 			if(m_ui64PartitionCount>=2)
 			{
+				boolean l_bRandomizeVectorOrder = (&(this->getConfigurationManager()))->expandAsBoolean("${Plugin_Classification_RandomizeKFoldTestData}");
+
+				// create a vector used for mapping feature vectors (initialize it as v[i] = i)
+				for (uint32 i = 0; i < m_vFeatureVector.size(); i++)
+				{
+					m_vFeatureVectorIndex.push_back(i);
+				}
+
+				// randomize the vector if necessary
+				if (l_bRandomizeVectorOrder)
+				{
+					this->getLogManager() << LogLevel_Info << "Randomizing the feature vector set\n";
+					random_shuffle(m_vFeatureVectorIndex.begin(), m_vFeatureVectorIndex.end());
+
+				}
+
 				this->getLogManager() << LogLevel_Info << "k-fold test could take quite a long time, be patient\n";
 				for(uint64 i=0; i<m_ui64PartitionCount; i++)
 				{
@@ -323,7 +339,7 @@ boolean CBoxAlgorithmClassifierTrainer::train(const size_t uiStartIndex, const s
 	float64* l_pFeatureVectorSetBuffer=ip_pFeatureVectorSet->getBuffer();
 	for(size_t j=0; j<m_vFeatureVector.size()-(uiStopIndex-uiStartIndex); j++)
 	{
-		size_t k=(j<uiStartIndex?j:j+(uiStopIndex-uiStartIndex));
+		size_t k=m_vFeatureVectorIndex[(j<uiStartIndex?j:j+(uiStopIndex-uiStartIndex))];
 		float64 l_f64Class=(float64)m_vFeatureVector[k].m_ui32InputIndex;
 		System::Memory::copy(
 			l_pFeatureVectorSetBuffer,
@@ -360,11 +376,13 @@ float64 CBoxAlgorithmClassifierTrainer::getAccuracy(const size_t uiStartIndex, c
 
 	for(size_t j=uiStartIndex; j<uiStopIndex; j++)
 	{
+		size_t k = m_vFeatureVectorIndex[j];
+
 		float64* l_pFeatureVectorBuffer=ip_pFeatureVector->getBuffer();
-		float64 l_f64TrainerClass=(float64)m_vFeatureVector[j].m_ui32InputIndex;
+		float64 l_f64TrainerClass=(float64)m_vFeatureVector[k].m_ui32InputIndex;
 		System::Memory::copy(
 			l_pFeatureVectorBuffer,
-			m_vFeatureVector[j].m_pFeatureVectorMatrix->getBuffer(),
+			m_vFeatureVector[k].m_pFeatureVectorMatrix->getBuffer(),
 			l_ui32FeatureVectorSize*sizeof(float64));
 
 		m_pClassifier->process(OVTK_Algorithm_Classifier_InputTriggerId_Classify);
