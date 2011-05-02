@@ -352,7 +352,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep Ubuntu /etc/lsb-release 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libreadline5-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libreadline5-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
@@ -430,6 +430,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "native-packages"
 
 			ov_hit_package "pkgconfig"
+			ov_hit_package "cmake"
 
 			ov_hit_package "expat"
 			ov_hit_package "libxml"
@@ -512,7 +513,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep Debian /etc/issue 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libois-dev libreadline5-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libois-dev libreadline5-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
@@ -592,6 +593,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "native-packages"
 
 			ov_hit_package "pkgconfig"
+			ov_hit_package "cmake"
 
 			ov_hit_package "expat"
 			ov_hit_package "libxml"
@@ -675,7 +677,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ -e /etc/fedora-release ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_fedora_packages="wget subversion doxygen make automake autoconf unzip gcc gcc-c++ gtk2-devel libglade2-devel itpp-devel expat-devel zziplib-devel libtool libXaw-devel pcre-devel readline-devel freeimage-devel mesa-libGLU-devel freealut-devel libvorbis-devel"
+		ov_fedora_packages="wget subversion doxygen make automake autoconf cmake unzip gcc gcc-c++ gtk2-devel libglade2-devel itpp-devel expat-devel zziplib-devel libtool libXaw-devel pcre-devel readline-devel freeimage-devel mesa-libGLU-devel freealut-devel libvorbis-devel"
 #		for package in $ov_ubuntu_packages; do
 #			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 #			ov_dpkg_retcode=$?
@@ -752,6 +754,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "native-packages"
 
 			ov_hit_package "pkgconfig"
+			ov_hit_package "cmake"
 
 			ov_hit_package "expat"
 			ov_hit_package "libxml"
