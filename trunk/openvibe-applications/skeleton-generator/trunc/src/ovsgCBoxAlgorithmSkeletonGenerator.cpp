@@ -1316,6 +1316,10 @@ void CBoxAlgorithmSkeletonGenerator::initialize( void )
 	m_vParameterType_EnumTypeCorrespondance[ParameterType_Pointer]        = "OpenViBE::uint8*";
 
 
+	// CODECS INITIALISATION:
+	::GtkWidget * l_pCodecCheckbutton = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-toolkit-checkbutton"));
+	m_bUseCodecToolkit = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCodecCheckbutton));
+
 	::GtkWidget * l_pAlgoCombobox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-add-combobox"));
 	::GtkTreeModel * l_pAlgoListStore = gtk_combo_box_get_model(GTK_COMBO_BOX(l_pAlgoCombobox));
 	//we iterate over all plugin descriptor identifiers

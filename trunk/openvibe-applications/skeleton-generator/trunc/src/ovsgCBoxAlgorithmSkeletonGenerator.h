@@ -51,6 +51,7 @@ namespace OpenViBESkeletonGenerator
 
 			//Algorithms
 			std::vector<OpenViBE::CString> m_vAlgorithms; // the algorithm selected by user
+			OpenViBE::boolean              m_bUseCodecToolkit; // use or not the codec toolkit for encoder and decoder algorithms
 			std::map <OpenViBE::CString, OpenViBE::CString> m_mAlgorithmHeaderDeclaration; //the map between algorithm and corresponding header declaration (all variables algo/input/output).
 			std::map <OpenViBE::CString, OpenViBE::CString> m_mAlgorithmInitialisation;//the map between algorithm and corresponding initialisation
 			std::map <OpenViBE::CString, OpenViBE::CString> m_mAlgorithmInitialisation_ReferenceTargets;//the map between algorithm and corresponding initialisation of ref targets

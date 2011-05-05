@@ -593,7 +593,6 @@ Please select the skeleton you want to generate :
   <object class="GtkWindow" id="sg-box-window">
     <property name="width_request">800</property>
     <property name="height_request">700</property>
-    <property name="resizable">False</property>
     <property name="window_position">center</property>
     <child>
       <object class="GtkVBox" id="vbox2">
@@ -601,6 +600,21 @@ Please select the skeleton you want to generate :
         <property name="border_width">10</property>
         <property name="orientation">vertical</property>
         <property name="spacing">10</property>
+        <child>
+          <object class="GtkLabel" id="label35">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;&lt;span fgcolor='#006400'&gt;Welcome to the OpenViBE Skeleton-Generator !&lt;/span&gt;&lt;/b&gt;
+Fill the 5 tabs below with what you need,
+then run the checking routine and generate the files.&lt;/big&gt;
+
+&lt;i&gt;Press any 'help' button to have more detail about a field in the Console below.&lt;/i&gt;</property>
+            <property name="use_markup">True</property>
+            <property name="justify">center</property>
+          </object>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkNotebook" id="sg-box-notebook">
             <property name="visible">True</property>
@@ -803,8 +817,8 @@ Please select the skeleton you want to generate :
                   <object class="GtkLabel" id="label19">
                     <property name="visible">True</property>
                     <property name="label" translatable="yes">&lt;i&gt;Your box will be automatically flagged as &lt;span fgcolor='red'&gt;UNSTABLE&lt;/span&gt;
-Don't forget to set the configuration variable Designer_ShowUnstable to TRUE
-in your configuration file&lt;/i&gt;</property>
+Don't forget to set the configuration variable &lt;b&gt;Designer_ShowUnstable&lt;/b&gt; to TRUE
+in your configuration file in order to see it in the Designer.&lt;/i&gt;</property>
                     <property name="use_markup">True</property>
                     <property name="justify">center</property>
                   </object>
@@ -1039,7 +1053,7 @@ a name and a type for each input&lt;/big&gt;</property>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="sg-box-inputs-modify-checkbutton">
-                    <property name="label" translatable="yes">The input(s) can be modified</property>
+                    <property name="label" translatable="yes">The input(s) can be modified by the box user</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -1052,7 +1066,7 @@ a name and a type for each input&lt;/big&gt;</property>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="sg-box-inputs-add-checkbutton">
-                    <property name="label" translatable="yes">Inputs can be added and removed</property>
+                    <property name="label" translatable="yes">Inputs can be added and removed by the box user</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -1103,6 +1117,7 @@ a name and a type for each input&lt;/big&gt;</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
+                    <property name="shadow_type">in</property>
                     <child>
                       <object class="GtkTreeView" id="sg-box-inputs-treeview">
                         <property name="visible">True</property>
@@ -1247,7 +1262,7 @@ a name and a type for each output&lt;/big&gt;</property>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="sg-box-outputs-modify-checkbutton">
-                    <property name="label" translatable="yes">The output(s) can be modified</property>
+                    <property name="label" translatable="yes">The output(s) can be modified by the box user</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -1260,7 +1275,7 @@ a name and a type for each output&lt;/big&gt;</property>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="sg-box-outputs-add-checkbutton">
-                    <property name="label" translatable="yes">Outputs can be added and removed</property>
+                    <property name="label" translatable="yes">Outputs can be added and removed by the box user</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -1311,6 +1326,7 @@ a name and a type for each output&lt;/big&gt;</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
+                    <property name="shadow_type">in</property>
                     <child>
                       <object class="GtkTreeView" id="sg-box-outputs-treeview">
                         <property name="visible">True</property>
@@ -1454,7 +1470,7 @@ a name, a type and a default value for each setting&lt;/big&gt;</property>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="sg-box-settings-modify-checkbutton">
-                    <property name="label" translatable="yes">The setting(s) can be modified</property>
+                    <property name="label" translatable="yes">The setting(s) can be modified by the box user</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -1467,7 +1483,7 @@ a name, a type and a default value for each setting&lt;/big&gt;</property>
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="sg-box-settings-add-checkbutton">
-                    <property name="label" translatable="yes">Settings can be added and removed</property>
+                    <property name="label" translatable="yes">Settings can be added and removed by the box user</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -1518,6 +1534,7 @@ a name, a type and a default value for each setting&lt;/big&gt;</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
+                    <property name="shadow_type">in</property>
                     <child>
                       <object class="GtkTreeView" id="sg-box-settings-treeview">
                         <property name="visible">True</property>
@@ -1675,20 +1692,12 @@ has to be done manually.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label35">
-                    <property name="visible">True</property>
-                  </object>
-                  <packing>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkScrolledWindow" id="scrolledwindow6">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
+                    <property name="shadow_type">in</property>
                     <child>
                       <object class="GtkTreeView" id="sg-box-algorithms-treeview">
                         <property name="visible">True</property>
@@ -1717,7 +1726,36 @@ has to be done manually.
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkCheckButton" id="sg-box-algorithms-toolkit-checkbutton">
+                    <property name="label" translatable="yes">Use the Codec Toolkit in the implementation (recommended)</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_EXPAND</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="sg-box-algorithms-toolkit-tooltip-button">
+                    <property name="label">gtk-help</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">2</property>
+                    <property name="bottom_attach">3</property>
+                    <property name="x_options">GTK_EXPAND</property>
+                    <property name="y_options">GTK_EXPAND</property>
+                  </packing>
                 </child>
                 <child>
                   <placeholder/>
@@ -1739,28 +1777,30 @@ has to be done manually.
             </child>
           </object>
           <packing>
-            <property name="position">0</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator3">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="padding">16</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkTable" id="table2">
             <property name="visible">True</property>
-            <property name="n_rows">2</property>
             <property name="n_columns">5</property>
             <property name="column_spacing">10</property>
             <property name="row_spacing">10</property>
             <child>
-              <object class="GtkFileChooserButton" id="sg-box-target-directory-filechooserbutton">
+              <object class="GtkLabel" id="label9">
                 <property name="visible">True</property>
-                <property name="action">select-folder</property>
-                <property name="title" translatable="yes">Select a folder</property>
+                <property name="label" translatable="yes">Destination folder:</property>
               </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">3</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton" id="sg-box-target-directory-tooltip-button">
@@ -1773,28 +1813,19 @@ has to be done manually.
               <packing>
                 <property name="left_attach">4</property>
                 <property name="right_attach">5</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
                 <property name="x_options">GTK_EXPAND</property>
                 <property name="y_options">GTK_EXPAND</property>
               </packing>
             </child>
             <child>
-              <object class="GtkHSeparator" id="hseparator3">
+              <object class="GtkFileChooserButton" id="sg-box-target-directory-filechooserbutton">
                 <property name="visible">True</property>
+                <property name="action">select-folder</property>
+                <property name="title" translatable="yes">Select a folder</property>
               </object>
               <packing>
-                <property name="right_attach">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label9">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Target directory:</property>
-              </object>
-              <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="left_attach">1</property>
+                <property name="right_attach">3</property>
               </packing>
             </child>
             <child>
@@ -1803,7 +1834,26 @@ has to be done manually.
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHSeparator" id="hseparator15">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label40">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&lt;b&gt;&lt;span color="#006400"&gt;&lt;big&gt; |   Help and Status Console   | &lt;/big&gt;&lt;/span&gt;&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="position">5</property>
           </packing>
         </child>
         <child>
@@ -1813,6 +1863,7 @@ has to be done manually.
             <property name="hadjustment">adjustment3</property>
             <property name="hscrollbar_policy">automatic</property>
             <property name="vscrollbar_policy">automatic</property>
+            <property name="shadow_type">out</property>
             <child>
               <object class="GtkTextView" id="sg-box-tooltips-textview">
                 <property name="visible">True</property>
@@ -1828,7 +1879,7 @@ has to be done manually.
             </child>
           </object>
           <packing>
-            <property name="position">2</property>
+            <property name="position">6</property>
           </packing>
         </child>
         <child>
@@ -1838,7 +1889,7 @@ has to be done manually.
             <property name="spacing">10</property>
             <child>
               <object class="GtkButton" id="sg-box-check-button">
-                <property name="label" translatable="yes">Check</property>
+                <property name="label" translatable="yes">Check...</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1849,7 +1900,7 @@ has to be done manually.
             </child>
             <child>
               <object class="GtkButton" id="sg-box-ok-button">
-                <property name="label" translatable="yes">OK</property>
+                <property name="label" translatable="yes">Generate !</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
@@ -1874,7 +1925,7 @@ has to be done manually.
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="position">3</property>
+            <property name="position">7</property>
           </packing>
         </child>
       </object>
