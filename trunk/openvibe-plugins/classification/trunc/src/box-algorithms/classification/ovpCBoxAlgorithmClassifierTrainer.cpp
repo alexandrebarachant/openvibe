@@ -3,6 +3,8 @@
 #include <system/Memory.h>
 
 #include <fstream>
+#include <cmath>
+#include <algorithm>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -258,23 +260,24 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 			float64 l_f64FinalAccuracy=0;
 			vector<float64> l_vPartitionAccuracies(m_ui64PartitionCount);
 
+			boolean l_bRandomizeVectorOrder = (&(this->getConfigurationManager()))->expandAsBoolean("${Plugin_Classification_RandomizeKFoldTestData}");
+
+			// create a vector used for mapping feature vectors (initialize it as v[i] = i)
+			for (uint32 i = 0; i < m_vFeatureVector.size(); i++)
+			{
+				m_vFeatureVectorIndex.push_back(i);
+			}
+
+			// randomize the vector if necessary
+			if (l_bRandomizeVectorOrder)
+			{
+				this->getLogManager() << LogLevel_Info << "Randomizing the feature vector set\n";
+				random_shuffle(m_vFeatureVectorIndex.begin(), m_vFeatureVectorIndex.end());
+
+			}
+
 			if(m_ui64PartitionCount>=2)
 			{
-				boolean l_bRandomizeVectorOrder = (&(this->getConfigurationManager()))->expandAsBoolean("${Plugin_Classification_RandomizeKFoldTestData}");
-
-				// create a vector used for mapping feature vectors (initialize it as v[i] = i)
-				for (uint32 i = 0; i < m_vFeatureVector.size(); i++)
-				{
-					m_vFeatureVectorIndex.push_back(i);
-				}
-
-				// randomize the vector if necessary
-				if (l_bRandomizeVectorOrder)
-				{
-					this->getLogManager() << LogLevel_Info << "Randomizing the feature vector set\n";
-					random_shuffle(m_vFeatureVectorIndex.begin(), m_vFeatureVectorIndex.end());
-
-				}
 
 				this->getLogManager() << LogLevel_Info << "k-fold test could take quite a long time, be patient\n";
 				for(uint64 i=0; i<m_ui64PartitionCount; i++)
@@ -292,9 +295,19 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 					this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount << " (performance : " << l_f64PartitionAccuracy << "%)\n";
 				}
 
+				float64 l_fMean = l_f64FinalAccuracy/m_ui64PartitionCount;
+				float64 l_fDeviation = 0;
+
+				for (uint64 i = 0; i < m_ui64PartitionCount; i++)
+				{
+					float64 l_fDiff = l_vPartitionAccuracies[i] - l_fMean;
+					l_fDeviation += l_fDiff * l_fDiff;
+				}
+				l_fDeviation = sqrt( l_fDeviation / m_ui64PartitionCount );
+
 				this->getLogManager() << LogLevel_Trace << "Training on whole set...\n";
 				this->train(0, 0);
-				this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << l_f64FinalAccuracy/m_ui64PartitionCount << "%\n";
+				this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << l_fMean << "% (sigma = " << l_fDeviation << "%)\n";
 			}
 			else
 			{
