@@ -465,7 +465,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 			//default path = dist
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target default  [dist]\n";
 #ifdef OV_OS_Linux
-			l_sTargetDirectory = CString(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
+			l_sTargetDirectory = CString(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pWidgetDialogOpen)));
 			l_sTargetDirectory = l_sTargetDirectory + "/..";
 #elif defined OV_OS_Windows
 			l_sTargetDirectory = "..";
