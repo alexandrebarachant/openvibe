@@ -185,8 +185,8 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			// OpenViBE::Kernel::IAlgorithmProxy* m_pStreamDecoder;
-			// ...
+			// OpenViBEToolkit::TSignalDecocer < $l_box_algorithm_class_name > m_oDecoder;
+			// OpenViBEToolkit::TSignalEncocer < $l_box_algorithm_class_name > m_oEncoder;
 		};
 
 /*
@@ -288,31 +288,22 @@ boolean $l_box_algorithm_class_name::initialize(void)
 	// uint64 l_ui64SettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
 	// float64 l_f64SettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);
 	// ...
-
-	// m_pStreamDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_...StreamDecoder));
-	// m_pStreamDecoder->initialize();
-
+	m_oDecoder.initialize(*this);
+	m_oEncoder.initialize(*this);
 	return true;
 }
 
 boolean $l_box_algorithm_class_name::uninitialize(void)
 {
-	// m_pStreamDecoder->uninitialize();
-	// this->getAlgorithmManager().releaseAlgorithm(*m_pStreamDecoder);
-	// m_pStreamDecoder=NULL;
-
-	// ...
-
+	m_oDecoder.uninitialize();
+	m_oEncoder.uninitialize();
 	return true;
 }
 
 /*
 boolean $l_box_algorithm_class_name::processEvent(IMessageEvent& rMessageEvent)
 {
-	// ...
-
-	// getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
-
+	// this->getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 */
@@ -320,10 +311,7 @@ boolean $l_box_algorithm_class_name::processEvent(IMessageEvent& rMessageEvent)
 /*
 boolean $l_box_algorithm_class_name::processSignal(IMessageSignal& rMessageSignal)
 {
-	// ...
-
-	// getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
-
+	// this->getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 */
@@ -331,10 +319,7 @@ boolean $l_box_algorithm_class_name::processSignal(IMessageSignal& rMessageSigna
 /*
 boolean $l_box_algorithm_class_name::processClock(IMessageClock& rMessageClock)
 {
-	// ...
-
-	// getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
-
+	// this->getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 */
@@ -342,10 +327,7 @@ boolean $l_box_algorithm_class_name::processClock(IMessageClock& rMessageClock)
 /*
 boolean $l_box_algorithm_class_name::processInput(uint32 ui32InputIndex)
 {
-	// ...
-
-	// getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
-
+	// this->getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	return true;
 }
 */
@@ -364,6 +346,23 @@ boolean $l_box_algorithm_class_name::process(void)
 	// l_rDynamicBoxContext.getInputChunkCount()
 	// l_rDynamicBoxContext.getInputChunk(i, )
 	// l_rDynamicBoxContext.getOutputChunk(i, )
+
+	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
+	{
+		m_oDecoder.decode(0, i);
+		if(m_oDecoder.isHeaderReceived())
+		{
+			m_oEncoder.encodeHeader(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+		}
+		if(m_oDecoder.isBufferReceived())
+		{
+			m_oEncoder.encodeBuffer(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+		}
+		if(m_oDecoder.isEndReceived())
+		{
+			m_oEncoder.encodeEnd(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+		}
+	}
 
 	return true;
 }"
