@@ -27,7 +27,7 @@ You can put these files in the trunk directory in your local repository:
 
 The glade interface:
 - interface-@@ClassName@@.glade
-You can put these files in the trunk directory in your local repository:
+You can put this file in the trunk directory in your local repository:
      [openvibe-repository]/trunk/openvibe-applications/acquisition-server/trunk/share/openvibe-applications/acquisition-server/
 
 Don't forget to declare your driver in the Acquisition Server application.

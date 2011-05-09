@@ -182,249 +182,111 @@ void CDriverSkeletonGenerator::buttonOkCB()
 {
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Generating files... \n";
+	CString l_sLogMessages = "Generating files...\n";
+	
 	boolean l_bSuccess = true;
-
-	::GtkWidget * l_pTooltipTextview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-tooltips-textview"));
-	::GtkTextBuffer * l_pTextBuffer  = gtk_text_view_get_buffer(GTK_TEXT_VIEW(l_pTooltipTextview));
-
-	stringstream l_ssTextBuffer;
-	l_ssTextBuffer << "Generating files...\n";
-	gtk_text_buffer_set_text (l_pTextBuffer,
-		l_ssTextBuffer.str().c_str(),
-		-1);
-
-	CString l_sSed;
-#ifdef OV_OS_Windows
-	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
-#else
-#ifdef OV_OS_Linux
-	l_sSed = "sed";
-#endif
-#endif
 
 	CString l_sDate = getDate();
 
+	// we construct the map of substitutions
+	map<CString,CString> l_mSubstitutions;
+	l_mSubstitutions[CString("@@AuthorName@@")] = m_sAuthor;
+	l_mSubstitutions[CString("@@CompanyName@@")] = m_sCompany;
+	l_mSubstitutions[CString("@@Date@@")] = l_sDate;
+	l_mSubstitutions[CString("@@ClassName@@")] = m_sClassName;
+	l_mSubstitutions[CString("@@DriverName@@")] = m_sDriverName;
+	l_mSubstitutions[CString("@@MinChannel@@")] = m_sMinChannel;
+	l_mSubstitutions[CString("@@MaxChannel@@")] = m_sMaxChannel;
+	l_mSubstitutions[CString("@@SamplingFrequency@@")] = m_vSamplingFrequencies[0];
+	
+	::GtkWidget * l_pTooltipTextview = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-tooltips-textview"));
+	::GtkTextBuffer * l_pTextBuffer  = gtk_text_view_get_buffer(GTK_TEXT_VIEW(l_pTooltipTextview));
+
+	
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// driver.h
-	// we check if the skeleton is in place.
-	const gchar* l_sDriverHSkel="../share/openvibe-applications/skeleton-generator/driver.h-skeleton";
-	if(! g_file_test(l_sDriverHSkel, G_FILE_TEST_EXISTS))
+	CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".h";
+	CString l_sTemplate("../share/openvibe-applications/skeleton-generator/driver.h-skeleton");
+	
+	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
-		l_ssTextBuffer << "[FAILED] the file 'driver.h-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver: the file 'driver.h-skeleton' is missing.\n";
-		l_bSuccess = false;
-	}
-	else
-	{
-		l_ssTextBuffer << "[   OK   ] -- 'driver.h-skeleton' found.\n";
 		gtk_text_buffer_set_text (l_pTextBuffer,
-			l_ssTextBuffer.str().c_str()
-			, -1);
-		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'driver.h-skeleton' found.\n";
-
-		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".h";
-
-		l_bSuccess &= executeSedSubstitution(l_sDriverHSkel,"@@AuthorName@@",  m_sAuthor, l_sDest);
-		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@CompanyName@@", m_sCompany);
-		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@Date@@",        l_sDate);
-		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@DriverName@@",  m_sDriverName);
-		l_bSuccess &= executeSedSubstitution(l_sDest,       "@@ClassName@@",   m_sClassName);
-
-		if(l_bSuccess)
-		{
-			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
-		}
-		else
-		{
-			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
-		}
+			l_sLogMessages,
+			-1);
+		l_bSuccess = false;
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// driver.cpp
-	// we check if the skeleton is in place.
-	const gchar* l_sDriverCppSkel="../share/openvibe-applications/skeleton-generator/driver.cpp-skeleton";
-	if(! g_file_test(l_sDriverCppSkel, G_FILE_TEST_EXISTS))
+	l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".cpp";
+	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/driver.cpp-skeleton");
+	
+	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
-		l_ssTextBuffer << "[FAILED] the file 'driver.cpp-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver: the file 'driver.cpp-skeleton' is missing.\n";
+		gtk_text_buffer_set_text (l_pTextBuffer,
+			l_sLogMessages,
+			-1);
 		l_bSuccess = false;
 	}
-	else
-	{
-		l_ssTextBuffer << "[   OK   ] -- 'driver.cpp-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'driver.cpp-skeleton' found.\n";
-
-		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".cpp";
-
-		l_bSuccess &= executeSedSubstitution(l_sDriverCppSkel,"@@AuthorName@@",        m_sAuthor, l_sDest);
-		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@CompanyName@@",       m_sCompany);
-		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@DriverName@@",        m_sDriverName);
-		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@ClassName@@",         m_sClassName);
-		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@SamplingFrequency@@", m_vSamplingFrequencies[0]);
-		l_bSuccess &= executeSedSubstitution(l_sDest,         "@@MaxChannel@@",        m_sMaxChannel);
-
-		if(l_bSuccess)
-		{
-			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
-		}
-		else
-		{
-			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
-		}
-	}
-
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// config.h
-	// we check if the skeleton is in place.
-	const gchar* l_sConfigurationHSkel="../share/openvibe-applications/skeleton-generator/configuration.h-skeleton";
-	if(! g_file_test(l_sConfigurationHSkel, G_FILE_TEST_EXISTS))
+	l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".h";
+	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/configuration.h-skeleton");
+	
+	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
-		l_ssTextBuffer << "[FAILED] the file 'configuration.h-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error << "Driver: the file 'configuration.h-skeleton' is missing.\n";
+		gtk_text_buffer_set_text (l_pTextBuffer,
+			l_sLogMessages,
+			-1);
 		l_bSuccess = false;
 	}
-	else
-	{
-		l_ssTextBuffer << "[   OK   ] -- 'configuration.h-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'configuration.h-skeleton' found.\n";
-
-		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".h";
-
-		l_bSuccess &= executeSedSubstitution(l_sConfigurationHSkel,"@@AuthorName@@",        m_sAuthor, l_sDest);
-		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@CompanyName@@",       m_sCompany);
-		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@Date@@",              l_sDate);
-		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@DriverName@@",        m_sDriverName);
-		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@ClassName@@",         m_sClassName);
-		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@SamplingFrequency@@", m_vSamplingFrequencies[0]);
-		l_bSuccess &= executeSedSubstitution(l_sDest,              "@@MaxChannel@@",        m_sMaxChannel);
-
-		if(l_bSuccess)
-		{
-			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
-		}
-		else
-		{
-			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
-		}
-	}
-
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// config.cpp
-	// we check if the skeleton is in place.
-	const gchar* l_sConfigurationCppSkel="../share/openvibe-applications/skeleton-generator/configuration.cpp-skeleton";
-	if(! g_file_test(l_sConfigurationCppSkel, G_FILE_TEST_EXISTS))
+	l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".cpp";
+	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/configuration.cpp-skeleton");
+	
+	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
-		l_ssTextBuffer << "[FAILED] the file 'configuration.cpp-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error << "the file 'configuration.cpp-skeleton' is missing.\n";
+		gtk_text_buffer_set_text (l_pTextBuffer,
+			l_sLogMessages,
+			-1);
 		l_bSuccess = false;
 	}
-	else
-	{
-		l_ssTextBuffer << "[   OK   ] -- 'configuration.cpp-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'configuration.cpp-skeleton' found.\n";
-
-		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".cpp";
-
-		l_bSuccess &= executeSedSubstitution(l_sConfigurationCppSkel,"@@ClassName@@",        m_sClassName, l_sDest);
-		l_bSuccess &= executeSedSubstitution(l_sDest,                "@@MaxChannel@@",       m_sMaxChannel);
-
-		if(l_bSuccess)
-		{
-			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
-		}
-		else
-		{
-			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
-		}
-	}
-
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// interface.ui
-	// we check if the skeleton is in place.
-	const gchar* l_sInterfaceUISkel="../share/openvibe-applications/skeleton-generator/interface.ui-skeleton";
-	if(! g_file_test(l_sInterfaceUISkel, G_FILE_TEST_EXISTS))
+	l_sDest = m_sTargetDirectory + "/interface-" + m_sClassName + ".ui";
+	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/interface.ui-skeleton");
+	
+	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
-		l_ssTextBuffer << "[FAILED] the file 'interface.ui-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error << "the file 'interface.ui-skeleton' is missing.\n";
+		gtk_text_buffer_set_text (l_pTextBuffer,
+			l_sLogMessages,
+			-1);
 		l_bSuccess = false;
 	}
-	else
+	// the following substitution is done in a .ui file, and not in a cpp file. 
+	// The SED primitive immplemented do not cover that case, and some typo problem happen with the character "
+	CString l_sCommandSed = "s/@@SamplingFrequencyList@@/";
+	for(vector<CString>::iterator it = m_vSamplingFrequencies.begin(); it != m_vSamplingFrequencies.end(); )
 	{
-		l_ssTextBuffer << "[   OK   ] -- 'interface.ui-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'interface.ui-skeleton' found.\n";
-
-		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/interface-" + m_sClassName + ".ui";
-
-		l_bSuccess &= executeSedSubstitution(l_sInterfaceUISkel,"@@DriverName@@",        m_sDriverName, l_sDest);
-		l_bSuccess &= executeSedSubstitution(l_sDest,           "@@MinChannel@@",       m_sMinChannel);
-		l_bSuccess &= executeSedSubstitution(l_sDest,           "@@MaxChannel@@",       m_sMaxChannel);
-		CString l_sCommandSed = "s/@@SamplingFrequencyList@@/";
-		for(vector<CString>::iterator it = m_vSamplingFrequencies.begin(); it != m_vSamplingFrequencies.end(); )
-		{
-			l_sCommandSed = l_sCommandSed + (*it++);
-			if(it!=m_vSamplingFrequencies.end()) l_sCommandSed = l_sCommandSed + "<\\/col><\\/row><row><col id=\\\"0\\\" translatable=\\\"yes\\\">";
-		}
-		l_sCommandSed = l_sCommandSed +  "/g";
-		l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
-
-		if(l_bSuccess)
-		{
-			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
-		}
-		else
-		{
-			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
-		}
+		l_sCommandSed = l_sCommandSed + (*it++);
+		if(it!=m_vSamplingFrequencies.end()) l_sCommandSed = l_sCommandSed + "<\\/col><\\/row><row><col id=\\\"0\\\" translatable=\\\"yes\\\">";
 	}
+	l_sCommandSed = l_sCommandSed +  "/g";
+	l_bSuccess &= executeSedCommand(l_sDest, l_sCommandSed);
+
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// readme-driver.txt
-	// we check if the skeleton is in place.
-	const gchar* l_sReadMeDriverTxtSkel="../share/openvibe-applications/skeleton-generator/readme-driver.txt-skeleton";
-	if(! g_file_test(l_sReadMeDriverTxtSkel, G_FILE_TEST_EXISTS))
+	l_sDest = m_sTargetDirectory + "/README.txt";
+	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/readme-driver.txt-skeleton");
+	
+	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
-		l_ssTextBuffer << "[FAILED] the file 'readme-driver.txt-skeleton' is missing.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Error << "the file 'readme-driver.txt-skeleton' is missing.\n";
+		gtk_text_buffer_set_text (l_pTextBuffer,
+			l_sLogMessages,
+			-1);
 		l_bSuccess = false;
 	}
-	else
-	{
-		l_ssTextBuffer << "[   OK   ] -- 'readme-driver.txt-skeleton' found.\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info << " -- 'readme-driver.txt-skeleton' found.\n";
-
-		//Using GNU sed for parsing and replacing tags
-		CString l_sDest = m_sTargetDirectory + "/README-SKGEN-DRIVER.txt";
-
-		l_bSuccess &= executeSedSubstitution(l_sReadMeDriverTxtSkel,"@@ClassName@@", m_sClassName, l_sDest);
-		l_bSuccess &= executeSedSubstitution(l_sDest,               "@@Date@@",      l_sDate);
-
-		if(l_bSuccess)
-		{
-			l_ssTextBuffer << "[   OK   ] -- " << l_sDest << " written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << l_sDest << " written.\n";
-		}
-		else
-		{
-			l_ssTextBuffer << "[FAILED] -- " << l_sDest << " cannot be written.\n";
-			m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << l_sDest << " cannot be written.\n";
-		}
-	}
-
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 
 	if(l_bSuccess)
@@ -436,14 +298,14 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 	if(!l_bSuccess)
 	{
-		l_ssTextBuffer << "Generation process did not completly succeed. Some files may have not been produced.\n";
+		l_sLogMessages = l_sLogMessages + "Generation process did not completly succeed. Some files may have not been produced.\n";
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "Generation process did not completly succeed. Some files may have not been produced.\n";
 	}
 	else
 	{
-		l_ssTextBuffer << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
-		l_ssTextBuffer << "PLEASE LOOK AT THE README FILE PRODUCED !\n";
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All entries saved in [" << m_sConfigurationFile << "]\n";
+		l_sLogMessages = l_sLogMessages + "Generation process successful. All information saved in [" + m_sConfigurationFile + "]\n";
+		l_sLogMessages = l_sLogMessages + "Please read the file [README.txt] !\n";
+		m_rKernelContext.getLogManager() << LogLevel_Info << "Generation process successful. All information saved in [" << m_sConfigurationFile << "]\n";
 	}
 
 	// Launch the browser to display the produced files
@@ -460,7 +322,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 
 	gtk_text_buffer_set_text(
 		l_pTextBuffer,
-		l_ssTextBuffer.str().c_str(),
+		l_sLogMessages,
 		-1);
 }
 
@@ -514,7 +376,7 @@ CDriverSkeletonGenerator::~CDriverSkeletonGenerator(void)
 {
 }
 
-void CDriverSkeletonGenerator::initialize( void )
+OpenViBE::boolean CDriverSkeletonGenerator::initialize( void )
 {
 	::GtkWidget * l_pWindowDriver = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-window"));
 
@@ -562,6 +424,8 @@ void CDriverSkeletonGenerator::initialize( void )
 	load(m_sConfigurationFile);
 
 	gtk_widget_show_all(l_pWindowDriver);
+
+	return true;
 }
 
 boolean CDriverSkeletonGenerator::save(OpenViBE::CString sFileName)

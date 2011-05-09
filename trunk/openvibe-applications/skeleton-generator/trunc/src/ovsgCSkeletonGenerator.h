@@ -8,6 +8,8 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
+#include <map>
+
 namespace OpenViBESkeletonGenerator
 {
 	class CSkeletonGenerator
@@ -26,7 +28,7 @@ namespace OpenViBESkeletonGenerator
 		OpenViBE::CString             m_sCompany;
 		OpenViBE::CString             m_sTargetDirectory;
 
-		virtual void initialize(void)=0;
+		virtual OpenViBE::boolean initialize(void)=0;
 		
 		OpenViBE::CString m_sConfigurationFile; // basic application config file
 		OpenViBE::boolean m_bConfigurationFileLoaded;
@@ -46,6 +48,10 @@ namespace OpenViBESkeletonGenerator
 		// get the formated string date
 		OpenViBE::CString getDate();
 		
+		// generate a new file, giving a template file, a destination file, and a map ofsubstitutions (Tag,Substitute)
+		// return false if an error occured.
+		OpenViBE::boolean generate(OpenViBE::CString sTemplateFile, OpenViBE::CString sDestinationFile, std::map<OpenViBE::CString,OpenViBE::CString> mSubstitutions, OpenViBE::CString& rLog);
+
 		virtual void getCurrentParameters(void) = 0;
 		virtual OpenViBE::boolean save(OpenViBE::CString sFileName) = 0;
 		virtual OpenViBE::boolean load(OpenViBE::CString sFileName) = 0;

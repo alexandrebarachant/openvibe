@@ -15,7 +15,7 @@ namespace OpenViBESkeletonGenerator
 		CDriverSkeletonGenerator(OpenViBE::Kernel::IKernelContext & rKernelContext, ::GtkBuilder * pBuilderInterface);
 		virtual ~CDriverSkeletonGenerator(void);
 
-		void initialize(void);
+		OpenViBE::boolean initialize(void);
 		OpenViBE::boolean save(OpenViBE::CString sFileName);
 		OpenViBE::boolean load(OpenViBE::CString sFileName);
 		void getCurrentParameters(void);

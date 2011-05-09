@@ -27,11 +27,12 @@ CSkeletonGenerator::~CSkeletonGenerator(void)
 void CSkeletonGenerator::getCommonParameters()
 {
 	//Author and Company
-	::GtkWidget* l_pEntryCompany=GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_company_name"));
+	::GtkWidget* l_pEntryCompany = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_company_name"));
 	m_sCompany = gtk_entry_get_text(GTK_ENTRY(l_pEntryCompany));
 
-	::GtkWidget* l_pEntryAuthor =GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_author_name"));
+	::GtkWidget* l_pEntryAuthor = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_author_name"));
 	m_sAuthor=gtk_entry_get_text(GTK_ENTRY(l_pEntryAuthor));
+
 }
 
 boolean CSkeletonGenerator::saveCommonParameters(CString sFileName)
@@ -46,6 +47,25 @@ boolean CSkeletonGenerator::saveCommonParameters(CString sFileName)
 		return false;
 	}
 
+	// generator selected
+	CString l_sActive;
+	::GtkWidget* l_pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-selection-radio-button"));
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pWidget)))
+	{
+		l_sActive = "0";
+	}
+	l_pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-algo-selection-radio-button"));
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pWidget)))
+	{
+		l_sActive = "1";
+	}
+	l_pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-selection-radio-button"));
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pWidget)))
+	{
+		l_sActive = "2";
+	}
+
+	::fprintf(l_pFile, "SkeletonGenerator_GeneratorSelected = %s\n", l_sActive.toASCIIString());
 	::fprintf(l_pFile, "SkeletonGenerator_Common_Author = %s\n", m_sAuthor.toASCIIString());
 	::fprintf(l_pFile, "SkeletonGenerator_Common_Company = %s\n", m_sCompany.toASCIIString());
 	::fclose(l_pFile);
@@ -79,7 +99,14 @@ boolean CSkeletonGenerator::loadCommonParameters(CString sFileName)
 		return false;
 	}
 
-	::GtkWidget* l_pEntryCompany=GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_company_name"));
+	::GtkWidget* l_pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-driver-selection-radio-button"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pWidget), (m_rKernelContext.getConfigurationManager().expandAsUInteger("${SkeletonGenerator_GeneratorSelected}") == 0));
+	l_pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-algo-selection-radio-button"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pWidget), (m_rKernelContext.getConfigurationManager().expandAsUInteger("${SkeletonGenerator_GeneratorSelected}") == 1));
+	l_pWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-selection-radio-button"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pWidget), (m_rKernelContext.getConfigurationManager().expandAsUInteger("${SkeletonGenerator_GeneratorSelected}") == 2));
+	
+	::GtkWidget* l_pEntryCompany = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_company_name"));
 	gtk_entry_set_text(GTK_ENTRY(l_pEntryCompany),m_rKernelContext.getConfigurationManager().expand("${SkeletonGenerator_Common_Company}"));
 
 	::GtkWidget * l_pEntryAuthorName = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "entry_author_name"));
@@ -157,13 +184,16 @@ boolean CSkeletonGenerator::executeSedCommand(CString sTemplateFile, CString sCo
 {
 	CString l_sSed;
 	CString l_sMove;
+	CString l_sNull;
 #ifdef OV_OS_Windows
 	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
 	l_sMove = "move";
+	l_sNull = "NULL";
 #else
 #ifdef OV_OS_Linux
 	l_sSed = "sed";
 	l_sMove = "mv";
+	l_sNull = "/dev/null";
 #endif
 #endif
 
@@ -179,7 +209,7 @@ boolean CSkeletonGenerator::executeSedCommand(CString sTemplateFile, CString sCo
 	{
 		l_sCommandSed =  l_sCommandSed + " > tmp-sed";
 		l_bSuccess = (system(l_sCommandSed) == 0);
-		CString l_sMoveCommand = l_sMove + " tmp-sed \"" + sTemplateFile + "\" >> NULL";
+		CString l_sMoveCommand = l_sMove + " tmp-sed \"" + sTemplateFile + "\" >> "+l_sNull;
 		l_bSuccess &= (system(l_sMoveCommand) == 0);
 		m_rKernelContext.getLogManager() << LogLevel_Trace << " -- Move command : [" << l_sMoveCommand << "]\n";
 	}
@@ -230,7 +260,7 @@ boolean CSkeletonGenerator::executeSedSubstitution(CString sTemplateFile, CStrin
 	{
 		l_sCommandSed =  l_sCommandSed + " > tmp-sed";
 		l_bSuccess = (system(l_sCommandSed) == 0);
-		CString l_sMoveCommand = l_sMove + " tmp-sed \"" + sTemplateFile + "\" >> NULL";
+		CString l_sMoveCommand = l_sMove + " tmp-sed \"" + sTemplateFile + "\" >> "+l_sNull;
 		l_bSuccess &= (system(l_sMoveCommand) == 0);
 		m_rKernelContext.getLogManager() << LogLevel_Trace << " -- Move command : [" << l_sMoveCommand << "]\n";
 #ifdef OV_OS_Windows
@@ -264,3 +294,51 @@ CString CSkeletonGenerator::getDate()
 	return l_sDate;
 }
 
+boolean CSkeletonGenerator::generate(CString sTemplateFile, CString sDestinationFile, map<CString,CString> mSubstitutions, CString& rLog)
+{
+	// we check if the template file is in place.
+	if(! g_file_test(sTemplateFile, G_FILE_TEST_EXISTS))
+	{
+		rLog = rLog + "[FAILED] the template file '"+sTemplateFile+"' is missing.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << "The template file '"<<sTemplateFile<<"' is missing.\n";
+		return false;
+	}
+	
+	// we check the map
+	if(mSubstitutions.size() == 0)
+	{
+		rLog = rLog + "[WARNING] No substitution provided.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "No substitution provided.\n";
+		return false;
+	}
+
+	boolean l_bSuccess = true;
+
+	rLog = rLog +  "[   OK   ] -- template file '"+sTemplateFile+"' found.\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << " -- template file '" << sTemplateFile << "' found.\n";
+
+	//we need to create the destination file by copying the template file, then do the first substitution
+	map<CString,CString>::const_iterator it = mSubstitutions.begin();
+	l_bSuccess &= executeSedSubstitution(sTemplateFile, it->first, it->second, sDestinationFile);
+	it++;
+	
+	//next substitutions are done on the - incomplete - destination file itself
+	while(it != mSubstitutions.end() && l_bSuccess)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "Executing substitution ["<<it->first<<"] ->["<<it->second<<"]\n";
+		l_bSuccess &= executeSedSubstitution(sDestinationFile, it->first, it->second);
+		it++;
+	}
+
+	if(! l_bSuccess)
+	{
+		rLog = rLog + "[FAILED] -- " + sDestinationFile + " cannot be written.\n";
+		m_rKernelContext.getLogManager() << LogLevel_Error << " -- " << sDestinationFile << " cannot be written.\n";
+		return false;
+
+	}
+
+	rLog = rLog + "[   OK   ] -- " + sDestinationFile + " written.\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << " -- " << sDestinationFile << " written.\n";
+	return true;
+}

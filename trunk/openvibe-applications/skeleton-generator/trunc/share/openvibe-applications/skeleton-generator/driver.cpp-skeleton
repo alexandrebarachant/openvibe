@@ -56,6 +56,7 @@ boolean CDriver@@ClassName@@::initialize(
 	// initialize hardware and get
 	// available header information
 	// from it
+	// Using for example the connection ID provided by the configuration (m_ui32ConnectionID)
 	// ...
 
 	// Saves parameters
@@ -90,6 +91,11 @@ boolean CDriver@@ClassName@@::loop(void)
 	// whether the buffer is full, send it to the acquisition server
 	//...
 	m_pCallback->setSamples(m_pSample);
+	
+	// When your sample buffer is fully loaded, 
+	// it is advised to ask the acquisition server 
+	// to correct any drift in the acquisition automatically.
+	m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 
 	// ...
 	// receive events from hardware
@@ -138,6 +144,7 @@ boolean CDriver@@ClassName@@::isConfigurable(void)
 
 boolean CDriver@@ClassName@@::configure(void)
 {
+	// Change this line if you need to specify some references to your driver attribute that need configuration, e.g. the connection ID.
 	CConfiguration@@ClassName@@ m_oConfiguration(m_rDriverContext,"../share/openvibe-applications/acquisition-server/interface-@@ClassName@@.ui");
 	if(!m_oConfiguration.configure(m_oHeader))
 	{

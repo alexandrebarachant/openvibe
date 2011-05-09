@@ -60,7 +60,7 @@ namespace OpenViBEAcquisitionServer
 		 * Insert here all specific attributes, such as USB port number or device ID.
 		 * Example :
 		 */
-		// OpenViBE::uint32 m_ui32USBPort;
+		// OpenViBE::uint32 m_ui32ConnectionID;
 	};
 };
 

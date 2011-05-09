@@ -22,6 +22,9 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
+		// you may have to add to your constructor some reference parameters
+		// for example, a connection ID:
+		//CConfiguration@@ClassName@@(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName, OpenViBE::uint32& rConnectionId);
 		CConfiguration@@ClassName@@(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName);
 
 		virtual OpenViBE::boolean preConfigure(void);
@@ -35,9 +38,10 @@ namespace OpenViBEAcquisitionServer
 
 		/*
 		 * Insert here all specific attributes, such as a connection ID.
+		 * use references to directly modify the corresponding attribute of the driver
 		 * Example:
 		 */
-		// OpenViBE::uint32 m_ui32ConnectionID;
+		// OpenViBE::uint32& m_ui32ConnectionID;
 	};
 };
 

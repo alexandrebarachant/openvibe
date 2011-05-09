@@ -24,6 +24,7 @@ void CConfigurationGTecGUSBamp::buttonCalibratePressedCB(void)
 }
 _________________________________________________*/
 
+// If you added more reference attribute, initialize them here
 CConfiguration@@ClassName@@::CConfiguration@@ClassName@@(IDriverContext& rDriverContext, const char* sGtkBuilderFileName)
 	:CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rDriverContext(rDriverContext)
@@ -54,7 +55,8 @@ boolean CConfiguration@@ClassName@@::postConfigure(void)
 	if(m_bApplyConfiguration)
 	{
 		// If the user pressed the "apply" button, you need to save the changes made in the configuration.
-		// For example, you can save the ID of the selected device.
+		// For example, you can save the connection ID of the selected device:
+		// m_ui32ConnectionID = <value-from-gtk-widget>
 	}
 
 	if(! CConfigurationBuilder::postConfigure()) // normal header is filled (Subject ID, Age, Gender, channels, sampling frequency), ressources are realesed

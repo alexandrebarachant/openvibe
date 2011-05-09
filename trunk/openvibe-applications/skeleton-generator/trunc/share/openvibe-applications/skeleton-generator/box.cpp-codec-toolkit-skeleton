@@ -76,75 +76,71 @@ boolean CBoxAlgorithm@@ClassName@@::process(void)
 	// - To get input/output/setting count:
 	// l_rStaticBoxContext.getInputCount();
 	// l_rStaticBoxContext.getOutputCount();
-	// l_rStaticBoxContext.getSettingCount();
 	
-	// - To get the chunks currently available on a particular input :
+	// - To get the number of chunks currently available on a particular input :
 	// l_rDynamicBoxContext.getInputChunkCount(input_index)
-	// l_rDynamicBoxContext.getInputChunk(input_index, chunk_index)
 	
-	// - To get the chunk available on a particular output :
-	// l_rDynamicBoxContext.getOutputChunk(output_index)
 	// - To send an output chunk :
 	// l_rDynamicBoxContext.markOutputAsReadyToSend(output_index, chunk_start_time, chunk_end_time);
 	
 	
 	// A typical process iteration may look like this.
-	// This example only iterate over the first input.
+	// This example only iterate over the first input of type Signal, and output a modified Signal.
+	// thus, the box uses 1 decoder (m_oSignalDecoder) and 1 encoder (m_oSignalEncoder)
 	/*
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	//iterate over all chunk on input 0
 	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
-		// fill the decoder input with input chunk
-		ip_pMemoryBufferToDecode=l_rDynamicBoxContext.getInputChunk(0, i);
-		// link the encoder output to box output chunk
-		op_pEncodedMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
-
-		// decode the input chunk
-		m_pSignalDecoder->process();
+		// decode the chunk i on input 0
+		m_oSignalDecoder.decode(0,i);
 		// the decoder may have decoded 3 different parts : the header, a buffer or the end of stream.
-		// 3 corresponding output triggers may rise.
-		// the decoded block is now in the decoded output (let's say op_pDecodedMatrix)
-		
-		if(m_pSignalDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
+		if(m_oSignalDecoder.isHeaderReceived())
 		{
-			// Header received. This happens only once when pressing "play". For example with a StreamedMatrix input, you now know the dimension count size, and label of the matrix
-			// ... do some process ...
+			// Header received. This happens only once when pressing "play". For example with a StreamedMatrix input, you now know the dimension count, sizes, and labels of the matrix
+			// ... maybe do some process ...
 			
-			// Pass the header to the next boxes, by encoding it :
-			m_pSignalEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
-			// send the output chunk containing the header :
+			// Pass the header to the next boxes, by encoding a header on the output 0:
+			m_oSignalEncoder.encodeHeader(0)
+			// send the output chunk containing the header. The dates are the same as the input chunk:
 			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 		}
-		if(m_pSignalDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
+		if(m_oSignalDecoder.isBufferReceived())
 		{
-			// Buffer received. For example the matrix values
-			// Access to the matrix buffer can be done thanks to :
-			// op_pDecodedMatrix->getBuffer(), which is a one-dimension vector of value.
+			// Buffer received. For example the signal values
+			// Access to the buffer can be done thanks to :
+			IMatrix* l_pMatrix = m_oSignalDecoder.getOutputMatrix(); // the StreamedMatrix of samples.
+			uint64 l_uiSamplingFrequency = m_oSignalDecoder.getOutputSamplingRate(); // the sampling rate of the signal
 			
-			// ... do some process ...
+			// ... do some process on the matrix ...
 
 			// Encode the output buffer :
-			m_pSignalEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
+			m_oSignalEncoder.encodeBuffer(0);
 			// and send it to the next boxes :
 			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 			
 		}
-		if(m_pSignalDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd))
+		if(m_oSignalDecoder.isEndReceived())
 		{
 			// End of stream received. This happens only once when pressing "stop". Just pass it to the next boxes so they receive the message :
-			m_pSignalEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd);
+			m_oSignalEncoder.encodeEnd(0);
 			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 		}
 
-		// The current input chunk has been processed, let's discard it :
-		l_rDynamicBoxContext.markInputAsDeprecated(0, i);
+		// The current input chunk has been processed, and automaticcaly discarded.
+		// you don't need to call "l_rDynamicBoxContext.markInputAsDeprecated(0, i);"
 	}
 	*/
 
 	// check the official developer documentation webpage for more example and information :
+	
+	// Basic tutorial, does not use Codec toolkit :
 	// http://openvibe.inria.fr/documentation/unstable/Doc_DeveloperDocumentation.html
+	// Codec Toolkit pages :
+	// http://openvibe.inria.fr/documentation/unstable/Doc_Tutorial_Developer_SignalProcessing_CodecToolkit.html
+	// http://openvibe.inria.fr/documentation/unstable/Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref.html
+	
 	// Feel free to ask experienced developers on the forum (http://openvibe.inria.fr/forum) and IRC (#openvibe on irc.freenode.net).
 
     return true;

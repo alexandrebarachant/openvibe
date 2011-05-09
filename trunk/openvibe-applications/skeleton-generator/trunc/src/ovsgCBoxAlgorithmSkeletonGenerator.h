@@ -14,7 +14,7 @@ namespace OpenViBESkeletonGenerator
 			CBoxAlgorithmSkeletonGenerator(OpenViBE::Kernel::IKernelContext & rKernelContext,::GtkBuilder * pBuilderInterface);
 			virtual ~CBoxAlgorithmSkeletonGenerator(void);
 
-			void initialize(void);
+			OpenViBE::boolean initialize(void);
 			OpenViBE::boolean save(OpenViBE::CString sFileName);
 			OpenViBE::boolean load(OpenViBE::CString sFileName);
 			void getCurrentParameters(void);
@@ -57,10 +57,39 @@ namespace OpenViBESkeletonGenerator
 			std::map <OpenViBE::CString, OpenViBE::CString> m_mAlgorithmInitialisation_ReferenceTargets;//the map between algorithm and corresponding initialisation of ref targets
 			std::map <OpenViBE::CString, OpenViBE::CString> m_mAlgorithmUninitialisation;//the map between algorithm and corresponding uninitialisation
 			
+			// Box Listener
+			OpenViBE::boolean              m_bUseBoxListener;
+			// input
+			OpenViBE::boolean              m_bBoxListenerOnInputAdded;
+			OpenViBE::boolean              m_bBoxListenerOnInputRemoved;
+			OpenViBE::boolean              m_bBoxListenerOnInputTypeChanged;
+			OpenViBE::boolean              m_bBoxListenerOnInputNameChanged;
+			OpenViBE::boolean              m_bBoxListenerOnInputConnected;
+			OpenViBE::boolean              m_bBoxListenerOnInputDisconnected;
+			// output
+			OpenViBE::boolean              m_bBoxListenerOnOutputAdded;
+			OpenViBE::boolean              m_bBoxListenerOnOutputRemoved;
+			OpenViBE::boolean              m_bBoxListenerOnOutputTypeChanged;
+			OpenViBE::boolean              m_bBoxListenerOnOutputNameChanged;
+			OpenViBE::boolean              m_bBoxListenerOnOutputConnected;
+			OpenViBE::boolean              m_bBoxListenerOnOutputDisconnected;
+			// setting
+			OpenViBE::boolean              m_bBoxListenerOnSettingAdded;
+			OpenViBE::boolean              m_bBoxListenerOnSettingRemoved;
+			OpenViBE::boolean              m_bBoxListenerOnSettingTypeChanged;
+			OpenViBE::boolean              m_bBoxListenerOnSettingNameChanged;
+			OpenViBE::boolean              m_bBoxListenerOnSettingDefaultValueChanged;
+			OpenViBE::boolean              m_bBoxListenerOnSettingValueChanged;
 			
+			OpenViBE::boolean              m_bProcessInput;
+			OpenViBE::boolean              m_bProcessClock;
+			OpenViBE::uint32               m_ui32ClockFrequency;
 
 			void buttonCheckCB(void);
 			void buttonOkCB(void);
+			void forceRecheckCB(void);
+			void toggleListenerCheckbuttonsStateCB(OpenViBE::boolean bNewState);
+			void toggleClockFrequencyStateCB(OpenViBE::boolean bNewState);
 			void buttonTooltipCB(::GtkButton* pButton);
 			void buttonExitCB(void);
 
@@ -76,27 +105,7 @@ namespace OpenViBESkeletonGenerator
 
 		private:
 
-			typedef enum
-			{
-				WidgetName_NameVersion,
-				WidgetName_Description,
-				WidgetName_Icon,
-				WidgetName_Inputs,
-				WidgetName_Inputs_CanModify,
-				WidgetName_Inputs_CanAddRemove,
-				WidgetName_Outputs,
-				WidgetName_Outputs_CanModify,
-				WidgetName_Outputs_CanAddRemove,
-				WidgetName_Settings,
-				WidgetName_Settings_CanModify,
-				WidgetName_Settings_CanAddRemove,
-				WidgetName_TargetDirectory,
-				WidgetName_ClassName,
-				WidgetName_Category,
-				WidgetName_Algorithm
-			} EWidgetName;
-
-			std::map < ::GtkButton*, EWidgetName > m_vWidgetName;
+			std::map < ::GtkButton*, OpenViBE::CString > m_vTooltips;
 
 			OpenViBE::CString getRandomIdentifierString(void);
 
