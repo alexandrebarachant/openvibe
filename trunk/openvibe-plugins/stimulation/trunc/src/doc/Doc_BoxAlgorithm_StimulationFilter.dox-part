@@ -50,15 +50,15 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting1|
- * The starting time of the filter.
+ * This is the default action to perform if no rule is matching.
  * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Setting1|
  
  * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting2|
- * The ending time of the filter.
+ * The starting time of the filter.
  * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Setting2|
  
  * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting3|
- * This is the default action to perform if no rule is matching.
+ * The ending time of the filter.
  * |OVP_DocEnd_BoxAlgorithm_StimulationFilter_Setting3|
 
  * |OVP_DocBegin_BoxAlgorithm_StimulationFilter_Setting4|
