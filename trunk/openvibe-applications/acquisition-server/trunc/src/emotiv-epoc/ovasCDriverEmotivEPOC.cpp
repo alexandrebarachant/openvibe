@@ -39,28 +39,13 @@ CDriverEmotivEPOC::CDriverEmotivEPOC(IDriverContext& rDriverContext)
 	,m_ui32TotalSampleCount(0)
 	,m_pSample(NULL)
 {
-	m_oHeader.setChannelCount(14); // 14 + 2 REF electrodes
-
-	m_oHeader.setChannelName(0,  "AF3");
-	m_oHeader.setChannelName(1,  "F7");
-	m_oHeader.setChannelName(2,  "F3");
-	m_oHeader.setChannelName(3,  "FC5");
-	m_oHeader.setChannelName(4,  "T7");
-	m_oHeader.setChannelName(5,  "P7");
-	m_oHeader.setChannelName(6,  "O1");
-	m_oHeader.setChannelName(7,  "O2");
-	m_oHeader.setChannelName(8,  "P8");
-	m_oHeader.setChannelName(9,  "T8");
-	m_oHeader.setChannelName(10, "FC6");
-	m_oHeader.setChannelName(11, "F4");
-	m_oHeader.setChannelName(12, "F8");
-	m_oHeader.setChannelName(13, "AF4");
-
-	m_oHeader.setSamplingFrequency(128); // let's hope so...
-
+	m_bUseGyroscope = false;
+	
 	m_ui32UserID = 0;
 	m_bReadyToCollect = false;
 	m_bFirstStart = true;
+
+
 }
 
 CDriverEmotivEPOC::~CDriverEmotivEPOC(void)
@@ -79,6 +64,35 @@ boolean CDriverEmotivEPOC::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
+	m_oHeader.setChannelCount(14);
+	if(m_bUseGyroscope)
+	{
+		m_oHeader.setChannelCount(16); // 14 + 2 REF + 2 Gyro 
+	}
+	
+	m_oHeader.setChannelName(0,  "AF3");
+	m_oHeader.setChannelName(1,  "F7");
+	m_oHeader.setChannelName(2,  "F3");
+	m_oHeader.setChannelName(3,  "FC5");
+	m_oHeader.setChannelName(4,  "T7");
+	m_oHeader.setChannelName(5,  "P7");
+	m_oHeader.setChannelName(6,  "O1");
+	m_oHeader.setChannelName(7,  "O2");
+	m_oHeader.setChannelName(8,  "P8");
+	m_oHeader.setChannelName(9,  "T8");
+	m_oHeader.setChannelName(10, "FC6");
+	m_oHeader.setChannelName(11, "F4");
+	m_oHeader.setChannelName(12, "F8");
+	m_oHeader.setChannelName(13, "AF4");
+
+	if(m_bUseGyroscope)
+	{
+		m_oHeader.setChannelName(14, "Gyro-X");
+		m_oHeader.setChannelName(15, "Gyro-Y");
+	}
+
+	m_oHeader.setSamplingFrequency(128); // let's hope so...
+
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "INIT called.\n";
 	if(m_rDriverContext.isConnected())
 	{
@@ -246,7 +260,7 @@ boolean CDriverEmotivEPOC::isConfigurable(void)
 
 boolean CDriverEmotivEPOC::configure(void)
 {
-	CConfigurationEmotivEPOC m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Emotiv-EPOC.ui"); 
+	CConfigurationEmotivEPOC m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Emotiv-EPOC.ui", m_bUseGyroscope); 
 
 	if(!m_oConfiguration.configure(m_oHeader)) 
 	{

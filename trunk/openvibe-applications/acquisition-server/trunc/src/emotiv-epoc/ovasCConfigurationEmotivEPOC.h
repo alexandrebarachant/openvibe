@@ -25,7 +25,7 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		CConfigurationEmotivEPOC(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName);
+		CConfigurationEmotivEPOC(OpenViBEAcquisitionServer::IDriverContext& rDriverContext, const char* sGtkBuilderFileName, OpenViBE::boolean& rUseGyroscope);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);
@@ -33,6 +33,7 @@ namespace OpenViBEAcquisitionServer
 	protected:
 
 		OpenViBEAcquisitionServer::IDriverContext& m_rDriverContext;
+		OpenViBE::boolean& m_rUseGyroscope;
 	};
 
 };

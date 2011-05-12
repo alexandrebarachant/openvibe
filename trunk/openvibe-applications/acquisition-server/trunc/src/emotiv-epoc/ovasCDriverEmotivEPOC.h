@@ -65,6 +65,8 @@ namespace OpenViBEAcquisitionServer
 
 		DataHandle m_tDataHandle;
 		OpenViBE::boolean m_bFirstStart;
+
+		OpenViBE::boolean m_bUseGyroscope;
 	};
 };
 

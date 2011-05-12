@@ -13,9 +13,10 @@ using namespace std;
 
 //____________________________________________________________________________________
 
-CConfigurationEmotivEPOC::CConfigurationEmotivEPOC(IDriverContext& rDriverContext, const char* sGtkBuilderFileName)
+CConfigurationEmotivEPOC::CConfigurationEmotivEPOC(IDriverContext& rDriverContext, const char* sGtkBuilderFileName, boolean& rUseGyroscope)
 	:CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rDriverContext(rDriverContext)
+	,m_rUseGyroscope(rUseGyroscope)
 {
 }
 
@@ -26,6 +27,9 @@ boolean CConfigurationEmotivEPOC::preConfigure(void)
 		return false;
 	}
 
+	::GtkToggleButton* l_pCheckbuttonGyro = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "checkbutton_gyro"));
+	gtk_toggle_button_set_active(l_pCheckbuttonGyro,m_rUseGyroscope);
+
 	return true;
 }
 
@@ -34,7 +38,8 @@ boolean CConfigurationEmotivEPOC::postConfigure(void)
 
 	if(m_bApplyConfiguration)
 	{
-		
+		::GtkToggleButton* l_pCheckbuttonGyro = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "checkbutton_gyro"));
+		m_rUseGyroscope = ::gtk_toggle_button_get_active(l_pCheckbuttonGyro);
 	}
 
 	if(! CConfigurationBuilder::postConfigure()) // normal header is filled, ressources are realesed

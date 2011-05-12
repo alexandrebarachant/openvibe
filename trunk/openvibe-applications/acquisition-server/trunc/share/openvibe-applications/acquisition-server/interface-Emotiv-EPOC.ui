@@ -68,7 +68,7 @@
             <property name="visible">True</property>
             <property name="label" translatable="yes">Emotiv EPOC
 
-&lt;small&gt;&lt;span color="darkred"&gt;14 channels
+&lt;small&gt;&lt;span color="darkred"&gt;14 EEG channels
 128 Hz sampling rate&lt;/span&gt;&lt;/small&gt;</property>
             <property name="use_markup">True</property>
             <property name="justify">center</property>
@@ -190,6 +190,18 @@
               </packing>
             </child>
             <child>
+              <object class="GtkCheckButton" id="checkbutton_gyro">
+                <property name="label" translatable="yes">Add 2 more channels for gyroscope</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkButton" id="button_change_channel_names">
                 <property name="label" translatable="yes">Change channel names</property>
                 <property name="visible">True</property>
@@ -198,7 +210,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
