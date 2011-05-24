@@ -30,7 +30,7 @@
           <object class="GtkToolButton" id="reset-score-button">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-            <property name="label" translatable="yes">reset scores</property>
+            <property name="label" translatable="yes">reset</property>
             <property name="stock_id">gtk-refresh</property>
           </object>
           <packing>
@@ -54,6 +54,18 @@
             <property name="label" translatable="yes">percentages</property>
             <property name="stock_id">gtk-justify-center</property>
             <property name="active">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleToolButton" id="show-scores-toggle-button">
+            <property name="visible">True</property>
+            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="label" translatable="yes">scores</property>
+            <property name="stock_id">gtk-justify-center</property>
           </object>
           <packing>
             <property name="expand">False</property>

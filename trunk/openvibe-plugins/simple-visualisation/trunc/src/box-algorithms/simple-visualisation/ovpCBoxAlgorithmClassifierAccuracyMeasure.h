@@ -62,6 +62,7 @@ namespace OpenViBEPlugins
 
 			std::vector<SProgressBar> m_vProgressBar;
 			OpenViBE::boolean m_bShowPercentages;
+			OpenViBE::boolean m_bShowScores;
 
 		};
 

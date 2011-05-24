@@ -31,6 +31,12 @@ namespace
 		CBoxAlgorithmClassifierAccuracyMeasure* l_pClassifierAccuracyMeasure=reinterpret_cast<CBoxAlgorithmClassifierAccuracyMeasure*>(pUserData);
 		l_pClassifierAccuracyMeasure->m_bShowPercentages=(gtk_toggle_tool_button_get_active(pButton)?true:false);
 	}
+
+	void show_scores_toggle_button_cb(::GtkToggleToolButton* pButton, gpointer pUserData)
+	{
+		CBoxAlgorithmClassifierAccuracyMeasure* l_pClassifierAccuracyMeasure=reinterpret_cast<CBoxAlgorithmClassifierAccuracyMeasure*>(pUserData);
+		l_pClassifierAccuracyMeasure->m_bShowScores=(gtk_toggle_tool_button_get_active(pButton)?true:false);
+	}
 };
 
 boolean CBoxAlgorithmClassifierAccuracyMeasure::initialize(void)
@@ -76,6 +82,7 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::initialize(void)
 
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "reset-score-button")),                  "clicked",      G_CALLBACK(::reset_scores_button_cb),            this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-percentages-toggle-button")),      "toggled",      G_CALLBACK(::show_percentages_toggle_button_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-scores-toggle-button")),           "toggled",      G_CALLBACK(::show_scores_toggle_button_cb), this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pToolbarWidgetInterface, "classifier-accuracy-measure-toolbar")), "delete_event", G_CALLBACK(gtk_widget_hide),                     NULL);
 
 	m_pMainWidget=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "classifier-accuracy-measure-table"));
@@ -85,6 +92,7 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::initialize(void)
 	getVisualisationContext().setToolbar(m_pToolbarWidget);
 
 	m_bShowPercentages=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-percentages-toggle-button")))?true:false);
+	m_bShowScores=(gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pToolbarWidgetInterface, "show-scores-toggle-button")))?true:false);
 
 	return true;
 }
@@ -277,8 +285,10 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::process(void)
 						std::stringstream ss;
 						ss << std::fixed;
 						ss << std::setprecision(2);
-						ss << "score : " << m_vProgressBar[ip-1].m_ui32Score << "/" << m_vProgressBar[ip-1].m_ui32StimulationCount << "\n";
-
+						if(m_bShowScores)
+						{
+							ss << "score : " << m_vProgressBar[ip-1].m_ui32Score << "/" << m_vProgressBar[ip-1].m_ui32StimulationCount << "\n";
+						}
 						float64 l_f64Percent = 0.0;
 						if(m_vProgressBar[ip-1].m_ui32StimulationCount != 0)
 						{
