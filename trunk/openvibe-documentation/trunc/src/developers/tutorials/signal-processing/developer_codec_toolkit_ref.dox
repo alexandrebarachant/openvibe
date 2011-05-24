@@ -74,11 +74,11 @@ OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > m_pInputM
 \endcode 
 
 \subsection Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Decoder_Methods Public Methods
-- \b Decode : decode the input chunk on given indexes. Basically, it just sets the input memory buffer, calls \c process() on the decoder algorithm, and mark the input chunk as deprecated.
+- \b Decode moethod: decode the input chunk on given indexes. Basically, it just sets the input memory buffer, calls \c process() on the decoder algorithm, and mark the input chunk as deprecated if asked (if nothing specified, by default the chunk is marked).
 \code
-OpenViBE::boolean decode(OpenViBE::uint32 ui32InputIndex, OpenViBE::uint32 ui32ChunkIndex)
+OpenViBE::boolean decode(OpenViBE::uint32 ui32InputIndex, OpenViBE::uint32 ui32ChunkIndex, OpenViBE::boolean bMarkInputAsDeprecated = true)
 \endcode
-- \b Check : tells which type of memory buffer was just decoded. These methods are implemented by all decoders with respect to their own triggers.
+- \b Check methods: tells which type of memory buffer was just decoded. These methods are implemented by all decoders with respect to their own triggers.
 \code
 OpenViBE::boolean isHeaderReceived(void)
 OpenViBE::boolean isBufferReceived(void)
@@ -196,6 +196,7 @@ OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* >& getInputMinMaxFreque
 \endcode
 
 \section Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Encoder_ChannelLocalisation TChannelLocalisationEncoder
+The Channel Localisation Encoder inherits from the Streamed Matrix Encoder. It needs a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) in order to process to encoding. As you get a reference you can modify the input directly.
 The Channel Localisation Encoder inherits from the Streamed Matrix Encoder. It needs a IMatrix (Localisation Matrix) and a boolean (Dynamic or not) in order to process to encoding. As you get a reference you can modify the input directly.
 \code
 // From TStreamedMatrixEncoder <T> :

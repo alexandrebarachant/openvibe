@@ -125,13 +125,11 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::process(void)
 			m_ui64LastStimulationInputChunkEndTime = l_rDynamicBoxContext.getInputChunkEndTime(0,i);
 		}
 	}
-	// We must encode the header or end on EVERY output
-			
 
-	
 	for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(1); j++)
 	{
-		m_pStreamDecoder->decode(1,j);
+		//We decode the chunk but we don't automatically mark it as deprecated, as we may need to keep it.
+		m_pStreamDecoder->decode(1,j,false);
 		{
 			l_rDynamicBoxContext.getInputChunk(1, j, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
 			if(m_pStreamDecoder->isHeaderReceived() || m_pStreamDecoder->isEndReceived())
@@ -146,16 +144,19 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::process(void)
 			{
 				if(m_i32ActiveOutputIndex == -1)
 				{
+					// we drop every chunk when no output is activated
 					l_rDynamicBoxContext.markInputAsDeprecated(1,j);
 				}
 				else
 				{
 					if(l_ui64StartTime < m_ui64LastStimulationInputChunkEndTime)
 					{
+						// the input chunk is in the good time range (we are sure that no stim has been received to change the active output)
 						l_rDynamicBoxContext.appendOutputChunkData(m_i32ActiveOutputIndex, l_pChunkBuffer, l_ui64ChunkSize);
 						l_rDynamicBoxContext.markOutputAsReadyToSend(m_i32ActiveOutputIndex, l_ui64StartTime, l_ui64EndTime);
-						//l_rDynamicBoxContext.markInputAsDeprecated(1,j);
+						l_rDynamicBoxContext.markInputAsDeprecated(1,j);
 					}
+					// else : we keep the input chunk, no mark as deprecated !
 				}
 			}
 		}

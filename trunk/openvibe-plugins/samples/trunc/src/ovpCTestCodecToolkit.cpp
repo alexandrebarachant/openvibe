@@ -11,7 +11,7 @@ using namespace OpenViBEToolkit;
 
 boolean CTestCodecToolkit::initialize(void)
 {
-	//TStreamedMatrixDecoder < CTestCodecToolkit > l_oStreamedMatrixDecoder(*this);
+	// You can also manipulate pointers to Codec object. Creation and destruction must be done like that :	
 	TStreamedMatrixDecoder < CTestCodecToolkit > * l_oStreamedMatrixDecoder = new TStreamedMatrixDecoder < CTestCodecToolkit >(*this);
 	delete l_oStreamedMatrixDecoder;
 	TStreamedMatrixEncoder < CTestCodecToolkit > * l_oStreamedMatrixEncoder = new TStreamedMatrixEncoder < CTestCodecToolkit >(*this);
@@ -46,6 +46,8 @@ boolean CTestCodecToolkit::initialize(void)
 	delete l_oTExperimentInformationDecoder;
 	TExperimentInformationEncoder < CTestCodecToolkit > * l_oTExperimentInformationEncoder = new TExperimentInformationEncoder < CTestCodecToolkit >(*this);
 	delete l_oTExperimentInformationEncoder;
+
+	//-----------------------------------------------------------------------------------------
 
 	m_oStreamedMatrixDecoder.initialize(*this);
 	m_oStreamedMatrixEncoder.initialize(*this);
@@ -177,7 +179,11 @@ boolean CTestCodecToolkit::process(void)
 					IStimulationSet* l_pStimulations =  m_oStimDecoder.getOutputStimulationSet();
 					// as we constantly receive stimulations on the stream, we will check if the incoming set is empty or not
 					if(l_pStimulations->getStimulationCount() != 0)
-						this->getLogManager() << LogLevel_Info << "Stimulation Set buffer received ("<<l_pStimulations->getStimulationCount()<<" stims in set).\n";
+					{
+						this->getLogManager() << LogLevel_Info << "Stimulation Set buffer received (1st stim is ["<<l_pStimulations->getStimulationIdentifier(0)<<":"<<this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, l_pStimulations->getStimulationIdentifier(0))<<"]).\n";
+						m_oStimEncoder.getInputStimulationSet()->clear();
+						m_oStimEncoder.getInputStimulationSet()->appendStimulation(l_pStimulations->getStimulationIdentifier(0)+1,l_pStimulations->getStimulationDate(0),0);
+					}
 				}
 				else if(l_oInputType==OV_TypeId_ExperimentationInformation)
 				{
