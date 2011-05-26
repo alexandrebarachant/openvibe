@@ -67,10 +67,12 @@ boolean CAlgorithmConfusionMatrix::process(void)
 		for(uint32 i = 0 ; i<l_ui64ClassCount; i++)
 		{
 			stringstream ss;
-			ss << "Target\nClass " << i+1;
+			//ss << "Target\nClass " << i+1;
+			ss << "Target Class\n" << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation,ip_pClassesCodes->getStimulationIdentifier(i));
 			op_pConfusionMatrix->setDimensionLabel(0,i,ss.str().c_str());
 			stringstream ss_;
-			ss_ << "Result\nClass "<< i+1;
+			//ss_ << "Result\nClass "<< i+1;
+			ss_ << "Result Class\n" << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation,ip_pClassesCodes->getStimulationIdentifier(i));
 			op_pConfusionMatrix->setDimensionLabel(1,i,ss_.str().c_str());
 		}
 
