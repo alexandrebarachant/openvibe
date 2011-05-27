@@ -46,7 +46,15 @@ namespace OpenViBEPlugins
 			{
 				OpenViBE::CIdentifier l_oTypeIdentifier;
 				rBox.getOutputType(0, l_oTypeIdentifier);
-				rBox.setInputType(0, l_oTypeIdentifier);
+				if(l_oTypeIdentifier==OV_TypeId_Signal || l_oTypeIdentifier==OV_TypeId_Spectrum)
+				{
+					rBox.setInputType(0, l_oTypeIdentifier);
+				}
+				else
+				{
+					rBox.getInputType(0, l_oTypeIdentifier);
+					rBox.setOutputType(0, l_oTypeIdentifier);
+				}
 				return true;
 			}
 
@@ -54,7 +62,15 @@ namespace OpenViBEPlugins
 			{
 				OpenViBE::CIdentifier l_oTypeIdentifier;
 				rBox.getInputType(0, l_oTypeIdentifier);
-				rBox.setOutputType(0, l_oTypeIdentifier);
+				if(l_oTypeIdentifier==OV_TypeId_Signal || l_oTypeIdentifier==OV_TypeId_Spectrum)
+				{
+					rBox.setOutputType(0, l_oTypeIdentifier);
+				}
+				else
+				{
+					rBox.getOutputType(0, l_oTypeIdentifier);
+					rBox.setInputType(0, l_oTypeIdentifier);
+				}
 				return true;
 			}
 
@@ -78,8 +94,8 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_ChannelSelector; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelSelector; }
-			// virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new CBoxAlgorithmChannelSelectorListener; }
-			// virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
+			virtual OpenViBE::Plugins::IBoxListener* createBoxListener(void) const               { return new CBoxAlgorithmChannelSelectorListener; }
+			virtual void releaseBoxListener(OpenViBE::Plugins::IBoxListener* pBoxListener) const { delete pBoxListener; }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
