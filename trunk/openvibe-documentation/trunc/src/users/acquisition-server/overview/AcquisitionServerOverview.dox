@@ -74,9 +74,19 @@ The other settings are :
 \section Doc_AcquisitionServerOverview_Usage Usage
 
 Once a device driver has been selected and relevant settings configured, data acquisition can start. The server should first connect to the acquisition device, which
-is done by clicking the 'Connect' button. A label will inform the user whether the connection was successful, and the number of connected clients will also be indicated.
+is done by clicking the 'Connect' button. A label will inform the user whether the connection was successful.
 
-If the connection was established and the client(s) successfully connected, data sampling can be started/stopped by clicking 'Play'/'Stop'. Once one is done
-using a given device, one can disconnect from it by clicking 'Disconnect'.
+If the connection was established and the device(s) successfully connected, data sampling can be started/stopped by clicking 'Play'/'Stop'. 
+
+Once a driver is 'connected' and 'playing', the clients (e.g. acquisition client boxes in a Designer scenario) may be started : press 'play' in the designer. Data should be received, decoded and sent through the openvibe pipeline you deisgned.
+
+In the acquisition server window, you should see the number of client connected to your server (e.g. '2 hosts connected')
+
+If you don't receive any signal from the acquisition client (e.g. you don't manage to display any signal), look in the console. If you find the following message :
+\code
+[WARNING] At time 402653184 (0x18000000) <Box algorithm::Acquisition client> Could not receive memory buffer size
+[WARNING] Box algorithm <Acquisition client> has been deactivated because process phase returned bad status
+\endcode
+The acquisition server is connected, but stopped. Press 'Play' in the acquisition server then play your scenario again.
 
 */
