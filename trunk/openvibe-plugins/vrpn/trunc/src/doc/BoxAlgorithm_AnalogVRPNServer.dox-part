@@ -74,8 +74,8 @@ __________________________________________________________________
  * Default \e VRPN connection port is \c 3883. But it may be possible that
  * you want to expose §OpenViBE§ on another port. This is not currently possible.
  *
- * For \e analogs emulation, you way want to look at the
- * \ref Doc_BoxAlgorithm_AnalogVRPNServer documentation that does almost
- * the same as this box but transcoding streamed matrices to analog states.
+ * For \e buttons emulation, you way want to look at the
+ * \ref Doc_BoxAlgorithm_ButtonVRPNServer documentation that does almost
+ * the same as this box but transcoding stimulations to button states.
  * |OVP_DocEnd_BoxAlgorithm_AnalogVRPNServer_Miscellaneous|
  */
