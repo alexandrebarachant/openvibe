@@ -30,7 +30,7 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Outputs|
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Output1|
- OVTK_StimulationId_EndOfFile is outputed when the sound is stopped. It may happens after a "stop" trigger received or a natural end of file.
+ The box outputs the "play" and "stop" triggers when the sound is actually started and stopped (manually or at the end of file). These stimulations are synchronized with the OpenAL engine, which timing may differ slightly with the input triggers.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Output1|
 __________________________________________________________________
 
@@ -41,11 +41,11 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Setting1|
-  The stimulation that trigger the sound play.
+  The stimulation that triggers the sound play.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Setting1|
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Setting2|
- The stimulation that trigger the sound stop.
+ The stimulation that triggers the sound stop.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Setting2|
 
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Setting3|

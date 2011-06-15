@@ -34,6 +34,7 @@ boolean CBoxAlgorithmOpenALSoundPlayer::initialize(void)
 	m_bLoop = FSettingValueAutoCast(*this->getBoxAlgorithmContext(),3);
 
 	m_ui64LastOutputChunkDate = -1;
+	m_bStartOfSoundSent = false;
 	m_bEndOfSoundSent = false;
 
 	if(alutInit(NULL,NULL) != AL_TRUE)
@@ -140,6 +141,7 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 				if(l_opStimulationSet->getStimulationIdentifier(j) == m_ui64StopTrigger)
 				{
 					stopSound();
+					m_bStartOfSoundSent = false;
 				}
 			}
 		}
@@ -158,12 +160,23 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 	{
 		ip_pStimulationSet->clear();
 		ip_pStimulationSet->appendStimulation(
-			OVTK_StimulationId_EndOfFile,
+			m_ui64StopTrigger,
 			m_ui64LastOutputChunkDate,
 			0);
 		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
 		m_bEndOfSoundSent = true;
+	}
+	if(l_uiStatus == AL_PLAYING && !m_bStartOfSoundSent)
+	{
+		ip_pStimulationSet->clear();
+		ip_pStimulationSet->appendStimulation(
+			m_ui64PlayTrigger,
+			m_ui64LastOutputChunkDate,
+			0);
+		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
+		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
+		m_bStartOfSoundSent = true;
 	}
 
 	m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();

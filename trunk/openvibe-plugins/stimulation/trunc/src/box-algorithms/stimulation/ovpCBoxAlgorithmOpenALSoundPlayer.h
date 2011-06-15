@@ -59,6 +59,7 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pMemoryBuffer;
 
 			OpenViBE::uint64 m_ui64LastOutputChunkDate;
+			OpenViBE::boolean m_bStartOfSoundSent;
 			OpenViBE::boolean m_bEndOfSoundSent;
 			OpenViBE::boolean m_bLoop;
 			OpenViBE::uint64 m_ui64PlayTrigger;
@@ -99,8 +100,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
-				rBoxAlgorithmPrototype.addInput  ("Stimulation stream", OV_TypeId_Stimulations);
-				rBoxAlgorithmPrototype.addOutput ("Stimulation stream", OV_TypeId_Stimulations);
+				rBoxAlgorithmPrototype.addInput  ("Input triggers", OV_TypeId_Stimulations);
+				rBoxAlgorithmPrototype.addOutput ("Resync triggers", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addSetting("PLAY trigger", OV_TypeId_Stimulation,"OVTK_StimulationId_Label_00");
 				rBoxAlgorithmPrototype.addSetting("STOP trigger", OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
 				rBoxAlgorithmPrototype.addSetting("File to play", OV_TypeId_Filename, "../share/openvibe-plugins/stimulation/ov_beep.wav");
