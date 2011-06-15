@@ -209,7 +209,7 @@ no_need_to_patch_3d_functionnality:
 	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "OpenViBE-designer-dynamic.exe$\r$\n"
+	FileWrite $0 "OpenViBE-designer-dynamic.exe %1 %2 %3 %4 %5 %6$\r$\n"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "pause$\r$\n"
 	FileClose $0
