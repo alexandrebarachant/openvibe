@@ -201,3 +201,12 @@ export OpenViBE_build_order_="
 if [ -e ./linux-dependencies ]; then
 	source ./linux-dependencies
 fi;
+
+if [ "$MATLABROOT" == "" ]; then
+	if [ "`which matlab`" != "" ] ; then 
+		export MATLABROOT=`matlab -e | grep "^MATLAB=" | sed "s/^MATLAB=//g"`
+		export MATLABARCH=`matlab -e | grep "^ARCH=" | sed "s/^ARCH=//g"`
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MATLABROOT/bin/$MATLABARCH
+	fi
+fi
+
