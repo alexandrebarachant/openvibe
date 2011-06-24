@@ -4,7 +4,6 @@
 #include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
-#include <ebml/IReader.h>
 #include <gtk/gtk.h>
 #include <vector>
 #include <string>
@@ -25,8 +24,8 @@ namespace OpenViBEPlugins
 		};
 
 		class CDisplayCueImage :
-			public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>,
-			public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
+			public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+			//public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
 		{
 		public:
 
@@ -37,6 +36,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean initialize();
 			virtual OpenViBE::boolean uninitialize();
 			virtual OpenViBE::boolean processInput(OpenViBE::uint32 ui32InputIndex);
+			virtual OpenViBE::uint64 getClockFrequency(void){ return (128LL<<32); }
+			virtual OpenViBE::boolean processClock(OpenViBE::CMessageClock& rMessageClock);
 			virtual OpenViBE::boolean process();
 			virtual void redraw(void);
 			virtual void resize(OpenViBE::uint32 ui32Width, OpenViBE::uint32 ui32Height);
@@ -45,10 +46,10 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
-			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
+			//virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
+			//virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
-			virtual void processState(void);
+			//virtual void processState(void);
 			virtual void drawCuePicture(OpenViBE::uint32 uint32CueID);
 
 			//The Builder handler used to create the interface
@@ -56,10 +57,14 @@ namespace OpenViBEPlugins
 			::GtkWidget*  m_pMainWindow;
 			::GtkWidget*  m_pDrawingArea;
 
-			//ebml
-			EBML::IReader* m_pReader[1];
-			OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* m_pStimulationReaderCallBack;
-
+			OpenViBEToolkit::TStimulationDecoder<CDisplayCueImage> m_oStimulationDecoder;
+			OpenViBEToolkit::TStimulationEncoder<CDisplayCueImage> m_oStimulationEncoder;
+			
+			/*penViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > ip_pStimulationSet;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pMemoryBuffer;*/
+			OpenViBE::uint64 m_ui64LastOutputChunkDate;
+			
 			//
 			EDisplayCueImageState   m_eCurrentState;
 			OpenViBE::uint32  m_uint32CurrentCueID;
@@ -82,6 +87,11 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64EndTime;
 
 			OpenViBE::boolean m_bError;
+
+			OpenViBE::boolean m_bNewImageRequested;
+			OpenViBE::boolean m_bClearScreenRequested;
+			OpenViBE::boolean m_bRedrawSucess;
+
 		};
 
 		class CDisplayCueImageListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
@@ -159,6 +169,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput  ("Stimulations", OV_TypeId_Stimulations);
+				rPrototype.addOutput  ("Stimulations", OV_TypeId_Stimulations);
 				rPrototype.addSetting("Display images in full screen", OV_TypeId_Boolean, "false");
 				rPrototype.addSetting("Clear screen Stimulation", OV_TypeId_Stimulation, "OVTK_StimulationId_VisualStimulationStop");
 				rPrototype.addSetting("Cue Image 1", OV_TypeId_Filename, "../share/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");

@@ -35,57 +35,23 @@ namespace OpenViBEPlugins
 			return TRUE;
 		}
 
-		void CDisplayCueImage::setStimulationCount(const uint32 ui32StimulationCount)
-		{
-			/*TODO nothing? */
-		}
-
-		void CDisplayCueImage::setStimulation(const uint32 ui32StimulationIndex, const uint64 ui64StimulationIdentifier, const uint64 ui64StimulationDate)
-		{
-			boolean l_bStateUpdated = false;
-
-			if(ui64StimulationIdentifier == m_ui64ClearScreenStimulation)
-			{
-				m_eCurrentState = EDisplayCueImageState_Idle;
-				l_bStateUpdated = true;
-			}
-			else
-				for(uint32 i=0; i<=m_ui32NuberOfCue; i++)
-					if(ui64StimulationIdentifier == m_pStimulationsId[i])
-					{
-						m_eCurrentState = EDisplayCueImageState_Cue;
-						m_uint32CurrentCueID = i;
-						l_bStateUpdated = true;
-						break;
-					}
-
-			if(l_bStateUpdated)
-			{
-				processState();
-			}
-		}
-
-		void CDisplayCueImage::processState()
-		{
-			if(GTK_WIDGET(m_pDrawingArea)->window)
-			{
-				gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,NULL,true);
-			}
-		}
-
 		CDisplayCueImage::CDisplayCueImage(void) :
 			m_pBuilderInterface(NULL),
 			m_pMainWindow(NULL),
 			m_pDrawingArea(NULL),
-			m_pStimulationReaderCallBack(NULL),
+			//m_pStimulationReaderCallBack(NULL),
 			m_eCurrentState(EDisplayCueImageState_Idle),
 			m_uint32CurrentCueID(0),
 			m_pOriginalPicture(NULL),
 			m_pScaledPicture(NULL),
 			m_bFullScreen(false),
-			m_bError(false)
+			m_bError(false),
+			m_ui64LastOutputChunkDate(-1),
+			m_bNewImageRequested(false),
+			m_bClearScreenRequested(false),
+			m_bRedrawSucess(false)
 		{
-			m_pReader[0] = NULL;
+			//m_pReader[0] = NULL;
 
 			m_oBackgroundColor.pixel = 0;
 			m_oBackgroundColor.red = 0;
@@ -127,10 +93,8 @@ namespace OpenViBEPlugins
 			}
 
 			//>>>> Initialisation
-
-			//The stimulation reader
-			m_pStimulationReaderCallBack=createBoxAlgorithmStimulationInputReaderCallback(*this);
-			m_pReader[0] = EBML::createReader(*m_pStimulationReaderCallBack);
+			m_oStimulationDecoder.initialize(*this);
+			m_oStimulationEncoder.initialize(*this);
 
 			//load the gtk builder interface
 			m_pBuilderInterface=gtk_builder_new();
@@ -186,11 +150,8 @@ namespace OpenViBEPlugins
 				return true;
 			}
 
-			releaseBoxAlgorithmStimulationInputReaderCallback(m_pStimulationReaderCallBack);
-
-			//release the ebml reader
-			m_pReader[0]->release();
-			m_pReader[0]=NULL;
+			m_oStimulationDecoder.uninitialize();
+			m_oStimulationEncoder.uninitialize();
 
 			//destroy drawing area
 			if(m_pDrawingArea)
@@ -217,6 +178,47 @@ namespace OpenViBEPlugins
 			return true;
 		}
 
+		boolean CDisplayCueImage::processClock(CMessageClock& rMessageClock)
+		{
+			IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
+
+			if(m_bRedrawSucess)
+			{
+				if(m_bNewImageRequested)
+				{
+					//this is first redraw() for that image
+					m_oStimulationEncoder.getInputStimulationSet()->clear();
+					m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(
+						m_pStimulationsId[m_uint32CurrentCueID],
+						this->getPlayerContext().getCurrentTime(),
+						0);
+					m_oStimulationEncoder.encodeBuffer(0);
+					l_pBoxIO->markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
+						
+					m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
+					m_bNewImageRequested = false;
+				}
+				if(m_bClearScreenRequested)
+				{
+					
+					m_oStimulationEncoder.getInputStimulationSet()->clear();
+					m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(
+						m_ui64ClearScreenStimulation,
+						this->getPlayerContext().getCurrentTime(),
+						0);
+					m_oStimulationEncoder.encodeBuffer(0);
+					l_pBoxIO->markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
+						
+					m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
+
+					m_bClearScreenRequested = false;
+				}
+
+				m_bRedrawSucess = false;
+			}
+			return true;
+		}
+
 		boolean CDisplayCueImage::processInput(uint32 ui32InputIndex)
 		{
 			if(m_bError)
@@ -236,13 +238,48 @@ namespace OpenViBEPlugins
 			{
 				for(uint32 chunk=0; chunk<l_pBoxIO->getInputChunkCount(input); chunk++)
 				{
-					uint64 l_ui64ChunkSize;
-					const uint8* l_pChunkBuffer=NULL;
-
-					if(l_pBoxIO->getInputChunk(input, chunk, m_ui64StartTime, m_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer))
+					m_oStimulationDecoder.decode(0,chunk,true);
+					if(m_oStimulationDecoder.isHeaderReceived())
 					{
-						m_pReader[input]->processData(l_pChunkBuffer, l_ui64ChunkSize);
-						l_pBoxIO->markInputAsDeprecated(input, chunk);
+						m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
+						m_oStimulationEncoder.encodeHeader(0);
+						l_pBoxIO->markOutputAsReadyToSend(0, 0, m_ui64LastOutputChunkDate);
+					}
+					if(m_oStimulationDecoder.isBufferReceived())
+					{
+						for(uint32 stim = 0; stim < m_oStimulationDecoder.getOutputStimulationSet()->getStimulationCount(); stim++)
+						{
+							boolean l_bStateUpdated = false;
+							uint64 l_ui64StimulationIdentifier = m_oStimulationDecoder.getOutputStimulationSet()->getStimulationIdentifier(stim);
+							if(l_ui64StimulationIdentifier == m_ui64ClearScreenStimulation)
+							{
+								m_eCurrentState = EDisplayCueImageState_Idle;
+								m_bClearScreenRequested = true;
+								l_bStateUpdated = true;
+							}
+							else
+							{
+								for(uint32 i=0; i<=m_ui32NuberOfCue; i++)
+								{
+									if(l_ui64StimulationIdentifier == m_pStimulationsId[i])
+									{
+										m_eCurrentState = EDisplayCueImageState_Cue;
+										m_uint32CurrentCueID = i;
+										l_bStateUpdated = true;
+										m_bNewImageRequested = true;
+										break;
+									}
+								}
+							}
+							if(l_bStateUpdated)
+							{
+								if(GTK_WIDGET(m_pDrawingArea)->window)
+								{
+									gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,NULL,true);
+									// it will trigger the callback redraw()
+								}
+							}
+						}
 					}
 				}
 			}
@@ -250,15 +287,24 @@ namespace OpenViBEPlugins
 			return true;
 		}
 
+		//Callback called by GTK
 		void CDisplayCueImage::redraw()
 		{
 			switch(m_eCurrentState)
 			{
 				case EDisplayCueImageState_Cue:
 					drawCuePicture(m_uint32CurrentCueID);
+					if(m_bNewImageRequested)
+					{
+						m_bRedrawSucess = true;
+					}
 					break;
 
 				case EDisplayCueImageState_Idle:
+					if(m_bClearScreenRequested)
+					{
+						m_bRedrawSucess = true; //always succes when drawing nothing at all
+					}
 					break;
 			}
 		}
