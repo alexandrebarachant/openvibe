@@ -36,6 +36,17 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_CSPSpatialFilterTrainer_Input3|
 __________________________________________________________________
 
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_CSPSpatialFilterTrainer_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_CSPSpatialFilterTrainer_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_CSPSpatialFilterTrainer_Output1|
+ The CSP Trainer outputs the stimulation <b>OVTK_StimulationId_TrainCompleted</b> when the training process was successfull. No output is produced if the process failed.
+ * |OVP_DocEnd_BoxAlgorithm_CSPSpatialFilterTrainer_Output1|
+__________________________________________________________________
+
 Settings description
 __________________________________________________________________
 
@@ -44,7 +55,7 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_CSPSpatialFilterTrainer_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_CSPSpatialFilterTrainer_Setting1|
- This should contain the stimulus identifier denoting the end of a recording session or end of file, e.g. OVTK_GDF_End_Of_Session
+ This should contain the stimulus identifier denoting the end of a recording session or end of file, e.g. OVTK_GDF_End_Of_Session or OVTK_StimulationId_ExperimentStop.
  * |OVP_DocEnd_BoxAlgorithm_CSPSpatialFilterTrainer_Setting1|
 
  * |OVP_DocBegin_BoxAlgorithm_CSPSpatialFilterTrainer_Setting2|

@@ -85,6 +85,8 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::initialize(void)
 	m_pSignalDecoderCondition2=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamDecoder));
 	m_pSignalDecoderCondition2->initialize();
 
+	m_oStimulationEncoder.initialize(*this);
+
 	m_ui64StimulationIdentifier=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	m_sSpatialFilterConfigurationFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
 	m_ui64FilterDimension=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);
@@ -97,6 +99,8 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::uninitialize(void)
 	m_pSignalDecoderCondition1->uninitialize();
 	m_pSignalDecoderCondition2->uninitialize();
 	m_pStimulationDecoder->uninitialize();
+
+	m_oStimulationEncoder.uninitialize();
 
 	this->getAlgorithmManager().releaseAlgorithm(*m_pSignalDecoderCondition1);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pSignalDecoderCondition2);
@@ -129,6 +133,8 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 		m_pStimulationDecoder->process();
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
+			m_oStimulationEncoder.encodeHeader(0);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_rDynamicBoxContext.getInputChunkStartTime(0, i),l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 		}
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
@@ -137,9 +143,17 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 			{
 				l_bShouldTrain |= (op_pStimulationSet->getStimulationIdentifier(j)==m_ui64StimulationIdentifier);
 			}
+			if(l_bShouldTrain)
+			{
+				uint64 l_ui32TrainCompletedStimulation = this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation,"OVTK_StimulationId_TrainCompleted");
+				m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(l_ui32TrainCompletedStimulation, op_pStimulationSet->getStimulationDate(j), 0);
+				m_oStimulationEncoder.encodeBuffer(0);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_rDynamicBoxContext.getInputChunkStartTime(0, i),l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+			}
 		}
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
 		{
+			m_oStimulationEncoder.encodeEnd(0);
 		}
 		l_rDynamicBoxContext.markInputAsDeprecated(0, i);
 	}
@@ -270,7 +284,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 		else
 		{
 			this->getLogManager() << LogLevel_ImportantWarning << "Eigen vector decomposition failed...\n";
-			return true;
+			return false;
 		}
 
 		this->getLogManager() << LogLevel_Info << "CSP Spatial filter trained successfully.\n";
