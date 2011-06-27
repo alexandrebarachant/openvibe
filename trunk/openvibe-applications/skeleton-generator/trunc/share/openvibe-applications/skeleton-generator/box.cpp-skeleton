@@ -48,7 +48,7 @@ boolean CBoxAlgorithm@@ClassName@@::processClock(IMessageClock& rMessageClock)
 uint64 CBoxAlgorithm@@ClassName@@::getClockFrequency(void)
 {
 	// Note that the time is coded on a 64 bits unsigned integer, fixed decimal point (32:32)
-	return @@ClockFrequency@@; // the box clock frequency
+	return @@ClockFrequency@@LL; // the box clock frequency
 }
 /*******************************************************************************/
 

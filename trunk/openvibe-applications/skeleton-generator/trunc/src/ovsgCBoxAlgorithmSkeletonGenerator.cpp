@@ -211,7 +211,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB(void)
 		l_ssTextBuffer << "[   OK   ] Valid box name.\n";
 	}
 
-	const boost::regex l_RegExpClassName("([a-z]|[A-Z])+([a-z]|[A-Z]|[0-9][_])*",boost::regex::perl);
+	const boost::regex l_RegExpClassName("([a-z]|[A-Z])+([a-z]|[A-Z]|[0-9]|[_])*",boost::regex::perl);
 	if(boost::regex_match(string(m_sClassName),l_RegExpClassName) == false)
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "-- class name: INVALID (" << (const char *)m_sClassName << ")\n";
