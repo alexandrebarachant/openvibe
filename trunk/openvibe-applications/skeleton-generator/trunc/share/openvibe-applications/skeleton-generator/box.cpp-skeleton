@@ -21,14 +21,14 @@ boolean CBoxAlgorithm@@ClassName@@::initialize(void)
 	// float64 l_f64SettingValue = FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);
 	// ...
 
-    return true;
+	return true;
 }
 /*******************************************************************************/
 
 boolean CBoxAlgorithm@@ClassName@@::uninitialize(void)
 {
 @@AlgorithmUninitialisation@@
-    return true;
+	return true;
 }
 /*******************************************************************************/
 
@@ -147,5 +147,5 @@ boolean CBoxAlgorithm@@ClassName@@::process(void)
 	// http://openvibe.inria.fr/documentation/unstable/Doc_DeveloperDocumentation.html
 	// Feel free to ask experienced developers on the forum (http://openvibe.inria.fr/forum) and IRC (#openvibe on irc.freenode.net).
 
-    return true;
+	return true;
 }
