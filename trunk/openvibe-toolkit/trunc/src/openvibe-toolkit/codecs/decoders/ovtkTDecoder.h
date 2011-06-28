@@ -18,7 +18,7 @@ namespace OpenViBEToolkit
 
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
-		
+
 		virtual void setInputChunk(const OpenViBE::IMemoryBuffer * pInputChunkMemoryBuffer)
 		{
 			m_pInputMemoryBuffer = pInputChunkMemoryBuffer;
@@ -46,7 +46,7 @@ namespace OpenViBEToolkit
 	public:
 		// We make visible the initialize methods of the superclass (should be TCodec), in the same scope (public)
 		using T::initialize;
-		
+
 		/*
 		This public function handles every aspects of the decoding process:
 		- fill the input memory buffer with a chunk
@@ -70,7 +70,7 @@ namespace OpenViBEToolkit
 
 	/*
 	This class provides an access to the superclass TDecoder.
-	Use case : iterating over a vector of TDecoder, calling decode() each time. 
+	Use case : iterating over a vector of TDecoder, calling decode() each time.
 	You don't need to know which type of decoder is in the vector.
 	*/
 	template <class T>

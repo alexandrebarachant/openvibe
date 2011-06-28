@@ -35,6 +35,8 @@
 #include "codecs/encoders/ovtkTEncoder.h"
 #include "codecs/decoders/ovtkTDecoder.h"
 
+#include "codecs/decoders/ovtkTAcquisitionDecoder.h"
+
 #include "codecs/encoders/ovtkTStimulationStreamEncoder.h"
 #include "codecs/decoders/ovtkTStimulationStreamDecoder.h"
 

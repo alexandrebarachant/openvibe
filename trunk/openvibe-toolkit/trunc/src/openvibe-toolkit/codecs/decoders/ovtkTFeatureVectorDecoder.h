@@ -12,9 +12,9 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TFeatureVectorDecoderLocal : public T
 	{
-		
+
 	protected:
-	
+
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pInputMemoryBuffer;
@@ -33,7 +33,7 @@ namespace OpenViBEToolkit
 	public:
 		using T::initialize;
 		using T::uninitialize;
-		
+
 		virtual OpenViBE::boolean isHeaderReceived()
 		{
 			return m_pCodec->isOutputTriggerActive(OVP_GD_Algorithm_FeatureVectorStreamDecoder_OutputTriggerId_ReceivedHeader);
@@ -66,7 +66,7 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 			initialize(rBoxAlgorithm);
 		}
-		~TFeatureVectorDecoder()
+		virtual ~TFeatureVectorDecoder()
 		{
 			uninitialize();
 		}

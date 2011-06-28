@@ -51,8 +51,8 @@ namespace OpenViBEToolkit
 
 	public:
 
-		/* 
-		These public methods handle every aspect of the encoding process : 
+		/*
+		These public methods handle every aspect of the encoding process :
 		- prepare the output memory buffer with a chunk
 		- encode (specific for each encoder)
 		- mark output as ready to be sent has to be done manually, for accurate timing.
@@ -82,7 +82,7 @@ namespace OpenViBEToolkit
 
 	/*
 	This class provides an access to the superclass TEncoder.
-	Use case : iterating over a vector of TEncoder, calling encodeHeader() each time. 
+	Use case : iterating over a vector of TEncoder, calling encodeHeader() each time.
 	You don't need to know which type of encoder is in the vector.
 	*/
 	template <class T>

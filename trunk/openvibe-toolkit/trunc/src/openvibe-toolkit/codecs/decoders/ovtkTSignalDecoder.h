@@ -16,7 +16,7 @@ namespace OpenViBEToolkit
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_pOutputSamplingRate;
-		
+
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pInputMemoryBuffer;
@@ -35,7 +35,7 @@ namespace OpenViBEToolkit
 
 	public:
 		using T::initialize;
-		
+
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -90,7 +90,7 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 			initialize(rBoxAlgorithm);
 		}
-		~TSignalDecoder()
+		virtual ~TSignalDecoder()
 		{
 			uninitialize();
 		}

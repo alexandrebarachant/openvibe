@@ -12,16 +12,15 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TSignalEncoderLocal : public T
 	{
-		
+
 	protected:
 		//The signal stream is a streamed matrix plus a sampling rate
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_pInputSamplingRate;
-		
+
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pOutputMemoryBuffer;
 		using T::m_pInputMatrix;
-
 
 		OpenViBE::boolean initializeImpl()
 		{
@@ -37,7 +36,7 @@ namespace OpenViBEToolkit
 	public:
 		//agin... we propagate initialize from upperclass.
 		using T::initialize;
-		
+
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -101,7 +100,7 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 			initialize(rBoxAlgorithm);
 		}
-		~TSignalEncoder()
+		virtual ~TSignalEncoder()
 		{
 			uninitialize();
 		}

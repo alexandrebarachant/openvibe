@@ -12,11 +12,11 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TFeatureVectorEncoderLocal : public T
 	{
-		
+
 	protected:
 		// the feature vector stream is just a streamed matrix with some constraint (dimension = 2).
 		// no specific parameter.
-		
+
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pOutputMemoryBuffer;
@@ -33,7 +33,7 @@ namespace OpenViBEToolkit
 		}
 
 	protected:
-	
+
 		OpenViBE::boolean encodeHeaderImpl(void)
 		{
 			return m_pCodec->process(OVP_GD_Algorithm_FeatureVectorStreamEncoder_InputTriggerId_EncodeHeader);
@@ -69,7 +69,7 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 			initialize(rBoxAlgorithm);
 		}
-		~TFeatureVectorEncoder()
+		virtual ~TFeatureVectorEncoder()
 		{
 			uninitialize();
 		}

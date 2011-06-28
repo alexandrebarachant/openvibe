@@ -12,11 +12,11 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TStreamedMatrixDecoderLocal : public T
 	{
-				
+
 	protected:
 
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputMatrix;
-		
+
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pInputMemoryBuffer;
@@ -88,7 +88,7 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 			initialize(rBoxAlgorithm);
 		}
-		~TStreamedMatrixDecoder()
+		virtual ~TStreamedMatrixDecoder()
 		{
 			uninitialize();
 		}

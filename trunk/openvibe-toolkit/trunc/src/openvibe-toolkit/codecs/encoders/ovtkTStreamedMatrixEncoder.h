@@ -16,7 +16,7 @@ namespace OpenViBEToolkit
 	protected:
 		//specific attribute : a matrix handler
 		OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputMatrix;
-		
+
 		using T::m_pCodec;
 		using T::m_pBoxAlgorithm;
 		using T::m_pOutputMemoryBuffer;
@@ -34,7 +34,7 @@ namespace OpenViBEToolkit
 	public:
 		// we propagate the visiblity of TCodec::initialize
 		using T::initialize;
-		
+
 		OpenViBE::boolean uninitialize(void)
 		{
 			if(m_pBoxAlgorithm == NULL || m_pCodec == NULL)
@@ -97,7 +97,7 @@ namespace OpenViBEToolkit
 			m_pBoxAlgorithm = NULL;
 			initialize(rBoxAlgorithm);
 		}
-		~TStreamedMatrixEncoder()
+		virtual ~TStreamedMatrixEncoder()
 		{
 			uninitialize();
 		}
