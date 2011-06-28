@@ -196,7 +196,7 @@ namespace Socket
 			void* pBuffer,
 			const uint32 ui32BufferSize)
 		{
-			if(!isConnected())
+			if(!isConnected() || !ui32BufferSize)
 			{
 				return 0;
 			}
