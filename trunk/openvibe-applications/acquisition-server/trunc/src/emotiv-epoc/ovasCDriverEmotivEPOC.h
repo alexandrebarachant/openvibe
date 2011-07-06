@@ -55,9 +55,11 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
 		OpenViBE::uint32 m_ui32TotalSampleCount;
 		OpenViBE::float32* m_pSample;
-		OpenViBE::float64* m_pBuffer;
+		//OpenViBE::float64* m_pBuffer;
 
 	private:
+
+		OpenViBE::uint32 m_ui32EDK_LastErrorCode;
 
 		EmoEngineEventHandle m_tEEEventHandle;
 		OpenViBE::uint32 m_ui32UserID;

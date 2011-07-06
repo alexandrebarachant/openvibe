@@ -7,6 +7,7 @@
 
 #include <system/Time.h>
 #include <windows.h>
+#include <system/Memory.h>
 
 #include <cstdlib>
 #include <cstring>
@@ -45,7 +46,7 @@ CDriverEmotivEPOC::CDriverEmotivEPOC(IDriverContext& rDriverContext)
 	m_bReadyToCollect = false;
 	m_bFirstStart = true;
 
-
+	m_ui32EDK_LastErrorCode = EDK_OK;
 }
 
 CDriverEmotivEPOC::~CDriverEmotivEPOC(void)
@@ -111,13 +112,13 @@ boolean CDriverEmotivEPOC::initialize(
 	// Builds up a buffer to store acquired samples. This buffer will be sent to the acquisition server later.
 
 	m_pSample=new float32[m_oHeader.getChannelCount()];
-	m_pBuffer=new float64[m_oHeader.getChannelCount()];
-	if(!m_pSample || !m_pBuffer)
+	//m_pBuffer=new float64[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
+	if(!m_pSample /*|| !m_pBuffer*/)
 	{
 		delete [] m_pSample;
-		delete [] m_pBuffer;
+		//delete [] m_pBuffer;
 		m_pSample=NULL;
-		m_pBuffer=NULL;
+		//m_pBuffer=NULL;
 		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Emotiv Driver: Samples allocation failed.\n";
 		return false;
 	}
@@ -127,9 +128,10 @@ boolean CDriverEmotivEPOC::initialize(
 
 	m_bReadyToCollect = false;
 	m_tEEEventHandle = EE_EmoEngineEventCreate();
-	int32 l_i32ErrorCode = EE_EngineConnect();
-	if (l_i32ErrorCode != EDK_OK) {
-		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Emotiv Driver: Can't connect to EmoEngine (error code "<<l_i32ErrorCode<<").\n";
+	m_ui32EDK_LastErrorCode = EE_EngineConnect();
+	if (m_ui32EDK_LastErrorCode != EDK_OK)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Emotiv Driver: Can't connect to EmoEngine. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
 		return false;
 	}
 	else
@@ -159,10 +161,15 @@ boolean CDriverEmotivEPOC::start(void)
 		return false;
 	}
 
-	//TODO
 	m_tDataHandle = EE_DataCreate();
-	EE_DataSetBufferSizeInSec(1);
-	m_rDriverContext.getLogManager() << LogLevel_Trace << "Data Handle created. Buffer size set to 1 sec.\n";
+	//float l_fBufferSizeInSeconds = (float32)m_ui32SampleCountPerSentBlock/(float32)m_oHeader.getSamplingFrequency();
+	float l_fBufferSizeInSeconds = 1;
+	m_ui32EDK_LastErrorCode = EE_DataSetBufferSizeInSec(l_fBufferSizeInSeconds);
+	if (m_ui32EDK_LastErrorCode != EDK_OK) {
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[START] Emotiv Driver: Set buffer size to ["<<l_fBufferSizeInSeconds<< "] sec failed. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
+		return false;
+	}
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "[START] Emotiv Driver: Data Handle created. Buffer size set to ["<<l_fBufferSizeInSeconds<< "] sec.\n";
 
 	return true;
 }
@@ -183,8 +190,13 @@ boolean CDriverEmotivEPOC::loop(void)
 
 			if (l_tEventType == EE_UserAdded)
 			{
-				m_rDriverContext.getLogManager() << LogLevel_Trace << "User #" << m_ui32UserID << " registered.\n";
-				EE_DataAcquisitionEnable(m_ui32UserID, true);
+				m_rDriverContext.getLogManager() << LogLevel_Trace << "[LOOP] Emotiv Driver: User #" << m_ui32UserID << " registered.\n";
+				m_ui32EDK_LastErrorCode = EE_DataAcquisitionEnable(m_ui32UserID, true);
+				if (m_ui32EDK_LastErrorCode != EDK_OK) 
+				{
+					m_rDriverContext.getLogManager() << LogLevel_Error << "[LOOP] Emotiv Driver: Enabling acquisition failed. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
+					return false;
+				}
 				m_bReadyToCollect = true;
 			}
 		}
@@ -192,22 +204,63 @@ boolean CDriverEmotivEPOC::loop(void)
 		if(m_bReadyToCollect)
 		{
 			uint32 l_ui32nSamplesTaken=0;
+			m_ui32EDK_LastErrorCode = EE_DataUpdateHandle(m_ui32UserID, m_tDataHandle);
+			if(m_ui32EDK_LastErrorCode != EDK_OK)
+			{
+				m_rDriverContext.getLogManager() << LogLevel_Error << "[LOOP] Emotiv Driver: An error occured while updating the DataHandle. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
+				return false;
+			}
+			m_ui32EDK_LastErrorCode = EE_DataGetNumberOfSample(m_tDataHandle, &l_ui32nSamplesTaken);
+			if(m_ui32EDK_LastErrorCode != EDK_OK)
+			{
+				m_rDriverContext.getLogManager() << LogLevel_Error << "[LOOP] Emotiv Driver: An error occured while getting new samples from device. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
+				return false;
+			}
+			// warning : if you connect/disconnect then reconnect, the internal buffer may be full of samples, thus maybe l_ui32nSamplesTaken > m_ui32SampleCountPerSentBlock
+			m_rDriverContext.getLogManager() << LogLevel_Debug << "EMOTIV EPOC >>> received ["<< l_ui32nSamplesTaken <<"] samples per channel from device.\n";
+			
+			
+			/*for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
+			{
+				for(uint32 s=0;s<l_ui32nSamplesTaken;s++)
+				{
+					double* l_pBuffer = new double[l_ui32nSamplesTaken];
+					m_ui32EDK_LastErrorCode = EE_DataGet(m_tDataHandle, g_ChannelList[i], l_pBuffer, l_ui32nSamplesTaken);
+					if(m_ui32EDK_LastErrorCode != EDK_OK)
+					{
+						m_rDriverContext.getLogManager() << LogLevel_Error << "[LOOP] Emotiv Driver: An error occured while getting new samples from device. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
+						return false;
+					}
+					
+					m_rDriverContext.getLogManager() << LogLevel_Debug << "EMOTIV EPOC >>> adding sample with value ["<< l_pBuffer[s] <<"]\n";
+					m_pSample[i*m_ui32SampleCountPerSentBlock + s] = (float32)l_pBuffer[s];
+					delete [] l_pBuffer;
+				}
+				m_pCallback->setSamples(m_pSample);
+			}
+			m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
+			*/
 
-			EE_DataUpdateHandle(m_ui32UserID, m_tDataHandle);
-			EE_DataGetNumberOfSample(m_tDataHandle, &l_ui32nSamplesTaken);
-
-			// warning :  if you connect/disconnect then reconnect, the internal buffer may be full of samples, thus maybe l_ui32nSamplesTaken > m_ui32SampleCountPerSentBlock
-			for(uint32 j=0; j<l_ui32nSamplesTaken; j++)
+			double* l_pBuffer = new double[l_ui32nSamplesTaken];
+			for(uint32 s=0; s<l_ui32nSamplesTaken; s++)
 			{
 				for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
 				{
-					EE_DataGet(m_tDataHandle, g_ChannelList[i], m_pBuffer, m_oHeader.getChannelCount());
-					m_pSample[i] = float32(m_pBuffer[j]); /* *m_oHeader.getChannelGain(i); */
+					m_ui32EDK_LastErrorCode = EE_DataGet(m_tDataHandle, g_ChannelList[i], l_pBuffer, l_ui32nSamplesTaken);
+					if(m_ui32EDK_LastErrorCode != EDK_OK)
+					{
+						m_rDriverContext.getLogManager() << LogLevel_Error << "[LOOP] Emotiv Driver: An error occured while getting new samples from device. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
+						return false;
+					}
+					m_pSample[i] = (float32)l_pBuffer[s];
+					if(s==0)m_rDriverContext.getLogManager() << LogLevel_Debug << "EMOTIV EPOC >>> sample received has value ["<< l_pBuffer[s] <<"]\n";
+					//m_rDriverContext.getLogManager() << LogLevel_Debug << "EMOTIV EPOC >>> sample stored has value ["<< m_pSample[i] <<"]\n";
 				}
 				m_pCallback->setSamples(m_pSample, 1);
 			}
-
 			m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
+			delete [] l_pBuffer;
+			
 		}
 	}
 
