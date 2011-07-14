@@ -239,6 +239,11 @@ boolean CBox::addInput(
 	const CString& sName,
 	const CIdentifier& rTypeIdentifier)
 {
+	if(!this->getTypeManager().isStream(rTypeIdentifier))
+	{
+		this->getLogManager() << LogLevel_Warning << "While adding input to box, unknown stream type identifier " << rTypeIdentifier << "\n";
+	}
+
 	CInput i;
 	i.m_sName=sName;
 	i.m_oTypeIdentifier=rTypeIdentifier;
@@ -344,6 +349,11 @@ boolean CBox::setInputType(
 	const uint32 ui32InputIndex,
 	const CIdentifier& rTypeIdentifier)
 {
+	if(!this->getTypeManager().isStream(rTypeIdentifier))
+	{
+		this->getLogManager() << LogLevel_Warning << "While changing box input type, unknown stream type identifier " << rTypeIdentifier << "\n";
+	}
+
 	if(ui32InputIndex>=m_vInput.size())
 	{
 		return false;
@@ -377,6 +387,11 @@ boolean CBox::addOutput(
 	const CString& sName,
 	const CIdentifier& rTypeIdentifier)
 {
+	if(!this->getTypeManager().isStream(rTypeIdentifier))
+	{
+		this->getLogManager() << LogLevel_Warning << "While adding output to box, unknown stream type identifier " << rTypeIdentifier << "\n";
+	}
+
 	COutput o;
 	o.m_sName=sName;
 	o.m_oTypeIdentifier=rTypeIdentifier;
@@ -482,6 +497,11 @@ boolean CBox::setOutputType(
 	const uint32 ui32OutputIndex,
 	const CIdentifier& rTypeIdentifier)
 {
+	if(!this->getTypeManager().isStream(rTypeIdentifier))
+	{
+		this->getLogManager() << LogLevel_Warning << "While changing box output type, unknown stream type identifier " << rTypeIdentifier << "\n";
+	}
+
 	if(ui32OutputIndex>=m_vOutput.size())
 	{
 		return false;
