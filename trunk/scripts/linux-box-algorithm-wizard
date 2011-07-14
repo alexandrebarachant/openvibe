@@ -185,8 +185,8 @@ namespace OpenViBEPlugins
 
 		protected:
 
-			// OpenViBEToolkit::TSignalDecocer < $l_box_algorithm_class_name > m_oDecoder;
-			// OpenViBEToolkit::TSignalEncocer < $l_box_algorithm_class_name > m_oEncoder;
+			// OpenViBEToolkit::TSignalDecoder < $l_box_algorithm_class_name > m_oDecoder;
+			// OpenViBEToolkit::TSignalEncoder < $l_box_algorithm_class_name > m_oEncoder;
 		};
 
 /*
