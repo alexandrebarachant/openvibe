@@ -1,7 +1,6 @@
 #include "ovpCBoxAlgorithmSignalConcatenation.h"
 
 #include <system/Memory.h>
-#include <stdio.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

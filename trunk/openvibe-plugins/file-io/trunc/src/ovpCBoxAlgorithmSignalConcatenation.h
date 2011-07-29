@@ -7,6 +7,7 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
+#include <stdio.h>
 #include <vector>
 #include <list>
 // The unique identifiers for the box and its descriptor.
