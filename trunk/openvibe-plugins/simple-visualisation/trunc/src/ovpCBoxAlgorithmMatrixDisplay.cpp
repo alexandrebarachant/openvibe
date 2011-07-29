@@ -160,14 +160,24 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 			//header received
 			//adding the event  to the window
 			::GtkTable* l_pTable=GTK_TABLE(gtk_builder_get_object(m_pMainWidgetInterface, "matrix-display-table"));
-			if(op_pMatrix->getDimensionCount() != 2)
+			uint32 l_ui32RowCount,l_ui32ColumnCount;
+			if(op_pMatrix->getDimensionCount() == 1)
 			{
-				getLogManager() << LogLevel_Error << "The streamed matrix received has not 2 dimensions (found "<< op_pMatrix->getDimensionCount() <<" dimensions)\n";
+				//getLogManager() << LogLevel_Warning<< "The streamed matrix received has 1 dimensions (found "<< op_pMatrix->getDimensionCount() <<" dimensions)\n";
+				l_ui32RowCount = 1;
+				l_ui32ColumnCount = op_pMatrix->getDimensionSize(0);
+				//return false;
+			}
+			else if(op_pMatrix->getDimensionCount() != 2)
+			{
+				getLogManager() << LogLevel_Error << "The streamed matrix received has more than 2 dimensions (found "<< op_pMatrix->getDimensionCount() <<" dimensions)\n";
 				return false;
 			}
-
-			uint32 l_ui32RowCount = op_pMatrix->getDimensionSize(0);
-			uint32 l_ui32ColumnCount = op_pMatrix->getDimensionSize(1);
+			else
+			{
+				l_ui32RowCount = op_pMatrix->getDimensionSize(0);
+				l_ui32ColumnCount = op_pMatrix->getDimensionSize(1);
+			}
 
 			gtk_table_resize(l_pTable, l_ui32RowCount+1,l_ui32ColumnCount+1);
 
@@ -256,8 +266,17 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 		{
 			//buffer received
 			//2-dimension-matrix values
-			uint32 l_ui32RowCount = op_pMatrix->getDimensionSize(0);
-			uint32 l_ui32ColumnCount = op_pMatrix->getDimensionSize(1);
+			uint32 l_ui32RowCount,l_ui32ColumnCount;
+			if(op_pMatrix->getDimensionCount()==1)
+			{
+				l_ui32RowCount = 1;
+				l_ui32ColumnCount = op_pMatrix->getDimensionSize(0);
+			}
+			else
+			{
+				l_ui32RowCount = op_pMatrix->getDimensionSize(0);
+				l_ui32ColumnCount = op_pMatrix->getDimensionSize(1);
+			}
 
 			if(m_bRealTimeMinMax || // we need recompute the min max at each loop call
 			  (m_f64MaxValue == 0 && m_f64MinValue == 0)) // we have never computed the min max values.
@@ -326,24 +345,40 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 				}
 			}
 
-			//first line : labels
-			for(uint32 c=0; c<l_ui32ColumnCount; c++)
+			if(op_pMatrix->getDimensionCount()!=1)
 			{
-				if(m_vColumnLabelCache[c].second != op_pMatrix->getDimensionLabel(1,c) && string(op_pMatrix->getDimensionLabel(1,c)) != "")
+				//first line : labels
+				for(uint32 c=0; c<l_ui32ColumnCount; c++)
 				{
-					gtk_label_set_label(GTK_LABEL(m_vColumnLabelCache[c].first),op_pMatrix->getDimensionLabel(1,c));
-					m_vColumnLabelCache[c].second = op_pMatrix->getDimensionLabel(1,c);
+					if(m_vColumnLabelCache[c].second != op_pMatrix->getDimensionLabel(1,c) && string(op_pMatrix->getDimensionLabel(1,c)) != "")
+					{
+						gtk_label_set_label(GTK_LABEL(m_vColumnLabelCache[c].first),op_pMatrix->getDimensionLabel(1,c));
+						m_vColumnLabelCache[c].second = op_pMatrix->getDimensionLabel(1,c);
+					}
+				}
+
+				//first column : labels
+				for(uint32 r=0; r<l_ui32RowCount; r++)
+				{
+					if(m_vRowLabelCache[r].second != op_pMatrix->getDimensionLabel(0,r) && string(op_pMatrix->getDimensionLabel(0,r)) != "")
+					{
+						gtk_label_set_label(GTK_LABEL(m_vRowLabelCache[r].first),op_pMatrix->getDimensionLabel(0,r));
+						m_vRowLabelCache[r].second = op_pMatrix->getDimensionLabel(0,r);
+					}
 				}
 			}
-
-			//first column : labels
-			for(uint32 r=0; r<l_ui32RowCount; r++)
+			else
 			{
-				if(m_vRowLabelCache[r].second != op_pMatrix->getDimensionLabel(0,r) && string(op_pMatrix->getDimensionLabel(0,r)) != "")
+				//first line : labels
+				for(uint32 c=0; c<l_ui32ColumnCount; c++)
 				{
-					gtk_label_set_label(GTK_LABEL(m_vRowLabelCache[r].first),op_pMatrix->getDimensionLabel(0,r));
-					m_vRowLabelCache[r].second = op_pMatrix->getDimensionLabel(0,r);
+					if(m_vColumnLabelCache[c].second != op_pMatrix->getDimensionLabel(0,c) && string(op_pMatrix->getDimensionLabel(0,c)) != "")
+					{
+						gtk_label_set_label(GTK_LABEL(m_vColumnLabelCache[c].first),op_pMatrix->getDimensionLabel(0,c));
+						m_vColumnLabelCache[c].second = op_pMatrix->getDimensionLabel(0,c);
+					}
 				}
+
 			}
 
 		}
