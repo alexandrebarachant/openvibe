@@ -1,6 +1,7 @@
 #include "ovpCBoxAlgorithmCSVFileWriter.h"
 
 #include <string>
+#include <iostream>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -85,7 +86,10 @@ boolean CBoxAlgorithmCSVFileWriter::uninitialize(void)
 		::fclose(m_pFile);
 		m_pFile=NULL;
 	}
-
+	if(op_pMatrix != m_pMatrix)
+	{
+		delete m_pMatrix;
+	}
 	op_pStimulationSet.uninitialize();
 	op_pMatrix.uninitialize();
 	ip_pMemoryBuffer.uninitialize();
@@ -114,7 +118,6 @@ boolean CBoxAlgorithmCSVFileWriter::process(void)
 boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 {
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
-
 	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
 		uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(0, i);
@@ -123,16 +126,32 @@ boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 		m_pStreamDecoder->process();
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
-			if(op_pMatrix->getDimensionCount() != 2)
+			if(op_pMatrix->getDimensionCount() > 2 || op_pMatrix->getDimensionCount() < 1)
 			{
-				this->getLogManager() << LogLevel_ImportantWarning << "Input matrix does not have 2 dimensions - Could not write content in CSV file...\n";
+				this->getLogManager() << LogLevel_ImportantWarning << "Input matrix does not have 1 or 2 dimensions - Could not write content in CSV file...\n";
 				return false;
 			}
 
-			::fprintf(m_pFile, "Time (s)");
-			for(uint32 c=0; c<op_pMatrix->getDimensionSize(0); c++)
+			if( op_pMatrix->getDimensionCount() == 1 )
 			{
-				std::string l_sLabel(op_pMatrix->getDimensionLabel(0, c));
+				m_pMatrix = new CMatrix();
+				m_pMatrix->setDimensionCount(2);
+				m_pMatrix->setDimensionSize(0,1);
+				m_pMatrix->setDimensionSize(1,op_pMatrix->getDimensionSize(0));
+				for(int i=0;i<op_pMatrix->getDimensionSize(0);i++)
+				{
+					m_pMatrix->setDimensionLabel(1,i,op_pMatrix->getDimensionLabel(0,i));
+				}
+			}
+			else
+			{
+				m_pMatrix=op_pMatrix;
+			}
+			std::cout<<&m_pMatrix<<" "<<&op_pMatrix<<"\n";
+			::fprintf(m_pFile, "Time (s)");
+			for(uint32 c=0; c<m_pMatrix->getDimensionSize(0); c++)
+			{
+				std::string l_sLabel(m_pMatrix->getDimensionLabel(0, c));
 				while(l_sLabel.length()>0 && l_sLabel[l_sLabel.length()-1]==' ')
 				{
 					l_sLabel.erase(l_sLabel.length()-1);
@@ -166,16 +185,16 @@ boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 		}
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
-			for(uint32 s=0; s<op_pMatrix->getDimensionSize(1); s++)
+			for(uint32 s=0; s<m_pMatrix->getDimensionSize(1); s++)
 			{
 				if(m_oTypeIdentifier==OV_TypeId_Signal)   ::fprintf(m_pFile, "%f", ((l_ui64StartTime+((s*(l_ui64EndTime-l_ui64StartTime))/op_pMatrix->getDimensionSize(1)))>>16)/65536.);
 				if(m_oTypeIdentifier==OV_TypeId_Spectrum) ::fprintf(m_pFile, "%f", (l_ui64EndTime>>16)/65536.);
-				for(uint32 c=0; c<op_pMatrix->getDimensionSize(0); c++)
+				for(uint32 c=0; c<m_pMatrix->getDimensionSize(0); c++)
 				{
 					::fprintf(m_pFile,
 						"%s%f",
 						m_sSeparator.toASCIIString(),
-						op_pMatrix->getBuffer()[c*op_pMatrix->getDimensionSize(1)+s]);
+						op_pMatrix->getBuffer()[c*m_pMatrix->getDimensionSize(1)+s]);
 				}
 
 				if(m_bFirstBuffer)
