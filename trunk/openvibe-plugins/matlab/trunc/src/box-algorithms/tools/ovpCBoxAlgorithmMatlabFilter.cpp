@@ -3,10 +3,14 @@
 #if defined TARGET_HAS_ThirdPartyMatlab
 
 #include <system/Memory.h>
-
+#include <iostream>
+#include <stdio.h>
+#include <sstream>
 #include <mex.h>
 #include <engine.h>
+#include <string>
 
+#define MATLAB_BUFFER 2048
 #define m_pMatlabEngine ((Engine*)m_pMatlabEngineHandle)
 #define m_pMatlabStimulation ((mxArray*)m_pMatlabStimulationHandle)
 #define m_pMatlabMatrix ((mxArray*)m_pMatlabMatrixHandle)
@@ -42,20 +46,20 @@ boolean CBoxAlgorithmMatlabFilter::initialize(void)
 
 	m_pMatlabStimulationHandle=NULL;
 	m_pMatlabMatrixHandle=NULL;
-	m_pMatlabBCIContextHandle=::mxCreateDoubleMatrix(
-		2,
-		1,
-		mxREAL);
+	m_pMatlabBCIContextHandle=::mxCreateDoubleMatrix(2,1,mxREAL);
 
 	m_pStimulationDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamDecoder));
+	m_pStimulationEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamEncoder));
 	m_pStreamedMatrixDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder));
 	m_pStreamedMatrixEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamEncoder));
 
 	m_pStimulationDecoder->initialize();
-	m_pStreamedMatrixDecoder->initialize();
+	m_pStimulationEncoder->initialize();
+ 	m_pStreamedMatrixDecoder->initialize();
 	m_pStreamedMatrixEncoder->initialize();
 
 	op_pStimulationSet.initialize(m_pStimulationDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
+	ip_pStimulationSet.initialize(m_pStimulationEncoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
 	op_pMatrix.initialize(m_pStreamedMatrixDecoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 	ip_pMatrix.initialize(m_pStreamedMatrixEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix));
 
@@ -67,14 +71,17 @@ boolean CBoxAlgorithmMatlabFilter::uninitialize(void)
 {
 	ip_pMatrix.uninitialize();
 	op_pMatrix.uninitialize();
+	ip_pStimulationSet.uninitialize();
 	op_pStimulationSet.uninitialize();
 
 	m_pStreamedMatrixEncoder->uninitialize();
 	m_pStreamedMatrixDecoder->uninitialize();
+	m_pStimulationEncoder->uninitialize();
 	m_pStimulationDecoder->uninitialize();
 
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStreamedMatrixEncoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStreamedMatrixDecoder);
+	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationEncoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationDecoder);
 
 	if(m_pMatlabMatrix)
@@ -109,16 +116,19 @@ boolean CBoxAlgorithmMatlabFilter::processInput(uint32 ui32InputIndex)
 
 boolean CBoxAlgorithmMatlabFilter::process(void)
 {
-	// IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 	uint32 i,j;
+	CString l_sSettingValue;
 
 	TParameterHandler < IMemoryBuffer* > op_pMemoryBuffer(m_pStreamedMatrixEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-
-	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
+	TParameterHandler < IMemoryBuffer* > op_pMemoryBufferStimulation(m_pStimulationEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+	op_pMemoryBufferStimulation=l_rDynamicBoxContext.getOutputChunk(1);
+	
+	// We decode and save the received stimulations.
+	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
 	{
 		TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_pStimulationDecoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
-		ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
+		ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(1, i);
 		m_pStimulationDecoder->process();
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
@@ -136,25 +146,28 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
 		{
 		}
-		m_ui64LatestStimulationChunkEndTime=l_rDynamicBoxContext.getInputChunkEndTime(0, i);
-		l_rDynamicBoxContext.markInputAsDeprecated(0, i);
+		m_ui64LatestStimulationChunkEndTime=l_rDynamicBoxContext.getInputChunkEndTime(1, i);
+		l_rDynamicBoxContext.markInputAsDeprecated(1, i);
 	}
 
-	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
+	// We now decode the stream matrix
+	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
-		uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(1, i);
-		uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(1, i);
+		uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(0, i);
+		uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(0, i);
 
-		((float64*)::mxGetPr(m_pMatlabBCIContext))[0]=(l_ui64StartTime >> 16) / 65536.0;
-		((float64*)::mxGetPr(m_pMatlabBCIContext))[1]=(l_ui64EndTime >> 16) / 65536.0;
+		((float64*)::mxGetPr(m_pMatlabBCIContext))[0] = (l_ui64StartTime >> 16) / 65536.0;
+		((float64*)::mxGetPr(m_pMatlabBCIContext))[1] = (l_ui64EndTime >> 16) / 65536.0;
 
 		if(l_ui64EndTime<=m_ui64LatestStimulationChunkEndTime)
 		{
 			TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_pStreamedMatrixDecoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_InputParameterId_MemoryBufferToDecode));
-			ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(1, i);
+			ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
 			m_pStreamedMatrixDecoder->process();
+			// we received the header
 			if(m_pStreamedMatrixDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
+				//we analyse the header
 				if(op_pMatrix->getDimensionCount()!=2)
 				{
 					this->getLogManager() << LogLevel_ImportantWarning << "Streamed matrix dimension count is not 2\n";
@@ -169,34 +182,85 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 					{
 						this->getLogManager() << LogLevel_ImportantWarning << "Could not create Matlab matrix\n";
 					}
-
+					
+					char l_pMatlabBuffer[MATLAB_BUFFER+1];
+					l_pMatlabBuffer[MATLAB_BUFFER]='\0';
+					std::stringstream l_sMatlabBuffer;
+					::engOutputBuffer(m_pMatlabEngine, l_pMatlabBuffer,MATLAB_BUFFER);
+					
 					::engPutVariable(m_pMatlabEngine, "bci_context", m_pMatlabBCIContext);
-					::engPutVariable(m_pMatlabEngine, "matrix", m_pMatlabMatrix);
-					::engEvalString(m_pMatlabEngine, "result = bci_Initialize(bci_context, matrix)");
-
-					::mxArray* l_pMatlabResult=::engGetVariable(m_pMatlabEngine, "result");
-					if(l_pMatlabResult)
+					::engPutVariable(m_pMatlabEngine, "matrix_in", m_pMatlabMatrix);
+					getStaticBoxContext().getSettingValue(2, l_sSettingValue); // l_sSettingValue = "bci_Initialize" with default parameter
+					if(::engEvalString(m_pMatlabEngine, CString("matrix_out = ") + l_sSettingValue + CString("(bci_context, matrix_in);"))!=0)
 					{
-						if(!::mxIsDouble(l_pMatlabResult))
+						l_sMatlabBuffer<<l_pMatlabBuffer;
+						this->getLogManager()<< LogLevel_Error << "Matlab Error: "<<l_sMatlabBuffer.str().c_str()<<"\n";
+						return false;
+					}
+
+					l_sMatlabBuffer<<l_pMatlabBuffer;
+
+					// if the MatlabBuffer is not empty, we have to print it in the openvibe console
+					// We have to check if it's error, warning, or simple info messages
+					if(l_sMatlabBuffer.str().size()>0)
+					{
+						size_t l_oErrorIndex=l_sMatlabBuffer.str().find("??? ");
+						size_t l_oWarningIndex=l_sMatlabBuffer.str().find("Warning: ");
+						if(l_oWarningIndex > 0 && l_oErrorIndex > 0)
 						{
-							this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << CString("bci_Initialize") << "\n";
+							this->getLogManager()<<LogLevel_Info<<l_sMatlabBuffer.str().substr(0,(l_oWarningIndex<l_oErrorIndex)?l_oWarningIndex:l_oErrorIndex).c_str()<<"\n";
+						
+						}
+						if(l_oWarningIndex!=std::string::npos)
+						{
+							this->getLogManager()<<LogLevel_Warning<<l_sMatlabBuffer.str().substr(l_oWarningIndex,l_oErrorIndex).c_str()<<"\n";
+						}
+						if(l_oErrorIndex!=std::string::npos)
+						{
+							this->getLogManager()<<LogLevel_Error<<l_sMatlabBuffer.str().substr(l_oErrorIndex).c_str()<<"\n";
+						}
+						
+					}
+					if(this->getLogManager().isActive(LogLevel_Debug))
+					{
+						::engOutputBuffer(m_pMatlabEngine, l_pMatlabBuffer, MATLAB_BUFFER);
+						::engEvalString(m_pMatlabEngine, "result");
+						l_sMatlabBuffer.clear();
+						l_sMatlabBuffer<<l_pMatlabBuffer;
+						this->getLogManager() << LogLevel_Debug << l_sMatlabBuffer.str().c_str()<<"\n";
+					}
+					
+					// now we check the result of the initialization
+					::mxArray* l_pMatlabMatrixOut=::engGetVariable(m_pMatlabEngine, "matrix_out");
+					if(l_pMatlabMatrixOut)
+					{
+						if(!::mxIsDouble(l_pMatlabMatrixOut))
+						{
+							this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << l_sSettingValue << "\n";
 						}
 						else
 						{
+							// we send a header on the stream matrix output:                            
 							ip_pMatrix->setDimensionCount(2);
-							ip_pMatrix->setDimensionSize(0, ::mxGetDimensions(l_pMatlabResult)[1]);
-							ip_pMatrix->setDimensionSize(1, ::mxGetDimensions(l_pMatlabResult)[0]);
+							ip_pMatrix->setDimensionSize(0, ::mxGetDimensions(l_pMatlabMatrixOut)[1]);
+							ip_pMatrix->setDimensionSize(1, ::mxGetDimensions(l_pMatlabMatrixOut)[0]);
 
 							op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
 							m_pStreamedMatrixEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeHeader);
-							l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(1, i), l_rDynamicBoxContext.getInputChunkEndTime(1, i));
+							l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 						}
-						::mxDestroyArray(l_pMatlabResult);
+						::mxDestroyArray(l_pMatlabMatrixOut);
 					}
 				}
+
+				// we send a header on the stimulation output:
+				m_pStimulationEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(1, l_ui64StartTime,l_ui64EndTime );
 			}
+			// we received a buffer
 			if(m_pStreamedMatrixDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
+				// we copy the actual pending stimulation in l_oStimulationSet
 				CStimulationSet l_oStimulationSet;
 				for(j=0; j<m_oPendingStimulationSet.getStimulationCount(); )
 				{
@@ -217,6 +281,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 					}
 				}
 
+				// we copy the stimulation into the corresponding matlab matrix
 				m_pMatlabStimulationHandle=::mxCreateDoubleMatrix(l_oStimulationSet.getStimulationCount(), 3, mxREAL);
 				float64* l_pMatlabStimulationBuffer=(float64*)::mxGetPr(m_pMatlabStimulation);
 				uint32 l_ui32StimulationCount=l_oStimulationSet.getStimulationCount();
@@ -227,42 +292,119 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 					l_pMatlabStimulationBuffer[j+2*l_ui32StimulationCount]=( l_oStimulationSet.getStimulationDuration(j) >> 16) / 65536.0;
 				}
 
+				// we copy the data
 				System::Memory::copy(::mxGetPr(m_pMatlabMatrix), op_pMatrix->getBuffer(), op_pMatrix->getBufferElementCount()*sizeof(float64));
 
+				// the call to the matlab engine
 				::engPutVariable(m_pMatlabEngine, "bci_context", m_pMatlabBCIContext);
-				::engPutVariable(m_pMatlabEngine, "stimulation_set", m_pMatlabStimulation);
-				::engPutVariable(m_pMatlabEngine, "matrix", m_pMatlabMatrix);
-				::engEvalString(m_pMatlabEngine, "result = bci_Process(bci_context, stimulation_set, matrix)");
+				::engPutVariable(m_pMatlabEngine, "stimulation_in", m_pMatlabStimulation);
+				::engPutVariable(m_pMatlabEngine, "matrix_in", m_pMatlabMatrix);
+				getStaticBoxContext().getSettingValue(3, l_sSettingValue); // l_sSettingValue = "bci_Process"
+
+				// the buffer for the console
+				char l_pMatlabBuffer[MATLAB_BUFFER+1];
+				l_pMatlabBuffer[MATLAB_BUFFER]='\0';
+				std::stringstream l_sMatlabBuffer;
+				::engOutputBuffer(m_pMatlabEngine, l_pMatlabBuffer,MATLAB_BUFFER);
+
+				if(::engEvalString(m_pMatlabEngine, CString("[matrix_out,stimulation_out] = ") + l_sSettingValue + CString("(bci_context, matrix_in, stimulation_in);"))!=0)
+				{
+					l_sMatlabBuffer<<l_pMatlabBuffer;
+					this->getLogManager()<< LogLevel_Error << "Matlab Error: "<<l_sMatlabBuffer.str().c_str()<<"\n";
+					return false;
+				}
+				l_sMatlabBuffer<<l_pMatlabBuffer;
+				if(l_sMatlabBuffer.str().size()>0)
+				{
+					size_t l_oErrorIndex=l_sMatlabBuffer.str().find("??? ");
+					size_t l_oWarningIndex=l_sMatlabBuffer.str().find("Warning: ");
+					if(l_oErrorIndex!=0 && l_oWarningIndex!=0)
+					{
+						this->getLogManager()<<LogLevel_Info<<l_sMatlabBuffer.str().substr(0,(l_oWarningIndex<l_oErrorIndex)?l_oWarningIndex:l_oErrorIndex).c_str()<<"\n";
+					}
+					if(l_oWarningIndex!=std::string::npos)
+					{
+						this->getLogManager()<<LogLevel_Warning<<l_sMatlabBuffer.str().substr(l_oWarningIndex,l_oErrorIndex).c_str()<<"\n";
+					}
+					if(l_oErrorIndex!=std::string::npos)
+					{
+						this->getLogManager()<<LogLevel_Error<<l_sMatlabBuffer.str().substr(l_oErrorIndex).c_str()<<"\n";
+					}
+				}
+				if(this->getLogManager().isActive(LogLevel_Debug))
+				{
+					::engOutputBuffer(m_pMatlabEngine, l_pMatlabBuffer, MATLAB_BUFFER);
+					::engEvalString(m_pMatlabEngine, "result");
+					l_sMatlabBuffer.clear();
+					l_sMatlabBuffer<<l_pMatlabBuffer;
+					this->getLogManager() << LogLevel_Debug << l_sMatlabBuffer.str().c_str()<<"\n";
+				}
 				::mxDestroyArray(m_pMatlabStimulation);
 
-					::mxArray* l_pMatlabResult=::engGetVariable(m_pMatlabEngine, "result");
-					if(l_pMatlabResult)
+				// reading matrix_out from matlab
+				::mxArray* l_pMatlabMatrixOut=::engGetVariable(m_pMatlabEngine, "matrix_out");
+				if(l_pMatlabMatrixOut)
+				{
+					if(!::mxIsDouble(l_pMatlabMatrixOut))
 					{
-						if(!::mxIsDouble(l_pMatlabResult))
+						this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << l_sSettingValue << "\n";
+					}
+					else
+					{
+						System::Memory::copy(ip_pMatrix->getBuffer(), ::mxGetPr(l_pMatlabMatrixOut), ip_pMatrix->getBufferElementCount()*sizeof(float64));
+ 
+						op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+						m_pStreamedMatrixEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeBuffer);
+						l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
+					}
+					::mxDestroyArray(l_pMatlabMatrixOut);
+				}
+
+				// reading stimulation_out from matlab
+				::mxArray* l_pMatlabStimulationOut=::engGetVariable(m_pMatlabEngine, "stimulation_out");
+				if(l_pMatlabStimulationOut)
+				{
+					if(!::mxIsDouble(l_pMatlabStimulationOut))
+					{
+						this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << l_sSettingValue << "\n";
+					}
+					else
+					{
+						if (::mxGetDimensions(l_pMatlabStimulationOut)[1] != 3)
 						{
-							this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << CString("bci_Process") << "\n";
+							this->getLogManager() << LogLevel_Warning << "Output Stimulation matrix must be of size (nb_stim x 3) " << l_sSettingValue << "\n";
 						}
 						else
 						{
-/*
-							ip_pMatrix->setDimensionCount(2);
-							ip_pMatrix->setDimensionSize(0, ::mxGetDimensions(l_pMatlabResult, 0));
-							ip_pMatrix->setDimensionSize(1, ::mxGetDimensions(l_pMatlabResult, 1));
-*/
-							System::Memory::copy(ip_pMatrix->getBuffer(), ::mxGetPr(l_pMatlabResult), ip_pMatrix->getBufferElementCount()*sizeof(float64));
-
-							op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
-							m_pStreamedMatrixEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeBuffer);
-							l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(1, i), l_rDynamicBoxContext.getInputChunkEndTime(1, i));
+							ip_pStimulationSet->setStimulationCount(0);
+							uint32 l_ui32StimulationCount=::mxGetDimensions(l_pMatlabStimulationOut)[0];
+							float64* l_pStim=::mxGetPr(l_pMatlabMatrixOut);
+							for(j=0; j<l_ui32StimulationCount; j++)
+							{
+								// we decode a stimulation from the matlab stimulation matrix
+								ip_pStimulationSet->appendStimulation(
+									l_pStim[j+0*l_ui32StimulationCount],
+									l_ui64StartTime + ((int64)(l_pStim[j+1*l_ui32StimulationCount] * 65536.0)<<16),
+									l_ui64StartTime + ((int64)(l_pStim[j+2*l_ui32StimulationCount] * 65536.0)<<16));
+							}
+							m_pStimulationEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);                            
+							l_rDynamicBoxContext.markOutputAsReadyToSend(1, l_ui64StartTime, l_ui64EndTime);
 						}
-						::mxDestroyArray(l_pMatlabResult);
 					}
+				}
+
+
 			}
+			// We received the End
 			if(m_pStreamedMatrixDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedEnd))
 			{
+				// we send the End signal to the stream matrix output
 				m_pStreamedMatrixEncoder->process(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputTriggerId_EncodeEnd);
+				// and to the stimulation output:
+				m_pStimulationEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeEnd);
 			}
-			l_rDynamicBoxContext.markInputAsDeprecated(1, i);
+			// The stream matrix chunk i has been process 
+			l_rDynamicBoxContext.markInputAsDeprecated(0, i);
 		}
 	}
 

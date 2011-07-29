@@ -34,12 +34,15 @@ namespace OpenViBEPlugins
 		protected:
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationDecoder;
+			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationEncoder;
+
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamedMatrixDecoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamedMatrixEncoder;
 
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > ip_pStimulationSet;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > op_pStimulationSet;
-			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pMatrix;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pMatrix;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > op_pMatrix;
 
 			OpenViBE::CStimulationSet m_oPendingStimulationSet;
 			OpenViBE::uint64 m_ui64LatestStimulationChunkEndTime;
@@ -57,13 +60,13 @@ namespace OpenViBEPlugins
 			virtual void release(void) { }
 
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Matlab filter"); }
-			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard / Robert Oostenveld"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Y.Renard / R. Oostenveld"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA / Donders Institute for Brain, Cognition and Behaviour"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This box communicates with the Matlab Engine to perform matrix and stim processing."); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("User must implement the matlab functions:\n[matrix_out]=bci_Initialize(bci_context,matrix_in)\n[matrix_out,stim_out]=bci_Process(bci_context,matrix_in,stim_in)"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tools"); }
-			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
-			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-missing-image"); }
+			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("2.1"); }
+			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-execute"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_MatlabFilter; }
 			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Local::CBoxAlgorithmMatlabFilter; }
@@ -71,12 +74,17 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
 			{
-				rBoxAlgorithmPrototype.addInput  ("Stimulations", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addInput  ("Streamed matrix", OV_TypeId_StreamedMatrix);
+				rBoxAlgorithmPrototype.addInput  ("Stimulations", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput ("Filtered streamed matrix", OV_TypeId_StreamedMatrix);
+                rBoxAlgorithmPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
+
 				rBoxAlgorithmPrototype.addSetting("Matlab launch command", OV_TypeId_String, "ssh user@host /path/to/matlab");
 				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "/home/user/matlab");
-				return true;
+                rBoxAlgorithmPrototype.addSetting("Initialize function", OV_TypeId_String, "bci_Initialize");
+                rBoxAlgorithmPrototype.addSetting("Process function", OV_TypeId_String, "bci_Process");
+				
+                return true;
 			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_MatlabFilterDesc);
