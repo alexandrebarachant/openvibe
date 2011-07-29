@@ -21,6 +21,8 @@
 
 #include "box-algorithms/file-reading-and-writing/ovpCBoxAlgorithmElectrodeLocalizationFileReader.h"
 
+#include "ovpCBoxAlgorithmSignalConcatenation.h"
+
 OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CGDFFileReaderDesc)
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CGDFFileWriterDesc)
@@ -44,4 +46,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmGenericStreamWriterDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmElectrodeLocalisationFileReaderDesc)
+
+	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmSignalConcatenationDesc)
+
 OVP_Declare_End()
