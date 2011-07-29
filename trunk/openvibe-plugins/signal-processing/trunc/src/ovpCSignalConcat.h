@@ -197,6 +197,7 @@ namespace OpenViBEPlugins
 				rPrototype.addSetting("Stimulation to consider an input as finished", OV_TypeId_Stimulation, "OVTK_StimulationId_EndOfFile");
 
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
+				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsDeprecated);
 				rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_CanAddInput);
 
 				return true;
