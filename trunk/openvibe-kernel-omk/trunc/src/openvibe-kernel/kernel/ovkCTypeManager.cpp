@@ -300,9 +300,9 @@ uint64 CTypeManager::getEnumerationEntryValueFromName(
 
 	// then looks at the std::string being the value itself
 	uint64 l_ui64Value;
-	if(sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
+	if(::sscanf((const char*)rEntryName, "%lli", &l_ui64Value)==1)
 	{
-		if(itEnumeration->second.find(l_ui64Value)!=itEnumeration->second.end())
+		if(itEnumeration->second.find(l_ui64Value)!=itEnumeration->second.end() || this->getConfigurationManager().expandAsBoolean("Kernel_AllowUnregisteredNumericalStimulationIdentifiers"))
 		{
 			return l_ui64Value;
 		}
