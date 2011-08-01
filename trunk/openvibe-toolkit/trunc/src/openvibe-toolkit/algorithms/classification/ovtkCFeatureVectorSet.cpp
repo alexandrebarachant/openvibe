@@ -104,3 +104,13 @@ const IFeatureVector& CFeatureVectorSet::getFeatureVector(const uint32 ui32Index
 	return itFeatureVector->second;
 }
 
+uint32 CFeatureVectorSet::getLabelCount(void) const
+{
+	std::map < float64, boolean > l_vLabel;
+	std::map < uint32, CInternalFeatureVector >::const_iterator itFeatureVector;
+	for(itFeatureVector=m_vFeatureVector.begin(); itFeatureVector!=m_vFeatureVector.end(); itFeatureVector++)
+	{
+		l_vLabel[itFeatureVector->second.getLabel()]=true;
+	}
+	return l_vLabel.size();
+}

@@ -45,6 +45,7 @@ namespace OpenViBEToolkit
 		virtual OpenViBE::boolean addFeatureVector(const OpenViBEToolkit::IFeatureVector& rFeatureVector);
 		virtual OpenViBEToolkit::IFeatureVector& getFeatureVector(const OpenViBE::uint32 ui32Index);
 		virtual const OpenViBEToolkit::IFeatureVector& getFeatureVector(const OpenViBE::uint32 ui32Index) const;
+		virtual OpenViBE::uint32 getLabelCount(void) const;
 
 		_IsDerivedFromClass_Final_(OpenViBEToolkit::IFeatureVectorSet, OV_UndefinedIdentifier);
 
