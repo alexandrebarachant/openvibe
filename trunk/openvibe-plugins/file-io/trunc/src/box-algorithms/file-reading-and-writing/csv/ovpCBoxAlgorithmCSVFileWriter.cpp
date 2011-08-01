@@ -138,7 +138,7 @@ boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 				m_pMatrix->setDimensionCount(2);
 				m_pMatrix->setDimensionSize(0,1);
 				m_pMatrix->setDimensionSize(1,op_pMatrix->getDimensionSize(0));
-				for(int i=0;i<op_pMatrix->getDimensionSize(0);i++)
+				for(uint32 i=0;i<op_pMatrix->getDimensionSize(0);i++)
 				{
 					m_pMatrix->setDimensionLabel(1,i,op_pMatrix->getDimensionLabel(0,i));
 				}
