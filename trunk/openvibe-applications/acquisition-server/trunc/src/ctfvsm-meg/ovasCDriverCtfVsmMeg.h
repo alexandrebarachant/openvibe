@@ -17,8 +17,8 @@ namespace OpenViBEAcquisitionServer
 	{
 	public:
 
-		typedef char str32[32];
-		typedef char str100[100];
+		typedef char Str32[32];
+		typedef char Str60[60];
 
 		CDriverCtfVsmMeg(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual ~CDriverCtfVsmMeg(void);
@@ -31,7 +31,7 @@ namespace OpenViBEAcquisitionServer
 		}
 
 		virtual OpenViBE::boolean initialize(
-			const OpenViBE::uint32 ui32SampleCountPerSentBlock,
+			const OpenViBE::uint32 ui32RequestedSampleCountPerSentBlock,
 			OpenViBEAcquisitionServer::IDriverCallback& rCallback);
 		virtual OpenViBE::boolean uninitialize(void);
 
@@ -46,52 +46,9 @@ namespace OpenViBEAcquisitionServer
 		Socket::IConnectionClient* m_pConnectionClient;
 		OpenViBE::CString m_sServerHostName;
 		OpenViBE::uint32 m_ui32ServerHostPort;
-
-		struct
-		{
-			int nbCharExperimentId;
-			str100 experimentId;
-			int nbCharExperimentDate;
-			str32 experimentDate;
-
-			int nbCharSubjectName;
-			str32 subjectName;
-			int subjectAge;
-			char subjectGender[1]; /**F: female or M: Male*/
-
-			int labId;
-			str32 labName;
-			int technicianId;
-			str32 technicianName;
-
-			float samplingRate;
-			int numberOfChannels;
-			str32 channelLabel[NB_CHAN_RECORDED_MAX];
-			int channelTypeIndex[NB_CHAN_RECORDED_MAX];
-
-			float properGain[NB_CHAN_RECORDED_MAX];
-			float qGain[NB_CHAN_RECORDED_MAX];
-			float ioGain[NB_CHAN_RECORDED_MAX];
-
-			int numberOfCoils[NB_CHAN_RECORDED_MAX];
-			int gradOrderNum[NB_CHAN_RECORDED_MAX];
-		} m_structHeader;
-
-		char* m_pStructHeader;
-
-		struct
-		{
-			int sampleNumber;
-			int nbSamplesPerChanPerBlock;
-			int nbSamplesTotPerBlock;
-			signed int data[NB_SAMP_ACQ_Packet];
-		} m_structBuffData;
-
-		char* m_pStructBuffData;
-
-	protected:
-
-		OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
+	
+	protected:		
+				OpenViBEAcquisitionServer::IDriverCallback* m_pCallback;
 		OpenViBEAcquisitionServer::CHeader m_oHeader;
 
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
@@ -101,6 +58,76 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint32 m_ui32IndexOut;
 		OpenViBE::uint32 m_ui32SocketFlag;
 		OpenViBE::uint32 m_ui32BuffDataIndex;
+	  
+
+
+		OpenViBE::uint32 m_ui32NbStimChannels;
+		OpenViBE::uint32 *m_pStimChannelIndex;
+		OpenViBE::uint32 *m_pPrevStimValue;
+		
+		enum
+		{
+			CTF_HEADER=0,
+			CTF_DATA=1,
+			CTF_STOP=2
+		};
+
+		struct
+		{
+			OpenViBE::uint32 m_ui32Command; /* may be 0 : header, 1 : data, 2 : stop . */
+			OpenViBE::uint32 m_ui32Size;
+		} m_structCommandHeader;
+		
+		struct
+		{
+			char *m_strExperimentId; /* Str60 */
+			char * m_strExperimenDate; /* Str32 */
+
+			char *m_strSubjectName; /* Str32 */
+			OpenViBE::int32 *m_i32SubjectAge;
+			char *m_strSubjectSex; /* 4 char */ /**F: female or M: Male*/
+
+			OpenViBE::int32 *m_i32LabId;
+			char *m_strLabName; /* Str32 */
+			OpenViBE::int32 *m_i32TechnicianId;
+			char *m_strTechnicianName; /* Str32 */
+
+			OpenViBE::float32 *m_f32SamplingRate;
+			OpenViBE::int32 *m_i32NumberOfChannels;
+
+			OpenViBE::float64 *m_f64PosRefNaLeReDew; /* 9 values */
+			
+			OpenViBE::uint32 *m_ui32NumSamples;
+		} m_structFixedHeader;
+		char* m_pStructFixedHeaderBuffer;
+
+		struct
+		{
+			Str32 *m_strChannelLabel;
+			OpenViBE::int32 *m_i32ChannelTypeIndex;
+
+			OpenViBE::float32 *m_f32ProperGain;
+			OpenViBE::float32 *m_f32QGain;
+			OpenViBE::float32 *m_f32IOGain;
+			
+			OpenViBE::int32 *m_i32GradOrderNum;
+		} m_structVariableHeader;
+		char* m_pStructVariableHeaderBuffer;
+		
+		struct
+		{
+			OpenViBE::int32 *m_i32SampleNumber;
+			OpenViBE::int32 *m_pDataBuffer;
+		} m_structData;
+		char* m_pStructDataBuffer;
+		
+		OpenViBE::uint32 m_ui32FixedHeaderLength;
+		OpenViBE::uint32 m_ui32VariableHeaderLength;
+		OpenViBE::uint32 m_ui32DataBufferLength;
+
+		void bufferToFixedHeaderStruct(void);
+		void bufferToVariableHeaderStruct(void);
+		void readCTFCommandHeader(void);
 	};
 };
 
