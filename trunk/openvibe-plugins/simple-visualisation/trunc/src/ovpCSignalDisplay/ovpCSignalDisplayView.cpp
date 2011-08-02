@@ -34,6 +34,8 @@ namespace OpenViBEPlugins
 
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode, boolean bAutoVerticalScale, float64 f64VerticalScale)
 			:m_pBuilderInterface(NULL)
+			,m_pMainWindow(NULL)
+			,m_pSignalDisplayTable(NULL)
 			,m_bShowLeftRulers(false)
 			,m_bShowBottomRuler(true)
 			,m_ui64LeftmostDisplayedTime(0)
@@ -59,6 +61,8 @@ namespace OpenViBEPlugins
 
 		CSignalDisplayView::CSignalDisplayView(CBufferDatabase& oBufferDatabase, float64 f64TimeScale, CIdentifier oDisplayMode)
 			:m_pBuilderInterface(NULL)
+			,m_pMainWindow(NULL)
+			,m_pSignalDisplayTable(NULL)
 			,m_bShowLeftRulers(false)
 			,m_bShowBottomRuler(true)
 			,m_ui64LeftmostDisplayedTime(0)
