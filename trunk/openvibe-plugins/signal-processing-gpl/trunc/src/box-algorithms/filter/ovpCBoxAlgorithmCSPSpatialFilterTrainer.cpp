@@ -124,7 +124,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	boolean l_bShouldTrain=false;
-	uint32 i, j, k;
+	uint32 i, j;
 
 	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
@@ -174,7 +174,8 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 			if(m_pSignalDecoderCondition1->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
 				TParameterHandler<IMatrix*> ip_pMatrix(m_pSignalDecoderCondition1->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix));
-				l_oCovarianceMatrixCondition1(ip_pMatrix->getDimensionSize(0),ip_pMatrix->getDimensionSize(0));
+				l_oCovarianceMatrixCondition1.set_size(ip_pMatrix->getDimensionSize(0),ip_pMatrix->getDimensionSize(0));
+				l_oCovarianceMatrixCondition1.zeros();
 			}
 			if(m_pSignalDecoderCondition1->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
@@ -203,7 +204,8 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 			if(m_pSignalDecoderCondition2->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
 			{
 				TParameterHandler<IMatrix*> ip_pMatrix(m_pSignalDecoderCondition2->getOutputParameter(OVP_GD_Algorithm_SignalStreamDecoder_OutputParameterId_Matrix));
-				l_oCovarianceMatrixCondition2(ip_pMatrix->getDimensionSize(0),ip_pMatrix->getDimensionSize(0));
+				l_oCovarianceMatrixCondition2.set_size(ip_pMatrix->getDimensionSize(0),ip_pMatrix->getDimensionSize(0));
+				l_oCovarianceMatrixCondition2.zeros();
 			}
 			if(m_pSignalDecoderCondition2->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
