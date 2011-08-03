@@ -1,5 +1,7 @@
 #include "ovpCBoxAlgorithmStimulationFilter.h"
 
+#include <cstddef>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
