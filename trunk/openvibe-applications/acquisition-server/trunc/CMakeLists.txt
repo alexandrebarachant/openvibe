@@ -21,6 +21,7 @@ INCLUDE("FindThirdPartyGMobiLabPlusAPI")
 INCLUDE("FindThirdPartyUSBFirstAmpAPI")
 INCLUDE("FindThirdPartyThinkGearAPI")
 INCLUDE("FindThirdPartyEmotivAPI")
+INCLUDE("FindThirdPartyOpenAL")
 
 # ---------------------------------
 # Target macros

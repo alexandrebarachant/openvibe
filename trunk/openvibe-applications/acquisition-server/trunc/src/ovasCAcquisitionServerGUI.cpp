@@ -20,6 +20,7 @@
 #include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
 #include "tmsi-refa32b/ovasCDriverTMSiRefa32B.h"
 // #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
+#include "openal-mono16bit-audiocapture/ovasCDriverOpenALAudioCapture.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -151,6 +152,9 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverTMSiRefa32B(m_pAcquisitionServer->getDriverContext()));
 #endif
 	// if(l_bShowUnstable) m_vDriver.push_back(new CDriverNeuroscanSynamps2(m_pAcquisitionServer->getDriverContext()));
+#if defined TARGET_HAS_ThirdPartyOpenAL
+	m_vDriver.push_back(new CDriverOpenALAudioCapture(m_pAcquisitionServer->getDriverContext()));
+#endif
 
 	m_pAcquisitionServerThread=new CAcquisitionServerThread(m_rKernelContext, *this, *m_pAcquisitionServer);
 
