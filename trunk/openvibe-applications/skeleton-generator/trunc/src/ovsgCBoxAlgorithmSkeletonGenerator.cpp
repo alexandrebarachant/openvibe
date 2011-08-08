@@ -542,7 +542,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 	l_mSubstitutions[CString("@@ProcessInputComment@@")] = (m_bProcessInput ? "" : "//");
 	l_mSubstitutions[CString("@@ProcessClockCommentIn@@")] = (m_bProcessClock ? "" : "/*");
 	l_mSubstitutions[CString("@@ProcessInputCommentIn@@")] = (m_bProcessInput ? "" : "/*");
-	stringstream ss; ss << m_ui32ClockFrequency << "<<32";
+	stringstream ss; ss << m_ui32ClockFrequency << "LL<<32";
 	l_mSubstitutions[CString("@@ClockFrequency@@")] = ss.str().c_str();
 	
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
