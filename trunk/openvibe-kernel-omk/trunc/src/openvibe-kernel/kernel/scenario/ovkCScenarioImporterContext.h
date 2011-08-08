@@ -26,7 +26,7 @@ namespace OpenViBE
 		protected:
 
 			const OpenViBE::CString m_sFileName;
-			mutable OpenViBE::Kernel::IScenario& m_rScenario;
+			OpenViBE::Kernel::IScenario& m_rScenario;
 		};
 	};
 };
