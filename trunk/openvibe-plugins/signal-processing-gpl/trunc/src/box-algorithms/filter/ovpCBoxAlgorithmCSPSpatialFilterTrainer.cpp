@@ -290,8 +290,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 		}
 
 		this->getLogManager() << LogLevel_Info << "CSP Spatial filter trained successfully.\n";
-		uint64 l_ui32TrainCompletedStimulation = this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation,"OVTK_StimulationId_TrainCompleted");
-		m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(l_ui32TrainCompletedStimulation, l_ui64TrainDate, 0);
+		m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(OVTK_StimulationId_TrainCompleted, l_ui64TrainDate, 0);
 		m_oStimulationEncoder.encodeBuffer(0);
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_ui64TrainChunkStartTime,l_ui64TrainChunkEndTime);
 	}

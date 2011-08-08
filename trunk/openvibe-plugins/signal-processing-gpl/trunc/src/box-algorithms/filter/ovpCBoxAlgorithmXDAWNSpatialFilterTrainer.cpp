@@ -108,7 +108,7 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::initialize(void)
 
 	m_pEvokedPotentialDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamDecoder));
 	m_pEvokedPotentialDecoder->initialize();
-	
+
 	m_oStimulationEncoder.initialize(*this);
 
 	m_ui64StimulationIdentifier=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
@@ -127,7 +127,7 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::uninitialize(void)
 	this->getAlgorithmManager().releaseAlgorithm(*m_pEvokedPotentialDecoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pSignalDecoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationDecoder);
-	
+
 	m_oStimulationEncoder.uninitialize();
 
 	m_pEvokedPotentialDecoder=NULL;
@@ -243,8 +243,6 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 			l_rDynamicBoxContext.markInputAsDeprecated(1, i);
 		}
 
-
-
 		this->getLogManager() << LogLevel_Trace << "Decoding evoked response potential...\n";
 
 		std::vector < SChunk > l_vEvokedPotential;
@@ -275,8 +273,6 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 			}
 			l_rDynamicBoxContext.markInputAsDeprecated(2, i);
 		}
-
-
 
 		if(!l_bIsContinuous)
 		{
@@ -311,9 +307,6 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 		{
 			(*l_pAveragedBuffer++)/=l_vEvokedPotential.size();
 		}
-
-
-
 
 		// WARNING - OpenViBE matrices are transposed ITPP matrices !
 
@@ -440,24 +433,12 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 			this->getLogManager() << LogLevel_ImportantWarning << "Generalized eigen vector decomposition failed...\n";
 			return true;
 		}
-		
+
 		this->getLogManager() << LogLevel_Info << "xDAWN Spatial filter trained successfully.\n";
-		uint64 l_ui32TrainCompletedStimulation = this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation,"OVTK_StimulationId_TrainCompleted");
-		m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(l_ui32TrainCompletedStimulation, l_ui64TrainDate, 0);
+		m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(OVTK_StimulationId_TrainCompleted, l_ui64TrainDate, 0);
 		m_oStimulationEncoder.encodeBuffer(0);
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_ui64TrainChunkStartTime, l_ui64TrainChunkEndTime);
-		
 	}
-
-	// ...
-
-	// l_rStaticBoxContext.getInputCount();
-	// l_rStaticBoxContext.getOutputCount();
-	// l_rStaticBoxContext.getSettingCount();
-
-	// l_rDynamicBoxContext.getInputChunkCount()
-	// l_rDynamicBoxContext.getInputChunk(i, )
-	// l_rDynamicBoxContext.getOutputChunk(i, )
 
 	return true;
 }
