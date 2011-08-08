@@ -107,7 +107,7 @@ namespace OpenViBEPlugins
 					rBox.setInputName(i*2+1, l_sName);
 					rBox.setInputType(i*2+1, OV_TypeId_Stimulations);
 
-					sprintf(l_sName, "End of File stimulation for input %u", i+1);
+					sprintf(l_sName, "End-of-file stimulation for input %u", i+1);
 					rBox.setSettingName(i+1, l_sName);
 				}
 
@@ -133,7 +133,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
 				rBox.addInput("", OV_TypeId_Stimulations);
-				rBox.addSetting("",OV_TypeId_Stimulations,"OVTK_StimulationId_ExperimentStop");
+				rBox.addSetting("",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
 				return this->check(rBox);
 			};
 			
@@ -183,9 +183,9 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addOutput("Signal",OV_TypeId_Signal);
 				rBoxAlgorithmPrototype.addOutput("Stimulations",OV_TypeId_Stimulations);
 				
-				rBoxAlgorithmPrototype.addSetting("Time out before assuming end of file",OV_TypeId_Integer,"5");
-				rBoxAlgorithmPrototype.addSetting("End of File stimulation for input 2",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
-				rBoxAlgorithmPrototype.addSetting("End of File stimulation for input 2",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
+				rBoxAlgorithmPrototype.addSetting("Time out before assuming end-of-file (in sec)",OV_TypeId_Integer,"5");
+				rBoxAlgorithmPrototype.addSetting("End-of-file stimulation for input 1",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
+				rBoxAlgorithmPrototype.addSetting("End-of-file stimulation for input 2",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
 				
 				//rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				
