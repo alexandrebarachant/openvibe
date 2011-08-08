@@ -108,6 +108,8 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::initialize(void)
 
 	m_pEvokedPotentialDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_SignalStreamDecoder));
 	m_pEvokedPotentialDecoder->initialize();
+	
+	m_oStimulationEncoder.initialize(*this);
 
 	m_ui64StimulationIdentifier=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	m_sSpatialFilterConfigurationFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
@@ -125,6 +127,8 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::uninitialize(void)
 	this->getAlgorithmManager().releaseAlgorithm(*m_pEvokedPotentialDecoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pSignalDecoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationDecoder);
+	
+	m_oStimulationEncoder.uninitialize();
 
 	m_pEvokedPotentialDecoder=NULL;
 	m_pSignalDecoder=NULL;
@@ -154,6 +158,7 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	boolean l_bShouldTrain=false;
+	uint64 l_ui64TrainDate, l_ui64TrainChunkStartTime, l_ui64TrainChunkEndTime;
 	uint32 i, j, k;
 	std::vector < SChunk >::const_iterator it;
 
@@ -164,6 +169,8 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 		m_pStimulationDecoder->process();
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
+			m_oStimulationEncoder.encodeHeader(0);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_rDynamicBoxContext.getInputChunkStartTime(0, i),l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 		}
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
@@ -172,9 +179,17 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 			{
 				l_bShouldTrain |= (op_pStimulationSet->getStimulationIdentifier(j)==m_ui64StimulationIdentifier);
 			}
+			if(l_bShouldTrain)
+			{
+				l_ui64TrainDate = op_pStimulationSet->getStimulationDate(j);
+				l_ui64TrainChunkStartTime = l_rDynamicBoxContext.getInputChunkStartTime(0, i);
+				l_ui64TrainChunkEndTime = l_rDynamicBoxContext.getInputChunkEndTime(0, i);
+			}
 		}
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
 		{
+			m_oStimulationEncoder.encodeEnd(0);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_rDynamicBoxContext.getInputChunkStartTime(0, i),l_rDynamicBoxContext.getInputChunkEndTime(0, i));
 		}
 		l_rDynamicBoxContext.markInputAsDeprecated(0, i);
 	}
@@ -425,6 +440,13 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 			this->getLogManager() << LogLevel_ImportantWarning << "Generalized eigen vector decomposition failed...\n";
 			return true;
 		}
+		
+		this->getLogManager() << LogLevel_Info << "xDAWN Spatial filter trained successfully.\n";
+		uint64 l_ui32TrainCompletedStimulation = this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation,"OVTK_StimulationId_TrainCompleted");
+		m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(l_ui32TrainCompletedStimulation, l_ui64TrainDate, 0);
+		m_oStimulationEncoder.encodeBuffer(0);
+		l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_ui64TrainChunkStartTime, l_ui64TrainChunkEndTime);
+		
 	}
 
 	// ...

@@ -35,6 +35,8 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationDecoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pSignalDecoder;
 			OpenViBE::Kernel::IAlgorithmProxy* m_pEvokedPotentialDecoder;
+			
+			OpenViBEToolkit::TStimulationEncoder<CBoxAlgorithmXDAWNSpatialFilterTrainer> m_oStimulationEncoder;
 
 			OpenViBE::uint64 m_ui64StimulationIdentifier;
 			OpenViBE::CString m_sSpatialFilterConfigurationFilename;
@@ -65,6 +67,8 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addInput  ("Stimulations", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addInput  ("Session signal", OV_TypeId_Signal);
 				rBoxAlgorithmPrototype.addInput  ("Evoked potential epochs", OV_TypeId_Signal);
+				rBoxAlgorithmPrototype.addOutput ("Train-completed Flag", OV_TypeId_Stimulations);
+				
 				rBoxAlgorithmPrototype.addSetting("Train stimulation", OV_TypeId_Stimulation, "OVTK_StimulationId_Train");
 				rBoxAlgorithmPrototype.addSetting("Spatial filter configuration", OV_TypeId_Filename, "");
 				rBoxAlgorithmPrototype.addSetting("Filter dimension", OV_TypeId_Integer, "4");

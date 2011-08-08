@@ -125,6 +125,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 
 	boolean l_bShouldTrain=false;
 	uint32 i, j;
+	uint64 l_ui64TrainDate, l_ui64TrainChunkStartTime, l_ui64TrainChunkEndTime;
 
 	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
@@ -145,10 +146,9 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 			}
 			if(l_bShouldTrain)
 			{
-				uint64 l_ui32TrainCompletedStimulation = this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation,"OVTK_StimulationId_TrainCompleted");
-				m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(l_ui32TrainCompletedStimulation, op_pStimulationSet->getStimulationDate(j), 0);
-				m_oStimulationEncoder.encodeBuffer(0);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_rDynamicBoxContext.getInputChunkStartTime(0, i),l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+				l_ui64TrainDate = op_pStimulationSet->getStimulationDate(j);
+				l_ui64TrainChunkStartTime = l_rDynamicBoxContext.getInputChunkStartTime(0, i);
+				l_ui64TrainChunkEndTime = l_rDynamicBoxContext.getInputChunkEndTime(0, i);
 			}
 		}
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
@@ -286,10 +286,14 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 		else
 		{
 			this->getLogManager() << LogLevel_ImportantWarning << "Eigen vector decomposition failed...\n";
-			return false;
+			return true;
 		}
 
 		this->getLogManager() << LogLevel_Info << "CSP Spatial filter trained successfully.\n";
+		uint64 l_ui32TrainCompletedStimulation = this->getTypeManager().getEnumerationEntryValueFromName(OV_TypeId_Stimulation,"OVTK_StimulationId_TrainCompleted");
+		m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(l_ui32TrainCompletedStimulation, l_ui64TrainDate, 0);
+		m_oStimulationEncoder.encodeBuffer(0);
+		l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_ui64TrainChunkStartTime,l_ui64TrainChunkEndTime);
 	}
 
 	return true;
