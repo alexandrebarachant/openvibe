@@ -106,10 +106,10 @@
 
  Scenario to use : <strong>ssvep-bci-2-training-acquisition</strong>
 
- After configuring the scenario you can proceed to the training phase. For this you will need to be
- able to record EEG signal on six electrodes <em>Oz, O1, O2, CPz, POz</em> and <em>Iz</em>.
- Configure the OpenViBE acquisition server accordingly, the order of the electrodes does not matter
- for the SSVEP scenarios as long as they are named correctly.
+ After configuring the scenario you can proceed to the training phase. The SSVEP scenarios use 
+ Common Spatial Pattern (CSP) spatial filter to select the best characteristics automatically. This
+ means that you can place the electrodes on any part of the scalp in the occipital area. Good
+ results were measured with electrodes Oz, O1, O2, CPz, POz and Iz.
 
  After launching the training scenario you will be presented by a window showing (by default) three
  squares - Training Targets. One additional square is added to represent no-stimulation. This square
@@ -172,17 +172,29 @@
 
  \subsubsection Doc_Scenario_SSVEP_Protocol_Step2_Classifier_Training Classifier Training
 
- Scenario to use : <strong>ssvep-bci-3-classifier-training</strong>
+ Once you have acquired the training data you can use the <em>training</em> scenarios to
+ create classifiers necessary for online testing.
 
- Once you have acquired the training data you can use the <em>classifier training</em> scenario to
- create classifiers necessary for online testing. You will have to load the EEG data recording from
- the previous step into the <strong>Generic file reader</strong> box.
+ First Scenario to use : <strong>ssvep-bci-3-CSP-training</strong>
 
- One classifier configuration will be created for each frequency.
+ First you will need to run the CSP training to generate the best characteristics from the acquired signals.
+
+ You will have to load the EEG data recording from
+ the training acquisition step into the <strong>Generic file reader</strong> box.
+
+ Second Scenario to use : <strong>ssvep-bci-4-classifier-training</strong>
+
+ This scenario will create the final classifiers for online testing. One classifier configuration will be 
+ created for each frequency. At the end, the scenario will provide results of a K-fold cross validation 
+ test.
+
+ You will have to load the EEG data recording from
+ the training acquisition step into the <strong>Generic file reader</strong> box.
+
 
  \subsection Doc_Scenario_SSVEP_Protocol_Step3 Step 3: Online Evaluation
 
- Scenario to use : <strong>ssvep-bci-3-online-shooter</strong>
+ Scenario to use : <strong>ssvep-bci-5-online-shooter</strong>
 
  The final scenario consists of a simple shooter game. The subject will control a "ship" represented
  by two wings (flickering squares at the sides) and a cannon (a flickering triangle on the top). By
