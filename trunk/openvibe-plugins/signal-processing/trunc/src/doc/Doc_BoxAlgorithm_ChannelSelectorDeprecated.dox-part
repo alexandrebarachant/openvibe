@@ -1,14 +1,12 @@
 /**
- * \page BoxAlgorithm_ChannelSelector Channel Selector
+ * \page BoxAlgorithm_ChannelSelector Channel selector
 __________________________________________________________________
 
 Detailed description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_ChannelSelector_Description|
- * This box allows to restrict outgoing signal data to a subset of incoming data based on a list of channels.
- * Channels may be identified by their index, their name (the case matters), or a mix of both. Additionally,
- * the channels can be rejected instead of being selected.
+ This box allows to restrict outgoing signal data to a subset of incoming data based on a list of channels. Channels may be identified by their index (0-based) or by their name (the case matters).
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Description|
 __________________________________________________________________
 
@@ -19,8 +17,6 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Inputs|
 
  * |OVP_DocBegin_BoxAlgorithm_ChannelSelector_Input1|
- * The input matrix which channels should be selected or rejected. The type of this input can be changed to
- * signal or spectrum depending on what kind of stream channel to select.
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Input1|
 __________________________________________________________________
 
@@ -31,8 +27,6 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Outputs|
 
  * |OVP_DocBegin_BoxAlgorithm_ChannelSelector_Output1|
- * The output matrix with selected or preseverd channels. The type of this output can be changed to
- * signal or spectrum depending on what kind of stream channel to select.
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Output1|
 __________________________________________________________________
 
@@ -43,30 +37,21 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_ChannelSelector_Setting1|
- * A semi colon separated list of channel identifiers. You can use the index of the channel or the name of the
- * channel. Also, ranges can be selected specifying first channel identifer, followed by a colon, followed by
- * the second channel identifier.
+ List of channels whose data is forwarded to the next box. Successive channel identifiers must be separated by semicolons.
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Setting1|
 
  * |OVP_DocBegin_BoxAlgorithm_ChannelSelector_Setting2|
- * The action to perform on the identifier channel, be it selection or rejection.
- * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Setting2|
+ If this setting is checked, channel identifiers refer to their index.
 
- * |OVP_DocBegin_BoxAlgorithm_ChannelSelector_Setting3|
- * The kind of identification for channel list.
- * - \c Smart let the box try to detect if the channel identifier is an index or a name
- * - \c Name forces the channel identifiers to be considered as channel names. This can be handfull if channel names are numbers.
- * - \c Index forces the channel identifiers to be considered as channel indices. This can be handfull if channel names are numbers.
- * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Setting3|
+ * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Setting2|
 __________________________________________________________________
 
 Examples description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_ChannelSelector_Examples|
- * Suppose you want to select the first 8 channel of an input stream, plus you want the Cz electrode. You would then use
- * the following string : "1:8;Cz"
  * |OVP_DocEnd_BoxAlgorithm_ChannelSelector_Examples|
+
 __________________________________________________________________
 
 Miscellaneous description
