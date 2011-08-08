@@ -125,6 +125,44 @@ This scenario is based on the online one, but the input signal is coming from a 
 */
 
 /**
+\page Doc_Scenario_BCI_MotorImagery Motor Imagery BCI with Common Spatial Pattern filtering.
+
+This set of scenarios implements the Graz BCI, based on motor imagery of the hands. You will find it in <b>share/openvibe-scenarios/bci/motor-imagery-CSP</b>.
+
+- \b motor-imagery-bci-0-signal-monitoring.xml: 
+This scenario should be always used prior to anything and in background to check the signal quality of the acquisition device. Once you are sure that the EEG acquisition runs correctly, you can go on to the next step !
+
+- \b motor-imagery-bci-1-acquisition.xml: 
+First step is to acquire some data in order to train the classifier that will discriminate Right and Left hand movements. The training session can be configured in the LUA stimulator (number of trials, timings, etc.).
+
+- \b motor-imagery-bci-2-train-csp.xml: 
+This scenario computes Common Sptial Pattern to produce a spatial filter that maximizes 
+the difference between the signal of the two classes. Use a previously acquired file to perform the training.
+
+- \b motor-imagery-bci-3-classifier-trainer.xml: 
+This scenario trains a LDA classifier based on the previous acquisition session.
+Note that the signal processing pipeline may be tuned accroding to the type of data acquired.
+For example, the \ref Doc_BoxAlgorithm_ReferenceChannel may not be needed.
+
+- \b motor-imagery-bci-4-online.xml:
+This scenario adds real-time feedback to the visualization, using the trained LDA classifier.
+Again, you may have to tune the signal processing pipeline.
+
+- \b motor-imagery-bci-5-replay.xml:
+This scenario is based on the online one, but the input signal is coming from a file rather than acquisition server.
+In this version classifier performance tools are used to display the confusion matrix of the classifier and its global performance
+during the session.
+
+<br/>
+
+<img src="motor-imagery-replay.png"></img>
+<center><strong>Fig.1 The motor imagery BCI: offline performance computations.</strong></center>
+
+<br/>
+
+*/
+
+/**
 \page Doc_Scenario_BCI_Handball Handball demonstrator
 
 This application allows anyone to test the handball vr-demo provided with OpenViBE. You will find it in <b>share/openvibe-scenarios/bci/handball</b>.
