@@ -102,7 +102,7 @@ namespace OpenViBEPlugins
 			{
 				rBoxAlgorithmPrototype.addInput  ("Input signal",             OV_TypeId_Signal);
 				rBoxAlgorithmPrototype.addOutput ("Output signal",            OV_TypeId_Signal);
-				rBoxAlgorithmPrototype.addSetting("Channel List",             OV_TypeId_String, "-");
+				rBoxAlgorithmPrototype.addSetting("Channel List",             OV_TypeId_String, ":");
 				rBoxAlgorithmPrototype.addSetting("Action",                   OVP_TypeId_SelectionMethod, OVP_TypeId_SelectionMethod_Select.toString());
 				rBoxAlgorithmPrototype.addSetting("Channel Matching Method",  OVP_TypeId_MatchMethod,     OVP_TypeId_MatchMethod_Smart.toString());
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyInput);

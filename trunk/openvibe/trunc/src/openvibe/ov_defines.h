@@ -185,7 +185,7 @@
 //                                                                   //
 
 #define OV_Value_EnumeratedStringSeparator                           ';'
-#define OV_Value_RangeStringSeparator                                '-'
+#define OV_Value_RangeStringSeparator                                ':'
 
 //___________________________________________________________________//
 //                                                                   //

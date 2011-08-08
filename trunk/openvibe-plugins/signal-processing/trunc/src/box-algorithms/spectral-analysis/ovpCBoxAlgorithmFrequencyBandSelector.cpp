@@ -48,7 +48,7 @@ boolean CBoxAlgorithmFrequencyBandSelector::initialize(void)
 	for(it=l_vSetting.begin(); it!=l_vSetting.end(); it++)
 	{
 		boolean l_bGood=false;
-		l_vSettingRange=::split(*it, '-');
+		l_vSettingRange=::split(*it, OV_Value_RangeStringSeparator);
 		if(l_vSettingRange.size() == 1)
 		{
 			double l_dValue;
