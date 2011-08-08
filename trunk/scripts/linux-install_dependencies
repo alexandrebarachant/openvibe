@@ -1071,7 +1071,7 @@ else
 ov_package_url_cg=http://developer.download.nvidia.com/cg/Cg_2.0/2.0.0012/Cg-2.0_Jan2008_x86.tar.gz
 fi;
 ov_package_url_cegui=$ov_sourceforge_mirror/crayzedsgui/files/CEGUI%20Mk-2/0.7.1/CEGUI-0.7.1.tar.gz
-ov_package_url_ogre=$ov_sourceforge_mirror/ogre/files/ogre/1.7/ogre_src_v1-7-1.tar.bz2
+ov_package_url_ogre=$ov_sourceforge_mirror/ogre/files/ogre/1.7/ogre_src_v1-7-3.tar.bz2
 ov_package_url_vrpn=ftp://ftp.cs.unc.edu/pub/packages/GRIP/vrpn/old_versions/vrpn_07_26.zip
 ov_package_url_openmask4=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4~dotsceneloader-src-164.tar.bz2
 ov_package_url_openmask4tutorial=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/openmask4-tutorial-src-164.tar.bz2
@@ -1391,6 +1391,13 @@ ov_package_install_hook_ogre='
 	echo "Plugin=Plugin_OctreeSceneManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
 	popd'
 #	echo "Plugin=Plugin_CgProgramManager" >> $ov_target_folder_lib/OGRE/Plugins.cfg &&
+
+ov_package_post_uncompress_hook_cegui='
+	pushd * &&
+	$ov_sed	-i
+		-e "36i#include <cstddef>"
+		cegui/include/CEGUIString.h &&
+	popd'
 
 ov_package_post_install_hook_cegui='
 	pushd * &&
