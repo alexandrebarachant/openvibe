@@ -175,7 +175,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Bruno Renier"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("\"Concatenates\" multiple signal streams and there associated stimulation streams."); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Outputs the signal and stimulations from the first couple of inputs, then the data from the next couple of inputs and so on."); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Outputs the signal and stimulations from the first couple of inputs, then the data from the next couple of inputs and so on.\n DEPRECATED: use File Reading and Writing/Signal Concatenation instead (faster and more stable). "); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.6"); }
 
