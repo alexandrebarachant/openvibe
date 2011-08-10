@@ -88,20 +88,22 @@
 <table class='faq-os' cellpading=0 cellspacing=0>
 <tr> <td colspan=6 bgcolor=black style="color: white"><center>The following target platforms have been tested</center></td> </tr>
 <tr bgcolor=lightgrey> <th>CPU</th> <th>Operating System</th> <th>Distribution</th> <th>Compiler</th> <th>Status</th> <th>Officially supported</th> </tr>
-<tr> <td rowspan=22>x86</td>   <td rowspan=6>Windows</td>  <td rowspan=2>7</td>           <td>Visual C++ 2010 Express</td>            <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                                                      <td>Visual C++ 2008 Express <b>SP1</b></td> <td bgcolor=green>OK (last built 2011/01)</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                       <td rowspan=3>XP SP3</td>      <td>Visual C++ 2010 Express</td>            <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                                                      <td>Visual C++ 2008 Express <b>SP1</b></td> <td bgcolor=green>OK (last built 2010/12)</td> <td bgcolor=green>Yes</td> </tr>
+<tr> <td rowspan=24>x86</td>   <td rowspan=6>Windows</td>  <td rowspan=2>7</td>           <td>Visual C++ 2010 Express</td>            <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                                                      <td>Visual C++ 2008 Express <b>SP1</b></td> <td bgcolor=green>OK (last built 2011/01)</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                       <td rowspan=3>XP SP3</td>      <td>Visual C++ 2010 Express</td>            <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                                                      <td>Visual C++ 2008 Express <b>SP1</b></td> <td bgcolor=green>OK (last built 2010/12)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                                                      <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Vista</td>                 <td>Visual C++ 2005 Express <b>SP1</b></td> <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr>                           <td rowspan=16>Linux</td>   <td>Ubuntu 10.10 Maverick</td> <td>GCC 4.4.5</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                           <td rowspan=18>Linux</td>   <td>Ubuntu 11.04 Narval</td> <td>GCC 4.5.2</td>                          <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>Ubuntu 10.04 LTS Lucid</td><td>GCC 4.4.3</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                          							   <td>Ubuntu 10.10 Maverick</td> <td>GCC 4.4.5</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=Orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK (last built 2010/09)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2010/04)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK (last built 2010/04)</td> <td bgcolor=orange>No</td> </tr>
-<tr>                                                       <td>Fedora 14</td>             <td>GCC 4.5.1</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                       <td>Fedora 13</td>             <td>GCC 4.4.5</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 15</td>             <td>GCC 4.6.0</td>                          <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 14</td>             <td>GCC 4.5.1</td>                          <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 13</td>             <td>GCC 4.4.5</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 12</td>             <td>GCC 4.4.2</td>                          <td bgcolor=green>OK (last built 2010/09)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK (last built 2010/04)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK (last built 2009/12)</td> <td bgcolor=orange>No</td> </tr>
@@ -110,17 +112,20 @@
 <tr>                                                       <td>Fedora Core 4</td>         <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora Core 3</td>         <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Debian 5</td>              <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr> <td rowspan=18>x86_64</td> <td rowspan=3>Windows</td> <td>7</td>                     <td>Visual C++ 2010 Express</td>            <td bgcolor=grey>Has been reported to work (2011/01)</td> <td bgcolor=orange>No</td> </tr>
+<tr> <td rowspan=20>x86_64</td> <td rowspan=3>Windows</td> <td>7</td>                     <td>Visual C++ 2010 Express</td>            <td bgcolor=grey>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>7</td>                     <td>Visual C++ 2008 Express <b>SP1</b></td> <td bgcolor=grey>Has been reported to work (2011/01)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td colspan=2>Others</td>                                                  <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
-<tr>                            <td rowspan=15>Linux</td>  <td>Ubuntu 10.10 Maverick</td> <td>GCC 4.4.5</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                       <td>Ubuntu 10.04 LTS Lucid</td><td>GCC 4.4.3</td>                          <td bgcolor=green>OK (last built 2010/12)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                            <td rowspan=17>Linux</td>  <td>Ubuntu 11.04 Narval</td> <td>GCC 4.5.2</td>                          <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Ubuntu 10.04 LTS Lucid</td><td>GCC 4.4.3</td>                          <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                          							   <td>Ubuntu 10.10 Maverick</td> <td>GCC 4.4.5</td>                          <td bgcolor=green>OK (last built 2011/04)</td> <td bgcolor=Orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 9.10 Karmic</td>    <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 9.04 Jaunty</td>    <td>GCC 4.3.3</td>                          <td bgcolor=green>OK (last built 2010/04)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.10 Intrepid</td>  <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Ubuntu 8.04 LTS Hardy</td> <td>GCC 4.2.4</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
+<tr>                                                       <td>Fedora 15</td>             <td>GCC 4.6.0</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>   
 <tr>                                                       <td>Fedora 14</td>             <td>GCC 4.5.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
-<tr>                                                       <td>Fedora 13</td>             <td>GCC 4.4.5</td>                          <td bgcolor=green>OK</td> <td bgcolor=green>Yes</td> </tr>
+<tr>                                                       <td>Fedora 13</td>             <td>GCC 4.4.5</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 12</td>             <td>GCC 4.4.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 11</td>             <td>GCC 4.4.1</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora 10</td>             <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
@@ -141,11 +146,12 @@
 <table class='faq-os' cellpading=0 cellspacing=0>
 <tr> <td colspan=2 bgcolor=black style="color: white"><center>The following functionnalities are already integrated</center></td> </tr>
 <tr bgcolor=lightgrey> <th>Category</th> <th>Box</th> </tr>
-<tr> <td rowspan=5>File reading and writing</td> <td>Generic files (r/w)</td> </tr>
+<tr> <td rowspan=6>File reading and writing</td> <td>Generic files (r/w)</td> </tr>
 <tr>                                             <td>GDF files (r/w)</td> </tr>
 <tr>                                             <td>BCI Competition IIIb (r)</td> </tr>
 <tr>                                             <td>Brainamp files (r)</td> </tr>
 <tr>                                             <td>CSV files (w)</td> </tr>
+<tr>                                             <td>File concatenation</td> </tr>
 <tr> <td rowspan=8>Preprocessing</td> <td>Time based epoching</td> </tr>
 <tr>                                  <td>Stimulation based epoching</td> </tr>
 <tr>                                  <td>Moving average</td> </tr>
@@ -153,22 +159,24 @@
 <tr>                                  <td>Channel selection</td> </tr>
 <tr>                                  <td>Simple DSP</td> </tr>
 <tr>                                  <td>Temporal filter</td> </tr>
-<tr>                                  <td>Downsampling (in progress)</td> </tr>
+<tr>                                  <td>Downsampling</td> </tr>
 <tr> <td rowspan=2>Feature extraction</td> <td>Spectral analysis</td> </tr>
-<tr>                                       <td>Spatial filter</td> </tr>
+<tr>                                       <td>Spatial filter (xDAWN and CSP)</td> </tr>
 <tr> <td rowspan=2>Classification</td> <td>Linear Discriminant Analysis</td> </tr>
 <tr>                                   <td>Support Vector Machine</td> </tr>
 <tr> <td rowspan=4>Stimulation presentation</td> <td>Graz-like motor imagery presentation</td> </tr>
 <tr>                                             <td>P300 Speller</td> </tr>
 <tr>                                             <td>P300 Magic Card</td> </tr>
 <tr>                                             <td>P300 Identifier</td> </tr>
-<tr> <td rowspan=5>Visualisation</td> <td>Simple levels</td> </tr>
+<tr> <td rowspan=6>Visualisation</td> <td>Simple levels</td> </tr>
 <tr>                                  <td>Raw signal</td> </tr>
 <tr>                                  <td>Spectrum</td> </tr>
 <tr>                                  <td>Time/Frequency analysis</td> </tr>
 <tr>                                  <td>2D/3D topography</td> </tr>
-<tr> <td rowspan=2>Connection to external software</td> <td>VRPN integration (Virtual Reality Peripheral Network)</td> </tr>
+<tr>                                  <td>Confusion Matrix</td> </tr>
+<tr> <td rowspan=3>Connection to external software</td> <td>VRPN integration (Virtual Reality Peripheral Network)</td> </tr>
 <tr>                                                    <td>TurboFieldTrip integration (r/w, in progress)</td> </tr>
+<tr>                                  <td>Matlab (SVN version only)</td> </tr>
 </table>
 <!-- features stop -->
 \endhtmlonly
