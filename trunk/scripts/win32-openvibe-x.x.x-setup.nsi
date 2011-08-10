@@ -328,6 +328,7 @@ no_need_to_patch_3d_functionnality:
 	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo handball.lnk"                   "$INSTDIR\openvibe-vr-demo-handball.cmd"    "" "%SystemRoot%\system32\shell32.dll" 200
 	CreateShortCut "$SMPROGRAMS\OpenViBE\uninstall.lnk"                                   "$INSTDIR\Uninstall.exe"
 
+	AccessControl::GrantOnFile "$INSTDIR" "(BU)" "GenericRead + GenericWrite"
 SectionEnd
 
 Section "Uninstall"
