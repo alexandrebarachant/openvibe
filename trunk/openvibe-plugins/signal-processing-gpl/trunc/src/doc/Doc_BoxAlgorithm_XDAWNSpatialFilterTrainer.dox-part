@@ -46,6 +46,17 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_XDAWNSpatialFilterTrainer_Input3|
 __________________________________________________________________
 
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_CSPSpatialFilterTrainer_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_CSPSpatialFilterTrainer_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_CSPSpatialFilterTrainer_Output1|
+  The xDAWN Trainer outputs the stimulation <b>OVTK_StimulationId_TrainCompleted</b> when the training process was successfull. No output is produced if the process failed.
+ * |OVP_DocEnd_BoxAlgorithm_CSPSpatialFilterTrainer_Output1|
+__________________________________________________________________
+
 Settings description
 __________________________________________________________________
 
