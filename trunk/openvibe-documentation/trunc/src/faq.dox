@@ -112,7 +112,7 @@
 <tr>                                                       <td>Fedora Core 4</td>         <td>GCC ?</td>                              <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Fedora Core 3</td>         <td>GCC 3.4.3</td>                          <td bgcolor=orange>No 3D visualisation</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td>Debian 5</td>              <td>GCC 4.3.2</td>                          <td bgcolor=green>OK</td> <td bgcolor=orange>No</td> </tr>
-<tr> <td rowspan=20>x86_64</td> <td rowspan=3>Windows</td> <td>7</td>                     <td>Visual C++ 2010 Express</td>            <td bgcolor=grey>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
+<tr> <td rowspan=20>x86_64</td> <td rowspan=3>Windows</td> <td>7</td>                     <td>Visual C++ 2010 Express</td>            <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
 <tr>                                                       <td>7</td>                     <td>Visual C++ 2008 Express <b>SP1</b></td> <td bgcolor=grey>Has been reported to work (2011/01)</td> <td bgcolor=orange>No</td> </tr>
 <tr>                                                       <td colspan=2>Others</td>                                                  <td bgcolor=grey>Untested (feedbacks welcome)</td> <td bgcolor=grey>No</td> </tr>
 <tr>                            <td rowspan=17>Linux</td>  <td>Ubuntu 11.04 Narval</td> <td>GCC 4.5.2</td>                          <td bgcolor=green>OK (last built 2011/08)</td> <td bgcolor=green>Yes</td> </tr>
