@@ -254,6 +254,66 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>If you want to see more <i>Made With OpenViBE</i> applications, visit the <a href="?q=made-with">Made With...</a> section</p>
 
 		<h1>News</h1>
+		
+		<h2>New release of OpenViBE 0.11.0 is now available<br><span style="font-size:x-small">11/08/2011</span></h2>
+
+		<p>The OpenViBE development team is happy to announce the release of *OpenViBE* 0.11.0 "Summer edition", available for download at the <a href="http://openvibe.inria.fr/?q=download">download page</a> 
+
+		<p>This release brings many exciting features, including three community contributions :</p>
+		
+		<ul>
+		<li><b>Aurélien Van Langhenhove</b> contributed a driver based on OpenAL to acquire *sound signal* from microphone input.</li>
+		<li><b>Joan Fruitet</b> patched the Matlab Filter box, by fixing bugs and adding stimulation output.</li>
+		<li><b>Olivier Rochel</b> contributed bugfix patches, for matlab box and skeleton-generator. </li>
+		
+		<li>Motor-imagery and SSVEP scenarios now use *CSP* for higher performances.</li>
+		<li><b>Emotiv driver</b> was updated to make *gyroscope* values available.</li>
+		<li>Signal Concatenation box has been rewritten for <b>fast file concatenation</b>.</li>
+		<li>The developer tool <b>Skeleton-Generator</b> benefited from a major update.</li>
+		<li>The <b>Matlab</b> box outputs stimulations.</li>
+		<li>Channel Selector and Reference Channel feature *smart* channel selection (names, indexes, ranges).</li>
+		<li>... and more new features detailed below.</li>
+
+		Detailed changelog can be found in this <a href="http://openvibe.inria.fr/forum/viewtopic.php?f=1&t=532">forum post</a>
+
+		Many thanks to Aurélien, Joan and Olivier for their contributions! If you are interested in joining the effort feel free to contact us!
+
+		<p><b>Detailed feature list</b></p>
+
+		<ul>
+
+		<p><i>COMMUNITY</i></p>
+		<li>+ Aurélien Van Langhenhove contributed a driver based on OpenAL to acquire sound signal from microphone input.</li>
+		<li>+ Joan Fruitet contributed a patch for the Matlab filter box, by fixing bugs and adding stimulation output.</li>
+		<li>+ Olivier Rochel contributed patches for the skeleton-generator and the matlab box.</li>
+		
+		<p><i>SUPPORT</i></p>
+		<li>+ OpenViBE is now officially supported on Fedora 15, Ubuntu 11.04 and Windows 7 64bit.</li>
+		
+		<p><i>APPLICATIONS</i></p>
+		<li>* The Emotiv EPOC driver now acquires values from gyroscope sensors (new option in the driver properties).</li>
+		<li>* The Player in the OpenViBE Designer can now be controlled with keyboard shortcuts (F5: stop, F6: one-step, F7: play, F8: fast-forward)</li>
+		<li>* Skeleton Generator benefited from a major update, and can produce box skeleton with Listeners, Codecs, Flags, etc.</li>
+		
+		<p><i>PLUGINS</i></p>
+		<li>+ New Reference Channel and Channel Selector boxes. The older boxes are now deprecated. The channel selection is smarter (name or 1-based index, 'X:Y' for channel range).</li>
+		<li>+ New Signal Concatenation box. The older box is now deprecated. The concatenation is much faster, and end-of-file is detected automatically through a time-out.</li>
+		<li>+ New Stream Switch box that copies its input chunks on one of its outputs. The active output is selected with defined stimulations.</li>
+		<li>* CSV file writer can receive 1 or 2-dimensional matrices</li>
+		<li>* Matrix display can receive 1 or 2-dimensional matrices</li>
+		<li>* The Matlab filter box has now a Stimulation output, and the Matlab messages are redirected to the OpenViBE console (warnings, errors, disp, etc.)</li>
+		<li>* Classifier Trainer outputs standard deviation along with classification percentage on the k-fold test. k-fold test now randomize the input data prior to testing by default.</li>
+		<li>* CSP and xDAWN spatial filter trainers output a stimulation OVTK_StimulationId_TrainCompleted after a successful training.</li>
+		<li>* Classifier Accuracy visualization box can now show score and/or percentages, or none of them.</li>
+		
+		<p><i>RESOURCES</i></p>
+		<li>+ New set of scenarios for a Motor-Imagery based BCI using CSP spatial filters, and demonstrating how to measure classifier performances offline or online (confusion matrix, overall performance).</li>
+		<li>+ Documentation for the Matlab Filter box.</li>
+		<li>+ Documentation for the Display-Cue visualisation box.</li>
+		<li>* SSVEP scenarios now make use of CSP spatial filters for better performances.</li>
+		<li>* Acquisition Server documentation updated to latest GUI modification (division driver properties/server settings)</li>
+
+		</ul>
 
 		<h2>A patch for windows installer (0.10.1) is available<br><span style="font-size:x-small">2011/13/04</span></h2>
 
@@ -923,11 +983,12 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Windows (32 bits)</h2>
 
 		<script language=javascript type='text/javascript'>
-			precompiled("OpenViBE 0.10.1", "pub/bin/win32/openvibe-0.10.1-svn2909-setup", "2011/04/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+			precompiled("OpenViBE 0.11.0", "pub/bin/win32/openvibe-0.11.0-svn3052-setup", "2011/08/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 		</script>
 		<div id="win32-installer-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
-				precompiled("OpenViBE 0.9.0", "pub/bin/win32/openvibe-0.9.0-svn2639-setup", "2010/12/28", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+				precompiled("OpenViBE 0.10.1", "pub/bin/win32/openvibe-0.10.1-svn2909-setup", "2011/04/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+				//precompiled("OpenViBE 0.9.0", "pub/bin/win32/openvibe-0.9.0-svn2639-setup", "2010/12/28", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 				//precompiled("OpenViBE 0.8.0", "pub/bin/win32/openvibe-0.8.0-svn2427-setup", "2010/10/01", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 				// precompiled("OpenViBE 0.7.0", "pub/bin/win32/openvibe-0.7.0-svn2254-setup", "2010/07/08", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 				// precompiled("OpenViBE 0.6.1", "pub/bin/win32/openvibe-0.6.1-svn2075-setup", "2010/05/20", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...<br><br><br><br><br>This is a bug fix release :<br><ul><li>Restores the TMSi driver</li><li>Restores the Micromed driver</li><li>Translates the Tie-Fighter demo in english</li></ul>", "openvibe-precompiled.png", 190);
@@ -945,13 +1006,11 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<h2>Windows (64 bits)</h2>
 
-		<p>OpenViBE has been reported to compile and run correctly on 64 bits Windows. However, we do not provide auto installers yet. We do not
-		use OpenViBE on 64 bits Windows ourselves. If you want to contribute and have skills in building such an installer for 64 bits Windows, feel free to contact us.</p>
+		<p>OpenViBE has been reported to compile and run correctly on 64 bits Windows. However, we do not provide auto installers yet. If you want to contribute and have skills in building such an installer for 64 bits Windows, feel free to contact us.</p>
 
 		<h2>Linux (32 & 64 bits)</h2>
 
-		<p>For now, Linux precompiled packages are missing. We will probably propose a precompiled <i>.tar.bz2</i> release but it is not yet ready.
-		However, if you want to contribute and have skills in building <i>RPMs</i>, <i>DEBs</i> or whatever package your distro uses, feel free to contact us.</p>
+		<p>For now, Linux precompiled packages are missing. If you want to contribute and have skills in building <i>RPMs</i>, <i>DEBs</i> or whatever package your distro uses, feel free to contact us.</p>
 
 		<h1>Source code download</h1>
 
@@ -972,11 +1031,12 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<p>Stable code is distributed as compressed source archives :</p>
 
 		<script language=javascript type='text/javascript'>
-			archive("OpenViBE 0.10.0 (svn 2909)", "pub/src/openvibe-0.10.0-svn2909-src", "2011/04/11", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+			archive("OpenViBE 0.11.0 (svn 3052)", "pub/src/openvibe-0.11.0-svn3052-src", "2011/08/11", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 		</script>
 		<div id="src-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
-				archive("OpenViBE 0.9.0 (svn 2639)", "pub/src/openvibe-0.9.0-svn2639-src", "2010/12/28", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+				archive("OpenViBE 0.10.0 (svn 2909)", "pub/src/openvibe-0.10.0-svn2909-src", "2011/04/11", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
+				// archive("OpenViBE 0.9.0 (svn 2639)", "pub/src/openvibe-0.9.0-svn2639-src", "2010/12/28", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 				// archive("OpenViBE 0.8.0 (svn 2427)", "pub/src/openvibe-0.8.0-svn2427-src", "2010/10/01", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 				// archive("OpenViBE 0.7.0 (svn 2254)", "pub/src/openvibe-0.7.0-svn2254-src", "2010/07/08", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
 				// archive("OpenViBE 0.6.0 (svn 2044)", "pub/src/openvibe-0.6.0-svn2044-src", "2010/04/14", "Check the <a href=\"http://openvibe.inria.fr/documentation/unstable/Doc_Install.html\" class=\"leaving-link\" onclick=\"window.open(this.href,'openvibe-doc'); return false;\">Installation Procedure</a> to build the software.", "openvibe-sources.png");
@@ -1260,69 +1320,75 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<a href="http://www-list.cea.fr/" class="leaving-link" onclick="window.open(this.href,'openvibe-collaborator'); return false;">CEA-List</a>,
 		<a href="http://www.afm-france.org/" class="leaving-link" onclick="window.open(this.href,'openvibe-collaborator'); return false;">AFM</a> and
 		<a href="http://www.orange.com" class="leaving-link" onclick="window.open(this.href,'openvibe-collaborator'); return false;">Orange Labs</a>.</p>
-		<p>It is currently maintained by the <a href="http://www.irisa.fr/bunraku" class="leaving-link" onclick="window.open(this.href,'openvibe-collaborator'); return false;">bunraku</a> team at INRIA.</p>
+		<p>It is currently maintained by the <a href="http://www.irisa.fr/vr4i" class="leaving-link" onclick="window.open(this.href,'openvibe-collaborator'); return false;">VR4I</a> team at INRIA.</p>
 
 		<h2>Project Leader</h2>
 
-		<ul><li>Anatole L&eacute;cuyer, INRIA (<i>anatole dot lecuyer at irisa dot fr</i>)</li></ul>
+		<ul><li>Anatole L&eacute;cuyer, INRIA (<i>anatole dot lecuyer at inria dot fr</i>)</li></ul>
 
 		<h2>Lead Software Engineer</h2>
 
-		<ul><li>Yann Renard, INRIA (<i>yann dot renard at irisa dot fr</i>)</li></ul>
+		<ul><li>Laurent Bonnet, INRIA (<i>laurent dot bonnet at inria dot fr</i>)</li></ul>
 
 		<h2>INRIA Support and Development Team</h2>
 
 		<ul>
-			<li>Yann Renard, lead Software Engineer, INRIA Bunraku Team (<i>yann dot renard at irisa dot fr</i>)</li>
-			<li>Laurent Bonnet, software engineer, INRIA Bunraku Team (<i>laurent dot bonnet at irisa dot fr</i>)</li>
+			<li>Laurent Bonnet, lead software engineer, INRIA VR4I Team (<i>laurent dot bonnet at inria dot fr</i>)</li>
+			<li>Jozef Leg&eacute;ny, software engineer, INRIA VR4I Team (<i>jozef dot legeny at inria dot fr</i>)</li>
 			<li>Baptiste Payan, software engineer, INRIA Cortex Team (<i>baptiste dot payan at loria dot fr</i>)</li>
-			<li>Guillermo Andrade Barroso, research engineer, INRIA SED Team (<i>guillermo dot andrade at irisa dot fr</i>)</li>
+			<li>Guillermo Andrade Barroso, research engineer, INRIA SED Team (<i>guillermo dot andrade at inria dot fr</i>)</li>
 			<li>Olivier Rochel, research engineer, INRIA SED Team (<i>olivier dot rochel at loria dot fr</i>)</li>
-			<li>Laurent Bougrain, assitant professor, INRIA Cortex Team (<i>laurent dot bougrain at loria dot fr</i>)</li>
+			
 		</ul>
 
 		<h2>Developers</h2>
 
 		<ul>
-			<li>Laurent Bonnet, software engineer, INRIA (<i>laurent dot bonnet at irisa dot fr</i>)</li>
+			<li>Laurent Bonnet, software engineer, INRIA (<i>laurent dot bonnet at inria dot fr</i>)</li>
+			<li>Jozef Leg&eacute;ny, software engineer, INRIA (<i>jozef dot legeny at inria dot fr</i>)</li>
 			<li>Baptiste Payan, software engineer, INRIA (<i>baptiste dot payan at loria dot fr</i>)</li>
-			<li>Pierre Emmanuel Aguera, research engineer, INSERM (<i>aguera at lyon dot inserm dot fr</i>)</li>
-			<li>Emmanuel Maby, postdoctoral fellow, INSERM (<i>maby at lyon dot inserm dot fr</i>)</li>
 			<li>Gelu Ionescu, research engineer, GIPSA-Lab (<i>gelu dot ionescu at lis dot inpg dot fr</i>)</li>
 			<li>Matthieu Goyat, software engineer, GIPSA-Lab (<i>matthieu dot goyat at gipsa-lab dot grenoble-inp dot fr</i>)</li>
-			<li>Guillaume Lio, software engineer, GIPSA-Lab (<i>guillaume dot lio at gipsa-lab dot grenoble-inp dot fr</i>)</li>
+			
+			Previous developers:
+			<li>Yann Renard, lead software engineer, INRIA</li>
+			<li>Aur&eacute;lien Van Langhenhove, research engineer, INRIA </li>
+			<li>Fabien Lotte, doctoral student, INRIA </li>
+			<li>Vincent Delannoy, software engineer, INRIA </li>
+			<li>Guillaume Gibert, postdoctoral fellow, INSERM </li>
+			<li>Bruno Renier, trainee, INRIA</li>
+			<li>Jean Baptiste Sauvan, trainee, INRIA</li>
+			<li>Pierre Emmanuel Aguera, research engineer, INSERM </li>
+			<li>Emmanuel Maby, postdoctoral fellow, INSERM </li>
+			<li>Guillaume Lio, software engineer, GIPSA-Lab </li>
 		</ul>
 
 		<h2>Scientific Contributors</h2>
 
 		<ul>
+			<li>Anatole L&eacute;cuyer, INRIA (<i>anatole dot lecuyer at irisa dot fr</i>)</li>
 			<li>Olivier Bertrand, senior researcher, INSERM</li>
 			<li>Marco Congedo, research scientist, GIPSA-Lab</li>
 			<li>Antoine Souloumiac, research engineer, CEA-List</li>
 			<li>J&eacute;r&eacute;mie Mattout, research scientist, INSERM</li>
 			<li>Christian Jutten, senior researcher, GIPSA-Lab</li>
-			<li>Laurent Bougrain, assitant professor, INRIA Cortex Team</li>
-		</ul>
+			<li>Laurent Bougrain, assistant professor, INRIA Cortex Team</li>
 
-		<h2>Previous Developers</h2>
-
-		<ul>
-			<li>Fabien Lotte, doctoral student, INRIA (<i>fabien dot lotte at irisa dot fr</i>)</li>
-			<li>Vincent Delannoy, software engineer, INRIA (<i>vincent dot delannoy at irisa dot fr</i>)</li>
-			<li>Guillaume Gibert, postdoctoral fellow, INSERM (<i>guillaume dot gibert at inserm dot fr</i>)</li>
-			<li>Bruno Renier, trainee, INRIA</li>
-			<li>Jean Baptiste Sauvan, trainee, INRIA</li>
-		</ul>
-
-		<h2>Previous Scientific Contributors</h2>
-
-		<ul>
+			Previous scientific contributors:
 			<li>Denis Ch&ecirc;ne, senior expert, Orange Labs</li>
 			<li>Virginie Attina, INSERM</li>
 			<li>Cedric Gouy-Pailler, doctoral student, GIPSA-Lab</li>
 			<li>Ornella Plos, doctoral student, AFM</li>
 			<li>Bertrand Rivet, postdoctoral fellow, CEA-List</li>
 			<li>Bernard Hennion, senior researcher, Orange Labs</li>
+		</ul>
+		
+		<h2>Community Contributors</h2>
+
+		<ul>
+			<li>Dieter Devlaminck</li>
+			<li>Joan Fruitet</li>
+			<li>Laurent George, PhD student, INRIA VR4I Team</li>
 		</ul>
 
 		<h1>OpenViBE Users</h1>
