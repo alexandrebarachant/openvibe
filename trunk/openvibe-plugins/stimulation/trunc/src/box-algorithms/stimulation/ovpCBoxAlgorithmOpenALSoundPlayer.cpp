@@ -137,11 +137,11 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 				{
 					playSound();
 					m_bEndOfSoundSent = false;
+					m_bStartOfSoundSent = false;
 				}
 				if(l_opStimulationSet->getStimulationIdentifier(j) == m_ui64StopTrigger)
 				{
 					stopSound();
-					m_bStartOfSoundSent = false;
 				}
 			}
 		}
