@@ -161,7 +161,7 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 		ip_pStimulationSet->clear();
 		ip_pStimulationSet->appendStimulation(
 			m_ui64StopTrigger,
-			m_ui64LastOutputChunkDate,
+			this->getPlayerContext().getCurrentTime(),
 			0);
 		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
@@ -172,7 +172,7 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 		ip_pStimulationSet->clear();
 		ip_pStimulationSet->appendStimulation(
 			m_ui64PlayTrigger,
-			m_ui64LastOutputChunkDate,
+			this->getPlayerContext().getCurrentTime(),
 			0);
 		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
