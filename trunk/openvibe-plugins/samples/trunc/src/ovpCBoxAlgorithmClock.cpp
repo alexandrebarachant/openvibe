@@ -12,7 +12,7 @@ using namespace OpenViBEPlugins::Samples;
 
 uint64 CBoxAlgorithmClock::getClockFrequency(void)
 {
-	getLogManager() << m_eLogLevel << "Clock frequency requested at time " << getPlayerContext().getCurrentTime() << "\n";
+	getLogManager() << m_eLogLevel << "Clock frequency requested at time " << time64(getPlayerContext().getCurrentTime()) << "\n";
 
 	return m_ui64ClockFrequency<<32;
 }
@@ -39,7 +39,7 @@ boolean CBoxAlgorithmClock::uninitialize(void)
 
 boolean CBoxAlgorithmClock::processClock(CMessageClock& rMessageClock)
 {
-	getLogManager() << m_eLogLevel << "Received clock message at time " << rMessageClock.getTime() << "\n";
+	getLogManager() << m_eLogLevel << "Received clock message at time " << time64(rMessageClock.getTime()) << "\n";
 
 	getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 

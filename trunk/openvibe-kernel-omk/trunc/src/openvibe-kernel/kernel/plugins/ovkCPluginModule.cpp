@@ -62,6 +62,8 @@ namespace OpenViBE
 
 				CLogManagerBridge(const IKernelContext& rKernelContext) : TKernelObject<ILogManager>(rKernelContext) { }
 
+				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const time64, time64Value)
+
 				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint64, ui64Value)
 				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint32, ui32Value)
 				__BridgeBindFunc1__(getKernelContext().getLogManager(), void, log, , const uint16, ui16Value)

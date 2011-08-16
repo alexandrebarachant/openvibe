@@ -21,6 +21,8 @@ namespace OpenViBE
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eStartLogLevel, OpenViBE::Kernel::ELogLevel eEndLogLevel, OpenViBE::boolean bActive);
 			virtual OpenViBE::boolean activate(OpenViBE::boolean bActive);
 
+			virtual void log(const OpenViBE::time64 time64Value);
+
 			virtual void log(const OpenViBE::uint64 ui64Value);
 			virtual void log(const OpenViBE::uint32 ui32Value);
 			virtual void log(const OpenViBE::uint16 ui16Value);
@@ -55,6 +57,8 @@ namespace OpenViBE
 			std::stack<OpenViBE::Kernel::ELogColor> m_vLogColor;
 			OpenViBE::Kernel::ELogColor m_eLogColor;
 			OpenViBE::CString m_sApplicationName;
+
+			OpenViBE::boolean m_bActivateHexaOutput;
 		};
 	};
 };

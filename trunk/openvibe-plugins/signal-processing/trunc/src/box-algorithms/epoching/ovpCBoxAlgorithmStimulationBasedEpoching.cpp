@@ -149,9 +149,9 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 						l_oEpocher.m_bNeedsReset=true;
 						m_vStimulationBasedEpoching.push_back(l_oEpocher);
 						getLogManager() << LogLevel_Debug << "Created new epocher at time "
-							<< l_oEpocher.m_ui64StimulationTime << ":"
-							<< l_oEpocher.m_ui64StartTime << ":"
-							<< l_oEpocher.m_ui64EndTime << "\n";
+							<< time64(l_oEpocher.m_ui64StimulationTime) << ":"
+							<< time64(l_oEpocher.m_ui64StartTime) << ":"
+							<< time64(l_oEpocher.m_ui64EndTime) << "\n";
 
 						ip_pStimulationSet->appendStimulation(
 							op_pStimulationSet->getStimulationIdentifier(j),

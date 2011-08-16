@@ -6,6 +6,8 @@
 #include <vector>
 #include <map>
 
+#define OVK_ClassId_Designer_LogListener OpenViBE::CIdentifier(0x0FE155FA, 0x313C17A7)
+
 namespace OpenViBEDesigner
 {
 	class CApplication;
@@ -20,6 +22,8 @@ namespace OpenViBEDesigner
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive);
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eStartLogLevel, OpenViBE::Kernel::ELogLevel eEndLogLevel, OpenViBE::boolean bActive);
 			virtual OpenViBE::boolean activate(OpenViBE::boolean bActive);
+
+			virtual void log(const OpenViBE::time64 time64Value);
 
 			virtual void log(const OpenViBE::uint64 ui64Value);
 			virtual void log(const OpenViBE::uint32 ui32Value);
@@ -43,10 +47,10 @@ namespace OpenViBEDesigner
 			virtual void log(const OpenViBE::Kernel::ELogLevel eLogLevel);
 			virtual void log(const OpenViBE::Kernel::ELogColor eLogColor);
 
-			_IsDerivedFromClass_Final_(OpenViBE::Kernel::ILogListener, OV_UndefinedIdentifier);
-
 			void clearMessages();
 			void focusMessageWindow();
+
+			_IsDerivedFromClass_Final_(OpenViBE::Kernel::ILogListener, OV_UndefinedIdentifier);
 
 		protected:
 
@@ -89,6 +93,9 @@ namespace OpenViBEDesigner
 
 			void updateMessageCounts();
 
+			OpenViBE::boolean m_bConsoleLogWithHexa;
+			OpenViBE::boolean m_bConsoleLogTimeInSecond;
+			OpenViBE::uint32 m_ui32ConsoleLogTimePrecision;
 
 	};
 };

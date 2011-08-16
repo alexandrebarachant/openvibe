@@ -1284,7 +1284,7 @@ void CSimulatedBox::handleCrash(const char* sHintName)
 {
 	m_ui32CrashCount++;
 
-	this->getLogManager() << LogLevel_Error << "At time " << m_rScheduler.getCurrentTime() << ", plugin code caused a crash " << m_ui32CrashCount << " time(s)\n";
+	this->getLogManager() << LogLevel_Error << "At time " << time64(m_rScheduler.getCurrentTime()) << ", plugin code caused a crash " << m_ui32CrashCount << " time(s)\n";
 	this->getLogManager() << LogLevel_Error << "  [name:" << m_pBox->getName() << "]\n";
 	this->getLogManager() << LogLevel_Error << "  [identifier:" << m_pBox->getIdentifier() << "]\n";
 	this->getLogManager() << LogLevel_Error << "  [algorithm class identifier:" << m_pBox->getAlgorithmClassIdentifier() << "]\n";

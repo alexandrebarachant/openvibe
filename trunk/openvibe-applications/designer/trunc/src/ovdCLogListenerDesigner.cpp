@@ -73,6 +73,10 @@ CLogListenerDesigner::CLogListenerDesigner(const IKernelContext& rKernelContext,
 	gtk_text_buffer_create_tag(m_pBuffer, "c_aqua", "foreground", "#00FFFF", NULL); // number
 	gtk_text_buffer_create_tag(m_pBuffer, "c_darkViolet", "foreground", "#6900D7", NULL); // warning
 	gtk_text_buffer_create_tag(m_pBuffer, "c_blueChill", "foreground", "#3d889b", NULL); // information
+
+	m_bConsoleLogWithHexa = rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ConsoleLogWithHexa}",false);
+	m_bConsoleLogTimeInSecond = rKernelContext.getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogTimeInSecond}",false);
+	m_ui32ConsoleLogTimePrecision = (uint32) rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_ConsoleLogTimePrecision}",3);
 }
 
 boolean CLogListenerDesigner::isActive(ELogLevel eLogLevel)
@@ -105,12 +109,50 @@ boolean CLogListenerDesigner::activate(boolean bActive)
 	return activate(LogLevel_First, LogLevel_Last, bActive);
 }
 
+void CLogListenerDesigner::log(const time64 time64Value)
+{
+	if(m_bIngnoreMessages) return;
+
+	stringstream l_sText;
+	if(m_bConsoleLogTimeInSecond)
+	{
+		float64 l_f64Time=(time64Value.m_ui64TimeValue>>22)/1024.;
+		std::stringstream ss;
+		ss.precision(m_ui32ConsoleLogTimePrecision);
+		ss.setf(std::ios::fixed,std::ios::floatfield);
+		ss << l_f64Time;
+		ss << " sec";
+		if(m_bConsoleLogWithHexa)
+		{
+			ss << " (0x" << hex << time64Value.m_ui64TimeValue << ")";
+		}
+
+		l_sText << ss.str().c_str();
+	}
+	else
+	{
+		l_sText << dec << time64Value.m_ui64TimeValue;
+		if(m_bConsoleLogWithHexa)
+		{
+			l_sText << " (0x" << hex << time64Value.m_ui64TimeValue << ")";
+		}
+	}
+
+	GtkTextIter l_oTextIter;
+	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
+	gtk_text_buffer_insert_with_tags_by_name(m_pBuffer, &l_oTextIter, l_sText.str().data(), -1, "c_watercourse", NULL);
+}
+
 void CLogListenerDesigner::log(const uint64 ui64Value)
 {
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << ui64Value << " (0x" << hex << ui64Value << ")";
+	l_sText << dec << ui64Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << ui64Value << ")";
+	}
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -122,8 +164,11 @@ void CLogListenerDesigner::log(const uint32 ui32Value)
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << ui32Value << " (0x" << hex << ui32Value << ")";
-
+	l_sText << dec << ui32Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << ui32Value << ")";
+	}
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
 	gtk_text_buffer_insert_with_tags_by_name(m_pBuffer, &l_oTextIter, l_sText.str().data(), -1, "c_watercourse", NULL);
@@ -134,7 +179,11 @@ void CLogListenerDesigner::log(const uint16 ui16Value)
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << ui16Value << " (0x" << hex << ui16Value << ")";
+	l_sText << dec << ui16Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << ui16Value << ")";
+	}
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -146,7 +195,11 @@ void CLogListenerDesigner::log(const uint8 ui8Value)
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << ui8Value << " (0x" << hex << ui8Value << ")";
+	l_sText << dec << ui8Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << ui8Value << ")";
+	}
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -158,7 +211,11 @@ void CLogListenerDesigner::log(const int64 i64Value)
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << i64Value << " (0x" << hex << i64Value << ")";
+	l_sText << dec << i64Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << i64Value << ")";
+	}
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -170,7 +227,11 @@ void CLogListenerDesigner::log(const int32 i32Value)
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << i32Value << " (0x" << hex << i32Value << ")";
+	l_sText << dec << i32Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << i32Value << ")";
+	}
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -182,7 +243,11 @@ void CLogListenerDesigner::log(const int16 i16Value)
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << i16Value << " (0x" << hex << i16Value << ")";
+	l_sText << dec << i16Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << i16Value << ")";
+	}
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);
@@ -194,7 +259,11 @@ void CLogListenerDesigner::log(const int8 i8Value)
 	if(m_bIngnoreMessages) return;
 
 	stringstream l_sText;
-	l_sText << dec << i8Value << " (0x" << hex << i8Value << ")";
+	l_sText << dec << i8Value;
+	if(m_bConsoleLogWithHexa)
+	{
+		l_sText << " (0x" << hex << i8Value << ")";
+	}
 
 	GtkTextIter l_oTextIter;
 	gtk_text_buffer_get_end_iter(m_pBuffer, &l_oTextIter);

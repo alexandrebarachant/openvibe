@@ -42,6 +42,11 @@ boolean CLogManager::activate(boolean bActive)
 	return activate(LogLevel_First, LogLevel_Last, bActive);
 }
 
+void CLogManager::log(const time64 time64Value)
+{
+	logForEach<const time64>(time64Value);
+}
+
 void CLogManager::log(const uint64 ui64Value)
 {
 	logForEach<const uint64>(ui64Value);
