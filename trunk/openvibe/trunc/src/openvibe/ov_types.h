@@ -45,6 +45,19 @@ namespace OpenViBE
 	typedef float float32;                  ///< 32 bits floating point
 	typedef double float64;                 ///< 64 bits floating point
 	typedef long double float80;            ///< 80 bits floating point
+	
+//___________________________________________________________________//
+//                                                                   //
+// Time basic type                                                   //
+//___________________________________________________________________//
+//                                                                   //
+
+	typedef struct _time64
+	{
+		_time64(uint64 ui64TimeValue) : m_ui64TimeValue(ui64TimeValue){}
+		uint64 m_ui64TimeValue;
+
+	}time64;                                ///< Time on uint64
 
 };
 
