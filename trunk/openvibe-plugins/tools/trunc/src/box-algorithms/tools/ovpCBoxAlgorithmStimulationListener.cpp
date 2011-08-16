@@ -70,8 +70,8 @@ boolean CBoxAlgorithmStimulationListener::process(void)
 						<< "For input " << i << " with name " << l_sInputName
 						<< " got stimulation " << op_pStimulationSet->getStimulationIdentifier(k)
 						<< "[" << this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, op_pStimulationSet->getStimulationIdentifier(k)) << "]"
-						<< " at date " << op_pStimulationSet->getStimulationDate(k)
-						<< " and duration " << op_pStimulationSet->getStimulationDuration(k)
+						<< " at date " << time64(op_pStimulationSet->getStimulationDate(k))
+						<< " and duration " << time64(op_pStimulationSet->getStimulationDuration(k))
 						<< "\n";
 				}
 			}

@@ -210,7 +210,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
 			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Saved trial start time "
-			<< m_ui64TrialStartTime
+			<< OpenViBE::time64(m_ui64TrialStartTime)
 			<< "...\n";
 	}
 	else if(ui64StimulationIdentifier==this->getStimulationIdentifierTrialEnd())
@@ -219,7 +219,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
 			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Saved trial end time "
-			<< m_ui64TrialEndTime
+			<< OpenViBE::time64(m_ui64TrialEndTime)
 			<< "...\n";
 	}
 	else if(this->getStimulationIdentifierTrialLabelRangeStart()<=OpenViBE::CIdentifier(ui64StimulationIdentifier) && OpenViBE::CIdentifier(ui64StimulationIdentifier)<=this->getStimulationIdentifierTrialLabelRangeEnd())
@@ -238,7 +238,7 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 			<< "Unhandled stimulation "
 			<< OpenViBE::CIdentifier(ui64StimulationIdentifier)
 			<< " at time "
-			<< ui64StimulationDate
+			<< OpenViBE::time64(ui64StimulationDate)
 			<< "\n";
 	}
 
@@ -249,9 +249,9 @@ void TTrainingBoxAlgorithm<CBoxAlgorithmParentClass>::setStimulation(const OpenV
 		this->getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
 			<< OpenViBE::Kernel::LogLevel_Trace
 			<< "Created trial "
-			<< m_ui64TrialStartTime
+			<< OpenViBE::time64(m_ui64TrialStartTime)
 			<< "-"
-			<< m_ui64TrialEndTime
+			<< OpenViBE::time64(m_ui64TrialEndTime)
 			<< " with "
 			<< l_ui32SampleCount
 			<< " samples\n";
