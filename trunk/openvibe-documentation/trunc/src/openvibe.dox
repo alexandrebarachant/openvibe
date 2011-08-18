@@ -71,6 +71,7 @@
  *   - \subpage Doc_Scenario_BCI_Neurofeedback
  *   - \subpage Doc_Scenario_BCI_TieFighter
  *   - \subpage Doc_Scenario_BCI_MotorImagery
+ *   - \subpage Doc_Scenario_BCI_MotorImageryCSP
  *   - \subpage Doc_Scenario_BCI_Handball 
  *   - \subpage Doc_Scenario_BCI_P300Speller
  *   - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
@@ -145,6 +146,7 @@
  *   - \subpage Doc_Scenario_BCI_Neurofeedback
  *   - \subpage Doc_Scenario_BCI_TieFighter 
  *   - \subpage Doc_Scenario_BCI_MotorImagery
+ *   - \subpage Doc_Scenario_BCI_MotorImageryCSP
  *   - \subpage Doc_Scenario_BCI_Handball
  *   - \subpage Doc_Scenario_BCI_P300Speller
  *   - \subpage Doc_Scenario_BCI_P300SpellerXDAWN
@@ -238,6 +240,7 @@
  * - \subpage Doc_Scenario_BCI_Neurofeedback
  * - \subpage Doc_Scenario_BCI_TieFighter
  * - \subpage Doc_Scenario_BCI_MotorImagery
+ * - \subpage Doc_Scenario_BCI_MotorImageryCSP
  * - \subpage Doc_Scenario_BCI_Handball
  * - \subpage Doc_Scenario_BCI_P300Speller
  * - \subpage Doc_Scenario_BCI_P300SpellerXDAWN

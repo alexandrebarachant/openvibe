@@ -125,7 +125,7 @@ This scenario is based on the online one, but the input signal is coming from a 
 */
 
 /**
-\page Doc_Scenario_BCI_MotorImagery Motor Imagery BCI with Common Spatial Pattern filtering.
+\page Doc_Scenario_BCI_MotorImageryCSP Motor Imagery BCI with Common Spatial Pattern filter
 
 This set of scenarios implements the Graz BCI, based on motor imagery of the hands. You will find it in <b>share/openvibe-scenarios/bci/motor-imagery-CSP</b>.
 
