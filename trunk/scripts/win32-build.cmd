@@ -2,15 +2,65 @@
 setlocal EnableDelayedExpansion
 setlocal enableextensions 
 
-REM #######################################################################################
-
-if not exist "win32-init_env_command.cmd" (
-	echo You have to configure your `win32-init_env_command` file.
-	echo `win32-init_env_command.cmd-skeleton` is a good file to start with... (I'll copy this file for you^)
-	copy "win32-init_env_command.cmd-skeleton" "win32-init_env_command.cmd"
+REM no options / set to default
+set BuildType=Release
+set InitEnvScript=win32-init_env_command.cmd
+if /i "%1"=="-h" (
+	echo Usage: win32-build.cmd [Build Type] [Init-env Script]
+	echo -- Build Type option can be : --release (-r^) or --debug (-d^). Default is release.
+	echo -- Default Init-env script is: win32-init_env_command.cmd
+	pause
+	exit 0
+) else if /i "%1"=="--help" (
+	echo Usage: win32-build.cmd [Build Type] [Init-env Script]
+	echo -- Build Type option can be : --release (-r^) or --debug (-d^). Default is Release.
+	echo -- Default Init-env script is: win32-init_env_command.cmd
+	pause
+	exit 0
+) else if /i "%1"=="-d" (
+	set BuildType=Debug
+	set InitEnvScript=%2
+) else if /i "%1"=="--debug" (
+	set BuildType=Debug
+	set InitEnvScript=%2
+) else if /i "%1"=="-r" (
+	set BuildType=Release
+	set InitEnvScript=%2
+) else if /i "%1"=="--release" (
+	set BuildType=Release
+	set InitEnvScript=%2
+) else if not "%1"=="" (
+	set BuildType=Release
+	set InitEnvScript=%1
 )
 
-call "win32-init_env_command.cmd"
+if /i "%InitEnvScript%"=="" (
+	echo No script specified. Default will be used.
+	set InitEnvScript=win32-init_env_command.cmd
+)
+
+echo --
+echo build type is set to: %BuildType%.
+echo Init-env Script to be called: %InitEnvScript%.
+echo --
+
+
+REM #######################################################################################
+
+if not exist "%InitEnvScript%" (
+	if not "%InitEnvScript%"=="win32-init_env_command.cmd" (
+		echo `%InitEnvScript%` file not found !
+		echo Init-env script used : "win32-init_env_command.cmd"
+		set InitEnvScript="win32-init_env_command.cmd"
+	)
+	if not exist "win32-init_env_command.cmd" (
+		echo "win32-init_env_command.cmd" not found !
+		echo `win32-init_env_command.cmd-skeleton` is a good file to start with... (I'll copy this file for you^)
+		copy "win32-init_env_command.cmd-skeleton" "win32-init_env_command.cmd"
+	)
+)
+
+call "%InitEnvScript%"
 
 REM #######################################################################################
 
@@ -31,7 +81,7 @@ for /F %%s in (%OpenViBE_build_order%) do (
 	mkdir ..\local-tmp\!OpenViBE_project_name_rel! 2> NULL
 	cd ..\local-tmp\!OpenViBE_project_name_rel!
 
-	cmake -DCMAKE_INSTALL_PREFIX="%%s" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -Wno-dev -DCMAKE_MODULE_PATH="%saved_directory:\=/%/../cmake-modules;${CMAKE_MODULE_PATH}" !OpenViBE_project_name_full! -G"NMake Makefiles"
+	cmake -DCMAKE_INSTALL_PREFIX="%%s" -DCMAKE_BUILD_TYPE=%BuildType% -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -Wno-dev -DCMAKE_MODULE_PATH="%saved_directory:\=/%/../cmake-modules;${CMAKE_MODULE_PATH}" !OpenViBE_project_name_full! -G"NMake Makefiles"
 	IF NOT "!ERRORLEVEL!" == "0" goto terminate_error
 
 	nmake
@@ -75,7 +125,7 @@ mkdir %target_dist%\tmp           > NULL 2<&1
 echo @echo off                                                            >  %target_dist%\ov-vr-demo-tie-fighter.cmd
 echo SET OpenViBE_DistRoot=%%CD%%>> %target_dist%\ov-vr-demo-tie-fighter.cmd
 echo pushd ..\scripts                                                     >> %target_dist%\ov-vr-demo-tie-fighter.cmd
-echo call win32-init_env_command.cmd                                      >> %target_dist%\ov-vr-demo-tie-fighter.cmd
+echo call %InitEnvScript%                                                 >> %target_dist%\ov-vr-demo-tie-fighter.cmd
 echo popd                                                                 >> %target_dist%\ov-vr-demo-tie-fighter.cmd
 echo copy share\openvibe-applications\vr-demo\tie-fighter\resources.cfg-base share\openvibe-applications\vr-demo\tie-fighter\resources.cfg >> %target_dist%\ov-vr-demo-tie-fighter.cmd
 echo type %OV_DEP_CEGUI%\resources.cfg ^>^> share\openvibe-applications\vr-demo\tie-fighter\resources.cfg >> %target_dist%\ov-vr-demo-tie-fighter.cmd
@@ -87,7 +137,7 @@ echo exit                                                                 >> %ta
 echo @echo off                                                            >  %target_dist%\ov-vr-demo-handball.cmd
 echo SET OpenViBE_DistRoot=%%CD%%>> %target_dist%\ov-vr-demo-handball.cmd
 echo pushd ..\scripts                                                     >> %target_dist%\ov-vr-demo-handball.cmd
-echo call win32-init_env_command.cmd                                      >> %target_dist%\ov-vr-demo-handball.cmd
+echo call %InitEnvScript%                                                 >> %target_dist%\ov-vr-demo-handball.cmd
 echo popd                                                                 >> %target_dist%\ov-vr-demo-handball.cmd
 echo copy share\openvibe-applications\vr-demo\handball\resources.cfg-base share\openvibe-applications\vr-demo\handball\resources.cfg >> %target_dist%\ov-vr-demo-handball.cmd
 echo type %OV_DEP_CEGUI%\resources.cfg ^>^> share\openvibe-applications\vr-demo\handball\resources.cfg >> %target_dist%\ov-vr-demo-handball.cmd
@@ -98,7 +148,7 @@ echo exit                                                                 >> %ta
 
 echo @echo off                                               >  %target_dist%\ov-acquisition-server.cmd
 echo pushd ..\scripts                                        >> %target_dist%\ov-acquisition-server.cmd
-echo call win32-init_env_command.cmd                         >> %target_dist%\ov-acquisition-server.cmd
+echo call %InitEnvScript%                                    >> %target_dist%\ov-acquisition-server.cmd
 echo popd                                                    >> %target_dist%\ov-acquisition-server.cmd
 echo cd bin                                                  >> %target_dist%\ov-acquisition-server.cmd
 echo OpenViBE-acquisition-server-dynamic.exe %%1 %%2 %%3 %%4 >> %target_dist%\ov-acquisition-server.cmd
@@ -106,7 +156,7 @@ echo pause                                                   >> %target_dist%\ov
 
 echo @echo off                                               >  %target_dist%\ov-designer.cmd
 echo pushd ..\scripts                                        >> %target_dist%\ov-designer.cmd
-echo call win32-init_env_command.cmd                         >> %target_dist%\ov-designer.cmd
+echo call %InitEnvScript%                                    >> %target_dist%\ov-designer.cmd
 echo popd                                                    >> %target_dist%\ov-designer.cmd
 echo cd bin                                                  >> %target_dist%\ov-designer.cmd
 echo OpenViBE-designer-dynamic.exe %%1 %%2 %%3 %%4 %%5 %%6   >> %target_dist%\ov-designer.cmd
@@ -114,7 +164,7 @@ echo pause                                                   >> %target_dist%\ov
 
 echo @echo off                                               >  %target_dist%\ov-id-generator.cmd
 echo pushd ..\scripts                                        >> %target_dist%\ov-id-generator.cmd
-echo call win32-init_env_command.cmd                         >> %target_dist%\ov-id-generator.cmd
+echo call %InitEnvScript%                                    >> %target_dist%\ov-id-generator.cmd
 echo popd                                                    >> %target_dist%\ov-id-generator.cmd
 echo cd bin                                                  >> %target_dist%\ov-id-generator.cmd
 echo OpenViBE-id-generator-dynamic.exe %%1 %%2 %%3 %%4 %%5   >> %target_dist%\ov-id-generator.cmd
@@ -122,7 +172,7 @@ echo pause                                                   >> %target_dist%\ov
 
 echo @echo off                                               >  %target_dist%\ov-plugin-inspector.cmd
 echo pushd ..\scripts                                        >> %target_dist%\ov-plugin-inspector.cmd
-echo call win32-init_env_command.cmd                         >> %target_dist%\ov-plugin-inspector.cmd
+echo call %InitEnvScript%                                    >> %target_dist%\ov-plugin-inspector.cmd
 echo popd                                                    >> %target_dist%\ov-plugin-inspector.cmd
 echo cd bin                                                  >> %target_dist%\ov-plugin-inspector.cmd
 echo OpenViBE-plugin-inspector-dynamic.exe %%1 %%2 %%3 %%4   >> %target_dist%\ov-plugin-inspector.cmd
@@ -141,7 +191,7 @@ echo pushd ..\scripts                                        >> %target_dist%\ov
 echo call win32-init_env_command.cmd                         >> %target_dist%\ov-ssvep-demo-training.cmd
 echo popd                                                    >> %target_dist%\ov-ssvep-demo-training.cmd
 echo cd bin                                                  >> %target_dist%\ov-ssvep-demo-training.cmd
-echo start OpenViBE-ssvep-demo-dynamic.exe training          >> %target_dist%\ov-ssvep-demo-training.cmd
+echo start OpenViBE-ssvep-demo-dynamic.exe training	         >> %target_dist%\ov-ssvep-demo-training.cmd
 
 echo @echo off                                               >  %target_dist%\ov-ssvep-demo-shooter.cmd
 echo pushd ..\scripts                                        >> %target_dist%\ov-ssvep-demo-shooter.cmd
@@ -153,6 +203,7 @@ echo start OpenViBE-ssvep-demo-dynamic.exe shooter           >> %target_dist%\ov
 echo @echo off                                               >  %target_dist%\bin\OpenViBE-external-application-launcher.cmd
 echo pushd ..                                                >> %target_dist%\bin\OpenViBE-external-application-launcher.cmd
 echo ov-%%1.cmd %%2 %%3 %%4 %%5                              >> %target_dist%\bin\OpenViBE-external-application-launcher.cmd
+
 
 echo.
 for /F %%s in (%OpenViBE_build_order%) do (
@@ -197,4 +248,4 @@ REM ############################################################################
 
 :terminate
 
-del NULL
+if exist NULL del NULL
