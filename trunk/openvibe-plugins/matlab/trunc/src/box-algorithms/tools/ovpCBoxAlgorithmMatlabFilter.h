@@ -51,6 +51,10 @@ namespace OpenViBEPlugins
 			void* m_pMatlabStimulationHandle;
 			void* m_pMatlabMatrixHandle;
 			void* m_pMatlabBCIContextHandle;
+
+		private:
+			OpenViBE::boolean OpenMatlabEngineSafely(void);
+			OpenViBE::boolean CloseMatlabEngineSafely(void);
 		};
 
 		class CBoxAlgorithmMatlabFilterDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc

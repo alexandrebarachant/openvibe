@@ -10,6 +10,10 @@
 #include <engine.h>
 #include <string>
 
+#if defined OVP_OS_Windows
+	#include <windows.h>
+#endif
+
 #define MATLAB_BUFFER 2048
 #define m_pMatlabEngine ((Engine*)m_pMatlabEngineHandle)
 #define m_pMatlabStimulation ((mxArray*)m_pMatlabStimulationHandle)
@@ -23,22 +27,41 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::Local;
 
-boolean CBoxAlgorithmMatlabFilter::initialize(void)
-{
-	CString l_sSettingValue;
+#define boolean OpenViBE::boolean
 
+boolean CBoxAlgorithmMatlabFilter::OpenMatlabEngineSafely(void)
+{
 	this->getLogManager() << LogLevel_Trace << "Trying to open Matlab engine\n";
 #if defined OVP_OS_Linux
 	getStaticBoxContext().getSettingValue(0, l_sSettingValue);
 	m_pMatlabEngineHandle=::engOpen(l_sSettingValue.toASCIIString());
 #elif defined OVP_OS_Windows
-	m_pMatlabEngineHandle=::engOpen(NULL);
+	__try
+	{
+		m_pMatlabEngineHandle=::engOpen(NULL);
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		this->getLogManager() << LogLevel_Error << "First call to MATLAB engine failed.\n"
+			<< "\tTo use this box you must have MATLAB installed on your computer.\n";
+
+		return false;
+	}
 #else
 #endif
 	if(!m_pMatlabEngine)
 	{
 		this->getLogManager() << LogLevel_Error << "Could not open Matlab engine\n";
+		return false;
 	}
+	return true;
+}
+
+boolean CBoxAlgorithmMatlabFilter::initialize(void)
+{
+	CString l_sSettingValue;
+
+	if(!OpenMatlabEngineSafely()) return false;
 
 	getStaticBoxContext().getSettingValue(1, l_sSettingValue);
 	l_sSettingValue=CString("cd ")+l_sSettingValue;
@@ -67,8 +90,45 @@ boolean CBoxAlgorithmMatlabFilter::initialize(void)
 	return true;
 }
 
+boolean CBoxAlgorithmMatlabFilter::CloseMatlabEngineSafely(void)
+{
+	this->getLogManager() << LogLevel_Trace << "Trying to close Matlab engine\n";
+#if defined OVP_OS_Windows
+	__try
+	{
+#endif
+		if(m_pMatlabMatrix)
+		{
+			::mxDestroyArray(m_pMatlabMatrix);
+		}
+
+		::mxDestroyArray(m_pMatlabBCIContext);
+
+		if(m_pMatlabEngine)
+		{
+			if(::engClose(m_pMatlabEngine)!=0)
+			{
+				this->getLogManager() << LogLevel_ImportantWarning << "Could not close Matlab enginen";
+			}
+		}
+#if defined OVP_OS_Windows
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		this->getLogManager() << LogLevel_Error << "Closing MATLAB engine failed.\n"
+			<< "\tTo use this box you must have MATLAB installed on your computer.\n";
+
+		return false;
+	}
+#endif
+
+	return true;
+}
+
 boolean CBoxAlgorithmMatlabFilter::uninitialize(void)
 {
+	if(!CloseMatlabEngineSafely()) return false;
+
 	ip_pMatrix.uninitialize();
 	op_pMatrix.uninitialize();
 	ip_pStimulationSet.uninitialize();
@@ -83,21 +143,6 @@ boolean CBoxAlgorithmMatlabFilter::uninitialize(void)
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStreamedMatrixDecoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationEncoder);
 	this->getAlgorithmManager().releaseAlgorithm(*m_pStimulationDecoder);
-
-	if(m_pMatlabMatrix)
-	{
-		::mxDestroyArray(m_pMatlabMatrix);
-	}
-
-	::mxDestroyArray(m_pMatlabBCIContext);
-
-	if(m_pMatlabEngine)
-	{
-		if(::engClose(m_pMatlabEngine)!=0)
-		{
-			this->getLogManager() << LogLevel_ImportantWarning << "Could not close Matlab engine\n";
-		}
-	}
 
 	return true;
 }
