@@ -33,8 +33,7 @@ boolean CBoxAlgorithmMatlabFilter::OpenMatlabEngineSafely(void)
 {
 	this->getLogManager() << LogLevel_Trace << "Trying to open Matlab engine\n";
 #if defined OVP_OS_Linux
-	getStaticBoxContext().getSettingValue(0, l_sSettingValue);
-	m_pMatlabEngineHandle=::engOpen(l_sSettingValue.toASCIIString());
+	m_pMatlabEngineHandle=::engOpen(m_sMatlabPath.toASCIIString());
 #elif defined OVP_OS_Windows
 	__try
 	{
@@ -60,7 +59,8 @@ boolean CBoxAlgorithmMatlabFilter::OpenMatlabEngineSafely(void)
 boolean CBoxAlgorithmMatlabFilter::initialize(void)
 {
 	CString l_sSettingValue;
-
+	getStaticBoxContext().getSettingValue(0, m_sMatlabPath);
+	
 	if(!OpenMatlabEngineSafely()) return false;
 
 	getStaticBoxContext().getSettingValue(1, l_sSettingValue);

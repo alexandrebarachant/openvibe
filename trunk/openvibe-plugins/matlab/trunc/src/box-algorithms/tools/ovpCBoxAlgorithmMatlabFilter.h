@@ -52,6 +52,8 @@ namespace OpenViBEPlugins
 			void* m_pMatlabMatrixHandle;
 			void* m_pMatlabBCIContextHandle;
 
+			OpenViBE::CString m_sMatlabPath;
+
 		private:
 			OpenViBE::boolean OpenMatlabEngineSafely(void);
 			OpenViBE::boolean CloseMatlabEngineSafely(void);
