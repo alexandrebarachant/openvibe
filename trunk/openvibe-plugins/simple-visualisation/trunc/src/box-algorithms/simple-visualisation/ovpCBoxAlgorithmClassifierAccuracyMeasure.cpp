@@ -210,7 +210,7 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::process(void)
 				uint64 l_ui64StimulationIdentifier = op_pTargetStimulationSet->getStimulationIdentifier(s);
 				uint64 l_ui64StimulationDate = op_pTargetStimulationSet->getStimulationDate(s);
 				m_mTargetsTimeLine.insert(std::pair<uint64,uint64>(l_ui64StimulationDate,l_ui64StimulationIdentifier));
-				getLogManager() << LogLevel_Trace << "New target inserted ("<< l_ui64StimulationIdentifier <<","<< l_ui64StimulationDate <<")\n";
+				getLogManager() << LogLevel_Trace << "New target inserted ("<< l_ui64StimulationIdentifier <<","<< time64(l_ui64StimulationDate) <<")\n";
 			}
 
 			//we updtae the time limit for processing classifier stim
@@ -256,7 +256,7 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::process(void)
 							uint64 l_ui64StimulationFromClassifierIdentifier = m_vOutputClassifierStimulationSet[ip-1]->getStimulationIdentifier(s);
 							uint64 l_ui64StimulationFromClassifierDate = m_vOutputClassifierStimulationSet[ip-1]->getStimulationDate(s);
 
-							getLogManager() << LogLevel_Trace << "New Classifier state received ("<< l_ui64StimulationFromClassifierIdentifier <<","<< l_ui64StimulationFromClassifierDate <<") from Classifier "<< ip <<"\n";
+							getLogManager() << LogLevel_Trace << "New Classifier state received ("<< l_ui64StimulationFromClassifierIdentifier <<","<< time64(l_ui64StimulationFromClassifierDate) <<") from Classifier "<< ip <<"\n";
 
 							std::map<uint64,uint64>::iterator l_itTarget = m_mTargetsTimeLine.begin();
 							std::map<uint64,uint64>::iterator l_itNextTarget;

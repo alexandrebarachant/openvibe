@@ -661,12 +661,12 @@ boolean CBoxAlgorithmLuaStimulator::sendStimulationCB(uint32 ui32OutputIndex, ui
 		}
 		else
 		{
-			this->getLogManager() << LogLevel_ImportantWarning << "Ignored outdated stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on output " << (ui32OutputIndex+1) << " - current time is " << this->getPlayerContext().getCurrentTime() << "\n";
+			this->getLogManager() << LogLevel_ImportantWarning << "Ignored outdated stimulation " << ui64Identifier << " " << time64(ui64Time) << " " << time64(ui64Duration) << " sent on output " << (ui32OutputIndex+1) << " - current time is " << time64(this->getPlayerContext().getCurrentTime()) << "\n";
 		}
 	}
 	else
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Ignored stimulation " << ui64Identifier << " " << ui64Time << " " << ui64Duration << " sent on unexistant output " << (ui32OutputIndex+1) << "\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Ignored stimulation " << ui64Identifier << " " << time64(ui64Time) << " " << time64(ui64Duration) << " sent on unexistant output " << (ui32OutputIndex+1) << "\n";
 	}
 	return true;
 }

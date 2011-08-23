@@ -23,7 +23,7 @@ boolean CBoxAlgorithmSignalConcatenation::initialize(void)
 	
 	m_ui64TimeOut = FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
 	m_ui64TimeOut = m_ui64TimeOut << 32;
-	this->getLogManager() << LogLevel_Info << "Timeout set to "<< m_ui64TimeOut <<".\n";
+	this->getLogManager() << LogLevel_Info << "Timeout set to "<< time64(m_ui64TimeOut) <<".\n";
 	for(uint32 i = 0; i < this->getStaticBoxContext().getInputCount(); i+=2)
 	{
 		m_vEndOfFileStimulations.push_back(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), (i>>2)+1));
@@ -110,7 +110,7 @@ boolean CBoxAlgorithmSignalConcatenation::processClock(CMessageClock& rMessageCl
 		if(!m_vEndOfFileReached[i] && l_ui64CurrentPlayerTime > m_vSignalFileEndTimes[i] + m_ui64TimeOut)
 		{
 			m_vEndOfFileReached[i] = true;
-			this->getLogManager() << LogLevel_Info << "File #" << i+1 << "/" << (this->getStaticBoxContext().getInputCount()/2) << " has timed out (effective end time: "<< m_vSignalFileEndTimes[i] <<").\n";
+			this->getLogManager() << LogLevel_Info << "File #" << i+1 << "/" << (this->getStaticBoxContext().getInputCount()/2) << " has timed out (effective end time: "<< time64(m_vSignalFileEndTimes[i]) <<").\n";
 		}
 	}
 
@@ -241,7 +241,7 @@ boolean CBoxAlgorithmSignalConcatenation::process(void)
 					{
 						if(m_oStimulationDecoder.getOutputStimulationSet()->getStimulationIdentifier(stim) == m_vEndOfFileStimulations[input>>1])
 						{
-							this->getLogManager() << LogLevel_Info << "File #" << (input>>1)+1 << "/" << (l_rStaticBoxContext.getInputCount()/2) << " is finished (end time: "<< m_vSignalFileEndTimes[input>>1] <<"). Any more signal chunk will be discarded.\n";
+							this->getLogManager() << LogLevel_Info << "File #" << (input>>1)+1 << "/" << (l_rStaticBoxContext.getInputCount()/2) << " is finished (end time: "<< time64(m_vSignalFileEndTimes[input>>1]) <<"). Any more signal chunk will be discarded.\n";
 							m_vEndOfFileReached[input>>1] = true;
 						}
 					
