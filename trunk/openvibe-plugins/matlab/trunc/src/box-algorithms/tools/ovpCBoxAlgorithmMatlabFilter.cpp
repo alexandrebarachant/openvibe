@@ -58,19 +58,7 @@ boolean CBoxAlgorithmMatlabFilter::OpenMatlabEngineSafely(void)
 
 boolean CBoxAlgorithmMatlabFilter::initialize(void)
 {
-	CString l_sSettingValue;
-	getStaticBoxContext().getSettingValue(0, m_sMatlabPath);
 	
-	if(!OpenMatlabEngineSafely()) return false;
-
-	getStaticBoxContext().getSettingValue(1, l_sSettingValue);
-	l_sSettingValue=CString("cd ")+l_sSettingValue;
-	::engEvalString(m_pMatlabEngine, l_sSettingValue.toASCIIString());
-
-	m_pMatlabStimulationHandle=NULL;
-	m_pMatlabMatrixHandle=NULL;
-	m_pMatlabBCIContextHandle=::mxCreateDoubleMatrix(2,1,mxREAL);
-
 	m_pStimulationDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamDecoder));
 	m_pStimulationEncoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StimulationStreamEncoder));
 	m_pStreamedMatrixDecoder=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(OVP_GD_ClassId_Algorithm_StreamedMatrixStreamDecoder));
@@ -87,11 +75,30 @@ boolean CBoxAlgorithmMatlabFilter::initialize(void)
 	ip_pMatrix.initialize(m_pStreamedMatrixEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix));
 
 	m_ui64LatestStimulationChunkEndTime=0;
+
+	if(!OpenMatlabEngineSafely()) return false;
+	
+	CString l_sSettingValue;
+	getStaticBoxContext().getSettingValue(0, m_sMatlabPath);
+	
+	getStaticBoxContext().getSettingValue(1, l_sSettingValue);
+	l_sSettingValue=CString("cd ")+l_sSettingValue;
+	::engEvalString(m_pMatlabEngine, l_sSettingValue.toASCIIString());
+
+	m_pMatlabStimulationHandle=NULL;
+	m_pMatlabMatrixHandle=NULL;
+	m_pMatlabBCIContextHandle=::mxCreateDoubleMatrix(2,1,mxREAL);
+
+
 	return true;
 }
 
 boolean CBoxAlgorithmMatlabFilter::CloseMatlabEngineSafely(void)
 {
+	if(m_pMatlabEngine == NULL)
+	{
+		return true;
+	}
 	this->getLogManager() << LogLevel_Trace << "Trying to close Matlab engine\n";
 #if defined OVP_OS_Windows
 	__try
@@ -127,7 +134,7 @@ boolean CBoxAlgorithmMatlabFilter::CloseMatlabEngineSafely(void)
 
 boolean CBoxAlgorithmMatlabFilter::uninitialize(void)
 {
-	if(!CloseMatlabEngineSafely()) return false;
+	CloseMatlabEngineSafely();
 
 	ip_pMatrix.uninitialize();
 	op_pMatrix.uninitialize();
