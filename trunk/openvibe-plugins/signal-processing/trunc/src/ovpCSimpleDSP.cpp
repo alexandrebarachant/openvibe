@@ -102,6 +102,9 @@ boolean CSimpleDSP::initialize(void)
 		return false;
 	}
 
+	m_bCheckChunkDates=this->getConfigurationManager().expandAsBoolean("${Plugin_SignalProcessing_SimpleDSP_CheckChunkDates}", true);
+	this->getLogManager() << LogLevel_Trace << (m_bCheckChunkDates?"Checking chunk dates...":"Not checking chunk dates !") << "\n";
+
 	return true;
 }
 
@@ -149,8 +152,17 @@ boolean CSimpleDSP::processInput(uint32 ui32InputIndex)
 		{
 			return true;
 		}
-		if(l_ui64StartTime!=l_rDynamicBoxContext.getInputChunkStartTime(i, 0)) { return false; }
-		if(l_ui64EndTime!=l_rDynamicBoxContext.getInputChunkEndTime(i, 0)) { return false; }
+		if(m_bCheckChunkDates)
+		{
+			boolean l_bValidDates=true;
+			if(l_ui64StartTime!=l_rDynamicBoxContext.getInputChunkStartTime(i, 0)) { l_bValidDates=false; }
+			if(l_ui64EndTime!=l_rDynamicBoxContext.getInputChunkEndTime(i, 0)) { l_bValidDates=false; }
+			if(!l_bValidDates)
+			{
+				this->getLogManager() << LogLevel_Warning << "Chunk dates mismatch, check stream structure or if turn " << CString("Plugin_SignalProcessing_SimpleDSP_CheckChunkDates") << " to " << false << " in your configuration file (" << this->getConfigurationManager().expand("${CustomConfiguration}") << ")\n";
+				return l_bValidDates;
+			}
+		}
 	}
 
 	this->getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
@@ -238,7 +250,6 @@ boolean CSimpleDSP::process(void)
 void CSimpleDSP::evaluate(void)
 {
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
-	IDynamicBoxContext& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
 	{

@@ -52,6 +52,8 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64EquationType;
 			OpenViBE::float64 m_f64SpecialEquationParameter;
 			OpenViBE::float64** m_ppVariable;
+
+			OpenViBE::boolean m_bCheckChunkDates;
 		};
 
 		class CSimpleDSPListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
