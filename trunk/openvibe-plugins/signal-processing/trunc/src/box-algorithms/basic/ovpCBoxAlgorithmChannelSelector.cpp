@@ -15,7 +15,7 @@ using namespace OpenViBEToolkit;
 
 namespace
 {
-	uint32 _find_channel_(const IMatrix& rMatrix, const CString& rChannel, const CIdentifier& rMatchMethodIdentifier, uint32 uiStart=0)
+	inline uint32 _find_channel_(const IMatrix& rMatrix, const CString& rChannel, const CIdentifier& rMatchMethodIdentifier, uint32 uiStart=0)
 	{
 		uint32 i, l_ui32Result=uint32(-1);
 
@@ -138,8 +138,8 @@ boolean CBoxAlgorithmChannelSelector::process(void)
 			// ______________________________________________________________________________________________________________________________________________________
 			//
 
-			CString l_sToken[1024];
-			uint32 l_ui32TokenCount=OpenViBEToolkit::Tools::String::split(l_sSettingValue, l_sToken, 1024, OV_Value_EnumeratedStringSeparator);
+			CString l_sToken[1024*64];
+			uint32 l_ui32TokenCount=OpenViBEToolkit::Tools::String::split(l_sSettingValue, l_sToken, 1024*64, OV_Value_EnumeratedStringSeparator);
 			for(j=0; j<l_ui32TokenCount; j++)
 			{
 				CString l_sSubToken[2];
