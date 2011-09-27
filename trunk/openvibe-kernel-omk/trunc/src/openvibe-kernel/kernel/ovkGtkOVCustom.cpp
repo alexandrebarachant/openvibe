@@ -44,7 +44,7 @@ public:
 
 static GtkWidgetClass *parent_class = NULL;
 
-guint gtk_ov_custom_get_type(void);
+GType gtk_ov_custom_get_type(void);
 
 //GtkOVCustom macros
 #define GTK_OV_CUSTOM(obj)         GTK_CHECK_CAST(obj, gtk_ov_custom_get_type(), GtkOVCustom)
@@ -296,12 +296,12 @@ static void gtk_ov_custom_init(GtkOVCustom *pOVCustom)
 	pOVCustom->init();
 }
 
-guint gtk_ov_custom_get_type(void)
+GType gtk_ov_custom_get_type(void)
 {
-	static guint ov_custom_type = 0;
-
+	static GType ov_custom_type = 0;
 	if (!ov_custom_type)
 	{
+#if 0
 		static const GtkTypeInfo ov_custom_info =
 		{
 			(gchar*)"GtkOVCustom",
@@ -315,14 +315,33 @@ guint gtk_ov_custom_get_type(void)
 		};
 
 		ov_custom_type = gtk_type_unique(gtk_widget_get_type(), &ov_custom_info);
-	}
+#else
+		static const GTypeInfo ov_custom_info =
+		{
+			sizeof(GtkOVCustomClass),
+			NULL, /* base_init */
+			NULL, /* base_finalize */
+			(GClassInitFunc)gtk_ov_custom_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof(GtkOVCustom),
+			0,
+			(GInstanceInitFunc)gtk_ov_custom_init,
+		};
 
+		ov_custom_type = g_type_register_static(GTK_TYPE_WIDGET, "GtkOVCustom", &ov_custom_info, GTypeFlags(0));
+	}
 	return ov_custom_type;
+#endif
 }
 
 GtkWidget* gtk_ov_custom_new(IGtkOVCustomHandler* pHandler)
 {
+#if 0
 	GtkOVCustom* l_pOVCustom = GTK_OV_CUSTOM(gtk_type_new(gtk_ov_custom_get_type()));	//deprecated
+#else
+	GtkOVCustom* l_pOVCustom = GTK_OV_CUSTOM(g_object_new(gtk_ov_custom_get_type(), NULL));
+#endif
 
 	l_pOVCustom->setHandler(pHandler);
 
