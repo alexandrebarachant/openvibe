@@ -28,7 +28,7 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::initialize(void)
 	}
 	// At start, no output is active.
 	m_i32ActiveOutputIndex = -1;
-	
+
 	// Stimulation stream decoder
 	m_oStimulationDecoder.initialize(*this);
 	m_ui64LastStimulationInputChunkEndTime = 0;
@@ -36,7 +36,7 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::initialize(void)
 	//initializing the decoder depending on the input type.
 	CIdentifier l_oTypeIdentifier;
 	this->getStaticBoxContext().getInputType(1,l_oTypeIdentifier);
-	
+
 	if(l_oTypeIdentifier == OV_TypeId_StreamedMatrix)
 	{
 		m_pStreamDecoder = new TStreamedMatrixDecoder < CBoxAlgorithmStreamedMatrixSwitch >(*this);
@@ -89,7 +89,7 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::processInput(uint32 ui32InputIndex)
 
 boolean CBoxAlgorithmStreamedMatrixSwitch::process(void)
 {
-	
+
 	// the static box context describes the box inputs, outputs, settings structures
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	// the dynamic box context describes the current state of the box inputs and outputs (i.e. the chunks)
@@ -103,9 +103,8 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::process(void)
 	//iterate over all chunk on input 0 (Stimulation)
 	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
-		
 		m_oStimulationDecoder.decode(0,i);
-		
+
 		if(m_oStimulationDecoder.isHeaderReceived() || m_oStimulationDecoder.isEndReceived())
 		{
 			// nothing
@@ -139,6 +138,7 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::process(void)
 					l_rDynamicBoxContext.appendOutputChunkData(j, l_pChunkBuffer, l_ui64ChunkSize);
 					l_rDynamicBoxContext.markOutputAsReadyToSend(j, l_ui64StartTime, l_ui64EndTime);
 				}
+				l_rDynamicBoxContext.markInputAsDeprecated(1,j);
 			}
 			if(m_pStreamDecoder->isBufferReceived())
 			{
