@@ -47,19 +47,17 @@ namespace OpenViBEToolkit
 	};
 };
 
-uint32 OpenViBEToolkit::Tools::String::split(const CString& rString, CString* pString, uint32 ui32StringCount, uint8 ui8Separator)
+uint32 OpenViBEToolkit::Tools::String::split(const CString& rString, const ISplitCallback& rSplitCallback, uint8 ui8Separator)
 {
-	return OpenViBEToolkit::Tools::String::split(rString, pString, ui32StringCount, &ui8Separator, 1);
+	return OpenViBEToolkit::Tools::String::split(rString, rSplitCallback, &ui8Separator, 1);
 }
 
-uint32 OpenViBEToolkit::Tools::String::split(const CString& rString, CString* pString, uint32 ui32StringCount, uint8* pSeparator, uint32 ui32SeparatorCount)
+uint32 OpenViBEToolkit::Tools::String::split(const CString& rString, const ISplitCallback& rSplitCallback, uint8* pSeparator, uint32 ui32SeparatorCount)
 {
-	if(pString==NULL) return 0;
-	if(ui32StringCount==0) return 0;
 	if(ui32SeparatorCount==0 || pSeparator==NULL) return 0;
 
+	uint32 l_ui32Count=0;
 	std::string l_sString(rString.toASCIIString());
-	std::vector < std::string > l_vResult;
 	std::string::size_type i=0;
 	std::string::size_type j=0;
 	while(i<l_sString.length())
@@ -71,22 +69,18 @@ uint32 OpenViBEToolkit::Tools::String::split(const CString& rString, CString* pS
 		}
 //		if(i!=j)
 		{
-			l_vResult.push_back(std::string(l_sString, i, j-i));
+			rSplitCallback.setToken(std::string(l_sString, i, j-i).c_str());
+			l_ui32Count++;
 		}
 		i=j+1;
 	}
 	if(l_sString.length()!=0 && OpenViBEToolkit::Tools::String::isSeparator(l_sString[l_sString.length()-1], pSeparator, ui32SeparatorCount))
 	{
-		l_vResult.push_back("");
+		rSplitCallback.setToken("");
+		l_ui32Count++;
 	}
 
-	if(l_vResult.size()>ui32StringCount) return 0;
-
-	for(uint32 i=0; i<l_vResult.size(); i++)
-	{
-		pString[i]=l_vResult[i].c_str();
-	}
-	return l_vResult.size();
+	return l_ui32Count;
 }
 
 

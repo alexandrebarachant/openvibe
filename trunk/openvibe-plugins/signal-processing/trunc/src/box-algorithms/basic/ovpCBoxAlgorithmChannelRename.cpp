@@ -9,9 +9,9 @@ using namespace OpenViBEPlugins::SignalProcessing;
 
 boolean CBoxAlgorithmChannelRename::initialize(void)
 {
-	CString l_sToken[1024];
+	std::vector < CString > l_sToken;
 	CString l_sSettingValue=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
-	uint32 l_ui32TokenCount=OpenViBEToolkit::Tools::String::split(l_sSettingValue, l_sToken, 1024, OV_Value_EnumeratedStringSeparator);
+	uint32 l_ui32TokenCount=OpenViBEToolkit::Tools::String::split(l_sSettingValue, OpenViBEToolkit::Tools::String::TSplitCallback < std::vector < CString > > (l_sToken), OV_Value_EnumeratedStringSeparator);
 
 	m_vChannelName.clear();
 	for(uint32 i=0; i<l_ui32TokenCount; i++)

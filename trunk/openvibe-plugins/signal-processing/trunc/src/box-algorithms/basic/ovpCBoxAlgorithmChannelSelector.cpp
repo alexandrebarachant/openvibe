@@ -138,14 +138,14 @@ boolean CBoxAlgorithmChannelSelector::process(void)
 			// ______________________________________________________________________________________________________________________________________________________
 			//
 
-			CString l_sToken[1024*64];
-			uint32 l_ui32TokenCount=OpenViBEToolkit::Tools::String::split(l_sSettingValue, l_sToken, 1024*64, OV_Value_EnumeratedStringSeparator);
+			std::vector < CString > l_sToken;
+			uint32 l_ui32TokenCount=OpenViBEToolkit::Tools::String::split(l_sSettingValue, OpenViBEToolkit::Tools::String::TSplitCallback < std::vector < CString > >(l_sToken), OV_Value_EnumeratedStringSeparator);
 			for(j=0; j<l_ui32TokenCount; j++)
 			{
-				CString l_sSubToken[2];
+				std::vector < CString > l_sSubToken;
 
 				// Checks if the token is a range
-				if(OpenViBEToolkit::Tools::String::split(l_sToken[j], l_sSubToken, 2, OV_Value_RangeStringSeparator)==2)
+				if(OpenViBEToolkit::Tools::String::split(l_sToken[j], OpenViBEToolkit::Tools::String::TSplitCallback < std::vector < CString > >(l_sSubToken), OV_Value_RangeStringSeparator)==2)
 				{
 					// Finds the first & second part of the range (only index based)
 					uint32 l_ui32RangeStartIndex=::_find_channel_(*m_pInputMatrix, l_sSubToken[0], OVP_TypeId_MatchMethod_Index);
