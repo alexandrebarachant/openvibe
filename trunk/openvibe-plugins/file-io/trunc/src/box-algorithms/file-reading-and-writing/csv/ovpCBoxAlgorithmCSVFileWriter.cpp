@@ -147,7 +147,7 @@ boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 			{
 				m_pMatrix=op_pMatrix;
 			}
-			std::cout<<&m_pMatrix<<" "<<&op_pMatrix<<"\n";
+//			std::cout<<&m_pMatrix<<" "<<&op_pMatrix<<"\n";
 			::fprintf(m_pFile, "Time (s)");
 			for(uint32 c=0; c<m_pMatrix->getDimensionSize(0); c++)
 			{
