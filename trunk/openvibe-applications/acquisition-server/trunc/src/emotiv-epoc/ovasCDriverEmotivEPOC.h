@@ -69,6 +69,9 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::boolean m_bFirstStart;
 
 		OpenViBE::boolean m_bUseGyroscope;
+		OpenViBE::CString m_sPathToEmotivSDK;
+		OpenViBE::CString m_sCommandForPathModification;
+		virtual OpenViBE::boolean buildPath(void);
 	};
 };
 

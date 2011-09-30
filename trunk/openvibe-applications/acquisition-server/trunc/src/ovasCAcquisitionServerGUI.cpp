@@ -39,6 +39,8 @@
 #include <cstring>
 
 #include <cassert>
+//
+
 
 #define boolean OpenViBE::boolean
 
@@ -112,6 +114,10 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	,m_pImpedanceWindow(NULL)
 	,m_pThread(NULL)
 {
+
+	/*if (FAILED(__HrLoadAllImportsForDll("edk.dll"))) {
+		printf ( "failed on snap load, exiting\n" );
+	}*/
 	boolean l_bShowUnstable=m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false);
 
 	m_pAcquisitionServer=new CAcquisitionServer(rKernelContext);
@@ -179,6 +185,8 @@ CAcquisitionServerGUI::~CAcquisitionServerGUI(void)
 		::fprintf(l_pFile, "AcquisitionServer_LastDriver = %s\n", m_pDriver->getName());
 		::fprintf(l_pFile, "AcquisitionServer_LastSampleCountPerBuffer = %i\n", this->getSampleCountPerBuffer());
 		::fprintf(l_pFile, "AcquisitionServer_LastConnectionPort = %i\n", this->getTCPPort());
+		::fprintf(l_pFile, "# Path to emotiv SDK\n");
+		::fprintf(l_pFile, "AcquisitionServer_PathToEmotivResearchSDK = %s\n", (const char *)m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_PathToEmotivResearchSDK}"));
 		::fclose(l_pFile);
 	}
 

@@ -6,7 +6,7 @@
 #include "edk.h"
 
 #include <system/Time.h>
-#include <windows.h>
+
 #include <system/Memory.h>
 
 #include <cstdlib>
@@ -41,12 +41,13 @@ CDriverEmotivEPOC::CDriverEmotivEPOC(IDriverContext& rDriverContext)
 	,m_pSample(NULL)
 {
 	m_bUseGyroscope = false;
-	
+	m_sPathToEmotivSDK = m_rDriverContext.getConfigurationManager().expand("${AcquisitionServer_PathToEmotivResearchSDK}");
+	m_sCommandForPathModification = "";
+
 	m_ui32UserID = 0;
 	m_bReadyToCollect = false;
 	m_bFirstStart = true;
 
-	m_ui32EDK_LastErrorCode = EDK_OK;
 }
 
 CDriverEmotivEPOC::~CDriverEmotivEPOC(void)
@@ -58,13 +59,37 @@ const char* CDriverEmotivEPOC::getName(void)
 	return "Emotiv EPOC";
 }
 
+boolean CDriverEmotivEPOC::buildPath(void)
+{
+	char * l_sPath = getenv("PATH");
+	if(l_sPath == NULL)
+	{
+		return false;
+	}
+	m_sCommandForPathModification = l_sPath + m_sPathToEmotivSDK+ ";";
+	return true;
+}
+
 //___________________________________________________________________//
 //                                                                   //
-
 boolean CDriverEmotivEPOC::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
+	//we need to add the path to Emotiv SDK to PATH: done in external function 
+	//because SEH (__try/__except) does not allow the use of local variables with destructor.
+	if(!this->buildPath())
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Emotiv Driver: Failed to get the environment PATH.\n";
+		return false;
+	}
+		
+	if(_putenv_s("PATH",m_sCommandForPathModification) != 0)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Emotiv Driver: Failed to modify the environment PATH with the Emotiv SDK path.\n";
+		return false;
+	}
+	
 	m_oHeader.setChannelCount(14);
 	if(m_bUseGyroscope)
 	{
@@ -127,8 +152,24 @@ boolean CDriverEmotivEPOC::initialize(
 	// Hardware initialization
 
 	m_bReadyToCollect = false;
-	m_tEEEventHandle = EE_EmoEngineEventCreate();
-	m_ui32EDK_LastErrorCode = EE_EngineConnect();
+
+	// First call to a function from EDK.DLL: guard the call with __try/__except clauses.
+	__try
+	{
+		m_tEEEventHandle = EE_EmoEngineEventCreate();
+		m_ui32EDK_LastErrorCode = EE_EngineConnect();
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Emotiv Driver: First call to 'edk.dll' failed.\n"
+			<< "\tTo use this driver you must have the Emotiv SDK Research Edition (or above) installed on your computer.\n"
+			<< "\tAt first use please provide in the driver properties the path to your Emotiv SDK (root directory)\n"
+			<< "\te.g. \"C:\\Program Files (x86)\\Emotiv Research Edition SDK_v1.0.0.4-PREMIUM\"\n"
+			<< "\tThis path will be saved for further use automatically.\n";
+
+		return false;
+	}
+
 	if (m_ui32EDK_LastErrorCode != EDK_OK)
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Emotiv Driver: Can't connect to EmoEngine. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
@@ -313,13 +354,12 @@ boolean CDriverEmotivEPOC::isConfigurable(void)
 
 boolean CDriverEmotivEPOC::configure(void)
 {
-	CConfigurationEmotivEPOC m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Emotiv-EPOC.ui", m_bUseGyroscope); 
+	CConfigurationEmotivEPOC m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Emotiv-EPOC.ui", m_bUseGyroscope, m_sPathToEmotivSDK); 
 
 	if(!m_oConfiguration.configure(m_oHeader)) 
 	{
 		return false;
 	}
-
 
 	return true;
 }
