@@ -37,6 +37,9 @@ CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
 	,m_pDevice(NULL)
 	,m_pEvent(NULL)
 	,m_pOverlapped(NULL)
+	,m_ui8CommonGndAndRefBitmap(0)
+	,m_i32NotchFilterIndex(-1)
+	,m_i32BandPassFilterIndex(-1)
 {
 	m_oHeader.setSamplingFrequency(512);
 	m_oHeader.setChannelCount(16);
@@ -138,20 +141,22 @@ boolean CDriverGTecGUSBamp::start(void)
 	if(!m_rDriverContext.isConnected()) return false;
 	if(m_rDriverContext.isStarted()) return false;
 
-#if 1
 	::UCHAR l_oChannel[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
 
-	::REF l_oReference;
-	l_oReference.ref1=FALSE;
-	l_oReference.ref2=FALSE;
-	l_oReference.ref3=FALSE;
-	l_oReference.ref4=FALSE;
-
+	// The amplifier is divided in 4 blocks, A to D
+	// each one has its own Ref/gnd connections,
+	// user can specify whether or not to connect the block to the common ground and reference of the amplifier.
 	::GND l_oGround;
-	l_oGround.GND1=FALSE;
-	l_oGround.GND2=FALSE;
-	l_oGround.GND3=FALSE;
-	l_oGround.GND4=FALSE;
+	l_oGround.GND1=(m_ui8CommonGndAndRefBitmap&1);
+	l_oGround.GND2=(m_ui8CommonGndAndRefBitmap&(1<<1));
+	l_oGround.GND3=(m_ui8CommonGndAndRefBitmap&(1<<2));
+	l_oGround.GND4=(m_ui8CommonGndAndRefBitmap&(1<<3));
+
+	::REF l_oReference;
+	l_oReference.ref1=(m_ui8CommonGndAndRefBitmap&(1<<4));
+	l_oReference.ref2=(m_ui8CommonGndAndRefBitmap&(1<<5));
+	l_oReference.ref3=(m_ui8CommonGndAndRefBitmap&(1<<6));
+	l_oReference.ref4=(m_ui8CommonGndAndRefBitmap&(1<<7));
 
 	if(!::GT_SetMode(m_pDevice, M_NORMAL)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetMode\n";
 	if(!::GT_SetBufferSize(m_pDevice, m_ui32SampleCountPerSentBlock)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetBufferSize\n";
@@ -160,19 +165,17 @@ boolean CDriverGTecGUSBamp::start(void)
 	if(!::GT_EnableTriggerLine(m_pDevice, TRUE)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_EnableTriggerLine\n";
 // GT_EnableSC
 // GT_SetBipolar
-/* */
+
 	for(uint32 i=0; i<g_ui32AcquiredChannelCount; i++)
 	{
-		if(!::GT_SetBandPass(m_pDevice, i+1, -1)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetBandPass for channel " << i << "\n";
-		if(!::GT_SetNotch(m_pDevice, i+1, -1)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetNotch for channel " << i << "\n";
+		if(!::GT_SetBandPass(m_pDevice, i+1, m_i32BandPassFilterIndex)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetBandPass for channel " << i << "\n";
+		if(!::GT_SetNotch(m_pDevice, i+1, m_i32NotchFilterIndex)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetNotch for channel " << i << "\n";
 	}
 /* */
 	if(!::GT_SetSampleRate(m_pDevice, m_oHeader.getSamplingFrequency())) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetSampleRate\n";
-#if 1 // most probably not necessary with g.GAMMAbox
+
 	if(!::GT_SetReference(m_pDevice, l_oReference)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetReference\n";
 	if(!::GT_SetGround(m_pDevice, l_oGround)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetGround\n";
-#endif
-#endif
 
 	::GT_Start(m_pDevice);
 
@@ -287,7 +290,7 @@ boolean CDriverGTecGUSBamp::isConfigurable(void)
 
 boolean CDriverGTecGUSBamp::configure(void)
 {
-	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.ui", m_ui32DeviceIndex);
+	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.ui", m_ui32DeviceIndex, m_ui8CommonGndAndRefBitmap, m_i32NotchFilterIndex,m_i32BandPassFilterIndex);
 	if(!m_oConfiguration.configure(m_oHeader))
 	{
 		return false;

@@ -49,6 +49,11 @@ namespace OpenViBEAcquisitionServer
 		void* m_pOverlapped;
 
 		OpenViBE::uint32 m_ui32ActualImpedanceIndex;
+
+		OpenViBE::uint8 m_ui8CommonGndAndRefBitmap;
+
+		OpenViBE::int32 m_i32NotchFilterIndex;
+		OpenViBE::int32 m_i32BandPassFilterIndex;
 	};
 };
 
