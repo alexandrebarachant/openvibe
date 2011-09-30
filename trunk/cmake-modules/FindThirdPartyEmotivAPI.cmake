@@ -16,7 +16,7 @@ IF(WIN32)
 			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_EmotivAPI} )
 			# To delay load EDK.dll and redistribute binary
 			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic Delayimp.lib )
-			
+			SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "/DELAYLOAD:edk.dll")
 		ELSE(LIB_EmotivAPI)
 			MESSAGE(STATUS "    [FAILED] lib Emotiv edk.lib")
 		ENDIF(LIB_EmotivAPI)
