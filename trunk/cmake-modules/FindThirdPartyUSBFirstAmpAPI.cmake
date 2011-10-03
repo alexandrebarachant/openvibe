@@ -4,7 +4,7 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_USBFirstAmpAPI FirstAmp.h PATHS "C:/Program Files/FaSDK" $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_USBFirstAmpAPI FirstAmp.h PATHS "C:/Program Files/FaSDK" "C:/Program Files (x86)/FaSDK" $ENV{OpenViBE_dependencies})
 	IF(PATH_USBFirstAmpAPI)
 		MESSAGE(STATUS "  Found FirstAmp API...")
 		INCLUDE_DIRECTORIES(${PATH_USBFirstAmpAPI})
@@ -27,6 +27,6 @@ IF(WIN32)
 		
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyUSBFirstAmpAPI)
 	ELSE(PATH_USBFirstAmpAPI)
-		MESSAGE(STATUS "  FAILED to find FirstAmp API - cmake looked in 'C:/Program Files/FaSDK' and '$ENV{OpenViBE_dependencies}'")
+		MESSAGE(STATUS "  FAILED to find FirstAmp API - cmake looked in 'C:/Program Files/FaSDK' and 'C:/Program Files (x86)/FaSDK'")
 	ENDIF(PATH_USBFirstAmpAPI)
 ENDIF(WIN32)
