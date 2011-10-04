@@ -9,11 +9,10 @@ __________________________________________________________________
  The Matlab Filter box forward the streamed matrices and stimulations received to the Matlab Engine.
  The process defined in a Matlab script is performed, and the result is given back to the Matlab Filter box for output.
  
- <b>Note:</b> This box has to be compiled manually on a computer with Matlab previously installed. Does not compile (link failure) on Windows 7 64b.
+ <b>Note:</b> this box can be used if you have Matlab installed on your computer. Otherwise, it will failed to start when running the scenario.
  
- <b>Note2:</b> On Windows if the plugins fails to load when starting the dsigner (missing matlab dll), add the following line to the file scripts/win32-dependencies.cmd:
+ <b>Note2:</b> This box is currently not compatible with MATLAB 64 bits. Please use a 32 bits version.
  
- SET OV_DEP_MATLAB=[Path-to-matlab, e.g. C:\Program Files\matlab\R2011a]
  * |OVP_DocEnd_BoxAlgorithm_MatlabFilter_Description|
 __________________________________________________________________
 

@@ -1,11 +1,13 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_MatlabFilter_H__
 #define __OpenViBEPlugins_BoxAlgorithm_MatlabFilter_H__
 
+#if defined TARGET_HAS_ThirdPartyMatlab
+
 #include "../../ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#if defined TARGET_HAS_ThirdPartyMatlab
+
 
 // TODO:
 // - please move the identifier definitions in ovp_defines.h

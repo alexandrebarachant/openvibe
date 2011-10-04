@@ -1,6 +1,7 @@
+#if defined TARGET_HAS_ThirdPartyMatlab
+
 #include "ovpCBoxAlgorithmMatlabFilter.h"
 
-#if defined TARGET_HAS_ThirdPartyMatlab
 
 #include <system/Memory.h>
 #include <iostream>
@@ -292,7 +293,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 						}
 						else
 						{
-							// we send a header on the stream matrix output:                            
+							// we send a header on the stream matrix output:
 							ip_pMatrix->setDimensionCount(2);
 							ip_pMatrix->setDimensionSize(0, ::mxGetDimensions(l_pMatlabMatrixOut)[1]);
 							ip_pMatrix->setDimensionSize(1, ::mxGetDimensions(l_pMatlabMatrixOut)[0]);
