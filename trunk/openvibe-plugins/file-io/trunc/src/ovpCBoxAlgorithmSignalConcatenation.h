@@ -116,11 +116,11 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean onInputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
-				if(ui32Index&1)
+				if(ui32Index&1) //odd index
 				{
-					rBox.removeInput(ui32Index&!1);
+					rBox.removeInput(ui32Index-1);
 				}
-				else
+				else // even index
 				{
 					rBox.removeInput(ui32Index);
 				}
@@ -132,6 +132,7 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
+				rBox.setInputType(ui32Index, OV_TypeId_Signal);
 				rBox.addInput("", OV_TypeId_Stimulations);
 				rBox.addSetting("",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
 				return this->check(rBox);
