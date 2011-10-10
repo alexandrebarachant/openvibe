@@ -40,9 +40,12 @@ boolean CBoxAlgorithmSignalConcatenation::initialize(void)
 	m_oSignalEncoder.initialize(*this);
 	m_oSignalEncoder.getInputSamplingRate().setReferenceTarget(m_oSignalDecoder.getOutputSamplingRate());
 	m_oSignalEncoder.getInputMatrix().setReferenceTarget(m_oSignalDecoder.getOutputMatrix());
+
+	m_oTriggerEncoder.initialize(*this);
 	
 	m_ui32HeaderReceivedCount = 0;
 	m_bHeaderSent = false;
+	m_bEndSent = false;
 	m_bStimHeaderSent = false;
 	m_bConcatenationFinished = false;
 	m_bResynchroDone = false;
@@ -52,6 +55,10 @@ boolean CBoxAlgorithmSignalConcatenation::initialize(void)
 	m_sState.ui32CurrentStimulationIndex = 0;
 	m_sState.ui32CurrentStartTime        = 0;
 	m_sState.ui32CurrentOffset           = 0;
+
+	m_ui64TriggerDate = 0;
+	m_ui64LastChunkStartTime = 0;
+	m_ui64LastChunkEndTime = 0;
 
 	return true;
 }
@@ -63,6 +70,8 @@ boolean CBoxAlgorithmSignalConcatenation::uninitialize(void)
 	m_oStimulationEncoder.uninitialize();
 	m_oSignalDecoder.uninitialize();
 	m_oSignalEncoder.uninitialize();
+
+	m_oTriggerEncoder.uninitialize();
 
 	for(uint32 i = 0; i < m_vSignalBuffers.size(); i++)
 	{
@@ -211,14 +220,19 @@ boolean CBoxAlgorithmSignalConcatenation::process(void)
 			{
 				m_oStimulationEncoder.encodeHeader(1);
 				l_rDynamicBoxContext.markOutputAsReadyToSend(1,l_rDynamicBoxContext.getInputChunkStartTime(input,chunk),l_rDynamicBoxContext.getInputChunkEndTime(input,chunk));
+				m_oTriggerEncoder.encodeHeader(2);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(2,l_rDynamicBoxContext.getInputChunkStartTime(input,chunk),l_rDynamicBoxContext.getInputChunkEndTime(input,chunk));
 				m_bStimHeaderSent = true;
 			}
-			if(m_oStimulationDecoder.isEndReceived())
+			if(m_oStimulationDecoder.isEndReceived() && !m_bEndSent)
 			{
 				m_oStimulationEncoder.encodeEnd(1);
 				l_rDynamicBoxContext.markOutputAsReadyToSend(1,l_rDynamicBoxContext.getInputChunkStartTime(input,chunk),l_rDynamicBoxContext.getInputChunkEndTime(input,chunk));
+				m_oTriggerEncoder.encodeEnd(2);
+				l_rDynamicBoxContext.markOutputAsReadyToSend(2,l_rDynamicBoxContext.getInputChunkStartTime(input,chunk),l_rDynamicBoxContext.getInputChunkEndTime(input,chunk));
 				m_oSignalEncoder.encodeEnd(0);
 				l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_rDynamicBoxContext.getInputChunkStartTime(input,chunk),l_rDynamicBoxContext.getInputChunkEndTime(input,chunk));
+				m_bEndSent = true;
 			}
 			if(m_oStimulationDecoder.isBufferReceived())
 			{
@@ -275,10 +289,14 @@ boolean CBoxAlgorithmSignalConcatenation::process(void)
 	{
 		if(!this->concate())
 		{
+			// concatenation not finished, we will resume on next process
 			return true;
 		}
 		else
 		{
+			m_oTriggerEncoder.getInputStimulationSet()->appendStimulation(OVTK_StimulationId_EndOfFile, this->getPlayerContext().getCurrentTime(), 0);
+			m_oTriggerEncoder.encodeBuffer(2);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(2,this->getPlayerContext().getCurrentTime(),this->getPlayerContext().getCurrentTime());
 			m_bConcatenationFinished = true;
 		}
 	}
@@ -378,7 +396,7 @@ boolean CBoxAlgorithmSignalConcatenation::concate(void)
 	}
 		
 	this->getLogManager() << LogLevel_Info << "Concatenation finished !\n";
-		
+	
 	return true;
 
 }

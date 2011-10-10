@@ -53,6 +53,7 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bHeaderSent;
 			OpenViBE::uint32 m_ui32HeaderReceivedCount;
 			OpenViBE::boolean m_bStimHeaderSent;
+			OpenViBE::boolean m_bEndSent;
 
 			OpenViBE::uint32 m_ui32SampleCountPerBuffer;
 
@@ -72,6 +73,12 @@ namespace OpenViBEPlugins
 			OpenViBEToolkit::TStimulationEncoder < CBoxAlgorithmSignalConcatenation > m_oStimulationEncoder;
 			OpenViBEToolkit::TSignalDecoder < CBoxAlgorithmSignalConcatenation > m_oSignalDecoder;
 			OpenViBEToolkit::TSignalEncoder < CBoxAlgorithmSignalConcatenation > m_oSignalEncoder;
+
+			OpenViBEToolkit::TStimulationEncoder < CBoxAlgorithmSignalConcatenation > m_oTriggerEncoder;
+			OpenViBE::uint64 m_ui64TriggerDate;
+			OpenViBE::uint64 m_ui64LastChunkStartTime;
+			OpenViBE::uint64 m_ui64LastChunkEndTime;
+
 
 			struct ConcatenationState
 			{
@@ -116,11 +123,11 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean onInputRemoved(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
-				if(ui32Index&1) //odd index
+				if(ui32Index&1)//odd index
 				{
 					rBox.removeInput(ui32Index-1);
 				}
-				else // even index
+				else //even index
 				{
 					rBox.removeInput(ui32Index);
 				}
@@ -132,7 +139,6 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
-				rBox.setInputType(ui32Index, OV_TypeId_Signal);
 				rBox.addInput("", OV_TypeId_Stimulations);
 				rBox.addSetting("",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
 				return this->check(rBox);
@@ -183,6 +189,8 @@ namespace OpenViBEPlugins
 				
 				rBoxAlgorithmPrototype.addOutput("Signal",OV_TypeId_Signal);
 				rBoxAlgorithmPrototype.addOutput("Stimulations",OV_TypeId_Stimulations);
+				
+				rBoxAlgorithmPrototype.addOutput("Status",OV_TypeId_Stimulations);
 				
 				rBoxAlgorithmPrototype.addSetting("Time out before assuming end-of-file (in sec)",OV_TypeId_Integer,"5");
 				rBoxAlgorithmPrototype.addSetting("End-of-file stimulation for input 1",OV_TypeId_Stimulation,"OVTK_StimulationId_ExperimentStop");
