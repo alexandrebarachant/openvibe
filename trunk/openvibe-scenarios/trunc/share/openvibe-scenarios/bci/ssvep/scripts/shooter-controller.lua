@@ -22,7 +22,7 @@ function initialize(box)
 	cfg_file:write("# please use the box settings in the shooter scenario.\n\n")
 
 	cfg_file:write("SSVEP_ShipAngularSpeed = ", angular_speed, "\n")
-	
+	cfg_file:close()
 
 end
 
