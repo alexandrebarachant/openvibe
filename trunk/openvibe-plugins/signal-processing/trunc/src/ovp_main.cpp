@@ -8,6 +8,7 @@
 #include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmSignalDecimation.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmReferenceChannel.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmSynchro.h"
 #include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
 //#include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
 #include "box-algorithms/filters/ovpCBoxAlgorithmCommonAverageReference.h"
@@ -71,6 +72,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelRenameDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelSelectorDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmReferenceChannelDesc)
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSynchroDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCropDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSignalDecimationDesc)
