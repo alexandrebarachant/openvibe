@@ -94,7 +94,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addSetting("Path to Matlab Engine DLLs", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
 #else
 #endif
-				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "/home/user/matlab");
+				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "[path-to-my-matlab-workspace]");
 				rBoxAlgorithmPrototype.addSetting("Initialize function", OV_TypeId_String, "bci_Initialize");
 				rBoxAlgorithmPrototype.addSetting("Process function", OV_TypeId_String, "bci_Process");
 				
