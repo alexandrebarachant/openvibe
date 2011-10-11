@@ -184,7 +184,7 @@ SET PATH=%OV_DEP_ITPP%\bin;%PATH%
 SET PATH=%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;%PATH%
 SET PATH=%OV_DEP_CEGUI%\bin;%PATH%
 SET PATH=%OV_DEP_LUA%\lib;%PATH%
-SET PATH=%OV_DEP_MATLAB%\bin\win32;%PATH%
+REM SET PATH=%OV_DEP_MATLAB%\bin\win32;%PATH%
 SET PATH=%OV_DEP_ALUT%\lib;%PATH%
 SET PATH=%OV_DEP_OPENAL%\libs\Win32;%PATH%
 SET PATH=%OV_DEP_OGG%\win32\bin\debug;%OV_DEP_OGG%\win32\bin\release;%PATH%
@@ -232,7 +232,7 @@ echo %OpenViBE_application_vrpn_simulator% >> %OpenViBE_build_order%
 echo %OpenViBE_application_skeleton_generator% >> %OpenViBE_build_order%
 echo %OpenViBE_application_ssvep_demo% >> %OpenViBE_build_order%
 
-REM echo %OpenViBE_plugin_matlab% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_matlab% >> %OpenViBE_build_order%
 REM echo %OpenViBE_plugin_turbofieldtrip% >> %OpenViBE_build_order%
 
 echo %OpenViBE_scenarios% >> %OpenViBE_build_order%

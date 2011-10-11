@@ -178,6 +178,7 @@ $OpenViBE_plugin_stimulation
 $OpenViBE_plugin_stream_codecs
 $OpenViBE_plugin_streaming
 $OpenViBE_plugin_tools
+$OpenViBE_plugin_matlab
 $OpenViBE_plugin_vrpn
 $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
@@ -191,12 +192,12 @@ $OpenViBE_documentation
 "
 
 # Use this line to temporarily overwrite the default one
+# add the specific project you want to build
 export OpenViBE_build_order_="
 "
 
+# optional external projects:
 #$OpenViBE_external_
-
-#$OpenViBE_plugin_matlab
 
 if [ -e ./linux-dependencies ]; then
 	source ./linux-dependencies
