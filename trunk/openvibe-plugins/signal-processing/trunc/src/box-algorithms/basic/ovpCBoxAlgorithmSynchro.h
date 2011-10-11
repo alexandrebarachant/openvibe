@@ -47,12 +47,12 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { }
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Synchro"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Stream Synchronization"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Gelu Ionescu & Matthieu Goyat"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("GIPSA-lab"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Synchronize two acquisition servers"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Synchro"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-missing-image"); }
 
