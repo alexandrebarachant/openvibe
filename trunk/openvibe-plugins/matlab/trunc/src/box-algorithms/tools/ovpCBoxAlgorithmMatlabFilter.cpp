@@ -43,7 +43,7 @@ boolean CBoxAlgorithmMatlabFilter::OpenMatlabEngineSafely(void)
 	__except(EXCEPTION_EXECUTE_HANDLER)
 	{
 		this->getLogManager() << LogLevel_Error << "First call to MATLAB engine failed.\n"
-			<< "\tTo use this box you must have MATLAB installed on your computer.\n";
+			<< "\tTo use this box you must have MATLAB (32 bits version) installed on your computer.\n";
 
 		return false;
 	}
@@ -116,7 +116,7 @@ boolean CBoxAlgorithmMatlabFilter::CloseMatlabEngineSafely(void)
 		{
 			if(::engClose(m_pMatlabEngine)!=0)
 			{
-				this->getLogManager() << LogLevel_ImportantWarning << "Could not close Matlab enginen";
+				this->getLogManager() << LogLevel_ImportantWarning << "Could not close Matlab engine.\n";
 			}
 		}
 #if defined OVP_OS_Windows
@@ -124,7 +124,7 @@ boolean CBoxAlgorithmMatlabFilter::CloseMatlabEngineSafely(void)
 	__except(EXCEPTION_EXECUTE_HANDLER)
 	{
 		this->getLogManager() << LogLevel_Error << "Closing MATLAB engine failed.\n"
-			<< "\tTo use this box you must have MATLAB installed on your computer.\n";
+			<< "\tTo use this box you must have MATLAB (32 bits version) installed on your computer.\n";
 
 		return false;
 	}
@@ -440,7 +440,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 									l_ui64StartTime + ((int64)(l_pStim[j+1*l_ui32StimulationCount] * 65536.0)<<16),
 									l_ui64StartTime + ((int64)(l_pStim[j+2*l_ui32StimulationCount] * 65536.0)<<16));
 							}
-							m_pStimulationEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);                            
+							m_pStimulationEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 							l_rDynamicBoxContext.markOutputAsReadyToSend(1, l_ui64StartTime, l_ui64EndTime);
 						}
 					}
@@ -464,4 +464,4 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 	return true;
 }
 
-#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+#endif // TARGET_HAS_ThirdPartyMatlab
