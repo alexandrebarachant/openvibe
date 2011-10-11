@@ -91,7 +91,7 @@ namespace OpenViBEPlugins
 #if defined OVP_OS_Linux
 				rBoxAlgorithmPrototype.addSetting("Matlab launch command", OV_TypeId_String, "ssh user@host /path/to/matlab");
 #elif defined OVP_OS_Windows
-				rBoxAlgorithmPrototype.addSetting("Path to Matlab.exe", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
+				rBoxAlgorithmPrototype.addSetting("Path to Matlab Engine DLLs", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
 #else
 #endif
 				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "/home/user/matlab");
