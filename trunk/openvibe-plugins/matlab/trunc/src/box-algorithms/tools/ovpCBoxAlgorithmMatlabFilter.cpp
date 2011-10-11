@@ -76,15 +76,34 @@ boolean CBoxAlgorithmMatlabFilter::initialize(void)
 	ip_pMatrix.initialize(m_pStreamedMatrixEncoder->getInputParameter(OVP_GD_Algorithm_StreamedMatrixStreamEncoder_InputParameterId_Matrix));
 
 	m_ui64LatestStimulationChunkEndTime=0;
+	uint32 l_ui32FirstCommonIndex = 0;
+
+	getStaticBoxContext().getSettingValue(0, m_sMatlabPath);
+
+#if defined OVP_OS_Windows
+	char * l_sPath = getenv("PATH");
+	if(l_sPath == NULL)
+	{
+		this->getLogManager() << LogLevel_Error << "Could not access the environment variable PATH to add Matlab.\n";
+		return false;
+	}
+	CString l_sCommandForPathModification = l_sPath + m_sMatlabPath+ ";";
+	if(_putenv_s("PATH",l_sCommandForPathModification) != 0)
+	{
+		this->getLogManager() << LogLevel_Error << "Failed to modify the environment PATH with the Matlab path.\n";
+		return false;
+	}
+#endif
 
 	if(!OpenMatlabEngineSafely()) return false;
 	
 	CString l_sSettingValue;
-	getStaticBoxContext().getSettingValue(0, m_sMatlabPath);
-	
-	getStaticBoxContext().getSettingValue(1, l_sSettingValue);
+	getStaticBoxContext().getSettingValue(1, l_sSettingValue); // working directory
 	l_sSettingValue=CString("cd ")+l_sSettingValue;
 	::engEvalString(m_pMatlabEngine, l_sSettingValue.toASCIIString());
+
+	getStaticBoxContext().getSettingValue(2,m_sInitializeFunction);
+	getStaticBoxContext().getSettingValue(3,m_sProcessFunction);
 
 	m_pMatlabStimulationHandle=NULL;
 	m_pMatlabMatrixHandle=NULL;
@@ -171,8 +190,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 {
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 	uint32 i,j;
-	CString l_sSettingValue;
-
+	
 	TParameterHandler < IMemoryBuffer* > op_pMemoryBuffer(m_pStreamedMatrixEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 	TParameterHandler < IMemoryBuffer* > op_pMemoryBufferStimulation(m_pStimulationEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 	op_pMemoryBufferStimulation=l_rDynamicBoxContext.getOutputChunk(1);
@@ -243,8 +261,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 					
 					::engPutVariable(m_pMatlabEngine, "bci_context", m_pMatlabBCIContext);
 					::engPutVariable(m_pMatlabEngine, "matrix_in", m_pMatlabMatrix);
-					getStaticBoxContext().getSettingValue(2, l_sSettingValue); // l_sSettingValue = "bci_Initialize" with default parameter
-					if(::engEvalString(m_pMatlabEngine, CString("matrix_out = ") + l_sSettingValue + CString("(bci_context, matrix_in);"))!=0)
+					if(::engEvalString(m_pMatlabEngine, CString("matrix_out = ") + m_sInitializeFunction + CString("(bci_context, matrix_in);"))!=0)
 					{
 						l_sMatlabBuffer<<l_pMatlabBuffer;
 						this->getLogManager()<< LogLevel_Error << "Matlab Error: "<<l_sMatlabBuffer.str().c_str()<<"\n";
@@ -289,7 +306,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 					{
 						if(!::mxIsDouble(l_pMatlabMatrixOut))
 						{
-							this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << l_sSettingValue << "\n";
+							this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << m_sInitializeFunction << "\n";
 						}
 						else
 						{
@@ -352,15 +369,14 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 				::engPutVariable(m_pMatlabEngine, "bci_context", m_pMatlabBCIContext);
 				::engPutVariable(m_pMatlabEngine, "stimulation_in", m_pMatlabStimulation);
 				::engPutVariable(m_pMatlabEngine, "matrix_in", m_pMatlabMatrix);
-				getStaticBoxContext().getSettingValue(3, l_sSettingValue); // l_sSettingValue = "bci_Process"
-
+				
 				// the buffer for the console
 				char l_pMatlabBuffer[MATLAB_BUFFER+1];
 				l_pMatlabBuffer[MATLAB_BUFFER]='\0';
 				std::stringstream l_sMatlabBuffer;
 				::engOutputBuffer(m_pMatlabEngine, l_pMatlabBuffer,MATLAB_BUFFER);
 
-				if(::engEvalString(m_pMatlabEngine, CString("[matrix_out,stimulation_out] = ") + l_sSettingValue + CString("(bci_context, matrix_in, stimulation_in);"))!=0)
+				if(::engEvalString(m_pMatlabEngine, CString("[matrix_out,stimulation_out] = ") + m_sProcessFunction + CString("(bci_context, matrix_in, stimulation_in);"))!=0)
 				{
 					l_sMatlabBuffer<<l_pMatlabBuffer;
 					this->getLogManager()<< LogLevel_Error << "Matlab Error: "<<l_sMatlabBuffer.str().c_str()<<"\n";
@@ -400,7 +416,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 				{
 					if(!::mxIsDouble(l_pMatlabMatrixOut))
 					{
-						this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << l_sSettingValue << "\n";
+						this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << m_sProcessFunction << "\n";
 					}
 					else
 					{
@@ -419,13 +435,13 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 				{
 					if(!::mxIsDouble(l_pMatlabStimulationOut))
 					{
-						this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << l_sSettingValue << "\n";
+						this->getLogManager() << LogLevel_Warning << "Expected double matrix output from " << m_sProcessFunction << "\n";
 					}
 					else
 					{
 						if (::mxGetDimensions(l_pMatlabStimulationOut)[1] != 3)
 						{
-							this->getLogManager() << LogLevel_Warning << "Output Stimulation matrix must be of size (nb_stim x 3) " << l_sSettingValue << "\n";
+							this->getLogManager() << LogLevel_Warning << "Output Stimulation matrix must be of size (nb_stim x 3) after " << m_sProcessFunction << "\n";
 						}
 						else
 						{

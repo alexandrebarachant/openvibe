@@ -55,6 +55,8 @@ namespace OpenViBEPlugins
 			void* m_pMatlabBCIContextHandle;
 
 			OpenViBE::CString m_sMatlabPath;
+			OpenViBE::CString m_sProcessFunction;
+			OpenViBE::CString m_sInitializeFunction;
 
 		private:
 			OpenViBE::boolean OpenMatlabEngineSafely(void);
@@ -85,14 +87,20 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addInput  ("Streamed matrix", OV_TypeId_StreamedMatrix);
 				rBoxAlgorithmPrototype.addInput  ("Stimulations", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput ("Filtered streamed matrix", OV_TypeId_StreamedMatrix);
-                rBoxAlgorithmPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
-
+				rBoxAlgorithmPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
+#if defined OVP_OS_Linux
 				rBoxAlgorithmPrototype.addSetting("Matlab launch command", OV_TypeId_String, "ssh user@host /path/to/matlab");
+#elif defined OVP_OS_Windows
+				rBoxAlgorithmPrototype.addSetting("Path to Matlab.exe", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
+#else
+#endif
 				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "/home/user/matlab");
-                rBoxAlgorithmPrototype.addSetting("Initialize function", OV_TypeId_String, "bci_Initialize");
-                rBoxAlgorithmPrototype.addSetting("Process function", OV_TypeId_String, "bci_Process");
+				rBoxAlgorithmPrototype.addSetting("Initialize function", OV_TypeId_String, "bci_Initialize");
+				rBoxAlgorithmPrototype.addSetting("Process function", OV_TypeId_String, "bci_Process");
 				
-                return true;
+				rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
+
+				return true;
 			}
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_MatlabFilterDesc);
