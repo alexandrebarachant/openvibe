@@ -1,7 +1,7 @@
 #!/bin/bash
 
 version_major=0
-version_minor=10
+version_minor=12
 version_patch=0
 
 projects="
@@ -30,6 +30,7 @@ openvibe-plugins/stimulation
 openvibe-plugins/stream-codecs
 openvibe-plugins/streaming
 openvibe-plugins/tools
+openvibe-plugins/matlab
 openvibe-plugins/vrpn
 openvibe-applications/designer
 openvibe-applications/acquisition-server
