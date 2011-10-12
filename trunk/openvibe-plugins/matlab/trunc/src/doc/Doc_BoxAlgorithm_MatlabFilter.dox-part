@@ -53,8 +53,11 @@ __________________________________________________________________
  * |OVP_DocEnd_BoxAlgorithm_MatlabFilter_Settings|
 
  * |OVP_DocBegin_BoxAlgorithm_MatlabFilter_Setting1|
- Please enter the path to the Matlab Engine DLLs (e.g libeng.dll).
- E.g. "C:\Program Files\Matlab\R2011a\bin\win32" on Windows.
+ On Windows please enter the path to the Matlab Engine DLLs (libeng.dll).
+ E.g. "C:\Program Files\Matlab\R2011a\bin\win32" .
+ <b>NB:</b> On Linux, this setting differs:
+ - name: Matlab Launch Command
+ - expected value : the command used to run matlab on your computer (e.g. "matlab")
  * |OVP_DocEnd_BoxAlgorithm_MatlabFilter_Setting1|
 
  * |OVP_DocBegin_BoxAlgorithm_MatlabFilter_Setting2|
