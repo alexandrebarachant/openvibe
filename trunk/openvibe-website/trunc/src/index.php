@@ -255,6 +255,25 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 
 		<h1>News</h1>
 		
+		<h2>New release of OpenViBE 0.12.0 is now available<br><span style="font-size:x-small">13/10/2011</span></h2>
+
+		<p>The OpenViBE development team is happy to announce the release of *OpenViBE* 0.12.0 "Autumn edition", available for download at the <a href="http://openvibe.inria.fr/?q=download">download page</a> 
+
+		<p>This release brings many new features, including one community contribution :</p>
+		
+		<ul>
+		<li><b>Nicolas Tarrin, Mathieu Goyat & Gelu Ionescu</b> contributed a <b>stream synchronization box</b>, that can synchronize in OpenViBE several streams coming from several linked devices.</li>
+				
+		<li>The <b>time</b>is now printed in every logs (console, file, etc.) in seconds. User can switch between this display and the previous (in 32:32 time and/or hexadecimal) at will using configuration tokens. The time precision can also be set.</li>
+		<li>The <b>Emotiv EPOC driver</b> is now included in the Windows Installer! It still requires the user to specify where to find the Emotiv Research Edition SDK in order to run correctly.</li>
+		<li>The <b>g.Tec g.USBAmp driver</b> benefits from a major update that add more amplifier functionalities: ability to connect to <b>common ground and reference</b>, activation of <b>notch and band-pass</b> filters.</li>
+		<li>The <b>Matlab Filter box<b> is now compiled by default and included in the release. This box is still unstable, but has been fully reworked in order to run on every machine, as long as Matlab (version 32bits) is installed.</li>
+		<li>... and more new features and bugfixes !</li>
+
+		Detailed changelog can be found in this <a href="http://openvibe.inria.fr/forum/viewtopic.php?f=1&t=578&p=2829#p2830">forum post</a>
+
+		Many thanks to Nicolas, Mathieu and Gelu for their contributions! If you are interested in joining the effort feel free to contact us!
+		
 		<h2>New release of OpenViBE 0.11.0 is now available<br><span style="font-size:x-small">11/08/2011</span></h2>
 
 		<p>The OpenViBE development team is happy to announce the release of *OpenViBE* 0.11.0 "Summer edition", available for download at the <a href="http://openvibe.inria.fr/?q=download">download page</a> 
@@ -983,11 +1002,12 @@ echo "<body onload=\"select_div('".$id."'); show_div('src-download-y'); show_div
 		<h2>Windows (32 bits)</h2>
 
 		<script language=javascript type='text/javascript'>
-			precompiled("OpenViBE 0.11.0", "pub/bin/win32/openvibe-0.11.0-svn3052-setup", "2011/08/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+			precompiled("OpenViBE 0.12.0", "pub/bin/win32/openvibe-0.12.0-svn3107-setup", "2011/10/12", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 		</script>
 		<div id="win32-installer-download-n" class="old-download">
 			<script language=javascript type='text/javascript'>
-				precompiled("OpenViBE 0.10.1", "pub/bin/win32/openvibe-0.10.1-svn2909-setup", "2011/04/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+				precompiled("OpenViBE 0.11.0", "pub/bin/win32/openvibe-0.11.0-svn3052-setup", "2011/08/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
+				//precompiled("OpenViBE 0.10.1", "pub/bin/win32/openvibe-0.10.1-svn2909-setup", "2011/04/11", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 				//precompiled("OpenViBE 0.9.0", "pub/bin/win32/openvibe-0.9.0-svn2639-setup", "2010/12/28", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 				//precompiled("OpenViBE 0.8.0", "pub/bin/win32/openvibe-0.8.0-svn2427-setup", "2010/10/01", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
 				// precompiled("OpenViBE 0.7.0", "pub/bin/win32/openvibe-0.7.0-svn2254-setup", "2010/07/08", "Requires Windows 2000/XP/Vista/7<br>Includes the Acquisition Server, the Designer, the VR demos, some sample scenarios and data files...", "openvibe-precompiled.png");
