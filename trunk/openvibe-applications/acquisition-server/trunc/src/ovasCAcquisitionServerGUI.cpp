@@ -114,10 +114,6 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	,m_pImpedanceWindow(NULL)
 	,m_pThread(NULL)
 {
-
-	/*if (FAILED(__HrLoadAllImportsForDll("edk.dll"))) {
-		printf ( "failed on snap load, exiting\n" );
-	}*/
 	boolean l_bShowUnstable=m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ShowUnstable}", false);
 
 	m_pAcquisitionServer=new CAcquisitionServer(rKernelContext);
