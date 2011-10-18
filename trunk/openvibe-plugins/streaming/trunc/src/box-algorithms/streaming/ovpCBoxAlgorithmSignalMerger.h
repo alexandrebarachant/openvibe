@@ -49,7 +49,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean onInputAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
 				char l_sInputName[1024];
-				::sprintf(l_sInputName, "Input %i", ui32Index);
+				::sprintf(l_sInputName, "Input %i", ui32Index+1);
 				rBox.setInputName(ui32Index, l_sInputName);
 				rBox.setInputType(ui32Index, OV_TypeId_Signal);
 				return true;
