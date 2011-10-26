@@ -18,7 +18,7 @@
 
 namespace OpenViBEPlugins
 {
-	namespace Local
+	namespace Tools
 	{
 		class CBoxAlgorithmMatlabFilter : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
@@ -79,7 +79,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-execute"); }
 
 			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_MatlabFilter; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Local::CBoxAlgorithmMatlabFilter; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::Tools::CBoxAlgorithmMatlabFilter; }
 
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
@@ -108,6 +108,6 @@ namespace OpenViBEPlugins
 	};
 };
 
-#endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
+#endif // TARGET_HAS_ThirdPartyMatlab
 
 #endif // __OpenViBEPlugins_BoxAlgorithm_MatlabFilter_H__

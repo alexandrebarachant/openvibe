@@ -26,7 +26,7 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
 using namespace OpenViBEPlugins;
-using namespace OpenViBEPlugins::Local;
+using namespace OpenViBEPlugins::Tools;
 
 #define boolean OpenViBE::boolean
 
