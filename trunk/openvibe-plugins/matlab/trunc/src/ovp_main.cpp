@@ -11,7 +11,7 @@
 OVP_Declare_Begin()
 
 #if defined TARGET_HAS_ThirdPartyMatlab
-	OVP_Declare_New(OpenViBEPlugins::Local::CBoxAlgorithmMatlabFilterDesc);
+	OVP_Declare_New(OpenViBEPlugins::Tools::CBoxAlgorithmMatlabFilterDesc);
 #endif // TARGET_HAS_ThirdPartyMatlab
 
 OVP_Declare_End()
