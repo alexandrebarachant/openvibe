@@ -2638,8 +2638,6 @@ by overwritting 2 callbacks: &lt;b&gt;'processInput'&lt;/b&gt; and &lt;b&gt;'pro
   <object class="GtkDialog" id="sg-box-algorithms-add-dialog">
     <property name="border_width">5</property>
     <property name="window_position">center</property>
-    <property name="default_width">320</property>
-    <property name="default_height">500</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
@@ -2810,7 +2808,6 @@ by overwritting 2 callbacks: &lt;b&gt;'processInput'&lt;/b&gt; and &lt;b&gt;'pro
             </child>
             <child>
               <object class="GtkEntry" id="sg-box-algorithms-add-short-description-entry">
-                <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="editable">False</property>
                 <property name="invisible_char">&#x25CF;</property>
@@ -2833,7 +2830,6 @@ by overwritting 2 callbacks: &lt;b&gt;'processInput'&lt;/b&gt; and &lt;b&gt;'pro
             </child>
             <child>
               <object class="GtkTextView" id="sg-box-algorithms-add-detailed-description-textview">
-                <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="editable">False</property>
               </object>
@@ -2855,8 +2851,6 @@ by overwritting 2 callbacks: &lt;b&gt;'processInput'&lt;/b&gt; and &lt;b&gt;'pro
             </child>
             <child>
               <object class="GtkEntry" id="sg-box-algorithms-add-category-entry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="editable">False</property>
                 <property name="invisible_char">&#x25CF;</property>
               </object>

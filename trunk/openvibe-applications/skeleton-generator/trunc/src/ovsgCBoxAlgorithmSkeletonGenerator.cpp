@@ -368,7 +368,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonCheckCB(void)
 	::GtkTextBuffer * l_pTextBuffer  = gtk_text_view_get_buffer(GTK_TEXT_VIEW(l_pTooltipTextview));
 	if(l_bSuccess)
 	{
-		l_ssTextBuffer << "----- SUCCESS -----\nPress OK to generate the files. If you want to modify your choice(s), please press the \"Check\" button again.";
+		l_ssTextBuffer << "----- SUCCESS -----\nPress 'Generate!' to generate the files. If you want to modify your choice(s), please press the \"Check\" button again.";
 		::GtkWidget * l_pButtonOk = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-ok-button"));
 		gtk_widget_set_sensitive(l_pButtonOk,true);
 
