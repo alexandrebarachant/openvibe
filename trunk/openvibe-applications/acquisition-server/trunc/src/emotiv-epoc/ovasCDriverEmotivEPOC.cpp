@@ -41,7 +41,15 @@ CDriverEmotivEPOC::CDriverEmotivEPOC(IDriverContext& rDriverContext)
 	,m_pSample(NULL)
 {
 	m_bUseGyroscope = false;
-	m_sPathToEmotivSDK = m_rDriverContext.getConfigurationManager().expand("${AcquisitionServer_PathToEmotivResearchSDK}");
+	if(m_rDriverContext.getConfigurationManager().lookUpConfigurationTokenIdentifier("AcquisitionServer_PathToEmotivResearchSDK") == OV_UndefinedIdentifier)
+	{
+		//it's possible at first start of the acquisition server/ emotiv driver selection
+		m_sPathToEmotivSDK = "";
+	}
+	else
+	{
+		m_sPathToEmotivSDK = m_rDriverContext.getConfigurationManager().expand("${AcquisitionServer_PathToEmotivResearchSDK}");
+	}
 	m_sCommandForPathModification = "";
 
 	m_ui32UserID = 0;
