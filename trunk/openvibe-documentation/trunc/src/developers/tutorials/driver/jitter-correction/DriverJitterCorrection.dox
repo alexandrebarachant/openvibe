@@ -1,5 +1,11 @@
 /**
 * \page Doc_DriverJitterCorrection Tutorial: Jitter monitoring and drift correction
+  <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/tutorial-jitter-monitoring-and-drift-correction/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
 *
 * - \b NB: Tutorial based on <b> OpenViBE 0.6.1 </b> (20-may-2010).
 *

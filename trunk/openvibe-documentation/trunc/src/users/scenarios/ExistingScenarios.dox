@@ -1,6 +1,11 @@
 /**
 \page Doc_Scenario_BoxTutorials Box Tutorials
-
+ <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/documentation-index/#Existing+scenarios+documentation"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
 You will find all the box tutorials scenarios in <b> <i> share/openvibe-scenarios/box-tutorials </i> </b>.
 
 This folder contains simple scenarios, widely commented. Each one shows how to design with the provided boxes a basic processing pipeline. Here is a complete listing of these box-tutorials, ordered alphabetically:

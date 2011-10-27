@@ -1,6 +1,11 @@
 /** 
 \page Doc_DesignerTutorial4 Designer Tutorial 4: Advanced box configuration
-
+ <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/designer-tutorial-3/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
 - \b NB: Tutorial based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
 
 \section Doc_DesignerTutorial4_overview Overview

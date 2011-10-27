@@ -1,5 +1,11 @@
 /**
  * \page Doc_Tutorial_Developer_SignalProcessing_Box Implementing a Box
+ <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/tutorial-1-implementing-a-signal-processing-box/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
  *
  * - \b NB: Document based on <b> OpenViBE 0.8.0 </b> (30-sep-2010).
  *

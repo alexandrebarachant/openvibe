@@ -1,5 +1,11 @@
 /**
 \page Doc_DeveloperTools_SkeletonGenerator Skeleton Generator - beta
+ <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/skeleton-generator-beta/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br> 
 
 - \b NB: Document based on <b> OpenViBE 0.9.0 </b> (dec-2010).
 

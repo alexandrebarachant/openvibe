@@ -1,6 +1,12 @@
 /**
 * \page Doc_VRApplicationAndVRPN Creating a Virtual Reality application with Ogre3D and connecting it to OpenViBE with VRPN
-*
+ <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/tutorial-vr-application-ogre-vrpn/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
+
 * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
 * 
 * \section Doc_VRApplicationAndVRPN_Intro Introduction

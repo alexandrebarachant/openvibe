@@ -127,6 +127,12 @@
  */
 
 /** \page Doc_UserDocumentation User Documentation
+ <p><div class="important"> 
+ These documentation pages are deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new user documentation section can be found \htmlonly <a href="http://openvibe.inria.fr/documentation-index/#User+Documentation "> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
  * - \subpage Doc_ConfigurationManager
  * - \subpage Doc_AcquisitionServerUserDocumentation
  *   - \subpage Doc_AcquisitionServerOverview
@@ -157,9 +163,15 @@
 
 /** \page Doc_DeveloperDocumentation Developer Documentation
  <p><div class="important"> 
+ These documentation pages are deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new developer documentation section can be found \htmlonly <a href="http://openvibe.inria.fr/documentation-index/#Developer+Documentation "> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br> 
+ <p><div class="important"> 
  If you want to see your work integrated in the project, you must follow the coding rules specified by the lead developer team.
  These rules are available on this page : \ref Doc_Contribution</a>. Please read this page carefully ! 
- <br />
+ <br/>
  We won't integrate any candidate modules that does not follow these rules.</div></p>
  * <br />
  * <br />

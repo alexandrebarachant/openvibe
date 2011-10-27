@@ -1,5 +1,11 @@
 /**
  * \page Doc_CreatingANewDriver Tutorial: creating a new driver for the acquisition server
+  <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/tutorial-creating-a-new-driver-for-the-acquisition-server/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br> 
  *
  * - \b NB: Document based on <b> OpenViBE 0.8.0 </b> (30-sept-2010).
  *

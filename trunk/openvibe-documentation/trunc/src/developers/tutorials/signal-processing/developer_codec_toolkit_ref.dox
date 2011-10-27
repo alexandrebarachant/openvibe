@@ -1,5 +1,12 @@
 /**
 \page Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref Codec Toolkit Reference
+  <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/codec-toolkit-references/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
+
 This reference page is divided in the following sections :
 
  - \ref Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref_Intro "Introduction"

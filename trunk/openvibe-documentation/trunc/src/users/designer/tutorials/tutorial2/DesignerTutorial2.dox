@@ -1,6 +1,11 @@
 /** 
 \page Doc_DesignerTutorial2 Designer Tutorial 2: Customizing a scenario
-
+ <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/designer-tutorial-2/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
 - \b NB: Tutorial based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
 
 \section designertutorial2_overview Overview

@@ -1,5 +1,11 @@
 /**
 \page Doc_DriverImpedanceChecker Tutorial: Using the built-in Impedance Checker
+  <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/tutorial-using-the-built-in-impedance-checker/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
 
 - \b NB: Tutorial based on <b> OpenViBE 0.6.1 </b> (20-may-2010).
 

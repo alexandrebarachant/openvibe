@@ -1,6 +1,13 @@
 /**
 \page Doc_Contribution Contribution Rules
 
+<p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new page can be found \htmlonly <a href="http://openvibe.inria.fr/contribute "> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br> 
+
 Developers wishing to contribute to OpenViBE should be aware that several coding
 rules have been fixed to ensure homogeneous source code. These rules are as follows :
 

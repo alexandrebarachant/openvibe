@@ -1,5 +1,11 @@
 /**
  * \page Doc_ConfiguringANewDriver Tutorial: configuring a new driver
+ <p><div class="important"> 
+ This documentation page is deprecated since OpenViBE 0.12.0 (oct 2011), and won't be maintained.
+ </br>
+ The new documentation page can be found \htmlonly <a href="http://openvibe.inria.fr/tutorial-configuring-a-new-driver/"> here </a> \endhtmlonly.</div></p>
+ </br>
+ </br>
  *
  * - \b NB: Document based on <b> OpenViBE 0.5.0 </b> (18-feb-2010).
  *
