@@ -26,7 +26,7 @@ Designer_ShowUnstable = true
 >>>>>
 
 For more information about implementing algorithms and boxes to fill your skeleton, please read the official tutorial:
-http://openvibe.inria.fr/documentation/unstable/Doc_DeveloperDocumentation_Plugin.html
+http://openvibe.inria.fr/tutorial-1-implementing-a-signal-processing-box/
 
 Feel free to propose your contribution on the forum ! 
 http://openvibe.inria.fr/forum/

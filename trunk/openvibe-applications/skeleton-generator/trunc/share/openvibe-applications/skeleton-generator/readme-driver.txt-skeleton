@@ -34,7 +34,7 @@ Don't forget to declare your driver in the Acquisition Server application.
 Look in ovasCAquisitionServerGUI.cpp, you will find examples of such declarations.
 
 For more information about building a new driver and filling your skeleton, please read the official tutorial:
-http://openvibe.inria.fr/documentation/unstable/Doc_CreatingANewDriver.html
+http://openvibe.inria.fr/tutorial-creating-a-new-driver-for-the-acquisition-server/
 
 Feel free to propose your contribution on the forum ! 
 http://openvibe.inria.fr/forum/

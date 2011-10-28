@@ -144,7 +144,7 @@ boolean CBoxAlgorithm@@ClassName@@::process(void)
 	*/
 
 	// check the official developer documentation webpage for more example and information :
-	// http://openvibe.inria.fr/documentation/unstable/Doc_DeveloperDocumentation.html
+	// http://openvibe.inria.fr/documentation/#Developer+Documentation
 	// Feel free to ask experienced developers on the forum (http://openvibe.inria.fr/forum) and IRC (#openvibe on irc.freenode.net).
 
 	return true;

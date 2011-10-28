@@ -135,11 +135,10 @@ boolean CBoxAlgorithm@@ClassName@@::process(void)
 
 	// check the official developer documentation webpage for more example and information :
 	
-	// Basic tutorial, does not use Codec toolkit :
-	// http://openvibe.inria.fr/documentation/unstable/Doc_DeveloperDocumentation.html
-	// Codec Toolkit pages :
-	// http://openvibe.inria.fr/documentation/unstable/Doc_Tutorial_Developer_SignalProcessing_CodecToolkit.html
-	// http://openvibe.inria.fr/documentation/unstable/Doc_Tutorial_Developer_SignalProcessing_CodecToolkit_Ref.html
+	// Tutorials:
+	// http://openvibe.inria.fr/documentation/#Developer+Documentation
+	// Codec Toolkit page :
+	// http://openvibe.inria.fr/codec-toolkit-references/
 	
 	// Feel free to ask experienced developers on the forum (http://openvibe.inria.fr/forum) and IRC (#openvibe on irc.freenode.net).
 
