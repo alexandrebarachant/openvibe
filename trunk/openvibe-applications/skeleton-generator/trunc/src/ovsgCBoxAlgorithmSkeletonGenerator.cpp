@@ -393,46 +393,6 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 	
 	boolean l_bSuccess = true;
 
-	CString l_sDate = getDate();
-
-	// construction of the namespace name from category
-	string l_sNamespace(m_sCategory);
-	for(uint32 s=0; s<l_sNamespace.length(); s++)
-	{
-		if(s == 0 && l_sNamespace[s] >= 'a' && l_sNamespace[s]<= 'z')
-		{
-			l_sNamespace.replace(s,1,1,(char)(l_sNamespace[s]+'A'-'a'));
-		}
-		boolean l_bErase = false;
-		while(s<l_sNamespace.length() && (l_sNamespace[s]==' ' || l_sNamespace[s]=='/'))
-		{
-			l_sNamespace.erase(s,1);
-			l_bErase = true;
-		}
-		if(l_bErase && s<l_sNamespace.length() && l_sNamespace[s] >= 'a' && l_sNamespace[s]<= 'z')
-		{	
-			l_sNamespace.replace(s,1,1,(char)(l_sNamespace[s]+'A'-'a'));
-		}
-	}
-
-	// generating some random identifiers
-	CString l_sClassIdentifier = getRandomIdentifierString();
-	CString l_sDescriptorIdentifier = getRandomIdentifierString();
-
-	// replace tags in the allgorithm description
-	if(m_bUseCodecToolkit)
-	{
-		for(uint32 i = 0; i < m_vAlgorithms.size(); i++)
-		{
-			string l_sAlgo = string((const char *)m_mAlgorithmHeaderDeclaration[m_vAlgorithms[i]]);
-			size_t it = l_sAlgo.find("@@ClassName@@");
-			string l_sClass(m_sClassName);
-			l_sClass = "CBoxAlgorithm" + l_sClass;
-			l_sAlgo.replace(it,13, l_sClass);
-			m_mAlgorithmHeaderDeclaration[m_vAlgorithms[i]] = CString(l_sAlgo.c_str());
-		}
-	}
-
 	// we ask for a target directory
 	::GtkWidget* l_pWidgetDialogOpen=gtk_file_chooser_dialog_new(
 			"Select the destination folder",
@@ -495,6 +455,46 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 		return;
 	}
 	gtk_widget_destroy(l_pWidgetDialogOpen);
+
+	CString l_sDate = getDate();
+
+	// construction of the namespace name from category
+	string l_sNamespace(m_sCategory);
+	for(uint32 s=0; s<l_sNamespace.length(); s++)
+	{
+		if(s == 0 && l_sNamespace[s] >= 'a' && l_sNamespace[s]<= 'z')
+		{
+			l_sNamespace.replace(s,1,1,(char)(l_sNamespace[s]+'A'-'a'));
+		}
+		boolean l_bErase = false;
+		while(s<l_sNamespace.length() && (l_sNamespace[s]==' ' || l_sNamespace[s]=='/'))
+		{
+			l_sNamespace.erase(s,1);
+			l_bErase = true;
+		}
+		if(l_bErase && s<l_sNamespace.length() && l_sNamespace[s] >= 'a' && l_sNamespace[s]<= 'z')
+		{	
+			l_sNamespace.replace(s,1,1,(char)(l_sNamespace[s]+'A'-'a'));
+		}
+	}
+
+	// generating some random identifiers
+	CString l_sClassIdentifier = getRandomIdentifierString();
+	CString l_sDescriptorIdentifier = getRandomIdentifierString();
+
+	// replace tags in the allgorithm description
+	if(m_bUseCodecToolkit)
+	{
+		for(uint32 i = 0; i < m_vAlgorithms.size(); i++)
+		{
+			string l_sAlgo = string((const char *)m_mAlgorithmHeaderDeclaration[m_vAlgorithms[i]]);
+			size_t it = l_sAlgo.find("@@ClassName@@");
+			string l_sClass(m_sClassName);
+			l_sClass = "CBoxAlgorithm" + l_sClass;
+			l_sAlgo.replace(it,13, l_sClass);
+			m_mAlgorithmHeaderDeclaration[m_vAlgorithms[i]] = CString(l_sAlgo.c_str());
+		}
+	}
 
 	// we construct the map of substitutions
 	map<CString,CString> l_mSubstitutions;
