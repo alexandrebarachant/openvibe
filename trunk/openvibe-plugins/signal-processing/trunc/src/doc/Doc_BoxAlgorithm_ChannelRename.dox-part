@@ -7,7 +7,7 @@ __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_ChannelRename_Description|
  * This box renames the input channels with whatever name the author wants. The names
- * should be separated by a \c ;
+ * should be separated by a semi-column ';'
  * |OVP_DocEnd_BoxAlgorithm_ChannelRename_Description|
 __________________________________________________________________
 
