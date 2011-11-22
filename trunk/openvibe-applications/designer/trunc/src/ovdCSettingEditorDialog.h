@@ -1,7 +1,7 @@
 #ifndef __OpenViBEDesigner_CSettingEditorDialog_H__
 #define __OpenViBEDesigner_CSettingEditorDialog_H__
 
-#include "ovd_base.h"
+#include "ovdCSettingCollectionHelper.h"
 
 #include <string>
 #include <map>
@@ -22,6 +22,7 @@ namespace OpenViBEDesigner
 
 		const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 		OpenViBE::Kernel::IBox& m_rBox;
+		OpenViBEDesigner::CSettingCollectionHelper m_oHelper;
 		OpenViBE::uint32 m_ui32SettingIndex;
 		OpenViBE::CString m_sGUIFilename;
 		OpenViBE::CString m_sGUISettingsFilename;

@@ -1,7 +1,4 @@
 #include "ovdCSettingEditorDialog.h"
-#include "ovdCSettingCollectionHelper.h"
-
-#include <map>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -16,6 +13,7 @@ static void type_changed_cb(::GtkComboBox* pWidget, gpointer pUserData)
 CSettingEditorDialog::CSettingEditorDialog(const IKernelContext& rKernelContext, IBox& rBox, uint32 ui32SettingIndex, const char* sTitle, const char* sGUIFilename, const char* sGUISettingsFilename)
 	:m_rKernelContext(rKernelContext)
 	,m_rBox(rBox)
+	,m_oHelper(rKernelContext, sGUIFilename)
 	,m_ui32SettingIndex(ui32SettingIndex)
 	,m_sGUIFilename(sGUIFilename)
 	,m_sGUISettingsFilename(sGUISettingsFilename)
@@ -83,11 +81,10 @@ boolean CSettingEditorDialog::run(void)
 			if(l_sActiveText)
 			{
 				CIdentifier l_oSettingType=m_vSettingTypes[l_sActiveText];
-				CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUISettingsFilename.toASCIIString());
 				m_rBox.setSettingName(m_ui32SettingIndex, gtk_entry_get_text(GTK_ENTRY(l_pName)));
 				m_rBox.setSettingType(m_ui32SettingIndex, l_oSettingType);
-				m_rBox.setSettingValue(m_ui32SettingIndex, l_oHelper.getValue(l_oSettingType, m_pDefaultValue));
-				m_rBox.setSettingDefaultValue(m_ui32SettingIndex, l_oHelper.getValue(l_oSettingType, m_pDefaultValue));
+				m_rBox.setSettingValue(m_ui32SettingIndex, m_oHelper.getValue(l_oSettingType, m_pDefaultValue));
+				m_rBox.setSettingDefaultValue(m_ui32SettingIndex, m_oHelper.getValue(l_oSettingType, m_pDefaultValue));
 				l_bFinished=true;
 				l_bResult=true;
 			}
@@ -115,11 +112,9 @@ boolean CSettingEditorDialog::run(void)
 
 void CSettingEditorDialog::typeChangedCB(void)
 {
-	CSettingCollectionHelper l_oHelper(m_rKernelContext, m_sGUISettingsFilename.toASCIIString());
-
 	CIdentifier l_oSettingType=m_vSettingTypes[gtk_combo_box_get_active_text(GTK_COMBO_BOX(m_pType))];
 
-	CString l_sWidgetName=l_oHelper.getSettingWidgetName(l_oSettingType).toASCIIString();
+	CString l_sWidgetName=m_oHelper.getSettingWidgetName(l_oSettingType).toASCIIString();
 	::GtkBuilder* l_pBuilderInterfaceDefaultValueDummy=gtk_builder_new(); // glade_xml_new(m_sGUIFilename.toASCIIString(), l_sWidgetName.toASCIIString(), NULL);
 	gtk_builder_add_from_file(l_pBuilderInterfaceDefaultValueDummy, m_sGUISettingsFilename.toASCIIString(), NULL);
 	gtk_builder_connect_signals(l_pBuilderInterfaceDefaultValueDummy, NULL);
@@ -132,5 +127,5 @@ void CSettingEditorDialog::typeChangedCB(void)
 
 	CString l_sDefaultValue;
 	m_rBox.getSettingDefaultValue(m_ui32SettingIndex, l_sDefaultValue);
-	l_oHelper.setValue(l_oSettingType, m_pDefaultValue, l_sDefaultValue);
+	m_oHelper.setValue(l_oSettingType, m_pDefaultValue, l_sDefaultValue);
 }
