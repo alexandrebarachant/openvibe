@@ -194,7 +194,7 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 				m_pOutputSignalDescription->setDimensionSize(0, ip_pSignal->getDimensionSize(0));
 				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*(m_ui64EpochDuration+(1LL<<32)/op_ui64SamplingRate))>>32));
 				m_pOutputSignalDescription->setDimensionSize(1, (uint32)(op_ui64SamplingRate*(m_ui64EpochDuration>>32)));
-				this->getLogManager() << LogLevel_Info << "sampling rate is ["<<op_ui64SamplingRate<<"] epoch duration is [" << m_ui64EpochDuration << "] result is [" << m_pOutputSignalDescription->getDimensionSize(1) <<"]\n";
+				this->getLogManager() << LogLevel_Debug << "sampling rate is ["<<op_ui64SamplingRate<<"] epoch duration is [" << time64(m_ui64EpochDuration) << "] result is [" << m_pOutputSignalDescription->getDimensionSize(1) <<"]\n";
 				// m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*m_ui64EpochDuration)>>32));
 				for(k=0; k<ip_pSignal->getDimensionSize(0); k++)
 				{
