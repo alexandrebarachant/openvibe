@@ -73,6 +73,13 @@ boolean CBoxAlgorithmStimulationListener::process(void)
 						<< " at date " << time64(op_pStimulationSet->getStimulationDate(k))
 						<< " and duration " << time64(op_pStimulationSet->getStimulationDuration(k))
 						<< "\n";
+					if(op_pStimulationSet->getStimulationDate(k) < l_rDynamicBoxContext.getInputChunkStartTime(i, j) || op_pStimulationSet->getStimulationDate(k) > l_rDynamicBoxContext.getInputChunkEndTime(i, j))
+					{
+						this->getLogManager() << LogLevel_Warning
+							<< "The stimulation date is out of chunk range ! "
+							<< " Stimulation date is " << time64(op_pStimulationSet->getStimulationDate(k))
+							<< " and chunk range is [" << time64(l_rDynamicBoxContext.getInputChunkStartTime(i, j)) << ", " << time64(l_rDynamicBoxContext.getInputChunkEndTime(i, j)) << "]\n";
+					}
 				}
 			}
 			if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
