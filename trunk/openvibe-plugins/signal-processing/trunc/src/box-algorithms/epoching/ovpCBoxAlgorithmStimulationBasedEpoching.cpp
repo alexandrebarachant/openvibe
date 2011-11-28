@@ -192,10 +192,18 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 			{
 				m_pOutputSignalDescription->setDimensionCount(2);
 				m_pOutputSignalDescription->setDimensionSize(0, ip_pSignal->getDimensionSize(0));
-				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*(m_ui64EpochDuration+(1LL<<32)/op_ui64SamplingRate))>>32));
-				m_pOutputSignalDescription->setDimensionSize(1, (uint32)(op_ui64SamplingRate*(m_ui64EpochDuration>>32)));
-				this->getLogManager() << LogLevel_Debug << "sampling rate is ["<<op_ui64SamplingRate<<"] epoch duration is [" << time64(m_ui64EpochDuration) << "] result is [" << m_pOutputSignalDescription->getDimensionSize(1) <<"]\n";
-				// m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*m_ui64EpochDuration)>>32));
+				
+				float64 l_f64SamplingRate = op_ui64SamplingRate;
+				float64 l_f64EpochDuration = m_ui64EpochDuration / 4294967296.f;
+				float64 l_f64Result = floor((l_f64SamplingRate*l_f64EpochDuration) + 0.5);
+				this->getLogManager() << LogLevel_Trace << "sampling rate is ["<<l_f64SamplingRate<<"] epoch duration ["<<l_f64EpochDuration<<"] -> samples ["<<l_f64Result<<"]\n";
+				m_pOutputSignalDescription->setDimensionSize(1, l_f64Result);
+				
+				// former computations :
+				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*(m_ui64EpochDuration+(1LL<<32)/op_ui64SamplingRate))>>32)); // gives +1 sample with power of 2 sampling rate
+				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*m_ui64EpochDuration)>>32));
+				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)(((op_ui64SamplingRate<<32)*m_ui64EpochDuration)>>32)); // does not work with epoch < 1s
+				
 				for(k=0; k<ip_pSignal->getDimensionSize(0); k++)
 				{
 					m_pOutputSignalDescription->setDimensionLabel(0, k, ip_pSignal->getDimensionLabel(0, k));
