@@ -47,6 +47,7 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean (OpenViBEPlugins::FileIO::CBoxAlgorithmCSVFileWriter::*m_fpRealProcess)(void);
 
 			OpenViBE::IMatrix* m_pMatrix;
+			OpenViBE::boolean m_bDeleteMatrix;
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamDecoder;
 			OpenViBE::Kernel::TParameterHandler < const OpenViBE::IMemoryBuffer* > ip_pMemoryBuffer;

@@ -14,6 +14,8 @@ CBoxAlgorithmCSVFileWriter::CBoxAlgorithmCSVFileWriter(void)
 	:m_pFile(NULL)
 	,m_fpRealProcess(NULL)
 	,m_pStreamDecoder(NULL)
+	,m_pMatrix(NULL)
+	,m_bDeleteMatrix(false)
 {
 }
 
@@ -86,7 +88,7 @@ boolean CBoxAlgorithmCSVFileWriter::uninitialize(void)
 		::fclose(m_pFile);
 		m_pFile=NULL;
 	}
-	if(op_pMatrix != m_pMatrix)
+	if(m_bDeleteMatrix)
 	{
 		delete m_pMatrix;
 	}
@@ -135,6 +137,7 @@ boolean CBoxAlgorithmCSVFileWriter::process_streamedMatrix(void)
 			if( op_pMatrix->getDimensionCount() == 1 )
 			{
 				m_pMatrix = new CMatrix();
+				m_bDeleteMatrix = true;
 				m_pMatrix->setDimensionCount(2);
 				m_pMatrix->setDimensionSize(0,1);
 				m_pMatrix->setDimensionSize(1,op_pMatrix->getDimensionSize(0));
