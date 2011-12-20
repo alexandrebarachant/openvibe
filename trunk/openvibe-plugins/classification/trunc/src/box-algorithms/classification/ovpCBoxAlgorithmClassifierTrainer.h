@@ -15,7 +15,7 @@
 #define OVP_ClassId_BoxAlgorithm_ClassifierTrainer     OpenViBE::CIdentifier(0x128703B1, 0x0E2441F6)
 #define OVP_ClassId_BoxAlgorithm_ClassifierTrainerDesc OpenViBE::CIdentifier(0x0A0A3F0A, 0x17C8569F)
 
-#define OVP_BoxAlgorithm_ClassifierTrainer_CommonSettingsCount 5
+#define OVP_BoxAlgorithm_ClassifierTrainer_CommonSettingsCount 4
 
 namespace OpenViBEPlugins
 {
@@ -37,7 +37,7 @@ namespace OpenViBEPlugins
 		protected:
 
 			virtual OpenViBE::boolean train(const size_t uiStartIndex, const size_t uiStopIndex);
-			virtual OpenViBE::boolean getAccuracy(const size_t uiStartIndex, const size_t uiStopIndex, OpenViBE::float64& rf64Accuracy, OpenViBE::float64& rf64TruePositiveRate, OpenViBE::float64& rf64FalsePositiveRate);
+			virtual OpenViBE::float64 getAccuracy(const size_t uiStartIndex, const size_t uiStopIndex);
 
 		protected:
 
@@ -48,9 +48,6 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::IAlgorithmProxy* m_pClassifier;
 			OpenViBE::uint64 m_ui64TrainStimulation;
 			OpenViBE::uint64 m_ui64PartitionCount;
-
-			OpenViBE::boolean m_bTrueFalsePositiveRate;
-			OpenViBE::int64 m_i64TargetClassIndex;
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStimulationsEncoder;
 
@@ -92,11 +89,10 @@ namespace OpenViBEPlugins
 
 				rBoxAlgorithmPrototype.addOutput ("Train-completed Flag",                 OV_TypeId_Stimulations);
 
-				rBoxAlgorithmPrototype.addSetting("Classifier to use",                      OVTK_TypeId_ClassificationAlgorithm, "Linear Discrimimant Analysis (LDA)");
-				rBoxAlgorithmPrototype.addSetting("Filename to save configuration to",      OV_TypeId_Filename,                  "");
-				rBoxAlgorithmPrototype.addSetting("Train trigger",                          OV_TypeId_Stimulation,               "OVTK_StimulationId_Train");
-				rBoxAlgorithmPrototype.addSetting("Number of partitions for k-fold test",   OV_TypeId_Integer,                   "10");
-				rBoxAlgorithmPrototype.addSetting("Target class index for TP and FP rates", OV_TypeId_Integer,                  "1");
+				rBoxAlgorithmPrototype.addSetting("Classifier to use",                    OVTK_TypeId_ClassificationAlgorithm, "");
+				rBoxAlgorithmPrototype.addSetting("Filename to save configuration to",    OV_TypeId_Filename,                  "");
+				rBoxAlgorithmPrototype.addSetting("Train trigger",                        OV_TypeId_Stimulation,               "OVTK_StimulationId_Train");
+				rBoxAlgorithmPrototype.addSetting("Number of partitions for k-fold test", OV_TypeId_Integer,                   "10");
 
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				return true;

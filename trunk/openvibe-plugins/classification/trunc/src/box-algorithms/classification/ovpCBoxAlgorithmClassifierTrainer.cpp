@@ -52,15 +52,6 @@ boolean CBoxAlgorithmClassifierTrainer::initialize(void)
 	m_pClassifier=&this->getAlgorithmManager().getAlgorithm(this->getAlgorithmManager().createAlgorithm(l_oClassifierAlgorithmClassIdentifier));
 	m_pClassifier->initialize();
 
-	//for computing true/false positive rates, we need a target class
-	m_i64TargetClassIndex =  FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 4);
-	if(m_i64TargetClassIndex < 0 || m_i64TargetClassIndex > this->getStaticBoxContext().getInputCount())
-	{
-		this->getLogManager() << LogLevel_Error << "Target class index must be a valid input index (was " << m_i64TargetClassIndex << ")\n";
-		return false;
-	}
-	m_bTrueFalsePositiveRate = (m_i64TargetClassIndex != 0);
-
 	CIdentifier l_oIdentifier;
 	i = OVP_BoxAlgorithm_ClassifierTrainer_CommonSettingsCount; // number of settings when no additional setting is added
 	while(i < l_rStaticBoxContext.getSettingCount() && (l_oIdentifier=m_pClassifier->getNextInputParameterIdentifier(l_oIdentifier))!=OV_UndefinedIdentifier)
@@ -266,14 +257,8 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 			ip_pConfiguration=&l_oConfiguration;
 
 			float64 l_f64PartitionAccuracy=0;
-			float64 l_f64PartitionTPRate=0;
-			float64 l_f64PartitionFPRate=0;
 			float64 l_f64FinalAccuracy=0;
-			float64 l_f64FinalTPRate=0;
-			float64 l_f64FinalFPRate=0;
-			vector<float64> l_vPartitionAccuracies((unsigned int)m_ui64PartitionCount);
-			vector<float64> l_vPartitionTPRates((unsigned int)m_ui64PartitionCount);
-			vector<float64> l_vPartitionFPRates((unsigned int)m_ui64PartitionCount);
+			vector<float64> l_vPartitionAccuracies(m_ui64PartitionCount);
 
 			boolean l_bRandomizeVectorOrder = (&(this->getConfigurationManager()))->expandAsBoolean("${Plugin_Classification_RandomizeKFoldTestData}");
 
@@ -295,7 +280,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 			{
 
 				this->getLogManager() << LogLevel_Info << "k-fold test could take quite a long time, be patient\n";
-				for(uint32 i=0; i<m_ui64PartitionCount; i++)
+				for(uint64 i=0; i<m_ui64PartitionCount; i++)
 				{
 					size_t l_uiStartIndex=((i  )*m_vFeatureVector.size())/m_ui64PartitionCount;
 					size_t l_uiStopIndex =((i+1)*m_vFeatureVector.size())/m_ui64PartitionCount;
@@ -303,70 +288,32 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 					this->getLogManager() << LogLevel_Trace << "Training on partition " << i << " (feature vectors " << (uint32)l_uiStartIndex << " to " << (uint32)l_uiStopIndex-1 << ")...\n";
 					if(this->train(l_uiStartIndex, l_uiStopIndex))
 					{
-						this->getAccuracy(l_uiStartIndex, l_uiStopIndex, l_f64PartitionAccuracy,l_f64PartitionTPRate,l_f64PartitionFPRate);
+						l_f64PartitionAccuracy=this->getAccuracy(l_uiStartIndex, l_uiStopIndex);
 						l_vPartitionAccuracies[i]=l_f64PartitionAccuracy;
 						l_f64FinalAccuracy+=l_f64PartitionAccuracy;
-						l_vPartitionTPRates[i]=l_f64PartitionTPRate;
-						l_f64FinalTPRate += l_f64PartitionTPRate;
-						l_vPartitionFPRates[i]=l_f64PartitionFPRate;
-						l_f64FinalFPRate += l_f64PartitionFPRate;
 					}
-					if(m_bTrueFalsePositiveRate)
-					{
-						this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount 
-							<< ". Accuracy [" << l_f64PartitionAccuracy 
-							<< "%] True Positive Rate ["<< l_f64PartitionTPRate
-							<< "%] False Positive Rate ["<< l_f64PartitionFPRate <<"%].\n";
-					}
-					else
-					{
-						this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount << " (performance : " << l_f64PartitionAccuracy << "% accuracy)\n";
-					}
+					this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount << " (performance : " << l_f64PartitionAccuracy << "%)\n";
 				}
 
 				float64 l_fMean = l_f64FinalAccuracy/m_ui64PartitionCount;
-				float64 l_fMeanTPRate = l_f64FinalTPRate/m_ui64PartitionCount;
-				float64 l_fMeanFPRate = l_f64FinalFPRate/m_ui64PartitionCount;
 				float64 l_fDeviation = 0;
-				float64 l_fDeviationTPRate = 0;
-				float64 l_fDeviationFPRAte = 0;
 
-				for (uint32 i = 0; i < m_ui64PartitionCount; i++)
+				for (uint64 i = 0; i < m_ui64PartitionCount; i++)
 				{
 					float64 l_fDiff = l_vPartitionAccuracies[i] - l_fMean;
 					l_fDeviation += l_fDiff * l_fDiff;
-
-					l_fDiff = l_vPartitionTPRates[i] - l_fMeanTPRate;
-					l_fDeviationTPRate += l_fDiff * l_fDiff;
-
-					l_fDiff = l_vPartitionFPRates[i] - l_fMeanFPRate;
-					l_fDeviationFPRAte += l_fDiff * l_fDiff;
 				}
 				l_fDeviation = sqrt( l_fDeviation / m_ui64PartitionCount );
-				l_fDeviationTPRate = sqrt( l_fDeviationTPRate / m_ui64PartitionCount );
-				l_fDeviationFPRAte = sqrt( l_fDeviationFPRAte / m_ui64PartitionCount );
 
 				this->getLogManager() << LogLevel_Trace << "Training on whole set...\n";
 				this->train(0, 0);
-				if(m_bTrueFalsePositiveRate)
-				{
-					this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is: Accuracy [" 
-						<< l_fMean << "% (sigma = " << l_fDeviation
-						<< ") True Positive Rate ["<< l_f64PartitionTPRate << "% (sigma = " << l_fDeviationTPRate << "%)]"
-						<< ") False Positive Rate ["<< l_f64PartitionFPRate << "% (sigma = " << l_fDeviationFPRAte << "%)].\n";
-				}
-				else
-				{
-					this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << l_fMean << "% (sigma = " << l_fDeviation << "%)\n";
-				}
+				this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << l_fMean << "% (sigma = " << l_fDeviation << "%)\n";
 			}
 			else
 			{
 				this->getLogManager() << LogLevel_Trace << "Training on whole set...\n";
 				this->train(0, 0);
-				float64 l_f64Accuracy = 0, l_f64TPRate = 0, l_f64FPRate = 0;
-				this->getAccuracy(0, m_vFeatureVector.size(),l_f64Accuracy,l_f64TPRate, l_f64FPRate);
-				this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << l_f64Accuracy << "% (trained without k-fold test - performance estimation may not be accurate)\n";
+				this->getLogManager() << LogLevel_Info << "Classifier performance on whole set is " << this->getAccuracy(0, m_vFeatureVector.size()) << "% (trained without k-fold test - performance estimation may not be accurate)\n";
 			}
 
 			CString l_sConfigurationFilename(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1));
@@ -422,16 +369,13 @@ boolean CBoxAlgorithmClassifierTrainer::train(const size_t uiStartIndex, const s
 	return true;
 }
 
-boolean CBoxAlgorithmClassifierTrainer::getAccuracy(const size_t uiStartIndex, const size_t uiStopIndex, float64& rf64Accuracy, float64& rf64TruePositiveRate, float64& rf64FalsePositiveRate)
+float64 CBoxAlgorithmClassifierTrainer::getAccuracy(const size_t uiStartIndex, const size_t uiStopIndex)
 {
 	size_t l_iSuccessfullTrainerCount=0;
-	size_t l_iTrueCount=0;
-	size_t l_iTruePositiveCount=0;
-	size_t l_iFalsePositiveCount=0;
 
 	if(uiStopIndex-uiStartIndex==0)
 	{
-		return false;
+		return 0;
 	}
 
 	uint32 l_ui32FeatureVectorSize=m_vFeatureVector[0].m_pFeatureVectorMatrix->getBufferElementCount();
@@ -456,32 +400,11 @@ boolean CBoxAlgorithmClassifierTrainer::getAccuracy(const size_t uiStartIndex, c
 
 		m_pClassifier->process(OVTK_Algorithm_Classifier_InputTriggerId_Classify);
 
-		if(l_f64TrainerClass == m_i64TargetClassIndex)
-		{
-			l_iTrueCount++;
-			if(op_f64ClassificationStateClass == m_i64TargetClassIndex)
-			{
-				l_iTruePositiveCount ++;
-			}
-		}
-		else
-		{
-			if(op_f64ClassificationStateClass == m_i64TargetClassIndex)
-			{
-				l_iFalsePositiveCount ++;
-			}
-		}
-		
-
-		if(op_f64ClassificationStateClass == l_f64TrainerClass)
+		if(op_f64ClassificationStateClass==l_f64TrainerClass)
 		{
 			l_iSuccessfullTrainerCount++;
 		}
 	}
 
-	rf64Accuracy = (float64)(l_iSuccessfullTrainerCount*100.0)/(uiStopIndex-uiStartIndex);
-	rf64TruePositiveRate  = (float64)(l_iTruePositiveCount*100.0)/l_iTrueCount;
-	rf64FalsePositiveRate = (float64)(l_iFalsePositiveCount*100.0)/(uiStopIndex-uiStartIndex);
-	this->getLogManager() << LogLevel_Trace << "Performance estimation : Acc["<<rf64Accuracy<<"] TP["<<rf64TruePositiveRate<<"] FP["<<rf64FalsePositiveRate<<"]\n";
-	return true;
+	return (float64)(l_iSuccessfullTrainerCount*100.0)/(uiStopIndex-uiStartIndex);
 }
