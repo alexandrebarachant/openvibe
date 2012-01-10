@@ -100,7 +100,7 @@ no_need_to_install_directx:
 	File ..\dependencies\arch\openvibe-vcredist-2010.exe
 	File ..\dependencies\arch\lua-5.1.4-30.zip
 	File ..\dependencies\arch\expat-2.0.1.zip
-	File ..\dependencies\arch\gtk-2.20.0-runtime.zip
+	File ..\dependencies\arch\gtk-2.24.8-runtime.zip
 	File ..\dependencies\arch\gtk-themes-2009.09.07.zip
 	File ..\dependencies\arch\itpp-4.0.7-runtime.zip
 	File ..\dependencies\arch\ogre-1.7.1-vs100-runtime.zip
@@ -119,16 +119,16 @@ no_need_to_install_directx:
 	SetOutPath "$INSTDIR\dependencies"
 	ZipDLL::extractall "arch\lua-5.1.4-30.zip" "lua"
 	ZipDLL::extractall "arch\expat-2.0.1.zip" "expat"
-	ZipDLL::extractall "arch\gtk-2.20.0-runtime.zip" "gtk"
+	ZipDLL::extractall "arch\gtk-2.24.8-runtime.zip" "gtk"
 	ZipDLL::extractall "arch\gtk-themes-2009.09.07.zip" "gtk"
 	ZipDLL::extractall "arch\itpp-4.0.7-runtime.zip" "itpp"
 	ZipDLL::extractall "arch\ogre-1.7.1-vs100-runtime.zip" "ogre"
 	ZipDLL::extractall "arch\cegui-0.7.2-vs100-runtime.zip" "cegui"
 	ZipDLL::extractall "arch\vrpn-7.26-runtime.zip" "vrpn"
-  ZipDLL::extractall "arch\openal-1.1-runtime.zip" "openal"
-  ZipDLL::extractall "arch\freealut-1.1.0-bin-runtime.zip" "freealut"
-  ZipDLL::extractall "arch\libvorbis-1.3.2-vs100-runtime.zip" "libvorbis"
-  ZipDLL::extractall "arch\libogg-1.2.1-vs100-runtime.zip" "libogg"
+	ZipDLL::extractall "arch\openal-1.1-runtime.zip" "openal"
+	ZipDLL::extractall "arch\freealut-1.1.0-bin-runtime.zip" "freealut"
+	ZipDLL::extractall "arch\libvorbis-1.3.2-vs100-runtime.zip" "libvorbis"
+	ZipDLL::extractall "arch\libogg-1.2.1-vs100-runtime.zip" "libogg"
 
 	SetOutPath "$INSTDIR"
 	File /nonfatal /r ..\dist\bin
