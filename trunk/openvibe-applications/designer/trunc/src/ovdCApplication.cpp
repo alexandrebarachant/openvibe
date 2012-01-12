@@ -11,6 +11,7 @@
 #include <fstream>
 
 #include <cstring>
+#include <cstdlib>
 
 #if defined OVD_OS_Linux
  #define _strcmpi strcasecmp
@@ -1316,6 +1317,13 @@ void CApplication::aboutScenarioCB(CInterfacedScenario* pScenario)
 void CApplication::browseDocumentationCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "CApplication::browseDocumentationCB\n";
+	CString l_sCommand = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand} \"${Designer_WebBrowserOpenViBEHomepage}/documentation-index\"");
+	int l_iResult = system(l_sCommand.toASCIIString());
+
+	if(l_iResult<0)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not launch command " << l_sCommand << "\n";
+	}
 }
 
 void CApplication::addCommentCB(
