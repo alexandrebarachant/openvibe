@@ -21,6 +21,8 @@
 
 #include "box-algorithms/file-reading-and-writing/ovpCBoxAlgorithmElectrodeLocalizationFileReader.h"
 
+#include "box-algorithms/file-reading-and-writing/bci2000reader/ovpCBoxAlgorithmBCI2000Reader.h"
+
 #include "ovpCBoxAlgorithmSignalConcatenation.h"
 
 OVP_Declare_Begin()
@@ -46,6 +48,8 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmGenericStreamWriterDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmElectrodeLocalisationFileReaderDesc)
+	
+	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmBCI2000ReaderDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmSignalConcatenationDesc)
 
