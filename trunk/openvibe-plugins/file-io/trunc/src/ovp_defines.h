@@ -91,6 +91,9 @@
 #define OVP_ClassId_BoxAlgorithm_CSVFileWriter     							   OpenViBE::CIdentifier(0x2C9312F1, 0x2D6613E5)
 #define OVP_ClassId_BoxAlgorithm_CSVFileReader     							   OpenViBE::CIdentifier(0x641D0717, 0x02884107)
 
+#define OVP_ClassId_BoxAlgorithm_EDFFileWriter                                 OpenViBE::CIdentifier(0x0D454DCE, 0x470A4C02)
+#define OVP_ClassId_BoxAlgorithm_EDFFileWriterDesc                             OpenViBE::CIdentifier(0x0D454DCE, 0x470A4C02)
+
 
 //___________________________________________________________________//
 //                                                                   //
