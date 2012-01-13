@@ -96,12 +96,14 @@ boolean CSecondDifferenceDetrending::process(void)
 			{ //doing the processing
 
 				//writing the output buffer for debug
+				/*
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Info << "inputBuffer after first differencing: ";
 				for(uint32 d = 0; d < m_ui32SamplePerBufferCount; d++)
 				{
 					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "inputBuffer[" << d << "][0]: " << m_pInputBuffer[d] <<" ";
 				}
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "\n";
+				*/
 
 				//computing the first difference...
 				//dealing with the left boundary
@@ -138,12 +140,14 @@ boolean CSecondDifferenceDetrending::process(void)
 				m_bAreLastSamplesValid=true;
 
 				//writing the output buffer for debug
+				/*
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Info << "outputBuffer after first differencing: ";
 				for(uint32 d = 0; d < m_ui32SamplePerBufferCount; d++)
 				{
 					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "outputBuffer[" << d << "][0]: " << m_pOutputBuffer[d] << " ";
 				}
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "\n";
+				*/
 
 				//computing the second difference
 				//dealing with the main part of the buffer
@@ -180,12 +184,14 @@ boolean CSecondDifferenceDetrending::process(void)
 				}
 				m_bAreLastDifferencesValid=true;
 
+				/*
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Info << "outputBuffer after second differencing: ";
 				for(uint32 d = 0; d < m_ui32SamplePerBufferCount; d++)
 				{
 					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "outputBuffer[" << d << "][0]: " << m_pOutputBuffer[d] << " ";
 				}
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << "\n";
+				*/
 
 				m_pSignalOutputWriterHelper->writeBuffer(*m_pSignalOutputWriter);
 			}

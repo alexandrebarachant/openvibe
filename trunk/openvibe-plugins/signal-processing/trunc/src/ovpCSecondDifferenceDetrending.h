@@ -126,7 +126,8 @@ namespace OpenViBEPlugins
 	      rPrototype.addInput("Input signal", OV_TypeId_Signal);
 	      rPrototype.addOutput("Detrended signal", OV_TypeId_Signal);
 
-	      return true;
+		  rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsDeprecated);
+		  return true;
 	    }
 
 	  _IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_SecondDifferenceDetrendingDesc)

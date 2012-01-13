@@ -115,11 +115,12 @@ namespace OpenViBEPlugins
 	  virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessing::CFirstDifferenceDetrending(); }
 
 	  virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
-	    {
+		{
 	      rPrototype.addInput("Input signal", OV_TypeId_Signal);
 	      rPrototype.addOutput("Detrended signal", OV_TypeId_Signal);
 
-	      return true;
+		  rPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsDeprecated);
+		  return true;
 	    }
 
 	  _IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_FirstDifferenceDetrendingDesc)
