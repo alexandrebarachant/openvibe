@@ -141,9 +141,16 @@ namespace OpenViBEDesigner
 		::GtkNotebook* m_pScenarioNotebook;
 		::GtkNotebook* m_pResourceNotebook;
 		::GtkTreeStore* m_pBoxAlgorithmTreeModel;
+		::GtkTreeModel* m_pBoxAlgorithmTreeModelFilter;
+		::GtkTreeModel* m_pBoxAlgorithmTreeModelFilter2;
+		::GtkTreeModel* m_pBoxAlgorithmTreeModelFilter3;
+		::GtkTreeModel* m_pBoxAlgorithmTreeModelFilter4;
 		::GtkTreeView* m_pBoxAlgorithmTreeView;
 		::GtkTreeStore* m_pAlgorithmTreeModel;
 		::GtkTreeView* m_pAlgorithmTreeView;
+		gint m_giFilterTimeout;
+
+		const gchar* m_sSearchTerm;
 		
 		OpenViBE::uint64 m_ui64LastTimeRefresh;
 		OpenViBE::boolean m_bIsQuitting;

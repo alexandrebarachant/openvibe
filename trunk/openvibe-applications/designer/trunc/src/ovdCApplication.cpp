@@ -63,6 +63,10 @@ namespace
 	{
 		static_cast<CApplication*>(pUserData)->redoCB();
 	}
+	void menu_focus_search_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
+	{
+		gtk_widget_grab_focus(GTK_WIDGET(gtk_builder_get_object(static_cast<CApplication*>(pUserData)->m_pBuilderInterface, "openvibe-box_algorithm_searchbox")));
+	}
 	void menu_copy_selection_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->copySelectionCB();
@@ -245,6 +249,120 @@ namespace
 		static_cast<CLogListenerDesigner*>(pUserData)->clearMessages();
 	}
 
+	string strtoupper(string str)
+	{
+		int leng=str.length();
+		for(int i=0; i<leng; i++)
+			if (97<=str[i]&&str[i]<=122)//a-z
+				str[i]-=32;
+		return str;
+	}
+	static gboolean box_algorithm_search_func(GtkTreeModel *model, GtkTreeIter *iter, gpointer pUserData)
+	{
+		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
+		/* Visible if row is non-empty and first column is "HI" */
+
+		gboolean l_bVisible = false;
+		gchar* l_sHaystack;
+
+		gtk_tree_model_get(model, iter, 0, &l_sHaystack, -1);
+
+		// consider only leaf nodes which match the search term
+		if (string::npos != strtoupper(l_sHaystack).find(strtoupper(l_pApplication->m_sSearchTerm)) || gtk_tree_model_iter_has_child(model, iter))
+		{
+			//std::cout << "value : " << l_pApplication->m_sSearchTerm << "\n";
+			l_bVisible = true;
+		}
+
+		g_free(l_sHaystack);
+
+		return l_bVisible;
+	}
+
+	static gboolean box_algorithm_prune_empty_folders(GtkTreeModel *model, GtkTreeIter *iter, gpointer pUserData)
+	{
+		gboolean l_bIsPlugin;
+		gtk_tree_model_get(model, iter, 5, &l_bIsPlugin, -1);
+
+		if (gtk_tree_model_iter_has_child(model, iter) || l_bIsPlugin)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	static gboolean	do_refilter( CApplication *l_pApplication )
+	{
+		if (0 == strcmp(l_pApplication->m_sSearchTerm, ""))
+		{
+			// reattach the old model
+			gtk_tree_view_set_model(l_pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModel));
+
+			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter4));
+			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter3));
+			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter2));
+			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter));
+		}
+		else
+		{
+			l_pApplication->m_pBoxAlgorithmTreeModelFilter = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModel), NULL);
+			l_pApplication->m_pBoxAlgorithmTreeModelFilter2 = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter), NULL);
+			l_pApplication->m_pBoxAlgorithmTreeModelFilter3 = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter2), NULL);
+			l_pApplication->m_pBoxAlgorithmTreeModelFilter4 = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter3), NULL);
+			// detach the normal model from the treeview
+			gtk_tree_view_set_model(l_pApplication->m_pBoxAlgorithmTreeView, NULL);
+
+			// clear the model
+
+			// add a filtering function to the model
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter), box_algorithm_search_func, l_pApplication, NULL );
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter2), box_algorithm_prune_empty_folders, l_pApplication, NULL );
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter3), box_algorithm_prune_empty_folders, l_pApplication, NULL );
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter4), box_algorithm_prune_empty_folders, l_pApplication, NULL );
+
+			// attach the model to the treeview
+			gtk_tree_view_set_model(l_pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter4));
+			gtk_tree_view_expand_all(l_pApplication->m_pBoxAlgorithmTreeView);
+		}
+
+		l_pApplication->m_giFilterTimeout = 0;
+
+		return false;
+	}
+
+	static void	queue_refilter( CApplication *l_pApplication )
+	{
+		if( l_pApplication->m_giFilterTimeout )
+			g_source_remove( l_pApplication->m_giFilterTimeout );
+
+		l_pApplication->m_giFilterTimeout = g_timeout_add( 300, (GSourceFunc)do_refilter, l_pApplication );
+	}
+
+	void refresh_search_cb(::GtkEntry* pTextfield, gpointer pUserData)
+	{
+		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
+		l_pApplication->m_sSearchTerm = gtk_entry_get_text(pTextfield);
+
+		queue_refilter(l_pApplication);
+	}
+
+
+
+	static gboolean searchbox_focus_in_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, CApplication* l_pApplication)
+	{
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pApplication->m_pBuilderInterface, "openvibe-menu_edit")), false);
+
+		return false;
+	}
+
+	static gboolean searchbox_focus_out_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, CApplication* l_pApplication)
+	{
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pApplication->m_pBuilderInterface, "openvibe-menu_edit")), true);
+
+		return false;
+	}
+
 	gboolean idle_application_loop(gpointer pUserData)
 	{
 		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
@@ -385,6 +503,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_undo")),        "activate", G_CALLBACK(menu_undo_cb),               this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_redo")),        "activate", G_CALLBACK(menu_redo_cb),               this);
 
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_focus_search")),"activate", G_CALLBACK(menu_focus_search_cb),     this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_copy")),        "activate", G_CALLBACK(menu_copy_selection_cb),     this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_cut")),         "activate", G_CALLBACK(menu_cut_selection_cb),      this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-menu_paste")),       "activate", G_CALLBACK(menu_paste_selection_cb),    this);
@@ -426,6 +545,10 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-algorithm_title_button_expand")),   "clicked", G_CALLBACK(algorithm_title_button_expand_cb),   this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-algorithm_title_button_collapse")), "clicked", G_CALLBACK(algorithm_title_button_collapse_cb), this);
+
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-box_algorithm_searchbox")), "changed", G_CALLBACK(refresh_search_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-box_algorithm_searchbox")), "focus-in-event", G_CALLBACK(searchbox_focus_in_cb), this);
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-box_algorithm_searchbox")), "focus-out-event", G_CALLBACK(searchbox_focus_out_cb), this);
 
 	__g_idle_add__(idle_application_loop, this);
 	__g_timeout_add__(1000, timeout_application_loop, this);
@@ -470,7 +593,9 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		//
 		// Prepares box algorithm model
 		m_pBoxAlgorithmTreeModel=gtk_tree_store_new(6, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
-		gtk_tree_view_set_model(m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(m_pBoxAlgorithmTreeModel));
+
+		// Tree Storage for the searches
+		gtk_tree_view_set_model(m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(m_pBoxAlgorithmTreeModel) );
 	}
 
 	{
