@@ -154,7 +154,7 @@ if exist "!VS90COMNTOOLS!\vsvars32.bat" (
 
 if exist "!VS100COMNTOOLS!\vsvars32.bat" (
 	SET VSTOOLS=!VS100COMNTOOLS!\vsvars32.bat
-	SET VSCMake=Visual Studio 10 2010
+	SET VSCMake=Visual Studio 10
 )
 
 if exist "%VSTOOLS%" (
