@@ -292,73 +292,65 @@ namespace
 		return false;
 	}
 
-	static gboolean	do_refilter( CApplication *l_pApplication )
+	static gboolean	do_refilter( CApplication *pApplication )
 	{
-		if (0 == strcmp(l_pApplication->m_sSearchTerm, ""))
+		if (0 == strcmp(pApplication->m_sSearchTerm, ""))
 		{
 			// reattach the old model
-			gtk_tree_view_set_model(l_pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModel));
-
-			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter4));
-			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter3));
-			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter2));
-			g_object_unref(G_OBJECT(l_pApplication->m_pBoxAlgorithmTreeModelFilter));
+			gtk_tree_view_set_model(pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModel));
 		}
 		else
 		{
-			l_pApplication->m_pBoxAlgorithmTreeModelFilter = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModel), NULL);
-			l_pApplication->m_pBoxAlgorithmTreeModelFilter2 = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter), NULL);
-			l_pApplication->m_pBoxAlgorithmTreeModelFilter3 = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter2), NULL);
-			l_pApplication->m_pBoxAlgorithmTreeModelFilter4 = gtk_tree_model_filter_new(GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter3), NULL);
+			pApplication->m_pBoxAlgorithmTreeModelFilter = gtk_tree_model_filter_new(GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModel), NULL);
+			pApplication->m_pBoxAlgorithmTreeModelFilter2 = gtk_tree_model_filter_new(GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModelFilter), NULL);
+			pApplication->m_pBoxAlgorithmTreeModelFilter3 = gtk_tree_model_filter_new(GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModelFilter2), NULL);
+			pApplication->m_pBoxAlgorithmTreeModelFilter4 = gtk_tree_model_filter_new(GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModelFilter3), NULL);
 			// detach the normal model from the treeview
-			gtk_tree_view_set_model(l_pApplication->m_pBoxAlgorithmTreeView, NULL);
+			gtk_tree_view_set_model(pApplication->m_pBoxAlgorithmTreeView, NULL);
 
 			// clear the model
 
 			// add a filtering function to the model
-			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter), box_algorithm_search_func, l_pApplication, NULL );
-			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter2), box_algorithm_prune_empty_folders, l_pApplication, NULL );
-			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter3), box_algorithm_prune_empty_folders, l_pApplication, NULL );
-			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(l_pApplication->m_pBoxAlgorithmTreeModelFilter4), box_algorithm_prune_empty_folders, l_pApplication, NULL );
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(pApplication->m_pBoxAlgorithmTreeModelFilter), box_algorithm_search_func, pApplication, NULL );
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(pApplication->m_pBoxAlgorithmTreeModelFilter2), box_algorithm_prune_empty_folders, pApplication, NULL );
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(pApplication->m_pBoxAlgorithmTreeModelFilter3), box_algorithm_prune_empty_folders, pApplication, NULL );
+			gtk_tree_model_filter_set_visible_func(GTK_TREE_MODEL_FILTER(pApplication->m_pBoxAlgorithmTreeModelFilter4), box_algorithm_prune_empty_folders, pApplication, NULL );
 
 			// attach the model to the treeview
-			gtk_tree_view_set_model(l_pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(l_pApplication->m_pBoxAlgorithmTreeModelFilter4));
-			gtk_tree_view_expand_all(l_pApplication->m_pBoxAlgorithmTreeView);
+			gtk_tree_view_set_model(pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModelFilter4));
+			gtk_tree_view_expand_all(pApplication->m_pBoxAlgorithmTreeView);
 		}
 
-		l_pApplication->m_giFilterTimeout = 0;
+		pApplication->m_giFilterTimeout = 0;
 
 		return false;
 	}
 
-	static void	queue_refilter( CApplication *l_pApplication )
+	static void	queue_refilter( CApplication* pApplication )
 	{
-		if( l_pApplication->m_giFilterTimeout )
-			g_source_remove( l_pApplication->m_giFilterTimeout );
+		if( pApplication->m_giFilterTimeout )
+			g_source_remove( pApplication->m_giFilterTimeout );
 
-		l_pApplication->m_giFilterTimeout = g_timeout_add( 300, (GSourceFunc)do_refilter, l_pApplication );
+		pApplication->m_giFilterTimeout = g_timeout_add( 300, (GSourceFunc)do_refilter, pApplication );
 	}
 
-	void refresh_search_cb(::GtkEntry* pTextfield, gpointer pUserData)
+	void refresh_search_cb(::GtkEntry* pTextfield, CApplication* pApplication)
 	{
-		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
-		l_pApplication->m_sSearchTerm = gtk_entry_get_text(pTextfield);
+		pApplication->m_sSearchTerm = gtk_entry_get_text(pTextfield);
 
-		queue_refilter(l_pApplication);
+		queue_refilter(pApplication);
 	}
 
-
-
-	static gboolean searchbox_focus_in_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, CApplication* l_pApplication)
+	static gboolean searchbox_focus_in_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, CApplication* pApplication)
 	{
-		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pApplication->m_pBuilderInterface, "openvibe-menu_edit")), false);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(pApplication->m_pBuilderInterface, "openvibe-menu_edit")), false);
 
 		return false;
 	}
 
-	static gboolean searchbox_focus_out_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, CApplication* l_pApplication)
+	static gboolean searchbox_focus_out_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, CApplication* pApplication)
 	{
-		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(l_pApplication->m_pBuilderInterface, "openvibe-menu_edit")), true);
+		gtk_widget_set_sensitive(GTK_WIDGET(gtk_builder_get_object(pApplication->m_pBuilderInterface, "openvibe-menu_edit")), true);
 
 		return false;
 	}
@@ -629,6 +621,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		gtk_tree_view_append_column(m_pAlgorithmTreeView, l_pTreeViewColumnDesc);
 		// g_signal_connect(G_OBJECT(m_pAlgorithmTreeView), "querry_tooltip", G_CALLBACK(resource_query_tooltip_cb), this);
 
+		m_sSearchTerm = "";
 		// Prepares algorithm model
 		m_pAlgorithmTreeModel=gtk_tree_store_new(6, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
 		gtk_tree_view_set_model(m_pAlgorithmTreeView, GTK_TREE_MODEL(m_pAlgorithmTreeModel));
