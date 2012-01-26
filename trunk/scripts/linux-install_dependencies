@@ -352,7 +352,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep Ubuntu /etc/lsb-release 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libglade2-dev libitpp-dev libgsl0-dev libexpat1-dev libreadline-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libglade2-dev gfortran libgsl0-dev libexpat1-dev libreadline-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
@@ -481,8 +481,9 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "glade"
 #			ov_hit_package "boost"
 
-			ov_hit_package "itpp_external"
-			ov_hit_package "itpp"
+#			ov_hit_package "itpp_external"
+#			ov_hit_package "itpp"
+			ov_hit_package "gfortran"
 			ov_hit_package "gsl"
 
 			ov_hit_package "freeimage"
