@@ -128,9 +128,9 @@ CStarShip::CStarShip(CApplication* poApplication, Ogre::SceneNode* poParentNode,
 
 void CStarShip::processFrame( OpenViBE::uint32 ui32CurrentFrame )
 {
-	m_poShipCannon->processFrame( ui32CurrentFrame );
-	m_poShipLeftWing->processFrame( ui32CurrentFrame );
-	m_poShipRightWing->processFrame( ui32CurrentFrame );
+	m_poShipCannon->processFrame();
+	m_poShipLeftWing->processFrame();
+	m_poShipRightWing->processFrame();
 
 	if (m_iCurrentRotationCount != 0)
 	{

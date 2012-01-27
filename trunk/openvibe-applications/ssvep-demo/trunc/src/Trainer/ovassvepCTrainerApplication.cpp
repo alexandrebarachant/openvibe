@@ -77,7 +77,7 @@ void CTrainerApplication::processFrame(OpenViBE::uint32 ui32CurrentFrame)
 
 	for (OpenViBE::uint32 i = 0; i < m_oObjects.size(); i++)
 	{
-		m_oObjects[i]->processFrame(ui32CurrentFrame);
+		m_oObjects[i]->processFrame();
 	}
 }
 

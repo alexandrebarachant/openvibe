@@ -14,10 +14,11 @@ namespace OpenViBESSVEP
 			~CSSVEPFlickeringObject() {};
 
 			virtual void setVisible( OpenViBE::boolean bVisibility );
-			virtual void processFrame( OpenViBE::uint32 ui32CurrentFrame );
+			virtual void processFrame(  );
 
 		protected:
 			Ogre::SceneNode* m_poObjectNode;
+			OpenViBE::uint32 m_ui32CurrentFrame;
 			OpenViBE::uint32 m_ui32LitFrames;
 			OpenViBE::uint32 m_ui32DarkFrames;
 
