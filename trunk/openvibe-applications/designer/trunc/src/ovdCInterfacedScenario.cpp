@@ -1975,7 +1975,10 @@ void CInterfacedScenario::scenarioDrawingAreaKeyPressEventCB(::GtkWidget* pWidge
 	// F5 : stop
 	if(pEvent->keyval==GDK_F5)
 	{
-		m_rApplication.stopScenarioCB();
+		if(m_rApplication.getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Play || m_rApplication.getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Pause)
+		{
+			m_rApplication.stopScenarioCB();
+		}
 	}
 
 	m_rKernelContext.getLogManager() << LogLevel_Debug
