@@ -9,6 +9,8 @@ IF(WIN32)
 	FIND_PATH(PATH_EmotivAPI edk.h  PATHS 
 		"C:/Program Files/Emotiv Development Kit_v1.0.0.3-PREMIUM"  
 		"C:/Program Files/Emotiv Development Kit_v1.0.0.3-PREMIUM/doc/examples/include" 
+		"C:\Program Files\Emotiv Research Edition SDK_v1.0.0.4-PREMIUM" 
+		"C:\Program Files\Emotiv Research Edition SDK_v1.0.0.4-PREMIUM/doc/examples/include"
 		"C:\Program Files (x86)\Emotiv Research Edition SDK_v1.0.0.4-PREMIUM" 
 		"C:\Program Files (x86)\Emotiv Research Edition SDK_v1.0.0.4-PREMIUM/doc/examples/include" $ENV{OpenViBE_dependencies})
 	IF(PATH_EmotivAPI)
