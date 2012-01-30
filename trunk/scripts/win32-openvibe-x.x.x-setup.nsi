@@ -100,7 +100,7 @@ no_need_to_install_directx:
 	File ..\dependencies\arch\openvibe-vcredist-2010.exe
 	File ..\dependencies\arch\lua-5.1.4-30.zip
 	File ..\dependencies\arch\expat-2.0.1.zip
-	File ..\dependencies\arch\gtk-2.24.8-runtime.zip
+	File ..\dependencies\arch\gtk-2.22.1-runtime.zip
 	File ..\dependencies\arch\gtk-themes-2009.09.07.zip
 	File ..\dependencies\arch\itpp-4.0.7-runtime.zip
 	File ..\dependencies\arch\ogre-1.7.1-vs100-runtime.zip
@@ -119,7 +119,7 @@ no_need_to_install_directx:
 	SetOutPath "$INSTDIR\dependencies"
 	ZipDLL::extractall "arch\lua-5.1.4-30.zip" "lua"
 	ZipDLL::extractall "arch\expat-2.0.1.zip" "expat"
-	ZipDLL::extractall "arch\gtk-2.24.8-runtime.zip" "gtk"
+	ZipDLL::extractall "arch\gtk-2.22.1-runtime.zip" "gtk"
 	ZipDLL::extractall "arch\gtk-themes-2009.09.07.zip" "gtk"
 	ZipDLL::extractall "arch\itpp-4.0.7-runtime.zip" "itpp"
 	ZipDLL::extractall "arch\ogre-1.7.1-vs100-runtime.zip" "ogre"
