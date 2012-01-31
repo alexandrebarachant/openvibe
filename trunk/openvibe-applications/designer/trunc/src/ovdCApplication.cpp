@@ -1521,7 +1521,7 @@ void CApplication::stopScenarioCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "stopScenarioCB\n";
 
-	if(this->getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Play || this->getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Pause)
+	if(this->getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Play || this->getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Pause || this->getCurrentInterfacedScenario()->m_ePlayerStatus == PlayerStatus_Forward)
 	{
 		this->getPlayer()->stop();
 		this->getCurrentInterfacedScenario()->m_ePlayerStatus=this->getPlayer()->getStatus();
