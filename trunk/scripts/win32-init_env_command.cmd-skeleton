@@ -53,8 +53,9 @@ SET OpenViBE_plugin_classification_gpl_branch=
 SET OpenViBE_plugin_feature_extraction_branch=
 SET OpenViBE_plugin_file_io_branch=
 SET OpenViBE_plugin_local_branch=
-SET OpenViBE_plugin_matlab_branch=
 SET OpenViBE_plugin_samples_branch=
+SET OpenViBE_plugin_matlab_branch=
+SET OpenViBE_plugin_python_branch=
 SET OpenViBE_plugin_signal_processing_branch=
 SET OpenViBE_plugin_signal_processing_gpl_branch=
 SET OpenViBE_plugin_simple_visualisation_branch=
@@ -233,6 +234,7 @@ echo %OpenViBE_application_skeleton_generator% >> %OpenViBE_build_order%
 echo %OpenViBE_application_ssvep_demo% >> %OpenViBE_build_order%
 
 echo %OpenViBE_plugin_matlab% >> %OpenViBE_build_order%
+echo %OpenViBE_plugin_python% >> %OpenViBE_build_order%
 REM echo %OpenViBE_plugin_turbofieldtrip% >> %OpenViBE_build_order%
 
 echo %OpenViBE_scenarios% >> %OpenViBE_build_order%
