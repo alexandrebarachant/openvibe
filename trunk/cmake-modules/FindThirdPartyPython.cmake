@@ -5,7 +5,9 @@
 # ---------------------------------
 
 IF(WIN32)
-FIND_PATH(PATH_PYTHON include/Python.h PATHS $ENV{OV_DEP_PYTHON} $ENV{OpenViBE_dependencies} NO_DEFAULT_PATH)
+FIND_PATH(PATH_PYTHON include/Python.h PATHS 
+		"C:\Python27"
+		$ENV{OpenViBE_dependencies} NO_DEFAULT_PATH)
 	IF(PATH_PYTHON)
 		MESSAGE(STATUS "  Found Python...")
 		INCLUDE_DIRECTORIES(${PATH_PYTHON}/include)
