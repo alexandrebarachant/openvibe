@@ -40,6 +40,7 @@ OpenViBE_application_plugin_inspector_branch=
 OpenViBE_application_vr_demo_branch=
 OpenViBE_application_vrpn_simulator_branch=
 OpenViBE_application_ssvep_demo_branch=
+OpenViBE_application_skeleton_generator_branch=
 
 ########################################################################################################################
 #PLUGINS
@@ -51,6 +52,7 @@ OpenViBE_plugin_classification_gpl_branch=
 OpenViBE_plugin_feature_extraction_branch=
 OpenViBE_plugin_file_io_branch=
 OpenViBE_plugin_matlab_branch=
+OpenViBE_plugin_python_branch=
 OpenViBE_plugin_samples_branch=
 OpenViBE_plugin_signal_processing_branch=
 OpenViBE_plugin_signal_processing_gpl_branch=
@@ -179,6 +181,7 @@ $OpenViBE_plugin_stream_codecs
 $OpenViBE_plugin_streaming
 $OpenViBE_plugin_tools
 $OpenViBE_plugin_matlab
+$OpenViBE_plugin_python
 $OpenViBE_plugin_vrpn
 $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
