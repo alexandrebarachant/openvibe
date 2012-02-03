@@ -5,9 +5,7 @@
 # ---------------------------------
 
 IF(WIN32)
-FIND_PATH(PATH_PYTHON include/Python.h PATHS 
-		"C:\Python27"
-		$ENV{OpenViBE_dependencies} NO_DEFAULT_PATH)
+FIND_PATH(PATH_PYTHON include/Python.h PATHS "c:\python27" $ENV{OpenViBE_dependencies})
 	IF(PATH_PYTHON)
 		MESSAGE(STATUS "  Found Python...")
 		INCLUDE_DIRECTORIES(${PATH_PYTHON}/include)
@@ -19,6 +17,9 @@ FIND_PATH(PATH_PYTHON include/Python.h PATHS
 			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic debug ${PYTHON_LIB})
 			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic optimized ${PYTHON_LIB})
 		ENDFOREACH(PYTHON_LIB)
+		
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic Delayimp )
+		SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES LINK_FLAGS "/DELAYLOAD:python27.dll")
 
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyPython)
 	ELSE(PATH_PYTHON)
