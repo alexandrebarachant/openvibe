@@ -60,34 +60,41 @@ namespace OpenViBEPlugins
 			std::vector < OpenViBE::uint64 > m_vEndOfFileStimulations;
 			std::vector < OpenViBE::boolean > m_vEndOfFileReached;
 
-			std::vector < std::vector < OpenViBE::IMemoryBuffer *> > m_vSignalBuffers;
-			std::vector < std::vector < OpenViBE::uint64 > > m_vSignalBufferEndTimes;
-			std::vector < OpenViBE::uint64 > m_vSignalFileEndTimes;
-			
-			std::vector < std::vector < OpenViBE::IMemoryBuffer *> > m_vStimulationBuffers;
-			std::vector < std::vector < OpenViBE::uint64 > > m_vStimulationBufferEndTimes;
-			std::vector < std::vector < OpenViBE::IStimulationSet *> > m_vStimulationSets;
-			std::vector < std::vector < std::pair<OpenViBE::uint64,OpenViBE::uint64> > >m_vStimulations;
-			
-			OpenViBEToolkit::TStimulationDecoder < CBoxAlgorithmSignalConcatenation > m_oStimulationDecoder;
-			OpenViBEToolkit::TStimulationEncoder < CBoxAlgorithmSignalConcatenation > m_oStimulationEncoder;
-			OpenViBEToolkit::TSignalDecoder < CBoxAlgorithmSignalConcatenation > m_oSignalDecoder;
-			OpenViBEToolkit::TSignalEncoder < CBoxAlgorithmSignalConcatenation > m_oSignalEncoder;
+			struct Chunk
+			{
+				OpenViBE::IMemoryBuffer * m_pMemoryBuffer;
+				OpenViBE::uint64          m_ui64StartTime;
+				OpenViBE::uint64          m_ui64EndTime;
+			};
 
+			// File end times
+			std::vector < OpenViBE::uint64 > m_vFileEndTimes;
+
+			// The signal buffers, one per file
+			std::vector < std::vector < Chunk > > m_vSignalChunkBuffers;
+			
+			
+			// The stimulations are stored in one stimulation set per file. The chunk are reconstructed.
+			std::vector < OpenViBE::IStimulationSet *> m_vStimulationSets;
+			
+			//The decoders, (1 signal/1 stim) per file
+			std::vector < OpenViBEToolkit::TStimulationDecoder < CBoxAlgorithmSignalConcatenation > *>m_vStimulationDecoders;
+			std::vector < OpenViBEToolkit::TSignalDecoder < CBoxAlgorithmSignalConcatenation > *> m_vSignalDecoders;
+			
+			// the encoders : signal, stim and trigger encoder.
+			OpenViBEToolkit::TSignalEncoder < CBoxAlgorithmSignalConcatenation > m_oSignalEncoder;
+			OpenViBEToolkit::TStimulationEncoder < CBoxAlgorithmSignalConcatenation > m_oStimulationEncoder;
 			OpenViBEToolkit::TStimulationEncoder < CBoxAlgorithmSignalConcatenation > m_oTriggerEncoder;
+	
 			OpenViBE::uint64 m_ui64TriggerDate;
 			OpenViBE::uint64 m_ui64LastChunkStartTime;
 			OpenViBE::uint64 m_ui64LastChunkEndTime;
 
-
 			struct ConcatenationState
 			{
-				OpenViBE::uint32 ui32CurrentBufferIndex;
+				OpenViBE::uint32 ui32CurrentFileIndex;
 				OpenViBE::uint32 ui32CurrentChunkIndex;
 				OpenViBE::uint32 ui32CurrentStimulationIndex;
-
-				OpenViBE::uint64 ui32CurrentStartTime;
-				OpenViBE::uint64 ui32CurrentOffset;
 			};
 			ConcatenationState m_sState;
 		};
