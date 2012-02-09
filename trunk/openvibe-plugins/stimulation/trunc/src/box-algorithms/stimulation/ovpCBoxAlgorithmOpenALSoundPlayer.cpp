@@ -111,23 +111,20 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
-
-
-	if(m_ui64LastOutputChunkDate == -1)
-	{
-		m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
-		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
-		l_rDynamicBoxContext.markOutputAsReadyToSend(0, 0, m_ui64LastOutputChunkDate);
-	}
-
+	
 	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
 		TParameterHandler < const IMemoryBuffer* > l_ipMemoryBuffer(m_pStreamDecoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
 		l_ipMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
 		m_pStreamDecoder->process();
+
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
+			m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeHeader);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+			m_ui64LastOutputChunkDate = l_rDynamicBoxContext.getInputChunkEndTime(0, i);
 		}
+
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
 			TParameterHandler < IStimulationSet* > l_opStimulationSet(m_pStreamDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
@@ -145,17 +142,23 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 				}
 			}
 		}
+
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
 		{
 			m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeEnd);
 			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+			m_ui64LastOutputChunkDate = l_rDynamicBoxContext.getInputChunkEndTime(0, i);
 		}
 
 		l_rDynamicBoxContext.markInputAsDeprecated(0, i);
+
 	}
+
+
 
 	ALint l_uiStatus;
 	alGetSourcei(m_uiSourceHandle, AL_SOURCE_STATE, &l_uiStatus);
+	// CASE : the sound has stopped, and we need to send the stimulation
 	if(l_uiStatus == AL_STOPPED && !m_bEndOfSoundSent)
 	{
 		ip_pStimulationSet->clear();
@@ -167,6 +170,7 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
 		m_bEndOfSoundSent = true;
 	}
+	// CASE : the sound has started playing, and we need to send the stimulation
 	if(l_uiStatus == AL_PLAYING && !m_bStartOfSoundSent)
 	{
 		ip_pStimulationSet->clear();
@@ -177,6 +181,13 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
 		m_bStartOfSoundSent = true;
+	}
+	// CASE : the sound has stopped (or is playing), but there is no need to send anything but empty set (the box is "idle" stop or in a middle of a sound)
+	if((l_uiStatus == AL_STOPPED && m_bEndOfSoundSent) || l_uiStatus == AL_PLAYING && m_bStartOfSoundSent || l_uiStatus == AL_INITIAL)
+	{
+		ip_pStimulationSet->clear();
+		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);
+		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
 	}
 
 	m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
@@ -283,6 +294,7 @@ boolean CBoxAlgorithmOpenALSoundPlayer::playSound()
 			alGetSourcei(m_uiSourceHandle, AL_SOURCE_STATE, &l_uiStatus);
 			if(l_uiStatus == AL_PLAYING)
 			{
+				// we start back again
 				alSourceStop(m_uiSourceHandle);
 			}
 			alSourcePlay(m_uiSourceHandle);

@@ -8,7 +8,7 @@ __________________________________________________________________
  * |OVP_DocBegin_BoxAlgorithm_SoundPlayer_Description|
  The Sound Player box can play a sound in WAV or OGG format. It is based on the OpenAL library.
  The box has to be configured to define the stimulations used as "play" and "stop" triggers.
- When the file is stopped, manually or not, the stimulation OVTK_StimulationId_EndOfFile is outputed.
+ When the file is stopped, manually or not, the "stop" stimulation is outputed.
  * |OVP_DocEnd_BoxAlgorithm_SoundPlayer_Description|
 __________________________________________________________________
 
