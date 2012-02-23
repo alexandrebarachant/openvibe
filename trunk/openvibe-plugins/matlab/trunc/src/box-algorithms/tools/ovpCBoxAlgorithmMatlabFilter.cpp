@@ -212,6 +212,10 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 					op_pStimulationSet->getStimulationIdentifier(j),
 					op_pStimulationSet->getStimulationDate(j),
 					op_pStimulationSet->getStimulationDuration(j));
+				if (op_pStimulationSet->getStimulationDate(j)<l_rDynamicBoxContext.getInputChunkStartTime(1, i))
+				{
+					this->getLogManager() << LogLevel_Error << "Stimulation Date before beginning of the buffer, stimulation may be skipped\n";
+				}
 			}
 		}
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedEnd))
@@ -340,7 +344,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 					}
 					else
 					{
-						if(m_oPendingStimulationSet.getStimulationDate(j)<l_ui64EndTime)
+						if(m_oPendingStimulationSet.getStimulationDate(j)<=l_ui64EndTime)
 						{
 							l_oStimulationSet.appendStimulation(
 								m_oPendingStimulationSet.getStimulationIdentifier(j),
