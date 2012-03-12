@@ -1646,7 +1646,7 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 				Py_CLEAR(l_pChunkSamplingRate);
 				return false;
 			}
-			OpenViBE::uint64 l_pSamplingRate = ( (TSignalEncoder <CBoxAlgorithmPython> *) m_vEncoders[output_index] )->getInputSamplingRate();
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& l_pSamplingRate = ( (TSignalEncoder <CBoxAlgorithmPython> *) m_vEncoders[output_index] )->getInputSamplingRate();
 			l_pSamplingRate = (OpenViBE::uint64) PyInt_AsLong(l_pChunkSamplingRate);
 
 			m_vEncoders[output_index]->encodeHeader(output_index);
