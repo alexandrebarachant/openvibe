@@ -135,8 +135,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 		return true;
 	}
 
-	m_bPythonInitialized = true;
-
 	PyRun_SimpleString(
 				"import sys\n"
 				"sys.path.append('../share/openvibe-plugins/python')\n"
@@ -353,13 +351,16 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 
 	this->getLogManager() << LogLevel_Info << "Python Interpreter initialized\n";
 
-return true;
+	m_bPythonInitialized = true;
+
+	return true;
 }
 
 OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 {
 	if (!initializePythonSafely())
 	{
+		m_bPythonInitialized = false;
 		return false;
 	}
 
@@ -782,6 +783,11 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 
 OpenViBE::boolean CBoxAlgorithmPython::uninitialize(void)
 {
+	if (!m_bPythonInitialized)
+	{
+		return true;
+	}
+
 	for(uint32 i = 0; i < m_vDecoders.size(); i++)
 	{
 		m_vDecoders[i]->uninitialize();
