@@ -712,7 +712,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 
 				echo "  Installing native packages on background..."
 
-				su -c "yum -y install $ov_fedora_packages "> $ov_native_package_log_file 2>&1
+				su -c "yum -y install $ov_fedora_packages " 2>&1 | tee $ov_native_package_log_file
 
 				echo "  Installing native packages on background... done."
 
