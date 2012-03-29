@@ -1606,3 +1606,4 @@ ov_install_package "lua"
 
 rm -f linux-dependencies 2> /dev/null
 ln -sf $ov_environment_configuration_script linux-dependencies
+echo "Install linux dependencies done"
