@@ -7,7 +7,7 @@
 # computer generated templates (.dox-skeleton) and hand written documentation
 # parts (.dox-part)
 
-ADD_CUSTOM_TARGET(${PROJECT_NAME})
+ADD_CUSTOM_TARGET(${PROJECT_NAME} ALL)
 
 # look for doxygen, if not present, no need to generate documentation
 FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin NO_DEFAULT_PATH)
