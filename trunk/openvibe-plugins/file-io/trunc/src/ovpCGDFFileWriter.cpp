@@ -201,6 +201,8 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const char* sVal
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectName:
 		{
+			if (strlen(sValue)>0)
+			{
 				char * l_pFormattedSubjectName = new char[strlen(sValue)];
 
 				strcpy(l_pFormattedSubjectName, sValue);
@@ -215,6 +217,7 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const char* sVal
 				sprintf(m_oFixedHeader.m_sPatientId + 31, "%s", l_pFormattedSubjectName);
 
 				delete[] l_pFormattedSubjectName;
+			}
 		}
 		break;
 	}
