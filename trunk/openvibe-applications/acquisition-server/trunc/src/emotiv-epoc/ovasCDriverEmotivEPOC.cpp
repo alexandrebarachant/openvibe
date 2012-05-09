@@ -233,24 +233,28 @@ boolean CDriverEmotivEPOC::loop(void)
 
 	if(m_rDriverContext.isStarted())
 	{
+		// we enable the acquisiton for every new headset (user) ever added
 		if(EE_EngineGetNextEvent(m_tEEEventHandle) == EDK_OK)
 		{
 			EE_Event_t l_tEventType = EE_EmoEngineEventGetType(m_tEEEventHandle);
-			EE_EmoEngineEventGetUserId(m_tEEEventHandle, &m_ui32UserID);
+			
 
 			if (l_tEventType == EE_UserAdded)
 			{
-				m_rDriverContext.getLogManager() << LogLevel_Trace << "[LOOP] Emotiv Driver: User #" << m_ui32UserID << " registered.\n";
-				m_ui32EDK_LastErrorCode = EE_DataAcquisitionEnable(m_ui32UserID, true);
+				uint32 l_ui32NewUserID;
+				EE_EmoEngineEventGetUserId(m_tEEEventHandle, &l_ui32NewUserID);
+				m_rDriverContext.getLogManager() << LogLevel_Trace << "[LOOP] Emotiv Driver: User #" << l_ui32NewUserID << " registered.\n";
+				m_ui32EDK_LastErrorCode = EE_DataAcquisitionEnable(l_ui32NewUserID, true);
 				if (m_ui32EDK_LastErrorCode != EDK_OK) 
 				{
 					m_rDriverContext.getLogManager() << LogLevel_Error << "[LOOP] Emotiv Driver: Enabling acquisition failed. EDK Error Code [" << m_ui32EDK_LastErrorCode << "]\n";
 					return false;
 				}
-				m_bReadyToCollect = true;
+				// but we are ready to acquire the samples only if the requested headset is detected
+				m_bReadyToCollect = m_bReadyToCollect || (m_ui32UserID == l_ui32NewUserID);
 			}
 		}
-
+		
 		if(m_bReadyToCollect)
 		{
 			uint32 l_ui32nSamplesTaken=0;
@@ -267,7 +271,7 @@ boolean CDriverEmotivEPOC::loop(void)
 				return false;
 			}
 			// warning : if you connect/disconnect then reconnect, the internal buffer may be full of samples, thus maybe l_ui32nSamplesTaken > m_ui32SampleCountPerSentBlock
-			m_rDriverContext.getLogManager() << LogLevel_Debug << "EMOTIV EPOC >>> received ["<< l_ui32nSamplesTaken <<"] samples per channel from device.\n";
+			m_rDriverContext.getLogManager() << LogLevel_Debug << "EMOTIV EPOC >>> received ["<< l_ui32nSamplesTaken <<"] samples per channel from device with user #" << m_ui32UserID <<".\n";
 			
 			
 			/*for(uint32 i=0; i<m_oHeader.getChannelCount(); i++)
@@ -363,7 +367,7 @@ boolean CDriverEmotivEPOC::isConfigurable(void)
 
 boolean CDriverEmotivEPOC::configure(void)
 {
-	CConfigurationEmotivEPOC m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Emotiv-EPOC.ui", m_bUseGyroscope, m_sPathToEmotivSDK); 
+	CConfigurationEmotivEPOC m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Emotiv-EPOC.ui", m_bUseGyroscope, m_sPathToEmotivSDK, m_ui32UserID); 
 
 	if(!m_oConfiguration.configure(m_oHeader)) 
 	{

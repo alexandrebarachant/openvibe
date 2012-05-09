@@ -69,7 +69,12 @@
             <property name="label" translatable="yes">Emotiv EPOC
 
 &lt;small&gt;&lt;span color="darkred"&gt;14 EEG channels
-128 Hz sampling rate&lt;/span&gt;&lt;/small&gt;</property>
+128 Hz sampling rate
+
+User ID is used for acquisition from multiple EPOC
+via different Acquisition Servers on the same computer.
+ID starts at 0 for the first headset connected
+Second headset has ID 1, etc.&lt;/span&gt;&lt;/small&gt;</property>
             <property name="use_markup">True</property>
             <property name="justify">center</property>
           </object>
@@ -190,6 +195,34 @@
               </packing>
             </child>
             <child>
+              <object class="GtkHBox" id="hbox1">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkLabel" id="label2">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Headset User ID:</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSpinButton" id="spinbutton_userid">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="adjustment">adjustment4</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkCheckButton" id="checkbutton_gyro">
                 <property name="label" translatable="yes">Add 2 more channels for gyroscope</property>
                 <property name="visible">True</property>
@@ -198,7 +231,7 @@
                 <property name="draw_indicator">True</property>
               </object>
               <packing>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -210,7 +243,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -359,5 +392,10 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment4">
+    <property name="upper">32</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
 </interface>
