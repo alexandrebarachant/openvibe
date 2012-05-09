@@ -179,85 +179,92 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 	}
 
 	// Signal input parsing
+
+	boolean l_bLastChunkIsHeader = false;
+
 	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
-		if((int64)l_rDynamicBoxContext.getInputChunkEndTime(0, i) <= (int64)m_ui64LastStimulationInputEndTime + m_i64EpochOffset) // preserve enough history
+		ip_SignalMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
+		op_SignalMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+
+		m_pSignalStreamDecoder->process();
+
+		if(m_pSignalStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
-			ip_SignalMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
-			op_SignalMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+			m_pOutputSignalDescription->setDimensionCount(2);
+			m_pOutputSignalDescription->setDimensionSize(0, ip_pSignal->getDimensionSize(0));
+			m_pOutputSignalDescription->setDimensionSize(1, (uint32)(((m_ui64EpochDuration+1)*op_ui64SamplingRate-1)>>32)); // http://stickyvibe.tuxfamily.org/blog/?p=121
 
-			m_pSignalStreamDecoder->process();
-
-			if(m_pSignalStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedHeader))
+			for(k=0; k<ip_pSignal->getDimensionSize(0); k++)
 			{
-				m_pOutputSignalDescription->setDimensionCount(2);
-				m_pOutputSignalDescription->setDimensionSize(0, ip_pSignal->getDimensionSize(0));
-				m_pOutputSignalDescription->setDimensionSize(1, (uint32)(((m_ui64EpochDuration+1)*op_ui64SamplingRate-1)>>32)); // http://stickyvibe.tuxfamily.org/blog/?p=121
-
-				// former computations :
-				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*(m_ui64EpochDuration+(1LL<<32)/op_ui64SamplingRate))>>32)); // gives +1 sample with power of 2 sampling rate
-				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)((op_ui64SamplingRate*m_ui64EpochDuration)>>32));
-				//m_pOutputSignalDescription->setDimensionSize(1, (uint32)(((op_ui64SamplingRate<<32)*m_ui64EpochDuration)>>32)); // does not work with epoch < 1s
-
-				//float64 l_f64SamplingRate = op_ui64SamplingRate;
-				//float64 l_f64EpochDuration = m_ui64EpochDuration / 4294967296.f;
-				//float64 l_f64Result = floor((l_f64SamplingRate*l_f64EpochDuration) + 0.5);
-				//this->getLogManager() << LogLevel_Trace << "sampling rate is ["<<l_f64SamplingRate<<"] epoch duration ["<<l_f64EpochDuration<<"] -> samples ["<<l_f64Result<<"]\n";
-				//m_pOutputSignalDescription->setDimensionSize(1, l_f64Result);
-
-				for(k=0; k<ip_pSignal->getDimensionSize(0); k++)
-				{
-					m_pOutputSignalDescription->setDimensionLabel(0, k, ip_pSignal->getDimensionLabel(0, k));
-				}
-				op_pSignal.setReferenceTarget(m_pOutputSignalDescription);
-				m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+				m_pOutputSignalDescription->setDimensionLabel(0, k, ip_pSignal->getDimensionLabel(0, k));
 			}
+			op_pSignal.setReferenceTarget(m_pOutputSignalDescription);
+			m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+			l_bLastChunkIsHeader = true;
+		}
 
-			if(m_pSignalStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
+		if(m_pSignalStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
+		{
+			vector < SStimulationBasedEpoching >::iterator j;
+			for(j=m_vStimulationBasedEpoching.begin(); j!=m_vStimulationBasedEpoching.end(); )
 			{
-				vector < SStimulationBasedEpoching >::iterator j;
-				for(j=m_vStimulationBasedEpoching.begin(); j!=m_vStimulationBasedEpoching.end(); )
+				SStimulationBasedEpoching& l_oEpocher=*j;
+
+				TParameterHandler < IMatrix* > l_pEpocherInputSignal(l_oEpocher.m_pEpocher->getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_InputSignal));
+				TParameterHandler < IMatrix* > l_pEpocherOutputSignal(l_oEpocher.m_pEpocher->getOutputParameter(OVP_Algorithm_StimulationBasedEpoching_OutputParameterId_OutputSignal));
+				l_pEpocherInputSignal.setReferenceTarget(ip_pSignal);
+				op_pSignal.setReferenceTarget(l_pEpocherOutputSignal);
+
+				/*
+				 * solving the negative offset bug: two lines of code added so that the epoching algorithm will not add signal chunks to its epoch that it has already added
+				 * this is necessary so that we can remove the first if statement (in the original code) in the for loop for signal chunk processing which in
+				 * turn enables us to output an epoch with negative offset without an additional delay
+				*/
+				TParameterHandler < uint64 > l_ui64TimeChunk(l_oEpocher.m_pEpocher->getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_EndTimeChunkToProcess));
+				l_ui64TimeChunk = l_rDynamicBoxContext.getInputChunkEndTime(0, i);
+
+				if(l_oEpocher.m_bNeedsReset)
 				{
-					SStimulationBasedEpoching& l_oEpocher=*j;
+					OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pEpocherOutputSignal, *m_pOutputSignalDescription);
+					TParameterHandler < int64 > l_ui64OffsetSampleCount(l_oEpocher.m_pEpocher->getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_OffsetSampleCount));
+					l_ui64OffsetSampleCount=(op_ui64SamplingRate*((l_oEpocher.m_ui64StartTime-l_rDynamicBoxContext.getInputChunkStartTime(0, i))>>16))>>16;
+					l_oEpocher.m_pEpocher->process(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_Reset);
+					l_oEpocher.m_bNeedsReset=false;
+				}
 
-					TParameterHandler < IMatrix* > l_pEpocherInputSignal(l_oEpocher.m_pEpocher->getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_InputSignal));
-					TParameterHandler < IMatrix* > l_pEpocherOutputSignal(l_oEpocher.m_pEpocher->getOutputParameter(OVP_Algorithm_StimulationBasedEpoching_OutputParameterId_OutputSignal));
-					l_pEpocherInputSignal.setReferenceTarget(ip_pSignal);
-					op_pSignal.setReferenceTarget(l_pEpocherOutputSignal);
+				l_oEpocher.m_pEpocher->process(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_PerformEpoching);
 
-					if(l_oEpocher.m_bNeedsReset)
-					{
-						OpenViBEToolkit::Tools::Matrix::copyDescription(*l_pEpocherOutputSignal, *m_pOutputSignalDescription);
-						TParameterHandler < int64 > l_ui64OffsetSampleCount(l_oEpocher.m_pEpocher->getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_OffsetSampleCount));
-						l_ui64OffsetSampleCount=(op_ui64SamplingRate*((l_oEpocher.m_ui64StartTime-l_rDynamicBoxContext.getInputChunkStartTime(0, i))>>16))>>16;
-						l_oEpocher.m_pEpocher->process(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_Reset);
-						l_oEpocher.m_bNeedsReset=false;
-					}
+				if(l_oEpocher.m_pEpocher->isOutputTriggerActive(OVP_Algorithm_StimulationBasedEpoching_OutputTriggerId_EpochingDone))
+				{
+					m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
+					l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_oEpocher.m_ui64StartTime, l_oEpocher.m_ui64EndTime);
 
-					l_oEpocher.m_pEpocher->process(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_PerformEpoching);
-
-					if(l_oEpocher.m_pEpocher->isOutputTriggerActive(OVP_Algorithm_StimulationBasedEpoching_OutputTriggerId_EpochingDone))
-					{
-						m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
-						l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_oEpocher.m_ui64StartTime, l_oEpocher.m_ui64EndTime);
-
-						getAlgorithmManager().releaseAlgorithm(*l_oEpocher.m_pEpocher);
-						j=m_vStimulationBasedEpoching.erase(j);
-					}
-					else
-					{
-						j++;
-					}
+					getAlgorithmManager().releaseAlgorithm(*l_oEpocher.m_pEpocher);
+					j=m_vStimulationBasedEpoching.erase(j);
+				}
+				else
+				{
+					j++;
 				}
 			}
+		}
 
-			if(m_pSignalStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd))
-			{
-				m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd);
-				l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
-			}
+		if(m_pSignalStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd))
+		{
+			m_pSignalStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeEnd);
+			l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_rDynamicBoxContext.getInputChunkStartTime(0, i), l_rDynamicBoxContext.getInputChunkEndTime(0, i));
+		}
 
+		/*
+		 * solving the negative offset bug: the fact that this statement is not at the top means that all epochs in the waiting queue can already be used for completing an epoch
+		 * without waiting for the next input chunk. This enables the algorithm to output an epoch with negative offset without additional delay.
+		 * Nevertheless we still need to preserve some history and thus we can not mark all processed chunks as deprecated yet.
+		 * lbonnet 09.05.2012: added a clause to avoid saving the header chunk. We need to deprecate it so we don't send headers continuously on the output.
+		*/
+		if((int64)l_rDynamicBoxContext.getInputChunkEndTime(0, i) <= (int64)m_ui64LastStimulationInputEndTime + m_i64EpochOffset || l_bLastChunkIsHeader) // preserve enough history
+		{
 			l_rDynamicBoxContext.markInputAsDeprecated(0, i);
 		}
 	}

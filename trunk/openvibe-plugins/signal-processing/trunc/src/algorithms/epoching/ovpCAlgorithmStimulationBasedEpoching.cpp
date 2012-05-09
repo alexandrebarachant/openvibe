@@ -14,6 +14,7 @@ boolean CAlgorithmStimulationBasedEpoching::initialize(void)
 	m_pInputSignal.initialize(getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_InputSignal));
 	m_ui64OffsetSampleCount.initialize(getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_OffsetSampleCount));
 	m_pOutputSignal.initialize(getOutputParameter(OVP_Algorithm_StimulationBasedEpoching_OutputParameterId_OutputSignal));
+	m_ui64EndTimeChunkToProcess.initialize(getInputParameter(OVP_Algorithm_StimulationBasedEpoching_InputParameterId_EndTimeChunkToProcess));
 
 	return true;
 }
@@ -23,6 +24,7 @@ boolean CAlgorithmStimulationBasedEpoching::uninitialize(void)
 	m_pOutputSignal.uninitialize();
 	m_ui64OffsetSampleCount.uninitialize();
 	m_pInputSignal.uninitialize();
+	m_ui64EndTimeChunkToProcess.uninitialize();
 
 	return true;
 }
@@ -32,11 +34,14 @@ boolean CAlgorithmStimulationBasedEpoching::process(void)
 	if(isInputTriggerActive(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_Reset))
 	{
 		m_ui64ReceivedSamples=0;
+		m_ui64TimeLastProcessedChunk = m_ui64EndTimeChunkToProcess-1;
 		m_ui64SamplesToSkip=m_ui64OffsetSampleCount;
 	}
 
-	if(isInputTriggerActive(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_PerformEpoching))
+	if(isInputTriggerActive(OVP_Algorithm_StimulationBasedEpoching_InputTriggerId_PerformEpoching) &&
+			(m_ui64TimeLastProcessedChunk<m_ui64EndTimeChunkToProcess) )
 	{
+		m_ui64TimeLastProcessedChunk = m_ui64EndTimeChunkToProcess;
 		uint32 l_ui32InputSampleCount=m_pInputSignal->getDimensionSize(1);
 		uint32 l_ui32OutputSampleCount=m_pOutputSignal->getDimensionSize(1);
 

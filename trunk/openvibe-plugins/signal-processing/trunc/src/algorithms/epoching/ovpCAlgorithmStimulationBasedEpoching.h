@@ -26,9 +26,11 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pInputSignal;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_ui64OffsetSampleCount;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > m_pOutputSignal;
+			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > m_ui64EndTimeChunkToProcess;
 
 			OpenViBE::uint64 m_ui64ReceivedSamples;
 			OpenViBE::uint64 m_ui64SamplesToSkip;
+			OpenViBE::uint64 m_ui64TimeLastProcessedChunk;
 		};
 
 		class CAlgorithmStimulationBasedEpochingDesc : public OpenViBE::Plugins::IAlgorithmDesc
@@ -53,6 +55,7 @@ namespace OpenViBEPlugins
 			{
 				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_StimulationBasedEpoching_InputParameterId_InputSignal,       "Input signal",              OpenViBE::Kernel::ParameterType_Matrix);
 				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_StimulationBasedEpoching_InputParameterId_OffsetSampleCount, "Offset sample count", OpenViBE::Kernel::ParameterType_Integer);
+				rAlgorithmPrototype.addInputParameter (OVP_Algorithm_StimulationBasedEpoching_InputParameterId_EndTimeChunkToProcess, "End time of the chunk one wants to process", OpenViBE::Kernel::ParameterType_Integer);
 
 				rAlgorithmPrototype.addOutputParameter(OVP_Algorithm_StimulationBasedEpoching_OutputParameterId_OutputSignal,     "Output signal",             OpenViBE::Kernel::ParameterType_Matrix);
 
