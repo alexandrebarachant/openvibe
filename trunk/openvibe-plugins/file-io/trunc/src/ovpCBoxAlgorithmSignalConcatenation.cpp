@@ -179,6 +179,24 @@ boolean CBoxAlgorithmSignalConcatenation::process(void)
 							}
 						}
 					}
+					else if(m_vSignalDecoders[input>>1]->isBufferReceived())
+					{
+						IMemoryBuffer * l_pBuffer = new CMemoryBuffer();
+						l_pBuffer->setSize(l_rDynamicBoxContext.getInputChunk(input,chunk)->getSize(),true);
+						System::Memory::copy(
+							l_pBuffer->getDirectPointer(),
+							l_rDynamicBoxContext.getInputChunk(input,chunk)->getDirectPointer(),
+							l_pBuffer->getSize());
+						Chunk l_oChunk;
+						l_oChunk.m_pMemoryBuffer = l_pBuffer;
+						l_oChunk.m_ui64StartTime = l_rDynamicBoxContext.getInputChunkStartTime(input,chunk);
+						l_oChunk.m_ui64EndTime = l_rDynamicBoxContext.getInputChunkEndTime(input,chunk);
+						m_vSignalChunkBuffers[input>>1].push_back(l_oChunk);
+
+						m_vFileEndTimes[input>>1] = l_rDynamicBoxContext.getInputChunkEndTime(input,chunk);
+						
+						l_rDynamicBoxContext.markInputAsDeprecated(input, chunk);
+					}
 				}
 				else
 				{
@@ -200,6 +218,7 @@ boolean CBoxAlgorithmSignalConcatenation::process(void)
 						l_oChunk.m_ui64StartTime = l_rDynamicBoxContext.getInputChunkStartTime(input,chunk);
 						l_oChunk.m_ui64EndTime = l_rDynamicBoxContext.getInputChunkEndTime(input,chunk);
 						m_vSignalChunkBuffers[input>>1].push_back(l_oChunk);
+
 
 						m_vFileEndTimes[input>>1] = l_rDynamicBoxContext.getInputChunkEndTime(input,chunk);
 						
