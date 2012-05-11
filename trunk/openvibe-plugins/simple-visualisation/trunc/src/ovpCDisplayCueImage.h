@@ -17,15 +17,10 @@ namespace OpenViBEPlugins
 {
 	namespace SimpleVisualisation
 	{
-		enum EDisplayCueImageState
-		{
-			EDisplayCueImageState_Idle,
-			EDisplayCueImageState_Cue,
-		};
 
 		class CDisplayCueImage :
-			public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
-			//public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
+				public OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>
+				//public OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback
 		{
 		public:
 
@@ -44,13 +39,13 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_DisplayCueImage)
 
-		protected:
+			protected:
 
-			//virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
-			//virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
+				//virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
+				//virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
-			//virtual void processState(void);
-			virtual void drawCuePicture(OpenViBE::uint32 uint32CueID);
+				//virtual void processState(void);
+				virtual void drawCuePicture(OpenViBE::uint32 uint32CueID);
 
 			//The Builder handler used to create the interface
 			::GtkBuilder* m_pBuilderInterface;
@@ -59,15 +54,18 @@ namespace OpenViBEPlugins
 
 			OpenViBEToolkit::TStimulationDecoder<CDisplayCueImage> m_oStimulationDecoder;
 			OpenViBEToolkit::TStimulationEncoder<CDisplayCueImage> m_oStimulationEncoder;
-			
+
 			/*penViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IStimulationSet* > ip_pStimulationSet;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMemoryBuffer* > op_pMemoryBuffer;*/
-			OpenViBE::uint64 m_ui64LastOutputChunkDate;
-			
-			//
-			EDisplayCueImageState   m_eCurrentState;
-			OpenViBE::uint32  m_uint32CurrentCueID;
+
+			// For the display of the images:
+			OpenViBE::boolean m_bImageRequested;        //when true: a new image must be drawn
+			OpenViBE::int32   m_int32RequestedImageID;  //ID of the requested image. -1 => clear the screen
+
+			OpenViBE::boolean m_bImageDrawn;            //when true: the new image has been drawn
+			OpenViBE::int32   m_int32DrawnImageID;      //ID of the drawn image. -1 => clear the screen
+
 
 			::GdkPixbuf** m_pOriginalPicture;
 			::GdkPixbuf** m_pScaledPicture;
@@ -85,13 +83,12 @@ namespace OpenViBEPlugins
 			//Start and end time of the last buffer
 			OpenViBE::uint64 m_ui64StartTime;
 			OpenViBE::uint64 m_ui64EndTime;
+			OpenViBE::uint64 m_ui64LastOutputChunkDate;
+
+			//We save the received stimulations
+			OpenViBE::CStimulationSet m_oPendingStimulationSet;
 
 			OpenViBE::boolean m_bError;
-
-			OpenViBE::boolean m_bNewImageRequested;
-			OpenViBE::boolean m_bClearScreenRequested;
-			OpenViBE::boolean m_bRedrawSucess;
-
 		};
 
 		class CDisplayCueImageListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
@@ -128,7 +125,7 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean checkSettingNames(OpenViBE::Kernel::IBox& rBox)
 			{
 				char l_sName[1024];
-				for(OpenViBE::uint32 i=2; i<rBox.getSettingCount(); i+=2)
+				for(OpenViBE::uint32 i=2; i<rBox.getSettingCount()-1; i+=2)
 				{
 					sprintf(l_sName, "Cue Image %i", i/2);
 					rBox.setSettingName(i, l_sName);

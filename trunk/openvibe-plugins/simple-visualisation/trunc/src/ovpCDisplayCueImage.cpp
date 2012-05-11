@@ -40,16 +40,15 @@ namespace OpenViBEPlugins
 			m_pMainWindow(NULL),
 			m_pDrawingArea(NULL),
 			//m_pStimulationReaderCallBack(NULL),
-			m_eCurrentState(EDisplayCueImageState_Idle),
-			m_uint32CurrentCueID(0),
+			m_bImageRequested(false),
+			m_int32RequestedImageID(-1),
+			m_bImageDrawn(false),
+			m_int32DrawnImageID(-1),
 			m_pOriginalPicture(NULL),
 			m_pScaledPicture(NULL),
 			m_bFullScreen(false),
-			m_bError(false),
 			m_ui64LastOutputChunkDate(-1),
-			m_bNewImageRequested(false),
-			m_bClearScreenRequested(false),
-			m_bRedrawSucess(false)
+			m_bError(false)
 		{
 			//m_pReader[0] = NULL;
 
@@ -132,7 +131,7 @@ namespace OpenViBEPlugins
 				m_pScaledPicture[i]=0;
 				if(!m_pOriginalPicture[i])
 				{
-					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error couldn't load ressource file : " << m_pImageNames[i] << "!\n";
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_ImportantWarning << "Error couldn't load ressource file : " << m_pImageNames[i] << "!\n";
 					m_bError = true;
 					return false;
 				}
@@ -181,41 +180,94 @@ namespace OpenViBEPlugins
 		boolean CDisplayCueImage::processClock(CMessageClock& rMessageClock)
 		{
 			IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
+			m_oStimulationEncoder.getInputStimulationSet()->clear();
 
-			if(m_bRedrawSucess)
+			if(m_bImageDrawn)
 			{
-				if(m_bNewImageRequested)
-				{
-					//this is first redraw() for that image
-					m_oStimulationEncoder.getInputStimulationSet()->clear();
-					m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(
-						m_pStimulationsId[m_uint32CurrentCueID],
-						this->getPlayerContext().getCurrentTime(),
-						0);
-					m_oStimulationEncoder.encodeBuffer(0);
-					l_pBoxIO->markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
-						
-					m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
-					m_bNewImageRequested = false;
-				}
-				if(m_bClearScreenRequested)
-				{
-					
-					m_oStimulationEncoder.getInputStimulationSet()->clear();
-					m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(
-						m_ui64ClearScreenStimulation,
-						this->getPlayerContext().getCurrentTime(),
-						0);
-					m_oStimulationEncoder.encodeBuffer(0);
-					l_pBoxIO->markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
-						
-					m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
+				// this is first redraw() for that image or clear screen
+				// we send a stimulation to signal it.
 
-					m_bClearScreenRequested = false;
+
+				if (m_int32DrawnImageID>=0)
+				{
+					// it was a image
+					m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(
+								m_pStimulationsId[m_int32DrawnImageID],
+								this->getPlayerContext().getCurrentTime(),
+								0);
+				}
+				else
+				{
+					// it was a clear_screen
+					m_oStimulationEncoder.getInputStimulationSet()->appendStimulation(
+								m_ui64ClearScreenStimulation,
+								this->getPlayerContext().getCurrentTime(),
+								0);
 				}
 
-				m_bRedrawSucess = false;
+				m_bImageDrawn = false;
+
+				if (m_int32DrawnImageID != m_int32RequestedImageID)
+				{
+					// We must be late...
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "One image may have been skipped => we must be late...\n";
+				}
 			}
+
+			m_oStimulationEncoder.encodeBuffer(0);
+			l_pBoxIO->markOutputAsReadyToSend(0, m_ui64LastOutputChunkDate, this->getPlayerContext().getCurrentTime());
+			m_ui64LastOutputChunkDate = this->getPlayerContext().getCurrentTime();
+
+			// We check if some images must be display
+			for(uint32 stim = 0; stim < m_oPendingStimulationSet.getStimulationCount() ; )
+			{
+				uint64 l_ui64StimDate = m_oPendingStimulationSet.getStimulationDate(stim);
+				uint64 l_ui64Time = this->getPlayerContext().getCurrentTime();
+				if (l_ui64StimDate < l_ui64Time)
+				{
+					float l_fDelay = ((l_ui64Time - l_ui64StimDate)>> 16) / 65.5360; //delay in ms
+					if (l_fDelay>50)
+						getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Image was late: "<< l_fDelay <<" ms \n";
+
+
+					uint64 l_ui64StimID =   m_oPendingStimulationSet.getStimulationIdentifier(stim);
+					if(l_ui64StimID== m_ui64ClearScreenStimulation)
+					{
+						if (m_bImageRequested)
+							getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_ImportantWarning << "One image was skipped => Not enough time between two images!!\n";
+						m_bImageRequested = true;
+						m_int32RequestedImageID = -1;
+					}
+					else
+					{
+						for(uint32 i=0; i<=m_ui32NuberOfCue; i++)
+						{
+							if(l_ui64StimID == m_pStimulationsId[i])
+							{
+								if (m_bImageRequested)
+									getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_ImportantWarning << "One image was skipped => Not enough time between two images!!\n";
+								m_bImageRequested = true;
+								m_int32RequestedImageID = i;
+								break;
+							}
+						}
+					}
+
+					m_oPendingStimulationSet.removeStimulation(stim);
+
+					if(GTK_WIDGET(m_pDrawingArea)->window)
+					{
+						gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,NULL,true);
+						// it will trigger the callback redraw()
+					}
+
+				}
+				else
+				{
+					stim++;
+				}
+			}
+
 			return true;
 		}
 
@@ -234,9 +286,10 @@ namespace OpenViBEPlugins
 		{
 			IBoxIO* l_pBoxIO=getBoxAlgorithmContext()->getDynamicBoxContext();
 
-			for(uint32 input=0; input<getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount(); input++)
+			// We decode and save the received stimulations.
+			for(uint32 input=0; input < getBoxAlgorithmContext()->getStaticBoxContext()->getInputCount(); input++)
 			{
-				for(uint32 chunk=0; chunk<l_pBoxIO->getInputChunkCount(input); chunk++)
+				for(uint32 chunk=0; chunk < l_pBoxIO->getInputChunkCount(input); chunk++)
 				{
 					m_oStimulationDecoder.decode(0,chunk,true);
 					if(m_oStimulationDecoder.isHeaderReceived())
@@ -249,38 +302,48 @@ namespace OpenViBEPlugins
 					{
 						for(uint32 stim = 0; stim < m_oStimulationDecoder.getOutputStimulationSet()->getStimulationCount(); stim++)
 						{
-							boolean l_bStateUpdated = false;
-							uint64 l_ui64StimulationIdentifier = m_oStimulationDecoder.getOutputStimulationSet()->getStimulationIdentifier(stim);
-							if(l_ui64StimulationIdentifier == m_ui64ClearScreenStimulation)
-							{
-								m_eCurrentState = EDisplayCueImageState_Idle;
-								m_bClearScreenRequested = true;
-								l_bStateUpdated = true;
-							}
+							uint64 l_ui64StimID =  m_oStimulationDecoder.getOutputStimulationSet()->getStimulationIdentifier(stim);
+
+
+							boolean l_bAddStim = false;
+							if(l_ui64StimID == m_ui64ClearScreenStimulation)
+								l_bAddStim = true;
 							else
-							{
 								for(uint32 i=0; i<=m_ui32NuberOfCue; i++)
-								{
-									if(l_ui64StimulationIdentifier == m_pStimulationsId[i])
+									if(l_ui64StimID == m_pStimulationsId[i])
 									{
-										m_eCurrentState = EDisplayCueImageState_Cue;
-										m_uint32CurrentCueID = i;
-										l_bStateUpdated = true;
-										m_bNewImageRequested = true;
+										l_bAddStim = true;
 										break;
 									}
-								}
-							}
-							if(l_bStateUpdated)
+
+							if (l_bAddStim)
 							{
-								if(GTK_WIDGET(m_pDrawingArea)->window)
+								uint64 l_ui64StimDate =     m_oStimulationDecoder.getOutputStimulationSet()->getStimulationDate(stim);
+								uint64 l_ui64StimDuration = m_oStimulationDecoder.getOutputStimulationSet()->getStimulationDuration(stim);
+
+								uint64 l_ui64Time = this->getPlayerContext().getCurrentTime();
+								if (l_ui64StimDate < l_ui64Time)
 								{
-									gdk_window_invalidate_rect(GTK_WIDGET(m_pDrawingArea)->window,NULL,true);
-									// it will trigger the callback redraw()
+									float l_fDelay = ((l_ui64Time - l_ui64StimDate)>> 16) / 65.5360; //delay in ms
+									if (l_fDelay>50)
+										getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Stimulation was received late: "<< l_fDelay <<" ms \n";
 								}
+
+								if (l_ui64StimDate < l_pBoxIO->getInputChunkStartTime(input, chunk))
+								{
+									this->getLogManager() << LogLevel_ImportantWarning << "Input Stimulation Date before beginning of the buffer\n";
+								}
+
+								m_oPendingStimulationSet.appendStimulation(
+											l_ui64StimID,
+											l_ui64StimDate,
+											l_ui64StimDuration);
 							}
+
+
 						}
 					}
+					l_pBoxIO->markInputAsDeprecated(input, chunk);
 				}
 			}
 
@@ -290,22 +353,16 @@ namespace OpenViBEPlugins
 		//Callback called by GTK
 		void CDisplayCueImage::redraw()
 		{
-			switch(m_eCurrentState)
+			if (m_int32RequestedImageID >= 0)
 			{
-				case EDisplayCueImageState_Cue:
-					drawCuePicture(m_uint32CurrentCueID);
-					if(m_bNewImageRequested)
-					{
-						m_bRedrawSucess = true;
-					}
-					break;
 
-				case EDisplayCueImageState_Idle:
-					if(m_bClearScreenRequested)
-					{
-						m_bRedrawSucess = true; //always succes when drawing nothing at all
-					}
-					break;
+				drawCuePicture(m_int32RequestedImageID);
+			}
+			if(m_bImageRequested)
+			{
+				m_bImageRequested = false;
+				m_bImageDrawn = true;
+				m_int32DrawnImageID = m_int32RequestedImageID;
 			}
 		}
 
