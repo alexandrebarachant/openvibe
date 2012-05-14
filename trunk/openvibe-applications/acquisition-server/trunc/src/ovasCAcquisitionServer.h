@@ -82,7 +82,6 @@ namespace OpenViBEAcquisitionServer
 		// General parameters configurable from the GUI
 		OpenViBEAcquisitionServer::ENaNReplacementPolicy getNaNReplacementPolicy(void);
 		OpenViBE::CString getNaNReplacementPolicyStr(void);
-		OpenViBE::boolean m_bReplacementInProgress;
 		OpenViBEAcquisitionServer::EDriftCorrectionPolicy getDriftCorrectionPolicy(void);
 		OpenViBE::CString getDriftCorrectionPolicyStr(void);
 		OpenViBE::uint64 getDriftToleranceDuration(void);
@@ -136,7 +135,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBEAcquisitionServer::EDriftCorrectionPolicy m_eDriftCorrectionPolicy;
 
 		OpenViBEAcquisitionServer::ENaNReplacementPolicy m_eNaNReplacementPolicy;
-
+		OpenViBE::boolean m_bReplacementInProgress;
+		
 		OpenViBE::boolean m_bInitialized;
 		OpenViBE::boolean m_bStarted;
 		OpenViBE::boolean m_bIsImpedanceCheckRequested;
