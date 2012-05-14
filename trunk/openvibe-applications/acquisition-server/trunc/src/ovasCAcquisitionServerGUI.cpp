@@ -181,6 +181,13 @@ CAcquisitionServerGUI::~CAcquisitionServerGUI(void)
 		::fprintf(l_pFile, "AcquisitionServer_LastDriver = %s\n", m_pDriver->getName());
 		::fprintf(l_pFile, "AcquisitionServer_LastSampleCountPerBuffer = %i\n", this->getSampleCountPerBuffer());
 		::fprintf(l_pFile, "AcquisitionServer_LastConnectionPort = %i\n", this->getTCPPort());
+		::fprintf(l_pFile, "# Last Preferences set in the acquisition server\n");
+		::fprintf(l_pFile, "AcquisitionServer_DriftCorrectionPolicy = %s\n", m_pAcquisitionServer->getDriftCorrectionPolicyStr().toASCIIString());
+		::fprintf(l_pFile, "AcquisitionServer_JitterEstimationCountForDrift = %i\n", m_pAcquisitionServer->getJitterEstimationCountForDrift());
+		::fprintf(l_pFile, "AcquisitionServer_DriftToleranceDuration = %i\n", m_pAcquisitionServer->getDriftToleranceDuration());
+		::fprintf(l_pFile, "AcquisitionServer_OverSamplingFactor = %i\n", m_pAcquisitionServer->getOversamplingFactor());
+		::fprintf(l_pFile, "AcquisitionServer_CheckImpedance = %s\n", (m_pAcquisitionServer->isImpedanceCheckRequested() ? "True" : "False"));
+		::fprintf(l_pFile, "AcquisitionServer_NaNReplacementPolicy = %s\n", m_pAcquisitionServer->getNaNReplacementPolicyStr().toASCIIString());
 		::fprintf(l_pFile, "# Path to emotiv SDK\n");
 		::fprintf(l_pFile, "AcquisitionServer_PathToEmotivResearchSDK = %s\n", (const char *)m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_PathToEmotivResearchSDK}"));
 		::fclose(l_pFile);
@@ -597,6 +604,7 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 	::gtk_builder_add_from_file(l_pInterface, OVAS_GUI_File, NULL);
 	::GtkDialog* l_pDialog=GTK_DIALOG(::gtk_builder_get_object(l_pInterface, "openvibe-acquisition-server-configuration"));
 	::GtkComboBox* l_pDriftCorrectionPolicy=GTK_COMBO_BOX(::gtk_builder_get_object(l_pInterface, "combobox_drift_correction"));
+	::GtkComboBox* l_pNaNReplacementPolicy=GTK_COMBO_BOX(::gtk_builder_get_object(l_pInterface, "combobox_nan_replacement"));
 	::GtkSpinButton* l_pDriftTolerance=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_drift_tolerance"));
 	::GtkSpinButton* l_pJitterMeasureCount=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_jitter_measure_count"));
 	::GtkSpinButton* l_pOverSamplingFactor=GTK_SPIN_BUTTON(::gtk_builder_get_object(l_pInterface, "spinbutton_oversampling_factor"));
@@ -607,6 +615,8 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 	::gtk_spin_button_set_value(l_pJitterMeasureCount, m_pAcquisitionServer->getJitterEstimationCountForDrift());
 	::gtk_spin_button_set_value(l_pOverSamplingFactor, m_pAcquisitionServer->getOversamplingFactor());
 	::gtk_toggle_button_set_active(l_pImpedanceCheck, m_pAcquisitionServer->isImpedanceCheckRequested()?TRUE:FALSE);
+	::gtk_combo_box_set_active(l_pNaNReplacementPolicy, (int)m_pAcquisitionServer->getNaNReplacementPolicy());
+
 
 	gint l_iResponseId=::gtk_dialog_run(l_pDialog);
 	switch(l_iResponseId)
@@ -614,6 +624,7 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 		case GTK_RESPONSE_APPLY:
 		case GTK_RESPONSE_OK:
 		case GTK_RESPONSE_YES:
+			m_pAcquisitionServer->setNaNReplacementPolicy((ENaNReplacementPolicy)::gtk_combo_box_get_active(l_pNaNReplacementPolicy));
 			m_pAcquisitionServer->setDriftCorrectionPolicy((EDriftCorrectionPolicy)::gtk_combo_box_get_active(l_pDriftCorrectionPolicy));
 			m_pAcquisitionServer->setDriftToleranceDuration(::gtk_spin_button_get_value_as_int(l_pDriftTolerance));
 			m_pAcquisitionServer->setJitterEstimationCountForDrift(::gtk_spin_button_get_value_as_int(l_pJitterMeasureCount));

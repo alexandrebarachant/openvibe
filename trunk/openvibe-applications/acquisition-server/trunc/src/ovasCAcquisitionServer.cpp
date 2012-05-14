@@ -208,6 +208,8 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	,m_pStreamEncoder(NULL)
 	,m_pConnectionServer(NULL)
 	,m_eDriftCorrectionPolicy(DriftCorrectionPolicy_DriverChoice)
+	,m_eNaNReplacementPolicy(NaNReplacementPolicy_LastCorrectValue)
+	,m_bReplacementInProgress(false)
 	,m_bInitialized(false)
 	,m_bStarted(false)
 {
@@ -225,6 +227,21 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	ip_pStimulationSet.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_StimulationSet));
 	ip_ui64BufferDuration.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_BufferDuration));
 	op_pEncodedMemoryBuffer.initialize(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
+	
+	CString l_sNaNReplacementPolicy=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_NaNReplacementPolicy}");
+	if(l_sNaNReplacementPolicy==CString("Disabled"))
+	{
+		this->setNaNReplacementPolicy(NaNReplacementPolicy_Disabled);
+	}
+	else if(l_sNaNReplacementPolicy==CString("Zero"))
+	{
+		this->setNaNReplacementPolicy(NaNReplacementPolicy_Zero);
+	}
+	else
+	{
+		this->setNaNReplacementPolicy(NaNReplacementPolicy_LastCorrectValue);
+	}
+	
 
 	CString l_sDriftCorrectionPolicy=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_DriftCorrectionPolicy}");
 	if(l_sDriftCorrectionPolicy==CString("Forced"))
@@ -600,6 +617,15 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 			case DriftCorrectionPolicy_Disabled:     m_rKernelContext.getLogManager() << CString("Disabled") << "\n"; break;
 		};
 
+		m_rKernelContext.getLogManager() << LogLevel_Trace << "NaN value correction is set to ";
+		switch(m_eNaNReplacementPolicy)
+		{
+			default:
+			case NaNReplacementPolicy_LastCorrectValue: m_rKernelContext.getLogManager() << CString("LastCorrectValue") << "\n"; break;
+			case NaNReplacementPolicy_Zero:             m_rKernelContext.getLogManager() << CString("Zero") << "\n"; break;
+			case NaNReplacementPolicy_Disabled:         m_rKernelContext.getLogManager() << CString("Disabled") << "\n"; break;
+		};
+
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Oversampling factor set to " << m_ui64OverSamplingFactor << "\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Sampling frequency set to " << m_ui32SamplingFrequency << "Hz\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver monitoring drift tolerance set to " << m_ui64DriftToleranceDuration << " milliseconds - eq " << m_i64DriftToleranceSampleCount << " samples\n";
@@ -797,13 +823,48 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 	{
 		for(uint32 i=0; i<ui32SampleCount; i++)
 		{
-			m_vOverSamplingSwapBuffer=m_vSwapBuffer;
+			if(!m_bReplacementInProgress)
+			{
+				// otherwise NaN are propagating
+				m_vOverSamplingSwapBuffer=m_vSwapBuffer;
+			}
 			for(uint32 k=0; k<m_ui64OverSamplingFactor; k++)
 			{
 				float32 alpha=float32(k+1)/m_ui64OverSamplingFactor;
 				for(uint32 j=0; j<m_ui32ChannelCount; j++)
 				{
-					m_vSwapBuffer[j]=alpha*pSample[j*ui32SampleCount+i]+(1-alpha)*m_vOverSamplingSwapBuffer[j];
+					if(pSample[j*ui32SampleCount+i] != pSample[j*ui32SampleCount+i]) // simple NaN? test
+					{
+						if(!m_bReplacementInProgress)
+						{
+							m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Incorrect, ((m_ui64SampleCount + j*ui32SampleCount+i -1 +1) << 32) / m_ui32SamplingFrequency, 0);
+							m_bReplacementInProgress = true;
+						}
+
+						switch(m_eNaNReplacementPolicy)
+						{
+						case NaNReplacementPolicy_Disabled:
+							m_vSwapBuffer[j] = std::numeric_limits<float>::quiet_NaN();
+							break;
+						case NaNReplacementPolicy_Zero:
+							m_vSwapBuffer[j] = 0;
+							break;
+						case NaNReplacementPolicy_LastCorrectValue:
+							// we simply don't update the value
+							break;
+						default:
+							break;
+						}
+					}
+					else
+					{
+						if(m_bReplacementInProgress)
+						{
+							m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Correct, ((m_ui64SampleCount + j*ui32SampleCount+i -1) << 32) / m_ui32SamplingFrequency, 0);
+							m_bReplacementInProgress = false;	
+						}
+						m_vSwapBuffer[j]=alpha*pSample[j*ui32SampleCount+i]+(1-alpha)*m_vOverSamplingSwapBuffer[j];
+					}
 				}
 				m_vPendingBuffer.push_back(m_vSwapBuffer);
 			}
@@ -964,10 +1025,46 @@ boolean CAcquisitionServer::updateImpedance(const uint32 ui32ChannelIndex, const
 
 // ____________________________________________________________________________
 //
+ENaNReplacementPolicy CAcquisitionServer::getNaNReplacementPolicy(void)
+{
+	return m_eNaNReplacementPolicy;
+}
+
 
 EDriftCorrectionPolicy CAcquisitionServer::getDriftCorrectionPolicy(void)
 {
 	return m_eDriftCorrectionPolicy;
+}
+
+CString CAcquisitionServer::getNaNReplacementPolicyStr(void)
+{
+	switch (m_eNaNReplacementPolicy)
+	{
+	case NaNReplacementPolicy_Disabled:
+		return CString("Disabled");
+	case NaNReplacementPolicy_LastCorrectValue:
+		return CString("LastCorrectValue");
+	case NaNReplacementPolicy_Zero:
+		return CString("Zero");
+	default :
+		return CString("N/A");
+	}
+}
+
+
+CString CAcquisitionServer::getDriftCorrectionPolicyStr(void)
+{
+	switch (m_eDriftCorrectionPolicy)
+	{
+	case DriftCorrectionPolicy_Disabled:
+		return CString("Disabled");
+	case DriftCorrectionPolicy_DriverChoice:
+		return CString("DriverChoice");
+	case DriftCorrectionPolicy_Forced:
+		return CString("Forced");
+	default :
+		return CString("N/A");
+	}
 }
 
 uint64 CAcquisitionServer::getDriftToleranceDuration(void)
@@ -983,6 +1080,12 @@ uint64 CAcquisitionServer::getJitterEstimationCountForDrift(void)
 uint64 CAcquisitionServer::getOversamplingFactor(void)
 {
 	return m_ui64OverSamplingFactor;
+}
+
+boolean CAcquisitionServer::setNaNReplacementPolicy(ENaNReplacementPolicy eNaNReplacementPolicy)
+{
+	m_eNaNReplacementPolicy=eNaNReplacementPolicy;
+	return true;
 }
 
 boolean CAcquisitionServer::setDriftCorrectionPolicy(EDriftCorrectionPolicy eDriftCorrectionPolicy)

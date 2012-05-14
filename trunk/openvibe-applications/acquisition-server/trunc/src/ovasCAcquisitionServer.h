@@ -37,6 +37,13 @@ namespace OpenViBEAcquisitionServer
 		DriftCorrectionPolicy_Disabled,
 	} EDriftCorrectionPolicy;
 
+	typedef enum
+	{
+		NaNReplacementPolicy_LastCorrectValue=0,
+		NaNReplacementPolicy_Zero,
+		NaNReplacementPolicy_Disabled,
+	} ENaNReplacementPolicy;
+
 	class CDriverContext;
 	class CAcquisitionServer : public OpenViBEAcquisitionServer::IDriverCallback
 	{
@@ -73,10 +80,15 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance);
 
 		// General parameters configurable from the GUI
+		OpenViBEAcquisitionServer::ENaNReplacementPolicy getNaNReplacementPolicy(void);
+		OpenViBE::CString getNaNReplacementPolicyStr(void);
+		OpenViBE::boolean m_bReplacementInProgress;
 		OpenViBEAcquisitionServer::EDriftCorrectionPolicy getDriftCorrectionPolicy(void);
+		OpenViBE::CString getDriftCorrectionPolicyStr(void);
 		OpenViBE::uint64 getDriftToleranceDuration(void);
 		OpenViBE::uint64 getJitterEstimationCountForDrift(void);
 		OpenViBE::uint64 getOversamplingFactor(void);
+		OpenViBE::boolean setNaNReplacementPolicy(OpenViBEAcquisitionServer::ENaNReplacementPolicy eNaNReplacementPolicy);
 		OpenViBE::boolean setDriftCorrectionPolicy(OpenViBEAcquisitionServer::EDriftCorrectionPolicy eDriftCorrectionPolicy);
 		OpenViBE::boolean isImpedanceCheckRequested(void);
 		OpenViBE::boolean setDriftToleranceDuration(OpenViBE::uint64 ui64DriftToleranceDuration);
@@ -122,6 +134,8 @@ namespace OpenViBEAcquisitionServer
 		Socket::IConnectionServer* m_pConnectionServer;
 
 		OpenViBEAcquisitionServer::EDriftCorrectionPolicy m_eDriftCorrectionPolicy;
+
+		OpenViBEAcquisitionServer::ENaNReplacementPolicy m_eNaNReplacementPolicy;
 
 		OpenViBE::boolean m_bInitialized;
 		OpenViBE::boolean m_bStarted;

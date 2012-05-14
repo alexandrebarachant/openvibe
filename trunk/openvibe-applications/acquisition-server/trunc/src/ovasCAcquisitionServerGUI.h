@@ -64,7 +64,7 @@ namespace OpenViBEAcquisitionServer
 		::GtkWidget* m_pImpedanceWindow;
 		std::vector < ::GtkWidget* > m_vLevelMesure;
 
-		boost::thread* m_pThread;
+		boost::thread* m_pThread;		
 	};
 };
 

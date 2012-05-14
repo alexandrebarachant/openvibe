@@ -543,7 +543,14 @@ Configuration </property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkHSeparator" id="hseparator5">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="right_attach">2</property>
+                <property name="top_attach">7</property>
+                <property name="bottom_attach">8</property>
+              </packing>
             </child>
             <child>
               <placeholder/>
@@ -552,13 +559,32 @@ Configuration </property>
               <placeholder/>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkLabel" id="label_nan_replacement">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">NaN value replacement</property>
+              </object>
+              <packing>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkComboBox" id="combobox_nan_replacement">
+                <property name="visible">True</property>
+                <property name="model">model_nan_replacement</property>
+                <child>
+                  <object class="GtkCellRendererText" id="renderer_nan_replacement"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="right_attach">2</property>
+                <property name="top_attach">8</property>
+                <property name="bottom_attach">9</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -720,5 +746,22 @@ Configuration </property>
   <object class="GtkImage" id="image_driver_properties">
     <property name="visible">True</property>
     <property name="stock">gtk-properties</property>
+  </object>
+  <object class="GtkListStore" id="model_nan_replacement">
+    <columns>
+      <!-- column-name policy -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Replace with the last correct value</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Replace with 0</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">No replacement</col>
+      </row>
+    </data>
   </object>
 </interface>
