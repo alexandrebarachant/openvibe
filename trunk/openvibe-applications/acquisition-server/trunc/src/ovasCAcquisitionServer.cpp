@@ -833,7 +833,7 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 				float32 alpha=float32(k+1)/m_ui64OverSamplingFactor;
 				for(uint32 j=0; j<m_ui32ChannelCount; j++)
 				{
-					if(pSample[j*ui32SampleCount+i] != pSample[j*ui32SampleCount+i]) // simple NaN? test
+					if(_isnan(pSample[j*ui32SampleCount+i]) || !_finite(pSample[j*ui32SampleCount+i])) // NaN or infinite values
 					{
 						if(!m_bReplacementInProgress)
 						{
