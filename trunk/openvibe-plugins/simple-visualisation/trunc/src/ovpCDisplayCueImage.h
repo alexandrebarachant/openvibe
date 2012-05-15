@@ -166,13 +166,12 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::boolean getBoxPrototype(OpenViBE::Kernel::IBoxProto& rPrototype) const
 			{
 				rPrototype.addInput  ("Stimulations", OV_TypeId_Stimulations);
-				rPrototype.addOutput  ("Stimulations", OV_TypeId_Stimulations);
+				rPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
 				rPrototype.addSetting("Display images in full screen", OV_TypeId_Boolean, "false");
 				rPrototype.addSetting("Clear screen Stimulation", OV_TypeId_Stimulation, "OVTK_StimulationId_VisualStimulationStop");
 				rPrototype.addSetting("Cue Image 1", OV_TypeId_Filename, "../share/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
 				rPrototype.addSetting("Stimulation 1", OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
 				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
-				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 				return true;
 			}
 
