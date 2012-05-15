@@ -2,6 +2,7 @@
 
 #include "ovpCXMLStimulationScenarioPlayer.h"
 #include "ovpCKeyboardStimulator.h"
+#include "ovpCSignChangeDetector.h"
 
 #include "box-algorithms/stimulation/ovpCBoxAlgorithmPlayerController.h"
 
@@ -34,6 +35,7 @@ OVP_Declare_Begin();
 
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CXMLStimulationScenarioPlayerDesc);
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CKeyboardStimulatorDesc);
+	OVP_Declare_New(OpenViBEPlugins::Stimulation::CSignChangeDetectorDesc);
 
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmPlayerControllerDesc);
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmStimulationMultiplexerDesc);
