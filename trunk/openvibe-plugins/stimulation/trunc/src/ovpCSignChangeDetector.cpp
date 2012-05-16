@@ -64,7 +64,7 @@ boolean CSignChangeDetector::process(void)
 	op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
 
 	// We decode the stream matrix
-	for(uint i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
+	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
 		uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(0, i);
 		uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(0, i);
@@ -106,7 +106,7 @@ boolean CSignChangeDetector::process(void)
 			float64* l_pData = op_pMatrix->getBuffer();
 			// for each data sample of the buffer we look for sign change
 
-			for (uint j=0;j< op_pMatrix->getDimensionSize(1);j++)
+			for (uint32 j=0;j< op_pMatrix->getDimensionSize(1);j++)
 			{
 				// if m_bNextStimIsOn==true we look for the signal getting positive.
 				if ( m_bNextStimIsOn && ( ( (j==0) ? (m_f64Lastsample) : (l_pData[(m_ui64ChannelIndex * m_ui64SamplesPerChannel) + j-1]) ) <0) && (l_pData[(m_ui64ChannelIndex * m_ui64SamplesPerChannel) + j]>=0) )
