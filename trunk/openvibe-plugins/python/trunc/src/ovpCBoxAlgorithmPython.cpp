@@ -135,6 +135,8 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 		return true;
 	}
 
+	m_bPythonInitialized = true;
+
 	PyRun_SimpleString(
 				"import sys\n"
 				"sys.path.append('../share/openvibe-plugins/python')\n"
@@ -351,16 +353,13 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 
 	this->getLogManager() << LogLevel_Info << "Python Interpreter initialized\n";
 
-	m_bPythonInitialized = true;
-
-	return true;
+return true;
 }
 
 OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 {
 	if (!initializePythonSafely())
 	{
-		m_bPythonInitialized = false;
 		return false;
 	}
 
@@ -783,11 +782,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 
 OpenViBE::boolean CBoxAlgorithmPython::uninitialize(void)
 {
-	if (!m_bPythonInitialized)
-	{
-		return true;
-	}
-
 	for(uint32 i = 0; i < m_vDecoders.size(); i++)
 	{
 		m_vDecoders[i]->uninitialize();
@@ -1654,7 +1648,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			}
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& l_pSamplingRate = ( (TSignalEncoder <CBoxAlgorithmPython> *) m_vEncoders[output_index] )->getInputSamplingRate();
 			l_pSamplingRate = (OpenViBE::uint64) PyInt_AsLong(l_pChunkSamplingRate);
-
 			m_vEncoders[output_index]->encodeHeader(output_index);
 			Py_CLEAR(l_pChunkSamplingRate);
 

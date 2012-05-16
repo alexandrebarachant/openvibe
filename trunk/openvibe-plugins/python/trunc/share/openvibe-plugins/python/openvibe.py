@@ -83,7 +83,7 @@ class OVStreamedMatrixEnd(OVChunk):
 class OVSignalHeader(OVStreamedMatrixHeader):
     def __init__(self, start_time, end_time, dimension_size, dimension_label, sampling_rate):
         OVStreamedMatrixHeader.__init__(self, start_time, end_time, dimension_size, dimension_label)
-        self.sampling_rate = sampling_rate
+        self.sampling_rate = int(sampling_rate)
         
 class OVSignalBuffer(OVStreamedMatrixBuffer):
     pass 
@@ -165,16 +165,16 @@ class OVBox(object):
 		pass
 	def real_initialize(self):
 		try :
-			return self.initialize()
+			self.initialize()
 		except:
 			print traceback.format_exc()
 	def real_process(self):
 		try :
-			return self.process()
+			self.process()
 		except:
 			print traceback.format_exc()
 	def real_uninitialize(self):
 		try :
-			return self.uninitialize()
+			self.uninitialize()
 		except:
 			print traceback.format_exc()
