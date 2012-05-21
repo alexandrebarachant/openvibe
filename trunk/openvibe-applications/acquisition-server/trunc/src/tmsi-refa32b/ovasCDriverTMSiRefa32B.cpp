@@ -356,7 +356,7 @@ boolean CDriverTMSiRefa32B::initialize(
 		m_bSignalBufferUnsigned=l_pSignalFormat[0].Format==0;
 		for(uint32 i = 0 ; i < l_pSignalFormat[0].Elements; i++ )
 		{
-			m_vExponentChannel.push_back(l_pSignalFormat[i].UnitExponent+6/*changed measure unit in µV*/);
+			m_vExponentChannel.push_back(l_pSignalFormat[i].UnitExponent+6/*changed measure unit in V*/);
 			m_vUnitGain.push_back(l_pSignalFormat[i].UnitGain);
 			m_vUnitOffSet.push_back(l_pSignalFormat[i].UnitOffSet);
 			m_rDriverContext.getLogManager() << LogLevel_Debug << "channel[" << i << "]: Exponent=" << m_vExponentChannel[i] <<
@@ -379,7 +379,7 @@ boolean CDriverTMSiRefa32B::initialize(
 
 			if(l_pSignalFormat!=NULL)
 			{
-				m_rDriverContext.getLogManager() << LogLevel_Trace << ">Slave device n°" << (uint32)j <<
+				m_rDriverContext.getLogManager() << LogLevel_Trace << ">Slave device n" << (uint32)j <<
 						" name: " << (char*)l_pSignalFormat[0].PortName << "\n";
 				m_rDriverContext.getLogManager() << LogLevel_Trace << ">Nb channels: " << (uint32)l_pSignalFormat[0].Elements << "\n\n";
 				m_ui32NbTotalChannels += l_pSignalFormat[0].Elements;
