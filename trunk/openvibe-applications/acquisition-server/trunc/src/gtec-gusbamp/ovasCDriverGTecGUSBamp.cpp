@@ -40,7 +40,6 @@ CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
 	,m_ui8CommonGndAndRefBitmap(0)
 	,m_i32NotchFilterIndex(-1)
 	,m_i32BandPassFilterIndex(-1)
-	,m_bTriggerInputEnabled(false)
 {
 	m_oHeader.setSamplingFrequency(512);
 	m_oHeader.setChannelCount(16);
@@ -96,7 +95,7 @@ boolean CDriverGTecGUSBamp::initialize(
 		return false;
 	}
 
-	m_ui32BufferSize=(g_ui32AcquiredChannelCount+1)*ui32SampleCountPerSentBlock*sizeof(float)+HEADER_SIZE;//+1 channel for trigger
+	m_ui32BufferSize=(g_ui32AcquiredChannelCount+1)*ui32SampleCountPerSentBlock*sizeof(float)+HEADER_SIZE;
 	m_pBuffer=new uint8[m_ui32BufferSize];
 	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
 	if(!m_pBuffer || !m_pSample)
@@ -109,7 +108,6 @@ boolean CDriverGTecGUSBamp::initialize(
 	::memset(m_pBuffer, 0, m_ui32BufferSize);
 	m_pSampleTranspose=reinterpret_cast<float32*>(m_pBuffer+HEADER_SIZE);
 	m_pOverlapped=new ::OVERLAPPED;
-	
 	if(!m_pOverlapped)
 	{
 		delete [] m_pBuffer;
@@ -117,10 +115,8 @@ boolean CDriverGTecGUSBamp::initialize(
 		::CloseHandle(m_pEvent);
 		return false;
 	}
-
 #define m_pOverlapped ((::OVERLAPPED*)m_pOverlapped)
-	
-::memset(m_pOverlapped, 0, sizeof(::OVERLAPPED));
+	::memset(m_pOverlapped, 0, sizeof(::OVERLAPPED));
 	m_pOverlapped->hEvent=m_pEvent;
 
 	m_pDevice=::GT_OpenDevice(m_ui32ActualDeviceIndex);
@@ -166,26 +162,20 @@ boolean CDriverGTecGUSBamp::start(void)
 	if(!::GT_SetBufferSize(m_pDevice, m_ui32SampleCountPerSentBlock)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetBufferSize\n";
 	if(!::GT_SetChannels(m_pDevice, l_oChannel, sizeof(l_oChannel)/sizeof(::UCHAR))) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetChannels\n";
 	if(!::GT_SetSlave(m_pDevice, FALSE)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetSlave\n";
-	
-	if(!::GT_EnableTriggerLine(m_pDevice, TRUE)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_EnableTriggerLine - the extra input trigger channel is disabled\n";
-	else m_bTriggerInputEnabled=true;
-	// GT_EnableSC
-    // GT_SetBipolar
+	if(!::GT_EnableTriggerLine(m_pDevice, TRUE)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_EnableTriggerLine\n";
+// GT_EnableSC
+// GT_SetBipolar
 
 	for(uint32 i=0; i<g_ui32AcquiredChannelCount; i++)
 	{
 		if(!::GT_SetBandPass(m_pDevice, i+1, m_i32BandPassFilterIndex)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetBandPass for channel " << i << "\n";
 		if(!::GT_SetNotch(m_pDevice, i+1, m_i32NotchFilterIndex)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetNotch for channel " << i << "\n";
 	}
-
+/* */
 	if(!::GT_SetSampleRate(m_pDevice, m_oHeader.getSamplingFrequency())) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetSampleRate\n";
 
 	if(!::GT_SetReference(m_pDevice, l_oReference)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetReference\n";
 	if(!::GT_SetGround(m_pDevice, l_oGround)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetGround\n";
-
-	m_ui32LastStimulation = STIMULATION_0;
-	m_ui32TotalHardwareStimulations = 0;
-	//m_ui32TotalDriverChunksLost = 0;
 
 	::GT_Start(m_pDevice);
 
@@ -194,8 +184,6 @@ boolean CDriverGTecGUSBamp::start(void)
 
 boolean CDriverGTecGUSBamp::loop(void)
 {
-	CStimulationSet   l_oStimulationSet;
-
 	if(!m_rDriverContext.isConnected()) return false;
 	if(m_rDriverContext.isStarted())
 	{
@@ -204,9 +192,7 @@ boolean CDriverGTecGUSBamp::loop(void)
 			if(::WaitForSingleObject(m_pOverlapped->hEvent, 2000)==WAIT_OBJECT_0)
 			{
 				DWORD l_dwByteCount=0;
-				
 				::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
-
 				if(l_dwByteCount==m_ui32BufferSize)
 				{
 					for(uint32 i=0; i<m_oHeader.getChannelCount() && i<g_ui32AcquiredChannelCount; i++)
@@ -216,51 +202,27 @@ boolean CDriverGTecGUSBamp::loop(void)
 							m_pSample[i*m_ui32SampleCountPerSentBlock+j]=m_pSampleTranspose[j*(g_ui32AcquiredChannelCount+1)+i];
 						}
 					}
+					m_pCallback->setSamples(m_pSample);
 
-					if (m_bTriggerInputEnabled)
-					{
-						int l_oStimulationChannel = m_oHeader.getChannelCount();
+					m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 
-						for(uint32 iSample=0; iSample<m_ui32SampleCountPerSentBlock; iSample++)
-						{
-							float l_fStimCode = m_pSampleTranspose[iSample*(g_ui32AcquiredChannelCount+1)+l_oStimulationChannel];
-					    
-							if ( (l_fStimCode != STIMULATION_0) //this means that the user sends 0 after each stimulatuion and in the beginning
-								  && (l_fStimCode != m_ui32LastStimulation)
-							   )
-							{
-								l_oStimulationSet.appendStimulation(OVTK_StimulationId_Label_00,( uint64(iSample) << 32) / m_oHeader.getSamplingFrequency(),0);
-								m_ui32TotalHardwareStimulations++;
-							}
-
-							m_ui32LastStimulation = l_fStimCode;
-						}
-					}
+					// TODO manage stims
 				}
 				else
 				{
-					//m_ui32TotalDriverChunksLost++;
-					//m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
-					// m_rDriverContext.getLogManager() << LogLevel_Warning 
-					// << "Returned data is different than expected. Total chunks lost: " << m_totalDriverChunksLost 
-					// << ", Total samples lost: " << m_ui32SampleCountPerSentBlock * m_totalDriverChunksLost
-					// << "\n";
+					// m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
 				}
-
-				m_pCallback->setSamples(m_pSample);	
-				m_pCallback->setStimulationSet(l_oStimulationSet);
-				m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
 			}
 			else
 			{
 				// TIMEOUT
-				//m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 1\n";
+				// m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 1\n";
 			}
 		}
 		else
 		{
 			// TIMEOUT
-			//m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 2\n";
+			// m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 2\n";
 		}
 	}
 	else
@@ -297,8 +259,6 @@ boolean CDriverGTecGUSBamp::stop(void)
 	::GT_Stop(m_pDevice);
 	::GT_ResetTransfer(m_pDevice);
 
-	m_rDriverContext.getLogManager() << LogLevel_Trace << "Total number of hardware stimulations acquired: " << m_ui32TotalHardwareStimulations << "\n";
-	
 	return true;
 }
 
