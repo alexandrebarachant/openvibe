@@ -1004,7 +1004,7 @@ ov_package_url_pkgconfig=http://pkgconfig.freedesktop.org/releases/pkg-config-0.
 
 # base libraries
 # http://sourceforge.net/projects
-ov_package_url_boost=$ov_sourceforge_mirror/boost/files/boost/1.42.0/boost_1_42_0.tar.bz2
+ov_package_url_boost=$ov_sourceforge_mirror/boost/files/boost/1.49.0/boost_1_49_0.tar.bz2
 ov_package_url_expat=$ov_sourceforge_mirror/expat/files/expat/2.0.0/expat-2.0.0.tar.gz
 ov_package_url_libxml=ftp://xmlsoft.org/libxml2/old/libxml2-sources-2.6.31.tar.gz
 ov_package_url_gettext=$ov_gnu_mirror/gettext/gettext-0.16.1.tar.gz
