@@ -63,7 +63,9 @@ namespace OpenViBEPlugins
 			}
 			else
 			{
-				// getLogManager() << LogLevel_Warning << "Unhandled key code " << (uint32)uiKey << "\n";
+				// this->getLogManager() << LogLevel_Warning << "Unhandled key code " << (uint32)uiKey << "\n";
+				m_bUnknownKeyPressed = true;
+				m_ui32UnknownKeyCode = (uint32)uiKey;
 			}
 		}
 
@@ -119,7 +121,9 @@ namespace OpenViBEPlugins
 			m_pStimulationOutputWriterHelper(NULL),
 			m_pWidget(NULL),
 			m_ui64PreviousActivationTime(0),
-			m_bError(false)
+			m_bError(false),
+			m_bUnknownKeyPressed(false),
+			m_ui32UnknownKeyCode(0)
 		{
 		}
 
@@ -211,6 +215,12 @@ namespace OpenViBEPlugins
 			if(m_bError)
 			{
 				return false;
+			}
+
+			if (m_bUnknownKeyPressed)
+			{
+				this->getLogManager() << LogLevel_Warning << "Unhandled key code " << m_ui32UnknownKeyCode << "\n";
+				m_bUnknownKeyPressed = false;
 			}
 
 			uint64 l_ui64CurrentTime=rMessageClock.getTime();

@@ -69,6 +69,10 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64PreviousActivationTime;
 
 			OpenViBE::boolean m_bError;
+
+		private:
+			OpenViBE::boolean m_bUnknownKeyPressed;
+			OpenViBE::uint32 m_ui32UnknownKeyCode;
 		};
 
 		/**
