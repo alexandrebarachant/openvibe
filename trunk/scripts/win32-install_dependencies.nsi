@@ -500,6 +500,40 @@ SectionEnd
 ;##########################################################################################################################################################
 ;##########################################################################################################################################################
 
+Section "pthreads"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\pthreads-2.8.0-dev.zip" no_need_to_download_pthreads_dev
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/pthreads-2.8.0-dev.zip "arch\pthreads-2.8.0-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_pthreads_dev:
+	ZipDLL::extractall "arch\pthreads-2.8.0-dev.zip" "pthreads"
+
+	IfFileExists "arch\pthreads-7.26-runtime.zip" no_need_to_download_pthreads_runtime
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/pthreads-2.8.0-runtime.zip "arch\pthreads-2.8.0-runtime.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0"
+			Quit
+no_need_to_download_pthreads_runtime:
+	ZipDLL::extractall "arch\pthreads-2.8.0-runtime.zip" "pthreads"
+
+	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
+	FileSeek $0 0 END
+	FileWrite $0 "SET OV_DEP_PTHREADS=$INSTDIR\pthreads$\r$\n"
+	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
 Section "OpenAL"
 
 	SetOutPath "$INSTDIR"
@@ -651,6 +685,7 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\libogg"
 	RMDir /r "$INSTDIR\libvorbis"
 	RMDir /r "$INSTDIR\tmp"
+	RMDir /r "$INSTDIR\pthreads"
 
 	Delete "$INSTDIR\..\scripts\win32-dependencies.cmd"
 
