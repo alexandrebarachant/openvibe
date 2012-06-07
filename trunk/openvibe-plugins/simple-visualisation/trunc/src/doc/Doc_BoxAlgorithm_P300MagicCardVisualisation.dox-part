@@ -85,42 +85,56 @@ exact stimulation code to the first input. Flashing the second card needs this s
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting5|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting6|
+Default background image for every card (the image displayed when the card is NOT flashed).
+If this setting is empty, the background image for every card must be named "<i>cardname</i>-offscreen" (e.g. "pacman.png-offscreen").
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting6|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting7|
+ 1st card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting7|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting8|
+ 2nd card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting8|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting9|
+ 3rd card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting9|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting10|
+ 4th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting10|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting11|
+ 5th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting11|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting12|
+ 6th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting12|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting13|
+ 7th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting13|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting14|
+ 8th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting14|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting15|
+ 9th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting15|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting16|
+ 10th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting16|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting17|
+ 11th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting17|
 
  * |OVP_DocBegin_BoxAlgorithm_P300MagicCardVisualisation_Setting18|
+ 12th card. Cards are ordered from left to right, line after line.
  * |OVP_DocEnd_BoxAlgorithm_P300MagicCardVisualisation_Setting18|
 __________________________________________________________________
 

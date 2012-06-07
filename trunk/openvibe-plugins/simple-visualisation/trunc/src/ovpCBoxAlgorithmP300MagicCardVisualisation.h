@@ -128,7 +128,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addSetting("Target background color",         OV_TypeId_Color,       "10,40,10");
 				rBoxAlgorithmPrototype.addSetting("Selected background color",       OV_TypeId_Color,       "70,20,20");
 				rBoxAlgorithmPrototype.addSetting("Card stimulation base",           OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png");
+				rBoxAlgorithmPrototype.addSetting("Default background filename",     OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png-offscreen");
 				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png");
 				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png");
 				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png");

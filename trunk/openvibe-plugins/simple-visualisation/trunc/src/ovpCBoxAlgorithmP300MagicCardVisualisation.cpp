@@ -49,6 +49,7 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 	m_oTargetBackgroundColor  =_AutoCast_(*this->getBoxAlgorithmContext(), 2);
 	m_oSelectedBackgroundColor=_AutoCast_(*this->getBoxAlgorithmContext(), 3);
 	m_ui64CardStimulationBase =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 4);
+	CString l_sBackgroundImageFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 5);
 
 	for(uint32 i=6; i<l_rStaticBoxContext.getSettingCount(); i++)
 	{
@@ -57,9 +58,15 @@ boolean CBoxAlgorithmP300MagicCardVisualisation::initialize(void)
 		gtk_widget_show(l_pForegroundImage);
 		g_object_ref(l_pForegroundImage);
 		m_vForegroundImage.push_back(l_pForegroundImage);
-
-		CString l_sBackgroundImageFilename=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 5);
-		::GtkWidget* l_pBackgroundImage=gtk_image_new_from_file((l_sBackgroundImageFilename+CString("-offscreen")).toASCIIString());
+		::GtkWidget* l_pBackgroundImage;
+		if(l_sBackgroundImageFilename == CString(""))
+		{
+			l_pBackgroundImage=gtk_image_new_from_file((l_sForegroundImageFilename+CString("-offscreen")).toASCIIString());
+		}
+		else
+		{
+			l_pBackgroundImage=gtk_image_new_from_file(l_sBackgroundImageFilename.toASCIIString());
+		}
 		gtk_widget_show(l_pBackgroundImage);
 		g_object_ref(l_pBackgroundImage);
 		m_vBackgroundImage.push_back(l_pBackgroundImage);
