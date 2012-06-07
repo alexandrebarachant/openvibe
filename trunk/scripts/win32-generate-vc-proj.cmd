@@ -1,21 +1,6 @@
 @echo off
-
-if "%1" == "" goto recall_me
-
-goto base
-
-REM #######################################################################################
-
-:recall_me
-
-cmd /e /v /c %0 dummy
-
-goto terminate
-
-REM #######################################################################################
-
-:base
-
+setlocal EnableDelayedExpansion
+setlocal enableextensions 
 REM #######################################################################################
 
 if not exist "win32-init_env_command.cmd" (
@@ -64,7 +49,7 @@ for /F %%s in (%OpenViBE_build_order%) do (
 )
 
 cd ..\local-tmp\visual
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -Wno-dev -DCMAKE_MODULE_PATH="%saved_directory:\=/%/../cmake-modules;${CMAKE_MODULE_PATH}" . -G"%VSCMake%"
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=" /DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355" -Wno-dev -DCMAKE_MODULE_PATH="%saved_directory:\=/%/../cmake-modules;${CMAKE_MODULE_PATH}" . -G"Visual Studio 10"
 cd %saved_directory%
 
 echo.
