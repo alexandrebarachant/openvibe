@@ -487,12 +487,16 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 	{
 		for(uint32 i = 0; i < m_vAlgorithms.size(); i++)
 		{
+
 			string l_sAlgo = string((const char *)m_mAlgorithmHeaderDeclaration[m_vAlgorithms[i]]);
 			size_t it = l_sAlgo.find("@@ClassName@@");
-			string l_sClass(m_sClassName);
-			l_sClass = "CBoxAlgorithm" + l_sClass;
-			l_sAlgo.replace(it,13, l_sClass);
-			m_mAlgorithmHeaderDeclaration[m_vAlgorithms[i]] = CString(l_sAlgo.c_str());
+			if(it != string::npos)
+			{
+				string l_sClass(m_sClassName);
+				l_sClass = "CBoxAlgorithm" + l_sClass;
+				l_sAlgo.replace(it,13, l_sClass);
+				m_mAlgorithmHeaderDeclaration[m_vAlgorithms[i]] = CString(l_sAlgo.c_str());
+			}
 		}
 	}
 
