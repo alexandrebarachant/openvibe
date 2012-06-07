@@ -2,9 +2,8 @@
 
 #include "ovp_defines.h"
 
-#if defined TARGET_HAS_ThirdPartyMatlab
-#include "box-algorithms/tools/ovpCBoxAlgorithmMatlabFilter.h"
-#endif // TARGET_HAS_ThirdPartyMatlab
+#include "ovpCBoxAlgorithmMatlabFilter.h"
+#include "ovpCBoxAlgorithmMatlabScripting.h"
 
 #include <vector>
 
@@ -12,6 +11,9 @@ OVP_Declare_Begin()
 
 #if defined TARGET_HAS_ThirdPartyMatlab
 	OVP_Declare_New(OpenViBEPlugins::Tools::CBoxAlgorithmMatlabFilterDesc);
+	
+	OVP_Declare_New(OpenViBEPlugins::Matlab::CBoxAlgorithmMatlabScriptingDesc);
+
 #endif // TARGET_HAS_ThirdPartyMatlab
 
 OVP_Declare_End()

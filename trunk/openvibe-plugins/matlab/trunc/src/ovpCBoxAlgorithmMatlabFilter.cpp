@@ -11,7 +11,7 @@
 #include <engine.h>
 #include <string>
 
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 	#include <windows.h>
 #endif
 
@@ -33,9 +33,9 @@ using namespace OpenViBEPlugins::Tools;
 boolean CBoxAlgorithmMatlabFilter::OpenMatlabEngineSafely(void)
 {
 	this->getLogManager() << LogLevel_Trace << "Trying to open Matlab engine\n";
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 	m_pMatlabEngineHandle=::engOpen(m_sMatlabPath.toASCIIString());
-#elif defined OVP_OS_Windows
+#elif defined TARGET_OS_Windows
 	__try
 	{
 		m_pMatlabEngineHandle=::engOpen(NULL);
@@ -80,7 +80,7 @@ boolean CBoxAlgorithmMatlabFilter::initialize(void)
 
 	getStaticBoxContext().getSettingValue(0, m_sMatlabPath);
 
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 	char * l_sPath = getenv("PATH");
 	if(l_sPath == NULL)
 	{
@@ -120,7 +120,7 @@ boolean CBoxAlgorithmMatlabFilter::CloseMatlabEngineSafely(void)
 		return true;
 	}
 	this->getLogManager() << LogLevel_Trace << "Trying to close Matlab engine\n";
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 	__try
 	{
 #endif
@@ -138,7 +138,7 @@ boolean CBoxAlgorithmMatlabFilter::CloseMatlabEngineSafely(void)
 				this->getLogManager() << LogLevel_ImportantWarning << "Could not close Matlab engine.\n";
 			}
 		}
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 	}
 	__except(EXCEPTION_EXECUTE_HANDLER)
 	{

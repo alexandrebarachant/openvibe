@@ -3,7 +3,7 @@
 
 #if defined TARGET_HAS_ThirdPartyMatlab
 
-#include "../../ovp_defines.h"
+#include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -74,7 +74,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA / Donders Institute for Brain, Cognition and Behaviour"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This box communicates with the Matlab Engine to perform matrix and stim processing."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("User must implement the matlab functions:\n[matrix_out]=bci_Initialize(bci_context,matrix_in)\n[matrix_out,stim_out]=bci_Process(bci_context,matrix_in,stim_in)"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tools"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Matlab"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("2.1"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-execute"); }
 
@@ -89,9 +89,9 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addOutput ("Filtered streamed matrix", OV_TypeId_StreamedMatrix);
 				rBoxAlgorithmPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
 #if defined OVP_OS_Linux
-				rBoxAlgorithmPrototype.addSetting("Matlab launch command", OV_TypeId_String, "ssh user@host /path/to/matlab");
+				rBoxAlgorithmPrototype.addSetting("Matlab launch command", OV_TypeId_String, "[ssh user@host] /path/to/matlab");
 #elif defined OVP_OS_Windows
-				rBoxAlgorithmPrototype.addSetting("Path to Matlab Engine DLLs", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
+				rBoxAlgorithmPrototype.addSetting("Path to Matlab Executable", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
 #else
 #endif
 				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "[path-to-my-matlab-workspace]");
