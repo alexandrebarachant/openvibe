@@ -2,6 +2,7 @@
 #include "ovasCAcquisitionServerThread.h"
 #include "ovasCAcquisitionServer.h"
 
+#include "field-trip-protocol/ovasCDriverFieldtrip.h"
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
 #include "generic-sawtooth/ovasCDriverGenericSawTooth.h"
 #include "generic-raw-reader/ovasCDriverGenericRawFileReader.h"
@@ -23,8 +24,6 @@
 #include "openal-mono16bit-audiocapture/ovasCDriverOpenALAudioCapture.h"
 
 #include "mitsarEEG202A/ovasCDriverMitsarEEG202A.h"
-
-#include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Memory.h>
 #include <system/Time.h>
@@ -124,6 +123,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverGenericSawTooth(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericRawFileReader(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericRawTelnetReader(m_pAcquisitionServer->getDriverContext()));
+	m_vDriver.push_back(new CDriverFieldtrip(m_pAcquisitionServer->getDriverContext()));
 #if defined OVAS_OS_Windows
 	m_vDriver.push_back(new CDriverMitsarEEG202A(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverBrainProductsBrainampSeries(m_pAcquisitionServer->getDriverContext()));
@@ -186,9 +186,9 @@ CAcquisitionServerGUI::~CAcquisitionServerGUI(void)
 		::fprintf(l_pFile, "AcquisitionServer_LastConnectionPort = %i\n", this->getTCPPort());
 		::fprintf(l_pFile, "# Last Preferences set in the acquisition server\n");
 		::fprintf(l_pFile, "AcquisitionServer_DriftCorrectionPolicy = %s\n", m_pAcquisitionServer->getDriftCorrectionPolicyStr().toASCIIString());
-		::fprintf(l_pFile, "AcquisitionServer_JitterEstimationCountForDrift = %i\n", m_pAcquisitionServer->getJitterEstimationCountForDrift());
-		::fprintf(l_pFile, "AcquisitionServer_DriftToleranceDuration = %i\n", m_pAcquisitionServer->getDriftToleranceDuration());
-		::fprintf(l_pFile, "AcquisitionServer_OverSamplingFactor = %i\n", m_pAcquisitionServer->getOversamplingFactor());
+		::fprintf(l_pFile, "AcquisitionServer_JitterEstimationCountForDrift = %llu\n", m_pAcquisitionServer->getJitterEstimationCountForDrift());
+		::fprintf(l_pFile, "AcquisitionServer_DriftToleranceDuration = %llu\n", m_pAcquisitionServer->getDriftToleranceDuration());
+		::fprintf(l_pFile, "AcquisitionServer_OverSamplingFactor = %llu\n", m_pAcquisitionServer->getOversamplingFactor());
 		::fprintf(l_pFile, "AcquisitionServer_CheckImpedance = %s\n", (m_pAcquisitionServer->isImpedanceCheckRequested() ? "True" : "False"));
 		::fprintf(l_pFile, "AcquisitionServer_NaNReplacementPolicy = %s\n", m_pAcquisitionServer->getNaNReplacementPolicyStr().toASCIIString());
 		::fprintf(l_pFile, "# Path to emotiv SDK\n");
