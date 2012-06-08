@@ -12,7 +12,7 @@ namespace OpenViBEAcquisitionServer
 	class CConfigurationGTecGUSBamp : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
-		CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName,OpenViBE::uint32& rUSBIndex,OpenViBE::uint8& rCommonGndAndRefBitmap, OpenViBE::int32& rNotchFilterIndex, OpenViBE::int32& rBandPassFilterIndex);
+		CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName,OpenViBE::uint32& rUSBIndex,OpenViBE::uint8& rCommonGndAndRefBitmap, OpenViBE::int32& rNotchFilterIndex, OpenViBE::int32& rBandPassFilterIndex,OpenViBE::boolean& rTriggerInput);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);
@@ -29,6 +29,7 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBE::int32& m_rNotchFilterIndex;
 		OpenViBE::int32& m_rBandPassFilterIndex;
+		OpenViBE::boolean& m_rTriggerInput;
 		
 	private:
 		::GtkWidget* m_pCalibrateDialog;

@@ -6,7 +6,6 @@
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Time.h>
-
 #include <cmath>
 
 #include <windows.h>
@@ -14,17 +13,22 @@
 #include <cstdlib>
 #include <cstdio>
 #include <gUSBamp.h>
-#define boolean OpenViBE::boolean
+
+#define GTEC_NUM_CHANNELS 16
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
 
-static const uint32 g_ui32AcquiredChannelCount=16;
-
-//___________________________________________________________________//
-//                                                                   //
+/*
+	This driver always reads 17 channels: 16 + 1
+	16 are EEG channels
+	1 is the last channel that provides triggers from the parallel port of the GTEC
+	Although 17 channels are read only "m_ui32AcquiredChannelCount" + 1 (if m_pTriggerInputEnabled==true) are displayed.
+	If m_ui32AcquiredChannelCount=6 and m_pTriggerInputEnabled=true then the output in OpenVibe is 7 channels. If m_pTriggerInputEnabled=false then 6.
+	"m_ui32AcquiredChannelCount" is a user modifiable variable with default value 16
+*/
 
 CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
@@ -40,9 +44,11 @@ CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
 	,m_ui8CommonGndAndRefBitmap(0)
 	,m_i32NotchFilterIndex(-1)
 	,m_i32BandPassFilterIndex(-1)
+	,m_bTriggerInputEnabled(false)
+	,m_ui32AcquiredChannelCount(GTEC_NUM_CHANNELS)
 {
 	m_oHeader.setSamplingFrequency(512);
-	m_oHeader.setChannelCount(16);
+	m_oHeader.setChannelCount(GTEC_NUM_CHANNELS);
 }
 
 void CDriverGTecGUSBamp::release(void)
@@ -58,7 +64,7 @@ const char* CDriverGTecGUSBamp::getName(void)
 //___________________________________________________________________//
 //                                                                   //
 
-boolean CDriverGTecGUSBamp::initialize(
+OpenViBE::boolean CDriverGTecGUSBamp::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
@@ -69,6 +75,16 @@ boolean CDriverGTecGUSBamp::initialize(
 	{
 		return false;
 	}
+
+	if (m_bTriggerInputEnabled)
+	{
+		m_oHeader.setChannelCount(m_ui32AcquiredChannelCount+1);
+		m_oHeader.setChannelName(m_ui32AcquiredChannelCount, "CH_Event");
+	}
+	else
+	{
+		m_oHeader.setChannelCount(m_ui32AcquiredChannelCount);
+	}                         
 
 	// If device has not been selected, try to find a device
 	uint32 i=0;
@@ -95,9 +111,19 @@ boolean CDriverGTecGUSBamp::initialize(
 		return false;
 	}
 
-	m_ui32BufferSize=(g_ui32AcquiredChannelCount+1)*ui32SampleCountPerSentBlock*sizeof(float)+HEADER_SIZE;
+	//allocate buffers
+	m_ui32BufferSize=(GTEC_NUM_CHANNELS + 1)*ui32SampleCountPerSentBlock*sizeof(float)+HEADER_SIZE;//+1 channel for trigger
 	m_pBuffer=new uint8[m_ui32BufferSize];
-	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
+
+	if (m_bTriggerInputEnabled)
+	{
+		m_pSample=new float32[(m_ui32AcquiredChannelCount+1) * ui32SampleCountPerSentBlock];
+	}
+	else
+	{
+		m_pSample=new float32[m_ui32AcquiredChannelCount * ui32SampleCountPerSentBlock];
+	}
+	
 	if(!m_pBuffer || !m_pSample)
 	{
 		delete [] m_pBuffer;
@@ -108,6 +134,7 @@ boolean CDriverGTecGUSBamp::initialize(
 	::memset(m_pBuffer, 0, m_ui32BufferSize);
 	m_pSampleTranspose=reinterpret_cast<float32*>(m_pBuffer+HEADER_SIZE);
 	m_pOverlapped=new ::OVERLAPPED;
+	
 	if(!m_pOverlapped)
 	{
 		delete [] m_pBuffer;
@@ -115,7 +142,9 @@ boolean CDriverGTecGUSBamp::initialize(
 		::CloseHandle(m_pEvent);
 		return false;
 	}
+
 #define m_pOverlapped ((::OVERLAPPED*)m_pOverlapped)
+	
 	::memset(m_pOverlapped, 0, sizeof(::OVERLAPPED));
 	m_pOverlapped->hEvent=m_pEvent;
 
@@ -136,7 +165,7 @@ boolean CDriverGTecGUSBamp::initialize(
 	return true;
 }
 
-boolean CDriverGTecGUSBamp::start(void)
+OpenViBE::boolean CDriverGTecGUSBamp::start(void)
 {
 	if(!m_rDriverContext.isConnected()) return false;
 	if(m_rDriverContext.isStarted()) return false;
@@ -162,68 +191,112 @@ boolean CDriverGTecGUSBamp::start(void)
 	if(!::GT_SetBufferSize(m_pDevice, m_ui32SampleCountPerSentBlock)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetBufferSize\n";
 	if(!::GT_SetChannels(m_pDevice, l_oChannel, sizeof(l_oChannel)/sizeof(::UCHAR))) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetChannels\n";
 	if(!::GT_SetSlave(m_pDevice, FALSE)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetSlave\n";
-	if(!::GT_EnableTriggerLine(m_pDevice, TRUE)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_EnableTriggerLine\n";
-// GT_EnableSC
-// GT_SetBipolar
+	
+	if(!::GT_EnableTriggerLine(m_pDevice, TRUE)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_EnableTriggerLine - the extra input trigger channel is disabled\n";
+	// GT_EnableSC
+    // GT_SetBipolar
 
-	for(uint32 i=0; i<g_ui32AcquiredChannelCount; i++)
+	for(uint32 i=0; i<m_ui32AcquiredChannelCount; i++)
 	{
 		if(!::GT_SetBandPass(m_pDevice, i+1, m_i32BandPassFilterIndex)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetBandPass for channel " << i << "\n";
 		if(!::GT_SetNotch(m_pDevice, i+1, m_i32NotchFilterIndex)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetNotch for channel " << i << "\n";
 	}
-/* */
+
 	if(!::GT_SetSampleRate(m_pDevice, m_oHeader.getSamplingFrequency())) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetSampleRate\n";
 
 	if(!::GT_SetReference(m_pDevice, l_oReference)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetReference\n";
 	if(!::GT_SetGround(m_pDevice, l_oGround)) m_rDriverContext.getLogManager() << LogLevel_Error << "Unexpected error while calling GT_SetGround\n";
+
+	m_ui32LastStimulation = STIMULATION_0;
+	m_ui32TotalHardwareStimulations = 0;
+	m_ui32TotalDriverChunksLost = 0;
 
 	::GT_Start(m_pDevice);
 
 	return true;
 }
 
-boolean CDriverGTecGUSBamp::loop(void)
+OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 {
+	CStimulationSet   l_oStimulationSet;
+
 	if(!m_rDriverContext.isConnected()) return false;
 	if(m_rDriverContext.isStarted())
 	{
-		if(::GT_GetData(m_pDevice, m_pBuffer, m_ui32BufferSize, m_pOverlapped))
-		{
-			if(::WaitForSingleObject(m_pOverlapped->hEvent, 2000)==WAIT_OBJECT_0)
+
+		if (::GT_GetData(m_pDevice, m_pBuffer, m_ui32BufferSize, m_pOverlapped))
 			{
-				DWORD l_dwByteCount=0;
-				::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
-				if(l_dwByteCount==m_ui32BufferSize)
+				if(::WaitForSingleObject(m_pOverlapped->hEvent, 1000)==WAIT_OBJECT_0)
 				{
-					for(uint32 i=0; i<m_oHeader.getChannelCount() && i<g_ui32AcquiredChannelCount; i++)
+					DWORD l_dwByteCount=0;
+				
+					::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
+
+					if(l_dwByteCount==m_ui32BufferSize)
 					{
-						for(uint32 j=0; j<m_ui32SampleCountPerSentBlock; j++)
-						{
-							m_pSample[i*m_ui32SampleCountPerSentBlock+j]=m_pSampleTranspose[j*(g_ui32AcquiredChannelCount+1)+i];
-						}
+
+							for(uint32 i=0; i<m_ui32AcquiredChannelCount; i++) 
+							{
+								for(uint32 j=0; j<m_ui32SampleCountPerSentBlock; j++)
+								{
+									m_pSample[i*m_ui32SampleCountPerSentBlock+j]=m_pSampleTranspose[j*(GTEC_NUM_CHANNELS + 1)+i];
+								}
+							}
+
+							if (m_bTriggerInputEnabled)
+							{
+								int l_oStimulationChannel = m_oHeader.getChannelCount()-1;
+        
+								for(uint32 iSample=0; iSample<m_ui32SampleCountPerSentBlock; iSample++)
+								{
+									OpenViBE::uint32 l_ui32StimCode = m_pSampleTranspose[iSample*(GTEC_NUM_CHANNELS + 1) + GTEC_NUM_CHANNELS];
+									m_pSample[m_ui32AcquiredChannelCount*m_ui32SampleCountPerSentBlock+iSample]=l_ui32StimCode;
+
+									if ( (l_ui32StimCode != STIMULATION_0) //this means that the user sends 0 after each stimulatuion and in the beginning
+											&& (l_ui32StimCode != m_ui32LastStimulation) 
+										)
+									{
+										OpenViBE::uint64 identifier;
+										switch (l_ui32StimCode)
+										{
+											case STIMULATION_64  : identifier = OVTK_StimulationId_Label_01; break;
+											case STIMULATION_128 : identifier = OVTK_StimulationId_Label_02; break;
+											case STIMULATION_192 : identifier = OVTK_StimulationId_Label_03; break;
+											default: identifier = OVTK_StimulationId_Label_07;
+										}
+
+										l_oStimulationSet.appendStimulation(identifier,( uint64(iSample) << 32) / m_oHeader.getSamplingFrequency(),0);
+										m_ui32TotalHardwareStimulations++;
+									}
+
+									m_ui32LastStimulation = l_ui32StimCode;
+								}     
+							}
+
+							m_pCallback->setSamples(m_pSample);	
+							m_pCallback->setStimulationSet(l_oStimulationSet);
+							m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());						
 					}
-					m_pCallback->setSamples(m_pSample);
-
-					m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
-
-					// TODO manage stims
+					else
+					{
+						m_ui32TotalDriverChunksLost++;
+						//m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
+						/*m_rDriverContext.getLogManager() << LogLevel_Warning 
+						<< "Returned data is different than expected. Total chunks lost: " << m_totalDriverChunksLost 
+						<< ", Total samples lost: " << m_ui32SampleCountPerSentBlock * m_totalDriverChunksLost
+						<< "\n";*/
+					}
 				}
 				else
 				{
-					// m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
+					// TIMEOUT
+					//m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 1\n";
 				}
 			}
 			else
 			{
-				// TIMEOUT
-				// m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 1\n";
+				//m_rDriverContext.getLogManager() << LogLevel_Error << "tError on GT_GetData.\n";
 			}
-		}
-		else
-		{
-			// TIMEOUT
-			// m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 2\n";
-		}
 	}
 	else
 	{
@@ -251,18 +324,22 @@ boolean CDriverGTecGUSBamp::loop(void)
 	return true;
 }
 
-boolean CDriverGTecGUSBamp::stop(void)
+OpenViBE::boolean CDriverGTecGUSBamp::stop(void)
 {
 	if(!m_rDriverContext.isConnected()) return false;
 	if(!m_rDriverContext.isStarted()) return false;
 
+	//stop device
 	::GT_Stop(m_pDevice);
 	::GT_ResetTransfer(m_pDevice);
 
+	m_rDriverContext.getLogManager() << LogLevel_Debug << "Total number of hardware stimulations acquired: " << m_ui32TotalHardwareStimulations << "\n";
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "Total chunks lost: " << m_ui32TotalDriverChunksLost << "\n";
+	
 	return true;
 }
 
-boolean CDriverGTecGUSBamp::uninitialize(void)
+OpenViBE::boolean CDriverGTecGUSBamp::uninitialize(void)
 {
 	if(!m_rDriverContext.isConnected()) return false;
 	if(m_rDriverContext.isStarted()) return false;
@@ -283,18 +360,24 @@ boolean CDriverGTecGUSBamp::uninitialize(void)
 
 //___________________________________________________________________//
 //                                                                   //
-boolean CDriverGTecGUSBamp::isConfigurable(void)
+OpenViBE::boolean CDriverGTecGUSBamp::isConfigurable(void)
 {
 	return true;
 }
 
-boolean CDriverGTecGUSBamp::configure(void)
+OpenViBE::boolean CDriverGTecGUSBamp::configure(void)
 {
-	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.ui", m_ui32DeviceIndex, m_ui8CommonGndAndRefBitmap, m_i32NotchFilterIndex,m_i32BandPassFilterIndex);
+	CConfigurationGTecGUSBamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GUSBamp.ui", m_ui32DeviceIndex, m_ui8CommonGndAndRefBitmap, m_i32NotchFilterIndex,m_i32BandPassFilterIndex,m_bTriggerInputEnabled);
+
+	m_oHeader.setChannelCount(m_ui32AcquiredChannelCount);
+	
 	if(!m_oConfiguration.configure(m_oHeader))
 	{
 		return false;
 	}
+
+	this->m_ui32AcquiredChannelCount = m_oHeader.getChannelCount();
+
 	return true;
 }
 

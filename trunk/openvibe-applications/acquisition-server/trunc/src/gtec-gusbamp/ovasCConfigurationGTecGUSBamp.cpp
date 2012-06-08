@@ -6,7 +6,7 @@
 #include <gUSBamp.h>
 #include <iostream>
 #include <sstream>
-#define boolean OpenViBE::boolean
+//#define boolean OpenViBE::boolean
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -37,28 +37,31 @@ static void button_filters_pressed_cb(::GtkButton* pButton, void* pUserData)
 	l_pConfig->buttonFiltersPressedCB();
 }
 
-CConfigurationGTecGUSBamp::CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName,uint32& rUSBIndex,uint8& rCommonGndAndRefBitmap, int32& rNotchFilterIndex, int32& rBandPassFilterIndex)
+CConfigurationGTecGUSBamp::CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName,uint32& rUSBIndex,uint8& rCommonGndAndRefBitmap, int32& rNotchFilterIndex, int32& rBandPassFilterIndex,OpenViBE::boolean& rTriggerInput)
 	: CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rUSBIndex(rUSBIndex)
 	,m_rCommonGndAndRefBitmap(rCommonGndAndRefBitmap)
 	,m_rNotchFilterIndex(rNotchFilterIndex)
 	,m_rBandPassFilterIndex(rBandPassFilterIndex)
-	
+	,m_rTriggerInput(rTriggerInput)
 {
 }
 
-boolean CConfigurationGTecGUSBamp::preConfigure(void)
+OpenViBE::boolean CConfigurationGTecGUSBamp::preConfigure(void)
 {
 	if(!CConfigurationBuilder::preConfigure())
 	{
 		return false;
 	}
 
+    ::GtkCheckButton* l_pCheckButton_HardwareTagging=GTK_CHECK_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "checkbutton_EventChannel"));
+	::gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pCheckButton_HardwareTagging), m_rTriggerInput);
+
 	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
 	char l_sBuffer[1024];
 	int l_iCount=0;
-	boolean l_bSelected=false;
+	OpenViBE::boolean l_bSelected=false;
 
 	// autodetection of the connected device
 	for(uint32 i=1; i<11; i++)
@@ -203,7 +206,7 @@ boolean CConfigurationGTecGUSBamp::preConfigure(void)
 	return true;
 }
 
-boolean CConfigurationGTecGUSBamp::postConfigure(void)
+OpenViBE::boolean CConfigurationGTecGUSBamp::postConfigure(void)
 {
 	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
@@ -241,8 +244,10 @@ boolean CConfigurationGTecGUSBamp::postConfigure(void)
 		m_rNotchFilterIndex = gtk_combo_box_get_active(l_pComboBoxNotch) - 1;
 		GtkComboBox * l_pComboBoxBandPass = GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox-band-pass"));
 		m_rBandPassFilterIndex = gtk_combo_box_get_active(l_pComboBoxBandPass) - 1;
+
+		::GtkCheckButton* l_pCheckButton_HardwareTagging=GTK_CHECK_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "checkbutton_EventChannel"));
+		m_rTriggerInput=(OpenViBE::boolean)::gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCheckButton_HardwareTagging));
 	}
-	
 
 	if(!CConfigurationBuilder::postConfigure())
 	{
