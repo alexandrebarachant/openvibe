@@ -262,19 +262,25 @@ namespace
 		CApplication* l_pApplication=static_cast<CApplication*>(pUserData);
 		/* Visible if row is non-empty and first column is "HI" */
 
-		gboolean l_bVisible = false;
-		gchar* l_sHaystack;
 
-		gtk_tree_model_get(model, iter, 0, &l_sHaystack, -1);
+		gboolean l_bVisible = false;
+		gboolean l_bShowUnstable = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gtk_builder_get_object(static_cast<CApplication*>(pUserData)->m_pBuilderInterface, "openvibe-show_unstable")));
+
+		gchar* l_sHaystackName;
+		gchar* l_sHaystackDescription;
+		gboolean l_bHaystackUnstable;
+
+		gtk_tree_model_get(model, iter, 0, &l_sHaystackName, 1, &l_sHaystackDescription, 6, &l_bHaystackUnstable, -1);
 
 		// consider only leaf nodes which match the search term
-		if (string::npos != strtoupper(l_sHaystack).find(strtoupper(l_pApplication->m_sSearchTerm)) || gtk_tree_model_iter_has_child(model, iter))
+		if ((l_bShowUnstable || !l_bHaystackUnstable) && (string::npos != strtoupper(l_sHaystackName).find(strtoupper(l_pApplication->m_sSearchTerm)) || string::npos != strtoupper(l_sHaystackDescription).find(strtoupper(l_pApplication->m_sSearchTerm)) || gtk_tree_model_iter_has_child(model, iter)))
 		{
 			//std::cout << "value : " << l_pApplication->m_sSearchTerm << "\n";
 			l_bVisible = true;
 		}
 
-		g_free(l_sHaystack);
+		g_free(l_sHaystackName);
+		g_free(l_sHaystackDescription);
 
 		return l_bVisible;
 	}
@@ -294,12 +300,14 @@ namespace
 
 	static gboolean	do_refilter( CApplication *pApplication )
 	{
+		/*
 		if (0 == strcmp(pApplication->m_sSearchTerm, ""))
 		{
 			// reattach the old model
 			gtk_tree_view_set_model(pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModel));
 		}
 		else
+		*/
 		{
 			pApplication->m_pBoxAlgorithmTreeModelFilter = gtk_tree_model_filter_new(GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModel), NULL);
 			pApplication->m_pBoxAlgorithmTreeModelFilter2 = gtk_tree_model_filter_new(GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModelFilter), NULL);
@@ -318,7 +326,15 @@ namespace
 
 			// attach the model to the treeview
 			gtk_tree_view_set_model(pApplication->m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(pApplication->m_pBoxAlgorithmTreeModelFilter4));
-			gtk_tree_view_expand_all(pApplication->m_pBoxAlgorithmTreeView);
+
+			if (0 == strcmp(pApplication->m_sSearchTerm, ""))
+			{
+				gtk_tree_view_collapse_all(pApplication->m_pBoxAlgorithmTreeView);
+			}
+			else
+			{
+				gtk_tree_view_expand_all(pApplication->m_pBoxAlgorithmTreeView);
+			}
 		}
 
 		pApplication->m_giFilterTimeout = 0;
@@ -340,6 +356,14 @@ namespace
 
 		queue_refilter(pApplication);
 	}
+
+	void refresh_search_no_data_cb(::GtkToggleButton* pToggleButton, CApplication* pApplication)
+	{
+		pApplication->m_sSearchTerm = gtk_entry_get_text(GTK_ENTRY(gtk_builder_get_object(pApplication->m_pBuilderInterface, "openvibe-box_algorithm_searchbox")));
+
+		queue_refilter(pApplication);
+	}
+
 
 	static gboolean searchbox_focus_in_cb(::GtkWidget* pWidget, ::GdkEvent* pEvent, CApplication* pApplication)
 	{
@@ -542,6 +566,8 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-box_algorithm_searchbox")), "focus-in-event", G_CALLBACK(searchbox_focus_in_cb), this);
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-box_algorithm_searchbox")), "focus-out-event", G_CALLBACK(searchbox_focus_out_cb), this);
 
+	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-show_unstable")), "toggled", G_CALLBACK(refresh_search_no_data_cb), this);
+
 	__g_idle_add__(idle_application_loop, this);
 	__g_timeout_add__(1000, timeout_application_loop, this);
 
@@ -581,10 +607,11 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		gtk_tree_view_column_set_fixed_width(l_pTreeViewColumnDesc, 512);
 		gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnName);
 		gtk_tree_view_append_column(m_pBoxAlgorithmTreeView, l_pTreeViewColumnDesc);
+
 		// g_signal_connect(G_OBJECT(m_pBoxAlgorithmTreeView), "querry_tooltip", G_CALLBACK(resource_query_tooltip_cb), this);
 		//
 		// Prepares box algorithm model
-		m_pBoxAlgorithmTreeModel=gtk_tree_store_new(6, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+		m_pBoxAlgorithmTreeModel=gtk_tree_store_new(7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 
 		// Tree Storage for the searches
 		gtk_tree_view_set_model(m_pBoxAlgorithmTreeView, GTK_TREE_MODEL(m_pBoxAlgorithmTreeModel) );
@@ -620,11 +647,14 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		gtk_tree_view_append_column(m_pAlgorithmTreeView, l_pTreeViewColumnName);
 		gtk_tree_view_append_column(m_pAlgorithmTreeView, l_pTreeViewColumnDesc);
 		// g_signal_connect(G_OBJECT(m_pAlgorithmTreeView), "querry_tooltip", G_CALLBACK(resource_query_tooltip_cb), this);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-show_unstable")), m_rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ShowUnstable}"));
+		refresh_search_no_data_cb(NULL, this);
 
 		m_sSearchTerm = "";
 		// Prepares algorithm model
-		m_pAlgorithmTreeModel=gtk_tree_store_new(6, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+		m_pAlgorithmTreeModel=gtk_tree_store_new(7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 		gtk_tree_view_set_model(m_pAlgorithmTreeView, GTK_TREE_MODEL(m_pAlgorithmTreeModel));
+
 	}
 
 	// Prepares drag & drop for box creation
@@ -1675,6 +1705,7 @@ boolean CApplication::quitApplicationCB(void)
 			::fprintf(l_pFile, "# This file is generated\n");
 			::fprintf(l_pFile, "# Do not modify\n");
 			::fprintf(l_pFile, "\n");
+			::fprintf(l_pFile, "Designer_ShowUnstable = %s\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-show_unstable")))?"True":"False");
 			::fprintf(l_pFile, "# Last files opened in the designer\n");
 			for(it=m_vInterfacedScenario.begin(); it!=m_vInterfacedScenario.end(); it++)
 			{

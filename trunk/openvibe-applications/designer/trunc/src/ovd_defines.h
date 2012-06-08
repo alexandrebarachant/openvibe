@@ -56,6 +56,7 @@ namespace OpenViBEDesigner
 		Resource_StringStockIcon,
 		Resource_StringColor,
 		Resource_BooleanIsPlugin,
+		Resource_BooleanIsUnstable,
 	};
 
 	enum

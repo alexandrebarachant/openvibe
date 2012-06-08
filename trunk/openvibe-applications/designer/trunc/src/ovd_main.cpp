@@ -157,11 +157,13 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 			l_bShouldShow=false;
 		}
 
+		/*
 		if  (rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass())
 		 && !rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ShowUnstable}", false))
 		{
 			l_bShouldShow=false;
 		}
+		*/
 
 		if(l_bShouldShow)
 		{
@@ -263,6 +265,7 @@ static void insertPluginObjectDesc_to_GtkTreeStore(const IKernelContext& rKernel
 					rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass())?"#6f6f6f":
 					"black",
 				Resource_BooleanIsPlugin, (gboolean)TRUE,
+				Resource_BooleanIsUnstable, rKernelContext.getPluginManager().isPluginObjectFlaggedAsUnstable(l_pPluginObjectDesc->getCreatedClass()),
 				-1);
 		};
 	}
