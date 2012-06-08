@@ -22,6 +22,8 @@
 // #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 #include "openal-mono16bit-audiocapture/ovasCDriverOpenALAudioCapture.h"
 
+#include "mitsarEEG202A/ovasCDriverMitsarEEG202A.h"
+
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <system/Memory.h>
@@ -123,6 +125,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverGenericRawFileReader(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericRawTelnetReader(m_pAcquisitionServer->getDriverContext()));
 #if defined OVAS_OS_Windows
+	m_vDriver.push_back(new CDriverMitsarEEG202A(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverBrainProductsBrainampSeries(m_pAcquisitionServer->getDriverContext()));
 #endif
 	m_vDriver.push_back(new CDriverBrainProductsBrainVisionRecorder(m_pAcquisitionServer->getDriverContext()));
