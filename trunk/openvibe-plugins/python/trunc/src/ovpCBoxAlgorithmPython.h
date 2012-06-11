@@ -218,7 +218,7 @@ namespace OpenViBEPlugins
 				//rBoxAlgorithmPrototype.addInput  ("Input stimulations", OV_TypeId_Stimulations);
 				//rBoxAlgorithmPrototype.addOutput ("Output", OV_TypeId_StreamedMatrix);
 				//rBoxAlgorithmPrototype.addOutput ("Output stimulations", OV_TypeId_Stimulations);
-				rBoxAlgorithmPrototype.addSetting("Clock frequency (Hz)", OV_TypeId_Integer, "60");
+				rBoxAlgorithmPrototype.addSetting("Clock frequency (Hz)", OV_TypeId_Integer, "64");
 				rBoxAlgorithmPrototype.addSetting("Script", OV_TypeId_Script, "");
 				//rBoxAlgorithmPrototype.addFlag(OpenViBE::Kernel::BoxFlag_IsUnstable);
 				
