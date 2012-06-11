@@ -21,7 +21,7 @@ IF(UNIX OR WIN32)
 				ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 4)
 			ENDIF(UNIX)
 			IF(WIN32)
-				SET(Matlab_LIBRARIES libmex libmx libeng mclmcrrt)
+				SET(Matlab_LIBRARIES libmex libmx libeng) #mclmcrrt
 				SET(Matlab_LIB_DIRECTORIES ${Matlab_ROOT}/extern/lib/win32/microsoft)
 				# for delayed importation on windows
 				TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic Delayimp )
@@ -29,15 +29,13 @@ IF(UNIX OR WIN32)
 				# /DELAYLOAD:libmex.dll /DELAYLOAD:mclmcrrt.dll --> useless, no import
 			ENDIF(WIN32)
 			SET(Matlab_FOUND TRUE)
-			SET(PLOP $ENV{OV_DEP_MATLAB})
-			MESSAGE(STATUS "Found matlab in [${Matlab_EXECUTABLE}] ")
 		ELSE(Matlab_INCLUDE)
 		ENDIF(Matlab_INCLUDE)
 	ENDIF(Matlab_EXECUTABLE)
 ENDIF(UNIX OR WIN32)
 
 IF(Matlab_FOUND)
-	MESSAGE(STATUS "  Found Matlab...")
+	MESSAGE(STATUS "  Found Matlab [${Matlab_EXECUTABLE}]")
 	SET(Matlab_LIB_FOUND TRUE)
 	INCLUDE_DIRECTORIES(${Matlab_INCLUDE})
 
