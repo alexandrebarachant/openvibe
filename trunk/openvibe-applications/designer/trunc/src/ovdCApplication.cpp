@@ -655,13 +655,13 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		gtk_tree_view_append_column(m_pAlgorithmTreeView, l_pTreeViewColumnDesc);
 		// g_signal_connect(G_OBJECT(m_pAlgorithmTreeView), "querry_tooltip", G_CALLBACK(resource_query_tooltip_cb), this);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-show_unstable")), m_rKernelContext.getConfigurationManager().expandAsBoolean("${Designer_ShowUnstable}"));
-		refresh_search_no_data_cb(NULL, this);
 
-		m_sSearchTerm = "";
 		// Prepares algorithm model
 		m_pAlgorithmTreeModel=gtk_tree_store_new(7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 		gtk_tree_view_set_model(m_pAlgorithmTreeView, GTK_TREE_MODEL(m_pAlgorithmTreeModel));
 
+		m_sSearchTerm = "";
+		refresh_search_no_data_cb(NULL, this);
 	}
 
 	// Prepares drag & drop for box creation
