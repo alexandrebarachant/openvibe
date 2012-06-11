@@ -109,7 +109,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Executes matlab scripts. To be used correctly, you must have Matlab installed."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("User must implement the matlab functions:\n[box_out]=bci_Initialize(box_in)\n[box_out]=bci_Process(box_in)\n[box_out]=bci_Uninitialize(box_in)\nPlease refer to the dedicated documentation <openvibe.inria.fr/tutorial-using-matlab-with-openvibe> for more information."); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Matlab"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Scripting"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-execute"); }
 

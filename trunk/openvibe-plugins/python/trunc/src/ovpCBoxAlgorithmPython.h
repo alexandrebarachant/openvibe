@@ -203,7 +203,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("CICIT Garches, Inria"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This box executes a python script."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tools"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Scripting"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("0.1"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-missing-image"); }
 

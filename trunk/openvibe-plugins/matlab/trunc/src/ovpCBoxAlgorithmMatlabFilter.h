@@ -74,7 +74,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA / Donders Institute for Brain, Cognition and Behaviour"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This box communicates with the Matlab Engine to perform matrix and stim processing."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("User must implement the matlab functions:\n[matrix_out]=bci_Initialize(bci_context,matrix_in)\n[matrix_out,stim_out]=bci_Process(bci_context,matrix_in,stim_in)"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Matlab"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Scripting"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("2.1"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-execute"); }
 
