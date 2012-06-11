@@ -273,14 +273,21 @@ namespace
 		gtk_tree_model_get(model, iter, 0, &l_sHaystackName, 1, &l_sHaystackDescription, 6, &l_bHaystackUnstable, -1);
 
 		// consider only leaf nodes which match the search term
-		if ((l_bShowUnstable || !l_bHaystackUnstable) && (string::npos != strtoupper(l_sHaystackName).find(strtoupper(l_pApplication->m_sSearchTerm)) || string::npos != strtoupper(l_sHaystackDescription).find(strtoupper(l_pApplication->m_sSearchTerm)) || gtk_tree_model_iter_has_child(model, iter)))
+		if (l_sHaystackName!=NULL && l_sHaystackDescription!=NULL)
 		{
-			//std::cout << "value : " << l_pApplication->m_sSearchTerm << "\n";
+			if ((l_bShowUnstable || !l_bHaystackUnstable) && (string::npos != strtoupper(l_sHaystackName).find(strtoupper(l_pApplication->m_sSearchTerm)) || string::npos != strtoupper(l_sHaystackDescription).find(strtoupper(l_pApplication->m_sSearchTerm)) || gtk_tree_model_iter_has_child(model, iter)))
+			{
+				//std::cout << "value : " << l_pApplication->m_sSearchTerm << "\n";
+				l_bVisible = true;
+			}
+
+			g_free(l_sHaystackName);
+			g_free(l_sHaystackDescription);
+		}
+		else
+		{
 			l_bVisible = true;
 		}
-
-		g_free(l_sHaystackName);
-		g_free(l_sHaystackDescription);
 
 		return l_bVisible;
 	}
