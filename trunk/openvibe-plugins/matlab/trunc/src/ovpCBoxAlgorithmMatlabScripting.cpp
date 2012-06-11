@@ -71,7 +71,7 @@ boolean CBoxAlgorithmMatlabScripting::OpenMatlabEngineSafely(void)
 	{
 		this->getLogManager() << LogLevel_Error << "First call to MATLAB engine failed.\n"
 			<< "\tTo use this box you must have MATLAB (32 bits version) installed on your computer.\n";
-
+		m_pMatlabEngineHandle = NULL;
 		return false;
 	}
 #else
@@ -376,11 +376,11 @@ boolean CBoxAlgorithmMatlabScripting::uninitialize(void)
 			this->getLogManager() << LogLevel_Warning << "An error occured while calling the Uninitialize function ["<<m_sUninitializeFunction<<"]\n";
 		}
 		this->printOutputBufferWithFormat();
-	
-		CloseMatlabEngineSafely();
 		delete[] m_sMatlabBuffer;
 	}
 
+	CloseMatlabEngineSafely();
+	
 	for(uint32 i = 0; i< m_mDecoders.size(); i++)
 	{
 		m_mDecoders[i]->uninitialize();
