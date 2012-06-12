@@ -505,6 +505,7 @@ CApplication::CApplication(const IKernelContext& rKernelContext)
 void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 {
 	m_eCommandLineFlags=eCommandLineFlags;
+	m_sSearchTerm = "";
 
 	// Prepares scenario clipboard
 	CIdentifier l_oClipboardScenarioIdentifier;
@@ -660,8 +661,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		m_pAlgorithmTreeModel=gtk_tree_store_new(7, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN, G_TYPE_BOOLEAN);
 		gtk_tree_view_set_model(m_pAlgorithmTreeView, GTK_TREE_MODEL(m_pAlgorithmTreeModel));
 
-		m_sSearchTerm = "";
-		refresh_search_no_data_cb(NULL, this);
+
 	}
 
 	// Prepares drag & drop for box creation
@@ -708,7 +708,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 		}
 		while(l_oTokenIdentifier!=OV_UndefinedIdentifier);
 	}
-
+	refresh_search_no_data_cb(NULL, this);
 	// Add the designer log listener
 
 	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(gtk_builder_get_object(m_pBuilderInterface, "openvibe-messages_tb_debug")), m_rKernelContext.getLogManager().isActive(LogLevel_Debug));
@@ -888,6 +888,7 @@ boolean CApplication::openScenario(const char* sFileName)
 					GTK_MESSAGE_DIALOG(l_pErrorDialog), "%s", l_oStringStream.str().c_str());
 			gtk_dialog_run(GTK_DIALOG(l_pErrorDialog));
 			gtk_widget_destroy(l_pErrorDialog);
+
 		}
 	}
 	return false;
