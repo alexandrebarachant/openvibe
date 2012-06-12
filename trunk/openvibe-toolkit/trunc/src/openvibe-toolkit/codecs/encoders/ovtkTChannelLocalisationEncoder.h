@@ -87,11 +87,11 @@ namespace OpenViBEToolkit
 		TChannelLocalisationEncoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
-			initialize(rBoxAlgorithm);
+			this->initialize(rBoxAlgorithm);
 		}
 		virtual ~TChannelLocalisationEncoder()
 		{
-			uninitialize();
+			this->uninitialize();
 		}
 	};
 };

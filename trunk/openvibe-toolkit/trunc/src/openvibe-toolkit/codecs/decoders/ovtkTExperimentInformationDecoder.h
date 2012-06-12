@@ -164,11 +164,11 @@ namespace OpenViBEToolkit
 		TExperimentInformationDecoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
-			initialize(rBoxAlgorithm);
+			this->initialize(rBoxAlgorithm);
 		}
 		virtual ~TExperimentInformationDecoder()
 		{
-			uninitialize();
+			this->uninitialize();
 		}
 	};
 };

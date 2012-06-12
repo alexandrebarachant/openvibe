@@ -4,6 +4,7 @@
 #include "ovkTKernelObject.h"
 
 #include <iostream>
+#include <cstring>
 
 namespace OpenViBE
 {

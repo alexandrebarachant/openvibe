@@ -88,11 +88,11 @@ namespace OpenViBEToolkit
 		TSpectrumDecoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
-			initialize(rBoxAlgorithm);
+			this->initialize(rBoxAlgorithm);
 		}
 		virtual ~TSpectrumDecoder()
 		{
-			uninitialize();
+			this->uninitialize();
 		}
 	};
 };

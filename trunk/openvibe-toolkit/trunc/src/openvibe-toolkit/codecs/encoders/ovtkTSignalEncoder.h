@@ -98,11 +98,11 @@ namespace OpenViBEToolkit
 		TSignalEncoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
-			initialize(rBoxAlgorithm);
+			this->initialize(rBoxAlgorithm);
 		}
 		virtual ~TSignalEncoder()
 		{
-			uninitialize();
+			this->uninitialize();
 		}
 	};
 };

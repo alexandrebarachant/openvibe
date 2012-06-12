@@ -64,11 +64,11 @@ namespace OpenViBEToolkit
 		TFeatureVectorDecoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
-			initialize(rBoxAlgorithm);
+			this->initialize(rBoxAlgorithm);
 		}
 		virtual ~TFeatureVectorDecoder()
 		{
-			uninitialize();
+			this->uninitialize();
 		}
 	};
 };

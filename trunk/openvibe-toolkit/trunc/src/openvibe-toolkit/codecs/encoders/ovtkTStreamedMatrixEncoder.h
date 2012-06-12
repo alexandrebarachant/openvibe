@@ -95,11 +95,11 @@ namespace OpenViBEToolkit
 		TStreamedMatrixEncoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
-			initialize(rBoxAlgorithm);
+			this->initialize(rBoxAlgorithm);
 		}
 		virtual ~TStreamedMatrixEncoder()
 		{
-			uninitialize();
+			this->uninitialize();
 		}
 	};
 };

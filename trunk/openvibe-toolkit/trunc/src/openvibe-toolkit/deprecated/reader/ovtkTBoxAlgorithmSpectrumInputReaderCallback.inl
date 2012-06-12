@@ -61,7 +61,7 @@ TBoxAlgorithmSpectrumInputReaderCallback<IBaseInterface>::TBoxAlgorithmSpectrumI
 	,m_pReaderHelper(NULL)
 {
 	m_pReaderHelper=EBML::createReaderHelper();
-	setStreamedMatrixCallback(&m_oStreamedMatrixCallbackProxy);
+	this->setStreamedMatrixCallback(&m_oStreamedMatrixCallbackProxy);
 }
 
 template <class IBaseInterface>

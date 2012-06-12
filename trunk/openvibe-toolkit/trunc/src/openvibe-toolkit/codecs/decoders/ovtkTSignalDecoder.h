@@ -88,11 +88,11 @@ namespace OpenViBEToolkit
 		TSignalDecoder(T& rBoxAlgorithm)
 		{
 			m_pBoxAlgorithm = NULL;
-			initialize(rBoxAlgorithm);
+			this->initialize(rBoxAlgorithm);
 		}
 		virtual ~TSignalDecoder()
 		{
-			uninitialize();
+			this->uninitialize();
 		}
 	};
 };
