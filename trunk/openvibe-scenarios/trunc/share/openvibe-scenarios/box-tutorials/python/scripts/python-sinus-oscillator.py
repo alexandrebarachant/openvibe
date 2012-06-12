@@ -3,68 +3,67 @@ import numpy
 class MyOVBox(OVBox):
 	def __init__(self):
 		OVBox.__init__(self)
-		self.channel_count = 0
-		self.sampling_frequency = 0
-		self.epoch_sample_count = 0
-		self.start_time = 0.
-		self.end_time = 0.
-		self.dimension_size = list()
-		self.dimension_label = list()
-		self.time_buffer = list()
-		self.signal_buffer = None
-		self.signal_header = None
+		self.channelCount = 0
+		self.samplingFrequency = 0
+		self.epochSampleCount = 0
+		self.startTime = 0.
+		self.endTime = 0.
+		self.dimensionSizes = list()
+		self.dimensionLabels = list()
+		self.timeBuffer = list()
+		self.signalBuffer = None
+		self.signalHeader = None
 		
 	def initialize(self):
-		self.channel_count = int(self.setting['Channel count'])
-		self.sampling_frequency = int(self.setting['Sampling frequency'])
-		self.epoch_sample_count = int(self.setting['Generated epoch sample count'])
+		self.channelCount = int(self.setting['Channel count'])
+		self.samplingFrequency = int(self.setting['Sampling frequency'])
+		self.epochSampleCount = int(self.setting['Generated epoch sample count'])
 		
 		#creation of the signal header
-		for i in range(self.channel_count):
-			self.dimension_label.append( 'Sinus'+str(i) )
-		self.dimension_label += self.epoch_sample_count*['']
-		self.dimension_size = [self.channel_count, self.epoch_sample_count]
-		self.signal_header = OVSignalHeader(0., 0., self.dimension_size, self.dimension_label, self.sampling_frequency)
-		self.output[0].append(self.signal_header)
+		for i in range(self.channelCount):
+			self.dimensionLabels.append( 'Sinus'+str(i) )
+		self.dimensionLabels += self.epochSampleCount*['']
+		self.dimensionSizes = [self.channelCount, self.epochSampleCount]
+		self.signalHeader = OVSignalHeader(0., 0., self.dimensionSizes, self.dimensionLabels, self.samplingFrequency)
+		self.output[0].append(self.signalHeader)
 		
 		#creation of the first signal chunk
-		self.end_time = 1.*self.epoch_sample_count/self.sampling_frequency
-		self.signal_buffer = numpy.zeros((self.channel_count, self.epoch_sample_count))
-		self.update_time_buffer()
-		self.update_signal_buffer()
-		#self.send_signal_buffer_to_openvibe()
+		self.endTime = 1.*self.epochSampleCount/self.samplingFrequency
+		self.signalBuffer = numpy.zeros((self.channelCount, self.epochSampleCount))
+		self.updateTimeBuffer()
+		self.updateSignalBuffer()
 		
-	def update_start_time(self):
-		self.start_time += 1.*self.epoch_sample_count/self.sampling_frequency
+	def updateStartTime(self):
+		self.startTime += 1.*self.epochSampleCount/self.samplingFrequency
 		
-	def update_end_time(self):
-		self.end_time = float(self.start_time + 1.*self.epoch_sample_count/self.sampling_frequency)
+	def updateEndTime(self):
+		self.endTime = float(self.startTime + 1.*self.epochSampleCount/self.samplingFrequency)
 	
-	def update_time_buffer(self):
-		self.time_buffer = numpy.arange(self.start_time, self.end_time, 1./self.sampling_frequency)
+	def updateTimeBuffer(self):
+		self.timeBuffer = numpy.arange(self.startTime, self.endTime, 1./self.samplingFrequency)
 		
-	def update_signal_buffer(self):
-		for row_index, row in enumerate(self.signal_buffer):
-			self.signal_buffer[row_index,:] = 100.*numpy.sin( 2.*numpy.pi*(row_index+1.)*self.time_buffer )
+	def updateSignalBuffer(self):
+		for rowIndex, row in enumerate(self.signalBuffer):
+			self.signalBuffer[rowIndex,:] = 100.*numpy.sin( 2.*numpy.pi*(rowIndex+1.)*self.timeBuffer )
 			
-	def send_signal_buffer_to_openvibe(self):
-		start = self.time_buffer[0]
-		end = self.time_buffer[-1] + 1./self.sampling_frequency
-		buffer_elements = self.signal_buffer.reshape(self.channel_count*self.epoch_sample_count).tolist()
-		self.output[0].append( OVSignalBuffer(start, end, buffer_elements) )
+	def sendSignalBufferToOpenvibe(self):
+		start = self.timeBuffer[0]
+		end = self.timeBuffer[-1] + 1./self.samplingFrequency
+		bufferElements = self.signalBuffer.reshape(self.channelCount*self.epochSampleCount).tolist()
+		self.output[0].append( OVSignalBuffer(start, end, bufferElements) )
 	
 	def process(self):
-		start = self.time_buffer[0]
-		end = self.time_buffer[-1]
-		if self.get_current_time() >= end:
-			self.send_signal_buffer_to_openvibe()
-			self.update_start_time()
-			self.update_end_time()
-			self.update_time_buffer()
-			self.update_signal_buffer()
+		start = self.timeBuffer[0]
+		end = self.timeBuffer[-1]
+		if self.getCurrentTime() >= end:
+			self.sendSignalBufferToOpenvibe()
+			self.updateStartTime()
+			self.updateEndTime()
+			self.updateTimeBuffer()
+			self.updateSignalBuffer()
 
 	def uninitialize(self):
-		end = self.time_buffer[-1]
+		end = self.timeBuffer[-1]
 		self.output[0].append(OVSignalEnd(end, end))				
 
 box = MyOVBox()
