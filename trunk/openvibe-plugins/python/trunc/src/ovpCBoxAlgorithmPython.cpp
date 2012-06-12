@@ -184,15 +184,15 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 	}
 
 	//Borrowed reference
-	m_pExecFileFunction = PyDict_GetItemString(m_pMainDictionnary, "execfile_handling_exception");
+	m_pExecFileFunction = PyDict_GetItemString(m_pMainDictionnary, "execfileHandlingException");
 	if (m_pExecFileFunction == NULL  )
 	{
-		this->getLogManager() << LogLevel_Error << "openvibe.py doesn't have a execfile_handling_exception function, quitting"  << ".\n";
+		this->getLogManager() << LogLevel_Error << "openvibe.py doesn't have a execfileHandlingException function, quitting"  << ".\n";
 		return false;
 	}
 
 	if (!PyCallable_Check(m_pExecFileFunction)){
-		this->getLogManager() << LogLevel_Error << "openvibe.py doesn't have a execfile_handling_exception function callable, "  << ".\n";
+		this->getLogManager() << LogLevel_Error << "openvibe.py doesn't have a execfileHandlingException function callable, "  << ".\n";
 		return false;
 	}
 
@@ -665,9 +665,9 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	}
 	Py_CLEAR(l_pBoxClock);
 
-	if (!PyObject_HasAttrString(m_pBox, "_current_time"))
+	if (!PyObject_HasAttrString(m_pBox, "_currentTime"))
 	{
-		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._current_time\" attribute because it does not exist.\n";
+		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._currentTime\" attribute because it does not exist.\n";
 		Py_CLEAR(m_pBox);
 		Py_CLEAR(m_pBoxInput);
 		Py_CLEAR(m_pBoxOutput);
@@ -686,9 +686,9 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 		Py_CLEAR(m_pBoxCurrentTime);
 		return false;
 	}
-	if (PyObject_SetAttrString(m_pBox, "_current_time", m_pBoxCurrentTime) == -1)
+	if (PyObject_SetAttrString(m_pBox, "_currentTime", m_pBoxCurrentTime) == -1)
 	{
-		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._clock\" attribute.\n";
+		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._currentTime\" attribute.\n";
 		Py_CLEAR(m_pBox);
 		Py_CLEAR(m_pBoxInput);
 		Py_CLEAR(m_pBoxOutput);
@@ -697,9 +697,9 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 		return false;
 	}
 
-	if (!PyObject_HasAttrString(m_pBox, "real_initialize"))
+	if (!PyObject_HasAttrString(m_pBox, "realInitialize"))
 	{
-		this->getLogManager() << LogLevel_Error << "No real_initialize.\n";
+		this->getLogManager() << LogLevel_Error << "No realInitialize.\n";
 		Py_CLEAR(m_pBox);
 		Py_CLEAR(m_pBoxInput);
 		Py_CLEAR(m_pBoxOutput);
@@ -709,36 +709,36 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	}
 
 	//New reference
-	m_pBoxInitialize = PyObject_GetAttrString(m_pBox, "real_initialize");
+	m_pBoxInitialize = PyObject_GetAttrString(m_pBox, "realInitialize");
 	if (m_pBoxInitialize == NULL)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Failed to load \"box.real_initialize\" function.\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Failed to load \"box.realInitialize\" function.\n";
 	}
 	else if (!PyCallable_Check(m_pBoxInitialize))
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "\"box.real_initialize\" is not callable.\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "\"box.realInitialize\" is not callable.\n";
 	}
 
 	//New reference
-	m_pBoxProcess = PyObject_GetAttrString(m_pBox, "real_process");
+	m_pBoxProcess = PyObject_GetAttrString(m_pBox, "realProcess");
 	if (m_pBoxProcess == NULL)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Failed to load \"box.real_process\" function.\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Failed to load \"box.realProcess\" function.\n";
 	}
 	else if (!PyCallable_Check(m_pBoxProcess))
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "\"box.__process\" is not callable.\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "\"box.realProcess\" is not callable.\n";
 	}
 
 	//New reference
-	m_pBoxUninitialize = PyObject_GetAttrString(m_pBox, "real_uninitialize");
+	m_pBoxUninitialize = PyObject_GetAttrString(m_pBox, "realUninitialize");
 	if (m_pBoxUninitialize == NULL)
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "Failed to load \"box.real_uninitialize\" function.\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "Failed to load \"box.realUninitialize\" function.\n";
 	}
 	else if (!PyCallable_Check(m_pBoxUninitialize))
 	{
-		this->getLogManager() << LogLevel_ImportantWarning << "\"box.real_uninitialize\" is not callable.\n";
+		this->getLogManager() << LogLevel_ImportantWarning << "\"box.realUninitialize\" is not callable.\n";
 	}
 
 	//Execute the initialize function defined in the python user script
@@ -1045,7 +1045,7 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			}
 			if (PyTuple_SetItem(l_pArg, 2, PyList_New(0)) != 0)
 			{
-				this->getLogManager() << LogLevel_Error << "Failed to set item 2 (buffer_elements) in tuple l_pArg.\n";
+				this->getLogManager() << LogLevel_Error << "Failed to set item 2 (bufferElements) in tuple l_pArg.\n";
 				Py_CLEAR(l_pArg);
 				return false;
 			}
@@ -1190,10 +1190,10 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 			uint32 l_ui32DimensionCount, l_ui32DimensionSize, l_ui32DimensionIndex, l_ui32DimensionEntryIndex;
 
 			//New reference
-			PyObject *l_pDimensionCount = PyObject_CallMethod(l_pOVChunk, (char *) "dimension_count", NULL);
+			PyObject *l_pDimensionCount = PyObject_CallMethod(l_pOVChunk, (char *) "getDimensionCount", NULL);
 			if (l_pDimensionCount == NULL)
 			{
-				this->getLogManager() << LogLevel_Error << "Failed to call chunk's dimension_count method.\n";
+				this->getLogManager() << LogLevel_Error << "Failed to call chunk's getDimensionCount method.\n";
 				Py_CLEAR(l_pDimensionCount);
 				Py_CLEAR(l_pOVChunk);
 				return false;
@@ -1203,10 +1203,10 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 			Py_CLEAR(l_pDimensionCount);
 
 			//New reference
-			PyObject *l_pDimensionSize = PyObject_GetAttrString(l_pOVChunk, "dimension_size");
+			PyObject *l_pDimensionSize = PyObject_GetAttrString(l_pOVChunk, "dimensionSizes");
 
 			//New reference
-			PyObject *l_pDimensionLabel = PyObject_GetAttrString(l_pOVChunk, "dimension_label");
+			PyObject *l_pDimensionLabel = PyObject_GetAttrString(l_pOVChunk, "dimensionLabels");
 
 			uint32 offset = 0;
 			for (l_ui32DimensionIndex=0; l_ui32DimensionIndex < l_ui32DimensionCount; l_ui32DimensionIndex++)
@@ -1225,12 +1225,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 			m_vEncoders[output_index]->encodeHeader(output_index);
 
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -1246,12 +1246,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 			}
 
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -1262,12 +1262,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 		else if (PyObject_IsInstance(l_pOVChunk, m_pOVStreamedMatrixEnd) == 1)
 		{
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -1400,7 +1400,7 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			}
 			if (PyTuple_SetItem(l_pArg, 4, PyInt_FromLong((long) ( (TSignalDecoder <CBoxAlgorithmPython> *) m_vDecoders[input_index] )->getOutputSamplingRate())) != 0)
 			{
-				this->getLogManager() << LogLevel_Error << "Failed to set item 4 (sampling rate) in tuple l_pArg.\n";
+				this->getLogManager() << LogLevel_Error << "Failed to set item 4 (samplingRate) in tuple l_pArg.\n";
 				Py_CLEAR(l_pDimensionSize);
 				Py_CLEAR(l_pDimensionLabel);
 				Py_CLEAR(l_pArg);
@@ -1449,19 +1449,19 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
 			{
-				this->getLogManager() << LogLevel_Error << "Failed to set item 0 (start time) in tuple l_pArg.\n";
+				this->getLogManager() << LogLevel_Error << "Failed to set item 0 (startTime) in tuple l_pArg.\n";
 				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 1, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkEndTime(input_index, chunk_index)>>22) / 1024.)) != 0)
 			{
-				this->getLogManager() << LogLevel_Error << "Failed to set item 1 (end time) in tuple l_pArg.\n";
+				this->getLogManager() << LogLevel_Error << "Failed to set item 1 (endTime) in tuple l_pArg.\n";
 				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 2, PyList_New(0)) != 0)
 			{
-				this->getLogManager() << LogLevel_Error << "Failed to set item 2 (buffer_elements) in tuple l_pArg.\n";
+				this->getLogManager() << LogLevel_Error << "Failed to set item 2 (bufferElements) in tuple l_pArg.\n";
 				Py_CLEAR(l_pArg);
 				return false;
 			}
@@ -1606,10 +1606,10 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			uint32 l_ui32DimensionCount, l_ui32DimensionSize, l_ui32DimensionIndex, l_ui32DimensionEntryIndex;
 
 			//New reference
-			PyObject *l_pDimensionCount = PyObject_CallMethod(l_pOVChunk, (char *) "dimension_count", NULL);
+			PyObject *l_pDimensionCount = PyObject_CallMethod(l_pOVChunk, (char *) "getDimensionCount", NULL);
 			if (l_pDimensionCount == NULL)
 			{
-				this->getLogManager() << LogLevel_Error << "Failed to call chunk's dimension_count method.\n";
+				this->getLogManager() << LogLevel_Error << "Failed to call chunk's getDimensionCount method.\n";
 				Py_CLEAR(l_pDimensionCount);
 				Py_CLEAR(l_pOVChunk);
 				return false;
@@ -1619,10 +1619,10 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			Py_CLEAR(l_pDimensionCount);
 
 			//New reference
-			PyObject *l_pDimensionSize = PyObject_GetAttrString(l_pOVChunk, "dimension_size");
+			PyObject *l_pDimensionSize = PyObject_GetAttrString(l_pOVChunk, "dimensionSizes");
 
 			//New reference
-			PyObject *l_pDimensionLabel = PyObject_GetAttrString(l_pOVChunk, "dimension_label");
+			PyObject *l_pDimensionLabel = PyObject_GetAttrString(l_pOVChunk, "dimensionLabels");
 
 			uint32 offset = 0;
 			for (l_ui32DimensionIndex=0; l_ui32DimensionIndex < l_ui32DimensionCount; l_ui32DimensionIndex++)
@@ -1639,7 +1639,7 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			Py_CLEAR(l_pDimensionLabel);
 
 			//New reference
-			PyObject *l_pChunkSamplingRate = PyObject_GetAttrString(l_pOVChunk, "sampling_rate");
+			PyObject *l_pChunkSamplingRate = PyObject_GetAttrString(l_pOVChunk, "samplingRate");
 			if (l_pChunkSamplingRate == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to load signal header sampling rate.\n";
@@ -1652,12 +1652,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			Py_CLEAR(l_pChunkSamplingRate);
 
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -1673,12 +1673,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			}
 
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -1689,12 +1689,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 		else if (PyObject_IsInstance(l_pOVChunk, m_pOVSignalEnd) == 1)
 		{
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -1983,12 +1983,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 		if (PyObject_IsInstance(l_pOVChunk, m_pOVStimulationHeader) == 1)
 		{
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -2048,12 +2048,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 			}
 
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -2064,12 +2064,12 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 		else if (PyObject_IsInstance(l_pOVChunk, m_pOVStimulationEnd) == 1)
 		{
 			//New reference
-			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "start_time");
+			PyObject *l_pStartTime = PyObject_GetAttrString(l_pOVChunk, "startTime");
 			uint64 l_ui64StartTime = (uint64)(PyFloat_AsDouble(l_pStartTime) * 1024.)<<22;
 			Py_CLEAR(l_pStartTime);
 
 			//New reference
-			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "end_time");
+			PyObject *l_pEndTime = PyObject_GetAttrString(l_pOVChunk, "endTime");
 			uint64 l_ui64EndTime = (uint64)(PyFloat_AsDouble(l_pEndTime) * 1024.)<<22;
 			Py_CLEAR(l_pEndTime);
 
@@ -2153,9 +2153,9 @@ OpenViBE::boolean CBoxAlgorithmPython::process(void)
 		this->getLogManager() << LogLevel_Error << "Failed to convert the current time into a PyFloat during update.\n";
 		return false;
 	}
-	if (PyObject_SetAttrString(m_pBox, "_current_time", m_pBoxCurrentTime) == -1)
+	if (PyObject_SetAttrString(m_pBox, "_currentTime", m_pBoxCurrentTime) == -1)
 	{
-		this->getLogManager() << LogLevel_Error << "Failed to update \"box._current_time\" attribute.\n";
+		this->getLogManager() << LogLevel_Error << "Failed to update \"box._currentTime\" attribute.\n";
 		return false;
 	}
 

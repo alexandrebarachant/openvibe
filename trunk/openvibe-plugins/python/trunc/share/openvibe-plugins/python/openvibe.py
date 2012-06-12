@@ -21,7 +21,7 @@ sys.stdout = NewStd()
 sys.stderr = NewStd()
 
 
-def execfile_handling_exception(filename, maindictionary):
+def execfileHandlingException(filename, maindictionary):
     print "executing script file"
 
     try:
@@ -34,7 +34,7 @@ def execfile_handling_exception(filename, maindictionary):
         print traceback.format_exc()
         return -1;
 
-def decorator_function(target):
+def decoratorFunction(target):
     """ add a try except block to protect openvibe box in case of exception """
     def wrapper(self):
         try :
@@ -47,33 +47,33 @@ def decorator_function(target):
     return wrapper
 
 class OVChunk(object):
-    def __init__(self, start_time, end_time):
-        self.start_time = start_time
-        self.end_time = end_time
+    def __init__(self, startTime, endTime):
+        self.startTime = startTime
+        self.endTime = endTime
 
 
 class OVStreamedMatrixHeader(OVChunk):
-    def __init__(self, start_time, end_time, dimension_size, dimension_label):
-        OVChunk.__init__(self, start_time, end_time)
-        self.dimension_size = list(dimension_size)
-        self.dimension_label = list(dimension_label)
+    def __init__(self, startTime, endTime, dimensionSizes, dimensionLabels):
+        OVChunk.__init__(self, startTime, endTime)
+        self.dimensionSizes = list(dimensionSizes)
+        self.dimensionLabels = list(dimensionLabels)
         
-    def dimension_count(self):
-        return len(self.dimension_size)
+    def getDimensionCount(self):
+        return len(self.dimensionSizes)
         
-    def buffer_element_count(self):
-        element_count = 0
-        for dimension, size in enumerate(self.dimension_size):
+    def getBufferElementCount(self):
+        elementCount = 0
+        for dimension, size in enumerate(self.dimensionSizes):
             if dimension == 0:
-                element_count = int(size)
+                elementCount = int(size)
             else:
-                element_count *= int(size)
-        return element_count
+                elementCount *= int(size)
+        return elementCount
 
 class OVStreamedMatrixBuffer(OVChunk, list):
-    def __init__(self, start_time, end_time, buffer_elements):
-        OVChunk.__init__(self, start_time, end_time)
-        list.__init__(self, buffer_elements)
+    def __init__(self, startTime, endTime, bufferElements):
+        OVChunk.__init__(self, startTime, endTime)
+        list.__init__(self, bufferElements)
 
 class OVStreamedMatrixEnd(OVChunk):
     pass 
@@ -81,9 +81,9 @@ class OVStreamedMatrixEnd(OVChunk):
 
     
 class OVSignalHeader(OVStreamedMatrixHeader):
-    def __init__(self, start_time, end_time, dimension_size, dimension_label, sampling_rate):
-        OVStreamedMatrixHeader.__init__(self, start_time, end_time, dimension_size, dimension_label)
-        self.sampling_rate = int(sampling_rate)
+    def __init__(self, startTime, endTime, dimensionSizes, dimensionLabels, samplingRate):
+        OVStreamedMatrixHeader.__init__(self, startTime, endTime, dimensionSizes, dimensionLabels)
+        self.samplingRate = int(samplingRate)
         
 class OVSignalBuffer(OVStreamedMatrixBuffer):
     pass 
@@ -103,9 +103,9 @@ class OVStimulationHeader(OVChunk):
     pass
 
 class OVStimulationSet(OVChunk, list):
-    def __init__(self, start_time, end_time):
+    def __init__(self, startTime, endTime):
         list.__init__(self)
-        OVChunk.__init__(self, start_time, end_time)
+        OVChunk.__init__(self, startTime, endTime)
         
     def append(self, item):
         if isinstance(item, OVStimulation):
@@ -119,9 +119,9 @@ class OVStimulationEnd(OVChunk):
 
 
 class OVBuffer(object):
-    def __init__(self, input_type):
+    def __init__(self, inputType):
         self.__deque = collections.deque()
-        self.__type = input_type
+        self.__type = inputType
     def __len__(self):
         return len(self.__deque)
     def __getitem__(self, key):
@@ -130,8 +130,8 @@ class OVBuffer(object):
         self.__deque[key] = item
     def __delitem__(self, key):
         del self.__deque[key]
-    def append(self, to_append):
-        self.__deque.appendleft(to_append)
+    def append(self, toAppend):
+        self.__deque.appendleft(toAppend)
     def pop(self):
         return self.__deque.pop()
     def type(self):
@@ -145,35 +145,35 @@ class OVBox(object):
 		self.setting = dict()
 		self.var = dict()
 		self._clock = 0
-		self._current_time = 0.
+		self._currentTime = 0.
 		self.default= default
-	def addInput(self, input_type):
-		self.input.append(OVBuffer(input_type))
-	def addOutput(self, output_type):
-		self.output.append(OVBuffer(output_type))
-	def get_clock(self):
+	def addInput(self, inputType):
+		self.input.append(OVBuffer(inputType))
+	def addOutput(self, outputType):
+		self.output.append(OVBuffer(outputType))
+	def getClock(self):
 		return self._clock
-	def get_current_time(self):
-		return self._current_time
+	def getCurrentTime(self):
+		return self._currentTime
 	def initialize(self):
 		if self.default == True:
-			print "box has not been created by user script, using default one from openvibe.py"
+			print "The box instance has not been created by user script, using default one from openvibe.py (dummy box)."
 		pass
 	def process(self):
 		pass
 	def uninitialize(self):
 		pass
-	def real_initialize(self):
+	def realInitialize(self):
 		try :
 			self.initialize()
 		except:
 			print traceback.format_exc()
-	def real_process(self):
+	def realProcess(self):
 		try :
 			self.process()
 		except:
 			print traceback.format_exc()
-	def real_uninitialize(self):
+	def realUninitialize(self):
 		try :
 			self.uninitialize()
 		except:
