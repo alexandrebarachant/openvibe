@@ -5,13 +5,8 @@
 # ---------------------------------
 
 IF(WIN32)
-FIND_PATH(PATH_PYTHON include/Python.h PATHS 
-		"c:\python27" $ENV{OpenViBE_dependencies}
-		[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]
-		[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]
-		[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]
-		[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]
-		[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath])
+	FIND_PATH(PATH_PYTHON include/Python.h PATHS "c:\python27" $ENV{OpenViBE_dependencies}	[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
+		
 	IF(PATH_PYTHON)
 		MESSAGE(STATUS "  Found Python...")
 		INCLUDE_DIRECTORIES(${PATH_PYTHON}/include)
