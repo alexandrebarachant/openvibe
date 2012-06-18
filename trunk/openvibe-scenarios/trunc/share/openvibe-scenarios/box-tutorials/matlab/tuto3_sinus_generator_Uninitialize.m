@@ -9,7 +9,6 @@ function box_out = tuto3_sinus_generator_Uninitialize(box_in)
     disp('Uninitializing the box...')
 		
     box_out = box_in;
-    global plop;
-	plop
+
 end
     
