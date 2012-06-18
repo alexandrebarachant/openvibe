@@ -1,7 +1,7 @@
 <OpenViBE-Scenario>
 	<Boxes>
 		<Box>
-			<Identifier>(0x0000238b, 0x000061c0)</Identifier>
+			<Identifier>(0x000045ec, 0x00003906)</Identifier>
 			<Name>Tuto3 : sinus generator</Name>
 			<AlgorithmClassIdentifier>(0x03303e0e, 0x39fe10df)</AlgorithmClassIdentifier>
 			<Outputs>
@@ -31,7 +31,7 @@
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
 					<Name>Matlab working directory</Name>
 					<DefaultValue>[path-to-my-matlab-workspace]</DefaultValue>
-					<Value>C:/openvibe/dist/share/openvibe-scenarios/box-tutorials/matlab/</Value>
+					<Value>C:/Program Files/openvibe/share/openvibe-scenarios/box-tutorials/matlab/</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
@@ -87,7 +87,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
-					<Value>56</Value>
+					<Value>51</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
@@ -111,7 +111,11 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>141</Value>
+					<Value>182</Value>
+				</Attribute>
+				<Attribute>
+					<Identifier>(0xc67a01dc, 0x28ce06c1)</Identifier>
+					<Value></Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xce18836a, 0x9c0eb403)</Identifier>
@@ -128,7 +132,7 @@
 			</Attributes>
 		</Box>
 		<Box>
-			<Identifier>(0x0000434a, 0x000079e4)</Identifier>
+			<Identifier>(0x0000516c, 0x00006618)</Identifier>
 			<Name>Signal display</Name>
 			<AlgorithmClassIdentifier>(0x0055be5f, 0x087bdd12)</AlgorithmClassIdentifier>
 			<Inputs>
@@ -174,7 +178,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x1fa963f5, 0x1a638cd4)</Identifier>
-					<Value>23</Value>
+					<Value>25</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
@@ -186,7 +190,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
-					<Value>87</Value>
+					<Value>113</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xce18836a, 0x9c0eb403)</Identifier>
@@ -201,19 +205,19 @@
 	</Boxes>
 	<Links>
 		<Link>
-			<Identifier>(0x00002108, 0x000024be)</Identifier>
+			<Identifier>(0x00002416, 0x00000b64)</Identifier>
 			<Source>
-				<BoxIdentifier>(0x0000238b, 0x000061c0)</BoxIdentifier>
+				<BoxIdentifier>(0x000045ec, 0x00003906)</BoxIdentifier>
 				<BoxOutputIndex>0</BoxOutputIndex>
 			</Source>
 			<Target>
-				<BoxIdentifier>(0x0000434a, 0x000079e4)</BoxIdentifier>
+				<BoxIdentifier>(0x0000516c, 0x00006618)</BoxIdentifier>
 				<BoxInputIndex>0</BoxInputIndex>
 			</Target>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
-					<Value>258</Value>
+					<Value>256</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
@@ -221,7 +225,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x3f0a3b27, 0x570913d2)</Identifier>
-					<Value>336</Value>
+					<Value>335</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x6267b5c5, 0x676e3e42)</Identifier>
@@ -230,19 +234,19 @@
 			</Attributes>
 		</Link>
 		<Link>
-			<Identifier>(0x000024f2, 0x00006570)</Identifier>
+			<Identifier>(0x00004244, 0x00005034)</Identifier>
 			<Source>
-				<BoxIdentifier>(0x0000238b, 0x000061c0)</BoxIdentifier>
+				<BoxIdentifier>(0x000045ec, 0x00003906)</BoxIdentifier>
 				<BoxOutputIndex>1</BoxOutputIndex>
 			</Source>
 			<Target>
-				<BoxIdentifier>(0x0000434a, 0x000079e4)</BoxIdentifier>
+				<BoxIdentifier>(0x0000516c, 0x00006618)</BoxIdentifier>
 				<BoxInputIndex>1</BoxInputIndex>
 			</Target>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1b32c44c, 0x1905e0e9)</Identifier>
-					<Value>258</Value>
+					<Value>256</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x358ae8b5, 0x0f8bacd1)</Identifier>
@@ -250,7 +254,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x3f0a3b27, 0x570913d2)</Identifier>
-					<Value>336</Value>
+					<Value>335</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x6267b5c5, 0x676e3e42)</Identifier>
@@ -261,7 +265,7 @@
 	</Links>
 	<Comments>
 		<Comment>
-			<Identifier>(0x00000622, 0x000021bd)</Identifier>
+			<Identifier>(0x000035a5, 0x000068bb)</Identifier>
 			<Text>&lt;b&gt;Configure the Matlab Scripting box:&lt;/b&gt;
 
 &lt;span color=&quot;red&quot;&gt; Set the matlab installation directory
@@ -288,7 +292,7 @@ The box sends one stimulation per second</Text>
 			</Attributes>
 		</Comment>
 		<Comment>
-			<Identifier>(0x00007560, 0x0000523c)</Identifier>
+			<Identifier>(0x00004aec, 0x00004ffa)</Identifier>
 			<Text>You can browse each box' documentation by selecting the box and pressing &lt;b&gt;F1&lt;/b&gt;
 
 The documentation page for this tutorial is available at:
@@ -307,14 +311,7 @@ The documentation page for this tutorial is available at:
 	</Comments>
 	<VisualisationTree>
 		<VisualisationWidget>
-			<Identifier>(0x00002d0b, 0x0000750a)</Identifier>
-			<Type>3</Type>
-			<ParentIdentifier>(0xffffffff, 0xffffffff)</ParentIdentifier>
-			<BoxIdentifier>(0x0000434a, 0x000079e4)</BoxIdentifier>
-			<NumChildren>0</NumChildren>
-		</VisualisationWidget>
-		<VisualisationWidget>
-			<Identifier>(0x000068c3, 0x00001f27)</Identifier>
+			<Identifier>(0x00003033, 0x000042dd)</Identifier>
 			<Name>Default window</Name>
 			<Type>1</Type>
 			<ParentIdentifier>(0xffffffff, 0xffffffff)</ParentIdentifier>
@@ -332,19 +329,26 @@ The documentation page for this tutorial is available at:
 			</Attributes>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x0000293c, 0x00001d6b)</Identifier>
+			<Identifier>(0x000063dc, 0x000030f1)</Identifier>
+			<Type>3</Type>
+			<ParentIdentifier>(0xffffffff, 0xffffffff)</ParentIdentifier>
+			<BoxIdentifier>(0x0000516c, 0x00006618)</BoxIdentifier>
+			<NumChildren>0</NumChildren>
+		</VisualisationWidget>
+		<VisualisationWidget>
+			<Identifier>(0x00004dc2, 0x000047dc)</Identifier>
 			<Name>Default tab</Name>
 			<Type>2</Type>
-			<ParentIdentifier>(0x000068c3, 0x00001f27)</ParentIdentifier>
+			<ParentIdentifier>(0x00003033, 0x000042dd)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>1</NumChildren>
 		</VisualisationWidget>
 		<VisualisationWidget>
-			<Identifier>(0x00007b07, 0x00001f6c)</Identifier>
+			<Identifier>(0x00001edf, 0x000048cf)</Identifier>
 			<Name>Empty</Name>
 			<Type>0</Type>
-			<ParentIdentifier>(0x0000293c, 0x00001d6b)</ParentIdentifier>
+			<ParentIdentifier>(0x00004dc2, 0x000047dc)</ParentIdentifier>
 			<Index>0</Index>
 			<BoxIdentifier>(0xffffffff, 0xffffffff)</BoxIdentifier>
 			<NumChildren>0</NumChildren>
