@@ -375,12 +375,12 @@ boolean CBoxAlgorithmMatlabScripting::uninitialize(void)
 		{
 			this->getLogManager() << LogLevel_Warning << "An error occured while calling the Uninitialize function ["<<m_sUninitializeFunction<<"]\n";
 		}
-		this->printOutputBufferWithFormat();
-		delete[] m_sMatlabBuffer;
+		this->printOutputBufferWithFormat();	
 	}
 
 	CloseMatlabEngineSafely();
-	
+	delete[] m_sMatlabBuffer;
+
 	for(uint32 i = 0; i< m_mDecoders.size(); i++)
 	{
 		m_mDecoders[i]->uninitialize();
