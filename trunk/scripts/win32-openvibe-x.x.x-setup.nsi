@@ -106,6 +106,7 @@ no_need_to_install_directx:
 	File ..\dependencies\arch\ogre-1.7.1-vs100-runtime.zip
 	File ..\dependencies\arch\cegui-0.7.2-vs100-runtime.zip
 	File ..\dependencies\arch\vrpn-7.26-runtime.zip
+	File ..\dependencies\arch\pthreads-2.8.0-runtime.zip
   File ..\dependencies\arch\openal-1.1-runtime.zip
   File ..\dependencies\arch\freealut-1.1.0-bin-runtime.zip
   File ..\dependencies\arch\libvorbis-1.3.2-vs100-runtime.zip
@@ -125,6 +126,7 @@ no_need_to_install_directx:
 	ZipDLL::extractall "arch\ogre-1.7.1-vs100-runtime.zip" "ogre"
 	ZipDLL::extractall "arch\cegui-0.7.2-vs100-runtime.zip" "cegui"
 	ZipDLL::extractall "arch\vrpn-7.26-runtime.zip" "vrpn"
+	ZipDLL::extractall "arch\pthreads-2.8.0-runtime.zip" "pthreads"
 	ZipDLL::extractall "arch\openal-1.1-runtime.zip" "openal"
 	ZipDLL::extractall "arch\freealut-1.1.0-bin-runtime.zip" "freealut"
 	ZipDLL::extractall "arch\libvorbis-1.3.2-vs100-runtime.zip" "libvorbis"
@@ -169,6 +171,7 @@ no_need_to_patch_3d_functionnality:
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "SET OGRE_HOME=$INSTDIR\dependencies\ogre$\r$\n"
 	FileWrite $0 "SET VRPNROOT=$INSTDIR\dependencies\vrpn$\r$\n"
+	FileWrite $0 "SET OV_DEP_PTHREADS=$INSTDIR\dependencies\pthreads$\r$\n"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_LUA%\lib;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_ITPP%\bin;%PATH%$\r$\n"
@@ -178,6 +181,7 @@ no_need_to_patch_3d_functionnality:
 	FileWrite $0 "SET PATH=%OV_DEP_CEGUI%\bin;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_VRPN%\bin;%PATH%$\r$\n"
+	FileWrite $0 "SET PATH=%OV_DEP_PTHREADS%\lib;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_OPENAL%\libs\Win32;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_FREEALUT%\lib;%PATH%$\r$\n"
 	FileWrite $0 "SET PATH=%OV_DEP_LIBVORBIS%\win32\bin\release;%PATH%$\r$\n"
