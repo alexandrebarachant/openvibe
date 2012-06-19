@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #File Name : StimulationsCodes.py
-#Created By : Aurélien Van Langhenhove
+#Created By : Aurelien Van Langhenhove
 
 ## Stimulation codes can be found at this url :
 ## http://openvibe.inria.fr/documentation/unstable/Doc_Stimulations.html

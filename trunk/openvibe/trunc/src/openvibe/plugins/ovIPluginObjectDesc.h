@@ -91,11 +91,11 @@ namespace OpenViBE
 			/**
 			 * \brief Informs the plugin description it won't be used any more
 			 *
-			 * This is called by the §OpenViBE§ platform to inform
+			 * This is called by the OpenViBE platform to inform
 			 * the plugin description it is not usefull anymore.
 			 * The plugin can chose whether to delete itself or
 			 * to stay in memory until it decides it is ok to be
-			 * deleted. However, the §OpenViBE§ platform will not
+			 * deleted. However, the OpenViBE platform will not
 			 * call any of the plugin functions after release is
 			 * called.
 			 */
@@ -108,7 +108,7 @@ namespace OpenViBE
 			/**
 			 * \brief Gives a tip on what this plugin descriptor is able to create
 			 *
-			 * This may inform the §OpenViBE§ platform about what
+			 * This may inform the OpenViBE platform about what
 			 * kind of plugin can be created using this plugin
 			 * descriptor. It should return the concrete class
 			 * identifier of the plugin object itself.
@@ -120,7 +120,7 @@ namespace OpenViBE
 			 * \return the created object.
 			 *
 			 * This method creates the plugin object itself and returns
-			 * it with the lowest level interface. The §OpenVIBE§
+			 * it with the lowest level interface. The OpenVIBE
 			 * platform then uses the IObject::isDerivedFromClass
 			 * method to use the plugin correctly.
 			 */
@@ -208,7 +208,7 @@ namespace OpenViBE
 			 * context.
 			 *
 			 * A plugin may be used under different licences. For this reason,
-			 * the §OpenViBE§ kernel will loop on this function for each
+			 * the OpenViBE kernel will loop on this function for each
 			 * licence type to request.
 			 */
 			virtual OpenViBE::boolean hasLicenceType(OpenViBE::Kernel::ELicenseType eLT) const { return false; }

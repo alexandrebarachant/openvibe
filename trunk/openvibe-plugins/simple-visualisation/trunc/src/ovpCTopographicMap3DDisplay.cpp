@@ -494,8 +494,8 @@ boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
 #endif
 
 #ifdef TILT_ELECTRODES
-	//10-20 electrode mapping is tilted by 10% (18°) on its X axis. Compute rotation matrix
-	//that transforming coordinates back into "standard" frame (-18°)
+	//10-20 electrode mapping is tilted by 10% (18deg) on its X axis. Compute rotation matrix
+	//that transforming coordinates back into "standard" frame (-18deg)
 	//float32 l_oXTransform[3] = { 1, 0, 0}; //identity
 	float32 l_oYTransform[3];
 	l_oYTransform[0] = 0; l_oYTransform[1] = cosf(-0.1f * M_PI); l_oYTransform[2] = sinf(-0.1f * M_PI);

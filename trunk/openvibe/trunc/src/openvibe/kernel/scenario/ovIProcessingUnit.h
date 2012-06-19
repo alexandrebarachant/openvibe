@@ -11,7 +11,7 @@ namespace OpenViBE
 		 * \class IProcessingUnit
 		 * \author Yann Renard (IRISA/INRIA)
 		 * \date 2006-08-16
-		 * \brief Processing unit information for §OpenViBE§ boxes
+		 * \brief Processing unit information for OpenViBE boxes
 		 * \ingroup Group_Scenario
 		 * \ingroup Group_Kernel
 		 */

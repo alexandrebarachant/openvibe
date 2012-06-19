@@ -9,14 +9,14 @@ namespace OpenViBE
 	 * \class IMatrix
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-11-21
-	 * \brief Basic §OpenViBE§ matrix interface
+	 * \brief Basic OpenViBE matrix interface
 	 *
 	 * This interface offers functionalities to basically manipulate an n-dimmensional
 	 * matrix. The manipulation that can be done are very limited and nearly limits
 	 * to memory manipulation. This is basically an unified way for storing matrices
-	 * content in §OpenViBE§
+	 * content in OpenViBE
 	 *
-	 * §OpenViBE§ provides an standalone implementation of this interface in OpenViBE::CMatrix
+	 * OpenViBE provides an standalone implementation of this interface in OpenViBE::CMatrix
 	 */
 	class OV_API IMatrix : public OpenViBE::IObject
 	{

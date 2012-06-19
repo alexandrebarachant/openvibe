@@ -37,7 +37,7 @@ namespace OpenViBE
 		 * application.
 		 *
 		 * \todo Refactor this base class to propose an interface
-		 *       more §OpenViBE§ compliant (use IDs, intialize/unitialize
+		 *       more OpenViBE compliant (use IDs, intialize/unitialize
 		 *       pairs etc...)
 		 */
 		class OV_API IPlayer : public OpenViBE::Kernel::IKernelObject

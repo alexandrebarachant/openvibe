@@ -16,18 +16,18 @@ namespace OpenViBE
 	 * \ingroup Group_Base
 	 *
 	 * This class is the basic class to use in order to identify
-	 * objects in the §OpenViBE§ platform. It can be used for class
+	 * objects in the OpenViBE platform. It can be used for class
 	 * identification, for object identification and any user needed
 	 * identification process.
 	 *
-	 * The identification of the §OpenViBE§ platform is based on
+	 * The identification of the OpenViBE platform is based on
 	 * 64 bits integers. This allows more than
 	 * 1 800 000 000 000 000 000 identifiers to exist... I won't
 	 * write that this should be enough ;) (this is (c) Bill Gates)
 	 * but at least... it may fit our today needs !
 	 *
 	 * This class is heavily used in the OpenViBE::IObject class. Also,
-	 * the §OpenViBE§ specification gives serveral already defined
+	 * the OpenViBE specification gives serveral already defined
 	 * class identifiers the developper should know of. For this,
 	 * let you have a look to the documentation of ov_defines.h !
 	 *
@@ -204,12 +204,12 @@ namespace OpenViBE
 		//@}
 
 		/**
-		 * \brief Converts this identifier into an §OpenViBE§ string
-		 * \return This identifier represented as an §OpenViBE§ string
+		 * \brief Converts this identifier into an OpenViBE string
+		 * \return This identifier represented as an OpenViBE string
 		 */
 		OpenViBE::CString toString(void) const;
 		/**
-		 * \brief Reads a an §OpenViBE§ string to extract this identifier
+		 * \brief Reads a an OpenViBE string to extract this identifier
 		 * \param rString [in] : the string to convert
 		 * \return \e true in case of success.
 		 * \return \e false in case of error.

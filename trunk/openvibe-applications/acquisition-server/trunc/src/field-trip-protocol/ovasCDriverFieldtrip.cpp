@@ -620,7 +620,7 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 							}
 							else
 							{
-								//data from IHM implant are in volts, must be in µvolts in openvibe
+								//data from IHM implant are in volts, must be in uvolts in openvibe
 								m_pSample[j*l_ui32NbDataToSend + i] = (float32) 1000000.0f*l_f64Value;
 							}*/
 							m_pSample[j*l_ui32NbDataToSend + i] = (float32) 1000000.0f*l_f64Value;
@@ -641,7 +641,7 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 							}
 							else
 							{
-								//data from IHM implant are in volts, must be in µvolts in openvibe
+								//data from IHM implant are in volts, must be in uvolts in openvibe
 								m_pSample[j*l_ui32NbDataToSend + i] = 1000000.0f*l_f32Value;
 							}*/
 							m_pSample[j*l_ui32NbDataToSend + i] = 1000000.0f*l_f32Value;

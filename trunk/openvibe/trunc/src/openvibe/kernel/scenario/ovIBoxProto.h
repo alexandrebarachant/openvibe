@@ -27,13 +27,13 @@ namespace OpenViBE
 		 * \class IBoxProto
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-07-05
-		 * \brief §OpenViBE§ box prototype
+		 * \brief OpenViBE box prototype
 		 * \ingroup Group_Scenario
 		 * \ingroup Group_Kernel
 		 * \ingroup Group_Extend
 		 *
 		 * This class is used by a plugin algorithm descriptor
-		 * to let the §OpenViBE§ platform know what an algorithm
+		 * to let the OpenViBE platform know what an algorithm
 		 * box looks like. It declares several things, like
 		 * it input types, output types and settings.
 		 *

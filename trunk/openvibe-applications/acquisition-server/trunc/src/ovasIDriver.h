@@ -168,7 +168,7 @@ namespace OpenViBEAcquisitionServer
 	 * \class IDriverCallback
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-04-01
-	 * \brief Base class for all the §OpenViBE§ acquisition server driver callbacks
+	 * \brief Base class for all the OpenViBE acquisition server driver callbacks
 	 *
 	 * Objects derived from this class are called by any driver to provide
 	 * built sample buffers.
@@ -261,10 +261,10 @@ namespace OpenViBEAcquisitionServer
 	 * \class IDriver
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-04-01
-	 * \brief Base class for all the §OpenViBE§ acquisition server drivers
+	 * \brief Base class for all the OpenViBE acquisition server drivers
 	 *
 	 * This class should be used by hardware driver developers in order
-	 * to add new peripherals to the §OpenViBE§ acquisition server. This driver
+	 * to add new peripherals to the OpenViBE acquisition server. This driver
 	 * is then used by the server to get cerebral activity measurments and to
 	 * send this measured activity to the platform so it can be processed.
 	 *
@@ -276,7 +276,7 @@ namespace OpenViBEAcquisitionServer
 	 * The implemented driver could either have direct access to the hardware
 	 * or read the measurements from a proprietarry server, depending on the
 	 * hardware manufacturer choice. Thus, the configuration phase of this driver
-	 * should be able to provide the information §OpenViBE§ needs that are
+	 * should be able to provide the information OpenViBE needs that are
 	 * not present from the hardware manufacturer'.
 	 *
 	 * Important job for the driver is to give the acquisition server fixed

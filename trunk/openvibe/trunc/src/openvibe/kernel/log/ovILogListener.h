@@ -215,7 +215,7 @@ namespace OpenViBE
 			 */
 			virtual void log(const OpenViBE::CIdentifier& rValue)=0;
 			/**
-			 * \brief Logs an §OpenViBE§ string value
+			 * \brief Logs an OpenViBE string value
 			 * \param rValue [in] : the value that should be logged
 			 */
 			virtual void log(const OpenViBE::CString& rValue)=0;

@@ -118,8 +118,8 @@ namespace OpenViBE
 		//@}
 
 		/**
-		 * \brief Initializes this string from another §OpenViBE§ string
-		 * \param rString [in] : the §OpenViBE§ string to initialize this string from
+		 * \brief Initializes this string from another OpenViBE string
+		 * \param rString [in] : the OpenViBE string to initialize this string from
 		 * \return \e true in case of success.
 		 * \return \e false in case of error.
 		 */

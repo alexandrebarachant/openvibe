@@ -222,7 +222,7 @@ public:
 
 			case OP_USERDEF:       op="UserDefined"; break;
 			case OP_NONE:          op="None"; break;
-			case OP_X2:            op="X²"; break;
+			case OP_X2:            op="X^2"; break;
 
 			default:               op="UnknownOp"; break;
 		}

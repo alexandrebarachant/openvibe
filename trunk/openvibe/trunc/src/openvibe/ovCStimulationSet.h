@@ -9,7 +9,7 @@ namespace OpenViBE
 	 * \class CStimulationSet
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-11-21
-	 * \brief Basic standalone §OpenViBE§ stimulation set implementation
+	 * \brief Basic standalone OpenViBE stimulation set implementation
 	 * \ingroup Group_Base
 	 *
 	 * This class offers a basic standalone impementation of the OpenViBE::IStimulationSet

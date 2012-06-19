@@ -9,13 +9,13 @@ namespace OpenViBE
 	 * \class IStimulationSet
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-11-21
-	 * \brief Basic §OpenViBE§ stimulation set interface
+	 * \brief Basic OpenViBE stimulation set interface
 	 *
-	 * This interface offers functionalities to handle a collection of §OpenViBE§ stimulations.
+	 * This interface offers functionalities to handle a collection of OpenViBE stimulations.
 	 * This collection basicaly consists in a list of stimulation information. Each stimulation
 	 * has three information : an identifier, a date and a duration.
 	 *
-	 * §OpenViBE§ provides an standalone implementation of this interface in OpenViBE::CStimulationSet
+	 * OpenViBE provides an standalone implementation of this interface in OpenViBE::CStimulationSet
 	 */
 
 	class OV_API IStimulationSet : public OpenViBE::IObject

@@ -54,7 +54,7 @@ namespace OpenViBEPlugins
 			virtual void release(void) { }
 
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("EDF File Writer"); }
-			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Aurélien Van Langhenhove"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Aurelien Van Langhenhove"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("CICIT Garches"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Writes experiment information, signal and stimulations in a EDF file"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }

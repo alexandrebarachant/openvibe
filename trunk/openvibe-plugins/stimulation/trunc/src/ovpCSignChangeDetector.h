@@ -49,7 +49,7 @@ namespace OpenViBEPlugins
 			virtual void release(void) { }
 
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Sign Change Detector"); }
-			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Joan Fruitet and Jozef Legény"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Joan Fruitet and Jozef Legeny"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("Inria Sophia"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Detects the change of input's sign"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Triggers a stimulation when one of the input's sign changes (input gets positive or negative"); }

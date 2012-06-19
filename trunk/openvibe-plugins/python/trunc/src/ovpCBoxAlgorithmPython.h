@@ -199,7 +199,7 @@ namespace OpenViBEPlugins
 			virtual void release(void) { }
 
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Python scripting"); }
-			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Aurélien Van Langhenhove and Laurent George"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Aurelien Van Langhenhove and Laurent George"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("CICIT Garches, Inria"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("This box executes a python script."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }

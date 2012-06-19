@@ -14,9 +14,9 @@ namespace OpenViBE
 	 * \class IKernelLoader
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2006-09-26
-	 * \brief This class allows an §OpenViBE§ application to load a kernel module.
+	 * \brief This class allows an OpenViBE application to load a kernel module.
 	 *
-	 * This class allows an §OpenViBE§ application to load a kernel module.
+	 * This class allows an OpenViBE application to load a kernel module.
 	 * The application should first load the DLL/so file and initialize it.
 	 * Then it is able to get a kernel descriptor and to build its own kernel
 	 * to use. The kernel DLL/so file should be freed thanks to the unintialization

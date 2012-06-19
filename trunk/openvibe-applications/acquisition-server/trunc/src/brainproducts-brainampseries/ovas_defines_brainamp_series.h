@@ -131,7 +131,7 @@ namespace OpenViBEAcquisitionServer
 		// Version 1.01.0003 and higher
 		// The following tables are based on logical channel positions
 		OpenViBE::uint8 m_pLowPassFilter[256];  // Low pass 250 Hz (0 = 1000Hz)                    - was /*UCHAR*/
-		OpenViBE::uint8 m_pResolution[256];     // 0 = 100 nV, 1 = 500 nV, 2 = 10 µV, 3 = 152.6 µV - was /*UCHAR*/
+		OpenViBE::uint8 m_pResolution[256];     // 0 = 100 nV, 1 = 500 nV, 2 = 10 uV, 3 = 152.6 uV - was /*UCHAR*/
 		OpenViBE::uint8 m_pDCCoupling[256];     // DC coupling (0 = AC)                            - was /*UCHAR*/
 		OpenViBE::uint8 m_ui8LowImpedance;      // Low impedance i.e. 10 MOhm, (0 = > 100MOhm)     - was /*UCHAR*/
 	} CBrainampSetup;

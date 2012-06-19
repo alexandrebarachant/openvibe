@@ -15,9 +15,9 @@ namespace OpenViBE
 		 * \ingroup Group_Extend
 		 *
 		 * This class is the base class for all the concrete plugin
-		 * classes that extend the §OpenViBE§ platform. It comes with
+		 * classes that extend the OpenViBE platform. It comes with
 		 * several basic functions each plugin should have in order
-		 * to work in the §OpenViBE§ platform.
+		 * to work in the OpenViBE platform.
 		 *
 		 * Each plugin class comes with a plugin descriptor class
 		 * (which you can write deriving the IPluginObjectDesc
@@ -40,11 +40,11 @@ namespace OpenViBE
 			/**
 			 * \brief Informs the plugin object it won't be used anymore
 			 *
-			 * This is called by the §OpenViBE§ platform to inform
+			 * This is called by the OpenViBE platform to inform
 			 * the plugin object it is not usefull anymore. The plugin
 			 * can chose whether to delete itself or to stay in
 			 * memory until it decides is is ok to be deleted.
-			 * However, the §OpenViBE§ platform will not call any
+			 * However, the OpenViBE platform will not call any
 			 * of the plugin functions after release is called.
 			 */
 			virtual void release(void)=0;

@@ -15,7 +15,7 @@ namespace OpenViBE
 		 * \ingroup Group_Extend
 		 *
 		 * This class should be derived by any plugin developper in
-		 * order to describe a specific §OpenViBE§ algorithm.
+		 * order to describe a specific OpenViBE algorithm.
 		 *
 		 * \sa OpenViBE::Plugins::IAlgorithm
 		 *
@@ -30,9 +30,9 @@ namespace OpenViBE
 			 * \param rAlgorithmPrototype [out] : the prototype to fill
 			 * \return \e true in case of success \e false in other cases.
 			 *
-			 * When this function is called by the §OpenViBE§
+			 * When this function is called by the OpenViBE
 			 * platform, the plugin descriptor should fill in
-			 * the structure to let the §OpenViBE§ platform know
+			 * the structure to let the OpenViBE platform know
 			 * what the algorithm should look like
 			 * (inputs/outputs/triggers).
 			 *

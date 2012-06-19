@@ -42,15 +42,15 @@ namespace OpenViBE
 	 * \class IObject
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2006-06-16
-	 * \brief Base class for all the §OpenViBE§ platform objects
+	 * \brief Base class for all the OpenViBE platform objects
 	 *
-	 * Most of the complex objects existing in the §OpenViBE§ platform
+	 * Most of the complex objects existing in the OpenViBE platform
 	 * should derive this base interface. Thus, several operations can
 	 * be performed in order to work on the object. The most important
 	 * may be the isDerivedFromClass method that allows the caller to
 	 * know it the object has specific interface implementation and if
 	 * the object could finally be casted in this interface or subclass.
-	 * Several interfaces are provided in the §OpenViBE§ specficiation
+	 * Several interfaces are provided in the OpenViBE specficiation
 	 * but custom class could also be created. It is the responsability
 	 * of the developper to notify the user of what interfaces are
 	 * implemented in a concrete class.

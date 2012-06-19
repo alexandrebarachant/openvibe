@@ -21,7 +21,7 @@ namespace OpenViBE
 		 * \ingroup Group_Kernel
 		 *
 		 * Each plugin module is exactly responsible for one module
-		 * (ie DLL/so file) containing §OpenViBE§ plugins. It is
+		 * (ie DLL/so file) containing OpenViBE plugins. It is
 		 * able to load/unload this file and to enumerate each of
 		 * its plugin object descriptor.
 		 */
@@ -30,7 +30,7 @@ namespace OpenViBE
 		public:
 
 			/**
-			 * \brief Tries to load a file as an §OpenViBE§ module
+			 * \brief Tries to load a file as an OpenViBE module
 			 * \param sName [in] : the name of the file to try to load
 			 * \param pError [out] : an optional output string containing the error on load failure
 			 * \return \e true in case of success.
@@ -40,7 +40,7 @@ namespace OpenViBE
 				const OpenViBE::CString& sName,
 				OpenViBE::CString* pError=NULL)=0;
 			/**
-			 * \brief Tries to unload the loaded §OpenViBE§ module
+			 * \brief Tries to unload the loaded OpenViBE module
 			 * \param pError [out] : an optional output string containing the error on unload failure
 			 * \return \e true in case of success.
 			 * \return \e false in case of error.

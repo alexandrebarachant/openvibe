@@ -16,7 +16,7 @@ namespace OpenViBE
 		 * \ingroup Group_Kernel
 		 *
 		 * This interface can be used in order to fully describe an
-		 * §OpenViBE§ comment in order to help the understanding of a
+		 * OpenViBE comment in order to help the understanding of a
 		 * given scenario.
 		 */
 		class OV_API IComment : public OpenViBE::Kernel::IAttributable
@@ -28,12 +28,12 @@ namespace OpenViBE
 
 			/**
 			 * \brief Gets the identifier of this comment
-			 * \return The identifier of this §OpenViBE§ comment.
+			 * \return The identifier of this OpenViBE comment.
 			 */
 			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
 			/**
 			 * \brief Gets the display name of this comment
-			 * \return The name of this §OpenViBE§ comment.
+			 * \return The name of this OpenViBE comment.
 			 */
 			virtual OpenViBE::CString getText(void) const=0;
 			/**

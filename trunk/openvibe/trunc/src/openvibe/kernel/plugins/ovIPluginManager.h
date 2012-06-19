@@ -30,7 +30,7 @@ namespace OpenViBE
 		 * \ingroup Group_Kernel
 		 *
 		 * The plugin manager is in charge of loading/unloading plugin
-		 * modules (ie DLL/so files) containing §OpenViBE§ plugins.
+		 * modules (ie DLL/so files) containing OpenViBE plugins.
 		 * It also provides functions in order to list plugin descriptors,
 		 * create or release plugin objects...
 		 */

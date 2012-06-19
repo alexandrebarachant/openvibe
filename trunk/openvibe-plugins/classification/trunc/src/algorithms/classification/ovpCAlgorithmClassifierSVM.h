@@ -72,7 +72,7 @@ namespace OpenViBEPlugins
 			OpenViBE::int32 m_i32IndexSV;
 			OpenViBE::uint32 m_ui32NumberOfFeatures;
 			OpenViBE::CMemoryBuffer m_oConfiguration;
-			//todo à modifier en fonction de svn_save_model
+			//todo a modifier en fonction de svn_save_model
 			//itpp::vec m_oCoefficients;
 		};
 

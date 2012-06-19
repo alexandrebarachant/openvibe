@@ -18,7 +18,7 @@ namespace OpenViBEAcquisitionServer
 {
 	/**
 	 * \class CDriverOpenALAudioCapture
-	 * \author Aurélien Van Langhenhove (CIC-IT Garches)
+	 * \author Aurelien Van Langhenhove (CIC-IT Garches)
 	 * \date Mon May 16 16:55:49 2011
 	 * \erief The CDriverOpenALAudioCapture allows the acquisition server to acquire data from a OpenAL audio capture device.
 	 *

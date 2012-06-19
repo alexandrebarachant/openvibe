@@ -17,7 +17,7 @@ namespace OpenViBEPlugins
 	{
 		/**
 		 * \class CBoxAlgorithmDifferentialIntegral
-		 * \author Jozef Legény (INRIA)
+		 * \author Jozef Legeny (INRIA)
 		 * \date Thu Oct 27 15:24:05 2011
 		 * \brief The class CBoxAlgorithmDifferentialIntegral describes the box DifferentialIntegral.
 		 *
@@ -62,7 +62,7 @@ namespace OpenViBEPlugins
 
 		/**
 		 * \class CBoxAlgorithmDifferentialIntegralDesc
-		 * \author Jozef Legény (INRIA)
+		 * \author Jozef Legeny (INRIA)
 		 * \date Thu Oct 27 15:24:05 2011
 		 * \brief Descriptor of the box DifferentialIntegral.
 		 *
@@ -74,7 +74,7 @@ namespace OpenViBEPlugins
 			virtual void release(void) { }
 
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Signal Differential/Integral"); }
-			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Jozef Legény"); }
+			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Jozef Legeny"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Calculates a differential or an integral of a signal"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Calculates a differential or an integral of a signal."); }

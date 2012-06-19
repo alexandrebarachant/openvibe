@@ -16,7 +16,7 @@ namespace OpenViBE
 		 * \class IAlgorithm
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2007-11-06
-		 * \brief Abstract algorithm, base element of §OpenViBE§ processing objects
+		 * \brief Abstract algorithm, base element of OpenViBE processing objects
 		 * \ingroup Group_Extend
 		 *
 		 * This class should be derived by any plugin that is related
@@ -27,7 +27,7 @@ namespace OpenViBE
 		 * or by this algorithm itself in order to produce output parameters.
 		 *
 		 * This is the heart of the extension mechanism of the
-		 * §OpenViBE§ platform.
+		 * OpenViBE platform.
 		 *
 		 * \sa OpenViBE::Kernel::IAlgorithmDesc
 		 * \sa OpenViBE::Kernel::IAlgorithmContext

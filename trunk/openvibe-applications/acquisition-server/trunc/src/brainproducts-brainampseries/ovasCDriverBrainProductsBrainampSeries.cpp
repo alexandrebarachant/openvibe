@@ -249,7 +249,7 @@ boolean CDriverBrainProductsBrainampSeries::initialize(
 			// Should I care about j being greater than 
 			m_pDeviceSetup->m_pChannelLookup[j]=i;
 			m_pDeviceSetup->m_pLowPassFilter[j]=uint8(m_peLowPassFilterFull[i]==Parameter_Default?m_eLowPass:m_peLowPassFilterFull[i]); // 0 - 1000Hz, 1 - 250Hz
-			m_pDeviceSetup->m_pResolution[j]=uint8(m_peResolutionFull[i]==Parameter_Default?m_eResolution:m_peResolutionFull[i]); // 0 - 100 nV, 1 - 500 nV, 2 - 10 µV, 3 - 152.6 µV
+			m_pDeviceSetup->m_pResolution[j]=uint8(m_peResolutionFull[i]==Parameter_Default?m_eResolution:m_peResolutionFull[i]); // 0 - 100 nV, 1 - 500 nV, 2 - 10 uV, 3 - 152.6 uV
 			m_pDeviceSetup->m_pDCCoupling[j]=uint8(m_peDCCouplingFull[i]==Parameter_Default?m_eDCCoupling:m_peDCCouplingFull[i]); // 0 - AC, 1 - DC
 
 			m_pf32ResolutionFactor[j]=l_pf32Resolution[m_pDeviceSetup->m_pResolution[j]];

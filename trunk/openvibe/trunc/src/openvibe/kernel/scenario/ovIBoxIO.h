@@ -11,7 +11,7 @@ namespace OpenViBE
 		 * \class IBoxIO
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-06-21
-		 * \brief Main §OpenViBE§ box interface to communicate with the kernel
+		 * \brief Main OpenViBE box interface to communicate with the kernel
 		 * \ingroup Group_Scenario
 		 * \ingroup Group_Kernel
 		 *

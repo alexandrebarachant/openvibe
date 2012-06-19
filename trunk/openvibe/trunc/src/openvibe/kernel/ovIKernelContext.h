@@ -24,7 +24,7 @@ namespace OpenViBE
 		 * \date 2007-10-24
 		 *
 		 * This class simply provides access to each manager the kernel owns. This is the top
-		 * level object that can be used by a custom §OpenViBE§ application and this is the common
+		 * level object that can be used by a custom OpenViBE application and this is the common
 		 * object all kernel object have in order to access all the functionnalities.
 		 *
 		 * See each manager's own documentation for more detail on a specific manager goal and usage.

@@ -428,7 +428,7 @@ void CComputeTemporalFilterCoefficients::convertSPlanePolesAndZerosToZPlane(void
 				// 2a //
 				l_complexCa.real *= 2.0;
 				l_complexCa.imag *= 2.0;
-				// -b +sqrt(b²-4ac) //
+				// -b +sqrt(b^2-4ac) //
 				addComplex(&l_complexB4ac, &l_complexCb, &l_complexCnum);
 				// ... /2a //
 				divComplex(&l_complexCa, &l_complexCnum, &l_complexCnum);

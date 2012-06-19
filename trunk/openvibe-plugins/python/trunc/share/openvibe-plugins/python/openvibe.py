@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #File Name : openvibe.py
-#Created By : Aurélien Van Langhenhove
+#Created By : Aurelien Van Langhenhove
 
 from StimulationsCodes import *
 import traceback, collections

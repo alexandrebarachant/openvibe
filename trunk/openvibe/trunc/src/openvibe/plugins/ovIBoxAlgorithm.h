@@ -60,7 +60,7 @@ namespace OpenViBE
 		 * \class IBoxAlgorithm
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2006-06-19
-		 * \brief Algorithm to create/process/transform §OpenViBE§ data
+		 * \brief Algorithm to create/process/transform OpenViBE data
 		 * \ingroup Group_Extend
 		 *
 		 * This class should be derived by any plugin that is related
@@ -72,7 +72,7 @@ namespace OpenViBE
 		 * continuous data flow.
 		 *
 		 * This is the heart of the extension mechanism of the
-		 * §OpenViBE§ platform.
+		 * OpenViBE platform.
 		 *
 		 * \sa OpenViBE::Kernel::IBoxAlgorithmDesc
 		 *
@@ -157,7 +157,7 @@ namespace OpenViBE
 			 * \return \e false when the message is not processed.
 			 * \note Default implementation returns \e false
 			 *
-			 * This function is called by the §OpenViBE§ kernel when
+			 * This function is called by the OpenViBE kernel when
 			 * another box tries to send an event message to this
 			 * box. This event message is described in the
 			 * rMessageEvent parameter and can be interpreted by this
@@ -176,9 +176,9 @@ namespace OpenViBE
 			 * \return \e false when the message is not processed.
 			 * \note Default implementation returns \e false
 			 *
-			 * This function is called by the §OpenViBE§ kernel when
+			 * This function is called by the OpenViBE kernel when
 			 * it has sent a signal. Signal are special messages,
-			 * mainly sent by the kernel to all of the §OpenViBE§
+			 * mainly sent by the kernel to all of the OpenViBE
 			 * boxes in order to tell them it is about to start,
 			 * processing, stop processing, load a new scenario
 			 * and so on...
@@ -196,7 +196,7 @@ namespace OpenViBE
 			 * \return \e false when the message is not processed.
 			 * \note Default implementation returns \e false
 			 *
-			 * This function is called by the §OpenViBE§ kernel when
+			 * This function is called by the OpenViBE kernel when
 			 * it has sent clock messages. Clock messages are used for
 			 * processes that should be executed regularly and which
 			 * can not be triggered thanks to their inputs (for example
@@ -219,7 +219,7 @@ namespace OpenViBE
 			 * \return \e false when the message is not processed.
 			 * \note Default implementation returns \e false
 			 *
-			 * This function is called by the §OpenViBE§ kernel each
+			 * This function is called by the OpenViBE kernel each
 			 * time an input of this box is updated. This allows the
 			 * algorithm to decide to call the process function and
 			 * eventually to the received data.
@@ -240,9 +240,9 @@ namespace OpenViBE
 			 * \return \e true on success, \e false when something went wrong.
 			 *
 			 * This function is used to process the arrived data and
-			 * eventually generate results. See §OpenViBE§ global
+			 * eventually generate results. See OpenViBE global
 			 * architecture to understand how the commponents interact
-			 * and how an §OpenViBE§ box works internally.
+			 * and how an OpenViBE box works internally.
 			 *
 			 * The processing function may use the provided context
 			 * in order to read its inputs and write its outputs...

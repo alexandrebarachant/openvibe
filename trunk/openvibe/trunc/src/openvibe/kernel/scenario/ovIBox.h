@@ -11,12 +11,12 @@ namespace OpenViBE
 		 * \class IBox
 		 * \author Yann Renard (IRISA/INRIA)
 		 * \date 2006-08-16
-		 * \brief Complete §OpenViBE§ box interface
+		 * \brief Complete OpenViBE box interface
 		 * \ingroup Group_Scenario
 		 * \ingroup Group_Kernel
 		 *
 		 * This interface can be used in order to fully describe an
-		 * §OpenViBE§ black box. It describes its identification values,
+		 * OpenViBE black box. It describes its identification values,
 		 * its inputs, its outputs and its settings.
 		 */
 		class OV_API IBox : public OpenViBE::Kernel::IAttributable
@@ -28,12 +28,12 @@ namespace OpenViBE
 
 			/**
 			 * \brief Gets the identifier of this box
-			 * \return The identifier of this §OpenViBE§ box.
+			 * \return The identifier of this OpenViBE box.
 			 */
 			virtual OpenViBE::CIdentifier getIdentifier(void) const=0;
 			/**
 			 * \brief Gets the display name of this box
-			 * \return The name of this §OpenViBE§ box.
+			 * \return The name of this OpenViBE box.
 			 */
 			virtual OpenViBE::CString getName(void) const=0;
 			/**

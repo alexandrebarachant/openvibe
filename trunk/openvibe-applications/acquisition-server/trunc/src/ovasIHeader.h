@@ -9,7 +9,7 @@ namespace OpenViBEAcquisitionServer
 	 * \class IHeader
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-04-01
-	 * \brief Base class for an §OpenViBE§ header container
+	 * \brief Base class for an OpenViBE header container
 	 *
 	 * IHeader objects are used by IDriver objects to give all the header
 	 * information to the acquisition server. The IDriver developer may
@@ -48,7 +48,7 @@ namespace OpenViBEAcquisitionServer
 		/**
 		 * \brief Sets the experiment identifier
 		 * \param ui32ExperimentIdentifier [in] : the experiment identifier to send to
-		 *        the §OpenViBE§ platform.
+		 *        the OpenViBE platform.
 		 * \return \e true in case of success.
 		 * \return \e false in case of error.
 		 *
@@ -153,7 +153,7 @@ namespace OpenViBEAcquisitionServer
 		 * \note As soon as a channel gain is set, all the yet-unset channel gains are
 		 *       considered to be set to 1.
 		 *
-		 * Gains are multiplicator coefficients that are used by the §OpenViBE§ platform to
+		 * Gains are multiplicator coefficients that are used by the OpenViBE platform to
 		 * to transform measured values into physical dimmension.
 		 */
 		virtual OpenViBE::boolean setChannelGain(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float32 f32ChannelGain)=0;

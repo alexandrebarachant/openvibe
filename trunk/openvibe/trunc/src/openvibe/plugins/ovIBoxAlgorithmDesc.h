@@ -23,7 +23,7 @@ namespace OpenViBE
 		 * \ingroup Group_Extend
 		 *
 		 * This class should be derived by any plugin developper in
-		 * order to describe a specific §OpenViBE§ box algorithm.
+		 * order to describe a specific OpenViBE box algorithm.
 		 *
 		 * \sa OpenViBE::Plugins::IBoxAlgorithm
 		 *
@@ -41,9 +41,9 @@ namespace OpenViBE
 			 * \param rPrototype [out] : the box prototype to fill
 			 * \return \e true in case of success \e false in other cases.
 			 *
-			 * When this function is called by the §OpenViBE§
+			 * When this function is called by the OpenViBE
 			 * platform, the plugin descriptor should fill in
-			 * the structure to let the §OpenViBE§ platform know
+			 * the structure to let the OpenViBE platform know
 			 * what the corresponding box should look like
 			 * (inputs/outputs/settings).
 			 *

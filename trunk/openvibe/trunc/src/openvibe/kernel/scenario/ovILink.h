@@ -11,11 +11,11 @@ namespace OpenViBE
 		 * \class ILink
 		 * \author Yann Renard (IRISA/INRIA)
 		 * \date 2006-08-16
-		 * \brief Link information between §OpenViBE§ box
+		 * \brief Link information between OpenViBE box
 		 * \ingroup Group_Scenario
 		 * \ingroup Group_Kernel
 		 *
-		 * This class collects informations between §OpenViBE§
+		 * This class collects informations between OpenViBE
 		 * boxes : box identifiers and input / output indices.
 		 */
 		class OV_API ILink : public OpenViBE::Kernel::IAttributable

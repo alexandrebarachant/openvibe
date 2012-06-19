@@ -9,7 +9,7 @@ namespace OpenViBE
 	 * \class CMemoryBuffer
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-11-21
-	 * \brief Basic standalone §OpenViBE§ memory buffer implementation
+	 * \brief Basic standalone OpenViBE memory buffer implementation
 	 * \ingroup Group_Base
 	 *
 	 * This class offers a basic standalone impementation of the OpenViBE::IMemoryBuffer

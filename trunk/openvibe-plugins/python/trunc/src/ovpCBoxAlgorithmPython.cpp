@@ -795,7 +795,7 @@ OpenViBE::boolean CBoxAlgorithmPython::uninitialize(void)
 	if (m_bInitializeSucceeded)
 	{ // we call this uninit only if init had succeeded
 		//Execute the uninitialize function defined in the python script
-		// il y a un souci ici si le script n'a pas été chargé ça ne passe pas
+		// il y a un souci ici si le script n'a pas ete charge ca ne passe pas
 		if (m_pBoxUninitialize && PyCallable_Check(m_pBoxUninitialize))
 		{
 			//New reference

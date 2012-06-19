@@ -9,14 +9,14 @@ namespace OpenViBE
 	 * \class IMemoryBuffer
 	 * \author Yann Renard (INRIA/IRISA)
 	 * \date 2007-11-21
-	 * \brief Basic §OpenViBE§ memory buffer interface
+	 * \brief Basic OpenViBE memory buffer interface
 	 *
 	 * This interface offers functionalities to basically manipulate a raw memory buffer.
 	 * It allows the buffer to be resized and manipulated easily with no care of allocation
 	 * reallocation. Implementations for this interface may provide optimisations for such
 	 * operations.
 	 *
-	 * §OpenViBE§ provides an standalone implementation of this interface in OpenViBE::CMemoryBuffer
+	 * OpenViBE provides an standalone implementation of this interface in OpenViBE::CMemoryBuffer
 	 */
 	class OV_API IMemoryBuffer : public OpenViBE::IObject
 	{

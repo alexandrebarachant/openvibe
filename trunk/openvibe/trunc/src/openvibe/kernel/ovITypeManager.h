@@ -13,7 +13,7 @@ namespace OpenViBE
 		 * \author Yann Renard (INRIA/IRISA)
 		 * \date 2007-03-14
 		 *
-		 * This manager concentrates all information about types in the §OpenViBE§
+		 * This manager concentrates all information about types in the OpenViBE
 		 * platform. Any non-standard type should be declared in the type identifier
 		 * by the kernel or the plugins in order to be used. Registered types range
 		 * from box settings to streams, eventually including inter-type auto casts.

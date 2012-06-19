@@ -472,15 +472,15 @@ bool CTieFighterBCI::process(double timeSinceLastProcess)
 			
 			if(_strcmpi(m_sLocalization.c_str(),"fr") == 0)
 			{
-				ss << " Merci d'avoir participé !" << "\n------------\n";
+				ss << " Merci d'avoir participe !" << "\n------------\n";
 
-				ss << "Le vaisseau s'est soulevé pendant :\n" << m_dStat_TieFighterLiftTime << " secondes.\n\n";
+				ss << "Le vaisseau s'est souleve pendant :\n" << m_dStat_TieFighterLiftTime << " secondes.\n\n";
 				ss << "Temps moyen par essai :\n" << m_dStat_TieFighterLiftTime/l_iCount << " secondes.\n\n";
 				ss << "------------\n";
 				ss << "Votre rang : \n";
 				l_sRang = "- Apprenti Jedi -";
 				if(m_dStat_TieFighterLiftTime/l_iCount > 1.0 ) l_sRang = "{ Chevalier Jedi }";
-				if(m_dStat_TieFighterLiftTime/l_iCount > 2.0 ) l_sRang = "-oO Maître Jedi Oo-";
+				if(m_dStat_TieFighterLiftTime/l_iCount > 2.0 ) l_sRang = "-oO Maitre Jedi Oo-";
 				ss << l_sRang << "\n";
 			}
 			else
