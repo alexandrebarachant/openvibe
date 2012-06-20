@@ -15,11 +15,14 @@ public:
 	~CPythonInitializer(void);
 	OpenViBE::boolean IsPythonAvailable(void);
 private:
+#ifdef OVP_OS_Windows
 	bool checkPythonPath();
+#endif
 	//		PyThreadState *m_pMainPyThreadState;
 	OpenViBE::boolean m_bPythonAvailable;
 };
 
+#ifdef OVP_OS_Windows
 bool CPythonInitializer::checkPythonPath()
 {
 	std::string l_sPath = Py_GetPath();
@@ -49,6 +52,7 @@ bool CPythonInitializer::checkPythonPath()
 	std::cout << "Python directory not found. You probably have a corrupted python installation!" << std::endl;
 	return false;
 }
+#endif
 
 CPythonInitializer::CPythonInitializer(void)
 {
