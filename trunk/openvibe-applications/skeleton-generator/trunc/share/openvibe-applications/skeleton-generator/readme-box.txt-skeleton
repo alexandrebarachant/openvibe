@@ -17,7 +17,22 @@ Please put these files in your local repository, in the project of your choice (
 You may have to change the file ovpCBoxAlgorithm@@ClassName@@.h to make it find the included file ovp_defines.h, whose path is related to the project used.
  
 Don't forget to declare your box in ovp_main.cpp, in order to make it available in the Designer.
-Look in one of the ovp_main.cpp file, you will find examples of such declarations (#include the header, then OVP_Declare_New macro).
+Look in one of the ovp_main.cpp file, you will find examples of such declarations (#include the header, then OVP_Declare_New macro). 
+This look something like this:
+
+#include "[my-box-folder]/ovpCBoxAlgorithm@@ClassName@@.h"
+
+...
+
+OVP_Declare_Begin();
+
+...
+
+OVP_Declare_New(OpenViBEPlugins::@@Namespace@@::CBoxAlgorithm@@ClassName@@Desc);
+...
+
+OVP_Declare_End();
+
 
 If your box doesn't appear in the designer, maybe it's because you cannot see Unstable Boxes.
 Try to set your configuration file (openvibe.conf on windows / .openviberc on Linux) with the following token :
