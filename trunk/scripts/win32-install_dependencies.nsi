@@ -57,10 +57,10 @@ base_failed_to_find_sdk_3:
 	goto base_failed_to_find_sdk
 
 base_failed_to_find_sdk:
-	MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to find Microsoft Platform SDK$\nPlease update your win32-dependencies.cmd script by hand"
+	MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to find Microsoft Platform SDK$\nPlease update your win32-dependencies.cmd script by hand" /SD IDOK
 	goto base_go_on
 base_found_sdk:
-	MessageBox MB_OK "Microsoft Platform SDK found at :$\n$r0"
+	MessageBox MB_OK "Microsoft Platform SDK found at :$\n$r0" /SD IDOK
 	goto base_go_on
 
 base_go_on:
@@ -105,7 +105,7 @@ Section "DirectX Runtime"
 	NSISdl::download "http://www.microsoft.com/downloads/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=04ac064b-00d1-474e-b7b1-442d8712d553&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fB%2f7%2f9%2fB79FC9D7-47B8-48B7-A75E-101DEBEB5AB4%2fdirectx_aug2009_redist.exe" "arch\openvibe-directx.exe"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_directx:
 	ExecWait '"arch\openvibe-directx.exe" /T:"$INSTDIR\tmp" /Q'
@@ -127,7 +127,7 @@ Section "Visual Redistributable Packages"
 	NSISdl::download "http://download.microsoft.com/download/a/3/7/a379292d-24f2-4bbb-841b-c2aeb1100471/vcredist_x86.exe" "arch\openvibe-vcredist-2005-sp1.exe"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_vcredist_2005_sp1:
 	ExecWait '"arch\openvibe-vcredist-2005-sp1.exe" /q'
@@ -137,7 +137,7 @@ no_need_to_download_vcredist_2005_sp1:
 	NSISdl::download "http://download.microsoft.com/download/9/e/d/9edd8390-011b-4c6d-9806-d8dc2b10c0fb/vcredist_x86.exe" "arch\openvibe-vcredist-2008-sp1.exe"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_vcredist_2008_sp1:
 	ExecWait '"arch\openvibe-vcredist-2008-sp1.exe" /q'
@@ -147,7 +147,7 @@ no_need_to_download_vcredist_2008_sp1:
 	NSISdl::download "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe" "arch\openvibe-vcredist-2010.exe"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_vcredist_2010:
 	ExecWait '"arch\openvibe-vcredist-2010.exe" /q'
@@ -168,7 +168,7 @@ Section "CMake"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.8.2-win32-x86.zip "arch\cmake-2.8.2-win32-x86.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_cmake:
 	ZipDLL::extractall "arch\cmake-2.8.2-win32-x86.zip" "cmake"
@@ -193,7 +193,7 @@ Section "eXpat"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/expat-2.0.1.zip "arch\expat-2.0.1.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_expat:
 	ZipDLL::extractall "arch\expat-2.0.1.zip" "expat"
@@ -218,7 +218,7 @@ Section "BOOST"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.42.0.zip "arch\boost-1.42.0.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_boost:
 	ZipDLL::extractall "arch\boost-1.42.0.zip" "boost"
@@ -243,7 +243,7 @@ Section "GTK+"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.22.1-dev.zip "arch\gtk-2.22.1-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_gtk_dev:
 	ZipDLL::extractall "arch\gtk-2.22.1-dev.zip" "gtk"
@@ -252,7 +252,7 @@ no_need_to_download_gtk_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.22.1-runtime.zip "arch\gtk-2.22.1-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_gtk_runtime:
 	ZipDLL::extractall "arch\gtk-2.22.1-runtime.zip" "gtk"
@@ -306,7 +306,7 @@ Section /o "GTK+ themes"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-themes-2009.09.07.zip "arch\gtk-themes-2009.09.07.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_gtk_themes:
 	ZipDLL::extractall "arch\gtk-themes-2009.09.07.zip" "gtk"
@@ -335,7 +335,7 @@ Section "IT++"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-$suffix-dev.zip "arch\itpp-4.0.7-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_itpp_dev:
 	ZipDLL::extractall "arch\itpp-4.0.7-$suffix-dev.zip" "itpp"
@@ -344,7 +344,7 @@ no_need_to_download_itpp_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/itpp-4.0.7-runtime.zip "arch\itpp-4.0.7-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_itpp_runtime:
 	ZipDLL::extractall "arch\itpp-4.0.7-runtime.zip" "itpp"
@@ -369,7 +369,7 @@ Section "Lua"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/lua-5.1.4-30.zip "arch\lua-5.1.4-30.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_lua:
 	ZipDLL::extractall "arch\lua-5.1.4-30.zip" "lua"
@@ -394,7 +394,7 @@ Section "Ogre3D"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-$suffix-dev.zip "arch\ogre-1.7.1-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_ogre_dev:
 	ZipDLL::extractall "arch\ogre-1.7.1-$suffix-dev.zip" "ogre"
@@ -403,7 +403,7 @@ no_need_to_download_ogre_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/ogre-1.7.1-$suffix-runtime.zip "arch\ogre-1.7.1-$suffix-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_ogre_runtime:
 	ZipDLL::extractall "arch\ogre-1.7.1-$suffix-runtime.zip" "ogre"
@@ -429,7 +429,7 @@ Section "CEGUI"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cegui-0.7.2-$suffix-dev.zip "arch\cegui-0.7.2-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_cegui_dev:
 	ZipDLL::extractall "arch\cegui-0.7.2-$suffix-dev.zip" "cegui"
@@ -474,7 +474,7 @@ Section "VRPN"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-$suffix-dev.zip "arch\vrpn-7.26-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_vrpn_dev:
 	ZipDLL::extractall "arch\vrpn-7.26-$suffix-dev.zip" "vrpn"
@@ -483,7 +483,7 @@ no_need_to_download_vrpn_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/vrpn-7.26-runtime.zip "arch\vrpn-7.26-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_vrpn_runtime:
 	ZipDLL::extractall "arch\vrpn-7.26-runtime.zip" "vrpn"
@@ -509,7 +509,7 @@ Section "pthreads"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/pthreads-2.8.0-dev.zip "arch\pthreads-2.8.0-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_pthreads_dev:
 	ZipDLL::extractall "arch\pthreads-2.8.0-dev.zip" "pthreads"
@@ -518,7 +518,7 @@ no_need_to_download_pthreads_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/pthreads-2.8.0-runtime.zip "arch\pthreads-2.8.0-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_pthreads_runtime:
 	ZipDLL::extractall "arch\pthreads-2.8.0-runtime.zip" "pthreads"
@@ -543,7 +543,7 @@ Section "OpenAL"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openal-1.1-dev.zip "arch\openal-1.1-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_openal_dev:
 	ZipDLL::extractall "arch\openal-1.1-dev.zip" "openal"
@@ -552,7 +552,7 @@ no_need_to_download_openal_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/openal-1.1-runtime.zip "arch\openal-1.1-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_openal_runtime:
 	ZipDLL::extractall "arch\openal-1.1-runtime.zip" "openal"
@@ -577,7 +577,7 @@ Section "Alut"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/freealut-1.1.0-bin-dev.zip "arch\freealut-1.1.0-bin-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_alut_dev:
 	ZipDLL::extractall "arch\freealut-1.1.0-bin-dev.zip" "freealut"
@@ -586,7 +586,7 @@ no_need_to_download_alut_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/freealut-1.1.0-bin-runtime.zip "arch\freealut-1.1.0-bin-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_alut_runtime:
 	ZipDLL::extractall "arch\freealut-1.1.0-bin-runtime.zip" "freealut"
@@ -611,7 +611,7 @@ Section "Ogg"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libogg-1.2.1-$suffix-dev.zip "arch\libogg-1.2.1-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_ogg_dev:
 	ZipDLL::extractall "arch\libogg-1.2.1-$suffix-dev.zip" "libogg"
@@ -620,7 +620,7 @@ no_need_to_download_ogg_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libogg-1.2.1-$suffix-runtime.zip "arch\libogg-1.2.1-$suffix-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_ogg_runtime:
 	ZipDLL::extractall "arch\libogg-1.2.1-$suffix-runtime.zip" "libogg"
@@ -645,7 +645,7 @@ Section "Vorbis"
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libvorbis-1.3.2-$suffix-dev.zip "arch\libvorbis-1.3.2-$suffix-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_vorbis_dev:
 	ZipDLL::extractall "arch\libvorbis-1.3.2-$suffix-dev.zip" "libvorbis"
@@ -654,7 +654,7 @@ no_need_to_download_vorbis_dev:
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/libvorbis-1.3.2-$suffix-runtime.zip "arch\libvorbis-1.3.2-$suffix-runtime.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_vorbis_runtime:
 	ZipDLL::extractall "arch\libvorbis-1.3.2-$suffix-runtime.zip" "libvorbis"

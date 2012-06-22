@@ -48,7 +48,7 @@ Function .onInit
 	UserInfo::GetAccountType
 	Pop $R1
 	StrCmp $R1 "Admin" has_admin_rights 0
-		MessageBox MB_OK "You must be administrator to install OpenViBE"
+		MessageBox MB_OK "You must be administrator to install OpenViBE" /SD IDOK
 		Quit
 has_admin_rights:
 
@@ -56,7 +56,7 @@ has_admin_rights:
 
 	${If} $0 != ""
 		IfFileExists "$0\Uninstall.exe" +1 +5
-			MessageBox MB_YESNO "A previous installation of OpenViBE is installed under $0.$\nContinuing the install procedure will remove previous installation of OpenViBE (including all files you eventually added in the installation directory).$\nWould you like to accept this removal and continue on installation process ?" IDNO +1 IDYES +2
+			MessageBox MB_YESNO "A previous installation of OpenViBE is installed under $0.$\nContinuing the install procedure will remove previous installation of OpenViBE (including all files you eventually added in the installation directory).$\nWould you like to accept this removal and continue on installation process ?" /SD IDYES IDNO +1 IDYES +2
 			Abort
 		StrCpy $OLDINSTDIR $0
 		StrCpy $INSTDIR $0
@@ -87,7 +87,7 @@ Section "-OpenViBE"
 	NSISdl::download "http://www.microsoft.com/downloads/info.aspx?na=90&p=&SrcDisplayLang=en&SrcCategoryId=&SrcFamilyId=04ac064b-00d1-474e-b7b1-442d8712d553&u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2fB%2f7%2f9%2fB79FC9D7-47B8-48B7-A75E-101DEBEB5AB4%2fdirectx_aug2009_redist.exe" "arch\openvibe-directx.exe"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +4
-			MessageBox MB_OK "Download failed: $R0$\nCheck your Internet connection and your firewall settings.$\nDirect X won't be installed and 3D functionalities won't be available...$\nYou can install DirectX later to enable 3D functionalities !"
+			MessageBox MB_OK "Download failed: $R0$\nCheck your Internet connection and your firewall settings.$\nDirect X won't be installed and 3D functionalities won't be available...$\nYou can install DirectX later to enable 3D functionalities !" /SD IDOK
 			StrCpy $DIRECTX_MISSING "true"
 			Goto no_need_to_install_directx ; Quit
 	ExecWait '"arch\openvibe-directx.exe" /T:"$INSTDIR\tmp" /Q'
