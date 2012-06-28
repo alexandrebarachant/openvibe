@@ -75,7 +75,16 @@ boolean CDriverEmotivEPOC::buildPath(void)
 	{
 		return false;
 	}
-	m_sCommandForPathModification = l_sPath + CString(";") + m_sPathToEmotivSDK;
+	
+	string l_sStrPath = string(l_sPath);
+	size_t l_pFound = l_sStrPath.find((const char *)m_sPathToEmotivSDK);
+
+	if( l_pFound == string::npos )
+	{
+		m_sCommandForPathModification = l_sPath + CString(";") + m_sPathToEmotivSDK;
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "[INIT] Emotiv Driver: Building new Windows PATH.\n";
+	}
+
 	return true;
 }
 
