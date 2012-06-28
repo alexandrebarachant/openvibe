@@ -1,0 +1,40 @@
+body {
+/*	position:relative;*/
+	max-width:11in;
+	margin:0 auto;
+	/*background:url('doc-bg.png') #fff left repeat-y;*/
+}
+
+#sidebar {
+	width:200px;
+	float:left;
+	border-left:1px solid #C4CFE5;
+	border-right:1px solid #C4CFE5;
+	padding-bottom:10px;
+}
+
+#sidebar ul, #sidebar div {
+	padding-left:10px;
+}
+
+#sidebar li {
+	list-style:none;
+}
+
+#sidebar b {
+	font-weight:bold;
+}
+
+#search input {
+	border:1px solid black;
+	width:180px;
+
+}
+
+#content {
+	margin-left:200px;
+}
+
+hr.footer {
+	clear:both;
+}
