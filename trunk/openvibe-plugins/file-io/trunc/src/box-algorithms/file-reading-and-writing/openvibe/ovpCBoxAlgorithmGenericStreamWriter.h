@@ -118,7 +118,7 @@ namespace OpenViBEPlugins
 			{
 				rBoxAlgorithmPrototype.addInput  ("Input stream 1",  OV_TypeId_EBMLStream);
 				rBoxAlgorithmPrototype.addSetting("Filename",        OV_TypeId_Filename, "record-[$core{date}-$core{time}].ov");
-				rBoxAlgorithmPrototype.addSetting("Use compression", OV_TypeId_Boolean, "false");
+				rBoxAlgorithmPrototype.addSetting("Use compression", OV_TypeId_Boolean, "true");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddInput);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyInput);
 				return true;

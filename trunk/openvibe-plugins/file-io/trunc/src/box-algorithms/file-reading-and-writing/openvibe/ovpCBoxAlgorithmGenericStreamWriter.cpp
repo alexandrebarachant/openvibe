@@ -28,7 +28,7 @@ boolean CBoxAlgorithmGenericStreamWriter::initialize(void)
 
 	if(m_bUseCompression)
 	{
-		this->getLogManager() << LogLevel_Warning << "Compression flag not used yet, the file will be flagged uncompressed and stored as is\n";
+		this->getLogManager() << LogLevel_Info << "Compression flag not used yet, the file will be flagged uncompressed and stored as is\n";
 	}
 
 	m_oSwap.setSize(0, true);
