@@ -198,7 +198,7 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 		this->getLogManager() << LogLevel_Error << "Could not access the environment variable PATH to add Matlab.\n";
 		return false;
 	}
-	CString l_sCommandForPathModification = l_sPath + m_sMatlabPath+ ";";
+	CString l_sCommandForPathModification = l_sPath + CString(";") + m_sMatlabPath;
 	if(_putenv_s("PATH",l_sCommandForPathModification) != 0)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to modify the environment PATH with the Matlab path.\n";
