@@ -75,7 +75,7 @@ boolean CDriverEmotivEPOC::buildPath(void)
 	{
 		return false;
 	}
-	m_sCommandForPathModification = l_sPath + m_sPathToEmotivSDK+ ";";
+	m_sCommandForPathModification = l_sPath + CString(";") + m_sPathToEmotivSDK;
 	return true;
 }
 
