@@ -213,6 +213,9 @@ OpenViBE::boolean CDriverGTecGUSBamp::start(void)
 
 	::GT_Start(m_pDevice);
 
+	m_bIsThreadRunning = true;
+	m_pThreadPtr.reset(new boost::thread( boost::bind(&CDriverGTecGUSBamp::acquire , this )));
+	
 	return true;
 }
 
@@ -224,79 +227,61 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 	if(m_rDriverContext.isStarted())
 	{
 
-		if (::GT_GetData(m_pDevice, m_pBuffer, m_ui32BufferSize, m_pOverlapped))
+		//Process the beginning of the buffer
+		if (!m_qBufferQueue.empty())
+		{
+			//m_rDriverContext.getLogManager() << LogLevel_Info << "Buffer not empty\n";
+			if (m_qBufferQueue.waitAndPop(m_pSampleTranspose))
 			{
-				if(::WaitForSingleObject(m_pOverlapped->hEvent, 1000)==WAIT_OBJECT_0)
+				for(uint32 i=0; i<m_ui32AcquiredChannelCount; i++) 
 				{
-					DWORD l_dwByteCount=0;
-				
-					::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
-
-					if(l_dwByteCount==m_ui32BufferSize)
+					for(uint32 j=0; j<m_ui32SampleCountPerSentBlock; j++)
 					{
-
-							for(uint32 i=0; i<m_ui32AcquiredChannelCount; i++) 
-							{
-								for(uint32 j=0; j<m_ui32SampleCountPerSentBlock; j++)
-								{
-									m_pSample[i*m_ui32SampleCountPerSentBlock+j]=m_pSampleTranspose[j*(GTEC_NUM_CHANNELS + 1)+i];
-								}
-							}
-
-							if (m_bTriggerInputEnabled)
-							{
-								int l_oStimulationChannel = m_oHeader.getChannelCount()-1;
-        
-								for(uint32 iSample=0; iSample<m_ui32SampleCountPerSentBlock; iSample++)
-								{
-									OpenViBE::uint32 l_ui32StimCode = m_pSampleTranspose[iSample*(GTEC_NUM_CHANNELS + 1) + GTEC_NUM_CHANNELS];
-									m_pSample[m_ui32AcquiredChannelCount*m_ui32SampleCountPerSentBlock+iSample]=l_ui32StimCode;
-
-									if ( (l_ui32StimCode != STIMULATION_0) //this means that the user sends 0 after each stimulatuion and in the beginning
-											&& (l_ui32StimCode != m_ui32LastStimulation) 
-										)
-									{
-										OpenViBE::uint64 identifier;
-										switch (l_ui32StimCode)
-										{
-											case STIMULATION_64  : identifier = OVTK_StimulationId_Label_01; break;
-											case STIMULATION_128 : identifier = OVTK_StimulationId_Label_02; break;
-											case STIMULATION_192 : identifier = OVTK_StimulationId_Label_03; break;
-											default: identifier = OVTK_StimulationId_Label_07;
-										}
-
-										l_oStimulationSet.appendStimulation(identifier,( uint64(iSample) << 32) / m_oHeader.getSamplingFrequency(),0);
-										m_ui32TotalHardwareStimulations++;
-									}
-
-									m_ui32LastStimulation = l_ui32StimCode;
-								}     
-							}
-
-							m_pCallback->setSamples(m_pSample);	
-							m_pCallback->setStimulationSet(l_oStimulationSet);
-							m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());						
-					}
-					else
-					{
-						m_ui32TotalDriverChunksLost++;
-						//m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
-						/*m_rDriverContext.getLogManager() << LogLevel_Warning 
-						<< "Returned data is different than expected. Total chunks lost: " << m_totalDriverChunksLost 
-						<< ", Total samples lost: " << m_ui32SampleCountPerSentBlock * m_totalDriverChunksLost
-						<< "\n";*/
+						m_pSample[i*m_ui32SampleCountPerSentBlock+j]=m_pSampleTranspose[j*(GTEC_NUM_CHANNELS + 1)+i];
 					}
 				}
-				else
+
+				if (m_bTriggerInputEnabled)
 				{
-					// TIMEOUT
-					//m_rDriverContext.getLogManager() << LogLevel_Error << "timeout 1\n";
+					int l_oStimulationChannel = m_oHeader.getChannelCount()-1;
+
+					for(uint32 iSample=0; iSample<m_ui32SampleCountPerSentBlock; iSample++)
+					{
+						OpenViBE::uint32 l_ui32StimCode = m_pSampleTranspose[iSample*(GTEC_NUM_CHANNELS + 1) + GTEC_NUM_CHANNELS];
+						m_pSample[m_ui32AcquiredChannelCount*m_ui32SampleCountPerSentBlock+iSample]=l_ui32StimCode;
+
+						if ( (l_ui32StimCode != STIMULATION_0) //this means that the user sends 0 after each stimulatuion and in the beginning
+								&& (l_ui32StimCode != m_ui32LastStimulation) 
+							)
+						{
+							OpenViBE::uint64 identifier;
+							switch (l_ui32StimCode)
+							{
+								case STIMULATION_64  : identifier = OVTK_StimulationId_Label_01; break;
+								case STIMULATION_128 : identifier = OVTK_StimulationId_Label_02; break;
+								case STIMULATION_192 : identifier = OVTK_StimulationId_Label_03; break;
+								default: identifier = OVTK_StimulationId_Label_07;
+							}
+
+							l_oStimulationSet.appendStimulation(identifier,( uint64(iSample) << 32) / m_oHeader.getSamplingFrequency(),0);
+							m_ui32TotalHardwareStimulations++;
+						}
+
+						m_ui32LastStimulation = l_ui32StimCode;
+					}
 				}
+
+				m_pCallback->setSamples(m_pSample);
+				m_pCallback->setStimulationSet(l_oStimulationSet);
+				m_rDriverContext.correctDriftSampleCount(m_rDriverContext.getSuggestedDriftCorrectionSampleCount());
+							
+				delete [] m_pSampleTranspose;
 			}
-			else
-			{
-				//m_rDriverContext.getLogManager() << LogLevel_Error << "tError on GT_GetData.\n";
-			}
+		}
+		else
+		{
+			//m_rDriverContext.getLogManager() << LogLevel_Info << "Buffer is empty\n";
+		}
 	}
 	else
 	{
@@ -324,10 +309,60 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 	return true;
 }
 
+void CDriverGTecGUSBamp::acquire()
+{
+	//Read data continuesly and buffer it
+	while(m_bIsThreadRunning)
+	{
+		if (::GT_GetData(m_pDevice, m_pBuffer, m_ui32BufferSize, m_pOverlapped))
+		{
+			if(::WaitForSingleObject(m_pOverlapped->hEvent, 1000)==WAIT_OBJECT_0)
+			{
+				DWORD l_dwByteCount=0;
+				
+				::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
+
+				if(l_dwByteCount==m_ui32BufferSize)
+				{
+					float32* temp=reinterpret_cast<float32*>(m_pBuffer+HEADER_SIZE);
+
+					float32* queueItemBuffer = new float32[m_ui32BufferSize];
+					memcpy ( queueItemBuffer, temp , m_ui32BufferSize );
+
+					m_qBufferQueue.push(queueItemBuffer);
+					//m_rDriverContext.getLogManager() << LogLevel_Info << "New buffer !!\n";
+				}
+				else
+				{
+					m_ui32TotalDriverChunksLost++;
+					//m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
+					/*m_rDriverContext.getLogManager() << LogLevel_Warning 
+					<< "Returned data is different than expected. Total chunks lost: " << m_totalDriverChunksLost 
+					<< ", Total samples lost: " << m_ui32SampleCountPerSentBlock * m_totalDriverChunksLost
+					<< "\n";*/
+				}
+			}
+			else
+			{
+				// TIMEOUT
+				m_rDriverContext.getLogManager() << LogLevel_Error << "\ttimeout on WaitForSingleObject.\n";
+			}
+		}
+		else
+		{
+			m_rDriverContext.getLogManager() << LogLevel_Error << "\tError on GT_GetData.\n";
+		}
+	}
+}
+
 OpenViBE::boolean CDriverGTecGUSBamp::stop(void)
 {
 	if(!m_rDriverContext.isConnected()) return false;
 	if(!m_rDriverContext.isStarted()) return false;
+
+	//stop thread
+	m_bIsThreadRunning = false;
+	m_pThreadPtr->join();
 
 	//stop device
 	::GT_Stop(m_pDevice);

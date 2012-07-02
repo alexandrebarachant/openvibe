@@ -9,15 +9,13 @@
 #include <gtk/gtk.h>
 #include <vector>
 
+#include "..\ovasTCustomConcurrentQueue.h"
+#include <boost\thread\thread.hpp>
+#include <boost\bind\bind.hpp>
+#include <boost\scoped_ptr.hpp>
+
 namespace OpenViBEAcquisitionServer
 {
-	/**
-	 * \class CConfigurationFieldtrip
-	 * \author Unknown
-	 * \date unknown
-	 * \brief GTEC driver 
-	 *
-	 */
 	class CDriverGTecGUSBamp : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
@@ -27,8 +25,7 @@ namespace OpenViBEAcquisitionServer
 		virtual const char* getName(void);
 
 		virtual OpenViBE::boolean initialize(
-		const OpenViBE::uint32 ui32SampleCountPerSentBlock,
-		OpenViBEAcquisitionServer::IDriverCallback& rCallback);
+		const OpenViBE::uint32 ui32SampleCountPerSentBlock, OpenViBEAcquisitionServer::IDriverCallback& rCallback);
 		virtual OpenViBE::boolean uninitialize(void);
 
 		virtual OpenViBE::boolean start(void);
@@ -54,6 +51,12 @@ namespace OpenViBEAcquisitionServer
 		void* m_pDevice;
 		void* m_pEvent;
 		void* m_pOverlapped;
+
+		TCustomConcurrentQueue < OpenViBE::float32* > m_qBufferQueue;
+		boost::scoped_ptr<boost::thread> m_pThreadPtr;
+		OpenViBE::boolean m_bIsThreadRunning;
+
+		void acquire(void);
 
 		OpenViBE::uint32 m_ui32ActualImpedanceIndex;
 
