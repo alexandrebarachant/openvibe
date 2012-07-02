@@ -52,9 +52,13 @@ namespace OpenViBEAcquisitionServer
 		void* m_pEvent;
 		void* m_pOverlapped;
 
+		/**
+		* Threading of GT_GetData : contribution by Anton Andreev (Gipsa-lab)
+		**/
 		TCustomConcurrentQueue < OpenViBE::float32* > m_qBufferQueue;
 		boost::scoped_ptr<boost::thread> m_pThreadPtr;
 		OpenViBE::boolean m_bIsThreadRunning;
+		/********************************************************************/
 
 		void acquire(void);
 
@@ -65,6 +69,9 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::int32 m_i32NotchFilterIndex;
 		OpenViBE::int32 m_i32BandPassFilterIndex;
 
+		/**
+		* Event Channel implementation : contribution by Anton Andreev (Gipsa-lab)
+		**/
 		OpenViBE::boolean m_bTriggerInputEnabled;
 		OpenViBE::uint32 m_ui32LastStimulation;
 
@@ -75,10 +82,11 @@ namespace OpenViBEAcquisitionServer
 			STIMULATION_128	= 128,
 			STIMULATION_192	= 192
 		} gtec_triggers_t;
+		/********************************************************************/
 
 		OpenViBE::uint32 m_ui32TotalHardwareStimulations; //since start button clicked
 		OpenViBE::uint32 m_ui32TotalDriverChunksLost; //since start button clicked
-		OpenViBE::uint32 m_ui32AcquiredChannelCount; //number of channels 1..16 specified bu user
+		OpenViBE::uint32 m_ui32AcquiredChannelCount; //number of channels 1..16 specified by user
 
 	};
 };

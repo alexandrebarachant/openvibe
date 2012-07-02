@@ -309,6 +309,10 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 	return true;
 }
 
+
+/**
+* Threading of GT_GetData : contribution by Anton Andreev (Gipsa-lab)
+**/
 void CDriverGTecGUSBamp::acquire()
 {
 	//Read data continuesly and buffer it
