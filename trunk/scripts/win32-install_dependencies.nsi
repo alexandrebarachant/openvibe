@@ -239,7 +239,7 @@ Section "GTK+"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\gtk-2.21.1-dev.zip" no_need_to_download_gtk_dev
+	IfFileExists "arch\gtk-2.22.1-dev.zip" no_need_to_download_gtk_dev
 	NSISdl::download http://openvibe.inria.fr/dependencies/win32/gtk-2.22.1-dev.zip "arch\gtk-2.22.1-dev.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
