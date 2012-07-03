@@ -57,6 +57,7 @@ namespace OpenViBEAcquisitionServer
 		**/
 		TCustomConcurrentQueue < OpenViBE::float32* > m_qBufferQueue;
 		boost::scoped_ptr<boost::thread> m_pThreadPtr;
+		boost::mutex m_oMutex;
 		OpenViBE::boolean m_bIsThreadRunning;
 		/********************************************************************/
 

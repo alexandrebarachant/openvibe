@@ -316,46 +316,54 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 void CDriverGTecGUSBamp::acquire()
 {
 	//Read data continuesly and buffer it
-	while(m_bIsThreadRunning)
+	OpenViBE::boolean l_bAcquire = true;
+	while(l_bAcquire)
 	{
-		if (::GT_GetData(m_pDevice, m_pBuffer, m_ui32BufferSize, m_pOverlapped))
-		{
-			if(::WaitForSingleObject(m_pOverlapped->hEvent, 1000)==WAIT_OBJECT_0)
+		boost::mutex::scoped_lock lock(m_oMutex);
+		if(m_bIsThreadRunning)
+			if (::GT_GetData(m_pDevice, m_pBuffer, m_ui32BufferSize, m_pOverlapped))
 			{
-				DWORD l_dwByteCount=0;
-				
-				::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
-
-				if(l_dwByteCount==m_ui32BufferSize)
+				if(::WaitForSingleObject(m_pOverlapped->hEvent, 1000)==WAIT_OBJECT_0)
 				{
-					float32* temp=reinterpret_cast<float32*>(m_pBuffer+HEADER_SIZE);
+					DWORD l_dwByteCount=0;
+				
+					::GetOverlappedResult(m_pDevice, m_pOverlapped, &l_dwByteCount, FALSE);
 
-					float32* queueItemBuffer = new float32[m_ui32BufferSize];
-					memcpy ( queueItemBuffer, temp , m_ui32BufferSize );
+					if(l_dwByteCount==m_ui32BufferSize)
+					{
+						float32* temp=reinterpret_cast<float32*>(m_pBuffer+HEADER_SIZE);
 
-					m_qBufferQueue.push(queueItemBuffer);
-					//m_rDriverContext.getLogManager() << LogLevel_Info << "New buffer !!\n";
+						float32* queueItemBuffer = new float32[m_ui32BufferSize];
+						memcpy ( queueItemBuffer, temp , m_ui32BufferSize );
+
+						m_qBufferQueue.push(queueItemBuffer);
+						//m_rDriverContext.getLogManager() << LogLevel_Info << "New buffer !!\n";
+					}
+					else
+					{
+						m_ui32TotalDriverChunksLost++;
+						//m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
+						/*m_rDriverContext.getLogManager() << LogLevel_Warning 
+						<< "Returned data is different than expected. Total chunks lost: " << m_totalDriverChunksLost 
+						<< ", Total samples lost: " << m_ui32SampleCountPerSentBlock * m_totalDriverChunksLost
+						<< "\n";*/
+					}
 				}
 				else
 				{
-					m_ui32TotalDriverChunksLost++;
-					//m_rDriverContext.getLogManager() << LogLevel_Error << "l_dwByteCount and m_ui32BufferSize differs : " << l_dwByteCount << "/" << m_ui32BufferSize << "(header size is " << HEADER_SIZE << ")\n";
-					/*m_rDriverContext.getLogManager() << LogLevel_Warning 
-					<< "Returned data is different than expected. Total chunks lost: " << m_totalDriverChunksLost 
-					<< ", Total samples lost: " << m_ui32SampleCountPerSentBlock * m_totalDriverChunksLost
-					<< "\n";*/
+					// TIMEOUT
+					m_rDriverContext.getLogManager() << LogLevel_Error << "\ttimeout on WaitForSingleObject.\n";
 				}
 			}
 			else
 			{
-				// TIMEOUT
-				m_rDriverContext.getLogManager() << LogLevel_Error << "\ttimeout on WaitForSingleObject.\n";
+				m_rDriverContext.getLogManager() << LogLevel_Error << "\tError on GT_GetData.\n";
 			}
-		}
 		else
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << "\tError on GT_GetData.\n";
+			l_bAcquire = false;
 		}
+		lock.unlock();
 	}
 }
 
@@ -365,7 +373,10 @@ OpenViBE::boolean CDriverGTecGUSBamp::stop(void)
 	if(!m_rDriverContext.isStarted()) return false;
 
 	//stop thread
+	m_rDriverContext.getLogManager() << LogLevel_Trace << "Waiting acquisition thread... \n";
+	boost::mutex::scoped_lock lock(m_oMutex);
 	m_bIsThreadRunning = false;
+	lock.unlock();
 	m_pThreadPtr->join();
 
 	//stop device
