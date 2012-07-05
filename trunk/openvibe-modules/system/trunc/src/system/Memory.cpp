@@ -7,14 +7,25 @@ using namespace System;
 boolean Memory::copy(
 	void* pTargetBuffer,
 	const void* pSourceBuffer,
-	const uint64 ui64BufferSize)
+	const uint64 ui64BufferSize,
+	bool bMove)
 {
 	// $$$ TODO take 64bits size into consideration
 	if(ui64BufferSize==0)
 	{
 		return true;
 	}
-	::memcpy(pTargetBuffer, pSourceBuffer, static_cast<size_t>(ui64BufferSize));
+
+	// if the source and destination are overlapping we should use the memmove instead of copy
+	if (bMove)
+	{
+		::memmove(pTargetBuffer, pSourceBuffer, static_cast<size_t>(ui64BufferSize));
+	}
+	else
+	{
+		::memcpy(pTargetBuffer, pSourceBuffer, static_cast<size_t>(ui64BufferSize));
+	}
+
 	return true;
 }
 

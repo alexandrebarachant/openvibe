@@ -9,7 +9,7 @@ namespace System
 	{
 	public:
 
-		static System::boolean copy(void* pTargetBuffer, const void* pSourceBuffer, const System::uint64 ui64BufferSize);
+		static System::boolean copy(void* pTargetBuffer, const void* pSourceBuffer, const System::uint64 ui64BufferSize, bool bMove = false);
 		static System::boolean set(void* pTargetBuffer, const System::uint64 ui64BufferSize, const System::uint8 ui8Value);
 		static System::boolean compare(const void* pSourceBuffer1, const void* pSourceBuffer2, const System::uint64 ui64BufferSize);
 

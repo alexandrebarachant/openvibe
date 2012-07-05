@@ -145,6 +145,7 @@ void CTimeBasedEpoching::COutputHandler::processInput(const uint32 ui32InputSamp
 	if(!m_pSampleBuffer)
 	{
 		m_pSampleBuffer=new float64[m_ui32SampleCountPerEpoch*m_ui32ChannelCount];
+		System::Memory::set(m_pSampleBuffer, m_ui32SampleCountPerEpoch*m_ui32ChannelCount*sizeof(float64), 0);
 		m_pSignalOutputWriterHelper->setSampleBuffer(m_pSampleBuffer);
 		m_pSignalOutputWriterHelper->writeHeader(*m_pSignalOutputWriter);
 		m_rParent.getDynamicBoxContext().markOutputAsReadyToSend(m_ui32OutputIndex, 0, 0);
@@ -189,7 +190,7 @@ void CTimeBasedEpoching::COutputHandler::processInput(const uint32 ui32InputSamp
 						System::Memory::copy(
 							m_pSampleBuffer+i*m_ui32SampleCountPerEpoch,
 							m_pSampleBuffer+i*m_ui32SampleCountPerEpoch+m_ui32SampleCountPerEpoch-l_ui32SamplesToSave,
-							l_ui32SamplesToSave*sizeof(float64));
+							l_ui32SamplesToSave*sizeof(float64), true);
 					}
 
 					// The counter can be reseted
