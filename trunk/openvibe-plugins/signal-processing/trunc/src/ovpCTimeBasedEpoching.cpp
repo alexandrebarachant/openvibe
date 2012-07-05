@@ -187,10 +187,10 @@ void CTimeBasedEpoching::COutputHandler::processInput(const uint32 ui32InputSamp
 					uint32 l_ui32SamplesToSave=m_ui32SampleCountPerEpoch-m_ui32SampleCountBetweenEpoch;
 					for(i=0; i<m_ui32ChannelCount; i++)
 					{
-						System::Memory::copy(
+						System::Memory::move(
 							m_pSampleBuffer+i*m_ui32SampleCountPerEpoch,
 							m_pSampleBuffer+i*m_ui32SampleCountPerEpoch+m_ui32SampleCountPerEpoch-l_ui32SamplesToSave,
-							l_ui32SamplesToSave*sizeof(float64), true);
+							l_ui32SamplesToSave*sizeof(float64));
 					}
 
 					// The counter can be reseted
