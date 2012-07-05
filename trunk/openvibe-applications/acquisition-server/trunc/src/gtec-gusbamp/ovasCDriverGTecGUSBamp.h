@@ -9,13 +9,15 @@
 #include <gtk/gtk.h>
 #include <vector>
 
-#include "..\ovasTCustomConcurrentQueue.h"
-#include <boost\thread\thread.hpp>
-#include <boost\bind\bind.hpp>
-#include <boost\scoped_ptr.hpp>
-
 namespace OpenViBEAcquisitionServer
 {
+	/**
+	 * \class CConfigurationFieldtrip
+	 * \author Unknown
+	 * \date unknown
+	 * \brief GTEC driver 
+	 *
+	 */
 	class CDriverGTecGUSBamp : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
@@ -25,7 +27,8 @@ namespace OpenViBEAcquisitionServer
 		virtual const char* getName(void);
 
 		virtual OpenViBE::boolean initialize(
-		const OpenViBE::uint32 ui32SampleCountPerSentBlock, OpenViBEAcquisitionServer::IDriverCallback& rCallback);
+		const OpenViBE::uint32 ui32SampleCountPerSentBlock,
+		OpenViBEAcquisitionServer::IDriverCallback& rCallback);
 		virtual OpenViBE::boolean uninitialize(void);
 
 		virtual OpenViBE::boolean start(void);
@@ -52,17 +55,6 @@ namespace OpenViBEAcquisitionServer
 		void* m_pEvent;
 		void* m_pOverlapped;
 
-		/**
-		* Threading of GT_GetData : contribution by Anton Andreev (Gipsa-lab)
-		**/
-		TCustomConcurrentQueue < OpenViBE::float32* > m_qBufferQueue;
-		boost::scoped_ptr<boost::thread> m_pThreadPtr;
-		boost::mutex m_oMutex;
-		OpenViBE::boolean m_bIsThreadRunning;
-		/********************************************************************/
-
-		void acquire(void);
-
 		OpenViBE::uint32 m_ui32ActualImpedanceIndex;
 
 		OpenViBE::uint8 m_ui8CommonGndAndRefBitmap;
@@ -70,12 +62,10 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::int32 m_i32NotchFilterIndex;
 		OpenViBE::int32 m_i32BandPassFilterIndex;
 
-		/**
-		* Event Channel implementation : contribution by Anton Andreev (Gipsa-lab)
-		**/
 		OpenViBE::boolean m_bTriggerInputEnabled;
 		OpenViBE::uint32 m_ui32LastStimulation;
 
+		// EVENT CHANNEL : contribution Anton Andreev (Gipsa-lab) - 0.14.0
 		typedef enum
 		{
 			STIMULATION_0	= 0,
@@ -83,11 +73,10 @@ namespace OpenViBEAcquisitionServer
 			STIMULATION_128	= 128,
 			STIMULATION_192	= 192
 		} gtec_triggers_t;
-		/********************************************************************/
 
 		OpenViBE::uint32 m_ui32TotalHardwareStimulations; //since start button clicked
 		OpenViBE::uint32 m_ui32TotalDriverChunksLost; //since start button clicked
-		OpenViBE::uint32 m_ui32AcquiredChannelCount; //number of channels 1..16 specified by user
+		OpenViBE::uint32 m_ui32AcquiredChannelCount; //number of channels 1..16 specified bu user
 
 	};
 };
