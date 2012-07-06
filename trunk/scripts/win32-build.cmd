@@ -5,6 +5,7 @@ setlocal enableextensions
 REM no options / set to default
 set BuildType=Release
 set InitEnvScript=win32-init_env_command.cmd
+set PAUSE=pause
 if /i "%1"=="-h" (
 	echo Usage: win32-build.cmd [Build Type] [Init-env Script]
 	echo -- Build Type option can be : --release (-r^) or --debug (-d^). Default is release.
@@ -17,6 +18,8 @@ if /i "%1"=="-h" (
 	echo -- Default Init-env script is: win32-init_env_command.cmd
 	pause
 	exit 0
+) else if /i "%1"=="--no-pause" (
+	set PAUSE=echo ""
 ) else if /i "%1"=="-d" (
 	set BuildType=Debug
 	set InitEnvScript=%2
@@ -232,7 +235,7 @@ REM ############################################################################
 echo.
 echo An error occured during building process !
 echo.
-pause
+%PAUSE%
 
 goto terminate
 
@@ -240,7 +243,7 @@ REM ############################################################################
 
 :terminate_success
 
-pause
+%PAUSE%
 
 goto terminate
 
