@@ -4,7 +4,7 @@
     <property name="width_request">480</property>
     <property name="height_request">320</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Chose electrode names...</property>
+    <property name="title" translatable="yes">Choose electrode names...</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="gravity">GDK_GRAVITY_CENTER</property>
