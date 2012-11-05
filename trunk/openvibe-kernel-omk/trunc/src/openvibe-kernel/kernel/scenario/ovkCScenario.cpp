@@ -265,7 +265,7 @@ CIdentifier CScenario::getNextBoxIdentifierOnProcessingUnit(
 const IBox* CScenario::getBoxDetails(
 	const CIdentifier& rBoxIdentifier) const
 {
-	this->getLogManager() << LogLevel_Debug << "Getting const box details from scenario\n";
+//	this->getLogManager() << LogLevel_Debug << "Getting const box details from scenario\n";
 
 	map<CIdentifier, CBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);
@@ -288,7 +288,7 @@ boolean CScenario::isBox(
 IBox* CScenario::getBoxDetails(
 	const CIdentifier& rBoxIdentifier)
 {
-	this->getLogManager() << LogLevel_Debug << "Getting box details from scenario\n";
+//	this->getLogManager() << LogLevel_Debug << "Getting box details from scenario\n";
 
 	map<CIdentifier, CBox*>::const_iterator itBox;
 	itBox=m_vBox.find(rBoxIdentifier);

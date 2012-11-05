@@ -209,7 +209,7 @@ CIdentifier CPluginManager::getNextPluginObjectDescIdentifier(
 boolean CPluginManager::canCreatePluginObject(
 	const CIdentifier& rClassIdentifier)
 {
-	this->getLogManager() << LogLevel_Debug << "Searching if can build plugin object\n";
+//	this->getLogManager() << LogLevel_Debug << "Searching if can build plugin object\n";
 
 	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
@@ -226,7 +226,7 @@ boolean CPluginManager::canCreatePluginObject(
 const IPluginObjectDesc* CPluginManager::getPluginObjectDesc(
 	const CIdentifier& rClassIdentifier) const
 {
-	this->getLogManager() << LogLevel_Debug << "Searching plugin object descriptor\n";
+//	this->getLogManager() << LogLevel_Debug << "Searching plugin object descriptor\n";
 
 	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
@@ -244,7 +244,7 @@ const IPluginObjectDesc* CPluginManager::getPluginObjectDesc(
 const IPluginObjectDesc* CPluginManager::getPluginObjectDescCreating(
 	const CIdentifier& rClassIdentifier) const
 {
-	this->getLogManager() << LogLevel_Debug << "Searching plugin object descriptor\n";
+//	this->getLogManager() << LogLevel_Debug << "Searching plugin object descriptor\n";
 
 	map < IPluginObjectDesc*, IPluginModule* >::const_iterator i;
 	for(i=m_vPluginObjectDesc.begin(); i!=m_vPluginObjectDesc.end(); i++)
