@@ -92,6 +92,16 @@ namespace OpenViBEAcquisitionServer
 			return m_rAcquisitionServer.getSuggestedDriftCorrectionSampleCount();
 		}
 
+		virtual boolean setInnerLatencySampleCount(int64 i64SampleCount)
+		{
+			return m_rAcquisitionServer.setInnerLatencySampleCount(i64SampleCount);
+		}
+
+		virtual int64 getInnerLatencySampleCount(void) const
+		{
+			return m_rAcquisitionServer.getInnerLatencySampleCount();
+		}
+
 		virtual boolean updateImpedance(const uint32 ui32ChannelIndex, const float64 f64Impedance)
 		{
 			return m_rAcquisitionServer.updateImpedance(ui32ChannelIndex, f64Impedance);
@@ -227,7 +237,7 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	ip_pStimulationSet.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_StimulationSet));
 	ip_ui64BufferDuration.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputParameterId_BufferDuration));
 	op_pEncodedMemoryBuffer.initialize(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
-	
+
 	CString l_sNaNReplacementPolicy=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_NaNReplacementPolicy}");
 	if(l_sNaNReplacementPolicy==CString("Disabled"))
 	{
@@ -241,7 +251,7 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	{
 		this->setNaNReplacementPolicy(NaNReplacementPolicy_LastCorrectValue);
 	}
-	
+
 
 	CString l_sDriftCorrectionPolicy=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_DriftCorrectionPolicy}");
 	if(l_sDriftCorrectionPolicy==CString("Forced"))
@@ -561,6 +571,7 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "connect\n";
 
+	m_i64InnerLatencySampleCount=0;
 	m_pDriver=&rDriver;
 	m_ui32SampleCountPerSentBlock=ui32SamplingCountPerSentBlock;
 
@@ -835,7 +846,7 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 				{
 #ifdef OVAS_OS_Windows
 					if(_isnan(pSample[j*ui32SampleCount+i]) || !_finite(pSample[j*ui32SampleCount+i])) // NaN or infinite values
-#else 
+#else
 					if(isnan(pSample[j*ui32SampleCount+i]) || !finite(pSample[j*ui32SampleCount+i])) // NaN or infinite values
 #endif
 					{
@@ -847,17 +858,17 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 
 						switch(m_eNaNReplacementPolicy)
 						{
-						case NaNReplacementPolicy_Disabled:
-							m_vSwapBuffer[j] = std::numeric_limits<float>::quiet_NaN();
-							break;
-						case NaNReplacementPolicy_Zero:
-							m_vSwapBuffer[j] = 0;
-							break;
-						case NaNReplacementPolicy_LastCorrectValue:
-							// we simply don't update the value
-							break;
-						default:
-							break;
+							case NaNReplacementPolicy_Disabled:
+								m_vSwapBuffer[j] = std::numeric_limits<float>::quiet_NaN();
+								break;
+							case NaNReplacementPolicy_Zero:
+								m_vSwapBuffer[j] = 0;
+								break;
+							case NaNReplacementPolicy_LastCorrectValue:
+								// we simply don't update the value
+								break;
+							default:
+								break;
 						}
 					}
 					else
@@ -865,7 +876,7 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 						if(m_bReplacementInProgress)
 						{
 							m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Correct, ((m_ui64SampleCount + j*ui32SampleCount+i -1) << 32) / m_ui32SamplingFrequency, 0);
-							m_bReplacementInProgress = false;	
+							m_bReplacementInProgress = false;
 						}
 						m_vSwapBuffer[j]=alpha*pSample[j*ui32SampleCount+i]+(1-alpha)*m_vOverSamplingSwapBuffer[j];
 					}
@@ -878,7 +889,7 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 
 		{
 			uint64 l_ui64TheoricalSampleCount=(m_ui32SamplingFrequency * (System::Time::zgetTime()-m_ui64StartTime))>>32;
-			int64 l_i64JitterSampleCount=int64(m_ui64SampleCount-l_ui64TheoricalSampleCount);
+			int64 l_i64JitterSampleCount=int64(m_ui64SampleCount-l_ui64TheoricalSampleCount)+m_i64InnerLatencySampleCount;
 
 			m_vJitterSampleCount.push_back(l_i64JitterSampleCount);
 			if(m_vJitterSampleCount.size() > m_ui64JitterEstimationCountForDrift)
@@ -915,26 +926,6 @@ void CAcquisitionServer::setStimulationSet(const IStimulationSet& rStimulationSe
 	{
 		m_rKernelContext.getLogManager() << LogLevel_Warning << "The acquisition is not started\n";
 	}
-}
-
-int64 CAcquisitionServer::getSuggestedDriftCorrectionSampleCount(void) const
-{
-	if(m_eDriftCorrectionPolicy == DriftCorrectionPolicy_Disabled)
-	{
-		return 0;
-	}
-
-	if(this->getDriftSampleCount() >= this->getDriftToleranceSampleCount())
-	{
-		return -this->getDriftSampleCount();
-	}
-
-	if(this->getDriftSampleCount() <= -this->getDriftToleranceSampleCount())
-	{
-		return -this->getDriftSampleCount();
-	}
-
-	return 0;
 }
 
 boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
@@ -1017,6 +1008,37 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 	return true;
 }
 
+int64 CAcquisitionServer::getSuggestedDriftCorrectionSampleCount(void) const
+{
+	if(m_eDriftCorrectionPolicy == DriftCorrectionPolicy_Disabled)
+	{
+		return 0;
+	}
+
+	if(this->getDriftSampleCount() >= this->getDriftToleranceSampleCount())
+	{
+		return -this->getDriftSampleCount();
+	}
+
+	if(this->getDriftSampleCount() <= -this->getDriftToleranceSampleCount())
+	{
+		return -this->getDriftSampleCount();
+	}
+
+	return 0;
+}
+
+boolean CAcquisitionServer::setInnerLatencySampleCount(OpenViBE::int64 i64SampleCount)
+{
+	m_i64InnerLatencySampleCount=i64SampleCount;
+	return true;
+}
+
+int64 CAcquisitionServer::getInnerLatencySampleCount(void) const
+{
+	return m_i64InnerLatencySampleCount;
+}
+
 boolean CAcquisitionServer::updateImpedance(const uint32 ui32ChannelIndex, const float64 f64Impedance)
 {
 	if(ui32ChannelIndex >= m_vImpedance.size())
@@ -1029,6 +1051,7 @@ boolean CAcquisitionServer::updateImpedance(const uint32 ui32ChannelIndex, const
 
 // ____________________________________________________________________________
 //
+
 ENaNReplacementPolicy CAcquisitionServer::getNaNReplacementPolicy(void)
 {
 	return m_eNaNReplacementPolicy;
@@ -1044,14 +1067,14 @@ CString CAcquisitionServer::getNaNReplacementPolicyStr(void)
 {
 	switch (m_eNaNReplacementPolicy)
 	{
-	case NaNReplacementPolicy_Disabled:
-		return CString("Disabled");
-	case NaNReplacementPolicy_LastCorrectValue:
-		return CString("LastCorrectValue");
-	case NaNReplacementPolicy_Zero:
-		return CString("Zero");
-	default :
-		return CString("N/A");
+		case NaNReplacementPolicy_Disabled:
+			return CString("Disabled");
+		case NaNReplacementPolicy_LastCorrectValue:
+			return CString("LastCorrectValue");
+		case NaNReplacementPolicy_Zero:
+			return CString("Zero");
+		default :
+			return CString("N/A");
 	}
 }
 
@@ -1060,14 +1083,14 @@ CString CAcquisitionServer::getDriftCorrectionPolicyStr(void)
 {
 	switch (m_eDriftCorrectionPolicy)
 	{
-	case DriftCorrectionPolicy_Disabled:
-		return CString("Disabled");
-	case DriftCorrectionPolicy_DriverChoice:
-		return CString("DriverChoice");
-	case DriftCorrectionPolicy_Forced:
-		return CString("Forced");
-	default :
-		return CString("N/A");
+		case DriftCorrectionPolicy_Disabled:
+			return CString("Disabled");
+		case DriftCorrectionPolicy_DriverChoice:
+			return CString("DriverChoice");
+		case DriftCorrectionPolicy_Forced:
+			return CString("Forced");
+		default :
+			return CString("N/A");
 	}
 }
 

@@ -8,6 +8,7 @@
 #include "generic-raw-reader/ovasCDriverGenericRawFileReader.h"
 #include "generic-raw-reader/ovasCDriverGenericRawTelnetReader.h"
 #include "brainmaster-discovery/ovasCDriverBrainmasterDiscovery.h"
+#include "brainproducts-actichamp/ovasCDriverBrainProductsActiCHamp.h"
 #include "brainproducts-brainampseries/ovasCDriverBrainProductsBrainampSeries.h"
 #include "brainproducts-brainvisionrecorder/ovasCDriverBrainProductsBrainVisionRecorder.h"
 #include "brainproducts-vamp/ovasCDriverBrainProductsVAmp.h"
@@ -129,6 +130,9 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverMitsarEEG202A(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyBrainmasterCodeMakerAPI
 	m_vDriver.push_back(new CDriverBrainmasterDiscovery(m_pAcquisitionServer->getDriverContext()));
+#endif
+#if defined TARGET_HAS_ThirdPartyActiCHampAPI
+	m_vDriver.push_back(new CDriverBrainProductsActiCHamp(m_pAcquisitionServer->getDriverContext()));
 #endif
 	m_vDriver.push_back(new CDriverBrainProductsBrainampSeries(m_pAcquisitionServer->getDriverContext()));
 #endif
@@ -410,7 +414,8 @@ void CAcquisitionServerGUI::setImpedance(OpenViBE::uint32 ui32ChannelIndex, Open
 	{
 		if(f64Impedance>=0)
 		{
-			float64 l_dFraction=(f64Impedance*.001/20);
+			//float64 l_dFraction=(f64Impedance*.001/20); With fixed impedance limit, 20kOhm max / 25%=5kOhm to be good
+			float64 l_dFraction=(f64Impedance / (m_rKernelContext.getConfigurationManager().expandAsFloat("${AcquisitionServer_DefaultImpedanceLimit}",5000) * 4));
 			if(l_dFraction>1) l_dFraction=1;
 
 			char l_sMessage[1024];

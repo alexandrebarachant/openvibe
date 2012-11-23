@@ -69,6 +69,14 @@
 #define OVTK_StimulationId_VisualStimulationStop             0x0000800c
 #define OVTK_StimulationId_VisualSteadyStateStimulationStart 0x00008010
 #define OVTK_StimulationId_VisualSteadyStateStimulationStop  0x00008011
+#define OVTK_StimulationId_Button1_Pressed                   0x00008012
+#define OVTK_StimulationId_Button1_Released                  0x00008013
+#define OVTK_StimulationId_Button2_Pressed                   0x00008014
+#define OVTK_StimulationId_Button2_Released                  0x00008015
+#define OVTK_StimulationId_Button3_Pressed                   0x00008016
+#define OVTK_StimulationId_Button3_Released                  0x00008017
+#define OVTK_StimulationId_Button4_Pressed                   0x00008018
+#define OVTK_StimulationId_Button4_Released                  0x00008019
 
 #define OVTK_StimulationId_Label(i)                          0x00008100|((i)&0xff)
 #define OVTK_StimulationId_LabelStart                        0x00008100

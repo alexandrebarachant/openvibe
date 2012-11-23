@@ -113,6 +113,7 @@ namespace OpenViBEAcquisitionServer
 		 * \return \e true in case of success
 		 * \return \e false in case of error
 		 * \sa getDriftSampleCount
+		 * \sa setInnerLatencySampleCount
 		 *
 		 * Some devices don't sent the number of samples they promised to
 		 * while requesting sampling rate. This can be for multiple reasons
@@ -145,6 +146,39 @@ namespace OpenViBEAcquisitionServer
 		 *          range depends of the actual driver you are creating).
 		 */
 		virtual OpenViBE::boolean correctDriftSampleCount(OpenViBE::int64 i64SampleCount)=0;
+		/**
+		 * \brief Sets a fixed latency due to the driver implementation and / or hardware
+		 * \param i64SampleCount [in] : the number of samples for the inner latency
+		 * \return \e true in case of success
+		 * \return \e false in case of error
+		 *
+		 * Some drivers / hardware devices implement processes that delay the
+		 * overall acquisition stream. Such processes include for instance
+		 * sample buffering or temporal filtering. The delay induced by these
+		 * processes can not be known by the acquisition server in a generic way
+		 * and are usually not provided by the device manufacturer. An intelligent
+		 * setup based on hardware tagging could however induce a fair estimate of this
+		 * latency so that it can be injected in the drift correction process.
+		 * Driver developpers will generally not have to care about this feature.
+		 * However, if it is important to have neurophysiologically relevant measures
+		 * (more particularly on ERPs) and it is know that the driver and / or hardware
+		 * has a latency, this latency compensation can be injected in the drift correction
+		 * process using the aforementionned function.
+		 *
+		 * \note Passing a positive value supposes the driver / hardware induce a delay which shall be corrected
+		 * \note Passing a negative value supposes the driver / hardware is able to predict and send future measures before they actually get measured (probably not recommanded)
+		 * \note Passing 0 supposes both the driver and hardware are ideals and send samples immediately to the acquisition server as they happen on the scalp
+		 * \note Default configuration supposes both the driver and hardware are ideal, thus sets the inner latency to 0
+		 *
+		 * \sa getInnerLatencySampleCount
+		 */
+		virtual OpenViBE::boolean setInnerLatencySampleCount(OpenViBE::int64 i64SampleCount)=0;
+		/**
+		 * \brief Gets the fixed latency due to the driver implementation and / or hardware
+		 * \return \e The inner latency of the driver in sample count
+		 * \sa setInnerLatencySampleCount
+		 */
+		virtual OpenViBE::int64 getInnerLatencySampleCount(void) const=0;
 
 		/**
 		 * \brief Updates impedance for a specific channel

@@ -75,8 +75,10 @@ namespace OpenViBEAcquisitionServer
 		virtual OpenViBE::boolean isStarted(void) const { return m_bStarted; }
 		virtual OpenViBE::int64 getDriftSampleCount(void) const { return m_eDriftCorrectionPolicy==DriftCorrectionPolicy_Disabled?0:m_i64DriftSampleCount; }
 		virtual OpenViBE::int64 getDriftToleranceSampleCount(void) const { return m_i64DriftToleranceSampleCount; }
-		virtual OpenViBE::int64 getSuggestedDriftCorrectionSampleCount(void) const;
 		virtual OpenViBE::boolean correctDriftSampleCount(OpenViBE::int64 i64SampleCount);
+		virtual OpenViBE::int64 getSuggestedDriftCorrectionSampleCount(void) const;
+		virtual OpenViBE::boolean setInnerLatencySampleCount(OpenViBE::int64 i64SampleCount);
+		virtual OpenViBE::int64 getInnerLatencySampleCount(void) const;
 		virtual OpenViBE::boolean updateImpedance(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float64 f64Impedance);
 
 		// General parameters configurable from the GUI
@@ -136,7 +138,7 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBEAcquisitionServer::ENaNReplacementPolicy m_eNaNReplacementPolicy;
 		OpenViBE::boolean m_bReplacementInProgress;
-		
+
 		OpenViBE::boolean m_bInitialized;
 		OpenViBE::boolean m_bStarted;
 		OpenViBE::boolean m_bIsImpedanceCheckRequested;
@@ -158,6 +160,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::int64 m_i64DriftToleranceSampleCount;
 		OpenViBE::int64 m_i64DriftCorrectionSampleCountAdded;
 		OpenViBE::int64 m_i64DriftCorrectionSampleCountRemoved;
+		OpenViBE::int64 m_i64InnerLatencySampleCount;
 
 		OpenViBE::uint64 m_ui64JitterEstimationCountForDrift;
 		OpenViBE::uint64 m_ui64DriverTimeoutDuration;
