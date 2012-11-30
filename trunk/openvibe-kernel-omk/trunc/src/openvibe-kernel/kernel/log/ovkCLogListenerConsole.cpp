@@ -16,9 +16,19 @@ CLogListenerConsole::CLogListenerConsole(const IKernelContext& rKernelContext, c
 	:TKernelObject<ILogListener>(rKernelContext)
 	,m_eLogColor(LogColor_Default)
 	,m_sApplicationName(sApplicationName)
-	,m_bActivateHexaOutput(false)
+	,m_bLogWithHexa(false)
+	,m_bTimeInSeconds(true)
+	,m_ui64TimePrecision(3)
 {
 }
+
+void CLogListenerConsole::configure(const IConfigurationManager& rConfigurationManager)
+{
+	m_bTimeInSeconds = rConfigurationManager.expandAsBoolean("${Kernel_ConsoleLogTimeInSecond}",true);
+	m_bLogWithHexa = rConfigurationManager.expandAsBoolean("${Kernel_ConsoleLogWithHexa}",false);
+	m_ui64TimePrecision = rConfigurationManager.expandAsUInteger("${Kernel_ConsoleLogTimePrecision}",3);
+}
+
 
 boolean CLogListenerConsole::isActive(ELogLevel eLogLevel)
 {
@@ -56,16 +66,16 @@ void CLogListenerConsole::log(const time64 time64Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 
-	if(getKernelContext().getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogTimeInSecond}",false))
+	if(m_bTimeInSeconds)
 	{
-		uint64 l_ui64Precision = getKernelContext().getConfigurationManager().expandAsUInteger("${Kernel_ConsoleLogTimePrecision}",3);
+		uint64 l_ui64Precision = m_ui64TimePrecision;
 		float64 l_f64Time=(time64Value.m_ui64TimeValue>>22)/1024.;
 		std::stringstream ss;
 		ss.precision(l_ui64Precision);
 		ss.setf(std::ios::fixed,std::ios::floatfield);
 		ss << l_f64Time;
 		ss << " sec";
-		if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+		if(m_bLogWithHexa)
 		{
 			ss << " (0x" << hex << time64Value.m_ui64TimeValue << ")";
 		}
@@ -75,7 +85,7 @@ void CLogListenerConsole::log(const time64 time64Value)
 	else
 	{
 		cout << dec << time64Value.m_ui64TimeValue;
-		if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+		if(m_bLogWithHexa)
 		{
 			cout << " (0x" << hex << time64Value.m_ui64TimeValue << ")";
 		}
@@ -91,7 +101,7 @@ void CLogListenerConsole::log(const uint64 ui64Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << ui64Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << ui64Value << ")";
 	}
@@ -106,7 +116,7 @@ void CLogListenerConsole::log(const uint32 ui32Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << ui32Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << ui32Value << ")";
 	}
@@ -120,7 +130,7 @@ void CLogListenerConsole::log(const uint16 ui16Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << ui16Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << ui16Value << ")";
 	}
@@ -134,7 +144,7 @@ void CLogListenerConsole::log(const uint8 ui8Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << ui8Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << ui8Value << ")";
 	}
@@ -148,7 +158,7 @@ void CLogListenerConsole::log(const int64 i64Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << i64Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << i64Value << ")";
 	}
@@ -161,7 +171,7 @@ void CLogListenerConsole::log(const int32 i32Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << i32Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << i32Value << ")";
 	}
@@ -175,7 +185,7 @@ void CLogListenerConsole::log(const int16 i16Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << i16Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << i16Value << ")";
 	}
@@ -189,7 +199,7 @@ void CLogListenerConsole::log(const int8 i8Value)
 	log(LogColor_ForegroundMagenta);
 	ios_base::fmtflags l_oFormat=cout.flags();
 	cout << dec << i8Value;
-	if(getConfigurationManager().expandAsBoolean("${Kernel_ConsoleLogWithHexa}",true))
+	if(m_bLogWithHexa)
 	{
 		cout << " (0x" << hex << i8Value << ")";
 	}

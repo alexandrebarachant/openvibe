@@ -21,6 +21,8 @@ namespace OpenViBE
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eStartLogLevel, OpenViBE::Kernel::ELogLevel eEndLogLevel, OpenViBE::boolean bActive);
 			virtual OpenViBE::boolean activate(OpenViBE::boolean bActive);
 
+			void configure(const OpenViBE::Kernel::IConfigurationManager& rConfigurationManager);
+
 			virtual void log(const OpenViBE::time64 time64Value);
 
 			virtual void log(const OpenViBE::uint64 ui64Value);
@@ -58,7 +60,9 @@ namespace OpenViBE
 			OpenViBE::Kernel::ELogColor m_eLogColor;
 			OpenViBE::CString m_sApplicationName;
 
-			OpenViBE::boolean m_bActivateHexaOutput;
+			OpenViBE::boolean m_bLogWithHexa;
+			OpenViBE::boolean m_bTimeInSeconds;
+			OpenViBE::boolean m_ui64TimePrecision;
 		};
 	};
 };

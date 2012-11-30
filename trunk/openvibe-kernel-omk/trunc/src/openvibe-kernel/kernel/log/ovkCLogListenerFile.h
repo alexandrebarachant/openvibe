@@ -4,6 +4,7 @@
 #include "../ovkTKernelObject.h"
 
 #include <map>
+#include <fstream>
 
 namespace OpenViBE
 {
@@ -14,11 +15,14 @@ namespace OpenViBE
 		public:
 
 			CLogListenerFile(const OpenViBE::Kernel::IKernelContext& rKernelContext, const CString& sApplicationName, const OpenViBE::CString& sLogFilename);
+			~CLogListenerFile();
 
 			virtual OpenViBE::boolean isActive(OpenViBE::Kernel::ELogLevel eLogLevel);
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eLogLevel, OpenViBE::boolean bActive);
 			virtual OpenViBE::boolean activate(OpenViBE::Kernel::ELogLevel eStartLogLevel, OpenViBE::Kernel::ELogLevel eEndLogLevel, OpenViBE::boolean bActive);
 			virtual OpenViBE::boolean activate(OpenViBE::boolean bActive);
+
+			void configure(const OpenViBE::Kernel::IConfigurationManager& rConfigurationManager);
 
 			virtual void log(const OpenViBE::time64 time64Value);
 
@@ -51,6 +55,25 @@ namespace OpenViBE
 			std::map<OpenViBE::Kernel::ELogLevel, OpenViBE::boolean> m_vActiveLevel;
 			OpenViBE::CString m_sApplicationName;
 			OpenViBE::CString m_sLogFilename;
+			std::fstream m_fsFileStream;
+
+			// Log Settings
+			OpenViBE::boolean m_bTimeInSeconds;
+			OpenViBE::boolean m_bLogWithHexa;
+			OpenViBE::uint64 m_ui64TimePrecision;
+
+		private:
+			template<typename T>
+			void logInteger(T value)
+			{
+				m_fsFileStream << value << " ";
+				if (m_bLogWithHexa)
+				{
+					m_fsFileStream.setf(std::ios::hex);
+					m_fsFileStream << "(" << value << ")";
+					m_fsFileStream.unsetf(std::ios::hex);
+				}
+			}
 		};
 	};
 };
