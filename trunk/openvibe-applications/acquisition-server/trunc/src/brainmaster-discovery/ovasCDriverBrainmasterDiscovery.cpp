@@ -217,7 +217,7 @@ boolean CDriverBrainmasterDiscovery::initialize(
 		case Type_Atlantis:
 			m_ui32BaudRateReal=(m_ui32BaudRate!=BaudRate_Default?m_ui32BaudRate:BaudRate_115200);
 			m_ui32SamplingRateReal=m_ui32SamplingRate;
-			m_ui32BitDepthReal=(m_ui32BitDepth!=BitDepth_Default?m_ui32BitDepth:BitDepth_8);
+			m_ui32BitDepthReal=(m_ui32BitDepth!=BitDepth_Default?m_ui32BitDepth:BitDepth_24);
 			m_ui32NotchFiltersReal=(m_ui32NotchFilters!=NotchFilter_Default?m_ui32NotchFilters:NotchFilter_Default);
 			m_ui32FrameSize=1;
 			m_ui32DataOffset=1;
@@ -369,6 +369,17 @@ boolean CDriverBrainmasterDiscovery::initialize(
 		return false;
 	}
 
+#if 0
+	// Poking special code for Atlantis 4x4
+	if(m_oHeader.getChannelCount()==8)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "Poking special code for Atlantis 4x4...\n";
+		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb607, 0xff)) << "\n"; // ATC_CHANOUTMASK
+		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb608, 0x20)) << "\n"; // ATC_ADCMODE
+//		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb7e9, 0x03)) << "\n"; // ??? Bit mode ?
+	}
+#endif
+
 	// serialn_p ::AtlQuerySerialNumber(int auth)
 
 	// Actually starts the acquisition
@@ -456,6 +467,29 @@ boolean CDriverBrainmasterDiscovery::loop(void)
 
 			// Assumed synced stream - Reads leading bytes
 			this->read(&m_vBuffer[1], m_vBuffer.size()-1);
+
+#if 1
+			// For debug purpose
+			if(m_bFrameDumpFlag)
+			{
+				FILE* l_pFile=::fopen(m_sFrameDumpFilename.c_str(), "ab");
+				if(l_pFile)
+				{
+					::fprintf(l_pFile, "Frame : ");
+					for(uint32 i=0; i<m_vBuffer.size(); i++)
+					{
+						::fprintf(l_pFile, "0x%02x ", m_vBuffer[i]);
+					}
+					::fprintf(l_pFile, "\n");
+					::fclose(l_pFile);
+				}
+				else
+				{
+					m_rDriverContext.getLogManager() << LogLevel_Warning << "Unexpected: Could not open dump file [" << CString(m_sFrameDumpFilename.c_str()) << "] for writing\n";
+					m_bFrameDumpFlag=false;
+				}
+			}
+#endif
 
 			// Converts new buffer to samples
 			unsigned char* l_pBuffer=&m_vBuffer[m_ui32DataOffset];
