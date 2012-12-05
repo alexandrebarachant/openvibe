@@ -369,16 +369,15 @@ boolean CDriverBrainmasterDiscovery::initialize(
 		return false;
 	}
 
-#if 0
 	// Poking special code for Atlantis 4x4
 	if(m_oHeader.getChannelCount()==8)
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Trace << "Poking special code for Atlantis 4x4...\n";
-		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb607, 0xff)) << "\n"; // ATC_CHANOUTMASK
-		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb608, 0x20)) << "\n"; // ATC_ADCMODE
+		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xc006, 0x00)) << "\n"; // Sets internal sampling rate set to 512 Hz - This hack solves the EEG chan 3 & 4 flat lines issue
+//		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb607, 0xff)) << "\n"; // ATC_CHANOUTMASK
+//		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb608, 0x20)) << "\n"; // ATC_ADCMODE
 //		m_rDriverContext.getLogManager() << LogLevel_Trace << uint32(::AtlPoke(0xb7e9, 0x03)) << "\n"; // ??? Bit mode ?
 	}
-#endif
 
 	// serialn_p ::AtlQuerySerialNumber(int auth)
 
