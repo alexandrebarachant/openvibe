@@ -5,7 +5,9 @@
 
 |Introduction|
 
-This document explains how to build the platform from sources.
+This document explains how to build the platform from sources. More up-to-date information may be available at 
+
+http://openvibe.inria.fr/build-instructions/
 
 |Repository.organisation|
 
@@ -15,8 +17,8 @@ organisation.
 |Build.target|
 
 OpenViBE should compile on x86 / x86_64 architecture running Microsoft Windows 2k/XP/Vista/7
-with Visual C++ 2008 express edition (take care of having the SP1 platform SDK
-installed).
+with Visual C++ 2008 or 2010 Express Edition (take care of having the up-to-date platform SDK 
+from Microsoft installed).
 
 OpenViBE should compile on x86 / x86_64 architectures running Linux with gcc 4.*
 
@@ -29,7 +31,8 @@ but you should not expect to get support on the short term.
 
 In order to build the software, one must install several dependencies.
 This may be done using the provided installation scripts which will
-automatically set up your environment.
+automatically set up your environment. These are in the scripts/ directory.
+
 <win32-install_dependencies> installs dependencies under Windows and
 <linux-install_dependencies> installs them under Linux.
 
@@ -44,14 +47,11 @@ However, it is safer to use native packages.
 
 The build process uses many environment variables. The 'script' directory
 contains the necessary files to build the whole platform and plugins.
-However, the script initializing the environment variables is missing because
-it must be tuned according to each local installation and usage. However, the
-<linux-init_env_command-skeleton> and <win32-init_env_command-skeleton> files
-may be used as a basis to create such scripts. Most Linux users will simply
-want to copy the <linux-init_env_command-skeleton> to <linux-init_env_command>. 
-Under Windows, copying the windows skeleton to <win32-init_env_command> may not 
-be enough because of installation specifics such as Visual Studio paths and so on... 
-Script tweaking is required here ;)
+The <linux-init_env_command-skeleton> and <win32-init_env_command-skeleton> files
+are copied to make initial versions of the actually used scripts <linux-init_env_command> 
+and <win32-init_env_command>. However, you may have to tune the scripts by hand
+due to installation specifics such as Visual Studio paths and so on... 
+Script tweaking may be required here ;)
 
 |Building.the.platform|
 
@@ -59,12 +59,7 @@ If you want to build all projects at once, you can use the <linux-build> or
 <win32-build> scripts. Both scripts call the appropriate
 <init_env_command>, which must have been properly configured. 
 
-Since each project will compile in its own directory, the <linux-collect_build> and
-<win32-collect_build> scripts should be used to get all built files and copy them to 
-the <dist> directory.
-
-The <linux-test> and <win32-test> scripts will collect the build and then launch 
-the most interesting softwares for you.
+On Linux, the <linux-test> script will launch the most interesting applications for you.
 
 If you made it this far, congratulations : you should now have OpenViBE working!
 
