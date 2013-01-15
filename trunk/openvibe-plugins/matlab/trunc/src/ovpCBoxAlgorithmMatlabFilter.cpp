@@ -83,6 +83,26 @@ boolean CBoxAlgorithmMatlabFilter::initialize(void)
 	getStaticBoxContext().getSettingValue(0, m_sMatlabPath);
 
 #if defined TARGET_OS_Windows
+	std::string l_oTmpPath(m_sMatlabPath);
+	// Convert '/' to '\'
+	for (size_t i=0; i < l_oTmpPath.length(); i++) {
+		if(l_oTmpPath[i] == '/') 
+		{
+			l_oTmpPath[i] = '\\';
+		}
+	}
+	// Append \ to end of path if its not there already
+	if(l_oTmpPath.length()>0) 
+	{
+		char l_cLastChar = l_oTmpPath.at(l_oTmpPath.length()-1);
+		if(l_cLastChar != '\\')
+		{
+			l_oTmpPath = l_oTmpPath + "\\";
+		}
+		m_sMatlabPath = OpenViBE::CString(l_oTmpPath.c_str());
+	}
+	m_sMatlabPath = OpenViBE::CString(l_oTmpPath.c_str());
+
 	char * l_sPath = getenv("PATH");
 	if(l_sPath == NULL)
 	{

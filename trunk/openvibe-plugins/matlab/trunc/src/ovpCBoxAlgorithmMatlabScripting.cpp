@@ -96,6 +96,7 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 	char l_sBuffer[1024];
 	sprintf(l_sBuffer,"0x%04X%04X_0x%04X%04X", (int)l_ui16Value1, (int)l_ui16Value2, (int)l_ui16Value3, (int)l_ui16Value4);
 	m_sBoxInstanceVariableName = m_sBoxInstanceVariableName + CString(l_sBuffer);
+	m_sMatlabBuffer = NULL;
 
 	CString l_sSettingValue;
 	getStaticBoxContext().getSettingValue(0, l_sSettingValue);
@@ -192,6 +193,25 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 	getStaticBoxContext().getSettingValue(1, m_sMatlabPath);
 
 #if defined TARGET_OS_Windows
+	std::string l_oTmpPath(m_sMatlabPath);
+	// Convert '/' to '\'
+	for (size_t i=0; i < l_oTmpPath.length(); i++) {
+		if(l_oTmpPath[i] == '/') 
+		{
+			l_oTmpPath[i] = '\\';
+		}
+	}
+	// Append \ to end of path if its not there already
+	if(l_oTmpPath.length()>0) 
+	{
+		char l_cLastChar = l_oTmpPath.at(l_oTmpPath.length()-1);
+		if(l_cLastChar != '\\')
+		{
+			l_oTmpPath = l_oTmpPath + "\\";
+		}
+		m_sMatlabPath = OpenViBE::CString(l_oTmpPath.c_str());
+	}
+
 	char * l_sPath = getenv("PATH");
 	if(l_sPath == NULL)
 	{
@@ -385,7 +405,11 @@ boolean CBoxAlgorithmMatlabScripting::uninitialize(void)
 	}
 
 	CloseMatlabEngineSafely();
-	delete[] m_sMatlabBuffer;
+	if(m_sMatlabBuffer) 
+	{
+		delete[] m_sMatlabBuffer;
+		m_sMatlabBuffer = NULL;
+	}
 
 	for(uint32 i = 0; i< m_mDecoders.size(); i++)
 	{
