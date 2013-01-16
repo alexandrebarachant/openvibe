@@ -203,6 +203,13 @@ echo popd                                                    >> %target_dist%\ov
 echo cd bin                                                  >> %target_dist%\ov-ssvep-demo-shooter.cmd
 echo start OpenViBE-ssvep-demo-dynamic.exe shooter           >> %target_dist%\ov-ssvep-demo-shooter.cmd
 
+echo @echo off                                               >  %target_dist%\ov-ssvep-demo-impact-shooter.cmd
+echo pushd ..\scripts                                        >> %target_dist%\ov-ssvep-demo-impact-shooter.cmd
+echo call win32-init_env_command.cmd                         >> %target_dist%\ov-ssvep-demo-impact-shooter.cmd
+echo popd                                                    >> %target_dist%\ov-ssvep-demo-impact-shooter.cmd
+echo cd bin                                                  >> %target_dist%\ov-ssvep-demo-impact-shooter.cmd
+echo start OpenViBE-ssvep-demo-dynamic.exe impact shooter    >> %target_dist%\ov-ssvep-demo-impact-shooter.cmd
+
 echo @echo off                                               >  %target_dist%\bin\OpenViBE-external-application-launcher.cmd
 echo pushd ..                                                >> %target_dist%\bin\OpenViBE-external-application-launcher.cmd
 echo ov-%%1.cmd %%2 %%3 %%4 %%5                              >> %target_dist%\bin\OpenViBE-external-application-launcher.cmd

@@ -124,6 +124,7 @@ echo "$script_base exec \$ov_debugger ./OpenViBE-designer-dynamic \$*" > $target
 echo "$script_base exec \$ov_debugger ./OpenViBE-acquisition-server-dynamic \$*" > $target_dist/ov-acquisition-server.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-plugin-inspector-dynamic \$*" > $target_dist/ov-plugin-inspector.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-id-generator-dynamic \$*" > $target_dist/ov-id-generator.sh
+echo "$script_base exec \$ov_debugger ./OpenViBE-external-stimulation-connection-example-dynamic \$*" > $target_dist/ov-external-stimulation-connection-example-dynamic.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-vr-demo \"tie-fighter\" \$*" > $target_dist/ov-vr-demo-tie-fighter.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-vr-demo \"handball\" \$*" > $target_dist/ov-vr-demo-handball.sh
 echo "$script_base exec \$ov_debugger ./OpenViBE-vrpn-simulator-dynamic \$*" > $target_dist/ov-vrpn-simulator.sh
@@ -134,6 +135,7 @@ ln -sf $target_dist/ov-designer.sh
 ln -sf $target_dist/ov-acquisition-server.sh
 ln -sf $target_dist/ov-plugin-inspector.sh
 ln -sf $target_dist/ov-id-generator.sh
+ln -sf $target_dist/ov-external-stimulation-connection-example-dynamic.sh
 ln -sf $target_dist/ov-vr-demo-tie-fighter.sh
 ln -sf $target_dist/ov-vr-demo-handball.sh
 ln -sf $target_dist/ov-vrpn-simulator.sh
