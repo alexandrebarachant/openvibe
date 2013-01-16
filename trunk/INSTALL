@@ -30,8 +30,8 @@ but you should not expect to get support on the short term.
 |Prerequesite.dependencies|
 
 In order to build the software, one must install several dependencies.
-This may be done using the provided installation scripts which will
-automatically set up your environment. These are in the scripts/ directory.
+This may be done using the provided installation scripts which will automatically 
+set up your environment. Run either of these while *inside* the scripts/ directory.
 
 <win32-install_dependencies> installs dependencies under Windows and
 <linux-install_dependencies> installs them under Linux.
