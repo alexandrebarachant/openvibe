@@ -1,0 +1,3 @@
+cd $1 
+cmd /C "win32-build.cmd --no-pause"
+
