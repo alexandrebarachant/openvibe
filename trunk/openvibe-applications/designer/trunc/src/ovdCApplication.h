@@ -52,6 +52,9 @@ namespace OpenViBEDesigner
 
 		OpenViBE::CString getWorkingDirectory(void);
 
+		// changes the working dir config token to reflect the current working directory of the scenario
+		void updateWorkingDirectoryToken(const OpenViBE::CIdentifier &oScenarioIdentifier);	
+
 		OpenViBE::boolean hasRunningScenario(void);
 		OpenViBE::boolean hasUnsavedScenario(void);
 

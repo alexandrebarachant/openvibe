@@ -841,9 +841,9 @@ boolean CApplication::openScenario(const char* sFileName)
 			{
 				if(m_vInterfacedScenario[0]->m_bHasBeenModified==false && !m_vInterfacedScenario[0]->m_bHasFileName)
 				{
-					CIdentifier l_oScenarioIdentifier=m_vInterfacedScenario[0]->m_oScenarioIdentifier;
+					CIdentifier l_oScenarioIdentifierTmp=m_vInterfacedScenario[0]->m_oScenarioIdentifier;
 					delete m_vInterfacedScenario[0];
-					m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
+					m_pScenarioManager->releaseScenario(l_oScenarioIdentifierTmp);
 					m_vInterfacedScenario.clear();
 				}
 			}
@@ -863,6 +863,8 @@ boolean CApplication::openScenario(const char* sFileName)
 			m_vInterfacedScenario.push_back(l_pInterfacedScenario);
 			gtk_notebook_set_current_page(m_pScenarioNotebook, gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
 			//this->changeCurrentScenario(gtk_notebook_get_n_pages(m_pScenarioNotebook)-1);
+
+			updateWorkingDirectoryToken(l_oScenarioIdentifier);
 
 			return true;
 		}
@@ -917,6 +919,24 @@ CString CApplication::getWorkingDirectory(void)
 	}
 
 	return l_sWorkingDirectory;
+}
+
+// Change the working directory token to the current scenario location
+void CApplication::updateWorkingDirectoryToken(const OpenViBE::CIdentifier &oScenarioIdentifier) {
+	// Store unique token for the working directory of the scenario. Note that OpenViBE will change the token value by itself.
+	OpenViBE::CString l_sWorkingDir = getWorkingDirectory();
+
+	OpenViBE::CString l_sGlobalToken = "__volatile_Scenario" + oScenarioIdentifier.toString() + "Dir";
+	OpenViBE::CString l_sOldDir = m_rKernelContext.getConfigurationManager().lookUpConfigurationTokenValue(l_sGlobalToken);
+	if (l_sOldDir == CString("")) 
+	{
+		m_rKernelContext.getConfigurationManager().createConfigurationToken(l_sGlobalToken, l_sWorkingDir);
+	}
+	else
+	{
+		m_rKernelContext.getConfigurationManager().setConfigurationTokenValue( m_rKernelContext.getConfigurationManager().lookUpConfigurationTokenIdentifier(l_sGlobalToken), l_sWorkingDir);
+	}
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "Scenario ( " << oScenarioIdentifier.toString() << " ) working directory changed to "  << l_sWorkingDir << "\n";
 }
 
 boolean CApplication::hasRunningScenario(void)
@@ -1347,6 +1367,8 @@ void CApplication::saveScenarioAsCB(CInterfacedScenario* pScenario)
 		}
 
 		saveScenarioCB(l_pCurrentInterfacedScenario);
+
+		updateWorkingDirectoryToken(l_pCurrentInterfacedScenario->m_oScenarioIdentifier);
 	}
 	gtk_widget_destroy(l_pWidgetDialogSaveAs);
 }

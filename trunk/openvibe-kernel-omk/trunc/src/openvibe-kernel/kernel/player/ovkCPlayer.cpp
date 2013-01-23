@@ -69,7 +69,7 @@ boolean CPlayer::setScenario(
 	}
 
 	this->getLogManager() << LogLevel_Trace << "Player setScenario\n";
-
+	m_oScenarioIdentifier = rScenarioIdentifier;
 	return m_oScheduler.setScenario(rScenarioIdentifier);;
 }
 
@@ -83,10 +83,42 @@ boolean CPlayer::initialize(void)
 
 	this->getLogManager() << LogLevel_Trace << "Player initialize\n";
 
-	m_pLocalConfigurationManager=new CConfigurationManager(this->getKernelContext(), &this->getKernelContext().getConfigurationManager());
-	m_pLocalConfigurationManager->addConfigurationFromFile(this->getKernelContext().getConfigurationManager().expand("${Kernel_DelayedConfiguration}"));
-	// m_pLocalConfigurationManager->addConfigurationFromFile(this->getKernelContext().getConfigurationManager().expand("")); // TODO ADD SCENARIO DEPENDANT CONFIGURATION FILE
+	m_pLocalConfigurationManager=new CConfigurationManager(m_oKernelContextBridge, &this->getKernelContext().getConfigurationManager());
+
+	// At this point we've inserted the bridge as a stand-in for Kernel context to the local CConfigurationManager, but the manager in the bridge is still the
+	// 'global' one. Now lets change the config manager in the bridge to point to the local manager in order to load configurations into the local manager.
 	m_oKernelContextBridge.setConfigurationManager(m_pLocalConfigurationManager);
+
+	m_pLocalConfigurationManager->addConfigurationFromFile(this->getKernelContext().getConfigurationManager().expand("${Kernel_DelayedConfiguration}"));
+
+	//get scenario path from the global configuration manager and insert it to the local manager.
+	//after having the path, try to see if there's a scenario specific config file
+	OpenViBE::CString l_sGlobalPathToken = "__volatile_Scenario" + m_oScenarioIdentifier.toString() + "Dir";
+	OpenViBE::CString l_sWorkingDir = this->getKernelContext().getConfigurationManager().lookUpConfigurationTokenValue(l_sGlobalPathToken);
+	if(l_sWorkingDir == CString(""))
+	{
+		this->getLogManager() << LogLevel_Warning << "Warning: Token " << l_sGlobalPathToken << " did not exist in the configuration manager. The token should have been set when the scenario was loaded or saved. If you're working on a new scenario that has never been saved, ignore this warning.\n";
+		this->getLogManager() << LogLevel_Warning << "Warning: Will not attempt to load any scenario specific configuration file.\n";
+	} 
+	else
+	{
+		//create an easily named local token that scenarios can use to read their own current directory. Note that the value of this token will often be overwritten by OpenViBE.
+		const CString l_sLocalPathToken("__volatile_ScenarioDir");
+		const CString l_sOldPath = m_pLocalConfigurationManager->lookUpConfigurationTokenValue(l_sLocalPathToken);
+		if(l_sOldPath == CString(""))
+		{
+			m_pLocalConfigurationManager->createConfigurationToken(l_sLocalPathToken,l_sWorkingDir);
+		}
+		else 
+		{
+			m_pLocalConfigurationManager->setConfigurationTokenValue( m_pLocalConfigurationManager->lookUpConfigurationTokenIdentifier(l_sLocalPathToken), l_sWorkingDir);
+		}
+
+		//load local, scenario-specific configuration file
+		CString l_sConfigPath = l_sWorkingDir + "/scenario.conf";
+		this->getLogManager() << LogLevel_Trace << "Requesting add of local scenario config from " << l_sConfigPath << "\n";
+		m_pLocalConfigurationManager->addConfigurationFromFile( l_sConfigPath ); 
+	}
 
 	m_oScheduler.initialize();
 	m_oBenchmarkChrono.reset(static_cast<uint32>(m_oScheduler.getFrequency()));

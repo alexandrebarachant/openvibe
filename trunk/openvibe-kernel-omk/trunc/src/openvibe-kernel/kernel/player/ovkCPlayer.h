@@ -54,6 +54,9 @@ namespace OpenViBE
 			OpenViBE::uint64 m_ui64Lateness;
 			OpenViBE::Kernel::EPlayerStatus m_eStatus;
 
+			// Stores the identifier of the scenario that is being played
+			OpenViBE::CIdentifier m_oScenarioIdentifier;
+
 		private:
 
 			System::CChrono m_oBenchmarkChrono;
