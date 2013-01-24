@@ -19,20 +19,20 @@ macro(getuname name flag)
   exec_program("${UNAME}" ARGS "${flag}" OUTPUT_VARIABLE "${name}")
 endmacro(getuname)
 
-IF(CYGWIN)
-	SET(distrib "")
+IF(WIN32)
+	SET(distrib ${CMAKE_SYSTEM})
 	SET(distrib-release "")
-ELSE(CYGWIN)
+ELSE(WIN32)
 	find_program(LSB_RELEASE NAMES lsb_release)
 	exec_program("${LSB_RELEASE}" ARGS "-si" OUTPUT_VARIABLE "distrib")
 	exec_program("${LSB_RELEASE}" ARGS "-sr" OUTPUT_VARIABLE "distrib-release")
-ENDIF(CYGWIN)
+ENDIF(WIN32)
 
 getuname(osname -s)
 getuname(osrel  -r)
 getuname(cpu    -m)
 
-set(CTEST_BUILD_NAME                    "${osname}${cpu}${distrib}${distrib-release}")
+set(CTEST_BUILD_NAME                    "${osname}_${cpu}_${distrib}${distrib-release}")
 
 ## -- SVN command
 ## ----------------
@@ -48,7 +48,7 @@ IF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
 ENDIF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
 
 ## -- DashBoard Root
-set(CTEST_DASHBOARD_ROOT                "$ENV{HOME}")
+set(CTEST_DASHBOARD_ROOT                "${CMAKE_CURRENT_SOURCE_DIR}")
 
 ## -- SRC Dir
 set(CTEST_SOURCE_DIRECTORY              "${CTEST_DASHBOARD_ROOT}/${CTEST_BUILD_NAME}/trunk")
@@ -71,10 +71,10 @@ set(CTEST_UPDATE_COMMAND               "${CTEST_SVN_COMMAND}")
 
 
 ## -- Configure Command
-set(CTEST_CONFIGURE_COMMAND            "$ENV{HOME}/InstallDependencies")
+set(CTEST_CONFIGURE_COMMAND            "${CMAKE_CURRENT_SOURCE_DIR}/InstallDependencies")
 IF(CYGWIN)
 	## -- Build Command
-set(CTEST_BUILD_COMMAND                "$ENV{HOME}/buildWindows ${CTEST_SOURCE_DIRECTORY}/scripts/")
+set(CTEST_BUILD_COMMAND                "${CMAKE_CURRENT_SOURCE_DIR}/buildWindows ${CTEST_SOURCE_DIRECTORY}/scripts/")
 ELSE(CYGWIN)
 
 	## -- Build Command
@@ -87,13 +87,13 @@ ENDIF(CYGWIN)
 # -----------------------------------------------------------  
 
 ## -- CTest Config
-configure_file($ENV{HOME}/CTestConfig.cmake  ${CTEST_BINARY_DIRECTORY}/CTestConfig.cmake)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake  ${CTEST_BINARY_DIRECTORY}/CTestConfig.cmake)
 
 ## -- CTest Custom
-configure_file($ENV{HOME}/CTestCustom.cmake ${CTEST_BINARY_DIRECTORY}/CTestCustom.cmake)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CTEST_BINARY_DIRECTORY}/CTestCustom.cmake)
 
 ## -- CTest Testfile
-configure_file($ENV{HOME}/CTestTestfile.cmake ${CTEST_BINARY_DIRECTORY}/CTestTestfile.cmake)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestTestfile.cmake ${CTEST_BINARY_DIRECTORY}/CTestTestfile.cmake)
 
 ## -- read CTestCustom.cmake file
 ctest_read_custom_files("${CTEST_BINARY_DIRECTORY}")
@@ -151,4 +151,5 @@ message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
 message(" -- clean ${MODEL}  - ${CTEST_BUILD_NAME} --")
 ctest_empty_binary_directory(${CTEST_SOURCE_DIRECTORY})
 exec_program("rm" ARGS "-rf ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "cleanScript")
+
 

@@ -4,15 +4,40 @@ After every test a Cdash rapport is emitted to OpenViBe Cdash server :
 http://cdash.inria.fr/CDash/index.php?project=OpenViBe
 
 Dependencies: 
+------------
 
 to run these scripts, you need ctest (cmake suit), sh-utils (coreutils on windows cygwin or gnuwin32) and svn command-line tools
+On Linux fedora you need to install :
+yum install cmake svn redhat-lsb gcc-c++ expect
 
-Run:
+SUDOER on Linux :
+------
+On linux, you need to have an account with sodoers privileges without password
+WARNING 1 : be carefull, this not good for your personal computer or server, it must be reserved for unsafe slaves machines used to run automatic tests
 
-for a Nightly test:
+launch:
+VISUAL=/usr/bin/vi visudo
+then put this kind of line :
+myUserAccount ALL=(ALL:ALL) NOPASSWD: ALL
 
-ctest -VV -S ~/openVibeTests.cmake,Nightly 
+WARNING 2 : execution of test change de root password in Fedora distributions to : openvibe 
 
-for a experimental test:
 
-ctest -VV -S ~/openVibeTests.cmake,Experimental 
+Get tests scripts:
+-----------------
+gcc
+svn checkout svn://scm.gforge.inria.fr/svnroot/openvibe/trunk/test
+cd test
+
+
+
+Run test:
+--------
+
+ - for a Nightly test:
+
+ctest -VV -S openVibeTests.cmake,Nightly 
+
+ - for a experimental test:
+
+ctest -VV -S openVibeTests.cmake,Experimental 
