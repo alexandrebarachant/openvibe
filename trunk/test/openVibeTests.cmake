@@ -70,16 +70,19 @@ endif(NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
 set(CTEST_UPDATE_COMMAND               "${CTEST_SVN_COMMAND}")
 
 
-## -- Configure Command
-set(CTEST_CONFIGURE_COMMAND            "${CMAKE_CURRENT_SOURCE_DIR}/InstallDependencies")
-IF(CYGWIN)
-	## -- Build Command
-set(CTEST_BUILD_COMMAND                "${CMAKE_CURRENT_SOURCE_DIR}/buildWindows ${CTEST_SOURCE_DIRECTORY}/scripts/")
-ELSE(CYGWIN)
 
+IF(WIN32)
+	## -- Configure Command
+	set(CTEST_CONFIGURE_COMMAND            "${CTEST_SOURCE_DIRECTORY}/scripts/win32-install_dependencies.exe /S")
+	
+	## -- Build Command
+	set(CTEST_BUILD_COMMAND                "cmd /C \"win32-build.cmd --no-pause\"")
+ELSE(WIN32)
+	## -- Configure Command
+	set(CTEST_CONFIGURE_COMMAND            "${CMAKE_CURRENT_SOURCE_DIR}/InstallDependencies")
 	## -- Build Command
 	set(CTEST_BUILD_COMMAND                "${CTEST_SOURCE_DIRECTORY}/scripts/linux-build")
-ENDIF(CYGWIN)
+ENDIF(WIN32)
 
 
 # -----------------------------------------------------------  
@@ -130,15 +133,15 @@ ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
 
 ## -- Configure	
 message(" -- Configure ${MODEL} - ${CTEST_BUILD_NAME} --")
-ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
+ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
 
 ## -- BUILD
 message(" -- Build ${MODEL} - ${CTEST_BUILD_NAME} --")
-ctest_build(    BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
+ctest_build(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
 
 ## -- TEST
 message(" -- Test ${MODEL} - ${CTEST_BUILD_NAME} --")
-ctest_test(     BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
+ctest_test(BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
 
 
 ## -- SUBMIT
@@ -151,5 +154,4 @@ message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
 message(" -- clean ${MODEL}  - ${CTEST_BUILD_NAME} --")
 ctest_empty_binary_directory(${CTEST_SOURCE_DIRECTORY})
 exec_program("rm" ARGS "-rf ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "cleanScript")
-
 

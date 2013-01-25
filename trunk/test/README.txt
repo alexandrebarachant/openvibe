@@ -13,19 +13,20 @@ yum install cmake svn redhat-lsb gcc-c++ expect
 SUDOER on Linux :
 ------
 On linux, you need to have an account with sodoers privileges without password
+
 WARNING 1 : be carefull, this not good for your personal computer or server, it must be reserved for unsafe slaves machines used to run automatic tests
 
 launch:
 VISUAL=/usr/bin/vi visudo
-then put this kind of line :
-myUserAccount ALL=(ALL:ALL) NOPASSWD: ALL
+then put this kind of line and the end of the file:
+user ALL=(ALL) NOPASSWD: ALL
+
 
 WARNING 2 : execution of test change de root password in Fedora distributions to : openvibe 
 
 
 Get tests scripts:
 -----------------
-gcc
 svn checkout svn://scm.gforge.inria.fr/svnroot/openvibe/trunk/test
 cd test
 

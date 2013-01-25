@@ -1,5 +1,4 @@
 #!/bin/bash
-#cd $1
 unamestr=`uname`
 if [[ "$unamestr" == 'Linux' ]]; then
    if [[ -e /etc/fedora-release ]]; then
@@ -14,4 +13,3 @@ else
    ./win32-install_dependencies.exe /S 
 fi
 
-#cd -
