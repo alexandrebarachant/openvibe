@@ -187,6 +187,7 @@ $OpenViBE_plugin_vrpn
 $OpenViBE_application_designer
 $OpenViBE_application_acquisition_server
 $OpenViBE_application_plugin_inspector
+$OpenViBE_application_external_stimulation_connection_example
 $OpenViBE_application_vr_demo
 $OpenViBE_application_vrpn_simulator
 $OpenViBE_application_skeleton_generator
