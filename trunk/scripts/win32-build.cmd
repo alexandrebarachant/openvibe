@@ -173,6 +173,14 @@ echo cd bin                                                  >> %target_dist%\ov
 echo OpenViBE-id-generator-dynamic.exe %%1 %%2 %%3 %%4 %%5   >> %target_dist%\ov-id-generator.cmd
 echo pause                                                   >> %target_dist%\ov-id-generator.cmd
 
+echo @echo off                                               >  %target_dist%\ov-external-stimulation-connection-example.cmd
+echo pushd ..\scripts                                        >> %target_dist%\ov-external-stimulation-connection-example.cmd
+echo call %InitEnvScript%                                    >> %target_dist%\ov-external-stimulation-connection-example.cmd
+echo popd                                                    >> %target_dist%\ov-external-stimulation-connection-example.cmd
+echo cd bin                                                  >> %target_dist%\ov-external-stimulation-connection-example.cmd
+echo OpenViBE-external-stimulation-connection-example-dynamic.exe %%1 %%2 %%3 %%4 %%5                       >> %target_dist%\ov-external-stimulation-connection-example.cmd
+echo pause                                                   >> %target_dist%\ov-external-stimulation-connection-example.cmd
+
 echo @echo off                                               >  %target_dist%\ov-plugin-inspector.cmd
 echo pushd ..\scripts                                        >> %target_dist%\ov-plugin-inspector.cmd
 echo call %InitEnvScript%                                    >> %target_dist%\ov-plugin-inspector.cmd
