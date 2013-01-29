@@ -37,6 +37,9 @@ namespace OpenViBEAcquisitionServer
 
 		OpenViBE::uint32 m_ui32TotalSampleCount;
 		OpenViBE::uint32 m_ui32StartTime;
+
+	private:
+		OpenViBE::boolean m_bSendPeriodicStimulations;
 	};
 };
 

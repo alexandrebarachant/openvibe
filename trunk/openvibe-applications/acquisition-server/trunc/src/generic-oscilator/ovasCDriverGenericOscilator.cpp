@@ -1,5 +1,5 @@
 #include "ovasCDriverGenericOscilator.h"
-#include "../ovasCConfigurationBuilder.h"
+#include "ovasCConfigurationDriverGenericOscilator.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -23,6 +23,8 @@ CDriverGenericOscillator::CDriverGenericOscillator(IDriverContext& rDriverContex
 	,m_ui32StartTime(0)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::CDriverGenericOscillator\n";
+
+	m_bSendPeriodicStimulations = m_rDriverContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_GenericOscilator_SendPeriodicStimulations}");
 
 	m_oHeader.setSamplingFrequency(512);
 	m_oHeader.setChannelCount(4);
@@ -99,10 +101,13 @@ boolean CDriverGenericOscillator::loop(void)
 		if(l_ui32CurrentTime-m_ui32StartTime > (1000*(m_ui32TotalSampleCount+m_ui32SampleCountPerSentBlock))/m_oHeader.getSamplingFrequency())
 		{
 			CStimulationSet l_oStimulationSet;
-			l_oStimulationSet.setStimulationCount(1);
-			l_oStimulationSet.setStimulationIdentifier(0, 0);
-			l_oStimulationSet.setStimulationDate(0, 0);
-			l_oStimulationSet.setStimulationDuration(0, 0);
+			if (m_bSendPeriodicStimulations)
+			{
+				l_oStimulationSet.setStimulationCount(1);
+				l_oStimulationSet.setStimulationIdentifier(0, 0);
+				l_oStimulationSet.setStimulationDate(0, 0);
+				l_oStimulationSet.setStimulationDuration(0, 0);
+			}
 
 			for(uint32 j=0; j<m_oHeader.getChannelCount(); j++)
 			{
@@ -177,6 +182,6 @@ boolean CDriverGenericOscillator::configure(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::configure\n";
 
-	CConfigurationBuilder m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.ui");
+	CConfigurationDriverGenericOscilator m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.ui", m_bSendPeriodicStimulations);
 	return m_oConfiguration.configure(m_oHeader);
 }
