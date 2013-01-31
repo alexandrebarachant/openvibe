@@ -1,12 +1,18 @@
 # ---------------------------------
 # Finds Matlab toolkit
 # ---------------------------------
+SET(Matlab_EXECUTABLE "Matlab_EXECUTABLE-NOTFOUND")
+
+IF (WIN32)
+	FIND_PROGRAM(Matlab_EXECUTABLE MATLAB)
+ENDIF(WIN32)
+IF (UNIX)
+	FIND_PROGRAM(Matlab_EXECUTABLE matlab)
+ENDIF(UNIX)
+
 
 IF(UNIX OR WIN32)
-	SET(Matlab_EXECUTABLE "Matlab_EXECUTABLE-NOTFOUND")
 	
-	# FIND_PROGRAM(Matlab_EXECUTABLE matlab PATHS "$ENV{MATLABROOT}/bin" "$ENV{OV_DEP_MATLAB}/bin")
-	FIND_PROGRAM(Matlab_EXECUTABLE MATLAB)
 	IF(Matlab_EXECUTABLE)
 		GET_FILENAME_COMPONENT(Matlab_ROOT ${Matlab_EXECUTABLE} PATH)
 		SET(Matlab_ROOT ${Matlab_ROOT}/..)
