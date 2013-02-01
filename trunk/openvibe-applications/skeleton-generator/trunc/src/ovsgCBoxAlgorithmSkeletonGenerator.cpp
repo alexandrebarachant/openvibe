@@ -1155,6 +1155,9 @@ CBoxAlgorithmSkeletonGenerator::~CBoxAlgorithmSkeletonGenerator(void)
 
 OpenViBE::boolean CBoxAlgorithmSkeletonGenerator::initialize( void )
 {
+	//random seed
+	srand((unsigned int)time(NULL));
+	
 	::GtkWidget * l_pBox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-window"));
 	
 	// Main Buttons and signals
@@ -2074,7 +2077,7 @@ void CBoxAlgorithmSkeletonGenerator::getCurrentParameters(void){
 
 CString  CBoxAlgorithmSkeletonGenerator::getRandomIdentifierString(void)
 {
-	srand((unsigned int)time(NULL));
+	
 	unsigned short int l_ui16Value1=(rand()&0xffff);
 	unsigned short int l_ui16Value2=(rand()&0xffff);
 	unsigned short int l_ui16Value3=(rand()&0xffff);
