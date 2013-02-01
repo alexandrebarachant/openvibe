@@ -151,7 +151,9 @@ ctest_submit(                                              RETURN_VALUE res)
 
 message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
 
-message(" -- clean ${MODEL}  - ${CTEST_BUILD_NAME} --")
-ctest_empty_binary_directory(${CTEST_SOURCE_DIRECTORY})
+IF(${CTEST_SCRIPT_ARG} MATCHES Nightly)
+	message(" -- clean ${MODEL}  - ${CTEST_BUILD_NAME} --")
+	ctest_empty_binary_directory(${CTEST_SOURCE_DIRECTORY})
+ENDIF(${CTEST_SCRIPT_ARG} MATCHES Nightly)
 exec_program("rm" ARGS "-rf ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "cleanScript")
 
