@@ -107,10 +107,10 @@ no_need_to_install_directx:
 	File ..\dependencies\arch\cegui-0.7.2-vs100-runtime.zip
 	File ..\dependencies\arch\vrpn-7.26-runtime.zip
 	File ..\dependencies\arch\pthreads-2.8.0-runtime.zip
-  File ..\dependencies\arch\openal-1.1-runtime.zip
-  File ..\dependencies\arch\freealut-1.1.0-bin-runtime.zip
-  File ..\dependencies\arch\libvorbis-1.3.2-vs100-runtime.zip
-  File ..\dependencies\arch\libogg-1.2.1-vs100-runtime.zip
+	File ..\dependencies\arch\openal-1.1-runtime.zip
+	File ..\dependencies\arch\freealut-1.1.0-bin-runtime.zip
+	File ..\dependencies\arch\libvorbis-1.3.2-vs100-runtime.zip
+	File ..\dependencies\arch\libogg-1.2.1-vs100-runtime.zip
 
 	SetOutPath "$INSTDIR\dependencies"
 	ExecWait '"arch\openvibe-vcredist-2005-sp1.exe" /q'
@@ -133,7 +133,10 @@ no_need_to_install_directx:
 	ZipDLL::extractall "arch\libogg-1.2.1-vs100-runtime.zip" "libogg"
 
 	SetOutPath "$INSTDIR"
+	; Export binaries
 	File /nonfatal /r ..\dist\bin
+	; Export launch scripts
+	File /nonfatal ..\dist\*.cmd
 	; File /nonfatal /r ..\dist\doc
 	; File /nonfatal /r ..\dist\etc
 	; File /nonfatal /r ..\dist\include
@@ -153,7 +156,8 @@ no_need_to_install_directx:
 	FileClose $0
 no_need_to_patch_3d_functionnality:
 
-	FileOpen $0 "$INSTDIR\dependencies\set-env.cmd" w
+	; Overwrite the file that may be in share/, as it contains local definitions to the build machine
+	FileOpen $0 "$INSTDIR\share\set-env.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\dependencies\itpp$\r$\n"
@@ -206,119 +210,6 @@ no_need_to_patch_3d_functionnality:
 	FileWrite $0 "	font_name=$\"Sans 8$\"$\r$\n"
 	FileWrite $0 "}$\r$\n"
 	FileWrite $0 "widget_class $\"*$\" style $\"user-font$\"$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-designer.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "OpenViBE-designer-dynamic.exe %1 %2 %3 %4 %5 %6$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-acquisition-server.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "OpenViBE-acquisition-server-dynamic.exe$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-id-generator.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "OpenViBE-id-generator-dynamic.exe$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-plugin-inspector.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "OpenViBE-plugin-inspector-dynamic.exe$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-skeleton-generator.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "OpenViBE-skeleton-generator-dynamic.exe$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-vrpn-simulator.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "OpenViBE-vrpn-simulator-dynamic.exe$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-vr-demo-tie-fighter.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "SET OpenViBE_DistRoot=%CD%$\r$\n"
-	FileWrite $0 "copy share\openvibe-applications\vr-demo\tie-fighter\resources.cfg-base share\openvibe-applications\vr-demo\tie-fighter\resources.cfg$\r$\n"
-	FileWrite $0 "type dependencies\cegui\resources.cfg >> share\openvibe-applications\vr-demo\tie-fighter\resources.cfg$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd share\openvibe-applications\vr-demo\tie-fighter$\r$\n"
-	FileWrite $0 "$\"%OpenViBE_DistRoot%\bin\OpenViBE-vr-demo-dynamic.exe$\" tie-fighter"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-	FileOpen $0 "$INSTDIR\openvibe-vr-demo-handball.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "SET OpenViBE_DistRoot=%CD%$\r$\n"
-	FileWrite $0 "copy share\openvibe-applications\vr-demo\handball\resources.cfg-base share\openvibe-applications\vr-demo\handball\resources.cfg$\r$\n"
-	FileWrite $0 "type dependencies\cegui\resources.cfg >> share\openvibe-applications\vr-demo\handball\resources.cfg$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd share\openvibe-applications\vr-demo\handball$\r$\n"
-	FileWrite $0 "$\"%OpenViBE_DistRoot%\bin\OpenViBE-vr-demo-dynamic.exe$\" handball"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "pause$\r$\n"
-	FileClose $0
-
-  FileOpen $0 "$INSTDIR\openvibe-ssvep-demo-training.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "start OpenViBE-ssvep-demo-dynamic.exe training$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileClose $0
-
-  FileOpen $0 "$INSTDIR\openvibe-ssvep-demo-shooter.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "call dependencies\set-env.cmd$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileWrite $0 "cd bin$\r$\n"
-	FileWrite $0 "start OpenViBE-ssvep-demo-dynamic.exe shooter$\r$\n"
-	FileWrite $0 "$\r$\n"
-	FileClose $0
-
-  FileOpen $0 "$INSTDIR\bin\Openvibe-external-application-launcher.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
-	FileWrite $0 "pushd ..$\r$\n"
-	FileWrite $0 "openvibe-%1.cmd %2 %3 %4 %5$\r$\n"
-	FileWrite $0 "$\r$\n"
 	FileClose $0
 
 	CreateDirectory "$SMPROGRAMS\OpenViBE"

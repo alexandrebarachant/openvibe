@@ -13,6 +13,13 @@ ENDIF(UNIX)
 
 IF(UNIX OR WIN32)
 	
+	IF(UNIX AND NOT Matlab_EXECUTABLE)
+		# Alternative way to try to find matlab
+		FILE(GLOB_RECURSE Executable_Candidates "/usr/local/matlab*/matlab")
+		IF(Executable_Candidates) 
+			LIST(GET Executable_Candidates 1 Matlab_EXECUTABLE)
+		ENDIF(Executable_Candidates)
+	ENDIF(UNIX AND NOT Matlab_EXECUTABLE)
 	IF(Matlab_EXECUTABLE)
 		GET_FILENAME_COMPONENT(Matlab_ROOT ${Matlab_EXECUTABLE} PATH)
 		SET(Matlab_ROOT ${Matlab_ROOT}/..)

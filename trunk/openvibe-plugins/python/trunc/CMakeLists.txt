@@ -17,8 +17,11 @@ INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
+INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindThirdPartyBoost_Thread")
+INCLUDE("FindThirdPartyBoost_Regex")
+INCLUDE("FindThirdPartyPython")	
 
-INCLUDE("FindThirdPartyPython")
 
 # ---------------------------------
 # Target macros

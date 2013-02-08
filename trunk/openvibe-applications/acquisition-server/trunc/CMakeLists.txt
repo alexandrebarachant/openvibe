@@ -5,6 +5,10 @@ SET(PROJECT_VERSION_MINOR x)
 SET(PROJECT_VERSION_PATCH x)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+# The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
+# Due to CMake, this needs to be done _before_ creating the target.
+INCLUDE("OvAddBoostLinkDir")
+
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
@@ -13,8 +17,8 @@ INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleSocket")
 INCLUDE("FindOpenViBEModuleSystem")
+INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
-INCLUDE("FindThirdPartyBoost_Thread")
 INCLUDE("FindThirdPartyGTK")
 INCLUDE("FindThirdPartyBrainmasterCodeMakerAPI")
 INCLUDE("FindThirdPartyActiCHampAPI")
@@ -24,8 +28,8 @@ INCLUDE("FindThirdPartyUSBFirstAmpAPI")
 INCLUDE("FindThirdPartyThinkGearAPI")
 INCLUDE("FindThirdPartyEmotivAPI")
 INCLUDE("FindThirdPartyOpenAL")
-
-
+INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindThirdPartyBoost_Thread")	# for linux
 
 # ---------------------------------
 # Target macros
@@ -53,27 +57,34 @@ ENDIF(UNIX)
 IF(WIN32)
 SET(PTHREAD_LIB "PTHREAD_LIB-NOTFOUND")
 SET(WS232_LIB "WS232_LIB-NOTFOUND")
-FIND_LIBRARY(WS232_LIB ws2_32)
+FIND_LIBRARY(WS232_LIB ws2_32 $ENV{OV_DEP_MSSDK}/lib)
 SET(PTHREAD_LIB $ENV{OV_DEP_PTHREADS}/lib/pthreadVCE2.lib)
 
 INCLUDE_DIRECTORIES($ENV{OV_DEP_PTHREADS}/include)
 
 IF(PTHREAD_LIB)
-  IF(WS232_LIB)
-	MESSAGE(STATUS "    [  OK  ] Third party lib ${WS232_LIB}")
 	MESSAGE(STATUS "    [  OK  ] Third party lib ${PTHREAD_LIB}")
-	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${WS232_LIB})
-	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${PTHREAD_LIB})
-    ELSE(WS2-32_LIB)
-        MESSAGE(STATUS "    [FAILED] Third party lib ${PTHREAD_LIB}") 
-        MESSAGE(STATUS "    [FAILED] Third party lib ${WS232_LIB}")
-    ENDIF(WS2-32_LIB)
 ELSE(PTHREAD_LIB)
 	MESSAGE(STATUS "    [FAILED] Third party lib ${PTHREAD_LIB}")
 ENDIF(PTHREAD_LIB)
+IF(WS232_LIB)
+	MESSAGE(STATUS "    [  OK  ] Third party lib ${WS232_LIB}")
+ELSE(WS232_LIB)
+	MESSAGE(STATUS "    [FAILED] Third party lib ${WS232_LIB}")
+ENDIF(WS232_LIB)
+
+IF(PTHREAD_LIB AND WS232_LIB)
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${WS232_LIB})
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${PTHREAD_LIB})
+ENDIF(PTHREAD_LIB AND WS232_LIB)
 
 ENDIF(WIN32)
 #end fieldtrip driver
+
+# ----------------------
+# Generate launch script
+# ----------------------
+OV_INSTALL_LAUNCH_SCRIPT("ov-acquisition-server")
 
 # -----------------------------
 # Install files

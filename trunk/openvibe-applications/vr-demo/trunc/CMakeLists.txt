@@ -5,13 +5,20 @@ SET(PROJECT_VERSION_MINOR x)
 SET(PROJECT_VERSION_PATCH x)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+# The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
+# Due to CMake, this needs to be done _before_ creating the target.
+INCLUDE("OvAddBoostLinkDir")
+
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
 INCLUDE("FindOpenViBEModuleSystem")
-INCLUDE("FindThirdPartyOgre3D") # OGRE + OIS included
+INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindThirdPartyCEGUI") # CEGUI + CEGUIOgreRender included
 INCLUDE("FindThirdPartyVRPN")
+INCLUDE("FindThirdPartyOgre3D") # OGRE + OIS included
+INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindThirdPartyBoost_Thread") # needed on linux to add lib
 
 # ---------------------------------
 # Finds standard library pthread
@@ -49,15 +56,11 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
 
-IF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
-	ADD_DEFINITIONS(-DTARGET_BUILDTYPE_Release)
-ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
-IF(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-	ADD_DEFINITIONS(-DTARGET_BUILDTYPE_Release)
-ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-IF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-	ADD_DEFINITIONS(-DTARGET_BUILDTYPE_Debug)
-ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+# ----------------------
+# Generate launch script
+# ----------------------
+OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball" "share/openvibe-applications/vr-demo/handball")
+OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter" "share/openvibe-applications/vr-demo/tie-fighter")
 
 # -----------------------------
 # Install files

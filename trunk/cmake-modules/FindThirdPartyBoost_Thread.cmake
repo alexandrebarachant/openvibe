@@ -4,10 +4,8 @@
 # Adds include path
 # ---------------------------------
 
-INCLUDE("FindThirdPartyBoost")
-
 IF(UNIX)
-	FIND_LIBRARY(LIB_Boost_Thread NAMES "boost_thread-mt" PATHS $ENV{OpenViBE_dependencies}/lib $ENV{OpenViBE_dependencies}/lib NO_DEFAULT_PATH)
+	FIND_LIBRARY(LIB_Boost_Thread NAMES "boost_thread-mt" PATHS $ENV{OpenViBE_dependencies}/lib NO_DEFAULT_PATH)
 	FIND_LIBRARY(LIB_Boost_Thread NAMES "boost_thread-mt" PATHS $ENV{OpenViBE_dependencies}/lib)
 	IF(LIB_Boost_Thread)
 		MESSAGE(STATUS "    [  OK  ] lib ${LIB_Boost_Thread}")
@@ -25,9 +23,3 @@ IF(UNIX)
 		MESSAGE(STATUS "  FAILED to find pthread...")
 	ENDIF(LIB_STANDARD_MODULE_PTHREAD)
 ENDIF(UNIX)
-
-IF(WIN32)
-	IF(PATH_BOOST)
-		LINK_DIRECTORIES(${PATH_BOOST}/lib)
-	ENDIF(PATH_BOOST)
-ENDIF(WIN32)

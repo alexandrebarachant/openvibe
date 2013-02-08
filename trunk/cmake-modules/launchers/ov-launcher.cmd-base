@@ -1,0 +1,35 @@
+@ECHO OFF
+SETLOCAL EnableExtensions
+
+REM Get the directory location of this script, assume it contains the OpenViBE dist tree.
+SET "OV_DISTROOT=%~dp0"
+
+SET OV_PAUSE=PAUSE
+SET OV_RUN_IN_BG=
+
+IF /i "%1"=="--no-pause" (
+	SET OV_PAUSE=
+	SHIFT
+)
+IF /i "%1"=="--run-bg" (
+	REM Run in background, disable pause. The first start arg is the app title.
+	SET OV_RUN_IN_BG=START "@OV_CMD_EXECUTABLE@"
+	SET OV_PAUSE=
+	SHIFT
+)
+
+SET "OV_ENVIRONMENT_FILE=%OV_DISTROOT%\bin\OpenViBE-set-env.cmd"
+IF NOT EXIST "%OV_ENVIRONMENT_FILE%" (
+	ECHO Error: "%OV_ENVIRONMENT_FILE%" was not found
+	GOTO EndOfScript
+)
+CALL "%OV_ENVIRONMENT_FILE%"
+
+PUSHD "%OV_DISTROOT%\@OV_CMD_WORKING_DIR@"
+%OV_RUN_IN_BG% "%OV_DISTROOT%\bin\@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ %1 %2 %3 %4 %5 %6
+POPD
+	
+:EndOfScript
+
+%OV_PAUSE%
+

@@ -5,6 +5,10 @@ SET(PROJECT_VERSION_MINOR x)
 SET(PROJECT_VERSION_PATCH x)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+# The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
+# Due to CMake, this needs to be done _before_ creating the target.
+INCLUDE("OvAddBoostLinkDir")
+
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.c src/*.h)
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
@@ -19,7 +23,6 @@ INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 INCLUDE("FindThirdPartyBoost")
-INCLUDE("FindThirdPartyBoost_Regex")
 
 # ---------------------------------
 # Target macros

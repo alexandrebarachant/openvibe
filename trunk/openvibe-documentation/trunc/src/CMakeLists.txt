@@ -24,14 +24,6 @@ IF(doxygen_bin)
 	# copy to the target directory
 	SET(resource_files "")
 
-	# builds a valid "build order" variable for both linux and windows
-	IF(WIN32)
-		FILE(READ "$ENV{OpenViBE_base}/scripts/OpenViBE_build_order.txt" OpenViBE_Build_Order)
-		STRING(REPLACE "\\" "/" OpenViBE_Build_Order ${OpenViBE_Build_Order})
-	ELSE(WIN32)
-		SET(OpenViBE_Build_Order $ENV{OpenViBE_build_order})
-	ENDIF(WIN32)
-
 	# iterates on each project we have
 	#
 	# for each project, we look at its resources and store them in a list
@@ -39,16 +31,16 @@ IF(doxygen_bin)
 	# parse them to get |ov[a-zA-Z0-9_]*_begin| or |ov[a-zA-Z0-9_]*_end|
 	# tokens. This tokens will later be included in the skeleton doxumentation
 	# files (.dox-skeleton)
-	STRING(REPLACE "\n" ";" currrent_projects "${OpenViBE_Build_Order}")
-	FOREACH(current_project ${currrent_projects})
+	GET_PROPERTY(CURRENT_PROJECTS GLOBAL PROPERTY OV_PROP_CURRENT_PROJECTS)
+	FOREACH(current_project ${CURRENT_PROJECTS})
 		STRING(REGEX REPLACE " +$" "" current_project ${current_project})
 		SET(current_project_src "${current_project}/src")
 
 		# updates the doxyfile variable for input directories
 		SET(ov_doxy_input "${ov_doxy_input} \"${current_project_src}\"")
-		MESSAGE(STATUS "    [  OK  ] Candidate directory found ${current_project_src}")
+		MESSAGE(STATUS "    [  OK  ] Candidate doc directory found ${current_project_src}")
 
-		# looks for resources and stores thm in a list
+		# looks for resources and stores them in a list
 		FILE(GLOB_RECURSE resource_files_tmp "${current_project_src}/*.png" "${current_project_src}/*.svg" "${current_project_src}/*.css" "${current_project_src}/*.php")
 		SET(resource_files ${resource_files} ${resource_files_tmp})
 
@@ -56,7 +48,7 @@ IF(doxygen_bin)
 		FILE(GLOB_RECURSE doxs "${current_project_src}/*.dox-part")
 		FOREACH(dox ${doxs})
 			GET_FILENAME_COMPONENT(dox_filename ${dox} NAME_WE)
-			MESSAGE(STATUS "             Documentation part found ${dox}")
+			# MESSAGE(STATUS "             Documentation part found ${dox}")
 
 			SET(dox_tag_name NOTFOUND)
 
@@ -101,7 +93,7 @@ IF(doxygen_bin)
 						STRING(REGEX REPLACE ".*\\|OVP_DocEnd_([a-zA-Z0-9_]*)\\|.*" "\\1" dox_tag_name_check ${dox_line})
 						STRING(REGEX REPLACE   "\\|OVP_DocEnd_([a-zA-Z0-9_]*)\\|.*" "" dox_line "${dox_line}")
 
-						MESSAGE(STATUS "             - Completed tag pair |${dox_tag_name}|")
+						# MESSAGE(STATUS "             - Completed tag pair |${dox_tag_name}|")
 
 						SET(dox_tag_name_value "${dox_tag_name_value}\n${dox_line}")
 						SET("Doc_${dox_tag_name}_Content" ${dox_tag_name_value})
@@ -127,7 +119,7 @@ IF(doxygen_bin)
 					# in case dox tag is not OVP_DocBegin* or OVP_DocEnd*
 					# just print a warning and continue
 					IF(NOT dox_line_processed)
-						MESSAGE(STATUS "             - Unexpected tag ${dox_tag} will be ignored")
+						MESSAGE(STATUS "             - Unexpected tag ${dox_tag} in ${dox} will be ignored")
 					ENDIF(NOT dox_line_processed)
 				ENDIF(dox_tag)
 
@@ -147,7 +139,7 @@ IF(doxygen_bin)
 
 	# now we have stored all the begin/end tagged things in variable, we just
 	# have to configure the skeleton configuration files with those variables.
-	# note that the skeleon files should be prepared to receive the CMake
+	# note that the skeleton files should be prepared to receive the CMake
 	# variables with @CMakeVariableName@ anywhere it is needed.
 	#
 	# in order to do so, we look after all the (.dox-skeleton) files and call
@@ -155,32 +147,19 @@ IF(doxygen_bin)
 	FILE(GLOB_RECURSE dox_skeletons "${PROJECT_SOURCE_DIR}/src/*.dox-skeleton")
 	FOREACH(dox_skeleton ${dox_skeletons})
 		GET_FILENAME_COMPONENT(dox_skeleton_filename ${dox_skeleton} NAME_WE)
-		GET_FILENAME_COMPONENT(dox_skeleton_path     ${dox_skeleton} PATH)
 		CONFIGURE_FILE(
 			"${dox_skeleton}"
-			"${dox_skeleton_path}/${dox_skeleton_filename}.dox"
+			"${CMAKE_CURRENT_BINARY_DIR}/${dox_skeleton_filename}.dox"
 			@ONLY)
 		MESSAGE(STATUS "    [  OK  ] Configured skeleton ${dox_skeleton}")
 	ENDFOREACH(dox_skeleton)
 
-	# now add post-build commands to copy resources in the target directory
 	IF(resource_files)
-		MESSAGE(STATUS "  Found resources...")
-		FOREACH(current_resource ${resource_files})
-			GET_FILENAME_COMPONENT(current_resource_stripped ${current_resource} NAME)
-			MESSAGE(STATUS "    [  OK  ] Resource file ${current_resource}")
-			ADD_CUSTOM_COMMAND(
-				TARGET ${PROJECT_NAME}
-				POST_BUILD
-				COMMAND ${CMAKE_COMMAND}
-				ARGS -E copy "${current_resource}" "${PROJECT_SOURCE_DIR}/doc/openvibe/html/${current_resource_stripped}"
-				COMMENT "      --->   Copying resource file ${current_resource_stripped}..."
-			VERBATIM)
-		ENDFOREACH(current_resource)
+		INSTALL(FILES ${resource_files} DESTINATION "doc/openvibe/html")
 	ENDIF(resource_files)
-
+	
 	# the final doxyfile filename is generated, platform compliantly
-	SET(ov_doxy_final "${PROJECT_SOURCE_DIR}/src/doxyfile")
+	SET(ov_doxy_final "${CMAKE_CURRENT_BINARY_DIR}/doxyfile")
 	IF(WIN32)
 		STRING(REPLACE "/" "\\" ov_doxy_final ${ov_doxy_final})
 	ENDIF(WIN32)
@@ -194,16 +173,35 @@ IF(doxygen_bin)
 		doxyfile-skeleton
 		${ov_doxy_final}
 		@ONLY)
-
+	
 	# and a post-build command is added in order to run doxygen
 	ADD_CUSTOM_COMMAND(
 		TARGET ${PROJECT_NAME}
 		PRE_BUILD
 		COMMAND "${doxygen_bin}" "${ov_doxy_final}"
-		WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/doc"
+		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
 		COMMENT "      --->   Running doxygen..."
 		VERBATIM)
-
+	
+	# 'patch' the docs, this takes some time, is it worth doing it?
+	# original linux-build directive: 
+	#     find $target_dist/doc -name *.html -exec sed -i -e "s/\xC2\?\xA7OpenViBE\xC2\?\xA7/OpenViBE/g" "{}" \; 
+	# \xC2\?\xA7 is the § character that has been put everywhere to clearly make the distinction between the project and the software
+	INSTALL(CODE "
+		MESSAGE(STATUS \"Patching special characters in HTML docs ...\")
+		FILE(GLOB_RECURSE HTML_DOCS \"\${CMAKE_CURRENT_BINARY_DIR}/../doc/html/\" \"*.html\")
+		# MESSAGE(STATUS \"got \${HTML_DOCS}\")	
+		FOREACH(HTML_DOC \${HTML_DOCS})
+			# MESSAGE(STATUS \"Processing \${HTML_DOC}\")
+			FILE(READ \${HTML_DOC} ORIG_FILE)
+			STRING(REPLACE \"§OpenViBE§\" \"OpenViBE\" TRANSLATED_FILE \${ORIG_FILE})
+			FILE(WRITE \${HTML_DOC} \${TRANSLATED_FILE})
+		ENDFOREACH(HTML_DOC)
+	")
+	
+	# doxygen will generate files in the first directory, install from there
+	INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../doc/html DESTINATION "./doc/openvibe" REGEX ".*\\.svn|.*\\.tmp" EXCLUDE)
+	
 ELSE(doxygen_bin)
 
 	MESSAGE(STATUS "  FAILED to find doxygen...")

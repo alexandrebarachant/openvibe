@@ -1,0 +1,10 @@
+#!/bin/bash
+
+CALLCMD=$1
+shift
+
+pushd ..
+
+./ov-$CALLCMD.sh $*
+
+popd

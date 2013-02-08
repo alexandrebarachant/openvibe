@@ -9,6 +9,10 @@
 # Adds include path
 # ---------------------------------
 
+IF(WIN32)
+	MESSAGE(STATUS "  Skipping MobiLabPlus, not supported on Windows")
+ENDIF(WIN32)
+
 IF(UNIX)
 	FIND_LIBRARY(gMOBIlabplus_LIBRARY NAMES gMOBIlabplus PATHS /usr/lib /usr/local/lib)
 	IF(gMOBIlabplus_LIBRARY)

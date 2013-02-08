@@ -6,20 +6,19 @@
 IF(WIN32)
 # edkErrorCode.h EmoStateDLL.h
 	#FIND_PATH(PATH_EmotivAPI edk.h  PATHS "C:/Program Files/Emotiv Development Kit_v1.0.0.3-PREMIUM"  "C:/Program Files/Emotiv Development Kit_v1.0.0.3-PREMIUM/doc/examples/include" "C:/Program Files (x86)/Emotiv Development Kit_v1.0.0.3-PREMIUM" "C:/Program Files (x86)/Emotiv Development Kit_v1.0.0.3-PREMIUM/doc/examples/include" $ENV{OpenViBE_dependencies})
-	FIND_PATH(PATH_EmotivAPI edk.h  PATHS 
-		"C:/Program Files/Emotiv Development Kit_v1.0.0.3-PREMIUM"
-		"C:/Program Files/Emotiv Development Kit_v1.0.0.3-PREMIUM/doc/examples/include" 
-		"C:/Program Files (x86)/Emotiv Development Kit_v1.0.0.3-PREMIUM"
-		"C:/Program Files (x86)/Emotiv Development Kit_v1.0.0.3-PREMIUM/doc/examples/include" 
-		"C:/Program Files/Emotiv Research Edition SDK_v1.0.0.4-PREMIUM" 
-		"C:/Program Files/Emotiv Research Edition SDK_v1.0.0.4-PREMIUM/doc/examples/include"
-		"C:/Program Files (x86)/Emotiv Research Edition SDK_v1.0.0.4-PREMIUM" 
-		"C:/Program Files (x86)/Emotiv Research Edition SDK_v1.0.0.4-PREMIUM/doc/examples/include"
-		"C:/Program Files/Emotiv Research Edition SDK_v1.0.0.5-PREMIUM"
-		"C:/Program Files/Emotiv Research Edition SDK_v1.0.0.5-PREMIUM/doc/examples/include" 
-		"C:/Program Files (x86)/Emotiv Research Edition SDK_v1.0.0.5-PREMIUM"
-		"C:/Program Files (x86)/Emotiv Research Edition SDK_v1.0.0.5-PREMIUM/doc/examples/include"
-		$ENV{OpenViBE_dependencies})
+	FILE(GLOB PATH_Candidates 
+		"C:/Program Files/Emotiv Development Kit*" 
+		"C:/Program Files/Emotiv Research Edition*"
+		"C:/Program Files (x86)/Emotiv Development Kit*" 
+		"C:/Program Files (x86)/Emotiv Research Edition*"
+	)
+	FOREACH(Candidate_folder ${PATH_Candidates}) 
+		# MESSAGE(STATUS "Found path ${PATH_Candidate}")
+		LIST(APPEND PATH_Candidates ${Candidate_folder}/doc/examples/include)
+	ENDFOREACH(Candidate_folder ${PATH_Candidates})
+	# MESSAGE(STATUS "Emotiv paths found ${PATH_Candidates}")
+	
+	FIND_PATH(PATH_EmotivAPI edk.h  PATHS ${PATH_Candidates} $ENV{OpenViBE_dependencies})
 	IF(PATH_EmotivAPI)
 		MESSAGE(STATUS "  Found Emotiv API...")
 		INCLUDE_DIRECTORIES(${PATH_EmotivAPI})

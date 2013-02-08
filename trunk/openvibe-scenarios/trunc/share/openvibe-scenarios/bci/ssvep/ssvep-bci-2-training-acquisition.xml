@@ -806,7 +806,7 @@
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
 					<Name>Command 1</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${External_Application_Launcher} ssvep-demo-training</Value>
+					<Value>${External_Application_Launcher} ssvep-demo-training --run-bg</Value>
 				</Setting>
 			</Settings>
 			<Attributes>

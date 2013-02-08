@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# find out where this script is located, assume it contains the openvibe distribution tree.
+# (the used mechanism allows running the script while in another directory.)
+OV_DISTROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+source "$OV_DISTROOT/bin/OpenViBE-set-env.sh"
+export LD_LIBRARY_PATH="$OV_DISTROOT/lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH"
+export LC_ALL=C
+renice 19 $$
+
+ov_debugger=
+if [ "$1" == "--debug" ]; then
+	ov_debugger="gdb --args"
+	shift
+fi
+ov_run_bg=0
+if [ "$1" == "--run-bg" ]; then
+	ov_run_bg=1
+	shift
+fi
+	
+cd "$OV_DISTROOT/@OV_CMD_WORKING_DIR@"
+
+ret_code=0
+
+if [ $ov_run_bg == 0 ]; then
+	eval $ov_debugger "$OV_DISTROOT/bin/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $*
+	ret_code=$?
+else
+	$ov_debugger "$OV_DISTROOT/bin/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $* &
+fi
+
+cd "$OV_DISTROOT"
+exit $ret_code
+

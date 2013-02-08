@@ -13,6 +13,7 @@ INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindOpenViBEModuleEBML")
+INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 INCLUDE("FindThirdPartyGTK")
 
@@ -36,6 +37,11 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
+
+# ----------------------
+# Generate launch script
+# ----------------------
+OV_INSTALL_LAUNCH_SCRIPT("ov-designer")
 
 # -----------------------------
 # Install files

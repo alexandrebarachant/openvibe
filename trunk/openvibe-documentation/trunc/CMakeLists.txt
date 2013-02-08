@@ -26,7 +26,7 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
 
-SUBDIRS(src)
+add_subdirectory(src)
 
 # -----------------------------
 # Install files

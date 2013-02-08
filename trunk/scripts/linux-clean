@@ -8,21 +8,18 @@ fi
 
 source linux-init_env_command
 
-for project_directory in $OpenViBE_build_order; do
-	if [ -e "$project_directory/CMakeLists.txt" ]; then
+dirDebug="../local-tmp/linux-Debug"
+dirRelease="../local-tmp/linux-Release"
 
-		temp_sub_directory=`echo $project_directory | sed '
-			s:'$OpenViBE_base'/::g
-			'`
-		mkdir -p "../local-tmp/$temp_sub_directory" 2> /dev/null
-		pushd "../local-tmp/$temp_sub_directory" 2> /dev/null
+if [ -e "$dirDebug" ]; then
+	pushd "$dirDebug" 2> /dev/null
+	make clean
+	popd 2> /dev/null
+fi
 
-		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MODULE_PATH="$OpenViBE_base/cmake-modules" -Wno-dev "$project_directory"
-		make clean
+if [ -e "$dirRelease" ]; then
+	pushd "$dirRelease" 2> /dev/null
+	make clean
+	popd 2> /dev/null
+fi
 
-		rmdir $project_directory/include/* 2> /dev/null
-
-		popd 2> /dev/null
-	fi;
-done
-rm -r ../local-tmp 2> /dev/null

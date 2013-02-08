@@ -35,6 +35,12 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
 
+# ----------------------
+# Generate launch script
+# ----------------------
+OV_INSTALL_LAUNCH_SCRIPT("ov-plugin-inspector")
+
+
 # -----------------------------
 # Install files
 # -----------------------------

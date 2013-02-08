@@ -5,7 +5,7 @@
 # ---------------------------------
 
 IF(WIN32)
-	FIND_PATH(PATH_PYTHON include/Python.h PATHS "c:\python27" $ENV{OpenViBE_dependencies}	[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
+	FIND_PATH(PATH_PYTHON include/Python.h PATHS "c:/python27" $ENV{OpenViBE_dependencies}	[HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
 		
 	IF(PATH_PYTHON)
 		MESSAGE(STATUS "  Found Python...")

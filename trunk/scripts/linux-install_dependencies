@@ -1062,7 +1062,7 @@ ov_package_url_torch=http://www.torch.ch/archives/Torch3src.tgz
 ov_package_url_bliff=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/bliff-src-16.tar.bz2
 
 # OpenMASK 4 related packages
-ov_package_url_cmake=http://www.cmake.org/files/v2.6/cmake-2.6.2.tar.gz
+ov_package_url_cmake=http://www.cmake.org/files/v2.8/cmake-2.8.7.tar.gz
 ov_package_url_obt=http://www.irisa.fr/bunraku/OpenViBE/dependencies/src/obt-src-22.tar.bz2
 ov_package_url_freeimage=$ov_sourceforge_mirror/freeimage/files/Source%20Distribution/3.11.0/FreeImage3110.zip
 ov_package_url_ois=$ov_sourceforge_mirror/wgois/files/Source%20Release/1.2/ois_1.2.0.tar.gz
