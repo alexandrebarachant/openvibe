@@ -28,9 +28,11 @@ namespace OpenViBE
 				std::map < OpenViBE::CIdentifier, std::pair < OpenViBE::boolean, OpenViBE::Kernel::IParameter* > >::iterator itParameter=m_vParameter.begin();
 				while(itParameter!=m_vParameter.end())
 				{
+					// @FIXME is this really as intended, test the first, delete the second?
 					if(itParameter->second.first)
 					{
 						delete itParameter->second.second;
+						itParameter->second.second = NULL;
 					}
 					++itParameter;
 				}

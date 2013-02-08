@@ -58,8 +58,16 @@ boolean CAlgorithmManager::releaseAlgorithm(
 	}
 	getLogManager() << LogLevel_Debug << "Releasing algorithm with identifier " << rAlgorithmIdentifier << "\n";
 	IAlgorithm& l_rAlgorithm=itAlgorithm->second.first->getAlgorithm();
-	delete itAlgorithm->second.second;
-	delete itAlgorithm->second.first;
+	if(itAlgorithm->second.second) 
+	{
+		delete itAlgorithm->second.second;
+		itAlgorithm->second.second = NULL;
+	}
+	if(itAlgorithm->second.first) 
+	{
+		delete itAlgorithm->second.first;
+		itAlgorithm->second.first = NULL;
+	}
 	m_vAlgorithm.erase(itAlgorithm);
 	getKernelContext().getPluginManager().releasePluginObject(&l_rAlgorithm);
 	return true;
@@ -73,10 +81,18 @@ boolean CAlgorithmManager::releaseAlgorithm(
 	{
 		if((IAlgorithmProxy*)itAlgorithm->second.second==&rAlgorithm)
 		{
-			getLogManager() << LogLevel_Debug << "Releasing algorithm\n";
 			IAlgorithm& l_rAlgorithm=itAlgorithm->second.first->getAlgorithm();
-			delete itAlgorithm->second.second;
-			delete itAlgorithm->second.first;
+			getLogManager() << LogLevel_Debug << "Releasing algorithm with class id " << l_rAlgorithm.getClassIdentifier() << "\n";
+			if(itAlgorithm->second.second) 
+			{
+				delete itAlgorithm->second.second;
+				itAlgorithm->second.second = NULL;
+			}
+			if(itAlgorithm->second.first) 
+			{
+				delete itAlgorithm->second.first;
+				itAlgorithm->second.first = NULL;
+			}
 			m_vAlgorithm.erase(itAlgorithm);
 			getKernelContext().getPluginManager().releasePluginObject(&l_rAlgorithm);
 			return true;

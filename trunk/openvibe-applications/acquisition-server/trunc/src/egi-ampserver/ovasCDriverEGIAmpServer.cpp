@@ -248,8 +248,11 @@ boolean CDriverEGIAmpServer::uninitialize(void)
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
 
-	delete [] m_pBuffer;
-	m_pBuffer=NULL;
+	if(m_pBuffer) 
+	{
+		delete [] m_pBuffer;
+		m_pBuffer=NULL;
+	}
 
 	if(m_pStream)
 	{

@@ -57,7 +57,11 @@ CMatrixImpl::CMatrixImpl(void)
 
 CMatrixImpl::~CMatrixImpl(void)
 {
-	delete [] m_pBuffer;
+	if(m_pBuffer) 
+	{
+		delete [] m_pBuffer;
+		m_pBuffer = NULL;
+	}
 }
 
 const uint32 CMatrixImpl::getDimensionCount(void) const
@@ -114,8 +118,11 @@ boolean CMatrixImpl::setDimensionCount(const uint32 ui32DimensionCount)
 		return false;
 	}
 
-	delete [] m_pBuffer;
-	m_pBuffer=NULL;
+	if(m_pBuffer) 
+	{
+		delete [] m_pBuffer;
+		m_pBuffer=NULL;
+	}
 
 	m_vDimensionSize.clear();
 	m_vDimensionSize.resize(ui32DimensionCount);
@@ -133,8 +140,11 @@ boolean CMatrixImpl::setDimensionSize(const uint32 ui32DimensionIndex, const uin
 		return false;
 	}
 
-	delete [] m_pBuffer;
-	m_pBuffer=NULL;
+	if(m_pBuffer) 
+	{
+		delete [] m_pBuffer;
+		m_pBuffer=NULL;
+	}
 
 	m_vDimensionSize[ui32DimensionIndex]=ui32DimensionSize;
 	m_vDimensionLabel[ui32DimensionIndex].clear();

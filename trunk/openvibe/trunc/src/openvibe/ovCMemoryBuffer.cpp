@@ -84,7 +84,10 @@ CMemoryBufferImpl::CMemoryBufferImpl(const uint8* pMemoryBuffer, const uint64 ui
 
 CMemoryBufferImpl::~CMemoryBufferImpl(void)
 {
-	delete [] m_pBuffer;
+	if(m_pBuffer) {
+		delete [] m_pBuffer;
+		m_pBuffer = NULL;
+	}
 }
 
 uint8* CMemoryBufferImpl::getDirectPointer(void)
@@ -113,7 +116,10 @@ boolean CMemoryBufferImpl::reserve(const uint64 ui64Size)
 			return false;
 		}
 		::memcpy(m_pBuffer, l_pSavedBuffer, static_cast<size_t>(m_ui64BufferSize)); // $$$
-		delete [] l_pSavedBuffer;
+		if(l_pSavedBuffer) 
+		{
+			delete [] l_pSavedBuffer;
+		}
 		m_ui64AllocatedSize=ui64Size;
 		m_pBuffer[m_ui64AllocatedSize]=0;
 	}
@@ -136,7 +142,10 @@ boolean CMemoryBufferImpl::setSize(
 		{
 			::memcpy(m_pBuffer, l_pSavedBuffer, static_cast<size_t>(m_ui64BufferSize)); // $$$
 		}
-		delete [] l_pSavedBuffer;
+		if(l_pSavedBuffer) 
+		{
+			delete [] l_pSavedBuffer;
+		}
 		m_ui64AllocatedSize=ui64Size;
 		m_pBuffer[m_ui64AllocatedSize]=0;
 	}

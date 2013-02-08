@@ -48,6 +48,7 @@ boolean CVRPNAnalogServer::uninitialize()
 		this->getAlgorithmManager().releaseAlgorithm(*m_vStreamDecoder[i]);
 	}
 	m_vStreamDecoder.clear();
+	m_vAnalogCount.clear();
 
 	// Releases the peripheral
 	IVRPNServerManager::getInstance().uninitialize();
@@ -72,8 +73,6 @@ boolean CVRPNAnalogServer::process()
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
-	uint32 k;
-
 	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
 	{
 		for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(i); j++)
@@ -92,13 +91,20 @@ boolean CVRPNAnalogServer::process()
 				if(m_vAnalogCount.size()==l_rStaticBoxContext.getInputCount())
 				{
 					uint32 l_ui32AnalogCount=0;
-					for(k=0; k<l_rStaticBoxContext.getInputCount(); k++)
+					for(uint32 k=0; k<l_rStaticBoxContext.getInputCount(); k++)
 					{
 						l_ui32AnalogCount+=m_vAnalogCount[k];
 					}
 
-					IVRPNServerManager::getInstance().setAnalogCount(m_oServerIdentifier, l_ui32AnalogCount);
-					this->getLogManager() << LogLevel_Trace << "Created VRPN analog server for " << l_ui32AnalogCount << " channel(s)\n";
+					if(IVRPNServerManager::getInstance().setAnalogCount(m_oServerIdentifier, l_ui32AnalogCount)) 
+					{
+						this->getLogManager() << LogLevel_Trace << "Created VRPN analog server for " << l_ui32AnalogCount << " channel(s)\n";
+					}
+					else
+					{
+						this->getLogManager() << LogLevel_Error << "Failed to create VRPN analog server for " << l_ui32AnalogCount << " channel(s)\n";
+						return false;
+					}
 
 					m_bAnalogSet=true;
 				}
@@ -111,15 +117,15 @@ boolean CVRPNAnalogServer::process()
 					if(m_bAnalogSet)
 					{
 						uint32 l_ui32AnalogOffset=0;
-						for(k=0; k<i; k++)
+						for(uint32 k=0; k<i; k++)
 						{
 							l_ui32AnalogOffset+=m_vAnalogCount[k];
 						}
-						for(k=0; k<l_pMatrix->getBufferElementCount(); k++)
+						for(uint32 k=0; k<l_pMatrix->getBufferElementCount(); k++)
 						{
 							if(!IVRPNServerManager::getInstance().setAnalogState(m_oServerIdentifier, l_ui32AnalogOffset+k, l_pMatrix->getBuffer()[k]))
 							{
-								getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Could not set analog state !\n";
+								getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Could not set analog state for index " << k << "\n";
 							}
 						}
 						IVRPNServerManager::getInstance().reportAnalog(m_oServerIdentifier);

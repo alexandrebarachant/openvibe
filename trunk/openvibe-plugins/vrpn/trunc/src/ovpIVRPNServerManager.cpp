@@ -130,13 +130,21 @@ boolean CVRPNServerManager::uninitialize(void)
 		map<CIdentifier, vrpn_Analog_Server*>::iterator itAnalogServer;
 		for(itAnalogServer=m_vAnalogServer.begin(); itAnalogServer!=m_vAnalogServer.end(); itAnalogServer++)
 		{
-			delete itAnalogServer->second;
+			if(itAnalogServer->second) 
+			{
+				delete itAnalogServer->second;
+				itAnalogServer->second = NULL;
+			}
 		}
 		m_vAnalogServer.clear();
 		map<CIdentifier, vrpn_Button_Server*>::iterator itButtonServer;
 		for(itButtonServer=m_vButtonServer.begin(); itButtonServer!=m_vButtonServer.end(); itButtonServer++)
 		{
-			delete itButtonServer->second;
+			if(itButtonServer->second) 
+			{
+				delete itButtonServer->second;
+				itButtonServer->second = NULL;
+			}
 		}
 		m_vButtonServer.clear();
 
@@ -346,9 +354,15 @@ boolean CVRPNServerManager::setAnalogCount(
 	{
 		return false;
 	}
-	delete m_vAnalogServer[rServerIdentifier];
+	if(m_vAnalogServer[rServerIdentifier]) 
+	{
+		delete m_vAnalogServer[rServerIdentifier];
+	}
 	m_vAnalogServer[rServerIdentifier]=new vrpn_Analog_Server(m_vServerName[rServerIdentifier], m_pConnection);
-	m_vAnalogServer[rServerIdentifier]->setNumChannels(ui32AnalogCount);
+	if(m_vAnalogServer[rServerIdentifier]->setNumChannels(ui32AnalogCount)!=ui32AnalogCount) 
+	{
+		return false;
+	}
 	return true;
 }
 
@@ -365,6 +379,12 @@ boolean CVRPNServerManager::setAnalogState(
 	{
 		return false;
 	}
+	uint32 l_u32numChannels = m_vAnalogServer[rServerIdentifier]->getNumChannels();
+	if(ui32AnalogIndex >= l_u32numChannels)  
+	{
+		return false;
+	}
+
 	m_vAnalogServer[rServerIdentifier]->channels()[ui32AnalogIndex]=f64AnalogStatus;
 	return true;
 }

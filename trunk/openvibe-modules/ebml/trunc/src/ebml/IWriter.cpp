@@ -116,8 +116,12 @@ CWriterNode::~CWriterNode(void)
 	{
 		delete (*i);
 	}
-
-	delete [] m_pBuffer;
+	
+	if(m_pBuffer) 
+	{
+		delete [] m_pBuffer;
+		m_pBuffer = NULL;
+	}
 }
 
 void CWriterNode::process(IWriterCallback& rWriterCallback)
@@ -265,6 +269,11 @@ boolean CWriter::setChildData(const void* pBuffer, const uint64 ui64BufferSize)
 			return false;
 		}
 		memcpy(l_pBufferCopy, pBuffer, (size_t)(ui64BufferSize));
+	}
+
+	if(m_pCurrentNode->m_pBuffer) 
+	{
+		delete [] m_pCurrentNode->m_pBuffer;
 	}
 
 	m_pCurrentNode->m_ui64BufferLength=ui64BufferSize;
