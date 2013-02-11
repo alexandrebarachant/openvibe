@@ -6,7 +6,8 @@ http://cdash.inria.fr/CDash/index.php?project=OpenViBe
 Dependencies: 
 ------------
 
-to run these scripts, you need ctest (cmake suit), sh-utils (coreutils on windows cygwin or gnuwin32) and svn command-line tools
+to run these scripts, you need ctest (cmake suit), sh-utils (coreutils on windows cygwin or gnuwin32), svn command-line tools and a c++ compiler (C++ Visual Studio 2010 on windows) 
+
 On Linux fedora you need to install :
 yum install cmake svn redhat-lsb gcc-c++ expect
 
@@ -14,7 +15,7 @@ SUDOER on Linux :
 ------
 On linux, you need to have an account with sodoers privileges without password
 
-WARNING 1 : be carefull, this not good for your personal computer or server, it must be reserved for unsafe slaves machines used to run automatic tests
+WARNING 1 : be careful, this not good for your personal computer or server, it must be reserved for unsafe slaves machines used to run automatic tests
 
 launch:
 VISUAL=/usr/bin/vi visudo
