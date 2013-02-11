@@ -1,4 +1,7 @@
-set(CMAKE_LEGACY_CYGWIN_WIN32 0)  # Remove when CMake >= 2.8.4 is required
+# REMOVE if all test is passed 
+# set(CMAKE_LEGACY_CYGWIN_WIN32 0)  # Remove when CMake >= 2.8.4 is required
+#------------------------
+
 # to exec test ctest -S thisfile
 # -----------------------------------------------------------  
 # -- Get environment
