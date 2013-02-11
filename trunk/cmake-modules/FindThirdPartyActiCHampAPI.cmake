@@ -45,24 +45,12 @@ IF(WIN32)
 			MESSAGE(STATUS "    [FAILED] firmware actiCHamp")
 		ENDIF(FIRMWARE_ActiCHampAPI)
 
-		# Copying the DLL file at postbuild
-		ADD_CUSTOM_COMMAND(
-				TARGET ${PROJECT_NAME}-dynamic
-				POST_BUILD
-				COMMAND ${CMAKE_COMMAND}
-				ARGS -E copy "${PATH_ActiCHampAPI}/actiCHamp_x86.dll" "${PROJECT_SOURCE_DIR}/bin"
-				COMMENT "      --->   Copying dll file ${PATH_ActiCHampAPI}/actiCHamp_x86.dll for the BrainProducts actiCHamp driver."
-			VERBATIM)
+		# Copy the DLL file at install
+		INSTALL(PROGRAMS "${PATH_ActiCHampAPI}/actiCHamp_x86.dll" DESTINATION "bin")
 
-		# Copying the firmware file at postbuild
-		ADD_CUSTOM_COMMAND(
-				TARGET ${PROJECT_NAME}-dynamic
-				POST_BUILD
-				COMMAND ${CMAKE_COMMAND}
-				ARGS -E copy "${FIRMWARE_ActiCHampAPI}" "${PROJECT_SOURCE_DIR}/bin"
-				COMMENT "      --->   Copying firmware file ${FIRMWARE_ActiCHampAPI} for the BrainProducts actiCHamp driver."
-			VERBATIM)
-
+		# Copy the firmware file at install
+		INSTALL(PROGRAMS "${FIRMWARE_ActiCHampAPI}" DESTINATION "bin")
+		
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyActiCHampAPI)
 	ELSE(PATH_ActiCHampAPI)
 		MESSAGE(STATUS "  FAILED to find actiCHamp API - cmake looked in 'C:/Program Files/actichamp' and 'C:/Program Files (x86)/actichamp'")

@@ -21,17 +21,10 @@ IF(WIN32)
 			MESSAGE(STATUS "    [FAILED] lib thinkgear")
 		ENDIF(LIB_ThinkGearAPI)
 
+		# Copy the DLL file at install
+		INSTALL(PROGRAMS "${PATH_ThinkGearAPI}/thinkgear.dll" DESTINATION "bin")
+
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyThinkGearAPI)
-		
-		# Copying the DLL file at postbuild
-		ADD_CUSTOM_COMMAND(
-				TARGET ${PROJECT_NAME}-dynamic
-				POST_BUILD
-				COMMAND ${CMAKE_COMMAND}
-				ARGS -E copy "${PATH_ThinkGearAPI}/thinkgear.dll" "${PROJECT_SOURCE_DIR}/bin"
-				COMMENT "      --->   Copying dll file ${PATH_ThinkGearAPI}/thinkgear.dll for the Neurosky MindSet driver."
-			VERBATIM)
-				
 	ELSE(PATH_ThinkGearAPI)
 		MESSAGE(STATUS "  FAILED to find a valid ThinkGear API - cmake looked in 'C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32' and 'C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32'")
 	ENDIF(PATH_ThinkGearAPI)

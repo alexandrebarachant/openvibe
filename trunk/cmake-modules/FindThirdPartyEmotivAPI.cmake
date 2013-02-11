@@ -33,21 +33,7 @@ IF(WIN32)
 			MESSAGE(STATUS "    [FAILED] lib Emotiv edk.lib")
 		ENDIF(LIB_EmotivAPI)
 
-		# Copying the DLL files at postbuild : not needed anymore cf delay load library
-		# ADD_CUSTOM_COMMAND(
-				# TARGET ${PROJECT_NAME}-dynamic
-				# POST_BUILD
-				# COMMAND ${CMAKE_COMMAND}
-				# ARGS -E copy "${PATH_EmotivAPI}/../bin/edk.dll" "${PROJECT_SOURCE_DIR}/bin"
-				# COMMENT "      --->   Copying dll file ${PATH_EmotivAPI}/../bin/edk.dll for the Emotiv EPOC driver."
-			# VERBATIM)
-		# ADD_CUSTOM_COMMAND(
-				# TARGET ${PROJECT_NAME}-dynamic
-				# POST_BUILD
-				# COMMAND ${CMAKE_COMMAND}
-				# ARGS -E copy "${PATH_EmotivAPI}/../bin/edk_utils.dll" "${PROJECT_SOURCE_DIR}/bin"
-				# COMMENT "      --->   Copying dll file ${PATH_EmotivAPI}/../bin/edk_utils.dll for the Emotiv EPOC driver."
-			# VERBATIM)
+		# Copying of DLL files is not needed anymore because of delay load library
 		
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyEmotivAPI)
 	ELSE(PATH_EmotivAPI)

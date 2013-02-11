@@ -21,14 +21,8 @@ IF(WIN32)
 			MESSAGE(STATUS "    [FAILED] lib gUSBamp")
 		ENDIF(LIB_GUSBampCAPI)
 
-		# Copying the DLL file at postbuild
-		ADD_CUSTOM_COMMAND(
-				TARGET ${PROJECT_NAME}-dynamic
-				POST_BUILD
-				COMMAND ${CMAKE_COMMAND}
-				ARGS -E copy "${PATH_GUSBampCAPI}/gUSBamp.dll" "${PROJECT_SOURCE_DIR}/bin"
-				COMMENT "      --->   Copying dll file ${PATH_GUSBampCAPI}/gUSBamp.dll for the g.Tec g.USBamp driver."
-			VERBATIM)
+		# Copy the DLL file at install
+		INSTALL(PROGRAMS "${PATH_GUSBampCAPI}/gUSBamp.dll" DESTINATION "bin")
 
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyGUSBampCAPI)
 	ELSE(PATH_GUSBampCAPI)

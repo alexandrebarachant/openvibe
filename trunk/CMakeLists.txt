@@ -12,10 +12,10 @@ ELSE(WIN32)
 	MESSAGE(STATUS "Warning: unknown platform")
 ENDIF(WIN32)	
 
-# if no specific branch has been given, default is to compile trunk
+# if no specific branch has been given for a component, default is to compile trunk
 SET(OV_TRUNK "trunc")
 
-# To compile your own non-trunch branches, add variables OV_BRANCH_[DIR OR DIR_DIR]_[branches/YOURBRANCH] for each.
+# To compile your own non-trunk branches, add variables OV_BRANCH_[DIR OR DIR_DIR] to point to "branches/YOURBRANCH" for each.
 # Branch name __SKIPME signifies that this component should not be compiled or installed.
 #SET(OV_BRANCH_PLUGINS_PYTHON "__SKIPME")			# skips python module
 #SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
@@ -52,7 +52,7 @@ SET(OV_TRUNK "trunc")
 #SET(OV_BRANCH_APPLICATIONS_ACQUISITION-SERVER							"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_DESIGNER									"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_EXTERNAL-STIMULATION-CONNECTION-EXAMPLE		"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_ID-GENERATOR								"branches/wip-jussi")
+#SET(OV_BRANCH_APPLICATIONS_ID-GENERATOR								"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_PLUGIN-INSPECTOR							"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_SKELETON-GENERATOR							"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_SSVEP-DEMO									"branches/mybranch")
@@ -62,7 +62,7 @@ SET(OV_TRUNK "trunc")
 
 # SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
-# a list of all projects, will be filled by the directory traversal. This is needed to generate the documentation.
+# a list of all project which will be filled by the directory traversal. This is needed to generate the documentation.
 SET_PROPERTY(GLOBAL PROPERTY OV_PROP_CURRENT_PROJECTS "") 	
 
 # needed for making visual studio projects when this script is called without CMAKE_BUILD_TYPE
@@ -70,11 +70,12 @@ SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "TARGET_BUILDTY
 SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE "TARGET_BUILDTYPE_Release")
 SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELWITHDEBINFO "TARGET_BUILDTYPE_Release")
 
-# Include some OpenViBE build specific helper functions that are used by the CMakeLists of the subprojects.
+# OpenViBE-specific helper functions that are used by the CMakeLists of the subprojects.
 INCLUDE("OvAddSingleProject")
 INCLUDE("OvAddProjects")
 INCLUDE("OvInstallLaunchScript")
 
+# Traverse these directories and build their components
 ADD_SUBDIRECTORY("openvibe/")
 ADD_SUBDIRECTORY("openvibe-kernel-omk/")
 ADD_SUBDIRECTORY("openvibe-modules/")
@@ -96,7 +97,7 @@ INSTALL(CODE "FILE(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/doc\")")
 INSTALL(CODE "FILE(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/log\")")
 INSTALL(CODE "FILE(MAKE_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/tmp\")")
 
-# make copy of the dependency script, this is done so we can use the same launch scripts both in win install and win devel situations.
+# make a copy of the dependency script, this is done so we can use the same launch scripts both in win install and win devel situations.
 IF(WIN32)
 	INSTALL(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/win32-dependencies.cmd DESTINATION ${CMAKE_INSTALL_PREFIX}/bin RENAME "OpenViBE-set-env.cmd")
 ENDIF(WIN32)
@@ -108,14 +109,14 @@ ENDIF(UNIX)
 # Generate 'external application launcher' script
 # ----------------------
 IF(WIN32)
-	SET(CMD_FILE "OpenViBE-external-application-launcher.cmd")
+	SET(OV_EXT_CMD_FILE "OpenViBE-external-application-launcher.cmd")
 ENDIF(WIN32)
 IF(UNIX)
-	SET(CMD_FILE "OpenViBE-external-application-launcher.sh")
+	SET(OV_EXT_CMD_FILE "OpenViBE-external-application-launcher.sh")
 ENDIF(UNIX)
 
-CONFIGURE_FILE("${CMAKE_MODULE_PATH}/launchers/${CMD_FILE}-base" "${CMAKE_CURRENT_BINARY_DIR}/${CMD_FILE}")
-INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${CMD_FILE} DESTINATION "bin/")
+CONFIGURE_FILE("${CMAKE_MODULE_PATH}/launchers/${OV_EXT_CMD_FILE}-base" "${CMAKE_CURRENT_BINARY_DIR}/${OV_EXT_CMD_FILE}")
+INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${OV_EXT_CMD_FILE} DESTINATION "bin/")
 
 
 

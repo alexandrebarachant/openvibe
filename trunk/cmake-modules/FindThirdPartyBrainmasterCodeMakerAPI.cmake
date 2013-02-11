@@ -24,14 +24,8 @@ IF(WIN32)
 			ENDIF(LIB_BrainmasterCodeMakerAPI1)
 		ENDFOREACH(LIB_BrainmasterCodeMakerAPI1)
 
-		# Copying the DLL file at postbuild
-		ADD_CUSTOM_COMMAND(
-				TARGET ${PROJECT_NAME}-dynamic
-				POST_BUILD
-				COMMAND ${CMAKE_COMMAND}
-				ARGS -E copy "${PATH_BrainmasterCodeMakerAPI}/bmrcm.dll" "${PROJECT_SOURCE_DIR}/bin"
-				COMMENT "      --->   Copying dll file ${PATH_BrainmasterCodeMakerAPI}/bmrcm.dll for the Brainmaster Code Maker API folder."
-			VERBATIM)
+		# Copy the DLL file at install
+		INSTALL(PROGRAMS "${PATH_BrainmasterCodeMakerAPI}/bmrcm.dll" DESTINATION "bin")
 
 		ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyBrainmasterCodeMakerAPI)
 	ELSE(PATH_BrainmasterCodeMakerAPI)

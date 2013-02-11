@@ -30,6 +30,23 @@ but you should not expect to get support on the short term.
 
 |Building on Windows|
 
+0. Short story:
+
+For command line -style building with NMake, double-click:
+
+# win32-install_dependencies
+# win32-build
+
+For IDE style building with Visual Studio, double-click:
+
+# win32-install_dependencies
+# win32-generate-vcproj
+# win32-launch-vc
+
+You may have to tweak the last script to find your particular version of Visual Studio.
+
+The built openvibe should now be in "dist\" folder. If it didn't work, read the longer description for hints.
+
 1. Install dependencies
 
 In order to build the software, you must install several dependencies.
@@ -82,6 +99,13 @@ and the freshly built OpenViBE in "dist\".
 
 
 |Building on Linux|
+
+0. Short story
+
+# ./linux-install_dependencies
+# ./linux-build
+
+The built OpenViBE should be in "dist/". If not, read the longer description for hints.
 
 1. Install dependencies
 
