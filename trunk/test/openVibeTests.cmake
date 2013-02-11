@@ -47,15 +47,19 @@ IF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
   SET(MODEL Experimental)
 ENDIF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
 
-## -- DashBoard Root
-set(CTEST_DASHBOARD_ROOT                "${CMAKE_CURRENT_SOURCE_DIR}")
+# create a temporary directory with very short name to host build
+exec_program("mktemp" ARGS "--tmpdir -d ov.XXX" OUTPUT_VARIABLE OV-ROOT-DIR)
+
+####
 
 ## -- SRC Dir
-set(CTEST_SOURCE_DIRECTORY              "${CTEST_DASHBOARD_ROOT}/${CTEST_BUILD_NAME}/trunk")
+set(CTEST_SOURCE_DIRECTORY              "${OV-ROOT-DIR}/trunk")
 
-## -- BIN Dir                                            
-set(CTEST_BINARY_DIRECTORY              "${CTEST_DASHBOARD_ROOT}/${CTEST_SITE}/${CTEST_BUILD_NAME}/bin")
+## -- BIN Dir
+set(CTEST_BINARY_DIRECTORY              "${OV-ROOT-DIR}/bin") 
 
+## -- DashBoard Root
+set(CTEST_DASHBOARD_ROOT                "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # -----------------------------------------------------------  
 # -- commands
@@ -154,6 +158,8 @@ message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
 IF(${CTEST_SCRIPT_ARG} MATCHES Nightly)
 	message(" -- clean ${MODEL}  - ${CTEST_BUILD_NAME} --")
 	ctest_empty_binary_directory(${CTEST_SOURCE_DIRECTORY})
+	ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY})
+	exec_program("rm" ARGS "-rf ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "cleanScript")
 ENDIF(${CTEST_SCRIPT_ARG} MATCHES Nightly)
-exec_program("rm" ARGS "-rf ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "cleanScript")
+
 
