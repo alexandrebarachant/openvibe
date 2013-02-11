@@ -23,7 +23,7 @@ macro(getuname name flag)
 endmacro(getuname)
 
 IF(WIN32)
-	SET(distrib ""})
+	SET(distrib "")
 	SET(distrib-release "")
 ELSE(WIN32)
 	find_program(LSB_RELEASE NAMES lsb_release)
