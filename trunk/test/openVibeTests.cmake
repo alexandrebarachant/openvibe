@@ -74,7 +74,7 @@ if(NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
 endif(NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
 
 ## -- Update Command
-set(CTEST_UPDATE_COMMAND               "${CTEST_SVN_COMMAND} update")
+set(CTEST_UPDATE_COMMAND               "${CTEST_SVN_COMMAND}")
 
 
 
