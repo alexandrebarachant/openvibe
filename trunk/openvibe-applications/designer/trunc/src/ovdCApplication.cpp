@@ -1431,10 +1431,12 @@ void CApplication::closeScenarioCB(CInterfacedScenario* pInterfacedScenario)
 	while(i!=m_vInterfacedScenario.end() && *i!=pInterfacedScenario) i++;
 	if(i!=m_vInterfacedScenario.end())
 	{
+		// We need to erase the scenario from the list first, because deleting the scenario will launch a "switch-page" 
+		// callback accessing this array with the identifier of the deleted scenario (if its not the last one) -> boom.
+		m_vInterfacedScenario.erase(i);
 		CIdentifier l_oScenarioIdentifier=pInterfacedScenario->m_oScenarioIdentifier;
 		delete pInterfacedScenario;
 		m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
-		m_vInterfacedScenario.erase(i);
 		//when closing last open scenario, no "switch-page" event is triggered so we manually handle this case
 		if(m_vInterfacedScenario.empty() == true)
 		{
