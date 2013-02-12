@@ -1,36 +1,29 @@
 #include "ov_all.h"
 
-#define __check_different_type_size__(t1,t2) \
-	static bool __check_different_type_size_value_##t1##t2=(1/(sizeof(t1)-sizeof(t2))==0); \
-	__check_different_type_size_value_##t1##t2=false; /* avoids "defined but not used" warning */
+#include <boost/static_assert.hpp>
 
 namespace OpenViBE
 {
-	namespace
-	{
-		static void nothing(void)
-		{
-			__check_different_type_size__(uint64, uint32);
-			__check_different_type_size__(uint64, uint16);
-			__check_different_type_size__(uint64, uint8);
-			__check_different_type_size__(uint32, uint16);
-			__check_different_type_size__(uint32, uint8);
-			__check_different_type_size__(uint16, uint8);
-
-			__check_different_type_size__(int64, int32);
-			__check_different_type_size__(int64, int16);
-			__check_different_type_size__(int64, int8);
-			__check_different_type_size__(int32, int16);
-			__check_different_type_size__(int32, int8);
-			__check_different_type_size__(int16, int8);
-
+	// static (on compile time) test of types here
+	BOOST_STATIC_ASSERT(sizeof(uint64)!=sizeof(uint32));
+	BOOST_STATIC_ASSERT(sizeof(uint64)!=sizeof(uint16));
+	BOOST_STATIC_ASSERT(sizeof(uint64)!=sizeof(uint8));
+	BOOST_STATIC_ASSERT(sizeof(uint32)!=sizeof(uint16));
+	BOOST_STATIC_ASSERT(sizeof(uint32)!=sizeof(uint8));
+	BOOST_STATIC_ASSERT(sizeof(uint16)!=sizeof(uint8));
+	
+	BOOST_STATIC_ASSERT(sizeof(int64)!=sizeof(int32));
+	BOOST_STATIC_ASSERT(sizeof(int64)!=sizeof(int16));
+	BOOST_STATIC_ASSERT(sizeof(int64)!=sizeof(int8));
+	BOOST_STATIC_ASSERT(sizeof(int32)!=sizeof(int16));
+	BOOST_STATIC_ASSERT(sizeof(int32)!=sizeof(int8));
+	BOOST_STATIC_ASSERT(sizeof(int16)!=sizeof(int8));
+	
 #ifndef OV_OS_Windows
-			__check_different_type_size__(float80, float64);
-			__check_different_type_size__(float80, float32);
+	BOOST_STATIC_ASSERT(sizeof(float80)!=sizeof(float64));
+	BOOST_STATIC_ASSERT(sizeof(float80)!=sizeof(float32));
 #endif
-			__check_different_type_size__(float64, float32);
-
-			nothing(); /* avoids "defined but not used" warning */
-		}
-	}
+	BOOST_STATIC_ASSERT(sizeof(float64)!=sizeof(float32));
 }
+
+
