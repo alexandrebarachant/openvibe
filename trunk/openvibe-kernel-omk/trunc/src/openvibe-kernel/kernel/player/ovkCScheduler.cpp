@@ -94,11 +94,10 @@ public:
 			if(l_oFile.is_open())
 			{
 				char l_sBuffer[1024];
-				size_t l_iBufferLen=0;
-				size_t l_iFileLen;
+				std::streamoff l_iBufferLen=0;
 				bool l_bStatusOk=true;
 				l_oFile.seekg(0, ios::end);
-				l_iFileLen=l_oFile.tellg();
+				std::streamoff l_iFileLen=l_oFile.tellg();
 				l_oFile.seekg(0, ios::beg);
 				while(l_iFileLen && l_bStatusOk)
 				{
@@ -239,12 +238,37 @@ boolean CScheduler::initialize(void)
 	CIdentifier l_oBoxIdentifier;
 	while((l_oBoxIdentifier=m_pScenario->getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)
 	{
-		int l_iPriority=0;
 		const IBox* l_pBox=m_pScenario->getBoxDetails(l_oBoxIdentifier);
+
+		int l_iPriority = 0;
+		if(l_pBox->hasAttribute(OV_AttributeId_Box_Priority)) 
+		{
+			// This is mostly retained for debugging use. The value can be entered to .xml by hand but there is no GUI to change this (on purpose)
+			::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_Priority).toASCIIString(), "%i", &l_iPriority);
+		}
+		else 
+		{
+			// Decide the priority based on the location of the box in the GUI. Priority decreases in top->bottom, left->right order.
+
+			int l_iYPosition = 0;
+			::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_YCenterPosition).toASCIIString(), "%i", &l_iYPosition);
+			int l_iXPosition = 0;
+			::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_XCenterPosition).toASCIIString(), "%i", &l_iXPosition);
+
+			this->getLogManager() << LogLevel_Debug << " Inserting box " << l_pBox->getName() << " with coords (x=" << l_iXPosition << ",y=" << l_iYPosition << ")\n";
+
+			const int32 l_iHalfMax = std::numeric_limits<int16>::max();					// signed int16 max == half of signed int32
+			l_iYPosition = l_iHalfMax-std::max(std::min(l_iYPosition,l_iHalfMax),0);	// Truncate to signed int16, invert
+			l_iXPosition = l_iHalfMax-std::max(std::min(l_iXPosition,l_iHalfMax),0);
+			l_iPriority = (l_iYPosition * l_iHalfMax + l_iXPosition);					// sort primarily by Y (first half),  secondarily by X (second half)
+
+			this->getLogManager() << LogLevel_Debug << "  -> coord-based box priority is " << l_iPriority << "\n";
+		}
+
 		CSimulatedBox* l_pSimulatedBox=new CSimulatedBox(getKernelContext(), *this);
 		l_pSimulatedBox->setScenarioIdentifier(m_oScenarioIdentifier);
 		l_pSimulatedBox->setBoxIdentifier(l_oBoxIdentifier);
-		::sscanf(l_pBox->getAttributeValue(OV_AttributeId_Box_Priority).toASCIIString(), "%i", &l_iPriority);
+
 		m_vSimulatedBox[std::make_pair(-l_iPriority, l_oBoxIdentifier)]=l_pSimulatedBox;
 		m_vSimulatedBoxChrono[l_oBoxIdentifier].reset(static_cast<uint32>(m_ui64Frequency));
 	}

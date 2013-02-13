@@ -241,7 +241,14 @@ boolean CBox::addInput(
 {
 	if(!this->getTypeManager().isStream(rTypeIdentifier))
 	{
-		this->getLogManager() << LogLevel_Warning << "While adding input to box, unknown stream type identifier " << rTypeIdentifier << "\n";
+		if(rTypeIdentifier==OV_UndefinedIdentifier) 
+		{
+			this->getLogManager() << LogLevel_Warning << "Box input maps to OV_UndefinedIdentifier. Please configure the box.\n";
+		} 
+		else 
+		{
+			this->getLogManager() << LogLevel_Warning << "While adding input to box, unknown stream type identifier " << rTypeIdentifier << "\n";
+		}
 	}
 
 	CInput i;
@@ -389,7 +396,14 @@ boolean CBox::addOutput(
 {
 	if(!this->getTypeManager().isStream(rTypeIdentifier))
 	{
-		this->getLogManager() << LogLevel_Warning << "While adding output to box, unknown stream type identifier " << rTypeIdentifier << "\n";
+		if(rTypeIdentifier==OV_UndefinedIdentifier) 
+		{
+			this->getLogManager() << LogLevel_Warning << "Box output maps to OV_UndefinedIdentifier. Please configure the box.\n";
+		} 
+		else 
+		{
+			this->getLogManager() << LogLevel_Warning << "While adding output to box, unknown stream type identifier " << rTypeIdentifier << "\n";
+		}
 	}
 
 	COutput o;

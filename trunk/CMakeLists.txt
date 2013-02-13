@@ -17,8 +17,8 @@ SET(OV_TRUNK "trunc")
 
 # To compile your own non-trunk branches, add variables OV_BRANCH_[DIR OR DIR_DIR] to point to "branches/YOURBRANCH" for each.
 # Branch name __SKIPME signifies that this component should not be compiled or installed.
-#SET(OV_BRANCH_PLUGINS_PYTHON "__SKIPME")			# skips python module
-#SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
+# SET(OV_BRANCH_PLUGINS_PYTHON "__SKIPME")			# skips python module
+SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
  
 # Some recognized branch variables
 #SET(OV_BRANCH_OPENVIBE													"branches/mybranch")
