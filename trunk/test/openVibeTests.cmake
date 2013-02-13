@@ -109,7 +109,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestTestfile.cmake ${CTEST_BINARY_DI
 ctest_read_custom_files("${CTEST_BINARY_DIRECTORY}")
 
 SET(CTEST_PROJECT_NAME "OpenViBe")
-#SET(CTEST_NIGHTLY_START_TIME "20:00:00 EST")
+# set time for update 
+SET(CTEST_NIGHTLY_START_TIME "19:00:00 CEST")
 SET(CTEST_DROP_METHOD "http")
 SET(CTEST_DROP_SITE "cdash.inria.fr")
 SET(CTEST_DROP_LOCATION "/CDash/submit.php?project=OpenViBe")
