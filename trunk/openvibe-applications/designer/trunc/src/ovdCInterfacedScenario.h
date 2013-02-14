@@ -65,7 +65,6 @@ namespace OpenViBEDesigner
 		void contextMenuBoxEditSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
 		void contextMenuBoxRemoveSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
 		void contextMenuBoxConfigureCB(OpenViBE::Kernel::IBox& rBox);
-		void contextMenuBoxSetPriorityCB(OpenViBE::Kernel::IBox& rBox);
 		void contextMenuBoxAboutCB(OpenViBE::Kernel::IBox& rBox);
 
 		void contextMenuScenarioAboutCB(void);

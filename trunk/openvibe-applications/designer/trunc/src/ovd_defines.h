@@ -43,7 +43,6 @@ namespace OpenViBEDesigner
 		ContextMenu_BoxRemoveSetting,
 		ContextMenu_BoxEditSetting,
 		ContextMenu_BoxConfigure,
-		ContextMenu_BoxSetPriority,
 		ContextMenu_BoxAbout,
 
 		ContextMenu_ScenarioAbout,
