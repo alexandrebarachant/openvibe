@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <limits>
 
 //___________________________________________________________________//
 //                                                                   //
@@ -257,10 +258,10 @@ boolean CScheduler::initialize(void)
 
 			this->getLogManager() << LogLevel_Debug << " Inserting box " << l_pBox->getName() << " with coords (x=" << l_iXPosition << ",y=" << l_iYPosition << ")\n";
 
-			const int32 l_iHalfMax = std::numeric_limits<int16>::max();					// signed int16 max == half of signed int32
-			l_iYPosition = l_iHalfMax-std::max(std::min(l_iYPosition,l_iHalfMax),0);	// Truncate to signed int16, invert
-			l_iXPosition = l_iHalfMax-std::max(std::min(l_iXPosition,l_iHalfMax),0);
-			l_iPriority = (l_iYPosition * l_iHalfMax + l_iXPosition);					// sort primarily by Y (first half),  secondarily by X (second half)
+			const int32 l_iMaxInt16 = std::numeric_limits<int16>::max();				// Signed max
+			l_iYPosition = std::max(std::min(l_iYPosition,l_iMaxInt16),0);				// y = Truncate to 0:int16
+			l_iXPosition = std::max(std::min(l_iXPosition,l_iMaxInt16),0);				// x = Truncate to 0:int16
+			l_iPriority = -( (l_iYPosition << 15)  + l_iXPosition);						// compose pri32=[int16,int16] = [y,x]
 
 			this->getLogManager() << LogLevel_Debug << "  -> coord-based box priority is " << l_iPriority << "\n";
 		}

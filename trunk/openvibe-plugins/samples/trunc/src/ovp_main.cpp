@@ -7,8 +7,6 @@
 #include "ovpCCrashingBox.h"
 #include "ovpCSinusSignalGenerator.h"
 #include "ovpCTimeSignalGenerator.h"
-#include "ovpCHelloWorld.h"
-#include "ovpCHelloWorldWithInput.h"
 #include "ovpCIdentity.h"
 #include "ovpCLog.h"
 #include "ovpCTest.h"
@@ -49,8 +47,6 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::Samples::CSinusSignalGeneratorDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CTimeSignalGeneratorDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CIdentityDesc);
-	OVP_Declare_New(OpenViBEPlugins::Samples::CHelloWorldDesc);
-	OVP_Declare_New(OpenViBEPlugins::Samples::CHelloWorldWithInputDesc);
 	// OVP_Declare_New(OpenViBEPlugins::Samples::CLogDesc);
 	// OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmClockDesc);
 	OVP_Declare_New(OpenViBEPlugins::Samples::CBoxAlgorithmClockStimulatorDesc);

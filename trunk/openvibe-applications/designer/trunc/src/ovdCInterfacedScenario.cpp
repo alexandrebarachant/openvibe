@@ -177,6 +177,7 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		case ContextMenu_BoxEditSetting:   l_pContextMenuCB->pInterfacedScenario->contextMenuBoxEditSettingCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
 		case ContextMenu_BoxRemoveSetting: l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRemoveSettingCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
 		case ContextMenu_BoxConfigure:     l_pContextMenuCB->pInterfacedScenario->contextMenuBoxConfigureCB(*l_pContextMenuCB->pBox); break;
+		case ContextMenu_BoxSetPriority:   l_pContextMenuCB->pInterfacedScenario->contextMenuBoxSetPriorityCB(*l_pContextMenuCB->pBox); break;
 		case ContextMenu_BoxAbout:         l_pContextMenuCB->pInterfacedScenario->contextMenuBoxAboutCB(*l_pContextMenuCB->pBox); break;
 
 		case ContextMenu_ScenarioAbout:    l_pContextMenuCB->pInterfacedScenario->contextMenuScenarioAboutCB(); break;
@@ -1021,7 +1022,7 @@ void CInterfacedScenario::addCommentCB(int x, int y)
 		::GtkAdjustment* l_pHAdjustment=gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(l_pScrolledWindow));
 		::GtkAdjustment* l_pVAdjustment=gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(l_pScrolledWindow));
 
-#if defined OVD_OS_Linux && not defined OVD_OS_MacOS
+#if defined OVD_OS_Linux && !defined OVD_OS_MacOS
 		x=gtk_adjustment_get_value(l_pHAdjustment)+gtk_adjustment_get_page_size(l_pHAdjustment)/2;
 		y=gtk_adjustment_get_value(l_pVAdjustment)+gtk_adjustment_get_page_size(l_pVAdjustment)/2;
 #elif defined OVD_OS_Windows
@@ -1669,6 +1670,7 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 								{
 									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemEdit, GTK_STOCK_EDIT, "configure box...", context_menu_cb, l_pBox, ContextMenu_BoxConfigure, -1);
 								}
+								gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemEdit, GTK_STOCK_EDIT, "change priority...", context_menu_cb, l_pBox, ContextMenu_BoxSetPriority, -1);
 								gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemRename, GTK_STOCK_EDIT, "rename box...", context_menu_cb, l_pBox, ContextMenu_BoxRename, -1);
 								gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemDelete, GTK_STOCK_CUT, "delete box...", context_menu_cb, l_pBox, ContextMenu_BoxDelete, -1);
 								gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemAbout, GTK_STOCK_ABOUT, "about box...", context_menu_cb, l_pBox, ContextMenu_BoxAbout, -1);
@@ -2444,6 +2446,26 @@ void CInterfacedScenario::contextMenuBoxConfigureCB(IBox& rBox)
 	CBoxConfigurationDialog l_oBoxConfigurationDialog(m_rKernelContext, rBox, m_sGUIFilename.c_str(), m_sGUISettingsFilename.c_str());
 	l_oBoxConfigurationDialog.run();
 	this->snapshotCB();
+}
+void CInterfacedScenario::contextMenuBoxSetPriorityCB(IBox& rBox)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuBoxSetPriorityCB\n";
+
+	CString l_sOldPriority = rBox.getAttributeValue(OV_AttributeId_Box_Priority);
+	CString l_sDefaultPriority("0");
+
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "Old box priority is " << rBox.getAttributeValue(OV_AttributeId_Box_Priority) << " as str '" << l_sOldPriority << "'\n";		
+
+	const IPluginObjectDesc* l_pPluginObjectDescriptor=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(rBox.getAlgorithmClassIdentifier());
+	CRenameDialog l_oRename(m_rKernelContext, l_sOldPriority, l_sDefaultPriority, m_sGUIFilename.c_str());
+	if(l_oRename.run())
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Debug << "New box priority is '" << l_oRename.getResult() << "'\n";		
+		
+		rBox.setAttributeValue(OV_AttributeId_Box_Priority, l_oRename.getResult());
+
+		this->snapshotCB();
+	}
 }
 void CInterfacedScenario::contextMenuBoxAboutCB(IBox& rBox)
 {

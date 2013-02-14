@@ -38,7 +38,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Prints \"Hello World!\" to the log"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Using several copies of this friendly box (with different names) can be used to e.g. examine box execution order"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Samples"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Examples"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-copy"); }
 
