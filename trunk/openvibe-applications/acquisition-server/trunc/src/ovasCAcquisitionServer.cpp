@@ -508,7 +508,7 @@ boolean CAcquisitionServer::loop(void)
 		// Calls driver's loop
 		if(!l_bResult)
 		{
-			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Something bad happened in the loop callback, stoping the acquisition\n";
+			m_rKernelContext.getLogManager() << LogLevel_ImportantWarning << "Something bad happened in the loop callback, stopping the acquisition\n";
 			return false;
 		}
 	}
@@ -544,9 +544,9 @@ boolean CAcquisitionServer::loop(void)
 				CStimulationSet l_oStimulationSet;
 //				int l = l_oStimulationSet.getStimulationCount();
 				
-				int p = m_ui64SampleCount-m_vPendingBuffer.size()+l_rInfo.m_ui64SignalSampleCountToSkip;
+				int64 p = m_ui64SampleCount-m_vPendingBuffer.size()+l_rInfo.m_ui64SignalSampleCountToSkip;
 				if (p < 0)
-					m_rKernelContext.getLogManager() << LogLevel_Error << "Signed number used for bit oeprations:" << p << "\n";
+					m_rKernelContext.getLogManager() << LogLevel_Error << "Signed number used for bit operations:" << p << "\n";
 
 				//l_rInfo.m_ui64SignalSampleCountToSkip = 0;
 
@@ -787,7 +787,7 @@ boolean CAcquisitionServer::stop(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "buttonStopPressedCB\n";
 
-	m_rKernelContext.getLogManager() << LogLevel_Info << "Stoping the acquisition.\n";
+	m_rKernelContext.getLogManager() << LogLevel_Info << "Stopping the acquisition.\n";
 
 	int64 l_i64DriftSampleCount=m_i64DriftSampleCount-(m_i64DriftCorrectionSampleCountAdded-m_i64DriftCorrectionSampleCountRemoved);
 	uint64 l_ui64TheoricalSampleCount=m_ui64SampleCount-m_i64DriftSampleCount;
@@ -1274,10 +1274,9 @@ void CAcquisitionServer::readExternalStimulations()
 {
 	using namespace boost::interprocess;
 
-	char mq_name[255];
-
 	//std::cout << "Creating External Stimulations thread" << std::endl;
 	//std::cout << "Queue Name : " << m_sExternalStimulationsQueueName << std::endl;
+	//char mq_name[255];
 	//std::strcpy(mq_name, m_sExternalStimulationsQueueName.toASCIIString());
 	const int chunk_length=3;
 	const int pause_time=5;
@@ -1301,7 +1300,7 @@ void CAcquisitionServer::readExternalStimulations()
 
 			success = mq.try_receive(&chunk, sizeof(chunk), recvd_size, priority);
 		}
-		catch(interprocess_exception &ex)
+		catch(interprocess_exception & /* ex */)
 		{
 			//m_bIsESThreadRunning = false;
 			//m_rKernelContext.getLogManager() << LogLevel_Error << "Problem with message queue in external stimulations:" << ex.what() << "\n";

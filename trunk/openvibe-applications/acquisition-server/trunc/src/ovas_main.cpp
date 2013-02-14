@@ -64,12 +64,10 @@ int main(int argc, char ** argv)
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 
 				//initialise Gtk before 3D context
-#if 1
 				g_thread_init(NULL);
 				gdk_threads_init();
-				gdk_threads_enter();
-#endif
 				gtk_init(&argc, &argv);
+
 				// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
 
 #if 0 // This is not needed in the acquisition server
@@ -80,12 +78,14 @@ int main(int argc, char ** argv)
 #endif
 
 				{
+					// If this is encapsulated by gdk_threads_enter() and gdk_threads_exit(), m_pThread->join() can hang when gtk_main() returns before destructor of app has been called.
 					OpenViBEAcquisitionServer::CAcquisitionServerGUI app(*l_pKernelContext);
-					// app.initialize();
 
 					try
 					{
+						gdk_threads_enter();	
 						gtk_main();
+						gdk_threads_leave();			
 					}
 					catch(...)
 					{
@@ -93,9 +93,6 @@ int main(int argc, char ** argv)
 					}
 				}
 
-#if 1
-				gdk_threads_leave();
-#endif
 				cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;
 
 				OpenViBEToolkit::uninitialize(*l_pKernelContext);
