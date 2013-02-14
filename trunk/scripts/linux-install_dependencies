@@ -649,6 +649,8 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "itpp"
 			ov_hit_package "gsl"
 
+			ov_hit_package "eigen3"
+			
 			ov_hit_package "freeimage"
 			ov_hit_package "ois"
 			ov_hit_package "zziplib"
@@ -811,6 +813,8 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "gcc-gfortran"
 			ov_hit_package "gsl"
 
+			ov_hit_package "eigen3"
+			
 			ov_hit_package "freeimage"
 #			ov_hit_package "ois"
 			ov_hit_package "zziplib"

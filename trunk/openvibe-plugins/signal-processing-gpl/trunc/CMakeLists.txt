@@ -19,6 +19,7 @@ INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 INCLUDE("FindThirdPartyBoost")
 INCLUDE("FindThirdPartyITPP")
+INCLUDE("FindThirdPartyEigen")
 
 # ---------------------------------
 # Target macros

@@ -33,6 +33,9 @@
 #include "algorithms/classif/ovpCNaiveBayesApplyFunction.h"
 #include "box-algorithms/classif/ovpCNaiveBayesApplyBoxAlgorithm.h"
 
+#include "algorithms/basic/ovpCAlgorithmARBurgMethod.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmARFeatures.h"
+
 
 
 OVP_Declare_Begin();
@@ -90,6 +93,8 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDetectingMinMaxBoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyFunctionDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyBoxAlgorithmDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmARFeaturesDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CAlgorithmARBurgMethodDesc);
 	
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmIFFTboxDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmEnvelopeDesc);
