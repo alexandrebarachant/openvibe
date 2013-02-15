@@ -4,8 +4,8 @@
 # Adds include path
 # ---------------------------------
 
-FIND_PATH(PATH_BOOST "include/boost/config/auto_link.hpp" PATHS $ENV{OV_DEP_BOOST} $ENV{OpenViBE_dependencies} NO_DEFAULT_PATH)
-FIND_PATH(PATH_BOOST "include/boost/config/auto_link.hpp" PATHS $ENV{OV_DEP_BOOST})
+FIND_PATH(PATH_BOOST "include/boost/config/auto_link.hpp" PATHS ${OV_WIN32_DEP_DIR}/boost $ENV{OpenViBE_dependencies} NO_DEFAULT_PATH)
+FIND_PATH(PATH_BOOST "include/boost/config/auto_link.hpp" PATHS ${OV_WIN32_DEP_DIR}/boost)
 
 IF(PATH_BOOST)
 	MESSAGE(STATUS "  Found boost...")

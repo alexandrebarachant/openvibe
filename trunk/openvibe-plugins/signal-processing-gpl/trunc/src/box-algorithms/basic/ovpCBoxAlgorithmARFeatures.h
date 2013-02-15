@@ -1,7 +1,8 @@
-#ifndef __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
-#define __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
 
 #if defined(TARGET_HAS_ThirdPartyEIGEN)
+
+#ifndef __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
+#define __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
 
 //You may have to change this path to match your folder organisation
 #include "../../ovp_defines.h"
@@ -103,8 +104,8 @@ namespace OpenViBEPlugins
 	};
 };
 
-#endif  // TARGET_HAS_ThirdPartyEIGEN
 
 #endif // __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
 
+#endif  // TARGET_HAS_ThirdPartyEIGEN
 

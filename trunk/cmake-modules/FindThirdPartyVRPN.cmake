@@ -3,8 +3,8 @@
 # Adds library to target
 # Adds include path
 # ---------------------------------
-FIND_PATH(PATH_VRPN include/vrpn_BaseClass.h PATHS $ENV{OV_DEP_VRPN} $ENV{VRPN_ROOT} NO_DEFAULT_PATH)
-FIND_PATH(PATH_VRPN include/vrpn_BaseClass.h PATHS $ENV{OV_DEP_VRPN} $ENV{VRPN_ROOT})
+FIND_PATH(PATH_VRPN include/vrpn_BaseClass.h PATHS ${OV_WIN32_DEP_DIR}/vrpn $ENV{VRPN_ROOT} NO_DEFAULT_PATH)
+FIND_PATH(PATH_VRPN include/vrpn_BaseClass.h PATHS ${OV_WIN32_DEP_DIR}/vrpn $ENV{VRPN_ROOT})
 IF(PATH_VRPN)
 	MESSAGE(STATUS "  Found VRPN...")
 	INCLUDE_DIRECTORIES(${PATH_VRPN}/include)

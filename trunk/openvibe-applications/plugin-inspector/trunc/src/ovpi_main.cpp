@@ -80,6 +80,10 @@ int main(int argc, char ** argv)
 				{
 					CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator l_oGlobalDefinesGenerator(*l_pKernelContext, l_sGlobalDefinesDirectory);
 					l_oGlobalDefinesGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
+				} 
+				else
+				{
+					cout << "[  INF  ] Skipping dump A, related PluginInspector tokens are empty in openvibe.conf" << endl;
 				}
 
 				if(l_sAlgorithmSnapshotDirectory!=CString("") && l_sAlgorithmDocTemplateDirectory!=CString(""))
@@ -87,11 +91,19 @@ int main(int argc, char ** argv)
 					CPluginObjectDescEnumAlgorithmSnapshotGenerator l_oAlgorithmSnapshotGenerator(*l_pKernelContext, l_sAlgorithmSnapshotDirectory, l_sAlgorithmDocTemplateDirectory);
 					l_oAlgorithmSnapshotGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_AlgorithmDesc);
 				}
+				else 
+				{
+					cout << "[  INF  ] Skipping dump B,  related PluginInspector tokens are empty in openvibe.conf" << endl;
+				}
 
 				if(l_sBoxAlgorithmSnapshotDirectory!=CString("") && l_sBoxAlgorithmDocTemplateDirectory!=CString(""))
 				{
 					CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator l_oBoxAlgorithmSnapshotGenerator(*l_pKernelContext, l_sBoxAlgorithmSnapshotDirectory, l_sBoxAlgorithmDocTemplateDirectory);
 					l_oBoxAlgorithmSnapshotGenerator.enumeratePluginObjectDesc(OV_ClassId_Plugins_BoxAlgorithmDesc);
+				} 
+				else
+				{
+					cout << "[  INF  ] Skipping dump C,  related PluginInspector tokens are empty in openvibe.conf" << endl;
 				}
 
 				cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;

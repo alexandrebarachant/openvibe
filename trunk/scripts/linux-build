@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ ! -e linux-init_env_command ]; then
-	echo "You have to configure your \`linux-init_env_command\` file."
-	echo "\`linux-init_env_command-skeleton\` is a good file to start with... (I'll copy this file for you)"
-	cp linux-init_env_command-skeleton linux-init_env_command
-fi
-
 source linux-init_env_command
 
 ov_build_type=Release

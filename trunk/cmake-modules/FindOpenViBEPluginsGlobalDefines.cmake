@@ -3,7 +3,7 @@
 # Adds library to target
 # Adds include path
 # ---------------------------------
-FIND_PATH(PATH_OpenViBEPluginsGlobalDefines ovp_global_defines.h PATHS $ENV{OpenViBE_base}/cmake-modules)
+FIND_PATH(PATH_OpenViBEPluginsGlobalDefines ovp_global_defines.h PATHS ${OV_BASE_DIR}/cmake-modules)
 IF(PATH_OpenViBEPluginsGlobalDefines)
 	MESSAGE(STATUS "  Found OpenViBE plugins global defines...")
 	INCLUDE_DIRECTORIES(${PATH_OpenViBEPluginsGlobalDefines})

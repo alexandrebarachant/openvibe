@@ -18,7 +18,7 @@ IF(doxygen_bin)
 
 	# intializes the variable that will be used in the doxyfile for input
 	# directories
-	STRING(REPLACE "\\" "/" ov_doxy_input "\"$ENV{OpenViBE_base}/cmake-modules\"")
+	STRING(REPLACE "\\" "/" ov_doxy_input "\"${OV_BASE_DIR}/cmake-modules\"")
 
 	# intializes the variable that will contain the list of resource files to
 	# copy to the target directory

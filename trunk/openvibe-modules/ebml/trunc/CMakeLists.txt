@@ -17,6 +17,8 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DEBML_Shared -DEBML_Exports")
 
+INCLUDE("FindThirdPartyBoost")
+	
 # ---------------------------------
 # Test applications
 # ---------------------------------

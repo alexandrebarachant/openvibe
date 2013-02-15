@@ -8,7 +8,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 FILE(GLOB_RECURSE header_files src/*.h)
 
-INCLUDE("FindThirdPartyBoost")
+INCLUDE("OvAddBoostLinkDir")
 
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
@@ -16,6 +16,8 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DOV_Exports -DOV_Shared")
 
+INCLUDE("FindThirdPartyBoost")
+	
 # ---------------------------------
 # Finds standard library dl
 # Adds library to target

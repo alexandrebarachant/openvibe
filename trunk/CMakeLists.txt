@@ -65,6 +65,12 @@ SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 # a list of all project which will be filled by the directory traversal. This is needed to generate the documentation.
 SET_PROPERTY(GLOBAL PROPERTY OV_PROP_CURRENT_PROJECTS "") 	
 
+SET(OV_BASE_DIR ${CMAKE_SOURCE_DIR})
+
+IF(WIN32)
+  SET(OV_WIN32_DEP_DIR "${CMAKE_SOURCE_DIR}/dependencies")
+ENDIF(WIN32)
+
 # needed for making visual studio projects when this script is called without CMAKE_BUILD_TYPE
 SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "TARGET_BUILDTYPE_Debug")
 SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE "TARGET_BUILDTYPE_Release")

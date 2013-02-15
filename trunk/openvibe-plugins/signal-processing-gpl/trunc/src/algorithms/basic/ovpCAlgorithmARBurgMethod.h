@@ -1,14 +1,14 @@
+
+#if defined(TARGET_HAS_ThirdPartyEIGEN)
+
 #ifndef __OpenViBEPlugins_Algorithm_ARBurgMethod_H__
 #define __OpenViBEPlugins_Algorithm_ARBurgMethod_H__
  
-#if defined(TARGET_HAS_ThirdPartyEIGEN)
-
 #include "../../ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
 #include <Eigen/Dense> 
-
 
 namespace OpenViBEPlugins
 {
@@ -87,7 +87,9 @@ namespace OpenViBEPlugins
         };
 };
 
+#endif // __OpenViBEPlugins_Algorithm_ARBurgMethod_H__
+
 #endif // TARGET_HAS_ThirdPartyEIGEN
  
-#endif // __OpenViBEPlugins_Algorithm_ARBurgMethod_H__
+
 

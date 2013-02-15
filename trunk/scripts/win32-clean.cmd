@@ -18,12 +18,6 @@ REM ############################################################################
 
 REM #######################################################################################
 
-if not exist "win32-init_env_command.cmd" (
-	echo You have to configure your `win32-init_env_command` file.
-	echo `win32-init_env_command-skeleton` is a good file to start with...
-	goto terminate
-)
-
 call "win32-init_env_command.cmd"
 
 REM #######################################################################################

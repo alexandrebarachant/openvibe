@@ -17,9 +17,9 @@ ENDIF(DYNAMIC_LINK_OPENVIBE_MODULE_SYSTEM)
 
 
 IF(OV_BRANCH_MODULES_SYSTEM)
-	set(SRC_DIR $ENV{OpenViBE_base}/openvibe-modules/system/${OV_BRANCH_MODULES_SYSTEM})
+	set(SRC_DIR ${OV_BASE_DIR}/openvibe-modules/system/${OV_BRANCH_MODULES_SYSTEM})
 ELSE(OV_BRANCH_MODULES_SYSTEM)
-	set(SRC_DIR $ENV{OpenViBE_base}/openvibe-modules/system/${OV_TRUNK})
+	set(SRC_DIR ${OV_BASE_DIR}/openvibe-modules/system/${OV_TRUNK})
 ENDIF(OV_BRANCH_MODULES_SYSTEM)
 
 FIND_PATH(PATH_OPENVIBE_MODULES_SYSTEM src/system/defines.h PATHS ${SRC_DIR})

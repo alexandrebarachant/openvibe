@@ -2,8 +2,6 @@
 
 ########################################################################################################################
 
-export OpenViBE_base=`cd .. ; pwd`
-
 if [ -e ./linux-dependencies ]; then
 	source ./linux-dependencies
 fi;

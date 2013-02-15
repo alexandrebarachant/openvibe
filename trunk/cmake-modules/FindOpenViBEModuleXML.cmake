@@ -17,9 +17,9 @@ ENDIF(DYNAMIC_LINK_OPENVIBE_MODULE_XML)
 
 
 IF(OV_BRANCH_MODULES_XML)
-	set(SRC_DIR $ENV{OpenViBE_base}/openvibe-modules/xml/${OV_BRANCH_MODULES_XML})
+	set(SRC_DIR ${OV_BASE_DIR}/openvibe-modules/xml/${OV_BRANCH_MODULES_XML})
 ELSE(OV_BRANCH_MODULES_XML)
-	set(SRC_DIR $ENV{OpenViBE_base}/openvibe-modules/xml/${OV_TRUNK})
+	set(SRC_DIR ${OV_BASE_DIR}/openvibe-modules/xml/${OV_TRUNK})
 ENDIF(OV_BRANCH_MODULES_XML)
 
 FIND_PATH(PATH_OPENVIBE_MODULES_XML src/xml/defines.h PATHS ${SRC_DIR})

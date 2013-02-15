@@ -15,7 +15,7 @@
 # ---------------------------------
 
 IF(WIN32)
-	FIND_PATH(PATH_ITPP include/itpp/itbase.h PATHS $ENV{OV_DEP_ITPP})
+	FIND_PATH(PATH_ITPP include/itpp/itbase.h PATHS ${OV_WIN32_DEP_DIR}/itpp)
 	IF(PATH_ITPP)
 		SET(ITPP_FOUND TRUE)
 		SET(ITPP_INCLUDE_DIRS ${PATH_ITPP}/include)

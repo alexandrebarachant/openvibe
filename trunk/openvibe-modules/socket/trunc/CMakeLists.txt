@@ -8,7 +8,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 FILE(GLOB_RECURSE header_files src/*.h)
 
-INCLUDE("FindThirdPartyBoost")
+INCLUDE("OvAddBoostLinkDir")
 
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 
@@ -17,13 +17,16 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DSocket_Shared -DSocket_Exports")
 
+INCLUDE("FindThirdPartyBoost")
+	
 # ---------------------------------
 # Finds standard library winsock
 # Adds library to target
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_LIBRARY(LIB_STANDARD_MODULE_WINSOCK ws2_32 ${OV_DEP_MSSDK}/lib)
+	INCLUDE("OvSetWindowsSDKPath")
+	FIND_LIBRARY(LIB_STANDARD_MODULE_WINSOCK ws2_32 ${OV_MS_SDK_PATH}/lib)
 	IF(LIB_STANDARD_MODULE_WINSOCK)
 		MESSAGE(STATUS "  Found ws2_32...")
 		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_WINSOCK})

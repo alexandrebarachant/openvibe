@@ -3,8 +3,8 @@
 # Adds library to target
 # Adds include path
 # ---------------------------------
-FIND_PATH(PATH_LUA include/lua.h PATHS $ENV{OV_DEP_LUA} $ENV{OpenViBE_dependencies} NO_DEFAULT_PATH)
-FIND_PATH(PATH_LUA include/lua.h PATHS $ENV{OV_DEP_LUA} $ENV{OpenViBE_dependencies})
+FIND_PATH(PATH_LUA include/lua.h PATHS ${OV_WIN32_DEP_DIR}/lua $ENV{OpenViBE_dependencies} NO_DEFAULT_PATH)
+FIND_PATH(PATH_LUA include/lua.h PATHS ${OV_WIN32_DEP_DIR}/lua $ENV{OpenViBE_dependencies})
 IF(PATH_LUA)
 	MESSAGE(STATUS "  Found Lua...")
 	INCLUDE_DIRECTORIES(${PATH_LUA}/include)

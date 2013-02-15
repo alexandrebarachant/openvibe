@@ -72,8 +72,7 @@ base_go_on:
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
 	FileWrite $0 "$\r$\n"
-	FileWrite $0 "SET OV_DEP_MSSDK=$r0$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_MSSDK%\bin$\r$\n"
+	FileWrite $0 "SET PATH=%PATH%;$r0\bin$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -165,19 +164,18 @@ Section "CMake"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\cmake-2.8.7-win32-x86.zip" no_need_to_download_cmake
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.8.7-win32-x86.zip "arch\cmake-2.8.7-win32-x86.zip"
+	IfFileExists "arch\cmake-2.8.7-win32-x86-ov2.zip" no_need_to_download_cmake
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/cmake-2.8.7-win32-x86-ov2.zip "arch\cmake-2.8.7-win32-x86-ov2.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_cmake:
-	ZipDLL::extractall "arch\cmake-2.8.7-win32-x86.zip" "cmake"
+	ZipDLL::extractall "arch\cmake-2.8.7-win32-x86-ov2.zip" ""
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_CMAKE=$INSTDIR\cmake\cmake-2.8.7-win32-x86$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_CMAKE%\bin$\r$\n"
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\cmake\bin$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -202,8 +200,7 @@ no_need_to_download_expat:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_EXPAT=$INSTDIR\expat$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_EXPAT%\bin$\r$\n"
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\expat\bin$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -228,8 +225,7 @@ no_need_to_download_boost:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_BOOST=$INSTDIR\boost$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_BOOST%\bin$\r$\n"	
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\boost\bin$\r$\n"	
 	FileClose $0
 
 SectionEnd
@@ -292,8 +288,7 @@ no_need_to_download_gtk_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_GTK=$INSTDIR\gtk$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_GTK%\bin$\r$\n"	
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\gtk\bin$\r$\n"	
 	FileClose $0
 
 SectionEnd
@@ -356,9 +351,30 @@ no_need_to_download_itpp_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_ITPP=$INSTDIR\itpp$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_ITPP%\bin$\r$\n"		
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\itpp\bin$\r$\n"		
 	FileClose $0
+
+SectionEnd
+
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+;##########################################################################################################################################################
+
+Section "eigen"
+
+	SetOutPath "$INSTDIR"
+	CreateDirectory "$INSTDIR\arch"
+
+	IfFileExists "arch\eigen-3.0.5-dev.zip" no_need_to_download_eigen
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/eigen-3.0.5-dev.zip "arch\eigen-3.0.5-dev.zip"
+	Pop $R0 ; Get the return value
+		StrCmp $R0 "success" +3
+			MessageBox MB_OK "Download failed: $R0" /SD IDOK
+			Quit
+no_need_to_download_eigen:
+	ZipDLL::extractall "arch\eigen-3.0.5-dev.zip" ""
+
+	; Eigen doesn't need path or vars set
 
 SectionEnd
 
@@ -382,8 +398,7 @@ no_need_to_download_lua:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_LUA=$INSTDIR\lua$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_LUA%\lib$\r$\n"		
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\lua\lib$\r$\n"		
 	FileClose $0
 
 SectionEnd
@@ -417,9 +432,8 @@ no_need_to_download_ogre_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OGRE=$INSTDIR\ogre$\r$\n"
 	FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_OGRE%\bin\release;%OV_DEP_OGRE%\bin\debug;$\r$\n"		
+	FileWrite $0 "SET PATH=%PATH%;%OGRE_HOME%\bin\release;%OGRE_HOME%\bin\debug;$\r$\n"		
 	FileClose $0
 
 SectionEnd
@@ -453,8 +467,7 @@ no_need_to_download_cegui_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_CEGUI=$INSTDIR\cegui$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_CEGUI%\bin;$\r$\n"			
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\cegui\bin;$\r$\n"			
 	FileClose $0
 
 	FileOpen $0 "$INSTDIR\cegui\resources.cfg" w
@@ -499,9 +512,8 @@ no_need_to_download_vrpn_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_VRPN=$INSTDIR\vrpn$\r$\n"
 	FileWrite $0 "SET VRPNROOT=$INSTDIR\vrpn$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_CEGUI%\bin;$\r$\n"		
+	FileWrite $0 "SET PATH=%PATH%;%VRPNROOT%\bin;$\r$\n"		
 	FileClose $0
 
 SectionEnd
@@ -535,8 +547,7 @@ no_need_to_download_pthreads_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_PTHREADS=$INSTDIR\pthreads$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_PTHREADS%\lib;$\r$\n"			
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\pthreads\lib;$\r$\n"			
 	FileClose $0
 
 SectionEnd
@@ -570,8 +581,7 @@ no_need_to_download_openal_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OPENAL=$INSTDIR\openal$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_OPENAL%\libs\win32;$\r$\n"			
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\openal\libs\win32;$\r$\n"			
 	FileClose $0
 
 SectionEnd
@@ -605,8 +615,7 @@ no_need_to_download_alut_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_ALUT=$INSTDIR\freealut$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_ALUT%\lib;$\r$\n"			
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\freealut\lib;$\r$\n"			
 	FileClose $0
 
 SectionEnd
@@ -640,8 +649,7 @@ no_need_to_download_ogg_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_OGG=$INSTDIR\libogg$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_OGG%\win32\bin\release;%OV_DEP_OGG%\win32\bin\debug$\r$\n"			
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\libogg\win32\bin\release;$INSTDIR\libogg\win32\bin\debug$\r$\n"			
 	FileClose $0
 
 SectionEnd
@@ -675,8 +683,7 @@ no_need_to_download_vorbis_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET OV_DEP_VORBIS=$INSTDIR\libvorbis$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OV_DEP_VORBIS%\win32\bin\release;%OV_DEP_VORBIS%\win32\bin\debug$\r$\n"			
+	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\libvorbis\win32\bin\release;$INSTDIR\libvorbis\win32\bin\debug$\r$\n"			
 	FileClose $0
 
 SectionEnd
