@@ -376,7 +376,7 @@ int dmarequest(const message_t *request, message_t **response_ptr) {
 				/* the selection has been specified */
 				memcpy(&datasel, request->buf, sizeof(datasel_t));
 				/* If endsample is -1 read the buffer to the end */
-				if(datasel.endsample == -1)
+				if(datasel.endsample == UINT32_T(-1))
 				{
 					datasel.endsample = header->def->nsamples - 1;
 				}

@@ -246,13 +246,16 @@ boolean CNaiveBayesApplyBoxAlgorithm::process(void)
 	if (m_ui64NbEntriesDecoded == m_ui64NbEntries)
 	{
 		// Decision
-		float64 *l_pf64EncodeMatrix, l_f64MaxAbsFunctional=0.0, l_f64SumExpFunctional1and2, l_f64DiffMin;
+		float64 *l_pf64EncodeMatrix, l_f64MaxAbsFunctional=0.0, l_f64SumExpFunctional1and2;
+		// FIXME is it necessary to keep next line uncomment ?
+		//float64 l_f64DiffMin;
 		// uint32 l_ui32IndMin;
 
 		l_pf64EncodeMatrix = m_oEncodeDecisionMatrix.getBuffer();
 
 		m_ui32Class2MaxNumber = 0;
-		l_f64DiffMin = DBL_MAX;
+		// FIXME is it necessary to keep next line uncomment ?
+		//l_f64DiffMin = DBL_MAX;
 
 		for (uint32 i_ent=0; i_ent<m_ui64NbEntries; i_ent++)
 		{

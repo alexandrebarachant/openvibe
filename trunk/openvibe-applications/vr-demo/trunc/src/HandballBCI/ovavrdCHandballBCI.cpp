@@ -14,7 +14,7 @@ static const float g_fViscosity=0.003f;
 static const float g_fGrowScoreingSpeed=0.1f;
 static const float g_fEpsilon=1E-5f;
 
-static const int HISTORY_SIZE = 5;
+static const unsigned int HISTORY_SIZE = 5;
 static const float GOAL_DISTANCE = 6.0f;
 
 CHandballBCI::CHandballBCI() : COgreVRApplication()

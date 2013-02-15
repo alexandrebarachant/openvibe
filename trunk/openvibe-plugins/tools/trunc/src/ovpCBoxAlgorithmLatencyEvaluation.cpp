@@ -32,7 +32,8 @@ boolean CBoxAlgorithmLatencyEvaluation::processInput(uint32 ui32InputIndex)
 
 boolean CBoxAlgorithmLatencyEvaluation::process(void)
 {
-	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
+	// FIXME is it necessary to keep next line uncomment ?
+	//IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	uint64 l_ui64Time=getPlayerContext().getCurrentTime();

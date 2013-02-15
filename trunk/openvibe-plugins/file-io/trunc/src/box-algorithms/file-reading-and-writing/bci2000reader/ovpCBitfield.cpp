@@ -22,7 +22,7 @@ void CBitfield::getFields(unsigned char * pData, uint32 * pExtractedField)
 
 		l_ui32Field=(*l_pPointer)>>m_vFields[i].m_i32BitPosition;
 
-		for (uint32 j=1; j<l_i32Space; j++)
+		for (uint32 j=1; j<(uint32)l_i32Space; j++)
 		{
 			l_pPointer++;
 			l_ui32Field+=((uint32)(*l_pPointer)) << (j*8-m_vFields[i].m_i32BitPosition);

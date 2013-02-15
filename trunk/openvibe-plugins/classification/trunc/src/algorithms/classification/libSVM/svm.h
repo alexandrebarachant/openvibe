@@ -24,6 +24,25 @@ struct svm_problem
 
 enum { C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR };	/* svm_type */
 enum { LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED }; /* kernel_type */
+/* Table help you to transforms Enums to strings */
+//extern static const char *svm_type_table[5];
+//extern static const char *kernel_type_table[5];
+inline const char* get_svm_type(unsigned int code)
+{
+  	static const char * svm_type_table[] =
+	{
+		"c_svc","nu_svc","one_class","epsilon_svr","nu_svr",NULL
+	};
+	return svm_type_table[code];
+}
+inline const char* get_kernel_type(unsigned int code)
+{
+  	static const char * kernel_type_table[]=
+	{
+		"linear","polynomial","rbf","sigmoid","precomputed",NULL
+	};
+	return kernel_type_table[code];
+}
 
 struct svm_parameter
 {
@@ -70,15 +89,7 @@ struct svm_model
 				/* 0 if svm_model is created by svm_train */
 };
 
-static const char *svm_type_table[] =
-{
-	"c_svc","nu_svc","one_class","epsilon_svr","nu_svr",NULL
-};
 
-static const char *kernel_type_table[]=
-{
-	"linear","polynomial","rbf","sigmoid","precomputed",NULL
-};
 
 struct svm_model *svm_train(const struct svm_problem *prob, const struct svm_parameter *param);
 void svm_cross_validation(const struct svm_problem *prob, const struct svm_parameter *param, int nr_fold, double *target);

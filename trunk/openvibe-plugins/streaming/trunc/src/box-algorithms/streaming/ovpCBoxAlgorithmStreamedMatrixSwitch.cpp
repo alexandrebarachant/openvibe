@@ -133,10 +133,10 @@ boolean CBoxAlgorithmStreamedMatrixSwitch::process(void)
 			l_rDynamicBoxContext.getInputChunk(1, j, l_ui64StartTime, l_ui64EndTime, l_ui64ChunkSize, l_pChunkBuffer);
 			if(m_pStreamDecoder->isHeaderReceived() || m_pStreamDecoder->isEndReceived())
 			{
-				for(uint32 j = 0; j < l_rStaticBoxContext.getOutputCount(); j++)
+				for(uint32 k = 0; k < l_rStaticBoxContext.getOutputCount(); k++)
 				{
-					l_rDynamicBoxContext.appendOutputChunkData(j, l_pChunkBuffer, l_ui64ChunkSize);
-					l_rDynamicBoxContext.markOutputAsReadyToSend(j, l_ui64StartTime, l_ui64EndTime);
+					l_rDynamicBoxContext.appendOutputChunkData(k, l_pChunkBuffer, l_ui64ChunkSize);
+					l_rDynamicBoxContext.markOutputAsReadyToSend(k, l_ui64StartTime, l_ui64EndTime);
 				}
 				l_rDynamicBoxContext.markInputAsDeprecated(1,j);
 			}

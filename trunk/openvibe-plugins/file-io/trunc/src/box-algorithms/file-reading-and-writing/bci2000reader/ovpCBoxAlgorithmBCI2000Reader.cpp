@@ -37,7 +37,7 @@ boolean CBoxAlgorithmBCI2000Reader::initialize(void)
 	m_pBuffer=new float64[m_ui32ChannelCount*m_ui32SampleCountPerBuffer];
 	m_pStates=new uint32[m_pB2KReaderHelper->getStateVectorSize()*m_ui32SampleCountPerBuffer];
 	m_ui32Rate=(uint32)m_pB2KReaderHelper->getRate();
-	if(m_ui32Rate == -1)
+	if((int32)m_ui32Rate == -1)
 	{
 		this->getLogManager() << LogLevel_Error << "Sampling rate could not be extracted from the file.\n";
 		return false;

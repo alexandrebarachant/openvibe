@@ -8,6 +8,8 @@
 #include <iostream>
 #include "svm.h"
 int libsvm_version = LIBSVM_VERSION;
+
+
 typedef float Qfloat;
 typedef signed char schar;
 #ifndef min
@@ -2475,8 +2477,8 @@ double svm_predict_values(const svm_model *model, const svm_node *x, double* dec
 		//std::cout<<"svm_predict_value: kvalues"<<std::endl;
 		//std::cout<<l<<" "<<sizeof(model->SV[i])/sizeof(model->SV[i][0])<<"\n";
 
-		const svm_node* y=x;
-		/*while(y->index !=-1)
+		/*const svm_node* y=x;
+		while(y->index !=-1)
 		{
 			std::cout<<y->index << ";" << y->value<<" ";
 			y++;
@@ -2629,8 +2631,8 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 
 	const svm_parameter& param = model->param;
 
-	fprintf(fp,"svm_type %s\n", svm_type_table[param.svm_type]);
-	fprintf(fp,"kernel_type %s\n", kernel_type_table[param.kernel_type]);
+	fprintf(fp,"svm_type %s\n", get_svm_type(param.svm_type));
+	fprintf(fp,"kernel_type %s\n", get_kernel_type(param.kernel_type));
 
 	if(param.kernel_type == POLY)
 		fprintf(fp,"degree %d\n", param.degree);
@@ -2748,21 +2750,28 @@ svm_model *svm_load_model(const char *model_file_name)
 	char cmd[81];
 	while(1)
 	{
-		fscanf(fp,"%80s",cmd);
-
+		int l_iresult =fscanf(fp,"%80s",cmd);
+		if (0==l_iresult)
+		{
+			// FIXME: handle with no chars readed
+		}
 		if(strcmp(cmd,"svm_type")==0)
 		{
-			fscanf(fp,"%80s",cmd);
-			int i;
-			for(i=0;svm_type_table[i];i++)
+			l_iresult=fscanf(fp,"%80s",cmd);
+			if (0==l_iresult)
 			{
-				if(strcmp(svm_type_table[i],cmd)==0)
+				// FIXME: handle with no chars readed
+			}
+			int i;
+			for(i=0;get_svm_type(i);i++)
+			{
+				if(strcmp(get_svm_type(i),cmd)==0)
 				{
 					param.svm_type=i;
 					break;
 				}
 			}
-			if(svm_type_table[i] == NULL)
+			if(get_svm_type(i) == NULL)
 			{
 				fprintf(stderr,"unknown svm type.\n");
 				free(model->rho);
@@ -2774,17 +2783,21 @@ svm_model *svm_load_model(const char *model_file_name)
 		}
 		else if(strcmp(cmd,"kernel_type")==0)
 		{		
-			fscanf(fp,"%80s",cmd);
-			int i;
-			for(i=0;kernel_type_table[i];i++)
+			l_iresult=fscanf(fp,"%80s",cmd);
+			if (0==l_iresult)
 			{
-				if(strcmp(kernel_type_table[i],cmd)==0)
+				// FIXME: handle with no chars readed
+			}
+			int i;
+			for(i=0;get_kernel_type(i);i++)
+			{
+				if(strcmp(get_kernel_type(i),cmd)==0)
 				{
 					param.kernel_type=i;
 					break;
 				}
 			}
-			if(kernel_type_table[i] == NULL)
+			if(get_kernel_type(i) == NULL)
 			{
 				fprintf(stderr,"unknown kernel function.\n");
 				free(model->rho);
@@ -2795,49 +2808,109 @@ svm_model *svm_load_model(const char *model_file_name)
 			}
 		}
 		else if(strcmp(cmd,"degree")==0)
-			fscanf(fp,"%d",&param.degree);
+		{
+			l_iresult=fscanf(fp,"%d",&param.degree);
+			if (0==l_iresult)
+			{
+				// FIXME: handle with no interger readed
+			}
+		}
 		else if(strcmp(cmd,"gamma")==0)
-			fscanf(fp,"%lf",&param.gamma);
+		{
+			l_iresult=fscanf(fp,"%lf",&param.gamma);
+			if (0==l_iresult)
+			{
+				// FIXME: handle with no float readed
+			}
+		}
 		else if(strcmp(cmd,"coef0")==0)
-			fscanf(fp,"%lf",&param.coef0);
+		{
+			l_iresult=fscanf(fp,"%lf",&param.coef0);
+			if (0==l_iresult)
+			{
+				// FIXME: handle with no float readed
+			}
+		}
 		else if(strcmp(cmd,"nr_class")==0)
-			fscanf(fp,"%d",&model->nr_class);
+		{
+			l_iresult=fscanf(fp,"%d",&model->nr_class);
+			if (0==l_iresult)
+			{
+				// FIXME: handle with no interger readed
+			}
+		}
 		else if(strcmp(cmd,"total_sv")==0)
-			fscanf(fp,"%d",&model->l);
+		{
+			l_iresult=fscanf(fp,"%d",&model->l);
+			if (0==l_iresult)
+			{
+				// FIXME: handle with no interger readed
+			}
+		}
 		else if(strcmp(cmd,"rho")==0)
 		{
 			int n = model->nr_class * (model->nr_class-1)/2;
 			model->rho = Malloc(double,n);
 			for(int i=0;i<n;i++)
-				fscanf(fp,"%lf",&model->rho[i]);
+			{
+				l_iresult=fscanf(fp,"%lf",&model->rho[i]);
+				if (0==l_iresult)
+				{
+					// FIXME: handle with no double readed
+				}
+			}
 		}
 		else if(strcmp(cmd,"label")==0)
 		{
 			int n = model->nr_class;
 			model->label = Malloc(int,n);
 			for(int i=0;i<n;i++)
-				fscanf(fp,"%d",&model->label[i]);
+			{
+				l_iresult=fscanf(fp,"%d",&model->label[i]);
+				if (0==l_iresult)
+				{
+					// FIXME: handle with no integer readed
+				}
+			}
 		}
 		else if(strcmp(cmd,"probA")==0)
 		{
 			int n = model->nr_class * (model->nr_class-1)/2;
 			model->probA = Malloc(double,n);
 			for(int i=0;i<n;i++)
-				fscanf(fp,"%lf",&model->probA[i]);
+			{
+				l_iresult=fscanf(fp,"%lf",&model->probA[i]);
+				if (0==l_iresult)
+				{
+					// FIXME: handle with no double readed
+				}
+			}
 		}
 		else if(strcmp(cmd,"probB")==0)
 		{
 			int n = model->nr_class * (model->nr_class-1)/2;
 			model->probB = Malloc(double,n);
 			for(int i=0;i<n;i++)
-				fscanf(fp,"%lf",&model->probB[i]);
+			{
+				l_iresult=fscanf(fp,"%lf",&model->probB[i]);
+				if (0==l_iresult)
+				{
+					// FIXME: handle with no double readed
+				}
+			}
 		}
 		else if(strcmp(cmd,"nr_sv")==0)
 		{
 			int n = model->nr_class;
 			model->nSV = Malloc(int,n);
 			for(int i=0;i<n;i++)
-				fscanf(fp,"%d",&model->nSV[i]);
+			{
+				l_iresult=fscanf(fp,"%d",&model->nSV[i]);
+				if (0==l_iresult)
+				{
+					// FIXME: handle with no integer readed
+				}
+			}
 		}
 		else if(strcmp(cmd,"SV")==0)
 		{

@@ -256,10 +256,10 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	 l_pWriter->openChild("SVM");
 	  l_pWriter->openChild("Param");
 	   l_pWriter->openChild("svm_type");
-	    l_pWriter->setChildData(svm_type_table[m_pModel->param.svm_type]);
+	    l_pWriter->setChildData(get_svm_type(m_pModel->param.svm_type));
 	   l_pWriter->closeChild();
 	   l_pWriter->openChild("kernel_type");
-	    l_pWriter->setChildData(kernel_type_table[m_pModel->param.kernel_type]);
+	    l_pWriter->setChildData(get_kernel_type(m_pModel->param.kernel_type));
 	   l_pWriter->closeChild();
 	   if(m_pModel->param.kernel_type == POLY)
 	   {
@@ -503,28 +503,28 @@ void CAlgorithmClassifierSVM::processChildData(const char* sData)
 	// param
 	if(m_vNode.top()==CString("svm_type"))
 	{
-		for(int i =0; svm_type_table[i];i++)
+		for(int i =0; get_svm_type(i);i++)
 		{
-			if ( strcmp(svm_type_table[i],l_sData.str().c_str())==0)
+			if ( strcmp(get_svm_type(i),l_sData.str().c_str())==0)
 			{
 				m_pModel->param.svm_type=i;
 			}
 		}
-		if(svm_type_table[m_pModel->param.svm_type] == NULL)
+		if(get_svm_type(m_pModel->param.svm_type) == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "load configuration error: bad value for the parameter svm_type\n";
 		}
 	}
 	if(m_vNode.top()==CString("kernel_type"))
 	{
-		for(int i =0; kernel_type_table[i];i++)
+		for(int i =0; get_kernel_type(i);i++)
 		{
-			if ( strcmp(kernel_type_table[i],l_sData.str().c_str())==0)
+			if ( strcmp(get_kernel_type(i),l_sData.str().c_str())==0)
 			{
 				m_pModel->param.kernel_type=i;
 			}
 		}
-		if(kernel_type_table[m_pModel->param.kernel_type] == NULL)
+		if(get_kernel_type(m_pModel->param.kernel_type) == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "load configuration error: bad value for the parameter kernel_type\n";
 		}
@@ -641,8 +641,8 @@ CString CAlgorithmClassifierSVM::paramToString(svm_parameter *pParam)
 		return CString(l_sParam.str().c_str());
 	}
 	l_sParam << "Param:\n";
-	l_sParam << "\tsvm_type: "<<svm_type_table[pParam->svm_type]<<"\n";
-	l_sParam << "\tkernel_type: "<<kernel_type_table[pParam->kernel_type]<<"\n";
+	l_sParam << "\tsvm_type: "<<get_svm_type(pParam->svm_type)<<"\n";
+	l_sParam << "\tkernel_type: "<<get_kernel_type(pParam->kernel_type)<<"\n";
 	l_sParam << "\tdegree: "<<pParam->degree<<"\n";
 	l_sParam << "\tgamma: "<<pParam->gamma<<"\n";
 	l_sParam << "\tcoef0: "<<pParam->coef0<<"\n";

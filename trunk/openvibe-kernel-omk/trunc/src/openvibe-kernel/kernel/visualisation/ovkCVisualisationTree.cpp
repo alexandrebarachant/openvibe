@@ -681,7 +681,8 @@ boolean CVisualisationTree::dragDataReceivedOutsideWidgetCB(const CIdentifier& r
 	IVisualisationWidget* l_pSrcVisualisationWidget = getVisualisationWidget(rSrcIdentifier);
 	if(l_pSrcVisualisationWidget == NULL)
 		return false;
-	CIdentifier l_oSrcParentIdentifier = l_pSrcVisualisationWidget->getParentIdentifier();
+	// FIXME is it necessary to keep next line uncomment ? 
+	// CIdentifier l_oSrcParentIdentifier = l_pSrcVisualisationWidget->getParentIdentifier();
 
 	//retrieve dest widget and dest widget parent identifiers
 	//-------------------------------------------------------

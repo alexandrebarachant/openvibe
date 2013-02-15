@@ -158,7 +158,7 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	boolean l_bShouldTrain=false;
-	uint64 l_ui64TrainDate, l_ui64TrainChunkStartTime, l_ui64TrainChunkEndTime;
+	uint64 l_ui64TrainDate=0, l_ui64TrainChunkStartTime=0, l_ui64TrainChunkEndTime=0;
 	uint32 i, j, k;
 	std::vector < SChunk >::const_iterator it;
 

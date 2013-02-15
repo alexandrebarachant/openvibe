@@ -35,8 +35,8 @@ CDriverFieldtrip::CDriverFieldtrip(IDriverContext& rDriverContext)
 	,m_pSample(NULL)
 	,m_sHostName("localhost")
 	,m_ui32PortNumber(1979)
-	,m_i32ConnectionID(-1)
 	,m_ui32DataType(DATATYPE_UNKNOWN)
+	,m_i32ConnectionID(-1)
 	,m_ui32MinSamples(1)
 	,m_bFirstGetDataRequest(false)
 	,m_bCorrectNonIntegerSR(true)
@@ -305,7 +305,7 @@ OpenViBE::boolean CDriverFieldtrip::requestHeader()
 	}
 	else
 	{
-		int l_iResponseBufSize = l_pResponse->def->bufsize;
+		unsigned int l_iResponseBufSize = l_pResponse->def->bufsize;
 		headerdef_t* l_pHeaderDef = (headerdef_t*) l_pResponse->buf;
 
 		if ( l_iResponseBufSize < sizeof(headerdef_t) )

@@ -15,9 +15,10 @@ using namespace std;
 
 void ComputeFilterInitialCondition(vec b, vec a, vec &zi)
 {
-	int na, nb,  j, i;
+	int na,j, i;
 	na = length(a);
-	nb = length(b);
+	// FIXME is it necessary to keep next line uncomment ?
+	//int nb = length(b);
 
 	//--------------------------------------
 	// use sparse matrix to solve system of linear equations for initial conditions
@@ -79,12 +80,13 @@ void ComputeFilterInitialCondition(vec b, vec a, vec &zi)
 
 void IIR_Filter (vec b, vec a, vec data, vec V0, vec &dataFiltered, vec &Vf)
 {
-	int i,j,i_V0;
+	int i,j,i_V0=0;
 	double Sum_a_tmp,Sum_b_tmp;
 	double Sum_tmp_Vf;
 	double V0_tmp;
-	int na, nb, dataSize;
-	na = length(a);
+	int nb, dataSize;
+	// FIXME is it necessary to keep next line uncomment ?
+	//int na = length(a);
 	nb = length(b);
 	dataSize = length(data);
 		

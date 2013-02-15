@@ -141,8 +141,10 @@ namespace OpenViBEPlugins
 			//width of each frequency band
 			float32 l_f32FreqBandWidth = static_cast<float32>(l_iWidth) / l_ui32FrequencyCount;
 
-			GdkColor l_oCurrentColor;
-			l_oCurrentColor.pixel = 0;
+			// FIXME is it necessary to keep next two lines uncomment ?
+			//GdkColor l_oCurrentColor;
+			//l_oCurrentColor.pixel = 0;
+			
 			// uint8 l_ui8IndexedColor = 0;
 
 			//get current buffer min/max values

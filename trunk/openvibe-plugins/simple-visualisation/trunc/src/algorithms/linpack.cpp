@@ -60,7 +60,7 @@ void sspfa(double* ap, int* n, int* kpvt, int* info)
 {
 double alpha, ak, bk, denom, t, tulk, tulkm1, absakk;
 double akm1, bkm1, colmax, rowmax;
-int    ij, ijj, ik, ikm1, im=0, imj, imk, imax, imaxp1, imim;
+int    ij, ik, ikm1, im=0, imj, imk, imax, imaxp1, imim;
 int    j, jj, jk, jkm1, jmax, jmim;
 int    k, kk, km1, km2, km1k, km1km1;
 int    kstep, swap;
@@ -163,7 +163,8 @@ else
                 tulk = -(*(ap+jk-1))/(*(ap+kk-1));
                 t = tulk;
                 saxpy(&j, &t, (ap+ik), &one, (ap+ij), &one);
-                ijj = ij + j;
+                // FIXME is it necessary to keep next line uncomment ?
+                //ijj = ij + j;
                 *(ap+jk-1) = tulk;
                 ij -= j-1;
                 }
@@ -214,7 +215,8 @@ else
                     saxpy(&j, &t, (ap+ikm1), &one, (ap+ij), &one);
                     *(ap+jk-1) = tulk;
                     *(ap+jkm1-1) = tulkm1;
-                    ijj = ij + j;
+                    // FIXME is it necessary to keep next line uncomment ?
+                    //ijj = ij + j;
                     ij -= j-1;
                     }
                 }

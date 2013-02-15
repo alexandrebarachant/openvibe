@@ -84,7 +84,11 @@ boolean CBoxAlgorithmCSVFileReader::initialize(void)
 
 	//read the header
 	char* l_pLine=new char[500];
-	::fgets(l_pLine,500,m_pFile);
+	char *l_pResult=::fgets(l_pLine,500,m_pFile);
+	if(NULL==l_pResult)
+	{
+	// bad : FIXME handle reading error here
+	}
 	m_vHeaderFile=split(std::string(l_pLine),m_sSeparator);
 	m_ui32NbColumn=m_vHeaderFile.size();
 
@@ -130,11 +134,19 @@ boolean CBoxAlgorithmCSVFileReader::initialize(void)
 		m_fpRealProcess=&CBoxAlgorithmCSVFileReader::process_signal;
 
 		//find the sampling rate
-		::fgets(l_pLine,500,m_pFile);
+		l_pResult=::fgets(l_pLine,500,m_pFile);
+		if(NULL==l_pResult)
+		{
+		// bad : FIXME handle reading error here
+		}
 		m_ui64SamplingRate=atoi(split(std::string(l_pLine),m_sSeparator)[m_ui32NbColumn-1].c_str());
 
 		::rewind(m_pFile);
-		::fgets(l_pLine,500,m_pFile);
+		l_pResult=::fgets(l_pLine,500,m_pFile);
+		if(NULL==l_pResult)
+		{
+		// bad : FIXME handle reading error here
+		}
 
 		//number of column without the column contains the sampling rate parameters
 		m_ui32NbColumn-=1;

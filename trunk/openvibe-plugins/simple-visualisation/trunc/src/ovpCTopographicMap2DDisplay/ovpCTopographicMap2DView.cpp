@@ -468,7 +468,8 @@ namespace OpenViBEPlugins
 				return;
 			}
 
-			boolean l_bDrawText = true;
+			// FIXME is it necessary to keep next line uncomment ?
+			//boolean l_bDrawText = true;
 
 			//retrieve text size
 			PangoLayout* l_pText = gtk_widget_create_pango_layout(GTK_WIDGET(m_pDrawingArea), "0");
@@ -478,7 +479,8 @@ namespace OpenViBEPlugins
 			//don't draw text if not enough room
 			if(l_iTextHeight >= (gint)(ui32Height - m_ui32MinPaletteBarHeight))
 			{
-				l_bDrawText = false;
+				// FIXME is it necessary to keep next line uncomment ?
+				//l_bDrawText = false;
 			}
 			//determine palette bar dims
 			gint l_iPaletteBarWidth = (gint)(0.9 * ui32Width);

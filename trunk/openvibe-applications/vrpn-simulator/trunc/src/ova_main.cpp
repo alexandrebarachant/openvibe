@@ -15,8 +15,8 @@
 ::vrpn_Connection* g_pConnection=NULL;
 ::vrpn_Button_Server* g_pButtonServer=NULL;
 ::vrpn_Analog_Server* g_pAnalogServer=NULL;
-int g_iAnalogCount=0;
-int g_iButtonCount=0;
+long g_iAnalogCount=0;
+long g_iButtonCount=0;
 
 typedef union
 {
@@ -50,7 +50,7 @@ void fConnectCB(::GtkWidget* pWidget, gpointer data)
 {
 	if(GTK_IS_RANGE(pWidget))
 	{
-		g_signal_connect(G_OBJECT(pWidget), "value-changed", G_CALLBACK(fScrollCB), (void*)g_iAnalogCount);
+		g_signal_connect(G_OBJECT(pWidget), "value-changed", G_CALLBACK(fScrollCB), (gpointer) g_iAnalogCount);
 		g_iAnalogCount++;
 	}
 

@@ -125,7 +125,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 
 	boolean l_bShouldTrain=false;
 	uint32 i, j;
-	uint64 l_ui64TrainDate, l_ui64TrainChunkStartTime, l_ui64TrainChunkEndTime;
+	uint64 l_ui64TrainDate=0, l_ui64TrainChunkStartTime=0, l_ui64TrainChunkEndTime=0;
 
 	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{

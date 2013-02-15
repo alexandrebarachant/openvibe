@@ -210,7 +210,8 @@ boolean CBoxAlgorithmP300SpellerStimulator::process(void)
 	uint32 l_ui32State=State_NoFlash;
 	uint64 l_ui64CurrentTime=this->getPlayerContext().getCurrentTime();
 	uint64 l_ui64FlashIndex=(uint64)-1;
-	uint64 l_ui64RepetitionIndex=(uint64)-1;
+	// FIXME is it necessary to keep next line uncomment ?
+	//uint64 l_ui64RepetitionIndex=(uint64)-1;
 
 	CStimulationSet l_oStimulationSet;
 
@@ -224,11 +225,13 @@ boolean CBoxAlgorithmP300SpellerStimulator::process(void)
 		{
 			uint64 l_ui64CurrentTimeInTrial     =l_ui64CurrentTime-m_ui64TrialStartTime;
 			uint64 l_ui64CurrentTimeInRepetition=l_ui64CurrentTimeInTrial%(m_ui64RepetitionDuration+m_ui64InterRepetitionDuration);
-			uint64 l_ui64RepritionIndexInTrial  =l_ui64CurrentTimeInTrial/(m_ui64RepetitionDuration+m_ui64InterRepetitionDuration);
+			// FIXME is it necessary to keep next line uncomment ?
+			//uint64 l_ui64RepritionIndexInTrial  =l_ui64CurrentTimeInTrial/(m_ui64RepetitionDuration+m_ui64InterRepetitionDuration);
 			uint64 l_ui64FlashIndexInRepetition =l_ui64CurrentTimeInRepetition/(m_ui64FlashDuration+m_ui64NoFlashDuration);
 
 			l_ui64FlashIndex=l_ui64FlashIndexInRepetition;
-			l_ui64RepetitionIndex=l_ui64RepritionIndexInTrial;
+			// FIXME is it necessary to keep next line uncomment ?
+			//l_ui64RepetitionIndex=l_ui64RepritionIndexInTrial;
 
 			if(l_ui64CurrentTimeInTrial >= m_ui64TrialDuration)
 			{
@@ -237,7 +240,8 @@ boolean CBoxAlgorithmP300SpellerStimulator::process(void)
 					m_ui64TrialStartTime=l_ui64CurrentTime+m_ui64InterTrialDuration;
 					l_ui32State=State_TrialRest;
 					l_ui64FlashIndex=(uint64)-1;
-					l_ui64RepetitionIndex=(uint64)-1;
+					// FIXME is it necessary to keep next line uncomment ?
+					//l_ui64RepetitionIndex=(uint64)-1;
 					m_ui64TrialIndex++;
 				}
 				else
@@ -360,6 +364,7 @@ boolean CBoxAlgorithmP300SpellerStimulator::process(void)
 			m_ui32LastState=l_ui32State;
 		}
 
+// FIXME is it necessary to keep next code uncomment ?
 #if 0
 		_OPTIONAL_LOG_(this->getLogManager(), LogLevel_Info << "State:" << state_to_string(l_ui32State) << " - flash index:" << l_ui64FlashIndex << " - repetition index:" << l_ui64RepetitionIndex << " - trial index:" << m_ui64TrialIndex << "\n");
 #endif

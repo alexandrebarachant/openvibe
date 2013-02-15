@@ -37,7 +37,8 @@ boolean CBoxAlgorithmSynchro::processInput(uint32 ui32InputIndex)
 
 boolean CBoxAlgorithmSynchro::process(void)
 {
-	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
+	// FIXME is it necessary to keep next line uncomment ?
+	//IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	if(m_oCInputChannel.isWorking())
 	{

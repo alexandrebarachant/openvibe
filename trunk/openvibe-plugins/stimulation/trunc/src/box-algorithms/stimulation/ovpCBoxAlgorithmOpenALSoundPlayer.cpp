@@ -183,7 +183,7 @@ boolean CBoxAlgorithmOpenALSoundPlayer::process(void)
 		m_bStartOfSoundSent = true;
 	}
 	// CASE : the sound has stopped (or is playing), but there is no need to send anything but empty set (the box is "idle" stop or in a middle of a sound)
-	if((l_uiStatus == AL_STOPPED && m_bEndOfSoundSent) || l_uiStatus == AL_PLAYING && m_bStartOfSoundSent || l_uiStatus == AL_INITIAL)
+	if((l_uiStatus == AL_STOPPED && m_bEndOfSoundSent) || (l_uiStatus == AL_PLAYING && m_bStartOfSoundSent) || l_uiStatus == AL_INITIAL)
 	{
 		ip_pStimulationSet->clear();
 		m_pStreamEncoder->process(OVP_GD_Algorithm_StimulationStreamEncoder_InputTriggerId_EncodeBuffer);

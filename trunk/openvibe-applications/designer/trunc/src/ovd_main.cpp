@@ -499,17 +499,20 @@ int go(int argc, char ** argv)
 						::CApplication app(*l_pKernelContext);
 						app.initialize(l_oConfiguration.getFlags());
 
-						boolean l_bIsScreenValid=true;
+						// FIXME is it necessary to keep next line uncomment ?
+						//boolean l_bIsScreenValid=true;
 						if(!l_oConfiguration.m_eNoCheckColorDepth)
 						{
 							if(GDK_IS_DRAWABLE(GTK_WIDGET(app.m_pMainWindow)->window))
 							{
-								l_bIsScreenValid=false;
+								// FIXME is it necessary to keep next line uncomment ?
+								//l_bIsScreenValid=false;
 								switch(gdk_drawable_get_depth(GTK_WIDGET(app.m_pMainWindow)->window))
 								{
 									case 24:
 									case 32:
-										l_bIsScreenValid=true;
+										// FIXME is it necessary to keep next line uncomment ?
+										//l_bIsScreenValid=true;
 										break;
 									default:
 										l_rLogManager << LogLevel_Error << "Please change the color depth of your screen to either 24 or 32 bits\n";
