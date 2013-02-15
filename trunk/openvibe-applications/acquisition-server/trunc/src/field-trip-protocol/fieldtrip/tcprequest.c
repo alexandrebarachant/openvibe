@@ -56,7 +56,7 @@ int tcprequest(int server, const message_t *request, message_t **response_ptr) {
     else {		
 		/* send the request to the server, first the message definition */
 		if ((n = bufwrite(server, request->def, sizeof(messagedef_t)))!=sizeof(messagedef_t)) {
-			fprintf(stderr, "write size = %d, should be %d\n", n, sizeof(messagedef_t));
+			fprintf(stderr, "write size = %d, should be %ld\n", n, sizeof(messagedef_t));
 			goto cleanup;
 		}
 
@@ -69,7 +69,7 @@ int tcprequest(int server, const message_t *request, message_t **response_ptr) {
 
 	/* read the response from the server, first the message definition */
 	if ((n = bufread(server, response->def, sizeof(messagedef_t))) != sizeof(messagedef_t)) {
-		fprintf(stderr, "packet size = %d, should be %d\n", n, sizeof(messagedef_t));
+		fprintf(stderr, "packet size = %d, should be %ld\n", n, sizeof(messagedef_t));
 		goto cleanup;
 	}
 

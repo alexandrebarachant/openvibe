@@ -92,7 +92,7 @@ boolean COgreScene::init()
 	}
 
 	//create default lights
-	m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1, 1));
+	m_pSceneManager->setAmbientLight(Ogre::ColourValue(0.1f, 0.1f, 0.1f, 1));
 	//m_pSceneManager->setAmbientLight(Ogre::ColourValue(0, 0, 0, 1));
 
 	//front light

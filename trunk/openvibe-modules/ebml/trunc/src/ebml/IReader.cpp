@@ -250,7 +250,8 @@ if(_Debug_)
 						}
 					}
 
-					unsigned long l_ulCodedSizeLength=getCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer, m_ui64PendingCount?m_ui64PendingCount:l_ui64BufferSize);
+					unsigned long l_ulCodedSizeLength=getCodedSizeLength(m_ui64PendingCount?m_pPending:l_pBuffer, 
+													(unsigned long)(m_ui64PendingCount?m_ui64PendingCount:l_ui64BufferSize));
 					if(l_ulCodedSizeLength>l_ui64BufferSize+m_ui64PendingCount)
 					{
 						l_bFinished=true;

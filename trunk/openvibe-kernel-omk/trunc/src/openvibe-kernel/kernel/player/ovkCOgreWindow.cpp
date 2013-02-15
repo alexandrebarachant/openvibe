@@ -437,8 +437,8 @@ boolean COgreWindow::setCameraSphericalAngles(float32 f32Theta, float32 f32Phi)
 
 boolean COgreWindow::updateCamera()
 {
-	float32 l_f32PhiRadians = m_f32Phi * 3.1415926535 / 180.0;
-	float32 l_f32ThetaRadians = m_f32Theta * 3.1415926535 / 180.0;
+	float32 l_f32PhiRadians = (float32)(m_f32Phi * 3.1415926535 / 180.0);
+	float32 l_f32ThetaRadians = (float32)(m_f32Theta * 3.1415926535 / 180.0);
 
 	m_pCamera->setPosition(
 		m_oLookAt.x + m_f32Radius * sinf(l_f32ThetaRadians) * sinf(l_f32PhiRadians),

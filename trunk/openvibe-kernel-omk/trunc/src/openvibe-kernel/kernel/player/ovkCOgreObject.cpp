@@ -231,7 +231,7 @@ boolean COgreObject::createPlane(const CNameValuePairList& rNameValuePairList)
 			m_sName.toASCIIString(),//"myPlane", //mesh name
 			m_sResourceGroupName.toASCIIString(),
 			Ogre::Plane(Ogre::Vector3::UNIT_Z, 0.0), //plane orientation and distance from origin
-			l_f64PlaneWidth, l_f64PlaneHeight, //width/height
+			(Ogre::Real)l_f64PlaneWidth, (Ogre::Real)l_f64PlaneHeight, //width/height
 			1, 1, //x and y segment count
 			true, //generate normals?
 			1, //texcoord set count
@@ -525,7 +525,7 @@ boolean COgreObject::loadWorldMatrix()
 						}
 #endif
 						//store value and update current value index
-						l_pPosition[l_ui32CurValueIndex++] = l_f64Value;
+						l_pPosition[l_ui32CurValueIndex++] = (float32)l_f64Value;
 
 						//reset current string
 						l_sCurString.erase();
@@ -565,7 +565,7 @@ boolean COgreObject::loadWorldMatrix()
 						}
 #endif
 						//store value and update current value index
-						l_pOrientation[l_ui32CurValueIndex++] = l_f64Value;
+						l_pOrientation[l_ui32CurValueIndex++] = (float32)l_f64Value;
 
 						//reset current string
 						l_sCurString.erase();
@@ -605,7 +605,7 @@ boolean COgreObject::loadWorldMatrix()
 						}
 #endif
 						//store value and update current value index
-						l_pScale[l_ui32CurValueIndex++] = l_f64Value;
+						l_pScale[l_ui32CurValueIndex++] = (float32)l_f64Value;
 
 						//reset current string
 						l_sCurString.erase();

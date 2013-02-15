@@ -52,7 +52,7 @@ void MaterialSetSceneBlending::passAction( SubEntityMaterial* subEntity,
 //===========================================================================
 MaterialSetTransparency::MaterialSetTransparency( const IKernelContext& rKernelContext, Ogre::Real transparency )
 : IMaterialPassAction(rKernelContext),
-_transparency( transparency < 0.0f ? 0.0 : ( 1.0f < transparency ? 1.0f : transparency ) )
+_transparency( transparency < 0.0f ? 0.0f : ( 1.0f < transparency ? 1.0f : transparency ) )
 {
 }
 //---------------------------------------------------------------------------
