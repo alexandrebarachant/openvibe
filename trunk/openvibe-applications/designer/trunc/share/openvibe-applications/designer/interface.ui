@@ -360,37 +360,42 @@ permitted, and provided that you do these two things:
     b) Give prominent notice with the combined library of the fact
     that part of it is a</property>
     <property name="authors">Project Leader :
- - Anatole Lecuyer, INRIA &lt;anatole.lecuyer@irisa.fr&gt;
+ - Anatole Lecuyer, Inria &lt;anatole.lecuyer@irisa.fr&gt;
 
 Lead Software Engineer :
- - Laurent Bonnet, INRIA &lt;laurent.bonnet@irisa.fr&gt;
+ - Jozef Legény, Inria &lt;jozef.legeny@inria.fr&gt;
 
 Core Developers :
- - Yann Renard, INRIA &lt;yann.renard@irisa.fr&gt;
- - Laurent Bonnet, INRIA &lt;laurent.bonnet@irisa.fr&gt;
- - Jozef Legény, INRIA &lt;jozef.legeny@inria.fr&gt;
+ - Jussi Tapio Lindgren, Inria
+ - Alison Cellard, Inria
+ - Loic Mahe, Inria
 
 Former Core Developers
+ - Yann Renard, INRIA
+ - Laurent Bonnet, INRIA
  - Vincent Delannoy, INRIA
  - Fabien Lotte, INRIA
  - Bruno Renier, INRIA
  - Baptiste Payan, INRIA
 
 Contributors :
- - Mattieu Goyat, INPG
+ - Anton Andreev, CNRS/Gipsa-lab
  - Dieter Devlaminck, Ghent Univ.
- - Joan Fruitet, INRIA
+ - Yann Renard, INRIA
+ - Laurent Bonnet, INRIA
 
 Previous Contributors :
+ - Mattieu Goyat, INPG
+ - Joan Fruitet, INRIA
  - Guillaume Gibert, INSERM
  - Emmanuel Maby, INSERM
  - Pierre-Emmanuel Aguera, INSERM
  - Chris Veigl, UAS Technikum Wien
  - Lucie Daubigney, Supelec</property>
-    <property name="documenters">Documenters :
- - Yann Renard, INRIA &lt;yann.renard@irisa.fr&gt;
- - Laurent Bonnet, INRIA &lt;laurent.bonnet@irisa.fr&gt;
- - Jozef Legény, INRIA &lt;jozef.legeny@inria.fr&gt;
+<property name="documenters">Documenters :
+ - Yann Renard, INRIA
+ - Laurent Bonnet, INRIA
+ - Jozef Legény, INRIA
 
 Former Documenters :
  - Baptiste Payan, INRIA
