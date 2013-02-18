@@ -398,11 +398,11 @@ boolean CAlgorithmScenarioImporterContext::processString(const CIdentifier& rIde
 boolean CAlgorithmScenarioImporterContext::processUInteger(const CIdentifier& rIdentifier, const uint64 ui64Value)
 {
 	if(false) { }
-	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_VisualisationWidget_Type)                 { m_oSymbolicScenario.m_vVisualisationWidget.back().m_ui32Type=ui64Value; }
-	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_VisualisationWidget_Index)                { m_oSymbolicScenario.m_vVisualisationWidget.back().m_ui32Index=ui64Value; }
-	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_VisualisationWidget_NumChildren)          { m_oSymbolicScenario.m_vVisualisationWidget.back().m_ui32NbChildren=ui64Value; }
-	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Link_Source_BoxOutputIndex)               { m_oSymbolicScenario.m_vLink.back().m_oLinkSource.m_ui32BoxOutputIndex=ui64Value; }
-	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Link_Target_BoxInputIndex)                { m_oSymbolicScenario.m_vLink.back().m_oLinkTarget.m_ui32BoxInputIndex=ui64Value; }
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_VisualisationWidget_Type)                 { m_oSymbolicScenario.m_vVisualisationWidget.back().m_ui32Type=(uint32)ui64Value; }
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_VisualisationWidget_Index)                { m_oSymbolicScenario.m_vVisualisationWidget.back().m_ui32Index=(uint32)ui64Value; }
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_VisualisationWidget_NumChildren)          { m_oSymbolicScenario.m_vVisualisationWidget.back().m_ui32NbChildren=(uint32)ui64Value; }
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Link_Source_BoxOutputIndex)               { m_oSymbolicScenario.m_vLink.back().m_oLinkSource.m_ui32BoxOutputIndex=(uint32)ui64Value; }
+	else if(rIdentifier==OVTK_Algorithm_ScenarioExporter_NodeId_Link_Target_BoxInputIndex)                { m_oSymbolicScenario.m_vLink.back().m_oLinkTarget.m_ui32BoxInputIndex=(uint32)ui64Value; }
 	else m_rAlgorithmContext.getLogManager() << LogLevel_Warning << "Unexpected node identifier " << rIdentifier << "\n";
 
 	return true;
