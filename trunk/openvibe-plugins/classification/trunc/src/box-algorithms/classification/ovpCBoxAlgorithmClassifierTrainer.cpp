@@ -258,7 +258,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 
 			float64 l_f64PartitionAccuracy=0;
 			float64 l_f64FinalAccuracy=0;
-			vector<float64> l_vPartitionAccuracies(m_ui64PartitionCount);
+			vector<float64> l_vPartitionAccuracies((unsigned int)m_ui64PartitionCount);
 
 			boolean l_bRandomizeVectorOrder = (&(this->getConfigurationManager()))->expandAsBoolean("${Plugin_Classification_RandomizeKFoldTestData}");
 
@@ -282,14 +282,14 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 				this->getLogManager() << LogLevel_Info << "k-fold test could take quite a long time, be patient\n";
 				for(uint64 i=0; i<m_ui64PartitionCount; i++)
 				{
-					size_t l_uiStartIndex=((i  )*m_vFeatureVector.size())/m_ui64PartitionCount;
-					size_t l_uiStopIndex =((i+1)*m_vFeatureVector.size())/m_ui64PartitionCount;
+					size_t l_uiStartIndex=(size_t)(((i  )*m_vFeatureVector.size())/m_ui64PartitionCount);
+					size_t l_uiStopIndex =(size_t)(((i+1)*m_vFeatureVector.size())/m_ui64PartitionCount);
 
 					this->getLogManager() << LogLevel_Trace << "Training on partition " << i << " (feature vectors " << (uint32)l_uiStartIndex << " to " << (uint32)l_uiStopIndex-1 << ")...\n";
 					if(this->train(l_uiStartIndex, l_uiStopIndex))
 					{
 						l_f64PartitionAccuracy=this->getAccuracy(l_uiStartIndex, l_uiStopIndex);
-						l_vPartitionAccuracies[i]=l_f64PartitionAccuracy;
+						l_vPartitionAccuracies[(unsigned int)i]=l_f64PartitionAccuracy;
 						l_f64FinalAccuracy+=l_f64PartitionAccuracy;
 					}
 					this->getLogManager() << LogLevel_Info << "Finished with partition " << i+1 << " / " << m_ui64PartitionCount << " (performance : " << l_f64PartitionAccuracy << "%)\n";
@@ -300,7 +300,7 @@ boolean CBoxAlgorithmClassifierTrainer::process(void)
 
 				for (uint64 i = 0; i < m_ui64PartitionCount; i++)
 				{
-					float64 l_fDiff = l_vPartitionAccuracies[i] - l_fMean;
+					float64 l_fDiff = l_vPartitionAccuracies[(unsigned int)i] - l_fMean;
 					l_fDeviation += l_fDiff * l_fDiff;
 				}
 				l_fDeviation = sqrt( l_fDeviation / m_ui64PartitionCount );

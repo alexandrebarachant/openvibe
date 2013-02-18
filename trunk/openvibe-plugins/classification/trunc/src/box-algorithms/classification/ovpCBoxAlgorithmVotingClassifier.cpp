@@ -176,7 +176,7 @@ boolean CBoxAlgorithmVotingClassifier::process(void)
 			{
 				l_f64ResultScore = l_vScore[i];
 				l_ui64ResultClassLabel = m_ui64ResultClassLabelBase + i;
-				l_ui64Time = l_rInput.m_vScore[m_ui64NumberOfRepetitions-1].second;
+				l_ui64Time = l_rInput.m_vScore[(unsigned int)(m_ui64NumberOfRepetitions-1)].second;
 			}
 			else if(l_vScore[i] == l_f64ResultScore)
 			{
@@ -184,11 +184,11 @@ boolean CBoxAlgorithmVotingClassifier::process(void)
 				{
 					l_f64ResultScore = l_vScore[i];
 					l_ui64ResultClassLabel = m_ui64RejectClassLabel;
-					l_ui64Time = l_rInput.m_vScore[m_ui64NumberOfRepetitions-1].second;
+					l_ui64Time = l_rInput.m_vScore[(unsigned int)(m_ui64NumberOfRepetitions-1)].second;
 				}
 			}
 
-			l_rInput.m_vScore.erase(l_rInput.m_vScore.begin(), l_rInput.m_vScore.begin()+m_ui64NumberOfRepetitions);
+			l_rInput.m_vScore.erase(l_rInput.m_vScore.begin(), l_rInput.m_vScore.begin()+(int)m_ui64NumberOfRepetitions);
 
 			this->getLogManager() << LogLevel_Trace << "Input " << i << " got score " << l_vScore[i] << "\n";
 		}
