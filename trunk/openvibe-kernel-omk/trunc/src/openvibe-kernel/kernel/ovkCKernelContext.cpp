@@ -209,7 +209,9 @@ boolean CKernelContext::initialize(void)
 	m_pLogListenerFile->configure(*m_pConfigurationManager);
 	m_pLogListenerConsole->activate(false);
 	m_pLogListenerConsole->activate(l_eConsoleLogLevel, LogLevel_Last, true);
+
 	m_pLogListenerFile->configure(*m_pConfigurationManager);
+	m_pLogListenerConsole->configure(*m_pConfigurationManager);
 
 	this->getLogManager() << LogLevel_Trace << "Creating algorithm manager\n";
 	m_pAlgorithmManager=new CAlgorithmManager(m_rMasterKernelContext);

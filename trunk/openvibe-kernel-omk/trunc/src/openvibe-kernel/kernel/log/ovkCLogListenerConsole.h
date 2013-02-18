@@ -63,6 +63,7 @@ namespace OpenViBE
 			OpenViBE::boolean m_bLogWithHexa;
 			OpenViBE::boolean m_bTimeInSeconds;
 			OpenViBE::uint64 m_ui64TimePrecision;
+			OpenViBE::boolean m_bUseColor;
 		};
 	};
 };

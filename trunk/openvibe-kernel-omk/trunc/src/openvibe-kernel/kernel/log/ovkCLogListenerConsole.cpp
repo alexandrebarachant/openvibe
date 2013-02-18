@@ -19,14 +19,17 @@ CLogListenerConsole::CLogListenerConsole(const IKernelContext& rKernelContext, c
 	,m_bLogWithHexa(false)
 	,m_bTimeInSeconds(true)
 	,m_ui64TimePrecision(3)
+	,m_bUseColor(true)
 {
 }
 
 void CLogListenerConsole::configure(const IConfigurationManager& rConfigurationManager)
 {
+	std::cout << "WOLOLO\n";
 	m_bTimeInSeconds = rConfigurationManager.expandAsBoolean("${Kernel_ConsoleLogTimeInSecond}",true);
 	m_bLogWithHexa = rConfigurationManager.expandAsBoolean("${Kernel_ConsoleLogWithHexa}",false);
 	m_ui64TimePrecision = rConfigurationManager.expandAsUInteger("${Kernel_ConsoleLogTimePrecision}",3);
+	m_bUseColor = rConfigurationManager.expandAsBoolean("${Kernel_ConsoleLogUseColor}",true);
 }
 
 
@@ -351,106 +354,109 @@ void CLogListenerConsole::log(const ELogLevel eLogLevel)
 
 void CLogListenerConsole::log(const ELogColor eLogColor)
 {
-	// Tests 'push state' bit
-	if(eLogColor&LogColor_PushStateBit)
+	if (m_bUseColor)
 	{
-		m_vLogColor.push(m_eLogColor);
-	}
-
-	// Tests 'pop state' bit
-	if(eLogColor&LogColor_PopStateBit)
-	{
-		if(m_vLogColor.size())
+		// Tests 'push state' bit
+		if(eLogColor&LogColor_PushStateBit)
 		{
-			m_eLogColor=m_vLogColor.top();
-			m_vLogColor.pop();
+			m_vLogColor.push(m_eLogColor);
 		}
-		else
+
+		// Tests 'pop state' bit
+		if(eLogColor&LogColor_PopStateBit)
+		{
+			if(m_vLogColor.size())
+			{
+				m_eLogColor=m_vLogColor.top();
+				m_vLogColor.pop();
+			}
+			else
+			{
+				m_eLogColor=LogColor_Default;
+			}
+		}
+
+		// Tests 'reset' bit
+		if(eLogColor&LogColor_ResetBit)
 		{
 			m_eLogColor=LogColor_Default;
 		}
+
+		// Tests 'foreground' bit
+		if(eLogColor&LogColor_ForegroundBit)
+		{
+			// Tests 'color' bit
+			if(eLogColor&LogColor_ForegroundColorBit)
+			{
+				ELogColor l_eColorMask=ELogColor(LogColor_ForegroundColorRedBit|LogColor_ForegroundColorGreenBit|LogColor_ForegroundColorBlueBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eColorMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eColorMask)|LogColor_ForegroundBit|LogColor_ForegroundColorBit);
+			}
+
+			// Test 'light' bit
+			if(eLogColor&LogColor_ForegroundLightBit)
+			{
+				ELogColor l_eLightMask=ELogColor(LogColor_ForegroundLightBit|LogColor_ForegroundLightStateBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eLightMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eLightMask)|LogColor_ForegroundBit);
+			}
+
+			// Test 'blink' bit
+			if(eLogColor&LogColor_ForegroundBlinkBit)
+			{
+				ELogColor l_eBlinkMask=ELogColor(LogColor_ForegroundBlinkBit|LogColor_ForegroundBlinkStateBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eBlinkMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eBlinkMask)|LogColor_ForegroundBit);
+			}
+
+			// Test 'bold' bit
+			if(eLogColor&LogColor_ForegroundBoldBit)
+			{
+				ELogColor l_eBoldMask=ELogColor(LogColor_ForegroundBoldBit|LogColor_ForegroundBoldStateBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eBoldMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eBoldMask)|LogColor_ForegroundBit);
+			}
+
+			// Test 'underline' bit
+			if(eLogColor&LogColor_ForegroundUnderlineBit)
+			{
+				ELogColor l_eUnderlineMask=ELogColor(LogColor_ForegroundBlinkBit|LogColor_ForegroundBlinkStateBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eUnderlineMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eUnderlineMask)|LogColor_ForegroundBit);
+			}
+		}
+
+		// Tests 'background' bit
+		if(eLogColor&LogColor_BackgroundBit)
+		{
+			// Tests 'color' bit
+			if(eLogColor&LogColor_BackgroundColorBit)
+			{
+				ELogColor l_eColorMask=ELogColor(LogColor_BackgroundColorRedBit|LogColor_BackgroundColorGreenBit|LogColor_BackgroundColorBlueBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eColorMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eColorMask)|LogColor_BackgroundBit|LogColor_BackgroundColorBit);
+			}
+
+			// Test 'light' bit
+			if(eLogColor&LogColor_BackgroundLightBit)
+			{
+				ELogColor l_eLightMask=ELogColor(LogColor_BackgroundLightBit|LogColor_BackgroundLightStateBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eLightMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eLightMask)|LogColor_BackgroundBit);
+			}
+
+			// Test 'blink' bit
+			if(eLogColor&LogColor_BackgroundBlinkBit)
+			{
+				ELogColor l_eBlinkMask=ELogColor(LogColor_BackgroundBlinkBit|LogColor_BackgroundBlinkStateBit);
+				m_eLogColor=ELogColor(m_eLogColor&(~l_eBlinkMask));
+				m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eBlinkMask)|LogColor_BackgroundBit);
+			}
+		}
+
+		// Finally applies current color
+		applyColor();
 	}
-
-	// Tests 'reset' bit
-	if(eLogColor&LogColor_ResetBit)
-	{
-		m_eLogColor=LogColor_Default;
-	}
-
-	// Tests 'foreground' bit
-	if(eLogColor&LogColor_ForegroundBit)
-	{
-		// Tests 'color' bit
-		if(eLogColor&LogColor_ForegroundColorBit)
-		{
-			ELogColor l_eColorMask=ELogColor(LogColor_ForegroundColorRedBit|LogColor_ForegroundColorGreenBit|LogColor_ForegroundColorBlueBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eColorMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eColorMask)|LogColor_ForegroundBit|LogColor_ForegroundColorBit);
-		}
-
-		// Test 'light' bit
-		if(eLogColor&LogColor_ForegroundLightBit)
-		{
-			ELogColor l_eLightMask=ELogColor(LogColor_ForegroundLightBit|LogColor_ForegroundLightStateBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eLightMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eLightMask)|LogColor_ForegroundBit);
-		}
-
-		// Test 'blink' bit
-		if(eLogColor&LogColor_ForegroundBlinkBit)
-		{
-			ELogColor l_eBlinkMask=ELogColor(LogColor_ForegroundBlinkBit|LogColor_ForegroundBlinkStateBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eBlinkMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eBlinkMask)|LogColor_ForegroundBit);
-		}
-
-		// Test 'bold' bit
-		if(eLogColor&LogColor_ForegroundBoldBit)
-		{
-			ELogColor l_eBoldMask=ELogColor(LogColor_ForegroundBoldBit|LogColor_ForegroundBoldStateBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eBoldMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eBoldMask)|LogColor_ForegroundBit);
-		}
-
-		// Test 'underline' bit
-		if(eLogColor&LogColor_ForegroundUnderlineBit)
-		{
-			ELogColor l_eUnderlineMask=ELogColor(LogColor_ForegroundBlinkBit|LogColor_ForegroundBlinkStateBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eUnderlineMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eUnderlineMask)|LogColor_ForegroundBit);
-		}
-	}
-
-	// Tests 'background' bit
-	if(eLogColor&LogColor_BackgroundBit)
-	{
-		// Tests 'color' bit
-		if(eLogColor&LogColor_BackgroundColorBit)
-		{
-			ELogColor l_eColorMask=ELogColor(LogColor_BackgroundColorRedBit|LogColor_BackgroundColorGreenBit|LogColor_BackgroundColorBlueBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eColorMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eColorMask)|LogColor_BackgroundBit|LogColor_BackgroundColorBit);
-		}
-
-		// Test 'light' bit
-		if(eLogColor&LogColor_BackgroundLightBit)
-		{
-			ELogColor l_eLightMask=ELogColor(LogColor_BackgroundLightBit|LogColor_BackgroundLightStateBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eLightMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eLightMask)|LogColor_BackgroundBit);
-		}
-
-		// Test 'blink' bit
-		if(eLogColor&LogColor_BackgroundBlinkBit)
-		{
-			ELogColor l_eBlinkMask=ELogColor(LogColor_BackgroundBlinkBit|LogColor_BackgroundBlinkStateBit);
-			m_eLogColor=ELogColor(m_eLogColor&(~l_eBlinkMask));
-			m_eLogColor=ELogColor(m_eLogColor|(eLogColor&l_eBlinkMask)|LogColor_BackgroundBit);
-		}
-	}
-
-	// Finally applies current color
-	applyColor();
 }
 
 #if defined OVK_OS_Linux
@@ -541,6 +547,7 @@ void CLogListenerConsole::applyColor(void)
 	}
 
 	#undef _command_separator_
+
 }
 
 #elif defined OVK_OS_Windows
