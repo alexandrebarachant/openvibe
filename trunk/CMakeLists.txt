@@ -2,17 +2,26 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 	
 PROJECT(OpenVIBE)
 
-MESSAGE(STATUS "Setting CMake flags...")
+MESSAGE(STATUS "Appending compilation flags...")
 
 IF(WIN32)
-	SET(CMAKE_CXX_FLAGS "/DWIN32 /D_WINDOWS /W3 /Zm1000 /EHsc /GR /wd4355")
+#	ADD_DEFINITIONS(/DYOUR_DEFINE_HERE)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4355")
 ELSEIF(UNIX)
-	SET(CMAKE_CXX_FLAGS "-Wall")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 ELSE(WIN32)
-	MESSAGE(STATUS "Warning: unknown platform")
+	MESSAGE(WARNING "Warning: unknown platform")
 ENDIF(WIN32)	
 
-# if no specific branch has been given for a component, default is to compile trunk
+# Print the used compilation parameters (for transparency)
+GET_DIRECTORY_PROPERTY(TMP_DEFINITIONS COMPILE_DEFINITIONS)
+MESSAGE(STATUS "Compilation flags used at source root: ")
+MESSAGE(STATUS "  COMPILE_DEFINITIONS = '${TMP_DEFINITIONS}'")
+MESSAGE(STATUS "  CMAKE_CXX_FLAGS = '${CMAKE_CXX_FLAGS}'")
+MESSAGE(STATUS "  CMAKE_CXX_FLAGS_RELEASE = '${CMAKE_CXX_FLAGS_RELEASE}'")
+MESSAGE(STATUS "  CMAKE_CXX_FLAGS_DEBUG = '${CMAKE_CXX_FLAGS_DEBUG}'")
+
+# if no specific branch has been given for an openvibe component, default is to compile its trunk folder
 SET(OV_TRUNK "trunc")
 
 # To compile your own non-trunk branches, add variables OV_BRANCH_[DIR OR DIR_DIR] to point to "branches/YOURBRANCH" for each.
