@@ -352,7 +352,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ "`grep -E 'Ubuntu|LinuxMint' /etc/lsb-release 2> /dev/null`" != "" ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libglade2-dev gfortran libgsl0-dev libexpat1-dev libreadline-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev libncurses5-dev python-dev libeigen3-dev"
+		ov_ubuntu_packages="subversion doxygen make automake autoconf cmake unzip gcc g++ libgtk2.0-dev libglade2-dev gfortran libgsl0-dev libexpat1-dev libreadline-dev libzzip-dev libtool libxaw7-dev libpcre3-dev libfreeimage-dev libglu1-mesa-dev libalut-dev libvorbis-dev libncurses5-dev python-dev libeigen3-dev libogre-dev libcegui-mk2-dev libois-dev libboost-dev libboost-thread-dev liblua5.2-dev libboost-regex-dev"
 		for package in $ov_ubuntu_packages; do
 			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 			ov_dpkg_retcode=$?
@@ -479,7 +479,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "clearlooks"
 			ov_hit_package "libglade"
 			ov_hit_package "glade"
-#			ov_hit_package "boost"
+			ov_hit_package "boost"
 
 #			ov_hit_package "itpp_external"
 #			ov_hit_package "itpp"
@@ -487,10 +487,12 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "gsl"
 
 			ov_hit_package "freeimage"
-#			ov_hit_package "ois"
+			ov_hit_package "ois"
 			ov_hit_package "zziplib"
 			ov_hit_package "cg"
-#			ov_hit_package "ogre"
+			ov_hit_package "ogre"
+			ov_hit_package "cegui"
+			ov_hit_package "lua"
 
 #			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
 #			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
@@ -678,7 +680,7 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 	if [[ -e /etc/fedora-release ]]; then
 		ov_native_package_installed=true
 		ov_native_package_log_file="$ov_target_folder_log/native-packages.log"
-		ov_fedora_packages="wget subversion doxygen make automake autoconf cmake unzip gcc gcc-c++ gtk2-devel libglade2-devel gcc-gfortran expat-devel zziplib-devel libtool libXaw-devel python-devel pcre-devel readline-devel freeimage-devel mesa-libGLU-devel freealut-devel libvorbis-devel bzip2 eigen3-devel"
+		ov_fedora_packages="wget subversion doxygen make automake autoconf cmake unzip gcc gcc-c++ gtk2-devel libglade2-devel gcc-gfortran expat-devel zziplib-devel libtool libXaw-devel python-devel pcre-devel readline-devel freeimage-devel mesa-libGLU-devel freealut-devel libvorbis-devel bzip2 eigen3-devel ogre-devel ois-devel cegui-devel boost-regex boost lua-devel"
 #		for package in $ov_ubuntu_packages; do
 #			ov_dpkg_output=`dpkg -l $package 2>&1 | grep "^ii"`
 #			ov_dpkg_retcode=$?
@@ -804,7 +806,8 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "clearlooks"
 			ov_hit_package "libglade"
 			ov_hit_package "glade"
-#			ov_hit_package "boost"
+			ov_hit_package "boost"
+			ov_hit_package "lua"
 
 #			ov_hit_package "itpp_external"
 #			ov_hit_package "itpp"
@@ -812,10 +815,11 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 			ov_hit_package "gsl"
 			
 			ov_hit_package "freeimage"
-#			ov_hit_package "ois"
+			ov_hit_package "ois"
 			ov_hit_package "zziplib"
 			ov_hit_package "cg"
-#			ov_hit_package "ogre"
+			ov_hit_package "ogre"
+			ov_hit_package "cegui"
 
 #			mkdir "$ov_target_folder_lib/OGRE" 2> /dev/null
 #			rm "$ov_target_folder_lib/OGRE/Plugins.cfg" 2> /dev/null
@@ -1495,34 +1499,34 @@ ov_package_make_hook_lua='
 ##                                              ##
 ##################################################
 
-rm $ov_environment_configuration_script 2> /dev/null
-touch $ov_environment_configuration_script
-
-echo '#!/bin/bash' >> $ov_environment_configuration_script
-echo '' >> $ov_environment_configuration_script
-echo 'export OpenViBE_dependencies='$ov_target_folder >> $ov_environment_configuration_script
-echo '' >> $ov_environment_configuration_script >> $ov_environment_configuration_script
-echo 'export PKG_CONFIG_PATH='$ov_target_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $ov_environment_configuration_script
-echo 'export LD_LIBRARY_PATH='$ov_target_folder'/lib64:'$ov_target_folder'/lib:'$ov_target_folder'/lib/opt:$LD_LIBRARY_PATH' >> $ov_environment_configuration_script
-echo 'export PATH='$ov_target_folder'/bin:$PATH' >> $ov_environment_configuration_script
-echo '' >> $ov_environment_configuration_script
 if [[ ! $ov_native_package_installed == true ]]; then
+	rm $ov_environment_configuration_script 2> /dev/null
+	touch $ov_environment_configuration_script
+
+	echo '#!/bin/bash' >> $ov_environment_configuration_script
+	echo '' >> $ov_environment_configuration_script
+	echo 'export OpenViBE_dependencies='$ov_target_folder >> $ov_environment_configuration_script
+	echo '' >> $ov_environment_configuration_script >> $ov_environment_configuration_script
+	echo 'export PKG_CONFIG_PATH='$ov_target_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $ov_environment_configuration_script
+	echo 'export LD_LIBRARY_PATH='$ov_target_folder'/lib64:'$ov_target_folder'/lib:'$ov_target_folder'/lib/opt:$LD_LIBRARY_PATH' >> $ov_environment_configuration_script
+	echo 'export PATH='$ov_target_folder'/bin:$PATH' >> $ov_environment_configuration_script
+	echo '' >> $ov_environment_configuration_script
 	echo '' >> $ov_environment_configuration_script
 	echo 'export BOOST_ROOT='$ov_target_folder'/include/boost_1_34_1' >> $ov_environment_configuration_script
 	echo 'export GTK2_RC_FILES='$ov_target_folder'/share/themes/Clearlooks/gtk-2.0/gtkrc' >> $ov_environment_configuration_script
 	echo 'export GTK_PATH='$ov_target_folder >> $ov_environment_configuration_script
 	echo '' >> $ov_environment_configuration_script
-fi;
-echo 'export LUA_PATH='$ov_target_folder_share'/lua/5.1/?.lua\;?.lua' >> $ov_environment_configuration_script
-echo 'export LUA_CPATH='$ov_target_folder_lib'/lua/5.1/?.so\;?.so' >> $ov_environment_configuration_script
-echo '' >> $ov_environment_configuration_script
-echo 'export OGRE_HOME='$ov_target_folder >> $ov_environment_configuration_script
-echo 'export VRPN_ROOT='$ov_target_folder >> $ov_environment_configuration_script
-echo 'export OMK_BIN='$ov_target_folder >> $ov_environment_configuration_script
-echo 'export OMK_HOME=$OMK_BIN' >> $ov_environment_configuration_script
-echo '' >> $ov_environment_configuration_script
+	echo 'export LUA_PATH='$ov_target_folder_share'/lua/5.1/?.lua\;?.lua' >> $ov_environment_configuration_script
+	echo 'export LUA_CPATH='$ov_target_folder_lib'/lua/5.1/?.so\;?.so' >> $ov_environment_configuration_script
+	echo '' >> $ov_environment_configuration_script
+	echo 'export OGRE_HOME='$ov_target_folder >> $ov_environment_configuration_script
+	echo 'export VRPN_ROOT='$ov_target_folder >> $ov_environment_configuration_script
+	echo 'export OMK_BIN='$ov_target_folder >> $ov_environment_configuration_script
+	echo 'export OMK_HOME=$OMK_BIN' >> $ov_environment_configuration_script
+	echo '' >> $ov_environment_configuration_script
 
-source $ov_environment_configuration_script
+	source $ov_environment_configuration_script
+fi;
 
 ####################################
 ##                                ##
@@ -1530,7 +1534,7 @@ source $ov_environment_configuration_script
 ##                                ##
 ####################################
 
-ov_install_package "cmake"
+	ov_install_package "cmake"
 
 	# package management related packages
 	ov_install_package "pkgconfig"
@@ -1615,9 +1619,9 @@ ov_install_package "vrpn"
 # Scripting packages
 #ov_install_package "readline"
 #ov_install_package "ncurses"
-ov_install_package "lua"
+#ov_install_package "lua"
 #ov_install_package "swig"
 
-rm -f linux-dependencies 2> /dev/null
-ln -sf $ov_environment_configuration_script linux-dependencies
+#rm -f linux-dependencies 2> /dev/null
+#ln -sf $ov_environment_configuration_script linux-dependencies
 echo "Install linux dependencies done"

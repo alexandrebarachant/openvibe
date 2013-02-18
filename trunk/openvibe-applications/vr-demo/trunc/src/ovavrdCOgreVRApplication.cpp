@@ -87,8 +87,7 @@ bool COgreVRApplication::setup()
 	pluginsPath = std::string(getenv("OGRE_HOME"))+std::string("/bin/release/plugins.cfg");
  #endif
 #elif defined OVA_OS_Linux
-	printf("%p\n", getenv("OGRE_HOME"));
-	pluginsPath = Ogre::String(getenv("OGRE_HOME"))+Ogre::String("/lib/OGRE/Plugins.cfg");
+	pluginsPath = std::string(getenv("OV_DISTROOT")) + std::string("/bin/Plugins.cfg");
 #else
 	#error "failing text"
 #endif

@@ -1,6 +1,12 @@
 #!/bin/bash
 
-source linux-init_env_command
+if [ "$MATLABROOT" == "" ]; then
+	if [ "`which matlab`" != "" ] ; then 
+		export MATLABROOT=`matlab -e | grep "^MATLAB=" | sed "s/^MATLAB=//g"`
+		export MATLABARCH=`matlab -e | grep "^ARCH=" | sed "s/^ARCH=//g"`
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MATLABROOT/bin/$MATLABARCH
+	fi
+fi
 
 ov_build_type=Release
 if [ "$1" == "--debug" ]; then

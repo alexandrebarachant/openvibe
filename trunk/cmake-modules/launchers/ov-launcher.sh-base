@@ -3,9 +3,9 @@
 # find out where this script is located, assume it contains the openvibe distribution tree.
 # (the used mechanism allows running the script while in another directory.)
 OV_DISTROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export OV_DISTROOT
 
-source "$OV_DISTROOT/bin/OpenViBE-set-env.sh"
-export LD_LIBRARY_PATH="$OV_DISTROOT/lib:$OpenViBE_dependencies/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$OV_DISTROOT/lib:$OV_DISTROOT/../scripts/software/lib:$LD_LIBRARY_PATH"
 export LC_ALL=C
 renice 19 $$
 

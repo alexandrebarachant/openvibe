@@ -8,6 +8,11 @@ IF(WIN32)
 #	ADD_DEFINITIONS(/DYOUR_DEFINE_HERE)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4355")
 ELSEIF(UNIX)
+	# Dependency folder
+	SET(ENV{OpenViBE_dependencies} "${CMAKE_SOURCE_DIR}/scripts/software")
+
+	SET(ENV{VRPN_ROOT} $ENV{OpenViBE_dependencies})
+	SET(ENV{PKG_CONFIG_PATH} "$ENV{OpenViBE_dependencies}/lib/pkgconfig")
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 ELSE(WIN32)
 	MESSAGE(WARNING "Warning: unknown platform")
@@ -64,7 +69,7 @@ SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
 #SET(OV_BRANCH_APPLICATIONS_ID-GENERATOR								"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_PLUGIN-INSPECTOR							"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_SKELETON-GENERATOR							"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_SSVEP-DEMO									"branches/mybranch")
+SET(OV_BRANCH_APPLICATIONS_SSVEP-DEMO									"__SKIPME")
 #SET(OV_BRANCH_APPLICATIONS_VR-DEMO										"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_VRPN-SIMULATOR								"branches/mybranch")
 #SET(OV_BRANCH_DOCUMENTATION											"branches/mybranch")
@@ -117,7 +122,7 @@ IF(WIN32)
 	INSTALL(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/win32-dependencies.cmd DESTINATION ${CMAKE_INSTALL_PREFIX}/bin RENAME "OpenViBE-set-env.cmd")
 ENDIF(WIN32)
 IF(UNIX)
-	INSTALL(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/linux-dependencies DESTINATION ${CMAKE_INSTALL_PREFIX}/bin RENAME "OpenViBE-set-env.sh")
+#	INSTALL(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/linux-dependencies DESTINATION ${CMAKE_INSTALL_PREFIX}/bin RENAME "OpenViBE-set-env.sh")
 ENDIF(UNIX)
 
 # ----------------------
@@ -132,6 +137,14 @@ ENDIF(UNIX)
 
 CONFIGURE_FILE("${CMAKE_MODULE_PATH}/launchers/${OV_EXT_CMD_FILE}-base" "${CMAKE_CURRENT_BINARY_DIR}/${OV_EXT_CMD_FILE}")
 INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${OV_EXT_CMD_FILE} DESTINATION "bin/")
+
+
+# create the Plugins.cfg file for Ogre on UNIX
+IF(UNIX)
+	execute_process(COMMAND pkg-config --variable=plugindir OGRE OUTPUT_VARIABLE OGRE3D_PLUGIN_PATH)
+	CONFIGURE_FILE("${CMAKE_MODULE_PATH}/launchers/Plugins.cfg-base" "${CMAKE_CURRENT_BINARY_DIR}/Plugins.cfg")
+	INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/Plugins.cfg DESTINATION "bin/")
+ENDIF(UNIX)
 
 
 
