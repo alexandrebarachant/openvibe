@@ -193,7 +193,7 @@ CBCI2000ReaderHelper::CBCI2000ReaderHelper(const char * sFilename)
 	CString l_sMeta=CString(l_oStringBuffer.str().c_str());
 
 	m_oBCIFile.seekg(0,std::ios::end);
-	int32 l_i32FileSize=m_oBCIFile.tellg();
+	int32 l_i32FileSize=(int32)m_oBCIFile.tellg();
 	m_oBCIFile.seekg(0,std::ios::beg);
 
 	m_bGood=parseMeta(l_sMeta);

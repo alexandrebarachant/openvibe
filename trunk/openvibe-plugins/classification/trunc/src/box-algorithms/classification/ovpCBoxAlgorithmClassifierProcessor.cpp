@@ -55,7 +55,7 @@ boolean CBoxAlgorithmClassifierProcessor::initialize(void)
 	{
 		size_t l_iFileLen;
 		l_oFile.seekg(0, ios::end);
-		l_iFileLen=l_oFile.tellg();
+		l_iFileLen=(size_t)l_oFile.tellg();
 		l_oFile.seekg(0, ios::beg);
 		l_pConfigurationFile->setSize(l_iFileLen, true);
 		l_oFile.read((char*)l_pConfigurationFile->getDirectPointer(), l_iFileLen);

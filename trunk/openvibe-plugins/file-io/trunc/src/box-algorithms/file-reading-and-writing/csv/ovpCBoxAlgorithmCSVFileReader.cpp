@@ -284,7 +284,7 @@ boolean CBoxAlgorithmCSVFileReader::process(void)
 				&&!this->getTypeManager().isDerivedFromStream(m_oTypeIdentifier,OV_TypeId_ChannelLocalisation))
 		{
 			//get the date of the first bloc samples to send
-			uint64 l_ui64StartTime=atof(m_vDataMatrix[0][0].c_str())*65536.0;
+			uint64 l_ui64StartTime=(uint64)(atof(m_vDataMatrix[0][0].c_str())*65536.0);
 			l_ui64StartTime=l_ui64StartTime<<16;
 			l_rDynamicBoxContext.markOutputAsReadyToSend(0,l_ui64StartTime,this->getPlayerContext().getCurrentTime());
 
@@ -340,14 +340,14 @@ OpenViBE::boolean CBoxAlgorithmCSVFileReader::process_stimulation(void){
 	for(uint32 i=0;i<m_vDataMatrix.size();i++)
 	{
 		//stimulation date
-		uint64 l_ui64StimulationDate=atof(m_vDataMatrix[i][0].c_str())*65536.0;
+		uint64 l_ui64StimulationDate=(uint64)(atof(m_vDataMatrix[i][0].c_str())*65536.0);
 		l_ui64StimulationDate=l_ui64StimulationDate<<16;
 
 		//stimulation indices
-		uint64 l_ui64Stimulation=atof(m_vDataMatrix[i][1].c_str());
+		uint64 l_ui64Stimulation=(uint64)atof(m_vDataMatrix[i][1].c_str());
 
 		//stimulation duration
-		uint64 l_ui64StimulationDuration=atof(m_vDataMatrix[i][2].c_str())*65536.0;
+		uint64 l_ui64StimulationDuration=(uint64)(atof(m_vDataMatrix[i][2].c_str())*65536.0);
 		l_ui64StimulationDuration=l_ui64StimulationDuration<<16;
 
 		getLogManager()<<LogLevel_Trace<<"  Stimulation "<<l_ui64Stimulation<<" start at time: "<<l_ui64StimulationDate<<"("<<((l_ui64StimulationDate>>16)/65536.0)<<" s)"<<" end during:"<<l_ui64StimulationDuration<<"("<<((l_ui64StimulationDuration>>16)/65536.0)<<" s)\n";
@@ -413,10 +413,10 @@ OpenViBE::boolean CBoxAlgorithmCSVFileReader::process_channelLocalisation(void)
 
 	for(uint64 i=0;i<l_vChannelBloc.size();i++)
 	{
-		m_vDataMatrix.push_back(l_vChannelBloc[i]);
+		m_vDataMatrix.push_back(l_vChannelBloc[(unsigned int)i]);
 
 		//send the current bloc if the next data hasn't the same date
-		if(i>=l_vChannelBloc.size()-1 || l_vChannelBloc[i+1][0]!=m_vDataMatrix[0][0])
+		if(i>=l_vChannelBloc.size()-1 || l_vChannelBloc[(unsigned int)(i+1)][0]!=m_vDataMatrix[0][0])
 		{
 			convertVectorDataToMatrix(&l_oMatrix);
 
@@ -435,7 +435,7 @@ OpenViBE::boolean CBoxAlgorithmCSVFileReader::process_channelLocalisation(void)
 			}
 
 			m_pAlgorithmEncoder->process(OVP_GD_Algorithm_ChannelLocalisationStreamEncoder_InputTriggerId_EncodeBuffer);
-			uint64 l_ui64Date=atof(m_vDataMatrix[0][0].c_str())*65536.0;
+			uint64 l_ui64Date=(uint64)(atof(m_vDataMatrix[0][0].c_str())*65536.0);
 			l_ui64Date=l_ui64Date<<16;
 			this->getDynamicBoxContext().markOutputAsReadyToSend(0,l_ui64Date,l_ui64Date);
 
@@ -492,9 +492,9 @@ OpenViBE::boolean CBoxAlgorithmCSVFileReader::process_spectrum(void)
 
 	for(uint64 i=0;i<l_vSpectrumBloc.size();i++)
 	{
-		m_vDataMatrix.push_back(l_vSpectrumBloc[i]);
+		m_vDataMatrix.push_back(l_vSpectrumBloc[(unsigned int)i]);
 		//send the current bloc if the next data hasn't the same date
-		if(i>=l_vSpectrumBloc.size()-1 || l_vSpectrumBloc[i+1][0]!=m_vDataMatrix[0][0])
+		if(i>=l_vSpectrumBloc.size()-1 || l_vSpectrumBloc[(unsigned int)(i+1)][0]!=m_vDataMatrix[0][0])
 		{
 			convertVectorDataToMatrix(&l_oMatrix);
 
@@ -528,7 +528,7 @@ OpenViBE::boolean CBoxAlgorithmCSVFileReader::process_spectrum(void)
 			}
 
 			m_pAlgorithmEncoder->process(OVP_GD_Algorithm_SpectrumStreamEncoder_InputTriggerId_EncodeBuffer);
-			uint64 l_ui64Date=atof(m_vDataMatrix[0][0].c_str())*65536.0;
+			uint64 l_ui64Date=(uint64)(atof(m_vDataMatrix[0][0].c_str())*65536.0);
 			l_ui64Date=l_ui64Date<<16;
 			this->getDynamicBoxContext().markOutputAsReadyToSend(0,l_ui64Date-1,l_ui64Date);
 

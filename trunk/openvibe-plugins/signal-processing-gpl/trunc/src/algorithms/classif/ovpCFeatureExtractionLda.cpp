@@ -58,8 +58,8 @@ boolean CFeatureExtractionLda::process(void)
 	if(isInputTriggerActive(OVP_Algorithm_FeatureExtractionLda_InputTriggerId_ExtractFeature))
 	{
 		// input vars
-		float64* l_pSignalEpochTable = l_pInputSignalEpochTable->getBuffer();
-		float64* l_pClass1SamplesNumber = l_pInputClass1SamplesNumber->getBuffer();
+		float64* l_pSignalEpochTable = (float64*)(l_pInputSignalEpochTable->getBuffer());
+		float64* l_pClass1SamplesNumber = (float64*)(l_pInputClass1SamplesNumber->getBuffer());
 
 		// dimension of input signal epochs
 		uint32 l_ui32InputSignalEpochTableDimensionNbUtterances=ip_pSignalEpochTable->getDimensionSize(0);
