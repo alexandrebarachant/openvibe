@@ -30,6 +30,12 @@ class CBoxSettingModifierVisitor : public IObjectVisitor, public XML::IReaderCal
 {
 public:
 
+
+	CBoxSettingModifierVisitor(IConfigurationManager* pConfigurationManager = NULL) :
+		IObjectVisitor(),
+		m_pConfigurationManager(pConfigurationManager)
+	{}
+
 	virtual void openChild(const char* sName, const char** sAttributeName, const char** sAttributeValue, XML::uint64 ui64AttributeCount)
 	{
 		if(!m_bIsParsingSettingOverride)
@@ -73,7 +79,15 @@ public:
 		if(rBox.hasAttribute(OVD_AttributeId_SettingOverrideFilename))
 		{
 			CString l_sSettingOverrideFilename=rBox.getAttributeValue(OVD_AttributeId_SettingOverrideFilename);
-			CString l_sSettingOverrideFilenameFinal=rObjectVisitorContext.getConfigurationManager().expand(l_sSettingOverrideFilename);
+			CString l_sSettingOverrideFilenameFinal;
+			if (m_pConfigurationManager == NULL)
+			{
+				l_sSettingOverrideFilenameFinal=rObjectVisitorContext.getConfigurationManager().expand(l_sSettingOverrideFilename);
+			}
+			else
+			{
+				l_sSettingOverrideFilenameFinal = m_pConfigurationManager->expand(l_sSettingOverrideFilename);
+			}
 
 			// message
 			rObjectVisitorContext.getLogManager() << LogLevel_Trace << "Trying to override [" << rBox.getName() << "] box settings with file [" << l_sSettingOverrideFilename << " which expands to " << l_sSettingOverrideFilenameFinal << "] !\n";
@@ -102,7 +116,8 @@ public:
 				l_oFile.seekg(0, ios::beg);
 				while(l_iFileLen && l_bStatusOk)
 				{
-					l_iBufferLen=(l_iFileLen>sizeof(l_sBuffer)?sizeof(l_sBuffer):l_iFileLen);
+					// File length is always positive so this is safe
+					l_iBufferLen=(unsigned(l_iFileLen)>sizeof(l_sBuffer)?sizeof(l_sBuffer):l_iFileLen);
 					l_oFile.read(l_sBuffer, l_iBufferLen);
 					l_iFileLen-=l_iBufferLen;
 					l_bStatusOk=l_pReader->processData(l_sBuffer, l_iBufferLen);
@@ -150,6 +165,7 @@ public:
 	uint32 m_ui32SettingIndex;
 	boolean m_bIsParsingSettingValue;
 	boolean m_bIsParsingSettingOverride;
+	IConfigurationManager* m_pConfigurationManager;
 
 #undef boolean
 	_IsDerivedFromClass_Final_(IObjectVisitor, OV_UndefinedIdentifier);
@@ -233,7 +249,7 @@ boolean CScheduler::initialize(void)
 		return false;
 	}
 
-	CBoxSettingModifierVisitor l_oBoxSettingModifierVisitor;
+	CBoxSettingModifierVisitor l_oBoxSettingModifierVisitor(&getKernelContext().getConfigurationManager());
 	m_pScenario->acceptVisitor(l_oBoxSettingModifierVisitor);
 
 	CIdentifier l_oBoxIdentifier;
