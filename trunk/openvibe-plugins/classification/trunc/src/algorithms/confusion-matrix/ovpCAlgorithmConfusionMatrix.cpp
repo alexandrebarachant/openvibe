@@ -55,13 +55,13 @@ boolean CAlgorithmConfusionMatrix::process(void)
 		op_pConfusionMatrix->setDimensionCount(2);
 		if(ip_bSums)
 		{
-			op_pConfusionMatrix->setDimensionSize(0,l_ui64ClassCount+1);
-			op_pConfusionMatrix->setDimensionSize(1,l_ui64ClassCount+1);
+			op_pConfusionMatrix->setDimensionSize(0,(uint32)(l_ui64ClassCount+1));
+			op_pConfusionMatrix->setDimensionSize(1,(uint32)(l_ui64ClassCount+1));
 		}
 		else
 		{
-			op_pConfusionMatrix->setDimensionSize(0,l_ui64ClassCount);
-			op_pConfusionMatrix->setDimensionSize(1,l_ui64ClassCount);
+			op_pConfusionMatrix->setDimensionSize(0,(uint32)l_ui64ClassCount);
+			op_pConfusionMatrix->setDimensionSize(1,(uint32)l_ui64ClassCount);
 		}
 
 		for(uint32 i = 0 ; i<l_ui64ClassCount; i++)
@@ -78,13 +78,13 @@ boolean CAlgorithmConfusionMatrix::process(void)
 
 		if(ip_bSums)
 		{
-			op_pConfusionMatrix->setDimensionLabel(0, l_ui64ClassCount, "Sums");
-			op_pConfusionMatrix->setDimensionLabel(1, l_ui64ClassCount, "Sums");
+			op_pConfusionMatrix->setDimensionLabel(0, (uint32)l_ui64ClassCount, "Sums");
+			op_pConfusionMatrix->setDimensionLabel(1, (uint32)l_ui64ClassCount, "Sums");
 		}
 
 		m_oConfusionMatrix.setDimensionCount(2);
-		m_oConfusionMatrix.setDimensionSize(0, l_ui64ClassCount);
-		m_oConfusionMatrix.setDimensionSize(1, l_ui64ClassCount);
+		m_oConfusionMatrix.setDimensionSize(0, (uint32)l_ui64ClassCount);
+		m_oConfusionMatrix.setDimensionSize(1, (uint32)l_ui64ClassCount);
 
 		// initialization
 		for(uint32 i = 0; i<op_pConfusionMatrix->getDimensionSize(0); i++)

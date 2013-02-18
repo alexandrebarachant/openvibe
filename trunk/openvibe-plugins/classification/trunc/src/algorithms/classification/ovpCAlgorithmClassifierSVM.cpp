@@ -78,9 +78,9 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 
 	boolean ip_bProbabilityEstimate=true;
 
-	m_oParam.svm_type = ip_i64SVMType;//C_SVC;
-	m_oParam.kernel_type = ip_i64SVMKernelType;//LINEAR;
-	m_oParam.degree = ip_i64Degree;//3;
+	m_oParam.svm_type = (int)ip_i64SVMType;//C_SVC;
+	m_oParam.kernel_type = (int)ip_i64SVMKernelType;//LINEAR;
+	m_oParam.degree = (int)ip_i64Degree;//3;
 	m_oParam.gamma = ip_f64Gamma;//0;	// 1/num_features
 	m_oParam.coef0 = ip_f64Coef0;//0;
 	m_oParam.nu = ip_f64Nu;//0.5;
@@ -128,7 +128,7 @@ boolean CAlgorithmClassifierSVM::train(const IFeatureVectorSet& rFeatureVectorSe
 	int * l_pWeightLabel=new int[l_vWeight.size()];
 	for(uint32 i=0;i<l_vWeight.size();i++)
 	{
-		l_pWeightLabel[i]=l_vWeightLabel[i];
+		l_pWeightLabel[i]=(int)l_vWeightLabel[i];
 	}
 	m_oParam.weight_label = l_pWeightLabel;//NULL;
 

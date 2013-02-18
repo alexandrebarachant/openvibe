@@ -1,9 +1,10 @@
 #include "Files.h"
 
 #if defined FS_OS_Linux
- #include <stdio.h>   // fopen()
+ #include <stdio.h>   // For fopen
+ #include <unistd.h>  //For access().
  #include <sys/stat.h>
- #include <sys/types.h>  // stat()
+ #include <sys/types.h>  // For stat().
 #elif defined FS_OS_Windows
  #include <windows.h>
 #else
