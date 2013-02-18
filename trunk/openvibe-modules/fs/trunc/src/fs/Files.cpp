@@ -1,9 +1,9 @@
 #include "Files.h"
 
 #if defined FS_OS_Linux
- #include <io.h>   // For access().
+ #include <stdio.h>   // fopen()
  #include <sys/stat.h>
- #include <sys/types.h>  // For stat().
+ #include <sys/types.h>  // stat()
 #elif defined FS_OS_Windows
  #include <windows.h>
 #else
@@ -136,7 +136,7 @@ boolean Files::directoryExists(const char *pathToCheck) {
 	if ( access( pathToCheck, 0 ) == 0 )
 	{
 		struct stat status;
-		stat( strPath.c_str(), &status );
+		stat( pathToCheck, &status );
 
 		if ( status.st_mode & S_IFDIR )
 		{
