@@ -1,3 +1,5 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.4)
+
 # REMOVE if all test is passed 
 # set(CMAKE_LEGACY_CYGWIN_WIN32 0)  # Remove when CMake >= 2.8.4 is required
 #------------------------
@@ -135,27 +137,50 @@ set( $ENV{LC_MESSAGES}      "en_EN" )
 message(" -- Start dashboard ${MODEL} - ${CTEST_BUILD_NAME} --")
 ctest_start(${MODEL} TRACK ${MODEL})
 
+set(ALL_OK "TRUE")
+
 ## -- Update
-message(" -- Update ${MODEL} - ${CTEST_BUILD_NAME} --")
-ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
+IF(ALL_OK)
+	message(" -- Update ${MODEL} - ${CTEST_BUILD_NAME} --")
+	ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
+	IF(res==-1) 
+		message(SEND_ERROR "  Update failed.")
+		set(ALL_OK "FALSE")
+	ENDIF(res==-1)
+ENDIF(ALL_OK)
 
 ## -- Configure	
-message(" -- Configure ${MODEL} - ${CTEST_BUILD_NAME} --")
-ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
-
+IF(ALL_OK)
+	message(" -- Configure ${MODEL} - ${CTEST_BUILD_NAME} --")
+	ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
+	IF(res!=0) 
+		message(SEND_ERROR "  Configure failed.")
+		set(ALL_OK "FALSE")
+	ENDIF(res!=0)
+ENDIF(ALL_OK)
+	
 ## -- BUILD
-message(" -- Build ${MODEL} - ${CTEST_BUILD_NAME} --")
-ctest_build(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
+IF(ALL_OK)
+	message(" -- Build ${MODEL} - ${CTEST_BUILD_NAME} --")
+	ctest_build(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
+	IF(res!=0) 
+		message(SEND_ERROR "  Build failed.")
+		set(ALL_OK "FALSE")
+	ENDIF(res!=0)
+ENDIF(ALL_OK)
 
 ## -- TEST
-message(" -- Test ${MODEL} - ${CTEST_BUILD_NAME} --")
-ctest_test(BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
-
+IF(ALL_OK)
+	message(" -- Test ${MODEL} - ${CTEST_BUILD_NAME} --")
+	ctest_test(BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
+	message(STATUS "  INFO : ctest_test(...) returned '${res}'")
+ENDIF(ALL_OK)
 
 ## -- SUBMIT
 message(" -- Submit ${MODEL} - ${CTEST_BUILD_NAME} --")
 
 ctest_submit(                                              RETURN_VALUE res)
+message(STATUS "  INFO : submit(...) returned '${res}'")
 
 message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
 
