@@ -57,6 +57,8 @@ namespace OpenViBEPlugins
 			char* m_sMatlabBuffer;
 			OpenViBE::boolean m_bErrorDetected;
 			OpenViBE::boolean printOutputBufferWithFormat(void);
+			OpenViBE::boolean checkFailureRoutine(OpenViBE::boolean bResult, OpenViBE::CString msg);
+			void sanitizePath(OpenViBE::CString &sPathToModify) const;
 
 			//void sendOutputHeader(OpenViBE::CIdentifier idOutputType);
 			//void sendOutputBuffer(OpenViBE::CIdentifier idOutputType);

@@ -10,7 +10,8 @@ namespace FS
 	public:
 
 		static FS::boolean equals(const char* pFile1, const char* pFile2);
-
+		static FS::boolean fileExists(const char* pathToCheck);
+		static FS::boolean directoryExists(const char* pathToCheck);
 	private:
 
 		Files(void);

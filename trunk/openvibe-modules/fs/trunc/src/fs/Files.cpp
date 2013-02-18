@@ -1,7 +1,9 @@
 #include "Files.h"
 
 #if defined FS_OS_Linux
+ #include <io.h>   // For access().
  #include <sys/stat.h>
+ #include <sys/types.h>  // For stat().
 #elif defined FS_OS_Windows
  #include <windows.h>
 #else
@@ -99,3 +101,48 @@ boolean Files::equals(const char* pFile1, const char* pFile2)
 #else
 
 #endif
+
+boolean Files::fileExists(const char *pathToCheck) {
+	if(!pathToCheck) 
+	{
+		return false;
+	}
+	FILE *fp = fopen( pathToCheck, "r");
+	if(!fp) {
+		return false;
+	} else {
+		fclose(fp);
+		return true;
+	}
+}
+
+boolean Files::directoryExists(const char *pathToCheck) {
+	if(!pathToCheck) 
+	{
+		return false;
+	}
+#if defined FS_OS_Windows
+	DWORD ftyp = GetFileAttributesA(pathToCheck);
+	if (ftyp == INVALID_FILE_ATTRIBUTES) 
+	{
+		return false;
+	}
+	if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+	{
+		return true;
+	}
+#endif
+#if defined FS_OS_Linux
+	if ( access( pathToCheck, 0 ) == 0 )
+	{
+		struct stat status;
+		stat( strPath.c_str(), &status );
+
+		if ( status.st_mode & S_IFDIR )
+		{
+			return true;
+		}
+	} 
+#endif
+	return false;
+}

@@ -15,6 +15,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleSystem")
+INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 
 INCLUDE("FindThirdPartyMatlab")
