@@ -205,7 +205,7 @@ boolean CScenarioImporterXML::doImport(IScenarioImporterContext& rScenarioImport
 		size_t l_iBufferLen=0;
 		size_t l_iFileLen;
 		l_oFile.seekg(0, ios::end);
-		l_iFileLen=l_oFile.tellg();
+		l_iFileLen=(size_t)l_oFile.tellg();
 		l_oFile.seekg(0, ios::beg);
 		while(l_iFileLen && l_bStatusOk)
 		{

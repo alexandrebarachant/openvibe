@@ -36,8 +36,8 @@ boolean CAlgorithmARBurgMethod::process(void)
 {
     m_ui32Order = ip_ui32Order;
 
-    int l_ui32ChannelCount = ip_pMatrix->getDimensionSize(0);
-    int l_ui32SamplesPerChannel = ip_pMatrix->getDimensionSize(1);
+    uint32 l_ui32ChannelCount = ip_pMatrix->getDimensionSize(0);
+    uint32 l_ui32SamplesPerChannel = ip_pMatrix->getDimensionSize(1);
 
     IMatrix* l_pInputMatrix=ip_pMatrix;
     IMatrix* l_pOutputMatrix=op_pMatrix;

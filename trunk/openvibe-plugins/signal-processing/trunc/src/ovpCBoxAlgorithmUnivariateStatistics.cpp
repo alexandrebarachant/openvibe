@@ -235,7 +235,7 @@ boolean CBoxUnivariateStatistic::process(void)
 			{
 #endif
 			this->getLogManager() << LogLevel_Debug << "DownSampling information : " << op_ui64SamplingRate << "*" << op_fCompression << "=>" << op_ui64SamplingRate*op_fCompression << "\n";
-			op_ui64SamplingRate=op_ui64SamplingRate*op_fCompression;
+			op_ui64SamplingRate=(uint64)(op_ui64SamplingRate*op_fCompression);
 			if(op_ui64SamplingRate==0)
 			{
 				this->getLogManager() << LogLevel_Warning <<"Output sampling Rate is null, it could produce problem in next boxes \n";

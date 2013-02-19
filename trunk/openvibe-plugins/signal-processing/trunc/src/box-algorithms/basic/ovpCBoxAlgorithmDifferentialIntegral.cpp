@@ -96,8 +96,8 @@ boolean CBoxAlgorithmDifferentialIntegral::process(void)
 			{
 				m_pStabilized[k] = false;
 				m_pStep[k] = 0;
-				m_pPastData[k] = new OpenViBE::float64[m_ui64FilterOrder];
-				m_pTmpData[k] = new OpenViBE::float64[m_ui64FilterOrder];
+				m_pPastData[k] = new OpenViBE::float64[(unsigned int)m_ui64FilterOrder];
+				m_pTmpData[k] = new OpenViBE::float64[(unsigned int)m_ui64FilterOrder];
 				m_pTmpData[k][0] = 0;
 			}
 
