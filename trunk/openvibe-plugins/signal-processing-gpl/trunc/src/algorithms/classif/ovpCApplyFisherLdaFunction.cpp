@@ -68,7 +68,7 @@ boolean CApplyFisherLdaFunction::process(void)
 		{
 			for(uint64 j=0 ; j<l_ui32InputMatrixSignalDimensionSizeEpoch; j++)
 			{
-				l_matInputSignal(i, j) =  l_pInputSignal[i*l_ui32InputMatrixSignalDimensionSizeEpoch+j];
+				l_matInputSignal((uint32)i, (uint32)j) =  l_pInputSignal[i*l_ui32InputMatrixSignalDimensionSizeEpoch+j];
 			}
 		}
 		//mean
@@ -81,7 +81,7 @@ boolean CApplyFisherLdaFunction::process(void)
 		{
 			for(uint64 j=0 ; j<l_ui32InputMatrixGlobalMeanDimensionSizeFeatures; j++)
 			{
-				l_matInputGlobalMean(i, j) =  l_pInputGlobalMean[i*l_ui32InputMatrixGlobalMeanDimensionSizeFeatures+j];
+				l_matInputGlobalMean((uint32)i, (uint32)j) =  l_pInputGlobalMean[i*l_ui32InputMatrixGlobalMeanDimensionSizeFeatures+j];
 			}
 		}
 
@@ -96,7 +96,7 @@ boolean CApplyFisherLdaFunction::process(void)
 		{
 			for(uint64 j=0 ; j<l_ui32InputMatrixGlobalCovarianceDimensionNbColumn; j++)
 			{
-				l_matIntputGlobalCovariance(i, j) =  l_pInputGlobalCovariance[i*l_ui32InputMatrixGlobalCovarianceDimensionNbColumn+j];
+				l_matIntputGlobalCovariance((uint32)i, (uint32)j) =  l_pInputGlobalCovariance[i*l_ui32InputMatrixGlobalCovarianceDimensionNbColumn+j];
 			}
 		}
 
@@ -107,7 +107,7 @@ boolean CApplyFisherLdaFunction::process(void)
 		{
 			for(uint64 j=0 ; j<ip_pMatrixGlobalProbability->getDimensionSize(1); j++)
 			{
-				l_matInputProbability(i, j) =  l_pInputGlobalProbability[i*ip_pMatrixGlobalProbability->getDimensionSize(1)+j];
+				l_matInputProbability((uint32)i, (uint32)j) =  l_pInputGlobalProbability[i*ip_pMatrixGlobalProbability->getDimensionSize(1)+j];
 			}
 		}
 
@@ -137,7 +137,7 @@ boolean CApplyFisherLdaFunction::process(void)
 			mat l_matTransposeRowInputSignal(ip_pMatrixSignal->getDimensionSize(1), 1);
 			for(uint64 j=0 ; j<ip_pMatrixSignal->getDimensionSize(1); j++)
 			{
-				l_matTransposeRowInputSignal(j,0) = l_matInputSignal(i, j);
+				l_matTransposeRowInputSignal((uint32)j,0) = l_matInputSignal(i, (uint32)j);
 			}
 			l_matMeanByInvCovByTransX = operator*(l_matMeanByInvCov, l_matTransposeRowInputSignal);
 

@@ -88,8 +88,8 @@ boolean CComputeFisherLdaFunction::process(void)
 		{
 			for(uint64 j=0 ; j<l_ui32InputMatrixFirstClassDimensionSizeEpoch; j++)
 			{
-				l_matInputFirstClass(i, j)=  l_pInputFirstClass[j+i*l_ui32InputMatrixFirstClassDimensionSizeEpoch];
-				this->getLogManager() << LogLevel_Debug << l_matInputFirstClass(i, j) << "  ";
+				l_matInputFirstClass((uint32)i, (uint32)j)=  l_pInputFirstClass[j+i*l_ui32InputMatrixFirstClassDimensionSizeEpoch];
+				this->getLogManager() << LogLevel_Debug << l_matInputFirstClass((uint32)i, (uint32)j) << "  ";
 			}
 			this->getLogManager() << LogLevel_Debug << "\n";
 		}
@@ -99,8 +99,8 @@ boolean CComputeFisherLdaFunction::process(void)
 		{
 			for(uint64 j=0 ; j< l_ui32InputMatrixSecondClassDimensionSizeEpoch; j++)
 			{
-				l_matInputSecondClass(i, j) =  l_pInputSecondClass[j+i*l_ui32InputMatrixSecondClassDimensionSizeEpoch];
-				this->getLogManager() << LogLevel_Debug << l_matInputSecondClass(i, j) << "  ";
+				l_matInputSecondClass((uint32)i, (uint32)j) =  l_pInputSecondClass[j+i*l_ui32InputMatrixSecondClassDimensionSizeEpoch];
+				this->getLogManager() << LogLevel_Debug << l_matInputSecondClass((uint32)i, (uint32)j) << "  ";
 			}
 			this->getLogManager() << LogLevel_Debug << "\n";
 		}
@@ -108,33 +108,33 @@ boolean CComputeFisherLdaFunction::process(void)
 		//Compute global mean
 		for(uint64 j=0 ; j<l_ui32InputMatrixFirstClassDimensionSizeEpoch; j++)
 		{
-			l_pOutputGlobalMean[j] = mean(l_matInputFirstClass.get_col(j));
+			l_pOutputGlobalMean[j] = mean(l_matInputFirstClass.get_col((uint32)j));
 		}
 		for(uint64 j=0 ; j<l_ui32InputMatrixSecondClassDimensionSizeEpoch; j++)
 		{
-			l_pOutputGlobalMean[j+l_ui32InputMatrixSecondClassDimensionSizeEpoch] = mean(l_matInputSecondClass.get_col(j));
+			l_pOutputGlobalMean[j+l_ui32InputMatrixSecondClassDimensionSizeEpoch] = mean(l_matInputSecondClass.get_col((uint32)j));
 		}
 		// Data correction
 		mat l_matGlobalMean(1,l_ui32InputMatrixSecondClassDimensionSizeEpoch);
 
 		for(uint64 j=0 ; j<l_ui32InputMatrixFirstClassDimensionSizeEpoch; j++)
 		{
-			l_matGlobalMean(0,j) = (l_ui32InputMatrixFirstClassDimensionNbItems * mean(l_matInputFirstClass.get_col(j)) + l_ui32InputMatrixSecondClassDimensionNbItems* mean(l_matInputSecondClass.get_col(j)))/ (l_ui32InputMatrixFirstClassDimensionNbItems+ l_ui32InputMatrixSecondClassDimensionNbItems);
+			l_matGlobalMean(0,(uint32)j) = (l_ui32InputMatrixFirstClassDimensionNbItems * mean(l_matInputFirstClass.get_col((uint32)j)) + l_ui32InputMatrixSecondClassDimensionNbItems* mean(l_matInputSecondClass.get_col((uint32)j)))/ (l_ui32InputMatrixFirstClassDimensionNbItems+ l_ui32InputMatrixSecondClassDimensionNbItems);
 		}
 		for (uint64 i=0;  i < l_ui32InputMatrixFirstClassDimensionNbItems; i++)
 		{
 			for(uint64 j=0 ; j<l_ui32InputMatrixFirstClassDimensionSizeEpoch; j++)
 			{
-				float64 l_f64tmpValue = l_matInputFirstClass(i, j);
-				l_matInputFirstClass(i,j) = l_f64tmpValue - l_matGlobalMean(0,j);
+				float64 l_f64tmpValue = l_matInputFirstClass((uint32)i, (uint32)j);
+				l_matInputFirstClass((uint32)i,(uint32)j) = l_f64tmpValue - l_matGlobalMean(0,(uint32)j);
 			}
 		}
 		for (uint64 i=0;  i < l_ui32InputMatrixSecondClassDimensionNbItems; i++)
 		{
 			for(uint64 j=0 ; j<l_ui32InputMatrixSecondClassDimensionSizeEpoch; j++)
 			{
-				float64 l_f64tmpValue = l_matInputSecondClass(i, j);
-				l_matInputSecondClass(i,j) = l_f64tmpValue - l_matGlobalMean(0,j);
+				float64 l_f64tmpValue = l_matInputSecondClass((uint32)i, (uint32)j);
+				l_matInputSecondClass((uint32)i,(uint32)j) = l_f64tmpValue - l_matGlobalMean(0,(uint32)j);
 			}
 		}
 
@@ -164,7 +164,7 @@ boolean CComputeFisherLdaFunction::process(void)
 		{
 			for(uint64 j=0 ; j<l_ui32InputMatrixFirstClassDimensionSizeEpoch; j++)
 			{
-				l_pOutputGlobalCovariance[i*l_ui32InputMatrixFirstClassDimensionSizeEpoch+j] =  l_matOutputGlobalCovarianceInv(i,j);
+				l_pOutputGlobalCovariance[i*l_ui32InputMatrixFirstClassDimensionSizeEpoch+j] =  l_matOutputGlobalCovarianceInv((uint32)i,(uint32)j);
 			}
 		}
 
