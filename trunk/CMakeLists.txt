@@ -69,7 +69,7 @@ SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
 #SET(OV_BRANCH_APPLICATIONS_ID-GENERATOR								"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_PLUGIN-INSPECTOR							"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_SKELETON-GENERATOR							"branches/mybranch")
-SET(OV_BRANCH_APPLICATIONS_SSVEP-DEMO									"__SKIPME")
+#SET(OV_BRANCH_APPLICATIONS_SSVEP-DEMO									"branch/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_VR-DEMO										"branches/mybranch")
 #SET(OV_BRANCH_APPLICATIONS_VRPN-SIMULATOR								"branches/mybranch")
 #SET(OV_BRANCH_DOCUMENTATION											"branches/mybranch")
