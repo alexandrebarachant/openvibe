@@ -25,7 +25,6 @@ CLogListenerConsole::CLogListenerConsole(const IKernelContext& rKernelContext, c
 
 void CLogListenerConsole::configure(const IConfigurationManager& rConfigurationManager)
 {
-	std::cout << "WOLOLO\n";
 	m_bTimeInSeconds = rConfigurationManager.expandAsBoolean("${Kernel_ConsoleLogTimeInSecond}",true);
 	m_bLogWithHexa = rConfigurationManager.expandAsBoolean("${Kernel_ConsoleLogWithHexa}",false);
 	m_ui64TimePrecision = rConfigurationManager.expandAsUInteger("${Kernel_ConsoleLogTimePrecision}",3);
