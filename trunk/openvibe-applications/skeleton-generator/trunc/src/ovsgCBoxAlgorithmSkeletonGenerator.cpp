@@ -109,11 +109,11 @@ extern "C" G_MODULE_EXPORT void entry_modified_cb(::GtkWidget * pObject, void* p
 }
 extern "C" G_MODULE_EXPORT void listener_checkbutton_toggled_cb(::GtkWidget * pObject, void* pUserData)
 {
-	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleListenerCheckbuttonsStateCB(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject)));
+	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleListenerCheckbuttonsStateCB((boolean)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject)));
 }
 extern "C" G_MODULE_EXPORT void processing_method_clock_toggled(::GtkWidget * pObject, void* pUserData)
 {
-	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleClockFrequencyStateCB(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject)));
+	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleClockFrequencyStateCB((boolean)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject)));
 }
 //-----------------------------------------------------------------------
 void CBoxAlgorithmSkeletonGenerator::buttonExitCB(void)
@@ -1344,7 +1344,7 @@ OpenViBE::boolean CBoxAlgorithmSkeletonGenerator::initialize( void )
 
 	// CODECS INITIALISATION:
 	::GtkWidget * l_pCodecCheckbutton = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-toolkit-checkbutton"));
-	m_bUseCodecToolkit = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCodecCheckbutton));
+	m_bUseCodecToolkit = (boolean) gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCodecCheckbutton));
 
 	::GtkWidget * l_pAlgoCombobox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-add-combobox"));
 	::GtkTreeModel * l_pAlgoListStore = gtk_combo_box_get_model(GTK_COMBO_BOX(l_pAlgoCombobox));
@@ -1485,7 +1485,7 @@ OpenViBE::boolean CBoxAlgorithmSkeletonGenerator::initialize( void )
 	//load everything from config file
 	load(m_sConfigurationFile);
 	::GtkWidget * l_pListenerWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-listener-checkbutton"));
-	toggleListenerCheckbuttonsStateCB(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pListenerWidget)));
+	toggleListenerCheckbuttonsStateCB((boolean)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pListenerWidget)));
 
 	gtk_widget_show_all(l_pBox);
 
@@ -1869,7 +1869,7 @@ boolean CBoxAlgorithmSkeletonGenerator::load(CString sFileName)
 	l_pProcessingMethod = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-process-clock-checkbutton"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pProcessingMethod),m_rKernelContext.getConfigurationManager().expandAsBoolean("${SkeletonGenerator_Box_ProcessClock}",false));
 	l_pProcessingMethod = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-process-frequency-spinbutton"));
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pProcessingMethod),m_rKernelContext.getConfigurationManager().expandAsUInteger("${SkeletonGenerator_Box_ProcessClock}",1));
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pProcessingMethod), (gdouble) m_rKernelContext.getConfigurationManager().expandAsUInteger("${SkeletonGenerator_Box_ProcessClock}",1));
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "box entries from [" << m_sConfigurationFile << "] loaded.\n";
 	
