@@ -58,8 +58,8 @@ boolean CAlgorithmClassifierLDA::train(const IFeatureVectorSet& rFeatureVectorSe
 		}
 	}
 
-	l_oMeanFeatureVector1/=l_vClassLabels[m_f64Class1];
-	l_oMeanFeatureVector2/=l_vClassLabels[m_f64Class2];
+	l_oMeanFeatureVector1/=(double)l_vClassLabels[m_f64Class1];
+	l_oMeanFeatureVector2/=(double)l_vClassLabels[m_f64Class2];
 
 	itpp::vec l_oDiff;
 	itpp::mat l_oSigma(l_ui32NumberOfFeatures, l_ui32NumberOfFeatures);

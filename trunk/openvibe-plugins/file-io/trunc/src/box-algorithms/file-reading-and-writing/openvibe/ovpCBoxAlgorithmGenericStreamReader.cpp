@@ -106,7 +106,7 @@ boolean CBoxAlgorithmGenericStreamReader::process(void)
 			if(!::feof(m_pFile) && m_oReader.getCurrentNodeSize()!=0)
 			{
 				m_oSwap.setSize(m_oReader.getCurrentNodeSize(), true);
-				size_t s=::fread(m_oSwap.getDirectPointer(), sizeof(uint8), m_oSwap.getSize(), m_pFile);
+				size_t s= (size_t) ::fread(m_oSwap.getDirectPointer(), sizeof(uint8), m_oSwap.getSize(), m_pFile);
 
 				if(s!=m_oSwap.getSize())
 				{

@@ -903,7 +903,7 @@ int edfread_physical_samples(int handle, int edfsignal, int n, double *buf)
 
   if((hdr->edfparam[channel].sample_pntr + n) > smp_in_file)
   {
-    n = smp_in_file - hdr->edfparam[channel].sample_pntr;
+    n = (int)(smp_in_file - hdr->edfparam[channel].sample_pntr);
 
     if(n==0)
     {
@@ -1094,7 +1094,7 @@ int edfread_digital_samples(int handle, int edfsignal, int n, int *buf)
 
   if((hdr->edfparam[channel].sample_pntr + n) > smp_in_file)
   {
-    n = smp_in_file - hdr->edfparam[channel].sample_pntr;
+    n = (int)(smp_in_file - hdr->edfparam[channel].sample_pntr);
 
     if(n==0)
     {
@@ -1446,9 +1446,9 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
     return(NULL);
   }
 
-  edfhdr->startdate_day = edflib_atof_nonlocalized(scratchpad);
-  edfhdr->startdate_month = edflib_atof_nonlocalized(scratchpad + 3);
-  edfhdr->startdate_year = edflib_atof_nonlocalized(scratchpad + 6);
+  edfhdr->startdate_day = (int) edflib_atof_nonlocalized(scratchpad);
+  edfhdr->startdate_month = (int) edflib_atof_nonlocalized(scratchpad + 3);
+  edfhdr->startdate_year = (int) edflib_atof_nonlocalized(scratchpad + 6);
   if(edfhdr->startdate_year>84)
   {
     edfhdr->startdate_year += 1900;
@@ -1529,13 +1529,13 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
     return(NULL);
   }
 
-  edfhdr->starttime_hour = edflib_atof_nonlocalized(scratchpad);
-  edfhdr->starttime_minute = edflib_atof_nonlocalized(scratchpad + 3);
-  edfhdr->starttime_second = edflib_atof_nonlocalized(scratchpad + 6);
+  edfhdr->starttime_hour = (int) edflib_atof_nonlocalized(scratchpad);
+  edfhdr->starttime_minute = (int) edflib_atof_nonlocalized(scratchpad + 3);
+  edfhdr->starttime_second = (int) edflib_atof_nonlocalized(scratchpad + 6);
 
-  edfhdr->l_starttime = 3600 * edflib_atof_nonlocalized(scratchpad);
-  edfhdr->l_starttime += 60 * edflib_atof_nonlocalized(scratchpad + 3);
-  edfhdr->l_starttime += edflib_atof_nonlocalized(scratchpad + 6);
+  edfhdr->l_starttime = (long long) (3600 * edflib_atof_nonlocalized(scratchpad));
+  edfhdr->l_starttime += (long long) (60 * edflib_atof_nonlocalized(scratchpad + 3));
+  edfhdr->l_starttime += (long long) edflib_atof_nonlocalized(scratchpad + 6);
 
   edfhdr->l_starttime *= EDFLIB_TIME_DIMENSION;
 
@@ -1561,7 +1561,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
     free(edfhdr);
     return(NULL);
   }
-  edfhdr->edfsignals = edflib_atof_nonlocalized(scratchpad);
+  edfhdr->edfsignals = (int) edflib_atof_nonlocalized(scratchpad);
   if(edfhdr->edfsignals<1)
   {
     *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
@@ -1602,7 +1602,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
     return(NULL);
   }
 
-  n  = edflib_atof_nonlocalized(scratchpad);
+  n  = (int) edflib_atof_nonlocalized(scratchpad);
   if((edfhdr->edfsignals * 256 + 256)!=n)
   {
     *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
@@ -1684,7 +1684,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
     return(NULL);
   }
 
-  edfhdr->datarecords = edflib_atof_nonlocalized(scratchpad);
+  edfhdr->datarecords = (long long) edflib_atof_nonlocalized(scratchpad);
   if(edfhdr->datarecords<1)
   {
     *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
@@ -1980,7 +1980,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
       return(NULL);
     }
 
-    n = edflib_atof_nonlocalized(scratchpad);
+    n = (int) edflib_atof_nonlocalized(scratchpad);
     if(edfhdr->edfplus)
     {
       if(edfhdr->edfparam[i].annotation)
@@ -2062,7 +2062,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
       return(NULL);
     }
 
-    n = edflib_atof_nonlocalized(scratchpad);
+    n = (int) edflib_atof_nonlocalized(scratchpad);
     if(edfhdr->edfplus)
     {
       if(edfhdr->edfparam[i].annotation)
@@ -2192,7 +2192,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
       return(NULL);
     }
 
-    n = edflib_atof_nonlocalized(scratchpad);
+    n = (int) edflib_atof_nonlocalized(scratchpad);
     if(n<1)
     {
       *edf_error = EDFLIB_FILE_CONTAINS_FORMAT_ERRORS;
@@ -2506,7 +2506,7 @@ struct edfhdrblock * edflib_check_edf_file(FILE *inputfile, int *edf_error)
         return(NULL);
       }
 
-      edfhdr->startdate_year = edflib_atof_nonlocalized(scratchpad2 + 7);
+      edfhdr->startdate_year = (int) edflib_atof_nonlocalized(scratchpad2 + 7);
 
       if(edfhdr->startdate_year<1970)
       {
@@ -2901,7 +2901,7 @@ int edflib_get_annotations(struct edfhdrblock *edfhdr, int hdl, int read_annotat
   recordsize = edfhdr->recordsize;
   edfparam = edfhdr->edfparam;
   nr_annot_chns = edfhdr->nr_annot_chns;
-  datarecords = edfhdr->datarecords;
+  datarecords = (int) edfhdr->datarecords;
   data_record_duration = edfhdr->long_data_record_duration;
   discontinuous = edfhdr->discontinuous;
   annot_ch = edfhdr->annot_ch;
@@ -4160,7 +4160,7 @@ int edfwrite_physical_samples(int handle, double *buf)
 
   for(i=0; i<sf; i++)
   {
-    value = buf[i] / bitvalue;
+    value = (int)(buf[i] / bitvalue);
 
     value -= offset;
 
@@ -4300,7 +4300,7 @@ int edf_blockwrite_physical_samples(int handle, double *buf)
 
     for(i=0; i<sf; i++)
     {
-      value = buf[i + buf_offset] / bitvalue;
+      value = (int)(buf[i + buf_offset] / bitvalue);
 
       value -= offset;
 
@@ -4494,7 +4494,7 @@ int edflib_write_edf_header(struct edfhdrblock *hdr)
     fputc(hdr->plus_birthdate[0], file);
     fputc(hdr->plus_birthdate[1], file);
     fputc('-', file);
-    q = edflib_atof_nonlocalized(&(hdr->plus_birthdate[3]));
+    q = (int) edflib_atof_nonlocalized(&(hdr->plus_birthdate[3]));
     switch(q)
     {
       case  1: fprintf(file, "JAN");  break;
@@ -5988,7 +5988,7 @@ int edflib_fprint_ll_number_nonlocalized(FILE *file, long long q, int minimum, i
       flag = 1;
     }
 
-    z = q / base;
+    z = (int) (q / base);
 
     q %= base;
 
@@ -6120,7 +6120,7 @@ int edflib_sprint_ll_number_nonlocalized(char *str, long long q, int minimum, in
       flag = 1;
     }
 
-    z = q / base;
+    z = (int)(q / base);
 
     q %= base;
 
