@@ -640,10 +640,10 @@ boolean CComputeTemporalFilterCoefficients::process(void)
 {
 	if(isInputTriggerActive(OVP_Algorithm_ComputeTemporalFilterCoefficients_InputTriggerId_Initialize))
 	{
-		m_ui32SamplingRate = ip_ui64SamplingFrequency;
+		m_ui32SamplingRate = (uint32)ip_ui64SamplingFrequency;
 		m_ui64FilterMethod = ip_ui64FilterMethod;
 		m_ui64FilterType = ip_ui64FilterType;
-		m_ui32FilterOrder = ip_ui64FilterOrder;
+		m_ui32FilterOrder = (uint32)ip_ui64FilterOrder;
 		m_float64LowPassBandEdge = ip_f64LowCutFrequency;
 		m_float64HighPassBandEdge =ip_f64HighCutFrequency;
 		m_float64PassBandRipple = ip_f64BandPassRipple;

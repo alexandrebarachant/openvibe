@@ -112,11 +112,11 @@ boolean CLDABoxAlgorithm::initialize(void)
 	IMatrix* l_pClass1SamplesNumbersInputMatrix = &m_oClass1SamplesNumbersInputMatrix;
 	l_pClass1SamplesNumbersInputMatrix->setDimensionCount(2);
 	l_pClass1SamplesNumbersInputMatrix->setDimensionSize(0,1);
-	l_pClass1SamplesNumbersInputMatrix->setDimensionSize(1, m_ui64NbTrainingSamples);
+	l_pClass1SamplesNumbersInputMatrix->setDimensionSize(1, (uint32)m_ui64NbTrainingSamples);
 	float64* l_pClass1SamplesNumbersInput = l_pClass1SamplesNumbersInputMatrix->getBuffer();
 	for (uint32 i = 0; i<m_oCoefficients.size(); i++)
 	{
-		l_pClass1SamplesNumbersInput[i] = m_oCoefficients[i];
+		l_pClass1SamplesNumbersInput[i] = (float64)m_oCoefficients[i];
 	}
 
 	m_pFeatureExtractionLda->getInputParameter(OVP_Algorithm_FeatureExtractionLda_InputParameterId_Class1SamplesNumber)->setValue(&l_pClass1SamplesNumbersInputMatrix);
@@ -290,9 +290,9 @@ boolean CLDABoxAlgorithm::process(void)
 
 				if(m_bFirstTime)
 				{
-					m_pEpochTable = new CMatrix[m_ui64NbEntries*l_ui32SignalInputColumnDimensionSize];
+					m_pEpochTable = new CMatrix[(unsigned int)m_ui64NbEntries*l_ui32SignalInputColumnDimensionSize];
 					m_pEpochTable->setDimensionCount(2);
-					m_pEpochTable->setDimensionSize(0,m_ui64NbEntries);
+					m_pEpochTable->setDimensionSize(0,(const uint32)m_ui64NbEntries);
 					m_pEpochTable->setDimensionSize(1,l_ui32SignalInputColumnDimensionSize);
 					m_pf64EpochTable = m_pEpochTable->getBuffer();
 					m_bFirstTime = false;

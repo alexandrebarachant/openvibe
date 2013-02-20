@@ -346,7 +346,7 @@ boolean CApplyTemporalFilter::process(void)
 		{
 			for(uint64 j=0 ; j<l_ui32SignalInputMatrixDimensionSizeEpoch; j++)
 			{
-				x[j] =  (double)l_pSignalInput[i*l_ui32SignalInputMatrixDimensionSizeEpoch+j];
+				x[(int)j] =  (double)l_pSignalInput[i*l_ui32SignalInputMatrixDimensionSizeEpoch+j];
 			}
 
 			// --- Modif Manu
@@ -355,7 +355,7 @@ boolean CApplyTemporalFilter::process(void)
 
 			for(uint64 k=0 ; k<l_ui32SignalInputMatrixDimensionSizeEpoch ; k++)
 			{
-				l_pFilteredSignalMatrix[i*l_ui32SignalInputMatrixDimensionSizeEpoch+k] = y[k];
+				l_pFilteredSignalMatrix[i*l_ui32SignalInputMatrixDimensionSizeEpoch+k] = y[(int)k];
 			}
 		}
 	}
@@ -406,16 +406,16 @@ boolean CApplyTemporalFilter::process(void)
 		{
 			for(uint64 j=0 ; j<l_ui32SignalInputMatrixDimensionSizeEpoch; j++)
 			{
-				x[j] =  (double)l_pSignalInput[i*l_ui32SignalInputMatrixDimensionSizeEpoch+j];
+				x[(int)j] =  (double)l_pSignalInput[i*l_ui32SignalInputMatrixDimensionSizeEpoch+j];
 			}
 			// --- Modif Manu
 			y = zeros(l_ui32SignalInputMatrixDimensionSizeEpoch);
-			IIR_Filter (m_vecNumCoefFilter,m_vecDenomCoefFilter, x, m_oCurrentStates[i],y,m_oCurrentStates[i]);
+			IIR_Filter (m_vecNumCoefFilter,m_vecDenomCoefFilter, x, m_oCurrentStates[(unsigned int)i],y,m_oCurrentStates[(unsigned int)i]);
 			// --- Fin Modif Manu
 
 			for(uint64 k=0 ; k<l_ui32SignalInputMatrixDimensionSizeEpoch ; k++)
 			{
-				l_pFilteredSignalMatrix[i*l_ui32SignalInputMatrixDimensionSizeEpoch+k] = y[k];
+				l_pFilteredSignalMatrix[i*l_ui32SignalInputMatrixDimensionSizeEpoch+k] = y[(uint32)k];
 			}
 		}
 	}
