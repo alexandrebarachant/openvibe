@@ -79,10 +79,10 @@ boolean CBoxAlgorithmP300IdentifierStimulator::initialize(void)
 
 	m_ui64RepetitionCountInTrial =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 4);
 	m_ui64TrialCount             =FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 5);
-	m_ui64FlashDuration          =float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 6))*(1LL << 32);
-	m_ui64NoFlashDuration        =float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 7))*(1LL << 32);
-	m_ui64InterRepetitionDuration=float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 8))*(1LL << 32);
-	m_ui64InterTrialDuration     =float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 9))*(1LL << 32);
+	m_ui64FlashDuration          =(uint64)(float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 6))*float64(1LL << 32));
+	m_ui64NoFlashDuration        =(uint64)(float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 7))*float64(1LL << 32));
+	m_ui64InterRepetitionDuration=(uint64)(float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 8))*float64(1LL << 32));
+	m_ui64InterTrialDuration     =(uint64)(float64(FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 9))*float64(1LL << 32));
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ boolean CBoxAlgorithmP300IdentifierStimulator::initialize(void)
 	m_ui64RepetitionDuration=m_ui64FlashCountInRepetition*(m_ui64FlashDuration+m_ui64NoFlashDuration);
 	m_ui64RepetitionDurationWithoutTarget=m_ui64FlashCountInRepetitionWithoutTarget*(m_ui64FlashDuration+m_ui64NoFlashDuration);
 	
-	m_pRepetitionTarget=new uint64[m_ui64RepetitionCountInTrial];
+	m_pRepetitionTarget=new uint64[(unsigned int)m_ui64RepetitionCountInTrial];
 
 	reset();
 
@@ -335,7 +335,7 @@ boolean CBoxAlgorithmP300IdentifierStimulator::process(void)
 			{
 				//case of the new state is a flash
 				case State_Flash:
-					l_oStimulationSet.appendStimulation(m_ui64StimulationBase+m_vImages[l_ui64FlashIndex], l_ui64CurrentTime, 0);
+					l_oStimulationSet.appendStimulation(m_ui64StimulationBase+m_vImages[(unsigned int)l_ui64FlashIndex], l_ui64CurrentTime, 0);
 					_LOG_(this->getLogManager(), LogLevel_Trace << "sends OVTK_StimulationId_LabelId(x)\n\t; Trial index:" << m_ui64TrialIndex << " Repetition index: " << m_ui64RepetitionIndex << "\n");
 					l_oStimulationSet.appendStimulation(OVTK_StimulationId_VisualStimulationStart, l_ui64CurrentTime, 0);
 					_LOG_(this->getLogManager(), LogLevel_Trace << "sends OVTK_StimulationId_VisualStimulationStart\n\t; Trial index:" << m_ui64TrialIndex << " Repetition index: " << m_ui64RepetitionIndex << "\n");
@@ -431,11 +431,11 @@ void CBoxAlgorithmP300IdentifierStimulator::generate_sequence(void)
 		}
 		_LOG_(this->getLogManager(), LogLevel_Trace << "Number target: " << " Repetition without target: " << m_bRepetitionWithoutTarget << "\n");
 		if(m_bRepetitionWithoutTarget&&m_i64TargetNumber!=-1){
-			l_vImages.erase(l_vImages.begin()+m_i64TargetNumber);
+			l_vImages.erase(l_vImages.begin()+(size_t)m_i64TargetNumber);
 		}
 		while(l_vImages.size()>0){
 			int j=rand()%l_vImages.size();
-			m_vImages.push_back(l_vImages[j]);
+			m_vImages.push_back((uint32)l_vImages[j]);
 			l_vImages.erase(l_vImages.begin()+j);
 		}
 	}

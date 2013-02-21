@@ -23,15 +23,19 @@ using namespace std;
   Z                Yn
  => X = -Xn, Y = Zn, Z = Yn
 */
-#define CONVERT_STD_TO_OV(ov_vec, std_vec) \
-	ov_vec[0] = -std_vec[0]; \
-	ov_vec[1] = std_vec[2]; \
-	ov_vec[2] = std_vec[1];
 
-#define CONVERT_OV_TO_STD(std_vec, ov_vec) \
-	std_vec[0] = -ov_vec[0]; \
-	std_vec[1] = ov_vec[2]; \
-	std_vec[2] = ov_vec[1];
+template<typename RealOv, typename RealSTD> void convert_std_to_ov( RealOv ov_vec[], const RealSTD std_vec[]) 
+{
+	ov_vec[0] = -(RealOv)std_vec[0]; 
+	ov_vec[1] = (RealOv)std_vec[2]; 
+	ov_vec[2] = (RealOv)std_vec[1];
+}
+template<typename RealSTD, typename RealOv> void convert_ov_to_std(RealSTD std_vec[] , const RealOv ov_vec[]) 
+{
+	std_vec[0] = -(RealSTD)ov_vec[0]; 
+	std_vec[1] = (RealSTD)ov_vec[2]; 
+	std_vec[2] = (RealSTD)ov_vec[1];
+}
 
 #define CROSS(dest,v1,v2) \
 	dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
@@ -396,7 +400,7 @@ boolean CTopographicMap3DDisplay::initializeScalpData()
 			for(uint32 i=0; i<m_ui32NbScalpVertices; i++, l_pScalpVertexCoord+=3)
 			{
 				//compute unit vector from center of unit sphere to scalp vertex
-				CONVERT_OV_TO_STD(l_f32UnitVector, l_pScalpVertexCoord)
+				convert_ov_to_std(l_f32UnitVector, l_pScalpVertexCoord);
 				SUB(l_f32UnitVector, l_f32UnitVector, m_f32ProjectionCenter)
 				NORMALIZE(l_f32UnitVector)
 
@@ -417,7 +421,7 @@ boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
 
 	//transform normalized projection center to Ogre space
 	float32 l_pProjectionCenter[3];
-	CONVERT_STD_TO_OV(l_pProjectionCenter, m_f32ProjectionCenter)
+	convert_std_to_ov(l_pProjectionCenter, m_f32ProjectionCenter);
 
 	//get scalp triangles
 	uint32 l_ui32ScalpTriangleCount = 0;
@@ -519,11 +523,11 @@ boolean CTopographicMap3DDisplay::computeModelFrameChannelCoordinates()
 
 			//transform them to Ogre space to get normalized ray direction
 			float32 l_pRayDirection[3];
-			CONVERT_STD_TO_OV(l_pRayDirection, l_pStandardChannelCoords)
+			convert_std_to_ov(l_pRayDirection, l_pStandardChannelCoords);
 #else
 			//transform them to Ogre space to get normalized ray direction
 			float32 l_pRayDirection[3];
-			CONVERT_STD_TO_OV(l_pRayDirection, l_pNormalizedChannelCoords)
+			convert_std_to_ov(l_pRayDirection, l_pNormalizedChannelCoords);
 #endif
 			//look for scalp triangle intersected by ray
 			uint32 j = 0;
@@ -660,7 +664,7 @@ boolean CTopographicMap3DDisplay::findRayTriangleIntersection(float32* pOrigin, 
 #else                    /* the non-culling branch */
 	if (det > -EPSILON && det < EPSILON)
 		return false;
-	inv_det = 1.0 / det;
+	inv_det = (float32)(1.0 / det);
 
 	/* calculate distance from pV0 to ray origin */
 	SUB(tvec, pOrigin, pV0);
@@ -802,7 +806,7 @@ boolean CTopographicMap3DDisplay::createSkull()
 		l_oModelSpaceProjectionCenter[1] = (l_oMin[1] + l_oMax[1]) / 2;
 		l_oModelSpaceProjectionCenter[2] = (l_oMin[2] + l_oMax[2]) / 2;
 
-		CONVERT_OV_TO_STD(m_f32ProjectionCenter, l_oModelSpaceProjectionCenter)
+		convert_ov_to_std(m_f32ProjectionCenter, l_oModelSpaceProjectionCenter);
 
 		getVisualisationContext().removeObject(l_oDummyObject);
 	}

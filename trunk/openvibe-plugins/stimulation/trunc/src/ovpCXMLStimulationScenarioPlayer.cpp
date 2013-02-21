@@ -42,7 +42,7 @@ namespace OpenViBEPlugins
 
 			size_t l_iFileSize = 0;
 			l_oFile.seekg(0, ios::end);
-			l_iFileSize = l_oFile.tellg();
+			l_iFileSize = (size_t)l_oFile.tellg();
 			l_oFile.seekg(0, ios::beg);
 
 			char * l_pXmlBuffer = new char[l_iFileSize];

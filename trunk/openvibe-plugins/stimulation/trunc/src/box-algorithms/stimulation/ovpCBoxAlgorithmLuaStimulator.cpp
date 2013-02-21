@@ -216,7 +216,7 @@ static int lua_get_stimulation_cb(lua_State* pState)
 	if(!lua_check_argument_count(pState, "get_stimulation", 2)) return 0;
 
 	__CB_Assert__(l_pThis->getStimulationCB(lua_tointeger(pState, 2)-1, lua_tointeger(pState, 3)-1, l_ui64Identifier, l_ui64Time, l_ui64Duration));
-	lua_pushinteger(pState, l_ui64Identifier);
+	lua_pushinteger(pState, (lua_Integer)l_ui64Identifier);
 	lua_pushnumber(pState, l_ui64Time/float64(1LL<<32));
 	lua_pushnumber(pState, l_ui64Duration/float64(1LL<<32));
 	return 3;

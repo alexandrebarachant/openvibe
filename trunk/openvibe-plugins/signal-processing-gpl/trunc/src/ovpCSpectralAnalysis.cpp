@@ -62,10 +62,10 @@ boolean CSpectralAnalysis::initialize()
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_sSpectralComponents);
 	uint64 l_ui64SpectralComponents=this->getTypeManager().getBitMaskEntryCompositionValueFromName(OVP_TypeId_SpectralComponent, l_sSpectralComponents);
 
-	m_bAmplitudeSpectrum = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Amplitude.toUInteger());
-	m_bPhaseSpectrum     = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Phase.toUInteger());
-	m_bRealPartSpectrum  = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_RealPart.toUInteger());
-	m_bImagPartSpectrum  = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_ImaginaryPart.toUInteger());
+	m_bAmplitudeSpectrum = ((l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Amplitude.toUInteger())>0);
+	m_bPhaseSpectrum     = ((l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Phase.toUInteger())>0);
+	m_bRealPartSpectrum  = ((l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_RealPart.toUInteger())>0);
+	m_bImagPartSpectrum  = ((l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_ImaginaryPart.toUInteger())>0);
 
 	// Prepares EBML reader
 	m_pSignalReaderCallBack = createBoxAlgorithmSignalInputReaderCallback(m_oSignalReaderCallBackProxy);

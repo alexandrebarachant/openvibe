@@ -87,10 +87,10 @@ boolean CBoxAlgorithmP300SpellerStimulator::initialize(void)
 
 	m_ui64RepetitionCountInTrial =_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 5);
 	m_ui64TrialCount             =_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 6);
-	m_ui64FlashDuration          =((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 7))*(1LL<<32);
-	m_ui64NoFlashDuration        =((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 8))*(1LL<<32);
-	m_ui64InterRepetitionDuration=((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 9))*(1LL<<32);
-	m_ui64InterTrialDuration     =((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 10))*(1LL<<32);
+	m_ui64FlashDuration          =(uint64)(((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 7))*float64(1LL<<32));
+	m_ui64NoFlashDuration        =(uint64)(((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 8))*float64(1LL<<32));
+	m_ui64InterRepetitionDuration=(uint64)(((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 9))*float64(1LL<<32));
+	m_ui64InterTrialDuration     =(uint64)(((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 10))*float64(1LL<<32));
 
 	m_bAvoidNeighborFlashing     =_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 11);
 
@@ -273,8 +273,8 @@ boolean CBoxAlgorithmP300SpellerStimulator::process(void)
 		if(l_ui32State!=m_ui32LastState)
 		{
 			boolean l_bRow=((l_ui64FlashIndex&1)==1?true:false);
-			long l_iRow=l_bRow?m_vRow[l_ui64FlashIndex>>1]:-1;
-			long l_iColumn=l_bRow?-1:m_vColumn[l_ui64FlashIndex>>1];
+			long l_iRow=(long)(l_bRow?m_vRow[l_ui64FlashIndex>>1]:-1);
+			long l_iColumn=(long)(l_bRow?-1:m_vColumn[l_ui64FlashIndex>>1]);
 
 			switch(m_ui32LastState)
 			{
