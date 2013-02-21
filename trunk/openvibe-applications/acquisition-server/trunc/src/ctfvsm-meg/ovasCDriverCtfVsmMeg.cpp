@@ -190,7 +190,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 			{
 				if ((m_structHeader.channelTypeIndex[i]==0) | (m_structHeader.channelTypeIndex[i]==1) |(m_structHeader.channelTypeIndex[i]==5))
 				{
-					m_pSample[j + i*m_ui32SampleCountPerSentBlock] = (float32)m_structBuffData.data[m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i);
+					m_pSample[j + i*m_ui32SampleCountPerSentBlock] = (float32)((float32)m_structBuffData.data[m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i));
 				}
 				else
 				{
@@ -214,7 +214,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 					{
 						if ((m_structHeader.channelTypeIndex[i]==0) | (m_structHeader.channelTypeIndex[i]==1) |(m_structHeader.channelTypeIndex[i]==5))
 						{
-							m_pSample[m_ui32IndexOut + j + i*m_ui32SampleCountPerSentBlock] = (float32)m_structBuffData.data[m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i);
+							m_pSample[m_ui32IndexOut + j + i*m_ui32SampleCountPerSentBlock] = (float32)((float32)m_structBuffData.data[m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i));
 						}
 						else
 						{
@@ -248,7 +248,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 				{
 					if ((m_structHeader.channelTypeIndex[i]==0) | (m_structHeader.channelTypeIndex[i]==1) |(m_structHeader.channelTypeIndex[i]==5))
 					{
-						m_pSample[m_ui32IndexOut + j + i*m_ui32SampleCountPerSentBlock] = (float32)m_structBuffData.data[m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i);
+						m_pSample[m_ui32IndexOut + j + i*m_ui32SampleCountPerSentBlock] = (float32)((float32)m_structBuffData.data[m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i));
 					}
 					else
 					{
@@ -271,7 +271,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 				{
 					if ((m_structHeader.channelTypeIndex[i]==0) | (m_structHeader.channelTypeIndex[i]==1) |(m_structHeader.channelTypeIndex[i]==5))
 					{
-						m_pSample[j + i*m_ui32SampleCountPerSentBlock] = (float32)m_structBuffData.data[m_ui32IndexIn *m_oHeader.getChannelCount() + m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i);
+						m_pSample[j + i*m_ui32SampleCountPerSentBlock] = (float32)((float32)m_structBuffData.data[m_ui32IndexIn *m_oHeader.getChannelCount() + m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i));
 					}
 					else
 					{
@@ -295,7 +295,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 					{
 						if ((m_structHeader.channelTypeIndex[i]==0) | (m_structHeader.channelTypeIndex[i]==1) |(m_structHeader.channelTypeIndex[i]==5))
 						{
-							m_pSample[j + m_ui32IndexOut+ i*m_ui32SampleCountPerSentBlock] = (float32)m_structBuffData.data[m_oHeader.getChannelCount() *  m_ui32IndexIn + m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i);
+							m_pSample[j + m_ui32IndexOut+ i*m_ui32SampleCountPerSentBlock] = (float32)((float32)m_structBuffData.data[m_oHeader.getChannelCount() *  m_ui32IndexIn + m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i));
 						}
 						else
 						{
@@ -317,7 +317,7 @@ boolean CDriverCtfVsmMeg::loop(void)
 				{
 					if ((m_structHeader.channelTypeIndex[i]==0) | (m_structHeader.channelTypeIndex[i]==1) |(m_structHeader.channelTypeIndex[i]==5))
 					{
-						m_pSample[j + m_ui32IndexOut+ i*m_ui32SampleCountPerSentBlock] = (float32)m_structBuffData.data[m_oHeader.getChannelCount() *  m_ui32IndexIn + m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i);
+						m_pSample[j + m_ui32IndexOut+ i*m_ui32SampleCountPerSentBlock] = (float32)((float32)m_structBuffData.data[m_oHeader.getChannelCount() *  m_ui32IndexIn + m_oHeader.getChannelCount()*j + i] * 1e15 / m_oHeader.getChannelGain(i));
 					}
 					else
 					{

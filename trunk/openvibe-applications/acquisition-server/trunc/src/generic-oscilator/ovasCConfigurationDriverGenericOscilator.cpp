@@ -32,7 +32,7 @@ boolean CConfigurationDriverGenericOscilator::postConfigure(void)
 	{
 		::GtkToggleButton* l_pToggleSendPeriodicStimulations = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "checkbutton_send_periodic_stimulations"));
 
-		m_rSendPeriodicStimulations = ::gtk_toggle_button_get_active(l_pToggleSendPeriodicStimulations);
+		m_rSendPeriodicStimulations = (::gtk_toggle_button_get_active(l_pToggleSendPeriodicStimulations)>0);
 	}
 
 	if (!CConfigurationBuilder::postConfigure())

@@ -202,12 +202,12 @@ boolean CDriverEGIAmpServer::loop(void)
 
 		if(l_oHeader.m_ui64PacketSize)
 		{
-			float32* l_pBufferSwap=new float32[l_oHeader.m_ui64PacketSize/sizeof(float32)];
-			m_pStream->receiveBufferBlocking(reinterpret_cast<char*>(l_pBufferSwap), l_oHeader.m_ui64PacketSize);
+			float32* l_pBufferSwap=new float32[(unsigned int)(l_oHeader.m_ui64PacketSize/sizeof(float32))];
+			m_pStream->receiveBufferBlocking(reinterpret_cast<char*>(l_pBufferSwap), (uint32)l_oHeader.m_ui64PacketSize);
 
 			if(m_rDriverContext.isStarted())
 			{
-				uint32 l_ui32SampleCount=l_oHeader.m_ui64PacketSize/1152;
+				uint32 l_ui32SampleCount=(uint32)(l_oHeader.m_ui64PacketSize/1152);
 				for(i=0; i<l_ui32SampleCount; i++)
 				{
 					for(j=0; j<m_ui32ChannelCount; j++)

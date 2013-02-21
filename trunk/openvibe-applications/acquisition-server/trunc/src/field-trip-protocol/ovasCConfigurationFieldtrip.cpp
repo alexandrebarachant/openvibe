@@ -112,7 +112,7 @@ boolean CConfigurationFieldtrip::postConfigure(void)
 		m_ui32MinSamples=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pMinSamples));
 		m_ui32HostPort=gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(m_pHostPort));
 		m_sHostName=gtk_entry_get_text(GTK_ENTRY(m_pHostName));
-        m_bSRCorrection=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(m_pSRCorrection));
+        m_bSRCorrection=(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(m_pSRCorrection))>0);
 	}
 
 	return CConfigurationBuilder::postConfigure();
