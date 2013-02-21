@@ -855,12 +855,12 @@ void CTemporalFilter::setSampleBuffer(const float64* pBuffer)
 	{
 		for(uint64 j=0 ; j<m_pSignalDescription->m_ui32SampleCount ; j++)
 		{
-			x[j] =  (double)pBuffer[i*m_pSignalDescription->m_ui32SampleCount+j];
+			x[(int)j] =  (double)pBuffer[i*m_pSignalDescription->m_ui32SampleCount+j];
 		}
 
 		if(m_bShouldCareOfHistory)
 		{
-			y = filter(m_vecDenomCoefFilter, m_vecNumCoefFilter, x, m_oCurrentStates[i], m_oCurrentStates[i]);
+			y = filter(m_vecDenomCoefFilter, m_vecNumCoefFilter, x, m_oCurrentStates[(int)i], m_oCurrentStates[(int)i]);
 		}
 		else
 		{
@@ -868,7 +868,7 @@ void CTemporalFilter::setSampleBuffer(const float64* pBuffer)
 		}
 		for(uint64 k=0 ; k<m_pSignalDescription->m_ui32SampleCount ; k++)
 		{
-			m_pMatrixBuffer[i*m_pSignalDescription->m_ui32SampleCount+k] =  y[k];
+			m_pMatrixBuffer[i*m_pSignalDescription->m_ui32SampleCount+k] =  y[(int)k];
 		}
 	}
 

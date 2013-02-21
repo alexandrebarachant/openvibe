@@ -79,7 +79,7 @@ void CSpectralAnalysisCospectra::setSampleBuffer(const float64* pBuffer)
 		{
 			for(uint64 j=0 ; j<m_ui32WindowSize ; j++)
 			{
-				x1[j] =  (double)pBuffer[i*(m_ui32WindowSize+l_ui32Index)+j];
+				x1[(int)j] =  (double)pBuffer[i*(m_ui32WindowSize+l_ui32Index)+j];
 			}
 			y1 = fft_real(x1, m_ui32WindowSize);
 			a1 = real(y1);
@@ -89,7 +89,7 @@ void CSpectralAnalysisCospectra::setSampleBuffer(const float64* pBuffer)
 			{
 				for(uint64 l=0 ; l<m_ui32WindowSize ; l++)
 				{
-					x2[l] =  (double)pBuffer[k*(m_ui32WindowSize+l_ui32Index)+l];
+					x2[(int)l] =  (double)pBuffer[k*(m_ui32WindowSize+l_ui32Index)+l];
 				}
 				y2 = fft_real(x2, m_ui32WindowSize);
 				a2 = real(y2);

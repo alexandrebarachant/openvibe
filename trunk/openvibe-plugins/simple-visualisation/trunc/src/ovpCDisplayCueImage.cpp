@@ -225,7 +225,7 @@ namespace OpenViBEPlugins
 				uint64 l_ui64Time = this->getPlayerContext().getCurrentTime();
 				if (l_ui64StimDate < l_ui64Time)
 				{
-					float l_fDelay = ((l_ui64Time - l_ui64StimDate)>> 16) / 65.5360; //delay in ms
+					float l_fDelay = (float)(((l_ui64Time - l_ui64StimDate)>> 16) / 65.5360); //delay in ms
 					if (l_fDelay>50)
 						getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Image was late: "<< l_fDelay <<" ms \n";
 
@@ -324,7 +324,7 @@ namespace OpenViBEPlugins
 								uint64 l_ui64Time = this->getPlayerContext().getCurrentTime();
 								if (l_ui64StimDate < l_ui64Time)
 								{
-									float l_fDelay = ((l_ui64Time - l_ui64StimDate)>> 16) / 65.5360; //delay in ms
+									float l_fDelay = (float)(((l_ui64Time - l_ui64StimDate)>> 16) / 65.5360); //delay in ms
 									if (l_fDelay>50)
 										getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Stimulation was received late: "<< l_fDelay <<" ms \n";
 								}
@@ -399,12 +399,12 @@ namespace OpenViBEPlugins
 			}
 			else
 			{
-				float l_fX = (ui32Width<64?64:ui32Width);
-				float l_fY = (ui32Height<64?64:ui32Height);
+				float l_fX = (float)(ui32Width<64?64:ui32Width);
+				float l_fY = (float)(ui32Height<64?64:ui32Height);
 				for(uint32 i=0; i<m_ui32NuberOfCue; i++)
 				{
-					float l_fx = gdk_pixbuf_get_width(m_pOriginalPicture[i]);
-					float l_fy = gdk_pixbuf_get_height(m_pOriginalPicture[i]);
+					float l_fx = (float)gdk_pixbuf_get_width(m_pOriginalPicture[i]);
+					float l_fy = (float)gdk_pixbuf_get_height(m_pOriginalPicture[i]);
 					if((l_fX/l_fx) < (l_fY/l_fy))
 					{
 						l_fy = l_fX*l_fy/(3*l_fx);
@@ -415,7 +415,7 @@ namespace OpenViBEPlugins
 						l_fx = l_fY*l_fx/(3*l_fy);
 						l_fy = l_fY/3;
 					}
-					m_pScaledPicture[i] = gdk_pixbuf_scale_simple(m_pOriginalPicture[i], l_fx, l_fy, GDK_INTERP_BILINEAR);
+					m_pScaledPicture[i] = gdk_pixbuf_scale_simple(m_pOriginalPicture[i], (int)l_fx, (int)l_fy, GDK_INTERP_BILINEAR);
 				}
 			}
 		}

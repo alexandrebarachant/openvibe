@@ -155,11 +155,11 @@ boolean CBoxAlgorithmP300SpellerVisualisation::initialize(void)
 	l_ui64MaxSize=std::max(l_ui64MaxSize, m_ui64TargetFontSize);
 	l_ui64MaxSize=std::max(l_ui64MaxSize, m_ui64SelectedFontSize);
 
-	pango_font_description_set_size(l_pMaxFontDescription, l_ui64MaxSize * PANGO_SCALE);
-	pango_font_description_set_size(m_pFlashFontDescription, m_ui64FlashFontSize * PANGO_SCALE);
-	pango_font_description_set_size(m_pNoFlashFontDescription, m_ui64NoFlashFontSize * PANGO_SCALE);
-	pango_font_description_set_size(m_pTargetFontDescription, m_ui64TargetFontSize * PANGO_SCALE);
-	pango_font_description_set_size(m_pSelectedFontDescription, m_ui64SelectedFontSize * PANGO_SCALE);
+	pango_font_description_set_size(l_pMaxFontDescription, (gint)(l_ui64MaxSize * PANGO_SCALE));
+	pango_font_description_set_size(m_pFlashFontDescription, (gint)(m_ui64FlashFontSize * PANGO_SCALE));
+	pango_font_description_set_size(m_pNoFlashFontDescription, (gint)(m_ui64NoFlashFontSize * PANGO_SCALE));
+	pango_font_description_set_size(m_pTargetFontDescription, (gint)(m_ui64TargetFontSize * PANGO_SCALE));
+	pango_font_description_set_size(m_pSelectedFontDescription, (gint)(m_ui64SelectedFontSize * PANGO_SCALE));
 
 	this->_cache_build_from_table_(m_pTable);
 	this->_cache_for_each_(&CBoxAlgorithmP300SpellerVisualisation::_cache_change_background_cb_, &m_oNoFlashBackgroundColor);
@@ -317,7 +317,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 				int l_iColumn=-1;
 				if(l_ui64StimulationIdentifier >= m_ui64RowStimulationBase && l_ui64StimulationIdentifier < m_ui64RowStimulationBase+m_ui64RowCount)
 				{
-					l_iRow=l_ui64StimulationIdentifier-m_ui64RowStimulationBase;
+					l_iRow=(int)(l_ui64StimulationIdentifier-m_ui64RowStimulationBase);
 					l_bFlash=true;
 					if(l_iRow==m_iLastTargetRow)
 					{
@@ -330,7 +330,7 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 				}
 				if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64ColumnCount)
 				{
-					l_iColumn=l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase;
+					l_iColumn=(int)(l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase);
 					l_bFlash=true;
 					if(l_iColumn==m_iLastTargetColumn)
 					{
@@ -414,13 +414,13 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 					if(l_ui64StimulationIdentifier >= m_ui64RowStimulationBase && l_ui64StimulationIdentifier < m_ui64RowStimulationBase+m_ui64RowCount)
 					{
 						this->getLogManager() << LogLevel_Debug << "Received Target Row " << l_ui64StimulationIdentifier << "\n";
-						m_iTargetRow=l_ui64StimulationIdentifier-m_ui64RowStimulationBase;
+						m_iTargetRow=(int)(l_ui64StimulationIdentifier-m_ui64RowStimulationBase);
 						l_bTarget=true;
 					}
 					if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64ColumnCount)
 					{
 						this->getLogManager() << LogLevel_Debug << "Received Target Column " << l_ui64StimulationIdentifier << "\n";
-						m_iTargetColumn=l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase;
+						m_iTargetColumn=(int)(l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase);
 						l_bTarget=true;
 					}
 
@@ -523,13 +523,13 @@ boolean CBoxAlgorithmP300SpellerVisualisation::process(void)
 						if(l_ui64StimulationIdentifier >= m_ui64RowStimulationBase && l_ui64StimulationIdentifier < m_ui64RowStimulationBase+m_ui64RowCount)
 						{
 							this->getLogManager() << LogLevel_Debug << "Received Selected Row " << l_ui64StimulationIdentifier << "\n";
-							m_iSelectedRow=l_ui64StimulationIdentifier-m_ui64RowStimulationBase;
+							m_iSelectedRow=(int)(l_ui64StimulationIdentifier-m_ui64RowStimulationBase);
 							l_bSelected=true;
 						}
 						if(l_ui64StimulationIdentifier >= m_ui64ColumnStimulationBase && l_ui64StimulationIdentifier < m_ui64ColumnStimulationBase+m_ui64RowCount)
 						{
 							this->getLogManager() << LogLevel_Debug << "Received Selected Column " << l_ui64StimulationIdentifier << "\n";
-							m_iSelectedColumn=l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase;
+							m_iSelectedColumn=(int)(l_ui64StimulationIdentifier-m_ui64ColumnStimulationBase);
 							l_bSelected=true;
 						}
 						if(l_ui64StimulationIdentifier == OVTK_StimulationId_Label_00)

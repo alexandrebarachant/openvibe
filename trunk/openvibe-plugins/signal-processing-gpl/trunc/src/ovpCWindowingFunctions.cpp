@@ -101,7 +101,7 @@ void CWindowingFunctions::setSampleBuffer(const float64* pBuffer)
 	{
 		for(uint64 j=0 ; j<m_pSignalDescription->m_ui32SampleCount ; j++)
 		{
-			m_pMatrixBuffer[i*m_pSignalDescription->m_ui32SampleCount+j] =  (double)pBuffer[i*m_pSignalDescription->m_ui32SampleCount+j]*l_vecWindow(j);
+			m_pMatrixBuffer[i*m_pSignalDescription->m_ui32SampleCount+j] =  (double)pBuffer[i*m_pSignalDescription->m_ui32SampleCount+j]*l_vecWindow((int)j);
 		}
 	}
 

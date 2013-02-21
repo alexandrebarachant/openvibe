@@ -192,7 +192,7 @@ boolean CNaiveBayesApplyBoxAlgorithm::process(void)
 						this->getLogManager()<<LogLevel_Error<<"Bad dimension of data or input training data : expected " << m_ui32NbFeatures << " features and input matrix size is " << l_opMatrix->getBufferElementCount() << "\n";
 					}
 
-					m_pf64AllEntriesClassFunctionalNB = (float64 **)calloc(m_ui64NbEntries, sizeof(float64*));
+					m_pf64AllEntriesClassFunctionalNB = (float64 **)calloc((size_t)m_ui64NbEntries, sizeof(float64*));
 					if (m_pf64AllEntriesClassFunctionalNB == NULL)
 					{
 						this->getLogManager()<<LogLevel_Error<<"Memory allocation for storing all entries functionnal NB.\n";
@@ -206,7 +206,7 @@ boolean CNaiveBayesApplyBoxAlgorithm::process(void)
 						}
 					}
 
-					m_pui32IndexClass2Max = (uint32 *)calloc(m_ui64NbEntries, sizeof(uint32));
+					m_pui32IndexClass2Max = (uint32 *)calloc((size_t)m_ui64NbEntries, sizeof(uint32));
 					if (m_pui32IndexClass2Max == NULL)
 					{
 						this->getLogManager()<<LogLevel_Error<<"Memory allocation for storing index of maximum.\n";

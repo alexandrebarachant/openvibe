@@ -73,7 +73,7 @@ void CFastICA::setSampleBuffer(const float64* pBuffer)
 	{
 		for(uint64 j=0 ; j<m_pSignalDescription->m_ui32SampleCount ; j++)
 		{
-			sources(i, j) =  (double)pBuffer[i*m_pSignalDescription->m_ui32SampleCount+j];
+			sources((int)i, (int)j) =  (double)pBuffer[i*m_pSignalDescription->m_ui32SampleCount+j];
 		}
 	}
 
@@ -88,7 +88,7 @@ void CFastICA::setSampleBuffer(const float64* pBuffer)
 	{
 		for(uint64 j=0 ; j<m_pSignalDescription->m_ui32SampleCount ; j++)
 		{
-			m_pMatrixBuffer[i*m_pSignalDescription->m_ui32SampleCount+j] = ICs(i,j);
+			m_pMatrixBuffer[i*m_pSignalDescription->m_ui32SampleCount+j] = ICs((int)i,(int)j);
 		}
 	}
 

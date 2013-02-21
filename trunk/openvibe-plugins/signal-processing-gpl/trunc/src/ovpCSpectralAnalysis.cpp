@@ -62,10 +62,10 @@ boolean CSpectralAnalysis::initialize()
 	getBoxAlgorithmContext()->getStaticBoxContext()->getSettingValue(0, l_sSpectralComponents);
 	uint64 l_ui64SpectralComponents=this->getTypeManager().getBitMaskEntryCompositionValueFromName(OVP_TypeId_SpectralComponent, l_sSpectralComponents);
 
-	m_bAmplitudeSpectrum = (l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Amplitude.toUInteger());
-	m_bPhaseSpectrum     = (l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Phase.toUInteger());
-	m_bRealPartSpectrum  = (l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_RealPart.toUInteger());
-	m_bImagPartSpectrum  = (l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_ImaginaryPart.toUInteger());
+	m_bAmplitudeSpectrum = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Amplitude.toUInteger());
+	m_bPhaseSpectrum     = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_Phase.toUInteger());
+	m_bRealPartSpectrum  = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_RealPart.toUInteger());
+	m_bImagPartSpectrum  = (boolean)(l_ui64SpectralComponents & OVP_TypeId_SpectralComponent_ImaginaryPart.toUInteger());
 
 	// Prepares EBML reader
 	m_pSignalReaderCallBack = createBoxAlgorithmSignalInputReaderCallback(m_oSignalReaderCallBackProxy);
@@ -249,13 +249,13 @@ boolean CSpectralAnalysis::process()
 				{
 					for(uint64 j=0 ; j<m_ui32SampleCount ; j++)
 					{
-						x[j] =  (double)m_pInputBuffer[i*m_ui32SampleCount+j];
+						x[(int)j] =  (double)m_pInputBuffer[i*m_ui32SampleCount+j];
 					}
 					y = fft_real(x, m_ui32FFTSize<<1);
 
 					for(uint64 k=0 ; k<m_ui32FFTSize ; k++)
 					{
-						z[k+i*m_ui32FFTSize] = y[k];
+						z[(int)(k+i*m_ui32FFTSize)] = y[(int)k];
 					}
 				}
 
@@ -263,7 +263,7 @@ boolean CSpectralAnalysis::process()
 				{
 					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
 					{
-						m_pOutputBuffer[i] =  sqrt(real(z[i])*real(z[i])+ imag(z[i])*imag(z[i]));
+						m_pOutputBuffer[i] =  sqrt(real(z[(int)i])*real(z[(int)i])+ imag(z[(int)i])*imag(z[(int)i]));
 					}
 					m_pSpectrumOutputWriterHelper->writeBuffer(*m_pWriter[0]);
 					l_pDynamicContext->markOutputAsReadyToSend(0,m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
@@ -272,7 +272,7 @@ boolean CSpectralAnalysis::process()
 				{
 					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
 					{
-						m_pOutputBuffer[i] =  imag(z[i])/real(z[i]);
+						m_pOutputBuffer[i] =  imag(z[(int)i])/real(z[(int)i]);
 					}
 					m_pSpectrumOutputWriterHelper->writeBuffer(*m_pWriter[1]);
 					l_pDynamicContext->markOutputAsReadyToSend(1,m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
@@ -281,7 +281,7 @@ boolean CSpectralAnalysis::process()
 				{
 					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
 					{
-						m_pOutputBuffer[i] = real(z[i]);
+						m_pOutputBuffer[i] = real(z[(int)i]);
 					}
 					m_pSpectrumOutputWriterHelper->writeBuffer(*m_pWriter[2]);
 					l_pDynamicContext->markOutputAsReadyToSend(2,m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
@@ -290,7 +290,7 @@ boolean CSpectralAnalysis::process()
 				{
 					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
 					{
-						m_pOutputBuffer[i] = imag(z[i]);
+						m_pOutputBuffer[i] = imag(z[(int)i]);
 					}
 					m_pSpectrumOutputWriterHelper->writeBuffer(*m_pWriter[3]);
 					l_pDynamicContext->markOutputAsReadyToSend(3,m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);

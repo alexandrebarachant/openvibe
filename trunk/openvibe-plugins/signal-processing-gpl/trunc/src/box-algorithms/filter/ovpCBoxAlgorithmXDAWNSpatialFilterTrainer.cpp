@@ -201,7 +201,8 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 		this->getLogManager() << LogLevel_Trace << "Decoding signal...\n";
 
 		boolean l_bIsContinuous=true;
-		uint64 l_ui64StartTime=uint64(-1);
+		// TODO Is next line needed 
+		// uint64 l_ui64StartTime=uint64(-1);
 		uint64 l_ui64EndTime=uint64(-1);
 		std::vector < SChunk > l_vSignalChunk;
 		for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
@@ -215,7 +216,8 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 				l_vSignalChunk.clear();
 
 				l_bIsContinuous=true;
-				l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(1, i);
+				// TODO Is next line needed 
+				//l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(1, i);
 				l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(1, i);
 			}
 			if(m_pSignalDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedBuffer))
@@ -234,7 +236,8 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 				{
 					l_bIsContinuous=false;
 				}
-				l_ui64StartTime=l_oChunk.m_ui64StartTime;
+				// TODO Is next line needed 
+				//l_ui64StartTime=l_oChunk.m_ui64StartTime;
 				l_ui64EndTime=l_oChunk.m_ui64EndTime;
 			}
 			if(m_pSignalDecoder->isOutputTriggerActive(OVP_GD_Algorithm_SignalStreamDecoder_OutputTriggerId_ReceivedEnd))
@@ -334,7 +337,7 @@ boolean CBoxAlgorithmXDAWNSpatialFilterTrainer::process(void)
 		for(it=l_vEvokedPotential.begin(); it!=l_vEvokedPotential.end(); it++)
 		{
 			uint64 l_ui64ERPStartTime=it->m_ui64StartTime;
-			uint32 l_ui32ERPStartIndex=((l_ui64ERPStartTime-l_ui64SignalStartTime)*(l_ui32SampleCountPerChunk*l_ui32ChunkCount))/(l_ui64SignalEndTime-l_ui64SignalStartTime);
+			uint32 l_ui32ERPStartIndex=(uint32)(((l_ui64ERPStartTime-l_ui64SignalStartTime)*(l_ui32SampleCountPerChunk*l_ui32ChunkCount))/(l_ui64SignalEndTime-l_ui64SignalStartTime));
 			for(k=0; k<l_ui32SampleCountPerERP; k++)
 			{
 				l_oDMatrix(l_ui32ERPStartIndex+k,k)=1;

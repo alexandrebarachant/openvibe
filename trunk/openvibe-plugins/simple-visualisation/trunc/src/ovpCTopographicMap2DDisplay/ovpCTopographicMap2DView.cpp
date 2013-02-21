@@ -574,7 +574,7 @@ namespace OpenViBEPlugins
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832795
 #endif
-#define DEG2RAD(x) (x)*M_PI/180
+#define DEG2RAD(x) ((x)*M_PI/180.0)
 
 			if(m_ui32CurrentView == TopographicMap2DView_Top)
 			{
@@ -767,15 +767,15 @@ namespace OpenViBEPlugins
 				uint32 l_ui32SkullCenterX = m_ui32SkullX + m_ui32SkullDiameter / 2;
 				uint32 l_ui32SkullCenterY = m_ui32SkullY + m_ui32SkullDiameter / 2;
 
-				m_ui32SkullOutlineLeftPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf(DEG2RAD(m_f32SkullOutlineEndAngle)));
-				m_ui32SkullOutlineLeftPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf(DEG2RAD(m_f32SkullOutlineEndAngle)));
-				m_ui32SkullOutlineRightPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf(DEG2RAD(m_f32SkullOutlineStartAngle)));
-				m_ui32SkullOutlineRightPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf(DEG2RAD(m_f32SkullOutlineStartAngle)));
+				m_ui32SkullOutlineLeftPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf((float)DEG2RAD(m_f32SkullOutlineEndAngle)));
+				m_ui32SkullOutlineLeftPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf((float)DEG2RAD(m_f32SkullOutlineEndAngle)));
+				m_ui32SkullOutlineRightPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf((float)DEG2RAD(m_f32SkullOutlineStartAngle)));
+				m_ui32SkullOutlineRightPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf((float)DEG2RAD(m_f32SkullOutlineStartAngle)));
 
-				m_ui32SkullFillLeftPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf(DEG2RAD(m_f32SkullFillEndAngle)));
-				m_ui32SkullFillLeftPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf(DEG2RAD(m_f32SkullFillEndAngle)));
-				m_ui32SkullFillRightPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf(DEG2RAD(m_f32SkullFillStartAngle)));
-				m_ui32SkullFillRightPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf(DEG2RAD(m_f32SkullFillStartAngle)));
+				m_ui32SkullFillLeftPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf((float)DEG2RAD(m_f32SkullFillEndAngle)));
+				m_ui32SkullFillLeftPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf((float)DEG2RAD(m_f32SkullFillEndAngle)));
+				m_ui32SkullFillRightPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf((float)DEG2RAD(m_f32SkullFillStartAngle)));
+				m_ui32SkullFillRightPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf((float)DEG2RAD(m_f32SkullFillStartAngle)));
 				m_ui32SkullFillBottomPointX = m_ui32SkullX + m_ui32SkullDiameter / 2;
 				m_ui32SkullFillBottomPointY = m_ui32SkullFillRightPointY;
 
@@ -816,8 +816,8 @@ namespace OpenViBEPlugins
 					uint32 l_ui32SkullCenterY = m_ui32SkullY + m_ui32SkullDiameter / 2;
 
 					//nose top = head outline left boundary
-					m_ui32NoseTopX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2*cosf(DEG2RAD(m_f32SkullOutlineEndAngle)));
-					m_ui32NoseTopY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2*sinf(DEG2RAD(m_f32SkullOutlineEndAngle)));
+					m_ui32NoseTopX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2*cosf((float)DEG2RAD(m_f32SkullOutlineEndAngle)));
+					m_ui32NoseTopY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2*sinf((float)DEG2RAD(m_f32SkullOutlineEndAngle)));
 					//nose bump
 					m_ui32NoseBumpX = m_ui32NoseTipX;
 					m_ui32NoseBumpY = m_ui32NoseTopY + (uint32)(0.15f * m_ui32SkullDiameter);//(uint32)(0.179f * m_ui32SkullDiameter);
@@ -847,8 +847,8 @@ namespace OpenViBEPlugins
 					uint32 l_ui32SkullCenterY = m_ui32SkullY + m_ui32SkullDiameter / 2;
 
 					//nose top = head outline right boundary
-					m_ui32NoseTopX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2*cosf(DEG2RAD(m_f32SkullOutlineStartAngle)));
-					m_ui32NoseTopY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2*sinf(DEG2RAD(m_f32SkullOutlineStartAngle)));
+					m_ui32NoseTopX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2*cosf((float)DEG2RAD(m_f32SkullOutlineStartAngle)));
+					m_ui32NoseTopY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2*sinf((float)DEG2RAD(m_f32SkullOutlineStartAngle)));
 					//nose bump
 					m_ui32NoseBumpX = m_ui32NoseTipX;
 					m_ui32NoseBumpY = m_ui32NoseTopY + (uint32)(0.15f * m_ui32SkullDiameter);//(uint32)(0.179f * m_ui32SkullDiameter);
@@ -865,10 +865,10 @@ namespace OpenViBEPlugins
 
 				uint32 l_ui32SkullCenterX = m_ui32SkullX + m_ui32SkullDiameter / 2;
 				uint32 l_ui32SkullCenterY = m_ui32SkullY + m_ui32SkullDiameter / 2;
-				m_ui32SkullFillLeftPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf(DEG2RAD(m_f32SkullFillEndAngle)));
-				m_ui32SkullFillLeftPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf(DEG2RAD(m_f32SkullFillEndAngle)));
-				m_ui32SkullFillRightPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf(DEG2RAD(m_f32SkullFillStartAngle)));
-				m_ui32SkullFillRightPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf(DEG2RAD(m_f32SkullFillStartAngle)));
+				m_ui32SkullFillLeftPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf((float)DEG2RAD(m_f32SkullFillEndAngle)));
+				m_ui32SkullFillLeftPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf((float)DEG2RAD(m_f32SkullFillEndAngle)));
+				m_ui32SkullFillRightPointX = l_ui32SkullCenterX + (uint32)(m_ui32SkullDiameter/2 * cosf((float)DEG2RAD(m_f32SkullFillStartAngle)));
+				m_ui32SkullFillRightPointY = l_ui32SkullCenterY - (uint32)(m_ui32SkullDiameter/2 * sinf((float)DEG2RAD(m_f32SkullFillStartAngle)));
 
 				m_ui32SkullFillBottomPointX = m_ui32SkullX + m_ui32SkullDiameter / 2;
 				m_ui32SkullFillBottomPointY = m_ui32SkullY + (uint32)(0.684f * m_ui32SkullDiameter);
