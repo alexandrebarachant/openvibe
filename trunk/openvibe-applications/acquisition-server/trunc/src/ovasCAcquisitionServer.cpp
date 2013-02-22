@@ -180,7 +180,7 @@ namespace OpenViBEAcquisitionServer
 				}
 				else
 				{
-					System::Time::sleep(m_rAcquisitionServer.m_ui64StartedDriverSleepDuration);
+					System::Time::sleep((uint32)m_rAcquisitionServer.m_ui64StartedDriverSleepDuration);
 				}
 			}
 			while(m_rConnection.isConnected());
@@ -536,7 +536,7 @@ boolean CAcquisitionServer::loop(void)
 				{
 					for(uint32 i=0; i<m_ui32SampleCountPerSentBlock; i++)
 					{
-						ip_pSignalMatrix->getBuffer()[j*m_ui32SampleCountPerSentBlock+i]=m_vPendingBuffer[i+l_rInfo.m_ui64SignalSampleCountToSkip][j];
+						ip_pSignalMatrix->getBuffer()[j*m_ui32SampleCountPerSentBlock+i]=m_vPendingBuffer[(int)(i+l_rInfo.m_ui64SignalSampleCountToSkip)][j];
 					}
 				}
 
@@ -1065,7 +1065,7 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 				l_ui64SamplesToRemove=m_vPendingBuffer.size();
 			}
 
-			m_vPendingBuffer.erase(m_vPendingBuffer.begin()+m_vPendingBuffer.size()-l_ui64SamplesToRemove, m_vPendingBuffer.begin()+m_vPendingBuffer.size());
+			m_vPendingBuffer.erase(m_vPendingBuffer.begin()+m_vPendingBuffer.size()-(int)l_ui64SamplesToRemove, m_vPendingBuffer.begin()+m_vPendingBuffer.size());
 
 #if 0
 			OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, ((m_ui64SampleCount-l_ui64SamplesToRemove)<<32)/m_ui32SamplingFrequency, (m_ui64SampleCount<<32)/m_ui32SamplingFrequency);

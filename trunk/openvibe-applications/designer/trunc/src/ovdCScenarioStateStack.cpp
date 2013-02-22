@@ -15,7 +15,7 @@ CScenarioStateStack::CScenarioStateStack(const IKernelContext& rKernelContext, C
 	,m_ui32MaximumStateCount(0)
 {
 	m_itCurrentState=m_vStates.begin();
-	m_ui32MaximumStateCount=m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UndoRedoStackSize}", 64);
+	m_ui32MaximumStateCount=(uint32)m_rKernelContext.getConfigurationManager().expandAsUInteger("${Designer_UndoRedoStackSize}", 64);
 }
 
 CScenarioStateStack::~CScenarioStateStack(void)

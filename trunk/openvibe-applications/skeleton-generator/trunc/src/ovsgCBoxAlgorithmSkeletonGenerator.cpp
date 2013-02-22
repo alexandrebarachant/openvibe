@@ -109,11 +109,11 @@ extern "C" G_MODULE_EXPORT void entry_modified_cb(::GtkWidget * pObject, void* p
 }
 extern "C" G_MODULE_EXPORT void listener_checkbutton_toggled_cb(::GtkWidget * pObject, void* pUserData)
 {
-	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleListenerCheckbuttonsStateCB((boolean)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject)));
+	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleListenerCheckbuttonsStateCB((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject))>0));
 }
 extern "C" G_MODULE_EXPORT void processing_method_clock_toggled(::GtkWidget * pObject, void* pUserData)
 {
-	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleClockFrequencyStateCB((boolean)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject)));
+	static_cast<CBoxAlgorithmSkeletonGenerator*>(pUserData)->toggleClockFrequencyStateCB((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(pObject))>0));
 }
 //-----------------------------------------------------------------------
 void CBoxAlgorithmSkeletonGenerator::buttonExitCB(void)
@@ -1344,7 +1344,7 @@ OpenViBE::boolean CBoxAlgorithmSkeletonGenerator::initialize( void )
 
 	// CODECS INITIALISATION:
 	::GtkWidget * l_pCodecCheckbutton = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-toolkit-checkbutton"));
-	m_bUseCodecToolkit = (boolean) gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCodecCheckbutton));
+	m_bUseCodecToolkit = (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCodecCheckbutton))>0);
 
 	::GtkWidget * l_pAlgoCombobox = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-algorithms-add-combobox"));
 	::GtkTreeModel * l_pAlgoListStore = gtk_combo_box_get_model(GTK_COMBO_BOX(l_pAlgoCombobox));
@@ -1485,7 +1485,7 @@ OpenViBE::boolean CBoxAlgorithmSkeletonGenerator::initialize( void )
 	//load everything from config file
 	load(m_sConfigurationFile);
 	::GtkWidget * l_pListenerWidget = GTK_WIDGET(gtk_builder_get_object(m_pBuilderInterface, "sg-box-listener-checkbutton"));
-	toggleListenerCheckbuttonsStateCB((boolean)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pListenerWidget)));
+	toggleListenerCheckbuttonsStateCB((gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pListenerWidget))>0));
 
 	gtk_widget_show_all(l_pBox);
 

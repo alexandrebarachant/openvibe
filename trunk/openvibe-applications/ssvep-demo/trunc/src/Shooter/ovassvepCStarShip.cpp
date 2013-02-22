@@ -17,7 +17,7 @@ CStarShip::CStarShip(CApplication* poApplication, Ogre::SceneNode* poParentNode,
 	// get configuration and controlling objects
 	OpenViBE::Kernel::IConfigurationManager* l_poConfigurationManager = poApplication->getConfigurationManager();
 	CBasicPainter* l_poPainter = poApplication->getPainter();
-	m_rAngularSpeed = l_poConfigurationManager->expandAsFloat("${SSVEP_ShipAngularSpeed}", Math::PI / 60.0f);
+	m_rAngularSpeed = (Ogre::Real) l_poConfigurationManager->expandAsFloat("${SSVEP_ShipAngularSpeed}", Math::PI / 60.0f);
 	poApplication->getLogManager() << OpenViBE::Kernel::LogLevel_Info << "Ship Angluar Speed : " << m_rAngularSpeed << "\n";
 
 	ColourValue l_oLightColour = ColourValue(

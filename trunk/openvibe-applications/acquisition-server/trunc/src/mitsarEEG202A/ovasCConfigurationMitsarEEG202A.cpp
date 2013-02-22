@@ -49,7 +49,7 @@ boolean CConfigurationMitsarEEG202A::postConfigure(void)
 
 	m_rRefIndex=(uint32)::gtk_combo_box_get_active(l_pComboBox_Ref);
 
-	m_rEventAndBioChannelsState=(boolean)::gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCheckButton_HardwareTagging));
+	m_rEventAndBioChannelsState=(::gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCheckButton_HardwareTagging))>0);
 
 	if (!CConfigurationBuilder::postConfigure())
 	{

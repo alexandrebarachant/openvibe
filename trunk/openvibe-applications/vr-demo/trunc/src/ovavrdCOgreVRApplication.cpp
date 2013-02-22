@@ -365,5 +365,5 @@ bool COgreVRApplication::frameStarted(const FrameEvent& evt)
 
 void COgreVRApplication::windowResized(RenderWindow* rw)
 {
-	CEGUI::System::getSingleton().notifyDisplaySizeChanged(CEGUI::Size(rw->getWidth(), rw->getHeight()));
+	CEGUI::System::getSingleton().notifyDisplaySizeChanged(CEGUI::Size((float)rw->getWidth(), (float)rw->getHeight()));
 }

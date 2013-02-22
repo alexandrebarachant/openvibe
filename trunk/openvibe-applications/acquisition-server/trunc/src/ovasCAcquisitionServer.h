@@ -147,7 +147,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::boolean m_bIsImpedanceCheckRequested;
 		OpenViBE::boolean m_bGotData;
 		OpenViBE::boolean m_bDriftCorrectionCalled;
-		OpenViBE::uint32 m_ui64OverSamplingFactor;
+		OpenViBE::uint64 m_ui64OverSamplingFactor;
 		OpenViBE::uint32 m_ui32ChannelCount;
 		OpenViBE::uint32 m_ui32SamplingFrequency;
 		OpenViBE::uint32 m_ui32SampleCountPerSentBlock;

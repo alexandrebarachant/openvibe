@@ -369,7 +369,7 @@ void CAcquisitionServerGUI::setClientCount(uint32 ui32ClientCount)
 
 void CAcquisitionServerGUI::setDrift(float64 f64Drift)
 {
-	float64 l_f64DriftToleranceDuration=m_pAcquisitionServer->getDriftToleranceDuration();
+	float64 l_f64DriftToleranceDuration=(float64)m_pAcquisitionServer->getDriftToleranceDuration();
 	float64 l_f64DriftRatio=f64Drift/l_f64DriftToleranceDuration;
 	boolean l_bDriftWarning=false;
 	char l_sLabel[1024];
@@ -627,9 +627,9 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 	::GtkToggleButton* l_pExternalStimulations=GTK_TOGGLE_BUTTON(::gtk_builder_get_object(l_pInterface, "checkbutton_external_stimulations")); // #Gipsa
 
 	::gtk_combo_box_set_active(l_pDriftCorrectionPolicy, (int)m_pAcquisitionServer->getDriftCorrectionPolicy());
-	::gtk_spin_button_set_value(l_pDriftTolerance, m_pAcquisitionServer->getDriftToleranceDuration());
-	::gtk_spin_button_set_value(l_pJitterMeasureCount, m_pAcquisitionServer->getJitterEstimationCountForDrift());
-	::gtk_spin_button_set_value(l_pOverSamplingFactor, m_pAcquisitionServer->getOversamplingFactor());
+	::gtk_spin_button_set_value(l_pDriftTolerance, (gdouble)m_pAcquisitionServer->getDriftToleranceDuration());
+	::gtk_spin_button_set_value(l_pJitterMeasureCount, (gdouble)m_pAcquisitionServer->getJitterEstimationCountForDrift());
+	::gtk_spin_button_set_value(l_pOverSamplingFactor, (gdouble)m_pAcquisitionServer->getOversamplingFactor());
 	::gtk_toggle_button_set_active(l_pImpedanceCheck, m_pAcquisitionServer->isImpedanceCheckRequested()?TRUE:FALSE);
 	::gtk_combo_box_set_active(l_pNaNReplacementPolicy, (int)m_pAcquisitionServer->getNaNReplacementPolicy());
 

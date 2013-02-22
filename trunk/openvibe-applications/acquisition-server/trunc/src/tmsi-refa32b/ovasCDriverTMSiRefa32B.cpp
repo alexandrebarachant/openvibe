@@ -491,11 +491,11 @@ boolean CDriverTMSiRefa32B::loop(void)
 					}
 					else if(m_bSignalBufferUnsigned)
 					{
-						m_pSample[m_ui32SampleIndex+j + i*m_ui32SampleCountPerSentBlock] =(((float32)m_ulSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +i])*m_vUnitGain[i]+m_vUnitOffSet[i])*pow(10.,(double)m_vExponentChannel[i]);
+						m_pSample[m_ui32SampleIndex+j + i*m_ui32SampleCountPerSentBlock] =(float32)((((float32)m_ulSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +i])*m_vUnitGain[i]+m_vUnitOffSet[i])*pow(10.,(double)m_vExponentChannel[i]));
 					}
 					else
 					{
-						m_pSample[m_ui32SampleIndex+j + i*m_ui32SampleCountPerSentBlock] =(((float32)m_lSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +i])*m_vUnitGain[i]+m_vUnitOffSet[i])*pow(10.,(double)m_vExponentChannel[i]);
+						m_pSample[m_ui32SampleIndex+j + i*m_ui32SampleCountPerSentBlock] =(float32)((((float32)m_lSignalBuffer[(l_ui32IndexBuffer+j)*m_ui32NbTotalChannels +i])*m_vUnitGain[i]+m_vUnitOffSet[i])*pow(10.,(double)m_vExponentChannel[i]));
 					}
 
 				}
@@ -517,7 +517,7 @@ boolean CDriverTMSiRefa32B::loop(void)
 
 				if(m_ui32LastTriggerValue!=l_ui32Trigger)
 				{
-					uint32 l_ui32IndexStimulation=m_oStimulationSet.getStimulationCount();
+					uint32 l_ui32IndexStimulation=(uint32)m_oStimulationSet.getStimulationCount();
 					m_oStimulationSet.appendStimulation(l_ui32Trigger, (uint64(m_ui32SampleIndex+j)<<32)/m_oHeader.getSamplingFrequency(), 0);
 					m_ui32LastTriggerValue=l_ui32Trigger;
 				}

@@ -408,7 +408,7 @@ namespace
 				float64 l_f64Time=(l_pCurrentInterfacedScenario->m_pPlayer?((l_pCurrentInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
 				if(l_pApplication->m_ui64LastTimeRefresh!=l_f64Time)
 				{
-					l_pApplication->m_ui64LastTimeRefresh=l_f64Time;
+					l_pApplication->m_ui64LastTimeRefresh=(uint64)l_f64Time;
 
 					uint32 l_ui32Milli  = ((uint32)(l_f64Time*1000)%1000);
 					uint32 l_ui32Seconds=  ((uint32)l_f64Time)%60;
@@ -772,7 +772,7 @@ boolean CApplication::openScenario(const char* sFileName)
 				::fseek(l_pFile, 0, SEEK_END);
 				l_oMemoryBuffer.setSize(::ftell(l_pFile), true);
 				::fseek(l_pFile, 0, SEEK_SET);
-				::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), l_oMemoryBuffer.getSize(), 1, l_pFile);
+				::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), (size_t)l_oMemoryBuffer.getSize(), 1, l_pFile);
 				::fclose(l_pFile);
 			}
 		}

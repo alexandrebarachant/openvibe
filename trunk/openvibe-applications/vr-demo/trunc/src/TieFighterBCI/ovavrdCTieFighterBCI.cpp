@@ -567,7 +567,7 @@ void CTieFighterBCI::processStageFreetime(double timeSinceLastProcess)
 		m_vTieOrientation[0] += g_fRotationSpeed *((rand()&1)==0?-1:1);
 		m_vTieOrientation[1] += g_fRotationSpeed *((rand()&1)==0?-1:1);
 		m_vTieOrientation[2] += g_fRotationSpeed *((rand()&1)==0?-1:1);
-		m_fTieHeight += (m_dFeedback-m_dBetaOffset)* g_fMoveSpeed;
+		m_fTieHeight += (float)((m_dFeedback-m_dBetaOffset)* g_fMoveSpeed);
 		if(m_bShouldIncrementStat) m_dStat_TieFighterLiftTime += timeSinceLastProcess;
 
 		if(m_vTieOrientation[0]>5)  m_vTieOrientation[0]=5;

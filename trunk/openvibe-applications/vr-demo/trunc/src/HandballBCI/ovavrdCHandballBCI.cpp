@@ -286,7 +286,7 @@ bool CHandballBCI::process(double timeSinceLastProcess)
 			break;
 
 		case Phase_Active:
-			m_fBallSpeed=-m_dFeedback * 0.1f;
+			m_fBallSpeed=-(float)(m_dFeedback * 0.1);
 			if(m_iMark==Mark_Left && m_fBallPosition==-GOAL_DISTANCE && !m_bGoalMarkedAtThisPhase) { m_iGoalScore++; m_bGoalMarkedAtThisPhase=true; }
 			if(m_iMark==Mark_Right&& m_fBallPosition== GOAL_DISTANCE && !m_bGoalMarkedAtThisPhase) { m_iGoalScore++; m_bGoalMarkedAtThisPhase=true; }
 			if(m_iMark==Mark_Left && m_dFeedback<0) { m_iClassificationScore++;}
@@ -333,8 +333,8 @@ bool CHandballBCI::process(double timeSinceLastProcess)
 	if(m_iPhase==Phase_Active)
 	{
 		l_poFeedbackNode->setVisible(true);
-		l_poFeedbackNode->setScale(0.25f,0.25f,_abs_(l_dFeedbackScale));
-		l_poFeedbackNode->setPosition(3.499f,0.20f,-l_dFeedbackScale/2.f);
+		l_poFeedbackNode->setScale(0.25f,0.25f,(Ogre::Real)_abs_(l_dFeedbackScale));
+		l_poFeedbackNode->setPosition(3.499f,0.20f,-(Ogre::Real)(l_dFeedbackScale/2.));
 	}
 	else
 	{
@@ -691,8 +691,8 @@ void CHandballBCI::initSceneCrossArrowAndFeedback()
 
 	l_poCrossCommonNode->yaw(Radian(Math::PI/2.f));
 	l_poCrossCommonNode->roll(Radian(Math::PI/2.f));
-	l_poCrossCommonNode->translate(3.5,0.20,0);
-	l_poCrossCommonNode->setScale(0.35,0.35,0.35);
+	l_poCrossCommonNode->translate(3.5f,0.20f,0.f);
+	l_poCrossCommonNode->setScale(0.35f,0.35f,0.35f);
 
 	//----------- FEEDBACK -------------//
 	SceneNode * l_poFeedbackNode = m_poSceneManager->getRootSceneNode()->createChildSceneNode( "FeedbackNode" );
