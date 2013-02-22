@@ -81,7 +81,7 @@ namespace OpenViBEAcquisitionServer
 			OpenViBE::uint32  Data1;
 			unsigned short Data2;
 			unsigned short Data3;
-			unsigned char  Data4[8];
+			OpenViBE::uint8  Data4[8];
 		} GUID;
 
 		struct RDA_Marker

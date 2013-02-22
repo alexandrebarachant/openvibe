@@ -259,7 +259,8 @@ bool CApplication::frameRenderingQueued(const Ogre::FrameEvent &evt)
 
 bool CApplication::frameStarted(const Ogre::FrameEvent &evt)
 {
-	m_ui32CurrentFrame = ++m_ui32CurrentFrame % int(m_f64ScreenRefreshRate);
+	++m_ui32CurrentFrame;
+	m_ui32CurrentFrame = m_ui32CurrentFrame % int(m_f64ScreenRefreshRate);
 
 	this->processFrame(m_ui32CurrentFrame);
 

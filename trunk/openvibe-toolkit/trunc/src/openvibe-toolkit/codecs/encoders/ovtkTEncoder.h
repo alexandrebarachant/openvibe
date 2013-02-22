@@ -88,6 +88,10 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TEncoder : public TEncoderLocal < TCodec < T > >
 	{
+	public:
+		virtual ~TEncoder()
+		{
+		}
 	protected:
 		// constructor is protected, ensuring we can't instanciate a TEncoder
 		TEncoder()

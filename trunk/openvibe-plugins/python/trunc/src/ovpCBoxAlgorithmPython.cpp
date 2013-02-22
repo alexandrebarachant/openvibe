@@ -560,7 +560,7 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 			l_sInputOutputType = "ExperimentationInformation";
 		}
 		//New reference
-		PyObject* l_pResult = PyObject_CallMethod(m_pBox, "addInput", "s", const_cast <char*>(l_sInputOutputType.toASCIIString()));
+		PyObject* l_pResult = PyObject_CallMethod(m_pBox, const_cast<char *>("addInput"), const_cast<char *>("s"), const_cast <char*>(l_sInputOutputType.toASCIIString()));
 		if (l_pResult == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to call box.addInput().\n";
@@ -606,7 +606,7 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 			l_sInputOutputType = "ExperimentationInformation";
 		}
 		//New reference
-		PyObject* l_pResult = PyObject_CallMethod(m_pBox, "addOutput", "s", const_cast <char*>(l_sInputOutputType.toASCIIString()));
+		PyObject* l_pResult = PyObject_CallMethod(m_pBox, const_cast<char *>("addOutput"), const_cast<char *>("s"), const_cast <char*>(l_sInputOutputType.toASCIIString()));
 		if (l_pResult == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to call box.addOutput().\n";

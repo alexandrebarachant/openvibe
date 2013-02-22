@@ -49,7 +49,7 @@ boolean CDriverBrainProductsBrainVisionRecorder::initialize(
 
 	// Initialize GUID value
 	DEFINE_GUID(GUID_RDAHeader,
-		1129858446, 51606, 19590, char(175), char(74), char(152), char(187), char(246), char(201), char(20), char(80)
+		1129858446, 51606, 19590, uint8(175), uint8(74), uint8(152), uint8(187), uint8(246), uint8(201), uint8(20), uint8(80)
 	);
 
 	// Builds up client connection
@@ -192,7 +192,7 @@ boolean CDriverBrainProductsBrainVisionRecorder::loop(void)
 	if(!m_rDriverContext.isStarted()) { return true; }
 
 	DEFINE_GUID(GUID_RDAHeader,
-		1129858446, 51606, 19590, char(175), char(74), char(152), char(187), char(246), char(201), char(20), char(80)
+		1129858446, 51606, 19590, uint8(175), uint8(74), uint8(152), uint8(187), uint8(246), uint8(201), uint8(20), uint8(80)
 	);
 
 	// Initialize var to receive buffer of data

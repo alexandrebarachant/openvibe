@@ -76,11 +76,16 @@ namespace OpenViBEToolkit
 	template <class T>
 	class TDecoder : public TDecoderLocal < TCodec < T > >
 	{
+	public:
+		virtual ~TDecoder()
+		{
+		}
 	protected:
 		// constructor is protected, ensuring we can't instanciate a TDecoder
 		TDecoder()
 		{
 		}
+
 	};
 };
 

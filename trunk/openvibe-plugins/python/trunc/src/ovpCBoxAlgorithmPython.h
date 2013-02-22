@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_Python_H__
 #define __OpenViBEPlugins_BoxAlgorithm_Python_H__
-
+#if defined TARGET_HAS_ThirdPartyPython
+# include <Python.h>
+#endif
 #include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
@@ -11,7 +13,6 @@
 #include <string>
 #include <vector>
 //#include <map>
-#include <Python.h>
 
 namespace OpenViBEPlugins
 {
