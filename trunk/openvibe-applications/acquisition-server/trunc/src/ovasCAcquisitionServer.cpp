@@ -631,7 +631,7 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 	const IHeader& l_rHeader=*rDriver.getHeader();
 
 	m_ui32ChannelCount=l_rHeader.getChannelCount();
-	m_ui32SamplingFrequency=l_rHeader.getSamplingFrequency()*m_ui64OverSamplingFactor;
+	m_ui32SamplingFrequency=(uint32)(l_rHeader.getSamplingFrequency()*m_ui64OverSamplingFactor);
 
 	if(m_ui32ChannelCount==0)
 	{
