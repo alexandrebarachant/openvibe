@@ -772,7 +772,10 @@ boolean CApplication::openScenario(const char* sFileName)
 				::fseek(l_pFile, 0, SEEK_END);
 				l_oMemoryBuffer.setSize(::ftell(l_pFile), true);
 				::fseek(l_pFile, 0, SEEK_SET);
-				::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), (size_t)l_oMemoryBuffer.getSize(), 1, l_pFile);
+				if(::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), (size_t)l_oMemoryBuffer.getSize(), 1, l_pFile)!=1)
+				{
+				// BAD !
+				}
 				::fclose(l_pFile);
 			}
 		}
