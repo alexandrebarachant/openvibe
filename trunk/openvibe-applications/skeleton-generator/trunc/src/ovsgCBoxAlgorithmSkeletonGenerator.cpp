@@ -1579,7 +1579,7 @@ boolean CBoxAlgorithmSkeletonGenerator::save(CString sFileName)
 	::fprintf(l_pFile, "SkeletonGenerator_Box_CanAddSettings = %s\n",(m_bCanAddSettings?"TRUE":"FALSE"));
 	
 	// Inputs
-	::fprintf(l_pFile, "SkeletonGenerator_Box_InputCount = %lu\n",m_vInputs.size());
+	::fprintf(l_pFile, "SkeletonGenerator_Box_InputCount = %lu\n",(unsigned long int)m_vInputs.size());
 	for(uint32 i = 0; i < m_vInputs.size(); i++)
 	{
 		::fprintf(l_pFile, "SkeletonGenerator_Box_Input%i_Name = %s\n",i,(const char *)m_vInputs[i]._name);
@@ -1587,7 +1587,7 @@ boolean CBoxAlgorithmSkeletonGenerator::save(CString sFileName)
 		::fprintf(l_pFile, "SkeletonGenerator_Box_Input%i_TypeId = %s\n",i,(const char *)m_vInputs[i]._typeId);
 	}
 	// Outputs
-	::fprintf(l_pFile, "SkeletonGenerator_Box_OutputCount = %lu\n",m_vOutputs.size());
+	::fprintf(l_pFile, "SkeletonGenerator_Box_OutputCount = %lu\n",(unsigned long int)m_vOutputs.size());
 	for(uint32 i = 0; i < m_vOutputs.size(); i++)
 	{
 		::fprintf(l_pFile, "SkeletonGenerator_Box_Output%i_Name = %s\n",i,(const char *)m_vOutputs[i]._name);
@@ -1595,7 +1595,7 @@ boolean CBoxAlgorithmSkeletonGenerator::save(CString sFileName)
 		::fprintf(l_pFile, "SkeletonGenerator_Box_Output%i_TypeId = %s\n",i,(const char *)m_vOutputs[i]._typeId);
 	}
 	// Inputs
-	::fprintf(l_pFile, "SkeletonGenerator_Box_SettingCount = %lu\n",m_vSettings.size());
+	::fprintf(l_pFile, "SkeletonGenerator_Box_SettingCount = %lu\n",(unsigned long int)m_vSettings.size());
 	for(uint32 i = 0; i < m_vSettings.size(); i++)
 	{
 		::fprintf(l_pFile, "SkeletonGenerator_Box_Setting%i_Name = %s\n",i,(const char *)m_vSettings[i]._name);
@@ -1604,7 +1604,7 @@ boolean CBoxAlgorithmSkeletonGenerator::save(CString sFileName)
 		::fprintf(l_pFile, "SkeletonGenerator_Box_Setting%i_DefaultValue = %s\n",i,(const char *)m_vSettings[i]._defaultValue);
 	}
 	// Algorithms
-	::fprintf(l_pFile, "SkeletonGenerator_Box_AlgorithmCount = %lu\n",m_vAlgorithms.size());
+	::fprintf(l_pFile, "SkeletonGenerator_Box_AlgorithmCount = %lu\n",(unsigned long int)m_vAlgorithms.size());
 	for(uint32 i = 0; i < m_vAlgorithms.size(); i++)
 	{
 		::fprintf(l_pFile, "SkeletonGenerator_Box_Algorithm%i_Name = %s\n",i,(const char *)m_vAlgorithms[i]);

@@ -64,7 +64,8 @@ int main(int argc, char ** argv)
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 
 				//initialise Gtk before 3D context
-				g_thread_init(NULL);
+				// g_thread_init has been deprecated since version 2.32 and should not be used in newly-written code. This function is no longer necessary
+				// g_thread_init(NULL);
 				gdk_threads_init();
 				gtk_init(&argc, &argv);
 

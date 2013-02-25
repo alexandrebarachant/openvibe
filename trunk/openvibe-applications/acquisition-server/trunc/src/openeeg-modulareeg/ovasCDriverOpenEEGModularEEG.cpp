@@ -395,7 +395,7 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 
 	fd_set  l_inputFileDescriptorSet;
 	struct timeval l_timeout;
-	ssize_t l_ui32ReadLength=0;
+	size_t l_ui32ReadLength=0;
 	bool finished=false;
 
 	l_timeout.tv_sec=0;
