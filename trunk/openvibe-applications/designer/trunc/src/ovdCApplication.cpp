@@ -774,9 +774,18 @@ boolean CApplication::openScenario(const char* sFileName)
 				::fseek(l_pFile, 0, SEEK_SET);
 				if(::fread(reinterpret_cast<char*>(l_oMemoryBuffer.getDirectPointer()), (size_t)l_oMemoryBuffer.getSize(), 1, l_pFile)!=1)
 				{
-				// BAD !
+					m_rKernelContext.getLogManager() << LogLevel_Error << "Problem reading '" << sFileName << "'\n";
+					::fclose(l_pFile);
+					m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
+					return false;
 				}
 				::fclose(l_pFile);
+			} 
+			else 
+			{
+				m_rKernelContext.getLogManager() << LogLevel_Error << "Unable to open '" << sFileName << "' for reading\n";
+				m_pScenarioManager->releaseScenario(l_oScenarioIdentifier);
+				return false;
 			}
 		}
 
