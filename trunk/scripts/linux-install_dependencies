@@ -10,6 +10,23 @@ ov_should_backup_after_install=false
 ov_native_package_installed=false
 ov_native_package_forced=true
 
+
+############################
+##                        ##
+##    usefull tools       ##
+##                        ##
+############################
+
+
+# Print echo in stderr 
+# howto use : 
+# echoerr hello world
+function echoerr() 
+{
+	echo "$@" 1>&2; 
+}
+
+
 ############################
 ##                        ##
 ##  installation scripts  ##
@@ -108,7 +125,7 @@ function ov_install_package
 				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
 				echo ""
 				echo "`$ov_tail "$ov_current_package_log_file"`"
-				exit
+				exit 100
 			fi;
 		fi;
 
@@ -140,7 +157,7 @@ function ov_install_package
 						;;
 					*)
 						echo "  Uhandled file extension [$ov_target_folder_arch/$ov_current_package_archive_name], sorry (may you try hook system ?) !"
-						exit
+						exit 100
 						;;
 				esac;
 				# executes uncompress hook pre
@@ -156,11 +173,11 @@ function ov_install_package
 			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 				echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name] succeeded..."
 			else
-				echo "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name] failed !"
+				echoerr "  Uncompressing [$ov_target_folder_arch/$ov_current_package_archive_name] failed !"
 				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
 				echo ""
 				echo "`$ov_tail "$ov_current_package_log_file"`"
-				exit
+				exit 100
 			fi;
 		fi;
 
@@ -186,11 +203,11 @@ function ov_install_package
 		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 			echo "  Configuring [$ov_current_package] succeeded..."
 		else
-			echo "  Configuring [$ov_current_package] failed !"
+			echoerr "  Configuring [$ov_current_package] failed !"
 			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
 			echo ""
 			echo "`$ov_tail "$ov_current_package_log_file"`"
-			exit
+			exit 100
 		fi;
 
 		# builds the package
@@ -215,11 +232,11 @@ function ov_install_package
 		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 			echo "  Building [$ov_current_package] succeeded..."
 		else
-			echo "  Building [$ov_current_package] failed !"
+			echoerr "  Building [$ov_current_package] failed !"
 			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
 			echo ""
 			echo "`$ov_tail "$ov_current_package_log_file"`"
-			exit
+			exit 100
 		fi;
 
 		# installs the package
@@ -244,11 +261,11 @@ function ov_install_package
 		if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 			echo "  Installing [$ov_current_package] succeeded..."
 		else
-			echo "  Installing [$ov_current_package] failed !"
+			echoerr "  Installing [$ov_current_package] failed !"
 			echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
 			echo ""
 			echo "`$ov_tail "$ov_current_package_log_file"`"
-			exit
+			exit 100
 		fi;
 
 		# hits this package
@@ -265,7 +282,7 @@ function ov_install_package
 			if [[ $ov_current_operation_result -eq 0 ]]; then
 				echo "  Backuping target directory [$ov_current_package_backup] succeeded..."
 			else
-				echo "  Backuping target directory [$ov_current_package_backup] failed !"
+				echoerr "  Backuping target directory [$ov_current_package_backup] failed !"
 				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
 v				echo ""
 				echo "`$ov_tail "$ov_current_package_log_file"`"
@@ -387,12 +404,18 @@ if [[ ! -e "$ov_target_folder_hit/no-native-packages.hit" ]]; then
 
 				sudo -k # revokes root privilege
 				sudo apt-get --assume-yes install $ov_ubuntu_packages > $ov_native_package_log_file 2>&1
+				ov_apt_get_output=$?
 				sudo -k # revokes root privilege
-
-				echo "  Installing native packages on background... done."
-
-				ov_should_hit_native=true
-				ov_native_package_installed=true
+				if [[ $ov_apt_get_output == 100 ]]; then
+					
+					echoerr "error in native package installation"
+					cat "$ov_native_package_log_file"
+					exit 100
+				else	
+					echo "  Installing native packages on background... done."
+					ov_should_hit_native=true
+					ov_native_package_installed=true
+				fi;
 			else
 				echo "  All right, we will compile everything..."
 			fi;
@@ -937,7 +960,7 @@ if [[ $ov_native_package_installed == false ]]; then
 		echo ""
 	else
 		echo ""
-		echo "  Looks like you don't have gl/glu/glx dev files installed."
+		echoerr "  Looks like you don't have gl/glu/glx dev files installed."
 		echo "  I recommand you use your distro package system to install it and get them for your video card."
 		echo "  Alternatively, I could build software rendering version of mesa for you but you won't have 3D acceleration."
 		echo ""
@@ -956,7 +979,7 @@ if [[ $ov_native_package_installed == false ]]; then
 			echo ""
 			echo "  You did not answer 'continue'."
 			echo "  You did the right choice, see you soon."
-			exit
+			exit 
 		fi;
 	fi;
 fi;
