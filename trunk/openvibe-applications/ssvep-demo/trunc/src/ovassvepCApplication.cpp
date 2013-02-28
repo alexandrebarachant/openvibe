@@ -64,7 +64,7 @@ bool CApplication::setup(OpenViBE::Kernel::IKernelContext* poKernelContext)
 	l_oPluginsPath = std::string(getenv("OGRE_HOME")) + std::string("/bin/release/plugins.cfg");
 #endif
 #elif defined OVA_OS_Linux
-	l_oPluginsPath = Ogre::String(getenv("OGRE_HOME")) + Ogre::String("/lib/OGRE/Plugins.cfg");
+	l_oPluginsPath = std::string(getenv("OV_DISTROOT")) + std::string("/bin/Plugins.cfg");
 #else
 #error "No OS defined."
 #endif
