@@ -105,7 +105,7 @@ function ov_install_package
 				ov_current_operation_hook_pre_result=$?
 				# effectively download file(s)
 				if [ ! "$ov_current_package_archive_name" == "" ]; then
-					$ov_wget -c -O "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" $ov_current_package_url >> $ov_current_package_log_file 2>&1
+					$ov_wget --retry-connrefused -w 2m -c -O "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" $ov_current_package_url >> $ov_current_package_log_file 2>&1
 					ov_current_operation_result=$?
 					if [[ $ov_current_operation_result -eq 0 ]]; then
 						mv -f "$ov_target_folder_arch/$ov_current_package_archive_name.tmp" "$ov_target_folder_arch/$ov_current_package_archive_name"
@@ -121,7 +121,7 @@ function ov_install_package
 			if [[ $ov_current_operation_result -eq 0 && $ov_current_operation_hook_result -eq 0 && $ov_current_operation_hook_pre_result -eq 0 && $ov_current_operation_hook_post_result -eq 0 ]]; then
 				echo "  Downloading [$ov_current_package_url] succeeded..."
 			else
-				echo "  Downloading [$ov_current_package_url] failed !"
+				echoerr "  Downloading [$ov_current_package_url] failed !"
 				echo "  Log file can be found at [$ov_current_package_log_file] and ends with :"
 				echo ""
 				echo "`$ov_tail "$ov_current_package_log_file"`"
