@@ -64,8 +64,8 @@ int main(int argc, char ** argv)
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 
 				//initialise Gtk before 3D context
-#if (GTK_MAJOR_VERSION == 2) && (GTK_MINOR_VERSION < 32)
-				// although deprecated in newer GTKs, we need to use this on Windows with the older GTK, or acquisition server will crash on startup
+#if (GTK_BINARY_AGE < 2413)
+				// although deprecated in newer GTKs (no more needed after (at least) 2.24.13, deprecated in 2.32), we need to use this on Windows with the older GTK (2.22.1), or acquisition server will crash on startup
 				g_thread_init(NULL);
 #endif
 				gdk_threads_init();
