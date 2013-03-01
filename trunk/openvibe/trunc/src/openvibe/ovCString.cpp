@@ -48,6 +48,11 @@ CString& CString::operator=(const CString& rString)
 	return *this;
 }
 
+char &CString::operator[](unsigned int idx)
+{
+	return m_pStringImpl->m_sValue[idx];
+}
+
 namespace OpenViBE
 {
 	const CString operator+(const CString& rString1, const CString& rString2)
@@ -71,6 +76,8 @@ namespace OpenViBE
 	{
 		return (rString1.m_pStringImpl->m_sValue)<(rString2.m_pStringImpl->m_sValue);
 	}
+
+
 };
 
 boolean CString::set(const CString& rString)
@@ -96,3 +103,9 @@ const char* CString::toASCIIString(void) const
 {
 	return m_pStringImpl->m_sValue.c_str();
 }
+
+unsigned int CString::length(void) const
+{
+	return m_pStringImpl->m_sValue.length();
+}
+

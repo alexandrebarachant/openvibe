@@ -364,8 +364,8 @@
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Interface filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card.ui</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card.ui</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card.ui</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card.ui</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x7f45a2a9, 0x7db12219)</TypeIdentifier>
@@ -394,80 +394,80 @@
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Card filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png</Value>
 				</Setting>
 			</Settings>
 			<Attributes>
@@ -507,8 +507,8 @@
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename</Name>
-					<DefaultValue>../share/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</DefaultValue>
-					<Value>../share/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</Value>
 				</Setting>
 			</Settings>
 			<Attributes>

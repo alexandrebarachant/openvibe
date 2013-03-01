@@ -1,4 +1,4 @@
-dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 targets = {}
 non_targets = {}
 sent_stimulation = 0

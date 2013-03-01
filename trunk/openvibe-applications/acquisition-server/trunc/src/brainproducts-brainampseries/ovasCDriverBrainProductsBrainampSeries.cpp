@@ -638,7 +638,7 @@ boolean CDriverBrainProductsBrainampSeries::configure(void)
 {
 	CConfigurationBrainProductsBrainampSeries l_oConfiguration(
 		*this,
-		"../share/openvibe-applications/acquisition-server/interface-BrainProducts-BrainampSeries.ui",
+		OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-BrainProducts-BrainampSeries.ui",
 		m_ui32USBIndex,
 		m_ui32DecimationFactor,
 		m_peChannelSelected,

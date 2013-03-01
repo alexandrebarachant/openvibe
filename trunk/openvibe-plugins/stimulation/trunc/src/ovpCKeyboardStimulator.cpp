@@ -167,8 +167,8 @@ namespace OpenViBEPlugins
 				ss << "\t</span>\n";
 			}
 
-			::GtkBuilder* l_pBuilder=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/stimulation/keyboard-stimulator.ui", NULL, NULL);
-			gtk_builder_add_from_file(l_pBuilder, "../share/openvibe-plugins/stimulation/keyboard-stimulator.ui", NULL);
+			::GtkBuilder* l_pBuilder=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/stimulation/keyboard-stimulator.ui", NULL, NULL);
+			gtk_builder_add_from_file(l_pBuilder, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/stimulation/keyboard-stimulator.ui", NULL);
 			gtk_builder_connect_signals(l_pBuilder, NULL);
 
 			m_pWidget=GTK_WIDGET(gtk_builder_get_object(l_pBuilder, "keyboard_stimulator-eventbox"));

@@ -236,7 +236,7 @@ boolean CDriverMindMediaNeXus32B::isConfigurable(void)
 
 boolean CDriverMindMediaNeXus32B::configure(void)
 {
-	CConfigurationBuilder m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.ui");
+	CConfigurationBuilder m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-MindMedia-NeXus32B.ui");
 	return m_oConfiguration.configure(m_oHeader);
 }
 

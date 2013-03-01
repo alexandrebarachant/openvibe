@@ -77,10 +77,10 @@ boolean CBoxAlgorithmMatrixDisplay::initialize(void)
 	op_pMatrix.initialize(m_pMatrixDecoder->getOutputParameter(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputParameterId_Matrix));
 
 	//widgets
-	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-display-table", NULL);
-	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-display-toolbar", NULL);
-	gtk_builder_add_from_file(m_pMainWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
-	gtk_builder_add_from_file(m_pToolbarWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-display-table", NULL);
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-display-toolbar", NULL);
+	gtk_builder_add_from_file(m_pMainWidgetInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
 
 	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
 	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
@@ -205,8 +205,8 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 			uint32 col = 0;
 			for(uint32 r=1; r<l_ui32RowCount+1; r++)
 			{
-				//::GtkBuilder* l_pGtkBuilderLabel=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-value-label", NULL);
-				//gtk_builder_add_from_file(l_pGtkBuilderLabel, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
+				//::GtkBuilder* l_pGtkBuilderLabel=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-value-label", NULL);
+				//gtk_builder_add_from_file(l_pGtkBuilderLabel, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
 
 				//::GtkWidget* l_pWidgetLabel=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "matrix-value-label"));
 				::GtkWidget* l_pWidgetLabel=gtk_label_new("");
@@ -230,8 +230,8 @@ boolean CBoxAlgorithmMatrixDisplay::process(void)
 			{
 				for(uint32 c=1; c<l_ui32ColumnCount+1; c++)
 				{
-					//::GtkBuilder* l_pGtkBuilderEventBox=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-value-eventbox", NULL);
-					//gtk_builder_add_from_file(l_pGtkBuilderEventBox, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
+					//::GtkBuilder* l_pGtkBuilderEventBox=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", "matrix-value-eventbox", NULL);
+					//gtk_builder_add_from_file(l_pGtkBuilderEventBox, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-MatrixDisplay.ui", NULL);
 
 					//::GtkWidget* l_pWidgetEventBox=GTK_WIDGET(gtk_builder_get_object(m_pMainWidgetInterface, "matrix-value-eventbox"));
 					::GtkWidget* l_pWidgetEventBox=gtk_event_box_new();

@@ -30,9 +30,9 @@ int main(int argc, char** argv)
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
 	CString m_sError;
 #if defined OVSG_OS_Windows
-	if(!l_oKernelLoader.load("../bin/OpenViBE-kernel-dynamic.dll", &m_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
-	if(!l_oKernelLoader.load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/libOpenViBE-kernel-dynamic.so", &m_sError))
 #endif
 	{
 			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 		else
 		{
 			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<endl;
-			l_pKernelContext=l_pKernelDesc->createKernel("skeleton-generator", "../share/openvibe.conf");
+			l_pKernelContext=l_pKernelDesc->createKernel("skeleton-generator", OpenViBE::Directories::getDataDir() + "/openvibe.conf");
 			if(!l_pKernelContext)
 			{
 				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 				gtk_init(&argc, &argv);
 
 				::GtkBuilder * l_pBuilderInterface = gtk_builder_new(); 
-				gtk_builder_add_from_file(l_pBuilderInterface, "../share/openvibe-applications/skeleton-generator/generator-interface.ui", NULL);
+				gtk_builder_add_from_file(l_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/generator-interface.ui", NULL);
 				//gtk_builder_connect_signals(l_pBuilderInterface, NULL);
 
 				::GtkWidget * l_pDialog = GTK_WIDGET(gtk_builder_get_object(l_pBuilderInterface, "sg-selection-dialog"));

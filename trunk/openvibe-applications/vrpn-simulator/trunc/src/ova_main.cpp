@@ -2,6 +2,9 @@
 
 #include <gdk/gdk.h>
 
+#include <openvibe/ov_directories.h>
+#include <openvibe/ovCString.h>
+
 #include <vrpn_Button.h>
 #include <vrpn_Analog.h>
 #include <vrpn_Connection.h>
@@ -79,8 +82,8 @@ int main(int argc, char ** argv)
 	g_pAnalogServer=new ::vrpn_Analog_Server(_vrpn_peripheral_name_, g_pConnection);
 	g_pAnalogServer->setNumChannels(10);
 
-	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-applications/vrpn-simulator/interface.ui", "window", NULL);
-	gtk_builder_add_from_file(l_pInterface, "../share/openvibe-applications/vrpn-simulator/interface.ui", NULL);
+	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-applications/vrpn-simulator/interface.ui", "window", NULL);
+	gtk_builder_add_from_file(l_pInterface, OpenViBE::Directories::getDataDir() + "/openvibe-applications/vrpn-simulator/interface.ui", NULL);
 
 	::GtkWidget* l_pMainWindow=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "window"));
 	::GtkWidget* l_pHBoxButton=GTK_WIDGET(gtk_builder_get_object(l_pInterface, "hbox_button"));

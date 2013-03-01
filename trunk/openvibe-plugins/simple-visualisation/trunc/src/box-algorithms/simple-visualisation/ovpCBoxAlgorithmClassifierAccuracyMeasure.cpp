@@ -71,11 +71,11 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::initialize(void)
 	op_pTargetStimulationSet.initialize(m_pTargetStimulationDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
 
 	//widgets
-	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "classifier-accuracy-measure-table", NULL);
-	gtk_builder_add_from_file(m_pMainWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "classifier-accuracy-measure-table", NULL);
+	gtk_builder_add_from_file(m_pMainWidgetInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
-	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "classifier-accuracy-measure-toolbar", NULL);
-	gtk_builder_add_from_file(m_pToolbarWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "classifier-accuracy-measure-toolbar", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
 	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
 	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
@@ -157,11 +157,11 @@ boolean CBoxAlgorithmClassifierAccuracyMeasure::process(void)
 
 			for(uint32 i=0; i<l_rStaticBoxContext.getInputCount()-1; i++)
 			{
-				::GtkBuilder* l_pGtkBuilderBar=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "progress-bar-classifier-accuracy", NULL);
-				gtk_builder_add_from_file(l_pGtkBuilderBar, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
+				::GtkBuilder* l_pGtkBuilderBar=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "progress-bar-classifier-accuracy", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilderBar, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
-				::GtkBuilder* l_pGtkBuilderLabel=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "label-classifier-name", NULL);
-				gtk_builder_add_from_file(l_pGtkBuilderLabel, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
+				::GtkBuilder* l_pGtkBuilderLabel=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", "label-classifier-name", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilderLabel, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-ClassifierAccuracyMeasure.ui", NULL);
 
 				::GtkWidget* l_pWidgetBar=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderBar, "progress-bar-classifier-accuracy"));
 				::GtkWidget* l_pWidgetLabel=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilderLabel, "label-classifier-name"));

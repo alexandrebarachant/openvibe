@@ -420,9 +420,9 @@ int go(int argc, char ** argv)
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<"\n";
 	CString m_sError;
 #if defined OVD_OS_Windows
-	if(!l_oKernelLoader.load("../bin/OpenViBE-kernel-dynamic.dll", &m_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
-	if(!l_oKernelLoader.load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/libOpenViBE-kernel-dynamic.so", &m_sError))
 #endif
 	{
 			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<"\n";
@@ -441,7 +441,8 @@ int go(int argc, char ** argv)
 		else
 		{
 			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<"\n";
-			l_pKernelContext=l_pKernelDesc->createKernel("designer", "../share/openvibe.conf");
+
+			l_pKernelContext=l_pKernelDesc->createKernel("designer", OpenViBE::Directories::getDataDir() + "/openvibe.conf");
 			if(!l_pKernelContext)
 			{
 				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<"\n";
@@ -472,7 +473,7 @@ int go(int argc, char ** argv)
 
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
-				// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
+				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.gtkrc");
 
 				SConfiguration l_oConfiguration;
 				if(!parse_arguments(argc, argv, l_oConfiguration))

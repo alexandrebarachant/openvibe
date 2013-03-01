@@ -59,7 +59,7 @@ namespace
 	}
 };
 
-#define OVAS_GUI_File            "../share/openvibe-applications/acquisition-server/interface.ui"
+#define OVAS_GUI_File            OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface.ui"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -1,4 +1,4 @@
-dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 vrpn_host = nil
 vrpn_port = nil

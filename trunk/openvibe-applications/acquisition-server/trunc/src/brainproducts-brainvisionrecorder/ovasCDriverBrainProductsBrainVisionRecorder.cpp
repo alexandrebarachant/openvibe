@@ -370,7 +370,7 @@ boolean CDriverBrainProductsBrainVisionRecorder::isConfigurable(void)
 
 boolean CDriverBrainProductsBrainVisionRecorder::configure(void)
 {
-	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-BrainProducts-BrainVisionRecorder.ui");
+	CConfigurationNetworkBuilder l_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-BrainProducts-BrainVisionRecorder.ui");
 
 	l_oConfiguration.setHostName(m_sServerHostName);
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);

@@ -166,7 +166,7 @@ boolean CDriverOpenEEGModularEEG::isConfigurable(void)
 
 boolean CDriverOpenEEGModularEEG::configure(void)
 {
-	CConfigurationOpenEEGModularEEG m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-OpenEEG-ModularEEG.ui", m_ui32DeviceIdentifier);
+	CConfigurationOpenEEGModularEEG m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-OpenEEG-ModularEEG.ui", m_ui32DeviceIdentifier);
 	return m_oConfiguration.configure(m_oHeader);
 }
 

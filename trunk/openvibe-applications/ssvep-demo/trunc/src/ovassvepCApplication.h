@@ -109,7 +109,7 @@ namespace OpenViBESSVEP
 
 
 		private:
-			void initCEGUI();
+			void initCEGUI(const char *logFileName);
 			Ogre::uint32 m_ui32WindowWidth;
 			Ogre::uint32 m_ui32WindowHeight;
 

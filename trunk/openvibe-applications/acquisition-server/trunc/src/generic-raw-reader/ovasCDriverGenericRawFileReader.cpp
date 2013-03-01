@@ -14,7 +14,7 @@ CDriverGenericRawFileReader::CDriverGenericRawFileReader(IDriverContext& rDriver
 
 boolean CDriverGenericRawFileReader::configure(void)
 {
-	CConfigurationGenericRawReader m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-RawFileReader.ui",
+	CConfigurationGenericRawReader m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-Generic-RawFileReader.ui",
 		m_bLimitSpeed,
 		m_ui32SampleFormat,
 		m_ui32SampleEndian,

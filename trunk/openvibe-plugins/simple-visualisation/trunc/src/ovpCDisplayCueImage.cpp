@@ -97,7 +97,7 @@ namespace OpenViBEPlugins
 
 			//load the gtk builder interface
 			m_pBuilderInterface=gtk_builder_new();
-			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-DisplayCueImage.ui", NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-DisplayCueImage.ui", NULL);
 
 			if(!m_pBuilderInterface)
 			{

@@ -75,7 +75,7 @@ boolean COgreVisualisation::initializeOgre(void) throw (std::exception)
 
 		//configuration file is assumed to be copied to working dir
 		CString l_sConfigFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgreConfiguration}");
-		//CString l_sConfigFile("../share/openvibe-kernel-omk/ogre.cfg");
+		//CString l_sConfigFile(OpenViBE::Directories::getDataDir() + "/openvibe-kernel-omk/ogre.cfg");
 
 		this->getLogManager() << LogLevel_Trace << "Ogre configuration file " << l_sConfigFile << "\n";
 
@@ -93,7 +93,7 @@ boolean COgreVisualisation::initializeOgre(void) throw (std::exception)
 
 		//resources file is assumed to be copied to working dir
 		CString l_sResourcesFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgreResources}");
-		//CString l_sResourcesFile("../share/openvibe-kernel-omk/resources.cfg");
+		//CString l_sResourcesFile(OpenViBE::Directories::getDataDir() + "/openvibe-kernel-omk/resources.cfg");
 
 		this->getLogManager() << LogLevel_Trace << "Ogre resources file " << l_sResourcesFile << "\n";
 
@@ -422,8 +422,9 @@ void COgreVisualisation::addResourceLocations(const std::string& resourcesFile)
 				//each entry is a resource location for the current resource group
 				resourceTypeName = i->first;
 				resourceName = i->second;
-				this->getLogManager() << LogLevel_Trace << "Adding resource location " << resourceName.c_str() << "\n";
-				ResourceGroupManager::getSingleton().addResourceLocation(resourceName, resourceTypeName, resourceGroupName);
+				OpenViBE::CString l_sExpandedResource = this->getConfigurationManager().expand(resourceName.c_str()); 
+				this->getLogManager() << LogLevel_Trace << "Adding resource location " << l_sExpandedResource << "\n";
+				ResourceGroupManager::getSingleton().addResourceLocation(l_sExpandedResource.toASCIIString(), resourceTypeName, resourceGroupName);
 			}
 		}
 	}

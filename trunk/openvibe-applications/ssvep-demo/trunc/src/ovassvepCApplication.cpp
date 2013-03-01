@@ -55,32 +55,23 @@ bool CApplication::setup(OpenViBE::Kernel::IKernelContext* poKernelContext)
 	(*m_poLogManager) << LogLevel_Debug << "  * CApplication::setup()\n";
 
 	// Plugin config path setup
-	Ogre::String l_oPluginsPath;
-
-#if defined OVA_OS_Windows
-#if defined OVA_BUILDTYPE_Debug
-	l_oPluginsPath = std::string(getenv("OGRE_HOME")) + std::string("/bin/debug/plugins_d.cfg");
-#else
-	l_oPluginsPath = std::string(getenv("OGRE_HOME")) + std::string("/bin/release/plugins.cfg");
-#endif
-#elif defined OVA_OS_Linux
-	l_oPluginsPath = std::string(getenv("OV_DISTROOT")) + std::string("/bin/Plugins.cfg");
-#else
-#error "No OS defined."
-#endif
+	OpenViBE::CString l_sPluginsPath = l_poConfigurationManager->expand("${Kernel_3DVisualisationOgrePlugins}");
 
 	// Create LogManager to stop Ogre flooding the console and creating random files
 	
 	
 	(*m_poLogManager) << LogLevel_Debug << "+ Creating Ogre logmanager\n";
 	Ogre::LogManager* l_poLogManager = new Ogre::LogManager();
-	(*m_poLogManager) << LogLevel_Info << "Application will output Ogre Log : " << l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_LogToConsole}", false) << "\n";
-	l_poLogManager->createLog("Ogre.log", true, l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_LogToConsole}", false), true );
+	(*m_poLogManager) << LogLevel_Info << "Ogre log to console : " << l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_LogToConsole}", false) << "\n";
+	CString l_sOgreLog = l_poConfigurationManager->expand("${Path_Log}") + "/openvibe-ssvep-demo-ogre.log";
+	(*m_poLogManager) << LogLevel_Info << "Ogre log file : " << l_sOgreLog << "\n";
+	l_poLogManager->createLog(l_sOgreLog.toASCIIString(), true, l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_LogToConsole}", false), false );
 	
-
 	// Root creation
+	CString l_sOgreCfg = l_poConfigurationManager->expand("${OpenVibeUserFolder}") + "/openvibe-ssvep-demo-ogre.cfg";
 	(*m_poLogManager) << LogLevel_Debug << "+ m_poRoot = new Ogre::Root(...)\n";
-	m_poRoot = new Ogre::Root(l_oPluginsPath, "ogre.cfg","ogre.log");
+	(*m_poLogManager) << LogLevel_Info << "Ogre cfg file : " << l_sOgreCfg << "\n";
+	m_poRoot = new Ogre::Root(l_sPluginsPath.toASCIIString(), l_sOgreCfg.toASCIIString(), l_sOgreLog.toASCIIString());
 
 	// Resource handling
 	this->setupResources();
@@ -124,7 +115,7 @@ bool CApplication::setup(OpenViBE::Kernel::IKernelContext* poKernelContext)
 	m_poPainter = new CBasicPainter( this );
 
 	(*m_poLogManager) << LogLevel_Debug << "  * initializing CEGUI\n";
-	this->initCEGUI();
+	this->initCEGUI(l_poConfigurationManager->expand("${Path_Log}") + "/openvibe-ssvep-demo-cegui.log");
 	(*m_poLogManager) << LogLevel_Debug << "  * CEGUI initialized\n";
 
 	// create the vector of stimulation frequencies
@@ -198,9 +189,16 @@ bool CApplication::configure()
 	return true;
 }
 
-
-void CApplication::initCEGUI()
+void CApplication::initCEGUI(const char *logFilename)
 {
+	// Instantiate logger before bootstrapping the system, this way we will be able to get the log redirected
+	if (!CEGUI::Logger::getSingletonPtr()) 
+	{
+		new CEGUI::DefaultLogger();		// singleton; instantiate only, no delete
+	}
+	(*m_poLogManager) << LogLevel_Info << "+ CEGUI log will be in '" << logFilename << "'\n";
+	CEGUI::Logger::getSingleton().setLogFilename(logFilename, false);
+
 	(*m_poLogManager) << LogLevel_Debug << "+ Creating CEGUI Ogre bootstrap\n";
 	m_roGUIRenderer = &(CEGUI::OgreRenderer::bootstrapSystem(*m_poWindow));
 	(*m_poLogManager) << LogLevel_Debug << "+ Creating CEGUI Scheme Manager\n";
@@ -244,9 +242,9 @@ void CApplication::processFrame(OpenViBE::uint32 ui32CurrentFrame)
 void CApplication::setupResources()
 {
 	Ogre::ResourceGroupManager::getSingleton().createResourceGroup("SSVEP");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("../share/openvibe-applications/ssvep-demo/resources", "FileSystem", "SSVEP");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("../share/openvibe-applications/ssvep-demo/resources/trainer", "FileSystem", "SSVEPTrainer");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("../share/openvibe-applications/ssvep-demo/resources/gui", "FileSystem", "CEGUI");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation((OpenViBE::Directories::getDataDir() + "/openvibe-applications/ssvep-demo/resources").toASCIIString(), "FileSystem", "SSVEP");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation((OpenViBE::Directories::getDataDir() + "/openvibe-applications/ssvep-demo/resources/trainer").toASCIIString(), "FileSystem", "SSVEPTrainer");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation((OpenViBE::Directories::getDataDir() + "/openvibe-applications/ssvep-demo/resources/gui").toASCIIString(), "FileSystem", "CEGUI");
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("SSVEP");
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("SSVEPTrainer");
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("CEGUI");

@@ -1,4 +1,4 @@
-dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 flip_count = 0
 switched_flip_count = 0

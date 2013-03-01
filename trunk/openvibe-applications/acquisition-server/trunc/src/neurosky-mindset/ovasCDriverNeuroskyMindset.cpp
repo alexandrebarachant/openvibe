@@ -469,7 +469,7 @@ boolean CDriverNeuroskyMindset::isConfigurable(void)
 
 boolean CDriverNeuroskyMindset::configure(void)
 {
-	CConfigurationNeuroskyMindset m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Neurosky-Mindset.ui"
+	CConfigurationNeuroskyMindset m_oConfiguration(m_rDriverContext, OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-Neurosky-Mindset.ui"
 		,m_ui32ComPort
 		,m_bESenseChannels
 		,m_bBandPowerChannels

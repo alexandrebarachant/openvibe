@@ -8,6 +8,8 @@
 #include <vrpn_Button.h>
 #include <vrpn_Analog.h>
 
+#include <openvibe/ov_directories.h>
+
 #if defined sleep
 #undef sleep
 #endif
@@ -87,13 +89,21 @@ bool COgreVRApplication::setup()
 	pluginsPath = std::string(getenv("OGRE_HOME"))+std::string("/bin/release/plugins.cfg");
  #endif
 #elif defined OVA_OS_Linux
-	pluginsPath = std::string(getenv("OV_DISTROOT")) + std::string("/bin/Plugins.cfg");
+	pluginsPath = std::string(OpenViBE::Directories::getBinDir()) + std::string("/Plugins.cfg");
 #else
 	#error "failing text"
 #endif
 
+	// Create LogManager to stop Ogre flooding the console and creating random files
+	OpenViBE::CString l_sOgreLog = OpenViBE::Directories::getLogDir() + "/openvibe-vr-demo-ogre.log";
+	std::cout << "+ Ogre log will be in " << l_sOgreLog << "\n";
+	Ogre::LogManager* l_poLogManagerSingleton = new Ogre::LogManager();
+	l_poLogManagerSingleton->createLog(l_sOgreLog.toASCIIString(), true, false, false );
+
 	// Root creation
-	m_poRoot = new Ogre::Root(pluginsPath, "ogre.cfg","ogre.log");
+	OpenViBE::CString l_sOgreCfg = OpenViBE::Directories::getLogDir() + "/openvibe-vr-demo-ogre.cfg";
+	std::cout << "+ Ogre cfg will be in " << l_sOgreCfg << "\n";
+	m_poRoot = new Ogre::Root(pluginsPath, l_sOgreCfg.toASCIIString(), l_sOgreLog.toASCIIString() );
 	// Resource handling
 	this->setupResources();
 	//Configuration from file or dialog window if needed
@@ -146,7 +156,7 @@ bool COgreVRApplication::setup()
 	this->initOIS();
 
 	//CEGUI
-	this->initCEGUI();
+	this->initCEGUI(OpenViBE::Directories::getLogDir() + "/openvibe-vr-demo-cegui.log");
 
 	//VRPN
 	m_poVrpnPeripheral = new CAbstractVrpnPeripheral("openvibe-vrpn@localhost");
@@ -223,10 +233,18 @@ bool COgreVRApplication::initOIS()
 	return true;
 }
 
-bool COgreVRApplication::initCEGUI()
+bool COgreVRApplication::initCEGUI(const char *logFilename)
 {
-	m_rGUIRenderer = &(CEGUI::OgreRenderer::bootstrapSystem());
-	
+	// Instantiate logger before bootstrapping the system, this way we will be able to get the log redirected
+	if (!CEGUI::Logger::getSingletonPtr()) 
+	{
+		new CEGUI::DefaultLogger();		// Singleton, instantiate only, no delete
+	}
+	std::cout << "+ CEGUI log will be in " << logFilename << "\n";
+	CEGUI::Logger::getSingleton().setLogFilename(logFilename, false);
+
+	m_rGUIRenderer = &(CEGUI::OgreRenderer::bootstrapSystem(*m_poWindow));
+
 	CEGUI::SchemeManager::getSingleton().create((CEGUI::utf8*)"TaharezLook-ov.scheme");
 
 	m_poGUIWindowManager = CEGUI::WindowManager::getSingletonPtr();
@@ -236,6 +254,7 @@ bool COgreVRApplication::initCEGUI()
 
 	return true;
 }
+
 
 //--------------------------------------------------------------
 

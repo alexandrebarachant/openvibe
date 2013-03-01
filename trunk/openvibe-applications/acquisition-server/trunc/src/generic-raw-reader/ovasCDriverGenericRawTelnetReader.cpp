@@ -16,7 +16,7 @@ CDriverGenericRawTelnetReader::CDriverGenericRawTelnetReader(IDriverContext& rDr
 boolean CDriverGenericRawTelnetReader::configure(void)
 {
 	CString l_sFilename;
-	CConfigurationGenericRawReader m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Generic-RawTelnetReader.ui",
+	CConfigurationGenericRawReader m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-Generic-RawTelnetReader.ui",
 		m_bLimitSpeed,
 		m_ui32SampleFormat,
 		m_ui32SampleEndian,

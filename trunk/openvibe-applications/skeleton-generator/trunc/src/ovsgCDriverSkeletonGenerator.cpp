@@ -206,7 +206,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// driver.h
 	CString l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".h";
-	CString l_sTemplate("../share/openvibe-applications/skeleton-generator/driver.h-skeleton");
+	CString l_sTemplate(OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/driver.h-skeleton");
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
@@ -219,7 +219,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// driver.cpp
 	l_sDest = m_sTargetDirectory + "/ovasCDriver" + m_sClassName + ".cpp";
-	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/driver.cpp-skeleton");
+	l_sTemplate = OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/driver.cpp-skeleton";
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
@@ -231,7 +231,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// config.h
 	l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".h";
-	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/configuration.h-skeleton");
+	l_sTemplate = OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/configuration.h-skeleton";
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
@@ -243,7 +243,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// config.cpp
 	l_sDest = m_sTargetDirectory + "/ovasCConfiguration" + m_sClassName + ".cpp";
-	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/configuration.cpp-skeleton");
+	l_sTemplate = OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/configuration.cpp-skeleton";
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
@@ -255,7 +255,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// interface.ui
 	l_sDest = m_sTargetDirectory + "/interface-" + m_sClassName + ".ui";
-	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/interface.ui-skeleton");
+	l_sTemplate = OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/interface.ui-skeleton";
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
@@ -278,7 +278,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// readme-driver.txt
 	l_sDest = m_sTargetDirectory + "/README.txt";
-	l_sTemplate = CString("../share/openvibe-applications/skeleton-generator/readme-driver.txt-skeleton");
+	l_sTemplate = OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/readme-driver.txt-skeleton";
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{

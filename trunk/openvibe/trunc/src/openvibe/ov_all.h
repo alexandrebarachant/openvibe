@@ -9,6 +9,7 @@
 
 #include "ov_types.h"
 #include "ov_defines.h"
+#include "ov_directories.h"
 
 #include "ovCIdentifier.h"
 #include "ovCString.h"

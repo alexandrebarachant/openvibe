@@ -121,24 +121,24 @@ namespace OpenViBEPlugins
 
 				rBoxAlgorithmPrototype.addOutput("Target / Non target flagging",     OV_TypeId_Stimulations);
 
-				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-identifier-card.ui");
+				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-identifier-card.ui");
 				rBoxAlgorithmPrototype.addSetting("Background color",                OV_TypeId_Color,       "0,0,0");
 				rBoxAlgorithmPrototype.addSetting("Target background color",         OV_TypeId_Color,       "10,40,10");
 				rBoxAlgorithmPrototype.addSetting("Selected background color",       OV_TypeId_Color,       "70,20,20");
 				rBoxAlgorithmPrototype.addSetting("Card stimulation base",           OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
-				rBoxAlgorithmPrototype.addSetting("Background Card filename",        OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "../share/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png");
+				rBoxAlgorithmPrototype.addSetting("Background Card filename",        OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png");
 				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "");
 				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "");
 				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "");

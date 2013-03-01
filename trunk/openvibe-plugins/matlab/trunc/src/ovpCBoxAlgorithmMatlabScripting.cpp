@@ -1,7 +1,6 @@
 #if defined TARGET_HAS_ThirdPartyMatlab
 
 #include "ovpCBoxAlgorithmMatlabScripting.h"
-#include "fs/Files.h"
 
 #include <system/Memory.h>
 #include <iostream>
@@ -11,6 +10,8 @@
 #include <engine.h>
 #include <string>
 #include <ctime>
+
+#include <fs/Files.h>
 
 #if defined TARGET_OS_Windows
 	#include <windows.h>
@@ -275,7 +276,7 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 		if(l_sCurrentDir[i] == '\\') l_sCurrentDir[i] = '/';
 	this->getConfigurationManager().createConfigurationToken(CString("Path_Bin_Abs"),CString(l_sCurrentDir));
 	
-	CString l_sOpenvibeToolboxPath = CString("addpath('") + CString(l_sCurrentDir) + CString("/../share/openvibe-plugins/matlab');");
+	CString l_sOpenvibeToolboxPath = CString("addpath('") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab');";
 	::engEvalString(m_pMatlabEngine, (const char * )l_sOpenvibeToolboxPath);
 	//if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, (const char * )l_sOpenvibeToolboxPath) == 0, "An error occured while adding the path to openvibe toolbox\n")) return false;
 	// If there is more than 1 Matlab box in the scenario, the path is set repeatedly
@@ -293,7 +294,7 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 	}
 
 	// executes the pre-run routine that defines the global identifiers for streams and stimulations codes
-	CString l_sDefineFile = CString("run '") + CString(l_sCurrentDir) + CString("/../share/openvibe-plugins/matlab/OV_define.m'");
+	CString l_sDefineFile = CString("run '") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab/OV_define.m'";
 	if(::engEvalString(m_pMatlabEngine, l_sDefineFile.toASCIIString())!=0)
 	{
 		this->printOutputBufferWithFormat();

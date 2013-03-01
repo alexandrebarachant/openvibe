@@ -22,9 +22,9 @@ int main(int argc, char ** argv)
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
 	CString m_sError;
 #if defined OVAS_OS_Windows
-	if(!l_oKernelLoader.load("../bin/OpenViBE-kernel-dynamic.dll", &m_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/OpenViBE-kernel-dynamic.dll", &m_sError))
 #else
-	if(!l_oKernelLoader.load("../lib/libOpenViBE-kernel-dynamic.so", &m_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/libOpenViBE-kernel-dynamic.so", &m_sError))
 #endif
 	{
 			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<endl;
@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
 		else
 		{
 			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<endl;
-			l_pKernelContext=l_pKernelDesc->createKernel("acquisition-server", "../share/openvibe.conf");
+			l_pKernelContext=l_pKernelDesc->createKernel("acquisition-server", OpenViBE::Directories::getDataDir() + "/openvibe.conf");
 			if(!l_pKernelContext)
 			{
 				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;
@@ -64,12 +64,14 @@ int main(int argc, char ** argv)
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
 
 				//initialise Gtk before 3D context
-				// g_thread_init has been deprecated since version 2.32 and should not be used in newly-written code. This function is no longer necessary
-				// g_thread_init(NULL);
+#if (GTK_MAJOR_VERSION == 2) && (GTK_MINOR_VERSION < 32)
+				// although deprecated in newer GTKs, we need to use this on Windows with the older GTK, or acquisition server will crash on startup
+				g_thread_init(NULL);
+#endif
 				gdk_threads_init();
 				gtk_init(&argc, &argv);
 
-				// gtk_rc_parse("../share/openvibe-applications/designer/interface.gtkrc");
+				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.gtkrc");
 
 #if 0 // This is not needed in the acquisition server
 				if(l_rConfigurationManager.expandAsBoolean("${Kernel_3DVisualisationEnabled}"))

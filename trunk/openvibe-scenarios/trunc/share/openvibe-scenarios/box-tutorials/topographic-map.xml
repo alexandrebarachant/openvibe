@@ -308,7 +308,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename</Name>
 					<DefaultValue></DefaultValue>
-					<Value>../share/electrode_sets/electrode_set_standard_cartesian.txt</Value>
+					<Value>${Path_Data}/electrode_sets/electrode_set_standard_cartesian.txt</Value>
 				</Setting>
 			</Settings>
 			<Attributes>

@@ -211,8 +211,8 @@ namespace OpenViBEPlugins
 			m_pReader[1] =EBML::createReader(*m_pStreamedMatrixReaderCallBack);
 
 			//load the gtk builder interface
-			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.ui", NULL, NULL);
-			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.ui", NULL);
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization.ui", NULL);
 
 			if(!m_pBuilderInterface)
 			{
@@ -246,10 +246,10 @@ namespace OpenViBEPlugins
 			gtk_widget_modify_fg(m_pDrawingArea, GTK_STATE_ACTIVE, &m_oForegroundColor);
 
 			//arrows
-			m_pOriginalLeftArrow  = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-leftArrow.png",  -1, -1, NULL);
-			m_pOriginalRightArrow = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-rightArrow.png", -1, -1, NULL);
-			m_pOriginalUpArrow    = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-upArrow.png",    -1, -1, NULL);
-			m_pOriginalDownArrow  = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-downArrow.png",  -1, -1, NULL);
+			m_pOriginalLeftArrow  = gdk_pixbuf_new_from_file_at_size(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-leftArrow.png",  -1, -1, NULL);
+			m_pOriginalRightArrow = gdk_pixbuf_new_from_file_at_size(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-rightArrow.png", -1, -1, NULL);
+			m_pOriginalUpArrow    = gdk_pixbuf_new_from_file_at_size(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-upArrow.png",    -1, -1, NULL);
+			m_pOriginalDownArrow  = gdk_pixbuf_new_from_file_at_size(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-downArrow.png",  -1, -1, NULL);
 
 			if(!m_pOriginalLeftArrow || !m_pOriginalRightArrow || !m_pOriginalUpArrow || !m_pOriginalDownArrow)
 			{
@@ -260,7 +260,7 @@ namespace OpenViBEPlugins
 			}
 
 			//bar
-			m_pOriginalBar = gdk_pixbuf_new_from_file_at_size("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-bar.png", -1, -1, NULL);
+			m_pOriginalBar = gdk_pixbuf_new_from_file_at_size(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-GrazVisualization-bar.png", -1, -1, NULL);
 			if(!m_pOriginalBar)
 			{
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error couldn't load bar ressource file!\n";

@@ -6,7 +6,7 @@
 -- Author : Yann Renard, INRIA
 -- Date   : 2011-03-15
 
-dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 grid =
 {

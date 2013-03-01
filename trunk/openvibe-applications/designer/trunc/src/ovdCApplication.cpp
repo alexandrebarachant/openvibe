@@ -17,8 +17,8 @@
  #define _strcmpi strcasecmp
 #endif
 
-#define OVD_GUI_File "../share/openvibe-applications/designer/interface.ui"
-#define OVD_GUI_Settings_File "../share/openvibe-applications/designer/interface-settings.ui"
+#define OVD_GUI_File          OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.ui"
+#define OVD_GUI_Settings_File OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface-settings.ui"
 
 #include "ovdCDesignerVisualisation.h"
 #include "ovdCPlayerVisualisation.h"
@@ -1742,7 +1742,9 @@ boolean CApplication::quitApplicationCB(void)
 	// Saves opened scenarios
 	if(!(m_eCommandLineFlags&CommandLineFlag_NoManageSession))
 	{
-		FILE* l_pFile=::fopen(m_rKernelContext.getConfigurationManager().expand("${CustomConfigurationApplication}").toASCIIString(), "wt");
+		OpenViBE::CString l_sAppConfigFile = m_rKernelContext.getConfigurationManager().expand("${CustomConfigurationApplication}");
+
+		FILE* l_pFile=::fopen(l_sAppConfigFile.toASCIIString(), "wt");
 		if(l_pFile)
 		{
 			unsigned int i=1;
@@ -1760,6 +1762,10 @@ boolean CApplication::quitApplicationCB(void)
 				}
 			}
 			::fclose(l_pFile);
+		}
+		else 
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Error << "Error writing to '" << l_sAppConfigFile << "'\n";
 		}
 	}
 

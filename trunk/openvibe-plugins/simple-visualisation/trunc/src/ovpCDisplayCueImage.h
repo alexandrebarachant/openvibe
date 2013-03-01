@@ -4,6 +4,7 @@
 #include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
+
 #include <gtk/gtk.h>
 #include <vector>
 #include <string>
@@ -97,11 +98,12 @@ namespace OpenViBEPlugins
 
 			virtual OpenViBE::boolean onSettingAdded(OpenViBE::Kernel::IBox& rBox, const OpenViBE::uint32 ui32Index)
 			{
-				char l_sName[1024] = "../share/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png";
+				OpenViBE::CString l_sDefaultName = OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png";
 
-				rBox.setSettingDefaultValue(ui32Index, l_sName);
-				rBox.setSettingValue(ui32Index, l_sName);
+				rBox.setSettingDefaultValue(ui32Index, l_sDefaultName.toASCIIString());
+				rBox.setSettingValue(ui32Index, l_sDefaultName.toASCIIString());
 
+				char l_sName[1024];
 				sprintf(l_sName, "OVTK_StimulationId_Label_%02X", ui32Index/2);
 				rBox.addSetting("", OV_TypeId_Stimulation, l_sName);
 				rBox.setSettingDefaultValue(ui32Index+1, l_sName);
@@ -169,7 +171,7 @@ namespace OpenViBEPlugins
 				rPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
 				rPrototype.addSetting("Display images in full screen", OV_TypeId_Boolean, "false");
 				rPrototype.addSetting("Clear screen Stimulation", OV_TypeId_Stimulation, "OVTK_StimulationId_VisualStimulationStop");
-				rPrototype.addSetting("Cue Image 1", OV_TypeId_Filename, "../share/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
+				rPrototype.addSetting("Cue Image 1", OV_TypeId_Filename, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
 				rPrototype.addSetting("Stimulation 1", OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
 				rPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
 				return true;

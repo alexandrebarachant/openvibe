@@ -839,8 +839,8 @@
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Interface filename</Name>
-					<DefaultValue>../share/openvibe-plugins/simple-visualisation/p300-speller.glade</DefaultValue>
-					<Value>../share/openvibe-plugins/simple-visualisation/p300-speller.ui</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/simple-visualisation/p300-speller.glade</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/p300-speller.ui</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -4006,8 +4006,8 @@
 				<Setting>
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename</Name>
-					<DefaultValue>../share/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</DefaultValue>
-					<Value>../share/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</Value>
+					<DefaultValue>${Path_Data}/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</DefaultValue>
+					<Value>${Path_Data}/openvibe-plugins/stimulation/simple-keyboard-to-stimulations.txt</Value>
 				</Setting>
 			</Settings>
 			<Attributes>

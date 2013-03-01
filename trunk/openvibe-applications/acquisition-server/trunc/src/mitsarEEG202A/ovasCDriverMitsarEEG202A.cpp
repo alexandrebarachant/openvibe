@@ -387,7 +387,7 @@ boolean CDriverMitsarEEG202A::configure(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverMitsarEEG202A::configure\n";
 	
-	CConfigurationMitsarEEG202A m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Mitsar-EEG202.ui", m_ui32RefIndex, m_bEventAndBioChannelsState);
+	CConfigurationMitsarEEG202A m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-Mitsar-EEG202.ui", m_ui32RefIndex, m_bEventAndBioChannelsState);
 	
 	if(!m_oConfiguration.configure(m_oHeader))
 	{

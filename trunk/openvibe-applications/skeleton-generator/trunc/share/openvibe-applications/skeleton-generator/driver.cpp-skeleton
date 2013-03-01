@@ -145,7 +145,7 @@ boolean CDriver@@ClassName@@::isConfigurable(void)
 boolean CDriver@@ClassName@@::configure(void)
 {
 	// Change this line if you need to specify some references to your driver attribute that need configuration, e.g. the connection ID.
-	CConfiguration@@ClassName@@ m_oConfiguration(m_rDriverContext,"../share/openvibe-applications/acquisition-server/interface-@@ClassName@@.ui");
+	CConfiguration@@ClassName@@ m_oConfiguration(m_rDriverContext, OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-@@ClassName@@.ui");
 	if(!m_oConfiguration.configure(m_oHeader))
 	{
 		return false;

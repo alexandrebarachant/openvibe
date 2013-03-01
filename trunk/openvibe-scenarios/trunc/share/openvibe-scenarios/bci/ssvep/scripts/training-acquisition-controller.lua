@@ -1,4 +1,4 @@
-dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 sequence = {}
 number_of_cycles = 0
 
@@ -99,7 +99,7 @@ function initialize(box)
 
 	-- create the configuration file for the stimulation-based-epoching
 	-- this file is used during classifier training only
-	cfg_file = io.open("../share/openvibe-scenarios/bci/ssvep/configuration/stimulation-based-epoching.cfg", "w")
+	cfg_file = io.open(os.getenv("OV_DATADIR") .. "/openvibe-scenarios/bci/ssvep/configuration/stimulation-based-epoching.cfg", "w")
 
 	cfg_file:write("<OpenViBE-SettingsOverride>\n")
 	cfg_file:write("	<SettingValue>", stimulation_duration, "</SettingValue>\n")

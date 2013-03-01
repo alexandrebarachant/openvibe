@@ -45,8 +45,8 @@ namespace OpenViBEPlugins
 			m_pBottomRuler(NULL)
 		{
 			//load the gtk builder interface
-			m_pBuilderInterface=::gtk_builder_new(); // ::glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TimeFrequencyMapDisplay.ui", NULL, NULL);
-			gtk_builder_add_from_file(m_pBuilderInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TimeFrequencyMapDisplay.ui", NULL);
+			m_pBuilderInterface=::gtk_builder_new(); // ::glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TimeFrequencyMapDisplay.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-TimeFrequencyMapDisplay.ui", NULL);
 
 			if(!m_pBuilderInterface)
 			{

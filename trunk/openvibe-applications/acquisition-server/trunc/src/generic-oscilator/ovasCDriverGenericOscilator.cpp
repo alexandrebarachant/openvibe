@@ -182,6 +182,6 @@ boolean CDriverGenericOscillator::configure(void)
 {
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "CDriverGenericOscillator::configure\n";
 
-	CConfigurationDriverGenericOscilator m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-Generic-Oscillator.ui", m_bSendPeriodicStimulations);
+	CConfigurationDriverGenericOscilator m_oConfiguration(m_rDriverContext, OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-Generic-Oscillator.ui", m_bSendPeriodicStimulations);
 	return m_oConfiguration.configure(m_oHeader);
 }

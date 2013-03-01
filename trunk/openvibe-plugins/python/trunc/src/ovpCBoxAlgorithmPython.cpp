@@ -137,13 +137,15 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 
 	m_bPythonInitialized = true;
 
-	PyRun_SimpleString(
-				"import sys\n"
-				"sys.path.append('../share/openvibe-plugins/python')\n"
-				"sys.argv = [\"openvibe\"]\n"
-				//"import openvibe\n"
-				//"from StimulationsCodes import *\n"
-				);
+	OpenViBE::CString l_sCommand;
+	l_sCommand = l_sCommand + "import sys\n";
+	l_sCommand = l_sCommand + "sys.path.append('";
+	l_sCommand = l_sCommand + OpenViBE::Directories::getDataDir();
+	l_sCommand = l_sCommand + "/openvibe-plugins/python')\n";
+	l_sCommand = l_sCommand + "sys.argv = [\"openvibe\"]\n";
+	// l_sCommand = l_sCommand + "import openvibe\n";
+	// l_sCommand = l_sCommand + "from StimulationsCodes import *\n";
+	PyRun_SimpleString(l_sCommand);
 
 	//Borrowed reference
 	m_pMainModule = PyImport_AddModule("__main__");
@@ -152,17 +154,18 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 
 	//Execute the script which contains the different classes to interact with OpenViBE
 	//New reference
-	PyObject *l_pScriptFile = PyFile_FromString((char *) "../share/openvibe-plugins/python/openvibe.py", (char *) "r");
+	OpenViBE::CString l_sFilePath = OpenViBE::Directories::getDataDir() + "/openvibe-plugins/python/openvibe.py";
+	PyObject *l_pScriptFile = PyFile_FromString( (char *)l_sFilePath.toASCIIString(), (char *) "r");
 	if (l_pScriptFile == NULL)
 	{
-		this->getLogManager() << LogLevel_Error << "Failed to open " << "../share/openvibe-plugins/python/openvibe.py" << ".\n";
+		this->getLogManager() << LogLevel_Error << "Failed to open '" << l_sFilePath << "'.\n";
 		Py_CLEAR(l_pScriptFile);
 		return false;
 	}
 
-	if (PyRun_SimpleFile(PyFile_AsFile(l_pScriptFile), "../share/openvibe-plugins/python/openvibe.py") == -1)
+	if (PyRun_SimpleFile(PyFile_AsFile(l_pScriptFile), (char *)l_sFilePath.toASCIIString() ) == -1)
 	{
-		this->getLogManager() << LogLevel_Error << "Failed to run " << "../share/openvibe-plugins/python/openvibe.py" << ".\n";
+		this->getLogManager() << LogLevel_Error << "Failed to run " << l_sFilePath << ".\n";
 		Py_CLEAR(l_pScriptFile);
 		return false;
 	}

@@ -214,14 +214,14 @@ Section "BOOST"
 	SetOutPath "$INSTDIR"
 	CreateDirectory "$INSTDIR\arch"
 
-	IfFileExists "arch\boost-1.42.0.zip" no_need_to_download_boost
-	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.42.0.zip "arch\boost-1.42.0.zip"
+	IfFileExists "arch\boost-1.47.0-ov.zip" no_need_to_download_boost
+	NSISdl::download http://openvibe.inria.fr/dependencies/win32/boost-1.47.0-ov.zip "arch\boost-1.47.0-ov.zip"
 	Pop $R0 ; Get the return value
 		StrCmp $R0 "success" +3
 			MessageBox MB_OK "Download failed: $R0" /SD IDOK
 			Quit
 no_need_to_download_boost:
-	ZipDLL::extractall "arch\boost-1.42.0.zip" "boost"
+	ZipDLL::extractall "arch\boost-1.47.0-ov.zip" "boost"
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END

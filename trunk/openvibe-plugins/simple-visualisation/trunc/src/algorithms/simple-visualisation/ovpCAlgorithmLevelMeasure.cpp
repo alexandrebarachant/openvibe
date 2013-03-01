@@ -43,11 +43,11 @@ boolean CAlgorithmLevelMeasure::initialize(void)
 	op_pMainWidget.initialize(getOutputParameter(OVP_Algorithm_LevelMeasure_OutputParameterId_MainWidget));
 	op_pToolbarWidget.initialize(getOutputParameter(OVP_Algorithm_LevelMeasure_OutputParameterId_ToolbarWidget));
 
-	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "level-measure-table", NULL);
-	gtk_builder_add_from_file(m_pMainWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
+	m_pMainWidgetInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "level-measure-table", NULL);
+	gtk_builder_add_from_file(m_pMainWidgetInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
 
-	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "level-measure-toolbar", NULL);
-	gtk_builder_add_from_file(m_pToolbarWidgetInterface, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
+	m_pToolbarWidgetInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "level-measure-toolbar", NULL);
+	gtk_builder_add_from_file(m_pToolbarWidgetInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
 
 	gtk_builder_connect_signals(m_pMainWidgetInterface, NULL);
 	gtk_builder_connect_signals(m_pToolbarWidgetInterface, NULL);
@@ -102,8 +102,8 @@ boolean CAlgorithmLevelMeasure::process(void)
 		{
 			for(uint32 j=0; j<l_ui32ColumnCount; j++)
 			{
-				::GtkBuilder* l_pGtkBuilder=gtk_builder_new(); // glade_xml_new("../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "progress-bar-level", NULL);
-				gtk_builder_add_from_file(l_pGtkBuilder, "../share/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
+				::GtkBuilder* l_pGtkBuilder=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", "progress-bar-level", NULL);
+				gtk_builder_add_from_file(l_pGtkBuilder, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-LevelMeasure.ui", NULL);
 
 				::GtkWidget* l_pWidget=GTK_WIDGET(gtk_builder_get_object(l_pGtkBuilder, "progress-bar-level"));
 				gtk_container_remove(GTK_CONTAINER(gtk_widget_get_parent(l_pWidget)), l_pWidget);

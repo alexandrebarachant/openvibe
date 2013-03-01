@@ -104,7 +104,14 @@ namespace OpenViBE
 			const OpenViBE::CString& rString1,
 			const OpenViBE::CString& rString2);
 
-/**
+		/**
+		 * \brief Array subscription operator
+		 * \param idx [in] : Index in the array
+		 */
+		char &operator[](
+			unsigned int idx);
+
+		/**
 		 * \brief Order comparison operator (necessary to use CString as a key in a stl map)
 		 * \param rString1 [in] : The first part of the resulting string
 		 * \param rString2 [in] : The second part of the resulting string
@@ -138,6 +145,12 @@ namespace OpenViBE
 		 * \return the ANSI/ASCII converted string.
 		 */
 		virtual const char* toASCIIString(void) const;
+
+		/**
+		 * \brief Returns length of the string
+		 * \return Length of the string
+		 */
+		virtual unsigned int length(void) const;
 
 	protected:
 

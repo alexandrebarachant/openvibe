@@ -368,8 +368,8 @@ boolean CDriverBrainProductsActiCHamp::initialize(
 	// Prepares low pass filter
 
 #define __set_filter__(f,f_decim) \
-	if(m_ui32ADCDataDecimation==CHAMP_DECIMATION_0) loadFilter("../share/openvibe-applications/acquisition-server/filters/"f".bin", m_vFilter); \
-	else loadFilter("../share/openvibe-applications/acquisition-server/filters/"f_decim".bin", m_vFilter);\
+	if(m_ui32ADCDataDecimation==CHAMP_DECIMATION_0)	loadFilter(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/filters/"f".bin", m_vFilter); \
+	else loadFilter(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/filters/"f_decim".bin", m_vFilter);\
 	l_bValid=true;
 
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "Setting up the FIR filter for signal decimation (physical rate > driver rate).\n";
@@ -771,7 +771,7 @@ boolean CDriverBrainProductsActiCHamp::isConfigurable(void)
 
 boolean CDriverBrainProductsActiCHamp::configure(void)
 {
-	CConfigurationBrainProductsActiCHamp m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-BrainProducts-ActiCHamp.ui",
+	CConfigurationBrainProductsActiCHamp m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-BrainProducts-ActiCHamp.ui",
 		m_ui32DeviceId,
 		m_ui32Mode,
 		m_ui32PhysicalSampleRate,

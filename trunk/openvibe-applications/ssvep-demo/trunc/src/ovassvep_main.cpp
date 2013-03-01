@@ -31,10 +31,10 @@ int main(int argc, char** argv)
 
 #ifdef OVA_OS_Windows
 	std::cout << "[  INF  ] Loading Windows kernel\n";
-	if(!l_oKernelLoader.load("../bin/OpenViBE-kernel-dynamic.dll", &l_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/OpenViBE-kernel-dynamic.dll", &l_sError))
 #else
 	std::cout << "[  INF  ] Loading Linux kernel\n";
-	if(!l_oKernelLoader.load("../lib/libOpenViBE-kernel-dynamic.so", &l_sError))
+	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/libOpenViBE-kernel-dynamic.so", &l_sError))
 #endif
 	{
 		std::cout << "[ FAILED ] Error loading kernel (" << l_sError << ")" << "\n";
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 		{
 			std::cout << "[  INF  ] Got kernel descriptor, trying to create kernel\n";
 
-			l_poKernelContext = l_poKernelDesc->createKernel("ssvep-demo", "../share/openvibe.conf");
+			l_poKernelContext = l_poKernelDesc->createKernel("ssvep-demo", OpenViBE::Directories::getDataDir() + "/openvibe.conf");
 
 			if(!l_poKernelContext)
 			{
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 
 				l_poConfigurationManager = &(l_poKernelContext->getConfigurationManager());
 				l_poConfigurationManager->createConfigurationToken("SSVEP_ApplicationDescriptor", CString(argv[1]));
-				l_poConfigurationManager->addConfigurationFromFile(l_poConfigurationManager->expand("../share/openvibe-ssvep-demo.conf"));
+				l_poConfigurationManager->addConfigurationFromFile(OpenViBE::Directories::getDataDir() + "/openvibe-ssvep-demo.conf");
 
 				l_poLogManager = &(l_poKernelContext->getLogManager());
 			}

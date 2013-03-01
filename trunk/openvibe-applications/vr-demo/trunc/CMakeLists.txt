@@ -12,6 +12,7 @@ INCLUDE("OvAddBoostLinkDir")
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
+INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindThirdPartyCEGUI") # CEGUI + CEGUIOgreRender included
@@ -59,8 +60,14 @@ ENDIF(UNIX)
 # ----------------------
 # Generate launch script
 # ----------------------
-OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball" "share/openvibe-applications/vr-demo/handball")
-OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter" "share/openvibe-applications/vr-demo/tie-fighter")
+IF(WIN32)
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball" "%OV_DATADIR%/openvibe-applications/vr-demo/handball")
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter" "%OV_DATADIR%/openvibe-applications/vr-demo/tie-fighter")
+ENDIF(WIN32)
+IF(UNIX)
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball" "$OV_DATADIR/openvibe-applications/vr-demo/handball")
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter" "$OV_DATADIR/openvibe-applications/vr-demo/tie-fighter")
+ENDIF(UNIX)
 
 # -----------------------------
 # Install files

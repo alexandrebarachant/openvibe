@@ -868,7 +868,7 @@ boolean CDriverMicromedSystemPlusEvolution::isConfigurable(void)
 
 boolean CDriverMicromedSystemPlusEvolution::configure(void)
 {
-	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-Micromed-SystemPlusEvolution.ui");
+	CConfigurationNetworkBuilder l_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-Micromed-SystemPlusEvolution.ui");
 
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);
 

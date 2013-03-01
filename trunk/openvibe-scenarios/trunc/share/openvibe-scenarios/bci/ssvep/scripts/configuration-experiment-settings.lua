@@ -1,4 +1,4 @@
-dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 stimulation_frequencies = {}
 frequency_count = 0
@@ -63,9 +63,10 @@ function process(box)
 	-- create configuration files for temporal filters
 
 	for i=1,frequency_count do
-		box:log("Info", string.format("Writing file '../share/openvibe-scenarios/bci/ssvep/configuration/temporal-filter-freq-%d.cfg'", i))
+		cfg_file_name = string.format("%s/openvibe-scenarios/bci/ssvep/configuration/temporal-filter-freq-%d.cfg", os.getenv("OV_DATADIR"), i)
+		box:log("Info", "Writing file '" .. cfg_file_name .. "'")
 
-		cfg_file = io.open(string.format("../share/openvibe-scenarios/bci/ssvep/configuration/temporal-filter-freq-%d.cfg", i), "w")
+		cfg_file = io.open(cfg_file_name, "w")
 
 		cfg_file:write("<OpenViBE-SettingsOverride>\n")
 		cfg_file:write("<SettingValue>Butterworth</SettingValue>\n")
@@ -80,10 +81,11 @@ function process(box)
 	end
 
 	-- create configuration file for time based epoching
+	cfg_file_name = os.getenv("OV_DATADIR") .. "/openvibe-scenarios/bci/ssvep/configuration/time-based-epoching.cfg";
 	
-	box:log("Info", "Writing file '../share/openvibe-scenarios/bci/ssvep/configuration/time-based-epoching.cfg'")
+	box:log("Info", "Writing file '" .. cfg_file_name .. "'")
 
-	cfg_file = io.open("../share/openvibe-scenarios/bci/ssvep/configuration/time-based-epoching.cfg", "w")
+	cfg_file = io.open(cfg_file_name, "w")
 	cfg_file:write("<OpenViBE-SettingsOverride>\n")
 	cfg_file:write(string.format("<SettingValue>%g</SettingValue>\n", processing_epoch_duration))
 	cfg_file:write(string.format("<SettingValue>%g</SettingValue>\n", processing_epoch_interval))

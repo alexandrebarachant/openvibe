@@ -552,7 +552,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// box.h
 	CString l_sDest = m_sTargetDirectory + "/ovpCBoxAlgorithm" + m_sClassName + ".h";
-	CString l_sTemplate("../share/openvibe-applications/skeleton-generator/box.h-skeleton");
+	CString l_sTemplate(OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/box.h-skeleton");
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
@@ -678,11 +678,11 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 	l_sDest = m_sTargetDirectory + "/ovpCBoxAlgorithm" + m_sClassName + ".cpp";
 	if(m_bUseCodecToolkit)
 	{
-		l_sTemplate= "../share/openvibe-applications/skeleton-generator/box.cpp-codec-toolkit-skeleton";
+		l_sTemplate= OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/box.cpp-codec-toolkit-skeleton";
 	}
 	else
 	{
-		l_sTemplate= "../share/openvibe-applications/skeleton-generator/box.cpp-skeleton";
+		l_sTemplate= OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/box.cpp-skeleton";
 	}
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{
@@ -764,7 +764,7 @@ void CBoxAlgorithmSkeletonGenerator::buttonOkCB(void)
 	//-------------------------------------------------------------------------------------------------------------------------------------------//
 	// readme-box.cpp
 	l_sDest = m_sTargetDirectory + "/README.txt";
-	l_sTemplate = "../share/openvibe-applications/skeleton-generator/readme-box.txt-skeleton";
+	l_sTemplate = OpenViBE::Directories::getDataDir() + "/openvibe-applications/skeleton-generator/readme-box.txt-skeleton";
 	
 	if(!this->generate(l_sTemplate,l_sDest,l_mSubstitutions,l_sLogMessages))
 	{

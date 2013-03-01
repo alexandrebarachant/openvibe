@@ -189,7 +189,7 @@ boolean CDriverBrainProductsVAmp::start(void)
 	m_bFirstStart = true;
 
 	//The bonus...
-	HBITMAP l_bitmap = (HBITMAP) LoadImage(NULL, "../share/openvibe-applications/acquisition-server/vamp.bmp",IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	HBITMAP l_bitmap = (HBITMAP) LoadImage(NULL, OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/vamp.bmp",IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	if(l_bitmap == NULL || faSetBitmap(m_oHeader.getDeviceId(),l_bitmap ) != FA_ERR_OK)
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Warning << "[START] VAmp Driver: BMP load failed.\n";
@@ -371,7 +371,7 @@ boolean CDriverBrainProductsVAmp::isConfigurable(void)
 
 boolean CDriverBrainProductsVAmp::configure(void)
 {
-	CConfigurationBrainProductsVAmp m_oConfiguration(m_rDriverContext, "../share/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp.ui", &m_oHeader); // the specific header is passed into the specific configuration
+	CConfigurationBrainProductsVAmp m_oConfiguration(m_rDriverContext, OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-BrainProducts-VAmp.ui", &m_oHeader); // the specific header is passed into the specific configuration
 
 	if(!m_oConfiguration.configure(*(m_oHeader.getBasicHeader()))) // the basic configure will use the basic header
 	{

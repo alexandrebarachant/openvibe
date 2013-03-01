@@ -148,7 +148,7 @@ CPluginManager::~CPluginManager(void)
 boolean CPluginManager::addPluginsFromFiles(
 	const CString& rFileNameWildCard)
 {
-	this->getLogManager() << LogLevel_Info << "Adding [" << rFileNameWildCard << "]\n";
+	this->getLogManager() << LogLevel_Info << "Adding plugins from [" << rFileNameWildCard << "]\n";
 
 	boolean l_bResult;
 	CPluginManagerEntryEnumeratorCallBack l_rCB(this->getKernelContext(), m_vPluginModule, m_vPluginObjectDesc);

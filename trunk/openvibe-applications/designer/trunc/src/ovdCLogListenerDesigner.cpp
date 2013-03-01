@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-#define OVD_GUI_File "../share/openvibe-applications/designer/interface.ui"
+#define OVD_GUI_File OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.ui"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

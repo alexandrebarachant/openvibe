@@ -374,7 +374,7 @@ boolean CDriverCtfVsmMeg::isConfigurable(void)
 
 boolean CDriverCtfVsmMeg::configure(void)
 {
-	CConfigurationNetworkBuilder l_oConfiguration("../share/openvibe-applications/acquisition-server/interface-CtfVsm-Meg.ui");
+	CConfigurationNetworkBuilder l_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-CtfVsm-Meg.ui");
 
 	l_oConfiguration.setHostName(m_sServerHostName);
 	l_oConfiguration.setHostPort(m_ui32ServerHostPort);

@@ -65,8 +65,9 @@
 
 #elif defined (COMPILER_MSVC)
 	#include <winsock2.h>						/* for timeval */
+	#include <stdint.h>
+
 	#include "win32/gettimeofday.h"
-	#include "win32/stdint.h"
 
 	#define bzero(b,len) (memset((b), '\0', (len)), (void) 0)
 	#define usleep(x)    (Sleep((x)/1000))

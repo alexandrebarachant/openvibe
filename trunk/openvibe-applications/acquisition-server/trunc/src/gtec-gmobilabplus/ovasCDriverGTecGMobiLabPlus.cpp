@@ -97,7 +97,7 @@ boolean CDriverGTecGMobiLabPlus::configure(void)
 
 	// We use CConfigurationGTecMobilabPlus configuration which is a class that inheritate from the CConfigurationBuilder class
 	// The difference between these two classes is the addition of a member of class. This member allows to change the port where is connected the device.
-	CConfigurationGTecGMobiLabPlus m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-GTec-GMobiLabPlus.ui");
+	CConfigurationGTecGMobiLabPlus m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-GTec-GMobiLabPlus.ui");
 
 	// We configure the Header with it...
 	if(!m_oConfiguration.configure(*m_pHeader))

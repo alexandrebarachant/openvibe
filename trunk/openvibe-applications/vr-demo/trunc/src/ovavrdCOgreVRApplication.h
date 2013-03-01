@@ -160,7 +160,7 @@ namespace OpenViBEVRDemos {
 			* \brief Initialize the CEGUI plugin.
 			* \return \em true if the setup is a success.
 			*/
-			virtual bool initCEGUI(void);
+			virtual bool initCEGUI(const char *logFileName);
 
 			//-------VRPN-------//
 			CAbstractVrpnPeripheral * m_poVrpnPeripheral;//!< A VRPN peripheric, handles at most one Analog + one Button server.

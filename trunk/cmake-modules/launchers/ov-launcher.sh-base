@@ -2,10 +2,12 @@
 
 # find out where this script is located, assume it contains the openvibe distribution tree.
 # (the used mechanism allows running the script while in another directory.)
-OV_DISTROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export OV_DISTROOT
+export OV_DISTROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export OV_BINDIR="@CMAKE_INSTALL_FULL_BINDIR@"
+export OV_LIBDIR="@CMAKE_INSTALL_FULL_LIBDIR@"
+export OV_DATADIR="@CMAKE_INSTALL_FULL_DATADIR@"
 
-export LD_LIBRARY_PATH="$OV_DISTROOT/lib:$OV_DISTROOT/../scripts/software/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$OV_LIBDIR:$OV_DISTROOT/../scripts/software/lib:$LD_LIBRARY_PATH"
 export LC_ALL=C
 renice 19 $$
 
@@ -20,17 +22,18 @@ if [ "$1" == "--run-bg" ]; then
 	shift
 fi
 	
-cd "$OV_DISTROOT/@OV_CMD_WORKING_DIR@"
+pushd "@OV_CMD_WORKING_DIR@" 1>/dev/null
 
 ret_code=0
 
 if [ $ov_run_bg == 0 ]; then
-	eval $ov_debugger "$OV_DISTROOT/bin/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $*
+	eval $ov_debugger "$OV_BINDIR/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $*
 	ret_code=$?
 else
-	$ov_debugger "$OV_DISTROOT/bin/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $* &
+	$ov_debugger "$OV_BINDIR/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $* &
 fi
 
-cd "$OV_DISTROOT"
+popd
+
 exit $ret_code
 

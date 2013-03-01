@@ -334,7 +334,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Voxels filename</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Root}/share/openvibe-plugins/simple-visualisation/voxeldisplay/voxel_set_2394.txt</Value>
+					<Value>${Path_Data}/openvibe-plugins/simple-visualisation/voxeldisplay/voxel_set_2394.txt</Value>
 				</Setting>
 			</Settings>
 			<Attributes>

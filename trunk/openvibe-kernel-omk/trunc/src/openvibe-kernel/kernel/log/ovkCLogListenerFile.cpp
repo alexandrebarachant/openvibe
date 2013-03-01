@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <boost/filesystem.hpp>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
@@ -17,13 +19,18 @@ CLogListenerFile::CLogListenerFile(const IKernelContext& rKernelContext, const C
 	,m_ui64TimePrecision(3)
 {
 
+	// Create the path to the log file
+	boost::filesystem::create_directories(boost::filesystem::path(sLogFilename.toASCIIString()).parent_path());
+
 	m_fsFileStream.open(sLogFilename.toASCIIString(), ios::out);
 
 	if (!m_fsFileStream.is_open())
 	{
-		std::cout << "Error while creating FileLogListener (" << sLogFilename << ")" << std::endl;
+		std::cout << "[  ERR  ] Error while creating FileLogListener into '" << sLogFilename << "'" << std::endl;
+		return;
 	}
 	m_fsFileStream << flush;
+	std::cout << "[  INF  ] Logging to '" << sLogFilename << "'" << std::endl;
 }
 
 CLogListenerFile::~CLogListenerFile()

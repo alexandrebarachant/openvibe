@@ -157,7 +157,7 @@ boolean CDriverEGIAmpServer::initialize(
 		return false;
 	}
 
-	this->exectue("../share/openvibe-applications/acquisition-server/scripts/egi-default-initialize.script");
+	this->exectue(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/scripts/egi-default-initialize.script");
 
 	CCommandConnectionHandler l_oCommandHandler(*this);
 	l_oCommandHandler.send("(sendCommand cmd_Start 0 -1 -1)");
@@ -178,7 +178,7 @@ boolean CDriverEGIAmpServer::start(void)
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(m_rDriverContext.isStarted()) { return false; }
 
-	this->exectue("../share/openvibe-applications/acquisition-server/scripts/egi-default-start.script");
+	this->exectue(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/scripts/egi-default-start.script");
 
 	return true;
 }
@@ -238,7 +238,7 @@ boolean CDriverEGIAmpServer::stop(void)
 	if(!m_rDriverContext.isConnected()) { return false; }
 	if(!m_rDriverContext.isStarted()) { return false; }
 
-	this->exectue("../share/openvibe-applications/acquisition-server/scripts/egi-default-stop.script");
+	this->exectue(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/scripts/egi-default-stop.script" );
 
 	return true;
 }
@@ -269,7 +269,7 @@ boolean CDriverEGIAmpServer::uninitialize(void)
 		CCommandConnectionHandler l_oCommandHandler(*this);
 		l_oCommandHandler.send("(sendCommand cmd_Stop 0 -1 -1)");
 
-		this->exectue("../share/openvibe-applications/acquisition-server/scripts/egi-default-uninitialize.script");
+		this->exectue(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/scripts/egi-default-uninitialize.script");
 
 		m_pCommand->close();
 		m_pCommand->release();
@@ -291,7 +291,7 @@ boolean CDriverEGIAmpServer::isConfigurable(void)
 
 boolean CDriverEGIAmpServer::configure(void)
 {
-	CConfigurationEGIAmpServer m_oConfiguration("../share/openvibe-applications/acquisition-server/interface-egi-ampserver.ui");
+	CConfigurationEGIAmpServer m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-egi-ampserver.ui" );
 
 	m_oConfiguration.setHostName(m_sAmpServerHostName);
 	m_oConfiguration.setCommandPort(m_ui32CommandPort);
