@@ -3,5 +3,3 @@ Plugin=RenderSystem_GL
 Plugin=Plugin_ParticleFX
 Plugin=Plugin_BSPSceneManager
 Plugin=Plugin_OctreeSceneManager
-Plugin=Plugin_OctreeZone
-Plugin=Plugin_PCZSceneManager
