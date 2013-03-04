@@ -11,8 +11,21 @@
 #    The full path to the executable of the test ( eg.: "$ENV{HOME}/bin/TEST_EXECUTABLE_1.sh" )
 #    A List of arguments to the executable ( eg.: "ARGUMENT_1" "ARGUMENT_2" etc. ) 
 
-ADD_TEST(testname1 "ls" "-all")
-#ADD_TEST(testname2 "$ENV{HOME}/bin/TEST_EXECUTABLE_2.sh")
+
+# basic test (just for sample) check that binary directory is readable 
+ADD_TEST(LS_BINARY_PATH "ls" "-all")
+
+## -- Other Tests : Place a file named DartTestfile.txt in this path with tests.
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-kernel-omk/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-modules/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-toolkit/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-plugins/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-scenarios/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-applications/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-externals/")
+
 
 
  

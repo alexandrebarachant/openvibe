@@ -51,9 +51,17 @@ SET(MODEL Nightly)
 IF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
   SET(MODEL Experimental)
 ENDIF(${CTEST_SCRIPT_ARG} MATCHES Experimental)
+IF(${CTEST_SCRIPT_ARG} MATCHES Continuous)
+  SET(MODEL Continuous)
+ENDIF(${CTEST_SCRIPT_ARG} MATCHES Continuous)
 
-# create a temporary directory with very short name to host build
-exec_program("mktemp" ARGS "--tmpdir -d ov.XXX" OUTPUT_VARIABLE OV-ROOT-DIR)
+IF(${MODEL} MATCHES Continuous)
+	set(OV-ROOT-DIR              "/tmp/ov.con")
+ELSE(${MODEL} MATCHES Continuous)
+	# create a temporary directory with very short name to host build
+	exec_program("mktemp" ARGS "--tmpdir -d ov.XXX" OUTPUT_VARIABLE OV-ROOT-DIR)
+ENDIF(${MODEL} MATCHES Continuous)
+
 
 ####
 
@@ -61,7 +69,7 @@ exec_program("mktemp" ARGS "--tmpdir -d ov.XXX" OUTPUT_VARIABLE OV-ROOT-DIR)
 set(CTEST_SOURCE_DIRECTORY              "${OV-ROOT-DIR}/trunk")
 
 ## -- BIN Dir
-set(CTEST_BINARY_DIRECTORY              "${OV-ROOT-DIR}/bin") 
+set(CTEST_BINARY_DIRECTORY              "${OV-ROOT-DIR}/dist") 
 
 ## -- DashBoard Root
 set(CTEST_DASHBOARD_ROOT                "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -99,10 +107,10 @@ ENDIF(WIN32)
 # -----------------------------------------------------------  
 
 ## -- CTest Config
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake  ${CTEST_BINARY_DIRECTORY}/CTestConfig.cmake)
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake  ${CTEST_BINARY_DIRECTORY}/CTestConfig.cmake)
 
 ## -- CTest Custom
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CTEST_BINARY_DIRECTORY}/CTestCustom.cmake)
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CTEST_BINARY_DIRECTORY}/CTestCustom.cmake)
 
 ## -- CTest Testfile
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestTestfile.cmake ${CTEST_BINARY_DIRECTORY}/CTestTestfile.cmake)
@@ -110,6 +118,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestTestfile.cmake ${CTEST_BINARY_DI
 ## -- read CTestCustom.cmake file
 ctest_read_custom_files("${CTEST_BINARY_DIRECTORY}")
 
+#SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test/")
+#ADD_SUBDIRECTORY("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test/")
 SET(CTEST_PROJECT_NAME "OpenViBe")
 # set time for update 
 SET(CTEST_NIGHTLY_START_TIME "19:00:00 CEST")
@@ -184,11 +194,11 @@ message(STATUS "  INFO : submit(...) returned '${res}'")
 
 message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
 
-IF(${CTEST_SCRIPT_ARG} MATCHES Nightly)
+IF(${MODEL} MATCHES Nightly)
 	message(" -- clean ${MODEL}  - ${CTEST_BUILD_NAME} --")
 	ctest_empty_binary_directory(${CTEST_SOURCE_DIRECTORY})
 	ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY})
 	exec_program("rm" ARGS "-rf ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "cleanScript")
-ENDIF(${CTEST_SCRIPT_ARG} MATCHES Nightly)
+ENDIF(${MODEL} MATCHES Nightly)
 
 

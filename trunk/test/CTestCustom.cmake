@@ -8,15 +8,15 @@
 # This are only some examples of customization. The full list and detailed description can be found here: http://public.kitware.com/Wiki/CMake_Testing_With_CTest#Customizing_CTest
 
 
-set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS "500" )
-set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS   "200" )
+#set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS "500" )
+#set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS   "200" )
 
 # Add fake warnings to a list of exceptions
-set(CTEST_CUSTOM_WARNING_EXCEPTION
-	${CTEST_CUSTOM_WARNING_EXCEPTION}
-
-	# -- doxygen warnings
-	"are not documented:"
-	"Skipping documentation"
-	)
+#set(CTEST_CUSTOM_WARNING_EXCEPTION
+#	${CTEST_CUSTOM_WARNING_EXCEPTION}
+#
+#	# -- doxygen warnings
+#	"are not documented:"
+#	"Skipping documentation"
+#	)
 
