@@ -16,6 +16,7 @@ namespace OpenViBEDesigner
 	{
 	public:
 		CApplication(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+		~CApplication(void);
 
 		void initialize(OpenViBEDesigner::ECommandLineFlag eCommandLineFlags);
 

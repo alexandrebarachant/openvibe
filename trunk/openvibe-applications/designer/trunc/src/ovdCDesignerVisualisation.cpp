@@ -999,6 +999,7 @@ void CDesignerVisualisation::setActiveVisualisation(const char* _activeWindow, c
 //creates a new widgets table and sets it as current
 ::GtkTable* CDesignerVisualisation::newWidgetsTable()
 {
+	//@FIXME is the memory ever freed? Valgrind is suspicious about this. It seems that a builder is allocated, but only a member of builder is returned as GtkTable*.
 	GtkBuilder* pGtkBuilderTable = gtk_builder_new(); // glade_xml_new(m_sGuiFile.c_str(), "window_manager_eventbox-table", NULL);
 	gtk_builder_add_from_file(pGtkBuilderTable, m_sGuiFile.c_str(), NULL);
 	gtk_builder_connect_signals(pGtkBuilderTable, NULL);

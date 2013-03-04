@@ -173,13 +173,10 @@ void CBottomTimeRuler::onResizeEventCB(gint i32Width, gint i32Height)
 
 void CBottomTimeRuler::drawRuler(int64 i64BaseX, int32 i32RulerWidth, float64 f64StartTime, float64 f64EndTime, float64 f64Length, float64 f64BaseValue, float64 f64ValueStep, int32 i32ClipLeft, int32 i32ClipRight)
 {
-	stringstream l_oTimeLabel;
+	char l_sTimeLabel[512];
 
 	for(float64 i=f64BaseValue ; i<static_cast<float64>(0.5+f64EndTime) ; i+=f64ValueStep)
 	{
-		//clears the stringstream
-		l_oTimeLabel.str("");
-
 		//compute the position of the label
 		gint l_iTextX = static_cast<gint>(i64BaseX + ((i - f64StartTime)*(((float64)i32RulerWidth)/f64Length))) ;
 
@@ -189,9 +186,9 @@ void CBottomTimeRuler::drawRuler(int64 i64BaseX, int32 i32RulerWidth, float64 f6
 			continue;
 		}
 
-		l_oTimeLabel<<i;
+		sprintf(l_sTimeLabel, "%g", i);
 
-		PangoLayout * l_pText = gtk_widget_create_pango_layout(m_pBottomRuler, l_oTimeLabel.str().c_str());
+		PangoLayout * l_pText = gtk_widget_create_pango_layout(m_pBottomRuler, l_sTimeLabel);
 
 		int l_iTextWidth;
 		pango_layout_get_pixel_size(l_pText, &l_iTextWidth, NULL);
@@ -199,6 +196,7 @@ void CBottomTimeRuler::drawRuler(int64 i64BaseX, int32 i32RulerWidth, float64 f6
 		//is text beyond visible range?
 		if(l_iTextX + l_iTextWidth > i32ClipRight)
 		{
+			g_object_unref(l_pText);
 			break;
 		}
 
@@ -214,6 +212,8 @@ void CBottomTimeRuler::drawRuler(int64 i64BaseX, int32 i32RulerWidth, float64 f6
 
 		//draw a small line above it
 		gdk_draw_line(m_pBottomRuler->window, m_pBottomRuler->style->fg_gc[GTK_WIDGET_STATE (m_pBottomRuler)], l_iTextX, 0, l_iTextX, 3);
+
+		g_object_unref(l_pText);
 	}
 }
 

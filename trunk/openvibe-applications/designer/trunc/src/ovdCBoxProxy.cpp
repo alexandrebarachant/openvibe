@@ -124,10 +124,10 @@ const char* CBoxProxy::getLabel(void) const
 	string l_sBoxName(m_pConstBox->getName());
 	string l_sBoxIden(m_pConstBox->getIdentifier().toString());
 
-	string l_sRed("#602020");
-	string l_sGreen("#206020");
-	string l_sBlue("#202060");
-	string l_sGrey("#404040");
+	const string l_sRed("#602020");
+	const string l_sGreen("#206020");
+	const string l_sBlue("#202060");
+	const string l_sGrey("#404040");
 
 	m_sLabel=l_sBoxName;
 

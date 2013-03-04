@@ -417,14 +417,13 @@ namespace
 
 					float64 l_f64CPUUsage=(l_pCurrentInterfacedScenario->m_pPlayer?l_pCurrentInterfacedScenario->m_pPlayer->getCPUUsage(OV_UndefinedIdentifier):0);
 
-					std::stringstream ss;
-					ss << "Time : ";
-					if(l_ui32Hours)                                            ss << l_ui32Hours << "h ";
-					if(l_ui32Hours||l_ui32Minutes)                             ss << (l_ui32Minutes<10?"0":"") << l_ui32Minutes << "m ";
-					if(l_ui32Hours||l_ui32Minutes||l_ui32Seconds)              ss << (l_ui32Seconds<10?"0":"") << l_ui32Seconds << "s ";
-					ss << (l_ui32Milli<100?"0":"") << (l_ui32Milli<10?"0":"") << l_ui32Milli << "ms";
+					char l_sTime[1024];
+					if(l_ui32Hours)				sprintf(l_sTime, "Time : %02dh %02dm %02ds %03dms", l_ui32Hours, l_ui32Minutes, l_ui32Seconds, l_ui32Milli);
+					else if(l_ui32Minutes)		sprintf(l_sTime, "Time : %02dm %02ds %03dms", l_ui32Minutes, l_ui32Seconds, l_ui32Milli);
+					else if(l_ui32Seconds)		sprintf(l_sTime, "Time : %02ds %03dms", l_ui32Seconds, l_ui32Milli);
+					else						sprintf(l_sTime, "Time : %03dms", l_ui32Milli);
 
-					gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(l_pApplication->m_pBuilderInterface, "openvibe-label_current_time")), ss.str().c_str());
+					gtk_label_set_text(GTK_LABEL(gtk_builder_get_object(l_pApplication->m_pBuilderInterface, "openvibe-label_current_time")), l_sTime);
 
 					char l_sCPU[1024];
 					sprintf(l_sCPU, "%3.01f%%", l_f64CPUUsage);
@@ -496,10 +495,22 @@ CApplication::CApplication(const IKernelContext& rKernelContext)
 	,m_pAlgorithmTreeModel(NULL)
 	,m_pAlgorithmTreeView(NULL)
 	,m_bIsQuitting(false)
+	,m_ui64LastTimeRefresh(0)
+	,m_giFilterTimeout(0)
 {
 	m_pPluginManager=&m_rKernelContext.getPluginManager();
 	m_pScenarioManager=&m_rKernelContext.getScenarioManager();
 	m_pVisualisationManager=&m_rKernelContext.getVisualisationManager();
+}
+
+CApplication::~CApplication(void) 
+{
+	if(m_pBuilderInterface)
+	{
+		// @FIXME this likely still does not deallocate the actual widgets allocated by add_from_file
+		g_object_unref(G_OBJECT(m_pBuilderInterface));
+		m_pBuilderInterface = NULL;
+	}
 }
 
 void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
