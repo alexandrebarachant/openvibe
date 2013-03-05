@@ -494,9 +494,9 @@ CApplication::CApplication(const IKernelContext& rKernelContext)
 	,m_pBoxAlgorithmTreeView(NULL)
 	,m_pAlgorithmTreeModel(NULL)
 	,m_pAlgorithmTreeView(NULL)
-	,m_bIsQuitting(false)
-	,m_ui64LastTimeRefresh(0)
 	,m_giFilterTimeout(0)
+	,m_ui64LastTimeRefresh(0)
+	,m_bIsQuitting(false)
 {
 	m_pPluginManager=&m_rKernelContext.getPluginManager();
 	m_pScenarioManager=&m_rKernelContext.getScenarioManager();
@@ -507,6 +507,7 @@ CApplication::~CApplication(void)
 {
 	if(m_pBuilderInterface)
 	{
+		m_rKernelContext.getLogManager().removeListener(m_pLogListenerDesigner);
 		// @FIXME this likely still does not deallocate the actual widgets allocated by add_from_file
 		g_object_unref(G_OBJECT(m_pBuilderInterface));
 		m_pBuilderInterface = NULL;
