@@ -29,6 +29,8 @@ IF(WIN32)
 ENDIF(WIN32)
 
 IF(UNIX)
+	# Prefert Python 2.7 supported by OV python-plugin
+	SET(Python_ADDITIONAL_VERSIONS 2.7)
 	INCLUDE("FindPythonLibs")
 	IF(PYTHONLIBS_FOUND)
 		MESSAGE(STATUS "  Found Python...")
