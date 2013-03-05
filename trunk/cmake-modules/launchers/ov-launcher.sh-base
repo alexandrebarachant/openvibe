@@ -22,8 +22,6 @@ if [ "$1" == "--run-bg" ]; then
 	shift
 fi
 	
-pushd "@OV_CMD_WORKING_DIR@" 1>/dev/null
-
 ret_code=0
 
 if [ $ov_run_bg == 0 ]; then
@@ -32,8 +30,6 @@ if [ $ov_run_bg == 0 ]; then
 else
 	$ov_debugger "$OV_BINDIR/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $* &
 fi
-
-popd
 
 exit $ret_code
 

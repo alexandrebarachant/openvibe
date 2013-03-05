@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <openvibe/ov_directories.h>
+
 template <typename T> const T _abs_(const T& t) { return t<0?-t:t; }
 template <typename T> const T _min_(const T& t1, const T& t2) { return t1<t2?t1:t2; }
 template <typename T> const T _max_(const T& t1, const T& t2) { return t1<t2?t2:t1; }
@@ -17,7 +19,8 @@ static const float g_fEpsilon=1E-5f;
 static const unsigned int HISTORY_SIZE = 5;
 static const float GOAL_DISTANCE = 6.0f;
 
-CHandballBCI::CHandballBCI() : COgreVRApplication()
+CHandballBCI::CHandballBCI() : 
+	COgreVRApplication(OpenViBE::Directories::getDataDir() + "/openvibe-applications/vr-demo/handball")
 {
 	// scores
 	m_iGoalScore=0;

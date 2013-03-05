@@ -1,5 +1,7 @@
 #include "ovavrdCTieFighterBCI.h"
 
+#include <openvibe/ov_directories.h>
+
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -27,7 +29,8 @@ static const float g_fOffsetWithoutVador = 2.0f;
  #define _strcmpi strcasecmp
 #endif
 
-CTieFighterBCI::CTieFighterBCI(string s_localization) : COgreVRApplication()
+CTieFighterBCI::CTieFighterBCI(string s_localization) : 
+	COgreVRApplication(OpenViBE::Directories::getDataDir() + "/openvibe-applications/vr-demo/tie-fighter")
 {
 	m_iScore=0;
 	m_iAttemptCount = 0;

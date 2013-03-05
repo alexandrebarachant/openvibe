@@ -61,12 +61,12 @@ ENDIF(UNIX)
 # Generate launch script
 # ----------------------
 IF(WIN32)
-	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball" "%OV_DATADIR%/openvibe-applications/vr-demo/handball")
-	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter" "%OV_DATADIR%/openvibe-applications/vr-demo/tie-fighter")
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball")
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter")
 ENDIF(WIN32)
 IF(UNIX)
-	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball" "$OV_DATADIR/openvibe-applications/vr-demo/handball")
-	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter" "$OV_DATADIR/openvibe-applications/vr-demo/tie-fighter")
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-handball" "handball")
+	OV_INSTALL_LAUNCH_SCRIPT("ov-vr-demo-tie-fighter" "tie-fighter")
 ENDIF(UNIX)
 
 # -----------------------------

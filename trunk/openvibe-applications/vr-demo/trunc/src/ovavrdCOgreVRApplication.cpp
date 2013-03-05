@@ -20,10 +20,10 @@ using namespace Ogre;
 static const float g_fRotationSpeedMouse = 0.5f;
 static const float g_fTranslationSpeed = 0.2f;
 
-COgreVRApplication::COgreVRApplication()
+COgreVRApplication::COgreVRApplication(const char *sResourceRoot) :
+	m_sResourcePath(sResourceRoot)
 {
 	m_dClock = 0;
-	m_sResourcePath = "./resources.cfg";
 	m_bContinue=true;
 	m_rGUIRenderer = NULL;
 	m_bCameraMode = false;
@@ -169,7 +169,7 @@ void COgreVRApplication::setupResources()
 {
 	 // Load resource paths from config file
     Ogre::ConfigFile l_oConfigFile;
-    l_oConfigFile.load(m_sResourcePath);
+    l_oConfigFile.load(m_sResourcePath + "/resources.cfg");
     // Go through all sections & settings in the file
     Ogre::ConfigFile::SectionIterator l_oSectionIterator = l_oConfigFile.getSectionIterator();
 
@@ -183,7 +183,8 @@ void COgreVRApplication::setupResources()
         {
             l_sTypeName = i->first;
             l_sArchName = i->second;
-            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(l_sArchName, l_sTypeName, l_sSecName);
+
+            Ogre::ResourceGroupManager::getSingleton().addResourceLocation(m_sResourcePath + "/" + l_sArchName, l_sTypeName, l_sSecName);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace OpenViBEVRDemos {
 			/**
 			* \brief Default constructor.
 			*/
-			COgreVRApplication();
+			COgreVRApplication(const char *sResourceRoot);
 
 			/**
 			* \brief Destructor.

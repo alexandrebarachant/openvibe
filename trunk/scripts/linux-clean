@@ -1,10 +1,7 @@
 #!/bin/bash
 
 for optName in $* ; do
-	if [ $optName == "--help" ]; then
-		echo Usage: $0 [ --local-tmp --dist --dependencies --all ]	
-		exit
-	elif [ $optName == "--all" ]; then
+	if [ $optName == "--all" ]; then
 		# With full, we delete all artifacts. Even non-native dependencies.
 		rm -R ../dist
 		rm -R ../local-tmp
@@ -19,12 +16,15 @@ for optName in $* ; do
 	elif [ $optName == "--dependencies" ]; then
 		# Delete non-native software dependencies
 		rm -R ../scripts/software
-	fi	
+	else
+		echo Usage: $0 [ --local-tmp --dist --dependencies --all ]	
+		exit
+	fi
 done
 
 # The default is to just clean what was created by the compiler
 if [ $[$BASH_ARGC] -eq 0 ] ; then
-	echo No command-line switches given, just cleaning compiler artifacts in ../local-tmp/ 
+	echo No command-line switches given, cleaning compiler artifacts in ../local-tmp/ 
 	
 	dirDebug="../local-tmp/linux-Debug"
 	dirRelease="../local-tmp/linux-Release"
