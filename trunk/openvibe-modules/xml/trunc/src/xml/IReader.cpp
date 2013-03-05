@@ -55,6 +55,7 @@ boolean CReader::processData(const void* pBuffer, const uint64 ui64BufferSize)
 
 void CReader::release(void)
 {
+	XML_ParserFree(m_pXMLParser);
 	delete this;
 }
 
