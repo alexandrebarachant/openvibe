@@ -16,15 +16,14 @@
 ADD_TEST(LS_BINARY_PATH "ls" "-all")
 
 ## -- Other Tests : Place a file named DartTestfile.txt in this path with tests.
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-kernel-omk/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-modules/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-toolkit/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-plugins/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-scenarios/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-applications/")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-externals/")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-kernel-omk/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-modules/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-toolkit/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-plugins/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-scenarios/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-applications/designer/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}openvibe-externals/trunc/test")
 
 
 

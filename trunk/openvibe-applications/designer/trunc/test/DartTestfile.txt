@@ -1,0 +1,2 @@
+ADD_TEST(basic_run_designer "./ov-designer.sh" "--no-gui" "--play" "../openvibe-applications/designer/trunc/test/basicScenarioTest.xml")
+ADD_TEST(sinus_generator "diff" "record-test.csv" "../openvibe-applications/designer/trunc/test/record-test.ref.csv")
