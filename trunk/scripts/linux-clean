@@ -1,19 +1,44 @@
 #!/bin/bash
 
-source linux-init_env_command
+for optName in $* ; do
+	if [ $optName == "--help" ]; then
+		echo Usage: $0 [ --local-tmp --dist --dependencies --all ]	
+		exit
+	elif [ $optName == "--all" ]; then
+		# With full, we delete all artifacts. Even non-native dependencies.
+		rm -R ../dist
+		rm -R ../local-tmp
+		rm -R ../scripts/software
+		exit
+	elif [ $optName == "--local-tmp" ]; then
+		# Delete files created by compiler as well as by cmake
+		rm -R ../local-tmp
+	elif [ $optName == "--dist" ]; then
+		# Delete the installation folder
+		rm -R ../dist
+	elif [ $optName == "--dependencies" ]; then
+		# Delete non-native software dependencies
+		rm -R ../scripts/software
+	fi	
+done
 
-dirDebug="../local-tmp/linux-Debug"
-dirRelease="../local-tmp/linux-Release"
+# The default is to just clean what was created by the compiler
+if [ $[$BASH_ARGC] -eq 0 ] ; then
+	echo No command-line switches given, just cleaning compiler artifacts in ../local-tmp/ 
+	
+	dirDebug="../local-tmp/linux-Debug"
+	dirRelease="../local-tmp/linux-Release"
 
-if [ -e "$dirDebug" ]; then
-	pushd "$dirDebug" 2> /dev/null
-	make clean
-	popd 2> /dev/null
-fi
+	if [ -e "$dirDebug" ]; then
+		pushd "$dirDebug" 1> /dev/null
+		make clean
+		popd 1> /dev/null
+	fi
 
-if [ -e "$dirRelease" ]; then
-	pushd "$dirRelease" 2> /dev/null
-	make clean
-	popd 2> /dev/null
+	if [ -e "$dirRelease" ]; then
+		pushd "$dirRelease" 1> /dev/null
+		make clean
+		popd 1> /dev/null
+	fi
 fi
 

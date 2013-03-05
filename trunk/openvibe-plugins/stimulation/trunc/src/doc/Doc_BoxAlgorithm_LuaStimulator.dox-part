@@ -204,7 +204,7 @@ __________________________________________________________________
  * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Examples|
 Here is a sample script
 \code
-dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 -- this function is called when the box is initialized
 function initialize(box)
@@ -283,7 +283,7 @@ __________________________________________________________________
  * In case you would not like to modify your already existing scripts in depth, I suggest you just include the \em lua-stimulator-legacy.lua script
  * at the begining of your exising scripts using the following command
  * \code
- * dofile("../share/openvibe-plugins/stimulation/lua-stimulator-legacy.lua")
+ * dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-legacy.lua")
  * \endcode
  *
  * \subsection LuaScriptAPI_using_stimulation_codes Using OpenViBE stimulation codes in Lua scripts
@@ -291,7 +291,7 @@ __________________________________________________________________
  * It could be convenient to have the stimulation names available in a Lua script. For this purpose, I suggest you just include the \em lua-stimulator-stim-codes.lua script
  * at the begining of your exising scripts using the following command
  * \code
- * dofile("../share/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+ * dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
  * \endcode
  *
  * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Miscellaneous|
