@@ -9,7 +9,7 @@
 
 #include "ovasCConfigurationTMSIRefa32B.h"
 
-#define RTLOADER "\\RTINST.Dll"
+#define RTLOADER "RTINST.Dll"
 #include <gtk/gtk.h>
 // Get Signal info
 

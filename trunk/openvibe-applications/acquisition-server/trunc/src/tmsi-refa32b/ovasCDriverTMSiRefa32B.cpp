@@ -189,18 +189,15 @@ CDriverTMSiRefa32B::CDriverTMSiRefa32B(IDriverContext& rDriverContext)
 	//load the DLL of the driver
 	m_oLibHandle = NULL ;
 	m_HandleMaster=NULL;
-	TCHAR l_sPath[ 1024 ];
 
 	//Open library
-	GetCurrentDirectory(1024, l_sPath);
-	::lstrcat(l_sPath,"\\..\\bin");
-	::lstrcat(l_sPath,RTLOADER);
-	m_oLibHandle = ::LoadLibrary(l_sPath);
+	OpenViBE::CString l_sPath = OpenViBE::Directories::getBinDir() + "/" + RTLOADER;
+	m_oLibHandle = ::LoadLibrary(l_sPath.toASCIIString() );
 
 	//if it can't be open return FALSE;
 	if( m_oLibHandle == NULL)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't load DLL: " << CString(l_sPath) << "\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't load DLL: " << l_sPath << "\n";
 		return;
 	}
 

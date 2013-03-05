@@ -3,7 +3,7 @@
 
 #if defined OVAS_OS_Windows
 
-#define MicromedDLL "\\dllMicromed.dll"
+#define MicromedDLL "dllMicromed.dll"
 
 #include <system/Time.h>
 
@@ -200,18 +200,15 @@ CDriverMicromedSystemPlusEvolution::CDriverMicromedSystemPlusEvolution(IDriverCo
 {
 	//load the ddl of the driver
 	m_oLibMicromed = NULL ;
-	TCHAR l_sPath[1024];
 
-	//Open libratry
-	::GetCurrentDirectory(1024, l_sPath);
-	::lstrcat(l_sPath, "\\..\\bin");
-	::lstrcat(l_sPath, MicromedDLL);
-	m_oLibMicromed = ::LoadLibrary(l_sPath);
+	//Open library
+	OpenViBE::CString l_sPath =  OpenViBE::Directories::getBinDir() + "/" + MicromedDLL;
+	m_oLibMicromed = ::LoadLibrary(l_sPath.toASCIIString());
 
 	//if it can't be open return FALSE;
 	if( m_oLibMicromed == NULL)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't load DLL: " << CString(l_sPath) << "\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Couldn't load DLL: " << l_sPath << "\n";
 		return;
 	}
 
