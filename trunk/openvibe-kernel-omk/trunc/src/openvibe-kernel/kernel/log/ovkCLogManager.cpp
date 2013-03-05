@@ -159,8 +159,9 @@ boolean CLogManager::removeListener(ILogListener* pListener)
 		{
 			itLogListener=m_vListener.erase(itLogListener);
 			l_bResult=true;
+		} else {
+			itLogListener++;
 		}
-		itLogListener++;
 	}
 	return l_bResult;
 }
