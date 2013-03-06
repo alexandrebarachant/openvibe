@@ -271,6 +271,12 @@ boolean CEntryEnumeratorLinux::enumerate(const char* sWildCard)
 		return false;
 	}
 
+	if(l_oGlobStruc.gl_pathc<=0) 
+	{
+		// Nothing found
+		return false;
+	}
+
 	size_t i=0;
 	boolean l_bFinished=false;
 	while(!l_bFinished)
@@ -342,38 +348,41 @@ boolean CEntryEnumeratorWindows::enumerate(const char* sWildCard)
 
 	WIN32_FIND_DATA l_oFindData;
 	HANDLE l_pFileHandle=FindFirstFile(sWildCard, &l_oFindData);
-	if(l_pFileHandle!=INVALID_HANDLE_VALUE)
+	if(l_pFileHandle==INVALID_HANDLE_VALUE) 
 	{
-		boolean l_bFinished=false;
-		while(!l_bFinished)
+		return false;
+	}
+
+	boolean l_bFinished=false;
+	while(!l_bFinished)
+	{
+		CEntry l_oEntry(std::string(l_sPath+l_oFindData.cFileName).c_str());
+		CAttributes l_oAttributes;
+
+		l_oAttributes.m_bIsDirectory=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)?true:false;
+		l_oAttributes.m_bIsFile=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)?false:true;
+		l_oAttributes.m_bIsSymbolicLink=false;
+
+		l_oAttributes.m_bIsArchive=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_ARCHIVE)?true:false;
+		l_oAttributes.m_bIsReadOnly=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_READONLY)?true:false;
+		l_oAttributes.m_bIsHidden=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_HIDDEN)?true:false;
+		l_oAttributes.m_bIsSystem=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_SYSTEM)?true:false;
+		l_oAttributes.m_bIsExecutable=false; // TODO
+
+		l_oAttributes.m_ui64Size=(l_oFindData.nFileSizeHigh<<16)+l_oFindData.nFileSizeLow;
+
+		// Sends to callback
+		if(!m_rEntryEnumeratorCallBack.callback(l_oEntry, l_oAttributes))
 		{
-			CEntry l_oEntry(std::string(l_sPath+l_oFindData.cFileName).c_str());
-			CAttributes l_oAttributes;
+			l_bFinished=true;
+		}
 
-			l_oAttributes.m_bIsDirectory=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)?true:false;
-			l_oAttributes.m_bIsFile=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)?false:true;
-			l_oAttributes.m_bIsSymbolicLink=false;
-
-			l_oAttributes.m_bIsArchive=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_ARCHIVE)?true:false;
-			l_oAttributes.m_bIsReadOnly=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_READONLY)?true:false;
-			l_oAttributes.m_bIsHidden=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_HIDDEN)?true:false;
-			l_oAttributes.m_bIsSystem=(l_oFindData.dwFileAttributes&FILE_ATTRIBUTE_SYSTEM)?true:false;
-			l_oAttributes.m_bIsExecutable=false; // TODO
-
-			l_oAttributes.m_ui64Size=(l_oFindData.nFileSizeHigh<<16)+l_oFindData.nFileSizeLow;
-
-			// Sends to callback
-			if(!m_rEntryEnumeratorCallBack.callback(l_oEntry, l_oAttributes))
-			{
-				l_bFinished=true;
-			}
-
-			if(!FindNextFile(l_pFileHandle, &l_oFindData))
-			{
-				l_bFinished=true;
-			}
+		if(!FindNextFile(l_pFileHandle, &l_oFindData))
+		{
+			l_bFinished=true;
 		}
 	}
+
 	return true;
 }
 

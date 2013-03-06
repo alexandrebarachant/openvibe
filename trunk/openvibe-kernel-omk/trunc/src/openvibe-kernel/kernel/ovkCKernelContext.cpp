@@ -203,7 +203,12 @@ boolean CKernelContext::initialize(void)
 	m_pConfigurationManager->createConfigurationToken("Kernel_PlayerFrequency",       "128");
 
 	this->getLogManager() << LogLevel_Info << "Adding kernel configuration file [" << m_sConfigurationFile << "]\n";
-	m_pConfigurationManager->addConfigurationFromFile(m_sConfigurationFile);
+	if(!m_pConfigurationManager->addConfigurationFromFile(m_sConfigurationFile)) {
+		this->getLogManager() << LogLevel_Error << "Problem parsing '" << m_sConfigurationFile << "'. This will not work.\n";
+		// Since OpenViBE components usually don't react to return value of initialize(), we just quit here
+		this->getLogManager() << LogLevel_Error << "Forcing an exit.\n";
+		exit(-1);
+	}
 
 	// Generate the openvibe directories that the applications may write to. These are done after addConfigurationFromFile(), in case the defaults have been modified.
 	// @FIXME note that there is an issue if these paths are changed by a delayed configuration, then the directories are not created unless the caller does it.

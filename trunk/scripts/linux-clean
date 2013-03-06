@@ -1,21 +1,36 @@
 #!/bin/bash
 
+OV_DIST=../dist
+OV_LOCALTMP=../local-tmp
+OV_DEP=../scripts/software
+
+if [ `basename $PWD` != "scripts" ] ; then
+	echo This only works when run in the \"scripts\" of the Openvibe source tree. Exiting.
+	exit 1
+fi
+
 for optName in $* ; do
 	if [ $optName == "--all" ]; then
 		# With full, we delete all artifacts. Even non-native dependencies.
-		rm -R ../dist
-		rm -R ../local-tmp
-		rm -R ../scripts/software
+		echo Deleting $OV_DIST ...
+		rm -R $OV_DIST
+		echo Deleting $OV_LOCALTMP ...
+		rm -R $OV_LOCALTMP
+		echo Deleting $OV_DEP ...
+		rm -R $OV_DEP
 		exit
 	elif [ $optName == "--local-tmp" ]; then
 		# Delete files created by compiler as well as by cmake
-		rm -R ../local-tmp
+		echo Deleting $OV_LOCALTMP ...
+		rm -R $OV_LOCALTMP
 	elif [ $optName == "--dist" ]; then
 		# Delete the installation folder
-		rm -R ../dist
+		echo Deleting $OV_DIST ...
+		rm -R $OV_DIST
 	elif [ $optName == "--dependencies" ]; then
 		# Delete non-native software dependencies
-		rm -R ../scripts/software
+		echo Deleting $OV_DEP ...
+		rm -R $OV_DEP
 	else
 		echo Usage: $0 [ --local-tmp --dist --dependencies --all ]	
 		exit
@@ -24,10 +39,10 @@ done
 
 # The default is to just clean what was created by the compiler
 if [ $[$BASH_ARGC] -eq 0 ] ; then
-	echo No command-line switches given, cleaning compiler artifacts in ../local-tmp/ 
+	echo No command-line switches given, doing \"make clean\" under ../local-tmp/ 
 	
-	dirDebug="../local-tmp/linux-Debug"
-	dirRelease="../local-tmp/linux-Release"
+	dirDebug="$OV_LOCALTMP/linux-Debug"
+	dirRelease="$OV_LOCALTMP/linux-Release"
 
 	if [ -e "$dirDebug" ]; then
 		pushd "$dirDebug" 1> /dev/null

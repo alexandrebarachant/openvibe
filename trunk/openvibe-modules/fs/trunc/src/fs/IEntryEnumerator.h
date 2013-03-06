@@ -37,6 +37,7 @@ namespace FS
 			virtual ~IEntry(void);
 		};
 
+		// Returns false if nothing matched the wildcard. Possible callback errors are not currently reflected in the return value.
 		virtual FS::boolean enumerate(const char* sWildcard)=0;
 		virtual void release(void)=0;
 	protected:
