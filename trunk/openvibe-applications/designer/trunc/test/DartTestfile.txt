@@ -1,6 +1,6 @@
 IF(WIN32)
 	ADD_TEST(basic_run_designer "../../../../dist/ov-designer.cmd" "--no-pause" "--no-gui" "--play" "basicScenarioTest.xml")
 ELSE(WIN32)
-	ADD_TEST(basic_run_designer "../../../../dist/ov-designer.sh" "--no-gui" "--play" "basicScenarioTest.xml")
+	ADD_TEST(basic_run_designer "DISPLAY=0.0 ../../../../dist/ov-designer.sh" "--no-gui" "--play" "basicScenarioTest.xml")
 ENDIF(WIN32)
 ADD_TEST(sinus_generator "diff" "record-test.csv" "record-test.ref.csv")
