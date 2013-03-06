@@ -56,7 +56,7 @@ IF(${CTEST_SCRIPT_ARG} MATCHES Continuous)
 ENDIF(${CTEST_SCRIPT_ARG} MATCHES Continuous)
 
 IF(${MODEL} MATCHES Continuous)
-	set(OV-ROOT-DIR              "con.ov")
+	set(OV-ROOT-DIR              "${CMAKE_CURRENT_SOURCE_DIR}/con.ov")
 	file(MAKE_DIRECTORY ${OV-ROOT-DIR})
 ELSE(${MODEL} MATCHES Continuous)
 	# create a temporary directory with very short name to host build
