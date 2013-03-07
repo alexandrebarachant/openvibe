@@ -107,7 +107,7 @@ ENDIF(WIN32)
 # -----------------------------------------------------------  
 
 ## -- CTest Config
-#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake  ${CTEST_BINARY_DIRECTORY}/CTestConfig.cmake)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake  ${CTEST_BINARY_DIRECTORY}/CTestConfig.cmake)
 
 ## -- CTest Custom
 #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake ${CTEST_BINARY_DIRECTORY}/CTestCustom.cmake)
@@ -115,18 +115,19 @@ ENDIF(WIN32)
 ## -- CTest Testfile
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestTestfile.cmake ${CTEST_BINARY_DIRECTORY}/CTestTestfile.cmake)
 
+
+# passthrow a environnement variable to binary path to tests
+SET(ENV{OV-BINARY-PATH} "${CTEST_SOURCE_DIRECTORY}/dist")
 ## -- read CTestCustom.cmake file
 ctest_read_custom_files("${CTEST_BINARY_DIRECTORY}")
 
-#SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test/")
-#ADD_SUBDIRECTORY("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test/")
-SET(CTEST_PROJECT_NAME "OpenViBe")
-# set time for update 
-SET(CTEST_NIGHTLY_START_TIME "19:00:00 CEST")
-SET(CTEST_DROP_METHOD "http")
-SET(CTEST_DROP_SITE "cdash.inria.fr")
-SET(CTEST_DROP_LOCATION "/CDash/submit.php?project=OpenViBe")
-SET(CTEST_DROP_SITE_CDASH TRUE)
+#~ SET(CTEST_PROJECT_NAME "OpenViBe")
+#~ # set time for update 
+#~ SET(CTEST_NIGHTLY_START_TIME "19:00:00 CEST")
+#~ SET(CTEST_DROP_METHOD "http")
+#~ SET(CTEST_DROP_SITE "cdash.inria.fr")
+#~ SET(CTEST_DROP_LOCATION "/CDash/submit.php?project=OpenViBe")
+#~ SET(CTEST_DROP_SITE_CDASH TRUE)
 # -----------------------------------------------------------  
 # -- Settings
 # -----------------------------------------------------------  
@@ -136,7 +137,6 @@ set(CTEST_TIMEOUT           "7200")
 
 ## -- Set output to english
 set( $ENV{LC_MESSAGES}      "en_EN" )
-
 
 
 # -----------------------------------------------------------  
@@ -150,46 +150,47 @@ ctest_start(${MODEL} TRACK ${MODEL})
 set(ALL_OK "TRUE")
 
 ## -- Update
-IF(ALL_OK)
+IF(ALL_OK MATCHES "TRUE")
 	message(" -- Update ${MODEL} - ${CTEST_BUILD_NAME} --")
 	ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
 	IF(res==-1) 
 		message(SEND_ERROR "  Update failed.")
 		set(ALL_OK "FALSE")
 	ENDIF(res==-1)
-ENDIF(ALL_OK)
+ENDIF(ALL_OK MATCHES "TRUE")
 
 ## -- Configure	
-IF(ALL_OK)
+IF(ALL_OK MATCHES "TRUE")
 	message(" -- Configure ${MODEL} - ${CTEST_BUILD_NAME} --")
 	ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
 	IF(res!=0) 
 		message(SEND_ERROR "  Configure failed.")
 		set(ALL_OK "FALSE")
 	ENDIF(res!=0)
-ENDIF(ALL_OK)
+ENDIF(ALL_OK MATCHES "TRUE")
 	
 ## -- BUILD
-IF(ALL_OK)
+IF(ALL_OK MATCHES "TRUE")
 	message(" -- Build ${MODEL} - ${CTEST_BUILD_NAME} --")
 	ctest_build(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
 	IF(res!=0) 
 		message(SEND_ERROR "  Build failed.")
 		set(ALL_OK "FALSE")
 	ENDIF(res!=0)
-ENDIF(ALL_OK)
+ENDIF(ALL_OK MATCHES "TRUE")
 
 ## -- TEST
-IF(ALL_OK)
+IF(ALL_OK MATCHES "TRUE")
 	message(" -- Test ${MODEL} - ${CTEST_BUILD_NAME} --")
+	set( $ENV{CTEST_BINARY_DIRECTORY}    "${CTEST_BINARY_DIRECTORY}" )
 	ctest_test(BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
 	message(STATUS "  INFO : ctest_test(...) returned '${res}'")
-ENDIF(ALL_OK)
+ENDIF(ALL_OK MATCHES "TRUE")
 
 ## -- SUBMIT
 message(" -- Submit ${MODEL} - ${CTEST_BUILD_NAME} --")
 
-ctest_submit(                                              RETURN_VALUE res)
+#ctest_submit(                                              RETURN_VALUE res)
 message(STATUS "  INFO : submit(...) returned '${res}'")
 
 message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")

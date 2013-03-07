@@ -1,0 +1,12 @@
+# Basic Template Test for automatic run a scenario that produce a file to be compared to a reference file
+# You need to set the name of the test according to name of scenario file and reference file
+SET(TEST_NAME SinusOscillator)
+SET(SCENARIO_TO_TEST "${TEST_NAME}.xml")
+
+IF(WIN32)
+	ADD_TEST(run_${TEST_NAME} "$ENV{OV-BINARY-PATH}/ov-designer.cmd" "--no-pause" "--no-gui" "--play" ${SCENARIO_TO_TEST})
+ELSE(WIN32)
+	SET(ENV{DISPLAY} ":0.0")
+	ADD_TEST(run_${TEST_NAME} "$ENV{OV-BINARY-PATH}/ov-designer.sh" "--no-gui" "--play" ${SCENARIO_TO_TEST})
+ENDIF(WIN32)
+ADD_TEST(comparator_${TEST_NAME} "diff" "${TEST_NAME}.csv" "${TEST_NAME}.ref.csv")

@@ -1,9 +1,6 @@
-# This file specifies the test which should be executed in
-
-#ctest_test(     BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
+# This file specifies the test which should be executed
 
 # The file should be placed in the binary directory ${CTEST_BINARY_DIRECTORY}.
-
 
 #Each test consists of:
 
@@ -13,15 +10,13 @@
 
 
 # basic test (just for sample) check that binary directory is readable 
-ADD_TEST(LS_BINARY_PATH "ls" "-all")
-ADD_TEST(PWD_BINARY_PATH "pwd")
-SET( $ENV{PATH}    "${CTEST_BINARY_DIRECTORY}" )
-#SET (CTEST_ENVIRONMENT "PATH=${CTEST_BINARY_DIRECTORY}")
+#ADD_TEST(LS_BINARY_PATH "ls" "-all")
+#ADD_TEST(PWD_BINARY_PATH "pwd")
 
 ## -- Other Tests : Place a file named DartTestfile.txt in this path with tests.
 
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-applications/designer/trunc/test")
-SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/samples/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-kernel-omk/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-modules/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-toolkit/trunc/test")
