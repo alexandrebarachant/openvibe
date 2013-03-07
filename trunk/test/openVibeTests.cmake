@@ -190,7 +190,7 @@ ENDIF(ALL_OK MATCHES "TRUE")
 ## -- SUBMIT
 message(" -- Submit ${MODEL} - ${CTEST_BUILD_NAME} --")
 
-#ctest_submit(                                              RETURN_VALUE res)
+ctest_submit(                                              RETURN_VALUE res)
 message(STATUS "  INFO : submit(...) returned '${res}'")
 
 message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
