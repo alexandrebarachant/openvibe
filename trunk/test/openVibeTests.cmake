@@ -87,11 +87,16 @@ endif(NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
 set(CTEST_UPDATE_COMMAND               "${CTEST_SVN_COMMAND}")
 
 
-
+SET(NEED_CONFIGURE TRUE) 
 IF(WIN32)
 	## -- Configure Command
+	IF(${MODEL} MATCHES Continuous)
+		IF(EXISTS "${CTEST_SOURCE_DIRECTORY}/dependencies/Uninstall.exe")
+			SET(NEED_CONFIGURE FALSE) 
+		ENDIF(EXISTS "${CTEST_SOURCE_DIRECTORY}/dependencies/Uninstall.exe")
+	ENDIF(${MODEL} MATCHES Continuous)
 	set(CTEST_CONFIGURE_COMMAND            "${CTEST_SOURCE_DIRECTORY}/scripts/win32-install_dependencies.exe /S")
-	
+
 	## -- Build Command
 	set(CTEST_BUILD_COMMAND                "cmd /C \"win32-build.cmd --no-pause\"")
 ELSE(WIN32)
@@ -147,45 +152,47 @@ set( $ENV{LC_MESSAGES}      "en_EN" )
 message(" -- Start dashboard ${MODEL} - ${CTEST_BUILD_NAME} --")
 ctest_start(${MODEL} TRACK ${MODEL})
 
-set(ALL_OK "TRUE")
+set(ALL_OK TRUE)
 
 ## -- Update
-IF(ALL_OK MATCHES "TRUE")
+IF(ALL_OK)
 	message(" -- Update ${MODEL} - ${CTEST_BUILD_NAME} --")
 	ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
 	IF(res==-1) 
 		message(SEND_ERROR "  Update failed.")
-		set(ALL_OK "FALSE")
+		set(ALL_OK FALSE)
 	ENDIF(res==-1)
-ENDIF(ALL_OK MATCHES "TRUE")
+ENDIF(ALL_OK)
 
 ## -- Configure	
-IF(ALL_OK MATCHES "TRUE")
-	message(" -- Configure ${MODEL} - ${CTEST_BUILD_NAME} --")
-	ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
-	IF(res!=0) 
-		message(SEND_ERROR "  Configure failed.")
-		set(ALL_OK "FALSE")
-	ENDIF(res!=0)
-ENDIF(ALL_OK MATCHES "TRUE")
+IF(ALL_OK)
+	IF(NEED_CONFIGURE)  
+		message(" -- Configure ${MODEL} - ${CTEST_BUILD_NAME} --")
+		ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
+		IF(res!=0) 
+			message(SEND_ERROR "  Configure failed.")
+			set(ALL_OK FALSE)
+		ENDIF(res!=0)
+	ENDIF(NEED_CONFIGURE)  
+ENDIF(ALL_OK)
 	
 ## -- BUILD
-IF(ALL_OK MATCHES "TRUE")
+IF(ALL_OK)
 	message(" -- Build ${MODEL} - ${CTEST_BUILD_NAME} --")
 	ctest_build(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
 	IF(res!=0) 
 		message(SEND_ERROR "  Build failed.")
-		set(ALL_OK "FALSE")
+		set(ALL_OK FALSE)
 	ENDIF(res!=0)
-ENDIF(ALL_OK MATCHES "TRUE")
+ENDIF(ALL_OK)
 
 ## -- TEST
-IF(ALL_OK MATCHES "TRUE")
+IF(ALL_OK)
 	message(" -- Test ${MODEL} - ${CTEST_BUILD_NAME} --")
 	set( $ENV{CTEST_BINARY_DIRECTORY}    "${CTEST_BINARY_DIRECTORY}" )
 	ctest_test(BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
 	message(STATUS "  INFO : ctest_test(...) returned '${res}'")
-ENDIF(ALL_OK MATCHES "TRUE")
+ENDIF(ALL_OK)
 
 ## -- SUBMIT
 message(" -- Submit ${MODEL} - ${CTEST_BUILD_NAME} --")
