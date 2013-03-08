@@ -43,3 +43,45 @@ ctest -VV -S openVibeTests.cmake,Nightly
  - for a experimental test:
 
 ctest -VV -S openVibeTests.cmake,Experimental 
+
+
+How to add new test:
+-------------------
+
+You can add new test using DartTestFile.txt placed in test directory from a specific module.
+
+For example, designer specific tests will be placed in DartTestFile.txt in trunk/openvibe-applications/designer/trunc/test/
+And specific test for samples plugin will be placed in DartTestFile.txt in trunk/openvibe-plugins/samples/trunc/test/
+To be sure that test are executed, you need to add this subdirectories in file trunk/test/CTestfile.cmake.
+For last examples:
+...
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-applications/designer/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}/test/trunk/openvibe-plugins/samples/trunc/test")
+...
+
+
+
+There is an exemple of test using Sinus Oscillator in trunk/openvibe-plugins/samples/trunc/test/DartTestFile.txt :
+
+SET(TEST_NAME SinusOscillator)
+SET(SCENARIO_TO_TEST "${TEST_NAME}.xml")
+
+IF(WIN32)
+    ADD_TEST(run_${TEST_NAME} "$ENV{OV-BINARY-PATH}/ov-designer.cmd" "--no-pause" "--no-gui" "--play" ${SCENARIO_TO_TEST})
+ELSE(WIN32)
+    SET(ENV{DISPLAY} ":0.0")
+    ADD_TEST(run_${TEST_NAME} "$ENV{OV-BINARY-PATH}/ov-designer.sh" "--no-gui" "--play" ${SCENARIO_TO_TEST})
+ENDIF(WIN32)
+
+ADD_TEST(comparator_${TEST_NAME} "diff" "${TEST_NAME}.csv" "${TEST_NAME}.ref.csv")
+
+
+
+Some Remarks :
+
+    This test run designer with no GUI, but in Linux it still need a X11 context. So you need to be sure that test is a automatic start-up of "Xorg -ac&" command to ensure that X server is launched at test moment. That's why we need to define DISPLAY environment variable before launch test.
+    This test run in path : trunk/openvibe-plugins/samples/trunc/test/.
+    This test works with a specific scenario that content automatic stop set to a 1 second (using Clock stimulator+Player Controller),
+    This test produce a CSV file output that contents output of Sinus oscillator for 1 second (using CSV File Writer)
+    Second test is a "white box" test that compare current output signal file with a reference file using "diff" program as comparator. Signal reference file was obtained with the same scenario "a day when all work fine" (actually, non-regression test) 
+    This DartTestFile.txt will be adapted to others boxes to produce same type of tests.
