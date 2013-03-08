@@ -26,6 +26,8 @@ user ALL=(ALL) NOPASSWD: ALL
 WARNING 2 : execution of test change de root password in Fedora distributions to : openvibe 
 
 
+
+
 Get tests scripts:
 -----------------
 svn checkout svn://scm.gforge.inria.fr/svnroot/openvibe/trunk/test
@@ -79,7 +81,8 @@ ADD_TEST(comparator_${TEST_NAME} "diff" "${TEST_NAME}.csv" "${TEST_NAME}.ref.csv
 
 Some Remarks :
 
-    This test run designer with no GUI, but in Linux it still need a X11 context. So you need to be sure that test is a automatic start-up of "Xorg -ac&" command to ensure that X server is launched at test moment. That's why we need to define DISPLAY environment variable before launch test.
+    This test run designer with no GUI, but in Linux it still need a X11 context. So you need to be sure that test can access to a X server. That will be do by a automatic start-up of "Xorg -ac&" command to ensure that X server is launched at test moment. 
+    That's why we need to define DISPLAY environment variable before launch test.
     This test run in path : trunk/openvibe-plugins/samples/trunc/test/.
     This test works with a specific scenario that content automatic stop set to a 1 second (using Clock stimulator+Player Controller),
     This test produce a CSV file output that contents output of Sinus oscillator for 1 second (using CSV File Writer)
