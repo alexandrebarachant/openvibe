@@ -37,7 +37,7 @@
 
 // Plugins
 
-#include "plugins/external-stimulations/ovaspExternalStimulations.h"
+#include "plugins/external-stimulations/ovaspCExternalStimulations.h"
 
 
 #include <fstream>
