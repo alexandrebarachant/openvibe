@@ -1,7 +1,7 @@
 #ifndef __OpenViBE_Directories_H__
 #define __OpenViBE_Directories_H__
 
-#include <stdlib.h>	 // For getenv()
+#include <cstdlib>	 // For getenv()
 
 #include "ovCString.h"
 
@@ -9,6 +9,9 @@ namespace OpenViBE
 {
 	class Directories 
 	{
+	// The functions in this file should be only used in bootstrapping circumstances where Configuration Manager (Kernel Context) is not available. 
+	// With access to Configuration Manager, the paths should be fetched using tokens such as ${Path_UserData}. Note that in such a case changing the environment variable later may no longer be affected in the token value.
+
 	// @NOTE These functions may not be thread-safe 
 	public:
 		static OpenViBE::CString getDistRootDir(void)
@@ -27,24 +30,39 @@ namespace OpenViBE
 		{
 			return pathFromEnv("OV_LIBDIR", "../lib");
 		}
-		static OpenViBE::CString getLogDir(void)
+		static OpenViBE::CString getUserHomeDir(void)
 		{
 #if defined TARGET_OS_Windows
-			OpenViBE::CString l_sPath = pathFromEnv("APPDATA", "../log");
-			l_sPath = l_sPath + "/openvibe";
+			return pathFromEnv("APPDATA", "openvibe-user");
 #elif defined TARGET_OS_Linux
-			OpenViBE::CString l_sPath = pathFromEnv("HOME", "../log");
-			l_sPath = l_sPath + "/.config/openvibe";
+			return pathFromEnv("HOME", "openvibe-user");
 #endif
-			return l_sPath;
+		}
+		static OpenViBE::CString getUserDataDir(void)
+		{
+#if defined TARGET_OS_Windows
+			return getUserHomeDir() + "/openvibe";
+#elif defined TARGET_OS_Linux
+			return getUserHomeDir() + "/.config/openvibe";
+#endif
+		}
+		static OpenViBE::CString getLogDir(void)
+		{
+			return getUserDataDir() + "/log";
 		}
 
-		// Used to convert \ in paths given by getenv() to /, we need this because \ is a special character for .conf token parsing
+		// Used to convert \ in paths to /, we need this because \ is a special character for .conf token parsing
 		static OpenViBE::CString convertPath(const OpenViBE::CString &strIn) 
 		{
 			OpenViBE::CString l_sOut(strIn); 
 			unsigned int l_sLen = strIn.length();
-			for(unsigned int i=0;i<l_sLen;i++) { if(strIn[i]=='\\') l_sOut[i]='/'; };
+			for(unsigned int i=0; i<l_sLen; i++) 
+			{ 
+				if(strIn[i]=='\\') 
+				{
+					l_sOut[i]='/'; 
+				}
+			}
 			return l_sOut;
 		}
 
@@ -52,7 +70,7 @@ namespace OpenViBE
 
 		static OpenViBE::CString pathFromEnv(const char *sEnvVar, const char *sDefaultPath)
 		{
-			const char *l_sPathPtr = getenv(sEnvVar);
+			const char *l_sPathPtr = std::getenv(sEnvVar);
 			OpenViBE::CString l_sPath = (l_sPathPtr ? l_sPathPtr : sDefaultPath);
 			return convertPath(l_sPath);
 		}

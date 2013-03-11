@@ -525,8 +525,8 @@ bool CTieFighterBCI::keyPressed(const OIS::KeyEvent& evt)
 	{
 		cout<<"[ESC] pressed, user termination."<<endl;
 		cout<<"      Saving statistics..."<<endl;
-		std::stringstream l_ssPath;
-		l_ssPath << "stats.txt";
+		std::stringstream l_ssPath(OpenViBE::Directories::getLogDir().toASCIIString());
+		l_ssPath << "/openvibe-vr-demo-tie-fighter-stats.txt";
 		remove( l_ssPath.str().c_str() );
 		ofstream l_ofsSubjectConf(l_ssPath.str().c_str());
 		l_ofsSubjectConf << "Temps total = " << m_dStat_TieFighterLiftTime << "\n";

@@ -151,6 +151,7 @@ boolean CKernelContext::initialize(void)
 	m_pLogManager->activate(true);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring file log listener\n";
+	boost::filesystem::create_directories(boost::filesystem::path(OpenViBE::Directories::getLogDir().toASCIIString()));
 	m_pLogListenerFile=new CLogListenerFile(m_rMasterKernelContext, m_sApplicationName, OpenViBE::Directories::getLogDir() + "/openvibe-"+m_sApplicationName+".log");
 	m_pLogListenerFile->activate(true);
 	this->getLogManager().addListener(m_pLogListenerFile);
@@ -174,17 +175,13 @@ boolean CKernelContext::initialize(void)
 
 #if defined OVK_OS_Windows
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Windows");
-	m_pConfigurationManager->createConfigurationToken("UserHome",                     OpenViBE::Directories::convertPath(OpenViBE::CString(getenv("APPDATA"))));
-	m_pConfigurationManager->createConfigurationToken("OpenVibeUserFolder",           "${UserHome}/openvibe");
 #elif defined OVK_OS_Linux
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Linux");
-	m_pConfigurationManager->createConfigurationToken("UserHome",                     OpenViBE::Directories::convertPath(OpenViBE::CString(getenv("HOME"))));
-	m_pConfigurationManager->createConfigurationToken("OpenVibeUserFolder",           "${UserHome}/.config/openvibe");
 #else
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Unknown");
-	m_pConfigurationManager->createConfigurationToken("UserHome",                     "");
-	m_pConfigurationManager->createConfigurationToken("OpenVibeUserFolder",           "openvibe");
 #endif
+	m_pConfigurationManager->createConfigurationToken("UserHome",                     OpenViBE::Directories::getUserHomeDir());
+	m_pConfigurationManager->createConfigurationToken("Path_UserData",                OpenViBE::Directories::getUserDataDir());
 
 	m_pConfigurationManager->createConfigurationToken("ApplicationName",              m_sApplicationName);
 	m_pConfigurationManager->createConfigurationToken("Path_Root",                    OpenViBE::Directories::getDistRootDir());
@@ -192,7 +189,7 @@ boolean CKernelContext::initialize(void)
 	m_pConfigurationManager->createConfigurationToken("Path_Data",                    OpenViBE::Directories::getDataDir());
 	m_pConfigurationManager->createConfigurationToken("Path_Lib",                     OpenViBE::Directories::getLibDir());
 	m_pConfigurationManager->createConfigurationToken("Path_Log",                     OpenViBE::Directories::getLogDir());
-	m_pConfigurationManager->createConfigurationToken("Path_Tmp",                     "${OpenVibeUserFolder}/tmp");
+	m_pConfigurationManager->createConfigurationToken("Path_Tmp",                     "${Path_UserData}/tmp");
 	m_pConfigurationManager->createConfigurationToken("Path_Samples",                 "${Path_Data}/openvibe-scenarios");
 	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternLinux",   "libOpenViBE-plugins-*.so");
 	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternWindows", "OpenViBE-plugins-*.dll");
@@ -213,9 +210,11 @@ boolean CKernelContext::initialize(void)
 	// Generate the openvibe directories that the applications may write to. These are done after addConfigurationFromFile(), in case the defaults have been modified.
 	// @FIXME note that there is an issue if these paths are changed by a delayed configuration, then the directories are not created unless the caller does it.
 	CString l_sPathTmp;
-	l_sPathTmp = m_pConfigurationManager->expand("${OpenVibeUserFolder}");
+	l_sPathTmp = m_pConfigurationManager->expand("${Path_UserData}");
 	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()));
 	l_sPathTmp = m_pConfigurationManager->expand("${Path_Tmp}");
+	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()));
+	l_sPathTmp = m_pConfigurationManager->expand("${Path_Log}");
 	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()));
 	l_sPathTmp = m_pConfigurationManager->expand("${CustomConfiguration}");
 	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()).parent_path());

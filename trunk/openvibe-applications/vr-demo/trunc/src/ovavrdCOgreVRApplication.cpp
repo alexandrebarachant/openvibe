@@ -101,7 +101,7 @@ bool COgreVRApplication::setup()
 	l_poLogManagerSingleton->createLog(l_sOgreLog.toASCIIString(), true, false, false );
 
 	// Root creation
-	OpenViBE::CString l_sOgreCfg = OpenViBE::Directories::getLogDir() + "/openvibe-vr-demo-ogre.cfg";
+	OpenViBE::CString l_sOgreCfg = OpenViBE::Directories::getUserDataDir() + "/openvibe-vr-demo-ogre.cfg";
 	std::cout << "+ Ogre cfg will be in " << l_sOgreCfg << "\n";
 	m_poRoot = new Ogre::Root(pluginsPath, l_sOgreCfg.toASCIIString(), l_sOgreLog.toASCIIString() );
 	// Resource handling

@@ -68,7 +68,7 @@ bool CApplication::setup(OpenViBE::Kernel::IKernelContext* poKernelContext)
 	l_poLogManager->createLog(l_sOgreLog.toASCIIString(), true, l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_LogToConsole}", false), false );
 	
 	// Root creation
-	CString l_sOgreCfg = l_poConfigurationManager->expand("${OpenVibeUserFolder}") + "/openvibe-ssvep-demo-ogre.cfg";
+	CString l_sOgreCfg = l_poConfigurationManager->expand("${Path_UserData}") + "/openvibe-ssvep-demo-ogre.cfg";
 	(*m_poLogManager) << LogLevel_Debug << "+ m_poRoot = new Ogre::Root(...)\n";
 	(*m_poLogManager) << LogLevel_Info << "Ogre cfg file : " << l_sOgreCfg << "\n";
 	m_poRoot = new Ogre::Root(l_sPluginsPath.toASCIIString(), l_sOgreCfg.toASCIIString(), l_sOgreLog.toASCIIString());
