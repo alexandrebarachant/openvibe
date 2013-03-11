@@ -56,20 +56,20 @@ IF(${CTEST_SCRIPT_ARG} MATCHES Continuous)
 ENDIF(${CTEST_SCRIPT_ARG} MATCHES Continuous)
 
 IF(${MODEL} MATCHES Continuous)
-	set(OV-ROOT-DIR              "${CMAKE_CURRENT_SOURCE_DIR}")
+	set(OV_ROOT_DIR              "${CMAKE_CURRENT_SOURCE_DIR}")
 ELSE(${MODEL} MATCHES Continuous)
 	# create a temporary directory with very short name to host build
-	exec_program("mktemp" ARGS "--tmpdir -d ov.XXX" OUTPUT_VARIABLE OV-ROOT-DIR)
+	exec_program("mktemp" ARGS "--tmpdir -d ov.XXX" OUTPUT_VARIABLE OV_ROOT_DIR)
 ENDIF(${MODEL} MATCHES Continuous)
 
 
 ####
 
 ## -- SRC Dir
-set(CTEST_SOURCE_DIRECTORY              "${OV-ROOT-DIR}/trunk")
+set(CTEST_SOURCE_DIRECTORY              "${OV_ROOT_DIR}/trunk")
 
 ## -- BIN Dir
-set(CTEST_BINARY_DIRECTORY              "${OV-ROOT-DIR}/dist") 
+set(CTEST_BINARY_DIRECTORY              "${OV_ROOT_DIR}/dist") 
 
 ## -- DashBoard Root
 set(CTEST_DASHBOARD_ROOT                "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -122,7 +122,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestTestfile.cmake ${CTEST_BINARY_DI
 
 
 # passthrow a environnement variable to binary path to tests
-SET(ENV{OV-BINARY-PATH} "${CTEST_SOURCE_DIRECTORY}/dist")
+SET(ENV{OV_BINARY_PATH} "${CTEST_SOURCE_DIRECTORY}/dist")
 ## -- read CTestCustom.cmake file
 ctest_read_custom_files("${CTEST_BINARY_DIRECTORY}")
 
