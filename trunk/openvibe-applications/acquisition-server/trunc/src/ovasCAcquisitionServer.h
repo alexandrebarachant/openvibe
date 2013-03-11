@@ -16,13 +16,13 @@
 #include <list>
 #include <deque>
 
-#include <sys/timeb.h>
 
 
 namespace OpenViBEAcquisitionServer
 {
 	class CConnectionServerHandlerThread;
 	class CConnectionClientHandlerThread;
+	class IAcquisitionServerPlugin;
 
 	typedef struct
 	{
@@ -100,6 +100,8 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::boolean setOversamplingFactor(OpenViBE::uint64 ui64OversamplingFactor);
 		OpenViBE::boolean setImpedanceCheckRequest(OpenViBE::boolean bActive);
 
+		std::vector<IAcquisitionServerPlugin*> getPlugins() { return m_vPlugins; }
+
 		//
 		virtual OpenViBE::boolean acceptNewConnection(Socket::IConnection* pConnection);
 
@@ -173,45 +175,7 @@ namespace OpenViBEAcquisitionServer
 		OpenViBE::uint8* m_pSampleBuffer;
 		OpenViBE::CStimulationSet m_oPendingStimulationSet;
 
-	public: // #Gipsa
-		
-		struct SExternalStimulation
-		{
-			OpenViBE::uint64 timestamp;
-			OpenViBE::uint64 identifier;
-			OpenViBE::boolean isProcessed;
-			OpenViBE::boolean alreadyCountedAsEarlier;
-		};
-
-		void addExternalStimulations(OpenViBE::CStimulationSet*, OpenViBE::Kernel::ILogManager& logm,OpenViBE::uint64 start,OpenViBE::uint64 end);
-		void readExternalStimulations();
-
-		void acquireExternalStimulationsVRPN(OpenViBE::CStimulationSet* ss, OpenViBE::Kernel::ILogManager& logm,OpenViBE::uint64 start,OpenViBE::uint64 end);
-
-		struct timeb m_CTStartTime; //time when the acquisition process started in local computer time
-
-		std::vector < SExternalStimulation > m_vExternalStimulations;
-
-		OpenViBE::boolean m_bIsExternalStimulationsEnabled;
-		OpenViBE::CString m_sExternalStimulationsQueueName;
-
-		OpenViBE::boolean setExternalStimulationsEnabled(OpenViBE::boolean bActive);
-		OpenViBE::boolean isExternalStimulationsEnabled(void);
-
-		// Debugging of external stimulations
-		int m_iDebugStimulationsLost;
-		int m_iDebugExternalStimulationsSent;
-		int m_iDebugCurrentReadIPCStimulations;
-		int m_iDebugStimulationsReceivedEarlier;
-		int m_iDebugStimulationsReceivedLate;
-		int m_iDebugStimulationsReceivedWrongSize;
-		int m_iDebugStimulationsBuffered;
-
-		//added for acquiring external stimulations
-		boost::scoped_ptr<boost::thread> m_ESthreadPtr;
-		OpenViBE::boolean m_bIsESThreadRunning;
-		boost::mutex m_es_mutex;
-		boost::condition  m_esAvailable;
+		std::vector<IAcquisitionServerPlugin*> m_vPlugins;
 	};
 };
 

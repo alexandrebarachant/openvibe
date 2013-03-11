@@ -1,4 +1,5 @@
 #include "ovasCAcquisitionServer.h"
+#include "ovasIAcquisitionServerPlugin.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -16,10 +17,6 @@
 
 #include <cassert>
 
-#include <boost/interprocess/ipc/message_queue.hpp> // #Gipsa
-
-#include <vector> // #Gipsa
-#include <ctime> // #Gipsa
 #include <iostream>
 
 
@@ -230,7 +227,6 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	,m_bReplacementInProgress(false)
 	,m_bInitialized(false)
 	,m_bStarted(false)
-	,m_bIsExternalStimulationsEnabled(false)
 {
 	m_pDriverContext=new CDriverContext(rKernelContext, *this);
 
@@ -285,12 +281,15 @@ CAcquisitionServer::CAcquisitionServer(const IKernelContext& rKernelContext)
 	m_ui64StoppedDriverSleepDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_StoppedDriverSleepDuration}", 100);
 	m_ui64DriverTimeoutDuration=m_rKernelContext.getConfigurationManager().expandAsUInteger("${AcquisitionServer_DriverTimeoutDuration}", 5000);
 
+
+
+
 	m_i64DriftSampleCount=0;
 
-	//check for software tagging
-	//value not memorized
-	this->setExternalStimulationsEnabled(m_rKernelContext.getConfigurationManager().expandAsBoolean("${AcquisitionServer_ExternalStimulations}",false));
-	m_sExternalStimulationsQueueName=m_rKernelContext.getConfigurationManager().expand("${AcquisitionServer_ExternalStimulationsQueueName}");
+	for(std::vector<IAcquisitionServerPlugin*>::iterator itp = m_vPlugins.begin(); itp != m_vPlugins.end(); ++itp)
+	{
+		(*itp)->createHook();
+	}
 }
 
 CAcquisitionServer::~CAcquisitionServer(void)
@@ -560,18 +559,12 @@ boolean CAcquisitionServer::loop(void)
 
 				//m_rKernelContext.getLogManager() << LogLevel_Info << "start: " << time64(start) << "end: " << time64(end) << "\n";
 
-				// Begin #Gipsa
-				//adding stumulations from external application
-
-				if (m_bIsExternalStimulationsEnabled)
+				for(std::vector<IAcquisitionServerPlugin*>::iterator itp = m_vPlugins.begin(); itp != m_vPlugins.end(); ++itp)
 				{
-					//m_rKernelContext.getLogManager() << LogLevel_Error << "Checking for external stimulations:" << p << "\n";
-					addExternalStimulations(&l_oStimulationSet,m_rKernelContext.getLogManager(),start,end);
+					(*itp)->loopHook(l_oStimulationSet, start, end);
 				}
-				
 				OpenViBEToolkit::Tools::StimulationSet::copy(*ip_pStimulationSet, l_oStimulationSet, -int64(l_rInfo.m_ui64StimulationTimeOffset));
 
-				// End #Gipsa
 
 				op_pEncodedMemoryBuffer->setSize(0, true);
 				m_pStreamEncoder->process(OVP_GD_Algorithm_MasterAcquisitionStreamEncoder_InputTriggerId_EncodeBuffer);
@@ -745,22 +738,12 @@ boolean CAcquisitionServer::start(void)
 	}
 	// m_pDriverContext->onStart(*m_pDriver->getHeader());
 
-	//software tagging
-	
-	if (m_bIsExternalStimulationsEnabled)
-	{
-		ftime(&m_CTStartTime); // #Gipsa
-		m_bIsESThreadRunning = true;
-		m_ESthreadPtr.reset(new boost::thread( boost::bind(&CAcquisitionServer::readExternalStimulations , this )));
-		m_rKernelContext.getLogManager() << LogLevel_Info << "Software tagging activated...\n";
-	}
 
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Now acquiring...\n";
 
 	m_vPendingBuffer.clear();
 	m_oPendingStimulationSet.clear();
 	m_vJitterSampleCount.clear();
-	m_vExternalStimulations.clear(); // #Gipsa
 
 	m_ui64SampleCount=0;
 	m_ui64LastSampleCount=0;
@@ -771,13 +754,10 @@ boolean CAcquisitionServer::start(void)
 	m_ui64StartTime=System::Time::zgetTime();
 	m_ui64LastDeliveryTime=m_ui64StartTime;
 
-	m_iDebugExternalStimulationsSent=0;
-	m_iDebugCurrentReadIPCStimulations = 0;
-	m_iDebugStimulationsLost = 0; // #Gipsa
-	m_iDebugStimulationsReceivedEarlier = 0;
-	m_iDebugStimulationsReceivedLate = 0;
-	m_iDebugStimulationsReceivedWrongSize = 0;
-	m_iDebugStimulationsBuffered = 0;
+	for(std::vector<IAcquisitionServerPlugin*>::iterator itp = m_vPlugins.begin(); itp != m_vPlugins.end(); ++itp)
+	{
+		(*itp)->startHook();
+	}
 
 	m_bStarted=true;
 	return true;
@@ -827,13 +807,6 @@ boolean CAcquisitionServer::stop(void)
 	m_pDriver->stop();
 	// m_pDriverContext->onStop(*m_pDriver->getHeader());
 
-    //added specifically for external stimulations support
-	if (m_bIsExternalStimulationsEnabled)
-	{
-		m_bIsESThreadRunning = false;
-		m_ESthreadPtr->join();
-	}
-	
 
 	list < pair < Socket::IConnection*, SConnectionInfo > >::iterator itConnection=m_vConnection.begin();
 	while(itConnection!=m_vConnection.end())
@@ -850,26 +823,14 @@ boolean CAcquisitionServer::stop(void)
 		itConnection=m_vConnection.erase(itConnection);
 	}
 
+	for(std::vector<IAcquisitionServerPlugin*>::iterator itp = m_vPlugins.begin(); itp != m_vPlugins.end(); ++itp)
+	{
+		(*itp)->stopHook();
+	}
+
+
 	m_bStarted=false;
 
-	//software tagging diagnosting
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  Total external ones received through IPC: " << m_iDebugCurrentReadIPCStimulations << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  Sent to Designer: " << m_iDebugExternalStimulationsSent << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  Lost because of invalid timestamp: " << m_iDebugStimulationsLost << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  Stimulations that came earlier: " << m_iDebugStimulationsReceivedEarlier << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  Stimulations that came later: " << 	m_iDebugStimulationsReceivedLate << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  Stimulations that had wrong size: " << 	m_iDebugStimulationsReceivedWrongSize << "\n";
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  Buffered: " << 	m_iDebugStimulationsBuffered << "\n";
-
-	int processed=0;
-	vector<SExternalStimulation>::iterator cii;
-	for(cii=m_vExternalStimulations.begin(); cii!=m_vExternalStimulations.end(); cii++)
-	{
-		if (cii->isProcessed)
-			processed++;
-	}
-	m_rKernelContext.getLogManager() << LogLevel_Debug << "  processed: " << processed << "\n";
-	//end software tagging diagnosting
 
 	return true;
 }
@@ -1264,172 +1225,12 @@ boolean CAcquisitionServer::acceptNewConnection(Socket::IConnection* pConnection
 	l_oInfo.m_pConnectionClientHandlerBoostThread=NULL; // not used
 	m_vPendingConnection.push_back(pair < Socket::IConnection*, SConnectionInfo > (pConnection, l_oInfo));
 
-	m_vExternalStimulations.clear(); // #Gipsa
+	for(std::vector<IAcquisitionServerPlugin*>::iterator itp = m_vPlugins.begin(); itp != m_vPlugins.end(); ++itp)
+	{
+		(*itp)->acceptNewConnectionHook();
+	}
 
 	return true;
 }
 
-// Begin #Gipsa
-void CAcquisitionServer::readExternalStimulations()
-{
-	using namespace boost::interprocess;
-
-	//std::cout << "Creating External Stimulations thread" << std::endl;
-	//std::cout << "Queue Name : " << m_sExternalStimulationsQueueName << std::endl;
-	//char mq_name[255];
-	//std::strcpy(mq_name, m_sExternalStimulationsQueueName.toASCIIString());
-	const int chunk_length=3;
-	const int pause_time=5;
-
-	unsigned int priority;
-	size_t recvd_size;
-
-	uint64 chunk[chunk_length];
-
-	while (m_bIsESThreadRunning)
-	{
-		bool success = false;
-		try
-		{
-			//Open a message queue.
-			message_queue mq
-					(open_only  //only open
-					 ,m_sExternalStimulationsQueueName.toASCIIString()    //name
-					 //,mq_name    //name
-					 );
-
-			success = mq.try_receive(&chunk, sizeof(chunk), recvd_size, priority);
-		}
-		catch(interprocess_exception & /* ex */)
-		{
-			//m_bIsESThreadRunning = false;
-			//m_rKernelContext.getLogManager() << LogLevel_Error << "Problem with message queue in external stimulations:" << ex.what() << "\n";
-			boost::this_thread::sleep(boost::posix_time::milliseconds(pause_time));
-			continue;
-		}
-
-		if (!success)
-		{
-			boost::this_thread::sleep(boost::posix_time::milliseconds(pause_time));
-			continue;
-		}
-
-		m_iDebugCurrentReadIPCStimulations++;
-
-		if(recvd_size != sizeof(chunk))
-		{
-			//m_rKernelContext.getLogManager() << LogLevel_Error << "Problem with type of received data when reqding external stimulation!\n";
-			m_iDebugStimulationsReceivedWrongSize++;
-		}
-		else
-		{
-			//m_rKernelContext.getLogManager() << LogLevel_Warning << "received\n";
-
-			SExternalStimulation stim;
-
-			stim.identifier = chunk[1];
-			uint64 received_time = chunk[2];
-
-			//1. calculate time
-			uint64 ct_start_time_ms = (m_CTStartTime.time * 1000 + m_CTStartTime.millitm);
-
-			int64 time_test = received_time - ct_start_time_ms;
-
-			if (time_test<0)
-			{
-				m_iDebugStimulationsLost++;
-				//m_rKernelContext.getLogManager() << LogLevel_Warning <<  "AS: external stimulation time is invalid, probably stimulation is before reference point, total invalid so far: " << m_i32FlashesLost << "\n";
-				boost::this_thread::sleep(boost::posix_time::milliseconds(pause_time));
-				continue; //we skip this stimulation
-			}
-			//2. Convert to OpenVibe time
-			uint64 ct_event_time = received_time - ct_start_time_ms;
-
-			float64 time = (float64)ct_event_time / (float64)1000;
-
-			uint64 ov_time = (uint64)(time * 1024)<<22;
-			stim.timestamp = ov_time;
-
-			stim.alreadyCountedAsEarlier = false;
-
-			//3. Store, the main thread will process it
-			{
-				//lock
-				boost::mutex::scoped_lock lock(m_es_mutex);
-
-				m_vExternalStimulations.push_back(stim);
-				m_iDebugStimulationsBuffered++;
-				m_esAvailable.notify_one();
-				//unlock
-			}
-
-			boost::this_thread::sleep(boost::posix_time::milliseconds(pause_time));
-
-		}
-	}
-}
-
-void CAcquisitionServer::addExternalStimulations(OpenViBE::CStimulationSet* ss, OpenViBE::Kernel::ILogManager& logm,uint64 start,uint64 end)
-{
-	uint64 duration_ms = 40;
-	{
-		//lock
-		boost::mutex::scoped_lock lock(m_es_mutex);
-
-		vector<SExternalStimulation>::iterator cii;
-
-		for(cii=m_vExternalStimulations.begin(); cii!=m_vExternalStimulations.end(); cii++)
-		{
-			if (cii->isProcessed==true) continue;
-
-			// if time matches current chunk being processed - send it
-			if (cii->timestamp >= start && cii->timestamp < end)
-			{
-				//flashes_in_this_time_chunk++;
-				//logm << LogLevel_Error << "Stimulation added." << "\n";
-				ss->appendStimulation(cii->identifier, cii->timestamp, duration_ms);
-				m_iDebugExternalStimulationsSent++;
-				//m_vExternalStimulations.erase(cii);
-				cii->isProcessed = true;
-			}
-			else
-				//the stimulation is coming too late - after the current block being processed
-				//we correct the timestamp to the current block and we send it
-				if (cii->timestamp < start)
-				{
-					m_iDebugStimulationsReceivedLate++;
-					ss->appendStimulation(cii->identifier, start, duration_ms);
-					m_iDebugExternalStimulationsSent++;
-					//m_vExternalStimulations.erase(cii);
-					cii->isProcessed = true;
-				}
-				else //stim.timestamp > end - coming before the currently processed block, so we still can put in the right place
-				{
-					//save the stimulation for later
-					if (!cii->alreadyCountedAsEarlier)
-					{
-						m_iDebugStimulationsReceivedEarlier++;
-						cii->alreadyCountedAsEarlier = true;
-					}
-					continue;
-				}
-		}
-
-		m_esAvailable.notify_one();
-		//unlock
-	}
-}
-
-
-boolean CAcquisitionServer::setExternalStimulationsEnabled(boolean bActive)
-{
-	m_bIsExternalStimulationsEnabled=bActive;
-	return true;
-}
-
-boolean CAcquisitionServer::isExternalStimulationsEnabled(void)
-{
-	return m_bIsExternalStimulationsEnabled;
-}
-// End #Gipsa
 

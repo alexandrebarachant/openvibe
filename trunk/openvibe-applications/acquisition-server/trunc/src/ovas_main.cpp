@@ -52,13 +52,6 @@ int main(int argc, char ** argv)
 			{
 				OpenViBEToolkit::initialize(*l_pKernelContext);
 
-// For Mister Vincent !
-#ifdef OVAS_OS_Windows
-#ifndef NDEBUG
-				//_asm int 3;
-#endif
-#endif
-
 				IConfigurationManager& l_rConfigurationManager=l_pKernelContext->getConfigurationManager();
 
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
