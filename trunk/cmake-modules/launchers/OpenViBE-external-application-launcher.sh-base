@@ -1,10 +1,10 @@
 #!/bin/bash
+#
+# This script is meant to be launched from an environment with the OV_ env variables already set
+#
 
 CALLCMD=$1
 shift
 
-pushd ..
+$OV_DISTROOT/ov-$CALLCMD.sh $*
 
-./ov-$CALLCMD.sh $*
-
-popd
