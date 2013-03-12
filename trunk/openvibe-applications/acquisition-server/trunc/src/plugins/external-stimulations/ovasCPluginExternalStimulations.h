@@ -22,12 +22,12 @@ namespace OpenViBEAcquisitionServer
 
 	namespace OpenViBEAcquisitionServerPlugins
 	{
-		class CExternalStimulations : public IAcquisitionServerPlugin
+		class CPluginExternalStimulations : public IAcquisitionServerPlugin
 		{
 				// Plugin interface
 			public:
-				CExternalStimulations(CAcquisitionServer& acquisitionServer);
-				virtual ~CExternalStimulations();
+				CPluginExternalStimulations(CAcquisitionServer& acquisitionServer);
+				virtual ~CPluginExternalStimulations();
 
 				virtual void startHook();
 				virtual void stopHook();

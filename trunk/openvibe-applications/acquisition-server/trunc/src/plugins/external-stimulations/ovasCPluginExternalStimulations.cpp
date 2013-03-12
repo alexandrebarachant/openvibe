@@ -1,4 +1,4 @@
-#include "ovaspCExternalStimulations.h"
+#include "ovasCPluginExternalStimulations.h"
 #include "../../ovasCAcquisitionServer.h"
 
 
@@ -17,27 +17,27 @@ using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBEAcquisitionServerPlugins;
 using namespace std;
 
-CExternalStimulations::CExternalStimulations(CAcquisitionServer& acquisitionServer) :
+CPluginExternalStimulations::CPluginExternalStimulations(CAcquisitionServer& acquisitionServer) :
 	IAcquisitionServerPlugin(acquisitionServer),
 	m_rKernelContext(acquisitionServer.m_rKernelContext),
 	m_bIsExternalStimulationsEnabled(false)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Loading plugin: Software Tagging\n";
 
-	m_sProperties.name = "Software Tagging";
+	m_oProperties.name = "Software Tagging";
 
 	addSetting<boolean>("Enable External Stimulations", true);
 	addSetting<OpenViBE::CString>("External Stimulation Queue Name", "openvibeExternalStimulations");
 
 }
 
-CExternalStimulations::~CExternalStimulations()
+CPluginExternalStimulations::~CPluginExternalStimulations()
 {
 }
 
 // Hooks
 
-void CExternalStimulations::startHook()
+void CPluginExternalStimulations::startHook()
 {
 	m_bIsExternalStimulationsEnabled = getSetting<boolean>("Enable External Stimulations");
 
@@ -46,7 +46,7 @@ void CExternalStimulations::startHook()
 		m_sExternalStimulationsQueueName = getSetting<OpenViBE::CString>("External Stimulation Queue Name");
 		ftime(&m_CTStartTime);
 		m_bIsESThreadRunning = true;
-		m_ESthreadPtr.reset(new boost::thread( boost::bind(&CExternalStimulations::readExternalStimulations , this )));
+		m_ESthreadPtr.reset(new boost::thread( boost::bind(&CPluginExternalStimulations::readExternalStimulations , this )));
 		m_rKernelContext.getLogManager() << LogLevel_Info << "Software tagging activated...\n";
 	}
 	m_vExternalStimulations.clear();
@@ -61,7 +61,7 @@ void CExternalStimulations::startHook()
 
 }
 
-void CExternalStimulations::loopHook(CStimulationSet &stimulationSet, uint64 start, uint64 end)
+void CPluginExternalStimulations::loopHook(CStimulationSet &stimulationSet, uint64 start, uint64 end)
 {
 	if (m_bIsExternalStimulationsEnabled)
 	{
@@ -71,7 +71,7 @@ void CExternalStimulations::loopHook(CStimulationSet &stimulationSet, uint64 sta
 
 }
 
-void CExternalStimulations::stopHook()
+void CPluginExternalStimulations::stopHook()
 {
 	if (m_bIsExternalStimulationsEnabled)
 	{
@@ -100,14 +100,14 @@ void CExternalStimulations::stopHook()
 	//end software tagging diagnosting
 }
 
-void CExternalStimulations::acceptNewConnectionHook()
+void CPluginExternalStimulations::acceptNewConnectionHook()
 {
 	m_vExternalStimulations.clear();
 }
 
 // Plugin specific methods
 
-void CExternalStimulations::readExternalStimulations()
+void CPluginExternalStimulations::readExternalStimulations()
 {
 	using namespace boost::interprocess;
 
@@ -206,7 +206,7 @@ void CExternalStimulations::readExternalStimulations()
 	}
 }
 
-void CExternalStimulations::addExternalStimulations(OpenViBE::CStimulationSet* ss, OpenViBE::Kernel::ILogManager& logm,uint64 start,uint64 end)
+void CPluginExternalStimulations::addExternalStimulations(OpenViBE::CStimulationSet* ss, OpenViBE::Kernel::ILogManager& logm,uint64 start,uint64 end)
 {
 	uint64 duration_ms = 40;
 	{
@@ -258,13 +258,13 @@ void CExternalStimulations::addExternalStimulations(OpenViBE::CStimulationSet* s
 }
 
 
-boolean CExternalStimulations::setExternalStimulationsEnabled(boolean bActive)
+boolean CPluginExternalStimulations::setExternalStimulationsEnabled(boolean bActive)
 {
 	m_bIsExternalStimulationsEnabled=bActive;
 	return true;
 }
 
-boolean CExternalStimulations::isExternalStimulationsEnabled(void)
+boolean CPluginExternalStimulations::isExternalStimulationsEnabled(void)
 {
 	return m_bIsExternalStimulationsEnabled;
 }

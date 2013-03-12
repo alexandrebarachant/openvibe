@@ -37,7 +37,7 @@
 
 // Plugins
 
-#include "plugins/external-stimulations/ovaspCExternalStimulations.h"
+#include "plugins/external-stimulations/ovasCPluginExternalStimulations.h"
 
 
 #include <fstream>
@@ -177,7 +177,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #endif
 
 
-	registerPlugin(new OpenViBEAcquisitionServerPlugins::CExternalStimulations(*m_pAcquisitionServer));
+	registerPlugin(new OpenViBEAcquisitionServerPlugins::CPluginExternalStimulations(*m_pAcquisitionServer));
 
 	scanPluginSettings();
 
@@ -250,15 +250,15 @@ CAcquisitionServerGUI::~CAcquisitionServerGUI(void)
 
 			if (l_pCurrentSetting->type == OVTK_TypeId_Boolean)
 			{
-				::fprintf(l_pFile, m_vPluginSettings[setting_index].unique_name + " = %s\n", boost::get<bool>(l_pCurrentSetting->value) ? "True" : "False");
+				::fprintf(l_pFile, m_vPluginSettings[setting_index].unique_name + " = %s\n", l_pCurrentSetting->getValue<bool>() ? "True" : "False");
 			}
 			else if (l_pCurrentSetting->type == OVTK_TypeId_Integer)
 			{
-				::fprintf(l_pFile, m_vPluginSettings[setting_index].unique_name + " = %llu\n", boost::get<int64>(l_pCurrentSetting->value));
+				::fprintf(l_pFile, m_vPluginSettings[setting_index].unique_name + " = %llu\n", l_pCurrentSetting->getValue<int64>());
 			}
 			else if (l_pCurrentSetting->type == OVTK_TypeId_String)
 			{
-				::fprintf(l_pFile, m_vPluginSettings[setting_index].unique_name + " = %s\n", boost::get<CString>(l_pCurrentSetting->value).toASCIIString());
+				::fprintf(l_pFile, m_vPluginSettings[setting_index].unique_name + " = %s\n", (l_pCurrentSetting->getValue<CString>()).toASCIIString());
 			}
 			else
 			{
@@ -715,21 +715,21 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 		{
 			// create the check button and assign it the current value of the setting
 			l_pSettingControl = gtk_check_button_new();
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pSettingControl), boost::get<boolean>(l_pCurrentSetting->value));
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(l_pSettingControl), l_pCurrentSetting->getValue<bool>());
 		}
 		else if (l_pCurrentSetting->type == OVTK_TypeId_Integer)
 		{
 			// create the check button and assign it the current value of the setting
 
 			l_pSettingControl = gtk_spin_button_new_with_range(std::numeric_limits<int64>::min(), std::numeric_limits<int64>::max(), 1);
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSettingControl), boost::get<int64>(l_pCurrentSetting->value));
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSettingControl), l_pCurrentSetting->getValue<int64>());
 
 		}
 		else if (l_pCurrentSetting->type == OVTK_TypeId_String)
 		{
 			// create the check button and assign it the current value of the setting
 			l_pSettingControl = gtk_entry_new();
-			gtk_entry_append_text(GTK_ENTRY(l_pSettingControl), boost::get<OpenViBE::CString>(l_pCurrentSetting->value));
+			gtk_entry_append_text(GTK_ENTRY(l_pSettingControl), l_pCurrentSetting->getValue<OpenViBE::CString>());
 		}
 		else
 		{
