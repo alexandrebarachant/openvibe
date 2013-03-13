@@ -274,7 +274,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Spatial filter configuration</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/motor-imagery-CSP/csp-spatial-filter.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/csp-spatial-filter.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>

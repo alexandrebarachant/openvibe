@@ -134,7 +134,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/motor-imagery-CSP/csp-spatial-filter.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/csp-spatial-filter.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -464,7 +464,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/motor-imagery-CSP/motor-imagery-bci-epoch-selector.lua</Value>
+					<Value>${__volatile_ScenarioDir}/motor-imagery-bci-epoch-selector.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x512a166f, 0x5c3ef83f)</TypeIdentifier>
@@ -1088,7 +1088,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/motor-imagery-CSP/motor-imagery-bci-config-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/motor-imagery-bci-config-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>

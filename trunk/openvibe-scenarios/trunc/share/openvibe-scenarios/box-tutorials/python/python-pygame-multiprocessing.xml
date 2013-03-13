@@ -15,7 +15,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/box-tutorials/python/scripts/python-multiprocessing.py</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/python-multiprocessing.py</Value>
 				</Setting>
 			</Settings>
 			<Attributes>
@@ -84,7 +84,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/box-tutorials/python/scripts/python-moving-circle.py</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/python-moving-circle.py</Value>
 				</Setting>
 			</Settings>
 			<Attributes>
@@ -153,7 +153,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/box-tutorials/python/scripts/python-star-field.py</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/python-star-field.py</Value>
 				</Setting>
 			</Settings>
 			<Attributes>

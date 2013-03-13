@@ -21,7 +21,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-speller-target.lua</Value>
+					<Value>${__volatile_ScenarioDir}/p300-speller-target.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
@@ -425,7 +425,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-speller-visualisation.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-speller-visualisation.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xac367a9c, 0x2da95abe)</Identifier>
@@ -464,7 +464,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/signals/p300-speller-xdawn-1-[$core{date}-$core{time}].ov</Value>
+					<Value>${__volatile_ScenarioDir}/signals/p300-speller-xdawn-1-[$core{date}-$core{time}].ov</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2cdb2f0b, 0x12f231ea)</TypeIdentifier>
@@ -617,7 +617,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-speller-stimulator.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-speller-stimulator.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xac367a9c, 0x2da95abe)</Identifier>
@@ -1003,7 +1003,8 @@ flashing sequence of the whole grid. This will
 be repeated 10 times.
 
 &lt;small&gt;&lt;i&gt;&lt;b&gt;note:&lt;/b&gt; the recorded files go to the
-&lt;span color=&quot;darkblue&quot;&gt;${Path_Samples}/signals&lt;/span&gt; folder.&lt;/i&gt;&lt;/small&gt;</Text>
+folder where the scenario xml is located
+(&lt;span color=&quot;darkblue&quot;&gt;${__volatile_ScenarioDir}/&lt;/span&gt;).&lt;/i&gt;&lt;/small&gt;</Text>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>

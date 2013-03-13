@@ -338,7 +338,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/motor-imagery/motor-imagery-bci-config-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/motor-imagery-bci-config-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>

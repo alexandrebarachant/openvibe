@@ -144,7 +144,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/signals/current-[$core{date}-$core{time}].ov</Value>
+					<Value>${__volatile_ScenarioDir}/signals/current-[$core{date}-$core{time}].ov</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2cdb2f0b, 0x12f231ea)</TypeIdentifier>
@@ -841,7 +841,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-magic-card/p300-magic-card-stimulations-targets.lua</Value>
+					<Value>${__volatile_ScenarioDir}/p300-magic-card-stimulations-targets.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>

@@ -195,7 +195,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/motor-imagery-CSP/csp-spatial-filter.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/csp-spatial-filter.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -319,7 +319,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/motor-imagery-CSP/motor-imagery-bci-graz-stimulator.lua</Value>
+					<Value>${__volatile_ScenarioDir}/motor-imagery-bci-graz-stimulator.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
@@ -716,7 +716,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/motor-imagery-CSP/motor-imagery-bci-config-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/motor-imagery-bci-config-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -838,7 +838,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/signals/motor-imagery-csp-4-online-[$core{date}-$core{time}].ov</Value>
+					<Value>${__volatile_ScenarioDir}/signals/motor-imagery-csp-4-online-[$core{date}-$core{time}].ov</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2cdb2f0b, 0x12f231ea)</TypeIdentifier>
@@ -1529,7 +1529,8 @@ This scenario can be used online once the
 CSP spatial filter and the classifier is trained.
 
 &lt;small&gt;&lt;i&gt;&lt;b&gt;note:&lt;/b&gt; the recorded files go to the
-&lt;span color=&quot;darkblue&quot;&gt;${Path_Samples}/signals&lt;/span&gt; folder.&lt;/i&gt;&lt;/small&gt;</Text>
+folder where the scenario xml is located
+(&lt;span color=&quot;darkblue&quot;&gt;${__volatile_ScenarioDir}/&lt;/span&gt;).&lt;/i&gt;&lt;/small&gt;</Text>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>

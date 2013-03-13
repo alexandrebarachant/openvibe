@@ -276,7 +276,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -446,7 +446,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -747,7 +747,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -787,7 +787,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -842,7 +842,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -882,7 +882,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -933,7 +933,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -973,7 +973,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1054,7 +1054,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1201,7 +1201,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-speller-visualisation.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-speller-visualisation.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xac367a9c, 0x2da95abe)</Identifier>
@@ -1270,7 +1270,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1455,7 +1455,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -1495,7 +1495,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1572,7 +1572,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1611,7 +1611,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -1651,7 +1651,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1773,7 +1773,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -1813,7 +1813,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2171,7 +2171,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -2211,7 +2211,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2266,7 +2266,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -2306,7 +2306,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2672,7 +2672,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -2712,7 +2712,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2763,7 +2763,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -2803,7 +2803,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2880,7 +2880,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -3063,7 +3063,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -3264,7 +3264,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-spatial-filter.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-spatial-filter.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -3392,7 +3392,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -3457,7 +3457,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -3496,7 +3496,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -3536,7 +3536,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -3680,7 +3680,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -4117,7 +4117,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -4207,7 +4207,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -4247,7 +4247,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-classifier-processor.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-classifier-processor.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -4395,7 +4395,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/p300-speller-xDAWN/p300-epoch-average.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/p300-epoch-average.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>

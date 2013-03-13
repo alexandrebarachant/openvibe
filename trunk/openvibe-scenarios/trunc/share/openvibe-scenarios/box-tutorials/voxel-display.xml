@@ -181,7 +181,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/box-tutorials/voxel-display-settings-file.txt</Value>
+					<Value>${__volatile_ScenarioDir}/voxel-display-settings-file.txt</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>

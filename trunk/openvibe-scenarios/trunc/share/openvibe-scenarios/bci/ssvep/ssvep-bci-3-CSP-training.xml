@@ -96,7 +96,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/classifier-training-target-separator.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/classifier-training-target-separator.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
@@ -193,7 +193,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/classifier-training-flipswitch.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/classifier-training-flipswitch.lua</Value>
 				</Setting>
 			</Settings>
 			<Attributes>
@@ -278,7 +278,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Spatial filter configuration</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/csp-3</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/csp-3.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
@@ -456,7 +456,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/stimulation-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/stimulation-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -539,7 +539,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/stimulation-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/stimulation-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -632,7 +632,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/temporal-filter-freq-2.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/temporal-filter-freq-2.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -725,7 +725,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/temporal-filter-freq-3.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/temporal-filter-freq-3.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -877,7 +877,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/stimulation-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/stimulation-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -932,7 +932,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Spatial filter configuration</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/csp-2</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/csp-2.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
@@ -1001,7 +1001,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/classifier-training-target-separator.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/classifier-training-target-separator.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
@@ -1132,7 +1132,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/stimulation-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/stimulation-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1215,7 +1215,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/stimulation-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/stimulation-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1308,7 +1308,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/temporal-filter-freq-1.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/temporal-filter-freq-1.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1391,7 +1391,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/stimulation-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/stimulation-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1562,7 +1562,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/classifier-training-target-separator.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/classifier-training-target-separator.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
@@ -1665,7 +1665,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Spatial filter configuration</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/csp-1</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/csp-1.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
@@ -2988,8 +2988,9 @@ electrodes you may want to raise this value to get even better precision.
 For the detailed description and experimental protocol, please refer to
 the SSVEP Scenario documentation on the OpenViBE website.
 
-&lt;small&gt;&lt;i&gt;&lt;b&gt;note:&lt;/b&gt; the recorded files go to the
-&lt;span color=&quot;darkblue&quot;&gt;${Path_Samples}/bci/ssvep/classifiers&lt;/span&gt; folder.&lt;/i&gt;&lt;/small&gt;</Text>
+&lt;small&gt;&lt;i&gt;&lt;b&gt;note:&lt;/b&gt; the classifiers go to the
+folder where the scenario xml is located
+(&lt;span color=&quot;darkblue&quot;&gt;${__volatile_ScenarioDir}/classifiers/&lt;/span&gt;).&lt;/i&gt;&lt;/small&gt;</Text>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>

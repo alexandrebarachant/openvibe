@@ -76,7 +76,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/configuration-experiment-settings.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/configuration-experiment-settings.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x7f45a2a9, 0x7db12219)</TypeIdentifier>
@@ -181,7 +181,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/configuration-peripheral-settings.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/configuration-peripheral-settings.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>

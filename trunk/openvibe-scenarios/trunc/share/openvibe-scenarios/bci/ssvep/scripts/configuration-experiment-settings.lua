@@ -62,8 +62,10 @@ function process(box)
 
 	-- create configuration files for temporal filters
 
+	scenario_path = box:get_config("${__volatile_ScenarioDir}")
+		
 	for i=1,frequency_count do
-		cfg_file_name = string.format("%s/openvibe-scenarios/bci/ssvep/configuration/temporal-filter-freq-%d.cfg", os.getenv("OV_DATADIR"), i)
+		cfg_file_name = scenario_path .. string.format("/configuration/temporal-filter-freq-%d.cfg", i)
 		box:log("Info", "Writing file '" .. cfg_file_name .. "'")
 
 		cfg_file = io.open(cfg_file_name, "w")
@@ -81,7 +83,7 @@ function process(box)
 	end
 
 	-- create configuration file for time based epoching
-	cfg_file_name = os.getenv("OV_DATADIR") .. "/openvibe-scenarios/bci/ssvep/configuration/time-based-epoching.cfg";
+	cfg_file_name = scenario_path .. "/configuration/time-based-epoching.cfg";
 	
 	box:log("Info", "Writing file '" .. cfg_file_name .. "'")
 

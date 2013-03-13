@@ -31,7 +31,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/classifier-1</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/classifier-1.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -288,7 +288,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/temporal-filter-freq-1.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/temporal-filter-freq-1.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -339,7 +339,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/classifier-2</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/classifier-2.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -570,7 +570,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/start-stimulator.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/start-stimulator.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
@@ -758,7 +758,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/temporal-filter-freq-2.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/temporal-filter-freq-2.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -902,7 +902,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/time-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/time-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1026,7 +1026,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/time-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/time-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1077,7 +1077,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename to load configuration from</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/classifier-3</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/classifier-3.cfg</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -1324,7 +1324,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/temporal-filter-freq-3.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/temporal-filter-freq-3.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1462,7 +1462,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/csp-1</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/csp-1.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -1990,7 +1990,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/shooter-controller.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/shooter-controller.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
@@ -2115,7 +2115,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/csp-3</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/csp-3.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2192,7 +2192,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/configuration/time-based-epoching.cfg</Value>
+					<Value>${__volatile_ScenarioDir}/configuration/time-based-epoching.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2275,7 +2275,7 @@
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x8d21ff41, 0xdf6afe7e)</Identifier>
-					<Value>${Path_Samples}/bci/ssvep/classifiers/csp-2</Value>
+					<Value>${__volatile_ScenarioDir}/classifiers/csp-2.cfg</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0xad100179, 0xa3c984ab)</Identifier>
@@ -2324,7 +2324,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/shooter-combination-classifier.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/shooter-combination-classifier.lua</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
@@ -2472,7 +2472,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/bci/ssvep/scripts/shooter-button-simplifier.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/shooter-button-simplifier.lua</Value>
 				</Setting>
 			</Settings>
 			<Attributes>

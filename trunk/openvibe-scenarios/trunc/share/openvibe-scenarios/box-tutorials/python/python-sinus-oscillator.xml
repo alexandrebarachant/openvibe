@@ -218,7 +218,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/box-tutorials/python/scripts/python-sinus-oscillator.py</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/python-sinus-oscillator.py</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
@@ -646,7 +646,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/box-tutorials/python/scripts/python-clock-stimulator.py</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/python-clock-stimulator.py</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x2c132d6e, 0x44ab0d97)</TypeIdentifier>
@@ -737,7 +737,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${Path_Samples}/box-tutorials/python/scripts/python-signal-average.py</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/python-signal-average.py</Value>
 				</Setting>
 			</Settings>
 			<Attributes>
