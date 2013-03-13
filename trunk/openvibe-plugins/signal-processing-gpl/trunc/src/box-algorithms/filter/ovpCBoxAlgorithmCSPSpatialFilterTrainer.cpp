@@ -124,10 +124,9 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	boolean l_bShouldTrain=false;
-	uint32 i, j;
 	uint64 l_ui64TrainDate=0, l_ui64TrainChunkStartTime=0, l_ui64TrainChunkEndTime=0;
 
-	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
+	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
 		TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_pStimulationDecoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
 		ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(0, i);
@@ -140,13 +139,13 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 		if(m_pStimulationDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 		{
 			TParameterHandler < IStimulationSet* > op_pStimulationSet(m_pStimulationDecoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));
-			for(j=0; j<op_pStimulationSet->getStimulationCount(); j++)
+			for(uint32 j=0; j<op_pStimulationSet->getStimulationCount(); j++)
 			{
 				l_bShouldTrain |= (op_pStimulationSet->getStimulationIdentifier(j)==m_ui64StimulationIdentifier);
 			}
 			if(l_bShouldTrain)
 			{
-				l_ui64TrainDate = op_pStimulationSet->getStimulationDate(j);
+				l_ui64TrainDate = op_pStimulationSet->getStimulationDate(op_pStimulationSet->getStimulationCount()-1);
 				l_ui64TrainChunkStartTime = l_rDynamicBoxContext.getInputChunkStartTime(0, i);
 				l_ui64TrainChunkEndTime = l_rDynamicBoxContext.getInputChunkEndTime(0, i);
 			}
@@ -166,7 +165,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 
 		itpp::mat l_oCovarianceMatrixCondition1;
 		int l_iNumberOfCondition1Trials = 0;
-		for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
+		for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
 		{
 			TParameterHandler<const IMemoryBuffer*> ip_pMemoryBuffer(m_pSignalDecoderCondition1->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
 			ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(1, i);
@@ -196,7 +195,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 
 		itpp::mat l_oCovarianceMatrixCondition2;
 		int l_iNumberOfCondition2Trials = 0;
-		for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(2); i++)
+		for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(2); i++)
 		{
 			TParameterHandler<const IMemoryBuffer*> ip_pMemoryBuffer(m_pSignalDecoderCondition2->getInputParameter(OVP_GD_Algorithm_SignalStreamDecoder_InputParameterId_MemoryBufferToDecode));
 			ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(2, i);
@@ -237,7 +236,7 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 		if(itpp::eig(itpp::inv(l_oCovarianceMatrixCondition2)*l_oCovarianceMatrixCondition1, l_oEigenValue, l_oEigenVector))
 		{
 			std::map < double, itpp::vec > l_vEigenVector;
-			for(i=0; i<l_ui32ChannelCount; i++)
+			for(uint32 i=0; i<l_ui32ChannelCount; i++)
 			{
 				itpp::cvec l_oVector=l_oEigenVector.get_col(i);
 				l_vEigenVector[itpp::real(l_oEigenValue)[i]]=itpp::real(l_oVector);
@@ -255,10 +254,13 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 			::fprintf(l_pFile, "<OpenViBE-SettingsOverride>\n");
 			::fprintf(l_pFile, "\t<SettingValue>");
 			this->getLogManager() << LogLevel_Debug << "lowest eigenvalues: " << "\n";
-			for(it_forward=l_vEigenVector.begin(), i=0; it_forward!=l_vEigenVector.end() && i< ::ceil(m_ui64FilterDimension/2.0); it_forward++, i++)
+			uint32 l_u32Steps;
+			for(it_forward=l_vEigenVector.begin(), l_u32Steps = 0; 
+				it_forward!=l_vEigenVector.end() && l_u32Steps < ::ceil(m_ui64FilterDimension/2.0);
+				it_forward++, l_u32Steps++)
 			{
 				this->getLogManager() << LogLevel_Debug << it_forward->first << ", ";
-				for(j=0; j<l_ui32ChannelCount; j++)
+				for(uint32 j=0; j<l_ui32ChannelCount; j++)
 				{
 					::fprintf(l_pFile, "%e ", it_forward->second[j]);
 				}
@@ -267,10 +269,12 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 
 			std::map < double, itpp::vec >::const_reverse_iterator it_backward;
 			this->getLogManager() << LogLevel_Debug << "highest eigenvalues: " << "\n";
-			for(it_backward=l_vEigenVector.rbegin(), i=0; it_backward!=l_vEigenVector.rend() && i< ::floor(m_ui64FilterDimension/2.0); it_backward++, i++)
+			for(it_backward=l_vEigenVector.rbegin(), l_u32Steps = 0; 
+				it_backward!=l_vEigenVector.rend() && l_u32Steps < ::floor(m_ui64FilterDimension/2.0); 
+				it_backward++, l_u32Steps++)
 			{
 				this->getLogManager() << LogLevel_Debug << it_backward->first << ", ";
-				for(j=0; j<l_ui32ChannelCount; j++)
+				for(uint32 j=0; j<l_ui32ChannelCount; j++)
 				{
 					::fprintf(l_pFile, "%e ", it_backward->second[j]);
 				}
