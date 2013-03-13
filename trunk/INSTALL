@@ -28,16 +28,16 @@ is experimental and has not been tested. If you wish to try and get OpenViBE
 to run on other hardware/OS/compilers, your efforts are welcome
 but you should not expect to get support on the short term.
 
-|Building on Windows|
+|Building.on.Windows|
 
-0. Short story:
+1. Short story:
 
-For command line -style building with NMake, double-click:
+For command line -style building using NMake, double-click:
 
 # win32-install_dependencies
 # win32-build
 
-For IDE style building with Visual Studio, double-click:
+For IDE style building using Visual Studio, double-click:
 
 # win32-install_dependencies
 # win32-generate-vcproj
@@ -46,6 +46,8 @@ For IDE style building with Visual Studio, double-click:
 You may have to tweak the last script to find your particular version of Visual Studio.
 
 The built openvibe should now be in "dist\" folder. If it didn't work, read the longer description for hints.
+
+|Detailed.building.instructions.for.Windows|
 
 1. Install dependencies
 
@@ -59,86 +61,79 @@ The Windows installer uses prebuilt packages and is quite fast.
 
 2. Prepare the environment
 
-The build process uses many environment variables. The 'scripts' directory
-contains the necessary files to build the whole platform and plugins.
-The <win32-init_env_command-skeleton> file is copied to make an initial version
-of the actually used script <win32-init_env_command>. However, you may 
-have to tune the scripts by hand due to installation specifics such as Visual 
-Studio paths and so on... Script tweaking may be required here ;)
+The 'scripts' directory contains the necessary files to build the whole platform and plugins.
+The <win32-init_env_command> sets the build environment.  You may have to tune this 
+and other scripts by hand due to installation specifics such as Visual Studio paths.
 
 3a. Build using NMake
 
-If you want to build all projects at once, you can use the <win32-build> script. 
-The script calls <win32-init_env_command>, which must have been properly 
-configured. 
+If you want to build all projects without an IDE, you can use the <win32-build> script. 
+The script calls <win32-init_env_command>, which must be able to set the development
+environment correctly.
 
 3b. Build using Visual Studio
 
 Use <win32-generate-vc-proj> in scripts\ directory to generate a Visual Studio
 solution to "local-tmp\visual\". The script calls <win32-init_env_command>, 
-which must have been properly configured. 
+which must be able to set up the development environment correctly. 
 
 Script <win32-launch-vc> can then be used to launch Visual Studio 2010 Express 
-while taking care that all the environment variables have been set.
+while taking care that all the environment variables have been set. To use other
+version of Visual Studio, change the path on the last line of the script to 
+point to your version.
 
 Note the following when using Visual Studio with OpenViBE:
 
 - When launching Visual Studio, the OpenViBE environment variables must have
-already been  set (as by <win32-launch-vc>)
+already been set (as done by <win32-launch-vc>)
 - Always compile the INSTALL target to get everything copied under "dist\". This 
 is required so that the compiled OpenViBE applications can find the DLL files.
-- When debugging an OpenViBE executable in Visual Studio, you must set the
+- When debugging an OpenViBE executable in Visual Studio, you may have to set the
 correct Properties->Debugging->Working Directory by finding "dist\bin\" with browse.
 - All Visual Studio projects are created by CMake, so any changes to the project 
-configurations should be made to CMake scripts.
-- If you want to add files to the build tree, delete "local-tmp\visual\CMakeCache.txt"
+configurations should be made to the CMake scripts.
+- If you want to add any files to the build tree, delete "local-tmp\visual\CMakeCache.txt"
 and run the <win32-generate-vc-proj> again.
 
 4. If you made it this far, congratulations : you should now have OpenViBE working,
 and the freshly built OpenViBE in "dist\".
 
 
-|Building on Linux|
+|Building.on.Linux|
 
-0. Short story
+1. Short story
 
 # ./linux-install_dependencies
 # ./linux-build
 
-The built OpenViBE should be in "dist/". If not, read the longer description for hints.
+The built OpenViBE should be in "dist/". If not, please read the longer description for hints.
+
+|Detailed.building.instructions.on.Linux|
 
 1. Install dependencies
 
-In order to build the software, one must install several dependencies.
-This may be done using the provided installation scripts which will automatically 
-set up your environment. Run the following *inside* the scripts/ directory:
+In order to build the software, you must install several dependencies. This may be 
+done using a provided script. Run the following *inside* the scripts/ directory:
 
 <linux-install_dependencies> installs dependencies under Linux.
 
-The Linux installer processes a few source packages and builds them from scratch.
-One should be able to install each dependency in a local directory without requiring
-root access and without using any package manager such as apt-get or yum. 
-However, it is safer to use native packages.
+The Linux installer processes a few source packages and builds them from scratch. Most
+of the packages are installed from your Linux distribution. Hence this script requires 
+root access. If you don't have one, please ask your IT support to install the OpenViBE 
+dependencies for you as listed in the script.
 
-2. Prepare the environment
+2. Build the platform
 
-The build process uses many environment variables. The 'script' directory
-contains the necessary files to build the whole platform and plugins.
-The <linux-init_env_command-skeleton> file is copied to make initial version 
-of the actually used script <linux-init_env_command>. However, you may have 
-to tune the scripts by hand due to installation specifics... 
-Script tweaking may be required here ;)
+To build OpenViBE, you can use the <linux-build> script while in the scripts/ directory. 
 
-3. Build the platform
+Finally, the <linux-test> script will launch the most interesting applications for you.
 
-If you want to build all projects at once, you can use the <linux-build> 
-scripts. The script calls the appropriate <init_env_command>, which must 
-have been properly configured. 
+If you want to build only some specific subtree, first build the whole OpenViBE 
+and then change to the appropriate subtree under local-tmp/. There you can call 
+"make" and "make install" to build only that component.
 
-On Linux, the <linux-test> script will launch the most interesting applications for you.
-
-4. If you made it this far, congratulations : you should now have OpenViBE working,
-and the freshly built OpenViBE in "dist/".
+3. If you made it this far, congratulations : you should now have OpenViBE freshly 
+built to "dist/".
 
 
 |Contribution.rules|
