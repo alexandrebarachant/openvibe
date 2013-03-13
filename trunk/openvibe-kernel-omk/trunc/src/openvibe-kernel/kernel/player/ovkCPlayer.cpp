@@ -120,7 +120,15 @@ boolean CPlayer::initialize(void)
 		m_pLocalConfigurationManager->addConfigurationFromFile( l_sConfigPath ); 
 	}
 
-	m_oScheduler.initialize();
+	if(!m_oScheduler.initialize()) 
+	{
+		this->getLogManager() << LogLevel_Error << "Scheduler initialization failed\n";
+
+		delete m_pLocalConfigurationManager;
+		m_pLocalConfigurationManager = NULL;
+
+		return false;
+	}
 	m_oBenchmarkChrono.reset(static_cast<uint32>(m_oScheduler.getFrequency()));
 
 	m_ui64CurrentTimeToReach=0;

@@ -97,7 +97,7 @@ namespace OpenViBEDesigner
 
 		OpenViBE::Kernel::IPlayer* getPlayer(void);
 
-		void createPlayer(void);
+		OpenViBE::boolean createPlayer(void);
 
 		void releasePlayer(void);
 

@@ -72,6 +72,8 @@ public:
 
 	virtual boolean processBegin(IObjectVisitorContext& rObjectVisitorContext, IBox& rBox)
 	{
+		boolean l_bReturnValue = true;
+
 		m_pObjectVisitorContext=&rObjectVisitorContext;
 
 		// checks if this box should override
@@ -137,7 +139,8 @@ public:
 			else
 			{
 				// override file was not found
-				rObjectVisitorContext.getLogManager() << LogLevel_Warning << "Could not override [" << rBox.getName() << "] settings because configuration file [" << l_sSettingOverrideFilenameFinal << "] could not be opened\n";
+				rObjectVisitorContext.getLogManager() << LogLevel_Error << "Could not override [" << rBox.getName() << "] settings because configuration file [" << l_sSettingOverrideFilenameFinal << "] could not be opened\n";
+				l_bReturnValue = false;
 			}
 
 			// cleans up internal state
@@ -151,7 +154,7 @@ public:
 			l_pReader=NULL;
 		}
 
-		return true;
+		return l_bReturnValue;
 	}
 
 	virtual boolean processEnd(IObjectVisitorContext& rObjectVisitorContext, IBox& rBox)
@@ -250,7 +253,11 @@ boolean CScheduler::initialize(void)
 	}
 
 	CBoxSettingModifierVisitor l_oBoxSettingModifierVisitor(&getKernelContext().getConfigurationManager());
-	m_pScenario->acceptVisitor(l_oBoxSettingModifierVisitor);
+	if(!m_pScenario->acceptVisitor(l_oBoxSettingModifierVisitor)) 
+	{
+		this->getLogManager() << LogLevel_Error << "Scenario " << m_oScenarioIdentifier << " setting modification with acceptVisitor() failed\n";
+		return false;
+	}
 
 	CIdentifier l_oBoxIdentifier;
 	while((l_oBoxIdentifier=m_pScenario->getNextBoxIdentifier(l_oBoxIdentifier))!=OV_UndefinedIdentifier)

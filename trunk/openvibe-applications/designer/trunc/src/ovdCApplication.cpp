@@ -1546,7 +1546,7 @@ IPlayer* CApplication::getPlayer(void)
 	return (l_pCurrentInterfacedScenario?l_pCurrentInterfacedScenario->m_pPlayer:NULL);
 }
 
-void CApplication::createPlayer(void)
+OpenViBE::boolean CApplication::createPlayer(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "createPlayer\n";
 
@@ -1564,7 +1564,14 @@ void CApplication::createPlayer(void)
 		CIdentifier l_oPlayerIdentifier=l_pCurrentInterfacedScenario->m_oPlayerIdentifier;
 		l_pCurrentInterfacedScenario->m_pPlayer=&m_rKernelContext.getPlayerManager().getPlayer(l_oPlayerIdentifier);
 		l_pCurrentInterfacedScenario->m_pPlayer->setScenario(l_oScenarioIdentifier);
-		l_pCurrentInterfacedScenario->m_pPlayer->initialize();
+		if(!l_pCurrentInterfacedScenario->m_pPlayer->initialize()) 
+		{
+			m_rKernelContext.getLogManager() << LogLevel_Error << "Failed to initialize player\n";
+			l_pCurrentInterfacedScenario->m_oPlayerIdentifier = OV_UndefinedIdentifier;
+			l_pCurrentInterfacedScenario->m_pPlayer=NULL;
+			m_rKernelContext.getPlayerManager().releasePlayer(l_oPlayerIdentifier);
+			return false;
+		}
 		l_pCurrentInterfacedScenario->m_ui64LastLoopTime=System::Time::zgetTime();
 
 		//set up idle function
@@ -1573,6 +1580,7 @@ void CApplication::createPlayer(void)
 		// redraws scenario
 		l_pCurrentInterfacedScenario->redraw();
 	}
+	return true;
 }
 
 void CApplication::releasePlayer(void)
@@ -1658,7 +1666,11 @@ void CApplication::playScenarioCB(void)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Trace << "playScenarioCB\n";
 
-	this->createPlayer();
+	if(!this->createPlayer()) 
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Error << "CreatePlayer failed\n";
+		return;
+	}
 	this->getPlayer()->play();
 	this->getCurrentInterfacedScenario()->m_ePlayerStatus=this->getPlayer()->getStatus();
 
