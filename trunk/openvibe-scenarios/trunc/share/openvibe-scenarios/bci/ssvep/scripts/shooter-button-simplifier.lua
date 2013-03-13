@@ -11,7 +11,7 @@ end
 -- Useful to remove "key up" events of keyboard stimulator
 function process(box)
 	
-	while (true) do
+	while box:keep_processing() do
 
 		for index = 1, box:get_stimulation_count(1) do
 

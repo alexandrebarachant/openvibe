@@ -34,7 +34,7 @@ function process(box)
 	-- while targets are available, send a stimulation with new target
 	-- position for each request
 
-	while true do
+	while box:keep_processing() do
 		if box:get_stimulation_count(1) > 0 then
 
 			identifier, date, duration = box:get_stimulation(1, 1)

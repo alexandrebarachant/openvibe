@@ -39,6 +39,7 @@ namespace OpenViBEPlugins
 		public:
 
 			CBoxAlgorithmLuaStimulator(void);
+			~CBoxAlgorithmLuaStimulator(void);
 
 			virtual void release(void) { delete this; }
 
@@ -75,6 +76,7 @@ namespace OpenViBEPlugins
 			{
 				State_Unstarted,
 				State_Processing,
+				State_Please_Quit,
 				State_Finished,
 			};
 
@@ -92,7 +94,9 @@ namespace OpenViBEPlugins
 			boost::mutex m_oMutex;
 			boost::mutex::scoped_lock m_oInnerLock;
 			boost::mutex::scoped_lock m_oOuterLock;
+			boost::mutex::scoped_lock m_oExitLock;
 			boost::condition m_oCondition;
+			boost::condition m_oExitCondition;
 
 		protected:
 

@@ -90,7 +90,14 @@ static bool lua_check_argument_count(lua_State* pState, const char* sName, int i
 static bool lua_check_box_status(lua_State* pState, const char* sName, uint32 ui32CurrentState)
 {
 	char l_sMessage[1024];
-	if(ui32CurrentState != CBoxAlgorithmLuaStimulator::State_Processing)
+	if(ui32CurrentState == CBoxAlgorithmLuaStimulator::State_Please_Quit)
+	{
+		::sprintf(l_sMessage, "[%s] This thread has been requested to quit...", sName);
+		lua_pushstring(pState, l_sMessage);
+		lua_error(pState);
+		return false;
+	}
+	else if(ui32CurrentState != CBoxAlgorithmLuaStimulator::State_Processing)
 	{
 		::sprintf(l_sMessage, "[%s] should only be called in the [process] callback", sName);
 		lua_pushstring(pState, l_sMessage);
@@ -289,15 +296,36 @@ static int lua_log_cb(lua_State* pState)
 	return 0;
 }
 
+static int lua_keep_processing_cb(lua_State* pState) 
+{
+	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
+	__CB_Assert__(l_pThis != NULL);
+	if(l_pThis->m_ui32State == CBoxAlgorithmLuaStimulator::State_Processing)
+	{
+		return 1;
+	}
+	return 0;
+}
+
 CBoxAlgorithmLuaStimulator::CBoxAlgorithmLuaStimulator(void)
+	: m_ui32State(State_Unstarted)
+	,m_pLuaState(NULL)
+	,m_pLuaThread(NULL)
 #if BOOST_VERSION >= 103500
-	:m_oInnerLock(m_oMutex, boost::defer_lock)
+	,m_oInnerLock(m_oMutex, boost::defer_lock)
 	,m_oOuterLock(m_oMutex, boost::defer_lock)
+	,m_oExitLock(m_oMutex, boost::defer_lock)
 #else
-	:m_oInnerLock(m_oMutex, false)
+	,m_oInnerLock(m_oMutex, false)
 	,m_oOuterLock(m_oMutex, false)
+	,m_oExitLock(m_oMutex, false)
 #endif
 {
+}
+
+CBoxAlgorithmLuaStimulator::~CBoxAlgorithmLuaStimulator(void) 
+{
+
 }
 
 uint64 CBoxAlgorithmLuaStimulator::getClockFrequency(void)
@@ -339,6 +367,7 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 	lua_setcallback(m_pLuaState, "remove_stimulation", ::lua_remove_stimulation_cb, this);
 	lua_setcallback(m_pLuaState, "send_stimulation", ::lua_send_stimulation_cb, this);
 	lua_setcallback(m_pLuaState, "log", ::lua_log_cb, this);
+	lua_setcallback(m_pLuaState, "keep_processing", ::lua_keep_processing_cb, this);
 
 	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function initialize(box) end"));
 	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function uninitialize(box) end"));
@@ -372,42 +401,96 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 
 boolean CBoxAlgorithmLuaStimulator::uninitialize(void)
 {
-	uint32 i;
+
+	if(m_pLuaThread) {
+
+		m_oOuterLock.lock();
+
+		// If Lua thread is still running, ask it to stop.
+		if(m_ui32State==State_Processing || m_ui32State==State_Please_Quit) 
+		{
+			this->getLogManager() << LogLevel_Debug << "Requesting thread to quit, waiting max 5 secs ...\n";
+
+			m_ui32State=State_Please_Quit;
+			m_oCondition.notify_one();
+
+			m_oOuterLock.unlock();
+			m_oExitLock.lock();
+
+			OpenViBE::boolean l_bGotLock = false;
+			for(int i=0;i<5;i++ ) {
+				// Wait for the thread to stop (in that case it notifies the lock)
+				boost::system_time l_oTimeout=boost::get_system_time() + boost::posix_time::milliseconds(1000);
+				if(m_oExitCondition.timed_wait(m_oExitLock, l_oTimeout))  {
+					l_bGotLock = true;
+					break;
+				}
+				this->getLogManager() << LogLevel_Info << "Waiting for thread to exit, " << i+1 << "/5 ...\n";
+			}
+			if(l_bGotLock) {
+				this->getLogManager() << LogLevel_Debug << "Ok, thread notified the exit lock\n";
+			} 
+			else 
+			{
+				this->getLogManager() << LogLevel_Debug << "Bad, thread did not notify the exit lock in 5s\n";
+			}
+
+			m_oExitLock.unlock();
+			m_oOuterLock.lock();
+		} 
+
+		if(m_ui32State == State_Finished) {
+			this->getLogManager() << LogLevel_Debug << "Ok, thread reached State_Finished as expected ...\n";
+			m_pLuaThread->join();
+			delete m_pLuaThread;
+			m_pLuaThread=NULL;
+		} 
+		else 
+		{
+			this->getLogManager() << LogLevel_Warning << "Bad, thread still in state " << m_ui32State << ", cannot delete. Memory leak.\n";
+		}
+
+		m_oOuterLock.unlock();
+	}
+	
+	if(m_pLuaState) 
+	{
+		lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "uninitialize(__openvibe_box_context)"));
+		lua_close(m_pLuaState);
+		m_pLuaState = NULL;
+	}
+
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
-	for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
 	{
 		m_vStreamDecoder[i]->uninitialize();
 		this->getAlgorithmManager().releaseAlgorithm(*m_vStreamDecoder[i]);
 	}
 	m_vStreamDecoder.clear();
 
-	for(i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
+	for(uint32 i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
 	{
 		m_vStreamEncoder[i]->uninitialize();
 		this->getAlgorithmManager().releaseAlgorithm(*m_vStreamEncoder[i]);
 	}
 	m_vStreamEncoder.clear();
 
-	delete m_pLuaThread;
 
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "uninitialize(__openvibe_box_context)"));
-	lua_close(m_pLuaState);
 
 	return true;
 }
 
 boolean CBoxAlgorithmLuaStimulator::process(void)
 {
-	uint32 i, j, k;
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
 
 	uint64 l_ui64CurrentTime=this->getPlayerContext().getCurrentTime();
 
-	for(i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
 	{
-		for(j=0; j<l_rDynamicBoxContext.getInputChunkCount(i); j++)
+		for(uint32 j=0; j<l_rDynamicBoxContext.getInputChunkCount(i); j++)
 		{
 			TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_vStreamDecoder[i]->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
 			TParameterHandler < const IStimulationSet* > op_pStimulationSet(m_vStreamDecoder[i]->getOutputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_OutputParameterId_StimulationSet));;
@@ -418,7 +501,7 @@ boolean CBoxAlgorithmLuaStimulator::process(void)
 			}
 			if(m_vStreamDecoder[i]->isOutputTriggerActive(OVP_GD_Algorithm_StimulationStreamDecoder_OutputTriggerId_ReceivedBuffer))
 			{
-				for(k=0; k<op_pStimulationSet->getStimulationCount(); k++)
+				for(uint32 k=0; k<op_pStimulationSet->getStimulationCount(); k++)
 				{
 					m_vInputStimulation[i].insert(std::make_pair(op_pStimulationSet->getStimulationDate(k), std::make_pair(op_pStimulationSet->getStimulationIdentifier(k), op_pStimulationSet->getStimulationDuration(k))));
 				}
@@ -446,6 +529,10 @@ boolean CBoxAlgorithmLuaStimulator::process(void)
 			m_oCondition.wait(m_oOuterLock);
 			break;
 
+		case State_Please_Quit:
+			// Shouldn't happen as only uninitialize() sets this
+			break;
+
 		case State_Finished:
 			break;
 
@@ -462,6 +549,10 @@ boolean CBoxAlgorithmLuaStimulator::process(void)
 				break; // This should never happen
 
 			case State_Processing:
+				break;
+
+			case State_Please_Quit:
+				// Shouldn't happen as only uninitialize() sets this
 				break;
 
 			case State_Finished:
@@ -481,7 +572,7 @@ boolean CBoxAlgorithmLuaStimulator::process(void)
 
 	m_oOuterLock.unlock();
 
-	for(i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
+	for(uint32 i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
 	{
 		CStimulationSet l_oStimulationSet;
 		TParameterHandler < const IStimulationSet* > ip_pStimulationSet(m_vStreamEncoder[i]->getInputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_InputParameterId_StimulationSet));
@@ -536,6 +627,9 @@ boolean CBoxAlgorithmLuaStimulator::_waitForStimulation(uint32 ui32InputIndex, u
 				return false; // this should never happen
 
 			case State_Finished:
+				return false;
+
+			case State_Please_Quit:
 				return false;
 
 			case State_Processing:
@@ -694,6 +788,7 @@ void CBoxAlgorithmLuaStimulator::doThread(void)
 	m_oInnerLock.unlock();
 
 	m_oCondition.notify_one();
+	m_oExitCondition.notify_one();
 }
 
 #endif // TARGET_HAS_ThirdPartyLua
