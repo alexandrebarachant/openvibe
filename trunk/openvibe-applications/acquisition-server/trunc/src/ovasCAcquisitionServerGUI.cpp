@@ -721,8 +721,8 @@ void CAcquisitionServerGUI::buttonPreferencePressedCB(::GtkButton* pButton)
 		{
 			// create the check button and assign it the current value of the setting
 
-			l_pSettingControl = gtk_spin_button_new_with_range(std::numeric_limits<int64>::min(), std::numeric_limits<int64>::max(), 1);
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSettingControl), l_pCurrentSetting->getValue<int64>());
+			l_pSettingControl = gtk_spin_button_new_with_range((gdouble)std::numeric_limits<int64>::min(), (gdouble)std::numeric_limits<int64>::max(), 1.0);
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(l_pSettingControl), (gdouble)l_pCurrentSetting->getValue<int64>());
 
 		}
 		else if (l_pCurrentSetting->type == OVTK_TypeId_String)
