@@ -17,7 +17,7 @@ end
 
 function process(box)
 
-	while switched_flip_count < flip_count do
+	while box::keep_processing() and switched_flip_count < flip_count do
 
 		for i = 1, flip_count do
 			if box:get_stimulation_count(i) > 0 then

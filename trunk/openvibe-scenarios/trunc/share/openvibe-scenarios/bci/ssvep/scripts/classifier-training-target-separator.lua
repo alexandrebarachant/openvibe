@@ -29,7 +29,7 @@ function process(box)
 
 	finished = false
 
-	while not finished do
+	while box:keep_processing() and not finished do
 
 		time = box:get_current_time()
 
@@ -38,12 +38,9 @@ function process(box)
 			s_code, s_date, s_duration = box:get_stimulation(1, 1)
 			box:remove_stimulation(1, 1)
 			
-
-
 			if s_code >= OVTK_StimulationId_Label_00 and s_code <= OVTK_StimulationId_Label_1F then
 
 				received_stimulation = s_code - OVTK_StimulationId_Label_00
-
 
 				if targets[received_stimulation] ~= nil then
 					box:send_stimulation(1, sent_stimulation, time)

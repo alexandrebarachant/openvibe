@@ -38,7 +38,7 @@ end
 
 function process(box)
 
-	while box:get_stimulation_count(1) == 0 do
+	while box:keep_processing() and box:get_stimulation_count(1) == 0 do
 		box:sleep()
 	end
 

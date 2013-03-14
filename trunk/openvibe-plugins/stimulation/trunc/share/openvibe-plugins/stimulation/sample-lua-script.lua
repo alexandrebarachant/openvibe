@@ -23,10 +23,10 @@ end
 function process(box)
 	io.write("process has been called\n")
 
-	-- enters infinite loop
+	-- loop until box:keep_processing() returns zero
 	-- cpu will be released with a call to sleep
 	-- at the end of the loop
-	while true do
+	while box:keep_processing() do
 
 		-- gets current simulated time
 		t = box:get_current_time()

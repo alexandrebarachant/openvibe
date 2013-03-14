@@ -29,7 +29,7 @@ end
 
 function process(box)
 	-- loops on every received stimulation for a given input
-	while true do
+	while box:keep_processing() do
 		for stimulation = 1, box:get_stimulation_count(1) do
 
 				-- gets the received stimulation
