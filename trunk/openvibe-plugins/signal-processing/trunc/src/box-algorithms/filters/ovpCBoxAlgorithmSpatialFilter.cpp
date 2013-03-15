@@ -13,29 +13,81 @@ using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SignalProcessing;
 
-namespace
+OpenViBE::uint32 CBoxAlgorithmSpatialFilter::loadCoefficients(const OpenViBE::CString &rCoefficients, const char c1, const char c2) 
 {
-	std::vector < std::string > split(const std::string& sString, const char c1, const char c2)
+	this->getLogManager() << LogLevel_Trace << "Parsing coefficients matrix\n";
+
+	m_vCoefficient.clear();
+
+	// Count the number of entries
+	// @Note To avoid doing a ton of subsequent memory allocations (very slow on Windows debug builds), we first count the number of entries in the vector. If the file format had specified the vector dimension, we wouldn't have to do this step.
+	this->getLogManager() << LogLevel_Trace << "Counting the number of coefficients\n";
+	uint32 l_u32count = 0;
+	const char *l_sPtr = rCoefficients.toASCIIString();
+	while(*l_sPtr!=0) 
 	{
-		std::vector < std::string > l_vResult;
-		std::string::size_type i=0;
-		std::string::size_type j=0;
-		while(i<sString.length())
-		{
-			j=i;
-			while(j<sString.length() && sString[j]!=c1 && sString[j]!=c2)
-			{
-				j++;
-			}
-			if(i!=j)
-			{
-				l_vResult.push_back(std::string(sString, i, j-i));
-			}
-			i=j+1;
+		// Skip separator characters
+		while(*l_sPtr==c1 || *l_sPtr==c2) 
+		{ 
+			l_sPtr++; 
 		}
-		return l_vResult;
+		if(*l_sPtr==0) 
+		{
+			break;
+		}
+		// Ok, we have reached something that is not NULL or separator, assume its a number
+		l_u32count++;
+		// Skip the normal characters
+		while(*l_sPtr!=c1 && *l_sPtr!=c2 && *l_sPtr!=0) 
+		{ 
+			l_sPtr++; 
+		}
 	}
-};
+
+	// Resize in one step for efficiency.
+	m_vCoefficient.resize(l_u32count);
+
+	// Ok, convert to floats
+	this->getLogManager() << LogLevel_Trace << "Converting the coefficients to a float vector\n";
+	l_sPtr = rCoefficients.toASCIIString();
+	uint32 l_u32currentIdx = 0;
+	while(*l_sPtr!=0) 
+	{
+		const int BUFFSIZE=1024;
+		char l_sBuffer[BUFFSIZE];
+		// Skip separator characters
+		while(*l_sPtr==c1 || *l_sPtr==c2) 
+		{ 
+			l_sPtr++; 
+		}
+		if(*l_sPtr==0) 
+		{
+			break;
+		}
+		// Copy the normal characters, don't exceed buffer size
+		int i=0;
+		while(*l_sPtr!=c1 && *l_sPtr!=c2 && *l_sPtr!=0) 
+		{ 
+			if(i<BUFFSIZE-1) {
+				l_sBuffer[i++] = *l_sPtr; 
+			}
+			l_sPtr++;
+		}
+		l_sBuffer[i]=0;
+		// Finally, convert
+		if(!sscanf(l_sBuffer, "%lf", &m_vCoefficient[l_u32currentIdx])) 
+		{
+			this->getLogManager() << LogLevel_Error << "Error parsing coefficient nr. " << l_u32currentIdx << ", stopping.\n";
+			break;
+		}
+		l_u32currentIdx++;
+	}
+	if(l_u32currentIdx != l_u32count) {
+		this->getLogManager() << LogLevel_Warning << "Number of coefficients expected did not match the number read\n";
+	}
+
+	return l_u32currentIdx;
+}
 
 boolean CBoxAlgorithmSpatialFilter::initialize(void)
 {
@@ -145,17 +197,8 @@ boolean CBoxAlgorithmSpatialFilter::process(void)
 		if(m_pStreamDecoder->isOutputTriggerActive(OVP_GD_Algorithm_StreamedMatrixStreamDecoder_OutputTriggerId_ReceivedHeader))
 		{
 			CString l_sCoefficient=FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 0);
-			std::vector < std::string > l_vCoefficientString=::split(l_sCoefficient.toASCIIString(), ' ', OV_Value_EnumeratedStringSeparator);
-
-			m_vCoefficient.clear();
-			for(j=0; j<l_vCoefficientString.size(); j++)
-			{
-				float64 l_f64Coefficient=0;
-				if(::sscanf(l_vCoefficientString[j].c_str(), "%lf", &l_f64Coefficient))
-				{
-				}
-				m_vCoefficient.push_back(l_f64Coefficient);
-			}
+			
+			loadCoefficients(l_sCoefficient, ' ', OV_Value_EnumeratedStringSeparator);
 
 			uint32 l_ui32OutputChannelCountSetting=(uint32)(uint64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 1);
 			uint32 l_ui32InputChannelCountSetting=(uint32)(uint64)FSettingValueAutoCast(*this->getBoxAlgorithmContext(), 2);

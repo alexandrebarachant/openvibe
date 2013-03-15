@@ -46,6 +46,10 @@ namespace OpenViBEPlugins
 			OpenViBE::uint32 m_ui32OutputChannelCount;
 			OpenViBE::uint32 m_ui32InputChannelCount;
 */
+		private:
+			// Loads the m_vCoefficient vector (representing a matrix) from the given string. c1 and c2 are separator characters between floats.
+			OpenViBE::uint32 loadCoefficients(const OpenViBE::CString &rCoefficients, const char c1, const char c2);
+
 		};
 
 		class CBoxAlgorithmSpatialFilterListener : public OpenViBEToolkit::TBoxListener < OpenViBE::Plugins::IBoxListener >
