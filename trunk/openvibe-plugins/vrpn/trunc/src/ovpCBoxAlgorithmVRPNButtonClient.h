@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_VRPNButtonClient_H__
 #define __OpenViBEPlugins_BoxAlgorithm_VRPNButtonClient_H__
 
+#if defined TARGET_HAS_ThirdPartyVRPN
+
 #include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
@@ -145,5 +147,6 @@ namespace OpenViBEPlugins
 		};
 	};
 };
+#endif // TARGET_HAS_ThirdPartyVRPN
 
 #endif // __OpenViBEPlugins_BoxAlgorithm_VRPNButtonClient_H__

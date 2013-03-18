@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyVRPN
+
 #include "ovpCBoxAlgorithmVRPNAnalogClient.h"
 
 using namespace OpenViBE;
@@ -146,3 +148,5 @@ void CBoxAlgorithmVRPNAnalogClient::setAnalog(uint32 ui32AnalogCount, const floa
 	}
 	m_vAnalog.push_back(m_vSwapAnalog);
 }
+
+#endif // TARGET_HAS_ThirdPartyVRPN

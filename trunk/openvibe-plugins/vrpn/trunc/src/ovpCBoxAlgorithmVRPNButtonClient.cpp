@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyVRPN
+
 #include "ovpCBoxAlgorithmVRPNButtonClient.h"
 
 using namespace OpenViBE;
@@ -153,3 +155,4 @@ void CBoxAlgorithmVRPNButtonClient::setButton(uint32 ui32ButtonIndex, boolean bP
 		m_bGotStimulation=true;
 	}
 }
+#endif // TARGET_HAS_ThirdPartyVRPN
