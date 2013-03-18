@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCWindowingFunctions.h"
 
 #include <iostream>
@@ -208,3 +210,5 @@ boolean CWindowingFunctions::process()
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

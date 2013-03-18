@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCFastICA.h"
 
 #include <iostream>
@@ -190,3 +192,5 @@ boolean CFastICA::process()
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

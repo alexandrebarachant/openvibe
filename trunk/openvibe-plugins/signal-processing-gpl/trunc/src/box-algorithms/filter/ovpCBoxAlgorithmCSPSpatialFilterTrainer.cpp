@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCBoxAlgorithmCSPSpatialFilterTrainer.h"
 
 #include <system/Memory.h>
@@ -301,3 +303,5 @@ boolean CBoxAlgorithmCSPSpatialFilterTrainer::process(void)
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

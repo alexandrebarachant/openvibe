@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCSpectralAnalysisCospectra.h"
 
 #include <iostream>
@@ -196,3 +198,5 @@ boolean CSpectralAnalysisCospectra::process()
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

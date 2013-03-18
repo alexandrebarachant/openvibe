@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_SignalProcessing_CFastICA_H__
 #define __OpenViBEPlugins_SignalProcessing_CFastICA_H__
 
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovp_defines.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
@@ -17,6 +19,7 @@
 #include <map>
 #include <string>
 
+// TODO create a member function to get rid of this
 #ifndef  CString2Boolean
 	#define CString2Boolean(string) (strcmp(string,"true"))?0:1
 #endif
@@ -142,5 +145,6 @@ namespace OpenViBEPlugins
 		};
 	}
 }
+#endif // TARGET_HAS_ThirdPartyITPP
 
 #endif // __SamplePlugin_CFastICA_H__

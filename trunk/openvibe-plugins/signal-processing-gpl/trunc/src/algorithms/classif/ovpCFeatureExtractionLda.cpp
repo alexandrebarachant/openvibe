@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCFeatureExtractionLda.h"
 
 using namespace OpenViBE;
@@ -107,3 +109,5 @@ boolean CFeatureExtractionLda::process(void)
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

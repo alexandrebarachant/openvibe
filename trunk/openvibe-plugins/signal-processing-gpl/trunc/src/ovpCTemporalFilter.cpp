@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCTemporalFilter.h"
 
 #include <iostream>
@@ -1007,3 +1009,5 @@ boolean CTemporalFilter::process()
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

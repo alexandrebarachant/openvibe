@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCApplyFisherLdaFunction.h"
 
 #include <cmath>
@@ -161,3 +163,5 @@ boolean CApplyFisherLdaFunction::process(void)
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

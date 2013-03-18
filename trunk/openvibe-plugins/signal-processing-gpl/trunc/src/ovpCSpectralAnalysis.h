@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_SignalProcessing_CSpectralAnalysis_H__
 #define __OpenViBEPlugins_SignalProcessing_CSpectralAnalysis_H__
 
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovp_defines.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
@@ -132,5 +134,6 @@ namespace OpenViBEPlugins
 		};
 	}
 }
+#endif // TARGET_HAS_ThirdPartyITPP
 
 #endif // __SamplePlugin_CSpectralAnalysis_H__

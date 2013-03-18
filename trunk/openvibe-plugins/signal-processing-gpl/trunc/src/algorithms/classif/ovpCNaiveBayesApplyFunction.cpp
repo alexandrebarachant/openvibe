@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCNaiveBayesApplyFunction.h"
 
 #include <cmath>
@@ -124,3 +126,5 @@ boolean CNaiveBayesApplyFunction::process(void)
 	}
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP

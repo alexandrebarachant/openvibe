@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_SignalProcessingGpl_Algorithms_Filter_CComputeFisherLdaFunction_H__
 #define __OpenViBEPlugins_SignalProcessingGpl_Algorithms_Filter_CComputeFisherLdaFunction_H__
 
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "../../ovp_defines.h"
 
 #include <openvibe/ov_all.h>
@@ -71,5 +73,7 @@ namespace OpenViBEPlugins
 		};
 	};
 };
+
+#endif // TARGET_HAS_ThirdPartyITPP
 
 #endif // __OpenViBEPlugins_SignalProcessingGpl_Algorithms_Filter_CComputeFisherLdaFunction_H__

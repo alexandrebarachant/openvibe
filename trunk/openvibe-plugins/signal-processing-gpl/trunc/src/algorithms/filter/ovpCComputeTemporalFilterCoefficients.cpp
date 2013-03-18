@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #include "ovpCComputeTemporalFilterCoefficients.h"
 
 #include <limits>
@@ -824,3 +826,5 @@ boolean CComputeTemporalFilterCoefficients::process(void)
 
 	return true;
 }
+
+#endif // TARGET_HAS_ThirdPartyITPP
