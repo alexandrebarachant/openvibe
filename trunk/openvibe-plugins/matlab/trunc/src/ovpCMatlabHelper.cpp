@@ -270,7 +270,7 @@ boolean CMatlabHelper::addStimulationsInputBuffer(uint32 ui32InputIndex, IStimul
 
 //---------------------------------------------------------------------------------------------------------------
 
-boolean CMatlabHelper::setStreamedMatrixOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix)
+boolean CMatlabHelper::getStreamedMatrixOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix)
 {
 	char l_sBuffer[32];
 	sprintf(l_sBuffer, "%i",(ui32OutputIndex+1));
@@ -333,7 +333,7 @@ boolean CMatlabHelper::setStreamedMatrixOutputHeader(uint32 ui32OutputIndex, IMa
 	return true;
 }
 
-boolean CMatlabHelper::setFeatureVectorOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix)
+boolean CMatlabHelper::getFeatureVectorOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix)
 {
 	char l_sBuffer[32];
 	sprintf(l_sBuffer, "%i",(ui32OutputIndex+1));
@@ -385,7 +385,7 @@ boolean CMatlabHelper::setFeatureVectorOutputHeader(uint32 ui32OutputIndex, IMat
 	return true;
 }
 
-boolean CMatlabHelper::setSignalOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix, uint64& rSamplingFrequency)
+boolean CMatlabHelper::getSignalOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix, uint64& rSamplingFrequency)
 {
 	char l_sBuffer[32];
 	sprintf(l_sBuffer, "%i",(ui32OutputIndex+1));
@@ -451,7 +451,7 @@ boolean CMatlabHelper::setSignalOutputHeader(uint32 ui32OutputIndex, IMatrix * p
 
 }
 
-boolean CMatlabHelper::setChannelLocalisationOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix, boolean& bDynamic)
+boolean CMatlabHelper::getChannelLocalisationOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix, boolean& bDynamic)
 {
 	char l_sBuffer[32];
 	sprintf(l_sBuffer, "%i",(ui32OutputIndex+1));
@@ -510,7 +510,7 @@ boolean CMatlabHelper::setChannelLocalisationOutputHeader(uint32 ui32OutputIndex
 	return true;
 }
 
-boolean CMatlabHelper::setSpectrumOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix, IMatrix * pFrequencyBands)
+boolean CMatlabHelper::getSpectrumOutputHeader(uint32 ui32OutputIndex, IMatrix * pMatrix, IMatrix * pFrequencyBands)
 {
 	char l_sBuffer[32];
 	sprintf(l_sBuffer, "%i",(ui32OutputIndex+1));
@@ -609,7 +609,7 @@ boolean CMatlabHelper::setSpectrumOutputHeader(uint32 ui32OutputIndex, IMatrix *
 	return true;
 }
 
-boolean CMatlabHelper::setStimulationsOutputHeader(uint32 ui32OutputIndex, IStimulationSet * pStimulationSet)
+boolean CMatlabHelper::getStimulationsOutputHeader(uint32 ui32OutputIndex, IStimulationSet * pStimulationSet)
 {
 	// Nothing to do, the stimulation header is empty.
 	return true;

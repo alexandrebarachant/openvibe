@@ -742,8 +742,8 @@ boolean CComputeTemporalFilterCoefficients::process(void)
 		{
 			// Compute RII Band Pass Filter coefs
 			m_ui32DimensionSize = m_ui32FilterOrder+1;
-			m_vecDenomCoefFilter = zeros(m_ui32FilterOrder+1);
-			m_vecNumCoefFilter = zeros(m_ui32FilterOrder+1);
+			m_vecDenomCoefFilter = zeros(m_ui32DimensionSize);
+			m_vecNumCoefFilter = zeros(m_ui32DimensionSize);
 			vec l_vecFrecuency;
 			vec l_vecAmplitude;
 			vec l_vecResultAutocorr;
@@ -810,15 +810,15 @@ boolean CComputeTemporalFilterCoefficients::process(void)
 		}
 
 		IMatrix* l_pOutputMatrix=op_pOutputMatrix;
-		l_pOutputMatrix->setDimensionCount(2); // numerator + denominator
-		l_pOutputMatrix->setDimensionSize(0,m_ui32DimensionSize);
-		l_pOutputMatrix->setDimensionSize(1,m_ui32DimensionSize);
+		l_pOutputMatrix->setDimensionCount(2);						// Push m_vecDenomCoefFilter and m_vecNumCoefFilter as two column vectors
+		l_pOutputMatrix->setDimensionSize(0,m_ui32DimensionSize);	// m_ui32Dimension rows
+		l_pOutputMatrix->setDimensionSize(1,2);						// 2 columns 
 
 		float64* l_pFilterCoefMatrix=l_pOutputMatrix->getBuffer();
 		for (uint32 i =0; i< m_ui32DimensionSize; i++)
 		{
 			l_pFilterCoefMatrix[i] = m_vecDenomCoefFilter[i];
-			l_pFilterCoefMatrix[i+m_ui32DimensionSize] = m_vecNumCoefFilter[i];
+			l_pFilterCoefMatrix[m_ui32DimensionSize+i] = m_vecNumCoefFilter[i];
 		}
 	}
 

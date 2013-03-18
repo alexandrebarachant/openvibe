@@ -263,11 +263,13 @@ void Filtfilt (vec b, vec a, vec data, vec &dataFiltered)
 
 boolean CApplyTemporalFilter::initialize(void)
 {
-	ip_pSignalMatrix.initialize(getInputParameter(OVP_Algorithm_ApplyTemporalFilter_InputParameterId_SignalMatrix));
-	ip_pFilterCoefficientsMatrix.initialize(getInputParameter(OVP_Algorithm_ApplyTemporalFilter_InputParameterId_FilterCoefficientsMatrix));
-	op_pSignalMatrix.initialize(getOutputParameter(OVP_Algorithm_ApplyTemporalFilter_OutputParameterId_FilteredSignalMatrix));
+	bool l_bReturn = true;
 
-	return true;
+	l_bReturn &= ip_pSignalMatrix.initialize(getInputParameter(OVP_Algorithm_ApplyTemporalFilter_InputParameterId_SignalMatrix));
+	l_bReturn &= ip_pFilterCoefficientsMatrix.initialize(getInputParameter(OVP_Algorithm_ApplyTemporalFilter_InputParameterId_FilterCoefficientsMatrix));
+	l_bReturn &= op_pSignalMatrix.initialize(getOutputParameter(OVP_Algorithm_ApplyTemporalFilter_OutputParameterId_FilteredSignalMatrix));
+
+	return l_bReturn;
 }
 
 boolean CApplyTemporalFilter::uninitialize(void)
@@ -295,7 +297,7 @@ boolean CApplyTemporalFilter::process(void)
 		OpenViBEToolkit::Tools::MatrixManipulation::clearContent(*l_pOutputMatrix);
 
 		// dimension of input coef (numerator, denominator) filter
-		uint32 l_ui32FilterCoefficientsNumeratorDimensionSize=ip_pFilterCoefficientsMatrix->getDimensionSize(1);
+		uint32 l_ui32FilterCoefficientsNumeratorDimensionSize=ip_pFilterCoefficientsMatrix->getDimensionSize(0);
 		uint32 l_ui32FilterCoefficientsDenominatorDimensionSize=ip_pFilterCoefficientsMatrix->getDimensionSize(0);
 
 		//coef filters vars

@@ -613,7 +613,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sBuffer) == 0,"Error calling the Process function.\n")) return false;
 
 	
-	// Checking every output in the matlab box to copy them in the openvibe box.
+	// Go through every output in the matlab box and copy the data to the C++ side
 	for(uint32 i = 0; i < getStaticBoxContext().getOutputCount(); i++)
 	{
 		// now we check for pending output chunk to be sent (output type independent call)
@@ -629,7 +629,8 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 		for(uint32 c = 0; c < (uint32)l_dPending; c++)
 		{
 			// If no header were ever sent, we need to extract header information in the matlab box
-			// This header must have been set prior to sending the very first buffer.
+			// This header must have been set prior to sending the very first buffer. 
+			// @FIXME the practice used below of assigning to getters is nasty, it should be refactored to e.g. using getter/setter pairs
 			if(!m_mOutputHeaderState[i])
 			{
 				boolean l_bUnkownType = true;
@@ -637,7 +638,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 				{
 					((TStreamedMatrixEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix() = new CMatrix();
 					IMatrix * l_pMatrixToSend = ((TStreamedMatrixEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
-					if(!checkFailureRoutine(m_oMatlabHelper.setStreamedMatrixOutputHeader(i,l_pMatrixToSend),"Error calling [OV_getStreamedMatrixOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
+					if(!checkFailureRoutine(m_oMatlabHelper.getStreamedMatrixOutputHeader(i,l_pMatrixToSend),"Error calling [OV_getStreamedMatrixOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
 					l_bUnkownType = false;
 				}
@@ -645,9 +646,12 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 				{
 					((TSignalEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix() = new CMatrix();
 					IMatrix * l_pMatrixToSend = ((TSignalEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
-					uint64 l_ui64SamplingRate =  ((TSignalEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputSamplingRate();
-					if(!checkFailureRoutine(m_oMatlabHelper.setSignalOutputHeader(i,l_pMatrixToSend,l_ui64SamplingRate),"Error calling [OV_getSignalOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
+					uint64 l_ui64SamplingRate = ((TSignalEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputSamplingRate();
+					if(!checkFailureRoutine(m_oMatlabHelper.getSignalOutputHeader(i,l_pMatrixToSend,l_ui64SamplingRate),"Error calling [OV_getSignalOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
+					// Set the new sampling rate
+					((TSignalEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputSamplingRate() = l_ui64SamplingRate;
+					
 					l_bUnkownType = false;
 				}
 
@@ -655,7 +659,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 				{
 					((TFeatureVectorEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix() = new CMatrix();
 					IMatrix * l_pMatrixToSend = ((TFeatureVectorEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
-					if(!checkFailureRoutine(m_oMatlabHelper.setFeatureVectorOutputHeader(i,l_pMatrixToSend),"Error calling [OV_getFeatureVectorOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
+					if(!checkFailureRoutine(m_oMatlabHelper.getFeatureVectorOutputHeader(i,l_pMatrixToSend),"Error calling [OV_getFeatureVectorOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
 					l_bUnkownType = false;
 				}
@@ -666,7 +670,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					((TSpectrumEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMinMaxFrequencyBands() = new CMatrix();
 					IMatrix * l_pMatrixToSend = ((TSpectrumEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
 					IMatrix * l_pBands        = ((TSpectrumEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMinMaxFrequencyBands();
-					if(!checkFailureRoutine(m_oMatlabHelper.setSpectrumOutputHeader(i,l_pMatrixToSend,l_pBands),"Error calling [OV_getSpectrumOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
+					if(!checkFailureRoutine(m_oMatlabHelper.getSpectrumOutputHeader(i,l_pMatrixToSend,l_pBands),"Error calling [OV_getSpectrumOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
 					l_bUnkownType = false;
 				}
@@ -676,7 +680,10 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					((TChannelLocalisationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix() = new CMatrix();
 					IMatrix * l_pMatrixToSend = ((TChannelLocalisationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
 					boolean   l_bDynamic      = ((TChannelLocalisationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputDynamic();
-					if(!checkFailureRoutine(m_oMatlabHelper.setChannelLocalisationOutputHeader(i,l_pMatrixToSend,l_bDynamic),"Error calling [OV_getChannelLocalizationOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
+					if(!checkFailureRoutine(m_oMatlabHelper.getChannelLocalisationOutputHeader(i,l_pMatrixToSend,l_bDynamic),"Error calling [OV_getChannelLocalizationOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
+
+					// Set the new channel localisation
+					((TChannelLocalisationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputDynamic() = l_bDynamic;
 
 					l_bUnkownType = false;
 				}
@@ -691,7 +698,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 				{
 					((TStimulationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputStimulationSet() = new CStimulationSet();
 					IStimulationSet * l_pStimSet = ((TStimulationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputStimulationSet();
-					if(!checkFailureRoutine(m_oMatlabHelper.setStimulationsOutputHeader(i, l_pStimSet),"Error calling [OV_getStimulationsOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
+					if(!checkFailureRoutine(m_oMatlabHelper.getStimulationsOutputHeader(i, l_pStimSet),"Error calling [OV_getStimulationsOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
 					l_bUnkownType = false;
 				}
@@ -699,7 +706,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 				
 				if(l_bUnkownType)
 				{
-					this->getLogManager() << LogLevel_Error << "Unkown Stream Type on output ["<<i<<"].\n";
+					this->getLogManager() << LogLevel_Error << "Unknown Stream Type on output ["<<i<<"].\n";
 					return false;
 				}
 
