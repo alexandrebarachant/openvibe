@@ -18,6 +18,12 @@ ELSE(WIN32)
 	MESSAGE(WARNING "Warning: unknown platform")
 ENDIF(WIN32)	
 
+IF(NOT CMAKE_BUILD_TYPE)
+	MESSAGE(STATUS "Setting default build type to Release")
+	SET(CMAKE_BUILD_TYPE "Release")
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+
 # Print the used compilation parameters (for transparency)
 GET_DIRECTORY_PROPERTY(TMP_DEFINITIONS COMPILE_DEFINITIONS)
 MESSAGE(STATUS "Compilation flags used at source root: ")
@@ -74,7 +80,13 @@ SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
 #SET(OV_BRANCH_APPLICATIONS_VRPN-SIMULATOR								"branches/mybranch")
 #SET(OV_BRANCH_DOCUMENTATION											"branches/mybranch")
 
+
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+
+# If you wish you can uncomment the next line and add a file with additional information called OVBranches.cmake to
+# the cmake-modules folder. It makes modifying this very CMake file easier.
+#INCLUDE("OVCustomSettings")
+
 # a list of all project which will be filled by the directory traversal. This is needed to generate the documentation.
 SET_PROPERTY(GLOBAL PROPERTY OV_PROP_CURRENT_PROJECTS "") 	
 
@@ -86,13 +98,17 @@ SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE "TARGET_BUILD
 SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELWITHDEBINFO "TARGET_BUILDTYPE_Release")
 
 IF(WIN32)
-	SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
+	IF(NOT CMAKE_INSTALL_PREFIX)
+		SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
+	ENDIF(NOT CMAKE_INSTALL_PREFIX)
 	SET(OV_WIN32_DEP_DIR "${CMAKE_SOURCE_DIR}/dependencies")
 ENDIF(WIN32)
 IF(UNIX)
 	# Remove the following line when doing linux packaging so target should be the usual GNU root tree
 	# WARNING: Not tested yet. Try on virtualbox first.
-	SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
+	IF(NOT CMAKE_INSTALL_PREFIX)
+		SET(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
+	ENDIF(NOT CMAKE_INSTALL_PREFIX)
 ENDIF(UNIX)
 	
 # OpenViBE-specific helper functions that are used by the CMakeLists of the subprojects.
