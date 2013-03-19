@@ -72,26 +72,30 @@ OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_MinMax, "Min/Max");
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_MinMax, "Min", OVP_TypeId_MinMax_Min.toUInteger());
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_MinMax, "Max", OVP_TypeId_MinMax_Max.toUInteger());
-
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CWindowingFunctionsDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CSpectralAnalysisCospectraDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CFastICADesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CSpectralAnalysisDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CTemporalFilterDesc);
+#if defined TARGET_HAS_ThirdPartyITPP
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmXDAWNSpatialFilterTrainerDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmCSPSpatialFilterTrainerDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CTemporalFilterBoxAlgorithmDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CSpectralAnalysisDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CSpectralAnalysisCospectraDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CFastICADesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CTemporalFilterDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmIFFTboxDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmEnvelopeDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CWindowingFunctionsDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CComputeTemporalFilterCoefficientsDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CTemporalFilterBoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CApplyTemporalFilterDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDownsamplingDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDownsamplingBoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CComputeFisherLdaFunctionDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CApplyFisherLdaFunctionDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CFeatureExtractionLdaDesc);
+		
+#endif // TARGET_HAS_ThirdPartyITPP
+
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDownsamplingDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDownsamplingBoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CLDABoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDetectingMinMaxDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDetectingMinMaxBoxAlgorithmDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyFunctionDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyBoxAlgorithmDesc);
 
 #ifdef __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
@@ -101,7 +105,5 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CAlgorithmARBurgMethodDesc);
 #endif
 
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmIFFTboxDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmEnvelopeDesc);
 	
 	OVP_Declare_End();

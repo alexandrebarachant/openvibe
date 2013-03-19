@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 // to get fft and ifft:
 #include <itpp/itsignal.h>
 #include "ovpCBoxAlgorithmEnvelope.h"
@@ -206,3 +208,5 @@ boolean CBoxAlgorithmEnvelope::process(void)
 
 	return true;
 }
+
+#endif //TARGET_HAS_ThirdPartyITPP

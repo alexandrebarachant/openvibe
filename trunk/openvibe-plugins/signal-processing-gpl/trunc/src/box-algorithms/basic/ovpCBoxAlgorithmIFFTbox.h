@@ -1,6 +1,8 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_IFFTbox_H__
 #define __OpenViBEPlugins_BoxAlgorithm_IFFTbox_H__
 
+#if defined TARGET_HAS_ThirdPartyITPP
+
 //You may have to change this path to match your folder organisation
 #include "../../ovp_defines.h"
 
@@ -171,5 +173,6 @@ namespace OpenViBEPlugins
 		};
 	};
 };
+#endif //TARGET_HAS_ThirdPartyITPP
 
 #endif // __OpenViBEPlugins_BoxAlgorithm_IFFTbox_H__

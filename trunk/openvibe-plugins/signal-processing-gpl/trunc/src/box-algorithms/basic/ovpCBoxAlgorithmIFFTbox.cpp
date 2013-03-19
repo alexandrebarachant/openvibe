@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyITPP
+
 //#define __OpenViBEPlugins_BoxAlgorithm_IFFTbox_CPP__
 // to get ifft:
 #include <itpp/itsignal.h>
@@ -306,3 +308,5 @@ boolean CBoxAlgorithmIFFTbox::process(void)
 
 	return true;
 }
+
+#endif //TARGET_HAS_ThirdPartyITPP
