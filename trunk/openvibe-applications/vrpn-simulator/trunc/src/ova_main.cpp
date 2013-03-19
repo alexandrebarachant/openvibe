@@ -75,8 +75,11 @@ gboolean fIdleApplicationLoop(gpointer pUserData)
 	return TRUE;
 }
 
+#endif // TARGET_HAS_ThirdPartyVRPN
+
 int main(int argc, char ** argv)
 {
+#if defined TARGET_HAS_ThirdPartyVRPN
 	gtk_init(&argc, &argv);
 	// g_pConnection=new ::vrpn_Connection;
 	g_pConnection=vrpn_create_server_connection();
@@ -108,7 +111,7 @@ int main(int argc, char ** argv)
 	delete g_pButtonServer;
 	delete g_pConnection;
 
+#endif // TARGET_HAS_ThirdPartyVRPN
 	return 0;
 }
 
-#endif // TARGET_HAS_ThirdPartyVRPN
