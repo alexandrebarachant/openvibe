@@ -1,3 +1,5 @@
+#if defined TARGET_HAS_ThirdPartyVRPN
+
 #include <gtk/gtk.h>
 
 #include <gdk/gdk.h>
@@ -108,3 +110,5 @@ int main(int argc, char ** argv)
 
 	return 0;
 }
+
+#endif // TARGET_HAS_ThirdPartyVRPN
