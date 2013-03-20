@@ -4,6 +4,7 @@
 #include "ovpiCPluginObjectDescEnum.h"
 
 #include <fstream>
+#include <map>
 
 class CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator : public CPluginObjectDescEnum
 {
@@ -16,6 +17,11 @@ public:
 protected:
 
 	std::ofstream m_oFile;
+
+	std::map<OpenViBE::CIdentifier, OpenViBE::CString> m_oUsedIdentifiers;
+	// Adds the define to m_usedIdentifiers and m_oFile
+	void addIdentifier(const OpenViBE::CString &objectName, const OpenViBE::CIdentifier candidate, const OpenViBE::CString &sSpaces);
+
 };
 
 #endif // __OpenViBEPluginInspector_CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator_H__

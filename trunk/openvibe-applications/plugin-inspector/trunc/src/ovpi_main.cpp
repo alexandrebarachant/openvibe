@@ -50,13 +50,6 @@ int main(int argc, char ** argv)
 			{
 				OpenViBEToolkit::initialize(*l_pKernelContext);
 
-// For Mister Vincent !
-#ifdef OVAS_OS_Windows
-#ifndef NDEBUG
-				//_asm int 3;
-#endif
-#endif
-
 				IConfigurationManager& l_rConfigurationManager=l_pKernelContext->getConfigurationManager();
 
 				l_pKernelContext->getPluginManager().addPluginsFromFiles(l_rConfigurationManager.expand("${Kernel_Plugins}"));
@@ -76,6 +69,7 @@ int main(int argc, char ** argv)
 				CString l_sBoxAlgorithmSnapshotDirectory   =l_rConfigurationManager.expand("${PluginInspector_DumpBoxAlgorithmSnapshotDirectory}");
 				CString l_sBoxAlgorithmDocTemplateDirectory=l_rConfigurationManager.expand("${PluginInspector_DumpBoxAlgorithmDocTemplateDirectory}");
 
+				l_pKernelContext->getLogManager() << LogLevel_Info << "Dumping global defines...\n";
 				if(l_sGlobalDefinesDirectory!=CString(""))
 				{
 					CPluginObjectDescEnumAlgorithmGlobalDefinesGenerator l_oGlobalDefinesGenerator(*l_pKernelContext, l_sGlobalDefinesDirectory);
@@ -83,9 +77,10 @@ int main(int argc, char ** argv)
 				} 
 				else
 				{
-					cout << "[  INF  ] Skipping dump A, related PluginInspector tokens are empty in openvibe.conf" << endl;
+					l_pKernelContext->getLogManager() << LogLevel_Info << "Skipped, related PluginInspector tokens are empty in openvibe.conf\n";
 				}
 
+				l_pKernelContext->getLogManager() << LogLevel_Info << "Dumping algorithm snapshots...\n";
 				if(l_sAlgorithmSnapshotDirectory!=CString("") && l_sAlgorithmDocTemplateDirectory!=CString(""))
 				{
 					CPluginObjectDescEnumAlgorithmSnapshotGenerator l_oAlgorithmSnapshotGenerator(*l_pKernelContext, l_sAlgorithmSnapshotDirectory, l_sAlgorithmDocTemplateDirectory);
@@ -93,9 +88,10 @@ int main(int argc, char ** argv)
 				}
 				else 
 				{
-					cout << "[  INF  ] Skipping dump B,  related PluginInspector tokens are empty in openvibe.conf" << endl;
+					l_pKernelContext->getLogManager() << LogLevel_Info << "Skipped, related PluginInspector tokens are empty in openvibe.conf\n";
 				}
 
+				l_pKernelContext->getLogManager() << LogLevel_Info << "Dumping box algorithm snapshots...\n";
 				if(l_sBoxAlgorithmSnapshotDirectory!=CString("") && l_sBoxAlgorithmDocTemplateDirectory!=CString(""))
 				{
 					CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator l_oBoxAlgorithmSnapshotGenerator(*l_pKernelContext, l_sBoxAlgorithmSnapshotDirectory, l_sBoxAlgorithmDocTemplateDirectory);
@@ -103,10 +99,10 @@ int main(int argc, char ** argv)
 				} 
 				else
 				{
-					cout << "[  INF  ] Skipping dump C,  related PluginInspector tokens are empty in openvibe.conf" << endl;
+					l_pKernelContext->getLogManager() << LogLevel_Info << "Skipped, related PluginInspector tokens are empty in openvibe.conf\n";
 				}
 
-				cout<<"[  INF  ] Application terminated, releasing allocated objects"<<endl;
+				l_pKernelContext->getLogManager() << LogLevel_Info << "Application terminated, releasing allocated objects \n";
 
 				OpenViBEToolkit::uninitialize(*l_pKernelContext);
 
