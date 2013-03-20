@@ -88,7 +88,9 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CComputeFisherLdaFunctionDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CApplyFisherLdaFunctionDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CFeatureExtractionLdaDesc);
-		
+
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyFunctionDesc);			// Requires ITPP
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyBoxAlgorithmDesc);		// Depends on the previous
 #endif // TARGET_HAS_ThirdPartyITPP
 
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDownsamplingDesc);
@@ -96,7 +98,6 @@ OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CLDABoxAlgorithmDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDetectingMinMaxDesc);
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CDetectingMinMaxBoxAlgorithmDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CNaiveBayesApplyBoxAlgorithmDesc);
 
 #ifdef __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmARFeaturesDesc);
