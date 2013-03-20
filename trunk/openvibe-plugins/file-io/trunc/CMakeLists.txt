@@ -9,7 +9,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 # Due to CMake, this needs to be done _before_ creating the target.
 INCLUDE("OvAddBoostLinkDir")
 
-FILE(GLOB_RECURSE source_files src/*.cpp src/*.c src/*.h)
+FILE(GLOB_RECURSE source_files src/*.cpp src/*.c src/*.h src/*.inl)
 ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
 SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
 	VERSION ${PROJECT_VERSION}

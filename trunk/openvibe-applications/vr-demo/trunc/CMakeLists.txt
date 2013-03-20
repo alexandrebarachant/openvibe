@@ -9,7 +9,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 # Due to CMake, this needs to be done _before_ creating the target.
 INCLUDE("OvAddBoostLinkDir")
 
-FILE(GLOB_RECURSE source_files src/*.cpp src/*.h)
+FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
 ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
 
 INCLUDE("FindOpenViBE")
