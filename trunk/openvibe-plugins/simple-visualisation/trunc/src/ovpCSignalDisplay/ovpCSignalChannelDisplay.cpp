@@ -562,10 +562,15 @@ float64 CSignalChannelDisplay::getSampleYCoordinate(float64 f64Value)
 	return m_f64ScaleY*m_f64ZoomScaleY*m_ui32Height* (m_f64TranslateY-f64Value) + (m_ui32Height*m_f64ZoomScaleY)/2 - m_f64ZoomTranslateY*m_f64ZoomScaleY;
 }
 
-void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 ui32LastBufferToDisplay, uint32 ui32FirstSampleToDisplay, float64 f64FirstBufferStartX)
+boolean CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 ui32LastBufferToDisplay, uint32 ui32FirstSampleToDisplay, float64 f64FirstBufferStartX)
 {
 	//compute and draw sample points
 	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimensionSizes[1];
+	if(l_ui32SamplesPerBuffer==0) 
+	{
+		// @FIXME silent fail, but no logManager here, so can't print
+		return false;
+	}
 
 	GdkColor l_oLineColor;
 
@@ -665,6 +670,8 @@ void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 
 	l_oLineColor.blue = 0;
 	gdk_gc_set_rgb_fg_color(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE(m_pDrawingArea)], &l_oLineColor);
 	gdk_gc_set_line_attributes(m_pDrawingArea->style->fg_gc[GTK_WIDGET_STATE (m_pDrawingArea)], 1, GDK_LINE_SOLID, GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+
+	return true;
 }
 
 void CSignalChannelDisplay::drawProgressLine(uint32 ui32FirstBufferToDisplay, uint32 ui32FirstBufferToDisplayPosition)

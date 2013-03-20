@@ -210,8 +210,9 @@ namespace OpenViBEPlugins
 		 * \param ui32LastBufferToDisplay Index of last buffer to display
 		 * \param ui32FirstSampleToDisplay Index of first sample to display in first buffer (subsequent buffers will start at sample 0)
 		 * \param f64BaseX X offset to apply to signals (can be non null in scroll mode)
+		 * \return True if all went ok, false otherwise
 		 */
-		void drawSignals(
+		OpenViBE::boolean drawSignals(
 			OpenViBE::uint32 ui32FirstBufferToDisplay,
 			OpenViBE::uint32 ui32LastBufferToDisplay,
 			OpenViBE::uint32 ui32FirstSampleToDisplay,

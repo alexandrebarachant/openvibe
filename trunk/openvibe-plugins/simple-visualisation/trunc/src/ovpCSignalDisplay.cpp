@@ -108,6 +108,11 @@ namespace OpenViBEPlugins
 			IDynamicBoxContext* l_pDynamicBoxContext=getBoxAlgorithmContext()->getDynamicBoxContext();
 			uint32 i;
 
+			if(m_pBufferDatabase->getErrorStatus()) {
+				this->getLogManager() << LogLevel_Error << "Buffer database reports an error. Its possible that the inputs given to the Signal Display are not supported by it.\n";
+				return false;
+			}
+
 			for(i=0; i<l_pDynamicBoxContext->getInputChunkCount(1); i++)
 			{
 				uint64 l_ui64ChunkSize=0;

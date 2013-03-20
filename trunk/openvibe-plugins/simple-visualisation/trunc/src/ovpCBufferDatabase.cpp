@@ -282,12 +282,19 @@ void CBufferDatabase::setMatrixDimensionCount(const uint32 ui32DimensionCount)
 {
 	if(ui32DimensionCount != 2)
 	{
-		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error dimension count isn't 2!\n";
+		m_bError = true;
+		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Caller tried to set a " << ui32DimensionCount << "-dimensional matrix. Only 2-dimensional matrices are supported (e.g. [rows X cols]).\n";
 	}
 }
 
 void CBufferDatabase::setMatrixDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 {
+	if(ui32DimensionIndex>=2) {
+		m_bError = true;
+		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Tried to access dimension " << ui32DimensionIndex << ", only 0 and 1 supported\n";
+		return;
+	}
+
 	m_pDimensionSizes[ui32DimensionIndex] = ui32DimensionSize;
 	m_pDimensionLabels[ui32DimensionIndex].resize(ui32DimensionSize);
 
@@ -302,6 +309,12 @@ void CBufferDatabase::setMatrixDimensionSize(const uint32 ui32DimensionIndex, co
 
 void CBufferDatabase::setMatrixDimensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 {
+	if(ui32DimensionIndex>=2) {
+		m_bError = true;
+		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Tried to access dimension " << ui32DimensionIndex << ", only 0 and 1 supported\n";
+		return;
+	}
+
 	m_pDimensionLabels[ui32DimensionIndex][ui32DimensionEntryIndex] = sDimensionLabel;
 }
 
@@ -771,7 +784,7 @@ boolean CBufferDatabase::convertCartesianToSpherical(const float64* pCartesianCo
 #define MY_THRESHOLD 1e-3
 #define PI 3.1415926535
 
-	static float64 l_f64RadToDeg = 180 / PI;
+	const float64 l_f64RadToDeg = 180 / PI;
 
 	//compute theta
 	rTheta = acos(pCartesianCoords[2]) * l_f64RadToDeg;
