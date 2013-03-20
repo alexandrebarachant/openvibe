@@ -20,29 +20,29 @@ namespace OpenViBEPlugins
 	namespace FeatureExtraction
 	{
 
-		void CFeatureAggregator::setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
+		void CFeatureAggregator::setMatrixDimensionCount(const OpenViBE::uint32 ui32DimensionCount)
 		{
-			//resizes to the number of dimmensions for the current input
-			m_oDimmensionSize[m_ui32CurrentInput].resize(ui32DimmensionCount);
-			m_oFeatureNames[m_ui32CurrentInput].resize(ui32DimmensionCount);
+			//resizes to the number of dimensions for the current input
+			m_oDimensionSize[m_ui32CurrentInput].resize(ui32DimensionCount);
+			m_oFeatureNames[m_ui32CurrentInput].resize(ui32DimensionCount);
 
 			// initilizes the total input buffer size
 			m_oInputBufferSizes[m_ui32CurrentInput] = 1;
 		}
 
-		void CFeatureAggregator::setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
+		void CFeatureAggregator::setMatrixDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize)
 		{
-			//sets this dimmension size
-			m_oDimmensionSize[m_ui32CurrentInput][ui32DimmensionIndex] = ui32DimmensionSize;
+			//sets this dimension size
+			m_oDimensionSize[m_ui32CurrentInput][ui32DimensionIndex] = ui32DimensionSize;
 
-			m_oFeatureNames[m_ui32CurrentInput][ui32DimmensionIndex].resize(ui32DimmensionSize);
+			m_oFeatureNames[m_ui32CurrentInput][ui32DimensionIndex].resize(ui32DimensionSize);
 
-			// taking the dimmension size into account in the input buffer size
-			m_oInputBufferSizes[m_ui32CurrentInput] *= ui32DimmensionSize;
+			// taking the dimension size into account in the input buffer size
+			m_oInputBufferSizes[m_ui32CurrentInput] *= ui32DimensionSize;
 
 
 			//if it's the last input
-			if(m_ui32CurrentInput == m_ui32NumberOfInput-1 && ui32DimmensionIndex == m_oDimmensionSize[m_ui32CurrentInput].size()-1)
+			if(m_ui32CurrentInput == m_ui32NumberOfInput-1 && ui32DimensionIndex == m_oDimensionSize[m_ui32CurrentInput].size()-1)
 			{
 				//computes the feature vector size
 				for(uint32 i=0 ; i<m_oInputBufferSizes.size() ; i++)
@@ -56,7 +56,7 @@ namespace OpenViBEPlugins
 				//sends the header
 				m_pFeatureVectorOutputWriterHelper->setFeatureCount(m_ui32VectorSize);
 
-				//generates features names based on inputs dimmensions' names
+				//generates features names based on inputs dimensions' names
 				uint32 l_ui32CurrentFeature = 0;
 				//for each input
 				for(uint32 i=0 ; i<m_ui32NumberOfInput ; i++)
@@ -68,10 +68,10 @@ namespace OpenViBEPlugins
 						string l_oLabel;
 						uint32 l_ui32ElementIndex = elt;
 
-						for(int32 k=m_oDimmensionSize[i].size()-1 ; k>=0 ; k--)
+						for(int32 k=m_oDimensionSize[i].size()-1 ; k>=0 ; k--)
 						{
-							l_oLabel += m_oFeatureNames[(size_t)i][(size_t)(m_oDimmensionSize[i].size()-k-1)][(size_t)(l_ui32ElementIndex / m_oDimmensionSize[i][k])];
-							l_ui32ElementIndex = l_ui32ElementIndex % m_oDimmensionSize[i][k];
+							l_oLabel += m_oFeatureNames[(size_t)i][(size_t)(m_oDimensionSize[i].size()-k-1)][(size_t)(l_ui32ElementIndex / m_oDimensionSize[i][k])];
+							l_ui32ElementIndex = l_ui32ElementIndex % m_oDimensionSize[i][k];
 						}
 						m_pFeatureVectorOutputWriterHelper->setFeatureName(l_ui32CurrentFeature, l_oLabel.c_str());
 					}
@@ -82,9 +82,9 @@ namespace OpenViBEPlugins
 			}
 		}
 
-		void CFeatureAggregator::setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+		void CFeatureAggregator::setMatrixDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 		{
-			m_oFeatureNames[m_ui32CurrentInput][ui32DimmensionIndex][ui32DimmensionEntryIndex] = sDimmensionLabel;
+			m_oFeatureNames[m_ui32CurrentInput][ui32DimensionIndex][ui32DimensionEntryIndex] = sDimensionLabel;
 		}
 
 		void CFeatureAggregator::setMatrixBuffer(const OpenViBE::float64* pBuffer)
@@ -143,7 +143,7 @@ namespace OpenViBEPlugins
 
 			//resizes everything as needed
 			m_oInputBufferSizes.resize(m_ui32NumberOfInput);
-			m_oDimmensionSize.resize(m_ui32NumberOfInput);
+			m_oDimensionSize.resize(m_ui32NumberOfInput);
 			m_oFeatureNames.resize(m_ui32NumberOfInput);
 
 			return true;

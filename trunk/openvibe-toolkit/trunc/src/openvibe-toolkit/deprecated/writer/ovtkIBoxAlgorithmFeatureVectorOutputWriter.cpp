@@ -33,17 +33,17 @@ namespace OpenViBEToolkit
 		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oFeatureVectorOutputWriterPart);
 		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oStreamedMatrixOutputWriterPart);
 
-		m_oStreamedMatrixOutputWriterPart.setDimmensionCount(1);
+		m_oStreamedMatrixOutputWriterPart.setDimensionCount(1);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmFeatureVectorOutputWriter::setFeatureCount(const OpenViBE::uint32 ui32FeatureCount)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(0, ui32FeatureCount);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionSize(0, ui32FeatureCount);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmFeatureVectorOutputWriter::setFeatureName(const OpenViBE::uint32 ui32FeatureIndex, const char* sFeatureName)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionLabel(0, ui32FeatureIndex, sFeatureName);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionLabel(0, ui32FeatureIndex, sFeatureName);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmFeatureVectorOutputWriter::setFeatureVector(const OpenViBE::float64* pFeatureVector)

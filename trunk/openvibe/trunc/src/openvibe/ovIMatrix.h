@@ -11,7 +11,7 @@ namespace OpenViBE
 	 * \date 2007-11-21
 	 * \brief Basic OpenViBE matrix interface
 	 *
-	 * This interface offers functionalities to basically manipulate an n-dimmensional
+	 * This interface offers functionalities to basically manipulate an n-dimensional
 	 * matrix. The manipulation that can be done are very limited and nearly limits
 	 * to memory manipulation. This is basically an unified way for storing matrices
 	 * content in OpenViBE

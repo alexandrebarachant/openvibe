@@ -97,7 +97,7 @@ void CSignalChannelDisplay::onResizeEventCB(gint i32Width, gint i32Height)
 
 void CSignalChannelDisplay::updateScale()
 {
-	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimmensionSizes[1];
+	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimensionSizes[1];
 	uint64 l_ui64NumberOfBufferToDisplay = m_pDatabase->m_ui64NumberOfBufferToDisplay;
 	if(l_ui32SamplesPerBuffer == 1 && l_ui64NumberOfBufferToDisplay != 1)
 	{
@@ -240,7 +240,7 @@ void CSignalChannelDisplay::getUpdateRectangle(GdkRectangle& rRect)
 		uint32 l_ui32LatestBufferPosition = l_ui32FirstBufferToDisplayPosition + m_pDatabase->m_oSampleBuffers.size()-1-l_ui32FirstBufferToDisplay;
 
 		//X position of last sample that will be drawn when channel is refreshed
-		uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimmensionSizes[1];
+		uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimensionSizes[1];
 		float64 l_f64EndX = getSampleXCoordinate(l_ui32LatestBufferPosition, l_ui32SamplesPerBuffer-1, 0);
 
 		rRect.x = (gint)l_f64StartX;
@@ -272,7 +272,7 @@ void CSignalChannelDisplay::draw(const GdkRectangle& rExposedArea)
 	m_pLeftRuler->update(l_f64MinimumDisplayedValue,l_f64MaximumDisplayedValue);
 
 	//determine index and position of first (in the sense of leftmost) buffer to display, and index of first sample to display
-	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimmensionSizes[1];
+	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimensionSizes[1];
 	uint32 l_ui32FirstBufferToDisplay = 0;
 	uint32 l_ui32FirstSampleToDisplay = 0;
 	uint32 l_ui32FirstBufferToDisplayPosition = 0;
@@ -540,7 +540,7 @@ void CSignalChannelDisplay::getFirstBufferToDisplayInformation(uint32& rFirstBuf
 			{
 				rFirstBufferToDisplay--;
 				rFirstBufferToDisplayPosition--;
-				rFirstSampleToDisplay = (uint32)m_pDatabase->m_pDimmensionSizes[1] - 1;
+				rFirstSampleToDisplay = (uint32)m_pDatabase->m_pDimensionSizes[1] - 1;
 			}
 		}
 	}
@@ -565,7 +565,7 @@ float64 CSignalChannelDisplay::getSampleYCoordinate(float64 f64Value)
 void CSignalChannelDisplay::drawSignals(uint32 ui32FirstBufferToDisplay, uint32 ui32LastBufferToDisplay, uint32 ui32FirstSampleToDisplay, float64 f64FirstBufferStartX)
 {
 	//compute and draw sample points
-	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimmensionSizes[1];
+	uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimensionSizes[1];
 
 	GdkColor l_oLineColor;
 
@@ -673,7 +673,7 @@ void CSignalChannelDisplay::drawProgressLine(uint32 ui32FirstBufferToDisplay, ui
 	if(m_pDatabase->m_oSampleBuffers.size() < m_pDatabase->m_ui64NumberOfBufferToDisplay ||
 		m_pParentDisplayView->m_ui64LeftmostDisplayedTime > m_pDatabase->m_oStartTime[0])
 	{
-		uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimmensionSizes[1];
+		uint32 l_ui32SamplesPerBuffer = (uint32)m_pDatabase->m_pDimensionSizes[1];
 
 		//position on screen of latest buffer
 		uint32 l_ui32LatestBufferPosition = ui32FirstBufferToDisplayPosition + m_pDatabase->m_oSampleBuffers.size()-1-ui32FirstBufferToDisplay;

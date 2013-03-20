@@ -135,19 +135,19 @@ boolean CTopographicMap2DDisplay::process(void)
 	return l_bProcessValues;
 }
 
-void CTopographicMap2DDisplay::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
+void CTopographicMap2DDisplay::setMatrixDimensionCount(const uint32 ui32DimensionCount)
 {
-	m_pTopographicMapDatabase->setMatrixDimmensionCount(ui32DimmensionCount);
+	m_pTopographicMapDatabase->setMatrixDimensionCount(ui32DimensionCount);
 }
 
-void CTopographicMap2DDisplay::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
+void CTopographicMap2DDisplay::setMatrixDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 {
-	m_pTopographicMapDatabase->setMatrixDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
+	m_pTopographicMapDatabase->setMatrixDimensionSize(ui32DimensionIndex, ui32DimensionSize);
 }
 
-void CTopographicMap2DDisplay::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+void CTopographicMap2DDisplay::setMatrixDimensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 {
-	m_pTopographicMapDatabase->setMatrixDimmensionLabel(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
+	m_pTopographicMapDatabase->setMatrixDimensionLabel(ui32DimensionIndex, ui32DimensionEntryIndex, sDimensionLabel);
 }
 
 void CTopographicMap2DDisplay::setMatrixBuffer(const float64* pBuffer)

@@ -58,15 +58,15 @@ namespace OpenViBEPlugins
 			}
 
 			//Sends the output header
-			m_pStreamedMatrixOutputWriterHelper->setDimmensionCount(1);
-			m_pStreamedMatrixOutputWriterHelper->setDimmensionSize(0,1);
-			m_pStreamedMatrixOutputWriterHelper->setDimmensionLabel(0, 0, "Class");
+			m_pStreamedMatrixOutputWriterHelper->setDimensionCount(1);
+			m_pStreamedMatrixOutputWriterHelper->setDimensionSize(0,1);
+			m_pStreamedMatrixOutputWriterHelper->setDimensionLabel(0, 0, "Class");
 			m_pStreamedMatrixOutputWriterHelper->writeHeader(*m_pWriter[0]);
 			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, 0, 0);
 
-			m_pStreamedMatrixOutputWriterHelper->setDimmensionCount(1);
-			m_pStreamedMatrixOutputWriterHelper->setDimmensionSize(0,1);
-			m_pStreamedMatrixOutputWriterHelper->setDimmensionLabel(0, 0, "Amplitude");
+			m_pStreamedMatrixOutputWriterHelper->setDimensionCount(1);
+			m_pStreamedMatrixOutputWriterHelper->setDimensionSize(0,1);
+			m_pStreamedMatrixOutputWriterHelper->setDimensionLabel(0, 0, "Amplitude");
 			m_pStreamedMatrixOutputWriterHelper->writeHeader(*m_pWriter[1]);
 			getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(1, 0, 0);
 
@@ -129,7 +129,7 @@ namespace OpenViBEPlugins
 				m_bError=true;
 			}
 
-			//check the number of dimmensions
+			//check the number of dimensions
 			if(ui32FeatureCount != m_oCoefficients.size()-1)
 			{
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Feature count different from the classifier's number of coefficients!\n";

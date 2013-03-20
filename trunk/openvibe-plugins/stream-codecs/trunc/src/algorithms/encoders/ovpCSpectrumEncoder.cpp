@@ -30,9 +30,9 @@ boolean CSpectrumEncoder::uninitialize(void)
 
 boolean CSpectrumEncoder::processHeader(void)
 {
-	// ip_pMinMaxFrenquencyBands dimmension count should be 2
-	// ip_pMinMaxFrenquencyBands dimmension size 0 should be 2
-	// ip_pMinMaxFrenquencyBands dimmension size 1 should be the same as streamed matrix dimmension size 1
+	// ip_pMinMaxFrenquencyBands dimension count should be 2
+	// ip_pMinMaxFrenquencyBands dimension size 0 should be 2
+	// ip_pMinMaxFrenquencyBands dimension size 1 should be the same as streamed matrix dimension size 1
 
 	IMatrix* l_pFrequencyBandMinMax=ip_pMinMaxFrenquencyBands;
 

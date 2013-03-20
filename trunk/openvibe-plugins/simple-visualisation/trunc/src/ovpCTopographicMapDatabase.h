@@ -41,9 +41,9 @@ namespace OpenViBEPlugins
 				OpenViBE::Kernel::IAlgorithmProxy& rSphericalSplineInterpolation);
 			~CTopographicMapDatabase();
 
-			void setMatrixDimmensionSize(
-				const OpenViBE::uint32 ui32DimmensionIndex,
-				const OpenViBE::uint32 ui32DimmensionSize);
+			void setMatrixDimensionSize(
+				const OpenViBE::uint32 ui32DimensionIndex,
+				const OpenViBE::uint32 ui32DimensionSize);
 
 			/**
 			 * \brief Callback called upon channel localisation buffer reception

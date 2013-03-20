@@ -154,7 +154,7 @@ namespace OpenViBEAcquisitionServer
 		 *       considered to be set to 1.
 		 *
 		 * Gains are multiplicator coefficients that are used by the OpenViBE platform to
-		 * to transform measured values into physical dimmension.
+		 * to transform measured values into physical dimension.
 		 */
 		virtual OpenViBE::boolean setChannelGain(const OpenViBE::uint32 ui32ChannelIndex, const OpenViBE::float32 f32ChannelGain)=0;
 		/// \todo setChannelLocation

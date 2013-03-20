@@ -76,9 +76,9 @@ boolean CSteadyStateFrequencyComparison::initialize()
 	m_pOutputBuffer = NULL;
 
 	//Sends the output header
-	m_pStreamedMatrixOutputWriterHelper->setDimmensionCount(1);
-	m_pStreamedMatrixOutputWriterHelper->setDimmensionSize(0,1);
-	m_pStreamedMatrixOutputWriterHelper->setDimmensionLabel(0, 0, "Amplitude");
+	m_pStreamedMatrixOutputWriterHelper->setDimensionCount(1);
+	m_pStreamedMatrixOutputWriterHelper->setDimensionSize(0,1);
+	m_pStreamedMatrixOutputWriterHelper->setDimensionLabel(0, 0, "Amplitude");
 	m_pStreamedMatrixOutputWriterHelper->writeHeader(*m_pWriter);
 	getBoxAlgorithmContext()->getDynamicBoxContext()->markOutputAsReadyToSend(0, 0, 0);
 

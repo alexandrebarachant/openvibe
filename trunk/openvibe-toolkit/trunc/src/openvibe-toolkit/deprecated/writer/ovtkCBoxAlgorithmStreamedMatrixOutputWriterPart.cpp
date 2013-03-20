@@ -21,7 +21,7 @@ CBoxAlgorithmStreamedMatrixOutputWriterPart::CBoxAlgorithmStreamedMatrixOutputWr
 // ________________________________________________________________________________________________________________
 //
 
-boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionCount(const uint32 ui32DimensionCount)
+boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimensionCount(const uint32 ui32DimensionCount)
 {
 	if(m_ui32Status!=Status_SendingNothing)
 	{
@@ -35,7 +35,7 @@ boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionCount(const ui
 	return true;
 }
 
-boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
+boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 {
 	if(ui32DimensionIndex>=m_ui32DimensionCount)
 	{
@@ -46,7 +46,7 @@ boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionSize(const uin
 	return true;
 }
 
-boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimmensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
+boolean CBoxAlgorithmStreamedMatrixOutputWriterPart::setDimensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 {
 	if(ui32DimensionIndex>=m_ui32DimensionCount)
 	{

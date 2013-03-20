@@ -480,9 +480,9 @@ namespace OpenViBEPlugins
 			}
 		}
 
-		void CGrazVisualization::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
+		void CGrazVisualization::setMatrixDimensionCount(const uint32 ui32DimensionCount)
 		{
-			if(ui32DimmensionCount != 1)
+			if(ui32DimensionCount != 1)
 			{
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error, dimension count isn't 1 for Amplitude input !\n";
 				m_bError = true;
@@ -490,16 +490,16 @@ namespace OpenViBEPlugins
 
 		}
 
-		void CGrazVisualization::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
+		void CGrazVisualization::setMatrixDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 		{
-			if(ui32DimmensionSize != 1)
+			if(ui32DimensionSize != 1)
 			{
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error, dimension size isn't 1 for Amplitude input !\n";
 				m_bError = true;
 			}
 		}
 
-		void CGrazVisualization::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+		void CGrazVisualization::setMatrixDimensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 		{
 			/* nothing to do */
 		}

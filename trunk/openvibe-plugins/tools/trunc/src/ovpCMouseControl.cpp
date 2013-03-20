@@ -19,9 +19,9 @@ CMouseControl::CMouseControl(void)
 	,m_pStreamedMatrixReaderCallBack(NULL)
 	,m_oStreamedMatrixReaderCallBackProxy(
 		*this,
-		&CMouseControl::setMatrixDimmensionCount,
-		&CMouseControl::setMatrixDimmensionSize,
-		&CMouseControl::setMatrixDimmensionLabel,
+		&CMouseControl::setMatrixDimensionCount,
+		&CMouseControl::setMatrixDimensionSize,
+		&CMouseControl::setMatrixDimensionLabel,
 		&CMouseControl::setMatrixBuffer)
 	,m_ui64StartTime(0)
 	,m_ui64EndTime(0)
@@ -74,20 +74,20 @@ boolean CMouseControl::processInput(uint32 ui32InputIndex)
 	return true;
 }
 
-void CMouseControl::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
+void CMouseControl::setMatrixDimensionCount(const uint32 ui32DimensionCount)
 {
 }
 
-void CMouseControl::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
+void CMouseControl::setMatrixDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 {
-	if(ui32DimmensionSize != 1)
+	if(ui32DimensionSize != 1)
 	{
 		getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning <<"Error, dimension size isn't 1 for Amplitude input !\n";
 		m_bError = true;
 	}
 }
 
-void CMouseControl::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+void CMouseControl::setMatrixDimensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 {
 	/* nothing to do */
 }

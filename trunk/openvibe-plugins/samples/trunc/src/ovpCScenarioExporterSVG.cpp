@@ -60,21 +60,21 @@ void CScenarioExporterSVG::exportBox(const IBox& rBox)
 	sscanf(rBox.getAttributeValue(OV_AttributeId_Box_XSize).toASCIIString(), "%i", &w);
 	sscanf(rBox.getAttributeValue(OV_AttributeId_Box_YSize).toASCIIString(), "%i", &h);
 
-	char l_sDimmensions[8][1024];
-	sprintf(l_sDimmensions[0], "%i", x-w/2);
-	sprintf(l_sDimmensions[1], "%i", y-h/2);
-	sprintf(l_sDimmensions[2], "%i", x+w/2);
-	sprintf(l_sDimmensions[3], "%i", y+h/2);
-	sprintf(l_sDimmensions[4], "%i", w);
-	sprintf(l_sDimmensions[5], "%i", h);
-	sprintf(l_sDimmensions[6], "%i", x);
-	sprintf(l_sDimmensions[7], "%i", y+4);
+	char l_sDimensions[8][1024];
+	sprintf(l_sDimensions[0], "%i", x-w/2);
+	sprintf(l_sDimensions[1], "%i", y-h/2);
+	sprintf(l_sDimensions[2], "%i", x+w/2);
+	sprintf(l_sDimensions[3], "%i", y+h/2);
+	sprintf(l_sDimensions[4], "%i", w);
+	sprintf(l_sDimensions[5], "%i", h);
+	sprintf(l_sDimensions[6], "%i", x);
+	sprintf(l_sDimensions[7], "%i", y+4);
 
 	m_pWriter->openChild("rect");
-	 m_pWriter->setAttribute("width", l_sDimmensions[4]);
-	 m_pWriter->setAttribute("height", l_sDimmensions[5]);
-	 m_pWriter->setAttribute("x", l_sDimmensions[0]);
-	 m_pWriter->setAttribute("y", l_sDimmensions[1]);
+	 m_pWriter->setAttribute("width", l_sDimensions[4]);
+	 m_pWriter->setAttribute("height", l_sDimensions[5]);
+	 m_pWriter->setAttribute("x", l_sDimensions[0]);
+	 m_pWriter->setAttribute("y", l_sDimensions[1]);
 	 m_pWriter->setAttribute("rx", "8");
 	 m_pWriter->setAttribute("ry", "8");
 	 m_pWriter->setAttribute("id", rBox.getIdentifier().toString());
@@ -86,8 +86,8 @@ void CScenarioExporterSVG::exportBox(const IBox& rBox)
 	 m_pWriter->setAttribute("fill", "black");
 	 m_pWriter->setAttribute("stroke", "none");
 	 m_pWriter->setAttribute("text-anchor", "middle");
-	 m_pWriter->setAttribute("x", l_sDimmensions[6]);
-	 m_pWriter->setAttribute("y", l_sDimmensions[7]);
+	 m_pWriter->setAttribute("x", l_sDimensions[6]);
+	 m_pWriter->setAttribute("y", l_sDimensions[7]);
 	 if(rBox.getSettingCount()==0)
 	 {
 	  m_pWriter->setChildData("- " + rBox.getName() + " -");

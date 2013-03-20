@@ -52,10 +52,10 @@ namespace OpenViBEPlugins
 			OpenViBE::int64 m_i64NbElectrodes;
 
 			//! Number of channels and number of samples per buffer
-			OpenViBE::uint64 m_pDimmensionSizes[2];
+			OpenViBE::uint64 m_pDimensionSizes[2];
 
 			//! Channel labels, buffer labels
-			std::vector<std::string> m_pDimmesionLabels[2];
+			std::vector<std::string> m_pDimensionLabels[2];
 
 			//! Flag set to true once first buffer is received
 			OpenViBE::boolean m_bFirstBufferReceived;
@@ -339,15 +339,15 @@ namespace OpenViBEPlugins
 				const OpenViBE::uint32 ui32ChannelIndex,
 				OpenViBE::CString& rChannelLabel);
 
-			virtual void setMatrixDimmensionCount(
-				const OpenViBE::uint32 ui32DimmensionCount);
-			virtual void setMatrixDimmensionSize(
-				const OpenViBE::uint32 ui32DimmensionIndex,
-				const OpenViBE::uint32 ui32DimmensionSize);
-			virtual void setMatrixDimmensionLabel(
-				const OpenViBE::uint32 ui32DimmensionIndex,
-				const OpenViBE::uint32 ui32DimmensionEntryIndex,
-				const char* sDimmensionLabel);
+			virtual void setMatrixDimensionCount(
+				const OpenViBE::uint32 ui32DimensionCount);
+			virtual void setMatrixDimensionSize(
+				const OpenViBE::uint32 ui32DimensionIndex,
+				const OpenViBE::uint32 ui32DimensionSize);
+			virtual void setMatrixDimensionLabel(
+				const OpenViBE::uint32 ui32DimensionIndex,
+				const OpenViBE::uint32 ui32DimensionEntryIndex,
+				const char* sDimensionLabel);
 			virtual void setMatrixBuffer(
 				const OpenViBE::float64* pBuffer,
 				OpenViBE::uint64 ui64StartTime,

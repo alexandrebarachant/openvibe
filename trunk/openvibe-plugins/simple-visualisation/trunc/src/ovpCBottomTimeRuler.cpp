@@ -64,7 +64,7 @@ void CBottomTimeRuler::draw()
 	//gets the number of buffers to display
 	uint64 l_ui64NumberOfBufferToDisplay = m_pDatabase->m_ui64NumberOfBufferToDisplay;
 
-	if(m_pDatabase->m_pDimmensionSizes[1] == 1 && l_ui64NumberOfBufferToDisplay != 1)
+	if(m_pDatabase->m_pDimensionSizes[1] == 1 && l_ui64NumberOfBufferToDisplay != 1)
 	{
 		// l_ui64NumberOfBufferToDisplay--;
 	}

@@ -25,9 +25,9 @@ namespace OpenViBEToolkit
 
 		CBoxAlgorithmStreamedMatrixOutputWriterPart(void);
 
-		virtual OpenViBE::boolean setDimmensionCount(const OpenViBE::uint32 ui32DimensionCount);
-		virtual OpenViBE::boolean setDimmensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
-		virtual OpenViBE::boolean setDimmensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
+		virtual OpenViBE::boolean setDimensionCount(const OpenViBE::uint32 ui32DimensionCount);
+		virtual OpenViBE::boolean setDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
+		virtual OpenViBE::boolean setDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
 		virtual OpenViBE::boolean setBuffer(const OpenViBE::float64* pBuffer);
 
 		_IsDerivedFromClass_Final_(OpenViBEToolkit::CBoxAlgorithmEBMLOutputWriterPartBase, OVTK_ClassId_);

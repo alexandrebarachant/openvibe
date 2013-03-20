@@ -137,19 +137,19 @@ namespace OpenViBEPlugins
 			return true;
 		}
 
-		void CSignalDisplay::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
+		void CSignalDisplay::setMatrixDimensionCount(const uint32 ui32DimensionCount)
 		{
-			m_pBufferDatabase->setMatrixDimmensionCount(ui32DimmensionCount);
+			m_pBufferDatabase->setMatrixDimensionCount(ui32DimensionCount);
 		}
 
-		void CSignalDisplay::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
+		void CSignalDisplay::setMatrixDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 		{
-			m_pBufferDatabase->setMatrixDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
+			m_pBufferDatabase->setMatrixDimensionSize(ui32DimensionIndex, ui32DimensionSize);
 		}
 
-		void CSignalDisplay::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+		void CSignalDisplay::setMatrixDimensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 		{
-			m_pBufferDatabase->setMatrixDimmensionLabel(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
+			m_pBufferDatabase->setMatrixDimensionLabel(ui32DimensionIndex, ui32DimensionEntryIndex, sDimensionLabel);
 		}
 
 		void CSignalDisplay::setMatrixBuffer(const float64* pBuffer)

@@ -37,27 +37,27 @@ namespace OpenViBEToolkit
 		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oStreamedMatrixOutputWriterPart);
 		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oSpectrumOutputWriterPart);
 
-		m_oStreamedMatrixOutputWriterPart.setDimmensionCount(2);
+		m_oStreamedMatrixOutputWriterPart.setDimensionCount(2);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::setChannelCount(const OpenViBE::uint32 ui32ChannelCount)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(0, ui32ChannelCount);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionSize(0, ui32ChannelCount);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::setChannelName(const OpenViBE::uint32 ui32ChannelIndex, const char* sChannelName)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionLabel(0, ui32ChannelIndex, sChannelName);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionLabel(0, ui32ChannelIndex, sChannelName);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::setFrequencyBandCount(const OpenViBE::uint32 ui32FrequencyBandCount)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(1, ui32FrequencyBandCount) && m_oSpectrumOutputWriterPart.setFrequencyBandCount(ui32FrequencyBandCount);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionSize(1, ui32FrequencyBandCount) && m_oSpectrumOutputWriterPart.setFrequencyBandCount(ui32FrequencyBandCount);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::setFrequencyBandName(const OpenViBE::uint32 ui32FrequencyBandIndex, const char* sFrequencyBandName)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionLabel(1, ui32FrequencyBandIndex, sFrequencyBandName);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionLabel(1, ui32FrequencyBandIndex, sFrequencyBandName);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmSpectrumOutputWriter::setFrequencyBandStart(const OpenViBE::uint32 ui32FrequencyBandIndex, const OpenViBE::float64 f64FrequencyBandStart)

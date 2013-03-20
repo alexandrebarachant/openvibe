@@ -303,7 +303,7 @@ namespace OpenViBEPlugins
 			::GtkWidget * l_pMultiViewSelectList = GTK_WIDGET(::gtk_builder_get_object(m_pBuilderInterface, "SignalDisplayMultiViewSelectList"));
 
 			//vector of channel names
-			vector<string>& l_oChannelName = m_pBufferDatabase->m_pDimmesionLabels[0];
+			vector<string>& l_oChannelName = m_pBufferDatabase->m_pDimensionLabels[0];
 
 			stringstream l_oLabelString;
 
@@ -436,9 +436,9 @@ namespace OpenViBEPlugins
 			//--------------------------------------
 			//reserve the maximum space needed for computing the points to display
 			//(when cropping the lines, there can be up to two times the number of original points)
-			m_pPoints.reserve((size_t)(m_pBufferDatabase->m_pDimmensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay * 2));
+			m_pPoints.reserve((size_t)(m_pBufferDatabase->m_pDimensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay * 2));
 			//resize the vector of raw points
-			m_pRawPoints.resize((size_t)(m_pBufferDatabase->m_pDimmensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
+			m_pRawPoints.resize((size_t)(m_pBufferDatabase->m_pDimensionSizes[1]*m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
 
 			//Don't display left ruler (default)
 			m_bShowLeftRulers = false;
@@ -963,10 +963,10 @@ namespace OpenViBEPlugins
 			{
 				//reserve the maximum space needed for computing the points to display
 				//(when cropping the lines, there can be up to two times the number of original points)
-				l_pView->m_pPoints.reserve((size_t)(l_pView->m_pBufferDatabase->m_pDimmensionSizes[1] * l_pView->m_pBufferDatabase->m_ui64NumberOfBufferToDisplay * 2));
+				l_pView->m_pPoints.reserve((size_t)(l_pView->m_pBufferDatabase->m_pDimensionSizes[1] * l_pView->m_pBufferDatabase->m_ui64NumberOfBufferToDisplay * 2));
 
 				//resize the vector of raw points (before cropping)
-				l_pView->m_pRawPoints.resize((size_t)(l_pView->m_pBufferDatabase->m_pDimmensionSizes[1] * l_pView->m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
+				l_pView->m_pRawPoints.resize((size_t)(l_pView->m_pBufferDatabase->m_pDimensionSizes[1] * l_pView->m_pBufferDatabase->m_ui64NumberOfBufferToDisplay));
 
 				//force full redraw of all channels when time scale changes
 				for(size_t i=0 ; i<l_pView->m_oChannelDisplay.size(); i++)
@@ -1056,7 +1056,7 @@ namespace OpenViBEPlugins
 
 			//gets the different values from the database and updates the corresponding label's text field
 			stringstream l_oValueString;
-			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimmensionSizes[0];
+			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimensionSizes[0];
 			::gtk_label_set_text(GTK_LABEL(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplayNumberOfChannels")),
 				 l_oValueString.str().c_str() );
 
@@ -1066,7 +1066,7 @@ namespace OpenViBEPlugins
 				l_oValueString.str().c_str() );
 
 			l_oValueString.str("");
-			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimmensionSizes[1];
+			l_oValueString<<l_pView->m_pBufferDatabase->m_pDimensionSizes[1];
 			::gtk_label_set_text(GTK_LABEL(::gtk_builder_get_object(l_pView->m_pBuilderInterface, "SignalDisplaySamplesPerBuffer")),
 				l_oValueString.str().c_str() );
 

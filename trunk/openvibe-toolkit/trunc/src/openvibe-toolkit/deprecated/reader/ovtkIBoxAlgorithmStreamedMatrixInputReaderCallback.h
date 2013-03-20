@@ -12,9 +12,9 @@ namespace OpenViBEToolkit
 		class OVTK_API ICallback
 		{
 		public:
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)=0;
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)=0;
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)=0;
+			virtual void setMatrixDimensionCount(const OpenViBE::uint32 ui32DimensionCount)=0;
+			virtual void setMatrixDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize)=0;
+			virtual void setMatrixDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)=0;
 			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer)=0;
 			virtual ~ICallback(void) { }
 		};
@@ -25,36 +25,36 @@ namespace OpenViBEToolkit
 		public:
 			TCallbackProxy1(
 				COwnerClass& rOwnerObject,
-				void (COwnerClass::*fpSetMatrixDimmensionCount)(const OpenViBE::uint32 ui32DimmensionCount),
-				void (COwnerClass::*fpSetMatrixDimmensionSize)(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize),
-				void (COwnerClass::*fpSetMatrixDimmensionLabel)(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel),
+				void (COwnerClass::*fpSetMatrixDimensionCount)(const OpenViBE::uint32 ui32DimensionCount),
+				void (COwnerClass::*fpSetMatrixDimensionSize)(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize),
+				void (COwnerClass::*fpSetMatrixDimensionLabel)(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel),
 				void (COwnerClass::*fpSetMatrixBuffer)(const OpenViBE::float64* pBuffer))
 				:m_rOwnerObject(rOwnerObject)
-				,m_fpSetMatrixDimmensionCount(fpSetMatrixDimmensionCount)
-				,m_fpSetMatrixDimmensionSize(fpSetMatrixDimmensionSize)
-				,m_fpSetMatrixDimmensionLabel(fpSetMatrixDimmensionLabel)
+				,m_fpSetMatrixDimensionCount(fpSetMatrixDimensionCount)
+				,m_fpSetMatrixDimensionSize(fpSetMatrixDimensionSize)
+				,m_fpSetMatrixDimensionLabel(fpSetMatrixDimensionLabel)
 				,m_fpSetMatrixBuffer(fpSetMatrixBuffer)
 			{
 			}
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
+			virtual void setMatrixDimensionCount(const OpenViBE::uint32 ui32DimensionCount)
 			{
-				if(m_fpSetMatrixDimmensionCount)
+				if(m_fpSetMatrixDimensionCount)
 				{
-					(m_rOwnerObject.*m_fpSetMatrixDimmensionCount)(ui32DimmensionCount);
+					(m_rOwnerObject.*m_fpSetMatrixDimensionCount)(ui32DimensionCount);
 				}
 			}
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
+			virtual void setMatrixDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize)
 			{
-				if(m_fpSetMatrixDimmensionSize)
+				if(m_fpSetMatrixDimensionSize)
 				{
-					(m_rOwnerObject.*m_fpSetMatrixDimmensionSize)(ui32DimmensionIndex, ui32DimmensionSize);
+					(m_rOwnerObject.*m_fpSetMatrixDimensionSize)(ui32DimensionIndex, ui32DimensionSize);
 				}
 			}
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+			virtual void setMatrixDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 			{
-				if(m_fpSetMatrixDimmensionLabel)
+				if(m_fpSetMatrixDimensionLabel)
 				{
-					(m_rOwnerObject.*m_fpSetMatrixDimmensionLabel)(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
+					(m_rOwnerObject.*m_fpSetMatrixDimensionLabel)(ui32DimensionIndex, ui32DimensionEntryIndex, sDimensionLabel);
 				}
 			}
 			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer)
@@ -66,9 +66,9 @@ namespace OpenViBEToolkit
 			}
 		protected:
 			COwnerClass& m_rOwnerObject;
-			void (COwnerClass::*m_fpSetMatrixDimmensionCount)(const OpenViBE::uint32 ui32DimmensionCount);
-			void (COwnerClass::*m_fpSetMatrixDimmensionSize)(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-			void (COwnerClass::*m_fpSetMatrixDimmensionLabel)(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+			void (COwnerClass::*m_fpSetMatrixDimensionCount)(const OpenViBE::uint32 ui32DimensionCount);
+			void (COwnerClass::*m_fpSetMatrixDimensionSize)(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
+			void (COwnerClass::*m_fpSetMatrixDimensionLabel)(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
 			void (COwnerClass::*m_fpSetMatrixBuffer)(const OpenViBE::float64* pBuffer);
 		};
 

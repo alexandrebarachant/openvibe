@@ -39,9 +39,9 @@ namespace OpenViBEPlugins
 
 			virtual void writeFeatureVectorOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize);
 
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+			virtual void setMatrixDimensionCount(const OpenViBE::uint32 ui32DimensionCount);
+			virtual void setMatrixDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
+			virtual void setMatrixDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
 			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_FeatureAggregator)
@@ -56,11 +56,11 @@ namespace OpenViBEPlugins
 				EBML::IReader* m_pReader;
 				OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* m_pMatrixReaderCallBack;
 
-				// contains the labels for each dimmension for each input
+				// contains the labels for each dimension for each input
 				std::vector<std::vector<std::vector<std::string> > > m_oFeatureNames;
 
-				// contains the dimmension size for each dimmension of each input
-				std::vector<std::vector<OpenViBE::uint32> > m_oDimmensionSize;
+				// contains the dimension size for each dimension of each input
+				std::vector<std::vector<OpenViBE::uint32> > m_oDimensionSize;
 
 				// contains the input buffer's total size for each input
 				std::vector<OpenViBE::uint64> m_oInputBufferSizes;

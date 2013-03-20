@@ -59,9 +59,9 @@ namespace OpenViBEPlugins
 			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount);
 			virtual void setStimulation(const OpenViBE::uint32 ui32StimulationIndex, const OpenViBE::uint64 ui64StimulationIdentifier, const OpenViBE::uint64 ui64StimulationDate);
 
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+			virtual void setMatrixDimensionCount(const OpenViBE::uint32 ui32DimensionCount);
+			virtual void setMatrixDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
+			virtual void setMatrixDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
 			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
 
 			virtual void processState();

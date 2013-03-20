@@ -9,9 +9,9 @@ namespace OpenViBEToolkit
 	{
 	public:
 
-		virtual OpenViBE::boolean setDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)=0;
-		virtual OpenViBE::boolean setDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)=0;
-		virtual OpenViBE::boolean setDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)=0;
+		virtual OpenViBE::boolean setDimensionCount(const OpenViBE::uint32 ui32DimensionCount)=0;
+		virtual OpenViBE::boolean setDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize)=0;
+		virtual OpenViBE::boolean setDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)=0;
 		virtual OpenViBE::boolean setBuffer(const OpenViBE::float64* pBuffer)=0;
 
 		virtual OpenViBE::boolean writeHeader(EBML::IWriter& rWriter)=0;

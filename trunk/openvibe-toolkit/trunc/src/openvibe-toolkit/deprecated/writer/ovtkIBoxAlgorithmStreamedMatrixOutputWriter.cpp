@@ -10,9 +10,9 @@ namespace OpenViBEToolkit
 
 		CBoxAlgorithmStreamedMatrixOutputWriter(void);
 
-		virtual OpenViBE::boolean setDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-		virtual OpenViBE::boolean setDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-		virtual OpenViBE::boolean setDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+		virtual OpenViBE::boolean setDimensionCount(const OpenViBE::uint32 ui32DimensionCount);
+		virtual OpenViBE::boolean setDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
+		virtual OpenViBE::boolean setDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
 		virtual OpenViBE::boolean setBuffer(const OpenViBE::float64* pBuffer);
 
 		virtual OpenViBE::boolean writeHeader(EBML::IWriter& rWriter);
@@ -32,19 +32,19 @@ namespace OpenViBEToolkit
 		m_oEBMLOutputWriterPart.registerBoxAlgorithmEBMLOutputWriterPart(m_oStreamedMatrixOutputWriterPart);
 	}
 
-	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::setDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount)
+	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::setDimensionCount(const OpenViBE::uint32 ui32DimensionCount)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionCount(ui32DimmensionCount);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionCount(ui32DimensionCount);
 	}
 
-	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::setDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize)
+	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::setDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionSize(ui32DimensionIndex, ui32DimensionSize);
 	}
 
-	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::setDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::setDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 	{
-		return m_oStreamedMatrixOutputWriterPart.setDimmensionLabel(ui32DimmensionIndex, ui32DimmensionEntryIndex, sDimmensionLabel);
+		return m_oStreamedMatrixOutputWriterPart.setDimensionLabel(ui32DimensionIndex, ui32DimensionEntryIndex, sDimensionLabel);
 	}
 
 	OpenViBE::boolean CBoxAlgorithmStreamedMatrixOutputWriter::setBuffer(const OpenViBE::float64* pBuffer)

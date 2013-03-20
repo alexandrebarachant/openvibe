@@ -218,36 +218,36 @@ template <class IBaseInterface>
 void TBoxAlgorithmStreamedMatrixInputReaderCallback<IBaseInterface>::sendHeaderToOwner(void)
 {
 	// should send header to owner
-	m_pCallback->setMatrixDimmensionCount(m_ui32DimensionCount);
+	m_pCallback->setMatrixDimensionCount(m_ui32DimensionCount);
 	for(OpenViBE::uint32 i=0; i<m_ui32DimensionCount; i++)
 	{
 		if(i<m_vDimensionSize.size())
 		{
-			m_pCallback->setMatrixDimmensionSize(i, m_vDimensionSize[i]);
+			m_pCallback->setMatrixDimensionSize(i, m_vDimensionSize[i]);
 			for(OpenViBE::uint32 j=0; j<m_vDimensionSize[i]; j++)
 			{
 				if(i<m_vDimensionLabel.size())
 				{
 					if(j<m_vDimensionLabel[i].size())
 					{
-						m_pCallback->setMatrixDimmensionLabel(i, j, m_vDimensionLabel[i][j].c_str());
+						m_pCallback->setMatrixDimensionLabel(i, j, m_vDimensionLabel[i][j].c_str());
 					}
 					else
 					{
-						m_pCallback->setMatrixDimmensionLabel(i, j, "");
+						m_pCallback->setMatrixDimensionLabel(i, j, "");
 					}
 				}
 				else
 				{
 					// this reflects a problem !
-					m_pCallback->setMatrixDimmensionLabel(i, j, "");
+					m_pCallback->setMatrixDimensionLabel(i, j, "");
 				}
 			}
 		}
 		else
 		{
 			// this reflects a problem !
-			m_pCallback->setMatrixDimmensionSize(i, 0);
+			m_pCallback->setMatrixDimensionSize(i, 0);
 		}
 	}
 }

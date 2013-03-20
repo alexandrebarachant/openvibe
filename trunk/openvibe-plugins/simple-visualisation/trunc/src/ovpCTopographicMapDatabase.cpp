@@ -68,11 +68,11 @@ CTopographicMapDatabase::~CTopographicMapDatabase()
 {
 }
 
-void CTopographicMapDatabase::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
+void CTopographicMapDatabase::setMatrixDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 {
-	CBufferDatabase::setMatrixDimmensionSize(ui32DimmensionIndex, ui32DimmensionSize);
+	CBufferDatabase::setMatrixDimensionSize(ui32DimensionIndex, ui32DimensionSize);
 
-	if(ui32DimmensionIndex == 0)
+	if(ui32DimensionIndex == 0)
 	{
 		m_oElectrodePotentials.setDimensionCount(1);
 		m_oElectrodePotentials.setDimensionSize(0, (uint32)m_i64NbElectrodes);
@@ -172,16 +172,16 @@ boolean CTopographicMapDatabase::processValues()
 	}
 	else if(l_ui64DisplayTime >= m_oEndTime[l_ui32BufferIndex])
 	{
-		l_ui64SampleIndex = m_pDimmensionSizes[1] - 1;
+		l_ui64SampleIndex = m_pDimensionSizes[1] - 1;
 	}
 	else
 	{
-		l_ui64SampleIndex = (uint64)((float64)(l_ui64DisplayTime - m_oStartTime[l_ui32BufferIndex])/(float64)m_ui64BufferDuration * m_pDimmensionSizes[1]);
+		l_ui64SampleIndex = (uint64)((float64)(l_ui64DisplayTime - m_oStartTime[l_ui32BufferIndex])/(float64)m_ui64BufferDuration * m_pDimensionSizes[1]);
 	}
 
 	for(int i=0; i<m_i64NbElectrodes; i++)
 	{
-		*(m_oElectrodePotentials.getBuffer()+i) = m_oSampleBuffers[l_ui32BufferIndex][i*m_pDimmensionSizes[1] + l_ui64SampleIndex];
+		*(m_oElectrodePotentials.getBuffer()+i) = m_oSampleBuffers[l_ui32BufferIndex][i*m_pDimensionSizes[1] + l_ui64SampleIndex];
 	}
 #endif
 

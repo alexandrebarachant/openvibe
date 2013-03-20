@@ -46,7 +46,7 @@ CBufferDatabase::CBufferDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlg
 
 	m_pChannelLocalisationStreamDecoder->initialize();
 
-	m_pDimmensionSizes[0] = m_pDimmensionSizes[1] = 0;
+	m_pDimensionSizes[0] = m_pDimensionSizes[1] = 0;
 }
 
 CBufferDatabase::~CBufferDatabase()
@@ -233,12 +233,12 @@ boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(float64 f64NumberOfSecon
 	}
 
 	//return if buffer length is not known yet
-	if(m_pDimmensionSizes[1] == 0)
+	if(m_pDimensionSizes[1] == 0)
 	{
 		return false;
 	}
 
-	uint64 l_ui64NewNumberOfBufferToDisplay =  static_cast<uint64>(ceil( (m_f64TotalDuration*m_ui32SamplingFrequency) / m_pDimmensionSizes[1]));
+	uint64 l_ui64NewNumberOfBufferToDisplay =  static_cast<uint64>(ceil( (m_f64TotalDuration*m_ui32SamplingFrequency) / m_pDimensionSizes[1]));
 
 	//displays at least one buffer
 	l_ui64NewNumberOfBufferToDisplay = (l_ui64NewNumberOfBufferToDisplay == 0) ? 1 : l_ui64NewNumberOfBufferToDisplay;
@@ -258,7 +258,7 @@ boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(float64 f64NumberOfSecon
 			m_oEndTime.pop_front();
 
 			//suppress the corresponding minmax values
-			for(uint32 c=0 ; c<m_pDimmensionSizes[0] ; c++)
+			for(uint32 c=0 ; c<m_pDimensionSizes[0] ; c++)
 			{
 				m_oLocalMinMaxValue[c].pop_front();
 			}
@@ -270,39 +270,39 @@ boolean CBufferDatabase::adjustNumberOfDisplayedBuffers(float64 f64NumberOfSecon
 
 uint64 CBufferDatabase::getChannelCount() const
 {
-	return m_pDimmensionSizes[0];
+	return m_pDimensionSizes[0];
 }
 
 float64 CBufferDatabase::getDisplayedTimeIntervalWidth() const
 {
-	return (m_ui64NumberOfBufferToDisplay * ((m_pDimmensionSizes[1]*1000.0) / m_ui32SamplingFrequency));
+	return (m_ui64NumberOfBufferToDisplay * ((m_pDimensionSizes[1]*1000.0) / m_ui32SamplingFrequency));
 }
 
-void CBufferDatabase::setMatrixDimmensionCount(const uint32 ui32DimmensionCount)
+void CBufferDatabase::setMatrixDimensionCount(const uint32 ui32DimensionCount)
 {
-	if(ui32DimmensionCount != 2)
+	if(ui32DimensionCount != 2)
 	{
-		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error dimmension count isn't 2!\n";
+		m_oParentPlugin.getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Error dimension count isn't 2!\n";
 	}
 }
 
-void CBufferDatabase::setMatrixDimmensionSize(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionSize)
+void CBufferDatabase::setMatrixDimensionSize(const uint32 ui32DimensionIndex, const uint32 ui32DimensionSize)
 {
-	m_pDimmensionSizes[ui32DimmensionIndex] = ui32DimmensionSize;
-	m_pDimmesionLabels[ui32DimmensionIndex].resize(ui32DimmensionSize);
+	m_pDimensionSizes[ui32DimensionIndex] = ui32DimensionSize;
+	m_pDimensionLabels[ui32DimensionIndex].resize(ui32DimensionSize);
 
-	if(ui32DimmensionIndex == 0)
+	if(ui32DimensionIndex == 0)
 	{
-		m_i64NbElectrodes = m_pDimmensionSizes[ui32DimmensionIndex];
+		m_i64NbElectrodes = m_pDimensionSizes[ui32DimensionIndex];
 
 		//resize min/max values vector
 		m_oLocalMinMaxValue.resize((size_t)m_i64NbElectrodes);
 	}
 }
 
-void CBufferDatabase::setMatrixDimmensionLabel(const uint32 ui32DimmensionIndex, const uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel)
+void CBufferDatabase::setMatrixDimensionLabel(const uint32 ui32DimensionIndex, const uint32 ui32DimensionEntryIndex, const char* sDimensionLabel)
 {
-	m_pDimmesionLabels[ui32DimmensionIndex][ui32DimmensionEntryIndex] = sDimmensionLabel;
+	m_pDimensionLabels[ui32DimensionIndex][ui32DimensionEntryIndex] = sDimensionLabel;
 }
 
 void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTime, uint64 ui64EndTime)
@@ -328,7 +328,7 @@ void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTi
 		}
 
 		//computes the sampling frequency
-		m_ui32SamplingFrequency = (uint32) ( ((uint64)1<<32) * m_pDimmensionSizes[1] / (m_ui64BufferDuration) );
+		m_ui32SamplingFrequency = (uint32) ( ((uint64)1<<32) * m_pDimensionSizes[1] / (m_ui64BufferDuration) );
 
 		//computes the number of buffer necessary to display the interval
 		adjustNumberOfDisplayedBuffers(-1);
@@ -360,7 +360,7 @@ void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTi
 #endif
 
 	float64* l_pBufferToWrite = NULL;
-	uint64 l_ui64NumberOfSamplesPerBuffer = m_pDimmensionSizes[0] * m_pDimmensionSizes[1];
+	uint64 l_ui64NumberOfSamplesPerBuffer = m_pDimensionSizes[0] * m_pDimensionSizes[1];
 
 	//if old buffers need to be removed
 	if(m_oSampleBuffers.size() == m_ui64NumberOfBufferToDisplay)
@@ -392,7 +392,7 @@ void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTi
 		m_oSampleBuffers.pop_front();
 		m_oStartTime.pop_front();
 		m_oEndTime.pop_front();
-		for(uint32 c=0 ; c<m_pDimmensionSizes[0] ; c++)
+		for(uint32 c=0 ; c<m_pDimensionSizes[0] ; c++)
 		{
 			m_oLocalMinMaxValue[c].pop_front();
 		}
@@ -415,13 +415,13 @@ void CBufferDatabase::setMatrixBuffer(const float64* pBuffer, uint64 ui64StartTi
 	//compute and push min and max values of new buffer
 	uint64 l_ui64CurrentSample = 0;
 	//for each channel
-	for(uint32 c=0 ; c<m_pDimmensionSizes[0] ; c++)
+	for(uint32 c=0 ; c<m_pDimensionSizes[0] ; c++)
 	{
 		float64 l_f64LocalMin = DBL_MAX;
 		float64 l_f64LocalMax = -DBL_MAX;
 
 		//for each sample
-		for(uint64 i=0 ; i<m_pDimmensionSizes[1] ; i++, l_ui64CurrentSample++)
+		for(uint64 i=0 ; i<m_pDimensionSizes[1] ; i++, l_ui64CurrentSample++)
 		{
 			//get channel local min/max
 			if(pBuffer[l_ui64CurrentSample] < l_f64LocalMin)
@@ -676,10 +676,10 @@ boolean CBufferDatabase::fillChannelLookupTable()
 	}
 
 #ifdef ELAN_VALIDATION
-		setMatrixDimmensionSize(0, NB_ELAN_CHANNELS);
-		for(uint32 i=0; i<m_pDimmensionSizes[0]; i++)
+		setMatrixDimensionSize(0, NB_ELAN_CHANNELS);
+		for(uint32 i=0; i<m_pDimensionSizes[0]; i++)
 		{
-			m_pDimmesionLabels[0][i] = m_oChannelLocalisationLabels[i].toASCIIString();	//use elan database
+			m_pDimensionLabels[0][i] = m_oChannelLocalisationLabels[i].toASCIIString();	//use elan database
 		}
 #endif
 
@@ -689,13 +689,13 @@ boolean CBufferDatabase::fillChannelLookupTable()
 	m_oChannelLookupIndices.resize((uint32)(m_i64NbElectrodes), 0);
 
 	//for all channels
-	for(uint32 i=0; i<m_pDimmensionSizes[0]; i++)
+	for(uint32 i=0; i<m_pDimensionSizes[0]; i++)
 	{
 		//trim leading spaces
 		uint32 firstNonWhitespaceChar = 0;
-		for(; firstNonWhitespaceChar < m_pDimmesionLabels[0][i].size(); firstNonWhitespaceChar++)
+		for(; firstNonWhitespaceChar < m_pDimensionLabels[0][i].size(); firstNonWhitespaceChar++)
 		{
-			if(!isspace(m_pDimmesionLabels[0][i][firstNonWhitespaceChar]))
+			if(!isspace(m_pDimensionLabels[0][i][firstNonWhitespaceChar]))
 			{
 				break;
 			}
@@ -703,11 +703,11 @@ boolean CBufferDatabase::fillChannelLookupTable()
 
 		//trim trailing spaces
 		uint32 lastNonWhitespaceChar = 0;
-		if(m_pDimmesionLabels[0][i].size() > 0)
+		if(m_pDimensionLabels[0][i].size() > 0)
 		{
-			for(lastNonWhitespaceChar = m_pDimmesionLabels[0][i].size()-1; lastNonWhitespaceChar >= 0; lastNonWhitespaceChar--)
+			for(lastNonWhitespaceChar = m_pDimensionLabels[0][i].size()-1; lastNonWhitespaceChar >= 0; lastNonWhitespaceChar--)
 			{
-				if(!isspace(m_pDimmesionLabels[0][i][lastNonWhitespaceChar]))
+				if(!isspace(m_pDimensionLabels[0][i][lastNonWhitespaceChar]))
 				{
 					break;
 				}
@@ -719,7 +719,7 @@ boolean CBufferDatabase::fillChannelLookupTable()
 
 		if(firstNonWhitespaceChar < lastNonWhitespaceChar)
 		{
-			std::string l_oChannelLabel(m_pDimmesionLabels[0][i].substr(firstNonWhitespaceChar, lastNonWhitespaceChar-firstNonWhitespaceChar+1));
+			std::string l_oChannelLabel(m_pDimensionLabels[0][i].substr(firstNonWhitespaceChar, lastNonWhitespaceChar-firstNonWhitespaceChar+1));
 
 			for(unsigned int j=0; j<m_oChannelLocalisationLabels.size(); j++)
 			{
@@ -737,7 +737,7 @@ boolean CBufferDatabase::fillChannelLookupTable()
 		{
 			m_oParentPlugin.getLogManager() << LogLevel_Trace
 				<< "Unrecognized electrode name (index=" << (uint32)i
-				<< ", name=" << m_pDimmesionLabels[0][i].c_str()
+				<< ", name=" << m_pDimensionLabels[0][i].c_str()
 				<< ")!\n";
 			res = false;
 		}
@@ -745,10 +745,10 @@ boolean CBufferDatabase::fillChannelLookupTable()
 
 	m_oParentPlugin.getLogManager() << LogLevel_Trace << "Electrodes list : " ;
 
-	for(uint32 i=0; i<m_pDimmensionSizes[0]; i++)
+	for(uint32 i=0; i<m_pDimensionSizes[0]; i++)
 	{
-		m_oParentPlugin.getLogManager() << CString(m_pDimmesionLabels[0][i].c_str());
-		if(i<m_pDimmensionSizes[0]-1)
+		m_oParentPlugin.getLogManager() << CString(m_pDimensionLabels[0][i].c_str());
+		if(i<m_pDimensionSizes[0]-1)
 		{
 			m_oParentPlugin.getLogManager() << ", ";
 		}

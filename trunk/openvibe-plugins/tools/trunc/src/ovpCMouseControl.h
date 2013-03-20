@@ -39,9 +39,9 @@ namespace OpenViBEPlugins
 
 			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm<OpenViBE::Plugins::IBoxAlgorithm>, OVP_ClassId_MouseControl)
 
-			virtual void setMatrixDimmensionCount(const OpenViBE::uint32 ui32DimmensionCount);
-			virtual void setMatrixDimmensionSize(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionSize);
-			virtual void setMatrixDimmensionLabel(const OpenViBE::uint32 ui32DimmensionIndex, const OpenViBE::uint32 ui32DimmensionEntryIndex, const char* sDimmensionLabel);
+			virtual void setMatrixDimensionCount(const OpenViBE::uint32 ui32DimensionCount);
+			virtual void setMatrixDimensionSize(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionSize);
+			virtual void setMatrixDimensionLabel(const OpenViBE::uint32 ui32DimensionIndex, const OpenViBE::uint32 ui32DimensionEntryIndex, const char* sDimensionLabel);
 			virtual void setMatrixBuffer(const OpenViBE::float64* pBuffer);
 
 		protected:
