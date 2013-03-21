@@ -74,6 +74,8 @@ set(CTEST_BINARY_DIRECTORY              "${OV_ROOT_DIR}/dist")
 ## -- DashBoard Root
 set(CTEST_DASHBOARD_ROOT                "${CMAKE_CURRENT_SOURCE_DIR}")
 
+
+
 # -----------------------------------------------------------  
 # -- commands
 # -----------------------------------------------------------  
@@ -147,6 +149,8 @@ set(CTEST_TIMEOUT           "7200")
 set( $ENV{LC_MESSAGES}      "en_EN" )
 
 
+
+
 # -----------------------------------------------------------  
 # -- Run CTest
 # -----------------------------------------------------------  
@@ -154,6 +158,15 @@ set( $ENV{LC_MESSAGES}      "en_EN" )
 ## -- Start
 message(" -- Start dashboard ${MODEL} - ${CTEST_BUILD_NAME} --")
 ctest_start(${MODEL} TRACK ${MODEL})
+
+## Test if another continuous test is not finished 
+IF(${MODEL} MATCHES Continuous)
+	IF(NOT EXISTS "lock")
+		FILE(WRITE "lock" "remove if needed")
+	ELSE(NOT EXISTS "lock")
+		RETURN()
+	ENDIF(NOT EXISTS "lock")
+ENDIF(${MODEL} MATCHES Continuous)
 
 set(ALL_OK TRUE)
 ## -- Update
@@ -165,9 +178,11 @@ IF(ALL_OK)
 		set(ALL_OK FALSE)
 	ENDIF(res EQUAL -1)
 	##  run build and test for continuous integration model only if there was a new update
-	#~ IF(res EQUAL 0 AND ${MODEL} MATCHES Continuous)
-		#~ RETURN()
-	#~ ENDIF(res EQUAL 0 AND ${MODEL} MATCHES Continuous)
+	IF(res EQUAL 0 AND ${MODEL} MATCHES Continuous)
+		# unlock before exit
+		FILE(REMOVE "lock")
+		RETURN()
+	ENDIF(res EQUAL 0 AND ${MODEL} MATCHES Continuous)
 ENDIF(ALL_OK)
 
 
@@ -204,7 +219,7 @@ ENDIF(ALL_OK)
 ## -- SUBMIT
 message(" -- Submit ${MODEL} - ${CTEST_BUILD_NAME} --")
 
-#ctest_submit(                                              RETURN_VALUE res)
+ctest_submit(                                              RETURN_VALUE res)
 message(STATUS "  INFO : submit(...) returned '${res}'")
 
 message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")
@@ -216,4 +231,7 @@ IF(${MODEL} MATCHES Nightly)
 	exec_program("rm" ARGS "-rf ${CTEST_SOURCE_DIRECTORY}" OUTPUT_VARIABLE "cleanScript")
 ENDIF(${MODEL} MATCHES Nightly)
 
-
+## unlock if continous build
+IF(${MODEL} MATCHES Continuous)
+	FILE(REMOVE "lock")
+ENDIF(${MODEL} MATCHES Continuous)
