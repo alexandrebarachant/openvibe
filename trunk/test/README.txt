@@ -40,15 +40,19 @@ Run test:
 
  - for a Nightly test:
 
-ctest -VV -S openVibeTests.cmake,Nightly 
+ ctest -VV -S openVibeTests.cmake,Nightly 
 
  - for a experimental test:
 
-ctest -VV -S openVibeTests.cmake,Experimental
+ ctest -VV -S openVibeTests.cmake,Experimental
 
  - for a continuous building test:
 
-ctest -VV -S openVibeTests.cmake,Continuous 
+ ctest -VV -S openVibeTests.cmake,Continuous 
+
+For a local test in your machine with not cdash rapport :
+
+ ctest 
 
 
 How to add new test:
@@ -73,12 +77,12 @@ SET(TEST_NAME SinusOscillator)
 SET(SCENARIO_TO_TEST "${TEST_NAME}.xml")
 
 IF(WIN32)
-    ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/ov-designer.cmd" "--no-pause" "--no-gui" "--play" ${SCENARIO_TO_TEST})
+	SET(EXT cmd)
 ELSE(WIN32)
-    SET(ENV{DISPLAY} ":0.0")
-    ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/ov-designer.sh" "--no-gui" "--play" ${SCENARIO_TO_TEST})
+	SET(EXT sh)
 ENDIF(WIN32)
 
+ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/ov-designer.${EXT}" "--no-pause" "--no-gui" "--play" ${SCENARIO_TO_TEST})
 ADD_TEST(comparator_${TEST_NAME} "diff" "${TEST_NAME}.csv" "${TEST_NAME}.ref.csv")
 
 

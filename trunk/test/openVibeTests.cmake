@@ -111,6 +111,9 @@ ENDIF(WIN32)
 # -- Configure CTest
 # -----------------------------------------------------------  
 
+## set for automatic test, not for in place local test 
+SET(TEST_LOCAL FALSE)
+
 ## -- CTest Config
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CTestConfig.cmake  ${CTEST_BINARY_DIRECTORY}/CTestConfig.cmake)
 
@@ -153,26 +156,30 @@ message(" -- Start dashboard ${MODEL} - ${CTEST_BUILD_NAME} --")
 ctest_start(${MODEL} TRACK ${MODEL})
 
 set(ALL_OK TRUE)
-
 ## -- Update
 IF(ALL_OK)
 	message(" -- Update ${MODEL} - ${CTEST_BUILD_NAME} --")
 	ctest_update( SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE res)
-	IF(res==-1) 
+	IF(res EQUAL -1) 
 		message(SEND_ERROR "  Update failed.")
 		set(ALL_OK FALSE)
-	ENDIF(res==-1)
+	ENDIF(res EQUAL -1)
+	##  run build and test for continuous integration model only if there was a new update
+	#~ IF(res EQUAL 0 AND ${MODEL} MATCHES Continuous)
+		#~ RETURN()
+	#~ ENDIF(res EQUAL 0 AND ${MODEL} MATCHES Continuous)
 ENDIF(ALL_OK)
+
 
 ## -- Configure	
 IF(ALL_OK)
 	IF(NEED_CONFIGURE)  
 		message(" -- Configure ${MODEL} - ${CTEST_BUILD_NAME} --")
 		ctest_configure(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
-		IF(res!=0) 
+		IF( NOT (res EQUAL 0)) 
 			message(SEND_ERROR "  Configure failed.")
-			set(ALL_OK FALSE)
-		ENDIF(res!=0)
+			set(ALL_OK FALSE)	
+		ENDIF( NOT (res EQUAL 0))
 	ENDIF(NEED_CONFIGURE)  
 ENDIF(ALL_OK)
 	
@@ -180,10 +187,10 @@ ENDIF(ALL_OK)
 IF(ALL_OK)
 	message(" -- Build ${MODEL} - ${CTEST_BUILD_NAME} --")
 	ctest_build(BUILD  "${CTEST_SOURCE_DIRECTORY}/scripts" SOURCE "${CTEST_SOURCE_DIRECTORY}/scripts" RETURN_VALUE res)
-	IF(res!=0) 
+	IF( NOT (res EQUAL 0)) 
 		message(SEND_ERROR "  Build failed.")
 		set(ALL_OK FALSE)
-	ENDIF(res!=0)
+	ENDIF( NOT (res EQUAL 0))
 ENDIF(ALL_OK)
 
 ## -- TEST
@@ -197,7 +204,7 @@ ENDIF(ALL_OK)
 ## -- SUBMIT
 message(" -- Submit ${MODEL} - ${CTEST_BUILD_NAME} --")
 
-ctest_submit(                                              RETURN_VALUE res)
+#ctest_submit(                                              RETURN_VALUE res)
 message(STATUS "  INFO : submit(...) returned '${res}'")
 
 message(" -- Finished ${MODEL}  - ${CTEST_BUILD_NAME} --")

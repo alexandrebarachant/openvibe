@@ -16,14 +16,14 @@
 
 ## -- Other Tests : Place a file named DartTestfile.txt in path with tests.
 
-# If you want to run only test in your developpement machine locallly you can run (on bash shell) this command in this directory
-# LOCAL_TEST=TRUE ctest
-IF($ENV{LOCAL_TEST} MATCHES TRUE)
+# ${TEST_LOCAL} is repleased by "FALSE" only by automatic test call, else {TEST_LOCAL} is not defined
+SET(LOCAL ${TEST_LOCAL})
+IF(NOT (LOCAL MATCHES "FALSE"))
 	set(OV_ROOT_DIR              "$ENV{PWD}/..")
 	set(CTEST_SOURCE_DIRECTORY		"${OV_ROOT_DIR}")
-	set($ENV{OV_BINARY_PATH} "${OV_ROOT_DIR}/dist")
+	set(ENV{OV_BINARY_PATH} "${OV_ROOT_DIR}/dist")
 	message("running local test here= $ENV{OV_BINARY_PATH}")
-ENDIF($ENV{LOCAL_TEST} MATCHES TRUE)	
+ENDIF(NOT (LOCAL MATCHES "FALSE"))
 
 
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/acquisition/trunc/test")
@@ -44,6 +44,7 @@ SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/examples/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/classification/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/stream-codecs/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/python/trunc/test")
+SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/streaming/branches/wip-emaby/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/streaming/branches/wip-emaby/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/streaming/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/signal-processing-gpl/branches/wip-emaby/test")
