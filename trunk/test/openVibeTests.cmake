@@ -13,8 +13,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.4)
 ## --------------------------
 find_program(HOSTNAME_CMD NAMES hostname)
 exec_program(${HOSTNAME_CMD} ARGS OUTPUT_VARIABLE HOSTNAME)
-
-set(CTEST_SITE                          "${HOSTNAME}")
+IF(NOT DEFINED CTEST_SITE)
+	SET(CTEST_SITE                          "${HOSTNAME}")
+ENDIF(NOT DEFINED CTEST_SITE)	
 
 ## -- Set site / build name
 ## --------------------------
