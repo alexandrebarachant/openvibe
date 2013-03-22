@@ -217,14 +217,13 @@ boolean CBoxAlgorithmMatlabFilter::processInput(uint32 ui32InputIndex)
 boolean CBoxAlgorithmMatlabFilter::process(void)
 {
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
-	uint32 i,j;
 	
 	TParameterHandler < IMemoryBuffer* > op_pMemoryBuffer(m_pStreamedMatrixEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 	TParameterHandler < IMemoryBuffer* > op_pMemoryBufferStimulation(m_pStimulationEncoder->getOutputParameter(OVP_GD_Algorithm_StimulationStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 	op_pMemoryBufferStimulation=l_rDynamicBoxContext.getOutputChunk(1);
 	
 	// We decode and save the received stimulations.
-	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
+	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(1); i++)
 	{
 		TParameterHandler < const IMemoryBuffer* > ip_pMemoryBuffer(m_pStimulationDecoder->getInputParameter(OVP_GD_Algorithm_StimulationStreamDecoder_InputParameterId_MemoryBufferToDecode));
 		ip_pMemoryBuffer=l_rDynamicBoxContext.getInputChunk(1, i);
@@ -254,7 +253,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 	}
 
 	// We now decode the stream matrix
-	for(i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
+	for(uint32 i=0; i<l_rDynamicBoxContext.getInputChunkCount(0); i++)
 	{
 		uint64 l_ui64StartTime=l_rDynamicBoxContext.getInputChunkStartTime(0, i);
 		uint64 l_ui64EndTime=l_rDynamicBoxContext.getInputChunkEndTime(0, i);
@@ -364,7 +363,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 			{
 				// we copy the actual pending stimulation in l_oStimulationSet
 				CStimulationSet l_oStimulationSet;
-				for(j=0; j<m_oPendingStimulationSet.getStimulationCount(); )
+				for(uint64 j=0; j<m_oPendingStimulationSet.getStimulationCount(); )
 				{
 					if(m_oPendingStimulationSet.getStimulationDate(j)<l_ui64StartTime)
 					{
@@ -384,10 +383,10 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 				}
 
 				// we copy the stimulation into the corresponding matlab matrix
-				m_pMatlabStimulationHandle=::mxCreateDoubleMatrix(l_oStimulationSet.getStimulationCount(), 3, mxREAL);
+				m_pMatlabStimulationHandle=::mxCreateDoubleMatrix(::mwSize(l_oStimulationSet.getStimulationCount()), 3, mxREAL);
 				float64* l_pMatlabStimulationBuffer=(float64*)::mxGetPr(m_pMatlabStimulation);
 				uint32 l_ui32StimulationCount=l_oStimulationSet.getStimulationCount();
-				for(j=0; j<l_ui32StimulationCount; j++)
+				for(uint32 j=0; j<l_ui32StimulationCount; j++)
 				{
 					l_pMatlabStimulationBuffer[j+0*l_ui32StimulationCount]=l_oStimulationSet.getStimulationIdentifier(j);
 					l_pMatlabStimulationBuffer[j+1*l_ui32StimulationCount]=((l_oStimulationSet.getStimulationDate(j)-l_ui64StartTime) >> 16) / 65536.0;
@@ -480,7 +479,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 							ip_pStimulationSet->setStimulationCount(0);
 							uint32 l_ui32StimulationCount=::mxGetDimensions(l_pMatlabStimulationOut)[0];
 							float64* l_pStim=::mxGetPr(l_pMatlabMatrixOut);
-							for(j=0; j<l_ui32StimulationCount; j++)
+							for(uint32 j=0; j<l_ui32StimulationCount; j++)
 							{
 								// we decode a stimulation from the matlab stimulation matrix
 								ip_pStimulationSet->appendStimulation(

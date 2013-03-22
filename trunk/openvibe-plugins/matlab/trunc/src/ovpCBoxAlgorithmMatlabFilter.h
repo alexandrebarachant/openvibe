@@ -91,10 +91,10 @@ namespace OpenViBEPlugins
 #if defined OVP_OS_Linux
 				rBoxAlgorithmPrototype.addSetting("Matlab launch command", OV_TypeId_String, "[ssh user@host] /path/to/matlab");
 #elif defined OVP_OS_Windows
-				rBoxAlgorithmPrototype.addSetting("Path to Matlab Executable", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
+				rBoxAlgorithmPrototype.addSetting("Path to Matlab Executable", OV_TypeId_String, "C:/Program Files (x86)/MATLAB/R2011b/bin/win32");
 #else
 #endif
-				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "[path-to-my-matlab-workspace]");
+				rBoxAlgorithmPrototype.addSetting("Matlab working directory", OV_TypeId_String, "${__volatile_ScenarioDir}");
 				rBoxAlgorithmPrototype.addSetting("Initialize function", OV_TypeId_String, "bci_Initialize");
 				rBoxAlgorithmPrototype.addSetting("Process function", OV_TypeId_String, "bci_Process");
 				

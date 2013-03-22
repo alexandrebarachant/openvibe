@@ -6,10 +6,11 @@
 #include <iostream>
 #include <stdio.h>
 #include <sstream>
-#include <mex.h>
-#include <engine.h>
 #include <string>
 #include <ctime>
+
+#include <mex.h>
+#include <engine.h>
 
 #include <fs/Files.h>
 
@@ -71,14 +72,15 @@ void CBoxAlgorithmMatlabScripting::sanitizePath(OpenViBE::CString &sPathToModify
 // The checkFailureRoutine() verifies the result of a matlab call (via engine or helper functions) given as argument.
 // If the result is false (the matlab call failed), the message msg is printed in the Error Log Level, and the macro returns false.
 // The Matlab output buffer is then printed. If an error message is detected in the buffer, the same error message is printed and
-// the macro returns false.
-boolean CBoxAlgorithmMatlabScripting::checkFailureRoutine(boolean bResult, OpenViBE::CString msg) 
+// the macro returns false. 
+boolean CBoxAlgorithmMatlabScripting::checkFailureRoutine(boolean bResult, const OpenViBE::CString &msg) 
 {
 	if(!bResult)
 	{ 
 		this->getLogManager() << LogLevel_Error << msg;
 		return false;
 	} 
+	m_bErrorDetected = false;
 	this->printOutputBufferWithFormat();
 	if(m_bErrorDetected)
 	{
@@ -276,8 +278,10 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 		if(l_sCurrentDir[i] == '\\') l_sCurrentDir[i] = '/';
 	this->getConfigurationManager().createConfigurationToken(CString("Path_Bin_Abs"),CString(l_sCurrentDir));
 	
-	CString l_sOpenvibeToolboxPath = CString("addpath('") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab');";
-	::engEvalString(m_pMatlabEngine, (const char * )l_sOpenvibeToolboxPath);
+	CString l_sCommand;
+
+	l_sCommand = CString("addpath('") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab');";
+	::engEvalString(m_pMatlabEngine, (const char * )l_sCommand);
 	//if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, (const char * )l_sOpenvibeToolboxPath) == 0, "An error occured while adding the path to openvibe toolbox\n")) return false;
 	// If there is more than 1 Matlab box in the scenario, the path is set repeatedly
 	// resulting in warning messages in the buffer. We don't print them.
@@ -286,29 +290,20 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 	CString l_sWorkingDir;
 	getStaticBoxContext().getSettingValue(2, l_sWorkingDir); // working directory
 	sanitizePath(l_sWorkingDir);
+
 	this->getLogManager() << LogLevel_Trace << "Setting working directory to " << l_sWorkingDir << "\n";
-	if(::engEvalString(m_pMatlabEngine, (CString("cd ") + l_sWorkingDir).toASCIIString())!=0)
-	{
-		this->printOutputBufferWithFormat();
-		return false;
-	}
+	l_sCommand = CString("cd ") + l_sWorkingDir;
+	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sCommand) == 0, "An error occured while changing the working directory\n")) return false;
 
 	// executes the pre-run routine that defines the global identifiers for streams and stimulations codes
-	CString l_sDefineFile = CString("run '") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab/OV_define.m'";
-	if(::engEvalString(m_pMatlabEngine, l_sDefineFile.toASCIIString())!=0)
-	{
-		this->printOutputBufferWithFormat();
-		return false;
-	}
+	l_sCommand = CString("run '") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab/OV_define.m'";
+	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sCommand) == 0, "An error occured while calling OV_define.m")) return false;
 
 	// executes the pre-run routine that construct the ov_box object
-	char l_sCreateBoxCommand[128];
-	sprintf(l_sCreateBoxCommand, "%s = OV_createBoxInstance(%i,%i)", (const char *) m_sBoxInstanceVariableName, this->getStaticBoxContext().getInputCount(),this->getStaticBoxContext().getOutputCount());
-	if(::engEvalString(m_pMatlabEngine, l_sCreateBoxCommand)!=0)
-	{
-		this->printOutputBufferWithFormat();
-		return false;
-	}
+	char l_sInputCount[32]; sprintf(l_sInputCount, "%i", this->getStaticBoxContext().getInputCount());
+	char l_sOutputCount[32]; sprintf(l_sOutputCount, "%i", this->getStaticBoxContext().getOutputCount());
+	l_sCommand = m_sBoxInstanceVariableName + " = OV_createBoxInstance(" + l_sInputCount + "," + l_sOutputCount + ");";
+	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sCommand) == 0, "An error occured while calling OV_createBoxInstance.m")) return false;
 	
 	//First call to a function of the openvibe toolbox
 	// if it fails, the toolbox may be not installed
@@ -378,8 +373,11 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 	l_sSettingNames  = l_sSettingNames + "}";
 	l_sSettingTypes = l_sSettingTypes +"}";
 	l_sSettingValues = l_sSettingValues +"}";
-	
-	CString l_sCommand = m_sBoxInstanceVariableName + " = OV_setSettings("+m_sBoxInstanceVariableName+"," + l_sSettingNames + "," + l_sSettingTypes +"," + l_sSettingValues +");";
+
+	// On Windows, Matlab doesn't sometimes notice .m files have been changed, esp. if you have matlab box running while you change them
+	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, "clear functions;") == 0, "An error occured while calling matlab 'clear functions;'\n")) return false;
+
+	l_sCommand = m_sBoxInstanceVariableName + " = OV_setSettings("+m_sBoxInstanceVariableName+"," + l_sSettingNames + "," + l_sSettingTypes +"," + l_sSettingValues +");";
 	//this->getLogManager() << LogLevel_Error << l_sCommand << "\n";
 	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, (const char *)l_sCommand)==0,"Error calling [OV_setSettings]\n")) return false;
 
@@ -434,11 +432,10 @@ boolean CBoxAlgorithmMatlabScripting::uninitialize(void)
 	if(m_pMatlabEngine != NULL)
 	{
 		CString l_sCommand = m_sBoxInstanceVariableName + " = " + m_sUninitializeFunction + "(" + m_sBoxInstanceVariableName + ");";
-		if(::engEvalString(m_pMatlabEngine, l_sCommand) != 0)
-		{
-			this->getLogManager() << LogLevel_Warning << "An error occured while calling the Uninitialize function ["<<m_sUninitializeFunction<<"]\n";
-		}
-		this->printOutputBufferWithFormat();	
+		if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sCommand) == 0, "An error occured while calling the uninitialize function\n")) 
+		{ 
+			// NOP, we still want to deallocate below
+		} 
 	}
 
 	CloseMatlabEngineSafely();
@@ -500,17 +497,21 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 			
 			CIdentifier l_oType;
 			getStaticBoxContext().getInputType(i,l_oType);
-			boolean l_bUnkownStream = true;
+			boolean l_bUnknownStream = true;
+			boolean l_bReceivedSomething = false;
 
 			if(m_mDecoders[i]->isHeaderReceived())
 			{
+				l_bReceivedSomething = true;
+				// this->getLogManager() << LogLevel_Debug << "Received header\n";
+
 				if(l_oType == OV_TypeId_StreamedMatrix)
 				{
 					IMatrix * l_pMatrix = ((TStreamedMatrixDecoder<CBoxAlgorithmMatlabScripting> *) m_mDecoders[i])->getOutputMatrix();
 					if(!checkFailureRoutine(m_oMatlabHelper.setStreamedMatrixInputHeader(i,l_pMatrix),"Error calling [OV_setStreamMatrixInputHeader]\n")) return false ;
 					
 					m_NbInputHeaderSent++;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 
 				if(l_oType == OV_TypeId_Signal)
@@ -520,7 +521,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					if(!checkFailureRoutine(m_oMatlabHelper.setSignalInputHeader(i,l_pMatrix,l_ui64SamplingRate),"Error calling [OV_setSignalInputHeader]\n")) return false;
 					
 					m_NbInputHeaderSent++;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 
 				if(l_oType == OV_TypeId_FeatureVector)
@@ -529,7 +530,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					if(!checkFailureRoutine(m_oMatlabHelper.setFeatureVectorInputHeader(i,l_pMatrix),"Error calling [OV_setFeatureVectorInputHeader]\n")) return false;
 					
 					m_NbInputHeaderSent++;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 
 				if(l_oType == OV_TypeId_Spectrum)
@@ -539,7 +540,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					if(!checkFailureRoutine(m_oMatlabHelper.setSpectrumInputHeader(i,l_pMatrix,l_pFreqBands),"Error calling [OV_setSpectrumInputHeader]\n")) return false;
 					
 					m_NbInputHeaderSent++;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 
 				if(l_oType == OV_TypeId_ChannelLocalisation)
@@ -549,14 +550,14 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					if(!checkFailureRoutine(m_oMatlabHelper.setChannelLocalisationInputHeader(i,l_pMatrix,l_bDynamic),"Error calling [OV_setChannelLocalizationInputHeader]\n")) return false;
 					
 					m_NbInputHeaderSent++;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 
 				if(l_oType == OV_TypeId_ExperimentationInformation)
 				{
 					this->getLogManager() << LogLevel_Warning << "The Experiment Information Stream is not implemented with the Matlab Scripting Box. If this is relevant for your usage, please contact the official development Team.\n";
 					m_NbInputHeaderSent++;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 
 				if(l_oType == OV_TypeId_Stimulations)
@@ -564,12 +565,14 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					if(!checkFailureRoutine(m_oMatlabHelper.setStimulationsInputHeader(i),"Error calling [OV_setStimulationsInputHeader]\n")) return false;
 					
 					m_NbInputHeaderSent++;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
-			}
-
+			} 
+			
 			if(m_mDecoders[i]->isBufferReceived())
 			{
+				// this->getLogManager() << LogLevel_Debug << "Received buffer\n";
+				l_bReceivedSomething = true;
 				// 
 				if(l_oType == OV_TypeId_StreamedMatrix || this->getTypeManager().isDerivedFromStream(l_oType, OV_TypeId_StreamedMatrix))
 				{
@@ -577,8 +580,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					uint64 l_ui64StartTime = l_rDynamicBoxContext.getInputChunkStartTime(i,j);
 					uint64 l_ui64EndTime = l_rDynamicBoxContext.getInputChunkEndTime(i,j);
 					if(!checkFailureRoutine(m_oMatlabHelper.addStreamedMatrixInputBuffer(i,l_pMatrix,l_ui64StartTime,l_ui64EndTime),"Error calling [OV_addInputBuffer (Streamed Matrix or child stream)]\n")) return false;
-					
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 
 				if(l_oType == OV_TypeId_Stimulations)
@@ -586,15 +588,26 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					IStimulationSet * l_pStimSet = ((TStimulationDecoder<CBoxAlgorithmMatlabScripting> *) m_mDecoders[i])->getOutputStimulationSet();
 					uint64 l_ui64StartTime = l_rDynamicBoxContext.getInputChunkStartTime(i,j);
 					uint64 l_ui64EndTime = l_rDynamicBoxContext.getInputChunkEndTime(i,j);
+					if(l_pStimSet->getStimulationCount() > 0) {
+						this->getLogManager() << LogLevel_Info << "Stuffing in stimuli\n";
+					}
 					if(!checkFailureRoutine(m_oMatlabHelper.addStimulationsInputBuffer(i,l_pStimSet,l_ui64StartTime,l_ui64EndTime),"Error calling [OV_addInputBuffer (Stimulations)]\n")) return false;
-					l_bUnkownStream = false;
+					l_bUnknownStream = false;
 				}
 				
+			} 
+			
+			if(m_mDecoders[i]->isEndReceived()) 
+			{
+				this->getLogManager() << LogLevel_Info << "Received end\n";
+				l_bReceivedSomething = true;
+				l_bUnknownStream = false;
+				// @FIXME should something additional be done here?
 			}
 
-			if(l_bUnkownStream)
+			if(l_bReceivedSomething && l_bUnknownStream)
 			{
-				this->getLogManager() << LogLevel_Error << "Unkown Stream Type on input ["<<i<<"].\n";
+				this->getLogManager() << LogLevel_Error << "Unknown Stream Type " << l_oType << " on input ["<<i<<"].\n";
 				return false;
 			}
 		}
@@ -612,7 +625,6 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 	sprintf(l_sBuffer,"%s = %s(%s);", (const char*) m_sBoxInstanceVariableName, (const char*)m_sProcessFunction, (const char*) m_sBoxInstanceVariableName);
 	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sBuffer) == 0,"Error calling the Process function.\n")) return false;
 
-	
 	// Go through every output in the matlab box and copy the data to the C++ side
 	for(uint32 i = 0; i < getStaticBoxContext().getOutputCount(); i++)
 	{
@@ -633,14 +645,14 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 			// @FIXME the practice used below of assigning to getters is nasty, it should be refactored to e.g. using getter/setter pairs
 			if(!m_mOutputHeaderState[i])
 			{
-				boolean l_bUnkownType = true;
+				boolean l_bUnknownType = true;
 				if(l_oType == OV_TypeId_StreamedMatrix)
 				{
 					((TStreamedMatrixEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix() = new CMatrix();
 					IMatrix * l_pMatrixToSend = ((TStreamedMatrixEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
 					if(!checkFailureRoutine(m_oMatlabHelper.getStreamedMatrixOutputHeader(i,l_pMatrixToSend),"Error calling [OV_getStreamedMatrixOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
-					l_bUnkownType = false;
+					l_bUnknownType = false;
 				}
 				if(l_oType == OV_TypeId_Signal)
 				{
@@ -652,7 +664,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					// Set the new sampling rate
 					((TSignalEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputSamplingRate() = l_ui64SamplingRate;
 					
-					l_bUnkownType = false;
+					l_bUnknownType = false;
 				}
 
 				if(l_oType == OV_TypeId_FeatureVector)
@@ -661,7 +673,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					IMatrix * l_pMatrixToSend = ((TFeatureVectorEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
 					if(!checkFailureRoutine(m_oMatlabHelper.getFeatureVectorOutputHeader(i,l_pMatrixToSend),"Error calling [OV_getFeatureVectorOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
-					l_bUnkownType = false;
+					l_bUnknownType = false;
 				}
 
 				if(l_oType == OV_TypeId_Spectrum)
@@ -672,7 +684,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					IMatrix * l_pBands        = ((TSpectrumEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMinMaxFrequencyBands();
 					if(!checkFailureRoutine(m_oMatlabHelper.getSpectrumOutputHeader(i,l_pMatrixToSend,l_pBands),"Error calling [OV_getSpectrumOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
-					l_bUnkownType = false;
+					l_bUnknownType = false;
 				}
 
 				if(l_oType == OV_TypeId_ChannelLocalisation)
@@ -685,13 +697,13 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					// Set the new channel localisation
 					((TChannelLocalisationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputDynamic() = l_bDynamic;
 
-					l_bUnkownType = false;
+					l_bUnknownType = false;
 				}
 
 				if(l_oType == OV_TypeId_ExperimentationInformation)
 				{
 					this->getLogManager() << LogLevel_Warning << "The Experiment Information Stream is not implemented with the Matlab Scripting Box. If this is relevant for your usage, please contact the official development Team.\n";
-					l_bUnkownType = false;
+					l_bUnknownType = false;
 				}
 
 				if(l_oType == OV_TypeId_Stimulations)
@@ -700,11 +712,11 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 					IStimulationSet * l_pStimSet = ((TStimulationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputStimulationSet();
 					if(!checkFailureRoutine(m_oMatlabHelper.getStimulationsOutputHeader(i, l_pStimSet),"Error calling [OV_getStimulationsOutputHeader]. Did you correctly set the output header in the matlab structure ?\n")) return false;
 
-					l_bUnkownType = false;
+					l_bUnknownType = false;
 				}
 
 				
-				if(l_bUnkownType)
+				if(l_bUnknownType)
 				{
 					this->getLogManager() << LogLevel_Error << "Unknown Stream Type on output ["<<i<<"].\n";
 					return false;
@@ -718,7 +730,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 			}
 
 			
-			boolean l_bUnkownType = true;
+			boolean l_bUnknownType = true;
 			uint64 l_ui64StartTime = 0;
 			uint64 l_ui64EndTime   = 0;
 
@@ -727,7 +739,7 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 				IMatrix * l_pMatrixToSend = ((TStreamedMatrixEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputMatrix();
 				if(!checkFailureRoutine(m_oMatlabHelper.popStreamedMatrixOutputBuffer(i,l_pMatrixToSend,l_ui64StartTime,l_ui64EndTime),"Error calling [OV_popOutputBufferReshape] for Streamed Matrix stream or child stream.\n")) return false;
 
-				l_bUnkownType = false;
+				l_bUnknownType = false;
 			}
 
 			if(l_oType == OV_TypeId_Stimulations)
@@ -735,12 +747,12 @@ boolean CBoxAlgorithmMatlabScripting::process(void)
 				IStimulationSet * l_pStimSet = ((TStimulationEncoder<CBoxAlgorithmMatlabScripting> *) m_mEncoders[i])->getInputStimulationSet();
 				l_pStimSet->clear();
 				if(!checkFailureRoutine(m_oMatlabHelper.popStimulationsOutputBuffer(i,l_pStimSet,l_ui64StartTime,l_ui64EndTime),"Error calling [OV_popOutputBuffer] for Stimulation stream.\n")) return false;
-				l_bUnkownType = false;
+				l_bUnknownType = false;
 			}
 
-			if(l_bUnkownType)
+			if(l_bUnknownType)
 			{
-				this->getLogManager() << LogLevel_Error << "Unkown Stream Type on output ["<<i<<"].\n";
+				this->getLogManager() << LogLevel_Error << "Unknown Stream Type on output ["<<i<<"].\n";
 				return false;
 			}
 
@@ -763,8 +775,17 @@ boolean CBoxAlgorithmMatlabScripting::printOutputBufferWithFormat()
 	if(l_ssMatlabBuffer.str().size()>0)
 	{
 		size_t l_oErrorIndex=l_ssMatlabBuffer.str().find("??? ");
+		if(l_oErrorIndex==std::string::npos) 
+		{
+			l_oErrorIndex=l_ssMatlabBuffer.str().find("Error: ");
+		} 
+		if(l_oErrorIndex==std::string::npos) 
+		{
+			l_oErrorIndex=l_ssMatlabBuffer.str().find("Error in ");
+		}
+
 		size_t l_oWarningIndex=l_ssMatlabBuffer.str().find("Warning: ");
-		if(l_oErrorIndex!=0 && l_oWarningIndex!=0)
+		if(l_oErrorIndex==std::string::npos && l_oWarningIndex==std::string::npos)
 		{
 			this->getLogManager()<<LogLevel_Info<< "\n---- MATLAB BUFFER - INFO ----\n"<<l_ssMatlabBuffer.str().substr(0,(l_oWarningIndex<l_oErrorIndex)?l_oWarningIndex:l_oErrorIndex).c_str()<<"\n";
 			//this->getLogManager()<<LogLevel_Info<< "-------- END OF BUFFER --------\n";

@@ -57,7 +57,7 @@ namespace OpenViBEPlugins
 			char* m_sMatlabBuffer;
 			OpenViBE::boolean m_bErrorDetected;
 			OpenViBE::boolean printOutputBufferWithFormat(void);
-			OpenViBE::boolean checkFailureRoutine(OpenViBE::boolean bResult, OpenViBE::CString msg);
+			OpenViBE::boolean checkFailureRoutine(OpenViBE::boolean bResult, const OpenViBE::CString &msg);
 			void sanitizePath(OpenViBE::CString &sPathToModify) const;
 
 			//void sendOutputHeader(OpenViBE::CIdentifier idOutputType);
@@ -125,10 +125,10 @@ namespace OpenViBEPlugins
 #if defined TARGET_OS_Linux
 				rBoxAlgorithmPrototype.addSetting("Matlab launch command",      OV_TypeId_String, "[ssh user@host] /path/to/matlab");
 #elif defined TARGET_OS_Windows
-				rBoxAlgorithmPrototype.addSetting("Path to Matlab Executables", OV_TypeId_String, "C:/Program Files/MATLAB/R2011a/bin/win32");
+				rBoxAlgorithmPrototype.addSetting("Path to Matlab Executables", OV_TypeId_String, "C:/Program Files (x86)/MATLAB/R2011b/bin/win32");
 #else
 #endif
-				rBoxAlgorithmPrototype.addSetting("Matlab working directory",   OV_TypeId_String, "[path-to-my-matlab-workspace]");
+				rBoxAlgorithmPrototype.addSetting("Matlab working directory",   OV_TypeId_String, "${__volatile_ScenarioDir}");
 				rBoxAlgorithmPrototype.addSetting("Initialize function",        OV_TypeId_String, "matlab_Initialize");
 				rBoxAlgorithmPrototype.addSetting("Process function",           OV_TypeId_String, "matlab_Process");
 				rBoxAlgorithmPrototype.addSetting("Uninitialize function",      OV_TypeId_String, "matlab_Uninitialize");
