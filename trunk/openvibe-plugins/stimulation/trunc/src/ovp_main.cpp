@@ -22,6 +22,8 @@
 #include "ovpCBoxAlgorithmP300SpellerStimulator.h"
 #include "ovpCBoxAlgorithmP300IdentifierStimulator.h"
 
+#include "ovpCBoxAlgorithmTimeout.h"
+
 OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerEnumerationType(OVP_TypeId_StimulationFilterAction, "Stimulation Filter Action");
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_StimulationFilterAction, "Select", OVP_TypeId_StimulationFilterAction_Select.toUInteger());
@@ -54,4 +56,6 @@ OVP_Declare_Begin();
 
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmP300SpellerStimulatorDesc);
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmP300IdentifierStimulatorDesc);
+
+	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmTimeoutDesc);
 OVP_Declare_End();
