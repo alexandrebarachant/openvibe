@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 
 #if defined OVP_OS_Linux
   #include <unistd.h>

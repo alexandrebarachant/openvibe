@@ -4,7 +4,7 @@
 #include "ovpCHelloWorld.h"
 
 #include <iostream>
-#include <stdlib.h>		// atof
+#include <cstdlib>		// atof
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

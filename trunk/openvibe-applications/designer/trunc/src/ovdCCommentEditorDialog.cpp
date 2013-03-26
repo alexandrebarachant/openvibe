@@ -1,6 +1,7 @@
 #include "ovdCCommentEditorDialog.h"
 
-#include <stdlib.h>
+#include <cstdlib>
+
 using namespace OpenViBEDesigner;
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

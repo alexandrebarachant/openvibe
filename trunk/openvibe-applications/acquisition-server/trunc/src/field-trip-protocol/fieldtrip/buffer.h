@@ -9,7 +9,7 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string.h>
 #include <stdio.h>
 
