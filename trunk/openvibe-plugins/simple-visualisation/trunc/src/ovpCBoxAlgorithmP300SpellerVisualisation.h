@@ -146,7 +146,7 @@ namespace OpenViBEPlugins
 
 				rBoxAlgorithmPrototype.addOutput("Target / Non target flagging",     OV_TypeId_Stimulations);
 
-				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-speller.ui");
+				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-speller.ui");
 				rBoxAlgorithmPrototype.addSetting("Row stimulation base",            OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
 				rBoxAlgorithmPrototype.addSetting("Column stimulation base",         OV_TypeId_Stimulation, "OVTK_StimulationId_Label_07");
 

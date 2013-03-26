@@ -123,24 +123,24 @@ namespace OpenViBEPlugins
 
 				rBoxAlgorithmPrototype.addOutput("Target / Non target flagging",     OV_TypeId_Stimulations);
 
-				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card.ui");
+				rBoxAlgorithmPrototype.addSetting("Interface filename",              OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card.ui");
 				rBoxAlgorithmPrototype.addSetting("Background color",                OV_TypeId_Color,       "90,90,90");
 				rBoxAlgorithmPrototype.addSetting("Target background color",         OV_TypeId_Color,       "10,40,10");
 				rBoxAlgorithmPrototype.addSetting("Selected background color",       OV_TypeId_Color,       "70,20,20");
 				rBoxAlgorithmPrototype.addSetting("Card stimulation base",           OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
-				rBoxAlgorithmPrototype.addSetting("Default background filename",     OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png-offscreen");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png");
-				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png");
+				rBoxAlgorithmPrototype.addSetting("Default background filename",     OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/openvibe-logo.png-offscreen");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/arkanoid.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/bomberman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/doom.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/dott.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/lemmings.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/mario.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/megaman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/pacman.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/sonic.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/space-invaders.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/worms.png");
+				rBoxAlgorithmPrototype.addSetting("Card filename",                   OV_TypeId_Filename,    "${Path_Data}/openvibe-plugins/simple-visualisation/p300-magic-card/zelda.png");
 
 				return true;
 			}

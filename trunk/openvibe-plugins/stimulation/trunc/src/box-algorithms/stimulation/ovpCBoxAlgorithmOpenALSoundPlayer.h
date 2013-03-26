@@ -104,7 +104,7 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addOutput ("Resync triggers", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addSetting("PLAY trigger", OV_TypeId_Stimulation,"OVTK_StimulationId_Label_00");
 				rBoxAlgorithmPrototype.addSetting("STOP trigger", OV_TypeId_Stimulation, "OVTK_StimulationId_Label_01");
-				rBoxAlgorithmPrototype.addSetting("File to play", OV_TypeId_Filename, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/stimulation/ov_beep.wav");
+				rBoxAlgorithmPrototype.addSetting("File to play", OV_TypeId_Filename, "${Path_Data}/openvibe-plugins/stimulation/ov_beep.wav");
 				rBoxAlgorithmPrototype.addSetting("Loop", OV_TypeId_Boolean, "False");
 				
 				return true;

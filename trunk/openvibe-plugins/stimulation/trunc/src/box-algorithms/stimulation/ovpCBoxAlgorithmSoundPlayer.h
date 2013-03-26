@@ -71,8 +71,8 @@ namespace OpenViBEPlugins
 				rBox.addSetting("", OV_UndefinedIdentifier, "");
 				rBox.setSettingDefaultValue(ui32Index, "OVTK_StimulationId_Beep");
 				rBox.setSettingValue(ui32Index, "OVTK_StimulationId_Beep");
-				rBox.setSettingDefaultValue(ui32Index+1, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/stimulation/ov_beep.wav");
-				rBox.setSettingValue(ui32Index+1, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/stimulation/ov_beep.wav");
+				rBox.setSettingDefaultValue(ui32Index+1, "${Path_Data}/openvibe-plugins/stimulation/ov_beep.wav");
+				rBox.setSettingValue(ui32Index+1, "${Path_Data}/openvibe-plugins/stimulation/ov_beep.wav");
 
 				return this->check(rBox);
 			};
@@ -105,7 +105,7 @@ namespace OpenViBEPlugins
 			{
 				rBoxAlgorithmPrototype.addInput  ("Stimulation stream", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addSetting("Stimulation", OV_TypeId_Stimulation,"OVTK_StimulationId_Beep");
-				rBoxAlgorithmPrototype.addSetting("Sound to play", OV_TypeId_Filename, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/stimulation/ov_beep.wav");
+				rBoxAlgorithmPrototype.addSetting("Sound to play", OV_TypeId_Filename, "${Path_Data}/openvibe-plugins/stimulation/ov_beep.wav");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanAddSetting);
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_IsUnstable);
 
