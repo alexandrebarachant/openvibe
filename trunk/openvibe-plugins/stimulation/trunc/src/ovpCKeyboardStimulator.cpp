@@ -27,16 +27,16 @@ namespace OpenViBEPlugins
 		}
 */
 		// Called when a key is pressed on the keyboard
-		gboolean KeyboardStimulator_KeyPressCallback(GtkWidget *widget, GdkEventKey *event, gpointer data)
+		gboolean KeyboardStimulator_KeyPressCallback(GtkWidget *widget, GdkEventKey *thisEvent, gpointer data)
 		{
-			reinterpret_cast<CKeyboardStimulator*>(data)->processKey(event->keyval, true);
+			reinterpret_cast<CKeyboardStimulator*>(data)->processKey(thisEvent->keyval, true);
 			return true;
 		}
 
 		// Called when a key is released on the keyboard
-		gboolean KeyboardStimulator_KeyReleaseCallback(GtkWidget *widget, GdkEventKey *event, gpointer data)
+		gboolean KeyboardStimulator_KeyReleaseCallback(GtkWidget *widget, GdkEventKey *thisEvent, gpointer data)
 		{
-			reinterpret_cast<CKeyboardStimulator*>(data)->processKey(event->keyval, false);
+			reinterpret_cast<CKeyboardStimulator*>(data)->processKey(thisEvent->keyval, false);
 			return true;
 		}
 

@@ -1,0 +1,86 @@
+/**
+ * \page BoxAlgorithm_StimulationVoter Stimulation Voter
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Description|
+This box reads all the incoming stimuli and returns the stimulus ID with the highest number of occurrences. Some constraints can be specified as the box parameters.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Inputs|
+Collects the stimuli from a single input. To use several inputs, combine them first with Stimulation Multiplexer. 
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Input1|
+Input stream, can include any stimuli.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Input1|
+
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Output1|
+This output sends a new stimulation as soon as the most frequent stimulus type passes the criteria specifie by the parameters.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Setting1|
+Minimum number of incoming stimulus required to be inside the time window to carry out a vote.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Setting1|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Setting2|
+The length of the time window. Stimuli are discarded after they drop outside the time window.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Setting2|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Setting3|
+You can specify that stimului can either vote as long as they remain inside the time window,
+ or to be discarded after a single successful vote.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Setting3|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Setting4|
+The output stimulus can be tagged either with the time of vote, the time of the last experienced winning stimulus, or the time of the last stimulus used in the vote.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Setting4|
+ 
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Setting5|
+Specifies the class interpreted as the 'rejected' class.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Setting5|
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Setting6|
+If no, 'rejected' class never wins the votes and is never output.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Setting6|
+ 
+ 
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Examples|
+ Possible usages include aggregating classifier outputs by voting.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Examples|
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_StimulationVoter_Miscellaneous|
+ This algorithm is similar to the Voting Classifier but it allows more parameters. Also, all stimulus available at time step t are used to carry out the vote at time step t. On the other hand, Stimulation Voter only supports Stimulus input streams.
+ * |OVP_DocEnd_BoxAlgorithm_StimulationVoter_Miscellaneous|
+ */
+
