@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmStimulationVoter.h"
 
-#include <system/Time.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <vector>
 #include <string>
@@ -100,7 +100,7 @@ boolean CBoxAlgorithmStimulationVoter::process(void)
 				uint64 l_ui64StimulationIdentifier=op_pStimulationSet->getStimulationIdentifier(k);
 				uint64 l_ui64StimulationDate = op_pStimulationSet->getStimulationDate(k);
 				m_ui64LatestStimulusDate = std::max(m_ui64LatestStimulusDate, l_ui64StimulationDate);
-				if(System::Time::convertToSeconds(m_ui64LatestStimulusDate - l_ui64StimulationDate) <= m_f64TimeWindow) 
+				if(ITimeArithmetics::timeToSeconds(m_ui64LatestStimulusDate - l_ui64StimulationDate) <= m_f64TimeWindow) 
 				{
 					// Stimulus is fresh, append
 					m_oStimulusDeque.push_back(std::pair<uint64, uint64>(l_ui64StimulationIdentifier, l_ui64StimulationDate));
@@ -122,7 +122,7 @@ boolean CBoxAlgorithmStimulationVoter::process(void)
 	// Always clear too old votes that have slipped off the time window. The time window is relative to the time of the latest stimulus received. 
 	while(!m_oStimulusDeque.empty()) {
 		uint64 l_ui64FrontDate = m_oStimulusDeque.front().second;
-		if(System::Time::convertToSeconds(m_ui64LatestStimulusDate - l_ui64FrontDate) > m_f64TimeWindow) {
+		if(ITimeArithmetics::timeToSeconds(m_ui64LatestStimulusDate - l_ui64FrontDate) > m_f64TimeWindow) {
 			// Drop it
 			m_oStimulusDeque.pop_front();
 		} else {
