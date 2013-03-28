@@ -1,12 +1,11 @@
-#include "fs/IAttributes.h"
-#include "fs/IEntry.h"
+
 #include "fs/IEntryEnumerator.h"
 #include <iostream>
 
 class CB : public FS::IEntryEnumeratorCallBack
 {
 public:
-	virtual FS::boolean callback(FS::IEntry& rEntry, FS::IAttributes& rAttributes)
+	virtual FS::boolean callback(FS::IEntryEnumerator::IEntry& rEntry, FS::IEntryEnumerator::IAttributes& rAttributes)
 	{
 		std::cout<<(rAttributes.isDirectory()?"d":" ");
 		std::cout<<(rAttributes.isFile()?"f":" ");
@@ -28,6 +27,10 @@ public:
 
 int main(int argc, char** argv)
 {
+	if(argc<=1) {
+		std::cout << "Usage: " << argv[0] << " <filename pattern>\n";
+		return 1;
+	}
 	std::cout<<"--"<<std::endl;
 
 	CB cb;
