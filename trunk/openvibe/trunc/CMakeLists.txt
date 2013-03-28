@@ -47,6 +47,13 @@ IF(UNIX)
 	ENDIF(LIB_STANDARD_MODULE_PTHREAD)
 ENDIF(UNIX)
 
+# --------------------------------- 
+# Tests
+# ---------------------------------
+IF(OV_COMPILE_TESTS) 
+	SUBDIRS("test")
+ENDIF(OV_COMPILE_TESTS)
+
 # ---------------------------------
 # Target macros
 # Defines target operating system

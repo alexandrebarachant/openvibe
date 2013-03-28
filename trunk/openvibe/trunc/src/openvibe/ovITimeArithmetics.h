@@ -39,12 +39,12 @@ namespace OpenViBE
 		 */
 		static uint64 timeToSampleIndex(const uint64 ui64SamplingRate, const uint64 ui64Time)
 		{
-			return (ui64Time*ui64SamplingRate)>>32;
+			return ((ui64Time+1)*ui64SamplingRate-1)>>32; 
 		}
 		
 		/**
 		 * \brief Get the time in seconds given fixed point time
-		 * \param ui64FixedPointTime : current time in fixed point format
+		 * \param ui64FixedPointTime : time in fixed point format
 		 * \return Regular floating point time in seconds
 		 */
 		static float64 timeToSeconds(const uint64 ui64Time)
@@ -52,6 +52,15 @@ namespace OpenViBE
 			return (ui64Time>>22)/1024.0;
 		}
 
+		/**
+		 * \brief Get the fixed point time given float time in seconds
+		 * \param f64Time : Regular floating point time in seconds 
+		 * \return Time in fixed point format
+		 */
+		static uint64 secondsToTime(const float64 f64Time)
+		{
+			return ((uint64)(f64Time*1024.0))<<22;
+		}
 	};
 
 }
