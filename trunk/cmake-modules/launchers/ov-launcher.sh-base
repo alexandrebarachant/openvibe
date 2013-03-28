@@ -10,6 +10,10 @@ export OV_DATADIR="@CMAKE_INSTALL_FULL_DATADIR@"
 export LD_LIBRARY_PATH="$OV_LIBDIR:$OV_DISTROOT/../scripts/software/lib:$LD_LIBRARY_PATH"
 export LC_ALL=C
 
+# The following line is there to help in cases where OpenViBE can consume excessive
+# amounts of CPU or grind the swap. You can remove it if you know what you're doing.
+renice 19 $$
+
 ov_debugger=
 if [ "$1" == "--debug" ]; then
 	ov_debugger="gdb --args"
