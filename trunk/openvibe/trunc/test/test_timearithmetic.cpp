@@ -9,21 +9,22 @@ using namespace std;
 
 int main(int argc, char *argv[]) 
 {
-	uint64 samplingRates[] = {100,128,200,400,512,1000};
+	uint64 samplingRatesToTest[] = {100,128,200,400,512,1000};
 
 	int retVal = 0;
 
-	uint64 secsAndBackTolerance = {ITimeArithmetics::secondsToTime(0.005)};
+	uint64 secsAndBackTolerance = {ITimeArithmetics::secondsToTime(0.001)};
 
 	cout << "To seconds and back conversion tolerance has been set to " << ITimeArithmetics::timeToSeconds(secsAndBackTolerance) << " secs\n\n";
 
 	{
-		cout << "--\n Test 'time to sample and back' using predefined times \n--\n";
+		cout << "------\nTest: 'time to sample and back' using predefined times (given orig. as secs)\n------\n";
 
-		uint64 timeNow[] = {ITimeArithmetics::secondsToTime(0.0),
+		uint64 timesToTest[] = {ITimeArithmetics::secondsToTime(0.0),
 			ITimeArithmetics::secondsToTime(1.0),
 			ITimeArithmetics::secondsToTime(1.5),
 			ITimeArithmetics::secondsToTime(2.0),
+			ITimeArithmetics::secondsToTime(100.0),
 			ITimeArithmetics::secondsToTime(128.0)};
 
 		cout << " " << setw(6) << "Rate"
@@ -32,27 +33,27 @@ int main(int argc, char *argv[])
 			<< " " << setw(15) << "TimeInv"
 			<< " " << setw(5)  << "Secs"
 			<< " " << setw(15) << "TimeInv2"
-			<< "\n";
-		for(int i=0;i<sizeof(samplingRates)/sizeof(samplingRates[0]);i++) {
-			for(int j=0;j<sizeof(timeNow)/sizeof(timeNow[0]);j++) {
-				uint64 sampleIdx = ITimeArithmetics::timeToSampleIndex(samplingRates[i], timeNow[j]);
-				uint64 timeFromSample =  ITimeArithmetics::sampleIndexToTime(samplingRates[i], sampleIdx);
-				float64 secondsFromTime = ITimeArithmetics::timeToSeconds(timeNow[j]);
+			<< " Tests\n";
+		for(int i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
+			for(int j=0;j<sizeof(timesToTest)/sizeof(timesToTest[0]);j++) {
+				uint64 sampleIdx = ITimeArithmetics::timeToSampleIndex(samplingRatesToTest[i], timesToTest[j]);
+				uint64 timeFromSample =  ITimeArithmetics::sampleIndexToTime(samplingRatesToTest[i], sampleIdx);
+				float64 secondsFromTime = ITimeArithmetics::timeToSeconds(timesToTest[j]);
 				uint64 timeFromSeconds = ITimeArithmetics::secondsToTime(secondsFromTime);
-				cout << " " << setw(6) << samplingRates[i] 
+				cout << " " << setw(6) << samplingRatesToTest[i] 
 					<< " " << setw(10) << sampleIdx
-					<< " " << setw(15) << timeNow[j] 
+					<< " " << setw(15) << timesToTest[j] 
 					<< " " << setw(15) << timeFromSample
 					<< " " << setw(5)  << secondsFromTime
 					<< " " << setw(15) << timeFromSeconds;
 				boolean hadError = false;
-				if(timeFromSample != timeNow[j]) {
+				if(timeFromSample != timesToTest[j]) {
 					cout << "  Error: Converting time to sample and back don't match\n";
 					retVal |= 1;
 					hadError = true;
 				}  
-				if(std::abs((int64)timeFromSeconds - (int64)timeNow[j]) > (int64) secsAndBackTolerance) {
-					cout << "  Error: Converting time to seconds and back don't match\n";
+				if(std::abs((int64)timeFromSeconds - (int64)timesToTest[j]) > (int64) secsAndBackTolerance) {
+					cout << "  Error: Converting time to seconds and back exceed tolerance\n";
 					retVal |= 2;
 					hadError = true;
 				} 
@@ -64,9 +65,9 @@ int main(int argc, char *argv[])
 	}
 
 	{
-		cout << "--\n Test 'sample to time and back' using predefined samples\n--\n";
+		cout << "------\nTest: 'sample to time and back' using predefined samples\n------\n";
 
-		uint64 sampleIdxs[] = {0,1,1000,1021,1024};
+		uint64 samplesToTest[] = {0,1,100,128,512,1000,1021,1024};
 
 		cout << " " << setw(6) << "Rate"
 			<< " " << setw(10) << "Sample"
@@ -74,34 +75,53 @@ int main(int argc, char *argv[])
 			<< " " << setw(15) << "Time"
 			<< " " << setw(15) << "Secs"
 			<< " " << setw(15) << "TimeInv2"
-			<< "\n";
-		for(int i=0;i<sizeof(samplingRates)/sizeof(samplingRates[0]);i++) {
-			for(int j=0;j<sizeof(sampleIdxs)/sizeof(sampleIdxs[0]);j++) {
-				uint64 timeFromSample =  ITimeArithmetics::sampleIndexToTime(samplingRates[i], sampleIdxs[j]);
+			<< " Tests\n";
+		for(int i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
+			for(int j=0;j<sizeof(samplesToTest)/sizeof(samplesToTest[0]);j++) {
+				uint64 timeFromSample =  ITimeArithmetics::sampleIndexToTime(samplingRatesToTest[i], samplesToTest[j]);
 				float64 secondsFromTime = ITimeArithmetics::timeToSeconds(timeFromSample);
-				uint64 sampleFromTime =  ITimeArithmetics::timeToSampleIndex(samplingRates[i], timeFromSample);
+				uint64 sampleFromTime =  ITimeArithmetics::timeToSampleIndex(samplingRatesToTest[i], timeFromSample);
 				uint64 timeFromSeconds = ITimeArithmetics::secondsToTime(secondsFromTime);
 
-				cout << " " << setw(6) << samplingRates[i] 
-					<< " " << setw(10) << sampleIdxs[j]
+				cout << " " << setw(6) << samplingRatesToTest[i] 
+					<< " " << setw(10) << samplesToTest[j]
 					<< " " << setw(15) << sampleFromTime
 					<< " " << setw(15) << timeFromSample
 					<< " " << setw(15) << secondsFromTime
 					<< " " << setw(15) << timeFromSeconds;
 				boolean hadError = false;
-				if(sampleIdxs[j] != sampleFromTime) {
+				if(samplesToTest[j] != sampleFromTime) {
 					cout << "  Error: Converting sample to time and back don't match\n";
 					retVal |= 3;
 					hadError = true;
 				}
 				if(std::abs((int64)timeFromSeconds - (int64)timeFromSample) > (int64)secsAndBackTolerance) {
-					cout << "  Error: Converting time to seconds and back don't match\n";
+					cout << "  Error: Converting time to seconds and back exceed tolerance\n";
 					retVal |= 4;
 					hadError = true;
 				} 
 				if(!hadError) { 
 					cout << " Ok\n";
 				}
+			}
+		}
+	}
+
+	{
+		cout << "------\nTest: One second of signal at 'rate' should equal 'rate' samples\n------\n";
+
+		cout << setw(6) << "Rate" 
+		     << setw(8) << "Samples"
+			 << " Test\n";
+		for(int i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
+			uint64 nSamples = ITimeArithmetics::timeToSampleIndex(samplingRatesToTest[i], ITimeArithmetics::secondsToTime(1.0));
+			cout << setw(6) << samplingRatesToTest[i] 
+			     << setw(8) << nSamples;
+			if(nSamples == samplingRatesToTest[i]) {
+				cout << " Ok\n";
+			} else {
+				cout << " Error\n";
+				retVal |= 5;
 			}
 		}
 	}
