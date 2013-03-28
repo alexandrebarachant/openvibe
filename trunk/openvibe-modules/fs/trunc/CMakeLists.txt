@@ -21,10 +21,9 @@ INCLUDE("FindThirdPartyBoost")
 # ---------------------------------
 # Test applications
 # ---------------------------------
-OPTION(BUILD_OPENVIBE_MODULE_FS_EXAMPLES "Build OpenViBE module FS examples" OFF)
-IF(BUILD_OPENVIBE_MODULE_FS_EXAMPLES)
-	SUBDIRS(test)
-ENDIF(BUILD_OPENVIBE_MODULE_FS_EXAMPLES)
+IF(OV_COMPILE_TESTS)
+	ADD_SUBDIRECTORY(test)
+ENDIF(OV_COMPILE_TESTS)
 
 # ---------------------------------
 # Target macros

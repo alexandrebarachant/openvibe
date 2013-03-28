@@ -72,7 +72,7 @@ base_go_on:
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" w
 	FileWrite $0 "@echo off$\r$\n"
 	FileWrite $0 "$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;$r0\bin$\r$\n"
+	FileWrite $0 "SET PATH=$r0\bin;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -175,7 +175,7 @@ no_need_to_download_cmake:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\cmake\bin$\r$\n"
+	FileWrite $0 "SET PATH=$INSTDIR\cmake\bin;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -200,7 +200,7 @@ no_need_to_download_expat:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\expat\bin$\r$\n"
+	FileWrite $0 "SET PATH=$INSTDIR\expat\bin;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -225,7 +225,7 @@ no_need_to_download_boost:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\boost\bin$\r$\n"	
+	FileWrite $0 "SET PATH=$INSTDIR\boost\bin;%PATH%$\r$\n"	
 	FileClose $0
 
 SectionEnd
@@ -288,7 +288,7 @@ no_need_to_download_gtk_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\gtk\bin$\r$\n"	
+	FileWrite $0 "SET PATH=$INSTDIR\gtk\bin;%PATH%$\r$\n"	
 	FileClose $0
 
 SectionEnd
@@ -351,7 +351,7 @@ no_need_to_download_itpp_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\itpp\bin$\r$\n"		
+	FileWrite $0 "SET PATH=$INSTDIR\itpp\bin;%PATH%$\r$\n"		
 	FileClose $0
 
 SectionEnd
@@ -398,7 +398,7 @@ no_need_to_download_lua:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\lua\lib$\r$\n"		
+	FileWrite $0 "SET PATH=$INSTDIR\lua\lib;%PATH%$\r$\n"		
 	FileClose $0
 
 SectionEnd
@@ -433,7 +433,7 @@ no_need_to_download_ogre_runtime:
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
 	FileWrite $0 "SET OGRE_HOME=$INSTDIR\ogre$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%OGRE_HOME%\bin\release;%OGRE_HOME%\bin\debug;$\r$\n"		
+	FileWrite $0 "SET PATH=%OGRE_HOME%\bin\release;%OGRE_HOME%\bin\debug;%PATH%$\r$\n"		
 	FileClose $0
 
 SectionEnd
@@ -467,7 +467,7 @@ no_need_to_download_cegui_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\cegui\bin;$\r$\n"			
+	FileWrite $0 "SET PATH=$INSTDIR\cegui\bin;%PATH%$\r$\n"
 	FileClose $0
 
 	FileOpen $0 "$INSTDIR\cegui\resources.cfg" w
@@ -513,7 +513,7 @@ no_need_to_download_vrpn_runtime:
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
 	FileWrite $0 "SET VRPNROOT=$INSTDIR\vrpn$\r$\n"
-	FileWrite $0 "SET PATH=%PATH%;%VRPNROOT%\bin;$\r$\n"		
+	FileWrite $0 "SET PATH=%VRPNROOT%\bin;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -547,7 +547,7 @@ no_need_to_download_pthreads_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\pthreads\lib;$\r$\n"			
+	FileWrite $0 "SET PATH=$INSTDIR\pthreads\lib;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -581,7 +581,7 @@ no_need_to_download_openal_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\openal\libs\win32;$\r$\n"			
+	FileWrite $0 "SET PATH=$INSTDIR\openal\libs\win32;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -615,7 +615,7 @@ no_need_to_download_alut_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\freealut\lib;$\r$\n"			
+	FileWrite $0 "SET PATH=$INSTDIR\freealut\lib;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -649,7 +649,7 @@ no_need_to_download_ogg_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\libogg\win32\bin\release;$INSTDIR\libogg\win32\bin\debug$\r$\n"			
+	FileWrite $0 "SET PATH=$INSTDIR\libogg\win32\bin\release;$INSTDIR\libogg\win32\bin\debug;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd
@@ -683,7 +683,7 @@ no_need_to_download_vorbis_runtime:
 
 	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
 	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=%PATH%;$INSTDIR\libvorbis\win32\bin\release;$INSTDIR\libvorbis\win32\bin\debug$\r$\n"			
+	FileWrite $0 "SET PATH=$INSTDIR\libvorbis\win32\bin\release;$INSTDIR\libvorbis\win32\bin\debug;%PATH%$\r$\n"
 	FileClose $0
 
 SectionEnd

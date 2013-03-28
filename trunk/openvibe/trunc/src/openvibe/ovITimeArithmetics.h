@@ -5,7 +5,7 @@
 
 namespace OpenViBE
 {
-	namespace ITimeArithmetics
+	class ITimeArithmetics
 	{
 
 		/**
@@ -19,6 +19,7 @@ namespace OpenViBE
 		 * All functions of the class are implemented by this header.
 		 *
 		 */
+	public:
 
 		/**
 		 * \brief Get the fixed point time of a sample
@@ -61,6 +62,11 @@ namespace OpenViBE
 		{
 			return ((uint64)(f64Time*1024.0))<<22;
 		}
+
+	private:
+		// Static class, don't allow instances
+		ITimeArithmetics() { };
+
 	};
 
 }

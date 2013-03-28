@@ -16,11 +16,11 @@ SET VSTOOLS=
 SET VSCMake=
 
 if exist "%VS100COMNTOOLS%vsvars32.bat" (
-	echo Found VS100 tools...
+	echo Found VS100 tools at "%VS100COMNTOOLS%" ...
 	CALL "%VS100COMNTOOLS%vsvars32.bat"
 	SET VSCMake=Visual Studio 10
 ) else if exist "%VS90COMNTOOLS%vsvars32.bat" (
-	echo Found VS90 tools...
+	echo Found VS90 tools at "%VS90COMNTOOLS%" ...
 	CALL "%VS90COMNTOOLS%vsvars32.bat"
 	SET VSCMake=Visual Studio 9 2008
 ) else (

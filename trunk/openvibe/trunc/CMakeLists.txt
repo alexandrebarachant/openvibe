@@ -51,7 +51,7 @@ ENDIF(UNIX)
 # Tests
 # ---------------------------------
 IF(OV_COMPILE_TESTS) 
-	SUBDIRS("test")
+	ADD_SUBDIRECTORY("test")
 ENDIF(OV_COMPILE_TESTS)
 
 # ---------------------------------
