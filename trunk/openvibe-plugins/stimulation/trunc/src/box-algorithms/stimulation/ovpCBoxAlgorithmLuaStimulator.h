@@ -81,6 +81,7 @@ namespace OpenViBEPlugins
 			};
 
 			OpenViBE::uint32 m_ui32State;
+			OpenViBE::boolean m_bLuaThreadHadError;		// Set to true by the lua thread if there were issues
 
 		protected:
 

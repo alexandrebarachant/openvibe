@@ -1,4 +1,8 @@
-
+/*
+ * \author Jussi T. Lindgren / Inria
+ * \date 29.03.2013
+ * \brief Some tests for the Time Arithmetics class
+ */
 #include <iostream>
 #include <iomanip>
 #include <cstdlib> // abs() on Linux
@@ -11,18 +15,18 @@ using namespace std;
 int main(int argc, char *argv[]) 
 {
 	// @note A rate of 101 can cause a glitch. Are we ever using uneven sampling rates?
-	uint64 samplingRatesToTest[] = {100,128,200,400,512,1000,16000,44100};
+	const uint64 samplingRatesToTest[] = {100,128,200,400,512,1000,16000,44100};
 
 	int retVal = 0;
 
-	uint64 secsAndBackTolerance = {ITimeArithmetics::secondsToTime(0.001)};
+	const uint64 secsAndBackTolerance = ITimeArithmetics::secondsToTime(0.001);
 
-	cout << "To seconds and back conversion tolerance has been set to " << ITimeArithmetics::timeToSeconds(secsAndBackTolerance) << " secs\n\n";
+	cout << "Conversion tolerance from fixed point to float and back has been set to " << ITimeArithmetics::timeToSeconds(secsAndBackTolerance) << " secs\n\n";
 
 	{
 		cout << "------\nTest: 'time to sample and back' using predefined times (given orig. as secs)\n------\n";
 
-		uint64 timesToTest[] = {ITimeArithmetics::secondsToTime(0.0),
+		const uint64 timesToTest[] = {ITimeArithmetics::secondsToTime(0.0),
 			ITimeArithmetics::secondsToTime(1.0),
 			ITimeArithmetics::secondsToTime(1.5),
 			ITimeArithmetics::secondsToTime(2.0),
@@ -70,7 +74,7 @@ int main(int argc, char *argv[])
 	{
 		cout << "------\nTest: 'sample to time and back' using predefined samples\n------\n";
 
-		uint64 samplesToTest[] = {0,1,100,128,512,1000,1021,1024,1000001};
+		const uint64 samplesToTest[] = {0,1,100,128,512,1000,1021,1024,1000001};
 
 		cout << " " << setw(6) << "Rate"
 			<< " " << setw(10) << "Sample"

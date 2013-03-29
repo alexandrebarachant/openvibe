@@ -67,7 +67,10 @@ namespace OpenViBE
 		}
 
 	private:
+		// Static class, don't allow instances
+		Directories() { };
 
+		// Returns ENV variable value or sDefaultPath if the variable doesn't exist. The path is converted with each \ to /.
 		static OpenViBE::CString pathFromEnv(const char *sEnvVar, const char *sDefaultPath)
 		{
 			const char *l_sPathPtr = std::getenv(sEnvVar);

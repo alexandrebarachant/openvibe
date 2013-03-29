@@ -202,19 +202,19 @@ no_need_to_patch_3d_functionnality:
 
 	CreateDirectory "$SMPROGRAMS\OpenViBE"
 	CreateDirectory "$SMPROGRAMS\OpenViBE\Developer tools"
-	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe id generator.lnk"       "$INSTDIR\openvibe-id-generator.cmd"        "" "%SystemRoot%\system32\shell32.dll" 57
-	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe plugin inspector.lnk"   "$INSTDIR\openvibe-plugin-inspector.cmd"    "" "%SystemRoot%\system32\shell32.dll" 57
-	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe skeleton generator.lnk" "$INSTDIR\openvibe-skeleton-generator.cmd"  "" "%SystemRoot%\system32\shell32.dll" 57
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe designer.lnk"                           "$INSTDIR\openvibe-designer.cmd"            "" "%SystemRoot%\system32\shell32.dll" 137
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe acquisition server.lnk"                 "$INSTDIR\openvibe-acquisition-server.cmd"  "" "%SystemRoot%\system32\shell32.dll" 18
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo tie-fighter.lnk"                "$INSTDIR\openvibe-vr-demo-tie-fighter.cmd" "" "%SystemRoot%\system32\shell32.dll" 200
-	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo handball.lnk"                   "$INSTDIR\openvibe-vr-demo-handball.cmd"    "" "%SystemRoot%\system32\shell32.dll" 200
+	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe id generator.lnk"       "$INSTDIR\ov-id-generator.cmd"        "" "%SystemRoot%\system32\shell32.dll" 57
+	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe plugin inspector.lnk"   "$INSTDIR\ov-plugin-inspector.cmd"    "" "%SystemRoot%\system32\shell32.dll" 57
+	CreateShortCut "$SMPROGRAMS\OpenViBE\Developer tools\openvibe skeleton generator.lnk" "$INSTDIR\ov-skeleton-generator.cmd"  "" "%SystemRoot%\system32\shell32.dll" 57
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe designer.lnk"                           "$INSTDIR\ov-designer.cmd"            "" "%SystemRoot%\system32\shell32.dll" 137
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe acquisition server.lnk"                 "$INSTDIR\ov-acquisition-server.cmd"  "" "%SystemRoot%\system32\shell32.dll" 18
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo tie-fighter.lnk"                "$INSTDIR\ov-vr-demo-tie-fighter.cmd" "" "%SystemRoot%\system32\shell32.dll" 200
+	CreateShortCut "$SMPROGRAMS\OpenViBE\openvibe vr-demo handball.lnk"                   "$INSTDIR\ov-vr-demo-handball.cmd"    "" "%SystemRoot%\system32\shell32.dll" 200
 	CreateShortCut "$SMPROGRAMS\OpenViBE\uninstall.lnk"                                   "$INSTDIR\Uninstall.exe"
 
 	
-	AccessControl::EnableFileInheritance "$INSTDIR"
-	AccessControl::GrantOnFile "$INSTDIR" "(BU)" "GenericRead + GenericWrite + GenericExecute + Delete" ; to ensure windows XP back compatibility
-	AccessControl::GrantOnFile "$INSTDIR" "(S-1-5-32-545)" "GenericRead + GenericWrite + GenericExecute + Delete" ; (BU) user group (builtin users) does not exist on win7. this SID replaces it.
+	; AccessControl::EnableFileInheritance "$INSTDIR"
+	; AccessControl::GrantOnFile "$INSTDIR" "(BU)" "GenericRead + GenericWrite + GenericExecute + Delete" ; to ensure windows XP back compatibility
+	; AccessControl::GrantOnFile "$INSTDIR" "(S-1-5-32-545)" "GenericRead + GenericWrite + GenericExecute + Delete" ; (BU) user group (builtin users) does not exist on win7. this SID replaces it.
 SectionEnd
 
 Section "Uninstall"

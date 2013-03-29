@@ -70,7 +70,12 @@ function process(box)
 		box:log("Info", "Writing file '" .. cfg_file_name .. "'")
 
 		cfg_file = io.open(cfg_file_name, "w")
-
+		if cfg_file == nil then
+			box:log("Error", "Cannot write to [" .. cfg_file_name .. "]")
+			box:log("Error", "Please copy the scenario folder to a directory with write access and use from there.")		
+			return false
+		end
+		
 		cfg_file:write("<OpenViBE-SettingsOverride>\n")
 		cfg_file:write("<SettingValue>Butterworth</SettingValue>\n")
 		cfg_file:write("<SettingValue>Band pass</SettingValue>\n")
@@ -89,6 +94,12 @@ function process(box)
 	box:log("Info", "Writing file '" .. cfg_file_name .. "'")
 
 	cfg_file = io.open(cfg_file_name, "w")
+	if cfg_file == nil then
+		box:log("Error", "Cannot write to [" .. cfg_file_name .. "]")
+		box:log("Error", "Please copy the scenario folder to a directory with write access and use from there.")
+		return false
+	end
+		
 	cfg_file:write("<OpenViBE-SettingsOverride>\n")
 	cfg_file:write(string.format("<SettingValue>%g</SettingValue>\n", processing_epoch_duration))
 	cfg_file:write(string.format("<SettingValue>%g</SettingValue>\n", processing_epoch_interval))

@@ -52,13 +52,15 @@ static void lua_setcallback(lua_State* pState, const char* sName, int (*fpCallba
 	lua_setfield(pState, -2, sName);
 }
 
-static void lua_report(ILogManager& rLogManager, lua_State* pLuaState, int iCode)
+// Returns true on success, i.e. if iCode is 0 (no failure).
+static boolean lua_report(ILogManager& rLogManager, lua_State* pLuaState, int iCode)
 {
 	if(iCode)
 	{
 		rLogManager << LogLevel_ImportantWarning << "Lua error: " << lua_tostring(pLuaState, -1) << "\n";
 		lua_pop(pLuaState, 1);
 	}
+	return (iCode==0);
 }
 
 static bool lua_check_argument_count(lua_State* pState, const char* sName, int iCount1, int iCount2=-1)
@@ -258,6 +260,7 @@ static int lua_send_stimulation_cb(lua_State* pState)
 	return 0;
 }
 
+// Has the side effect of setting m_bLuaThreadHadError to true if called with "Error" or "Fatal" loglevels.
 static int lua_log_cb(lua_State* pState)
 {
 	CBoxAlgorithmLuaStimulator* l_pThis=static_cast < CBoxAlgorithmLuaStimulator* >(lua_touserdata(pState, lua_upvalueindex(1)));
@@ -286,10 +289,12 @@ static int lua_log_cb(lua_State* pState)
 	else if(l_sLogLevel==CString("Error"))
 	{
 		l_eLogLevel=LogLevel_Error;
+		l_pThis->m_bLuaThreadHadError = true;
 	}
 	else if(l_sLogLevel==CString("Fatal"))
 	{
 		l_eLogLevel=LogLevel_Fatal;
+		l_pThis->m_bLuaThreadHadError = true;
 	}
 	__CB_Assert__(l_pThis->log(l_eLogLevel, lua_tostring(pState, 3)));
 
@@ -369,12 +374,12 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 	lua_setcallback(m_pLuaState, "log", ::lua_log_cb, this);
 	lua_setcallback(m_pLuaState, "keep_processing", ::lua_keep_processing_cb, this);
 
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function initialize(box) end"));
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function uninitialize(box) end"));
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function process(box) end"));
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dofile(m_pLuaState, l_sLuaScriptFilename.toASCIIString()));
+	if(!lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function initialize(box) end"))) return false;
+	if(!lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function uninitialize(box) end"))) return false;
+	if(!lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "function process(box) end"))) return false;
+	if(!lua_report(this->getLogManager(), m_pLuaState, luaL_dofile(m_pLuaState, l_sLuaScriptFilename.toASCIIString()))) return false;
 
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "initialize(__openvibe_box_context)"));
+	if(!lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "initialize(__openvibe_box_context)"))) return false;
 
 	m_vInputStimulation.resize(l_rStaticBoxContext.getInputCount());
 	m_vOutputStimulation.resize(l_rStaticBoxContext.getOutputCount());
@@ -395,6 +400,7 @@ boolean CBoxAlgorithmLuaStimulator::initialize(void)
 
 	m_ui64LastTime=0;
 	m_pLuaThread=NULL;
+	m_bLuaThreadHadError = false;
 
 	return true;
 }
@@ -455,7 +461,11 @@ boolean CBoxAlgorithmLuaStimulator::uninitialize(void)
 	
 	if(m_pLuaState) 
 	{
-		lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "uninitialize(__openvibe_box_context)"));
+		if(!lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "uninitialize(__openvibe_box_context)")))
+		{
+			this->getLogManager() << LogLevel_Warning << "Lua script uninitialize failed\n";
+			// Don't return here on false, still want to free the resources below
+		}
 		lua_close(m_pLuaState);
 		m_pLuaState = NULL;
 	}
@@ -607,6 +617,12 @@ boolean CBoxAlgorithmLuaStimulator::process(void)
 	}
 
 	m_ui64LastTime=l_ui64CurrentTime;
+
+	if(!m_pLuaThread && m_bLuaThreadHadError) 
+	{
+		// Lua thread has exit, so it was ok to check m_bLuaThreadHadError without a lock
+		return false;
+	}
 
 	return true;
 }
@@ -783,7 +799,10 @@ boolean CBoxAlgorithmLuaStimulator::log(const ELogLevel eLogLevel, const CString
 void CBoxAlgorithmLuaStimulator::doThread(void)
 {
 	m_oInnerLock.lock();
-	lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "process(__openvibe_box_context)"));
+	if(!lua_report(this->getLogManager(), m_pLuaState, luaL_dostring(m_pLuaState, "process(__openvibe_box_context)"))) 
+	{
+		m_bLuaThreadHadError = true;
+	}
 	m_ui32State=State_Finished;
 	m_oInnerLock.unlock();
 
