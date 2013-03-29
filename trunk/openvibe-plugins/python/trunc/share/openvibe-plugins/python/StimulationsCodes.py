@@ -2,8 +2,8 @@
 #File Name : StimulationsCodes.py
 #Created By : Aurelien Van Langhenhove
 
-## Stimulation codes can be found at this url :
-## http://openvibe.inria.fr/documentation/unstable/Doc_Stimulations.html
+## Stimulation codes 
+## Originally from openvibe-toolkit/ovtk_defines.h
 
 OpenViBE_stimulation = {
 'OVTK_StimulationId_ExperimentStart'                   : 0x00008001,

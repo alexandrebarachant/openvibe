@@ -472,13 +472,22 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	PyObject *l_pTemporyPyObject = Py_BuildValue("s,O", m_sScriptFilename.toASCIIString(), m_pMainDictionnary);
 	//New reference
 	PyObject *l_pResult = PyObject_CallObject(m_pExecFileFunction, l_pTemporyPyObject);
-	if (l_pResult == NULL)
+	if (l_pResult == NULL || PyInt_AsLong(l_pResult)!=0)
 	{
-		this->getLogManager() << LogLevel_Error << "Failed to run " << m_sScriptFilename << ".\n";
+		this->getLogManager() << LogLevel_Error << "Failed to run [" << m_sScriptFilename << "]";
+		if(l_pResult) 
+		{
+			this->getLogManager() << ", result = " << PyInt_AsLong(l_pResult) << "\n";
+		} 
+		else
+		{
+			this->getLogManager() << ", result = NULL\n";
+		}
 		Py_CLEAR(l_pTemporyPyObject);
 		Py_CLEAR(l_pResult);
 		return false;
 	}
+
 	Py_CLEAR(l_pTemporyPyObject);
 	Py_CLEAR(l_pResult);
 

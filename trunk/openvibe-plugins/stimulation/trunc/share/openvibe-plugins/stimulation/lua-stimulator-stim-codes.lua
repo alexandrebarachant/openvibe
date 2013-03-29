@@ -3,6 +3,8 @@
  --  OpenViBE toolkit stimulation identifiers                           --
  -- ___________________________________________________________________ --
  --                                                                     --
+ --  Stimulation codes                                                  --
+ --  Originally from openvibe-toolkit/ovtk_defines.h                    --
 
 OVTK_StimulationId_ExperimentStart                    = 0x00008001
 OVTK_StimulationId_ExperimentStop                     = 0x00008002

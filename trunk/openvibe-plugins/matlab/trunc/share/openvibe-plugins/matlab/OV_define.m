@@ -7,7 +7,9 @@
 % This file is meant to be executed prior to any user defined script.
 % It declare all stim IDs as  variable for use  by the user.
 % MEANT TO BE CALLED BY OPENVIBE
-
+% 
+% Stimulation codes 
+% Originally from openvibe-toolkit/ovtk_defines.h
 
 
 function OV_define()
