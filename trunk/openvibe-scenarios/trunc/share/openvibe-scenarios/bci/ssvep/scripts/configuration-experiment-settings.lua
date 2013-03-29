@@ -1,4 +1,3 @@
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 stimulation_frequencies = {}
 frequency_count = 0
@@ -13,6 +12,8 @@ processing_epoch_interval = nil
 processing_frequency_tolerance = nil
 
 function initialize(box)
+
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	for value in box:get_setting(2):gmatch("%d+") do
 		table.insert(target_light_color, value)

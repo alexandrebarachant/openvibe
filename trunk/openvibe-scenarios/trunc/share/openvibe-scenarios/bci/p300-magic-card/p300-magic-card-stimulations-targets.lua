@@ -5,10 +5,10 @@
 -- Author : Yann Renard, INRIA
 -- Date   : 2011-03-15
 
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
-
 -- this function is called when the box is initialized
 function initialize(box)
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+
 	math.randomseed(os.time())
 	card_count = box:get_setting(2)
 	card_base = _G[box:get_setting(3)]

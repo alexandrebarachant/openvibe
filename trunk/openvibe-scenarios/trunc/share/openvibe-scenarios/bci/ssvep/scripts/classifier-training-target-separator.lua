@@ -1,9 +1,11 @@
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+
 targets = {}
 non_targets = {}
 sent_stimulation = 0
 
 function initialize(box)
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+	
 	-- read the parameters of the box
 	
 	s_targets = box:get_setting(2)

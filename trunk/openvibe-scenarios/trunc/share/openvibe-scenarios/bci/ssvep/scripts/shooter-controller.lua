@@ -1,8 +1,10 @@
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+
 sequence = {}
 flickeringDelay = nil
 
 function initialize(box)
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+
 	s_sequence = box:get_setting(2)
 	angular_speed = box:get_setting(3)
 

@@ -1,4 +1,4 @@
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+
 sequence = {}
 number_of_cycles = 0
 
@@ -24,6 +24,8 @@ stimulationLabels = {
 }
 
 function initialize(box)
+
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	-- load the goal sequence
 	s_sequence = box:get_setting(2)

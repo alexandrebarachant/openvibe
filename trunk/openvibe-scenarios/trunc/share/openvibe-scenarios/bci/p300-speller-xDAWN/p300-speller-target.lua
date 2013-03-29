@@ -6,8 +6,6 @@
 -- Author : Yann Renard, INRIA
 -- Date   : 2011-03-15
 
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
-
 grid =
 {
 	{ 'a', 'b', 'c', 'd', 'e', 'f' },
@@ -33,6 +31,8 @@ end
 
 -- this function is called when the box is initialized
 function initialize(box)
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+
 	math.randomseed(os.time())
 	target = box:get_setting(2)
 	row_base = _G[box:get_setting(3)]

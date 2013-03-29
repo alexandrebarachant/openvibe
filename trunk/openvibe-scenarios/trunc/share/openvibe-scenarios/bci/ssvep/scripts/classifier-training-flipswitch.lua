@@ -1,10 +1,11 @@
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 flip_count = 0
 switched_flip_count = 0
 flips = {}
 
 function initialize(box)
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+
 	flip_count = box:get_input_count()
 
 	for i = 1, flip_count do

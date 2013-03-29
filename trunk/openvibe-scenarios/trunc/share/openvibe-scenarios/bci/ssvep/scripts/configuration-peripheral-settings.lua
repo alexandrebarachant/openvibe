@@ -1,10 +1,10 @@
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 vrpn_host = nil
 vrpn_port = nil
 screen_refresh_rate = nil
 
 function initialize(box)
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 	screen_refresh_rate = box:get_setting(2)
 end
 

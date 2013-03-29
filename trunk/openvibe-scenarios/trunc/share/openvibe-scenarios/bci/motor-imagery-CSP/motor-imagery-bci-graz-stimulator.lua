@@ -1,6 +1,7 @@
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 function initialize(box)
+
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	number_of_trials = box:get_setting(2)
 	first_class = _G[box:get_setting(3)]

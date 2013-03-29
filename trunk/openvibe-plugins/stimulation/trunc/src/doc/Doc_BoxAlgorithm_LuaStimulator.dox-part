@@ -204,11 +204,12 @@ __________________________________________________________________
  * |OVP_DocBegin_BoxAlgorithm_LuaStimulator_Examples|
 Here is a sample script
 \code
-dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 -- this function is called when the box is initialized
 function initialize(box)
 	box:log("Trace", "initialize has been called");
+
+	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	-- inspects the box topology
 	box:log("Info", string.format("box has %i input(s)", box:get_input_count()))
@@ -281,17 +282,17 @@ __________________________________________________________________
  * the API functions. Each API function is now prefixed with \e box: as described in the Object-Oriented Access documentation page - http://www.lua.org/pil/28.3.html
  *
  * In case you would not like to modify your already existing scripts in depth, I suggest you just include the \em lua-stimulator-legacy.lua script
- * at the begining of your exising scripts using the following command
+ * at the initialization of your existing scripts using the following command
  * \code
- * dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-legacy.lua")
+ * dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-legacy.lua")
  * \endcode
  *
  * \subsection LuaScriptAPI_using_stimulation_codes Using OpenViBE stimulation codes in Lua scripts
  *
  * It could be convenient to have the stimulation names available in a Lua script. For this purpose, I suggest you just include the \em lua-stimulator-stim-codes.lua script
- * at the begining of your exising scripts using the following command
+ * at the initialization of your existing scripts using the following command
  * \code
- * dofile(os.getenv("OV_DATADIR") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+ * dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
  * \endcode
  *
  * |OVP_DocEnd_BoxAlgorithm_LuaStimulator_Miscellaneous|
