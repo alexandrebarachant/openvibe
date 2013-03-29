@@ -477,7 +477,7 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 		this->getLogManager() << LogLevel_Error << "Failed to run [" << m_sScriptFilename << "]";
 		if(l_pResult) 
 		{
-			this->getLogManager() << ", result = " << PyInt_AsLong(l_pResult) << "\n";
+			this->getLogManager() << ", result = " << (int32)PyInt_AsLong(l_pResult) << "\n";
 		} 
 		else
 		{
