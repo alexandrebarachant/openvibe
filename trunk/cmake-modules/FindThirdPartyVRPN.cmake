@@ -1,22 +1,20 @@
 # ---------------------------------
-# Finds VRPN
-# Adds library to target
+# Adds VRPN library to the target project
 # Adds include path
+# Requires FindThirdPartyVRPN_Check.cmake to have been run successfully before
 # ---------------------------------
-FIND_PATH(PATH_VRPN include/vrpn_BaseClass.h PATHS ${OV_WIN32_DEP_DIR}/vrpn $ENV{VRPN_ROOT} NO_DEFAULT_PATH)
-FIND_PATH(PATH_VRPN include/vrpn_BaseClass.h PATHS ${OV_WIN32_DEP_DIR}/vrpn $ENV{VRPN_ROOT})
-IF(PATH_VRPN)
-	MESSAGE(STATUS "  Found VRPN...")
-	INCLUDE_DIRECTORIES(${PATH_VRPN}/include)
 
+IF(PATH_VRPN)
+	# Find all library paths
+	
 	IF(WIN32)
 		FIND_LIBRARY(LIB_VRPN vrpn PATHS ${PATH_VRPN}/lib NO_DEFAULT_PATH)
 		FIND_LIBRARY(LIB_VRPN vrpn PATHS ${PATH_VRPN}/lib)
 		IF(LIB_VRPN)
 			MESSAGE(STATUS "    [  OK  ] lib ${LIB_VRPN}")
-			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_VRPN})
 		ELSE(LIB_VRPN)
 			MESSAGE(STATUS "    [FAILED] lib vrpn")
+			RETURN()
 		ENDIF(LIB_VRPN)
 	ENDIF(WIN32)
 
@@ -25,9 +23,9 @@ IF(PATH_VRPN)
 		FIND_LIBRARY(LIB_VRPNSERVER vrpnserver PATHS ${PATH_VRPN}/lib)
 		IF(LIB_VRPNSERVER)
 			MESSAGE(STATUS "    [  OK  ] lib ${LIB_VRPNSERVER}")
-			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_VRPNSERVER})
 		ELSE(LIB_VRPNSERVER)
 			MESSAGE(STATUS "    [FAILED] lib vrpnserver")
+			RETURN()
 		ENDIF(LIB_VRPNSERVER)
 	ENDIF(UNIX)
 
@@ -35,12 +33,23 @@ IF(PATH_VRPN)
 	FIND_LIBRARY(LIB_QUAT quat PATHS ${PATH_VRPN}/lib)
 	IF(LIB_QUAT)
 		MESSAGE(STATUS "    [  OK  ] lib ${LIB_QUAT}")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_QUAT})
 	ELSE(LIB_QUAT)
 		MESSAGE(STATUS "    [FAILED] lib quat")
+		RETURN()
 	ENDIF(LIB_QUAT)
 
+	# If we reach here, everything has been found, add
+	INCLUDE_DIRECTORIES(${PATH_VRPN}/include)
+	
+	IF(WIN32)
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_VRPN})	
+	ENDIF(WIN32)
+	IF(UNIX)
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_VRPNSERVER})	
+	ENDIF(UNIX)
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_QUAT})
+	
 	ADD_DEFINITIONS(-DTARGET_HAS_ThirdPartyVRPN)
 ELSE(PATH_VRPN)
-	MESSAGE(STATUS "  FAILED to find VRPN")
+	MESSAGE(AUTHOR_WARNING "Should not run FindThirdPartyVRPN without FindThirdPartyVRPN_Check passing successfully first")
 ENDIF(PATH_VRPN)

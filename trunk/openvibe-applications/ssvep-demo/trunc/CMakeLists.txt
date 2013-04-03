@@ -5,6 +5,12 @@ SET(PROJECT_VERSION_MINOR x)
 SET(PROJECT_VERSION_PATCH x)
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+INCLUDE("FindThirdPartyVRPN_Check")
+IF(NOT PATH_VRPN)
+	MESSAGE(STATUS "    --> Not building ${PROJECT_NAME}")
+	RETURN()
+ENDIF(NOT PATH_VRPN)
+
 # The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
 # Due to CMake, this needs to be done _before_ creating the target.
 INCLUDE("OvAddBoostLinkDir")
