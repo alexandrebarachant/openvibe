@@ -1,0 +1,22 @@
+#basics definitions needed here
+IF(WIN32)
+	SET(EXT cmd)
+	SET(OS_FLAGS "--no-pause")
+ELSE(WIN32)
+	SET(EXT sh)
+	SET(OS_FLAGS "")
+ENDIF(WIN32)
+
+
+# Simple Test of run-command box
+SET(TEST_NAME run-command)
+SET(SCENARIO_TO_TEST "${TEST_NAME}.xml")
+ADD_TEST(clean_${TEST_NAME} "rm" "-f" "${TEST_NAME}.txt")
+ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/ov-designer.${EXT}" ${OS_FLAGS} "--no-gui" "--play" ${SCENARIO_TO_TEST})
+ADD_TEST(exist_${TEST_NAME} "ls" "${TEST_NAME}.txt")
+
+
+## add some properties that help to debug 
+SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES ATTACHED_FILES_ON_FAIL "ENV${HOME}.config/openvibe/log/openvibe-designer.log"})
+SET_TESTS_PROPERTIES(exist_${TEST_NAME} PROPERTIES DEPENDS run_${TEST_NAME}})
+SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES DEPENDS clean_${TEST_NAME}})
