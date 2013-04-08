@@ -70,7 +70,6 @@ SUBDIRS("${CTEST_SOURCE_DIRECTORY}/test/trunk/openvibe-plugins/samples/trunc/tes
 ...
 
 
-
 There is an exemple of test using Sinus Oscillator in trunk/openvibe-plugins/samples/trunc/test/DartTestFile.txt :
 
 SET(TEST_NAME SinusOscillator)
