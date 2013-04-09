@@ -91,7 +91,7 @@ bool CApplication::setup(OpenViBE::Kernel::IKernelContext* poKernelContext)
 
 	l_oOptionList["vsync"] = "1";
 
-	m_poWindow = m_poRoot->createRenderWindow("SSVEP Stimulator", 640, 480, false, &l_oOptionList);
+	m_poWindow = m_poRoot->createRenderWindow("SSVEP Stimulator", 640, 480, l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_FullScreen}", false), &l_oOptionList);
 	m_ui32WindowWidth = m_poWindow->getWidth();
 	m_ui32WindowHeight = m_poWindow->getHeight();
 
@@ -182,7 +182,7 @@ bool CApplication::configure()
 
 	// Set hard-coded parameters, VSync in particular
 	m_poRoot->getRenderSystem()->setConfigOption("VSync", "True");
-	m_poRoot->getRenderSystem()->setConfigOption("Full Screen","No");
+//	m_poRoot->getRenderSystem()->setConfigOption("Full Screen", "Yes");
 	m_poRoot->getRenderSystem()->setConfigOption("Video Mode","640 x 480 @ 16-bit colour");
 
 
