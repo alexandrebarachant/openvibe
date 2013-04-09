@@ -191,8 +191,8 @@ boolean CKernelContext::initialize(void)
 	m_pConfigurationManager->createConfigurationToken("Path_Log",                     OpenViBE::Directories::getLogDir());
 	m_pConfigurationManager->createConfigurationToken("Path_Tmp",                     "${Path_UserData}/tmp");
 	m_pConfigurationManager->createConfigurationToken("Path_Samples",                 "${Path_Data}/openvibe-scenarios");
-	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternLinux",   "libOpenViBE-plugins-*.so");
-	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternWindows", "OpenViBE-plugins-*.dll");
+	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternLinux",   "libopenvibe-plugins-*.so");
+	m_pConfigurationManager->createConfigurationToken("Kernel_PluginsPatternWindows", "openvibe-plugins-*.dll");
 	m_pConfigurationManager->createConfigurationToken("Kernel_Plugins",               "${Path_Lib}/${Kernel_PluginsPattern${OperatingSystem}}");
 	m_pConfigurationManager->createConfigurationToken("Kernel_MainLogLevel",          "Debug");
 	m_pConfigurationManager->createConfigurationToken("Kernel_ConsoleLogLevel",       "Information");

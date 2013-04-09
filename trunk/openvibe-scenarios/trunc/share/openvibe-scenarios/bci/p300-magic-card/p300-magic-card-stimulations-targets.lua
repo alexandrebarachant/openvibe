@@ -1,5 +1,3 @@
-#!/bin/lua
-
 -- This Lua script generates target stimulations for the magic card demo
 --
 -- Author : Yann Renard, INRIA

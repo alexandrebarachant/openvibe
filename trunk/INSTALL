@@ -135,6 +135,15 @@ and then change to the appropriate subtree under local-tmp/. There you can call
 3. If you made it this far, congratulations : you should now have OpenViBE freshly 
 built to "dist/".
 
+|Elementary Linux packaging|
+
+To build an elementary Debian/Ubuntu/Mint package from the official tarball (>= 0.16.0) 
+using debhelper, do the following:
+
+# mv openvibe-X.Y.Z.tar.gz openvibe_X.Y.Z.orig.tar.gz
+# tar xzvf openvibe_X.Y.Z.orig.tar.gz
+# cd openvibe-X.Y.Z
+# debuild -uc -us
 
 |Contribution.rules|
 

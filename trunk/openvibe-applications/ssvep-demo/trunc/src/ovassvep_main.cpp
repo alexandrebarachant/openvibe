@@ -15,29 +15,28 @@ int main(int argc, char** argv)
 	
 	if (argc != 2)
 	{
-		printf("Usage : %s <configuration-file>\n", argv[0]);
+		printf("Usage : %s [trainer|shooter]\n", argv[0]);
 		exit(1);
 	}
 	
 	// initialize the OpenViBE kernel
 	
 	OpenViBE::CKernelLoader l_oKernelLoader;
-	OpenViBE::CString l_sError;
 	OpenViBE::Kernel::IKernelDesc* l_poKernelDesc = NULL;
 	OpenViBE::Kernel::IKernelContext* l_poKernelContext = NULL;
 	OpenViBE::Kernel::ILogManager* l_poLogManager = NULL;
 	OpenViBE::Kernel::IConfigurationManager* l_poConfigurationManager = NULL;
 
-
-#ifdef OVA_OS_Windows
-	std::cout << "[  INF  ] Loading Windows kernel\n";
-	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/OpenViBE-kernel-dynamic.dll", &l_sError))
+	CString l_sError;
+#if defined OVA_OS_Windows
+	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/openvibe-kernel.dll";
 #else
-	std::cout << "[  INF  ] Loading Linux kernel\n";
-	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/libOpenViBE-kernel-dynamic.so", &l_sError))
+	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/libopenvibe-kernel.so";
 #endif
+	if(!l_oKernelLoader.load(l_sKernelFile, &l_sError))
 	{
-		std::cout << "[ FAILED ] Error loading kernel (" << l_sError << ")" << "\n";
+		std::cout<<"[ FAILED ] Error loading kernel ("<<l_sError<<")" << " from [" << l_sKernelFile << "]\n";
+		return(1);
 	}
 	else
 	{
@@ -49,6 +48,7 @@ int main(int argc, char** argv)
 		if(!l_poKernelDesc)
 		{
 			std::cout << "[ FAILED ] No kernel descriptor\n";
+			return(1);
 		}
 		else
 		{
@@ -59,6 +59,7 @@ int main(int argc, char** argv)
 			if(!l_poKernelContext)
 			{
 				std::cout << "[ FAILED ] No kernel created by kernel descriptor\n";
+				return(1);
 			}
 			else
 			{
@@ -66,7 +67,9 @@ int main(int argc, char** argv)
 
 				l_poConfigurationManager = &(l_poKernelContext->getConfigurationManager());
 				l_poConfigurationManager->createConfigurationToken("SSVEP_ApplicationDescriptor", CString(argv[1]));
-				l_poConfigurationManager->addConfigurationFromFile(OpenViBE::Directories::getDataDir() + "/openvibe-ssvep-demo.conf");
+
+				OpenViBE::CString l_sConfigFile = l_poConfigurationManager->expand("${Path_Data}/openvibe-ssvep-demo.conf");
+				l_poConfigurationManager->addConfigurationFromFile(l_sConfigFile);
 
 				l_poLogManager = &(l_poKernelContext->getLogManager());
 			}

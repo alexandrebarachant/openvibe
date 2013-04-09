@@ -11,17 +11,10 @@ information on what you just downloaded.
 
 |Code.source.access|
 
-The source code of the project can be found on the INRIA gForge :
+The source code of the project can be found by following links
+on the OpenViBE homepage :
 
-https://gforge.inria.fr/projects/openvibe/ (welcome page)
-https://gforge.inria.fr/mail/?group_id=276 (mailing lists)
-http://www.irisa.fr/bunraku/OpenViBE/forum (forums)
-https://gforge.inria.fr/tracker/?group_id=276 (bug tracker)
-
-Getting the latest (unstable) version of the source code from the forge can
-be done thanks to this command :
-
-svn checkout svn+ssh://developername@scm.gforge.inria.fr/svn/openvibe/trunk
+http://openvibe.inria.fr/
 
 |Repository.organisation|
 
@@ -31,7 +24,7 @@ from other modules. The repository basically looks like this :
 
 root of the repository
  + <openvibe> (API / specifications)
- + <openvibe-kernel> (kernel implementation)
+ + <openvibe-kernel-omk> (kernel implementation)
  + <openvibe-toolkit> (development help components)
  + <openvibe-applications> (OpenViBE user applications)
     + <acquisition-server>
@@ -71,11 +64,9 @@ Finally, in each branch, each software module is divided in the following UNIX-l
 
 |Support|
 
-You can get support for this software in several ways :
+Please follow the links on the OpenViBE homepage:
 
-- register to several mailing lists (https://gforge.inria.fr/mail/?group_id=276)
-- use a phpBB forum (http://www.irisa.fr/bunraku/OpenViBE/forum)
-- join an IRC channel (#openvibe on irc.freenode.net)
+http://openvibe.inria.fr/
 
 |Licence|
 

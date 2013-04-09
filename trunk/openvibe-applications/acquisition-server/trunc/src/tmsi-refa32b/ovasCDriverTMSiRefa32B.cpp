@@ -191,7 +191,7 @@ CDriverTMSiRefa32B::CDriverTMSiRefa32B(IDriverContext& rDriverContext)
 	m_HandleMaster=NULL;
 
 	//Open library
-	OpenViBE::CString l_sPath = OpenViBE::Directories::getBinDir() + "/" + RTLOADER;
+	OpenViBE::CString l_sPath = m_rDriverContext.getConfigurationManager().expand("${Path_Bin}") + "/" + RTLOADER;
 	m_oLibHandle = ::LoadLibrary(l_sPath.toASCIIString() );
 
 	//if it can't be open return FALSE;

@@ -1,5 +1,3 @@
-#!/bin/lua
-
 -- This Lua script generates target stimulations for the P300 visualisation
 -- box based on the matrix of letters / numbers a P300 speller has
 --

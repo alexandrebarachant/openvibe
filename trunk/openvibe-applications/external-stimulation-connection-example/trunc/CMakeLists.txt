@@ -1,8 +1,8 @@
-PROJECT(OpenViBE-external-stimulation-connection-example)
+PROJECT(openvibe-external-stimulation-connection-example)
 
-SET(PROJECT_VERSION_MAJOR x)
-SET(PROJECT_VERSION_MINOR x)
-SET(PROJECT_VERSION_PATCH x)
+SET(PROJECT_VERSION_MAJOR ${OV_GLOBAL_VERSION_MAJOR})
+SET(PROJECT_VERSION_MINOR ${OV_GLOBAL_VERSION_MINOR})
+SET(PROJECT_VERSION_PATCH ${OV_GLOBAL_VERSION_PATCH})
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
 # The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
@@ -10,7 +10,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 INCLUDE("OvAddBoostLinkDir")
 
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.hpp src/*.inl)
-ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
+ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
 INCLUDE("FindThirdPartyBoost")
 INCLUDE("FindThirdPartyBoost_Thread")
@@ -24,7 +24,7 @@ IF(UNIX)
 	FIND_LIBRARY(LIB_STANDARD_MODULE_RT rt)
 	IF(LIB_STANDARD_MODULE_RT)
 		MESSAGE(STATUS "  Found rt...")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_STANDARD_MODULE_RT})
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIB_STANDARD_MODULE_RT})
 	ELSE(LIB_STANDARD_MODULE_RT)
 		MESSAGE(STATUS "  FAILED to find rt...")
 	ENDIF(LIB_STANDARD_MODULE_RT)
@@ -54,12 +54,12 @@ ENDIF(UNIX)
 # ----------------------
 # Generate launch script
 # ----------------------
-OV_INSTALL_LAUNCH_SCRIPT("ov-external-stimulation-connection-example")
+OV_INSTALL_LAUNCH_SCRIPT("openvibe-external-stimulation-connection-example")
 
 # -----------------------------
 # Install files
 # -----------------------------
-INSTALL(TARGETS ${PROJECT_NAME}-dynamic
+INSTALL(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})

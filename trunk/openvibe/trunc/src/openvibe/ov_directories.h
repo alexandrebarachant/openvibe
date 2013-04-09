@@ -16,19 +16,19 @@ namespace OpenViBE
 	public:
 		static OpenViBE::CString getDistRootDir(void)
 		{
-			return pathFromEnv("OV_DISTROOT", "..");
+			return pathFromEnv("OV_PATH_ROOT", OV_CMAKE_PATH_ROOT);
 		}
 		static OpenViBE::CString getBinDir(void)
 		{
-			return pathFromEnv("OV_BINDIR", "../bin");
+			return pathFromEnv("OV_PATH_BIN", OV_CMAKE_PATH_BIN);
 		}
 		static OpenViBE::CString getDataDir(void)
 		{
-			return pathFromEnv("OV_DATADIR", "../share");
+			return pathFromEnv("OV_PATH_DATA", OV_CMAKE_PATH_DATA);
 		}
 		static OpenViBE::CString getLibDir(void)
 		{
-			return pathFromEnv("OV_LIBDIR", "../lib");
+			return pathFromEnv("OV_PATH_LIB", OV_CMAKE_PATH_LIB);
 		}
 		static OpenViBE::CString getUserHomeDir(void)
 		{

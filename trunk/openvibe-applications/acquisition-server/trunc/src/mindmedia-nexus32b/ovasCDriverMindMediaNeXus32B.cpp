@@ -82,8 +82,9 @@ boolean CDriverMindMediaNeXus32B::initialize(
 	IDriverCallback& rCallback)
 {
 	if(m_rDriverContext.isConnected()) { return false; }
-
-	g_hNeXusDLLInstance=::LoadLibrary( (OpenViBE::Directories::getBinDir() + "/" + _MindMedia_NeXus32B_DLLFileName_).toASCIIString() );
+	
+	OpenViBE::CString l_sBinPath = m_rDriverContext.getConfigurationManager().expand("${Path_Bin}");
+	g_hNeXusDLLInstance=::LoadLibrary( ( l_sBinPath + "/" + _MindMedia_NeXus32B_DLLFileName_).toASCIIString() );
 	if(!g_hNeXusDLLInstance)
 	{
 		return false;

@@ -1,12 +1,12 @@
-PROJECT(OpenViBE-id-generator)
+PROJECT(openvibe-id-generator)
 
-SET(PROJECT_VERSION_MAJOR x)
-SET(PROJECT_VERSION_MINOR x)
-SET(PROJECT_VERSION_PATCH x)
+SET(PROJECT_VERSION_MAJOR ${OV_GLOBAL_VERSION_MAJOR})
+SET(PROJECT_VERSION_MINOR ${OV_GLOBAL_VERSION_MINOR})
+SET(PROJECT_VERSION_PATCH ${OV_GLOBAL_VERSION_PATCH})
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
-ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
+ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
 # ---------------------------------
 # Target macros
@@ -32,12 +32,12 @@ ENDIF(UNIX)
 # ----------------------
 # Generate launch script
 # ----------------------
-OV_INSTALL_LAUNCH_SCRIPT("ov-id-generator")
+OV_INSTALL_LAUNCH_SCRIPT("openvibe-id-generator")
 
 # -----------------------------
 # Install files
 # -----------------------------
-INSTALL(TARGETS ${PROJECT_NAME}-dynamic
+INSTALL(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})

@@ -4,14 +4,14 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_USBFirstAmpAPI FirstAmp.h PATHS "C:/Program Files/FaSDK" "C:/Program Files (x86)/FaSDK" $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_USBFirstAmpAPI FirstAmp.h PATHS "C:/Program Files/FaSDK" "C:/Program Files (x86)/FaSDK" ${OV_CUSTOM_DEPENDENCIES_PATH})
 	IF(PATH_USBFirstAmpAPI)
 		MESSAGE(STATUS "  Found FirstAmp API...")
 		INCLUDE_DIRECTORIES(${PATH_USBFirstAmpAPI})
 		FIND_LIBRARY(LIB_USBFirstAmpAPI FirstAmp PATHS ${PATH_USBFirstAmpAPI} )
 		IF(LIB_USBFirstAmpAPI)
 			MESSAGE(STATUS "    [  OK  ] lib ${LIB_USBFirstAmpAPI}")
-			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_USBFirstAmpAPI} )
+			TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIB_USBFirstAmpAPI} )
 		ELSE(LIB_USBFirstAmpAPI)
 			MESSAGE(STATUS "    [FAILED] lib FirstAmp")
 		ENDIF(LIB_USBFirstAmpAPI)

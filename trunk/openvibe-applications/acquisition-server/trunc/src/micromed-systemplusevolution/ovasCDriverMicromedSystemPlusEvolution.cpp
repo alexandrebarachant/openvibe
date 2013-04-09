@@ -202,7 +202,7 @@ CDriverMicromedSystemPlusEvolution::CDriverMicromedSystemPlusEvolution(IDriverCo
 	m_oLibMicromed = NULL ;
 
 	//Open library
-	OpenViBE::CString l_sPath =  OpenViBE::Directories::getBinDir() + "/" + MicromedDLL;
+	OpenViBE::CString l_sPath = m_rDriverContext.getConfigurationManager().expand("${Path_Bin}") + "/" + MicromedDLL;
 	m_oLibMicromed = ::LoadLibrary(l_sPath.toASCIIString());
 
 	//if it can't be open return FALSE;

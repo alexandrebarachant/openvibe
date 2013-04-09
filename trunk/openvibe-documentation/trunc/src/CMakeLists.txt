@@ -10,8 +10,8 @@
 ADD_CUSTOM_TARGET(${PROJECT_NAME} ALL)
 
 # look for doxygen, if not present, no need to generate documentation
-FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin NO_DEFAULT_PATH)
-FIND_PROGRAM(doxygen_bin "doxygen" PATHS $ENV{OpenViBE_dependencies}/bin "C:/Program Files/doxygen/bin")
+FIND_PROGRAM(doxygen_bin "doxygen" PATHS ${OV_CUSTOM_DEPENDENCIES_PATH}/bin NO_DEFAULT_PATH)
+FIND_PROGRAM(doxygen_bin "doxygen" PATHS ${OV_CUSTOM_DEPENDENCIES_PATH}/bin "C:/Program Files/doxygen/bin")
 
 IF(doxygen_bin)
 	MESSAGE(STATUS "  Found doxygen...")

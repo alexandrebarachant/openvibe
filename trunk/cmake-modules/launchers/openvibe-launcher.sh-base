@@ -1,0 +1,48 @@
+#!/bin/bash
+
+## By default, paths specified by CMake install will be used to locate OpenViBE components. If defined, these ENV variables can override the CMake defines.
+#export OV_PATH_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#export OV_PATH_BIN="$OV_PATH_ROOT/bin"
+#export OV_PATH_LIB="$OV_PATH_ROOT/lib"
+#export OV_PATH_DATA="$OV_PATH_ROOT/data"
+
+LOCAL_BIN_PATH="@CMAKE_INSTALL_FULL_BINDIR@"
+if [ "$OV_PATH_BIN" != "" ]; then
+	LOCAL_BIN_PATH="$OV_PATH_BIN"
+fi
+LOCAL_LIB_PATH="@CMAKE_INSTALL_FULL_LIBDIR@"
+if [ "$OV_PATH_LIB" != "" ]; then
+	LOCAL_LIB_PATH="$OV_PATH_LIB"
+fi
+
+export LD_LIBRARY_PATH="$LOCAL_LIB_PATH:@CMAKE_SOURCE_DIR@/scripts/software/lib:$LD_LIBRARY_PATH"
+export LC_ALL=C
+
+# The following line is there to help in cases where OpenViBE can consume excessive
+# amounts of CPU or grind the swap. You can remove it if you know what you're doing.
+renice 19 $$
+
+ov_debugger=
+if [ "$1" == "--debug" ]; then
+	ov_debugger="gdb --args"
+	shift
+fi
+ov_run_bg=0
+if [ "$1" == "--run-bg" ]; then
+	ov_run_bg=1
+	shift
+fi
+
+
+	
+ret_code=0
+
+if [ $ov_run_bg == 0 ]; then
+	eval $ov_debugger "$LOCAL_BIN_PATH/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $*
+	ret_code=$?
+else
+	$ov_debugger "$LOCAL_BIN_PATH/@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ $* &
+fi
+
+exit $ret_code
+

@@ -1528,8 +1528,7 @@ if [[ ! $ov_native_package_installed == true ]]; then
 
 	echo '#!/bin/bash' >> $ov_environment_configuration_script
 	echo '' >> $ov_environment_configuration_script
-	echo 'export OpenViBE_dependencies='$ov_target_folder >> $ov_environment_configuration_script
-	echo '' >> $ov_environment_configuration_script >> $ov_environment_configuration_script
+
 	echo 'export PKG_CONFIG_PATH='$ov_target_folder'/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig:/usr/local/lib/pkgconfig' >> $ov_environment_configuration_script
 	echo 'export LD_LIBRARY_PATH='$ov_target_folder'/lib64:'$ov_target_folder'/lib:'$ov_target_folder'/lib/opt:$LD_LIBRARY_PATH' >> $ov_environment_configuration_script
 	echo 'export PATH='$ov_target_folder'/bin:$PATH' >> $ov_environment_configuration_script

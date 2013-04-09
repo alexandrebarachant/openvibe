@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+# Openvibe scripts with .sh extension are only for debugging/development purposes, they're not packaged
+export DH_ALWAYS_EXCLUDE=.sh
+
+%:
+	dh $@
+
+# In the following, we put materials to openvibe/ subdirs to avoid cluttering the base directories
+override_dh_auto_configure:
+	dh_auto_configure -- -DCMAKE_INSTALL_DATADIR="/usr/share/openvibe" -DCMAKE_INSTALL_INCLUDEDIR="/usr/include/openvibe"
+ 

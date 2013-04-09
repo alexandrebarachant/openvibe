@@ -25,7 +25,7 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_ActiCHampAPI actiCHamp.h PATHS "C:/Program Files/actichamp" "C:/Program Files (x86)/actichamp" $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_ActiCHampAPI actiCHamp.h PATHS "C:/Program Files/actichamp" "C:/Program Files (x86)/actichamp" ${OV_CUSTOM_DEPENDENCIES_PATH})
 	IF(PATH_ActiCHampAPI)
 		MESSAGE(STATUS "  Found actiCHamp API...")
 		INCLUDE_DIRECTORIES(${PATH_ActiCHampAPI})
@@ -33,7 +33,7 @@ IF(WIN32)
 		FIND_LIBRARY(LIB_ActiCHampAPI actiCHamp_x86 PATHS ${PATH_ActiCHampAPI} )
 		IF(LIB_ActiCHampAPI)
 			MESSAGE(STATUS "    [  OK  ] lib ${LIB_ActiCHampAPI}")
-			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_ActiCHampAPI} )
+			TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIB_ActiCHampAPI} )
 		ELSE(LIB_ActiCHampAPI)
 			MESSAGE(STATUS "    [FAILED] lib actiCHamp")
 		ENDIF(LIB_ActiCHampAPI)

@@ -1,9 +1,0 @@
-@echo off
-
-REM
-REM This script is meant to be launched from an environment with the OV_ env variables already set
-REM
-
-%OV_DISTROOT%\ov-%1.cmd %2 %3 %4 %5
-
-

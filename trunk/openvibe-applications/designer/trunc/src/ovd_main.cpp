@@ -418,14 +418,15 @@ int go(int argc, char ** argv)
 	CKernelLoader l_oKernelLoader;
 
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<"\n";
-	CString m_sError;
+	CString l_sError;
 #if defined OVD_OS_Windows
-	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/OpenViBE-kernel-dynamic.dll", &m_sError))
+	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/openvibe-kernel.dll";
 #else
-	if(!l_oKernelLoader.load(OpenViBE::Directories::getLibDir() + "/libOpenViBE-kernel-dynamic.so", &m_sError))
+	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/libopenvibe-kernel.so";
 #endif
+	if(!l_oKernelLoader.load(l_sKernelFile, &l_sError))
 	{
-			cout<<"[ FAILED ] Error loading kernel ("<<m_sError<<")"<<"\n";
+		cout<<"[ FAILED ] Error loading kernel ("<<l_sError<<")" << " from [" << l_sKernelFile << "]\n";
 	}
 	else
 	{
@@ -450,13 +451,6 @@ int go(int argc, char ** argv)
 			else
 			{
 				OpenViBEToolkit::initialize(*l_pKernelContext);
-
-// For Mister Vincent !
-#ifdef OVD_OS_Windows
-#ifndef NDEBUG
-					//_asm int 3;
-#endif
-#endif
 
 				IConfigurationManager& l_rConfigurationManager=l_pKernelContext->getConfigurationManager();
 				ILogManager& l_rLogManager=l_pKernelContext->getLogManager();

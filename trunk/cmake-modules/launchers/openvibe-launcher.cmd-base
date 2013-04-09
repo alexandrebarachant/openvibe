@@ -1,11 +1,11 @@
 @ECHO OFF
 SETLOCAL EnableExtensions
 
-REM Get the directory location of this script, assume it contains the OpenViBE dist tree.
-SET "OV_DISTROOT=%~dp0"
-SET "OV_BINDIR=%OV_DISTROOT%bin"
-SET "OV_DATADIR=%OV_DISTROOT%share"
-SET "OV_LIBDIR=%OV_DISTROOT%bin"
+REM Get the directory location of this script, assume it contains the OpenViBE dist tree. These variables will be used by OpenViBE executables.
+SET "OV_PATH_ROOT=%~dp0"
+SET "OV_PATH_BIN=%OV_PATH_ROOT%\bin"
+SET "OV_PATH_LIB=%OV_PATH_ROOT%\bin"
+SET "OV_PATH_DATA=%OV_PATH_ROOT%\share"
 
 SET OV_PAUSE=PAUSE
 SET OV_RUN_IN_BG=
@@ -21,14 +21,14 @@ IF /i "%1"=="--run-bg" (
 	SHIFT
 )
 
-SET "OV_ENVIRONMENT_FILE=%OV_BINDIR%\OpenViBE-set-env.cmd"
+SET "OV_ENVIRONMENT_FILE=%OV_PATH_ROOT%\bin\OpenViBE-set-env.cmd"
 IF NOT EXIST "%OV_ENVIRONMENT_FILE%" (
 	ECHO Error: "%OV_ENVIRONMENT_FILE%" was not found
 	GOTO EndOfScript
 )
 CALL "%OV_ENVIRONMENT_FILE%"
 
-%OV_RUN_IN_BG% "%OV_BINDIR%\@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ %1 %2 %3 %4 %5 %6
+%OV_RUN_IN_BG% "%OV_PATH_ROOT%\bin\@OV_CMD_EXECUTABLE@" @OV_CMD_ARGS@ %1 %2 %3 %4 %5 %6
 	
 :EndOfScript
 

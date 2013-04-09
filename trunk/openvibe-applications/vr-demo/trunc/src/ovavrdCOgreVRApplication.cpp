@@ -89,7 +89,7 @@ bool COgreVRApplication::setup()
 	pluginsPath = std::string(getenv("OGRE_HOME"))+std::string("/bin/release/plugins.cfg");
  #endif
 #elif defined OVA_OS_Linux
-	pluginsPath = std::string(OpenViBE::Directories::getBinDir()) + std::string("/Plugins.cfg");
+	pluginsPath = std::string(OpenViBE::Directories::getDataDir()) + std::string("/openvibe-ogre-plugins.cfg");
 #else
 	#error "failing text"
 #endif

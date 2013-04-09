@@ -1,8 +1,8 @@
-PROJECT(OpenViBE-acquisition-server)
+PROJECT(openvibe-acquisition-server)
 
-SET(PROJECT_VERSION_MAJOR x)
-SET(PROJECT_VERSION_MINOR x)
-SET(PROJECT_VERSION_PATCH x)
+SET(PROJECT_VERSION_MAJOR ${OV_GLOBAL_VERSION_MAJOR})
+SET(PROJECT_VERSION_MINOR ${OV_GLOBAL_VERSION_MINOR})
+SET(PROJECT_VERSION_PATCH ${OV_GLOBAL_VERSION_PATCH})
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
 # The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
@@ -10,7 +10,7 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 INCLUDE("OvAddBoostLinkDir")
 
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
-ADD_EXECUTABLE(${PROJECT_NAME}-dynamic ${source_files})
+ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
 INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBEToolkit")
@@ -30,6 +30,7 @@ INCLUDE("FindThirdPartyEmotivAPI")
 INCLUDE("FindThirdPartyOpenAL")
 INCLUDE("FindThirdPartyBoost")
 INCLUDE("FindThirdPartyBoost_Thread")	# for linux
+INCLUDE("FindThirdPartyPThreadsVCE2")	# for Windows Fieldtrip
 
 # ---------------------------------
 # Target macros
@@ -53,45 +54,15 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
 ENDIF(UNIX)
 
-#begin fieldtrip driver:
-IF(WIN32)		
-	SET(PTHREAD_LIB "PTHREAD_LIB-NOTFOUND")
-	SET(PTHREAD_LIB ${OV_WIN32_DEP_DIR}/pthreads/lib/pthreadVCE2.lib)
-
-	IF(PTHREAD_LIB)
-		MESSAGE(STATUS "    [  OK  ] Third party lib ${PTHREAD_LIB}")
-	ELSE(PTHREAD_LIB)
-		MESSAGE(STATUS "    [FAILED] Third party lib ${PTHREAD_LIB}")
-	ENDIF(PTHREAD_LIB)
-	
-	INCLUDE("OvSetWindowsSDKPath")
-	SET(WS232_LIB "WS232_LIB-NOTFOUND")
-	FIND_LIBRARY(WS232_LIB ws2_32 ${OV_MS_SDK_PATH}/lib)
-	
-	IF(WS232_LIB)
-		MESSAGE(STATUS "    [  OK  ] Third party lib ${WS232_LIB}")
-	ELSE(WS232_LIB)
-		MESSAGE(STATUS "    [FAILED] Third party lib ${WS232_LIB}")
-	ENDIF(WS232_LIB)
-
-	IF(PTHREAD_LIB AND WS232_LIB)
-		INCLUDE_DIRECTORIES(${OV_WIN32_DEP_DIR}/pthreads/include)		
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${WS232_LIB} )
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${PTHREAD_LIB})
-	ENDIF(PTHREAD_LIB AND WS232_LIB)
-
-ENDIF(WIN32)
-#end fieldtrip driver
-
 # ----------------------
 # Generate launch script
 # ----------------------
-OV_INSTALL_LAUNCH_SCRIPT("ov-acquisition-server")
+OV_INSTALL_LAUNCH_SCRIPT("openvibe-acquisition-server")
 
 # -----------------------------
 # Install files
 # -----------------------------
-INSTALL(TARGETS ${PROJECT_NAME}-dynamic
+INSTALL(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})

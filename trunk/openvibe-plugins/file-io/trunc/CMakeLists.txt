@@ -1,8 +1,8 @@
-PROJECT(OpenViBE-plugins-file-io)
+PROJECT(openvibe-plugins-file-io)
 
-SET(PROJECT_VERSION_MAJOR x)
-SET(PROJECT_VERSION_MINOR x)
-SET(PROJECT_VERSION_PATCH x)
+SET(PROJECT_VERSION_MAJOR ${OV_GLOBAL_VERSION_MAJOR})
+SET(PROJECT_VERSION_MINOR ${OV_GLOBAL_VERSION_MINOR})
+SET(PROJECT_VERSION_PATCH ${OV_GLOBAL_VERSION_PATCH})
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
 # The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
@@ -10,8 +10,8 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 INCLUDE("OvAddBoostLinkDir")
 
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.c src/*.h src/*.inl)
-ADD_LIBRARY(${PROJECT_NAME}-dynamic SHARED ${source_files})
-SET_TARGET_PROPERTIES(${PROJECT_NAME}-dynamic PROPERTIES
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${source_files})
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DOVP_Exports -DOVP_Shared -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE")
@@ -23,6 +23,7 @@ INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
 INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindThirdPartyBoost_Regex")
 
 # ---------------------------------
 # Target macros
@@ -48,7 +49,7 @@ ENDIF(UNIX)
 # -----------------------------
 # Install files
 # -----------------------------
-INSTALL(TARGETS ${PROJECT_NAME}-dynamic
+INSTALL(TARGETS ${PROJECT_NAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})

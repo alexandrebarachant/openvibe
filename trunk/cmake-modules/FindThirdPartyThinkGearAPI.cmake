@@ -4,19 +4,19 @@
 # Adds include path
 # ---------------------------------
 IF(WIN32)
-	FIND_PATH(PATH_ThinkGearAPIOld thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32"  $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_ThinkGearAPIOld thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/tgcd/win32"  ${OV_CUSTOM_DEPENDENCIES_PATH})
 	IF(PATH_ThinkGearAPIOld)
 		MESSAGE(STATUS "  Found a ThinkGear API, but the version seems inferior to 2.1.")
 	ENDIF(PATH_ThinkGearAPIOld)
 	
-	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32" "C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32" $ENV{OpenViBE_dependencies})
+	FIND_PATH(PATH_ThinkGearAPI thinkgear.h PATHS "C:/Program Files/MindSet Development Tools/ThinkGear Communications Driver/win32" "C:/Program Files (x86)/MindSet Development Tools/ThinkGear Communications Driver/win32" ${OV_CUSTOM_DEPENDENCIES_PATH})
 	IF(PATH_ThinkGearAPI)
 		MESSAGE(STATUS "  Found ThinkGear API...")
 		INCLUDE_DIRECTORIES(${PATH_ThinkGearAPI})
 		FIND_LIBRARY(LIB_ThinkGearAPI thinkgear PATHS ${PATH_ThinkGearAPI} )
 		IF(LIB_ThinkGearAPI)
 			MESSAGE(STATUS "    [  OK  ] lib ${LIB_ThinkGearAPI}")
-			TARGET_LINK_LIBRARIES(${PROJECT_NAME}-dynamic ${LIB_ThinkGearAPI} )
+			TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIB_ThinkGearAPI} )
 		ELSE(LIB_ThinkGearAPI)
 			MESSAGE(STATUS "    [FAILED] lib thinkgear")
 		ENDIF(LIB_ThinkGearAPI)
