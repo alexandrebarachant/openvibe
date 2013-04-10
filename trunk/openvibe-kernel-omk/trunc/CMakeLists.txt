@@ -5,10 +5,6 @@ SET(PROJECT_VERSION_MINOR ${OV_GLOBAL_VERSION_MINOR})
 SET(PROJECT_VERSION_PATCH ${OV_GLOBAL_VERSION_PATCH})
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
-# The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
-# Due to CMake, this needs to be done _before_ creating the target.
-INCLUDE("OvAddBoostLinkDir")
-
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${source_files})
@@ -23,9 +19,6 @@ INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindThirdPartyGTK")
 INCLUDE("FindThirdPartyOgre3D")
-INCLUDE("FindThirdPartyBoost")
-INCLUDE("FindThirdPartyBoost_FileSystem")
-INCLUDE("FindThirdPartyBoost_System")	# Linux packaging ("lintian") complains if not linked to
 INCLUDE("FindThirdPartyX11")			# Linux packaging ("lintian") complains if not linked to, NOP on Win32
 
 # ---------------------------------

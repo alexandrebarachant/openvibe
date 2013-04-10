@@ -12,12 +12,12 @@
 #include "log/ovkCLogListenerFile.h"
 #include "visualisation/ovkCVisualisationManager.h"
 
-#include <boost/filesystem.hpp>
-
 #include <string>
 #include <algorithm>
 #include <functional>
 #include <cctype>
+
+#include <fs/Files.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -151,7 +151,7 @@ boolean CKernelContext::initialize(void)
 	m_pLogManager->activate(true);
 
 	this->getLogManager() << LogLevel_Trace << "Creating and configuring file log listener\n";
-	boost::filesystem::create_directories(boost::filesystem::path(OpenViBE::Directories::getLogDir().toASCIIString()));
+	FS::Files::createPath(OpenViBE::Directories::getLogDir().toASCIIString());
 	m_pLogListenerFile=new CLogListenerFile(m_rMasterKernelContext, m_sApplicationName, OpenViBE::Directories::getLogDir() + "/openvibe-"+m_sApplicationName+".log");
 	m_pLogListenerFile->activate(true);
 	this->getLogManager().addListener(m_pLogListenerFile);
@@ -211,15 +211,15 @@ boolean CKernelContext::initialize(void)
 	// @FIXME note that there is an issue if these paths are changed by a delayed configuration, then the directories are not created unless the caller does it.
 	CString l_sPathTmp;
 	l_sPathTmp = m_pConfigurationManager->expand("${Path_UserData}");
-	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()));
+	FS::Files::createPath(l_sPathTmp.toASCIIString());
 	l_sPathTmp = m_pConfigurationManager->expand("${Path_Tmp}");
-	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()));
+	FS::Files::createPath(l_sPathTmp.toASCIIString());
 	l_sPathTmp = m_pConfigurationManager->expand("${Path_Log}");
-	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()));
+	FS::Files::createPath(l_sPathTmp.toASCIIString());
 	l_sPathTmp = m_pConfigurationManager->expand("${CustomConfiguration}");
-	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()).parent_path());
+	FS::Files::createParentPath(l_sPathTmp.toASCIIString());
 	l_sPathTmp = m_pConfigurationManager->expand("${CustomConfigurationApplication}");
-	boost::filesystem::create_directories(boost::filesystem::path(l_sPathTmp.toASCIIString()).parent_path());
+	FS::Files::createParentPath(l_sPathTmp.toASCIIString());
 
 	ELogLevel l_eMainLogLevel   =this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_MainLogLevel}"));
 	ELogLevel l_eConsoleLogLevel=this->earlyGetLogLevel(m_pConfigurationManager->expand("${Kernel_ConsoleLogLevel}"));

@@ -10,6 +10,7 @@
 #else
 #endif
 
+#include <boost/filesystem.hpp>
 #include <iostream>
 
 using namespace FS;
@@ -146,4 +147,14 @@ boolean Files::directoryExists(const char *pathToCheck) {
 	} 
 #endif
 	return false;
+}
+
+bool Files::createPath(const char *sPath) 
+{
+	return boost::filesystem::create_directories(boost::filesystem::path(sPath));
+}
+
+bool Files::createParentPath(const char *sPath) 
+{
+	return boost::filesystem::create_directories(boost::filesystem::path(sPath).parent_path());
 }

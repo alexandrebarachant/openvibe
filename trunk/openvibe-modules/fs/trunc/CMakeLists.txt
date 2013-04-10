@@ -17,6 +17,8 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
 	COMPILE_FLAGS "-DFS_Shared -DFS_Exports")
 
 INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindThirdPartyBoost_FileSystem")
+INCLUDE("FindThirdPartyBoost_System")	# Linux packaging ("lintian") complains if not linked to	
 	
 # ---------------------------------
 # Test applications

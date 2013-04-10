@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <boost/filesystem.hpp>
+#include <fs/Files.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -20,7 +20,7 @@ CLogListenerFile::CLogListenerFile(const IKernelContext& rKernelContext, const C
 {
 
 	// Create the path to the log file
-	boost::filesystem::create_directories(boost::filesystem::path(sLogFilename.toASCIIString()).parent_path());
+	FS::Files::createParentPath(sLogFilename.toASCIIString());
 
 	m_fsFileStream.open(sLogFilename.toASCIIString(), ios::out);
 
