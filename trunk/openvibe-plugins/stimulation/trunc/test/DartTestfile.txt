@@ -12,7 +12,7 @@ ENDIF(WIN32)
 SET(TEST_NAME run-command)
 SET(SCENARIO_TO_TEST "${TEST_NAME}.xml")
 ADD_TEST(clean_${TEST_NAME} "rm" "-f" "${TEST_NAME}.txt")
-ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/ov-designer.${EXT}" ${OS_FLAGS} "--no-gui" "--play" ${SCENARIO_TO_TEST})
+ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/openvibe-designer.${EXT}" ${OS_FLAGS} "--no-gui" "--play" ${SCENARIO_TO_TEST})
 ADD_TEST(exist_${TEST_NAME} "ls" "${TEST_NAME}.txt")
 
 

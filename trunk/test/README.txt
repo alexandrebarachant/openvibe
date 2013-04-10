@@ -83,7 +83,7 @@ ELSE(WIN32)
 	SET(OS_FLAGS "")
 ENDIF(WIN32)
 
-ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/ov-designer.${EXT}" ${OS_FLAGS} "--no-gui" "--play" ${SCENARIO_TO_TEST})
+ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/openvibe-designer.${EXT}" ${OS_FLAGS} "--no-gui" "--play" ${SCENARIO_TO_TEST})
 ADD_TEST(comparator_${TEST_NAME} "diff" "${TEST_NAME}.csv" "${TEST_NAME}.ref.csv")
 
 ## add some properties that help to debug 

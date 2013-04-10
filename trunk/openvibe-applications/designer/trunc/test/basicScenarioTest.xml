@@ -160,7 +160,7 @@
 			<Text>This is the simplest scenario to need for automatic test
 This scenario run for about 1 sec and stop
  
-To run use ov-designer --no-gui --play basicScenarioTest.xml
+To run use openvibe-designer --no-gui --play basicScenarioTest.xml
  
 You can run faster if you replace --play with --play-fast
  

@@ -5,6 +5,6 @@ ELSE(WIN32)
 	SET(EXT sh)
 	SET(OS_FLAGS "")
 ENDIF(WIN32)
-ADD_TEST(basic_run_designer "$ENV{OV_BINARY_PATH}/ov-designer.${EXT}" ${OS_FLAGS} "--no-gui" "--play" "basicScenarioTest.xml")
+ADD_TEST(basic_run_designer "$ENV{OV_BINARY_PATH}/openvibe-designer.${EXT}" ${OS_FLAGS} "--no-gui" "--play" "basicScenarioTest.xml")
 
 SET_TESTS_PROPERTIES(basic_run_designer PROPERTIES ATTACHED_FILES_ON_FAIL "ENV${HOME}.config/openvibe/log/openvibe-designer.log"})
