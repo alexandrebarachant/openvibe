@@ -99,6 +99,7 @@ SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
 # a list of all project which will be filled by the directory traversal. This is needed to generate the documentation.
 SET_PROPERTY(GLOBAL PROPERTY OV_PROP_CURRENT_PROJECTS "") 	
+SET_PROPERTY(GLOBAL PROPERTY OV_PROP_CURRENT_PROJECTS_BUILD_DIR "")
 
 # Used by the various Find* scripts to locate OpenViBE modules
 SET(OV_BASE_DIR ${CMAKE_SOURCE_DIR})
@@ -115,6 +116,7 @@ INCLUDE("OvInstallLaunchScript")
 
 # Setup knowledge of GNU-style install path variables
 INCLUDE("GNUInstallDirs")
+SET(CMAKE_INSTALL_FULL_DOCDIR "${CMAKE_INSTALL_FULL_BINDIR}/../doc/html")
 	
 # Add directories that OpenViBE will use to look for its components runtime, unless overridden by environment variables in the launch scripts.
 # These defines should only be used in "ov_directories.h".
@@ -134,6 +136,10 @@ ADD_SUBDIRECTORY("openvibe-applications/")
 ADD_SUBDIRECTORY("openvibe-externals/")
 ADD_SUBDIRECTORY("openvibe-documentation/")	# needs to be the last since it uses the list of collected projects
 
+#add dependency to plugin inspector to the documentation
+IF(openvibe-documentation)
+	ADD_DEPENDENCIES(openvibe-documentation openvibe-plugin-inspector-dynamic)
+ENDIF(openvibe-documentation)
 # make a copy of the dependency script, this is done so we can use the same launch scripts both in win install and win devel situations.
 IF(WIN32)
 	INSTALL(PROGRAMS ${CMAKE_SOURCE_DIR}/scripts/win32-dependencies.cmd DESTINATION ${CMAKE_INSTALL_FULL_BINDIR} RENAME "openvibe-set-env.cmd")
