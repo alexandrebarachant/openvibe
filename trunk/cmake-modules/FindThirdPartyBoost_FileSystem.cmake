@@ -23,3 +23,8 @@ IF(UNIX)
 		MESSAGE(STATUS "  FAILED to find pthread...")
 	ENDIF(LIB_STANDARD_MODULE_PTHREAD)
 ENDIF(UNIX)
+
+IF(WIN32)
+	OV_LINK_BOOST_LIB("filesystem" ${OV_WIN32_BOOST_VERSION} )
+	OV_LINK_BOOST_LIB("system" ${OV_WIN32_BOOST_VERSION} )			# filesystem depends on system
+ENDIF(WIN32)

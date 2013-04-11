@@ -11,10 +11,6 @@ IF(NOT PATH_VRPN)
 	RETURN()
 ENDIF(NOT PATH_VRPN)
 
-# The following is required because one of our dependencies hard-links against specific boost libs on Win, so we need to tell the linker the path to them. 
-# Due to CMake, this needs to be done _before_ creating the target.
-INCLUDE("OvAddBoostLinkDir")
-
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
 ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
@@ -25,9 +21,9 @@ INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindThirdPartyCEGUI") # CEGUI + CEGUIOgreRender included
 INCLUDE("FindThirdPartyVRPN")
-INCLUDE("FindThirdPartyOgre3D") # OGRE + OIS included
-INCLUDE("FindThirdPartyBoost")
-INCLUDE("FindThirdPartyBoost_Thread")
+INCLUDE("FindThirdPartyOgre3D") # OGRE + OIS included, pulls boost thread
+INCLUDE("FindThirdPartyBoost")			# Using Ogre headers on Win32 causes dependency to Boost thread library
+INCLUDE("FindThirdPartyBoost_Thread")	# Note that this is a potential issue on Windows, as the dependencies/ogre/boost and dependencies/boost are not the same at the time of writing this.
 
 # ---------------------------------
 # Finds standard library pthread
