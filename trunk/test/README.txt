@@ -87,7 +87,7 @@ ADD_TEST(run_${TEST_NAME} "$ENV{OV_BINARY_PATH}/openvibe-designer.${EXT}" ${OS_F
 ADD_TEST(comparator_${TEST_NAME} "diff" "${TEST_NAME}.csv" "${TEST_NAME}.ref.csv")
 
 ## add some properties that help to debug 
-SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES ATTACHED_FILES_ON_FAIL "ENV${HOME}.config/openvibe/log/openvibe-designer.log"}
+SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES ATTACHED_FILES_ON_FAIL "$ENV{HOME}/.config/openvibe/log/openvibe-designer.log"}
 SET_TESTS_PROPERTIES(comparator_${TEST_NAME} PROPERTIES ATTACHED_FILES_ON_FAIL "${TEST_NAME}.csv"}
 SET_TESTS_PROPERTIES(comparator_${TEST_NAME} PROPERTIES DEPENDS run_${TEST_NAME}}
 

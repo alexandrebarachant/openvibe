@@ -147,7 +147,7 @@ ctest_read_custom_files("${CTEST_BINARY_DIRECTORY}")
 set(CTEST_TIMEOUT           "7200")
 
 ## -- Set output to english
-set( $ENV{LC_MESSAGES}      "en_EN" )
+set(ENV{LC_MESSAGES}      "en_EN" )
 
 
 
@@ -212,7 +212,7 @@ ENDIF(ALL_OK)
 ## -- TEST
 IF(ALL_OK)
 	message(" -- Test ${MODEL} - ${CTEST_BUILD_NAME} --")
-	set( $ENV{CTEST_BINARY_DIRECTORY}    "${CTEST_BINARY_DIRECTORY}" )
+	set( ENV{CTEST_BINARY_DIRECTORY}    "${CTEST_BINARY_DIRECTORY}" )
 	ctest_test(BUILD  "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE res)
 	message(STATUS "  INFO : ctest_test(...) returned '${res}'")
 ENDIF(ALL_OK)
