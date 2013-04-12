@@ -19,11 +19,23 @@
 # ${TEST_LOCAL} is repleased by "FALSE" only by automatic test call, else {TEST_LOCAL} is not defined
 SET(LOCAL ${TEST_LOCAL})
 IF(NOT (LOCAL MATCHES "FALSE"))
-	set(OV_ROOT_DIR              "$ENV{PWD}/..")
+	IF(WIN32)
+		# triky way to get absolute path for ../. directory in windows with cygwin
+		# todo: try to find a cmake way to get this for simple call to ctest in OV_ROOT_DIR\test directory in the aim to run all test
+		exec_program("cygpath" ARGS "-a -w ../." OUTPUT_VARIABLE "OV_ROOT_DIR")
+	ELSE(WIN32)
+		set(OV_ROOT_DIR              "$ENV{PWD}/..")
+	ENDIF(WIN32)
+	
 	set(CTEST_SOURCE_DIRECTORY		"${OV_ROOT_DIR}")
 	set(ENV{OV_BINARY_PATH} "${OV_ROOT_DIR}/dist")
 	message("running local test here= $ENV{OV_BINARY_PATH}")
 ENDIF(NOT (LOCAL MATCHES "FALSE"))
+
+get_cmake_property(_variableNames VARIABLES)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
 
 
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-plugins/acquisition/trunc/test")
@@ -82,6 +94,3 @@ SUBDIRS("${CTEST_SOURCE_DIRECTORY}/openvibe-modules/system/trunc/test")
 SUBDIRS("${CTEST_SOURCE_DIRECTORY}/scripts/software/tmp/vrpn/java_vrpn/test")
 
 
-
-
- 
