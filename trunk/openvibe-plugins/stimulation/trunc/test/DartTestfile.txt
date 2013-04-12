@@ -17,6 +17,10 @@ ADD_TEST(exist_${TEST_NAME} "ls" "${TEST_NAME}.txt")
 
 
 ## add some properties that help to debug 
-SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES ATTACHED_FILES_ON_FAIL "$ENV{HOME}/.config/openvibe/log/openvibe-designer.log"})
+IF(WIN32)
+	SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES ATTACHED_FILES_ON_FAIL "$ENV{APPDATA}/openvibe/log/openvibe-designer.log"})
+ELSE(WIN32)
+	SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES ATTACHED_FILES_ON_FAIL "$ENV{HOME}/.config/openvibe/log/openvibe-designer.log"})
+ENDIF(WIN32)
 SET_TESTS_PROPERTIES(exist_${TEST_NAME} PROPERTIES DEPENDS run_${TEST_NAME}})
 SET_TESTS_PROPERTIES(run_${TEST_NAME} PROPERTIES DEPENDS clean_${TEST_NAME}})
