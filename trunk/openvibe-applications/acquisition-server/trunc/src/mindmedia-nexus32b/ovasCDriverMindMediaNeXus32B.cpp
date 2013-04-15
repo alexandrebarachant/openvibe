@@ -6,7 +6,7 @@
 #include <system/Time.h>
 #include <system/Memory.h>
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #include <cmath>
 #include <windows.h>
@@ -266,4 +266,4 @@ void CDriverMindMediaNeXus32B::processData(
 	ReleaseMutex(g_pMutex);
 }
 
-#endif // defined OVAS_OS_Windows
+#endif // defined TARGET_OS_Windows

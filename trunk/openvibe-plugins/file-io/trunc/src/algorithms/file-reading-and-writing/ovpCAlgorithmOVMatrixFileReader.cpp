@@ -4,7 +4,7 @@
 
 #include <sstream>
 #include <locale>
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 #include <cerrno>
 #endif
 
@@ -400,7 +400,7 @@ boolean CAlgorithmOVMatrixFileReader::parseFile(boolean bStoreData)
 
 						//retrieve value
 						float64 l_f64Value = atof(l_sCurString.c_str());
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 						if(errno == ERANGE)
 						{
 							//string couldn't be converted to a double

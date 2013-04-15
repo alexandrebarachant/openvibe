@@ -5,11 +5,11 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmStimulationInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
+	class OV_API IBoxAlgorithmStimulationInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
 	{
 	public:
 
-		class OVTK_API ICallback
+		class OV_API ICallback
 		{
 		public:
 			virtual void setStimulationCount(const OpenViBE::uint32 ui32StimulationCount)=0;
@@ -53,8 +53,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback, OVTK_ClassId_);
 	};
 
-	OVTK_API OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* createBoxAlgorithmStimulationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback& rCallback);
-	OVTK_API void releaseBoxAlgorithmStimulationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* pBoxAlgorithmStimulationInputReaderCallback);
+	OV_API OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* createBoxAlgorithmStimulationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback::ICallback& rCallback);
+	OV_API void releaseBoxAlgorithmStimulationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStimulationInputReaderCallback* pBoxAlgorithmStimulationInputReaderCallback);
 };
 
 #endif // __OpenViBEToolkit_Reader_IBoxAlgorithmStimulationInputReaderCallback_H__

@@ -5,7 +5,7 @@
 
 namespace EBML
 {
-	class EBML_API CWriter : public EBML::IWriter
+	class OV_API CWriter : public EBML::IWriter
 	{
 	public:
 

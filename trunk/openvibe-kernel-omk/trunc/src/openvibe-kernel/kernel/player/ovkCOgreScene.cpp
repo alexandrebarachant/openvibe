@@ -7,11 +7,11 @@
 #include "ovkCOgreVisualisation.h"
 #include "ovkCOgreScene.h"
 
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
 #  include <gdk/gdkwin32.h>
-#elif defined OVK_OS_Linux
+#elif defined TARGET_OS_Linux
 #  include <gdk/gdkx.h>
-#elif defined OVK_OS_MacOS
+#elif defined TARGET_OS_MacOS
 #  define Cursor XCursor
 #  include <gdk/gdkx.h>
 #  undef Cursor

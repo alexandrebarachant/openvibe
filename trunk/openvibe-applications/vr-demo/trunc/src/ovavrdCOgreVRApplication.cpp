@@ -82,13 +82,13 @@ bool COgreVRApplication::setup()
 {
 	// Plugin config path setup
 	Ogre::String pluginsPath;
-#if defined OVA_OS_Windows
- #if defined OVA_BUILDTYPE_Debug
+#if defined TARGET_OS_Windows
+ #if defined TARGET_BUILDTYPE_Debug
 	pluginsPath = std::string(getenv("OGRE_HOME"))+std::string("/bin/debug/plugins_d.cfg");
  #else
 	pluginsPath = std::string(getenv("OGRE_HOME"))+std::string("/bin/release/plugins.cfg");
  #endif
-#elif defined OVA_OS_Linux
+#elif defined TARGET_OS_Linux
 	pluginsPath = std::string(OpenViBE::Directories::getDataDir()) + std::string("/openvibe-ogre-plugins.cfg");
 #else
 	#error "failing text"

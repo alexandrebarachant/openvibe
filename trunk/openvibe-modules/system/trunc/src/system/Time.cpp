@@ -2,11 +2,11 @@
 
 #include <cmath>
 
-#if defined System_OS_Linux
+#if defined TARGET_OS_Linux
  #include <unistd.h>
  #include <ctime>
  #include <sys/time.h>
-#elif defined System_OS_Windows
+#elif defined TARGET_OS_Windows
  #include <windows.h>
 #else
 #endif
@@ -19,7 +19,7 @@ boolean Time::sleep(const uint32 ui32MilliSeconds)
 	return zsleep(((((uint64)ui32MilliSeconds)<<22)/1000)<<10);
 }
 
-#if defined System_OS_Windows
+#if defined TARGET_OS_Windows
 
 namespace
 {
@@ -143,9 +143,9 @@ namespace
 
 boolean Time::zsleep(const uint64 ui64Seconds)
 {
-#if defined System_OS_Linux
+#if defined TARGET_OS_Linux
 	usleep((ui64Seconds*1000000)>>32);
-#elif defined System_OS_Windows
+#elif defined TARGET_OS_Windows
 	Sleep((uint32)(((ui64Seconds>>10)*1000)>>22));
 #else
 #endif
@@ -161,7 +161,7 @@ uint64 Time::zgetTime(void)
 {
 	uint64 l_ui64Result=0;
 
-#if defined System_OS_Linux
+#if defined TARGET_OS_Linux
 
 	static boolean l_bInitialized=false;
 	static struct timeval l_oTimeValueStart;
@@ -184,7 +184,7 @@ uint64 Time::zgetTime(void)
 
 	l_ui64Result=((l_i64TimeMicroSecond/1000000)<<32)+(((l_i64TimeMicroSecond%1000000)<<32)/1000000);
 
-#elif defined System_OS_Windows
+#elif defined TARGET_OS_Windows
 
 #if 0
 	static boolean l_bInitialized=false;

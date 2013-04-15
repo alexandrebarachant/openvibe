@@ -5,7 +5,7 @@
 #include "../ovasCHeader.h"
 #include "../ovas_base.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #include "ovasCConfigurationTMSIRefa32B.h"
 
@@ -110,6 +110,6 @@ namespace OpenViBEAcquisitionServer
 	};
 };
 
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows
 
 #endif // __OpenViBE_AcquisitionServer_CDriverTMSiRefa32B_H__

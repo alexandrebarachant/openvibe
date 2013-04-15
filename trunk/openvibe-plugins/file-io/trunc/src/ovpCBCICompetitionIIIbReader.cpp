@@ -16,7 +16,7 @@ using namespace OpenViBEToolkit;
 using namespace std;
 
 #define BCICompetitionIIIbReader_UndefinedClass 0xFFFFFFFFFFLL
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 #define isnan _isnan
 #endif
 

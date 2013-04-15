@@ -20,7 +20,7 @@
 
 #include "ovasCHeaderAdapterBrainProductsBrainampSeries.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 using namespace OpenViBE;
 using namespace OpenViBEAcquisitionServer;
@@ -74,4 +74,4 @@ const char* CHeaderAdapterBrainProductsBrainampSeries::getChannelName(const uint
 	return "";
 }
 
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows

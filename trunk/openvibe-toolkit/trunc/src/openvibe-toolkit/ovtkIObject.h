@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IObject : public OpenViBE::IObject
+	class OV_API IObject : public OpenViBE::IObject
 	{
 	public:
 

@@ -1,8 +1,8 @@
 #include "ovCKernelLoader.h"
 
-#if defined OV_OS_Linux
+#if defined TARGET_OS_Linux
  #include <dlfcn.h>
-#elif defined OV_OS_Windows
+#elif defined TARGET_OS_Windows
  #include <windows.h>
 #else
 #endif
@@ -105,7 +105,7 @@ void CKernelLoaderBase::release(void)
 //___________________________________________________________________//
 //                                                                   //
 
-#if defined OV_OS_Linux
+#if defined TARGET_OS_Linux
 
 namespace OpenViBE
 {
@@ -126,7 +126,7 @@ namespace OpenViBE
 	};
 };
 
-#elif defined OV_OS_Windows
+#elif defined TARGET_OS_Windows
 
 namespace OpenViBE
 {
@@ -153,7 +153,7 @@ namespace OpenViBE
 //___________________________________________________________________//
 //                                                                   //
 
-#if defined OV_OS_Linux
+#if defined TARGET_OS_Linux
 
 CKernelLoaderLinux::CKernelLoaderLinux(void)
 	:m_pFileHandle(NULL)
@@ -216,7 +216,7 @@ boolean CKernelLoaderLinux::isOpen(void)
 	return m_pFileHandle!=NULL;
 }
 
-#elif defined OV_OS_Windows
+#elif defined TARGET_OS_Windows
 
 CKernelLoaderWindows::CKernelLoaderWindows(void)
 	:m_pFileHandle(NULL)
@@ -319,9 +319,9 @@ boolean CKernelLoaderWindows::isOpen(void)
 CKernelLoader::CKernelLoader(void)
 	:m_pKernelLoaderImpl(NULL)
 {
-#if defined OV_OS_Linux
+#if defined TARGET_OS_Linux
 	m_pKernelLoaderImpl=new CKernelLoaderLinux();
-#elif defined OV_OS_Windows
+#elif defined TARGET_OS_Windows
 	m_pKernelLoaderImpl=new CKernelLoaderWindows();
 #else
 #endif

@@ -14,7 +14,7 @@
 #include <string>
 #include <cfloat>
 
-#ifdef OVP_OS_Windows
+#ifdef TARGET_OS_Windows
 #ifndef NDEBUG
 		//#define ELAN_VALIDATION
 		#define NB_ELAN_CHANNELS 143

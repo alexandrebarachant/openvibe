@@ -27,7 +27,7 @@ namespace EBML
 	 * \todo date formating implementation
 	 * \todo utf8 string formating implementation
 	 */
-	class EBML_API IWriterHelper
+	class OV_API IWriterHelper
 	{
 	public:
 
@@ -174,7 +174,7 @@ namespace EBML
 	 * \return a pointer to the created instance on success.
 	 * \return \c NULL when something went wrong.
 	 */
-	extern EBML_API EBML::IWriterHelper* createWriterHelper(void);
+	extern OV_API EBML::IWriterHelper* createWriterHelper(void);
 };
 
 #endif // __EBML_IEnhancedWriter_H__

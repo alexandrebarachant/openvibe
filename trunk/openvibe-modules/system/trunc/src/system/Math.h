@@ -5,7 +5,7 @@
 
 namespace System
 {
-	class System_API Math
+	class OV_API Math
 	{
 	public:
 

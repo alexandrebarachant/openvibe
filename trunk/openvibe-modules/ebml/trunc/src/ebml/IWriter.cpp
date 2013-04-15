@@ -319,7 +319,7 @@ void CWriter::release(void)
 // ________________________________________________________________________________________________________________
 //
 
-EBML_API IWriter* EBML::createWriter(IWriterCallback& rWriterCallback)
+OV_API IWriter* EBML::createWriter(IWriterCallback& rWriterCallback)
 {
 	return new CWriter(rWriterCallback);
 }

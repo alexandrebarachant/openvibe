@@ -9,7 +9,7 @@ using namespace Automaton;
 
 namespace Automaton
 {
-	class Automaton_API CNodeFactory : public INodeFactory
+	class OV_API CNodeFactory : public INodeFactory
 	{
 		public:
 			static INodeFactory* m_pFactory;
@@ -67,7 +67,7 @@ void CNodeFactory::releaseNode(INode * pNode)
 //___________________________________________________________________________________________________
 //
 
-Automaton_API Automaton::INodeFactory* Automaton::createNodeFactory()
+OV_API Automaton::INodeFactory* Automaton::createNodeFactory()
 {
 	if(!CNodeFactory::m_pFactory)
 	{
@@ -79,7 +79,7 @@ Automaton_API Automaton::INodeFactory* Automaton::createNodeFactory()
 	return CNodeFactory::m_pFactory;
 }
 
-Automaton_API void Automaton::releaseNodeFactory(Automaton::INodeFactory* pFactory)
+OV_API void Automaton::releaseNodeFactory(Automaton::INodeFactory* pFactory)
 {
 	CNodeFactory::m_ui64ReferenceCount--;
 

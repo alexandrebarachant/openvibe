@@ -62,12 +62,12 @@ Automaton::boolean CAutomatonController::process()
 //___________________________________________________________________________________________________
 //
 
-Automaton_API Automaton::IAutomatonController* Automaton::createAutomatonController(Automaton::IAutomatonContext* pContext)
+OV_API Automaton::IAutomatonController* Automaton::createAutomatonController(Automaton::IAutomatonContext* pContext)
 {
 	return new Automaton::CAutomatonController(pContext);
 }
 
-Automaton_API void Automaton::releaseAutomatonController(Automaton::IAutomatonController * pController)
+OV_API void Automaton::releaseAutomatonController(Automaton::IAutomatonController * pController)
 {
 	pController->release();
 }

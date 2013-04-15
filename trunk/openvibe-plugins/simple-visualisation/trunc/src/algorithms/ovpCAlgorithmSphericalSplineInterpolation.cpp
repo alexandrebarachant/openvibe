@@ -202,7 +202,7 @@ boolean CAlgorithmSphericalSplineInterpolation::process(void)
 
 		for(uint32 i=0; i<ip_pSamplePointsCoords->getDimensionSize(0); i++, l_pSampleValue++)
 		{
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 #ifndef NDEBUG
 			if(_finite(*(ip_pSamplePointsCoords->getBuffer()+3*i)) == 0 ||
 				_finite(*(ip_pSamplePointsCoords->getBuffer()+3*i+1)) == 0 ||
@@ -227,7 +227,7 @@ boolean CAlgorithmSphericalSplineInterpolation::process(void)
 				*(ip_pSamplePointsCoords->getBuffer()+3*i+2) //coordinate where to interpolate
 				);
 
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 #ifndef NDEBUG
 			if(_finite(*l_pSampleValue) == 0) //tests whether a double is infinite or a NaN
 			{

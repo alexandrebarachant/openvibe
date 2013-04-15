@@ -14,11 +14,11 @@
 #include "ovkCOgreScene.h"
 #include "../ovkGtkOVCustom.h"
 
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
 #  include <gdk/gdkwin32.h>
-#elif defined OVK_OS_Linux
+#elif defined TARGET_OS_Linux
 #  include <gdk/gdkx.h>
-#elif defined OVK_OS_MacOS
+#elif defined TARGET_OS_MacOS
 #  define Cursor XCursor
 #  include <gdk/gdkx.h>
 #  undef Cursor
@@ -144,9 +144,9 @@ boolean CSimulatedBox::handleRealizeEvent(GtkWidget* pOVCustomWidget)
 	gtk_widget_set_double_buffered(pOVCustomWidget, FALSE);
 
 	std::string l_sExternalHandle;
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
 	l_sExternalHandle=Ogre::StringConverter::toString((unsigned long)GDK_WINDOW_HWND(pOVCustomWidget->window));
-#elif defined OVK_OS_Linux
+#elif defined TARGET_OS_Linux
 	::XSync(GDK_WINDOW_XDISPLAY(pOVCustomWidget->window), False);
 
 	::GdkDisplay* l_pGdkDisplay=gdk_drawable_get_display(GDK_DRAWABLE(pOVCustomWidget->window));

@@ -9,13 +9,13 @@ namespace OpenViBEToolkit
 	{
 		namespace Matrix
 		{
-			OVTK_API OpenViBE::boolean copy(OpenViBE::IMatrix& rDestinationMatrix, const OpenViBE::IMatrix& rSourceMatrix);
-			OVTK_API OpenViBE::boolean copyDescription(OpenViBE::IMatrix& rDestinationMatrix, const OpenViBE::IMatrix& rSourceMatrix);
-			OVTK_API OpenViBE::boolean copyContent(OpenViBE::IMatrix& rDestinationMatrix, const OpenViBE::IMatrix& rSourceMatrix);
-			OVTK_API OpenViBE::boolean clearContent(OpenViBE::IMatrix& rMatrix);
-			OVTK_API OpenViBE::boolean isDescriptionSimilar(const OpenViBE::IMatrix& rSourceMatrix1, const OpenViBE::IMatrix& rSourceMatrix2, const OpenViBE::boolean bCheckLabels=true);
-			OVTK_API OpenViBE::boolean isContentSimilar(const OpenViBE::IMatrix& rSourceMatrix1, const OpenViBE::IMatrix& rSourceMatrix2);
-			OVTK_API OpenViBE::boolean isContentValid(const OpenViBE::IMatrix& rSourceMatrix, const OpenViBE::boolean bCheckNotANumber=true, const OpenViBE::boolean bCheckInfinity=true);
+			OV_API OpenViBE::boolean copy(OpenViBE::IMatrix& rDestinationMatrix, const OpenViBE::IMatrix& rSourceMatrix);
+			OV_API OpenViBE::boolean copyDescription(OpenViBE::IMatrix& rDestinationMatrix, const OpenViBE::IMatrix& rSourceMatrix);
+			OV_API OpenViBE::boolean copyContent(OpenViBE::IMatrix& rDestinationMatrix, const OpenViBE::IMatrix& rSourceMatrix);
+			OV_API OpenViBE::boolean clearContent(OpenViBE::IMatrix& rMatrix);
+			OV_API OpenViBE::boolean isDescriptionSimilar(const OpenViBE::IMatrix& rSourceMatrix1, const OpenViBE::IMatrix& rSourceMatrix2, const OpenViBE::boolean bCheckLabels=true);
+			OV_API OpenViBE::boolean isContentSimilar(const OpenViBE::IMatrix& rSourceMatrix1, const OpenViBE::IMatrix& rSourceMatrix2);
+			OV_API OpenViBE::boolean isContentValid(const OpenViBE::IMatrix& rSourceMatrix, const OpenViBE::boolean bCheckNotANumber=true, const OpenViBE::boolean bCheckInfinity=true);
 		};
 
 		namespace MatrixManipulation

@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmExperimentInformationInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
+	class OV_API IBoxAlgorithmExperimentInformationInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
 	{
 	public:
 
@@ -24,7 +24,7 @@ namespace OpenViBEToolkit
 			Value_TechnicianName,       // string
 		};
 
-		class OVTK_API ICallback
+		class OV_API ICallback
 		{
 		public:
 			virtual void setValue(const OpenViBE::uint32 ui32ValueIdentifier, const OpenViBE::uint64 ui64Value)=0;
@@ -68,8 +68,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback, OVTK_ClassId_);
 	};
 
-	OVTK_API OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback* createBoxAlgorithmExperimentInformationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback::ICallback& rCallback);
-	OVTK_API void releaseBoxAlgorithmExperimentInformationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback* pBoxAlgorithmExperimentInformationInputReaderCallback);
+	OV_API OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback* createBoxAlgorithmExperimentInformationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback::ICallback& rCallback);
+	OV_API void releaseBoxAlgorithmExperimentInformationInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmExperimentInformationInputReaderCallback* pBoxAlgorithmExperimentInformationInputReaderCallback);
 };
 
 #endif // __OpenViBEToolkit_Reader_IBoxAlgorithmExperimentInformationInputReaderCallback_H__

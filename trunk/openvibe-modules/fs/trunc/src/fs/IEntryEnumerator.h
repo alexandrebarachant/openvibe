@@ -7,11 +7,11 @@ namespace FS
 {
 	class IEntryEnumeratorCallBack;
 
-	class FS_API IEntryEnumerator
+	class OV_API IEntryEnumerator
 	{
 	public:
 
-		class FS_API IAttributes
+		class OV_API IAttributes
 		{
 		public:
 			virtual FS::boolean isFile(void)=0;
@@ -29,7 +29,7 @@ namespace FS
 			virtual ~IAttributes(void);
 		};
 
-		class FS_API IEntry
+		class OV_API IEntry
 		{
 		public:
 			virtual const char* getName(void)=0;
@@ -44,14 +44,14 @@ namespace FS
 		virtual ~IEntryEnumerator(void);
 	};
 
-	class FS_API IEntryEnumeratorCallBack
+	class OV_API IEntryEnumeratorCallBack
 	{
 	public:
 		virtual FS::boolean callback(FS::IEntryEnumerator::IEntry& rEntry, FS::IEntryEnumerator::IAttributes& rAttributes)=0;
 		virtual ~IEntryEnumeratorCallBack(void) { }
 	};
 
-	extern FS_API FS::IEntryEnumerator* createEntryEnumerator(FS::IEntryEnumeratorCallBack& rCallBack);
+	extern OV_API FS::IEntryEnumerator* createEntryEnumerator(FS::IEntryEnumeratorCallBack& rCallBack);
 };
 
 #endif // __FS_IEntryEnumerator_H__

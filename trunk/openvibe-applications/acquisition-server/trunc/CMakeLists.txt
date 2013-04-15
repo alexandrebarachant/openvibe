@@ -9,6 +9,7 @@ FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
 ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
 INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBECommon")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleSocket")
@@ -25,7 +26,7 @@ INCLUDE("FindThirdPartyThinkGearAPI")
 INCLUDE("FindThirdPartyEmotivAPI")
 INCLUDE("FindThirdPartyOpenAL")
 INCLUDE("FindThirdPartyBoost")
-INCLUDE("FindThirdPartyBoost_Thread")	# for linux
+INCLUDE("FindThirdPartyBoost_Thread")
 INCLUDE("FindThirdPartyPThreadsVCE2")	# for Windows Fieldtrip
 
 # ---------------------------------

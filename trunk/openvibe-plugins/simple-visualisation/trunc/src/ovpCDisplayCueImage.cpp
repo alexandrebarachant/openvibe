@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
   #include <unistd.h>
 #endif
 

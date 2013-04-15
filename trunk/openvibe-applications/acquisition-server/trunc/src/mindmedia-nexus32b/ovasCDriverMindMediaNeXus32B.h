@@ -4,7 +4,7 @@
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 namespace OpenViBEAcquisitionServer
 {
@@ -42,6 +42,6 @@ namespace OpenViBEAcquisitionServer
 	};
 };
 
-#endif // defined OVAS_OS_Windows
+#endif // defined TARGET_OS_Windows
 
 #endif // __OpenViBE_AcquisitionServer_CDriverMindMediaNeXus32B_H__

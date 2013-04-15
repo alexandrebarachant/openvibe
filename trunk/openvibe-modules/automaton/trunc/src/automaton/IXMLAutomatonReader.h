@@ -8,7 +8,7 @@
 namespace Automaton
 {
 
-	class Automaton_API IXMLAutomatonReader
+	class OV_API IXMLAutomatonReader
 	{
 		public:
 			virtual void release() = 0;
@@ -22,8 +22,8 @@ namespace Automaton
 
 	};
 
-	extern Automaton_API IXMLAutomatonReader* createXMLAutomatonReader();
-	extern Automaton_API void releaseXMLAutomatonReader(IXMLAutomatonReader* pReader);
+	extern OV_API IXMLAutomatonReader* createXMLAutomatonReader();
+	extern OV_API void releaseXMLAutomatonReader(IXMLAutomatonReader* pReader);
 
 };
 

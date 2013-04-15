@@ -6,7 +6,7 @@
 
 namespace Automaton
 {
-	class Automaton_API IAutomatonController
+	class OV_API IAutomatonController
 	{
 		public:
 			virtual Automaton::boolean process() = 0;
@@ -17,8 +17,8 @@ namespace Automaton
 			virtual ~IAutomatonController(){ }
 	};
 
-	extern Automaton_API IAutomatonController* createAutomatonController(IAutomatonContext* pContext);
-	extern Automaton_API void releaseAutomatonController(IAutomatonController* pController);
+	extern OV_API IAutomatonController* createAutomatonController(IAutomatonContext* pContext);
+	extern OV_API void releaseAutomatonController(IAutomatonController* pController);
 };
 
 #endif

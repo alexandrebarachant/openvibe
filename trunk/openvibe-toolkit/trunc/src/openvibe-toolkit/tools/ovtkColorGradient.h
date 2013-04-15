@@ -9,9 +9,9 @@ namespace OpenViBEToolkit
 	{
 		namespace ColorGradient
 		{
-			OVTK_API OpenViBE::boolean parse(OpenViBE::IMatrix& rColorGradient, const OpenViBE::CString& rString);
-			OVTK_API OpenViBE::boolean format(OpenViBE::CString& rString, const OpenViBE::IMatrix& rColorGradient);
-			OVTK_API OpenViBE::boolean interpolate(OpenViBE::IMatrix& rInterpolatedColorGradient, const OpenViBE::IMatrix& rColorGradient, const OpenViBE::uint32 ui32Steps);
+			OV_API OpenViBE::boolean parse(OpenViBE::IMatrix& rColorGradient, const OpenViBE::CString& rString);
+			OV_API OpenViBE::boolean format(OpenViBE::CString& rString, const OpenViBE::IMatrix& rColorGradient);
+			OV_API OpenViBE::boolean interpolate(OpenViBE::IMatrix& rInterpolatedColorGradient, const OpenViBE::IMatrix& rColorGradient, const OpenViBE::uint32 ui32Steps);
 		};
 	};
 };

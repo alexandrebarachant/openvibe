@@ -1,7 +1,7 @@
 #include "ovasCDriverMicromedSystemPlusEvolution.h"
 #include "../ovasCConfigurationNetworkBuilder.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #define MicromedDLL "dllMicromed.dll"
 

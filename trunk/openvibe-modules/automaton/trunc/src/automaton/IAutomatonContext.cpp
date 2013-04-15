@@ -249,12 +249,12 @@ CIdentifier CAutomatonContext::addParameter(const char * pName, Automaton::uint6
 //___________________________________________________________________________________________________
 //
 
-Automaton_API IAutomatonContext* Automaton::createAutomatonContext()
+OV_API IAutomatonContext* Automaton::createAutomatonContext()
 {
 	return new CAutomatonContext;
 }
 
-Automaton_API void Automaton::releaseAutomatonContext(IAutomatonContext* pContext)
+OV_API void Automaton::releaseAutomatonContext(IAutomatonContext* pContext)
 {
 	pContext->release();
 }

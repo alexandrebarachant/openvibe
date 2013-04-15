@@ -25,7 +25,7 @@ static const float g_fMoveSpeed=0.01f; // 0.004;
 
 static const float g_fOffsetWithoutVador = 2.0f;
 
-#if defined OVA_OS_Linux
+#if defined TARGET_OS_Linux
  #define _strcmpi strcasecmp
 #endif
 

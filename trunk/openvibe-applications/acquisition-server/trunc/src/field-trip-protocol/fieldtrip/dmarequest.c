@@ -11,7 +11,7 @@
 #include "buffer.h"
 #include <pthread.h>
 
-#ifdef OVAS_OS_Linux
+#ifdef TARGET_OS_Linux
 #include <sys/time.h>
 #endif
 

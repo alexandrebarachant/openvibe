@@ -133,7 +133,7 @@ CString CSkeletonGenerator::ensureSedCompliancy(CString sExpression)
 			it++;
 			it = l_sExpression.insert(it,'\\');
 			it++;
-#ifdef OV_OS_Linux
+#ifdef TARGET_OS_Linux
 			it = l_sExpression.insert(it,'\\');
 			it = l_sExpression.insert(it,'\\');
 			it+=2;
@@ -163,7 +163,7 @@ CString CSkeletonGenerator::ensureSedCompliancy(CString sExpression)
 		else if((*it)=='\n')
 		{
 			it = l_sExpression.erase(it);
-#ifdef OV_OS_Linux
+#ifdef TARGET_OS_Linux
 			it = l_sExpression.insert(it,'\\');
 			it = l_sExpression.insert(it,'\\');
 			it+=2;
@@ -185,12 +185,12 @@ boolean CSkeletonGenerator::executeSedCommand(CString sTemplateFile, CString sCo
 	CString l_sSed;
 	CString l_sMove;
 	CString l_sNull;
-#ifdef OV_OS_Windows
+#ifdef TARGET_OS_Windows
 	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
 	l_sMove = "move";
 	l_sNull = "NULL";
 #else
-#ifdef OV_OS_Linux
+#ifdef TARGET_OS_Linux
 	l_sSed = "sed";
 	l_sMove = "mv";
 	l_sNull = "/dev/null";
@@ -234,12 +234,12 @@ boolean CSkeletonGenerator::executeSedSubstitution(CString sTemplateFile, CStrin
 	CString l_sSed;
 	CString l_sMove;
 	CString l_sNull;
-#ifdef OV_OS_Windows
+#ifdef TARGET_OS_Windows
 	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
 	l_sMove = "move";
 	l_sNull = "NULL";
 #else
-#ifdef OV_OS_Linux
+#ifdef TARGET_OS_Linux
 	l_sSed = "sed";
 	l_sMove = "mv";
 	l_sNull = "/dev/null";
@@ -263,7 +263,7 @@ boolean CSkeletonGenerator::executeSedSubstitution(CString sTemplateFile, CStrin
 		CString l_sMoveCommand = l_sMove + " tmp-sed \"" + sTemplateFile + "\" >> "+l_sNull;
 		l_bSuccess &= (system(l_sMoveCommand) == 0);
 		m_rKernelContext.getLogManager() << LogLevel_Trace << " -- Move command : [" << l_sMoveCommand << "]\n";
-#ifdef OV_OS_Windows
+#ifdef TARGET_OS_Windows
 		l_bSuccess &= (system("del NULL") == 0);
 #endif
 	}

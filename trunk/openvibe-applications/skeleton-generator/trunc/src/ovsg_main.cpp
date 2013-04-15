@@ -6,16 +6,6 @@
 #include "ovsgCDriverSkeletonGenerator.h"
 #include "ovsgCBoxAlgorithmSkeletonGenerator.h"
 
-#if defined TARGET_OS_Windows
- #define OVSG_OS_Windows
-#elif defined TARGET_OS_Linux
- #define OVSG_OS_Linux
-#elif defined TARGET_OS_MacOS
- #define OVSG_OS_MacOS
-#else
- #warning "No target operating system defined !"
-#endif
-
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBESkeletonGenerator;
@@ -29,7 +19,7 @@ int main(int argc, char** argv)
 
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
 	CString l_sError;
-#if defined OVSG_OS_Windows
+#if defined TARGET_OS_Windows
 	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/openvibe-kernel.dll";
 #else
 	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/libopenvibe-kernel.so";

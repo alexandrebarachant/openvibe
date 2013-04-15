@@ -1,7 +1,7 @@
 #if defined TARGET_HAS_ThirdPartyPython
 #include "ovpCBoxAlgorithmPython.h"
 
-#ifdef OVP_OS_Windows
+#ifdef TARGET_OS_Windows
 #include "windows.h"
 #endif
 
@@ -15,14 +15,14 @@ public:
 	~CPythonInitializer(void);
 	OpenViBE::boolean IsPythonAvailable(void);
 private:
-#ifdef OVP_OS_Windows
+#ifdef TARGET_OS_Windows
 	bool checkPythonPath();
 #endif
 	//		PyThreadState *m_pMainPyThreadState;
 	OpenViBE::boolean m_bPythonAvailable;
 };
 
-#ifdef OVP_OS_Windows
+#ifdef TARGET_OS_Windows
 bool CPythonInitializer::checkPythonPath()
 {
 	std::string l_sPath = Py_GetPath();
@@ -59,7 +59,7 @@ CPythonInitializer::CPythonInitializer(void)
 	m_bPythonAvailable = false;
 	//m_pMainPyThreadState = NULL;
 
-#ifdef OVP_OS_Windows
+#ifdef TARGET_OS_Windows
 		__try
 		{
 			m_bPythonAvailable = false;

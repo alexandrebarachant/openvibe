@@ -116,7 +116,7 @@ void CReaderHelper::release(void)
 	delete this;
 }
 
-EBML_API IReaderHelper* EBML::createReaderHelper(void)
+OV_API IReaderHelper* EBML::createReaderHelper(void)
 {
 	return new CReaderHelper();
 }

@@ -19,9 +19,9 @@
 
 #include <cstdlib>
 
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
  #include <unistd.h> // for getpid
-#elif defined OVK_OS_Windows
+#elif defined TARGET_OS_Windows
  #include <windows.h> // for GetCurrentProcessId
 #else
 #endif
@@ -680,9 +680,9 @@ uint32 CConfigurationManager::getRealTime(void) const
 
 uint32 CConfigurationManager::getProcessId(void) const
 {
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 	return (uint32)getpid();
-#elif defined OVK_OS_Windows
+#elif defined TARGET_OS_Windows
 	return (uint32)GetCurrentProcessId();
 #else
 	#error TODO

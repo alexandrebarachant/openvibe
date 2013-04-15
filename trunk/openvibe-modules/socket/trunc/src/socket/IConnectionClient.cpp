@@ -7,12 +7,12 @@
 #include <fcntl.h>
 #include <cerrno>
 
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
  #include <netinet/in.h>
  #include <netinet/tcp.h>
  #include <netdb.h>
  #include <unistd.h>
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
  #include <fcntl.h>
  #include <cerrno>
 #else
@@ -29,11 +29,11 @@ namespace Socket
 			uint32 ui32ServerPort,
 			uint32 ui32TimeOut)
 		{
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
 
 			long l_iValue;
 
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 
 			unsigned long l_uiMode;
 
@@ -52,7 +52,7 @@ namespace Socket
 				return false;
 			}
 
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
 
 			// Sets non blocking
 			if((l_iValue=::fcntl(m_i32Socket, F_GETFL, NULL))<0)
@@ -67,7 +67,7 @@ namespace Socket
 				return false;
 			}
 
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 
 			// Sets non blocking
 			l_uiMode=1;
@@ -85,11 +85,11 @@ namespace Socket
 			{
 				boolean l_bInProgress=false;
 
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
 
 				l_bInProgress=(errno==EINPROGRESS);
 
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 
 				l_bInProgress=(WSAGetLastError()==WSAEINPROGRESS || WSAGetLastError()==WSAEWOULDBLOCK);
 
@@ -124,10 +124,10 @@ namespace Socket
 
 					// Checks error status
 					int l_iOption=0;
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
 					socklen_t l_iOptionLength=sizeof(l_iOption);
 					::getsockopt(m_i32Socket, SOL_SOCKET, SO_ERROR, (void*)(&l_iOption), &l_iOptionLength);
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 					int l_iOptionLength=sizeof(l_iOption);
 					::getsockopt(m_i32Socket, SOL_SOCKET, SO_ERROR, (char*)(&l_iOption), &l_iOptionLength);
 #endif
@@ -144,7 +144,7 @@ namespace Socket
 				}
 			}
 
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
 
 			// Sets back to blocking
 			if((l_iValue=::fcntl(m_i32Socket, F_GETFL, NULL))<0)
@@ -159,7 +159,7 @@ namespace Socket
 				return false;
 			}
 
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 
 			// Sets back to blocking
 			l_uiMode=0;

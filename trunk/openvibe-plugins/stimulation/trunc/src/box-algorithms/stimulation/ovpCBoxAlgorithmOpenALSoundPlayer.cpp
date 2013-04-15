@@ -224,9 +224,9 @@ boolean CBoxAlgorithmOpenALSoundPlayer::openSoundFile()
 			//	return false;
 			//}
 			
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 			if(ov_fopen(const_cast<char*>(m_sFileName.toASCIIString()), &m_oOggVorbisStream.Stream) < 0)
-#elif defined OVP_OS_Linux
+#elif defined TARGET_OS_Linux
 			if((m_oOggVorbisStream.File = fopen((const char *)m_sFileName, "rb")) == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Can't open file "<<m_sFileName<<": IO error\n.";

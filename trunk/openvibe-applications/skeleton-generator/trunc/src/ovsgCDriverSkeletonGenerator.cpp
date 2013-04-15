@@ -143,7 +143,7 @@ void CDriverSkeletonGenerator::buttonCheckCB()
 	m_sTargetDirectory = CString(l_pTargetDirectory);
 	g_free(l_pTargetDirectory);*/
 
-#ifdef OV_OS_Windows
+#ifdef TARGET_OS_Windows
 	string space("%20");
 	if(((string)m_sTargetDirectory).rfind(space) != string::npos)
 	{
@@ -312,7 +312,7 @@ void CDriverSkeletonGenerator::buttonOkCB()
 	CString l_sBrowser = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand_${OperatingSystem}}");
 	CString l_sBrowserCmd = l_sBrowser + " \"" +  m_sTargetDirectory+"\"";
 
-#ifdef OV_OS_Windows
+#ifdef TARGET_OS_Windows
 	l_sBrowserCmd =  l_sBrowser + " file:///"+  m_sTargetDirectory; //otherwise the browser does not find the directory (problem with / and \ char)
 #endif
 
@@ -509,18 +509,18 @@ boolean CDriverSkeletonGenerator::load(OpenViBE::CString sFileName)
 		{
 			//default path = dist
 			m_rKernelContext.getLogManager() << LogLevel_Debug << "Target default  [dist]\n";
-#ifdef OV_OS_Linux
+#ifdef TARGET_OS_Linux
 			l_sTargetDirectory = CString(gtk_file_chooser_get_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser)));
 			l_sTargetDirectory = l_sTargetDirectory + "/..";
-#elif defined OV_OS_Windows
+#elif defined TARGET_OS_Windows
 			l_sTargetDirectory = "..";
 #endif
 		}
 	}
-#ifdef OV_OS_Linux
+#ifdef TARGET_OS_Linux
 	if(l_bNeedFilePrefix) l_sTargetDirectory = "file://"+l_sTargetDirectory;
 	gtk_file_chooser_set_current_folder_uri(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
-#elif defined OV_OS_Windows
+#elif defined TARGET_OS_Windows
 	gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(l_pFileChooser),(const char *)l_sTargetDirectory);
 #endif
 

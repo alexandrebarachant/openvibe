@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#if defined Socket_OS_Linux || defined Socket_OS_MacOS
+#if defined TARGET_OS_Linux || defined TARGET_OS_MacOS
  #include <sys/select.h>
  #include <sys/types.h>
  #include <sys/socket.h>
@@ -13,14 +13,14 @@
  // #include <netdb.h>
  #include <ctime>
 
- #if defined Socket_OS_MacOS
+ #if defined TARGET_OS_MacOS
   #define Socket_SendFlags    0
   #define Socket_ReceiveFlags 0
  #else
   #define Socket_SendFlags    MSG_NOSIGNAL
   #define Socket_ReceiveFlags MSG_NOSIGNAL
  #endif
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
  #include <winsock2.h>
  #include <windows.h>
 
@@ -44,8 +44,8 @@ namespace Socket
 		TConnection(void)
 			:m_i32Socket(-1)
 		{
-#if defined Socket_OS_Linux
-#elif defined Socket_OS_Windows
+#if defined TARGET_OS_Linux
+#elif defined TARGET_OS_Windows
 			int32 l_i32VersionHigh=2;
 			int32 l_i32VersionLow=0;
 			WORD l_oWinsockVersion=MAKEWORD(l_i32VersionHigh, l_i32VersionLow);
@@ -58,8 +58,8 @@ namespace Socket
 		TConnection(int32 i32Socket)
 			:m_i32Socket(i32Socket)
 		{
-#if defined Socket_OS_Linux
-#elif defined Socket_OS_Windows
+#if defined TARGET_OS_Linux
+#elif defined TARGET_OS_Windows
 			int32 l_i32VersionHigh=2;
 			int32 l_i32VersionLow=0;
 			WORD l_oWinsockVersion=MAKEWORD(l_i32VersionHigh, l_i32VersionLow);
@@ -71,8 +71,8 @@ namespace Socket
 
 		virtual ~TConnection(void)
 		{
-#if defined Socket_OS_Linux
-#elif defined Socket_OS_Windows
+#if defined TARGET_OS_Linux
+#elif defined TARGET_OS_Windows
 			::WSACleanup();
 #else
 #endif
@@ -105,10 +105,10 @@ namespace Socket
 				return false;
 			}
 
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
 			::shutdown(m_i32Socket, SHUT_RDWR);
 			::close(m_i32Socket);
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 			::shutdown(m_i32Socket, SD_BOTH);
 			::closesocket(m_i32Socket);
 #else

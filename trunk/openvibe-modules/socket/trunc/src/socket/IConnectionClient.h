@@ -5,7 +5,7 @@
 
 namespace Socket
 {
-	class Socket_API IConnectionClient : public Socket::IConnection
+	class OV_API IConnectionClient : public Socket::IConnection
 	{
 	public:
 
@@ -16,7 +16,7 @@ namespace Socket
 
 	};
 
-	extern Socket_API Socket::IConnectionClient* createConnectionClient(void);
+	extern OV_API Socket::IConnectionClient* createConnectionClient(void);
 };
 
 #endif // __Socket_IConnectionClient_H__

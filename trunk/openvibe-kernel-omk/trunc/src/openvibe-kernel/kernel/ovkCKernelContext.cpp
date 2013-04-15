@@ -35,7 +35,7 @@ namespace
 
 };
 
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 
 	#include <signal.h>
 
@@ -112,7 +112,7 @@ CKernelContext::CKernelContext(const IKernelContext* pMasterKernelContext, const
 	,m_pLogListenerConsole(NULL)
 	,m_pLogListenerFile(NULL)
 {
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 
 	signal(SIGILL,  _openvibeKernelSignalHandler_); // Illegal instruction
 	signal(SIGFPE,  _openvibeKernelSignalHandler_); // Floadint point exception
@@ -165,17 +165,17 @@ boolean CKernelContext::initialize(void)
 	this->getLogManager() << LogLevel_Trace << "Creating configuration manager\n";
 	m_pConfigurationManager=new CConfigurationManager(m_rMasterKernelContext);
 
-#if defined OVK_BUILDTYPE_Release
+#if defined TARGET_BUILDTYPE_Release
 	m_pConfigurationManager->createConfigurationToken("BuildType",                    "Release");
-#elif defined OVK_BUILDTYPE_Debug
+#elif defined TARGET_BUILDTYPE_Debug
 	m_pConfigurationManager->createConfigurationToken("BuildType",                    "Debug");
 #else
 	m_pConfigurationManager->createConfigurationToken("BuildType",                    "Unknown");
 #endif
 
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Windows");
-#elif defined OVK_OS_Linux
+#elif defined TARGET_OS_Linux
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Linux");
 #else
 	m_pConfigurationManager->createConfigurationToken("OperatingSystem",              "Unknown");

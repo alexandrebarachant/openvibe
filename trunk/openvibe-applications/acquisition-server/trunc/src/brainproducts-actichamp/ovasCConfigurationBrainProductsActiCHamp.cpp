@@ -244,4 +244,4 @@ void CConfigurationBrainProductsActiCHamp::buttonAuxChannelsToggledCB(boolean bT
 	}
 
 }
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows

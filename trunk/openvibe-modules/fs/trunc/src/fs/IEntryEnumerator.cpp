@@ -3,10 +3,10 @@
 #include <string>
 #include <cstring>
 
-#ifdef FS_OS_Linux
+#ifdef TARGET_OS_Linux
  #include <glob.h>
  #include <sys/stat.h>
-#elif defined FS_OS_Windows
+#elif defined TARGET_OS_Windows
  #include <windows.h>
 #else
 #endif
@@ -209,7 +209,7 @@ void CEntryEnumerator::release(void)
 // ________________________________________________________________________________________________________________
 //
 
-#ifdef FS_OS_Linux
+#ifdef TARGET_OS_Linux
 
 namespace FS
 {
@@ -221,7 +221,7 @@ namespace FS
 	};
 };
 
-#elif defined FS_OS_Windows
+#elif defined TARGET_OS_Windows
 
 namespace FS
 {
@@ -250,7 +250,7 @@ namespace FS
 // ________________________________________________________________________________________________________________
 //
 
-#ifdef FS_OS_Linux
+#ifdef TARGET_OS_Linux
 
 CEntryEnumeratorLinux::CEntryEnumeratorLinux(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack)
 	:CEntryEnumerator(rEntryEnumeratorCallBack)
@@ -320,7 +320,7 @@ boolean CEntryEnumeratorLinux::enumerate(const char* sWildCard)
 	return true;
 }
 
-#elif defined FS_OS_Windows
+#elif defined TARGET_OS_Windows
 
 CEntryEnumeratorWindows::CEntryEnumeratorWindows(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack)
 	:CEntryEnumerator(rEntryEnumeratorCallBack)
@@ -405,12 +405,12 @@ boolean CEntryEnumeratorDummy::enumerate(const char* sWildCard)
 
 #endif
 
-FS_API IEntryEnumerator* FS::createEntryEnumerator(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack)
+OV_API IEntryEnumerator* FS::createEntryEnumerator(IEntryEnumeratorCallBack& rEntryEnumeratorCallBack)
 {
 	IEntryEnumerator* l_pResult=NULL;
-#ifdef FS_OS_Linux
+#ifdef TARGET_OS_Linux
 	l_pResult=new CEntryEnumeratorLinux(rEntryEnumeratorCallBack);
-#elif defined FS_OS_Windows
+#elif defined TARGET_OS_Windows
 	l_pResult=new CEntryEnumeratorWindows(rEntryEnumeratorCallBack);
 #else
 	l_pResult=new CEntryEnumeratorDummy(rEntryEnumeratorCallBack);

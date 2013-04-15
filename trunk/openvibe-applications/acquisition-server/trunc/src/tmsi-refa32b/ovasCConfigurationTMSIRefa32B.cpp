@@ -1,6 +1,6 @@
 #include "ovasCConfigurationTMSIRefa32B.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #include <windows.h>
 #include <iostream>
@@ -230,4 +230,4 @@ void CConfigurationTMSIRefa32B::buttonRemoveSlaveDevice(void)
 	}
 }
 
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows

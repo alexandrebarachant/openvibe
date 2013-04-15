@@ -5,7 +5,7 @@
 
 namespace System
 {
-	class System_API Memory
+	class OV_API Memory
 	{
 	public:
 

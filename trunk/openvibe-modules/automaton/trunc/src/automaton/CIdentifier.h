@@ -23,7 +23,7 @@ namespace Automaton
 	 * changed to handle bigger values if needed.
 	 *
 	 */
-	class Automaton_API CIdentifier
+	class OV_API CIdentifier
 	{
 	public:
 
@@ -83,7 +83,7 @@ namespace Automaton
 		 *
 		 * This function compares the two 64 bits values.
 		 */
-		friend Automaton_API bool operator==(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
+		friend OV_API bool operator==(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
 		/**
 		 * \brief Difference comparison operator
 		 * \param rIdentifier1 [in] : The first identifier to compare
@@ -93,7 +93,7 @@ namespace Automaton
 		 *
 		 * This function compares the two 64 bits values.
 		 */
-		friend Automaton_API bool operator!=(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
+		friend OV_API bool operator!=(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
 		/**
 		 * \brief Ordering comparison operator
 		 * \param rIdentifier1 [in] : The first identifier to compare
@@ -103,7 +103,7 @@ namespace Automaton
 		 *
 		 * This function compares the two 64 bits values.
 		 */
-		friend Automaton_API bool operator<=(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
+		friend OV_API bool operator<=(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
 		/**
 		 * \brief Ordering comparison operator
 		 * \param rIdentifier1 [in] : The first identifier to compare
@@ -113,7 +113,7 @@ namespace Automaton
 		 *
 		 * This function compares the two 64 bits values.
 		 */
-		friend Automaton_API bool operator>=(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
+		friend OV_API bool operator>=(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
 		/**
 		 * \brief Ordering comparison operator
 		 * \param rIdentifier1 [in] : The first identifier to compare
@@ -123,7 +123,7 @@ namespace Automaton
 		 *
 		 * This function compares the two 64 bits values.
 		 */
-		friend Automaton_API bool operator<(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
+		friend OV_API bool operator<(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
 		/**
 		 * \brief Ordering comparison operator
 		 * \param rIdentifier1 [in] : The first identifier to compare
@@ -133,7 +133,7 @@ namespace Automaton
 		 *
 		 * This function compares the two 64 bits values.
 		 */
-		friend Automaton_API bool operator>(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
+		friend OV_API bool operator>(const Automaton::CIdentifier& rIdentifier1, const Automaton::CIdentifier& rIdentifier2);
 		/**
 		 * \brief Cast operator
 		 * \return \e the 64 bits value contained by this identifier.

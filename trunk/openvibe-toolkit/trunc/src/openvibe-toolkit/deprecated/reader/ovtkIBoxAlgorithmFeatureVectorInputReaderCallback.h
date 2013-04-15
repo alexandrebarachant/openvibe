@@ -5,11 +5,11 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmFeatureVectorInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback
+	class OV_API IBoxAlgorithmFeatureVectorInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback
 	{
 	public:
 
-		class OVTK_API ICallback
+		class OV_API ICallback
 		{
 		public:
 			virtual void setFeatureCount(const OpenViBE::uint32 ui32FeatureCount)=0;
@@ -64,8 +64,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback, OVTK_ClassId_);
 	};
 
-	OVTK_API OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback* createBoxAlgorithmFeatureVectorInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback::ICallback& rCallback);
-	OVTK_API void releaseBoxAlgorithmFeatureVectorInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback* pBoxAlgorithmFeatureVectorInputReaderCallback);
+	OV_API OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback* createBoxAlgorithmFeatureVectorInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback::ICallback& rCallback);
+	OV_API void releaseBoxAlgorithmFeatureVectorInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmFeatureVectorInputReaderCallback* pBoxAlgorithmFeatureVectorInputReaderCallback);
 };
 
 #endif // __OpenViBEToolkit_Reader_IBoxAlgorithmFeatureVectorInputReaderCallback_H__

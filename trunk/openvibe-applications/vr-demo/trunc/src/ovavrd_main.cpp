@@ -4,7 +4,7 @@
 #include "TieFighterBCI/ovavrdCTieFighterBCI.h"
 
 #if 0
-#if defined OVA_OS_Linux
+#if defined TARGET_OS_Linux
 namespace CEGUI
 {
 	Exception::Exception(const String& s)

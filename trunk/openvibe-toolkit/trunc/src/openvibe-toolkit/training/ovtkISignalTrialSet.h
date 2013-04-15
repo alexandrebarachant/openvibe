@@ -7,7 +7,7 @@ namespace OpenViBEToolkit
 {
 	class ISignalTrial;
 
-	class OVTK_API ISignalTrialSet : public OpenViBEToolkit::IObject
+	class OV_API ISignalTrialSet : public OpenViBEToolkit::IObject
 	{
 	public:
 
@@ -20,8 +20,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IObject, OVTK_ClassId_);
 	};
 
-	extern OVTK_API OpenViBEToolkit::ISignalTrialSet* createSignalTrialSet(void);
-	extern OVTK_API void releaseSignalTrialSet(OpenViBEToolkit::ISignalTrialSet* pSignalTrialSet);
+	extern OV_API OpenViBEToolkit::ISignalTrialSet* createSignalTrialSet(void);
+	extern OV_API void releaseSignalTrialSet(OpenViBEToolkit::ISignalTrialSet* pSignalTrialSet);
 };
 
 #endif // __OpenViBEToolkit_Offline_ISignalTrialSet_H__

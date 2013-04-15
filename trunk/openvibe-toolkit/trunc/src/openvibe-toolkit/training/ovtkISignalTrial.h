@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API ISignalTrial : public OpenViBEToolkit::IObject
+	class OV_API ISignalTrial : public OpenViBEToolkit::IObject
 	{
 	public:
 
@@ -26,43 +26,43 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IObject, OVTK_ClassId_);
 	};
 
-	extern OVTK_API OpenViBEToolkit::ISignalTrial* createSignalTrial(void);
-	extern OVTK_API void releaseSignalTrial(OpenViBEToolkit::ISignalTrial* pSignalTrial);
+	extern OV_API OpenViBEToolkit::ISignalTrial* createSignalTrial(void);
+	extern OV_API void releaseSignalTrial(OpenViBEToolkit::ISignalTrial* pSignalTrial);
 
 	// operations
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& copyHeader(
+	extern OV_API OpenViBEToolkit::ISignalTrial& copyHeader(
 		OpenViBEToolkit::ISignalTrial& rSignalTrial,
 		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& copy(
+	extern OV_API OpenViBEToolkit::ISignalTrial& copy(
 		OpenViBEToolkit::ISignalTrial& rSignalTrial,
 		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& selectSamples(
-		OpenViBEToolkit::ISignalTrial& rSignalTrial,
-		const OpenViBE::uint32 ui32SampleStart,
-		const OpenViBE::uint32 ui32SampleEnd,
-		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& selectTime(
-		OpenViBEToolkit::ISignalTrial& rSignalTrial,
-		const OpenViBE::uint64 ui64TimeStart,
-		const OpenViBE::uint64 ui64TimeEnd,
-		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& removeSamples(
+	extern OV_API OpenViBEToolkit::ISignalTrial& selectSamples(
 		OpenViBEToolkit::ISignalTrial& rSignalTrial,
 		const OpenViBE::uint32 ui32SampleStart,
 		const OpenViBE::uint32 ui32SampleEnd,
 		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& removeTime(
+	extern OV_API OpenViBEToolkit::ISignalTrial& selectTime(
 		OpenViBEToolkit::ISignalTrial& rSignalTrial,
 		const OpenViBE::uint64 ui64TimeStart,
 		const OpenViBE::uint64 ui64TimeEnd,
 		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& insertBufferSamples(
+	extern OV_API OpenViBEToolkit::ISignalTrial& removeSamples(
+		OpenViBEToolkit::ISignalTrial& rSignalTrial,
+		const OpenViBE::uint32 ui32SampleStart,
+		const OpenViBE::uint32 ui32SampleEnd,
+		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
+	extern OV_API OpenViBEToolkit::ISignalTrial& removeTime(
+		OpenViBEToolkit::ISignalTrial& rSignalTrial,
+		const OpenViBE::uint64 ui64TimeStart,
+		const OpenViBE::uint64 ui64TimeEnd,
+		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
+	extern OV_API OpenViBEToolkit::ISignalTrial& insertBufferSamples(
 		OpenViBEToolkit::ISignalTrial& rSignalTrial,
 		const OpenViBE::uint32 ui32SampleStart,
 		const OpenViBE::uint32 ui32SampleCount,
 		const OpenViBE::float64* pBuffer,
 		const OpenViBEToolkit::ISignalTrial* pSourceSignalTrial=NULL);
-	extern OVTK_API OpenViBEToolkit::ISignalTrial& insertBufferTime(
+	extern OV_API OpenViBEToolkit::ISignalTrial& insertBufferTime(
 		OpenViBEToolkit::ISignalTrial& rSignalTrial,
 		const OpenViBE::uint64 ui64TimeStart,
 		const OpenViBE::uint32 ui32SampleCount,

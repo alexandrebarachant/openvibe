@@ -19,7 +19,7 @@ namespace EBML
 	 *
 	 * \sa EBML::IWriter
 	 */
-	class EBML_API IWriterCallback
+	class OV_API IWriterCallback
 	{
 	public:
 
@@ -40,7 +40,7 @@ namespace EBML
 		virtual void write(const void* pBuffer, const EBML::uint64 ui64BufferSize)=0;
 	};
 
-	class EBML_API IWriterCallBack : public IWriterCallback { };
+	class OV_API IWriterCallBack : public IWriterCallback { };
 
 	/**
 	 * \class IWriter
@@ -74,7 +74,7 @@ namespace EBML
 	 * Be sure to look at http://ebml.sourceforge.net/specs/ in
 	 * order to understand what EBML is and how it should be used.
 	 */
-	class EBML_API IWriter
+	class OV_API IWriter
 	{
 	public:
 
@@ -151,7 +151,7 @@ namespace EBML
 	 * \return a pointer to the created instance on success.
 	 * \return \c NULL when something went wrong.
 	 */
-	extern EBML_API EBML::IWriter* createWriter(EBML::IWriterCallback& rWriterCallback);
+	extern OV_API EBML::IWriter* createWriter(EBML::IWriterCallback& rWriterCallback);
 };
 
 #endif // __EBML_IWriter_H__

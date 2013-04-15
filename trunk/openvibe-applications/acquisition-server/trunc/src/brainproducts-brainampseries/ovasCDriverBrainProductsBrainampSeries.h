@@ -24,7 +24,7 @@
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #include "ovas_defines_brainamp_series.h"
 
@@ -104,6 +104,6 @@ namespace OpenViBEAcquisitionServer
 	};
 };
 
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows
 
 #endif // __OpenViBE_AcquisitionServer_CDriverBrainProductsBrainampSeries_H__

@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class Stream_API IOutputStreamHelper : public Stream::IOutputStream
+	class OV_API IOutputStreamHelper : public Stream::IOutputStream
 	{
 	public:
 
@@ -30,7 +30,7 @@ namespace Stream
 		virtual Stream::boolean sendUTF16String(const Stream::uint16* sString)=0;
 	};
 
-	extern Stream_API Stream::IOutputStreamHelper* createOutputStreamHelper(Stream::IOutputStream& rOutputStream);
+	extern OV_API Stream::IOutputStreamHelper* createOutputStreamHelper(Stream::IOutputStream& rOutputStream);
 };
 
 #endif // __Stream_IOutputStreamHelper_H__

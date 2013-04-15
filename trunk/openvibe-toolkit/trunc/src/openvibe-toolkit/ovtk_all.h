@@ -120,8 +120,8 @@
 
 namespace OpenViBEToolkit
 {
-	OVTK_API OpenViBE::boolean initialize(const OpenViBE::Kernel::IKernelContext& rKernelContext);
-	OVTK_API OpenViBE::boolean uninitialize(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+	OV_API OpenViBE::boolean initialize(const OpenViBE::Kernel::IKernelContext& rKernelContext);
+	OV_API OpenViBE::boolean uninitialize(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 };
 
 #endif // __OpenViBEToolkit_All_H__

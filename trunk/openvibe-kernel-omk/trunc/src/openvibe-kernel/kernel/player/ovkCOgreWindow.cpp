@@ -139,10 +139,10 @@ boolean COgreWindow::handleSizeAllocateEvent(unsigned int uiWidth, unsigned int 
 		return false;
 	}
 
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
 	m_pRenderWindow->resize(uiWidth, uiHeight);
 	m_pRenderWindow->windowMovedOrResized();
-#elif defined OVK_OS_Linux
+#elif defined TARGET_OS_Linux
 	m_pRenderWindow->resize(uiWidth, uiHeight);
 #endif
 

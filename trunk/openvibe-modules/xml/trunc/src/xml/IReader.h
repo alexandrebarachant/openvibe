@@ -5,7 +5,7 @@
 
 namespace XML
 {
-	class XML_API IReaderCallback
+	class OV_API IReaderCallback
 	{
 	public:
 		virtual ~IReaderCallback(void) { }
@@ -14,9 +14,9 @@ namespace XML
 		virtual void closeChild(void)=0;
 	};
 
-	class XML_API IReaderCallBack : public IReaderCallback { };
+	class OV_API IReaderCallBack : public IReaderCallback { };
 
-	class XML_API IReader
+	class OV_API IReader
 	{
 	public:
 		virtual XML::boolean processData(const void* pBuffer, const XML::uint64 ui64BufferSize)=0;
@@ -25,7 +25,7 @@ namespace XML
 		virtual ~IReader(void) { }
 	};
 
-	extern XML_API XML::IReader* createReader(XML::IReaderCallback& rReaderCallback);
+	extern OV_API XML::IReader* createReader(XML::IReaderCallback& rReaderCallback);
 };
 
 #endif // __XML_IReader_H__

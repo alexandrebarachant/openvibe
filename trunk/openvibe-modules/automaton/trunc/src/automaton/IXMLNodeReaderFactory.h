@@ -6,7 +6,7 @@
 
 namespace Automaton
 {
-	class Automaton_API IXMLNodeReaderFactory
+	class OV_API IXMLNodeReaderFactory
 	{
 		public:
 			virtual IXMLNodeReader * createNodeReader(const CIdentifier& oIdentifier) = 0;
@@ -18,8 +18,8 @@ namespace Automaton
 			virtual ~IXMLNodeReaderFactory(){}
 	};
 
-	extern Automaton_API Automaton::IXMLNodeReaderFactory* createXMLNodeReaderFactory();
-	extern Automaton_API void releaseXMLNodeReaderFactory(Automaton::IXMLNodeReaderFactory* pFactory);
+	extern OV_API Automaton::IXMLNodeReaderFactory* createXMLNodeReaderFactory();
+	extern OV_API void releaseXMLNodeReaderFactory(Automaton::IXMLNodeReaderFactory* pFactory);
 
 };
 

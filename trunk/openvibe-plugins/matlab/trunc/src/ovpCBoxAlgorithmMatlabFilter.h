@@ -88,9 +88,9 @@ namespace OpenViBEPlugins
 				rBoxAlgorithmPrototype.addInput  ("Stimulations", OV_TypeId_Stimulations);
 				rBoxAlgorithmPrototype.addOutput ("Filtered streamed matrix", OV_TypeId_StreamedMatrix);
 				rBoxAlgorithmPrototype.addOutput ("Stimulations", OV_TypeId_Stimulations);
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 				rBoxAlgorithmPrototype.addSetting("Matlab launch command", OV_TypeId_String, "[ssh user@host] /path/to/matlab");
-#elif defined OVP_OS_Windows
+#elif defined TARGET_OS_Windows
 				rBoxAlgorithmPrototype.addSetting("Path to Matlab Executable", OV_TypeId_String, "C:/Program Files (x86)/MATLAB/R2011b/bin/win32");
 #else
 #endif

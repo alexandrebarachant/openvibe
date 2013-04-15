@@ -13,7 +13,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#if defined OVD_OS_Linux
+#if defined TARGET_OS_Linux
  #define _strcmpi strcasecmp
 #endif
 

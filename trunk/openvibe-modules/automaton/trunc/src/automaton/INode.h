@@ -9,7 +9,7 @@ namespace Automaton
 {
 	class IAutomatonContext;
 
-	class Automaton_API INode
+	class OV_API INode
 	{
 		public:
 			virtual ~INode(){}

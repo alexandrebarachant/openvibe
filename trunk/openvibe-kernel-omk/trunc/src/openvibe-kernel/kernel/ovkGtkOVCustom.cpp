@@ -114,7 +114,7 @@ boolean GtkOVCustom::handleRealizeEvent()
 	//create child window
 	m_oWidget.window = GDK_DRAWABLE(gdk_window_new(l_pParent, &l_oWindowAttributes, GDK_WA_X | GDK_WA_Y));
 
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
 	::gdk_window_ensure_native(m_oWidget.window);
 	// ::gtk_widget_reparent(&m_oWidget, ::gtk_widget_get_parent(&m_oWidget));
 	::SetWindowPos((HWND)GDK_WINDOW_HWND(m_oWidget.window), 0, l_oWindowAttributes.x, l_oWindowAttributes.y, l_oWindowAttributes.width, l_oWindowAttributes.height, SWP_SHOWWINDOW);
@@ -172,7 +172,7 @@ boolean GtkOVCustom::handleSizeAllocateEvent(GtkAllocation* pAllocation)
 
 	if(m_oWidget.window != NULL)
 	{
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
 		::SetWindowPos((HWND)GDK_WINDOW_HWND(m_oWidget.window), 0, pAllocation->x, pAllocation->y, pAllocation->width, pAllocation->height, SWP_SHOWWINDOW);
 		// ::gdk_window_show(m_oWidget.window);
 #else

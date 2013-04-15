@@ -24,7 +24,7 @@ namespace OpenViBEToolkit
 		mutable std::vector<OpenViBEToolkit::ISignalTrial*> m_vSignalTrial;
 	};
 
-	extern OVTK_API OpenViBEToolkit::ISignalTrialSet* createSignalTrialSet(void);
+	extern OV_API OpenViBEToolkit::ISignalTrialSet* createSignalTrialSet(void);
 };
 
 #endif // __OpenViBEToolkit_Offline_CSignalTrialSet_HPP__

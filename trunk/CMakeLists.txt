@@ -128,6 +128,7 @@ ADD_DEFINITIONS(-DOV_CMAKE_PATH_DATA="${CMAKE_INSTALL_FULL_DATADIR}")
 ADD_DEFINITIONS(-DOV_CMAKE_PATH_LIB="${CMAKE_INSTALL_FULL_LIBDIR}")
 	
 # Traverse these directories and build their components
+ADD_SUBDIRECTORY("openvibe-common/")
 ADD_SUBDIRECTORY("openvibe/")
 ADD_SUBDIRECTORY("openvibe-kernel-omk/")
 ADD_SUBDIRECTORY("openvibe-modules/")

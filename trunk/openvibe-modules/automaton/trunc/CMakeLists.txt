@@ -12,9 +12,9 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED ${source_files})
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR}
-	COMPILE_FLAGS "-DAutomaton_Shared -DAutomaton_Exports")
+	COMPILE_FLAGS "-DOV_Shared -DOV_Exports")
 
-INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindOpenViBECommon")
 INCLUDE("FindOpenViBEModuleXML")
 
 # ---------------------------------

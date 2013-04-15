@@ -12,8 +12,9 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED ${source_files})
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR}
-	COMPILE_FLAGS "-DFS_Shared -DFS_Exports")
+	COMPILE_FLAGS "-DOV_Shared -DOV_Exports")
 
+INCLUDE("FindOpenViBECommon")
 INCLUDE("FindThirdPartyBoost")
 INCLUDE("FindThirdPartyBoost_FileSystem")
 INCLUDE("FindThirdPartyBoost_System")	# Linux packaging ("lintian") complains if not linked to	

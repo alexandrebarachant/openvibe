@@ -97,7 +97,7 @@ void CXMLNodeReaderFactory::releaseNodeReader(Automaton::IXMLNodeReader * pReade
 //___________________________________________________________________________________________________
 //
 
-Automaton_API Automaton::IXMLNodeReaderFactory* Automaton::createXMLNodeReaderFactory()
+OV_API Automaton::IXMLNodeReaderFactory* Automaton::createXMLNodeReaderFactory()
 {
 	if(!CXMLNodeReaderFactory::m_pFactory)
 	{
@@ -108,7 +108,7 @@ Automaton_API Automaton::IXMLNodeReaderFactory* Automaton::createXMLNodeReaderFa
 	return CXMLNodeReaderFactory::m_pFactory;
 }
 
-Automaton_API void Automaton::releaseXMLNodeReaderFactory(Automaton::IXMLNodeReaderFactory* pFactory)
+OV_API void Automaton::releaseXMLNodeReaderFactory(Automaton::IXMLNodeReaderFactory* pFactory)
 {
 	CXMLNodeReaderFactory::m_ui64ReferenceCounter--;
 

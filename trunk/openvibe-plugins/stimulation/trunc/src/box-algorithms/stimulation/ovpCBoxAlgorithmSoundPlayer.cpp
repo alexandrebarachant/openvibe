@@ -1,10 +1,10 @@
 #include "ovpCBoxAlgorithmSoundPlayer.h"
 
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
  #include <windows.h>
  #include <mmsystem.h>
 #endif
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
  #include <unistd.h>
 #endif
 
@@ -78,9 +78,9 @@ boolean CBoxAlgorithmSoundPlayer::process(void)
 				{
 					for(it2=it->second.begin(); it2!=it->second.end(); it2++)
 					{
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 						::sndPlaySound(it2->toASCIIString(), SND_NOSTOP | SND_ASYNC );
-#elif defined OVP_OS_Linux
+#elif defined TARGET_OS_Linux
 						string l_sCommand;
 						l_sCommand+="cat ";
 						l_sCommand+=it2->toASCIIString();

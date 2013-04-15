@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmExperimentInformationOutputWriter : public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
+	class OV_API IBoxAlgorithmExperimentInformationOutputWriter : public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
 	{
 	public:
 
@@ -30,8 +30,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter, OVTK_ClassId_);
 	};
 
-	extern OVTK_API OpenViBEToolkit::IBoxAlgorithmExperimentInformationOutputWriter* createBoxAlgorithmExperimentInformationOutputWriter(void);
-	extern OVTK_API void releaseBoxAlgorithmExperimentInformationOutputWriter(OpenViBEToolkit::IBoxAlgorithmExperimentInformationOutputWriter* pOutputWriter);
+	extern OV_API OpenViBEToolkit::IBoxAlgorithmExperimentInformationOutputWriter* createBoxAlgorithmExperimentInformationOutputWriter(void);
+	extern OV_API void releaseBoxAlgorithmExperimentInformationOutputWriter(OpenViBEToolkit::IBoxAlgorithmExperimentInformationOutputWriter* pOutputWriter);
 };
 
 #endif // __OpenViBEToolkit_Writer_IBoxAlgorithmExperimentInformationOutputWriter_H__

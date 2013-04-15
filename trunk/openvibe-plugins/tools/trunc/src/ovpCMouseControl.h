@@ -15,7 +15,7 @@
 #include <string>
 #include <map>
 
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 	#include <X11/X.h>
 	#include <X11/Xlib.h>
 	#include <X11/Xutil.h>
@@ -60,7 +60,7 @@ namespace OpenViBEPlugins
 
 			OpenViBE::boolean m_bError;
 
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 			::Display* m_pMainDisplay;
 			::Window m_oRootWindow;
 #endif

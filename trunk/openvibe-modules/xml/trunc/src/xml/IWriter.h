@@ -5,16 +5,16 @@
 
 namespace XML
 {
-	class XML_API IWriterCallback
+	class OV_API IWriterCallback
 	{
 	public:
 		virtual ~IWriterCallback(void) { }
 		virtual void write(const char* sString)=0;
 	};
 
-	class XML_API IWriterCallBack : public IWriterCallback { };
+	class OV_API IWriterCallBack : public IWriterCallback { };
 
-	class XML_API IWriter
+	class OV_API IWriter
 	{
 	public:
 		virtual XML::boolean openChild(const char* sName)=0;
@@ -26,7 +26,7 @@ namespace XML
 		virtual ~IWriter(void) { }
 	};
 
-	extern XML_API XML::IWriter* createWriter(XML::IWriterCallback& rWriterCallback);
+	extern OV_API XML::IWriter* createWriter(XML::IWriterCallback& rWriterCallback);
 };
 
 #endif // __XML_IWriter_H__

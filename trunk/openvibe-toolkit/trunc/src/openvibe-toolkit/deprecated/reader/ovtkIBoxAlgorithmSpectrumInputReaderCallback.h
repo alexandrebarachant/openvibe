@@ -5,11 +5,11 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmSpectrumInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
+	class OV_API IBoxAlgorithmSpectrumInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
 	{
 	public:
 
-		class OVTK_API ICallback
+		class OV_API ICallback
 		{
 		public:
 			virtual void setChannelCount(const OpenViBE::uint32 ui32ChannelCount)=0;
@@ -108,8 +108,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback, OVTK_ClassId_);
 	};
 
-	OVTK_API OpenViBEToolkit::IBoxAlgorithmSpectrumInputReaderCallback* createBoxAlgorithmSpectrumInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSpectrumInputReaderCallback::ICallback& rCallback);
-	OVTK_API void releaseBoxAlgorithmSpectrumInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSpectrumInputReaderCallback* pBoxAlgorithmSpectrumInputReaderCallback);
+	OV_API OpenViBEToolkit::IBoxAlgorithmSpectrumInputReaderCallback* createBoxAlgorithmSpectrumInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSpectrumInputReaderCallback::ICallback& rCallback);
+	OV_API void releaseBoxAlgorithmSpectrumInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSpectrumInputReaderCallback* pBoxAlgorithmSpectrumInputReaderCallback);
 };
 
 #endif // __OpenViBEToolkit_Reader_IBoxAlgorithmSpectrumInputReaderCallback_H__

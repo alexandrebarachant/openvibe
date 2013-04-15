@@ -1,7 +1,7 @@
 #include "ovasCDriverTMSiRefa32B.h"
 #include "ovasCConfigurationTMSIRefa32B.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #include <openvibe-toolkit/ovtk_all.h>
 #include <iostream>
@@ -725,4 +725,4 @@ boolean CDriverTMSiRefa32B::measureMode(uint32 mode, uint32 info )
 	return true;
 }
 
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows

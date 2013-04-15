@@ -5,9 +5,9 @@
 #include <map>
 #include <vector>
 
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 	#include <dlfcn.h>
-#elif defined OVK_OS_Windows
+#elif defined TARGET_OS_Windows
 	#include <windows.h>
 #else
 #endif
@@ -268,7 +268,7 @@ boolean CPluginModuleBase::getFileName(
 //___________________________________________________________________//
 //                                                                   //
 
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 
 namespace OpenViBE
 {
@@ -294,7 +294,7 @@ namespace OpenViBE
 	};
 };
 
-#elif defined OVK_OS_Windows
+#elif defined TARGET_OS_Windows
 
 namespace OpenViBE
 {
@@ -355,7 +355,7 @@ namespace OpenViBE
 //___________________________________________________________________//
 //                                                                   //
 
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 
 CPluginModuleLinux::CPluginModuleLinux(const IKernelContext& rKernelContext)
 	:CPluginModuleBase(rKernelContext)
@@ -423,7 +423,7 @@ boolean CPluginModuleLinux::isOpen(void) const
 	return m_pFileHandle!=NULL;
 }
 
-#elif defined OVK_OS_Windows
+#elif defined TARGET_OS_Windows
 
 CPluginModuleWindows::CPluginModuleWindows(const IKernelContext& rKernelContext)
 	:CPluginModuleBase(rKernelContext)
@@ -538,9 +538,9 @@ CPluginModule::CPluginModule(const IKernelContext& rKernelContext)
 	:TKernelObject<IPluginModule>(rKernelContext)
 	,m_pImplementation(NULL)
 {
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 	m_pImplementation=new CPluginModuleLinux(getKernelContext());
-#elif defined OVK_OS_Windows
+#elif defined TARGET_OS_Windows
 	m_pImplementation=new CPluginModuleWindows(getKernelContext());
 #else
 #endif

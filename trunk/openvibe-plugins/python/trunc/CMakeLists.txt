@@ -10,16 +10,14 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED ${source_files})
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR}
-	COMPILE_FLAGS "-DOVP_Exports -DOVP_Shared")
+	COMPILE_FLAGS "-DOV_Exports -DOV_Shared")
 
 INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBECommon")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEPluginsGlobalDefines")
-INCLUDE("FindThirdPartyBoost")
-INCLUDE("FindThirdPartyBoost_Thread")
-INCLUDE("FindThirdPartyBoost_Regex")
 INCLUDE("FindThirdPartyPython")	
 
 

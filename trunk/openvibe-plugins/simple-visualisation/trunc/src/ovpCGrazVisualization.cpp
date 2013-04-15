@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
  #include <unistd.h>
 #endif
 
@@ -65,7 +65,7 @@ namespace OpenViBEPlugins
 					// gdk_beep();
 					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Trace << "Beep is no more considered in 'Graz Visu', use the 'Sound player' for this!\n";
 #if 0
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 					system("cat /local/ov_beep.wav > /dev/dsp &");
 #endif
 #endif

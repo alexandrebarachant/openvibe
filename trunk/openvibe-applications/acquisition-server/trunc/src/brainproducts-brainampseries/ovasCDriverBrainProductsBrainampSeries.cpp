@@ -20,7 +20,7 @@
 
 #include "ovasCDriverBrainProductsBrainampSeries.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #include <openvibe-toolkit/ovtk_all.h>
 
@@ -705,4 +705,4 @@ boolean CDriverBrainProductsBrainampSeries::getDeviceDetails(const uint32 ui32In
 	return true;
 }
 
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows

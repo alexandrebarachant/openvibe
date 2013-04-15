@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class Stream_API IInputStream
+	class OV_API IInputStream
 	{
 	public:
 
@@ -26,8 +26,8 @@ namespace Stream
 		virtual ~IInputStream(void) { }
 	};
 
-	extern Stream_API Stream::IInputStream* createInputStreamFile(const char* sFilename);
-	extern Stream_API Stream::IInputStream* createInputStreamMemory(const Stream::uint8* pBuffer, const Stream::uint64 ui64BufferSize);
+	extern OV_API Stream::IInputStream* createInputStreamFile(const char* sFilename);
+	extern OV_API Stream::IInputStream* createInputStreamMemory(const Stream::uint8* pBuffer, const Stream::uint64 ui64BufferSize);
 };
 
 #endif // __Stream_IInputStream_H__

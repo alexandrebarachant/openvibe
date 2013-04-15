@@ -4,7 +4,7 @@
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 #include <openvibe/ov_all.h>
 #include <iostream>
 #include <socket/IConnectionClient.h>

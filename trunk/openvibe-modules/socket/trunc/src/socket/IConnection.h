@@ -5,7 +5,7 @@
 
 namespace Socket
 {
-	class Socket_API IConnection
+	class OV_API IConnection
 	{
 	protected:
 

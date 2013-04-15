@@ -441,7 +441,7 @@ void CReader::release(void)
 // ________________________________________________________________________________________________________________
 //
 
-EBML_API IReader* EBML::createReader(IReaderCallback& rReaderCallback)
+OV_API IReader* EBML::createReader(IReaderCallback& rReaderCallback)
 {
 	return new CReader(rReaderCallback);
 }

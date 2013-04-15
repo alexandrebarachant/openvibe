@@ -6,7 +6,7 @@
 
 namespace Automaton
 {
-	class Automaton_API INodeFactory
+	class OV_API INodeFactory
 	{
 		public:
 			virtual INode * createNode(const CIdentifier& oIdentifier) = 0;
@@ -17,8 +17,8 @@ namespace Automaton
 			virtual ~INodeFactory(){}
 	};
 
-	extern Automaton_API Automaton::INodeFactory* createNodeFactory();
-	extern Automaton_API void releaseNodeFactory(Automaton::INodeFactory* pFactory);
+	extern OV_API Automaton::INodeFactory* createNodeFactory();
+	extern OV_API void releaseNodeFactory(Automaton::INodeFactory* pFactory);
 };
 
 #endif

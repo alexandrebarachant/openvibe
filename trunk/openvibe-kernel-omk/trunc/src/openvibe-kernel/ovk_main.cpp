@@ -47,18 +47,18 @@ static CKernelDesc gst_oKernelDesc;
 extern "C"
 {
 
-OVK_API boolean onInitialize(void)
+OV_API boolean onInitialize(void)
 {
 	return true;
 }
 
-OVK_API boolean onGetKernelDesc(IKernelDesc*& rpKernelDesc)
+OV_API boolean onGetKernelDesc(IKernelDesc*& rpKernelDesc)
 {
 	rpKernelDesc=&gst_oKernelDesc;
 	return true;
 }
 
-OVK_API boolean onUninitialize(void)
+OV_API boolean onUninitialize(void)
 {
 	return true;
 }

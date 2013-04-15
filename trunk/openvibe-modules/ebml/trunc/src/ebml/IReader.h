@@ -18,7 +18,7 @@ namespace EBML
 	 *
 	 * \sa EBML::IReader
 	 */
-	class EBML_API IReaderCallback
+	class OV_API IReaderCallback
 	{
 	public:
 
@@ -75,7 +75,7 @@ namespace EBML
 		virtual void closeChild(void)=0;
 	};
 
-	class EBML_API IReaderCallBack : public IReaderCallback { };
+	class OV_API IReaderCallBack : public IReaderCallback { };
 
 	/**
 	 * \class IReader
@@ -99,7 +99,7 @@ namespace EBML
 	 * Be sure to look at http://ebml.sourceforge.net/specs/ in
 	 * order to understand what EBML is and how it should be used.
 	 */
-	class EBML_API IReader
+	class OV_API IReader
 	{
 	public:
 
@@ -160,7 +160,7 @@ namespace EBML
 	 * \return a pointer to the created instance on success.
 	 * \return \c NULL when something went wrong.
 	 */
-	extern EBML_API EBML::IReader* createReader(EBML::IReaderCallback& rReaderCallback);
+	extern OV_API EBML::IReader* createReader(EBML::IReaderCallback& rReaderCallback);
 };
 
 #endif // __EBML_IReader_H__

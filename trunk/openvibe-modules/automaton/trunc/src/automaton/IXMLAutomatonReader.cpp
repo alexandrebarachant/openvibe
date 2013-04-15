@@ -298,12 +298,12 @@ void CXMLAutomatonReader::closeChild(void)
 //___________________________________________________________________________________________________
 //
 
-Automaton_API IXMLAutomatonReader* Automaton::createXMLAutomatonReader()
+OV_API IXMLAutomatonReader* Automaton::createXMLAutomatonReader()
 {
 	return new CXMLAutomatonReader;
 }
 
-Automaton_API void Automaton::releaseXMLAutomatonReader(IXMLAutomatonReader* pReader)
+OV_API void Automaton::releaseXMLAutomatonReader(IXMLAutomatonReader* pReader)
 {
 	pReader->release();
 }

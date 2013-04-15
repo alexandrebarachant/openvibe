@@ -13,7 +13,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
 	SOVERSION ${PROJECT_VERSION_MAJOR}
 	COMPILE_FLAGS "-DOV_Exports -DOV_Shared")
 
-INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindOpenViBECommon")
 	
 # ---------------------------------
 # Finds standard library dl

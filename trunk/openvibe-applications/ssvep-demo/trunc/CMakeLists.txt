@@ -15,13 +15,14 @@ FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
 ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 
 INCLUDE("FindOpenViBE")
+INCLUDE("FindOpenViBECommon")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleFS")
 INCLUDE("FindThirdPartyCEGUI") # CEGUI + CEGUIOgreRender included
 INCLUDE("FindThirdPartyVRPN")
-INCLUDE("FindThirdPartyOgre3D") # OGRE + OIS included, pulls boost thread
+INCLUDE("FindThirdPartyOgre3D")			# OGRE + OIS included, pulls boost thread
 INCLUDE("FindThirdPartyBoost")			# Using Ogre headers on Win32 causes dependency to Boost thread library
 INCLUDE("FindThirdPartyBoost_Thread")	# Note that this is a potential issue on Windows, as the dependencies/ogre/boost and dependencies/boost are not the same at the time of writing this.
 

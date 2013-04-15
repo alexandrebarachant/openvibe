@@ -35,9 +35,9 @@ boolean CConfigurationOpenEEGModularEEG::preConfigure(void)
 
 	for(uint32 i=1; i<17; i++)
 	{
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 		::sprintf(l_sBuffer, "\\\\.\\COM%i", i);
-#elif defined OVAS_OS_Linux
+#elif defined TARGET_OS_Linux
 		if(i<10)
 		{
 			::sprintf(l_sBuffer, i<10?"/dev/ttyS%d":"/dev/ttyUSB%d", i);

@@ -26,7 +26,7 @@ namespace Automaton
 
 	};
 
-	class Automaton_API IXMLNodeReader
+	class OV_API IXMLNodeReader
 	{
 		protected:
 			virtual ~IXMLNodeReader(){}

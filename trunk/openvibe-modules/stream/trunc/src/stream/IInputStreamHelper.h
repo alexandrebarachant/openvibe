@@ -5,7 +5,7 @@
 
 namespace Stream
 {
-	class Stream_API IInputStreamHelper : public Stream::IInputStream
+	class OV_API IInputStreamHelper : public Stream::IInputStream
 	{
 	public:
 
@@ -31,7 +31,7 @@ namespace Stream
 */
 	};
 
-	extern Stream_API Stream::IInputStreamHelper* createInputStreamHelper(Stream::IInputStream& rInputStream);
+	extern OV_API Stream::IInputStreamHelper* createInputStreamHelper(Stream::IInputStream& rInputStream);
 };
 
 #endif // __Stream_IInputStreamHelper_H__

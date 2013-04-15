@@ -8,14 +8,14 @@
 #include <cmath>
 #include <iostream>
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
  #include <windows.h>
  #include <winbase.h>
  #include <cstdio>
  #include <cstdlib>
  #include <commctrl.h>
  #define TERM_SPEED 57600
-#elif defined OVAS_OS_Linux
+#elif defined TARGET_OS_Linux
  #include <cstdio>
  #include <unistd.h>
  #include <fcntl.h>
@@ -244,7 +244,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 {
 	char l_sTTYName[1024];
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 	::sprintf(l_sTTYName, "\\\\.\\COM%d", ui32TTYNumber);
 	DCB dcb = {0};
@@ -297,7 +297,7 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 	::EscapeCommFunction(*pFileDescriptor, SETDTR);
 	::SetCommMask (*pFileDescriptor, EV_RXCHAR | EV_CTS | EV_DSR | EV_RLSD | EV_RING);
 
-#elif defined OVAS_OS_Linux
+#elif defined TARGET_OS_Linux
 
 	struct termios l_oTerminalAttributes;
 
@@ -351,9 +351,9 @@ boolean CDriverOpenEEGModularEEG::initTTY(::FD_TYPE* pFileDescriptor, uint32 ui3
 
 void CDriverOpenEEGModularEEG::closeTTY(::FD_TYPE i32FileDescriptor)
 {
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 	::CloseHandle(i32FileDescriptor);
-#elif defined OVAS_OS_Linux
+#elif defined TARGET_OS_Linux
 	::close(i32FileDescriptor);
 #else
 #endif
@@ -367,7 +367,7 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 	uint32 l_ui32BytesProcessed=0;
 	int32  l_i32PacketsProcessed=0;
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 	uint32 l_ui32ReadLength=0;
 	uint32 l_ui32ReadOk=0;
@@ -391,7 +391,7 @@ int32 CDriverOpenEEGModularEEG::readPacketFromTTY(::FD_TYPE i32FileDescriptor)
 		}
 	}
 
-#elif defined OVAS_OS_Linux
+#elif defined TARGET_OS_Linux
 
 	fd_set  l_inputFileDescriptorSet;
 	struct timeval l_timeout;

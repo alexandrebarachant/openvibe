@@ -19,9 +19,9 @@
 #include <map>
 #include <string>
 
-//~ #if defined OVP_OS_Windows
+//~ #if defined TARGET_OS_Windows
  //~ #include <itpp/itsignal.h>
-//~ #elif defined OVP_OS_Linux
+//~ #elif defined TARGET_OS_Linux
  //~ #include <itpp/itbase.h>
 //~ #else
 //~ #endif

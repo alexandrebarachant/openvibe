@@ -5,10 +5,10 @@
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 #include <openvibe/ov_all.h>
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 	#include <al.h>
 	#include <alc.h>
-#elif defined OVAS_OS_Linux
+#elif defined TARGET_OS_Linux
 	#include <AL/al.h>
 	#include <AL/alc.h>
 #else

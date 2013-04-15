@@ -1,6 +1,6 @@
 #include <sstream>
 #include <locale>
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 #include <cerrno>
 #endif
 
@@ -516,7 +516,7 @@ boolean COgreObject::loadWorldMatrix()
 					if(std::isspace(*l_oIt, l_oLocale) == true || *l_oIt == ']')
 					{
 						float64 l_f64Value = atof(l_sCurString.c_str());
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 						if(errno == ERANGE)
 						{
 							//string couldn't be converted to a double
@@ -556,7 +556,7 @@ boolean COgreObject::loadWorldMatrix()
 					if(std::isspace(*l_oIt, l_oLocale) == true || *l_oIt == ']')
 					{
 						float64 l_f64Value = atof(l_sCurString.c_str());
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 						if(errno == ERANGE)
 						{
 							//string couldn't be converted to a double
@@ -596,7 +596,7 @@ boolean COgreObject::loadWorldMatrix()
 					if(std::isspace(*l_oIt, l_oLocale) == true || *l_oIt == ']')
 					{
 						float64 l_f64Value = atof(l_sCurString.c_str());
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 						if(errno == ERANGE)
 						{
 							//string couldn't be converted to a double

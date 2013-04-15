@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 	#include <unistd.h>
 #endif
 
@@ -26,7 +26,7 @@ CMouseControl::CMouseControl(void)
 	,m_ui64StartTime(0)
 	,m_ui64EndTime(0)
 	,m_bError(false)
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 	,m_pMainDisplay(NULL)
 #endif
 {
@@ -44,7 +44,7 @@ boolean CMouseControl::initialize(void)
 
 	m_pInputBuffer = NULL;
 
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 #else
 	getLogManager() << LogLevel_ImportantWarning << "This box algorithm is not yet implemented for your platform\n";
 #endif
@@ -120,7 +120,7 @@ boolean CMouseControl::process()
 			}
 			else
 			{
-#if defined OVP_OS_Linux
+#if defined TARGET_OS_Linux
 				m_pMainDisplay=::XOpenDisplay(NULL);
 				if (!m_pMainDisplay)
 				{

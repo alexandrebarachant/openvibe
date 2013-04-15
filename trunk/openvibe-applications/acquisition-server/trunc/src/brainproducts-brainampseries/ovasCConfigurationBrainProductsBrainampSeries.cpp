@@ -22,7 +22,7 @@
 
 #include "../ovasIHeader.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 
 #include "ovasCDriverBrainProductsBrainampSeries.h"
 
@@ -347,4 +347,4 @@ void CConfigurationBrainProductsBrainampSeries::comboBoxDeviceChangedCB(void)
 	}
 }
 
-#endif // OVAS_OS_Windows
+#endif // TARGET_OS_Windows

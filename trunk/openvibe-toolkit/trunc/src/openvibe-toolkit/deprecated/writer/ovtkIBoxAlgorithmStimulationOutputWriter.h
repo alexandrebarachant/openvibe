@@ -5,7 +5,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmStimulationOutputWriter : public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
+	class OV_API IBoxAlgorithmStimulationOutputWriter : public OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter
 	{
 	public:
 
@@ -15,8 +15,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLOutputWriter, OVTK_ClassId_);
 	};
 
-	extern OVTK_API OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter* createBoxAlgorithmStimulationOutputWriter(void);
-	extern OVTK_API void releaseBoxAlgorithmStimulationOutputWriter(OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter* pOutputWriter);
+	extern OV_API OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter* createBoxAlgorithmStimulationOutputWriter(void);
+	extern OV_API void releaseBoxAlgorithmStimulationOutputWriter(OpenViBEToolkit::IBoxAlgorithmStimulationOutputWriter* pOutputWriter);
 };
 
 #endif // __OpenViBEToolkit_Writer_IBoxAlgorithmStimulationOutputWriter_H__

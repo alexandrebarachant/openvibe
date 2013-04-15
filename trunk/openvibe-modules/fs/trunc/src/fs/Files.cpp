@@ -1,11 +1,11 @@
 #include "Files.h"
 
-#if defined FS_OS_Linux
+#if defined TARGET_OS_Linux
  #include <stdio.h>   // For fopen
  #include <unistd.h>  //For access().
  #include <sys/stat.h>
  #include <sys/types.h>  // For stat().
-#elif defined FS_OS_Windows
+#elif defined TARGET_OS_Windows
  #include <windows.h>
 #else
 #endif
@@ -22,7 +22,7 @@ using namespace std;
 //                     force the use of FS::boolean !
 #define boolean FS::boolean
 
-#if defined FS_OS_Linux
+#if defined TARGET_OS_Linux
 
 boolean Files::equals(const char* pFile1, const char* pFile2)
 {
@@ -54,7 +54,7 @@ boolean Files::equals(const char* pFile1, const char* pFile2)
 	return l_bResult;
 }
 
-#elif defined FS_OS_Windows
+#elif defined TARGET_OS_Windows
 
 boolean Files::equals(const char* pFile1, const char* pFile2)
 {
@@ -123,7 +123,7 @@ boolean Files::directoryExists(const char *pathToCheck) {
 	{
 		return false;
 	}
-#if defined FS_OS_Windows
+#if defined TARGET_OS_Windows
 	DWORD ftyp = GetFileAttributesA(pathToCheck);
 	if (ftyp == INVALID_FILE_ATTRIBUTES) 
 	{
@@ -134,7 +134,7 @@ boolean Files::directoryExists(const char *pathToCheck) {
 		return true;
 	}
 #endif
-#if defined FS_OS_Linux
+#if defined TARGET_OS_Linux
 	if ( access( pathToCheck, 0 ) == 0 )
 	{
 		struct stat status;

@@ -419,7 +419,7 @@ int go(int argc, char ** argv)
 
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<"\n";
 	CString l_sError;
-#if defined OVD_OS_Windows
+#if defined TARGET_OS_Windows
 	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/openvibe-kernel.dll";
 #else
 	CString l_sKernelFile = OpenViBE::Directories::getLibDir() + "/libopenvibe-kernel.so";

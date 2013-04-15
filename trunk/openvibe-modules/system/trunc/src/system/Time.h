@@ -5,7 +5,7 @@
 
 namespace System
 {
-	class System_API Time
+	class OV_API Time
 	{
 	public:
 

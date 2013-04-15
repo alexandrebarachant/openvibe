@@ -7,16 +7,14 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl)
 
-INCLUDE("FindThirdPartyBoost")
-
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${source_files})
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
 	VERSION ${PROJECT_VERSION}
 	SOVERSION ${PROJECT_VERSION_MAJOR}
-	COMPILE_FLAGS "-DEBML_Shared -DEBML_Exports")
+	COMPILE_FLAGS "-DOV_Shared -DOV_Exports")
 
-INCLUDE("FindThirdPartyBoost")
+INCLUDE("FindOpenViBECommon")
 	
 # ---------------------------------
 # Test applications

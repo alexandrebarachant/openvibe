@@ -1,3 +1,4 @@
+
 #basics definitions needed here
 IF(WIN32)
 	SET(EXT cmd)

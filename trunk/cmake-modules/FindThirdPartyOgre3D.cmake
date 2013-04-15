@@ -15,7 +15,6 @@
 # ---------------------------------
 
 IF(WIN32)
-	INCLUDE("FindThirdPartyBoost")
 	FIND_PATH(PATH_Ogre3D include/OGRE/Ogre.h PATHS ${OV_CUSTOM_DEPENDENCIES_PATH}/ogre $ENV{OGRE_HOME})
 	IF(PATH_Ogre3D)
 		SET(Ogre3D_FOUND TRUE)

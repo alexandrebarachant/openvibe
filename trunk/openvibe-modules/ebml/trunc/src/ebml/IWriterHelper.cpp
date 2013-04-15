@@ -203,7 +203,7 @@ void CWriterHelper::release(void)
 // ________________________________________________________________________________________________________________
 //
 
-EBML_API IWriterHelper* EBML::createWriterHelper(void)
+OV_API IWriterHelper* EBML::createWriterHelper(void)
 {
 	return new CWriterHelper();
 }

@@ -25,7 +25,7 @@ namespace EBML
 	 * \todo date reading implementation
 	 * \todo utf8 string reading implementation
 	 */
-	class EBML_API IReaderHelper
+	class OV_API IReaderHelper
 	{
 	public:
 
@@ -91,7 +91,7 @@ namespace EBML
 	 * \return a pointer to the created instance on success.
 	 * \return \c NULL when something went wrong.
 	 */
-	extern EBML_API EBML::IReaderHelper* createReaderHelper(void);
+	extern OV_API EBML::IReaderHelper* createReaderHelper(void);
 };
 
 #endif // __EBML_IReaderHelper_H__

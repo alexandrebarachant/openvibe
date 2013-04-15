@@ -132,7 +132,7 @@ int main(int argc, char ** argv)
 
 	cout<<"[  INF  ] Created kernel loader, trying to load kernel module"<<endl;
 	CString l_sError;
-#if defined OVPI_OS_Windows
+#if defined TARGET_OS_Windows
 	CString l_sKernelFile = "/openvibe-kernel.dll";
 #else
 	CString l_sKernelFile = "/libopenvibe-kernel.so";

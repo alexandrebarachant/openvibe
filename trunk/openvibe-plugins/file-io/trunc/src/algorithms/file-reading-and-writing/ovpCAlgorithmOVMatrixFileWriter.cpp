@@ -3,7 +3,7 @@
 #include <system/Memory.h>
 
 #include <sstream>
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 #include <cerrno>
 #endif
 

@@ -11,7 +11,7 @@
 //#include <engine.h>
 #include <string>
 
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 	#include <windows.h>
 #endif
 

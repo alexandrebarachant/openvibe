@@ -5,11 +5,11 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmSignalInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback
+	class OV_API IBoxAlgorithmSignalInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback
 	{
 	public:
 
-		class OVTK_API ICallback
+		class OV_API ICallback
 		{
 		public:
 			virtual void setChannelCount(const OpenViBE::uint32 ui32ChannelCount)=0;
@@ -86,8 +86,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback, OVTK_ClassId_);
 	};
 
-	OVTK_API OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback* createBoxAlgorithmSignalInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback& rCallback);
-	OVTK_API void releaseBoxAlgorithmSignalInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback* pBoxAlgorithmSignalInputReaderCallback);
+	OV_API OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback* createBoxAlgorithmSignalInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback::ICallback& rCallback);
+	OV_API void releaseBoxAlgorithmSignalInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmSignalInputReaderCallback* pBoxAlgorithmSignalInputReaderCallback);
 };
 
 #endif // __OpenViBEToolkit_Reader_IBoxAlgorithmSignalInputReaderCallback_H__

@@ -12,7 +12,7 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IAlgorithmScenarioImporterContext : public OpenViBEToolkit::IObject
+	class OV_API IAlgorithmScenarioImporterContext : public OpenViBEToolkit::IObject
 	{
 	public:
 
@@ -25,7 +25,7 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IObject, OV_UndefinedIdentifier);
 	};
 
-	class OVTK_API CAlgorithmScenarioImporter : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
+	class OV_API CAlgorithmScenarioImporter : public OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >
 	{
 	public:
 
@@ -38,7 +38,7 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::TAlgorithm < OpenViBE::Plugins::IAlgorithm >, OVP_ClassId_Algorithm_ScenarioImporter);
 	};
 
-	class OVTK_API CAlgorithmScenarioImporterDesc : public OpenViBE::Plugins::IAlgorithmDesc
+	class OV_API CAlgorithmScenarioImporterDesc : public OpenViBE::Plugins::IAlgorithmDesc
 	{
 	public:
 

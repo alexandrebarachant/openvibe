@@ -80,7 +80,7 @@ void CReader::closeChild(void)
 	m_rReaderCallback.closeChild();
 }
 
-XML_API IReader* XML::createReader(IReaderCallback& rReaderCallback)
+OV_API IReader* XML::createReader(IReaderCallback& rReaderCallback)
 {
 	return new CReader(rReaderCallback);
 }

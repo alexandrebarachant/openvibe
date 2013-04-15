@@ -5,12 +5,12 @@
 #include <cstring>
 #include <iostream>
 
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
  #include <netinet/in.h>
  #include <netinet/tcp.h>
  #include <netdb.h>
  #include <cerrno>
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 #else
 #endif
 
@@ -29,7 +29,7 @@ namespace Socket
 			}
 
 			int l_iReuseAddress=1;
-#if defined Socket_OS_Windows
+#if defined TARGET_OS_Windows
 			::setsockopt(m_i32Socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&l_iReuseAddress), sizeof(l_iReuseAddress));
 #else
 			::setsockopt(m_i32Socket, SOL_SOCKET, SO_REUSEADDR, &l_iReuseAddress, sizeof(l_iReuseAddress));
@@ -85,9 +85,9 @@ namespace Socket
 		virtual IConnection* accept(void)
 		{
 			struct sockaddr_in l_oClientAddress;
-#if defined Socket_OS_Linux
+#if defined TARGET_OS_Linux
 			socklen_t l_iClientAddressSize=sizeof(l_oClientAddress);
-#elif defined Socket_OS_Windows
+#elif defined TARGET_OS_Windows
 			int l_iClientAddressSize=sizeof(l_oClientAddress);
 #else
 #endif

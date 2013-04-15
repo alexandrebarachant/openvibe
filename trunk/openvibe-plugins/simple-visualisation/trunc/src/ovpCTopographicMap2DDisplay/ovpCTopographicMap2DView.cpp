@@ -7,7 +7,7 @@
 #include <cmath>
 #include <cstring>
 
-#ifdef OVP_OS_Windows
+#ifdef TARGET_OS_Windows
 #ifndef NDEBUG
 #include <cassert>
 #endif
@@ -1037,7 +1037,7 @@ namespace OpenViBEPlugins
 				uint32 l_ui32Index=m_oSampleValues[i];
 				if(l_ui32Index>12)
 				{
-#if defined OVP_OS_Windows
+#if defined TARGET_OS_Windows
 #ifndef NDEBUG
 					_asm int 3;
 #endif
@@ -1289,7 +1289,7 @@ namespace OpenViBEPlugins
 
 		void CTopographicMap2DView::drawBoxToBuffer(uint32 ui32X, uint32 ui32Y, uint32 ui32Width, uint32 ui32Height, uint8 ui8Red, uint8 ui8Green, uint8 ui8Blue)
 		{
-#ifdef OVP_OS_Windows
+#ifdef TARGET_OS_Windows
 #ifndef NDEBUG
 			//m_pSkullRGBBuffer == m_ui32RowStride*m_ui32SkullDiameter
 			assert(ui32X < m_ui32SkullDiameter);

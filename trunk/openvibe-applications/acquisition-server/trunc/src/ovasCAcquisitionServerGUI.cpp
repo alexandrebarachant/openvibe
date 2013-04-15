@@ -135,7 +135,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #if defined __OpenViBE_AcquisitionServer_CDriverFieldtrip_H__
 	m_vDriver.push_back(new CDriverFieldtrip(m_pAcquisitionServer->getDriverContext()));
 #endif
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 	m_vDriver.push_back(new CDriverMitsarEEG202A(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyBrainmasterCodeMakerAPI
 	m_vDriver.push_back(new CDriverBrainmasterDiscovery(m_pAcquisitionServer->getDriverContext()));
@@ -160,17 +160,17 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 	m_vDriver.push_back(new CDriverGTecGUSBamp(m_pAcquisitionServer->getDriverContext()));
 #endif
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 	m_vDriver.push_back(new CDriverMicromedSystemPlusEvolution(m_pAcquisitionServer->getDriverContext()));
 #endif
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));
 #endif
 #if defined TARGET_HAS_ThirdPartyThinkGearAPI
 	m_vDriver.push_back(new CDriverNeuroskyMindset(m_pAcquisitionServer->getDriverContext()));
 #endif
 	m_vDriver.push_back(new CDriverOpenEEGModularEEG(m_pAcquisitionServer->getDriverContext()));
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
 	m_vDriver.push_back(new CDriverTMSiRefa32B(m_pAcquisitionServer->getDriverContext()));
 #endif
 	// if(l_bShowUnstable) m_vDriver.push_back(new CDriverNeuroscanSynamps2(m_pAcquisitionServer->getDriverContext()));

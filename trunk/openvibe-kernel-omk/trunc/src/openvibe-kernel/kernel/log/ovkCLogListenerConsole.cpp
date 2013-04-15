@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-#if defined OVK_OS_Windows
+#if defined TARGET_OS_Windows
  #include <windows.h>
  #define boolean OpenViBE::boolean
 #endif
@@ -458,7 +458,7 @@ void CLogListenerConsole::log(const ELogColor eLogColor)
 	}
 }
 
-#if defined OVK_OS_Linux
+#if defined TARGET_OS_Linux
 
 void CLogListenerConsole::applyColor(void)
 {
@@ -549,7 +549,7 @@ void CLogListenerConsole::applyColor(void)
 
 }
 
-#elif defined OVK_OS_Windows
+#elif defined TARGET_OS_Windows
 
 void CLogListenerConsole::applyColor(void)
 {

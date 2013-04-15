@@ -5,7 +5,7 @@
 
 namespace FS
 {
-	class FS_API Files
+	class OV_API Files
 	{
 	public:
 

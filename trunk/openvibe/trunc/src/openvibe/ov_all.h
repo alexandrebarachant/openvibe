@@ -7,8 +7,8 @@
 //___________________________________________________________________//
 //                                                                   //
 
-#include "ov_types.h"
 #include "ov_defines.h"
+#include "ov_types.h"
 #include "ov_directories.h"
 
 #include "ovCIdentifier.h"
@@ -129,7 +129,7 @@ namespace OpenViBE
 	static std::vector<OpenViBE::Plugins::IPluginObjectDesc*>::iterator l_itDescriptors; \
 	extern "C" \
 	{ \
-		OVP_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext) \
+		OV_API OpenViBE::boolean onInitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext) \
 		{
 
 #define OVP_Declare_New(Class) \
@@ -138,14 +138,14 @@ namespace OpenViBE
 #define OVP_Declare_End() \
 			return true; \
 		} \
-		OVP_API OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext) \
+		OpenViBE::boolean onUninitialize(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext) \
 		{ \
 			for(l_itDescriptors=g_descriptors.begin(); l_itDescriptors!=g_descriptors.end(); l_itDescriptors++) \
 				delete *l_itDescriptors; \
 			g_descriptors.clear(); \
 			return true; \
 		} \
-		OVP_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription) \
+		OV_API OpenViBE::boolean onGetPluginObjectDescription(const OpenViBE::Kernel::IPluginModuleContext& rPluginModuleContext, OpenViBE::uint32 ui32Index, OpenViBE::Plugins::IPluginObjectDesc*& rpPluginObjectDescription) \
 		{ \
 			if(ui32Index>=g_descriptors.size()) \
 			{ \

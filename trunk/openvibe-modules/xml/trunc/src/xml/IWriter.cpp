@@ -179,7 +179,7 @@ void CWriter::sanitize(string& sString)
 	}
 }
 
-XML_API XML::IWriter* XML::createWriter(IWriterCallback& rWriterCallback)
+OV_API XML::IWriter* XML::createWriter(IWriterCallback& rWriterCallback)
 {
 	return new CWriter(rWriterCallback);
 }

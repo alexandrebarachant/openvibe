@@ -5,11 +5,11 @@
 
 namespace OpenViBEToolkit
 {
-	class OVTK_API IBoxAlgorithmStreamedMatrixInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
+	class OV_API IBoxAlgorithmStreamedMatrixInputReaderCallback : public OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback
 	{
 	public:
 
-		class OVTK_API ICallback
+		class OV_API ICallback
 		{
 		public:
 			virtual void setMatrixDimensionCount(const OpenViBE::uint32 ui32DimensionCount)=0;
@@ -75,8 +75,8 @@ namespace OpenViBEToolkit
 		_IsDerivedFromClass_(OpenViBEToolkit::IBoxAlgorithmEBMLInputReaderCallback, OVTK_ClassId_);
 	};
 
-	OVTK_API OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* createBoxAlgorithmStreamedMatrixInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback& rCallback);
-	OVTK_API void releaseBoxAlgorithmStreamedMatrixInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* pStreamedMatrixInputReaderCallback);
+	OV_API OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* createBoxAlgorithmStreamedMatrixInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback::ICallback& rCallback);
+	OV_API void releaseBoxAlgorithmStreamedMatrixInputReaderCallback(OpenViBEToolkit::IBoxAlgorithmStreamedMatrixInputReaderCallback* pStreamedMatrixInputReaderCallback);
 };
 
 #endif // __OpenViBEToolkit_Reader_IBoxAlgorithmStreamedMatrixInputReaderCallback_H__

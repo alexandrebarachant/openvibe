@@ -4,9 +4,9 @@
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
 
-#if defined OVAS_OS_Windows
+#if defined TARGET_OS_Windows
  typedef void * FD_TYPE;
-#elif defined OVAS_OS_Linux
+#elif defined TARGET_OS_Linux
  typedef OpenViBE::int32 FD_TYPE;
 #else
 #endif

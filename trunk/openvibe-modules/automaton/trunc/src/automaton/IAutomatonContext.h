@@ -13,7 +13,7 @@ namespace Automaton
 
 	class INode;
 
-	class Automaton_API IAutomatonContext
+	class OV_API IAutomatonContext
 	{
 
 		public:
@@ -87,8 +87,8 @@ namespace Automaton
 			virtual ~IAutomatonContext(){ }
 	};
 
-	extern Automaton_API IAutomatonContext* createAutomatonContext();
-	extern Automaton_API void releaseAutomatonContext(IAutomatonContext* pContext);
+	extern OV_API IAutomatonContext* createAutomatonContext();
+	extern OV_API void releaseAutomatonContext(IAutomatonContext* pContext);
 };
 
 #endif
