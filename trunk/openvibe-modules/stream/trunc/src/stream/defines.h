@@ -99,20 +99,20 @@ namespace Stream
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define Stream_COMPILATOR_GCC
-// #define Stream_COMPILATOR_VisualStudio
-// #define Stream_COMPILATOR_
+// #define Stream_COMPILER_GCC
+// #define Stream_COMPILER_VisualStudio
+// #define Stream_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define Stream_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define Stream_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define Stream_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define Stream_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

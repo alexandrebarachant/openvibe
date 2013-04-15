@@ -92,20 +92,20 @@ namespace System
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define System_COMPILATOR_GCC
-// #define System_COMPILATOR_VisualStudio
-// #define System_COMPILATOR_
+// #define System_COMPILER_GCC
+// #define System_COMPILER_VisualStudio
+// #define System_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define System_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define System_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define System_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define System_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

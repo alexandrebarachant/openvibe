@@ -92,20 +92,20 @@ namespace Socket
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define Socket_COMPILATOR_GCC
-// #define Socket_COMPILATOR_VisualStudio
-// #define Socket_COMPILATOR_
+// #define Socket_COMPILER_GCC
+// #define Socket_COMPILER_VisualStudio
+// #define Socket_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define Socket_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define Socket_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define Socket_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define Socket_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

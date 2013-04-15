@@ -121,20 +121,20 @@ namespace Automaton
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define Automaton_COMPILATOR_GCC
-// #define Automaton_COMPILATOR_VisualStudio
-// #define Automaton_COMPILATOR_
+// #define Automaton_COMPILER_GCC
+// #define Automaton_COMPILER_VisualStudio
+// #define Automaton_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define Automaton_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define Automaton_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define Automaton_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define Automaton_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

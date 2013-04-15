@@ -112,7 +112,7 @@ namespace OpenViBEDesigner
 
 //___________________________________________________________________//
 //                                                                   //
-// Gloabal defines                                                   //
+// Global defines                                                   //
 //___________________________________________________________________//
 //                                                                   //
 
@@ -158,20 +158,20 @@ namespace OpenViBEDesigner
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define OVD_COMPILATOR_GCC
-// #define OVD_COMPILATOR_VisualStudio
-// #define OVD_COMPILATOR_
+// #define OVD_COMPILER_GCC
+// #define OVD_COMPILER_VisualStudio
+// #define OVD_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define OVD_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define OVD_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define OVD_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define OVD_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

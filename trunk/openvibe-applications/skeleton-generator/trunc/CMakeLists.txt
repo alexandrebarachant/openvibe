@@ -22,13 +22,13 @@ INCLUDE("FindThirdPartyBoost_Regex")  # for linux
 # Target macros
 # Defines target operating system
 # Defines target architecture
-# Defines target compilator
+# Defines target compiler
 # ---------------------------------
 IF(WIN32)
 	ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
 	ADD_DEFINITIONS(-DTARGET_OS_Windows)
 	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
-	ADD_DEFINITIONS(-DTARGET_COMPILATOR_VisualStudio)
+	ADD_DEFINITIONS(-DTARGET_COMPILER_VisualStudio)
 ENDIF(WIN32)
 IF(UNIX)
 	# ADD_DEFINITIONS(-fvisibility=hidden) # This flag should be present... man gcc
@@ -36,7 +36,7 @@ IF(UNIX)
 	ADD_DEFINITIONS(-fnon-call-exceptions)
 	ADD_DEFINITIONS(-DTARGET_OS_Linux)
 	ADD_DEFINITIONS(-DTARGET_ARCHITECTURE_i386)
-	ADD_DEFINITIONS(-DTARGET_COMPILATOR_GCC)
+	ADD_DEFINITIONS(-DTARGET_COMPILER_GCC)
 ENDIF(UNIX)
 
 # ----------------------

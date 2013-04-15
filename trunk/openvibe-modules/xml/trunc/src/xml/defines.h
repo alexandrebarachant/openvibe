@@ -92,20 +92,20 @@ namespace XML
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define XML_COMPILATOR_GCC
-// #define XML_COMPILATOR_VisualStudio
-// #define XML_COMPILATOR_
+// #define XML_COMPILER_GCC
+// #define XML_COMPILER_VisualStudio
+// #define XML_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define XML_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define XML_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define XML_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define XML_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

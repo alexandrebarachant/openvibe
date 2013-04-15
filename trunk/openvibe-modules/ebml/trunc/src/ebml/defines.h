@@ -189,20 +189,20 @@ namespace EBML
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define EBML_COMPILATOR_GCC
-// #define EBML_COMPILATOR_VisualStudio
-// #define EBML_COMPILATOR_
+// #define EBML_COMPILER_GCC
+// #define EBML_COMPILER_VisualStudio
+// #define EBML_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define EBML_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define EBML_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define EBML_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define EBML_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

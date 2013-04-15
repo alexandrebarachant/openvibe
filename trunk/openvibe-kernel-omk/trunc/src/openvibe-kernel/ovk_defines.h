@@ -137,20 +137,20 @@
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define OVK_COMPILATOR_GCC
-// #define OVK_COMPILATOR_VisualStudio
-// #define OVK_COMPILATOR_
+// #define OVK_COMPILER_GCC
+// #define OVK_COMPILER_VisualStudio
+// #define OVK_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define OVK_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define OVK_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define OVK_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define OVK_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

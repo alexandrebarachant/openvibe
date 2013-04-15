@@ -56,20 +56,20 @@
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define OVA_COMPILATOR_GCC
-// #define OVA_COMPILATOR_VisualStudio
-// #define OVA_COMPILATOR_
+// #define OVA_COMPILER_GCC
+// #define OVA_COMPILER_VisualStudio
+// #define OVA_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define OVA_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define OVA_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define OVA_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define OVA_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//

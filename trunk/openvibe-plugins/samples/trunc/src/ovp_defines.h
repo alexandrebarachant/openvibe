@@ -72,7 +72,7 @@
 
 //___________________________________________________________________//
 //                                                                   //
-// Gloabal defines                                                   //
+// Global defines                                                   //
 //___________________________________________________________________//
 //                                                                   //
 
@@ -118,20 +118,20 @@
 
 //___________________________________________________________________//
 //                                                                   //
-// Compilator software identification                                //
+// Compiler software identification                                //
 //___________________________________________________________________//
 //                                                                   //
 
-// #define OVP_COMPILATOR_GCC
-// #define OVP_COMPILATOR_VisualStudio
-// #define OVP_COMPILATOR_
+// #define OVP_COMPILER_GCC
+// #define OVP_COMPILER_VisualStudio
+// #define OVP_COMPILER_
 
-#if defined TARGET_COMPILATOR_GCC
- #define OVP_COMPILATOR_GCC
-#elif defined TARGET_COMPILATOR_VisualStudio
- #define OVP_COMPILATOR_VisualStudio
+#if defined TARGET_COMPILER_GCC
+ #define OVP_COMPILER_GCC
+#elif defined TARGET_COMPILER_VisualStudio
+ #define OVP_COMPILER_VisualStudio
 #else
- #warning "No target compilator defined !"
+ #warning "No target compiler defined !"
 #endif
 
 //___________________________________________________________________//
