@@ -18,7 +18,6 @@ INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleEBML")
 INCLUDE("FindOpenViBEModuleXML")
 INCLUDE("FindOpenViBEModuleSystem")
-INCLUDE("FindOpenViBEPluginsGlobalDefines")
 
 INCLUDE("FindThirdPartyBLiFF")
 INCLUDE("FindThirdPartyITPP")

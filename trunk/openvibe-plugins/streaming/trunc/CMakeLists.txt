@@ -16,7 +16,6 @@ INCLUDE("FindOpenViBE")
 INCLUDE("FindOpenViBECommon")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleSystem")
-INCLUDE("FindOpenViBEPluginsGlobalDefines")
 
 # ---------------------------------
 # Target macros

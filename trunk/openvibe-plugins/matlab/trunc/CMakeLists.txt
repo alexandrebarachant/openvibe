@@ -17,7 +17,6 @@ INCLUDE("FindOpenViBECommon")
 INCLUDE("FindOpenViBEToolkit")
 INCLUDE("FindOpenViBEModuleSystem")
 INCLUDE("FindOpenViBEModuleFS")
-INCLUDE("FindOpenViBEPluginsGlobalDefines")
 
 INCLUDE("FindThirdPartyMatlab")
 
