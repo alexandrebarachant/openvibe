@@ -144,6 +144,8 @@
 #define OV_AttributeId_Box_FlagCanAddSetting                 OpenViBE::CIdentifier(0x61D11811, 0x71E65362)
 #define OV_AttributeId_Box_FlagCanModifySetting              OpenViBE::CIdentifier(0xF191C1C8, 0xA0123976)
 
+#define OV_AttributeId_Box_Muted                             OpenViBE::CIdentifier(0xC73E83EC, 0xF855C5BC)
+
 #define OV_AttributeId_Comment_XCenterPosition               OpenViBE::CIdentifier(0x473D9A43, 0x97FC0A97)
 #define OV_AttributeId_Comment_YCenterPosition               OpenViBE::CIdentifier(0x7234B86B, 0x2B8651A5)
 // #define OV_AttributeId_Comment_XSize                         OpenViBE::CIdentifier(0xE680C753, 0x605306E0)
