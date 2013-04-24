@@ -1,6 +1,7 @@
 #if defined TARGET_HAS_ThirdPartyVRPN
 
 #include "ovpCBoxAlgorithmVRPNAnalogClient.h"
+#include "openvibe/ovITimeArithmetics.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -41,11 +42,12 @@ boolean CBoxAlgorithmVRPNAnalogClient::initialize(void)
 	ip_ui64SamplingRate.initialize(m_pStreamEncoder->getInputParameter(OVP_GD_Algorithm_SignalStreamEncoder_InputParameterId_SamplingRate));
 	op_pMemoryBuffer.initialize(m_pStreamEncoder->getOutputParameter(OVP_GD_Algorithm_SignalStreamEncoder_OutputParameterId_EncodedMemoryBuffer));
 
-	m_ui64LastChunkEndTime=uint64(-1);
+	m_bFirstStart = true;
+	m_ui64LastChunkEndTime=0;
 	m_ui64ChunkDuration=(uint64(m_ui32SampleCountPerSentBlock)<<32)/m_ui64SamplingRate;
-	m_ui32SampleIndex=0;
 
-	m_vSwapAnalog.resize(m_ui32ChannelCount);
+	m_vLastSample.resize(m_ui32ChannelCount);
+	m_dSampleBuffer.clear();
 
 	return true;
 }
@@ -65,8 +67,8 @@ boolean CBoxAlgorithmVRPNAnalogClient::uninitialize(void)
 		m_pStreamEncoder=NULL;
 	}
 
-	m_vSwapAnalog.clear();
-	m_vAnalog.clear();
+	m_dSampleBuffer.clear();
+	m_vLastSample.clear();
 
 	return true;
 }
@@ -80,61 +82,75 @@ boolean CBoxAlgorithmVRPNAnalogClient::processClock(IMessageClock& rMessageClock
 boolean CBoxAlgorithmVRPNAnalogClient::process(void)
 {
 	IBoxIO& l_rDynamicBoxContext=this->getDynamicBoxContext();
-	uint32 i, j;
 
-	if(m_pVRPNAnalogRemote)
-	{
-		m_pVRPNAnalogRemote->mainloop();
-	}
-	else
-	{
-		m_pVRPNAnalogRemote=new vrpn_Analog_Remote(m_sPeripheralName.toASCIIString());
-		m_pVRPNAnalogRemote->register_change_handler(this, &vrpn_analog_cb);
-	}
-
-	if(m_ui64LastChunkEndTime==uint64(-1))
+	if(m_bFirstStart)
 	{
 		ip_ui64SamplingRate=m_ui64SamplingRate;
 		ip_pMatrix->setDimensionCount(2);
 		ip_pMatrix->setDimensionSize(0, m_ui32ChannelCount);
 		ip_pMatrix->setDimensionSize(1, m_ui32SampleCountPerSentBlock);
 
-		// do labels ?
+		// @TODO do labels ?
 
 		op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
 		m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeHeader);
 		l_rDynamicBoxContext.markOutputAsReadyToSend(0, 0, 0);
 
-		m_ui64LastChunkEndTime=0;
+		m_vLastSample.resize(m_ui32ChannelCount);
+		for(uint32 i=0;i<m_ui32ChannelCount;i++) {
+			m_vLastSample[i] = 0;
+		}
+
+		m_bFirstStart = false;
 	}
 
-	uint64 l_ui64CurrentTime=this->getPlayerContext().getCurrentTime();
-	uint32 l_ui32SampleCountToFill=((l_ui64CurrentTime-m_ui64LastChunkEndTime)*m_ui64SamplingRate)>>32;
+	if(!m_pVRPNAnalogRemote) {
+		m_pVRPNAnalogRemote=new vrpn_Analog_Remote(m_sPeripheralName.toASCIIString());
+		m_pVRPNAnalogRemote->register_change_handler(this, &vrpn_analog_cb);
+	}
 
-	if(l_ui32SampleCountToFill>m_ui32SampleIndex)
+	m_pVRPNAnalogRemote->mainloop();
+
+	const uint64 l_ui64CurrentTime=this->getPlayerContext().getCurrentTime();
+
+	if( (l_ui64CurrentTime-m_ui64LastChunkEndTime) >= m_ui64ChunkDuration ) 
 	{
-		for(i=m_ui32SampleIndex; i<m_ui32SampleIndex+l_ui32SampleCountToFill && i<m_ui32SampleCountPerSentBlock; i++)
+		// Time to send a chunk. Copy our current sample buffer to the output matrix.
+		uint32 l_ui32SampleIndex=0;
+		OpenViBE::float64 *l_pOutputBuffer = ip_pMatrix->getBuffer();
+
+		while(m_dSampleBuffer.size()>0) 
 		{
-			if(m_vAnalog.size()!=0)
-			{
-				m_vSwapAnalog=m_vAnalog[0];
-				m_vAnalog.pop_front();
+			const std::vector< OpenViBE::float64 > &l_vTempSample = m_dSampleBuffer.front();
+
+			for(uint32 j=0; j<m_ui32ChannelCount; j++) {
+				l_pOutputBuffer[j*m_ui32SampleCountPerSentBlock + l_ui32SampleIndex ] = l_vTempSample[j];
 			}
-			for(j=0; j<m_ui32ChannelCount; j++)
-			{
-				ip_pMatrix->getBuffer()[j*m_ui32SampleCountPerSentBlock+i]=m_vSwapAnalog[j];
+
+			m_dSampleBuffer.pop_front();
+			l_ui32SampleIndex++;
+		}
+		// If the buffer didn't have enough data from callbacks, pad with the last sample
+		while(l_ui32SampleIndex<m_ui32SampleCountPerSentBlock) 
+		{
+			for(uint32 j=0; j<m_ui32ChannelCount; j++) {
+				l_pOutputBuffer[j*m_ui32SampleCountPerSentBlock + l_ui32SampleIndex ] = m_vLastSample[j];
 			}
+			l_ui32SampleIndex++;
 		}
 
-		m_ui32SampleIndex+=l_ui32SampleCountToFill;
-		if(m_ui32SampleIndex>m_ui32SampleCountPerSentBlock)
-		{
-			op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
-			m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
-			l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastChunkEndTime, m_ui64LastChunkEndTime+m_ui64ChunkDuration);
-			m_ui32SampleIndex=0;
-			m_ui64LastChunkEndTime+=m_ui64ChunkDuration;
+		op_pMemoryBuffer=l_rDynamicBoxContext.getOutputChunk(0);
+		m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
+		l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64LastChunkEndTime, m_ui64LastChunkEndTime + m_ui64ChunkDuration);
+		m_ui64LastChunkEndTime += m_ui64ChunkDuration;
+#if defined _DEBUG
+		const float64 l_f64TimeDiff = OpenViBE::ITimeArithmetics::timeToSeconds(m_ui64LastChunkEndTime)
+			- OpenViBE::ITimeArithmetics::timeToSeconds(l_ui64CurrentTime);
+		if(std::abs(l_f64TimeDiff) > 1) {
+			this->getLogManager() << LogLevel_Warning 
+				<< "Time difference detected: " << l_f64TimeDiff << " secs.\n";
 		}
+#endif		
 	}
 
 	return true;
@@ -142,11 +158,23 @@ boolean CBoxAlgorithmVRPNAnalogClient::process(void)
 
 void CBoxAlgorithmVRPNAnalogClient::setAnalog(uint32 ui32AnalogCount, const float64* pAnalog)
 {
-	for(uint32 i=0; i<ui32AnalogCount && i<m_ui32ChannelCount; i++)
+	// Count how many samples are encoded in pAnalog
+	const uint32 l_ui32SampleCount = ui32AnalogCount / m_ui32ChannelCount;
+	for(uint32 i=0;i<l_ui32SampleCount;i++) 
 	{
-		m_vSwapAnalog[i]=pAnalog[i];
+		// Append the sample to the buffer
+		for(uint32 j=0; j<m_ui32ChannelCount; j++) 
+		{
+			m_vLastSample[j] = pAnalog[j*l_ui32SampleCount+i];
+		}
+		m_dSampleBuffer.push_back(m_vLastSample);
+
+		// Drop the oldest sample if our buffer got full. This means that VRPN is sending data faster than we consume.
+		if(m_dSampleBuffer.size()>m_ui32SampleCountPerSentBlock) 
+		{
+			m_dSampleBuffer.pop_front();
+		}
 	}
-	m_vAnalog.push_back(m_vSwapAnalog);
 }
 
 #endif // TARGET_HAS_ThirdPartyVRPN

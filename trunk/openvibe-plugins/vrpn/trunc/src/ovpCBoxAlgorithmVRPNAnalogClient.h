@@ -42,7 +42,8 @@ namespace OpenViBEPlugins
 			OpenViBE::uint64 m_ui64SamplingRate;
 			OpenViBE::uint32 m_ui32ChannelCount;
 			OpenViBE::uint32 m_ui32SampleCountPerSentBlock;
-			OpenViBE::uint32 m_ui32SampleIndex;
+
+			OpenViBE::boolean m_bFirstStart;
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pStreamEncoder;
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::IMatrix* > ip_pMatrix;
@@ -51,12 +52,11 @@ namespace OpenViBEPlugins
 
 			OpenViBE::CString m_sPeripheralName;
 
-			std::deque < std::vector < OpenViBE::float64 > > m_vAnalog;
-			std::vector < OpenViBE::float64 > m_vSwapAnalog;
+			std::deque< std::vector< OpenViBE::float64 > > m_dSampleBuffer;	// Used as a limited-size buffer of sample vectors
+			std::vector< OpenViBE::float64 > m_vLastSample;					// The last sample received from VRPN
 
 			vrpn_Analog_Remote* m_pVRPNAnalogRemote;
 		};
-
 		class CBoxAlgorithmVRPNAnalogClientDesc : public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:

@@ -33,10 +33,11 @@ void fScrollCB(::GtkRange* pRange, gpointer pUserData)
 {
 	TUserData  l_oUserData;
 	l_oUserData.pUserData=pUserData;
-	g_pAnalogServer->channels()[l_oUserData.iData]=gtk_range_get_value(pRange);
+	gdouble l_oNewValue = gtk_range_get_value(pRange);
+	g_pAnalogServer->channels()[l_oUserData.iData]=l_oNewValue;
 
 #if defined _DEBUG
-	std::cout << (int)(pUserData) << " value changed\n";
+	std::cout << "Channel " << (int)(pUserData) << " value changed to " << l_oNewValue << "\n";
 #endif
 }
 
@@ -44,10 +45,11 @@ void fSwitchCB(::GtkToggleButton* pTogglebutton, gpointer pUserData)
 {
 	TUserData  l_oUserData;
 	l_oUserData.pUserData=pUserData;
-	g_pButtonServer->set_button(l_oUserData.iData, gtk_toggle_button_get_active(pTogglebutton));
+	gboolean l_bToggleValue = gtk_toggle_button_get_active(pTogglebutton);
+	g_pButtonServer->set_button(l_oUserData.iData, l_bToggleValue);
 
 #if defined _DEBUG
-	std::cout << (int)(pUserData) << " toggled\n";
+	std::cout << "Channel " << (int)(l_oUserData.iData) << " toggled to " << l_bToggleValue << "\n";
 #endif
 }
 
@@ -80,12 +82,13 @@ gboolean fIdleApplicationLoop(gpointer pUserData)
 int main(int argc, char ** argv)
 {
 #if defined TARGET_HAS_ThirdPartyVRPN
+	const int l_nChannels = 8;
+
 	gtk_init(&argc, &argv);
 	// g_pConnection=new ::vrpn_Connection;
 	g_pConnection=vrpn_create_server_connection();
-	g_pButtonServer=new ::vrpn_Button_Server(_vrpn_peripheral_name_, g_pConnection, 10);
-	g_pAnalogServer=new ::vrpn_Analog_Server(_vrpn_peripheral_name_, g_pConnection);
-	g_pAnalogServer->setNumChannels(10);
+	g_pButtonServer=new ::vrpn_Button_Server(_vrpn_peripheral_name_, g_pConnection, l_nChannels);
+	g_pAnalogServer=new ::vrpn_Analog_Server(_vrpn_peripheral_name_, g_pConnection, l_nChannels);
 
 	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-applications/vrpn-simulator/interface.ui", "window", NULL);
 	gtk_builder_add_from_file(l_pInterface, OpenViBE::Directories::getDataDir() + "/openvibe-applications/vrpn-simulator/interface.ui", NULL);
@@ -99,8 +102,11 @@ int main(int argc, char ** argv)
 	gtk_container_foreach(GTK_CONTAINER(l_pHBoxAnalog), fConnectCB, NULL);
 	gtk_builder_connect_signals(l_pInterface, NULL);
 
-	std::cout << "got " << g_iAnalogCount << " analogs...\n";
-	std::cout << "got " << g_iButtonCount << " buttons...\n";
+	std::cout << "VRPN Stimulator\n";
+	std::cout << "Got " << g_iAnalogCount << " analogs...\n";
+	std::cout << "Got " << g_iButtonCount << " buttons...\n";
+	std::cout << "Using " << l_nChannels << " VRPN channels...\n";
+	std::cout << "Signals will be sent to peripheral [" << _vrpn_peripheral_name_ << "]\n";
 
 	g_idle_add(fIdleApplicationLoop, NULL);
 
