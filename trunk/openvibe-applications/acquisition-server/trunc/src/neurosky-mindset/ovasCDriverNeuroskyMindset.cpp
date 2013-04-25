@@ -279,7 +279,7 @@ boolean CDriverNeuroskyMindset::start(void)
 	l_iErrCode = TG_Connect(m_i32ConnectionID,l_ssComPortName.str().c_str(),TG_BAUD_9600,TG_STREAM_PACKETS );
 	if( l_iErrCode < 0 ) 
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "The ThinkGear driver was unable to connect to serial port COM"<<m_ui32ComPort<<" (error code "<<l_iErrCode<<").\n";
+		m_rDriverContext.getLogManager() << LogLevel_Error << "The ThinkGear driver was unable to connect to serial port [" << l_ssComPortName.str().c_str() << "] (error code "<<l_iErrCode<<").\n";
 		return false;
 	}
 
@@ -302,17 +302,20 @@ boolean CDriverNeuroskyMindset::loop(void)
 	{
 		
 		uint32 l_ui32ReceivedSamples=0;
-		int32 l_i32ErrorCode;
+		uint32 l_ui32ErrorCount=0;
 
 		CStimulationSet l_oStimulationSet;
 
 		while(l_ui32ReceivedSamples < m_ui32SampleCountPerSentBlock)
 		{
 			/* Attempt to read 1 Packet of data from the connection (numPackets = -1 means all packets) */
-			l_i32ErrorCode = TG_ReadPackets( m_i32ConnectionID, 1 );
+			int32 l_i32ErrorCode = TG_ReadPackets( m_i32ConnectionID, 1 );
 			
 			if(l_i32ErrorCode == 1)// we asked for 1 packet and received 1
 			{
+				// Got a packet, reset the error count
+				l_ui32ErrorCount = 0;
+
 				/* If raw value has been updated by TG_ReadPackets()... */
 				if( TG_GetValueStatus(m_i32ConnectionID, TG_DATA_RAW ) != 0 )
 				{
@@ -428,8 +431,19 @@ boolean CDriverNeuroskyMindset::loop(void)
 			}
 			else
 			{
-				// Received something else than 1 packet, just sleep. This is not necessarily an unrecoverable error.
-				System::Time::sleep(2);
+				// Received something else than 1 packet. This is not necessarily an unrecoverable error. Try for a while.
+				// @note this is using counting to avoid polling the clock constantly
+				l_ui32ErrorCount++;
+				
+				const uint32 l_ui32ErrorSleep = 2; // In ms
+				const uint32 l_ui32ErrorTolerance = 1000; // As each error sleeps 2 ms, 1000*2 = 2000ms
+				if(l_ui32ErrorCount > l_ui32ErrorTolerance) 
+				{
+					m_rDriverContext.getLogManager() << LogLevel_Warning << "No valid packet from ThinkGear for a while, returning prematurely.\n";
+					return true;	// Let the acquisition server decide what to do, don't return a failure. It'll timeout after a bit.
+				}
+
+				System::Time::sleep(l_ui32ErrorSleep);
 			}
 		}
 
