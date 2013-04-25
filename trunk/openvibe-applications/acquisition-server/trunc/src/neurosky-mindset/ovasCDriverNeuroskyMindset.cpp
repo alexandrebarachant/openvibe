@@ -144,8 +144,6 @@ boolean CDriverNeuroskyMindset::initialize(
 	m_pSample=new float32[m_oHeader.getChannelCount()*ui32SampleCountPerSentBlock];
 	if(!m_pSample)
 	{
-		delete [] m_pSample;
-		m_pSample=NULL;
 		m_rDriverContext.getLogManager() << LogLevel_Error << "[INIT] Mindset Driver: Samples allocation failed.\n";
 		return false;
 	}
@@ -167,57 +165,72 @@ boolean CDriverNeuroskyMindset::initialize(
 		m_rDriverContext.getLogManager() << LogLevel_Info << "Eye blink detection NOT possible. Please use MindSet Dev. Tools v2.1 or sup. \n";
 	}
 
-	/* Get a connection ID handle to ThinkGear */
-	l_iConnectionId = TG_GetNewConnectionId();
-	if( l_iConnectionId < 0 ) 
-	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Can't connect to ThinkGear Communication Driver (error code "<< l_iConnectionId <<").\n";
-		return false;
-	}
-
-	m_rDriverContext.getLogManager() << LogLevel_Info << "ThinkGear Communication ID is: "<< l_iConnectionId <<".\n";
-	
-	m_i32ConnectionID = l_iConnectionId;
-
 	// if no com port was selected with the property dialog window
-	if(m_ui32ComPort == OVAS_MINDSET_INVALID_COM_PORT)
+	if(m_ui32ComPort == OVAS_MINDSET_INVALID_COM_PORT) 
 	{
+		// try the com ports. @NOTE almost duplicate code in CConfigurationMindSet
 		m_rDriverContext.getLogManager() << LogLevel_Info << "Scanning COM ports 1 to 16...\n";
-		bool l_bComPortFound = false;
-		// try the com ports
-		for(uint32 i=1; i<16 && !l_bComPortFound; i++)
+		for(uint32 i=1 ; i<16 && m_ui32ComPort == OVAS_MINDSET_INVALID_COM_PORT; i++)
 		{
+			/* Get a new connection ID handle to ThinkGear API */
+			int l_iConnectionId = TG_GetNewConnectionId();
+			if( l_iConnectionId < 0 ) {
+				m_rDriverContext.getLogManager() << LogLevel_Error << "The driver was unable to connect to the ThinkGear Communication Driver.\n";	
+				return false;
+			}
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "ThinkGear Connection ID is: "<< l_iConnectionId <<".\n";
+
 			/* Attempt to connect the connection ID handle to serial port */
 			stringstream l_ssComPortName;
 			l_ssComPortName << "\\\\.\\COM" << i;
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "Trying port [" << l_ssComPortName.str().c_str() << "]\n";
 			int l_iErrCode = TG_Connect(l_iConnectionId,l_ssComPortName.str().c_str(),TG_BAUD_9600,TG_STREAM_PACKETS );
 			if( l_iErrCode >= 0 ) 
 			{
-				m_rDriverContext.getLogManager() << LogLevel_Info << "Connection available on port COM"<< i <<" -- STATUS: ";
+				m_rDriverContext.getLogManager() << LogLevel_Info << "Connection available on port " << l_ssComPortName.str().c_str();
 		
-				//we try to read one packet, to check the connection.
-				l_iErrCode = TG_ReadPackets(l_iConnectionId,1);
-				if(l_iErrCode >= 0)
-				{	
-					m_ui32ComPort = i;
-					printf("OK\n");
-					l_bComPortFound = true;
-				}
-				else
-				{
-					if(l_iErrCode == -1) printf("FAILED (Invalid connection ID)\n");
-					if(l_iErrCode == -2) printf("FAILED (0 bytes on the stream)\n");
-					if(l_iErrCode == -3) printf("FAILED (I/O error occured)\n");
-				}
-				TG_Disconnect(l_iConnectionId);
-			}
-		}
+				const uint32 l_ui32StartTime = System::Time::getTime();
+				const uint32 l_ui32TimeToTry = 3000; // ms
 
-		if(!l_bComPortFound)
-		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << "The driver was unable to find any valid device on serial port COM1 to COM16.\n";
-			return false;
+				// With e.g. MindWave Mobile, errors do not mean that the operation couldn't succeed in the future, so we ask for a packet optimistically for a while.
+				bool l_bComPortFound = false;
+				while(!l_bComPortFound && (System::Time::getTime()-l_ui32StartTime) < l_ui32TimeToTry) 
+				{	
+					//we try to read one packet to check the connection.
+					l_iErrCode = TG_ReadPackets( l_iConnectionId, 1 );
+					if(l_iErrCode >= 0)
+					{	
+						m_rDriverContext.getLogManager() << " - Status: OK\n";
+						m_ui32ComPort = i;
+						l_bComPortFound = true;
+					} else {
+						System::Time::sleep(1);
+					}
+				}
+				if(!l_bComPortFound) {
+					m_rDriverContext.getLogManager() << " - Tried for " << l_ui32TimeToTry/1000 << " seconds, gave up.\n";
+					if(l_iErrCode == -1) 
+						m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: -1, Invalid connection ID\n";
+					else if(l_iErrCode == -2)
+						m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: -2, 0 bytes on the stream\n";
+					else if(l_iErrCode == -3) 
+						m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: -3, I/O error occured\n";
+					else 
+						m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: " << l_iErrCode << ", Unknown\n";
+				}
+			} else {
+				m_rDriverContext.getLogManager() << LogLevel_Trace << "TG_Connect() returned error " << l_iErrCode << "\n";
+			}
+			// free the connection to ThinkGear API
+			// We use FreeConnection() only as doing a TG_Disconnect()+TG_FreeConnection() pair can cause first-chance exceptions on visual studio & MindWave Mobile for some reason.
+			TG_FreeConnection(l_iConnectionId);
 		}
+	}
+
+	if(m_ui32ComPort == OVAS_MINDSET_INVALID_COM_PORT)
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "The driver was unable to find any valid device on serial port COM1 to COM16.\n";
+		return false;
 	}
 
 	//__________________________________
@@ -249,10 +262,20 @@ boolean CDriverNeuroskyMindset::start(void)
 
 	int   l_iErrCode = 0;
 
+	/* Get a connection ID handle to ThinkGear */
+	m_i32ConnectionID = TG_GetNewConnectionId();
+	if( m_i32ConnectionID < 0 ) 
+	{
+		m_rDriverContext.getLogManager() << LogLevel_Error << "Can't connect to ThinkGear Communication Driver (error code "<< m_i32ConnectionID <<").\n";
+		return false;
+	}
+
+	m_rDriverContext.getLogManager() << LogLevel_Info << "ThinkGear Communication ID is: "<< m_i32ConnectionID <<".\n";
+
 	/* Attempt to connect the connection ID handle to serial port */
 	stringstream l_ssComPortName;
 	l_ssComPortName << "\\\\.\\COM" << m_ui32ComPort;
-	m_rDriverContext.getLogManager() << LogLevel_Info << "Trying to connect ThinkGear driver to Serial Port COM"<< m_ui32ComPort <<".\n";
+	m_rDriverContext.getLogManager() << LogLevel_Info << "Trying to connect ThinkGear driver to Serial Port [" << l_ssComPortName.str().c_str() << "]\n";
 	l_iErrCode = TG_Connect(m_i32ConnectionID,l_ssComPortName.str().c_str(),TG_BAUD_9600,TG_STREAM_PACKETS );
 	if( l_iErrCode < 0 ) 
 	{
@@ -324,7 +347,7 @@ boolean CDriverNeuroskyMindset::loop(void)
 					{
 						if(m_ui32WarningCount != 0)
 							m_rDriverContext.getLogManager()
-								<< LogLevel_Warning
+								<< LogLevel_Info
 								<< "Signal Quality acceptable - noise < 12.5%\n";
 						m_ui32WarningCount = 0;
 					}
@@ -405,6 +428,7 @@ boolean CDriverNeuroskyMindset::loop(void)
 			}
 			else
 			{
+				// Received something else than 1 packet, just sleep. This is not necessarily an unrecoverable error.
 				System::Time::sleep(2);
 			}
 		}
@@ -431,8 +455,12 @@ boolean CDriverNeuroskyMindset::stop(void)
 		return false;
 	}
 
-	//STOP CODE HERE !
-	TG_Disconnect(m_i32ConnectionID);
+	if(m_i32ConnectionID>=0) 
+	{
+		// We use FreeConnection() only as doing a TG_Disconnect()+TG_FreeConnection() pair can cause first-chance exceptions on visual studio & MindWave Mobile for some reason.
+		TG_FreeConnection(m_i32ConnectionID);
+		m_i32ConnectionID = -1;
+	}
 
 	return true;
 }
@@ -449,11 +477,12 @@ boolean CDriverNeuroskyMindset::uninitialize(void)
 		return false;
 	}
 
-	// UNINIT HERE !
-	TG_FreeConnection(m_i32ConnectionID);
 
-	delete [] m_pSample;
-	m_pSample=NULL;
+	if(m_pSample)
+	{
+		delete [] m_pSample;
+		m_pSample=NULL;
+	}
 	m_pCallback=NULL;
 
 	return true;

@@ -176,28 +176,42 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 
 	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_com_port"));
 	
-	/* Get a new connection ID handle to ThinkGear API */
-	int l_iConnectionId = TG_GetNewConnectionId();
-	if( l_iConnectionId >= 0 )
+	int32 l_iDllVersion = TG_GetDriverVersion();
+	m_rDriverContext.getLogManager() << LogLevel_Info << "ThinkGear DLL version: "<< l_iDllVersion <<"\n";
+
+	// try the com ports. @NOTE almost duplicate code in CDriverNeuroskyMindset
+	m_rDriverContext.getLogManager() << LogLevel_Info << "Scanning COM ports 1 to 16...\n";
+	for(uint32 i=1 ; i<16 ; i++)
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Info << "ThinkGear Connection ID is: "<< l_iConnectionId <<".\n";
-		// try the com ports
-		m_rDriverContext.getLogManager() << LogLevel_Info << "Scanning COM ports 1 to 16...\n";
-		for(uint32 i=1; i<16; i++)
+		/* Get a new connection ID handle to ThinkGear API */
+		int l_iConnectionId = TG_GetNewConnectionId();
+		if( l_iConnectionId < 0 ) {
+			m_rDriverContext.getLogManager() << LogLevel_Error << "The driver was unable to connect to the ThinkGear Communication Driver.\n";	
+			return false;
+		}
+		// m_rDriverContext.getLogManager() << LogLevel_Info << "ThinkGear Connection ID is: "<< l_iConnectionId <<".\n";
+
+		/* Attempt to connect the connection ID handle to serial port */
+		stringstream l_ssComPortName;
+		l_ssComPortName << "\\\\.\\COM" << i;
+		m_rDriverContext.getLogManager() << LogLevel_Trace << "Trying port [" << l_ssComPortName.str().c_str() << "]\n";
+		int l_iErrCode = TG_Connect(l_iConnectionId,l_ssComPortName.str().c_str(),TG_BAUD_9600,TG_STREAM_PACKETS );
+		if( l_iErrCode >= 0 ) 
 		{
-			/* Attempt to connect the connection ID handle to serial port */
-			stringstream l_ssComPortName;
-			l_ssComPortName << "\\\\.\\COM" << i;
-			int l_iErrCode = TG_Connect(l_iConnectionId,l_ssComPortName.str().c_str(),TG_BAUD_9600,TG_STREAM_PACKETS );
-			if( l_iErrCode >= 0 ) 
-			{
-				m_rDriverContext.getLogManager() << LogLevel_Info << "Connection available on port COM"<< i <<" -- STATUS: ";
+			m_rDriverContext.getLogManager() << LogLevel_Info << "Connection available on port [" << l_ssComPortName.str().c_str() << "]";
 		
-				//we try to read one packet, to check the connection.
+			const uint32 l_ui32StartTime = System::Time::getTime();
+			const uint32 l_ui32TimeToTry = 3000; // ms
+
+			// With e.g. MindWave Mobile, errors do not mean that the operation couldn't succeed in the future, so we ask for a packet optimistically for a while.
+			bool l_bComPortFound = false;
+			while(!l_bComPortFound && (System::Time::getTime()-l_ui32StartTime) < l_ui32TimeToTry) 
+			{	
+				//we try to read one packet to check the connection.
 				l_iErrCode = TG_ReadPackets( l_iConnectionId, 1 );
 				if(l_iErrCode >= 0)
 				{	
-					printf("OK\n");
+					m_rDriverContext.getLogManager() << " - Status: OK\n";
 					sprintf(l_sBuffer, "COM%i", i);
 					gtk_combo_box_append_text(l_pComboBox, l_sBuffer);
 					if(m_rComPort==i)
@@ -206,33 +220,36 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 						l_bSelected=true;
 					}
 					l_iCount++;
+					l_bComPortFound = true;
+				} else {
+					System::Time::sleep(1);
 				}
-				else
-				{
-					if(l_iErrCode == -1) printf("FAIL (Invalid connection ID)\n");
-					if(l_iErrCode == -2) printf("FAIL (0 bytes on the stream)\n");
-					if(l_iErrCode == -3) printf("FAIL (I/O error occured)\n");
-				}
-				
-				TG_Disconnect(l_iConnectionId);	
 			}
+			if(!l_bComPortFound) {
+				m_rDriverContext.getLogManager() << " - Tried for " << l_ui32TimeToTry/1000 << " seconds, gave up.\n";
+				if(l_iErrCode == -1) 
+					m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: -1, Invalid connection ID\n";
+				else if(l_iErrCode == -2)
+					m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: -2, 0 bytes on the stream\n";
+				else if(l_iErrCode == -3) 
+					m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: -3, I/O error occured\n";
+				else 
+					m_rDriverContext.getLogManager() << LogLevel_Info << "  Last TG_ReadPackets error: " << l_iErrCode << ", Unknown\n";
+			}
+		} else {
+			m_rDriverContext.getLogManager() << LogLevel_Trace << "TG_Connect() returned error " << l_iErrCode << "\n";
 		}
 		// free the connection to ThinkGear API
+		// We use FreeConnection() only as doing a TG_Disconnect()+TG_FreeConnection() pair can cause first-chance exceptions on visual studio & MindWave Mobile for some reason.
 		TG_FreeConnection(l_iConnectionId);
-	}
-	else
-	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "The driver was unable to connect to the ThinkGear Communication Driver.\n";	
-		return false;
 	}
 
 	if(l_iCount == 0)
 	{
 		m_rDriverContext.getLogManager() << LogLevel_Error << "The driver was unable to find any valid device on serial port COM1 to COM16.\n";
-		return false;
 	}
 
-	if(!l_bSelected && l_iCount!=0)
+	if(!l_bSelected)
 	{
 		::gtk_combo_box_set_active(l_pComboBox, 0);
 	}
@@ -247,8 +264,7 @@ boolean CConfigurationNeuroskyMindset::preConfigure(void)
 	gtk_toggle_button_set_active(l_pToggleBlink,m_rBlinkStimulations);
 	gtk_toggle_button_set_active(l_pToggleBlinkStrenght,m_rBlinkStrenghtChannel);
 	
-
-	return true;
+	return (l_iCount>0);
 }
 
 boolean CConfigurationNeuroskyMindset::postConfigure(void)
@@ -272,10 +288,10 @@ boolean CConfigurationNeuroskyMindset::postConfigure(void)
 		::GtkToggleButton* l_pToggleBlink         = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_blink"));
 		::GtkToggleButton* l_pToggleBlinkStrenght = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "check_blink_strenght"));
 
-		m_rESenseChannels = ::gtk_toggle_button_get_active(l_pToggleESense);
-		m_rBandPowerChannels = ::gtk_toggle_button_get_active(l_pTogglePower);
-		m_rBlinkStimulations = ::gtk_toggle_button_get_active(l_pToggleBlink);
-		m_rBlinkStrenghtChannel = ::gtk_toggle_button_get_active(l_pToggleBlinkStrenght);
+		m_rESenseChannels = (::gtk_toggle_button_get_active(l_pToggleESense) != 0); // assign to bool while avoiding C4800 warning on MSVC
+		m_rBandPowerChannels = (::gtk_toggle_button_get_active(l_pTogglePower) != 0);
+		m_rBlinkStimulations = (::gtk_toggle_button_get_active(l_pToggleBlink) != 0);
+		m_rBlinkStrenghtChannel = (::gtk_toggle_button_get_active(l_pToggleBlinkStrenght) != 0);
 	}
 
 	if(! CConfigurationBuilder::postConfigure()) // normal header is filled, ressources are realesed
