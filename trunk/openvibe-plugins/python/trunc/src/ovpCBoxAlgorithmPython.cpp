@@ -4,8 +4,6 @@
 
 #include <iostream>
 
-
-
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -16,7 +14,7 @@ using namespace OpenViBEPlugins::Python;
 using namespace OpenViBEToolkit;
 
 OpenViBE::boolean CBoxAlgorithmPython::m_bPythonInitialized = false;
-uint32 CBoxAlgorithmPython::m_ui32PythonBoxInstanceCount = 0;
+
 PyObject *CBoxAlgorithmPython::m_pMainModule = NULL;
 PyObject *CBoxAlgorithmPython::m_pMainDictionnary = NULL;
 PyObject *CBoxAlgorithmPython::m_pOVStreamedMatrixHeader = NULL;
@@ -41,7 +39,6 @@ OpenViBE::boolean CBoxAlgorithmPython::logSysStdout(void)
 	if (l_pPyStringToLog == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to call sys.stdout.getvalue().\n";
-		Py_CLEAR(l_pPyStringToLog);
 		return false;
 	}
 	
@@ -62,7 +59,6 @@ OpenViBE::boolean CBoxAlgorithmPython::logSysStdout(void)
 		if (l_pResult == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to call sys.stdout.flush().\n";
-			Py_CLEAR(l_pResult);
 			return false;
 		}
 		Py_CLEAR(l_pResult);
@@ -77,7 +73,6 @@ OpenViBE::boolean CBoxAlgorithmPython::logSysStderr(void)
 	if (l_pPyStringToLog == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to call sys.stderr.getvalue().\n";
-		Py_CLEAR(l_pPyStringToLog);
 		return false;
 	}
 	
@@ -98,7 +93,6 @@ OpenViBE::boolean CBoxAlgorithmPython::logSysStderr(void)
 		if (l_pResult == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to call sys.stderr.flush().\n";
-			Py_CLEAR(l_pResult);
 			return false;
 		}
 		Py_CLEAR(l_pResult);
@@ -130,12 +124,11 @@ void CBoxAlgorithmPython::buildPythonSettings(void)
 
 OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 {
+	// Only the first Python box does the initialization of the global parts
 	if (m_bPythonInitialized)
 	{
 		return true;
 	}
-
-	m_bPythonInitialized = true;
 
 	OpenViBE::CString l_sCommand;
 	l_sCommand = l_sCommand + "import sys\n";
@@ -159,7 +152,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 	if (l_pScriptFile == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to open '" << l_sFilePath << "'.\n";
-		Py_CLEAR(l_pScriptFile);
 		return false;
 	}
 
@@ -199,174 +191,118 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVStreamedMatrixHeader = PyDict_GetItemString(m_pMainDictionnary, "OVStreamedMatrixHeader");
 	if (m_pOVStreamedMatrixHeader == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVStreamedMatrixHeader\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
 		return false;
 	}
 
 
-	//New reference
+	//Borrowed reference
 	m_pOVStreamedMatrixBuffer = PyDict_GetItemString(m_pMainDictionnary, "OVStreamedMatrixBuffer");
 	if (m_pOVStreamedMatrixBuffer == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVStreamedMatrixBuffer\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVStreamedMatrixEnd = PyDict_GetItemString(m_pMainDictionnary, "OVStreamedMatrixEnd");
 	if (m_pOVStreamedMatrixEnd == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVStreamedMatrixEnd\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVSignalHeader = PyDict_GetItemString(m_pMainDictionnary, "OVSignalHeader");
 	if (m_pOVSignalHeader == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVSignalHeader\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVSignalBuffer = PyDict_GetItemString(m_pMainDictionnary, "OVSignalBuffer");
 	if (m_pOVSignalBuffer == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVSignalBuffer\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVSignalEnd = PyDict_GetItemString(m_pMainDictionnary, "OVSignalEnd");
 	if (m_pOVSignalEnd == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVSignalEnd\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
-		Py_CLEAR(m_pOVSignalEnd);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVStimulationHeader = PyDict_GetItemString(m_pMainDictionnary, "OVStimulationHeader");
 	if (m_pOVStimulationHeader == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVStimulationHeader\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
-		Py_CLEAR(m_pOVSignalEnd);
-		Py_CLEAR(m_pOVStimulationHeader);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVStimulation = PyDict_GetItemString(m_pMainDictionnary, "OVStimulation");
 	if (m_pOVStimulation == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVStimulation\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
-		Py_CLEAR(m_pOVSignalEnd);
-		Py_CLEAR(m_pOVStimulationHeader);
-		Py_CLEAR(m_pOVStimulation);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVStimulationSet = PyDict_GetItemString(m_pMainDictionnary, "OVStimulationSet");
 	if (m_pOVStimulationSet == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVStimulationSet\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
-		Py_CLEAR(m_pOVSignalEnd);
-		Py_CLEAR(m_pOVStimulationHeader);
-		Py_CLEAR(m_pOVStimulation);
-		Py_CLEAR(m_pOVStimulationSet);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVStimulationEnd = PyDict_GetItemString(m_pMainDictionnary, "OVStimulationEnd");
 	if (m_pOVStimulationEnd == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVStimulationEnd\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
-		Py_CLEAR(m_pOVSignalEnd);
-		Py_CLEAR(m_pOVStimulationHeader);
-		Py_CLEAR(m_pOVStimulation);
-		Py_CLEAR(m_pOVStimulationSet);
-		Py_CLEAR(m_pOVStimulationEnd);
 		return false;
 	}
 
-	//New reference
+	//Borrowed reference
 	m_pOVBuffer = PyDict_GetItemString(m_pMainDictionnary, "OVBuffer");
 	if (m_pOVBuffer == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load class \"OVBuffer\".\n";
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
-		Py_CLEAR(m_pOVSignalEnd);
-		Py_CLEAR(m_pOVStimulationHeader);
-		Py_CLEAR(m_pOVStimulation);
-		Py_CLEAR(m_pOVStimulationSet);
-		Py_CLEAR(m_pOVStimulationEnd);
-		Py_CLEAR(m_pOVBuffer);
 		return false;
 	}
 
+	m_bPythonInitialized = true;
+
 	this->getLogManager() << LogLevel_Info << "Python Interpreter initialized\n";
 
-return true;
+	return true;
 }
 
 OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 {
+	m_pBox = NULL;
+	m_pBoxInput = NULL;
+	m_pBoxOutput = NULL;
+	m_pBoxCurrentTime = NULL;
+	m_pBoxSetting = NULL;
+	m_pBoxInitialize = NULL;
+	m_pBoxProcess = NULL;
+	m_pBoxUninitialize = NULL;
+	m_bInitializeSucceeded = false;
+
 	if (!initializePythonSafely())
 	{
 		return false;
 	}
-
-	m_ui32PythonBoxInstanceCount++;
 
 	//Initialize the clock frequency of the box depending on the first setting of the box
 	CString l_sSettingValue;
@@ -462,10 +398,7 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 
 
 
-	m_bInitializeSucceeded = false;
-	m_pBoxInitialize = NULL ;
-	m_pBoxProcess = NULL;
-	m_pBoxUninitialize = NULL ;
+
 
 
 	//New reference
@@ -491,7 +424,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	Py_CLEAR(l_pTemporyPyObject);
 	Py_CLEAR(l_pResult);
 
-
 	/*
 	PyObject *l_pScriptFile = PyFile_FromString((char *) m_sScriptFilename.toASCIIString(), (char *) "r");
 	if (l_pScriptFile == NULL)
@@ -515,7 +447,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (m_pBox == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load \"box\" object.\n";
-		Py_CLEAR(m_pBox);
 		return false;
 	}
 	//New reference
@@ -523,8 +454,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (m_pBoxInput == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load \"box.input\".\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
 		return false;
 	}
 	//New reference
@@ -532,9 +461,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (m_pBoxOutput == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load \"box.output\".\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
 		return false;
 	}
 
@@ -576,10 +502,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 		if (l_pResult == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to call box.addInput().\n";
-			Py_CLEAR(m_pBox);
-			Py_CLEAR(m_pBoxInput);
-			Py_CLEAR(m_pBoxOutput);
-			Py_CLEAR(l_pResult);
 			return false;
 		}
 		Py_CLEAR(l_pResult);
@@ -622,10 +544,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 		if (l_pResult == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to call box.addOutput().\n";
-			Py_CLEAR(m_pBox);
-			Py_CLEAR(m_pBoxInput);
-			Py_CLEAR(m_pBoxOutput);
-			Py_CLEAR(l_pResult);
 			return false;
 		}
 		Py_CLEAR(l_pResult);
@@ -636,10 +554,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (m_pBoxSetting == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to load \"box.setting\".\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
 		return false;
 	}
 	buildPythonSettings();
@@ -647,10 +561,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (!PyObject_HasAttrString(m_pBox, "_clock"))
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._clock\" attribute because it does not exist.\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
 		return false;
 	}
 	//New reference
@@ -658,21 +568,11 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (l_pBoxClock == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to convert m_ui64ClockFrequency into PyInt.\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
-		Py_CLEAR(l_pBoxClock);
 		return false;
 	}
 	if (PyObject_SetAttrString(m_pBox, "_clock", l_pBoxClock) == -1)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._clock\" attribute.\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
-		Py_CLEAR(l_pBoxClock);
 		return false;
 	}
 	Py_CLEAR(l_pBoxClock);
@@ -680,10 +580,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (!PyObject_HasAttrString(m_pBox, "_currentTime"))
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._currentTime\" attribute because it does not exist.\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
 		return false;
 	}
 	//New reference
@@ -691,32 +587,17 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 	if (m_pBoxCurrentTime == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to convert the current time into a PyFloat.\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
-		Py_CLEAR(m_pBoxCurrentTime);
 		return false;
 	}
 	if (PyObject_SetAttrString(m_pBox, "_currentTime", m_pBoxCurrentTime) == -1)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to initialize \"box._currentTime\" attribute.\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
-		Py_CLEAR(m_pBoxCurrentTime);
 		return false;
 	}
 
 	if (!PyObject_HasAttrString(m_pBox, "realInitialize"))
 	{
 		this->getLogManager() << LogLevel_Error << "No realInitialize.\n";
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxSetting);
-		Py_CLEAR(m_pBoxCurrentTime);
 		return false;
 	}
 
@@ -774,14 +655,6 @@ OpenViBE::boolean CBoxAlgorithmPython::initialize(void)
 			{
 				this->getLogManager() << LogLevel_Error << "logSysStderr() failed during box.__initialization.\n";
 			}
-			Py_CLEAR(m_pBox);
-			Py_CLEAR(m_pBoxInput);
-			Py_CLEAR(m_pBoxOutput);
-			Py_CLEAR(m_pBoxCurrentTime);
-			Py_CLEAR(m_pBoxSetting);
-			Py_CLEAR(m_pBoxInitialize);
-			Py_CLEAR(m_pBoxProcess);
-			Py_CLEAR(m_pBoxUninitialize);
 			Py_CLEAR(l_pResult);
 			return false;
 		}
@@ -798,11 +671,13 @@ OpenViBE::boolean CBoxAlgorithmPython::uninitialize(void)
 	{
 		m_vDecoders[i]->uninitialize();
 	}
+	m_vDecoders.clear();
 
 	for(uint32 i = 0; i < m_vEncoders.size(); i++)
 	{
 		m_vEncoders[i]->uninitialize();
 	}
+	m_vEncoders.clear();
 
 	if (m_bInitializeSucceeded)
 	{ // we call this uninit only if init had succeeded
@@ -828,52 +703,24 @@ OpenViBE::boolean CBoxAlgorithmPython::uninitialize(void)
 				{
 					this->getLogManager() << LogLevel_Error << "logSysStderr() failed during box.__uninitialization.\n";
 				}
-				Py_CLEAR(m_pBox);
-				Py_CLEAR(m_pBoxInput);
-				Py_CLEAR(m_pBoxOutput);
-				Py_CLEAR(m_pBoxCurrentTime);
-				Py_CLEAR(m_pBoxSetting);
-				Py_CLEAR(m_pBoxInitialize);
-				Py_CLEAR(m_pBoxProcess);
-				Py_CLEAR(m_pBoxUninitialize);
 				Py_CLEAR(l_pResult);
 				return false;
 			}
 			Py_CLEAR(l_pResult);
 		}
-
-		Py_CLEAR(m_pBox);
-		Py_CLEAR(m_pBoxInput);
-		Py_CLEAR(m_pBoxOutput);
-		Py_CLEAR(m_pBoxCurrentTime);
-		Py_CLEAR(m_pBoxSetting);
-		Py_CLEAR(m_pBoxInitialize);
-		Py_CLEAR(m_pBoxProcess);
-		Py_CLEAR(m_pBoxUninitialize);
 	}
 
-	m_ui32PythonBoxInstanceCount--;
+	// Note: Py_CLEAR is safe to use on NULL pointers, so we can clean everything here
+	Py_CLEAR(m_pBox);
+	Py_CLEAR(m_pBoxInput);
+	Py_CLEAR(m_pBoxOutput);
+	Py_CLEAR(m_pBoxCurrentTime);
+	Py_CLEAR(m_pBoxSetting);
+	Py_CLEAR(m_pBoxInitialize);
+	Py_CLEAR(m_pBoxProcess);
+	Py_CLEAR(m_pBoxUninitialize);
 
-	if (m_ui32PythonBoxInstanceCount == 0 && m_bPythonInitialized)
-	{
-
-		Py_CLEAR(m_pOVStreamedMatrixHeader);
-		Py_CLEAR(m_pOVStreamedMatrixBuffer);
-		Py_CLEAR(m_pOVStreamedMatrixEnd);
-		Py_CLEAR(m_pOVSignalHeader);
-		Py_CLEAR(m_pOVSignalBuffer);
-		Py_CLEAR(m_pOVSignalEnd);
-		Py_CLEAR(m_pOVStimulationHeader);
-		Py_CLEAR(m_pOVStimulation);
-		Py_CLEAR(m_pOVStimulationSet);
-		Py_CLEAR(m_pOVStimulationEnd);
-		Py_CLEAR(m_pOVBuffer);
-
-
-		//Py_Finalize();
-		m_bPythonInitialized = false;
-		this->getLogManager() << LogLevel_Info << "Python Interpreter uninitialized\n";
-	}
+	// Py_Initialize() and Py_Finalize() are called in ovp_main.cpp, we never uninitialize Python here
 
 	return true;
 }
@@ -924,7 +771,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			if (l_pDimensionSize == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new list l_pDimensionSize.\n";
-				Py_CLEAR(l_pDimensionSize);
 				return false;
 			}
 
@@ -934,7 +780,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new list l_pDimensionLabel.\n";
 				Py_CLEAR(l_pDimensionSize);
-				Py_CLEAR(l_pDimensionLabel);
 				return false;
 			}
 
@@ -967,7 +812,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
 				Py_CLEAR(l_pDimensionSize);
 				Py_CLEAR(l_pDimensionLabel);
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1010,7 +854,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 				Py_CLEAR(l_pDimensionSize);
 				Py_CLEAR(l_pDimensionLabel);
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVStreamedMatrixHeader);
 				return false;
 			}
 			Py_CLEAR(l_pDimensionSize);
@@ -1025,7 +868,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append chunk to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVStreamedMatrixHeader);
 				return false;
 			}
@@ -1040,7 +882,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			if (l_pArg == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1068,7 +909,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new OVStreamedMatrixBuffer l_pOVStreamedMatrixBuffer.\n";
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVStreamedMatrixBuffer);
 				return false;
 			}
 			Py_CLEAR(l_pArg);
@@ -1093,7 +933,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append an OVStreamedMatrixBuffer to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVStreamedMatrixBuffer);
 				return false;
 			}
@@ -1108,7 +947,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			if (l_pArg == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1130,7 +968,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new OVStreamedMatrixEnd l_pOVStreamedMatrixEnd.\n";
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVStreamedMatrixEnd);
 				return false;
 			}
 			Py_CLEAR(l_pArg);
@@ -1143,7 +980,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixInputChunksToPython
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append an OVStreamedMatrixEnd to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVStreamedMatrixEnd);
 				return false;
 			}
@@ -1180,7 +1016,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 	if (l_pBufferLen == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to get box.output["<< output_index << "].__len__().\n";
-		Py_CLEAR(l_pBufferLen);
 		return false;
 	}
 
@@ -1193,7 +1028,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 		if (l_pOVChunk == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to get item " << chunk_index << " of box.output["<< output_index << "].\n";
-			Py_CLEAR(l_pOVChunk);
 			return false;
 		}
 
@@ -1206,7 +1040,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStreamedMatrixOutputChunksFromPyt
 			if (l_pDimensionCount == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to call chunk's getDimensionCount method.\n";
-				Py_CLEAR(l_pDimensionCount);
 				Py_CLEAR(l_pOVChunk);
 				return false;
 			}
@@ -1332,7 +1165,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			if (l_pDimensionSize == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new list l_pDimensionSize.\n";
-				Py_CLEAR(l_pDimensionSize);
 				return false;
 			}
 
@@ -1342,7 +1174,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new list l_pDimensionLabel.\n";
 				Py_CLEAR(l_pDimensionSize);
-				Py_CLEAR(l_pDimensionLabel);
 				return false;
 			}
 
@@ -1375,7 +1206,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
 				Py_CLEAR(l_pDimensionSize);
 				Py_CLEAR(l_pDimensionLabel);
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1426,7 +1256,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 				Py_CLEAR(l_pDimensionSize);
 				Py_CLEAR(l_pDimensionLabel);
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVSignalHeader);
 				return false;
 			}
 			Py_CLEAR(l_pDimensionSize);
@@ -1441,7 +1270,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append chunk to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVSignalHeader);
 				return false;
 			}
@@ -1456,7 +1284,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			if (l_pArg == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1484,7 +1311,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new OVSignalBuffer l_pOVSignalBuffer.\n";
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVSignalBuffer);
 				return false;
 			}
 			Py_CLEAR(l_pArg);
@@ -1509,7 +1335,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append an OVSignalBuffer to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVSignalBuffer);
 				return false;
 			}
@@ -1524,7 +1349,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			if (l_pArg == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1546,7 +1370,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new m_pOVSignalEnd l_pOVSignalEnd.\n";
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVSignalEnd);
 				return false;
 			}
 			Py_CLEAR(l_pArg);
@@ -1559,7 +1382,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalInputChunksToPython(uint32 
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append an OVSignalEnd to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVSignalEnd);
 				return false;
 			}
@@ -1596,7 +1418,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 	if (l_pBufferLen == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to get box.output["<< output_index << "].__len__().\n";
-		Py_CLEAR(l_pBufferLen);
 		return false;
 	}
 
@@ -1609,7 +1430,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 		if (l_pOVChunk == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to get item " << chunk_index << " of box.output["<< output_index << "].\n";
-			Py_CLEAR(l_pOVChunk);
 			return false;
 		}
 
@@ -1622,7 +1442,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			if (l_pDimensionCount == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to call chunk's getDimensionCount method.\n";
-				Py_CLEAR(l_pDimensionCount);
 				Py_CLEAR(l_pOVChunk);
 				return false;
 			}
@@ -1655,7 +1474,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferSignalOutputChunksFromPython(uint
 			if (l_pChunkSamplingRate == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to load signal header sampling rate.\n";
-				Py_CLEAR(l_pChunkSamplingRate);
 				return false;
 			}
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 >& l_pSamplingRate = ( (TSignalEncoder <CBoxAlgorithmPython> *) m_vEncoders[output_index] )->getInputSamplingRate();
@@ -1747,7 +1565,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			if (l_pArg == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1768,7 +1585,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 				this->getLogManager() << LogLevel_Error << "Failed to create a new OVStimulationHeader l_pOVStimulationHeader.\n";
 				PyErr_Print();
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVStimulationHeader);
 				return false;
 			}
 			Py_CLEAR(l_pArg);
@@ -1781,7 +1597,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append an OVStimulationHeader to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVStimulationHeader);
 				return false;
 			}
@@ -1798,7 +1613,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			if (l_pArg == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1819,7 +1633,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new OVStimulationSet l_pOVStimulationSet.\n";
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVStimulationSet);
 				return false;
 			}
 			Py_CLEAR(l_pArg);
@@ -1835,7 +1648,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 				if (l_pArg == NULL)
 				{
 					this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-					Py_CLEAR(l_pArg);
 					return false;
 				}
 				if (PyTuple_SetItem(l_pArg, 0, PyInt_FromLong((long) l_ui64StimulationIdentifier)) != 0)
@@ -1862,7 +1674,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 				{
 					this->getLogManager() << LogLevel_Error << "Failed to create a new OVStimulation l_pOVStimulation.\n";
 					Py_CLEAR(l_pArg);
-					Py_CLEAR(l_pOVStimulation);
 					return false;
 				}
 				Py_CLEAR(l_pArg);
@@ -1875,7 +1686,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 				if (l_pResult == NULL)
 				{
 					this->getLogManager() << LogLevel_Error << "Failed to append stimulation to box.input[" << input_index << "].\n";
-					Py_CLEAR(l_pResult);
 					Py_CLEAR(l_pOVStimulation);
 					return false;
 				}
@@ -1891,7 +1701,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append stimulation set to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVStimulationSet);
 				return false;
 			}
@@ -1906,7 +1715,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			if (l_pArg == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new tuple l_pArg.\n";
-				Py_CLEAR(l_pArg);
 				return false;
 			}
 			if (PyTuple_SetItem(l_pArg, 0, PyFloat_FromDouble((double)(l_rDynamicBoxContext.getInputChunkStartTime(input_index, chunk_index)>>22) / 1024.)) != 0)
@@ -1928,7 +1736,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to create a new OVStimulationEnd l_pOVStimulationEnd.\n";
 				Py_CLEAR(l_pArg);
-				Py_CLEAR(l_pOVStimulationEnd);
 				return false;
 			}
 			Py_CLEAR(l_pArg);
@@ -1941,7 +1748,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationInputChunksToPython(ui
 			if (l_pResult == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to append an OVStimulationEnd to box.input[" << input_index << "].\n";
-				Py_CLEAR(l_pResult);
 				Py_CLEAR(l_pOVStimulationEnd);
 				return false;
 			}
@@ -1976,7 +1782,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 	if (l_pBufferLen == NULL)
 	{
 		this->getLogManager() << LogLevel_Error << "Failed to get box.output["<< output_index << "].__len__().\n";
-		Py_CLEAR(l_pBufferLen);
 		return false;
 	}
 	uint32 l_ui32OutputLen = PyInt_AsUnsignedLongMask(l_pBufferLen);
@@ -1988,7 +1793,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 		if (l_pOVChunk == NULL)
 		{
 			this->getLogManager() << LogLevel_Error << "Failed to get item " << chunk_index << " of box.output["<< output_index << "].\n";
-			Py_CLEAR(l_pOVChunk);
 			return false;
 		}
 
@@ -2016,7 +1820,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 			if (l_pOVChunkLen == NULL)
 			{
 				this->getLogManager() << LogLevel_Error << "Failed to get stimulations set length.\n";
-				Py_CLEAR(l_pOVChunkLen);
 				return false;
 			}
 			uint32 l_ui32OVChunkLen = PyInt_AsUnsignedLongMask(l_pOVChunkLen);
@@ -2025,18 +1828,16 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 			l_pStimulationSet->setStimulationCount(0);
 			for (uint32 stim_index=0; stim_index < l_ui32OVChunkLen; stim_index++)
 			{
-				//New reference
+				//Borrowed reference
 				PyObject* l_pOVStimulation = PyList_GetItem(l_pOVChunk, (Py_ssize_t) stim_index);
 				if (l_pOVStimulation == NULL)
 				{
 					this->getLogManager() << LogLevel_Error << "Failed to get item " << stim_index << " of chunk "<< chunk_index << ".\n";
-					Py_CLEAR(l_pOVStimulation);
 					return false;
 				}
 				if (PyObject_IsInstance(l_pOVStimulation, m_pOVStimulation) < 1)
 				{
 					this->getLogManager() << LogLevel_Error << "Item " << stim_index << " is not an OVStimulation.\n";
-					Py_CLEAR(l_pOVStimulation);
 					return false;
 				}
 				//New reference
@@ -2053,8 +1854,6 @@ OpenViBE::boolean CBoxAlgorithmPython::transferStimulationOutputChunksFromPython
 				PyObject *l_pDuration = PyObject_GetAttrString(l_pOVStimulation, "duration");
 				uint64 l_ui64Duration = (uint64)(PyFloat_AsDouble(l_pDuration) * 1024.)<<22;
 				Py_CLEAR(l_pDuration);
-
-				Py_CLEAR(l_pOVStimulation);
 
 				l_pStimulationSet->appendStimulation(l_ui64Identifier, l_ui64Date, l_ui64Duration);
 			}

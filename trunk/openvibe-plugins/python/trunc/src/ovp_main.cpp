@@ -54,15 +54,14 @@ bool CPythonInitializer::checkPythonPath()
 }
 #endif
 
-CPythonInitializer::CPythonInitializer(void)
+CPythonInitializer::CPythonInitializer(void) : 
+	m_bPythonAvailable(false)
 {
-	m_bPythonAvailable = false;
 	//m_pMainPyThreadState = NULL;
 
 #ifdef TARGET_OS_Windows
 		__try
 		{
-			m_bPythonAvailable = false;
 			if (!Py_IsInitialized())
 			{
 				// We do not care about the last file, since it is the OpenViBE runtime path
@@ -80,8 +79,8 @@ CPythonInitializer::CPythonInitializer(void)
 		if (!Py_IsInitialized())
 		{
 			Py_Initialize();
+			m_bPythonAvailable = true;
 		}
-		m_bPythonAvailable = true;
 #endif
 
 
@@ -92,6 +91,7 @@ CPythonInitializer::~CPythonInitializer(void)
 {
 	if (m_bPythonAvailable)
 	{
+		m_bPythonAvailable = false;
 		Py_Finalize();
 	}
 }

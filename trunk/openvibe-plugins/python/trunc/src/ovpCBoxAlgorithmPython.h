@@ -62,7 +62,8 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean transferStimulationOutputChunksFromPython(OpenViBE::uint32 output_index);
 
 			static OpenViBE::boolean m_bPythonInitialized;
-			static OpenViBE::uint32 m_ui32PythonBoxInstanceCount;
+
+			// These are all borrowed references in python v2.7. Do not free them.
 			static PyObject *m_pMainModule, *m_pMainDictionnary; 
 			static PyObject *m_pOVStreamedMatrixHeader, *m_pOVStreamedMatrixBuffer, *m_pOVStreamedMatrixEnd;
 			static PyObject *m_pOVSignalHeader, *m_pOVSignalBuffer, *m_pOVSignalEnd;
