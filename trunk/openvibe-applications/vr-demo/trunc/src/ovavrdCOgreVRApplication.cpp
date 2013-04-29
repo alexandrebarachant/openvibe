@@ -9,6 +9,7 @@
 #include <vrpn_Analog.h>
 
 #include <openvibe/ov_directories.h>
+#include <fs/Files.h>
 
 #if defined sleep
 #undef sleep
@@ -27,11 +28,18 @@ COgreVRApplication::COgreVRApplication(const char *sResourceRoot) :
 	m_bContinue=true;
 	m_rGUIRenderer = NULL;
 	m_bCameraMode = false;
+	m_poVrpnPeripheral = NULL;
+	m_poCamera = NULL;
+	m_poInputManager = NULL;
+	m_poSceneManager = NULL;
+	m_poMouse = NULL;
+	m_poKeyboard = NULL;
 }
 
 COgreVRApplication::~COgreVRApplication()
 {
-	m_poSceneManager->clearScene(); // does not destroy cameras
+	if(m_poSceneManager)
+		m_poSceneManager->clearScene(); // does not destroy cameras
 
 	if(m_poVrpnPeripheral)
 		delete m_poVrpnPeripheral;
@@ -98,6 +106,7 @@ bool COgreVRApplication::setup()
 	OpenViBE::CString l_sOgreLog = OpenViBE::Directories::getLogDir() + "/openvibe-vr-demo-ogre.log";
 	std::cout << "+ Ogre log will be in " << l_sOgreLog << "\n";
 	Ogre::LogManager* l_poLogManagerSingleton = new Ogre::LogManager();
+	FS::Files::createParentPath(l_sOgreLog);
 	l_poLogManagerSingleton->createLog(l_sOgreLog.toASCIIString(), true, false, false );
 
 	// Root creation
@@ -242,7 +251,14 @@ bool COgreVRApplication::initCEGUI(const char *logFilename)
 		new CEGUI::DefaultLogger();		// Singleton, instantiate only, no delete
 	}
 	std::cout << "+ CEGUI log will be in " << logFilename << "\n";
-	CEGUI::Logger::getSingleton().setLogFilename(logFilename, false);
+	FS::Files::createParentPath(logFilename);
+	try {
+		CEGUI::Logger::getSingleton().setLogFilename(logFilename, false);
+	} catch (char *error) {
+		std::cout << "  CEGUI::getSingleton() exception: " << error << "\n";
+	} catch (const char *error) {
+		std::cout << "  CEGUI::getSingleTon() exception: " << error << "\n";
+	}
 
 	m_rGUIRenderer = &(CEGUI::OgreRenderer::bootstrapSystem(*m_poWindow));
 

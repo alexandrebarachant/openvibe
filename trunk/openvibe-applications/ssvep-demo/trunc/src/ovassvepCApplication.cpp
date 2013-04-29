@@ -1,6 +1,8 @@
 #include "ovassvepCApplication.h"
 #include <cmath>
 
+#include "fs/Files.h"
+
 using namespace OpenViBE;
 using namespace OpenViBESSVEP;
 using namespace OpenViBE::Kernel;
@@ -65,6 +67,7 @@ bool CApplication::setup(OpenViBE::Kernel::IKernelContext* poKernelContext)
 	(*m_poLogManager) << LogLevel_Info << "Ogre log to console : " << l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_LogToConsole}", false) << "\n";
 	CString l_sOgreLog = l_poConfigurationManager->expand("${Path_Log}") + "/openvibe-ssvep-demo-ogre.log";
 	(*m_poLogManager) << LogLevel_Info << "Ogre log file : " << l_sOgreLog << "\n";
+	FS::Files::createParentPath(l_sOgreLog);
 	l_poLogManager->createLog(l_sOgreLog.toASCIIString(), true, l_poConfigurationManager->expandAsBoolean("${SSVEP_Ogre_LogToConsole}", false), false );
 	
 	// Root creation
@@ -197,6 +200,7 @@ void CApplication::initCEGUI(const char *logFilename)
 		new CEGUI::DefaultLogger();		// singleton; instantiate only, no delete
 	}
 	(*m_poLogManager) << LogLevel_Info << "+ CEGUI log will be in '" << logFilename << "'\n";
+	FS::Files::createParentPath(logFilename);
 	CEGUI::Logger::getSingleton().setLogFilename(logFilename, false);
 
 	(*m_poLogManager) << LogLevel_Debug << "+ Creating CEGUI Ogre bootstrap\n";
