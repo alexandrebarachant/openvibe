@@ -26,8 +26,18 @@ COgreVisualisation::~COgreVisualisation()
 	finish();
 }
 
-void COgreVisualisation::messageLogged(const String& message, LogMessageLevel lml, bool maskDebug, const String &logName)
+#if (OGRE_VERSION_MAJOR > 1) || ((OGRE_VERSION_MAJOR == 1) && (OGRE_VERSION_MINOR >= 8))
+void COgreVisualisation::messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage)
+#else
+void COgreVisualisation::messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName)
+#endif
 {
+#if (OGRE_VERSION_MAJOR > 1) || ((OGRE_VERSION_MAJOR == 1) && (OGRE_VERSION_MINOR >= 8))
+	if(skipThisMessage) 
+	{
+		return;
+	}
+#endif
 	switch(lml)
 	{
 		case Ogre::LML_CRITICAL:

@@ -41,8 +41,13 @@ public:
    * \param logName
    * \logName the name of this log
    */
+#if (OGRE_VERSION_MAJOR > 1) || ((OGRE_VERSION_MAJOR == 1) && (OGRE_VERSION_MINOR >= 8))
+	// Interface changed in Ogre 1.8.0
+	virtual void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool& skipThisMessage);
+#else
+	// Versions before 1.8.0
 	virtual void messageLogged(const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName);
-
+#endif
 	/**
 	 * \brief Load configuration files and initialise Ogre
 	 * Creates Ogre root object, parses resource locations and initialises Ogre from last
