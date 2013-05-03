@@ -16,6 +16,8 @@
 #include <windows.h>
 #include <cstring>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #define boolean OpenViBE::boolean
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
@@ -792,7 +794,8 @@ boolean CDriverMicromedSystemPlusEvolution::loop(void)
 					else
 					{
 						uint32 l_ui32TriggerPosition=(uint32)(l_ui32TriggerSample-m_ui64PosFirstSampleOfCurrentBlock);
-						m_oStimulationSet.appendStimulation(m_oFgetTriggerValue(i), (uint64(l_ui32TriggerPosition)<<32)/m_oHeader.getSamplingFrequency(), 0);
+						uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), uint64(l_ui32TriggerPosition));
+						m_oStimulationSet.appendStimulation(m_oFgetTriggerValue(i), l_ui64StimulationTime, 0);
 
 					}
 				}

@@ -19,7 +19,7 @@ namespace OpenViBEPlugins
 
 			virtual void release(void);
 
-			virtual OpenViBE::uint64 getClockFrequency(void) { return (((OpenViBE::uint64)m_ui32SamplingFrequency)<<32)/m_ui32GeneratedEpochSampleCount; }
+			virtual OpenViBE::uint64 getClockFrequency(void);
 
 			virtual OpenViBE::boolean initialize(void);
 			virtual OpenViBE::boolean uninitialize(void);

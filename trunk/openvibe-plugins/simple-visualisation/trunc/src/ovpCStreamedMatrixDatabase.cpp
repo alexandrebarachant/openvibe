@@ -26,7 +26,6 @@ CStreamedMatrixDatabase::CStreamedMatrixDatabase(OpenViBEToolkit::TBoxAlgorithm<
 	m_bFirstBufferReceived(false),
 	m_bBufferTimeStepComputed(false),
 	m_ui64BufferTimeStep(0),
-	//m_ui32SamplingFrequency(0),
 	m_ui32MaxBufferCount(2), //store at least 2 buffers so that it is possible to determine whether they overlap
 	m_bIgnoreTimeScale(false),
 	m_f64TimeScale(10)
@@ -440,9 +439,6 @@ boolean CStreamedMatrixDatabase::decodeBuffer(uint64 ui64StartTime, uint64 ui64E
 			//m_bError = true;
 			return false;
 		}
-
-		//compute sampling frequency
-		//m_ui32SamplingFrequency = (uint32)((float64)(((uint64)1<<32)/(l_ui64BufferDuration)) * getSampleCountPerBuffer());
 
 		m_bFirstBufferReceived = true;
 	}

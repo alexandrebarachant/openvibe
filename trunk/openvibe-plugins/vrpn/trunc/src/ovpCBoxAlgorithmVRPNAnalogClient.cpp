@@ -3,6 +3,8 @@
 #include "ovpCBoxAlgorithmVRPNAnalogClient.h"
 #include "openvibe/ovITimeArithmetics.h"
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -44,7 +46,8 @@ boolean CBoxAlgorithmVRPNAnalogClient::initialize(void)
 
 	m_bFirstStart = true;
 	m_ui64LastChunkEndTime=0;
-	m_ui64ChunkDuration=(uint64(m_ui32SampleCountPerSentBlock)<<32)/m_ui64SamplingRate;
+
+	m_ui64ChunkDuration=ITimeArithmetics::sampleCountToTime(m_ui64SamplingRate, m_ui32SampleCountPerSentBlock);
 
 	m_vLastSample.resize(m_ui32ChannelCount);
 	m_dSampleBuffer.clear();

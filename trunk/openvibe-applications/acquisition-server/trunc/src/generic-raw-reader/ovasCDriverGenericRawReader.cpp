@@ -2,6 +2,7 @@
 #include "../ovasCConfigurationBuilder.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Memory.h>
 #include <system/Time.h>
@@ -124,7 +125,9 @@ boolean CDriverGenericRawReader::loop(void)
 	if(!m_rDriverContext.isConnected()) { return false; }
 	// if(!m_rDriverContext.isStarted()) { return true; }
 
-	if(m_bLimitSpeed && ((m_ui64TotalSampleCount << 32) / m_oHeader.getSamplingFrequency() > System::Time::zgetTime() - m_ui64StartTime))
+	uint64 l_ui64SampleTime = ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), m_ui64TotalSampleCount);
+
+	if(m_bLimitSpeed && (l_ui64SampleTime > System::Time::zgetTime() - m_ui64StartTime))
 	{
 		return true;
 	}

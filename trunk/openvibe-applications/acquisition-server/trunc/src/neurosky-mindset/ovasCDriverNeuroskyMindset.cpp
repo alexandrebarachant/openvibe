@@ -8,6 +8,8 @@
 
 #include <thinkgear.h>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -425,7 +427,9 @@ boolean CDriverNeuroskyMindset::loop(void)
 				{
 					if(TG_GetValueStatus(m_i32ConnectionID,TG_DATA_BLINK_STRENGTH) != 0 || l_bBlinkDetected)
 					{
-						l_oStimulationSet.appendStimulation(OVTK_GDF_Eye_Blink,(((uint64)l_ui32ReceivedSamples) << 32) / m_oHeader.getSamplingFrequency(),0);
+						uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), l_ui32ReceivedSamples);
+
+						l_oStimulationSet.appendStimulation(OVTK_GDF_Eye_Blink, l_ui64StimulationTime,0);
 					}
 				}
 			}

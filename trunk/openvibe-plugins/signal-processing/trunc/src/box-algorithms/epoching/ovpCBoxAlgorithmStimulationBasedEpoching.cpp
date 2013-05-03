@@ -1,6 +1,8 @@
 #include "ovpCBoxAlgorithmStimulationBasedEpoching.h"
 #include <cstdio>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -193,7 +195,7 @@ boolean CBoxAlgorithmStimulationBasedEpoching::process(void)
 		{
 			m_pOutputSignalDescription->setDimensionCount(2);
 			m_pOutputSignalDescription->setDimensionSize(0, ip_pSignal->getDimensionSize(0));
-			m_pOutputSignalDescription->setDimensionSize(1, (uint32)(((m_ui64EpochDuration+1)*op_ui64SamplingRate-1)>>32)); // http://stickyvibe.tuxfamily.org/blog/?p=121
+			m_pOutputSignalDescription->setDimensionSize(1, (uint32)ITimeArithmetics::timeToSampleCount(op_ui64SamplingRate, m_ui64EpochDuration));
 
 			for(k=0; k<ip_pSignal->getDimensionSize(0); k++)
 			{

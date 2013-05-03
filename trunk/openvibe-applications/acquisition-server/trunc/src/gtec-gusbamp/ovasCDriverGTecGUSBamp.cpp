@@ -4,6 +4,7 @@
 #include "ovasCConfigurationGTecGUSBamp.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Time.h>
 #include <cmath>
@@ -265,7 +266,8 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 											default: identifier = OVTK_StimulationId_Label_07;
 										}
 
-										l_oStimulationSet.appendStimulation(identifier,( uint64(iSample) << 32) / m_oHeader.getSamplingFrequency(),0);
+										uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), uint64(iSample));
+										l_oStimulationSet.appendStimulation(identifier, l_ui64StimulationTime, 0);
 										m_ui32TotalHardwareStimulations++;
 									}
 

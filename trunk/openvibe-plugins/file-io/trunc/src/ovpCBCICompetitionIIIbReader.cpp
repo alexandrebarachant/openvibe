@@ -1,5 +1,7 @@
 #include "ovpCBCICompetitionIIIbReader.h"
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #include <iostream>
 #include <cmath>
 #include <cfloat>
@@ -207,7 +209,7 @@ namespace OpenViBEPlugins
 							"Please consider adjusting the BCI Competition IIIb reader settings to correct this!\n";
 					}
 
-					m_ui64ClockFrequency = ( ((uint64)m_ui32SamplingRate<<32) / (uint64)m_ui32SamplesPerBuffer);
+					m_ui64ClockFrequency = ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, m_ui32SamplesPerBuffer);
 				}
 
 			}
@@ -335,8 +337,8 @@ namespace OpenViBEPlugins
 			//A signal matrix is ready to be output
 			m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter[0]);
 
-			l_ui64StartTime=(((uint64)(m_ui32SentSampleCount - i))<<32)/m_ui32SamplingRate;
-			l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_ui32SamplingRate;
+			l_ui64StartTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, (uint64)(m_ui32SentSampleCount - i));
+			l_ui64EndTime  =  ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, (uint64)(m_ui32SentSampleCount));
 
 			l_pBoxIO->markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 			//////
@@ -422,7 +424,7 @@ namespace OpenViBEPlugins
 				for(size_t j=0 ; j<l_oEvents.size() ; j++)
 				{
 					//compute date
-					l_ui64EventDate = ( ((uint64)l_oEvents[j].second)<<32)/m_ui32SamplingRate;
+					l_ui64EventDate = ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, l_oEvents[j].second);
 					m_pStimulationOutputWriterHelper->setStimulation(j, l_oEvents[j].first, l_ui64EventDate);
 				}
 
@@ -430,7 +432,7 @@ namespace OpenViBEPlugins
 				if(m_bEndOfFile)
 				{
 					//compute date
-					l_ui64EventDate = (((uint64)m_ui32SentSampleCount)<<32) / m_ui32SamplingRate;
+					l_ui64EventDate = ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, m_ui32SentSampleCount);
 					m_pStimulationOutputWriterHelper->setStimulation(l_oEvents.size(), 0x3FF, l_ui64EventDate);
 				}
 

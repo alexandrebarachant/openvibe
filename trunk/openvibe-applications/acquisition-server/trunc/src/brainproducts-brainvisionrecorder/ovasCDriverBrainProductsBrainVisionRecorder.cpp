@@ -10,6 +10,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -288,7 +290,7 @@ boolean CDriverBrainProductsBrainVisionRecorder::loop(void)
 			char* pszDescription = pszType + strlen(pszType) + 1;
 
 			m_vStimulationIdentifier[i] = atoi(strtok (pszDescription,"S"));
-			m_vStimulationDate[i] = (((uint64)(m_pStructRDA_Marker->nPosition )) << 32) / m_oHeader.getSamplingFrequency();
+			m_vStimulationDate[i] = ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), m_pStructRDA_Marker->nPosition );
 			m_vStimulationSample[i] = m_pStructRDA_Marker->nPosition;
 			m_pStructRDA_Marker = (RDA_Marker*)((char*)m_pStructRDA_Marker + m_pStructRDA_Marker->nSize);
 		}

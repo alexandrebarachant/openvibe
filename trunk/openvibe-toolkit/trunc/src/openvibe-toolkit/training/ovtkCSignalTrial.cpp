@@ -2,6 +2,8 @@
 
 #include <system/Memory.h>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBEToolkit;
 using namespace std;
@@ -132,7 +134,7 @@ uint32 CSignalTrial::getSampleCount(void) const
 
 uint64 CSignalTrial::getDuration(void) const
 {
-	return m_ui32SamplingRate?(((uint64)m_ui32SampleCount)<<32)/m_ui32SamplingRate:0;
+	return (m_ui32SamplingRate ? ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, m_ui32SampleCount) : 0);
 }
 
 float64* CSignalTrial::getChannelSampleBuffer(const uint32 ui32ChannelIndex) const

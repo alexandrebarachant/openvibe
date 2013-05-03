@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -172,8 +174,8 @@ void CTimeBasedEpoching::COutputHandler::processInput(const uint32 ui32InputSamp
 			if(m_ui32SampleIndex==m_ui32SampleCountPerEpoch) // An epoch has been totally filled !
 			{
 				// Calculates start and end time
-				uint64 l_ui64StartTime=m_ui64DeltaTime+((((uint64)m_ui32EpochIndex)*((uint64)m_ui32SampleCountBetweenEpoch)                          )<<32)/m_ui32SamplingRate;
-				uint64 l_ui64EndTime=  m_ui64DeltaTime+((((uint64)m_ui32EpochIndex)*((uint64)m_ui32SampleCountBetweenEpoch)+m_ui32SampleCountPerEpoch)<<32)/m_ui32SamplingRate;
+				uint64 l_ui64StartTime=m_ui64DeltaTime+ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, (uint64)m_ui32EpochIndex*(uint64)m_ui32SampleCountBetweenEpoch);
+				uint64 l_ui64EndTime=  m_ui64DeltaTime+ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, (uint64)m_ui32EpochIndex*(uint64)m_ui32SampleCountBetweenEpoch+m_ui32SampleCountPerEpoch);
 				m_ui32EpochIndex++;
 
 				// Writes epoch

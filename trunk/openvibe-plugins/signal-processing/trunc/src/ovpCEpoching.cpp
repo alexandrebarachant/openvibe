@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <system/Memory.h>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBEPlugins;
@@ -98,10 +100,10 @@ void CEpoching::setSampleBuffer(const float64* pBuffer)
 
 			// compute timestart
 			m_ui32IndexInGlobal += m_ui32SizeSampleIntervalInterTrigger;
-			m_ui64LastChunkStartTime = ((m_ui32IndexInGlobal) << 32) / m_pSignalDescription->m_ui32SamplingRate;
+			m_ui64LastChunkStartTime = ITimeArithmetics::sampleCountToTime(m_pSignalDescription->m_ui32SamplingRate, m_ui32IndexInGlobal);
 
 			// compute timestop
-			m_ui64LastChunkEndTime = ((m_ui32IndexInGlobal + m_ui32SizeSampleOutputBuffer) << 32) / m_pSignalDescription->m_ui32SamplingRate;
+			m_ui64LastChunkEndTime =   ITimeArithmetics::sampleCountToTime(m_pSignalDescription->m_ui32SamplingRate, m_ui32IndexInGlobal + m_ui32SizeSampleOutputBuffer);
 
 			//sends the current signal matrix
 			m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter);
@@ -207,7 +209,7 @@ void CEpoching::setSampleBuffer(const float64* pBuffer)
 			}
 
 			// compute timestop
-			m_ui64LastChunkEndTime = ((m_ui32IndexInGlobal + m_ui32SizeSampleOutputBuffer) << 32) / m_pSignalDescription->m_ui32SamplingRate;
+			m_ui64LastChunkEndTime = ITimeArithmetics::sampleCountToTime(m_pSignalDescription->m_ui32SamplingRate, m_ui32IndexInGlobal + m_ui32SizeSampleOutputBuffer);
 
 			//sends the current signal matrix
 			m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter);
@@ -215,7 +217,7 @@ void CEpoching::setSampleBuffer(const float64* pBuffer)
 
 			// compute timestart
 			m_ui32IndexInGlobal += m_ui32SizeSampleIntervalInterTrigger;
-			m_ui64LastChunkStartTime = ((m_ui32IndexInGlobal) << 32) / m_pSignalDescription->m_ui32SamplingRate;
+			m_ui64LastChunkStartTime = ITimeArithmetics::sampleCountToTime(m_pSignalDescription->m_ui32SamplingRate, m_ui32IndexInGlobal);
 
 			//~ cout << "m_ui64LastChunkStartTime= "<<m_ui64LastChunkStartTime<< std::endl;
 			//~ cout << "m_ui64LastChunkEndTime = " <<m_ui64LastChunkEndTime << std::endl;

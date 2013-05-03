@@ -2,6 +2,8 @@
 
 #include <system/Memory.h>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -183,7 +185,9 @@ this->getLogManager() << LogLevel_Info << "Built buffer chunk\n";
 						l_pOutputBuffer=ip_pMatrix->getBuffer();
 						m_ui32OutputSampleIndex=0;
 						m_pStreamEncoder->process(OVP_GD_Algorithm_SignalStreamEncoder_InputTriggerId_EncodeBuffer);
-						l_rDynamicBoxContext.markOutputAsReadyToSend(0, m_ui64StartTimeBase+(m_ui64TotalSampleCount<<32)/m_ui64OutputSamplingFrequency, m_ui64StartTimeBase+((m_ui64TotalSampleCount+m_ui32OutputSampleCountPerSentBlock)<<32)/m_ui64OutputSamplingFrequency);
+						uint64 l_ui64SampleStartTime = m_ui64StartTimeBase + ITimeArithmetics::sampleCountToTime(m_ui64OutputSamplingFrequency, m_ui64TotalSampleCount);
+						uint64 l_ui64SampleEndTime   = m_ui64StartTimeBase + ITimeArithmetics::sampleCountToTime(m_ui64OutputSamplingFrequency, m_ui64TotalSampleCount + m_ui32OutputSampleCountPerSentBlock);
+						l_rDynamicBoxContext.markOutputAsReadyToSend(0, l_ui64SampleStartTime, l_ui64SampleEndTime);
 						m_ui64TotalSampleCount+=m_ui32OutputSampleCountPerSentBlock;
 
 						OpenViBEToolkit::Tools::Matrix::clearContent(*ip_pMatrix);

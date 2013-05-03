@@ -2,6 +2,7 @@
 #include "ovasIAcquisitionServerPlugin.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Memory.h>
 #include <system/Time.h>
@@ -408,7 +409,7 @@ boolean CAcquisitionServer::loop(void)
 
 				SConnectionInfo l_oInfo;
 				l_oInfo.m_ui64ConnectionTime=itConnection->second.m_ui64ConnectionTime;
-				l_oInfo.m_ui64StimulationTimeOffset=((l_ui64TheoricalSampleCountToSkip+m_ui64SampleCount-m_vPendingBuffer.size())<<32)/m_ui32SamplingFrequency;
+				l_oInfo.m_ui64StimulationTimeOffset=ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, l_ui64TheoricalSampleCountToSkip+m_ui64SampleCount-m_vPendingBuffer.size());
 				l_oInfo.m_ui64SignalSampleCountToSkip=l_ui64TheoricalSampleCountToSkip;
 				l_oInfo.m_pConnectionClientHandlerThread=new CConnectionClientHandlerThread(*this, *l_pConnection);
 				l_oInfo.m_pConnectionClientHandlerBoostThread=new boost::thread(boost::bind(&start_connection_client_handler_thread, l_oInfo.m_pConnectionClientHandlerThread));
@@ -549,9 +550,9 @@ boolean CAcquisitionServer::loop(void)
 
 				//l_rInfo.m_ui64SignalSampleCountToSkip = 0;
 
-				start = (((m_ui64SampleCount-m_vPendingBuffer.size()                              )+l_rInfo.m_ui64SignalSampleCountToSkip)<<32)/m_ui32SamplingFrequency;
-				end = (((m_ui64SampleCount-m_vPendingBuffer.size()+m_ui32SampleCountPerSentBlock)+l_rInfo.m_ui64SignalSampleCountToSkip)<<32)/m_ui32SamplingFrequency;
-				
+				start = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, (m_ui64SampleCount-m_vPendingBuffer.size()+0                            ) + l_rInfo.m_ui64SignalSampleCountToSkip);
+				end   = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, (m_ui64SampleCount-m_vPendingBuffer.size()+m_ui32SampleCountPerSentBlock) + l_rInfo.m_ui64SignalSampleCountToSkip);
+
 				OpenViBEToolkit::Tools::StimulationSet::appendRange(
 					l_oStimulationSet,
 					m_oPendingStimulationSet,
@@ -586,8 +587,9 @@ boolean CAcquisitionServer::loop(void)
 		// Clears pending stimulations
 		OpenViBEToolkit::Tools::StimulationSet::removeRange(
 			m_oPendingStimulationSet,
-			((m_ui64SampleCount-m_vPendingBuffer.size()                              )<<32)/m_ui32SamplingFrequency,
-			((m_ui64SampleCount-m_vPendingBuffer.size()+m_ui32SampleCountPerSentBlock)<<32)/m_ui32SamplingFrequency);
+			ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount-m_vPendingBuffer.size()),
+			ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount-m_vPendingBuffer.size()+m_ui32SampleCountPerSentBlock)
+			);
 
 		// Clears pending signal
 		m_vPendingBuffer.erase(m_vPendingBuffer.begin(), m_vPendingBuffer.begin()+m_ui32SampleCountPerSentBlock);
@@ -677,7 +679,7 @@ boolean CAcquisitionServer::connect(IDriver& rDriver, IHeader& rHeaderCopy, uint
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Stopped driver sleeping duration is " << m_ui64StoppedDriverSleepDuration << " milliseconds\n";
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "Driver timeout duration set to " << m_ui64DriverTimeoutDuration << " milliseconds\n";
 
-		ip_ui64BufferDuration=(((uint64)m_ui32SampleCountPerSentBlock)<<32)/m_ui32SamplingFrequency;
+		ip_ui64BufferDuration=ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32SampleCountPerSentBlock);
 
 		ip_ui64SubjectIdentifier=l_rHeader.getExperimentIdentifier();
 		ip_ui64SubjectAge=l_rHeader.getSubjectAge();
@@ -901,7 +903,9 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 					{
 						if(!m_bReplacementInProgress)
 						{
-							m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Incorrect, ((m_ui64SampleCount + j*ui32SampleCount+i -1 +1) << 32) / m_ui32SamplingFrequency, 0);
+							uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount + j*ui32SampleCount + i);
+
+							m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Incorrect, l_ui64StimulationTime, 0);
 							m_bReplacementInProgress = true;
 						}
 
@@ -924,7 +928,10 @@ void CAcquisitionServer::setSamples(const float32* pSample, const uint32 ui32Sam
 					{
 						if(m_bReplacementInProgress)
 						{
-							m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Correct, ((m_ui64SampleCount + j*ui32SampleCount+i -1) << 32) / m_ui32SamplingFrequency, 0);
+							// @note -1 input discrepancy to similar line above, is this intentional? if yes, please explain here.
+							uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount + j*ui32SampleCount + i -1);
+
+							m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Correct, l_ui64StimulationTime, 0);
 							m_bReplacementInProgress = false;
 						}
 						m_vSwapBuffer[j]=alpha*pSample[j*ui32SampleCount+i]+(1-alpha)*m_vOverSamplingSwapBuffer[j];
@@ -969,7 +976,8 @@ void CAcquisitionServer::setStimulationSet(const IStimulationSet& rStimulationSe
 {
 	if(m_bStarted)
 	{
-		OpenViBEToolkit::Tools::StimulationSet::append(m_oPendingStimulationSet, rStimulationSet, (m_ui64LastSampleCount<<32)/m_ui32SamplingFrequency);
+		uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64LastSampleCount);
+		OpenViBEToolkit::Tools::StimulationSet::append(m_oPendingStimulationSet, rStimulationSet, l_ui64StimulationTime);
 	}
 	else
 	{
@@ -1009,8 +1017,11 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 				m_vPendingBuffer.push_back(m_vSwapBuffer);
 			}
 
-			m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Incorrect, ((m_ui64SampleCount-1               ) << 32) / m_ui32SamplingFrequency, (i64SampleCount << 32) / m_ui32SamplingFrequency);
-			m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Correct,   ((m_ui64SampleCount-1+i64SampleCount) << 32) / m_ui32SamplingFrequency, 0);
+			uint64 l_ui64TimeOfIncorrect     = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount-1);
+			uint64 l_ui64DurationOfIncorrect = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, i64SampleCount);
+			uint64 l_ui64TimeOfCorrect       = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount-1+i64SampleCount);
+			m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Incorrect, l_ui64TimeOfIncorrect, l_ui64DurationOfIncorrect);
+			m_oPendingStimulationSet.appendStimulation(OVTK_GDF_Correct,   l_ui64TimeOfCorrect, 0);
 
 			m_f64DriftSampleCount+=i64SampleCount;
 			m_i64DriftSampleCount+=i64SampleCount;
@@ -1029,9 +1040,11 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 			m_vPendingBuffer.erase(m_vPendingBuffer.begin()+m_vPendingBuffer.size()-(int)l_ui64SamplesToRemove, m_vPendingBuffer.begin()+m_vPendingBuffer.size());
 
 #if 0
-			OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, ((m_ui64SampleCount-l_ui64SamplesToRemove)<<32)/m_ui32SamplingFrequency, (m_ui64SampleCount<<32)/m_ui32SamplingFrequency);
+			uint64 l_ui64Start = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount-l_ui64SamplesToRemove);
+			uint64 l_ui64End   = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount);
+			OpenViBEToolkit::Tools::StimulationSet::removeRange(m_oPendingStimulationSet, l_ui64Start, l_ui64End);
 #else
-			uint64 l_ui64LastSampleDate=((m_ui64SampleCount-l_ui64SamplesToRemove)<<32)/m_ui32SamplingFrequency;
+			uint64 l_ui64LastSampleDate = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui64SampleCount-l_ui64SamplesToRemove);
 			for(uint32 i=0; i<m_oPendingStimulationSet.getStimulationCount(); i++)
 			{
 				if(m_oPendingStimulationSet.getStimulationDate(i) > l_ui64LastSampleDate)

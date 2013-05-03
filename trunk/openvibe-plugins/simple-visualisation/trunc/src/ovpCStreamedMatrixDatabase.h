@@ -129,8 +129,6 @@ namespace OpenViBEPlugins
 			OpenViBE::boolean m_bBufferTimeStepComputed;
 			//time difference between start times of two consecutive buffers
 			OpenViBE::uint64 m_ui64BufferTimeStep;
-			//sampling frequency of incoming stream
-			//OpenViBE::uint32 m_ui32SamplingFrequency;
 			//maximum number of buffers stored in database
 			OpenViBE::uint32 m_ui32MaxBufferCount;
 			//flag stating whether time scale should be ignored (max buffer count externally set)

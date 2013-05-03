@@ -6,113 +6,175 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdlib> // abs() on Linux
+#include <bitset>
 
 #include <openvibe/ovITimeArithmetics.h>
 
 using namespace OpenViBE;
 using namespace std;
 
+// legacy code from ovIStimulationSet.h for comparison
+OpenViBE::uint64 sampleIndexToTime(OpenViBE::uint32 ui32SamplingRate, OpenViBE::uint64 ui64SampleIndex)
+{	
+	return ((ui64SampleIndex<<32)+(ui32SamplingRate-1))/ui32SamplingRate;
+}
+
+// legacy code from ovIStimulationSet.h for comparison
+OpenViBE::uint64 timeToSampleIndex(OpenViBE::uint32 ui32SamplingRate, OpenViBE::uint64 ui64Time)
+{
+	return (ui64Time*ui32SamplingRate)>>32;
+}
+
 int main(int argc, char *argv[]) 
 {
+
+	const float64 l_f64secsAndBackTolerance = 0.00001;
+
 	// @note A rate of 101 can cause a glitch. Are we ever using uneven sampling rates?
-	const uint64 samplingRatesToTest[] = {100,128,200,400,512,1000,16000,44100};
+	const uint32 samplingRatesToTest[] = {100,128,512,1000,1024,16000,44100};
+	const float64 l_f64timesToTest[] = {
+		0, 0.001, 0.01, 0.1, 0.2, 0.25, 0.5, 1.0, 1.1, 1.5, 2, 5, 10, 50, 100, 123.456789, 128.0, 500, 1000, 2500};
+	const uint64 l_ui64samplesToTest[] = {0,1,100,128,512,1000,1021,1024,5005,12345, 59876, 1000001};
+	const uint64 l_ui64timesToTest[] = { 1LL<<8, 1LL<<16, 1L<<19, 1LL<<22, 1LL<<27, 1L<<30, 1LL<<32, 10LL<<32, 100LL<<32, 123LL<<32, 500LL<<32, 512LL<<32, 1000LL<<32, 1024LL<<32, 2001LL<<32, 5000LL<<32};
+
+	cout << "Conversion tolerance from fixed point to float and back has been set to " << l_f64secsAndBackTolerance << " secs\n\n";
 
 	int retVal = 0;
 
-	const uint64 secsAndBackTolerance = ITimeArithmetics::secondsToTime(0.001);
+	{
+		cout << "------\nTest: map time float->fixed->float\n---------\n";
+		cout 
+			<< " " << setw(15) << "TimeFloat"
+			<< " " << setw(15) << "Time"
+			<< " " << setw(15) << "TimeFloatInv"
+			<< " Tests\n";
 
-	cout << "Conversion tolerance from fixed point to float and back has been set to " << ITimeArithmetics::timeToSeconds(secsAndBackTolerance) << " secs\n\n";
+		for(uint32 i=0;i<sizeof(l_f64timesToTest)/sizeof(l_f64timesToTest[0]);i++) 
+		{
+			uint64 l_ui64mapped=ITimeArithmetics::secondsToTime(l_f64timesToTest[i]);
+			float64 l_f64inverse=ITimeArithmetics::timeToSeconds(l_ui64mapped);
+
+			cout << " " << setw(15) << l_f64timesToTest[i] << " " << setw(15) << l_ui64mapped << " " << setw(15) << l_f64inverse;
+		
+			float64 l_f64AbsDiff = (l_f64timesToTest[i] - l_f64inverse);
+			l_f64AbsDiff = (l_f64AbsDiff >= 0 ? l_f64AbsDiff : -l_f64AbsDiff); // no std::abs() for float64 on Ubuntu LTS gcc at the moment
+
+			if(l_f64AbsDiff < l_f64secsAndBackTolerance)
+			{
+				cout << " Ok\n";
+			}
+			else
+			{
+				cout << " Err " << l_f64AbsDiff << "\n";
+				retVal |= 1;
+			}
+		}
+	}
 
 	{
-		cout << "------\nTest: 'time to sample and back' using predefined times (given orig. as secs)\n------\n";
-
-		const uint64 timesToTest[] = {ITimeArithmetics::secondsToTime(0.0),
-			ITimeArithmetics::secondsToTime(1.0),
-			ITimeArithmetics::secondsToTime(1.5),
-			ITimeArithmetics::secondsToTime(2.0),
-			ITimeArithmetics::secondsToTime(100.0),
-			ITimeArithmetics::secondsToTime(128.0),
-			ITimeArithmetics::secondsToTime(10*60.0)};
-
-		cout << " " << setw(6) << "Rate"
-			<< " " << setw(10) << "Sample"
+		cout << "------\nTest: map time fixed->float->fixed\n---------\n";
+		cout 
 			<< " " << setw(15) << "Time"
+			<< " " << setw(15) << "TimeFloat"
 			<< " " << setw(15) << "TimeInv"
-			<< " " << setw(5)  << "Secs"
-			<< " " << setw(15) << "TimeInv2"
 			<< " Tests\n";
-		for(size_t i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
-			for(size_t j=0;j<sizeof(timesToTest)/sizeof(timesToTest[0]);j++) {
-				uint64 sampleIdx = ITimeArithmetics::timeToSampleIndex(samplingRatesToTest[i], timesToTest[j]);
-				uint64 timeFromSample =  ITimeArithmetics::sampleIndexToTime(samplingRatesToTest[i], sampleIdx);
-				float64 secondsFromTime = ITimeArithmetics::timeToSeconds(timesToTest[j]);
-				uint64 timeFromSeconds = ITimeArithmetics::secondsToTime(secondsFromTime);
-				cout << " " << setw(6) << samplingRatesToTest[i] 
-					<< " " << setw(10) << sampleIdx
-					<< " " << setw(15) << timesToTest[j] 
-					<< " " << setw(15) << timeFromSample
-					<< " " << setw(5)  << secondsFromTime
-					<< " " << setw(15) << timeFromSeconds;
-				boolean hadError = false;
-				if(timeFromSample != timesToTest[j]) {
-					cout << " Error: Converting time to sample and back don't match\n";
-					retVal |= 1;
-					hadError = true;
-				}  
-				if(std::abs((int64)timeFromSeconds - (int64)timesToTest[j]) > (int64) secsAndBackTolerance) {
-					cout << " Error: Converting time to seconds and back exceed tolerance\n";
-					retVal |= 2;
-					hadError = true;
-				} 
-				if(!hadError) { 
-					cout << " Ok\n";
-				}
+
+		for(uint32 i=0;i<sizeof(l_ui64timesToTest)/sizeof(l_ui64timesToTest[0]);i++) 
+		{
+			uint64 l_ui64Time = l_ui64timesToTest[i];
+			float64 l_f64mapped=ITimeArithmetics::timeToSeconds(l_ui64Time);
+			uint64 l_ui64inverse=ITimeArithmetics::secondsToTime(l_f64mapped);
+
+			cout << " " << setw(15) << l_ui64Time << " " << setw(15) << l_f64mapped << " " << setw(15) << l_ui64inverse;
+		
+			if(l_ui64inverse == l_ui64Time) 
+			{
+				cout << " Ok\n";
+			} else {
+				cout << " Err\n";
+				retVal |= 2;
 			}
 		}
 	}
 
 	{
-		cout << "------\nTest: 'sample to time and back' using predefined samples\n------\n";
-
-		const uint64 samplesToTest[] = {0,1,100,128,512,1000,1021,1024,1000001};
+		cout << "------\nTest: time -> sample -> time using predefined times (orig. given as secs)\n------\n";
 
 		cout << " " << setw(6) << "Rate"
-			<< " " << setw(10) << "Sample"
-			<< " " << setw(15) << "SampleInv"
+			<< " " << setw(10) << "TimeSecs"
 			<< " " << setw(15) << "Time"
-			<< " " << setw(15) << "Secs"
-			<< " " << setw(15) << "TimeInv2"
+			<< " " << setw(10) << "Sample"
+			<< " " << setw(15) << "TimeInv"
 			<< " Tests\n";
 		for(size_t i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
-			for(size_t j=0;j<sizeof(samplesToTest)/sizeof(samplesToTest[0]);j++) {
-				uint64 timeFromSample =  ITimeArithmetics::sampleIndexToTime(samplingRatesToTest[i], samplesToTest[j]);
-				float64 secondsFromTime = ITimeArithmetics::timeToSeconds(timeFromSample);
-				uint64 sampleFromTime =  ITimeArithmetics::timeToSampleIndex(samplingRatesToTest[i], timeFromSample);
-				uint64 timeFromSeconds = ITimeArithmetics::secondsToTime(secondsFromTime);
+			for(size_t j=0;j<sizeof(l_f64timesToTest)/sizeof(l_f64timesToTest[0]);j++) {
+
+				float64 l_f64Time = l_f64timesToTest[j];
+
+				uint64 l_ui64Time = ITimeArithmetics::secondsToTime(l_f64Time);
+				uint64 sampleIdx = ITimeArithmetics::timeToSampleCount(samplingRatesToTest[i], l_ui64Time);
+				uint64 timeFromSample =  ITimeArithmetics::sampleCountToTime(samplingRatesToTest[i], sampleIdx);
 
 				cout << " " << setw(6) << samplingRatesToTest[i] 
-					<< " " << setw(10) << samplesToTest[j]
-					<< " " << setw(15) << sampleFromTime
+					<< " " << setw(10) << l_f64Time
+					<< " " << setw(15) << l_ui64Time
+					<< " " << setw(10) << sampleIdx
 					<< " " << setw(15) << timeFromSample
-					<< " " << setw(15) << secondsFromTime
-					<< " " << setw(15) << timeFromSeconds;
-				boolean hadError = false;
-				if(samplesToTest[j] != sampleFromTime) {
-					cout << " Error: Converting sample to time and back don't match\n";
-					retVal |= 3;
-					hadError = true;
-				}
-				if(std::abs((int64)timeFromSeconds - (int64)timeFromSample) > (int64)secsAndBackTolerance) {
-					cout << " Error: Converting time to seconds and back exceeded tolerance\n";
-					retVal |= 4;
-					hadError = true;
-				} 
-				if(!hadError) { 
+					;
+				if(timeFromSample != l_ui64Time) {
+					float64 l_f64Period = 1.0/(float64)samplingRatesToTest[i];
+					uint64 l_ui64AbsDiff = std::abs((int64)timeFromSample - (int64)l_ui64Time);
+					float64 l_f64AbsDiff = ITimeArithmetics::timeToSeconds(l_ui64AbsDiff);
+					if(l_f64AbsDiff > l_f64Period)
+					{
+						cout << " Error: Mismatch of " << l_f64AbsDiff << "s, period " << l_f64Period << "\n";
+						retVal |= 3;
+					} else {
+						cout << " Ok(*)\n";
+					}
+				}  
+				else
+				{
 					cout << " Ok\n";
 				}
 			}
 		}
+		cout << "*) Error is smaller than precision allowed by the sampling rate\n";
 	}
+
+	{
+		cout << "------\nTest: sample->time->sample using predefined samples\n------\n";
+
+		cout << " " << setw(6) << "Rate"
+			<< " " << setw(10) << "Sample"
+			<< " " << setw(15) << "Time"
+			<< " " << setw(10) << "SampleInv"
+			<< " Tests\n";
+		for(size_t i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
+			for(size_t j=0;j<sizeof(l_ui64samplesToTest)/sizeof(l_ui64samplesToTest[0]);j++) {
+
+				uint64 l_ui64testSample = l_ui64samplesToTest[j];
+				uint64 timeFromSample =  ITimeArithmetics::sampleCountToTime(samplingRatesToTest[i], l_ui64testSample);
+				uint64 sampleInv = ITimeArithmetics::timeToSampleCount(samplingRatesToTest[i], timeFromSample);
+
+				cout << " " << setw(6) << samplingRatesToTest[i] 
+					<< " " << setw(10) << l_ui64testSample
+					<< " " << setw(15) << timeFromSample
+					<< " " << setw(10) << sampleInv
+					;
+				if(l_ui64testSample == sampleInv) 
+				{
+					cout << " Ok\n";
+				}
+				else
+				{
+					cout << " Error: Mismatch\n";
+					retVal |= 4;
+				} 
+			}
+		}
+	}
+
 
 	{
 		cout << "------\nTest: One second of signal at 'rate' should equal 'rate' samples\n------\n";
@@ -121,7 +183,7 @@ int main(int argc, char *argv[])
 		     << setw(8) << "Samples"
 			 << " Test\n";
 		for(size_t i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
-			uint64 nSamples = ITimeArithmetics::timeToSampleIndex(samplingRatesToTest[i], ITimeArithmetics::secondsToTime(1.0));
+			uint64 nSamples = ITimeArithmetics::timeToSampleCount(samplingRatesToTest[i], ITimeArithmetics::secondsToTime(1.0));
 			cout << setw(6) << samplingRatesToTest[i] 
 			     << setw(8) << nSamples;
 			if(nSamples == samplingRatesToTest[i]) {
@@ -131,6 +193,72 @@ int main(int argc, char *argv[])
 				retVal |= 5;
 			}
 		}
+	}
+
+	cout << "------\nTest: Comparing epoch durations between ITimeArithmetics and old code from stimulationBasedEpoching\n---------\n";
+
+	uint64 ui64resultA, ui64resultB;
+
+	const float64 l_f64EpochDurations[] = {0.01, 0.1, 0.2, 0.25, 0.5, 1.0, 1.1, 1.5, 2, 5, 10,50,100};
+	for(uint32 i=0;i<sizeof(l_f64EpochDurations)/sizeof(const float64);i++) 
+	{
+		ui64resultA=(int64)(l_f64EpochDurations[i]*(1LL<<32)); // Code from stimulationBasedEpoching
+		ui64resultB=ITimeArithmetics::secondsToTime(l_f64EpochDurations[i]);
+		cout << setw(5) << l_f64EpochDurations[i] << " " << setw(15) << ui64resultA << " " << setw(15) << ui64resultB;
+		uint64 l_ui64AbsDiff = std::abs((int64)ui64resultA-int64(ui64resultB));
+		float64 l_f64Diff = ITimeArithmetics::timeToSeconds(l_ui64AbsDiff);
+		cout << " " << l_f64Diff;
+
+		if(l_ui64AbsDiff==0) 
+		{
+			cout << " Ok\n";
+		}
+		else
+		{
+			std::bitset<64> tmpA(ui64resultA);
+			std::bitset<64> tmpB(ui64resultB);
+			cout << " Err " << tmpA << " " << ITimeArithmetics::timeToSeconds(ui64resultA);
+			cout << " " << tmpB << " " << ITimeArithmetics::timeToSeconds(ui64resultB) << "\n";
+			retVal |= 6;
+		}
+
+	}
+
+	cout << "------\nMisc tests (no errors will be reported)\n------------\n";
+
+	// Test with milliseconds, the divisor 1000 can be in different positions in OV code. Small differences are to be expected here.
+	const int ui32MilliSeconds = 123;
+	ui64resultA = ((((uint64)ui32MilliSeconds)<<22)/1000)<<10;;		// Conversion that was sometimes used in the code
+	ui64resultB = ITimeArithmetics::secondsToTime(ui32MilliSeconds/1000.0);
+	cout << "m1: A " << ui64resultA << " B " << ui64resultB << "\n";
+
+	// Code from stimulationBasedEpoching. Expect 0 diff
+	const float64 l_f64EpochDuration = 1.1f;
+	ui64resultA=(int64)(l_f64EpochDuration*(1LL<<32));
+	ui64resultB=ITimeArithmetics::secondsToTime(l_f64EpochDuration);
+	cout << "m2: A " << ui64resultA << " B " << ui64resultB << "\n";
+
+	// Code from ovIStimulationSet.h. Time is typically off by one between the old code and code from ovITimeArithmetics.h using the following parameters.
+	const uint64 l_ui64SampleIndex = 99; const uint32 l_ui32SamplingRate = 310;
+	const uint64 l_ui64TestTime = 123LL<<32;
+	ui64resultA = sampleIndexToTime(l_ui32SamplingRate, l_ui64SampleIndex); 
+	ui64resultB = ITimeArithmetics::sampleCountToTime(l_ui32SamplingRate, l_ui64SampleIndex);
+	cout << "m3: A " << ui64resultA << " B " << ui64resultB << "\n";
+	ui64resultA = timeToSampleIndex(l_ui32SamplingRate, l_ui64TestTime);
+	ui64resultB = ITimeArithmetics::timeToSampleCount(l_ui32SamplingRate, l_ui64TestTime);
+	cout << "m4: A " << ui64resultA << " B " << ui64resultB << "\n";
+
+	// Test a sequence of small indexes
+	// Code from ovIStimulationSet.h. Time is typically off by one between the old code and code from ovITimeArithmetics.h using the following parameters.
+	for(int i=0;i<32;i++) {
+		ui64resultA = sampleIndexToTime(100, i);
+		ui64resultB = ITimeArithmetics::sampleCountToTime(100, i);
+		cout << "m5: " << setw(3) << i << ": A " << ui64resultA << " B " << ui64resultB << "\n";
+	}
+	for(int i=0;i<32;i++) {
+		ui64resultA = timeToSampleIndex(100, sampleIndexToTime(100, i));
+		ui64resultB = ITimeArithmetics::timeToSampleCount(100, ITimeArithmetics::sampleCountToTime(100, i));
+		cout << "m6: " << setw(3) << i << ": A " << ui64resultA << " B " << ui64resultB << "\n";
 	}
 
 	return retVal;

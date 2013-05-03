@@ -1,3 +1,6 @@
+
+#include <openvibe/ovITimeArithmetics.h>
+
 #include "ovkCScheduler.h"
 #include "ovkCSimulatedBox.h"
 #include "ovkCPlayer.h"
@@ -418,7 +421,8 @@ boolean CScheduler::loop(void)
 	}
 
 	m_ui64Steps++;
-	m_ui64CurrentTime=m_ui64Steps*((1LL<<32)/m_ui64Frequency);
+
+	m_ui64CurrentTime=m_ui64Steps*ITimeArithmetics::sampleCountToTime(m_ui64Frequency, 1LL);
 
 	return true;
 }

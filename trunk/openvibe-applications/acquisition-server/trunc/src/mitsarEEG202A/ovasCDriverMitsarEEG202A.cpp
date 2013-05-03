@@ -5,6 +5,7 @@
 #include "ovasCConfigurationMitsarEEG202A.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Time.h>
 #include <system/Memory.h>
@@ -321,8 +322,10 @@ boolean CDriverMitsarEEG202A::loop(void)
 					case STIMULATION_192 : identifier = OVTK_StimulationId_Label_03; break;
 				}
 		
+				uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), uint64(m_vStimulationDate[iStimulation]));
+
 				l_oStimulationSet.setStimulationIdentifier(iStimulation, identifier);
-				l_oStimulationSet.setStimulationDate(iStimulation, ( uint64(m_vStimulationDate[iStimulation]) << 32) / m_oHeader.getSamplingFrequency());
+				l_oStimulationSet.setStimulationDate(iStimulation, l_ui64StimulationTime);
 				l_oStimulationSet.setStimulationDuration(iStimulation, 1);
 
 				//std::cout << "Trigger " << std::hex << m_vStimulationIdentifier[iStimulation] << " ";

@@ -1,5 +1,7 @@
 #include "ovpCGDFFileReader.h"
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #include <system/Memory.h>
 #include <cmath>
 
@@ -176,7 +178,8 @@ boolean CGDFFileReader::uninitialize()
 
 boolean CGDFFileReader::processClock(CMessageClock& rMessageClock)
 {
-	if(rMessageClock.getTime() > (((uint64)(m_ui32SentSampleCount+m_pSignalDescription.m_ui32SampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate)
+	uint64 l_ui64SampleTime = ITimeArithmetics::sampleCountToTime(m_pSignalDescription.m_ui32SamplingRate, m_ui32SentSampleCount+m_pSignalDescription.m_ui32SampleCount);
+	if(rMessageClock.getTime() > l_ui64SampleTime)
 	{
 		getBoxAlgorithmContext()->markAlgorithmAsReadyToProcess();
 	}
@@ -459,7 +462,7 @@ boolean CGDFFileReader::readFileHeader()
 					<< "Buffer size was " << m_ui32SamplesPerBuffer << "\n";
 			}
 
-			m_ui64ClockFrequency = ( ((uint64)m_pSignalDescription.m_ui32SamplingRate<<32) / (uint64)m_ui32SamplesPerBuffer);
+			m_ui64ClockFrequency = ITimeArithmetics::sampleCountToTime(m_pSignalDescription.m_ui32SamplingRate, m_ui32SamplesPerBuffer);
 		}
 
 		//Send the data to the output
@@ -554,7 +557,7 @@ void CGDFFileReader::writeEvents()
 	for(size_t i=0 ; i<m_oEvents.size() ; i++)
 	{
 		//compute date
-		l_ui64EventDate = ( ((uint64)(m_oEvents[i].m_ui32Position)) <<32)/m_pSignalDescription.m_ui32SamplingRate;
+		l_ui64EventDate = ITimeArithmetics::sampleCountToTime(m_pSignalDescription.m_ui32SamplingRate, m_oEvents[i].m_ui32Position);
 		m_pStimulationOutputWriterHelper->setStimulation(i, m_oEvents[i].m_ui16Type, l_ui64EventDate);
 	}
 
@@ -721,9 +724,9 @@ boolean CGDFFileReader::process()
 		//A signal matrix is ready to be output
 		m_pSignalOutputWriterHelper->writeBuffer(*m_pWriter[GDFReader_SignalOutput]);
 
-		l_ui64StartTime=(((uint64)(m_ui32SentSampleCount - m_pSignalDescription.m_ui32SampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate;
+		l_ui64StartTime= ITimeArithmetics::sampleCountToTime(m_pSignalDescription.m_ui32SamplingRate, (uint64)(m_ui32SentSampleCount - m_pSignalDescription.m_ui32SampleCount));
 
-		l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_pSignalDescription.m_ui32SamplingRate;
+		l_ui64EndTime  = ITimeArithmetics::sampleCountToTime(m_pSignalDescription.m_ui32SamplingRate, (uint64)(m_ui32SentSampleCount));
 
 		l_pBoxIO->markOutputAsReadyToSend(GDFReader_SignalOutput, l_ui64StartTime, l_ui64EndTime);
 

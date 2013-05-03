@@ -46,10 +46,10 @@ boolean CConfigurationEmotivEPOC::postConfigure(void)
 	if(m_bApplyConfiguration)
 	{
 		::GtkToggleButton* l_pCheckbuttonGyro = GTK_TOGGLE_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "checkbutton_gyro"));
-		m_rUseGyroscope = ::gtk_toggle_button_get_active(l_pCheckbuttonGyro);
+		m_rUseGyroscope = ::gtk_toggle_button_get_active(l_pCheckbuttonGyro) ? true : false;
 
 		::GtkSpinButton* l_pSpinButtonUserID = GTK_SPIN_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "spinbutton_userid"));
-		m_rUserID = gtk_spin_button_get_value(l_pSpinButtonUserID);
+		m_rUserID = (uint32)gtk_spin_button_get_value(l_pSpinButtonUserID);
 
 		::GtkFileChooser* l_pFileChooserButton = GTK_FILE_CHOOSER(gtk_builder_get_object(m_pBuilderConfigureInterface, "filechooserbutton"));
 		gchar * l_sDir = gtk_file_chooser_get_filename(l_pFileChooserButton);

@@ -1,5 +1,7 @@
 #include "ovpCBoxAlgorithmBCI2000Reader.h"
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #include <iostream>
 #include <sstream>
 #include <cstdio>
@@ -100,7 +102,7 @@ boolean CBoxAlgorithmBCI2000Reader::processClock(IMessageClock& rMessageClock)
 
 uint64 CBoxAlgorithmBCI2000Reader::getClockFrequency(void)
 {
-	return ((uint64)m_ui32Rate<<32)/m_ui32SampleCountPerBuffer;
+	return ITimeArithmetics::sampleCountToTime(m_ui32Rate, m_ui32SampleCountPerBuffer);
 }
 
 void CBoxAlgorithmBCI2000Reader::sendHeader(void)
@@ -140,10 +142,8 @@ boolean CBoxAlgorithmBCI2000Reader::process(void)
 			}
 		}
 		m_oSignalEncoder.encodeBuffer(0);
-		uint64 StartTime;
-		uint64 EndTime;
-		StartTime=(((uint64)(m_ui32SamplesSent))<<32)/m_ui32Rate;
-		EndTime=(((uint64)(m_ui32SamplesSent+m_ui32SampleCountPerBuffer))<<32)/m_ui32Rate;
+		uint64 StartTime = ITimeArithmetics::sampleCountToTime(m_ui32Rate, m_ui32SamplesSent);
+		uint64 EndTime = ITimeArithmetics::sampleCountToTime(m_ui32Rate, m_ui32SamplesSent+m_ui32SampleCountPerBuffer);
 		m_ui32SamplesSent+=l_ui32SamplesRead;
 		if (m_pB2KReaderHelper->getSamplesLeft()==0)
 		{

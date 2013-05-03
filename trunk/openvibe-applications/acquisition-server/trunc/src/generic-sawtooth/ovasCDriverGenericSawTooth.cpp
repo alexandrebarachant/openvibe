@@ -2,6 +2,7 @@
 #include "../ovasCConfigurationBuilder.h"
 
 #include <openvibe-toolkit/ovtk_all.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Time.h>
 
@@ -107,7 +108,8 @@ boolean CDriverGenericSawTooth::loop(void)
 
 		CStimulationSet l_oStimulationSet;
 		l_oStimulationSet.appendStimulation((l_ui32CurrentTime-m_ui32StartTime)/1000, 0, 0);
-		l_oStimulationSet.appendStimulation((l_ui32CurrentTime-m_ui32StartTime)/1000, (uint64(m_ui32SampleCountPerSentBlock-1)<<32)/m_oHeader.getSamplingFrequency(), 0);
+		l_oStimulationSet.appendStimulation((l_ui32CurrentTime-m_ui32StartTime)/1000, 
+			ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), m_ui32SampleCountPerSentBlock-1), 0);
 
 		m_pCallback->setSamples(m_pSample);
 		// m_pCallback->setStimulationSet(l_oStimulationSet);

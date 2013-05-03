@@ -1,3 +1,6 @@
+
+#include <openvibe/ovITimeArithmetics.h>
+
 #include "ovkCPlayer.h"
 #include "ovkCSimulatedBox.h"
 #include "ovkCScheduler.h"
@@ -257,7 +260,7 @@ boolean CPlayer::loop(
 	{
 		// Calls a single controller loop and goes back to pause state
 		case PlayerStatus_Step:
-			m_ui64CurrentTimeToReach+=(1LL<<32)/m_oScheduler.getFrequency();
+			m_ui64CurrentTimeToReach += ITimeArithmetics::sampleCountToTime(m_oScheduler.getFrequency(), 1LL);
 			m_eStatus=PlayerStatus_Pause;
 			break;
 

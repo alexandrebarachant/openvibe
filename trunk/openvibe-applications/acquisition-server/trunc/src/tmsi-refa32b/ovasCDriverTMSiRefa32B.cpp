@@ -4,12 +4,15 @@
 #if defined TARGET_OS_Windows
 
 #include <openvibe-toolkit/ovtk_all.h>
+#include <openvibe/ovITimeArithmetics.h>
+
 #include <iostream>
 #include <cmath>
 #include <cstring>
 #include <system/Time.h>
 #include "ovasCConfigurationTMSIRefa32B.h"
 #include <Windows.h>
+
 #define boolean OpenViBE::boolean
 
 using namespace OpenViBEAcquisitionServer;
@@ -515,7 +518,8 @@ boolean CDriverTMSiRefa32B::loop(void)
 				if(m_ui32LastTriggerValue!=l_ui32Trigger)
 				{
 					uint32 l_ui32IndexStimulation=(uint32)m_oStimulationSet.getStimulationCount();
-					m_oStimulationSet.appendStimulation(l_ui32Trigger, (uint64(m_ui32SampleIndex+j)<<32)/m_oHeader.getSamplingFrequency(), 0);
+					uint64 l_ui64StimulationTime = ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), uint64(m_ui32SampleIndex+j));
+					m_oStimulationSet.appendStimulation(l_ui32Trigger, l_ui64StimulationTime, 0);
 					m_ui32LastTriggerValue=l_ui32Trigger;
 				}
 			}

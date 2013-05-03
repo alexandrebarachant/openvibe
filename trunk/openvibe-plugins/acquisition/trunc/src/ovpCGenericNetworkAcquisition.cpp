@@ -1,5 +1,7 @@
 #include "ovpCGenericNetworkAcquisition.h"
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #include <system/Memory.h>
 
 #include <iostream>
@@ -146,9 +148,8 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 			//increases total sample counter
 			m_ui32SentSampleCount += m_pSignalDescription->m_ui32SampleCount;
 
-			OpenViBE::uint64 l_ui64StartTime=(((uint64)(m_ui32SentSampleCount - m_pSignalDescription->m_ui32SampleCount))<<32)/m_pSignalDescription->m_ui32SamplingRate;
-
-			OpenViBE::uint64 l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_pSignalDescription->m_ui32SamplingRate;
+			OpenViBE::uint64 l_ui64StartTime= ITimeArithmetics::sampleCountToTime(m_pSignalDescription->m_ui32SamplingRate, (uint64)(m_ui32SentSampleCount - m_pSignalDescription->m_ui32SampleCount));
+			OpenViBE::uint64 l_ui64EndTime  = ITimeArithmetics::sampleCountToTime(m_pSignalDescription->m_ui32SamplingRate, m_ui32SentSampleCount);
 
 			l_pDynamicBoxContext->markOutputAsReadyToSend(GenericNetworkAcquisition_SignalOutput, l_ui64StartTime, l_ui64EndTime);
 
@@ -156,7 +157,7 @@ void CGenericNetworkAcquisition::readerProcessChildData(const void* pBuffer, con
 			if(l_ui64CurrentDate>>32 != m_ui64CurrentDate>>32)
 			{
 				l_ui64CurrentDate=m_ui64CurrentDate;
-				uint32 l_ui32SentSampleCount=(uint32)((m_pSignalDescription->m_ui32SamplingRate*m_ui64CurrentDate)>>32);
+				uint32 l_ui32SentSampleCount=(uint32)ITimeArithmetics::timeToSampleCount(m_pSignalDescription->m_ui32SamplingRate, m_ui64CurrentDate);
 				// m_ui32SentSampleCount
 				getBoxAlgorithmContext()->getPlayerContext()->getLogManager()
 					<< LogLevel_Trace

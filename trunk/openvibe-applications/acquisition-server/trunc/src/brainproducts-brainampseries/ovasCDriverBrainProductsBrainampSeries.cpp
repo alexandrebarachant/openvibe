@@ -23,6 +23,7 @@
 #if defined TARGET_OS_Windows
 
 #include <openvibe-toolkit/ovtk_all.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Memory.h>
 #include <system/Time.h>
@@ -485,7 +486,10 @@ boolean CDriverBrainProductsBrainampSeries::loop(void)
 				m_ui16Marker=l_ui16Marker;
 				if(m_ui16Marker != 0)
 				{
-					l_oStimulationSet.appendStimulation(m_ui16Marker, (uint64(j)<<32)/(m_oHeader.getSamplingFrequency()*m_ui32DecimationFactor), 0);
+					;
+					l_oStimulationSet.appendStimulation(m_ui16Marker, 
+						ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency()*m_ui32DecimationFactor, uint64(j)), 
+						0);
 					m_rDriverContext.getLogManager() << LogLevel_Trace << "Got stim code " << m_ui16Marker << " at sample " << j << "\n";
 				}
 			}

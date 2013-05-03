@@ -4,6 +4,8 @@
 #include <cmath>
 #include <cstdlib>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -99,10 +101,9 @@ boolean CTimeSignalGenerator::process(void)
 		m_pSignalOutputWriterHelper->writeBuffer(*m_pSignalOutputWriter);
 		m_ui32SentSampleCount+=m_ui32GeneratedEpochSampleCount;
 
-		uint64 l_ui64StartTime;
-		uint64 l_ui64EndTime;
-		l_ui64StartTime=(((uint64)(l_ui32SentSampleCount))<<32)/m_ui32SamplingFrequency;
-		l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_ui32SamplingFrequency;
+		uint64 l_ui64StartTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, l_ui32SentSampleCount);
+		uint64 l_ui64EndTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32SentSampleCount);
+
 		l_pDynamicBoxContext->markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 	}
 
@@ -112,4 +113,9 @@ boolean CTimeSignalGenerator::process(void)
 void CTimeSignalGenerator::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
 {
 	appendOutputChunkData<0>(pBuffer, ui64BufferSize);
+}
+
+OpenViBE::uint64 CTimeSignalGenerator::getClockFrequency(void) 
+{
+	return ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32GeneratedEpochSampleCount);
 }

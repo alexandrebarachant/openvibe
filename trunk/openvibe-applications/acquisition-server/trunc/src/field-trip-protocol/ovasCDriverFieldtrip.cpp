@@ -595,8 +595,9 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 						m_f64DriftSinceLastCorrection -= (float64) l_ui32DiffSamples;
 						/*oStimulationSet.appendStimulation(
 							OVTK_GDF_Missing,
-							((uint64)l_ui32NbDataToSend << 32)/m_oHeader.getSamplingFrequency(),
-							((uint64)l_ui32DiffSamples   << 32)/m_oHeader.getSamplingFrequency());*/
+							ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), l_ui32NbDataToSend),
+							ITimeArithmetics::sampleCountToTime(m_oHeader.getSamplingFrequency(), l_ui32DiffSamples));
+						*/
 					}
 				}
 

@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cstdio>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -96,7 +98,7 @@ boolean CSinusSignalGenerator::process(void)
 		m_pSignalOutputWriterHelper->writeHeader(*m_pSignalOutputWriter);
 		m_bHeaderSent=true;
 
-		uint64 l_ui64Time=(((uint64)(m_ui32SentSampleCount))<<32)/m_ui32SamplingFrequency;
+		uint64 l_ui64Time=ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32SentSampleCount);
 		l_pDynamicBoxContext->markOutputAsReadyToSend(0, l_ui64Time, l_ui64Time);
 	}
 	else
@@ -115,14 +117,18 @@ boolean CSinusSignalGenerator::process(void)
 		m_pSignalOutputWriterHelper->writeBuffer(*m_pSignalOutputWriter);
 		m_ui32SentSampleCount+=m_ui32GeneratedEpochSampleCount;
 
-		uint64 l_ui64StartTime;
-		uint64 l_ui64EndTime;
-		l_ui64StartTime=(((uint64)(l_ui32SentSampleCount))<<32)/m_ui32SamplingFrequency;
-		l_ui64EndTime  =(((uint64)(m_ui32SentSampleCount))<<32)/m_ui32SamplingFrequency;
+		uint64 l_ui64StartTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, l_ui32SentSampleCount);
+		uint64 l_ui64EndTime = ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32SentSampleCount);
+
 		l_pDynamicBoxContext->markOutputAsReadyToSend(0, l_ui64StartTime, l_ui64EndTime);
 	}
 
 	return true;
+}
+
+OpenViBE::uint64 CSinusSignalGenerator::getClockFrequency(void) 
+{
+	return ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32GeneratedEpochSampleCount);
 }
 
 void CSinusSignalGenerator::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
