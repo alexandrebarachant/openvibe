@@ -12,6 +12,7 @@ MESSAGE(STATUS "Launching Create Doxygen CMake script")
 SET(resource_files "@resource_files@")
 SET(ov_doxy_final "@ov_doxy_final@")
 SET(ov_doxy_version "@ov_doxy_version@")
+SET(ov_doxy_input "@ov_doxy_input@")
 SET(CURRENT_PROJECTS "@CURRENT_PROJECTS@")
 SET(CMAKE_CURRENT_SOURCE_DIR "@CMAKE_CURRENT_SOURCE_DIR@")
 

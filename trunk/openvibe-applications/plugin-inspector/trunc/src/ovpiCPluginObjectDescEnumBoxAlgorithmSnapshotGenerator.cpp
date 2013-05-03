@@ -168,7 +168,7 @@ CPluginObjectDescEnumBoxAlgorithmSnapshotGenerator::~CPluginObjectDescEnumBoxAlg
 		<< "/**\n"
 		<< " * \\page Doc_BoxAlgorithms Box algorithms list\n"
 		<< " *\n"
-		<< " * Available box algorithms are include :\n";
+		<< " * Available box algorithms :\n";
 
 	uint32 l_ui32Level=0;
 	string l_sLastCategory;

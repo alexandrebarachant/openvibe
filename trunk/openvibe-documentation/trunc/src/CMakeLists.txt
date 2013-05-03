@@ -19,7 +19,8 @@ IF(doxygen_bin)
 
 	# intializes the variable that will be used in the doxyfile for input
 	# directories
-	STRING(REPLACE "\\" "/" ov_doxy_input "\"${OV_BASE_DIR}/cmake-modules\"")
+	STRING(REPLACE "\\" "/" ov_doxy_input "${OV_BASE_DIR}/cmake-modules")
+	SET(ov_doxy_input "\\\"${ov_doxy_input}\\\"")
 
 	# intializes the variable that will contain the list of resource files to
 	# copy to the target directory
@@ -39,7 +40,7 @@ IF(doxygen_bin)
 		SET(current_project_src "${current_project}/src")
 
 		# updates the doxyfile variable for input directories
-		SET(ov_doxy_input "${ov_doxy_input} \"${current_project_src}\"")
+		SET(ov_doxy_input "${ov_doxy_input} \\\"${current_project_src}\\\"")
 		#MESSAGE(STATUS "    [  OK  ] Candidate doc directory found ${current_project_src}")
 
 		# looks for resources and stores them in a list
@@ -67,7 +68,7 @@ IF(doxygen_bin)
 	ENDIF(WIN32)
 
 	# these two lines configure the variables used to configure the doxyfile
-	SET(ov_doxy_input "${ov_doxy_input} \"${CMAKE_CURRENT_BINARY_DIR}\"")
+	SET(ov_doxy_input "${ov_doxy_input} \\\"${CMAKE_CURRENT_BINARY_DIR}\\\"")
 	SET(ov_doxy_strip_from_path ${ov_doxy_input})
 	SET(ov_doxy_version ${PROJECT_VERSION})
 
