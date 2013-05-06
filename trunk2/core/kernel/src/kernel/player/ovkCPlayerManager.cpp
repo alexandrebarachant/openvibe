@@ -3,7 +3,7 @@
 
 #include "../../ovk_tools.h"
 
-#include <system/Math.h>
+#include <system/include/Math.h>
 
 using namespace OpenViBE;
 using namespace Kernel;

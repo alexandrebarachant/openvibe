@@ -1,13 +1,13 @@
 
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovITimeArithmetics.h>
 
 #include "ovkCScheduler.h"
 #include "ovkCSimulatedBox.h"
 #include "ovkCPlayer.h"
 
-#include <system/Time.h>
+#include <system/include/Time.h>
 
-#include <xml/IReader.h>
+#include <xml/include/IReader.h>
 
 #include <string>
 #include <iostream>

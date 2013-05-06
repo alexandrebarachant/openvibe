@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <fs/Files.h>
+#include <fs/include/Files.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
