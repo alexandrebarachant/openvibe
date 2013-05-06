@@ -2,7 +2,7 @@
 #define __OpenViBEKernel_Kernel_Player_COgreWindow_H__
 
 #include <Ogre.h>
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 class COgreScene;
 class COgreVisualisation;

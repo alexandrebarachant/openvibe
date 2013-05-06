@@ -1,7 +1,7 @@
 #ifndef __OpenViBEKernel_Kernel_Player_COgreAnimator_H__
 #define __OpenViBEKernel_Kernel_Player_COgreAnimator_H__
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include "ovkCOgreObject.h"
 

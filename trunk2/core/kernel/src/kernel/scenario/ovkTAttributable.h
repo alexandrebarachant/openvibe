@@ -4,7 +4,7 @@
 #include "../../ovk_base.h"
 #include "../../ovk_tools.h"
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include <map>
 #include <iostream>

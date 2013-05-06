@@ -23,7 +23,7 @@
 
 #include <Ogre.h>
 #include <stack>
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 class IMaterialAction;
 class IUpdateMaterial;
