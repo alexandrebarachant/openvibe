@@ -1,6 +1,6 @@
 #include "ovtkMatrix.h"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 #include <cstring>
 #include <cmath>

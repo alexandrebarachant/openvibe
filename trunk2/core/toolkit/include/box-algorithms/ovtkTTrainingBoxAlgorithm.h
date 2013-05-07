@@ -9,7 +9,7 @@
 #include "../deprecated/reader/ovtkIBoxAlgorithmSignalInputReaderCallback.h"
 #include "../deprecated/reader/ovtkIBoxAlgorithmStimulationInputReaderCallback.h"
 
-#include <ebml/CReader.h>
+#include <ebml/include/CReader.h>
 
 #include <vector>
 

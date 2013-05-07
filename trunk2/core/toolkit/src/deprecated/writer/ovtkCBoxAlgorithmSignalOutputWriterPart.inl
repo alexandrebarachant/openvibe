@@ -4,7 +4,7 @@
 #include "ovtkIBoxAlgorithmEBMLOutputWriter.h"
 #include "ovtkCBoxAlgorithmEBMLOutputWriterPartBase.inl"
 
-#include <ebml/CWriterHelper.h>
+#include <ebml/include/CWriterHelper.h>
 
 namespace OpenViBEToolkit
 {

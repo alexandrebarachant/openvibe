@@ -3,8 +3,8 @@
 
 #include "ovtkIBoxAlgorithmEBMLInputReaderCallback.h"
 
-#include <ebml/IReader.h>
-#include <ebml/IReaderHelper.h>
+#include <ebml/include/IReader.h>
+#include <ebml/include/IReaderHelper.h>
 
 #include <stack>
 #include <vector>

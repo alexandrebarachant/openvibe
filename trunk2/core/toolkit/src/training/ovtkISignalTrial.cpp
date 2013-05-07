@@ -1,6 +1,6 @@
 #include "ovtkISignalTrial.h"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 using namespace OpenViBEToolkit;
 using namespace OpenViBE;
