@@ -1,0 +1,63 @@
+/**
+ * \page BoxAlgorithm_Timeout Timeout
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Description|
+This box will send a stimulation on its output after it stops receiving an input. The user
+can set a duration to wait before considering the output inactive.
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Inputs|
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Input1|
+Streamed Matrix input to be monitored.
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Input1|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Output1|
+Output stimulation. One stimulation will be sent after the timeout is reached.
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Setting1|
+Timeout value. Duration (in seconds) to wait after the last received chunk before the input is considered inactive.
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Setting1|
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Setting2|
+Sitmulation ID to send.
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Setting2|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Examples|
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Examples|
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_Timeout_Miscellaneous|
+ * |OVP_DocEnd_BoxAlgorithm_Timeout_Miscellaneous|
+ */
