@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# This script is meant to be launched from inside an OpenViBE application (such as a scenario in Designer)
+#
+
+CALLCMD=$1
+shift
+
+ov_run_bg=0
+if [ "$1" == "--run-bg" ]; then
+	ov_run_bg=1
+	shift
+fi
+
+# OV_PATH_BIN overrides the CMake specified folder, if given
+LOCAL_BIN_PATH="@CMAKE_INSTALL_FULL_BINDIR@"
+if [ "$OV_PATH_BIN" != "" ]; then
+	LOCAL_BIN_PATH="$OV_PATH_BIN"
+fi
+
+ret_code=0
+
+if [ $ov_run_bg == 0 ]; then
+	eval "$LOCAL_BIN_PATH/$CALLCMD" @OV_CMD_ARGS@ $*
+	ret_code=$?
+else
+	"$LOCAL_BIN_PATH/$CALLCMD" @OV_CMD_ARGS@ $* &
+fi
+
+exit $ret_code

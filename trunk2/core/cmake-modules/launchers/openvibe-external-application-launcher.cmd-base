@@ -1,0 +1,18 @@
+@echo off
+
+REM
+REM This script is meant to be launched from an environment with the OV_PATH_BIN env variable set externally
+REM
+
+SET "OV_RUN_APP=%1"
+SHIFT
+
+SET OV_RUN_IN_BG=
+IF /i "%1"=="--run-bg" (
+	REM Run in background. The first arg to START is the app title.
+	SET OV_RUN_IN_BG=START "%OV_RUN_APP%"
+	SHIFT
+)
+
+%OV_RUN_IN_BG% %OV_PATH_BIN%\%OV_RUN_APP% %1 %2 %3 %4 %5
+
