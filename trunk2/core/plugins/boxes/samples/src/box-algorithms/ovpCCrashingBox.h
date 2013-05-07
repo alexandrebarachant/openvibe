@@ -1,7 +1,7 @@
 #ifndef __OpenViBEPlugins_Samples_CCrashingBox_H__
 #define __OpenViBEPlugins_Samples_CCrashingBox_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
 #include <ov_all.h>
 #include <ebml/include/IReader.h>
@@ -24,35 +24,16 @@ namespace OpenViBEPlugins
 			}
 
 			virtual OpenViBE::boolean initialize(
-				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
-			{
-				throw 0;
-				return true;
-			}
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext);
 
 			virtual OpenViBE::boolean uninitialize(
-				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
-			{
-				int one=(int)1.0;
-				int zero=(int)sin(0.0);
-				int division_by_zero=one/zero;
-				return division_by_zero?true:false;
-			}
+				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext);
 
 			virtual OpenViBE::boolean processInput(
 				OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext,
-				OpenViBE::uint32 ui32InputIndex)
-			{
-				rBoxAlgorithmContext.markAlgorithmAsReadyToProcess();
-				return true;
-			}
+				OpenViBE::uint32 ui32InputIndex);
 
-			virtual OpenViBE::boolean process(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext)
-			{
-				*((int*)NULL)=0;
-
-				return true;
-			}
+			virtual OpenViBE::boolean process(OpenViBE::Kernel::IBoxAlgorithmContext& rBoxAlgorithmContext);
 
 			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithm, OVP_ClassId_CrashingBox)
 		};
