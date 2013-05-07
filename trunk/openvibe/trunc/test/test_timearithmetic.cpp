@@ -13,6 +13,18 @@
 using namespace OpenViBE;
 using namespace std;
 
+// Legacy code to convert time to seconds
+float64 oldTimeToSeconds(const uint64 ui64Time)
+{
+	return (ui64Time>>22)/1024.0;
+}
+
+// Legacy code to convert seconds to time
+uint64 oldSecondsToTime(const float64 f64Time)
+{
+	return ((uint64)(f64Time*1024.0))<<22;
+}
+
 // legacy code from ovIStimulationSet.h for comparison
 OpenViBE::uint64 sampleIndexToTime(OpenViBE::uint32 ui32SamplingRate, OpenViBE::uint64 ui64SampleIndex)
 {	
@@ -27,14 +39,13 @@ OpenViBE::uint64 timeToSampleIndex(OpenViBE::uint32 ui32SamplingRate, OpenViBE::
 
 int main(int argc, char *argv[]) 
 {
-
 	const float64 l_f64secsAndBackTolerance = 0.00001;
 
 	// @note A rate of 101 can cause a glitch. Are we ever using uneven sampling rates?
 	const uint32 samplingRatesToTest[] = {100,128,512,1000,1024,16000,44100};
 	const float64 l_f64timesToTest[] = {
-		0, 0.001, 0.01, 0.1, 0.2, 0.25, 0.5, 1.0, 1.1, 1.5, 2, 5, 10, 50, 100, 123.456789, 128.0, 500, 1000, 2500};
-	const uint64 l_ui64samplesToTest[] = {0,1,100,128,512,1000,1021,1024,5005,12345, 59876, 1000001};
+		0, 0.001, 0.01, 0.1, 0.2, 0.25, 0.5, 1.0, 1.1, 1.5, 2, 5, 10, 50, 100, 123.456789, 128.0, 500, 1000, 2500, 5000};
+	const uint64 l_ui64samplesToTest[] = {0,1,100,128,512,1000,1021,1024,5005,12345, 59876, 100000, 717893, 1000001};
 	const uint64 l_ui64timesToTest[] = { 1LL<<8, 1LL<<16, 1L<<19, 1LL<<22, 1LL<<27, 1L<<30, 1LL<<32, 10LL<<32, 100LL<<32, 123LL<<32, 500LL<<32, 512LL<<32, 1000LL<<32, 1024LL<<32, 2001LL<<32, 5000LL<<32};
 
 	cout << "Conversion tolerance from fixed point to float and back has been set to " << l_f64secsAndBackTolerance << " secs\n\n";
@@ -178,14 +189,13 @@ int main(int argc, char *argv[])
 
 	{
 		cout << "------\nTest: One second of signal at 'rate' should equal 'rate' samples\n------\n";
-
-		cout << setw(6) << "Rate" 
-		     << setw(8) << "Samples"
+		cout << " " << setw(6) << "Rate" 
+		     << " " << setw(8) << "Samples"
 			 << " Test\n";
 		for(size_t i=0;i<sizeof(samplingRatesToTest)/sizeof(samplingRatesToTest[0]);i++) {
 			uint64 nSamples = ITimeArithmetics::timeToSampleCount(samplingRatesToTest[i], ITimeArithmetics::secondsToTime(1.0));
-			cout << setw(6) << samplingRatesToTest[i] 
-			     << setw(8) << nSamples;
+			cout << " " << setw(6) << samplingRatesToTest[i] 
+			     << " " << setw(8) << nSamples;
 			if(nSamples == samplingRatesToTest[i]) {
 				cout << " Ok\n";
 			} else {
@@ -196,35 +206,41 @@ int main(int argc, char *argv[])
 	}
 
 	cout << "------\nTest: Comparing epoch durations between ITimeArithmetics and old code from stimulationBasedEpoching\n---------\n";
+	cout << " " << setw(10) << "Duration" 
+	     << " " << setw(15) << "ResultA"
+	     << " " << setw(15) << "ResultB"
+	     << " " << setw(10) << "AbsDiff"
+		 << " Test\n";
 
-	uint64 ui64resultA, ui64resultB;
-
-	const float64 l_f64EpochDurations[] = {0.01, 0.1, 0.2, 0.25, 0.5, 1.0, 1.1, 1.5, 2, 5, 10,50,100};
-	for(uint32 i=0;i<sizeof(l_f64EpochDurations)/sizeof(const float64);i++) 
 	{
-		ui64resultA=(int64)(l_f64EpochDurations[i]*(1LL<<32)); // Code from stimulationBasedEpoching
-		ui64resultB=ITimeArithmetics::secondsToTime(l_f64EpochDurations[i]);
-		cout << setw(5) << l_f64EpochDurations[i] << " " << setw(15) << ui64resultA << " " << setw(15) << ui64resultB;
-		uint64 l_ui64AbsDiff = std::abs((int64)ui64resultA-int64(ui64resultB));
-		float64 l_f64Diff = ITimeArithmetics::timeToSeconds(l_ui64AbsDiff);
-		cout << " " << l_f64Diff;
-
-		if(l_ui64AbsDiff==0) 
+		const float64 l_f64EpochDurations[] = {0.01, 0.1, 0.2, 0.25, 0.5, 1.0, 1.1, 1.5, 2, 5, 10,50,100};
+		for(uint32 i=0;i<sizeof(l_f64EpochDurations)/sizeof(const float64);i++) 
 		{
-			cout << " Ok\n";
-		}
-		else
-		{
-			std::bitset<64> tmpA(ui64resultA);
-			std::bitset<64> tmpB(ui64resultB);
-			cout << " Err " << tmpA << " " << ITimeArithmetics::timeToSeconds(ui64resultA);
-			cout << " " << tmpB << " " << ITimeArithmetics::timeToSeconds(ui64resultB) << "\n";
-			retVal |= 6;
-		}
+			uint64 ui64resultA=(int64)(l_f64EpochDurations[i]*(1LL<<32)); // Code from stimulationBasedEpoching
+			uint64 ui64resultB=ITimeArithmetics::secondsToTime(l_f64EpochDurations[i]);
+			cout << " " << setw(10) << l_f64EpochDurations[i] << " " << setw(15) << ui64resultA << " " << setw(15) << ui64resultB;
+			uint64 l_ui64AbsDiff = std::abs((int64)ui64resultA-int64(ui64resultB));
+			float64 l_f64Diff = ITimeArithmetics::timeToSeconds(l_ui64AbsDiff);
+			cout << " " << setw(10) << l_f64Diff;
 
+			if(l_ui64AbsDiff==0) 
+			{
+				cout << " Ok\n";
+			}
+			else
+			{
+				std::bitset<64> tmpA(ui64resultA);
+				std::bitset<64> tmpB(ui64resultB);
+				cout << " Err " << tmpA << " " << ITimeArithmetics::timeToSeconds(ui64resultA);
+				cout << " " << tmpB << " " << ITimeArithmetics::timeToSeconds(ui64resultB) << "\n";
+				retVal |= 6;
+			}
+		}
 	}
 
 	cout << "------\nMisc tests (no errors will be reported)\n------------\n";
+
+	uint64 ui64resultA, ui64resultB;
 
 	// Test with milliseconds, the divisor 1000 can be in different positions in OV code. Small differences are to be expected here.
 	const int ui32MilliSeconds = 123;
@@ -250,16 +266,23 @@ int main(int argc, char *argv[])
 
 	// Test a sequence of small indexes
 	// Code from ovIStimulationSet.h. Time is typically off by one between the old code and code from ovITimeArithmetics.h using the following parameters.
-	for(int i=0;i<32;i++) {
-		ui64resultA = sampleIndexToTime(100, i);
-		ui64resultB = ITimeArithmetics::sampleCountToTime(100, i);
+	const uint32 l_ui32TestFrequency = 100;
+	for(uint32 i=0;i<32;i++) {
+		ui64resultA = sampleIndexToTime(l_ui32TestFrequency, i);
+		ui64resultB = ITimeArithmetics::sampleCountToTime(l_ui32TestFrequency, i);
 		cout << "m5: " << setw(3) << i << ": A " << ui64resultA << " B " << ui64resultB << "\n";
 	}
-	for(int i=0;i<32;i++) {
-		ui64resultA = timeToSampleIndex(100, sampleIndexToTime(100, i));
-		ui64resultB = ITimeArithmetics::timeToSampleCount(100, ITimeArithmetics::sampleCountToTime(100, i));
+	// Code from ovIStimulationSet.h. Sample counts should be equivalent regardless of the time skew of 1 earlier.
+	for(uint32 i=0;i<32;i++) {
+		ui64resultA = timeToSampleIndex(l_ui32TestFrequency, sampleIndexToTime(l_ui32TestFrequency, i));
+		ui64resultB = ITimeArithmetics::timeToSampleCount(l_ui32TestFrequency, ITimeArithmetics::sampleCountToTime(100, i));
 		cout << "m6: " << setw(3) << i << ": A " << ui64resultA << " B " << ui64resultB << "\n";
 	}
+
+	const float64 l_f64TestNumber = 1.23456789;
+	cout << "m7: A " << setprecision(10) << oldTimeToSeconds(oldSecondsToTime(l_f64TestNumber))
+		<<  " B " << setprecision(10) << ITimeArithmetics::timeToSeconds(ITimeArithmetics::secondsToTime(l_f64TestNumber))
+		<< "\n";
 
 	return retVal;
 } 
