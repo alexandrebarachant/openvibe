@@ -1,8 +1,8 @@
 #ifndef __OpenViBEDesigner_base_H__
 #define __OpenViBEDesigner_base_H__
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include <gtk/gtk.h>
 

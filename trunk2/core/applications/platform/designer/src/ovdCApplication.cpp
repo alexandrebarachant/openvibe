@@ -1,6 +1,6 @@
 #include "ovd_base.h"
 
-#include <system/Time.h>
+#include <system/include/Time.h>
 
 #include <stack>
 #include <vector>
@@ -17,8 +17,8 @@
  #define _strcmpi strcasecmp
 #endif
 
-#define OVD_GUI_File          OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.ui"
-#define OVD_GUI_Settings_File OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface-settings.ui"
+#define OVD_GUI_File          OpenViBE::Directories::getDataDir() + "/applications/designer/interface.ui"
+#define OVD_GUI_Settings_File OpenViBE::Directories::getDataDir() + "/applications/designer/interface-settings.ui"
 
 #include "ovdCDesignerVisualisation.h"
 #include "ovdCPlayerVisualisation.h"
