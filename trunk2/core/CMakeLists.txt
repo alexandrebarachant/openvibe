@@ -19,10 +19,10 @@ IF(WIN32)
 	ADD_DEFINITIONS("-DNOMINMAX -DBOOST_ALL_NO_LIB")
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4355")
 	SET(OV_WIN32_BOOST_VERSION "1_47")
-	SET(OV_CUSTOM_DEPENDENCIES_PATH "${CMAKE_SOURCE_DIR}/dependencies")	
+	SET(OV_CUSTOM_DEPENDENCIES_PATH "${CMAKE_SOURCE_DIR}/../dependencies")	
 ELSEIF(UNIX)
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-	SET(OV_CUSTOM_DEPENDENCIES_PATH "${CMAKE_SOURCE_DIR}/scripts/software")
+	SET(OV_CUSTOM_DEPENDENCIES_PATH "${CMAKE_SOURCE_DIR}/../dependencies")
 	# This ENV var is needed to locate our custom IT++ on Linux
 	SET(ENV{PKG_CONFIG_PATH} "${OV_CUSTOM_DEPENDENCIES_PATH}/lib/pkgconfig")	
 ELSE(WIN32)
@@ -128,16 +128,16 @@ ADD_DEFINITIONS(-DOV_CMAKE_PATH_DATA="${CMAKE_INSTALL_FULL_DATADIR}")
 ADD_DEFINITIONS(-DOV_CMAKE_PATH_LIB="${CMAKE_INSTALL_FULL_LIBDIR}")
 	
 # Traverse these directories and build their components
-ADD_SUBDIRECTORY("openvibe-common/")
+ADD_SUBDIRECTORY("common/")
 ADD_SUBDIRECTORY("openvibe/")
-ADD_SUBDIRECTORY("openvibe-kernel-omk/")
-ADD_SUBDIRECTORY("openvibe-modules/")
-ADD_SUBDIRECTORY("openvibe-toolkit/")
-ADD_SUBDIRECTORY("openvibe-plugins/")
-ADD_SUBDIRECTORY("openvibe-scenarios/")
-ADD_SUBDIRECTORY("openvibe-applications/")
-ADD_SUBDIRECTORY("openvibe-externals/")
-ADD_SUBDIRECTORY("openvibe-documentation/")	# needs to be the last since it uses the list of collected projects
+ADD_SUBDIRECTORY("kernel/")
+ADD_SUBDIRECTORY("modules/")
+ADD_SUBDIRECTORY("toolkit/")
+ADD_SUBDIRECTORY("plugins/")
+#ADD_SUBDIRECTORY("openvibe-scenarios/")
+#ADD_SUBDIRECTORY("openvibe-applications/")
+#ADD_SUBDIRECTORY("openvibe-externals/")
+#ADD_SUBDIRECTORY("openvibe-documentation/")	# needs to be the last since it uses the list of collected projects
 
 #add dependency to plugin inspector to the documentation
 IF(openvibe-documentation)
