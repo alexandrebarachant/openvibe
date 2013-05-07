@@ -101,3 +101,5 @@ Some Remarks :
     This test produce a CSV file output that contents output of Sinus oscillator for 1 second (using CSV File Writer)
     Second test is a "white box" test that compare current output signal file with a reference file using "diff" program as comparator. Signal reference file was obtained with the same scenario "a day when all work fine" (actually, non-regression test) 
     This DartTestFile.txt will be adapted to others boxes to produce same type of tests.
+
+That's all 
