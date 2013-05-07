@@ -1,7 +1,7 @@
-#include "stream/IInputStream.h"
-#include "stream/IInputStreamHelper.h"
-#include "stream/IOutputStream.h"
-#include "stream/IOutputStreamHelper.h"
+#include "IInputStream.h"
+#include "IInputStreamHelper.h"
+#include "IOutputStream.h"
+#include "IOutputStreamHelper.h"
 
 namespace Stream
 {

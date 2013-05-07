@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmStreamedMatrixMultiplexer.h"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

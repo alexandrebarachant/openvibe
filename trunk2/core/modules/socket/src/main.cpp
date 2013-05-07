@@ -1,6 +1,6 @@
-#include "socket/IConnectionServer.h"
-#include "socket/IConnectionClient.h"
-#include "socket/IConnection.h"
+#include "IConnectionServer.h"
+#include "IConnectionClient.h"
+#include "IConnection.h"
 
 namespace Socket
 {

@@ -1,5 +1,5 @@
-#include "../IXMLNodeReader.h"
-#include "../INodeFactory.h"
+#include "IXMLNodeReader.h"
+#include "INodeFactory.h"
 #include "../node/CNodeAction.hpp"
 #include "../TXMLReader.hpp"
 #include "CXMLParameterReader.hpp"

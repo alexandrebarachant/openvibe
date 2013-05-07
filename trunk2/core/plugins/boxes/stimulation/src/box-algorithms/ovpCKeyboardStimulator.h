@@ -9,8 +9,8 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include <ebml/IWriter.h>
-#include <ebml/TWriterCallbackProxy.h>
+#include <ebml/include/IWriter.h>
+#include <ebml/include/TWriterCallbackProxy.h>
 
 #include <vector>
 #include <map>

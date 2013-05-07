@@ -1,7 +1,7 @@
 #ifndef __Automaton_TNodeLoop_INL__
 #define __Automaton_TNodeLoop_INL__
 
-#include "../INode.h"
+#include "INode.h"
 #include "TNode.inl"
 
 namespace Automaton

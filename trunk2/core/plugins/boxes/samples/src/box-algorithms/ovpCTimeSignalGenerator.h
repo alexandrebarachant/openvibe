@@ -5,7 +5,7 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <ebml/TWriterCallbackProxy.h>
+#include <ebml/include/TWriterCallbackProxy.h>
 
 namespace OpenViBEPlugins
 {

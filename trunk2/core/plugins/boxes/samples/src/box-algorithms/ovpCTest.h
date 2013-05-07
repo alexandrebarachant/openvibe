@@ -5,8 +5,8 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <ebml/CReader.h>
-#include <ebml/CReaderHelper.h>
+#include <ebml/include/CReader.h>
+#include <ebml/include/CReaderHelper.h>
 
 namespace OpenViBEPlugins
 {

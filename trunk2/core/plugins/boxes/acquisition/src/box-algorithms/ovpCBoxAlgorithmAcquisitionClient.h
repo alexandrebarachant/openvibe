@@ -5,7 +5,7 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <socket/IConnectionClient.h>
+#include <socket/include/IConnectionClient.h>
 
 namespace OpenViBEPlugins
 {

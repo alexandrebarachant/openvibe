@@ -5,7 +5,7 @@
 
 #include <openvibe/ov_all.h>
 
-#include <xml/IWriter.h>
+#include <xml/include/IWriter.h>
 
 #include <iostream>
 #include <fstream>

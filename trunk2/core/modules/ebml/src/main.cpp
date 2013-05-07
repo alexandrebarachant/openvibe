@@ -1,10 +1,10 @@
-#include "ebml/IReader.h"
-#include "ebml/IReaderHelper.h"
-#include "ebml/TReaderCallbackProxy.h"
+#include "IReader.h"
+#include "IReaderHelper.h"
+#include "TReaderCallbackProxy.h"
 
-#include "ebml/IWriter.h"
-#include "ebml/IWriterHelper.h"
-#include "ebml/TWriterCallbackProxy.h"
+#include "IWriter.h"
+#include "IWriterHelper.h"
+#include "TWriterCallbackProxy.h"
 
 namespace EBML
 {

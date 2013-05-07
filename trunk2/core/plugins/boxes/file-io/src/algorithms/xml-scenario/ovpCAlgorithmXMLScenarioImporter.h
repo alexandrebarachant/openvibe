@@ -7,7 +7,7 @@
 
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <xml/IReader.h>
+#include <xml/include/IReader.h>
 
 #include <stack>
 #include <string>

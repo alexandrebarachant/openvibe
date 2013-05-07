@@ -1,8 +1,8 @@
 #ifndef __Automaton_TNode_INL__
 #define __Automaton_TNode_INL__
 
-#include "../INode.h"
-#include "../CIdentifier.h"
+#include "INode.h"
+#include "CIdentifier.h"
 #include <vector>
 
 namespace Automaton

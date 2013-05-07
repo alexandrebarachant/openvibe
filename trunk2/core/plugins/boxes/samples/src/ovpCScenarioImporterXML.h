@@ -5,7 +5,7 @@
 
 #include <openvibe/ov_all.h>
 
-#include <xml/IReader.h>
+#include <xml/include/IReader.h>
 
 #include <map>
 #include <stack>

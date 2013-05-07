@@ -6,7 +6,7 @@
 
 #include <cstdlib>
 #include <cmath>
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 using namespace std;
 

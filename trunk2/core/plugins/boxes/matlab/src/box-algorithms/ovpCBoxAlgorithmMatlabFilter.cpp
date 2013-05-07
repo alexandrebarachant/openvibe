@@ -3,7 +3,7 @@
 #include "ovpCBoxAlgorithmMatlabFilter.h"
 
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 #include <iostream>
 #include <stdio.h>
 #include <sstream>

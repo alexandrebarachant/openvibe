@@ -5,7 +5,7 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <ebml/IReader.h>
+#include <ebml/include/IReader.h>
 
 namespace OpenViBEPlugins
 {

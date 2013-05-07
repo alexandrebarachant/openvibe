@@ -2,7 +2,7 @@
 #define __Automaton_CXMLParameterReader_HPP__
 
 #include "../TXMLReader.hpp"
-#include "../IXMLNodeReader.h"
+#include "IXMLNodeReader.h"
 
 #include <iostream>
 #include <sstream>

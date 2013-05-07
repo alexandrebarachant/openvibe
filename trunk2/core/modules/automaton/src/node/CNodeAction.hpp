@@ -1,10 +1,10 @@
 #ifndef __Automaton_CNodeAction_H__
 #define __Automaton_CNodeAction_H__
 
-#include "../INode.h"
+#include "INode.h"
 #include "TNode.inl"
-#include "../CIdentifier.h"
-#include "../IAutomatonContext.h"
+#include "CIdentifier.h"
+#include "IAutomatonContext.h"
 
 #include <vector>
 #include <string>

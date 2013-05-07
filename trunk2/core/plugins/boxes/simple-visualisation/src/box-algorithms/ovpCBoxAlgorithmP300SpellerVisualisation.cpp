@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmP300SpellerVisualisation.h"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 #include <list>
 #include <vector>

@@ -5,7 +5,7 @@
 #include "IAutomatonContext.h"
 #include "CIdentifier.h"
 
-#include "xml/IReader.h"
+#include "xml/include/IReader.h"
 
 namespace Automaton
 {

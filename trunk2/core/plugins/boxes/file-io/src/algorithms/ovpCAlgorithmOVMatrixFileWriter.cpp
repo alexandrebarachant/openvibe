@@ -1,6 +1,6 @@
 #include "ovpCAlgorithmOVMatrixFileWriter.h"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 #include <sstream>
 #if defined TARGET_OS_Windows

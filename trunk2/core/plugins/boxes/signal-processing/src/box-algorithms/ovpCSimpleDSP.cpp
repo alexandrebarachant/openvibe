@@ -1,6 +1,6 @@
 #include "ovpCSimpleDSP.h"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 #include <iostream>
 #include <sstream>

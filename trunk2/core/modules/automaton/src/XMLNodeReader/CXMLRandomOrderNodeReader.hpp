@@ -1,6 +1,6 @@
-#include "../IXMLNodeReader.h"
-#include "../INodeFactory.h"
-#include "../IXMLNodeReaderFactory.h"
+#include "IXMLNodeReader.h"
+#include "INodeFactory.h"
+#include "IXMLNodeReaderFactory.h"
 #include "../node/CNodeRandomOrder.hpp"
 
 #include "../TXMLReader.hpp"

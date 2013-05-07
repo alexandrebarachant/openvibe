@@ -1,11 +1,11 @@
 #ifndef __Automaton_CNodeRandomOrder_HPP__
 #define __Automaton_CNodeRandomOrder_HPP__
 
-#include "../INode.h"
+#include "INode.h"
 #include "TNode.inl"
-#include "../IAutomatonContext.h"
+#include "IAutomatonContext.h"
 
-#include "../CIdentifier.h"
+#include "CIdentifier.h"
 
 #include <string>
 #include <vector>

@@ -5,9 +5,9 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <ebml/CWriter.h>
-#include <ebml/CWriterHelper.h>
-#include <ebml/CReader.h>
+#include <ebml/include/CWriter.h>
+#include <ebml/include/CWriterHelper.h>
+#include <ebml/include/CReader.h>
 
 #include <cstdio>
 

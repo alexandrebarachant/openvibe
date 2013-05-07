@@ -2,7 +2,7 @@
 
 #include "ovpCBoxAlgorithmXDAWNSpatialFilterTrainer.h"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 #include <complex>
 #include <sstream>

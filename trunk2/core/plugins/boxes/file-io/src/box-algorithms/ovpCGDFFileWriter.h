@@ -7,10 +7,10 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <ebml/IReader.h>
-#include <ebml/IReaderHelper.h>
+#include <ebml/include/IReader.h>
+#include <ebml/include/IReaderHelper.h>
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 #include <iostream>
 #include <fstream>

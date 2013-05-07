@@ -5,8 +5,8 @@
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
 
-#include <xml/IWriter.h>
-#include <xml/IReader.h>
+#include <xml/include/IWriter.h>
+#include <xml/include/IReader.h>
 
 #include <stack>
 #include "libSVM/svm.h"

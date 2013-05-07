@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
-#include <ebml/TWriterCallbackProxy.h>
+#include <ebml/include/TWriterCallbackProxy.h>
 
 namespace OpenViBEPlugins
 {

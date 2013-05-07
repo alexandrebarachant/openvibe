@@ -4,8 +4,8 @@
 #include "ovp_defines.h"
 
 #include <openvibe/ov_all.h>
-#include <ebml/IReader.h>
-#include <ebml/IReaderHelper.h>
+#include <ebml/include/IReader.h>
+#include <ebml/include/IReaderHelper.h>
 #include <iostream>
 #include <vector>
 #include <cmath>

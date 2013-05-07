@@ -1,6 +1,6 @@
 #include "COutputStreamBase.hpp"
 
-#include <system/Memory.h>
+#include <system/include/Memory.h>
 
 using namespace Stream;
 

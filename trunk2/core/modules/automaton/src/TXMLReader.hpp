@@ -2,7 +2,7 @@
 #define __Automaton_TXMLReader_HPP__
 
 #include "defines.h"
-#include <xml/IReader.h>
+#include <xml/include/IReader.h>
 
 #include <cstring>
 

@@ -4,7 +4,7 @@
 #include "ovp_defines.h"
 #include <openvibe/ov_all.h>
 #include <openvibe-toolkit/ovtk_all.h>
-#include <ebml/TWriterCallbackProxy.h>
+#include <ebml/include/TWriterCallbackProxy.h>
 
 #include <vector>
 

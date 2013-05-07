@@ -1,12 +1,12 @@
 #ifndef __Automaton_CNodeFiniteIterationLoop_HPP__
 #define __Automaton_CNodeFiniteIterationLoop_HPP__
 
-#include "../INode.h"
+#include "INode.h"
 #include "TNode.inl"
 #include "TNodeLoop.inl"
-#include "../IAutomatonContext.h"
+#include "IAutomatonContext.h"
 
-#include "../CIdentifier.h"
+#include "CIdentifier.h"
 
 #include <string>
 #include <vector>
