@@ -1,27 +1,27 @@
 #include "ovp_defines.h"
 
 #include "algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
-#include "algorithms/simple-visualisation/ovpCAlgorithmLevelMeasure.h"
+#include "algorithms/ovpCAlgorithmLevelMeasure.h"
 
 //Presentation
-#include "ovpCGrazVisualization.h"
-#include "ovpCBoxAlgorithmP300SpellerVisualisation.h"
-#include "ovpCBoxAlgorithmP300MagicCardVisualisation.h"
-#include "ovpCBoxAlgorithmP300IdentifierCardVisualisation.h"
-#include "ovpCDisplayCueImage.h"
+#include "box-algorithms/ovpCGrazVisualization.h"
+#include "box-algorithms/ovpCBoxAlgorithmP300SpellerVisualisation.h"
+#include "box-algorithms/ovpCBoxAlgorithmP300MagicCardVisualisation.h"
+#include "box-algorithms/ovpCBoxAlgorithmP300IdentifierCardVisualisation.h"
+#include "box-algorithms/ovpCDisplayCueImage.h"
 
 //2D plugins
-#include "ovpCSignalDisplay.h"
-#include "ovpCTimeFrequencyMapDisplay.h"
-#include "ovpCPowerSpectrumDisplay.h"
-#include "ovpCTopographicMap2DDisplay.h"
-#include "box-algorithms/simple-visualisation/ovpCBoxAlgorithmLevelMeasure.h"
-#include "box-algorithms/simple-visualisation/ovpCBoxAlgorithmClassifierAccuracyMeasure.h"
-#include "ovpCBoxAlgorithmMatrixDisplay.h"
+#include "box-algorithms/ovpCSignalDisplay.h"
+#include "box-algorithms/ovpCTimeFrequencyMapDisplay.h"
+#include "box-algorithms/ovpCPowerSpectrumDisplay.h"
+#include "box-algorithms/ovpCTopographicMap2DDisplay.h"
+#include "box-algorithms/ovpCBoxAlgorithmLevelMeasure.h"
+#include "box-algorithms/ovpCBoxAlgorithmClassifierAccuracyMeasure.h"
+#include "box-algorithms/ovpCBoxAlgorithmMatrixDisplay.h"
 //3D plugins
-#include "ovpCSimple3DDisplay.h"
-#include "ovpCTopographicMap3DDisplay.h"
-#include "ovpCVoxelDisplay.h"
+#include "box-algorithms/ovpCSimple3DDisplay.h"
+#include "box-algorithms/ovpCTopographicMap3DDisplay.h"
+#include "box-algorithms/ovpCVoxelDisplay.h"
 
 OVP_Declare_Begin()
 

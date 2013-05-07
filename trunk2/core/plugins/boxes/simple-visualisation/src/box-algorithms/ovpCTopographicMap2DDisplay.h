@@ -1,14 +1,14 @@
 #ifndef __SamplePlugin_CTopographicMap2DDisplay_H__
 #define __SamplePlugin_CTopographicMap2DDisplay_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include <ebml/include/IReader.h>
 
-#include "ovpCTopographicMapDatabase.h"
+#include "../ovpCTopographicMapDatabase.h"
 #include "ovpCTopographicMap2DDisplay/ovpCTopographicMap2DView.h"
 
 namespace OpenViBEPlugins

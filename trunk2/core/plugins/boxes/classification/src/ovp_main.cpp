@@ -1,14 +1,14 @@
 #include "ovp_defines.h"
 
-#include "algorithms/classification/ovpCAlgorithmClassifierNULL.h"
-#include "algorithms/classification/ovpCAlgorithmClassifierSVM.h"
+#include "algorithms/ovpCAlgorithmClassifierNULL.h"
+#include "algorithms/ovpCAlgorithmClassifierSVM.h"
 
-#include "algorithms/confusion-matrix/ovpCAlgorithmConfusionMatrix.h"
+#include "algorithms/ovpCAlgorithmConfusionMatrix.h"
 
-#include "box-algorithms/classification/ovpCBoxAlgorithmVotingClassifier.h"
-#include "box-algorithms/classification/ovpCBoxAlgorithmClassifierTrainer.h"
-#include "box-algorithms/classification/ovpCBoxAlgorithmClassifierProcessor.h"
-#include "box-algorithms/confusion-matrix/ovpCBoxAlgorithmConfusionMatrix.h"
+#include "box-algorithms/ovpCBoxAlgorithmVotingClassifier.h"
+#include "box-algorithms/ovpCBoxAlgorithmClassifierTrainer.h"
+#include "box-algorithms/ovpCBoxAlgorithmClassifierProcessor.h"
+#include "box-algorithms/ovpCBoxAlgorithmConfusionMatrix.h"
 
 #include <vector>
 

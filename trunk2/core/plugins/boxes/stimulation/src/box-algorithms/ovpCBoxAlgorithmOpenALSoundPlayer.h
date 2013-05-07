@@ -3,9 +3,9 @@
 
 #if defined TARGET_HAS_ThirdPartyOpenAL
 
-#include "../../ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include <AL/alut.h>
 #include <vorbis/vorbisfile.h>

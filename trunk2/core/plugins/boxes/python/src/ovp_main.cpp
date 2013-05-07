@@ -1,5 +1,5 @@
 #if defined TARGET_HAS_ThirdPartyPython
-#include "ovpCBoxAlgorithmPython.h"
+#include "box-algorithms/ovpCBoxAlgorithmPython.h"
 
 #ifdef TARGET_OS_Windows
 #include "windows.h"

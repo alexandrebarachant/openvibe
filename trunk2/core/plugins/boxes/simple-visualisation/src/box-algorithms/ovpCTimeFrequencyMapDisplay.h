@@ -1,12 +1,12 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CTimeFrequencyMapDisplay_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CTimeFrequencyMapDisplay_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
-#include "ovpCSpectrumDatabase.h"
+#include "../ovpCSpectrumDatabase.h"
 #include "ovpCTimeFrequencyMapDisplay/ovpCTimeFrequencyMapDisplayView.h"
 
 namespace OpenViBEPlugins

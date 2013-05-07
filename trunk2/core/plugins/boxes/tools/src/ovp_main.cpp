@@ -1,11 +1,11 @@
 #include "ovp_defines.h"
 
-#include "box-algorithms/tools/ovpCBoxAlgorithmEBMLStreamSpy.h"
-#include "box-algorithms/tools/ovpCBoxAlgorithmStimulationListener.h"
+#include "box-algorithms/ovpCBoxAlgorithmEBMLStreamSpy.h"
+#include "box-algorithms/ovpCBoxAlgorithmStimulationListener.h"
 
-#include "ovpCMouseControl.h"
+#include "box-algorithms/ovpCMouseControl.h"
 // #include "ovpCBoxAlgorithmLatencyEvaluation.h"
-#include "box-algorithms/tools/ovpCBoxAlgorithmMatrixValidityChecker.h"
+#include "box-algorithms/ovpCBoxAlgorithmMatrixValidityChecker.h"
 
 OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::Tools::CMouseControlDesc);

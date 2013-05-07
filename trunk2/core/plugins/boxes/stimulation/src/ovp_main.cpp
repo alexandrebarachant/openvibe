@@ -1,29 +1,30 @@
+
 #include "ovp_defines.h"
 
-#include "ovpCXMLStimulationScenarioPlayer.h"
-#include "ovpCKeyboardStimulator.h"
-#include "ovpCSignChangeDetector.h"
+#include "box-algorithms/ovpCXMLStimulationScenarioPlayer.h"
+#include "box-algorithms/ovpCKeyboardStimulator.h"
+#include "box-algorithms/ovpCSignChangeDetector.h"
 
-#include "box-algorithms/stimulation/ovpCBoxAlgorithmPlayerController.h"
+#include "box-algorithms/ovpCBoxAlgorithmPlayerController.h"
 
-#include "box-algorithms/stimulation/ovpCBoxAlgorithmStimulationMultiplexer.h"
-#include "box-algorithms/stimulation/ovpCBoxAlgorithmStimulationVoter.h"
-#include "box-algorithms/stimulation/ovpCBoxAlgorithmSoundPlayer.h"
+#include "box-algorithms/ovpCBoxAlgorithmStimulationMultiplexer.h"
+#include "box-algorithms/ovpCBoxAlgorithmStimulationVoter.h"
+#include "box-algorithms/ovpCBoxAlgorithmSoundPlayer.h"
 
-#include "box-algorithms/stimulation/ovpCBoxAlgorithmRunCommand.h"
+#include "box-algorithms/ovpCBoxAlgorithmRunCommand.h"
 #if defined TARGET_HAS_ThirdPartyLua
- #include "box-algorithms/stimulation/ovpCBoxAlgorithmLuaStimulator.h"
+ #include "box-algorithms/ovpCBoxAlgorithmLuaStimulator.h"
 #endif // TARGET_HAS_ThirdPartyLua
 #if defined TARGET_HAS_ThirdPartyOpenAL
- #include "box-algorithms/stimulation/ovpCBoxAlgorithmOpenALSoundPlayer.h"
+ #include "box-algorithms/ovpCBoxAlgorithmOpenALSoundPlayer.h"
 #endif // TARGET_HAS_ThirdPartyOpenAL
 
-#include "box-algorithms/stimulation/adaptation/ovpCBoxAlgorithmStimulationFilter.h"
+#include "box-algorithms/adaptation/ovpCBoxAlgorithmStimulationFilter.h"
 
-#include "ovpCBoxAlgorithmP300SpellerStimulator.h"
-#include "ovpCBoxAlgorithmP300IdentifierStimulator.h"
+#include "box-algorithms/ovpCBoxAlgorithmP300SpellerStimulator.h"
+#include "box-algorithms/ovpCBoxAlgorithmP300IdentifierStimulator.h"
 
-#include "ovpCBoxAlgorithmTimeout.h"
+#include "box-algorithms/ovpCBoxAlgorithmTimeout.h"
 
 OVP_Declare_Begin();
 	rPluginModuleContext.getTypeManager().registerEnumerationType(OVP_TypeId_StimulationFilterAction, "Stimulation Filter Action");

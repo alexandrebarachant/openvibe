@@ -1,11 +1,10 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_SignalConcatenation_H__
 #define __OpenViBEPlugins_BoxAlgorithm_SignalConcatenation_H__
 
-//You may have to change this path to match your folder organisation
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include <stdio.h>
 #include <vector>

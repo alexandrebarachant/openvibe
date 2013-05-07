@@ -4,8 +4,8 @@
 #if defined TARGET_HAS_ThirdPartyVRPN
 
 #include "ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 namespace OpenViBEPlugins
 {

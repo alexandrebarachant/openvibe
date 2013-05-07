@@ -4,7 +4,7 @@
 #include <fs/include/Files.h>
 
 #include <system/include/Time.h>
-#include <system/include/Math.h>
+#include <system/include/CMath.h>
 
 #include <stack>
 #include <string>

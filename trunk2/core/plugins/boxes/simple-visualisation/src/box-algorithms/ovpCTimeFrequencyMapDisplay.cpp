@@ -1,5 +1,5 @@
 #include "ovpCTimeFrequencyMapDisplay.h"
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
 #include <cstdlib>
 

@@ -1,6 +1,6 @@
 #include "ovpCTopographicMap3DDisplay.h"
 #include "ovpCTopographicMap3DDisplay/ovpCTopographicMap3DView.h"
-#include "algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
+#include "../algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
 
 #include <cstdlib>
 #include <cmath>

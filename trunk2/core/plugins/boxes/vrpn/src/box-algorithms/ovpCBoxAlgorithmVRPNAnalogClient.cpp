@@ -1,9 +1,8 @@
 #if defined TARGET_HAS_ThirdPartyVRPN
 
 #include "ovpCBoxAlgorithmVRPNAnalogClient.h"
-#include "openvibe/ovITimeArithmetics.h"
 
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovITimeArithmetics.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

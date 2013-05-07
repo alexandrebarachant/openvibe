@@ -1,14 +1,14 @@
 #ifndef __SamplePlugin_CVoxelDisplay_H__
 #define __SamplePlugin_CVoxelDisplay_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include <gtk/gtk.h>
 
-#include "ovpCStreamedMatrixDatabase.h"
+#include "../ovpCStreamedMatrixDatabase.h"
 
 namespace OpenViBEPlugins
 {

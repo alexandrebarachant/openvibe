@@ -1,7 +1,7 @@
 #ifndef __OpenViBEPlugins_FileIO_GDFHelpers_H__
 #define __OpenViBEPlugins_FileIO_GDFHelpers_H__
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include <system/include/Memory.h>
 

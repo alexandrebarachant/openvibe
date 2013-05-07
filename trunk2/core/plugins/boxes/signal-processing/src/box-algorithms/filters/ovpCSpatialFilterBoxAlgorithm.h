@@ -4,7 +4,7 @@
 
 #include "../../ovp_defines.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #define OVP_ClassId_Box_SpatialFilterBoxAlgorithm     OpenViBE::CIdentifier(0xDD332C6C, 0x195B4FD4)
 #define OVP_ClassId_Box_SpatialFilterBoxAlgorithmDesc OpenViBE::CIdentifier(0x72A01C92, 0xF8C1FA24)

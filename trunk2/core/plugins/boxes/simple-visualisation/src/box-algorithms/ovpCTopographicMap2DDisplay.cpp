@@ -1,5 +1,5 @@
 #include "ovpCTopographicMap2DDisplay.h"
-#include "algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
+#include "../algorithms/ovpCAlgorithmSphericalSplineInterpolation.h"
 #include <cstdlib>
 #include <cmath>
 #include <memory.h>

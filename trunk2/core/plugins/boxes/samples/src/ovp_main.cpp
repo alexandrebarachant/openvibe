@@ -4,23 +4,23 @@
 #include "ovpCScenarioExporterXML.h"
 #include "ovpCScenarioExporterSVG.h"
 
-#include "ovpCCrashingBox.h"
-#include "ovpCSinusSignalGenerator.h"
-#include "ovpCTimeSignalGenerator.h"
-#include "ovpCIdentity.h"
-#include "ovpCLog.h"
-#include "ovpCTest.h"
-#include "ovpCBoxAlgorithmClock.h"
-#include "ovpCBoxAlgorithmClockStimulator.h"
+#include "box-algorithms/ovpCCrashingBox.h"
+#include "box-algorithms/ovpCSinusSignalGenerator.h"
+#include "box-algorithms/ovpCTimeSignalGenerator.h"
+#include "box-algorithms/ovpCIdentity.h"
+#include "box-algorithms/ovpCLog.h"
+#include "box-algorithms/ovpCTest.h"
+#include "box-algorithms/ovpCBoxAlgorithmClock.h"
+#include "box-algorithms/ovpCBoxAlgorithmClockStimulator.h"
 
 #include "algorithms/ovpCAlgorithmAddition.h"
-#include "ovpCBoxAlgorithmAdditionTest.h"
+#include "box-algorithms/ovpCBoxAlgorithmAdditionTest.h"
 
-#include "ovpCBoxAlgorithmNothing.h"
+#include "box-algorithms/ovpCBoxAlgorithmNothing.h"
 
-#include "ovpCBoxAlgorithmMeanVariance.h"
+#include "box-algorithms/ovpCBoxAlgorithmMeanVariance.h"
 
-#include "ovpCTestCodecToolkit.h"
+#include "box-algorithms/ovpCTestCodecToolkit.h"
 
 OVP_Declare_Begin();
 	// rPluginModuleContext.getTypeManager().registerStreamType(OpenViBE::CIdentifier(0x1234,0x5678), "producer/consumer", OV_UndefinedIdentifier);

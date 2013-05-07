@@ -1,4 +1,5 @@
-#include "Math.h"
+
+#include "CMath.h"
 #include <cstdlib>
 #include <cstring>
 

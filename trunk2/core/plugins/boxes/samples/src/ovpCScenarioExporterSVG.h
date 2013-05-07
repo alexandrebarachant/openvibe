@@ -3,7 +3,7 @@
 
 #include "ovp_defines.h"
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include <xml/include/IWriter.h>
 

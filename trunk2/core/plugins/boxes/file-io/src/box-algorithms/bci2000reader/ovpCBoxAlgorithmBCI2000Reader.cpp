@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmBCI2000Reader.h"
 
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovITimeArithmetics.h>
 
 #include <iostream>
 #include <sstream>

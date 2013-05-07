@@ -1,9 +1,9 @@
 #ifndef __SamplePlugin_CTest_H__
 #define __SamplePlugin_CTest_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #include <ebml/include/CReader.h>
 #include <ebml/include/CReaderHelper.h>

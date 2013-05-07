@@ -1,8 +1,8 @@
 #ifndef __SamplePlugin_CTimeBasedEpoching_H__
 #define __SamplePlugin_CTimeBasedEpoching_H__
 
-#include "ovp_defines.h"
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ovtk_all.h>
 #include <ebml/include/TWriterCallbackProxy.h>
 #include <vector>
 #include <cstdio>

@@ -18,24 +18,22 @@
 #include "box-algorithms/spectral-analysis/ovpCBoxAlgorithmFrequencyBandSelector.h"
 #include "box-algorithms/spectral-analysis/ovpCBoxAlgorithmSpectrumAverage.h"
 
-#include "ovpCTimeBasedEpoching.h"
-#include "ovpCReferenceChannel.h"
-#include "ovpCChannelSelector.h"
-#include "ovpCSimpleDSP.h"
-#include "ovpCSignalAverage.h"
-#include "ovpCSignalConcat.h"
-#include "ovpCFirstDifferenceDetrending.h"
-#include "ovpCSecondDifferenceDetrending.h"
-#include "ovpCBoxAlgorithmQuadraticForm.h"
+#include "box-algorithms/ovpCTimeBasedEpoching.h"
+#include "box-algorithms/ovpCReferenceChannel.h"
+#include "box-algorithms/ovpCChannelSelector.h"
+#include "box-algorithms/ovpCSimpleDSP.h"
+#include "box-algorithms/ovpCSignalAverage.h"
+#include "box-algorithms/ovpCSignalConcat.h"
+#include "box-algorithms/ovpCFirstDifferenceDetrending.h"
+#include "box-algorithms/ovpCSecondDifferenceDetrending.h"
+#include "box-algorithms/ovpCBoxAlgorithmQuadraticForm.h"
 
-#include "ovpCBandFrequencyAverage.h"
-#include "ovpCEpoching.h"
-#include "ovpCSteadyStateFrequencyComparison.h"
+#include "box-algorithms/ovpCBandFrequencyAverage.h"
+#include "box-algorithms/ovpCEpoching.h"
+#include "box-algorithms/ovpCSteadyStateFrequencyComparison.h"
 
-#if 1
-#include "ovpCAlgorithmUnivariateStatistics.h"
-#include "ovpCBoxAlgorithmUnivariateStatistics.h"
-#endif
+#include "algorithms/ovpCAlgorithmUnivariateStatistics.h"
+#include "box-algorithms/ovpCBoxAlgorithmUnivariateStatistics.h"
 
 OVP_Declare_Begin()
 

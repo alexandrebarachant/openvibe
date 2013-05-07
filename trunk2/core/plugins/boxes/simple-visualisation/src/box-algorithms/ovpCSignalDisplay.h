@@ -1,17 +1,17 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CSignalDisplay_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CSignalDisplay_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include <ebml/include/IReader.h>
 
 #include <vector>
 #include <string>
 
-#include "ovpCBufferDatabase.h"
+#include "../ovpCBufferDatabase.h"
 #include "ovpCSignalDisplay/ovpCSignalDisplayView.h"
 
 namespace OpenViBEPlugins

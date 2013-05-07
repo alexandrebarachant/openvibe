@@ -1,11 +1,11 @@
 #ifndef __OpenViBEPlugins_Algorithm_XMLScenarioExporter_H__
 #define __OpenViBEPlugins_Algorithm_XMLScenarioExporter_H__
 
-#include "../../../ovp_defines.h"
+#include "../../ovp_defines.h"
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #include <xml/include/IWriter.h>
 

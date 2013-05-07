@@ -1,7 +1,7 @@
 #ifndef BITFIELD_H
 #define BITFIELD_H
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include <string>
 #include <iostream>

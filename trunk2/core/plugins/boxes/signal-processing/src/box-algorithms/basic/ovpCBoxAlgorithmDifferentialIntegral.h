@@ -4,8 +4,8 @@
 //You may have to change this path to match your folder organisation
 #include "../../ovp_defines.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 #include <vector>
 
 // The unique identifiers for the box and its descriptor.

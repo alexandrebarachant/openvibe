@@ -1,11 +1,11 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
 #define __OpenViBEPlugins_BoxAlgorithm_LatencyEvaluation_H__
 
-#include "ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ov_all.h>
+#include <ovtk_all.h>
 
-#include <system/Time.h>
+#include <system/include/Time.h>
 
 namespace OpenViBEPlugins
 {

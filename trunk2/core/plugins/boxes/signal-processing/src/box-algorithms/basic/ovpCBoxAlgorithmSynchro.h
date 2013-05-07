@@ -2,8 +2,8 @@
 #define __OpenViBEPlugins_BoxAlgorithm_Synchro_H__
 
 #include "../../ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include "ovpCInputChannel.h"
 #include "ovpCOutputChannel.h"

@@ -1,6 +1,6 @@
 #include "ovp_defines.h"
 
-#include "ovpCFeatureAggregator.h"
+#include "box-algorithms/ovpCFeatureAggregator.h"
 
 OVP_Declare_Begin();
 	OVP_Declare_New(OpenViBEPlugins::FeatureExtraction::CFeatureAggregatorDesc);

@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmLevelMeasure.h"
 
-#include "../../algorithms/simple-visualisation/ovpCAlgorithmLevelMeasure.h"
+#include "../algorithms/ovpCAlgorithmLevelMeasure.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

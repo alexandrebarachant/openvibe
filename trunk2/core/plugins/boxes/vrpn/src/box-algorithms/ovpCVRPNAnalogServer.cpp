@@ -1,7 +1,7 @@
 #if defined TARGET_HAS_ThirdPartyVRPN
 
 #include "ovpCVRPNAnalogServer.h"
-#include "ovpIVRPNServerManager.h"
+#include "../ovpIVRPNServerManager.h"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

@@ -3,7 +3,7 @@
 
 #include "../ovp_defines.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #include <boost/spirit/include/classic_core.hpp>
 #include <boost/spirit/include/classic_symbols.hpp>

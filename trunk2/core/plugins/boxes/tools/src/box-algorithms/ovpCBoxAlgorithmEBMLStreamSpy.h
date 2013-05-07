@@ -1,8 +1,8 @@
 #ifndef __OpenViBEPlugins_BoxAlgorithm_EBMLStreamSpy_H__
 #define __OpenViBEPlugins_BoxAlgorithm_EBMLStreamSpy_H__
 
-#include "../../ovp_defines.h"
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ovtk_all.h>
 #include <ebml/include/IReader.h>
 #include <ebml/include/IReaderHelper.h>
 

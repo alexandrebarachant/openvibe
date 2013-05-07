@@ -5,11 +5,11 @@
 
 #include <map>
 
-#include "ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ov_all.h>
+#include <ovtk_all.h>
 
-#include "ovpCMatlabHelper.h"
+#include "../ovpCMatlabHelper.h"
 
 #define OVP_ClassId_BoxAlgorithm_MatlabScripting     OpenViBE::CIdentifier(0x03303E0E, 0x39FE10DF)
 #define OVP_ClassId_BoxAlgorithm_MatlabScriptingDesc OpenViBE::CIdentifier(0x46130E2F, 0x34F90BA1)

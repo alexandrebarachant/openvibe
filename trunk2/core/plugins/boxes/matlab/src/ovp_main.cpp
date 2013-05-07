@@ -1,9 +1,9 @@
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include "ovp_defines.h"
 
-#include "ovpCBoxAlgorithmMatlabFilter.h"
-#include "ovpCBoxAlgorithmMatlabScripting.h"
+#include "box-algorithms/ovpCBoxAlgorithmMatlabFilter.h"
+#include "box-algorithms/ovpCBoxAlgorithmMatlabScripting.h"
 
 #include <vector>
 

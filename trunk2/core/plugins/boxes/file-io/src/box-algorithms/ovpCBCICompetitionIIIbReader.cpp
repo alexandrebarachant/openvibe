@@ -1,6 +1,6 @@
 #include "ovpCBCICompetitionIIIbReader.h"
 
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovITimeArithmetics.h>
 
 #include <iostream>
 #include <cmath>

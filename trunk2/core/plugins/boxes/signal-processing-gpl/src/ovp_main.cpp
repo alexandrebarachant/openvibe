@@ -1,14 +1,14 @@
 #include "ovp_defines.h"
 
-#include "ovpCWindowingFunctions.h"
+#include "box-algorithms/ovpCWindowingFunctions.h"
 
-#include "ovpCSpectralAnalysisCospectra.h"
+#include "box-algorithms/ovpCSpectralAnalysisCospectra.h"
 
-#include "ovpCFastICA.h"
+#include "box-algorithms/ovpCFastICA.h"
 
-#include "ovpCSpectralAnalysis.h"
+#include "box-algorithms/ovpCSpectralAnalysis.h"
 
-#include "ovpCTemporalFilter.h"
+#include "box-algorithms/ovpCTemporalFilter.h"
 
 #include "algorithms/filter/ovpCComputeTemporalFilterCoefficients.h"
 #include "algorithms/filter/ovpCApplyTemporalFilter.h"

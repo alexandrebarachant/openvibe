@@ -1,5 +1,5 @@
 #include "ovpCBoxAlgorithmUnivariateStatistics.h"
-#include "ovpCAlgorithmUnivariateStatistics.h"
+#include "../algorithms/ovpCAlgorithmUnivariateStatistics.h"
 #include <cstdlib>
 #include <iostream>
 

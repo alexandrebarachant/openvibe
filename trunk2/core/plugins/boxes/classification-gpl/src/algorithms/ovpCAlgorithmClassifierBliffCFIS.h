@@ -1,9 +1,9 @@
 #ifndef __OpenViBEPlugins_Algorithm_ClassifierBliffCFIS_H__
 #define __OpenViBEPlugins_Algorithm_ClassifierBliffCFIS_H__
 
-#include "../../ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #if defined TARGET_HAS_ThirdPartyBLiFF
 

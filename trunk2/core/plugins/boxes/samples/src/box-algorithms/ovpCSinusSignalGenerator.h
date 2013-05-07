@@ -1,9 +1,9 @@
 #ifndef __SamplePlugin_CSinusSignalGenerator_H__
 #define __SamplePlugin_CSinusSignalGenerator_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #include <ebml/include/TWriterCallbackProxy.h>
 

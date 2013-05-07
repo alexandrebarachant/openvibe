@@ -1,12 +1,12 @@
 #ifndef __OpenViBEPlugins_SignalProcessing_CSimpleDSP_H__
 #define __OpenViBEPlugins_SignalProcessing_CSimpleDSP_H__
 
-#include "ovp_defines.h"
+#include "../ovp_defines.h"
 
-#include <system/Time.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <system/include/Time.h>
+#include <ovtk_all.h>
 
-#include "ovpCSimpleDSP/ovpCEquationParser.h"
+#include "../ovpCSimpleDSP/ovpCEquationParser.h"
 
 #include <ebml/include/IReader.h>
 #include <ebml/include/IReaderHelper.h>

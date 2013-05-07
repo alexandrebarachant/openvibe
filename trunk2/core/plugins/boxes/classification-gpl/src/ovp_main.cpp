@@ -1,7 +1,7 @@
 #include "ovp_defines.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #if defined TARGET_HAS_ThirdPartyBLiFF
 #include "algorithms/classification/ovpCAlgorithmClassifierBliffLDA.h"
@@ -9,7 +9,7 @@
 #endif // TARGET_HAS_ThirdPartyBLiFF
 
 #if defined TARGET_HAS_ThirdPartyITPP
-#include "algorithms/classification/ovpCAlgorithmClassifierLDA.h"
+#include "algorithms/ovpCAlgorithmClassifierLDA.h"
 #endif // TARGET_HAS_ThirdPartyITPP
 
 #include <vector>

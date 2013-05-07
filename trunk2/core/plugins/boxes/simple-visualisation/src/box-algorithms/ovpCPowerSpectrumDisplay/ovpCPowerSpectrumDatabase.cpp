@@ -1,5 +1,5 @@
 #include "ovpCPowerSpectrumDatabase.h"
-#include "../ovpCBufferDatabase.h"
+#include "../../ovpCBufferDatabase.h"
 
 #include <system/include/Memory.h>
 

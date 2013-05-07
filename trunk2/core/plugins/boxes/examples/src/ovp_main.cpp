@@ -1,7 +1,7 @@
 #include "ovp_defines.h"
 
-#include "ovpCHelloWorld.h"
-#include "ovpCHelloWorldWithInput.h"
+#include "box-algorithms/ovpCHelloWorld.h"
+#include "box-algorithms/ovpCHelloWorldWithInput.h"
 
 OVP_Declare_Begin();
 

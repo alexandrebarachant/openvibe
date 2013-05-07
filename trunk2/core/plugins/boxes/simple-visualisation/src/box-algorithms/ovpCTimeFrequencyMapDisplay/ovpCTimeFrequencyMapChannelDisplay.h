@@ -1,12 +1,12 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CTimeFrequencyMapChannelDisplay_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CTimeFrequencyMapChannelDisplay_H__
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 #include <gtk/gtk.h>
 #include <iostream>
 
-#include "../ovpCSpectrumDatabase.h"
+#include "../../ovpCSpectrumDatabase.h"
 
 using namespace std;
 

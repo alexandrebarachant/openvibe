@@ -2,8 +2,8 @@
 #define __OpenViBEPlugins_SignalProcessingGpl_BoxAlgorithms_Filter_CDownsamplingBoxAlgorithm_H__
 
 #include "../../ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 namespace OpenViBEPlugins
 {

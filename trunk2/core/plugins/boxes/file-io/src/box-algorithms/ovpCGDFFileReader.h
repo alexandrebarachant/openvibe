@@ -1,12 +1,12 @@
 #ifndef __OpenViBEPlugins_FileIO_CGDFFileReader_H__
 #define __OpenViBEPlugins_FileIO_CGDFFileReader_H__
 
-#include "ovp_defines.h"
-#include "ovp_gdf_helpers.h"
+#include "../ovp_defines.h"
+#include "../ovp_gdf_helpers.h"
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #include <ebml/include/TWriterCallbackProxy.h>
 #include <ebml/include/IWriter.h>

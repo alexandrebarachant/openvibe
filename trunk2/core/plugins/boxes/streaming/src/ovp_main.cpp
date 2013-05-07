@@ -1,8 +1,9 @@
+
 #include "ovp_defines.h"
 
-#include "box-algorithms/streaming/ovpCBoxAlgorithmStreamedMatrixMultiplexer.h"
-#include "box-algorithms/streaming/ovpCBoxAlgorithmSignalMerger.h"
-#include "box-algorithms/streaming/ovpCBoxAlgorithmStreamedMatrixSwitch.h"
+#include "box-algorithms/ovpCBoxAlgorithmStreamedMatrixMultiplexer.h"
+#include "box-algorithms/ovpCBoxAlgorithmSignalMerger.h"
+#include "box-algorithms/ovpCBoxAlgorithmStreamedMatrixSwitch.h"
 
 #include <vector>
 

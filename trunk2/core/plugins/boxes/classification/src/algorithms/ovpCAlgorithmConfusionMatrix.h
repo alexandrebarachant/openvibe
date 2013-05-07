@@ -1,9 +1,9 @@
 #ifndef __OpenViBEPlugins_Algorithm_ConfusionMatrix_H__
 #define __OpenViBEPlugins_Algorithm_ConfusionMatrix_H__
 
-#include "../../ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #define OVP_Algorithm_ConfusionMatrixAlgorithm_InputParameterId_Sums                     OpenViBE::CIdentifier(0x75502E8E, 0x05D838EE)
 #define OVP_Algorithm_ConfusionMatrixAlgorithm_InputParameterId_Percentage               OpenViBE::CIdentifier(0x7E504E8E, 0x058858EE)

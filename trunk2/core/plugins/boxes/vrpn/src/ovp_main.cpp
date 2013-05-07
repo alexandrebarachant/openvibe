@@ -1,10 +1,10 @@
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include "ovp_defines.h"
-#include "ovpCVRPNAnalogServer.h"
-#include "ovpCVRPNButtonServer.h"
-#include "ovpCBoxAlgorithmVRPNAnalogClient.h"
-#include "ovpCBoxAlgorithmVRPNButtonClient.h"
+#include "box-algorithms/ovpCVRPNAnalogServer.h"
+#include "box-algorithms/ovpCVRPNButtonServer.h"
+#include "box-algorithms/ovpCBoxAlgorithmVRPNAnalogClient.h"
+#include "box-algorithms/ovpCBoxAlgorithmVRPNButtonClient.h"
 
 #include <vector>
 

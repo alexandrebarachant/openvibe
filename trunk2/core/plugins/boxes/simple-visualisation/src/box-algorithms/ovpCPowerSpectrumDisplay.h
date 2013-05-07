@@ -1,9 +1,9 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CPowerSpectrumDisplay_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CPowerSpectrumDisplay_H__
 
-#include "ovp_defines.h"
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include "../ovp_defines.h"
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include "ovpCPowerSpectrumDisplay/ovpCPowerSpectrumDatabase.h"
 #include "ovpCPowerSpectrumDisplay/ovpCPowerSpectrumDisplayView.h"

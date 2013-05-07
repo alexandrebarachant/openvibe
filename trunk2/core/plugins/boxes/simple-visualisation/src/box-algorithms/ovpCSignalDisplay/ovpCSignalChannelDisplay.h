@@ -1,7 +1,7 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CSignalChannelDisplay_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CSignalChannelDisplay_H__
 
-#include "../ovp_defines.h"
+#include "../../ovp_defines.h"
 #include "ovpCSignalDisplayLeftRuler.h"
 
 #include <glib.h>
@@ -9,9 +9,9 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #include <memory.h>
 #include <cmath>

@@ -4,8 +4,8 @@
 #include "ovp_defines.h"
 #include "ovpIStreamDatabase.h"
 
-#include <openvibe/ov_all.h>
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ov_all.h>
+#include <ovtk_all.h>
 
 #include <vector>
 #include <deque>
