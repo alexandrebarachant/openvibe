@@ -209,7 +209,8 @@ namespace OpenViBEPlugins
 							"Please consider adjusting the BCI Competition IIIb reader settings to correct this!\n";
 					}
 
-					m_ui64ClockFrequency = ITimeArithmetics::sampleCountToTime(m_ui32SamplingRate, m_ui32SamplesPerBuffer);
+					// Intentional parameter swap to get the frequency
+					m_ui64ClockFrequency = ITimeArithmetics::sampleCountToTime(m_ui32SamplesPerBuffer, m_ui32SamplingRate);
 				}
 
 			}

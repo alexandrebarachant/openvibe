@@ -117,5 +117,6 @@ void CTimeSignalGenerator::writeSignalOutput(const void* pBuffer, const EBML::ui
 
 OpenViBE::uint64 CTimeSignalGenerator::getClockFrequency(void) 
 {
-	return ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32GeneratedEpochSampleCount);
+	// Intentional parameter swap to get the frequency
+	return ITimeArithmetics::sampleCountToTime(m_ui32GeneratedEpochSampleCount, m_ui32SamplingFrequency);
 }

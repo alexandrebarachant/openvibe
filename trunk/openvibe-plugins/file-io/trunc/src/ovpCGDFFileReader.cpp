@@ -462,7 +462,8 @@ boolean CGDFFileReader::readFileHeader()
 					<< "Buffer size was " << m_ui32SamplesPerBuffer << "\n";
 			}
 
-			m_ui64ClockFrequency = ITimeArithmetics::sampleCountToTime(m_pSignalDescription.m_ui32SamplingRate, m_ui32SamplesPerBuffer);
+			// Intentional parameter swap to get the frequency
+			m_ui64ClockFrequency = ITimeArithmetics::sampleCountToTime(m_ui32SamplesPerBuffer, m_pSignalDescription.m_ui32SamplingRate);
 		}
 
 		//Send the data to the output

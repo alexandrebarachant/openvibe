@@ -128,7 +128,8 @@ boolean CSinusSignalGenerator::process(void)
 
 OpenViBE::uint64 CSinusSignalGenerator::getClockFrequency(void) 
 {
-	return ITimeArithmetics::sampleCountToTime(m_ui32SamplingFrequency, m_ui32GeneratedEpochSampleCount);
+	// Intentional parameter swap to get the frequency
+	return ITimeArithmetics::sampleCountToTime(m_ui32GeneratedEpochSampleCount, m_ui32SamplingFrequency);
 }
 
 void CSinusSignalGenerator::writeSignalOutput(const void* pBuffer, const EBML::uint64 ui64BufferSize)
