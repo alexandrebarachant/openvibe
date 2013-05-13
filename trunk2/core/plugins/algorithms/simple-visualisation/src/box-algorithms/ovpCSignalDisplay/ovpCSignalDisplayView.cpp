@@ -84,7 +84,7 @@ namespace OpenViBEPlugins
 		{
 			//load the gtk builder interface
 			m_pBuilderInterface=::gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.ui", NULL, NULL);
-			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/openvibe-plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.ui", NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/openvibe/plugins/simple-visualisation/openvibe-simple-visualisation-SignalDisplay.ui", NULL);
 
 			if(!m_pBuilderInterface)
 			{

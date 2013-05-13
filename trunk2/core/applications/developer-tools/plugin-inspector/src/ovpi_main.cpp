@@ -165,7 +165,7 @@ int main(int argc, char ** argv)
 		else
 		{
 			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<endl;
-			CString l_sConfigPath = OpenViBE::Directories::getDataDir() + "/openvibe.conf";
+			CString l_sConfigPath = OpenViBE::Directories::getDataDir() + "/openvibe/kernel/openvibe.conf";
 			if (l_oConfiguration.m_bConfigPathOverload)
 			{
 				l_sConfigPath = CString(l_oConfiguration.m_sConfigPath.c_str());

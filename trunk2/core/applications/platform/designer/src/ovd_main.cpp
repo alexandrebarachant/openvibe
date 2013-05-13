@@ -443,7 +443,7 @@ int go(int argc, char ** argv)
 		{
 			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<"\n";
 
-			l_pKernelContext=l_pKernelDesc->createKernel("designer", OpenViBE::Directories::getDataDir() + "/openvibe.conf");
+			l_pKernelContext=l_pKernelDesc->createKernel("designer", OpenViBE::Directories::getDataDir() + "/openvibe/kernel/openvibe.conf");
 			if(!l_pKernelContext)
 			{
 				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<"\n";
