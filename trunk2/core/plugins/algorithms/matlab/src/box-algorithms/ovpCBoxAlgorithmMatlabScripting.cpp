@@ -280,7 +280,7 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 	
 	CString l_sCommand;
 
-	l_sCommand = CString("addpath('") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab');";
+	l_sCommand = CString("addpath('") + OpenViBE::Directories::getDataDir() + "/openvibe/plugins/matlab');";
 	::engEvalString(m_pMatlabEngine, (const char * )l_sCommand);
 	//if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, (const char * )l_sOpenvibeToolboxPath) == 0, "An error occured while adding the path to openvibe toolbox\n")) return false;
 	// If there is more than 1 Matlab box in the scenario, the path is set repeatedly
@@ -296,7 +296,7 @@ boolean CBoxAlgorithmMatlabScripting::initialize(void)
 	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sCommand) == 0, "An error occured while changing the working directory\n")) return false;
 
 	// executes the pre-run routine that defines the global identifiers for streams and stimulations codes
-	l_sCommand = CString("run '") + OpenViBE::Directories::getDataDir() + "/openvibe-plugins/matlab/OV_define.m'";
+	l_sCommand = CString("run '") + OpenViBE::Directories::getDataDir() + "/openvibe/plugins/matlab/OV_define.m'";
 	if(!checkFailureRoutine(::engEvalString(m_pMatlabEngine, l_sCommand) == 0, "An error occured while calling OV_define.m")) return false;
 
 	// executes the pre-run routine that construct the ov_box object
