@@ -8,27 +8,27 @@
 #include "field-trip-protocol/ovasCDriverFieldtrip.h"
 */
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
-/*
 #include "generic-sawtooth/ovasCDriverGenericSawTooth.h"
 #include "generic-raw-reader/ovasCDriverGenericRawFileReader.h"
 #include "generic-raw-reader/ovasCDriverGenericRawTelnetReader.h"
 #include "brainmaster-discovery/ovasCDriverBrainmasterDiscovery.h"
 #include "brainproducts-actichamp/ovasCDriverBrainProductsActiCHamp.h"
 #include "brainproducts-brainampseries/ovasCDriverBrainProductsBrainampSeries.h"
-#include "brainproducts-brainvisionrecorder/ovasCDriverBrainProductsBrainVisionRecorder.h"
 #include "brainproducts-vamp/ovasCDriverBrainProductsVAmp.h"
-#include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
-#include "egi-ampserver/ovasCDriverEGIAmpServer.h"
 #include "emotiv-epoc/ovasCDriverEmotivEPOC.h"
-#include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
-#include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
 #include "micromed-systemplusevolution/ovasCDriverMicromedSystemPlusEvolution.h"
 #include "mindmedia-nexus32b/ovasCDriverMindMediaNeXus32B.h"
 #include "neurosky-mindset/ovasCDriverNeuroskyMindset.h"
-#include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
 #include "tmsi-refa32b/ovasCDriverTMSiRefa32B.h"
-// #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 #include "openal-mono16bit-audiocapture/ovasCDriverOpenALAudioCapture.h"
+/*
+#include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
+#include "brainproducts-brainvisionrecorder/ovasCDriverBrainProductsBrainVisionRecorder.h"
+#include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
+#include "egi-ampserver/ovasCDriverEGIAmpServer.h"
+#include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
+#include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
+// #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 
 #include "mitsarEEG202A/ovasCDriverMitsarEEG202A.h"
 */
@@ -132,15 +132,11 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_pAcquisitionServer=new CAcquisitionServer(rKernelContext);
 
 	m_vDriver.push_back(new CDriverGenericOscillator(m_pAcquisitionServer->getDriverContext()));
-	/*
 	m_vDriver.push_back(new CDriverGenericSawTooth(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericRawFileReader(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverGenericRawTelnetReader(m_pAcquisitionServer->getDriverContext()));
-#if defined __OpenViBE_AcquisitionServer_CDriverFieldtrip_H__
-	m_vDriver.push_back(new CDriverFieldtrip(m_pAcquisitionServer->getDriverContext()));
-#endif
+
 #if defined TARGET_OS_Windows
-	m_vDriver.push_back(new CDriverMitsarEEG202A(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyBrainmasterCodeMakerAPI
 	m_vDriver.push_back(new CDriverBrainmasterDiscovery(m_pAcquisitionServer->getDriverContext()));
 #endif
@@ -148,39 +144,41 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverBrainProductsActiCHamp(m_pAcquisitionServer->getDriverContext()));
 #endif
 	m_vDriver.push_back(new CDriverBrainProductsBrainampSeries(m_pAcquisitionServer->getDriverContext()));
+	m_vDriver.push_back(new CDriverMicromedSystemPlusEvolution(m_pAcquisitionServer->getDriverContext()));
+	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));
+	m_vDriver.push_back(new CDriverTMSiRefa32B(m_pAcquisitionServer->getDriverContext()));
 #endif
-	m_vDriver.push_back(new CDriverBrainProductsBrainVisionRecorder(m_pAcquisitionServer->getDriverContext()));
+
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 	m_vDriver.push_back(new CDriverBrainProductsVAmp(m_pAcquisitionServer->getDriverContext()));
 #endif
-	if(l_bShowUnstable) m_vDriver.push_back(new CDriverCtfVsmMeg(m_pAcquisitionServer->getDriverContext()));
-	if(l_bShowUnstable) m_vDriver.push_back(new CDriverEGIAmpServer(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyEmotivAPI
 	m_vDriver.push_back(new CDriverEmotivEPOC(m_pAcquisitionServer->getDriverContext()));
 #endif
+#if defined TARGET_HAS_ThirdPartyThinkGearAPI
+	m_vDriver.push_back(new CDriverNeuroskyMindset(m_pAcquisitionServer->getDriverContext()));
+#endif
+#if defined TARGET_HAS_ThirdPartyOpenAL
+	m_vDriver.push_back(new CDriverOpenALAudioCapture(m_pAcquisitionServer->getDriverContext()));
+#endif
+/*
+#if defined __OpenViBE_AcquisitionServer_CDriverFieldtrip_H__
+	m_vDriver.push_back(new CDriverFieldtrip(m_pAcquisitionServer->getDriverContext()));
+#endif
+#if defined TARGET_OS_Windows
+	m_vDriver.push_back(new CDriverMitsarEEG202A(m_pAcquisitionServer->getDriverContext()));
+#endif
+	m_vDriver.push_back(new CDriverBrainProductsBrainVisionRecorder(m_pAcquisitionServer->getDriverContext()));
+	if(l_bShowUnstable) m_vDriver.push_back(new CDriverCtfVsmMeg(m_pAcquisitionServer->getDriverContext()));
+	if(l_bShowUnstable) m_vDriver.push_back(new CDriverEGIAmpServer(m_pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyGMobiLabPlusAPI
 	if(l_bShowUnstable) m_vDriver.push_back(new CDriverGTecGMobiLabPlus(m_pAcquisitionServer->getDriverContext()));
 #endif
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 	m_vDriver.push_back(new CDriverGTecGUSBamp(m_pAcquisitionServer->getDriverContext()));
 #endif
-#if defined TARGET_OS_Windows
-	m_vDriver.push_back(new CDriverMicromedSystemPlusEvolution(m_pAcquisitionServer->getDriverContext()));
-#endif
-#if defined TARGET_OS_Windows
-	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));
-#endif
-#if defined TARGET_HAS_ThirdPartyThinkGearAPI
-	m_vDriver.push_back(new CDriverNeuroskyMindset(m_pAcquisitionServer->getDriverContext()));
-#endif
 	m_vDriver.push_back(new CDriverOpenEEGModularEEG(m_pAcquisitionServer->getDriverContext()));
-#if defined TARGET_OS_Windows
-	m_vDriver.push_back(new CDriverTMSiRefa32B(m_pAcquisitionServer->getDriverContext()));
-#endif
 	// if(l_bShowUnstable) m_vDriver.push_back(new CDriverNeuroscanSynamps2(m_pAcquisitionServer->getDriverContext()));
-#if defined TARGET_HAS_ThirdPartyOpenAL
-	m_vDriver.push_back(new CDriverOpenALAudioCapture(m_pAcquisitionServer->getDriverContext()));
-#endif
 */
 
 	registerPlugin(new OpenViBEAcquisitionServerPlugins::CPluginExternalStimulations(*m_pAcquisitionServer));
