@@ -51,7 +51,8 @@ SET(OV_TRUNK "trunc")
 # Branch name __SKIPME signifies that this component should not be compiled or installed.
 # SET(OV_BRANCH_PLUGINS_PYTHON "__SKIPME")			# skips python module
 SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
- 
+SET(SKIP_PLUGINS_PYTHON "yes")
+
 # Some recognized branch variables
 #SET(OV_BRANCH_OPENVIBE													"branches/mybranch")
 #SET(OV_BRANCH_KERNEL													"branches/mybranch")
@@ -135,7 +136,7 @@ ADD_SUBDIRECTORY("modules/")
 ADD_SUBDIRECTORY("toolkit/")
 ADD_SUBDIRECTORY("plugins/")
 #ADD_SUBDIRECTORY("openvibe-scenarios/")
-#ADD_SUBDIRECTORY("openvibe-applications/")
+ADD_SUBDIRECTORY("applications/")
 #ADD_SUBDIRECTORY("openvibe-externals/")
 #ADD_SUBDIRECTORY("openvibe-documentation/")	# needs to be the last since it uses the list of collected projects
 
