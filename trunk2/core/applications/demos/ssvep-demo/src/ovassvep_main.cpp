@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 		{
 			std::cout << "[  INF  ] Got kernel descriptor, trying to create kernel\n";
 
-			l_poKernelContext = l_poKernelDesc->createKernel("ssvep-demo", OpenViBE::Directories::getDataDir() + "/openvibe.conf");
+			l_poKernelContext = l_poKernelDesc->createKernel("ssvep-demo", OpenViBE::Directories::getDataDir() + "/openvibe/kernel/openvibe.conf");
 
 			if(!l_poKernelContext)
 			{
