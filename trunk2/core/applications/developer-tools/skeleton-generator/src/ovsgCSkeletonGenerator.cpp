@@ -186,7 +186,7 @@ boolean CSkeletonGenerator::executeSedCommand(CString sTemplateFile, CString sCo
 	CString l_sMove;
 	CString l_sNull;
 #ifdef TARGET_OS_Windows
-	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
+	l_sSed = "..\\share\\applications\\skeleton-generator\\sed";
 	l_sMove = "move";
 	l_sNull = "NULL";
 #else
@@ -235,7 +235,7 @@ boolean CSkeletonGenerator::executeSedSubstitution(CString sTemplateFile, CStrin
 	CString l_sMove;
 	CString l_sNull;
 #ifdef TARGET_OS_Windows
-	l_sSed = "..\\share\\openvibe-applications\\skeleton-generator\\sed";
+	l_sSed = "..\\share\\applications\\skeleton-generator\\sed";
 	l_sMove = "move";
 	l_sNull = "NULL";
 #else

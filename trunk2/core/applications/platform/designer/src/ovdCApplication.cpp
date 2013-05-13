@@ -696,7 +696,7 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	}
 
 	// gtk_window_set_icon_name(GTK_WINDOW(m_pMainWindow), "ov-logo");
-	// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/openvibe-applications/designer/ov-logo.png", NULL);
+	// gtk_window_set_icon_from_file(GTK_WINDOW(m_pMainWindow), "../share/applications/designer/ov-logo.png", NULL);
 
 	if(!(m_eCommandLineFlags&CommandLineFlag_NoManageSession))
 	{

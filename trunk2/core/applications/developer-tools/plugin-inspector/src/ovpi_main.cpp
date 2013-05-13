@@ -210,7 +210,7 @@ int main(int argc, char ** argv)
 
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
-				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.gtkrc");
+				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/applications/designer/interface.gtkrc");
 
 				if(l_rConfigurationManager.expandAsBoolean("${Kernel_3DVisualisationEnabled}"))
 				{

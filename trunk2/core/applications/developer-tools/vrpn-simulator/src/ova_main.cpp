@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
 	g_pButtonServer=new ::vrpn_Button_Server(_vrpn_peripheral_name_, g_pConnection, l_nChannels);
 	g_pAnalogServer=new ::vrpn_Analog_Server(_vrpn_peripheral_name_, g_pConnection, l_nChannels);
 
-	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe-applications/vrpn-simulator/interface.ui", "window", NULL);
+	::GtkBuilder* l_pInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/applications/vrpn-simulator/interface.ui", "window", NULL);
 	const OpenViBE::CString l_sFilename = OpenViBE::Directories::getDataDir() + "/applications/vrpn-simulator/interface.ui";
 	if(!gtk_builder_add_from_file(l_pInterface, l_sFilename, NULL)) {
 		std::cout << "Problem loading [" << l_sFilename << "]\n";

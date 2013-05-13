@@ -467,7 +467,7 @@ int go(int argc, char ** argv)
 
 				//initialise Gtk before 3D context
 				gtk_init(&argc, &argv);
-				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.gtkrc");
+				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/applications/designer/interface.gtkrc");
 
 				SConfiguration l_oConfiguration;
 				if(!parse_arguments(argc, argv, l_oConfiguration))
