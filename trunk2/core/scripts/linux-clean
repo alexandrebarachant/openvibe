@@ -2,7 +2,7 @@
 
 OV_DIST=../dist
 OV_LOCALTMP=../local-tmp
-OV_DEP=../scripts/software
+OV_DEP=../../dependencies
 
 if [ `basename $PWD` != "scripts" ] ; then
 	echo This only works when run in the \"scripts\" of the Openvibe source tree. Exiting.

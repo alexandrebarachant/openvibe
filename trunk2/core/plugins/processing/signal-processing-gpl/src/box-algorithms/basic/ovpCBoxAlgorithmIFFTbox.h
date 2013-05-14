@@ -14,11 +14,16 @@
 #define OVP_ClassId_BoxAlgorithm_IFFTbox OpenViBE::CIdentifier(0xD533E997, 0x4AFD2423)
 #define OVP_ClassId_BoxAlgorithm_IFFTboxDesc OpenViBE::CIdentifier(0xD533E997, 0x4AFD2423)
 #include <complex>
+
+#include <itpp/itbase.h>
+
 //#ifndef __OpenViBEPlugins_BoxAlgorithm_IFFTbox_CPP__
+/*
 namespace itpp
 {
 template<class Num_T> class Vec;
 }
+*/
 //#endif
 
 namespace OpenViBEPlugins
