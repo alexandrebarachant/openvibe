@@ -51,7 +51,9 @@ SET(OV_TRUNK "trunc")
 # Branch name __SKIPME signifies that this component should not be compiled or installed.
 # SET(OV_BRANCH_PLUGINS_PYTHON "__SKIPME")			# skips python module
 SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
-SET(SKIP_PLUGINS_PYTHON "yes")
+# SET(SKIP_PLUGINS_PYTHON "yes")
+SET(SKIP_APPLICATIONS_PLATFORM_ACQUISITION-SERVER "yes")
+SET(SKIP_CONTRIB_VARIOUS_PLUGINS "yes")
 
 # Some recognized branch variables
 #SET(OV_BRANCH_OPENVIBE													"branches/mybranch")
@@ -139,6 +141,7 @@ ADD_SUBDIRECTORY("plugins/")
 ADD_SUBDIRECTORY("applications/")
 #ADD_SUBDIRECTORY("openvibe-externals/")
 #ADD_SUBDIRECTORY("openvibe-documentation/")	# needs to be the last since it uses the list of collected projects
+ADD_SUBDIRECTORY("../contrib/" "../contrib")
 
 #add dependency to plugin inspector to the documentation
 IF(openvibe-documentation)
@@ -168,6 +171,4 @@ IF(UNIX)
 	CONFIGURE_FILE("${CMAKE_MODULE_PATH}/launchers/openvibe-ogre-plugins.cfg-base" "${CMAKE_CURRENT_BINARY_DIR}/openvibe-ogre-plugins.cfg")
 	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/openvibe-ogre-plugins.cfg DESTINATION ${CMAKE_INSTALL_FULL_DATADIR})
 ENDIF(UNIX)
-
-
 

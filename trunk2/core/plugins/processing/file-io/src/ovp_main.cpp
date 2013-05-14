@@ -25,8 +25,6 @@
 
 #include "box-algorithms/ovpCBoxAlgorithmSignalConcatenation.h"
 
-#include "box-algorithms/edf/ovpCBoxAlgorithmEDFFileWriter.h"
-
 OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CGDFFileReaderDesc)
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CGDFFileWriterDesc)
@@ -54,7 +52,5 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmBCI2000ReaderDesc)
 
 	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmSignalConcatenationDesc)
-
-	OVP_Declare_New(OpenViBEPlugins::FileIO::CBoxAlgorithmEDFFileWriterDesc)
 
 OVP_Declare_End()

@@ -8,7 +8,6 @@
 #include "box-algorithms/basic/ovpCBoxAlgorithmCrop.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmSignalDecimation.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmReferenceChannel.h"
-#include "box-algorithms/basic/ovpCBoxAlgorithmSynchro.h"
 #include "box-algorithms/basic/ovpCBoxAlgorithmDifferentialIntegral.h"
 #include "box-algorithms/epoching/ovpCBoxAlgorithmStimulationBasedEpoching.h"
 //#include "box-algorithms/filters/ovpCSpatialFilterBoxAlgorithm.h"
@@ -28,13 +27,6 @@
 #include "box-algorithms/ovpCSecondDifferenceDetrending.h"
 #include "box-algorithms/ovpCBoxAlgorithmQuadraticForm.h"
 
-#include "box-algorithms/ovpCBandFrequencyAverage.h"
-#include "box-algorithms/ovpCEpoching.h"
-#include "box-algorithms/ovpCSteadyStateFrequencyComparison.h"
-
-#include "algorithms/ovpCAlgorithmUnivariateStatistics.h"
-#include "box-algorithms/ovpCBoxAlgorithmUnivariateStatistics.h"
-
 OVP_Declare_Begin()
 
 	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_EpochAverageMethod, "Epoch Average method");
@@ -48,10 +40,6 @@ OVP_Declare_Begin()
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_CropMethod, "Max",     OVP_TypeId_CropMethod_Max.toUInteger());
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_CropMethod, "Min/Max", OVP_TypeId_CropMethod_MinMax.toUInteger());
 
-	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_ComparisonMethod, "Comparison method");
-	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Ratio",            OVP_TypeId_ComparisonMethod_Ratio.toUInteger());
-	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Substraction",     OVP_TypeId_ComparisonMethod_Substraction.toUInteger());
-	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_ComparisonMethod, "Laterality index", OVP_TypeId_ComparisonMethod_LateralityIndex.toUInteger());
 
 	rPluginModuleContext.getTypeManager().registerEnumerationType (OVP_TypeId_SelectionMethod, "Selection method");
 	rPluginModuleContext.getTypeManager().registerEnumerationEntry(OVP_TypeId_SelectionMethod, "Select", OVP_TypeId_SelectionMethod_Select.toUInteger());
@@ -75,7 +63,6 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelRenameDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmChannelSelectorDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmReferenceChannelDesc)
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSynchroDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmDifferentialIntegralDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochAverageDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmCropDesc)
@@ -94,16 +81,7 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSecondDifferenceDetrendingDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmQuadraticFormDesc)
 
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBandFrequencyAverageDesc)
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CEpochingDesc)
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CSteadyStateFrequencyComparisonDesc)
-
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmFrequencyBandSelectorDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSpectrumAverageDesc)
-
-#if 1
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CAlgoUnivariateStatisticDesc);
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxUnivariateStatisticDesc);
-#endif
 
 OVP_Declare_End()

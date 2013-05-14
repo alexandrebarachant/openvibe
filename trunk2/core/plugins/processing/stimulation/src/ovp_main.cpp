@@ -9,7 +9,6 @@
 
 #include "box-algorithms/ovpCBoxAlgorithmStimulationMultiplexer.h"
 #include "box-algorithms/ovpCBoxAlgorithmStimulationVoter.h"
-#include "box-algorithms/ovpCBoxAlgorithmSoundPlayer.h"
 
 #include "box-algorithms/ovpCBoxAlgorithmRunCommand.h"
 #if defined TARGET_HAS_ThirdPartyLua
@@ -43,7 +42,6 @@ OVP_Declare_Begin();
 
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmPlayerControllerDesc);
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmStimulationMultiplexerDesc);
-	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmSoundPlayerDesc);
 
 	OVP_Declare_New(OpenViBEPlugins::Stimulation::CBoxAlgorithmRunCommandDesc);
 #if defined TARGET_HAS_ThirdPartyLua

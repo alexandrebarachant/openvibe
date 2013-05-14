@@ -10,19 +10,6 @@
 #define OVP_ClassId_TimeBasedEpoching                                                  OpenViBE::CIdentifier(0x00777FA0, 0x5DC3F560)
 #define OVP_ClassId_TimeBasedEpochingDesc                                              OpenViBE::CIdentifier(0x00ABDABE, 0x41381683)
 
-#define OVP_ClassId_BoxAlgorithm_Epoching                                              OpenViBE::CIdentifier(0x974D2B9C, 0x369D1065)
-#define OVP_ClassId_BoxAlgorithm_EpochingDesc                                          OpenViBE::CIdentifier(0x617BF26E, 0xADDFBC4D)
-
-#define OVP_ClassId_BoxAlgorithm_BandFrequencyAverage                                  OpenViBE::CIdentifier(0x95E4781E, 0x45576562)
-#define OVP_ClassId_BoxAlgorithm_BandFrequencyAverageDesc                              OpenViBE::CIdentifier(0xB87877FC, 0xFB3591F2)
-
-#define OVP_TypeId_ComparisonMethod                                                    OpenViBE::CIdentifier(0xCF7AE755, 0x134E71CB)
-#define OVP_TypeId_ComparisonMethod_Ratio                                              OpenViBE::CIdentifier(0xE81FAD81, 0xB320B8EA)
-#define OVP_TypeId_ComparisonMethod_Substraction                                       OpenViBE::CIdentifier(0x2444FC59, 0x40DAB3AD)
-#define OVP_TypeId_ComparisonMethod_LateralityIndex                                    OpenViBE::CIdentifier(0x127A1836, 0xF608C3B5)
-#define OVP_ClassId_BoxAlgorithm_SteadyStateFrequencyComparison                        OpenViBE::CIdentifier(0xC13EFA6C, 0x7757834D)
-#define OVP_ClassId_BoxAlgorithm_SteadyStateFrequencyComparisonDesc                    OpenViBE::CIdentifier(0x50DC8D3E, 0x22B235DB)
-
 #define OVP_ClassId_Algorithm_ApplySpatialFilter                                       OpenViBE::CIdentifier(0xC5DC28FF, 0x2394AFBC)
 #define OVP_ClassId_Algorithm_ApplySpatialFilterDesc                                   OpenViBE::CIdentifier(0x0601FABE, 0x85692BFD)
 #define OVP_Algorithm_ApplySpatialFilter_InputParameterId_SignalMatrix                 OpenViBE::CIdentifier(0x6FF50741, 0xB9757B1F)
