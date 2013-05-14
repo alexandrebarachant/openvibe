@@ -1,8 +1,8 @@
 #include "ovasCDriverGenericSawTooth.h"
 #include "../ovasCConfigurationBuilder.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovtk_all.h>
+#include <ovITimeArithmetics.h>
 
 #include <system/Time.h>
 

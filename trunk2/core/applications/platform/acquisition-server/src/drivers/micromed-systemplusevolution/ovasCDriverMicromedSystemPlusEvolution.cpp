@@ -16,7 +16,7 @@
 #include <windows.h>
 #include <cstring>
 
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovITimeArithmetics.h>
 
 #define boolean OpenViBE::boolean
 using namespace OpenViBEAcquisitionServer;

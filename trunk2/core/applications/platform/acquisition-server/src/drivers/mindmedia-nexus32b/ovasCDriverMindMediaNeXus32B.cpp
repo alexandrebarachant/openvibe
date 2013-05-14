@@ -1,10 +1,10 @@
 #include "ovasCDriverMindMediaNeXus32B.h"
 #include "../ovasCConfigurationBuilder.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
-#include <system/Time.h>
-#include <system/Memory.h>
+#include <system/include/Time.h>
+#include <system/include/Memory.h>
 
 #if defined TARGET_OS_Windows
 

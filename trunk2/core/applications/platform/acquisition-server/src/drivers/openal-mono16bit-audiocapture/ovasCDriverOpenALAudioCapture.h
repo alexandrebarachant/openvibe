@@ -4,7 +4,7 @@
 #if defined TARGET_HAS_ThirdPartyOpenAL
 #include "../ovasIDriver.h"
 #include "../ovasCHeader.h"
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 #if defined TARGET_OS_Windows
 	#include <al.h>
 	#include <alc.h>

@@ -5,10 +5,10 @@
 #include "../ovasCHeader.h"
 
 #if defined TARGET_OS_Windows
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 #include <iostream>
-#include <socket/IConnectionClient.h>
-#include <socket/IConnectionServer.h>
+#include <socket/include/IConnectionClient.h>
+#include <socket/include/IConnectionServer.h>
 #include <list>
 
 namespace OpenViBEAcquisitionServer

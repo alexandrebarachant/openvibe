@@ -2,8 +2,8 @@
 #include "ovasCDriverOpenALAudioCapture.h"
 #include "ovasCConfigurationOpenALAudioCapture.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
-#include <system/Time.h>
+#include <ovtk_all.h>
+#include <Time.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

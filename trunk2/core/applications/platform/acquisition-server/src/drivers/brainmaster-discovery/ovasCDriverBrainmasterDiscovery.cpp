@@ -25,7 +25,7 @@
 #include "ovasCConfigurationBrainmasterDiscovery.h"
 #include "../ovasCConfigurationBuilder.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <ovtk_all.h>
 
 #include "ovas_defines_brainmaster_discovery.h"
 

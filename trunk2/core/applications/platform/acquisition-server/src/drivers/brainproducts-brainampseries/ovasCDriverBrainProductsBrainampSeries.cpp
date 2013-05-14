@@ -22,11 +22,11 @@
 
 #if defined TARGET_OS_Windows
 
-#include <openvibe-toolkit/ovtk_all.h>
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovtk_all.h>
+#include <ovITimeArithmetics.h>
 
-#include <system/Memory.h>
-#include <system/Time.h>
+#include <system/time/Memory.h>
+#include <system/time/Time.h>
 
 #include <list>
 

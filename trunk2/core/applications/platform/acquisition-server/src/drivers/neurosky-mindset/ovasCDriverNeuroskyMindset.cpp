@@ -4,11 +4,11 @@
 #include "ovasCConfigurationNeuroskyMindset.h"
 
 #include <sstream>
-#include <system/Time.h>
+#include <system/include/Time.h>
 
 #include <thinkgear.h>
 
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovITimeArithmetics.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

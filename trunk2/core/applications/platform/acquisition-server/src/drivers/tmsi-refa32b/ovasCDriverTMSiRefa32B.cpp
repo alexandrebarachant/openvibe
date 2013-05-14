@@ -3,13 +3,13 @@
 
 #if defined TARGET_OS_Windows
 
-#include <openvibe-toolkit/ovtk_all.h>
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovtk_all.h>
+#include <ovITimeArithmetics.h>
 
 #include <iostream>
 #include <cmath>
 #include <cstring>
-#include <system/Time.h>
+#include <system/include/Time.h>
 #include "ovasCConfigurationTMSIRefa32B.h"
 #include <Windows.h>
 
