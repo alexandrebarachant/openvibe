@@ -102,7 +102,8 @@ boolean CBoxAlgorithmBCI2000Reader::processClock(IMessageClock& rMessageClock)
 
 uint64 CBoxAlgorithmBCI2000Reader::getClockFrequency(void)
 {
-	return ITimeArithmetics::sampleCountToTime(m_ui32Rate, m_ui32SampleCountPerBuffer);
+	// Intentional parameter swap to get the frequency
+	return ITimeArithmetics::sampleCountToTime(m_ui32SampleCountPerBuffer, m_ui32Rate);
 }
 
 void CBoxAlgorithmBCI2000Reader::sendHeader(void)
