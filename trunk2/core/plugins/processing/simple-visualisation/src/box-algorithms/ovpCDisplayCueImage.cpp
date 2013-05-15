@@ -46,6 +46,8 @@ namespace OpenViBEPlugins
 			m_int32DrawnImageID(-1),
 			m_pOriginalPicture(NULL),
 			m_pScaledPicture(NULL),
+			m_pStimulationsId(NULL),
+			m_pImageNames(NULL),
 			m_bFullScreen(false),
 			m_ui64LastOutputChunkDate(-1),
 			m_bError(false)
@@ -144,11 +146,6 @@ namespace OpenViBEPlugins
 
 		boolean CDisplayCueImage::uninitialize()
 		{
-			if(m_bError)
-			{
-				return true;
-			}
-
 			m_oStimulationDecoder.uninitialize();
 			m_oStimulationEncoder.uninitialize();
 
@@ -160,19 +157,42 @@ namespace OpenViBEPlugins
 			}
 
 			// unref the xml file as it's not needed anymore
-			g_object_unref(G_OBJECT(m_pBuilderInterface));
-			m_pBuilderInterface=NULL;
-
-			delete[] m_pStimulationsId;
-			delete[] m_pImageNames;
-
-			for(uint32 i=0; i<m_ui32NuberOfCue; i++)
+			if(m_pBuilderInterface) 
 			{
-				if(m_pOriginalPicture[i]){ g_object_unref(G_OBJECT(m_pOriginalPicture[i])); }
-				if(m_pScaledPicture[i]){ g_object_unref(G_OBJECT(m_pScaledPicture[i])); }
+				g_object_unref(G_OBJECT(m_pBuilderInterface));
+				m_pBuilderInterface=NULL;
 			}
-			delete[] m_pOriginalPicture;
-			delete[] m_pScaledPicture;
+
+			if(m_pStimulationsId) 
+			{
+				delete[] m_pStimulationsId;
+				m_pStimulationsId = NULL;
+			}
+			if(m_pImageNames)
+			{
+				delete[] m_pImageNames;
+				m_pImageNames = NULL;
+			}
+
+			if(m_pOriginalPicture) 
+			{
+				for(uint32 i=0; i<m_ui32NuberOfCue; i++)
+				{
+					if(m_pOriginalPicture[i]){ g_object_unref(G_OBJECT(m_pOriginalPicture[i])); }
+				}
+				delete[] m_pOriginalPicture;
+				m_pOriginalPicture = NULL;
+			}
+
+			if(m_pScaledPicture) 
+			{
+				for(uint32 i=0; i<m_ui32NuberOfCue; i++)
+				{
+					if(m_pScaledPicture[i]){ g_object_unref(G_OBJECT(m_pScaledPicture[i])); }
+				}
+				delete[] m_pScaledPicture;
+				m_pScaledPicture = NULL;
+			}
 
 			return true;
 		}
