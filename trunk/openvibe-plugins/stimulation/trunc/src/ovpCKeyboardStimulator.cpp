@@ -190,8 +190,11 @@ namespace OpenViBEPlugins
 
 		boolean CKeyboardStimulator::uninitialize()
 		{
-			delete m_pOutputWriterCallbackProxy;
-			m_pOutputWriterCallbackProxy= NULL;
+			if(m_pOutputWriterCallbackProxy) 
+			{
+				delete m_pOutputWriterCallbackProxy;
+				m_pOutputWriterCallbackProxy= NULL;
+			}
 
 			if(m_pWriter)
 			{
@@ -205,7 +208,11 @@ namespace OpenViBEPlugins
 				m_pStimulationOutputWriterHelper=NULL;
 			}
 
-			g_object_unref(m_pWidget);
+			if(m_pWidget)
+			{
+				g_object_unref(m_pWidget);
+				m_pWidget = NULL;
+			}
 
 			return true;
 		}
