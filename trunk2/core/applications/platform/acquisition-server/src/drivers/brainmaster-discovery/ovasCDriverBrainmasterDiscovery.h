@@ -24,7 +24,7 @@
 
 #if defined TARGET_HAS_ThirdPartyBrainmasterCodeMakerAPI
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 
 #include <vector>

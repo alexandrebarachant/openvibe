@@ -20,7 +20,7 @@
 
 #include "ovasCConfigurationBrainProductsBrainampSeries.h"
 
-#include "../ovasIHeader.h"
+#include "ovasIHeader.h"
 
 #if defined TARGET_OS_Windows
 

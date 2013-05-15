@@ -1,7 +1,7 @@
 #ifndef __OpenViBE_AcquisitionServer_CDriverMicromedSystemPlusEvolution_H__
 #define __OpenViBE_AcquisitionServer_CDriverMicromedSystemPlusEvolution_H__
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 
 #if defined TARGET_OS_Windows

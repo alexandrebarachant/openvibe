@@ -4,7 +4,7 @@
 #if defined TARGET_HAS_ThirdPartyThinkGearAPI
 
 #include "../ovasCConfigurationBuilder.h"
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 
 #include <gtk/gtk.h>
 

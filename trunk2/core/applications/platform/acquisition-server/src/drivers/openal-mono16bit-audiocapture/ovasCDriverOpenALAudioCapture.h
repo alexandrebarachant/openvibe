@@ -2,7 +2,7 @@
 #define __OpenViBE_AcquisitionServer_CDriverOpenALAudioCapture_H__
 
 #if defined TARGET_HAS_ThirdPartyOpenAL
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 #include <ov_all.h>
 #if defined TARGET_OS_Windows

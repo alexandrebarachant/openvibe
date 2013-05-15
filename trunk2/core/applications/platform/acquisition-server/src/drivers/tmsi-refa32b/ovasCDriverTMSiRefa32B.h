@@ -1,9 +1,9 @@
 #ifndef __OpenViBE_AcquisitionServer_CDriverTMSiRefa32B_H__
 #define __OpenViBE_AcquisitionServer_CDriverTMSiRefa32B_H__
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
-#include "../ovas_base.h"
+#include "ovas_base.h"
 
 #if defined TARGET_OS_Windows
 

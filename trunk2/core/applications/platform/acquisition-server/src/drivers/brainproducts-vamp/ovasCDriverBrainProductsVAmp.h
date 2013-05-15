@@ -3,7 +3,7 @@
 
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "ovasCHeaderBrainProductsVAmp.h"
 #include <ov_all.h>
 

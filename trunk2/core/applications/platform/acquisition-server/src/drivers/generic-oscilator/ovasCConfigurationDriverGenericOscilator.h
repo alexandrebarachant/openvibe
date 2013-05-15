@@ -2,7 +2,7 @@
 #define __OpenViBE_AcquisitionServer_CConfigurationDriverGenericOscilator_H__
 
 #include "../ovasCConfigurationBuilder.h"
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 
 #include <gtk/gtk.h>
 

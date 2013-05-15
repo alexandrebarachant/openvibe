@@ -65,8 +65,8 @@ namespace OpenViBEAcquisitionServer
 					std::map<OpenViBE::CString, PluginSetting> settings;
 			};
 
-			IAcquisitionServerPlugin(CAcquisitionServer& acquisitionServer) :
-				m_rAcquisitionServer(acquisitionServer)
+			IAcquisitionServerPlugin(const OpenViBE::Kernel::IKernelContext& rKernelContext) :
+				m_rKernelContext(rKernelContext)
 			{}
 
 			virtual ~IAcquisitionServerPlugin() {}
@@ -97,9 +97,9 @@ namespace OpenViBEAcquisitionServer
 
 
 		protected:
-			CAcquisitionServer& m_rAcquisitionServer;
 			struct PluginProperties m_oProperties;
 
+			const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 	};
 }
 

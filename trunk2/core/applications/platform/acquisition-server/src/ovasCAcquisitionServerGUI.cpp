@@ -4,9 +4,11 @@
 #include "ovasIAcquisitionServerPlugin.h"
 // Drivers
 
-/*
-#include "field-trip-protocol/ovasCDriverFieldtrip.h"
-*/
+//#ifdef HAS_ThirdPartyAcquisitionServerContributions
+#include "contribAcquisitionServer.inl"
+//#endif
+
+
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
 #include "generic-sawtooth/ovasCDriverGenericSawTooth.h"
 #include "generic-raw-reader/ovasCDriverGenericRawFileReader.h"
@@ -21,17 +23,7 @@
 #include "neurosky-mindset/ovasCDriverNeuroskyMindset.h"
 #include "tmsi-refa32b/ovasCDriverTMSiRefa32B.h"
 #include "openal-mono16bit-audiocapture/ovasCDriverOpenALAudioCapture.h"
-/*
-#include "openeeg-modulareeg/ovasCDriverOpenEEGModularEEG.h"
-#include "brainproducts-brainvisionrecorder/ovasCDriverBrainProductsBrainVisionRecorder.h"
-#include "ctfvsm-meg/ovasCDriverCtfVsmMeg.h"
-#include "egi-ampserver/ovasCDriverEGIAmpServer.h"
-#include "gtec-gmobilabplus/ovasCDriverGTecGMobiLabPlus.h"
-#include "gtec-gusbamp/ovasCDriverGTecGUSBamp.h"
-// #include "neuroscan-synamps2/ovasCDriverNeuroscanSynamps2.h"
 
-#include "mitsarEEG202A/ovasCDriverMitsarEEG202A.h"
-*/
 #include <system/include/Memory.h>
 #include <system/include/Time.h>
 #include <limits>
@@ -40,7 +32,6 @@
 
 // Plugins
 
-#include "plugins/external-stimulations/ovasCPluginExternalStimulations.h"
 
 
 #include <fstream>
@@ -161,27 +152,10 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #if defined TARGET_HAS_ThirdPartyOpenAL
 	m_vDriver.push_back(new CDriverOpenALAudioCapture(m_pAcquisitionServer->getDriverContext()));
 #endif
-/*
-#if defined __OpenViBE_AcquisitionServer_CDriverFieldtrip_H__
-	m_vDriver.push_back(new CDriverFieldtrip(m_pAcquisitionServer->getDriverContext()));
-#endif
-#if defined TARGET_OS_Windows
-	m_vDriver.push_back(new CDriverMitsarEEG202A(m_pAcquisitionServer->getDriverContext()));
-#endif
-	m_vDriver.push_back(new CDriverBrainProductsBrainVisionRecorder(m_pAcquisitionServer->getDriverContext()));
-	if(l_bShowUnstable) m_vDriver.push_back(new CDriverCtfVsmMeg(m_pAcquisitionServer->getDriverContext()));
-	if(l_bShowUnstable) m_vDriver.push_back(new CDriverEGIAmpServer(m_pAcquisitionServer->getDriverContext()));
-#if defined TARGET_HAS_ThirdPartyGMobiLabPlusAPI
-	if(l_bShowUnstable) m_vDriver.push_back(new CDriverGTecGMobiLabPlus(m_pAcquisitionServer->getDriverContext()));
-#endif
-#if defined TARGET_HAS_ThirdPartyGUSBampCAPI
-	m_vDriver.push_back(new CDriverGTecGUSBamp(m_pAcquisitionServer->getDriverContext()));
-#endif
-	m_vDriver.push_back(new CDriverOpenEEGModularEEG(m_pAcquisitionServer->getDriverContext()));
-	// if(l_bShowUnstable) m_vDriver.push_back(new CDriverNeuroscanSynamps2(m_pAcquisitionServer->getDriverContext()));
-*/
 
-	registerPlugin(new OpenViBEAcquisitionServerPlugins::CPluginExternalStimulations(*m_pAcquisitionServer));
+//#ifdef HAS_ThirdPartyAcquisitionServerContributions
+	OpenViBEContributions::initiateContributions(this, rKernelContext, m_vDriver);
+//#endif
 
 	scanPluginSettings();
 

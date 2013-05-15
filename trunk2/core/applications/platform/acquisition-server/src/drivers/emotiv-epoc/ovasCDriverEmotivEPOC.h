@@ -3,7 +3,7 @@
 
 #if defined TARGET_HAS_ThirdPartyEmotivAPI
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 
 #include <ov_all.h>

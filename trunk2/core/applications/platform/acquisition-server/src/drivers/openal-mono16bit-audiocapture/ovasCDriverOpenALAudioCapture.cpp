@@ -3,7 +3,7 @@
 #include "ovasCConfigurationOpenALAudioCapture.h"
 
 #include <ovtk_all.h>
-#include <Time.h>
+#include <system/include/Time.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

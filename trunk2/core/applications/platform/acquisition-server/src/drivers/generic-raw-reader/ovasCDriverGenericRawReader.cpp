@@ -1,11 +1,11 @@
 #include "ovasCDriverGenericRawReader.h"
 #include "../ovasCConfigurationBuilder.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
-#include <openvibe/ovITimeArithmetics.h>
+#include <ovtk_all.h>
+#include <ovITimeArithmetics.h>
 
-#include <system/Memory.h>
-#include <system/Time.h>
+#include <system/include/Memory.h>
+#include <system/include/Time.h>
 
 #include <cmath>
 

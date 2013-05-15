@@ -4,7 +4,7 @@
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 
 #include "../ovasCConfigurationBuilder.h"
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "ovasCHeaderBrainProductsVAmp.h"
 
 #include <gtk/gtk.h>

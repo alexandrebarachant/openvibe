@@ -3,7 +3,7 @@
 
 #if defined TARGET_HAS_ThirdPartyOpenAL
 #include "../ovasCConfigurationBuilder.h"
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 
 #include <gtk/gtk.h>
 

@@ -1,7 +1,7 @@
 #ifndef __OpenViBE_AcquisitionServer_CDriverGenericSawTooth_H__
 #define __OpenViBE_AcquisitionServer_CDriverGenericSawTooth_H__
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 
 namespace OpenViBEAcquisitionServer

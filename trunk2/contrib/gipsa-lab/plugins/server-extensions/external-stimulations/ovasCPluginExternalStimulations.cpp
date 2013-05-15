@@ -1,6 +1,4 @@
 #include "ovasCPluginExternalStimulations.h"
-#include "../../ovasCAcquisitionServer.h"
-
 
 #include <boost/interprocess/ipc/message_queue.hpp>
 
@@ -17,9 +15,8 @@ using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBEAcquisitionServerPlugins;
 using namespace std;
 
-CPluginExternalStimulations::CPluginExternalStimulations(CAcquisitionServer& acquisitionServer) :
-	IAcquisitionServerPlugin(acquisitionServer),
-	m_rKernelContext(acquisitionServer.m_rKernelContext),
+CPluginExternalStimulations::CPluginExternalStimulations(const IKernelContext& rKernelContext) :
+	IAcquisitionServerPlugin(rKernelContext),
 	m_bIsExternalStimulationsEnabled(false)
 {
 	m_rKernelContext.getLogManager() << LogLevel_Info << "Loading plugin: Software Tagging\n";

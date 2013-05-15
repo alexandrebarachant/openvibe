@@ -14,7 +14,7 @@
 
 #include <sys/timeb.h>
 
-#include "../../ovasIAcquisitionServerPlugin.h"
+#include "ovasIAcquisitionServerPlugin.h"
 
 namespace OpenViBEAcquisitionServer
 {
@@ -26,7 +26,7 @@ namespace OpenViBEAcquisitionServer
 		{
 				// Plugin interface
 			public:
-				CPluginExternalStimulations(CAcquisitionServer& acquisitionServer);
+				CPluginExternalStimulations(const OpenViBE::Kernel::IKernelContext& rKernelContext);
 				virtual ~CPluginExternalStimulations();
 
 				virtual void startHook();
@@ -37,7 +37,6 @@ namespace OpenViBEAcquisitionServer
 
 				// Plugin implementation
 
-				const OpenViBE::Kernel::IKernelContext& m_rKernelContext;
 
 				struct SExternalStimulation
 				{

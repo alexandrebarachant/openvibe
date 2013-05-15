@@ -1,7 +1,7 @@
 #ifndef __OpenViBE_AcquisitionServer_CDriverMindMediaNeXus32B_H__
 #define __OpenViBE_AcquisitionServer_CDriverMindMediaNeXus32B_H__
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 
 #if defined TARGET_OS_Windows
