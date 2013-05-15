@@ -5,7 +5,7 @@
 
 #define MicromedDLL "dllMicromed.dll"
 
-#include <system/Time.h>
+#include <system/include/Time.h>
 
 #include <cmath>
 
