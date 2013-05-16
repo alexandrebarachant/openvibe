@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 		else
 		{
 			cout<<"[  INF  ] Got kernel descriptor, trying to create kernel"<<endl;
-			l_pKernelContext=l_pKernelDesc->createKernel("skeleton-generator", OpenViBE::Directories::getDataDir() + "/openvibe/kernel/openvibe.conf");
+			l_pKernelContext=l_pKernelDesc->createKernel("skeleton-generator", OpenViBE::Directories::getDataDir() + "/kernel/openvibe.conf");
 			if(!l_pKernelContext)
 			{
 				cout<<"[ FAILED ] No kernel created by kernel descriptor"<<endl;

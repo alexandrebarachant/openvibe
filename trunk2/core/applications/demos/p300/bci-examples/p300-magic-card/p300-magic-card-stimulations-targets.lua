@@ -5,7 +5,7 @@
 
 -- this function is called when the box is initialized
 function initialize(box)
-	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	math.randomseed(os.time())
 	card_count = box:get_setting(2)

@@ -24,7 +24,7 @@ namespace OpenViBE
 		}
 		static OpenViBE::CString getDataDir(void)
 		{
-			return pathFromEnv("OV_PATH_DATA", OV_CMAKE_PATH_DATA);
+			return pathFromEnv("OV_PATH_DATA", OV_CMAKE_PATH_DATA) + "/openvibe";
 		}
 		static OpenViBE::CString getLibDir(void)
 		{

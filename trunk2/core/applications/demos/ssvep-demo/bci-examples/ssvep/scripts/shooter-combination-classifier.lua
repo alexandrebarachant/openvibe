@@ -2,7 +2,7 @@
 class_count = 0
 
 function initialize(box)
-	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	class_count = box:get_setting(2)
 end

@@ -39,8 +39,8 @@ namespace OpenViBEPlugins
 			//m_bSamplingPointsToggledOn(false)
 		{
 			//load the gtk builder interface
-			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/openvibe/plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap3D.ui", NULL, NULL);
-			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/openvibe/plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap3D.ui", NULL);
+			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap3D.ui", NULL, NULL);
+			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/plugins/simple-visualisation/openvibe-simple-visualisation-TopographicMap3D.ui", NULL);
 
 			if(!m_pBuilderInterface)
 			{

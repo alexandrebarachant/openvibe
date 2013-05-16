@@ -3,7 +3,7 @@
 function initialize(box)
 	io.write("initialize has been called\n");
 
-	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	-- inspects the box topology
 	io.write(string.format("box has %i input(s)\n", box:get_input_count()))

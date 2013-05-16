@@ -156,7 +156,7 @@ boolean CVoxelDisplay::initialize(void)
 
 	//resource group
 	getVisualisationContext().createResourceGroup(m_oResourceGroupIdentifier, "VoxelDisplayResources");
-	getVisualisationContext().addResourceLocation(m_oResourceGroupIdentifier, OpenViBE::Directories::getDataDir() + "/openvibe/plugins/simple-visualisation/voxeldisplay", ResourceType_Directory, false);
+	getVisualisationContext().addResourceLocation(m_oResourceGroupIdentifier, OpenViBE::Directories::getDataDir() + "/plugins/simple-visualisation/voxeldisplay", ResourceType_Directory, false);
 	getVisualisationContext().initializeResourceGroup(m_oResourceGroupIdentifier);
 
 	return true;

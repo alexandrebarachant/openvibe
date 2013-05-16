@@ -85,7 +85,7 @@ boolean COgreVisualisation::initializeOgre(void) throw (std::exception)
 
 		//configuration file is assumed to be copied to working dir
 		CString l_sConfigFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgreConfiguration}");
-		//CString l_sConfigFile(OpenViBE::Directories::getDataDir() + "/openvibe/kernel/ogre.cfg");
+		//CString l_sConfigFile(OpenViBE::Directories::getDataDir() + "/kernel/ogre.cfg");
 
 		this->getLogManager() << LogLevel_Trace << "Ogre configuration file " << l_sConfigFile << "\n";
 
@@ -103,7 +103,7 @@ boolean COgreVisualisation::initializeOgre(void) throw (std::exception)
 
 		//resources file is assumed to be copied to working dir
 		CString l_sResourcesFile=this->getConfigurationManager().expand("${Kernel_3DVisualisationOgreResources}");
-		//CString l_sResourcesFile(OpenViBE::Directories::getDataDir() + "/openvibe/kernel/resources.cfg");
+		//CString l_sResourcesFile(OpenViBE::Directories::getDataDir() + "/kernel/resources.cfg");
 
 		this->getLogManager() << LogLevel_Trace << "Ogre resources file " << l_sResourcesFile << "\n";
 

@@ -167,7 +167,7 @@ boolean CTopographicMap3DDisplay::initialize(void)
 
 	//resource group
 	getVisualisationContext().createResourceGroup(m_oResourceGroupIdentifier, "TopographicMap3DResources");
-	getVisualisationContext().addResourceLocation(m_oResourceGroupIdentifier, OpenViBE::Directories::getDataDir() + "/openvibe/plugins/simple-visualisation/topographicmap3D", ResourceType_Directory, false);
+	getVisualisationContext().addResourceLocation(m_oResourceGroupIdentifier, OpenViBE::Directories::getDataDir() + "/plugins/simple-visualisation/topographicmap3D", ResourceType_Directory, false);
 	getVisualisationContext().initializeResourceGroup(m_oResourceGroupIdentifier);
 
 	return true;

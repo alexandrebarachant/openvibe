@@ -4,7 +4,7 @@ vrpn_port = nil
 screen_refresh_rate = nil
 
 function initialize(box)
-	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
 	screen_refresh_rate = box:get_setting(2)
 end
 

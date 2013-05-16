@@ -5,7 +5,7 @@ g_duration = nil
 -- this function is called when the box is initialized
 function initialize(box)
 
-	dofile(box:get_config("${Path_Data}") .. "/openvibe-plugins/stimulation/lua-stimulator-stim-codes.lua")
+	dofile(box:get_config("${Path_Data}") .. "/plugins/stimulation/lua-stimulator-stim-codes.lua")
 
 	g_offset = box:get_setting(2)
 	g_duration = box:get_setting(3)
