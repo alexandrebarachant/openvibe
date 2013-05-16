@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
 				gdk_threads_init();
 				gtk_init(&argc, &argv);
 
-				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/openvibe-applications/designer/interface.gtkrc");
+				// gtk_rc_parse(OpenViBE::Directories::getDataDir() + "/openvibe/applications/designer/interface.gtkrc");
 
 #if 0 // This is not needed in the acquisition server
 				if(l_rConfigurationManager.expandAsBoolean("${Kernel_3DVisualisationEnabled}"))

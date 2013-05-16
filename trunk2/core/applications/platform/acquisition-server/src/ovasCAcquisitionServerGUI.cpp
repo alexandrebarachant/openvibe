@@ -154,7 +154,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #endif
 
 //#ifdef HAS_ThirdPartyAcquisitionServerContributions
-	OpenViBEContributions::initiateContributions(this, rKernelContext, m_vDriver);
+	OpenViBEContributions::initiateContributions(this, m_pAcquisitionServer, rKernelContext, &m_vDriver);
 //#endif
 
 	scanPluginSettings();
