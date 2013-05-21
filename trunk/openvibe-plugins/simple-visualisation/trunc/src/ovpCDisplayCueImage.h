@@ -76,8 +76,8 @@ namespace OpenViBEPlugins
 
 			//Settings
 			OpenViBE::uint32   m_ui32NuberOfCue;
-			OpenViBE::CString* m_pImageNames;
 			OpenViBE::uint64*  m_pStimulationsId;
+			OpenViBE::CString* m_pImageNames;
 			OpenViBE::uint64   m_ui64ClearScreenStimulation;
 			OpenViBE::boolean  m_bFullScreen;
 
