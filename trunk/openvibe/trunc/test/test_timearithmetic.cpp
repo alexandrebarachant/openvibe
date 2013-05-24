@@ -37,6 +37,10 @@ OpenViBE::uint64 timeToSampleIndex(OpenViBE::uint32 ui32SamplingRate, OpenViBE::
 	return (ui64Time*ui32SamplingRate)>>32;
 }
 
+// Alternate timeToSeconds and secondsToTime that very precise with decimals but not so great with huge numbers
+//	f64seconds = float64(ui64Time)/float64(1LL<<32);
+//	ui64time = uint64(f64Time*float64(1LL<<32)); 
+
 int main(int argc, char *argv[]) 
 {
 	const float64 l_f64secsAndBackTolerance = 0.00001;
@@ -48,7 +52,8 @@ int main(int argc, char *argv[])
 	const uint64 l_ui64samplesToTest[] = {0,1,100,128,512,1000,1021,1024,5005,12345, 59876, 100000, 717893, 1000001};
 	const uint64 l_ui64timesToTest[] = { 1LL<<8, 1LL<<16, 1L<<19, 1LL<<22, 1LL<<27, 1L<<30, 1LL<<32, 10LL<<32, 100LL<<32, 123LL<<32, 500LL<<32, 512LL<<32, 1000LL<<32, 1024LL<<32, 2001LL<<32, 5000LL<<32};
 
-	cout << "Conversion tolerance from fixed point to float and back has been set to " << l_f64secsAndBackTolerance << " secs\n\n";
+	cout << "Conversion tolerance from fixed point to float and back has been set to " << l_f64secsAndBackTolerance << " secs\n";
+	cout << "ITimeArithmetics claims to support precision up to " << 1.0/(1L<<ITimeArithmetics::m_ui32DecimalPrecision) << " secs\n\n";
 
 	int retVal = 0;
 
@@ -74,12 +79,16 @@ int main(int argc, char *argv[])
 			{
 				cout << " Ok\n";
 			}
-			else
+			else if(l_f64AbsDiff < 1.0/(1LL << ITimeArithmetics::m_ui32DecimalPrecision)) 
 			{
+				cout << " Ok(*)\n";
+			}
+			else {
 				cout << " Err " << l_f64AbsDiff << "\n";
 				retVal |= 1;
 			}
 		}
+		cout << "*) Error is smaller than the minimum precision supported by ITimeArithmetics.h\n";
 	}
 
 	{
@@ -102,10 +111,19 @@ int main(int argc, char *argv[])
 			{
 				cout << " Ok\n";
 			} else {
-				cout << " Err\n";
-				retVal |= 2;
+				uint64 l_ui64SignificantBitsA = (l_ui64inverse >> (32-ITimeArithmetics::m_ui32DecimalPrecision));
+				uint64 l_ui64SignificantBitsB = (l_ui64Time >> (32-ITimeArithmetics::m_ui32DecimalPrecision));
+				if(l_ui64SignificantBitsA == l_ui64SignificantBitsB) {
+					cout << " Ok(*)\n";
+				}
+				else
+				{
+					cout << " Err\n";
+					retVal |= 2;
+				}
 			}
 		}
+		cout << "*) Error is smaller than the minimum precision supported by ITimeArithmetics.h\n";
 	}
 
 	{
@@ -229,13 +247,20 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				std::bitset<64> tmpA(ui64resultA);
-				std::bitset<64> tmpB(ui64resultB);
-				cout << " Err " << tmpA << " " << ITimeArithmetics::timeToSeconds(ui64resultA);
-				cout << " " << tmpB << " " << ITimeArithmetics::timeToSeconds(ui64resultB) << "\n";
-				retVal |= 6;
+				uint64 l_ui64SignificantBitsA = (ui64resultA >> (32-ITimeArithmetics::m_ui32DecimalPrecision));
+				uint64 l_ui64SignificantBitsB = (ui64resultB >> (32-ITimeArithmetics::m_ui32DecimalPrecision));
+				if(l_ui64SignificantBitsA == l_ui64SignificantBitsB) {
+					cout << " Ok(*)\n";
+				} else {
+					std::bitset<64> tmpA(ui64resultA);
+					std::bitset<64> tmpB(ui64resultB);
+					cout << " Err " << tmpA << " " << ITimeArithmetics::timeToSeconds(ui64resultA);
+					cout << " " << tmpB << " " << ITimeArithmetics::timeToSeconds(ui64resultB) << "\n";
+					retVal |= 6;
+				} 
 			}
 		}
+		cout << "*) Error is smaller than the minimum precision supported by ITimeArithmetics.h\n";
 	}
 
 	cout << "------\nMisc tests (no errors will be reported)\n------------\n";
