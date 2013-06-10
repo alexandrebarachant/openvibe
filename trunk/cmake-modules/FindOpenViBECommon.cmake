@@ -4,7 +4,7 @@
 # Adds include path
 # ---------------------------------
 
-FIND_PATH(PATH_OPENVIBE_COMMON ov_common_defines.h PATHS ${OV_BASE_DIR}/openvibe-common/src)
+FIND_PATH(PATH_OPENVIBE_COMMON ov_common_defines.h PATHS ${OV_BASE_DIR}/openvibe-common/src NO_DEFAULT_PATH) 
 IF(PATH_OPENVIBE_COMMON)
 	MESSAGE(STATUS "  Found openvibe-common...")
 	INCLUDE_DIRECTORIES(${PATH_OPENVIBE_COMMON})

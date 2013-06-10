@@ -12,21 +12,6 @@ INCLUDE("FindThirdPartyBoost")
 INCLUDE("FindThirdPartyBoost_Thread")
 
 # ---------------------------------
-# Finds standard library rt
-# Adds library to target
-# Adds include path
-# ---------------------------------
-IF(UNIX)
-	FIND_LIBRARY(LIB_STANDARD_MODULE_RT rt)
-	IF(LIB_STANDARD_MODULE_RT)
-		MESSAGE(STATUS "  Found rt...")
-		TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIB_STANDARD_MODULE_RT})
-	ELSE(LIB_STANDARD_MODULE_RT)
-		MESSAGE(STATUS "  FAILED to find rt...")
-	ENDIF(LIB_STANDARD_MODULE_RT)
-ENDIF(UNIX)
-
-# ---------------------------------
 # Target macros
 # Defines target operating system
 # Defines target architecture
