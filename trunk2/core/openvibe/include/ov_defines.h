@@ -70,6 +70,8 @@
 #define OV_ClassId_Kernel_Visualisation_VisualisationWidget  OpenViBE::CIdentifier(0xD88B5297, 0xFE0E9041)
 #define OV_ClassId_Kernel_Visualisation_VisualisationTree    OpenViBE::CIdentifier(0xB8F4A764, 0x8D1FF3BF)
 
+#define OV_ClassId_Kernel_Server_ServerExtensionProto             OpenViBE::CIdentifier(0x93A6ECFB, 0x1199459F)
+
 //___________________________________________________________________//
 //                                                                   //
 // Plugin Class Identifiers                                          //
@@ -91,6 +93,9 @@
 
 #define OV_ClassId_Plugins_ScenarioExporter                  OpenViBE::CIdentifier(0x6C54A6C9, 0x174982CD)
 #define OV_ClassId_Plugins_ScenarioExporterDesc              OpenViBE::CIdentifier(0x13B1BD52, 0x06AB7557)
+
+#define OV_ClassId_Plugins_ServerExtension                   OpenViBE::CIdentifier(0x85558278, 0x285A3E06)
+#define OV_ClassId_Plugins_ServerExtensionDesc               OpenViBE::CIdentifier(0x187ADACA, 0x6DD8C6FA)
 
 //___________________________________________________________________//
 //                                                                   //
