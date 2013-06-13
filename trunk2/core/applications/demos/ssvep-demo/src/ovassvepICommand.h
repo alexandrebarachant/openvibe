@@ -2,7 +2,7 @@
 #define __OpenViBEApplication_ICommand_H__
 
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 namespace OpenViBESSVEP
 {

@@ -4,7 +4,7 @@
 #include <Ogre.h>
 
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 namespace OpenViBESSVEP
 {

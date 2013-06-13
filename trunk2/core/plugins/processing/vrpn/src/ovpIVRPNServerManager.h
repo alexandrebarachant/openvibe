@@ -5,7 +5,7 @@
 
 #include "ovp_defines.h"
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 namespace OpenViBEPlugins
 {

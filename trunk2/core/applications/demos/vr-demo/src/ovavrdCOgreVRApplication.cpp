@@ -1,7 +1,7 @@
 #include "ovavrdCOgreVRApplication.h"
 
-#include <system/include/Time.h>
-#include <fs/include/Files.h>
+#include <system/Time.h>
+#include <fs/Files.h>
 
 #include <iostream>
 

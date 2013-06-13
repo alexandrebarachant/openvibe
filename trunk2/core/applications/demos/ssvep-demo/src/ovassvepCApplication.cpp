@@ -1,7 +1,7 @@
 #include "ovassvepCApplication.h"
 #include <cmath>
 
-#include "fs/include/Files.h"
+#include "fs/Files.h"
 
 using namespace OpenViBE;
 using namespace OpenViBESSVEP;
