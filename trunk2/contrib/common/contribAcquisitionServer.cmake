@@ -1,6 +1,6 @@
-INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/../contrib/common")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/contrib/common")
 
-SET(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/../contrib/gipsa-lab/plugins/server-extensions/external-stimulations/")
+SET(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/contrib/gipsa-lab/plugins/server-extensions/external-stimulations/")
 INCLUDE_DIRECTORIES(${ADDITIONAL_PATH})
 FILE(GLOB_RECURSE additional_source_files ${ADDITIONAL_PATH}/*.cpp ${ADDITIONAL_PATH}/*.h)
 SET(source_files "${source_files};${additional_source_files}")
@@ -17,7 +17,7 @@ FUNCTION(OV_ADD_CONTRIB_DRIVER DRIVER_PATH)
 
 ENDFUNCTION(OV_ADD_CONTRIB_DRIVER)
 
-OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/../contrib/various/plugins/server-drivers/gtec-gusbamp")
-OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/../contrib/inserm/plugins/server-drivers/ctfvsm-meg")
-OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/../contrib/inserm/plugins/server-drivers/brainproducts-brainvisionrecorder")
-OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/../contrib/gipsa-lab/plugins/server-drivers/mitsarEEG202A")
+OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/contrib/various/plugins/server-drivers/gtec-gusbamp")
+OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/contrib/inserm/plugins/server-drivers/ctfvsm-meg")
+OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/contrib/inserm/plugins/server-drivers/brainproducts-brainvisionrecorder")
+OV_ADD_CONTRIB_DRIVER("${CMAKE_SOURCE_DIR}/contrib/gipsa-lab/plugins/server-drivers/mitsarEEG202A")
