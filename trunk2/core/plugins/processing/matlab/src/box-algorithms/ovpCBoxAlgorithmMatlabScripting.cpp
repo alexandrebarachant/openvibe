@@ -2,7 +2,7 @@
 
 #include "ovpCBoxAlgorithmMatlabScripting.h"
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 #include <iostream>
 #include <stdio.h>
 #include <sstream>
@@ -12,7 +12,7 @@
 #include <mex.h>
 #include <engine.h>
 
-#include <fs/include/Files.h>
+#include <fs/Files.h>
 
 #if defined TARGET_OS_Windows
 	#include <windows.h>

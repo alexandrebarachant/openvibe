@@ -1,5 +1,5 @@
 #include "COutputStreamHelper.hpp"
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 using namespace Stream;
 

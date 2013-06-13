@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmSpatialFilter.h"
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <sstream>
 #include <string>

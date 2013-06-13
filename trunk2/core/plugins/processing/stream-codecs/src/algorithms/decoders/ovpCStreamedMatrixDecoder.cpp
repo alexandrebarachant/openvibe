@@ -1,6 +1,6 @@
 #include "ovpCStreamedMatrixDecoder.h"
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

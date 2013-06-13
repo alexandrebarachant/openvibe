@@ -6,7 +6,7 @@
 #include <ov_all.h>
 #include <ovtk_all.h>
 
-#include <ebml/include/IReader.h>
+#include <ebml/IReader.h>
 
 #include <vector>
 #include <string>

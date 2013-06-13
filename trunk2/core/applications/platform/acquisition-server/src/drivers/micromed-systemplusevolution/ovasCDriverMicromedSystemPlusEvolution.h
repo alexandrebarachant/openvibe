@@ -7,8 +7,8 @@
 #if defined TARGET_OS_Windows
 #include <ov_all.h>
 #include <iostream>
-#include <socket/include/IConnectionClient.h>
-#include <socket/include/IConnectionServer.h>
+#include <socket/IConnectionClient.h>
+#include <socket/IConnectionServer.h>
 #include <list>
 
 namespace OpenViBEAcquisitionServer

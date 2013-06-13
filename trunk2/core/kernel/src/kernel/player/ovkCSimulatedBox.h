@@ -6,7 +6,7 @@
 #include "../ovkIGtkOVCustomHandler.h"
 
 #include <gtk/gtk.h>
-#include <system/include/CChrono.h>
+#include <system/CChrono.h>
 #include <vector>
 #include <string>
 #include <deque>

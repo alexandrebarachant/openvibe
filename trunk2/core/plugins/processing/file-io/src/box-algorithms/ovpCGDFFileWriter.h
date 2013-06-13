@@ -7,10 +7,10 @@
 #include <ov_all.h>
 #include <ovtk_all.h>
 
-#include <ebml/include/IReader.h>
-#include <ebml/include/IReaderHelper.h>
+#include <ebml/IReader.h>
+#include <ebml/IReaderHelper.h>
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <iostream>
 #include <fstream>

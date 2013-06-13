@@ -42,7 +42,7 @@ namespace OpenViBE
 
 static CKernelDesc gst_oKernelDesc;
 
-#include <system/include/Time.h>
+#include <system/Time.h>
 
 extern "C"
 {

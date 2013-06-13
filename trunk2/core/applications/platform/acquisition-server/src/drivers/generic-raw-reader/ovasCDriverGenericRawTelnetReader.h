@@ -3,7 +3,7 @@
 
 #include "ovasCDriverGenericRawReader.h"
 
-#include <socket/include/IConnectionClient.h>
+#include <socket/IConnectionClient.h>
 
 namespace OpenViBEAcquisitionServer
 {

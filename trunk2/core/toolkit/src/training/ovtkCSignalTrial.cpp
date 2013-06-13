@@ -1,6 +1,6 @@
 #include "ovtkCSignalTrial.hpp"
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <ovITimeArithmetics.h>
 

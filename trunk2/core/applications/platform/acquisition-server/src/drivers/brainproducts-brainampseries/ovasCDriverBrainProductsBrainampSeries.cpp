@@ -25,8 +25,8 @@
 #include <ovtk_all.h>
 #include <ovITimeArithmetics.h>
 
-#include <system/include/Memory.h>
-#include <system/include/Time.h>
+#include <system/Memory.h>
+#include <system/Time.h>
 
 #include <list>
 

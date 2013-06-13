@@ -3,8 +3,8 @@
 
 #include "../ovp_defines.h"
 #include <ovtk_all.h>
-#include <ebml/include/IReader.h>
-#include <ebml/include/IReaderHelper.h>
+#include <ebml/IReader.h>
+#include <ebml/IReaderHelper.h>
 
 #include <stack>
 #include <map>

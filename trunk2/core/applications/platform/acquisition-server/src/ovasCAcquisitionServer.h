@@ -5,7 +5,7 @@
 #include "ovasIDriver.h"
 #include "ovasIHeader.h"
 
-#include <socket/include/IConnectionServer.h>
+#include <socket/IConnectionServer.h>
 
 #include <boost/thread.hpp>
 #include <boost/thread/condition.hpp>

@@ -5,8 +5,8 @@
 #include <string>
 #include <fstream>
 
-#include <xml/include/IReader.h>
-#include <xml/include/IWriter.h>
+#include <xml/IReader.h>
+#include <xml/IWriter.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

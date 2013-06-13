@@ -5,8 +5,8 @@
 #include <ov_all.h>
 #include <ovtk_all.h>
 
-#include <xml/include/IWriter.h>
-#include <xml/include/IReader.h>
+#include <xml/IWriter.h>
+#include <xml/IReader.h>
 
 #include <stack>
 

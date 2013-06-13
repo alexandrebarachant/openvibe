@@ -6,7 +6,7 @@
 
 #include "../ovkCKernelContext.h"
 
-#include <system/include/CChrono.h>
+#include <system/CChrono.h>
 
 #include <map>
 

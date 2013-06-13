@@ -24,8 +24,8 @@
 #include "tmsi-refa32b/ovasCDriverTMSiRefa32B.h"
 #include "openal-mono16bit-audiocapture/ovasCDriverOpenALAudioCapture.h"
 
-#include <system/include/Memory.h>
-#include <system/include/Time.h>
+#include <system/Memory.h>
+#include <system/Time.h>
 #include <limits>
 
 #include <ovtk_all.h>

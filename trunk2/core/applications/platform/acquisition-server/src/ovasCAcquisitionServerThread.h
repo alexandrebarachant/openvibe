@@ -4,7 +4,7 @@
 #include "ovasCAcquisitionServerGUI.h"
 #include "ovasCAcquisitionServer.h"
 
-#include <system/include/Time.h>
+#include <system/Time.h>
 
 namespace OpenViBEAcquisitionServer
 {

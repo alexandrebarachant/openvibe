@@ -7,7 +7,7 @@
 
 #include <ovtk_all.h>
 
-#include <xml/include/IReader.h>
+#include <xml/IReader.h>
 
 #include <stack>
 #include <string>

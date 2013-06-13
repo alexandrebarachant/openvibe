@@ -6,11 +6,11 @@
 #include <ov_all.h>
 #include <ovtk_all.h>
 
-#include <automaton/include/IXMLAutomatonReader.h>
+#include <automaton/IXMLAutomatonReader.h>
 
-#include <ebml/include/IReader.h>
-#include <ebml/include/IWriter.h>
-#include <ebml/include/TWriterCallbackProxy.h>
+#include <ebml/IReader.h>
+#include <ebml/IWriter.h>
+#include <ebml/TWriterCallbackProxy.h>
 
 #include <vector>
 #include <string>

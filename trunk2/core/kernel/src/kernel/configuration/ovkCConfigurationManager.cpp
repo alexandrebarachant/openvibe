@@ -1,10 +1,10 @@
 #include "ovkCConfigurationManager.h"
 
-#include <fs/include/IEntryEnumerator.h>
-#include <fs/include/Files.h>
+#include <fs/IEntryEnumerator.h>
+#include <fs/Files.h>
 
-#include <system/include/Time.h>
-#include <system/include/CMath.h>
+#include <system/Time.h>
+#include <system/CMath.h>
 
 #include <stack>
 #include <string>

@@ -4,7 +4,7 @@
 #include "ovtkIBoxAlgorithmEBMLOutputWriter.h"
 #include "ovtkCBoxAlgorithmEBMLOutputWriterPartBase.inl"
 
-#include <ebml/include/CWriterHelper.h>
+#include <ebml/CWriterHelper.h>
 
 #include <map>
 

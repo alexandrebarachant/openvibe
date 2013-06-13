@@ -5,7 +5,7 @@
 
 #include <ovtk_all.h>
 
-#include <ebml/include/TWriterCallbackProxy.h>
+#include <ebml/TWriterCallbackProxy.h>
 
 namespace OpenViBEPlugins
 {

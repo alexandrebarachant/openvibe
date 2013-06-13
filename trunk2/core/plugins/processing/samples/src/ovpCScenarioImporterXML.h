@@ -5,7 +5,7 @@
 
 #include <ov_all.h>
 
-#include <xml/include/IReader.h>
+#include <xml/IReader.h>
 
 #include <map>
 #include <stack>

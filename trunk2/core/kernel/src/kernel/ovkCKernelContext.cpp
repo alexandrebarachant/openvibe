@@ -17,7 +17,7 @@
 #include <functional>
 #include <cctype>
 
-#include <fs/include/Files.h>
+#include <fs/Files.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

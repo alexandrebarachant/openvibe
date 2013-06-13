@@ -2,7 +2,7 @@
 #include "ovasCConfigurationBrainProductsVAmp.h"
 #include "../ovasCHeader.h"
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #if defined TARGET_HAS_ThirdPartyUSBFirstAmpAPI
 

@@ -1,7 +1,7 @@
 #if 0
 #include "ovpCApplySpatialFilter.h"
 #include <cmath>
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

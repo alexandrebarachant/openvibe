@@ -4,8 +4,8 @@
 #include "../ovp_defines.h"
 #include <ov_all.h>
 #include <ovtk_all.h>
-#include <ebml/include/TWriterCallbackProxy.h>
-#include <ebml/include/IWriter.h>
+#include <ebml/TWriterCallbackProxy.h>
+#include <ebml/IWriter.h>
 
 #include <vector>
 #include <string>

@@ -5,9 +5,9 @@
 #include <ov_all.h>
 #include <ovtk_all.h>
 
-#include <ebml/include/CWriter.h>
-#include <ebml/include/CWriterHelper.h>
-#include <ebml/include/CReader.h>
+#include <ebml/CWriter.h>
+#include <ebml/CWriterHelper.h>
+#include <ebml/CReader.h>
 
 #include <cstdio>
 

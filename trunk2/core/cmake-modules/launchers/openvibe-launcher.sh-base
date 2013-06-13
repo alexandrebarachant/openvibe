@@ -4,7 +4,7 @@
 #export OV_PATH_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #export OV_PATH_BIN="$OV_PATH_ROOT/bin"
 #export OV_PATH_LIB="$OV_PATH_ROOT/lib"
-#export OV_PATH_DATA="$OV_PATH_ROOT/share"
+#export OV_PATH_DATA="$OV_PATH_ROOT/share/openvibe"
 
 LOCAL_BIN_PATH="@CMAKE_INSTALL_FULL_BINDIR@"
 if [ "$OV_PATH_BIN" != "" ]; then

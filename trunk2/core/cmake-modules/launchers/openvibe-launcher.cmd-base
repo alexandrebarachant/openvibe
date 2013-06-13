@@ -5,7 +5,7 @@ REM Get the directory location of this script, assume it contains the OpenViBE d
 SET "OV_PATH_ROOT=%~dp0"
 SET "OV_PATH_BIN=%OV_PATH_ROOT%\bin"
 SET "OV_PATH_LIB=%OV_PATH_ROOT%\bin"
-SET "OV_PATH_DATA=%OV_PATH_ROOT%\share"
+SET "OV_PATH_DATA=%OV_PATH_ROOT%\share\openvibe"
 
 SET OV_PAUSE=PAUSE
 SET OV_RUN_IN_BG=

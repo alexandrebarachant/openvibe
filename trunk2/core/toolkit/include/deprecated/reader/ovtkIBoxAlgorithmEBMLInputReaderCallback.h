@@ -3,7 +3,7 @@
 
 #include "../../ovtkIObject.h"
 
-#include <ebml/include/IReader.h>
+#include <ebml/IReader.h>
 
 namespace OpenViBEToolkit
 {

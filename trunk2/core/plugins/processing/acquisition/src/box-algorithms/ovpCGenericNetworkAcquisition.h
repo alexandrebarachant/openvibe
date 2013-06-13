@@ -5,15 +5,15 @@
 #include <ov_all.h>
 #include <ovtk_all.h>
 
-#include <ebml/include/TReaderCallbackProxy.h>
-#include <ebml/include/TWriterCallbackProxy.h>
+#include <ebml/TReaderCallbackProxy.h>
+#include <ebml/TWriterCallbackProxy.h>
 
-#include <socket/include/IConnectionClient.h>
+#include <socket/IConnectionClient.h>
 
-#include <ebml/include/IReader.h>
-#include <ebml/include/IReaderHelper.h>
-#include <ebml/include/IWriter.h>
-#include <ebml/include/IWriterHelper.h>
+#include <ebml/IReader.h>
+#include <ebml/IReaderHelper.h>
+#include <ebml/IWriter.h>
+#include <ebml/IWriterHelper.h>
 
 #include <string>
 #include <vector>

@@ -8,10 +8,10 @@
 
 #include <ovtk_all.h>
 
-#include <ebml/include/TWriterCallbackProxy.h>
-#include <ebml/include/IWriter.h>
+#include <ebml/TWriterCallbackProxy.h>
+#include <ebml/IWriter.h>
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <fstream>
 #include <string>

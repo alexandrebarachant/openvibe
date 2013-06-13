@@ -4,7 +4,7 @@
 #include "ovasCConfigurationBrainProductsVAmp.h"
 #include "ovasCHeaderBrainProductsVAmp.h"
 
-#include <system/include/Time.h>
+#include <system/Time.h>
 #include <windows.h>
 
 #include <cstdlib>

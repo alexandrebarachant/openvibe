@@ -6,7 +6,7 @@
 
 #include "CIdentifier.h"
 
-#include <xml/include/IReader.h>
+#include <xml/IReader.h>
 
 #include <stack>
 #include <vector>

@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmP300MagicCardVisualisation.h"
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <list>
 #include <vector>

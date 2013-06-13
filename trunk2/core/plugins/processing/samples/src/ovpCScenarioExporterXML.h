@@ -5,7 +5,7 @@
 
 #include <ov_all.h>
 
-#include <xml/include/IWriter.h>
+#include <xml/IWriter.h>
 
 #include <iostream>
 #include <fstream>

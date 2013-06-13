@@ -3,8 +3,8 @@
 
 #include <ovtk_all.h>
 
-#include <system/include/Time.h>
-#include <system/include/Memory.h>
+#include <system/Time.h>
+#include <system/Memory.h>
 
 #if defined TARGET_OS_Windows
 

@@ -3,10 +3,10 @@
 
 #include "../../ovk_tools.h"
 
-#include <fs/include/IEntryEnumerator.h>
-#include <fs/include/Files.h>
+#include <fs/IEntryEnumerator.h>
+#include <fs/Files.h>
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <cstdio>
 #include <iostream>

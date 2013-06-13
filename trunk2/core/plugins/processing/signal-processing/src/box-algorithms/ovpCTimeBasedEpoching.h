@@ -3,7 +3,7 @@
 
 #include "../ovp_defines.h"
 #include <ovtk_all.h>
-#include <ebml/include/TWriterCallbackProxy.h>
+#include <ebml/TWriterCallbackProxy.h>
 #include <vector>
 #include <cstdio>
 

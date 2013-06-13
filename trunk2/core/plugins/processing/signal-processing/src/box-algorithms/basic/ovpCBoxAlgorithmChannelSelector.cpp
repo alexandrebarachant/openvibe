@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmChannelSelector.h"
 
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <cstdio>
 

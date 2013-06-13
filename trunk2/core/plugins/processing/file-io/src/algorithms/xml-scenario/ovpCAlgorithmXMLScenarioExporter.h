@@ -7,7 +7,7 @@
 
 #include <ovtk_all.h>
 
-#include <xml/include/IWriter.h>
+#include <xml/IWriter.h>
 
 #define OVP_ClassId_Algorithm_XMLScenarioExporter                                        OpenViBE::CIdentifier(0x53693531, 0xB136CF3F)
 #define OVP_ClassId_Algorithm_XMLScenarioExporterDesc                                    OpenViBE::CIdentifier(0x9709C9FA, 0xF126F74E)
