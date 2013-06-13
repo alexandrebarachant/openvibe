@@ -3,7 +3,7 @@
 
 #include "../ovp_defines.h"
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 #include <cstdio>
 
 #define OVP_ClassId_BoxAlgorithm_MatrixValidityChecker     OpenViBE::CIdentifier(0x60210579, 0x6F7519B6)

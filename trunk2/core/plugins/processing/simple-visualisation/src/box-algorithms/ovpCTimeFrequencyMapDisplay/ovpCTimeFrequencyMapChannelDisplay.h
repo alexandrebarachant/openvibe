@@ -2,7 +2,7 @@
 #define __OpenViBEPlugins_SimpleVisualisation_CTimeFrequencyMapChannelDisplay_H__
 
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 #include <gtk/gtk.h>
 #include <iostream>
 

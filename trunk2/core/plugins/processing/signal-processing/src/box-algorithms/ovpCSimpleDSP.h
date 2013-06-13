@@ -4,7 +4,7 @@
 #include "../ovp_defines.h"
 
 #include <system/Time.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include "../ovpCSimpleDSP/ovpCEquationParser.h"
 

@@ -3,7 +3,7 @@
 
 #include "../ovp_defines.h"
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #define OVP_ClassId_BoxAlgorithm_UnivariateStatistic     OpenViBE::CIdentifier(0x6118159D, 0x600C40B9)
 #define OVP_ClassId_BoxAlgorithm_UnivariateStatisticDesc OpenViBE::CIdentifier(0x36F742D9, 0x6D1477B2)

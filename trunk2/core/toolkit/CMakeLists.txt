@@ -7,13 +7,13 @@ SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_
 
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl src/*.hpp include/*.h)
 
-INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include)
-INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/algorithms/scenario-io)
-INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/algorithms/classification)
-INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/deprecated/writer)
-INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/deprecated/reader)
-INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/training)
-INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/tools)
+INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/)
+INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/toolkit/algorithms/scenario-io)
+INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/toolkit/algorithms/classification)
+INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/toolkit/deprecated/writer)
+INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/toolkit/deprecated/reader)
+INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/toolkit/training)
+INCLUDE_DIRECTORIES(${openvibe-toolkit_SOURCE_DIR}/include/toolkit/tools)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${source_files})
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
@@ -54,4 +54,4 @@ INSTALL(TARGETS ${PROJECT_NAME}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})
 
-INSTALL(DIRECTORY include/   DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/toolkit FILES_MATCHING PATTERN "*.h" PATTERN ".svn" EXCLUDE)
+INSTALL(DIRECTORY include/   DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h" PATTERN ".svn" EXCLUDE)

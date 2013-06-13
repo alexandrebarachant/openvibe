@@ -1,15 +1,15 @@
 #include "ovasCConfigurationBuilder.h"
 #include "ovasIHeader.h"
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include <iostream>
 #include <fstream>
 #include <list>
 #include <cstdlib>
 
-#define OVAS_ElectrodeNames_File           OpenViBE::Directories::getDataDir() + "/openvibe/applications/acquisition-server/electrode-names.txt"
-#define OVAS_ConfigureGUIElectrodes_File   OpenViBE::Directories::getDataDir() + "/openvibe/applications/acquisition-server/interface-channel-names.ui"
+#define OVAS_ElectrodeNames_File           OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/electrode-names.txt"
+#define OVAS_ConfigureGUIElectrodes_File   OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-channel-names.ui"
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

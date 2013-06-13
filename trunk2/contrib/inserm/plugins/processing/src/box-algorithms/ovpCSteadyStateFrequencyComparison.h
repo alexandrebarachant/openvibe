@@ -3,8 +3,8 @@
 
 #include "../ovp_defines.h"
 #include <ov_all.h>
-#include <ovtk_all.h>
-#include <ebml/include/TWriterCallbackProxy.h>
+#include <toolkit/ovtk_all.h>
+#include <ebml/TWriterCallbackProxy.h>
 
 #include <vector>
 

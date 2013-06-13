@@ -2,7 +2,7 @@
 #define __SamplePlugin_CHelloWorldWithInput_H__
 
 #include "../ovp_defines.h"
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 #include <cstdio>
 
 namespace OpenViBEPlugins

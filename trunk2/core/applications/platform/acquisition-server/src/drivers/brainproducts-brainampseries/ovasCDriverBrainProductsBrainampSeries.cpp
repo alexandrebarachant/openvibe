@@ -22,7 +22,7 @@
 
 #if defined TARGET_OS_Windows
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 #include <ovITimeArithmetics.h>
 
 #include <system/Memory.h>
@@ -642,7 +642,7 @@ boolean CDriverBrainProductsBrainampSeries::configure(void)
 {
 	CConfigurationBrainProductsBrainampSeries l_oConfiguration(
 		*this,
-		OpenViBE::Directories::getDataDir() + "/openvibe/applications/acquisition-server/interface-BrainProducts-BrainampSeries.ui",
+		OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-BrainProducts-BrainampSeries.ui",
 		m_ui32USBIndex,
 		m_ui32DecimationFactor,
 		m_peChannelSelected,

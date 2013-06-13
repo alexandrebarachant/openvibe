@@ -4,7 +4,7 @@
 #include <sstream>
 #include <cmath>
 #include <cstdlib>
-#include <system/include/Memory.h>
+#include <system/Memory.h>
 
 #include <ovITimeArithmetics.h>
 

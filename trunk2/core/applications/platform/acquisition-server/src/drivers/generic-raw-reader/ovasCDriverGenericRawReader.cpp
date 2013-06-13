@@ -1,7 +1,7 @@
 #include "ovasCDriverGenericRawReader.h"
 #include "../ovasCConfigurationBuilder.h"
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 #include <ovITimeArithmetics.h>
 
 #include <system/Memory.h>

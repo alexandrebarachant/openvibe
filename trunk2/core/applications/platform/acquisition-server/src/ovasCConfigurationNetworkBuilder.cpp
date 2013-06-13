@@ -1,6 +1,6 @@
 #include "ovasCConfigurationNetworkBuilder.h"
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include <iostream>
 #include <fstream>

@@ -5,7 +5,7 @@
 #include "../../ovp_defines.h"
 
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #define OVP_ClassId_BoxAlgorithm_BCI2000Reader OpenViBE::CIdentifier(0xFF78DAF4, 0xC41544B8)
 #define OVP_ClassId_BoxAlgorithm_BCI2000ReaderDesc OpenViBE::CIdentifier(0xFF53D107, 0xC31144B8)

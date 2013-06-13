@@ -3,7 +3,7 @@
 
 #include "../ovp_defines.h"
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #define OVP_ClassId_BoxAlgorithm_Nothing     OpenViBE::CIdentifier(0x273960C0, 0x485C407C)
 #define OVP_ClassId_BoxAlgorithm_NothingDesc OpenViBE::CIdentifier(0x7A6167D9, 0x79070E22)

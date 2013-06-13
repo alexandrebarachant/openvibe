@@ -5,7 +5,7 @@
 
 #include "../ovp_defines.h"
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #define OVP_ClassId_BoxAlgorithm_CSPSpatialFilterTrainer     OpenViBE::CIdentifier(0x51DB0D64, 0x2109714E)
 #define OVP_ClassId_BoxAlgorithm_CSPSpatialFilterTrainerDesc OpenViBE::CIdentifier(0x05120978, 0x14E061CD)

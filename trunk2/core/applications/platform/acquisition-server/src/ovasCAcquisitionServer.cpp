@@ -1,7 +1,7 @@
 #include "ovasCAcquisitionServer.h"
 #include "ovasIAcquisitionServerPlugin.h"
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 #include <ovITimeArithmetics.h>
 
 #include <ovp_global_defines.h>

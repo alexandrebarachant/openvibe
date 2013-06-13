@@ -25,7 +25,7 @@
 #include "ovasCConfigurationBrainmasterDiscovery.h"
 #include "../ovasCConfigurationBuilder.h"
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include "ovas_defines_brainmaster_discovery.h"
 
@@ -637,7 +637,7 @@ boolean CDriverBrainmasterDiscovery::isConfigurable(void)
 
 boolean CDriverBrainmasterDiscovery::configure(void)
 {
-	CConfigurationBrainmasterDiscovery m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe/applications/acquisition-server/interface-Brainmaster-Discovery.ui", m_ui32Port, m_ui32Preset, m_ui32Type, m_ui32BaudRate, m_ui32SamplingRate, m_ui32BitDepth, m_ui32NotchFilters, m_vChannelType, m_sDeviceSerial, m_sDevicePasskey);
+	CConfigurationBrainmasterDiscovery m_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-Brainmaster-Discovery.ui", m_ui32Port, m_ui32Preset, m_ui32Type, m_ui32BaudRate, m_ui32SamplingRate, m_ui32BitDepth, m_ui32NotchFilters, m_vChannelType, m_sDeviceSerial, m_sDevicePasskey);
 	if(!m_oConfiguration.configure(m_oHeader))
 	{
 		return false;

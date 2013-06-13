@@ -3,7 +3,7 @@
 
 #include "../ovp_defines.h"
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #define SET_BIT(bit)	(1 << bit)
 namespace OpenViBEPlugins

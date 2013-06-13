@@ -2,7 +2,7 @@
 #define __OpenViBESkeletonGenerator_CSkeletonGenerator_H__
 
 #include <ov_all.h>
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 //#include <configuration/ovkCConfigurationManager.h>
 
 #include <gtk/gtk.h>

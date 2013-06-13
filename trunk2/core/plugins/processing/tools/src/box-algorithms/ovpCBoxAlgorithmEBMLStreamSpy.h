@@ -2,7 +2,7 @@
 #define __OpenViBEPlugins_BoxAlgorithm_EBMLStreamSpy_H__
 
 #include "../ovp_defines.h"
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 #include <ebml/IReader.h>
 #include <ebml/IReaderHelper.h>
 

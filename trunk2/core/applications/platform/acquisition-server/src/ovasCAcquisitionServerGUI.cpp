@@ -28,7 +28,7 @@
 #include <system/Time.h>
 #include <limits>
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 // Plugins
 
@@ -60,7 +60,7 @@ namespace
 	}
 };
 
-#define OVAS_GUI_File            OpenViBE::Directories::getDataDir() + "/openvibe/applications/acquisition-server/interface.ui"
+#define OVAS_GUI_File            OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface.ui"
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

@@ -1,7 +1,7 @@
 #include "ovasCDriverMindMediaNeXus32B.h"
 #include "../ovasCConfigurationBuilder.h"
 
-#include <ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include <system/Time.h>
 #include <system/Memory.h>
@@ -237,7 +237,7 @@ boolean CDriverMindMediaNeXus32B::isConfigurable(void)
 
 boolean CDriverMindMediaNeXus32B::configure(void)
 {
-	CConfigurationBuilder m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe/applications/acquisition-server/interface-MindMedia-NeXus32B.ui");
+	CConfigurationBuilder m_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-MindMedia-NeXus32B.ui");
 	return m_oConfiguration.configure(m_oHeader);
 }
 
