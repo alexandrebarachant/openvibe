@@ -9,7 +9,7 @@ call "!InitEnvScript!"
 REM needed for debugging in VS ...
 SET "OV_PATH_ROOT=%CD%\..\..\dist"
 SET "OV_PATH_BIN=%OV_PATH_ROOT%\bin"
-SET "OV_PATH_DATA=%OV_PATH_ROOT%\share"
+SET "OV_PATH_DATA=%OV_PATH_ROOT%\share\openvibe"
 SET "OV_PATH_LIB=%OV_PATH_ROOT%\bin"
 SET "PATH=%OV_PATH_ROOT%\bin;%PATH%"
 
