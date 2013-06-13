@@ -1,0 +1,13 @@
+Source: openvibe
+Maintainer: none <do-not-email@abc.fr>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.3
+Build-Depends: debhelper (>= 9), doxygen, automake, autoconf, cmake (>= 2.8), cmake-data (>= 2.8.7), unzip, libgtk2.0-dev, libglade2-dev, gfortran, libgsl0-dev, libexpat1-dev, libreadline-dev, libzzip-dev, libtool, libxaw7-dev, libpcre3-dev, libfreeimage-dev, libglu1-mesa-dev, libalut-dev, libvorbis-dev, libncurses5-dev, python-dev, python-numpy, libeigen3-dev, libogre-dev, libcegui-mk2-dev, libois-dev, libboost-dev, libboost-thread-dev, liblua5.1-0-dev, libboost-regex-dev, libboost-filesystem-dev
+
+Package: openvibe
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python2.7, python-numpy
+Description: Platform for Brain-Computer Interfaces (BCI)
+ A modular software platform for the design, test and use of Brain-Computer 
+ Interfaces.
