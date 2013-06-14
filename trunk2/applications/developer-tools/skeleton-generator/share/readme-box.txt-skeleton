@@ -12,7 +12,7 @@ The Box class:
 - ovpCBoxAlgorithm@@ClassName@@.h
 - ovpCBoxAlgorithm@@ClassName@@.cpp
 Please put these files in your local repository, in the project of your choice (e.g. Signal Processing or Classification)
-     [openvibe-repository]/trunk/openvibe-plugins/[plugin-project]/trunc/src/[my-box-folder]
+     [openvibe-repository]/contrib/plugins/[plugin-project]/src/[my-box-folder]
  
 You may have to change the file ovpCBoxAlgorithm@@ClassName@@.h to make it find the included file ovp_defines.h, whose path is related to the project used.
  

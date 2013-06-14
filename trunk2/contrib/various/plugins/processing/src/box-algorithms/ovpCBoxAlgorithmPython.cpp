@@ -134,7 +134,7 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 	l_sCommand = l_sCommand + "import sys\n";
 	l_sCommand = l_sCommand + "sys.path.append('";
 	l_sCommand = l_sCommand + OpenViBE::Directories::getDataDir();
-	l_sCommand = l_sCommand + "/openvibe-plugins/python')\n";
+	l_sCommand = l_sCommand + "/plugins/python')\n";
 	l_sCommand = l_sCommand + "sys.argv = [\"openvibe\"]\n";
 	// l_sCommand = l_sCommand + "import openvibe\n";
 	// l_sCommand = l_sCommand + "from StimulationsCodes import *\n";
@@ -147,7 +147,7 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 
 	//Execute the script which contains the different classes to interact with OpenViBE
 	//New reference
-	OpenViBE::CString l_sFilePath = OpenViBE::Directories::getDataDir() + "/openvibe-plugins/python/openvibe.py";
+	OpenViBE::CString l_sFilePath = OpenViBE::Directories::getDataDir() + "/plugins/python/openvibe.py";
 	PyObject *l_pScriptFile = PyFile_FromString( (char *)l_sFilePath.toASCIIString(), (char *) "r");
 	if (l_pScriptFile == NULL)
 	{
