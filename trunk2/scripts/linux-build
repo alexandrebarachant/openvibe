@@ -19,8 +19,8 @@ echo "__________________________________________________________________________
 echo ""
 		
 ov_script_dir="${PWD}"
-ov_build_dir="${ov_script_dir}/../../local-tmp/linux-${ov_build_type}"
-ov_install_dir="${ov_script_dir}/../../dist"
+ov_build_dir="${ov_script_dir}/../local-tmp/linux-${ov_build_type}"
+ov_install_dir="${ov_script_dir}/../dist"
 
 mkdir -p "${ov_build_dir}" 2> /dev/null
 pushd "${ov_build_dir}" 2> /dev/null

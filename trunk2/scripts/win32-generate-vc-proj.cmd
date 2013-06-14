@@ -12,8 +12,8 @@ call "!InitEnvScript!"
 REM #######################################################################################
 
 set ov_script_dir=%CD%
-set ov_build_dir=%ov_script_dir%\..\..\local-tmp\visual
-set ov_install_dir=%ov_script_dir%\..\..\dist
+set ov_build_dir=%ov_script_dir%\..\local-tmp\visual
+set ov_install_dir=%ov_script_dir%\..\dist
 
 mkdir %ov_build_dir% 2>NUL
 cd /D %ov_build_dir%
