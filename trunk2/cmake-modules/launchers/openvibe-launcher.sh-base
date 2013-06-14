@@ -15,7 +15,7 @@ if [ "$OV_PATH_LIB" != "" ]; then
 	LOCAL_LIB_PATH="$OV_PATH_LIB"
 fi
 
-export LD_LIBRARY_PATH="$LOCAL_LIB_PATH:@CMAKE_SOURCE_DIR@/../dependencies/lib:$LD_LIBRARY_PATH"
+export LD_LIBRARY_PATH="$LOCAL_LIB_PATH:@CMAKE_SOURCE_DIR@/dependencies/lib:$LD_LIBRARY_PATH"
 export LC_ALL=C
 
 # The following line is there to help in cases where OpenViBE can consume excessive
