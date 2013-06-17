@@ -196,6 +196,11 @@ boolean CSpectralAnalysis::process()
 						m_ui32FFTSize<<=1;
 					}
 					m_ui32FFTSize>>=1;
+					if(m_ui32FFTSize==0) 
+					{
+						this->getLogManager() << LogLevel_Error << "Computed FFT size was 0\n";
+						return false;
+					}
 					m_bCoefComputed = true;
 				}
 

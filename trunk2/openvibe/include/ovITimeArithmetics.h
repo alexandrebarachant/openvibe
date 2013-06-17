@@ -46,13 +46,10 @@ namespace OpenViBE
 		 * \param ui64FixedPointTime : time in fixed point format
 		 * \return Regular floating point time in seconds
 		 *
-		 * @FIXME Computation still subject to change.
-		 *
 		 */
 		static float64 timeToSeconds(const uint64 ui64Time)
 		{
-			// return (ui64Time>>22)/1024.0;
-			return float64(ui64Time)/float64(1LL<<32);
+			return (ui64Time>>m_ui32Shift)/double(m_ui32Multiplier);
 		}
 
 		/**
@@ -60,14 +57,19 @@ namespace OpenViBE
 		 * \param f64Time : Regular floating point time in seconds 
 		 * \return Time in fixed point format
 		 *
-		 * @FIXME Computation still subject to change.
-		 *
 		 */
 		static uint64 secondsToTime(const float64 f64Time)
 		{
-			// return ((uint64)(f64Time*1024.0))<<22;
-			return uint64(f64Time*float64(1LL<<32)); 
+			return ((uint64)(f64Time*double(m_ui32Multiplier)))<<m_ui32Shift;
 		}
+
+		// Increase m_ui32DecimalPrecision to get more precision in decimals for timeToSeconds() and secondsToTime().
+		// The default value of 10 bits suffices for (1/2^10)s=(1/1024)s precision in time, i.e. a bit under 1ms. 
+		// Using higher sampling rates than 1024hz would require a correspondingly higher decimal precision.
+		static const uint32 m_ui32DecimalPrecision = 10;		// In bits
+
+		static const uint32 m_ui32Shift = 32-m_ui32DecimalPrecision;			// 22
+		static const uint32 m_ui32Multiplier = 1L << m_ui32DecimalPrecision;	// 1024
 
 	private:
 		// Static class, don't allow instances
