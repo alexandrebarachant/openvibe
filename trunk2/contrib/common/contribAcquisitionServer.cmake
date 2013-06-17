@@ -5,8 +5,6 @@ INCLUDE_DIRECTORIES(${ADDITIONAL_PATH})
 FILE(GLOB_RECURSE additional_source_files ${ADDITIONAL_PATH}/*.cpp ${ADDITIONAL_PATH}/*.h)
 SET(source_files "${source_files};${additional_source_files}")
 
-# INCLUDE("FindThirdPartyGUSBampCAPI")
-
 
 FUNCTION(OV_ADD_CONTRIB_DRIVER DRIVER_PATH)
 

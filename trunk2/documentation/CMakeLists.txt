@@ -26,7 +26,9 @@ IF(UNIX)
 	ADD_DEFINITIONS(-DTARGET_COMPILER_GCC)
 ENDIF(UNIX)
 
-add_subdirectory(src)
+IF(NOT(${SKIP_DOCUMENTATION}))
+	add_subdirectory(src)
+ENDIF(NOT(${SKIP_DOCUMENTATION}))
 
 # -----------------------------
 # Install files

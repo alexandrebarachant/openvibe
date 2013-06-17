@@ -35,6 +35,7 @@ IF(doxygen_bin)
 	# tokens. This tokens will later be included in the skeleton doxumentation
 	# files (.dox-skeleton)
 	GET_PROPERTY(CURRENT_PROJECTS GLOBAL PROPERTY OV_PROP_CURRENT_PROJECTS)
+
 	FOREACH(current_project ${CURRENT_PROJECTS})
 		STRING(REGEX REPLACE " +$" "" current_project ${current_project})
 		SET(current_project_src "${current_project}/src")
@@ -106,7 +107,8 @@ IF(doxygen_bin)
 	)
 	
 # does not work, for some reason
-#	INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../doc/html/" DESTINATION ${CMAKE_INSTALL_FULL_DOCDIR} PATTERN ".svn" EXCLUDE)
+MESSAGE(STATUS "CURRENT SOURCE: ${CMAKE_CURRENT_SOURCE_DIR}")
+INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../doc/" DESTINATION ${CMAKE_INSTALL_FULL_DOCDIR} PATTERN ".svn" EXCLUDE)
 
 ELSE(doxygen_bin)
 

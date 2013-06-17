@@ -93,6 +93,9 @@ MESSAGE(STATUS "  CMAKE_CXX_FLAGS_DEBUG = '${CMAKE_CXX_FLAGS_DEBUG}'")
 #SET(OV_BRANCH_APPLICATIONS_VRPN-SIMULATOR								"branches/mybranch")
 #SET(OV_BRANCH_DOCUMENTATION											"branches/mybranch")
 
+SET(SKIP_DOCUMENTATION "1")
+#SET(SKIP_CONTRIB_PLUGINS_PROCESSING_PYTHON "1")
+
 #SET(SKIP_MODULES_AUTOMATON "1")
 #SET(SKIP_MODULES_EBML "1")
 #SET(SKIP_MODULES_FS "1")
@@ -122,7 +125,7 @@ SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELEASE "TARGET_BUILD
 SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS_RELWITHDEBINFO "TARGET_BUILDTYPE_Release")
 
 # OpenViBE-specific helper functions that are used by the CMakeLists of the subprojects.
-INCLUDE("OvAddSingleProject")
+#INCLUDE("OvAddSingleProject")
 INCLUDE("OvAddProjects")
 INCLUDE("OvInstallLaunchScript")
 INCLUDE("OvLinkBoostLib")
@@ -147,12 +150,15 @@ ADD_SUBDIRECTORY("toolkit/")
 ADD_SUBDIRECTORY("plugins/")
 ADD_SUBDIRECTORY("applications/")
 #ADD_SUBDIRECTORY("openvibe-externals/")
-#ADD_SUBDIRECTORY("openvibe-documentation/")	# needs to be the last since it uses the list of collected projects
 ADD_SUBDIRECTORY("contrib/")
+ADD_SUBDIRECTORY("documentation/") # needs to be the last since it uses the list of collected projects
+
+
+
 
 #add dependency to plugin inspector to the documentation
 IF(openvibe-documentation)
-	ADD_DEPENDENCIES(openvibe-documentation openvibe-plugin-inspector-dynamic)
+	ADD_DEPENDENCIES(openvibe-documentation openvibe-plugin-inspector)
 ENDIF(openvibe-documentation)
 # make a copy of the dependency script, this is done so we can use the same launch scripts both in win install and win devel situations.
 IF(WIN32)

@@ -3,8 +3,8 @@
 #include "ovasCDriverGTecGUSBamp.h"
 #include "ovasCConfigurationGTecGUSBamp.h"
 
-#include <openvibe-toolkit/toolkit/ovtk_all.h>
-#include <openvibe/ovITimeArithmetics.h>
+#include <toolkit/ovtk_all.h>
+#include <ovITimeArithmetics.h>
 
 #include <system/Time.h>
 #include <cmath>

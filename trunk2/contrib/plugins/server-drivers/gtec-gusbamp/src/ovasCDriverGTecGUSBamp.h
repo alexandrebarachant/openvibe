@@ -3,7 +3,7 @@
 
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 
 #include <gtk/gtk.h>
