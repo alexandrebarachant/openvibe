@@ -1,3 +1,4 @@
+
 #include "algorithms/basic/ovpCMatrixAverage.h"
 #include "algorithms/epoching/ovpCAlgorithmStimulationBasedEpoching.h"
 //#include "algorithms/filters/ovpCApplySpatialFilter.h"
@@ -26,6 +27,14 @@
 #include "box-algorithms/ovpCFirstDifferenceDetrending.h"
 #include "box-algorithms/ovpCSecondDifferenceDetrending.h"
 #include "box-algorithms/ovpCBoxAlgorithmQuadraticForm.h"
+
+#include "box-algorithms/filter/ovpCBoxAlgorithmXDAWNSpatialFilterTrainer.h"
+
+#include "box-algorithms/basic/ovpCBoxAlgorithmIFFTbox.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmEnvelope.h"
+
+#include "algorithms/basic/ovpCAlgorithmARBurgMethod.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmARFeatures.h"
 
 OVP_Declare_Begin()
 
@@ -84,4 +93,20 @@ OVP_Declare_Begin()
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmFrequencyBandSelectorDesc)
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessing::CBoxAlgorithmSpectrumAverageDesc)
 
+#if defined TARGET_HAS_ThirdPartyITPP
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmXDAWNSpatialFilterTrainerDesc);
+
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmIFFTboxDesc);
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingBasic::CBoxAlgorithmEnvelopeDesc);
+
+#endif // TARGET_HAS_ThirdPartyITPP
+
+
+#ifdef __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmARFeaturesDesc);
+#endif
+#ifdef __OpenViBEPlugins_Algorithm_ARBurgMethod_H__
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CAlgorithmARBurgMethodDesc);
+#endif
+	
 OVP_Declare_End()
