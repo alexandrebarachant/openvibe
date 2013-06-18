@@ -1,0 +1,71 @@
+
+         *========================================*
+                      |OpenViBE| |README|
+         *========================================*
+
+|Introduction|
+
+OpenViBE is a software platform for the design, test and use of
+Brain-Computer Interfaces. This document provides basic
+information on what you just downloaded.
+
+|Code.source.access|
+
+The source code of the project can be found by following links
+on the OpenViBE homepage :
+
+http://openvibe.inria.fr/
+
+|Repository.organisation|
+
+The project repository is composed of several software modules. Each software
+module can have its own branches and tags and is compiled separately
+from other modules. The repository basically looks like this :
+
+root of the repository
+ + <openvibe> (API / specifications)
+ + <kernel> (kernel implementation)
+ + <toolkit> (development help components)
+ + <applications> (OpenViBE user applications)
+    + <platform>
+        + <acquisition-server>
+        + <designer>
+    + ...
+ + <plugins> (OpenViBE plugin collections)
+    + <samples>
+    + <acquisition>
+    + ...
+ + <modules> (abstraction and portability components)
+    + <ebml>
+    + <socket>
+    + ...
+
+Each software module is organized as a UNIX-like tree (empty folders not
+included):
+
++ <bin> (any pre-compiled binaries)
++ <include> (target folder for API headers)
++ <lib> (any pre-compiled libraries)
++ <share> (shared file folder for all data)
++ <src> (source code of the module)
++ <doc> (documentation files for the module)
++ <test> (unit test source code for the module)
+
+|Support|
+
+Please follow the links on the OpenViBE homepage:
+
+http://openvibe.inria.fr/
+
+|Licence|
+
+Please refer to the COPYING file to get details regarding the OpenViBE license.
+
+|Building.the.software|
+
+Please refer to the INSTALL file for instructions on how to build the
+platform.
+
+|End.of.file|
+
+ vim:tw=78:ts=8:ft=help:norl:
