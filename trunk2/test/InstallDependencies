@@ -1,0 +1,15 @@
+#!/bin/bash
+unamestr=`uname`
+if [[ "$unamestr" == 'Linux' ]]; then
+   if [[ -e /etc/fedora-release ]]; then
+			echo -e 'openvibe\nopenvibe\n' | sudo passwd
+			echo -e 'spawn ./linux-install_dependencies\n expect "assword:"\n send "openvibe\n"\n expect -timeout 3600 "done."\n expect -timeout 7200 "Install linux dependencies done"\n' | expect
+		else
+			./linux-install_dependencies
+		fi;
+else
+   #cygwin 
+   chmod +x ./win32-install_dependencies.exe
+   ./win32-install_dependencies.exe /S 
+fi
+
