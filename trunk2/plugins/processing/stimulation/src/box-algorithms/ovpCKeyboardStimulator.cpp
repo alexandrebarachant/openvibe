@@ -211,6 +211,7 @@ namespace OpenViBEPlugins
 			if(m_pWidget)
 			{
 				g_object_unref(m_pWidget);
+				m_pWidget = NULL;
 			}
 
 			return true;

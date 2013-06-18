@@ -223,10 +223,6 @@ Section "BOOST"
 no_need_to_download_boost:
 	ZipDLL::extractall "arch\boost-1.47.0-ov.zip" ""
 
-	FileOpen $0 "$EXEDIR\win32-dependencies.cmd" a
-	FileSeek $0 0 END
-	FileWrite $0 "SET PATH=$INSTDIR\boost\bin;%PATH%$\r$\n"	
-	FileClose $0
 
 SectionEnd
 
