@@ -26,7 +26,9 @@ namespace OpenViBEContributions {
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverGTecGUSBamp(pAcquisitionServer->getDriverContext()));
 #endif
+#if defined TARGET_OS_Windows
 		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverMitsarEEG202A(pAcquisitionServer->getDriverContext()));
+#endif
 
 		pGUI->registerPlugin(new OpenViBEAcquisitionServer::OpenViBEAcquisitionServerPlugins::CPluginExternalStimulations(rKernelContext));
 	}
