@@ -5,8 +5,13 @@ SET(PROJECT_VERSION_MINOR ${OV_GLOBAL_VERSION_MINOR})
 SET(PROJECT_VERSION_PATCH ${OV_GLOBAL_VERSION_PATCH})
 SET(PROJECT_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 
+INCLUDE("FindOpenViBEContributions")
+
 FILE(GLOB_RECURSE source_files src/*.cpp src/*.h src/*.inl include/*.h)
-INCLUDE("${CMAKE_SOURCE_DIR}/contrib/common/contribAcquisitionServer.cmake")
+IF(PATH_OPENVIBE_CONTRIBUTIONS)
+	INCLUDE("${CMAKE_SOURCE_DIR}/contrib/common/contribAcquisitionServer.cmake")
+ENDIF(PATH_OPENVIBE_CONTRIBUTIONS)
+
 ADD_EXECUTABLE(${PROJECT_NAME} ${source_files})
 INCLUDE_DIRECTORIES("src/drivers")
 INCLUDE_DIRECTORIES("include")
@@ -30,7 +35,9 @@ INCLUDE("FindThirdPartyBoost")
 INCLUDE("FindThirdPartyBoost_Thread")
 INCLUDE("FindThirdPartyPThreadsVCE2")	# for Windows Fieldtrip
 
-INCLUDE("${CMAKE_SOURCE_DIR}/contrib/common/contribAcquisitionServerLinkLibs.cmake")
+IF(PATH_OPENVIBE_CONTRIBUTIONS)
+	INCLUDE("${CMAKE_SOURCE_DIR}/contrib/common/contribAcquisitionServerLinkLibs.cmake")
+ENDIF(PATH_OPENVIBE_CONTRIBUTIONS)
 
 # ---------------------------------
 # Target macros

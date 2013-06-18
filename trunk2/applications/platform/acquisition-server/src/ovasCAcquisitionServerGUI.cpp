@@ -4,9 +4,9 @@
 #include "ovasIAcquisitionServerPlugin.h"
 // Drivers
 
-//#ifdef HAS_ThirdPartyAcquisitionServerContributions
+#ifdef TARGET_HAS_OpenViBEContributions
 #include "contribAcquisitionServer.inl"
-//#endif
+#endif
 
 
 #include "generic-oscilator/ovasCDriverGenericOscilator.h"
@@ -22,7 +22,6 @@
 #include "mindmedia-nexus32b/ovasCDriverMindMediaNeXus32B.h"
 #include "neurosky-mindset/ovasCDriverNeuroskyMindset.h"
 #include "tmsi-refa32b/ovasCDriverTMSiRefa32B.h"
-#include "openal-mono16bit-audiocapture/ovasCDriverOpenALAudioCapture.h"
 
 #include <system/Memory.h>
 #include <system/Time.h>
@@ -149,13 +148,10 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 #if defined TARGET_HAS_ThirdPartyThinkGearAPI
 	m_vDriver.push_back(new CDriverNeuroskyMindset(m_pAcquisitionServer->getDriverContext()));
 #endif
-#if defined TARGET_HAS_ThirdPartyOpenAL
-	m_vDriver.push_back(new CDriverOpenALAudioCapture(m_pAcquisitionServer->getDriverContext()));
-#endif
 
-//#ifdef HAS_ThirdPartyAcquisitionServerContributions
+#if defined TARGET_HAS_OpenViBEContributions
 	OpenViBEContributions::initiateContributions(this, m_pAcquisitionServer, rKernelContext, &m_vDriver);
-//#endif
+#endif
 
 	scanPluginSettings();
 

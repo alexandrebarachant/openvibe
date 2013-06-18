@@ -4,7 +4,7 @@
 
 #include "ovasCDriverFieldtrip.h"
 #include "ovasCConfigurationFieldtrip.h"
-#include <openvibe-toolkit/ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include <pthread.h>
 #include "fieldtrip/buffer.h"
@@ -236,7 +236,7 @@ OpenViBE::boolean CDriverFieldtrip::isConfigurable(void)
 
 OpenViBE::boolean CDriverFieldtrip::configure(void)
 {
-	CConfigurationFieldtrip l_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-Fieldtrip.ui");
+	CConfigurationFieldtrip l_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-Fieldtrip.ui");
 	l_oConfiguration.setMinSamples(m_ui32MinSamples);
 	l_oConfiguration.setHostPort(m_ui32PortNumber);
 	l_oConfiguration.setHostName(m_sHostName);

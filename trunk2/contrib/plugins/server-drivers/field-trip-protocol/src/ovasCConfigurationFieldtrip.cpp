@@ -1,6 +1,6 @@
 #include "ovasCConfigurationFieldtrip.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include <iostream>
 #include <fstream>

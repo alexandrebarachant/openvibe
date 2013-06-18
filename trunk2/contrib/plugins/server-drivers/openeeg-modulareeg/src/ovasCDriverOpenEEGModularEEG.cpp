@@ -1,7 +1,7 @@
 #include "ovasCDriverOpenEEGModularEEG.h"
 #include "ovasCConfigurationOpenEEGModularEEG.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include <system/Time.h>
 #include <system/Memory.h>
@@ -166,7 +166,7 @@ boolean CDriverOpenEEGModularEEG::isConfigurable(void)
 
 boolean CDriverOpenEEGModularEEG::configure(void)
 {
-	CConfigurationOpenEEGModularEEG m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-OpenEEG-ModularEEG.ui", m_ui32DeviceIdentifier);
+	CConfigurationOpenEEGModularEEG m_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-OpenEEG-ModularEEG.ui", m_ui32DeviceIdentifier);
 	return m_oConfiguration.configure(m_oHeader);
 }
 

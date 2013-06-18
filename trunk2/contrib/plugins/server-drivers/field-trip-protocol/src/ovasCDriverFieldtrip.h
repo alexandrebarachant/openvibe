@@ -5,9 +5,9 @@
 #ifndef __OpenViBE_AcquisitionServer_CDriverFieldtrip_H__
 #define __OpenViBE_AcquisitionServer_CDriverFieldtrip_H__
 
-#include "../ovasIDriver.h"
+#include "ovasIDriver.h"
 #include "../ovasCHeader.h"
-#include <openvibe/ov_all.h>
+#include <ov_all.h>
 
 #include "fieldtrip/message.h"
 
