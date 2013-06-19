@@ -38,11 +38,23 @@ IF(doxygen_bin)
 
 	FOREACH(current_project ${CURRENT_PROJECTS})
 		STRING(REGEX REPLACE " +$" "" current_project ${current_project})
-		SET(current_project_src "${current_project}/src")
-		SET(current_project_doc "${current_project}/doc")
 
 		# updates the doxyfile variable for input directories
-		SET(ov_doxy_input "${ov_doxy_input} \\\"${current_project_src}\\\"")
+		IF(EXISTS "${current_project}/include")
+			SET(current_project_include "${current_project}/include")
+			SET(ov_doxy_input "${ov_doxy_input} \\\"${current_project_include}\\\"")
+		ENDIF(EXISTS "${current_project}/include")
+
+		IF(EXISTS "${current_project}/src")
+			SET(current_project_src "${current_project}/src")
+			SET(ov_doxy_input "${ov_doxy_input} \\\"${current_project_src}\\\"")
+		ENDIF(EXISTS "${current_project}/src")
+
+		IF(EXISTS "${current_project}/doc")
+			SET(current_project_doc "${current_project}/doc")
+			SET(ov_doxy_input "${ov_doxy_input} \\\"${current_project_doc}\\\"")
+		ENDIF(EXISTS "${current_project}/doc")
+
 		#MESSAGE(STATUS "    [  OK  ] Candidate doc directory found ${current_project_src}")
 
 		# looks for resources and stores them in a list
@@ -70,6 +82,7 @@ IF(doxygen_bin)
 	ENDIF(WIN32)
 
 	# these two lines configure the variables used to configure the doxyfile
+	SET(ov_doxy_input "${ov_doxy_input} \\\"${CMAKE_CURRENT_SOURCE_DIR}\\\"")
 	SET(ov_doxy_input "${ov_doxy_input} \\\"${CMAKE_CURRENT_BINARY_DIR}\\\"")
 	SET(ov_doxy_strip_from_path ${ov_doxy_input})
 	SET(ov_doxy_version ${PROJECT_VERSION})
