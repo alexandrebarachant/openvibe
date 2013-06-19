@@ -48,52 +48,8 @@ MESSAGE(STATUS "  CMAKE_CXX_FLAGS_DEBUG = '${CMAKE_CXX_FLAGS_DEBUG}'")
 
 # SET(OV_COMPILE_TESTS "true")
 
-# To compile your own non-trunk branches, add variables OV_BRANCH_[DIR OR DIR_DIR] to point to "branches/YOURBRANCH" for each.
-# Branch name __SKIPME signifies that this component should not be compiled or installed.
-# SET(OV_BRANCH_PLUGINS_PYTHON "__SKIPME")			# skips python module
-## SET(OV_BRANCH_DOCUMENTATION "__SKIPME")				# skips documentation module
-#SET(SKIP_PLUGINS_PYTHON "yes")
-# Some recognized branch variables
-#SET(OV_BRANCH_OPENVIBE													"branches/mybranch")
-#SET(OV_BRANCH_KERNEL													"branches/mybranch")
-#SET(OV_BRANCH_MODULES_AUTOMATON										"branches/mybranch")
-#SET(OV_BRANCH_MODULES_EBML												"branches/mybranch")
-#SET(OV_BRANCH_MODULES_FS												"branches/mybranch")
-#SET(OV_BRANCH_MODULES_SOCKET											"branches/mybranch")
-#SET(OV_BRANCH_MODULES_STREAM											"branches/mybranch")
-#SET(OV_BRANCH_MODULES_SYSTEM											"branches/mybranch")
-#SET(OV_BRANCH_MODULES_XML												"branches/mybranch")
-#SET(OV_BRANCH_TOOLKIT													"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_ACQUISITION										"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_CLASSIFICATION									"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_CLASSIFICATION-GPL								"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_FEATURE-EXTRACTION								"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_FILE-IO											"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_MATLAB											"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_PYTHON 											"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_SAMPLES											"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_SIGNAL-PROCESSING 								"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_SIGNAL-PROCESSING-GPL 							"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_SIMPLE-VISUALISATION 							"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_STIMULATION 										"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_STREAM-CODECS									"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_STREAMING										"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_TOOLS											"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_TURBOFIELDTRIP									"branches/mybranch")
-#SET(OV_BRANCH_PLUGINS_VRPN												"branches/mybranch")
-#SET(OV_BRANCH_SCENARIOS												"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_ACQUISITION-SERVER							"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_DESIGNER									"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_EXTERNAL-STIMULATION-CONNECTION-EXAMPLE		"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_ID-GENERATOR								"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_PLUGIN-INSPECTOR							"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_SKELETON-GENERATOR							"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_SSVEP-DEMO									"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_VR-DEMO										"branches/mybranch")
-#SET(OV_BRANCH_APPLICATIONS_VRPN-SIMULATOR								"branches/mybranch")
-#SET(OV_BRANCH_DOCUMENTATION											"branches/mybranch")
-
-#SET(SKIP_DOCUMENTATION "1")
+# By setting SKIP[_FOLDER]* you can skip a subtree (example: SKIP_A_B_C skips folder a/b/c and all its subfolders if any)
+SET(SKIP_DOCUMENTATION "1")
 #SET(SKIP_CONTRIB_PLUGINS_PROCESSING_PYTHON "1")
 
 #SET(SKIP_MODULES_AUTOMATON "1")
@@ -152,9 +108,6 @@ ADD_SUBDIRECTORY("applications/")
 ADD_SUBDIRECTORY("externals/")
 ADD_SUBDIRECTORY("contrib/")
 ADD_SUBDIRECTORY("documentation/") # needs to be the last since it uses the list of collected projects
-
-
-
 
 #add dependency to plugin inspector to the documentation
 IF(openvibe-documentation)
