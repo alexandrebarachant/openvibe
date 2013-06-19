@@ -20,7 +20,7 @@ FOREACH(current_project ${CURRENT_PROJECTS})
 	STRING(REGEX REPLACE " +$" "" current_project ${current_project})
 	SET(current_project_src "${current_project}/src")
 	# updates the doxyfile variable for input directories
-	SET(ov_plugin_inspector_load_path "${ov_plugin_inspector_load_path};${current_project}")
+	SET(ov_plugin_inspector_load_path "${ov_plugin_inspector_load_path}#${current_project}")
 ENDFOREACH(current_project)
 
 MESSAGE(STATUS "Running plugin inspector")

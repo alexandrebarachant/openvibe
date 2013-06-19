@@ -57,10 +57,10 @@ boolean parse_arguments(int argc, char** argv, SConfiguration& rConfiguration)
 			{
 				std::string l_sPluginDirectories = *++it;
 
-				// split the argument to separate paths, the delimiter is ":"
+				// split the argument to separate paths, the delimiter is "#"
 				std::stringstream ss(l_sPluginDirectories);
 				std::string item;
-				while(std::getline(ss, item, ';'))
+				while(std::getline(ss, item, '#'))
 				{
 					rConfiguration.m_vPluginPaths.push_back(item);
 				}
