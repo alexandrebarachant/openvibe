@@ -81,7 +81,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("Inria"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Extract AutoRegressive (AR) features from a set of EEG signals"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Calculate AutoRegressive coefficients using Burg's method"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-add"); }
 

@@ -1,0 +1,81 @@
+/**
+ * \page BoxAlgorithm_ARFeatures AR Features
+__________________________________________________________________
+
+Detailed description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Description|
+ *The AR features box calculate the coefficients using Burg's method [1] to compute the AutoRegressive (AR) model of an input signal. 
+ The AR model is a representation that describes a time varying process by its own previous values. 
+ 
+ The definition used is :   
+ \image html ARBurg_Formula.png 
+ 
+ <!-- "Formula of the AR model is x(t)=\sum_{i=1}^N a(i)x(t-i)+e(t)" -->
+
+ Where \e a(i) are the autoregressive coefficients or parameters of the model, \e x(t) is the input signal, \e x(t-i) its previous values, \e N is the order (length) of the model and \e epsilon(t) is the residue, assumed to be Gaussian white noise.
+
+ For more informations about AR model : 
+ 
+ https://en.wikipedia.org/wiki/Autoregressive_model
+ 
+ http://paulbourke.net/miscellaneous/ar/
+ 
+ The model order (see [2]) needs to be specified in the settings of the box.
+ 
+ 
+ [1] Burg, J.P. (1967) "Maximum Entropy Spectral Analysis", Proceedings of the 37th Meeting of the Society of Exploration Geophysicists, Oklahoma City, Oklahoma
+ 
+ [2] D.J. Krusienski, D.J. MacFarland, J.R. Wolpaw. An evaluation of autoregressive spectral estimation model order for brain-computer interface application. Proceedings of the 28th IEEE EMBS Annual International Conference, New York City, USA, Aug 30-Sept 3, 2006
+
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Description|
+__________________________________________________________________
+
+Inputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Inputs|
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Inputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Input1|
+ The input signal
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Input1|
+__________________________________________________________________
+
+Outputs description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Outputs|
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Outputs|
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Output1|
+ The AR coefficients stored in a Feature vector
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Output1|
+__________________________________________________________________
+
+Settings description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Settings|
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Settings|
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Setting1|
+ Specify the order, thus the number of coefficients calculated
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Setting1|
+__________________________________________________________________
+
+Examples description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Examples|
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Examples|
+__________________________________________________________________
+
+Miscellaneous description
+__________________________________________________________________
+
+ * |OVP_DocBegin_BoxAlgorithm_ARFeatures_Miscellaneous|
+The output feature vector contains the coefficients for each channel : the first [order+1] elements are the coefficients of the first channel, etc. 
+ * |OVP_DocEnd_BoxAlgorithm_ARFeatures_Miscellaneous|
+ */
