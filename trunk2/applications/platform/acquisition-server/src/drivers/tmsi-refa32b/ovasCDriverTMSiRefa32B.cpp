@@ -11,7 +11,7 @@
 #include <cstring>
 #include <system/Time.h>
 #include "ovasCConfigurationTMSIRefa32B.h"
-#include <Windows.h>
+#include <windows.h>
 
 #define boolean OpenViBE::boolean
 

@@ -1,5 +1,5 @@
-#ifndef __OpenViBE_AcquisitionServer_CDriverGTecGUSBamp_H__
-#define __OpenViBE_AcquisitionServer_CDriverGTecGUSBamp_H__
+#ifndef __OpenViBE_AcquisitionServer_CDriverGTecGUSBampLegacy_H__
+#define __OpenViBE_AcquisitionServer_CDriverGTecGUSBampLegacy_H__
 
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 
@@ -12,17 +12,17 @@
 namespace OpenViBEAcquisitionServer
 {
 	/**
-	 * \class CConfigurationFieldtrip
+	 * \class CDriverGTecGUSBampLegacy
 	 * \author Unknown
 	 * \date unknown
 	 * \brief GTEC driver 
 	 *
 	 */
-	class CDriverGTecGUSBamp : public OpenViBEAcquisitionServer::IDriver
+	class CDriverGTecGUSBampLegacy : public OpenViBEAcquisitionServer::IDriver
 	{
 	public:
 
-		CDriverGTecGUSBamp(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
+		CDriverGTecGUSBampLegacy(OpenViBEAcquisitionServer::IDriverContext& rDriverContext);
 		virtual void release(void);
 		virtual const char* getName(void);
 
@@ -83,4 +83,4 @@ namespace OpenViBEAcquisitionServer
 
 #endif // TARGET_HAS_ThirdPartyGUSBampCAPI
 
-#endif // __OpenViBE_AcquisitionServer_CDriverGTecGUSBamp_H__
+#endif // __OpenViBE_AcquisitionServer_CDriverGTecGUSBampLegacy_H__

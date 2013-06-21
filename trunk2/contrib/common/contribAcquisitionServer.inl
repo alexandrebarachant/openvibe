@@ -11,6 +11,7 @@
 #include "ovasCDriverBrainProductsBrainVisionRecorder.h"
 #include "ovasCDriverCtfVsmMeg.h"
 #include "ovasCDriverGTecGUSBamp.h"
+#include "ovasCDriverGTecGUSBampLegacy.h"
 #include "ovasCDriverFieldtrip.h"
 #include "ovasCDriverMitsarEEG202A.h"
 #include "ovasCDriverOpenALAudioCapture.h"
@@ -28,6 +29,7 @@ namespace OpenViBEContributions {
 		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverCtfVsmMeg(pAcquisitionServer->getDriverContext()));
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverGTecGUSBamp(pAcquisitionServer->getDriverContext()));
+		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverGTecGUSBampLegacy(pAcquisitionServer->getDriverContext()));
 #endif
 		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverFieldtrip(pAcquisitionServer->getDriverContext()));
 #if defined TARGET_OS_Windows

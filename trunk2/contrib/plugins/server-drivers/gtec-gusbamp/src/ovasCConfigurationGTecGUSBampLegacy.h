@@ -1,5 +1,5 @@
-#ifndef __OpenViBE_AcquisitionServer_CConfigurationGTecGUSBamp_H__
-#define __OpenViBE_AcquisitionServer_CConfigurationGTecGUSBamp_H__
+#ifndef __OpenViBE_AcquisitionServer_CConfigurationGTecGUSBampLegacy_H__
+#define __OpenViBE_AcquisitionServer_CConfigurationGTecGUSBampLegacy_H__
 
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 
@@ -9,10 +9,10 @@
 
 namespace OpenViBEAcquisitionServer
 {
-	class CConfigurationGTecGUSBamp : public OpenViBEAcquisitionServer::CConfigurationBuilder
+	class CConfigurationGTecGUSBampLegacy : public OpenViBEAcquisitionServer::CConfigurationBuilder
 	{
 	public:
-		CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName,OpenViBE::uint32& rUSBIndex,OpenViBE::uint8& rCommonGndAndRefBitmap, OpenViBE::int32& rNotchFilterIndex, OpenViBE::int32& rBandPassFilterIndex,OpenViBE::boolean& rTriggerInput);
+		CConfigurationGTecGUSBampLegacy(const char* sGtkBuilderFileName,OpenViBE::uint32& rUSBIndex,OpenViBE::uint8& rCommonGndAndRefBitmap, OpenViBE::int32& rNotchFilterIndex, OpenViBE::int32& rBandPassFilterIndex,OpenViBE::boolean& rTriggerInput);
 
 		virtual OpenViBE::boolean preConfigure(void);
 		virtual OpenViBE::boolean postConfigure(void);
@@ -39,4 +39,4 @@ namespace OpenViBEAcquisitionServer
 
 #endif // TARGET_HAS_ThirdPartyGUSBampCAPI
 
-#endif // __OpenViBE_AcquisitionServer_CConfigurationGTecGUSBamp_H__
+#endif // __OpenViBE_AcquisitionServer_CConfigurationGTecGUSBampLegacy_H__

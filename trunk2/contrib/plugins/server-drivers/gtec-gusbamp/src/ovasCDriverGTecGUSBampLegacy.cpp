@@ -1,7 +1,7 @@
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 
-#include "ovasCDriverGTecGUSBamp.h"
-#include "ovasCConfigurationGTecGUSBamp.h"
+#include "ovasCDriverGTecGUSBampLegacy.h"
+#include "ovasCConfigurationGTecGUSBampLegacy.h"
 
 #include <toolkit/ovtk_all.h>
 #include <ovITimeArithmetics.h>
@@ -31,7 +31,7 @@ using namespace std;
 	"m_ui32AcquiredChannelCount" is a user modifiable variable with default value 16
 */
 
-CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
+CDriverGTecGUSBampLegacy::CDriverGTecGUSBampLegacy(IDriverContext& rDriverContext)
 	:IDriver(rDriverContext)
 	,m_pCallback(NULL)
 	,m_ui32SampleCountPerSentBlock(0)
@@ -52,20 +52,20 @@ CDriverGTecGUSBamp::CDriverGTecGUSBamp(IDriverContext& rDriverContext)
 	m_oHeader.setChannelCount(GTEC_NUM_CHANNELS);
 }
 
-void CDriverGTecGUSBamp::release(void)
+void CDriverGTecGUSBampLegacy::release(void)
 {
 	delete this;
 }
 
-const char* CDriverGTecGUSBamp::getName(void)
+const char* CDriverGTecGUSBampLegacy::getName(void)
 {
-	return "g.Tec gUSBamp";
+	return "g.Tec gUSBamp (Legacy)";
 }
 
 //___________________________________________________________________//
 //                                                                   //
 
-OpenViBE::boolean CDriverGTecGUSBamp::initialize(
+OpenViBE::boolean CDriverGTecGUSBampLegacy::initialize(
 	const uint32 ui32SampleCountPerSentBlock,
 	IDriverCallback& rCallback)
 {
@@ -166,7 +166,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::initialize(
 	return true;
 }
 
-OpenViBE::boolean CDriverGTecGUSBamp::start(void)
+OpenViBE::boolean CDriverGTecGUSBampLegacy::start(void)
 {
 	if(!m_rDriverContext.isConnected()) return false;
 	if(m_rDriverContext.isStarted()) return false;
@@ -217,7 +217,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::start(void)
 	return true;
 }
 
-OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
+OpenViBE::boolean CDriverGTecGUSBampLegacy::loop(void)
 {
 	CStimulationSet   l_oStimulationSet;
 
@@ -326,7 +326,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 	return true;
 }
 
-OpenViBE::boolean CDriverGTecGUSBamp::stop(void)
+OpenViBE::boolean CDriverGTecGUSBampLegacy::stop(void)
 {
 	if(!m_rDriverContext.isConnected()) return false;
 	if(!m_rDriverContext.isStarted()) return false;
@@ -341,7 +341,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::stop(void)
 	return true;
 }
 
-OpenViBE::boolean CDriverGTecGUSBamp::uninitialize(void)
+OpenViBE::boolean CDriverGTecGUSBampLegacy::uninitialize(void)
 {
 	if(!m_rDriverContext.isConnected()) return false;
 	if(m_rDriverContext.isStarted()) return false;
@@ -362,14 +362,14 @@ OpenViBE::boolean CDriverGTecGUSBamp::uninitialize(void)
 
 //___________________________________________________________________//
 //                                                                   //
-OpenViBE::boolean CDriverGTecGUSBamp::isConfigurable(void)
+OpenViBE::boolean CDriverGTecGUSBampLegacy::isConfigurable(void)
 {
 	return true;
 }
 
-OpenViBE::boolean CDriverGTecGUSBamp::configure(void)
+OpenViBE::boolean CDriverGTecGUSBampLegacy::configure(void)
 {
-	CConfigurationGTecGUSBamp m_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-GTec-GUSBamp.ui", m_ui32DeviceIndex, m_ui8CommonGndAndRefBitmap, m_i32NotchFilterIndex,m_i32BandPassFilterIndex,m_bTriggerInputEnabled);
+	CConfigurationGTecGUSBampLegacy m_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-GTec-GUSBampLegacy.ui", m_ui32DeviceIndex, m_ui8CommonGndAndRefBitmap, m_i32NotchFilterIndex,m_i32BandPassFilterIndex,m_bTriggerInputEnabled);
 
 	m_oHeader.setChannelCount(m_ui32AcquiredChannelCount);
 	

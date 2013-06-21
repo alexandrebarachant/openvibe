@@ -31,6 +31,7 @@
 #include <list>
 
 #include <windows.h>
+#include <WinIoCtl.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

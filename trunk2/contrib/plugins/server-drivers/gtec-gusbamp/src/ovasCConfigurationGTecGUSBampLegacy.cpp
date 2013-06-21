@@ -1,6 +1,6 @@
 #if defined TARGET_HAS_ThirdPartyGUSBampCAPI
 
-#include "ovasCConfigurationGTecGUSBamp.h"
+#include "ovasCConfigurationGTecGUSBampLegacy.h"
 
 #include <windows.h>
 #include <gUSBamp.h>
@@ -14,30 +14,30 @@ using namespace OpenViBEAcquisitionServer;
 
 static void button_calibrate_pressed_cb(::GtkButton* pButton, void* pUserData)
 {
-	CConfigurationGTecGUSBamp* l_pConfig=static_cast<CConfigurationGTecGUSBamp*>(pUserData);
+	CConfigurationGTecGUSBampLegacy* l_pConfig=static_cast<CConfigurationGTecGUSBampLegacy*>(pUserData);
 	l_pConfig->buttonCalibratePressedCB();
 }
 
 static gboolean idle_calibrate_cb(void* pUserData)
 {
-	CConfigurationGTecGUSBamp* l_pConfig=static_cast<CConfigurationGTecGUSBamp*>(pUserData);
+	CConfigurationGTecGUSBampLegacy* l_pConfig=static_cast<CConfigurationGTecGUSBampLegacy*>(pUserData);
 	l_pConfig->idleCalibrateCB();
 	return FALSE;
 }
 
 static void button_common_gnd_ref_pressed_cb(::GtkButton* pButton, void* pUserData)
 {
-	CConfigurationGTecGUSBamp* l_pConfig=static_cast<CConfigurationGTecGUSBamp*>(pUserData);
+	CConfigurationGTecGUSBampLegacy* l_pConfig=static_cast<CConfigurationGTecGUSBampLegacy*>(pUserData);
 	l_pConfig->buttonCommonGndRefPressedCB();
 }
 
 static void button_filters_pressed_cb(::GtkButton* pButton, void* pUserData)
 {
-	CConfigurationGTecGUSBamp* l_pConfig=static_cast<CConfigurationGTecGUSBamp*>(pUserData);
+	CConfigurationGTecGUSBampLegacy* l_pConfig=static_cast<CConfigurationGTecGUSBampLegacy*>(pUserData);
 	l_pConfig->buttonFiltersPressedCB();
 }
 
-CConfigurationGTecGUSBamp::CConfigurationGTecGUSBamp(const char* sGtkBuilderFileName,uint32& rUSBIndex,uint8& rCommonGndAndRefBitmap, int32& rNotchFilterIndex, int32& rBandPassFilterIndex,OpenViBE::boolean& rTriggerInput)
+CConfigurationGTecGUSBampLegacy::CConfigurationGTecGUSBampLegacy(const char* sGtkBuilderFileName,uint32& rUSBIndex,uint8& rCommonGndAndRefBitmap, int32& rNotchFilterIndex, int32& rBandPassFilterIndex,OpenViBE::boolean& rTriggerInput)
 	: CConfigurationBuilder(sGtkBuilderFileName)
 	,m_rUSBIndex(rUSBIndex)
 	,m_rCommonGndAndRefBitmap(rCommonGndAndRefBitmap)
@@ -47,7 +47,7 @@ CConfigurationGTecGUSBamp::CConfigurationGTecGUSBamp(const char* sGtkBuilderFile
 {
 }
 
-OpenViBE::boolean CConfigurationGTecGUSBamp::preConfigure(void)
+OpenViBE::boolean CConfigurationGTecGUSBampLegacy::preConfigure(void)
 {
 	if(!CConfigurationBuilder::preConfigure())
 	{
@@ -206,7 +206,7 @@ OpenViBE::boolean CConfigurationGTecGUSBamp::preConfigure(void)
 	return true;
 }
 
-OpenViBE::boolean CConfigurationGTecGUSBamp::postConfigure(void)
+OpenViBE::boolean CConfigurationGTecGUSBampLegacy::postConfigure(void)
 {
 	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
@@ -256,7 +256,7 @@ OpenViBE::boolean CConfigurationGTecGUSBamp::postConfigure(void)
 	return true;
 }
 
-void CConfigurationGTecGUSBamp::buttonCalibratePressedCB(void)
+void CConfigurationGTecGUSBampLegacy::buttonCalibratePressedCB(void)
 {
 	::g_idle_add(idle_calibrate_cb, this);
 
@@ -279,7 +279,7 @@ void CConfigurationGTecGUSBamp::buttonCalibratePressedCB(void)
 	}
 }
 
-void CConfigurationGTecGUSBamp::idleCalibrateCB(void)
+void CConfigurationGTecGUSBampLegacy::idleCalibrateCB(void)
 {
 	::GtkComboBox* l_pComboBox=GTK_COMBO_BOX(gtk_builder_get_object(m_pBuilderConfigureInterface, "combobox_device"));
 
@@ -307,7 +307,7 @@ void CConfigurationGTecGUSBamp::idleCalibrateCB(void)
 	gtk_dialog_response(GTK_DIALOG(m_pCalibrateDialog), 0);
 }
 
-void CConfigurationGTecGUSBamp::buttonCommonGndRefPressedCB(void)
+void CConfigurationGTecGUSBampLegacy::buttonCommonGndRefPressedCB(void)
 {
 	::GtkWidget * l_pDialog = GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog-common-gnd-ref"));
 	
@@ -316,7 +316,7 @@ void CConfigurationGTecGUSBamp::buttonCommonGndRefPressedCB(void)
 	gtk_widget_hide(l_pDialog);
 }
 
-void CConfigurationGTecGUSBamp::buttonFiltersPressedCB(void)
+void CConfigurationGTecGUSBampLegacy::buttonFiltersPressedCB(void)
 {
 	::GtkWidget * l_pDialog = GTK_WIDGET(gtk_builder_get_object(m_pBuilderConfigureInterface, "dialog-filters"));
 	
