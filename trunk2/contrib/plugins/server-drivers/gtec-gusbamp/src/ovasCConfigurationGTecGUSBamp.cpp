@@ -246,7 +246,7 @@ OpenViBE::boolean CConfigurationGTecGUSBamp::postConfigure(void)
 		m_rBandPassFilterIndex = gtk_combo_box_get_active(l_pComboBoxBandPass) - 1;
 
 		::GtkCheckButton* l_pCheckButton_HardwareTagging=GTK_CHECK_BUTTON(gtk_builder_get_object(m_pBuilderConfigureInterface, "checkbutton_EventChannel"));
-		m_rTriggerInput=(OpenViBE::boolean)::gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCheckButton_HardwareTagging));
+		m_rTriggerInput=(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(l_pCheckButton_HardwareTagging)) ? true : false);
 	}
 
 	if(!CConfigurationBuilder::postConfigure())

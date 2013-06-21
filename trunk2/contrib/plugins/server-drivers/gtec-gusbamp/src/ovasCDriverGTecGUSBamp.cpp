@@ -250,8 +250,8 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
         
 								for(uint32 iSample=0; iSample<m_ui32SampleCountPerSentBlock; iSample++)
 								{
-									OpenViBE::uint32 l_ui32StimCode = m_pSampleTranspose[iSample*(GTEC_NUM_CHANNELS + 1) + GTEC_NUM_CHANNELS];
-									m_pSample[m_ui32AcquiredChannelCount*m_ui32SampleCountPerSentBlock+iSample]=l_ui32StimCode;
+									OpenViBE::uint32 l_ui32StimCode = (uint32)m_pSampleTranspose[iSample*(GTEC_NUM_CHANNELS + 1) + GTEC_NUM_CHANNELS];
+									m_pSample[m_ui32AcquiredChannelCount*m_ui32SampleCountPerSentBlock+iSample]= (float32)l_ui32StimCode;
 
 									if ( (l_ui32StimCode != STIMULATION_0) //this means that the user sends 0 after each stimulatuion and in the beginning
 											&& (l_ui32StimCode != m_ui32LastStimulation) 

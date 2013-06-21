@@ -385,12 +385,12 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 				// we copy the stimulation into the corresponding matlab matrix
 				m_pMatlabStimulationHandle=::mxCreateDoubleMatrix(::mwSize(l_oStimulationSet.getStimulationCount()), 3, mxREAL);
 				float64* l_pMatlabStimulationBuffer=(float64*)::mxGetPr(m_pMatlabStimulation);
-				uint32 l_ui32StimulationCount=l_oStimulationSet.getStimulationCount();
-				for(uint32 j=0; j<l_ui32StimulationCount; j++)
+				uint64 l_ui64StimulationCount=l_oStimulationSet.getStimulationCount();
+				for(uint64 j=0; j<l_ui64StimulationCount; j++)
 				{
-					l_pMatlabStimulationBuffer[j+0*l_ui32StimulationCount]=l_oStimulationSet.getStimulationIdentifier(j);
-					l_pMatlabStimulationBuffer[j+1*l_ui32StimulationCount]=((l_oStimulationSet.getStimulationDate(j)-l_ui64StartTime) >> 16) / 65536.0;
-					l_pMatlabStimulationBuffer[j+2*l_ui32StimulationCount]=( l_oStimulationSet.getStimulationDuration(j) >> 16) / 65536.0;
+					l_pMatlabStimulationBuffer[j+0*l_ui64StimulationCount]=(float64)l_oStimulationSet.getStimulationIdentifier(j);
+					l_pMatlabStimulationBuffer[j+1*l_ui64StimulationCount]=((l_oStimulationSet.getStimulationDate(j)-l_ui64StartTime) >> 16) / 65536.0;
+					l_pMatlabStimulationBuffer[j+2*l_ui64StimulationCount]=( l_oStimulationSet.getStimulationDuration(j) >> 16) / 65536.0;
 				}
 
 				// we copy the data
@@ -483,7 +483,7 @@ boolean CBoxAlgorithmMatlabFilter::process(void)
 							{
 								// we decode a stimulation from the matlab stimulation matrix
 								ip_pStimulationSet->appendStimulation(
-									l_pStim[j+0*l_ui32StimulationCount],
+									(uint64)l_pStim[j+0*l_ui32StimulationCount],
 									l_ui64StartTime + ((int64)(l_pStim[j+1*l_ui32StimulationCount] * 65536.0)<<16),
 									l_ui64StartTime + ((int64)(l_pStim[j+2*l_ui32StimulationCount] * 65536.0)<<16));
 							}
