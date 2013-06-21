@@ -138,6 +138,8 @@ OpenViBE::boolean CBoxAlgorithmPython::initializePythonSafely()
 	l_sCommand = l_sCommand + "sys.argv = [\"openvibe\"]\n";
 	// l_sCommand = l_sCommand + "import openvibe\n";
 	// l_sCommand = l_sCommand + "from StimulationsCodes import *\n";
+	this->getLogManager() << LogLevel_Trace << "Running [" << l_sCommand << "].\n";
+
 	PyRun_SimpleString(l_sCommand);
 
 	//Borrowed reference

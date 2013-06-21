@@ -24,14 +24,14 @@
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
 					<Name>Path to Matlab Executables</Name>
-					<DefaultValue>C:/Program Files/MATLAB/R2011a/bin/win32</DefaultValue>
-					<Value>C:/Program Files/MATLAB/R2011a/bin/win32</Value>
+					<DefaultValue>C:/Program Files (x86)/MATLAB/R2011b/bin/win32</DefaultValue>
+					<Value>C:/Program Files (x86)/MATLAB/R2011b/bin/win32</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
 					<Name>Matlab working directory</Name>
 					<DefaultValue>[path-to-my-matlab-workspace]</DefaultValue>
-					<Value>C:/Program Files/openvibe/share/openvibe-scenarios/box-tutorials/matlab/</Value>
+					<Value>${__volatile_ScenarioDir}</Value>
 				</Setting>
 				<Setting>
 					<TypeIdentifier>(0x79a9edeb, 0x245d83fc)</TypeIdentifier>
