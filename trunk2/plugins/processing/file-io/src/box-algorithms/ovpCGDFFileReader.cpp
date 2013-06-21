@@ -409,8 +409,15 @@ boolean CGDFFileReader::readFileHeader()
 			//If all the channels don't have the same sampling rate
 			if(m_ui32NumberOfSamplesPerRecord != l_pNumberOfSamplesPerRecordArray[i])
 			{
-				getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Can't handle GDF files with channels having different sampling rates!\n";
-
+				if(m_f32FileVersion >= 2.51) 
+				{
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "Interpreted GDF file to have channels with varying sampling rates, which is not supported.\n";
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Error << "This can be a misinterpretation of the newer GDF subformats. File claims to follow GDF " << m_f32FileVersion << ".\n";
+				} 
+				else 
+				{
+					getBoxAlgorithmContext()->getPlayerContext()->getLogManager() << LogLevel_Warning << "Can't handle GDF files with channels having different sampling rates!\n";
+				}
 				m_bErrorOccured = true;
 				return false;
 			}
