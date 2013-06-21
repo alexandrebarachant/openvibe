@@ -8,7 +8,7 @@ SHIFT
 SHIFT
 
 SET "OV_PATH_BIN=%OV_BUILD%\openvibe\"
-SET "OV_PATH_LIB=%OV_BUILD%\openvibe\;%OV_BUILD%\modules\ebml\;%OV_BUILD%\modules\system\;%OV_BUILD%\modules\fs\;%OV_BUILD%\modules\xml\;%OV_BUILD%\toolkit\"
+SET "OV_PATH_LIB=%OV_BUILD%\openvibe\;%OV_BUILD%\modules\ebml\;%OV_BUILD%\modules\system\;%OV_BUILD%\modules\fs\;%OV_BUILD%\modules\xml\;%OV_BUILD%\modules\socket\;%OV_BUILD%\modules\automaton\;%OV_BUILD%\toolkit\"
 SET "OV_PATH_DATA=%OV_BUILD%\share\openvibe"
 
 SET PATH=%OV_PATH_LIB%;%PATH%
