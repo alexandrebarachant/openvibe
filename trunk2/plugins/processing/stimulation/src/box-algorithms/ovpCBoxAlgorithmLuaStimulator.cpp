@@ -472,14 +472,14 @@ boolean CBoxAlgorithmLuaStimulator::uninitialize(void)
 
 	IBox& l_rStaticBoxContext=this->getStaticBoxContext();
 
-	for(uint32 i=0; i<l_rStaticBoxContext.getInputCount(); i++)
+	for(uint32 i=0; i<m_vStreamDecoder.size(); i++)
 	{
 		m_vStreamDecoder[i]->uninitialize();
 		this->getAlgorithmManager().releaseAlgorithm(*m_vStreamDecoder[i]);
 	}
 	m_vStreamDecoder.clear();
 
-	for(uint32 i=0; i<l_rStaticBoxContext.getOutputCount(); i++)
+	for(uint32 i=0; i<m_vStreamEncoder.size(); i++)
 	{
 		m_vStreamEncoder[i]->uninitialize();
 		this->getAlgorithmManager().releaseAlgorithm(*m_vStreamEncoder[i]);

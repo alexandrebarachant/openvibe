@@ -74,7 +74,7 @@
 					<TypeIdentifier>(0xb0d0db45, 0x49cbc34a)</TypeIdentifier>
 					<Name>Lua Script</Name>
 					<DefaultValue></DefaultValue>
-					<Value>${__volative_ScenarioDir}/scripts/sample-lua-script.lua</Value>
+					<Value>${__volatile_ScenarioDir}/scripts/sample-lua-script.lua</Value>
 				</Setting>
 			</Settings>
 			<Attributes>
