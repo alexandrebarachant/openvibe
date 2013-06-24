@@ -83,7 +83,7 @@ namespace OpenViBEAcquisitionServer
 		
 		OpenViBE::uint32 numDevices;                 //currently this driver supports 1 device 
 
-		static const int nPoints = NUMBER_OF_SCANS * (GTEC_NUM_CHANNELS + 1);
+		static const OpenViBE::uint32 nPoints = NUMBER_OF_SCANS * (GTEC_NUM_CHANNELS + 1);
 		int validPoints;
 		static const DWORD bufferSizeBytes;
 

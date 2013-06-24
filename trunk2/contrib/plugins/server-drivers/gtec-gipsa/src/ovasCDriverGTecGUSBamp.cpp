@@ -122,7 +122,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::initialize(
 
 	m_RingBuffer.Initialize(BUFFER_SIZE_SECONDS * m_oHeader.getSamplingFrequency() * (GTEC_NUM_CHANNELS + 1) * numDevices );
 
-	for (int i=0;i<numDevices;i++)
+	for (uint32 i=0;i<numDevices;i++)
 	{
 		if (m_bTriggerInputEnabled) 
 		{
@@ -264,7 +264,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::start(void)
 	m_ui32TotalRingBufferOverruns = 0;
 	m_ui32TotalDataUnavailable = 0;
 
-	for (int i=0;i<numDevices;i++)
+	for (uint32 i=0;i<numDevices;i++)
 	{
 		HANDLE o_pDevice = m_callSequenceHandles[i];
 		::GT_Start(o_pDevice);
@@ -323,7 +323,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::loop(void)
 		//channelIndex ranges from 0..numDevices*numChannelsPerDevices where numDevices equals the number of recorded devices 
 		//and numChannelsPerDevice the number of channels from each of those devices.
 		     
-		int o_limit=(GTEC_NUM_CHANNELS + 1)*numDevices;
+		uint32 o_limit=(GTEC_NUM_CHANNELS + 1)*numDevices;
 		//int o_limit=(GTEC_NUM_CHANNELS + 1);
 
 		for(uint32 i=0; i<o_limit; i++)
@@ -384,7 +384,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::acquire(void)
 	if (m_flagIsFirstLoop) //First time do some memory initialization, etc
 	{
 		//for each device create a number of QUEUE_SIZE data buffers
-		for (int deviceIndex=0; deviceIndex<numDevices; deviceIndex++)
+		for (uint32 deviceIndex=0; deviceIndex<numDevices; deviceIndex++)
 		{
 			m_buffers[deviceIndex] = new BYTE*[QUEUE_SIZE];
 			m_overlapped[deviceIndex] = new OVERLAPPED[QUEUE_SIZE];
@@ -406,7 +406,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::acquire(void)
 			}
 		}
 
-		for (int deviceIndex=0; deviceIndex<numDevices; deviceIndex++)
+		for (uint32 deviceIndex=0; deviceIndex<numDevices; deviceIndex++)
 		{
 			//devices are started in "Start" method, so this part skipped from the origianl code
 
@@ -437,7 +437,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::acquire(void)
 				OpenViBE::boolean m_flagChunkTimeOutDetected=false;
 
 				//acquire data from the amplifier(s)
-				for (int deviceIndex = 0; deviceIndex < numDevices; deviceIndex++)
+				for (uint32 deviceIndex = 0; deviceIndex < numDevices; deviceIndex++)
 				{
 					HANDLE hDevice = m_callSequenceHandles[deviceIndex];
 
@@ -470,11 +470,11 @@ OpenViBE::boolean CDriverGTecGUSBamp::acquire(void)
 						try
 						{
 							//if we are going to overrun on writing the received data into the buffer, set the appropriate flag; the reading thread will handle the overrun
-							m_bufferOverrun = (m_RingBuffer.GetFreeSize() < (nPoints * numDevices));
+							m_bufferOverrun = (m_RingBuffer.GetFreeSize() < static_cast<int>(nPoints * numDevices));
 
 							//store received data from each device in the correct order (that is scan-wise, where one scan includes all channels of all devices) ignoring the header
-							for (int scanIndex = 0; scanIndex < NUMBER_OF_SCANS; scanIndex++)
-								for (int deviceIndex = 0; deviceIndex < numDevices; deviceIndex++)
+							for (uint32 scanIndex = 0; scanIndex < NUMBER_OF_SCANS; scanIndex++)
+								for (uint32 deviceIndex = 0; deviceIndex < numDevices; deviceIndex++)
 								{
 									m_RingBuffer.Write((float*) (m_buffers[deviceIndex][m_ui32CurrentQueueIndex] + scanIndex * (GTEC_NUM_CHANNELS + 1) * sizeof(float) + HEADER_SIZE), (GTEC_NUM_CHANNELS + 1));
 								}
@@ -492,7 +492,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::acquire(void)
 
 				//add new GetData call to the queue replacing the currently received one
 				//this gives us time to process data while we wait for a new data chunk from the amplifier
-				for (int deviceIndex = 0; deviceIndex < numDevices; deviceIndex++)
+				for (uint32 deviceIndex = 0; deviceIndex < numDevices; deviceIndex++)
 				{
 					HANDLE hDevice = m_callSequenceHandles[deviceIndex];
 					if (!GT_GetData(hDevice, m_buffers[deviceIndex][m_ui32CurrentQueueIndex], bufferSizeBytes, &m_overlapped[deviceIndex][m_ui32CurrentQueueIndex]))
@@ -530,7 +530,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::acquire(void)
 		}
 
 		//clean up allocated resources for each device
-		for (int i=0; i<numDevices; i++)
+		for (uint32 i=0; i<numDevices; i++)
 		{
 			HANDLE hDevice = m_callSequenceHandles[i];
 
@@ -631,7 +631,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::uninitialize(void)
 OpenViBE::boolean CDriverGTecGUSBamp::setMasterDevice(string targetMasterSerial)
 {   
 	int targetDeviceIndex = -1;//points to the one that needs to become master
-	for (int i=0;i<m_vDevicesSerials.size();i++)
+	for (uint32 i=0;i<m_vDevicesSerials.size();i++)
 	{
 		if (m_vDevicesSerials[i] == targetMasterSerial)
 		{
@@ -640,7 +640,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::setMasterDevice(string targetMasterSerial)
 		}
 	}
 	
-	if (numDevices>1 && targetDeviceIndex<numDevices && targetDeviceIndex>=0)
+	if (numDevices>1 && targetDeviceIndex<static_cast<int>(numDevices) && targetDeviceIndex>=0)
 	{
 		uint32 lastIndex = numDevices-1;
 		//swap the handlers and serials, set the desired one as last and master
