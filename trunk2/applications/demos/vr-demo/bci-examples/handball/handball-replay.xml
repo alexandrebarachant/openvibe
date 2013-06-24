@@ -1735,7 +1735,7 @@ for details about the training process.</Text>
 
 This scenario allows to quickly replay
 an online session recorded file, and watch the corresponding 
-feedback using the &lt;b&gt;handball vr-demo&lt;/b&gt;.
+feedback using the &lt;b&gt;openvibe-vr-demo-handball&lt;/b&gt;.
 This scenario is based on &lt;i&gt;motor-imagery-bci-4-replay&lt;/i&gt;, 
 which can be found in &lt;i&gt;bci/motor-imagery&lt;/i&gt;.
 It uses &lt;b&gt;VRPN servers&lt;/b&gt; to communicate with the handball application.
