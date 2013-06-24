@@ -36,7 +36,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("HelloWorld"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Prints \"Hello World!\" to the log"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Prints \"Hello World!\" to the log with a user-specified frequency"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Using several copies of this friendly box (with different names) can be used to e.g. examine box execution order"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Examples"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }

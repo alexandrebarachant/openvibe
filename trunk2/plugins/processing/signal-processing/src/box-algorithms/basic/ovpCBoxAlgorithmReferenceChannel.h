@@ -41,8 +41,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Reference Channel"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("..."); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("..."); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Subtracts the value of the reference channel from all other channels"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Reference channel must be specified as a parameter for the box"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-missing-image"); }

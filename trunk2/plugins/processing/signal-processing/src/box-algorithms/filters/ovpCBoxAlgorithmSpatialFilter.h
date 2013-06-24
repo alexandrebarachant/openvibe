@@ -99,8 +99,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Spatial Filter"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Maps M inputs to N outputs by multiplying the each input vector with a matrix"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("The applied coefficient matrix must be specified as a box parameter. The filter processes each sample independently of the past samples."); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Filtering"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-missing-image"); }
@@ -115,7 +115,7 @@ namespace OpenViBEPlugins
 			{
 				rBoxAlgorithmPrototype.addInput  ("Input Signal",                OV_TypeId_Signal);
 				rBoxAlgorithmPrototype.addOutput ("Output Signal",               OV_TypeId_Signal);
-				rBoxAlgorithmPrototype.addSetting("Spatial Fitler Coefficients", OV_TypeId_String,  "1;0;0;0;0;1;0;0;0;0;1;0;0;0;0;1");
+				rBoxAlgorithmPrototype.addSetting("Spatial Filter Coefficients", OV_TypeId_String,  "1;0;0;0;0;1;0;0;0;0;1;0;0;0;0;1");
 				rBoxAlgorithmPrototype.addSetting("Number of Output Channels",   OV_TypeId_Integer, "4");
 				rBoxAlgorithmPrototype.addSetting("Number of Input Channels",    OV_TypeId_Integer, "4");
 				rBoxAlgorithmPrototype.addFlag   (OpenViBE::Kernel::BoxFlag_CanModifyInput);
