@@ -34,7 +34,7 @@
 #include "box-algorithms/basic/ovpCBoxAlgorithmEnvelope.h"
 
 #include "algorithms/basic/ovpCAlgorithmARBurgMethod.h"
-#include "box-algorithms/basic/ovpCBoxAlgorithmARFeatures.h"
+#include "box-algorithms/basic/ovpCBoxAlgorithmARCoefficients.h"
 
 OVP_Declare_Begin()
 
@@ -102,8 +102,8 @@ OVP_Declare_Begin()
 #endif // TARGET_HAS_ThirdPartyITPP
 
 
-#ifdef __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
-	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmARFeaturesDesc);
+#ifdef __OpenViBEPlugins_BoxAlgorithm_ARCoefficients_H__
+	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmARCoefficientsDesc);
 #endif
 #ifdef __OpenViBEPlugins_Algorithm_ARBurgMethod_H__
 	OVP_Declare_New(OpenViBEPlugins::SignalProcessingGpl::CAlgorithmARBurgMethodDesc);

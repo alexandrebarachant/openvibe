@@ -1,8 +1,8 @@
 
 #if defined(TARGET_HAS_ThirdPartyEIGEN)
 
-#ifndef __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
-#define __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
+#ifndef __OpenViBEPlugins_BoxAlgorithm_ARCoefficients_H__
+#define __OpenViBEPlugins_BoxAlgorithm_ARCoefficients_H__
 
 //You may have to change this path to match your folder organisation
 #include "../../ovp_defines.h"
@@ -12,21 +12,21 @@
 
 // The unique identifiers for the box and its descriptor.
 // Identifier are randomly chosen by the skeleton-generator.
-#define OVP_ClassId_BoxAlgorithm_ARFeatures OpenViBE::CIdentifier(0xBAADC2F3, 0xB556A07B)
-#define OVP_ClassId_BoxAlgorithm_ARFeaturesDesc OpenViBE::CIdentifier(0xBAADC2F3, 0xB556A07B)
+#define OVP_ClassId_BoxAlgorithm_ARCoefficients OpenViBE::CIdentifier(0xBAADC2F3, 0xB556A07B)
+#define OVP_ClassId_BoxAlgorithm_ARCoefficientsDesc OpenViBE::CIdentifier(0xBAADC2F3, 0xB556A07B)
 
 namespace OpenViBEPlugins
 {
 	namespace SignalProcessingGpl
 	{
 		/**
-		 * \class CBoxAlgorithmARFeatures
+		 * \class CBoxAlgorithmARCoefficients
 		 * \author Alison Cellard (Inria)
 		 * \date Wed Nov 28 10:40:52 2012
-		 * \brief The class CBoxAlgorithmARFeatures describes the box AR Features.
+		 * \brief The class CBoxAlgorithmARCoefficients describes the box AR Features.
 		 *
 		 */
-		class CBoxAlgorithmARFeatures : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
+		class CBoxAlgorithmARCoefficients : virtual public OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
 		{
 		public:
 			virtual void release(void) { delete this; }
@@ -44,12 +44,12 @@ namespace OpenViBEPlugins
 			// to associate this box to an unique identifier. 
 			// The inheritance information is also made available, 
 			// as we provide the superclass OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >
-			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_BoxAlgorithm_ARFeatures);
+			_IsDerivedFromClass_Final_(OpenViBEToolkit::TBoxAlgorithm < OpenViBE::Plugins::IBoxAlgorithm >, OVP_ClassId_BoxAlgorithm_ARCoefficients);
 
 		protected:
 			
 			// Signal stream decoder
-			OpenViBEToolkit::TSignalDecoder < CBoxAlgorithmARFeatures > m_oAlgo0_SignalDecoder;
+			OpenViBEToolkit::TSignalDecoder < CBoxAlgorithmARCoefficients > m_oAlgo0_SignalDecoder;
 
 			OpenViBE::Kernel::IAlgorithmProxy* m_pARBurgMethodAlgorithm;
 
@@ -58,35 +58,35 @@ namespace OpenViBEPlugins
 			OpenViBE::Kernel::TParameterHandler < OpenViBE::uint64 > ip_ui64ARBurgMethodAlgorithm_Order;
 			
 			// Feature vector stream encoder
-			OpenViBEToolkit::TFeatureVectorEncoder < CBoxAlgorithmARFeatures > m_oAlgo1_FeatureVectorEncoder;
+			OpenViBEToolkit::TFeatureVectorEncoder < CBoxAlgorithmARCoefficients > m_oAlgo1_FeatureVectorEncoder;
 
 		};
 
 
 		/**
-		 * \class CBoxAlgorithmARFeaturesDesc
+		 * \class CBoxAlgorithmARCoefficientsDesc
 		 * \author Alison Cellard (Inria)
 		 * \date Wed Nov 28 10:40:52 2012
 		 * \brief Descriptor of the box AR Features.
 		 *
 		 */
-		class CBoxAlgorithmARFeaturesDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
+		class CBoxAlgorithmARCoefficientsDesc : virtual public OpenViBE::Plugins::IBoxAlgorithmDesc
 		{
 		public:
 
 			virtual void release(void) { }
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("AR Features"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("AutoRegressive Coefficients"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Alison Cellard"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("Inria"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Extract AutoRegressive (AR) features from a set of EEG signals"); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Calculate AutoRegressive coefficients using Burg's method"); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Estimates autoregressive (AR) coefficients from a set of signals"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Estimates autoregressive (AR) linear model coefficients using Burg's method"); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Basic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-add"); }
 
-			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_ARFeatures; }
-			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmARFeatures; }
+			virtual OpenViBE::CIdentifier getCreatedClass(void) const    { return OVP_ClassId_BoxAlgorithm_ARCoefficients; }
+			virtual OpenViBE::Plugins::IPluginObject* create(void)       { return new OpenViBEPlugins::SignalProcessingGpl::CBoxAlgorithmARCoefficients; }
 		
 			virtual OpenViBE::boolean getBoxPrototype(
 				OpenViBE::Kernel::IBoxProto& rBoxAlgorithmPrototype) const
@@ -99,13 +99,13 @@ namespace OpenViBEPlugins
 				
 				return true;
 			}
-			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_ARFeaturesDesc);
+			_IsDerivedFromClass_Final_(OpenViBE::Plugins::IBoxAlgorithmDesc, OVP_ClassId_BoxAlgorithm_ARCoefficientsDesc);
 		};
 	};
 };
 
 
-#endif // __OpenViBEPlugins_BoxAlgorithm_ARFeatures_H__
+#endif // __OpenViBEPlugins_BoxAlgorithm_ARCoefficients_H__
 
 #endif  // TARGET_HAS_ThirdPartyEIGEN
 

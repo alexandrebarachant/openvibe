@@ -1,6 +1,6 @@
 #if defined(TARGET_HAS_ThirdPartyEIGEN)
 
-#include "ovpCBoxAlgorithmARFeatures.h"
+#include "ovpCBoxAlgorithmARCoefficients.h"
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -13,7 +13,7 @@ using namespace OpenViBEPlugins;
 using namespace OpenViBEPlugins::SignalProcessingGpl;
 using namespace std;
 
-boolean CBoxAlgorithmARFeatures::initialize(void)
+boolean CBoxAlgorithmARCoefficients::initialize(void)
 {
 	// Signal stream decoder
 	m_oAlgo0_SignalDecoder.initialize(*this);
@@ -46,7 +46,7 @@ boolean CBoxAlgorithmARFeatures::initialize(void)
 }
 /*******************************************************************************/
 
-boolean CBoxAlgorithmARFeatures::uninitialize(void)
+boolean CBoxAlgorithmARCoefficients::uninitialize(void)
 {
 	m_oAlgo0_SignalDecoder.uninitialize();
 
@@ -69,7 +69,7 @@ boolean CBoxAlgorithmARFeatures::uninitialize(void)
 /*******************************************************************************/
 
 
-boolean CBoxAlgorithmARFeatures::processInput(uint32 ui32InputIndex)
+boolean CBoxAlgorithmARCoefficients::processInput(uint32 ui32InputIndex)
 {
 
 	// ready to process !
@@ -79,7 +79,7 @@ boolean CBoxAlgorithmARFeatures::processInput(uint32 ui32InputIndex)
 }
 /*******************************************************************************/
 
-boolean CBoxAlgorithmARFeatures::process(void)
+boolean CBoxAlgorithmARCoefficients::process(void)
 {
 	
 	// the static box context describes the box inputs, outputs, settings structures

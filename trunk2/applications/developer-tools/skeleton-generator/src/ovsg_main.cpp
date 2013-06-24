@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 				gtk_init(&argc, &argv);
 
 				::GtkBuilder * l_pBuilderInterface = gtk_builder_new(); 
-				const OpenViBE::CString l_sFilename = OpenViBE::Directories::getDataDir() + "openvibe/applications/skeleton-generator/generator-interface.ui";
+				const OpenViBE::CString l_sFilename = OpenViBE::Directories::getDataDir() + "/applications/skeleton-generator/generator-interface.ui";
 				if(!gtk_builder_add_from_file(l_pBuilderInterface, l_sFilename, NULL))
 				{
 					std::cout << "Problem loading [" << l_sFilename << "]\n";
