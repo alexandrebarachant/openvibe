@@ -42,7 +42,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Decodes various types of streams and outputs some of the content parameters the log"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Note: Warnings are normal as the algorithm polls the decoders for structures they may not contain."); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Unit test/Algorithms"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tests and Examples/Algorithms"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-about"); }
 

@@ -201,9 +201,10 @@ void CGDFFileWriter::setValue(const uint32 ui32ValueIdentifier, const char* sVal
 
 		case IBoxAlgorithmExperimentInformationInputReaderCallback::Value_SubjectName:
 		{
-			if (strlen(sValue)>0)
+			int l_nameLen = strlen(sValue);
+			if (l_nameLen>0)
 			{
-				char * l_pFormattedSubjectName = new char[strlen(sValue)];
+				char * l_pFormattedSubjectName = new char[l_nameLen+1];
 
 				strcpy(l_pFormattedSubjectName, sValue);
 

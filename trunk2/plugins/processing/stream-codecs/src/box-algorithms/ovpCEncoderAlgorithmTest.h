@@ -50,7 +50,7 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Setups various streams and outputs them"); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("Note: Data sent in the streams does not change over time"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Unit test/Algorithms"); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tests and Examples/Algorithms"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-about"); }
 

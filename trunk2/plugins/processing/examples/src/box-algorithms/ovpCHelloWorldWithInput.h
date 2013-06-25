@@ -97,8 +97,8 @@ namespace OpenViBEPlugins
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString(""); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Duplicates input to output and prints a message to the log for each input block"); }
-			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("This simply duplicates intput on its output"); }
-			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Examples"); }
+			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString(""); }
+			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Tests and Examples/Basic"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }
 			virtual OpenViBE::CString getStockItemName(void) const       { return OpenViBE::CString("gtk-copy"); }
 

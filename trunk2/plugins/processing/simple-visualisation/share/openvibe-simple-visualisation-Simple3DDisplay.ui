@@ -318,7 +318,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="x1">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Scale x</property>
               </object>

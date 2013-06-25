@@ -79,16 +79,20 @@ namespace OpenViBEPlugins
 			m_pTransparencyEntry(NULL)
 		{
 			//load the gtk builder interface
+			GError *l_pErr = NULL; 
 			m_pBuilderInterface=gtk_builder_new(); // glade_xml_new(OpenViBE::Directories::getDataDir() + "/plugins/simple-visualisation/openvibe-simple-visualisation-Simple3DDisplay.ui", NULL, NULL);
-			gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/plugins/simple-visualisation/openvibe-simple-visualisation-Simple3DDisplay.ui", NULL);
+			guint l_retVal = gtk_builder_add_from_file(m_pBuilderInterface, OpenViBE::Directories::getDataDir() + "/plugins/simple-visualisation/openvibe-simple-visualisation-Simple3DDisplay.ui", &l_pErr);
 
-			if(!m_pBuilderInterface)
+			if(!m_pBuilderInterface || l_retVal == 0 || l_pErr)
 			{
-				g_warning("Couldn't load the interface!");
+				g_warning("Couldn't load the interface");
+				if(l_pErr) 
+				{
+					g_warning("Error was %s", l_pErr->message);
+					g_error_free(l_pErr);
+				}
 				return;
 			}
-
-			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			//toolbar buttons connections
 			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "CreateObject")),
@@ -105,6 +109,8 @@ namespace OpenViBEPlugins
 				"clicked", G_CALLBACK(setColorButtonCallback), this);
 			g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "RepositionCamera")),
 				"clicked", G_CALLBACK(repositionCameraButtonCallback), this);
+
+			gtk_builder_connect_signals(m_pBuilderInterface, NULL);
 
 			//create object connections
 			//-------------------------
