@@ -70,6 +70,7 @@ boolean CEncoderAlgorithmTest::initialize(void)
 boolean CEncoderAlgorithmTest::uininitialize(void)
 {
 	delete m_pStimulationSet;
+	delete m_pMatrix3;
 	delete m_pMatrix2;
 	delete m_pMatrix1;
 
