@@ -80,7 +80,7 @@ __________________________________________________________________
  consists in visualising log(1+X*X) where X represents incoming signals) and epoch average boxes. This should result in smoothed out signals where peak activity areas will move gradually
  between frames, thus making them easily identifiable on the map.
 
- Let's use a temporal filter box (found under 'Signal Processing GPL > Filters') to restrict incoming signals to a frequency band of our choice, e.g. the Beta range, about 16-24 Hz.
+ Let's use a temporal filter box (found under 'Signal Processing > Filters') to restrict incoming signals to a frequency band of our choice, e.g. the Beta range, about 16-24 Hz.
  Appropriate settings could go like this : 'Butterworth' filter type, 'Band Pass' filtering, 16Hz low pass band edge, 24Hz high pass band edge).
 
  Next, one can average out signals by applying the typical log(1+X*X) formula. A 'Simple DSP' (found under 'Signal Processing > Basic') can compute the square of the signal ('Equation'

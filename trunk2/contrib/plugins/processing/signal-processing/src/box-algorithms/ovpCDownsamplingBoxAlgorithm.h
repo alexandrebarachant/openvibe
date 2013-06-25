@@ -1,3 +1,6 @@
+
+// @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
+
 #ifndef __OpenViBEPlugins_SignalProcessingGpl_BoxAlgorithms_Filter_CDownsamplingBoxAlgorithm_H__
 #define __OpenViBEPlugins_SignalProcessingGpl_BoxAlgorithms_Filter_CDownsamplingBoxAlgorithm_H__
 
@@ -52,7 +55,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Downsampling - GPL"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Downsampling"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("G. Gibert - E. Maby - P.E. Aguera"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM/U821"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Filters and downsamples input buffer."); }

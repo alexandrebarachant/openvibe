@@ -73,8 +73,8 @@ This example is based on the following scenario file : tutorials/visualisation/s
  visualise signals and their spectra at the same time.
 
  The power spectrum plugin has one input connector of 'Spectrum' type. Indeed, signal information must be processed before being sent to this plugin,
- so that amplitude values are computed for a set of frequency bands. These computations can be done using a Spectral Analysis filter (found under 'Signal Processing GPL > Spectral
- Analysis'), making sure 'Amplitude' computation is enable in its settings (see \ref Doc_SignalProcessing_GPL_SpectralAnalysis for more on this). However, results might not be satisfactory due to the small size of data chunks being processed by the Spectral Analysis plugin.
+ so that amplitude values are computed for a set of frequency bands. These computations can be done using a Spectral Analysis filter (found under 'Signal Processing > Spectral
+ Analysis'), making sure 'Amplitude' computation is enable in its settings (see \ref Doc_SignalProcessing_SpectralAnalysis for more on this). However, results might not be satisfactory due to the small size of data chunks being processed by the Spectral Analysis plugin.
 
  To feed the plugin more significant data, one can use the Time-Based Epoching
  plugin to store data and send it only when it amounts to a given duration (see \ref Doc_SignalProcessing_Epoching to learn more about this box). One can insert an epoching

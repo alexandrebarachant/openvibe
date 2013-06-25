@@ -1,3 +1,6 @@
+
+// @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
+
 #ifndef __OpenViBEPlugins_Algorithm_ClassifierBliffCFIS_H__
 #define __OpenViBEPlugins_Algorithm_ClassifierBliffCFIS_H__
 
@@ -53,8 +56,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("BLiFF CFIS classifier - GPL"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("BLiFF CFIS classifier"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard / Fabien Lotte"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA / INSA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }

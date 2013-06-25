@@ -970,7 +970,7 @@
 		</Box>
 		<Box>
 			<Identifier>(0x00006827, 0x00007a83)</Identifier>
-			<Name>Temporal filter - GPL</Name>
+			<Name>Temporal filter</Name>
 			<AlgorithmClassIdentifier>(0xb4f9d042, 0x9d79f2e5)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>

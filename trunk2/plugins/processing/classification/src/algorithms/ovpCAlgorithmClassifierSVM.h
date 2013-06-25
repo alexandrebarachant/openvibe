@@ -73,7 +73,7 @@ namespace OpenViBEPlugins
 			OpenViBE::uint32 m_ui32NumberOfFeatures;
 			OpenViBE::CMemoryBuffer m_oConfiguration;
 			//todo a modifier en fonction de svn_save_model
-			//itpp::vec m_oCoefficients;
+			//vector m_oCoefficients;
 		};
 
 		class CAlgorithmClassifierSVMDesc : public OpenViBEToolkit::CAlgorithmClassifierDesc

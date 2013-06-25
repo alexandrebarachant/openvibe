@@ -1,3 +1,6 @@
+
+// @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
+
 #ifndef __OpenViBEPlugins_SignalProcessing_CTemporalFilter_H__
 #define __OpenViBEPlugins_SignalProcessing_CTemporalFilter_H__
 
@@ -181,7 +184,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Temporal filter - GPL (no algorithm)"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Temporal filter (no algorithm)"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Guillaume Gibert"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Applies a temporal filter to input signal"); }

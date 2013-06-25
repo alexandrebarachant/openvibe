@@ -1,3 +1,6 @@
+
+// @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
+
 #ifndef __OpenViBEPlugins_Algorithm_ClassifierLDA_H__
 #define __OpenViBEPlugins_Algorithm_ClassifierLDA_H__
 
@@ -56,7 +59,7 @@ namespace OpenViBEPlugins
 
 			virtual void release(void) { }
 
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("LDA classifier - GPL"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("LDA classifier"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Yann Renard / Fabien Lotte"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INRIA/IRISA / INSA/IRISA"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString(""); }

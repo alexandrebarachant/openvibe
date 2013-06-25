@@ -1,3 +1,6 @@
+
+// @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
+
 #ifndef __OpenViBEPlugins_SignalProcessing_CWindowingFunctions_H__
 #define __OpenViBEPlugins_SignalProcessing_CWindowingFunctions_H__
 
@@ -117,7 +120,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Windowing functions - GPL"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Windowing functions"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Guillaume Gibert"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Apply a window to the signal buffer"); }

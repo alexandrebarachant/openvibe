@@ -6,7 +6,7 @@ Detailed description
 __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SpectrumAverage_Description|
- * This box can be used in conjunction with the \ref Doc_BoxAlgorithm_SpectralAnalysisGPL and
+ * This box can be used in conjunction with the \ref Doc_BoxAlgorithm_SpectralAnalysis and
  * the \ref Doc_BoxAlgorithm_FrequencyBandSelector boxes in order to compute a power in specific
  * frequency bands of a spectrum. The output is a column matrix giving a single value for each
  * channel : the actual average power of the spectrum. You can may want to use these values

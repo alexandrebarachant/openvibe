@@ -6123,8 +6123,8 @@ scenario uses example data provided with OpenViBE.
 frequencies.  If you wish to use more than three commands in your
 applications, you will have to modify it.  This modification is
 pretty straightforward just duplicate a branch of the processing
-chain and change the files used by boxes &lt;i&gt;Temporal filter -
-GPL&lt;/i&gt;, &lt;i&gt;Target Separator&lt;/i&gt; and &lt;i&gt;Classifier trainer&lt;/i&gt;</Text>
+chain and change the files used by boxes &lt;i&gt;Temporal filter&lt;/i&gt;, 
+&lt;i&gt;Target Separator&lt;/i&gt; and &lt;i&gt;Classifier trainer&lt;/i&gt;</Text>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>

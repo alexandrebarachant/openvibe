@@ -2,7 +2,7 @@
 	<Boxes>
 		<Box>
 			<Identifier>(0x000016d5, 0x000033f1)</Identifier>
-			<Name>Temporal filter - GPL</Name>
+			<Name>Temporal filter</Name>
 			<AlgorithmClassIdentifier>(0xb4f9d042, 0x9d79f2e5)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>

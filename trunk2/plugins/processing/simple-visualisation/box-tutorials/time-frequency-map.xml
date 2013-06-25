@@ -2,7 +2,7 @@
 	<Boxes>
 		<Box>
 			<Identifier>(0x0dafceb5, 0x558590df)</Identifier>
-			<Name>Spectral analysis - GPL</Name>
+			<Name>Spectral analysis</Name>
 			<AlgorithmClassIdentifier>(0x84218ff8, 0xa87e7995)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>
@@ -374,7 +374,7 @@
 		</Box>
 		<Box>
 			<Identifier>(0x706da037, 0x5b5ede14)</Identifier>
-			<Name>Temporal filter - GPL</Name>
+			<Name>Temporal filter</Name>
 			<AlgorithmClassIdentifier>(0xb4f9d042, 0x9d79f2e5)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>

@@ -1,3 +1,6 @@
+
+// @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
+
 #ifndef __OpenViBEPlugins_BoxAlgorithm_CSPSpatialFilterTrainer_H__
 #define __OpenViBEPlugins_BoxAlgorithm_CSPSpatialFilterTrainer_H__
 
@@ -45,13 +48,11 @@ namespace OpenViBEPlugins
 		{
 		public:
 
-
 			virtual void release(void) { }
-
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("CSP Spatial Filter Trainer - GPL"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("CSP Spatial Filter Trainer"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Dieter Devlaminck"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("Ghent University"); }
-			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Computes spatial filter coeffcients according to the Common Spatial Pattern algorithm. GPL."); }
+			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Computes spatial filter coeffcients according to the Common Spatial Pattern algorithm."); }
 			virtual OpenViBE::CString getDetailedDescription(void) const { return OpenViBE::CString("The CSP algortihm increases the signal variance for one condition while minimizing the variance for the other condition."); }
 			virtual OpenViBE::CString getCategory(void) const            { return OpenViBE::CString("Signal processing/Filtering"); }
 			virtual OpenViBE::CString getVersion(void) const             { return OpenViBE::CString("1.0"); }

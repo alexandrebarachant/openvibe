@@ -1,3 +1,6 @@
+
+// @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
+
 #ifndef __OpenViBEPlugins_SignalProcessingGpl_BoxAlgorithms_Filter_CDetectingMinMaxBoxAlgorithm_H__
 #define __OpenViBEPlugins_SignalProcessingGpl_BoxAlgorithms_Filter_CDetectingMinMaxBoxAlgorithm_H__
 
@@ -41,7 +44,7 @@ namespace OpenViBEPlugins
 		public:
 
 			virtual void release(void) { }
-			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Min/Max detection - GPL"); }
+			virtual OpenViBE::CString getName(void) const                { return OpenViBE::CString("Min/Max detection"); }
 			virtual OpenViBE::CString getAuthorName(void) const          { return OpenViBE::CString("Guillaume Gibert"); }
 			virtual OpenViBE::CString getAuthorCompanyName(void) const   { return OpenViBE::CString("INSERM/U821"); }
 			virtual OpenViBE::CString getShortDescription(void) const    { return OpenViBE::CString("Outputs the minimum or the maximum value inside a time window"); }

@@ -7,10 +7,10 @@ __________________________________________________________________
 
  * |OVP_DocBegin_BoxAlgorithm_SignalDecimation_Description|
 This box reduces the sampling frequency of an input signal <em>the easy way</em>.
-It is different of the existing \ref Doc_BoxAlgorithm_DownsamplingGPL box in the sense
+It is different of the existing \ref Doc_BoxAlgorithm_Downsampling box in the sense
 that there is no pre-filtering and that you can not choose an arbitrary sampling
 frequency. Thus you will have to pre-filter the input signal with the
-\ref Doc_BoxAlgorithm_TemporalFilterGPL box for example. The new sampling frequency
+\ref Doc_BoxAlgorithm_TemporalFilter box for example. The new sampling frequency
 will be an exact divider of the source signal sampling frequency. For instance, if your
 input sampling frequency is 1000Hz, you are allowed to divide that frequency by 2 or 4
 but you can't divide it by 3. See section \ref Doc_BoxAlgorithm_SignalDecimation_Examples

@@ -511,7 +511,7 @@
 		</Box>
 		<Box>
 			<Identifier>(0x4694c502, 0x4515155d)</Identifier>
-			<Name>Temporal filter - GPL</Name>
+			<Name>Temporal filter</Name>
 			<AlgorithmClassIdentifier>(0xb4f9d042, 0x9d79f2e5)</AlgorithmClassIdentifier>
 			<Inputs>
 				<Input>
