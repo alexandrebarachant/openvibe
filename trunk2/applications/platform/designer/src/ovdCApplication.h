@@ -109,6 +109,8 @@ namespace OpenViBEDesigner
 		OpenViBE::boolean quitApplicationCB(void);
 		void aboutOpenViBECB(void);
 		void aboutScenarioCB(OpenViBEDesigner::CInterfacedScenario* pScenario);
+		void aboutLinkClickedCB(const gchar *url);
+
 		void browseDocumentationCB(void);
 
 		//@}

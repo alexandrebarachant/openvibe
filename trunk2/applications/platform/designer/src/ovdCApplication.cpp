@@ -128,11 +128,15 @@ namespace
 	{
 		static_cast<CApplication*>(pUserData)->aboutOpenViBECB();
 	}
+	void menu_about_link_clicked_cb(::GtkAboutDialog* pAboutDialog, const gchar *linkPtr, gpointer pUserData)
+	{
+		static_cast<CApplication*>(pUserData)->aboutLinkClickedCB(linkPtr);
+	}
+
 	void menu_browse_documentation_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->browseDocumentationCB();
 	}
-
 	void button_new_scenario_cb(::GtkButton* pButton, gpointer pUserData)
 	{
 		static_cast<CApplication*>(pUserData)->newScenarioCB();
@@ -587,6 +591,14 @@ void CApplication::initialize(ECommandLineFlag eCommandLineFlags)
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-box_algorithm_searchbox")), "focus-out-event", G_CALLBACK(searchbox_focus_out_cb), this);
 
 	g_signal_connect(G_OBJECT(gtk_builder_get_object(m_pBuilderInterface, "openvibe-show_unstable")), "toggled", G_CALLBACK(refresh_search_no_data_cb), this);
+
+#if defined(TARGET_OS_Windows)
+#if GTK_CHECK_VERSION(2,24,0)
+	// expect it to work */
+#else
+	gtk_about_dialog_set_url_hook ((GtkAboutDialogActivateLinkFunc)menu_about_link_clicked_cb, this, NULL);
+#endif
+#endif
 
 	__g_idle_add__(idle_application_loop, this);
 	__g_timeout_add__(1000, timeout_application_loop, this);
@@ -1515,6 +1527,21 @@ void CApplication::aboutScenarioCB(CInterfacedScenario* pScenario)
 	if(pScenario && !pScenario->isLocked())
 	{
 		pScenario->contextMenuScenarioAboutCB();
+	}
+}
+
+void CApplication::aboutLinkClickedCB(const gchar *url)
+{
+	if(!url) 
+	{
+		return;
+	}
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "CApplication::aboutLinkClickedCB\n";
+	CString l_sCommand = m_rKernelContext.getConfigurationManager().expand("${Designer_WebBrowserCommand} " + OpenViBE::CString(url));
+	int l_iResult = system(l_sCommand.toASCIIString());
+	if(l_iResult<0)
+	{
+		m_rKernelContext.getLogManager() << LogLevel_Warning << "Could not launch command " << l_sCommand << "\n";
 	}
 }
 
