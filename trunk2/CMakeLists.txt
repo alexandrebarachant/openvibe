@@ -91,7 +91,7 @@ INCLUDE("GNUInstallDirs")
 SET(CMAKE_INSTALL_FULL_DOCDIR "${CMAKE_INSTALL_FULL_BINDIR}/../doc/html")
 	
 # Add directories that OpenViBE will use to look for its components runtime, unless overridden by environment variables in the launch scripts.
-# These defines should only be used in "ov_directories.h".
+# These defines should only be used in "openvibe/ov_directories.h".
 ADD_DEFINITIONS(-DOV_CMAKE_PATH_ROOT="${CMAKE_INSTALL_PREFIX}")
 ADD_DEFINITIONS(-DOV_CMAKE_PATH_BIN="${CMAKE_INSTALL_FULL_BINDIR}")	
 ADD_DEFINITIONS(-DOV_CMAKE_PATH_DATA="${CMAKE_INSTALL_FULL_DATADIR}/openvibe")

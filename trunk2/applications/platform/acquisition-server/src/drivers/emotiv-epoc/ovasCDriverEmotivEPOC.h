@@ -6,7 +6,7 @@
 #include "ovasIDriver.h"
 #include "../ovasCHeader.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 
 #include "EmoStateDLL.h"
 #include "edk.h"

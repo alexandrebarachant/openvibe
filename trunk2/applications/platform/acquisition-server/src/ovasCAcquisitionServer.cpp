@@ -2,7 +2,7 @@
 #include "ovasIAcquisitionServerPlugin.h"
 
 #include <toolkit/ovtk_all.h>
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <ovp_global_defines.h>
 

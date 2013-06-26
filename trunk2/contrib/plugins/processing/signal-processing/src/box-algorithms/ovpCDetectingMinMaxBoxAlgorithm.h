@@ -5,7 +5,7 @@
 #define __OpenViBEPlugins_SignalProcessingGpl_BoxAlgorithms_Filter_CDetectingMinMaxBoxAlgorithm_H__
 
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 namespace OpenViBEPlugins

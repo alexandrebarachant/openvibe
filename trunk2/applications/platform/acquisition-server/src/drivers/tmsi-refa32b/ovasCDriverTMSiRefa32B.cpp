@@ -4,7 +4,7 @@
 #if defined TARGET_OS_Windows
 
 #include <toolkit/ovtk_all.h>
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <iostream>
 #include <cmath>

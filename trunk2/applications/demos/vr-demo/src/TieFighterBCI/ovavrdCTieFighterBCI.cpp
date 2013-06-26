@@ -1,6 +1,6 @@
 #include "ovavrdCTieFighterBCI.h"
 
-#include <ov_directories.h>
+#include <openvibe/ov_directories.h>
 
 #include <iostream>
 #include <fstream>

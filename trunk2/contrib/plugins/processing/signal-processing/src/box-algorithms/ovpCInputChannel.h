@@ -2,7 +2,7 @@
 #define __OpenViBEPlugins_InputChannel_H__
 
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #define SET_BIT(bit)	(1 << bit)

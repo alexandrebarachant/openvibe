@@ -4,8 +4,8 @@
 
 #include <gdk/gdk.h>
 
-#include <ov_directories.h>
-#include <ovCString.h>
+#include <openvibe/ov_directories.h>
+#include <openvibe/ovCString.h>
 
 #include <vrpn_Button.h>
 #include <vrpn_Analog.h>

@@ -5,7 +5,7 @@
 #include "ovasCConfigurationMitsarEEG202A.h"
 
 #include <toolkit/ovtk_all.h>
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Time.h>
 #include <system/Memory.h>

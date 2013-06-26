@@ -1,7 +1,7 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CSignalDisplayLeftRuler_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CSignalDisplayLeftRuler_H__
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <gtk/gtk.h>
 
 namespace OpenViBEPlugins

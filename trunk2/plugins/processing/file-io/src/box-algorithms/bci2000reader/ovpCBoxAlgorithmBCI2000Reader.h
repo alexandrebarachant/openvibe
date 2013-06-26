@@ -4,7 +4,7 @@
 #include "ovpCBCI2000ReaderHelper.h"
 #include "../../ovp_defines.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #define OVP_ClassId_BoxAlgorithm_BCI2000Reader OpenViBE::CIdentifier(0xFF78DAF4, 0xC41544B8)

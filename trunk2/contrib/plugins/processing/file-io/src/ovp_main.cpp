@@ -1,6 +1,6 @@
 
 #include <vector>
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 
 // @BEGIN CICIT-GARCHES
 #include "box-algorithms/ovpCBoxAlgorithmEDFFileWriter.h"

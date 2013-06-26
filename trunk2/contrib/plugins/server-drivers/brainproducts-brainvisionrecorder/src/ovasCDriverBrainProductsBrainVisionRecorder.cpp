@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

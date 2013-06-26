@@ -9,7 +9,7 @@
 #include <vrpn_Button.h>
 #include <vrpn_Analog.h>
 
-#include <ov_directories.h>
+#include <openvibe/ov_directories.h>
 
 #if defined sleep
 #undef sleep

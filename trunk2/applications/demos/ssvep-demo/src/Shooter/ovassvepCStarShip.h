@@ -3,7 +3,7 @@
 
 #include <Ogre.h>
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 namespace OpenViBESSVEP

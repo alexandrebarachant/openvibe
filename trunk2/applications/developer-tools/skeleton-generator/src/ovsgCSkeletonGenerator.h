@@ -1,7 +1,7 @@
 #ifndef __OpenViBESkeletonGenerator_CSkeletonGenerator_H__
 #define __OpenViBESkeletonGenerator_CSkeletonGenerator_H__
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 //#include <configuration/ovkCConfigurationManager.h>
 

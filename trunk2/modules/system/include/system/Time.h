@@ -14,7 +14,7 @@ namespace System
 		static System::uint32 getTime(void);  // milliseconds
 		static System::uint64 zgetTime(void); // fixed point 32:32 seconds
 
-		// Please see ovITimeArithmetics.h for conversion routines to/from OpenViBE fixed point time
+		// Please see openvibe/ovITimeArithmetics.h for conversion routines to/from OpenViBE fixed point time
 
 	private:
 

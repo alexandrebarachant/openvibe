@@ -4,7 +4,7 @@
 # include <Python.h>
 #endif
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #if defined TARGET_HAS_ThirdPartyPython

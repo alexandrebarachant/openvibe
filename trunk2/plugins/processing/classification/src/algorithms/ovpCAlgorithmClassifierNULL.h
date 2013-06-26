@@ -2,7 +2,7 @@
 #define __OpenViBEPlugins_Algorithm_ClassifierNULL_H__
 
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #define OVP_ClassId_Algorithm_ClassifierNULL                                        OpenViBE::CIdentifier(0x043D09AB, 0xCB5E4859)

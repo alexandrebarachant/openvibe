@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <system/Memory.h>
 
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;

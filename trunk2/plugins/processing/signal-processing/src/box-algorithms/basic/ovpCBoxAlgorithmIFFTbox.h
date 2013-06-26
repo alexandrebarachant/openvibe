@@ -6,7 +6,7 @@
 //You may have to change this path to match your folder organisation
 #include "../../ovp_defines.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 // The unique identifiers for the box and its descriptor.

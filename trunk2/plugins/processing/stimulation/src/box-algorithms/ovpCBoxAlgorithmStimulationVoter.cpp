@@ -1,6 +1,6 @@
 #include "ovpCBoxAlgorithmStimulationVoter.h"
 
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <vector>
 #include <string>

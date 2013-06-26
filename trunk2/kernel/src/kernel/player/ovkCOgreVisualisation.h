@@ -3,7 +3,7 @@
 
 #include "../ovkTKernelObject.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 
 #include <Ogre.h>
 

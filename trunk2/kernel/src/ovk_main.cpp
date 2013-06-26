@@ -1,6 +1,6 @@
 #include "kernel/ovkCKernelContext.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

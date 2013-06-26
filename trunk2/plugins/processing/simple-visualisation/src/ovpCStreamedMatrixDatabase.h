@@ -4,7 +4,7 @@
 #include "ovp_defines.h"
 #include "ovpIStreamDatabase.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #include <vector>

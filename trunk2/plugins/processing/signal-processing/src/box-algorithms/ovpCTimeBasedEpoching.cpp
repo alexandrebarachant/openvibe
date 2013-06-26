@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;

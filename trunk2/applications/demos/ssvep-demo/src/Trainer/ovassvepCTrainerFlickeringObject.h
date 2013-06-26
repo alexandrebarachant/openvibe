@@ -1,7 +1,7 @@
 #ifndef __OpenViBEApplication_CTrainerFlickeringObject_H__
 #define __OpenViBEApplication_CTrainerFlickeringObject_H__
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 #include <Ogre.h>
 

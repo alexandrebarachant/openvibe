@@ -5,7 +5,7 @@
 #include "../ovasCHeader.h"
 
 #if defined TARGET_OS_Windows
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <iostream>
 #include <socket/IConnectionClient.h>
 #include <socket/IConnectionServer.h>

@@ -5,7 +5,7 @@
 
 #include "ovasIDriver.h"
 #include "ovasCHeaderBrainProductsVAmp.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 
 #include <windows.h>
 #include <FirstAmp.h>

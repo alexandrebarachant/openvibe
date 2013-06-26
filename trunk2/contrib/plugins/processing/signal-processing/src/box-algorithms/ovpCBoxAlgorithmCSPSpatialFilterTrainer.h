@@ -7,7 +7,7 @@
 #if defined TARGET_HAS_ThirdPartyITPP
 
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #define OVP_ClassId_BoxAlgorithm_CSPSpatialFilterTrainer     OpenViBE::CIdentifier(0x51DB0D64, 0x2109714E)

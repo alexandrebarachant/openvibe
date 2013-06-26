@@ -1,7 +1,7 @@
 #ifndef __OpenViBEKernel_Kernel_Player_COgreObject_H__
 #define __OpenViBEKernel_Kernel_Player_COgreObject_H__
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <OgreColourValue.h>
 
 namespace Ogre

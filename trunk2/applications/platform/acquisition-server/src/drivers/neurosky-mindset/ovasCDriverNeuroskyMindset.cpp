@@ -8,7 +8,7 @@
 
 #include <thinkgear.h>
 
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 using namespace OpenViBEAcquisitionServer;
 using namespace OpenViBE;

@@ -3,7 +3,7 @@
 
 #include "ovpCPowerSpectrumDatabase.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <gtk/gtk.h>
 #include <iostream>
 using namespace std;

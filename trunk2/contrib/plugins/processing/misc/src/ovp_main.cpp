@@ -1,6 +1,6 @@
 
 #include <vector>
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include "ovp_defines.h"
 
 #include "box-algorithms/ovpCMouseControl.h"							// inserm

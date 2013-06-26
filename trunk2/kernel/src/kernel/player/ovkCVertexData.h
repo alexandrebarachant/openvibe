@@ -1,7 +1,7 @@
 #ifndef __OpenViBEKernel_Kernel_Player_CVertexData_H__
 #define __OpenViBEKernel_Kernel_Player_CVertexData_H__
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 /*
 #include "ov_types.h"
 #include "ovCString.h"

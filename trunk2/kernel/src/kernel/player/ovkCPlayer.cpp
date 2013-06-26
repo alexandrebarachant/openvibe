@@ -1,5 +1,5 @@
 
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include "ovkCPlayer.h"
 #include "ovkCSimulatedBox.h"

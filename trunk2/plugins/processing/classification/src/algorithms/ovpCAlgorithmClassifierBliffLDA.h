@@ -5,7 +5,7 @@
 #define __OpenViBEPlugins_Algorithm_ClassifierBliffLDA_H__
 
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #if defined TARGET_HAS_ThirdPartyBLiFF

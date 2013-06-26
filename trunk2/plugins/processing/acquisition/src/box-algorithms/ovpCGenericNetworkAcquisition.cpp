@@ -1,6 +1,6 @@
 #include "ovpCGenericNetworkAcquisition.h"
 
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Memory.h>
 

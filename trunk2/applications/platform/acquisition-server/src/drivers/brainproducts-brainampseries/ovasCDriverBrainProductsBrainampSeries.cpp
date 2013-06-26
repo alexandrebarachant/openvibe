@@ -23,7 +23,7 @@
 #if defined TARGET_OS_Windows
 
 #include <toolkit/ovtk_all.h>
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Memory.h>
 #include <system/Time.h>

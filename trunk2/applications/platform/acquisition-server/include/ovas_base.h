@@ -3,7 +3,7 @@
 
 #include "ovas_defines.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #endif // __OpenViBE_AcquisitionServer_Base_H__

@@ -2,7 +2,7 @@
 #define __OpenViBEPlugins_BoxAlgorithm_ClassifierProcessor_H__
 
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #include "ovpCBoxAlgorithmCommonClassifierListener.inl"

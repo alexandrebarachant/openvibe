@@ -3,7 +3,7 @@
 
 #include "../ovp_defines.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <ebml/IReader.h>
 #include <ebml/IReaderHelper.h>
 #include <iostream>

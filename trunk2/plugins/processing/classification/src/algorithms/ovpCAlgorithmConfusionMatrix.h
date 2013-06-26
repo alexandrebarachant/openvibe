@@ -2,7 +2,7 @@
 #define __OpenViBEPlugins_Algorithm_ConfusionMatrix_H__
 
 #include "../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 #define OVP_Algorithm_ConfusionMatrixAlgorithm_InputParameterId_Sums                     OpenViBE::CIdentifier(0x75502E8E, 0x05D838EE)

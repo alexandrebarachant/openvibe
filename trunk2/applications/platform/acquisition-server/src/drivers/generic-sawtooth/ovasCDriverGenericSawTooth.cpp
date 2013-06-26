@@ -2,7 +2,7 @@
 #include "../ovasCConfigurationBuilder.h"
 
 #include <toolkit/ovtk_all.h>
-#include <ovITimeArithmetics.h>
+#include <openvibe/ovITimeArithmetics.h>
 
 #include <system/Time.h>
 

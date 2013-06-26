@@ -1,7 +1,7 @@
 #ifndef __OpenViBEPlugins_SimpleVisualisation_CTimeRuler_H__
 #define __OpenViBEPlugins_SimpleVisualisation_CTimeRuler_H__
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include "ovpIStreamDatabase.h"
 #include <gtk/gtk.h>
 

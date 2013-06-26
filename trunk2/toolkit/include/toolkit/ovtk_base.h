@@ -3,7 +3,7 @@
 
 #include "ovtk_defines.h"
 
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 
 namespace EBML
 {

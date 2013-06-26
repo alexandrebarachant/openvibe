@@ -4,7 +4,7 @@
 #if defined TARGET_HAS_ThirdPartyITPP
 
 #include "../../ovp_defines.h"
-#include <ov_all.h>
+#include <openvibe/ov_all.h>
 #include <toolkit/ovtk_all.h>
 
 // TODO:
