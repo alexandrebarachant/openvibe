@@ -8,6 +8,8 @@
 
 #include "ovasCPluginExternalStimulations.h"
 
+#include "ovasCConfigurationBrainmasterDiscovery.h"
+#include "ovasCConfigurationBrainProductsActiCHamp.h"
 #include "ovasCDriverBrainProductsBrainVisionRecorder.h"
 #include "ovasCDriverCtfVsmMeg.h"
 #include "ovasCDriverGTecGUSBamp.h"
@@ -33,6 +35,12 @@ namespace OpenViBEContributions {
 #endif
 		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverFieldtrip(pAcquisitionServer->getDriverContext()));
 #if defined TARGET_OS_Windows
+#if defined TARGET_HAS_ThirdPartyBrainmasterCodeMakerAPI
+		m_vDriver.push_back(new CDriverBrainmasterDiscovery(m_pAcquisitionServer->getDriverContext()));
+#endif
+#if defined TARGET_HAS_ThirdPartyActiCHampAPI
+		m_vDriver.push_back(new CDriverBrainProductsActiCHamp(m_pAcquisitionServer->getDriverContext()));
+#endif
 		vDriver->push_back(new OpenViBEAcquisitionServer::CDriverMitsarEEG202A(pAcquisitionServer->getDriverContext()));
 #endif
 

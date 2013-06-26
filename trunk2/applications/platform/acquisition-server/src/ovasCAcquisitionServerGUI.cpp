@@ -14,8 +14,6 @@
 #include "generic-raw-reader/ovasCDriverGenericRawFileReader.h"
 #include "generic-raw-reader/ovasCDriverGenericRawTelnetReader.h"
 #include "brainmaster-discovery/ovasCDriverBrainmasterDiscovery.h"
-#include "brainproducts-actichamp/ovasCDriverBrainProductsActiCHamp.h"
-#include "brainproducts-brainampseries/ovasCDriverBrainProductsBrainampSeries.h"
 #include "brainproducts-vamp/ovasCDriverBrainProductsVAmp.h"
 #include "emotiv-epoc/ovasCDriverEmotivEPOC.h"
 #include "micromed-systemplusevolution/ovasCDriverMicromedSystemPlusEvolution.h"
@@ -127,12 +125,7 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 	m_vDriver.push_back(new CDriverGenericRawTelnetReader(m_pAcquisitionServer->getDriverContext()));
 
 #if defined TARGET_OS_Windows
-#if defined TARGET_HAS_ThirdPartyBrainmasterCodeMakerAPI
-	m_vDriver.push_back(new CDriverBrainmasterDiscovery(m_pAcquisitionServer->getDriverContext()));
-#endif
-#if defined TARGET_HAS_ThirdPartyActiCHampAPI
-	m_vDriver.push_back(new CDriverBrainProductsActiCHamp(m_pAcquisitionServer->getDriverContext()));
-#endif
+
 	m_vDriver.push_back(new CDriverBrainProductsBrainampSeries(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverMicromedSystemPlusEvolution(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));
