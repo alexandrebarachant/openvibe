@@ -24,7 +24,7 @@
 #include "ovasCDriverBrainProductsActiCHamp.h"
 #include "ovasCConfigurationBrainProductsActiCHamp.h"
 
-#include <openvibe-toolkit/ovtk_all.h>
+#include <toolkit/ovtk_all.h>
 
 #include <actichamp.h>
 
@@ -289,8 +289,8 @@ boolean CDriverBrainProductsActiCHamp::initialize(
 	m_rDriverContext.getLogManager() << LogLevel_Trace << "Sampling rate in Hz  [Physical: "<<m_ui32PhysicalSampleRateHz<<"] [Driver: "<<m_oHeader.getSamplingFrequency()<<"]\n";
 
 	uint32 i,j=0;
-	for(i=0; i<m_ui32CountEEG; i++, j++) m_vResolution[j]=l_oProperties.ResolutionEeg*1E6f; // converts to µV
-	for(i=0; i<m_ui32CountAux; i++, j++) m_vResolution[j]=l_oProperties.ResolutionAux*1E6f; // converts to µV
+	for(i=0; i<m_ui32CountEEG; i++, j++) m_vResolution[j]=l_oProperties.ResolutionEeg*1E6f; // converts to ?V
+	for(i=0; i<m_ui32CountAux; i++, j++) m_vResolution[j]=l_oProperties.ResolutionAux*1E6f; // converts to ?V
 
 	// Sets data pointers
 	// the amplifier model is depending on the number of channels, always including AUX
@@ -771,7 +771,7 @@ boolean CDriverBrainProductsActiCHamp::isConfigurable(void)
 
 boolean CDriverBrainProductsActiCHamp::configure(void)
 {
-	CConfigurationBrainProductsActiCHamp m_oConfiguration(OpenViBE::Directories::getDataDir() + "/openvibe-applications/acquisition-server/interface-BrainProducts-ActiCHamp.ui",
+	CConfigurationBrainProductsActiCHamp m_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-BrainProducts-ActiCHamp.ui",
 		m_ui32DeviceId,
 		m_ui32Mode,
 		m_ui32PhysicalSampleRate,

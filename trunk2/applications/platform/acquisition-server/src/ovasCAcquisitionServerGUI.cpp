@@ -13,7 +13,6 @@
 #include "generic-sawtooth/ovasCDriverGenericSawTooth.h"
 #include "generic-raw-reader/ovasCDriverGenericRawFileReader.h"
 #include "generic-raw-reader/ovasCDriverGenericRawTelnetReader.h"
-#include "brainmaster-discovery/ovasCDriverBrainmasterDiscovery.h"
 #include "brainproducts-vamp/ovasCDriverBrainProductsVAmp.h"
 #include "emotiv-epoc/ovasCDriverEmotivEPOC.h"
 #include "micromed-systemplusevolution/ovasCDriverMicromedSystemPlusEvolution.h"
@@ -126,7 +125,6 @@ CAcquisitionServerGUI::CAcquisitionServerGUI(const IKernelContext& rKernelContex
 
 #if defined TARGET_OS_Windows
 
-	m_vDriver.push_back(new CDriverBrainProductsBrainampSeries(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverMicromedSystemPlusEvolution(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverMindMediaNeXus32B(m_pAcquisitionServer->getDriverContext()));
 	m_vDriver.push_back(new CDriverTMSiRefa32B(m_pAcquisitionServer->getDriverContext()));

@@ -23,7 +23,7 @@
 
 #include "ovasCConfigurationBrainProductsActiCHamp.h"
 
-#include "../ovasIHeader.h"
+#include "ovasIHeader.h"
 
 #include <actichamp.h>
 
