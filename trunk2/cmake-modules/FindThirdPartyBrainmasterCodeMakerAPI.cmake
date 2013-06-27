@@ -22,7 +22,7 @@ IF(WIN32)
 			ELSE(LIB_BrainmasterCodeMakerAPI1)
 				MESSAGE(STATUS "    [FAILED] Third party lib ${LIB_BrainmasterCodeMakerAPI}")
 			ENDIF(LIB_BrainmasterCodeMakerAPI1)
-		ENDFOREACH(LIB_BrainmasterCodeMakerAPI1)
+		ENDFOREACH(LIB_BrainmasterCodeMakerAPI)
 
 		# Copy the DLL file at install
 		INSTALL(PROGRAMS "${PATH_BrainmasterCodeMakerAPI}/bmrcm.dll" DESTINATION "bin")
