@@ -146,7 +146,7 @@ no_need_to_install_directx:
 	; File /nonfatal /r ..\dist\tmp
 
 	StrCmp $DIRECTX_MISSING "false" no_need_to_patch_3d_functionnality
-	FileOpen $0 "$INSTDIR\share\openvibe.conf" a
+	FileOpen $0 "$INSTDIR\share\openvibe\kernel\openvibe.conf" a	
 	FileSeek $0 0 END
 	FileWrite $0 "$\r$\n"
 	FileWrite $0 "#####################################################################################$\r$\n"
@@ -157,8 +157,7 @@ no_need_to_install_directx:
 no_need_to_patch_3d_functionnality:
 
 	; Overwrite the file that may be in share/, as it contains local definitions to the build machine
-	FileOpen $0 "$INSTDIR\share\set-env.cmd" w
-	FileWrite $0 "@echo off$\r$\n"
+	FileOpen $0 "$INSTDIR\bin\openvibe-set-env.cmd" w	FileWrite $0 "@echo off$\r$\n"
 	FileWrite $0 "$\r$\n"
 
 	FileWrite $0 "$\r$\n"
