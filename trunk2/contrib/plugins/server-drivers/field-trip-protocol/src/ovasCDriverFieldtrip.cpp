@@ -36,6 +36,7 @@ CDriverFieldtrip::CDriverFieldtrip(IDriverContext& rDriverContext)
 	,m_sHostName("localhost")
 	,m_ui32PortNumber(1979)
 	,m_i32ConnectionID(-1)
+	,m_ui32DataType(DATATYPE_UNKNOWN)
 	,m_ui32MinSamples(1)
 	,m_bFirstGetDataRequest(false)
 	,m_bCorrectNonIntegerSR(true)
@@ -268,38 +269,17 @@ OpenViBE::boolean CDriverFieldtrip::requestHeader()
 
 	if ( l_iRes!=0 )
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Error while asking for header. Buffer aborted ?\n";
-		if ( l_pResponse )
-		{
-			if (l_pResponse->buf) free(l_pResponse->buf);
-			if (l_pResponse->def) free(l_pResponse->def);
-			free(l_pResponse);
-			l_pResponse = NULL;
-		}
+		FreeResponse(l_pResponse,"Error while asking for header. Buffer aborted ?");
 		return false;
 	}
 	else if ( l_pResponse==NULL || l_pResponse->def==NULL )
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Error while asking for header\n";
-		if ( l_pResponse )
-		{
-			if (l_pResponse->buf) free(l_pResponse->buf);
-			if (l_pResponse->def) free(l_pResponse->def);
-			free(l_pResponse);
-			l_pResponse = NULL;
-		}
+		FreeResponse(l_pResponse,"Error while asking for header");
 		return false;
 	}
 	else if ( l_pResponse->def->command!=GET_OK || l_pResponse->def->bufsize==0 )
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "No header in the buffer\n";
-		if ( l_pResponse )
-		{
-			if (l_pResponse->buf) free(l_pResponse->buf);
-			if (l_pResponse->def) free(l_pResponse->def);
-			free(l_pResponse);
-			l_pResponse = NULL;
-		}
+		FreeResponse(l_pResponse,"No header in the buffer");
 		return false;
 	}
 	else
@@ -309,14 +289,7 @@ OpenViBE::boolean CDriverFieldtrip::requestHeader()
 
 		if ( l_iResponseBufSize < sizeof(headerdef_t) )
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << "Header received has wrong format\n";
-			if ( l_pResponse )
-			{
-				if (l_pResponse->buf) free(l_pResponse->buf);
-				if (l_pResponse->def) free(l_pResponse->def);
-				free(l_pResponse);
-				l_pResponse = NULL;
-			}
+			FreeResponse(l_pResponse,"Header received has wrong format");
 			return false;
 		}
 
@@ -324,16 +297,10 @@ OpenViBE::boolean CDriverFieldtrip::requestHeader()
 		m_f64RealSamplingRate = l_pHeaderDef->fsample;
 		m_oHeader.setChannelCount(l_pHeaderDef->nchans);
 		m_ui32DataType = l_pHeaderDef->data_type;
+		
 		if ( m_ui32DataType != DATATYPE_FLOAT32 && m_ui32DataType != DATATYPE_FLOAT64 )
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << "Data type is not supported\n";
-			if ( l_pResponse )
-			{
-				if (l_pResponse->buf) free(l_pResponse->buf);
-				if (l_pResponse->def) free(l_pResponse->def);
-				free(l_pResponse);
-				l_pResponse = NULL;
-			}
+			FreeResponse(l_pResponse,"Data type is not supported");
 			return false;
 		}
 
@@ -351,6 +318,7 @@ OpenViBE::boolean CDriverFieldtrip::requestHeader()
 			int l_iBytesInHeaderBuffer = l_pHeaderDef->bufsize;
 			void* l_pChunk = (headerdef_t*) l_pHeaderDef + 1;
 			OpenViBE::boolean l_bFoundChannelNames = false;
+			
 			while( l_iBytesInHeaderBuffer > 0 )
 			{
 				if ( ((ft_chunk_t*)l_pChunk)->def.type == FT_CHUNK_CHANNEL_NAMES )
@@ -384,12 +352,7 @@ OpenViBE::boolean CDriverFieldtrip::requestHeader()
 		}
 	} /* end valid header */
 
-	if ( l_pResponse )
-	{
-		if (l_pResponse->buf) free(l_pResponse->buf);
-		if (l_pResponse->def) free(l_pResponse->def);
-		free(l_pResponse);
-	}
+	FreeResponse(l_pResponse,NULL);
 
 	return true;
 }
@@ -397,7 +360,13 @@ OpenViBE::boolean CDriverFieldtrip::requestHeader()
 
 OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimulationSet)
 {
-	// "wait data" request
+    //There are two basic opertations:
+	// - configure m_pGetData_Request and m_pWaitData_Request
+	// - use m_pGetData_Request to call fieldtrip clientrequest() that gets the data from fieldtrip
+	// - transpose the data to fill m_pSample in the correct way expected by OpenVube
+	//The rest are data validity checks and correction for non-integer sampling frequency
+
+	//configure "wait data" request
 	m_pWaitData_Request->def->command = WAIT_DAT;
 	m_pWaitData_Request->def->version = VERSION;
 
@@ -410,6 +379,7 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 		m_pWaitData_Request->def->bufsize = requestSize - sizeof(messagedef_t);
 		m_pWaitData_Request->buf = (messagedef_t*) m_pWaitData_Request->def+1;
 	}
+	
 	waitdef_t* l_pWaitDef = (waitdef_t*) m_pWaitData_Request->buf;
 	l_pWaitDef->threshold.nevents = 0xFFFFFFFF;
 	l_pWaitDef->threshold.nsamples = m_ui32SampleCountPerSentBlock;
@@ -423,38 +393,17 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 
 	if ( l_iRes )
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Error while asking for data. Buffer aborted ?\n";
-		if ( l_pResponse )
-		{
-			if (l_pResponse->buf) free(l_pResponse->buf);
-			if (l_pResponse->def) free(l_pResponse->def);
-			free(l_pResponse);
-			l_pResponse = NULL;
-		}
+		FreeResponse(l_pResponse,"Error while asking for data. Buffer aborted ?");
 		return -1;
 	}
 	else if ( l_pResponse==NULL || l_pResponse->def==NULL )
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "Error while asking for data\n";
-		if ( l_pResponse )
-		{
-			if (l_pResponse->buf) free(l_pResponse->buf);
-			if (l_pResponse->def) free(l_pResponse->def);
-			free(l_pResponse);
-			l_pResponse = NULL;
-		}
+		FreeResponse(l_pResponse,"Error while asking for data");
 		return -1;
 	}
 	else if ( l_pResponse->def->command != WAIT_OK || l_pResponse->def->bufsize!=8 || l_pResponse->buf==NULL )
 	{
-		m_rDriverContext.getLogManager() << LogLevel_Error << "No header in buffer anymore\n";
-		if ( l_pResponse )
-		{
-			if (l_pResponse->buf) free(l_pResponse->buf);
-			if (l_pResponse->def) free(l_pResponse->def);
-			free(l_pResponse);
-			l_pResponse = NULL;
-		}
+		FreeResponse(l_pResponse,"No header in buffer anymore");
 		return -1;
 	}
 	else
@@ -462,14 +411,7 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 		// new header received ? stop acquisition
 		if ( ((samples_events_t*) l_pResponse->buf)->nsamples < m_ui32TotalSampleCount )
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Warning << "End of data\n";
-			if ( l_pResponse )
-			{
-				if (l_pResponse->buf) free(l_pResponse->buf);
-				if (l_pResponse->def) free(l_pResponse->def);
-				free(l_pResponse);
-				l_pResponse = NULL;
-			}
+			FreeResponse(l_pResponse,"End of data");
 			return -1;
 		}
 
@@ -477,13 +419,7 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 		if ( ((samples_events_t*) l_pResponse->buf)->nsamples <= m_ui32TotalSampleCount+m_ui32MinSamples )
 		{
 			m_rDriverContext.getLogManager() << LogLevel_Trace << "No new data\n";
-			if ( l_pResponse )
-			{
-				if (l_pResponse->buf) free(l_pResponse->buf);
-				if (l_pResponse->def) free(l_pResponse->def);
-				free(l_pResponse);
-				l_pResponse = NULL;
-			}
+			FreeResponse(l_pResponse,NULL);
 			return 0;
 		}
 
@@ -500,18 +436,13 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 				l_ui32LastSample = m_ui32TotalSampleCount + m_ui32SampleCountPerSentBlock;
 			}
 		}
+
 		if ( m_bFirstGetDataRequest )
 		{
 			m_bFirstGetDataRequest = false;
 		}
 
-		if ( l_pResponse )
-		{
-			if (l_pResponse->buf) free(l_pResponse->buf);
-			if (l_pResponse->def) free(l_pResponse->def);
-			free(l_pResponse);
-			l_pResponse = NULL;
-		}
+		FreeResponse(l_pResponse,NULL); //prevents memory leak
 
 		// "get data" request
 		m_pGetData_Request->def->command = GET_DAT;
@@ -526,34 +457,22 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 			m_pGetData_Request->def->bufsize = requestSize - sizeof(messagedef_t);
 			m_pGetData_Request->buf = (messagedef_t*) m_pGetData_Request->def+1;
 		}
+		
 		datasel_t* l_pDataSel = (datasel_t*) m_pGetData_Request->buf;
 		l_pDataSel->begsample = m_ui32TotalSampleCount;
 		l_pDataSel->endsample = l_ui32LastSample - 1;
-
+		
+		//actual data acquisition
 		l_iRes = clientrequest(m_i32ConnectionID, m_pGetData_Request, &l_pResponse);
 
 		if ( l_iRes || !l_pResponse || !l_pResponse->def || l_pResponse->def->version!=VERSION )
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << "Error while asking for data\n";
-			if ( l_pResponse )
-			{
-				if (l_pResponse->buf) free(l_pResponse->buf);
-				if (l_pResponse->def) free(l_pResponse->def);
-				free(l_pResponse);
-				l_pResponse = NULL;
-			}
+			FreeResponse(l_pResponse,"Error while asking for data");
 			return -1;
 		}
 		else if ( l_pResponse->def->command != GET_OK || l_pResponse->def->bufsize==0 || l_pResponse->buf==NULL )
 		{
-			m_rDriverContext.getLogManager() << LogLevel_Error << "Data are not available anymore\n";
-			if ( l_pResponse )
-			{
-				if (l_pResponse->buf) free(l_pResponse->buf);
-				if (l_pResponse->def) free(l_pResponse->def);
-				free(l_pResponse);
-				l_pResponse = NULL;
-			}
+			FreeResponse(l_pResponse,"Data are not available anymore");
 			return -1;
 		}
 		else // data received
@@ -562,17 +481,10 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 			void* l_pDatabuf = (datadef_t*) l_pResponse->buf + 1;
 			if ( l_pDatadef->bufsize / (wordsize_from_type(l_pDatadef->data_type)*l_pDatadef->nchans) != l_ui32LastSample - m_ui32TotalSampleCount )
 			{
-				m_rDriverContext.getLogManager() << LogLevel_Error << "Data received from buffer are invalid\n";
-				if ( l_pResponse )
-				{
-					if (l_pResponse->buf) free(l_pResponse->buf);
-					if (l_pResponse->def) free(l_pResponse->def);
-					free(l_pResponse);
-					l_pResponse = NULL;
-				}
+				FreeResponse(l_pResponse,"Data received from buffer are invalid");
 				return -1;
 			}
-			else //data correct
+			else // data correct
 			{
 				l_ui32NbDataReceived = l_ui32LastSample - m_ui32TotalSampleCount;
 
@@ -628,6 +540,7 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 					}
 					break;
 				case DATATYPE_FLOAT32 :
+
 					l_pBuffer32 = (float32*) l_pDatabuf;
 					for ( uint32 j = 0; j < m_oHeader.getChannelCount(); j++ )
 					{
@@ -649,22 +562,29 @@ OpenViBE::int32 CDriverFieldtrip::requestChunk(OpenViBE::CStimulationSet& oStimu
 					}
 					break;
 				default :
-					m_rDriverContext.getLogManager() << LogLevel_Error << "DEV ERROR : data type not suppported\n";
-					if ( l_pResponse )
-					{
-						if (l_pResponse->buf) free(l_pResponse->buf);
-						if (l_pResponse->def) free(l_pResponse->def);
-						free(l_pResponse);
-						l_pResponse = NULL;
-					}
+					FreeResponse(l_pResponse,"DEV ERROR : data type not suppported");
 					return -1;
 				}//end switch
 
 			}//end data correct
 
 		}//end data received
+		
+		FreeResponse(l_pResponse,NULL);//we copied the data from l_pResponse, so now we need to release this memory to avoid memory leak
+
 		m_ui32TotalSampleCount = l_ui32LastSample;
 	}
 
 	return l_ui32NbDataToSend; // no error
+}
+
+void CDriverFieldtrip::FreeResponse(message_t * response, char* message)
+{
+	if (message!=NULL)
+	   m_rDriverContext.getLogManager() << LogLevel_Error << message << "\n";
+
+	if (response->buf) free(response->buf);
+	if (response->def) free(response->def);
+	free(response);
+	response = NULL;
 }
