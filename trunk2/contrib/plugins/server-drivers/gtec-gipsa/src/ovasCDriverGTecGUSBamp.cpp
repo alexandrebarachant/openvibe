@@ -740,7 +740,7 @@ OpenViBE::boolean CDriverGTecGUSBamp::configure(void)
 
 	detectDevices();
 
-	string targetMasterSerial = m_masterSerial;
+	string targetMasterSerial = (numDevices>1) ? m_masterSerial : "";
 	CConfigurationGTecGUSBamp m_oConfiguration(OpenViBE::Directories::getDataDir() + "/applications/acquisition-server/interface-GTec-GUSBamp.ui", m_ui32DeviceIndex, m_ui8CommonGndAndRefBitmap, m_i32NotchFilterIndex,m_i32BandPassFilterIndex,m_bTriggerInputEnabled,m_vDevicesSerials,targetMasterSerial);
 
 	//reduce from number of channels for all devices to the number of channels for one device
