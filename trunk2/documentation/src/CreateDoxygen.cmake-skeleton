@@ -73,7 +73,7 @@ ENDIF(UNIX)
 				SET(dox_tag       NOTFOUND)
 
 				# and look for a new tag in this line
-				STRING(REGEX MATCH "\\|[a-zA-Z0-9_]*\\|" dox_tag "${dox_line}")
+				STRING(REGEX MATCH "\\|[a-zA-Z0-9_]+\\|" dox_tag "${dox_line}")
 				IF(dox_tag)
 					# a tag is found, so we want to know if it is a
 					# OVP_DocBegin* or OVP_DocEnd* tag
