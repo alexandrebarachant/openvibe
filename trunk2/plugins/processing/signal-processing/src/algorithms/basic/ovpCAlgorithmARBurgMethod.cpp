@@ -60,8 +60,8 @@ boolean CAlgorithmARBurgMethod::process(void)
 		// Setting size of output
 
 		l_pOutputMatrix->setDimensionCount(2); // the output matrix will have 2 dimensions 
-		l_pOutputMatrix->setDimensionSize(0,1); // only one row vector giving the coefficients
-		l_pOutputMatrix->setDimensionSize(1,(m_ui32Order+1)*l_ui32ChannelCount);// The number of coefficients per channel is equal to the order
+	    l_pOutputMatrix->setDimensionSize(0,l_ui32ChannelCount);
+    	l_pOutputMatrix->setDimensionSize(1,(m_ui32Order+1));// The number of coefficients per channel is equal to the order+1
 
 	}
 
@@ -136,7 +136,7 @@ boolean CAlgorithmARBurgMethod::process(void)
 		
 			for(uint32 i=0; i<=m_ui32Order; i++)
 			{
-				l_pOutputMatrix->getBuffer()[i+j*m_ui32Order]= m_vecXdARCoefs(i);
+			l_pOutputMatrix->getBuffer()[i+j*(m_ui32Order+1)]= m_vecXdARCoefs(i);
 			}
 		}
 	
