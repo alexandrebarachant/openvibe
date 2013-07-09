@@ -1,5 +1,3 @@
-#if defined TARGET_HAS_ThirdPartyITPP
-
 #include "ovpCSpectralAnalysis.h"
 
 #include <iostream>
@@ -44,7 +42,9 @@ CSpectralAnalysis::CSpectralAnalysis(void)
 	m_ui32ChannelCount(0),
 	m_ui32SampleCount(0),
 	m_bCoefComputed(false),
-	m_ui32FFTSize(1)
+	m_ui32FFTSize(1),
+	m_ui32HalfFFTSize(1)
+
 {
 	m_pWriter[0] = NULL;
 	m_pWriter[1] = NULL;
@@ -177,12 +177,12 @@ boolean CSpectralAnalysis::process()
 	float64 l_float64BandStart, l_float64BandStop;
 	char l_sFrequencyBandName [1024];
 
-	for(uint32 i = 0; i < l_ui32InputChunkCount; i++)
+	for(uint32 chunkIdx = 0; chunkIdx < l_ui32InputChunkCount; chunkIdx++)
     {
 		uint64 l_ui64ChunkSize = 0;
 		const uint8 * l_pChunkBuffer = NULL;
 
-		if(l_pDynamicContext->getInputChunk(0, i, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pChunkBuffer))
+		if(l_pDynamicContext->getInputChunk(0, chunkIdx, m_ui64LastChunkStartTime, m_ui64LastChunkEndTime, l_ui64ChunkSize, l_pChunkBuffer))
 		{
 			m_pSignalReader->processData(l_pChunkBuffer, l_ui64ChunkSize);
 
@@ -191,20 +191,22 @@ boolean CSpectralAnalysis::process()
 				if (!m_bCoefComputed)
 				{
 					m_ui32FFTSize=1;
+					m_ui32HalfFFTSize=1;
+					// Find out a power of two thats >= m_ui32SampleCount
 					while (m_ui32FFTSize < m_ui32SampleCount)
 					{
 						m_ui32FFTSize<<=1;
 					}
-					m_ui32FFTSize>>=1;
-					if(m_ui32FFTSize==0) 
+					if(m_ui32FFTSize==1)
 					{
-						this->getLogManager() << LogLevel_Error << "Computed FFT size was 0\n";
-						return false;
+						this->getLogManager() << LogLevel_Warning << "Computing FFT with size = 1\n";
 					}
+					// Due to the inputs being real numbers, we only need to look at half of the complex output later
+					m_ui32HalfFFTSize = m_ui32FFTSize>>1;	
 					m_bCoefComputed = true;
 				}
 
-				m_ui32FrequencyBandCount = m_ui32FFTSize;
+				m_ui32FrequencyBandCount = m_ui32HalfFFTSize;
 				m_pSpectrumOutputWriterHelper->setFrequencyBandCount(m_ui32FrequencyBandCount);
 				for (uint32 j=0; j < m_ui32FrequencyBandCount; j++)
 				{
@@ -242,15 +244,15 @@ boolean CSpectralAnalysis::process()
 					l_pDynamicContext->markOutputAsReadyToSend(3,m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
 				}
 
-				m_pOutputBuffer = new float64[m_ui32FFTSize*m_ui32ChannelCount];
+				m_pOutputBuffer = new float64[m_ui32HalfFFTSize*m_ui32ChannelCount];
 				m_pSpectrumOutputWriterHelper->setBuffer(m_pOutputBuffer);
 			}
 			else
 			{
-				//doing the processing
+				//do the processing
 				vec x(m_ui32SampleCount);
 				cvec y(m_ui32SampleCount);
-				cvec z(m_ui32ChannelCount*m_ui32FFTSize);
+				cvec z(m_ui32ChannelCount*m_ui32HalfFFTSize);
 
 				for (uint64 i=0;  i < m_ui32ChannelCount; i++)
 				{
@@ -258,17 +260,18 @@ boolean CSpectralAnalysis::process()
 					{
 						x[(int)j] =  (double)m_pInputBuffer[i*m_ui32SampleCount+j];
 					}
-					y = fft_real(x, m_ui32FFTSize<<1);
 
-					for(uint64 k=0 ; k<m_ui32FFTSize ; k++)
+					y = fft_real(x, m_ui32FFTSize);
+
+					for(uint64 k=0 ; k<m_ui32HalfFFTSize ; k++)
 					{
-						z[(int)(k+i*m_ui32FFTSize)] = y[(int)k];
+						z[(int)(k+i*m_ui32HalfFFTSize)] = y[(int)k];
 					}
 				}
 
 				if (m_bAmplitudeSpectrum)
 				{
-					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
+					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32HalfFFTSize; i++)
 					{
 						m_pOutputBuffer[i] =  sqrt(real(z[(int)i])*real(z[(int)i])+ imag(z[(int)i])*imag(z[(int)i]));
 					}
@@ -277,7 +280,7 @@ boolean CSpectralAnalysis::process()
 				}
 				if (m_bPhaseSpectrum)
 				{
-					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
+					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32HalfFFTSize; i++)
 					{
 						m_pOutputBuffer[i] =  imag(z[(int)i])/real(z[(int)i]);
 					}
@@ -286,7 +289,7 @@ boolean CSpectralAnalysis::process()
 				}
 				if (m_bRealPartSpectrum)
 				{
-					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
+					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32HalfFFTSize; i++)
 					{
 						m_pOutputBuffer[i] = real(z[(int)i]);
 					}
@@ -295,7 +298,7 @@ boolean CSpectralAnalysis::process()
 				}
 				if (m_bImagPartSpectrum)
 				{
-					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32FFTSize; i++)
+					for (uint64 i=0;  i < m_ui32ChannelCount*m_ui32HalfFFTSize; i++)
 					{
 						m_pOutputBuffer[i] = imag(z[(int)i]);
 					}
@@ -303,10 +306,8 @@ boolean CSpectralAnalysis::process()
 					l_pDynamicContext->markOutputAsReadyToSend(3,m_ui64LastChunkStartTime, m_ui64LastChunkEndTime);
 				}
 			}
-			l_pDynamicContext->markInputAsDeprecated(0,i);
+			l_pDynamicContext->markInputAsDeprecated(0,chunkIdx);
 		}
 	}
 	return true;
 }
-
-#endif // TARGET_HAS_ThirdPartyITPP

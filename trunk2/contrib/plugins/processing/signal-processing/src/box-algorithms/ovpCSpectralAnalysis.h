@@ -1,10 +1,10 @@
 
 // @copyright notice: Possibly due to dependencies, this box used to be GPL before upgrade to AGPL3
 
+#if defined TARGET_HAS_ThirdPartyITPP
+
 #ifndef __OpenViBEPlugins_SignalProcessing_CSpectralAnalysis_H__
 #define __OpenViBEPlugins_SignalProcessing_CSpectralAnalysis_H__
-
-#if defined TARGET_HAS_ThirdPartyITPP
 
 #include "../ovp_defines.h"
 
@@ -95,7 +95,8 @@ namespace OpenViBEPlugins
 			OpenViBE::float64* m_pOutputBuffer;
 
 			OpenViBE::boolean m_bCoefComputed;
-			OpenViBE::uint32 m_ui32FFTSize;
+			OpenViBE::uint32 m_ui32FFTSize;				// Pad sample up to this, a power of two
+			OpenViBE::uint32 m_ui32HalfFFTSize;			// Half of the m_ui32FFTSize
 
 			OpenViBE::boolean m_bAmplitudeSpectrum;
 			OpenViBE::boolean m_bPhaseSpectrum;
@@ -137,6 +138,8 @@ namespace OpenViBEPlugins
 		};
 	}
 }
-#endif // TARGET_HAS_ThirdPartyITPP
 
 #endif // __SamplePlugin_CSpectralAnalysis_H__
+
+#endif // TARGET_HAS_ThirdPartyITPP
+
