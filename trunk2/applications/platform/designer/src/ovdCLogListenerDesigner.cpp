@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #define OVD_GUI_File OpenViBE::Directories::getDataDir() + "/applications/designer/interface.ui"
 
 using namespace OpenViBE;
@@ -116,7 +118,7 @@ void CLogListenerDesigner::log(const time64 time64Value)
 	stringstream l_sText;
 	if(m_bConsoleLogTimeInSecond)
 	{
-		float64 l_f64Time=(time64Value.m_ui64TimeValue>>22)/1024.;
+		float64 l_f64Time=ITimeArithmetics::timeToSeconds(time64Value.m_ui64TimeValue);
 		std::stringstream ss;
 		ss.precision(m_ui32ConsoleLogTimePrecision);
 		ss.setf(std::ios::fixed,std::ios::floatfield);

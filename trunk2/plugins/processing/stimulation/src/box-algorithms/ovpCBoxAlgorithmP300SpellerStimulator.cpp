@@ -3,6 +3,8 @@
 #include <list>
 #include <cstdlib>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -91,19 +93,26 @@ boolean CBoxAlgorithmP300SpellerStimulator::initialize(void)
 	m_ui64NoFlashDuration        =(uint64)(((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 8))*float64(1LL<<32));
 	m_ui64InterRepetitionDuration=(uint64)(((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 9))*float64(1LL<<32));
 	m_ui64InterTrialDuration     =(uint64)(((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 10))*float64(1LL<<32));
+/*
+	m_ui64FlashDuration          = ITimeArithmetics::secondsToTime((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 7));
+	m_ui64NoFlashDuration        = ITimeArithmetics::secondsToTime((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 8));
+	m_ui64InterRepetitionDuration= ITimeArithmetics::secondsToTime((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 9));
+	m_ui64InterTrialDuration     = ITimeArithmetics::secondsToTime((float64)_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 10));
+*/
 
 	m_bAvoidNeighborFlashing     =_AutoCast_(l_rStaticBoxContext, this->getConfigurationManager(), 11);
 
-	if(m_ui64InterRepetitionDuration<(10LL<<32)/1000)
+	const uint64 l_ui64DurationThreshold = (10LL<<32)/1000;	// 10ms
+	if(m_ui64InterRepetitionDuration<l_ui64DurationThreshold)
 	{
 		_LOG_(this->getLogManager(), LogLevel_Warning << "Inter repetition duration should not be less than 10 ms\n");
-		m_ui64InterRepetitionDuration=(10LL<<32)/1000;
+		m_ui64InterRepetitionDuration=l_ui64DurationThreshold;
 	}
 
-	if(m_ui64InterTrialDuration<(10LL<<32)/1000)
+	if(m_ui64InterTrialDuration<l_ui64DurationThreshold)
 	{
 		_LOG_(this->getLogManager(), LogLevel_Warning << "Inter trial duration should not be less than 10 ms\n");
-		m_ui64InterTrialDuration=(10LL<<32)/1000;
+		m_ui64InterTrialDuration=l_ui64DurationThreshold;
 	}
 
 	if(m_bAvoidNeighborFlashing)

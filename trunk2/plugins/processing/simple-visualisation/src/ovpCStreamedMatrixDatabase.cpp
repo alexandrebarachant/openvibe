@@ -4,6 +4,8 @@
 
 #include "ovpCStreamedMatrixDatabase.h"
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Plugins;
 using namespace OpenViBE::Kernel;
@@ -14,9 +16,6 @@ using namespace OpenViBEPlugins::SimpleVisualisation;
 using namespace OpenViBEToolkit;
 
 using namespace std;
-
-#define convert_floating_time(f) ((uint64)f<<32) + (uint64)((f - (uint64)f) * (float64)((uint64)1<<32))
-//#define convert_uinteger_time(i) (float64)(i>>32) + (float64)((float64)(i&0xFFFFFFFF) / (float64)((uint64)1<<32))
 
 CStreamedMatrixDatabase::CStreamedMatrixDatabase(OpenViBEToolkit::TBoxAlgorithm<Plugins::IBoxAlgorithm>& oPlugin) :
 	m_oParentPlugin(oPlugin),
@@ -114,7 +113,7 @@ boolean CStreamedMatrixDatabase::setTimeScale(float64 f64TimeScale)
 
 	if(m_ui64BufferTimeStep > 0)
 	{
-		uint64 l_ui64TimeScale = convert_floating_time(m_f64TimeScale);
+		uint64 l_ui64TimeScale = ITimeArithmetics::secondsToTime(m_f64TimeScale);
 		l_ui32MaxBufferCount = (uint32)(ceil((float64)l_ui64TimeScale / m_ui64BufferTimeStep));
 	}
 

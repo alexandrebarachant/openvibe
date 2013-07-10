@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #include <fs/Files.h>
 
 using namespace OpenViBE;
@@ -79,7 +81,7 @@ void CLogListenerFile::log(const time64 time64Value)
 {
 	if(m_bTimeInSeconds)
 	{
-		float64 l_f64Time=(time64Value.m_ui64TimeValue>>22)/1024.;
+		float64 l_f64Time=ITimeArithmetics::timeToSeconds(time64Value.m_ui64TimeValue);
 		std::stringstream ss;
 		ss.precision(m_ui64TimePrecision);
 		ss.setf(std::ios::fixed,std::ios::floatfield);

@@ -13,6 +13,8 @@
 #include <cstring>
 #include <cstdlib>
 
+#include <openvibe/ovITimeArithmetics.h>
+
 #if defined TARGET_OS_Linux
  #define _strcmpi strcasecmp
 #endif
@@ -409,7 +411,8 @@ namespace
 			}
 			else
 			{
-				float64 l_f64Time=(l_pCurrentInterfacedScenario->m_pPlayer?((l_pCurrentInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()>>22)/1024.0):0);
+				float64 l_f64Time=(l_pCurrentInterfacedScenario->m_pPlayer 
+					? ITimeArithmetics::timeToSeconds(l_pCurrentInterfacedScenario->m_pPlayer->getCurrentSimulatedTime()) : 0);
 				if(l_pApplication->m_ui64LastTimeRefresh!=l_f64Time)
 				{
 					l_pApplication->m_ui64LastTimeRefresh=(uint64)l_f64Time;

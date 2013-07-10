@@ -4,8 +4,9 @@
 
 #include <vector>
 #include <ctime>
-
 #include <iostream>
+
+#include <openvibe/ovITimeArithmetics.h>
 
 #define boolean OpenViBE::boolean
 
@@ -181,7 +182,7 @@ void CPluginExternalStimulations::readExternalStimulations()
 
 			float64 time = (float64)ct_event_time / (float64)1000;
 
-			uint64 ov_time = (uint64)(time * 1024)<<22;
+			uint64 ov_time = ITimeArithmetics::secondsToTime(time);
 			stim.timestamp = ov_time;
 
 			stim.alreadyCountedAsEarlier = false;

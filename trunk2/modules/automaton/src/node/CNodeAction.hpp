@@ -87,9 +87,11 @@ namespace Automaton
 			Automaton::uint64 m_ui64EndTime;
 		public:
 
-			Automaton::uint64 convertTime(Automaton::uint64 ui64TimeLength)
+			// @note we're not using ITimeArithmetics::timeToSeconds() here to avoid its float conversion. This uses integer arithmetics.
+			Automaton::uint64 convertTime(Automaton::uint64 ui64TimeLengthMs)
 			{
-				return (ui64TimeLength<<32)/1000;
+				// -> 32:32 time, division by 1000 to return seconds
+				return (ui64TimeLengthMs<<32)/1000;
 			}
 
 			CWaitTime(Automaton::uint64 ui64TimeLength) :

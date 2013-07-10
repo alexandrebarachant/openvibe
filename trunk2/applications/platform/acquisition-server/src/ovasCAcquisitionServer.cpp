@@ -1009,7 +1009,7 @@ boolean CAcquisitionServer::correctDriftSampleCount(int64 i64SampleCount)
 
 		char l_sTime[1024];
 		uint64 l_ui64Time=System::Time::zgetTime()-m_ui64StartTime;
-		float64 l_f64Time=(l_ui64Time>>22)/1024.;
+		float64 l_f64Time=ITimeArithmetics::timeToSeconds(l_ui64Time);
 		::sprintf(l_sTime, "%.03lf", l_f64Time);
 		m_rKernelContext.getLogManager() << LogLevel_Trace << "At time " << CString(l_sTime) << " : Correcting drift by " << i64SampleCount << " samples\n";
 		if(i64SampleCount > 0)

@@ -304,10 +304,57 @@ int main(int argc, char *argv[])
 		cout << "m6: " << setw(3) << i << ": A " << ui64resultA << " B " << ui64resultB << "\n";
 	}
 
-	const float64 l_f64TestNumber = 1.23456789;
-	cout << "m7: A " << setprecision(10) << oldTimeToSeconds(oldSecondsToTime(l_f64TestNumber))
-		<<  " B " << setprecision(10) << ITimeArithmetics::timeToSeconds(ITimeArithmetics::secondsToTime(l_f64TestNumber))
-		<< "\n";
+	const float64 l_f64TestNumbers[] = { 1.23456789, 500.987654, 98765.123456, 123456789.123456789,
+		12345678901234567890.1234567890} ;
+	for(uint32 i=0;i<sizeof(l_f64TestNumbers)/sizeof(l_f64TestNumbers[0]);i++)
+	{
+		cout << "m7: " << setw(5) << i << " val " << setprecision(10) << " " << l_f64TestNumbers[i] << " A " << setprecision(10) << oldTimeToSeconds(oldSecondsToTime(l_f64TestNumbers[i]))
+			<<  " B " << setprecision(10) << ITimeArithmetics::timeToSeconds(ITimeArithmetics::secondsToTime(l_f64TestNumbers[i]))
+			<< "\n";
+	}
+
+#if 0
+	// Steps the 32:32 timeline linearly, trying to convert to seconds and back
+	const uint64 l_ui64Increment = ((1LL<<32)/1000)/4;		// 0.25 ms
+	const uint64 l_ui64LowerBound = (0LL*60LL*60LL)<<32;	// 0 hours
+	const uint64 l_ui64UpperBound = (48LL*60LL*60LL)<<32;	// 48 hours
+	const uint64 l_ui64DumpInterval = l_ui64Increment*10000LL*60LL*10LL;		// 10 min
+
+	uint64 l_ui64Errors = 0;
+	uint64 l_ui64Tests = 0;
+
+	for(uint64 i=l_ui64LowerBound; i<l_ui64UpperBound; i+=l_ui64Increment) {
+		uint64 l_ui64floatAndBack = ITimeArithmetics::secondsToTime(ITimeArithmetics::timeToSeconds(i));
+
+		uint64 l_ui64SignificantBitsA = (i >> (32-ITimeArithmetics::m_ui32DecimalPrecision));
+		uint64 l_ui64SignificantBitsB = (l_ui64floatAndBack >> (32-ITimeArithmetics::m_ui32DecimalPrecision));
+		if(l_ui64SignificantBitsA != l_ui64SignificantBitsB) {
+			// cout << "Err " << setw(15) << i << " : " << (l_ui64floatAndBack-i) << "\n";
+			l_ui64Errors++;
+		}
+		if( i == l_ui64Increment || i % l_ui64DumpInterval == 0) {
+			cout << "m8: At " << i << " -> " << l_ui64floatAndBack << " ( " << ITimeArithmetics::timeToSeconds(i) << "s )\n";
+		}
+		l_ui64Tests++;
+	}
+	cout << "m8: Got " << l_ui64Errors << " errors in " << l_ui64Tests << " trials, " << l_ui64Errors/(float64)l_ui64Tests << "%\n";
+#endif
+
+#if 0
+	// Randomized test
+	uint64 l_ui64Errors = 0;
+	for(uint64 i=0; i<1000000;i++) {
+		uint64 l_ui64Random = System::Math::randomUInteger64() >> 10;
+
+		if(l_ui64Random !=  ITimeArithmetics::secondsToTime(ITimeArithmetics::timeToSeconds(l_ui64Random))) {
+	//		if(ITimeArithmetics::timeToSeconds(l_ui64Random)/(60.0*60.0)<500.0) {
+			    cout << "Error converting " << l_ui64Random << " ( " << ITimeArithmetics::timeToSeconds(l_ui64Random)/(60.0*60.0) << " h)\n";
+	//		}
+			l_ui64Errors++;
+		}
+	}
+	cout << "Got " << l_ui64Errors << " errors\n";
+#endif
 
 	return retVal;
 } 

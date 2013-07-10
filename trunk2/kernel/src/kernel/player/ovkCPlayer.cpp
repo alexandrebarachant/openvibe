@@ -24,8 +24,8 @@ using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
 
-#define _Scheduler_Default_Frequency_ 128
-#define _Scheduler_Maximum_Loops_Duration_ (100LL << 22) /* 100/1024 second = approx 100ms */
+const uint64 g_ui64Scheduler_Default_Frequency_ = 128;
+const uint64 g_ui64Scheduler_Maximum_Loops_Duration_ = (100LL << 22); /* 100/1024 seconds, approx 100ms */
 
 //___________________________________________________________________//
 //                                                                   //
@@ -41,8 +41,8 @@ CPlayer::CPlayer(const IKernelContext& rKernelContext)
 	uint64 l_ui64SchedulerFrequency=this->getConfigurationManager().expandAsUInteger("${Kernel_PlayerFrequency}");
 	if(l_ui64SchedulerFrequency==0)
 	{
-		getLogManager() << LogLevel_ImportantWarning << "Invalid frequency configuration " << CString("Kernel_PlayerFrequency") << "=" << this->getConfigurationManager().expand("${Kernel_PlayerFrequency}") << " restored to default " << _Scheduler_Default_Frequency_ << "\n";
-		l_ui64SchedulerFrequency=_Scheduler_Default_Frequency_;
+		getLogManager() << LogLevel_ImportantWarning << "Invalid frequency configuration " << CString("Kernel_PlayerFrequency") << "=" << this->getConfigurationManager().expand("${Kernel_PlayerFrequency}") << " restored to default " << g_ui64Scheduler_Default_Frequency_ << "\n";
+		l_ui64SchedulerFrequency=g_ui64Scheduler_Default_Frequency_;
 	}
 	else
 	{
@@ -268,7 +268,7 @@ boolean CPlayer::loop(
 		case PlayerStatus_Forward:
 			// We can't know what m_ui64CurrentTimeToReach should be in advance
 			// We will try to do as many scheduler loops as possible until
-			// _Scheduler_Maximum_Loops_Duration_ seconds elapsed
+			// g_ui64Scheduler_Maximum_Loops_Duration_ seconds elapsed
 			break;
 
 		// Simply updates time according to delta time
@@ -293,7 +293,7 @@ boolean CPlayer::loop(
 		{
 			m_oScheduler.loop();
 		}
-		if(System::Time::zgetTime() > l_ui64StartTime+_Scheduler_Maximum_Loops_Duration_)
+		if(System::Time::zgetTime() > l_ui64StartTime + g_ui64Scheduler_Maximum_Loops_Duration_ )
 		{
 			l_bFinished=true;
 		}

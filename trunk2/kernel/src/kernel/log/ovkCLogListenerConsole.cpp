@@ -8,6 +8,8 @@
  #define boolean OpenViBE::boolean
 #endif
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace std;
@@ -71,7 +73,7 @@ void CLogListenerConsole::log(const time64 time64Value)
 	if(m_bTimeInSeconds)
 	{
 		uint64 l_ui64Precision = m_ui64TimePrecision;
-		float64 l_f64Time=(time64Value.m_ui64TimeValue>>22)/1024.;
+		float64 l_f64Time=ITimeArithmetics::timeToSeconds(time64Value.m_ui64TimeValue);
 		std::stringstream ss;
 		ss.precision(l_ui64Precision);
 		ss.setf(std::ios::fixed,std::ios::floatfield);

@@ -1,5 +1,7 @@
 #include "ovpCBoxAlgorithmEDFFileWriter.h"
 
+#include <openvibe/ovITimeArithmetics.h>
+
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
 using namespace OpenViBE::Plugins;
@@ -305,10 +307,10 @@ boolean CBoxAlgorithmEDFFileWriter::process(void)
 			for(uint32 stimulation_index = 0; stimulation_index < l_pStimulationSet->getStimulationCount(); stimulation_index++)
 			{
 				uint64 l_ui64StimulationDate = l_pStimulationSet->getStimulationDate(stimulation_index);
-				long long l_StimulationDate = (long long)(((double)(l_ui64StimulationDate>>22) / 1024.)/0.0001);
-				
+				long long l_StimulationDate = (long long)(ITimeArithmetics::timeToSeconds(l_ui64StimulationDate)/0.0001);
+
 				uint64 l_ui64StimulationDuration = l_pStimulationSet->getStimulationDuration(stimulation_index);
-				long long l_StimulationDuration = (long long)(((double)(l_ui64StimulationDuration>>22) / 1024.)/0.0001);
+				long long l_StimulationDuration = (long long)(ITimeArithmetics::timeToSeconds(l_ui64StimulationDuration)/0.0001);
 				
 				uint64 l_ui64StimulationIdentifier = l_pStimulationSet->getStimulationIdentifier(stimulation_index);
 				CString l_sStimulationIdentifier = this->getTypeManager().getEnumerationEntryNameFromValue(OV_TypeId_Stimulation, l_ui64StimulationIdentifier);
