@@ -5,6 +5,8 @@
 
 #include "../ovkCObjectVisitorContext.h"
 
+#include <openvibe/ov_defines.h>
+
 using namespace std;
 using namespace OpenViBE;
 using namespace OpenViBE::Kernel;
@@ -25,6 +27,10 @@ CBox::CBox(const IKernelContext& rKernelContext, CScenario& rOwnerScenario)
 	,m_oProcessingUnitIdentifier(OV_UndefinedIdentifier)
 	,m_sName("unnamed")
 {
+	if(this->hasAttribute(OV_AttributeId_Box_Muted))
+	{
+		this->getLogManager() << LogLevel_Debug << "Muted attribute is"<< this->getAttributeValue(OV_AttributeId_Box_Muted) <<"\n";
+	}
 }
 
 CBox::~CBox(void)
@@ -166,6 +172,15 @@ boolean CBox::initializeFromAlgorithmClassIdentifier(
 	else
 	{
 		this->addAttribute(OV_AttributeId_Box_InitialPrototypeHashValue, this->getPluginManager().getPluginObjectHashValue(rAlgorithmClassIdentifier).toString());
+	}
+
+	if(this->hasAttribute(OV_AttributeId_Box_Muted))
+	{
+		this->getLogManager() << LogLevel_Trace << "Muted attribute is"<< this->getAttributeValue(OV_AttributeId_Box_Muted) <<"\n";
+	}
+	else
+	{
+		this->addAttribute(OV_AttributeId_Box_Muted, "false");
 	}
 
 	this->enableNotification();

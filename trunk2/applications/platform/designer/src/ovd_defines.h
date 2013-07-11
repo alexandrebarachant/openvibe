@@ -46,6 +46,9 @@ namespace OpenViBEDesigner
 		ContextMenu_BoxAbout,
 
 		ContextMenu_ScenarioAbout,
+
+		ContextMenu_SelectionMute,
+		ContextMenu_BoxMute,
 	};
 
 	enum
@@ -87,6 +90,7 @@ namespace OpenViBEDesigner
 		Color_LinkInvalid,
 		Color_SelectionArea,
 		Color_SelectionAreaBorder,
+		Color_BoxBackgroundMuted,
 	};
 
 	enum
@@ -119,7 +123,5 @@ namespace OpenViBEDesigner
 #ifdef TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
  #include "ovp_global_defines.h"
 #endif // TARGET_HAS_ThirdPartyOpenViBEPluginsGlobalDefines
-
-
 
 #endif // __OpenViBEDesigner_defines_H__

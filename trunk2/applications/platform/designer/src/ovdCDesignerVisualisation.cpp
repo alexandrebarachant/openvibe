@@ -305,6 +305,18 @@ void CDesignerVisualisation::setDeleteEventCB(fpDesignerVisualisationDeleteEvent
 
 void CDesignerVisualisation::onVisualisationBoxAdded(const IBox* pBox)
 {
+	if(pBox->hasAttribute(OV_AttributeId_Box_Muted))
+	{
+		CString l_sIsMuted = pBox->getAttributeValue(OV_AttributeId_Box_Muted);
+		m_rKernelContext.getLogManager() <<  LogLevel_Trace << "Trying to add box with mute attribute value [" << l_sIsMuted << "]\n";
+		if( l_sIsMuted==CString("true") )
+		{
+			m_rKernelContext.getLogManager() <<  LogLevel_Trace << "Box muted, not adding new visualisation widget\n";
+			m_rVisualisationTree.reloadTree();
+			return;
+		}
+	}
+
 	CIdentifier l_oVisualisationWidgetIdentifier;
 	m_rVisualisationTree.addVisualisationWidget(
 		l_oVisualisationWidgetIdentifier,
@@ -1773,6 +1785,7 @@ void CDesignerVisualisation::cursorChangedCB(::GtkTreeView* pTreeView)
 
 void CDesignerVisualisation::drag_data_get_from_tree_cb(::GtkWidget* pSrcWidget, ::GdkDragContext* pDragContex, ::GtkSelectionData* pSelectionData, guint uiInfo, guint uiT, gpointer pData)
 {
+	//m_rKernelContext.getLogManager() << LogLevel_Debug << "drag_data_get_from_tree_cb\n";
 	static_cast<CDesignerVisualisation*>(pData)->dragDataGetFromTreeCB(pSrcWidget, pSelectionData);
 }
 

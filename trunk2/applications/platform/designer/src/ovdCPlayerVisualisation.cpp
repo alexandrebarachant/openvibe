@@ -340,6 +340,17 @@ boolean CPlayerVisualisation::setWidget(const CIdentifier& rBoxIdentifier, ::Gtk
 		return false;
 	}
 
+	//#lm
+	IBox* l_oBox = m_rInterfacedScenario.m_rScenario.getBoxDetails(rBoxIdentifier);
+	CString l_sIsMute = l_oBox->getAttributeValue(OV_AttributeId_Box_Muted);
+	bool l_bIsMute = false;
+	if ( l_sIsMute==CString("true") )
+	{
+		l_bIsMute=true;
+	}
+	m_mPlugins[l_pVisualisationWidget->getIdentifier()].m_Muted = l_bIsMute;
+	//
+
 	//unparent top widget, if necessary
 	::GtkWidget* l_pWidgetParent = gtk_widget_get_parent(pWidget);
 	if(GTK_IS_CONTAINER(l_pWidgetParent))
@@ -373,7 +384,13 @@ boolean CPlayerVisualisation::setWidget(const CIdentifier& rBoxIdentifier, ::Gtk
 		gtk_box_pack_start(l_pHBox, l_pIcon, TRUE, TRUE, 0);
 
 		//create label
-		::GtkWidget* l_pLabel = gtk_label_new((const char*)l_pVisualisationWidget->getName());
+		CString l_sName = l_pVisualisationWidget->getName();
+		if (l_bIsMute)
+		{
+			l_sName = l_sName+CString(" (muted)");
+		}
+		const char* l_cName = l_sName.toASCIIString();
+		::GtkWidget* l_pLabel = gtk_label_new(l_cName);//
 		//gtk_widget_set_size_request(l_pLabel, 0, 0);
 		gtk_box_pack_start(l_pHBox, l_pLabel, TRUE, TRUE, 0);
 
@@ -425,6 +442,14 @@ boolean CPlayerVisualisation::setWidget(const CIdentifier& rBoxIdentifier, ::Gtk
 
 boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::GtkBox* pWidgetBox)
 {
+
+	IBox* l_oBox = m_rInterfacedScenario.m_rScenario.getBoxDetails( pWidget->getBoxIdentifier() );
+	CString l_sMute = l_oBox->getAttributeValue(OV_AttributeId_Box_Muted);
+	bool l_bMute = false;
+	if (l_sMute==CString("true")) 
+	{
+		l_bMute=true;
+	}
 	//if widget is unaffected, open it in its own window
 	if(pWidget->getParentIdentifier() == OV_UndefinedIdentifier)
 	{
@@ -462,8 +487,11 @@ boolean CPlayerVisualisation::parentWidgetBox(IVisualisationWidget* pWidget, ::G
 			gtk_window_set_position(GTK_WINDOW(l_pWindow), GTK_WIN_POS_CENTER_ON_PARENT);
 		}
 
-		//show window (and realize widget in doing so)
-		gtk_widget_show(l_pWindow);
+		if(l_bMute==false)
+		{
+			//show window (and realize widget in doing so)
+			gtk_widget_show(l_pWindow);
+		}
 	}
 	else //retrieve parent widget in which to insert current widget
 	{

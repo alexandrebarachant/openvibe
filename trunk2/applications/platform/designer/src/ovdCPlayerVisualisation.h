@@ -120,6 +120,7 @@ namespace OpenViBEDesigner
 			::GtkWidget* m_pWidget;
 			::GtkToggleButton* m_pToolbarButton;
 			::GtkWidget* m_pToolbar;
+			bool m_Muted;//#lm
 		};
 
 		/**

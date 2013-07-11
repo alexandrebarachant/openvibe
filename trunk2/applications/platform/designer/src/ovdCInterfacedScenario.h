@@ -52,6 +52,8 @@ namespace OpenViBEDesigner
 		void pasteSelection(void);
 		void deleteSelection(void);
 
+		void muteSelection(void);
+
 		void contextMenuBoxRenameCB(OpenViBE::Kernel::IBox& rBox);
 		void contextMenuBoxRenameAllCB();
 		void contextMenuBoxDeleteCB(OpenViBE::Kernel::IBox& rBox);
@@ -66,6 +68,7 @@ namespace OpenViBEDesigner
 		void contextMenuBoxRemoveSettingCB(OpenViBE::Kernel::IBox& rBox, OpenViBE::uint32 ui32Index);
 		void contextMenuBoxConfigureCB(OpenViBE::Kernel::IBox& rBox);
 		void contextMenuBoxAboutCB(OpenViBE::Kernel::IBox& rBox);
+		void contextMenuBoxMuteCB(OpenViBE::Kernel::IBox& rBox);
 
 		void contextMenuScenarioAboutCB(void);
 

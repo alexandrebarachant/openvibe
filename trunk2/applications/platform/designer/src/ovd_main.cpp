@@ -388,6 +388,7 @@ int go(int argc, char ** argv)
 	gdk_color_set(g_vColors[Color_BoxBackgroundDeprecated],  24575, 32767, 32767);
 	gdk_color_set(g_vColors[Color_BoxBackgroundNeedsUpdate], 57343, 57343, 57343);
 	gdk_color_set(g_vColors[Color_BoxBackgroundUnstable],    49151, 49151, 49151);
+	gdk_color_set(g_vColors[Color_BoxBackgroundMuted],       65535, 57343, 57343);
 	gdk_color_set(g_vColors[Color_BoxBackground],            65535, 65535, 65535);
 	gdk_color_set(g_vColors[Color_BoxBorderSelected],            0,     0,     0);
 	gdk_color_set(g_vColors[Color_BoxBorder],                    0,     0,     0);

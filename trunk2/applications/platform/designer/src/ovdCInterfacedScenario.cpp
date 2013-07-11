@@ -163,6 +163,7 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		case ContextMenu_SelectionCut:     l_pContextMenuCB->pInterfacedScenario->cutSelection(); break;
 		case ContextMenu_SelectionPaste:   l_pContextMenuCB->pInterfacedScenario->pasteSelection(); break;
 		case ContextMenu_SelectionDelete:  l_pContextMenuCB->pInterfacedScenario->deleteSelection(); break;
+		case ContextMenu_SelectionMute:    l_pContextMenuCB->pInterfacedScenario->muteSelection(); break;
 
 		case ContextMenu_BoxRename:        l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRenameCB(*l_pContextMenuCB->pBox); break;
 		//case ContextMenu_BoxRename:        l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRenameAllCB(); break;
@@ -178,6 +179,7 @@ static void context_menu_cb(::GtkMenuItem* pMenuItem, gpointer pUserData)
 		case ContextMenu_BoxRemoveSetting: l_pContextMenuCB->pInterfacedScenario->contextMenuBoxRemoveSettingCB(*l_pContextMenuCB->pBox, l_pContextMenuCB->ui32Index); break;
 		case ContextMenu_BoxConfigure:     l_pContextMenuCB->pInterfacedScenario->contextMenuBoxConfigureCB(*l_pContextMenuCB->pBox); break;
 		case ContextMenu_BoxAbout:         l_pContextMenuCB->pInterfacedScenario->contextMenuBoxAboutCB(*l_pContextMenuCB->pBox); break;
+		case ContextMenu_BoxMute:          l_pContextMenuCB->pInterfacedScenario->contextMenuBoxMuteCB(*l_pContextMenuCB->pBox); break;
 
 		case ContextMenu_ScenarioAbout:    l_pContextMenuCB->pInterfacedScenario->contextMenuScenarioAboutCB(); break;
 	}
@@ -458,6 +460,8 @@ void CInterfacedScenario::redraw(IBox& rBox)
 	boolean l_bUpToDate  =l_bCanCreate ?  l_oBoxProxy.isUpToDate() : true;
 	boolean l_bDeprecated=l_bCanCreate && l_oBoxProxy.isDeprecated();
 	boolean l_bUnstable  =l_bCanCreate && l_oBoxProxy.isUnstable();
+	boolean l_bMuted     =l_oBoxProxy.getMute();
+
 	if(!this->isLocked() || !m_bDebugCPUUsage)
 	{
 		if(m_vCurrentObject[rBox.getIdentifier()])
@@ -479,6 +483,10 @@ void CInterfacedScenario::redraw(IBox& rBox)
 		else if(l_bUnstable)
 		{
 			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundUnstable]);
+		}
+		else if(l_bMuted)
+		{
+			gdk_gc_set_rgb_fg_color(l_pDrawGC, &g_vColors[Color_BoxBackgroundMuted]);
 		}
 		else
 		{
@@ -1534,6 +1542,7 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 						if(this->hasSelection()) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionCopy, GTK_STOCK_COPY, "copy...", context_menu_cb, NULL, ContextMenu_SelectionCopy, -1); }
 						if(m_rApplication.m_pClipboardScenario->getNextBoxIdentifier(OV_UndefinedIdentifier)!=OV_UndefinedIdentifier) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionPaste, GTK_STOCK_PASTE, "paste...", context_menu_cb, NULL, ContextMenu_SelectionPaste, -1); }
 						if(this->hasSelection()) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionCut, GTK_STOCK_DELETE, "delete...", context_menu_cb, NULL, ContextMenu_SelectionDelete, -1); }
+						if(this->hasSelection()) { gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemSelectionCut, GTK_STOCK_CUT, "mute toggle...", context_menu_cb, NULL, ContextMenu_SelectionMute, -1); }
 
 						if(m_oCurrentObject.m_oIdentifier!=OV_UndefinedIdentifier && m_rScenario.isBox(m_oCurrentObject.m_oIdentifier))
 						{
@@ -1542,6 +1551,11 @@ void CInterfacedScenario::scenarioDrawingAreaButtonPressedCB(::GtkWidget* pWidge
 							{
 								uint32 i;
 								char l_sCompleteName[1024];
+
+								if (!this->hasSelection())
+								{
+									gtk_menu_add_new_image_menu_item_with_cb(l_pMenu, l_pMenuItemRename, GTK_STOCK_EDIT, "mute toggle...", context_menu_cb, l_pBox, ContextMenu_BoxMute, -1);
+								}
 
 								gtk_menu_add_separator_menu_item_with_condition(m_vBoxContextMenuCB.size()!=0, l_pMenu);
 
@@ -2230,6 +2244,28 @@ void CInterfacedScenario::deleteSelection(void)
 	this->snapshotCB();
 }
 
+void CInterfacedScenario::muteSelection(void)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "muteSelection\n";
+
+	map<CIdentifier, boolean>::const_iterator i;
+	for(i=m_vCurrentObject.begin(); i!=m_vCurrentObject.end(); i++)
+	{
+		if(i->second)
+		{
+			if(m_rScenario.isBox(i->first))
+			{
+				IBox* l_pBox=m_rScenario.getBoxDetails(i->first);
+				this->contextMenuBoxMuteCB(*l_pBox);
+			}
+		}
+	}
+	m_vCurrentObject.clear();
+
+	this->redraw();
+	this->snapshotCB();
+}
+
 void CInterfacedScenario::contextMenuBoxRenameCB(IBox& rBox)
 {
 	const IPluginObjectDesc* l_pPluginObjectDescriptor=m_rKernelContext.getPluginManager().getPluginObjectDescCreating(rBox.getAlgorithmClassIdentifier());
@@ -2457,6 +2493,34 @@ void CInterfacedScenario::contextMenuScenarioAboutCB(void)
 	m_rKernelContext.getLogManager() << LogLevel_Debug << "contextMenuScenarioAboutCB\n";
 	CAboutScenarioDialog l_oAboutScenarioDialog(m_rKernelContext, m_rScenario, m_sGUIFilename.c_str());
 	l_oAboutScenarioDialog.run();
+	this->snapshotCB();
+}
+
+void CInterfacedScenario::contextMenuBoxMuteCB(IBox& rBox)
+{
+	m_rKernelContext.getLogManager() << LogLevel_Trace << "contextMenuBoxMuteCB\n";
+
+	//two constructors for the BoxProxy
+	//if I use the first one, I can not use setMute and have to use l_oAttributeHandler.setAttributeValue<bool>
+
+	CBoxProxy l_oBoxProxy(m_rKernelContext, rBox);
+	TAttributeHandler l_oAttributeHandler(rBox);
+	//CBoxProxy l_oBoxProxy(m_rKernelContext, m_rScenario, rBox.getIdentifier() );
+
+	//first if the attribute does not already exist, set it to false
+	if(!rBox.hasAttribute(OV_AttributeId_Box_Muted))
+	{
+		rBox.addAttribute(OV_AttributeId_Box_Muted, "false");
+	}
+
+	bool l_bIsmuted = l_oBoxProxy.getMute();
+	boolean l_bNewValue = !l_bIsmuted;
+
+	m_rKernelContext.getLogManager() << LogLevel_Debug << "was " <<  l_bIsmuted <<"\n";
+	//l_oBoxProxy.setMute( l_bNewValue );
+	l_oAttributeHandler.setAttributeValue<bool>(OV_AttributeId_Box_Muted, l_bNewValue);
+
+	this->redraw();
 	this->snapshotCB();
 }
 

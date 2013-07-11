@@ -304,7 +304,7 @@ boolean CScheduler::initialize(void)
 	{
 		const IBox* l_pBox=m_pScenario->getBoxDetails(itSimulatedBox->first.second);
 		this->getLogManager() << LogLevel_Trace << "Scheduled box : id = " << itSimulatedBox->first.second << " priority = " << -itSimulatedBox->first.first << " name = " << l_pBox->getName() << "\n";
-		if(itSimulatedBox->second)
+		if(itSimulatedBox->second ) // we initialize regardless of mute so that we can bring the box back during the run (in theory...)
 		{
 			itSimulatedBox->second->initialize();
 		}
@@ -365,8 +365,20 @@ boolean CScheduler::loop(void)
 		CSimulatedBox* l_pSimulatedBox=itSimulatedBox->second;
 		System::CChrono& l_rSimulatedBoxChrono=m_vSimulatedBoxChrono[itSimulatedBox->first.second];
 
+		// we check once a cycle if the box is indeed muted.
+		IBox* l_pBox=m_pScenario->getBoxDetails(itSimulatedBox->first.second);
+		boolean l_bIsMuted = false;
+		if(l_pBox->hasAttribute(OV_AttributeId_Box_Muted))
+		{
+			CString l_sIsMuted = l_pBox->getAttributeValue(OV_AttributeId_Box_Muted);
+			if (l_sIsMuted==CString("true"))
+			{
+				l_bIsMuted = true;
+			}
+		}
+
 		l_rSimulatedBoxChrono.stepIn();
-		if(l_pSimulatedBox)
+		if(l_pSimulatedBox && !l_bIsMuted)
 		{
 			l_pSimulatedBox->processClock();
 
