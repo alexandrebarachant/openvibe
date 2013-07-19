@@ -1,5 +1,0 @@
-#ifndef __OpenViBEPluginInspector_defines_H__
-#define __OpenViBEPluginInspector_defines_H__
-
-
-#endif // __OpenViBEPluginInspector_defines_H__
